@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -45,7 +45,7 @@ AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
 
-INSTALL = /usr/local/bin/ginstall -c
+INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL} $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL_PROGRAM}
@@ -62,9 +62,10 @@ CXX = c++
 MAKEINFO = makeinfo
 PACKAGE = glob2
 RANLIB = ranlib
-SDL_CFLAGS = -I/home/smagnena/pub/include -I/home/smagnena/pub/include/SDL -D_REENTRANT
-SDL_CONFIG = /home/smagnena/pub/bin/sdl-config
-SDL_LIBS = -L/home/smagnena/pub/lib -R/home/smagnena/pub/lib -lSDL -lpthread -lposix4
+SDL_CFLAGS = -I/usr/include/SDL -D_REENTRANT
+SDL_CONFIG = /usr/bin/sdl-config
+SDL_LIBS = -L/usr/lib -lSDL -lpthread -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv
+SDL_LIBS_FOR_LIBS = -L/usr/lib -lSDL -lpthread
 VERSION = 0.1
 
 bin_PROGRAMS = glob2
@@ -72,8 +73,8 @@ bin_PROGRAMS = glob2
 glob2_SOURCES = AI.cpp AI.h Building.cpp Building.h BuildingType.cpp BuildingType.h CVS Engine.cpp Engine.h EntityType.cpp EntityType.h Fatal.cpp Fatal.h GAG.h GUIBase.cpp GUIBase.h GUIButton.cpp GUIButton.h GUIList.cpp GUIList.h GUIText.h GUIText.cpp GUITextInput.cpp GUITextInput.h GUITextArea.cpp GUITextArea.h GUIMapPreview.h GUIMapPreview.cpp Game.cpp Game.h GameGUI.cpp GameGUI.h GameGUIDialog.cpp GameGUIDialog.h GameGUILoadSave.cpp GameGUILoadSave.h Glob2.cpp Glob2.h GlobalContainer.cpp GlobalContainer.h GraphicContext.cpp GraphicContext.h Header.h Makefile.am Map.cpp Map.h MapEdit.cpp MapEdit.h NetConsts.h NetGame.cpp NetGame.h Order.cpp Order.h Player.cpp Player.h PreparationGui.cpp PreparationGui.h Race.cpp Race.h Session.cpp Session.h SDLSprite.cpp SDLSprite.h SDLFont.h SDLFont.cpp SDLGraphicContext.h SDLGraphicContext.cpp StringTable.cpp StringTable.h Team.cpp Team.h TeamStat.h TeamStat.cpp Unit.cpp Unit.h UnitType.cpp UnitType.h Utilities.cpp Utilities.h FileManager.h FileManager.cpp CustomGameScreen.h CustomGameScreen.cpp LoadGameScreen.h LoadGameScreen.cpp MainMenuScreen.h MainMenuScreen.cpp MultiplayersOfferScreen.h MultiplayersOfferScreen.cpp YOGScreen.h YOGScreen.cpp YOGConnector.h YOGConnector.cpp SettingsScreen.h SettingsScreen.cpp MultiplayersHostScreen.h MultiplayersHostScreen.cpp MultiplayersHost.h MultiplayersHost.cpp MultiplayersJoinScreen.h MultiplayersJoinScreen.cpp MultiplayersJoin.h MultiplayersJoin.cpp MultiplayersConnectedScreen.h MultiplayersConnectedScreen.cpp MultiplayersChooseMapScreen.h MultiplayersChooseMapScreen.cpp MultiplayersCrossConnectable.h MultiplayersCrossConnectable.cpp NonANSICStdWrapper.h NewMapScreen.h NewMapScreen.cpp YOG.h YOG.cpp
 
 
-glob2_LDADD = -lSDL_net -lSDL_image -L/home/smagnena/pub/lib -R/home/smagnena/pub/lib -lSDL -lpthread -lposix4 
-INCLUDES = -I/home/smagnena/pub/include -I/home/smagnena/pub/include/SDL -D_REENTRANT
+glob2_LDADD = -lSDL_net -lSDL_image -L/usr/lib -lSDL -lpthread -L/usr/X11R6/lib -lXxf86dga -lXxf86vm -lXv 
+INCLUDES = -I/usr/include/SDL -D_REENTRANT
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -99,7 +100,7 @@ MultiplayersChooseMapScreen.o MultiplayersCrossConnectable.o \
 NewMapScreen.o YOG.o
 glob2_DEPENDENCIES = 
 glob2_LDFLAGS = 
-CXXFLAGS = -g -Wall -lpng 
+CXXFLAGS = -g -Wall 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
@@ -112,7 +113,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/AI.P .deps/Building.P .deps/BuildingType.P \
 .deps/CustomGameScreen.P .deps/Engine.P .deps/EntityType.P \
@@ -235,7 +236,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

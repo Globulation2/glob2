@@ -210,11 +210,14 @@ bool SessionInfo::load(SDL_RWops *stream)
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
 
+	
 	for (i=0; i<numberOfPlayer; ++i)
-		players[i].load(stream);
+		if(!players[i].load(stream))
+			return false;
 
 	for (i=0; i<numberOfTeam; ++i)
-		team[i].load(stream);
+		if(!team[i].load(stream))
+			return false;
 
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)

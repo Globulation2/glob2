@@ -32,14 +32,15 @@ class Engine
 public:
 	Engine();
 	~Engine();
-	int initCampain(void);
-	int initCustom(void);
-	int initCustom(char *gameName);
+	int initCampain();
+	int initCustom();
+	int initCustom(const char *gameName);
+	int initLoadGame();
 	void startMultiplayer(SessionConnection *screen);
 	int initMutiplayerHost(bool shareOnYOG);
-	int initMutiplayerJoin(void);
-	int initMutiplayerYOG(void);
-	int run(void);
+	int initMutiplayerJoin();
+	int initMutiplayerYOG();
+	int run();
 
 	enum EngineError
 	{

@@ -27,13 +27,19 @@
 class InGameLoadSaveScreen:public InGameScreen
 {
 public:
-	/*const*/ char *fileName;
+	enum
+	{
+		OK = 0,
+		CANCEL = 1
+	};
+	char *fileName;
 
 private:
 	List *fileList;
 	TextInput *fileNameEntry;
 	bool firstPaint;
 	bool isLoad;
+	const char *extension;
 
 public:
 	InGameLoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL);

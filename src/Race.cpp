@@ -27,7 +27,6 @@
 Race::~Race()
 {
 	
-			
 }
 
 void Race::create(CreationType creationType)
@@ -170,21 +169,19 @@ UnitType *Race::getUnitType(UnitType::TypeNum type, int level)
 
 void Race::save(SDL_RWops *stream)
 {
-	{
-		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-			for(int j=0; j<UnitType::NB_UNIT_LEVELS; j++)
-				unitTypes[i][j].save(stream);
-	}
+	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		for(int j=0; j<UnitType::NB_UNIT_LEVELS; j++)
+			unitTypes[i][j].save(stream);
 }
 
-void Race::load(SDL_RWops *stream)
+bool Race::load(SDL_RWops *stream)
 {
-	{
-		//printf("loading race\n");
-		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-			for(int j=0; j<UnitType::NB_UNIT_LEVELS; j++)
-				unitTypes[i][j].load(stream);
-	}
+	//printf("loading race\n");
+	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		for(int j=0; j<UnitType::NB_UNIT_LEVELS; j++)
+			unitTypes[i][j].load(stream);
+	
+	return true;
 }
 
 /*

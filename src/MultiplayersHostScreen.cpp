@@ -33,8 +33,8 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addWidget(new TextButton(420, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
-	addWidget(new TextButton(180, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
+	addWidget(new TextButton(180, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
+	addWidget(new TextButton(420, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
 
 	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG);
 	multiplayersJoin=NULL;

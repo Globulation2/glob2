@@ -38,7 +38,7 @@ BaseTeam::BaseTeam()
 	type=T_HUMAN;
 }
 
-void BaseTeam::load(SDL_RWops *stream)
+bool BaseTeam::load(SDL_RWops *stream)
 {
 	// loading baseteam
 	teamNumber=SDL_ReadBE32(stream);
@@ -48,7 +48,9 @@ void BaseTeam::load(SDL_RWops *stream)
 	SDL_RWread(stream, &colorB, 1, 1);
 	SDL_RWread(stream, &colorPAD, 1, 1);
 	playersMask=SDL_ReadBE32(stream);
-	race.load(stream);
+	if(!race.load(stream))
+		return false;
+	return true;
 }
 
 void BaseTeam::save(SDL_RWops *stream)
@@ -128,7 +130,8 @@ Team::Team(SDL_RWops *stream, Game *game)
 {
 	this->game=game;
 	init();
-	load(stream, &(globalContainer->buildingsTypes));
+	bool success=load(stream, &(globalContainer->buildingsTypes));
+	assert(success);
 }
 
 Team::~Team()
@@ -509,14 +512,16 @@ int Team::maxBuildLevel(void)
 	return maxLevel;
 }
 
-void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
+bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 {
 	int i;
+	assert(stream);
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsToBeUpgraded.clear();
 	
 	// loading baseteam
-	BaseTeam::load(stream);
+	if(!BaseTeam::load(stream))
+		return false;
 
 	// normal load
 	for (i=0; i< 1024; i++)
@@ -599,6 +604,8 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	eventPosX=startPosX;
 	eventPosY=startPosY;
 	isAlive=true;
+	
+	return true;
 }
 
 void Team::save(SDL_RWops *stream)

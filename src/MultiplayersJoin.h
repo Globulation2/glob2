@@ -21,7 +21,7 @@
 #ifndef __MULTIPLAYERJOIN_H
 #define __MULTIPLAYERJOIN_H
 
-#include "PreparationGui.h"
+#include "MultiplayersCrossConnectable.h"
 
 class MultiplayersJoin:public MultiplayersCrossConnectable
 {

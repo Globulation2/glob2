@@ -20,7 +20,7 @@
 
 #include "GUIButton.h"
 
-Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode)
+Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicode)
 {
 	this->x=x;
 	this->y=y;
@@ -30,6 +30,7 @@ Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int hig
 	this->standardId=standardId;
 	this->highlightID=highlightID;
 	this->returnCode=returnCode;
+	this->unicode=unicode;
 	highlighted=false;
 }
 
@@ -58,6 +59,13 @@ void Button::onSDLEvent(SDL_Event *event)
 				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
 			}
 		}
+	}
+	else if (event->type==SDL_KEYDOWN)
+	{
+		Uint16 typedUnicode=event->key.keysym.unicode;
+		//printf("typedUnicode=%d.\n", typedUnicode);
+		if ((unicode)&&(typedUnicode==unicode))
+			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
@@ -100,8 +108,8 @@ void Button::paint(DrawableSurface *gfx)
 
 
 
-TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode)
-:Button(x, y, w, h, arch, standardId, highlightID, returnCode)
+TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicode)
+:Button(x, y, w, h, arch, standardId, highlightID, returnCode, unicode)
 {
 	this->text=NULL;
 	this->font=font;

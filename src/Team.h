@@ -51,7 +51,7 @@ private:
 	char data[16];
 
 public:
-	void load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 	
 	Uint8 getOrderType();
@@ -80,7 +80,7 @@ public:
 	virtual ~Team(void);
 
 	void setBaseTeam(const BaseTeam *initial);
-	void load(SDL_RWops *stream, BuildingsTypes *buildingstypes);
+	bool load(SDL_RWops *stream, BuildingsTypes *buildingstypes);
 	void save(SDL_RWops *stream);
 
 	//! Do a step for each unit, building and bullet in team.

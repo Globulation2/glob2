@@ -102,7 +102,7 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 	this->teamNumberMask=1<<teamNumber;
 };
 
-void BasePlayer::load(SDL_RWops *stream)
+bool BasePlayer::load(SDL_RWops *stream)
 {
 	type=(PlayerType)SDL_ReadBE32(stream);
 	number=SDL_ReadBE32(stream);
@@ -113,6 +113,7 @@ void BasePlayer::load(SDL_RWops *stream)
 
 	ip.host=SDL_ReadBE32(stream);
 	ip.port=SDL_ReadBE32(stream);
+	return true;
 }
 
 void BasePlayer::save(SDL_RWops *stream)
@@ -476,7 +477,8 @@ Player::Player()
 Player::Player(SDL_RWops *stream, Team *teams[32])
 :BasePlayer()
 {
-	load(stream, teams);
+	bool sucess=load(stream, teams);
+	assert(sucess);
 }
 
 Player::Player(Sint32 number, const char name[16], Team *team, PlayerType type)
@@ -516,14 +518,16 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	channel=initial->channel;
 };
 
-void Player::load(SDL_RWops *stream, Team *teams[32])
+bool Player::load(SDL_RWops *stream, Team *teams[32])
 {
 	// if AI, delete
 	if ((type==P_AI) && (ai))
 		delete ai;
 
 	// base player
-	BasePlayer::load(stream);
+	bool success=BasePlayer::load(stream);
+	if (!success)
+		return false;
 
 	// player
 	startPositionX=SDL_ReadBE32(stream);
@@ -533,6 +537,8 @@ void Player::load(SDL_RWops *stream, Team *teams[32])
 		ai=new AI(stream, this);
 	else
 		ai=NULL;
+	
+	return true;
 }
 
 void Player::save(SDL_RWops *stream)

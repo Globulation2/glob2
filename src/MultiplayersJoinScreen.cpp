@@ -44,8 +44,8 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	playerText=new Text(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
 	addWidget(playerText);
 
-	addWidget(new TextButton(420, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT));
-	addWidget(new TextButton( 40, 420, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
+	addWidget(new TextButton( 40, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT, 13));
+	addWidget(new TextButton(280, 420, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT, 27));
 
 	wasVisible=false;
 }

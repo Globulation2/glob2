@@ -21,7 +21,7 @@
 #ifndef __MULTIPLAYERHOST_H
 #define __MULTIPLAYERHOST_H
 
-#include "PreparationGui.h"
+#include "MultiplayersCrossConnectable.h"
 #include "GAG.h"
 
 class MultiplayersHost: public MultiplayersCrossConnectable

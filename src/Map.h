@@ -82,12 +82,14 @@ public:
 protected:
 	char mapName[MAP_NAME_MAX_SIZE];
 	char mapFileName[MAP_NAME_MAX_SIZE+4];//This is not saved in file
+	char gameFileName[MAP_NAME_MAX_SIZE+4];//This is not saved in file
 
 public:
 	//! Safely copy s to mapName[] and remove the extention if needed.
 	void setMapName(const char *s);
 	const char *getMapName() const;
 	const char *getMapFileName() const;
+	const char *getGameFileName() const;
 protected:
 	//! serialized form of BaseMap
 	char data[MAP_NAME_MAX_SIZE];

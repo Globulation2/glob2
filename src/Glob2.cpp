@@ -24,6 +24,8 @@
 #include "GAG.h"
 #include "Game.h"
 #include "PreparationGui.h"
+#include "MainMenuScreen.h"
+#include "MultiplayersOfferScreen.h"
 #include "MapEdit.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
@@ -211,7 +213,7 @@ int Glob2::run(int argc, char *argv[])
 				isRunning=false;
 			}
 			break;
-			case 0:
+			case MainMenuScreen::CAMPAIN:
 			{
 				Engine engine;
 				if (engine.initCampain()==Engine::EE_NO_ERROR)
@@ -219,7 +221,15 @@ int Glob2::run(int argc, char *argv[])
 						isRunning=false;
 			}
 			break;
-			case 1:
+			case MainMenuScreen::LOAD_GAME:
+			{
+				Engine engine;
+				if (engine.initLoadGame()==Engine::EE_NO_ERROR)
+					if (engine.run()==-1)
+						isRunning=false;
+			}
+			break;
+			case MainMenuScreen::CUSTOM:
 			{
 				Engine engine;
 				if (engine.initCustom()==Engine::EE_NO_ERROR)
@@ -227,16 +237,16 @@ int Glob2::run(int argc, char *argv[])
 						isRunning=false;
 			}
 			break;
-			case 2:
+			case MainMenuScreen::MULTIPLAYERS_YOG:
 			{
 				mutiplayerYOG();
 			}
 			break;
-			case 3:
+			case MainMenuScreen::MULTIPLAYERS_LAN:
 			{
 				switch (MultiplayersOfferScreen::menu())
 				{
-					case MultiplayersOfferScreen::HOST :
+					case MultiplayersOfferScreen::HOST:
 					{
 						Engine engine;
 						int rc=engine.initMutiplayerHost(false);
@@ -250,7 +260,7 @@ int Glob2::run(int argc, char *argv[])
 					}
 					break;
 
-					case MultiplayersOfferScreen::JOIN :
+					case MultiplayersOfferScreen::JOIN:
 					{
 						Engine engine;
 						printf("join\n");
@@ -264,13 +274,11 @@ int Glob2::run(int argc, char *argv[])
 							isRunning=false;
 					}
 					break;
-
-					case MultiplayersOfferScreen::QUIT :
+					case MultiplayersOfferScreen::QUIT:
 					{
-
+						//continue;
 					}
 					break;
-
 					case -1 :
 					{
 						isRunning=false;
@@ -279,26 +287,24 @@ int Glob2::run(int argc, char *argv[])
 				}
 			}
 			break;
-			case 4:
+			case MainMenuScreen::GAME_SETUP:
 			{
-				int settingReturnValue;
-				do
-				{
-					settingReturnValue=SettingsScreen::menu();
-				}
-				while (settingReturnValue);
+				SettingsScreen settingsScreen;
+				settingsScreen.execute(globalContainer->gfx, 20);
 			}
 			break;
-			case 5:
+			case MainMenuScreen::EDITOR:
 			{
 				NewMapScreen newMapScreen;
-				newMapScreen.execute(globalContainer->gfx, 30);
-				MapEdit mapEdit;
-				if (mapEdit.run(newMapScreen.sizeX, newMapScreen.sizeY, newMapScreen.defaultTerrainType))
-					isRunning=false;
+				if (newMapScreen.execute(globalContainer->gfx, 20)==NewMapScreen::OK)
+				{
+					MapEdit mapEdit;
+					if (mapEdit.run(newMapScreen.sizeX, newMapScreen.sizeY, newMapScreen.defaultTerrainType))
+						isRunning=false;
+				}
 			}
 			break;
-			case 6:
+			case MainMenuScreen::QUIT:
 			{
 				isRunning=false;
 			}

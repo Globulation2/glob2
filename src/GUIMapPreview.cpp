@@ -55,12 +55,12 @@ void MapPreview::repaint(void)
 		if (stream)
 		{
 			SessionGame session;
-			session.load(stream);
+			session.load(stream); // TODO: check if the loading is sucessfull
 			if (session.versionMinor>1)
 			{
 				Map map;
 				SDL_RWseek(stream, session.mapOffset , SEEK_SET);
-				map.load(stream);
+				map.load(stream); // TODO: check if the loading is sucessfull
 				gfx->drawFilledRect(x,y,128,128,0,0,0);
 
 				lastW=map.getW();

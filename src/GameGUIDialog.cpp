@@ -68,12 +68,12 @@ void InGameScreen::paint(int x, int y, int w, int h)
 InGameMainScreen::InGameMainScreen()
 :InGameScreen(300, 275)
 {
-	addWidget(new TextButton(10, 10, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), 0));
-	addWidget(new TextButton(10, 50, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), 1));
-	addWidget(new TextButton(10, 90, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[options]"), 2));
-	addWidget(new TextButton(10, 130, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[alliances]"), 3));
-	addWidget(new TextButton(10, 180, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[return to game]"), 4));
-	addWidget(new TextButton(10, 230, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit the game]"), 5));
+	addWidget(new TextButton(10, 10, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), LOAD_GAME));
+	addWidget(new TextButton(10, 50, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), SAVE_GAME));
+	addWidget(new TextButton(10, 90, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[options]"), OPTIONS));
+	addWidget(new TextButton(10, 130, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[alliances]"), ALLIANCES));
+	addWidget(new TextButton(10, 180, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[return to game]"), RETURN_GAME, 27));
+	addWidget(new TextButton(10, 230, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit the game]"), QUIT_GAME));
 }
 
 void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -84,8 +84,7 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 
 void InGameMainScreen::onSDLEvent(SDL_Event *event)
 {
-	if ((event->type==SDL_KEYDOWN) && (event->key.keysym.sym==SDLK_ESCAPE))
-		endValue=4;
+
 }
 
 //! Alliance screen

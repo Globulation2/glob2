@@ -61,6 +61,9 @@ namespace Utilities
 
 	//! data for computing minimap
 	void computeMinimapData(int resolution, int mW, int mH, int *maxSize, int *sizeX, int *sizeY, int *decX, int *decY);
+
+	char *concat(const char *a, const char *b);
+	char *dencat(const char *a, const char *b);
 };
 
 #endif

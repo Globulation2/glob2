@@ -58,7 +58,7 @@ protected:
 	SDLNet_SocketSet socketSet;
 
 	//! pending messages
-	std::deque<ChatMessage> messages;
+	deque<ChatMessage> messages;
 
 protected:
 	//! Interprete a message from IRC; do parsing etc

@@ -200,85 +200,95 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (gameMenuScreen->endValue)
 			{
-				case 0:
-				delete gameMenuScreen;
-				inGameMenu=IGM_LOAD;
-				gameMenuScreen=new InGameLoadSaveScreen(".", "game");
-				gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-				return true;
-
-				case 1:
-				delete gameMenuScreen;
-				inGameMenu=IGM_SAVE;
-				gameMenuScreen=new InGameLoadSaveScreen(".", "game", false, "default.game");
-				gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-				return true;
-
-				case 3:
-				delete gameMenuScreen;
-				if (game.session.numberOfPlayer<=8)
+				case InGameMainScreen::LOAD_GAME:
 				{
-					inGameMenu=IGM_ALLIANCE8;
-					gameMenuScreen=new InGameAlliance8Screen(this);
-
-					// fill the names
-					int i;
-					for (i=0; i<game.session.numberOfPlayer; i++)
-					{
-						strncpy(((InGameAlliance8Screen *)gameMenuScreen)->names[i], game.players[i]->name, BasePlayer::MAX_NAME_LENGTH);
-					}
-
+					delete gameMenuScreen;
+					inGameMenu=IGM_LOAD;
+					gameMenuScreen=new InGameLoadSaveScreen(".", "game");
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-
-					// set correct values to choice boxes
-					OnOffButton *button;
-					Team *teamPtr=game.teams[localTeam];
-					assert(teamPtr);
-
-					for (i=0; i<game.session.numberOfPlayer; i++)
+					return true;
+				}
+				break;
+				case InGameMainScreen::SAVE_GAME:
+				{
+					delete gameMenuScreen;
+					inGameMenu=IGM_SAVE;
+					gameMenuScreen=new InGameLoadSaveScreen(".", "game", false, game.map.getMapName());
+					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+					return true;
+				}
+				break;
+				case InGameMainScreen::ALLIANCES:
+				{
+					delete gameMenuScreen;
+					if (game.session.numberOfPlayer<=8)
 					{
-						int otherTeam=game.players[i]->teamNumber;
-						Team *otherTeamPtr=game.teams[otherTeam];
+						inGameMenu=IGM_ALLIANCE8;
+						gameMenuScreen=new InGameAlliance8Screen(this);
 
-						button=((InGameAlliance8Screen *)gameMenuScreen)->allied[i];
-						assert(button);
-#						ifdef WIN32
+						// fill the names
+						int i;
+						for (i=0; i<game.session.numberOfPlayer; i++)
+						{
+							strncpy(((InGameAlliance8Screen *)gameMenuScreen)->names[i], game.players[i]->name, BasePlayer::MAX_NAME_LENGTH);
+						}
+
+						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+
+						// set correct values to choice boxes
+						OnOffButton *button;
+						Team *teamPtr=game.teams[localTeam];
+						assert(teamPtr);
+
+						for (i=0; i<game.session.numberOfPlayer; i++)
+						{
+							int otherTeam=game.players[i]->teamNumber;
+							Team *otherTeamPtr=game.teams[otherTeam];
+
+							button=((InGameAlliance8Screen *)gameMenuScreen)->allied[i];
+							assert(button);
+#							ifdef WIN32
 #							pragma warning (disable : 4800)
-#						endif
-						button->setState((teamPtr->allies)&(1<<otherTeam));
+#							endif
+							button->setState((teamPtr->allies)&(1<<otherTeam));
 
-						button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
-						assert(button);
-						bool state=(otherTeamPtr->sharedVision)&(1<<localTeam);
-						button->setState(state);
+							button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
+							assert(button);
+							bool state=(otherTeamPtr->sharedVision)&(1<<localTeam);
+							button->setState(state);
 
-						button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
-						assert(button);
-						button->setState(chatMask&(1<<i));
-#						ifdef WIN32
+							button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
+							assert(button);
+							button->setState(chatMask&(1<<i));
+#							ifdef WIN32
 #							pragma warning (default : 4800)
-#						endif
+#							endif
+
+						}
 
 					}
-
+					else
+					{
+						inGameMenu=IGM_NONE;
+					}
+					return true;
 				}
-				else
+				break;
+				case InGameMainScreen::RETURN_GAME:
 				{
 					inGameMenu=IGM_NONE;
+					delete gameMenuScreen;
+					return true;
 				}
-				return true;
-
-				case 4:
-				inGameMenu=IGM_NONE;
-				delete gameMenuScreen;
-				return true;
-
-				case 5:
-				orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
-				inGameMenu=IGM_NONE;
-				delete gameMenuScreen;
-				return true;
-
+				break;
+				case InGameMainScreen::QUIT_GAME:
+				{
+					orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+					inGameMenu=IGM_NONE;
+					delete gameMenuScreen;
+					return true;
+				}
+				break;
 				default:
 				return false;
 			}
@@ -329,7 +339,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (gameMenuScreen->endValue)
 			{
-				case 0:
+				case InGameLoadSaveScreen::OK:
 				{
 					/*const*/ char *name=((InGameLoadSaveScreen *)gameMenuScreen)->fileName;
 					if (inGameMenu==IGM_LOAD)
@@ -337,15 +347,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						strncpy(toLoadGameFileName, name, Map::MAP_NAME_MAX_SIZE+5);
 						toLoadGameFileName[Map::MAP_NAME_MAX_SIZE+4]=0;
 						orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
-						/*SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
-						if (stream)
-						{
-							this->load(stream);
-							SDL_RWclose(stream);
-							printf("game is loaded\n");
-						}
-						else
-							printf("GGU : Can't load map\n"); zzz*/
 					}
 					else
 					{
@@ -361,7 +362,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 				}
 
-				case 1:
+				case InGameLoadSaveScreen::CANCEL:
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				return true;
@@ -1648,7 +1649,7 @@ void GameGUI::executeOrder(Order *order)
 		}
 	}
 }
-void GameGUI::load(SDL_RWops *stream)
+bool GameGUI::load(SDL_RWops *stream)
 {
 	init();
 	
@@ -1656,6 +1657,7 @@ void GameGUI::load(SDL_RWops *stream)
 	chatMask=SDL_ReadBE32(stream);
 	if (result==false)
 		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
+	return result;
 }
 
 void GameGUI::save(SDL_RWops *stream)

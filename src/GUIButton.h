@@ -26,7 +26,7 @@
 class Button: public Widget
 {
 public:
-	Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode);
+	Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicode=0);
 	virtual ~Button() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
@@ -37,6 +37,7 @@ protected:
 	int x, y, w, h;
 	Sprite *arch;
 	int standardId, highlightID, returnCode;
+	Uint16 unicode;
 	bool highlighted;
 	DrawableSurface *gfx;
 };
@@ -44,7 +45,7 @@ protected:
 class TextButton:public Button
 {
 public:
-	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode);
+	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicode=0);
 	virtual ~TextButton() { if (text) delete[] text; }
 
 	virtual void paint(DrawableSurface *gfx);

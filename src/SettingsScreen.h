@@ -25,9 +25,18 @@
 
 class SettingsScreen:public Screen
 {
+public:
+	enum
+	{
+		OK = 1,
+		CANCEL = 2
+	};
 private:
 	List *languageList;
 	TextInput *userName;
+	int oldLanguage;
+	
+	TextButton *ok, *cancel;
 
 public:
 	SettingsScreen();

@@ -26,9 +26,6 @@
 #include "Utilities.h"
 #include <set>
 
-// BOUUUU c est laid!!!
-// BuildingsTypes Game::buildingsTypes("data/buildings.txt");
-
 Game::Game()
 {
 	init();
@@ -410,7 +407,8 @@ bool Game::load(SDL_RWops *stream)
 	// we have to load team before map
 	if (session.versionMinor>1)
 		SDL_RWseek(stream, tempSessionInfo.mapOffset , SEEK_SET);
-	map.load(stream, this);
+	if(!map.load(stream, this))
+		return false;
 
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
@@ -826,8 +824,7 @@ bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	{
 		for (int dy=y; dy<y+h; dy++)
 			for (int dx=x; dx<x+w; dx++)
-				if ((!map.isGrass(dx, dy)) || ((map.getUnit(dx, dy)!=NOUID) &&
- (map.getUnit(dx, dy)<0)))
+				if ((!map.isGrass(dx, dy)) || ((map.getUnit(dx, dy)!=NOUID) && (map.getUnit(dx, dy)<0)))
 					isRoom=false;
 	}
 

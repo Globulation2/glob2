@@ -18,8 +18,8 @@
 
 */
 
-#ifndef __CUSTOMGAMESCREEN_H
-#define __CUSTOMGAMESCREEN_H
+#ifndef __CUSTOM_GAME_SCREEN_H
+#define __CUSTOM_GAME_SCREEN_H
 
 #include "GAG.h"
 #include "Session.h"

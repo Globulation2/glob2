@@ -20,21 +20,27 @@
 
 #include "GameGUILoadSave.h"
 #include "GlobalContainer.h"
+#include "Utilities.h"
 
 //! Load/Save screen
 InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName)
 :InGameScreen(300, 275)
 {
 	this->isLoad=isLoad;
+	this->extension=Utilities::concat(".", extension);
 	firstPaint=true;
 
 	fileList=new List(10, 35, 280, 150, globalContainer->standardFont);
 
 	if (globalContainer->fileManager.initDirectoryListing(directory, extension))
 	{
-		const char *file;
-		while ((file=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
-			fileList->addText(file);
+		const char *fileName;
+		while ((fileName=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
+		{
+			char *mapTempName=Utilities::dencat(fileName,this->extension);
+			fileList->addText(mapTempName);
+			delete[] mapTempName;
+		}
 	}
 	addWidget(fileList);
 
@@ -43,24 +49,36 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 	fileNameEntry=new TextInput(10, 195, 280, 25, globalContainer->standardFont, defaultFileName, true);
 	addWidget(fileNameEntry);
 
-	addWidget(new TextButton(10, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 0));
-	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), 1));
+	addWidget(new TextButton(10, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK));
+	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
 
-	fileName=fileNameEntry->getText();
+	fileName=Utilities::concat(fileNameEntry->getText(), this->extension);
+	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
 }
 
 void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_RELEASED)
-		endValue=par1;
+	{
+		if (par1==OK)
+		{
+			char *mapName=Utilities::dencat(fileName, extension);
+			if (mapName[0])
+				endValue=OK;
+			delete[] mapName;
+		}
+		else
+			endValue=par1;
+	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		fileName=fileList->getText(par1);
-		fileNameEntry->setText(fileName);
+		const char *s=fileList->getText(par1);
+		fileName=Utilities::concat(s, extension);
+		fileNameEntry->setText(s);
 	}
 	else if (action==TEXT_MODIFFIED)
 	{
-		fileName=fileNameEntry->getText();
+		fileName=Utilities::concat(fileNameEntry->getText(), extension);
 	}
 }
 
