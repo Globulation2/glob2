@@ -376,7 +376,8 @@ int Engine::run(void)
 	bool doRunOnceAggain=true;
 	
 	// Stop music for now, next load music game
-	globalContainer->mix->stopMusic();
+	if (globalContainer->mix)
+		globalContainer->mix->stopMusic();
 	
 	while (doRunOnceAggain)
 	{
@@ -514,6 +515,7 @@ int Engine::run(void)
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, 40);
 		// Restart menu music
+		assert(globalContainer->mix);
 		globalContainer->mix->setNextTrack(1);
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
