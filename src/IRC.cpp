@@ -158,19 +158,22 @@ void IRC::interpreteIRCMessage(const char *message)
 		
 		// normal chat message
 		ChatMessage msg;
-
-		if (message && (*(++message)))
+		
+		if (strstr(source, "[YOG]")==0)
 		{
-			strncpy(msg.source,  source, IRC_NICK_SIZE);
-			msg.source[IRC_NICK_SIZE]=0;
+			if (message && (*(++message)))
+			{
+				strncpy(msg.source,  source, IRC_NICK_SIZE);
+				msg.source[IRC_NICK_SIZE]=0;
+		   
+				strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+				msg.diffusion[IRC_CHANNEL_SIZE]=0;
 
-			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-			msg.diffusion[IRC_CHANNEL_SIZE]=0;
-
-			strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-			msg.message[IRC_MESSAGE_SIZE]=0;
-
-			messages.push_back(msg);
+				strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
+				msg.message[IRC_MESSAGE_SIZE]=0;
+			
+				messages.push_back(msg);
+			}
 		}
 	}
 	else if (strcasecmp(cmd, "JOIN")==0)
@@ -272,7 +275,7 @@ void IRC::interpreteIRCMessage(const char *message)
 			usersOnChannelsModified = true;
 		}
 	}
-	
+
 	else if (strcasecmp(cmd, "433")==0)
 	{
 		if (strlen(this->nick) < IRC_NICK_SIZE)
