@@ -30,7 +30,7 @@ protected:
 	friend class SDLSprite;
 	SDL_Surface *surface;
 	SDL_Rect clipRect;
-
+	
 public:
 	SDLDrawableSurface() { surface=NULL; }
 	virtual ~SDLDrawableSurface() { if (surface) SDL_FreeSurface(surface); }
@@ -40,6 +40,7 @@ public:
 	/*virtual*/ int getH(void) { return surface->h; }
 	virtual void setClipRect(int x, int y, int w, int h);
 	virtual void setClipRect(void);
+	virtual void loadImage(const char *name);
 	virtual void drawSprite(int x, int y, Sprite *sprite, int index=0);
 	virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
@@ -76,7 +77,7 @@ public:
 
 	virtual Sprite *loadSprite(const char *name);
 	virtual Font *loadFont(const char *name);
-	virtual DrawableSurface *createDrawableSurface(void);
+	virtual DrawableSurface *createDrawableSurface(const char *name=NULL);
 
 	virtual void nextFrame(void);
 	virtual void updateRects(SDL_Rect *rects, int size);
