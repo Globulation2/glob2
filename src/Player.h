@@ -84,13 +84,14 @@ public:
 		
 		// joiners choose a state for joiners between :
 		
-		PNS_BINDED=13,
-		PNS_SENDING_FIRST_PACKET=14,
-		PNS_HOST=15,
+		PNS_NOT_BINDED=20,
+		PNS_BINDED=21,
+		PNS_SENDING_FIRST_PACKET=22,
+		PNS_HOST=23,
 		
 		// ai :
 		
-		PNS_AI=16
+		PNS_AI=30
 	};
 	
 	PlayerNetworkState netState;
@@ -127,7 +128,6 @@ public:
 	
 	void setip(Uint32 host, Uint16 port);
 	void setip(IPaddress ip);
-	void BasePlayer::printip(char s[32]);
 	bool sameip(IPaddress ip);
 	bool bind(UDPsocket socket, int channel);
 	void unbind();

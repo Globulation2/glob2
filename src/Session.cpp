@@ -207,40 +207,9 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 	assert(playerNumber<numberOfPlayer);
 	*teamNumber=players[playerNumber].teamNumber;
 	if (players[playerNumber].type==BasePlayer::P_IP)
-	{
-		char s[32];
-		players[playerNumber].printip(s);
-		char t[32];
-		players[playerNumber].printNetState(t);
-
-		/*if (savedSessionInfo)
-		{
-			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
-				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
-				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was]"), savedSessionInfo->players[playerNumber].name, s, t);
-			else if (savedSessionInfo->players[playerNumber].type==BasePlayer::P_AI)
-				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was AI]"), savedSessionInfo->players[playerNumber].name, s, t);
-			else
-				assert(false);
-		}
-		else*/
-			snprintf(infoString, stringLen, "%s : %s (%s)", players[playerNumber].name, s, t);
-	}
+		snprintf(infoString, stringLen, "%s : %s", players[playerNumber].name, Utilities::stringIP(players[playerNumber].ip));
 	else if (players[playerNumber].type==BasePlayer::P_AI)
-	{
-		/*if (savedSessionInfo)
-		{
-			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
-				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
-				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was]"), savedSessionInfo->players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
-			else if (savedSessionInfo->players[playerNumber].type==BasePlayer::P_AI)
-				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was AI]"), savedSessionInfo->players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
-			else
-				assert(false);
-		}
-		else*/
-			snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
-	}
+		snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
 	else
 		assert(false);
 }
