@@ -1,11 +1,8 @@
 To First release :
 
-Nouveau bug : dans la carte Easy Three que j'ai chez moi, quand on clique sur la minimap ca ne va pas a la bonne position, il y a un decalage d'une demi-carte. Idem quand on drag
-
 -les guerrières ne sont toujours pas intelligentes.
 -Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
 -Avec des explo seulement, on n'a pas perdu.
--Pourqoi ça marche mal sans ruche ?
 
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)

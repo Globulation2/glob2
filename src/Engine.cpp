@@ -462,7 +462,8 @@ int Engine::run(void)
 	
 	// Display End Game Screen
 	EndGameScreen endGameScreen(&gui);
-	endGameScreen.execute(globalContainer->gfx, 40);
-	
-	return EE_NO_ERROR;
+	if (endGameScreen.execute(globalContainer->gfx, 40)==-1)
+		return -1;
+	else
+		return EE_NO_ERROR;
 }
