@@ -918,6 +918,10 @@ isBuildingSite = 1
 // Defense building, level 0
 startImage = 7
 
+fillable = 1
+maxStone = 4
+maxUnitWorking = 1
+
 shootingRange = 5
 shootDamage = 30
 shootSpeed = 4700
@@ -968,6 +972,10 @@ viewingRange = 5
 
 // Defense building, level 1
 startImage = 14
+
+fillable = 1
+maxStone = 5
+maxUnitWorking = 1
 
 shootingRange = 7
 shootDamage = 40
@@ -1020,6 +1028,10 @@ viewingRange = 6
 
 // Defense building, level 2
 startImage = 21
+
+fillable = 1
+maxStone = 6
+maxUnitWorking = 1
 
 shootingRange = 7
 shootDamage = 45

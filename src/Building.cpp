@@ -1286,12 +1286,15 @@ void Building::turretStep(void)
 		return;
 	}
 
+	if (!ressources[STONE])
+		return;
+
 	assert(type->width ==2);
 	assert(type->height==2);
-	
+
 	int range=type->shootingRange;
 	shootingStep=(shootingStep+1)&0x7;
-	
+
 	Uint32 enemies=owner->enemies;
 	bool targetFound=false;
 	int bestTime=256;
@@ -1459,6 +1462,7 @@ void Building::turretStep(void)
 		//printf("%d insert: (px=%d, py=%d, sx=%d, sy=%d, tl=%d, sd=%d) \n", gid, px, py, speedX, speedY, ticksLeft, type->shootDamage);
 		s->bullets.push_front(b);
 
+		ressources[STONE]--;
 		shootingCooldown=SHOOTING_COOLDOWN_MAX;
 	}
 
