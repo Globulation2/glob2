@@ -83,6 +83,8 @@ SettingsScreen.h \
 SettingsScreen.cpp \
 MultiplayersHostScreen.h \
 MultiplayersHostScreen.cpp \
+MultiplayersHost.h \
+MultiplayersHost.cpp \
 MultiplayersJoinScreen.h \
 MultiplayersJoinScreen.cpp \
 MultiplayersJoin.h \

@@ -141,13 +141,12 @@ int Engine::initMutiplayerHost(void)
 	printf("the game is sharing ...\n");
 
 	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );
-	multiplayersHostScreen.newHostPlayer();
 	if (multiplayersHostScreen.execute(globalContainer->gfx, 20)==MultiplayersHostScreen::STARTED)
 	{
-		if (multiplayersHostScreen.myPlayerNumber==-1)
+		if (multiplayersHostScreen.multiplayersHost->myPlayerNumber==-1)
 			return CANCEL;
 		else
-			startMultiplayer(&multiplayersHostScreen);
+			startMultiplayer(multiplayersHostScreen.multiplayersHost);
 
 		return NO_ERROR;
 	}
