@@ -364,6 +364,7 @@ int Engine::run(void)
 		Sint32 ticksSpentInComputation=40;
 		Sint32 computationAvailableTicks=0;
 		Sint32 ticksToDelayInside=0;
+		Sint32 missedTicksToWait=0;
 		
 		startTick=SDL_GetTicks();
 		while (gui.isRunning)
@@ -411,6 +412,7 @@ int Engine::run(void)
 					
 					ticksToDelayInside=net->ticksToDelayInside();
 					ticksDelayedInside=ticksToDelayInside+computationAvailableTicks/2;
+					ticksDelayedInside=(ticksDelayedInside/10)*10; //SDL_Delay() is only 10[ms] acurate
 					if (ticksDelayedInside>0)
 						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
 					else
@@ -451,9 +453,16 @@ int Engine::run(void)
 				Sint32 spentTicks=endTick-startTick;
 				ticksSpentInComputation=spentTicks-ticksDelayedInside;
 				computationAvailableTicks=40-ticksSpentInComputation;
-				Sint32 ticksToWait=computationAvailableTicks+ticksToDelayInside;
+				Sint32 ticksToWait=computationAvailableTicks+ticksToDelayInside+missedTicksToWait;
 				if (ticksToWait>0)
-					SDL_Delay(ticksToWait);
+				{
+					missedTicksToWait=ticksToWait%10;
+					ticksToWait=ticksToWait-missedTicksToWait; //SDL_Delay() is only 10[ms] acurate
+					if (ticksToWait>0)
+						SDL_Delay(ticksToWait);
+				}
+				else
+					missedTicksToWait=0;
 				startTick=SDL_GetTicks();
 				
 				// we set CPU stats
