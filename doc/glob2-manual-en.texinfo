@@ -1,0 +1,95 @@
+\input texinfo	@c -*-texinfo-*-
+
+@c %**start of header
+@setfilename Glob2 English Manual
+@settitle Glob2 English Manual
+@afourpaper
+@documentencoding ISO-8859-1
+@c %**end of header
+
+@copying
+This manual is for the @uref{http://ysagoon.com/glob2, Globulation 2 game}.
+
+Copyright @copyright{} 2002 St@'ephane Magnenat
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with the Front-Cover texts being ``Globulation 2 English Manual,''
+and with the Back-Cover Texts as in (a) below.  A copy of the
+license is included in the section entitled ``GNU Free Documentation
+License.''
+
+(a) The FSF's Back-Cover Text is: ``You have freedom to copy and modify
+this manual, like Globulation 2 itself.  If you likes Globulation 2, please
+consider publisizing it, reporting bug, contributing to code, graphics, 
+musicm translations and so on. Additionally, you can send postcards to
+Globulation 2 developpers.''
+@end quotation
+@end copying
+
+@titlepage
+@title Globulation 2
+@subtitle English Manual
+@author St@'ephane Magnenat
+
+@c The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+
+@uref{http://ysagoon.com/glob2, Published by the Globulation 2 project}
+@end titlepage
+
+@c Output the table of contents at the beginning.
+@contents
+
+@ifnottex
+@node Top
+@top Globulation 2 English Manual
+
+@insertcopying
+
+The manual is divided into the following sections, to give you
+a quick access to what you are searching for.
+@end ifnottex
+
+@menu
+* Quick introduction::    A quick introduction to Globulation 2 for new players.
+@c * SGSL reference::   The reference for the SGSL scripting language.
+* Contributing::     Details informations on how to contribute to Globulation 2.
+@c * Index::            Complete index.
+@end menu
+
+@node Quick introduction
+@chapter Quick introduction
+
+Glon2 is cool.
+
+@enumerate
+@item
+It works !
+
+@item
+It is free !
+
+@end enumerate
+
+@node Contributing
+@chapter Contributing
+
+The following sections will strongly help you if you are (or wanna be) a Globulation 2 contributor.
+
+@node SGSL reference
+@section SGSL reference
+
+bla bla bla SGSL
+
+@c @node Index
+@c @unnumbered Index
+
+@c @printindex cp
+
+@bye
+
