@@ -523,21 +523,21 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 
 	if (size!=8)
 	{
-		fprintf(logFile, "Bad size for a crossConnectionFirstMessage packet recieved!\n");
+		fprintf(logFile, " Bad size for a crossConnectionFirstMessage packet recieved!\n");
 		return;
 	}
 
 	Sint32 p=data[4];
-	fprintf(logFile, "p=%d\n", p);
+	fprintf(logFile, " p=%d\n", p);
 
 	if ((p>=0)&&(p<sessionInfo.numberOfPlayer))
 	{
 		if (sessionInfo.players[p].waitForNatResolution)
 		{
-			fprintf(logFile, "player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
+			fprintf(logFile, " player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
 			sessionInfo.players[p].ip=ip; // TODO: This is a security question. Can we avoid to thrust any packet from anyone.
 			
-			fprintf(logFile, "(this NAT is solved)\n");
+			fprintf(logFile, " (this NAT is solved)\n");
 			sessionInfo.players[p].waitForNatResolution=false;
 
 			if (waitingTimeout>4 && waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
@@ -549,7 +549,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 			int freeChannel=getFreeChannel();
 			if (!sessionInfo.players[p].bind(socket, freeChannel))
 			{
-				fprintf(logFile, "Player %d with ip %s is not bindable!\n", p, Utilities::stringIP(sessionInfo.players[p].ip));
+				fprintf(logFile, " Player %d with ip %s is not bindable!\n", p, Utilities::stringIP(sessionInfo.players[p].ip));
 				sessionInfo.players[p].netState=BasePlayer::PNS_BAD;
 			}
 			else
@@ -560,7 +560,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 		{
 			if (crossPacketRecieved[p]<1)
 				crossPacketRecieved[p]=1;
-			fprintf(logFile, "crossConnectionFirstMessage packet recieved (%d)\n", p);
+			fprintf(logFile, " crossConnectionFirstMessage packet recieved (%d)\n", p);
 
 			Uint8 data[8];
 			data[0]=PLAYER_CROSS_CONNECTION_SECOND_MESSAGE;
@@ -575,11 +575,11 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 		}
 		else
 		{
-			fprintf(logFile, "player %d is not binded! (crossPacketRecieved[%d]=%d).\n", p, p, crossPacketRecieved[p]);
+			fprintf(logFile, " player %d is not binded! (crossPacketRecieved[%d]=%d).\n", p, p, crossPacketRecieved[p]);
 		}
 	}
 	else
-		fprintf(logFile, "Dangerous crossConnectionFirstMessage packet recieved (%d)!\n", p);
+		fprintf(logFile, " Dangerous crossConnectionFirstMessage packet recieved (%d)!\n", p);
 
 }
 
@@ -680,8 +680,13 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 						{
 							if ((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
 							{
-								fprintf(logFile, "   player (%d) (%s) switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
-								sessionInfo.players[j].setip(ip);
+								if (sessionInfo.players[j].sameip(ip))
+									fprintf(logFile, "   player (%d) (%s) already switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
+								else
+								{
+									fprintf(logFile, "   player (%d) (%s) switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
+									sessionInfo.players[j].setip(ip);
+								}
 							}
 							else
 								fprintf(logFile, "   player (%d) (%s) not switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
