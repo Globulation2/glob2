@@ -21,6 +21,7 @@
 #define __SETTINGSSCREEN_H
 
 #include <GUIBase.h>
+#include <string>
 
 class List;
 class TextInput;
@@ -54,6 +55,7 @@ private:
 	Selector *musicVol;
 	Text *title, *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *musicVolText;
+	Text *actDisplay;
 
 	bool gfxAltered;
 	
@@ -61,6 +63,8 @@ private:
 	void setVisibilityFromGraphicType(void);
 	//! reset res and redraw everything
 	void updateGfxCtx(void);
+	//! Return a string representing the actual display mode
+	std::string actDisplayModeToString(void);
 
 public:
 	SettingsScreen();
