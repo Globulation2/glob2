@@ -37,6 +37,13 @@ inline Sint32 getSint32(const Uint8 *data, int pos)
 	return (Sint32)SDL_SwapBE32( *((Sint32 *)(data+pos)) );
 }
 
+inline Uint32 getSint32safe(const Uint8 *data, int pos)
+{
+	Sint8 temp[4];
+	memcpy(temp, data+pos, 4);
+	return (Sint32)SDL_SwapBE32(*((Sint32 *)temp));
+}
+
 inline void addUint32(const Uint8 *data, Uint32 val, int pos)
 {
 	*((Uint32 *)(data+pos))=SDL_SwapBE32(val);
@@ -71,6 +78,13 @@ inline Sint32 getSint32(const char *data, int pos)
 	return (Sint32)SDL_SwapBE32( *( (Sint32 *) (((Uint8 *)data) +pos) ) );
 }
 
+inline Uint32 getSint32safe(const char *data, int pos)
+{
+	Sint8 temp[4];
+	memcpy(temp, data+pos, 4);
+	return (Sint32)SDL_SwapBE32(*((Sint32 *)temp));
+}
+
 inline void addUint32(const char *data, Uint32 val, int pos)
 {
 	*((Uint32 *)(((Uint8 *)data)+pos))=SDL_SwapBE32(val);
@@ -79,6 +93,13 @@ inline void addUint32(const char *data, Uint32 val, int pos)
 inline Uint32 getUint32(const char *data, int pos)
 {
 	return (Uint32)SDL_SwapBE32( *( (Uint32 *) (((Uint8 *)data) +pos) ) );
+}
+
+inline Uint32 getUint32safe(const char *data, int pos)
+{
+	Uint8 temp[4];
+	memcpy(temp, data+pos, 4);
+	return (Uint32)SDL_SwapBE32(*((Uint32 *)temp));
 }
 
 // 16 bit, Uint8* version:
