@@ -344,8 +344,8 @@ protected:
 	// Support functions
 	//! Load a frame from two file pointers
 	void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
-	//! Check if index is within bound and assert false otherwise
-	void checkBound(int index);
+	//! Check if index is within bound and return true, assert false and return false otherwise
+	bool checkBound(int index);
 
 public:
 	Sprite() { }

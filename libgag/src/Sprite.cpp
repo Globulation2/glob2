@@ -83,7 +83,8 @@ bool Sprite::load(const char *filename)
 
 void Sprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)
 {
-	checkBound(index);
+	if (!checkBound(index))
+		return;
 
 	SDL_Rect oldr, r;
 	SDL_Rect newr=*clip;
@@ -247,7 +248,8 @@ void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
 
 int Sprite::getW(int index)
 {
-	checkBound(index);
+	if (!checkBound(index))
+		return 0;
 	if (images[index])
 		return images[index]->s->w;
 	else if (rotated[index])
@@ -258,7 +260,8 @@ int Sprite::getW(int index)
 
 int Sprite::getH(int index)
 {
-	checkBound(index);
+	if (!checkBound(index))
+		return 0;
 	if (images[index])
 		return images[index]->s->h;
 	else if (rotated[index])
@@ -272,7 +275,7 @@ int Sprite::getFrameCount(void)
 	return std::max(images.size(), rotated.size());
 }
 
-void Sprite::checkBound(int index)
+bool Sprite::checkBound(int index)
 {
 	if ((index < 0) || (index >= getFrameCount()))
 	{
@@ -283,11 +286,14 @@ void Sprite::checkBound(int index)
 			{
 				std::cerr << "GAG : Sprite::checkBound(" << index << ") : error : out of bound access for " << it->first << std::endl;
 				assert(false);
-				return;
+				return false;
 			}
 			++it;
 		}
 		std::cerr << "GAG : Sprite::checkBound(" << index << ") : error : sprite is not in the sprite server" << std::endl;
 		assert(false);
+		return false;
 	}
+	else
+		return true;
 }
