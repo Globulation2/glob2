@@ -2021,7 +2021,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 	
 	assert(size <= 65536);
 	
-	Uint16 listedAddr[size];
+	VARARRAY(Uint16,listedAddr,size);
 	size_t listCountWrite = 0;
 	
 	// make the first list:
