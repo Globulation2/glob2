@@ -1731,7 +1731,8 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 
 bool Mapscript::hasTeamWon(unsigned teamNumber)
 {
-	if (testMainTimer())
+	// Seb: Cheapo hack. Script should intialize hasWon first :-)
+	if (testMainTimer() && hasWon.size()>teamNumber)
 	{
 		return hasWon.at(teamNumber);
 	}
@@ -1740,5 +1741,8 @@ bool Mapscript::hasTeamWon(unsigned teamNumber)
 
 bool Mapscript::hasTeamLost(unsigned teamNumber)
 {
-	return hasLost.at(teamNumber);
+	// Seb: Cheapo hack. Script should intialize hasLost first :-)
+	if(hasLost.size()>teamNumber)
+		return hasLost.at(teamNumber);
+	return false;
 }
