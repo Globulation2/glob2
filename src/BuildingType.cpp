@@ -105,8 +105,7 @@ int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 			i++;
 		}
 	}
-	// we should never be here
-	assert(false);
+	// we can arrive here if we request a flag
 	return -1;
 }
 

@@ -32,6 +32,9 @@ public:
 		EXPLORATION_FLAG=8,
 		WAR_FLAG=9,
 
+		WOOD_WALL=10,
+		STONE_WALL=11,
+
 		NB_BUILDING
 	};
 

@@ -1062,3 +1062,75 @@ type = 9
 defaultUnitStayRange = 4
 
 *
+
+// wood wall building site
+startImage = 66
+
+jobHarvest = 1
+maxWood = 1
+
+width = 1
+height = 1
+decLeft = 0
+decTop = 0
+hpInit = 1
+hpMax = 50
+hpInc = 49
+level = 0
+type = 10
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// wood wall
+startImage = 67
+
+width = 1
+height = 1
+decLeft = 0
+decTop = 0
+hpInit = 50
+hpMax = 50
+level = 0
+type = 10
+armor = 2
+
+*
+
+// stone wall building site
+startImage = 68
+
+jobHarvest = 1
+maxWood = 1
+maxStone = 2
+
+width = 1
+height = 1
+decLeft = 0
+decTop = 0
+hpInit = 1
+hpMax = 150
+hpInc = 50
+level = 0
+type = 11
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// stone wall
+startImage = 69
+
+width = 1
+height = 1
+decLeft = 0
+decTop = 0
+hpInit = 150
+hpMax = 150
+level = 0
+type = 11
+armor = 5
+
+*
+

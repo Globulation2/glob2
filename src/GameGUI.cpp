@@ -490,12 +490,14 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		// we get the type of building
 		int mapX, mapY;
 
-		// TODO : when we eant building site, pass true tu getTypeNum
 		int typeNum;
-		if (typeToBuild<(int)BuildingType::EXPLORATION_FLAG)
-			typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, true);
-		else
+
+		// try to get the nuilding site, if it doesn't exists, get the finished building (for flags)
+		typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, true);
+		if (typeNum==-1)
 			typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, false);
+		assert (typeNum!=-1);
+
 		BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 
 		int tempX, tempY;
@@ -569,10 +571,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (displayMode==BUILDING_AND_FLAG)
 	{
-		if (my<480-32)
+		if (my<480-16)
 		{
 			int xNum=mx>>6;
-			int yNum=(my-128)>>6;
+			int yNum=(my-128)/56;
 			typeToBuild=yNum*2+xNum;
 			needRedraw=true;
 		}
@@ -837,17 +839,17 @@ void GameGUI::draw(void)
 
 		if (displayMode==BUILDING_AND_FLAG)
 		{
-			for (int i=0; i<10; i++)
+			for (int i=0; i<12; i++)
 			{
 				int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
 				BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 				int imgid=bt->startImage;
-				int x=((i&0x1)<<6)+globalContainer->gfx->getW()-128;
-				int y=((i>>1)<<6)+128;
+				int x=((i&0x1)*64)+globalContainer->gfx->getW()-128;
+				int y=((i>>1)*56)+128;
 				int decX=0;
 				int decY=0;
 
-				globalContainer->gfx->setClipRect(x+6, y+6, 52, 52);
+				globalContainer->gfx->setClipRect(x+6, y+3, 52, 50);
 				Sprite *buildingSprite=globalContainer->buildings;
 
 				if (buildingSprite->getW(imgid)<=32)
@@ -865,11 +867,11 @@ void GameGUI::draw(void)
 
 			if (typeToBuild>=0)
 			{
-				int x=((typeToBuild&0x1)<<6)+globalContainer->gfx->getW()-128;
-				int y=((typeToBuild>>1)<<6)+128;
+				int x=((typeToBuild&0x1)*64)+globalContainer->gfx->getW()-128;
+				int y=((typeToBuild>>1)*56)+128;
 				globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
-				globalContainer->gfx->drawRect(x+6, y+6, 52, 52, 255, 0, 0);
-				globalContainer->gfx->drawRect(x+5, y+5, 54, 54, 255, 0, 0);
+				globalContainer->gfx->drawRect(x+6, y+3, 52, 50, 255, 0, 0);
+				globalContainer->gfx->drawRect(x+5, y+2, 54, 52, 255, 0, 0);
 			}
 
 			int nowFu=game.teams[localTeam]->freeUnits;
@@ -880,7 +882,7 @@ void GameGUI::draw(void)
 			for (int i=0; i<nbRecentFreeUnits; i++)
 				if (viewFu<recentFreeUnits[i])
 					viewFu=recentFreeUnits[i];
-			
+
 			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 460, 128, 20);
 			if (viewFu<=0)
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, font,"%s",globalContainer->texts.getString("[no unit free]"));
