@@ -114,61 +114,61 @@ Zid de piatră
 Piată
 [forbidden area]
 Zonă interzisă
-[Building short explaination]
+[Building short explanation]
 Scurtă prezentare a clădirii (maxim 24 caractere)
-[swarm building explaination]
+[swarm building explanation]
 Crează unităţi noi
-[food building explaination]
+[food building explanation]
 Vă hrăneşte unitaţile
-[health building explaination]
+[health building explanation]
 Vă vindecă unităţile
-[walkspeed building explaination]
+[walkspeed building explanation]
 Ameliorează viteza de mers
-[swimspeed building explaination]
+[swimspeed building explanation]
 Ameliorează viteza de
-[attack building explaination]
+[attack building explanation]
 Vă ameliorează
-[science building explaination]
+[science building explanation]
 Vă ameliorează
-[defense building explaination]
+[defense building explanation]
 Atacă unitaţile inamice
-[exploration flag explaination]
+[exploration flag explanation]
 Atrage exploratori
-[war flag explaination]
+[war flag explanation]
 Atrage luptători
-[clearing flag explaination]
+[clearing flag explanation]
 Îndepărtează resursele
-[stone wall explaination]
+[stone wall explanation]
 Element pasiv de apărare
-[market explaination]
+[market explanation]
 Permite schimbul de fructe
-[Building short explaination 2]
+[Building short explanation 2]
 Scurtă explicaţie 2 a clădirii (maxim 24 caractere)
-[swarm building explaination 2]
+[swarm building explanation 2]
 
-[food building explaination 2]
+[food building explanation 2]
 
-[health building explaination 2]
+[health building explanation 2]
 
-[walkspeed building explaination 2]
+[walkspeed building explanation 2]
 înot a unitătilor
-[swimspeed building explaination 2]
+[swimspeed building explanation 2]
 nivelul de înot
-[attack building explaination 2]
+[attack building explanation 2]
 nivelul de luptă
-[science building explaination 2]
+[science building explanation 2]
 nivelul de construire
-[defense building explaination 2]
+[defense building explanation 2]
 din vecinătate
-[exploration flag explaination 2]
+[exploration flag explanation 2]
 
-[war flag explaination 2]
+[war flag explanation 2]
 
-[clearing flag explaination 2]
+[clearing flag explanation 2]
 
-[stone wall explaination 2]
+[stone wall explanation 2]
 
-[market explaination 2]
+[market explanation 2]
 cu ceilalţi
 [waiting for %s]
 Aşteaptă %s

@@ -114,61 +114,61 @@ Kamenná hradba
 Tržiště
 [forbidden area]
 
-[Building short explaination]
+[Building short explanation]
 Krátké vysvětlení (24 znaků max)
-[swarm building explaination]
+[swarm building explanation]
 Vytvoř nové jednotky
-[food building explaination]
+[food building explanation]
 Potrava tvých jednotek
-[health building explaination]
+[health building explanation]
 Zdravý tvých jednotek
-[walkspeed building explaination]
+[walkspeed building explanation]
 Zlepši chůzi
-[swimspeed building explaination]
+[swimspeed building explanation]
 Zlepši plavání
-[attack building explaination]
+[attack building explanation]
 Zlepši bojeschopnost
-[science building explaination]
+[science building explanation]
 Zlepši uroveň stavitelství
-[defense building explaination]
+[defense building explanation]
 Zaútoč na blízkého nepřítele
-[exploration flag explaination]
+[exploration flag explanation]
 Přilákáno průzkumníků
-[war flag explaination]
+[war flag explanation]
 Přilákáno válečníků
-[clearing flag explaination]
+[clearing flag explanation]
 Čistící prostředky
-[stone wall explaination]
+[stone wall explanation]
 Pasivní ochraná část
-[market explaination]
+[market explanation]
 Povolení vyměnit ovoce
-[Building short explaination 2]
+[Building short explanation 2]
 Krátké vysvětlení 2 (24 znaků max)
-[swarm building explaination 2]
+[swarm building explanation 2]
 
-[food building explaination 2]
+[food building explanation 2]
 
-[health building explaination 2]
+[health building explanation 2]
 
-[walkspeed building explaination 2]
+[walkspeed building explanation 2]
 
-[swimspeed building explaination 2]
+[swimspeed building explanation 2]
 
-[attack building explaination 2]
+[attack building explanation 2]
 
-[science building explaination 2]
+[science building explanation 2]
 
-[defense building explaination 2]
+[defense building explanation 2]
 
-[exploration flag explaination 2]
+[exploration flag explanation 2]
 
-[war flag explaination 2]
+[war flag explanation 2]
 
-[clearing flag explaination 2]
+[clearing flag explanation 2]
 
-[stone wall explaination 2]
+[stone wall explanation 2]
 
-[market explaination 2]
+[market explanation 2]
 
 [waiting for %s]
 Čeká se na %s

@@ -114,61 +114,61 @@ Kőfal
 Piac
 [forbidden area]
 
-[Building short explaination]
+[Building short explanation]
 Az épület rövid leírása  (max. 24 karater)
-[swarm building explaination]
+[swarm building explanation]
 Új egységek létrehozása
-[food building explaination]
+[food building explanation]
 Egységek élelmezése
-[health building explaination]
+[health building explanation]
 Egységek gyógyítása
-[walkspeed building explaination]
+[walkspeed building explanation]
 Haladási sebesség
-[swimspeed building explaination]
+[swimspeed building explanation]
 Úszási sebesség
-[attack building explaination]
+[attack building explanation]
 Támadóképesség
-[science building explaination]
+[science building explanation]
 A dolgozók építési
-[defense building explaination]
+[defense building explanation]
 Megtámadja a közeli
-[exploration flag explaination]
+[exploration flag explanation]
 Összevonja a
-[war flag explaination]
+[war flag explanation]
 Összevonja a
-[clearing flag explaination]
+[clearing flag explanation]
 Erőforrások feltárása
-[stone wall explaination]
+[stone wall explanation]
 Passzív védelmi elem
-[market explaination]
+[market explanation]
 Lehetővé teszi az
-[Building short explaination 2]
+[Building short explanation 2]
 Épületek rövid megnevezése 2 (max. 24 karakter)
-[swarm building explaination 2]
+[swarm building explanation 2]
 
-[food building explaination 2]
+[food building explanation 2]
 
-[health building explaination 2]
+[health building explanation 2]
 
-[walkspeed building explaination 2]
+[walkspeed building explanation 2]
 fejlesztése
-[swimspeed building explaination 2]
+[swimspeed building explanation 2]
 fejlesztése
-[attack building explaination 2]
+[attack building explanation 2]
 fejlesztése
-[science building explaination 2]
+[science building explanation 2]
 sebességének fejlesztése
-[defense building explaination 2]
+[defense building explanation 2]
 ellenséges egységeket
-[exploration flag explaination 2]
+[exploration flag explanation 2]
 felderítőket
-[war flag explaination 2]
+[war flag explanation 2]
 harcosokat
-[clearing flag explaination 2]
+[clearing flag explanation 2]
 
-[stone wall explaination 2]
+[stone wall explanation 2]
 
-[market explaination 2]
+[market explanation 2]
 gyümölcs árucserét
 [waiting for %s]
 %s -ra várva

@@ -114,61 +114,61 @@ sr
 Пијаца
 [forbidden area]
 
-[Building short explaination]
+[Building short explanation]
 Кратко име грађевине
-[swarm building explaination]
+[swarm building explanation]
 Зграда за ројење.
-[food building explaination]
+[food building explanation]
 Зграда у којој се скупља храна.
-[health building explaination]
+[health building explanation]
 Болница служи за лечење
-[walkspeed building explaination]
+[walkspeed building explanation]
 Стадион служи за...
-[swimspeed building explaination]
+[swimspeed building explanation]
 Пливалиште служи за...
-[attack building explaination]
+[attack building explanation]
 Касарна служи за ...
-[science building explaination]
+[science building explanation]
 Школа служи за учење нових вештина.
-[defense building explaination]
+[defense building explanation]
 Стражара служи за осматрање.
-[exploration flag explaination]
+[exploration flag explanation]
 Истраживачка застава служи за истраживање.
-[war flag explaination]
+[war flag explanation]
 Ратна застава служи за ратовање.
-[clearing flag explaination]
+[clearing flag explanation]
 Застава за чишћење служи за чишћење
-[stone wall explaination]
+[stone wall explanation]
 Камени зид служи за...
-[market explaination]
+[market explanation]
 Пијаца служи за
-[Building short explaination 2]
+[Building short explanation 2]
 
-[swarm building explaination 2]
+[swarm building explanation 2]
 
-[food building explaination 2]
+[food building explanation 2]
 
-[health building explaination 2]
+[health building explanation 2]
 
-[walkspeed building explaination 2]
+[walkspeed building explanation 2]
 
-[swimspeed building explaination 2]
+[swimspeed building explanation 2]
 
-[attack building explaination 2]
+[attack building explanation 2]
 
-[science building explaination 2]
+[science building explanation 2]
 
-[defense building explaination 2]
+[defense building explanation 2]
 
-[exploration flag explaination 2]
+[exploration flag explanation 2]
 
-[war flag explaination 2]
+[war flag explanation 2]
 
-[clearing flag explaination 2]
+[clearing flag explanation 2]
 
-[stone wall explaination 2]
+[stone wall explanation 2]
 
-[market explaination 2]
+[market explanation 2]
 
 [waiting for %s]
 Чека се на %s

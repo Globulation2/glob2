@@ -114,61 +114,61 @@ Stone wall
 Market
 [forbidden area]
 Forbidden area
-[Building short explaination]
-Building short explaination (24 chars max)
-[swarm building explaination]
+[Building short explanation]
+Building short explanation (24 chars max)
+[swarm building explanation]
 Creates new units
-[food building explaination]
+[food building explanation]
 Foods your units
-[health building explaination]
+[health building explanation]
 Heals your units
-[walkspeed building explaination]
+[walkspeed building explanation]
 Improves the walking speed
-[swimspeed building explaination]
+[swimspeed building explanation]
 Improves the swimming
-[attack building explaination]
+[attack building explanation]
 Improves fighting level
-[science building explaination]
+[science building explanation]
 Improve the building level
-[defense building explaination]
+[defense building explanation]
 Attacks nearby enemy
-[exploration flag explaination]
+[exploration flag explanation]
 Attracts explorers
-[war flag explaination]
+[war flag explanation]
 Attracts warriors
-[clearing flag explaination]
+[clearing flag explanation]
 Clear ressources
-[stone wall explaination]
+[stone wall explanation]
 Passive defense element
-[market explaination]
+[market explanation]
 Allows to exchange fruits
-[Building short explaination 2]
-Building short explaination 2 (24 chars max)
-[swarm building explaination 2]
+[Building short explanation 2]
+Building short explanation 2 (24 chars max)
+[swarm building explanation 2]
  
-[food building explaination 2]
+[food building explanation 2]
  
-[health building explaination 2]
+[health building explanation 2]
  
-[walkspeed building explaination 2]
+[walkspeed building explanation 2]
 level of your units
-[swimspeed building explaination 2]
+[swimspeed building explanation 2]
 speed level of your units
-[attack building explaination 2]
+[attack building explanation 2]
 of your warriors
-[science building explaination 2]
+[science building explanation 2]
 of your workers
-[defense building explaination 2]
+[defense building explanation 2]
 units or buildings
-[exploration flag explaination 2]
+[exploration flag explanation 2]
  
-[war flag explaination 2]
+[war flag explanation 2]
  
-[clearing flag explaination 2]
+[clearing flag explanation 2]
  
-[stone wall explaination 2]
+[stone wall explanation 2]
  
-[market explaination 2]
+[market explanation 2]
 with the others
 [waiting for %s]
 Waiting for %s
