@@ -846,6 +846,17 @@ void MultiplayersHost::stopHosting(void)
 {
 	printf("Every player has one chance to get the server-quit packet.\n");
 	send(SERVER_QUIT_NEW_GAME);
+	
+	if (shareOnYOG)
+	{
+		// tell YOG to open the game
+		YOGConnector yogConnector;
+		yogConnector.open();
+		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
+		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "deletegame");
+		yogConnector.sendString(newGameText);
+		yogConnector.close();
+	}
 }
 
 void MultiplayersHost::startGame(void)

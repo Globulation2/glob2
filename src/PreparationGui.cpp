@@ -208,14 +208,17 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 	{
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		{
-			if (crossPacketRecieved[j]<2)
+			if (crossPacketRecieved[j]<3) // NOTE: is this still usefull ?
 			{
-				if ( (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)&&(!sessionInfo.players[j].bind()) )
+				if (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)
 				{
-					printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
-					sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-					sucess=false;
-					break;
+					if (!sessionInfo.players[j].bind())
+					{
+						printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
+						sucess=false;
+						break;
+					}
 				}
 				sessionInfo.players[j].netState=BasePlayer::PNS_BINDED;
 

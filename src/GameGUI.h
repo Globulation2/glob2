@@ -105,6 +105,8 @@ private:
 public:
 	Game game;
 	bool isRunning;
+	//! true if user close the glob2 window.
+	bool exitGlobCompletely;
 	//bool showExtendedInformation;
 	bool drawHealthFoodBar, drawPathLines;
 	int localPlayer, localTeam;
