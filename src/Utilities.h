@@ -21,7 +21,7 @@
 #define __UTILITIES_H
 
 #include <stdlib.h>
-#include <SDL/SDL_net.h>
+#include <SDL_net.h>
 
 Uint32 syncRand(void);
 void setSyncRandSeed();

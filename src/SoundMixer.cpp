@@ -23,7 +23,7 @@
 #include <iostream>
 #include <assert.h>
 #include <iostream>
-#include <SDL/SDL_endian.h>
+#include <SDL_endian.h>
 
 #define SAMPLE_COUNT_PER_SLICE 4096
 

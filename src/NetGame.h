@@ -75,7 +75,7 @@ order's steps tricks:
 */
 
 #include "Header.h"
-#include <SDL/SDL_net.h>
+#include <SDL_net.h>
 #include <list>
 
 class Player;

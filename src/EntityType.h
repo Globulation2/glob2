@@ -20,7 +20,7 @@
 #ifndef __ENTITY_TYPE_H
 #define __ENTITY_TYPE_H
 
-#include <SDL/SDL_rwops.h>
+#include <SDL_rwops.h>
 
 class EntityType
 {

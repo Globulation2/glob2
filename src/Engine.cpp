@@ -17,7 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <SDL/SDL_rwops.h>
+#include <SDL_rwops.h>
 
 #include <FileManager.h>
 #include <GraphicContext.h>
