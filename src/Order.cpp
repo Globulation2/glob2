@@ -370,7 +370,7 @@ bool OrderModifyBuildings::setData(const char *data, int dataLength)
 		free(this->UID);
 		free(this->numberRequested);
 		free(this->data);
-		
+
 		this->UID=(Sint32 *)malloc(length*4);
 		this->numberRequested=(Sint32 *)malloc(length*4);
 		this->data=(char *)malloc(8*length);
@@ -440,7 +440,7 @@ bool OrderModifySwarms::setData(const char *data, int dataLength)
 		return false;
 	if ((dataLength%16)!=0)
 		return false;
-	
+
 	this->length=dataLength/16;
 
 	this->UID=(Sint32 *)malloc(length*4);
@@ -630,10 +630,10 @@ bool MessageOrder::setData(const char *data, int dataLength)
 
 	this->length=dataLength;
 	this->recepientsMask=getUint32(data, 0);
-	
+
 	this->data=(char *)malloc(dataLength);
 	memcpy(this->data, data, dataLength);
-	
+
 	return true;
 }
 
@@ -641,19 +641,23 @@ bool MessageOrder::setData(const char *data, int dataLength)
 
 SetAllianceOrder::SetAllianceOrder(const char *data, int dataLength)
 {
-	assert(dataLength==4);
+	assert(dataLength==12);
 
 	setData(data, dataLength);
 }
 
-SetAllianceOrder::SetAllianceOrder(Uint32 allianceMask)
+SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionMask)
 {
+	this->teamNumber=teamNumber;
 	this->allianceMask=allianceMask;
+	this->visionMask=visionMask;
 }
 
 char *SetAllianceOrder::getData(void)
 {
-	addUint32(data, this->allianceMask, 0);
+	addUint32(data, this->teamNumber, 0);
+	addUint32(data, this->allianceMask, 4);
+	addUint32(data, this->visionMask, 8);
 	return data;
 }
 
@@ -662,8 +666,10 @@ bool SetAllianceOrder::setData(const char *data, int dataLength)
 	if(dataLength!=getDataLength())
 		return false;
 
-	this->allianceMask=getUint32(data, 0);
-	
+	this->teamNumber=getUint32(data, 0);
+	this->allianceMask=getUint32(data, 4);
+	this->visionMask=getUint32(data, 8);
+
 	memcpy(this->data,data,dataLength);
 
 	return true;

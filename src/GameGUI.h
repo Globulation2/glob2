@@ -91,6 +91,8 @@ private:
 	int statsPtr;
 	StatMode statMode;
 
+	Uint32 chatMask;
+
 	SDLBitmapFont *font;
 
 	std::queue<Order *> orderQueue;

@@ -248,7 +248,7 @@ class NullOrder:public MiscOrder
 class QuitedOrder:public MiscOrder
 {
  public:
-	
+
 	virtual ~QuitedOrder(void) { }
 
 	char *getData(void) { return NULL; }
@@ -283,19 +283,21 @@ class SetAllianceOrder:public MiscOrder
 {
  public:
 	SetAllianceOrder(const char *data, int dataLength);
-	SetAllianceOrder(Uint32 allianceMask);
+	SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionMask);
 	virtual ~SetAllianceOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_SET_ALLIANCE; }
 	char *getData(void);
 	bool setData(const char *data, int dataLength);
-	int getDataLength(void) { return 4; }
+	int getDataLength(void) { return 12; }
 	Sint32 checkSum() { return ORDER_SET_ALLIANCE; }
 
+	Uint32 teamNumber;
 	Uint32 allianceMask;
+	Uint32 visionMask;
 
  protected:
-	char data[4];
+	char data[12];
 };
 
 class SubmitCheckSumOrder:public MiscOrder
@@ -331,7 +333,7 @@ class WaitingForPlayerOrder:public MiscOrder
 	bool setData(const char *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_WAITING_FOR_PLAYER; }
-	
+
 	Uint32 maskAwayPlayer;
 	
  private:
@@ -391,7 +393,7 @@ class NoMoreOrdersAviable:public MiscOrder
 	bool setData(const char *data, int dataLength);
 	int getDataLength(void) { return 8; }
 	Sint32 checkSum() { return ORDER_NO_MORE_ORDER_AVIABLES; }
-	
+
 	Sint32 player;
 	Sint32 lastAviableStep;
 	

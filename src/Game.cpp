@@ -283,6 +283,14 @@ void Game::executeOrder(Order *order, int localPlayer)
 				b->cancelUpgrade();
 		}
 		break;
+		case ORDER_SET_ALLIANCE:
+		{
+			Uint32 team=((SetAllianceOrder *)order)->teamNumber;
+			teams[team]->allies=((SetAllianceOrder *)order)->allianceMask;
+			teams[team]->enemies=~teams[team]->allies;
+			teams[team]->sharedVision=((SetAllianceOrder *)order)->visionMask;
+		}
+		break;
 		case ORDER_WAITING_FOR_PLAYER:
 		{
 			anyPlayerWaited=true;

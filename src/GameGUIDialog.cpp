@@ -5,7 +5,7 @@
 
 #include "GameGUIDialog.h"
 #include "GlobalContainer.h"
-
+#include "GameGUI.h"
 
 
 InGameScreen::InGameScreen(int w, int h)
@@ -91,26 +91,34 @@ void InGameMainScreen::onSDLEvent(SDL_Event *event)
 }
 
 //! Alliance screen
-InGameAlliance8Screen::InGameAlliance8Screen()
+InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 :InGameScreen(300, 295)
 {
+	int i;
+	for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		for (int i=0; i<8; i++)
-		{
-			allied[i]=new OnOffButton(230, 40+i*25, 20, 20, false, i);
-			addWidget(allied[i]);
-			chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, 10+i);
-			addWidget(chat[i]);
-		}
+		allied[i]=new OnOffButton(200, 40+i*25, 20, 20, false, i);
+		addWidget(allied[i]);
+		vision[i]=new OnOffButton(235, 40+i*25, 20, 20, false, 10+i);
+		addWidget(vision[i]);
+		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, 20+i);
+		addWidget(chat[i]);
 	}
-	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 30));
+	for (;i<8;i++)
+	{
+		allied[i]=vision[i]=chat[i]=NULL;
+	}
+	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 40));
 	firstPaint=true;
+	this->gameGUI=gameGUI;
 }
 
 void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_PRESSED)
 		endValue=par1;
+	else if (action==BUTTON_STATE_CHANGED)
+		setCorrectValueForPlayer(par1%10);
 }
 
 void InGameAlliance8Screen::onSDLEvent(SDL_Event *event)
@@ -124,14 +132,65 @@ void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 	InGameScreen::paint(x, y, w, h);
 	if (firstPaint)
 	{
-		gfxCtx->drawString(231, 10, globalContainer->menuFont, "A");
+		gfxCtx->drawString(200, 10, globalContainer->menuFont, "A");
+		gfxCtx->drawString(236, 10, globalContainer->menuFont, "V");
 		gfxCtx->drawString(272, 10, globalContainer->menuFont, "C");
 		{
-			for (int i=0; i<8; i++)
+			for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 			{
 				gfxCtx->drawString(10, 40+i*25, globalContainer->menuFont, names[i]);
 			}
 		}
 		firstPaint=false;
 	}
+}
+
+void InGameAlliance8Screen::setCorrectValueForPlayer(int i)
+{
+	Game *game=&(gameGUI->game);
+	for (int j=0; j<game->session.numberOfPlayer; j++)
+	{
+		if (j!=i)
+		{
+			// if two players are the same team, we must have the same alliance and vision
+			if (game->players[j]->teamNumber==game->players[i]->teamNumber)
+			{
+				allied[j]->setState(allied[i]->getState());
+				vision[j]->setState(vision[i]->getState());
+			}
+		}
+	}
+}
+
+Uint32 InGameAlliance8Screen::getAllianceMask(void)
+{
+	Uint32 mask=0;
+	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	{
+		if (allied[i]->getState())
+			mask|=1<<i;
+	}
+	return mask;
+}
+
+Uint32 InGameAlliance8Screen::getVisionMask(void)
+{
+	Uint32 mask=0;
+	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	{
+		if (vision[i]->getState())
+			mask|=1<<i;
+	}
+	return mask;
+}
+
+Uint32 InGameAlliance8Screen::getChatMask(void)
+{
+	Uint32 mask=0;
+	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	{
+		if (chat[i]->getState())
+			mask|=1<<i;
+	}
+	return mask;
 }

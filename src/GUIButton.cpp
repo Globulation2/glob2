@@ -208,3 +208,12 @@ void OnOffButton::repaint(void)
 	internalPaint();
 	parent->addUpdateRect(x, y, w, h);
 }
+
+void OnOffButton::setState(bool newState)
+{
+	if (newState!=state)
+	{
+		state=newState;
+		repaint();
+	}
+}

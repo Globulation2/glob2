@@ -23,6 +23,8 @@ public:
 
 private:
 	void setMetaServerName(char *name);
+	void initProgressBar(void);
+	void updateLoadProgressBar(int value);
 
 public:
 	Uint32 graphicFlags;

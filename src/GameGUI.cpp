@@ -24,6 +24,7 @@ GameGUI::GameGUI()
 	typeToBuild=-1;
 	selBuild=NULL;
 	selectionUID=0;
+	chatMask=0xFFFFFFFF;
 	// TODO : clean this, this is BAD
 	font=new SDLBitmapFont("data/fonts/arial8green.png");
 	statsPtr=0;
@@ -121,12 +122,17 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				if (game.session.numberOfPlayer<=8)
 				{
 					inGameMenu=IGM_ALLIANCE8;
-					gameMenuScreen=new InGameAlliance8Screen();
+					gameMenuScreen=new InGameAlliance8Screen(this);
 					int i;
 					for (i=0; i<game.session.numberOfPlayer; i++)
+					{
+						int team=game.players[i]->teamNumber;
 						strncpy(((InGameAlliance8Screen *)gameMenuScreen)->names[i], game.players[i]->name, BasePlayer::MAX_NAME_LENGTH);
-					for (;i<8; i++)
-						((InGameAlliance8Screen *)gameMenuScreen)->names[i][0]=0;
+						// FIXME :  there is a segfault here
+						((InGameAlliance8Screen *)gameMenuScreen)->allied[i]->setState(game.teams[localTeam]->allies&team);
+						((InGameAlliance8Screen *)gameMenuScreen)->vision[i]->setState(game.teams[localTeam]->sharedVision&team);
+					}
+
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 				}
 				else
@@ -155,7 +161,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (gameMenuScreen->endValue)
 			{
-				case 30:
+				case 40:
+				orderQueue.push(new SetAllianceOrder(localTeam, ((InGameAlliance8Screen *)gameMenuScreen)->getAllianceMask(), ((InGameAlliance8Screen *)gameMenuScreen)->getVisionMask()));
+				chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				return true;
@@ -400,8 +408,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			{
 				if (typingMessage)
 				{
-					// TODO : send message only to some players
-					orderQueue.push(new MessageOrder((Uint32)0xFFFFFFFF, typedMessage));
+					orderQueue.push(new MessageOrder(chatMask, typedMessage));
 
 					typedMessage[0]=0;
 					typedChar=0;
@@ -1289,6 +1296,7 @@ void GameGUI::executeOrder(Order *order)
 void GameGUI::load(SDL_RWops *stream)
 {
 	bool result=game.load(stream);
+	chatMask=SDL_ReadBE32(stream);
 	if (result==false)
 		printf("ENG : Critical : Wrong map format, signature missmatch\n");
 }
@@ -1296,6 +1304,7 @@ void GameGUI::load(SDL_RWops *stream)
 void GameGUI::save(SDL_RWops *stream)
 {
 	game.save(stream);
+	SDL_WriteBE32(stream, chatMask);
 }
 
 void GameGUI::drawButton(int x, int y, const char *caption)
