@@ -153,15 +153,15 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			mapMode=!mapMode;
 			if (mapMode)
 			{
-				gameFileList->visible=false;
-				mapFileList->setVisible(true);
+				gameFileList->hide();
+				mapFileList->show();
 				title->setText(Toolkit::getStringTable()->getString("[choose map]"));
 				toogleButton->setText(Toolkit::getStringTable()->getString("[the games]"));
 			}
 			else
 			{
-				mapFileList->visible=false;
-				gameFileList->setVisible(true);
+				mapFileList->hide();
+				gameFileList->show();
 				title->setText(Toolkit::getStringTable()->getString("[choose game]"));
 				toogleButton->setText(Toolkit::getStringTable()->getString("[the maps]"));
 			}

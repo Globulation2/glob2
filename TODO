@@ -6,7 +6,7 @@ Gameplay :
 
 
 Bug:
-- Les drapeaux de guerrières sont mal gérés et des guerrières marchent sur le même GID.
+- Les drapeaux de guerrières sont mal gérés et des guerrières marchent sur le meme GID.
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
 
 Net:
@@ -14,11 +14,11 @@ Net:
 
 Technique :
 - Cleaner le rendu de la minimap, integrer toutes les ressources.
-- Il faut beaucoup de boulets pour une pierre déposée dans une tourelle.
 - Modiffier le comportement-gui des drapeaux d'interdiction pour ne tenir compte des mouvements lorsque l'on lache le drapeau.
 - Terminer le pathfindig: grouper les gradients globaux
 - Statistiques sur les gradients et le pathfinding pour optimiser.
 - Minimiser les #includes
+- Nettoyer les dependances inutiles pour gagner en temps de compillation !
 - optimiser l'affichage des boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
 - La minimap ne tient pas compte des batiment que l'on voit sous le FOW.
@@ -26,13 +26,10 @@ Technique :
 - traduction des raccourcis claviers de la GUI. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Un YOG qui tienne la route.
-- Netozer les dependances innnutiles pour gagner en temps de compillation !
-- Cleaner le coup des paint(), repaint(), internalPaint()
 
 To Next version :
 
 - Ressuciter le concept de race.
-- Couts aleatoires des batiments.
 - Il faudrait gérer des vitesses différentes, que çe soit pour 1:le GUI, 2:le motteur 3:le réseau.
 - Il faudrait que le réseau soit plus léger, en particuler que la taille des packets soit plus optimale.
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
