@@ -578,7 +578,7 @@ bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 		fulltype=globalContainer->ressourcesTypes->get(ressourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
-			rp->field.type=(Uint8)ressourceType;
+			rp->field.type=ressourceType;
 			rp->field.variety=syncRand()%fulltype->varietiesCount;
 			rp->field.amount=1;
 			rp->field.animation=0;
@@ -1130,13 +1130,13 @@ bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *d
     return false;
 }
 
-bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
+bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y)
 {
 	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
 	return g>1; //Becasue 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);

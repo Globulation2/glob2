@@ -354,8 +354,8 @@ public:
 	//! Only returns ressource into the circle (fx, fy, fsr).
 	bool nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy);
 	
-	bool ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y);
-	bool ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
+	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
+	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
 	
 	/*Uint8 distToRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
 	{

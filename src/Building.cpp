@@ -1786,9 +1786,9 @@ Uint32 Building::getFruits(Uint32 *mask)
 {
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
-	for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
+	for (int i=0; i<HAPPYNESS_COUNT; i++)
 	{
-		unsigned resId=i+HAPPYNESS_BASE;
+		int resId=i+HAPPYNESS_BASE;
 		if (ressources[resId])
 		{
 			ressources[resId]--;

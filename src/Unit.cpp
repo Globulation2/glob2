@@ -904,7 +904,6 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->ressources[CORN]--;
 						assert(attachedBuilding->ressources[CORN]>=0);
 						fruitCount=attachedBuilding->getFruits(&fruitMask);
-
 						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}
