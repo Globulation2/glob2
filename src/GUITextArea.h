@@ -26,14 +26,16 @@
 class TextArea:public RectangularWidget
 {
 public:
-	TextArea(int x, int y, int w, int h, const Font *font);
+	TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true);
 	virtual ~TextArea();
 
 	virtual void paint(void);
 	virtual void onSDLEvent(SDL_Event *event);
 
-	virtual void setText(const char *text, int ap=-1);
+	virtual void setText(const char *text);
 	virtual void addText(const char *text);
+	virtual void addChar(const char c);
+	virtual void remText(unsigned pos, unsigned len);
 	virtual void scrollDown(void);
 	virtual void scrollUp(void);
 	virtual void scrollToBottom(void);
@@ -41,8 +43,11 @@ public:
 protected:
 	virtual void internalPaint(void);
 	virtual void repaint(void);
+	//! we make sure the repaint will show something correct
+	virtual void computeAndRepaint(void);
 
 protected:
+	bool readOnly;
 	const Font *font;
 	char *textBuffer;
 	unsigned int textBufferLength;
@@ -50,6 +55,10 @@ protected:
 	unsigned int areaPos;
 	unsigned int charHeight;
 	std::vector <unsigned int> lines;
+	
+	// edit mod variables
+	unsigned int cursorPos;
+	unsigned int cursorPosY;
 };
 
 #endif

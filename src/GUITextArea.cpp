@@ -19,8 +19,9 @@
 
 #include "GUITextArea.h"
 
-TextArea::TextArea(int x, int y, int w, int h, const Font *font)
+TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true)
 {
+	this->readOnly=readOnly;
 	this->x=x;
 	this->y=y;
 	this->w=w;
@@ -33,6 +34,9 @@ TextArea::TextArea(int x, int y, int w, int h, const Font *font)
 	areaHeight=(h-8)/charHeight;
 	areaPos=0;
 	textBufferLength=0;
+	
+	cursorPos=0;
+	cursorPosY=0;
 }
 
 TextArea::~TextArea(void)
@@ -82,20 +86,112 @@ void TextArea::onSDLEvent(SDL_Event *event)
 	{
 		switch (event->key.keysym.sym)
 		{
-		case SDLK_UP:
+			case SDLK_BACKSPACE:
 			{
-				scrollUp();
-				//return true;
+				remText(cursorPos, 1);
 			}
 			break;
-		case SDLK_DOWN:
+			
+			case SDLK_DELETE:
 			{
-				scrollDown();
-				//return true;
+				if (cursorPos)
+					remText(cursorPos-1, 1);
 			}
 			break;
-		default:
+			
+			case SDLK_UP:
+			{
+				if (readOnly)
+				{
+					scrollUp();
+				}
+				else if (cursorPosY>0)
+				{
+					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
+					unsigned int newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
+					
+					if (cursorPosX<newLineLen)
+					{
+						cursorPos=lines[cursorPosY-1]+cursorPosX;
+					}
+					else
+					{
+						cursorPos=lines[cursorPosY]-1;
+					}
+					
+					computeAndRepaint();
+				}
+			}
 			break;
+				
+			case SDLK_DOWN:
+			{
+				if (readOnly)
+				{
+					scrollDown();
+				}
+				else if (cursorPosY+1<lines.size())
+				{
+					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
+					unsigned int newLineLen;
+					
+					if (cursorPosY==lines.size()-2)
+					{
+						newLineLen=textBufferLength-lines[cursorPosY+1];
+					}
+					else
+					{
+						newLineLen=lines[cursorPosY+2]-lines[cursorPosY+1]-1;
+					}
+					
+					if (cursorPosX < newLineLen)
+					{
+						cursorPos=lines[cursorPosY+1]+cursorPosX;
+					}
+					else
+					{
+						cursorPos=lines[cursorPosY+1]+newLineLen;
+					}
+					
+					computeAndRepaint();
+				}
+			}
+			break;
+			
+			case SDLK_LEFT:
+			{
+				if (cursorPos>0)
+				{
+					cursorPos--;
+					computeAndRepaint();
+				}
+			}
+			break;
+		
+			case SDLK_RIGHT:
+			{
+				if (cursorPos<textBufferLength)
+				{
+					cursorPos++;
+					computeAndRepaint();
+				}
+			}
+			break;
+			
+			case SDLK_RETURN:
+			{
+				addChar('\n');
+			}
+			break;
+		
+			default:
+			{
+				unsigned char c=(char)event->key.keysym.unicode;
+				if ((c>31) && (c<128))
+				{
+					addChar(c);
+				}
+			}
 		}
 	}
 	/*else if (event->type==SDL_MOUSEBUTTONDOWN)
@@ -126,8 +222,58 @@ void TextArea::onSDLEvent(SDL_Event *event)
 	//return false;
 }
 
+void TextArea::computeAndRepaint(void)
+{
+	// The only variable which is always valid is cursorPos,
+	// so now we recompute cursorPosY from it.
+	// But it is guarantied that cursorPosY < lines.size();
+	
+	assert(cursorPosY >= 0);
+	assert(cursorPosY < lines.size());
+	assert(cursorPos >= 0);
+	assert(cursorPos <= textBufferLength);
+	
+	if (!readOnly)
+	{
+		// increment it (if needed)
+		while ((cursorPosY < lines.size()-1)  && (lines[cursorPosY+1] < cursorPos))
+			cursorPosY++;
 
-void TextArea::setText(const char *text, int ap)
+		// decrement it (if needed)
+		while (cursorPos < lines[cursorPosY])
+			cursorPosY--;
+
+		// make sure the cursor the visible window follow the cursor
+		if (cursorPosY>0)
+		{
+			while (cursorPosY-1<areaPos)
+				areaPos--;
+		}
+		else
+		{
+			while (cursorPosY<areaPos)
+				areaPos--;
+		}
+		if (cursorPosY<lines.size()-1)
+		{
+			while (cursorPosY+1>areaPos+areaHeight)
+				areaPos++;
+		}
+		else
+		{
+			while (cursorPosY>areaPos+areaHeight)
+				areaPos++;
+		}
+
+		// todo : compute displayable cursor Pos
+	}
+	
+	// repaint
+	repaint();
+}
+
+
+void TextArea::setText(const char *text)
 {
 	assert(text);
 	if (text)
@@ -193,33 +339,77 @@ void TextArea::setText(const char *text, int ap)
 		}
 		if (pos==textBufferLength)
 			textBuffer[pos]=0;
-		if (ap==-1)
-			areaPos=0;
-		else
-			areaPos=ap;
-		repaint();
+		
+		computeAndRepaint();
 	}
 }
 
 void TextArea::addText(const char *text)
 {
 	assert(text);
+	assert(cursorPos <= textBufferLength);
+	assert(cursorPos >= 0);
+	
 	if (text)
 	{
-		char *temp;
 		int ts=strlen(text);
 
-		temp=(char *)malloc(textBufferLength+ts+1);
+		char *temp=(char *)malloc(textBufferLength+ts+1);
 
-		memcpy(temp, textBuffer, textBufferLength);
-		memcpy(temp+textBufferLength, text, ts);
-
+		if (readOnly)
+		{
+			memcpy(temp, textBuffer, textBufferLength);
+			memcpy(temp+textBufferLength, text, ts);
+		}
+		else
+		{
+			memcpy(temp, textBuffer, cursorPos);
+			memcpy(temp+cursorPos, text, ts);
+			memcpy(temp+cursorPos+ts, textBuffer+cursorPos, textBufferLength-cursorPos);
+			cursorPos+=ts;
+		}
+		
 		temp[textBufferLength+ts]=0;
-
-		setText(temp, areaPos);
+		
+		setText(temp);
 		
 		free(temp);
 	}
+}
+
+void TextArea::remText(unsigned pos, unsigned len)
+{
+	if (pos < textBufferLength)
+	{
+		// if we wanna delete past the end
+		if (pos + len >= textBufferLength)
+			len = textBufferLength - pos;
+		
+		unsigned newLen = textBufferLength-len;
+		char *temp=(char *)malloc(newLen+1);
+		
+		memcpy(temp, textBuffer, pos);
+		memcpy(temp, textBuffer+pos, textBufferLength-len-pos);
+		temp[newLen] = 0;
+		
+		// make sure the cursor isn't past the end now
+		if (cursorPos > newLen)
+			cursorPos = newLen;
+		// because we can decrease line count, let's zero the Y offset
+		cursorPosY = 0;
+		
+		setText(temp);
+		
+		free(temp);
+	}
+}
+
+void TextArea::addChar(const char c)
+{
+	char text[2];
+	text[0] = c;
+	text[1] = 0;
+	addText(text);
 }
 
 void TextArea::scrollDown(void)
