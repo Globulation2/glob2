@@ -132,7 +132,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	if (gameGUI->game.session.numberOfPlayer<8)
 	{
 		// add ok button
-		addWidget(new TextButton(10, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+		addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
 	else
 	{
@@ -143,7 +143,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		addWidget(new Text(300+268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 		
 		// add ok button
-		addWidget(new TextButton(135, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+		addWidget(new TextButton(150, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
 	this->gameGUI=gameGUI;
 	dispatchInit();
