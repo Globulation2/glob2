@@ -77,6 +77,7 @@ namespace GAGCore
 	
 	Sprite *Toolkit::getSprite(const char *name)
 	{
+		assert(name);
 		if (spriteMap.find(name) == spriteMap.end())
 		{
 			Sprite *sprite = new Sprite();
@@ -96,6 +97,7 @@ namespace GAGCore
 	
 	void Toolkit::releaseSprite(const char *name)
 	{
+		assert(name);
 		SpriteMap::iterator it = spriteMap.find(std::string(name));
 		assert(it!=spriteMap.end());
 		delete (*it).second;
@@ -104,6 +106,8 @@ namespace GAGCore
 	
 	void Toolkit::loadFont(const char *filename, unsigned size, const char *name)
 	{
+		assert(filename);
+		assert(name);
 		TrueTypeFont *ttf = new TrueTypeFont();
 		if (ttf->load(filename, size))
 		{
@@ -118,6 +122,7 @@ namespace GAGCore
 	
 	Font *Toolkit::getFont(const char *name)
 	{
+		assert(name);
 		if (fontMap.find(name) == fontMap.end())
 		{
 			std::cerr << "GAG : Font " << name << " does not exists" << std::endl;
@@ -129,6 +134,7 @@ namespace GAGCore
 	
 	void Toolkit::releaseFont(const char *name)
 	{
+		assert(name);
 		FontMap::iterator it = fontMap.find(std::string(name));
 		assert(it!=fontMap.end());
 		delete (*it).second;

@@ -37,7 +37,7 @@ namespace GAGGUI
 	{
 	public:
 		TextArea() { font=NULL; }
-		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *spritelocation="" , const char *text="");
+		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="", const char *spritelocation=NULL);
 		virtual ~TextArea();
 	
 		virtual void onSDLEvent(SDL_Event *event);
