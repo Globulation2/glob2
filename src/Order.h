@@ -299,7 +299,7 @@ public:
 	
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 10+mask.getByteLength(); }
+	int getDataLength(void);
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
 	
 	Uint8 teamNumber;
