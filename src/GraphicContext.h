@@ -65,7 +65,8 @@ public:
 	{
 		DEFAULT=0,
 		FULLSCREEN=1,
-		HWACCELERATED=2
+		HWACCELERATED=2,
+		RESIZABLE=4
 	};
 
 public:

@@ -44,26 +44,32 @@ public:
 	InGameTextInput();
 	//! InGameTextInput destructor
 	virtual ~InGameTextInput() { }
-	//! React on action from any widget
+	//! React on action from any widget (but there is only one anyway)
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	//! Draw the widget
-	//virtual void paint(int x, int y, int w, int h);
 	//! Return the text typed
 	const char *getText(void) const { return textInput->getText(); }
+	//! Set the text
+	void setText(const char *text) const { textInput->setText(text); }
 };
 
+//! The Game Graphic User Interface
+/*!
+	Handle all user input during game, draw & handle menu.
+*/
 class GameGUI
 {
 public:
 	GameGUI();
 	~GameGUI();
-	// this handle mouse, keyboard and window resize inputs
+	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
-	// get order from gui, return NullOrder if 
+	//! Get order from gui, return NullOrder if
 	Order *getOrder(void);
+	//! Return position on x
 	int getViewportX() { return viewportX; }
+	//! Return position on y
 	int getViewportY() { return viewportY; }
-	
+
 	void draw(void);
 	void drawAll(int team);
 	void executeOrder(Order *order);
@@ -90,7 +96,10 @@ private:
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
 	void drawOverlayInfos(void);
+	//! Draw the menu during game
 	void drawInGameMenu(void);
+	//! Draw the message input field
+	void drawInGameTextInput(void);
 	bool hasLocalTeamWon(void);
 
 public:
@@ -171,6 +180,8 @@ private :
 	};
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
+	int typingInputScreenPos;
+	int typingInputScreenInc;
 };
 
 #endif

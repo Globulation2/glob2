@@ -621,6 +621,8 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 		sdlFlags|=SDL_FULLSCREEN;
 	if (flags&HWACCELERATED)
 		sdlFlags|=SDL_HWSURFACE;
+	if (globalContainer->graphicFlags&RESIZABLE)
+		sdlFlags|=SDL_RESIZABLE;
 
 	surface = SDL_SetVideoMode(w, h, depth, sdlFlags);
 

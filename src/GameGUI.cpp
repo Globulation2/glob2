@@ -70,7 +70,8 @@ GameGUI::GameGUI()
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
 	typingInputScreen=NULL;
-	
+	typingInputScreenPos=0;
+
 	recentFreeUnitsIt=0;
 	{
 		for (int i=0; i<nbRecentFreeUnits; i++)
@@ -311,12 +312,17 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (event->type==SDL_KEYDOWN)
 			typingInputScreen->translateAndProcessEvent(event);
 
-		if (typingInputScreen->endValue!=-1)
+		if (typingInputScreen->endValue==0)
 		{
 			if (typingInputScreen->getText()[0])
+			{
 				orderQueue.push(new MessageOrder(chatMask, typingInputScreen->getText()));
-			delete typingInputScreen;
-			typingInputScreen=NULL;
+				typingInputScreen->setText("");
+			}
+			typingInputScreenInc=-50;
+			//delete typingInputScreen;
+			//typingInputScreen=NULL;
+			typingInputScreen->endValue=1;
 			return;
 		}
 	}
@@ -366,6 +372,19 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
 		//isRunning=false;
+	}
+	else if (event->type==SDL_VIDEORESIZE)
+	{
+		int newW=event->resize.w;
+		int newH=event->resize.h;
+		newW&=(~(0x1F));
+		newH&=(~(0x1F));
+		if (newW<640)
+			newW=640;
+		if (newH<480)
+			newH=480;
+		printf("New size : %dx%d\n", newW, newH);
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->graphicFlags);
 	}
 }
 
@@ -560,6 +579,8 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				{
 					typingInputScreen=new InGameTextInput();
 					typingInputScreen->dispatchPaint(typingInputScreen->getSurface());
+					typingInputScreenInc=50;
+					typingInputScreenPos=0;
 				}
 				break;
 			case SDLK_SPACE:
@@ -1395,6 +1416,26 @@ void GameGUI::drawInGameMenu(void)
 	globalContainer->gfx->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getSurface());
 }
 
+void GameGUI::drawInGameTextInput(void)
+{
+	globalContainer->gfx->drawSurface(10-492+typingInputScreenPos, globalContainer->gfx->getH()-44, typingInputScreen->getSurface());
+	if (typingInputScreenInc>0)
+		if (typingInputScreenPos<492)
+			typingInputScreenPos+=typingInputScreenInc;
+		else
+			typingInputScreenInc=0;
+	else if (typingInputScreenInc<0)
+		if (typingInputScreenPos>0)
+			typingInputScreenPos+=typingInputScreenInc;
+		else
+		{
+			typingInputScreenInc=0;
+			delete typingInputScreen;
+			typingInputScreen=NULL;
+		}
+}
+
+
 void GameGUI::drawAll(int team)
 {
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
@@ -1418,7 +1459,8 @@ void GameGUI::drawAll(int team)
 
 	if (typingInputScreen)
 	{
-		globalContainer->gfx->drawSurface(10, globalContainer->gfx->getH()-44, typingInputScreen->getSurface());
+		globalContainer->gfx->setClipRect();
+		drawInGameTextInput();
 	}
 }
 
