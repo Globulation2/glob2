@@ -29,7 +29,7 @@ List::List(int x, int y, int w, int h, base::Ptr<Font> font)
 	this->w=w;
 	this->h=h;
 	this->font=font;
-	textHeight=font->getStringHeight(NULL);
+	textHeight=font->getStringHeight((const char *)NULL);
 	nth=-1;
 	disp=0;
 	blockLength=0;

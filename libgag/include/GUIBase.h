@@ -24,6 +24,7 @@
 #include "GraphicContext.h"
 #include <vector>
 #include "dps/base.h"
+#include "dps/basecont.h"
 
 //! if defined, widget added twice are handeld correctly
 #define ENABLE_MULTIPLE_ADD_WIDGET
@@ -136,7 +137,7 @@ protected:
 		BASECLASS(base::Object)
 	MEMBERS
 		//! the widgets
-		ITEM(std::vector<base::Ptr<Widget> >, widgets)
+		ITEM(base::Vector<Widget>, widgets)
 	CLASSEND;
 
 	//! true while execution is running, no need for serialisation
@@ -149,6 +150,8 @@ protected:
 	DrawableSurface *gfxCtx;
 
 public:
+	Screen();
+	
 	virtual ~Screen();
 
 	//! Method called for each timer's tick

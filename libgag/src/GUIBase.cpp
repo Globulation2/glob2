@@ -128,6 +128,13 @@ void RectangularWidget::setVisible(bool visible)
 	repaint();
 }
 
+Screen::Screen()
+{
+	gfxCtx = NULL;
+	returnCode = 0;
+	run = false;
+}
+
 Screen::~Screen()
 {
 }
@@ -237,47 +244,36 @@ void Screen::addWidget(base::Ptr<Widget> widget)
 	widget->parent=this;
 	// this option enable or disable the multiple add check
 #ifdef ENABLE_MULTIPLE_ADD_WIDGET
-	bool already=false;
-	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
-		if ((*it)==widget)
-		{
-			already=true;
-			break;
-		}
-	if (!already)
+		widgets.add(widget);
+#else
+		widgets.adds(widget);
 #endif
-		widgets.push_back(widget);
 }
 
 void Screen::removeWidget(base::Ptr<Widget> widget)
 {
 	assert(widget);
 	assert(widget->parent==this);
-	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
-		if ((*it)==widget)
-		{
-			widgets.erase(it);
-			break;
-		}
+	widgets.remove(widget);
 }
 
 void Screen::dispatchEvents(SDL_Event *event)
 {
 	onSDLEvent(event);
-	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (unsigned i=0; i<widgets.size(); i++)
 	{
-		if ((*it)->visible)
-			(*it)->onSDLEvent(event);
+		if (widgets[i]->visible)
+			widgets[i]->onSDLEvent(event);
 	}
 }
 
 void Screen::dispatchTimer(Uint32 tick)
 {
 	onTimer(tick);
-	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (unsigned i=0; i<widgets.size(); i++)
 	{
-		if ((*it)->visible)
-			(*it)->onTimer(tick);
+		if (widgets[i]->visible)
+			widgets[i]->onTimer(tick);
 	}
 }
 
@@ -287,10 +283,10 @@ void Screen::dispatchPaint(DrawableSurface *gfx)
 	gfxCtx=gfx;
 	gfxCtx->setClipRect();
 	paint();
-	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (unsigned i=0; i<widgets.size(); i++)
 	{
-		if ((*it)->visible)
-			(*it)->paint();
+		if (widgets[i]->visible)
+			widgets[i]->paint();
 	}
 }
 
