@@ -185,7 +185,7 @@ NewMapScreen::NewMapScreen()
 	addWidget(new TextButton( 20, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
 	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
 
-	char *text= globalContainer->texts.getString("[create map]");
+	const char *text= globalContainer->texts.getString("[create map]");
 	addWidget(new Text(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text));
 	addWidget(new Text(130, 50, globalContainer->standardFont, globalContainer->texts.getString("[map size x]")));
 	addWidget(new Text(130, 75, globalContainer->standardFont, globalContainer->texts.getString("[map size y]")));

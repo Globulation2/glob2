@@ -2320,7 +2320,7 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
 {
-	char *text;
+	const char *text;
 
 	if (i==-1)
 		text=globalContainer->texts.getString(caption);

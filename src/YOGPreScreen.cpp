@@ -25,7 +25,8 @@ YOGPreScreen::YOGPreScreen()
 {
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[login]"), LOGIN, 13));
-
+	addWidget(new Text(0, 18, globalContainer->menuFont, globalContainer->texts.getString("[yog]"), 640));
+	
 	login=new TextInput(20, 435, 400, 25, globalContainer->standardFont, globalContainer->userName, true, 32);
 	addWidget(login);
 	
@@ -66,17 +67,6 @@ void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else
 			assert(false);
 	}
-}
-
-void YOGPreScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	if (y<40)
-	{
-		char *text= globalContainer->texts.getString("[yog]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, "%s", text);
-	}
-	addUpdateRect();
 }
 
 void YOGPreScreen::onTimer(Uint32 tick)
@@ -121,10 +111,3 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	}
 	
 }
-
-
-
-
-
-
-

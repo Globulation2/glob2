@@ -53,7 +53,7 @@ void Glob2::drawYOGSplashScreen(void)
 	w=globalContainer->gfx->getW();
 	h=globalContainer->gfx->getH();
 	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
-	char *text[3];
+	const char *text[3];
 	text[0]=globalContainer->texts.getString("[connecting to]");
 	text[1]=globalContainer->texts.getString("[yog]");
 	text[2]=globalContainer->texts.getString("[please wait]");

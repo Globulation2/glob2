@@ -1486,7 +1486,7 @@ IPaddress YOG::ipFromUserName(char userName[32])
 
 char *YOG::getStatusString(ExternalStatusState externalStatusState)
 {
-	char *s;
+	const char *s;
 	switch (externalStatusState)
 	{
 	case YESTS_BAD:

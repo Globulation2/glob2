@@ -38,7 +38,7 @@ void MapPreview::paint(void)
 	repaint();
 }
 
-char *MapPreview::getMethode(void)
+const char *MapPreview::getMethode(void)
 {
 	if (randomGenerated)
 		return globalContainer->texts.getString("[mapGenerationDescriptor Methodes]", lastRandomGenerationMethode);
