@@ -40,7 +40,7 @@ CustomGameScreen::CustomGameScreen()
 	addWidget(cancel);
 	addWidget(mapPreview);
 
-	for (i=0; i<7; i++)
+	for (i=0; i<8; i++)
 	{
 		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, true, 10+i);
 		addWidget(isAI[i]);
