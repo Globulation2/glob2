@@ -1429,6 +1429,17 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 }
 
+struct BuildingPosComp
+{
+	bool operator () (Building * const & a, Building * const & b)
+	{
+		if (a->posY != b->posY)
+			return a->posY < b->posY;
+		else
+			return a->posX < b->posX;
+	}
+};
+
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	int id;
@@ -1436,8 +1447,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	int top=(sy>>5);
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
-	std::set<Building *> buildingList;
-	std::list<BuildingType *> localySeenBuildings;
+	std::set<Building *, BuildingPosComp> buildingList;
+	//std::list<BuildingType *> localySeenBuildings;
 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
@@ -1649,7 +1660,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					|| Building::GIDtoTeam(gid)==localTeam
 					|| (building->seenByMask & teams[localTeam]->me)
 					|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
-					buildingList.insert(building); //TODO: we may make it faster by pushing a Building* in the buildingList instead of a uid.
+					buildingList.insert(building);
 			}
 		}
 	
