@@ -110,8 +110,7 @@ public:
 	int leftClientsTimeout;
 	int leftClientsTOTL;
 	Uint32 leftClientPacketID;
-	int lastLeftClientNumber[4];
-	int allreadyRemovedClients;
+	std::list<Uint32> lastLeftClientsSent[4];
 	
 	int timeout;
 	int TOTL;

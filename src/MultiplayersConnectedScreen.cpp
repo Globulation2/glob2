@@ -60,8 +60,8 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 	if (multiplayersJoin->waitingState<MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
 		multiplayersJoin->quitThisGame();
-		printf("MultiplayersConnectScreen:DISCONNECT!\n");
-		endExecute(DISCONNECT);
+		printf("MultiplayersConnectScreen:DISCONNECTED!\n");
+		endExecute(DISCONNECTED);
 	}
 	
 	if ((timeCounter++ % 10)==0)

@@ -50,9 +50,6 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	uid=clientUID++;
 	
 	leftClientPacketID=0;
-	for (int i=0; i<4; i++)
-		lastLeftClientNumber[i]=0;
-	allreadyRemovedClients=0;
 }
 
 YOGClient::~YOGClient()
@@ -332,15 +329,16 @@ void YOGClient::sendLeftClients()
 	
 	leftClientPacketID++;
 	addUint32(data, leftClientPacketID, 4); // This is redundancy
-	lastLeftClientNumber[leftClientPacketID&0x3]=nbClients;
 	
 	int index=8;
 	for (std::list<Uint32>::iterator uid=leftClients.begin(); uid!=leftClients.end(); ++uid)
 	{
 		addUint32(data, *uid, index);
-		lprintf("uid=%d.\n", *uid);
+		//lprintf("uid=%d.\n", *uid);
 		index+=4;
 	}
+	lastLeftClientsSent[leftClientPacketID&0x3]=leftClients;
+	
 	send(YMT_LEFT_CLIENTS_LIST, data, index);
 	lprintf("sent a %d left clients list to %s\n", nbClients, userName);
 }
