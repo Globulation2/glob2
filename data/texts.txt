@@ -109,7 +109,7 @@ Pomarenče
 Pomarańcze
 [Prune]
 Prune
-Prune
+Plum
 Pflaume
 Švestky
 Śliwki
@@ -133,7 +133,7 @@ Zničit
 Zniszcz
 [cancel destroy]
 Annuler destruction
-Cancel destroy
+Cancel destruction
 Zerstörung verhindern
 Stornuj zničeni
 Przerwij niszczenie
@@ -283,7 +283,7 @@ Koupaliště
 Pływalnia
 [attack building]
 Camp d'entraînement
-Camp
+Barracks
 Trainingslager
 Cvičiště
 Baraki
@@ -571,19 +571,19 @@ Server hostname
 Nazwa hosta
 [hp]
 Point de vie
-HitPoint
+Hitpoint
 Lebenspunkt
 Životy
 Punkty życia
 [carry]
 Transporte :
-Carry :
+Carrying :
 Transportiert :
 Nesu :
 Transport :
 [don't carry anything]
 Ne transporte rien
-Don't carry anything
+Not carrying anything
 Transportiert nichts
 Nic nenesu
 Nic nie transportuje
@@ -601,7 +601,7 @@ Stufen
 Poziomy
 [building site]
 chantier
-building site
+construction site
 baustelle
 staveniště
 plac budowy
@@ -763,13 +763,13 @@ Zbudowano wieżę obronną
 ?? Postawiono flagę zakazu ?? 
 [the stone wall is finished]
 Un élément de mur est terminé
-A part of the wall is finished
+A wall section is finished
 Ein Mauerteil ist fertig
 Kus hradby hotov ...
 Zbudowano część muru
 [the wood wall is finished]
 Un élément de mur est terminé
-A part of the wall is finished
+A wall section is finished
 Ein Mauerteil ist fertig
 Kus hradby hotov ...
 Zbudowano część palisady
@@ -985,13 +985,13 @@ o hladu
 odczuwa głód
 [are dying hungry]
 meurent de faim
-starve to death
+are starving to death
 verhungern
 umírají hlady
 umiera z głodu
 [are wonded]
 blessées
-are wonded
+are wounded
 sind verletzt
 je zraněných
 rannych
@@ -1003,7 +1003,7 @@ a
 i
 [seeking a job]
 cherchent du travail
-look for a job
+are looking for a job
 suchen Arbeit
 hledá práci
 szuka pracy
@@ -1033,13 +1033,13 @@ Těžba
 Zbiera
 [At. speed]
 Vitesse at.
-At. speed
+Att. speed
 Geschwindigkeit
 Rychlost útoku
 Prędkość ataku
 [At. strength]
 Force at.
-At. strength
+Att. strength
 Stärke
 Síla útoku
 Siła ataku
@@ -1087,13 +1087,13 @@ Zraněných
 rannych
 [In way]
 En chemin
-In way
+On the way
 Unterwegs
 Na cestě
 W drodze
 [On the spot]
 Sur place
-On the spot
+Here
 Vor Ort
 Na místě
 Na miejscu
@@ -1345,7 +1345,7 @@ Připojen ke všem hráčům
 Połączono z resztą graczy
 [aviable lan games]
 Parties locales disponibles
-Local available games
+Available local games
 Lokal verfügbare Spiele
 Dostupné místní hry
 Dostępne gry sieciowe
@@ -1405,7 +1405,7 @@ Jméno mapy: %s.
 Nazwa mapy: %s.
 [one player]
 Un joueur présent.
-One player has joined.
+A player has joined.
 Ein Spieler spielt mit.
 Jeden hráč se připojil.
 Gracz dołaczył do gry.
@@ -1471,7 +1471,7 @@ Register a new YOG user with password. (insecure)
 
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
-Remember password localy. (insecure)
+Remember password locally. (insecure)
 
 
 
@@ -1519,7 +1519,7 @@ Spojení s YOG metaserverem bylo ztraceno.
 Połączenie z YOG zostało utracone.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
-The YOG metaserver has refused the connection because your globulation2 version is too old to communicate with.
+The YOG metaserver has refused connection because your globulation2 client is obsolete.
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation zu alt ist. 
 YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globulation2.
 Metaserwere YOG odmówił połączenia, ponieważ Twoja wersja globulation2 jest zbyt stara, by mógł się z nią komunikować.
@@ -1531,19 +1531,19 @@ YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jin
 Metaserwer YOG odmówił połączenia ponieważ twój login jest już zajęty przez kogoś innego.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Le metaserveur YOG a refusé la connection car le mot de passe est faux.
-The YOG metaserver has refused the connection because your entered a wrong password.
+The YOG metaserver has refused connection because supplied password was incorrect.
 
 
 
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
-The YOG metaserver has refused the connection because this user name has already been registered with a password. If you registered this user, disactivate the option "Register a new YOG user with password" just under.
+The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with password."
 
 
 
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
 Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
-The YOG metaserver has refused the connection because because a protocol error occured: you are already authenticated. Try again 45 seconds later.
+The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
 
 
 
@@ -1561,19 +1561,19 @@ YOG metaserver odmítnul spojení bez udání důvodu.
 Metaserver YOG odmówił połączenia bez dalszego wyjaśnienia.
 [The player %s has left YOG]
 Le joueur %s a quitté YOG.
-The player %s has left YOG.
+%s has left YOG.
 Spieler %s hat YOG verlassen.
 Hráč %s se odpojil od YOG.
 Gracz %s opuścił YOG.
 [The player %s has joined YOG]
 Le joueur %s a rejoint YOG.
-The player %s has joined YOG.
+%s has joined YOG.
 Spieler %s ist zu YOG zurückgekehrt.
 Hráč %s se připojil k YOG.
 Gracz %s przyłączył się do YOG.
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
-You are marked as being away.
+You are marked as away.
 Sie sind als abwesend markiert.
 Jsi označen, že jsi pryč.
 Jesteś oznaczony jako nieaktywny.
@@ -1591,19 +1591,19 @@ YOG komunikační systém má dva příkazy, "msg" a "away". Napiš "/help <př�
 System komunikacji YOG ma dwie komendy, "msg" oraz "away". Napisz "/help <komenda>" aby się o nich więcej dowiedzieć.
 [YOG_HELP_AWAY]
 La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
-The "/away (<message>)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/away I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
+The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explaination message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
 Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, .B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a"
 Příkazem "/away (<zpráva>)" dáš na vědomí ostatním YOG uživatelům svoji dočasnou nepřítomnost. Můžeš přidat i výmluvnou krátkou zprávu (důvod). Například "/away Du na cigaretu, za 5 minut sem zpátky ...", lze použít zkráceně "/a".
 Komenda "/away (<wiadomość>)" pozwala Ci poinformować innych użytkowników YOG o Twojej tymczasowej nieobecności. Możesz dodać krótką notę informacyjną. Np. "/away Jem obiad będę o 14". Możesz użyć też skrótu "/a".
 [YOG_HELP_MSG]
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
-The "/msg <name> <message>" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/m".
+The "/msg <name> <message>" command sends a private message.  For instance, "/msg John Hi John, how are you?".  Alias "/m".
 "/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine bestimmte Person zu senden. z.b. "/msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
 Příkaz "/msg <jméno> <zpráva>" pošle zprávu jen dotyčnému, nikdo jiný si jí nepřečte (šeptání). Například "/msg klip Nazdar :-), tak co ?", lze použít zkráceně "/m".
 Komenda "/msg <nazwa> <wiadomość>" pozwala Ci przesłać wiadomość do jednej osoby. Np. "/msg Daemon42 Twoje tłumaczenie ssie...". W skrócie "/m"
 [save before quit?]
 Voulez-vous sauver avant de quitter ?
-Do you want to save before quitting ?
+Do you want to save before quitting?
 Möchten Sie vor dem Beenden abspeichern?
 Chceš uložit před odchodem ?
 Chcesz zapisać stan gry, przed jej zakończeniem ?
@@ -1657,7 +1657,7 @@ Tvoji nepřátelé byli poraženi ...
 Wygrałeś: pokonałeś swoich przeciwników
 [Won : your ally %s have the biggest prestige]
 Gagné : votre allié %s a le plus de prestige
-Won : your ally %s have the biggest prestige
+Won : your ally %s has the most prestige
 Gewonnen: Ihr Verbündeter %s hat das höchste Prestige
 Tvůj spojenec %s má největší prestiž ...
 Wygrałeś: %s ma największy prestiż
@@ -1669,7 +1669,7 @@ Verloren: %s hat mehr Prestige als Sie
 Przegrałeś: %s ma większy prestiż od Twojego
 [Won : you have the biggest prestige]
 Gagné : vous avez le plus de prestige
-Won : you have the biggest prestige
+Won : you have the most prestige
 Gewonnen: Sie haben das höchste Prestige
 Ty máš největší prestiž ...
 Wygrałeś: Masz największy prestiż
