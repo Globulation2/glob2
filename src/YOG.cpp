@@ -534,7 +534,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			game.natSolved=false;
 			games.push_back(game);
 			fprintf(logFile, "index=%d.\n", index);
-			fprintf(logFile, "game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
+			fprintf(logFile, "game no=%d uid=%d name=%s host=%s ip=%s\n", i, game.uid, game.name, game.userName, Utilities::stringIP(game.hostip));
 		}
 		assert(index==size);
 		if (isAnyCompleteNewGame)

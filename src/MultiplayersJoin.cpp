@@ -245,6 +245,9 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
 	
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		fprintf(logFile, " player=(%d) ip=(%s) waitForNatResolution=(%d)\n", j, Utilities::stringIP(sessionInfo.players[j].ip), sessionInfo.players[j].waitForNatResolution); 
+	
 	if (localPort)
 	{
 		fprintf(logFile, " I set my own ip to localhost, localPort=%d \n", SDL_SwapBE16(localPort));
