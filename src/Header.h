@@ -14,12 +14,13 @@
 #	include <SDL_image.h>
 #	include <assert.h>
 #	pragma warning (disable : 4786)
+#	pragma warning (disable : 4250)
 #elif macintosh
 	#include "SDL.h"
 	#include "SDL_endian.h"
 	#include <Assert.h>
 	#include <StdLib.h>
-#else
+#else // Unix ??? autre ??? TODO a preciser...
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_endian.h>
 	#include <SDL/SDL_image.h>

@@ -335,13 +335,17 @@ bool Map::doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy)
 	int tdx, tdy;
 	
 	for (tdx=-1; tdx<=1; tdx++)
+	{
 		for (tdy=-1; tdy<=1; tdy++)
+		{
 			if (getUnit(x+tdx, y+tdy)==otherUID)
 			{
 				*dx=tdx;
 				*dy=tdy;
 				return true;
 			}
+		}
+	}
 			
 	return false;
 }
@@ -389,6 +393,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 
 	enemies=unit->owner->enemies;
 	for (tdx=-1; tdx<=1; tdx++)
+	{
 		for (tdy=-1; tdy<=1; tdy++)
 		{
 			Sint32 UID=getUnit(x+tdx, y+tdy);
@@ -417,6 +422,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 				}
 			}
 		}
+	}
 			
 	return false;
 }
@@ -483,10 +489,12 @@ void Map::setSize(int wDec, int hDec, Game *game)
 		sectors=new Sector[size](game);
 #	else
 		sectors=new Sector[size];
-		for (int i2=0; i2 < size; ++i2) 
 		{
-			sectors[i2].~Sector();
-			new (&sectors[i2])Sector(game);
+			for (int i=0; i < size; ++i) 
+			{
+				sectors[i].~Sector();
+				new (&sectors[i])Sector(game);
+			}
 		}
 #	endif
 }
@@ -532,7 +540,7 @@ bool Map::load(SDL_RWops *stream, Game *game)
 	stepCounter=0;
 	cases=new Case[size];
 	{
-		for (int i=0;i<size;i++)
+		for (int i=0;i<size;++i)
 		{
 			mapDiscovered[i]=SDL_ReadBE32(stream);
 			cases[i].setInteger(SDL_ReadBE32(stream));
@@ -601,7 +609,7 @@ void Map::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, hSector);
 	size=wSector*hSector;
 	{
-		for (int i=0;i<size;++i)
+		for (int i=0; i<size; ++i)
 		{
 			sectors[i].save(stream);
 		}
@@ -659,146 +667,6 @@ void Map::growRessources(void)
 			}
 		}
 	}
-	/*if ((syncRand()&0xF)==0)
-	{
-		{
-			int cnt=0;
-			for (int y=0; y<h; y++)
-				for (int x=0; x<w; x++)
-				{
-					if (isGrowableRessource(x, y))
-					{
-						cnt++;
-						if (cnt>7)
-						{
-							for (int ri=2; ri<=5; ri++)
-							{
-								int d=getTerrain(x+w-ri, y)-272;
-								if ((d<0)||(d>=40))
-									continue;
-								int r=d/10;
-								int l=d%5;
-								if (r==STONE)
-									continue;
-								if (l>0)
-									setTerrain(x+w-ri, y, d+271);
-								else if (l==0)
-								{
-									if (r==ALGA)
-										setTerrain(x+w-ri, y, 256+(syncRand()&0xF));
-									else
-										setTerrain(x+w-ri, y, syncRand()&0xF);
-								}
-							}
-							//decRessource(x+w-3, y);
-						}
-					}
-					else
-						cnt=0;
-				}
-		}
-		
-		{
-			int cnt=0;
-			for (int x=0; x<w; x++)
-				for (int y=0; y<h; y++)
-				{
-					if (isGrowableRessource(x, y))
-					{
-						cnt++;
-						if (cnt>7)
-						{
-							for (int ri=2; ri<=5; ri++)
-							{
-								int d=getTerrain(x, y+h-ri)-272;
-								if ((d<0)||(d>=40))
-									continue;
-								int r=d/10;
-								int l=d%5;
-								if (r==STONE)
-									continue;
-								if (l>0)
-									setTerrain(x, y+h-ri, d+271);
-								else if (l==0)
-								{
-									if (r==ALGA)
-										setTerrain(x, y+h-ri, 256+(syncRand()&0xF));
-									else
-										setTerrain(x, y+h-ri, syncRand()&0xF);
-								}
-							}
-							//decRessource(x+w-3, y);
-						}
-					}
-					else
-						cnt=0;
-				}
-		}
-	}*/
-	
-	/*{
-		for (int x=0; x<w; x+=16)
-			for (int y=0; y<h; y+=16)
-			{
-				bool allResources=true;
-				for (int dy=0; dy<16; dy++)
-					for (int dx=0; dx<16; dx++)
-					{
-						if (!isGrowableRessource(x+dx, y+dy))
-						{
-							allResources=false;
-							dy=16;
-							break;
-						}
-					}
-				if (allResources)
-				{
-					for (int dy=0; dy<16; dy++)
-						for (int dx=0; dx<16; dx++)
-							decRessource(x+dx, y+dy);
-				}
-			}
-	}*/
-	
-	/*{
-		int sx=syncRand()&wMask;
-		int sy=syncRand()&hMask;
-		int d=getTerrain(sx, sy)-272;
-		int r=d/10;
-		int l=d%5;
-		if ((d>=0)&&(d<312)&&(l==4)&&(r!=STONE))
-		{
-			bool allPlacesR=true;
-			for (int y=0; y<8; y++)
-				for (int x=0; x<8; x++)
-				{
-					int dl=getTerrain(sx+x, sy+y)-272;
-					int rl=dl/10;
-					int ll=dl%5;
-					if ((rl!=r)||(ll!=4))
-					{
-						allPlacesR=false;
-						x=4;
-						break;
-					}
-				}
-			if (allPlacesR)
-			{
-				if (r==ALGA)
-				{
-					for (int y=2; y<6; y++)
-						for (int x=2; x<6; x++)
-							setTerrain(sx+x, sy+y, 256+(syncRand()&0xF));
-				}
-				else
-				{
-					for (int y=2; y<6; y++)
-						for (int x=2; x<6; x++)
-							setTerrain(sx+x, sy+y, 0+(syncRand()&0xF));
-				}
-			}
-		}
-	}*/
 }
 
 void Map::step(void)

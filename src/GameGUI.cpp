@@ -144,6 +144,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 						button=((InGameAlliance8Screen *)gameMenuScreen)->allied[i];
 						assert(button);
+#						ifdef WIN32
+#							pragma warning (disable : 4800)
+#						endif
 						button->setState((teamPtr->allies)&(1<<otherTeam));
 
 						button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
@@ -153,6 +156,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
 						assert(button);
 						button->setState(chatMask&(1<<otherTeam));
+#						ifdef WIN32
+#							pragma warning (default : 4800)
+#						endif
+
 					}
 
 
@@ -872,7 +879,8 @@ void GameGUI::draw(void)
 
 		if (displayMode==BUILDING_AND_FLAG)
 		{
-			for (int i=0; i<12; i++)
+			int i;
+			for (i=0; i<12; i++)
 			{
 				int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
 				BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
@@ -912,7 +920,7 @@ void GameGUI::draw(void)
 			recentFreeUnits[recentFreeUnitsIt]=nowFu;
 			recentFreeUnitsIt=(recentFreeUnitsIt+1)%nbRecentFreeUnits;
 			int viewFu=0;
-			for (int i=0; i<nbRecentFreeUnits; i++)
+			for (i=0; i<nbRecentFreeUnits; i++)
 				if (viewFu<recentFreeUnits[i])
 					viewFu=recentFreeUnits[i];
 

@@ -57,32 +57,38 @@ void NetGame::init(void)
 
 	{
 		for (step=0; step<1; step++)//because first step will be ignored.
+		{
 			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
 			{
 				playersNetQueue[eachPlayers][step].order=NULL;
 				playersNetQueue[eachPlayers][step].packetID=-1;
 				playersNetQueue[eachPlayers][step].ackID=-1;
 			}
+		}
 	}
 
 	{
 		for (step=1; step<latency; step++)
+		{
 			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
 			{
 				playersNetQueue[eachPlayers][step].order=new NullOrder();
 				playersNetQueue[eachPlayers][step].packetID=step;
 				playersNetQueue[eachPlayers][step].ackID=step;
 			}
+		}
 	}
 
 	{
 		for (step=latency; step<queueSize; step++)
+		{
 			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
 			{
 				playersNetQueue[eachPlayers][step].order=NULL;
 				playersNetQueue[eachPlayers][step].packetID=-1;
 				playersNetQueue[eachPlayers][step].ackID=-1;
 			}
+		}
 	}
 
 	{
@@ -109,6 +115,7 @@ bool NetGame::isStepReady(Sint32 step)
 {
 	int eachPlayers;
 	for (eachPlayers=0;eachPlayers<numberOfPlayer;eachPlayers++)
+	{
 		if (players[eachPlayers]->type!=Player::P_LOST_B)
 		{
 			if (smaller(lastReceivedFromHim[eachPlayers], step))
@@ -132,6 +139,7 @@ bool NetGame::isStepReady(Sint32 step)
 				return false;
 			}
 		}
+	}
 
 	isWaitingForPlayer=false;
 	return true;
@@ -469,6 +477,7 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	if (localPlayerNumber==playerNumber)
 	{
 		for (eachPlayers=0;eachPlayers<numberOfPlayer;eachPlayers++)
+		{
 			if (players[eachPlayers]->type==Player::P_IP)
 			{
 				// then send directly
@@ -479,7 +488,7 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 				// We confirm reception for every player that is local. (ai & local)
 				lastReceivedFromMe[eachPlayers]=pushStep; // 2B Clean only
 			}
-
+		}
 	}
 	
 	

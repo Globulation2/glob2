@@ -119,15 +119,15 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 
 SDLSprite::~SDLSprite()
 {
-	for (vector <SDL_Surface *>::iterator imagesIt=images.begin(); imagesIt!=images.end(); ++imagesIt)
+	for (std::vector <SDL_Surface *>::iterator imagesIt=images.begin(); imagesIt!=images.end(); ++imagesIt)
 	{
 		if (*imagesIt)
-			delete (*imagesIt);
+			SDL_FreeSurface((*imagesIt));
 	}
-	for (vector <SDL_Surface *>::iterator masksIt=masks.begin(); masksIt!=masks.end(); ++masksIt)
+	for (std::vector <SDL_Surface *>::iterator masksIt=masks.begin(); masksIt!=masks.end(); ++masksIt)
 	{
 		if (*masksIt)
-			delete (*masksIt);
+			SDL_FreeSurface((*masksIt));
 	}
 }
 
