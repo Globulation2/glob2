@@ -9663,7 +9663,7 @@
 				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-Ilibgag/include";
-				OTHER_LDFLAGS = "build/libgag.a  -lSDL -lSDL_image -lSDL_mixer -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -framework foundation -lpng -lSDL_net -lvorbisfile -lvorbis";
+				OTHER_LDFLAGS = "build/libgag.a  -lSDL -lSDL_image -lSDL_mixer -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -framework foundation -lpng -lSDL_net -lvorbisfile -lvorbis -lSDLmain";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = Globulation2;
 				REZ_EXECUTABLE = YES;
