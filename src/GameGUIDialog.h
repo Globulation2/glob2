@@ -70,12 +70,17 @@ public:
 	{
 		OK = 0,
 		ALLIED = 32,
-		VISION = 64,
-		CHAT= 96
+		NORMAL_VISION = 64,
+		FOOD_VISION = 96,
+		MARKET_VISION = 128,
+		CHAT= 160
 	};
 
 public:
-	Selector *alliance[16];
+	OnOffButton *alliance[16];
+	OnOffButton *normalVision[16];
+	OnOffButton *foodVision[16];
+	OnOffButton *marketVision[16];
 	OnOffButton *chat[16];
 	GameGUI *gameGUI;
 
