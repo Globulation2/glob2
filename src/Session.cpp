@@ -469,7 +469,7 @@ bool SessionInfo::load(GAGCore::InputStream *stream)
 		stream->seekFromStart(sessionInfoOffset);
 
 	stream->read(mapName, MAP_NAME_MAX_SIZE, "mapName");
-	printf("End-user map name is %s\n", mapName);
+	//std::cout << "SessionInfo::load : end-user map name is " << mapName << std::endl;
 
 	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature,"GLO2",4) != 0)

@@ -41,6 +41,7 @@
 #include "Utilities.h"
 #include "YOGScreen.h"
 #include "SoundMixer.h"
+#include "CampaignScreen.h"
 #include <iostream>
 
 
@@ -129,7 +130,8 @@ int Engine::initCampain(const std::string &mapName)
 	// if this is a campaign, show a screen
 	if (gui.game.campaignText.length() > 0)
 	{
-		std::cout << "Campaign : " << gui.game.campaignText << std::endl;
+		CampaignScreen campaignScreen(gui.game.campaignText);
+		campaignScreen.execute(globalContainer->gfx, 40);
 	}
 	
 	// We do some cosmetic fix
@@ -474,7 +476,7 @@ int Engine::run(void)
 			// if we have won, managed to load next map, we do it again
 			if (gui.game.isGameEnded && gui.getLocalTeam()->isAlive)
 			{
-				std::string filename = glob2NameToFilename("maps", gui.game.nextMap.c_str(), "map");
+				std::string filename = std::string("maps/") +  gui.game.nextMap;
 				doRunOnceAggain = (initCampain(filename.c_str()) == EE_NO_ERROR);
 			}
 		}
