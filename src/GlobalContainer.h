@@ -71,6 +71,7 @@ public:
 	BuildingsTypes buildingsTypes;
 	
 	bool hostServer;
+	char hostServerMapName[32];
 };
 
 extern GlobalContainer *globalContainer;

@@ -29,6 +29,7 @@
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
 #include <SDL_net.h>
+#include "MultiplayersHost.h"
 
 GlobalContainer *globalContainer=0;
 
@@ -75,6 +76,62 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runHostServer(int argc, char *argv[])
 {
+	bool validSessionInfo;
+	SessionInfo sessionInfo;
+	
+	char *mapName=globalContainer->hostServerMapName;
+	
+	printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
+	SDL_RWops *stream=globalContainer->fileManager.open(mapName,"rb");
+	if (stream==NULL)
+	{
+		printf("Map '%s' not found!\n", mapName);
+		return 0;
+	}
+	else
+	{
+		validSessionInfo=sessionInfo.load(stream);
+		SDL_RWclose(stream);
+		if (validSessionInfo)
+		{
+			sessionInfo.map.mapName[31]=0;
+		}
+		else
+		{
+			printf("Glob2::runHostServer():Warning, Error during map load.\n");
+			return 0;
+		}
+	}
+	
+	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true);
+	
+	Uint32 frameStartTime;
+	Sint32 frameWaitTime;
+	Sint32 stepLength=20;
+	
+	bool running=true;
+	while (running)
+	{
+		// get first timer
+		frameStartTime=SDL_GetTicks();
+		
+		multiplayersHost->onTimer(frameStartTime);
+		
+		frameWaitTime=SDL_GetTicks()-frameStartTime;
+		frameWaitTime=stepLength-frameWaitTime;
+		if (frameWaitTime>0)
+			SDL_Delay(frameWaitTime);
+	}
+	/*multiplayersHost->onTimer(tick);
+	multiplayersHost->startGame();
+	multiplayersHost->stopHosting();*/
+	
+	multiplayersHost->startGame();
+	
+	delete multiplayersHost;
+		
+	printf("Glob2::runHostServer():end.\n");
+
 	return 0;
 }
 

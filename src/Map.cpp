@@ -25,7 +25,7 @@
 
 BaseMap::BaseMap()
 {
-	strncpy(mapName,"DEBUG MAP", 32);
+	strncpy(mapName,"DEBUG MAP", MAP_NAME_MAX_SIZE);
 }
 
 void BaseMap::save(SDL_RWops *stream)
@@ -42,7 +42,7 @@ bool BaseMap::load(SDL_RWops *stream)
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
 	
-	SDL_RWread(stream, mapName, 32, 1);
+	SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
 	
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
@@ -59,7 +59,7 @@ Uint8 BaseMap::getOrderType()
 
 char *BaseMap::getData()
 {
-	memcpy(data, mapName, 32);
+	memcpy(data, mapName, MAP_NAME_MAX_SIZE);
 	return data;
 }
 
@@ -69,7 +69,7 @@ bool BaseMap::setData(const char *data, int dataLength)
 	if (dataLength!=getDataLength())
 		return false;
 	
-	memcpy(mapName, data, 32);
+	memcpy(mapName, data, MAP_NAME_MAX_SIZE);
 	
 	return true;
 }

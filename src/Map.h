@@ -32,6 +32,7 @@
 #include <list>
 
 #define NOUID (Sint16)0x8000
+#define MAP_NAME_MAX_SIZE 32
 class Map;
 class Game;
 
@@ -80,10 +81,10 @@ public:
 	BaseMap();
 	virtual ~BaseMap(void) { }
 
-	char mapName[32];
+	char mapName[MAP_NAME_MAX_SIZE];
 protected:
 	//! serialized form of BaseMap
-	char data[32];
+	char data[MAP_NAME_MAX_SIZE];
 
 public:
 	bool load(SDL_RWops *stream);
