@@ -17,34 +17,17 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MAIN_MENU_SCREEN_H
-#define __MAIN_MENU_SCREEN_H
+#ifndef __CREDIT_SCREEN_H
+#define __CREDIT_SCREEN_H
 
 #include "GAG.h"
 
-class MainMenuScreen:public Screen
+class CreditScreen:public Screen
 {
 public:
-	enum
-	{
-		CAMPAIN = 1,
-		LOAD_GAME = 2,
-		CUSTOM = 3,
-		MULTIPLAYERS_YOG = 4,
-		MULTIPLAYERS_LAN = 5,
-		GAME_SETUP = 6,
-		EDITOR = 7,
-		CREDITS = 8,
-		QUIT = 9
-	};
-private:
-	DrawableSurface *background;
-public:
-	MainMenuScreen();
-	virtual ~MainMenuScreen();
+	CreditScreen();
+	virtual ~CreditScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
-	static int menu(void);
 };
 
 #endif

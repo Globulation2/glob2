@@ -36,10 +36,11 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new TextButton( 20, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[settings]"), GAME_SETUP));
 	addWidget(new TextButton(340, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[editor]"), EDITOR));
 
+	addWidget(new TextButton(20, 420, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[credits]"), CREDITS));
 	addWidget(new TextButton(340, 420, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 
 	globalContainer->gfx->setClipRect();
-	
+
 	background=globalContainer->gfx->createDrawableSurface("data/gfx/IntroMN.png");
 }
 
