@@ -769,7 +769,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				if (UID<0)
 				{
 					// we can select for view buildings that are in shared vision
-					if (game.map.isFOW(mapX, mapY, game.teams[localTeam]->sharedVision))
+					if (game.map.isMapDiscovered(mapX, mapY, game.teams[localTeam]->sharedVision))
 					{
 						displayMode=BUILDING_SELECTION_VIEW;
 						game.selectedUnit=NULL;
