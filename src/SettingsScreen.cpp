@@ -36,7 +36,7 @@ SettingsScreen::SettingsScreen()
 	// language part
 	language=new Text(20, 60, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidget(language);
-	languageList=new List(20, 90, 160, 160, ALIGN_LEFT, ALIGN_TOP, "standard");
+	languageList=new List(20, 90, 160, 200, ALIGN_LEFT, ALIGN_TOP, "standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 		languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
 	addWidget(languageList);
@@ -44,7 +44,7 @@ SettingsScreen::SettingsScreen()
 	// graphics part
 	display=new Text(245, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]"));
 	addWidget(display);
-	modeList=new List(245, 90, 100, 160, ALIGN_RIGHT, ALIGN_TOP, "standard");
+	modeList=new List(245, 90, 100, 200, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
 	while(globalContainer->gfx->getNextVideoMode(&w, &h))
@@ -61,29 +61,30 @@ SettingsScreen::SettingsScreen()
 	rendererList->addText("GL");
 	addWidget(rendererList);
 	
-	depthList = new List(110, 90, 50, 45, ALIGN_RIGHT, ALIGN_TOP, "standard");
+	depthList = new List(110, 90, 50, 65, ALIGN_RIGHT, ALIGN_TOP, "standard");
+	depthList->addText("auto");
 	depthList->addText("32");
 	depthList->addText("16");
 	addWidget(depthList);
 
-	fullscreen=new OnOffButton(200, 90+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
+	fullscreen=new OnOffButton(200, 90+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
-	fullscreenText=new Text(20, 90+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
+	fullscreenText=new Text(20, 90+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
 	addWidget(fullscreenText);
 	
-	lowquality=new OnOffButton(200, 120+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	lowquality=new OnOffButton(200, 120+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
-	lowqualityText=new Text(20, 120+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
+	lowqualityText=new Text(20, 120+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
 	addWidget(lowqualityText);
 
-	hwaccel=new OnOffButton(200, 180+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
+	hwaccel=new OnOffButton(200, 180+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
 	addWidget(hwaccel);
-	hwaccelText=new Text(20, 180+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
+	hwaccelText=new Text(20, 180+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
 	addWidget(hwaccelText);
 
-	dblbuff=new OnOffButton(200, 150+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
+	dblbuff=new OnOffButton(200, 150+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
 	addWidget(dblbuff);
-	dblbuffText=new Text(20, 150+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
+	dblbuffText=new Text(20, 150+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
 	addWidget(dblbuffText);
 	
 	setVisibilityFromGraphicType();
@@ -191,7 +192,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source==depthList)
 		{
-			globalContainer->settings.screenDepth = atoi(depthList->getText(par1));
+			if (par1 == 0)
+				globalContainer->settings.screenDepth = 0;
+			else
+				globalContainer->settings.screenDepth = atoi(depthList->getText(par1));
 			updateGfxCtx();
 		}
 	}
