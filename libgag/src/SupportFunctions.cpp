@@ -252,7 +252,8 @@ namespace GAGCore
 	std::string vnsprintf(const char* f, va_list arglist)
 	{
 		char* str;
-#if defined __GNUC__ && __GNUC__ >= 3
+//Dejan: There is no vasprintf() in MinGW at the moment (2004-12-09)
+#if ((defined __GNUC__ && __GNUC__ >= 3) && (!defined __MINGW32__))
 		vasprintf(&str, f, arglist);
 #else
 		str = (char*)malloc(256);
