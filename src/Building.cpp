@@ -864,17 +864,20 @@ void Building::swarmStep(void)
 	if (productionTimeout<0)
 	{
 		// We find the kind of unit we have to create:
-		float propotion;
-		float minPropotion=1.0;
+		float proportion;
+		float minProportion=1.0;
 		int minType=-1;
 		{
 			for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 			{
-				propotion=((float)percentUsed[i])/((float)ratio[i]);
-				if (propotion<=minPropotion)
+				if (ratio[i]!=0)
 				{
-					minPropotion=propotion;
-					minType=i;
+					proportion=((float)percentUsed[i])/((float)ratio[i]);
+					if (proportion<=minProportion)
+					{
+						minProportion=proportion;
+						minType=i;
+					}
 				}
 			}
 		}
@@ -885,6 +888,12 @@ void Building::swarmStep(void)
 		assert(minType<UnitType::NB_UNIT_TYPE);
 		if (minType<0 || minType>=UnitType::NB_UNIT_TYPE)
 			minType=0;
+
+		// help printf
+		/*printf("SWARM : prod ratio %d/%d/%d - pused %d/%d/%d, producing : %d\n",
+			ratio[0], ratio[1], ratio[2],
+			percentUsed[0], percentUsed[1], percentUsed[2],
+			minType);*/
 
 		// We get the unit UnitType:
 		int posX, posY, dx, dy;
