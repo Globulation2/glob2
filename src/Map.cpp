@@ -120,7 +120,7 @@ void Sector::load(SDL_RWops *stream, Game *game)
 
 void Sector::step(void)
 {
-	list<Bullet*>::iterator ittemp;
+	std::list<Bullet*>::iterator ittemp;
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
 	{
 		if ( (*it)->ticksLeft > 0 )
@@ -382,7 +382,17 @@ void Map::setSize(int wDec, int hDec, Game *game)
 	wSector=w>>4;
 	hSector=h>>4;
 	size=wSector*hSector;
-	sectors=new Sector[size](game);
+	// pas standard!!!
+#	ifndef WIN32
+		sectors=new Sector[size](game);
+#	else
+		sectors=new Sector[size];
+		for (int i2=0; i2 < size; ++i2) 
+		{
+			sectors[i2].~Sector();
+			new (&sectors[i2])Sector(game);
+		}
+#	endif
 }
 
 bool Map::load(SDL_RWops *stream, Game *game)
@@ -441,11 +451,21 @@ bool Map::load(SDL_RWops *stream, Game *game)
 	size=wSector*hSector;
 	if (sectors)
 		delete[] sectors;
-	sectors=new Sector[size](game);
+	// non standard !!!
+#	ifndef WIN32
+		sectors=new Sector[size](game);
+#	else
+		sectors=new Sector[size];
+		for (int i2 = 0; i < size; ++i)
+		{
+			sectors[i2].~Sector();
+			new (&sectors[i2])Sector(game);
+		}
+#	endif
 
-	for (int i=0;i<size;i++)
+	for (int i3=0;i3<size;i3++)
 	{
-		sectors[i].load(stream, game); // TODO : make a bool sector.load to allow errors.
+		sectors[i3].load(stream, game); // TODO : make a bool sector.load to allow errors.
 	}
 	
 	SDL_RWread(stream, signature, 4, 1);
@@ -475,9 +495,9 @@ void Map::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, wSector);
 	SDL_WriteBE32(stream, hSector);
 	size=wSector*hSector;
-	for (int i=0;i<size;i++)
+	for (int i2=0;i2<size;i2++)
 	{
-		sectors[i].save(stream);
+		sectors[i2].save(stream);
 	}
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);

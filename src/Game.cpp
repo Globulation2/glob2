@@ -41,9 +41,9 @@ Game::~Game()
 	{
 		delete teams[i];
 	}
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i2=0; i2<session.numberOfPlayer; i2++)
 	{
-		delete players[i];
+		delete players[i2];
 	}
 	
 	SDL_FreeSurface(minimap);
@@ -91,15 +91,15 @@ void Game::setBase(const SessionInfo *initial)
 	}
 
 	// set the base players
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i2=0; i2<session.numberOfPlayer; i2++)
 	{
-		delete players[i];
+		delete players[i2];
 	}
 	session.numberOfPlayer=initial->numberOfPlayer;
-	for (int i=0; i<initial->numberOfPlayer; i++)
+	for (int i3=0; i3<initial->numberOfPlayer; i3++)
 	{
-		players[i]=new Player();
-		players[i]->setBasePlayer(&(initial->players[i]), teams);
+		players[i3]=new Player();
+		players[i3]->setBasePlayer(&(initial->players[i3]), teams);
 	}
 
 	// set the base map
@@ -184,8 +184,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 					for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
 					{
 						b->ratio[j]=((OrderModifySwarms *)order)->ratio[i*(UnitType::NB_UNIT_TYPE)+j];
+						/* commented out by angel
 						if (order->sender!=localPlayer)
-							b->ratioLocal=b->ratioLocal;
+							b->ratioLocal=b->ratioLocal; // ??
+						*/
 					}
 					b->update();
 				}
@@ -267,9 +269,9 @@ bool Game::load(SDL_RWops *stream)
 	{
 		delete teams[i];
 	}
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i2=0; i2<session.numberOfPlayer; i2++)
 	{
-		delete players[i];
+		delete players[i2];
 	}
 
 	SessionInfo tempSessionInfo;
@@ -301,13 +303,13 @@ bool Game::load(SDL_RWops *stream)
 		return false;
 	
 	// recreate new teams and players
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i3=0; i3<session.numberOfTeam; i3++)
 	{
-		teams[i]=new Team(stream, this);
+		teams[i3]=new Team(stream, this);
 	}
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i4=0; i4<session.numberOfPlayer; i4++)
 	{
-		players[i]=new Player(stream, teams);
+		players[i4]=new Player(stream, teams);
 	}
 	stepCounter=SDL_ReadBE32(stream);
 	
@@ -349,9 +351,9 @@ void Game::save(SDL_RWops *stream)
 	{
 		tempSessionInfo.team[i]=*teams[i];
 	}
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i2=0; i2<session.numberOfPlayer; i2++)
 	{
-		tempSessionInfo.players[i]=*players[i];
+		tempSessionInfo.players[i2]=*players[i2];
 	}
 	
 	tempSessionInfo.save(stream);
@@ -364,13 +366,13 @@ void Game::save(SDL_RWops *stream)
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i3=0; i3<session.numberOfTeam; i3++)
 	{
-		teams[i]->save(stream);
+		teams[i3]->save(stream);
 	}
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i4=0; i4<session.numberOfPlayer; i4++)
 	{
-		players[i]->save(stream);
+		players[i4]->save(stream);
 	}
 	
 	SDL_WriteBE32(stream, stepCounter);
@@ -435,13 +437,13 @@ void Game::removeTeam(void)
 				map.setUnit(team->myUnits[i]->posX, team->myUnits[i]->posY, NOUID);
 		}
 
-		for (int i=0; i<512; i++)
+		for (int i2=0; i2<512; i2++)
 		{
-			if (team->myBuildings[i])
-				map.setBuilding(team->myBuildings[i]->posX, team->myBuildings[i]->posY, team->myBuildings[i]->type->width, team->myBuildings[i]->type->height, NOUID);
+			if (team->myBuildings[i2])
+				map.setBuilding(team->myBuildings[i2]->posX, team->myBuildings[i2]->posY, team->myBuildings[i2]->type->width, team->myBuildings[i2]->type->height, NOUID);
 		}
 		
-		for (int i=0; i<256; i++)
+		for (int i3=0; i3<256; i3++)
 		{
 			//if (team->myBullets[i])
 			// TODO : handle bullets destruction
@@ -452,9 +454,9 @@ void Game::removeTeam(void)
 		assert (session.numberOfTeam!=0);
 		int color=0;
 		int colorInc=360/session.numberOfTeam;
-		for (int i=0; i<session.numberOfTeam; i++)
+		for (int i4=0; i4<session.numberOfTeam; i4++)
 		{
-			teams[i]->setCorrectColor(color);
+			teams[i4]->setCorrectColor(color);
 			color+=colorInc;
 		}
 	}
@@ -490,7 +492,14 @@ Unit *Game::addUnit(int x, int y, int team, int type, int level, int delta, int 
 	assert(team<session.numberOfTeam);
 	
 	UnitType *ut=teams[team]->race.getUnitType((UnitType::TypeNum)type, level);
+	
+#	ifdef WIN32
+#		pragma warning (disable : 4800)
+#	endif
 	if (!map.isFreeForUnit(x, y, ut->performance[FLY]))
+#	ifdef WIN32
+#		pragma warning (default : 4800)
+#	endif
 		return NULL;
 
 	int id=-1;
@@ -769,7 +778,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		assert(false);
 }
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, bool drawBuildingRects=true, const bool useMapDiscovered=false)
+void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar, bool drawPathLines, bool drawBuildingRects, const bool useMapDiscovered)
 {
 	int x, y, id;
 	int left=(sx>>5);
@@ -1115,9 +1124,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 	}
 
-	for (std::set <Building *>::iterator it=flagList.begin(); it!=flagList.end(); ++it)
+	for (std::set <Building *>::iterator it2=flagList.begin(); it2!=flagList.end(); ++it2)
 	{
-		Building *building=*it;
+		Building *building=*it2;
 		BuildingType *type=building->type;
 		int team=building->owner->teamNumber;
 
@@ -1344,9 +1353,9 @@ Sint32 Game::checkSum()
 		cs=(cs<<31)|(cs>>1);
 	}
 	cs=(cs<<31)|(cs>>1);
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i2=0; i2<session.numberOfPlayer; i2++)
 	{
-		cs^=players[i]->checkSum();
+		cs^=players[i2]->checkSum();
 		cs=(cs<<31)|(cs>>1);
 	}
 	cs=(cs<<31)|(cs>>1);

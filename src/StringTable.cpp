@@ -23,7 +23,7 @@ OneStringToken::OneStringToken(const char *name)
 OneStringToken::~OneStringToken()
 {
 	free (name);
-	for (vector<char *>::iterator it=data.begin(); it!=data.end(); it++)
+	for (std::vector<char *>::iterator it=data.begin(); it!=data.end(); it++)
 		free (*it);
 }
 
@@ -43,7 +43,7 @@ StringTable::StringTable()
 
 StringTable::~StringTable()
 {
-	for (vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		delete (*it);
 }
 
@@ -126,7 +126,7 @@ bool StringTable::load(char *filename)
 
 void StringTable::print()
 {
-	for (vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 	{
 		printf("name=%s\n", (*it)->name);
 		for (int i=0; i<(int)((*it)->data.size()); i++)
@@ -140,7 +140,7 @@ char *StringTable::getString(const char *stringname)
 {
 	if (actlang<numberoflanguages)
 	{
-		for (vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		{
 			if (strcmp(stringname, (*it)->name)==0)
 			{

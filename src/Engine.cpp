@@ -12,6 +12,7 @@ extern GlobalContainer globalContainer;
 int Engine::init(void)
 {
 	assert(false);
+	return 0; // not sure about this but should return a value...
 }
 
 int Engine::initCampain(void)
@@ -182,9 +183,9 @@ int Engine::run(void)
 		
 		//printf ("Engine::bge:%d\n", globalContainer.safe());
 		
-		for (int i=0; i<gui.game.session.numberOfPlayer; i++)
+		for (int i2=0; i2<gui.game.session.numberOfPlayer; i2++)
 		{
-			gui.executeOrder(net->getOrder(i));
+			gui.executeOrder(net->getOrder(i2));
 		}
 
 		//printf ("Engine::bne:%d\n", globalContainer.safe());

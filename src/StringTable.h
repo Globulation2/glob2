@@ -18,7 +18,7 @@ public:
 	
 public:
 	char *name;
-	vector<char *> data;
+	std::vector<char *> data;
 };
 
 class StringTable
@@ -33,7 +33,7 @@ public:
 	void print();
 
 private:
-	vector<OneStringToken *> strings;
+	std::vector<OneStringToken *> strings;
 	int actlang;
 	int numberoflanguages;
 };

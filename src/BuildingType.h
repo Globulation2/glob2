@@ -35,7 +35,8 @@ public:
 		NB_BUILDING
 	};
 
-	Uint32 __STARTDATA[0];
+//	Uint32 __STARTDATA[0];
+#define __STARTDATA_B ((Uint32*)&startImage)
 
 	// visualisation
 	Sint32 startImage;
@@ -195,7 +196,7 @@ public:
 		if (size)
 			*size=(sizeof(vars)/sizeof(char *));
 		if (data)
-			*data=__STARTDATA;
+			*data=__STARTDATA_B;
 		return vars;
 	}
 };

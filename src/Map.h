@@ -38,6 +38,7 @@ struct Case
 class Sector
 {
 public:
+	Sector() {}
 	Sector(Game *);
 	virtual ~Sector(void);
 	

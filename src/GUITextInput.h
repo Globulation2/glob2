@@ -26,7 +26,9 @@ protected:
 	int cursPos;
 	
 public:
-	static const int MAX_TEXT_SIZE=256;
+	enum {
+		MAX_TEXT_SIZE=256
+	};
 	char text[MAX_TEXT_SIZE];
 	
 	bool activated;

@@ -354,7 +354,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			if (pressed)
 				drawHealthFoodBar=!drawHealthFoodBar;
 			break;
-			
+
 		case SDLK_RETURN :
 			if (pressed)
 			{
@@ -515,9 +515,23 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	else if (displayMode==STAT_VIEW)
 	{
 		// do nothibg for now, it's stat
-		((int)statMode)++;
-		if (((int)statMode)==NB_STAT_MODE)
-			((int)statMode)=0;
+#		ifndef WIN32
+			((int)statMode)++;
+			if (((int)statMode)==NB_STAT_MODE)
+				((int)statMode)=0;
+#		else
+			switch (statMode) {
+			case STAT_TEXT :
+				statMode = STAT_GRAPH;
+				break;
+			case STAT_GRAPH :
+				statMode = NB_STAT_MODE;
+				break;
+			case NB_STAT_MODE :
+				statMode = STAT_TEXT;
+				break;
+			}
+#		endif
 	}
 	else if (displayMode==BUILDING_SELECTION_VIEW)
 	{
@@ -607,13 +621,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]>0)
 						{
 							selBuild->ratioLocal[i]--;
-							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), (Sint32 [][UnitType::NB_UNIT_TYPE])&(selBuild->ratioLocal), 1));
+							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), reinterpret_cast<Sint32 (*)[UnitType::NB_UNIT_TYPE]>(&(selBuild->ratioLocal)), 1));
 						}
 					}
 					else if (mx<128-16)
 					{
 						selBuild->ratioLocal[i]=((mx-16)*MAX_RATIO_RANGE)/94;
-						orderQueue.push(new OrderModifySwarms(&(selBuild->UID), (Sint32 [][UnitType::NB_UNIT_TYPE])&(selBuild->ratioLocal), 1));
+						orderQueue.push(new OrderModifySwarms(&(selBuild->UID), reinterpret_cast<Sint32 (*)[UnitType::NB_UNIT_TYPE]>(&(selBuild->ratioLocal)), 1));
 
 					}
 					else
@@ -621,7 +635,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
 						{
 							selBuild->ratioLocal[i]++;
-							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), (Sint32 [][UnitType::NB_UNIT_TYPE])&(selBuild->ratioLocal), 1));
+							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), reinterpret_cast<Sint32 (*)[UnitType::NB_UNIT_TYPE]>(&(selBuild->ratioLocal)), 1));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
@@ -698,17 +712,17 @@ void GameGUI::draw(void)
 		globalContainer.gfx.drawRect(32, 32, globalContainer.gfx.getW()-128-64, 22+nbap*20, 0, 255, 127);
 		pm=1;
 		int pnb=0;
-		for(int pi=0; pi<game.session.numberOfPlayer; pi++)
+		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
 		{
 			if (pm&apm)
 			{
 
-				globalContainer.gfx.drawString(48, 48+pnb*20, font,"%s%d", globalContainer.texts.getString("[l waiting for player]"), pi, globalContainer.texts.getString("[r waiting for player]"));
+				globalContainer.gfx.drawString(48, 48+pnb*20, font,"%s%d", globalContainer.texts.getString("[l waiting for player]"), pi2, globalContainer.texts.getString("[r waiting for player]"));
 				pnb++;
 			}
 			pm=pm<<1;
 		}
-		
+
 		
 	}
 	else
@@ -720,12 +734,12 @@ void GameGUI::draw(void)
 			ymesg+=20;
 			it->showTicks--;
 		}
-		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
+		for (std::list <Message>::iterator it2=messagesList.begin(); it2!=messagesList.end(); ++it2)
 		{
-			if (it->showTicks<0)
+			if (it2->showTicks<0)
 			{
-				std::list<Message>::iterator ittemp=it;
-				it=messagesList.erase(ittemp);
+				std::list<Message>::iterator ittemp=it2;
+				it2=messagesList.erase(ittemp);
 			}
 		}
 	}
@@ -980,13 +994,13 @@ void GameGUI::draw(void)
 					if (stats[i].totalUnit>maxUnit)
 						maxUnit=stats[i].totalUnit;
 				}
-				for (int i=0; i<128; i++)
+				for (int i2=0; i2<128; i2++)
 				{
-					int index=(statsPtr+i+1)&0x7F;
+					int index=(statsPtr+i2+1)&0x7F;
 					int nbFree=(stats[index].isFree*64)/maxUnit;
 					int nbTotal=(stats[index].totalUnit*64)/maxUnit;
-					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 10 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
-					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 10 +64-nbFree, nbFree, 0, 255, 0);
+					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i2, 128+ 10 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
+					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i2, 128+ 10 +64-nbFree, nbFree, 0, 255, 0);
 					int nbOk, nbNeedFood, nbNeedHeal;
 					if (stats[index].totalUnit)
 					{  
@@ -998,9 +1012,9 @@ void GameGUI::draw(void)
 					{
 						nbOk=nbNeedFood=nbNeedHeal=0;
 					}
-					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 80 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
-					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 80 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
-					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 80 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
+					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i2, 128+ 80 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
+					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i2, 128+ 80 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
+					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i2, 128+ 80 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
 
 				}
 			}

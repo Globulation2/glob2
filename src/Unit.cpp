@@ -102,7 +102,13 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	speed=SDL_ReadBE32(stream);
 
 	// states
+#	ifdef WIN32
+#		pragma warning (disable : 4800)
+#	endif
 	needToRecheckMedical=(bool)SDL_ReadBE32(stream);
+#	ifdef WIN32
+#		pragma warning (default : 4800)
+#	endif
 	medical=(Medical)SDL_ReadBE32(stream);
 	activity=(Activity)SDL_ReadBE32(stream);
 	displacement=(Displacement)SDL_ReadBE32(stream);
@@ -136,7 +142,13 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	}
 	
 	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
+#	ifdef WIN32
+#		pragma warning (disable : 4800)
+#	endif
 	subscribed=(bool)SDL_ReadBE32(stream);
+#	ifdef WIN32
+#		pragma warning (default : 4800)
+#	endif
 	verbose=false;
 }
 
@@ -479,33 +491,35 @@ void Unit::handleActivity(void)
 					}
 				}
 			}
-			
-			// fifth we go to flag
-			for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
-				if (performance[abilityIterator])
-				{
-					Building *b=owner->findNearestAttract(posX, posY, (Abilities)abilityIterator);
-					if ( b != NULL)
-					{
-						jobFound=true;
-						activity=ACT_FLAG;
-						displacement=DIS_GOING_TO_FLAG;
-						destinationPurprose=abilityIterator;
 
-						attachedBuilding=b;
-						targetX=attachedBuilding->getMidX();
-						targetY=attachedBuilding->getMidY();
-						newTargetWasSet();
-						b->unitsWorkingSubscribe.push_front(this);
-						b->lastWorkingSubscribe=0;
-						subscribed=true;
-						owner->subscribeForWorkingStep.push_front(b);
-						//b->update();
-						//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
-						
-						return;
+			{		
+				// fifth we go to flag
+				for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
+					if (performance[abilityIterator])
+					{
+						Building *b=owner->findNearestAttract(posX, posY, (Abilities)abilityIterator);
+						if ( b != NULL)
+						{
+							jobFound=true;
+							activity=ACT_FLAG;
+							displacement=DIS_GOING_TO_FLAG;
+							destinationPurprose=abilityIterator;
+
+							attachedBuilding=b;
+							targetX=attachedBuilding->getMidX();
+							targetY=attachedBuilding->getMidY();
+							newTargetWasSet();
+							b->unitsWorkingSubscribe.push_front(this);
+							b->lastWorkingSubscribe=0;
+							subscribed=true;
+							owner->subscribeForWorkingStep.push_front(b);
+							//b->update();
+							//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
+							
+							return;
+						}
 					}
-				}
+			}
 			
 			if ( (!jobFound) )
 			{
@@ -1049,7 +1063,13 @@ void Unit::handleMovement(void)
 		
 		case DIS_EXITING_BUILDING:
 		{
+#			ifdef WIN32
+#				pragma warning (disable : 4800)
+#			endif
 			if (attachedBuilding->findExit(&posX, &posY, &dx, &dy, performance[FLY]))
+#			ifdef WIN32
+#				pragma warning (default : 4800)
+#			endif
 			{
 				//printf("Exit found : (%d,%d) delta (%d,%d)\n", posX, posY, dx, dy);
 				// OK, we have finished the ACT_BUILDING displacement.
@@ -2179,7 +2199,7 @@ Sint32 Unit::checkSum()
 	cs=(cs<<1)|(cs>>31);
 	//printf("%d,1,%x\n", UID, cs);
 
-	cs^=needToRecheckMedical;
+	cs^=(int)needToRecheckMedical;
 	//printf("%d,1a,%x\n", UID, cs);
 	cs^=medical;
 	cs^=activity;
