@@ -50,7 +50,8 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	
 	assert(localPlayerNumber!=-1);
 	
-	logFile=NULL;
+	logFile=globalContainer->logFileManager.getFile("NetGame.log");
+	assert(logFile);
 	
 	init();
 };
@@ -84,13 +85,6 @@ NetGame::~NetGame()
 				players[eachPlayers]->channel=-1;
 		SDLNet_UDP_Close(socket);
 		socket=NULL;
-	}
-	
-	if (logFile)
-	{
-		if (logFile!=stdout)
-			fclose(logFile);
-		logFile=NULL;
 	}
 }
 
@@ -147,17 +141,6 @@ void NetGame::init(void)
 	
 	dropState=NO_DROP_PROCESSING;
 	printQueue("init::");
-	
-	if (logFile)
-	{
-		if (logFile!=stdout)
-			fclose(logFile);
-		logFile=NULL;
-	}
-	logFile=globalContainer->fileManager.openFP("NetGame.log", "w");
-	if (logFile==NULL)
-		logFile=stdout;
-	assert(logFile);
 };
 
 

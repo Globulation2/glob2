@@ -32,10 +32,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	else
 		this->savedSessionInfo=NULL;
 
-	logFile=NULL;
-	logFile=globalContainer->fileManager.openFP("MultiplayersHost.log", "w");
-	if (logFile==NULL)
-		logFile=stdout;
+	logFile=globalContainer->logFileManager.getFile("MultiplayersHost.log");
 	assert(logFile);
 	// net things:
 	initHostGlobalState();
@@ -182,9 +179,7 @@ MultiplayersHost::~MultiplayersHost()
 					fprintf(logFile, "playerFileTra[p].totalSent=%d.\n", playerFileTra[p].totalSent);
 					fprintf(logFile, "playerFileTra[p].onlyWaited=%d.\n", playerFileTra[p].onlyWaited);
 				}
-			fclose(logFile);
 		}
-		logFile=NULL;
 	}
 }
 

@@ -27,7 +27,8 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 {
 	yogGameInfo=NULL;
 	downloadStream=NULL;
-	logFile=NULL;
+	logFile=globalContainer->logFileManager.getFile("MultiplayersJoin.log");
+	assert(logFile);
 	duplicatePacketFile=0;
 	init(shareOnYOG);
 }
@@ -57,13 +58,6 @@ MultiplayersJoin::~MultiplayersJoin()
 		//TODO: delete/remove the incomplete file !
 		SDL_RWclose(downloadStream);
 		downloadStream=NULL;
-	}
-	
-	if (logFile)
-	{
-		if (logFile!=stdout)
-			fclose(logFile);
-		logFile=NULL;
 	}
 }
 
@@ -119,15 +113,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	localPort=0;
 	startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
 	
-	if (logFile)
-	{
-		if (logFile!=stdout)
-			fclose(logFile);
-		logFile=NULL;
-	}
-	logFile=globalContainer->fileManager.openFP("MultiplayersJoin.log", "w");
-	if (logFile==NULL)
-		logFile=stdout;
+	logFile=globalContainer->logFileManager.getFile("MultiplayersJoin.log");
 	assert(logFile);
 	
 	if (duplicatePacketFile)

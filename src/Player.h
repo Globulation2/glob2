@@ -96,6 +96,7 @@ public:
 
 private:
 	char data[28+MAX_NAME_LENGTH];
+	
 public:
 	
 	BasePlayer(void);
@@ -132,6 +133,9 @@ public:
 
 public:
 	void printNetState(char s[128]);
+	
+public:
+	FILE *logFile;
 };
 
 class Player:public BasePlayer
