@@ -25,6 +25,21 @@
 #include "GameGUILoadSave.h"
 
 
+InGameTextInput::InGameTextInput()
+:InGameScreen(492, 34)
+{
+	textInput=new TextInput(5, 5, 482, 24, globalContainer->standardFont, "", true);
+	addWidget(textInput);
+}
+
+void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2)
+{
+	if (action==TEXT_VALIDATED)
+	{
+		endValue=0;
+	}
+}
+
 GameGUI::GameGUI()
 {
 	isRunning=true;
@@ -40,8 +55,6 @@ GameGUI::GameGUI()
 	selBuild=NULL;
 	selectionUID=0;
 	chatMask=0xFFFFFFFF;
-	// TODO : clean this, this is BAD
-	font=new SDLBitmapFont("data/fonts/arial8green.png");
 	statsPtr=0;
 	memset(stats, 0, 128*sizeof(TeamStat));
 	statMode=STAT_TEXT;
@@ -54,9 +67,9 @@ GameGUI::GameGUI()
 		}
 	}
 
-	typingMessage=false;
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
+	typingInputScreen=NULL;
 	
 	recentFreeUnitsIt=0;
 	{
@@ -67,7 +80,7 @@ GameGUI::GameGUI()
 
 GameGUI::~GameGUI()
 {
-	delete font;
+
 }
 
 void GameGUI::step(void)
@@ -292,6 +305,21 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+	// handle typing
+	if (typingInputScreen)
+	{
+		if (event->type==SDL_KEYDOWN)
+			typingInputScreen->translateAndProcessEvent(event);
+
+		if (typingInputScreen->endValue!=-1)
+		{
+			orderQueue.push(new MessageOrder(chatMask, typingInputScreen->getText()));
+			delete typingInputScreen;
+			typingInputScreen=NULL;
+			return;
+		}
+	}
+
 	// if there is a menu he get events first
 	if (inGameMenu)
 	{
@@ -370,26 +398,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 	else
 		modifier=-1;
 
-	if (typingMessage)
-	{
-		if (pressed)
-			if (key==SDLK_RETURN)
-			{
-				orderQueue.push(new MessageOrder(chatMask, typedMessage));
-				typedMessage[0]=0;
-				typedChar=0;
-				typingMessage=false;
-			}
-			else if (font->printable(keySym.unicode))
-			{
-				if (typedChar<MAX_MESSAGE_SIZE)
-				{
-					typedMessage[typedChar++]=keySym.unicode;
-					typedMessage[typedChar]=0;
-				}
-			}
-	}
-	else
+	if (!typingInputScreen)
 	{
 		switch (key)
 		{
@@ -548,16 +557,8 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_RETURN :
 				if (pressed)
 				{
-					typedMessage[0]=0;
-					typedChar=0;
-					typingMessage=true;
-				}
-				break;
-			case SDLK_BACKSPACE :
-				if (pressed && (typedChar>0))
-				{
-					typedChar--;
-					typedMessage[typedChar]=0;
+					typingInputScreen=new InGameTextInput();
+					typingInputScreen->dispatchPaint(typingInputScreen->getSurface());
 				}
 				break;
 			case SDLK_SPACE:
@@ -919,59 +920,6 @@ Order *GameGUI::getOrder(void)
 void GameGUI::draw(void)
 {
 	// TODO : compare building to see if something has changed
-	// FIXME : shift this into a menu
-	if (game.anyPlayerWaited && game.maskAwayPlayer)
-	{
-		int nbap=0; // Number of away players
-		Uint32 pm=1;
-		Uint32 apm=game.maskAwayPlayer;
-		for(int pi=0; pi<game.session.numberOfPlayer; pi++)
-		{
-			if (pm&apm)
-				nbap++;
-			pm=pm<<1;
-		}
-
-		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 127, 255);
-		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 255, 127);
-		pm=1;
-		int pnb=0;
-		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
-		{
-			if (pm&apm)
-			{
-
-				globalContainer->gfx->drawString(48, 48+pnb*20, font,"%s%d", globalContainer->texts.getString("[l waiting for player]"), pi2, globalContainer->texts.getString("[r waiting for player]"));
-				pnb++;
-			}
-			pm=pm<<1;
-		}
-
-
-	}
-	else
-	{
-		int ymesg=32;
-		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
-		{
-			globalContainer->gfx->drawString(32, ymesg, font, "%s", it->text);
-			ymesg+=20;
-			it->showTicks--;
-		}
-		for (std::list <Message>::iterator it2=messagesList.begin(); it2!=messagesList.end(); ++it2)
-		{
-			if (it2->showTicks<0)
-			{
-				std::list<Message>::iterator ittemp=it2;
-				it2=messagesList.erase(ittemp);
-			}
-		}
-	}
-
-	if (typingMessage)
-	{
-		globalContainer->gfx->drawString(40, 440, font, ": %s", typedMessage);
-	}
 
 	//if (needRedraw)
 	checkValidSelection();
@@ -1029,11 +977,11 @@ void GameGUI::draw(void)
 
 			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 460, 128, 20);
 			if (viewFu<=0)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, font,"%s",globalContainer->texts.getString("[no unit free]"));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, globalContainer->littleFontGreen,"%s",globalContainer->texts.getString("[no unit free]"));
 			else if (viewFu==1)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, font,"%s",globalContainer->texts.getString("[one unit free]"));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, globalContainer->littleFontGreen,"%s",globalContainer->texts.getString("[one unit free]"));
 			else
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, font,"%s%d%s",globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, globalContainer->littleFontGreen,"%s%d%s",globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
 		}
 		else if (displayMode==BUILDING_SELECTION_VIEW)
 		{
@@ -1054,39 +1002,39 @@ void GameGUI::draw(void)
 				drawTextCenter(globalContainer->gfx->getW()-128, 128+64+24, "[building site]");
 			// FIXME : find a clean way here
 			char *textT=globalContainer->texts.getString("[level]");
-			int decT=(128-font->getStringWidth(textT)-font->getStringWidth(" : ")-font->getStringWidth(selBuild->type->level+1))>>1;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+96+8, font, "%s : %d", textT, selBuild->type->level+1);
+			int decT=(128-globalContainer->littleFontGreen->getStringWidth(textT)-globalContainer->littleFontGreen->getStringWidth(" : ")-globalContainer->littleFontGreen->getStringWidth(selBuild->type->level+1))>>1;
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+96+8, globalContainer->littleFontGreen, "%s : %d", textT, selBuild->type->level+1);
 
 
 			// building Infos
 			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
 
 			if (selBuild->type->hpMax)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+2, font, "%s : %d/%d", globalContainer->texts.getString("[hp]"), selBuild->hp, selBuild->type->hpMax);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+2, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[hp]"), selBuild->hp, selBuild->type->hpMax);
 			if (selBuild->type->armor)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+12, font, "%s : %d", globalContainer->texts.getString("[armor]"), selBuild->type->armor);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+12, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[armor]"), selBuild->type->armor);
 			if (selBuild->type->shootDamage)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+22, font, "%s : %d", globalContainer->texts.getString("[damage]"), selBuild->type->shootDamage);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+22, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[damage]"), selBuild->type->shootDamage);
 
 			if (selBuild->type->maxUnitWorking)
 			{
 				if (selBuild->buildingState==Building::ALIVE)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23, font, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
 					drawScrollBox(globalContainer->gfx->getW()-128, 256+35, selBuild->maxUnitWorking, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 				}
 				else
 				{
 					if (selBuild->unitsWorking.size()>1)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23, font, "%s%d%s",
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23, globalContainer->littleFontGreen, "%s%d%s",
 							globalContainer->texts.getString("[still (w)]"),
 							selBuild->unitsWorking.size(),
 							globalContainer->texts.getString("[units working]"));
 					}
 					else if (selBuild->unitsWorking.size()==1)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23, font, "%s",
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23, globalContainer->littleFontGreen, "%s",
 							globalContainer->texts.getString("[still one unit working]") );
 					}
 				}
@@ -1102,7 +1050,7 @@ void GameGUI::draw(void)
 				for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 				{
 					drawScrollBox(globalContainer->gfx->getW()-128, 256+80+(i*20), selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+83+(i*20), font, "%s", globalContainer->texts.getString("[unit type]", i));
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+83+(i*20), globalContainer->littleFontGreen, "%s", globalContainer->texts.getString("[unit type]", i));
 				}
 			}
 
@@ -1110,31 +1058,31 @@ void GameGUI::draw(void)
 			{
 				if (selBuild->buildingState==Building::ALIVE)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52, font, "%s : %d/%d", globalContainer->texts.getString("[inside]"), selBuild->unitsInside.size(), selBuild->maxUnitInside);
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[inside]"), selBuild->unitsInside.size(), selBuild->maxUnitInside);
 				}
 				else
 				{
 					if (selBuild->unitsInside.size()>1)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52, font, "%s%d%s",
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52, globalContainer->littleFontGreen, "%s%d%s",
 							globalContainer->texts.getString("[still (i)]"),
 							selBuild->unitsInside.size(),
 							globalContainer->texts.getString("[units inside]"));
 					}
 					else if (selBuild->unitsInside.size()==1)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52, font, "%s",
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52, globalContainer->littleFontGreen, "%s",
 							globalContainer->texts.getString("[still one unit inside]") );
 					}
 				}
 			}
 			for (int i=0; i<NB_RESSOURCES; i++)
 				if (selBuild->type->maxRessource[i])
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+54+(i*10), font, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+54+(i*10), globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
 
 			if (selBuild->type->defaultUnitStayRange)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+132, font, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->unitStayRange);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+132, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->unitStayRange);
 				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
 					drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_EXPLO_FLAG_RANGE);
 				else if (selBuild->type->type==BuildingType::WAR_FLAG)
@@ -1169,46 +1117,46 @@ void GameGUI::draw(void)
 			{
 				drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
 			}
-			//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, font, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
+			//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, globalContainer->littleFontGreen, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
 
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, font, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFontGreen, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
 			if (selUnit->caryedRessource>=0)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, font, globalContainer->texts.getString("[carry]"));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, globalContainer->littleFontGreen, globalContainer->texts.getString("[carry]"));
 				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+20, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
 			}
 			else
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, font, globalContainer->texts.getString("[don't carry anything]"));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, globalContainer->littleFontGreen, globalContainer->texts.getString("[don't carry anything]"));
 			}
 
 			/* NOTE : I have comment this debug code that isn't used anymore
 			Sint32 UID=selUnit->UID;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, font, "hp=%d", selUnit->hp);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, font, "UID=%d", UID);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 30, font, "id=%d", Unit::UIDtoID(UID));
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 45, font, "Team=%d", Unit::UIDtoTeam(UID));
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 60, font, "medical=%d", selUnit->medical);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 75, font, "activity=%d", selUnit->activity);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 90, font, "displacement=%d", selUnit->displacement);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+105, font, "movement=%d", selUnit->movement);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+120, font, "action=%d", selUnit->action);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+135, font, "pox=(%d;%d)", selUnit->posX, selUnit->posY);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+150, font, "d=(%d;%d)", selUnit->dx, selUnit->dy);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+165, font, "direction=%d", selUnit->direction);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+180, font, "target=(%d;%d)", selUnit->targetX, selUnit->targetY);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+195, font, "tempTarget=(%d;%d)", selUnit->tempTargetX, selUnit->tempTargetY);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+210, font, "obstacle=(%d;%d)", selUnit->obstacleX, selUnit->obstacleY);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+225, font, "border=(%d;%d)", selUnit->borderX, selUnit->borderY);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+240, font, "bypassDirection=%d", selUnit->bypassDirection);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+255, font, "ab=%x", selUnit->attachedBuilding);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+270, font, "speed=%d", selUnit->speed);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+285, font, "verbose=%d", selUnit->verbose);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+300, font, "subscribed=%d", selUnit->subscribed);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+315, font, "ndToRckMed=%d", selUnit->needToRecheckMedical);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, globalContainer->littleFontGreen, "hp=%d", selUnit->hp);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, globalContainer->littleFontGreen, "UID=%d", UID);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 30, globalContainer->littleFontGreen, "id=%d", Unit::UIDtoID(UID));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 45, globalContainer->littleFontGreen, "Team=%d", Unit::UIDtoTeam(UID));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 60, globalContainer->littleFontGreen, "medical=%d", selUnit->medical);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 75, globalContainer->littleFontGreen, "activity=%d", selUnit->activity);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 90, globalContainer->littleFontGreen, "displacement=%d", selUnit->displacement);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+105, globalContainer->littleFontGreen, "movement=%d", selUnit->movement);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+120, globalContainer->littleFontGreen, "action=%d", selUnit->action);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+135, globalContainer->littleFontGreen, "pox=(%d;%d)", selUnit->posX, selUnit->posY);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+150, globalContainer->littleFontGreen, "d=(%d;%d)", selUnit->dx, selUnit->dy);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+165, globalContainer->littleFontGreen, "direction=%d", selUnit->direction);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+180, globalContainer->littleFontGreen, "target=(%d;%d)", selUnit->targetX, selUnit->targetY);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+195, globalContainer->littleFontGreen, "tempTarget=(%d;%d)", selUnit->tempTargetX, selUnit->tempTargetY);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+210, globalContainer->littleFontGreen, "obstacle=(%d;%d)", selUnit->obstacleX, selUnit->obstacleY);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+225, globalContainer->littleFontGreen, "border=(%d;%d)", selUnit->borderX, selUnit->borderY);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+240, globalContainer->littleFontGreen, "bypassDirection=%d", selUnit->bypassDirection);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+255, globalContainer->littleFontGreen, "ab=%x", selUnit->attachedBuilding);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+270, globalContainer->littleFontGreen, "speed=%d", selUnit->speed);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+285, globalContainer->littleFontGreen, "verbose=%d", selUnit->verbose);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+300, globalContainer->littleFontGreen, "subscribed=%d", selUnit->subscribed);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+315, globalContainer->littleFontGreen, "ndToRckMed=%d", selUnit->needToRecheckMedical);
 			*/
 		}
 		else if (displayMode==STAT_VIEW)
@@ -1218,21 +1166,21 @@ void GameGUI::draw(void)
 			if (statMode==STAT_TEXT)
 			{
 				// TODO : this code needs to be internationalized
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, font, "Units newStats :");
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, font, "%d free on %d", newStats.isFree, newStats.totalUnit);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 30+5, font, "%3.2f %% Worker", ((float)newStats.numberPerType[0])*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 45+5, font, "%3.2f %% Explorer", ((float)newStats.numberPerType[1])*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 60+5, font, "%3.2f %% Warrior", ((float)newStats.numberPerType[2])*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 75+10, font, "%3.2f %% are Ok", ((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 90+10, font, "%3.2f %% needs food", ((float)newStats.needFood)*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+105+10, font, "%3.2f %% needs heal ", ((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+120+15, font, "Upgrades levels :");
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+135+15, font, "Walk %d/%d/%d/%d", newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+150+15, font, "Swim %d/%d/%d/%d", newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+165+15, font, "Build %d/%d/%d/%d", newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+180+15, font, "Harvest %d/%d/%d/%d", newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+195+15, font, "At Speed %d/%d/%d/%d", newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+210+15, font, "At Strength %d/%d/%d/%d", newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, globalContainer->littleFontGreen, "Units newStats :");
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, globalContainer->littleFontGreen, "%d free on %d", newStats.isFree, newStats.totalUnit);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 30+5, globalContainer->littleFontGreen, "%3.2f %% Worker", ((float)newStats.numberPerType[0])*100.0f/((float)newStats.totalUnit));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 45+5, globalContainer->littleFontGreen, "%3.2f %% Explorer", ((float)newStats.numberPerType[1])*100.0f/((float)newStats.totalUnit));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 60+5, globalContainer->littleFontGreen, "%3.2f %% Warrior", ((float)newStats.numberPerType[2])*100.0f/((float)newStats.totalUnit));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 75+10, globalContainer->littleFontGreen, "%3.2f %% are Ok", ((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 90+10, globalContainer->littleFontGreen, "%3.2f %% needs food", ((float)newStats.needFood)*100.0f/((float)newStats.totalUnit));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+105+10, globalContainer->littleFontGreen, "%3.2f %% needs heal ", ((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+120+15, globalContainer->littleFontGreen, "Upgrades levels :");
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+135+15, globalContainer->littleFontGreen, "Walk %d/%d/%d/%d", newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+150+15, globalContainer->littleFontGreen, "Swim %d/%d/%d/%d", newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+165+15, globalContainer->littleFontGreen, "Build %d/%d/%d/%d", newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+180+15, globalContainer->littleFontGreen, "Harvest %d/%d/%d/%d", newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+195+15, globalContainer->littleFontGreen, "At Speed %d/%d/%d/%d", newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+210+15, globalContainer->littleFontGreen, "At Strength %d/%d/%d/%d", newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]);
 			}
 			else
 			{
@@ -1374,11 +1322,61 @@ void GameGUI::drawOverlayInfos(void)
 	}
 	if (game.teams[localTeam]->isAlive==false)
 	{
-		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, font, globalContainer->texts.getString("[you have lost]"));
+		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFontGreen, globalContainer->texts.getString("[you have lost]"));
 	}
 	else if (hasLocalTeamWon()==true)
 	{
-		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, font, globalContainer->texts.getString("[you have won]"));
+		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFontGreen, globalContainer->texts.getString("[you have won]"));
+	}
+
+	// draw message List
+	// FIXME : shift this into a menu
+	if (game.anyPlayerWaited && game.maskAwayPlayer)
+	{
+		int nbap=0; // Number of away players
+		Uint32 pm=1;
+		Uint32 apm=game.maskAwayPlayer;
+		for(int pi=0; pi<game.session.numberOfPlayer; pi++)
+		{
+			if (pm&apm)
+				nbap++;
+			pm=pm<<1;
+		}
+
+		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 127, 255);
+		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 255, 127);
+		pm=1;
+		int pnb=0;
+		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
+		{
+			if (pm&apm)
+			{
+
+				globalContainer->gfx->drawString(48, 48+pnb*20, globalContainer->littleFontGreen,"%s%d", globalContainer->texts.getString("[l waiting for player]"), pi2, globalContainer->texts.getString("[r waiting for player]"));
+				pnb++;
+			}
+			pm=pm<<1;
+		}
+
+
+	}
+	else
+	{
+		int ymesg=32;
+		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
+		{
+			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", it->text);
+			ymesg+=20;
+			it->showTicks--;
+		}
+		for (std::list <Message>::iterator it2=messagesList.begin(); it2!=messagesList.end(); ++it2)
+		{
+			if (it2->showTicks<0)
+			{
+				std::list<Message>::iterator ittemp=it2;
+				it2=messagesList.erase(ittemp);
+			}
+		}
 	}
 }
 
@@ -1417,6 +1415,11 @@ void GameGUI::drawAll(int team)
 	{
 		globalContainer->gfx->setClipRect();
 		drawInGameMenu();
+	}
+
+	if (typingInputScreen)
+	{
+		globalContainer->gfx->drawSurface(10, globalContainer->gfx->getH()-44, typingInputScreen->getSurface());
 	}
 }
 
@@ -1486,7 +1489,7 @@ void GameGUI::drawButton(int x, int y, const char *caption)
 	globalContainer->gfx->drawHorzLine(x, y+15, 96, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x, y, 16, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(x+95, y, 16, 200, 200, 200);
-	globalContainer->gfx->drawString(x+3, y+3, font, globalContainer->texts.getString(caption));
+	globalContainer->gfx->drawString(x+3, y+3, globalContainer->littleFontGreen, globalContainer->texts.getString(caption));
 }
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
@@ -1498,8 +1501,8 @@ void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
 	else
 		text=globalContainer->texts.getString(caption, i);
 
-	int dec=(128-font->getStringWidth(text))>>1;
-	globalContainer->gfx->drawString(x+dec, y, font, text);
+	int dec=(128-globalContainer->littleFontGreen->getStringWidth(text))>>1;
+	globalContainer->gfx->drawString(x+dec, y, globalContainer->littleFontGreen, text);
 }
 
 void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, int max)
@@ -1513,8 +1516,8 @@ void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, in
 	globalContainer->gfx->drawVertLine(x+15, y, 16, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x+16+95, y, 16, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x+16+96+15, y, 16, 28, 28, 28);
-	globalContainer->gfx->drawString(x+6, y+3, font, "-");
-	globalContainer->gfx->drawString(x+96+16+6, y+3, font, "+");
+	globalContainer->gfx->drawString(x+6, y+3, globalContainer->littleFontGreen, "-");
+	globalContainer->gfx->drawString(x+96+16+6, y+3, globalContainer->littleFontGreen, "+");
 	int size=(valueLocal*94)/max;
 	globalContainer->gfx->drawFilledRect(x+16+1, y+1, size, 14, 100, 100, 200);
 	size=(value*94)/max;
