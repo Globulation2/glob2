@@ -1896,11 +1896,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				if (players[1] && players[1]->ai)
 				{
 					AICastor *ai=(AICastor *)players[1]->ai->aiImplementation;
-					Uint8 *gradient=ai->wheatCareMap;
+					Uint8 *gradient=ai->goodBuildingMap;
+					
 					assert(gradient);
 					size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
+					Uint8 value=gradient[addr];
+					if (value)
+						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, gradient[addr]);
 					
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, gradient[addr]);
+					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, CORN, 0, x+viewportX, y+viewportY));
 				}
 }
 
