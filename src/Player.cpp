@@ -140,8 +140,10 @@ char *BasePlayer::getData()
 	addSint32(data, numberMask, 8);
 	addSint32(data, teamNumber, 12);
 	addSint32(data, teamNumberMask, 16);
-	addSint32(data, ip.host, 20);
-	addSint32(data, ip.port, 24);
+	Uint32 netHost=SDL_SwapBE32((Uint32)ip.host);
+	Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
+	addUint32(data, netHost, 20);
+	addUint32(data, netPort, 24);
 	
 	memcpy(data+28, name, 16);
 	return data;
@@ -157,8 +159,10 @@ bool BasePlayer::setData(const char *data, int dataLength)
 	numberMask=getSint32(data, 8);
 	teamNumber=getSint32(data, 12);
 	teamNumberMask=getSint32(data, 16);
-	ip.host=getSint32(data, 20);
-	ip.port=getSint32(data, 24);
+	Uint32 newHost=(Uint32)SDL_SwapBE32((Uint32)getUint32(data, 20));
+	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 24));
+	ip.host=newHost;
+	ip.port=newPort;
 	
 	memcpy(name, data+28, 16);
 	
@@ -180,8 +184,10 @@ Sint32 BasePlayer::checkSum()
 	cs^=numberMask;
 	cs^=teamNumber;
 	cs^=teamNumberMask;
-	cs^=ip.host;
-	cs^=ip.port;
+	Uint32 netHost=SDL_SwapBE32(ip.host);
+	Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
+	cs^=netHost;
+	cs^=netPort;
 
 	{
 		for (int i=0; i<(int)strlen(name); i++)
