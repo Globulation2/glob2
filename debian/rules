@@ -36,7 +36,7 @@ build-stamp:  config.status
 
 	# Add here commands to compile the package.
 	$(MAKE)
-	#/usr/bin/docbook-to-man debian/glob2cvs.sgml > glob2cvs.1
+	#/usr/bin/docbook-to-man debian/glob2.sgml > glob2.1
 
 	touch build-stamp
 
@@ -63,8 +63,8 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/glob2cvs.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/glob2cvs
+	# Add here commands to install the package into debian/glob2.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/glob2
 
 
 # Build architecture-independent files here.
