@@ -1782,6 +1782,25 @@ void Building::computeFlagStat(int *goingTo, int *onSpot)
 	}
 }
 
+Uint32 Building::getFruits(Uint32 *mask)
+{
+	Uint32 fruitMask=0;
+	Uint32 fruitCount=0;
+	for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
+	{
+		unsigned resId=i+HAPPYNESS_BASE;
+		if (ressources[resId])
+		{
+			ressources[resId]--;
+			fruitMask|=(1<<i);
+			fruitCount++;
+		}
+	}
+	if (mask)
+		*mask=fruitMask;
+	return fruitCount;
+}
+
 Sint32 Building::GIDtoID(Uint16 gid)
 {
 	assert(gid<32768);
