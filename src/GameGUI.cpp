@@ -1217,6 +1217,7 @@ void GameGUI::draw(void)
 			newStats=stats[statsPtr];
 			if (statMode==STAT_TEXT)
 			{
+				// TODO : this code needs to be internationalized
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, font, "Units newStats :");
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, font, "%d free on %d", newStats.isFree, newStats.totalUnit);
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 30+5, font, "%3.2f %% Worker", ((float)newStats.numberPerType[0])*100.0f/((float)newStats.totalUnit));

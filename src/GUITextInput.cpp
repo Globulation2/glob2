@@ -73,7 +73,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 					textBeforeCurs[--cursPos]=0;
 				
 				repaint();
-				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 			}
 			else
 			{
@@ -83,28 +83,77 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			}
 		}
 	}
-	
+
 	if (activated && event->type==SDL_KEYDOWN)
 	{
 		SDLKey sym=event->key.keysym.sym;
+		SDLMod mod=event->key.keysym.mod;
 
 		if (sym==SDLK_RIGHT)
 		{
 			int l=strlen(text);
-			if (cursPos<l)
+			if (mod&KMOD_CTRL)
 			{
-				cursPos++;
+				bool cont=true;
+				while ((cursPos<l) && cont)
+				{
+					cursPos++;
+					switch (text[cursPos])
+					{
+						case '.':
+						case ' ':
+						case '\t':
+						case ',':
+						case '\'':
+						cont=false;
+						default:
+						break;
+					}
+				}
 				repaint();
-				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+			}
+			else
+			{
+				if (cursPos<l)
+				{
+					cursPos++;
+					repaint();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+				}
 			}
 		}
 		else if (sym==SDLK_LEFT)
 		{
-			if (cursPos>0)
+			if (mod&KMOD_CTRL)
 			{
-				cursPos--;
+				bool cont=true;
+				while ((cursPos>0) && cont)
+				{
+					cursPos--;
+					switch (text[cursPos])
+					{
+						case '.':
+						case ' ':
+						case '\t':
+						case ',':
+						case '\'':
+						cont=false;
+						default:
+						break;
+					}
+				}
 				repaint();
-				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+			}
+			else
+			{
+				if (cursPos>0)
+				{
+					cursPos--;
+					repaint();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+				}
 			}
 		}
 		else if (sym==SDLK_BACKSPACE)
@@ -140,11 +189,13 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		{
 			cursPos=0;
 			repaint();
+			parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 		}
 		else if (sym==SDLK_END)
 		{
 			cursPos=strlen(text);
 			repaint();
+			parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 		}
 		else if (sym==SDLK_RETURN)
 		{
