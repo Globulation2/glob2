@@ -67,45 +67,15 @@ Think if your AI is able to play with another human player ?
 class AIImplementation
 {
 public:
-	AIImplementation(Player *player);
-	AIImplementation(SDL_RWops *stream, Player *player);
-	void init(Player *player);
-	~AIImplementation();
-
-	Player *player;
+	AIImplementation(){}
+	virtual void init(Player *player)=0;
+	virtual ~AIImplementation(){}
 	
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
+	virtual bool load(SDL_RWops *stream)=0;
+	virtual void save(SDL_RWops *stream)=0;
 	
-	Order *getOrder(void);
-	
-private:
-	// SEVEN_PHASES variables
-	int timer;
-	int phase;
-	int attackPhase;
-	int phaseTime;
-	int critticalWarriors;
-	int critticalTime;
-	int attackTimer;
-	int mainBuilding[BuildingType::NB_BUILDING];
-	int estimateFood(int x, int y);
-	int countUnits(void);
-	int countUnits(const int medicalState);
-	Order *swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors);
-	void nextMainBuilding(const int buildingType);
-	bool checkUIDRoomForBuilding(int px, int py, int width, int height);
-	int nbFreeAround(const int buildingType, int posX, int posY, int width, int height);
-	bool parseBuildingType(const int buildingType);
-	void squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my);
-	bool findNewEmplacement(const int buildingType, int *posX, int *posY);
-	Order *mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested);
-	Order *adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType);
-	Order *checkoutExpands(const int numbers, const int workers);
-	Order *mayUpgrade(const int ptrigger, const int ntrigger);
+	virtual Order *getOrder(void)=0;
 };
-
-
 
 #endif
 
