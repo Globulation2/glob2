@@ -181,7 +181,6 @@ void AICastor::init(Player *player)
 	controlUpgradeDelay=32;
 	controlStrikesTimer=0;
 	
-	hardMapComputed=false;
 	warLevel=0;
 	warTimeTrigerLevel=0;
 	warLevelTrigerLevel=0;
@@ -219,6 +218,8 @@ void AICastor::init(Player *player)
 	
 	size_t size=map->w*map->h;
 	assert(size>0);
+	
+	computeBoot=0;
 	
 	if (obstacleUnitMap!=NULL)
 		delete[] obstacleUnitMap;
@@ -364,16 +365,73 @@ Order *AICastor::getOrder()
 {
 	timer++;
 	
-	if (!hardMapComputed)
-	{
-		computeHydratationMap();
-		computeNotGrassMap();
-		hardMapComputed=true;
-	}
-	
 	if (!strategy.defined)
 		defineStrategy();
-		
+	
+	if (computeBoot<32)
+	{
+		computeBoot++;
+		return new NullOrder();
+	}
+	else if (computeBoot<16+32)
+	{
+		switch (computeBoot-32)
+		{
+			case 0:
+			computeHydratationMap();
+			break;
+			case 1:
+			computeNotGrassMap();
+			break;
+			case 2:
+			computeCanSwim();
+			break;
+			case 3:
+			computeNeedSwim();
+			break;
+			case 4:
+			computeBuildingSum();
+			break;
+			case 5:
+			computeWarLevel();
+			break;
+			case 6:
+			computeObstacleUnitMap();
+			break;
+			case 7:
+			computeObstacleBuildingMap();
+			break;
+			case 8:
+			computeWorkPowerMap();
+			break;
+			case 9:
+			computeWorkRangeMap();
+			break;
+			case 10:
+			computeWorkAbilityMap();
+			break;
+			case 11:
+			computeHydratationMap();
+			break;
+			case 12:
+			computeWheatCareMap();
+			break;
+			case 13:
+			computeWheatGrowthMap();
+			break;
+			case 14:
+			computeEnemyPowerMap();
+			break;
+			case 15:
+			computeEnemyRangeMap();
+			break;
+			default:
+			assert(false);
+		}
+		computeBoot++;
+		return new NullOrder();
+	}
+	
 	/*// Defense, we check it first, because it will only return true if there is an attack and free warriors
 	{
 		Order *order = controlBaseDefense();
@@ -2320,14 +2378,20 @@ fprintf(logFile,  "computeHydratationMap()...\n");
 				}
 		}
 	for (size_t i=0; i<size; i++)
-		hydratationMap[i]=(gradient[i]>>4);
+	{
+		Uint16 value=gradient[i]>>4;
+		if (value<255)
+			hydratationMap[i]=value;
+		else
+			hydratationMap[i]=255;
+	}
 	free(gradient);
-fprintf(logFile,  "...computeHydratationMap() done\n");
+	fprintf(logFile,  "...computeHydratationMap() done\n");
 }
 
 void AICastor::computeNotGrassMap()
 {
-fprintf(logFile,  "computeNotGrassMap()...\n");
+	fprintf(logFile,  "computeNotGrassMap()...\n");
 	int w=map->w;
 	int h=map->w;
 	//int wMask=map->wMask;
@@ -2345,7 +2409,7 @@ fprintf(logFile,  "computeNotGrassMap()...\n");
 	}
 	
 	updateGlobalGradientNoObstacle(notGrassMap);
-fprintf(logFile,  "...computeNotGrassMap() done\n");
+	fprintf(logFile,  "...computeNotGrassMap() done\n");
 }
 
 void AICastor::computeWheatCareMap()
@@ -2679,7 +2743,6 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 	
 	if (bestScore>0)
 	{
-	
 		fprintf(logFile,  " found a cool place");
 		fprintf(logFile,  "  score=%d, wheatGrowth=%d, wheatGradientMap=%d, work=%d\n",
 			bestScore, wheatGrowthMap[bestIndex], wheatGradientMap[bestIndex], workAbilityMap[bestIndex]);
