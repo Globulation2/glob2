@@ -127,7 +127,7 @@ void MultiplayersCrossConnectable::sendingTime()
 			int sSize=Utilities::strmlen(mit->text, 256);
 			int size=4+1+uSize+sSize;
 			
-			Uint8 data[size];
+			VARARRAY(Uint8,data,size);
 			data[0]=ORDER_TEXT_MESSAGE;
 			data[1]=0;
 			data[2]=0;
