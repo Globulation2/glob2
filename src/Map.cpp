@@ -515,6 +515,21 @@ bool Map::isHardSpaceForBuilding(int x, int y, int w, int h)
 	return true;
 }
 
+bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid)
+{
+	for (int yi=y; yi<y+h; yi++)
+		for (int xi=x; xi<x+w; xi++)
+		{
+			if (isRessource(xi, yi))
+				return false;
+			if (getBuilding(xi, yi)!=NOGBID && getBuilding(xi, yi)!=gid)
+				return false;
+			if (!isGrass(xi, yi))
+				return false;
+		}
+	return true;
+}
+
 bool Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy)
 {
 	int x=unit->posX;
