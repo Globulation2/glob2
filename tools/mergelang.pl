@@ -41,12 +41,10 @@ while ($h = <FILE>) {
 		print $p;
 	}
 	else {
-		if ($h =~ /%s/) {
-			print "%s\n";
+		while ($h =~ /%s/g) {
+			print "%s";
 		}
-		else {
-			print "\n";
-		}
+		print "\n";
 	}
 	close PATCH;
 }
