@@ -1350,9 +1350,9 @@ void Unit::pathFind(void)
 	int odx=dx;
 	int ody=dy;
 	bool broken=false;
-	int mapw=owner->game->map.w;
-	int maph=owner->game->map.h;
-	
+	int mapw=owner->game->map.getW();
+	int maph=owner->game->map.getH();
+
 	if (bypassDirection==DIR_UNSET)
 	{
 		if ((displacement==DIS_GOING_TO_RESSOURCE)&&(!owner->game->map.isRessource(targetX, targetY, (RessourceType)destinationPurprose)))
@@ -1656,7 +1656,7 @@ void Unit::pathFind(void)
 			int bapdx=dx;
 			int bapdy=dy;
 			int maxDist=0;
-			
+
 			if (verbose)
 				printf("l bapd=(%d, %d), border-bapd=(%d, %d)\n", bapdx, bapdy, borderX-bapdx, borderY-bapdy);
 			if (((bapdx!=0)||(bapdy!=0))&&(!validHard(posX+bapdx, posY+bapdy)))
@@ -1900,7 +1900,7 @@ void Unit::pathFind(void)
 						bDirection=(bDirection+1)&7;
 						if (verbose)
 							printf("r tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
-						
+
 						dxdyfromDirection(bDirection, &bdx, &bdy);
 					}
 					testBorderX+=bdx;
@@ -2153,8 +2153,8 @@ void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
-	int mapw=owner->game->map.w;
-	int maph=owner->game->map.h;
+	int mapw=owner->game->map.getW();
+	int maph=owner->game->map.getH();
 	if (ldx>(mapw>>1))
 		ldx-=mapw;
 	else if (ldx<-(mapw>>1))
@@ -2163,7 +2163,7 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 		ldy-=maph;
 	else if (ldy<-(maph>>1))
 		ldy+=maph;
-		
+
 	if (abs(ldx)>(2*abs(ldy)))
 	{
 		*cdx=sign(ldx);
@@ -2184,8 +2184,8 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 void Unit::secondaryDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
-	int mapw=owner->game->map.w;
-	int maph=owner->game->map.h;
+	int mapw=owner->game->map.getW();
+	int maph=owner->game->map.getH();
 	if (ldx>(mapw>>1))
 		ldx-=mapw;
 	else if (ldx<-(mapw>>1))

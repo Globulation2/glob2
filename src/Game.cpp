@@ -144,11 +144,11 @@ void Game::executeOrder(Order *order, int localPlayer)
 				int posX=((OrderCreate *)order)->posX;
 				int posY=((OrderCreate *)order)->posY;
 				if(posX<0)
-					posX+=map.w;
+					posX+=map.getW();
 				if(posY<0)
-					posY+=map.h;
-				posX&=map.wMask;
-				posY&=map.hMask;
+					posY+=map.getH();
+				posX&=map.getMaskW();
+				posY&=map.getMaskH();
 				
 				Building *b=addBuilding( posX, posY, ((OrderCreate *)order)->team, ((OrderCreate *)order)->typeNumber );
 				if (b)
@@ -532,7 +532,7 @@ void Game::removeTeam(void)
 
 void Game::regenerateDiscoveryMap(void)
 {
-	memset(map.mapDiscovered, 0, map.w*map.h*sizeof(Uint32));
+	map.unsetMapDiscovered();
 	{
 		for (int t=0; t<session.numberOfTeam; t++)
 		{
@@ -704,7 +704,7 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags)
 		{
 			for (int scy=(y-sts); scy<=(y+sts-stp); scy++)
 			{
-				rv=removeUnitAndBuilding((scx&(map.wMask)), (scy&(map.hMask)), &rl, flags) || rv;
+				rv=removeUnitAndBuilding((scx&(map.getMaskW())), (scy&(map.getMaskH())), &rl, flags) || rv;
 				if (ri)
 				{
 					Utilities::rectExtendRect(&rl, r);
@@ -1166,13 +1166,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	Sprite *bulletSprite=globalContainer->buildings;
 	// FIXME : have team in bullets to have the correct color
 
-	int mapPixW=(map.w)<<5;
-	int mapPixH=(map.h)<<5;
+	int mapPixW=(map.getW())<<5;
+	int mapPixH=(map.getH())<<5;
 
 	{
-		for (int i=0; i<(map.wSector*map.hSector); i++)
+		for (int i=0; i<(map.getSectorW()*map.getSectorH()); i++)
 		{
-			Sector *s=&(map.sectors[i]);
+			Sector *s=map.getSector(i);
 			for (std::list<Bullet *>::iterator it=s->bullets.begin();it!=s->bullets.end();it++)
 			{
 				int x=(*it)->px-(viewportX<<5);
@@ -1296,8 +1296,8 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	ry=viewportY;
 	if (teamSelected>=0)
 	{
-		rx=(rx-teams[teamSelected]->startPosX+map.w-(map.w>>1));
-		ry=(ry-teams[teamSelected]->startPosY+map.h-(map.h>>1));
+		rx=(rx-teams[teamSelected]->startPosX+(map.getW()>>1));
+		ry=(ry-teams[teamSelected]->startPosY+(map.getH()>>1));
 		rx&=map.getMaskW();
 		ry&=map.getMaskH();
 	}
@@ -1349,8 +1349,8 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 
 	if (teamSelected>=0)
 	{
-		decSPX=teams[teamSelected]->startPosX+map.w/2;
-		decSPY=teams[teamSelected]->startPosY+map.h/2;
+		decSPX=teams[teamSelected]->startPosX+map.getW()/2;
+		decSPY=teams[teamSelected]->startPosY+map.getH()/2;
 	}
 	else
 	{

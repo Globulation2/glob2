@@ -91,10 +91,17 @@ public:
 	virtual Sint32 checkSum();
 };
 
-// map container
+//! Map, handle all physical localisations
+/*!
+	Map, handle all physical localisations
+	When not specified, all size are given in 32x32 cell, which is the basic
+	game measurement unit.
+	All functions are wrap-safe, excepted the one specified otherwise.
+*/
 class Map:public BaseMap
 {
 public:
+	//! Type of terrain
 	enum TerrainType
 	{
 		WATER=0,
@@ -103,88 +110,145 @@ public:
 	};
 
 public:
+	//! Map constructor
 	Map();
+	//! Map destructor
 	virtual ~Map(void);
 
+	//! Set the base map (name and initial infos)
 	void setBaseMap(const BaseMap *initial);
+	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, Game *game, TerrainType terrainType=WATER);
+	//! Save a map
 	void save(SDL_RWops *stream);
+	//! Load a map from a stream and relink with associated game
 	bool load(SDL_RWops *stream, Game *game);
-	
+
+	//! Grow ressources on map
 	void growRessources(void);
+	//! Do a step associated woth map (grow ressources and process bullets)
 	void step(void);
+	//! Switch the Fog of War buffer
 	void switchFogOfWar(void);
 
+	//! Return map width
 	int getW(void) { return w; }
+	//! Return map height
 	int getH(void) { return h; }
+	//! Return map width mask
 	int getMaskW(void) { return wMask; }
+	//! Return map height mask
 	int getMaskH(void) { return hMask; }
+	//! Return the number of sectors on x, which corresponds to the sector map width
+	int getSectorW(void) { return wSector; }
+	//! Return the number of sectors on y, which corresponds to the sector map height
+	int getSectorH(void) { return hSector; }
 
+	//! Set map to discovered state at position (x,y) for team p
 	void setMapDiscovered(int x, int y, int p)
 	{
 		(*(mapDiscovered+w*(y&hMask)+(x&wMask)))|=(1<<p);
 		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))|=(1<<p);
 		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))|=(1<<p);
 	}
+	//! Set map to undiscovered state at position (x,y) for team p
 	void unsetMapDiscovered(int x, int y, int p)
 	{
 		(*(mapDiscovered+w*(y&hMask)+(x&wMask)))&=~(1<<p);
 		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))&=~(1<<p);
 		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))&=~(1<<p);
 	}
+	//! Returs true if map is discovered at position (x,y) for team p
 	bool isMapDiscovered(int x, int y, int p)
 	{
 		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
 	/*void setFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))|=(1<<p); }
 	void unsetFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))&=~(1<<p); }*/
+	//! Return true if FOW (Fog of War) is not set at position (x,y) for team p (the function name is illogic, should be isFOWfree )
 	bool isFOW(int x, int y, int p)
 	{
 		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
+	//! Set map to discovered state at rect (x,y) - (x+w, y+h) for team p
 	void setMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapDiscovered(dx, dy, p); }
+	//! Set map to undiscovered state at rect (x,y) - (x+w, y+h) for team p
 	void unsetMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) unsetMapDiscovered(dx, dy, p); }
+	//! Set all map to undiscovered state
+	void unsetMapDiscovered(void) { memset(mapDiscovered, 0, w*h*sizeof(Uint32)); }
 	// NOTE : unused now
 	//void isMapDescovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) if (isMapDiscovered(dx, dy, p)) return true; return false; }
 
+	//! Return the terrain type at position (x,y).
 	Uint16 getTerrain(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).terrain; }
+	//! Set the terrain type at position (x,y).
 	void setTerrain(int x, int y, Uint16 t) { (*(cases+w*(y&hMask)+(x&wMask))).terrain=t; }
+	//! Return true if there is water at position (x,y).
 	bool isWater(int x, int y);
+	//! Return true if there is grass at position (x,y).
 	bool isGrass(int x, int y);
+	//! Return true if there is a ressource that can grow at position (x,y).
 	bool isGrowableRessource(int x, int y);
+	//! Return true if there is a ressource at position (x,y).
 	bool isRessource(int x, int y);
+	//! Retrun true if there is a ressource of type ressourceType at position (x,y).
 	bool isRessource(int x, int y, RessourceType ressourceType);
+	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
 	bool decRessource(int x, int y);
+	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
 	bool decRessource(int x, int y, RessourceType ressourceType);
+	//! Return true if unit can go to position (x,y)
 	bool isFreeForUnit(int x, int y, bool canFly);
+	//! Return true if unit has contact with otherUID. If true, put contact direction in dx, dy
 	bool doesUnitTouchUID(Unit *unit, Sint16 otherUID, int *dx, int *dy);
+	//! Return true if (x,y) has contact with otherUID.
 	bool doesPosTouchUID(int x, int y, Sint16 otherUID);
+	//! Return true if (x,y) has contact with otherUID. If true, put contact direction in dx, dy
 	bool doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy);
+	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
 	bool doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy);
+	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
 	bool doesPosTouchRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
+	//! Return true if unit has contact with enemy. If true, put contact direction in dx, dy
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
+	//! Return unit or building UID at (x,y). Return NOUID if none
 	Sint16 getUnit(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).unit; }
+	//! Return sector at (x,y).
 	Sector *getSector(int x, int y) { return &(sectors[wSector*((y&hMask)>>4)+((x&wMask)>>4)]); }
+	//! Return a sector in the sector array. It is not clean because too high level
+	Sector *getSector(int i) { assert(i>=0); assert(i<wSector*hSector); return sectors+i; }
+
+	//! Set unit or building at (x,y) to UID u
 	void setUnit(int x, int y, Sint16 u) { (*(cases+w*(y&hMask)+(x&wMask))).unit=u; }
+	//! Set building at rect (x,y) - (x+w,y+h) to UID u
 	void setBuilding(int x, int y, int w, int h, Sint16 u);
-
+	//! Set undermap terrain type at (x,y) (undermap positions)
 	void setUMTerrain(int x, int y, TerrainType t) { *(undermap+w*(y&hMask)+(x&wMask))=(Uint8)t; }
+	//! Return undermap terrain type at (x,y)
 	TerrainType getUMTerrain(int x, int y) { return (TerrainType)(*(undermap+w*(y&hMask)+(x&wMask))); }
-
+	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int size);
+	//! Set ressourcse at (x,y) on an area
 	void setResAtPos(int x, int y, int type, int size);
-	
-	static void mapCaseToPixelCase(int mx, int my, int *px, int *py) { *px=(mx<<5); *py=(my<<5); }
+	//! Transform coordinate from map scale (mx,my) to pixel scale (px,py)
+	void mapCaseToPixelCase(int mx, int my, int *px, int *py) { *px=(mx<<5); *py=(my<<5); }
+	//! Transform coordinate from map (mx,my) to screen (px,py)
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY);
+	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid aligned object (buildings, ressources, units)
 	void displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY);
+	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid unaligned object (terrain)
 	void displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY);
+	//! Transform coordinate from screen (mx,my) to building (px,py)
 	void cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY);
+	//! Transform coordinate from building (px,py) to screen (mx,my)
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
-
+	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
 	bool nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
-	
-//private:
+	//! Save a thumbnail of the map in stream
+	void saveThumbnail(SDL_RWops *stream);
+
+protected:
 	// private functions, used for edition
 
 	void regenerateMap(int x, int y, int w, int h);
@@ -206,7 +270,7 @@ public:
 	Sint32 checkSum();
 	int warpDistSquare(int px, int py, int qx, int qy);
 
-private:
+protected:
 	Sint32 stepCounter;
 	int sizeOfFogOfWar;
 };

@@ -62,9 +62,9 @@ int AI::estimateFood(int x, int y)
 	Map *map=&player->team->game->map;
 	if (map->nearestRessource(x, y, CORN, &rx, &ry))
 	{
-		rx+=map->w;
-		ry+=map->h;
-		
+		rx+=map->getW();
+		ry+=map->getH();
+
 		int w=0;
 		int h=0;
 		int i;
@@ -224,9 +224,9 @@ bool AI::checkUIDRoomForBuilding(int px, int py, int width, int height)
 int AI::nbFreeAround(const int buildingType, int posX, int posY, int width, int height)
 {
 	Game *game=player->team->game;
-	
-	int px=posX+game->map.w;
-	int py=posY+game->map.h;
+
+	int px=posX+game->map.getW();
+	int py=posY+game->map.getH();
 	int x, y;
 	
 	int valid=256+96;
@@ -471,16 +471,16 @@ bool AI::findNewEmplacement(const int buildingType, int *posX, int *posY)
 			maxr=16;
 		//for (int r=0; r<=maxr; r++)
 		//	for (int d=0; d<8; d++)
-		
+
 		int dx, dy, sx, sy, px, py, mx, my;
 		int margin;
 		if (b->type->type)
 			margin=0;
 		else
 			margin=2;
-		
-		int bposX=b->posX+player->team->game->map.w;
-		int bposY=b->posY+player->team->game->map.h;
+
+		int bposX=b->posX+player->team->game->map.getW();
+		int bposY=b->posY+player->team->game->map.getH();
 		
 		sx=bposX-width-margin;
 		sy=bposY-height-margin;
