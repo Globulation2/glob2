@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,6 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
 
 #ifndef __AI_H
 #define __AI_H
