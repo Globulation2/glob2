@@ -487,7 +487,7 @@ void YOGClient::sendClients()
 	int nbClients=clients.size();
 	if (nbClients>32)
 		nbClients=32;
-	int size=(4+32+2)*nbClients+1;
+	int size=(4+32+2)*nbClients+2;
 	Uint8 data[size];
 	addUint8(data, (Uint8)nbClients, 0); // This is redundancy
 	clientsPacketID++;
@@ -495,6 +495,7 @@ void YOGClient::sendClients()
 	int index=2;
 	int rri=clientsPacketID&15;
 	lastSentClients[rri].clear();
+	int j = 0;
 	for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 	{
 		addUint32(data, (*client)->uid, index);
@@ -507,8 +508,11 @@ void YOGClient::sendClients()
 		index++;
 		data[index]=(*client)->away;
 		index++;
-		assert(index<size);
+		assert(index<=size);
 		lastSentClients[rri].push_back(*client);
+		j++;
+		if (j>31)
+			break;
 	}
 	send(YMT_CLIENTS_LIST, data, index);
 	lprintf("sent a (%d) clients list to (%s), cpid=%d\n", nbClients, username, clientsPacketID);
