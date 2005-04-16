@@ -67,28 +67,31 @@ bool YOGServer::init()
 	
 	lprintf("YOGServer::reading users...\n");
 	usersFile=fopen("YOGUsers.log", "r");
-	IPaddress ip;
-	ip.host=0;
-	ip.port=0;
-	while (!feof(usersFile))
+	if (usersFile)
 	{
-		char username[32];
-		char password[32];
-		memset(username, 0, 32);
-		memset(password, 0, 32);
-		int rv=fread(username, 1, 32, usersFile);
-		if (rv==0)
-			break;
-		else
+		IPaddress ip;
+		ip.host=0;
+		ip.port=0;
+		while (!feof(usersFile))
+		{
+			char username[32];
+			char password[32];
+			memset(username, 0, 32);
+			memset(password, 0, 32);
+			int rv=fread(username, 1, 32, usersFile);
+			if (rv==0)
+				break;
+			else
+				assert(rv==32);
+			rv=fread(password, 1, 32, usersFile);
 			assert(rv==32);
-		rv=fread(password, 1, 32, usersFile);
-		assert(rv==32);
-		YOGClient *client=new YOGClient(ip, socket, username);
-		memcpy(client->password, password, 32);
-		unconnectedClients.push_back(client);
-		lprintf(" username=(%s) added\n", username);
+			YOGClient *client=new YOGClient(ip, socket, username);
+			memcpy(client->password, password, 32);
+			unconnectedClients.push_back(client);
+			lprintf(" username=(%s) added\n", username);
+		}
+		fclose(usersFile);
 	}
-	fclose(usersFile);
 	
 	lprintf("YOGServer::writing users...\n");
 	usersFile=fopen("YOGUsers.log", "w");
