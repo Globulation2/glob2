@@ -89,6 +89,11 @@ namespace GAGCore
 		void remove(const std::string &filename) { return remove(filename.c_str()); }
 		//! Returns true if filename is a directory
 		bool isDir(const char *filename);
+		
+		//! Compress source to dest uzing gzip, returns true on success
+		bool gzip(const std::string &source, const std::string &dest);
+		//! Uncompress source to dest uzing gzip, returns true on success
+		bool gunzip(const std::string &source, const std::string &dest);
 	
 		//! Open an output stream backend, use it to construct specific output streams, const char *version
 		StreamBackend *openOutputStreamBackend(const char *filename);

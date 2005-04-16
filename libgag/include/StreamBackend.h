@@ -46,6 +46,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) = 0;
 		virtual size_t getPosition(void) = 0;
 		virtual bool isEndOfStream(void) = 0;
+		virtual bool isValid(void) = 0;
 	};
 	
 	//! The FILE* implementation of stream backend
@@ -69,6 +70,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) { assert(fp); fseek(fp, displacement, SEEK_CUR); }
 		virtual size_t getPosition(void) { assert(fp); return ftell(fp); }
 		virtual bool isEndOfStream(void) { return (fp == NULL) || (feof(fp) != 0); }
+		virtual bool isValid(void) { return (fp != NULL); }
 	};
 	
 	//! A stream backend that lies in memory
@@ -93,6 +95,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement);
 		virtual size_t getPosition(void);
 		virtual bool isEndOfStream(void);
+		virtual bool isValid(void) { return true; }
 	};
 }
 

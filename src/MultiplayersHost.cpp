@@ -87,10 +87,24 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	}
 	else
 	{
+		// get filename
 		std::string filename = sessionInfo->getFileName();
 		fprintf(logFile, "MultiplayersHost() mapFileName=%s.\n", filename.c_str());
-		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(sessionInfo->getFileName()));
-		mapFileCheckSum = globalContainer->fileManager->checksum(sessionInfo->getFileName());
+		
+		// checksum
+		mapFileCheckSum = globalContainer->fileManager->checksum(filename);
+		
+		// compress if possible
+		if (Toolkit::getFileManager()->gzip(filename, filename + ".gz"))
+		{
+			fprintf(logFile, "MultiplayersHost() map %s successfully compressed to %s.gz.\n", filename.c_str(), filename.c_str());
+			stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename + ".gz"));
+		}
+		else
+		{
+			fprintf(logFile, "MultiplayersHost() map %s compression to %s.gz failed, sending uncompressed.\n", filename.c_str(), filename.c_str());
+			stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+		}
 	}
 	
 	fileSize=0;

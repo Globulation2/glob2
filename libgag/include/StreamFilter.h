@@ -43,6 +43,8 @@ namespace GAGCore
 		CompressedOutputStreamBackendFilter(StreamBackend *backen);
 		//! Delete also the associated backend
 		virtual ~CompressedOutputStreamBackendFilter();
+		//! We are writing in memory, never out of stream
+		virtual bool isEndOfStream() { return false; }
 	};
 }
 

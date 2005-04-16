@@ -20,7 +20,7 @@
 */
 
 #include "VoiceRecorder.h"
-#include <speex.h>
+#include <speex/speex.h>
 #include <assert.h>
 #include <stdio.h>
 #include "Order.h"

@@ -30,6 +30,7 @@
 #include "Utilities.h"
 
 #include <Stream.h>
+#include <StreamFilter.h>
 
 MapEdit::MapEdit()
 :game(NULL)
@@ -1016,7 +1017,7 @@ bool MapEdit::save(const char *filename, const char *name)
 	assert(filename);
 	assert(name);
 
-	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+	OutputStream *stream = new BinaryOutputStream(new CompressedOutputStreamBackendFilter(Toolkit::getFileManager()->openOutputStreamBackend(filename)));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "MapEdit::save(\"" << filename << "\",\"" << name << "\") : error, can't open file." << std::endl;
