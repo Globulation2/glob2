@@ -24,7 +24,7 @@
 using namespace GAGCore;
 #include <iostream>
 #include <assert.h>
-#include <speex.h>
+#include <speex/speex.h>
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>

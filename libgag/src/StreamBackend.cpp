@@ -24,12 +24,15 @@ namespace GAGCore
 	MemoryStreamBackend::MemoryStreamBackend(const void *data, const size_t size)
 	{
 		index = 0;
-		write(data, size);
+		if (size)
+			write(data, size);
 	}
 	
 	void MemoryStreamBackend::write(const void *data, const size_t size)
 	{
 		const char *_data = static_cast<const char *>(data);
+		if (index + size > datas.size())
+			datas.resize(index + size);
 		datas.replace(index, size, _data);
 		index += size;
 	}

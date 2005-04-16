@@ -22,6 +22,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <Stream.h>
+#include <StreamFilter.h>
 #include <BinaryStream.h>
 using namespace GAGCore;
 
@@ -71,6 +72,7 @@ void MapPreview::setMapThumbnail(const char *mapName)
 	}
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	//InputStream *stream = new BinaryInputStream(new CompressedInputStreamBackendFilter(Toolkit::getFileManager()->openInputStreamBackend(mapName)));
 	if (stream->isEndOfStream())
 	{
 		delete stream;

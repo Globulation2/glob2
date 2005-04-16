@@ -352,10 +352,12 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 			duplicatePacketFile=0;
 			brandwidth=1;
 			receivedCounter=0;
-			downloadStream=globalContainer->fileManager->open(filename, "wb");
 			
-			fprintf(logFile, " downloadStream=%p\n", downloadStream);
-			fprintf(logFileDownload, " downloadStream=%p\n", downloadStream);
+			// save as compressed stream
+			downloadStream = globalContainer->fileManager->open(filename + ".gz", "wb");
+			
+			fprintf(logFile, " downloadStream=%p to %s.gz\n", downloadStream, filename.c_str());
+			fprintf(logFileDownload, " downloadStream=%p to %s.gz\n", downloadStream, filename.c_str());
 		}
 	}
 	
@@ -465,6 +467,13 @@ void MultiplayersJoin::dataFileRecieved(Uint8 *data, int size, IPaddress ip)
 		duplicatePacketFile=0;
 		fprintf(logFileDownload, "download's file closed\n");
 		SDL_RWclose(downloadStream);
+		
+		// uncompress
+		if (Toolkit::getFileManager()->gunzip(filename + ".gz", filename) == false)
+			fprintf(logFileDownload, "error decompressing file %s.gz to %s\n", filename.c_str(), filename.c_str());
+		else
+			fprintf(logFileDownload, "Map file %s.gz successfully decompressed to %s\n", filename.c_str(), filename.c_str());
+		
 		downloadStream=NULL;
 		
 		// We have to tell the server that we finished correctly the download:

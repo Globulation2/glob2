@@ -21,6 +21,7 @@
 #include <BinaryStream.h>
 #include <valarray>
 #include "zlib.h"
+#include <iostream>
 
 namespace GAGCore
 {
@@ -35,6 +36,7 @@ namespace GAGCore
 		std::valarray<unsigned char> source(compressedLength);
 		std::valarray<unsigned char> dest(uncompressedLength);
 		unsigned long destLength;
+		std::cout << "Decompressing " << compressedLength <<  " bytes to " << uncompressedLength << " bytes." << std::endl;
 		
 		stream->read(&source[0], compressedLength);
 		delete stream;
@@ -64,8 +66,9 @@ namespace GAGCore
 		std::valarray<unsigned char> source(uncompressedLength);
 		std::valarray<unsigned char> dest(compressedLength);
 		
-		this->write(&source[0], uncompressedLength);
+		this->read(&source[0], uncompressedLength);
 		compress(&dest[0], (uLongf *)&compressedLength, &source[0], uncompressedLength);
+		std::cout << "Compressing " << uncompressedLength <<  " bytes into " << compressedLength << " bytes." << std::endl;
 		
 		BinaryOutputStream *stream = new BinaryOutputStream(backend);
 		stream->writeUint32(compressedLength);

@@ -28,6 +28,8 @@
 #include <Types.h>
 #endif
 #include <iostream>
+#include <valarray>
+#include <zlib.h>
 #include "BinaryStream.h"
 #include "TextStream.h"
 
@@ -292,6 +294,75 @@ namespace GAGCore
 		return (s.st_mode & S_IFDIR) != 0;
 	}
 	
+	bool FileManager::gzip(const std::string &source, const std::string &dest)
+	{
+		// Open streams
+		StreamBackend *srcStream = openInputStreamBackend(source);
+		FILE *destStream = openFP(dest.c_str(), "wb");
+		
+		// Check
+		if ((!srcStream->isValid()) || (destStream == NULL))
+		{
+			delete srcStream;
+			return false;
+		}
+		
+		// Preapare source
+		srcStream->seekFromEnd(0);
+		size_t fileLength = srcStream->getPosition();
+		srcStream->seekFromStart(0);
+		std::valarray<char> buffer(fileLength);
+		
+		// Compress
+		srcStream->read(&buffer[0], fileLength);
+		gzFile gzStream = gzdopen(fileno(destStream), "wb");
+		gzwrite(gzStream, &buffer[0], fileLength);
+		
+		// Close
+		gzclose(gzStream);
+		delete srcStream;
+		
+		return true;
+	}
+	
+	bool FileManager::gunzip(const std::string &source, const std::string &dest)
+	{
+		// Open streams
+		FILE *srcStream = openFP(source.c_str(), "rb");
+		StreamBackend *destStream = openOutputStreamBackend(dest);
+		
+		// Check
+		if ((!destStream->isValid()) || (srcStream == NULL))
+		{
+			delete destStream;
+			return false;
+		}
+		
+		// Preapare source
+		gzFile gzStream = gzdopen(fileno(srcStream), "rb");
+		#define BLOCK_SIZE 1024*1024
+		std::string buffer;
+		size_t len = 0;
+		size_t bufferLength = 0;
+		
+		// Uncompress
+		while (gzeof(gzStream) == 0)
+		{
+			buffer.resize(bufferLength + BLOCK_SIZE);
+			len += gzread(gzStream, const_cast<void *>(static_cast<const void *>(buffer.data() + bufferLength)), BLOCK_SIZE);
+			bufferLength += BLOCK_SIZE;
+		}
+		
+		// Write
+		destStream->write(buffer.c_str(), len);
+		
+		// Close
+		gzclose(gzStream);
+		delete destStream;
+		
+		return true;
+	}
+
 	bool FileManager::addListingForDir(const char *realDir, const char *extension, const bool dirs)
 	{
 		DIR *dir = opendir(realDir);

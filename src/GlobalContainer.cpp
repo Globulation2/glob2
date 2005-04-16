@@ -57,7 +57,7 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	logFileManager = new LogFileManager(fileManager);
-
+	
 	// load user preference
 	settings.load();
 	userName = settings.username.c_str();
