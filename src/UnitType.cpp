@@ -18,6 +18,7 @@
 */
 
 #include "UnitType.h"
+#include <Stream.h>
 
 UnitType& UnitType::operator+=(const UnitType &a)
 {
@@ -112,4 +113,69 @@ void UnitType::copyIfNot(const UnitType a, const UnitType b)
 	for (int i=0; i<NB_ABILITY; i++)
 		if (!(b.performance[i]))
 			performance[i]=a.performance[i];
+}
+
+void UnitType::load(GAGCore::InputStream *stream, Sint32 versionMinor)
+{
+	startImage[STOP_WALK] = stream->readUint32("startImageStopWalk");
+	startImage[STOP_SWIM] = stream->readUint32("startImageStopSwim");
+	startImage[STOP_FLY] = stream->readUint32("startImageStopFly");
+	startImage[WALK] = stream->readUint32("startImageWalk");
+	startImage[SWIM] = stream->readUint32("startImageSwim");
+	startImage[FLY] = stream->readUint32("startImageFly");
+	startImage[BUILD] = stream->readUint32("startImageBuild");
+	startImage[HARVEST] = stream->readUint32("startImageHarvest");
+	startImage[ATTACK_SPEED] = stream->readUint32("startImageAttack");
+	
+	hungryness = stream->readSint32("hungryness");
+	
+	performance[STOP_WALK] = stream->readSint32("stopWalkSpeed");
+	performance[STOP_SWIM] = stream->readSint32("stopSwimSpeed");
+	performance[STOP_FLY] = stream->readSint32("stopFlySpeed");
+	performance[WALK] = stream->readSint32("walkSpeed");
+	performance[SWIM] = stream->readSint32("swimSpeed");
+	performance[FLY] = stream->readSint32("flySpeed");
+	performance[BUILD] = stream->readSint32("buildSpeed");
+	performance[HARVEST] = stream->readSint32("harvestSpeed");
+	performance[ATTACK_SPEED] = stream->readSint32("attackSpeed");
+	performance[ATTACK_STRENGTH] = stream->readSint32("attackForce");
+	performance[ARMOR] = stream->readSint32("armor");
+	performance[HP] = stream->readSint32("hpMax");
+	
+	if (versionMinor>=39)
+	{
+		harvestDamage = stream->readSint32("harvestDamage");
+		armorReductionPerHappyness = stream->readSint32("armorReductionPerHappyness");
+	}
+}
+
+void UnitType::save(GAGCore::OutputStream *stream)
+{
+	stream->writeUint32(startImage[STOP_WALK], "startImageStopWalk");
+	stream->writeUint32(startImage[STOP_SWIM], "startImageStopSwim");
+	stream->writeUint32(startImage[STOP_FLY], "startImageStopFly");
+	stream->writeUint32(startImage[WALK], "startImageWalk");
+	stream->writeUint32(startImage[SWIM], "startImageSwim");
+	stream->writeUint32(startImage[FLY], "startImageFly");
+	stream->writeUint32(startImage[BUILD], "startImageBuild");
+	stream->writeUint32(startImage[HARVEST], "startImageHarvest");
+	stream->writeUint32(startImage[ATTACK_SPEED], "startImageAttack");
+	
+	stream->writeSint32(hungryness, "hungryness");
+	
+	stream->writeSint32(performance[STOP_WALK], "stopWalkSpeed");
+	stream->writeSint32(performance[STOP_SWIM], "stopSwimSpeed");
+	stream->writeSint32(performance[STOP_FLY], "stopFlySpeed");
+	stream->writeSint32(performance[WALK], "walkSpeed");
+	stream->writeSint32(performance[SWIM], "swimSpeed");
+	stream->writeSint32(performance[FLY], "flySpeed");
+	stream->writeSint32(performance[BUILD], "buildSpeed");
+	stream->writeSint32(performance[HARVEST], "harvestSpeed");
+	stream->writeSint32(performance[ATTACK_SPEED], "attackSpeed");
+	stream->writeSint32(performance[ATTACK_STRENGTH], "attackForce");
+	stream->writeSint32(performance[ARMOR], "armor");
+	stream->writeSint32(performance[HP], "hpMax");
+	
+	stream->writeSint32(harvestDamage, "harvestDamage");
+	stream->writeSint32(armorReductionPerHappyness, "armorReductionPerHappyness");
 }

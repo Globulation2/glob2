@@ -29,17 +29,63 @@
 
 #include <FileManager.h>
 #include <Stream.h>
+#include <TextStream.h>
 
 #include "GlobalContainer.h"
+#include "Version.h"
 #include "Race.h"
 
+Race::Race()
+{
+}
 
 Race::~Race()
 {
 	
 }
 
-void Race::create(CreationType creationType)
+void Race::load()
+{
+	TextInputStream *stream = new TextInputStream(Toolkit::getFileManager()->openInputStreamBackend("data/units.txt"));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Race::create : error, can't open file data/units.txt." << std::endl;
+		delete stream;
+		assert(false);
+		return;
+	}
+	
+	stream->readEnterSection("worker");
+	for (int i = 0; i < NB_UNIT_LEVELS; i++)
+	{
+		stream->readEnterSection(i);
+		unitTypes[0][i].load(stream, VERSION_MINOR);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	stream->readEnterSection("explorer");
+	for (int i = 0; i < NB_UNIT_LEVELS; i++)
+	{
+		stream->readEnterSection(i);
+		unitTypes[1][i].load(stream, VERSION_MINOR);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	stream->readEnterSection("warrior");
+	for (int i = 0; i < NB_UNIT_LEVELS; i++)
+	{
+		stream->readEnterSection(i);
+		unitTypes[2][i].load(stream, VERSION_MINOR);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	delete stream;
+}
+
+/*void Race::load()
 {
 	// First we load units.txt (into 6 differents usable UnitType-s).
 		
@@ -49,7 +95,7 @@ void Race::create(CreationType creationType)
 	UnitType evolvable;
 	UnitType costs[3];//[worker, explorer, warrior]
 	
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("data/units.txt"));
+	TextInputStream *stream = new TextInputStream(Toolkit::getFileManager()->openInputStreamBackend("data/units.txt"));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Race::create : error, can't open file data/units.txt." << std::endl;
@@ -58,20 +104,33 @@ void Race::create(CreationType creationType)
 		return;
 	}
 	
-	baseUnit[0].loadText(stream);
+	stream->readEnterSection("minUnit");
+	baseUnit[0].load(stream, VERSION_MINOR);
+	stream->readLeaveSection();
+	
 	baseUnit[1] = baseUnit[0];
-	baseUnit[1].loadText(stream);
+	
+	stream->readEnterSection("maxUnit");
+	baseUnit[1].load(stream, VERSION_MINOR);
+	stream->readLeaveSection();
 
 	for (int i=0; i<2; i++)
 		for (int j=0; j<3; j++)
 			limits[i][j] = baseUnit[i];
 	
-	baseCost.loadText(stream);
+	stream->readEnterSection("baseCost");
+	baseCost.load(stream, VERSION_MINOR);
+	stream->readLeaveSection();
 	
 	for (int j=0; j<3; j++)
 		costs[j] = baseCost;
 	
-	evolvable.loadText(stream);
+	stream->readEnterSection("evolvable");
+	evolvable.load(stream, VERSION_MINOR);
+	stream->readLeaveSection();
+	
+	// zzzz : change to text stream there
+	// TODO : clean this
 
 	for (int j=0; j<3; j++)
 	{
@@ -155,6 +214,7 @@ void Race::create(CreationType creationType)
 	// the hungryness is the same for all units:
 	hungryness=unitTypes[0][0].hungryness;
 }
+*/
 
 UnitType *Race::getUnitType(int type, int level)
 {
@@ -179,7 +239,7 @@ bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	//printf("loading race\n");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
-			unitTypes[i][j].load(stream);
+			unitTypes[i][j].load(stream, versionMinor);
 	
 	if (versionMinor >= 34)
 		hungryness = (Sint32)stream->readSint32("hungryness");

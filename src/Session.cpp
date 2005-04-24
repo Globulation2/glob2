@@ -595,7 +595,7 @@ bool SessionInfo::setData(const Uint8 *data, int dataLength, bool compressed)
 		for (int i=0; i<numberOfTeam; ++i)
 		{
 			teams[i].setData(l+data, teams[i].getDataLength());
-			teams[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+			teams[i].race.load();
 			l+=teams[i].getDataLength();
 		}
 
@@ -617,7 +617,7 @@ bool SessionInfo::setData(const Uint8 *data, int dataLength, bool compressed)
 		for (int i=0; i<32; ++i)
 		{
 			teams[i].setData(l+data, teams[i].getDataLength());
-			teams[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+			teams[i].race.load();
 			l+=teams[i].getDataLength();
 		}
 
