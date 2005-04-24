@@ -116,6 +116,7 @@ namespace GAGCore
 				CLOSE_BRACKET,
 				EQUAL,
 				SEMI_COLON,
+				COLON,
 				VAL,
 				NONE
 			} type;
@@ -225,6 +226,11 @@ namespace GAGCore
 					token = Token(Token::SEMI_COLON);
 					break;
 					
+					case ':':
+					nextChar();
+					token = Token(Token::COLON);
+					break;
+					
 					case '"':
 					{
 						std::string tempValue;
@@ -296,6 +302,14 @@ namespace GAGCore
 		if (token.type != Token::SEMI_COLON) \
 		{ \
 			std::cerr << "TextStream::parser : error @ " << line << ':' << column << " : ; (semicolon) expected" << std::endl; \
+			return false; \
+		}
+		
+		//! Macro that return false and an error message if anything else then a { is encountered
+		#define CHECK_OPEN_BRACKET \
+		if (token.type != Token::OPEN_BRACKET) \
+		{ \
+			std::cerr << "TextStream::parser : error @ " << line << ':' << column << " : ; { expected" << std::endl; \
 			return false; \
 		}
 		
@@ -374,22 +388,59 @@ namespace GAGCore
 						CHECK_NOT_EOF
 						CHECK_VAL
 						std::string val = token.val;
+						
 						nextToken();
+						CHECK_NOT_EOF
 						CHECK_SEMICOLON
+						
 						std::string path = fullId;
 						if (fullId.length())
 							path += ".";
 						path += id;
+						
 						(*table)[path] = val;
 						nextToken();
 					}
 					else if (token.type == Token::OPEN_BRACKET)
 					{
+						// build new path
 						if (fullId.length())
 							fullId += ".";
 						fullId += id;
 						levels.push_back(id);
 						autovectors.push(0);
+						nextToken();
+						CHECK_NOT_EOF
+					}
+					else if (token.type == Token::COLON)
+					{
+						nextToken();
+						CHECK_NOT_EOF
+						CHECK_VAL
+						std::string copyPathSource = token.val;
+						
+						nextToken();
+						CHECK_NOT_EOF
+						CHECK_OPEN_BRACKET
+						
+						// build new path
+						if (fullId.length())
+							fullId += ".";
+						fullId += id;
+						levels.push_back(id);
+						autovectors.push(0);
+						
+						// copy subkeys to actual
+						size_t len = copyPathSource.length();
+						for (std::map<std::string, std::string>::iterator i = table->begin(); i != table->end(); i++)
+						{
+							if (i->first.find(copyPathSource) == 0)
+							{
+								std::string copyPathSub = i->first.substr(len, i->first.length() - len);
+								(*table)[fullId + copyPathSub] = i->second;
+							}
+						}
+						
 						nextToken();
 						CHECK_NOT_EOF
 					}
@@ -415,6 +466,8 @@ namespace GAGCore
 	{
 		Parser p(backend);
 		p.parse(&table);
+		for (std::map<std::string, std::string>::iterator i = table.begin(); i != table.end(); ++i)
+			std::cout << i->first << " = " << i->second << std::endl;
 	}
 	
 	void TextInputStream::readEnterSection(const char *name)
