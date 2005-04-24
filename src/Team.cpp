@@ -63,7 +63,8 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->readLeaveSection();
 	if (!race.load(stream, versionMinor))
 		return false;
-	//TODO: overide Race only is some cases.
+	// TODO : overwrite only when it is a certain type, but require carefull thinking. For now, overwrite
+	// if (type == T_HUMAN)
 	race.load();
 	return true;
 }
