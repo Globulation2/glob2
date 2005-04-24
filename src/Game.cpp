@@ -1210,7 +1210,7 @@ void Game::addTeam(void)
 	{
 		teams[session.numberOfTeam]=new Team(this);
 		teams[session.numberOfTeam]->teamNumber=session.numberOfTeam;
-		teams[session.numberOfTeam]->race.create(Race::USE_DEFAULT);
+		teams[session.numberOfTeam]->race.load();
 		teams[session.numberOfTeam]->setCorrectMasks();
 
 		session.numberOfTeam++;

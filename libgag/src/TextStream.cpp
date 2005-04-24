@@ -373,8 +373,8 @@ namespace GAGCore
 						nextToken();
 						CHECK_NOT_EOF
 						CHECK_VAL
-						nextToken();
 						std::string val = token.val;
+						nextToken();
 						CHECK_SEMICOLON
 						std::string path = fullId;
 						if (fullId.length())
@@ -419,8 +419,9 @@ namespace GAGCore
 	
 	void TextInputStream::readEnterSection(const char *name)
 	{
+		if (levels.size() > 0)
+			key += ".";
 		levels.push_back(std::string(name));
-		key += ".";
 		key += name;
 	}
 	
@@ -435,7 +436,7 @@ namespace GAGCore
 	
 	void TextInputStream::readLeaveSection(size_t count)
 	{
-		assert(count < levels.size());
+		assert(count <= levels.size());
 		
 		levels.resize(levels.size() - count);
 		key.clear();

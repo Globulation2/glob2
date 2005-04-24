@@ -31,23 +31,17 @@ namespace GAGCore
 class Race
 {
 public:
-	enum CreationType
-	{
-		USE_DEFAULT,
-		USE_GUI,
-		USE_AI
-	};
-
 	UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
 	Sint32 hungryness;
 
 public:
+	Race();
 	virtual ~Race();
 	
-	void create(CreationType creationType);
+	void load();
+	
 	UnitType *getUnitType(int type, int level);
 	
-	// Deactivated for now, as race are not saved */
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 };

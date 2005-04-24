@@ -23,58 +23,24 @@
 #include "EntityType.h"
 #include "UnitConsts.h"
 
-class UnitType: public EntityType
+class UnitType
 {
 public:
 	// caracteristic modulated by player choice, if 0, feature disabled
 	// display infos
-#	define __STARTDATA_U ((Uint32*)startImage)
-
 	Uint32 startImage[NB_MOVE];
 	
 	Sint32 hungryness;
 
 	Sint32 performance[NB_ABILITY];
+	
+	Sint32 harvestDamage;
+	Sint32 armorReductionPerHappyness;
 
 public:
-	UnitType() { init(); }
-	UnitType(GAGCore::InputStream *stream) { load(stream); }
+	UnitType() {}
+	UnitType(GAGCore::InputStream *stream, Sint32 versionMinor) { load(stream, versionMinor); }
 	virtual ~UnitType() {}
-	virtual const char **getVars(size_t *size, Uint32 **data)
-	{
-		static const char *vars[] =
-		{
-			"startImageStopWalk",
-			"startImageStopSwim",
-			"startImageStopFly",
-			"startImageWalk",
-			"startImageSwim",
-			"startImageFly",
-			"startImageBuild",
-			"startImageHarvest",
-			"startImageAttack",
-
-			"hungryness",
-
-			"stopWalkSpeed",
-			"stopSwimSpeed",
-			"stopFlySpeed",
-			"walkSpeed",
-			"swimSpeed",
-			"flySpeed",
-			"buildSpeed",
-			"harvestSpeed",
-			"attackSpeed",
-			"attackForce",
-			"armor",
-			"hpMax"
-		};
-		if (size)
-			*size=(sizeof(vars)/sizeof(char *));
-		if (data)
-			*data=__STARTDATA_U;
-		return vars;
-	}
 
 public:
 	UnitType& operator+=(const UnitType &a);
@@ -88,6 +54,8 @@ public:
 	void copyIf(const UnitType a, const UnitType b);
 	void copyIfNot(const UnitType a, const UnitType b);
 	
+	void load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 };
 
 #endif

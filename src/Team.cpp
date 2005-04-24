@@ -61,8 +61,10 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->read(&colorPAD, 1, "colorPAD");
 	playersMask = stream->readUint32("playersMask");
 	stream->readLeaveSection();
-	if(!race.load(stream, versionMinor))
+	if (!race.load(stream, versionMinor))
 		return false;
+	//TODO: overide Race only is some cases.
+	race.load();
 	return true;
 }
 
