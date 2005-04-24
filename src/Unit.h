@@ -27,6 +27,8 @@
 #include <GAGSys.h>
 #include "UnitConsts.h"
 
+#define LEVEL_UP_ANIMATION_FRAME_COUNT 20
+
 class Team;
 class Race;
 class Building;
@@ -41,11 +43,11 @@ namespace GAGCore
 class Unit
 {
 public:
-	Unit(GAGCore::InputStream *stream, Team *owner);
+	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }
 	
-	void load(GAGCore::InputStream *stream, Team *owner);
+	void load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	void loadCrossRef(GAGCore::InputStream *stream, Team *owner);
 	void saveCrossRef(GAGCore::OutputStream *stream);
@@ -82,7 +84,10 @@ public:
 	bool isUnitHungry(void);
 	void standardRandomActivity();
 	
-	int getRealArmor(void);
+	int getRealArmor(void) const;
+	int getRealAttackStrength(void) const;
+	int getNextLevelThreshold(void) const;
+	void incrementExperience(int increment);
 	
 public:
 
@@ -210,6 +215,8 @@ public:
 	Sint32 performance[NB_ABILITY];
 	Sint32 level[NB_ABILITY];
 	bool canLearn[NB_ABILITY];
+	Sint32 experience;
+	Sint32 experienceLevel;
 	
 	// building attraction handling
 	Building *attachedBuilding;
@@ -219,6 +226,9 @@ public:
 	Sint32 destinationPurprose;
 	bool subscribed;
 	int caryedRessource;
+	
+	// gui
+	int levelUpAnimation;
 
 public:
 	void integrity();

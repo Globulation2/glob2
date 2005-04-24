@@ -142,10 +142,14 @@ void UnitType::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	performance[ARMOR] = stream->readSint32("armor");
 	performance[HP] = stream->readSint32("hpMax");
 	
-	if (versionMinor>=39)
+	if (versionMinor >= 39)
 	{
 		harvestDamage = stream->readSint32("harvestDamage");
 		armorReductionPerHappyness = stream->readSint32("armorReductionPerHappyness");
+	}
+	if (versionMinor >= 40)
+	{
+		experiencePerLevel = stream->readSint32("experiencePerLevel");
 	}
 }
 
@@ -178,4 +182,5 @@ void UnitType::save(GAGCore::OutputStream *stream)
 	
 	stream->writeSint32(harvestDamage, "harvestDamage");
 	stream->writeSint32(armorReductionPerHappyness, "armorReductionPerHappyness");
+	stream->writeSint32(experiencePerLevel, "experiencePerLevel");
 }

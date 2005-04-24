@@ -17,7 +17,7 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
-hungryness = 350;
+hungryness = 700;
 
 baseWorker
 {
@@ -108,6 +108,7 @@ baseExplorer
 	
 	walkSpeed = 0;
 	swimSpeed = 0;
+	flySpeed = 20;
 	
 	buildSpeed = 0;
 	harvestSpeed = 0;
@@ -129,19 +130,15 @@ explorer
 {
 	0 : baseExplorer
 	{
-		flySpeed = 16;
 	}
 	1 : baseExplorer
 	{
-		flySpeed = 20;
 	}
 	2 : baseExplorer
 	{
-		flySpeed = 23;
 	}
 	3 : baseExplorer
 	{
-		flySpeed = 25;
 	}
 }
 

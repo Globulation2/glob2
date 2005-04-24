@@ -1614,11 +1614,14 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		imgid+=(delta>>5);
 	}
 
+	// draw unit
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
 	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+
+	// draw selection
 	if (unit==selectedUnit)
 	{
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
@@ -1628,6 +1631,14 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 255, 196, 0);
 		else
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0);
+	}
+
+	// draw xp
+	if (unit->levelUpAnimation)
+	{
+		std::ostringstream oss;
+		oss << unit->experienceLevel;
+		globalContainer->gfx->drawString(px, py - 16 - 2 *( LEVEL_UP_ANIMATION_FRAME_COUNT - unit->levelUpAnimation), globalContainer->standardFont, oss.str(), 0, (255*unit->levelUpAnimation) / LEVEL_UP_ANIMATION_FRAME_COUNT);
 	}
 
 	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))||(Unit::GIDtoTeam(gid)==localTeam)))

@@ -240,7 +240,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		stream->readEnterSection(i);
 		Uint32 isUsed = stream->readUint32("isUsed");
 		if (isUsed)
-			myUnits[i] = new Unit(stream, this);
+			myUnits[i] = new Unit(stream, this, versionMinor);
 		else
 			myUnits[i] = NULL;
 		stream->readLeaveSection();

@@ -27,10 +27,10 @@
 #include "LogFileManager.h"
 #include <Stream.h>
 
-Unit::Unit(GAGCore::InputStream *stream, Team *owner)
+Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
 	logFile = globalContainer->logFileManager->getFile("Unit.log");
-	load(stream, owner);
+	load(stream, owner, versionMinor);
 }
 
 Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
@@ -66,6 +66,9 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 		this->level[i]=level;
 		this->canLearn[i]=(bool)race->getUnitType(typeNum, 1)->performance[i]; //TODO: is is a better way to hack this?
 	}
+	
+	experience = 0;
+	experienceLevel = 0;
 
 	// states
 	needToRecheckMedical=true;
@@ -112,11 +115,14 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	subscribed=false;
 	caryedRessource=-1;
 	
+	// gui
+	levelUpAnimation = 0;
+	
 	// debug vars:
 	verbose=false;
 }
 
-void Unit::load(GAGCore::InputStream *stream, Team *owner)
+void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
 	stream->readEnterSection("Unit");
 	
@@ -172,11 +178,26 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	
+	if (versionMinor >= 40)
+	{
+		experience = stream->readSint32("experience");
+		experienceLevel = stream->readSint32("experienceLevel");
+	}
+	else
+	{
+		experience = 0;
+		experienceLevel = 0;
+	}
 
 	destinationPurprose = stream->readSint32("destinationPurprose");
 	subscribed = (bool)stream->readUint32("subscribed");
 
 	caryedRessource = stream->readSint32("caryedRessource");
+	
+	// gui
+	levelUpAnimation = 0;
+	
 	verbose = false;
 	
 	stream->readLeaveSection();
@@ -235,6 +256,9 @@ void Unit::save(GAGCore::OutputStream *stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	
+	stream->writeSint32(experience, "experience");
+	stream->writeSint32(experienceLevel, "experienceLevel");
 
 	stream->writeSint32(destinationPurprose, "destinationPurprose");
 	stream->writeUint32((Uint32)subscribed, "subscribed");
@@ -430,11 +454,12 @@ void Unit::syncStep(void)
 			int enemyTeam=GIDtoTeam(enemyGUID);
 			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
 			
-			int degats=performance[ATTACK_STRENGTH]-enemy->getRealArmor();
+			int degats=getRealAttackStrength()-enemy->getRealArmor();
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
 			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID);
+			incrementExperience(degats);
 		}
 		else
 		{
@@ -444,13 +469,14 @@ void Unit::syncStep(void)
 				int enemyID=Building::GIDtoID(enemyGBID);
 				int enemyTeam=Building::GIDtoTeam(enemyGBID);
 				Building *enemy=owner->game->teams[enemyTeam]->myBuildings[enemyID];
-				int degats=performance[ATTACK_STRENGTH]-enemy->type->armor;
+				int degats=getRealAttackStrength()-enemy->type->armor;
 				if (degats<=0)
 					degats=1;
 				enemy->hp-=degats;
 				enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyGBID);
 				if (enemy->hp<0)
 					enemy->kill();
+				incrementExperience(degats);
 			}
 		}
 	}
@@ -482,6 +508,10 @@ void Unit::syncStep(void)
 			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther, owner->game->teams);
 		}
 	}
+	
+	// gui
+	if (levelUpAnimation > 0)
+		levelUpAnimation--;
 }
 
 void Unit::selectPreferedMovement(void)
@@ -1660,7 +1690,7 @@ void Unit::handleMovement(void)
 								Unit *u=owner->game->teams[team]->myUnits[id];
 								if (((owner->sharedVisionExchange & tm)==0) || (u->foreingExchangeBuilding==NULL))
 								{
-									int attackStrength=u->performance[ATTACK_STRENGTH];
+									int attackStrength=u->getRealAttackStrength();
 									int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
 									if (verbose)
 										printf("guid=(%d) warrior found unit with newQuality=%d\n", this->gid, newQuality);
@@ -2366,10 +2396,32 @@ Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 	return id+team*1024;
 }
 
-int Unit::getRealArmor(void)
+int Unit::getRealArmor(void) const
 {
 	int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
 	return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
+}
+
+int Unit::getRealAttackStrength(void) const
+{
+	return performance[ATTACK_STRENGTH] + experienceLevel;
+}
+
+int Unit::getNextLevelThreshold(void) const
+{
+	return (experienceLevel + 1) * (experienceLevel + 1) * race->getUnitType(typeNum, level[ATTACK_STRENGTH])->experiencePerLevel;
+}
+
+void Unit::incrementExperience(int increment)
+{
+	int nextLevelThreshold = getNextLevelThreshold();
+	experience += increment;
+	if (experience > nextLevelThreshold)
+	{
+		experienceLevel++;
+		experience -= nextLevelThreshold;
+		levelUpAnimation = LEVEL_UP_ANIMATION_FRAME_COUNT;
+	}
 }
 
 void Unit::integrity()
