@@ -2099,9 +2099,21 @@ void GameGUI::drawUnitInfos(void)
 
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[current speed]"), selUnit->speed).c_str());
 	ypos += YOFFSET_TEXT_PARA+10;
+	
+	if (selUnit->performance[ARMOR])
+	{
+		int armorReductionPerHappyness = selUnit->race->getUnitType(selUnit->typeNum, selUnit->level[ARMOR])->armorReductionPerHappyness;
+		int realArmor = selUnit->performance[ARMOR] - selUnit->fruitCount * armorReductionPerHappyness;
+		if (realArmor < 0)
+			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0));
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s : %d = %d - %d * %d", Toolkit::getStringTable()->getString("[armor]"), realArmor, selUnit->performance[ARMOR], selUnit->fruitCount, armorReductionPerHappyness).c_str());
+		if (realArmor < 0)
+			globalContainer->littleFont->popStyle();
+	}
+	ypos += YOFFSET_TEXT_PARA;
 
 	if (selUnit->typeNum!=EXPLORER)
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s:", Toolkit::getStringTable()->getString("[levels]"), selUnit->speed).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s:", Toolkit::getStringTable()->getString("[levels]")).c_str());
 	ypos += YOFFSET_TEXT_PARA;
 
 	if (selUnit->performance[WALK])

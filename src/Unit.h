@@ -82,6 +82,8 @@ public:
 	bool isUnitHungry(void);
 	void standardRandomActivity();
 	
+	int getRealArmor(void);
+	
 public:
 
 	enum Medical

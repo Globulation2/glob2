@@ -117,7 +117,10 @@ void Sector::step(void)
 				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid);
 				game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
-				game->teams[team]->myUnits[id]->hp -= bullet->shootDamage;
+				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor();
+				if (degats <= 0)
+					degats = 1;
+				game->teams[team]->myUnits[id]->hp -= degats;
 			}
 			else
 			{

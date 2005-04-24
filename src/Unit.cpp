@@ -430,7 +430,7 @@ void Unit::syncStep(void)
 			int enemyTeam=GIDtoTeam(enemyGUID);
 			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
 			
-			int degats=performance[ATTACK_STRENGTH]-enemy->performance[ARMOR];
+			int degats=performance[ATTACK_STRENGTH]-enemy->getRealArmor();
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
@@ -1468,14 +1468,16 @@ void Unit::handleMovement(void)
 		medical == MED_FREE &&
 		(displacement == DIS_RANDOM
 		|| displacement == DIS_GOING_TO_FLAG
-		|| displacement == DIS_CLEARING_RESSOURCES
 		|| displacement == DIS_GOING_TO_RESSOURCE
 		|| displacement == DIS_GOING_TO_BUILDING))
 	{
 		Map *map = owner->map;
 		// TODO : be sure this is the right thing to do and add a decent comment
 		if (movement == MOV_HARVESTING)
+		{
 			map->decRessource(posX + dx, posY + dy);
+			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
+		}
 		for (int tdx = -1; tdx <= 1; tdx++)
 			for (int tdy = -1; tdy <= 1; tdy++)
 			{
@@ -1722,7 +1724,10 @@ void Unit::handleMovement(void)
 		{
 			Map *map=owner->map;
 			if (movement==MOV_HARVESTING)
+			{
 				map->decRessource(posX+dx, posY+dy);
+				hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
+			}
 			
 			int bx=attachedBuilding->posX;
 			int by=attachedBuilding->posY;
@@ -2361,6 +2366,11 @@ Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 	return id+team*1024;
 }
 
+int Unit::getRealArmor(void)
+{
+	int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
+	return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
+}
 
 void Unit::integrity()
 {
