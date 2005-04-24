@@ -39,11 +39,15 @@ public:
 	virtual ~Race();
 	
 	void load();
+	static void loadDefault();
 	
 	UnitType *getUnitType(int type, int level);
 	
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	
+protected:
+	static Race defaultRace;
 };
 
 #endif

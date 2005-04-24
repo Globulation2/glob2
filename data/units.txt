@@ -17,6 +17,8 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
+hungryness = 350;
+
 worker
 {
 	0
@@ -50,7 +52,7 @@ worker
 		armor = 0;
 		hpMax = 200;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 10;
 		armorReductionPerHappyness = 0;
 	}
@@ -85,7 +87,7 @@ worker
 		armor = 0;
 		hpMax = 200;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 10;
 		armorReductionPerHappyness = 0;
 	}
@@ -120,7 +122,7 @@ worker
 		armor = 0;
 		hpMax = 200;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 10;
 		armorReductionPerHappyness = 0;
 	}
@@ -155,7 +157,7 @@ worker
 		armor = 0;
 		hpMax = 200;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 10;
 		armorReductionPerHappyness = 0;
 	}
@@ -337,7 +339,7 @@ warrior
 		armor = 10;
 		hpMax = 25;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 0;
 		armorReductionPerHappyness = 10;
 	}
@@ -372,7 +374,7 @@ warrior
 		armor = 10;
 		hpMax = 25;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 0;
 		armorReductionPerHappyness = 10;
 	}
@@ -407,7 +409,7 @@ warrior
 		armor = 10;
 		hpMax = 25;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 0;
 		armorReductionPerHappyness = 10;
 	}
@@ -442,7 +444,7 @@ warrior
 		armor = 10;
 		hpMax = 25;
 		
-		hungryness = 25;
+		hungryness = 350;
 		harvestDamage = 0;
 		armorReductionPerHappyness = 10;
 	}

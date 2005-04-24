@@ -35,6 +35,8 @@
 #include "Version.h"
 #include "Race.h"
 
+Race Race::defaultRace;
+
 Race::Race()
 {
 }
@@ -44,7 +46,7 @@ Race::~Race()
 	
 }
 
-void Race::load()
+void Race::loadDefault()
 {
 	TextInputStream *stream = new TextInputStream(Toolkit::getFileManager()->openInputStreamBackend("data/units.txt"));
 	if (stream->isEndOfStream())
@@ -55,11 +57,13 @@ void Race::load()
 		return;
 	}
 	
+	defaultRace.hungryness = stream->readSint32("hungryness");
+	
 	stream->readEnterSection("worker");
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
 		stream->readEnterSection(i);
-		unitTypes[0][i].load(stream, VERSION_MINOR);
+		defaultRace.unitTypes[0][i].load(stream, VERSION_MINOR);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -68,7 +72,7 @@ void Race::load()
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
 		stream->readEnterSection(i);
-		unitTypes[1][i].load(stream, VERSION_MINOR);
+		defaultRace.unitTypes[1][i].load(stream, VERSION_MINOR);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -77,12 +81,17 @@ void Race::load()
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
 		stream->readEnterSection(i);
-		unitTypes[2][i].load(stream, VERSION_MINOR);
+		defaultRace.unitTypes[2][i].load(stream, VERSION_MINOR);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	
 	delete stream;
+}
+
+void Race::load()
+{
+	*this = defaultRace;
 }
 
 /*void Race::load()
@@ -244,23 +253,7 @@ bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if (versionMinor >= 34)
 		hungryness = (Sint32)stream->readSint32("hungryness");
 	else
-		hungryness = unitTypes[0][0].hungryness;
+		hungryness = defaultRace.hungryness;
 	
 	return true;
 }
-
-/*
-NOTE : never use this, it is depreciated, replaced by create
-void Race::loadText(const char *filename)
-{
-	SDL_RWops *stream=globalContainer->fileManager->open(filename, "r");
-	
-    for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-		for(int j=0; j<UnitType::NB_UNIT_LEVELS; j++)
-		{
-			unitTypes[i][j].init();
-			unitTypes[i][j].loadText(stream);
-        }
-	SDL_RWclose(stream);
-}
-*/

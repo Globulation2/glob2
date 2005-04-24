@@ -31,6 +31,7 @@
 #include "SoundMixer.h"
 #include "VoiceRecorder.h"
 #include "IntBuildingType.h"
+#include "Race.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -416,6 +417,8 @@ void GlobalContainer::load(void)
 	// load buildings types
 	buildingsTypes.load();
 	IntBuildingType::init();
+	// load default unit types
+	Race::loadDefault();
 	// load ressources types
 	ressourcesTypes.load("data/ressources.txt");
 	
