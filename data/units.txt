@@ -48,6 +48,8 @@ baseWorker
 	hungryness = 350;
 	harvestDamage = 10;
 	armorReductionPerHappyness = 0;
+	
+	experiencePerLevel = 0;
 }
 
 worker
@@ -119,6 +121,8 @@ baseExplorer
 	hungryness = 15;
 	harvestDamage = 0;
 	armorReductionPerHappyness = 0;
+	
+	experiencePerLevel = 0;
 }
 
 explorer
@@ -169,6 +173,8 @@ baseWarrior
 	hungryness = 350;
 	harvestDamage = 0;
 	armorReductionPerHappyness = 10;
+	
+	experiencePerLevel = 20;
 }
 
 warrior
