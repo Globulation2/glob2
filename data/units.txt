@@ -19,434 +19,191 @@
 
 hungryness = 350;
 
+baseWorker
+{
+	startImageStopWalk = 64;
+	startImageStopSwim = 128;
+	startImageStopFly = 0;
+	
+	startImageWalk = 64;
+	startImageSwim = 128;
+	startImageFly = 0;
+	startImageBuild = 192;
+	startImageHarvest = 192;
+	startImageAttack = 0;
+	
+	
+	stopWalkSpeed = 8;
+	stopSwimSpeed = 8;
+	stopFlySpeed = 0;
+	
+	flySpeed = 0;
+	
+	attackSpeed = 0;
+	attackForce = 0;
+	
+	armor = 0;
+	hpMax = 200;
+	
+	hungryness = 350;
+	harvestDamage = 10;
+	armorReductionPerHappyness = 0;
+}
+
 worker
 {
-	0
+	0 : baseWorker
 	{
-		startImageStopWalk = 64;
-		startImageStopSwim = 128;
-		startImageStopFly = 0;
-		
-		startImageWalk = 64;
-		startImageSwim = 128;
-		startImageFly = 0;
-		startImageBuild = 192;
-		startImageHarvest = 192;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
 		walkSpeed = 16;
 		swimSpeed = 0;
-		flySpeed = 0;
 		
 		buildSpeed = 8;
 		harvestSpeed = 8;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 200;
-		
-		hungryness = 350;
-		harvestDamage = 10;
-		armorReductionPerHappyness = 0;
 	}
-	1
+	1 : baseWorker
 	{
-		startImageStopWalk = 64;
-		startImageStopSwim = 128;
-		startImageStopFly = 0;
-		
-		startImageWalk = 64;
-		startImageSwim = 128;
-		startImageFly = 0;
-		startImageBuild = 192;
-		startImageHarvest = 192;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 30;
-		swimSpeed = 20;
-		flySpeed = 0;
+		walkSpeed = 24;
+		swimSpeed = 10;
 		
 		buildSpeed = 12;
 		harvestSpeed = 9;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 200;
-		
-		hungryness = 350;
-		harvestDamage = 10;
-		armorReductionPerHappyness = 0;
 	}
-	2
+	2 : baseWorker
 	{
-		startImageStopWalk = 64;
-		startImageStopSwim = 128;
-		startImageStopFly = 0;
-		
-		startImageWalk = 64;
-		startImageSwim = 128;
-		startImageFly = 0;
-		startImageBuild = 192;
-		startImageHarvest = 192;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 35;
-		swimSpeed = 32;
-		flySpeed = 0;
+		walkSpeed = 32;
+		swimSpeed = 25;
 		
 		buildSpeed = 16;
 		harvestSpeed = 10;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 200;
-		
-		hungryness = 350;
-		harvestDamage = 10;
-		armorReductionPerHappyness = 0;
 	}
-	3
+	3 : baseWorker
 	{
-		startImageStopWalk = 64;
-		startImageStopSwim = 128;
-		startImageStopFly = 0;
-		
-		startImageWalk = 64;
-		startImageSwim = 128;
-		startImageFly = 0;
-		startImageBuild = 192;
-		startImageHarvest = 192;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
 		walkSpeed = 40;
-		swimSpeed = 44;
-		flySpeed = 0;
+		swimSpeed = 40;
 		
 		buildSpeed = 20;
 		harvestSpeed = 11;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 200;
-		
-		hungryness = 350;
-		harvestDamage = 10;
-		armorReductionPerHappyness = 0;
 	}
+}
+
+baseExplorer
+{
+	startImageStopWalk = 0;
+	startImageStopSwim = 0;
+	startImageStopFly = 0;
+	
+	startImageWalk = 0;
+	startImageSwim = 0;
+	startImageFly = 0;
+	startImageBuild = 0;
+	startImageHarvest = 0;
+	startImageAttack = 0;
+	
+	
+	stopWalkSpeed = 8;
+	stopSwimSpeed = 8;
+	stopFlySpeed = 0;
+	
+	walkSpeed = 0;
+	swimSpeed = 0;
+	
+	buildSpeed = 0;
+	harvestSpeed = 0;
+	
+	attackSpeed = 0;
+	attackForce = 0;
+	
+	armor = 0;
+	hpMax = 25;
+	
+	hungryness = 15;
+	harvestDamage = 0;
+	armorReductionPerHappyness = 0;
 }
 
 explorer
 {
-	0
+	0 : baseExplorer
 	{
-		startImageStopWalk = 0;
-		startImageStopSwim = 0;
-		startImageStopFly = 0;
-		
-		startImageWalk = 0;
-		startImageSwim = 0;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 0;
-		swimSpeed = 0;
 		flySpeed = 16;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 25;
-		
-		hungryness = 15;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 0;
 	}
-	1
+	1 : baseExplorer
 	{
-		startImageStopWalk = 0;
-		startImageStopSwim = 0;
-		startImageStopFly = 0;
-		
-		startImageWalk = 0;
-		startImageSwim = 0;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 0;
-		swimSpeed = 0;
 		flySpeed = 20;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 25;
-		
-		hungryness = 15;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 0;
 	}
-	2
+	2 : baseExplorer
 	{
-		startImageStopWalk = 0;
-		startImageStopSwim = 0;
-		startImageStopFly = 0;
-		
-		startImageWalk = 0;
-		startImageSwim = 0;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 0;
-		swimSpeed = 0;
-		flySpeed = 24;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 25;
-		
-		hungryness = 15;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 0;
+		flySpeed = 23;
 	}
-	3
+	3 : baseExplorer
 	{
-		startImageStopWalk = 0;
-		startImageStopSwim = 0;
-		startImageStopFly = 0;
-		
-		startImageWalk = 0;
-		startImageSwim = 0;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 0;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 0;
-		swimSpeed = 0;
-		flySpeed = 28;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
-		
-		attackSpeed = 0;
-		attackForce = 0;
-		
-		armor = 0;
-		hpMax = 25;
-		
-		hungryness = 15;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 0;
+		flySpeed = 25;
 	}
+}
+
+baseWarrior
+{
+	startImageStopWalk = 256;
+	startImageStopSwim = 320;
+	startImageStopFly = 0;
+	
+	startImageWalk = 256;
+	startImageSwim = 320;
+	startImageFly = 0;
+	startImageBuild = 0;
+	startImageHarvest = 0;
+	startImageAttack = 384;
+	
+	stopWalkSpeed = 8;
+	stopSwimSpeed = 8;
+	stopFlySpeed = 0;
+	
+	flySpeed = 0;
+	
+	buildSpeed = 0;
+	harvestSpeed = 0;
+	
+	armor = 10;
+	hpMax = 250;
+	
+	hungryness = 350;
+	harvestDamage = 0;
+	armorReductionPerHappyness = 10;
 }
 
 warrior
 {
-	0
+	0 : baseWarrior
 	{
-		startImageStopWalk = 256;
-		startImageStopSwim = 320;
-		startImageStopFly = 0;
-		
-		startImageWalk = 256;
-		startImageSwim = 320;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 384;
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
 		walkSpeed = 16;
 		swimSpeed = 0;
-		flySpeed = 0;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
 		
 		attackSpeed = 11;
 		attackForce = 8;
-		
-		armor = 10;
-		hpMax = 25;
-		
-		hungryness = 350;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 10;
 	}
-	1
+	1 : baseWarrior
 	{
-		startImageStopWalk = 256;
-		startImageStopSwim = 320;
-		startImageStopFly = 0;
-		
-		startImageWalk = 256;
-		startImageSwim = 320;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 384;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 16;
-		swimSpeed = 0;
-		flySpeed = 0;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
+		walkSpeed = 24;
+		swimSpeed = 10;
 		
 		attackSpeed = 18;
 		attackForce = 16;
-		
-		armor = 10;
-		hpMax = 25;
-		
-		hungryness = 350;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 10;
 	}
-	2
+	2 : baseWarrior
 	{
-		startImageStopWalk = 256;
-		startImageStopSwim = 320;
-		startImageStopFly = 0;
-		
-		startImageWalk = 256;
-		startImageSwim = 320;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 384;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 16;
-		swimSpeed = 0;
-		flySpeed = 0;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
+		walkSpeed = 32;
+		swimSpeed = 20;
 		
 		attackSpeed = 25;
 		attackForce = 24;
-		
-		armor = 10;
-		hpMax = 25;
-		
-		hungryness = 350;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 10;
 	}
-	3
+	3 : baseWarrior
 	{
-		startImageStopWalk = 256;
-		startImageStopSwim = 320;
-		startImageStopFly = 0;
-		
-		startImageWalk = 256;
-		startImageSwim = 320;
-		startImageFly = 0;
-		startImageBuild = 0;
-		startImageHarvest = 0;
-		startImageAttack = 384;
-		
-		
-		stopWalkSpeed = 8;
-		stopSwimSpeed = 8;
-		stopFlySpeed = 0;
-		
-		walkSpeed = 16;
-		swimSpeed = 0;
-		flySpeed = 0;
-		
-		buildSpeed = 0;
-		harvestSpeed = 0;
+		walkSpeed = 40;
+		swimSpeed = 30;
 		
 		attackSpeed = 32;
 		attackForce = 32;
-		
-		armor = 10;
-		hpMax = 25;
-		
-		hungryness = 350;
-		harvestDamage = 0;
-		armorReductionPerHappyness = 10;
 	}
 }
 
