@@ -20,13 +20,18 @@
 */
 
 #include "VoiceRecorder.h"
-#include <speex/speex.h>
 #include <assert.h>
 #include <stdio.h>
 #include "Order.h"
 
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
+#endif
+
+#ifdef SPEEX_DIR
+#include <speex/speex.h>
+#else
+#include <speex.h>
 #endif
 
 #ifdef WIN32
