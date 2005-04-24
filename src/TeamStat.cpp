@@ -150,7 +150,7 @@ void TeamStats::step(Team *team)
 					stat.upgradeState[j][u->level[j]]++;
 			}
 			if (u->typeNum==WARRIOR)
-				stat.totalAttackPower+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH];
+				stat.totalAttackPower+=u->performance[ATTACK_SPEED]*u->getRealAttackStrength();
 			
 			stat.happiness[u->fruitCount]++;
 		}

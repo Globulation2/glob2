@@ -2137,8 +2137,12 @@ void GameGUI::drawUnitInfos(void)
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[ATTACK_STRENGTH])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]).c_str());
-
+	{
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d+%d) : %d+%d", Toolkit::getStringTable()->getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->experienceLevel, selUnit->performance[ATTACK_STRENGTH], selUnit->experienceLevel).c_str());
+		
+		ypos += YOFFSET_TEXT_PARA + 2;
+		drawXPProgressBar(globalContainer->gfx->getW()-128, ypos, selUnit->experience, selUnit->getNextLevelThreshold());
+	}
 }
 
 void GameGUI::drawValueAlignedRight(int y, int v)
@@ -3592,6 +3596,19 @@ void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, in
 	globalContainer->gfx->drawFilledRect(x+16+1, y+3, size, 10, 28, 28, 200);
 	size=(act*94)/max;
 	globalContainer->gfx->drawFilledRect(x+16+1, y+5, size, 6, 28, 200, 28);*/
+}
+
+void GameGUI::drawXPProgressBar(int x, int y, int act, int max)
+{
+	globalContainer->gfx->setClipRect(x+8, y, 112, 16);
+	
+	globalContainer->gfx->setClipRect(x+18, y, 92, 16);
+	globalContainer->gfx->drawSprite(x+18, y+3, globalContainer->gamegui, 10);
+	
+	globalContainer->gfx->setClipRect(x+18, y, (act*92)/max, 16);
+	globalContainer->gfx->drawSprite(x+18, y+4, globalContainer->gamegui, 11);
+	
+	globalContainer->gfx->setClipRect();
 }
 
 void GameGUI::cleanOldSelection(void)

@@ -36,6 +36,7 @@ public:
 	
 	Sint32 harvestDamage;
 	Sint32 armorReductionPerHappyness;
+	Sint32 experiencePerLevel;
 
 public:
 	UnitType() {}

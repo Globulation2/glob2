@@ -1871,9 +1871,9 @@ void Building::turretStep(void)
 							{
 								// score is proportional to speed, probability to hit, attack strength and actual damage being conducted
 								if (testUnit->movement == Unit::MOV_ATTACKING_TARGET)
-									targetScore = 1000 + testUnit->performance[ATTACK_STRENGTH] ;
+									targetScore = 1000 + testUnit->getRealAttackStrength();
 								else
-									targetScore = testUnit->speed/(256-testUnit->delta) + 10*testUnit->performance[ATTACK_STRENGTH] ;
+									targetScore = testUnit->speed/(256-testUnit->delta) + 10*testUnit->getRealAttackStrength();
 								// adjust score for range
 								targetScore = ((range+1)*targetScore)/(i+1);
 								// anything else or warriors with lower scores are overriden
