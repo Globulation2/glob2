@@ -466,8 +466,8 @@ namespace GAGCore
 	{
 		Parser p(backend);
 		p.parse(&table);
-		for (std::map<std::string, std::string>::iterator i = table.begin(); i != table.end(); ++i)
-			std::cout << i->first << " = " << i->second << std::endl;
+		/*for (std::map<std::string, std::string>::iterator i = table.begin(); i != table.end(); ++i)
+			std::cout << i->first << " = " << i->second << std::endl;*/
 	}
 	
 	void TextInputStream::readEnterSection(const char *name)
