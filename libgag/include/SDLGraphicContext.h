@@ -193,6 +193,9 @@ namespace GAGCore
 		virtual int getW(void) { return sdlsurface->w; } 
 		virtual int getH(void) { return sdlsurface->h; }
 		
+		// capability querying
+		virtual bool canDrawStretchedSprite(void) { return false; }
+		
 		// drawing commands
 		virtual void drawPixel(int x, int y, Color color);
 		virtual void drawPixel(float x, float y, Color color);
@@ -290,6 +293,8 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum) { }
 		
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
+		virtual bool canDrawStretchedSprite(void) { return (optionFlags & USEGPU) != 0; }
+		
 		virtual void drawPixel(int x, int y, Color color);
 		virtual void drawPixel(float x, float y, Color color);
 		
