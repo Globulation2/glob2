@@ -85,6 +85,8 @@ public:
 	Sprite *unitmini;
 	Sprite *gamegui;
 	Sprite *brush;
+	Sprite *magiceffect;
+	
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;

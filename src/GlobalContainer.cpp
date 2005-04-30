@@ -462,6 +462,7 @@ void GlobalContainer::load(void)
 		unitmini = Toolkit::getSprite("data/gfx/unitmini");
 		gamegui = Toolkit::getSprite("data/gfx/gamegui");
 		brush = Toolkit::getSprite("data/gfx/brush");
+		magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
 
 		updateLoadProgressBar(100);
 		destroyProgressBar();
