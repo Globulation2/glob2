@@ -24,6 +24,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
+#include <algorithm>
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -57,16 +58,10 @@ void EndGameStat::paint(void)
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	
 	// find maximum
-	int team, pos, maxValue=0;
+	int team, pos, maxValue = 1;
 	for (team=0; team < game->session.numberOfTeam; team++)
-	{
 		for (pos=0; pos<TeamStats::END_OF_GAME_STATS_SIZE; pos++)
-		{
-			int val=game->teams[team]->stats.endOfGameStats[pos].value[type];
-			if (val>maxValue)
-				maxValue=val;
-		}
-	}
+			maxValue = std::max(maxValue, game->teams[team]->stats.endOfGameStats[pos].value[type]);
 	
 	// draw curve
 	if (maxValue)
@@ -93,6 +88,8 @@ void EndGameStat::paint(void)
 
 				ox = nx;
 				oy = ny;
+				
+				//std::cout << pos << " : " << team << " : " << game->teams[team]->stats.endOfGameStats[index].value[type] << std::endl;
 			}
 		}
 	}
