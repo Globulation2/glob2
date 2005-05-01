@@ -343,6 +343,9 @@ namespace GAGCore
 		
 		//! Save a bmp of the screen to a file, bypass virtual filesystem
 		virtual void printScreen(const char *filename);
+		
+		//! Return the option flags
+		Uint32 getOptionFlags(void) { return optionFlags; }
 	};
 	
 	//! A sprite is a collection of images (frames) that can be displayed one after another to make an animation
