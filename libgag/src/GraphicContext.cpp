@@ -36,20 +36,19 @@
 #endif
 
 #ifdef HAVE_OPENGL
-# ifdef __APPLE__
-#  include <OpenGL/gl.h>
-#  include <OpenGL/glext.h>
-#  include <OpenGL/glu.h>
-//TODO clean this ! chez apple ???
-#  define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
-# else
-#  include <GL/gl.h>
-#  include <GL/glu.h>
-# endif
+	#if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
+		#include <OpenGL/gl.h>
+		#include <OpenGL/glext.h>
+		#include <OpenGL/glu.h>
+		#define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
+	#else
+		#include <GL/gl.h>
+		#include <GL/glu.h>
+	#endif
 #endif
 
 #ifdef WIN32
-#include <GL/glext.h>
+	#include <GL/glext.h>
 #endif
 
 namespace GAGCore
