@@ -54,9 +54,21 @@ XIPH_PATH_VORBIS
 dnl Open GL support
 have_opengl=yes
 AC_ARG_ENABLE(opengl, [  --disable-opengl        Disable the OpenGL renderer even if available (default is enabled)],have_opengl=no,)
+# test for GL/
 if test "$have_opengl" = "yes"; then
 	AC_CHECK_HEADER(GL/gl.h,,have_opengl=no)
 	AC_CHECK_HEADER(GL/glu.h,,have_opengl=no)
+	AC_DEFINE([OPENGL_HEADER_DIRECTORY_GL],,[OpenGL headers are in GL/ if HAVE_OPENGL is defined])
+fi
+# test for OpenGL/
+if test "$have_opengl" = "no"; then
+	have_opengl=yes
+	AC_CHECK_HEADER(OpenGL/gl.h,,have_opengl=no)
+	AC_CHECK_HEADER(OpenGL/glu.h,,have_opengl=no)
+       	AC_DEFINE([OPENGL_HEADER_DIRECTORY_OPENGL],,[OpenGL headers are in OpenGL/ if HAVE_OPENGL is defined])
+fi
+
+if test "$have_opengl" = "yes"; then
 	AC_CHECK_LIB(GL, glBegin,,have_opengl=no,-lpthread)
 	AC_CHECK_LIB(GLU, gluOrtho2D,,have_opengl=no,-lpthread)
 fi
