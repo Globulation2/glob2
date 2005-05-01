@@ -265,8 +265,8 @@ void SettingsScreen::updateGfxCtx(void)
 std::string SettingsScreen::actDisplayModeToString(void)
 {
 	std::ostringstream oss;
-	oss << globalContainer->settings.screenWidth << "x" << globalContainer->settings.screenHeight;
-	if (globalContainer->settings.screenFlags & GraphicContext::USEGPU)
+	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		oss << " GL";
 	else
 		oss << " SDL";
