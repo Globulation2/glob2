@@ -278,6 +278,15 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 
 	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();
+	
+	std::ostringstream oss;
+	oss << globalContainer->settings.screenWidth << "x" << globalContainer->settings.screenHeight;
+	if (globalContainer->settings.screenFlags & GraphicContext::USEGPU)
+		oss << " GL";
+	else
+		oss << " SDL";
+		
+	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 }
 
 void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)
