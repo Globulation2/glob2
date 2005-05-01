@@ -25,6 +25,10 @@ AC_HAVE_HEADERS(string.h sys/time.h assert.h)
 
 dnl Libraries
 
+dnl Check for zlib
+AC_CHECK_HEADER(zlib.h,)
+AC_CHECK_LIB(z,gzdopen,,AC_MSG_ERROR([*** zlib library not found. Please install zlib (http://www.gzip.org/zlib).]))
+
 dnl Check for Speex
 have_speex=no
 AC_CHECK_HEADER(speex/speex.h,have_speex=yes,)
