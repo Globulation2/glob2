@@ -95,7 +95,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	// warriors wait more tiem before going to eat
 	hungry=HUNGRY_MAX;
-	if (this->performance[ATTACK_SPEED])
+	if (performance[ATTACK_SPEED])
 		trigHungry=(hungry*2)/10;
 	else
 		trigHungry=hungry/4;
@@ -876,8 +876,8 @@ void Unit::handleActivity(void)
 				printf("guid=(%d) no job found.\n", gid);
 			
 			// nothing to do:
-			// we go to a heal building if we'r not fully healed:
-			if (hp<performance[HP])
+			// we go to a heal building if we'r not fully healed: (1/8 trigger)
+			if (hp+(performance[HP]/10) < performance[HP])
 			{
 				Building *b;
 				b=owner->findNearestHeal(this);
@@ -1480,16 +1480,19 @@ void Unit::handleDisplacement(void)
 				if (destinationPurprose==FEED)
 				{
 					insideTimeout=-attachedBuilding->type->timeToFeedUnit;
+					speed=attachedBuilding->type->insideSpeed;
 				}
 				else if (destinationPurprose==HEAL)
 				{
+					//insideTimeout=-(attachedBuilding->type->timeToHealUnit*(performance[HP]-hp))/performance[HP];
 					insideTimeout=-attachedBuilding->type->timeToHealUnit;
+					speed=(attachedBuilding->type->insideSpeed*performance[HP])/(performance[HP]-hp);
 				}
 				else
 				{
 					insideTimeout=-attachedBuilding->type->upgradeTime[destinationPurprose];
+					speed=attachedBuilding->type->insideSpeed;
 				}
-				speed=attachedBuilding->type->insideSpeed;
 			}
 			else if (displacement==DIS_INSIDE)
 			{

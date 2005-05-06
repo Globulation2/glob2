@@ -2158,7 +2158,7 @@ void GameGUI::drawUnitInfos(void)
 	
 	if (selUnit->performance[MAGIC_ATTACK])
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[Magic At.]"), 1+selUnit->experienceLevel).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Magic At.]"), selUnit->experienceLevel, 1+selUnit->experienceLevel).c_str());
 		
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
