@@ -123,14 +123,14 @@ baseExplorer
 	
 	magicAttack = 4;
 	
-	armor = 0;
-	hpMax = 25;
+	armor = -1;
+	hpMax = 50;
 	
-	hungryness = 15;
+	hungryness = 350;
 	harvestDamage = 0;
-	armorReductionPerHappyness = 0;
+	armorReductionPerHappyness = 1;
 	
-	experiencePerLevel = 100;
+	experiencePerLevel = 50;
 }
 
 explorer
