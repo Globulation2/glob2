@@ -200,6 +200,7 @@
 [Harvest]
 [At. speed]
 [At. strength]
+[Magic At.]
 [Total]
 [free]
 [seeking]

@@ -1906,10 +1906,10 @@ void Building::turretStep(void)
 				// shoot building only if no unit is found
 				if (targetFound == TARGETTYPE_NONE)
 				{
-					int targetGBID = map->getBuilding(targetX, targetY);
+					Uint16 targetGBID = map->getBuilding(targetX, targetY);
 					if (targetGBID != NOGBID)
 					{
-						int otherTeam = Building::GIDtoTeam(targetGBID);
+						Sint32 otherTeam = Building::GIDtoTeam(targetGBID);
 						//int otherID = Building::GIDtoID(targetGBID);
 						Uint32 otherTeamMask = 1<<otherTeam;
 						if (enemies & otherTeamMask)

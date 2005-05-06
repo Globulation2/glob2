@@ -42,6 +42,11 @@ baseWorker
 	attackSpeed = 0;
 	attackForce = 0;
 	
+	magicAttack = 0;
+	magicCreateWood = 0;
+	magicCreateCorn = 0;
+	magicCreateAlga = 0;
+	
 	armor = 0;
 	hpMax = 200;
 	
@@ -116,6 +121,8 @@ baseExplorer
 	attackSpeed = 0;
 	attackForce = 0;
 	
+	magicAttack = 4;
+	
 	armor = 0;
 	hpMax = 25;
 	
@@ -123,22 +130,34 @@ baseExplorer
 	harvestDamage = 0;
 	armorReductionPerHappyness = 0;
 	
-	experiencePerLevel = 0;
+	experiencePerLevel = 100;
 }
 
 explorer
 {
 	0 : baseExplorer
 	{
+		magicCreateWood = 0;
+		magicCreateCorn = 0;
+		magicCreateAlga = 0;
 	}
 	1 : baseExplorer
 	{
+		magicCreateWood = 4;
+		magicCreateCorn = 4;
+		magicCreateAlga = 4;
 	}
 	2 : baseExplorer
 	{
+		magicCreateWood = 3;
+		magicCreateCorn = 3;
+		magicCreateAlga = 3;
 	}
 	3 : baseExplorer
 	{
+		magicCreateWood = 2;
+		magicCreateCorn = 2;
+		magicCreateAlga = 2;
 	}
 }
 
@@ -163,6 +182,11 @@ baseWarrior
 	
 	buildSpeed = 0;
 	harvestSpeed = 0;
+	
+	magicAttack = 0;
+	magicCreateWood = 0;
+	magicCreateCorn = 0;
+	magicCreateAlga = 0;
 	
 	armor = 10;
 	hpMax = 250;

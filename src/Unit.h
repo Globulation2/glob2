@@ -28,6 +28,7 @@
 #include "UnitConsts.h"
 
 #define LEVEL_UP_ANIMATION_FRAME_COUNT 20
+#define MAGIC_ACTION_ANIMATION_FRAME_COUNT 8
 
 class Team;
 class Race;
@@ -157,6 +158,7 @@ public:
 	
 protected:
 	void stopAttachedForBuilding(bool goingInside);
+	void handleMagic(void);
 	void handleMedical(void);
 	void handleActivity(void);
 	void handleDisplacement(void);
@@ -199,6 +201,7 @@ public:
 	Movement movement;
 	Abilities action;
 	Sint32 targetX, targetY;
+	Sint32 magicActionTimeout;
 
 	// trigger parameters
 	Sint32 hp; // (Uint8)
@@ -229,6 +232,7 @@ public:
 	
 	// gui
 	int levelUpAnimation;
+	int magicActionAnimation;
 
 public:
 	void integrity();

@@ -1188,10 +1188,23 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 				}
 				break;
 			case SDLK_v :
-				if (pressed)
-					globalContainer->rec->startRecording();
-				else if (!shift)
-					globalContainer->rec->stopRecording();
+				if (shift)
+				{
+					if (pressed)
+					{
+						if (globalContainer->rec->recordingNow)
+							globalContainer->rec->stopRecording();
+						else
+							globalContainer->rec->startRecording();
+					}
+				}
+				else
+				{
+					if (pressed)
+						globalContainer->rec->startRecording();
+					else if (!shift)
+						globalContainer->rec->stopRecording();
+				}
 				break;
 			case SDLK_RETURN :
 				if (pressed)
@@ -2141,8 +2154,17 @@ void GameGUI::drawUnitInfos(void)
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d+%d) : %d+%d", Toolkit::getStringTable()->getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->experienceLevel, selUnit->performance[ATTACK_STRENGTH], selUnit->experienceLevel).c_str());
 		
 		ypos += YOFFSET_TEXT_PARA + 2;
-		drawXPProgressBar(globalContainer->gfx->getW()-128, ypos, selUnit->experience, selUnit->getNextLevelThreshold());
 	}
+	
+	if (selUnit->performance[MAGIC_ATTACK])
+	{
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[Magic At.]"), 1+selUnit->experienceLevel).c_str());
+		
+		ypos += YOFFSET_TEXT_PARA + 2;
+	}
+	
+	if ((selUnit->performance[ATTACK_STRENGTH]) || (selUnit->performance[MAGIC_ATTACK]))
+		drawXPProgressBar(globalContainer->gfx->getW()-128, ypos, selUnit->experience, selUnit->getNextLevelThreshold());
 }
 
 void GameGUI::drawValueAlignedRight(int y, int v)
