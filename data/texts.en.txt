@@ -402,6 +402,8 @@ Harvest
 Att. speed
 [At. strength]
 Att. strength
+[Magic At.]
+Magic attack
 [Total]
 Total
 [free]

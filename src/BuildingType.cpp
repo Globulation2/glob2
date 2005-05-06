@@ -42,7 +42,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(flagImage,"flagImage");
 	configBlock->load(crossConnectMultiImage,"crossConnectMultiImage");
 	
-	assert(NB_ABILITY == 12);
+	assert(NB_ABILITY == 16);
 	configBlock->load(upgrade[0], "upgradeStopWalk");
 	configBlock->load(upgrade[1], "upgradeStopSwim");
 	configBlock->load(upgrade[2], "upgradeStopFly");
@@ -53,8 +53,12 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgrade[7], "upgradeHarvest");
 	configBlock->load(upgrade[8], "upgradeAttackSpeed");
 	configBlock->load(upgrade[9], "upgradeAttackStrength");
-	configBlock->load(upgrade[10], "upgradeArmor");
-	configBlock->load(upgrade[11], "upgradeHP");
+	configBlock->load(upgrade[10], "upgradeMagicAttack");
+	configBlock->load(upgrade[11], "upgradeMagicCreateWood");
+	configBlock->load(upgrade[12], "upgradeMagicCreateCorn");
+	configBlock->load(upgrade[13], "upgradeMagicCreateAlga");
+	configBlock->load(upgrade[14], "upgradeArmor");
+	configBlock->load(upgrade[15], "upgradeHP");
 	configBlock->load(upgradeTime[0], "upgradeTimeStopWalk");
 	configBlock->load(upgradeTime[1], "upgradeTimeStopSwim");
 	configBlock->load(upgradeTime[2], "upgradeTimeStopFly");
@@ -65,8 +69,12 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgradeTime[7], "upgradeTimeHarvest");
 	configBlock->load(upgradeTime[8], "upgradeTimeAttackSpeed");
 	configBlock->load(upgradeTime[9], "upgradeTimeAttackStrength");
-	configBlock->load(upgradeTime[10], "upgradeTimeArmor");
-	configBlock->load(upgradeTime[11], "upgradeTimeHP");
+	configBlock->load(upgradeTime[10], "upgradeTimeMagicAttack");
+	configBlock->load(upgradeTime[11], "upgradeTimeMagicCreateWood");
+	configBlock->load(upgradeTime[12], "upgradeTimeMagicCreateCorn");
+	configBlock->load(upgradeTime[13], "upgradeTimeMagicCreateAlga");
+	configBlock->load(upgradeTime[14], "upgradeTimeArmor");
+	configBlock->load(upgradeTime[15], "upgradeTimeHP");
 	
 	configBlock->load(foodable, "foodable");
 	configBlock->load(fillable, "fillable");

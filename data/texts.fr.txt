@@ -402,6 +402,8 @@ Récolte
 Vitesse at.
 [At. strength]
 Force at.
+[Magic At.]
+Attaque magique
 [Total]
 Total
 [free]

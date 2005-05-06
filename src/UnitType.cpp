@@ -139,6 +139,13 @@ void UnitType::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	performance[HARVEST] = stream->readSint32("harvestSpeed");
 	performance[ATTACK_SPEED] = stream->readSint32("attackSpeed");
 	performance[ATTACK_STRENGTH] = stream->readSint32("attackForce");
+	if (versionMinor >= 41)
+	{
+		performance[MAGIC_ATTACK] = stream->readSint32("magicAttack");
+		performance[MAGIC_CREATE_WOOD] = stream->readSint32("magicCreateWood");
+		performance[MAGIC_CREATE_CORN] = stream->readSint32("magicCreateCorn");
+		performance[MAGIC_CREATE_ALGA] = stream->readSint32("magicCreateAlga");
+	}
 	performance[ARMOR] = stream->readSint32("armor");
 	performance[HP] = stream->readSint32("hpMax");
 	
@@ -177,6 +184,10 @@ void UnitType::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(performance[HARVEST], "harvestSpeed");
 	stream->writeSint32(performance[ATTACK_SPEED], "attackSpeed");
 	stream->writeSint32(performance[ATTACK_STRENGTH], "attackForce");
+	stream->writeSint32(performance[MAGIC_ATTACK], "magicAttack");
+	stream->writeSint32(performance[MAGIC_CREATE_WOOD], "magicCreateWood");
+	stream->writeSint32(performance[MAGIC_CREATE_CORN], "magicCreateCorn");
+	stream->writeSint32(performance[MAGIC_CREATE_ALGA], "magicCreateAlga");
 	stream->writeSint32(performance[ARMOR], "armor");
 	stream->writeSint32(performance[HP], "hpMax");
 	

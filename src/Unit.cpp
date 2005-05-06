@@ -82,6 +82,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	targetX=0;
 	targetY=0;
+	magicActionTimeout=0;
 
 	// trigger parameters
 	hp=0;
@@ -117,6 +118,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	
 	// gui
 	levelUpAnimation = 0;
+	magicActionAnimation = 0;
 	
 	// debug vars:
 	verbose=false;
@@ -155,6 +157,11 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	action = (Abilities)stream->readUint32("action");
 	targetX = (Sint32)stream->readSint32("targetX");
 	targetY = (Sint32)stream->readSint32("targetY");
+	
+	if (versionMinor >= 41)
+		magicActionTimeout = stream->readSint32("magicActionTimeout");
+	else
+		magicActionTimeout = 0;
 
 	// trigger parameters
 	hp = stream->readSint32("hp");
@@ -171,11 +178,20 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	stream->readEnterSection("abilities");
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		stream->readEnterSection(i);
-		performance[i] = stream->readSint32("performance");
-		level[i] = stream->readSint32("level");
-		canLearn[i] = (bool)stream->readUint32("canLearn");
-		stream->readLeaveSection();
+		if ((versionMinor < 41) && (i >= 10) && (i < 14))
+		{
+			performance[i] = race->getUnitType(typeNum, 0)->performance[i];
+			level[i] = 0;
+			canLearn[i] = (bool)race->getUnitType(typeNum, 1)->performance[i];
+		}
+		else
+		{
+			stream->readEnterSection(i);
+			performance[i] = stream->readSint32("performance");
+			level[i] = stream->readSint32("level");
+			canLearn[i] = (bool)stream->readUint32("canLearn");
+			stream->readLeaveSection();
+		}
 	}
 	stream->readLeaveSection();
 	
@@ -191,12 +207,16 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	}
 
 	destinationPurprose = stream->readSint32("destinationPurprose");
+	if (versionMinor < 41 && destinationPurprose >= 10)
+		destinationPurprose += 4;
+	
 	subscribed = (bool)stream->readUint32("subscribed");
 
 	caryedRessource = stream->readSint32("caryedRessource");
 	
 	// gui
 	levelUpAnimation = 0;
+	magicActionAnimation = 0;
 	
 	verbose = false;
 	
@@ -234,6 +254,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeUint32((Uint32)action, "action");
 	stream->writeSint32(targetX, "targetX");
 	stream->writeSint32(targetY, "targetY");
+	stream->writeSint32(magicActionTimeout, "magicActionTimeout");
 
 	// trigger parameters
 	stream->writeSint32(hp, "hp");
@@ -512,6 +533,8 @@ void Unit::syncStep(void)
 	// gui
 	if (levelUpAnimation > 0)
 		levelUpAnimation--;
+	if (magicActionAnimation > 0)
+		magicActionAnimation--;
 }
 
 void Unit::selectPreferedMovement(void)
@@ -600,6 +623,84 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	assert(needToRecheckMedical);
 }
 
+void Unit::handleMagic(void)
+{
+	assert(medical==MED_FREE);
+	assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
+	
+	magicActionTimeout--;
+	if (magicActionTimeout > 0)
+		return;
+	
+	Map *map = &owner->game->map;
+	Team **teams = owner->game->teams;
+	
+	bool hasUsedMagicAction = false;
+	if (performance[MAGIC_ATTACK])
+	{
+		for (int yi=posY-3; yi<=posY+3; yi++)
+			for (int xi=posX-3; xi<=posX+3; xi++)
+			{
+				// damaging enemy units:
+				for (int altitude=0; altitude<2; altitude++)
+				{
+					Uint16 targetGUID;
+					if (altitude)
+						targetGUID = map->getAirUnit(xi, yi);
+					else
+						targetGUID = map->getGroundUnit(xi, yi);
+					if (targetGUID != NOGUID)
+					{
+						Sint32 targetTeam = Unit::GIDtoTeam(targetGUID);
+						Uint16 targetID = Unit::GIDtoID(targetGUID);
+						Uint32 targetTeamMask = 1<<targetTeam;
+						if (owner->enemies & targetTeamMask)
+						{
+							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
+							Sint32 damage = experienceLevel + altitude - enemyUnit->performance[ARMOR];
+							if (damage > 0)
+							{
+								enemyUnit->hp -= damage;
+								enemyUnit->owner->setEvent(xi, yi, Team::UNIT_UNDER_ATTACK_EVENT, targetGUID);
+								incrementExperience(damage);
+								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
+								hasUsedMagicAction = true;
+							}
+						}
+					}
+				}
+				// damaging enemy buildings:
+				Uint16 targetGBID = map->getBuilding(xi, yi);
+				if (targetGBID != NOGBID)
+				{
+					Sint32 targetTeam = Building::GIDtoTeam(targetGBID);
+					Uint16 targetID = Building::GIDtoID(targetGBID);
+					Uint32 targetTeamMask = 1<<targetTeam;
+					if (owner->enemies & targetTeamMask)
+					{
+						Building *enemyBuilding = teams[targetTeam]->myBuildings[targetID];
+						Sint32 damage = experienceLevel - enemyBuilding->type->armor;
+						if (damage > 0)
+						{
+							enemyBuilding->hp -= damage;
+							enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID);
+							if (enemyBuilding->hp <= 0)
+								enemyBuilding->kill();
+							incrementExperience(damage);
+							magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
+							hasUsedMagicAction = true;
+						}
+					}
+				}
+			}
+			
+		if (hasUsedMagicAction)
+			magicActionTimeout = performance[MAGIC_ATTACK];
+	}
+	
+	
+}
+
 void Unit::handleMedical(void)
 {
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
@@ -663,6 +764,8 @@ void Unit::handleActivity(void)
 	
 	if (medical==MED_FREE)
 	{
+		handleMagic();
+		
 		if (activity==ACT_RANDOM)
 		{
 			// look for a "job"
