@@ -1008,6 +1008,8 @@ upgradeBuild 1
 upgradeTimeBuild 7
 upgradeHarvest 1
 upgradeTimeHarvest 4
+upgradeMagicAttackGround 1
+upgradeTimeMagicAttackGround 14
 
 width 2
 height 2
