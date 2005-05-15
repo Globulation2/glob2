@@ -64,7 +64,8 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	{
 		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
 		this->level[i]=level;
-		this->canLearn[i]=(bool)race->getUnitType(typeNum, 1)->performance[i]; //TODO: is is a better way to hack this?
+		this->canLearn[i]=(bool)race->getUnitType(typeNum, 3)->performance[i]; //TODO: is is a better way to hack this?
+		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceedings levels
 	}
 	
 	experience = 0;
