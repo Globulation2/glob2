@@ -402,8 +402,10 @@ Harvest
 Att. speed
 [At. strength]
 Att. strength
-[Magic At.]
-Magic attack
+[Magic At. Air]
+Air dmg.
+[Magic At. Ground]
+Ground dmg.
 [Total]
 Total
 [free]

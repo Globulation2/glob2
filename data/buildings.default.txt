@@ -42,7 +42,8 @@ upgradeBuild 0
 upgradeHarvest 0
 upgradeAttackSpeed 0
 upgradeAttackStrength 0
-upgradeMagicAttack 0
+upgradeMagicAttackAir 0
+upgradeMagicAttackGround 0
 upgradeMagicCreateWood 0
 upgradeMagicCreateCorn 0
 upgradeMagicCreateAlga 0
@@ -59,7 +60,8 @@ upgradeTimeBuild 0
 upgradeTimeHarvest 0
 upgradeTimeAttackSpeed 0
 upgradeTimeAttackStrength 0
-upgradeTimeMagicAttack 0
+upgradeTimeMagicAttackAir 0
+upgradeTimeMagicAttackGround 0
 upgradeTimeMagicCreateWood 0
 upgradeTimeMagicCreateCorn 0
 upgradeTimeMagicCreateAlga 0

@@ -21,6 +21,7 @@ To compile glob2 from CVS, you need the following libraries and programs:
 - libsdl-net1.2
 - libsdl-image1.2
 - libspeex
+- libvorbis
 Of course, you need the development version of the libs.
 
 
