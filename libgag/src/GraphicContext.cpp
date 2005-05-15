@@ -55,6 +55,7 @@ namespace GAGCore
 {
 	// static local pointer to the actual graphic context
 	static GraphicContext *_gc = NULL;
+	static SDL_PixelFormat _glFormat;
 	
 	// Color
 	Uint32 Color::pack() const
@@ -188,22 +189,17 @@ namespace GAGCore
 	
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
-		SDL_Surface *s;
+		SDL_Surface *dest;
 		if (_gc->sdlsurface->format->BitsPerPixel == 32)
 		{
-			s = SDL_DisplayFormatAlpha(source);
+			dest = SDL_DisplayFormatAlpha(source);
 		}
 		else
 		{
-			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-			s = SDL_CreateRGBSurface(SDL_SWSURFACE, source->w, source->h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-			#else
-			s = SDL_CreateRGBSurface(SDL_SWSURFACE, source->w, source->h, 32, 0xff0000, 0xff00, 0xff, 0xff000000);
-			#endif
-			SDL_BlitSurface(source, NULL, s, NULL);
+			dest = SDL_ConvertSurface(source, &_glFormat, SDL_SWSURFACE);
 		}
-		assert(s);
-		return s;
+		assert(dest);
+		return dest;
 	}
 	
 	// Drawable surface
@@ -351,27 +347,7 @@ namespace GAGCore
 		if (sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		
-		Uint32 rmask, gmask, bmask, amask;
-		if (_gc->sdlsurface->format->BitsPerPixel == 32)
-		{
-			rmask = _gc->sdlsurface->format->Rmask;
-			gmask = _gc->sdlsurface->format->Gmask;
-			bmask = _gc->sdlsurface->format->Bmask;
-		}
-		else
-		{
-			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-				rmask = 0x000000ff;
-				gmask = 0x0000ff00;
-				bmask = 0x00ff0000;
-			#else
-				rmask = 0x00ff0000;
-				gmask = 0x0000ff00;
-				bmask = 0x000000ff;
-			#endif
-		}
-		amask = 0xff000000;
-		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, rmask, gmask, bmask, amask);
+		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, _glFormat.Rmask, _glFormat.Gmask, _glFormat.Bmask, _glFormat.Amask);
 		assert(sdlsurface);
 		setClipRect();
 		initTextureSize();
@@ -1682,6 +1658,41 @@ namespace GAGCore
 		// create surface
 		sdlsurface = SDL_SetVideoMode(w, h, 32, sdlFlags);
 		_gc = this;
+		
+		// set _glFormat
+		if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
+		{
+			_glFormat.palette = NULL;
+			_glFormat.BitsPerPixel = 32;
+			_glFormat.BytesPerPixel = 4;
+			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+			_glFormat.Rmask = 0x000000ff;
+			_glFormat.Rshift = 0;
+			_glFormat.Gmask = 0x0000ff00;
+			_glFormat.Gshift = 8;
+			_glFormat.Bmask = 0x00ff0000;
+			_glFormat.Bshift = 16;
+			#else
+			_glFormat.Rmask = 0x00ff0000;
+			_glFormat.Rshift = 16;
+			_glFormat.Gmask = 0x0000ff00;
+			_glFormat.Gshift = 8;
+			_glFormat.Bmask = 0x000000ff;
+			_glFormat.Bshift = 0;
+			#endif
+			_glFormat.Amask = 0xff000000;
+			_glFormat.Ashift = 24;
+			_glFormat.Rloss = 8;
+			_glFormat.Gloss = 8;
+			_glFormat.Bloss = 8;
+			_glFormat.Aloss = 8;
+			_glFormat.colorkey = 0;
+			_glFormat.alpha = 255;
+		}
+		else
+		{
+			memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
+		}
 		
 		// check surface
 		if (!sdlsurface)
