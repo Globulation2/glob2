@@ -186,6 +186,26 @@ namespace GAGCore
 	} glState;
 	#endif
 	
+	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
+	{
+		SDL_Surface *s;
+		if (_gc->sdlsurface->format->BitsPerPixel == 32)
+		{
+			s = SDL_DisplayFormatAlpha(source);
+		}
+		else
+		{
+			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+			s = SDL_CreateRGBSurface(SDL_SWSURFACE, source->w, source->h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+			#else
+			s = SDL_CreateRGBSurface(SDL_SWSURFACE, source->w, source->h, 32, 0xff0000, 0xff00, 0xff, 0xff000000);
+			#endif
+			SDL_BlitSurface(source, NULL, s, NULL);
+		}
+		assert(s);
+		return s;
+	}
+	
 	// Drawable surface
 	DrawableSurface::DrawableSurface(const char *imageFileName)
 	{
@@ -214,7 +234,7 @@ namespace GAGCore
 	{
 		assert(sourceSurface);
 		// beurk, const cast here becasue SDL API sucks
-		sdlsurface = SDL_DisplayFormatAlpha(const_cast<SDL_Surface *>(sourceSurface));
+		sdlsurface = convertForUpload(const_cast<SDL_Surface *>(sourceSurface));
 		assert(sdlsurface);
 		setClipRect();
 		allocateTexture();
@@ -341,13 +361,13 @@ namespace GAGCore
 		else
 		{
 			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-				rmask = 0x00ff0000;
-				gmask = 0x0000ff00;
-				bmask = 0x000000ff;
-			#else
 				rmask = 0x000000ff;
 				gmask = 0x0000ff00;
 				bmask = 0x00ff0000;
+			#else
+				rmask = 0x00ff0000;
+				gmask = 0x0000ff00;
+				bmask = 0x000000ff;
 			#endif
 		}
 		amask = 0xff000000;
@@ -409,17 +429,8 @@ namespace GAGCore
 				{
 					if (sdlsurface)
 						SDL_FreeSurface(sdlsurface);
-					if (_gc->sdlsurface->format->BitsPerPixel == 32)
-					{
-						sdlsurface = SDL_DisplayFormatAlpha(loadedSurface);
-						assert(sdlsurface);
-						SDL_FreeSurface(loadedSurface);
-					}
-					else
-					{
-						assert(loadedSurface->format->BitsPerPixel == 32);
-						sdlsurface = loadedSurface;
-					}
+					sdlsurface = convertForUpload(loadedSurface);
+					SDL_FreeSurface(loadedSurface);
 					setClipRect();
 					dirty = true;
 					return true;
