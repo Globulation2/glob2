@@ -62,7 +62,7 @@ namespace GAGCore
 	// Color
 	Uint32 Color::pack() const
 	{
-		return SDL_MapRGB(&_glFormat, r, g, b) | (a << 24);
+		return (SDL_MapRGB(&_glFormat, r, g, b) & 0x00ffffff) | (a << 24);
 	}
 	
 	void  Color::unpack(const Uint32 packedValue)
