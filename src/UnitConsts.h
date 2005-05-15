@@ -35,19 +35,20 @@ enum Abilities
 	
 	ATTACK_STRENGTH=9,
 	
-	MAGIC_ATTACK=10,
-	MAGIC_CREATE_WOOD=11,
-	MAGIC_CREATE_CORN=12,
-	MAGIC_CREATE_ALGA=13,
+	MAGIC_ATTACK_AIR=10,
+	MAGIC_ATTACK_GROUND=11,
+	MAGIC_CREATE_WOOD=12,
+	MAGIC_CREATE_CORN=13,
+	MAGIC_CREATE_ALGA=14,
 	
-	ARMOR=14, /* old 10 */
-	HP=15, /* old 11 */
+	ARMOR=15, /* old 10 */
+	HP=16, /* old 11 */
 	
-	HEAL=16, /* old 12 */
-	FEED=17 /* old 13 */
+	HEAL=17, /* old 12 */
+	FEED=18 /* old 13 */
 };
 const int NB_MOVE=9;
-const int NB_ABILITY=16;
+const int NB_ABILITY=17;
 
 
 const int WORKER=0;

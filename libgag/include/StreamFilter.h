@@ -24,6 +24,10 @@
 
 namespace GAGCore
 {
+	// WARNING, does not work as it, please fix
+	// TODO : FIX
+	// FIXME : TODO
+	
 	//! Uncompress from a StreamBackend
 	class CompressedInputStreamBackendFilter : public MemoryStreamBackend
 	{

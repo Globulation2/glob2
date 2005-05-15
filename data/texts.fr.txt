@@ -402,8 +402,10 @@ Récolte
 Vitesse at.
 [At. strength]
 Force at.
-[Magic At.]
-Attaque magique
+[Magic At. Air]
+Dmg. air
+[Magic At. Ground]
+Dmg. sol
 [Total]
 Total
 [free]

@@ -178,7 +178,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	stream->readEnterSection("abilities");
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		if ((versionMinor < 41) && (i >= 10) && (i < 14))
+		if ((versionMinor < 41) && (i >= 10) && (i < 15))
 		{
 			performance[i] = race->getUnitType(typeNum, 0)->performance[i];
 			level[i] = 0;
@@ -208,7 +208,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	destinationPurprose = stream->readSint32("destinationPurprose");
 	if (versionMinor < 41 && destinationPurprose >= 10)
-		destinationPurprose += 4;
+		destinationPurprose += 5;
 	
 	subscribed = (bool)stream->readUint32("subscribed");
 
@@ -636,7 +636,7 @@ void Unit::handleMagic(void)
 	Team **teams = owner->game->teams;
 	
 	bool hasUsedMagicAction = false;
-	if (performance[MAGIC_ATTACK])
+	if (performance[MAGIC_ATTACK_AIR] || performance[MAGIC_ATTACK_GROUND])
 	{
 		for (int yi=posY-3; yi<=posY+3; yi++)
 			for (int xi=posX-3; xi<=posX+3; xi++)
@@ -645,10 +645,19 @@ void Unit::handleMagic(void)
 				for (int altitude=0; altitude<2; altitude++)
 				{
 					Uint16 targetGUID;
-					if (altitude)
+					Sint32 attackForce;
+					if ((altitude == 1) && performance[MAGIC_ATTACK_AIR])
+					{
 						targetGUID = map->getAirUnit(xi, yi);
-					else
+						attackForce = performance[MAGIC_ATTACK_AIR];
+					}
+					else if ((altitude == 0) && performance[MAGIC_ATTACK_GROUND])
+					{
 						targetGUID = map->getGroundUnit(xi, yi);
+						attackForce = performance[MAGIC_ATTACK_GROUND];
+					}
+					else
+						continue;
 					if (targetGUID != NOGUID)
 					{
 						Sint32 targetTeam = Unit::GIDtoTeam(targetGUID);
@@ -657,7 +666,7 @@ void Unit::handleMagic(void)
 						if (owner->enemies & targetTeamMask)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
-							Sint32 damage = experienceLevel + altitude - enemyUnit->performance[ARMOR];
+							Sint32 damage = attackForce + experienceLevel - enemyUnit->performance[ARMOR];
 							if (damage > 0)
 							{
 								enemyUnit->hp -= damage;
@@ -669,36 +678,39 @@ void Unit::handleMagic(void)
 						}
 					}
 				}
+				
 				// damaging enemy buildings:
-				Uint16 targetGBID = map->getBuilding(xi, yi);
-				if (targetGBID != NOGBID)
+				if (performance[MAGIC_ATTACK_GROUND])
 				{
-					Sint32 targetTeam = Building::GIDtoTeam(targetGBID);
-					Uint16 targetID = Building::GIDtoID(targetGBID);
-					Uint32 targetTeamMask = 1<<targetTeam;
-					if (owner->enemies & targetTeamMask)
+					Uint16 targetGBID = map->getBuilding(xi, yi);
+					if (targetGBID != NOGBID)
 					{
-						Building *enemyBuilding = teams[targetTeam]->myBuildings[targetID];
-						Sint32 damage = experienceLevel - enemyBuilding->type->armor;
-						if (damage > 0)
+						Sint32 targetTeam = Building::GIDtoTeam(targetGBID);
+						Uint16 targetID = Building::GIDtoID(targetGBID);
+						Uint32 targetTeamMask = 1<<targetTeam;
+						if (owner->enemies & targetTeamMask)
 						{
-							enemyBuilding->hp -= damage;
-							enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID);
-							if (enemyBuilding->hp <= 0)
-								enemyBuilding->kill();
-							incrementExperience(damage);
-							magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
-							hasUsedMagicAction = true;
+							Building *enemyBuilding = teams[targetTeam]->myBuildings[targetID];
+							Sint32 damage = performance[MAGIC_ATTACK_GROUND] + experienceLevel - enemyBuilding->type->armor;
+							if (damage > 0)
+							{
+								enemyBuilding->hp -= damage;
+								enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID);
+								if (enemyBuilding->hp <= 0)
+									enemyBuilding->kill();
+								incrementExperience(damage);
+								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
+								hasUsedMagicAction = true;
+							}
 						}
 					}
 				}
 			}
-			
+		
+		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
 		if (hasUsedMagicAction)
-			magicActionTimeout = performance[MAGIC_ATTACK];
+			magicActionTimeout = race->getUnitType(typeNum, level[magicLevel])->magicActionCooldown;
 	}
-	
-	
 }
 
 void Unit::handleMedical(void)

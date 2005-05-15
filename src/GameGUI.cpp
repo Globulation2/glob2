@@ -2156,14 +2156,21 @@ void GameGUI::drawUnitInfos(void)
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 	
-	if (selUnit->performance[MAGIC_ATTACK])
+	if (selUnit->performance[MAGIC_ATTACK_AIR])
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Magic At.]"), selUnit->experienceLevel, 1+selUnit->experienceLevel).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d+%d) : %d+%d", Toolkit::getStringTable()->getString("[Magic At. Air]"), 1+selUnit->level[MAGIC_ATTACK_AIR], selUnit->experienceLevel, selUnit->performance[MAGIC_ATTACK_AIR], selUnit->experienceLevel).c_str());
 		
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 	
-	if ((selUnit->performance[ATTACK_STRENGTH]) || (selUnit->performance[MAGIC_ATTACK]))
+	if (selUnit->performance[MAGIC_ATTACK_GROUND])
+	{
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d+%d) : %d+%d", Toolkit::getStringTable()->getString("[Magic At. Ground]"), 1+selUnit->level[MAGIC_ATTACK_GROUND], selUnit->experienceLevel, selUnit->performance[MAGIC_ATTACK_GROUND], selUnit->experienceLevel).c_str());
+		
+		ypos += YOFFSET_TEXT_PARA + 2;
+	}
+	
+	if (selUnit->performance[ATTACK_STRENGTH] || selUnit->performance[MAGIC_ATTACK_AIR] || selUnit->performance[MAGIC_ATTACK_GROUND])
 		drawXPProgressBar(globalContainer->gfx->getW()-128, ypos, selUnit->experience, selUnit->getNextLevelThreshold());
 }
 
