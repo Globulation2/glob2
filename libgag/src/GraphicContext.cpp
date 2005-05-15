@@ -51,7 +51,7 @@
 	#include <GL/glext.h>
 #endif
 
-extern "C" { SDL_PixelFormat *SDL_AllocFormat(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask); }
+//extern "C" { SDL_PixelFormat *SDL_AllocFormat(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask); }
 
 namespace GAGCore
 {
@@ -1664,7 +1664,7 @@ namespace GAGCore
 		// set _glFormat
 		if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
 		{
-			/*_glFormat.palette = NULL;
+			_glFormat.palette = NULL;
 			_glFormat.BitsPerPixel = 32;
 			_glFormat.BytesPerPixel = 4;
 			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -1689,8 +1689,8 @@ namespace GAGCore
 			_glFormat.Bloss = 0;
 			_glFormat.Aloss = 0;
 			_glFormat.colorkey = 0;
-			_glFormat.alpha = 0;*/
-			_glFormat = *SDL_AllocFormat(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			_glFormat.alpha = 255;
+			//_glFormat = *SDL_AllocFormat(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 		}
 		else
 		{
