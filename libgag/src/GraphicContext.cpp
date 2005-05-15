@@ -409,9 +409,17 @@ namespace GAGCore
 				{
 					if (sdlsurface)
 						SDL_FreeSurface(sdlsurface);
-					sdlsurface = SDL_DisplayFormatAlpha(loadedSurface);
-					assert(sdlsurface);
-					SDL_FreeSurface(loadedSurface);
+					if (_gc->sdlsurface->format->BitsPerPixel == 32)
+					{
+						sdlsurface = SDL_DisplayFormatAlpha(loadedSurface);
+						assert(sdlsurface);
+						SDL_FreeSurface(loadedSurface);
+					}
+					else
+					{
+						assert(loadedSurface->format->BitsPerPixel == 32);
+						sdlsurface = loadedSurface;
+					}
 					setClipRect();
 					dirty = true;
 					return true;
