@@ -196,7 +196,7 @@ namespace GAGCore
 		}
 		else
 		{
-			dest = SDL_ConvertSurface(source, &_glFormat, SDL_SWSURFACE);
+			dest = SDL_ConvertSurface(source, &_glFormat, SDL_SWSURFACE | SDL_SRCALPHA);
 		}
 		assert(dest);
 		return dest;
@@ -1682,12 +1682,12 @@ namespace GAGCore
 			#endif
 			_glFormat.Amask = 0xff000000;
 			_glFormat.Ashift = 24;
-			_glFormat.Rloss = 8;
-			_glFormat.Gloss = 8;
-			_glFormat.Bloss = 8;
-			_glFormat.Aloss = 8;
+			_glFormat.Rloss = 0;
+			_glFormat.Gloss = 0;
+			_glFormat.Bloss = 0;
+			_glFormat.Aloss = 0;
 			_glFormat.colorkey = 0;
-			_glFormat.alpha = 255;
+			_glFormat.alpha = 0;
 		}
 		else
 		{
