@@ -331,10 +331,26 @@ namespace GAGCore
 		if (sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		
-		Uint32 rmask = _gc->sdlsurface->format->Rmask;
-		Uint32 gmask = _gc->sdlsurface->format->Gmask;
-		Uint32 bmask = _gc->sdlsurface->format->Bmask;
-		Uint32 amask = 0xff000000;
+		Uint32 rmask, gmask, bmask, amask;
+		if (_gc->sdlsurface->format->BitsPerPixel == 32)
+		{
+			rmask = _gc->sdlsurface->format->Rmask;
+			gmask = _gc->sdlsurface->format->Gmask;
+			bmask = _gc->sdlsurface->format->Bmask;
+		}
+		else
+		{
+			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+				rmask = 0x00ff0000;
+				gmask = 0x0000ff00;
+				bmask = 0x000000ff;
+			#else
+				rmask = 0x000000ff;
+				gmask = 0x0000ff00;
+				bmask = 0x00ff0000;
+			#endif
+		}
+		amask = 0xff000000;
 		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, rmask, gmask, bmask, amask);
 		assert(sdlsurface);
 		setClipRect();
