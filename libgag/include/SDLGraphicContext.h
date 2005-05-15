@@ -167,6 +167,8 @@ namespace GAGCore
 		void uploadToTexture(void);
 		//! free texture in GPU for this surface
 		void freeGPUTexture(void);
+		//! transform any SDL Surface to a GL uploadable one
+		SDL_Surface *convertForUpload(SDL_Surface *source);
 		
 	public:
 		// New API
