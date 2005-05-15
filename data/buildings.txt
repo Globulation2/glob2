@@ -177,6 +177,7 @@ maxFruit2 80
 maxUnitInside 7
 hpInit 250
 hpMax 250
+armor 5
 level 1
 shortTypeNum 1
 maxUnitWorking 1
@@ -202,6 +203,7 @@ maxStone 5
 hpInit 250
 hpMax 350
 hpInc 11
+armor 5
 level 2
 shortTypeNum 1
 maxUnitWorking 1
@@ -232,7 +234,7 @@ maxFruit2 200
 maxUnitInside 17
 hpInit 350
 hpMax 350
-armor 1
+armor 10
 level 2
 shortTypeNum 1
 maxUnitWorking 1
@@ -283,6 +285,7 @@ decTop -1
 maxUnitInside 2
 hpInit 130
 hpMax 130
+armor 5
 level 0
 shortTypeNum 2
 
@@ -331,6 +334,7 @@ decTop -1
 maxUnitInside 5
 hpInit 250
 hpMax 250
+armor 5
 level 1
 shortTypeNum 2
 
@@ -355,6 +359,7 @@ maxStone 5
 hpInit 250
 hpMax 350
 hpInc 13
+armor 5
 level 2
 shortTypeNum 2
 maxUnitWorking 1
@@ -380,7 +385,7 @@ decTop -1
 maxUnitInside 7
 hpInit 350
 hpMax 350
-armor 1
+armor 10
 level 2
 shortTypeNum 2
 
@@ -432,7 +437,7 @@ decTop -3
 maxUnitInside 4
 hpInit 270
 hpMax 270
-armor 1
+armor 5
 level 0
 shortTypeNum 3
 
@@ -457,7 +462,7 @@ maxStone 5
 hpInit 270
 hpMax 400
 hpInc 9
-armor 1
+armor 5
 level 1
 shortTypeNum 3
 maxUnitWorking 1
@@ -484,7 +489,7 @@ decTop -4
 maxUnitInside 7
 hpInit 400
 hpMax 400
-armor 3
+armor 9
 level 1
 shortTypeNum 3
 
@@ -509,7 +514,7 @@ maxStone 5
 hpInit 400
 hpMax 600
 hpInc 10
-armor 3
+armor 9
 level 2
 shortTypeNum 3
 maxUnitWorking 1
@@ -535,7 +540,7 @@ decTop -4
 maxUnitInside 9
 hpInit 600
 hpMax 600
-armor 4
+armor 13
 level 2
 shortTypeNum 3
 
@@ -586,7 +591,7 @@ decTop -3
 maxUnitInside 3
 hpInit 300
 hpMax 300
-armor 0
+armor 4
 level 0
 shortTypeNum 4
 
@@ -611,7 +616,7 @@ maxWood 12
 hpInit 300
 hpMax 400
 hpInc 6
-armor 0
+armor 4
 level 1
 shortTypeNum 4
 maxUnitWorking 1
@@ -637,7 +642,7 @@ decTop -4
 maxUnitInside 7
 hpInit 400
 hpMax 400
-armor 0
+armor 8
 level 1
 shortTypeNum 4
 
@@ -664,7 +669,7 @@ maxAlgue 8
 hpInit 400
 hpMax 600
 hpInc 8
-armor 0
+armor 8
 level 2
 shortTypeNum 4
 maxUnitWorking 1
@@ -690,7 +695,7 @@ decTop -4
 maxUnitInside 11
 hpInit 600
 hpMax 600
-armor 1
+armor 14
 level 2
 shortTypeNum 4
 
@@ -742,7 +747,7 @@ decTop -2
 maxUnitInside 2
 hpInit 220
 hpMax 220
-armor 1
+armor 4
 level 0
 shortTypeNum 5
 
@@ -767,7 +772,7 @@ maxWood 3
 hpInit 220
 hpMax 400
 hpInc 14
-armor 1
+armor 4
 level 1
 shortTypeNum 5
 maxUnitWorking 1
@@ -795,7 +800,7 @@ decTop -2
 maxUnitInside 4
 hpInit 400
 hpMax 400
-armor 4
+armor 9
 level 1
 shortTypeNum 5
 
@@ -820,7 +825,7 @@ maxStone 10
 hpInit 400
 hpMax 650
 hpInc 13
-armor 4
+armor 9
 level 2
 shortTypeNum 5
 maxUnitWorking 1
@@ -848,7 +853,7 @@ decTop -2
 maxUnitInside 5
 hpInit 650
 hpMax 650
-armor 7
+armor 15
 level 2
 shortTypeNum 5
 
@@ -956,7 +961,7 @@ decTop -1
 maxUnitInside 7
 hpInit 260
 hpMax 260
-armor 1
+armor 5
 level 1
 shortTypeNum 6
 
@@ -983,7 +988,7 @@ maxAlgue 10
 hpInit 260
 hpMax 350
 hpInc 3
-armor 1
+armor 5
 level 2
 shortTypeNum 6
 maxUnitWorking 1
@@ -1011,7 +1016,7 @@ decTop -1
 maxUnitInside 9
 hpInit 350
 hpMax 350
-armor 8
+armor 17
 level 2
 shortTypeNum 6
 prestige 50
@@ -1069,7 +1074,7 @@ decLeft -1
 decTop -1
 hpInit 200
 hpMax 200
-armor 8
+armor 9
 level 0
 shortTypeNum 7
 
@@ -1096,7 +1101,7 @@ maxStone 6
 hpInit 200
 hpMax 300
 hpInc 12
-armor 8
+armor 9
 level 1
 shortTypeNum 7
 maxUnitWorking 1
@@ -1132,7 +1137,7 @@ decLeft -1
 decTop -1
 hpInit 300
 hpMax 300
-armor 12
+armor 13
 level 1
 shortTypeNum 7
 
@@ -1160,7 +1165,7 @@ maxAlgue 3
 hpInit 300
 hpMax 450
 hpInc 12
-armor 12
+armor 13
 level 2
 shortTypeNum 7
 maxUnitWorking 1
@@ -1195,7 +1200,7 @@ decLeft -1
 decTop -1
 hpInit 450
 hpMax 450
-armor 18
+armor 19
 level 2
 shortTypeNum 7
 
@@ -1326,7 +1331,7 @@ hpInit 60
 hpMax 60
 level 0
 shortTypeNum 11
-armor 10
+armor 11
 
 
 *market0c
@@ -1371,7 +1376,7 @@ hpInit 200
 hpMax 200
 level 0
 shortTypeNum 12
-armor 2
+armor 4
 fillable 1
 canExchange 1
 maxFruit0 200
