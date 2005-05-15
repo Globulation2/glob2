@@ -1637,7 +1637,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-			sdlFlags |= SDL_OPENGL;
+			sdlFlags |= SDL_OPENGL | SDL_ANYFORMAT;
 		}
 		#else
 		// remove GL from options
