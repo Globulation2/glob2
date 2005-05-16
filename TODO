@@ -8,14 +8,9 @@ To First release :
 - Fixer "On the spot"
 - Un joueur qui quitte doit perdre!
 - Mettre une touche pour affichier la liste des messages qui ont disparu.
-- Balancer clearing attack.
 
--Optimiser les boulets.
 -La sortie du gradient d'interdiction est parfois bugé!
 -Tenir compte des unités qui apportent déja quelquechose.
-
-libgag::GL:
-- fix in game menu
 
 AICastor:
 - batiment plus près d'une ressource.
