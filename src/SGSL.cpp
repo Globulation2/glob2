@@ -680,7 +680,7 @@ Aquisition::Aquisition(void)
 #define HANDLE_ERROR_POS(c) { actPos++; if (c=='\n') { actLine++; actCol=0; } else { actCol++; } }
 #undef getc
 
-#ifdef _MSC_VER
+#ifdef WIN32 
 const char *index(const char *str, char f)
 {
 	for(const char *a=str;*a;a++)

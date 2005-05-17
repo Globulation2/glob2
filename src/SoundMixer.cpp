@@ -41,6 +41,9 @@ using namespace GAGCore;
 #include <Types.h>
 #endif
 
+#ifdef WIN32
+#include <malloc.h>
+#endif
 
 #define SAMPLE_COUNT_PER_SLICE 4096*8
 #define INTERPOLATION_RANGE 65535
