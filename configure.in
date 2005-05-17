@@ -82,13 +82,33 @@ if test "$have_opengl" = "no"; then
 		AC_DEFINE([OPENGL_HEADER_DIRECTORY_OPENGL],,[OpenGL headers are in OpenGL/ if HAVE_OPENGL is defined])
 	fi
 fi
-
+# test for OpenGL/, Win32
+if test "$have_opengl" = "no"; then
+	have_opengl=yes
+	AC_CHECK_HEADER(GL/gl.h,,have_opengl=no)
+	AC_CHECK_HEADER(GL/glu.h,,have_opengl=no)
+	AC_CHECK_LIB(opengl32, main,,have_opengl=no)
+	AC_CHECK_LIB(glu32, main,,have_opengl=no)
+fi
 
 if test "$have_opengl" = "yes"; then
 	AC_DEFINE([HAVE_OPENGL],[],[Defined when OpenGL support is present and compiled])
 else
 	AC_MSG_WARN([OpenGL not found or not working. OpenGL support will be disabled.])
 fi
+
+AC_MSG_CHECKING(for Mingw32)
+case $host in
+	*-*-mingw*)	MING=yes
+			LIBS="$LIBS -logg -lwsock32"
+			;;
+	*)		MING=no
+			LIBS="$LIBS"	
+			;;
+esac
+
+AM_CONDITIONAL(MINGW, test x$MING = xyes)
+AC_MSG_RESULT($MING)
 
 dnl Type of voice recorder
 AC_DEFINE([AUDIO_RECORDER_OSS],,[Set the audio input type to OSS; the UNIX Open Sound System])

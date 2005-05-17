@@ -25,16 +25,23 @@
 #endif
 
 #ifdef WIN32
-	#include <windows.h>
-	#include <sys/types.h>
-	#include <sys/stat.h>
+
+   #include <windows.h>
+   #include <sys/types.h>
+   #include <sys/stat.h>
+
+   #define S_IFDIR _S_IFDIR
+
+   #ifndef __MINGW32__
 	#define snprintf _snprintf
 	#define vsnprintf _vsnprintf
-	#define S_IFDIR _S_IFDIR
 	#pragma warning (disable : 4786)
 	#pragma warning (disable : 4250)
-	#undef max
-	#undef min
+   #endif
+
+   #undef max
+   #undef min
+
 	#define HAVE_OPENGL
 	#define _USE_MATH_DEFINES // To get M_PI
 #endif

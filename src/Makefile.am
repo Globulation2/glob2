@@ -151,5 +151,5 @@ IRC.cpp \
 VoiceRecorder.h \
 VoiceRecorder.cpp
 
-glob2_LDADD = @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ ../libgag/src/libgag.a
+glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include
