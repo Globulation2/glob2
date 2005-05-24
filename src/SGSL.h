@@ -19,6 +19,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+/*!	\file SGSL.h
+	\brief SGSL: Simple Globulation Scripting Language: definition of classes for map scripting
+*/
+
 #ifndef SGSL_H
 #define SGSL_H
 
