@@ -205,7 +205,7 @@ Predavanje
 [custom game]
 Naključna igra
 [yog]
-Ysagoon Online Gaming
+Ysagoon medmrežno igranje
 [Enter your nickname :]
 Vnesi svoj vzdevek :
 [Enter your password :]
@@ -373,7 +373,7 @@ Napad
 [Defense]
 Obramba
 [free]
-free
+prost/ih
 [of which]
 od katerih
 [are ok]
@@ -403,11 +403,11 @@ Moč napada
 [Total]
 Skupaj
 [free]
-free
+prost/ih
 [seeking]
 Iščem
 [Free]
-Free
+Prost/ih
 [hungry]
 lačen
 [starving]
@@ -443,7 +443,7 @@ je bil
 [was AI]
 je bil UI
 [state]
-state?
+stanje?
 [Start]
 Začni
 [not ready]
@@ -553,7 +553,7 @@ Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
 [YESTS_CONNECTING]
-Vzspostavljam povezavo na YOG metastrežnikom...
+Vspostavljam povezavo na YOG metastrežnikom...
 [YESTS_DECONNECTING]
 Prekinjam povezavo z YOG metastrežnikom...
 [YESTS_YOG_KILLED]
@@ -561,15 +561,15 @@ Administrator je ustavil navidezni metastrežnik.
 [YESTS_CONNECTION_LOST]
 Povezava z YOG metastrežnikom je bila izgubljena.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-The YOG metaserver has refused connection because your globulation2 client is obsolete.
+YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metastrežnik je zavrnil povezavo, ker je vpisano geslo napačno.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metastrežnik je zavrnil povezavo ker tvoje uporabniško ime nima določenega gesla. Gotovo hočeš registrirati to uporabniško ime zato poskusi aktivirati možnost "Registriraj novega YOG uporabnika s tem geslom. To možnost moraš aktivirati le enkrat.
+YOG metastrežnik je zavrnil povezavo ker tvoje uporabniško ime nima določenega gesla. Gotovo hočeš registrirati to uporabniško ime zato poskusi aktivirati možnost "Registriraj novega YOG uporabnika s tem geslom". To možnost moraš aktivirati le enkrat.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
+YOG metastrežnik je zavrnil povezavo, ker je bilo tvoje uporabniško ime že registrirano. Če je to uporabniško ime tvoje, potem onemogoči možnost "Registriraj novega YOG uporabnika s tem geslom".
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
 YOG metastrežnik je zavrnil povezavo, ker se je pojavila napaka v protokolu. Poskusi ponovno v 45 sekundah.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
