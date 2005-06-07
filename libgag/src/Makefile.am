@@ -1,12 +1,12 @@
 noinst_LIBRARIES = libgag.a
 
 if MINGW
-LIBGAG_A_EXTRA_SOURCES = \
+libgag_a_EXTRA_SRC = \
 	win32_dirent.h\
 	win32_dirent.cpp
 	
 else
-LIBGAG_A_EXTRA_SOURCES = 
+libgag_a_EXTRA_SRC = 
 endif
 
 libgag_a_SOURCES = \
@@ -38,6 +38,6 @@ libgag_a_SOURCES = \
 	Stream.cpp\
 	BinaryStream.cpp\
 	TextStream.cpp\
-	$(LIBGAG_A_EXTRA_SOURCES)
+	$(libgag_a_EXTRA_SRC)
 
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I@srcdir@/../include/

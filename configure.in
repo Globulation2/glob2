@@ -46,7 +46,7 @@ SDL_VERSION=1.2.0
 AM_PATH_SDL($SDL_VERSION, :, AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
 
 dnl Check for SDL_image and SDL_net
-AC_CHECK_LIB(SDL_image, IMG_Load_RW, SDL_LIBS="$SDL_LIBS -lSDL_image", AC_MSG_ERROR([*** SDL_image not found !]), $SDL_LIBS)
+AC_CHECK_LIB(SDL_image, IMG_LoadPNG_RW, , AC_MSG_ERROR([*** Unable to find SDL_image libary with PNG support(http://www.libsdl.org/projects/SDL_image/)]))
 AC_CHECK_LIB(SDL_net, SDLNet_UDP_Open, SDL_LIBS="$SDL_LIBS -lSDL_net", AC_MSG_ERROR([*** SDL_net not found !]), $SDL_LIBS)
 
 dnl Check for FT2
