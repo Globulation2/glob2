@@ -37,7 +37,7 @@ Abelsin
 [Prune]
 Prune
 [Clearing:]
-Rense:
+Rydning:
 [Min required level:]
 Minimum krævede neavu:
 [Bullets]
@@ -45,9 +45,9 @@ Kugler
 [range]
 Afstand
 [destroy]
-Ødelæg
+Destruktion
 [cancel destroy]
-Afbryd ødelæggelse
+Afbryd Destruktion
 [wait destroy]
 Vænter på konstruktion
 [upgrade]
@@ -97,7 +97,7 @@ Raserbane
 [swimspeed building]
 Svømmepøl
 [attack building]
-Militær
+Kaserne
 [science building]
 Skole
 [defense building]
@@ -107,7 +107,7 @@ Udforsknings flag
 [war flag]
 Krig flag
 [clearing flag]
-Rensning flag
+Rydnings flag
 [stone wall]
 Sten væg
 [market]
@@ -117,7 +117,7 @@ Forbudt arial
 [guard area]
 Vagt arial
 [clear area]
-Rens arial
+Ophæv arial
 [Building short explanation]
 Bygning kort forklaring (24 karaktere max)
 [swarm building explanation]
@@ -267,7 +267,7 @@ Lave et kort
 [map size x]
 Kort bredte
 [map size y]
-Kort højdte
+Kort højde
 [default terrain]
 Standart terring
 [water]
@@ -297,13 +297,13 @@ Kroen er færdig gjordt
 [the health building is finished]
 Hospitalet er færdig gjort
 [the walkspeed building is finished]
-Raserbanen er færtig gjort
+Raserbanen er fædtig gjort
 [the swimspeed building is finished]
 Svømmepølen er færdig gjort
 [the attack building is finished]
-Trænings bygningen er færdig gjort
+Kasernen er færdig gjort
 [the science building is finished]
-Skolen er færtig gjort
+Skolen er færdig gjort
 [the tower building is finished]
 Forsvar tornet er færdig gjordt
 [the exploration flag is finished]
@@ -315,7 +315,7 @@ Forsvar tornet er færdig gjordt
 [the stone wall is finished]
 En sektion af en væg er færdig
 [the market is finished]
-Market er færtig gjort.
+Market er færdig gjort.
 [the building is under attack]
 Bygningn er under angrib
 [the swarm is under attack]
@@ -329,7 +329,7 @@ Raserbanen er under angrib
 [the swimspeed building is under attack]
 Svømme pølen er under angrib
 [the attack building is under attack]
-Trænings bygningen er under angrib
+Kasernen er under angrib
 [the science building is under attack]
 Skolen er under angrib
 [the defense building is under attack]
@@ -339,7 +339,7 @@ Dine forsvar er under angrib
 [the war flag is under attack]
 ?? Krigs flaget er under angrib ??
 [the clearing flag is under attack]
-?? Rrnsnings flaget er under angrib ??
+?? Rydnings flaget er under angrib ??
 [the stone wall is under attack]
 Fjenden er ved dine væge
 [the market is under attack]
@@ -487,9 +487,9 @@ Udglatning
 [number of teams]
 antal af hold
 [islands size]
-Ø størelse
+Ø størrelse
 [beach size]
-Strand størelse
+Strand størrelse
 [workers]
 Arbejdere
 [bad error in connection system]
@@ -497,11 +497,11 @@ Fejl i forbindelses systemet
 [not connected]
 Ikke forbundet
 [presence request sent]
-Presence request sent ...
+Til stede forspørgsel sendt ...
 [session request sent]
-Session request sent ...
+Session forspørgelse sendt ...
 [checksum sent]
-Checksum sent ...
+Kontrol værdi sendt ...
 [connected to server]
 Forbundet til server
 [connecting to all players]
@@ -525,7 +525,7 @@ Hentet fra
 [percent]
   procent
 [download finished]
-Nedhæntning færdig
+Nedhentning færdig
 [Map name: %s]
 Kort navn: %s.
 [one player]
@@ -543,7 +543,7 @@ mellem
 [large]
 stort
 [network latency]
-Netværk begransning
+Netværk begrænsning
 [game speed]
 Spil hastighed
 [Paused]
@@ -559,7 +559,7 @@ Er ikke muligt at forbinde. Muligvis er YOG meta servern nede.
 [YESTS_CREATED]
 Forbindelse systemet er klar til at forbinde til YOG meta serveren.
 [YESTS_CONNECTING]
-Establere forbindelse til YOG meta serveren...
+Establere forbindelsen til YOG meta serveren...
 [YESTS_DECONNECTING]
 Afbryder forbindelsen til YOG meta serveren...
 [YESTS_YOG_KILLED]
@@ -569,7 +569,7 @@ Forbindelsen til YOG er blevet afbrudt.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG meta serveren har afbrudt forbindelsen fordi din globulation2 klient er forældet.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG meta servern har afbrudt forbindelsen fordi dit bruger navn er allerede i brug af en anden.
+YOG meta serveren har afbrudt forbindelsen fordi dit bruger navn er allerede i brug af en anden.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG meta serveren har afbrudt forbindelsen fordi det indtastet adgangs kode er forkert.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
