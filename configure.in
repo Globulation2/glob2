@@ -150,6 +150,7 @@ AC_CONFIG_FILES([Makefile
 	data/fonts/Makefile
 	data/gui/Makefile
 	data/zik/Makefile
+	data/icons/Makefile
 	maps/Makefile
 	campaigns/Makefile
 	libgag/Makefile
