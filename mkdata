@@ -4,3 +4,4 @@ rsync -z --delete-after data/gfx/cursor/*.png nct@yog1.ysagoon.com:~/glob2data/g
 rsync -z --delete-after data/fonts/*.ttf nct@yog1.ysagoon.com:~/glob2data/fonts/
 rsync -z --delete-after data/gui/*.png nct@yog1.ysagoon.com:~/glob2data/gui/
 rsync -z --delete-after data/zik/*.ogg nct@yog1.ysagoon.com:~/glob2data/zik/
+rsync -z --delete-after data/icons/*.png nct@yog1.ysagoon.com:~/glob2data/icons/
