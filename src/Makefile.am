@@ -11,7 +11,14 @@ glob2_static_lib =\
 	 /usr/lib/libvorbisfile.a\
 	 /usr/lib/libvorbis.a\
 	 /usr/lib/libogg.a\
-	 /usr/lib/libspeex.a
+	 /usr/lib/libspeex.a\
+	 /usr/lib/libSDL.a\
+	 /usr/lib/libaudio.a\
+	 /usr/lib/libaa.a\
+	 /usr/lib/libncurses.a\
+	 /usr/lib/libslang.a\
+	 /usr/lib/libgpm.a\
+	 /usr/lib/libfreetype.a
 else
 glob2_static_lib =
 endif
@@ -168,7 +175,7 @@ VoiceRecorder.h \
 VoiceRecorder.cpp
 
 if LINKSTATIC
-glob2_LDADD = ../libgag/src/libgag.a @FT2_LIBS@ -lSDL -lGL -lGLU -lz -lpthread $(glob2_static_lib)
+glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)
 LIBS = 
 else
 glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ $(glob2_static_lib)
