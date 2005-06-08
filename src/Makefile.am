@@ -1,5 +1,21 @@
 bin_PROGRAMS = glob2
 
+if LINKSTATIC
+glob2_static_lib =\
+	 /usr/lib/libSDL_image.a\
+	 /usr/lib/libSDL_net.a\
+	 /usr/lib/libpng*.a\
+	 /usr/lib/libtiff.a\
+	 /usr/lib/libjpeg.a\
+	 /usr/lib/libz.a\
+	 /usr/lib/libvorbisfile.a\
+	 /usr/lib/libvorbis.a\
+	 /usr/lib/libogg.a\
+	 /usr/lib/libspeex.a
+else
+glob2_static_lib =
+endif
+
 glob2_SOURCES=\
 IntBuildingType.h\
 IntBuildingType.cpp\
@@ -151,5 +167,10 @@ IRC.cpp \
 VoiceRecorder.h \
 VoiceRecorder.cpp
 
-glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@
+if LINKSTATIC
+glob2_LDADD = ../libgag/src/libgag.a @FT2_LIBS@ -lSDL -lGL -lGLU -lz -lpthread $(glob2_static_lib)
+LIBS = 
+else
+glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ $(glob2_static_lib)
+endif
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include

@@ -58,6 +58,10 @@
 #	include <sys/stat.h>
 #endif
 
+#ifndef WIN32
+#	include "unistd.h"
+#endif
+
 namespace GAGCore
 {
 	FileManager::FileManager(const char *gameName)
@@ -70,6 +74,35 @@ namespace GAGCore
 		addDir(gameLocal.c_str());
 		#endif
 		addDir(".");
+
+		#ifndef WIN32 	
+		#ifndef __APPLE__
+		/* Find own path
+		 * TODO: Make nicer */
+		
+		char link[100];
+		char proc[]="/proc/self/exe";
+
+		int linksize = readlink(proc, link, sizeof(link));
+		if (linksize < 0){
+			perror("readlink() error");
+		} else {
+			assert ((int)sizeof(link) >= linksize); 
+			link[linksize] = '\0';
+			char * pch;
+			pch=strrchr(link,'/');	
+			link[pch-link] = '\0';
+			pch=strrchr(link,'/');	
+			link[pch-link] = '\0';
+
+			if ((linksize + 13) <= (int)sizeof(link)){
+				strcat(link, "/share/glob2");
+				addDir(link);
+			}
+		}
+		#endif
+		#endif
+
 		addDir(PACKAGE_DATA_DIR);
 		addDir(PACKAGE_SOURCE_DIR);
 		fileListIndex = -1;
