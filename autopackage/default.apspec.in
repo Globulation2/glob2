@@ -34,6 +34,8 @@ require @opengl.org/opengl 1.4
 # Put your installation script here
 installExe bin/*
 installData share/*
+installDesktop share/applications/glob2.desktop 
+installIcon share/pixmaps/*.png
 
 [Uninstall]
 # Usually just the following line is enough to uninstall everything
