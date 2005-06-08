@@ -59,7 +59,9 @@
 #endif
 
 #ifndef WIN32
+#ifndef __APPLE__
 #	include "unistd.h"
+#endif
 #endif
 
 namespace GAGCore
@@ -82,6 +84,7 @@ namespace GAGCore
 		
 		char link[100];
 		char proc[]="/proc/self/exe";
+		char * pch;
 
 		int linksize = readlink(proc, link, sizeof(link));
 		if (linksize < 0)
@@ -92,11 +95,16 @@ namespace GAGCore
 		{
 			assert ((int)sizeof(link) > linksize); 
 			link[linksize] = '\0';
-			char * pch;
+
 			pch = strrchr(link,'/');	
-			link[pch-link] = '\0';
+			if ( (pch-link) > 0) 
+				link[pch-link] = '\0';
+			else
+				link[1] = '\0';
+
 			pch = strrchr(link,'/');	
-			link[pch-link] = '\0';
+			if ( (pch-link) > 0) 
+				link[pch-link] = '\0';
 
 			if ((linksize + 13) <= (int)sizeof(link))
 			{
