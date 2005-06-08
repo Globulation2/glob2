@@ -84,18 +84,22 @@ namespace GAGCore
 		char proc[]="/proc/self/exe";
 
 		int linksize = readlink(proc, link, sizeof(link));
-		if (linksize < 0){
+		if (linksize < 0)
+		{
 			perror("readlink() error");
-		} else {
-			assert ((int)sizeof(link) >= linksize); 
+		}
+		else
+		{
+			assert ((int)sizeof(link) > linksize); 
 			link[linksize] = '\0';
 			char * pch;
-			pch=strrchr(link,'/');	
+			pch = strrchr(link,'/');	
 			link[pch-link] = '\0';
-			pch=strrchr(link,'/');	
+			pch = strrchr(link,'/');	
 			link[pch-link] = '\0';
 
-			if ((linksize + 13) <= (int)sizeof(link)){
+			if ((linksize + 13) <= (int)sizeof(link))
+			{
 				strcat(link, "/share/glob2");
 				addDir(link);
 			}
