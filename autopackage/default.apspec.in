@@ -32,10 +32,10 @@ require @opengl.org/opengl 1.4
 
 [Install]
 # Put your installation script here
-installExe bin/*
-installData share/*
-installDesktop share/applications/glob2.desktop 
-installIcon share/pixmaps/*.png
+installExe ./bin/*
+installData ./share/*
+installDesktop "Games/Strategy" ./share/applications/glob2.desktop 
+installIcon share/pixmaps/glob2-icon-48x48.png
 
 [Uninstall]
 # Usually just the following line is enough to uninstall everything
