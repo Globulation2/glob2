@@ -825,7 +825,7 @@ Order *AICastor::controlSwarms()
 	else
 		workerGoal=4;
 	
-	fprintf(logFile,  "discovered=%d, seeable=%d, size=%d, explorerGoal=%d\n",
+	fprintf(logFile,  "discovered=%d, seeable=%d, size=%zd, explorerGoal=%d\n",
 		discovered, seeable, size, explorerGoal);
 	
 	for (int bi=0; bi<1024; bi++)
