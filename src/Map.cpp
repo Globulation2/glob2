@@ -303,7 +303,7 @@ void Map::clear()
 						ressourceAvailableCountSuccess[t][r],
 						100.*(double)ressourceAvailableCountSuccess[t][r]/(double)ressourceAvailableCount[t][r]);
 					fprintf(logFile, "| ressourceAvailableCountFailure[%d][%d]=%d (%f %%)\n", t, r,
-						ressourceAvailableCountFailure,
+						ressourceAvailableCountFailure[t][r],
 						100.*(double)ressourceAvailableCountFailure[t][r]/(double)ressourceAvailableCount[t][r]);
 				}
 	

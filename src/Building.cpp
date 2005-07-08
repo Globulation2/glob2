@@ -433,7 +433,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	// units
 	stream->writeSint32(maxUnitInside, "maxUnitInside");
 	stream->writeUint32(unitsWorking.size(), "nbWorking");
-	fprintf(logFile, " nbWorking=%d\n", unitsWorking.size());
+	fprintf(logFile, " nbWorking=%zd\n", unitsWorking.size());
 	i = 0;
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
@@ -445,7 +445,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	}
 
 	stream->writeUint32(unitsWorkingSubscribe.size(), "nbWorkingSubscribe");
-	fprintf(logFile, " nbWorkingSubscribe=%d\n", unitsWorkingSubscribe.size());
+	fprintf(logFile, " nbWorkingSubscribe=%zd\n", unitsWorkingSubscribe.size());
 	i = 0;
 	for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 	{
@@ -461,7 +461,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	
 	stream->writeUint32(unitsInside.size(), "nbInside");
-	fprintf(logFile, " nbInside=%d\n", unitsInside.size());
+	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
 	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
@@ -473,7 +473,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	}
 
 	stream->writeUint32(unitsInsideSubscribe.size(), "nbInsideSubscribe");
-	fprintf(logFile, " nbInsideSubscribe=%d\n", unitsInsideSubscribe.size());
+	fprintf(logFile, " nbInsideSubscribe=%zd\n", unitsInsideSubscribe.size());
 	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 	{
@@ -2014,7 +2014,7 @@ void Building::kill(void)
 		return;
 	
 	
-	fprintf(logFile, " still %d unitsInside\n", unitsInside.size());
+	fprintf(logFile, " still %zd unitsInside\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		Unit *u=*it;
@@ -2035,7 +2035,7 @@ void Building::kill(void)
 	}
 	unitsInside.clear();
 
-	fprintf(logFile, " still %d unitsWorking\n", unitsInside.size());
+	fprintf(logFile, " still %zd unitsWorking\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);

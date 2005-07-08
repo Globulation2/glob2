@@ -1016,7 +1016,7 @@ Building *Team::findBestFillable(Unit *unit)
 					if (need && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						Sint32 newScore=((buildingDist+ressourceDist)<<8)/((b->maxUnitWorking-b->unitsWorking.size())*need);
-						fprintf(logFile, "[%d] newScore=%d=f(%d, %d, %d, %d, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
+						fprintf(logFile, "[%d] newScore=%d=f(%d, %d, %d, %zd, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
 						if (newScore<score)
 						{
 							choosen=b;
@@ -1479,8 +1479,8 @@ void Team::syncStep(void)
 		fprintf(logFile, " isEnoughFoodInSwarm=%d\n", isEnoughFoodInSwarm);
 		fprintf(logFile, " nbUsefullUnitsAlone=%d\n", nbUsefullUnitsAlone);
 		fprintf(logFile, " nbUsefullUnits=%d\n", nbUsefullUnits);
-		fprintf(logFile, "  canFeedUnit=%d\n", canFeedUnit.size());
-		fprintf(logFile, "  canHealUnit.size()=%d\n", canHealUnit.size());
+		fprintf(logFile, "  canFeedUnit=%zd\n", canFeedUnit.size());
+		fprintf(logFile, "  canHealUnit.size()=%zd\n", canHealUnit.size());
 	}
 	//isAlive=isAlive && (isEnoughFoodInSwarm || nbUsefullUnitsAlone!=0 || (nbUsefullUnits!=0 && (canFeedUnit.size()>0 || canHealUnit.size()>0)));
 	// decount event cooldown counter
