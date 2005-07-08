@@ -69,11 +69,17 @@ namespace GAGCore
 	FileManager::FileManager(const char *gameName)
 	{
 		#ifndef WIN32
-		std::string gameLocal(getenv("HOME"));
-		gameLocal += "/.";
-		gameLocal += gameName;
-		mkdir(gameLocal.c_str(), S_IRWXU);
-		addDir(gameLocal.c_str());
+		const char *homeDir = getenv("HOME");
+		if (homeDir)
+		{
+			std::string gameLocal(homeDir);
+			gameLocal += "/.";
+			gameLocal += gameName;
+			mkdir(gameLocal.c_str(), S_IRWXU);
+			addDir(gameLocal.c_str());
+		}
+		else
+			std::cerr << "FileManager::FileManager : warning, can't get home directory by using getenv(\"HOME\")" << std::endl;
 		#endif
 		addDir(".");
 

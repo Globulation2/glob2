@@ -35,6 +35,7 @@ class ConfigBlock;
 struct LoadableFromConfigFile
 {
 	virtual void loadFromConfigFile(const ConfigBlock *configBlock) = 0;
+	virtual ~LoadableFromConfigFile() {}
 };
 
 //! A name-value array holder that can assign them to a variable
