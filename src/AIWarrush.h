@@ -43,6 +43,8 @@ public:
 	Team *team;
 	Game *game;
 	Map *map;
+	//! Delay after an order order to create a building has been issued, until next one can
+	int buildingDelay;
 
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);

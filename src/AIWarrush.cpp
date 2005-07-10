@@ -28,6 +28,8 @@
 #include "Player.h"
 #include "Brush.h"
 
+#define BUILDING_DELAY 20
+
 void AIWarrush::init(Player *player)
 {
 	assert(player);
@@ -36,6 +38,7 @@ void AIWarrush::init(Player *player)
 	this->team=player->team;
 	this->game=player->game;
 	this->map=player->map;
+	buildingDelay = 0;
 	
 	assert(this->team);
 	assert(this->game);
@@ -222,6 +225,10 @@ bool AIWarrush::allBarracksAreCompletedAndFull()const
 
 Order *AIWarrush::getOrder(void)
 {
+	// reduce delay due to built building
+	if (buildingDelay > 0)
+		buildingDelay--;
+	
 	//C-style comments in the main code are remaining pseudocode.
 	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] == 0)
 	{
@@ -238,13 +245,16 @@ Order *AIWarrush::getOrder(void)
 
 Order *AIWarrush::initialRush(void)
 {
-	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::SWARM_BUILDING] < 2)
+	if (buildingDelay == 0)
 	{
-		return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
-	}
-	if(isAnyUnitWithLessThanOneThirdFood())
-	{
-		return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
+		if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::SWARM_BUILDING] < 2)
+		{
+			return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
+		}
+		if(isAnyUnitWithLessThanOneThirdFood())
+		{
+			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
+		}
 	}
 	if(numberOfUnitsWithSkillGreaterThanValue(HARVEST,0) >= 6)
 	{
@@ -290,18 +300,21 @@ Order *AIWarrush::maintain(void)
 		Sint32 settings[3] = {1,0,1};
 		return new OrderModifySwarm(out_of_date_swarm->gid, settings);
 	}
-	if(
-		team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::ATTACK_BUILDING] < 2
-		|| (allBarracksAreCompletedAndFull() && numberOfIdleLevel1Warriors() >= 3)
-			)
+	if (buildingDelay == 0)
 	{
-		return buildBuildingOfType(IntBuildingType::ATTACK_BUILDING);
-	}
-	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] * 18
-			<
-			numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
-	{
-		return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
+		if(
+			team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::ATTACK_BUILDING] < 2
+			|| (allBarracksAreCompletedAndFull() && numberOfIdleLevel1Warriors() >= 3)
+				)
+		{
+			return buildBuildingOfType(IntBuildingType::ATTACK_BUILDING);
+		}
+		if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] * 18
+				<
+				numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
+		{
+			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
+		}
 	}
 	const int jobs = numberOfJobsForWorkers();
 	const int workers = numberOfUnitsWithSkillGreaterThanValue(HARVEST,0);
@@ -360,7 +373,10 @@ Order *AIWarrush::setupAttack(void)
 {
 	BrushAccumulator acc;
 	bool areaMap[map->w][map->h];
-	for(int x=0;x<map->w;x++){for(int y=0;y<map->h;y++){areaMap[x][y]=false;}}
+	for(int x=0;x<map->w;x++)
+		for(int y=0;y<map->h;y++)
+			areaMap[x][y]=false;
+
 	for(int x=0;x<map->w;x++)
 	{
 		for(int y=0;y<map->h;y++)
@@ -454,9 +470,9 @@ bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int heig
 	if(map->isHardSpaceForBuilding(x,y,width,height))
 	{
 		if(		map->isMapDiscovered(x,			y,			team->me)
-			||	map->isMapDiscovered(x+width,	y,			team->me)
-			||	map->isMapDiscovered(x+width,	y+height,	team->me)
-			||	map->isMapDiscovered(x,			y+height,	team->me)
+			||	map->isMapDiscovered(x+width-1,	y,			team->me)
+			||	map->isMapDiscovered(x+width-1,	y+height-1,	team->me)
+			||	map->isMapDiscovered(x,			y+height-1,	team->me)
 				)
 		{
 			return true;
@@ -474,7 +490,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 		{
 			Case c=map->getCase(x,y);
 			if (
-					(c.ressource.type=CORN)
+					(c.ressource.type==CORN)
 					&& (
 						(typeNum==IntBuildingType::FOOD_BUILDING)
 						|| (typeNum==IntBuildingType::SWARM_BUILDING)
@@ -484,7 +500,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 				gradient[x][y] = 255;
 			}
 			else if (
-					(c.ressource.type=WOOD)
+					(c.ressource.type==WOOD)
 					&& (
 						(typeNum==IntBuildingType::FOOD_BUILDING)
 						|| (typeNum==IntBuildingType::ATTACK_BUILDING)
@@ -518,8 +534,10 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			if(gradient[x][y] == 255) gradient[x][y] = 0;
-			else gradient[x][y]++;
+			if (gradient[x][y] == 255)
+				gradient[x][y] = 0;
+			else
+				gradient[x][y]++;
 		}
 	}
 	
@@ -556,9 +574,18 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 	Sint32 destination_x,destination_y;
 	{
 		Sint32 x,y;
+		map->dumpGradient(gradient.c_array(), "gradient.pgm");
+		map->dumpGradient(availability_gradient.c_array(), "availability_gradient.pgm");
 		map->getGlobalGradientDestination(gradient.c_array(), swarm->posX, swarm->posY, &x, &y);
-		map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
+		bool res = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
+		
+		std::cout << "Trying to build " << typeNum << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << res << std::endl;
 	}
+	
+	// set delay
+	buildingDelay = BUILDING_DELAY;
+	
+	// creatre and return order
 	return new OrderCreate(team->teamNumber,destination_x,destination_y,typeNum);
 	
 	/*Code that I decided not to use -- NOT pseudocode!
@@ -588,3 +615,4 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 		}
 	}*/
 }
+

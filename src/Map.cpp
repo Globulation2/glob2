@@ -4446,3 +4446,15 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 		return (((bx+15) & wMask)==(ux & wMask)) && (((by+15) & wMask)==(uy & wMask));
 	}
 }
+
+void Map::dumpGradient(Uint8 *gradient, const char *filename)
+{
+	FILE *fp = globalContainer->fileManager->openFP(filename, "wb");
+	if (fp)
+	{
+		fprintf(fp, "P5 %d %d 255\n", w, h);
+		fwrite(gradient, w, h, fp);
+		fclose(fp);
+	}
+}
+
