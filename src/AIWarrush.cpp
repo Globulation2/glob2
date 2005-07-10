@@ -27,8 +27,9 @@
 #include "Order.h"
 #include "Player.h"
 #include "Brush.h"
+#include <valarray>
 
-#define BUILDING_DELAY 20
+#define BUILDING_DELAY 30
 
 void AIWarrush::init(Player *player)
 {
@@ -371,6 +372,9 @@ Order *AIWarrush::maintain(void)
 
 Order *AIWarrush::setupAttack(void)
 {
+	/*
+	Note from Steph: disable because it produces excessively big areas and there is a static which breaks glob2
+	
 	BrushAccumulator acc;
 	bool areaMap[map->w][map->h];
 	for(int x=0;x<map->w;x++)
@@ -383,18 +387,22 @@ Order *AIWarrush::setupAttack(void)
 		{
 			if(map->isMapDiscovered(x,y,team->me))
 			{
-				//The below line is a major UGH. I don't know a simpler way to get a building from a GID.
-				Building *b = game->teams[Building::GIDtoTeam(map->getBuilding(x,y))]->myBuildings[Building::GIDtoID(map->getBuilding(x,y))];
-				if((b)&&(b->owner->teamNumber != team->teamNumber))
+				Uint16 gbid = map->getBuilding(x, y);
+				if (gbid != NOGBID)
 				{
-					for(int sub_x = x - 1;sub_x <= x + 1;sub_x++)
+					//The below line is a major UGH. I don't know a simpler way to get a building from a GID.
+					Building *b = game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+					if ((b) && (b->owner->me & team->enemies))
 					{
-						for(int sub_y = y - 1;sub_y <= y + 1;sub_y++)
+						for (int sub_x = x - 1;sub_x <= x + 1;sub_x++)
 						{
-							if(sub_x<0)sub_x+=map->w; if(sub_y<0)sub_y+=map->h;
-							if(sub_x>map->w)sub_x-=map->w; if(sub_y>map->h)sub_y-=map->h;
-							
-							areaMap[sub_x][sub_y] = true;
+							for (int sub_y = y - 1;sub_y <= y + 1;sub_y++)
+							{
+								if(sub_x<0)sub_x+=map->w; if(sub_y<0)sub_y+=map->h;
+								if(sub_x>map->w)sub_x-=map->w; if(sub_y>map->h)sub_y-=map->h;
+								
+								areaMap[sub_x][sub_y] = true;
+							}
 						}
 					}
 				}
@@ -432,6 +440,9 @@ Order *AIWarrush::setupAttack(void)
 		}
 		return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc);
 	}
+	*/
+	
+	return new NullOrder();
 		
 	/*static bool adding = true;
 		find all KNOWN enemy buildings;
@@ -447,22 +458,23 @@ struct DynamicGradientMapArray
 {
 public:
 	typedef Uint8 element_type;
-	DynamicGradientMapArray(std::size_t width, std::size_t height)
-	: width_(width), height_(height), array_(new element_type[width*height]) {}
 	
-	~DynamicGradientMapArray() {delete[] array_;}
+	DynamicGradientMapArray(std::size_t w, std::size_t h) :
+		width(w),
+		height(h),
+		array(w*h)
+	{
+	}
 	
-	//usage: gradient[x][y]
-	element_type* operator[](std::size_t width_index) {return &array_[width_index*width_];}
-	element_type const* operator[](std::size_t width_index) const {return &array_[width_index*width_];}
-	
-	element_type* c_array() {return array_;}
+	//usage: gradient(x, y)
+	const element_type &operator()(size_t x, size_t y) const { return array[y * width + x]; }
+	element_type &operator()(size_t x, size_t y) { return array[y * width + x]; }
+	element_type* c_array() { return &array[0]; }
 	
 private:
-	std::size_t width_;
-	std::size_t height_;
-	element_type* array_;
-	
+	std::size_t width;
+	std::size_t height;
+	std::valarray<element_type> array;
 };
 
 bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int height)
@@ -481,7 +493,7 @@ bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int heig
 	return false;
 }
 
-Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
+Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 {
 	DynamicGradientMapArray gradient(map->w,map->h);
 	for(int x=0;x<map->w;x++)
@@ -492,38 +504,38 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 			if (
 					(c.ressource.type==CORN)
 					&& (
-						(typeNum==IntBuildingType::FOOD_BUILDING)
-						|| (typeNum==IntBuildingType::SWARM_BUILDING)
+						(shortTypeNum==IntBuildingType::FOOD_BUILDING)
+						|| (shortTypeNum==IntBuildingType::SWARM_BUILDING)
 							)
 								)
 			{
-				gradient[x][y] = 255;
+				gradient(x, y) = 255;
 			}
 			else if (
 					(c.ressource.type==WOOD)
 					&& (
-						(typeNum==IntBuildingType::FOOD_BUILDING)
-						|| (typeNum==IntBuildingType::ATTACK_BUILDING)
+						(shortTypeNum==IntBuildingType::FOOD_BUILDING)
+						|| (shortTypeNum==IntBuildingType::ATTACK_BUILDING)
 							)
 								)
 			{
-				gradient[x][y] = 255;
+				gradient(x, y) = 255;
 			}
 			else if (c.ressource.type!=NO_RES_TYPE)
 			{
-				gradient[x][y] = 0;
+				gradient(x, y) = 0;
 			}
 			else if (c.building!=NOGBID)
 			{
-				gradient[x][y] = 0;
+				gradient(x, y) = 0;
 			}
 			else if (map->isWater(x,y))
 			{
-				gradient[x][y] = 0;
+				gradient(x, y) = 0;
 			}
 			else
 			{ //has to be desert or grass with no buildings or resources, at this point.
-				gradient[x][y] = 1;
+				gradient(x, y) = 1;
 			}
 		}
 	}
@@ -534,14 +546,14 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			if (gradient[x][y] == 255)
-				gradient[x][y] = 0;
+			if (gradient(x, y) == 255)
+				gradient(x, y) = 0;
 			else
-				gradient[x][y]++;
+				gradient(x, y)++;
 		}
 	}
 	
-	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+	BuildingType *bt=globalContainer->buildingsTypes.get(shortTypeNum);
 	DynamicGradientMapArray availability_gradient(map->w,map->h);
 	for(int x=0;x<map->w;x++)
 	{
@@ -550,21 +562,21 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 			Case c=map->getCase(x,y);
 			if (c.ressource.type!=NO_RES_TYPE)
 			{
-				availability_gradient[x][y] = 0;
+				availability_gradient(x, y) = 0;
 			}
 			else if (c.building!=NOGBID)
 			{
-				availability_gradient[x][y] = 0;
+				availability_gradient(x, y) = 0;
 			}
 			else if (map->isWater(x,y))
 			{
-				availability_gradient[x][y] = 0;
+				availability_gradient(x, y) = 0;
 			}
 			else if(locationIsAvailableForBuilding(x,y,bt->width,bt->height))
 			{
-				availability_gradient[x][y] = 255;
+				availability_gradient(x, y) = 255;
 			}
-			else availability_gradient[x][y] = 1;
+			else availability_gradient(x, y) = 1;
 		}
 	}
 	
@@ -574,26 +586,27 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 	Sint32 destination_x,destination_y;
 	{
 		Sint32 x,y;
-		map->dumpGradient(gradient.c_array(), "gradient.pgm");
-		map->dumpGradient(availability_gradient.c_array(), "availability_gradient.pgm");
+		//map->dumpGradient(gradient.c_array(), "gradient.pgm");
+		//map->dumpGradient(availability_gradient.c_array(), "availability_gradient.pgm");
 		map->getGlobalGradientDestination(gradient.c_array(), swarm->posX, swarm->posY, &x, &y);
 		bool res = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
 		
-		std::cout << "Trying to build " << typeNum << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << res << std::endl;
+		std::cout << "Trying to build " << shortTypeNum << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << res << std::endl;
 	}
 	
 	// set delay
 	buildingDelay = BUILDING_DELAY;
 	
 	// creatre and return order
-	return new OrderCreate(team->teamNumber,destination_x,destination_y,typeNum);
+	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
+	return new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum);
 	
 	/*Code that I decided not to use -- NOT pseudocode!
 	
 	int x,y;
 	int max_value = -10000;
 	int max_x, max_y;
-	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+	BuildingType *bt=globalContainer->buildingsTypes.get(shortTypeNum);
 	int width = bt->width;
 	int height = bt->height;
 	for(x=0;x<map->w;x++){
@@ -605,7 +618,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 typeNum)
 					||	isMapDiscovered(x,			y+height,	team->me)
 						) {
 					int value;
-					if(typeNum == IntBuildingType::FOOD_BUILDING){
+					if(shortTypeNum == IntBuildingType::FOOD_BUILDING){
 						value += map->getGradient(team->teamNumber,CORN,false,x,y)
 						value += map->getGradient(team->teamNumber,WOOD,false,x,y)
 					}

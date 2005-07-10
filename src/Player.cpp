@@ -46,7 +46,9 @@ BasePlayer::BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 t
 	setNumber(number);
 	setTeamNumber(teamNumber);
 
-	memcpy(this->name, name, MAX_NAME_LENGTH);
+	memset(this->name, 0, MAX_NAME_LENGTH);
+	strncpy(this->name, name, MAX_NAME_LENGTH);
+	this->name[MAX_NAME_LENGTH-1] = 0;
 
 	this->type=type;
 };
