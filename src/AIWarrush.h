@@ -52,7 +52,6 @@ private:
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;
 	//these should be improved, and some should be moved to Team.h.
-	int numberOfBuildingsOfType(int buildingType)const;
 	int numberOfUnitsWithSkillGreaterThanValue(int skill, int value)const;
 	bool isAnyUnitWithLessThanOneThirdFood()const;
 	Building *getSwarmWithoutSettings(int workerRatio, int explorerRatio, int warriorRatio)const;
