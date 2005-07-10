@@ -47,10 +47,10 @@ TeamStats::~TeamStats()
 	
 }
 
-void TeamStats::step(Team *team)
+void TeamStats::step(Team *team, bool reloaded)
 {
 	// handle end of game stat step
-	if ((team->game->stepCounter & 0x1FF) == 0)
+	if (((team->game->stepCounter & 0x1FF) == 0) && !reloaded)
 	{
 		// we copy stats to end of game stat
 		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_UNITS] = stats[statsIndex].totalUnit;

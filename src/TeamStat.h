@@ -86,7 +86,7 @@ public:
 	TeamStats();
 	virtual ~TeamStats(void);
 	
-	void step(Team *team);
+	void step(Team *team, bool reloaded = false);
 	void drawText(int pos);
 	void drawStat(int pos);
 	int getFreeUnits(int type);

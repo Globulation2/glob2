@@ -359,6 +359,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		stream->readLeaveSection();
 		return false;
 	}
+	stats.step(this, true);
 
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 	{
