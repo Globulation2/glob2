@@ -37,6 +37,8 @@ AICastor.h\
 AICastor.cpp\
 AIToubib.h\
 AIToubib.cpp\
+AIWarrush.h\
+AIWarrush.cpp\
 Building.cpp\
 Building.h\
 BuildingType.cpp\

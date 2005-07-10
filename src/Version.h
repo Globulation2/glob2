@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 23
-#define VERSION_MINOR 41
+#define VERSION_MINOR 42
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -55,5 +55,6 @@
 // version 39 added UnitType::harvestDamage and UnitType::armorReductionPerHappyness.
 // version 40 added experience and experienceLevel to Unit
 // version 41 added magic abilities
+// version 41 added AIWarrush
 
 #endif

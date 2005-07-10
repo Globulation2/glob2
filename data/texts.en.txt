@@ -440,6 +440,8 @@ AINumbi
 AICastor
 [AIToubib]
 AIToubib
+[AIWarrush]
+AIWarrush
 [the games]
 Games
 [the maps]
