@@ -66,6 +66,7 @@ void AIWarrush::save(GAGCore::OutputStream *stream)
 {
 }
 
+/*
 int AIWarrush::numberOfBuildingsOfType(const int buildingType)const
 {
 	Building **myBuildings=team->myBuildings;
@@ -80,6 +81,7 @@ int AIWarrush::numberOfBuildingsOfType(const int buildingType)const
 	}
 	return count;
 }
+*/
 
 int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int value)const
 {
@@ -221,7 +223,7 @@ bool AIWarrush::allBarracksAreCompletedAndFull()const
 Order *AIWarrush::getOrder(void)
 {
 	//C-style comments in the main code are remaining pseudocode.
-	if(numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) == 0)
+	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] == 0)
 	{
 		return initialRush();
 	}
@@ -236,7 +238,7 @@ Order *AIWarrush::getOrder(void)
 
 Order *AIWarrush::initialRush(void)
 {
-	if(numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) < 2)
+	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::SWARM_BUILDING] < 2)
 	{
 		return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
 	}
@@ -289,13 +291,13 @@ Order *AIWarrush::maintain(void)
 		return new OrderModifySwarm(out_of_date_swarm->gid, settings);
 	}
 	if(
-		numberOfBuildingsOfType(IntBuildingType::ATTACK_BUILDING) < 2
+		team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::ATTACK_BUILDING] < 2
 		|| (allBarracksAreCompletedAndFull() && numberOfIdleLevel1Warriors() >= 3)
 			)
 	{
 		return buildBuildingOfType(IntBuildingType::ATTACK_BUILDING);
 	}
-	if(numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) * 18
+	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] * 18
 			<
 			numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
 	{
