@@ -68,7 +68,7 @@ private:
 	Order *maintain(void);
 	Order *setupAttack(void);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
-	Order *buildBuildingOfType(Sint32 typeNum);
+	Order *buildBuildingOfType(Sint32 shortTypeNum);
 };
 
 #endif
