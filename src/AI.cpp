@@ -29,6 +29,7 @@
 #include "AINumbi.h"
 #include "AICastor.h"
 #include "AIToubib.h"
+#include "AIWarrush.h"
 
 /*AI::AI(Player *player)
 {
@@ -54,6 +55,9 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(player);
+		break;
+		case WARRUSH:
+			aiImplementation=new AIWarrush(player);
 		break;
 		default:
 			assert(false);
@@ -126,6 +130,9 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(stream, player, versionMinor);
+		break;
+		case WARRUSH:
+			aiImplementation=new AIWarrush(player);
 		break;
 		default:
 			assert(false);
