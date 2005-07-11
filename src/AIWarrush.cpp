@@ -231,6 +231,10 @@ Order *AIWarrush::getOrder(void)
 		buildingDelay--;
 	
 	//C-style comments in the main code are remaining pseudocode.
+	
+	//This is basically just a way of splitting the AI into two phases, one of which comes before
+	//the Inn is placed, the other of which comes after. It would probably be better to store the
+	//state, e.g. for maps where you start with an inn it would do very poorly.
 	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] == 0)
 	{
 		return initialRush();
@@ -246,19 +250,29 @@ Order *AIWarrush::getOrder(void)
 
 Order *AIWarrush::initialRush(void)
 {
+	//IF it hasn't been too soon since we last built something, we may build stuff...
 	if (buildingDelay == 0)
 	{
+		//Build up two swarms. This usually means to build one swarm at the beginning
+		//of the game. This is so that the AI can produce units faster, as it needs to
+		//in order to 'rush'. :)
 		if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::SWARM_BUILDING] < 2)
 		{
 			return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
 		}
+		//This triggers the end of the first phase. The first phase lasts until you
+		//actually *need* the inn before your units get hungry.
 		if(isAnyUnitWithLessThanOneThirdFood())
 		{
 			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
 		}
 	}
+	//If we have enough workers, we can switch to making some explorers to find the enemies.
 	if(numberOfUnitsWithSkillGreaterThanValue(HARVEST,0) >= 6)
 	{
+		//This is basically a way to change all the swarms without bothering to remember
+		//anything. (It can only issue one order per tick, so it has to do it over several
+		//ticks and calculate the orders seperately.)
 		Building *out_of_date_swarm = getSwarmWithoutSettings(2,1,0);
 		if(out_of_date_swarm)
 		{
@@ -266,6 +280,10 @@ Order *AIWarrush::initialRush(void)
 			return new OrderModifySwarm(out_of_date_swarm->gid, settings);
 		}
 	}
+	//Obviously we have no reason for unemployment.
+	//Currently AIWarrush::getSwarmWithLeastProduction() returns the swarm with fewest
+	//workers on it, but it might be good to also base it on distance to wheat (so that
+	//the swarms get relatively equal amounts of wheat, rather than workers.)
 	if(numberOfJobsForWorkers() < numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
 	{
 		Building *low_swarm = getSwarmWithLeastProduction();
@@ -295,14 +313,19 @@ Order *AIWarrush::initialRush(void)
 
 Order *AIWarrush::maintain(void)
 {
-	Building *out_of_date_swarm = getSwarmWithoutSettings(1,0,1);
+	//Update all swarms to produce warriors as well. 1/6 of units produced are still explorers,
+	//in case they all get killed or something.
+	Building *out_of_date_swarm = getSwarmWithoutSettings(2,1,3);
 	if(out_of_date_swarm)
 	{
-		Sint32 settings[3] = {1,0,1};
+		Sint32 settings[3] = {2,1,3};
 		return new OrderModifySwarm(out_of_date_swarm->gid, settings);
 	}
+	//Again, IF it hasn't been too soon since we last built something, we may build stuff...
 	if (buildingDelay == 0)
 	{
+		//If we don't yet have the first two barracks, or if we don't have enough to train
+		//our warriors, then we build more to accomodate.
 		if(
 			team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::ATTACK_BUILDING] < 2
 			|| (allBarracksAreCompletedAndFull() && numberOfIdleLevel1Warriors() >= 3)
@@ -310,6 +333,10 @@ Order *AIWarrush::maintain(void)
 		{
 			return buildBuildingOfType(IntBuildingType::ATTACK_BUILDING);
 		}
+		//The AI currently assumes it can accomodate 18 units per inn, which is optomistic,
+		//but it can assume that either its warriors will be killed or its enemies will be
+		//defeated, both of which would reduce the necessity. :)
+		//The following code builds inns if there are more than 18 units for each one.
 		if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] * 18
 				<
 				numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
@@ -317,6 +344,10 @@ Order *AIWarrush::maintain(void)
 			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
 		}
 	}
+	//We want to keep all our workers employed, all the time. This code has two problems.
+	//The first is that it assumes that all workers are able and ready to work.
+	//The second is that it assigns them all to the swarm (it should build hospitals
+	//with them instead.)
 	const int jobs = numberOfJobsForWorkers();
 	const int workers = numberOfUnitsWithSkillGreaterThanValue(HARVEST,0);
 	if(jobs != workers)
@@ -327,6 +358,10 @@ Order *AIWarrush::maintain(void)
 		else assert(false);
 		return new OrderModifyBuilding(swarmToModify->gid,swarmToModify->maxUnitWorking+workers-jobs);
 	}
+	//And we attack if we have enough warriors. This code may cause an ugly problem if enough
+	//warriors get killed in the assault. Again, it should store what phase it's at.
+	//(although phase-based AI is rather bad, AI that is phase-based but appears not to be by
+	//predicting what it would have done already is worse.)
 	if(numberOfUnitsWithSkillGreaterThanValue(ATTACK_SPEED,1) >= 20)
 	{
 		return setupAttack();
@@ -372,6 +407,103 @@ Order *AIWarrush::maintain(void)
 
 Order *AIWarrush::setupAttack(void)
 {
+	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
+	{
+		BrushAccumulator acc;
+		for(int x=0;x<map->w;x++)
+		{
+			for(int y=0;y<map->h;y++)
+			{
+				if(map->isGuardAreaLocal(x,y))
+				{
+					bool keep = false;
+					for(int xmod=-1;xmod<=1;xmod++)
+					{
+						for(int ymod=-1;ymod<=1;ymod++)
+						{
+							//This is wrong. It not only has to be a building, it also has to be an
+							//ENEMY building. If the enemy is very close or the AI forms an alliance
+							//with the enemy, the AI will leave the guard areas there, hindering the
+							//real attack.
+							if(map->getBuilding(x+xmod,y+ymod))
+							{
+								keep=true;
+							}
+						}
+					}
+					if(!keep)
+					{
+						acc.applyBrush(map,BrushApplication(x,y,0));
+					}
+				}
+			}
+		}
+		//Obviously we don't want to give an actual order if there is no area to remove.
+		//That would prevent the area from ever being placed, in this case.
+		if(acc.getApplicationCount())
+		{
+			return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc);
+		}
+	}
+	
+	//There were no excess guard areas. Place on an enemy inn or swarm (or if there are none known, on any building)
+	
+	std::string pass = "first";
+	//On the "first" pass, attack only inns and swarms. The "second" pass is there in case none are found.
+	//The "done" pass is in case no enemy buildings at all are found.
+	while(pass != "done")
+	{
+		for(int i=0;i<32;i++)
+		{
+			Team *t = game->teams[i];
+			if(team->enemies & t->me)
+			{
+				for(int j=0;j<32;j++)
+				{
+					Building *b = t->myBuildings[j];
+					BuildingType *bt = b->type;
+					if(
+							//the area must be discovered to prevent AI cheating.
+							(
+									map->isMapDiscovered(b->posX,				b->posY,				team->me)
+								||	map->isMapDiscovered(b->posX+bt->width - 1,	b->posY,				team->me)
+								||	map->isMapDiscovered(b->posX+bt->width - 1,	b->posY+bt->height-1,	team->me)
+								||	map->isMapDiscovered(b->posX,				b->posY+bt->height-1,	team->me)
+									)
+							&&
+							//the building must be a swarm or inn unless there are none available.
+							(
+									bt->shortTypeNum == IntBuildingType::SWARM_BUILDING
+								||	bt->shortTypeNum == IntBuildingType::FOOD_BUILDING
+								||	pass == "second"
+									)
+							&&
+							//do not order a building attacked if the order is already in place.
+							(
+								!map->isGuardAreaLocal(b->posX,b->posY)
+									)			
+										)
+					{
+						BrushAccumulator acc;
+						for(int x = 0; x < bt->width; x++)
+						{
+							for(int y = 0; y < bt->height; y++)
+							{
+								acc.applyBrush(map,BrushApplication(b->posX+x,b->posY+y,6));
+							}
+						}
+						return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&acc);
+					}
+				}
+			}
+		}
+		if(pass == "first")pass = "second";
+		if(pass == "second")pass = "done";
+	}
+	
+	//omg there are no guard areas and no enemy buildings. I wonder where they are.
+	return new NullOrder();
+	
 	/*
 	Note from Steph: disable because it produces excessively big areas and there is a static which breaks glob2
 	
@@ -440,9 +572,9 @@ Order *AIWarrush::setupAttack(void)
 		}
 		return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc);
 	}
-	*/
 	
-	return new NullOrder();
+	
+	return new NullOrder();*/
 		
 	/*static bool adding = true;
 		find all KNOWN enemy buildings;
