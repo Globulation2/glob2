@@ -31,12 +31,14 @@ public:
 	Sint32 gfxId;
 	Sint32 sizesCount;
 	Sint32 varietiesCount;
-	Sint32 shrinkable;
-	Sint32 expendable;
-	Sint32 eternal;
-	Sint32 granular;
-	Sint32 visibleToBeCollected;
 	Sint32 minimapR, minimapG, minimapB;
+	//The following values are integers, but are used like booleans.
+	Sint32 shrinkable; //whether the resource is depleted when it is collected.
+	Sint32 expendable;	//probably a misspelling of 'extendable'. What it actually determines is whether
+						//the resource multiplies itself to adjacent squares over time.
+	Sint32 eternal; //whether the resource cannot be destroyed or completely consumed.
+	Sint32 granular; //whether the resource is decremented, rather than removed, when it is harvested/cleared.
+	Sint32 visibleToBeCollected; //whether the resource can only be collected if the fog of war is cleared on its location.
 
 public:
 	RessourceType() { init(); }

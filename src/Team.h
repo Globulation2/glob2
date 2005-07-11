@@ -172,15 +172,15 @@ public:
 	
 	Unit *myUnits[1024];
 	
-	Building *myBuildings[1024];
+	Building *myBuildings[1024]; //That's right, you can't build two walls all the way across a 512x512 map.
 	
-	// thoses where the 4 "call-lists" :
-	std::list<Building *> foodable;
-	std::list<Building *> fillable;
-	std::list<Building *> zonableWorkers[2]; 
-	std::list<Building *> zonableExplorer; 
-	std::list<Building *> zonableWarrior;
-	std::list<Building *> upgrade[NB_ABILITY];
+	// thoses where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
+	std::list<Building *> foodable; //to bring food to
+	std::list<Building *> fillable; //to bring resources to
+	std::list<Building *> zonableWorkers[2]; //to be built by workers who can ([1]) or needn't ([0]) swim.
+	std::list<Building *> zonableExplorer; //to be visited by Explorers.
+	std::list<Building *> zonableWarrior; //to be visited by Warriors.
+	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
 	
 	// The list of building which have one specific ability.
 	std::list<Building *> canFeedUnit; // The buildings with not enough food are not in this list.
