@@ -23,7 +23,7 @@
 /*
 What's in AI ?
 AI represents the behaviour of an artificial intelligence player.
-The main methode is Order *getOrder() which return the order to be used by the AI's team.
+The main method is Order *getOrder() which return the order to be used by the AI's team.
 */
 
 #include "BuildingType.h"
@@ -39,15 +39,15 @@ class Order;
 /*
 Howto make a new AI ?
 If you want to build a new way AI behave, you have to:
-Add a new Strategy to the below enum.
-Add a new if in the getOrder methode.
-Add a new case in the load and save methodes.
-Fill these methodes correctly.
+Add a new Strategy to the AI::ImplementitionID enum.
+Add a new case in the AI::load method.
+Create a subclass of AIImplementation.
+Fill AIImplenetation's methods correctly for that subclass.
 
 Warning:
-You have to understand Order's mechanism.
-Never uses rand() but allways syncRand().
-(because the AI need to behave exactly the same on every computers.)
+You have to understand how the Order class is used.
+Never use rand(), always syncRand().
+(because the AI need to behave exactly the same on every computer.)
 Be sure to return at least a *NullOrder, not NULL.
 
 Idea:
@@ -56,16 +56,17 @@ player
 player->team
 player->team->game
 player->team->game->map
+The current AIs store pointers to all these for convenient access.
 
 Fairness:
-AI don't have restriction access to hidden part of the map.
+AI don't have restricted access to hidden part of the map.
 You have to check it yourself, please do it.
-Please don't uses too much CPU too.
-Test games with a lot of AI that for.
+Please don't use too much CPU either.
+Test games with a lot of AI for that.
 
 Gameplay:
 Player and AI may play together, in the same team.
-Think if your AI is able to play with another human player ?
+Think if your AI is able to play with a human player?
 */
 
 class AIImplementation
