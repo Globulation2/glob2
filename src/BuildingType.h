@@ -67,23 +67,28 @@ public:
 	//Sint32 walkableOver; // bool, can walk over
 	Sint32 shootingRange; // Uint8, if 0 can't shoot
 	Sint32 shootDamage; // Uint8
-	Sint32 shootSpeed; // Uint8
-	Sint32 shootRythme; // Uint8
+	Sint32 shootSpeed; // Uint8, the actual speed at which the shots fly through the air.
+	Sint32 shootRythme;		// Uint8, The frequency with which a tower fires. It fires once every
+							// SHOOTING_COOLDOWN_MAX/shootRythme ticks.
 	Sint32 maxBullets;
-	Sint32 multiplierStoneToBullets;
+	Sint32 multiplierStoneToBullets; //The tower gets this many bullets every time a worker delivers stone to it.
 
 	Sint32 unitProductionTime; // Uint8, nb tick to produce one unit
-	Sint32 ressourceForOneUnit;
+	Sint32 ressourceForOneUnit; // The amount of wheat consumed in the production of a unit.
 
 	Sint32 maxRessource[MAX_NB_RESSOURCES];
 	Sint32 multiplierRessource[MAX_NB_RESSOURCES];
 	Sint32 maxUnitInside;
 	Sint32 maxUnitWorking;
 
-	Sint32 hpInit; // (Uint16)
+	Sint32 hpInit;	// (Uint16) Initial HP of the building. This is generally equal to hpMax for completed buildings,
+					// equal to 1 for newly created buildings, and equal to the hpMax of the original building for
+					// upgrading buildings.
 	Sint32 hpMax;
-	Sint32 hpInc;
-	Sint32 armor; // (Uint8)
+	Sint32 hpInc;	// The amount by which the building's hitpoints are incremented when a resource is added to it,
+					// for buildings under construction.
+	Sint32 armor;	// (Uint8) Any damage the building takes is reduced by this much, although it has a minumum of 1
+					// for most damage, 0 only for Explorers.
 	Sint32 level; // (Uint8)
 	Sint32 shortTypeNum; // BuildingTypeShortNumber, Should not be used by the main engine, but only to choose the next level building.
 	Sint32 isBuildingSite;
