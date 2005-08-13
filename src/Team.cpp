@@ -637,7 +637,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		int x = unit->posX;
 		int y = unit->posY;
-		int timeLeft = unit->hungry/race.hungryness;
+		int timeLeft = unit->hungry/race.hungryness; //Don't try to go to a hospital if you would get hungry first.
 		int timeLeftSquare = timeLeft*timeLeft;
 		Building *choosen = NULL;
 		int minDistSquare = INT_MAX;
@@ -664,7 +664,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			int buildingDist;
+			int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 			if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<timeLeft && buildingDist<minDist)
 			{
 				choosen=b;
@@ -679,7 +679,7 @@ Building *Team::findNearestFood(Unit *unit)
 {
 	SessionGame &session=game->session;
 	
-	bool concurency=false;
+	bool concurency=false; //Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
 	for (int ti=0; ti<session.numberOfTeam; ti++)
 		if (ti!=teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
 		{
@@ -724,7 +724,7 @@ Building *Team::findNearestFood(Unit *unit)
 						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 						{
 							int h=(*bi)->availableHappynessLevel();
-							int dist;
+							int dist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 							if (h>maxHappyness[ti] && map->buildingAvailable(*bi, canSwim, x, y, &dist))
 							{
 								maxHappyness[ti]=h;
@@ -736,6 +736,7 @@ Building *Team::findNearestFood(Unit *unit)
 		}
 	}
 	
+	//First we check if we have any satisfactory inns on our team.
 	if (unit->performance[FLY])
 	{
 		int x=unit->posX;
@@ -770,7 +771,7 @@ Building *Team::findNearestFood(Unit *unit)
 			Building *b=(*bi);
 			if (b->availableHappynessLevel()>=enemyHappyness)
 			{
-				int buildingDist;
+				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
 				{
 					choosen=b;
@@ -783,8 +784,16 @@ Building *Team::findNearestFood(Unit *unit)
 	}
 	
 	if (!concurency)
-		return NULL;
+		return NULL;	//This is bad, bad, bad. It means that if you have no opponents with Inn View on,
+						//your units CANNOT be converted --- even if an enemy inn is in normal view range.
+						//Later in the code, this turns out to mean that no team can convert any units without
+						//both being your enemy and turning on Inn View. This is inconsistent with the current
+						//documentation and with the meaning of 'inn view'. It's a convenient way to do things,
+						//but should be done away with sometime.
+						//
+						//It seems that a glob will never eat from an allied inn, either.
 	
+	//Now we go through all the enemy buildings controlled by opponents with Inn View on:
 	bool concurent[32];
 	memset(concurent, 0, 32*sizeof(bool));
 		
@@ -848,6 +857,14 @@ Building *Team::findNearestFood(Unit *unit)
 			printf("guid=%d found gbui=%d\n", unit->gid, choosen->gid);
 		else
 		{
+			//This code is reached only if these conditions are met:
+			//There is at least one team with Inn-View on against you.
+			//Neither you nor any of the aforementioned teams has any inns available.
+			//The unit in question does not fly.
+			//
+			//It does not do anything, because the only way it could choose a building, that building
+			//has been chosen already. It just prints a string for each building telling why it can't use that one.
+			//It only states one reason. Possibly it could be improved such that it states all.
 			printf("guid=%d found no ennemy building (enemyHappyness=%d)\n", unit->gid, enemyHappyness);
 			
 			int x=unit->posX;
@@ -865,7 +882,7 @@ Building *Team::findNearestFood(Unit *unit)
 						Building *b=(*bi);
 						if (b->availableHappynessLevel()>=enemyHappyness)
 						{
-							int buildingDist;
+							int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 							if (map->buildingAvailable(b, canSwim, x, y, &buildingDist))
 							{
 								if (/*map->buildingAvailable(b, canSwim, x, y, &buildingDist) &&*/ buildingDist<minDist)
@@ -909,7 +926,7 @@ Building *Team::findBestFoodable(Unit *unit)
 			Building *b=(*bi);
 			if (b->neededRessource(r))
 			{
-				int buildingDist;
+				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
 					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
@@ -981,7 +998,7 @@ Building *Team::findBestFillable(Unit *unit)
 			Building *b=(*bi);
 			if ((b->type->level<=actLevel)&&(b->neededRessource(r)))
 			{
-				int buildingDist;
+				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
 					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
@@ -1003,20 +1020,24 @@ Building *Team::findBestFillable(Unit *unit)
 
 	Building *choosen=NULL;
 	Sint32 score=0x7FFFFFFF;
-	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
+	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++) //first, iterate through the resource types to see how easy each is to get.
 	{
-		int ressourceDist;
+		int ressourceDist; //Not initialized or assigned to in this function, but in map::ressourceAvailable below.
 		if (map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
+					//then iterate through the buildings to see if they want that resource.
 			{
 				Building *b=(*bi);
-				if (b->type->level<=actLevel)
+				if (b->type->level<=actLevel) //A glob cannot work for a building of higher level than its skill.
 				{
 					int need=b->neededRessource(ri);
-					int buildingDist;
+					int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 					if (need && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						Sint32 newScore=((buildingDist+ressourceDist)<<8)/((b->maxUnitWorking-b->unitsWorking.size())*need);
+								//The lowest score is the best. The lowest total distance to supply the building is chosen, except that globs also prefer to help buildings that
+								//need more of the resource. This means that a nearly finished building is prioritized higher than a newly made one, delaying the completion of
+								//many buildings if they are built at the same time and the globs are distracted enough.
 						fprintf(logFile, "[%d] newScore=%d=f(%d, %d, %d, %zd, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
 						if (newScore<score)
 						{
@@ -1034,6 +1055,8 @@ Building *Team::findBestFillable(Unit *unit)
 	
 	if (!openMarket())
 		return NULL;
+		
+	//Trading fruit cannot be done unless two teams each have a market and at least one shares market view with the other.
 	
 	SessionGame &session=game->session;
 	// We compute all what's available from foreign ressources: (mask)
@@ -1091,7 +1114,7 @@ Building *Team::findBestFillable(Unit *unit)
 	{
 		Uint32 sendRessourceMask=(*bi)->sendRessourceMask;
 		Uint32 receiveRessourceMask=(*bi)->receiveRessourceMask;
-		int buildingDist;
+		int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 		if ((sendRessourceMask & allForeignReceiveRessourceMask)
 			&& (receiveRessourceMask & allForeignSendRessourceMask)
 			&& map->buildingAvailable(*bi, canSwim, x, y, &buildingDist)
@@ -1147,7 +1170,7 @@ Building *Team::findBestZonable(Unit *unit)
 			for (std::list<Building *>::iterator bi=zonableWorkers[canSwim].begin(); bi!=zonableWorkers[canSwim].end(); ++bi)
 			{
 				Building *b=(*bi);
-				int buildingDist;
+				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				int need=b->maxUnitWorking-b->unitsWorking.size();
 				if ((need>0) && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
@@ -1186,7 +1209,7 @@ Building *Team::findBestZonable(Unit *unit)
 				Building *b=(*bi);
 				if (b->minLevelToFlag<=level)
 				{
-					int buildingDist;
+					int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						Sint32 newScore=buildingDist/(b->maxUnitWorking-b->unitsWorking.size());
@@ -1213,7 +1236,9 @@ Building *Team::findBestUpgrade(Unit *unit)
 	Sint32 score=0x7FFFFFFF;
 	int x=unit->posX;
 	int y=unit->posY;
-	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
+	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)	//This is bad code. If WALK ever ceases to be the
+																//first ability or ARMOR ever ceases to be the last, this
+																//code willl fail.
 		if (unit->canLearn[ability])
 		{
 			int actLevel=unit->level[ability];
