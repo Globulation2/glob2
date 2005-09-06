@@ -28,6 +28,7 @@
 #include "Player.h"
 #include "Brush.h"
 #include <valarray>
+#include <algorithm>
 
 #define BUILDING_DELAY 30
 
@@ -95,6 +96,21 @@ int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int
 	{
 		Unit *u=myUnits[i];
 		if ((u)&&(u->performance[skill]>value))
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
+int AIWarrush::numberOfBuildingsOfType(Sint32 shortTypeNum)const
+{
+	Building **myBuildings=team->myBuildings;
+	int count = 0;
+	for (int i=0; i<1024; i++)
+	{
+		Building *b=myBuildings[i];
+		if ((b)&&(b->type->shortTypeNum==shortTypeNum))
 		{
 			count++;
 		}
@@ -235,7 +251,8 @@ Order *AIWarrush::getOrder(void)
 	//This is basically just a way of splitting the AI into two phases, one of which comes before
 	//the Inn is placed, the other of which comes after. It would probably be better to store the
 	//state, e.g. for maps where you start with an inn it would do very poorly.
-	if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] == 0)
+	// Not using: if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] == 0)
+	if(numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) == 0)
 	{
 		return initialRush();
 	}
@@ -256,7 +273,8 @@ Order *AIWarrush::initialRush(void)
 		//Build up two swarms. This usually means to build one swarm at the beginning
 		//of the game. This is so that the AI can produce units faster, as it needs to
 		//in order to 'rush'. :)
-		if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::SWARM_BUILDING] < 2)
+		//Not using: if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::SWARM_BUILDING] < 2)
+		if(numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) < 2)
 		{
 			return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
 		}
@@ -287,7 +305,13 @@ Order *AIWarrush::initialRush(void)
 	if(numberOfJobsForWorkers() < numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
 	{
 		Building *low_swarm = getSwarmWithLeastProduction();
-		return new OrderModifyBuilding(low_swarm->gid, low_swarm->maxUnitWorking + 1);
+		return new OrderModifyBuilding(low_swarm->gid, std::min(low_swarm->maxUnitWorking + 1, 20));
+	}
+	//Conversely we have no need for overemployment.
+	if(numberOfJobsForWorkers() > numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
+	{
+		Building *high_swarm = getSwarmWithMostProduction();
+		return new OrderModifyBuilding(high_swarm->gid, std::max(high_swarm->maxUnitWorking - 1, 0));
 	}
 	return new NullOrder();
 	
@@ -327,27 +351,48 @@ Order *AIWarrush::maintain(void)
 		//If we don't yet have the first two barracks, or if we don't have enough to train
 		//our warriors, then we build more to accomodate.
 		if(
-			team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::ATTACK_BUILDING] < 2
+			//Not using: team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::ATTACK_BUILDING] < 2
+			numberOfBuildingsOfType(IntBuildingType::ATTACK_BUILDING) < 2
 			|| (allBarracksAreCompletedAndFull() && numberOfIdleLevel1Warriors() >= 3)
 				)
 		{
 			return buildBuildingOfType(IntBuildingType::ATTACK_BUILDING);
 		}
-		//The AI currently assumes it can accomodate 18 units per inn, which is optomistic,
+		//The AI currently assumes it can accomodate 18 units per inn, which is optimistic,
 		//but it can assume that either its warriors will be killed or its enemies will be
 		//defeated, both of which would reduce the necessity. :)
 		//The following code builds inns if there are more than 18 units for each one.
-		if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] * 18
+		//Not using: if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] * 18
+		if(numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) * 18
 				<
-				numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
+				numberOfUnitsWithSkillGreaterThanValue(WALK,0))+numberOfUnitsWithSkillGreaterThanValue(FLY,0))
+					//The above is abominable and should be replaced by "numberOfUnits" or somesuch.
 		{
 			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
 		}
 	}
+	
 	//We want to keep all our workers employed, all the time. This code has two problems.
 	//The first is that it assumes that all workers are able and ready to work.
 	//The second is that it assigns them all to the swarm (it should build hospitals
 	//with them instead.)
+	
+	//This is the same code as above. This is not a bad thing, like most duplicate code,
+	//because most changes to this should differ from those to that.
+	if(numberOfJobsForWorkers() < numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
+	{
+		Building *low_swarm = getSwarmWithLeastProduction();
+		return new OrderModifyBuilding(low_swarm->gid, std::min(low_swarm->maxUnitWorking + 1, 20));
+	}
+	if(numberOfJobsForWorkers() > numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
+	{
+		Building *high_swarm = getSwarmWithMostProduction();
+		return new OrderModifyBuilding(high_swarm->gid, std::max(high_swarm->maxUnitWorking - 1, 0));
+	}
+	
+	//This is the old job-handling code. Quite foolish in light of the better algorithm above,
+	//which I had already implemented at the time...
+	/*
 	const int jobs = numberOfJobsForWorkers();
 	const int workers = numberOfUnitsWithSkillGreaterThanValue(HARVEST,0);
 	if(jobs != workers)
@@ -357,7 +402,9 @@ Order *AIWarrush::maintain(void)
 		else if(jobs > workers)swarmToModify = getSwarmWithMostProduction();
 		else assert(false);
 		return new OrderModifyBuilding(swarmToModify->gid,swarmToModify->maxUnitWorking+workers-jobs);
-	}
+	}*/
+	
+	
 	//And we attack if we have enough warriors. This code may cause an ugly problem if enough
 	//warriors get killed in the assault. Again, it should store what phase it's at.
 	//(although phase-based AI is rather bad, AI that is phase-based but appears not to be by
@@ -704,7 +751,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if(locationIsAvailableForBuilding(x,y,bt->width,bt->height))
+			else if(locationIsAvailableForBuilding(x-1,y-1,bt->width+2,bt->height+2)) //the extra numbers at the ends expand the building 
 			{
 				availability_gradient(x, y) = 255;
 			}
