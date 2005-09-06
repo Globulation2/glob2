@@ -43,7 +43,9 @@ public:
 	Team *team;
 	Game *game;
 	Map *map;
-	//! Delay after an order order to create a building has been issued, until next one can
+	//! The amount of delay left before building a building. This delay is used to prevent
+	//overly frequent building-creating requests (and potentially from building them extra times
+	//on locations with units and getting extras, but I'm not sure on this one)
 	int buildingDelay;
 
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -55,6 +57,7 @@ private:
 	//implementation functions to make the code more like the pseudocode;
 	//these should be improved, and some should be moved to Team.h.
 	int numberOfUnitsWithSkillGreaterThanValue(int skill, int value)const;
+	int numberOfBuildingsOfType(Sint32 shortTypeNum)const;
 	bool isAnyUnitWithLessThanOneThirdFood()const;
 	Building *getSwarmWithoutSettings(int workerRatio, int explorerRatio, int warriorRatio)const;
 	Building *getSwarmWithLeastProduction()const;
