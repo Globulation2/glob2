@@ -1,0 +1,12 @@
+AIWarrush:
+-For inn building, climb to wheat then wood.
+-Turn on Inn View in Maintain phase.
+-Build hospitals with excess workers.
+-Fix the bug that causes barracks not to be built.
+
+Other code:
+-Add caps on employment at 0 and 20.
+-Finish augmenting SGSL.
+
+Non-code:
+Remember all the other stuff that should be in this list.
