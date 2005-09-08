@@ -246,6 +246,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
 				fprintf(logFile, "ORDER_MODIFY_BUILDING");
+				assert(omb->numberRequested <= 20 && omb->numberRequested >= 0);
 				b->maxUnitWorking=omb->numberRequested;
 				b->maxUnitWorkingPreferred=b->maxUnitWorking;
 				if (order->sender!=localPlayer)
