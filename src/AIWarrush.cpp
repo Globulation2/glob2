@@ -365,7 +365,7 @@ Order *AIWarrush::maintain(void)
 		//Not using: if(team->stats.getLatestStat()->numberBuildingPerType[IntBuildingType::FOOD_BUILDING] * 18
 		if(numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) * 18
 				<
-				numberOfUnitsWithSkillGreaterThanValue(WALK,0))+numberOfUnitsWithSkillGreaterThanValue(FLY,0))
+				numberOfUnitsWithSkillGreaterThanValue(WALK,0)+numberOfUnitsWithSkillGreaterThanValue(FLY,0))
 					//The above is abominable and should be replaced by "numberOfUnits" or somesuch.
 		{
 			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
@@ -672,15 +672,18 @@ bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int heig
 	return false;
 }
 
-Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
+void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type)
 {
-	DynamicGradientMapArray gradient(map->w,map->h);
 	for(int x=0;x<map->w;x++)
 	{
 		for(int y=0;y<map->h;y++)
 		{
 			Case c=map->getCase(x,y);
-			if (
+			if (c.ressource.type==resource_type)
+			{
+				gradient(x, y) = 255;
+			}
+			/*if (
 					(c.ressource.type==CORN)
 					&& (
 						(shortTypeNum==IntBuildingType::FOOD_BUILDING)
@@ -699,7 +702,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 								)
 			{
 				gradient(x, y) = 255;
-			}
+			}*/
 			else if (c.ressource.type!=NO_RES_TYPE)
 			{
 				gradient(x, y) = 0;
@@ -731,6 +734,15 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 				gradient(x, y)++;
 		}
 	}
+}
+
+Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
+{
+	DynamicGradientMapArray wood_gradient(map->w,map->h);
+	DynamicGradientMapArray wheat_gradient(map->w,map->h);
+	initializeGradientWithResource(wood_gradient, WOOD);
+	initializeGradientWithResource(wheat_gradient, CORN);
+	
 	
 	BuildingType *bt=globalContainer->buildingsTypes.get(shortTypeNum);
 	DynamicGradientMapArray availability_gradient(map->w,map->h);
@@ -765,18 +777,31 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	Sint32 destination_x,destination_y;
 	{
 		Sint32 x,y;
+		Sint32 x_temp,y_temp;
 		//map->dumpGradient(gradient.c_array(), "gradient.pgm");
 		//map->dumpGradient(availability_gradient.c_array(), "availability_gradient.pgm");
-		map->getGlobalGradientDestination(gradient.c_array(), swarm->posX, swarm->posY, &x, &y);
-		bool res = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
 		
-		std::cout << "Trying to build " << shortTypeNum << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << res << std::endl;
+		x = swarm->posX; y = swarm->posY;
+		
+		if(shortTypeNum==IntBuildingType::ATTACK_BUILDING || shortTypeNum==IntBuildingType::FOOD_BUILDING)
+		{
+			map->getGlobalGradientDestination(wood_gradient.c_array(), x, y, &x_temp, &y_temp);
+			x = x_temp; y = y_temp;
+		}
+		if(shortTypeNum==IntBuildingType::SWARM_BUILDING || shortTypeNum==IntBuildingType::FOOD_BUILDING)
+		{
+			map->getGlobalGradientDestination(wheat_gradient.c_array(), x, y, &x_temp, &y_temp);
+			x = x_temp; y = y_temp;
+		}
+		bool result = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
+		
+		std::cout << "Trying to build " << shortTypeNum << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl;
 	}
 	
 	// set delay
 	buildingDelay = BUILDING_DELAY;
 	
-	// creatre and return order
+	// create and return order
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
 	return new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum);
 	
