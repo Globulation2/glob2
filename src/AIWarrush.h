@@ -22,7 +22,7 @@
 #define __AI_WARRUSH_H
 
 #include "AIImplementation.h"
-
+#include <valarray>
 
 class Game;
 class Map;
@@ -31,6 +31,30 @@ class Player;
 class Team;
 class Building;
 
+//ugh. such a large amount of code to work around something simple like "Unit8 gradient[map->w][map->h];"
+// NOte: nct: I've mobved this from AIWarrush.cpp to AIWarrush.h so that AIWarrush.cpp compiles
+struct DynamicGradientMapArray
+{
+public:
+	typedef Uint8 element_type;
+	
+	DynamicGradientMapArray(std::size_t w, std::size_t h) :
+		width(w),
+		height(h),
+		array(w*h)
+	{
+	}
+	
+	//usage: gradient(x, y)
+	const element_type &operator()(size_t x, size_t y) const { return array[y * width + x]; }
+	element_type &operator()(size_t x, size_t y) { return array[y * width + x]; }
+	element_type* c_array() { return &array[0]; }
+	
+private:
+	std::size_t width;
+	std::size_t height;
+	std::valarray<element_type> array;
+};
 
 class AIWarrush : public AIImplementation
 {
@@ -71,6 +95,7 @@ private:
 	Order *maintain(void);
 	Order *setupAttack(void);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
+	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);
 	Order *buildBuildingOfType(Sint32 shortTypeNum);
 };
 

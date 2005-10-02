@@ -632,6 +632,9 @@ Order *AIWarrush::setupAttack(void)
 		return (remove guard areas from all other locations);}*/
 }
 
+
+/*
+Note: Nct: Moved to AIWarrush.h
 //ugh. such a large amount of code to work around something simple like "Unit8 gradient[map->w][map->h];"
 struct DynamicGradientMapArray
 {
@@ -655,6 +658,7 @@ private:
 	std::size_t height;
 	std::valarray<element_type> array;
 };
+*/
 
 bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int height)
 {
