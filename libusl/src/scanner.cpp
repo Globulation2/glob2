@@ -1,6 +1,5 @@
 #include "scanner.h"
 
-#include <iostream>
 Token Scanner::Next() {
 	const Token::Type* type = NULL;
 	ssize_t length = -1;
@@ -22,6 +21,7 @@ Token Scanner::Next() {
 }
 
 /*
+#include <iostream>
 Token next;
 
 Token nextToken(Scanner& scanner) {

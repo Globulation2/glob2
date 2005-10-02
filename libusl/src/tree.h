@@ -1,7 +1,6 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include "common.h"
 #include "position.h"
 #include <vector>
 
@@ -22,6 +21,7 @@ namespace Trees {
 
 struct Tree {
 	struct Visitor {
+		virtual ~Visitor() {}
 		virtual void Visit(Tree& tree);
 		virtual void Visit(Trees::String& str) = 0;
 		virtual void Visit(Trees::Strings::Identifier& id) { Visit((Trees::String&)id); }
@@ -32,6 +32,7 @@ struct Tree {
 	};
 	
 	struct ConstVisitor {
+		virtual ~ConstVisitor() {}
 		virtual void Visit(const Tree& tree);
 		virtual void Visit(const Trees::String& str) = 0;
 		virtual void Visit(const Trees::Strings::Identifier& id) { Visit((const Trees::String&)id); }
@@ -44,6 +45,7 @@ struct Tree {
 	virtual void Accept(Visitor& visitor) = 0;
 	virtual void Accept(ConstVisitor& visitor) const = 0;
 	virtual ~Tree() {}
+	
 protected:
 	Tree(const Position& position): position(position) {}
 private:
@@ -72,8 +74,8 @@ namespace Trees {
 		};
 	};
 	
-	struct Number: public Tree {
-		Number(const Position& position): Tree(position) {}
+	struct Number: public String {
+		Number(const Position& position, const std::string& content): String(position, content) {}
 		void Accept(Tree::Visitor& visitor) { return visitor.Visit(self); }
 		void Accept(Tree::ConstVisitor& visitor) const { return visitor.Visit(self); }
 	};
@@ -99,29 +101,57 @@ namespace Trees {
 	
 };
 
-void Tree::Visitor::Visit(Tree& tree) {
+inline void Tree::Visitor::Visit(Tree& tree) {
 	tree.Accept(self);
 }
-void Tree::Visitor::Visit(Trees::Apply& apply) {
+inline void Tree::Visitor::Visit(Trees::Apply& apply) {
 	apply.function->Accept(self);
 	apply.argument->Accept(self);
 }
-void Tree::Visitor::Visit(Trees::Sequence& sequence) {
+inline void Tree::Visitor::Visit(Trees::Sequence& sequence) {
 	foreach(iterator, sequence.elements.begin(), sequence.elements.end()) {
 		(*iterator)->Accept(self);
 	}
 }
-void Tree::ConstVisitor::Visit(const Tree& tree) {
+inline void Tree::ConstVisitor::Visit(const Tree& tree) {
 	tree.Accept(self);
 }
-void Tree::ConstVisitor::Visit(const Trees::Apply& apply) {
+inline void Tree::ConstVisitor::Visit(const Trees::Apply& apply) {
 	apply.function->Accept(self);
 	apply.argument->Accept(self);
 }
-void Tree::ConstVisitor::Visit(const Trees::Sequence& sequence) {
+inline void Tree::ConstVisitor::Visit(const Trees::Sequence& sequence) {
 	foreach(iterator, sequence.elements.begin(), sequence.elements.end()) {
 		(*iterator)->Accept(self);
 	}
 }
+
+struct TreeType: Tree::ConstVisitor {
+	enum Type {
+		String,
+		Number,
+		Apply,
+		Sequence
+	};
+	Type result;
+	TreeType(const Tree* tree) {
+		tree->Accept(self);
+	}
+	operator Type() const {
+		return result;
+	}
+	void Visit(const Trees::String& str) {
+		result = String;
+	}
+	void Visit(const Trees::Number& num) {
+		result = Number;
+	}
+	void Visit(const Trees::Apply& apply) {
+		result = Apply;
+	}
+	void Visit(const Trees::Sequence& sequence) {
+		result = Sequence;
+	}
+};
 
 #endif // ndef TREE_H

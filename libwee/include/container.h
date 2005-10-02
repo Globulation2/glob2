@@ -28,6 +28,7 @@ public:
 	uint8_t* max;
 public:
 	Container(size_t pages);
+	virtual ~Container() { }
 	void Free();
 	size_t Capacity() { return max - min; }
 	bool Contains(void* ptr) { return ptr >= min && ptr < max; }

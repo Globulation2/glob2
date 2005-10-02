@@ -27,6 +27,7 @@ namespace Asm {
 		// returns next instruction to evaluate
 #define ASM_INSTRUCTION_NEXT (const Instruction*)(((const uint8_t*)this) + sizeof(*this))
 		virtual const Instruction* Eval(Stack* stack) const = 0;
+		virtual ~Instruction() { }
 	};
 	
 	namespace Instructions {
@@ -138,7 +139,7 @@ namespace Asm {
 			}
 		};
 		
-		// Schrink stack
+		// Shrink stack
 		// ..., space => ...
 		struct Free: Instruction {
 			const size_t size;

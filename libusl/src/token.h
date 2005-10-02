@@ -1,7 +1,6 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#include "common.h"
 #include "position.h"
 #include <string>
 #include <regex.h>
