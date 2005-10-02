@@ -51,7 +51,7 @@ Tree* Parser::Next2() {
 			NextToken();
 			break;
 		case NUM: // TODO: parse numbers correctly and put the value in the tree
-			tree = new Trees::Number(next.position);
+			tree = new Trees::Number(next.position, std::string(next.text, next.length));
 			NextToken();
 			break;
 		case SBEG: {
@@ -59,7 +59,7 @@ Tree* Parser::Next2() {
 			std::vector<Tree*> sequence;
 			NextToken();
 			if(next.type->id != SEND) {
-				loop {
+				while(true) {
 					sequence.push_back(Next());
 					if(next.type->id == SSEP) {
 						NextToken();
@@ -100,6 +100,7 @@ Tree* Parser::Next2() {
 	return tree;
 }
 
+#include <iostream>
 #include <fstream>
 const char* LoadFile(const char* name) {
 	std::filebuf file;
@@ -114,36 +115,188 @@ const char* LoadFile(const char* name) {
 	return text;
 }
 
+struct Indent {
+	size_t indent;
+	Indent(size_t val = 0): indent(val) {}
+	operator size_t&() {
+		return indent;
+	}
+	operator const size_t&() const {
+		return indent;
+	}
+};
+
+std::ostream& operator<<(std::ostream& os, const Indent& indent) {
+	for(size_t i = 0; i < indent; ++i)
+		os << ' ';
+	return os;
+}
+
 struct Printer: Tree::ConstVisitor {
-	std::string ident;
+	Indent indent;
 	Printer() {
-		ident = "";
+		indent = 0;
 	}
 	void Print(const Tree* tree) {
 		tree->Accept(self);
 	}
 	void Visit(const Trees::String& str) {
-		std::cout << ident << str.content << std::endl;
+		std::cout << indent << str.content << std::endl;
 	}
 	void Visit(const Trees::Number& num) {
-		std::cout << ident << "..." << std::endl;
+		std::cout << indent << num.content << std::endl;
 	}
 	void Visit(const Trees::Apply& apply) {
-		std::string ident = this->ident;
-		this->ident = ident + ' ';
+		++indent;
 		Tree::ConstVisitor::Visit(apply);
-		this->ident = ident;
+		--indent;
 	}
 	void Visit(const Trees::Sequence& sequence) {
-		std::cout << ident << "{" << std::endl;
-		std::string ident = this->ident;
-		this->ident = ident + ' ';
+		std::cout << indent << "{" << std::endl;
+		++indent;
 		/*foreach(iterator, sequence.elements.begin(), sequence.elements.end()) {
 			(*iterator)->Accept(self);
 		}*/
 		Tree::ConstVisitor::Visit(sequence);
-		this->ident = ident;
-		std::cout << ident << "}" << std::endl;
+		--indent;
+		std::cout << indent << "}" << std::endl;
+	}
+};
+
+struct Node {
+	enum Type {
+		NUMBER,
+		OPERATION,
+		OPERATOR,
+		FUNCTOR,
+		SUBEXPR
+	};
+	virtual operator Type() const = 0;
+};
+
+struct Expr: Node {
+	virtual operator Type() const = 0;
+};
+
+struct Number: Expr  {
+	Number(int i): i(i) {}
+	const int i;
+	virtual operator Type() const { return NUMBER; }
+};
+
+struct Operation: Expr {
+	Operation(std::string op, const Expr* left, const Expr* right): op(op), left(left), right(right) {}
+	const std::string op;
+	const Expr* left;
+	const Expr* right;
+	virtual operator Type() const { return OPERATION; }
+};
+
+struct Operator: Node {
+	Operator(const std::string op): op(op) {}
+	const std::string op;
+	virtual operator Type() const { return OPERATOR; }
+};
+
+struct Functor: Node {
+	Functor(std::string op, const Expr* me): op(op), me(me) {}
+	const std::string op;
+	const Expr* me;
+	virtual operator Type() const { return FUNCTOR; }
+};
+
+struct SubExpr: Expr {
+	const Expr* expr;
+	SubExpr(const Expr* expr): expr(expr) {}
+	virtual operator Type() const { return SUBEXPR; }
+};
+
+struct Evaluator: Tree::ConstVisitor {
+	Evaluator() {
+	}
+	Node* node;
+	const Node* Evaluate(const Tree* tree) {
+		tree->Accept(self);
+		return node;
+	}
+	void Visit(const Trees::String& str) {
+		assert(false);
+	}
+	void Visit(const Trees::Number& num) {
+		node = new Number(atoi(num.content.c_str()));
+	}
+	void Visit(const Trees::Apply& apply) {
+		const Node* left = Evaluate(apply.function);
+		const Node* right = Evaluate(apply.argument);
+		switch(*left) {
+		case Node::NUMBER:
+		case Node::SUBEXPR:
+			switch(*right) {
+			case Node::OPERATOR:
+				node = new Functor(((const Operator*)right)->op, (const Expr*)left);
+			default:
+				assert(false);
+			}
+			break;
+		case Node::FUNCTOR:
+			switch(*right) {
+			case Node::NUMBER:
+			case Node::SUBEXPR:
+				const Functor* func = (const Functor*)node;
+				node = new Operation(func->op, func->me, (const Expr*)right);
+				break;
+			default:
+				assert(false);
+			}
+			break;
+		case Node::OPERATION:
+			switch(*right) {
+			case Node:::
+				break;
+			default:
+				assert(false);
+			}
+			break;
+		default:
+			assert(false);
+		}
+	}
+	
+	/*void parseExpr(inputSequence, outputSequence)
+	{
+		// précédende à gauche
+		int operand0 = inputSequence.pop();
+		Operator op = inputSequence.pop();
+		if (inputSequence.size() > 1)
+			parseExpr(inputSequence, outputSequence);
+		else
+			outputSequence.push(inputSequence.pop);
+		outputSequence.push(operand0);
+		outputSequence.push(op);
+		// précédende à droite
+		if (inputSequence.size() > 3)
+			parseExpr(inputSequence, outputSequence);
+		else
+			outputSequence.push(inputSequence.pop);
+		Operator op = inputSequence.pop();
+		int operand0 = inputSequence.pop();
+		outputSequence.push(operand0);
+		outputSequence.push(op);
+	}*/
+	
+	void Visit(const Trees::Sequence& sequence) { // TODO: treat empty sequences
+		foreach(it, sequence.elements.begin(), sequence.elements.end()) {
+			Evaluate(*it);
+		}
+		switch(*node) {
+		case Node::NUMBER:
+		case Node::OPERATION:
+			node = new SubExpr((const Expr*)node);
+		case Node::SUBEXPR:
+			break;
+		default:
+			assert(false);
+		}
 	}
 };
 

@@ -25,6 +25,7 @@
 
 class GC {
 public:
+	virtual ~GC() { }
 	virtual Object* New(const Type* type, size_t allocSize) = 0;
 	virtual void Collect() = 0;
 };
