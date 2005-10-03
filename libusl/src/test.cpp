@@ -1,4 +1,4 @@
-#include "tree.h"
+#include "parser.h"
 #include <iostream>
 #include <fstream>
 
@@ -33,11 +33,11 @@ std::ostream& operator<<(std::ostream& os, const Indent& indent) {
 }
 
 struct Printer: Tree::ConstVisitor {
+	const Tree* tree;
+	std::ostream& os;
 	Indent indent;
-	Printer() {
-		indent = 0;
-	}
-	void Print(const Tree* tree) {
+	Printer(const Tree* tree, std::ostream& os, const Indent indent = 0): tree(tree), os(os), indent(indent) {}
+	void Print() {
 		tree->Accept(self);
 	}
 	void Visit(const Trees::String& str) {
@@ -63,6 +63,11 @@ struct Printer: Tree::ConstVisitor {
 	}
 };
 
+std::ostream& operator<<(std::ostream& os, const Tree* tree) {
+	Printer(tree, os).Print();
+	return os;
+}
+/*
 struct Node {
 	enum Type {
 		NUMBER,
@@ -182,7 +187,7 @@ struct Evaluator: Tree::ConstVisitor {
 		int operand0 = inputSequence.pop();
 		outputSequence.push(operand0);
 		outputSequence.push(op);
-	}*/
+	}/
 	
 	void Visit(const Trees::Sequence& sequence) { // TODO: treat empty sequences
 		foreach(it, sequence.elements.begin(), sequence.elements.end()) {
@@ -199,7 +204,7 @@ struct Evaluator: Tree::ConstVisitor {
 		}
 	}
 };
-
+*/
 int main(int argc, char* argv[]) {
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
 	const char* filename;
@@ -223,8 +228,7 @@ int main(int argc, char* argv[]) {
 	}
 	delete[] source;
 	if(status) {
-		Printer printer;
-		printer.Print(tree);
+		std::cout << tree;
 	}
 	return status;
 }
