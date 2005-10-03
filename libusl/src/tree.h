@@ -3,6 +3,7 @@
 
 #include "position.h"
 #include <vector>
+#include <string>
 
 namespace Trees {
 	struct String;
@@ -100,31 +101,6 @@ namespace Trees {
 	};
 	
 };
-
-inline void Tree::Visitor::Visit(Tree& tree) {
-	tree.Accept(self);
-}
-inline void Tree::Visitor::Visit(Trees::Apply& apply) {
-	apply.function->Accept(self);
-	apply.argument->Accept(self);
-}
-inline void Tree::Visitor::Visit(Trees::Sequence& sequence) {
-	foreach(iterator, sequence.elements.begin(), sequence.elements.end()) {
-		(*iterator)->Accept(self);
-	}
-}
-inline void Tree::ConstVisitor::Visit(const Tree& tree) {
-	tree.Accept(self);
-}
-inline void Tree::ConstVisitor::Visit(const Trees::Apply& apply) {
-	apply.function->Accept(self);
-	apply.argument->Accept(self);
-}
-inline void Tree::ConstVisitor::Visit(const Trees::Sequence& sequence) {
-	foreach(iterator, sequence.elements.begin(), sequence.elements.end()) {
-		(*iterator)->Accept(self);
-	}
-}
 
 struct TreeType: Tree::ConstVisitor {
 	enum Type {
