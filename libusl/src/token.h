@@ -3,6 +3,7 @@
 
 #include "position.h"
 #include <string>
+#include <cassert>
 #include <regex.h>
 
 struct Token {
