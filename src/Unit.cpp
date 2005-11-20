@@ -26,6 +26,7 @@
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include <Stream.h>
+#include <set>
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
@@ -639,6 +640,8 @@ void Unit::handleMagic(void)
 	bool hasUsedMagicAction = false;
 	if (performance[MAGIC_ATTACK_AIR] || performance[MAGIC_ATTACK_GROUND])
 	{
+		std::set<Uint16> damagedBuildings;
+		damagedBuildings.insert(NOGBID);
 		for (int yi=posY-3; yi<=posY+3; yi++)
 			for (int xi=posX-3; xi<=posX+3; xi++)
 			{
@@ -684,7 +687,7 @@ void Unit::handleMagic(void)
 				if (performance[MAGIC_ATTACK_GROUND])
 				{
 					Uint16 targetGBID = map->getBuilding(xi, yi);
-					if (targetGBID != NOGBID)
+					if (damagedBuildings.insert(targetGBID).second)
 					{
 						Sint32 targetTeam = Building::GIDtoTeam(targetGBID);
 						Uint16 targetID = Building::GIDtoID(targetGBID);
@@ -787,28 +790,50 @@ void Unit::handleActivity(void)
 				printf("guid=(%d) looking for a job...\n", gid);
 
 			// first we look for a food building to fill, because it is the first priority.
+			// FIXME: Ugly hacks added by Andrew to make sure that globs only subscribe to an inn they have a chance of being accepted at
 			if (performance[HARVEST])
 			{
 				Building *b=owner->findBestFoodable(this);
-				if (b!=NULL)
+
+				int dist;
+				// Is there a building we can reach in time?
+				const int timeLeft=(hungry-trigHungry)/race->hungryness;
+				if (b!=NULL && owner->map->buildingAvailable(b, performance[SWIM], posX, posY, &dist) && dist<timeLeft)
 				{
-					assert(destinationPurprose>=0);
-					assert(b->neededRessource(destinationPurprose));
-					activity=ACT_FILLING;
-					attachedBuilding=b;
-					targetBuilding=NULL;
-					if (verbose)
-						printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-					b->unitsWorkingSubscribe.push_front(this);
-					subscribed=true;
-					if (b->subscribeToBringRessources!=1)
+					bool canSubscribe=(caryedRessource>=0) && b->neededRessource(caryedRessource);
+
+					if (!canSubscribe)
 					{
-						b->subscribeToBringRessources=1;
-						owner->subscribeToBringRessources.push_front(b);
+						int needs[MAX_NB_RESSOURCES];
+						b->wishedRessources(needs);
+						for (int r=0; r<MAX_RESSOURCES; r++)
+							if (needs[r]>0 && owner->map->ressourceAvailable(owner->teamNumber, r, performance[SWIM], posX, posY, &dist) && (dist<timeLeft))
+							{
+								canSubscribe=true;
+								break;
+							};
+					};
+
+					if (canSubscribe)
+					{
+						assert(destinationPurprose>=0);
+						assert(b->neededRessource(destinationPurprose));
+						activity=ACT_FILLING;
+						attachedBuilding=b;
+						targetBuilding=NULL;
+						if (verbose)
+							printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+						b->unitsWorkingSubscribe.push_front(this);
+						subscribed=true;
+						if (b->subscribeToBringRessources!=1)
+							{
+								b->subscribeToBringRessources=1;
+								owner->subscribeToBringRessources.push_front(b);
+							}
+						if (b->subscriptionWorkingTimer<=0)
+							b->subscriptionWorkingTimer=1;
+						return;
 					}
-					if (b->subscriptionWorkingTimer<=0)
-						b->subscriptionWorkingTimer=1;
-					return;
 				}
 			}
 			

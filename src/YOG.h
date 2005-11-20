@@ -29,6 +29,7 @@ class LogFileManager;
 //! Ysagoon Online Game connector and session handler
 class YOG
 {
+	static const bool verbose = false;
 public:
 	enum YOGGlobalState
 	{

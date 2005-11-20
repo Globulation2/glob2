@@ -36,6 +36,7 @@ class Building;
 
 class AICastor : public AIImplementation
 {
+	static const bool verbose = false;
 public:
 	static const int NB_HARD_BUILDING=8;
 	class Project

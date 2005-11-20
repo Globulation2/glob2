@@ -136,7 +136,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AIToubib(stream, player, versionMinor);
 		break;
 		case WARRUSH:
-			aiImplementation=new AIWarrush(player);
+			aiImplementation=new AIWarrush(stream, player, versionMinor);
 		break;
 		case HELPER:
 			aiImplementation=new AIHelper(stream, player, versionMinor);

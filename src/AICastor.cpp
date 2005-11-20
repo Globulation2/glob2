@@ -936,7 +936,8 @@ Order *AICastor::controlFood()
 			b->maxUnitWorking=0;
 			b->maxUnitWorkingLocal=0;
 			b->update();
-			printf("controlFood(), worstCare=%d\n", worstCare);
+			if (verbose)
+				printf("controlFood(), worstCare=%d\n", worstCare);
 			return new OrderModifyBuilding(b->gid, 0);
 		}
 	}
@@ -947,7 +948,8 @@ Order *AICastor::controlFood()
 			b->maxUnitWorking=1;
 			b->maxUnitWorkingLocal=1;
 			b->update();
-			printf("controlFood(), beta, worstCare=%d\n", worstCare);
+			if (verbose)
+				printf("controlFood(), beta, worstCare=%d\n", worstCare);
 			return new OrderModifyBuilding(b->gid, 1);
 		}
 	}
@@ -1929,7 +1931,8 @@ void AICastor::computeBuildingSum()
 			for (int li=0; li<4; li++)
 				if (buildingLevels[bi][si][li]>0)
 					if ((timer&8191)==0)
-						printf("buildingLevels[%d][%d][%d]=%d\n", bi, si, li, buildingLevels[bi][si][li]);
+						if (verbose)
+							printf("buildingLevels[%d][%d][%d]=%d\n", bi, si, li, buildingLevels[bi][si][li]);
 }
 
 void AICastor::computeWarLevel()
@@ -2711,7 +2714,8 @@ void AICastor::computeEnemyWarriorsMap()
 	if (lastEnemyWarriorsMapComputed==timer)
 		return;
 	lastEnemyWarriorsMapComputed=timer;
-	printf("computeEnemyWarriorsMap()\n");
+	if (verbose)
+		printf("computeEnemyWarriorsMap()\n");
 	
 	int w=map->w;
 	int h=map->h;

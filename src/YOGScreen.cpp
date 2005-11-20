@@ -33,7 +33,7 @@
 #include <GraphicContext.h>
 
 #define IRC_CHAN "#glob2"
-#define IRC_SERVER "irc.freenode.net"
+#define IRC_SERVER "irc.globulation2.org"
 
 // TODO: is it anyway to do this cleaner ?
 IRC *ircPtr = NULL;
@@ -446,7 +446,8 @@ void YOGScreen::onTimer(Uint32 tick)
 		YOG::GameInfo *yogGameInfo=yog->getSelectedGameInfo();
 		if (yogGameInfo)
 		{
-			printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
+			if (verbose)
+				printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
 			char s[128];
 			sprintf(s, Toolkit::getStringTable()->getString("[Map name: %s]"), yogGameInfo->mapName);
 			gameInfo->setText(s);
@@ -478,7 +479,8 @@ void YOGScreen::onTimer(Uint32 tick)
 		}
 		else
 		{
-			printf("selectedGameinfoUpdated cleaned\n");
+			if (verbose)
+				printf("selectedGameinfoUpdated cleaned\n");
 			gameInfo->setText("");
 		}
 	}

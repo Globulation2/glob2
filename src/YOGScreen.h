@@ -71,6 +71,7 @@ protected:
 
 class YOGScreen:public Screen
 {
+	static const int verbose = false;
 public:
 	enum
 	{

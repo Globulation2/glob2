@@ -43,6 +43,7 @@
 //! This class is an IRC client
 class IRC
 {
+	static const bool verbose = false;
 public:
 	enum IRCConst
 	{

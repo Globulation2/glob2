@@ -133,7 +133,8 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		}
 		animation->hide();
 		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
-		printf("YOGPreScreen:: starting YOGScreen...\n");
+		if (verbose)
+			printf("YOGPreScreen:: starting YOGScreen...\n");
 		YOGScreen yogScreen;
 		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 40);
 		if (yogReturnCode==YOGScreen::CANCEL)
@@ -147,7 +148,8 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		}
 		else
 			assert(false);
-		printf("YOGPreScreen:: YOGScreen has ended ...\n");
+		if (verbose)
+			printf("YOGPreScreen:: YOGScreen has ended ...\n");
 	}
 	if (connectOnNextTimer)
 	{

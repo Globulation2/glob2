@@ -232,6 +232,7 @@ class Game;
 // Independant story line
 class Story
 {
+	static const bool verbose = false;
 public:
 	Story(Mapscript *mapscript);
 	virtual ~Story();

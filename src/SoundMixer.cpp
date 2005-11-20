@@ -318,7 +318,7 @@ SoundMixer::~SoundMixer()
 	{
 		SDL_PauseAudio(1);
 		SDL_CloseAudio();
-		speex_encoder_destroy(speexDecoderState);
+		speex_decoder_destroy(speexDecoderState);
 	}
 	
 	for (size_t i=0; i<tracks.size(); i++)
