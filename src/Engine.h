@@ -30,6 +30,7 @@ class NetGame;
 //! Engine is responsible for loading games and setting up players
 class Engine
 {
+	static const bool verbose = false;
 public:
 	//! Constructor
 	Engine();

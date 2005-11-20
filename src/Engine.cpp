@@ -549,7 +549,8 @@ bool Engine::loadGame(const std::string &filename)
 		}
 	}
 
-	std::cout << "Engine::loadGame(\"" << filename << "\") : game successfully loaded." << std::endl;
+	if (verbose)
+		std::cout << "Engine::loadGame(\"" << filename << "\") : game successfully loaded." << std::endl;
 	return true;
 }
 
