@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #define __AI_HELPER_H
 
 #include "BuildingType.h"
+#include "Building.h"
+#include "Game.h"
 #include "AIImplementation.h"
 #include <queue>
 #include <list>
@@ -29,21 +31,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using namespace std;
 
-class Game;
 class Map;
 class Order;
 class Player;
 class Team;
-class Building;
 
 ///These constants are what fine tune AIHelper. There is allot of them.
 ///@{
 //The following deal with the upgrade and repair management system.
-const int MINIMUM_TO_UPGRADE=4;
-const int MAXIMUM_TO_UPGRADE=8;
-const int MINIMUM_TO_REPAIR=2;
-const int MAXIMUM_TO_REPAIR=8;
-const int MAX_CONSTRUCTION_AT_ONCE=4;
+const unsigned int MINIMUM_TO_UPGRADE=4;
+const unsigned int MAXIMUM_TO_UPGRADE=8;
+const unsigned int MINIMUM_TO_REPAIR=2;
+const unsigned int MAXIMUM_TO_REPAIR=8;
+const unsigned int MAX_CONSTRUCTION_AT_ONCE=4;
 const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 {0, 4, 1, 1, 1, 1, 1, 2, 0, 0, 0, 1, 1};
 
@@ -136,7 +136,10 @@ private:
 	///Checks if the given spot is free of flags
 	bool isFreeOfFlags(unsigned int x, unsigned int y);
 	///Returns the building* of the gid, or NULL
-	Building* getBuildingFromGid(unsigned int gid);
+	Building* getBuildingFromGid(unsigned int gid)
+        {
+            return game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
+        }
 
 	///Returns true if the given building hasn't been destroyed
 	bool buildingStillExists(Building* b);
@@ -183,9 +186,9 @@ private:
 		///The building that this record is for
 		Building* building;
 		///The number of units assigned to the building (or requested if its still pending)
-		int assigned;
+		unsigned int assigned;
 		///The number of units that where working the building before the construction
-		int original;
+		unsigned int original;
 		///True if the construction is repair, false if it is an upgrade.
 		bool is_repair;
 	};
@@ -404,6 +407,8 @@ private:
 		int height;
 		int assigned;
 	};
+
+        std::vector<defenseRecord> defending_zones;
 
 	///Will check to see if there are any buildings under attack, if so, it will identify that buildings zone,
 	///check to see if there aren't already warriors defending in that zone, and if not, add a flag with enough
