@@ -90,12 +90,18 @@ namespace GAGCore
 		}
 		else
 		{
+			size_t line = 0;
 			while (!inputLineStream->isEndOfStream())
 			{
 				std::string s = inputLineStream->readLine();
-				if ((s.length() < 2) || (s[0] != '[') || (s[s.length()-1] != ']'))
-					std::cerr << "StringTable::load(" << keyFile << ") : keys must be in bracket. Key " << s << " invalid" << std::endl;
-				keys.push_back(s);
+				if (s.length() > 0)
+				{
+					if ((s.length() < 2) || (s[0] != '[') || (s[s.length()-1] != ']'))
+						std::cerr << "StringTable::load(" << keyFile << ") : keys must be in bracket. Invalid key " << s << " at line " << line << " ignored" << std::endl;
+					else
+						keys.push_back(s);
+				}
+				line++;
 			}
 			delete inputLineStream;
 		}
