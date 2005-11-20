@@ -305,13 +305,19 @@ Order *AIWarrush::initialRush(void)
 	if(numberOfJobsForWorkers() < numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
 	{
 		Building *low_swarm = getSwarmWithLeastProduction();
-		return new OrderModifyBuilding(low_swarm->gid, std::min(low_swarm->maxUnitWorking + 1, 20));
+		if (low_swarm)
+			return new OrderModifyBuilding(low_swarm->gid, std::min(low_swarm->maxUnitWorking + 1, 20));
+		else
+			return new NullOrder;
 	}
 	//Conversely we have no need for overemployment.
 	if(numberOfJobsForWorkers() > numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
 	{
 		Building *high_swarm = getSwarmWithMostProduction();
-		return new OrderModifyBuilding(high_swarm->gid, std::max(high_swarm->maxUnitWorking - 1, 0));
+		if (high_swarm)
+			return new OrderModifyBuilding(high_swarm->gid, std::max(high_swarm->maxUnitWorking - 1, 0));
+		else
+			return new NullOrder;
 	}
 	return new NullOrder();
 	
@@ -382,12 +388,18 @@ Order *AIWarrush::maintain(void)
 	if(numberOfJobsForWorkers() < numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
 	{
 		Building *low_swarm = getSwarmWithLeastProduction();
-		return new OrderModifyBuilding(low_swarm->gid, std::min(low_swarm->maxUnitWorking + 1, 20));
+		if (low_swarm)
+			return new OrderModifyBuilding(low_swarm->gid, std::min(low_swarm->maxUnitWorking + 1, 20));
+		else
+			return new NullOrder;
 	}
 	if(numberOfJobsForWorkers() > numberOfUnitsWithSkillGreaterThanValue(HARVEST,0))
 	{
 		Building *high_swarm = getSwarmWithMostProduction();
-		return new OrderModifyBuilding(high_swarm->gid, std::max(high_swarm->maxUnitWorking - 1, 0));
+		if (high_swarm)
+			return new OrderModifyBuilding(high_swarm->gid, std::max(high_swarm->maxUnitWorking - 1, 0));
+		else
+			return new NullOrder;
 	}
 	
 	//This is the old job-handling code. Quite foolish in light of the better algorithm above,
@@ -778,6 +790,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	map->updateGlobalGradient(availability_gradient.c_array());
 	
 	Building *swarm = getSwarmWithMostProduction();
+	if (!swarm) return new NullOrder;
 	Sint32 destination_x,destination_y;
 	{
 		Sint32 x,y;
