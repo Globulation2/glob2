@@ -138,7 +138,11 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
 		break;
+		case HELPER:
+			aiImplementation=new AIHelper(stream, player, versionMinor);
+		break;
 		default:
+			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementitionID);
 			assert(false);
 		break;
 	}
