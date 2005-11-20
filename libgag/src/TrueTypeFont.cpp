@@ -55,13 +55,14 @@ namespace GAGCore
 			float cacheTotal = static_cast<float>(cacheHit + cacheMiss);
 			if (cacheTotal > 0)
 			{
-				std::cout << "TrueTypeFont : font" <<
-					/*TTF_FontFaceFamilyName(font) << ", " <<
-					TTF_FontFaceStyleName(font) << ", " <<
-					TTF_FontHeight(font) <<*/ " had " <<
-					cacheHit + cacheMiss << " requests, " <<
-					cacheHit << " hits (" << static_cast<float>(cacheHit)/cacheTotal << "), " <<
-					cacheMiss << " misses (" << static_cast<float>(cacheMiss)/cacheTotal << ")" << std::endl;
+				if (verbose)
+					std::cout << "TrueTypeFont : font" <<
+						/*TTF_FontFaceFamilyName(font) << ", " <<
+						  TTF_FontFaceStyleName(font) << ", " <<
+						  TTF_FontHeight(font) <<*/ " had " <<
+						cacheHit + cacheMiss << " requests, " <<
+						cacheHit << " hits (" << static_cast<float>(cacheHit)/cacheTotal << "), " <<
+						cacheMiss << " misses (" << static_cast<float>(cacheMiss)/cacheTotal << ")" << std::endl;
 			}
 			// free cache
 			for (std::map<CacheKey, CacheData>::iterator it = cache.begin(); it != cache.end(); ++it)

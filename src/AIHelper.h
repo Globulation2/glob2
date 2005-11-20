@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <list>
 #include <algorithm>
 #include "IntBuildingType.h"
-#include "boost/multi_array.hpp"
 #include <map>
 
 using namespace std;

@@ -177,6 +177,7 @@ namespace GAGCore
 	
 	class GraphicContext : public DrawableSurface
 	{
+		static const bool verbose = false;
 	public:
 		//! The cursor manager, public to be able to set custom cursors
 		CursorManager cursorManager;

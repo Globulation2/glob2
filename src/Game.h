@@ -36,6 +36,7 @@ class BuilgingType;
 
 class Game
 {
+	static const bool verbose = false;
 public:
 	enum FlagForRemoval
 	{

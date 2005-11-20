@@ -166,7 +166,8 @@ int Engine::initCustom(void)
 
 	if (!gui.loadBase(&(customGameScreen.sessionInfo)))
 	{
-		printf("Engine : Can't load map\n");
+		if (verbose)
+			printf("Engine : Can't load map\n");
 		return EE_CANCEL;
 	}
 	int nbTeam=gui.game.session.numberOfTeam;
@@ -224,11 +225,13 @@ int Engine::initCustom(const std::string &gameName)
 	// If the game is a network saved game, we need to toogle net players to ai players:
 	for (int p=0; p<gui.game.session.numberOfPlayer; p++)
 	{
-		printf("Engine::initCustom::player[%d].type=%d.\n", p, gui.game.players[p]->type);
+		if (verbose)
+			printf("Engine::initCustom::player[%d].type=%d.\n", p, gui.game.players[p]->type);
 		if (gui.game.players[p]->type==BasePlayer::P_IP)
 		{
 			gui.game.players[p]->makeItAI(AI::toggleAI);
-			printf("Engine::initCustom::net player (id %d) was made ai.\n", p);
+			if (verbose)
+				printf("Engine::initCustom::net player (id %d) was made ai.\n", p);
 		}
 	}
 
@@ -288,7 +291,8 @@ void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 	// we create the net game
 	net=new NetGame(multiplayersJoin->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
-	printf("Engine::localPlayer=%d, localTeamNb=%d\n", gui.localPlayer, gui.localTeamNo);
+	if (verbose)
+		printf("Engine::localPlayer=%d, localTeamNb=%d\n", gui.localPlayer, gui.localTeamNo);
 }
 
 
@@ -303,7 +307,8 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 	if (mpcms==-1)
 		return -1;
 
-	printf("Engine::the game is sharing ...\n");
+	if (verbose)
+		printf("Engine::the game is sharing ...\n");
 	
 	MultiplayersHostScreen multiplayersHostScreen(&(multiplayersChooseMapScreen.sessionInfo), shareOnYOG);
 	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 40);
@@ -323,7 +328,8 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 	else if (rc==-1)
 		return -1;
 
-	printf("Engine::initMutiplayerHost() rc=%d\n", rc);
+	if (verbose)
+		printf("Engine::initMutiplayerHost() rc=%d\n", rc);
 
 	return EE_CANCEL;
 }

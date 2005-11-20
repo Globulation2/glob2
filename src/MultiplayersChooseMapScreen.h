@@ -36,6 +36,7 @@ class MapPreview;
 //! This class is very similar to ChooseMapScreen but implements a dual list to be able to load both map and games from the same screen
 class MultiplayersChooseMapScreen : public Screen
 {
+	static const bool verbose = false;
 public:
 	enum
 	{

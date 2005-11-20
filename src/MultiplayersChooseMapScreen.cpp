@@ -83,12 +83,14 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		if (mapMode)
 		{
 			mapFileName = glob2NameToFilename("maps", mapSelectedName, "map");
-			std::cout << "MultiplayersChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+			if (verbose)
+				std::cout << "MultiplayersChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 		}
 		else
 		{
 			mapFileName = glob2NameToFilename("games", mapSelectedName, "game");
-			std::cout << "MultiplayersChooseMapScreen::onAction : loading game " << mapFileName << std::endl;
+			if (verbose)
+				std::cout << "MultiplayersChooseMapScreen::onAction : loading game " << mapFileName << std::endl;
 		}
 		mapPreview->setMapThumbnail(mapFileName.c_str());
 
@@ -99,7 +101,8 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		}
 		else
 		{
-			std::cout << "MultiplayersChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+			if (verbose)
+				std::cout << "MultiplayersChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 			validSessionInfo = sessionInfo.load(stream);
 			
 			if (validSessionInfo)
