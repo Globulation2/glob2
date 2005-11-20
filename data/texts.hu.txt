@@ -432,6 +432,8 @@ MINumbi
 MICastor
 [AIToubib]
 MIToubib
+[AIHelper]
+MIHelper
 [the games]
 Játékok
 [the maps]

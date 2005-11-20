@@ -432,6 +432,8 @@ IANumbi
 IACastor
 [AIToubib]
 IAToubib
+[AIHelper]
+IAHelper
 [the games]
 Juegos
 [the maps]
