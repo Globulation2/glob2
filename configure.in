@@ -7,6 +7,7 @@ AC_CONFIG_SRCDIR([src/Game.cpp])
 AM_CONFIG_HEADER(config.h)
 
 CXXFLAGS="$CXXFLAGS -Wall -g"
+CFLAGS="$CFLAGS -Wall -g"
 
 dnl Programs 
 AC_PROG_CC
@@ -51,8 +52,11 @@ SDL_VERSION=1.2.0
 AM_PATH_SDL($SDL_VERSION, :, AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
 
 dnl Check for SDL_image and SDL_net
-AC_CHECK_LIB(SDL_image, IMG_Load_RW, SDL_LIBS="$SDL_LIBS -lSDL_image", AC_MSG_ERROR([*** SDL_image not found !]), $SDL_LIBS)
-AC_CHECK_LIB(SDL_net, SDLNet_UDP_Open, SDL_LIBS="$SDL_LIBS -lSDL_net", AC_MSG_ERROR([*** SDL_net not found !]), $SDL_LIBS)
+CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
+AC_CHECK_HEADER(SDL_image.h,,AC_MSG_ERROR([*** SDL_image headers not found !]))
+AC_CHECK_HEADER(SDL_net.h,,AC_MSG_ERROR([*** SDL_net headers not found !]))
+AC_CHECK_LIB(SDL_image, IMG_Load_RW, SDL_LIBS="$SDL_LIBS -lSDL_image", AC_MSG_ERROR([*** SDL_image library not found !]), $SDL_LIBS)
+AC_CHECK_LIB(SDL_net, SDLNet_UDP_Open, SDL_LIBS="$SDL_LIBS -lSDL_net", AC_MSG_ERROR([*** SDL_net library not found !]), $SDL_LIBS)
 
 dnl Check for FT2
 AC_CHECK_FT2
