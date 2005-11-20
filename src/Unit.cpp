@@ -1003,7 +1003,8 @@ void Unit::handleActivity(void)
 						currentTeam->myUnits[currentID]=NULL;
 						targetTeam->myUnits[targetID]=this;
 						Uint16 targetGID=(GIDfrom(targetID, targetTeam->teamNumber));
-						printf("Unit guid=%d (%d) switched to guid=%d (%d)\n", gid, Unit::GIDtoTeam(gid), targetGID, Unit::GIDtoTeam(targetGID));
+						if (verbose)
+							printf("Unit guid=%d (%d) switched to guid=%d (%d)\n", gid, Unit::GIDtoTeam(gid), targetGID, Unit::GIDtoTeam(targetGID));
 						if (performance[FLY])
 						{
 							assert(owner->map->getAirUnit(posX, posY)==gid);

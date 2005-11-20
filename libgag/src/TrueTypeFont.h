@@ -36,6 +36,7 @@ namespace GAGCore
 	//! An implementation of Font using SDL_TTF
 	class TrueTypeFont:public Font
 	{
+		static const bool verbose = false;
 	public:
 		TrueTypeFont();
 		TrueTypeFont(const char *filename, unsigned size);

@@ -35,6 +35,7 @@ class MapPreview;
 //! This screen is the basic screen used to selected map and games
 class ChooseMapScreen : public Screen
 {
+	static const bool verbose = false;
 public:
 	enum
 	{

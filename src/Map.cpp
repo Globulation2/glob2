@@ -3923,7 +3923,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	{
 		// This mean there are still ressources, but they are unreachable.
 		// We wait 5[s] before recomputing anything.
-		printf("...pathfindedLocalRessource v0 failure waiting\n");
+		if (verbose)
+			printf("...pathfindedLocalRessource v0 failure waiting\n");
 		pathfindLocalRessourceCountWait++;
 		return false;
 	}
@@ -3970,7 +3971,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 				*dx=0;
 				*dy=0;
 				pathfindLocalRessourceCountSuccessLocked++;
-				printf("...pathfindedLocalRessource v2 locked\n");
+				if (verbose)
+					printf("...pathfindedLocalRessource v2 locked\n");
 				return true;
 			}
 		}
@@ -4031,7 +4033,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 				*dx=0;
 				*dy=0;
 				pathfindLocalRessourceCountSuccessUpdateLocked++;
-				printf("...pathfindedLocalRessource v4 locked\n");
+				if (verbose)
+					printf("...pathfindedLocalRessource v4 locked\n");
 				return true;
 			}
 		}
@@ -4039,7 +4042,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		{
 			pathfindLocalRessourceCountFailureUnusable++;
 			fprintf(logFile, "lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			printf("lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			if (verbose)
+				printf("lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
 	}
@@ -4047,7 +4051,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	{
 		pathfindLocalRessourceCountFailureBad++;
 		fprintf(logFile, "lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-		printf("lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		if (verbose)
+			printf("lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		return false;
 	}
 }
@@ -4090,7 +4095,7 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 		printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
 	pathfindForbiddenCount++;
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
-	if (!gradient)
+	if (verbose && !gradient)
 		printf("error, Map::pathfindForbidden(), forbiddenGradient[teamNumber=%d][canSwim=%d] is NULL\n", teamNumber, canSwim);
 	assert(gradient);
 	

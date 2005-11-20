@@ -722,7 +722,8 @@ void Game::setAIAlliance(void)
 {
 	if (isHumanAllAllied())
 	{
-		printf("Game : AIs are now allied vs human\n");
+		if (verbose)
+			printf("Game : AIs are now allied vs human\n");
 		
 		// all human are allied, ally AI
 		Uint32 aiMask = 0;
@@ -732,7 +733,8 @@ void Game::setAIAlliance(void)
 			if (teams[i]->type == BaseTeam::T_AI)
 				aiMask |= (1<<i);
 		
-		printf("AI mask : %x\n", aiMask);
+		if (verbose)
+			printf("AI mask : %x\n", aiMask);
 				
 		// ally them together
 		for (int i=0; i<session.numberOfTeam; i++)
@@ -744,7 +746,8 @@ void Game::setAIAlliance(void)
 	}
 	else
 	{
-		printf("Game : AIs are now in ffa mode\n");
+		if (verbose)
+			printf("Game : AIs are now in ffa mode\n");
 		
 		// free for all on AI side
 		for (int i=0; i<session.numberOfTeam; i++)
@@ -786,7 +789,8 @@ bool Game::load(GAGCore::InputStream *stream)
 
 	// We load the file's header:
 	SessionInfo tempSessionInfo;
-	printf("Loading map header\n");
+	if (verbose)
+		printf("Loading map header\n");
 	if (!tempSessionInfo.load(stream))
 	{
 		fprintf(logFile, "Game::load::tempSessionInfo.load\n");

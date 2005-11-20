@@ -93,6 +93,7 @@ namespace GAGCore
 	// Cache for GL state, call gl only if necessary. GL optimisations
 	static struct GLState
 	{
+		static const bool verbose = false;
 		int _doBlend;
 		int _doTexture;
 		int _doScissor;
@@ -116,10 +117,11 @@ namespace GAGCore
 			const char *glExtensions = (const char *)glGetString(GL_EXTENSIONS);
 			isTextureRectangle = (strstr(glExtensions, "GL_NV_texture_rectangle") != NULL);
 			isTextureRectangle = isTextureRectangle || (strstr(glExtensions, "GL_EXT_texture_rectangle") != NULL);
-			if (isTextureRectangle)
-				std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
-			else
-				std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension not present, power of two texture will be used" << std::endl;
+			if (verbose)
+				if (isTextureRectangle)
+					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
+				else
+					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension not present, power of two texture will be used" << std::endl;
 		}
 		
 		void doBlend(int on)
@@ -1605,7 +1607,8 @@ namespace GAGCore
 		}
 		else
 		{
-			fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
+			if (verbose)
+				fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 		}
 	
 		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
@@ -1621,8 +1624,9 @@ namespace GAGCore
 		TTF_Quit();
 		SDL_Quit();
 		sdlsurface = NULL;
-		
-		fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
+
+		if (verbose)
+			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	}
 	
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
@@ -1630,12 +1634,14 @@ namespace GAGCore
 		// check dimension
 		if (minW && (w < minW))
 		{
-			fprintf(stderr, "Toolkit : Screen width %d is too small, set to min %d\n", w, minW);
+			if (verbose)
+				fprintf(stderr, "Toolkit : Screen width %d is too small, set to min %d\n", w, minW);
 			w = minW;
 		}
 		if (minH && (h < minH))
 		{
-			fprintf(stderr, "Toolkit : Screen height %d is too small, set to min %d\n", h, minH);
+			if (verbose)
+				fprintf(stderr, "Toolkit : Screen height %d is too small, set to min %d\n", h, minH);
 			h = minH;
 		}
 		
@@ -1717,10 +1723,12 @@ namespace GAGCore
 			else
 				SDL_ShowCursor(SDL_ENABLE);
 			
-			if (flags & FULLSCREEN)
-				fprintf(stderr, "Toolkit : Screen set to %dx%d at 32 bpp in fullscreen\n", w, h);
-			else
-				fprintf(stderr, "Toolkit : Screen set to %dx%d at 32 bpp in window\n", w, h);
+			if (verbose)
+				fprintf(stderr,
+					(flags & FULLSCREEN)
+					?"Toolkit : Screen set to %dx%d at 32 bpp in fullscreen\n"
+					:"Toolkit : Screen set to %dx%d at 32 bpp in window\n",
+					w, h);
 			
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)

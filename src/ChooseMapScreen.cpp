@@ -87,7 +87,8 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		}
 		else
 		{
-			std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+			if (verbose)
+				std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 			validMapSelected = sessionInfo.load(stream);
 			if (validMapSelected)
 			{
