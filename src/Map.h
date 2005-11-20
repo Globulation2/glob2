@@ -66,6 +66,7 @@ struct Case
 */
 class Map
 {
+	static const bool verbose = false;
 public:
 	//! Type of terrain (used for undermap)
 

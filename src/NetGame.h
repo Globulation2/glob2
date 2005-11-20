@@ -93,6 +93,7 @@ public:
 	void init(void);
 	void dumpStats();
 	void initStats();
+	static const bool verbose = false;
 	
 private:
 	Uint32 whoMaskAreWeWaitingFor(void); // Uses executeUStep

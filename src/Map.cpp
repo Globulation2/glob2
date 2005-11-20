@@ -1946,7 +1946,8 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 			{
 				int vx=x&wMask;
 				int vy=y&hMask;
-				printf("init v=(%d, %d)\n", vx, vy);
+				if (verbose)
+					printf("init v=(%d, %d)\n", vx, vy);
 
 				Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
 				for (int count=0; count<255; count++)
@@ -1971,7 +1972,8 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 					{
 						vx=(vx+vddx)&wMask;
 						vy=(vy+vddy)&hMask;
-						printf("fast v=(%d, %d), max=%d\n", vx, vy, max);
+						if (verbose)
+							printf("fast v=(%d, %d), max=%d\n", vx, vy, max);
 					}
 					else
 					{
@@ -1992,17 +1994,20 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 							found=true;
 							if (g>max)
 								max=g;
-							printf("mini v=(%d, %d), g=%d, max=%d\n", vx, vy, g, max);
+							if (verbose)
+								printf("mini v=(%d, %d), g=%d, max=%d\n", vx, vy, g, max);
 						}
 					}
 					if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
 					{
-						printf("return true v=(%d, %d), max=%d\n", vx, vy, max);
+						if (verbose)
+							printf("return true v=(%d, %d), max=%d\n", vx, vy, max);
 						break;
 					}
 					if (!found)
 					{
-						printf("return false\n");
+						if (verbose)
+							printf("return false\n");
 						break;
 					}
 				}
@@ -2010,7 +2015,8 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 			
 			ressourceAvailableCountFailureBase[teamNumber][ressourceType]++;
 			fprintf(logFile, "target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
-			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
+			if (verbose)
+				printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			*targetX=vx;
 			*targetY=vy;
 			return false;
@@ -2020,7 +2026,8 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 	{
 		int vx=x&wMask;
 		int vy=y&hMask;
-		printf("init v=(%d, %d)\n", vx, vy);
+		if (verbose)
+			printf("init v=(%d, %d)\n", vx, vy);
 
 		Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
 		for (int count=0; count<255; count++)
@@ -2045,7 +2052,8 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 			{
 				vx=(vx+vddx)&wMask;
 				vy=(vy+vddy)&hMask;
-				printf("fast v=(%d, %d), max=%d\n", vx, vy, max);
+				if (verbose)
+					printf("fast v=(%d, %d), max=%d\n", vx, vy, max);
 			}
 			else
 			{
@@ -2066,17 +2074,20 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 					found=true;
 					if (g>max)
 						max=g;
-					printf("mini v=(%d, %d), g=%d, max=%d\n", vx, vy, g, max);
+					if (verbose)
+						printf("mini v=(%d, %d), g=%d, max=%d\n", vx, vy, g, max);
 				}
 			}
 			if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
 			{
-				printf("return true v=(%d, %d), max=%d\n", vx, vy, max);
+				if (verbose)
+					printf("return true v=(%d, %d), max=%d\n", vx, vy, max);
 				break;
 			}
 			if (!found)
 			{
-				printf("return false\n");
+				if (verbose)
+					printf("return false\n");
 				break;
 			}
 		}
@@ -2084,7 +2095,8 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 	
 	ressourceAvailableCountFailureOvercount[teamNumber][ressourceType]++;
 	fprintf(logFile, "target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
-	printf("target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
+	if (verbose)
+		printf("target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
 	*targetX=vx;
 	*targetY=vy;
 	return false;
@@ -2520,17 +2532,23 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	
 	if (verbose)
 	{
-		printf("miniGrad (%d):\n", strict);
+		if (verbose)
+			printf("miniGrad (%d):\n", strict);
 		for (int ry=0; ry<5; ry++)
 		{
 			for (int rx=0; rx<5; rx++)
+			if (verbose)
 				printf("%4d", miniGrad[rx+ry*5]);
-			printf("\n");
+			if (verbose)
+				printf("\n");
 		}
-		printf("maxs:\n");
-		for (int d=0; d<8; d++)
-			printf("%4d.%4d (%d)\n", maxs[d]>>8, maxs[d]&0xFF, maxs[d]);
-		printf("max=%4d.%4d (%d), d=%d, good=%d\n", maxs[maxd]>>8, maxs[maxd]&0xFF, maxs[maxd], maxd, good);
+		if (verbose)
+		{
+			printf("maxs:\n");
+			for (int d=0; d<8; d++)
+				printf("%4d.%4d (%d)\n", maxs[d]>>8, maxs[d]&0xFF, maxs[d]);
+			printf("max=%4d.%4d (%d), d=%d, good=%d\n", maxs[maxd]>>8, maxs[maxd]&0xFF, maxs[maxd], maxd, good);
+		};
 	}
 	
 	if (!good)
@@ -3686,7 +3704,8 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 		}
 		else
 		{
-			printf("ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			if (verbose)
+				printf("ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			fprintf(logFile, "ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			buildingAvailableCountFarNewFailureEnd++;
 		}

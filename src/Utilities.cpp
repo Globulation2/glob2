@@ -57,22 +57,6 @@ void testRand()
 	}
 }
 
-Uint32 syncRand(void)
-{
-	randa+=0x13573DC1;
-	randb+=0x7B717315;
-
-	randc+=(randa&randb)^0x00000001;
-	randc=(randc<<1)|((randc>>29)&0x1);
-
-	//return (randc>>3)|((randa^randb)&0xE0000000);
-	//return randc;
-	
-	//printf("syncRand (%d, %d, %d).\n", randa, randb, randc);
-	
-	return (randc>>1)|((randa^randb)&0x80000000);
-}
-
 void setSyncRandSeed()
 {
 	randa=0x8FD2B1A1;

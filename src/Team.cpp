@@ -854,7 +854,10 @@ Building *Team::findNearestFood(Unit *unit)
 			}
 		
 		if (choosen)
-			printf("guid=%d found gbui=%d\n", unit->gid, choosen->gid);
+		{
+			if (verbose)
+				printf("guid=%d found gbui=%d\n", unit->gid, choosen->gid);
+		}
 		else
 		{
 			//This code is reached only if these conditions are met:
@@ -865,7 +868,8 @@ Building *Team::findNearestFood(Unit *unit)
 			//It does not do anything, because the only way it could choose a building, that building
 			//has been chosen already. It just prints a string for each building telling why it can't use that one.
 			//It only states one reason. Possibly it could be improved such that it states all.
-			printf("guid=%d found no ennemy building (enemyHappyness=%d)\n", unit->gid, enemyHappyness);
+			if (verbose)
+				printf("guid=%d found no ennemy building (enemyHappyness=%d)\n", unit->gid, enemyHappyness);
 			
 			int x=unit->posX;
 			int y=unit->posY;

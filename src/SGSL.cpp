@@ -207,26 +207,29 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 	{
 		case (Token::S_HIGHER):
 		{
+			if (verbose)
 			std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
-				<< Token::getNameByType(type) << " ("
-				<< teamNumber << ", " << level << ") : "
-				<< val << " >? " << amount << std::endl;
+				  << Token::getNameByType(type) << " ("
+				  << teamNumber << ", " << level << ") : "
+				  << val << " >? " << amount << std::endl;
 			return (val > amount);
 		}
 		case (Token::S_LOWER):
 		{
-			std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
-				<< Token::getNameByType(type) << " ("
-				<< teamNumber << ", " << level << ") : "
-				<< val << " <? " << amount << std::endl;
+			if (verbose)
+				std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
+				  << Token::getNameByType(type) << " ("
+					  << teamNumber << ", " << level << ") : "
+					  << val << " <? " << amount << std::endl;
 			return (val < amount);
 		}
 		case (Token::S_EQUAL):
 		{
-			std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
-				<< Token::getNameByType(type) << " ("
-				<< teamNumber << ", " << level << ") : "
-				<< val << " =? " << amount << std::endl;
+			if (verbose)
+				std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
+					  << Token::getNameByType(type) << " ("
+					  << teamNumber << ", " << level << ") : "
+					  << val << " =? " << amount << std::endl;
 			return (val == amount);
 		}
 		default:
@@ -623,13 +626,14 @@ void Story::syncStep(GameGUI *gui)
 {
 	int cycleLeft = 256;
 
-	std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
+	if (verbose)
+		std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	while (testCondition(gui) && cycleLeft)
 	{
 		lineSelector++;
 		cycleLeft--;
-		
-		std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
+		if (verbose)
+			std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	}
 
 	if (!cycleLeft)

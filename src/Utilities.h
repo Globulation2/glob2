@@ -34,7 +34,26 @@ namespace GAGCore
 	class OutputStream;
 }
 
-Uint32 syncRand(void);
+extern Uint32 randa;
+extern Uint32 randb;
+extern Uint32 randc;
+
+inline Uint32 syncRand(void)
+{
+	randa+=0x13573DC1;
+	randb+=0x7B717315;
+
+	randc+=(randa&randb)^0x00000001;
+	randc=(randc<<1)|((randc>>29)&0x1);
+
+	//return (randc>>3)|((randa^randb)&0xE0000000);
+	//return randc;
+	
+	//printf("syncRand (%d, %d, %d).\n", randa, randb, randc);
+	
+	return (randc>>1)|((randa^randb)&0x80000000);
+}
+
 void setSyncRandSeed();
 void setSyncRandSeedA(Uint32 seed);
 void setSyncRandSeedB(Uint32 seed);

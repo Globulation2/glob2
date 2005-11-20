@@ -35,6 +35,7 @@ namespace GAGGUI
 
 class YOGPreScreen:public Screen
 {
+	static const bool verbose = false;
 public:
 	enum
 	{

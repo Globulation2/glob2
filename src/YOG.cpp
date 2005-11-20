@@ -276,7 +276,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						newSelectedGameinfoAvailable=true;
 						selectedGameinfoValid=true;
 					}
-					printf("new game->mapName=%s\n", game->mapName);
+					if (verbose)
+						printf("new game->mapName=%s\n", game->mapName);
 				}
 	}
 	break;
@@ -1077,7 +1078,8 @@ void YOG::step()
 				}
 				else
 				{
-					printf("sending authentication info...userName=(%s), newYogPassword=%d\n", userName, newYogPassword);
+					if (verbose)
+						printf("sending authentication info...userName=(%s), newYogPassword=%d\n", userName, newYogPassword);
 					UDPpacket *packet;
 					unsigned char xored[32];
 					for (int i=0; i<32; i++)

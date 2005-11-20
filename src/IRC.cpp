@@ -322,7 +322,8 @@ void IRC::step(void)
 			bool res=getString(data);
 			if (res)
 			{
-				printf("YOG (IRC) has received [%s]\n", data);
+				if (verbose)
+					printf("YOG (IRC) has received [%s]\n", data);
 				interpreteIRCMessage(data);
 			}
 			else
@@ -430,7 +431,8 @@ void IRC::sendCommand(const char *message)
 		char *cmd=strtok(tempMessage, " \t");
 		char *arg1=strtok(NULL, " \t");
 		char *arg2=strtok(NULL, "\0");
-		printf ("c = [%s] a1 = [%s] a2 = [%s]\n", cmd, arg1, arg2);
+		if (verbose)
+			printf ("c = [%s] a1 = [%s] a2 = [%s]\n", cmd, arg1, arg2);
 		if ((strcasecmp(cmd, "/msg")==0) && arg1 && arg2)
 		{
 			snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", arg1, arg2);
@@ -457,7 +459,8 @@ void IRC::sendCommand(const char *message)
 	else
 	{
 		snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", chatChan, message);
-		printf("YOG::sendString(%s).\n", command);
+		if (verbose)
+			printf("YOG::sendString(%s).\n", command);
 		sendString(command);
 	}
 }

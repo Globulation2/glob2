@@ -1358,16 +1358,16 @@ void Building::subscribeToBringRessourcesStep()
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
 						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-						for (int r=0; r<MAX_RESSOURCES; r++)
+						int distUnitBuilding;
+						if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 						{
-							int need=needs[r];
-							if (need>0)
+							for (int r=0; r<MAX_RESSOURCES; r++)
 							{
-								int distUnitRessource;
-								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
+								int need=needs[r];
+								if (need>0)
 								{
-									int distUnitBuilding;
-									if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+									int distUnitRessource;
+									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
 										if (value<minValue)
@@ -1482,16 +1482,16 @@ void Building::subscribeToBringRessourcesStep()
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
 						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-						for (int r=0; r<MAX_RESSOURCES; r++)
+						int distUnitBuilding;
+						if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 						{
-							int need=needs[r];
-							if (need>0)
+							for (int r=0; r<MAX_RESSOURCES; r++)
 							{
-								int distUnitRessource;
-								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
+								int need=needs[r];
+								if (need>0)
 								{
-									int distUnitBuilding;
-									if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+									int distUnitRessource;
+									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
 										if (value<minValue)

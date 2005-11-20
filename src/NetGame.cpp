@@ -357,7 +357,8 @@ Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 			assert(order);
 			if (order->ustep!=executeUStep)
 			{
-				printf("Can't execute ustep=%d (hash=%d) of player=%d.\n", executeUStep, executeUStep&255, pi);
+				if (verbose)
+					printf("Can't execute ustep=%d (hash=%d) of player=%d.\n", executeUStep, executeUStep&255, pi);
 				waitingPlayersMask|=1<<pi;
 			}
 		}
@@ -737,7 +738,8 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 	if (players[playerNumber]->type<Player::P_AI && players[playerNumber]->type!=Player::P_LOCAL)
 	{
-		printf("Error, can't push order of player %d, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
+		if (verbose)
+			printf("Error, can't push order of player %d, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
 		fprintf(logFile, "Error, can't push order of player %d, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
 		assert(false);
 	}
@@ -767,7 +769,8 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	ordersQueue[playerNumber][pushUStep&255]=order;
 	if (!order->gameCheckSum && players[playerNumber]->type==Player::P_LOCAL)
 	{
-		printf("Warning, no gameCheckSum localy provided for player %d, at pushUStep %d\n", playerNumber, pushUStep);
+		if (verbose)
+			printf("Warning, no gameCheckSum localy provided for player %d, at pushUStep %d\n", playerNumber, pushUStep);
 		fprintf(logFile, "Warning, no gameCheckSum localy provided for player %d, at pushUStep %d\n", playerNumber, pushUStep);
 	}
 	gameCheckSums[playerNumber][pushUStep&255]=order->gameCheckSum;
@@ -1024,7 +1027,8 @@ void NetGame::computeMyLocalWishedLatency()
 			maxPingPongMax=pingPongMax[pi];
 	if (maxPingPongMax!=lastMaxPingPongMax)
 	{
-		printf("new maxPingPongMax=%d[ms]\n", maxPingPongMax);
+		if (verbose)
+			printf("new maxPingPongMax=%d[ms]\n", maxPingPongMax);
 		fprintf(logFile, "new maxPingPongMax=%d[ms]\n", maxPingPongMax);
 		lastMaxPingPongMax=maxPingPongMax;
 	}
@@ -1050,7 +1054,8 @@ void NetGame::computeMyLocalWishedLatency()
 		static int lastMyLocalWishedLatency=-1;
 		if (lastMyLocalWishedLatency!=myLocalWishedLatency)
 		{
-			printf("myLocalWishedLatency=%d[ticks]\n", myLocalWishedLatency);
+			if (verbose)
+				printf("myLocalWishedLatency=%d[ticks]\n", myLocalWishedLatency);
 			lastMyLocalWishedLatency=myLocalWishedLatency;
 		}
 		fprintf(logFile, "myLocalWishedLatency=%d[ticks]\n", myLocalWishedLatency);

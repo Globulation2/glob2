@@ -78,6 +78,7 @@ class Game;
 
 class Team:public BaseTeam
 {
+	static const bool verbose = false;
 public:
 	enum EventType
 	{
