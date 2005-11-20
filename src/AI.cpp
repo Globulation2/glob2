@@ -30,6 +30,7 @@
 #include "AICastor.h"
 #include "AIToubib.h"
 #include "AIWarrush.h"
+#include "AIHelper.h"
 
 /*AI::AI(Player *player)
 {
@@ -59,6 +60,9 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
 		break;
+                case HELPER:
+                        aiImplementation=new AIHelper(player);
+                break;
 		default:
 			assert(false);
 		break;

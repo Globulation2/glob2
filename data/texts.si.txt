@@ -434,6 +434,8 @@ AINumbi
 AICastor
 [AIToubib]
 AIToubib
+[AIHelper]
+AIHelper
 [the games]
 Igre
 [the maps]

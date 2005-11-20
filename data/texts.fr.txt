@@ -442,6 +442,8 @@ AICastor
 AIToubib
 [AIWarrush]
 AIWarrush
+[AIHelper]
+AIHelper
 [the games]
 Parties
 [the maps]

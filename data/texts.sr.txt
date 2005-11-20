@@ -432,6 +432,8 @@ sr
 ВИКастор
 [AIToubib]
 AIToubib
+[AIHelper]
+AIHelper
 [the games]
 Игре
 [the maps]

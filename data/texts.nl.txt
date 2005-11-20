@@ -440,6 +440,8 @@ AINumbi
 AICastor
 [AIToubib]
 AIToubib
+[AIHelper]
+AIHelper
 [the games]
 Spelen
 [the maps]

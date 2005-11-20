@@ -220,6 +220,7 @@
 [AICastor]
 [AIToubib]
 [AIWarrush]
+[AIHelper]
 [the games]
 [the maps]
 [was]

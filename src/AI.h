@@ -45,6 +45,7 @@ public:
 		CASTOR=2,
 		TOUBIB=3,
 		WARRUSH=4,
+                HELPER=5,
 		SIZE
 	};
 	static const ImplementitionID toggleAI=CASTOR;

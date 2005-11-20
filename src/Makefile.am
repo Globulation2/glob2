@@ -28,6 +28,8 @@ IntBuildingType.h\
 IntBuildingType.cpp\
 AI.cpp \
 AI.h\
+AIHelper.cpp \
+AIHelper.h \
 AIImplementation.h\
 AINull.h\
 AINull.cpp\

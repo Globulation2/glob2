@@ -432,6 +432,8 @@ AINumbi
 AICastor
 [AIToubib]
 AIToubib
+[AIHelper]
+AIHelper
 [the games]
 Gry
 [the maps]
