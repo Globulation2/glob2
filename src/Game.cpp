@@ -1110,6 +1110,7 @@ void Game::wonSyncStep(void)
 {
 	totalPrestige=0;
 	isGameEnded=false;
+	int greatestPrestige=0;
 	
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
@@ -1122,11 +1123,16 @@ void Game::wonSyncStep(void)
 		teams[i]->hasWon |= !isOtherAlive;
 		isGameEnded |= teams[i]->hasWon;
 		totalPrestige += teams[i]->prestige;
+		if (greatestPrestige < teams[i]->prestige) greatestPrestige = teams[i]->prestige;
 	}
+
 	if (totalPrestige >= prestigeToReach)
 	{
 		totalPrestigeReached=true;
 		isGameEnded=true;
+
+		for (int i=0; i<session.numberOfTeam; i++)
+			teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
 	}
 }
 
