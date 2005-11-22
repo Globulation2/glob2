@@ -561,8 +561,9 @@ protected:
 	//Used for scheduling computation time.
 	bool gradientUpdated[32][MAX_NB_RESSOURCES][2];
 	Uint8 *undermap;
+	Uint8 **listedAddr;
 	size_t size;
-	
+
 	Sector *sectors;
 	Sint32 wSector, hSector;
 	int sizeSector;

@@ -554,7 +554,7 @@ void Team::integrity(void)
 	{
 		assert(*it);
 		assert((*it)->type);
-		if (!(*it)->type->foodable)
+		if (verbose && !(*it)->type->foodable)
 			printf("assert failure with gid=%d\n", (*it)->gid);
 		assert((*it)->type->foodable);
 		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
@@ -879,7 +879,8 @@ Building *Team::findNearestFood(Unit *unit)
 			for (int ti=0; ti<session.numberOfTeam; ti++)
 				if (ti!=teamNumber && concurent[ti])
 				{
-					printf(" team ti=%d suitable, nbb=%d\n", ti, static_cast<unsigned>(canFeedUnit.size()));
+					if (verbose)
+						printf(" team ti=%d suitable, nbb=%d\n", ti, static_cast<unsigned>(canFeedUnit.size()));
 					Team *t=game->teams[ti];
 					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 					{
@@ -895,17 +896,21 @@ Building *Team::findNearestFood(Unit *unit)
 									minDist=buildingDist;
 								}
 								else
-									printf(" building bgid=%d buildingDist=%d, minDist=%d\n", b->gid, buildingDist, minDist);
+									if (verbose)
+										printf(" building bgid=%d buildingDist=%d, minDist=%d\n", b->gid, buildingDist, minDist);
 							}
 							else
-								printf(" building bgid=%d not available\n", b->gid);
+								if (verbose)
+									printf(" building bgid=%d not available\n", b->gid);
 						}
 						else
-							printf(" building bgid=%d availableHappynessLevel()=%d < %d\n", b->gid, b->availableHappynessLevel(), enemyHappyness);
+							if (verbose)
+								printf(" building bgid=%d availableHappynessLevel()=%d < %d\n", b->gid, b->availableHappynessLevel(), enemyHappyness);
 					}
 				}
 				else
-					printf(" team ti=%d not suitable\n", ti);
+					if (verbose)
+						printf(" team ti=%d not suitable\n", ti);
 		}
 		return choosen;
 	}
