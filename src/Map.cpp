@@ -96,6 +96,7 @@ Map::Map()
 	
 	undermap=NULL;
 	sectors=NULL;
+	listedAddr=NULL;
 	
 	w=0;
 	h=0;
@@ -244,6 +245,10 @@ void Map::clear()
 		delete[] sectors;
 		sectors=NULL;
 
+		assert(listedAddr);
+		delete[] listedAddr;
+		listedAddr=NULL;
+
 		arraysBuilt=false;
 	}
 	else
@@ -265,6 +270,7 @@ void Map::clear()
 			}
 		assert(undermap==NULL);
 		assert(sectors==NULL);
+		assert(listedAddr==NULL);
 
 		assert(w==0);
 		assert(h==0);
@@ -877,6 +883,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
 		
+	listedAddr = new Uint8*[size];
+
 	//numberOfTeam=0, then ressourcesGradient[][][] is empty. This is done by clear();
 
 	regenerateMap(0, 0, w, h);
@@ -940,6 +948,7 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	localClearAreaMap.resize(size, false);
 	cases = new Case[size];
 	undermap = new Uint8[size];
+	listedAddr = new Uint8*[size];
 
 	// We read what's inside the map:
 	stream->read(undermap, size, "undermap");
@@ -2104,119 +2113,62 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 }
 */
 
-void Map::updateGlobalGradientSmall(Uint8 *gradient)
+inline void updateGradientSquare(Uint8**& listedAddrWrite, const Uint8 g, Uint8* element)
 {
-	Uint16 *listedAddr = new Uint16[size];
-	size_t listCountWrite = 0;
-	
-	// make the first list:
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-			if (gradient[(y << wDec) | x] >= 3)
-				listedAddr[listCountWrite++] = (y << wDec) | x;
-	
-	size_t listCountRead = 0;
-	while (listCountRead < listCountWrite)
-	{
-		Uint16 deltaAddrG = listedAddr[listCountRead++];
-		
-		size_t y = deltaAddrG >> wDec;
-		size_t x = deltaAddrG & wMask;
-		
-		size_t yu = ((y - 1) & hMask);
-		size_t yd = ((y + 1) & hMask);
-		size_t xl = ((x - 1) & wMask);
-		size_t xr = ((x + 1) & wMask);
-		
-		Uint8 g = gradient[(y << wDec) | x] - 1;
-		
-		size_t deltaAddrC[8];
-		Uint8 *addr;
-		Uint8 side;
-		
-		deltaAddrC[0] = (yu << wDec) | xl;
-		deltaAddrC[1] = (yu << wDec) | x ;
-		deltaAddrC[2] = (yu << wDec) | xr;
-		deltaAddrC[3] = (y  << wDec) | xr;
-		deltaAddrC[4] = (yd << wDec) | xr;
-		deltaAddrC[5] = (yd << wDec) | x ;
-		deltaAddrC[6] = (yd << wDec) | xl;
-		deltaAddrC[7] = (y  << wDec) | xl;
-		for (int ci=0; ci<8; ci++)
-		{
-			addr = &gradient[deltaAddrC[ci]];
-			side = *addr;
-			if (side > 0 && side < g)
-			{
-				*addr = g;
-				if (g > 2)
-					listedAddr[listCountWrite++] = deltaAddrC[ci];
-			}
-		}
-	}
-	assert(listCountWrite<=size);
-	delete[] listedAddr;
+	if (*element > 0 && *element < g && (*element = g) > 2)
+		*listedAddrWrite++ = element;
 }
-void Map::updateGlobalGradientBig(Uint8 *gradient)
+
+inline void updateGradientLine(const Map& m, const Uint8* gradient, Uint8**& listedAddrWrite, const Uint8 g, Uint8* topLine, Uint8* middleLine, Uint8* bottomLine)
 {
-	size_t *listedAddr = new size_t[size];
-	size_t listCountWrite = 0;
-	
-	// make the first list:
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-			if (gradient[(y << wDec) | x] >= 3)
-				listedAddr[listCountWrite++] = (y << wDec) | x;
-	
-	size_t listCountRead = 0;
-	while (listCountRead < listCountWrite)
-	{
-		size_t deltaAddrG = listedAddr[listCountRead++];
-		
-		size_t y = deltaAddrG >> wDec;
-		size_t x = deltaAddrG & wMask;
-		
-		size_t yu = ((y - 1) & hMask);
-		size_t yd = ((y + 1) & hMask);
-		size_t xl = ((x - 1) & wMask);
-		size_t xr = ((x + 1) & wMask);
-		
-		Uint8 g = gradient[(y << wDec) | x] - 1;
-		
-		size_t deltaAddrC[8];
-		Uint8 *addr;
-		Uint8 side;
-		
-		deltaAddrC[0] = (yu << wDec) | xl;
-		deltaAddrC[1] = (yu << wDec) | x ;
-		deltaAddrC[2] = (yu << wDec) | xr;
-		deltaAddrC[3] = (y  << wDec) | xr;
-		deltaAddrC[4] = (yd << wDec) | xr;
-		deltaAddrC[5] = (yd << wDec) | x ;
-		deltaAddrC[6] = (yd << wDec) | xl;
-		deltaAddrC[7] = (y  << wDec) | xl;
-		for (int ci=0; ci<8; ci++)
+	const size_t x = (middleLine - gradient) & m.wMask;
+	if (x) // Not at the left
+		if ((x+1) & m.wMask) // Not at the right
 		{
-			addr = &gradient[deltaAddrC[ci]];
-			side = *addr;
-			if (side > 0 && side < g)
-			{
-				*addr = g;
-				if (g > 2)
-					listedAddr[listCountWrite++] = deltaAddrC[ci];
-			}
+			updateGradientSquare(listedAddrWrite, g, topLine-1   ); updateGradientSquare(listedAddrWrite, g, topLine   ); updateGradientSquare(listedAddrWrite, g, topLine+1);
+			updateGradientSquare(listedAddrWrite, g, middleLine-1); updateGradientSquare(listedAddrWrite, g, middleLine); updateGradientSquare(listedAddrWrite, g, middleLine+1);
+			updateGradientSquare(listedAddrWrite, g, bottomLine-1); updateGradientSquare(listedAddrWrite, g, bottomLine); updateGradientSquare(listedAddrWrite, g, bottomLine+1);
 		}
+		else // at the right
+		{
+			const size_t width = m.getW()-1;
+			updateGradientSquare(listedAddrWrite, g, topLine-1   ); updateGradientSquare(listedAddrWrite, g, topLine   ); updateGradientSquare(listedAddrWrite, g, topLine-width);
+			updateGradientSquare(listedAddrWrite, g, middleLine-1); updateGradientSquare(listedAddrWrite, g, middleLine); updateGradientSquare(listedAddrWrite, g, middleLine-width);
+			updateGradientSquare(listedAddrWrite, g, bottomLine-1); updateGradientSquare(listedAddrWrite, g, bottomLine); updateGradientSquare(listedAddrWrite, g, bottomLine-width);
+		}
+	else // at the left
+	{
+			const size_t width = m.getW()-1;
+			updateGradientSquare(listedAddrWrite, g, topLine+width); updateGradientSquare(listedAddrWrite, g, topLine); updateGradientSquare(listedAddrWrite, g, topLine+1);
+			updateGradientSquare(listedAddrWrite, g, middleLine+width); updateGradientSquare(listedAddrWrite, g, middleLine); updateGradientSquare(listedAddrWrite, g, middleLine+1);
+			updateGradientSquare(listedAddrWrite, g, bottomLine+width); updateGradientSquare(listedAddrWrite, g, bottomLine); updateGradientSquare(listedAddrWrite, g, bottomLine+1);
 	}
-	assert(listCountWrite<=size);
-	delete[] listedAddr;
-}
+};
 
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
-	if (size<=65536)
-		updateGlobalGradientSmall(gradient);
-	else
-		updateGlobalGradientBig(gradient);
+	Uint8 **listedAddr = new Uint8*[size];
+	Uint8 **listedAddrWrite = listedAddr;
+
+	// make the first list:
+	for (Uint8 *g=gradient; g<gradient+size; ++g)
+		if (*g >= 3) *listedAddrWrite++ = g;
+
+	for (Uint8 **listedAddrRead=listedAddr; listedAddrRead < listedAddrWrite; ++listedAddrRead)
+	{
+		const Uint8 g = **listedAddrRead - 1;
+
+		const size_t y = (*listedAddrRead - gradient) >> wDec;
+		if (y) // Not at the start
+			if ((y+1) & hMask) // Not at the end
+				updateGradientLine(*this, gradient, listedAddrWrite, g, *listedAddrRead-getW(), *listedAddrRead, *listedAddrRead+getW());
+			else // at the end
+				updateGradientLine(*this, gradient, listedAddrWrite, g, *listedAddrRead-getW(), *listedAddrRead, *listedAddrRead-size+getW());
+		else // at the start
+				updateGradientLine(*this, gradient, listedAddrWrite, g, *listedAddrRead+size-getW(), *listedAddrRead, *listedAddrRead+getW());
+	}
+	assert(listedAddrWrite-listedAddr<size);
+	delete[] listedAddr;
 }
 
 /*void Map::updateGlobalGradient(Uint8 *gradient)
