@@ -508,6 +508,8 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 	{
 		for(; y<=bound_y; ++y)
 		{
+			Building* b = getBuildingFromGid(map->getBuilding(x, y));
+			Unit* u = getUnitFromGid(map->getGroundUnit(x, y));
 			switch (poll_type)
 			{
 
@@ -518,7 +520,6 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 					}
 					break;
 				case ENEMY_BUILDINGS:
-					Building* b = getBuildingFromGid(map->getBuilding(x, y));
 					if (b)
 					{
 						if(b->owner->me&team->enemies)
@@ -528,7 +529,6 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 					}
 					break;
 				case ENEMY_UNITS:
-					Unit* u = getUnitFromGid(map->getGroundUnit(x, y));
 					if (u)
 					{
 						if(u->owner->me&team->enemies)
