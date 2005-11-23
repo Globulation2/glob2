@@ -50,7 +50,7 @@ const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING
 
 //The following constants deal with the function iteration. All of these except the first must be
 //lower than TIMER_ITERATION.
-const int TIMER_ITERATION=75;
+const int TIMER_ITERATION=90;
 const int removeOldConstruction_TIME=0;
 const int updatePendingConstruction_TIME=5;
 const int startNewConstruction_TIME=10;
@@ -59,13 +59,16 @@ const int exploreWorld_TIME=20;
 const int findCreatedFlags_TIME=25;
 const int moderateSwarmsForExplorers_TIME=30;
 const int explorerAttack_TIME=35;
-const int moderateSwarms_TIME=40;
-const int recordInns_TIME=45;
-const int modifyInns_TIME=50;
-const int controlTowers_TIME=55;
-const int updateFlags_TIME=60;
-const int findDefense_TIME=65;
-const int findCreatedDefenseFlags_TIME=70;
+const int targetEnemy_TIME=40;
+const int attack_TIME=45;
+const int updateAttackFlags_TIME=50;
+const int moderateSwarms_TIME=55;
+const int recordInns_TIME=60;
+const int modifyInns_TIME=65;
+const int controlTowers_TIME=70;
+const int updateFlags_TIME=75;
+const int findDefense_TIME=80;
+const int findCreatedDefenseFlags_TIME=85;
 
 //These constants are for the AI's management of exploration and explorer attacks.
 //Warning, the following four constants must be powers of 2, because map sizes are in powers of two,
@@ -94,14 +97,6 @@ const unsigned int EMERGENCY_UNIT_SCORE=6;
 //This means that for every n units that need to be created, it will add in one new worker to the swarms.
 const unsigned int CREATION_UNIT_REQUIREMENT=15;
 
-//These constants are for the defense system.
-const unsigned int DEFENSE_ZONE_BUILDING_PADDING=2;
-
-const unsigned int DEFENSE_ZONE_WIDTH=8;
-const unsigned int DEFENSE_ZONE_HEIGHT=8;
-const unsigned int DEFENSE_ZONE_HORIZONTAL_OVERLAP=0;
-const unsigned int DEFENSE_ZONE_VERTICAL_OVERLAP=0;
-
 //These constants are for the AI's inn manager.
 //Says how many records it should take for each inn before restarting back at the begginning.
 const unsigned int INN_RECORD_MAX=20;
@@ -110,6 +105,34 @@ const unsigned int INN_MINIMUM[3]={1, 1, 2};
 
 //These constants are for AIHelpers tower controller
 const unsigned int NUM_PER_TOWER=2;
+
+//These constants are for the defense system.
+const unsigned int DEFENSE_ZONE_BUILDING_PADDING=2;
+const unsigned int DEFENSE_ZONE_WIDTH=8;
+const unsigned int DEFENSE_ZONE_HEIGHT=8;
+const unsigned int DEFENSE_ZONE_HORIZONTAL_OVERLAP=0;
+const unsigned int DEFENSE_ZONE_VERTICAL_OVERLAP=0;
+const unsigned int BASE_DEFENSE_WARRIORS=20;
+
+//These constants are for the attack system.
+const IntBuildingType::Number ATTACK_PRIORITY[IntBuildingType::NB_BUILDING-3] =
+{
+	IntBuildingType::HEAL_BUILDING,
+	IntBuildingType::FOOD_BUILDING,
+	IntBuildingType::ATTACK_BUILDING,
+	IntBuildingType::WALKSPEED_BUILDING,
+	IntBuildingType::SWIMSPEED_BUILDING,
+	IntBuildingType::SCIENCE_BUILDING,
+	IntBuildingType::SWARM_BUILDING,
+	IntBuildingType::DEFENSE_BUILDING,
+	IntBuildingType::MARKET_BUILDING,
+	IntBuildingType::STONE_WALL
+};
+const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
+const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
+const unsigned int ATTACK_WARRIOR_MINIMUM=8;
+const unsigned int MAX_ATTACKS_AT_ONCE=5;
+const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*1.5);
 ///@}
 
 ///This constant turns on debugging output
@@ -353,10 +376,18 @@ class AIHelper : public AIImplementation
 		///@{
 		struct attackRecord
 		{
-			Building* target;
+			unsigned int target;
 			Building* flag;
 			unsigned int flagx;
 			unsigned int flagy;
+			unsigned int zonex;
+			unsigned int zoney;
+			unsigned int width;
+			unsigned int height;
+			unsigned int unitx;
+			unsigned int unity;
+			unsigned int unit_width;
+			unsigned int unit_height;
 			unsigned int assigned_units;
 			unsigned int assigned_level;
 
@@ -369,6 +400,9 @@ class AIHelper : public AIImplementation
 
 		///If we have enough warriors of the best available skill level, launch an attack!
 		void attack();
+
+		//Find flags that attack() created, and update flags as neccecary to keep up with the number of units defending each building
+		void updateAttackFlags();
 		///@}
 
 		///@name Spawn Controller
