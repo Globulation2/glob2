@@ -55,9 +55,12 @@ void AIHelper::init(Player *player)
 	desired_explorers=0;
 	developing_attack_explorers=false;
 	explorer_attacking=false;
+	enemy=NULL;
 	changeUnits("upgrade-repair manager", WORKER, static_cast<int>(std::max(MAXIMUM_TO_REPAIR, MAXIMUM_TO_UPGRADE)*MAX_CONSTRUCTION_AT_ONCE*1.5), std::max(MAXIMUM_TO_REPAIR, MAXIMUM_TO_UPGRADE), 0);
 
-	changeUnits("defense", WARRIOR, 0, 0, 20);
+	changeUnits("defense", WARRIOR, 0, 0, BASE_DEFENSE_WARRIORS);
+
+	changeUnits("attack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
 
 	assert(player);
 
@@ -130,7 +133,11 @@ bool AIHelper::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	while(n--)
 	{
 		explorationRecord er;
-		er.flag=getBuildingFromGid(stream->readUint32());
+		unsigned int gid=stream->readUint32();
+		if(!gid)
+			er.flag=NULL;
+		else
+			er.flag=getBuildingFromGid(gid);
 		er.flag_x=stream->readUint32();
 		er.flag_y=stream->readUint32();
 		er.zone_x=stream->readUint32();
@@ -152,8 +159,18 @@ bool AIHelper::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	while(n--)
 	{
 		attackRecord ar;
-		ar.target=getBuildingFromGid(stream->readUint32());
+		ar.target=stream->readUint32();
 		ar.flag=getBuildingFromGid(stream->readUint32());
+		ar.flagx=stream->readUint32();
+		ar.flagy=stream->readUint32();
+		ar.zonex=stream->readUint32();
+		ar.zoney=stream->readUint32();
+		ar.width=stream->readUint32();
+		ar.height=stream->readUint32();
+		ar.unitx=stream->readUint32();
+		ar.unity=stream->readUint32();
+		ar.unit_width=stream->readUint32();
+		ar.unit_height=stream->readUint32();
 		ar.assigned_units=stream->readUint32();
 		ar.assigned_level=stream->readUint32();
 		attacks.push_back(ar);
@@ -262,7 +279,10 @@ void AIHelper::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(active_exploration.size());
 	for(std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
 	{
-		stream->writeUint32(i->flag->gid);
+		if(i->flag!=NULL)
+			stream->writeUint32(i->flag->gid);
+		else
+			stream->writeUint32(0);
 		stream->writeUint32(i->flag_x);
 		stream->writeUint32(i->flag_y);
 		stream->writeUint32(i->zone_x);
@@ -282,8 +302,18 @@ void AIHelper::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(attacks.size());
 	for(std::vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
 	{
-		stream->writeUint32(i->target->gid);
+		stream->writeUint32(i->target);
 		stream->writeUint32(i->flag->gid);
+		stream->writeUint32(i->flagx);
+		stream->writeUint32(i->flagy);
+		stream->writeUint32(i->zonex);
+		stream->writeUint32(i->zoney);
+		stream->writeUint32(i->width);
+		stream->writeUint32(i->height);
+		stream->writeUint32(i->unitx);
+		stream->writeUint32(i->unity);
+		stream->writeUint32(i->unit_width);
+		stream->writeUint32(i->unit_height);
 		stream->writeUint32(i->assigned_units);
 		stream->writeUint32(i->assigned_level);
 	}
@@ -350,7 +380,7 @@ Order *AIHelper::getOrder(void)
 	//the time where it should have done something because there where items already in the queue.
 	timer++;
 	//Waits for atleast 30 ticks before it does anything, because of a few off, 'goes to fast' bugs.
-	if (timer<50)
+	if (timer<TIMER_ITERATION)
 		return new NullOrder();
 
 	if(timer%TIMER_ITERATION==0)
@@ -396,6 +426,18 @@ Order *AIHelper::getOrder(void)
 		case explorerAttack_TIME:
 			//Attack using explorers if possible
 			explorerAttack();
+			break;
+		case targetEnemy_TIME:
+			//Chooses an enemy to attack
+			targetEnemy();
+			break;
+		case attack_TIME:
+			//Targets and attacks a building
+			attack();
+			break;
+		case updateAttackFlags_TIME:
+			//Finds flags that attack() created and reassigns them as neccecary
+			updateAttackFlags();
 			break;
 		case moderateSwarms_TIME:
 			//Change the ratios on the swarms if neccecary
@@ -508,8 +550,8 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 	{
 		for(; y<=bound_y; ++y)
 		{
-			Building* b = getBuildingFromGid(map->getBuilding(x, y));
-			Unit* u = getUnitFromGid(map->getGroundUnit(x, y));
+			Unit* u;
+			Building* b;
 			switch (poll_type)
 			{
 
@@ -520,6 +562,7 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 					}
 					break;
 				case ENEMY_BUILDINGS:
+					b = getBuildingFromGid(map->getBuilding(x, y));
 					if (b)
 					{
 						if(b->owner->me&team->enemies)
@@ -529,6 +572,7 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 					}
 					break;
 				case ENEMY_UNITS:
+					u = getUnitFromGid(map->getGroundUnit(x, y));
 					if (u)
 					{
 						if(u->owner->me&team->enemies)
@@ -754,7 +798,8 @@ void AIHelper::reassignConstruction(void)
 
 int AIHelper::getFreeUnits(int ability, int level)
 {
-	level-=1;																						//This is because ability levels are counted from 0, not 1. I'm not sure why,
+	level-=1;
+	//This is because ability levels are counted from 0, not 1. I'm not sure why,
 	//though, because 0 would mean that the unit does not have that skill, which
 	//would be more appropriette.
 	int free_workers=0;
@@ -1152,6 +1197,23 @@ void AIHelper::explorerAttack(void)
 
 void AIHelper::targetEnemy()
 {
+	if(enemy==NULL || !enemy->isAlive)
+	{
+		for(int i=0; i<32; ++i)
+		{
+			Team* t = game->teams[i];
+			if(t)
+			{
+				if(t->me & team->enemies && t->isAlive)
+				{
+					if(AIHelper_DEBUG)
+						std::cout<<"AIHelper: targetEnemy: A new enemy has been chosen."<<endl;
+					enemy=game->teams[i];
+					return;
+				}
+			}
+		}
+	}
 
 }
 
@@ -1160,6 +1222,147 @@ void AIHelper::targetEnemy()
 
 void AIHelper::attack()
 {
+	vector<vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
+	for(int i=0; i<1024; ++i)
+	{
+		Building* b = enemy->myBuildings[i];
+		if(b)
+		{
+			buildings[std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+IntBuildingType::NB_BUILDING-3, b->type->shortTypeNum)-ATTACK_PRIORITY].push_back(b);
+		}
+	}
+
+	unsigned int max_barracks_level=0;
+	for(int i=0; i<1024; ++i)
+	{
+		Building* b = team->myBuildings[i];
+		if(b)
+		{
+			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			{
+				max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
+			}
+		}
+	}
+
+	unsigned int available_units = getFreeUnits(ATTACK_STRENGTH, max_barracks_level+1);
+
+	for(vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
+	{
+		if(i->assigned_level == max_barracks_level && available_units > i->assigned_units)
+			available_units-=i->assigned_units;
+		else if(available_units < i->assigned_units)
+			available_units=0;
+	}
+
+
+	unsigned int attack_count=attacks.size();
+
+	for(vector<vector<Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
+	{
+		for(vector<Building*>::iterator j = i->begin(); j!=i->end(); ++j)
+		{
+			Building* b = *j;
+			if(attack_count!=MAX_ATTACKS_AT_ONCE && available_units>=ATTACK_WARRIOR_MINIMUM)
+			{
+				bool found=false;
+				for(vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
+				{
+					if(b->gid==i->target)
+					{
+						found=true;
+						break;
+					}
+				}
+				if(found)
+					continue;
+				attackRecord ar;
+				ar.target=b->gid;
+				ar.flag=NULL;
+				ar.flagx=b->posX+(b->type->width/2);
+				ar.flagy=b->posY+(b->type->height/2);
+				ar.zonex=b->posX-ATTACK_ZONE_BUILDING_PADDING;
+				ar.zoney=b->posY-ATTACK_ZONE_BUILDING_PADDING;
+				ar.width=b->type->width+ATTACK_ZONE_BUILDING_PADDING*2;
+				ar.height=b->type->height+ATTACK_ZONE_BUILDING_PADDING*2;
+				ar.unitx=b->posX-ATTACK_ZONE_EXAMINATION_PADDING;
+				ar.unity=b->posY-ATTACK_ZONE_EXAMINATION_PADDING;
+				ar.unit_width=b->type->width+ATTACK_ZONE_EXAMINATION_PADDING*2;
+				ar.unit_height=b->type->height+ATTACK_ZONE_EXAMINATION_PADDING*2;
+				ar.assigned_units=pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, ENEMY_UNITS)*2+ATTACK_WARRIOR_MINIMUM;
+				ar.assigned_level=max_barracks_level;
+				attacks.push_back(ar);
+				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
+				if(AIHelper_DEBUG)
+					std::cout<<"AIHelper: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<endl;
+				orders.push(new OrderCreate(team->teamNumber, ar.flagx, ar.flagy, typeNum));
+				++attack_count;
+				available_units-=ar.assigned_units;
+			}
+		}
+	}
+}
+
+
+
+
+void AIHelper::updateAttackFlags()
+{
+	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
+	{
+		if(!buildingStillExists(j->target))
+		{
+			if(AIHelper_DEBUG)
+				std::cout<<"AIHelper: updateAttackFlags: Stopping attack on a building, removing the "<<j->flag->posX<<","<<j->flag->posY<<" flag."<<endl;
+			orders.push(new OrderDelete(j->flag->gid));
+			j=attacks.erase(j);
+			continue;
+		}
+		else
+		{
+			++j;
+		}
+	}
+
+	for(int i=0; i<1024; ++i)
+	{
+		Building* b = team->myBuildings[i];
+		if(b)
+		{
+			if(b->type->shortTypeNum==IntBuildingType::WAR_FLAG)
+			{
+				for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end(); j++)
+				{
+					if(j->flag==NULL && b->posX == static_cast<int>(j->flagx) && b->posY == static_cast<int>(j->flagy))
+					{
+						j->flag=b;
+						unsigned int radius=std::max(j->width, j->height)/2;
+						if(AIHelper_DEBUG)
+							std::cout<<"AIHelper: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<endl;
+
+						orders.push(new OrderModifyFlag(b->gid, radius));
+						orders.push(new OrderModifyBuilding(b->gid, j->assigned_units));
+						orders.push(new OrderModifyWarFlag(b->gid, j->assigned_level));
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
+	{
+		unsigned int score = pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, ENEMY_UNITS);
+		if(score*2+ATTACK_WARRIOR_MINIMUM != j->assigned_units)
+		{
+			int new_assigned=score*2+ATTACK_WARRIOR_MINIMUM;
+			if(AIHelper_DEBUG)
+				std::cout<<"AIHelper: updateAttackFlags: Changing the "<<j->flag->posX<<","<<j->flag->posY<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<endl;
+			j->assigned_units=new_assigned;
+			orders.push(new OrderModifyBuilding(j->flag->gid, new_assigned));
+		}
+		++j;
+	}
 
 }
 
@@ -1449,11 +1652,11 @@ void AIHelper::findDefense()
 			{
 				if(building_health[b->gid] > b->hp)
 				{
-//					zone z=getZone(b->posX, b->posY, DEFENSE_ZONE_WIDTH, DEFENSE_ZONE_HEIGHT, DEFENSE_ZONE_HORIZONTAL_OVERLAP, DEFENSE_ZONE_VERTICAL_OVERLAP);
+					//					zone z=getZone(b->posX, b->posY, DEFENSE_ZONE_WIDTH, DEFENSE_ZONE_HEIGHT, DEFENSE_ZONE_HORIZONTAL_OVERLAP, DEFENSE_ZONE_VERTICAL_OVERLAP);
 					bool found=false;
 					for(vector<defenseRecord>::iterator j = defending_zones.begin(); j != defending_zones.end(); ++j)
 					{
-//						if(j->zonex == z.x && j->zoney == z.y)
+						//						if(j->zonex == z.x && j->zoney == z.y)
 						if(j->zonex == b->posX-DEFENSE_ZONE_BUILDING_PADDING && j->zoney == b->posY-DEFENSE_ZONE_BUILDING_PADDING)
 						{
 							found=true;
@@ -1465,16 +1668,16 @@ void AIHelper::findDefense()
 					}
 					defenseRecord dr;
 					dr.flag=NULL;
-//					dr.flagx=z.x+(z.width/2);
-//					dr.flagy=z.y+(z.height/2);
+					//					dr.flagx=z.x+(z.width/2);
+					//					dr.flagy=z.y+(z.height/2);
 					dr.flagx=b->posX+(b->type->width/2);
 					dr.flagy=b->posY+(b->type->height/2);
-//					dr.zonex=z.x;
-//					dr.zoney=z.y;
+					//					dr.zonex=z.x;
+					//					dr.zoney=z.y;
 					dr.zonex=b->posX-DEFENSE_ZONE_BUILDING_PADDING;
-					dr.zoney=b->posY-DEFENSE_ZONE_BUILDING_PADDING; 
-//					dr.width=z.width;
-//					dr.height=z.height;
+					dr.zoney=b->posY-DEFENSE_ZONE_BUILDING_PADDING;
+					//					dr.width=z.width;
+					//					dr.height=z.height;
 					dr.width=b->type->width+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.height=b->type->height+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.assigned=pollArea(dr.zonex, dr.zoney, dr.width, dr.height, ENEMY_UNITS);
