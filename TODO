@@ -36,6 +36,7 @@ http://ysagoon.com/phpBB2/viewtopic.php?t=45&sid=755083a5e3af8f0caf75558feb7e0e1
 -Ajouter des routes.
 
 NetGame:
+- Remove the ustep warning at the end of a game.
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
 
 Bug:
