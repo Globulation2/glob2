@@ -812,7 +812,8 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		}
 		bool result = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
 		
-		std::cout << "Trying to build " << shortTypeNum << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl;
+		if (verbose)
+			std::cout << "Trying to build " << shortTypeNum << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl;
 	}
 	
 	// set delay

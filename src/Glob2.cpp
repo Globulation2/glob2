@@ -84,7 +84,8 @@ void Glob2::drawYOGSplashScreen(void)
 
 void Glob2::mutiplayerYOG(void)
 {
-	printf("Glob2:: starting YOGPreScreen...\n");
+	if (verbose)
+		printf("Glob2:: starting YOGPreScreen...\n");
 	YOGPreScreen yogPreScreen;
 	int yogReturnCode=yogPreScreen.execute(globalContainer->gfx, 40);
 	if (yogReturnCode==YOGPreScreen::CANCEL)
@@ -94,7 +95,8 @@ void Glob2::mutiplayerYOG(void)
 		isRunning=false;
 		return;
 	}
-	printf("Glob2::YOGPreScreen has ended ...\n");
+	if (verbose)
+		printf("Glob2::YOGPreScreen has ended ...\n");
 }
 
 int Glob2::runNoX()
@@ -111,7 +113,8 @@ int Glob2::runNoX()
 
 int Glob2::runHostServer()
 {
-	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->getUsername());
+	if (verbose)
+		printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->getUsername());
 	yog->enableConnection(globalContainer->hostServerUserName, globalContainer->hostServerPassWord, false);
 	
 	while(yog->yogGlobalState==YOG::YGS_CONNECTING)
@@ -129,7 +132,8 @@ int Glob2::runHostServer()
 	
 	char *mapName=globalContainer->hostServerMapName;
 	
-	printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
+	if (verbose)
+		printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
 	if (stream->isEndOfStream())
 	{
@@ -216,7 +220,8 @@ int Glob2::runHostServer()
 
 	delete multiplayersHost;
 
-	printf("Glob2::runHostServer(): disconnecting YOG.\n");
+	if (verbose)
+		printf("Glob2::runHostServer(): disconnecting YOG.\n");
 
 	yog->deconnect();
 	while(yog->yogGlobalState==YOG::YGS_DECONNECTING)
@@ -225,7 +230,8 @@ int Glob2::runHostServer()
 		SDL_Delay(50);
 	}
 
-	printf("Glob2::runHostServer():end.\n");
+	if (verbose)
+		printf("Glob2::runHostServer():end.\n");
 
 	return 0;
 }

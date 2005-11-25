@@ -23,6 +23,7 @@
 //! This class is used to handle the whole game
 class Glob2
 {
+	static const bool verbose = false;
 public:
 	//! true while the game is running
 	bool isRunning;

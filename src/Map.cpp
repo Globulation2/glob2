@@ -2132,16 +2132,16 @@ inline void updateGradientLine(const Map& m, const Uint8* gradient, Uint8**& lis
 		else // at the right
 		{
 			const size_t width = m.getW()-1;
-			updateGradientSquare(listedAddrWrite, g, topLine-1   ); updateGradientSquare(listedAddrWrite, g, topLine   ); updateGradientSquare(listedAddrWrite, g, topLine-width);
-			updateGradientSquare(listedAddrWrite, g, middleLine-1); updateGradientSquare(listedAddrWrite, g, middleLine); updateGradientSquare(listedAddrWrite, g, middleLine-width);
-			updateGradientSquare(listedAddrWrite, g, bottomLine-1); updateGradientSquare(listedAddrWrite, g, bottomLine); updateGradientSquare(listedAddrWrite, g, bottomLine-width);
+			updateGradientSquare(listedAddrWrite, g, topLine-1   ); updateGradientSquare(listedAddrWrite, g, topLine   ); updateGradientSquare(listedAddrWrite, g, topLine+1-width);
+			updateGradientSquare(listedAddrWrite, g, middleLine-1); updateGradientSquare(listedAddrWrite, g, middleLine); updateGradientSquare(listedAddrWrite, g, middleLine+1-width);
+			updateGradientSquare(listedAddrWrite, g, bottomLine-1); updateGradientSquare(listedAddrWrite, g, bottomLine); updateGradientSquare(listedAddrWrite, g, bottomLine+1-width);
 		}
 	else // at the left
 	{
 			const size_t width = m.getW()-1;
-			updateGradientSquare(listedAddrWrite, g, topLine+width); updateGradientSquare(listedAddrWrite, g, topLine); updateGradientSquare(listedAddrWrite, g, topLine+1);
-			updateGradientSquare(listedAddrWrite, g, middleLine+width); updateGradientSquare(listedAddrWrite, g, middleLine); updateGradientSquare(listedAddrWrite, g, middleLine+1);
-			updateGradientSquare(listedAddrWrite, g, bottomLine+width); updateGradientSquare(listedAddrWrite, g, bottomLine); updateGradientSquare(listedAddrWrite, g, bottomLine+1);
+			updateGradientSquare(listedAddrWrite, g, topLine-1+width); updateGradientSquare(listedAddrWrite, g, topLine); updateGradientSquare(listedAddrWrite, g, topLine+1);
+			updateGradientSquare(listedAddrWrite, g, middleLine-1+width); updateGradientSquare(listedAddrWrite, g, middleLine); updateGradientSquare(listedAddrWrite, g, middleLine+1);
+			updateGradientSquare(listedAddrWrite, g, bottomLine-1+width); updateGradientSquare(listedAddrWrite, g, bottomLine); updateGradientSquare(listedAddrWrite, g, bottomLine+1);
 	}
 };
 
