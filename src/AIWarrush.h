@@ -58,6 +58,7 @@ private:
 
 class AIWarrush : public AIImplementation
 {
+	static const bool verbose = false;
 public:
 	AIWarrush(Player *player);
 	AIWarrush(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
