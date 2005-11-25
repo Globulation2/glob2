@@ -1124,6 +1124,16 @@ void Map::addTeam(void)
 			ressourcesGradient[t][r][s]=new Uint8[size];
 			updateRessourcesGradient(t, r, (bool)s);
 		}
+	
+	for (int s=0; s<2; s++)
+	{
+		assert(forbiddenGradient[t][s] == NULL);
+		forbiddenGradient[t][s] = new Uint8[size];
+		updateForbiddenGradient(t, s);
+		assert(guardAreasGradient[t][s] == NULL);
+		guardAreasGradient[t][s] = new Uint8[size];
+		updateGuardAreasGradient(t, s);
+	}
 }
 
 void Map::removeTeam(void)
