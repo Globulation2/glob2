@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "YOGScreen.h"
 #include "YOGPreScreen.h"
+
 YOGPreScreen::YOGPreScreen()
 {
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
@@ -51,7 +52,7 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(newYogPassword);
 	addWidget(newYogPasswordText);
 	
-	rememberYogPassword=new OnOffButton(20, 440, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, NEW_USER);
+	rememberYogPassword=new OnOffButton(20, 440, 21, 21, ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED, password->getTextStdString().length() > 0, NEW_USER);
 	rememberYogPasswordText=new Text(47, 440, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
 		Toolkit::getStringTable()->getString("[Remember YOG password localy]"));
 	addWidget(rememberYogPassword);
