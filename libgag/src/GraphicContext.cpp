@@ -1015,13 +1015,13 @@ namespace GAGCore
 		{
 			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USEGPU))
 			{
-				if ((x == 0) && (y == 0) && (sx == 0) && (sy == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
+				if ((x == 0) && (y == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
 				{
 					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-					glReadPixels(0, 0, sdlsurface->w, sdlsurface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdlsurface->pixels);
+					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdlsurface->pixels);
 					#else
 					std::valarray<unsigned> tempPixels(sw*sh);
-					glReadPixels(0, 0, sdlsurface->w, sdlsurface->h, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					for (int y = 0; y<sh; y++)
 					{
 						unsigned *srcPtr = (unsigned *)&tempPixels[y*sw];
