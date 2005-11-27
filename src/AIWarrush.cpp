@@ -520,38 +520,41 @@ Order *AIWarrush::setupAttack(void)
 				for(int j=0;j<32;j++)
 				{
 					Building *b = t->myBuildings[j];
-					BuildingType *bt = b->type;
-					if(
-							//the area must be discovered to prevent AI cheating.
-							(
-									map->isMapDiscovered(b->posX,				b->posY,				team->me)
-								||	map->isMapDiscovered(b->posX+bt->width - 1,	b->posY,				team->me)
-								||	map->isMapDiscovered(b->posX+bt->width - 1,	b->posY+bt->height-1,	team->me)
-								||	map->isMapDiscovered(b->posX,				b->posY+bt->height-1,	team->me)
-									)
-							&&
-							//the building must be a swarm or inn unless there are none available.
-							(
-									bt->shortTypeNum == IntBuildingType::SWARM_BUILDING
-								||	bt->shortTypeNum == IntBuildingType::FOOD_BUILDING
-								||	pass == "second"
-									)
-							&&
-							//do not order a building attacked if the order is already in place.
-							(
-								!map->isGuardAreaLocal(b->posX,b->posY)
-									)			
-										)
+					if (b)
 					{
-						BrushAccumulator acc;
-						for(int x = 0; x < bt->width; x++)
+						BuildingType *bt = b->type;
+						if(
+								//the area must be discovered to prevent AI cheating.
+								(
+										map->isMapDiscovered(b->posX,				b->posY,				team->me)
+									||	map->isMapDiscovered(b->posX+bt->width - 1,	b->posY,				team->me)
+									||	map->isMapDiscovered(b->posX+bt->width - 1,	b->posY+bt->height-1,	team->me)
+									||	map->isMapDiscovered(b->posX,				b->posY+bt->height-1,	team->me)
+										)
+								&&
+								//the building must be a swarm or inn unless there are none available.
+								(
+										bt->shortTypeNum == IntBuildingType::SWARM_BUILDING
+									||	bt->shortTypeNum == IntBuildingType::FOOD_BUILDING
+									||	pass == "second"
+										)
+								&&
+								//do not order a building attacked if the order is already in place.
+								(
+									!map->isGuardAreaLocal(b->posX,b->posY)
+										)			
+											)
 						{
-							for(int y = 0; y < bt->height; y++)
+							BrushAccumulator acc;
+							for(int x = 0; x < bt->width; x++)
 							{
-								acc.applyBrush(map,BrushApplication(b->posX+x,b->posY+y,6));
+								for(int y = 0; y < bt->height; y++)
+								{
+									acc.applyBrush(map,BrushApplication(b->posX+x,b->posY+y,6));
+								}
 							}
+							return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&acc);
 						}
-						return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&acc);
 					}
 				}
 			}
