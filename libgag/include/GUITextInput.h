@@ -57,6 +57,7 @@ namespace GAGGUI
 		void setText(const char *newText);
 		void setText(const std::string &newText) { setText(newText.c_str()); }
 		const char *getText(void) { return text.c_str(); }
+		const std::string &getTextStdString(void) { return text; }
 		void deactivate(void) { activated=false; recomputeTextInfos(); }
 		
 	protected:
