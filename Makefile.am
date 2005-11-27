@@ -1,4 +1,4 @@
-SUBDIRS=libgag src gnupg doc data maps campaigns 
+SUBDIRS=libgag src gnupg doc data maps campaigns autopackage
 
 glob2basedir= $(pkgdatadir)
 glob2base_DATA= $(srcdir)/AUTHORS

@@ -146,6 +146,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [source directory])
 
 AC_CONFIG_FILES([Makefile
 	autopackage/default.apspec
+	autopackage/Makefile
 	src/Makefile
 	doc/Makefile
 	data/Makefile
