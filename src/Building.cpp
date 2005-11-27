@@ -1190,7 +1190,8 @@ bool Building::tryToBuildingSiteRoom(void)
 				{
 					if (res>resMax)
 						res=resMax;
-					printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
+					if (verbose)
+						printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
 					hp+=res*type->hpInc;
 				}
 			}
@@ -1752,7 +1753,7 @@ void Building::swarmStep(void)
 					for (int i=0; i<NB_UNIT_TYPE; i++)
 						percentUsed[i]=0;
 			}
-			else
+			else if (verbose)
 				printf("WARNING, no more UNIT ID free for team %d\n", owner->teamNumber);
 		}
 	}

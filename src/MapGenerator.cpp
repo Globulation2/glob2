@@ -328,7 +328,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		baseSand =(float)sandRatio /(float)totalRatio;
 		baseGrass=(float)grassRatio/(float)totalRatio;
 	}
-	printf("makeRandomMap::old-base=(%f, %f, %f).\n", baseWater, baseSand, baseGrass);
+	if (verbose)
+		printf("makeRandomMap::old-base=(%f, %f, %f).\n", baseWater, baseSand, baseGrass);
 	
 	//Sorry, the equation is too complex for me. We uses a numeric aproach:
 	double alphaWater=baseWater;
@@ -439,11 +440,13 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		}
 	}
 	
-	printf("makeRandomMap::new-base =(%f, %f, %f).\n", alphaWater, alphaSand, alphaGrass);
+	if (verbose)
+		printf("makeRandomMap::new-base =(%f, %f, %f).\n", alphaWater, alphaSand, alphaGrass);
 	
 	double simWater, simSand, simGrass;
 	simulateRandomMap(smooth, alphaWater, alphaSand, alphaGrass, &simWater, &simSand, &simGrass);
-	printf("makeRandomMap::simulateRandomMap=(%f, %f, %f).\n", simWater, simSand, simGrass);
+	if (verbose)
+		printf("makeRandomMap::simulateRandomMap=(%f, %f, %f).\n", simWater, simSand, simGrass);
 	
 	totalRatio=0x7FFF;
 	waterRatio=(int)(((double)alphaWater)*((double)totalRatio));
@@ -505,7 +508,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 	double totalCount=(double)(waterCount+sandCount+grassCount);
-	printf("makeRandomMap::beforeCount=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
+	if (verbose)
+		printf("makeRandomMap::beforeCount=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
 	
 	for (int i=0; i<smooth; i++)
 	{
@@ -671,14 +675,16 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 	totalCount=(double)(waterCount+sandCount+grassCount);
-	printf("makeRandomMap::final count=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
+	if (verbose)
+		printf("makeRandomMap::final count=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
 	
 	controlSand();
 	
 	//Now, we have to find suitable places for teams:
 	int nbTeams=descriptor.nbTeams;
 	int minDistSquare=(int)((double)((double)w*(double)h*(double)grassCount)/(double)((double)nbTeams*(double)totalCount));
-	printf("minDistSquare=%d (%f).\n", minDistSquare, sqrt((double)minDistSquare));
+	if (verbose)
+		printf("minDistSquare=%d (%f).\n", minDistSquare, sqrt((double)minDistSquare));
 	if (minDistSquare<=0)
 		return false;
 	assert(minDistSquare>0);
@@ -753,7 +759,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	
 	// Let's add some green space for teams:
 	int squareSize=5+(int)(sqrt((double)minDistSquare)/4.5);
-	printf("squareSize=%d.\n", squareSize);
+	if (verbose)
+		printf("squareSize=%d.\n", squareSize);
 	for (int team=0; team<nbTeams; team++)
 	{
 		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+0, GRASS, squareSize);
@@ -763,7 +770,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	controlSand();
 	regenerateMap(0, 0, w, h);
 	
-	printf("makeRandomMap::success\n");
+	if (verbose)
+		printf("makeRandomMap::success\n");
 	return true;
 }
 
@@ -1344,20 +1352,8 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]+d))
 				break;
-		amount=descriptor.ressource[STONE];
-		amount=d-smoothRessources-3;
-		if (amount<1)
-			amount=1;
-		p=d-1-amount/2;
-		if (amount>0)
-			setRessource(bootX[s], bootY[s]+p, STONE, amount);
-		if (amount<smallestAmount)
-		{
-			smallestAmount=amount;
-			smallestRessource=STONE;
-		}
-		
-		
+		setRessource(bootX[s], bootY[s]+p, STONE, 1);
+
 		//We add the ressource with the smallest amount:
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s]+d, bootY[s]+d))
@@ -1398,7 +1394,8 @@ bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
 		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), -1, false))
 		{
-			printf("Failed to add swarm of team %d\n", s);
+			if (verbose)
+				printf("Failed to add swarm of team %d\n", s);
 			return false;
 		}
 		teams[s]->startPosX=descriptor.bootX[s];
@@ -1408,7 +1405,8 @@ bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		for (int i=0; i<descriptor.nbWorkers; i++)
 			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)
 			{
-				printf("Failed to add unit %d of team %d\n", i, s);
+				if (verbose)
+					printf("Failed to add unit %d of team %d\n", i, s);
 				return false;
 			}
 		teams[s]->createLists();
@@ -1433,7 +1431,8 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
 		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), -1, false))
 		{
-			printf("Failed to add swarm of team %d\n", s);
+			if (verbose)
+				printf("Failed to add swarm of team %d\n", s);
 			return false;
 		}
 		teams[s]->startPosX=descriptor.bootX[s];
@@ -1443,7 +1442,8 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		for (int i=0; i<descriptor.nbWorkers; i++)
 			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)
 			{
-				printf("Failed to add unit %d of team %d\n", i, s);
+				if (verbose)
+					printf("Failed to add unit %d of team %d\n", i, s);
 				return false;
 			}
 		teams[s]->createLists();
@@ -1453,7 +1453,8 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 
 bool Game::generateMap(MapGenerationDescriptor &descriptor)
 {
-	printf("Generating map, please wait ....\n");
+	if (verbose)
+		printf("Generating map, please wait ....\n");
 	descriptor.synchronizeNow();
 	map.setSize(descriptor.wDec, descriptor.hDec);
 	map.setGame(this);
@@ -1483,7 +1484,8 @@ bool Game::generateMap(MapGenerationDescriptor &descriptor)
 	if (session.mapGenerationDescriptor)
 		delete session.mapGenerationDescriptor;
 	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
-	printf(".... map generated.\n");
+	if (verbose)
+		printf(".... map generated.\n");
 	return true;
 }
 /*
