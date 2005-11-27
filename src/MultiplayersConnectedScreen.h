@@ -34,6 +34,7 @@ class ColorRect;
 
 class MultiplayersConnectedScreen:public Screen
 {
+	static const bool verbose = false;
 public:
 	enum
 	{
