@@ -795,9 +795,14 @@ void GameGUI::processEvent(SDL_Event *event)
 	// handle typing
 	if (typingInputScreen)
 	{
-		//if (event->type==SDL_KEYDOWN)
+		if ((event->type==SDL_KEYDOWN) && (event->key.keysym.sym == SDLK_ESCAPE))
+		{
+			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
+			typingInputScreen->endValue=1;
+		}
+		
 		typingInputScreen->translateAndProcessEvent(event);
-
+		
 		if (typingInputScreen->endValue==0)
 		{
 			char message[256];
@@ -1304,11 +1309,11 @@ void GameGUI::handleKeyAlways(void)
 		viewportY++;
 	if (keystate[SDLK_KP2])
 		viewportY++;
-	if ((keystate[SDLK_LEFT]) && (typingInputScreen == NULL))
+	if ((keystate[SDLK_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 		viewportX--;
 	if (keystate[SDLK_KP4])
 		viewportX--;
-	if ((keystate[SDLK_RIGHT]) && (typingInputScreen == NULL))
+	if ((keystate[SDLK_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 		viewportX++;
 	if (keystate[SDLK_KP6])
 		viewportX++;
