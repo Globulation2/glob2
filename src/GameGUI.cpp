@@ -1304,11 +1304,11 @@ void GameGUI::handleKeyAlways(void)
 		viewportY++;
 	if (keystate[SDLK_KP2])
 		viewportY++;
-	if (keystate[SDLK_LEFT])
+	if ((keystate[SDLK_LEFT]) && (typingInputScreen == NULL))
 		viewportX--;
 	if (keystate[SDLK_KP4])
 		viewportX--;
-	if (keystate[SDLK_RIGHT])
+	if ((keystate[SDLK_RIGHT]) && (typingInputScreen == NULL))
 		viewportX++;
 	if (keystate[SDLK_KP6])
 		viewportX++;
