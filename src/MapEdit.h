@@ -30,6 +30,7 @@ using namespace GAGCore;
 
 class MapEdit
 {
+	static const bool verbose = false;
 public:
 	MapEdit();
 	~MapEdit();

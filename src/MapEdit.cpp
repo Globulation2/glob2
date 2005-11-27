@@ -347,7 +347,8 @@ void MapEdit::handleMapClick(int mx, int my)
 		Unit *unit=game.addUnit(x, y, team, type, level, rand()%256, 0, 0);
 		if (unit)
 		{
-			printf("newu startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
+			if (verbose)
+				printf("newu startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
 			if (game.teams[team]->startPosSet<1)
 			{
 				game.teams[team]->startPosX=viewportX;
@@ -372,7 +373,8 @@ void MapEdit::handleMapClick(int mx, int my)
 			game.addBuilding(x, y, typeNum, team);
 			if (type==0 && level==0)
 			{
-				printf("news startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
+				if (verbose)
+					printf("news startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
 				if (game.teams[team]->startPosSet<3)
 				{
 					game.teams[team]->startPosX=tempX;
@@ -382,7 +384,8 @@ void MapEdit::handleMapClick(int mx, int my)
 			}
 			else
 			{
-				printf("newb startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
+				if (verbose)
+					printf("newb startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
 				if (game.teams[team]->startPosSet<2)
 				{
 					game.teams[team]->startPosX=tempX;
@@ -628,7 +631,8 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 				nnbt=globalContainer->buildingsTypes.get(nnbt->nextLevel);
 				if (max++>200)
 				{
-					printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
+					if (verbose)
+						printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
 					assert(false);
 					break;
 				}
@@ -919,12 +923,14 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 						if (game.teams[team]->type == BaseTeam::T_AI)
 						{
 							game.teams[team]->type = BaseTeam::T_HUMAN;
-							printf("MapEdit : switching team %d to human\n", team);
+							if (verbose)
+								printf("MapEdit : switching team %d to human\n", team);
 						}
 						else
 						{
 							game.teams[team]->type = BaseTeam::T_AI;
-							printf("MapEdit : switching team %d to null AI\n", team);
+							if (verbose)
+								printf("MapEdit : switching team %d to null AI\n", team);
 						}
 					}
 				}
@@ -953,12 +959,14 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 						if (game.teams[team]->type == BaseTeam::T_AI)
 						{
 							game.teams[team]->type = BaseTeam::T_HUMAN;
-							printf("MapEdit : switching team %d to human\n", team);
+							if (verbose)
+								printf("MapEdit : switching team %d to human\n", team);
 						}
 						else
 						{
 							game.teams[team]->type = BaseTeam::T_AI;
-							printf("MapEdit : switching team %d to null AI\n", team);
+							if (verbose)
+								printf("MapEdit : switching team %d to null AI\n", team);
 						}
 					}
 				}
