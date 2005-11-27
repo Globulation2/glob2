@@ -54,15 +54,15 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		case CASTOR:
 			aiImplementation=new AICastor(player);
 		break;
+		case HELPER:
+			aiImplementation=new AIHelper(player);
+		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(player);
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
 		break;
-                case HELPER:
-                        aiImplementation=new AIHelper(player);
-                break;
 		default:
 			assert(false);
 		break;
@@ -132,14 +132,14 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case CASTOR:
 			aiImplementation=new AICastor(stream, player, versionMinor);
 		break;
+		case HELPER:
+			aiImplementation=new AIHelper(stream, player, versionMinor);
+		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(stream, player, versionMinor);
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
-		break;
-		case HELPER:
-			aiImplementation=new AIHelper(stream, player, versionMinor);
 		break;
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementitionID);
