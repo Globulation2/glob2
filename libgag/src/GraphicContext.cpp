@@ -1013,20 +1013,53 @@ namespace GAGCore
 	{
 		if (alpha == Color::ALPHA_OPAQUE)
 		{
-			// well, we *hope* SDL is faster than a handmade code
-			SDL_Rect sr, dr;
-			sr.x = static_cast<Sint16>(sx);
-			sr.y = static_cast<Sint16>(sy);
-			sr.w = static_cast<Uint16>(sw);
-			sr.h = static_cast<Uint16>(sh);
-			dr.x = static_cast<Sint16>(x);
-			dr.y = static_cast<Sint16>(y);
-			dr.w = static_cast<Uint16>(sw);
-			dr.h = static_cast<Uint16>(sh);
-			SDL_BlitSurface(surface->sdlsurface, &sr, sdlsurface, &dr);
+			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USEGPU))
+			{
+				if ((x == 0) && (y == 0) && (sx == 0) && (sy == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
+				{
+					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+					glReadPixels(0, 0, sdlsurface->w, sdlsurface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdlsurface->pixels);
+					#else
+					std::valarray<unsigned> tempPixels(sw*sh);
+					glReadPixels(0, 0, sdlsurface->w, sdlsurface->h, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					for (int y = 0; y<sh; y++)
+					{
+						unsigned *srcPtr = (unsigned *)&tempPixels[y*sw];
+						unsigned *destPtr = &(((unsigned *)sdlsurface->pixels)[(sh-y-1)*sw]);
+						for (int x = 0; x<sw; x++)
+							*destPtr++ = *srcPtr++;
+					}
+					#endif
+				}
+				else
+				{
+					std::cerr << "Partial blitting to from framebuffer in GL is forbidden" << std::endl;
+					assert(false);
+				}
+			}
+			else
+			{
+				// well, we *hope* SDL is faster than a handmade code
+				SDL_Rect sr, dr;
+				sr.x = static_cast<Sint16>(sx);
+				sr.y = static_cast<Sint16>(sy);
+				sr.w = static_cast<Uint16>(sw);
+				sr.h = static_cast<Uint16>(sh);
+				dr.x = static_cast<Sint16>(x);
+				dr.y = static_cast<Sint16>(y);
+				dr.w = static_cast<Uint16>(sw);
+				dr.h = static_cast<Uint16>(sh);
+				SDL_BlitSurface(surface->sdlsurface, &sr, sdlsurface, &dr);
+			}
 		}
 		else
 		{
+			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USEGPU))
+			{
+				std::cerr << "Blitting with alphablending from framebuffer in GL is forbidden" << std::endl;
+				assert(false);
+			}
+			
 			// check we assume the source rect is within the source surface
 			assert((sx >= 0) && (sx < surface->getW()));
 			assert((sy >= 0) && (sy < surface->getH()));
