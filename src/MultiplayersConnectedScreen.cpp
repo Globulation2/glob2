@@ -146,7 +146,8 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		{
 			char s[128];
 			snprintf(s, 128, "%s%d", Toolkit::getStringTable()->getString("[STARTING GAME ...]"), multiplayersJoin->startGameTimeCounter/20);
-			printf("s=%s.\n", s);
+			if (verbose)
+				printf("s=%s.\n", s);
 			startTimer->setText(s);
 		}
 	}
