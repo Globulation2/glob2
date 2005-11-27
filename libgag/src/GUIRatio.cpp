@@ -46,7 +46,7 @@ namespace GAGGUI
 		
 		max=w-size-1;
 		assert(value<max);
-		needRefresh=true;
+		valueUpdated=true;
 		pressed=false;
 		
 		start=0.0;
@@ -60,9 +60,10 @@ namespace GAGGUI
 	
 	void Ratio::onTimer(Uint32 tick)
 	{
-		if (needRefresh)
+		if (valueUpdated)
 		{
 			parent->onAction(this, RATIO_CHANGED, value, 0);
+			valueUpdated = false;
 		}
 	}
 	
@@ -79,12 +80,10 @@ namespace GAGGUI
 				px=event->button.x;
 				py=event->button.y;
 				pValue=value;
-				needRefresh=true;
 			}
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
-			needRefresh=pressed;
 			pressed=false;
 		}
 		else  if ((event->type==SDL_MOUSEMOTION) && pressed )
@@ -101,7 +100,7 @@ namespace GAGGUI
 			if (oldValue!=value)
 			{
 				oldValue=value;
-				needRefresh=true;
+				valueUpdated=true;
 			}
 		}
 		
@@ -146,8 +145,6 @@ namespace GAGGUI
 		g << get();
 		int tw=fontPtr->getStringWidth(g.str().c_str());
 		parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, fontPtr, g.str().c_str());
-	
-		needRefresh=false;
 	}
 	
 	int Ratio::getMax(void)
