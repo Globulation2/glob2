@@ -180,6 +180,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 
 	// save screen
 	globalContainer->gfx->setClipRect();
+	
 	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	background->drawSurface(0, 0, globalContainer->gfx);
 
@@ -191,6 +192,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		loadSaveScreen->dispatchPaint();
+		
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
