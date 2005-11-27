@@ -71,7 +71,7 @@ namespace GAGGUI
 		float start;
 		float ratio;
 	
-		bool needRefresh;
+		bool valueUpdated;
 	};
 }
 
