@@ -62,6 +62,24 @@ void AIHelper::init(Player *player)
 
 	changeUnits("attack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
 
+	num_buildings_wanted[IntBuildingType::SWARM_BUILDING]=2;
+	num_buildings_wanted[IntBuildingType::FOOD_BUILDING]=8;
+	num_buildings_wanted[IntBuildingType::HEAL_BUILDING]=2;
+
+	num_buildings_wanted[IntBuildingType::WALKSPEED_BUILDING]=2;
+	num_buildings_wanted[IntBuildingType::SWIMSPEED_BUILDING]=2;
+	num_buildings_wanted[IntBuildingType::ATTACK_BUILDING]=2;
+	num_buildings_wanted[IntBuildingType::SCIENCE_BUILDING]=2;
+
+	num_buildings_wanted[IntBuildingType::DEFENSE_BUILDING]=8;
+
+	num_buildings_wanted[IntBuildingType::EXPLORATION_FLAG]=0;
+	num_buildings_wanted[IntBuildingType::WAR_FLAG]=0;
+	num_buildings_wanted[IntBuildingType::CLEARING_FLAG]=0;
+
+	num_buildings_wanted[IntBuildingType::STONE_WALL]=0;
+
+	num_buildings_wanted[IntBuildingType::MARKET_BUILDING]=0;
 	assert(player);
 
 	this->player=player;
@@ -227,6 +245,26 @@ bool AIHelper::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	}
 	stream->readLeaveSection();
 
+	stream->readEnterSection("new_buildings");
+	n = stream->readUint32();
+	while(n--)
+	{
+		newConstructionRecord ncr;
+		ncr.building = stream->readUint32();
+		ncr.x = stream->readUint32();
+		ncr.y = stream->readUint32();
+		ncr.assigned = stream->readUint32();
+		ncr.building_type = stream->readUint32();
+		new_buildings.push_back(ncr);
+	}
+
+	stream->readEnterSection("num_buildings_wanted");
+	n = stream->readUint32();
+	while(n--)
+	{
+		num_buildings_wanted[stream->readUint32()] = stream->readUint32();
+	}
+
 	stream->readLeaveSection();
 	return true;
 }
@@ -362,6 +400,25 @@ void AIHelper::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(i->assigned);
 	}
 	stream->writeLeaveSection();
+
+	stream->writeEnterSection("new_buildings");
+	stream->writeUint32(new_buildings.size());
+	for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i!=new_buildings.end(); ++i)
+	{
+		stream->writeUint32(i->building);
+		stream->writeUint32(i->x);
+		stream->writeUint32(i->y);
+		stream->writeUint32(i->assigned);
+		stream->writeUint32(i->building_type);
+	}
+
+	stream->writeEnterSection("num_buildings_wanted");
+	stream->writeUint32(num_buildings_wanted.size());
+	for(std::map<unsigned int, unsigned int>::iterator i = num_buildings_wanted.begin(); i!=num_buildings_wanted.end(); ++i)
+	{
+		stream->writeUint32(i->first);
+		stream->writeUint32(i->second);
+	}
 }
 
 
@@ -369,6 +426,19 @@ void AIHelper::save(GAGCore::OutputStream *stream)
 
 Order *AIHelper::getOrder(void)
 {
+	//This code enables the whole map to be seen for testing.
+	/*	if(timer==1)
+		{
+			for(int x=0; x<map->getW(); ++x)
+			{
+				for(int y=0; y<map->getH(); ++y)
+				{
+					map->setMapDiscovered(x, y, team->me);
+				}
+			}
+		}
+	*/
+
 	//See if there is an existing order that the AI wanted to have done
 	if (!orders.empty())
 	{
@@ -379,7 +449,7 @@ Order *AIHelper::getOrder(void)
 	//Putting this at the start allowed for certain bugs to creep in where it would skip past
 	//the time where it should have done something because there where items already in the queue.
 	timer++;
-	//Waits for atleast 30 ticks before it does anything, because of a few off, 'goes to fast' bugs.
+	//Waits for atleast one iteration before it does anything, because of a few off, 'goes to fast' bugs.
 	if (timer<TIMER_ITERATION)
 		return new NullOrder();
 
@@ -467,6 +537,14 @@ Order *AIHelper::getOrder(void)
 			//Finds flags that findDefense() created and puts them into the records
 			findCreatedDefenseFlags();
 			break;
+		case constructBuildings_TIME:
+			//Constructs new buildings that have been queued.
+			constructBuildings();
+			break;
+		case updateBuildings_TIME:
+			//Updates buildings that constructBuildings created.
+			updateBuildings();
+			break;
 	}
 
 	if (!orders.empty())
@@ -540,16 +618,30 @@ bool AIHelper::buildingStillExists(unsigned int gid)
 
 
 
-int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollType poll_type)
+int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type)
 {
+	if (poll_type == NONE)
+		return 0;
 
 	unsigned int bound_h=x+width;
+	if(static_cast<int>(bound_h)>map->getW())
+		bound_h-=map->getW();
+
 	unsigned int bound_y=y+height;
+	if(static_cast<int>(bound_y)>map->getH())
+		bound_y-=map->getH();
+
 	int score=0;
-	for(; x<=bound_h; ++x)
+	for(; x!=bound_h; ++x)
 	{
-		for(; y<=bound_y; ++y)
+		if(static_cast<int>(x) >= map->getW())
+			x=0;
+
+		for(; y!=bound_y; ++y)
 		{
+			if(static_cast<int>(y) >= map->getH())
+				y=0;
+
 			Unit* u;
 			Building* b;
 			switch (poll_type)
@@ -557,6 +649,12 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 
 				case HIDDEN_SQUARES:
 					if(!map->isMapDiscovered(x, y, team->me))
+					{
+						score++;
+					}
+					break;
+				case VISIBLE_SQUARES:
+					if(map->isMapDiscovered(x, y, team->me))
 					{
 						score++;
 					}
@@ -571,6 +669,16 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 						}
 					}
 					break;
+				case FRIENDLY_BUILDINGS:
+					b = getBuildingFromGid(map->getBuilding(x, y));
+					if (b)
+					{
+						if(b->owner->me == team->me)
+						{
+							score++;
+						}
+					}
+					break;
 				case ENEMY_UNITS:
 					u = getUnitFromGid(map->getGroundUnit(x, y));
 					if (u)
@@ -580,10 +688,34 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 							score++;
 						}
 					}
+					break;
+				case POLL_CORN:
+					if (map->isRessource(x, y, CORN))
+						score++;
+					break;
+				case POLL_TREES:
+					if (map->isRessource(x, y, WOOD))
+						score++;
+					break;
+				case POLL_STONE:
+					if (map->isRessource(x, y, STONE))
+						score++;
+					break;
+				case NONE:
+					break;
 			}
 		}
 	}
-	return score;
+	switch (mod)
+	{
+		case MAXIMUM:
+			return score;
+			break;
+		case MINIMUM:
+			return width*height-score;
+			break;
+	}
+	return 0;
 }
 
 
@@ -604,7 +736,7 @@ AIHelper::zone AIHelper::getZone(unsigned int x, unsigned int y, unsigned int ar
 
 
 
-std::vector<AIHelper::pollRecord> AIHelper::pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollType poll_type)
+std::vector<AIHelper::pollRecord> AIHelper::pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollModifier mod, pollType poll_type)
 {
 
 	vector<AIHelper::pollRecord> best;
@@ -615,13 +747,118 @@ std::vector<AIHelper::pollRecord> AIHelper::pollMap(unsigned int area_width, uns
 	{
 		for (unsigned int y=0; y<=map->getH()-area_height; y+=(area_height)-(vertical_overlap))
 		{
-			int score=pollArea(x, y, area_width, area_height, poll_type);
+			int score=pollArea(x, y, area_width, area_height, mod, poll_type);
 			best.push_back(pollRecord(x, y, area_width, area_height, score, poll_type));
 		}
 	}
 	std::sort(best.begin(), best.end(), greater<pollRecord>());
 	best.erase(best.begin()+requested_spots, best.end());
 	return best;
+}
+
+
+
+
+int AIHelper::getPositionScore(const std::vector<pollRecord>& polls, const std::vector<pollRecord>::const_iterator& iter)
+{
+	int score=0;
+	for(std::vector<pollRecord>::const_iterator i = polls.begin(); (i+1)!=polls.end(); ++i)
+	{
+		if(i==iter)
+		{
+			break;
+		}
+		if(i->score != (i+1)->score)
+		{
+			score++;
+		}
+	}
+	return score;
+}
+
+
+
+
+std::vector<AIHelper::zone> AIHelper::getBestZones(pollModifier amod, pollType a, pollModifier bmod, pollType b, pollModifier cmod, pollType c, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height, unsigned int minimum_friendly_buildings)
+{
+	std::vector<pollRecord> a_list;
+	std::vector<pollRecord> b_list;
+	std::vector<pollRecord> c_list;
+
+	for (unsigned int x=0; x<=map->getW()-width; x+=width-horizontal_overlap)
+	{
+		for (unsigned int y=0; y<=map->getH()-height; y+=height-vertical_overlap)
+		{
+			int full_x=x-extention_width;
+			if(full_x<0)
+				full_x=map->getW()+full_x;
+			int full_y=y-extention_height;
+			if(full_y<0)
+				full_y=map->getH()+full_y;
+
+			int full_w=width+2*extention_width;
+			int full_h=height+2*extention_height;
+			if(pollArea(full_x, full_y, full_w, full_h, MAXIMUM, FRIENDLY_BUILDINGS)<minimum_friendly_buildings)
+				continue;
+			pollRecord pr_a;
+			pr_a.x=x;
+			pr_a.y=y;
+			pr_a.width=width;
+			pr_a.height=height;
+			pollRecord pr_b=pr_a;
+			pollRecord pr_c=pr_b;
+			pr_a.score=pollArea(full_x, full_y, full_w, full_h, amod, a);
+			pr_b.score=pollArea(full_x, full_y, full_w, full_h, bmod, b);
+			pr_c.score=pollArea(full_x, full_y, full_w, full_h, cmod, c);
+			a_list.push_back(pr_a);
+			b_list.push_back(pr_b);
+			c_list.push_back(pr_c);
+		}
+	}
+
+	std::sort(a_list.begin(), a_list.end());
+	std::sort(b_list.begin(), b_list.end());
+	std::sort(c_list.begin(), c_list.end());
+
+	std::vector<threeTierRecord> final;
+	for (std::vector<pollRecord>::iterator i1=a_list.begin(); i1!=a_list.end(); ++i1)
+	{
+		threeTierRecord ttr;
+		ttr.x=i1->x;
+		ttr.y=i1->y;
+		ttr.width=i1->width;
+		ttr.height=i1->height;
+		ttr.score_a=getPositionScore(a_list, i1);
+		for (std::vector<pollRecord>::iterator i2=b_list.begin(); i2!=b_list.end(); ++i2)
+		{
+			if(i2->x==ttr.x && i2->y==ttr.y)
+				ttr.score_b=getPositionScore(b_list, i2);
+		}
+
+		for (std::vector<pollRecord>::iterator i3=c_list.begin(); i3!=c_list.end(); ++i3)
+		{
+			if(i3->x==ttr.x && i3->y==ttr.y)
+				ttr.score_c=getPositionScore(c_list, i3);
+		}
+		final.push_back(ttr);
+	}
+
+	std::sort(final.begin(), final.end());
+
+	std::vector<zone> return_list;
+	//For some reason, the final list is being sorted backwards. It seems to be because of my lack of thouroughly thinking out
+	//how the various comparisons relate.
+	for(std::vector<threeTierRecord>::reverse_iterator i=final.rbegin(); i!=final.rend(); ++i)
+	{
+		zone z;
+		z.x=i->x;
+		z.y=i->y;
+		z.width=i->width;
+		z.height=i->height;
+		return_list.push_back(z);
+	}
+
+	return return_list;
 }
 
 
@@ -965,9 +1202,9 @@ void AIHelper::exploreWorld(void)
 		{
 			int score=0;
 			if(i->isAssaultFlag)
-				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, ENEMY_BUILDINGS);
+				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, MAXIMUM, ENEMY_BUILDINGS);
 			else
-				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, HIDDEN_SQUARES);
+				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, MAXIMUM, HIDDEN_SQUARES);
 
 			if(score==0)
 			{
@@ -996,9 +1233,9 @@ void AIHelper::exploreWorld(void)
 	int wanted_attack=EXPLORER_ATTACKS_AT_ONCE-attack_count;
 	if(! explorer_attacking )
 		wanted_attack=0;
-	vector<pollRecord> best = pollMap(EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP, EXPLORER_REGION_VERTICAL_OVERLAP, exploration_count+wanted_exploration+1, HIDDEN_SQUARES);
+	vector<pollRecord> best = pollMap(EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP, EXPLORER_REGION_VERTICAL_OVERLAP, exploration_count+wanted_exploration+1, MAXIMUM, HIDDEN_SQUARES);
 
-	vector<pollRecord> best_attack = pollMap(EXPLORER_ATTACK_AREA_WIDTH, EXPLORER_ATTACK_AREA_HEIGHT, EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP, EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP, attack_count+wanted_attack+1, ENEMY_BUILDINGS);
+	vector<pollRecord> best_attack = pollMap(EXPLORER_ATTACK_AREA_WIDTH, EXPLORER_ATTACK_AREA_HEIGHT, EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP, EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP, attack_count+wanted_attack+1, MAXIMUM, ENEMY_BUILDINGS);
 
 	std::copy(best_attack.begin(), best_attack.end(), back_insert_iterator<vector<pollRecord> >(best));
 
@@ -1255,7 +1492,6 @@ void AIHelper::attack()
 			available_units=0;
 	}
 
-
 	unsigned int attack_count=attacks.size();
 
 	for(vector<vector<Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
@@ -1289,7 +1525,7 @@ void AIHelper::attack()
 				ar.unity=b->posY-ATTACK_ZONE_EXAMINATION_PADDING;
 				ar.unit_width=b->type->width+ATTACK_ZONE_EXAMINATION_PADDING*2;
 				ar.unit_height=b->type->height+ATTACK_ZONE_EXAMINATION_PADDING*2;
-				ar.assigned_units=pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, ENEMY_UNITS)*2+ATTACK_WARRIOR_MINIMUM;
+				ar.assigned_units=pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, MAXIMUM, ENEMY_UNITS)*2+ATTACK_WARRIOR_MINIMUM;
 				ar.assigned_level=max_barracks_level;
 				attacks.push_back(ar);
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
@@ -1352,7 +1588,7 @@ void AIHelper::updateAttackFlags()
 
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
-		unsigned int score = pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, ENEMY_UNITS);
+		unsigned int score = pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, MAXIMUM, ENEMY_UNITS);
 		if(score*2+ATTACK_WARRIOR_MINIMUM != j->assigned_units)
 		{
 			int new_assigned=score*2+ATTACK_WARRIOR_MINIMUM;
@@ -1394,48 +1630,67 @@ void AIHelper::changeUnits(string module_name, unsigned int unit_type, unsigned 
 
 void AIHelper::moderateSwarms()
 {
-	int unit_scores[NB_UNIT_TYPE];
-	int num_wanted[NB_UNIT_TYPE];
-	for (int i=0; i<NB_UNIT_TYPE; i++)
+	//The number of units we want for each priority level
+	unsigned int num_wanted[NB_UNIT_TYPE][3];
+	unsigned int total_available[NB_UNIT_TYPE];
+	for (unsigned int i=0; i<NB_UNIT_TYPE; i++)
 	{
-		unit_scores[i]=0;
-		num_wanted[i]=0;
+		total_available[i]=team->stats.getLatestStat()->numberUnitPerType[i];
+		for(int n=0; n<3; ++n)
+		{
+			num_wanted[i][n]=0;
+		}
 	}
 
+	//Counts out the requested units from each of the modules
 	for (std::map<string, unitRecord>::iterator i = module_demands.begin(); i!=module_demands.end(); i++)
 	{
 		for (int unit_t=0; unit_t<NB_UNIT_TYPE; unit_t++)
 		{
-			unit_scores[unit_t]+=i->second.desired_units[unit_t]*DESIRED_UNIT_SCORE;
-			unit_scores[unit_t]+=i->second.required_units[unit_t]*REQUIRED_UNIT_SCORE;
-			unit_scores[unit_t]+=i->second.emergency_units[unit_t]*EMERGENCY_UNIT_SCORE;
-			num_wanted[unit_t]+=i->second.desired_units[unit_t];
-			num_wanted[unit_t]+=i->second.required_units[unit_t];
-			num_wanted[unit_t]+=i->second.emergency_units[unit_t];
-
+			num_wanted[unit_t][0]+=i->second.desired_units[unit_t];
+			num_wanted[unit_t][1]+=i->second.required_units[unit_t];
+			num_wanted[unit_t][2]+=i->second.emergency_units[unit_t];
 		}
 	}
 
+	//Substract the already-existing amount of units from the numbers requested, and then move these totals multiplied by their respective score
+	//into the ratios.
 	int ratios[NB_UNIT_TYPE];
-	std::copy(unit_scores, unit_scores+NB_UNIT_TYPE, ratios);
-	int max=*max_element(ratios, ratios+NB_UNIT_TYPE);
-	float devisor=1;
-	int total_wanted=0;
-	if(max>20)
-		devisor=static_cast<float>(max)/15.0;
-	for (int i=0; i<NB_UNIT_TYPE; i++)
+	unsigned int total_wanted_score=0;
+	for (unsigned int i=0; i<NB_UNIT_TYPE; i++)
 	{
-		total_wanted+=num_wanted[i]-team->stats.getLatestStat()->numberUnitPerType[i];
-		if(num_wanted[i]-team->stats.getLatestStat()->numberUnitPerType[i] <= 0)
-			ratios[i]=0;
-		else
-			ratios[i]=static_cast<int>(std::floor(ratios[i]/devisor+0.5));
+		for(unsigned int n=0; n<3; ++n)
+		{
+			unsigned int reverse_loc=2-n;
+			if(total_available[i] > num_wanted[i][reverse_loc])
+			{
+				total_available[i]-=num_wanted[i][reverse_loc];
+				num_wanted[i][reverse_loc]=0;
+			}
+			else
+			{
+				num_wanted[i][reverse_loc]-=total_available[i];
+			}
+		}
+		ratios[i]=0;
+		ratios[i]+=num_wanted[i][0]*DESIRED_UNIT_SCORE;
+		ratios[i]+=num_wanted[i][1]*REQUIRED_UNIT_SCORE;
+		ratios[i]+=num_wanted[i][2]*EMERGENCY_UNIT_SCORE;
+		total_wanted_score+=ratios[i];
 	}
 
-	if(total_wanted<0)
-		total_wanted=0;
+	int max=*max_element(ratios, ratios+NB_UNIT_TYPE);
+	float devisor=1;
+	if(max>16)
+		devisor=static_cast<float>(max)/16.0;
 
-	changeUnits("spawn-manager", WORKER, 0, team->swarms.size()*(total_wanted/CREATION_UNIT_REQUIREMENT+1), 0);
+	for(unsigned int i=0; i<NB_UNIT_TYPE; ++i)
+	{
+		ratios[i]=static_cast<int>(std::floor(ratios[i]/devisor+0.5));
+	}
+
+	unsigned int assigned_per_swarm=std::min(MAXIMUM_UNITS_FOR_SWARM, static_cast<unsigned int>(total_wanted_score/CREATION_UNIT_REQUIREMENT+1));
+	changeUnits("spawn-manager", WORKER, 0, team->swarms.size()*assigned_per_swarm, 0);
 
 	for (std::list<Building*>::iterator i = team->swarms.begin(); i != team->swarms.end(); ++i)
 	{
@@ -1445,20 +1700,22 @@ void AIHelper::moderateSwarms()
 			if (swarm->ratio[x]!=ratios[x])
 				changed=true;
 
-		if(swarm->maxUnitWorking != static_cast<int>(total_wanted/CREATION_UNIT_REQUIREMENT+1))
-			orders.push(new OrderModifyBuilding(swarm->gid, total_wanted/CREATION_UNIT_REQUIREMENT+1));
+		if(swarm->maxUnitWorking != assigned_per_swarm)
+			orders.push(new OrderModifyBuilding(swarm->gid, assigned_per_swarm));
 
 		if(!changed)
 			continue;
 
 		if(AIHelper_DEBUG)
-			std::cout<<"AIHelper: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<total_wanted/CREATION_UNIT_REQUIREMENT+1<<" workers."<<endl;
+			std::cout<<"AIHelper: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<endl;
 		orders.push(new OrderModifySwarm(swarm->gid, ratios));
 	}
 }
 
 
 
+
+AIHelper::innRecord::innRecord() : pos(0), records(INN_RECORD_MAX) {}
 
 void AIHelper::recordInns()
 {
@@ -1680,7 +1937,7 @@ void AIHelper::findDefense()
 					//					dr.height=z.height;
 					dr.width=b->type->width+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.height=b->type->height+DEFENSE_ZONE_BUILDING_PADDING*2;
-					dr.assigned=pollArea(dr.zonex, dr.zoney, dr.width, dr.height, ENEMY_UNITS);
+					dr.assigned=pollArea(dr.zonex, dr.zoney, dr.width, dr.height, MAXIMUM, ENEMY_UNITS);
 					defending_zones.push_back(dr);
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 					if(AIHelper_DEBUG)
@@ -1708,7 +1965,7 @@ void AIHelper::updateFlags()
 {
 	for (vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
 	{
-		int score = pollArea(i->zonex, i->zoney, i->width, i->height, ENEMY_UNITS);
+		int score = pollArea(i->zonex, i->zoney, i->width, i->height, MAXIMUM, ENEMY_UNITS);
 		if(score==0)
 		{
 			if(AIHelper_DEBUG)
@@ -1783,4 +2040,331 @@ void AIHelper::controlTowers()
 		}
 	}
 	changeUnits("tower-controller", WORKER, 0, count*NUM_PER_TOWER, 0);
+}
+
+
+
+
+AIHelper::upgradeData AIHelper::findMaxSize(unsigned int building_type, unsigned int cur_level)
+{
+	string type = IntBuildingType::reverseConversionMap[building_type];
+	BuildingType* new_type = globalContainer->buildingsTypes.getByType(type, 2, false);
+	BuildingType* cur_type = globalContainer->buildingsTypes.getByType(type, cur_level, false);
+	upgradeData ud;
+	if(new_type)
+	{
+		ud.width=new_type->width;
+		ud.height=new_type->height;
+		ud.horizontal_offset = (new_type->width - cur_type->width)/2;
+		ud.vertical_offset = (new_type->height - cur_type->height)/2;
+	}
+	else
+	{
+		ud.width=cur_type->width;
+		ud.height=cur_type->height;
+		ud.horizontal_offset=0;
+		ud.vertical_offset=0;
+	}
+	return ud;
+}
+
+
+
+
+AIHelper::point AIHelper::findBestPlace(unsigned int building_type)
+{
+	//Get the best zone based on a number of factors
+	vector<zone> zones = getBestZones(  static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][0][0]),
+		static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][0][1]),
+		static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][1][0]),
+		static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][1][1]),
+		static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][2][0]),
+		static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][2][1]),
+		BUILD_AREA_WIDTH, BUILD_AREA_HEIGHT, BUILD_AREA_HORIZONTAL_OVERLAP,
+		BUILD_AREA_VERTICAL_OVERLAP, BUILD_AREA_EXTENTION_WIDTH,
+		BUILD_AREA_EXTENTION_HEIGHT, MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT);
+
+	//Iterate through the zones
+	for(std::vector<zone>::iterator i = zones.begin(); i!=zones.end(); ++i)
+	{
+		//Pregenerate some common numbers
+		unsigned int full_width=BUILD_AREA_WIDTH+2*BUILD_AREA_EXTENTION_WIDTH;
+		unsigned int full_height=BUILD_AREA_HEIGHT+2*BUILD_AREA_EXTENTION_HEIGHT;
+		unsigned int zone_start_column=BUILD_AREA_EXTENTION_WIDTH;
+		unsigned int zone_start_row=BUILD_AREA_EXTENTION_HEIGHT;
+		unsigned int zone_end_column=BUILD_AREA_EXTENTION_WIDTH+BUILD_AREA_WIDTH;
+		unsigned int zone_end_row=BUILD_AREA_EXTENTION_HEIGHT+BUILD_AREA_HEIGHT;
+		unsigned short int imap[full_width][full_height];
+
+		//Prepare the imap
+		for(unsigned int x=0; x<full_width; ++x)
+		{
+			for(unsigned int y=0; y<full_height; ++y)
+			{
+				imap[x][y]=0;
+			}
+		}
+
+		//Go through each square checking off squares that are used
+		for(unsigned int x=0; x<full_width; ++x)
+		{
+			unsigned int fx=i->x + x - BUILD_AREA_EXTENTION_WIDTH;
+			for(unsigned int y=0; y<full_height; ++y)
+			{
+				unsigned int fy=i->y + y - BUILD_AREA_EXTENTION_HEIGHT;
+				//Check off hidden or occupied squares
+				if(!map->isHardSpaceForBuilding(fx, fy) || !map->isMapDiscovered(fx, fy, team->me))
+				{
+					imap[x][y]=1;
+				}
+
+				//If we find a building here (or a building that is in the list of buildings to be constructed)
+				bool found_building=false;
+				upgradeData size;
+				if(map->getBuilding(fx, fy)!=NOGBID)
+				{
+					Building* b=getBuildingFromGid(map->getBuilding(fx, fy));
+					size=findMaxSize(b->type->shortTypeNum, b->type->level);
+					found_building=true;
+				}
+
+				for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); i++)
+				{
+					if(i->x == fx && i->y == fy)
+					{
+						found_building=true;
+						size=findMaxSize(i->building_type, 0);
+					}
+				}
+				//Then mark all the squares this building occupies in its largest upgrade with an extra padding
+				if(found_building)
+				{
+
+					int startx=x-size.horizontal_offset-BUILDING_PADDING;
+					if(startx<0)
+						startx=0;
+					int starty=y-size.vertical_offset-BUILDING_PADDING;
+					if(starty<0)
+						starty=0;
+					int endx=startx+size.width+BUILDING_PADDING*2;
+					if(endx>=full_width)
+						endx=full_width;
+					int endy=starty+size.height+BUILDING_PADDING*2;
+					if(endy>=full_height)
+						endy=full_height;
+					for(unsigned int x2=startx; x2<endx; ++x2)
+					{
+						for(unsigned int y2=starty; y2<endy; ++y2)
+						{
+							imap[x2][y2]=1;
+						}
+					}
+				}
+			}
+		}
+
+		upgradeData size=findMaxSize(building_type, 0);
+
+		//Uncomment this to output the int maps for debugging, carefull, they are large
+		/*
+
+				std::cout<<"Zone "<<i->x<<","<<i->y<<endl;
+				for(unsigned int y=0; y<full_height; ++y)
+				{
+
+					if(y==zone_start_row || y==zone_end_row)
+					{
+						for(unsigned int x=0; x<full_width+2; ++x)
+						{
+							if (x>=zone_start_column+1 && x<zone_end_column+1)
+		std::cout<<"--";
+		else
+		std::cout<<"  ";
+		}
+		std::cout<<endl;
+		}
+
+		for(unsigned int x=0; x<full_width; ++x)
+		{
+		if (x==zone_start_column || x==zone_end_column)
+		{
+		if(y >= zone_start_row && y<zone_end_row)
+		std::cout<<"| ";
+		else
+		std::cout<<"  ";
+		}
+		std::cout<<imap[x][y]<<" ";
+		}
+		std::cout<<endl;
+		}
+		*/
+
+		//Now go through the zones int map searching for a good, possible place to put the building.
+		unsigned int max=0;
+		point max_point;
+		max_point.x=NOPOS;
+		max_point.y=NOPOS;
+		for(unsigned int x=zone_start_column; x<zone_end_column; ++x)
+		{
+			for(unsigned int y=zone_start_row; y<zone_end_row; ++y)
+			{
+				if(imap[x][y]==0)
+				{
+					bool all_empty=true;
+					for(int x2=x; x2<(x+size.width) && all_empty; ++x2)
+					{
+						for(int y2=y; y2<(y+size.height) && all_empty; ++y2)
+						{
+							if(imap[x2][y2]==1)
+							{
+								all_empty=false;
+							}
+						}
+					}
+					if(all_empty)
+					{
+						unsigned int border_count=0;
+						for(int x2=x-1; x2<(x+size.width+2); ++x2)
+						{
+							for(int y2=y-1; y2<(y+size.height+2); ++y2)
+							{
+								if(imap[x2][y2]==1)
+									border_count++;
+							}
+						}
+
+						point p;
+						p.x=i->x + x - BUILD_AREA_EXTENTION_WIDTH;
+						p.y=i->y + y - BUILD_AREA_EXTENTION_HEIGHT;
+						if(!CRAMP_BUILDINGS)
+							return p;
+						if(border_count>max)
+						{
+							max_point=p;
+							max=border_count;
+						}
+					}
+				}
+			}
+		}
+		if(max_point.x!=NOPOS)
+			return max_point;
+	}
+	point p;
+	p.x=NOPOS;
+	p.y=NOPOS;
+	return p;
+}
+
+
+
+
+void AIHelper::constructBuildings()
+{
+	unsigned total_free_workers=0;
+	for(int i=0; i<NB_UNIT_LEVELS; ++i)
+	{
+		total_free_workers+=getFreeUnits(BUILD, i);
+	}
+
+	unsigned int counts[IntBuildingType::NB_BUILDING];
+	unsigned int under_construction_counts[IntBuildingType::NB_BUILDING];
+	unsigned int total_construction=new_buildings.size();
+
+	if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
+		return;
+
+	for(unsigned i = 0; i<IntBuildingType::NB_BUILDING; ++i)
+	{
+		counts[i]=team->stats.getLatestStat()->numberBuildingPerType[i];
+		under_construction_counts[i]=0;
+	}
+
+	for(std::vector<newConstructionRecord>::iterator i=new_buildings.begin(); i!=new_buildings.end(); ++i)
+	{
+		counts[i->building_type]++;
+		under_construction_counts[i->building_type]++;
+		total_free_workers-=i->assigned;
+		if(i->building!=NOGBID)
+			total_free_workers+=getBuildingFromGid(i->building)->unitsWorking.size();
+	}
+
+	for(unsigned int i = 0; i<IntBuildingType::NB_BUILDING; ++i)
+	{
+		while(true)
+		{
+			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
+				return;
+			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW)
+				return;
+
+			if(under_construction_counts[i]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i])
+				break;
+			if(counts[i]>=num_buildings_wanted[i])
+				break;
+			point p = findBestPlace(i);
+			if(p.x == NOPOS || p.y==NOPOS)
+				break;
+
+			newConstructionRecord ncr;
+			ncr.building=NOGBID;
+			ncr.x=p.x;
+			ncr.y=p.y;
+			///Change this later
+			ncr.assigned=std::min(total_free_workers, MAXIMUM_TO_CONSTRUCT_NEW);
+			ncr.building_type=i;
+			new_buildings.push_back(ncr);
+
+			if(AIHelper_DEBUG)
+				std::cout<<"AIHelper: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i]<<", at position "<<p.x<<","<<p.y<<"."<<endl;
+			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i], 0, true);
+			orders.push(new OrderCreate(team->teamNumber, p.x, p.y, type));
+			total_construction+=1;
+			total_free_workers-=ncr.assigned;
+			under_construction_counts[i]++;
+			counts[i]++;
+		}
+	}
+}
+
+
+
+
+void AIHelper::updateBuildings()
+{
+	//Remove records of buildings that are no longer under construction
+	for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end();)
+	{
+		if(i->building!=NOGBID)
+		{
+			Building* b = getBuildingFromGid(i->building);
+			if(b==NULL || b->constructionResultState == Building::NO_CONSTRUCTION)
+			{
+				i = new_buildings.erase(i);
+			}
+			else
+				++i;
+		}
+		else
+			++i;
+	}
+
+	//Update buildings that have just been created.
+	//There is one problem, if a building is destroyed by enemy troops before this gets executed, the new record will hang and never be removed, causing
+	//disruptions throughout the code.
+	for(int i=0; i<1024; ++i)
+	{
+		Building *b = team->myBuildings[i];
+		if(b)
+		{
+			for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); ++i)
+			{
+				if(i->building==NOGBID && b->type->shortTypeNum == i->building_type && b->posX == i->x && b->posY == i->y)
+				{
+					i->building=b->gid;
+					orders.push(new OrderModifyBuilding(i->building, i->assigned));
+				}
+			}
+		}
+	}
 }
