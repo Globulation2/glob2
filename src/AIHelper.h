@@ -37,106 +37,6 @@ class Order;
 class Player;
 class Team;
 
-///These constants are what fine tune AIHelper. There is allot of them.
-///@{
-//The following deal with the upgrade and repair management system.
-const unsigned int MINIMUM_TO_UPGRADE=4;
-const unsigned int MAXIMUM_TO_UPGRADE=8;
-const unsigned int MINIMUM_TO_REPAIR=2;
-const unsigned int MAXIMUM_TO_REPAIR=8;
-const unsigned int MAX_CONSTRUCTION_AT_ONCE=4;
-const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
-{0, 4, 1, 1, 1, 1, 1, 2, 0, 0, 0, 1, 1};
-
-//The following constants deal with the function iteration. All of these except the first must be
-//lower than TIMER_ITERATION.
-const int TIMER_ITERATION=90;
-const int removeOldConstruction_TIME=0;
-const int updatePendingConstruction_TIME=5;
-const int startNewConstruction_TIME=10;
-const int reassignConstruction_TIME=15;
-const int exploreWorld_TIME=20;
-const int findCreatedFlags_TIME=25;
-const int moderateSwarmsForExplorers_TIME=30;
-const int explorerAttack_TIME=35;
-const int targetEnemy_TIME=40;
-const int attack_TIME=45;
-const int updateAttackFlags_TIME=50;
-const int moderateSwarms_TIME=55;
-const int recordInns_TIME=60;
-const int modifyInns_TIME=65;
-const int controlTowers_TIME=70;
-const int updateFlags_TIME=75;
-const int findDefense_TIME=80;
-const int findCreatedDefenseFlags_TIME=85;
-
-//These constants are for the AI's management of exploration and explorer attacks.
-//Warning, the following four constants must be powers of 2, because map sizes are in powers of two,
-//or the explorers will leave small strips at the right side of maps unexplored.
-const unsigned int EXPLORER_REGION_WIDTH=16;
-const unsigned int EXPLORER_REGION_HEIGHT=16;
-const int EXPLORER_REGION_HORIZONTAL_OVERLAP=0;
-const int EXPLORER_REGION_VERTICAL_OVERLAP=0;
-//Its reccomended that this number is an even number.
-const unsigned int EXPLORERS_PER_REGION=2;
-const unsigned int EXPLORATION_FLAG_RADIUS=12;
-const unsigned int EXPLORER_MAX_REGIONS_AT_ONCE=3;
-
-const unsigned int EXPLORER_ATTACK_AREA_WIDTH=8;
-const unsigned int EXPLORER_ATTACK_AREA_HEIGHT=8;
-const int EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP=4;
-const int EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP=4;
-const unsigned int EXPLORERS_PER_ATTACK=2;
-const unsigned int EXPLORATION_FLAG_ATTACK_RADIUS=5;
-const unsigned int EXPLORER_ATTACKS_AT_ONCE=4;
-
-//These constants are for the AI's swarm controller.
-const unsigned int DESIRED_UNIT_SCORE=1;
-const unsigned int REQUIRED_UNIT_SCORE=2;
-const unsigned int EMERGENCY_UNIT_SCORE=6;
-//This means that for every n units that need to be created, it will add in one new worker to the swarms.
-const unsigned int CREATION_UNIT_REQUIREMENT=15;
-
-//These constants are for the AI's inn manager.
-//Says how many records it should take for each inn before restarting back at the begginning.
-const unsigned int INN_RECORD_MAX=20;
-const unsigned int INN_MAX[3]={2, 5, 8};
-const unsigned int INN_MINIMUM[3]={1, 1, 2};
-
-//These constants are for AIHelpers tower controller
-const unsigned int NUM_PER_TOWER=2;
-
-//These constants are for the defense system.
-const unsigned int DEFENSE_ZONE_BUILDING_PADDING=2;
-const unsigned int DEFENSE_ZONE_WIDTH=8;
-const unsigned int DEFENSE_ZONE_HEIGHT=8;
-const unsigned int DEFENSE_ZONE_HORIZONTAL_OVERLAP=0;
-const unsigned int DEFENSE_ZONE_VERTICAL_OVERLAP=0;
-const unsigned int BASE_DEFENSE_WARRIORS=20;
-
-//These constants are for the attack system.
-const IntBuildingType::Number ATTACK_PRIORITY[IntBuildingType::NB_BUILDING-3] =
-{
-	IntBuildingType::HEAL_BUILDING,
-	IntBuildingType::FOOD_BUILDING,
-	IntBuildingType::ATTACK_BUILDING,
-	IntBuildingType::WALKSPEED_BUILDING,
-	IntBuildingType::SWIMSPEED_BUILDING,
-	IntBuildingType::SCIENCE_BUILDING,
-	IntBuildingType::SWARM_BUILDING,
-	IntBuildingType::DEFENSE_BUILDING,
-	IntBuildingType::MARKET_BUILDING,
-	IntBuildingType::STONE_WALL
-};
-const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
-const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
-const unsigned int ATTACK_WARRIOR_MINIMUM=8;
-const unsigned int MAX_ATTACKS_AT_ONCE=5;
-const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*1.5);
-///@}
-
-///This constant turns on debugging output
-const bool AIHelper_DEBUG = true;
 
 ///This implements an advanced AI, it is designed to do everything the best of players would do. But since it is an AI, it can
 ///manage much more than a human can at one time, thus making it a difficult opponent. However, the AI is not going to be
@@ -158,12 +58,11 @@ class AIHelper : public AIImplementation
 		void save(GAGCore::OutputStream *stream);
 
 		Order *getOrder(void);
-
-	private:
+	public:
 		void init(Player *player);
 
-		///Returns the number of free workers with the given ability and the given level in it.
-		///It discounts hungry/starving units.
+		///Returns the number of free units with the given ability and the given level in it.
+		///It discounts hungry/hurt units.
 		int getFreeUnits(int ability, int level);
 		int timer;
 		int iteration;
@@ -173,17 +72,15 @@ class AIHelper : public AIImplementation
 		///Returns the building* of the gid, or NULL
 		Building* getBuildingFromGid(int gid)
 		{
-			//Hack Fix needs to be changed. Map::getBuilding is returning invalid gid's.
-			if(gid>32768)
-				gid=0;
+			if(gid==NOGBID)
+				return NULL;
 			return game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
 		}
 		///Returns a unit* of the gid, or NULL
 		Unit* getUnitFromGid(int gid)
 		{
-			//Hack Fix needs to be changed. Map::getBuilding is returning invalid gid's.
-			if(gid>32768)
-				gid=0;
+			if(gid==NOGUID)
+				return NULL;
 			return game->teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
 		}
 
@@ -192,21 +89,57 @@ class AIHelper : public AIImplementation
 		///Returns true if the given building hasn't been destroyed
 		bool buildingStillExists(unsigned int gid);
 
+
+
+		///@name Abstract Region Polling System
+		///These set of methods, enumerations and structs are what abstract the map polling system, which is used by several
+		///modules. The map polling system devides the map into a set of sections, which can also be called regions or zones.
+		///The names are used interchangebly. It then polls each grid area for a set of information, sucvh as hidden squares
+		///or enemy units. The various methods do different things with that information.
+		///@{
+
+		///This represents the various things that can be polled for on a grid section
 		enum pollType
 		{
+			///Hidden squares: Squares that can't be seen by the player, they are black in the game window.
 			HIDDEN_SQUARES,
+			///The number of squares that aren't hidden
+			VISIBLE_SQUARES,
+			///Any of our opponents buildings.
 			ENEMY_BUILDINGS,
-			ENEMY_UNITS
+			///This teams buildings
+			FRIENDLY_BUILDINGS,
+			///Any opposing unit, including explorers, warriors and workers.
+			ENEMY_UNITS,
+			///A single section of corn.
+			POLL_CORN,
+			///A single section of trees
+			POLL_TREES,
+			///Polls for a block of stone
+			POLL_STONE,
+			///Returns 0 everytime.
+			NONE,
 		};
 
+		///The poll modifiers tell what the scores mean, and how to change them.
+		enum pollModifier
+		{
+			///This will give a point for each square that has the desired thing.
+			MAXIMUM,
+			///This gives a point to each square that doesn't have the desired thing.
+			MINIMUM
+		};
+
+		///Represents a zone, with its x and y cordinates and its width and height.
 		struct zone
 		{
 			unsigned int x;
 			unsigned int y;
 			unsigned int width;
 			unsigned int height;
-		};
 
+		};
+		///Represents a single pollRecord. It has the information for the zone, as well as the score and type of information that as polled for.
 		struct pollRecord
 		{
 			int x;
@@ -216,6 +149,7 @@ class AIHelper : public AIImplementation
 			int score;
 			pollType poll_type;
 			pollRecord(int ax, int ay, int awidth, int aheight, int ascore, pollType apoll_type) : x(ax), y(ay), width(awidth), height(aheight), score(ascore), poll_type(apoll_type) {}
+			pollRecord() {}
 			bool operator>(const pollRecord& cmp) const { return score>cmp.score; }
 			bool operator<(const pollRecord& cmp) const { return score<cmp.score; }
 			bool operator<=(const pollRecord& cmp) const { return score<=cmp.score; }
@@ -224,14 +158,60 @@ class AIHelper : public AIImplementation
 
 		///Polls a specific region for the number of objects given by type, which can be one of
 		///the above enum.
-		int pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollType poll_type);
+		int pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type);
 
 		///Polls the entire map using the given information, returning the n top spots and their
 		///information.
-		std::vector<pollRecord> pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollType poll_type);
+		std::vector<pollRecord> pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollModifier mod, pollType poll_type);
+
+		///Returns the placement of a certain psoition in a pollRecord vector. This handles
+		///multiple pollRecords being tied for a certain place. The list must be sorted.
+		int getPositionScore(const std::vector<pollRecord>& polls, const std::vector<pollRecord>::const_iterator& iter);
 
 		///Gets the zone that position x and y are in.
 		zone getZone(unsigned int x, unsigned int y, unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap);
+
+		///This three tier record is meant for its three scores to be balanced, meaning
+		///they must be out of the same maximum, so the scores are best made to be
+		///indexes on previoussly sorted, equal length lists.
+		struct threeTierRecord
+		{
+			unsigned int x;
+			unsigned int y;
+			unsigned int width;
+			unsigned int height;
+			unsigned int score_a;
+			unsigned int score_b;
+			unsigned int score_c;
+			bool operator<(const threeTierRecord& cmp) const
+			{
+				if(score_a+score_b+score_c < cmp.score_a+cmp.score_b+cmp.score_c)
+					return true;
+
+				else if(score_a+score_b+score_c == cmp.score_a+cmp.score_b+cmp.score_c)
+				{
+
+					if(score_a<cmp.score_a)
+						return true;
+					if(score_a==cmp.score_a && score_b<cmp.score_b)
+						return true;
+					if(score_a==cmp.score_a && score_b==cmp.score_b && score_c<cmp.score_c)
+						return true;
+				}
+				return false;
+			}
+		};
+
+		///Returns the zones in order of scores of each poll type: a, b, and c,
+		///where a is prioritized over b and b is prioritized over c. extention_width
+		///and extention_height cause getBestZones to poll a zone larger than
+		///what it would normally, so this allows for zones not to be strictly
+		///scored in only there area, but surrounding areas can be considered
+		///as well. The extentions are applied to both the top and the bottom
+		///of the zone, so the total width or height of the zone increases by two
+		///times the extention.
+		std::vector<zone> getBestZones(pollModifier amod, pollType a, pollModifier bmod, pollType b, pollModifier cmod, pollType c, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height, unsigned int minimum_friendly_buildings);
+		///@}
 
 		///@name AIHelper Upgrade and Repair Manegement System
 		///Upgrades and repairs buildings at random, within certain limits. Only uses spare workers (some of which it may have asked for from the spawn manager.)
@@ -443,7 +423,7 @@ class AIHelper : public AIImplementation
 		};
 		struct innRecord
 		{
-			innRecord() : pos(0), records(INN_RECORD_MAX) {}
+			innRecord();
 			unsigned int pos;
 			vector<singleInnRecord> records;
 		};
@@ -499,13 +479,199 @@ class AIHelper : public AIImplementation
 		///@}
 
 		///@name Tower Controller
-		///Assigns units to towers.
+		///Assigns units to towers. It will eventually do full management of towers, adding more units to towers that
+		///need them more.
 		///@{
-
 		///Searches for any towers that do not have the right amount of units assigned, and assigns them.
 		void controlTowers();
 		///@}
+
+		///@name Construction Manager.
+		///Likely to be one of the most important modules in the AI. This one handles construction of buildings.
+		///@{
+
+		struct point
+		{
+			unsigned int x;
+			unsigned int y;
+		};
+
+		struct upgradeData
+		{
+			int horizontal_offset;
+			int vertical_offset;
+			unsigned int width;
+			unsigned int height;
+		};
+
+		///Stores information for the creation of a new building.
+		struct newConstructionRecord
+		{
+			unsigned int building;
+			unsigned int x;
+			unsigned int y;
+			unsigned int assigned;
+			unsigned int building_type;
+		};
+
+		///Stores the various records of what is being built
+		std::vector<newConstructionRecord> new_buildings;
+
+		upgradeData findMaxSize(unsigned int building_type, unsigned int cur_level);
+
+		point findBestPlace(unsigned int building_type);
+
+		///Constructs the various queued up buildings.
+		void constructBuildings();
+
+		///Finds the buildings that constructBuildings has started construction of.
+		void updateBuildings();
+
+		std::map<unsigned int, unsigned int> num_buildings_wanted;
+		///@}
+
 };
+
+
+///These constants are what fine tune AIHelper. There is allot of them.
+///@{
+//The following deal with the upgrade and repair management system.
+const unsigned int MINIMUM_TO_UPGRADE=4;
+const unsigned int MAXIMUM_TO_UPGRADE=8;
+const unsigned int MINIMUM_TO_REPAIR=2;
+const unsigned int MAXIMUM_TO_REPAIR=8;
+const unsigned int MAX_CONSTRUCTION_AT_ONCE=4;
+const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
+{0, 4, 1, 1, 1, 1, 1, 2, 0, 0, 0, 1, 1};
+
+//The following constants deal with the function iteration. All of these except the first must be
+//lower than TIMER_ITERATION.
+const int TIMER_ITERATION=100;
+const int removeOldConstruction_TIME=0;
+const int updatePendingConstruction_TIME=5;
+const int startNewConstruction_TIME=10;
+const int reassignConstruction_TIME=15;
+const int exploreWorld_TIME=20;
+const int findCreatedFlags_TIME=25;
+const int moderateSwarmsForExplorers_TIME=30;
+const int explorerAttack_TIME=35;
+const int targetEnemy_TIME=40;
+const int attack_TIME=45;
+const int updateAttackFlags_TIME=50;
+const int moderateSwarms_TIME=55;
+const int recordInns_TIME=60;
+const int modifyInns_TIME=65;
+const int controlTowers_TIME=70;
+const int updateFlags_TIME=75;
+const int findDefense_TIME=80;
+const int findCreatedDefenseFlags_TIME=85;
+const int constructBuildings_TIME=90;
+const int updateBuildings_TIME=95;
+
+//These constants are for the AI's management of exploration and explorer attacks.
+//Warning, the following four constants must be powers of 2, because map sizes are in powers of two,
+//or the explorers will leave small strips at the right side of maps unexplored.
+const unsigned int EXPLORER_REGION_WIDTH=16;
+const unsigned int EXPLORER_REGION_HEIGHT=16;
+const int EXPLORER_REGION_HORIZONTAL_OVERLAP=0;
+const int EXPLORER_REGION_VERTICAL_OVERLAP=0;
+//Its reccomended that this number is an even number.
+const unsigned int EXPLORERS_PER_REGION=2;
+const unsigned int EXPLORATION_FLAG_RADIUS=12;
+const unsigned int EXPLORER_MAX_REGIONS_AT_ONCE=3;
+
+const unsigned int EXPLORER_ATTACK_AREA_WIDTH=8;
+const unsigned int EXPLORER_ATTACK_AREA_HEIGHT=8;
+const int EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP=4;
+const int EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP=4;
+const unsigned int EXPLORERS_PER_ATTACK=2;
+const unsigned int EXPLORATION_FLAG_ATTACK_RADIUS=5;
+const unsigned int EXPLORER_ATTACKS_AT_ONCE=4;
+
+//These constants are for the AI's swarm controller.
+const unsigned int DESIRED_UNIT_SCORE=1;
+const unsigned int REQUIRED_UNIT_SCORE=2;
+const unsigned int EMERGENCY_UNIT_SCORE=5;
+//This means that for every n points it will add in one new worker to the swarms.
+const unsigned int CREATION_UNIT_REQUIREMENT=8;
+const unsigned int MAXIMUM_UNITS_FOR_SWARM=6;
+
+//These constants are for the AI's inn manager.
+//Says how many records it should take for each inn before restarting back at the begginning.
+const unsigned int INN_RECORD_MAX=20;
+const unsigned int INN_MAX[3]={2, 5, 8};
+const unsigned int INN_MINIMUM[3]={1, 1, 2};
+
+//These constants are for AIHelpers tower controller
+const unsigned int NUM_PER_TOWER=2;
+
+//These constants are for the defense system.
+const unsigned int DEFENSE_ZONE_BUILDING_PADDING=2;
+const unsigned int DEFENSE_ZONE_WIDTH=8;
+const unsigned int DEFENSE_ZONE_HEIGHT=8;
+const int DEFENSE_ZONE_HORIZONTAL_OVERLAP=0;
+const int DEFENSE_ZONE_VERTICAL_OVERLAP=0;
+const unsigned int BASE_DEFENSE_WARRIORS=20;
+
+//These constants are for the attack system.
+const IntBuildingType::Number ATTACK_PRIORITY[IntBuildingType::NB_BUILDING-3] =
+{
+	IntBuildingType::HEAL_BUILDING,
+	IntBuildingType::FOOD_BUILDING,
+	IntBuildingType::ATTACK_BUILDING,
+	IntBuildingType::WALKSPEED_BUILDING,
+	IntBuildingType::SWIMSPEED_BUILDING,
+	IntBuildingType::SCIENCE_BUILDING,
+	IntBuildingType::SWARM_BUILDING,
+	IntBuildingType::DEFENSE_BUILDING,
+	IntBuildingType::MARKET_BUILDING,
+	IntBuildingType::STONE_WALL
+};
+const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
+const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
+const unsigned int ATTACK_WARRIOR_MINIMUM=8;
+const unsigned int MAX_ATTACKS_AT_ONCE=5;
+const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*1.5);
+
+//The following are for the construction manager
+
+const unsigned int BUILD_AREA_WIDTH=8;
+const unsigned int BUILD_AREA_HEIGHT=8;
+const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=2;
+const unsigned int BUILD_AREA_VERTICAL_OVERLAP=2;
+const unsigned int BUILD_AREA_EXTENTION_WIDTH=16;
+const unsigned int BUILD_AREA_EXTENTION_HEIGHT=16;
+const unsigned int BUILDING_PADDING=2;
+///With the following enabled, the new construction manager will try to place buildings as close together as possible that still satisfy the padding.
+const bool CRAMP_BUILDINGS=true;
+const unsigned int NOPOS=1023;
+const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=1;
+const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
+{
+{{AIHelper::MAXIMUM, AIHelper::POLL_CORN}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::POLL_CORN}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::POLL_TREES}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::POLL_STONE}, {AIHelper::MAXIMUM, AIHelper::POLL_TREES}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MINIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
+{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}}
+};
+const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
+const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
+{1, 1, 3, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+const unsigned int MINIMUM_TO_CONSTRUCT_NEW=2;
+const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
+
+///This constant turns on debugging output
+const bool AIHelper_DEBUG = true;
+///@}
+
 
 ///Shuffles the given list.
 template<typename T> void list_shuffle(std::list<T>& l)
@@ -520,5 +686,13 @@ template<typename T> void list_shuffle(std::list<T>& l)
 		++i1;
 		++i2;
 	}
+}
+
+
+
+inline std::ostream& operator<<(std::ostream& o, const AIHelper::zone& z)
+{
+	o<<"zone(x="<<z.x<<", y="<<z.y<<", width="<<z.width<<", height="<<z.height<<")";
+	return o;
 }
 #endif
