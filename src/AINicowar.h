@@ -40,14 +40,14 @@ class Team;
 
 ///This implements an advanced AI, it is designed to do everything the best of players would do. But since it is an AI, it can
 ///manage much more than a human can at one time, thus making it a difficult opponent. However, the AI is not going to be
-///stand alone for quite some time, thus its name AIHelper, as it is an ai that can apply advanced techniques to other AI's or
+///stand alone for quite some time, thus its name AINicowar, as it is an ai that can apply advanced techniques to other AI's or
 ///human players.
-class AIHelper : public AIImplementation
+class AINicowar : public AIImplementation
 {
 	public:
-		AIHelper(Player *player);
-		AIHelper(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-		~AIHelper();
+		AINicowar(Player *player);
+		AINicowar(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+		~AINicowar();
 
 		Player *player;
 		Team *team;
@@ -213,7 +213,7 @@ class AIHelper : public AIImplementation
 		std::vector<zone> getBestZones(pollModifier amod, pollType a, pollModifier bmod, pollType b, pollModifier cmod, pollType c, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height, unsigned int minimum_friendly_buildings);
 		///@}
 
-		///@name AIHelper Upgrade and Repair Manegement System
+		///@name AINicowar Upgrade and Repair Manegement System
 		///Upgrades and repairs buildings at random, within certain limits. Only uses spare workers (some of which it may have asked for from the spawn manager.)
 		///@{
 
@@ -295,8 +295,8 @@ class AIHelper : public AIImplementation
 		std::list<constructionRecord> pending_construction;
 		///@}
 
-		///@name AIHelper Air Search and Assault System
-		///The following deal with AIHelpers management of explorers. It tries to explore areas covered with fog of war
+		///@name AINicowar Air Search and Assault System
+		///The following deal with AINicowars management of explorers. It tries to explore areas covered with fog of war
 		///and, if it has enough exploreres with magic ground damage, it will launch deadly assaults on the enemy using
 		///explorers.
 		///@{
@@ -533,7 +533,7 @@ class AIHelper : public AIImplementation
 };
 
 
-///These constants are what fine tune AIHelper. There is allot of them.
+///These constants are what fine tune AINicowar. There is allot of them.
 ///@{
 //The following deal with the upgrade and repair management system.
 const unsigned int MINIMUM_TO_UPGRADE=4;
@@ -602,7 +602,7 @@ const unsigned int INN_RECORD_MAX=20;
 const unsigned int INN_MAX[3]={2, 5, 8};
 const unsigned int INN_MINIMUM[3]={1, 1, 2};
 
-//These constants are for AIHelpers tower controller
+//These constants are for AINicowars tower controller
 const unsigned int NUM_PER_TOWER=2;
 
 //These constants are for the defense system.
@@ -648,19 +648,19 @@ const unsigned int NOPOS=1023;
 const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=1;
 const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 {
-{{AIHelper::MAXIMUM, AIHelper::POLL_CORN}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::POLL_CORN}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::POLL_TREES}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::POLL_STONE}, {AIHelper::MAXIMUM, AIHelper::POLL_TREES}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MINIMUM, AIHelper::FRIENDLY_BUILDINGS}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}},
-{{AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}, {AIHelper::MAXIMUM, AIHelper::NONE}}
+{{AINicowar::MAXIMUM, AINicowar::POLL_CORN}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::POLL_CORN}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::POLL_TREES}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::POLL_STONE}, {AINicowar::MAXIMUM, AINicowar::POLL_TREES}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MINIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}}
 };
 const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
@@ -669,7 +669,7 @@ const unsigned int MINIMUM_TO_CONSTRUCT_NEW=2;
 const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 
 ///This constant turns on debugging output
-const bool AIHelper_DEBUG = true;
+const bool AINicowar_DEBUG = true;
 ///@}
 
 
@@ -690,7 +690,7 @@ template<typename T> void list_shuffle(std::list<T>& l)
 
 
 
-inline std::ostream& operator<<(std::ostream& o, const AIHelper::zone& z)
+inline std::ostream& operator<<(std::ostream& o, const AINicowar::zone& z)
 {
 	o<<"zone(x="<<z.x<<", y="<<z.y<<", width="<<z.width<<", height="<<z.height<<")";
 	return o;

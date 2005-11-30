@@ -438,10 +438,12 @@ AIGeen
 AINumbi
 [AICastor]
 AICastor
+[AINicowar]
+Nicowar
 [AIToubib]
 AIToubib
-[AIHelper]
-AIHelper
+[AIWarrush]
+AIWarrush
 [the games]
 Spelen
 [the maps]

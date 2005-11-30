@@ -430,10 +430,12 @@ IANone
 IANumbi
 [AICastor]
 IACastor
+[AINicowar]
+Nicowar
 [AIToubib]
 IAToubib
-[AIHelper]
-IAHelper
+[AIWarrush]
+IAWarrush
 [the games]
 Juegos
 [the maps]

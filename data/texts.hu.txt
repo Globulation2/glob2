@@ -430,10 +430,12 @@ MINone
 MINumbi
 [AICastor]
 MICastor
+[AINicowar]
+Nicowar
 [AIToubib]
 MIToubib
-[AIHelper]
-MIHelper
+[AIWarrush]
+MIWarrush
 [the games]
 Játékok
 [the maps]

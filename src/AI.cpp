@@ -30,7 +30,7 @@
 #include "AICastor.h"
 #include "AIToubib.h"
 #include "AIWarrush.h"
-#include "AIHelper.h"
+#include "AINicowar.h"
 
 /*AI::AI(Player *player)
 {
@@ -54,8 +54,8 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		case CASTOR:
 			aiImplementation=new AICastor(player);
 		break;
-		case HELPER:
-			aiImplementation=new AIHelper(player);
+		case NICOWAR:
+			aiImplementation=new AINicowar(player);
 		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(player);
@@ -132,8 +132,8 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case CASTOR:
 			aiImplementation=new AICastor(stream, player, versionMinor);
 		break;
-		case HELPER:
-			aiImplementation=new AIHelper(stream, player, versionMinor);
+		case NICOWAR:
+			aiImplementation=new AINicowar(stream, player, versionMinor);
 		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(stream, player, versionMinor);

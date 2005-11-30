@@ -432,10 +432,12 @@ AINone
 AINumbi
 [AICastor]
 AICastor
+[AINicowar]
+Nicowar
 [AIToubib]
 AIToubib
-[AIHelper]
-AIHelper
+[AIWarrush]
+AIWarrush
 [the games]
 Hry
 [the maps]
