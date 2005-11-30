@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #include <Stream.h>
 
-#include "AIHelper.h"
+#include "AINicowar.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using namespace std;
 
-AIHelper::AIHelper(Player *player)
+AINicowar::AINicowar(Player *player)
 {
 	init(player);
 }
@@ -39,7 +39,7 @@ AIHelper::AIHelper(Player *player)
 
 
 
-AIHelper::AIHelper(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+AINicowar::AINicowar(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	bool goodLoad=load(stream, player, versionMinor);
 	assert(goodLoad);
@@ -48,7 +48,7 @@ AIHelper::AIHelper(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 
 
 
-void AIHelper::init(Player *player)
+void AINicowar::init(Player *player)
 {
 	timer=0;
 	iteration=0;
@@ -95,17 +95,17 @@ void AIHelper::init(Player *player)
 
 
 
-AIHelper::~AIHelper()
+AINicowar::~AINicowar()
 {
 }
 
 
 
 
-bool AIHelper::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
-	stream->readEnterSection("AIHelper");
+	stream->readEnterSection("AINicowar");
 	timer=stream->readSint32("timer");
 	iteration=stream->readSint32("iteration");
 
@@ -272,9 +272,9 @@ bool AIHelper::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 
 
 
-void AIHelper::save(GAGCore::OutputStream *stream)
+void AINicowar::save(GAGCore::OutputStream *stream)
 {
-	stream->writeEnterSection("AIHelper");
+	stream->writeEnterSection("AINicowar");
 	stream->writeSint32(timer, "timer");
 	stream->writeSint32(iteration, "iteration");
 
@@ -424,7 +424,7 @@ void AIHelper::save(GAGCore::OutputStream *stream)
 
 
 
-Order *AIHelper::getOrder(void)
+Order *AINicowar::getOrder(void)
 {
 	//This code enables the whole map to be seen for testing.
 	/*	if(timer==1)
@@ -456,7 +456,7 @@ Order *AIHelper::getOrder(void)
 	if(timer%TIMER_ITERATION==0)
 	{
 		iteration+=1;
-		std::cout<<"AIHelper: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<endl;
+		std::cout<<"AINicowar: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<endl;
 	}
 
 	//The ai does stuff in iterations.
@@ -561,7 +561,7 @@ Order *AIHelper::getOrder(void)
 
 
 
-bool AIHelper::isFreeOfFlags(unsigned int x, unsigned int y)
+bool AINicowar::isFreeOfFlags(unsigned int x, unsigned int y)
 {
 	Building** myBuildings=team->myBuildings;
 	for (int i=0; i<1024; i+=1)
@@ -586,7 +586,7 @@ bool AIHelper::isFreeOfFlags(unsigned int x, unsigned int y)
 
 
 
-bool AIHelper::buildingStillExists(Building* building)
+bool AINicowar::buildingStillExists(Building* building)
 {
 	for (int i=0; i<32; i++)
 	{
@@ -610,7 +610,7 @@ bool AIHelper::buildingStillExists(Building* building)
 
 
 
-bool AIHelper::buildingStillExists(unsigned int gid)
+bool AINicowar::buildingStillExists(unsigned int gid)
 {
 	return getBuildingFromGid(gid)!=NULL;
 }
@@ -618,7 +618,7 @@ bool AIHelper::buildingStillExists(unsigned int gid)
 
 
 
-int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type)
+int AINicowar::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type)
 {
 	if (poll_type == NONE)
 		return 0;
@@ -721,7 +721,7 @@ int AIHelper::pollArea(unsigned int x, unsigned int y, unsigned int width, unsig
 
 
 
-AIHelper::zone AIHelper::getZone(unsigned int x, unsigned int y, unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap)
+AINicowar::zone AINicowar::getZone(unsigned int x, unsigned int y, unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap)
 {
 	int free_width=area_width-horizontal_overlap;
 	int free_height=area_height-vertical_overlap;
@@ -736,10 +736,10 @@ AIHelper::zone AIHelper::getZone(unsigned int x, unsigned int y, unsigned int ar
 
 
 
-std::vector<AIHelper::pollRecord> AIHelper::pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollModifier mod, pollType poll_type)
+std::vector<AINicowar::pollRecord> AINicowar::pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollModifier mod, pollType poll_type)
 {
 
-	vector<AIHelper::pollRecord> best;
+	vector<AINicowar::pollRecord> best;
 	best.reserve((map->getW()/(area_width-horizontal_overlap))*
 		map->getH()/(area_height-vertical_overlap));
 
@@ -759,7 +759,7 @@ std::vector<AIHelper::pollRecord> AIHelper::pollMap(unsigned int area_width, uns
 
 
 
-int AIHelper::getPositionScore(const std::vector<pollRecord>& polls, const std::vector<pollRecord>::const_iterator& iter)
+int AINicowar::getPositionScore(const std::vector<pollRecord>& polls, const std::vector<pollRecord>::const_iterator& iter)
 {
 	int score=0;
 	for(std::vector<pollRecord>::const_iterator i = polls.begin(); (i+1)!=polls.end(); ++i)
@@ -779,7 +779,7 @@ int AIHelper::getPositionScore(const std::vector<pollRecord>& polls, const std::
 
 
 
-std::vector<AIHelper::zone> AIHelper::getBestZones(pollModifier amod, pollType a, pollModifier bmod, pollType b, pollModifier cmod, pollType c, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height, unsigned int minimum_friendly_buildings)
+std::vector<AINicowar::zone> AINicowar::getBestZones(pollModifier amod, pollType a, pollModifier bmod, pollType b, pollModifier cmod, pollType c, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height, unsigned int minimum_friendly_buildings)
 {
 	std::vector<pollRecord> a_list;
 	std::vector<pollRecord> b_list;
@@ -864,9 +864,9 @@ std::vector<AIHelper::zone> AIHelper::getBestZones(pollModifier amod, pollType a
 
 
 
-void AIHelper::removeOldConstruction(void)
+void AINicowar::removeOldConstruction(void)
 {
-	for (std::list<AIHelper::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end();)
+	for (std::list<AINicowar::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end();)
 	{
 		Building *b=i->building;
 		if(!buildingStillExists(b))
@@ -878,8 +878,8 @@ void AIHelper::removeOldConstruction(void)
 		int original = i->original;
 		if (b->constructionResultState==Building::NO_CONSTRUCTION)
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<endl;
 			i=active_construction.erase(i);
 			orders.push(new OrderModifyBuilding(b->gid, original));
 			continue;
@@ -891,9 +891,9 @@ void AIHelper::removeOldConstruction(void)
 
 
 
-void AIHelper::updatePendingConstruction(void)
+void AINicowar::updatePendingConstruction(void)
 {
-	for (std::list<AIHelper::constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end();)
+	for (std::list<AINicowar::constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end();)
 	{
 		Building *b=i->building;
 		if(!buildingStillExists(b))
@@ -904,9 +904,9 @@ void AIHelper::updatePendingConstruction(void)
 		int assigned = i->assigned;
 		if (b->buildingState != Building::WAITING_FOR_CONSTRUCTION && b->buildingState != Building::WAITING_FOR_CONSTRUCTION_ROOM)
 		{
-			AIHelper::constructionRecord u=*i;
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: updatePendingConstruction: The "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<endl;
+			AINicowar::constructionRecord u=*i;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: updatePendingConstruction: The "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<endl;
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
 			orders.push(new OrderModifyBuilding(b->gid, assigned));
@@ -919,7 +919,7 @@ void AIHelper::updatePendingConstruction(void)
 
 
 
-int AIHelper::getAvailableUnitsForConstruction(int level)
+int AINicowar::getAvailableUnitsForConstruction(int level)
 {
 	int free_workers[NB_UNIT_LEVELS];
 	for (int j=0; j<NB_UNIT_LEVELS; j++)
@@ -939,7 +939,7 @@ int AIHelper::getAvailableUnitsForConstruction(int level)
 
 
 
-void AIHelper::reassignConstruction(void)
+void AINicowar::reassignConstruction(void)
 {
 	//Get the numbers of free units
 	int free_workers[NB_UNIT_LEVELS];
@@ -949,7 +949,7 @@ void AIHelper::reassignConstruction(void)
 	}
 
 	//Add in the numbers of units that are already working
-	for (list<AIHelper::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
+	for (list<AINicowar::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
 		for (std::list<Unit*>::iterator i = b->unitsWorking.begin(); i!=b->unitsWorking.end(); i++)
@@ -960,7 +960,7 @@ void AIHelper::reassignConstruction(void)
 	}
 
 	//Finally, iterate through the shuffled list of records changing the number of units allocated to upgrade the buildings.
-	for (list<AIHelper::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
+	for (list<AINicowar::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
 		unsigned int assigned=i->assigned;
@@ -987,16 +987,16 @@ void AIHelper::reassignConstruction(void)
 
 		if (!is_repair && available_upgrade==0)
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
 			orders.push(new OrderCancelConstruction(b->gid));
 			continue;
 		}
 
 		else if (is_repair && available_repair==0)
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
 			orders.push(new OrderCancelConstruction(b->gid));
 			continue;
 		}
@@ -1021,8 +1021,8 @@ void AIHelper::reassignConstruction(void)
 
 		if (num_to_assign != assigned)
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: reassignConstruction: Retasking "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: reassignConstruction: Retasking "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<endl;
 			orders.push(new OrderModifyBuilding(b->gid, num_to_assign));
 			i->assigned=num_to_assign;
 		}
@@ -1033,7 +1033,7 @@ void AIHelper::reassignConstruction(void)
 
 
 
-int AIHelper::getFreeUnits(int ability, int level)
+int AINicowar::getFreeUnits(int ability, int level)
 {
 	level-=1;
 	//This is because ability levels are counted from 0, not 1. I'm not sure why,
@@ -1058,7 +1058,7 @@ int AIHelper::getFreeUnits(int ability, int level)
 
 
 
-void AIHelper::startNewConstruction(void)
+void AINicowar::startNewConstruction(void)
 {
 	//If we already have more than our max, don't do any more
 	if (active_construction.size()+pending_construction.size()>=MAX_CONSTRUCTION_AT_ONCE)
@@ -1076,7 +1076,7 @@ void AIHelper::startNewConstruction(void)
 	for (int j=0; j!=IntBuildingType::NB_BUILDING; j++)
 		construction_counts[j]=0;
 
-	for (list<AIHelper::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
+	for (list<AINicowar::constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
 		int assigned = i->assigned;
@@ -1084,7 +1084,7 @@ void AIHelper::startNewConstruction(void)
 		construction_counts[b->type->shortTypeNum]+=1;
 	}
 
-	for (list<AIHelper::constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
+	for (list<AINicowar::constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
 	{
 		Building *b=i->building;
 		int assigned = i->assigned;
@@ -1140,9 +1140,9 @@ void AIHelper::startNewConstruction(void)
 					unsigned int num_to_assign=available_repair;
 					if( num_to_assign > MAXIMUM_TO_REPAIR)
 						num_to_assign=MAXIMUM_TO_REPAIR;
-					if(AIHelper_DEBUG)
-						cout<<"AIHelper: startNewConstruction: Found "<<available_repair<<" available workers, assigning "<<num_to_assign<<" workers to repair the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<endl;
-					AIHelper::constructionRecord u;
+					if(AINicowar_DEBUG)
+						cout<<"AINicowar: startNewConstruction: Found "<<available_repair<<" available workers, assigning "<<num_to_assign<<" workers to repair the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<endl;
+					AINicowar::constructionRecord u;
 					u.building=b;
 					u.assigned=num_to_assign;
 					u.original=b->maxUnitWorking;
@@ -1169,9 +1169,9 @@ void AIHelper::startNewConstruction(void)
 					unsigned int num_to_assign=available_upgrade;
 					if( num_to_assign > MAXIMUM_TO_UPGRADE)
 						num_to_assign=MAXIMUM_TO_UPGRADE;
-					if(AIHelper_DEBUG)
-						cout<<"AIHelper: startNewConstruction: Found "<<available_upgrade<<" available workers, assigning "<<num_to_assign<<" workers to upgrade the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<endl;
-					AIHelper::constructionRecord u;
+					if(AINicowar_DEBUG)
+						cout<<"AINicowar: startNewConstruction: Found "<<available_upgrade<<" available workers, assigning "<<num_to_assign<<" workers to upgrade the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<endl;
+					AINicowar::constructionRecord u;
 					u.building=b;
 					u.assigned=num_to_assign;
 					u.original=b->maxUnitWorking;
@@ -1189,7 +1189,7 @@ void AIHelper::startNewConstruction(void)
 
 
 
-void AIHelper::exploreWorld(void)
+void AINicowar::exploreWorld(void)
 {
 	std::vector<Building*> orphaned_flags;
 
@@ -1255,8 +1255,8 @@ void AIHelper::exploreWorld(void)
 	{
 		for(std::vector<Building*>::iterator i = orphaned_flags.begin(); i!=orphaned_flags.end(); i++)
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: exploreWorld: Removing an existing explorer flag, it is no longer needed."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: exploreWorld: Removing an existing explorer flag, it is no longer needed."<<endl;
 			desired_explorers-=EXPLORERS_PER_REGION;
 			orders.push(new OrderDelete((*i)->gid));
 		}
@@ -1296,16 +1296,16 @@ void AIHelper::exploreWorld(void)
 			{
 				Building* orphaned_flag = orphaned_flags.at(0);
 				orphaned_flags.erase(orphaned_flags.begin());
-				if(AIHelper_DEBUG)
-					std::cout<<"AIHelper: exploreWorld: Moving an existing explorer flag from position "<<orphaned_flag->posX<<","<<orphaned_flag->posY<<" to position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: exploreWorld: Moving an existing explorer flag from position "<<orphaned_flag->posX<<","<<orphaned_flag->posY<<" to position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
 				orders.push(new OrderMoveFlag(orphaned_flag->gid, exploration_record.flag_x, exploration_record.flag_y, true));
 				return;
 			}
 			else
 			{
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-				if(AIHelper_DEBUG)
-					std::cout<<"AIHelper: exploreWorld: Creating a new flag at position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: exploreWorld: Creating a new flag at position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
 				desired_explorers+=EXPLORERS_PER_REGION;
 				orders.push(new OrderCreate(team->teamNumber, exploration_record.flag_x, exploration_record.flag_y,typeNum));
 			}
@@ -1316,7 +1316,7 @@ void AIHelper::exploreWorld(void)
 
 
 
-void AIHelper::findCreatedFlags(void)
+void AINicowar::findCreatedFlags(void)
 {
 	//Find the record that has NULL for a flag, if it exists.
 	std::vector<explorationRecord*> explr;
@@ -1355,8 +1355,8 @@ void AIHelper::findCreatedFlags(void)
 						if (b->posX==static_cast<int>((*i)->flag_x) && b->posY==static_cast<int>((*i)->flag_y))
 						{
 							(*i)->flag=b;
-							if(AIHelper_DEBUG)
-								std::cout<<"AIHelper: findCreatedFlags: Found a newly created or moved flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<endl;
+							if(AINicowar_DEBUG)
+								std::cout<<"AINicowar: findCreatedFlags: Found a newly created or moved flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<endl;
 							orders.push(new OrderModifyFlag(b->gid, (*i)->radius));
 							orders.push(new OrderModifyBuilding(b->gid, (*i)->assigned));
 							break;
@@ -1371,7 +1371,7 @@ void AIHelper::findCreatedFlags(void)
 
 
 
-void AIHelper::moderateSwarmsForExplorers(void)
+void AINicowar::moderateSwarmsForExplorers(void)
 {
 	changeUnits("aircontrol", EXPLORER, static_cast<int>(desired_explorers/2) , desired_explorers, 0);
 }
@@ -1379,7 +1379,7 @@ void AIHelper::moderateSwarmsForExplorers(void)
 
 
 
-void AIHelper::explorerAttack(void)
+void AINicowar::explorerAttack(void)
 {
 	bool lvl3_school_exists=false;
 	Building** myBuildings=team->myBuildings;
@@ -1423,16 +1423,16 @@ void AIHelper::explorerAttack(void)
 
 	if (ground_attack_explorers<static_cast<int>(EXPLORERS_PER_ATTACK*EXPLORER_ATTACKS_AT_ONCE))
 		return;
-	if(AIHelper_DEBUG)
+	if(AINicowar_DEBUG)
 		if(!explorer_attacking)
-			std::cout<<"AIHelper: explorerAttack: Enabling explorer attacks."<<endl;
+			std::cout<<"AINicowar: explorerAttack: Enabling explorer attacks."<<endl;
 	explorer_attacking=true;
 }
 
 
 
 
-void AIHelper::targetEnemy()
+void AINicowar::targetEnemy()
 {
 	if(enemy==NULL || !enemy->isAlive)
 	{
@@ -1443,8 +1443,8 @@ void AIHelper::targetEnemy()
 			{
 				if(t->me & team->enemies && t->isAlive)
 				{
-					if(AIHelper_DEBUG)
-						std::cout<<"AIHelper: targetEnemy: A new enemy has been chosen."<<endl;
+					if(AINicowar_DEBUG)
+						std::cout<<"AINicowar: targetEnemy: A new enemy has been chosen."<<endl;
 					enemy=game->teams[i];
 					return;
 				}
@@ -1457,7 +1457,7 @@ void AIHelper::targetEnemy()
 
 
 
-void AIHelper::attack()
+void AINicowar::attack()
 {
 	vector<vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
 	for(int i=0; i<1024; ++i)
@@ -1529,8 +1529,8 @@ void AIHelper::attack()
 				ar.assigned_level=max_barracks_level;
 				attacks.push_back(ar);
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-				if(AIHelper_DEBUG)
-					std::cout<<"AIHelper: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<endl;
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<endl;
 				orders.push(new OrderCreate(team->teamNumber, ar.flagx, ar.flagy, typeNum));
 				++attack_count;
 				available_units-=ar.assigned_units;
@@ -1542,14 +1542,14 @@ void AIHelper::attack()
 
 
 
-void AIHelper::updateAttackFlags()
+void AINicowar::updateAttackFlags()
 {
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
 		if(!buildingStillExists(j->target))
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: updateAttackFlags: Stopping attack on a building, removing the "<<j->flag->posX<<","<<j->flag->posY<<" flag."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flag->posX<<","<<j->flag->posY<<" flag."<<endl;
 			orders.push(new OrderDelete(j->flag->gid));
 			j=attacks.erase(j);
 			continue;
@@ -1573,8 +1573,8 @@ void AIHelper::updateAttackFlags()
 					{
 						j->flag=b;
 						unsigned int radius=std::max(j->width, j->height)/2;
-						if(AIHelper_DEBUG)
-							std::cout<<"AIHelper: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<endl;
+						if(AINicowar_DEBUG)
+							std::cout<<"AINicowar: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<endl;
 
 						orders.push(new OrderModifyFlag(b->gid, radius));
 						orders.push(new OrderModifyBuilding(b->gid, j->assigned_units));
@@ -1592,8 +1592,8 @@ void AIHelper::updateAttackFlags()
 		if(score*2+ATTACK_WARRIOR_MINIMUM != j->assigned_units)
 		{
 			int new_assigned=score*2+ATTACK_WARRIOR_MINIMUM;
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: updateAttackFlags: Changing the "<<j->flag->posX<<","<<j->flag->posY<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: updateAttackFlags: Changing the "<<j->flag->posX<<","<<j->flag->posY<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<endl;
 			j->assigned_units=new_assigned;
 			orders.push(new OrderModifyBuilding(j->flag->gid, new_assigned));
 		}
@@ -1605,7 +1605,7 @@ void AIHelper::updateAttackFlags()
 
 
 
-void AIHelper::changeUnits(string module_name, unsigned int unit_type, unsigned int desired_units, unsigned int required_units, unsigned int emergency_units)
+void AINicowar::changeUnits(string module_name, unsigned int unit_type, unsigned int desired_units, unsigned int required_units, unsigned int emergency_units)
 {
 	unitRecord ur;
 	if (module_demands.count(module_name))
@@ -1628,7 +1628,7 @@ void AIHelper::changeUnits(string module_name, unsigned int unit_type, unsigned 
 
 
 
-void AIHelper::moderateSwarms()
+void AINicowar::moderateSwarms()
 {
 	//The number of units we want for each priority level
 	unsigned int num_wanted[NB_UNIT_TYPE][3];
@@ -1706,8 +1706,8 @@ void AIHelper::moderateSwarms()
 		if(!changed)
 			continue;
 
-		if(AIHelper_DEBUG)
-			std::cout<<"AIHelper: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<endl;
+		if(AINicowar_DEBUG)
+			std::cout<<"AINicowar: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<endl;
 		orders.push(new OrderModifySwarm(swarm->gid, ratios));
 	}
 }
@@ -1715,9 +1715,9 @@ void AIHelper::moderateSwarms()
 
 
 
-AIHelper::innRecord::innRecord() : pos(0), records(INN_RECORD_MAX) {}
+AINicowar::innRecord::innRecord() : pos(0), records(INN_RECORD_MAX) {}
 
-void AIHelper::recordInns()
+void AINicowar::recordInns()
 {
 	for(int i=0; i<1024; ++i)
 	{
@@ -1801,7 +1801,7 @@ bool compare_final(const finalInnScore& first, const finalInnScore& other)
 
 
 
-void AIHelper::modifyInns()
+void AINicowar::modifyInns()
 {
 
 	std::vector<innScore> scores;
@@ -1872,8 +1872,8 @@ void AIHelper::modifyInns()
 		to_increase=i->inn;
 		if(i-score_finals.rbegin()<static_cast<int>(score_finals.size()/2) && to_increase->maxUnitWorking<static_cast<int>(INN_MAX[to_increase->type->level]))
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: modifyInns: Increasing the number of units assigned to an inn."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: modifyInns: Increasing the number of units assigned to an inn."<<endl;
 			total_workers_needed+=1;
 			orders.push(new OrderModifyBuilding(to_increase->gid, to_increase->maxUnitWorking+1));
 			break;
@@ -1885,8 +1885,8 @@ void AIHelper::modifyInns()
 		to_decrease=i->inn;
 		if(i-score_finals.begin()<static_cast<int>(score_finals.size()/2) && to_decrease->maxUnitWorking>static_cast<int>(INN_MINIMUM[to_decrease->type->level]))
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: modifyInns: Decreasing the number of units assigned to an inn."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: modifyInns: Decreasing the number of units assigned to an inn."<<endl;
 			total_workers_needed-=1;
 			orders.push(new OrderModifyBuilding(to_decrease->gid, to_decrease->maxUnitWorking-1));
 			break;
@@ -1898,7 +1898,7 @@ void AIHelper::modifyInns()
 
 
 
-void AIHelper::findDefense()
+void AINicowar::findDefense()
 {
 	for(unsigned int i=0; i<1024; ++i)
 	{
@@ -1940,8 +1940,8 @@ void AIHelper::findDefense()
 					dr.assigned=pollArea(dr.zonex, dr.zoney, dr.width, dr.height, MAXIMUM, ENEMY_UNITS);
 					defending_zones.push_back(dr);
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-					if(AIHelper_DEBUG)
-						std::cout<<"AIHelper: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking "<<b->posX<<","<<b->posY<<"."<<endl;
+					if(AINicowar_DEBUG)
+						std::cout<<"AINicowar: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking "<<b->posX<<","<<b->posY<<"."<<endl;
 					orders.push(new OrderCreate(team->teamNumber, dr.flagx, dr.flagy, typeNum));
 				}
 			}
@@ -1961,15 +1961,15 @@ void AIHelper::findDefense()
 
 
 
-void AIHelper::updateFlags()
+void AINicowar::updateFlags()
 {
 	for (vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
 	{
 		int score = pollArea(i->zonex, i->zoney, i->width, i->height, MAXIMUM, ENEMY_UNITS);
 		if(score==0)
 		{
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: updateFlags: Found a zone at "<<i->zonex<<","<<i->zoney<<" that no longer has any enemy units in it. Removing this flag."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: updateFlags: Found a zone at "<<i->zonex<<","<<i->zoney<<" that no longer has any enemy units in it. Removing this flag."<<endl;
 			i=defending_zones.erase(i);
 			orders.push(new OrderDelete(i->flag->gid));
 		}
@@ -1987,7 +1987,7 @@ void AIHelper::updateFlags()
 
 
 
-void AIHelper::findCreatedDefenseFlags()
+void AINicowar::findCreatedDefenseFlags()
 {
 	for(unsigned int i=0; i<1024; ++i)
 	{
@@ -2000,8 +2000,8 @@ void AIHelper::findCreatedDefenseFlags()
 				{
 					if(i->flag == NULL && b->posX == static_cast<int>(i->flagx) && b->posY == static_cast<int>(i->flagy))
 					{
-						if(AIHelper_DEBUG)
-							std::cout<<"AIHelper: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<endl;
+						if(AINicowar_DEBUG)
+							std::cout<<"AINicowar: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<endl;
 						i->flag=b;
 						orders.push(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2));
 						orders.push(new OrderModifyBuilding(b->gid, i->assigned));
@@ -2016,7 +2016,7 @@ void AIHelper::findCreatedDefenseFlags()
 
 
 
-void AIHelper::controlTowers()
+void AINicowar::controlTowers()
 {
 
 	int count=0;
@@ -2032,8 +2032,8 @@ void AIHelper::controlTowers()
 				count+=1;
 				if(b->maxUnitWorking != static_cast<int>(NUM_PER_TOWER))
 				{
-					if(AIHelper_DEBUG)
-						std::cout<<"AIHelper: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<endl;
+					if(AINicowar_DEBUG)
+						std::cout<<"AINicowar: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<endl;
 					orders.push(new OrderModifyBuilding(b->gid, NUM_PER_TOWER));
 				}
 			}
@@ -2045,7 +2045,7 @@ void AIHelper::controlTowers()
 
 
 
-AIHelper::upgradeData AIHelper::findMaxSize(unsigned int building_type, unsigned int cur_level)
+AINicowar::upgradeData AINicowar::findMaxSize(unsigned int building_type, unsigned int cur_level)
 {
 	string type = IntBuildingType::reverseConversionMap[building_type];
 	BuildingType* new_type = globalContainer->buildingsTypes.getByType(type, 2, false);
@@ -2071,7 +2071,7 @@ AIHelper::upgradeData AIHelper::findMaxSize(unsigned int building_type, unsigned
 
 
 
-AIHelper::point AIHelper::findBestPlace(unsigned int building_type)
+AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 {
 	//Get the best zone based on a number of factors
 	vector<zone> zones = getBestZones(  static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][0][0]),
@@ -2259,7 +2259,7 @@ AIHelper::point AIHelper::findBestPlace(unsigned int building_type)
 
 
 
-void AIHelper::constructBuildings()
+void AINicowar::constructBuildings()
 {
 	unsigned total_free_workers=0;
 	for(int i=0; i<NB_UNIT_LEVELS; ++i)
@@ -2315,8 +2315,8 @@ void AIHelper::constructBuildings()
 			ncr.building_type=i;
 			new_buildings.push_back(ncr);
 
-			if(AIHelper_DEBUG)
-				std::cout<<"AIHelper: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i]<<", at position "<<p.x<<","<<p.y<<"."<<endl;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i]<<", at position "<<p.x<<","<<p.y<<"."<<endl;
 			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i], 0, true);
 			orders.push(new OrderCreate(team->teamNumber, p.x, p.y, type));
 			total_construction+=1;
@@ -2330,7 +2330,7 @@ void AIHelper::constructBuildings()
 
 
 
-void AIHelper::updateBuildings()
+void AINicowar::updateBuildings()
 {
 	//Remove records of buildings that are no longer under construction
 	for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end();)

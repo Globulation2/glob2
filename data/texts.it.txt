@@ -430,10 +430,12 @@ NienteIA
 IANumbi
 [AICastor]
 IACastor
+[AINicowar]
+Nicowar
 [AIToubib]
 IAToubib
-[AIHelper]
-IAHelper
+[AIWarrush]
+IAWarrush
 [the games]
 Giochi
 [the maps]

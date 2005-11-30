@@ -218,7 +218,7 @@
 [AINone]
 [AINumbi]
 [AICastor]
-[AIHelper]
+[AINicowar]
 [AIToubib]
 [AIWarrush]
 [the games]

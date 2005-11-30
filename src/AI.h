@@ -43,7 +43,7 @@ public:
 		NONE=0,
 		NUMBI=1,
 		CASTOR=2,
-		HELPER=3,
+		NICOWAR=3,
 		
 		SIZE,
 		
