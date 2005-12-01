@@ -618,7 +618,7 @@ bool AINicowar::buildingStillExists(unsigned int gid)
 
 
 
-int AINicowar::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type)
+unsigned int AINicowar::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type)
 {
 	if (poll_type == NONE)
 		return 0;
@@ -631,7 +631,7 @@ int AINicowar::pollArea(unsigned int x, unsigned int y, unsigned int width, unsi
 	if(static_cast<int>(bound_y)>map->getH())
 		bound_y-=map->getH();
 
-	int score=0;
+	unsigned int score=0;
 	for(; x!=bound_h; ++x)
 	{
 		if(static_cast<int>(x) >= map->getW())
@@ -1633,7 +1633,7 @@ void AINicowar::moderateSwarms()
 	//The number of units we want for each priority level
 	unsigned int num_wanted[NB_UNIT_TYPE][3];
 	unsigned int total_available[NB_UNIT_TYPE];
-	for (unsigned int i=0; i<NB_UNIT_TYPE; i++)
+	for (unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; i++)
 	{
 		total_available[i]=team->stats.getLatestStat()->numberUnitPerType[i];
 		for(int n=0; n<3; ++n)
@@ -1645,7 +1645,7 @@ void AINicowar::moderateSwarms()
 	//Counts out the requested units from each of the modules
 	for (std::map<string, unitRecord>::iterator i = module_demands.begin(); i!=module_demands.end(); i++)
 	{
-		for (int unit_t=0; unit_t<NB_UNIT_TYPE; unit_t++)
+		for (unsigned int unit_t=0; static_cast<int>(unit_t)<NB_UNIT_TYPE; unit_t++)
 		{
 			num_wanted[unit_t][0]+=i->second.desired_units[unit_t];
 			num_wanted[unit_t][1]+=i->second.required_units[unit_t];
@@ -1654,10 +1654,10 @@ void AINicowar::moderateSwarms()
 	}
 
 	//Substract the already-existing amount of units from the numbers requested, and then move these totals multiplied by their respective score
-	//into the ratios.
+	//into the ratios. This number can't be unsigned or it won't pass into OrderModifySwarm properly
 	int ratios[NB_UNIT_TYPE];
 	unsigned int total_wanted_score=0;
-	for (unsigned int i=0; i<NB_UNIT_TYPE; i++)
+	for (unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; i++)
 	{
 		for(unsigned int n=0; n<3; ++n)
 		{
@@ -1684,7 +1684,7 @@ void AINicowar::moderateSwarms()
 	if(max>16)
 		devisor=static_cast<float>(max)/16.0;
 
-	for(unsigned int i=0; i<NB_UNIT_TYPE; ++i)
+	for(unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; ++i)
 	{
 		ratios[i]=static_cast<int>(std::floor(ratios[i]/devisor+0.5));
 	}
@@ -1700,7 +1700,7 @@ void AINicowar::moderateSwarms()
 			if (swarm->ratio[x]!=ratios[x])
 				changed=true;
 
-		if(swarm->maxUnitWorking != assigned_per_swarm)
+		if(swarm->maxUnitWorking != static_cast<int>(assigned_per_swarm))
 			orders.push(new OrderModifyBuilding(swarm->gid, assigned_per_swarm));
 
 		if(!changed)
@@ -1907,7 +1907,7 @@ void AINicowar::findDefense()
 		{
 			if(building_health.find(b->gid) != building_health.end())
 			{
-				if(building_health[b->gid] > b->hp)
+				if(static_cast<int>(building_health[b->gid]) > b->hp)
 				{
 					//					zone z=getZone(b->posX, b->posY, DEFENSE_ZONE_WIDTH, DEFENSE_ZONE_HEIGHT, DEFENSE_ZONE_HORIZONTAL_OVERLAP, DEFENSE_ZONE_VERTICAL_OVERLAP);
 					bool found=false;
@@ -2140,16 +2140,16 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 				if(found_building)
 				{
 
-					int startx=x-size.horizontal_offset-BUILDING_PADDING;
+					unsigned int startx=x-size.horizontal_offset-BUILDING_PADDING;
 					if(startx<0)
 						startx=0;
-					int starty=y-size.vertical_offset-BUILDING_PADDING;
+					unsigned int starty=y-size.vertical_offset-BUILDING_PADDING;
 					if(starty<0)
 						starty=0;
-					int endx=startx+size.width+BUILDING_PADDING*2;
+					unsigned int endx=startx+size.width+BUILDING_PADDING*2;
 					if(endx>=full_width)
 						endx=full_width;
-					int endy=starty+size.height+BUILDING_PADDING*2;
+					unsigned int endy=starty+size.height+BUILDING_PADDING*2;
 					if(endy>=full_height)
 						endy=full_height;
 					for(unsigned int x2=startx; x2<endx; ++x2)
@@ -2211,9 +2211,9 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 				if(imap[x][y]==0)
 				{
 					bool all_empty=true;
-					for(int x2=x; x2<(x+size.width) && all_empty; ++x2)
+					for(unsigned int x2=x; x2<(x+size.width) && all_empty; ++x2)
 					{
-						for(int y2=y; y2<(y+size.height) && all_empty; ++y2)
+						for(unsigned int y2=y; y2<(y+size.height) && all_empty; ++y2)
 						{
 							if(imap[x2][y2]==1)
 							{
@@ -2224,9 +2224,9 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 					if(all_empty)
 					{
 						unsigned int border_count=0;
-						for(int x2=x-1; x2<(x+size.width+2); ++x2)
+						for(unsigned int x2=x-1; x2<(x+size.width+2); ++x2)
 						{
-							for(int y2=y-1; y2<(y+size.height+2); ++y2)
+							for(unsigned int y2=y-1; y2<(y+size.height+2); ++y2)
 							{
 								if(imap[x2][y2]==1)
 									border_count++;
@@ -2238,7 +2238,7 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 						p.y=i->y + y - BUILD_AREA_EXTENTION_HEIGHT;
 						if(!CRAMP_BUILDINGS)
 							return p;
-						if(border_count>max)
+						if(border_count>max || max==0)
 						{
 							max_point=p;
 							max=border_count;
@@ -2340,7 +2340,9 @@ void AINicowar::updateBuildings()
 			Building* b = getBuildingFromGid(i->building);
 			if(b==NULL || b->constructionResultState == Building::NO_CONSTRUCTION)
 			{
+				orders.push(new OrderModifyBuilding(i->building, 0));
 				i = new_buildings.erase(i);
+		
 			}
 			else
 				++i;
@@ -2359,7 +2361,7 @@ void AINicowar::updateBuildings()
 		{
 			for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); ++i)
 			{
-				if(i->building==NOGBID && b->type->shortTypeNum == i->building_type && b->posX == i->x && b->posY == i->y)
+				if(i->building==NOGBID && b->type->shortTypeNum == static_cast<int>(i->building_type) && b->posX == static_cast<int>(i->x) && b->posY == static_cast<int>(i->y))
 				{
 					i->building=b->gid;
 					orders.push(new OrderModifyBuilding(i->building, i->assigned));

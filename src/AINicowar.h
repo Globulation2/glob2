@@ -142,11 +142,11 @@ class AINicowar : public AIImplementation
 		///Represents a single pollRecord. It has the information for the zone, as well as the score and type of information that as polled for.
 		struct pollRecord
 		{
-			int x;
-			int y;
-			int width;
-			int height;
-			int score;
+			unsigned int x;
+			unsigned int y;
+			unsigned int width;
+			unsigned int height;
+			unsigned int score;
 			pollType poll_type;
 			pollRecord(int ax, int ay, int awidth, int aheight, int ascore, pollType apoll_type) : x(ax), y(ay), width(awidth), height(aheight), score(ascore), poll_type(apoll_type) {}
 			pollRecord() {}
@@ -158,7 +158,7 @@ class AINicowar : public AIImplementation
 
 		///Polls a specific region for the number of objects given by type, which can be one of
 		///the above enum.
-		int pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type);
+		unsigned int pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type);
 
 		///Polls the entire map using the given information, returning the n top spots and their
 		///information.
@@ -448,13 +448,13 @@ class AINicowar : public AIImplementation
 		struct defenseRecord
 		{
 			Building* flag;
-			int flagx;
-			int flagy;
-			int zonex;
-			int zoney;
-			int width;
-			int height;
-			int assigned;
+			unsigned int flagx;
+			unsigned int flagy;
+			unsigned int zonex;
+			unsigned int zoney;
+			unsigned int width;
+			unsigned int height;
+			unsigned int assigned;
 		};
 
 		std::vector<defenseRecord> defending_zones;
