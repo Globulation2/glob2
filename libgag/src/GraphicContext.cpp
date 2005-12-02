@@ -1017,19 +1017,27 @@ namespace GAGCore
 			{
 				if ((x == 0) && (y == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
 				{
-					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdlsurface->pixels);
-					#else
 					std::valarray<unsigned> tempPixels(sw*sh);
+					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					#else
 					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					#endif
 					for (int y = 0; y<sh; y++)
 					{
 						unsigned *srcPtr = (unsigned *)&tempPixels[y*sw];
 						unsigned *destPtr = &(((unsigned *)sdlsurface->pixels)[(sh-y-1)*sw]);
 						for (int x = 0; x<sw; x++)
+						#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+						{
+							*destPtr++ = (*srcPtr >> 8) | (*srcPtr << 24);
+							srcPtr++;
+						}
+						#else
 							*destPtr++ = *srcPtr++;
+						#endif
 					}
-					#endif
+					
 				}
 				else
 				{
