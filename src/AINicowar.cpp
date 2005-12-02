@@ -58,28 +58,10 @@ void AINicowar::init(Player *player)
 	enemy=NULL;
 	changeUnits("upgrade-repair manager", WORKER, static_cast<int>(std::max(MAXIMUM_TO_REPAIR, MAXIMUM_TO_UPGRADE)*MAX_CONSTRUCTION_AT_ONCE*1.5), std::max(MAXIMUM_TO_REPAIR, MAXIMUM_TO_UPGRADE), 0);
 
-	changeUnits("defense", WARRIOR, 0, 0, BASE_DEFENSE_WARRIORS);
+	changeUnits("defense", WARRIOR, BASE_DEFENSE_WARRIORS, 0, 0);
 
 	changeUnits("attack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
 
-	num_buildings_wanted[IntBuildingType::SWARM_BUILDING]=2;
-	num_buildings_wanted[IntBuildingType::FOOD_BUILDING]=8;
-	num_buildings_wanted[IntBuildingType::HEAL_BUILDING]=2;
-
-	num_buildings_wanted[IntBuildingType::WALKSPEED_BUILDING]=2;
-	num_buildings_wanted[IntBuildingType::SWIMSPEED_BUILDING]=2;
-	num_buildings_wanted[IntBuildingType::ATTACK_BUILDING]=2;
-	num_buildings_wanted[IntBuildingType::SCIENCE_BUILDING]=2;
-
-	num_buildings_wanted[IntBuildingType::DEFENSE_BUILDING]=8;
-
-	num_buildings_wanted[IntBuildingType::EXPLORATION_FLAG]=0;
-	num_buildings_wanted[IntBuildingType::WAR_FLAG]=0;
-	num_buildings_wanted[IntBuildingType::CLEARING_FLAG]=0;
-
-	num_buildings_wanted[IntBuildingType::STONE_WALL]=0;
-
-	num_buildings_wanted[IntBuildingType::MARKET_BUILDING]=0;
 	assert(player);
 
 	this->player=player;
@@ -178,7 +160,11 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 	{
 		attackRecord ar;
 		ar.target=stream->readUint32();
-		ar.flag=getBuildingFromGid(stream->readUint32());
+		unsigned int gbid=stream->readUint32();
+		if(gbid==NOGBID)
+			ar.flag=NULL;
+		else
+			ar.flag=getBuildingFromGid(gbid);
 		ar.flagx=stream->readUint32();
 		ar.flagy=stream->readUint32();
 		ar.zonex=stream->readUint32();
@@ -233,7 +219,11 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 	while(n--)
 	{
 		defenseRecord dr;
-		dr.flag=getBuildingFromGid(stream->readUint32());
+		unsigned int gbid=stream->readUint32();
+		if(gbid==NOGBID)
+			dr.flag=NULL;
+		else
+			dr.flag=getBuildingFromGid(gbid);
 		dr.flagx=stream->readUint32();
 		dr.flagy=stream->readUint32();
 		dr.zonex=stream->readUint32();
@@ -341,7 +331,10 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 	for(std::vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
 	{
 		stream->writeUint32(i->target);
-		stream->writeUint32(i->flag->gid);
+		if(i->flag==NULL)
+			stream->writeUint32(NOGBID);
+		else
+			stream->writeUint32(i->flag->gid);
 		stream->writeUint32(i->flagx);
 		stream->writeUint32(i->flagy);
 		stream->writeUint32(i->zonex);
@@ -390,7 +383,10 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(defending_zones.size());
 	for(std::vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end(); ++i)
 	{
-		stream->writeUint32(i->flag->gid);
+		if(i->flag==NULL)
+			stream->writeUint32(NOGBID);
+		else
+			stream->writeUint32(i->flag->gid);
 		stream->writeUint32(i->flagx);
 		stream->writeUint32(i->flagy);
 		stream->writeUint32(i->zonex);
@@ -544,6 +540,10 @@ Order *AINicowar::getOrder(void)
 		case updateBuildings_TIME:
 			//Updates buildings that constructBuildings created.
 			updateBuildings();
+			break;
+		case calculateBuildings_TIME:
+			//calculates the number of buildings the player should have
+			calculateBuildings();
 			break;
 	}
 
@@ -1041,6 +1041,7 @@ int AINicowar::getFreeUnits(int ability, int level)
 	//would be more appropriette.
 	int free_workers=0;
 	Unit **myUnits=team->myUnits;
+
 	for (int i=0; i<1024; i++)
 	{
 		Unit* u = myUnits[i];
@@ -1373,7 +1374,9 @@ void AINicowar::findCreatedFlags(void)
 
 void AINicowar::moderateSwarmsForExplorers(void)
 {
-	changeUnits("aircontrol", EXPLORER, static_cast<int>(desired_explorers/2) , desired_explorers, 0);
+	//I've raised the priority on explorers temporarily for testing.
+	//	changeUnits("aircontrol", EXPLORER, static_cast<int>(desired_explorers/2) , desired_explorers, 0);
+	changeUnits("aircontrol", EXPLORER, 0, static_cast<int>(desired_explorers/2), desired_explorers);
 }
 
 
@@ -1806,7 +1809,7 @@ void AINicowar::modifyInns()
 
 	std::vector<innScore> scores;
 
-	for(std::map<int, innRecord>::iterator i = inns.begin(); i!=inns.end();)
+	for(std::map<int, innRecord>::iterator i = inns.begin(); i!=inns.end(); ++i)
 	{
 		innScore score;
 		score.inn=getBuildingFromGid(i->first);
@@ -1821,7 +1824,6 @@ void AINicowar::modifyInns()
 			score.unit_score+=record->units_eating;
 		}
 		scores.push_back(score);
-		i++;
 	}
 	if(scores.size()==0)
 		return;
@@ -1970,12 +1972,14 @@ void AINicowar::updateFlags()
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: updateFlags: Found a zone at "<<i->zonex<<","<<i->zoney<<" that no longer has any enemy units in it. Removing this flag."<<endl;
+			if(i->flag!=NULL)
+				orders.push(new OrderDelete(i->flag->gid));
 			i=defending_zones.erase(i);
-			orders.push(new OrderDelete(i->flag->gid));
 		}
 		else
 		{
-			if(score!=i->flag->maxUnitWorking)
+			if(i->flag!=NULL)
+				if(score!=i->flag->maxUnitWorking)
 			{
 				orders.push(new OrderModifyBuilding(i->flag->gid, score));
 			}
@@ -2165,39 +2169,41 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 
 		upgradeData size=findMaxSize(building_type, 0);
 
-		//Uncomment this to output the int maps for debugging, carefull, they are large
-		/*
+		//Change this to output the int maps for debugging, carefull, they are large
 
-				std::cout<<"Zone "<<i->x<<","<<i->y<<endl;
-				for(unsigned int y=0; y<full_height; ++y)
+		bool output_zones=false;
+		if(output_zones)
+		{
+			std::cout<<"Zone "<<i->x<<","<<i->y<<endl;
+			for(unsigned int y=0; y<full_height; ++y)
+			{
+
+				if(y==zone_start_row || y==zone_end_row)
 				{
-
-					if(y==zone_start_row || y==zone_end_row)
+					for(unsigned int x=0; x<full_width+2; ++x)
 					{
-						for(unsigned int x=0; x<full_width+2; ++x)
-						{
-							if (x>=zone_start_column+1 && x<zone_end_column+1)
-		std::cout<<"--";
-		else
-		std::cout<<"  ";
-		}
-		std::cout<<endl;
-		}
+						if (x>=zone_start_column+1 && x<zone_end_column+1)
+							std::cout<<"--";
+						else
+							std::cout<<"  ";
+					}
+					std::cout<<endl;
+				}
 
-		for(unsigned int x=0; x<full_width; ++x)
-		{
-		if (x==zone_start_column || x==zone_end_column)
-		{
-		if(y >= zone_start_row && y<zone_end_row)
-		std::cout<<"| ";
-		else
-		std::cout<<"  ";
+				for(unsigned int x=0; x<full_width; ++x)
+				{
+					if (x==zone_start_column || x==zone_end_column)
+					{
+						if(y >= zone_start_row && y<zone_end_row)
+							std::cout<<"| ";
+						else
+							std::cout<<"  ";
+					}
+					std::cout<<imap[x][y]<<" ";
+				}
+				std::cout<<endl;
+			}
 		}
-		std::cout<<imap[x][y]<<" ";
-		}
-		std::cout<<endl;
-		}
-		*/
 
 		//Now go through the zones int map searching for a good, possible place to put the building.
 		unsigned int max=0;
@@ -2223,6 +2229,12 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 					}
 					if(all_empty)
 					{
+						point p;
+						p.x=i->x + x - BUILD_AREA_EXTENTION_WIDTH;
+						p.y=i->y + y - BUILD_AREA_EXTENTION_HEIGHT;
+						if(!CRAMP_BUILDINGS)
+							return p;
+
 						unsigned int border_count=0;
 						for(unsigned int x2=x-1; x2<(x+size.width+2); ++x2)
 						{
@@ -2232,12 +2244,6 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 									border_count++;
 							}
 						}
-
-						point p;
-						p.x=i->x + x - BUILD_AREA_EXTENTION_WIDTH;
-						p.y=i->y + y - BUILD_AREA_EXTENTION_HEIGHT;
-						if(!CRAMP_BUILDINGS)
-							return p;
 						if(border_count>max || max==0)
 						{
 							max_point=p;
@@ -2247,7 +2253,7 @@ AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 				}
 			}
 		}
-		if(max_point.x!=NOPOS)
+		if(max_point.x!=NOPOS && CRAMP_BUILDINGS)
 			return max_point;
 	}
 	point p;
@@ -2272,7 +2278,10 @@ void AINicowar::constructBuildings()
 	unsigned int total_construction=new_buildings.size();
 
 	if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
+	{
+		std::cout<<"Fail 1, too much construction."<<endl;
 		return;
+	}
 
 	for(unsigned i = 0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
@@ -2284,8 +2293,11 @@ void AINicowar::constructBuildings()
 	{
 		counts[i->building_type]++;
 		under_construction_counts[i->building_type]++;
-		total_free_workers-=i->assigned;
-		if(i->building!=NOGBID)
+		if(total_free_workers>i->assigned)
+			total_free_workers-=i->assigned;
+		else
+			total_free_workers=0;
+		if(i->building!=NOGBID && getBuildingFromGid(i->building)!=NULL)
 			total_free_workers+=getBuildingFromGid(i->building)->unitsWorking.size();
 	}
 
@@ -2294,17 +2306,31 @@ void AINicowar::constructBuildings()
 		while(true)
 		{
 			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
+			{
+				std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				return;
+			}
 			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW)
+			{
+				std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				return;
-
+			}
 			if(under_construction_counts[i]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i])
+			{
+				std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
+			}
 			if(counts[i]>=num_buildings_wanted[i])
+			{
+				std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
+			}
 			point p = findBestPlace(i);
 			if(p.x == NOPOS || p.y==NOPOS)
+			{
+				std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
+			}
 
 			newConstructionRecord ncr;
 			ncr.building=NOGBID;
@@ -2340,9 +2366,9 @@ void AINicowar::updateBuildings()
 			Building* b = getBuildingFromGid(i->building);
 			if(b==NULL || b->constructionResultState == Building::NO_CONSTRUCTION)
 			{
-				orders.push(new OrderModifyBuilding(i->building, 0));
+				orders.push(new OrderModifyBuilding(i->building, 1));
 				i = new_buildings.erase(i);
-		
+
 			}
 			else
 				++i;
@@ -2368,5 +2394,20 @@ void AINicowar::updateBuildings()
 				}
 			}
 		}
+	}
+}
+
+
+
+
+void AINicowar::calculateBuildings()
+{
+	unsigned int total_units=team->stats.getLatestStat()->totalUnit;
+	for (int i=0; i<IntBuildingType::NB_BUILDING; ++i)
+	{
+		if(UNITS_FOR_BUILDING[i]!=0)
+			num_buildings_wanted[i]=std::max(total_units/UNITS_FOR_BUILDING[i], static_cast<unsigned int>(1));
+		else
+			num_buildings_wanted[i]=0;
 	}
 }
