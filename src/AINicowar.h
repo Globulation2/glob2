@@ -527,6 +527,9 @@ class AINicowar : public AIImplementation
 		///Finds the buildings that constructBuildings has started construction of.
 		void updateBuildings();
 
+		//Calculates how many of each type of building the ai should have.
+		void calculateBuildings();
+
 		std::map<unsigned int, unsigned int> num_buildings_wanted;
 		///@}
 
@@ -544,29 +547,30 @@ const unsigned int MAX_CONSTRUCTION_AT_ONCE=4;
 const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 {0, 4, 1, 1, 1, 1, 1, 2, 0, 0, 0, 1, 1};
 
-//The following constants deal with the function iteration. All of these except the first must be
+//The following constants deal with the function iteration. All of these must be
 //lower than TIMER_ITERATION.
-const int TIMER_ITERATION=100;
+const int TIMER_ITERATION=63;
 const int removeOldConstruction_TIME=0;
-const int updatePendingConstruction_TIME=5;
-const int startNewConstruction_TIME=10;
-const int reassignConstruction_TIME=15;
-const int exploreWorld_TIME=20;
-const int findCreatedFlags_TIME=25;
-const int moderateSwarmsForExplorers_TIME=30;
-const int explorerAttack_TIME=35;
-const int targetEnemy_TIME=40;
-const int attack_TIME=45;
-const int updateAttackFlags_TIME=50;
-const int moderateSwarms_TIME=55;
-const int recordInns_TIME=60;
-const int modifyInns_TIME=65;
-const int controlTowers_TIME=70;
-const int updateFlags_TIME=75;
-const int findDefense_TIME=80;
-const int findCreatedDefenseFlags_TIME=85;
-const int constructBuildings_TIME=90;
-const int updateBuildings_TIME=95;
+const int updatePendingConstruction_TIME=3;
+const int startNewConstruction_TIME=6;
+const int reassignConstruction_TIME=9;
+const int exploreWorld_TIME=12;
+const int findCreatedFlags_TIME=15;
+const int moderateSwarmsForExplorers_TIME=18;
+const int explorerAttack_TIME=21;
+const int targetEnemy_TIME=24;
+const int attack_TIME=27;
+const int updateAttackFlags_TIME=30;
+const int moderateSwarms_TIME=33;
+const int recordInns_TIME=36;
+const int modifyInns_TIME=39;
+const int controlTowers_TIME=42;
+const int updateFlags_TIME=45;
+const int findDefense_TIME=48;
+const int findCreatedDefenseFlags_TIME=51;
+const int calculateBuildings_TIME=54;
+const int constructBuildings_TIME=57;
+const int updateBuildings_TIME=60;
 
 //These constants are for the AI's management of exploration and explorer attacks.
 //Warning, the following four constants must be powers of 2, because map sizes are in powers of two,
@@ -611,7 +615,7 @@ const unsigned int DEFENSE_ZONE_WIDTH=8;
 const unsigned int DEFENSE_ZONE_HEIGHT=8;
 const int DEFENSE_ZONE_HORIZONTAL_OVERLAP=0;
 const int DEFENSE_ZONE_VERTICAL_OVERLAP=0;
-const unsigned int BASE_DEFENSE_WARRIORS=20;
+const unsigned int BASE_DEFENSE_WARRIORS=10;
 
 //These constants are for the attack system.
 const IntBuildingType::Number ATTACK_PRIORITY[IntBuildingType::NB_BUILDING-3] =
@@ -629,31 +633,31 @@ const IntBuildingType::Number ATTACK_PRIORITY[IntBuildingType::NB_BUILDING-3] =
 };
 const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
 const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
-const unsigned int ATTACK_WARRIOR_MINIMUM=8;
-const unsigned int MAX_ATTACKS_AT_ONCE=5;
+const unsigned int ATTACK_WARRIOR_MINIMUM=4;
+const unsigned int MAX_ATTACKS_AT_ONCE=3;
 const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*1.5);
 
 //The following are for the construction manager
 
 const unsigned int BUILD_AREA_WIDTH=8;
 const unsigned int BUILD_AREA_HEIGHT=8;
-const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=2;
-const unsigned int BUILD_AREA_VERTICAL_OVERLAP=2;
-const unsigned int BUILD_AREA_EXTENTION_WIDTH=16;
-const unsigned int BUILD_AREA_EXTENTION_HEIGHT=16;
+const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=4;
+const unsigned int BUILD_AREA_VERTICAL_OVERLAP=4;
+const unsigned int BUILD_AREA_EXTENTION_WIDTH=8;
+const unsigned int BUILD_AREA_EXTENTION_HEIGHT=8;
 const unsigned int BUILDING_PADDING=2;
 ///With the following enabled, the new construction manager will try to place buildings as close together as possible that still satisfy the padding.
 const bool CRAMP_BUILDINGS=true;
 const unsigned int NOPOS=1023;
-const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=1;
+const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=0;
 const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 {
-{{AINicowar::MAXIMUM, AINicowar::POLL_CORN}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
-{{AINicowar::MAXIMUM, AINicowar::POLL_CORN}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
-{{AINicowar::MAXIMUM, AINicowar::POLL_TREES}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::POLL_CORN}, {AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::POLL_CORN}, {AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::POLL_TREES}, {AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}},
 {{AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
 {{AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
-{{AINicowar::MAXIMUM, AINicowar::POLL_STONE}, {AINicowar::MAXIMUM, AINicowar::POLL_TREES}, {AINicowar::MAXIMUM, AINicowar::NONE}},
+{{AINicowar::MAXIMUM, AINicowar::POLL_STONE}, {AINicowar::MAXIMUM, AINicowar::POLL_TREES}, {AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}},
 {{AINicowar::MAXIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
 {{AINicowar::MINIMUM, AINicowar::FRIENDLY_BUILDINGS}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
 {{AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}, {AINicowar::MAXIMUM, AINicowar::NONE}},
@@ -664,9 +668,12 @@ const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 };
 const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-{1, 1, 3, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
-const unsigned int MINIMUM_TO_CONSTRUCT_NEW=2;
+{1, 4, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
+///How many units it requires to constitute construction another building, per type
+const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
+{20, 5, 10, 20, 20, 20, 20, 15, 0, 0, 0, 0, 0};
 
 ///This constant turns on debugging output
 const bool AINicowar_DEBUG = true;
