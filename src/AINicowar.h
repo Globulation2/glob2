@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <algorithm>
 #include "IntBuildingType.h"
 #include <map>
+#include "Utilities.h"
 
 using namespace std;
 
@@ -679,12 +680,16 @@ const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
 const bool AINicowar_DEBUG = true;
 ///@}
 
+inline unsigned int syncRandAdapter(unsigned int x)
+{
+	return syncRand()%x;
+}
 
 ///Shuffles the given list.
 template<typename T> void list_shuffle(std::list<T>& l)
 {
 	std::vector<T> v(l.begin(), l.end());
-	std::random_shuffle(v.begin(), v.end());
+	std::random_shuffle(v.begin(), v.end(), syncRandAdapter);
 	typename std::list<T>::iterator i1 = l.begin();
 	typename std::vector<T>::iterator i2 = v.begin();
 	while (i1!=l.end())
@@ -702,4 +707,7 @@ inline std::ostream& operator<<(std::ostream& o, const AINicowar::zone& z)
 	o<<"zone(x="<<z.x<<", y="<<z.y<<", width="<<z.width<<", height="<<z.height<<")";
 	return o;
 }
+
+
+
 #endif

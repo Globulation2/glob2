@@ -1102,7 +1102,7 @@ void AINicowar::startNewConstruction(void)
 		if (b)
 			buildings.push_back(b);
 	}
-	random_shuffle(buildings.begin(), buildings.end());
+	random_shuffle(buildings.begin(), buildings.end(), syncRandAdapter);
 
 	//Look through the buildings and find one that needs to be upgraded or repaired, and if their are atleast 4 of the correct unit type available to upgrade it, then do it.
 	for (vector<Building*>::iterator i = buildings.begin(); i!=buildings.end(); i++)
