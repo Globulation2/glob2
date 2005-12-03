@@ -67,9 +67,13 @@ class AINicowar : public AIImplementation
 		int getFreeUnits(int ability, int level);
 		int timer;
 		int iteration;
+
+		unsigned int center_x;
+		unsigned int center_y;
+		///Sets the center x and center y based on the currently viewable squares.
+		void setCenter();
+
 		std::queue<Order*> orders;
-		///Checks if the given spot is free of flags
-		bool isFreeOfFlags(unsigned int x, unsigned int y);
 		///Returns the building* of the gid, or NULL
 		Building* getBuildingFromGid(int gid)
 		{
@@ -106,6 +110,8 @@ class AINicowar : public AIImplementation
 			HIDDEN_SQUARES,
 			///The number of squares that aren't hidden
 			VISIBLE_SQUARES,
+			///Returns the distance between the center square and the village center
+			CENTER_DISTANCE,
 			///Any of our opponents buildings.
 			ENEMY_BUILDINGS,
 			///This teams buildings
@@ -140,6 +146,7 @@ class AINicowar : public AIImplementation
 			unsigned int height;
 
 		};
+
 		///Represents a single pollRecord. It has the information for the zone, as well as the score and type of information that as polled for.
 		struct pollRecord
 		{
@@ -160,10 +167,6 @@ class AINicowar : public AIImplementation
 		///Polls a specific region for the number of objects given by type, which can be one of
 		///the above enum.
 		unsigned int pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type);
-
-		///Polls the entire map using the given information, returning the n top spots and their
-		///information.
-		std::vector<pollRecord> pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollModifier mod, pollType poll_type);
 
 		///Returns the placement of a certain psoition in a pollRecord vector. This handles
 		///multiple pollRecords being tied for a certain place. The list must be sorted.
@@ -203,6 +206,28 @@ class AINicowar : public AIImplementation
 			}
 		};
 
+		///This contains all of the information for a single poll of getBestZones. Its obvious that there
+		///are many possible factors that can go into a poll.
+		struct poll
+		{
+			pollModifier mod_1;
+			pollType type_1;
+			pollModifier mod_2;
+			pollType type_2;
+			pollModifier mod_3;
+			pollType type_3;
+			pollModifier mod_minimum;
+			pollType minimum_type;
+			unsigned int minimum_score;
+			pollModifier mod_maximum;
+			pollType maximum_type;
+			unsigned int maximum_score;
+			poll() :	mod_1(MAXIMUM), type_1(NONE), mod_2(MAXIMUM), type_2(NONE), mod_3(MAXIMUM), type_3(NONE),
+					mod_minimum(MAXIMUM), minimum_type(NONE), minimum_score(0), mod_maximum(MAXIMUM),
+					maximum_type(NONE), maximum_score(0)
+					{}
+		};
+
 		///Returns the zones in order of scores of each poll type: a, b, and c,
 		///where a is prioritized over b and b is prioritized over c. extention_width
 		///and extention_height cause getBestZones to poll a zone larger than
@@ -211,7 +236,7 @@ class AINicowar : public AIImplementation
 		///as well. The extentions are applied to both the top and the bottom
 		///of the zone, so the total width or height of the zone increases by two
 		///times the extention.
-		std::vector<zone> getBestZones(pollModifier amod, pollType a, pollModifier bmod, pollType b, pollModifier cmod, pollType c, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height, unsigned int minimum_friendly_buildings);
+		std::vector<zone> getBestZones(poll p, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height);
 		///@}
 
 		///@name AINicowar Upgrade and Repair Manegement System
@@ -326,7 +351,7 @@ class AINicowar : public AIImplementation
 		///adds in a NULL pointer, and this function will search out for exploration
 		///flags that have been create, that are not in the active_exploration record
 		///list yet. And it puts them there, as well as assigning them the right radius.
-		void findCreatedFlags(void);
+		void updateExplorationFlags(void);
 
 		///Controls the swarms in order to get the desired numbers of explorers. It puts
 		///the explorers creation at top priority, and if multiple explorers need to be
@@ -343,9 +368,11 @@ class AINicowar : public AIImplementation
 		///done being explored, it can move on to explore other regions.
 		std::list<explorationRecord> active_exploration;
 
-		///Gives the number of desired explorers, which moderateSpawnExplorers will
-		///control swarms in order to meet.
-		unsigned int desired_explorers;
+		///Checks if the given spot is free of flags.
+		bool isFreeOfFlags(unsigned int x, unsigned int y);
+
+
+		unsigned int explorers_wanted;
 		///True if explorers that are intended to be used in an attack are being created.
 		bool developing_attack_explorers;
 		///True if the conditions are right for an explorer attack.
@@ -358,6 +385,8 @@ class AINicowar : public AIImplementation
 		struct attackRecord
 		{
 			unsigned int target;
+			unsigned int target_x;
+			unsigned int target_y;
 			Building* flag;
 			unsigned int flagx;
 			unsigned int flagy;
@@ -556,7 +585,7 @@ const int updatePendingConstruction_TIME=3;
 const int startNewConstruction_TIME=6;
 const int reassignConstruction_TIME=9;
 const int exploreWorld_TIME=12;
-const int findCreatedFlags_TIME=15;
+const int updateExplorationFlags_TIME=15;
 const int moderateSwarmsForExplorers_TIME=18;
 const int explorerAttack_TIME=21;
 const int targetEnemy_TIME=24;
@@ -578,8 +607,10 @@ const int updateBuildings_TIME=60;
 //or the explorers will leave small strips at the right side of maps unexplored.
 const unsigned int EXPLORER_REGION_WIDTH=16;
 const unsigned int EXPLORER_REGION_HEIGHT=16;
-const int EXPLORER_REGION_HORIZONTAL_OVERLAP=0;
-const int EXPLORER_REGION_VERTICAL_OVERLAP=0;
+const int EXPLORER_REGION_HORIZONTAL_OVERLAP=8;
+const int EXPLORER_REGION_VERTICAL_OVERLAP=8;
+const int EXPLORER_REGION_HORIZONTAL_EXTENTION=0;
+const int EXPLORER_REGION_VERTICAL_EXTENTION=0;
 //Its reccomended that this number is an even number.
 const unsigned int EXPLORERS_PER_REGION=2;
 const unsigned int EXPLORATION_FLAG_RADIUS=12;
@@ -589,6 +620,8 @@ const unsigned int EXPLORER_ATTACK_AREA_WIDTH=8;
 const unsigned int EXPLORER_ATTACK_AREA_HEIGHT=8;
 const int EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP=4;
 const int EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP=4;
+const int EXPLORER_ATTACK_AREA_HORIZONTAL_EXTENTION=0;
+const int EXPLORER_ATTACK_AREA_VERTICAL_EXTENTION=0;
 const unsigned int EXPLORERS_PER_ATTACK=2;
 const unsigned int EXPLORATION_FLAG_ATTACK_RADIUS=5;
 const unsigned int EXPLORER_ATTACKS_AT_ONCE=4;
@@ -635,6 +668,7 @@ const IntBuildingType::Number ATTACK_PRIORITY[IntBuildingType::NB_BUILDING-3] =
 const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
 const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
 const unsigned int ATTACK_WARRIOR_MINIMUM=4;
+const unsigned int MINIMUM_BARRACKS_LEVEL=0;
 const unsigned int MAX_ATTACKS_AT_ONCE=3;
 const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*1.5);
 
@@ -669,12 +703,12 @@ const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 };
 const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-{1, 4, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+{1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 ///How many units it requires to constitute construction another building, per type
 const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-{20, 5, 10, 20, 20, 20, 20, 15, 0, 0, 0, 0, 0};
+{20, 8, 10, 20, 20, 20, 20, 15, 0, 0, 0, 0, 0};
 
 ///This constant turns on debugging output
 const bool AINicowar_DEBUG = true;
@@ -708,6 +742,11 @@ inline std::ostream& operator<<(std::ostream& o, const AINicowar::zone& z)
 	return o;
 }
 
-
+inline unsigned int intdistance(unsigned int a, unsigned int b)
+{
+	if(a>b)
+		return a-b;
+	return b-a;
+}
 
 #endif

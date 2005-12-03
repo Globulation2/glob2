@@ -52,7 +52,7 @@ void AINicowar::init(Player *player)
 {
 	timer=0;
 	iteration=0;
-	desired_explorers=0;
+	explorers_wanted=0;
 	developing_attack_explorers=false;
 	explorer_attacking=false;
 	enemy=NULL;
@@ -150,7 +150,7 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 		active_exploration.push_back(er);
 	}
 	stream->readLeaveSection();
-	desired_explorers=stream->readUint32("desired_explorers");
+	explorers_wanted=stream->readUint32("explorers_wanted");
 	developing_attack_explorers=stream->readUint8("developing_attack_explorers");
 	explorer_attacking=stream->readUint8("explorer_attacking");
 
@@ -322,7 +322,7 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 		stream->writeUint8(i->isAssaultFlag);
 	}
 	stream->writeLeaveSection();
-	stream->writeUint32(desired_explorers, "desired_explorers");
+	stream->writeUint32(explorers_wanted, "explorers_wanted");
 	stream->writeUint8(developing_attack_explorers, "developing_attack_explorers");
 	stream->writeUint8(explorer_attacking, "explorer_attacking");
 
@@ -451,6 +451,8 @@ Order *AINicowar::getOrder(void)
 
 	if(timer%TIMER_ITERATION==0)
 	{
+		if(iteration==0)
+			setCenter();
 		iteration+=1;
 		std::cout<<"AINicowar: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<endl;
 	}
@@ -481,9 +483,9 @@ Order *AINicowar::getOrder(void)
 			//Create, move, or destroy flags as neccecary to explore the world
 			exploreWorld();
 			break;
-		case findCreatedFlags_TIME:
+		case updateExplorationFlags_TIME:
 			//Find flags created by exploreWorld and add them to the record books
-			findCreatedFlags();
+			updateExplorationFlags();
 			break;
 		case moderateSwarmsForExplorers_TIME:
 			//Modify swarm ratios in order to maintain the desired number of explorers.
@@ -561,26 +563,25 @@ Order *AINicowar::getOrder(void)
 
 
 
-bool AINicowar::isFreeOfFlags(unsigned int x, unsigned int y)
+void AINicowar::setCenter()
 {
-	Building** myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i+=1)
+	unsigned int x_total=0;
+	unsigned int y_total=0;
+	unsigned int square_total=0;
+	for(int x=0; x < map->getW(); ++x)
 	{
-		Building *b=myBuildings[i];
-		if (b)
+		for(int y=0; y<map->getH(); ++y)
 		{
-			if (b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG ||
-				b->type->shortTypeNum==IntBuildingType::WAR_FLAG ||
-				b->type->shortTypeNum==IntBuildingType::CLEARING_FLAG)
+			if(map->isMapDiscovered(x, y, team->me))
 			{
-				if (b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
-				{
-					return false;
-				}
+				x_total+=x;
+				y_total+=y;
+				square_total++;
 			}
 		}
 	}
-	return true;
+	center_x=x_total/square_total;
+	center_y=y_total/square_total;
 }
 
 
@@ -622,6 +623,22 @@ unsigned int AINicowar::pollArea(unsigned int x, unsigned int y, unsigned int wi
 {
 	if (poll_type == NONE)
 		return 0;
+
+	if (poll_type == CENTER_DISTANCE)
+	{
+		unsigned int score=0;
+/*
+		if(mod==MAXIMUM)
+			score=intdistance((x+width/2), center_x) + intdistance((y+height/2), center_y);
+		if(mod==MINIMUM)
+			score=map->getW()/2-intdistance((x+width/2), center_x) + map->getH()/2-intdistance((y+height/2), center_y);
+*/
+		if(mod==MAXIMUM)
+			score=intdistance((x+width), center_x) + intdistance((y+height), center_y);
+		if(mod==MINIMUM)
+			score=map->getW()-intdistance((x+width), center_x) + map->getH()-intdistance((y+height), center_y);
+		return score;
+	}
 
 	unsigned int bound_h=x+width;
 	if(static_cast<int>(bound_h)>map->getW())
@@ -701,7 +718,11 @@ unsigned int AINicowar::pollArea(unsigned int x, unsigned int y, unsigned int wi
 					if (map->isRessource(x, y, STONE))
 						score++;
 					break;
+				case CENTER_DISTANCE:
+					assert(false);
+					break;
 				case NONE:
+					assert(false);
 					break;
 			}
 		}
@@ -736,29 +757,6 @@ AINicowar::zone AINicowar::getZone(unsigned int x, unsigned int y, unsigned int 
 
 
 
-std::vector<AINicowar::pollRecord> AINicowar::pollMap(unsigned int area_width, unsigned int area_height, int horizontal_overlap, int vertical_overlap, unsigned int requested_spots, pollModifier mod, pollType poll_type)
-{
-
-	vector<AINicowar::pollRecord> best;
-	best.reserve((map->getW()/(area_width-horizontal_overlap))*
-		map->getH()/(area_height-vertical_overlap));
-
-	for (unsigned int x=0; x<=map->getW()-area_width; x+=(area_width)-(horizontal_overlap))
-	{
-		for (unsigned int y=0; y<=map->getH()-area_height; y+=(area_height)-(vertical_overlap))
-		{
-			int score=pollArea(x, y, area_width, area_height, mod, poll_type);
-			best.push_back(pollRecord(x, y, area_width, area_height, score, poll_type));
-		}
-	}
-	std::sort(best.begin(), best.end(), greater<pollRecord>());
-	best.erase(best.begin()+requested_spots, best.end());
-	return best;
-}
-
-
-
-
 int AINicowar::getPositionScore(const std::vector<pollRecord>& polls, const std::vector<pollRecord>::const_iterator& iter)
 {
 	int score=0;
@@ -779,15 +777,15 @@ int AINicowar::getPositionScore(const std::vector<pollRecord>& polls, const std:
 
 
 
-std::vector<AINicowar::zone> AINicowar::getBestZones(pollModifier amod, pollType a, pollModifier bmod, pollType b, pollModifier cmod, pollType c, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height, unsigned int minimum_friendly_buildings)
+std::vector<AINicowar::zone> AINicowar::getBestZones(poll p, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height)
 {
 	std::vector<pollRecord> a_list;
 	std::vector<pollRecord> b_list;
 	std::vector<pollRecord> c_list;
 
-	for (unsigned int x=0; x<=map->getW()-width; x+=width-horizontal_overlap)
+	for (unsigned int x=0; x<=static_cast<unsigned int>(map->getW()-horizontal_overlap); x+=width-horizontal_overlap)
 	{
-		for (unsigned int y=0; y<=map->getH()-height; y+=height-vertical_overlap)
+		for (unsigned int y=0; y<=static_cast<unsigned int>(map->getH()-vertical_overlap); y+=height-vertical_overlap)
 		{
 			int full_x=x-extention_width;
 			if(full_x<0)
@@ -798,8 +796,13 @@ std::vector<AINicowar::zone> AINicowar::getBestZones(pollModifier amod, pollType
 
 			int full_w=width+2*extention_width;
 			int full_h=height+2*extention_height;
-			if(pollArea(full_x, full_y, full_w, full_h, MAXIMUM, FRIENDLY_BUILDINGS)<minimum_friendly_buildings)
+
+			if(pollArea(full_x, full_y, full_w, full_h, p.mod_minimum, p.minimum_type)<p.minimum_score)
 				continue;
+
+			if(pollArea(full_x, full_y, full_w, full_h, p.mod_maximum, p.maximum_type)>p.maximum_score)
+				continue;
+
 			pollRecord pr_a;
 			pr_a.x=x;
 			pr_a.y=y;
@@ -807,9 +810,9 @@ std::vector<AINicowar::zone> AINicowar::getBestZones(pollModifier amod, pollType
 			pr_a.height=height;
 			pollRecord pr_b=pr_a;
 			pollRecord pr_c=pr_b;
-			pr_a.score=pollArea(full_x, full_y, full_w, full_h, amod, a);
-			pr_b.score=pollArea(full_x, full_y, full_w, full_h, bmod, b);
-			pr_c.score=pollArea(full_x, full_y, full_w, full_h, cmod, c);
+			pr_a.score=pollArea(full_x, full_y, full_w, full_h, p.mod_1, p.type_1);
+			pr_b.score=pollArea(full_x, full_y, full_w, full_h, p.mod_2, p.type_2);
+			pr_c.score=pollArea(full_x, full_y, full_w, full_h, p.mod_3, p.type_3);
 			a_list.push_back(pr_a);
 			b_list.push_back(pr_b);
 			c_list.push_back(pr_c);
@@ -1192,58 +1195,63 @@ void AINicowar::startNewConstruction(void)
 
 void AINicowar::exploreWorld(void)
 {
-	std::vector<Building*> orphaned_flags;
-
 	unsigned int exploration_count=0;
 	unsigned int attack_count=0;
-	for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end();)
+	for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
 	{
-		bool was_orphaned=false;
-		if(!i->isAssaultFlag || explorer_attacking)
-		{
-			int score=0;
-			if(i->isAssaultFlag)
-				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, MAXIMUM, ENEMY_BUILDINGS);
-			else
-				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, MAXIMUM, HIDDEN_SQUARES);
 
-			if(score==0)
-			{
-				orphaned_flags.push_back(i->flag);
-				was_orphaned=true;
-				i=active_exploration.erase(i);
-			}
-			else
-			{
-				if(i->isAssaultFlag)
-					attack_count++;
-				else
-					exploration_count++;
-			}
-		}
-		if (!was_orphaned)
-		{
-			++i;
-		}
+		if(i->isAssaultFlag)
+			attack_count++;
+		else
+			exploration_count++;
 	}
 
-	if (exploration_count==EXPLORER_MAX_REGIONS_AT_ONCE && attack_count==EXPLORER_ATTACKS_AT_ONCE)
-		return;
+//	std::cout<<"active_exploration.size()="<<active_exploration.size()<<endl;
 
 	int wanted_exploration=EXPLORER_MAX_REGIONS_AT_ONCE-exploration_count;
 	int wanted_attack=EXPLORER_ATTACKS_AT_ONCE-attack_count;
 	if(! explorer_attacking )
 		wanted_attack=0;
-	vector<pollRecord> best = pollMap(EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP, EXPLORER_REGION_VERTICAL_OVERLAP, exploration_count+wanted_exploration+1, MAXIMUM, HIDDEN_SQUARES);
 
-	vector<pollRecord> best_attack = pollMap(EXPLORER_ATTACK_AREA_WIDTH, EXPLORER_ATTACK_AREA_HEIGHT, EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP, EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP, attack_count+wanted_attack+1, MAXIMUM, ENEMY_BUILDINGS);
+	if(wanted_exploration==0 && wanted_attack==0)
+		return;
 
-	std::copy(best_attack.begin(), best_attack.end(), back_insert_iterator<vector<pollRecord> >(best));
+	poll p;
+	p.mod_1=MAXIMUM;
+	p.type_1=HIDDEN_SQUARES;
+	p.mod_2=MINIMUM;
+	p.type_2=CENTER_DISTANCE;
+	p.mod_minimum=MAXIMUM;
+	p.minimum_type=VISIBLE_SQUARES;
+	p.minimum_score=1;
+	vector<zone> best = getBestZones(p, EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP,
+		EXPLORER_REGION_VERTICAL_OVERLAP, EXPLORER_REGION_HORIZONTAL_EXTENTION,
+		EXPLORER_REGION_VERTICAL_EXTENTION);
+	unsigned int size=best.size();
 
-	for(vector<pollRecord>::iterator i = best.begin(); i!=best.end();)
+//	std::cout<<"best.size()="<<best.size()<<endl;
+
+	p.mod_1=MAXIMUM;
+	p.type_1=ENEMY_BUILDINGS;
+	p.mod_2=MAXIMUM;
+	p.type_2=NONE;
+	p.mod_minimum=MAXIMUM;
+	p.minimum_type=ENEMY_BUILDINGS;
+	p.minimum_score=1;
+	vector<zone> best_attack = getBestZones(p, EXPLORER_ATTACK_AREA_WIDTH, EXPLORER_ATTACK_AREA_HEIGHT, EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP,
+		EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP, EXPLORER_ATTACK_AREA_HORIZONTAL_EXTENTION,
+		EXPLORER_ATTACK_AREA_VERTICAL_EXTENTION);
+
+	std::copy(best_attack.begin(), best_attack.end(), back_insert_iterator<vector<zone> >(best));
+
+	vector<zone>::iterator attack_start=best.begin()+size;
+
+	///Erase any zones that already have flags in them
+	for(vector<zone>::iterator i = best.begin(); i!=best.end();)
 	{
 		if(!isFreeOfFlags(i->x+i->width/2, i->y+i->height/2))
 		{
+//			std::cout<<"removing zone from list!"<<endl;
 			i = best.erase(i);
 		}
 		else
@@ -1252,83 +1260,62 @@ void AINicowar::exploreWorld(void)
 		}
 	}
 
-	if (best.at(0).score==0)
+	vector<zone>::iterator top=best.begin();
+	if(top<attack_start && pollArea(top->x, top->y, top->width, top->height, MAXIMUM, HIDDEN_SQUARES)==0)
 	{
-		for(std::vector<Building*>::iterator i = orphaned_flags.begin(); i!=orphaned_flags.end(); i++)
-		{
-			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: exploreWorld: Removing an existing explorer flag, it is no longer needed."<<endl;
-			desired_explorers-=EXPLORERS_PER_REGION;
-			orders.push(new OrderDelete((*i)->gid));
-		}
+//		std::cout<<"Doing nothing! wanted_exploration="<<wanted_exploration<<";"<<endl;
 		return;
 	}
 
-	else
+	for (vector<zone>::iterator i=best.begin(); i!=best.end(); ++i)
 	{
-		for (int i=0; i<wanted_exploration+wanted_attack; ++i)
-		{
-			pollRecord pr = best.at(0);
-			best.erase(best.begin());
-			explorationRecord exploration_record;
-			//This flag will be picked up by findCreatedFlags
-			exploration_record.flag=NULL;
-			exploration_record.flag_x=pr.x+(pr.width/2);
-			exploration_record.flag_y=pr.y+(pr.height/2);
-			exploration_record.zone_x=pr.x;
-			exploration_record.zone_y=pr.y;
-			exploration_record.width=pr.width;
-			exploration_record.height=pr.height;
-			if(pr.poll_type == HIDDEN_SQUARES)
-			{
-				exploration_record.assigned=EXPLORERS_PER_REGION;
-				exploration_record.radius=EXPLORATION_FLAG_RADIUS;
-				exploration_record.isAssaultFlag=false;
-			}
-			else
-			{
-				exploration_record.assigned=EXPLORERS_PER_ATTACK;
-				exploration_record.radius=EXPLORATION_FLAG_ATTACK_RADIUS;
-				exploration_record.isAssaultFlag=true;
-			}
+//		std::cout<<"wanted_exploration="<<wanted_exploration<<"; "<<endl;
+		zone z = *i;
+		if((i>=attack_start && wanted_attack==0) || (wanted_attack==0 && wanted_exploration==0))
+			break;
 
-			active_exploration.push_back(exploration_record);
-			if(orphaned_flags.size()>0)
-			{
-				Building* orphaned_flag = orphaned_flags.at(0);
-				orphaned_flags.erase(orphaned_flags.begin());
-				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: exploreWorld: Moving an existing explorer flag from position "<<orphaned_flag->posX<<","<<orphaned_flag->posY<<" to position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
-				orders.push(new OrderMoveFlag(orphaned_flag->gid, exploration_record.flag_x, exploration_record.flag_y, true));
-				return;
-			}
-			else
-			{
-				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: exploreWorld: Creating a new flag at position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
-				desired_explorers+=EXPLORERS_PER_REGION;
-				orders.push(new OrderCreate(team->teamNumber, exploration_record.flag_x, exploration_record.flag_y,typeNum));
-			}
+		if(wanted_exploration==0)
+			continue;
+
+		explorationRecord exploration_record;
+		//This flag will be picked up by findCreatedFlags
+		exploration_record.flag=NULL;
+		exploration_record.flag_x=z.x+(z.width/2);
+		exploration_record.flag_y=z.y+(z.height/2);
+		exploration_record.zone_x=z.x;
+		exploration_record.zone_y=z.y;
+		exploration_record.width=z.width;
+		exploration_record.height=z.height;
+		if(i<attack_start)
+		{
+			exploration_record.assigned=EXPLORERS_PER_REGION;
+			exploration_record.radius=EXPLORATION_FLAG_RADIUS;
+			exploration_record.isAssaultFlag=false;
+			wanted_exploration--;
 		}
+		else
+		{
+			exploration_record.assigned=EXPLORERS_PER_ATTACK;
+			exploration_record.radius=EXPLORATION_FLAG_ATTACK_RADIUS;
+			exploration_record.isAssaultFlag=true;
+			wanted_attack--;
+		}
+
+		active_exploration.push_back(exploration_record);
+
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
+		if(AINicowar_DEBUG)
+			std::cout<<"AINicowar: exploreWorld: Creating a new flag at position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
+		orders.push(new OrderCreate(team->teamNumber, exploration_record.flag_x, exploration_record.flag_y,typeNum));
+		explorers_wanted+=exploration_record.assigned;
 	}
 }
 
 
 
 
-void AINicowar::findCreatedFlags(void)
+void AINicowar::updateExplorationFlags(void)
 {
-	//Find the record that has NULL for a flag, if it exists.
-	std::vector<explorationRecord*> explr;
-	for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
-	{
-		if(i->flag == NULL)
-			explr.push_back(&(*i));
-	}
-	if (explr.size()==0)
-		return;
-
 	//Iterate through the buildings (which includes flags), looking for a flag that is not on the lists, that is in the right
 	//spot to be one of our null records flags.
 	Building** myBuildings=team->myBuildings;
@@ -1339,34 +1326,74 @@ void AINicowar::findCreatedFlags(void)
 		{
 			if (b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
 			{
-				bool found=false;
-				for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
+				for (list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
 				{
-					if(i->flag == b)
+					if (i->flag==NULL && b->posX==static_cast<int>(i->flag_x) && b->posY==static_cast<int>(i->flag_y) && b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
 					{
-						found=true;
+						i->flag=b;
+						if(AINicowar_DEBUG)
+							std::cout<<"AINicowar: updateExplorationFlags: Found a newly created flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<endl;
+						orders.push(new OrderModifyFlag(b->gid, i->radius));
+						orders.push(new OrderModifyBuilding(b->gid, i->assigned));
 						break;
-					}
-				}
-				//If the flag is not in the list, look through our null records list and see if it matches any
-				if (!found)
-				{
-					for (vector<explorationRecord*>::iterator i = explr.begin(); i!=explr.end(); i++)
-					{
-						if (b->posX==static_cast<int>((*i)->flag_x) && b->posY==static_cast<int>((*i)->flag_y))
-						{
-							(*i)->flag=b;
-							if(AINicowar_DEBUG)
-								std::cout<<"AINicowar: findCreatedFlags: Found a newly created or moved flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<endl;
-							orders.push(new OrderModifyFlag(b->gid, (*i)->radius));
-							orders.push(new OrderModifyBuilding(b->gid, (*i)->assigned));
-							break;
-						}
 					}
 				}
 			}
 		}
 	}
+
+	for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end();)
+	{
+		if((!i->isAssaultFlag || explorer_attacking) && i->flag!=NULL)
+		{
+			int score=0;
+			if(i->isAssaultFlag)
+				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, MAXIMUM, ENEMY_BUILDINGS);
+			else
+				score=pollArea(i->zone_x, i->zone_y, i->width, i->height, MAXIMUM, HIDDEN_SQUARES);
+
+			if(score==0)
+			{
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: updateExplorationFlags: Removing a flag this is no longer needed at "<<i->flag_x<<", "<<i->flag_y<<"."<<endl;
+				orders.push(new OrderDelete(i->flag->gid));
+				explorers_wanted-=i->assigned;
+				i=active_exploration.erase(i);
+			}
+			else
+				++i;
+		}
+		else
+			++i;
+	}
+
+}
+
+
+
+
+bool AINicowar::isFreeOfFlags(unsigned int x, unsigned int y)
+{
+	//Check if theres any flags of other types on the spot.
+	Building** myBuildings=team->myBuildings;
+	for (int i=0; i<1024; i+=1)
+	{
+		Building *b=myBuildings[i];
+		if (b)
+		{
+			if (    b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG ||
+				b->type->shortTypeNum==IntBuildingType::WAR_FLAG ||
+				b->type->shortTypeNum==IntBuildingType::CLEARING_FLAG)
+			{
+				if (b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 
@@ -1376,7 +1403,7 @@ void AINicowar::moderateSwarmsForExplorers(void)
 {
 	//I've raised the priority on explorers temporarily for testing.
 	//	changeUnits("aircontrol", EXPLORER, static_cast<int>(desired_explorers/2) , desired_explorers, 0);
-	changeUnits("aircontrol", EXPLORER, 0, static_cast<int>(desired_explorers/2), desired_explorers);
+	changeUnits("aircontrol", EXPLORER, 0, static_cast<int>(explorers_wanted/2), explorers_wanted);
 }
 
 
@@ -1405,7 +1432,6 @@ void AINicowar::explorerAttack(void)
 	if (!developing_attack_explorers)
 	{
 		developing_attack_explorers=true;
-		desired_explorers+=static_cast<int>(EXPLORERS_PER_ATTACK*EXPLORER_ATTACKS_AT_ONCE);
 		return;
 	}
 
@@ -1484,6 +1510,8 @@ void AINicowar::attack()
 			}
 		}
 	}
+	if(max_barracks_level<MINIMUM_BARRACKS_LEVEL+1)
+		return;
 
 	unsigned int available_units = getFreeUnits(ATTACK_STRENGTH, max_barracks_level+1);
 
@@ -1517,6 +1545,8 @@ void AINicowar::attack()
 					continue;
 				attackRecord ar;
 				ar.target=b->gid;
+				ar.target_x=b->posX;
+				ar.target_y=b->posY;
 				ar.flag=NULL;
 				ar.flagx=b->posX+(b->type->width/2);
 				ar.flagy=b->posY+(b->type->height/2);
@@ -1547,22 +1577,6 @@ void AINicowar::attack()
 
 void AINicowar::updateAttackFlags()
 {
-	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
-	{
-		if(!buildingStillExists(j->target))
-		{
-			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flag->posX<<","<<j->flag->posY<<" flag."<<endl;
-			orders.push(new OrderDelete(j->flag->gid));
-			j=attacks.erase(j);
-			continue;
-		}
-		else
-		{
-			++j;
-		}
-	}
-
 	for(int i=0; i<1024; ++i)
 	{
 		Building* b = team->myBuildings[i];
@@ -1586,6 +1600,23 @@ void AINicowar::updateAttackFlags()
 					}
 				}
 			}
+		}
+	}
+
+	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
+	{
+		Building* b = getBuildingFromGid(j->target);
+		if(b==NULL || b->posX!=static_cast<int>(j->target_x) || b->posY!=static_cast<int>(j->target_y))
+		{
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flag->posX<<","<<j->flag->posY<<" flag."<<endl;
+			orders.push(new OrderDelete(j->flag->gid));
+			j=attacks.erase(j);
+			continue;
+		}
+		else
+		{
+			++j;
 		}
 	}
 
@@ -2078,15 +2109,20 @@ AINicowar::upgradeData AINicowar::findMaxSize(unsigned int building_type, unsign
 AINicowar::point AINicowar::findBestPlace(unsigned int building_type)
 {
 	//Get the best zone based on a number of factors
-	vector<zone> zones = getBestZones(  static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][0][0]),
-		static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][0][1]),
-		static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][1][0]),
-		static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][1][1]),
-		static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][2][0]),
-		static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][2][1]),
-		BUILD_AREA_WIDTH, BUILD_AREA_HEIGHT, BUILD_AREA_HORIZONTAL_OVERLAP,
+	poll zp;
+	zp.mod_1=static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][0][0]);
+	zp.type_1=static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][0][1]);
+	zp.mod_2=static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][1][0]);
+	zp.type_2=static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][1][1]);
+	zp.mod_3=static_cast<pollModifier>(CONSTRUCTION_FACTORS[building_type][2][0]);
+	zp.type_3=static_cast<pollType>(CONSTRUCTION_FACTORS[building_type][2][1]);
+	zp.mod_minimum=MAXIMUM;
+	zp.minimum_type=FRIENDLY_BUILDINGS;
+	zp.minimum_score=MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT;
+
+	vector<zone> zones = getBestZones(zp, BUILD_AREA_WIDTH, BUILD_AREA_HEIGHT, BUILD_AREA_HORIZONTAL_OVERLAP,
 		BUILD_AREA_VERTICAL_OVERLAP, BUILD_AREA_EXTENTION_WIDTH,
-		BUILD_AREA_EXTENTION_HEIGHT, MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT);
+		BUILD_AREA_EXTENTION_HEIGHT);
 
 	//Iterate through the zones
 	for(std::vector<zone>::iterator i = zones.begin(); i!=zones.end(); ++i)
@@ -2279,7 +2315,7 @@ void AINicowar::constructBuildings()
 
 	if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 	{
-		std::cout<<"Fail 1, too much construction."<<endl;
+//		std::cout<<"Fail 1, too much construction."<<endl;
 		return;
 	}
 
@@ -2307,28 +2343,28 @@ void AINicowar::constructBuildings()
 		{
 			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 			{
-				std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				//				std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				return;
 			}
 			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW)
 			{
-				std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				//				std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				return;
 			}
 			if(under_construction_counts[i]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i])
 			{
-				std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				//				std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
 			}
 			if(counts[i]>=num_buildings_wanted[i])
 			{
-				std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				//				std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
 			}
 			point p = findBestPlace(i);
 			if(p.x == NOPOS || p.y==NOPOS)
 			{
-				std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				//				std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
 			}
 
@@ -2406,7 +2442,7 @@ void AINicowar::calculateBuildings()
 	for (int i=0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
 		if(UNITS_FOR_BUILDING[i]!=0)
-			num_buildings_wanted[i]=std::max(total_units/UNITS_FOR_BUILDING[i], static_cast<unsigned int>(1));
+			num_buildings_wanted[i]=total_units/UNITS_FOR_BUILDING[i]+1;
 		else
 			num_buildings_wanted[i]=0;
 	}
