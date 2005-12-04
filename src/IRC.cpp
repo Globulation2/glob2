@@ -69,7 +69,7 @@ bool IRC::connect(const char *serverName, int serverPort, const char *nick)
 	}
 
 	SDLNet_TCP_AddSocket(socketSet, socket);
-        
+	
 	// Here we change the nick on yog for the IRC
 	// changing from nick = "nick" to YOGnick = "YOGnick"
 	memcpy(this->nick, "[YOG]", 5);
@@ -150,10 +150,16 @@ void IRC::interpreteIRCMessage(const char *message)
 	}
 
 	// this is a debug printf to reverse engineer IRC protocol
-	//printf("IRC command is : [%s] Source is [%s]\n", cmd, source);
+	if (verbose)
+		printf("IRC command is : [%s] Source is [%s] Prefix is [%s]\n", cmd, source, prefix);
 	if (strcasecmp(cmd, "PING")==0)
 	{
-		sendString("PONG");
+		char *argument=strtok(NULL, " \0");
+		if (verbose)
+			printf("IRC got PING, responding PONG with argument [%s]\n", argument);
+		std::string answer("PONG ");
+		answer += argument;
+		sendString(answer.c_str());
 	}
 	if (strcasecmp(cmd, "PRIVMSG")==0)
 	{
@@ -564,7 +570,7 @@ bool IRC::getString(char data[IRC_MESSAGE_SIZE])
 	}
 }
 
-bool IRC::sendString(char *data)
+bool IRC::sendString(const char *data)
 {
 	if (socket)
 	{

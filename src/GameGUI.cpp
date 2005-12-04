@@ -491,10 +491,17 @@ void GameGUI::step(void)
 	// do a yog step
 	yog->step();
 	
-	// do a irc step if we have to
+	// do a irc step if IRC is enabled
 	if (ircPtr)
+	{
 		ircPtr->step();
-	// TODO : should we read the datas now or let them for return to YOGScreen ?
+		// display IRC messages
+		while (ircPtr->isChatMessage())
+		{
+			addMessage(99, 255, 242, "<%s%s> %s", Toolkit::getStringTable()->getString("[from:]"), ircPtr->getChatMessageSource(), ircPtr->getChatMessage());
+			ircPtr->freeChatMessage();
+		}
+	}
 
 	// display yog chat messages
 	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
@@ -829,7 +836,11 @@ void GameGUI::processEvent(SDL_Event *event)
 						yog->sendMessage(message);
 				}
 				else if (message[0]=='/')
+				{
 					yog->sendMessage(message);
+					if (ircPtr && (message[1]=='/'))
+						ircPtr->sendCommand(&message[1]);
+				}
 				else
 					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message));
 				typingInputScreen->setText("");
