@@ -1,7 +1,7 @@
-Source of files not created from us :
+Source of files not created by us :
 
 Font :
-sans.ttf http://packages.debian.org/unstable/x11/ttf-freefont.html
+sans.ttf : /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf from ubuntu ttf-dejavu package (http://dejavu.sourceforge.net)
 
 Emoticon for alliance :
 kopete http://kopete.kde.org/
