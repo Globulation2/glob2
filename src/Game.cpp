@@ -353,21 +353,31 @@ void Game::executeOrder(Order *order, int localPlayer)
 			}
 		}
 		break;
-		case ORDER_MODIFY_WAR_FLAG:
+		case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderModifyWarFlag *omwf=(OrderModifyWarFlag *)order;
+			OrderModifyMinLevelToFlag *omwf=(OrderModifyMinLevelToFlag *)order;
 			int team=Building::GIDtoTeam(omwf->gid);
 			int id=Building::GIDtoID(omwf->gid);
 			Building *b=teams[team]->myBuildings[id];
 			if (b
 				&& b->buildingState==Building::ALIVE
 				&& b->type->defaultUnitStayRange
-				&& b->type->zonable[WARRIOR])
+				&& (b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
 			{
-				fprintf(logFile, "ORDER_MODIFY_WAR_FLAG");
-				b->minLevelToFlag=omwf->minLevelToFlag;
+				fprintf(logFile, "ORDER_MODIFY_MIN_LEVEL_TO_FLAG");
+				b->minLevelToFlag = omwf->minLevelToFlag;
+				// if it was another player, update local
+				if (order->sender != localPlayer)
+					b->minLevelToFlagLocal = b->minLevelToFlag;
+					
+				// flush all the actual units
+				int maxUnitWorkingSaved = b->maxUnitWorking;
+				b->maxUnitWorking = 0;
+				b->update();
+				b->maxUnitWorking = maxUnitWorkingSaved;
+				b->update();
 			}
 		}
 		break;

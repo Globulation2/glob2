@@ -668,3 +668,7 @@ touche enter : envoyer un message
 touche v : presser pour parler
 [Delete game]
 Effacer le jeu séléctionné
+[any explorer]
+Toute exploratrice
+[ground attack]
+Attaque au sol

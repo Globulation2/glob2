@@ -89,7 +89,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	clearingRessources[STONE]=false;
 	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
 	minLevelToFlag=0;
-	minLevelToFlagLocal=0;
+	minLevelToFlagLocal=minLevelToFlag;
 	
 	// building specific :
 	for(int i=0; i<MAX_NB_RESSOURCES; i++)

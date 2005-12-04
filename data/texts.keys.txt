@@ -333,3 +333,5 @@
 [shortcut explanation enter]
 [shortcut explanation v]
 [Delete game]
+[any explorer]
+[ground attack]

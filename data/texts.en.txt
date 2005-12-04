@@ -668,3 +668,7 @@ key enter : send a chat message
 key v : hold to speak
 [Delete game]
 Delete the selected game
+[any explorer]
+any explorer
+[ground attack]
+ground attack
