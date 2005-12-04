@@ -388,6 +388,12 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 	else if (action==TEXT_VALIDATED)
 	{
 		multiplayersHost->sendMessage(textInput->getText());
+		if (ircPtr)
+		{
+			const char *message = textInput->getText();
+			if ((message[0] == '/') && (message[1]=='/'))
+				ircPtr->sendCommand(&message[1]);
+		}
 		textInput->setText("");
 	}
 }
