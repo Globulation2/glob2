@@ -311,7 +311,6 @@ void IRC::interpreteIRCMessage(const char *message)
 			}
 		}
 	}
-
 }
 
 void IRC::step(void)

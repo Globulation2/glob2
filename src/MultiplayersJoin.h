@@ -26,6 +26,7 @@
 
 class MultiplayersJoin:public MultiplayersCrossConnectable
 {
+	static const bool verbose = false;
 public:
 	enum WaitingState
 	{
