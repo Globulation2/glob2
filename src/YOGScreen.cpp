@@ -183,10 +183,12 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			// execute game
 			if (rc==Engine::EE_NO_ERROR)
 			{
+				irc.leaveChannel(IRC_CHAN);
 				yog->gameStarted();
 				if (engine.run()==-1)
 					executionMode=-1;
 				yog->gameEnded();
+				irc.joinChannel(IRC_CHAN);
 			}
 			else if (rc==-1)
 				executionMode=-1;
@@ -415,9 +417,11 @@ void YOGScreen::onTimer(Uint32 tick)
 		{
 			Engine engine;
 			engine.startMultiplayer(multiplayersJoin);
+			irc.leaveChannel(IRC_CHAN);
 			yog->gameStarted();
 			int rc=engine.run();
 			yog->gameEnded();
+			irc.joinChannel(IRC_CHAN);
 			delete multiplayersJoin;
 			multiplayersJoin=new MultiplayersJoin(true);
 			assert(multiplayersJoin);

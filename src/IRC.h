@@ -49,8 +49,8 @@ public:
 	{
 		IRC_CHANNEL_SIZE = 200,
 		IRC_MESSAGE_SIZE = 512,
-		//! we are using freenode, and doc sates that maxlength is 16, as stated here: http://searchirc.com/network/freenode
-		IRC_NICK_SIZE = 16
+		//! we are using oftc, which says its nicklen is 30
+		IRC_NICK_SIZE = 30
 	};
 	
 	enum InfoMessageType
@@ -176,7 +176,7 @@ public:
 
 private:
 	//! Send a string in IRC format
-	bool sendString(char *data);
+	bool sendString(const char *data);
 	//! Get a string in IRC format
 	bool getString(char data[IRC_MESSAGE_SIZE]);
 };
