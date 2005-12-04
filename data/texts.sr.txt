@@ -431,7 +431,7 @@ sr
 [AICastor]
 ВИКастор
 [AINicowar]
-Nicowar
+Nicowar (unstable)
 [AIToubib]
 AIToubib
 [AIWarrush]

@@ -431,7 +431,7 @@ MINumbi
 [AICastor]
 MICastor
 [AINicowar]
-Nicowar
+Nicowar (unstable)
 [AIToubib]
 MIToubib
 [AIWarrush]
