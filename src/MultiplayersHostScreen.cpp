@@ -111,6 +111,9 @@ MultiplayersHostScreen::~MultiplayersHostScreen()
 		delete savedSessionInfo;
 }
 
+//! Pointer to IRC client in YOGScreen, NULL if no IRC client is available
+extern IRC *ircPtr;
+
 void MultiplayersHostScreen::onTimer(Uint32 tick)
 {
 	multiplayersHost->onTimer(tick, multiplayersJoin);
@@ -204,6 +207,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		}
 	}
 	
+	// Host messages
 	if (multiplayersHost->receivedMessages.size())
 		for (std::list<MultiplayersCrossConnectable::Message>::iterator mit=multiplayersHost->receivedMessages.begin(); mit!=multiplayersHost->receivedMessages.end(); ++mit)
 			if (!mit->guiPainted)
@@ -243,6 +247,25 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 				mit->guiPainted=true;
 			}
 
+	// IRC messages
+	if (ircPtr)
+	{
+		ircPtr->step();
+		// display IRC messages
+		while (ircPtr->isChatMessage())
+		{
+			chatWindow->addText("<");
+			chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
+			chatWindow->addText(ircPtr->getChatMessageSource());
+			chatWindow->addText("> ");
+			chatWindow->addText(ircPtr->getChatMessage());
+			chatWindow->addText("\n");
+			chatWindow->scrollToBottom();
+			ircPtr->freeChatMessage();
+		}
+	}
+	
+	// YOG messages
 	for (std::list<YOG::Message>::iterator mit=yog->receivedMessages.begin(); mit!=yog->receivedMessages.end(); ++mit)
 		if (!mit->gameGuiPainted)
 		{
