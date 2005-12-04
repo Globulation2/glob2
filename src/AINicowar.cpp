@@ -627,12 +627,12 @@ unsigned int AINicowar::pollArea(unsigned int x, unsigned int y, unsigned int wi
 	if (poll_type == CENTER_DISTANCE)
 	{
 		unsigned int score=0;
-/*
-		if(mod==MAXIMUM)
-			score=intdistance((x+width/2), center_x) + intdistance((y+height/2), center_y);
-		if(mod==MINIMUM)
-			score=map->getW()/2-intdistance((x+width/2), center_x) + map->getH()/2-intdistance((y+height/2), center_y);
-*/
+		/*
+				if(mod==MAXIMUM)
+					score=intdistance((x+width/2), center_x) + intdistance((y+height/2), center_y);
+				if(mod==MINIMUM)
+					score=map->getW()/2-intdistance((x+width/2), center_x) + map->getH()/2-intdistance((y+height/2), center_y);
+		*/
 		if(mod==MAXIMUM)
 			score=intdistance((x+width), center_x) + intdistance((y+height), center_y);
 		if(mod==MINIMUM)
@@ -1206,7 +1206,7 @@ void AINicowar::exploreWorld(void)
 			exploration_count++;
 	}
 
-//	std::cout<<"active_exploration.size()="<<active_exploration.size()<<endl;
+	//	std::cout<<"active_exploration.size()="<<active_exploration.size()<<endl;
 
 	int wanted_exploration=EXPLORER_MAX_REGIONS_AT_ONCE-exploration_count;
 	int wanted_attack=EXPLORER_ATTACKS_AT_ONCE-attack_count;
@@ -1229,7 +1229,7 @@ void AINicowar::exploreWorld(void)
 		EXPLORER_REGION_VERTICAL_EXTENTION);
 	unsigned int size=best.size();
 
-//	std::cout<<"best.size()="<<best.size()<<endl;
+	//	std::cout<<"best.size()="<<best.size()<<endl;
 
 	p.mod_1=MAXIMUM;
 	p.type_1=ENEMY_BUILDINGS;
@@ -1251,7 +1251,7 @@ void AINicowar::exploreWorld(void)
 	{
 		if(!isFreeOfFlags(i->x+i->width/2, i->y+i->height/2))
 		{
-//			std::cout<<"removing zone from list!"<<endl;
+			//			std::cout<<"removing zone from list!"<<endl;
 			i = best.erase(i);
 		}
 		else
@@ -1263,13 +1263,13 @@ void AINicowar::exploreWorld(void)
 	vector<zone>::iterator top=best.begin();
 	if(top<attack_start && pollArea(top->x, top->y, top->width, top->height, MAXIMUM, HIDDEN_SQUARES)==0)
 	{
-//		std::cout<<"Doing nothing! wanted_exploration="<<wanted_exploration<<";"<<endl;
+		//		std::cout<<"Doing nothing! wanted_exploration="<<wanted_exploration<<";"<<endl;
 		return;
 	}
 
 	for (vector<zone>::iterator i=best.begin(); i!=best.end(); ++i)
 	{
-//		std::cout<<"wanted_exploration="<<wanted_exploration<<"; "<<endl;
+		//		std::cout<<"wanted_exploration="<<wanted_exploration<<"; "<<endl;
 		zone z = *i;
 		if((i>=attack_start && wanted_attack==0) || (wanted_attack==0 && wanted_exploration==0))
 			break;
@@ -2309,13 +2309,18 @@ void AINicowar::constructBuildings()
 		total_free_workers+=getFreeUnits(BUILD, i);
 	}
 
+	//Counts out the number of buildings allready existing, including ones under construction
 	unsigned int counts[IntBuildingType::NB_BUILDING];
+	//The totals of the number of builinds under construction only
 	unsigned int under_construction_counts[IntBuildingType::NB_BUILDING];
+	//The total amount of construction
 	unsigned int total_construction=new_buildings.size();
+	//Holds the order in which it should decide to build buildings.
+	std::vector<typePercent> construction_priorities;
 
 	if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 	{
-//		std::cout<<"Fail 1, too much construction."<<endl;
+		//		std::cout<<"Fail 1, too much construction."<<endl;
 		return;
 	}
 
@@ -2337,7 +2342,20 @@ void AINicowar::constructBuildings()
 			total_free_workers+=getBuildingFromGid(i->building)->unitsWorking.size();
 	}
 
-	for(unsigned int i = 0; i<IntBuildingType::NB_BUILDING; ++i)
+	for (unsigned int i = 0; i<IntBuildingType::NB_BUILDING; ++i)
+	{
+		typePercent tp;
+		tp.building_type=i;
+		if(num_buildings_wanted[i]==0)
+			tp.percent=100;
+		else
+			tp.percent=static_cast<unsigned int>(static_cast<float>(counts[i])/static_cast<float>(num_buildings_wanted[i])*100);
+		construction_priorities.push_back(tp);
+	}
+
+	std::sort(construction_priorities.begin(), construction_priorities.end());
+
+	for(std::vector<typePercent>::iterator i = construction_priorities.begin(); i!=construction_priorities.end(); ++i)
 	{
 		while(true)
 		{
@@ -2351,17 +2369,17 @@ void AINicowar::constructBuildings()
 				//				std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				return;
 			}
-			if(under_construction_counts[i]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i])
+			if(under_construction_counts[i->building_type]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i->building_type])
 			{
 				//				std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
 			}
-			if(counts[i]>=num_buildings_wanted[i])
+			if(counts[i->building_type]>=num_buildings_wanted[i->building_type])
 			{
 				//				std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
 			}
-			point p = findBestPlace(i);
+			point p = findBestPlace(i->building_type);
 			if(p.x == NOPOS || p.y==NOPOS)
 			{
 				//				std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
@@ -2374,17 +2392,17 @@ void AINicowar::constructBuildings()
 			ncr.y=p.y;
 			///Change this later
 			ncr.assigned=std::min(total_free_workers, MAXIMUM_TO_CONSTRUCT_NEW);
-			ncr.building_type=i;
+			ncr.building_type=i->building_type;
 			new_buildings.push_back(ncr);
 
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i]<<", at position "<<p.x<<","<<p.y<<"."<<endl;
-			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i], 0, true);
+				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i->building_type]<<", at position "<<p.x<<","<<p.y<<"."<<endl;
+			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i->building_type], 0, true);
 			orders.push(new OrderCreate(team->teamNumber, p.x, p.y, type));
 			total_construction+=1;
 			total_free_workers-=ncr.assigned;
-			under_construction_counts[i]++;
-			counts[i]++;
+			under_construction_counts[i->building_type]++;
+			counts[i->building_type]++;
 		}
 	}
 }
