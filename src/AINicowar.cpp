@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "Player.h"
 #include "Utilities.h"
 #include "Unit.h"
+#include "Ressource.h"
 #include <algorithm>
 #include <iterator>
 
@@ -60,7 +61,6 @@ void AINicowar::init(Player *player)
 
 	changeUnits("defense", WARRIOR, BASE_DEFENSE_WARRIORS, 0, 0);
 
-	changeUnits("attack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
 
 	assert(player);
 
@@ -760,15 +760,17 @@ AINicowar::zone AINicowar::getZone(unsigned int x, unsigned int y, unsigned int 
 int AINicowar::getPositionScore(const std::vector<pollRecord>& polls, const std::vector<pollRecord>::const_iterator& iter)
 {
 	int score=0;
-	for(std::vector<pollRecord>::const_iterator i = polls.begin(); (i+1)!=polls.end(); ++i)
+	std::vector<pollRecord>::const_iterator last = polls.begin();
+	for(std::vector<pollRecord>::const_iterator i = polls.begin(); i!=polls.end(); ++i)
 	{
 		if(i==iter)
 		{
 			break;
 		}
-		if(i->score != (i+1)->score)
+		if(i->score != last->score)
 		{
 			score++;
+			last=i;
 		}
 	}
 	return score;
@@ -824,24 +826,49 @@ std::vector<AINicowar::zone> AINicowar::getBestZones(poll p, unsigned int width,
 	std::sort(c_list.begin(), c_list.end());
 
 	std::vector<threeTierRecord> final;
+	unsigned int previous_score_a=0;
+	unsigned int pos_a=0;
 	for (std::vector<pollRecord>::iterator i1=a_list.begin(); i1!=a_list.end(); ++i1)
 	{
+			if(i1->score != previous_score_a)
+			{
+				previous_score_a=i1->score;
+				pos_a++;
+			}
+
 		threeTierRecord ttr;
 		ttr.x=i1->x;
 		ttr.y=i1->y;
 		ttr.width=i1->width;
 		ttr.height=i1->height;
-		ttr.score_a=getPositionScore(a_list, i1);
+		ttr.score_a=pos_a;
+
+		unsigned int previous_score_b=0;
+		unsigned int pos_b=0;
 		for (std::vector<pollRecord>::iterator i2=b_list.begin(); i2!=b_list.end(); ++i2)
 		{
+			if(i2->score != previous_score_b)
+			{
+				previous_score_b=i2->score;
+				pos_b++;
+			}
+
 			if(i2->x==ttr.x && i2->y==ttr.y)
-				ttr.score_b=getPositionScore(b_list, i2);
+				ttr.score_b=pos_b;
 		}
 
+		unsigned int previous_score_c=0;
+		unsigned int pos_c=0;
 		for (std::vector<pollRecord>::iterator i3=c_list.begin(); i3!=c_list.end(); ++i3)
 		{
+			if(i3->score != previous_score_c)
+			{
+				previous_score_c=i3->score;
+				pos_c++;
+			}
+
 			if(i3->x==ttr.x && i3->y==ttr.y)
-				ttr.score_c=getPositionScore(c_list, i3);
+				ttr.score_c=pos_c;
 		}
 		final.push_back(ttr);
 	}
@@ -1510,8 +1537,12 @@ void AINicowar::attack()
 			}
 		}
 	}
+
+	//If we don't have enough barracks, don't bother doing anything, otherwise, make sure where producing warriors.
 	if(max_barracks_level<MINIMUM_BARRACKS_LEVEL+1)
 		return;
+	else
+		changeUnits("attack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
 
 	unsigned int available_units = getFreeUnits(ATTACK_STRENGTH, max_barracks_level+1);
 
@@ -2355,6 +2386,10 @@ void AINicowar::constructBuildings()
 
 	std::sort(construction_priorities.begin(), construction_priorities.end());
 
+	//These numbers are because I don't believe a building size will ever exceed them.
+	unsigned int min_failed_width=512;
+	unsigned int min_failed_height=512;
+
 	for(std::vector<typePercent>::iterator i = construction_priorities.begin(); i!=construction_priorities.end(); ++i)
 	{
 		while(true)
@@ -2380,8 +2415,14 @@ void AINicowar::constructBuildings()
 				break;
 			}
 			point p = findBestPlace(i->building_type);
+			upgradeData size=findMaxSize(i->building_type, 0);
+			//If there wasn't a place for a smaller building than this one, than there certainly won't be a place for this one
+			if(size.width>=min_failed_width && size.height>=min_failed_height)
+				continue;
 			if(p.x == NOPOS || p.y==NOPOS)
 			{
+				min_failed_width=size.width;
+				min_failed_height=size.height;
 				//				std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				break;
 			}
@@ -2390,8 +2431,14 @@ void AINicowar::constructBuildings()
 			ncr.building=NOGBID;
 			ncr.x=p.x;
 			ncr.y=p.y;
-			///Change this later
-			ncr.assigned=std::min(total_free_workers, MAXIMUM_TO_CONSTRUCT_NEW);
+			//Don't assign more units than the total amount of resources needed to construct the building.
+			unsigned int needed_resource_total=0;
+			BuildingType* t=globalContainer->buildingsTypes.getByType(IntBuildingType::reverseConversionMap[i->building_type], 0, true);
+			for(unsigned int n=0; n<MAX_NB_RESSOURCES; ++n)
+			{
+				needed_resource_total+=t->maxRessource[n];
+			}
+			ncr.assigned=std::min(total_free_workers, std::min(MAXIMUM_TO_CONSTRUCT_NEW, needed_resource_total));
 			ncr.building_type=i->building_type;
 			new_buildings.push_back(ncr);
 
