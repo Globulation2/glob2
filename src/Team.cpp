@@ -1194,9 +1194,18 @@ Building *Team::findBestZonable(Unit *unit)
 		break;
 		
 		case EXPLORER:
+		{
 			for (std::list<Building *>::iterator bi=zonableExplorer.begin(); bi!=zonableExplorer.end(); ++bi)
 			{
 				Building *b=(*bi);
+				// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
+				// must be able to do to be accepted at this flag
+				// 0 == any explorer
+				// 1 == must be able to attack ground
+				// if we have requested explorer to be able to attack ground and this one can't, skip it
+				if (b->minLevelToFlag && !unit->level[MAGIC_ATTACK_GROUND])
+					continue;
+				
 				int buildingDist2=map->warpDistSquare(b->getMidX(), b->getMidY(), x, y);
 				if (buildingDist2<(timeLeft*timeLeft))
 				{
@@ -1208,6 +1217,7 @@ Building *Team::findBestZonable(Unit *unit)
 					}
 				}
 			}
+		}
 		break;
 		
 		case WARRIOR:

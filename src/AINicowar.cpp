@@ -1595,7 +1595,7 @@ void AINicowar::updateAttackFlags()
 
 						orders.push(new OrderModifyFlag(b->gid, radius));
 						orders.push(new OrderModifyBuilding(b->gid, j->assigned_units));
-						orders.push(new OrderModifyWarFlag(b->gid, j->assigned_level));
+						orders.push(new OrderModifyMinLevelToFlag(b->gid, j->assigned_level));
 						break;
 					}
 				}

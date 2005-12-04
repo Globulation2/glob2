@@ -85,9 +85,9 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new OrderModifyClearingFlag(netData+1, netDataLength-1);
 	}
-	case ORDER_MODIFY_WAR_FLAG:
+	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
 	{
-		return new OrderModifyWarFlag(netData+1, netDataLength-1);
+		return new OrderModifyMinLevelToFlag(netData+1, netDataLength-1);
 	}
 	case ORDER_MOVE_FLAG:
 	{
@@ -528,9 +528,9 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength)
 	return true;
 }
 
-// OrderModifyWarFlag' code
+// OrderModifyMinLevelToFlag's code
 
-OrderModifyWarFlag::OrderModifyWarFlag(const Uint8 *data, int dataLength)
+OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert(dataLength==4);
@@ -538,17 +538,17 @@ OrderModifyWarFlag::OrderModifyWarFlag(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-OrderModifyWarFlag::OrderModifyWarFlag(Uint16 gid, Uint16 minLevelToFlag)
+OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag)
 {
 	this->gid=gid;
 	this->minLevelToFlag=minLevelToFlag;
 }
 
-OrderModifyWarFlag::~OrderModifyWarFlag(void)
+OrderModifyMinLevelToFlag::~OrderModifyMinLevelToFlag(void)
 {
 }
 
-Uint8 *OrderModifyWarFlag::getData(void)
+Uint8 *OrderModifyMinLevelToFlag::getData(void)
 {
 	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
@@ -556,7 +556,7 @@ Uint8 *OrderModifyWarFlag::getData(void)
 	return data;
 }
 
-bool OrderModifyWarFlag::setData(const Uint8 *data, int dataLength)
+bool OrderModifyMinLevelToFlag::setData(const Uint8 *data, int dataLength)
 {
 	if (dataLength!=getDataLength())
 		return false;

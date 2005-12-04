@@ -1676,7 +1676,23 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						selBuild->minLevelToFlagLocal=i;
-						orderQueue.push_back(new OrderModifyWarFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+					}
+					
+					ypos+=YOFFSET_TEXT_PARA;
+				}
+				
+			if (buildingType->type == "explorationflag")
+				// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
+				// must be able to do to be accepted at this flag
+				// 0 == any explorer
+				// 1 == must be able to attack ground
+				for (int i=0; i<2; i++)
+				{
+					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+					{
+						selBuild->minLevelToFlagLocal=i;
+						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
@@ -2391,49 +2407,80 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
 	
-	// cleared ressources for clearing flags:
-	if ((buildingType->type == "clearingflag") && ((selBuild->owner->allies)&(1<<localTeamNo)))
+	// flag control of team and allies
+	if ((selBuild->owner->allies) & (1<<localTeamNo))
 	{
-		ypos += YOFFSET_B_SEP;
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
-			Toolkit::getStringTable()->getString("[Clearing:]"));
-		ypos += YOFFSET_TEXT_PARA;
-		int j=0;
-		for (int i=0; i<BASIC_COUNT; i++)
-			if (i!=STONE)
+		// cleared ressources for clearing flags:
+		if (buildingType->type == "clearingflag")
+		{
+			ypos += YOFFSET_B_SEP;
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
+				Toolkit::getStringTable()->getString("[Clearing:]"));
+			ypos += YOFFSET_TEXT_PARA;
+			int j=0;
+			for (int i=0; i<BASIC_COUNT; i++)
+				if (i!=STONE)
+				{
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,
+						Toolkit::getStringTable()->getString("[ressources]", i));
+					int spriteId;
+					if (selBuild->clearingRessourcesLocal[i])
+						spriteId=20;
+					else
+						spriteId=19;
+					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
+					
+					ypos+=YOFFSET_TEXT_PARA;
+					j++;
+				}
+		}
+		// min war level for war flags:
+		else if (buildingType->type == "warflag")
+		{
+			ypos += YOFFSET_B_SEP;
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
+				Toolkit::getStringTable()->getString("[Min required level:]"));
+			ypos += YOFFSET_TEXT_PARA;
+			for (int i=0; i<4; i++)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,
-					Toolkit::getStringTable()->getString("[ressources]", i));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont, 1+i);
 				int spriteId;
-				if (selBuild->clearingRessourcesLocal[i])
+				if (i==selBuild->minLevelToFlagLocal)
 					spriteId=20;
 				else
 					spriteId=19;
 				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
 				
 				ypos+=YOFFSET_TEXT_PARA;
-				j++;
 			}
-	}
-	
-	// min war level for war flags:
-	if ((buildingType->type == "warflag") && ((selBuild->owner->allies)&(1<<localTeamNo)))
-	{
-		ypos += YOFFSET_B_SEP;
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
-			Toolkit::getStringTable()->getString("[Min required level:]"));
-		ypos += YOFFSET_TEXT_PARA;
-		for (int i=0; i<4; i++)
+		}
+		else if (buildingType->type == "explorationflag")
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont, 1+i);
 			int spriteId;
-			if (i==selBuild->minLevelToFlag)
-				spriteId=20;
+			
+			ypos += YOFFSET_B_SEP;
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
+				Toolkit::getStringTable()->getString("[Min required level:]"));
+			ypos += YOFFSET_TEXT_PARA;
+			
+			// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
+			// must be able to do to be accepted at this flag
+			// 0 == any explorer
+			// 1 == must be able to attack ground
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[any explorer]"));
+			if (selBuild->minLevelToFlagLocal == 0)
+				spriteId = 20;
 			else
-				spriteId=19;
+				spriteId = 19;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
 			
-			ypos+=YOFFSET_TEXT_PARA;
+			ypos += YOFFSET_TEXT_PARA;
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[ground attack]"));
+			if (selBuild->minLevelToFlagLocal == 1)
+				spriteId = 20;
+			else
+				spriteId = 19;
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
 		}
 	}
 
