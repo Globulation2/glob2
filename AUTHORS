@@ -12,7 +12,7 @@ Martin Nyffenegger <barock[no-spam]ysagoon.com> (SGSL)
 Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (GUI, bug fix and more)
 Hein-Pieter van Braam <hp[no-spam]syntomax.com> (IRC patch, debugging)
 Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (CreditScreen JJ)
-Andrew Sayers <globulation2@pileofstuff.org> (Miscellaneous bugfixes)
+Andrew Sayers <globulation2[no-spam]pileofstuff.org> (Miscellaneous bugfixes)
 
 
 *
@@ -72,9 +72,11 @@ Jean-David Maillefer <jdmaillefer[no-spam]bluewin.ch> (Mac OS X)
 *
 Internet, documentation and community
 
+Kyle Lutze <kyle[no-spam]randomvoids.com> (hosting, phpbb/mediawiki integration)
 Munteanu Olimpiu Andrei <moa3333[no-spam]fastmail.fm> (wiki)
 Stéphane Magnenat <nct[no-spam]ysagoon.com> (server, wiki, savannah, forum)
 Gabriel Walt <disney[no-spam]ysagoon.com> (hosting, CMS, wiki, forum)
+Ion_bidon <> (phpbb/mediawiki integration)
 Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (yog server)
 Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (wiki)
 Loki Azgorodin <> (#glob2)
