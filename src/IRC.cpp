@@ -151,6 +151,10 @@ void IRC::interpreteIRCMessage(const char *message)
 
 	// this is a debug printf to reverse engineer IRC protocol
 	//printf("IRC command is : [%s] Source is [%s]\n", cmd, source);
+	if (strcasecmp(cmd, "PING")==0)
+	{
+		sendString("PONG");
+	}
 	if (strcasecmp(cmd, "PRIVMSG")==0)
 	{
 		char *diffusion=strtok(NULL, " :");
@@ -566,6 +570,7 @@ bool IRC::sendString(char *data)
 	{
 		char ircMsg[IRC_MESSAGE_SIZE];
 		snprintf(ircMsg, IRC_MESSAGE_SIZE-1, "%s", data);
+		ircMsg[IRC_MESSAGE_SIZE-1] = 0;
 		int len=strlen(ircMsg);
 		ircMsg[len]='\r';
 		ircMsg[len+1]='\n';

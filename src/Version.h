@@ -56,6 +56,6 @@
 // version 40 added experience and experienceLevel to Unit
 // version 41 added magic abilities
 // version 42 added AIWarrush
-// version 43 added AIHelper
+// version 43 added AINicowar
 
 #endif
