@@ -544,6 +544,21 @@ class AINicowar : public AIImplementation
 			unsigned int building_type;
 		};
 
+
+		struct typePercent
+		{
+			unsigned int building_type;
+			unsigned int percent;
+			bool operator<(const typePercent& tp) const
+			{
+				return percent<tp.percent;
+			}
+			bool operator>(const typePercent& tp) const
+			{
+				return percent>tp.percent;
+			}
+		};
+
 		///Stores the various records of what is being built
 		std::vector<newConstructionRecord> new_buildings;
 
@@ -703,12 +718,12 @@ const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 };
 const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-{1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+{1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0};
 const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 ///How many units it requires to constitute construction another building, per type
 const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-{20, 8, 10, 20, 20, 20, 20, 15, 0, 0, 0, 0, 0};
+{20, 6, 10, 20, 20, 20, 20, 0, 0, 0, 0, 0, 0};
 
 ///This constant turns on debugging output
 const bool AINicowar_DEBUG = true;
