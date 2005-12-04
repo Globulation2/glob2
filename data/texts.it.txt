@@ -431,7 +431,7 @@ IANumbi
 [AICastor]
 IACastor
 [AINicowar]
-Nicowar
+Nicowar (unstable)
 [AIToubib]
 IAToubib
 [AIWarrush]
