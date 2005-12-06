@@ -171,7 +171,8 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 	{
 		if (multiplayersJoin->startGameTimeCounter<0)
 		{
-			printf("MultiplayersConnectScreen::STARTED!\n");
+			if (verbose)
+				printf("MultiplayersConnectScreen::STARTED!\n");
 			endExecute(STARTED);
 		}
 	}
