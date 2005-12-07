@@ -1,0 +1,636 @@
+[language]
+Català
+[language-code]
+ca
+[language-tr]
+Llengua
+[hp]
+Vida
+[heal]
+Vida
+[armor]
+Armadura
+[damage]
+mal
+[food]
+Menjar
+[working]
+Treballant
+[inside]
+Dins
+[ressources]
+Recursos
+[Wood]
+Fusta
+[Corn]
+Blat
+[Papyrus]
+Papir
+[Stone]
+Pedra
+[Alga]
+Algues
+[Cherry]
+Cirera
+[Orange]
+Taronja
+[Prune]
+Passes
+[Clearing:]
+Netejant
+[Min required level:]
+Nivell Minim Requerit
+[Bullets]
+Bales
+[range]
+Rang
+[destroy]
+Destruir
+[cancel destroy]
+Cancelar destrucció
+[wait destroy]
+Esperar a destruir
+[upgrade]
+Millorar
+[repair]
+Reparar
+[cancel upgrade]
+Cancelar Millora
+[cancel repair]
+Cancelar Reparació
+[units type]
+Tipus d' unitat
+[workers]
+Treballadors
+[explorers]
+Exploradors
+[warriors]
+Guerrers
+[Unit type]
+Tipus d' unitat
+[Worker]
+Treballador
+[Explorer]
+Explorador
+[Warrior]
+Guerrer
+[still (w)]
+Ara
+[units working]
+ Unitats treballant
+[still one unit working]
+Una unitat treballant
+[Still (i)]
+Ara
+[Still one]
+Ara una
+[Building name]
+Nom de la Construcció
+[swarm building]
+Granja
+[food building]
+Despensa
+[health building]
+Hospital
+[walkspeed building]
+Poliesportiu
+[swimspeed building]
+Piscina
+[attack building]
+Cuartell
+[science building]
+Escola
+[defense building]
+Torre
+[exploration flag]
+Bandera d' Exploració
+[war flag]
+Bandera de Guerra
+[clearing flag]
+Bandera de Neteja
+[stone wall]
+Mur de pedra
+[market]
+Mercat
+[forbidden area]
+Area prohibida
+[Building short explanation]
+Zona petita en construcció
+[swarm building explanation]
+Zona de la Granja en construcció
+[food building explanation]
+Zona de la Despensa en construcció
+[health building explanation]
+Zona de l'Hospital en construcció
+[walkspeed building explanation]
+Zona del Poliesportiu en construcció
+[swimspeed building explanation]
+Zona de la Piscina en construcció
+[attack building explanation]
+Zona del Cuartell en construcció
+[science building explanation]
+Zona del Laboratori en construcció
+[defense building explanation]
+Zona de Defensa en construcció
+[exploration flag explanation]
+Zona de la bandera d' Exploració
+[war flag explanation]
+Zona de la bandera d' Atac
+[clearing flag explanation]
+Zona de la bandera de Neteja
+[stone wall explanation]
+Zona de la Muralla
+[market explanation]
+Zona del mercat
+[Building short explanation 2]
+Zona petita 2 en construcció
+[swarm building explanation 2]
+Zona de la Granja 2 en construcció
+[food building explanation 2]
+Zona de la Despensa 2 en construcció
+[health building explanation 2]
+Zona de l'Hospital 2 en construcció
+[walkspeed building explanation 2]
+Zona del Poliesportiu 2 en construcció
+[swimspeed building explanation 2]
+Zona de la Piscina 2 en construcció
+[attack building explanation 2]
+Zona del Cuartell 2 en construcció
+[science building explanation 2]
+Zona del Laboratori 2 en construcció
+[defense building explanation 2]
+Zona de Defensa 2 en construcció
+[exploration flag explanation 2]
+Zona de la bandera d' Exploració 2
+[war flag explanation]
+Zona de la bandera d' Atac 2
+[clearing flag explanation]
+Zona de la bandera de Neteja 2
+[stone wall explanation]
+Zona de la Muralla
+[market explanation]
+Zona del mercat
+[waiting for %s]
+Esperant a %s
+[%s has left the game]
+%s ha marxat
+[%s has been deconnected of the game]
+%s s'ha desconectat del joc
+[load game]
+Cargar partida
+[save game]
+Desar partida
+[options]
+Opcions
+[alliances]
+Aliances
+[return to game]
+Tornar al joc
+[quit the game]
+Sortir del joc
+[ok]
+OK
+[Cancel]
+Cancelar
+[you have lost]
+Has Perdut
+[you have won]
+Has guanyat
+[campaign]
+Campanya
+[tutorial]
+Tutorial
+[custom game]
+Joc personalizat
+[yog]
+Joc en linea amb Ysagoon
+[Enter your nickname :]
+Introdueix el teu nick :
+[Enter your password :]
+Introdueix la contrassenya :
+[lan]
+Joc en LAN
+[settings]
+Opcions
+[Warning, you need to reboot the game for changes to take effect]
+Compte, necesites reiniciar el joc per que els cambis tinguin efecte
+[editor]
+Editor
+[credits]
+Crèdits
+[quit]
+Sortir
+[create game]
+Crear joc
+[update list]
+Actualitzar llista
+[connecting to]
+Conectant a
+[connect]
+Conectat
+[Disconnect]
+Desconectat
+[please wait]
+Esperi un moment
+[loading glob2]
+Carregant Globulation 2
+[host]
+Servir una partida
+[join a game]
+Unir-se a una partida
+[join]
+Unir-se
+[goto main menu]
+Tornar al menú principal
+[player name]
+Nom del jugador
+[svr hostname]
+Nom del servidor
+[hp]
+Punts de Vida
+[carry]
+Transport :
+[don't carry anything]
+No Transporta res
+[level]
+Nivell
+[levels]
+Nivells
+[building site]
+Construint
+[create map]
+Crear mapa
+[map size x]
+Amplada del mapa
+[map size y]
+Altura del mapa
+[default terrain]
+Terreny predefinit
+[water]
+Aigua
+[sand]
+Terra
+[grass]
+Herba
+[teams]
+ Equips
+[choose map]
+Escull un mapa
+[choose game]
+Escull un juego
+[awaiting players]
+Esperant als jugadors
+[stat]
+Estadistiques
+[food left]
+Menjà restant
+[the building is finished]
+Construcció finalitzada
+[the swarm is finished]
+La GRANJA ja està construida
+[the food building is finished]
+La DESPENSA ja està construida
+[the health building is finished]
+L' HOSPITAL ja està construït
+[the walkspeed building is finished]
+El POLIESPORTIU ja està construida
+[the swimspeed building is finished]
+La PISCINA ja està construida
+[the attack building is finished]
+El CUARTELL ja està construida
+[the science building is finished]
+L' ESCOLA ja està construid
+[the tower building is finished]
+La TORRE ja està construida
+[the exploration flag is finished]
+?? Bandera d' Exploració finalitzada ??
+[the war flag is finished]
+?? Bandera de Guerra finalizada ??
+[the clearing flag is finished]
+?? Bandera de Neteja finalizada ??
+[the stone wall is finished]
+El MUR DE PEDRA ja està construït
+[the market is finished]
+El MERCAT ja està construït
+[the building is under attack]
+La Construcció està sent atacat
+[the swarm is under attack]
+La Granja està sent atacada
+[the food building is under attack]
+La Despensa està sent atacada
+[the health building is under attack]
+L' Hospital està sent atacat
+[the walkspeed building is under attack]
+El Poliesportiu està sent atacat
+[the swimspeed building is under attack]
+La Piscina està sent atacada
+[the attack building is under attack]
+El Cuartell  està sent atacada
+[the science building is under attack]
+L' Escola està sent atacada
+[the defense building is under attack]
+La Torre està sent atacada
+[the exploration flag is under attack]
+?? La bandera d' Exploració està sent atacada ??
+[the war flag is under attack]
+?? La bandera de Guerra està sent atacada ??
+[the clearing flag is under attack]
+?? La bandera de Neteja  està sent atacada ??
+[the stone wall is under attack]
+L'enemic esta atacant la teva muralla
+[the market is under attack]
+El mercat està sent atacat
+[Your %s are under attack]
+El teu %s  està sent atacat
+[Your unit got converted to another team]
+La teva unitat s'ha passat a l'enemic
+[Another team's unit got converted to your team]
+La unitat enemiga s'ha passat al teu equip
+[Uncontrolled]
+No Controlat
+[ai]
+IA
+[closed]
+Tancat
+[close]
+Tancat
+[player]
+Jugador
+[STARTING GAME ...]
+Comenzant la partida
+[Statistics]
+Estadistiques
+[Buildings]
+Edificis
+[Prestige]
+Prestigi
+[Units]
+Unitats
+[Attack]
+Atac
+[Defense]
+Defensa
+[free]
+Lliure
+[of which]
+dels quals
+[are ok]
+esta bé
+[are hungry]
+te fam
+[are dying hungry]
+es mor de gana
+[are wonded]
+esta ferit
+[and]
+i
+[seeking a job]
+buscant feina
+[Walk]
+Correr
+[Swim]
+Nedar
+[Build]
+Construir
+[Harvest]
+Recolectar
+[At. speed]
+At. velocitat
+[At. strength]
+At. força
+[Total]
+Total
+[free]
+Lliure
+[seeking]
+Buscant
+[Free]
+Lliure
+[hungry]
+te fam
+[starving]
+anèmic
+[wounded]
+ferit
+[In way]
+en camí
+[On the spot]
+Aqui
+[Version]
+Versió
+[open]
+Obrir
+[Add AI]
+Afegir IA
+[AI]
+IA
+[AINone]
+IANone
+[AINumbi]
+IANumbi
+[AICastor]
+IACastor
+[AIToubib]
+IAToubib
+[the games]
+Els Jocs
+[the maps]
+Els Mapes
+[was]
+era
+[was AI]
+era una IA
+[state]
+estat
+[Start]
+Començar
+[not ready]
+sense preparar
+[has joined]
+s'ha unit a la partida
+[has quit]
+ha marxat
+[yog-chat]
+#yog-ca
+[speed]
+Velocitat
+[current speed]
+Velocitat actual
+[attack speed]
+Velocitat d' atac
+[new]
+Nou
+[load]
+Carregar
+[handmade map]
+Mapa Fet a Mà
+[mapGenerationDescriptor Methodes]
+Mètode de Generació de Mapes
+[uniform terrain]
+Terreny uniforme
+[random terrain]
+Terreny aleatori
+[islands terrain]
+Illes
+[ratios]
+Proporció
+[smoothing]
+Pla
+[number of teams]
+Nombre d' equips
+[islands size]
+Tamany de les illes
+[beach size]
+Tamany de la platja
+[workers]
+Treballadors
+[bad error in connection system]
+Error al sistema de conexió
+[not connected]
+No conectat
+[presence request sent]
+Invitació enviada ...
+[session request sent]
+Petició de sesió enviada ...
+[checksum sent]
+Checksum enviat ...
+[connected to server]
+Conectat al servidor
+[connecting to all players]
+Conectant a tots els jugadors
+[connected to all players]
+Conectats tots els jugadors
+[available lan games]
+jocs LAN disponibles
+[login]
+Conectar
+[from:]
+de:
+[to:]
+a:
+[away:]
+ausent:
+[compile]
+Compilar el script
+[downloaded at]
+Baixat al
+[percent]
+  porcentatge
+[download finished]
+Descarga finalitzada
+[Map name: %s]
+Nom del mapa: %s.
+[one player]
+un jugador
+[number of players: %d]
+%d nombre de jugadors
+[number of teams: %d]
+%d nombre d' equips
+[game full]
+Partida Completada
+[small]
+Petit
+[medium]
+mitjà
+[large]
+gran
+[network latency]
+llatència
+[game speed]
+velocitat del joc
+[Paused]
+Pausat
+[Register a new YOG user with password]
+Registrar un nou jugador YOG amb contrasenya (insegur)
+[Remember YOG password localy]
+Recordar la contrasenya (insegur)
+[YESTS_BAD]
+Inconsistència interna mentre conectaba
+[YESTS_UNABLE_TO_CONNECT]
+Imposible conectar. Metaservidor YOG esta caigut
+[YESTS_CREATED]
+El sistema de conexió està llest per contactar amb el metaservidor YOG
+[YESTS_CONNECTING]
+Conectant al metaservidor YOG...
+[YESTS_DECONNECTING]
+Desconectant del metaservidor YOG...
+[YESTS_YOG_KILLED]
+Un administrador a interrumput el metaservidor YOG.
+[YESTS_CONNECTION_LOST]
+Conexió al metaservidor YOG perduda
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+No es pot conectar al metaservidor YOG, el teu client Globulation2 està obsolet
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+No es pot conectar al metaservidor YOG. Nom d'usuari en ús
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+No es pot conectar al metaservidor YOG. Contrassenya Incorrecta
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+El metaservidor YOG ha rebutjat la conexió per que  usuari no te contrasenya encara, activa l' opció: Registrar un nou usuari YOG amb contrasenya
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Nom d'usuari ja registrat. Proba amb un altre
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+El servidor YOG ha rebutjat la conexió per un error d' autentificació, intentiu en 45 segons
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+El servidor YOG ha rebutjat la conexió per un error intern, si us plau comunica aquest error
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+El servidor YOG ha rebutjat la conexió inexplicablement.
+[The player %s has left YOG]
+El jugador %s ha abandonat YOG
+[The player %s has joined YOG]
+El jugador %s se conectat a YOG
+[You are now marked as away]
+Estas marcat com ausent.
+[You are no more marked as away]
+Ya no estas marcat com ausent.
+[YOG_HELP]
+El sistema de missatges YOG te dos comandaments, "msg" i "awat". Escriu "/help <comandament>" per aprendre sobre un d' ells.
+[YOG_HELP_AWAY]
+El comandament "/away [<missatge>]" te permes ausentar-se deixant un missatge als altres
+[YOG_HELP_MSG]
+El comandament "/msn <nick> <missatge>" envia <missatge> a l' usuari <nick>
+[save before quit?]
+Vols desar abans de sortir?
+[Yes]
+Sí
+[No]
+No
+[Save]
+Desar
+[auto save]
+Autodesar
+[Total prestige reached]
+Prestigi total alcanzat
+[Continue playing]
+Continuar jugant
+[Lost : your colony is dead]
+Perdedor: La teva colonia ha sigut exterminada
+[Won : you defeated your opponents]
+Vencedor: Has destruit als teus enemics
+[Won : your ally %s has the most prestige]
+Vencedor: el teu aliat %s ha alcanzat el major prestigi-
+[Lost : %s has more prestige than you]
+Perdedor: %s te més prestigi que tú
+[Won : you have the most prestige]
+Guuanyador: Tu ets el que més prestigi té
+[The game has not been finished]
+La partida no ha acabat
+[display]
+Visualitzador
+[username]
+Nom d' usuari
+[fullscreen]
+Pantalla Completa
+[hwaccel]
+Acceleració de Hardaware
+[dblbuff]
+Buffer Doble
+[lowquality]
+Qualitat Baixa
+[audio]
+Audio
+[Music volume]
+Volum (música)
+[Happyness]
+Felicitats
+[nick taken]
+Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
