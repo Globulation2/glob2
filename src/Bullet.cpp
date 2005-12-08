@@ -26,9 +26,9 @@
 #endif
 #include <Stream.h>
 
-Bullet::Bullet(GAGCore::InputStream *stream)
+Bullet::Bullet(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	bool good = load(stream);
+	bool good = load(stream, versionMinor);
 	assert(good);
 }
 
@@ -49,7 +49,7 @@ Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksL
 	this->revealH = revealH;
 }
 
-bool Bullet::load(GAGCore::InputStream *stream)
+bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	px = stream->readSint32("px");
 	py = stream->readSint32("py");
@@ -60,6 +60,20 @@ bool Bullet::load(GAGCore::InputStream *stream)
 	shootDamage = stream->readSint32("shootDamage");
 	targetX = stream->readSint32("targetX");
 	targetY = stream->readSint32("targetY");
+	if (versionMinor < 44)
+	{
+		revealX = 0;
+		revealY = 0;
+		revealW = 0;
+		revealH = 0;
+	}
+	else
+	{
+		revealX = stream->readSint32("revealX");
+		revealY = stream->readSint32("revealY");
+		revealW = stream->readSint32("revealW");
+		revealH = stream->readSint32("revealH");
+	}
 	return true;
 }
 
@@ -73,6 +87,10 @@ void Bullet::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(shootDamage, "shootDamage");
 	stream->writeSint32(targetX, "targetX");
 	stream->writeSint32(targetY, "targetY");
+	stream->writeSint32(revealX, "revealX");
+	stream->writeSint32(revealY, "revealY");
+	stream->writeSint32(revealW, "revealW");
+	stream->writeSint32(revealH, "revealH");
 }
 
 void Bullet::step(void)

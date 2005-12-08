@@ -72,7 +72,7 @@ void Sector::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-bool Sector::load(GAGCore::InputStream *stream, Game *game)
+bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 {
 	// destroy all actual bullets
 	free();
@@ -83,7 +83,7 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game)
 	for (Uint32 i=0; i<bulletCount; i++)
 	{
 		stream->readEnterSection(i);
-		bullets.push_front(new Bullet(stream));
+		bullets.push_front(new Bullet(stream, versionMinor));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -115,7 +115,8 @@ void Sector::step(void)
 				int id = Unit::GIDtoID(gid);
 				
 				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid);
-				game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
+				if (bullet->revealW > 0 && bullet->revealH > 0)
+					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
 				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor();
 				if (degats <= 0)
@@ -132,7 +133,8 @@ void Sector::step(void)
 					int id = Building::GIDtoID(gid);
 
 					game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::BUILDING_UNDER_ATTACK_EVENT, gid);
-					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
+					if (bullet->revealW > 0 && bullet->revealH > 0)
+						game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 					
 					Building *building = game->teams[team]->myBuildings[id];
 					int damage = bullet->shootDamage-building->type->armor; 
