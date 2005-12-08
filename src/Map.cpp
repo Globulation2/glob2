@@ -1032,7 +1032,7 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	for (int i=0; i<sizeSector; i++)
 	{
 		stream->readEnterSection(i);
-		if (!sectors[i].load(stream, this->game))
+		if (!sectors[i].load(stream, this->game, sessionGame->versionMinor))
 		{
 			stream->readLeaveSection(3);
 			return false;

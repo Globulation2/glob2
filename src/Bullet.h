@@ -33,9 +33,9 @@ namespace GAGCore
 class Bullet
 {
 public:
-	Bullet(GAGCore::InputStream *stream);
+	Bullet(GAGCore::InputStream *stream, Sint32 versionMinor);
 	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY, Sint32 revealX, Sint32 revealY, Sint32 revealW, Sint32 revealH);
-	bool load(GAGCore::InputStream *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 public:
 	Sint32 px, py; //!< pixel precision point of x,y

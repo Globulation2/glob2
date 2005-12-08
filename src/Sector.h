@@ -48,7 +48,7 @@ public:
 	std::list<BulletExplosion *> explosions;
 
 	void save(GAGCore::OutputStream *stream);
-	bool load(GAGCore::InputStream *stream, Game *game);
+	bool load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
 	void step(void);
 private:
