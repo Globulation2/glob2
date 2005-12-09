@@ -121,6 +121,10 @@ namespace GAGCore
 		#endif
 		#endif
 
+#ifdef __APPLE__
+		addDir("./Contents/Resources");
+#endif
+
 		addDir(PACKAGE_DATA_DIR);
 		addDir(PACKAGE_SOURCE_DIR);
 		fileListIndex = -1;
