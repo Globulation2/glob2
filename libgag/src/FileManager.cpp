@@ -81,6 +81,9 @@ namespace GAGCore
 		else
 			std::cerr << "FileManager::FileManager : warning, can't get home directory by using getenv(\"HOME\")" << std::endl;
 		#endif
+#ifdef __APPLE__
+		addDir("./Contents/Resources");
+#endif
 		addDir(".");
 
 		#ifndef WIN32 	
@@ -120,10 +123,6 @@ namespace GAGCore
 		}
 		#endif
 		#endif
-
-#ifdef __APPLE__
-		addDir("./Contents/Resources");
-#endif
 
 		addDir(PACKAGE_DATA_DIR);
 		addDir(PACKAGE_SOURCE_DIR);
