@@ -212,7 +212,7 @@ public:
 	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
 	void integrity();
-	Uint32 checkSum(std::list<Uint32> *checkSumsList);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 	int verbose;
 
 protected:

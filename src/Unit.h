@@ -20,7 +20,7 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
-#include <list>
+#include <vector>
 #include <assert.h>
 #include <string.h>
 
@@ -236,7 +236,7 @@ public:
 
 public:
 	void integrity();
-	Uint32 checkSum(std::list<Uint32> *checkSumsList);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 	bool verbose;
 	
 protected:

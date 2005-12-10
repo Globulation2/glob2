@@ -892,63 +892,71 @@ Order *NetGame::getOrder(int playerNumber)
 		
 		assert(whoMaskAreWeWaitingFor()==0);
 		
-		bool good=true;
-		for (int pai=0; pai<numberOfPlayer; pai++)
+		bool good = true;
+		for (int pai=0; pai<numberOfPlayer && good; pai++)
 			if (!players[pai]->quitting && (players[pai]->type==Player::P_IP || players[pai]->type==Player::P_LOCAL))
-				for (int pbi=0; pbi<pai; pbi++)
+				for (int pbi=0; pbi<pai && good; pbi++)
 					if (!players[pbi]->quitting && (players[pbi]->type==Player::P_IP || players[pbi]->type==Player::P_LOCAL))
 					{
 						Uint32 checkSumsA=gameCheckSums[pai][executeUStep&255];
 						Uint32 checkSumsB=gameCheckSums[pbi][executeUStep&255];
-						if (checkSumsA && checkSumsB)
+						if (checkSumsA!=checkSumsB)
 						{
-							if (checkSumsA!=checkSumsB)
+							printf("World desynchronisation at executeUStep %d.\n", executeUStep);
+							printf(" player %2d has a checkSum=%x\n", pai, checkSumsA);
+							printf(" player %2d has a checkSum=%x\n", pbi, checkSumsB);
+							fprintf(logFile, "World desynchronisation at executeUStep %d.\n", executeUStep);
+							fprintf(logFile, " player %2d has a checkSum=%x\n", pai, checkSumsA);
+							fprintf(logFile, " player %2d has a checkSum=%x\n", pbi, checkSumsB);
+							
+							// dumping game to text
+							OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.world-desynchronization.dump.txt"));
+							if (stream->isEndOfStream())
 							{
-								printf("World desynchronisation at executeUStep %d.\n", executeUStep);
-								printf(" player %2d has a checkSum=%x\n", pai, checkSumsA);
-								printf(" player %2d has a checkSum=%x\n", pbi, checkSumsB);
-								fprintf(logFile, "World desynchronisation at executeUStep %d.\n", executeUStep);
-								fprintf(logFile, " player %2d has a checkSum=%x\n", pai, checkSumsA);
-								fprintf(logFile, " player %2d has a checkSum=%x\n", pbi, checkSumsB);
-								
-								// dumping game to text
-								OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.world-desynchronization.dump.txt"));
-								if (stream->isEndOfStream())
-								{
-									std::cerr << "Can't dump full game memory to file glob2.world-desynchronization.dump.txt" << std::endl;
-								}
-								else
-								{
-									std::cerr << "Dump full game memory" << std::endl;
-									players[localPlayerNumber]->game->save(stream, false, "glob2.dump.txt");
-								}
-								delete stream;
-								
-								good=false;
+								std::cerr << "Can't dump full game memory to file glob2.world-desynchronization.dump.txt" << std::endl;
 							}
+							else
+							{
+								std::cerr << "Dump full game memory" << std::endl;
+								players[localPlayerNumber]->game->save(stream, false, "glob2.world-desynchronization.dump.txt");
+							}
+							delete stream;
+							
+							good = false;
+						}
 							//else
 							//	printf("Player %d and %d both have gameCheckSum=%x at executeUStep=%d\n", pai, pbi, checkSumsA, executeUStep);
-						}
 					}
+					
+		/* 	We still need those checksum even if we have the complete game state in text file.
+			Indeed, the file glob2.world-desynchronization.dump.txt will contain the game state
+			as it is when the desynchronised has been noticed, which, due to the time orders
+			(and thus checksums) take to transit over the network, can be several ticks after it
+			has been produced.
+			We thus need to log the checksums that correspond to the time the desynchronisation
+			has been produced. They are much less readable than glob2.world-desynchronization.dump.txt
+			because they are faster to create. Indeed, they are a tradeoff between network game speed
+			and readability of logs.
+		*/
 		if (!good)
 		{
 			FILE *logFile;
 			int ci;
-			std::list<Uint32> checkSumsListForBuildings=checkSumsListsStorageForBuildings[executeUStep&255];
-			std::list<Uint32> checkSumsListForUnits=checkSumsListsStorageForUnits[executeUStep&255];
-			std::list<Uint32> checkSumsList=checkSumsListsStorage[executeUStep&255];
+			std::vector<Uint32> checkSumsVectorForBuildings = checkSumsVectorsStorageForBuildings[executeUStep&255];
+			std::vector<Uint32> checkSumsVectorForUnits = checkSumsVectorsStorageForUnits[executeUStep&255];
+			std::vector<Uint32> checkSumsVector = checkSumsVectorsStorage[executeUStep&255];
 			
 			ci=0;
 			logFile=globalContainer->logFileManager->getFile("ChecksumUnits.log");
 			fprintf(logFile, "my checkSumsListForUnits at ustep=%d is:\n", executeUStep);
-			for (std::list<Uint32>::iterator csi=checkSumsListForUnits.begin(); csi!=checkSumsListForUnits.end(); csi++)
+			for (std::vector<Uint32>::iterator csi=checkSumsVectorForUnits.begin(); csi!=checkSumsVectorForUnits.end(); csi++)
 				fprintf(logFile, "[%3d] %d\n", ci++, (Sint32)*csi);
 			fflush(logFile);
 			
 			ci=0;
 			logFile=globalContainer->logFileManager->getFile("ChecksumBuildings.log");
 			fprintf(logFile, "my checkSumsListForBuildings at ustep=%d is:\n", executeUStep);
-			for (std::list<Uint32>::iterator csi=checkSumsListForBuildings.begin(); csi!=checkSumsListForBuildings.end(); csi++)
+			for (std::vector<Uint32>::iterator csi=checkSumsVectorForBuildings.begin(); csi!=checkSumsVectorForBuildings.end(); csi++)
 				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
 			fflush(logFile);
 			
@@ -960,7 +968,7 @@ Order *NetGame::getOrder(int playerNumber)
 			ci=0;
 			logFile=globalContainer->logFileManager->getFile("Checksum.log");
 			fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
-			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+			for (std::vector<Uint32>::iterator csi=checkSumsVector.begin(); csi!=checkSumsVector.end(); csi++)
 				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
 			fflush(logFile);
 			
@@ -1702,23 +1710,23 @@ void NetGame::setLeftTicks(int leftTicks)
 	wishedDelayStats[myLocalWishedDelay]++;
 }
 
-std::list<Uint32> *NetGame::getCheckSumsListsStorage()
+std::vector<Uint32> *NetGame::getCheckSumsVectorsStorage()
 {
-	std::list<Uint32> *checkSumsListStorage=&checkSumsListsStorage[pushUStep&255];
-	checkSumsListStorage->clear();
-	return checkSumsListStorage;
+	std::vector<Uint32> *checkSumsVectorStorage=&checkSumsVectorsStorage[pushUStep&255];
+	checkSumsVectorStorage->clear();
+	return checkSumsVectorStorage;
 }
 
-std::list<Uint32> *NetGame::getCheckSumsListsStorageForBuildings()
+std::vector<Uint32> *NetGame::getCheckSumsVectorsStorageForBuildings()
 {
-	std::list<Uint32> *checkSumsListStorageForBuildings=&checkSumsListsStorageForBuildings[pushUStep&255];
-	checkSumsListStorageForBuildings->clear();
-	return checkSumsListStorageForBuildings;
+	std::vector<Uint32> *checkSumsVectorStorageForBuildings=&checkSumsVectorsStorageForBuildings[pushUStep&255];
+	checkSumsVectorStorageForBuildings->clear();
+	return checkSumsVectorStorageForBuildings;
 }
 
-std::list<Uint32> *NetGame::getCheckSumsListsStorageForUnits()
+std::vector<Uint32> *NetGame::getCheckSumsVectorsStorageForUnits()
 {
-	std::list<Uint32> *checkSumsListStorageForUnits=&checkSumsListsStorageForUnits[pushUStep&255];
-	checkSumsListStorageForUnits->clear();
-	return checkSumsListStorageForUnits;
+	std::vector<Uint32> *checkSumsVectorStorageForUnits=&checkSumsVectorsStorageForUnits[pushUStep&255];
+	checkSumsVectorStorageForUnits->clear();
+	return checkSumsVectorStorageForUnits;
 }

@@ -409,7 +409,7 @@ int Engine::run(void)
 					net->pushOrder(gui.getOrder(), gui.localPlayer);
 					
 					// We store full recursive checkSums data:
-					gui.game.checkSum(net->getCheckSumsListsStorage(), net->getCheckSumsListsStorageForBuildings(), net->getCheckSumsListsStorageForUnits());
+					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
 
 					// we get and push ai orders
 					for (int i=0; i<gui.game.session.numberOfPlayer; i++)

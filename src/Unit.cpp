@@ -2584,108 +2584,108 @@ void Unit::integrity()
 	}
 }
 
-Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
+Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 {
 	Uint32 cs=0;
 	
 	cs^=typeNum;
-	if (checkSumsList)
-		checkSumsList->push_back(typeNum);// [0]
+	if (checkSumsVector)
+		checkSumsVector->push_back(typeNum);// [0]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=isDead;
-	if (checkSumsList)
-		checkSumsList->push_back(isDead);// [1]
+	if (checkSumsVector)
+		checkSumsVector->push_back(isDead);// [1]
 	cs=(cs<<1)|(cs>>31);
 	cs^=gid;
-	if (checkSumsList)
-		checkSumsList->push_back(gid);// [2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(gid);// [2]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=posX;
-	if (checkSumsList)
-		checkSumsList->push_back(posX);// [3]
+	if (checkSumsVector)
+		checkSumsVector->push_back(posX);// [3]
 	cs=(cs<<1)|(cs>>31);
 	cs^=posY;
-	if (checkSumsList)
-		checkSumsList->push_back(posY);// [4]
+	if (checkSumsVector)
+		checkSumsVector->push_back(posY);// [4]
 	cs=(cs<<1)|(cs>>31);
 	cs^=delta;
-	if (checkSumsList)
-		checkSumsList->push_back(delta);// [5]
+	if (checkSumsVector)
+		checkSumsVector->push_back(delta);// [5]
 	cs=(cs<<1)|(cs>>31);
 	cs^=dx;
-	if (checkSumsList)
-		checkSumsList->push_back(dx);// [6]
+	if (checkSumsVector)
+		checkSumsVector->push_back(dx);// [6]
 	cs^=dy;
-	if (checkSumsList)
-		checkSumsList->push_back(dy);// [7]
+	if (checkSumsVector)
+		checkSumsVector->push_back(dy);// [7]
 	cs^=direction;
-	if (checkSumsList)
-		checkSumsList->push_back(direction);// [8]
+	if (checkSumsVector)
+		checkSumsVector->push_back(direction);// [8]
 	cs=(cs<<1)|(cs>>31);
 	cs^=insideTimeout;
-	if (checkSumsList)
-		checkSumsList->push_back(insideTimeout);// [9]
+	if (checkSumsVector)
+		checkSumsVector->push_back(insideTimeout);// [9]
 	cs=(cs<<1)|(cs>>31);
 	cs^=speed;
-	if (checkSumsList)
-		checkSumsList->push_back(speed);// [10]
+	if (checkSumsVector)
+		checkSumsVector->push_back(speed);// [10]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=(int)needToRecheckMedical;
-	if (checkSumsList)
-		checkSumsList->push_back(needToRecheckMedical);// [11]
+	if (checkSumsVector)
+		checkSumsVector->push_back(needToRecheckMedical);// [11]
 	cs=(cs<<1)|(cs>>31);
 	cs^=medical;
-	if (checkSumsList)
-		checkSumsList->push_back(medical);// [12]
+	if (checkSumsVector)
+		checkSumsVector->push_back(medical);// [12]
 	cs^=activity;
-	if (checkSumsList)
-		checkSumsList->push_back(activity);// [13]
+	if (checkSumsVector)
+		checkSumsVector->push_back(activity);// [13]
 	cs^=displacement;
-	if (checkSumsList)
-		checkSumsList->push_back(displacement);// [14]
+	if (checkSumsVector)
+		checkSumsVector->push_back(displacement);// [14]
 	cs^=movement;
-	if (checkSumsList)
-		checkSumsList->push_back(movement);// [15]
+	if (checkSumsVector)
+		checkSumsVector->push_back(movement);// [15]
 	cs^=action;
-	if (checkSumsList)
-		checkSumsList->push_back(action);// [16]
+	if (checkSumsVector)
+		checkSumsVector->push_back(action);// [16]
 	cs=(cs<<1)|(cs>>31);
 	cs^=targetX;
-	if (checkSumsList)
-		checkSumsList->push_back(targetX);// [17]
+	if (checkSumsVector)
+		checkSumsVector->push_back(targetX);// [17]
 	cs^=targetY;
-	if (checkSumsList)
-		checkSumsList->push_back(targetY);// [18]
+	if (checkSumsVector)
+		checkSumsVector->push_back(targetY);// [18]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=hp;
-	if (checkSumsList)
-		checkSumsList->push_back(hp);// [19]
+	if (checkSumsVector)
+		checkSumsVector->push_back(hp);// [19]
 	cs^=trigHP;
-	if (checkSumsList)
-		checkSumsList->push_back(trigHP);// [20]
+	if (checkSumsVector)
+		checkSumsVector->push_back(trigHP);// [20]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=hungry;
-	if (checkSumsList)
-		checkSumsList->push_back(hungry);// [21]
+	if (checkSumsVector)
+		checkSumsVector->push_back(hungry);// [21]
 	cs^=trigHungry;
-	if (checkSumsList)
-		checkSumsList->push_back(trigHungry);// [22]
+	if (checkSumsVector)
+		checkSumsVector->push_back(trigHungry);// [22]
 	cs^=trigHungryCarying;
-	if (checkSumsList)
-		checkSumsList->push_back(trigHungryCarying);// [23]
+	if (checkSumsVector)
+		checkSumsVector->push_back(trigHungryCarying);// [23]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=fruitMask;
-	if (checkSumsList)
-		checkSumsList->push_back(fruitMask);// [24]
+	if (checkSumsVector)
+		checkSumsVector->push_back(fruitMask);// [24]
 	cs^=fruitCount;
-	if (checkSumsList)
-		checkSumsList->push_back(fruitCount);// [25]
+	if (checkSumsVector)
+		checkSumsVector->push_back(fruitCount);// [25]
 	cs=(cs<<1)|(cs>>31);
 
 	for (int i=0; i<NB_ABILITY; i++)
@@ -2697,47 +2697,47 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 		cs^=(Uint32)canLearn[i];
 		cs=(cs<<1)|(cs>>31);
 	}
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [26]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [26]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=(attachedBuilding!=NULL ? 1:0);
-	if (checkSumsList)
-		checkSumsList->push_back((attachedBuilding!=NULL ? 1:0));// [27]
+	if (checkSumsVector)
+		checkSumsVector->push_back((attachedBuilding!=NULL ? 1:0));// [27]
 	cs=(cs<<1)|(cs>>31);
 	cs^=(targetBuilding!=NULL ? 1:0);
-	if (checkSumsList)
-		checkSumsList->push_back((targetBuilding!=NULL ? 1:0));// [28]
+	if (checkSumsVector)
+		checkSumsVector->push_back((targetBuilding!=NULL ? 1:0));// [28]
 	cs^=(ownExchangeBuilding!=NULL ? 2:0);
-	if (checkSumsList)
-		checkSumsList->push_back((ownExchangeBuilding!=NULL ? 1:0));// [29]
+	if (checkSumsVector)
+		checkSumsVector->push_back((ownExchangeBuilding!=NULL ? 1:0));// [29]
 	cs^=(foreingExchangeBuilding!=NULL ? 4:0);
-	if (checkSumsList)
-		checkSumsList->push_back((foreingExchangeBuilding!=NULL ? 1:0));// [30]
+	if (checkSumsVector)
+		checkSumsVector->push_back((foreingExchangeBuilding!=NULL ? 1:0));// [30]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=destinationPurprose;
-	if (checkSumsList)
-		checkSumsList->push_back(destinationPurprose);// [31]
+	if (checkSumsVector)
+		checkSumsVector->push_back(destinationPurprose);// [31]
 	cs^=(Uint32)subscribed;
-	if (checkSumsList)
-		checkSumsList->push_back(subscribed);// [32]
+	if (checkSumsVector)
+		checkSumsVector->push_back(subscribed);// [32]
 	cs^=caryedRessource;
-	if (checkSumsList)
-		checkSumsList->push_back(caryedRessource);// [33]
+	if (checkSumsVector)
+		checkSumsVector->push_back(caryedRessource);// [33]
 	
-	if (checkSumsList)
-		checkSumsList->push_back(0);// [34]
-	if (checkSumsList)
-		checkSumsList->push_back(0);// [35]
-	if (checkSumsList)
-		checkSumsList->push_back(0);// [36]
-	if (checkSumsList)
-		checkSumsList->push_back(0);// [37]
-	if (checkSumsList)
-		checkSumsList->push_back(0);// [38]
-	if (checkSumsList)
-		checkSumsList->push_back(0);// [39]
+	if (checkSumsVector)
+		checkSumsVector->push_back(0);// [34]
+	if (checkSumsVector)
+		checkSumsVector->push_back(0);// [35]
+	if (checkSumsVector)
+		checkSumsVector->push_back(0);// [36]
+	if (checkSumsVector)
+		checkSumsVector->push_back(0);// [37]
+	if (checkSumsVector)
+		checkSumsVector->push_back(0);// [38]
+	if (checkSumsVector)
+		checkSumsVector->push_back(0);// [39]
 	
 	return cs;
 }

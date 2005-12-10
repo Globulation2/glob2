@@ -21,7 +21,7 @@
 #define __PLAYER_H
 
 #include <assert.h>
-#include <list>
+#include <vector>
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
@@ -195,7 +195,7 @@ public:
 	AI *ai;
 
 public:
-	Uint32 checkSum(std::list<Uint32> *checkSumsList);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 };
 
 #endif

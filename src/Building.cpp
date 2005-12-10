@@ -2370,64 +2370,64 @@ void Building::integrity()
 	}
 }
 
-Uint32 Building::checkSum(std::list<Uint32> *checkSumsList)
+Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 {
 	int cs=0;
 	
 	cs^=typeNum;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [0]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [0]
 
 	cs^=buildingState;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [1]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [1]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=maxUnitWorking;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [2]
 	cs^=maxUnitWorkingPreferred;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [3]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [3]
 	cs^=unitsWorking.size();
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [4]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [4]
 	cs^=maxUnitInside;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [5]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [5]
 	cs^=unitsInside.size();
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [6]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [6]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=posX;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [7]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [7]
 	cs^=posY;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [8]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [8]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=unitStayRange;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [9]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [9]
 
 	for (int i=0; i<MAX_RESSOURCES; i++)
 		cs^=ressources[i];
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [10]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [10]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=hp;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [11]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [11]
 
 	cs^=productionTimeout;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [12]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [12]
 	cs^=totalRatio;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [13]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [13]
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
@@ -2435,27 +2435,27 @@ Uint32 Building::checkSum(std::list<Uint32> *checkSumsList)
 		cs^=percentUsed[i];
 		cs=(cs<<31)|(cs>>1);
 	}
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [14]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [14]
 
 	cs^=shootingStep;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [15]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [15]
 	cs^=shootingCooldown;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [16]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [16]
 	cs^=bullets;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [17]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [17]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=seenByMask;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [18]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [18]
 	
 	cs^=gid;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [19]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [19]
 	
 	return cs;
 }
