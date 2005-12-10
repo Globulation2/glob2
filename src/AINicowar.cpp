@@ -60,8 +60,6 @@ void AINicowar::init(Player *player)
 
 	assert(player);
 
-
-
 	attack_module=NULL;
 	defense_module=NULL;
 	new_construction_module=NULL;
@@ -70,13 +68,12 @@ void AINicowar::init(Player *player)
 
 	new BasicDistributedSwarmManager(*this);
 	new PrioritizedBuildingAttack(*this);
-	new SimpleBuildingDefense(*this);
+	new GeneralsDefense(*this);
 	new DistributedNewConstructionManager(*this);
 	new RandomUpgradeRepairModule(*this);
 	new ExplorationManager(*this);
 	new InnManager(*this);
 	new TowerController(*this);
-
 
 	this->player=player;
 	this->team=player->team;
@@ -181,8 +178,7 @@ Order *AINicowar::getOrder(void)
 	if (timer<STARTUP_TIME)
 		return new NullOrder();
 
-//	std::cout<<"timer="<<timer<<";"<<endl;
-
+	//	std::cout<<"timer="<<timer<<";"<<endl;
 
 	if(active_module==modules.end() || iteration==0)
 	{
@@ -200,7 +196,7 @@ Order *AINicowar::getOrder(void)
 	//This -1 corrects that.
 	if((timer+1)%TIMER_INTERVAL==0)
 	{
-//		std::cout<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<endl;
+		//		std::cout<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<endl;
 		(*active_module)->perform(module_timer);
 		++module_timer;
 
@@ -920,6 +916,159 @@ void SimpleBuildingDefense::findCreatedDefenseFlags()
 
 
 
+GeneralsDefense::GeneralsDefense(AINicowar& ai) : ai(ai)
+{
+	ai.setDefenseModule(this);
+}
+
+
+
+
+void GeneralsDefense::perform(unsigned int time_slice_n)
+{
+	switch(time_slice_n)
+	{
+		case 0:
+			findEnemyFlags();
+		case 1:
+			updateDefenseFlags();
+	}
+}
+
+
+
+
+string GeneralsDefense::getName() const
+{
+	return "GeneralsDefense";
+}
+
+
+
+
+bool GeneralsDefense::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("GeneralsDefense");
+	stream->readEnterSection("defending_flags");
+	unsigned int n = stream->readUint32();
+	while(n--)
+	{
+		defenseRecord dr;
+		dr.flag=stream->readUint32();
+		dr.enemy_flag=stream->readUint32();
+		defending_flags.push_back(dr);
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+
+void GeneralsDefense::save(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("GeneralsDefense");
+	stream->writeEnterSection("defending_flags");
+	stream->writeUint32(defending_flags.size());
+	for(std::vector<defenseRecord>::const_iterator i = defending_flags.begin(); i!=defending_flags.end(); ++i)
+	{
+		stream->writeUint32(i->flag);
+		stream->writeUint32(i->enemy_flag);
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+
+
+
+void GeneralsDefense::findEnemyFlags()
+{
+	GridPollingSystem gps(ai);
+	for (unsigned int t=0; t<32; t++)
+	{
+		Team* team = ai.game->teams[t];
+		if(team)
+		{
+			if(team->me & ai.team->enemies)
+			{
+				for(unsigned int n=0; n<1024; ++n)
+				{
+					Building* b = team->myBuildings[n];
+					if(b)
+					{
+						if(b->type->shortTypeNum==IntBuildingType::WAR_FLAG)
+						{
+
+							std::cout<<"b->unitStayRange="<<b->unitStayRange<<";"<<endl;
+							unsigned int score = gps.pollArea((b->posX)-(b->unitStayRange), (b->posY)-(b->unitStayRange),
+								b->unitStayRange*2, b->unitStayRange*2, GridPollingSystem::MAXIMUM,
+								GridPollingSystem::FRIENDLY_BUILDINGS);
+							std::cout<<"score="<<score<<";"<<endl;
+							if(score>0)
+							{
+								bool found=false;
+								for(vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end(); ++i)
+								{
+									if(i->enemy_flag == b->gid)
+										found=true;
+								}
+								if(found)
+									continue;
+
+								defenseRecord dr;
+								dr.flag=NOGBID;
+								dr.enemy_flag=b->gid;
+								defending_flags.push_back(dr);
+								if(AINicowar_DEBUG)
+									std::cout<<"AINicowar: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<endl;
+								Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
+								ai.orders.push(new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+void GeneralsDefense::updateDefenseFlags()
+{
+	for(vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end();)
+	{
+		if(buildingStillExists(ai.game, i->enemy_flag)==false)
+		{
+			i=defending_flags.erase(i);
+			continue;
+		}
+
+		if(i->flag==NOGBID)
+		{
+			Building* eb = getBuildingFromGid(ai.game, i->enemy_flag);
+			for(unsigned int n=0; n<1024; ++n)
+			{
+				Building* b = ai.team->myBuildings[n];
+				if(b)
+				{
+					if(b->type->shortTypeNum == IntBuildingType::WAR_FLAG && b->posX==eb->posX && b->posY==eb->posY)
+					{
+						i->flag=b->gid;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
 PrioritizedBuildingAttack::PrioritizedBuildingAttack(AINicowar& ai) : ai(ai)
 {
 	ai.setAttackModule(this);
@@ -1108,6 +1257,8 @@ void PrioritizedBuildingAttack::attack()
 				}
 				if(found)
 					continue;
+				if(available_units<ATTACK_WARRIOR_MINIMUM)
+					return;
 				attackRecord ar;
 				ar.target=b->gid;
 				ar.target_x=b->posX;
@@ -1123,7 +1274,7 @@ void PrioritizedBuildingAttack::attack()
 				ar.unity=b->posY-ATTACK_ZONE_EXAMINATION_PADDING;
 				ar.unit_width=b->type->width+ATTACK_ZONE_EXAMINATION_PADDING*2;
 				ar.unit_height=b->type->height+ATTACK_ZONE_EXAMINATION_PADDING*2;
-				ar.assigned_units=gps.pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS)*2+ATTACK_WARRIOR_MINIMUM;
+				ar.assigned_units=std::min(available_units, std::max(gps.pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS)*2,ATTACK_WARRIOR_MINIMUM));
 				ar.assigned_level=max_barracks_level;
 				attacks.push_back(ar);
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
@@ -1186,16 +1337,32 @@ void PrioritizedBuildingAttack::updateAttackFlags()
 		}
 	}
 
+	unsigned int max_barracks_level=0;
+	for(int i=0; i<1024; ++i)
+	{
+		Building* b = ai.team->myBuildings[i];
+		if(b)
+		{
+			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			{
+				max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
+			}
+		}
+	}
+	unsigned int available_units = getFreeUnits(ai.team, ATTACK_STRENGTH, max_barracks_level+1);
+
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
+		available_units+=j->assigned_units;
 		unsigned int score = gps.pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS);
-		if(score*2+ATTACK_WARRIOR_MINIMUM != j->assigned_units)
+		unsigned int new_assigned=std::min(available_units, std::max(score*2, ATTACK_WARRIOR_MINIMUM));;
+		if(new_assigned != j->assigned_units)
 		{
-			int new_assigned=score*2+ATTACK_WARRIOR_MINIMUM;
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: updateAttackFlags: Changing the "<<j->flag->posX<<","<<j->flag->posY<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<endl;
 			j->assigned_units=new_assigned;
 			ai.orders.push(new OrderModifyBuilding(j->flag->gid, new_assigned));
+			available_units-=new_assigned;
 		}
 		++j;
 	}
@@ -2102,10 +2269,16 @@ void RandomUpgradeRepairModule::startNewConstruction(void)
 	}
 }
 
+
+
+
 BasicDistributedSwarmManager::BasicDistributedSwarmManager(AINicowar& ai) : ai(ai)
 {
 	ai.setUnitModule(this);
 }
+
+
+
 
 void BasicDistributedSwarmManager::perform(unsigned int time_slice_n)
 {
@@ -2116,10 +2289,16 @@ void BasicDistributedSwarmManager::perform(unsigned int time_slice_n)
 	}
 }
 
+
+
+
 string BasicDistributedSwarmManager::getName() const
 {
 	return "BasicDistributedSwarmManager";
 }
+
+
+
 
 bool BasicDistributedSwarmManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -2143,6 +2322,9 @@ bool BasicDistributedSwarmManager::load(GAGCore::InputStream *stream, Player *pl
 	return true;
 }
 
+
+
+
 void BasicDistributedSwarmManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("BasicDistributedSwarmManager");
@@ -2161,6 +2343,8 @@ void BasicDistributedSwarmManager::save(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
+
+
 
 
 void BasicDistributedSwarmManager::changeUnits(string module_name, unsigned int unit_type, unsigned int desired_units, unsigned int required_units, unsigned int emergency_units)
@@ -2250,6 +2434,7 @@ void BasicDistributedSwarmManager::moderateSwarms()
 	unsigned int assigned_per_swarm=std::min(MAXIMUM_UNITS_FOR_SWARM, static_cast<unsigned int>(total_wanted_score/CREATION_UNIT_REQUIREMENT+1));
 	ai.getUnitModule()->changeUnits("spawn-manager", WORKER, 0, ai.team->swarms.size()*assigned_per_swarm, 0);
 
+	bool need_to_output=true;
 	for (std::list<Building*>::iterator i = ai.team->swarms.begin(); i != ai.team->swarms.end(); ++i)
 	{
 		Building* swarm=*i;
@@ -2264,11 +2449,14 @@ void BasicDistributedSwarmManager::moderateSwarms()
 		if(!changed)
 			continue;
 
-		if(AINicowar_DEBUG)
+		if(AINicowar_DEBUG && need_to_output)
 			std::cout<<"AINicowar: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<endl;
+		need_to_output=false;
 		ai.orders.push(new OrderModifySwarm(swarm->gid, ratios));
 	}
 }
+
+
 
 
 ExplorationManager::ExplorationManager(AINicowar& ai) : ai(ai)
@@ -2278,6 +2466,9 @@ ExplorationManager::ExplorationManager(AINicowar& ai) : ai(ai)
 	developing_attack_explorers=false;
 	explorer_attacking=false;
 }
+
+
+
 
 void ExplorationManager::perform(unsigned int time_slice_n)
 {
@@ -2294,10 +2485,16 @@ void ExplorationManager::perform(unsigned int time_slice_n)
 	}
 }
 
+
+
+
 string ExplorationManager::getName() const
 {
 	return "ExplorationManager";
 }
+
+
+
 
 bool ExplorationManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -2331,6 +2528,9 @@ bool ExplorationManager::load(GAGCore::InputStream *stream, Player *player, Sint
 	return true;
 }
 
+
+
+
 void ExplorationManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("ExplorationManager");
@@ -2358,6 +2558,8 @@ void ExplorationManager::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(explorer_attacking, "explorer_attacking");
 	stream->writeLeaveSection();
 }
+
+
 
 
 void ExplorationManager::exploreWorld(void)
@@ -2633,6 +2835,9 @@ InnManager::InnManager(AINicowar& ai) : ai(ai)
 	ai.addOtherModule(this);
 }
 
+
+
+
 void InnManager::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
@@ -2644,10 +2849,16 @@ void InnManager::perform(unsigned int time_slice_n)
 	}
 }
 
+
+
+
 string InnManager::getName() const
 {
 	return "InnManager";
 }
+
+
+
 
 bool InnManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -2671,6 +2882,9 @@ bool InnManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 	stream->readLeaveSection();
 	return true;
 }
+
+
+
 
 void InnManager::save(GAGCore::OutputStream *stream) const
 {
@@ -2704,7 +2918,7 @@ void InnManager::recordInns()
 		Building* b=ai.team->myBuildings[i];
 		if (b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING)
+			if(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
 				innRecord i = inns[b->gid];
 				i.records[i.pos].food_amount=b->ressources[CORN];
@@ -2795,6 +3009,12 @@ void InnManager::modifyInns()
 			inns.erase(i);
 			continue;
 		}
+
+		if (score.inn->constructionResultState!=Building::NO_CONSTRUCTION)
+		{
+			continue;
+		}
+
 		for (vector<singleInnRecord>::iterator record = i->second.records.begin(); record!=i->second.records.end(); ++record)
 		{
 			score.food_score+=record->food_amount;
@@ -2875,10 +3095,15 @@ void InnManager::modifyInns()
 }
 
 
+
+
 TowerController::TowerController(AINicowar& ai) : ai(ai)
 {
 	ai.addOtherModule(this);
 }
+
+
+
 
 void TowerController::perform(unsigned int time_slice_n)
 {
@@ -2889,10 +3114,16 @@ void TowerController::perform(unsigned int time_slice_n)
 	}
 }
 
+
+
+
 string TowerController::getName() const
 {
 	return "TowerController";
 }
+
+
+
 
 bool TowerController::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -2901,11 +3132,16 @@ bool TowerController::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	return true;
 }
 
+
+
+
 void TowerController::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("TowerController");
 	stream->writeLeaveSection();
 }
+
+
 
 
 void TowerController::controlTowers()
