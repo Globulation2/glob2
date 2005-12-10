@@ -343,6 +343,7 @@ namespace Nicowar
 
 			SimpleBuildingDefense(AINicowar& ai);
 
+			~SimpleBuildingDefense() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -392,6 +393,7 @@ namespace Nicowar
 	{
 		public:
 			PrioritizedBuildingAttack(AINicowar& ai);
+			~PrioritizedBuildingAttack() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -447,6 +449,7 @@ namespace Nicowar
 	{
 		public:
 			DistributedNewConstructionManager(AINicowar& ai);
+			~DistributedNewConstructionManager() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -525,6 +528,7 @@ namespace Nicowar
 	{
 		public:
 			RandomUpgradeRepairModule(AINicowar& ai);
+			~RandomUpgradeRepairModule() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -621,6 +625,7 @@ namespace Nicowar
 	{
 		public:
 			BasicDistributedSwarmManager(AINicowar& ai);
+			~BasicDistributedSwarmManager() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -663,6 +668,7 @@ namespace Nicowar
 	{
 		public:
 			ExplorationManager(AINicowar& ai);
+			~ExplorationManager() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -732,6 +738,7 @@ namespace Nicowar
 	{
 		public:
 			InnManager(AINicowar& ai);
+			~InnManager() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -773,6 +780,7 @@ namespace Nicowar
 	{
 		public:
 			TowerController(AINicowar& ai);
+			~TowerController() {};
 			void perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
