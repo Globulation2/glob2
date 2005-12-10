@@ -132,7 +132,7 @@ public:
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0);
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam);
 	void renderMiniMap(int teamSelected, const bool useMapDiscovered=false, int step=0, int stepCount=1);
-	Uint32 checkSum(std::list<Uint32> *checkSumsList=NULL, std::list<Uint32> *checkSumsListForBuildings=NULL, std::list<Uint32> *checkSumsListForUnits=NULL);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 	
 	//! ally or disally AI following human alliances
 	void setAIAlliance(void);

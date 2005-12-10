@@ -2664,40 +2664,40 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 		}*/
 }
 
-Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings, std::list<Uint32> *checkSumsListForUnits)
+Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
 {
 	Uint32 cs=0;
 
 	Uint32 sessionCs=session.checkSum();
 	cs^=sessionCs;
-	if (checkSumsList)
-		checkSumsList->push_back(sessionCs);// [0]
+	if (checkSumsVector)
+		checkSumsVector->push_back(sessionCs);// [0]
 
 	cs=(cs<<31)|(cs>>1);
 	
 	Uint32 teamsCs=0;
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
-		teamsCs^=teams[i]->checkSum(checkSumsList, checkSumsListForBuildings, checkSumsListForUnits);
+		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits);
 		teamsCs=(teamsCs<<31)|(teamsCs>>1);
 		cs=(cs<<31)|(cs>>1);
 	}
 	cs^=teamsCs;
-	if (checkSumsList)
-		checkSumsList->push_back(teamsCs);// [1+t*20]
+	if (checkSumsVector)
+		checkSumsVector->push_back(teamsCs);// [1+t*20]
 	
 	cs=(cs<<31)|(cs>>1);
 	
 	Uint32 playersCs=0;
 	for (int i=0; i<session.numberOfPlayer; i++)
 	{
-		playersCs^=players[i]->checkSum(checkSumsList);
+		playersCs^=players[i]->checkSum(checkSumsVector);
 		playersCs=(playersCs<<31)|(playersCs>>1);
 		cs=(cs<<31)|(cs>>1);
 	}
 	cs^=playersCs;
-	if (checkSumsList)
-		checkSumsList->push_back(playersCs);// [2+t*20+p*2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(playersCs);// [2+t*20+p*2]
 	
 	cs=(cs<<31)|(cs>>1);
 	
@@ -2710,8 +2710,8 @@ Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 		}
 	Uint32 mapCs=map.checkSum(heavy);
 	cs^=mapCs;
-	if (checkSumsList)
-		checkSumsList->push_back(mapCs);// [3+t*20+p*2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]
 	
 	cs=(cs<<31)|(cs>>1);
 
@@ -2720,15 +2720,15 @@ Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 	syncRandCs^=getSyncRandSeedB();
 	syncRandCs^=getSyncRandSeedC();
 	cs^=syncRandCs;
-	if (checkSumsList)
-		checkSumsList->push_back(syncRandCs);// [4+t*20+p*2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(syncRandCs);// [4+t*20+p*2]
 
 	cs=(cs<<31)|(cs>>1);
 	
 	Uint32 scriptCs=script.checkSum();
 	cs^=scriptCs;
-	if (checkSumsList)
-		checkSumsList->push_back(scriptCs);// [5+t*20+p*2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(scriptCs);// [5+t*20+p*2]
 	
 	return cs;
 }

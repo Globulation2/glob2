@@ -583,20 +583,20 @@ void Player::save(GAGCore::OutputStream  *stream)
 	stream->writeLeaveSection();
 }
 
-Uint32 Player::checkSum(std::list<Uint32> *checkSumsList)
+Uint32 Player::checkSum(std::vector<Uint32> *checkSumsVector)
 {
 	Uint32 cs;
 	if (ai)
 		cs=ai->step;
 	else
 		cs=0;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [2+t*20+p*2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [2+t*20+p*2]
 	
 	cs^=BasePlayer::checkSum();
 	
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [3+t*20+p*2]
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [3+t*20+p*2]
 	
 	return cs;
 }

@@ -158,7 +158,7 @@ public:
 	void dirtyGlobalGradient();
 	
 	//! Compute team checksum
-	Uint32 checkSum(std::list<Uint32> *checkSumsList=NULL, std::list<Uint32> *checkSumsListForBuildings=NULL, std::list<Uint32> *checkSumsListForUnits=NULL);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 	
 	//! Return the name of the first player in the team
 	const char *getFirstPlayerName(void);

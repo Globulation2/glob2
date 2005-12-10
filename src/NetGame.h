@@ -80,7 +80,7 @@ order's steps tricks:
 #else
 #include <Types.h>
 #endif
-#include <list>
+#include <vector>
 
 class Player;
 class Order;
@@ -120,9 +120,9 @@ public:
 	void stepExecuted(void);
 	int ticksToDelayInside(void);
 	void setLeftTicks(int leftTicks);
-	std::list<Uint32> *getCheckSumsListsStorage();
-	std::list<Uint32> *getCheckSumsListsStorageForBuildings();
-	std::list<Uint32> *getCheckSumsListsStorageForUnits();
+	std::vector<Uint32> *getCheckSumsVectorsStorage();
+	std::vector<Uint32> *getCheckSumsVectorsStorageForBuildings();
+	std::vector<Uint32> *getCheckSumsVectorsStorageForUnits();
 	
 private:
 	int numberOfPlayer;
@@ -183,9 +183,9 @@ private:
 	UDPsocket socket;
 
 	Sint32 gameCheckSums[32][256];
-	std::list<Uint32> checkSumsListsStorage[256];
-	std::list<Uint32> checkSumsListsStorageForBuildings[256];
-	std::list<Uint32> checkSumsListsStorageForUnits[256];
+	std::vector<Uint32> checkSumsVectorsStorage[256];
+	std::vector<Uint32> checkSumsVectorsStorageForBuildings[256];
+	std::vector<Uint32> checkSumsVectorsStorageForUnits[256];
 	
 	FILE *logFile;
 	FILE *logFileEnd;
