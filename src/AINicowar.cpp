@@ -73,10 +73,9 @@ void AINicowar::init(Player *player)
 	new SimpleBuildingDefense(*this);
 	new DistributedNewConstructionManager(*this);
 	new RandomUpgradeRepairModule(*this);
-
-	addOtherModule(new ExplorationManager(*this));
-	addOtherModule(new InnManager(*this));
-	addOtherModule(new TowerController(*this));
+	new ExplorationManager(*this);
+	new InnManager(*this);
+	new TowerController(*this);
 
 
 	this->player=player;
