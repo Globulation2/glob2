@@ -387,6 +387,47 @@ namespace Nicowar
 			AINicowar& ai;
 	};
 
+	///Generals defense is an alternative, fairly difficult defense mechanism.
+	///It looks through its enemies buildings, looking for war flags that are
+	///near its buildings. If it finds one, it will check to see if it has already
+	///setup defense against it. If not, it will set up a flag to match the enemies
+	///flag in the same position in size, number of units, and training level.
+	///It can fail when the opponent simply has a stronger force, but this is more
+	///than capable of combatting several weaker forces.
+	class GeneralsDefense : public DefenseModule
+	{
+		public:
+			GeneralsDefense(AINicowar& ai);
+			~GeneralsDefense() {};
+			void perform(unsigned int time_slice_n);
+			string getName() const;
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream) const;
+			unsigned int numberOfTicks() const
+			{
+				return 2;
+			}
+
+			///Stores the information nessecary to remeber the combat against one enemy flag.
+			struct defenseRecord
+			{
+				unsigned int flag;
+				unsigned int enemy_flag;
+			};
+
+			vector<defenseRecord> defending_flags;
+
+			///Searches for enemy flags that it needs to defend against, and if
+			///it finds one, it will make a new flag.
+			void findEnemyFlags();
+
+			///Looks through the defense records and updates the flags as nessecary
+			///to be able to combat the opponents forces.
+			void updateDefenseFlags();
+
+			AINicowar& ai;
+	};
+
 	///Moderates ground attacks on the enemy. After it has chosen what enemy to attack, it attacks buildings based on priority,
 	///destroying all of one building type before moving onto the next.
 	class PrioritizedBuildingAttack : public AttackModule
