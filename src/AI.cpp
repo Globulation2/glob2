@@ -55,7 +55,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 			aiImplementation=new AICastor(player);
 		break;
 		case NICOWAR:
-			aiImplementation=new AINicowar(player);
+			aiImplementation=new Nicowar::AINicowar(player);
 		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(player);
@@ -133,7 +133,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AICastor(stream, player, versionMinor);
 		break;
 		case NICOWAR:
-			aiImplementation=new AINicowar(stream, player, versionMinor);
+			aiImplementation=new Nicowar::AINicowar(stream, player, versionMinor);
 		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(stream, player, versionMinor);
