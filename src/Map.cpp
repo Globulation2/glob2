@@ -4407,17 +4407,20 @@ Uint32 Map::checkSum(bool heavy)
 {
 	Uint32 cs=size;
 	if (heavy)
-		for (int y=0; y<h; y++)
-			for (int x=0; x<w; x++)
-			{
-				cs+=(cases+w*(y&hMask)+(x&wMask))->terrain;
-				cs+=(cases+w*(y&hMask)+(x&wMask))->building;
-				cs+=(cases+w*(y&hMask)+(x&wMask))->ressource.getUint32();
-				cs+=(cases+w*(y&hMask)+(x&wMask))->groundUnit;
-				cs+=(cases+w*(y&hMask)+(x&wMask))->airUnit;
-				cs+=(cases+w*(y&hMask)+(x&wMask))->forbidden;
-				cs=(cs<<1)|(cs>>31);
-			}
+	{
+		const Case* end = cases + (w * h);
+		for (Case* c=cases; c < end; ++c)
+		{
+			cs+=
+				c->terrain +
+				c->building +
+				c->ressource.getUint32() +
+				c->groundUnit +
+				c->airUnit +
+				c->forbidden;
+			cs=(cs<<1)|(cs>>31);
+		}
+	};
 	return cs;
 }
 
