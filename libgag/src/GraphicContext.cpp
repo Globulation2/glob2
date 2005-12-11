@@ -117,6 +117,11 @@ namespace GAGCore
 			const char *glExtensions = (const char *)glGetString(GL_EXTENSIONS);
 			isTextureRectangle = (strstr(glExtensions, "GL_NV_texture_rectangle") != NULL);
 			isTextureRectangle = isTextureRectangle || (strstr(glExtensions, "GL_EXT_texture_rectangle") != NULL);
+			isTextureRectangle = isTextureRectangle || (strstr(glExtensions, "GL_ARB_texture_rectangle") != NULL);
+
+			const char *glVendor= (const char *)glGetString(GL_VENDOR);
+			if(strstr(glVendor,"ATI"))
+				isTextureRectangle = false;
 			if (verbose)
 				if (isTextureRectangle)
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
