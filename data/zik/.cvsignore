@@ -1,4 +1,4 @@
 *.ogg
 .DS_Store
 Makefile
-Makefile.*
+Makefile.in
