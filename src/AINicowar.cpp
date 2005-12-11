@@ -1520,7 +1520,15 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 		unsigned int zone_start_row=BUILD_AREA_EXTENTION_HEIGHT;
 		unsigned int zone_end_column=BUILD_AREA_EXTENTION_WIDTH+BUILD_AREA_WIDTH;
 		unsigned int zone_end_row=BUILD_AREA_EXTENTION_HEIGHT+BUILD_AREA_HEIGHT;
+#ifndef WIN32
 		unsigned short int imap[full_width][full_height];
+#else
+		unsigned short int **imap=(unsigned short int **)alloca(full_width*sizeof(unsigned short int *));
+		unsigned short int *imap_back=(unsigned short int *)alloca(full_width*full_height*sizeof(unsigned short));
+		for(int imap_back_init = 0; imap_back_init<full_width; ++imap_back_init)
+			imap[imap_back_init]=&imap_back[imap_back_init*full_height];
+
+#endif
 
 		//Prepare the imap
 		for(unsigned int x=0; x<full_width; ++x)

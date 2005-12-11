@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static_d.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib libspeex.lib glu32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static_d.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib libspeex.lib glu32.lib zdll.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="WinSDLBuild\Lib"
@@ -87,7 +87,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib libspeex.lib glu32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib libspeex.lib glu32.lib zdll.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="WinSDLBuild\Lib"
@@ -183,6 +183,12 @@
 				RelativePath=".\src\AICastor.cpp">
 			</File>
 			<File
+				RelativePath=".\src\AINicowar.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AINicowar.h">
+			</File>
+			<File
 				RelativePath=".\src\AINull.cpp">
 			</File>
 			<File
@@ -190,6 +196,12 @@
 			</File>
 			<File
 				RelativePath=".\src\AIToubib.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AIWarrush.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AIWarrush.h">
 			</File>
 			<File
 				RelativePath=".\src\BitArray.cpp">
@@ -391,6 +403,12 @@
 				</File>
 				<File
 					RelativePath=".\libgag\src\FileManager.cpp">
+					<FileConfiguration
+						Name="Debug SDL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions="ZLIB_WINAPI"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\libgag\src\GUIAnimation.cpp">
@@ -436,6 +454,15 @@
 				</File>
 				<File
 					RelativePath=".\libgag\src\StreamBackend.h">
+				</File>
+				<File
+					RelativePath=".\libgag\src\StreamFilter.cpp">
+					<FileConfiguration
+						Name="Debug SDL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions="ZLIB_WINAPI"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\libgag\src\StringTable.cpp">
