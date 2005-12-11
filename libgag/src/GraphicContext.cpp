@@ -104,14 +104,19 @@ namespace GAGCore
 	
 		GLState(void)
 		{
+			resetCache();
+			isTextureRectangle = false;
+			useATIWorkaround = false;
+		}
+		
+		void resetCache(void)
+		{
 			_doBlend = -1;
 			_doTexture = -1;
 			_doScissor = -1;
 			_texture = -1;
 			_sfactor = 0xffffffff;
 			_dfactor = 0xffffffff;
-			isTextureRectangle = false;
-			useATIWorkaround = false;
 		}
 		
 		void checkExtensions(void)
@@ -123,7 +128,7 @@ namespace GAGCore
 
 			const char *glVendor= (const char *)glGetString(GL_VENDOR);
 			if(strstr(glVendor,"ATI"))
-				useATIWorkaround = true; // ugly temporary bug fix for bug 13823
+				useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
 
 			if (verbose)
 				if (isTextureRectangle)
@@ -354,7 +359,10 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
+			glState.resetCache();
+		}
 		#endif
 	}
 	
