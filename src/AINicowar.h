@@ -919,10 +919,10 @@ namespace Nicowar
 	};
 	const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
 	const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
-	const unsigned int ATTACK_WARRIOR_MINIMUM=8;
+	const unsigned int ATTACK_WARRIOR_MINIMUM=4;
 	const unsigned int MINIMUM_BARRACKS_LEVEL=0;
-	const unsigned int MAX_ATTACKS_AT_ONCE=4;
-	const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*1.5);
+	const unsigned int MAX_ATTACKS_AT_ONCE=2;
+	const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*2);
 
 	//The following are for the construction manager
 
@@ -956,12 +956,12 @@ namespace Nicowar
 
 	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-		{1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0};
+		{1, 4, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0};
 	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{20, 6, 10, 20, 20, 20, 20, 0, 0, 0, 0, 0, 0};
+		{20, 6, 10, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
 
 	//These constants are for GeneralsDefense
 	const unsigned int DEFENSE_ZONE_SIZE_INCREASE=2;

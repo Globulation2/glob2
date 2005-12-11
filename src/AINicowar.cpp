@@ -68,7 +68,7 @@ void AINicowar::init(Player *player)
 
 	new BasicDistributedSwarmManager(*this);
 	new PrioritizedBuildingAttack(*this);
-	new GeneralsDefense(*this);
+	new SimpleBuildingDefense(*this);
 	new DistributedNewConstructionManager(*this);
 	new RandomUpgradeRepairModule(*this);
 	new ExplorationManager(*this);
@@ -437,8 +437,8 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 	if (poll_type == NONE)
 		return 0;
 
-//	if(poll_type == FRIENDLY_BUILDINGS)
-//		std::cout<<"findEnemyFlags: Starting poll."<<endl;
+	//	if(poll_type == FRIENDLY_BUILDINGS)
+	//		std::cout<<"findEnemyFlags: Starting poll."<<endl;
 
 	if (poll_type == CENTER_DISTANCE)
 	{
@@ -1006,14 +1006,14 @@ void GeneralsDefense::findEnemyFlags()
 						if(b->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 						{
 
-/*
-							std::cout<<"b->unitStayRange="<<b->unitStayRange<<";"<<endl;
-							std::cout<<"AINicowar: findEnemyFlags: x="<<b->posX<<";"<<endl;
-							std::cout<<"AINicowar: findEnemyFlags: y="<<b->posY<<";"<<endl;
-							std::cout<<"AINicowar: findEnemyFlags: zonex="<<(b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
-							std::cout<<"AINicowar: findEnemyFlags: zoney="<<(b->posY)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
-							std::cout<<"AINicowar: findEnemyFlags: width/height="<<b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2<<";"<<endl;
-*/
+							/*
+														std::cout<<"b->unitStayRange="<<b->unitStayRange<<";"<<endl;
+														std::cout<<"AINicowar: findEnemyFlags: x="<<b->posX<<";"<<endl;
+														std::cout<<"AINicowar: findEnemyFlags: y="<<b->posY<<";"<<endl;
+														std::cout<<"AINicowar: findEnemyFlags: zonex="<<(b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
+														std::cout<<"AINicowar: findEnemyFlags: zoney="<<(b->posY)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
+														std::cout<<"AINicowar: findEnemyFlags: width/height="<<b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2<<";"<<endl;
+							*/
 
 							unsigned int score = gps.pollArea((b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE,
 								(b->posY)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE,
@@ -1021,7 +1021,7 @@ void GeneralsDefense::findEnemyFlags()
 								b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2, GridPollingSystem::MAXIMUM,
 								GridPollingSystem::FRIENDLY_BUILDINGS);
 
-//							std::cout<<"AINicowar: findEnemyFlags: score="<<score<<";"<<endl;
+							//							std::cout<<"AINicowar: findEnemyFlags: score="<<score<<";"<<endl;
 							if(score>0)
 							{
 								bool found=false;
@@ -1074,12 +1074,15 @@ void GeneralsDefense::updateDefenseFlags()
 					if(b->type->shortTypeNum == IntBuildingType::WAR_FLAG && b->posX==eb->posX && b->posY==eb->posY)
 					{
 						i->flag=b->gid;
+						ai.orders.push(new OrderModifyFlag(i->flag, eb->unitStayRange));
+						ai.orders.push(new OrderModifyBuilding(i->flag, eb->maxUnitWorking));
+						ai.orders.push(new OrderModifyMinLevelToFlag(i->flag, eb->minLevelToFlag));
 						break;
 					}
 				}
 			}
 		}
-	++i;
+		++i;
 	}
 }
 
@@ -1274,8 +1277,10 @@ void PrioritizedBuildingAttack::attack()
 				}
 				if(found)
 					continue;
+
 				if(available_units<ATTACK_WARRIOR_MINIMUM)
 					return;
+
 				attackRecord ar;
 				ar.target=b->gid;
 				ar.target_x=b->posX;
@@ -1291,7 +1296,7 @@ void PrioritizedBuildingAttack::attack()
 				ar.unity=b->posY-ATTACK_ZONE_EXAMINATION_PADDING;
 				ar.unit_width=b->type->width+ATTACK_ZONE_EXAMINATION_PADDING*2;
 				ar.unit_height=b->type->height+ATTACK_ZONE_EXAMINATION_PADDING*2;
-				ar.assigned_units=std::min(available_units, std::max(gps.pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS)*2,ATTACK_WARRIOR_MINIMUM));
+				ar.assigned_units=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(gps.pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS)*2, ATTACK_WARRIOR_MINIMUM));
 				ar.assigned_level=max_barracks_level;
 				attacks.push_back(ar);
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
@@ -1370,9 +1375,26 @@ void PrioritizedBuildingAttack::updateAttackFlags()
 
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
-		available_units+=j->assigned_units;
+		if(j->flag == NULL)
+		{
+			++j;
+			continue;
+		}
+
+		available_units+=j->flag->unitsWorking.size();
 		unsigned int score = gps.pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS);
-		unsigned int new_assigned=std::min(available_units, std::max(score*2, ATTACK_WARRIOR_MINIMUM));;
+		unsigned int new_assigned=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(score*2, ATTACK_WARRIOR_MINIMUM));
+
+		if(new_assigned<ATTACK_WARRIOR_MINIMUM)
+		{
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flag->posX<<","<<j->flag->posY<<" flag."<<endl;
+			ai.orders.push(new OrderDelete(j->flag->gid));
+			j=attacks.erase(j);
+			continue;
+			
+		}
+
 		if(new_assigned != j->assigned_units)
 		{
 			if(AINicowar_DEBUG)
@@ -1380,6 +1402,12 @@ void PrioritizedBuildingAttack::updateAttackFlags()
 			j->assigned_units=new_assigned;
 			ai.orders.push(new OrderModifyBuilding(j->flag->gid, new_assigned));
 			available_units-=new_assigned;
+		}
+
+		if(max_barracks_level != j->assigned_level)
+		{
+			j->assigned_level=max_barracks_level;
+			ai.orders.push(new OrderModifyMinLevelToFlag(j->flag->gid, max_barracks_level));
 		}
 		++j;
 	}
@@ -2077,10 +2105,13 @@ void RandomUpgradeRepairModule::reassignConstruction(void)
 	for (list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
-		for (std::list<Unit*>::iterator i = b->unitsWorking.begin(); i!=b->unitsWorking.end(); i++)
+		if(buildingStillExists(ai.game, b))
 		{
-			Unit* u=*i;
-			free_workers[u->level[BUILD]]+=1;
+			for (std::list<Unit*>::iterator i = b->unitsWorking.begin(); i!=b->unitsWorking.end(); i++)
+			{
+				Unit* u=*i;
+				free_workers[u->level[BUILD]]+=1;
+			}
 		}
 	}
 
