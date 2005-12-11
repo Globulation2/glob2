@@ -1,0 +1,11 @@
+Makefile
+Makefile.*
+.deps
+configure
+config.*
+*Check
+autodoc
+aclocal.m4
+autom4te.cache
+stamp-h
+stamp-h.in

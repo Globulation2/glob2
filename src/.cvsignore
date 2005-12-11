@@ -1,4 +1,4 @@
+.deps
 Makefile
 Makefile.*
-*.png
-.DS_Store
+glob2
