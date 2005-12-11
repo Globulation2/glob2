@@ -963,6 +963,9 @@ namespace Nicowar
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
 		{20, 6, 10, 20, 20, 20, 20, 0, 0, 0, 0, 0, 0};
 
+	//These constants are for GeneralsDefense
+	const unsigned int DEFENSE_ZONE_SIZE_INCREASE=2;
+
 	///This constant turns on debugging output
 	const bool AINicowar_DEBUG = true;
 	///@}

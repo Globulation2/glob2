@@ -437,6 +437,9 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 	if (poll_type == NONE)
 		return 0;
 
+//	if(poll_type == FRIENDLY_BUILDINGS)
+//		std::cout<<"findEnemyFlags: Starting poll."<<endl;
+
 	if (poll_type == CENTER_DISTANCE)
 	{
 		unsigned int score=0;
@@ -449,7 +452,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 		if(mod==MAXIMUM)
 			score=intdistance((x+width), center_x) + intdistance((y+height), center_y);
 		if(mod==MINIMUM)
-			score=map->getW()-intdistance((x+width), center_x) + map->getH()-intdistance((y+height), center_y);
+			score=(map->getW()-intdistance((x+width), center_x)) + (map->getH()-intdistance((y+height), center_y));
 		return score;
 	}
 
@@ -461,19 +464,21 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 	if(static_cast<int>(bound_y)>map->getH())
 		bound_y-=map->getH();
 
+	unsigned int orig_y=y;
 	unsigned int score=0;
 	for(; x!=bound_h; ++x)
 	{
 		if(static_cast<int>(x) >= map->getW())
 			x=0;
 
+		y=orig_y;
 		for(; y!=bound_y; ++y)
 		{
 			if(static_cast<int>(y) >= map->getH())
 				y=0;
 
-			Unit* u;
-			Building* b;
+			Unit* u=NULL;
+			Building* b=NULL;
 			switch (poll_type)
 			{
 
@@ -493,7 +498,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					b = getBuildingFromGid(game, map->getBuilding(x, y));
 					if (b)
 					{
-						if(b->owner->me&team->enemies)
+						if(b->owner->me&team->enemies && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -503,7 +508,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					b = getBuildingFromGid(game, map->getBuilding(x, y));
 					if (b)
 					{
-						if(b->owner->me == team->me)
+						if(b->owner->me == team->me && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -513,7 +518,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->getGroundUnit(x, y));
 					if (u)
 					{
-						if(u->owner->me&team->enemies)
+						if(u->owner->me & team->enemies && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -1001,11 +1006,22 @@ void GeneralsDefense::findEnemyFlags()
 						if(b->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 						{
 
+/*
 							std::cout<<"b->unitStayRange="<<b->unitStayRange<<";"<<endl;
-							unsigned int score = gps.pollArea((b->posX)-(b->unitStayRange), (b->posY)-(b->unitStayRange),
-								b->unitStayRange*2, b->unitStayRange*2, GridPollingSystem::MAXIMUM,
+							std::cout<<"AINicowar: findEnemyFlags: x="<<b->posX<<";"<<endl;
+							std::cout<<"AINicowar: findEnemyFlags: y="<<b->posY<<";"<<endl;
+							std::cout<<"AINicowar: findEnemyFlags: zonex="<<(b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
+							std::cout<<"AINicowar: findEnemyFlags: zoney="<<(b->posY)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
+							std::cout<<"AINicowar: findEnemyFlags: width/height="<<b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2<<";"<<endl;
+*/
+
+							unsigned int score = gps.pollArea((b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE,
+								(b->posY)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE,
+								b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2,
+								b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2, GridPollingSystem::MAXIMUM,
 								GridPollingSystem::FRIENDLY_BUILDINGS);
-							std::cout<<"score="<<score<<";"<<endl;
+
+//							std::cout<<"AINicowar: findEnemyFlags: score="<<score<<";"<<endl;
 							if(score>0)
 							{
 								bool found=false;
@@ -1024,7 +1040,7 @@ void GeneralsDefense::findEnemyFlags()
 								if(AINicowar_DEBUG)
 									std::cout<<"AINicowar: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<endl;
 								Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-								ai.orders.push(new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum));
+								ai.orders.push(new OrderCreate(ai.team->teamNumber, b->posX, b->posY, typeNum));
 							}
 						}
 					}
@@ -1063,6 +1079,7 @@ void GeneralsDefense::updateDefenseFlags()
 				}
 			}
 		}
+	++i;
 	}
 }
 
@@ -1520,15 +1537,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 		unsigned int zone_start_row=BUILD_AREA_EXTENTION_HEIGHT;
 		unsigned int zone_end_column=BUILD_AREA_EXTENTION_WIDTH+BUILD_AREA_WIDTH;
 		unsigned int zone_end_row=BUILD_AREA_EXTENTION_HEIGHT+BUILD_AREA_HEIGHT;
-#ifndef WIN32
 		unsigned short int imap[full_width][full_height];
-#else
-		unsigned short int **imap=(unsigned short int **)alloca(full_width*sizeof(unsigned short int *));
-		unsigned short int *imap_back=(unsigned short int *)alloca(full_width*full_height*sizeof(unsigned short));
-		for(int imap_back_init = 0; imap_back_init<full_width; ++imap_back_init)
-			imap[imap_back_init]=&imap_back[imap_back_init*full_height];
-
-#endif
 
 		//Prepare the imap
 		for(unsigned int x=0; x<full_width; ++x)
