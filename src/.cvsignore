@@ -1,4 +1,4 @@
 .deps
 Makefile
-Makefile.*
+Makefile.in
 glob2
