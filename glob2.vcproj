@@ -409,6 +409,12 @@
 							Name="VCCLCompilerTool"
 							PreprocessorDefinitions="ZLIB_WINAPI"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SDL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions="ZLIB_WINAPI"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\libgag\src\GUIAnimation.cpp">
@@ -459,6 +465,12 @@
 					RelativePath=".\libgag\src\StreamFilter.cpp">
 					<FileConfiguration
 						Name="Debug SDL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions="ZLIB_WINAPI"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SDL|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							PreprocessorDefinitions="ZLIB_WINAPI"/>

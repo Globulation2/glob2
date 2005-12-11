@@ -100,6 +100,7 @@ namespace GAGCore
 		GLint _texture;
 		GLenum _sfactor, _dfactor;
 		bool isTextureRectangle;
+		bool useATIWorkaround;
 	
 		GLState(void)
 		{
@@ -110,6 +111,7 @@ namespace GAGCore
 			_sfactor = 0xffffffff;
 			_dfactor = 0xffffffff;
 			isTextureRectangle = false;
+			useATIWorkaround = false;
 		}
 		
 		void checkExtensions(void)
@@ -121,7 +123,8 @@ namespace GAGCore
 
 			const char *glVendor= (const char *)glGetString(GL_VENDOR);
 			if(strstr(glVendor,"ATI"))
-				isTextureRectangle = false; // ugly temporary bug fix for bug 13823
+				useATIWorkaround = true; // ugly temporary bug fix for bug 13823
+
 			if (verbose)
 				if (isTextureRectangle)
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
@@ -165,7 +168,11 @@ namespace GAGCore
 				return;
 		
 			if (isTextureRectangle)
+			{
+				if(useATIWorkaround)
+					glBindTexture(GL_TEXTURE_RECTANGLE_NV, 0);
 				glBindTexture(GL_TEXTURE_RECTANGLE_NV, tex);
+			}
 			else
 				glBindTexture(GL_TEXTURE_2D, tex);
 			_texture = tex;
@@ -1758,6 +1765,9 @@ namespace GAGCore
 		}
 		else
 		{
+			if (optionFlags & USEGPU)
+				glState.checkExtensions();
+
 			setClipRect();
 			if (flags & CUSTOMCURSOR)
 			{
@@ -1779,7 +1789,6 @@ namespace GAGCore
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 			{
-				glState.checkExtensions();
 				gluOrtho2D(0, w, h, 0);
 				glEnable(GL_LINE_SMOOTH);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
