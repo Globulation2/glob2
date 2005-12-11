@@ -121,7 +121,7 @@ namespace GAGCore
 
 			const char *glVendor= (const char *)glGetString(GL_VENDOR);
 			if(strstr(glVendor,"ATI"))
-				isTextureRectangle = false;
+				isTextureRectangle = false; // ugly temporary bug fix for bug 13823
 			if (verbose)
 				if (isTextureRectangle)
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
