@@ -1,2 +1,4 @@
 *.ogg
 .DS_Store
+Makefile
+Makefile.*
