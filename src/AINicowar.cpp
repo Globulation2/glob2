@@ -197,8 +197,9 @@ Order *AINicowar::getOrder(void)
 	if((timer+1)%TIMER_INTERVAL==0)
 	{
 		//		std::cout<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<endl;
-		(*active_module)->perform(module_timer);
-		++module_timer;
+		bool cont = (*active_module)->perform(module_timer);
+		if(!cont)
+			++module_timer;
 
 		if(module_timer==(*active_module)->numberOfTicks())
 		{
@@ -597,11 +598,22 @@ int GridPollingSystem::getPositionScore(const std::vector<pollRecord>& polls, co
 
 
 
-std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(poll p, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height)
+GridPollingSystem::getBestZonesSplit* GridPollingSystem::getBestZones(poll p, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height)
 {
-	std::vector<pollRecord> a_list;
-	std::vector<pollRecord> b_list;
-	std::vector<pollRecord> c_list;
+	getBestZonesSplit* split=new getBestZonesSplit;
+	split->p=p;
+	split->width=width;
+	split->height=height;
+	split->horizontal_overlap=horizontal_overlap;
+	split->vertical_overlap=vertical_overlap;
+	split->extention_width=extention_width;
+	split->extention_height=extention_height;
+	std::vector<pollRecord>& a_list=*new std::vector<pollRecord>;
+	std::vector<pollRecord>& b_list=*new std::vector<pollRecord>;
+	std::vector<pollRecord>& c_list=*new std::vector<pollRecord>;
+	split->a_list=&a_list;
+	split->b_list=&b_list;
+	split->c_list=&c_list;
 
 	for (unsigned int x=0; x<=static_cast<unsigned int>(map->getW()-horizontal_overlap); x+=width-horizontal_overlap)
 	{
@@ -642,6 +654,17 @@ std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(poll p, uns
 	std::sort(a_list.begin(), a_list.end());
 	std::sort(b_list.begin(), b_list.end());
 	std::sort(c_list.begin(), c_list.end());
+	return split;
+}
+
+
+
+
+std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(GridPollingSystem::getBestZonesSplit* split_calc)
+{
+	std::vector<pollRecord>& a_list=*split_calc->a_list;
+	std::vector<pollRecord>& b_list=*split_calc->b_list;
+	std::vector<pollRecord>& c_list=*split_calc->c_list;
 
 	std::vector<threeTierRecord> final;
 	unsigned int previous_score_a=0;
@@ -712,6 +735,11 @@ std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(poll p, uns
 		return_list.push_back(z);
 	}
 
+	delete split_calc->a_list;
+	delete split_calc->b_list;
+	delete split_calc->c_list;
+	delete split_calc;
+
 	return return_list;
 }
 
@@ -726,17 +754,18 @@ SimpleBuildingDefense::SimpleBuildingDefense(AINicowar& ai) : ai(ai)
 
 
 
-void SimpleBuildingDefense::perform(unsigned int time_slice_n)
+bool SimpleBuildingDefense::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			findDefense();
+			return findDefense();
 		case 1:
-			updateFlags();
+			return updateFlags();
 		case 2:
-			findCreatedDefenseFlags();
+			return findCreatedDefenseFlags();
 	}
+	return false;
 }
 
 
@@ -807,7 +836,7 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 
 
 
-void SimpleBuildingDefense::findDefense()
+bool SimpleBuildingDefense::findDefense()
 {
 	GridPollingSystem gps(ai);
 	for(unsigned int i=0; i<1024; ++i)
@@ -858,12 +887,13 @@ void SimpleBuildingDefense::findDefense()
 			building_health[b->gid]=b->hp;
 		}
 	}
+	return false;
 }
 
 
 
 
-void SimpleBuildingDefense::updateFlags()
+bool SimpleBuildingDefense::updateFlags()
 {
 	GridPollingSystem gps(ai);
 	for (vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
@@ -887,12 +917,13 @@ void SimpleBuildingDefense::updateFlags()
 			++i;
 		}
 	}
+	return false;
 }
 
 
 
 
-void SimpleBuildingDefense::findCreatedDefenseFlags()
+bool SimpleBuildingDefense::findCreatedDefenseFlags()
 {
 	for(unsigned int i=0; i<1024; ++i)
 	{
@@ -916,6 +947,7 @@ void SimpleBuildingDefense::findCreatedDefenseFlags()
 			}
 		}
 	}
+	return false;
 }
 
 
@@ -929,15 +961,16 @@ GeneralsDefense::GeneralsDefense(AINicowar& ai) : ai(ai)
 
 
 
-void GeneralsDefense::perform(unsigned int time_slice_n)
+bool GeneralsDefense::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			findEnemyFlags();
+			return findEnemyFlags();
 		case 1:
-			updateDefenseFlags();
+			return updateDefenseFlags();
 	}
+	return false;
 }
 
 
@@ -988,7 +1021,7 @@ void GeneralsDefense::save(GAGCore::OutputStream *stream) const
 
 
 
-void GeneralsDefense::findEnemyFlags()
+bool GeneralsDefense::findEnemyFlags()
 {
 	GridPollingSystem gps(ai);
 	for (unsigned int t=0; t<32; t++)
@@ -1006,22 +1039,12 @@ void GeneralsDefense::findEnemyFlags()
 						if(b->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 						{
 
-							/*
-														std::cout<<"b->unitStayRange="<<b->unitStayRange<<";"<<endl;
-														std::cout<<"AINicowar: findEnemyFlags: x="<<b->posX<<";"<<endl;
-														std::cout<<"AINicowar: findEnemyFlags: y="<<b->posY<<";"<<endl;
-														std::cout<<"AINicowar: findEnemyFlags: zonex="<<(b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
-														std::cout<<"AINicowar: findEnemyFlags: zoney="<<(b->posY)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE<<";"<<endl;
-														std::cout<<"AINicowar: findEnemyFlags: width/height="<<b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2<<";"<<endl;
-							*/
-
 							unsigned int score = gps.pollArea((b->posX)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE,
 								(b->posY)-(b->unitStayRange)-DEFENSE_ZONE_SIZE_INCREASE,
 								b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2,
 								b->unitStayRange*2+DEFENSE_ZONE_SIZE_INCREASE*2, GridPollingSystem::MAXIMUM,
 								GridPollingSystem::FRIENDLY_BUILDINGS);
 
-							//							std::cout<<"AINicowar: findEnemyFlags: score="<<score<<";"<<endl;
 							if(score>0)
 							{
 								bool found=false;
@@ -1048,12 +1071,13 @@ void GeneralsDefense::findEnemyFlags()
 			}
 		}
 	}
+	return false;
 }
 
 
 
 
-void GeneralsDefense::updateDefenseFlags()
+bool GeneralsDefense::updateDefenseFlags()
 {
 	for(vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end();)
 	{
@@ -1084,6 +1108,7 @@ void GeneralsDefense::updateDefenseFlags()
 		}
 		++i;
 	}
+	return false;
 }
 
 
@@ -1098,17 +1123,18 @@ PrioritizedBuildingAttack::PrioritizedBuildingAttack(AINicowar& ai) : ai(ai)
 
 
 
-void PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
+bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			targetEnemy();
+			return targetEnemy();
 		case 1:
-			attack();
+			return attack();
 		case 2:
-			updateAttackFlags();
+			return updateAttackFlags();
 	}
+	return false;
 }
 
 
@@ -1190,7 +1216,7 @@ void PrioritizedBuildingAttack::save(GAGCore::OutputStream *stream) const
 
 
 
-void PrioritizedBuildingAttack::targetEnemy()
+bool PrioritizedBuildingAttack::targetEnemy()
 {
 	if(enemy==NULL || !enemy->isAlive)
 	{
@@ -1204,18 +1230,18 @@ void PrioritizedBuildingAttack::targetEnemy()
 					if(AINicowar_DEBUG)
 						std::cout<<"AINicowar: targetEnemy: A new enemy has been chosen."<<endl;
 					enemy=t;
-					return;
+					return false;
 				}
 			}
 		}
 	}
-
+	return false;
 }
 
 
 
 
-void PrioritizedBuildingAttack::attack()
+bool PrioritizedBuildingAttack::attack()
 {
 	GridPollingSystem gps(ai);
 	vector<vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
@@ -1243,7 +1269,7 @@ void PrioritizedBuildingAttack::attack()
 
 	//If we don't have enough barracks, don't bother doing anything, otherwise, make sure where producing warriors.
 	if(max_barracks_level<MINIMUM_BARRACKS_LEVEL+1)
-		return;
+		return false;
 	else
 		ai.getUnitModule()->changeUnits("attack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
 
@@ -1279,7 +1305,7 @@ void PrioritizedBuildingAttack::attack()
 					continue;
 
 				if(available_units<ATTACK_WARRIOR_MINIMUM)
-					return;
+					return false;
 
 				attackRecord ar;
 				ar.target=b->gid;
@@ -1308,12 +1334,13 @@ void PrioritizedBuildingAttack::attack()
 			}
 		}
 	}
+	return false;
 }
 
 
 
 
-void PrioritizedBuildingAttack::updateAttackFlags()
+bool PrioritizedBuildingAttack::updateAttackFlags()
 {
 	GridPollingSystem gps(ai);
 	for(int i=0; i<1024; ++i)
@@ -1412,6 +1439,7 @@ void PrioritizedBuildingAttack::updateAttackFlags()
 		++j;
 	}
 
+	return false;
 }
 
 
@@ -1425,19 +1453,20 @@ DistributedNewConstructionManager::DistributedNewConstructionManager(AINicowar& 
 
 
 
-void DistributedNewConstructionManager::perform(unsigned int time_slice_n)
+bool DistributedNewConstructionManager::perform(unsigned int time_slice_n)
 {
 	//Keep the number of units we want updated
 	ai.getUnitModule()->changeUnits("DistributedNewConstructionManager", WORKER, MAXIMUM_TO_CONSTRUCT_NEW*MAX_NEW_CONSTRUCTION_AT_ONCE, MINIMUM_TO_CONSTRUCT_NEW, 0);
 	switch(time_slice_n)
 	{
 		case 0:
-			constructBuildings();
+			return constructBuildings();
 		case 1:
-			updateBuildings();
+			return updateBuildings();
 		case 2:
-			calculateBuildings();
+			return calculateBuildings();
 	}
+	return false;
 }
 
 
@@ -1551,9 +1580,10 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 	zp.minimum_type=GridPollingSystem::FRIENDLY_BUILDINGS;
 	zp.minimum_score=MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT;
 
-	vector<GridPollingSystem::zone> zones = gps.getBestZones(zp, BUILD_AREA_WIDTH, BUILD_AREA_HEIGHT, BUILD_AREA_HORIZONTAL_OVERLAP,
-		BUILD_AREA_VERTICAL_OVERLAP, BUILD_AREA_EXTENTION_WIDTH,
-		BUILD_AREA_EXTENTION_HEIGHT);
+	GridPollingSystem::getBestZonesSplit* split = gps.getBestZones(zp, BUILD_AREA_WIDTH, BUILD_AREA_HEIGHT, BUILD_AREA_HORIZONTAL_OVERLAP,
+		BUILD_AREA_VERTICAL_OVERLAP, BUILD_AREA_EXTENTION_WIDTH, BUILD_AREA_EXTENTION_HEIGHT);
+
+	vector<GridPollingSystem::zone> zones = gps.getBestZones(split);
 
 	//Iterate through the zones
 	for(std::vector<GridPollingSystem::zone>::iterator i = zones.begin(); i!=zones.end(); ++i)
@@ -1732,7 +1762,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 
 
 
-void DistributedNewConstructionManager::constructBuildings()
+bool DistributedNewConstructionManager::constructBuildings()
 {
 	unsigned total_free_workers=0;
 	for(int i=0; i<NB_UNIT_LEVELS; ++i)
@@ -1752,7 +1782,7 @@ void DistributedNewConstructionManager::constructBuildings()
 	if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 	{
 		//		std::cout<<"Fail 1, too much construction."<<endl;
-		return;
+		return false;
 	}
 
 	for(unsigned i = 0; i<IntBuildingType::NB_BUILDING; ++i)
@@ -1797,12 +1827,12 @@ void DistributedNewConstructionManager::constructBuildings()
 			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 			{
 				//				std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
-				return;
+				return false;
 			}
 			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW)
 			{
 				//				std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
-				return;
+				return false;
 			}
 			if(under_construction_counts[i->building_type]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i->building_type])
 			{
@@ -1853,12 +1883,13 @@ void DistributedNewConstructionManager::constructBuildings()
 			counts[i->building_type]++;
 		}
 	}
+	return false;
 }
 
 
 
 
-void DistributedNewConstructionManager::updateBuildings()
+bool DistributedNewConstructionManager::updateBuildings()
 {
 	//Remove records of buildings that are no longer under construction
 	for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end();)
@@ -1897,12 +1928,13 @@ void DistributedNewConstructionManager::updateBuildings()
 			}
 		}
 	}
+	return false;
 }
 
 
 
 
-void DistributedNewConstructionManager::calculateBuildings()
+bool DistributedNewConstructionManager::calculateBuildings()
 {
 	unsigned int total_units=ai.team->stats.getLatestStat()->totalUnit;
 	for (int i=0; i<IntBuildingType::NB_BUILDING; ++i)
@@ -1912,6 +1944,7 @@ void DistributedNewConstructionManager::calculateBuildings()
 		else
 			num_buildings_wanted[i]=0;
 	}
+	return false;
 }
 
 
@@ -1926,19 +1959,20 @@ RandomUpgradeRepairModule::RandomUpgradeRepairModule(AINicowar& ai) : ai(ai)
 
 
 
-void RandomUpgradeRepairModule::perform(unsigned int time_slice_n)
+bool RandomUpgradeRepairModule::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			removeOldConstruction();
+			return removeOldConstruction();
 		case 1:
-			updatePendingConstruction();
+			return updatePendingConstruction();
 		case 2:
-			startNewConstruction();
+			return startNewConstruction();
 		case 3:
-			reassignConstruction();
+			return reassignConstruction();
 	}
+	return false;
 }
 
 
@@ -2017,7 +2051,7 @@ void RandomUpgradeRepairModule::save(GAGCore::OutputStream *stream) const
 
 
 
-void RandomUpgradeRepairModule::removeOldConstruction(void)
+bool RandomUpgradeRepairModule::removeOldConstruction(void)
 {
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end();)
 	{
@@ -2039,12 +2073,13 @@ void RandomUpgradeRepairModule::removeOldConstruction(void)
 		}
 		i++;
 	}
+	return false;
 }
 
 
 
 
-void RandomUpgradeRepairModule::updatePendingConstruction(void)
+bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 {
 	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end();)
 	{
@@ -2067,6 +2102,7 @@ void RandomUpgradeRepairModule::updatePendingConstruction(void)
 		}
 		i++;
 	}
+	return false;
 }
 
 
@@ -2092,7 +2128,7 @@ int RandomUpgradeRepairModule::getAvailableUnitsForConstruction(int level)
 
 
 
-void RandomUpgradeRepairModule::reassignConstruction(void)
+bool RandomUpgradeRepairModule::reassignConstruction(void)
 {
 	//Get the numbers of free units
 	int free_workers[NB_UNIT_LEVELS];
@@ -2184,16 +2220,17 @@ void RandomUpgradeRepairModule::reassignConstruction(void)
 		}
 		reduce(free_workers, b->type->level, num_to_assign);
 	}
+	return false;
 }
 
 
 
 
-void RandomUpgradeRepairModule::startNewConstruction(void)
+bool RandomUpgradeRepairModule::startNewConstruction(void)
 {
 	//If we already have more than our max, don't do any more
 	if (active_construction.size()+pending_construction.size()>=MAX_CONSTRUCTION_AT_ONCE)
-		return;
+		return false;
 
 	//Get the numbers of free units
 	int free_workers[NB_UNIT_LEVELS];
@@ -2315,6 +2352,7 @@ void RandomUpgradeRepairModule::startNewConstruction(void)
 			}
 		}
 	}
+	return false;
 }
 
 
@@ -2328,13 +2366,14 @@ BasicDistributedSwarmManager::BasicDistributedSwarmManager(AINicowar& ai) : ai(a
 
 
 
-void BasicDistributedSwarmManager::perform(unsigned int time_slice_n)
+bool BasicDistributedSwarmManager::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			moderateSwarms();
+			return moderateSwarms();
 	}
+	return false;
 }
 
 
@@ -2418,7 +2457,7 @@ void BasicDistributedSwarmManager::changeUnits(string module_name, unsigned int 
 
 
 
-void BasicDistributedSwarmManager::moderateSwarms()
+bool BasicDistributedSwarmManager::moderateSwarms()
 {
 	//The number of units we want for each priority level
 	unsigned int num_wanted[NB_UNIT_TYPE][3];
@@ -2502,6 +2541,7 @@ void BasicDistributedSwarmManager::moderateSwarms()
 		need_to_output=false;
 		ai.orders.push(new OrderModifySwarm(swarm->gid, ratios));
 	}
+	return false;
 }
 
 
@@ -2518,19 +2558,20 @@ ExplorationManager::ExplorationManager(AINicowar& ai) : ai(ai)
 
 
 
-void ExplorationManager::perform(unsigned int time_slice_n)
+bool ExplorationManager::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			exploreWorld();
+			return exploreWorld();
 		case 1:
-			updateExplorationFlags();
+			return updateExplorationFlags();
 		case 2:
-			moderateSwarmsForExplorers();
+			return moderateSwarmsForExplorers();
 		case 3:
-			explorerAttack();
+			return explorerAttack();
 	}
+	return false;
 }
 
 
@@ -2610,7 +2651,7 @@ void ExplorationManager::save(GAGCore::OutputStream *stream) const
 
 
 
-void ExplorationManager::exploreWorld(void)
+bool ExplorationManager::exploreWorld(void)
 {
 	GridPollingSystem gps(ai);
 	unsigned int exploration_count=0;
@@ -2630,7 +2671,7 @@ void ExplorationManager::exploreWorld(void)
 		wanted_attack=0;
 
 	if(wanted_exploration==0 && wanted_attack==0)
-		return;
+		return false;
 
 	GridPollingSystem::poll p;
 	p.mod_1=GridPollingSystem::MAXIMUM;
@@ -2640,9 +2681,10 @@ void ExplorationManager::exploreWorld(void)
 	p.mod_minimum=GridPollingSystem::MAXIMUM;
 	p.minimum_type=GridPollingSystem::VISIBLE_SQUARES;
 	p.minimum_score=1;
-	vector<GridPollingSystem::zone> best = gps.getBestZones(p, EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP,
+	GridPollingSystem::getBestZonesSplit* split = gps.getBestZones(p, EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP,
 		EXPLORER_REGION_VERTICAL_OVERLAP, EXPLORER_REGION_HORIZONTAL_EXTENTION,
 		EXPLORER_REGION_VERTICAL_EXTENTION);
+	vector<GridPollingSystem::zone> best = gps.getBestZones(split);
 	unsigned int size=best.size();
 
 	//	std::cout<<"best.size()="<<best.size()<<endl;
@@ -2654,9 +2696,11 @@ void ExplorationManager::exploreWorld(void)
 	p.mod_minimum=GridPollingSystem::MAXIMUM;
 	p.minimum_type=GridPollingSystem::ENEMY_BUILDINGS;
 	p.minimum_score=1;
-	vector<GridPollingSystem::zone> best_attack = gps.getBestZones(p, EXPLORER_ATTACK_AREA_WIDTH, EXPLORER_ATTACK_AREA_HEIGHT, EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP,
+	split = gps.getBestZones(p, EXPLORER_ATTACK_AREA_WIDTH, EXPLORER_ATTACK_AREA_HEIGHT, EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP,
 		EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP, EXPLORER_ATTACK_AREA_HORIZONTAL_EXTENTION,
 		EXPLORER_ATTACK_AREA_VERTICAL_EXTENTION);
+
+	vector<GridPollingSystem::zone> best_attack = gps.getBestZones(split);
 
 	std::copy(best_attack.begin(), best_attack.end(), back_insert_iterator<vector<GridPollingSystem::zone> >(best));
 
@@ -2680,7 +2724,7 @@ void ExplorationManager::exploreWorld(void)
 	if(top<attack_start && gps.pollArea(top->x, top->y, top->width, top->height, GridPollingSystem::MAXIMUM, GridPollingSystem::HIDDEN_SQUARES)==0)
 	{
 		//		std::cout<<"Doing nothing! wanted_exploration="<<wanted_exploration<<";"<<endl;
-		return;
+		return false;
 	}
 
 	for (vector<GridPollingSystem::zone>::iterator i=best.begin(); i!=best.end(); ++i)
@@ -2725,12 +2769,13 @@ void ExplorationManager::exploreWorld(void)
 		ai.orders.push(new OrderCreate(ai.team->teamNumber, exploration_record.flag_x, exploration_record.flag_y,typeNum));
 		explorers_wanted+=exploration_record.assigned;
 	}
+	return false;
 }
 
 
 
 
-void ExplorationManager::updateExplorationFlags(void)
+bool ExplorationManager::updateExplorationFlags(void)
 {
 	GridPollingSystem gps(ai);
 	//Iterate through the buildings (which includes flags), looking for a flag that is not on the lists, that is in the right
@@ -2784,6 +2829,7 @@ void ExplorationManager::updateExplorationFlags(void)
 			++i;
 	}
 
+	return false;
 }
 
 
@@ -2816,17 +2862,18 @@ bool ExplorationManager::isFreeOfFlags(unsigned int x, unsigned int y)
 
 
 
-void ExplorationManager::moderateSwarmsForExplorers(void)
+bool ExplorationManager::moderateSwarmsForExplorers(void)
 {
 	//I've raised the priority on explorers temporarily for testing.
 	//	changeUnits("aircontrol", EXPLORER, static_cast<int>(desired_explorers/2) , desired_explorers, 0);
 	ai.getUnitModule()->changeUnits("aircontrol", EXPLORER, 0, static_cast<int>(explorers_wanted/2), explorers_wanted);
+	return false;
 }
 
 
 
 
-void ExplorationManager::explorerAttack(void)
+bool ExplorationManager::explorerAttack(void)
 {
 	bool lvl3_school_exists=false;
 	Building** myBuildings=ai.team->myBuildings;
@@ -2843,13 +2890,13 @@ void ExplorationManager::explorerAttack(void)
 	}
 	if (!lvl3_school_exists)
 	{
-		return;
+		return false;
 	}
 
 	if (!developing_attack_explorers)
 	{
 		developing_attack_explorers=true;
-		return;
+		return false;
 	}
 
 	//check if we have enough explorers to start launching attacks.
@@ -2868,11 +2915,12 @@ void ExplorationManager::explorerAttack(void)
 	}
 
 	if (ground_attack_explorers<static_cast<int>(EXPLORERS_PER_ATTACK*EXPLORER_ATTACKS_AT_ONCE))
-		return;
+		return false;
 	if(AINicowar_DEBUG)
 		if(!explorer_attacking)
 			std::cout<<"AINicowar: explorerAttack: Enabling explorer attacks."<<endl;
 	explorer_attacking=true;
+	return false;
 }
 
 
@@ -2886,15 +2934,16 @@ InnManager::InnManager(AINicowar& ai) : ai(ai)
 
 
 
-void InnManager::perform(unsigned int time_slice_n)
+bool InnManager::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			recordInns();
+			return recordInns();
 		case 1:
-			modifyInns();
+			return modifyInns();
 	}
+	return false;
 }
 
 
@@ -2959,7 +3008,7 @@ void InnManager::save(GAGCore::OutputStream *stream) const
 
 InnManager::innRecord::innRecord() : pos(0), records(INN_RECORD_MAX) {}
 
-void InnManager::recordInns()
+bool InnManager::recordInns()
 {
 	for(int i=0; i<1024; ++i)
 	{
@@ -2980,6 +3029,7 @@ void InnManager::recordInns()
 			}
 		}
 	}
+	return false;
 }
 
 
@@ -3043,7 +3093,7 @@ bool compare_final(const finalInnScore& first, const finalInnScore& other)
 
 
 
-void InnManager::modifyInns()
+bool InnManager::modifyInns()
 {
 
 	std::vector<innScore> scores;
@@ -3071,7 +3121,7 @@ void InnManager::modifyInns()
 		scores.push_back(score);
 	}
 	if(scores.size()==0)
-		return;
+		return false;
 
 	std::vector<innScore> scores_total_food(scores);
 	std::vector<innScore> scores_total_units(scores);
@@ -3140,6 +3190,7 @@ void InnManager::modifyInns()
 		}
 	}
 	ai.getUnitModule()->changeUnits("inn-manager", WORKER, inns.size(), total_workers_needed, 0);
+	return false;
 }
 
 
@@ -3153,13 +3204,14 @@ TowerController::TowerController(AINicowar& ai) : ai(ai)
 
 
 
-void TowerController::perform(unsigned int time_slice_n)
+bool TowerController::perform(unsigned int time_slice_n)
 {
 	switch(time_slice_n)
 	{
 		case 0:
-			controlTowers();
+			return controlTowers();
 	}
+	return false;
 }
 
 
@@ -3192,7 +3244,7 @@ void TowerController::save(GAGCore::OutputStream *stream) const
 
 
 
-void TowerController::controlTowers()
+bool TowerController::controlTowers()
 {
 
 	int count=0;
@@ -3216,4 +3268,5 @@ void TowerController::controlTowers()
 		}
 	}
 	ai.getUnitModule()->changeUnits("tower-controller", WORKER, 0, count*NUM_PER_TOWER, 0);
+	return false;
 }
