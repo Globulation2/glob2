@@ -1033,6 +1033,7 @@ namespace GAGCore
 	{
 		if (alpha == Color::ALPHA_OPAQUE)
 		{
+			#ifdef HAVE_OPENGL
 			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USEGPU))
 			{
 				if ((x == 0) && (y == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
@@ -1067,6 +1068,7 @@ namespace GAGCore
 			}
 			else
 			{
+			#endif // HAVE_OPENGL
 				// well, we *hope* SDL is faster than a handmade code
 				SDL_Rect sr, dr;
 				sr.x = static_cast<Sint16>(sx);
@@ -1078,7 +1080,9 @@ namespace GAGCore
 				dr.w = static_cast<Uint16>(sw);
 				dr.h = static_cast<Uint16>(sh);
 				SDL_BlitSurface(surface->sdlsurface, &sr, sdlsurface, &dr);
+			#ifdef HAVE_OPENGL	
 			}
+			#endif // HAVE_OPENGL
 		}
 		else
 		{
@@ -1773,9 +1777,11 @@ namespace GAGCore
 		}
 		else
 		{
+			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 				glState.checkExtensions();
-
+			#endif // HAVE_OPENGL
+			
 			setClipRect();
 			if (flags & CUSTOMCURSOR)
 			{
