@@ -113,63 +113,67 @@ Mur de pedra
 [market]
 Mercat
 [forbidden area]
-Area prohibida
+Area Prohibida
+[guard area]
+Area de Guardia
+[clear area]
+Area de Neteja
 [Building short explanation]
-Zona petita en construcció
+
 [swarm building explanation]
-Zona de la Granja en construcció
+Produeix globuls treballadors,
 [food building explanation]
-Zona de la Despensa en construcció
+Per alimentar a tots els
 [health building explanation]
-Zona de l'Hospital en construcció
+Per curar a tots els
 [walkspeed building explanation]
-Zona del Poliesportiu en construcció
+Per augmentar la velocitat dels
 [swimspeed building explanation]
-Zona de la Piscina en construcció
+Per augmentar la velocitat dels
 [attack building explanation]
-Zona del Cuartell en construcció
+Per augmentar el poder d' atac
 [science building explanation]
-Zona del Laboratori en construcció
+Per mijorar les construccions
 [defense building explanation]
-Zona de Defensa en construcció
+Ataca els globuls enemics
 [exploration flag explanation]
-Zona de la bandera d' Exploració
+Atrau als teus globuls
 [war flag explanation]
-Zona de la bandera d' Atac
+Atrau als teus globuls
 [clearing flag explanation]
-Zona de la bandera de Neteja
+Atrau als teus globuls treballadors
 [stone wall explanation]
-Zona de la Muralla
+Bloqueja els globuls enemics
 [market explanation]
-Zona del mercat
+Per intercambiar fruita amb
 [Building short explanation 2]
-Zona petita 2 en construcció
+
 [swarm building explanation 2]
-Zona de la Granja 2 en construcció
+exploradors i guerrers
 [food building explanation 2]
-Zona de la Despensa 2 en construcció
+teus globuls
 [health building explanation 2]
-Zona de l'Hospital 2 en construcció
+teus globuls
 [walkspeed building explanation 2]
-Zona del Poliesportiu 2 en construcció
+teus globuls en terra
 [swimspeed building explanation 2]
-Zona de la Piscina 2 en construcció
+teus globuls en aigua
 [attack building explanation 2]
-Zona del Cuartell 2 en construcció
+dels teus globuls en aigua
 [science building explanation 2]
-Zona del Laboratori 2 en construcció
+dels teus globuls
 [defense building explanation 2]
-Zona de Defensa 2 en construcció
+
 [exploration flag explanation 2]
-Zona de la bandera d' Exploració 2
+exploradors a l'area seleccionada
 [war flag explanation]
-Zona de la bandera d' Atac 2
+guerrers a l'area seleccionada
 [clearing flag explanation]
-Zona de la bandera de Neteja 2
+perque netegin l'area seleccionada
 [stone wall explanation]
-Zona de la Muralla
+dificultant els seus atacs
 [market explanation]
-Zona del mercat
+els teus aliats
 [waiting for %s]
 Esperant a %s
 [%s has left the game]
@@ -247,7 +251,7 @@ Nom del jugador
 [svr hostname]
 Nom del servidor
 [hp]
-Punts de Vida
+Punts Vida
 [carry]
 Transport :
 [don't carry anything]
@@ -371,11 +375,11 @@ Atac
 [Defense]
 Defensa
 [free]
-Lliure
+desocupat
 [of which]
 dels quals
 [are ok]
-esta bé
+estan bé
 [are hungry]
 te fam
 [are dying hungry]
@@ -401,13 +405,17 @@ At. força
 [Total]
 Total
 [free]
-Lliure
+desocupats
 [seeking]
 Buscant
 [Free]
-Lliure
+lliures
+[seeking]
+esperant
+[Free]
+lliures
 [hungry]
-te fam
+afamat
 [starving]
 anèmic
 [wounded]
@@ -430,8 +438,12 @@ IANone
 IANumbi
 [AICastor]
 IACastor
+[AINicowar]
+Nicowar (unstable)
 [AIToubib]
-IAToubib
+AIToubib
+[AIWarrush]
+AIWarrush
 [the games]
 Els Jocs
 [the maps]
@@ -527,7 +539,7 @@ un jugador
 [number of teams: %d]
 %d nombre d' equips
 [game full]
-Partida Completada
+Partida Completa
 [small]
 Petit
 [medium]
@@ -631,6 +643,32 @@ Audio
 [Music volume]
 Volum (música)
 [Happyness]
-Felicitats
+Felicitat
+[customcur]
+Cursor actual
+[choose campaign]
+Escull una campanya
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
+[mute]
+Silenci
+[abreaviation explanation A]
+A : Alies
+[abreaviation explanation V]
+V : Mostra la visio de totes les construccions
+[abreaviation explanation Vf]
+Vf : Mostra la visio de totes les DESPENSES (per robar unitats)
+[abreaviation explanation mV]
+mV : Mostra la visio de tots els MERCATS (per intercanviar fruita)
+[abreaviation explanation C]
+C : Envia un missatge de text a
+[shortcut explanation enter]
+key enter : Envia un missatge de text
+[shortcut explanation v]
+key v : Presiona per parlar
+[Delete game]
+Esborra la partida seleccionada
+[any explorer]
+Qualsevol Explorador
+[ground attack]
+Attac en terra
