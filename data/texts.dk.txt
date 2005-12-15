@@ -33,7 +33,7 @@ Algae
 [Cherry]
 Kirsebær
 [Orange]
-Abelsin
+Appelsin
 [Prune]
 Prune
 [Clearing:]
@@ -105,7 +105,7 @@ Forsvars tårn
 [exploration flag]
 Udforsknings flag
 [war flag]
-Krig flag
+Krigs flag
 [clearing flag]
 Rydnings flag
 [stone wall]
@@ -131,7 +131,7 @@ Forbedre gå hastighed
 [swimspeed building explanation]
 Forbedre svømning
 [attack building explanation]
-Fordere slås 
+Forbedre militlær enheder 
 [science building explanation]
 Forbædre bygnings evnen
 [defense building explanation]
@@ -439,7 +439,7 @@ AINumbi
 [AICastor]
 AICastor
 [AINicowar]
-Nicowar (unstable)
+Nicowar (ustabil)
 [AIToubib]
 AIToubib
 [AIWarrush]
@@ -668,3 +668,7 @@ tast enter : send en besked
 tast v : hold nede for at snakke
 [Delete game]
 Slet det valgte spil
+[any explorer]
+Tilfældig udforsker
+[ground attack]
+Grund angrib
