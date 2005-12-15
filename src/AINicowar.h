@@ -252,6 +252,23 @@ namespace Nicowar
 					{}
 			};
 
+
+			///This is the data that is stored between two calls to get best zones for split calculations
+			struct getBestZonesSplit
+			{
+				poll p;
+				unsigned int width;
+				unsigned int height;
+				int horizontal_overlap;
+				int vertical_overlap;
+				unsigned int extention_width;
+				unsigned int extention_height;
+				std::vector<pollRecord>* a_list;
+				std::vector<pollRecord>* b_list;
+				std::vector<pollRecord>* c_list;
+			};
+
+
 			///Returns the zones in order of scores of each poll type: a, b, and c,
 			///where a is prioritized over b and b is prioritized over c. extention_width
 			///and extention_height cause getBestZones to poll a zone larger than
@@ -259,9 +276,11 @@ namespace Nicowar
 			///scored in only there area, but surrounding areas can be considered
 			///as well. The extentions are applied to both the top and the bottom
 			///of the zone, so the total width or height of the zone increases by two
-			///times the extention.
-			std::vector<zone> getBestZones(poll p, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height);
+			///times the extention. The calculation is quite heavy and so is split into
+			///two parts.
+			getBestZonesSplit* getBestZones(poll p, unsigned int width, unsigned int height, int horizontal_overlap, int vertical_overlap, unsigned int extention_width, unsigned int extention_height);
 
+			std::vector<zone> getBestZones(getBestZonesSplit* split_calc);
 		private:
 			Map* map;
 			Team* team;
@@ -276,8 +295,10 @@ namespace Nicowar
 		public:
 			///Destructs the module, deconnecting it from the base.
 			virtual ~Module() {};
-			///Asks the Module to perform something in its timeslice
-			virtual void perform(unsigned int time_slice_n)=0;
+			///Asks the Module to perform something in its timeslice. If this returns true,
+			///The main module will give it another tick, for split calculations. The function
+			///will be called again with the same time_splice_n.
+			virtual bool perform(unsigned int time_slice_n)=0;
 			///Gets the name of this module.
 			virtual string getName() const=0;
 			///This should load the modules contents from the stream
@@ -344,7 +365,7 @@ namespace Nicowar
 			SimpleBuildingDefense(AINicowar& ai);
 
 			~SimpleBuildingDefense() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -373,16 +394,16 @@ namespace Nicowar
 			///check to see if there aren't already warriors defending in that zone, and if not, add a flag with enough
 			///assigned units to counter everything the enemy has *1.5. If the forces are overwhelming, tells the swarm
 			///manager to create warriors on the double.
-			void findDefense();
+			bool findDefense();
 
 			///Destroys defense flags that are defending zones that are no longer under enemy attack. It also reassigns
 			///units to flags in order to keep up to date on what zones need how many defending warriors. Finally, it
 			///will also call on the swarm to create units in a big rush if it has not enough.
-			void updateFlags();
+			bool updateFlags();
 
 			///When defense flags are created by findDefense, they aren't created instantly. Generally it takes 1 tick
 			///later before the flag can be found and added to the records.
-			void findCreatedDefenseFlags();
+			bool findCreatedDefenseFlags();
 
 			AINicowar& ai;
 	};
@@ -399,7 +420,7 @@ namespace Nicowar
 		public:
 			GeneralsDefense(AINicowar& ai);
 			~GeneralsDefense() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -419,11 +440,11 @@ namespace Nicowar
 
 			///Searches for enemy flags that it needs to defend against, and if
 			///it finds one, it will make a new flag.
-			void findEnemyFlags();
+			bool findEnemyFlags();
 
 			///Looks through the defense records and updates the flags as nessecary
 			///to be able to combat the opponents forces.
-			void updateDefenseFlags();
+			bool updateDefenseFlags();
 
 			AINicowar& ai;
 	};
@@ -435,7 +456,7 @@ namespace Nicowar
 		public:
 			PrioritizedBuildingAttack(AINicowar& ai);
 			~PrioritizedBuildingAttack() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -470,14 +491,14 @@ namespace Nicowar
 			std::vector<attackRecord> attacks;
 
 			///Chooses an enemy to attack. Will change to a different enemy if the current enemy has been eradicated.
-			void targetEnemy();
+			bool targetEnemy();
 			Team* enemy;
 
 			///If we have enough warriors of the best available skill level, launch an attack!
-			void attack();
+			bool attack();
 
 			///Find flags that attack() created, and update flags as neccecary to keep up with the number of units defending each building
-			void updateAttackFlags();
+			bool updateAttackFlags();
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
@@ -491,7 +512,7 @@ namespace Nicowar
 		public:
 			DistributedNewConstructionManager(AINicowar& ai);
 			~DistributedNewConstructionManager() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -544,18 +565,25 @@ namespace Nicowar
 			///Stores the various records of what is being built
 			std::vector<newConstructionRecord> new_buildings;
 
+			///Fings the largest size the building of a given type can have by iterating
+			///through that buildings various levels and examining the sizes of the building
+			///at the level, looking for the largest size. It will also set the offsets
+			///correctly, which are used if a building expands in multiple directions,
+			///if the current level is provided.
 			upgradeData findMaxSize(unsigned int building_type, unsigned int cur_level);
 
+			///Find the best spot to put a prticular kind of building. This function does
+			///most of the calculation work.
 			point findBestPlace(unsigned int building_type);
 
 			///Constructs the various queued up buildings.
-			void constructBuildings();
+			bool constructBuildings();
 
 			///Finds the buildings that constructBuildings has started construction of.
-			void updateBuildings();
+			bool updateBuildings();
 
 			//Calculates how many of each type of building the ai should have.
-			void calculateBuildings();
+			bool calculateBuildings();
 
 			std::map<unsigned int, unsigned int> num_buildings_wanted;
 
@@ -570,7 +598,7 @@ namespace Nicowar
 		public:
 			RandomUpgradeRepairModule(AINicowar& ai);
 			~RandomUpgradeRepairModule() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -594,14 +622,14 @@ namespace Nicowar
 			};
 
 			///Removes construction records that are no longer being constructed (either from cancel or finish)
-			void removeOldConstruction(void);
+			bool removeOldConstruction(void);
 
 			///A building may have been issued a command to be upgraded/repaired, but it is only
 			///constructed on when all the people are out of it. So this goes through the pending
 			///building list for any buildings that are no longer pending (don't have any
 			///people in them.), and then assigns the number of requested units for the upgrade/
 			///repair to the building.
-			void updatePendingConstruction(void);
+			bool updatePendingConstruction(void);
 
 			///Looks through all of the buildings to see if any need to be upgraded or repaired.
 			///If so, request construction, and push information including how many worker globs
@@ -609,7 +637,7 @@ namespace Nicowar
 			///and is ready to be constructed on, updatePendingUpgrades assign the number of
 			///requested units to the building. Does nothing if it lacks units or available
 			///buildings to upgrade.
-			void startNewConstruction(void);
+			bool startNewConstruction(void);
 
 			///Returns the number of free units available to construct a building to the given level.
 			///It does not take into account that other buildings under construction may not have
@@ -622,7 +650,7 @@ namespace Nicowar
 			///assigned to the various upgrades all over again, so this makes up for any units
 			///that have become available since the start of the upgrades, or perhaps loss of
 			///units.
-			void reassignConstruction(void);
+			bool reassignConstruction(void);
 
 			///A common piece of code. unit_counts is an array of unit counts for each level
 			///up to NB_UNIT_LEVELS. Assuming that slot 0 in the area represents counts of units
@@ -667,7 +695,7 @@ namespace Nicowar
 		public:
 			BasicDistributedSwarmManager(AINicowar& ai);
 			~BasicDistributedSwarmManager() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -696,7 +724,7 @@ namespace Nicowar
 			///Constructs the ratios of desired workers, turns off production if there are enough units,
 			///otherwise uses the ratios to moderate all of the spawns to get enough workers. It will
 			///increase the number of people working on the spawn depending on how many units are wanted.
-			void moderateSwarms();
+			bool moderateSwarms();
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
@@ -710,7 +738,7 @@ namespace Nicowar
 		public:
 			ExplorationManager(AINicowar& ai);
 			~ExplorationManager() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -737,25 +765,25 @@ namespace Nicowar
 			///Important!! Each call to exploreWorld only manages changes (creates, destroys,
 			///or moves) one flag. So if many regions are desired to be explored at once, it
 			///may take several calls to exploreWorld to get them explored.
-			void exploreWorld(void);
+			bool exploreWorld(void);
 
 			///When exploreWorld creates a new flag, it isn't able to get a link to the flag
 			///right away to be put into the active_exploration record list. So, instead, it
 			///adds in a NULL pointer, and this function will search out for exploration
 			///flags that have been create, that are not in the active_exploration record
 			///list yet. And it puts them there, as well as assigning them the right radius.
-			void updateExplorationFlags(void);
+			bool updateExplorationFlags(void);
 
 			///Controls the swarms in order to get the desired numbers of explorers. It puts
 			///the explorers creation at top priority, and if multiple explorers need to be
 			///created, will distribute them between its swarms.
-			void moderateSwarmsForExplorers(void);
+			bool moderateSwarmsForExplorers(void);
 
 			///Prepares and launches an explorer attack (if possible). Explorer attacks are
 			///where a group of level 4 explorers are assigned to an explorer flag over an
 			///area, who will spin around the permiter of the flag attack ground units. Can
 			///be devestating if not defended against properly.
-			void explorerAttack(void);
+			bool explorerAttack(void);
 
 			///This list keeps a record of what regions are being explored, so when they're
 			///done being explored, it can move on to explore other regions.
@@ -780,7 +808,7 @@ namespace Nicowar
 		public:
 			InnManager(AINicowar& ai);
 			~InnManager() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -807,10 +835,10 @@ namespace Nicowar
 
 			///Adds one more recording to the innRecord for each of the inns. Uses round robin recording in order
 			///to get untainted, recent averages.
-			void recordInns();
+			bool recordInns();
 
 			///Uses the simple, yet advanced, statistical anylysis algorithm to increase workers on particular inns.
-			void modifyInns();
+			bool modifyInns();
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
@@ -822,7 +850,7 @@ namespace Nicowar
 		public:
 			TowerController(AINicowar& ai);
 			~TowerController() {};
-			void perform(unsigned int time_slice_n);
+			bool perform(unsigned int time_slice_n);
 			string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
@@ -832,7 +860,7 @@ namespace Nicowar
 			}
 
 			///Searches for any towers that do not have the right amount of units assigned, and assigns them.
-			void controlTowers();
+			bool controlTowers();
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
