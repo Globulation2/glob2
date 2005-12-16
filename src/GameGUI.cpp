@@ -1165,7 +1165,14 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 						Building* selBuild=selection.building;
 						if (selBuild->owner->teamNumber==localTeamNo)
 						{
-							orderQueue.push_back(new OrderDelete(selBuild->gid));
+							if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+							{
+								orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
+							}
+							else if (selBuild->buildingState==Building::ALIVE)
+							{
+								orderQueue.push_back(new OrderDelete(selBuild->gid));
+							}
 						}
 					}
 				}
@@ -1173,13 +1180,25 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 			case SDLK_u:
 				{
 					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-						repairAndUpgradeBuilding(selection.building, false, true);
+					{
+						Building* selBuild = selection.building;
+						if (selBuild->constructionResultState == Building::UPGRADE)
+							orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+							repairAndUpgradeBuilding(selBuild, false, true);
+					}
 				}
 				break;
 			case SDLK_r:
 				{
 					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-						repairAndUpgradeBuilding(selection.building, true, false);
+					{
+						Building* selBuild = selection.building;
+						if (selBuild->constructionResultState == Building::REPAIR)
+							orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+							repairAndUpgradeBuilding(selBuild, true, false);
+					}
 				}
 				break;
 			case SDLK_t :
