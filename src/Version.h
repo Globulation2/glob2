@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 23
-#define VERSION_MINOR 44
+#define VERSION_MINOR 45
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -58,5 +58,6 @@
 // version 42 added AIWarrush
 // version 43 added AINicowar
 // version 44 added Bullet:revealX/Y/W/H into the saved file
+// version 45 added teamRessources to Team for shared resources among markets
 
 #endif

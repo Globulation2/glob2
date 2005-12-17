@@ -9,12 +9,12 @@
 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 //#include <float.h>
@@ -43,9 +43,12 @@ BaseTeam::BaseTeam()
 	colorPAD=0;
 	playersMask=0;
 	type=T_AI;
-	
+
 	disableRecursiveDestruction=false;
 }
+
+
+
 
 bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
@@ -69,6 +72,9 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	return true;
 }
 
+
+
+
 void BaseTeam::save(GAGCore::OutputStream *stream)
 {
 	// saving baseteam
@@ -85,10 +91,16 @@ void BaseTeam::save(GAGCore::OutputStream *stream)
 	race.save(stream);
 }
 
+
+
+
 Uint8 BaseTeam::getOrderType()
 {
 	return DATA_BASE_TEAM;
 }
+
+
+
 
 Uint8 *BaseTeam::getData()
 {
@@ -103,6 +115,9 @@ Uint8 *BaseTeam::getData()
 
 	return data;
 }
+
+
+
 
 bool BaseTeam::setData(const Uint8 *data, int dataLength)
 {
@@ -121,10 +136,16 @@ bool BaseTeam::setData(const Uint8 *data, int dataLength)
 	return true;
 }
 
+
+
+
 int BaseTeam::getDataLength()
 {
 	return 16;
 }
+
+
+
 
 Uint32 BaseTeam::checkSum()
 {
@@ -140,6 +161,9 @@ Uint32 BaseTeam::checkSum()
 	return cs;
 }
 
+
+
+
 Team::Team(Game *game)
 :BaseTeam()
 {
@@ -149,6 +173,9 @@ Team::Team(Game *game)
 	this->map=&game->map;
 	init();
 }
+
+
+
 
 Team::Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 :BaseTeam()
@@ -162,6 +189,9 @@ Team::Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 	assert(success);
 }
 
+
+
+
 Team::~Team()
 {
 	if (!disableRecursiveDestruction)
@@ -169,6 +199,9 @@ Team::~Team()
 		clearMem();
 	}
 }
+
+
+
 
 void Team::init(void)
 {
@@ -197,8 +230,14 @@ void Team::init(void)
 	prestige=0;
 	unitConversionLost = 0;
 	unitConversionGained = 0;
+	for(int i=0; i<MAX_NB_RESSOURCES; ++i)
+		teamRessources[i]=0;
+
 	noMoreBuildingSitesCountdown=0;
 }
+
+
+
 
 void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 {
@@ -207,7 +246,7 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	playersMask=initial->playersMask;
 	race=initial->race;
 	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
-	
+
 	// This case is a bit hard to understand.
 	// When you load a teamed saved game, you don't want to change your aliances.
 	// But players may join the network game in adifferent order than when the game was saved.
@@ -218,16 +257,19 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	}
 }
 
+
+
+
 bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
 	assert(stream);
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsTryToBuildingSiteRoom.clear();
-	
+
 	// loading baseteam
 	if(!BaseTeam::load(stream, versionMinor))
 		return false;
-	
+
 	stream->readEnterSection("Team");
 
 	// normal load
@@ -252,7 +294,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	canExchange.clear();
 	virtualBuildings.clear();
 	clearingFlags.clear();
-	
+
 	prestige = 0;
 	stream->readEnterSection("myBuildings");
 	for (int i=0; i<1024; i++)
@@ -298,7 +340,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		}
 	}
 	stream->readLeaveSection();
-	
+
 	stream->readEnterSection("myBuildings");
 	for (int i=0; i<1024; i++)
 	{
@@ -353,7 +395,25 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		unitConversionLost = 0;
 		unitConversionGained = 0;
 	}
-		
+
+	if(versionMinor >= 45)
+	{
+		stream->readEnterSection("teamRessources");
+		for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
+		{
+			stream->readEnterSection(i);
+			teamRessources[i]=stream->readUint32();
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
+	else
+	{
+		for(unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
+			teamRessources[i]=0;
+	}
+
+
 	if (!stats.load(stream, versionMinor))
 	{
 		stream->readLeaveSection();
@@ -374,13 +434,16 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	return true;
 }
 
+
+
+
 void Team::save(GAGCore::OutputStream *stream)
 {
 	// saving baseteam
 	BaseTeam::save(stream);
 
 	stream->writeEnterSection("Team");
-	
+
 	// saving team
 	stream->writeEnterSection("myUnits");
 	for (int i=0; i<1024; i++)
@@ -415,7 +478,7 @@ void Team::save(GAGCore::OutputStream *stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	
+
 	// save cross reference
 	stream->writeEnterSection("myUnits");
 	for (int i=0; i<1024; i++)
@@ -428,7 +491,7 @@ void Team::save(GAGCore::OutputStream *stream)
 		}
 	}
 	stream->writeLeaveSection();
-	
+
 	stream->writeEnterSection("myBuildings");
 	for (int i=0; i<1024; i++)
 	{
@@ -452,11 +515,23 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(startPosSet, "startPosSet");
 	stream->writeSint32(unitConversionLost, "unitConversionLost");
 	stream->writeSint32(unitConversionGained, "unitConversionGained");
-	
+
+	stream->writeEnterSection("teamRessources");
+	for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeUint32(teamRessources[i]);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
 	stats.save(stream);
-	
+
 	stream->writeLeaveSection();
 }
+
+
+
 
 void Team::createLists(void)
 {
@@ -467,29 +542,32 @@ void Team::createLists(void)
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
-	
+
 	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
-		{
-			if (myBuildings[i]->type->unitProductionTime)
-				swarms.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->shootingRange)
-				turrets.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->isVirtual)
-				virtualBuildings.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonable[WORKER])
-				clearingFlags.push_back(myBuildings[i]);
-			myBuildings[i]->update();
-		}
+	{
+		if (myBuildings[i]->type->unitProductionTime)
+			swarms.push_back(myBuildings[i]);
+		if (myBuildings[i]->type->shootingRange)
+			turrets.push_back(myBuildings[i]);
+		if (myBuildings[i]->type->isVirtual)
+			virtualBuildings.push_back(myBuildings[i]);
+		if (myBuildings[i]->type->zonable[WORKER])
+			clearingFlags.push_back(myBuildings[i]);
+		myBuildings[i]->update();
+	}
 }
+
+
+
 
 void Team::clearLists(void)
 {
 	foodable.clear();
 	fillable.clear();
-	zonableWorkers[0].clear(); 
-	zonableWorkers[1].clear(); 
-	zonableExplorer.clear(); 
+	zonableWorkers[0].clear();
+	zonableWorkers[1].clear();
+	zonableExplorer.clear();
 	zonableWarrior.clear();
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i].clear();
@@ -507,6 +585,9 @@ void Team::clearLists(void)
 	virtualBuildings.clear();
 }
 
+
+
+
 void Team::clearMap(void)
 {
 	assert(map);
@@ -515,8 +596,8 @@ void Team::clearMap(void)
 		if (myUnits[i])
 			if (myUnits[i]->performance[FLY])
 				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
-			else
-				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+	else
+		map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
 
 	for (int i=0; i<1024; ++i)
 		if (myBuildings[i])
@@ -525,21 +606,27 @@ void Team::clearMap(void)
 
 }
 
+
+
+
 void Team::clearMem(void)
 {
 	for (int i=0; i<1024; ++i)
 		if (myUnits[i])
-		{
-			delete myUnits[i];
-			myUnits[i] = NULL;
-		}
+	{
+		delete myUnits[i];
+		myUnits[i] = NULL;
+	}
 	for (int i=0; i<1024; ++i)
 		if (myBuildings[i])
-		{
-			delete myBuildings[i];
-			myBuildings[i] = NULL;
-		}
+	{
+		delete myBuildings[i];
+		myBuildings[i] = NULL;
+	}
 }
+
+
+
 
 void Team::integrity(void)
 {
@@ -589,6 +676,9 @@ void Team::integrity(void)
 	}
 }
 
+
+
+
 void Team::setCorrectMasks(void)
 {
 	me=teamNumberToMask(teamNumber);
@@ -599,12 +689,18 @@ void Team::setCorrectMasks(void)
 	sharedVisionOther=me;
 }
 
+
+
+
 void Team::setCorrectColor(Uint8 r, Uint8 g, Uint8 b)
 {
 	this->colorR=r;
 	this->colorG=g;
 	this->colorB=b;
 }
+
+
+
 
 void Team::setCorrectColor(float value)
 {
@@ -615,12 +711,18 @@ void Team::setCorrectColor(float value)
 	this->colorB=(Uint8)(255.0f*b);
 }
 
+
+
+
 void Team::update()
 {
 	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
 			myBuildings[i]->update();
 }
+
+
+
 
 bool Team::openMarket()
 {
@@ -631,13 +733,16 @@ bool Team::openMarket()
 	return false;
 }
 
+
+
+
 Building *Team::findNearestHeal(Unit *unit)
 {
 	if (unit->performance[FLY])
 	{
 		int x = unit->posX;
 		int y = unit->posY;
-		int timeLeft = unit->hungry/race.hungryness; //Don't try to go to a hospital if you would get hungry first.
+		int timeLeft = unit->hungry/race.hungryness;												//Don't try to go to a hospital if you would get hungry first.
 		int timeLeftSquare = timeLeft*timeLeft;
 		Building *choosen = NULL;
 		int minDistSquare = INT_MAX;
@@ -664,7 +769,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
+			int buildingDist;																		//Not initialized or assigned to in this function, but in map::buildingAvailable below.
 			if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<timeLeft && buildingDist<minDist)
 			{
 				choosen=b;
@@ -675,18 +780,21 @@ Building *Team::findNearestHeal(Unit *unit)
 	}
 }
 
+
+
+
 Building *Team::findNearestFood(Unit *unit)
 {
 	SessionGame &session=game->session;
-	
-	bool concurency=false; //Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
+
+	bool concurency=false;																			//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
 	for (int ti=0; ti<session.numberOfTeam; ti++)
 		if (ti!=teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
-		{
-			concurency=true;
-			break;
-		}
-	
+	{
+		concurency=true;
+		break;
+	}
+
 	int enemyHappyness=0;
 	int maxHappyness[32];
 	memset(maxHappyness, 0, 32*sizeof(int));
@@ -696,20 +804,20 @@ Building *Team::findNearestFood(Unit *unit)
 		{
 			for (int ti=0; ti<session.numberOfTeam; ti++)
 				if (ti!=teamNumber)
+			{
+				Team *t=game->teams[ti];
+				if ((t->sharedVisionFood & me) && !(t->allies & me))
+					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 				{
-					Team *t=game->teams[ti];
-					if ((t->sharedVisionFood & me) && !(t->allies & me))
-						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
-						{
-							int h=(*bi)->availableHappynessLevel();
-							if (h>maxHappyness[ti])
-							{
-								maxHappyness[ti]=h;
-								if (h>enemyHappyness)
-									enemyHappyness=h;
-							}
-						}
+					int h=(*bi)->availableHappynessLevel();
+					if (h>maxHappyness[ti])
+					{
+						maxHappyness[ti]=h;
+						if (h>enemyHappyness)
+							enemyHappyness=h;
+					}
 				}
+			}
 		}
 		else
 		{
@@ -718,24 +826,24 @@ Building *Team::findNearestFood(Unit *unit)
 			bool canSwim=unit->performance[SWIM];
 			for (int ti=0; ti<session.numberOfTeam; ti++)
 				if (ti!=teamNumber)
+			{
+				Team *t=game->teams[ti];
+				if ((t->sharedVisionFood & me) && !(t->allies & me))
+					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 				{
-					Team *t=game->teams[ti];
-					if ((t->sharedVisionFood & me) && !(t->allies & me))
-						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
-						{
-							int h=(*bi)->availableHappynessLevel();
-							int dist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
-							if (h>maxHappyness[ti] && map->buildingAvailable(*bi, canSwim, x, y, &dist))
-							{
-								maxHappyness[ti]=h;
-								if (h>enemyHappyness)
-									enemyHappyness=h;
-							}
-						}
+					int h=(*bi)->availableHappynessLevel();
+					int dist;																		//Not initialized or assigned to in this function, but in map::buildingAvailable below.
+					if (h>maxHappyness[ti] && map->buildingAvailable(*bi, canSwim, x, y, &dist))
+					{
+						maxHappyness[ti]=h;
+						if (h>enemyHappyness)
+							enemyHappyness=h;
+					}
 				}
+			}
 		}
 	}
-	
+
 	//First we check if we have any satisfactory inns on our team.
 	if (unit->performance[FLY])
 	{
@@ -771,7 +879,7 @@ Building *Team::findNearestFood(Unit *unit)
 			Building *b=(*bi);
 			if (b->availableHappynessLevel()>=enemyHappyness)
 			{
-				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
+				int buildingDist;																	//Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
 				{
 					choosen=b;
@@ -782,25 +890,25 @@ Building *Team::findNearestFood(Unit *unit)
 		if (choosen)
 			return choosen;
 	}
-	
+
 	if (!concurency)
-		return NULL;	//This is bad, bad, bad. It means that if you have no opponents with Inn View on,
-						//your units CANNOT be converted --- even if an enemy inn is in normal view range.
-						//Later in the code, this turns out to mean that no team can convert any units without
-						//both being your enemy and turning on Inn View. This is inconsistent with the current
-						//documentation and with the meaning of 'inn view'. It's a convenient way to do things,
-						//but should be done away with sometime.
-						//
-						//It seems that a glob will never eat from an allied inn, either.
-	
+		return NULL;																				//This is bad, bad, bad. It means that if you have no opponents with Inn View on,
+	//your units CANNOT be converted --- even if an enemy inn is in normal view range.
+	//Later in the code, this turns out to mean that no team can convert any units without
+	//both being your enemy and turning on Inn View. This is inconsistent with the current
+	//documentation and with the meaning of 'inn view'. It's a convenient way to do things,
+	//but should be done away with sometime.
+	//
+	//It seems that a glob will never eat from an allied inn, either.
+
 	//Now we go through all the enemy buildings controlled by opponents with Inn View on:
 	bool concurent[32];
 	memset(concurent, 0, 32*sizeof(bool));
-		
+
 	for (int ti=0; ti<session.numberOfTeam; ti++)
 		if (ti!=teamNumber)
 			concurent[ti]=(maxHappyness[ti]>=enemyHappyness) && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me);
-	
+
 	if (unit->performance[FLY])
 	{
 		int x=unit->posX;
@@ -809,22 +917,22 @@ Building *Team::findNearestFood(Unit *unit)
 		int minDist=INT_MAX;
 		for (int ti=0; ti<session.numberOfTeam; ti++)
 			if (ti!=teamNumber && concurent[ti])
+		{
+			Team *t=game->teams[ti];
+			for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 			{
-				Team *t=game->teams[ti];
-				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+				Building *b=(*bi);
+				if (b->availableHappynessLevel()>=enemyHappyness)
 				{
-					Building *b=(*bi);
-					if (b->availableHappynessLevel()>=enemyHappyness)
+					int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
+					if (buildingDist<minDist)
 					{
-						int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
-						if (buildingDist<minDist)
-						{
-							choosen=b;
-							minDist=buildingDist;
-						}
+						choosen=b;
+						minDist=buildingDist;
 					}
 				}
 			}
+		}
 		return choosen;
 	}
 	else
@@ -836,23 +944,23 @@ Building *Team::findNearestFood(Unit *unit)
 		int minDist=INT_MAX;
 		for (int ti=0; ti<session.numberOfTeam; ti++)
 			if (ti!=teamNumber && concurent[ti])
+		{
+			Team *t=game->teams[ti];
+			for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 			{
-				Team *t=game->teams[ti];
-				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+				Building *b=(*bi);
+				if (b->availableHappynessLevel()>=enemyHappyness)
 				{
-					Building *b=(*bi);
-					if (b->availableHappynessLevel()>=enemyHappyness)
+					int buildingDist;
+					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
 					{
-						int buildingDist;
-						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
-						{
-							choosen=b;
-							minDist=buildingDist;
-						}
+						choosen=b;
+						minDist=buildingDist;
 					}
 				}
 			}
-		
+		}
+
 		if (choosen)
 		{
 			if (verbose)
@@ -870,7 +978,7 @@ Building *Team::findNearestFood(Unit *unit)
 			//It only states one reason. Possibly it could be improved such that it states all.
 			if (verbose)
 				printf("guid=%d found no ennemy building (enemyHappyness=%d)\n", unit->gid, enemyHappyness);
-			
+
 			int x=unit->posX;
 			int y=unit->posY;
 			bool canSwim=unit->performance[SWIM];
@@ -878,43 +986,46 @@ Building *Team::findNearestFood(Unit *unit)
 			int minDist=INT_MAX;
 			for (int ti=0; ti<session.numberOfTeam; ti++)
 				if (ti!=teamNumber && concurent[ti])
+			{
+				if (verbose)
+					printf(" team ti=%d suitable, nbb=%d\n", ti, static_cast<unsigned>(canFeedUnit.size()));
+				Team *t=game->teams[ti];
+				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 				{
-					if (verbose)
-						printf(" team ti=%d suitable, nbb=%d\n", ti, static_cast<unsigned>(canFeedUnit.size()));
-					Team *t=game->teams[ti];
-					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+					Building *b=(*bi);
+					if (b->availableHappynessLevel()>=enemyHappyness)
 					{
-						Building *b=(*bi);
-						if (b->availableHappynessLevel()>=enemyHappyness)
+						int buildingDist;															//Not initialized or assigned to in this function, but in map::buildingAvailable below.
+						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist))
 						{
-							int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
-							if (map->buildingAvailable(b, canSwim, x, y, &buildingDist))
+							if (/*map->buildingAvailable(b, canSwim, x, y, &buildingDist) &&*/ buildingDist<minDist)
 							{
-								if (/*map->buildingAvailable(b, canSwim, x, y, &buildingDist) &&*/ buildingDist<minDist)
-								{
-									choosen=b;
-									minDist=buildingDist;
-								}
-								else
-									if (verbose)
-										printf(" building bgid=%d buildingDist=%d, minDist=%d\n", b->gid, buildingDist, minDist);
+								choosen=b;
+								minDist=buildingDist;
 							}
 							else
-								if (verbose)
-									printf(" building bgid=%d not available\n", b->gid);
+							if (verbose)
+								printf(" building bgid=%d buildingDist=%d, minDist=%d\n", b->gid, buildingDist, minDist);
 						}
 						else
-							if (verbose)
-								printf(" building bgid=%d availableHappynessLevel()=%d < %d\n", b->gid, b->availableHappynessLevel(), enemyHappyness);
+						if (verbose)
+							printf(" building bgid=%d not available\n", b->gid);
 					}
-				}
-				else
+					else
 					if (verbose)
-						printf(" team ti=%d not suitable\n", ti);
+						printf(" building bgid=%d availableHappynessLevel()=%d < %d\n", b->gid, b->availableHappynessLevel(), enemyHappyness);
+				}
+			}
+			else
+			if (verbose)
+				printf(" team ti=%d not suitable\n", ti);
 		}
 		return choosen;
 	}
 }
+
+
+
 
 Building *Team::findBestFoodable(Unit *unit)
 {
@@ -923,7 +1034,7 @@ Building *Team::findBestFoodable(Unit *unit)
 	int r=unit->caryedRessource;
 	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
 	bool canSwim=unit->performance[SWIM];
-	
+
 	if (r!=-1)
 	{
 		// I'm already carying a ressource:
@@ -935,7 +1046,7 @@ Building *Team::findBestFoodable(Unit *unit)
 			Building *b=(*bi);
 			if (b->neededRessource(r))
 			{
-				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
+				int buildingDist;																	//Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
 					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
@@ -959,32 +1070,35 @@ Building *Team::findBestFoodable(Unit *unit)
 	Sint32 score=0x7FFFFFFF;
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
 		if (ri==CORN || ri>=HAPPYNESS_BASE)
+	{
+		int ressourceDist;
+		if (map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
+			for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 		{
-			int ressourceDist;
-			if (map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
-				for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
+			Building *b=(*bi);
+			if (b->neededRessource(ri))
+			{
+				int buildingDist;
+				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
-					Building *b=(*bi);
-					if (b->neededRessource(ri))
+					Sint32 newScore=((ressourceDist+buildingDist)<<8)/(b->maxUnitWorking-b->unitsWorking.size());
+					if (newScore<score)
 					{
-						int buildingDist;
-						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
-						{
-							Sint32 newScore=((ressourceDist+buildingDist)<<8)/(b->maxUnitWorking-b->unitsWorking.size());
-							if (newScore<score)
-							{
-								choosen=b;
-								score=newScore;
-								unit->destinationPurprose=ri;
-								fprintf(logFile, "[%d] tdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-							}
-						}
+						choosen=b;
+						score=newScore;
+						unit->destinationPurprose=ri;
+						fprintf(logFile, "[%d] tdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 					}
 				}
+			}
 		}
-	
+	}
+
 	return choosen;
 }
+
+
+
 
 Building *Team::findBestFillable(Unit *unit)
 {
@@ -995,7 +1109,7 @@ Building *Team::findBestFillable(Unit *unit)
 	assert(!unit->performance[FLY]);
 	bool canSwim=unit->performance[SWIM];
 	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
-	
+
 	if (r!=-1)
 	{
 		// I'm already carying a ressource:
@@ -1007,7 +1121,7 @@ Building *Team::findBestFillable(Unit *unit)
 			Building *b=(*bi);
 			if ((b->type->level<=actLevel)&&(b->neededRessource(r)))
 			{
-				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
+				int buildingDist;																	//Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
 					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
@@ -1029,72 +1143,72 @@ Building *Team::findBestFillable(Unit *unit)
 
 	Building *choosen=NULL;
 	Sint32 score=0x7FFFFFFF;
-	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++) //first, iterate through the resource types to see how easy each is to get.
+	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)													//first, iterate through the resource types to see how easy each is to get.
 	{
-		int ressourceDist; //Not initialized or assigned to in this function, but in map::ressourceAvailable below.
+		int ressourceDist;																			//Not initialized or assigned to in this function, but in map::ressourceAvailable below.
 		if (map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
-					//then iterate through the buildings to see if they want that resource.
-			{
-				Building *b=(*bi);
-				if (b->type->level<=actLevel) //A glob cannot work for a building of higher level than its skill.
+				//then iterate through the buildings to see if they want that resource.
 				{
-					int need=b->neededRessource(ri);
-					int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
-					if (need && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+					Building *b=(*bi);
+					if (b->type->level<=actLevel)													//A glob cannot work for a building of higher level than its skill.
 					{
-						Sint32 newScore=((buildingDist+ressourceDist)<<8)/((b->maxUnitWorking-b->unitsWorking.size())*need);
-								//The lowest score is the best. The lowest total distance to supply the building is chosen, except that globs also prefer to help buildings that
-								//need more of the resource. This means that a nearly finished building is prioritized higher than a newly made one, delaying the completion of
-								//many buildings if they are built at the same time and the globs are distracted enough.
-						fprintf(logFile, "[%d] newScore=%d=f(%d, %d, %d, %zd, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
-						if (newScore<score)
+						int need=b->neededRessource(ri);
+						int buildingDist;															//Not initialized or assigned to in this function, but in map::buildingAvailable below.
+						if (need && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 						{
-							choosen=b;
-							score=newScore;
-							unit->destinationPurprose=ri;
-							fprintf(logFile, " [%d] tdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-						}
+							Sint32 newScore=((buildingDist+ressourceDist)<<8)/((b->maxUnitWorking-b->unitsWorking.size())*need);
+					//The lowest score is the best. The lowest total distance to supply the building is chosen, except that globs also prefer to help buildings that
+					//need more of the resource. This means that a nearly finished building is prioritized higher than a newly made one, delaying the completion of
+					//many buildings if they are built at the same time and the globs are distracted enough.
+					fprintf(logFile, "[%d] newScore=%d=f(%d, %d, %d, %zd, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
+					if (newScore<score)
+					{
+						choosen=b;
+						score=newScore;
+						unit->destinationPurprose=ri;
+						fprintf(logFile, " [%d] tdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 					}
 				}
 			}
+		}
 	}
 	if (choosen)
 		return choosen;
-	
+
 	if (!openMarket())
 		return NULL;
-		
+
 	//Trading fruit cannot be done unless two teams each have a market and at least one shares market view with the other.
-	
+
 	SessionGame &session=game->session;
 	// We compute all what's available from foreign ressources: (mask)
 	Uint32 allForeignSendRessourceMask=0;
 	Uint32 allForeignReceiveRessourceMask=0;
 	for (int ti=0; ti<session.numberOfTeam; ti++)
 		if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
+	{
+		std::list<Building *> foreignCanExchange=game->teams[ti]->canExchange;
+		for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
 		{
-			std::list<Building *> foreignCanExchange=game->teams[ti]->canExchange;
-			for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
-			{
-				Uint32 sendRessourceMask=(*fbi)->sendRessourceMask;
-				for (int r=0; r<HAPPYNESS_COUNT; r++)
-					if ((sendRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]<=0))
-						sendRessourceMask&=(~(1<<r));
-				allForeignSendRessourceMask|=sendRessourceMask;
+			Uint32 sendRessourceMask=(*fbi)->sendRessourceMask;
+			for (int r=0; r<HAPPYNESS_COUNT; r++)
+				if ((sendRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]<=0))
+					sendRessourceMask&=(~(1<<r));
+			allForeignSendRessourceMask|=sendRessourceMask;
 
-				Uint32 receiveRessourceMask=(*fbi)->receiveRessourceMask;
-				for (int r=0; r<HAPPYNESS_COUNT; r++)
-					if ((receiveRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]>=(*fbi)->type->maxRessource[HAPPYNESS_BASE+r]))
-						receiveRessourceMask&=(~(1<<r));
-				allForeignReceiveRessourceMask|=receiveRessourceMask;
-			}
+			Uint32 receiveRessourceMask=(*fbi)->receiveRessourceMask;
+			for (int r=0; r<HAPPYNESS_COUNT; r++)
+				if ((receiveRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]>=(*fbi)->type->maxRessource[HAPPYNESS_BASE+r]))
+					receiveRessourceMask&=(~(1<<r));
+			allForeignReceiveRessourceMask|=receiveRessourceMask;
 		}
-	
+	}
+
 	//printf(" allForeignSendRessourceMask=%d, allForeignReceiveRessourceMask=%d\n", allForeignSendRessourceMask, allForeignReceiveRessourceMask);
 	if (allForeignSendRessourceMask==0 || allForeignReceiveRessourceMask==0)
 		return NULL;
-	
+
 	// We compute all what's available from our own ressources: (mask)
 	Uint32 allOwnSendRessourceMask=0;
 	Uint32 allOwnReceiveRessourceMask=0;
@@ -1112,18 +1226,18 @@ Building *Team::findBestFillable(Unit *unit)
 				receiveRessourceMask&=(~(1<<r));
 		allOwnReceiveRessourceMask|=receiveRessourceMask;
 	}
-	
+
 	//printf(" allOwnSendRessourceMask=%d, allOwnReceiveRessourceMask=%d\n", allOwnSendRessourceMask, allOwnReceiveRessourceMask);
 	if ((allForeignSendRessourceMask & allOwnReceiveRessourceMask)==0 || (allForeignReceiveRessourceMask & allOwnSendRessourceMask)==0)
 		return NULL;
-	
+
 	choosen=NULL;
 	score=0x7FFFFFFF;
 	for (std::list<Building *>::iterator bi=canExchange.begin(); bi!=canExchange.end(); ++bi)
 	{
 		Uint32 sendRessourceMask=(*bi)->sendRessourceMask;
 		Uint32 receiveRessourceMask=(*bi)->receiveRessourceMask;
-		int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
+		int buildingDist;																			//Not initialized or assigned to in this function, but in map::buildingAvailable below.
 		if ((sendRessourceMask & allForeignReceiveRessourceMask)
 			&& (receiveRessourceMask & allForeignSendRessourceMask)
 			&& map->buildingAvailable(*bi, canSwim, x, y, &buildingDist)
@@ -1140,29 +1254,31 @@ Building *Team::findBestFillable(Unit *unit)
 						Sint32 missingUnitsToWork=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 						int foreignBuildingDist;
 						if (missingUnitsToWork
-							&& (sendRessourceMask & foreignReceiveRessourceMask)
-							&& (receiveRessourceMask & foreignSendRessourceMask)
-							&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
-							&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
-						{
-							Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/missingUnitsToWork;
-							if (newScore<score)
-							{
-								choosen=*bi;
-								score=newScore;
-								assert(choosen);
-								unit->ownExchangeBuilding=*bi;
-								unit->foreingExchangeBuilding=*fbi;
-								unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
-								fprintf(logFile, "[%d] tdp5 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-							}
-						}
+					&& (sendRessourceMask & foreignReceiveRessourceMask)
+					&& (receiveRessourceMask & foreignSendRessourceMask)
+					&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
+					&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
+				{
+					Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/missingUnitsToWork;
+					if (newScore<score)
+					{
+						choosen=*bi;
+						score=newScore;
+						assert(choosen);
+						unit->ownExchangeBuilding=*bi;
+						unit->foreingExchangeBuilding=*fbi;
+						unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+						fprintf(logFile, "[%d] tdp5 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 					}
 				}
+			}
+		}
 	}
-	
+
 	return choosen;
 }
+
+
 
 
 Building *Team::findBestZonable(Unit *unit)
@@ -1179,7 +1295,7 @@ Building *Team::findBestZonable(Unit *unit)
 			for (std::list<Building *>::iterator bi=zonableWorkers[canSwim].begin(); bi!=zonableWorkers[canSwim].end(); ++bi)
 			{
 				Building *b=(*bi);
-				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
+				int buildingDist;																	//Not initialized or assigned to in this function, but in map::buildingAvailable below.
 				int need=b->maxUnitWorking-b->unitsWorking.size();
 				if ((need>0) && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
@@ -1191,8 +1307,8 @@ Building *Team::findBestZonable(Unit *unit)
 					}
 				}
 			}
-		break;
-		
+			break;
+
 		case EXPLORER:
 		{
 			for (std::list<Building *>::iterator bi=zonableExplorer.begin(); bi!=zonableExplorer.end(); ++bi)
@@ -1205,7 +1321,7 @@ Building *Team::findBestZonable(Unit *unit)
 				// if we have requested explorer to be able to attack ground and this one can't, skip it
 				if (b->minLevelToFlag && !unit->level[MAGIC_ATTACK_GROUND])
 					continue;
-				
+
 				int buildingDist2=map->warpDistSquare(b->getMidX(), b->getMidY(), x, y);
 				if (buildingDist2<(timeLeft*timeLeft))
 				{
@@ -1219,7 +1335,7 @@ Building *Team::findBestZonable(Unit *unit)
 			}
 		}
 		break;
-		
+
 		case WARRIOR:
 		{
 			int level=std::min(unit->level[ATTACK_SPEED], unit->level[ATTACK_STRENGTH]);
@@ -1228,7 +1344,7 @@ Building *Team::findBestZonable(Unit *unit)
 				Building *b=(*bi);
 				if (b->minLevelToFlag<=level)
 				{
-					int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
+					int buildingDist;																//Not initialized or assigned to in this function, but in map::buildingAvailable below.
 					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						Sint32 newScore=buildingDist/(b->maxUnitWorking-b->unitsWorking.size());
@@ -1242,12 +1358,15 @@ Building *Team::findBestZonable(Unit *unit)
 			}
 		}
 		break;
-		
+
 		default:
 			assert(false);
 	}
 	return choosen;
 }
+
+
+
 
 Building *Team::findBestUpgrade(Unit *unit)
 {
@@ -1255,31 +1374,34 @@ Building *Team::findBestUpgrade(Unit *unit)
 	Sint32 score=0x7FFFFFFF;
 	int x=unit->posX;
 	int y=unit->posY;
-	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)	//This is bad code. If WALK ever ceases to be the
-																//first ability or ARMOR ever ceases to be the last, this
-																//code willl fail.
+	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)										//This is bad code. If WALK ever ceases to be the
+		//first ability or ARMOR ever ceases to be the last, this
+		//code willl fail.
 		if (unit->canLearn[ability])
+	{
+		int actLevel=unit->level[ability];
+		for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
 		{
-			int actLevel=unit->level[ability];
-			for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
+			Building *b=(*bi);
+			if (b->type->level>=actLevel)
 			{
-				Building *b=(*bi);
-				if (b->type->level>=actLevel)
+				Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
+				if (newScore<score)
 				{
-					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
-					if (newScore<score)
-					{
-						unit->destinationPurprose=(Sint32)ability;
-						//fprintf(logFile, "[%d] score=%d, newScore=%d\n", unit->gid, score, newScore);
-						fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-						choosen=b;
-						score=newScore;
-					}
+					unit->destinationPurprose=(Sint32)ability;
+					//fprintf(logFile, "[%d] score=%d, newScore=%d\n", unit->gid, score, newScore);
+					fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+					choosen=b;
+					score=newScore;
 				}
 			}
 		}
+	}
 	return choosen;
 }
+
+
+
 
 int Team::maxBuildLevel(void)
 {
@@ -1297,6 +1419,9 @@ int Team::maxBuildLevel(void)
 	return maxLevel;
 }
 
+
+
+
 void Team::removeFromAbilitiesLists(Building *building)
 {
 	if (building->type->foodable)
@@ -1312,55 +1437,61 @@ void Team::removeFromAbilitiesLists(Building *building)
 		zonableExplorer.remove(building);
 	if (building->type->zonable[WARRIOR])
 		zonableWarrior.remove(building);
-	
+
 	for (int ui=0; ui<NB_ABILITY; ui++)
 		if (building->type->upgrade[ui])
 			upgrade[ui].remove(building);
-	
+
 	if (building->type->canFeedUnit)
 		canFeedUnit.remove(building);
 	if (building->type->canHealUnit)
 		canHealUnit.remove(building);
 	if (building->type->canExchange)
 		canExchange.remove(building);
-	
+
 	if (building->type->unitProductionTime)
 		swarms.remove(building);
 	if (building->type->shootingRange)
 		turrets.remove(building);
-	
+
 	if (building->type->zonable[WORKER])
 		clearingFlags.remove(building);
-	
+
 	if (building->type->isVirtual)
 		virtualBuildings.remove(building);
 }
+
+
+
 
 void Team::addToStaticAbilitiesLists(Building *building)
 {
 	if (building->type->canExchange)
 		canExchange.push_back(building);
-	
+
 	if (building->type->unitProductionTime)
 		swarms.push_back(building);
-	
+
 	if (building->type->shootingRange)
 		turrets.push_back(building);
-	
+
 	if (building->type->zonable[WORKER])
 		clearingFlags.push_back(building);
-	
+
 	if (building->type->isVirtual)
 		virtualBuildings.push_back(building);
 }
 
+
+
+
 void Team::syncStep(void)
 {
 	integrity();
-	
+
 	if (noMoreBuildingSitesCountdown>0)
 		noMoreBuildingSitesCountdown--;
-	
+
 	int nbUsefullUnits=0;
 	int nbUsefullUnitsAlone=0;
 	for (int i=0; i<1024; i++)
@@ -1389,7 +1520,7 @@ void Team::syncStep(void)
 			}
 		}
 	}
-	
+
 	bool isDirtyGlobalGradient=false;
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
 	{
@@ -1413,7 +1544,7 @@ void Team::syncStep(void)
 				// the building can be alive if we canceled destruction
 				assert(building->buildingState==Building::DEAD || building->buildingState==Building::ALIVE);
 			}
-			
+
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsWaitingForDestruction.erase(ittemp);
 		}
@@ -1424,7 +1555,7 @@ void Team::syncStep(void)
 		map->updateForbiddenGradient(teamNumber);
 		map->updateGuardAreasGradient(teamNumber);
 	}
-	
+
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		Building *building=*it;
@@ -1432,7 +1563,7 @@ void Team::syncStep(void)
 		fflush(logFile);
 
 		removeFromAbilitiesLists(building);
-		
+
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
 		assert(building->unitsWorkingSubscribe.size()==0);
@@ -1450,17 +1581,17 @@ void Team::syncStep(void)
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 		delete building;
 	}
-	
+
 	if (buildingsToBeDestroyed.size())
 		buildingsToBeDestroyed.clear();
-	
+
 	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
 		if ((*it)->tryToBuildingSiteRoom())
-		{
-			std::list<Building *>::iterator ittemp=it;
-			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
-		}
-	
+	{
+		std::list<Building *>::iterator ittemp=it;
+		it=buildingsTryToBuildingSiteRoom.erase(ittemp);
+	}
+
 	//printf("subscribeForInside.size()=%d\n", subscribeForInside.size());
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
 		if (!(*it)->unitsInsideSubscribe.empty())
@@ -1468,12 +1599,12 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
 		if ((*it)->unitsInsideSubscribe.empty())
-		{
-			(*it)->subscribeForInside=2;
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForInside.erase(ittemp);
-		}
-	
+	{
+		(*it)->subscribeForInside=2;
+		std::list<Building *>::iterator ittemp=it;
+		it=subscribeForInside.erase(ittemp);
+	}
+
 	//subscribeToBringRessourcesStep
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if (!(*it)->unitsWorkingSubscribe.empty())
@@ -1481,12 +1612,12 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
-		{
-			(*it)->subscribeToBringRessources=2;
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeToBringRessources.erase(ittemp);
-		}
-	
+	{
+		(*it)->subscribeToBringRessources=2;
+		std::list<Building *>::iterator ittemp=it;
+		it=subscribeToBringRessources.erase(ittemp);
+	}
+
 	//subscribeForFlagingStep
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
 		if (!(*it)->unitsWorkingSubscribe.empty())
@@ -1494,27 +1625,27 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
 		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
-		{
-			(*it)->subscribeForFlaging=2;
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForFlaging.erase(ittemp);
-		}
-	
+	{
+		(*it)->subscribeForFlaging=2;
+		std::list<Building *>::iterator ittemp=it;
+		it=subscribeForFlaging.erase(ittemp);
+	}
+
 	bool isEnoughFoodInSwarm=false;
-	
+
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{
 		if (!(*it)->locked && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
 			isEnoughFoodInSwarm=true;
 		(*it)->swarmStep();
 	}
-	
+
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep();
-		
+
 	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
 		(*it)->clearingFlagsStep();
-	
+
 	bool isDying= (playersMask==0)
 		|| (!isEnoughFoodInSwarm && nbUsefullUnitsAlone==0 && (nbUsefullUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
@@ -1532,9 +1663,12 @@ void Team::syncStep(void)
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 		if (eventCooldown[i]>0)
 			eventCooldown[i]--;
-	
+
 	stats.step(this);
 }
+
+
+
 
 void Team::checkControllingPlayers(void)
 {
@@ -1552,6 +1686,9 @@ void Team::checkControllingPlayers(void)
 	}
 }
 
+
+
+
 void Team::dirtyGlobalGradient()
 {
 	for (int id=0; id<1024; id++)
@@ -1561,13 +1698,16 @@ void Team::dirtyGlobalGradient()
 			for (int canSwim=0; canSwim<2; canSwim++)
 				if (b->globalGradient[canSwim])
 				{
-					//printf("freeing globalGradient for gbid=%d (%p)\n", b->gid, b->globalGradient[canSwim]);
+			//printf("freeing globalGradient for gbid=%d (%p)\n", b->gid, b->globalGradient[canSwim]);
 					delete[] b->globalGradient[canSwim];
 					b->globalGradient[canSwim]=NULL;
 					b->locked[canSwim]=false;
 				}
 	}
 }
+
+
+
 
 Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
 {
@@ -1576,113 +1716,116 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	cs^=BaseTeam::checkSum();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [1+t*20]
-	
+		checkSumsVector->push_back(cs);																// [1+t*20]
+
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
-		{
-			cs^=myUnits[i]->checkSum(checkSumsVectorForUnits);
-			cs=(cs<<31)|(cs>>1);
-		}
+	{
+		cs^=myUnits[i]->checkSum(checkSumsVectorForUnits);
+		cs=(cs<<31)|(cs>>1);
+	}
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [2+t*20]
-		
+		checkSumsVector->push_back(cs);																// [2+t*20]
+
 	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
-		{
-			cs^=myBuildings[i]->checkSum(checkSumsVectorForBuildings);
-			cs=(cs<<31)|(cs>>1);
-		}
+	{
+		cs^=myBuildings[i]->checkSum(checkSumsVectorForBuildings);
+		cs=(cs<<31)|(cs>>1);
+	}
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [3+t*20]
-	
+		checkSumsVector->push_back(cs);																// [3+t*20]
+
 	for (int i=0; i<NB_ABILITY; i++)
 	{
 		cs^=upgrade[i].size();
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [4+t*20]
-	
+		checkSumsVector->push_back(cs);																// [4+t*20]
+
 	cs^=foodable.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [5+t*20]
+		checkSumsVector->push_back(cs);																// [5+t*20]
 	cs^=fillable.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [6+t*20]
-	
+		checkSumsVector->push_back(cs);																// [6+t*20]
+
 	cs^=zonableWorkers[0].size();
 	cs^=zonableWorkers[1].size();
 	cs^=zonableExplorer.size();
 	cs^=zonableWarrior.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [7+t*20]
-	
+		checkSumsVector->push_back(cs);																// [7+t*20]
+
 	cs^=canExchange.size();
 	cs^=canFeedUnit.size();
 	cs^=canHealUnit.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [8+t*20]
-	
+		checkSumsVector->push_back(cs);																// [8+t*20]
+
 	cs^=buildingsToBeDestroyed.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [9+t*20]
+		checkSumsVector->push_back(cs);																// [9+t*20]
 	cs^=buildingsTryToBuildingSiteRoom.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [10+t*20]
-	
+		checkSumsVector->push_back(cs);																// [10+t*20]
+
 	cs^=swarms.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [11+t*20]
+		checkSumsVector->push_back(cs);																// [11+t*20]
 	cs^=turrets.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [12+t*20]
+		checkSumsVector->push_back(cs);																// [12+t*20]
 
 	cs^=allies;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [13+t*20]
+		checkSumsVector->push_back(cs);																// [13+t*20]
 	cs^=enemies;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [14+t*20]
+		checkSumsVector->push_back(cs);																// [14+t*20]
 	cs^=sharedVisionExchange;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [15+t*20]
+		checkSumsVector->push_back(cs);																// [15+t*20]
 	cs^=sharedVisionFood;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [16+t*20]
+		checkSumsVector->push_back(cs);																// [16+t*20]
 	cs^=sharedVisionOther;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [17+t*20]
+		checkSumsVector->push_back(cs);																// [17+t*20]
 	cs^=me;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [18+t*20]
+		checkSumsVector->push_back(cs);																// [18+t*20]
 
 	cs^=noMoreBuildingSitesCountdown;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [19+t*20]
-	
+		checkSumsVector->push_back(cs);																// [19+t*20]
+
 	cs^=prestige;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [20+t*20]
-	
+		checkSumsVector->push_back(cs);																// [20+t*20]
+
 	return cs;
 }
+
+
+
 
 const char *Team::getFirstPlayerName(void)
 {

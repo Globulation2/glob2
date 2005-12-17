@@ -93,6 +93,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(timeToHealUnit, "timeToHealUnit");
 	configBlock->load(insideSpeed, "insideSpeed");
 	configBlock->load(canExchange, "canExchange");
+	configBlock->load(useTeamRessources, "useTeamRessources");
 
 	configBlock->load(width, "width");
 	configBlock->load(height, "height");
