@@ -151,18 +151,7 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 
 Order *AINicowar::getOrder(void)
 {
-	//This code enables the whole map to be seen for testing.
-	/*	if(timer==1)
-		{
-			for(int x=0; x<map->getW(); ++x)
-			{
-				for(int y=0; y<map->getH(); ++y)
-				{
-					map->setMapDiscovered(x, y, team->me);
-				}
-			}
-		}
-	*/
+
 
 	//See if there is an existing order that the AI wanted to have done
 	if (!orders.empty())
@@ -185,6 +174,16 @@ Order *AINicowar::getOrder(void)
 		if(iteration==0)
 		{
 			setCenter();
+			if(SEE_EVERYTHING)
+			{
+				for(int x=0; x<map->getW(); ++x)
+				{
+						for(int y=0; y<map->getH(); ++y)
+					{
+						map->setMapDiscovered(x, y, team->me);
+					}
+				}
+			}
 		}
 		iteration+=1;
 		active_module=modules.begin();
@@ -525,6 +524,16 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 						}
 					}
 					break;
+				case ENEMY_WARRIORS:
+					u = getUnitFromGid(game, map->getGroundUnit(x, y));
+					if (u)
+					{
+						if(u->owner->me & team->enemies && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
+						{
+							score++;
+						}
+					}
+					break;
 				case POLL_CORN:
 					if (map->isRessource(x, y, CORN))
 						score++;
@@ -667,52 +676,44 @@ std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(GridPolling
 	std::vector<pollRecord>& c_list=*split_calc->c_list;
 
 	std::vector<threeTierRecord> final;
-	unsigned int previous_score_a=0;
 	unsigned int pos_a=0;
 	for (std::vector<pollRecord>::iterator i1=a_list.begin(); i1!=a_list.end(); ++i1)
 	{
-		if(i1->score != previous_score_a)
-		{
-			previous_score_a=i1->score;
-			pos_a++;
-		}
+		pos_a++;
 
 		threeTierRecord ttr;
 		ttr.x=i1->x;
 		ttr.y=i1->y;
 		ttr.width=i1->width;
 		ttr.height=i1->height;
+
+		for(std::vector<pollRecord>::iterator s1=i1; s1!=a_list.end() && s1->score == i1->score; ++s1)
+			pos_a++;
+
+
 		ttr.score_a=pos_a;
 
-		unsigned int previous_score_b=0;
 		unsigned int pos_b=0;
 		for (std::vector<pollRecord>::iterator i2=b_list.begin(); i2!=b_list.end(); ++i2)
 		{
-			if(i2->score != previous_score_b)
-			{
-				previous_score_b=i2->score;
-				pos_b++;
-			}
-
+			pos_b++;
 			if(i2->x==ttr.x && i2->y==ttr.y)
 			{
+				for(std::vector<pollRecord>::iterator s2=i2; s2!=b_list.end() && s2->score == i2->score; ++s2)
+					pos_b++;
 				ttr.score_b=pos_b;
 				break;
 			}
 		}
 
-		unsigned int previous_score_c=0;
 		unsigned int pos_c=0;
 		for (std::vector<pollRecord>::iterator i3=c_list.begin(); i3!=c_list.end(); ++i3)
 		{
-			if(i3->score != previous_score_c)
-			{
-				previous_score_c=i3->score;
-				pos_c++;
-			}
-
+			pos_c++;
 			if(i3->x==ttr.x && i3->y==ttr.y)
 			{
+				for(std::vector<pollRecord>::iterator s3=i3; s3!=c_list.end() && s3->score == i3->score; ++s3)
+					pos_c++;
 				ttr.score_c=pos_c;
 				break;
 			}
@@ -723,7 +724,7 @@ std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(GridPolling
 	std::sort(final.begin(), final.end());
 
 	std::vector<zone> return_list;
-	//For some reason, the final list is being sorted backwards. It seems to be because of my lack of thouroughly thinking out
+	//For some reason, the final list is being sorted backwards. It seems to be because of my lack of thoroughly thinking out
 	//how the various comparisons relate.
 	for(std::vector<threeTierRecord>::reverse_iterator i=final.rbegin(); i!=final.rend(); ++i)
 	{
@@ -868,7 +869,7 @@ bool SimpleBuildingDefense::findDefense()
 					dr.zoney=b->posY-DEFENSE_ZONE_BUILDING_PADDING;
 					dr.width=b->type->width+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.height=b->type->height+DEFENSE_ZONE_BUILDING_PADDING*2;
-					dr.assigned=gps.pollArea(dr.zonex, dr.zoney, dr.width, dr.height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS);
+					dr.assigned=gps.pollArea(dr.zonex, dr.zoney, dr.width, dr.height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS);
 					defending_zones.push_back(dr);
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 					if(AINicowar_DEBUG)
@@ -884,7 +885,7 @@ bool SimpleBuildingDefense::findDefense()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			building_health[b->gid]=b->hp;
+			building_health[b->gid]=std::min(b->type->hpMax, b->hp);
 		}
 	}
 	return false;
@@ -898,7 +899,7 @@ bool SimpleBuildingDefense::updateFlags()
 	GridPollingSystem gps(ai);
 	for (vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
 	{
-		unsigned int score = gps.pollArea(i->zonex, i->zoney, i->width, i->height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS);
+		unsigned int score = gps.pollArea(i->zonex, i->zoney, i->width, i->height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS);
 		if(score==0)
 		{
 			if(AINicowar_DEBUG)
@@ -1829,7 +1830,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 				//				std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				return false;
 			}
-			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW)
+			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW && !CHEAT_INSTANT_BUILDING)
 			{
 				//				std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
 				return false;
@@ -1875,7 +1876,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i->building_type]<<", at position "<<p.x<<","<<p.y<<"."<<endl;
-			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i->building_type], 0, true);
+			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i->building_type], 0, !CHEAT_INSTANT_BUILDING);
 			ai.orders.push(new OrderCreate(ai.team->teamNumber, p.x, p.y, type));
 			total_construction+=1;
 			total_free_workers-=ncr.assigned;

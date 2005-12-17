@@ -221,6 +221,9 @@ public:
 	// Number of unit gained due to conversion
 	Sint32 unitConversionGained;
 
+	/// The amount of ressources the team has globally, for markets
+	Sint32 teamRessources[MAX_NB_RESSOURCES];
+
 private:
 	//! was an event last tick
 	bool isEvent[EVENT_TYPE_SIZE];

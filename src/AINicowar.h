@@ -142,6 +142,8 @@ namespace Nicowar
 				FRIENDLY_BUILDINGS,
 				///Any opposing unit, including explorers, warriors and workers.
 				ENEMY_UNITS,
+				///Enemy warriors
+				ENEMY_WARRIORS,
 				///A single section of corn.
 				POLL_CORN,
 				///A single section of trees
@@ -868,6 +870,10 @@ namespace Nicowar
 
 	///These constants are what fine tune AINicowar. There is allot of them.
 	///@{
+
+	///This boolean tells the ai to uncover the map right at the start, for debugging.
+	const bool SEE_EVERYTHING=false;
+
 	//The following deal with the upgrade and repair management system.
 	const unsigned int MINIMUM_TO_UPGRADE=4;
 	const unsigned int MAXIMUM_TO_UPGRADE=8;
@@ -892,9 +898,9 @@ namespace Nicowar
 	const int EXPLORER_REGION_HORIZONTAL_EXTENTION=0;
 	const int EXPLORER_REGION_VERTICAL_EXTENTION=0;
 	//Its reccomended that this number is an even number.
-	const unsigned int EXPLORERS_PER_REGION=2;
+	const unsigned int EXPLORERS_PER_REGION=3;
 	const unsigned int EXPLORATION_FLAG_RADIUS=12;
-	const unsigned int EXPLORER_MAX_REGIONS_AT_ONCE=3;
+	const unsigned int EXPLORER_MAX_REGIONS_AT_ONCE=4;
 
 	const unsigned int EXPLORER_ATTACK_AREA_WIDTH=8;
 	const unsigned int EXPLORER_ATTACK_AREA_HEIGHT=8;
@@ -947,10 +953,11 @@ namespace Nicowar
 	};
 	const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
 	const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
-	const unsigned int ATTACK_WARRIOR_MINIMUM=4;
+	const unsigned int ATTACK_WARRIOR_MINIMUM=8;
 	const unsigned int MINIMUM_BARRACKS_LEVEL=0;
 	const unsigned int MAX_ATTACKS_AT_ONCE=2;
-	const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*2);
+	const unsigned int WARRIOR_FACTOR=4;
+	const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*WARRIOR_FACTOR);
 
 	//The following are for the construction manager
 
@@ -961,6 +968,9 @@ namespace Nicowar
 	const unsigned int BUILD_AREA_EXTENTION_WIDTH=8;
 	const unsigned int BUILD_AREA_EXTENTION_HEIGHT=8;
 	const unsigned int BUILDING_PADDING=2;
+	///This this enabled, buildings are constructed instantly, which is cheating,
+	///although can aid in debugging in certain situations
+	const bool CHEAT_INSTANT_BUILDING=false;
 	///With the following enabled, the new construction manager will try to place buildings as close together as possible that still satisfy the padding.
 	const bool CRAMP_BUILDINGS=true;
 	const unsigned int NOPOS=1023;

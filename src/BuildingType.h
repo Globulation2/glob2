@@ -58,6 +58,7 @@ public:
 	Sint32 timeToHealUnit;
 	Sint32 insideSpeed;
 	Sint32 canExchange;
+	Sint32 useTeamRessources;
 
 	Sint32 width, height; // Uint8, size in square
 	Sint32 decLeft, decTop;

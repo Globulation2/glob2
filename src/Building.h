@@ -109,7 +109,8 @@ public:
 	Sint32 minLevelToFlagLocal;
 
 	// Building specific :
-	Sint32 ressources[MAX_NB_RESSOURCES]; // Ammount stocked, or used for building building.
+	/// Ammount stocked, or used for building building.
+	Sint32 ressources[MAX_NB_RESSOURCES];
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
