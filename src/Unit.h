@@ -86,7 +86,7 @@ public:
 	void standardRandomActivity();
 	
 	int getRealArmor(void) const;
-	int getRealAttackStrength(void) const;
+	int getRealAttackStrength(void) const; //!< Return the real attack strengh for warriors
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);
 	

@@ -670,7 +670,7 @@ void Unit::handleMagic(void)
 						if (owner->enemies & targetTeamMask)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
-							Sint32 damage = attackForce + experienceLevel - enemyUnit->performance[ARMOR];
+							Sint32 damage = attackForce + experienceLevel - enemyUnit->getRealArmor();
 							if (damage > 0)
 							{
 								enemyUnit->hp -= damage;
