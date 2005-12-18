@@ -957,7 +957,7 @@ namespace GAGCore
 	void DrawableSurface::drawCircle(int x, int y, int radius, Color color)
 	{
 		// clip
-		if ((x<clipRect.x) || (x>=clipRect.x+clipRect.w) || (y<clipRect.y) || (y>=clipRect.y+clipRect.h))
+		if ((x+radius < clipRect.x) || (x-radius >= clipRect.x+clipRect.w) || (y+radius < clipRect.y) || (y-radius >= clipRect.y+clipRect.h))
 			return;
 		
 		// draw
