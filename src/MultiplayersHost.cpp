@@ -972,7 +972,7 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
 		
-		fprintf(logFile, "this ip(%s) is continuing cross connection confirmed..\n", Utilities::stringIP(ip));
+		fprintf(logFile, "this ip(%s)(%s) is continuing cross connection confirmed..\n", Utilities::stringIP(ip), sessionInfo.players[i].name);
 		
 		if (shareOnYOG)
 		{
