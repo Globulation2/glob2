@@ -900,7 +900,7 @@ void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress i
 	memcpy(packet->data+5, playerName, l);
 	
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
-		fprintf(logFile, "send suceeded to send joinerBroadcastRequest packet to ip=(%s).\n", Utilities::stringIP(ip));
+		fprintf(logFile, "send suceeded to send joinerBroadcastRequest packet to ip=(%s). name=(%s), l=(%d)\n", Utilities::stringIP(ip), playerName, l);
 	else
 		fprintf(logFile, "send failed to send joinerBroadcastRequest packet to ip=(%s).\n", Utilities::stringIP(ip));
 	SDLNet_FreePacket(packet);
