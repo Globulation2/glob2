@@ -1635,7 +1635,7 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{
-		if (!(*it)->locked && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
+		if (!(*it)->locked[1] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
 			isEnoughFoodInSwarm=true;
 		(*it)->swarmStep();
 	}
