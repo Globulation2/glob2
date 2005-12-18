@@ -1743,14 +1743,15 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 	int x=mx-viewportX;
 	int y=my-viewportY;
 	
-	if (x>(w/2))
+	if (x>(w-16))
 		x-=w;
-	if (y>(h/2))
+	if (y>(h-16))
 		y-=h;
-	if ((x)<-(w/2))
+	if ((x)<-(16))
 		x+=w;
-	if ((y)<-(h/2))
+	if ((y)<-(16))
 		y+=getH();
+	
 	*px=x<<5;
 	*py=y<<5;
 }
