@@ -152,7 +152,6 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 Order *AINicowar::getOrder(void)
 {
 
-
 	//See if there is an existing order that the AI wanted to have done
 	if (!orders.empty())
 	{
@@ -178,7 +177,7 @@ Order *AINicowar::getOrder(void)
 			{
 				for(int x=0; x<map->getW(); ++x)
 				{
-						for(int y=0; y<map->getH(); ++y)
+					for(int y=0; y<map->getH(); ++y)
 					{
 						map->setMapDiscovered(x, y, team->me);
 					}
@@ -408,7 +407,7 @@ unsigned int Nicowar::getFreeUnits(Team* team, int ability, int level)
 		Unit* u = myUnits[i];
 		if (u)
 		{
-			if ( (u->activity==Unit::ACT_RANDOM || u->movement==Unit::MOV_RANDOM_GROUND) && u->level[ability]==static_cast<int>(level) && u->medical==Unit::MED_FREE)
+			if ( (u->activity==Unit::ACT_RANDOM && u->movement==Unit::MOV_RANDOM_GROUND) && u->level[ability]==static_cast<int>(level) && u->medical==Unit::MED_FREE)
 			{
 				free_workers+=1;
 			}
@@ -690,7 +689,6 @@ std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(GridPolling
 		for(std::vector<pollRecord>::iterator s1=i1; s1!=a_list.end() && s1->score == i1->score; ++s1)
 			pos_a++;
 
-
 		ttr.score_a=pos_a;
 
 		unsigned int pos_b=0;
@@ -900,12 +898,11 @@ bool SimpleBuildingDefense::updateFlags()
 	for (vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
 	{
 		unsigned int score = gps.pollArea(i->zonex, i->zoney, i->width, i->height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS);
-		if(score==0)
+		if(score==0 && i->flag!=NULL)
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: updateFlags: Found a zone at "<<i->zonex<<","<<i->zoney<<" that no longer has any enemy units in it. Removing this flag."<<endl;
-			if(i->flag!=NULL)
-				ai.orders.push(new OrderDelete(i->flag->gid));
+			ai.orders.push(new OrderDelete(i->flag->gid));
 			i=defending_zones.erase(i);
 		}
 		else
@@ -1261,7 +1258,7 @@ bool PrioritizedBuildingAttack::attack()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING && b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
 				max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
 			}
@@ -1393,7 +1390,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING && b->constructionResultState==Building::NO_CONSTRUCTION)
 			{
 				max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
 			}
@@ -1420,7 +1417,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			ai.orders.push(new OrderDelete(j->flag->gid));
 			j=attacks.erase(j);
 			continue;
-			
+
 		}
 
 		if(new_assigned != j->assigned_units)
@@ -1948,7 +1945,24 @@ bool DistributedNewConstructionManager::calculateBuildings()
 	return false;
 }
 
+bool DistributedNewConstructionManager::typePercent::operator<(const typePercent& tp) const
+{
+	if(NEW_CONSTRUCTION_PRIORITIES[building_type]==0)
+		return false;
+	if(NEW_CONSTRUCTION_PRIORITIES[tp.building_type]==0)
+		return true;
 
+	return (static_cast<float>(percent)/NEW_CONSTRUCTION_PRIORITIES[building_type])<(static_cast<float>(tp.percent)/NEW_CONSTRUCTION_PRIORITIES[tp.building_type]);
+}
+bool DistributedNewConstructionManager::typePercent::operator>(const typePercent& tp) const
+{
+	if(NEW_CONSTRUCTION_PRIORITIES[building_type]==0)
+		return true;
+	if(NEW_CONSTRUCTION_PRIORITIES[tp.building_type]==0)
+		return false;
+
+	return (static_cast<float>(percent)/NEW_CONSTRUCTION_PRIORITIES[building_type])>(static_cast<float>(tp.percent)/NEW_CONSTRUCTION_PRIORITIES[tp.building_type]);
+}
 
 
 RandomUpgradeRepairModule::RandomUpgradeRepairModule(AINicowar& ai) : ai(ai)

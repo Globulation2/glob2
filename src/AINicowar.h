@@ -554,14 +554,8 @@ namespace Nicowar
 			{
 				unsigned int building_type;
 				unsigned int percent;
-				bool operator<(const typePercent& tp) const
-				{
-					return percent<tp.percent;
-				}
-				bool operator>(const typePercent& tp) const
-				{
-					return percent>tp.percent;
-				}
+				bool operator<(const typePercent& tp) const;
+				bool operator>(const typePercent& tp) const;
 			};
 
 			///Stores the various records of what is being built
@@ -893,8 +887,8 @@ namespace Nicowar
 	//or the explorers will leave small strips at the right side of maps unexplored.
 	const unsigned int EXPLORER_REGION_WIDTH=16;
 	const unsigned int EXPLORER_REGION_HEIGHT=16;
-	const int EXPLORER_REGION_HORIZONTAL_OVERLAP=8;
-	const int EXPLORER_REGION_VERTICAL_OVERLAP=8;
+	const int EXPLORER_REGION_HORIZONTAL_OVERLAP=4;
+	const int EXPLORER_REGION_VERTICAL_OVERLAP=4;
 	const int EXPLORER_REGION_HORIZONTAL_EXTENTION=0;
 	const int EXPLORER_REGION_VERTICAL_EXTENTION=0;
 	//Its reccomended that this number is an even number.
@@ -963,8 +957,8 @@ namespace Nicowar
 
 	const unsigned int BUILD_AREA_WIDTH=8;
 	const unsigned int BUILD_AREA_HEIGHT=8;
-	const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=4;
-	const unsigned int BUILD_AREA_VERTICAL_OVERLAP=4;
+	const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=2;
+	const unsigned int BUILD_AREA_VERTICAL_OVERLAP=2;
 	const unsigned int BUILD_AREA_EXTENTION_WIDTH=8;
 	const unsigned int BUILD_AREA_EXTENTION_HEIGHT=8;
 	const unsigned int BUILDING_PADDING=2;
@@ -978,7 +972,7 @@ namespace Nicowar
 	const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 	{
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
+	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MINIMUM, GridPollingSystem::CENTER_DISTANCE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_TREES}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
@@ -999,7 +993,13 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{20, 6, 10, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{20, 6, 20, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+	///This is non-strict prioritizing, meaning that the priorities are used as devisors on the percentages used
+	///for comparison. In otherwords, the highest priorites will *almost* always be constructed first, however,
+	///in more extreme situations, lower priorites may be constructed first, even when their are missing higher
+	///priority buildings.
+	const unsigned int NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
+		{2, 4, 3, 1, 1, 2, 2, 0, 0, 0, 0, 0};
 
 	//These constants are for GeneralsDefense
 	const unsigned int DEFENSE_ZONE_SIZE_INCREASE=2;
