@@ -406,10 +406,14 @@ public:
 		return gradient[((y&hMask)<<wDec)+(x&wMask)];
 	}
 	
-	void updateGlobalGradientSmall(Uint8 *gradient);
-	void updateGlobalGradientBig(Uint8 *gradient);
-	void updateGlobalGradient(Uint8 *gradient);
+	void updateGlobalGradientSlow(Uint8 *gradient);
+	template<typename Tint> void updateGlobalGradientSlow(Uint8 *gradient);
+	template<typename Tint> void updateGlobalGradient(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
+	//void updateGlobalGradientSmall(Uint8 *gradient);
+	//void updateGlobalGradientBig(Uint8 *gradient);
+	//void updateGlobalGradient(Uint8 *gradient);
 	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
+	template<typename Tint> void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose);
@@ -418,6 +422,7 @@ public:
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
+	template<typename Tint> void updateGlobalGradient(Building *building, bool canSwim);
 	//!A special gradient for clearing flags. Returns false if there is nothing to clear.
 	bool updateLocalRessources(Building *building, bool canSwim); 
 	void expandLocalGradient(Uint8 *gradient);
@@ -433,10 +438,12 @@ public:
 	bool pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
+	template<typename Tint> void updateForbiddenGradient(int teamNumber, bool canSwim);
 	void updateForbiddenGradient(int teamNumber);
 	void updateForbiddenGradient();
 	//! Update the guard area gradient
 	void updateGuardAreasGradient(int teamNumber, bool canSwim);
+	template<typename Tint> void updateGuardAreasGradient(int teamNumber, bool canSwim);
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
 	

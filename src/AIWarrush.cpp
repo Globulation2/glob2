@@ -741,7 +741,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		}
 	}
 	
-	map->updateGlobalGradient(gradient.c_array());
+	map->updateGlobalGradientSlow(gradient.c_array());
 	
 	for(int x=0;x<map->w;x++)
 	{
@@ -790,7 +790,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		}
 	}
 	
-	map->updateGlobalGradient(availability_gradient.c_array());
+	map->updateGlobalGradientSlow(availability_gradient.c_array());
 	
 	Building *swarm = getSwarmWithMostProduction();
 	if (!swarm) return new NullOrder;
