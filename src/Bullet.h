@@ -21,6 +21,8 @@
 #define __BULLET_H
 
 #define SHOOTING_COOLDOWN_MAX 65536
+//! Number of bit before any significant one, to avoid overflow while computing totalDefensePower in TeamStat.cpp
+#define SHOOTING_COOLDOWN_MAGNITUDE 10
 
 #include <GAGSys.h>
 
