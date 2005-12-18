@@ -1947,21 +1947,21 @@ bool DistributedNewConstructionManager::calculateBuildings()
 
 bool DistributedNewConstructionManager::typePercent::operator<(const typePercent& tp) const
 {
-	if(NEW_CONSTRUCTION_PRIORITIES[building_type]==0)
-		return false;
-	if(NEW_CONSTRUCTION_PRIORITIES[tp.building_type]==0)
+	if(STRICT_NEW_CONSTRUCTION_PRIORITIES[building_type]>STRICT_NEW_CONSTRUCTION_PRIORITIES[tp.building_type])
 		return true;
+	if(STRICT_NEW_CONSTRUCTION_PRIORITIES[building_type]<STRICT_NEW_CONSTRUCTION_PRIORITIES[tp.building_type])
+		return false;
 
-	return (static_cast<float>(percent)/NEW_CONSTRUCTION_PRIORITIES[building_type])<(static_cast<float>(tp.percent)/NEW_CONSTRUCTION_PRIORITIES[tp.building_type]);
+
+	return percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[building_type]<tp.percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[tp.building_type];
 }
 bool DistributedNewConstructionManager::typePercent::operator>(const typePercent& tp) const
 {
-	if(NEW_CONSTRUCTION_PRIORITIES[building_type]==0)
+	if(STRICT_NEW_CONSTRUCTION_PRIORITIES[building_type]<STRICT_NEW_CONSTRUCTION_PRIORITIES[tp.building_type])
 		return true;
-	if(NEW_CONSTRUCTION_PRIORITIES[tp.building_type]==0)
+	if(STRICT_NEW_CONSTRUCTION_PRIORITIES[building_type]>STRICT_NEW_CONSTRUCTION_PRIORITIES[tp.building_type])
 		return false;
-
-	return (static_cast<float>(percent)/NEW_CONSTRUCTION_PRIORITIES[building_type])>(static_cast<float>(tp.percent)/NEW_CONSTRUCTION_PRIORITIES[tp.building_type]);
+	return percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[building_type]>tp.percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[tp.building_type];
 }
 
 

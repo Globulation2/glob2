@@ -862,6 +862,31 @@ namespace Nicowar
 			AINicowar& ai;
 	};
 
+	///This will put clearing-area padding around buildings.
+	class BuildingClearer : public OtherModule
+	{
+		public:
+			BuildingClearer(AINicowar& ai);
+			~BuildingClearer() {};
+			bool perform(unsigned int time_slice_n);
+			string getName() const;
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream) const;
+			unsigned int numberOfTicks() const
+			{
+				return 1;
+			}
+
+			///Removes the padding around buildings that have been destroyed or upgrad
+			bool removeOldPadding();
+			
+
+			///Looks for buildings that haven't had padding added to them
+			bool updateClearingAreas();
+
+			///Holds a refernece to the ai so taht the module can work properly.
+			AINicowar& ai;
+	};
 	///These constants are what fine tune AINicowar. There is allot of them.
 	///@{
 
@@ -972,7 +997,7 @@ namespace Nicowar
 	const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 	{
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MINIMUM, GridPollingSystem::CENTER_DISTANCE}},
+	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MINIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_TREES}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
@@ -994,12 +1019,16 @@ namespace Nicowar
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
 		{20, 6, 20, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
-	///This is non-strict prioritizing, meaning that the priorities are used as devisors on the percentages used
-	///for comparison. In otherwords, the highest priorites will *almost* always be constructed first, however,
-	///in more extreme situations, lower priorites may be constructed first, even when their are missing higher
+	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
+	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
+	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
 	///priority buildings.
-	const unsigned int NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{2, 4, 3, 1, 1, 2, 2, 0, 0, 0, 0, 0};
+	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
+		{6, 3, 4, 6, 6, 6, 6, 0, 0, 0, 0, 0};
+
+	///Buildings with a higher strict priority will *always* go first
+	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
+		{1, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 
 	//These constants are for GeneralsDefense
 	const unsigned int DEFENSE_ZONE_SIZE_INCREASE=2;
