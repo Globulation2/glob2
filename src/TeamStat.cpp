@@ -166,8 +166,8 @@ void TeamStats::step(Team *team, bool reloaded)
 			assert(longLevel>=0);
 			assert(longLevel<=5);
 			stat.numberBuildingPerTypePerLevel[b->type->shortTypeNum][longLevel]++;
-			stat.totalHP+=b->hp;
-			stat.totalDefensePower+=b->type->shootDamage*b->type->shootRythme;
+			stat.totalHP += b->hp;
+			stat.totalDefensePower += (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
 			if (!b->type->isBuildingSite)
 				stat.totalBuilding++;
 		}
