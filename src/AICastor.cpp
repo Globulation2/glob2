@@ -1005,6 +1005,10 @@ Order *AICastor::controlUpgrades()
 		return NULL;
 	if (b->maxUnitWorking<1)
 		return new OrderModifyBuilding(b->gid, 1);
+	int numberOfFreeWorkers = team->stats.getLatestStat()->isFree[WORKER];
+	int numberOfAbleWorkers = team->stats.getLatestStat()->upgradeState[BUILD][b->type->level];
+	if (numberOfAbleWorkers <= 2 || numberOfFreeWorkers <= 4 || numberOfAbleWorkers <= (numberOfFreeWorkers/8))
+		return NULL;
 	// Is it any repair:
 	if (!b->type->isBuildingSite)
 	{
