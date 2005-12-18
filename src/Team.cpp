@@ -1539,11 +1539,6 @@ void Team::syncStep(void)
 				prestige-=(*it)->type->prestige;
 				buildingsToBeDestroyed.push_front(building);
 			}
-			else
-			{
-				// the building can be alive if we canceled destruction
-				assert(building->buildingState==Building::DEAD || building->buildingState==Building::ALIVE);
-			}
 
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsWaitingForDestruction.erase(ittemp);
