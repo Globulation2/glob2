@@ -2550,7 +2550,7 @@ void AICastor::computeWheatCareMap()
 			else
 				wheatCareMap[0][i]=8;
 		}
-	map->updateGlobalGradient(wheatCareMap[0]);
+	map->updateGlobalGradientSlow(wheatCareMap[0]);
 }
 
 void AICastor::computeWheatGrowthMap()
@@ -2573,7 +2573,7 @@ void AICastor::computeWheatGrowthMap()
 		if (wheatGradient[i]==255)
 			wheatGrowthMap[i]=1+(hydratationMap[i]>>3);
 	
-	map->updateGlobalGradient(wheatGrowthMap);
+	map->updateGlobalGradientSlow(wheatGrowthMap);
 	
 	for (size_t i=0; i<size; i++)
 	{
@@ -2710,7 +2710,7 @@ void AICastor::computeEnemyRangeMap()
 		}
 	}
 	
-	map->updateGlobalGradient(gradient);
+	map->updateGlobalGradientSlow(gradient);
 }
 
 void AICastor::computeEnemyWarriorsMap()
@@ -2743,7 +2743,7 @@ void AICastor::computeEnemyWarriorsMap()
 			continue;
 		gradient[i]=32;
 	}
-	map->updateGlobalGradient(gradient);
+	map->updateGlobalGradientSlow(gradient);
 }
 
 Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical)

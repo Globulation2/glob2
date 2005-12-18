@@ -882,7 +882,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
-		
+	
 	listedAddr = new Uint8*[size];
 
 	//numberOfTeam=0, then ressourcesGradient[][][] is empty. This is done by clear();
@@ -2123,7 +2123,80 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 }
 */
 
-void Map::updateGlobalGradientSmall(Uint8 *gradient)
+void Map::updateGlobalGradientSlow(Uint8 *gradient)
+{
+	if (size <= 65536)
+		updateGlobalGradientSlow<Uint16>(gradient);
+	else
+		updateGlobalGradientSlow<Uint32>(gradient);
+}
+
+template<typename Tint> void Map::updateGlobalGradientSlow(Uint8 *gradient)
+{
+	Tint *listedAddr = new Tint[size];
+	size_t listCountWrite = 0;
+	// make the first list:
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++)
+			if (gradient[(y << wDec) | x] >= 3)
+				listedAddr[listCountWrite++] = (y << wDec) | x;
+	updateGlobalGradient(gradient, listedAddr, listCountWrite);
+	delete[] listedAddr;
+}
+
+template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
+{
+	//Tint *listedAddr = new Tint[size];
+	//size_t listCountWrite = 0;
+	// make the first list:
+	//for (int y = 0; y < h; y++)
+	//	for (int x = 0; x < w; x++)
+	//		if (gradient[(y << wDec) | x] >= 3)
+	//			listedAddr[listCountWrite++] = (y << wDec) | x;
+	
+	size_t listCountRead = 0;
+	while (listCountRead < listCountWrite)
+	{
+		Tint deltaAddrG = listedAddr[listCountRead++];
+		
+		size_t y = deltaAddrG >> wDec;
+		size_t x = deltaAddrG & wMask;
+		
+		size_t yu = ((y - 1) & hMask);
+		size_t yd = ((y + 1) & hMask);
+		size_t xl = ((x - 1) & wMask);
+		size_t xr = ((x + 1) & wMask);
+		
+		Uint8 g = gradient[(y << wDec) | x] - 1;
+		
+		size_t deltaAddrC[8];
+		Uint8 *addr;
+		Uint8 side;
+		
+		deltaAddrC[0] = (yu << wDec) | xl;
+		deltaAddrC[1] = (yu << wDec) | x ;
+		deltaAddrC[2] = (yu << wDec) | xr;
+		deltaAddrC[3] = (y  << wDec) | xr;
+		deltaAddrC[4] = (yd << wDec) | xr;
+		deltaAddrC[5] = (yd << wDec) | x ;
+		deltaAddrC[6] = (yd << wDec) | xl;
+		deltaAddrC[7] = (y  << wDec) | xl;
+		for (int ci=0; ci<8; ci++)
+		{
+			addr = &gradient[deltaAddrC[ci]];
+			side = *addr;
+			if (side > 0 && side < g)
+			{
+				*addr = g;
+				if (g > 2)
+					listedAddr[listCountWrite++] = deltaAddrC[ci];
+			}
+		}
+	}
+	assert(listCountWrite<=size);
+}
+
+/*void Map::updateGlobalGradientSmall(Uint8 *gradient)
 {
 	Uint16 *listedAddr = new Uint16[size];
 	size_t listCountWrite = 0;
@@ -2236,138 +2309,22 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 		updateGlobalGradientSmall(gradient);
 	else
 		updateGlobalGradientBig(gradient);
-}
-
-/*void Map::updateGlobalGradient(Uint8 *gradient)
-{
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
-	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
-	
-	for (int yi=0; yi<h; yi++)
-	{
-		int wy=((yi&hMask)<<wDec);
-		int wyu=(((yi-1)&hMask)<<wDec);
-		for (int xi=yi; xi<(yi+w); xi++)
-		{
-			int x=xi&wMask;
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				int xl=(x-1)&wMask;
-				int xr=(x+1)&wMask;
-
-				Uint8 side[4];
-				side[0]=gradient[wyu+xl];
-				side[1]=gradient[wyu+x ];
-				side[2]=gradient[wyu+xr];
-				side[3]=gradient[wy +xl];
-				max++;
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
-	
-	for (int y=hMask; y>=0; y--)
-	{
-		int wy=(y<<wDec);
-		int wyd=(((y+1)&hMask)<<wDec);
-		for (int xi=y; xi<(y+w); xi++)
-		{
-			int x=xi&wMask;
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				int xl=(x-1)&wMask;
-				int xr=(x+1)&wMask;
-
-				Uint8 side[4];
-				side[0]=gradient[wyd+xr];
-				side[1]=gradient[wyd+x ];
-				side[2]=gradient[wyd+xl];
-				side[3]=gradient[wy +xl];
-				max++;
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
-	
-	for (int x=0; x<w; x++)
-	{
-		int xl=(x-1)&wMask;
-		for (int yi=x; yi<(x+h); yi++)
-		{
-			int wy=((yi&hMask)<<wDec);
-			int wyu=(((yi-1)&hMask)<<wDec);
-			int wyd=(((yi+1)&hMask)<<wDec);
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				Uint8 side[4];
-				side[0]=gradient[wyu+xl];
-				side[1]=gradient[wyd+xl];
-				side[2]=gradient[wy +xl];
-				side[3]=gradient[wyu+x ];
-				max++;
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
-
-	for (int x=wMask; x>=0; x--)
-	{
-		int xr=(x+1)&wMask;
-		for (int yi=x; yi<(x+h); yi++)
-		{
-			int wy=((yi&hMask)<<wDec);
-			int wyu=(((yi-1)&hMask)<<wDec);
-			int wyd=(((yi+1)&hMask)<<wDec);
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				Uint8 side[4];
-				side[0]=gradient[wyu+xr];
-				side[1]=gradient[wy +xr];
-				side[2]=gradient[wyd+xr];
-				side[3]=gradient[wyu+x ];
-				max++;
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
 }*/
 
 void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 {
+	if (size <= 65536)
+		updateRessourcesGradient<Uint16>(teamNumber, ressourceType, canSwim);
+	else
+		updateRessourcesGradient<Uint32>(teamNumber, ressourceType, canSwim);
+}
+
+template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
+{
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
+	Tint *listedAddr = new Tint[size];
+	size_t listCountWrite = 0;
 	
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
@@ -2390,12 +2347,17 @@ void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool can
 			if (globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
 				gradient[i]=0;
 			else
+			{
 				gradient[i]=255;
+				listedAddr[listCountWrite++] = i;
+			}
 		}
 		else
 			gradient[i]=0;
 	}
-	updateGlobalGradient(gradient);
+	
+	updateGlobalGradient<Tint>(gradient, (Tint *)listedAddr, listCountWrite);
+	delete[] listedAddr;
 }
 
 bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose)
@@ -3098,6 +3060,14 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
+	if (size <= 65536)
+		updateGlobalGradient<Uint16>(building, canSwim);
+	else
+		updateGlobalGradient<Uint32>(building, canSwim);
+}
+
+template<typename Tint> void Map::updateGlobalGradient(Building *building, bool canSwim)
+{
 	globalBuildingGradientUpdate++;
 	assert(building);
 	assert(building->type);
@@ -3106,15 +3076,18 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	int posX=building->posX;
 	int posY=building->posY;
 	int posW=building->type->width;
-	int posH=building->type->height;
+	//int posH=building->type->height;
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
 	
 	Uint8 *gradient=building->globalGradient[canSwim];
 	assert(gradient);
+	
+	Tint *listedAddr = new Tint[size];
+	size_t listCountWrite = 0;
 
 	memset(gradient, 1, size);
-	if (building->type->isVirtual)
+	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
 		assert(!building->type->zonableForbidden);
 		int r=building->unitStayRange;
@@ -3124,14 +3097,12 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			int yi2=(yi*yi);
 			for (int xi=-r; xi<=r; xi++)
 				if (yi2+(xi*xi)<r2)
-					gradient[((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask))]=255;
+				{
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					gradient[addr] = 255;
+					listedAddr[listCountWrite++] = addr;
+				}
 		}
-	}
-	else
-	{
-		for (int dy=0; dy<posH; dy++)
-			for (int dx=0; dx<posW; dx++)
-				gradient[((posX+dx)&wMask)+((posY+dy)&hMask)*w]=255;
 	}
 
 	for (int y=0; y<h; y++)
@@ -3144,18 +3115,21 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			if (c.building==NOGBID)
 			{
 				if (c.ressource.type!=NO_RES_TYPE)
-					gradient[wyx]=0;
+					gradient[wyx] = 0;
 				else if (c.forbidden&teamMask)
-					gradient[wyx]=0;
+					gradient[wyx] = 0;
 				else if (!canSwim && isWater(x, y))
-					gradient[wyx]=0;
+					gradient[wyx] = 0;
 			}
 			else
 			{
 				if (c.building==bgid)
-					gradient[wyx]=255;
+				{
+					gradient[wyx] = 255;
+					listedAddr[listCountWrite++] = wyx;
+				}
 				else
-					gradient[wyx]=0;
+					gradient[wyx] = 0;
 			}
 		}
 	}
@@ -3170,7 +3144,12 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			int yi2=(yi*yi);
 			for (int xi=-r; xi<=r; xi++)
 				if (yi2+(xi*xi)<=r2)
-					gradient[((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask))]=255;
+				{
+					// TODO: check if this is really the ressource we are meant to remove
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					gradient[addr] = 255;
+					listedAddr[listCountWrite++] = addr;
+				}
 		}
 	}
 	
@@ -3222,102 +3201,9 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	}
 	else
 		building->locked[canSwim]=false;
-
-	/*
-	TODO: remove this, it was only needed with the old gradient method.
-	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
-	{
-		int x=(posX-1)&wMask;
-		int y=(posY-1)&hMask;
-		
-		for (int di=posW+1; di<=64; di+=2) //distance-iterator
-		{
-			for (int bi=0; bi<2; bi++) //back-iterator
-				for (int ai=0; ai<4; ai++) //angle-iterator
-				{
-					for (int mi=0; mi<di; mi++) //move-iterator
-					{
-						//printf("di=%d, ai=%d, mi=%d, p=(%d, %d)\n", di, ai, mi, x, y);
-						assert(x>=0);
-						assert(y>=0);
-						assert(x<w);
-						assert(y<h);
-
-						int wy =w*((y)&hMask);
-						int wyu=w*((y-1)&hMask);
-						int wyd=w*((y+1)&hMask);
-						
-						Uint8 max=gradient[wy+x];
-						if (max && max!=255)
-						{
-							int xl=(x-1)&wMask;
-							int xr=(x+1)&wMask;
-
-							Uint8 side[8];
-							side[0]=gradient[wyu+xl];
-							side[1]=gradient[wyu+x ];
-							side[2]=gradient[wyu+xr];
-
-							side[3]=gradient[wy +xr];
-
-							side[4]=gradient[wyd+xr];
-							side[5]=gradient[wyd+x ];
-							side[6]=gradient[wyd+xl];
-
-							side[7]=gradient[wy +xl];
-
-							for (int i=0; i<8; i++)
-								if (side[i]>max)
-									max=side[i];
-							if (max==1)
-								gradient[wy+x]=1;
-							else
-								gradient[wy+x]=max-1;
-						}
-
-						if (bi==0)
-						{
-							switch (ai)
-							{
-								case 0:
-									x=(x+1)&wMask;
-								break;
-								case 1:
-									y=(y+1)&hMask;
-								break;
-								case 2:
-									x=(x-1)&wMask;
-								break;
-								case 3:
-									y=(y-1)&hMask;
-								break;
-							}
-						}
-						else
-						{
-							switch (ai)
-							{
-								case 0:
-									y=(y+1)&hMask;
-								break;
-								case 1:
-									x=(x+1)&wMask;
-								break;
-								case 2:
-									y=(y-1)&hMask;
-								break;
-								case 3:
-									x=(x-1)&wMask;
-								break;
-							}
-						}
-					}
-				}
-			x=(x-1)&wMask;
-			y=(y-1)&hMask;
-		}
-	}*/
-	updateGlobalGradient(gradient);
+	
+	updateGlobalGradient<Tint>(gradient, listedAddr, listCountWrite);
+	delete[] listedAddr;
 }
 
 bool Map::updateLocalRessources(Building *building, bool canSwim)
@@ -4206,8 +4092,18 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 
 void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 {
+	if (size <= 65536)
+		updateForbiddenGradient<Uint16>(teamNumber, canSwim);
+	else
+		updateForbiddenGradient<Uint32>(teamNumber, canSwim);
+}
+
+template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
+{
 	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
+	Tint *listedAddr = new Tint[size];
+	size_t listCountWrite = 0;
 	
 	// We set the obstacle and free places
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
@@ -4223,11 +4119,15 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 		else if (c.forbidden&teamMask)
 			gradient[i] = 1;
 		else
+		{
 			gradient[i] = 255;
+			listedAddr[listCountWrite++] = i;
+		}
 	}
 	
 	// Then we propagate the gradient
-	updateGlobalGradient(gradient);
+	updateGlobalGradient(gradient, listedAddr, listCountWrite);
+	delete[] listedAddr;
 }
 
 void Map::updateForbiddenGradient(int teamNumber)
@@ -4244,8 +4144,18 @@ void Map::updateForbiddenGradient()
 
 void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 {
+	if (size <= 65536)
+		updateGuardAreasGradient<Uint16>(teamNumber, canSwim);
+	else
+		updateGuardAreasGradient<Uint32>(teamNumber, canSwim);
+}
+
+template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
+{
 	Uint8 *gradient = guardAreasGradient[teamNumber][canSwim];
 	assert(gradient);
+	Tint *listedAddr = new Tint[size];
+	size_t listCountWrite = 0;
 	
 	// We set the obstacle and free places
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
@@ -4261,13 +4171,17 @@ void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
 		else if (c.guardArea & teamMask)
+		{
 			gradient[i] = 255;
+			listedAddr[listCountWrite++] = i;
+		}
 		else
 			gradient[i] = 1;
 	}
 	
 	// Then we propagate the gradient
-	updateGlobalGradient(gradient);
+	updateGlobalGradient(gradient, listedAddr, listCountWrite);
+	delete[] listedAddr;
 }
 
 void Map::updateGuardAreasGradient(int teamNumber)
