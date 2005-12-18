@@ -1296,9 +1296,11 @@ void Unit::handleDisplacement(void)
 						break;
 
 						case Building::NEW_BUILDING:
-						case Building::UPGRADE: 
+						case Building::UPGRADE:
 						{
 							attachedBuilding->hp+=bt->hpInc;
+							if (attachedBuilding->hp > bt->hpMax)
+								attachedBuilding->hp = bt->hpMax;
 						}
 						break;
 
