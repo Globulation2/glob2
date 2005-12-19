@@ -2170,8 +2170,11 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 	for (list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
+		if(!buildingStillExists(ai.game, b))
+			continue;
 		unsigned int assigned=i->assigned;
 		bool is_repair=i->is_repair;
+
 
 		//Find the number of workers with enough of a level to upgrade this building
 		int available_upgrade = 0;
@@ -2262,9 +2265,12 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	for (list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
-		unsigned int assigned = i->assigned;
-		reduce(free_workers, b->type->level, assigned-b->unitsWorking.size());
-		construction_counts[b->type->shortTypeNum]+=1;
+		if(buildingStillExists(ai.game, b))
+		{
+			unsigned int assigned = i->assigned;
+			reduce(free_workers, b->type->level, assigned-b->unitsWorking.size());
+			construction_counts[b->type->shortTypeNum]+=1;
+		}
 	}
 
 	for (list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
