@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "Ressource.h"
 #include <algorithm>
 #include <iterator>
+#include "Brush.h"
 
 using namespace std;
 using namespace Nicowar;
@@ -74,6 +75,7 @@ void AINicowar::init(Player *player)
 	new ExplorationManager(*this);
 	new InnManager(*this);
 	new TowerController(*this);
+	new BuildingClearer(*this);
 
 	this->player=player;
 	this->team=player->team;
@@ -147,12 +149,8 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 			return false;
 		}
 
-
 	}
 	stream->readLeaveSection();
-
-
-
 
 	stream->readLeaveSection();
 	return true;
@@ -1456,6 +1454,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			continue;
 		}
 
+		std::cout<<j->flag->gid<<endl;
 		available_units+=j->flag->unitsWorking.size();
 		unsigned int score = gps.pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS);
 		unsigned int new_assigned=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(score*2, ATTACK_WARRIOR_MINIMUM));
@@ -1466,6 +1465,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				std::cout<<"AINicowar: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flag->posX<<","<<j->flag->posY<<" flag."<<endl;
 			ai.orders.push(new OrderDelete(j->flag->gid));
 			j=attacks.erase(j);
+			std::cout<<j->flag->gid<<endl;
 			continue;
 
 		}
@@ -1995,6 +1995,9 @@ bool DistributedNewConstructionManager::calculateBuildings()
 	return false;
 }
 
+
+
+
 bool DistributedNewConstructionManager::typePercent::operator<(const typePercent& tp) const
 {
 	if(STRICT_NEW_CONSTRUCTION_PRIORITIES[building_type]>STRICT_NEW_CONSTRUCTION_PRIORITIES[tp.building_type])
@@ -2002,9 +2005,12 @@ bool DistributedNewConstructionManager::typePercent::operator<(const typePercent
 	if(STRICT_NEW_CONSTRUCTION_PRIORITIES[building_type]<STRICT_NEW_CONSTRUCTION_PRIORITIES[tp.building_type])
 		return false;
 
-
 	return percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[building_type]<tp.percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[tp.building_type];
 }
+
+
+
+
 bool DistributedNewConstructionManager::typePercent::operator>(const typePercent& tp) const
 {
 	if(STRICT_NEW_CONSTRUCTION_PRIORITIES[building_type]<STRICT_NEW_CONSTRUCTION_PRIORITIES[tp.building_type])
@@ -2013,6 +2019,8 @@ bool DistributedNewConstructionManager::typePercent::operator>(const typePercent
 		return false;
 	return percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[building_type]>tp.percent*WEAK_NEW_CONSTRUCTION_PRIORITIES[tp.building_type];
 }
+
+
 
 
 RandomUpgradeRepairModule::RandomUpgradeRepairModule(AINicowar& ai) : ai(ai)
@@ -2128,7 +2136,7 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 		}
 
 		unsigned int original = i->original;
-		if (b->constructionResultState==Building::NO_CONSTRUCTION)
+		if (b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR )
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<endl;
@@ -2222,9 +2230,11 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		Building *b=i->building;
 		if(!buildingStillExists(ai.game, b))
 			continue;
+		if(b->constructionResultState==Building::NO_CONSTRUCTION)
+			continue;
+
 		unsigned int assigned=i->assigned;
 		bool is_repair=i->is_repair;
-
 
 		//Find the number of workers with enough of a level to upgrade this building
 		int available_upgrade = 0;
@@ -2255,6 +2265,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 
 		else if (is_repair && available_repair==0)
 		{
+			std::cout<<b->constructionResultState<<endl;
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
 			ai.orders.push(new OrderCancelConstruction(b->gid));
@@ -3339,5 +3350,164 @@ bool TowerController::controlTowers()
 		}
 	}
 	ai.getUnitModule()->changeUnits("tower-controller", WORKER, 0, count*NUM_PER_TOWER, 0);
+	return false;
+}
+
+
+
+
+BuildingClearer::BuildingClearer(AINicowar& ai) : ai(ai)
+{
+	ai.addOtherModule(this);
+}
+
+
+
+
+bool BuildingClearer::perform(unsigned int time_slice_n)
+{
+	switch(time_slice_n)
+	{
+		case 0:
+			return removeOldPadding();
+		case 1:
+			return updateClearingAreas();
+	}
+	return false;
+}
+
+
+
+
+string BuildingClearer::getName() const
+{
+	return "BuildingClearer";
+}
+
+
+
+
+bool BuildingClearer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("BuildingClearer");
+	unsigned int n = stream->readUint32();
+	while(n--)
+	{
+		clearingRecord cr;
+		cr.x=stream->readUint32();
+		cr.y=stream->readUint32();
+		cr.width=stream->readUint32();
+		cr.height=stream->readUint32();
+		cr.level=stream->readUint32();
+		cleared_buildings[stream->readUint32()];
+	}
+
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+
+void BuildingClearer::save(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("BuildingClearer");
+	for(map<int, clearingRecord>::const_iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
+	{
+		stream->writeUint32(i->first);
+		stream->writeUint32(i->second.x);
+		stream->writeUint32(i->second.y);
+		stream->writeUint32(i->second.width);
+		stream->writeUint32(i->second.height);
+		stream->writeUint32(i->second.level);
+	}
+	stream->writeLeaveSection();
+}
+
+
+
+
+bool BuildingClearer::removeOldPadding()
+{
+	for(map<int, clearingRecord>::iterator i=cleared_buildings.begin(); i!=cleared_buildings.end();)
+	{
+		Building* b = getBuildingFromGid(ai.game, i->first);
+		if(b==NULL || b->type->level != static_cast<int>(i->second.level))
+		{
+
+			unsigned int x_bound=i->second.x+i->second.width;
+			unsigned int y_bound=i->second.y+i->second.height;
+			if(static_cast<int>(x_bound) > ai.map->getW())
+				x_bound-=ai.map->getW();
+			if(static_cast<int>(y_bound) > ai.map->getH())
+				y_bound-=ai.map->getH();
+
+			BrushAccumulator acc;
+			for(unsigned int x=i->second.x; x!=x_bound; ++x)
+			{
+				for(unsigned int y=i->second.y; y!=y_bound; ++y)
+				{
+					if(ai.map->isClearAreaLocal(x,y))
+					{
+						acc.applyBrush(ai.map, BrushApplication(x,y,0));
+					}
+				}
+				ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_DEL, &acc));
+				cleared_buildings.erase(i);
+				continue;
+			}
+		}
+		++i;
+	}
+	return false;
+}
+
+
+
+
+bool BuildingClearer::updateClearingAreas()
+{
+	for(unsigned int i=0; i<1024; ++i)
+	{
+		Building* b = ai.team->myBuildings[i];
+		if(b)
+		{
+			if(	b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
+				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
+				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG &&
+				 cleared_buildings.find(b->gid) == cleared_buildings.end())
+			{
+				clearingRecord cr;
+				cr.x=b->posX-CLEARING_AREA_BUILDING_PADDING+1;
+				cr.y=b->posY-CLEARING_AREA_BUILDING_PADDING+1;
+				cr.width=b->type->width+CLEARING_AREA_BUILDING_PADDING*2-2;
+				cr.height=b->type->height+CLEARING_AREA_BUILDING_PADDING*2-2;
+				cr.level=b->type->level;
+
+				unsigned int x_bound=cr.x+cr.width;
+				unsigned int y_bound=cr.y+cr.height;
+				if(static_cast<int>(x_bound) > ai.map->getW())
+					x_bound-=ai.map->getW();
+				if(static_cast<int>(y_bound) > ai.map->getH())
+					y_bound-=ai.map->getH();
+
+				BrushAccumulator acc;
+				for(unsigned int x=cr.x; x!=x_bound; ++x)
+				{
+					for(unsigned int y=cr.y; y!=y_bound; ++y)
+					{
+						if(!ai.map->isClearAreaLocal(x,y))
+						{
+							acc.applyBrush(ai.map, BrushApplication(x,y,6));
+						}
+					}
+				}
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<endl;
+				ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_ADD, &acc));
+				cleared_buildings[b->gid]=cr;
+			}
+		}
+	}
 	return false;
 }
