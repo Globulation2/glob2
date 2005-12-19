@@ -103,9 +103,14 @@ AINicowar::~AINicowar()
 bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
+
 	stream->readEnterSection("AINicowar");
-	timer=stream->readSint32("timer");
-	iteration=stream->readSint32("iteration");
+	timer=stream->readUint32("timer");
+	iteration=stream->readUint32("iteration");
+	center_x=stream->readUint32("center_x");
+	center_y=stream->readUint32("center_y");
+	module_timer=stream->readUint32("module_timer");
+	active_module=modules.begin()+stream->readUint32("active_module");
 
 	stream->readEnterSection("orders");
 	unsigned int n = stream->readUint32();
@@ -118,13 +123,35 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 	}
 	stream->readLeaveSection();
 
+	char signature[4];
+
 	stream->readEnterSection("modules");
-	n = stream->readUint32();
-	while(n--)
+	unsigned int size = stream->readUint32();
+	for(n=0; n<size; ++n)
 	{
+		stream->read(signature, 4, "signatureStart");
+		if (memcmp(signature,"MoSt", 4)!=0)
+		{
+			std::cout<<"Signature missmatch at begin of module #"<<n<<", "<<modules[n]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
+			stream->readLeaveSection();
+			return false;
+		}
+
 		modules[n]->load(stream, player, versionMinor);
+
+		stream->read(signature, 4, "signatureEnd");
+		if (memcmp(signature,"MoEn", 4)!=0)
+		{
+			std::cout<<"Signature missmatch at end of module #"<<n<<", "<<modules[n]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
+			stream->readLeaveSection();
+			return false;
+		}
+
+
 	}
 	stream->readLeaveSection();
+
+
 
 
 	stream->readLeaveSection();
@@ -137,8 +164,12 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 void AINicowar::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AINicowar");
-	stream->writeSint32(timer, "timer");
-	stream->writeSint32(iteration, "iteration");
+	stream->writeUint32(timer, "timer");
+	stream->writeUint32(iteration, "iteration");
+	stream->writeUint32(center_x, "center_x");
+	stream->writeUint32(center_y, "center_y");
+	stream->writeUint32(module_timer, "module_timer");
+	stream->writeUint32(active_module-modules.begin(), "active_module");
 
 	stream->writeEnterSection("orders");
 	stream->writeUint32(orders.size());
@@ -157,7 +188,9 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(modules.size());
 	for(vector<Module*>::iterator i = modules.begin(); i!=modules.end(); ++i)
 	{
+		stream->write("MoSt", 4, "signatureStart");
 		(*i)->save(stream);
+		stream->write("MoEn", 4, "signatureEnd");
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
