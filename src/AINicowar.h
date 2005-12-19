@@ -993,7 +993,7 @@ namespace Nicowar
 	///With the following enabled, the new construction manager will try to place buildings as close together as possible that still satisfy the padding.
 	const bool CRAMP_BUILDINGS=true;
 	const unsigned int NOPOS=1023;
-	const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=0;
+	const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=1;
 	const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 	{
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
