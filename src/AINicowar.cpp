@@ -118,6 +118,15 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 	}
 	stream->readLeaveSection();
 
+	stream->readEnterSection("modules");
+	n = stream->readUint32();
+	while(n--)
+	{
+		modules[n]->load(stream, player, versionMinor);
+	}
+	stream->readLeaveSection();
+
+
 	stream->readLeaveSection();
 	return true;
 }
@@ -141,6 +150,14 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 		stream->writeSint8(order->getOrderType());
 		stream->write(order->getData(), order->getDataLength());
 		delete order;
+	}
+	stream->writeLeaveSection();
+
+	stream->writeEnterSection("modules");
+	stream->writeUint32(modules.size());
+	for(vector<Module*>::iterator i = modules.begin(); i!=modules.end(); ++i)
+	{
+		(*i)->save(stream);
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -3008,7 +3025,7 @@ void InnManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("InnManager");
 	stream->writeEnterSection("inns");
-	stream->writeUint32(inns.size());
+	stream->writeUint32(static_cast<unsigned int>(inns.size()));
 	for(std::map<int, innRecord>::const_iterator i = inns.begin(); i!=inns.end(); ++i)
 	{
 		stream->writeUint32(i->first);

@@ -877,9 +877,8 @@ namespace Nicowar
 				return 1;
 			}
 
-			///Removes the padding around buildings that have been destroyed or upgrad
+			///Removes the padding around buildings that have been destroyed or upgraded (and their size has changed)
 			bool removeOldPadding();
-			
 
 			///Looks for buildings that haven't had padding added to them
 			bool updateClearingAreas();
@@ -887,6 +886,8 @@ namespace Nicowar
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
 	};
+
+
 	///These constants are what fine tune AINicowar. There is allot of them.
 	///@{
 
