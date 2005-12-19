@@ -874,8 +874,20 @@ namespace Nicowar
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
 			{
-				return 1;
+				return 2;
 			}
+
+			struct clearingRecord
+			{
+				unsigned int x;
+				unsigned int y;
+				unsigned int height;
+				unsigned int width;
+				unsigned int level;
+			};
+
+
+			map<int, clearingRecord> cleared_buildings;
 
 			///Removes the padding around buildings that have been destroyed or upgraded (and their size has changed)
 			bool removeOldPadding();
@@ -1026,13 +1038,16 @@ namespace Nicowar
 	///priority buildings.
 	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
 		{6, 3, 4, 6, 6, 6, 6, 0, 0, 0, 0, 0};
-
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
 		{1, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 
 	//These constants are for GeneralsDefense
 	const unsigned int DEFENSE_ZONE_SIZE_INCREASE=2;
+
+	//These constants are for BuildingClearer
+	const unsigned int CLEARING_AREA_BUILDING_PADDING=1;
+
 
 	///This constant turns on debugging output
 	const bool AINicowar_DEBUG = true;
