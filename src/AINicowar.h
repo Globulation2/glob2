@@ -378,7 +378,7 @@ namespace Nicowar
 
 			struct defenseRecord
 			{
-				Building* flag;
+				unsigned int flag;
 				unsigned int flagx;
 				unsigned int flagy;
 				unsigned int zonex;
@@ -386,6 +386,7 @@ namespace Nicowar
 				unsigned int width;
 				unsigned int height;
 				unsigned int assigned;
+				unsigned int building;
 			};
 
 			std::vector<defenseRecord> defending_zones;
@@ -473,7 +474,7 @@ namespace Nicowar
 				unsigned int target;
 				unsigned int target_x;
 				unsigned int target_y;
-				Building* flag;
+				unsigned int flag;
 				unsigned int flagx;
 				unsigned int flagy;
 				unsigned int zonex;
@@ -963,10 +964,6 @@ namespace Nicowar
 
 	//These constants are for the defense system.
 	const unsigned int DEFENSE_ZONE_BUILDING_PADDING=2;
-	const unsigned int DEFENSE_ZONE_WIDTH=8;
-	const unsigned int DEFENSE_ZONE_HEIGHT=8;
-	const int DEFENSE_ZONE_HORIZONTAL_OVERLAP=0;
-	const int DEFENSE_ZONE_VERTICAL_OVERLAP=0;
 	const unsigned int BASE_DEFENSE_WARRIORS=10;
 
 	//These constants are for the attack system.
@@ -985,9 +982,11 @@ namespace Nicowar
 	};
 	const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
 	const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
-	const unsigned int ATTACK_WARRIOR_MINIMUM=8;
+	const unsigned int ATTACK_WARRIOR_MINIMUM=4;
+	///As opposed to the above variable, this is the minimum number of units it needs to start a new attack, rather than the minimum it will send.
+	const unsigned int MINIMUM_TO_ATTACK=6;
 	const unsigned int MINIMUM_BARRACKS_LEVEL=0;
-	const unsigned int MAX_ATTACKS_AT_ONCE=2;
+	const unsigned int MAX_ATTACKS_AT_ONCE=4;
 	const unsigned int WARRIOR_FACTOR=4;
 	const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*WARRIOR_FACTOR);
 
@@ -1112,6 +1111,17 @@ namespace Nicowar
 	bool buildingStillExists(Game* team, Building* b);
 	///Returns true if the given building hasn't been destroyed
 	bool buildingStillExists(Game* game, unsigned int gid);
+
+	///Implements a selection sort algorithm, which is usefull because it enables predicate sorting, or weighted random sorting etc based
+	///on the predicate. the iter type is any forward iterator, and predicate is a functor that takes in two iter::value_type's and returns
+	///true if the first should precede the second.
+	template <typename iter, typename predicate> void selection_sort(iter b,  iter e, predicate p)
+	{
+		for( ; b != e; ++b )
+		{
+			iter_swap( b, p(*b, *e) );
+		}
+	}
 
 }
 #endif
