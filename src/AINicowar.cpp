@@ -75,7 +75,7 @@ void AINicowar::init(Player *player)
 	new ExplorationManager(*this);
 	new InnManager(*this);
 	new TowerController(*this);
-//	new BuildingClearer(*this);
+	new BuildingClearer(*this);
 
 	this->player=player;
 	this->team=player->team;
@@ -881,15 +881,20 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 bool SimpleBuildingDefense::findDefense()
 {
 	GridPollingSystem gps(ai);
-	for(unsigned int i=0; i<1024; ++i)
+	for(map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end(); ++i)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b)
 		{
 			if(building_health.find(b->gid) != building_health.end())
 			{
 				if(b->hp < static_cast<int>(building_health[b->gid]))
-				{
+				{	
+					defenseRecord dr;
+					dr.flag=NOGBID;
+					dr.flagx=b->posX+(b->type->width/2);
+					dr.flagy=b->posY+(b->type->height/2);
+
 					bool found=false;
 					for(vector<defenseRecord>::iterator j = defending_zones.begin(); j != defending_zones.end(); ++j)
 					{
@@ -903,10 +908,6 @@ bool SimpleBuildingDefense::findDefense()
 					{
 						continue;
 					}
-					defenseRecord dr;
-					dr.flag=NOGBID;
-					dr.flagx=b->posX+(b->type->width/2);
-					dr.flagy=b->posY+(b->type->height/2);
 					dr.zonex=b->posX-DEFENSE_ZONE_BUILDING_PADDING;
 					dr.zoney=b->posY-DEFENSE_ZONE_BUILDING_PADDING;
 					dr.width=b->type->width+DEFENSE_ZONE_BUILDING_PADDING*2;
@@ -916,10 +917,14 @@ bool SimpleBuildingDefense::findDefense()
 					defending_zones.push_back(dr);
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 					if(AINicowar_DEBUG)
-						std::cout<<"AINicowar: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking "<<b->posX<<","<<b->posY<<"."<<endl;
+						std::cout<<"AINicowar: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<IntBuildingType::reverseConversionMap[b->type->shortTypeNum]<<" at "<<b->posX<<","<<b->posY<<"."<<endl;
 					ai.orders.push(new OrderCreate(ai.team->teamNumber, dr.flagx, dr.flagy, typeNum));
 				}
 			}
+		}
+		else
+		{
+			building_health.erase(i);
 		}
 	}
 
@@ -928,7 +933,12 @@ bool SimpleBuildingDefense::findDefense()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			building_health[b->gid]=std::min(b->type->hpMax, b->hp);
+			if(b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
+				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
+				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG)
+			{
+				building_health[b->gid]=std::min(b->type->hpMax, b->hp);
+			}
 		}
 	}
 	return false;
@@ -1657,9 +1667,22 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 
 	vector<GridPollingSystem::zone> zones = gps.getBestZones(split);
 
+	upgradeData size=findMaxSize(building_type, 0);
+
 	//Iterate through the zones
 	for(std::vector<GridPollingSystem::zone>::iterator i = zones.begin(); i!=zones.end(); ++i)
 	{
+		//Check if this zone is in the cache already, and if it is, and the building where finding is larger than the one recorded
+		//in the cache, skip this zone.
+		if(no_build_cache.find(*i)!=no_build_cache.end())
+		{
+			noBuildRecord nbr=no_build_cache[*i];
+			if(size.width>=nbr.min_width && size.height>=nbr.min_height)
+			{
+				continue;
+			}
+		}
+
 		//Pregenerate some common numbers
 		unsigned int full_width=BUILD_AREA_WIDTH+2*BUILD_AREA_EXTENTION_WIDTH;
 		unsigned int full_height=BUILD_AREA_HEIGHT+2*BUILD_AREA_EXTENTION_HEIGHT;
@@ -1684,6 +1707,9 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 			unsigned int fx=i->x + x - BUILD_AREA_EXTENTION_WIDTH;
 			for(unsigned int y=0; y<full_height; ++y)
 			{
+				if(imap[x][y]==1)
+					continue;
+
 				unsigned int fy=i->y + y - BUILD_AREA_EXTENTION_HEIGHT;
 				//Check off hidden or occupied squares
 				if(!ai.map->isHardSpaceForBuilding(fx, fy) || !ai.map->isMapDiscovered(fx, fy, ai.team->me))
@@ -1693,11 +1719,11 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 
 				//If we find a building here (or a building that is in the list of buildings to be constructed)
 				bool found_building=false;
-				upgradeData size;
+				upgradeData bsize;
 				if(ai.map->getBuilding(fx, fy)!=NOGBID)
 				{
 					Building* b=getBuildingFromGid(ai.game, ai.map->getBuilding(fx, fy));
-					size=findMaxSize(b->type->shortTypeNum, b->type->level);
+					bsize=findMaxSize(b->type->shortTypeNum, b->type->level);
 					found_building=true;
 				}
 
@@ -1706,23 +1732,24 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 					if(i->x == fx && i->y == fy)
 					{
 						found_building=true;
-						size=findMaxSize(i->building_type, 0);
+						bsize=findMaxSize(i->building_type, 0);
+						break;
 					}
 				}
 				//Then mark all the squares this building occupies in its largest upgrade with an extra padding
 				if(found_building)
 				{
 
-					unsigned int startx=x-size.horizontal_offset-BUILDING_PADDING;
+					unsigned int startx=x-bsize.horizontal_offset-BUILDING_PADDING;
 					if(startx<0)
 						startx=0;
-					unsigned int starty=y-size.vertical_offset-BUILDING_PADDING;
+					unsigned int starty=y-bsize.vertical_offset-BUILDING_PADDING;
 					if(starty<0)
 						starty=0;
-					unsigned int endx=startx+size.width+BUILDING_PADDING*2;
+					unsigned int endx=startx+bsize.width+BUILDING_PADDING*2;
 					if(endx>=full_width)
 						endx=full_width;
-					unsigned int endy=starty+size.height+BUILDING_PADDING*2;
+					unsigned int endy=starty+bsize.height+BUILDING_PADDING*2;
 					if(endy>=full_height)
 						endy=full_height;
 					for(unsigned int x2=startx; x2<endx; ++x2)
@@ -1736,7 +1763,6 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 			}
 		}
 
-		upgradeData size=findMaxSize(building_type, 0);
 
 		//Change this to output the int maps for debugging, carefull, they are large
 
@@ -1822,8 +1848,32 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 				}
 			}
 		}
+
 		if(max_point.x!=NOPOS && CRAMP_BUILDINGS)
 			return max_point;
+
+		///Add this zone to our cache if we can not build here
+		if(max_point.x==NOPOS || max_point.y==NOPOS)
+		{
+			noBuildRecord nbr;
+			if(no_build_cache.find(*i)!=no_build_cache.end())
+			{
+				nbr=no_build_cache[*i];
+				if(size.width<=nbr.min_width && size.height<=nbr.min_height)
+				{
+					nbr.min_width=std::min(nbr.min_width, size.width);
+					nbr.min_height=std::min(nbr.min_height, size.height);
+				}
+			}
+			else
+			{
+				nbr.min_width=size.width;
+				nbr.min_height=size.height;
+				nbr.turns=0;
+			}
+			no_build_cache[*i]=nbr;
+		}
+
 	}
 	point p;
 	p.x=NOPOS;
@@ -1836,6 +1886,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 
 bool DistributedNewConstructionManager::constructBuildings()
 {
+	updateNoBuildCache();
 	unsigned total_free_workers=0;
 	for(int i=0; i<NB_UNIT_LEVELS; ++i)
 	{
@@ -2017,6 +2068,19 @@ bool DistributedNewConstructionManager::calculateBuildings()
 			num_buildings_wanted[i]=0;
 	}
 	return false;
+}
+
+
+
+
+void DistributedNewConstructionManager::updateNoBuildCache()
+{
+	for(std::map<GridPollingSystem::zone, noBuildRecord>::iterator i=no_build_cache.begin(); i!=no_build_cache.end(); ++i)
+	{
+		i->second.turns++;
+		if(i->second.turns > NO_BUILD_CACHE_TIMEOUT)
+			no_build_cache.erase(i);
+	}
 }
 
 
