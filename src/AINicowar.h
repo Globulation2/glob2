@@ -170,6 +170,8 @@ namespace Nicowar
 				unsigned int y;
 				unsigned int width;
 				unsigned int height;
+				bool operator>(const zone& cmp) const { if(x==cmp.x) return y>cmp.y; return x>cmp.x; }
+				bool operator<(const zone& cmp) const { if(x==cmp.x) return y<cmp.y; return x<cmp.x; }
 
 			};
 
@@ -540,6 +542,19 @@ namespace Nicowar
 				unsigned int height;
 			};
 
+			///These are used to keep track of what zones can not be built in. It is stored in a cache,
+			///and erased after a certain number of turns. It helps to lower how much it has to recompute
+			///when there is little to no space left on the map to build anything.
+			struct noBuildRecord
+			{
+				///The number of turns this record has been existant for
+				unsigned int turns;
+				///The smallest width of a building has been found not to fit into this zone
+				unsigned int min_width;
+				///The smallest height of a building has been found not to fit into this zone
+				unsigned int min_height;
+			};
+
 			///Stores information for the creation of a new building.
 			struct newConstructionRecord
 			{
@@ -583,6 +598,12 @@ namespace Nicowar
 			bool calculateBuildings();
 
 			std::map<unsigned int, unsigned int> num_buildings_wanted;
+
+			///The cache that stores all of the no-build records.
+			std::map<GridPollingSystem::zone, noBuildRecord> no_build_cache;
+
+			///This function updates the no build cache, removing expired records.
+			void updateNoBuildCache();
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
@@ -994,8 +1015,8 @@ namespace Nicowar
 
 	const unsigned int BUILD_AREA_WIDTH=8;
 	const unsigned int BUILD_AREA_HEIGHT=8;
-	const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=2;
-	const unsigned int BUILD_AREA_VERTICAL_OVERLAP=2;
+	const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=4;
+	const unsigned int BUILD_AREA_VERTICAL_OVERLAP=4;
 	const unsigned int BUILD_AREA_EXTENTION_WIDTH=8;
 	const unsigned int BUILD_AREA_EXTENTION_HEIGHT=8;
 	const unsigned int BUILDING_PADDING=2;
@@ -1040,6 +1061,9 @@ namespace Nicowar
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
 		{1, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+
+	///The number of turns before a cached no-build zone gets erased
+	const unsigned int NO_BUILD_CACHE_TIMEOUT=5;
 
 	//These constants are for GeneralsDefense
 	const unsigned int DEFENSE_ZONE_SIZE_INCREASE=2;
