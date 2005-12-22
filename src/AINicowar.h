@@ -921,6 +921,28 @@ namespace Nicowar
 			AINicowar& ai;
 	};
 
+	///This module will check if it has a higher happiness level than any opponents, and if it does,
+	///it will open up in view to those opponents, to steal units.
+	class HappinessHandler : public OtherModule
+	{
+		public:
+			HappinessHandler(AINicowar& ai);
+			~HappinessHandler();
+			bool perform(unsigned int time_slice_n);
+			string getName() const;
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream) const;
+			unsigned int numberOfTicks() const
+			{
+				return 1;
+			}
+
+			///This will change the alliances approprietly depending on the average happiness level.
+			bool adjustAlliances();
+
+			///Holds a refernece to the ai so taht the module can work properly.
+			AINicowar& ai;
+	};
 
 	///These constants are what fine tune AINicowar. There is allot of them.
 	///@{
