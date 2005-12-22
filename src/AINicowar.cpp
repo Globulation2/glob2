@@ -1190,9 +1190,9 @@ bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 		case 0:
 			return targetEnemy();
 		case 1:
-			return attack();
-		case 2:
 			return updateAttackFlags();
+		case 2:
+			return attack();
 	}
 	return false;
 }
@@ -1212,6 +1212,7 @@ bool PrioritizedBuildingAttack::load(GAGCore::InputStream *stream, Player *playe
 {
 	stream->readEnterSection("PrioritizedBuildingAttack");
 	stream->readEnterSection("attacks");
+	enemy = ai.game->teams[stream->readUint8()];
 	unsigned int n = stream->readUint32();
 	while(n--)
 	{
@@ -1246,6 +1247,7 @@ void PrioritizedBuildingAttack::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("PrioritizedBuildingAttack");
 	stream->writeEnterSection("attacks");
+	stream->writeUint8(enemy->teamNumber);
 	stream->writeUint32(attacks.size());
 	for(std::vector<attackRecord>::const_iterator i = attacks.begin(); i!=attacks.end(); ++i)
 	{
@@ -2858,8 +2860,6 @@ bool ExplorationManager::exploreWorld(void)
 	vector<GridPollingSystem::zone> best = gps.getBestZones(split);
 	unsigned int size=best.size();
 
-	//	std::cout<<"best.size()="<<best.size()<<endl;
-
 	p.mod_1=GridPollingSystem::MAXIMUM;
 	p.type_1=GridPollingSystem::ENEMY_BUILDINGS;
 	p.mod_2=GridPollingSystem::MAXIMUM;
@@ -3547,7 +3547,8 @@ bool BuildingClearer::removeOldPadding()
 					}
 				}
 			}
-			ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_DEL, &acc));
+			if(acc.getApplicationCount()>0)
+				ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_DEL, &acc));
 			cleared_buildings.erase(i);
 		}
 	}
@@ -3600,7 +3601,8 @@ bool BuildingClearer::updateClearingAreas()
 				}
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<endl;
-				ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_ADD, &acc));
+				if(acc.getApplicationCount()>0)
+					ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_ADD, &acc));
 				cleared_buildings[b->gid]=cr;
 			}
 		}
