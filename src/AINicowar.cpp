@@ -76,6 +76,7 @@ void AINicowar::init(Player *player)
 	new InnManager(*this);
 	new TowerController(*this);
 	new BuildingClearer(*this);
+	new HappinessHandler(*this);
 
 	this->player=player;
 	this->team=player->team;
@@ -2353,7 +2354,6 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 
 		else if (is_repair && available_repair==0)
 		{
-			std::cout<<b->constructionResultState<<endl;
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
 			ai.orders.push(new OrderCancelConstruction(b->gid));
@@ -3500,6 +3500,7 @@ bool BuildingClearer::load(GAGCore::InputStream *stream, Player *player, Sint32 
 void BuildingClearer::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("BuildingClearer");
+	stream->writeUint32(cleared_buildings.size());
 	for(map<int, clearingRecord>::const_iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
 	{
 		stream->writeUint32(i->first);
@@ -3520,7 +3521,7 @@ bool BuildingClearer::removeOldPadding()
 	for(map<int, clearingRecord>::iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b==NULL || b->type->level != static_cast<int>(i->second.level))
+		if(b==NULL || b->type->level != static_cast<int>(i->second.level) || i->second.x!=b->posX-CLEARING_AREA_BUILDING_PADDING+1 || i->second.y!=b->posY-CLEARING_AREA_BUILDING_PADDING+1)
 		{
 
 			unsigned int x_bound=i->second.x+i->second.width+2;
@@ -3605,3 +3606,86 @@ bool BuildingClearer::updateClearingAreas()
 	}
 	return false;
 }
+
+
+
+
+HappinessHandler::HappinessHandler(AINicowar& ai) : ai(ai)
+{
+	ai.addOtherModule(this);
+}
+
+HappinessHandler::~HappinessHandler()
+{
+
+}
+
+bool HappinessHandler::perform(unsigned int time_slice_n)
+{
+	switch(time_slice_n)
+	{
+		case 0:
+			return adjustAlliances();
+	}
+
+	return false;
+}
+
+string HappinessHandler::getName() const
+{
+	return "HappinessHandler";
+}
+
+bool HappinessHandler::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("HappinessHandler");
+	stream->readLeaveSection();
+	return true;
+}
+
+void HappinessHandler::save(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("HappinessHandler");
+	stream->writeLeaveSection();
+}
+
+bool HappinessHandler::adjustAlliances()
+{
+	Uint32 food_mask=ai.team->me;
+	unsigned int total_happiness=0;
+	for(unsigned int i=0; i<HAPPYNESS_COUNT+1; ++i)
+	{
+		total_happiness+=ai.team->stats.getLatestStat()->happiness[i]*i;
+	}
+
+
+	for(unsigned int i=0;  i<32; ++i)
+	{
+		Team* t=ai.game->teams[i];
+		if(t)
+		{
+			if(t->me & ai.team->enemies)
+			{
+				unsigned int enemy_happiness=0;
+				for(unsigned int i=0; i<HAPPYNESS_COUNT+1; ++i)
+				{
+					enemy_happiness+=t->stats.getLatestStat()->happiness[i]*i;
+				}
+				if(total_happiness>enemy_happiness)
+				{
+					food_mask=food_mask|t->me;
+				}
+			}
+		}
+	}
+
+	if(food_mask!=ai.team->sharedVisionFood)
+	{
+		if(AINicowar_DEBUG)
+			std::cout<<"AINicowar: adjustAlliances: Adjusting food vision alliance."<<endl;
+		ai.orders.push(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->enemies, ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther));
+	}
+
+	return false;
+}
+
