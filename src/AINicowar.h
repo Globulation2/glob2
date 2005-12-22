@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "IntBuildingType.h"
 #include <map>
 #include "Utilities.h"
+#include <set>
 
 using namespace std;
 
@@ -944,6 +945,68 @@ namespace Nicowar
 			AINicowar& ai;
 	};
 
+	///This module will put restricted zones on resources in order to maintain the resources.
+	///This is known as "farming", and is explained on the wiki.
+	class Farmer : public OtherModule
+	{
+		public:
+			Farmer(AINicowar& ai);
+			~Farmer();
+			bool perform(unsigned int time_slice_n);
+			string getName() const;
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream) const;
+			unsigned int numberOfTicks() const
+			{
+				return 1;
+			}
+
+			enum FarmingMethod
+			{
+				CheckerBoard,
+				CrossSpacing,
+				Row4,
+				Column4,
+			};
+
+			///This structure holds a point, with including comparison operators so that it can have
+			///O(log2(n)) lookup times in a container such as set or map
+			struct point
+			{
+				unsigned int x;
+				unsigned int y;
+
+				point(unsigned int ax, unsigned int ay) : x(ax), y(ay) {}
+				point() : x(0), y(0) {}
+
+				bool operator>(const point& cmp) const
+				{
+					if(x==cmp.x)
+						return y>cmp.y;
+					return x>cmp.x;
+				}
+
+				bool operator<(const point& cmp) const
+				{
+					if(x==cmp.x)
+						return y<cmp.y;
+					return x<cmp.x;
+				}
+			};
+
+			set<point> resources;
+
+			///This function goess through every square on the map, if it is a resource, not hidden,
+			///on an even numbered x or a even numbered y, not both and not neither, and it doesn't
+			///already have a Forbidden area on it, *and* it doesn't have clearing area on it, then
+			///it will place forbidden area on it. It will remove forbidden area if there is forbidden
+			///area on that square, but no resource or if clearing area has been put over it
+			bool updateFarm();
+
+			///Holds a refernece to the ai so taht the module can work properly.
+			AINicowar& ai;
+	};
+
 	///These constants are what fine tune AINicowar. There is allot of them.
 	///@{
 
@@ -1083,7 +1146,6 @@ namespace Nicowar
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
 		{1, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
-
 	///The number of turns before a cached no-build zone gets erased
 	const unsigned int NO_BUILD_CACHE_TIMEOUT=5;
 
@@ -1093,6 +1155,8 @@ namespace Nicowar
 	//These constants are for BuildingClearer
 	const unsigned int CLEARING_AREA_BUILDING_PADDING=1;
 
+	//These are for farmer
+	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
 
 	///This constant turns on debugging output
 	const bool AINicowar_DEBUG = true;
@@ -1165,7 +1229,7 @@ namespace Nicowar
 	{
 		for( ; b != e; ++b )
 		{
-			iter_swap( b, p(*b, *e) );
+			iter_swap( b, min_element(b, e, p) );
 		}
 	}
 

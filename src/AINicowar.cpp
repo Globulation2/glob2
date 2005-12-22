@@ -77,6 +77,7 @@ void AINicowar::init(Player *player)
 	new TowerController(*this);
 	new BuildingClearer(*this);
 	new HappinessHandler(*this);
+	new Farmer(*this);
 
 	this->player=player;
 	this->team=player->team;
@@ -885,12 +886,14 @@ bool SimpleBuildingDefense::findDefense()
 	for(map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end(); ++i)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b)
+		if(b && b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
+				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
+				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG)
 		{
 			if(building_health.find(b->gid) != building_health.end())
 			{
 				if(b->hp < static_cast<int>(building_health[b->gid]))
-				{	
+				{
 					defenseRecord dr;
 					dr.flag=NOGBID;
 					dr.flagx=b->posX+(b->type->width/2);
@@ -1491,7 +1494,6 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 
 		available_units+=getBuildingFromGid(ai.game, j->flag)->unitsWorking.size();
 
-
 		unsigned int score = gps.pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS);
 		unsigned int new_assigned=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(score, ATTACK_WARRIOR_MINIMUM));
 
@@ -1763,7 +1765,6 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 				}
 			}
 		}
-
 
 		//Change this to output the int maps for debugging, carefull, they are large
 
@@ -2319,7 +2320,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		Building *b=i->building;
 		if(!buildingStillExists(ai.game, b))
 			continue;
-		if(b->constructionResultState==Building::NO_CONSTRUCTION)
+		if(b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR)
 			continue;
 
 		unsigned int assigned=i->assigned;
@@ -3521,22 +3522,22 @@ bool BuildingClearer::removeOldPadding()
 	for(map<int, clearingRecord>::iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
-		if(b==NULL || b->type->level != static_cast<int>(i->second.level) || i->second.x!=b->posX-CLEARING_AREA_BUILDING_PADDING+1 || i->second.y!=b->posY-CLEARING_AREA_BUILDING_PADDING+1)
+		if(b==NULL || b->type->level != static_cast<int>(i->second.level) || i->second.x!=b->posX-CLEARING_AREA_BUILDING_PADDING || i->second.y!=b->posY-CLEARING_AREA_BUILDING_PADDING)
 		{
 
-			unsigned int x_bound=i->second.x+i->second.width+2;
-			unsigned int y_bound=i->second.y+i->second.height+2;
+			unsigned int x_bound=i->second.x+i->second.width;
+			unsigned int y_bound=i->second.y+i->second.height;
 			if(static_cast<int>(x_bound) > ai.map->getW())
 				x_bound-=ai.map->getW();
 			if(static_cast<int>(y_bound) > ai.map->getH())
 				y_bound-=ai.map->getH();
 
 			BrushAccumulator acc;
-			for(unsigned int x=i->second.x-1; x!=x_bound; ++x)
+			for(unsigned int x=i->second.x; x!=x_bound; ++x)
 			{
 				if(static_cast<int>(x)==ai.map->getW())
 					x=0;
-				for(unsigned int y=i->second.y-1; y!=y_bound; ++y)
+				for(unsigned int y=i->second.y; y!=y_bound; ++y)
 				{
 					if(static_cast<int>(y)==ai.map->getH())
 						y=0;
@@ -3563,16 +3564,16 @@ bool BuildingClearer::updateClearingAreas()
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(	b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
+			if( b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
 				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
 				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG &&
-				 cleared_buildings.find(b->gid) == cleared_buildings.end())
+				cleared_buildings.find(b->gid) == cleared_buildings.end())
 			{
 				clearingRecord cr;
-				cr.x=b->posX-CLEARING_AREA_BUILDING_PADDING+1;
-				cr.y=b->posY-CLEARING_AREA_BUILDING_PADDING+1;
-				cr.width=b->type->width+CLEARING_AREA_BUILDING_PADDING*2-2;
-				cr.height=b->type->height+CLEARING_AREA_BUILDING_PADDING*2-2;
+				cr.x=b->posX-CLEARING_AREA_BUILDING_PADDING;
+				cr.y=b->posY-CLEARING_AREA_BUILDING_PADDING;
+				cr.width=b->type->width+CLEARING_AREA_BUILDING_PADDING*2;
+				cr.height=b->type->height+CLEARING_AREA_BUILDING_PADDING*2;
 				cr.level=b->type->level;
 
 				unsigned int x_bound=cr.x+cr.width;
@@ -3593,7 +3594,7 @@ bool BuildingClearer::updateClearingAreas()
 							y=0;
 						if(!ai.map->isClearAreaLocal(x,y))
 						{
-							acc.applyBrush(ai.map, BrushApplication(x,y,6));
+							acc.applyBrush(ai.map, BrushApplication(x, y, 0));
 						}
 					}
 				}
@@ -3615,10 +3616,16 @@ HappinessHandler::HappinessHandler(AINicowar& ai) : ai(ai)
 	ai.addOtherModule(this);
 }
 
+
+
+
 HappinessHandler::~HappinessHandler()
 {
 
 }
+
+
+
 
 bool HappinessHandler::perform(unsigned int time_slice_n)
 {
@@ -3631,10 +3638,16 @@ bool HappinessHandler::perform(unsigned int time_slice_n)
 	return false;
 }
 
+
+
+
 string HappinessHandler::getName() const
 {
 	return "HappinessHandler";
 }
+
+
+
 
 bool HappinessHandler::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -3643,11 +3656,17 @@ bool HappinessHandler::load(GAGCore::InputStream *stream, Player *player, Sint32
 	return true;
 }
 
+
+
+
 void HappinessHandler::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("HappinessHandler");
 	stream->writeLeaveSection();
 }
+
+
+
 
 bool HappinessHandler::adjustAlliances()
 {
@@ -3657,7 +3676,6 @@ bool HappinessHandler::adjustAlliances()
 	{
 		total_happiness+=ai.team->stats.getLatestStat()->happiness[i]*i;
 	}
-
 
 	for(unsigned int i=0;  i<32; ++i)
 	{
@@ -3689,3 +3707,117 @@ bool HappinessHandler::adjustAlliances()
 	return false;
 }
 
+
+
+
+Farmer::Farmer(AINicowar& ai) : ai(ai)
+{
+	ai.addOtherModule(this);
+}
+
+
+
+
+Farmer::~Farmer()
+{
+
+}
+
+
+
+
+bool Farmer::perform(unsigned int time_slice_n)
+{
+	switch(time_slice_n)
+	{
+		case 0:
+			return updateFarm();
+
+	}
+	return false;
+}
+
+
+
+
+string Farmer::getName() const
+{
+	return "Farmer";
+}
+
+
+
+
+bool Farmer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Farmer");
+	unsigned int n = stream->readUint32();
+	while(n--)
+	{
+		point p;
+		p.x=stream->readUint16();
+		p.y=stream->readUint16();
+		resources.insert(p);
+	}
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+
+void Farmer::save(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("Farmer");
+	stream->writeUint32(resources.size());
+	for(set<point>::const_iterator i=resources.begin(); i!=resources.end(); ++i)
+	{
+		stream->writeUint16(i->x);
+		stream->writeUint16(i->y);
+	}
+	stream->writeLeaveSection();
+}
+
+
+
+
+bool Farmer::updateFarm()
+{
+	BrushAccumulator del_acc;
+	BrushAccumulator add_acc;
+	for(unsigned int x=0; static_cast<int>(x)<ai.map->getW(); ++x)
+	{
+		for(unsigned int y=0; static_cast<int>(y)<ai.map->getH(); ++y)
+		{
+
+			if(	(x%2!=y%2) && FARMING_METHOD==CheckerBoard ||
+				(x%2==1 && y%2==1) && FARMING_METHOD==CrossSpacing ||
+				(x%6<4 && y%3==0) && FARMING_METHOD==Row4 ||
+				(x%3==0 && y%6<4) && FARMING_METHOD==Column4)
+			{
+				if((!ai.map->isRessource(x, y, WOOD) && !ai.map->isRessource(x, y, CORN)) || ai.map->isClearAreaLocal(x, y))
+				{
+					if(resources.find(point(x, y))!=resources.end())
+					{					
+						del_acc.applyBrush(ai.map, BrushApplication(x, y, 0));
+						resources.erase(resources.find(point(x, y)));
+					}
+				}
+				else
+				{
+					if(resources.find(point(x, y))==resources.end() && ai.map->isMapDiscovered(x, y, ai.team->me))
+					{
+						add_acc.applyBrush(ai.map, BrushApplication(x, y, 0));
+						resources.insert(point(x, y));
+					}
+				}
+			}
+		}
+	}
+
+	if(del_acc.getApplicationCount()>0)
+		ai.orders.push(new OrderAlterateForbidden(ai.team->teamNumber, BrushTool::MODE_DEL, &del_acc));
+	if(add_acc.getApplicationCount()>0)
+		ai.orders.push(new OrderAlterateForbidden(ai.team->teamNumber, BrushTool::MODE_ADD, &add_acc));
+	return false;
+}
