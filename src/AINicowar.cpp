@@ -236,7 +236,8 @@ Order *AINicowar::getOrder(void)
 		}
 		iteration+=1;
 		active_module=modules.begin();
-		std::cout<<"AINicowar: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<endl;
+		if(AINicowar_DEBUG)
+			std::cout<<"AINicowar: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<endl;
 	}
 
 	//The +1 here is because the program would end one tick late, so the tick #'s that
@@ -483,28 +484,6 @@ GridPollingSystem::GridPollingSystem(AINicowar& ai)
 
 unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigned int width, unsigned int height, pollModifier mod, pollType poll_type)
 {
-	if (poll_type == NONE)
-		return 0;
-
-	//	if(poll_type == FRIENDLY_BUILDINGS)
-	//		std::cout<<"findEnemyFlags: Starting poll."<<endl;
-
-	if (poll_type == CENTER_DISTANCE)
-	{
-		unsigned int score=0;
-		/*
-				if(mod==MAXIMUM)
-					score=intdistance((x+width/2), center_x) + intdistance((y+height/2), center_y);
-				if(mod==MINIMUM)
-					score=map->getW()/2-intdistance((x+width/2), center_x) + map->getH()/2-intdistance((y+height/2), center_y);
-		*/
-		if(mod==MAXIMUM)
-			score=intdistance((x+width), center_x) + intdistance((y+height), center_y);
-		if(mod==MINIMUM)
-			score=(map->getW()-intdistance((x+width), center_x)) + (map->getH()-intdistance((y+height), center_y));
-		return score;
-	}
-
 	unsigned int bound_h=x+width;
 	if(static_cast<int>(bound_h)>map->getW())
 		bound_h-=map->getW();
@@ -515,35 +494,56 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 
 	unsigned int orig_y=y;
 	unsigned int score=0;
-	for(; x!=bound_h; ++x)
+
+	//This is an optmization, as putting the switch inside the for loop causes it to do log2n checks
+	//For every single square, which has become to cumbersome.
+	Unit* u=NULL;
+	Building* b=NULL;
+	switch (poll_type)
 	{
-		if(static_cast<int>(x) >= map->getW())
-			x=0;
 
-		y=orig_y;
-		for(; y!=bound_y; ++y)
-		{
-			if(static_cast<int>(y) >= map->getH())
-				y=0;
-
-			Unit* u=NULL;
-			Building* b=NULL;
-			switch (poll_type)
+		case HIDDEN_SQUARES:
+			for(; x!=bound_h; ++x)
 			{
-
-				case HIDDEN_SQUARES:
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					if(!map->isMapDiscovered(x, y, team->me))
 					{
 						score++;
 					}
-					break;
-				case VISIBLE_SQUARES:
+				}
+			}
+
+			break;
+		case VISIBLE_SQUARES:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					if(map->isMapDiscovered(x, y, team->me))
 					{
 						score++;
 					}
-					break;
-				case ENEMY_BUILDINGS:
+				}
+			}
+			break;
+		case ENEMY_BUILDINGS:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					b = getBuildingFromGid(game, map->getBuilding(x, y));
 					if (b)
 					{
@@ -552,8 +552,18 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 							score++;
 						}
 					}
-					break;
-				case FRIENDLY_BUILDINGS:
+				}
+			}
+			break;
+		case FRIENDLY_BUILDINGS:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					b = getBuildingFromGid(game, map->getBuilding(x, y));
 					if (b)
 					{
@@ -562,8 +572,18 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 							score++;
 						}
 					}
-					break;
-				case ENEMY_UNITS:
+				}
+			}
+			break;
+		case ENEMY_UNITS:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					u = getUnitFromGid(game, map->getGroundUnit(x, y));
 					if (u)
 					{
@@ -572,8 +592,18 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 							score++;
 						}
 					}
-					break;
-				case ENEMY_WARRIORS:
+				}
+			}
+			break;
+		case ENEMY_WARRIORS:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					u = getUnitFromGid(game, map->getGroundUnit(x, y));
 					if (u)
 					{
@@ -582,28 +612,62 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 							score++;
 						}
 					}
-					break;
-				case POLL_CORN:
+				}
+			}
+			break;
+		case POLL_CORN:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					if (map->isRessourceTakeable(x, y, CORN))
 						score++;
-					break;
-				case POLL_TREES:
+				}
+			}
+		case POLL_TREES:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					if (map->isRessourceTakeable(x, y, WOOD))
 						score++;
-					break;
-				case POLL_STONE:
+				}
+			}
+			break;
+		case POLL_STONE:
+			for(; x!=bound_h; ++x)
+			{
+				if(static_cast<int>(x) >= map->getW())
+					x=0;
+				for(y=orig_y; y!=bound_y; ++y)
+				{
+					if(static_cast<int>(y) >= map->getH())
+						y=0;
 					if (map->isRessourceTakeable(x, y, STONE))
 						score++;
-					break;
-				case CENTER_DISTANCE:
-					assert(false);
-					break;
-				case NONE:
-					assert(false);
-					break;
+				}
 			}
-		}
+			break;
+		case CENTER_DISTANCE:
+			if(mod==MAXIMUM)
+				score=intdistance((x+width), center_x) + intdistance((y+height), center_y);
+			if(mod==MINIMUM)
+				score=(map->getW()-intdistance((x+width), center_x)) + (map->getH()-intdistance((y+height), center_y));
+			return score;
+			break;
+		case NONE:
+			return 0;
+			break;
 	}
+
 	switch (mod)
 	{
 		case MAXIMUM:
@@ -613,6 +677,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 			return width*height-score;
 			break;
 	}
+
 	return 0;
 }
 
@@ -887,8 +952,8 @@ bool SimpleBuildingDefense::findDefense()
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b && b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
-				b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
-				b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG)
+			b->type->shortTypeNum!=IntBuildingType::WAR_FLAG &&
+			b->type->shortTypeNum!=IntBuildingType::CLEARING_FLAG)
 		{
 			if(building_health.find(b->gid) != building_health.end())
 			{
@@ -1193,6 +1258,8 @@ bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 			return updateAttackFlags();
 		case 2:
 			return attack();
+		case 3:
+			return updateAttackFlags();
 	}
 	return false;
 }
@@ -1279,6 +1346,20 @@ bool PrioritizedBuildingAttack::targetEnemy()
 {
 	if(enemy==NULL || !enemy->isAlive)
 	{
+		for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
+		{
+			if(j->flag!=NOGBID)
+			{
+				ai.orders.push(new OrderDelete(j->flag));
+				j=attacks.erase(j);
+			}
+			else
+			{
+				++j;
+			}
+		}
+
+		vector<Team*> targets;
 		for(int i=0; i<32; ++i)
 		{
 			Team* t = ai.game->teams[i];
@@ -1286,12 +1367,16 @@ bool PrioritizedBuildingAttack::targetEnemy()
 			{
 				if((t->me & ai.team->enemies) && t->isAlive)
 				{
-					if(AINicowar_DEBUG)
-						std::cout<<"AINicowar: targetEnemy: A new enemy has been chosen."<<endl;
-					enemy=t;
-					return false;
+					targets.push_back(t);
 				}
 			}
+		}
+
+		if(targets.size()>0)
+		{
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: targetEnemy: A new enemy has been chosen."<<endl;
+			enemy=targets[syncRand()%targets.size()];
 		}
 	}
 	return false;
@@ -1303,6 +1388,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 bool PrioritizedBuildingAttack::attack()
 {
 	GridPollingSystem gps(ai);
+
 	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
 	//ATTACK_PRIORITY variable.
 	vector<vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
@@ -1311,10 +1397,19 @@ bool PrioritizedBuildingAttack::attack()
 		Building* b = enemy->myBuildings[i];
 		if(b)
 		{
-			unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+IntBuildingType::NB_BUILDING-3, b->type->shortTypeNum)-ATTACK_PRIORITY;
-			buildings[pos].push_back(b);
+			if(b->constructionResultState==Building::NO_CONSTRUCTION){
+				unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+IntBuildingType::NB_BUILDING-3, b->type->shortTypeNum)-ATTACK_PRIORITY;
+				buildings[pos].push_back(b);
+			}
 		}
 	}
+
+	//And now we shuffle then for added randomness
+	for(unsigned int i=0; i<buildings.size(); ++i)
+	{
+		random_shuffle(buildings[i].begin(), buildings[i].end(), syncRandAdapter);
+	}
+
 
 	//The following gets the highest barracks level the player has
 	unsigned int max_barracks_level=0;
@@ -1336,34 +1431,39 @@ bool PrioritizedBuildingAttack::attack()
 	if(max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0)
 		return false;
 	else
-		ai.getUnitModule()->changeUnits("attack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
+		ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
 
+	//Check if we have enough units of the right level
 	unsigned int available_units = getFreeUnits(ai.team, ATTACK_STRENGTH, max_barracks_level+1);
-
 	if(available_units<MINIMUM_TO_ATTACK)
 		return false;
 
+	//Don't use units that are needed by other flags
 	for(vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
 	{
-		unsigned int needed=0;
-		if(i->flag!=NOGBID)
+		if(i->assigned_level == max_barracks_level)
 		{
-			Building* b = getBuildingFromGid(ai.game, i->flag);
-			needed=i->assigned_units-b->unitsWorking.size();
+			unsigned int needed=0;
+			if(i->flag!=NOGBID)
+			{
+				Building* b = getBuildingFromGid(ai.game, i->flag);
+				needed=i->assigned_units-b->unitsWorking.size();
+			}
+			else
+			{
+				needed=i->assigned_units;
+			};
+			if(available_units > needed)
+				available_units-=needed;
+			else if(available_units <= needed)
+				available_units=0;
 		}
-		else
-		{
-			needed=i->assigned_units;
-		};
-
-		if(i->assigned_level == max_barracks_level && available_units > needed)
-			available_units-=needed;
-		else if(available_units <= needed)
-			available_units=0;
 	}
 
+	//Iterate through the buildings, starting attacks as neccecary, and stopping when
+	//we run out of available units, or we have reached the maximum number of attacks
+	//at once.
 	unsigned int attack_count=attacks.size();
-
 	for(vector<vector<Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
 	{
 		for(vector<Building*>::iterator j = i->begin(); j!=i->end(); ++j)
@@ -1371,6 +1471,7 @@ bool PrioritizedBuildingAttack::attack()
 			Building* b = *j;
 			if(attack_count!=MAX_ATTACKS_AT_ONCE && available_units>=ATTACK_WARRIOR_MINIMUM)
 			{
+				//Make sure where not attacking this building already
 				bool found=false;
 				for(vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
 				{
@@ -1383,9 +1484,7 @@ bool PrioritizedBuildingAttack::attack()
 				if(found)
 					continue;
 
-				if(available_units<ATTACK_WARRIOR_MINIMUM)
-					return false;
-
+				//Ok! Launch an attack
 				attackRecord ar;
 				ar.target=b->gid;
 				ar.target_x=b->posX;
@@ -1404,12 +1503,16 @@ bool PrioritizedBuildingAttack::attack()
 				ar.assigned_units=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(gps.pollArea(ar.unitx, ar.unity, ar.unit_width, ar.unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS), ATTACK_WARRIOR_MINIMUM));
 				ar.assigned_level=max_barracks_level;
 				attacks.push_back(ar);
-				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<endl;
+				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 				ai.orders.push(new OrderCreate(ai.team->teamNumber, ar.flagx, ar.flagy, typeNum));
 				++attack_count;
 				available_units-=ar.assigned_units;
+			}
+			else
+			{
+					return false;
 			}
 		}
 	}
@@ -1422,6 +1525,13 @@ bool PrioritizedBuildingAttack::attack()
 bool PrioritizedBuildingAttack::updateAttackFlags()
 {
 	GridPollingSystem gps(ai);
+
+	//Go through all of the buildings, checking each one to see if we have an
+	//attack record that is not connected to its flag. If the record is missing
+	//its flag, and this building is in the right spot to be the flag that we
+	//are missing, then it must be our flag. Merge it into the records, and
+	//change it to match up with our records in size, assigned units, and
+	//assigned level
 	for(int i=0; i<1024; ++i)
 	{
 		Building* b = ai.team->myBuildings[i];
@@ -1448,27 +1558,29 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		}
 	}
 
+	//Go through the list of records looking for any buildings that where successfully destroyed, erasing the record if neccecary
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
-		Building* b = getBuildingFromGid(ai.game, j->target);
-		//We need the additional location checks because sometimes the player where attacking builds a building, which quickly assumes the same gid
-		//before we detect and remove the flag here. If we destroyed a building, and the ai quickly remakes the same building in the same spot,
-		//we don't stop attacking that spot, there is still a building there.
-		if(b==NULL || b->posX!=static_cast<int>(j->target_x) || b->posY!=static_cast<int>(j->target_y))
+		if(j->flag!=NOGBID)
 		{
-			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<endl;
-			ai.orders.push(new OrderDelete(j->flag));
-			j=attacks.erase(j);
-			continue;
+			//We need the additional location checks because sometimes the player where attacking builds a building,
+			//which quickly assumes the same gid before we detect and remove the flag here. If we destroyed a building,
+			//and the ai quickly remakes the same building in the same spot, we don't stop attacking that spot, there
+			//is still a building there.
+			Building* b = getBuildingFromGid(ai.game, j->target);
+			if((b==NULL || b->posX!=static_cast<int>(j->target_x) || b->posY!=static_cast<int>(j->target_y)))
+			{
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<endl;
+				ai.orders.push(new OrderDelete(j->flag));
+				j=attacks.erase(j);
+				continue;
+			}
 		}
-		else
-		{
-			++j;
-		}
+		++j;
 	}
 
-	//The following gets the highest barracks level the player has
+	//The following gets the highest barracks level the player has. 
 	unsigned int max_barracks_level=0;
 	unsigned int found_barracks=0;
 	for(int i=0; i<1024; ++i)
@@ -1484,44 +1596,49 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		}
 	}
 
+	//Get the number of available units, and go though the record, modifying the number of units assigned to each as
+	//neccessary in order to keep up with the defending soldiers
 	unsigned int available_units = getFreeUnits(ai.team, ATTACK_STRENGTH, max_barracks_level+1);
-
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
 		if(j->flag == NOGBID)
 		{
-			++j;
-			continue;
-		}
+			Building* flag=getBuildingFromGid(ai.game, j->flag);
+			//Add the number of units that are assigned to this flag to the total number of units available
+			available_units+=flag->unitsWorking.size();
+	
+			unsigned int score = gps.pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, GridPollingSystem::MAXIMUM,
+								GridPollingSystem::ENEMY_UNITS);
+			unsigned int new_assigned=std::min(std::min(static_cast<unsigned int>(20), available_units),
+								std::max(score, ATTACK_WARRIOR_MINIMUM));
 
-		available_units+=getBuildingFromGid(ai.game, j->flag)->unitsWorking.size();
+			//If we don't have enough free units to continue the fight, remove the flag
+			if(new_assigned<ATTACK_WARRIOR_MINIMUM)
+			{
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<endl;
+				ai.orders.push(new OrderDelete(j->flag));
+				j=attacks.erase(j);
+				continue;
+			}
 
-		unsigned int score = gps.pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_UNITS);
-		unsigned int new_assigned=std::min(std::min(static_cast<unsigned int>(20), available_units), std::max(score, ATTACK_WARRIOR_MINIMUM));
+			//If the number of units that should be attacking the building has changed,
+			//update the flag.
+			if(new_assigned != j->assigned_units)
+			{
+				if(AINicowar_DEBUG)
+					std::cout<<"AINicowar: updateAttackFlags: Changing the "<<j->flagx<<","<<j->flagy<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<endl;
+				j->assigned_units=new_assigned;
+				ai.orders.push(new OrderModifyBuilding(j->flag, new_assigned));
+				available_units-=new_assigned;
+			}
 
-		if(new_assigned<ATTACK_WARRIOR_MINIMUM)
-		{
-			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<endl;
-			ai.orders.push(new OrderDelete(j->flag));
-			j=attacks.erase(j);
-			continue;
-
-		}
-
-		if(new_assigned != j->assigned_units)
-		{
-			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: updateAttackFlags: Changing the "<<j->flagx<<","<<j->flagy<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<endl;
-			j->assigned_units=new_assigned;
-			ai.orders.push(new OrderModifyBuilding(j->flag, new_assigned));
-			available_units-=new_assigned;
-		}
-
-		if(max_barracks_level != j->assigned_level)
-		{
-			j->assigned_level=max_barracks_level;
-			ai.orders.push(new OrderModifyMinLevelToFlag(j->flag, max_barracks_level));
+			//If the maximum barracks level has changed, then update the flag
+			if(max_barracks_level != j->assigned_level)
+			{
+				j->assigned_level=max_barracks_level;
+				ai.orders.push(new OrderModifyMinLevelToFlag(j->flag, max_barracks_level));
+			}
 		}
 		++j;
 	}
@@ -1770,7 +1887,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 
 		//Change this to output the int maps for debugging, carefull, they are large
 
-		bool output_zones=false;
+		const bool output_zones=false;
 		if(output_zones)
 		{
 			std::cout<<"Zone "<<i->x<<","<<i->y<<endl;
@@ -1891,6 +2008,13 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 bool DistributedNewConstructionManager::constructBuildings()
 {
 	updateNoBuildCache();
+
+	//Enabling this will turn on verbose debugging mode for this function,
+	//it will tell you various things like why its not cosntructing buildings
+	//for various reasons.
+	const bool local_debug=false;
+
+	//Get the total number of free workers, since a worker of any level can construct a new building
 	unsigned total_free_workers=0;
 	for(int i=0; i<NB_UNIT_LEVELS; ++i)
 	{
@@ -1899,25 +2023,33 @@ bool DistributedNewConstructionManager::constructBuildings()
 
 	//Counts out the number of buildings allready existing, including ones under construction
 	unsigned int counts[IntBuildingType::NB_BUILDING];
+
 	//The totals of the number of builinds under construction only
 	unsigned int under_construction_counts[IntBuildingType::NB_BUILDING];
+
 	//The total amount of construction
 	unsigned int total_construction=new_buildings.size();
+
 	//Holds the order in which it should decide to build buildings.
 	std::vector<typePercent> construction_priorities;
 
 	if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 	{
-		//		std::cout<<"Fail 1, too much construction."<<endl;
+		if(local_debug)
+			std::cout<<"Fail 1, too much construction."<<endl;
 		return false;
 	}
 
+	//Count up the numbers of buildings not under construction on a per-building type basis
 	for(unsigned i = 0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
 		counts[i]=ai.team->stats.getLatestStat()->numberBuildingPerType[i];
 		under_construction_counts[i]=0;
 	}
 
+	//Now count up the number of buildings under construction, as well adding to the number of buildings
+	//not under construction, and taking away any units that are needed for other construction sites
+	//from the total number of free units. Ignore buildings
 	for(std::vector<newConstructionRecord>::iterator i=new_buildings.begin(); i!=new_buildings.end(); ++i)
 	{
 		counts[i->building_type]++;
@@ -1926,10 +2058,12 @@ bool DistributedNewConstructionManager::constructBuildings()
 			total_free_workers-=i->assigned;
 		else
 			total_free_workers=0;
+
 		if(i->building!=NOGBID && getBuildingFromGid(ai.game, i->building)!=NULL)
 			total_free_workers+=getBuildingFromGid(ai.game, i->building)->unitsWorking.size();
 	}
 
+	//Develop a list of percentages used for sorting what buildings this ai should develop first, and sort this list
 	for (unsigned int i = 0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
 		typePercent tp;
@@ -1940,55 +2074,63 @@ bool DistributedNewConstructionManager::constructBuildings()
 			tp.percent=static_cast<unsigned int>(static_cast<float>(counts[i])/static_cast<float>(num_buildings_wanted[i])*100);
 		construction_priorities.push_back(tp);
 	}
-
 	std::sort(construction_priorities.begin(), construction_priorities.end());
 
-	//These numbers are because I don't believe a building size will ever exceed them.
+	//These numbers are big because I don't believe a building size will ever exceed them.
 	unsigned int min_failed_width=512;
 	unsigned int min_failed_height=512;
-
 	for(std::vector<typePercent>::iterator i = construction_priorities.begin(); i!=construction_priorities.end(); ++i)
 	{
+		//Keep constructing buildings of this type untill one of the failure conditions have been reached
 		while(true)
 		{
 			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 			{
-				//				std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				if(local_debug)
+					std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
 				return false;
 			}
 			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW && !CHEAT_INSTANT_BUILDING)
 			{
-				//				std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				if(local_debug)
+					std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
 				return false;
 			}
 			if(under_construction_counts[i->building_type]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i->building_type])
 			{
-				//				std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				if(local_debug)
+					std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
 				break;
 			}
 			if(counts[i->building_type]>=num_buildings_wanted[i->building_type])
 			{
-				//				std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+				if(local_debug)
+					std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
 				break;
 			}
+
+			//Find the largest size that this building can have
 			point p = findBestPlace(i->building_type);
 			upgradeData size=findMaxSize(i->building_type, 0);
 			//If there wasn't a place for a smaller building than this one, than there certainly won't be a place for this one
 			if(size.width>=min_failed_width && size.height>=min_failed_height)
 				break;
-
 			if(p.x == NOPOS || p.y==NOPOS)
 			{
 				min_failed_width=size.width;
 				min_failed_height=size.height;
-				//				std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i]<<"."<<endl;
+
+				if(local_debug)
+					std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
 				break;
 			}
 
+			//We have the ok on everything, start constructing a building
 			newConstructionRecord ncr;
 			ncr.building=NOGBID;
 			ncr.x=p.x;
 			ncr.y=p.y;
+
 			//Don't assign more units than the total amount of resources needed to construct the building.
 			unsigned int needed_resource_total=0;
 			BuildingType* t=globalContainer->buildingsTypes.getByType(IntBuildingType::reverseConversionMap[i->building_type], 0, true);
@@ -1997,6 +2139,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 				needed_resource_total+=t->maxRessource[n];
 			}
 			ncr.assigned=std::min(total_free_workers, std::min(MAXIMUM_TO_CONSTRUCT_NEW, needed_resource_total));
+
 			ncr.building_type=i->building_type;
 			new_buildings.push_back(ncr);
 
@@ -2018,7 +2161,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 
 bool DistributedNewConstructionManager::updateBuildings()
 {
-	//Remove records of buildings that are no longer under construction
+	//Remove records of buildings that are no longer under construction, or ones for buildings that where destroyed be the enemy
 	for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end();)
 	{
 		if(i->building!=NOGBID)
@@ -2028,13 +2171,10 @@ bool DistributedNewConstructionManager::updateBuildings()
 			{
 				ai.orders.push(new OrderModifyBuilding(i->building, 1));
 				i = new_buildings.erase(i);
-
+				continue;
 			}
-			else
-				++i;
 		}
-		else
-			++i;
+		++i;
 	}
 
 	//Update buildings that have just been created.
@@ -3792,7 +3932,7 @@ bool Farmer::updateFarm()
 		for(unsigned int y=0; static_cast<int>(y)<ai.map->getH(); ++y)
 		{
 
-			if(	(x%2!=y%2) && FARMING_METHOD==CheckerBoard ||
+			if( (x%2!=y%2) && FARMING_METHOD==CheckerBoard ||
 				(x%2==1 && y%2==1) && FARMING_METHOD==CrossSpacing ||
 				(x%6<4 && y%3==0) && FARMING_METHOD==Row4 ||
 				(x%3==0 && y%6<4) && FARMING_METHOD==Column4)
@@ -3800,7 +3940,7 @@ bool Farmer::updateFarm()
 				if((!ai.map->isRessourceTakeable(x, y, WOOD) && !ai.map->isRessourceTakeable(x, y, CORN)) || ai.map->isClearAreaLocal(x, y))
 				{
 					if(resources.find(point(x, y))!=resources.end())
-					{					
+					{
 						del_acc.applyBrush(ai.map, BrushApplication(x, y, 0));
 						resources.erase(resources.find(point(x, y)));
 					}

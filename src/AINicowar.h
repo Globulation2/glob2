@@ -468,7 +468,7 @@ namespace Nicowar
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
 			{
-				return 3;
+				return 4;
 			}
 
 			///Stores all of the information accociated with a particular attack
@@ -1018,9 +1018,9 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_UPGRADE=8;
 	const unsigned int MINIMUM_TO_REPAIR=2;
 	const unsigned int MAXIMUM_TO_REPAIR=8;
-	const unsigned int MAX_CONSTRUCTION_AT_ONCE=4;
+	const unsigned int MAX_CONSTRUCTION_AT_ONCE=6;
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
-		{0, 4, 1, 1, 1, 1, 1, 2, 0, 0, 0, 1, 1};
+		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
 
 	//The following constants deal with the function iteration. All of these must be
 	//lower than TIMER_ITERATION.
@@ -1057,7 +1057,7 @@ namespace Nicowar
 	const unsigned int EMERGENCY_UNIT_SCORE=5;
 	//This means that for every n points it will add in one new worker to the swarms.
 	const unsigned int CREATION_UNIT_REQUIREMENT=8;
-	const unsigned int MAXIMUM_UNITS_FOR_SWARM=6;
+	const unsigned int MAXIMUM_UNITS_FOR_SWARM=5;
 
 	//These constants are for the AI's inn manager.
 	//Says how many records it should take for each inn before restarting back at the begginning.
@@ -1136,7 +1136,7 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{20, 6, 20, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{20, 8, 20, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
@@ -1159,7 +1159,7 @@ namespace Nicowar
 	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
 
 	///This constant turns on debugging output
-	const bool AINicowar_DEBUG = true;
+	const bool AINicowar_DEBUG = false;
 	///@}
 
 	//These are just some handy functions
