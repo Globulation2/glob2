@@ -595,6 +595,7 @@ public:
 
 protected:
 	FILE *logFile;
+	Uint32 incRessourceLog[16];
 };
 
 #endif

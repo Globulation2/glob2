@@ -187,10 +187,16 @@ Map::Map()
 	pathfindForbiddenCountFailure=0;
 	
 	logFile = globalContainer->logFileManager->getFile("Map.log");
+	std::fill(incRessourceLog, incRessourceLog + 16, 0);
 }
 
 Map::~Map(void)
 {
+	FILE *resLogFile = globalContainer->logFileManager->getFile("IncRessourceLog.log");
+	for (int i=0; i<=11; i++)
+		fprintf(resLogFile, "incRessourceLog[%2d] =%8d\n", i, incRessourceLog[i]);
+	fprintf(resLogFile, "\n");
+	fflush(resLogFile);
 	clear();
 }
 
@@ -1321,12 +1327,16 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 {
 	Ressource &r = getCase(x, y).ressource;
 	const RessourceType *fulltype;
+	incRessourceLog[0]++;
 	if (r.type == NO_RES_TYPE)
 	{
+		incRessourceLog[1]++;
 		if (getBuilding(x, y) != NOGBID)
 			return false;
+		incRessourceLog[2]++;
 		if (getGroundUnit(x, y) != NOGUID)
 			return false;
+		incRessourceLog[3]++;
 		
 		fulltype = globalContainer->ressourcesTypes.get(ressourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
@@ -1335,27 +1345,37 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 			r.variety = variety;
 			r.amount = 1;
 			r.animation = 0;
+			incRessourceLog[4]++;
 			return true;
 		}
 		else
+		{
+			incRessourceLog[5]++;
 			return false;
+		}
 	}
 	else
 	{
 		fulltype = globalContainer->ressourcesTypes.get(r.type);
+		incRessourceLog[6]++;
 	}
 	
+	incRessourceLog[7]++;
 	if (r.type != ressourceType)
 		return false;
+	incRessourceLog[8]++;
 	if (!fulltype->shrinkable)
 		return false;
+	incRessourceLog[9]++;
 	if (r.amount < fulltype->sizesCount)
 	{
+		incRessourceLog[10]++;
 		r.amount++;
 		return true;
 	}
 	else
 	{
+		incRessourceLog[11]++;
 		r.amount--;
 	}
 	return false;
