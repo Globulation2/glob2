@@ -298,14 +298,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx+i, ry, CORN)||map->isRessource(rx+i, ry-1, CORN))
+			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx-i, ry, CORN)||map->isRessource(rx-i, ry-1, CORN))
+			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -315,14 +315,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry+i, CORN)||map->isRessource(rx-1, ry+i, CORN))
+			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx-1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry-i, CORN)||map->isRessource(rx-1, ry-i, CORN))
+			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx-1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -333,14 +333,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry+i, CORN)||map->isRessource(rx+1, ry+i, CORN))
+			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx+1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry-i, CORN)||map->isRessource(rx+1, ry-i, CORN))
+			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx+1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -350,13 +350,13 @@ int AINumbi::estimateFood(Building *building)
 		w=0;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx+i, ry, CORN)||map->isRessource(rx+i, ry+1, CORN))
+			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx-i, ry, CORN)||map->isRessource(rx-i, ry+1, CORN))
+			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;

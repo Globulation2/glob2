@@ -26,10 +26,10 @@
 #include <Types.h>
 #endif
 
-//! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are undefined.
+//! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are zero.
 #define NO_RES_TYPE 0xFF
 
-//! A union is used so a ressource can be accessed as a whole 32 bit unsigned int as well as 4 bytes defining its components (type, ...).
+//! Either a ressource type is NO_RES_TYPE and all others fields are zero, or the ressource has a valid type and amount is NOT zero. This constraint does not apply if a ressource is eternal.
 struct Ressource
 {
 	Uint8 type;
@@ -37,7 +37,7 @@ struct Ressource
 	Uint8 amount;
 	Uint8 animation;
 	
-	void clear() {type=0xFF; variety=0xFF;  amount=0xFF;  animation=0xFF; }
+	void clear() {type=NO_RES_TYPE; variety = 0;  amount = 0;  animation = 0; }
 	//void setUint32(Uint32 i) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
 	Uint32 getUint32() { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };

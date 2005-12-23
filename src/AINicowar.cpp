@@ -584,15 +584,15 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					}
 					break;
 				case POLL_CORN:
-					if (map->isRessource(x, y, CORN))
+					if (map->isRessourceTakeable(x, y, CORN))
 						score++;
 					break;
 				case POLL_TREES:
-					if (map->isRessource(x, y, WOOD))
+					if (map->isRessourceTakeable(x, y, WOOD))
 						score++;
 					break;
 				case POLL_STONE:
-					if (map->isRessource(x, y, STONE))
+					if (map->isRessourceTakeable(x, y, STONE))
 						score++;
 					break;
 				case CENTER_DISTANCE:
@@ -3797,7 +3797,7 @@ bool Farmer::updateFarm()
 				(x%6<4 && y%3==0) && FARMING_METHOD==Row4 ||
 				(x%3==0 && y%6<4) && FARMING_METHOD==Column4)
 			{
-				if((!ai.map->isRessource(x, y, WOOD) && !ai.map->isRessource(x, y, CORN)) || ai.map->isClearAreaLocal(x, y))
+				if((!ai.map->isRessourceTakeable(x, y, WOOD) && !ai.map->isRessourceTakeable(x, y, CORN)) || ai.map->isClearAreaLocal(x, y))
 				{
 					if(resources.find(point(x, y))!=resources.end())
 					{					

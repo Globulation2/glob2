@@ -1073,7 +1073,6 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint16(cases[i].terrain, "terrain");
 		stream->writeUint16(cases[i].building, "building");
 		
-		//SDL_WriteBE32(stream, cases[i].ressource.id);
 		stream->write(&(cases[i].ressource), 4, "ressource");
 		
 		stream->writeUint16(cases[i].groundUnit, "groundUnit");
@@ -1171,7 +1170,7 @@ void Map::growRessources(void)
 		//for (int x=0; x<w; x++)
 		{
 			//int y=syncRand()&hMask;
-			Ressource r=getRessource(x, y);
+			const Ressource &r = getRessource(x, y);
 			if (r.type!=NO_RES_TYPE)
 			{
 				// we look around to see if there is any water :
@@ -1192,12 +1191,12 @@ void Map::growRessources(void)
 
 				// alga, wood and corn are limited by near underground. Others are not.
 				bool expand=true;
-				if (r.type==ALGA)
-					expand=isWater(wax1, way1)&&isSand(wax2, way2);
-				else if (r.type==WOOD)
-					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
-				else if (r.type==CORN)
-					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
+				if (r.type == ALGA)
+					expand = isWater(wax1, way1) && isSand(wax2, way2);
+				else if (r.type == WOOD)
+					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
+				else if (r.type == CORN)
+					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
 
 				if (expand)
 				{
@@ -1289,58 +1288,53 @@ void Map::computeLocalClearArea(int localTeamNo)
 
 void Map::decRessource(int x, int y)
 {
-	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
-	Ressource r=*rp;
-
-	if (r.type==NO_RES_TYPE)
+	Ressource &r = getCase(x, y).ressource;
+	
+	if (r.type == NO_RES_TYPE || r.amount == 0)
 		return;
-
-	int type=r.type;
-	const RessourceType *fulltype=globalContainer->ressourcesTypes.get(type);
-	unsigned amount=r.amount;
-	assert(amount);
-
+	
+	const RessourceType *fulltype = globalContainer->ressourcesTypes.get(r.type);
+	
 	if (!fulltype->shrinkable)
 		return;
 	if (fulltype->eternal)
 	{
-		if (amount>0)
-			rp->amount=amount-1;
+		if (r.amount > 0)
+			r.amount--;
 	}
 	else
 	{
-		if (!fulltype->granular || amount<=1)
-			rp->clear();
+		if (!fulltype->granular || r.amount<=1)
+			r.clear();
 		else
-			rp->amount=amount-1;
+			r.amount--;
 	}
 }
 
 void Map::decRessource(int x, int y, int ressourceType)
 {
-	if (isRessource(x, y, ressourceType))
+	if (isRessourceTakeable(x, y, ressourceType))
 		decRessource(x, y);
 }
 
 bool Map::incRessource(int x, int y, int ressourceType, int variety)
 {
-	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
-	Ressource &r=*rp;
+	Ressource &r = getCase(x, y).ressource;
 	const RessourceType *fulltype;
-	if (r.type==NO_RES_TYPE)
+	if (r.type == NO_RES_TYPE)
 	{
-		if (getBuilding(x, y)!=NOGBID)
+		if (getBuilding(x, y) != NOGBID)
 			return false;
-		if (getGroundUnit(x, y)!=NOGUID)
+		if (getGroundUnit(x, y) != NOGUID)
 			return false;
-
-		fulltype=globalContainer->ressourcesTypes.get(ressourceType);
+		
+		fulltype = globalContainer->ressourcesTypes.get(ressourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
-			rp->type=ressourceType;
-			rp->variety=variety;
-			rp->amount=1;
-			rp->animation=0;
+			r.type = ressourceType;
+			r.variety = variety;
+			r.amount = 1;
+			r.animation = 0;
 			return true;
 		}
 		else
@@ -1348,21 +1342,21 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 	}
 	else
 	{
-		fulltype=globalContainer->ressourcesTypes.get(r.type);
+		fulltype = globalContainer->ressourcesTypes.get(r.type);
 	}
-
-	if (r.type!=ressourceType)
+	
+	if (r.type != ressourceType)
 		return false;
 	if (!fulltype->shrinkable)
 		return false;
-	if (r.amount<fulltype->sizesCount)
+	if (r.amount < fulltype->sizesCount)
 	{
-		rp->amount=r.amount+1;
+		r.amount++;
 		return true;
 	}
 	else
 	{
-		rp->amount=r.amount-1;
+		r.amount--;
 	}
 	return false;
 }
@@ -1548,7 +1542,7 @@ bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy, ressourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
+			if (isRessourceTakeable(x+tdx, y+tdy, ressourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 			{
 				*dx=tdx;
 				*dy=tdy;
@@ -1561,7 +1555,7 @@ bool Map::doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *d
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy,ressourceType))
+			if (isRessourceTakeable(x+tdx, y+tdy,ressourceType))
 			{
 				*dx=tdx;
 				*dy=tdy;
