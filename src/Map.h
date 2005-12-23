@@ -204,7 +204,7 @@ public:
 	void computeLocalClearArea(int localTeamNo);
 	
 	//! Return the case at a given position
-	Case &getCase(int x, int y)
+	inline Case &getCase(int x, int y)
 	{
 		return cases[((y&hMask)<<wDec)+(x&wMask)];
 	}
@@ -285,18 +285,18 @@ public:
 
 	bool isRessource(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].ressource.type != NO_RES_TYPE;
+		return getCase(x, y).ressource.type != NO_RES_TYPE;
 	}
 
-	bool isRessource(int x, int y, int ressourceType)
+	bool isRessourceTakeable(int x, int y, int ressourceType)
 	{
-		const Ressource &ressource = cases[((y&hMask)<<wDec)+(x&wMask)].ressource;
-		return (ressource.type == ressourceType &&  ressource.amount>0);
+		const Ressource &ressource = getCase(x, y).ressource;
+		return (ressource.type == ressourceType && ressource.amount > 0);
 	}
 
-	bool isRessource(int x, int y, bool ressourceTypes[BASIC_COUNT])
+	bool isRessourceTakeable(int x, int y, bool ressourceTypes[BASIC_COUNT])
 	{
-		const Ressource &ressource = cases[((y&hMask)<<wDec)+(x&wMask)].ressource;
+		const Ressource &ressource = getCase(x, y).ressource;
 		return (ressource.type != NO_RES_TYPE
 			&& ressource.amount > 0
 			&& ressource.type < BASIC_COUNT
@@ -305,10 +305,10 @@ public:
 
 	bool isRessource(int x, int y, int *ressourceType)
 	{
-		int rt = getRessource(x, y).type;
-		if (rt == 0xFF)
+		const Ressource &ressource = getCase(x, y).ressource;
+		if (ressource.type == NO_RES_TYPE)
 			return false;
-		*ressourceType = rt;
+		*ressourceType = ressource.type;
 		return true;
 	}
 
