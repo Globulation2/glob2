@@ -54,17 +54,17 @@ namespace GAGCore
 		TextOutputStream(StreamBackend *backend) { this->backend = backend; level=0; };
 		virtual ~TextOutputStream() { delete backend; }
 	
-		virtual void write(const void *data, const size_t size, const char *name = NULL);
+		virtual void write(const void *data, const size_t size, const char *name);
 	
-		virtual void writeSint8(const Sint8 v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeUint8(const Uint8 v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeSint16(const Sint16 v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeUint16(const Uint16 v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeSint32(const Sint32 v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeUint32(const Uint32 v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeFloat(const float v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeDouble(const double v, const char *name = NULL) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeText(const std::string &v, const char *name = NULL);
+		virtual void writeSint8(const Sint8 v, const char *name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
+		virtual void writeUint8(const Uint8 v, const char *name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
+		virtual void writeSint16(const Sint16 v, const char *name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
+		virtual void writeUint16(const Uint16 v, const char *name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
+		virtual void writeSint32(const Sint32 v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeUint32(const Uint32 v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeFloat(const float v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeDouble(const double v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeText(const std::string &v, const char *name);
 		virtual void flush(void) { backend->flush(); }
 		
 		virtual void writeEnterSection(const char *name);
@@ -109,16 +109,16 @@ namespace GAGCore
 		//! Constructor. Uses backend, but does not delete it
 		TextInputStream(StreamBackend *backend);
 		
-		virtual void read(void *data, size_t size, const char *name = NULL);
-		virtual Sint8 readSint8(const char *name = NULL) { return readFromTable<Sint8>(name); }
-		virtual Uint8 readUint8(const char *name = NULL) { return readFromTable<Uint8>(name); }
-		virtual Sint16 readSint16(const char *name = NULL) { return readFromTable<Sint16>(name); }
-		virtual Uint16 readUint16(const char *name = NULL) { return readFromTable<Uint16>(name); }
-		virtual Sint32 readSint32(const char *name = NULL) { return readFromTable<Sint32>(name); }
-		virtual Uint32 readUint32(const char *name = NULL) { return readFromTable<Uint32>(name); }
-		virtual float readFloat(const char *name = NULL) { return readFromTable<float>(name); }
-		virtual double readDouble(const char *name = NULL) { return readFromTable<double>(name); }
-		virtual std::string readText(const char *name = NULL) { std::string s; readFromTableToString(name, &s); return s; }
+		virtual void read(void *data, size_t size, const char *name);
+		virtual Sint8 readSint8(const char *name) { return static_cast<Sint8>(readFromTable<signed>(name)); }
+		virtual Uint8 readUint8(const char *name) { return static_cast<Uint8>(readFromTable<unsigned>(name)); }
+		virtual Sint16 readSint16(const char *name) { return static_cast<Sint16>(readFromTable<signed>(name)); }
+		virtual Uint16 readUint16(const char *name) { return static_cast<Uint16>(readFromTable<unsigned>(name)); }
+		virtual Sint32 readSint32(const char *name) { return readFromTable<Sint32>(name); }
+		virtual Uint32 readUint32(const char *name) { return readFromTable<Uint32>(name); }
+		virtual float readFloat(const char *name) { return readFromTable<float>(name); }
+		virtual double readDouble(const char *name) { return readFromTable<double>(name); }
+		virtual std::string readText(const char *name) { std::string s; readFromTableToString(name, &s); return s; }
 		
 		virtual void readEnterSection(const char *name);
 		virtual void readEnterSection(unsigned id);

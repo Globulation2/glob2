@@ -117,40 +117,44 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 	active_module=modules.begin()+stream->readUint32("active_module");
 
 	stream->readEnterSection("orders");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 ordersSize = stream->readUint32("size");
+	for (Uint32 ordersIndex = 0; ordersIndex < ordersSize; ordersIndex++)
 	{
-		size_t size=stream->readUint32();
+		stream->readEnterSection(ordersIndex);
+		size_t size=stream->readUint32("size");
 		Uint8* buffer = new Uint8[size];
-		stream->read(buffer, size);
+		stream->read(buffer, size, "data");
 		orders.push(Order::getOrder(buffer, size));
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	char signature[4];
 
 	stream->readEnterSection("modules");
-	unsigned int size = stream->readUint32();
-	for(n=0; n<size; ++n)
+	Uint32 modulesSize = stream->readUint32("size");
+	for (Uint32 modulesIndex = 0; modulesIndex < modulesSize; modulesIndex++)
 	{
+		stream->readEnterSection(modulesIndex);
 		stream->read(signature, 4, "signatureStart");
 		if (memcmp(signature,"MoSt", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at begin of module #"<<n<<", "<<modules[n]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
+			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
 			stream->readLeaveSection();
 			return false;
 		}
 
-		modules[n]->load(stream, player, versionMinor);
+		modules[modulesIndex]->load(stream, player, versionMinor);
 
 		stream->read(signature, 4, "signatureEnd");
 		if (memcmp(signature,"MoEn", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at end of module #"<<n<<", "<<modules[n]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
+			std::cout<<"Signature missmatch at end of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
 			stream->readLeaveSection();
 			return false;
 		}
-
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
@@ -172,20 +176,21 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(active_module-modules.begin(), "active_module");
 
 	stream->writeEnterSection("orders");
-	stream->writeUint32(orders.size());
-	while(orders.size())
+	stream->writeUint32((Uint32)orders.size(), "size");
+	for (Uint32 ordersIndex = 0; ordersIndex < orders.size(); ordersIndex++)
 	{
+		stream->writeEnterSection(ordersIndex);
 		Order* order = orders.front();
 		orders.pop();
-		stream->writeUint32(order->getDataLength()+1);
-		stream->writeSint8(order->getOrderType());
-		stream->write(order->getData(), order->getDataLength());
+		stream->writeUint32(order->getDataLength()+1, "size");
+		stream->write(order->getData(), order->getDataLength(), "data");
 		delete order;
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 
 	stream->writeEnterSection("modules");
-	stream->writeUint32(modules.size());
+	stream->writeUint32(modules.size(), "size");
 	for(vector<Module*>::iterator i = modules.begin(); i!=modules.end(); ++i)
 	{
 		stream->write("MoSt", 4, "signatureStart");
@@ -898,20 +903,23 @@ bool SimpleBuildingDefense::load(GAGCore::InputStream *stream, Player *player, S
 
 	stream->readEnterSection("SimpleBuildingDefense");
 	stream->readEnterSection("defending_zones");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 defenseRecordSize = stream->readUint32("size");
+	for (Uint32 defenseRecordIndex = 0; defenseRecordIndex < defenseRecordSize; defenseRecordIndex++)
 	{
+		stream->readEnterSection(defenseRecordIndex);
 		defenseRecord dr;
-		dr.flag=stream->readUint32();
-		dr.flagx=stream->readUint32();
-		dr.flagy=stream->readUint32();
-		dr.zonex=stream->readUint32();
-		dr.zoney=stream->readUint32();
-		dr.width=stream->readUint32();
-		dr.height=stream->readUint32();
-		dr.assigned=stream->readUint32();
-		dr.building=stream->readUint32();
+		dr.flag=stream->readUint32("flag");
+		dr.flagx=stream->readUint32("flagx");
+		dr.flagy=stream->readUint32("flagy");
+		dr.zonex=stream->readUint32("zonex");
+		dr.zoney=stream->readUint32("zoney");
+		dr.width=stream->readUint32("width");
+		dr.height=stream->readUint32("height");
+		dr.assigned=stream->readUint32("assigned");
+		dr.building=stream->readUint32("building");
 		defending_zones.push_back(dr);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
@@ -925,18 +933,21 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("SimpleBuildingDefense");
 	stream->writeEnterSection("defending_zones");
-	stream->writeUint32(defending_zones.size());
-	for(std::vector<defenseRecord>::const_iterator i=defending_zones.begin(); i!=defending_zones.end(); ++i)
+	stream->writeUint32(defending_zones.size(), "size");
+	for (Uint32 defenseRecordIndex = 0; defenseRecordIndex < defending_zones.size(); defenseRecordIndex++)
 	{
-		stream->writeUint32(i->flag);
-		stream->writeUint32(i->flagx);
-		stream->writeUint32(i->flagy);
-		stream->writeUint32(i->zonex);
-		stream->writeUint32(i->zoney);
-		stream->writeUint32(i->width);
-		stream->writeUint32(i->height);
-		stream->writeUint32(i->assigned);
-		stream->writeUint32(i->building);
+		stream->writeEnterSection(defenseRecordIndex);
+		std::vector<defenseRecord>::const_iterator i = defending_zones.begin() + defenseRecordIndex;
+		stream->writeUint32(i->flag, "flag");
+		stream->writeUint32(i->flagx, "flagx");
+		stream->writeUint32(i->flagy, "flagy");
+		stream->writeUint32(i->zonex, "zonex");
+		stream->writeUint32(i->zoney, "zoney");
+		stream->writeUint32(i->width, "width");
+		stream->writeUint32(i->height, "height");
+		stream->writeUint32(i->assigned, "assigned");
+		stream->writeUint32(i->building, "building");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -1113,13 +1124,16 @@ bool GeneralsDefense::load(GAGCore::InputStream *stream, Player *player, Sint32 
 {
 	stream->readEnterSection("GeneralsDefense");
 	stream->readEnterSection("defending_flags");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 defenseRecordSize = stream->readUint32("size");
+	for (Uint32 defenseRecordIndex = 0; defenseRecordIndex < defenseRecordSize ; defenseRecordIndex++)
 	{
+		stream->readEnterSection(defenseRecordIndex);
 		defenseRecord dr;
-		dr.flag=stream->readUint32();
-		dr.enemy_flag=stream->readUint32();
+		dr.flag=stream->readUint32("flag");
+		dr.enemy_flag=stream->readUint32("enemy_flag");
 		defending_flags.push_back(dr);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
@@ -1133,11 +1147,14 @@ void GeneralsDefense::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("GeneralsDefense");
 	stream->writeEnterSection("defending_flags");
-	stream->writeUint32(defending_flags.size());
-	for(std::vector<defenseRecord>::const_iterator i = defending_flags.begin(); i!=defending_flags.end(); ++i)
+	stream->writeUint32(defending_flags.size(), "size");
+	for (Uint32 defenseRecordIndex = 0; defenseRecordIndex < defending_flags.size(); defenseRecordIndex++)
 	{
-		stream->writeUint32(i->flag);
-		stream->writeUint32(i->enemy_flag);
+		stream->writeEnterSection(defenseRecordIndex);
+		std::vector<defenseRecord>::const_iterator i = defending_flags.begin() + defenseRecordIndex;
+		stream->writeUint32(i->flag, "flag");
+		stream->writeUint32(i->enemy_flag, "enemy_flag");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -1279,28 +1296,31 @@ bool PrioritizedBuildingAttack::load(GAGCore::InputStream *stream, Player *playe
 {
 	stream->readEnterSection("PrioritizedBuildingAttack");
 	stream->readEnterSection("attacks");
-	enemy = ai.game->teams[stream->readUint8()];
-	unsigned int n = stream->readUint32();
-	while(n--)
+	enemy = ai.game->teams[stream->readUint8("teamNumber")];
+	Uint32 attackRecordSize = stream->readUint32("size");
+	for (Uint32 attackRecordIndex = 0; attackRecordIndex < attackRecordSize; attackRecordIndex++)
 	{
+		stream->readEnterSection(attackRecordIndex);
 		attackRecord ar;
-		ar.target=stream->readUint32();
-		ar.target_x=stream->readUint32();
-		ar.target_y=stream->readUint32();
-		ar.flag=stream->readUint32();
-		ar.flagx=stream->readUint32();
-		ar.flagy=stream->readUint32();
-		ar.zonex=stream->readUint32();
-		ar.zoney=stream->readUint32();
-		ar.width=stream->readUint32();
-		ar.height=stream->readUint32();
-		ar.unitx=stream->readUint32();
-		ar.unity=stream->readUint32();
-		ar.unit_width=stream->readUint32();
-		ar.unit_height=stream->readUint32();
-		ar.assigned_units=stream->readUint32();
-		ar.assigned_level=stream->readUint32();
+		ar.target=stream->readUint32("target");
+		ar.target_x=stream->readUint32("target_x");
+		ar.target_y=stream->readUint32("target_y");
+		ar.flag=stream->readUint32("flag");
+		ar.flagx=stream->readUint32("flagx");
+		ar.flagy=stream->readUint32("flagy");
+		ar.zonex=stream->readUint32("zonex");
+		ar.zoney=stream->readUint32("zoney");
+		ar.width=stream->readUint32("width");
+		ar.height=stream->readUint32("height");
+		ar.unitx=stream->readUint32("unitx");
+		ar.unity=stream->readUint32("unity");
+		ar.unit_width=stream->readUint32("unit_width");
+		ar.unit_height=stream->readUint32("unit_height");
+		ar.assigned_units=stream->readUint32("assigned_units");
+		ar.assigned_level=stream->readUint32("assigned_level");
 		attacks.push_back(ar);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
@@ -1314,26 +1334,29 @@ void PrioritizedBuildingAttack::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("PrioritizedBuildingAttack");
 	stream->writeEnterSection("attacks");
-	stream->writeUint8(enemy->teamNumber);
-	stream->writeUint32(attacks.size());
-	for(std::vector<attackRecord>::const_iterator i = attacks.begin(); i!=attacks.end(); ++i)
+	stream->writeUint8(enemy->teamNumber, "teamNumber");
+	stream->writeUint32(attacks.size(), "size");
+	for (Uint32 attackRecordIndex = 0; attackRecordIndex < attacks.size(); attackRecordIndex++)
 	{
-		stream->writeUint32(i->target);
-		stream->writeUint32(i->target_x);
-		stream->writeUint32(i->target_y);
-		stream->writeUint32(i->flag);
-		stream->writeUint32(i->flagx);
-		stream->writeUint32(i->flagy);
-		stream->writeUint32(i->zonex);
-		stream->writeUint32(i->zoney);
-		stream->writeUint32(i->width);
-		stream->writeUint32(i->height);
-		stream->writeUint32(i->unitx);
-		stream->writeUint32(i->unity);
-		stream->writeUint32(i->unit_width);
-		stream->writeUint32(i->unit_height);
-		stream->writeUint32(i->assigned_units);
-		stream->writeUint32(i->assigned_level);
+		stream->writeEnterSection(attackRecordIndex);
+		std::vector<attackRecord>::const_iterator i = attacks.begin() + attackRecordIndex;
+		stream->writeUint32(i->target, "target");
+		stream->writeUint32(i->target_x, "target_x");
+		stream->writeUint32(i->target_y, "target_y");
+		stream->writeUint32(i->flag, "flag");
+		stream->writeUint32(i->flagx, "flagx");
+		stream->writeUint32(i->flagy, "flagy");
+		stream->writeUint32(i->zonex, "zonex");
+		stream->writeUint32(i->zoney, "zoney");
+		stream->writeUint32(i->width, "width");
+		stream->writeUint32(i->height, "height");
+		stream->writeUint32(i->unitx, "unitx");
+		stream->writeUint32(i->unity, "unity");
+		stream->writeUint32(i->unit_width, "unit_width");
+		stream->writeUint32(i->unit_height, "unit_height");
+		stream->writeUint32(i->assigned_units, "assigned_units");
+		stream->writeUint32(i->assigned_level, "assigned_level");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -1687,23 +1710,30 @@ bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Playe
 {
 	stream->readEnterSection("DistributedNewConstructionManager");
 	stream->readEnterSection("new_buildings");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 newConstructionRecordSize = stream->readUint32("newConstructionRecordSize");
+	for (Uint32 newConstructionRecordIndex = 0; newConstructionRecordIndex < newConstructionRecordSize; newConstructionRecordIndex++)
 	{
+		stream->readEnterSection(newConstructionRecordIndex);
 		newConstructionRecord ncr;
-		ncr.building = stream->readUint32();
-		ncr.x = stream->readUint32();
-		ncr.y = stream->readUint32();
-		ncr.assigned = stream->readUint32();
-		ncr.building_type = stream->readUint32();
+		ncr.building = stream->readUint32("building");
+		ncr.x = stream->readUint32("x");
+		ncr.y = stream->readUint32("y");
+		ncr.assigned = stream->readUint32("assigned");
+		ncr.building_type = stream->readUint32("building_type");
 		new_buildings.push_back(ncr);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
 
 	stream->readEnterSection("num_buildings_wanted");
-	n = stream->readUint32();
-	while(n--)
+	Uint32 numBuildingWantedSize = stream->readUint32("size");
+	for (Uint32 numBuildingWantedIndex = 0; numBuildingWantedIndex < numBuildingWantedSize; numBuildingWantedIndex++)
 	{
-		num_buildings_wanted[stream->readUint32()] = stream->readUint32();
+		stream->readEnterSection(numBuildingWantedIndex);
+		num_buildings_wanted[stream->readUint32("first")] = stream->readUint32("second");
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 
 	stream->readLeaveSection();
@@ -1718,22 +1748,29 @@ void DistributedNewConstructionManager::save(GAGCore::OutputStream *stream) cons
 {
 	stream->writeEnterSection("DistributedNewConstructionManager");
 	stream->writeEnterSection("new_buildings");
-	stream->writeUint32(new_buildings.size());
-	for(std::vector<newConstructionRecord>::const_iterator i = new_buildings.begin(); i!=new_buildings.end(); ++i)
+	stream->writeUint32(new_buildings.size(), "newConstructionRecordSize");
+	for (Uint32 newConstructionRecordIndex = 0; newConstructionRecordIndex < new_buildings.size(); newConstructionRecordIndex++)
 	{
-		stream->writeUint32(i->building);
-		stream->writeUint32(i->x);
-		stream->writeUint32(i->y);
-		stream->writeUint32(i->assigned);
-		stream->writeUint32(i->building_type);
+		stream->writeEnterSection(newConstructionRecordIndex);
+		std::vector<newConstructionRecord>::const_iterator i = new_buildings.begin() + newConstructionRecordIndex;
+		stream->writeUint32(i->building, "building");
+		stream->writeUint32(i->x, "x");
+		stream->writeUint32(i->y, "y");
+		stream->writeUint32(i->assigned, "assigned");
+		stream->writeUint32(i->building_type, "building_type");
+		stream->writeLeaveSection();
 	}
+	stream->writeLeaveSection();
 
 	stream->writeEnterSection("num_buildings_wanted");
-	stream->writeUint32(num_buildings_wanted.size());
-	for(std::map<unsigned int, unsigned int>::const_iterator i = num_buildings_wanted.begin(); i!=num_buildings_wanted.end(); ++i)
+	stream->writeUint32(num_buildings_wanted.size(), "size");
+	Uint32 numBuildingWantedIndex = 0;
+	for (std::map<unsigned int, unsigned int>::const_iterator i = num_buildings_wanted.begin(); i != num_buildings_wanted.begin(); ++i)
 	{
-		stream->writeUint32(i->first);
-		stream->writeUint32(i->second);
+		stream->writeEnterSection(numBuildingWantedIndex++);
+		stream->writeUint32(i->first, "first");
+		stream->writeUint32(i->second, "second");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -2291,28 +2328,34 @@ bool RandomUpgradeRepairModule::load(GAGCore::InputStream *stream, Player *playe
 {
 	stream->readEnterSection("RandomUpgradeRepairModule");
 	stream->readEnterSection("active_construction");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 constructionRecordSize = stream->readUint32("size");
+	for (Uint32 constructionRecordIndex = 0; constructionRecordIndex < constructionRecordSize; constructionRecordIndex++)
 	{
+		stream->readEnterSection(constructionRecordIndex);
 		constructionRecord cr;
-		cr.building=getBuildingFromGid(ai.game, stream->readUint32());
-		cr.assigned=stream->readUint32();
-		cr.original=stream->readUint32();
-		cr.is_repair=stream->readUint8();
+		cr.building=getBuildingFromGid(ai.game, stream->readUint32("gid"));
+		cr.assigned=stream->readUint32("assigned");
+		cr.original=stream->readUint32("original");
+		cr.is_repair=stream->readUint8("is_repair");
 		active_construction.push_back(cr);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	stream->readEnterSection("pending_construction");
-	n = stream->readUint32();
-	while(n--)
+	constructionRecordSize = stream->readUint32("size");
+	for (Uint32 constructionRecordIndex = 0; constructionRecordIndex < constructionRecordSize; constructionRecordIndex++)
 	{
+		stream->readEnterSection(constructionRecordIndex);
 		constructionRecord cr;
-		cr.building=getBuildingFromGid(ai.game, stream->readUint32());
-		cr.assigned=stream->readUint32();
-		cr.original=stream->readUint32();
-		cr.is_repair=stream->readUint8();
+		cr.building=getBuildingFromGid(ai.game, stream->readUint32("gid"));
+		cr.assigned=stream->readUint32("assigned");
+		cr.original=stream->readUint32("original");
+		cr.is_repair=stream->readUint8("is_repair");
 		pending_construction.push_back(cr);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
@@ -2326,24 +2369,30 @@ void RandomUpgradeRepairModule::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("RandomUpgradeRepairModule");
 	stream->writeEnterSection("active_construction");
-	stream->writeUint32(active_construction.size());
+	stream->writeUint32(active_construction.size(), "size");
+	Uint32 constructionRecordIndex = 0;
 	for(std::list<constructionRecord>::const_iterator i = active_construction.begin(); i!=active_construction.end(); ++i)
 	{
-		stream->writeUint32(i->building->gid);
-		stream->writeUint32(i->assigned);
-		stream->writeUint32(i->original);
-		stream->writeUint8(i->is_repair);
+		stream->writeEnterSection(constructionRecordIndex++);
+		stream->writeUint32(i->building->gid, "gid");
+		stream->writeUint32(i->assigned, "assigned");
+		stream->writeUint32(i->original, "original");
+		stream->writeUint8(i->is_repair, "is_repair");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 
 	stream->writeEnterSection("pending_construction");
-	stream->writeUint32(pending_construction.size());
+	stream->writeUint32(pending_construction.size(), "size");
+	constructionRecordIndex = 0;
 	for(std::list<constructionRecord>::const_iterator i = pending_construction.begin(); i!=pending_construction.end(); ++i)
 	{
-		stream->writeUint32(i->building->gid);
-		stream->writeUint32(i->assigned);
-		stream->writeUint32(i->original);
-		stream->writeUint8(i->is_repair);
+		stream->writeEnterSection(constructionRecordIndex++);
+		stream->writeUint32(i->building->gid, "gid");
+		stream->writeUint32(i->assigned, "assigned");
+		stream->writeUint32(i->original, "original");
+		stream->writeUint8(i->is_repair, "is_repair");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -2700,18 +2749,23 @@ bool BasicDistributedSwarmManager::load(GAGCore::InputStream *stream, Player *pl
 {
 	stream->readEnterSection("BasicDistributedSwarmManager");
 	stream->readEnterSection("module_demands");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 unitRecordSize = stream->readUint32("size");
+	for (Uint32 unitRecordIndex = 0; unitRecordIndex < unitRecordSize; unitRecordIndex++)
 	{
+		stream->readEnterSection(unitRecordIndex);
 		unitRecord ur;
-		string name=stream->readText();
+		string name=stream->readText("name");
 		for(int i=0; i<NB_UNIT_TYPE; ++i)
 		{
-			ur.desired_units[i]=stream->readUint32();
-			ur.required_units[i]=stream->readUint32();
-			ur.emergency_units[i]=stream->readUint32();
+			stream->readEnterSection(i);
+			ur.desired_units[i]=stream->readUint32("desired_units");
+			ur.required_units[i]=stream->readUint32("required_units");
+			ur.emergency_units[i]=stream->readUint32("emergency_units");
+			stream->readLeaveSection();
 		}
 		module_demands[name]=ur;
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
@@ -2725,16 +2779,21 @@ void BasicDistributedSwarmManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("BasicDistributedSwarmManager");
 	stream->writeEnterSection("module_demands");
-	stream->writeUint32(module_demands.size());
+	stream->writeUint32(module_demands.size(), "size");
+	Uint32 unitRecordIndex = 0;
 	for(std::map<string, unitRecord>::const_iterator i = module_demands.begin(); i!=module_demands.end(); ++i)
 	{
-		stream->writeText(i->first);
+		stream->writeEnterSection(unitRecordIndex++);
+		stream->writeText(i->first, "name");
 		for(int n=0; n<NB_UNIT_TYPE; ++n)
 		{
-			stream->writeUint32(i->second.desired_units[n]);
-			stream->writeUint32(i->second.required_units[n]);
-			stream->writeUint32(i->second.emergency_units[n]);
+			stream->writeEnterSection(n);
+			stream->writeUint32(i->second.desired_units[n], "desired_units");
+			stream->writeUint32(i->second.required_units[n], "required_units");
+			stream->writeUint32(i->second.emergency_units[n], "emergency_units");
+			stream->writeLeaveSection();
 		}
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -2898,25 +2957,28 @@ bool ExplorationManager::load(GAGCore::InputStream *stream, Player *player, Sint
 {
 	stream->readEnterSection("ExplorationManager");
 	stream->readEnterSection("active_exploration");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 explorationRecordSize = stream->readUint32("size");
+	for (Uint32 explorationRecordIndex = 0; explorationRecordIndex < explorationRecordSize; explorationRecordIndex++)
 	{
+		stream->readEnterSection(explorationRecordIndex);
 		explorationRecord er;
-		unsigned int gid=stream->readUint32();
+		unsigned int gid=stream->readUint32("gid");
 		if(!gid)
 			er.flag=NULL;
 		else
 			er.flag=getBuildingFromGid(ai.game, gid);
-		er.flag_x=stream->readUint32();
-		er.flag_y=stream->readUint32();
-		er.zone_x=stream->readUint32();
-		er.zone_y=stream->readUint32();
-		er.width=stream->readUint32();
-		er.height=stream->readUint32();
-		er.assigned=stream->readUint32();
-		er.radius=stream->readUint32();
-		er.isAssaultFlag=stream->readUint8();
+		er.flag_x=stream->readUint32("flag_x");
+		er.flag_y=stream->readUint32("flag_y");
+		er.zone_x=stream->readUint32("zone_x");
+		er.zone_y=stream->readUint32("zone_y");
+		er.width=stream->readUint32("width");
+		er.height=stream->readUint32("height");
+		er.assigned=stream->readUint32("assigned");
+		er.radius=stream->readUint32("radius");
+		er.isAssaultFlag=stream->readUint8("isAssaultFlag");
 		active_exploration.push_back(er);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	explorers_wanted=stream->readUint32("explorers_wanted");
@@ -2933,22 +2995,25 @@ void ExplorationManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("ExplorationManager");
 	stream->writeEnterSection("active_exploration");
-	stream->writeUint32(active_exploration.size());
+	stream->writeUint32(active_exploration.size(), "size");
+	Uint32 explorationRecordIndex = 0;
 	for(std::list<explorationRecord>::const_iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
 	{
+		stream->writeEnterSection(explorationRecordIndex++);
 		if(i->flag!=NULL)
-			stream->writeUint32(i->flag->gid);
+			stream->writeUint32(i->flag->gid, "gid");
 		else
-			stream->writeUint32(0);
-		stream->writeUint32(i->flag_x);
-		stream->writeUint32(i->flag_y);
-		stream->writeUint32(i->zone_x);
-		stream->writeUint32(i->zone_y);
-		stream->writeUint32(i->width);
-		stream->writeUint32(i->height);
-		stream->writeUint32(i->assigned);
-		stream->writeUint32(i->radius);
-		stream->writeUint8(i->isAssaultFlag);
+			stream->writeUint32(0, "gid");
+		stream->writeUint32(i->flag_x, "flag_x");
+		stream->writeUint32(i->flag_y, "flag_y");
+		stream->writeUint32(i->zone_x, "zone_x");
+		stream->writeUint32(i->zone_y, "zone_y");
+		stream->writeUint32(i->width, "width");
+		stream->writeUint32(i->height, "height");
+		stream->writeUint32(i->assigned, "assigned");
+		stream->writeUint32(i->radius, "radius");
+		stream->writeUint8(i->isAssaultFlag, "isAssaultFlag");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeUint32(explorers_wanted, "explorers_wanted");
@@ -3268,19 +3333,24 @@ bool InnManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 {
 	stream->readEnterSection("InnManager");
 	stream->readEnterSection("inns");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 innRecordSize = stream->readUint32("size");
+	for (Uint32 innRecordIndex = 0; innRecordIndex < innRecordSize; innRecordIndex++)
 	{
+		stream->readEnterSection(innRecordIndex);
 		innRecord ir;
-		unsigned int gid=stream->readUint32();
-		ir.pos=stream->readUint32();
-		unsigned int size=stream->readUint32();
+		unsigned int gid=stream->readUint32("gid");
+		ir.pos=stream->readUint32("pos");
+		unsigned int size=stream->readUint32("size");
 		for(unsigned int i=0; i<size; ++i)
 		{
-			ir.records[i].food_amount=stream->readUint32();
-			ir.records[i].units_eating=stream->readUint32();
+			stream->readEnterSection(i);
+			ir.records[i].food_amount=stream->readUint32("food_amount");
+			ir.records[i].units_eating=stream->readUint32("units_eating");
+			stream->readLeaveSection();
 		}
 		inns[gid]=ir;
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
@@ -3294,17 +3364,23 @@ void InnManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("InnManager");
 	stream->writeEnterSection("inns");
-	stream->writeUint32(static_cast<unsigned int>(inns.size()));
+	stream->writeUint32(static_cast<Uint32>(inns.size()), "size");
+	Uint32 innRecordIndex = 0;
 	for(std::map<int, innRecord>::const_iterator i = inns.begin(); i!=inns.end(); ++i)
 	{
-		stream->writeUint32(i->first);
-		stream->writeUint32(i->second.pos);
-		stream->writeUint32(i->second.records.size());
+		stream->writeEnterSection(innRecordIndex++);
+		stream->writeUint32(i->first, "gid");
+		stream->writeUint32(i->second.pos, "pos");
+		stream->writeUint32(i->second.records.size(), "size");
+		Uint32 recordIndex = 0;
 		for(std::vector<singleInnRecord>::const_iterator record = i->second.records.begin(); record!=i->second.records.end(); ++record)
 		{
-			stream->writeUint32(record->food_amount);
-			stream->writeUint32(record->units_eating);
+			stream->writeEnterSection(recordIndex++);
+			stream->writeUint32(record->food_amount, "food_amount");
+			stream->writeUint32(record->units_eating, "units_eating");
+			stream->writeLeaveSection();
 		}
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
@@ -3615,16 +3691,20 @@ string BuildingClearer::getName() const
 bool BuildingClearer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("BuildingClearer");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 clearingRecordSize = stream->readUint32("size");
+	for (Uint32 clearingRecordIndex = 0; clearingRecordIndex < clearingRecordSize; clearingRecordIndex++)
 	{
+		stream->readEnterSection(clearingRecordIndex);
 		clearingRecord cr;
-		cr.x=stream->readUint32();
-		cr.y=stream->readUint32();
-		cr.width=stream->readUint32();
-		cr.height=stream->readUint32();
-		cr.level=stream->readUint32();
-		cleared_buildings[stream->readUint32()];
+		cr.x=stream->readUint32("x");
+		cr.y=stream->readUint32("y");
+		cr.width=stream->readUint32("width");
+		cr.height=stream->readUint32("height");
+		cr.level=stream->readUint32("level");
+		cleared_buildings[stream->readUint32("first")]=cr;
+		// FIXME : clear the container before load
+		
+		stream->readLeaveSection();
 	}
 
 	stream->readLeaveSection();
@@ -3637,15 +3717,18 @@ bool BuildingClearer::load(GAGCore::InputStream *stream, Player *player, Sint32 
 void BuildingClearer::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("BuildingClearer");
-	stream->writeUint32(cleared_buildings.size());
+	stream->writeUint32(cleared_buildings.size(), "size");
+	Uint32 clearingRecordIndex = 0;
 	for(map<int, clearingRecord>::const_iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
 	{
-		stream->writeUint32(i->first);
-		stream->writeUint32(i->second.x);
-		stream->writeUint32(i->second.y);
-		stream->writeUint32(i->second.width);
-		stream->writeUint32(i->second.height);
-		stream->writeUint32(i->second.level);
+		stream->writeEnterSection(clearingRecordIndex++);
+		stream->writeUint32(i->second.x, "x");
+		stream->writeUint32(i->second.y, "y");
+		stream->writeUint32(i->second.width, "width");
+		stream->writeUint32(i->second.height, "height");
+		stream->writeUint32(i->second.level, "level");
+		stream->writeUint32(i->first, "first");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 }
@@ -3889,13 +3972,16 @@ string Farmer::getName() const
 bool Farmer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("Farmer");
-	unsigned int n = stream->readUint32();
-	while(n--)
+	Uint32 pointsSize = stream->readUint32("size");
+	for (Uint32 pointsIndex = 0; pointsIndex < pointsSize; pointsIndex++)
 	{
+		stream->readEnterSection(pointsIndex);
 		point p;
-		p.x=stream->readUint16();
-		p.y=stream->readUint16();
+		p.x=stream->readUint16("x");
+		p.y=stream->readUint16("y");
 		resources.insert(p);
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	return true;
@@ -3907,11 +3993,14 @@ bool Farmer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMi
 void Farmer::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("Farmer");
-	stream->writeUint32(resources.size());
+	stream->writeUint32(resources.size(), "size");
+	Uint32 pointsIndex = 0;
 	for(set<point>::const_iterator i=resources.begin(); i!=resources.end(); ++i)
 	{
-		stream->writeUint16(i->x);
-		stream->writeUint16(i->y);
+		stream->writeEnterSection(pointsIndex++);
+		stream->writeUint16(i->x, "x");
+		stream->writeUint16(i->y, "y");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 }

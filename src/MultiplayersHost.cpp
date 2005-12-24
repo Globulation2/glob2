@@ -1513,7 +1513,7 @@ void MultiplayersHost::sendingTime()
 					addSint32(data, brandwidth, 4);
 				addUint32(data, sendingIndex, 8);
 				stream->seekFromStart(sendingIndex);
-				stream->read(data+12, size);
+				stream->read(data+12, size, NULL);
 				bool success=sessionInfo.players[p].send(data, 12+size);
 				if (!success)
 				{

@@ -52,8 +52,8 @@ namespace GAGCore
 	
 	void BinaryOutputStream::writeText(const std::string &v, const char *name)
 	{
-		writeUint32(v.size());
-		write(v.c_str(), v.size()); 
+		writeUint32(v.size(), NULL);
+		write(v.c_str(), v.size(), NULL); 
 	}
 	
 	void BinaryInputStream::readEndianIndependant(void *v, size_t size, const char *name)
@@ -78,9 +78,9 @@ namespace GAGCore
 	
 	std::string BinaryInputStream::readText(const char *name)
 	{
-		size_t len = readUint32();
+		size_t len = readUint32(NULL);
 		std::valarray<char> buffer(len+1);
-		read(&buffer[0], len);
+		read(&buffer[0], len, NULL);
 		buffer[len] = 0;
 		return std::string(&buffer[0]);
 	}
