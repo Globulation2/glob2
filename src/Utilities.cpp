@@ -498,7 +498,7 @@ namespace Utilities
 		va_list arglist;
 		va_start(arglist, format);
 		vsnprintf(buffer, 256, format, arglist);
-		stream->write(buffer, strlen(buffer));
+		stream->write(buffer, strlen(buffer), buffer);
 		va_end(arglist);
 	}
 	

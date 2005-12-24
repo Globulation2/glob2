@@ -25,13 +25,13 @@
 #include "Team.h"
 
 //! Save in stream at offset the actual file pos
-#define SAVE_OFFSET(stream, offset) \
+#define SAVE_OFFSET(stream, offset, name) \
 	{ \
 		if (stream->canSeek()) \
 		{ \
 			Uint32 pos = stream->getPosition(); \
 			stream->seekFromStart(offset); \
-			stream->writeUint32(pos); \
+			stream->writeUint32(pos, name); \
 			stream->seekFromStart(pos); \
 		} \
 	}

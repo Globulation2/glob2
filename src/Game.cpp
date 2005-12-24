@@ -1020,7 +1020,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 	}
 	else
 	{
-		SAVE_OFFSET(stream, 16);
+		SAVE_OFFSET(stream, 16, "gameOffset");
 		stream->write("GaBe", 4, "signatureStart");
 
 		stream->writeUint32(stepCounter, "stepCounter");
@@ -1029,7 +1029,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 		stream->writeUint32(getSyncRandSeedC(), "SyncRandSeedC");
 		stream->write("GaSy", 4, "signatureAfterSyncRand");
 
-		SAVE_OFFSET(stream, 20);
+		SAVE_OFFSET(stream, 20, "teamsOffset");
 		stream->writeEnterSection("teams");
 		for (int i=0; i<session.numberOfTeam; ++i)
 		{
@@ -1040,11 +1040,11 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 		stream->writeLeaveSection();
 		stream->write("GaTe", 4, "signatureAfterTeams");
 
-		SAVE_OFFSET(stream, 28);
+		SAVE_OFFSET(stream, 28, "mapOffset");
 		map.save(stream);
 		stream->write("GaMa", 4, "signatureAfterMap");
 		
-		SAVE_OFFSET(stream, 24);
+		SAVE_OFFSET(stream, 24, "playersOffset");
 		stream->writeEnterSection("players");
 		for (int i=0; i<session.numberOfPlayer; ++i)
 		{
@@ -1055,7 +1055,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 		stream->writeLeaveSection();
 		stream->write("GaPl", 4, "signatureAfterPlayers");
 
-		SAVE_OFFSET(stream, 32);
+		SAVE_OFFSET(stream, 32, "mapScriptOffset");
 		script.save(stream);
 		
 		stream->writeText(nextMap, "nextMap");

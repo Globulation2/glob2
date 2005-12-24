@@ -118,7 +118,7 @@ void SessionGame::save(GAGCore::OutputStream *stream)
 	if (mapGenerationDescriptor)
 	{
 		stream->writeSint32((Sint32)true, "mapGenerationDescriptor");
-		SAVE_OFFSET(stream, 36);
+		SAVE_OFFSET(stream, 36, "generationDescriptorOffset");
 		mapGenerationDescriptor->save(stream);
 	}
 	else
@@ -434,7 +434,7 @@ void SessionInfo::save(GAGCore::OutputStream *stream)
 
 	stream->writeEnterSection("SessionInfo");
 	// update to this version
-	SAVE_OFFSET(stream, 12);
+	SAVE_OFFSET(stream, 12, "sessionInfoOffset");
 	
 	stream->write(mapName, MAP_NAME_MAX_SIZE, "mapName");
 
