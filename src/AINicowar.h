@@ -1104,7 +1104,7 @@ namespace Nicowar
 	const unsigned int BUILD_AREA_VERTICAL_OVERLAP=4;
 	const unsigned int BUILD_AREA_EXTENTION_WIDTH=8;
 	const unsigned int BUILD_AREA_EXTENTION_HEIGHT=8;
-	const unsigned int BUILDING_PADDING=2;
+	const unsigned int BUILDING_PADDING=1;
 	///This this enabled, buildings are constructed instantly, which is cheating,
 	///although can aid in debugging in certain situations
 	const bool CHEAT_INSTANT_BUILDING=false;
@@ -1136,7 +1136,7 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{20, 8, 20, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{20, 8, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
