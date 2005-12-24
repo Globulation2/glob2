@@ -1389,28 +1389,6 @@ bool PrioritizedBuildingAttack::attack()
 {
 	GridPollingSystem gps(ai);
 
-	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
-	//ATTACK_PRIORITY variable.
-	vector<vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
-	for(int i=0; i<1024; ++i)
-	{
-		Building* b = enemy->myBuildings[i];
-		if(b)
-		{
-			if(b->constructionResultState==Building::NO_CONSTRUCTION){
-				unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+IntBuildingType::NB_BUILDING-3, b->type->shortTypeNum)-ATTACK_PRIORITY;
-				buildings[pos].push_back(b);
-			}
-		}
-	}
-
-	//And now we shuffle then for added randomness
-	for(unsigned int i=0; i<buildings.size(); ++i)
-	{
-		random_shuffle(buildings[i].begin(), buildings[i].end(), syncRandAdapter);
-	}
-
-
 	//The following gets the highest barracks level the player has
 	unsigned int max_barracks_level=0;
 	unsigned int found_barracks=0;
@@ -1458,6 +1436,27 @@ bool PrioritizedBuildingAttack::attack()
 			else if(available_units <= needed)
 				available_units=0;
 		}
+	}
+
+	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
+	//ATTACK_PRIORITY variable.
+	vector<vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
+	for(int i=0; i<1024; ++i)
+	{
+		Building* b = enemy->myBuildings[i];
+		if(b)
+		{
+			if(b->constructionResultState==Building::NO_CONSTRUCTION){
+				unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+IntBuildingType::NB_BUILDING-3, b->type->shortTypeNum)-ATTACK_PRIORITY;
+				buildings[pos].push_back(b);
+			}
+		}
+	}
+
+	//And now we shuffle then for added randomness
+	for(unsigned int i=0; i<buildings.size(); ++i)
+	{
+		random_shuffle(buildings[i].begin(), buildings[i].end(), syncRandAdapter);
 	}
 
 	//Iterate through the buildings, starting attacks as neccecary, and stopping when
@@ -1601,7 +1600,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	unsigned int available_units = getFreeUnits(ai.team, ATTACK_STRENGTH, max_barracks_level+1);
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
-		if(j->flag == NOGBID)
+		if(j->flag != NOGBID)
 		{
 			Building* flag=getBuildingFromGid(ai.game, j->flag);
 			//Add the number of units that are assigned to this flag to the total number of units available
@@ -1829,9 +1828,6 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 			unsigned int fx=i->x + x - BUILD_AREA_EXTENTION_WIDTH;
 			for(unsigned int y=0; y<full_height; ++y)
 			{
-				if(imap[x][y]==1)
-					continue;
-
 				unsigned int fy=i->y + y - BUILD_AREA_EXTENTION_HEIGHT;
 				//Check off hidden or occupied squares
 				if(!ai.map->isHardSpaceForBuilding(fx, fy) || !ai.map->isMapDiscovered(fx, fy, ai.team->me))
