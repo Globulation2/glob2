@@ -1390,7 +1390,7 @@ void Team::syncStep(void)
 			if (u->typeNum != EXPLORER)
 			{
 				nbUsefullUnits++;
-				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->attachedBuilding->type->canFeedUnit))
+				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->attachedBuilding && u->attachedBuilding->type->canFeedUnit))
 					nbUsefullUnitsAlone++;
 			}
 			u->syncStep();
