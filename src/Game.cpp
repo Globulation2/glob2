@@ -1863,7 +1863,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			{
 				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->wheatCareMap[0][(x+viewportX)+(y+viewportY)*map.w]);
 				
-				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->notGrassMap[(x+viewportX)+(y+viewportY)*map.w]);
+				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->notGrassMap[(x+viewportX)+(y+viewportY)*map.w]);
+				
+				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getExplored(x+viewportX, y+viewportY, 0));
 				
 				//((AICastor *)players[0].ai->aiImplementation)->wheatCareMap
 			}
