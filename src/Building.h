@@ -206,7 +206,7 @@ public:
 	//! return the number of differents fruits in this building. If mask is non-null, return the mask as well
 	Uint32 eatOnce(Uint32 *mask=NULL);
 	
-	int availableHappynessLevel();
+	int availableHappynessLevel(bool guarantee);
 
 	static Sint32 GIDtoID(Uint16 gid);
 	static Sint32 GIDtoTeam(Uint16 gid);

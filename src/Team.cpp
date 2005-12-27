@@ -787,241 +787,129 @@ Building *Team::findNearestFood(Unit *unit)
 {
 	SessionGame &session=game->session;
 
-	bool concurency=false;																			//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
-	for (int ti=0; ti<session.numberOfTeam; ti++)
-		if (ti!=teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
-	{
-		concurency=true;
-		break;
-	}
-
-	int enemyHappyness=0;
-	int maxHappyness[32];
-	memset(maxHappyness, 0, 32*sizeof(int));
+	bool concurency = false;//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
+	for (int ti= 0; ti < session.numberOfTeam; ti++)
+		if (ti != teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
+		{
+			concurency = true;
+			break;
+		}
+	
+	// first, we check for the best food an enemy can offer:
+	Sint32 bestEnemyHappyness = 0;
+	Sint32 maxDist = unit->hungry / unit->race->hungryness + unit->hp;
+	Sint32 bestDist = 0x7FFFFFFF;
+	Building *bestEnemyFood = NULL;
 	if (concurency)
 	{
 		if (unit->performance[FLY])
 		{
-			for (int ti=0; ti<session.numberOfTeam; ti++)
-				if (ti!=teamNumber)
+			for (int ti = 0; ti < session.numberOfTeam; ti++)
 			{
-				Team *t=game->teams[ti];
-				if ((t->sharedVisionFood & me) && !(t->allies & me))
-					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+				if (ti == teamNumber)
+					continue;
+				Team *team = game->teams[ti];
+				if ((!team->sharedVisionFood & me) || (team->allies & me))
+					continue;
+				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
-					int h=(*bi)->availableHappynessLevel();
-					if (h>maxHappyness[ti])
+					Sint32 dist = (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
+					if (dist >= maxDist)
+						continue;
+					
+					int happyness = (*bi)->availableHappynessLevel(true);
+					if (happyness > bestEnemyHappyness)
 					{
-						maxHappyness[ti]=h;
-						if (h>enemyHappyness)
-							enemyHappyness=h;
+						bestEnemyHappyness = happyness;
+						bestDist = dist;
+						bestEnemyFood = *bi;
+					}
+					else if (happyness == bestEnemyHappyness && dist < bestDist)
+					{
+						bestDist = dist;
+						bestEnemyFood = *bi;
 					}
 				}
 			}
 		}
 		else
 		{
-			int x=unit->posX;
-			int y=unit->posY;
-			bool canSwim=unit->performance[SWIM];
-			for (int ti=0; ti<session.numberOfTeam; ti++)
-				if (ti!=teamNumber)
+			bool canSwim = (unit->performance[SWIM] > 0);
+			for (int ti = 0; ti < session.numberOfTeam; ti++)
 			{
-				Team *t=game->teams[ti];
-				if ((t->sharedVisionFood & me) && !(t->allies & me))
-					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+				if (ti == teamNumber)
+					continue;
+				Team *team = game->teams[ti];
+				if ((!team->sharedVisionFood & me) || (team->allies & me))
+					continue;
+				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
-					int h=(*bi)->availableHappynessLevel();
-					int dist;																		//Not initialized or assigned to in this function, but in map::buildingAvailable below.
-					if (h>maxHappyness[ti] && map->buildingAvailable(*bi, canSwim, x, y, &dist))
+					int dist;
+					if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
+						continue;
+					if (dist > maxDist)
+						continue;
+					
+					int happyness = (*bi)->availableHappynessLevel(true);
+					if (happyness > bestEnemyHappyness)
 					{
-						maxHappyness[ti]=h;
-						if (h>enemyHappyness)
-							enemyHappyness=h;
+						bestEnemyHappyness = happyness;
+						bestDist = dist;
+						bestEnemyFood = *bi;
+					}
+					else if (happyness == bestEnemyHappyness && dist < bestDist)
+					{
+						bestDist = dist;
+						bestEnemyFood = *bi;
 					}
 				}
 			}
 		}
 	}
 
-	//First we check if we have any satisfactory inns on our team.
+	//Second, we check if we have any satisfactory inns on our team.
+	// That mean it has to be better or equal than the ennemy food.
 	if (unit->performance[FLY])
 	{
-		int x=unit->posX;
-		int y=unit->posY;
-		Building *choosen=NULL;
-		int minDist=INT_MAX;
+		Sint32 bestDist = 0x7FFFFFFF;
+		Building *choosenFood = NULL;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
-			Building *b=(*bi);
-			if (b->availableHappynessLevel()>=enemyHappyness)
+			if ((*bi)->availableHappynessLevel(false) < bestEnemyHappyness)
+				continue;
+			Sint32 dist = (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
+			if (bestDist > dist)
 			{
-				int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
-				if (buildingDist<minDist)
-				{
-					choosen=b;
-					minDist=buildingDist;
-				}
+				bestDist = dist;
+				choosenFood = *bi;
 			}
 		}
-		if (choosen)
-			return choosen;
+		if (choosenFood)
+			return choosenFood;
 	}
 	else
 	{
-		int x=unit->posX;
-		int y=unit->posY;
-		bool canSwim=unit->performance[SWIM];
-		Building *choosen=NULL;
-		int minDist=INT_MAX;
+		bool canSwim = (unit->performance[SWIM] > 0);
+		Sint32 bestDist = 0x7FFFFFFF;
+		Building *choosenFood = NULL;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
-			Building *b=(*bi);
-			if (b->availableHappynessLevel()>=enemyHappyness)
+			if ((*bi)->availableHappynessLevel(false) < bestEnemyHappyness)
+				continue;
+			Sint32 dist;
+			if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
+				continue;
+			if (bestDist > dist)
 			{
-				int buildingDist;																	//Not initialized or assigned to in this function, but in map::buildingAvailable below.
-				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
-				{
-					choosen=b;
-					minDist=buildingDist;
-				}
+				bestDist = dist;
+				choosenFood = *bi;
 			}
 		}
-		if (choosen)
-			return choosen;
+		if (choosenFood)
+			return choosenFood;
 	}
-
-	if (!concurency)
-		return NULL;																				//This is bad, bad, bad. It means that if you have no opponents with Inn View on,
-	//your units CANNOT be converted --- even if an enemy inn is in normal view range.
-	//Later in the code, this turns out to mean that no team can convert any units without
-	//both being your enemy and turning on Inn View. This is inconsistent with the current
-	//documentation and with the meaning of 'inn view'. It's a convenient way to do things,
-	//but should be done away with sometime.
-	//
-	//It seems that a glob will never eat from an allied inn, either.
-
-	//Now we go through all the enemy buildings controlled by opponents with Inn View on:
-	bool concurent[32];
-	memset(concurent, 0, 32*sizeof(bool));
-
-	for (int ti=0; ti<session.numberOfTeam; ti++)
-		if (ti!=teamNumber)
-			concurent[ti]=(maxHappyness[ti]>=enemyHappyness) && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me);
-
-	if (unit->performance[FLY])
-	{
-		int x=unit->posX;
-		int y=unit->posY;
-		Building *choosen=NULL;
-		int minDist=INT_MAX;
-		for (int ti=0; ti<session.numberOfTeam; ti++)
-			if (ti!=teamNumber && concurent[ti])
-		{
-			Team *t=game->teams[ti];
-			for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
-			{
-				Building *b=(*bi);
-				if (b->availableHappynessLevel()>=enemyHappyness)
-				{
-					int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
-					if (buildingDist<minDist)
-					{
-						choosen=b;
-						minDist=buildingDist;
-					}
-				}
-			}
-		}
-		return choosen;
-	}
-	else
-	{
-		int x=unit->posX;
-		int y=unit->posY;
-		bool canSwim=unit->performance[SWIM];
-		Building *choosen=NULL;
-		int minDist=INT_MAX;
-		for (int ti=0; ti<session.numberOfTeam; ti++)
-			if (ti!=teamNumber && concurent[ti])
-		{
-			Team *t=game->teams[ti];
-			for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
-			{
-				Building *b=(*bi);
-				if (b->availableHappynessLevel()>=enemyHappyness)
-				{
-					int buildingDist;
-					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
-					{
-						choosen=b;
-						minDist=buildingDist;
-					}
-				}
-			}
-		}
-
-		if (choosen)
-		{
-			if (verbose)
-				printf("guid=%d found gbui=%d\n", unit->gid, choosen->gid);
-		}
-		else
-		{
-			//This code is reached only if these conditions are met:
-			//There is at least one team with Inn-View on against you.
-			//Neither you nor any of the aforementioned teams has any inns available.
-			//The unit in question does not fly.
-			//
-			//It does not do anything, because the only way it could choose a building, that building
-			//has been chosen already. It just prints a string for each building telling why it can't use that one.
-			//It only states one reason. Possibly it could be improved such that it states all.
-			if (verbose)
-				printf("guid=%d found no ennemy building (enemyHappyness=%d)\n", unit->gid, enemyHappyness);
-
-			int x=unit->posX;
-			int y=unit->posY;
-			bool canSwim=unit->performance[SWIM];
-			Building *choosen=NULL;
-			int minDist=INT_MAX;
-			for (int ti=0; ti<session.numberOfTeam; ti++)
-				if (ti!=teamNumber && concurent[ti])
-			{
-				if (verbose)
-					printf(" team ti=%d suitable, nbb=%d\n", ti, static_cast<unsigned>(canFeedUnit.size()));
-				Team *t=game->teams[ti];
-				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
-				{
-					Building *b=(*bi);
-					if (b->availableHappynessLevel()>=enemyHappyness)
-					{
-						int buildingDist;															//Not initialized or assigned to in this function, but in map::buildingAvailable below.
-						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist))
-						{
-							if (/*map->buildingAvailable(b, canSwim, x, y, &buildingDist) &&*/ buildingDist<minDist)
-							{
-								choosen=b;
-								minDist=buildingDist;
-							}
-							else
-							if (verbose)
-								printf(" building bgid=%d buildingDist=%d, minDist=%d\n", b->gid, buildingDist, minDist);
-						}
-						else
-						if (verbose)
-							printf(" building bgid=%d not available\n", b->gid);
-					}
-					else
-					if (verbose)
-						printf(" building bgid=%d availableHappynessLevel()=%d < %d\n", b->gid, b->availableHappynessLevel(), enemyHappyness);
-				}
-			}
-			else
-			if (verbose)
-				printf(" team ti=%d not suitable\n", ti);
-		}
-		return choosen;
-	}
+	
+	return bestEnemyFood;
 }
 
 
@@ -1492,17 +1380,17 @@ void Team::syncStep(void)
 	if (noMoreBuildingSitesCountdown>0)
 		noMoreBuildingSitesCountdown--;
 
-	int nbUsefullUnits=0;
-	int nbUsefullUnitsAlone=0;
-	for (int i=0; i<1024; i++)
+	int nbUsefullUnits = 0;
+	int nbUsefullUnitsAlone = 0;
+	for (int i = 0; i < 1024; i++)
 	{
-		Unit *u=myUnits[i];
+		Unit *u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum!=EXPLORER)
+			if (u->typeNum != EXPLORER)
 			{
 				nbUsefullUnits++;
-				if (u->medical==Unit::MED_FREE)
+				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->attachedBuilding->type->canFeedUnit))
 					nbUsefullUnitsAlone++;
 			}
 			u->syncStep();
@@ -1511,12 +1399,10 @@ void Team::syncStep(void)
 				fprintf(logFile, "unit guid=%d deleted\n", u->gid);
 				if (u->attachedBuilding)
 					fprintf(logFile, " attachedBuilding->bgid=%d\n", u->attachedBuilding->gid);
-
-				if(game->selectedUnit==u)
-					game->selectedUnit=NULL;
-
+				if(game->selectedUnit == u)
+					game->selectedUnit = NULL;
 				delete u;
-				myUnits[i]=NULL;
+				myUnits[i] = NULL;
 			}
 		}
 	}
@@ -1650,7 +1536,7 @@ void Team::syncStep(void)
 		fprintf(logFile, " isEnoughFoodInSwarm=%d\n", isEnoughFoodInSwarm);
 		fprintf(logFile, " nbUsefullUnitsAlone=%d\n", nbUsefullUnitsAlone);
 		fprintf(logFile, " nbUsefullUnits=%d\n", nbUsefullUnits);
-		fprintf(logFile, "  canFeedUnit=%zd\n", canFeedUnit.size());
+		fprintf(logFile, "  canFeedUnit.size()=%zd\n", canFeedUnit.size());
 		fprintf(logFile, "  canHealUnit.size()=%zd\n", canHealUnit.size());
 	}
 	//isAlive=isAlive && (isEnoughFoodInSwarm || nbUsefullUnitsAlone!=0 || (nbUsefullUnits!=0 && (canFeedUnit.size()>0 || canHealUnit.size()>0)));
