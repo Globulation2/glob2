@@ -524,11 +524,13 @@ void Unit::syncStep(void)
 		{
 			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther);
 			owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther, owner->game->teams);
+			owner->map->setMapExplored(posX-3, posY-3, 7, 7, owner->teamNumber);
 		}
 		else
 		{
 			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther);
 			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther, owner->game->teams);
+			owner->map->setMapExplored(posX-1, posY-1, 3, 3, owner->teamNumber);
 		}
 	}
 	
@@ -1704,71 +1706,30 @@ void Unit::handleMovement(void)
 			}
 			else if ((movement!=MOV_GOING_DXDY)||((syncRand()&0xFF)<0xEF))
 			{
-				int dist[8];
-				int minDist=32;
-				int minDistj=8;
-				for (int j=0; j<8; j++)
+				int scoreX = 0;
+				int scoreY = 0;
+				for (int delta = -3; delta <= 3; delta++)
 				{
-					dist[j]=32;
-					// WARNING : the i=4 is linked to the sight range of the explorer.
-					for (int i=4; i<32; i+=4)
-					{
-						int dx, dy;
-						dxdyfromDirection(j, &dx, &dy);
-						if (!owner->map->isMapDiscovered(posX+i*dx, posY+j*dy, owner->sharedVisionOther))
-						{
-							dist[j]=i;
-							break;
-						}
-					}
-					if (dist[j]<minDist)
-					{
-						minDist=dist[j];
-						minDistj=j;
-					}
-					if (verbose)
-						printf("dist[%d]=%d.\n", j, dist[j]);
+					scoreX -= owner->map->getExplored(posX + 4, posY + delta, owner->teamNumber);
+					scoreX += owner->map->getExplored(posX - 4, posY + delta, owner->teamNumber);
+					scoreY -= owner->map->getExplored(posX + delta, posY + 4, owner->teamNumber);
+					scoreY += owner->map->getExplored(posX + delta, posY - 4, owner->teamNumber);
 				}
-				
-				if (minDist==32)
-				{
-					if (verbose)
-						printf("guid=(%d) I can''t see black.\n", gid);
-					if ((syncRand()&0xFF)<0xEF)
-					{
-						movement=MOV_GOING_DXDY;
-					}
-					else if ((syncRand()&0xFF)<0xEF)
-					{
-						directionFromDxDy();
-						direction=(direction+((syncRand()&1)<<1)+7)&7;
-						dxdyfromDirection();
-						movement=MOV_GOING_DXDY;
-					}
-					else 
-					{
-						movement=MOV_RANDOM_FLY;
-					}
-				}
+				int cdx, cdy;
+				simplifyDirection(scoreX, scoreY, &cdx, &cdy);
+				//printf("score = (%2d, %2d), cd = (%d, %d)\n", scoreX, scoreY, cdx, cdy);
+				if (cdx == 0 && cdy == 0)
+					movement = MOV_RANDOM_FLY;
 				else
 				{
-					int decj=syncRand()&7;
-					if (verbose)
-						printf("guid=(%d) minDist=%d, minDistj=%d.\n", gid, minDist, minDistj);
-					for (int j=0; j<8; j++)
-					{
-						int d=(decj+j)&7;
-
-						if (dist[d]<=minDist)
-						{
-							movement=MOV_GOING_DXDY;
-							dxdyfromDirection(d, &dx, &dy);
-							break;
-						}
-					}
+					dx = cdx;
+					dy = cdy;
+					directionFromDxDy();
+					direction=(direction+((syncRand()&1))+7)&7;
+					dxdyfromDirection();
+					movement = MOV_GOING_DXDY;
 				}
 			}
-
 			if (movement!=MOV_GOING_DXDY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
 				movement=MOV_RANDOM_FLY;
 		}

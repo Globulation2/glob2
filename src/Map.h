@@ -157,6 +157,13 @@ public:
 			for (int dy=y; dy<y+h; dy++)
 				setMapBuildingsDiscovered(dx, dy, sharedVision, teams);
 	}
+	
+	void setMapExplored(int x, int y, int w, int h, int team)
+	{
+		for (int dx = x; dx < x + w; dx++)
+			for (int dy = y; dy < y + h; dy++)
+				exploredArea[team][((dy & hMask) << wDec) | (dx & wMask)] = 255;
+	}
 
 	//! Set all map for all teams to undiscovered state
 	void unsetMapDiscovered(void)
@@ -248,6 +255,11 @@ public:
 	Uint32 getForbidden(int x, int y)
 	{
 		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden;
+	}
+	
+	Uint8 getExplored(int x, int y, int team)
+	{
+		return exploredArea[team][((y&hMask)<<wDec)+(x&wMask)];
 	}
 	
 	void setTerrain(int x, int y, Uint16 terrain)
@@ -447,6 +459,9 @@ public:
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
 	
+	void initExploredArea(int teamNumber);
+	void updateExploredArea(int teamNumber);
+	
 protected:
 	// computationals pathfinding statistics:
 	int ressourceAvailableCount[16][MAX_RESSOURCES];
@@ -563,6 +578,11 @@ public:
 	// Used to attrack idle warriors into guard areas
 	//[int team][bool unitCanSwim][int mapX][int mapY]
 	Uint8 *guardAreasGradient[32][2];
+	
+	// Used to guide explorers
+	//[int team]
+	// 0=unexplored, 255=just explored
+	Uint8 *exploredArea[32];
 	
 protected:
 	//Used for scheduling computation time.

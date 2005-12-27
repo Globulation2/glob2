@@ -93,6 +93,8 @@ Map::Map()
 			forbiddenGradient[t][s] = NULL;
 			guardAreasGradient[t][s] = NULL;
 		}
+	for (int t = 0; t < 32; t++)
+		exploredArea[t] = NULL;
 	
 	undermap=NULL;
 	sectors=NULL;
@@ -243,6 +245,14 @@ void Map::clear()
 					guardAreasGradient[t][s] = NULL;
 				}
 		
+		for (int t=0; t<32; t++)
+			if (exploredArea[t])
+			{
+				assert(exploredArea[t]);
+				delete[] exploredArea[t];
+				exploredArea[t] = NULL;
+			}
+		
 		assert(undermap);
 		delete[] undermap;
 		undermap=NULL;
@@ -274,6 +284,9 @@ void Map::clear()
 				assert(forbiddenGradient[t][s] == NULL);
 				assert(guardAreasGradient[t][s] == NULL);
 			}
+		for (int t=0; t<32; t++)
+			assert(exploredArea[t] == NULL);
+		
 		assert(undermap==NULL);
 		assert(sectors==NULL);
 		assert(listedAddr==NULL);
@@ -1023,6 +1036,13 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 				guardAreasGradient[t][s] = new Uint8[size];
 				updateGuardAreasGradient(t, s);
 			}
+		for (int t=0; t<sessionGame->numberOfTeam; t++)
+		{
+			assert(exploredArea[t] == NULL);
+			exploredArea[t] = new Uint8[size];
+			initExploredArea(t);
+		}
+		
 		this->game=game;
 	}
 
@@ -1139,6 +1159,10 @@ void Map::addTeam(void)
 		guardAreasGradient[t][s] = new Uint8[size];
 		updateGuardAreasGradient(t, s);
 	}
+	
+	assert(exploredArea[t] == NULL);
+	exploredArea[t] = new Uint8[size];
+	initExploredArea(t);
 }
 
 void Map::removeTeam(void)
@@ -1231,6 +1255,13 @@ void Map::syncStep(Uint32 stepCounter)
 	growRessources();
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
+	
+	if (stepCounter & 1)
+	{
+		int team = (stepCounter >> 1) & 31;
+		if (team < game->session.numberOfTeam)
+			updateExploredArea(team);
+	}
 	
 	// We only update one gradient per step:
 	bool updated=false;
@@ -4209,6 +4240,18 @@ void Map::updateGuardAreasGradient()
 {
 	for (int i=0; i<game->session.numberOfTeam; i++)
 		updateGuardAreasGradient(i);
+}
+
+void Map::initExploredArea(int teamNumber)
+{
+	std::fill(exploredArea[teamNumber], exploredArea[teamNumber] + size, 0);
+}
+
+void Map::updateExploredArea(int teamNumber)
+{
+	for (size_t i = 0; i < size; i++)
+		if (exploredArea[teamNumber][i] > 0)
+			exploredArea[teamNumber][i]--;
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)
