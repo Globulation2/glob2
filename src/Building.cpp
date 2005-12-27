@@ -2300,14 +2300,16 @@ Uint32 Building::eatOnce(Uint32 *mask)
 	return fruitCount;
 }
 
-int Building::availableHappynessLevel()
+int Building::availableHappynessLevel(bool guarantee)
 {
-	int inside=(int)unitsInside.size();
-	if (ressources[CORN]<=inside)
+	int inside = (int)unitsInside.size();
+	if (guarantee)
+		inside += unitsInsideSubscribe.size();
+	if (ressources[CORN] <= inside)
 		return 0;
-	int happyness=1;
-	for (int i=0; i<HAPPYNESS_COUNT; i++)
-		if (ressources[i+HAPPYNESS_BASE]>inside)
+	int happyness = 1;
+	for (int i = 0; i < HAPPYNESS_COUNT; i++)
+		if (ressources[i + HAPPYNESS_BASE]  >inside)
 			happyness++;
 	return happyness;
 }
