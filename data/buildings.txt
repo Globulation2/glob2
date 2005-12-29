@@ -1039,10 +1039,11 @@ width 2
 height 2
 decLeft -1
 decTop -1
-maxWood 6
+maxWood 9
+maxStone 9
 hpInit 1
-hpMax 200
-hpInc 34
+hpMax 720
+hpInc 40
 armor 0
 level 0
 shortTypeNum 7
@@ -1065,8 +1066,8 @@ maxUnitWorking 1
 
 shootingRange 5
 shootDamage 30
-shootSpeed 4700
-shootRythme 1800
+shootSpeed 5000
+shootRythme 1700
 maxBullets 12
 multiplierStoneToBullets 3
 
@@ -1074,8 +1075,8 @@ width 2
 height 2
 decLeft -1
 decTop -1
-hpInit 200
-hpMax 200
+hpInit 720
+hpMax 720
 armor 9
 level 0
 shortTypeNum 7
@@ -1098,11 +1099,11 @@ width 2
 height 2
 decLeft -1
 decTop -1
-maxWood 3
-maxStone 6
-hpInit 200
-hpMax 300
-hpInc 12
+maxWood 9
+maxStone 9
+hpInit 720
+hpMax 1080
+hpInc 20
 armor 9
 level 1
 shortTypeNum 7
@@ -1129,7 +1130,7 @@ maxUnitWorking 1
 shootingRange 6
 shootDamage 40
 shootSpeed 5700
-shootRythme 2000
+shootRythme 1800
 maxBullets 16
 multiplierStoneToBullets 4
 
@@ -1137,8 +1138,8 @@ width 2
 height 2
 decLeft -1
 decTop -1
-hpInit 300
-hpMax 300
+hpInit 1080
+hpMax 1080
 armor 13
 level 1
 shortTypeNum 7
@@ -1161,13 +1162,13 @@ width 2
 height 2
 decLeft -1
 decTop -1
-maxWood 5
-maxStone 5
-maxAlgue 3
-hpInit 300
-hpMax 450
-hpInc 12
-armor 13
+maxWood 17
+maxStone 17
+maxAlgue 2
+hpInit 1080
+hpMax 1440
+hpInc 10
+armor 10
 level 2
 shortTypeNum 7
 maxUnitWorking 1
@@ -1190,18 +1191,18 @@ maxStone 4
 maxUnitWorking 1
 
 shootingRange 7
-shootDamage 60
-shootSpeed 8000
-shootRythme 2200
+shootDamage 50
+shootSpeed 7000
+shootRythme 1900
 maxBullets 20
-multiplierStoneToBullets 5
+multiplierStoneToBullets 7
 
 width 2
 height 2
 decLeft -1
 decTop -1
-hpInit 450
-hpMax 450
+hpInit 1440
+hpMax 1440
 armor 19
 level 2
 shortTypeNum 7
