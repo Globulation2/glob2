@@ -1797,14 +1797,16 @@ void Building::turretStep(void)
 	enum TargetType
 	{
 		TARGETTYPE_NONE,
-		TARGETTYPE_WARRIOR,
-		TARGETTYPE_WORKER,
 		TARGETTYPE_BUILDING,
+		TARGETTYPE_WORKER,
+		TARGETTYPE_WARRIOR,
 	};
 	// The type of the best target we have found up to now
 	TargetType targetFound = TARGETTYPE_NONE;
 	// The score of the best target we have found up to now
-	int bestScore = 0;
+	int bestScore = INT_MIN;
+	// The number of ticks before the unit may move away
+	int bestTicks = 0;
 	// The position of the best target we have found up to now
 	int bestTargetX = 0, bestTargetY=0;
 	
@@ -1867,20 +1869,19 @@ void Building::turretStep(void)
 						if ((owner->sharedVisionExchange & otherTeamMask) == 0)
 						{
 							int targetScore;
+							int targetTicks = (256 - testUnit->delta) / testUnit->speed;
+							// skip this unit if it will move away too soon.
+							if (targetTicks <= 1)
+								continue;
 							// shoot warrior first, then workers if no warrior
 							if (testUnit->typeNum == WARRIOR)
 							{
-								// score is proportional to speed, probability to hit, attack strength and actual damage being conducted
-								if (testUnit->movement == Unit::MOV_ATTACKING_TARGET)
-									targetScore = 1000 + testUnit->getRealAttackStrength();
-								else
-									targetScore = testUnit->speed/(256-testUnit->delta) + 10*testUnit->getRealAttackStrength();
-								// adjust score for range
-								targetScore = ((range+1)*targetScore)/(i+1);
-								// anything else or warriors with lower scores are overriden
-								if ((targetFound != TARGETTYPE_WARRIOR) || (targetScore > bestScore))
+								targetScore = testUnit->getRealAttackStrength() + 2 * targetTicks - 2 * i - (testUnit->hp >> 3);
+								// lower scores are overriden
+								if (targetScore > bestScore)
 								{
 									bestScore = targetScore;
+									bestTicks = targetTicks;
 									bestTargetX = targetX;
 									bestTargetY = targetY;
 									targetFound = TARGETTYPE_WARRIOR;
@@ -1888,14 +1889,13 @@ void Building::turretStep(void)
 							}
 							else if ((targetFound != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER))
 							{
-								// score is proportional to speed and probability to hit
-								targetScore = testUnit->speed/(256-testUnit->delta);
 								// adjust score for range
-								targetScore = ((range+1)*targetScore)/(i+1);
-								// building or workers with lower scores are overriden
-								if ((targetFound != TARGETTYPE_WORKER) || (targetScore > bestScore))
+								targetScore = 2 * targetTicks - 2 * i - (testUnit->hp >> 2);
+								// lower scores are overriden
+								if (targetScore > bestScore)
 								{
 									bestScore = targetScore;
+									bestTicks = targetTicks;
 									bestTargetX = targetX;
 									bestTargetY = targetY;
 									targetFound = TARGETTYPE_WORKER;
@@ -1916,10 +1916,11 @@ void Building::turretStep(void)
 						if (enemies & otherTeamMask)
 						{
 							// adjust score for range
-							int targetScore = (range+1)/(i+1); 
+							int targetScore = -i;
 							if (targetScore > bestScore)
 							{
 								bestScore = targetScore;
+								bestTicks = 256;
 								bestTargetX = targetX;
 								bestTargetY = targetY;
 								targetFound = TARGETTYPE_BUILDING;
@@ -1990,12 +1991,14 @@ void Building::turretStep(void)
 				return;
 			}
 		}
-
-		Bullet *b = new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, bestTargetX, bestTargetY, posX-1, posY-1, type->width+2, type->height+2);
-		s->bullets.push_front(b);
-
-		bullets--;
-		shootingCooldown = SHOOTING_COOLDOWN_MAX;
+		
+		if (ticksLeft < bestTicks)
+		{
+			Bullet *b = new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, bestTargetX, bestTargetY, posX-1, posY-1, type->width+2, type->height+2);
+			s->bullets.push_front(b);
+			bullets--;
+			shootingCooldown = SHOOTING_COOLDOWN_MAX;
+		}
 	}
 
 }
