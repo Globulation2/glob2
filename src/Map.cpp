@@ -2214,6 +2214,8 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 		size_t xr = ((x + 1) & wMask);
 		
 		Uint8 g = gradient[(y << wDec) | x] - 1;
+		if (g <= 2)
+			continue;
 		
 		size_t deltaAddrC[8];
 		Uint8 *addr;
@@ -2234,8 +2236,7 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 			if (side > 0 && side < g)
 			{
 				*addr = g;
-				if (g > 2)
-					listedAddr[listCountWrite++] = deltaAddrC[ci];
+				listedAddr[listCountWrite++] = deltaAddrC[ci];
 			}
 		}
 	}
