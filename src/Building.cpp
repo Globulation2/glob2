@@ -1812,6 +1812,8 @@ void Building::turretStep(void)
 	
 	for (int i=0; i<=range ; i++)
 	{
+		// The number of ticks before the bullet hits the target at range "i".
+		int ticksToHit = ((i << 5) + ((type->width) << 4)) / (type->shootSpeed>>8);
 		for (int j=0; j<=i ; j++)
 		{
 			for (int k=0; k<8; k++)
@@ -1868,15 +1870,28 @@ void Building::turretStep(void)
 						Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
 						if ((owner->sharedVisionExchange & otherTeamMask) == 0)
 						{
-							int targetScore;
 							int targetTicks = (256 - testUnit->delta) / testUnit->speed;
 							// skip this unit if it will move away too soon.
-							if (targetTicks <= 2)
+							if (targetTicks <= ticksToHit)
 								continue;
 							// shoot warrior first, then workers if no warrior
 							if (testUnit->typeNum == WARRIOR)
 							{
-								targetScore = testUnit->getRealAttackStrength() + 2 * targetTicks - 2 * i - (testUnit->hp >> 3);
+								int targetOffense = (testUnit->getRealAttackStrength() * testUnit->performance[ATTACK_SPEED]); // 88 to 1024
+								int targetWeakeness = 0; // 0 to 512
+								if (testUnit->hp > 0)
+								{
+									if (testUnit->hp < type->shootDamage) // hahaha, how mean!
+										targetWeakeness = 512;
+									else
+										targetWeakeness = 256 / testUnit->hp;
+								}
+								int targetProximity = 0; // 0 to 512
+								if (i <= 0)
+									targetProximity = 512;
+								else
+									targetProximity = (256 / i);
+								int targetScore = targetOffense + targetWeakeness + targetProximity;
 								// lower scores are overriden
 								if (targetScore > bestScore)
 								{
@@ -1890,7 +1905,7 @@ void Building::turretStep(void)
 							else if ((targetFound != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER))
 							{
 								// adjust score for range
-								targetScore = 2 * targetTicks - 2 * i - (testUnit->hp >> 2);
+								int targetScore = - testUnit->hp;
 								// lower scores are overriden
 								if (targetScore > bestScore)
 								{
@@ -1916,7 +1931,7 @@ void Building::turretStep(void)
 						if (enemies & otherTeamMask)
 						{
 							// adjust score for range
-							int targetScore = -i;
+							int targetScore = - i;
 							if (targetScore > bestScore)
 							{
 								bestScore = targetScore;
