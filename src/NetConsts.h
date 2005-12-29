@@ -42,7 +42,7 @@
 // Max packet size for reception in game setup
 #define MAX_PACKET_SIZE 4096
 
-#define NET_PROTOCOL_VERSION 21
+#define NET_PROTOCOL_VERSION 22
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 
 enum OrderTypes
