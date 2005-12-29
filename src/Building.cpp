@@ -1871,7 +1871,7 @@ void Building::turretStep(void)
 							int targetScore;
 							int targetTicks = (256 - testUnit->delta) / testUnit->speed;
 							// skip this unit if it will move away too soon.
-							if (targetTicks <= 1)
+							if (targetTicks <= 2)
 								continue;
 							// shoot warrior first, then workers if no warrior
 							if (testUnit->typeNum == WARRIOR)
