@@ -1839,8 +1839,18 @@ namespace GAGCore
 	
 	void GraphicContext::printScreen(const char *filename)
 	{
-		if (sdlsurface)
-			SDL_SaveBMP(sdlsurface, filename);
+		#ifdef HAVE_OPENGL
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
+			DrawableSurface toPrint(getW(), getH());
+			glFlush();
+			toPrint.drawSurface(0, 0, this);
+			SDL_SaveBMP(toPrint.sdlsurface, filename);
+		}
+		#endif
+		else
+			if (sdlsurface)
+				SDL_SaveBMP(sdlsurface, filename);
 	}
 	
 	// Font stuff
