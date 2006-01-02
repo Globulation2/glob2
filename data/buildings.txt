@@ -33,10 +33,10 @@ width 4
 height 4
 decLeft -2
 decTop -2
-maxCorn 10
+maxCorn 35
 hpInit 1
 hpMax 700
-hpInc 70
+hpInc 20
 level 0
 shortTypeNum 0
 maxUnitWorking 1
