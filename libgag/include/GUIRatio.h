@@ -42,7 +42,7 @@ namespace GAGGUI
 		virtual void init(void);
 		virtual void paint(void);
 	
-		void set(int value);
+		void set(int newValue) {value=newValue;};
 		int getMax(void);
 		int get(void);
 	
@@ -76,4 +76,3 @@ namespace GAGGUI
 }
 
 #endif
-
