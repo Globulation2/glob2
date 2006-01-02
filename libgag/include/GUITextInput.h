@@ -56,6 +56,7 @@ namespace GAGGUI
 		virtual void paint(void);
 		void setText(const char *newText);
 		void setText(const std::string &newText) { setText(newText.c_str()); }
+		void setCursorPos(size_t pos){cursPos=pos;};
 		const char *getText(void) { return text.c_str(); }
 		const std::string &getTextStdString(void) { return text; }
 		void deactivate(void) { activated=false; recomputeTextInfos(); }
@@ -65,4 +66,4 @@ namespace GAGGUI
 	};
 }
 
-#endif 
+#endif
