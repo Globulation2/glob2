@@ -21,8 +21,7 @@
 #define __CHOOSE_MAP_SCREEN_H
 
 #include "Session.h"
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
 namespace GAGGUI
 {
@@ -33,7 +32,7 @@ class Glob2FileList;
 class MapPreview;
 
 //! This screen is the basic screen used to selected map and games
-class ChooseMapScreen : public Screen
+class ChooseMapScreen : public Glob2Screen
 {
 	static const bool verbose = false;
 public:

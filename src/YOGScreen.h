@@ -24,10 +24,9 @@
 #include <vector>
 #include "YOG.h"
 #include "IRC.h"
-#include <GUIBase.h>
 #include <GUIList.h>
 #include <GraphicContext.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
 namespace GAGGUI
 {
@@ -69,7 +68,7 @@ protected:
 	virtual void drawItem(int x, int y, size_t element);
 };
 
-class YOGScreen:public Screen
+class YOGScreen : public Glob2Screen
 {
 	static const int verbose = false;
 public:

@@ -22,8 +22,7 @@
 
 #include "SessionConnection.h"
 #include "MultiplayersJoin.h"
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
 namespace GAGGUI
 {
@@ -32,7 +31,7 @@ namespace GAGGUI
 	class List;
 }
 
-class MultiplayersJoinScreen:public Screen
+class MultiplayersJoinScreen : public Glob2Screen
 {
 public:
 	enum

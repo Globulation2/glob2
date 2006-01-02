@@ -20,10 +20,9 @@
 #ifndef __CAMPAIGN_SCREEN_H
 #define __CAMPAIGN_SCREEN_H
 
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
-class CampaignScreen : public Screen
+class CampaignScreen : public Glob2Screen
 {
 public:
 	CampaignScreen(const std::string &text);

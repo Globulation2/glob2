@@ -176,7 +176,10 @@ Brush.cpp \
 IRC.h \
 IRC.cpp \
 VoiceRecorder.h \
-VoiceRecorder.cpp
+VoiceRecorder.cpp \
+Glob2Screen.h \
+Glob2Screen.cpp
+
 
 if LINKSTATIC
 glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)

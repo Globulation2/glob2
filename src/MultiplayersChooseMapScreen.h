@@ -21,8 +21,7 @@
 #define __MULTIPLAYERS_CHOOSE_MAP_SCREEN_H
 
 #include "Session.h"
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
 namespace GAGGUI
 {
@@ -34,7 +33,7 @@ namespace GAGGUI
 class MapPreview;
 
 //! This class is very similar to ChooseMapScreen but implements a dual list to be able to load both map and games from the same screen
-class MultiplayersChooseMapScreen : public Screen
+class MultiplayersChooseMapScreen : public Glob2Screen
 {
 	static const bool verbose = false;
 public:

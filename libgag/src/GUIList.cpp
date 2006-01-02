@@ -170,28 +170,28 @@ namespace GAGGUI
 		unsigned elementLength;
 	
 		HighlightableWidget::paint();
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
 	
 		unsigned count = (h-4) / textHeight;
 		if (strings.size() > count)
 		{
 			// draw line and arrows
-			parent->getSurface()->drawVertLine(x+w-21, y, h, 180, 180, 180);
-			parent->getSurface()->drawHorzLine(x+w-20, y+21, 19, 180, 180, 180);
-			parent->getSurface()->drawHorzLine(x+w-20, y+h-21, 19, 180, 180, 180);
+			parent->getSurface()->drawLine(x+w-21, y, x+w-21, y + h, ColorTheme::frontFrameColor);
+			parent->getSurface()->drawLine(x+w-20, y+21, x+w-1, y+21, ColorTheme::frontFrameColor);
+			parent->getSurface()->drawLine(x+w-20, y+h-21, x+w-1, y+h-21, ColorTheme::frontFrameColor);
 	
-			unsigned j;
+			int j;
 			int baseX = x+w-11;
 			int baseY1 = y+11;
 			int baseY2 = y+h-11;
 			for (j=7; j>4; j--)
 			{
-				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, 255, 255, 255);
+				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, ColorTheme::frontColor);
+				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, ColorTheme::frontColor);
+				parent->getSurface()->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, ColorTheme::frontColor);
+				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, ColorTheme::frontColor);
+				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, ColorTheme::frontColor);
+				parent->getSurface()->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, ColorTheme::frontColor);
 			}
 	
 			// draw slider
@@ -200,7 +200,7 @@ namespace GAGGUI
 			{
 				blockLength = (count * leftSpace) / strings.size();
 				blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
-				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
+				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, ColorTheme::frontColor);
 			}
 			else
 			{
@@ -223,7 +223,7 @@ namespace GAGGUI
 		{
 			drawItem(x+2, yPos, static_cast<size_t>(i+disp));
 			if (i+static_cast<int>(disp) == nth)
-				parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
+				parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, ColorTheme::listSelectedElementColor);
 			nextSize+=textHeight;
 			i++;
 			yPos+=textHeight;

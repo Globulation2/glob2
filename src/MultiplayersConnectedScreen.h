@@ -21,8 +21,7 @@
 #define __MULTIPLAYER_CONNECTED_SCREEN_H
 
 #include "MultiplayersJoin.h"
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
 namespace GAGGUI
 {
@@ -32,7 +31,7 @@ namespace GAGGUI
 }
 class ColorRect;
 
-class MultiplayersConnectedScreen:public Screen
+class MultiplayersConnectedScreen:public Glob2Screen
 {
 	static const bool verbose = false;
 public:

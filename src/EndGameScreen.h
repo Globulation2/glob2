@@ -21,8 +21,7 @@
 #define __END_GAME_SCREEN_H
 
 #include "GameGUI.h"
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
 namespace GAGGUI
 {
@@ -56,7 +55,7 @@ struct TeamEntry
 	Uint32 r, g, b, a;
 };
 
-class EndGameScreen:public Screen
+class EndGameScreen : public Glob2Screen
 {
 protected:
 	std::vector<TeamEntry> teams;

@@ -20,6 +20,7 @@
 #include <GUIBase.h>
 #include <assert.h>
 #include <GraphicContext.h>
+#include <cmath>
 
 #define SCREEN_ANIMATION_FRAME_COUNT 10
 
@@ -27,6 +28,16 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
+	namespace ColorTheme
+	{
+		// for green theme
+		Color frontColor = Color(255, 255, 255);
+		Color frontFrameColor = Color(0, 200, 100);
+		Color listSelectedElementColor = Color(170, 170, 240);
+		Color backColor = Color(0, 0, 0);
+		Color backOverlayColor = Color(0, 0, 40);
+	}
+	
 	// this function support base unicode (UCS16)
 	void UCS16toUTF8(Uint16 ucs16, char utf8[4])
 	{
@@ -277,6 +288,8 @@ namespace GAGGUI
 		}
 	}
 	
+	
+	
 	void HighlightableWidget::paint(void)
 	{
 		int x, y, w, h;
@@ -292,11 +305,12 @@ namespace GAGGUI
 		else
 			actHighlight = nextHighlightValue;
 		
-		parent->getSurface()->drawRect(x, y, w, h, 200, 200, 200);
+		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
+		
 		if (actHighlight > 0)
 		{
 			unsigned val = static_cast<unsigned>(255.0 * actHighlight);
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255, val);
+			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, ColorTheme::frontColor.applyAlpha(val));
 		}
 	}
 	
@@ -469,7 +483,7 @@ namespace GAGGUI
 	
 	void Screen::paint(void)
 	{
-		gfx->drawFilledRect(0, 0, getW(), getH(), 0, 0, 0);
+		gfx->drawFilledRect(0, 0, getW(), getH(), ColorTheme::backColor);
 	}
 	
 	int Screen::getW(void)
@@ -531,6 +545,6 @@ namespace GAGGUI
 	
 	void OverlayScreen::paint(void)
 	{
-		gfx->drawFilledRect(0, 0, getW(), getH(), 0, 0, 40);
+		gfx->drawFilledRect(0, 0, getW(), getH(), ColorTheme::backOverlayColor);
 	}
 }

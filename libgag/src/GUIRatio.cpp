@@ -72,6 +72,8 @@ namespace GAGGUI
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
+		HighlightableWidget::onSDLEvent(event);
+		
 		if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
 			if (isPtInRect(event->button.x, event->button.y, x+value, y, x+value+size, h))
@@ -122,23 +124,12 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+		HighlightableWidget::paint();
+		
 		if (pressed)
-		{
-			parent->getSurface()->drawHorzLine(x+value+1, y+1, size-2, 170, 170, 240);
-			parent->getSurface()->drawHorzLine(x+value+1, y+h-2, size-2, 170, 170, 240);
-			
-			parent->getSurface()->drawVertLine(x+value+1, y+1, h-2, 170, 170, 240);
-			parent->getSurface()->drawVertLine(x+value+size-1, y+1, h-2, 170, 170, 240);
-		}
+			parent->getSurface()->drawRect(x+value+1, y+1, size-2, h-2, ColorTheme::frontColor);
 		else
-		{
-			parent->getSurface()->drawHorzLine(x+value+1, y+1, size-2, 180, 180, 180);
-			parent->getSurface()->drawHorzLine(x+value+1, y+h-2, size-2, 180, 180, 180);
-			
-			parent->getSurface()->drawVertLine(x+value+1, y+1, h-2, 180, 180, 180);
-			parent->getSurface()->drawVertLine(x+value+size-1, y+1, h-2, 180, 180, 180);
-		}
+			parent->getSurface()->drawRect(x+value+1, y+1, size-2, h-2, ColorTheme::frontFrameColor);
 	
 		// We center the string
 		std::stringstream g;

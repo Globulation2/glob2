@@ -20,15 +20,9 @@
 #ifndef __MAIN_MENU_SCREEN_H
 #define __MAIN_MENU_SCREEN_H
 
-#include <GUIBase.h>
-namespace GAGCore
-{
-	class DrawableSurface;
-}
-using namespace GAGCore;
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
-class MainMenuScreen:public Screen
+class MainMenuScreen:public Glob2Screen
 {
 public:
 	enum
@@ -44,8 +38,7 @@ public:
 		CREDITS,
 		QUIT,
 	};
-private:
-	DrawableSurface *background;
+	
 public:
 	MainMenuScreen();
 	virtual ~MainMenuScreen();
