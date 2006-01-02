@@ -245,15 +245,17 @@ namespace Nicowar
 				pollType type_2;
 				pollModifier mod_3;
 				pollType type_3;
+				bool is_strict_minimum;
 				pollModifier mod_minimum;
 				pollType minimum_type;
 				unsigned int minimum_score;
+				bool is_strict_maximum;
 				pollModifier mod_maximum;
 				pollType maximum_type;
 				unsigned int maximum_score;
 				poll() :    mod_1(MAXIMUM), type_1(NONE), mod_2(MAXIMUM), type_2(NONE), mod_3(MAXIMUM), type_3(NONE),
-					mod_minimum(MAXIMUM), minimum_type(NONE), minimum_score(0), mod_maximum(MAXIMUM),
-					maximum_type(NONE), maximum_score(0)
+					is_strict_minimum(true), mod_minimum(MAXIMUM), minimum_type(NONE), minimum_score(0),
+				 	is_strict_maximum(true), mod_maximum(MAXIMUM), maximum_type(NONE), maximum_score(0)
 					{}
 			};
 
@@ -293,6 +295,26 @@ namespace Nicowar
 			unsigned int center_x;
 			unsigned int center_y;
 	};
+
+	///This class serves as an advanced statistics generator for a teams units and buildings.
+	class TeamStatsGenerator
+	{
+		public:
+			TeamStatsGenerator(Team* team);
+			///Gets the number of units that follow the criteria. type is the type of unit. medical_state is the medical state of
+			///the unit. activity is what the unit is doing. ability is the ability the unit should have to qualify. level is the
+			///level of skill that unit should have in the ability, and isMinimum states whether the unit has to have exactly level
+			///to qualify, or just have minimum of level, in which it can be higher. If level is 0, then it means the unit should
+			///not have that ability, or have no skill in it.
+			unsigned int getUnits(unsigned int type, Unit::Medical medical_state, Unit::Activity activity, unsigned int ability, unsigned int level, bool isMinimum);
+
+			///Returns the highest level that the team has for a particular building type, or 0 for none.
+			unsigned int getMaximumBuildingLevel(unsigned int building_type);
+
+			///The team that this team stats generator is connected to
+			Team* team;
+	};
+
 
 	///Individual modules handle everything, after being connected to their respecting ai.
 	class Module
@@ -341,15 +363,36 @@ namespace Nicowar
 	};
 
 	///Any module that is going to handle general unit passing and swarms should derive from this one.
+	///It implements a default distributation method, sub classes can choose to keep it or override it.
 	class UnitModule : public Module
 	{
 		public:
-			///Allows a module to set the amount of units it requires for its purposes.
-			///The number of desired units should be extra units that aren't essential for the running of the module.
-			///Required units should be how many units the module requires to work at a minimal level.
-			///Emergency units are any units that a module needs *know*. Can be used by the defense module to raise
-			///an army quickly.
-			virtual void changeUnits(string module_name, unsigned int unit_type, unsigned int desired_units, unsigned int required_units, unsigned int emergency_units)=0;
+			enum Priority
+			{
+				high=0,
+				medium_high,
+				medium,
+				medium_low,
+				low,
+				priorityNum,
+			};
+
+			///This function sets the maximum number of units the module wants for a specific unit type, level, and priority.
+			///This number must be the number of units the module would use, instantly, if granted them. This is with one
+			///exception, units with a low priority should simply be created, and do not need to be used imediettly. Its
+			///expectes that a module keep this number up to date, or the whole system can go down, because one module is being
+			///offered units and its never using them.
+			virtual void changeUnits(string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)=0;
+
+			///This function returns the number of units available to the given module, based on the number of free units,
+			///how many units this module has already recieved, and how many it wants.
+			virtual unsigned int available(string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)=0;
+
+			///This function returns true if the module can have the requested number of units for a specific task, and adds
+			///the building to the record books and manages the number of free units so that building can constantly keep full.
+			///This function can also be used to make changes on an existing building. Once you pass a building into UnitModule,
+			///the UnitModule will keep the building full untill you change the number of assigned units.
+			virtual bool request(string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)=0;
 	};
 
 	///This designates other modules that don't fit into the above catagories.
@@ -508,7 +551,6 @@ namespace Nicowar
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
-
 	};
 
 	///This construction manager constructs buildings based on the total numbers of buildings it wants.
@@ -658,11 +700,6 @@ namespace Nicowar
 			///buildings to upgrade.
 			bool startNewConstruction(void);
 
-			///Returns the number of free units available to construct a building to the given level.
-			///It does not take into account that other buildings under construction may not have
-			///recieved all of their desired units.
-			int getAvailableUnitsForConstruction(int level);
-
 			///This one is simple. It gets the numbers of available units to perform upgrades
 			///first by counting the numbers of free units. Then it adds the numbers of all
 			///the units already working on an upgrade. Then it reassigns the numbers of units
@@ -707,9 +744,69 @@ namespace Nicowar
 			AINicowar& ai;
 	};
 
-	///Controls swarms quite simplisticly, creating rations based on desired numbers of units (with priorites),
-	///and assigning units to swarms evenly, based on the number of untis it has to create.
-	class BasicDistributedSwarmManager : public UnitModule
+	///This contains a bassic implementation of the UnitModule interface. It does not do everything
+	///however, it just dishes out units. It is not a complete module.
+	class DistributedUnitManager : public UnitModule
+	{
+		public:
+			DistributedUnitManager(AINicowar& ai);
+			~DistributedUnitManager() {};
+			string getName() const;
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream) const;
+
+			void changeUnits(string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority);
+			unsigned int available(string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority);
+			bool request(string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building);
+		protected:
+			///This stores all of the information needed for maintaining a particular building at its maximum unit consumption
+			struct usageRecord
+			{
+				string owner;
+				unsigned int x;
+				unsigned int y;
+				unsigned int type;
+				unsigned int level;
+				unsigned int ability;
+				unsigned int unit_type;
+				unsigned int minimum_level;
+				Priority priority;
+			};
+
+			///This stores all of the buildings and how many units they are using. A buildings usage record is both stored
+			///here and in the related modules moduleRecord for effiency.
+			map<int, usageRecord> buildings;
+
+			///Module record
+			struct moduleRecord
+			{
+				moduleRecord()
+				{
+					for(int i=0; i<NB_UNIT_TYPE; ++i)
+						for(int j=0; j<NB_ABILITY; ++j)
+							for(int k=0; k<NB_UNIT_LEVELS; ++k)
+								for(unsigned int l=0; l<priorityNum; ++l)
+								{
+									requested[i][j][k][l]=0;
+									usingUnits[i][j][k][l]=0;
+								}
+				}
+				///This is the number of requested units for various categories.
+				unsigned int requested[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS][priorityNum];
+				///This is the units that this module in particular is using for
+				unsigned int usingUnits[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS][priorityNum];
+			};
+
+			///This map stores the moduleRecords in accordance to their related module
+			map<string, moduleRecord> module_records;
+
+			///Holds a refernece to the ai so taht the module can work properly.
+			AINicowar& ai;
+	};
+
+
+	///A subclass of distrbuted unit manager that completes the module with swarm management.
+	class BasicDistributedSwarmManager : public DistributedUnitManager
 	{
 		public:
 			BasicDistributedSwarmManager(AINicowar& ai);
@@ -722,23 +819,6 @@ namespace Nicowar
 			{
 				return 1;
 			}
-
-			///Holds one record of one modules desires for one type of unit.
-			struct unitRecord
-			{
-				unsigned int desired_units[NB_UNIT_TYPE];
-				unsigned int required_units[NB_UNIT_TYPE];
-				unsigned int emergency_units[NB_UNIT_TYPE];
-			};
-			///Stores a modules demands for units based on its module name.
-			std::map<string, unitRecord> module_demands;
-
-			///Allows a module to set the amount of units it requires for its purposes.
-			///The number of desired units should be extra units that aren't essential for the running of the module.
-			///Required units should be how many units the module requires to work at a minimal level.
-			///Emergency units are any units that a module needs *know*. Can be used by the defense module to raise
-			///an army quickly.
-			void changeUnits(string module_name, unsigned int unit_type, unsigned int desired_units, unsigned int required_units, unsigned int emergency_units);
 
 			///Constructs the ratios of desired workers, turns off production if there are enough units,
 			///otherwise uses the ratios to moderate all of the spawns to get enough workers. It will
@@ -1037,7 +1117,7 @@ namespace Nicowar
 	const int EXPLORER_REGION_HORIZONTAL_EXTENTION=0;
 	const int EXPLORER_REGION_VERTICAL_EXTENTION=0;
 	//Its reccomended that this number is an even number.
-	const unsigned int EXPLORERS_PER_REGION=3;
+	const unsigned int EXPLORERS_PER_REGION=2;
 	const unsigned int EXPLORATION_FLAG_RADIUS=12;
 	const unsigned int EXPLORER_MAX_REGIONS_AT_ONCE=4;
 
@@ -1052,9 +1132,7 @@ namespace Nicowar
 	const unsigned int EXPLORER_ATTACKS_AT_ONCE=4;
 
 	//These constants are for the AI's swarm controller.
-	const unsigned int DESIRED_UNIT_SCORE=1;
-	const unsigned int REQUIRED_UNIT_SCORE=2;
-	const unsigned int EMERGENCY_UNIT_SCORE=5;
+	const unsigned int PRIORITY_SCORES[UnitModule::priorityNum]={5, 4, 3, 2, 1};
 	//This means that for every n points it will add in one new worker to the swarms.
 	const unsigned int CREATION_UNIT_REQUIREMENT=8;
 	const unsigned int MAXIMUM_UNITS_FOR_SWARM=5;
@@ -1088,13 +1166,16 @@ namespace Nicowar
 	};
 	const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
 	const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
-	const unsigned int ATTACK_WARRIOR_MINIMUM=4;
+	const unsigned int ATTACK_WARRIOR_MINIMUM=8;
 	///As opposed to the above variable, this is the minimum number of units it needs to start a new attack, rather than the minimum it will send.
-	const unsigned int MINIMUM_TO_ATTACK=6;
+	const unsigned int MINIMUM_TO_ATTACK=10;
 	const unsigned int MINIMUM_BARRACKS_LEVEL=0;
 	const unsigned int MAX_ATTACKS_AT_ONCE=4;
-	const unsigned int WARRIOR_FACTOR=4;
+	const unsigned int WARRIOR_FACTOR=3;
 	const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*WARRIOR_FACTOR);
+	///The number of warriors per available space to train them, for example, a level 1 barracks would have 2 spaces, and thus
+	///the game would produce 2*WARRIORS_PER_BARRACKS_TRAINING_SPACE. Higher level barracks offer more spaces.
+	const unsigned int WARRIORS_PER_BARRACKS_TRAINING_SPACE=3;
 
 	//The following are for the construction manager
 
@@ -1112,6 +1193,7 @@ namespace Nicowar
 	const bool CRAMP_BUILDINGS=true;
 	const unsigned int NOPOS=1023;
 	const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=1;
+	const bool STRICT_NEARBY_BUILDING_MINIMUM=false;
 	const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 	{
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
@@ -1131,21 +1213,21 @@ namespace Nicowar
 
 	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-		{1, 4, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0};
+		{2, 4, 3, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0};
 	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{20, 8, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{30, 8, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
 	///priority buildings.
 	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{6, 3, 4, 6, 6, 6, 6, 0, 0, 0, 0, 0};
+		{4, 3, 4, 6, 6, 4, 6, 0, 0, 0, 0, 0};
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{1, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+		{2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 	///The number of turns before a cached no-build zone gets erased
 	const unsigned int NO_BUILD_CACHE_TIMEOUT=5;
 
@@ -1159,7 +1241,7 @@ namespace Nicowar
 	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
 
 	///This constant turns on debugging output
-	const bool AINicowar_DEBUG = false;
+	const bool AINicowar_DEBUG = true;
 	///@}
 
 	//These are just some handy functions
@@ -1197,10 +1279,6 @@ namespace Nicowar
 			return a-b;
 		return b-a;
 	}
-
-	///Returns the number of free units with the given ability and the given level in it.
-	///It discounts hungry/hurt units.
-	unsigned int getFreeUnits(Team* team, int ability, int level);
 
 	///Returns the building* of the gid, or NULL
 	inline Building* getBuildingFromGid(Game* game, int gid)
