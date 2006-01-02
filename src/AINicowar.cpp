@@ -75,9 +75,9 @@ void AINicowar::init(Player *player)
 	new ExplorationManager(*this);
 	new InnManager(*this);
 	new TowerController(*this);
-	new BuildingClearer(*this);
-	new HappinessHandler(*this);
-	new Farmer(*this);
+	//new BuildingClearer(*this);
+	//new HappinessHandler(*this);
+	//new Farmer(*this);
 
 	this->player=player;
 	this->team=player->team;
@@ -449,32 +449,6 @@ bool Nicowar::buildingStillExists(Game* game, unsigned int gid)
 
 
 
-unsigned int Nicowar::getFreeUnits(Team* team, int ability, int level)
-{
-	level-=1;
-	//This is because ability levels are counted from 0, not 1. I'm not sure why,
-	//though, because 0 would mean that the unit does not have that skill, which
-	//would be more appropriette.
-	int free_workers=0;
-	Unit **myUnits=team->myUnits;
-
-	for (int i=0; i<1024; i++)
-	{
-		Unit* u = myUnits[i];
-		if (u)
-		{
-			if (u->activity==Unit::ACT_RANDOM && u->level[ability]==static_cast<int>(level) && u->medical==Unit::MED_FREE)
-			{
-				free_workers+=1;
-			}
-		}
-	}
-	return free_workers;
-}
-
-
-
-
 GridPollingSystem::GridPollingSystem(AINicowar& ai)
 {
 	map=ai.map;
@@ -758,7 +732,10 @@ GridPollingSystem::getBestZonesSplit* GridPollingSystem::getBestZones(poll p, un
 			int full_h=height+2*extention_height;
 
 			if(pollArea(full_x, full_y, full_w, full_h, p.mod_minimum, p.minimum_type)<p.minimum_score)
-				continue;
+				if(p.is_strict_minimum)
+					continue;
+				else
+					
 
 			if(pollArea(full_x, full_y, full_w, full_h, p.mod_maximum, p.maximum_type)>p.maximum_score)
 				continue;
@@ -783,6 +760,14 @@ GridPollingSystem::getBestZonesSplit* GridPollingSystem::getBestZones(poll p, un
 	std::sort(b_list.begin(), b_list.end());
 	std::sort(c_list.begin(), c_list.end());
 	return split;
+}
+
+
+
+
+TeamStatsGenerator::TeamStatsGenerator(Team* team) : team(team)
+{
+
 }
 
 
@@ -860,6 +845,53 @@ std::vector<GridPollingSystem::zone> GridPollingSystem::getBestZones(GridPolling
 	delete split_calc;
 
 	return return_list;
+}
+
+
+
+
+unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medical_state, Unit::Activity activity, unsigned int ability, unsigned int level, bool isMinimum)
+{
+	//This is because ability levels are counted from 0, not 1. I'm not sure why,
+	//though, because 0 would mean that the unit does not have that skill, which
+	//would be more appropriette.
+	level-=1;
+	unsigned int free_workers=0;
+	Unit **myUnits=team->myUnits;
+
+	for (int i=0; i<1024; i++)
+	{
+		Unit* u = myUnits[i];
+		if (u)
+		{
+			if (u->typeNum == static_cast<int>(type) && u->activity==activity && ((!isMinimum && u->level[ability]==static_cast<int>(level)) ||
+				(isMinimum && u->level[ability]>=static_cast<int>(level))) && u->medical==medical_state)
+			{
+				free_workers+=1;
+			}
+		}
+	}
+	return free_workers;
+}
+
+
+
+
+unsigned int TeamStatsGenerator::getMaximumBuildingLevel(unsigned int building_type)
+{
+	unsigned int level=0;
+	for (int i=0; i<1024; ++i)
+	{
+		Building* b = team->myBuildings[i];
+		if(b)
+		{
+			if(b->type->shortTypeNum == static_cast<int>(building_type))
+			{
+				level=std::max(static_cast<int>(level), b->type->level+1);
+			}
+		}
+	}
+	return level;
 }
 
 
@@ -958,6 +990,7 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 
 bool SimpleBuildingDefense::findDefense()
 {
+	ai.getUnitModule()->changeUnits("SimpleBuildingDefense", WARRIOR, 0, ATTACK_STRENGTH, 1, UnitModule::low);
 	GridPollingSystem gps(ai);
 	for(map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end(); ++i)
 	{
@@ -1048,6 +1081,7 @@ bool SimpleBuildingDefense::updateFlags()
 				if(static_cast<int>(score)!=getBuildingFromGid(ai.game, i->flag)->maxUnitWorking)
 				{
 					ai.orders.push(new OrderModifyBuilding(i->flag, score));
+					ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, score, UnitModule::high, i->flag);
 				}
 			}
 		}
@@ -1077,6 +1111,7 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 						i->flag=b->gid;
 						ai.orders.push(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2));
 						ai.orders.push(new OrderModifyBuilding(b->gid, i->assigned));
+					ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, UnitModule::high, i->flag);
 						break;
 					}
 				}
@@ -1415,27 +1450,44 @@ bool PrioritizedBuildingAttack::attack()
 	//The following gets the highest barracks level the player has
 	unsigned int max_barracks_level=0;
 	unsigned int found_barracks=0;
+//	unsigned int training_spaces;
+//	for(int i=0; i<NB_UNIT_LEVELS-1; ++i)
+//		training_spaces=ai.team->stats.getLatestStat()->upgradeState[ATTACK_STRENGTH][i+1];
+
 	for(int i=0; i<1024; ++i)
 	{
 		Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
-			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING && b->constructionResultState==Building::NO_CONSTRUCTION)
+			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
 			{
-				max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
-				found_barracks++;
+//				training_spaces+=b->type->maxUnitInside*WARRIORS_PER_BARRACKS_TRAINING_SPACE;
+				if(b->constructionResultState==Building::NO_CONSTRUCTION)
+				{
+					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
+					found_barracks++;
+				}
 			}
 		}
 	}
-
 	//If we don't have enough barracks, don't bother doing anything, otherwise, make sure where producing warriors.
+	//And don't produce more warriors than the barracks we have to train them.
 	if(max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0)
 		return false;
 	else
-		ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR, BASE_ATTACK_WARRIORS, 0, 0);
+	{
+		for(int i=0; i<NB_UNIT_LEVELS; ++i)
+		{
+			ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR, 0, ATTACK_STRENGTH, i+1, UnitModule::medium);
+		}
+		ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR, BASE_ATTACK_WARRIORS, ATTACK_STRENGTH, max_barracks_level+1, UnitModule::medium);
+	}
 
 	//Check if we have enough units of the right level
-	unsigned int available_units = getFreeUnits(ai.team, ATTACK_STRENGTH, max_barracks_level+1);
+
+
+
+	unsigned int available_units = ai.getUnitModule()->available("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, max_barracks_level+1, true, UnitModule::medium);
 	if(available_units<MINIMUM_TO_ATTACK)
 		return false;
 
@@ -1469,7 +1521,8 @@ bool PrioritizedBuildingAttack::attack()
 		Building* b = enemy->myBuildings[i];
 		if(b)
 		{
-			if(b->constructionResultState==Building::NO_CONSTRUCTION){
+			if(b->constructionResultState==Building::NO_CONSTRUCTION)
+			{
 				unsigned int pos=std::find(ATTACK_PRIORITY, ATTACK_PRIORITY+IntBuildingType::NB_BUILDING-3, b->type->shortTypeNum)-ATTACK_PRIORITY;
 				buildings[pos].push_back(b);
 			}
@@ -1534,7 +1587,7 @@ bool PrioritizedBuildingAttack::attack()
 			}
 			else
 			{
-					return false;
+				return false;
 			}
 		}
 	}
@@ -1573,6 +1626,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 						ai.orders.push(new OrderModifyFlag(b->gid, radius));
 						ai.orders.push(new OrderModifyBuilding(b->gid, j->assigned_units));
 						ai.orders.push(new OrderModifyMinLevelToFlag(b->gid, j->assigned_level));
+						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, j->assigned_units, ATTACK_STRENGTH, j->assigned_level, UnitModule::medium, j->flag);
 						break;
 					}
 				}
@@ -1602,7 +1656,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		++j;
 	}
 
-	//The following gets the highest barracks level the player has. 
+	//The following gets the highest barracks level the player has.
 	unsigned int max_barracks_level=0;
 	unsigned int found_barracks=0;
 	for(int i=0; i<1024; ++i)
@@ -1620,7 +1674,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 
 	//Get the number of available units, and go though the record, modifying the number of units assigned to each as
 	//neccessary in order to keep up with the defending soldiers
-	unsigned int available_units = getFreeUnits(ai.team, ATTACK_STRENGTH, max_barracks_level+1);
+	unsigned int available_units = ai.getUnitModule()->available("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, max_barracks_level+1, true, UnitModule::medium);
 	for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 	{
 		if(j->flag != NOGBID)
@@ -1628,11 +1682,11 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			Building* flag=getBuildingFromGid(ai.game, j->flag);
 			//Add the number of units that are assigned to this flag to the total number of units available
 			available_units+=flag->unitsWorking.size();
-	
+
 			unsigned int score = gps.pollArea(j->unitx, j->unity, j->unit_width, j->unit_height, GridPollingSystem::MAXIMUM,
-								GridPollingSystem::ENEMY_UNITS);
+				GridPollingSystem::ENEMY_UNITS);
 			unsigned int new_assigned=std::min(std::min(static_cast<unsigned int>(20), available_units),
-								std::max(score, ATTACK_WARRIOR_MINIMUM));
+				std::max(score, ATTACK_WARRIOR_MINIMUM));
 
 			//If we don't have enough free units to continue the fight, remove the flag
 			if(new_assigned<ATTACK_WARRIOR_MINIMUM)
@@ -1653,6 +1707,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				j->assigned_units=new_assigned;
 				ai.orders.push(new OrderModifyBuilding(j->flag, new_assigned));
 				available_units-=new_assigned;
+				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, new_assigned, ATTACK_STRENGTH, max_barracks_level, UnitModule::medium, j->flag);
 			}
 
 			//If the maximum barracks level has changed, then update the flag
@@ -1681,8 +1736,6 @@ DistributedNewConstructionManager::DistributedNewConstructionManager(AINicowar& 
 
 bool DistributedNewConstructionManager::perform(unsigned int time_slice_n)
 {
-	//Keep the number of units we want updated
-	ai.getUnitModule()->changeUnits("DistributedNewConstructionManager", WORKER, MAXIMUM_TO_CONSTRUCT_NEW*MAX_NEW_CONSTRUCTION_AT_ONCE, MINIMUM_TO_CONSTRUCT_NEW, 0);
 	switch(time_slice_n)
 	{
 		case 0:
@@ -1816,6 +1869,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 	zp.type_2=static_cast<GridPollingSystem::pollType>(CONSTRUCTION_FACTORS[building_type][1][1]);
 	zp.mod_3=static_cast<GridPollingSystem::pollModifier>(CONSTRUCTION_FACTORS[building_type][2][0]);
 	zp.type_3=static_cast<GridPollingSystem::pollType>(CONSTRUCTION_FACTORS[building_type][2][1]);
+	zp.is_strict_minimum=STRICT_NEARBY_BUILDING_MINIMUM;
 	zp.mod_minimum=GridPollingSystem::MAXIMUM;
 	zp.minimum_type=GridPollingSystem::FRIENDLY_BUILDINGS;
 	zp.minimum_score=MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT;
@@ -1842,20 +1896,20 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 		}
 
 		//Pregenerate some common numbers
-		unsigned int full_width=BUILD_AREA_WIDTH+2*BUILD_AREA_EXTENTION_WIDTH;
-		unsigned int full_height=BUILD_AREA_HEIGHT+2*BUILD_AREA_EXTENTION_HEIGHT;
-		unsigned int zone_start_column=BUILD_AREA_EXTENTION_WIDTH;
-		unsigned int zone_start_row=BUILD_AREA_EXTENTION_HEIGHT;
-		unsigned int zone_end_column=BUILD_AREA_EXTENTION_WIDTH+BUILD_AREA_WIDTH;
-		unsigned int zone_end_row=BUILD_AREA_EXTENTION_HEIGHT+BUILD_AREA_HEIGHT;
-		unsigned short int imap[full_width][full_height];
+		const unsigned int full_width=BUILD_AREA_WIDTH+2*BUILD_AREA_EXTENTION_WIDTH;
+		const unsigned int full_height=BUILD_AREA_HEIGHT+2*BUILD_AREA_EXTENTION_HEIGHT;
+		const unsigned int zone_start_column=BUILD_AREA_EXTENTION_WIDTH;
+		const unsigned int zone_start_row=BUILD_AREA_EXTENTION_HEIGHT;
+		const unsigned int zone_end_column=BUILD_AREA_EXTENTION_WIDTH+BUILD_AREA_WIDTH;
+		const unsigned int zone_end_row=BUILD_AREA_EXTENTION_HEIGHT+BUILD_AREA_HEIGHT;
+		unsigned short int* imap = new unsigned short int[full_width*full_height];
 
 		//Prepare the imap
 		for(unsigned int x=0; x<full_width; ++x)
 		{
 			for(unsigned int y=0; y<full_height; ++y)
 			{
-				imap[x][y]=0;
+				imap[x*full_width+y]=0;
 			}
 		}
 
@@ -1869,7 +1923,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 				//Check off hidden or occupied squares
 				if(!ai.map->isHardSpaceForBuilding(fx, fy) || !ai.map->isMapDiscovered(fx, fy, ai.team->me))
 				{
-					imap[x][y]=1;
+					imap[x*full_width+y]=1;
 				}
 
 				//If we find a building here (or a building that is in the list of buildings to be constructed)
@@ -1911,7 +1965,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 					{
 						for(unsigned int y2=starty; y2<endy; ++y2)
 						{
-							imap[x2][y2]=1;
+							imap[x2*full_width+y2]=1;
 						}
 					}
 				}
@@ -1948,7 +2002,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 						else
 							std::cout<<"  ";
 					}
-					std::cout<<imap[x][y]<<" ";
+					std::cout<<imap[x*full_width+y]<<" ";
 				}
 				std::cout<<endl;
 			}
@@ -1963,14 +2017,14 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 		{
 			for(unsigned int y=zone_start_row; y<zone_end_row; ++y)
 			{
-				if(imap[x][y]==0)
+				if(imap[x*full_width+y]==0)
 				{
 					bool all_empty=true;
 					for(unsigned int x2=x; x2<(x+size.width) && all_empty; ++x2)
 					{
 						for(unsigned int y2=y; y2<(y+size.height) && all_empty; ++y2)
 						{
-							if(imap[x2][y2]==1)
+							if(imap[x2*full_width+y2]==1)
 							{
 								all_empty=false;
 							}
@@ -1989,7 +2043,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 						{
 							for(unsigned int y2=y-1; y2<(y+size.height+2); ++y2)
 							{
-								if(imap[x2][y2]==1)
+								if(imap[x2*full_width+y2]==1)
 									border_count++;
 							}
 						}
@@ -2042,17 +2096,15 @@ bool DistributedNewConstructionManager::constructBuildings()
 {
 	updateNoBuildCache();
 
+	ai.getUnitModule()->changeUnits("DistributedNewConstructionManager", WORKER, MAXIMUM_TO_CONSTRUCT_NEW*MAX_NEW_CONSTRUCTION_AT_ONCE, BUILD, 1, UnitModule::medium);
+
 	//Enabling this will turn on verbose debugging mode for this function,
 	//it will tell you various things like why its not cosntructing buildings
 	//for various reasons.
 	const bool local_debug=false;
 
 	//Get the total number of free workers, since a worker of any level can construct a new building
-	unsigned total_free_workers=0;
-	for(int i=0; i<NB_UNIT_LEVELS; ++i)
-	{
-		total_free_workers+=getFreeUnits(ai.team, BUILD, i);
-	}
+	unsigned total_free_workers=ai.getUnitModule()->available("DistributedNewConstructionManager", WORKER, BUILD, 1, true, UnitModule::medium);
 
 	//Counts out the number of buildings allready existing, including ones under construction
 	unsigned int counts[IntBuildingType::NB_BUILDING];
@@ -2224,6 +2276,7 @@ bool DistributedNewConstructionManager::updateBuildings()
 				{
 					i->building=b->gid;
 					ai.orders.push(new OrderModifyBuilding(i->building, i->assigned));
+					ai.getUnitModule()->request("DistributedNewConstructionManager", WORKER, BUILD, 0, i->assigned, UnitModule::medium, i->building);
 				}
 			}
 		}
@@ -2291,7 +2344,6 @@ bool DistributedNewConstructionManager::typePercent::operator>(const typePercent
 RandomUpgradeRepairModule::RandomUpgradeRepairModule(AINicowar& ai) : ai(ai)
 {
 	ai.setUpgradeRepairModule(this);
-	ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, MAXIMUM_TO_UPGRADE*MAX_CONSTRUCTION_AT_ONCE, MINIMUM_TO_UPGRADE, 0);
 }
 
 
@@ -2417,6 +2469,7 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, UnitModule::medium, b->gid);
 			i=active_construction.erase(i);
 			ai.orders.push(new OrderModifyBuilding(b->gid, original));
 			continue;
@@ -2458,34 +2511,15 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 
 
 
-int RandomUpgradeRepairModule::getAvailableUnitsForConstruction(int level)
-{
-	int free_workers[NB_UNIT_LEVELS];
-	for (int j=0; j<NB_UNIT_LEVELS; j++)
-	{
-		free_workers[j]=getFreeUnits(ai.team, BUILD, j+1);
-	}
-
-	int total_free = 0;
-	for (int j=0; j<NB_UNIT_LEVELS; j++)
-	{
-		if ((j+1)>=level)
-			total_free+=free_workers[j];
-	}
-	return total_free;
-}
-
-
-
-
 bool RandomUpgradeRepairModule::reassignConstruction(void)
 {
 	//Get the numbers of free units
 	int free_workers[NB_UNIT_LEVELS];
 	for (int j=0; j<NB_UNIT_LEVELS; j++)
 	{
-		free_workers[j]=getFreeUnits(ai.team, BUILD, j+1);
+		free_workers[j]=ai.getUnitModule()->available("RandomUpgradeRepairModule", WORKER, BUILD, j+1, false, UnitModule::medium);
 	}
+
 
 	//Add in the numbers of units that are already working
 	for (list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
@@ -2536,6 +2570,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, UnitModule::medium, b->gid);
 			ai.orders.push(new OrderCancelConstruction(b->gid));
 			continue;
 		}
@@ -2544,6 +2579,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+2, 0, UnitModule::medium, b->gid);
 			ai.orders.push(new OrderCancelConstruction(b->gid));
 			continue;
 		}
@@ -2570,6 +2606,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: Retasking "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<endl;
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, UnitModule::medium, b->gid);
 			ai.orders.push(new OrderModifyBuilding(b->gid, num_to_assign));
 			i->assigned=num_to_assign;
 		}
@@ -2583,6 +2620,8 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 
 bool RandomUpgradeRepairModule::startNewConstruction(void)
 {
+	ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, MAXIMUM_TO_UPGRADE*MAX_CONSTRUCTION_AT_ONCE, BUILD, 2, UnitModule::medium);
+
 	//If we already have more than our max, don't do any more
 	if (active_construction.size()+pending_construction.size()>=MAX_CONSTRUCTION_AT_ONCE)
 		return false;
@@ -2591,10 +2630,10 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	int free_workers[NB_UNIT_LEVELS];
 	for (int j=0; j<NB_UNIT_LEVELS; j++)
 	{
-		free_workers[j]=getFreeUnits(ai.team, BUILD, j+1);
+		free_workers[j]=ai.getUnitModule()->available("RandomUpgradeRepairModule", WORKER, BUILD, j+1, false, UnitModule::medium);
 	}
 
-	//Look through each building we previoussly assigned to be upgraded, and subtract their requested number of units from the free ones (ones that they haven't recieved yet but wanted.). Also take not of the type of building, counting up the numbers for each type.
+	//Look through each building we previoussly assigned to be upgraded, and take not of the type of building, counting up the numbers for each type.
 	int construction_counts[IntBuildingType::NB_BUILDING];
 	for (int j=0; j!=IntBuildingType::NB_BUILDING; j++)
 		construction_counts[j]=0;
@@ -2604,8 +2643,6 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 		Building *b=i->building;
 		if(buildingStillExists(ai.game, b))
 		{
-			unsigned int assigned = i->assigned;
-			reduce(free_workers, b->type->level, assigned-b->unitsWorking.size());
 			construction_counts[b->type->shortTypeNum]+=1;
 		}
 	}
@@ -2613,9 +2650,10 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	for (list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
 	{
 		Building *b=i->building;
-		unsigned int assigned = i->assigned;
-		reduce(free_workers, b->type->level, assigned-b->unitsWorking.size());
-		construction_counts[b->type->shortTypeNum]+=1;
+		if(buildingStillExists(ai.game, b))
+		{
+			construction_counts[b->type->shortTypeNum]+=1;
+		}
 	}
 
 	//Make a copy of the array of buildings, then shuffle it so that every building has an equal chance of being upgraded with the spare units.
@@ -2675,6 +2713,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 					u.is_repair=true;
 					pending_construction.push_back(u);
 					ai.orders.push(new OrderConstruction(b->gid));
+					ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned, UnitModule::medium, b->gid);
 					reduce(free_workers, b->type->level, num_to_assign);
 					construction_counts[b->type->shortTypeNum]+=1;
 				}
@@ -2704,6 +2743,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 					u.is_repair=false;
 					pending_construction.push_back(u);
 					ai.orders.push(new OrderConstruction(b->gid));
+					ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+2, u.assigned, UnitModule::medium, b->gid);
 					reduce(free_workers, b->type->level+1, num_to_assign);
 					construction_counts[b->type->shortTypeNum]+=1;
 				}
@@ -2715,8 +2755,246 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 
 
 
+DistributedUnitManager::DistributedUnitManager(AINicowar& ai) : ai(ai)
+{
 
-BasicDistributedSwarmManager::BasicDistributedSwarmManager(AINicowar& ai) : ai(ai)
+}
+
+string DistributedUnitManager::getName() const
+{
+	return "DistributedUnitManager";
+}
+
+bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("DistributedUnitManager");
+	stream->readEnterSection("module_records");
+	Uint32 unitRecordSize = stream->readUint32("size");
+	for (Uint32 unitRecordIndex = 0; unitRecordIndex < unitRecordSize; unitRecordIndex++)
+	{
+		stream->readEnterSection(unitRecordIndex);
+		moduleRecord mr;
+		string name=stream->readText("name");
+		for(unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; ++i)
+		{
+			stream->readEnterSection(i);
+			for(unsigned int j=0; static_cast<int>(j)<NB_ABILITY; ++j)
+			{
+				stream->readEnterSection(j);
+				for(unsigned int k=0; static_cast<int>(k)<NB_UNIT_LEVELS; ++k)
+				{
+					stream->readEnterSection(k);
+					for(unsigned int l=0; l<priorityNum; ++l)
+					{
+						stream->readEnterSection(l);
+						mr.requested[i][j][k][l]=stream->readUint32("requested");
+						mr.usingUnits[i][j][k][l]=stream->readUint32("usingUnits");
+						stream->readLeaveSection();
+					}
+					stream->readLeaveSection();
+				}
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
+		}
+		module_records[name]=mr;
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	stream->readEnterSection("buildings");
+	unitRecordSize = stream->readUint32("size");
+	for (Uint32 unitRecordIndex = 0; unitRecordIndex < unitRecordSize; unitRecordIndex++)
+	{
+		stream->readEnterSection(unitRecordIndex);
+		usageRecord ur;
+		unsigned int gid=stream->readUint32("gid");
+		ur.owner= stream->readText("owner");
+		ur.x=stream->readUint32("x");
+		ur.y=stream->readUint32("y");
+		ur.type=stream->readUint32("type");
+		ur.level=stream->readUint32("level");
+		ur.ability=stream->readUint32("ability");
+		ur.unit_type=stream->readUint32("unit_type");
+		ur.minimum_level=stream->readUint32("minimum_level");
+		ur.priority=static_cast<UnitModule::Priority>(stream->readUint32("priority"));
+		buildings[gid]=ur;
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
+}
+
+void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("DistributedUnitManager");
+	stream->writeEnterSection("module_records");
+	stream->writeUint32(module_records.size(), "size");
+	Uint32 unitRecordIndex = 0;
+	for (map<string, moduleRecord>::const_iterator i=module_records.begin(); i!=module_records.end(); ++i)
+	{
+		stream->writeEnterSection(unitRecordIndex++);
+		stream->writeText(i->first, "name");
+		for(unsigned int j=0; static_cast<int>(j)<NB_UNIT_TYPE; ++j)
+		{
+			stream->writeEnterSection(j);
+			for(unsigned int k=0; static_cast<int>(k)<NB_ABILITY; ++k)
+			{
+				stream->writeEnterSection(k);
+				for(unsigned int l=0; static_cast<int>(l)<NB_UNIT_LEVELS; ++l)
+				{
+					stream->writeEnterSection(l);
+					for(unsigned int m=0; m<priorityNum; ++m)
+					{
+						stream->writeEnterSection(m);
+						stream->writeUint32(i->second.requested[j][k][l][m], "requested");
+						stream->writeUint32(i->second.usingUnits[j][k][l][m], "usingUnits");
+						stream->writeLeaveSection();
+					}
+					stream->writeLeaveSection();
+				}
+				stream->writeLeaveSection();
+			}
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	stream->writeEnterSection("buildings");
+	stream->writeUint32(buildings.size(), "size");
+	unitRecordIndex = 0;
+	for(map<int, usageRecord>::const_iterator i = buildings.begin(); i!=buildings.end(); ++i)
+	{
+		stream->writeEnterSection(unitRecordIndex++);
+		stream->writeUint32(i->first, "gid");
+		stream->writeText(i->second.owner, "owner");
+		stream->writeUint32(i->second.x, "x");
+		stream->writeUint32(i->second.y, "y");
+		stream->writeUint32(i->second.type, "type");
+		stream->writeUint32(i->second.level, "level");
+		stream->writeUint32(i->second.ability, "ability");
+		stream->writeUint32(i->second.unit_type, "unit_type");
+		stream->writeUint32(i->second.minimum_level, "minimum_level");
+		stream->writeUint32(i->second.priority, "priority");
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+
+void DistributedUnitManager::changeUnits(string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)
+{
+//	std::cout<<"moduleName="<<moduleName<<"; unitType="<<unitType<<"; numUnits="<<numUnits<<"; ability="<<ability<<"; level="<<level<<";"<<endl;
+	module_records[moduleName].requested[unitType][ability][level][priority]=numUnits;
+}
+
+
+
+
+unsigned int DistributedUnitManager::available(string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)
+{
+//	std::cout<<"module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; level="<<level<<"; is_minimum="<<is_minimum<<"; priority="<<priority<<";"<<endl;
+	TeamStatsGenerator stat(ai.team);
+	unsigned int num_available=stat.getUnits(unit_type, Unit::MED_FREE, Unit::ACT_RANDOM, ability, level, is_minimum);
+//	std::cout<<"    num_available="<<num_available<<";"<<endl;
+	for(map<int, usageRecord>::iterator i=buildings.begin(); i!=buildings.end(); ++i)
+	{
+		Building* b = getBuildingFromGid(ai.game, i->first);
+		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->type->shortTypeNum != static_cast<int>(i->second.type) || b->type->level!=static_cast<int>(i->second.level))
+		{
+			buildings.erase(i);
+			continue;
+		}
+		if((is_minimum && i->second.level>=level) || (!is_minimum && i->second.level==level))
+		{
+			unsigned int needed=b->maxUnitWorking-b->unitsWorking.size();
+			if(needed>num_available)
+			{
+				num_available=0;
+			}
+			else
+			{
+				num_available-=needed;
+			}
+		}
+	}
+
+	///This is given as the 'unreachable' highest value.
+	unsigned int min_percent=10000;
+	string min_module="";
+	unsigned int min_total_requested=0;
+	unsigned int min_total_used=0;
+	for(map<string, moduleRecord>::iterator i=module_records.begin(); i!=module_records.end(); ++i)
+	{
+		unsigned int total_requested=0;
+		unsigned int total_used=0;
+		//UnitModule::low is a special case, units made by it should be ignored
+		for(unsigned int j=0; j<priorityNum && j!=UnitModule::low; ++j)
+		{
+			total_requested+=i->second.requested[unit_type][ability][level][j]*PRIORITY_SCORES[j];
+			total_used+=i->second.usingUnits[unit_type][ability][level][j]*PRIORITY_SCORES[j];
+		}
+		unsigned int percent=0;
+		if(total_requested>0)
+			percent=total_used*100/total_requested;
+		else
+			percent=100;
+		if(percent<min_percent || (i->first==module_name && percent==min_percent))
+		{
+			min_percent=percent;
+			min_module=i->first;
+			min_total_requested=total_requested;
+			min_total_used=total_used;
+		}
+	}
+
+//	std::cout<<"    min_module="<<min_module<<";"<<endl;
+//	std::cout<<"    min_percent="<<min_percent<<";"<<endl;
+//	std::cout<<"    min_total_requested="<<min_total_requested<<";"<<endl;
+
+	if(min_module!=module_name)
+		return 0;
+
+	return num_available;
+}
+
+
+
+
+bool DistributedUnitManager::request(string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)
+{
+	Building* b=getBuildingFromGid(ai.game, building);
+	if(b==NULL)
+	{
+		return false;
+	}
+	usageRecord ur;
+	if(buildings.find(building)!=buildings.end())
+	{
+		ur=buildings[building];
+		module_records[ur.owner].usingUnits[ur.unit_type][ur.ability][ur.minimum_level][ur.priority]-=getBuildingFromGid(ai.game, building)->maxUnitWorking;
+	}
+	ur.owner=module_name;
+	ur.x=b->posX;
+	ur.y=b->posY;
+	ur.type=b->type->shortTypeNum;
+	ur.level=b->type->level;
+	ur.ability=unit_type;
+	ur.unit_type=unit_type;
+	ur.minimum_level=unit_type;
+	ur.priority=priority;
+	buildings[building]=ur;
+	return true;
+}
+
+
+
+
+BasicDistributedSwarmManager::BasicDistributedSwarmManager(AINicowar& ai) : DistributedUnitManager(ai), ai(ai)
 {
 	ai.setUnitModule(this);
 }
@@ -2748,26 +3026,7 @@ string BasicDistributedSwarmManager::getName() const
 bool BasicDistributedSwarmManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("BasicDistributedSwarmManager");
-	stream->readEnterSection("module_demands");
-	Uint32 unitRecordSize = stream->readUint32("size");
-	for (Uint32 unitRecordIndex = 0; unitRecordIndex < unitRecordSize; unitRecordIndex++)
-	{
-		stream->readEnterSection(unitRecordIndex);
-		unitRecord ur;
-		string name=stream->readText("name");
-		for(int i=0; i<NB_UNIT_TYPE; ++i)
-		{
-			stream->readEnterSection(i);
-			ur.desired_units[i]=stream->readUint32("desired_units");
-			ur.required_units[i]=stream->readUint32("required_units");
-			ur.emergency_units[i]=stream->readUint32("emergency_units");
-			stream->readLeaveSection();
-		}
-		module_demands[name]=ur;
-		// FIXME : clear the container before load
-		stream->readLeaveSection();
-	}
-	stream->readLeaveSection();
+	DistributedUnitManager::load(stream, player, versionMinor);
 	stream->readLeaveSection();
 	return true;
 }
@@ -2778,48 +3037,8 @@ bool BasicDistributedSwarmManager::load(GAGCore::InputStream *stream, Player *pl
 void BasicDistributedSwarmManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("BasicDistributedSwarmManager");
-	stream->writeEnterSection("module_demands");
-	stream->writeUint32(module_demands.size(), "size");
-	Uint32 unitRecordIndex = 0;
-	for(std::map<string, unitRecord>::const_iterator i = module_demands.begin(); i!=module_demands.end(); ++i)
-	{
-		stream->writeEnterSection(unitRecordIndex++);
-		stream->writeText(i->first, "name");
-		for(int n=0; n<NB_UNIT_TYPE; ++n)
-		{
-			stream->writeEnterSection(n);
-			stream->writeUint32(i->second.desired_units[n], "desired_units");
-			stream->writeUint32(i->second.required_units[n], "required_units");
-			stream->writeUint32(i->second.emergency_units[n], "emergency_units");
-			stream->writeLeaveSection();
-		}
-		stream->writeLeaveSection();
-	}
+	DistributedUnitManager::save(stream);
 	stream->writeLeaveSection();
-	stream->writeLeaveSection();
-}
-
-
-
-
-void BasicDistributedSwarmManager::changeUnits(string module_name, unsigned int unit_type, unsigned int desired_units, unsigned int required_units, unsigned int emergency_units)
-{
-	unitRecord ur;
-	if (module_demands.count(module_name))
-		ur=module_demands[module_name];
-	else
-	{
-		for (int i=0; i<NB_UNIT_TYPE; i++)
-		{
-			ur.desired_units[i]=0;
-			ur.required_units[i]=0;
-			ur.emergency_units[i]=0;
-		}
-	}
-	ur.desired_units[unit_type]=desired_units;
-	ur.required_units[unit_type]=required_units;
-	ur.emergency_units[unit_type]=emergency_units;
-	module_demands[module_name]=ur;
 }
 
 
@@ -2828,51 +3047,47 @@ void BasicDistributedSwarmManager::changeUnits(string module_name, unsigned int 
 bool BasicDistributedSwarmManager::moderateSwarms()
 {
 	//The number of units we want for each priority level
-	unsigned int num_wanted[NB_UNIT_TYPE][3];
+	unsigned int num_wanted[NB_UNIT_TYPE][priorityNum];
 	unsigned int total_available[NB_UNIT_TYPE];
 	for (unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; i++)
 	{
 		total_available[i]=ai.team->stats.getLatestStat()->numberUnitPerType[i];
-		for(int n=0; n<3; ++n)
+		for(int n=0; n<priorityNum; ++n)
 		{
 			num_wanted[i][n]=0;
 		}
 	}
 
 	//Counts out the requested units from each of the modules
-	for (std::map<string, unitRecord>::iterator i = module_demands.begin(); i!=module_demands.end(); i++)
+	for (std::map<string, moduleRecord>::iterator i = module_records.begin(); i!=module_records.end(); i++)
 	{
-		for (unsigned int unit_t=0; static_cast<int>(unit_t)<NB_UNIT_TYPE; unit_t++)
-		{
-			num_wanted[unit_t][0]+=i->second.desired_units[unit_t];
-			num_wanted[unit_t][1]+=i->second.required_units[unit_t];
-			num_wanted[unit_t][2]+=i->second.emergency_units[unit_t];
-		}
+		for(unsigned int j=0; static_cast<int>(j)<NB_UNIT_TYPE; ++j)
+			for(unsigned int k=0; static_cast<int>(k)<NB_ABILITY; ++k)
+				for(unsigned int l=0; static_cast<int>(l)<NB_UNIT_LEVELS; ++l)
+					for(unsigned int m=0; m<priorityNum; ++m)
+						num_wanted[j][m]+=i->second.requested[j][k][l][m];
 	}
 
 	//Substract the already-existing amount of units from the numbers requested, and then move these totals multiplied by their respective score
-	//into the ratios. This number can't be unsigned or it won't pass into OrderModifySwarm properly
+	//into the ratios. ratios[NB_UNIT_TYPE] can't be unsigned or it won't pass into OrderModifySwarm properly
 	int ratios[NB_UNIT_TYPE];
 	unsigned int total_wanted_score=0;
 	for (unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; i++)
 	{
-		for(unsigned int n=0; n<3; ++n)
+		ratios[i]=0;
+		for(unsigned int n=0; n<priorityNum; ++n)
 		{
-			unsigned int reverse_loc=2-n;
-			if(total_available[i] > num_wanted[i][reverse_loc])
+			if(total_available[i] > num_wanted[i][n])
 			{
-				total_available[i]-=num_wanted[i][reverse_loc];
-				num_wanted[i][reverse_loc]=0;
+				total_available[i]-=num_wanted[i][n];
+				num_wanted[i][n]=0;
 			}
 			else
 			{
-				num_wanted[i][reverse_loc]-=total_available[i];
+				num_wanted[i][n]-=total_available[i];
 			}
+			ratios[i]+=num_wanted[i][n]*PRIORITY_SCORES[n];
 		}
-		ratios[i]=0;
-		ratios[i]+=num_wanted[i][0]*DESIRED_UNIT_SCORE;
-		ratios[i]+=num_wanted[i][1]*REQUIRED_UNIT_SCORE;
-		ratios[i]+=num_wanted[i][2]*EMERGENCY_UNIT_SCORE;
 		total_wanted_score+=ratios[i];
 	}
 
@@ -2883,11 +3098,13 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 
 	for(unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; ++i)
 	{
-		ratios[i]=static_cast<int>(std::floor(ratios[i]/devisor+0.5));
+		unsigned int num=ratios[i];
+		ratios[i]=static_cast<int>(std::floor(num/devisor+0.5));
+		if(num>0 && ratios[i]==0)
+			ratios[i]=1;
 	}
 
 	unsigned int assigned_per_swarm=std::min(MAXIMUM_UNITS_FOR_SWARM, static_cast<unsigned int>(total_wanted_score/CREATION_UNIT_REQUIREMENT+1));
-	ai.getUnitModule()->changeUnits("spawn-manager", WORKER, 0, ai.team->swarms.size()*assigned_per_swarm, 0);
 
 	bool need_to_output=true;
 	for (std::list<Building*>::iterator i = ai.team->swarms.begin(); i != ai.team->swarms.end(); ++i)
@@ -3113,7 +3330,11 @@ bool ExplorationManager::exploreWorld(void)
 		//This flag will be picked up by findCreatedFlags
 		exploration_record.flag=NULL;
 		exploration_record.flag_x=z.x+(z.width/2);
+		if(static_cast<int>(exploration_record.flag_x)>=ai.map->getW())
+			exploration_record.flag_x-=ai.map->getW();
 		exploration_record.flag_y=z.y+(z.height/2);
+		if(static_cast<int>(exploration_record.flag_y)>=ai.map->getH())
+			exploration_record.flag_y-=ai.map->getH();
 		exploration_record.zone_x=z.x;
 		exploration_record.zone_y=z.y;
 		exploration_record.width=z.width;
@@ -3169,6 +3390,7 @@ bool ExplorationManager::updateExplorationFlags(void)
 							std::cout<<"AINicowar: updateExplorationFlags: Found a newly created flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<endl;
 						ai.orders.push(new OrderModifyFlag(b->gid, i->radius));
 						ai.orders.push(new OrderModifyBuilding(b->gid, i->assigned));
+						ai.getUnitModule()->request("ExplorationManager", EXPLORER, FLY, 1, i->assigned, UnitModule::medium_high, i->flag->gid);
 						break;
 					}
 				}
@@ -3238,7 +3460,7 @@ bool ExplorationManager::moderateSwarmsForExplorers(void)
 {
 	//I've raised the priority on explorers temporarily for testing.
 	//	changeUnits("aircontrol", EXPLORER, static_cast<int>(desired_explorers/2) , desired_explorers, 0);
-	ai.getUnitModule()->changeUnits("aircontrol", EXPLORER, 0, static_cast<int>(explorers_wanted/2), explorers_wanted);
+	ai.getUnitModule()->changeUnits("ExplorationManager", EXPLORER, explorers_wanted, FLY, 1, UnitModule::medium_high);
 	return false;
 }
 
@@ -3572,7 +3794,7 @@ bool InnManager::modifyInns()
 			break;
 		}
 	}
-	ai.getUnitModule()->changeUnits("inn-manager", WORKER, inns.size(), total_workers_needed, 0);
+	ai.getUnitModule()->changeUnits("InnManager", WORKER, inns.size(), HARVEST, 1, UnitModule::medium);
 	return false;
 }
 
@@ -3650,7 +3872,8 @@ bool TowerController::controlTowers()
 			}
 		}
 	}
-	ai.getUnitModule()->changeUnits("tower-controller", WORKER, 0, count*NUM_PER_TOWER, 0);
+	ai.getUnitModule()->changeUnits("TowerController", WORKER, count*NUM_PER_TOWER, HARVEST, 1, UnitModule::low);
+
 	return false;
 }
 
@@ -3703,7 +3926,7 @@ bool BuildingClearer::load(GAGCore::InputStream *stream, Player *player, Sint32 
 		cr.level=stream->readUint32("level");
 		cleared_buildings[stream->readUint32("first")]=cr;
 		// FIXME : clear the container before load
-		
+
 		stream->readLeaveSection();
 	}
 
