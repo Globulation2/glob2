@@ -744,6 +744,7 @@ void Unit::handleMedical(void)
 		
 		if (!isDead)
 		{
+			// disconnect from building
 			if (attachedBuilding)
 			{
 				assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
@@ -761,12 +762,16 @@ void Unit::handleMedical(void)
 			
 			activity=ACT_RANDOM;
 			
+			// remove from map
 			if (performance[FLY])
 				owner->map->setAirUnit(posX, posY, NOGUID);
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
+				
+			// generate death animation
+			owner->map->getSector(posX, posY)->deathAnimations.push_back(new UnitDeathAnimation(posX, posY, owner));
 		}
-		isDead=true;
+		isDead = true;
 	}
 }
 

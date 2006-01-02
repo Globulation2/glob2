@@ -26,6 +26,14 @@
 #include <GraphicContext.h>
 #include <Stream.h>
 
+UnitDeathAnimation::UnitDeathAnimation(int x, int y, Team *team)
+{
+	this->x = x;
+	this->y = y;
+	this->team = team;
+	this->ticksLeft = globalContainer->deathAnimation->getFrameCount();
+}
+
 Sector::Sector(Game *game)
 {
 	this->game=game;
@@ -53,6 +61,10 @@ void Sector::free(void)
 	for (std::list<BulletExplosion *>::iterator it=explosions.begin();it!=explosions.end();it++)
 		delete (*it);
 	explosions.clear();
+	
+	for (std::list<UnitDeathAnimation *>::iterator it=deathAnimations.begin();it!=deathAnimations.end();it++)
+		delete (*it);
+	deathAnimations.clear();
 	
 	game=NULL;
 	map=NULL;
@@ -87,7 +99,6 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	
 	this->game=game;
 	this->map=&(game->map);
 	return true;
@@ -171,6 +182,20 @@ void Sector::step(void)
 		{
 			delete *it;
 			it = explosions.erase(it);
+		}
+	}
+	
+	// handle death animation
+	for (std::list<UnitDeathAnimation *>::iterator it=deathAnimations.begin();it!=deathAnimations.end();++it)
+	{
+		if ( (*it)->ticksLeft > 0 )
+		{
+			(*it)->ticksLeft--;
+		}
+		else
+		{
+			delete *it;
+			it = deathAnimations.erase(it);
 		}
 	}
 }

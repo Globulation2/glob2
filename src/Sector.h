@@ -26,6 +26,14 @@ class Map;
 class Game;
 class Bullet;
 class Explosion;
+class Team;
+
+struct UnitDeathAnimation
+{
+	UnitDeathAnimation(int x, int y, Team *team);
+	int x, y, ticksLeft;
+	Team *team;
+};
 
 // a 16x16 piece of Map
 class Sector
@@ -41,6 +49,7 @@ public:
 
 	std::list<Bullet *> bullets;
 	std::list<BulletExplosion *> explosions;
+	std::list<UnitDeathAnimation *> deathAnimations;
 
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);

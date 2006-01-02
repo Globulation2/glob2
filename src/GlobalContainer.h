@@ -81,6 +81,7 @@ public:
 	Sprite *ressourceMini;
 	Sprite *bullet;
 	Sprite *bulletExplosion;
+	Sprite *deathAnimation;
 	Sprite *units;
 	Sprite *unitmini;
 	Sprite *gamegui;
