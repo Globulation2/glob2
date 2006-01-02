@@ -2206,12 +2206,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		{
 			int x, y;
 			map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
-			Sprite *img = globalContainer->bulletExplosion;
 			int frame = globalContainer->bulletExplosion->getFrameCount() - (*it)->ticksLeft - 1;
 			int decX = globalContainer->bulletExplosion->getW(frame)>>1;
 			int decY = globalContainer->bulletExplosion->getH(frame)>>1;
-			globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, img, frame);
-			//std::cout << "Explosion at (" << x << "," << y << ") frame " << frame <<std::endl;
+			globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, globalContainer->bulletExplosion, frame);
+		}
+		// death animations
+		for (std::list<UnitDeathAnimation *>::iterator it=s->deathAnimations.begin();it!=s->deathAnimations.end();++it)
+		{
+			int x, y;
+			map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
+			int frame = globalContainer->deathAnimation->getFrameCount() - (*it)->ticksLeft - 1;
+			int decX = globalContainer->deathAnimation->getW(frame)>>1;
+			int decY = globalContainer->deathAnimation->getH(frame)>>1;
+			Team *team = (*it)->team;
+			globalContainer->deathAnimation->setBaseColor(team->colorR, team->colorG, team->colorB);
+			globalContainer->gfx->drawSprite(x+16-decX, y+16-decY-frame, globalContainer->deathAnimation, frame);
 		}
 	}
 	

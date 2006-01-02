@@ -456,7 +456,8 @@ void GlobalContainer::load(void)
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
 		bullet = Toolkit::getSprite("data/gfx/bullet");
-		bulletExplosion = Toolkit::getSprite("data/gfx/explosion"); 
+		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
+		deathAnimation = Toolkit::getSprite("data/gfx/death"); 
 
 		updateLoadProgressBar(70);
 		// load units
