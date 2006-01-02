@@ -30,7 +30,7 @@ namespace GAGCore
 
 namespace GAGGUI
 {
-	class Ratio: public RectangularWidget
+	class Ratio : public HighlightableWidget
 	{
 	public:
 		Ratio() { fontPtr=NULL; }

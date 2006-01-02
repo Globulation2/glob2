@@ -21,8 +21,7 @@
 #define __MULTIPLAYERHOSTSCREEN_H
 
 #include <vector>
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
 namespace GAGGUI
 {
@@ -36,7 +35,7 @@ class SessionInfo;
 class MultiplayersHost;
 class MultiplayersJoin;
 
-class MultiplayersHostScreen: public Screen
+class MultiplayersHostScreen : public Glob2Screen
 {
 public:
 	enum

@@ -20,8 +20,7 @@
 #ifndef __YOG_PRE_SCREEN_H
 #define __YOG_PRE_SCREEN_H
 
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 #include "YOG.h"
 
 namespace GAGGUI
@@ -33,7 +32,7 @@ namespace GAGGUI
 	class Animation;
 }
 
-class YOGPreScreen:public Screen
+class YOGPreScreen : public Glob2Screen
 {
 	static const bool verbose = false;
 public:

@@ -21,6 +21,7 @@
 
 #include <Toolkit.h>
 #include <GAG.h>
+#include <GUIBase.h>
 
 #include "FileManager.h"
 #include "GlobalContainer.h"
@@ -32,6 +33,7 @@
 #include "VoiceRecorder.h"
 #include "IntBuildingType.h"
 #include "Race.h"
+#include "Glob2Screen.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -431,8 +433,11 @@ void GlobalContainer::load(void)
 		Toolkit::loadFont("data/fonts/sans.ttf", 14, "standard");
 		Toolkit::loadFont("data/fonts/sans.ttf", 10, "little");
 		menuFont = Toolkit::getFont("menu");
+		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::frontColor));
 		standardFont = Toolkit::getFont("standard");
+		standardFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::frontColor));
 		littleFont = Toolkit::getFont("little");
+		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::frontColor));
 
 		updateLoadProgressBar(45);
 		// load terrain data

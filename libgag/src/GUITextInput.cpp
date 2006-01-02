@@ -262,10 +262,6 @@ namespace GAGGUI
 	
 	void TextInput::paint(void)
 	{
-		static const int r= 180;
-		static const int g= 180;
-		static const int b= 180;
-	
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
@@ -275,7 +271,7 @@ namespace GAGGUI
 		recomputeTextInfos();
 		HighlightableWidget::paint();
 		
-		parent->getSurface()->drawRect(x, y, w, h, r, g, b);
+		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
 		
 		if (password)
 		{
@@ -290,7 +286,7 @@ namespace GAGGUI
 		if(activated)
 		{
 			int hbc=fontPtr->getStringHeight(text.c_str());
-			parent->getSurface()->drawVertLine(x+2+cursorScreenPos, y+3 , hbc, r, g, b);
+			parent->getSurface()->drawLine(x+2+cursorScreenPos, y+3 , x+2+cursorScreenPos, y+3+hbc, ColorTheme::frontColor);
 		}
 	}
 	

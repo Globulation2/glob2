@@ -61,6 +61,9 @@ namespace GAGCore
 		//! comparaison for equality
 		bool operator==(const Color &o) const { return pack() == o.pack(); }
 		
+		//! return a new color with a different alpha value
+		Color applyAlpha(Uint8 a) { Color c = *this; c.a = a; return c; }
+		
 		static Color black; //!< black color (0,0,0)
 		static Color white; //!< black color (255,255,255)
 	};
@@ -93,6 +96,13 @@ namespace GAGCore
 			Style() { shape = STYLE_NORMAL; color = Color::white; }
 			
 			//! Constructor from shape and color
+			Style(Shape _shape, Color _color) :
+				shape(_shape),
+				color(_color)
+			{
+			}
+			
+			//! Constructor from shape and color component
 			Style(Shape _shape, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE) :
 				shape(_shape),
 				color(r, g, b, a)

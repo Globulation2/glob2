@@ -20,8 +20,7 @@
 #ifndef __NEWMAPSCREEN_H
 #define __NEWMAPSCREEN_H
 
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 #include "MapGenerationDescriptor.h"
 
 namespace GAGGUI
@@ -33,7 +32,7 @@ namespace GAGGUI
 }
 
 //! This screen allows to choose how to make a new map
-class HowNewMapScreen:public Screen
+class HowNewMapScreen : public Glob2Screen
 {
 public:
 	enum
@@ -53,7 +52,7 @@ public:
 };
 
 //! This screen allows to choose the size of the map and the default background
-class NewMapScreen:public Screen
+class NewMapScreen : public Glob2Screen
 {
 public:
 	enum

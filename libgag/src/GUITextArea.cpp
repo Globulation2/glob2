@@ -449,7 +449,7 @@ namespace GAGGUI
 	
 		areaHeight=(h-8)/charHeight;
 		parent->getSurface()->setClipRect(x, y, w, h);
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
 		
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
@@ -478,7 +478,9 @@ namespace GAGGUI
 	
 		if (!readOnly)
 		{
-			parent->getSurface()->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
+			int xPos = x+4+cursorScreenPosY;
+			int yPos = y+4+(charHeight*(cursorPosY-areaPos));
+			parent->getSurface()->drawLine(xPos, yPos, xPos, yPos + charHeight, ColorTheme::frontColor);
 		}
 		parent->getSurface()->setClipRect();
 	}

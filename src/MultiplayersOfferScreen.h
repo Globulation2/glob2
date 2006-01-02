@@ -20,10 +20,9 @@
 #ifndef __MULTIPLAYERS_OFFER_SCREEN_H
 #define __MULTIPLAYERS_OFFER_SCREEN_H
 
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
-class MultiplayersOfferScreen:public Screen
+class MultiplayersOfferScreen : public Glob2Screen
 {
 public:
 	enum

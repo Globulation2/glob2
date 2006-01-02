@@ -20,10 +20,9 @@
 #ifndef __CREDIT_SCREEN_H
 #define __CREDIT_SCREEN_H
 
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 
-class CreditScreen:public Screen
+class CreditScreen : public Glob2Screen
 {
 public:
 	CreditScreen();

@@ -21,6 +21,7 @@
 #define __GUIBASE_H
 
 #include "GAGSys.h"
+#include "GraphicContext.h"
 #include <vector>
 #include <set>
 
@@ -76,6 +77,16 @@ namespace GAGGUI
 		RATIO_CHANGED,
 		VALUE_CHANGED,
 	};
+	
+	//! Colors used by GUI element
+	namespace ColorTheme
+	{
+		extern GAGCore::Color frontColor; //!< front elements color
+		extern GAGCore::Color frontFrameColor; //!< front frame elements color
+		extern GAGCore::Color listSelectedElementColor;
+		extern GAGCore::Color backColor; //!< background color
+		extern GAGCore::Color backOverlayColor; //!< overlay background color
+	}
 	
 	class Screen;
 	

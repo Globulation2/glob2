@@ -59,6 +59,8 @@ namespace GAGGUI
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
+		HighlightableWidget::onSDLEvent(event);
+		
 		if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
 			if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
@@ -104,9 +106,10 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-		parent->getSurface()->drawVertLine(x+m, y, h, 255, 255, 255);
-		parent->getSurface()->drawVertLine(x+w-m, y, h, 255, 255, 255);
+		HighlightableWidget::paint();
+		
+		parent->getSurface()->drawLine(x+m, y, x+m, y+h, ColorTheme::frontFrameColor);
+		parent->getSurface()->drawLine(x+w-m, y, x+w-m, y+h, ColorTheme::frontFrameColor);
 		
 		assert(nth>=0);
 		assert(nth<(int)numbers.size());

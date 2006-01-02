@@ -39,15 +39,15 @@ using namespace GAGCore;
 
 MainMenuScreen::MainMenuScreen()
 {
-	addWidget(new TextButton( 10,  20, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campaign]"), CAMPAIGN));
+	addWidget(new TextButton( 10, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campaign]"), CAMPAIGN));
 	
-	addWidget(new TextButton( 330,  20, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[tutorial]"), TUTORIAL));
+	addWidget(new TextButton( 330, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[tutorial]"), TUTORIAL));
 	
-	addWidget(new TextButton( 10, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
-	addWidget(new TextButton(330, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[custom game]"), CUSTOM));
+	addWidget(new TextButton( 10, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
+	addWidget(new TextButton(330, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[custom game]"), CUSTOM));
 	
-	addWidget(new TextButton( 10, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[yog]"), MULTIPLAYERS_YOG));
-	addWidget(new TextButton(330, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[lan]"), MULTIPLAYERS_LAN));
+	addWidget(new TextButton( 10, 260, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[yog]"), MULTIPLAYERS_YOG));
+	addWidget(new TextButton(330, 260, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[lan]"), MULTIPLAYERS_LAN));
 	
 	addWidget(new TextButton( 10, 340, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[settings]"), GAME_SETUP));
 	addWidget(new TextButton(330, 340, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[editor]"), EDITOR));
@@ -58,13 +58,14 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", GAGCore::nsprintf("V %d.%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, NET_PROTOCOL_VERSION, YOG_PROTOCOL_VERSION).c_str()));
 	
 	addWidget(new Text(3, 0, ALIGN_LEFT, ALIGN_BOTTOM, "standard", PACKAGE_VERSION));
-
-	//background=globalContainer->gfx->createDrawableSurface("data/gfx/IntroMN.png");
+	
+	Text *title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", "Globulation 2");
+	addWidget(title);
 }
 
 MainMenuScreen::~MainMenuScreen()
 {
-	//delete background;
+	
 }
 
 void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)

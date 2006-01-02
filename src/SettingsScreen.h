@@ -20,8 +20,7 @@
 #ifndef __SETTINGSSCREEN_H
 #define __SETTINGSSCREEN_H
 
-#include <GUIBase.h>
-using namespace GAGGUI;
+#include "Glob2Screen.h"
 #include <string>
 
 namespace GAGGUI
@@ -34,7 +33,7 @@ namespace GAGGUI
 	class Selector;
 }
 
-class SettingsScreen:public Screen
+class SettingsScreen : public Glob2Screen
 {
 public:
 	enum

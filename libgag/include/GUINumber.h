@@ -31,7 +31,7 @@ namespace GAGCore
 
 namespace GAGGUI
 {
-	class Number: public RectangularWidget
+	class Number: public HighlightableWidget
 	{
 	protected:
 		Sint32 nth;
