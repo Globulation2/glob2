@@ -35,21 +35,13 @@ namespace GAGGUI
 	{
 	protected:
 		Uint16 unicodeShortcut;
-		Sint32 standardId;
-		Sint32 highlightID;
-		std::string sprite;
-	
-		//! cache, recomputed on internalInit
-		GAGCore::Sprite *archPtr;
-	
+		
 	public:
-		Button() { unicodeShortcut=0; standardId=-1; highlightID=-1; archPtr=NULL; }
+		Button() {  }
 		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut=0);
 		virtual ~Button() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void init(void);
-		virtual void paint(void);
 	};
 	
 	class TextButton:public Button
