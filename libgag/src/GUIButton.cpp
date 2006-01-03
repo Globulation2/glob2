@@ -37,13 +37,7 @@ namespace GAGGUI
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
 	
-		if (sprite)
-			this->sprite=sprite;
-		this->standardId=standardId;
-		this->highlightID=highlightID;
 		this->unicodeShortcut=unicodeShortcut;
-	
-		archPtr=NULL;
 	}
 	
 	
@@ -71,40 +65,6 @@ namespace GAGGUI
 			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
 				(event->button.button == SDL_BUTTON_LEFT))
 				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
-		}
-	}
-	
-	void Button::init(void)
-	{
-		if ((standardId>=0)||(highlightID>=0))
-		{
-			archPtr=Toolkit::getSprite(sprite.c_str());
-			assert(archPtr);
-		}
-	}
-	
-	void Button::paint()
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		
-		assert(parent);
-		assert(parent->getSurface());
-		
-		if (standardId < 0)
-		{
-			HighlightableWidget::paint();
-		}
-		else
-		{
-			unsigned val = getNextHighlightValue();
-			if ((val > 0) && (highlightID>=0))
-			{
-				parent->getSurface()->drawSprite(x, y, archPtr, standardId, 255 - val);
-				parent->getSurface()->drawSprite(x, y, archPtr, highlightID, val);
-			}
-			else
-				parent->getSurface()->drawSprite(x, y, archPtr, standardId);
 		}
 	}
 	
