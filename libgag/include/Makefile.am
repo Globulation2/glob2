@@ -24,4 +24,5 @@ GraphicContext.h \
 SDLGraphicContext.h \
 CursorManager.h \
 SupportFunctions.h \
-GUIMessageBox.h 
+GUIMessageBox.h \
+GUIStyle.h

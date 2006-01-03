@@ -18,6 +18,7 @@
 */
 
 #include <GUIButton.h>
+#include <GUIStyle.h>
 #include <Toolkit.h>
 #include <assert.h>
 #include <GraphicContext.h>
@@ -133,8 +134,8 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		Button::paint();
-	
+		Style::style->drawTextButtonBackground(parent->getSurface(), x, y, w, h, getNextHighlightValue());
+		
 		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
 		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
 	
@@ -193,14 +194,7 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		HighlightableWidget::paint();
-		if (state)
-		{
-			parent->getSurface()->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
-			parent->getSurface()->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
-			parent->getSurface()->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
-			parent->getSurface()->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
-		}
+		Style::style->drawOnOffButton(parent->getSurface(), x, y, w, h, getNextHighlightValue(), state);
 	}
 	
 	void OnOffButton::setState(bool newState)
