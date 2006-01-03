@@ -161,7 +161,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(new TextButton(90, 85, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[hp]"), 3, '4'));
 	addWidget(new TextButton(190, 85, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
 	addWidget(new TextButton(290, 85, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
-	addWidget(new TextButton(150, 25, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), 6, 13));
+	addWidget(new TextButton(0, 25, 300, 40, ALIGN_CENTERED, ALIGN_BOTTOM, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[ok]"), 6, 13));
 	
 	// add players name
 	Text *text;
