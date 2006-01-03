@@ -178,7 +178,9 @@ IRC.cpp \
 VoiceRecorder.h \
 VoiceRecorder.cpp \
 Glob2Screen.h \
-Glob2Screen.cpp
+Glob2Screen.cpp \
+Glob2Style.h \
+Glob2Style.cpp
 
 
 if LINKSTATIC

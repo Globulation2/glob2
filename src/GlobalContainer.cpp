@@ -90,6 +90,9 @@ GlobalContainer::GlobalContainer(void)
 
 GlobalContainer::~GlobalContainer(void)
 {
+	// unlink GUI style
+	Style::style = &defaultStyle;
+	
 	// close sound
 	if (mix)
 		delete mix;
@@ -469,6 +472,7 @@ void GlobalContainer::load(void)
 		gamegui = Toolkit::getSprite("data/gfx/gamegui");
 		brush = Toolkit::getSprite("data/gfx/brush");
 		magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
+		Style::style = &style;
 
 		updateLoadProgressBar(100);
 		destroyProgressBar();

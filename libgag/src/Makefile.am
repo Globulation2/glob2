@@ -33,6 +33,7 @@ libgag_a_SOURCES = \
 	GUISelector.cpp\
 	GUIAnimation.cpp\
 	GUIMessageBox.cpp\
+	GUIStyle.cpp\
 	StreamBackend.cpp\
 	StreamFilter.cpp\
 	Stream.cpp\
