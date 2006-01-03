@@ -1,0 +1,674 @@
+[language]
+Svenska
+[language-code]
+sv
+[language-tr]
+Språk
+[hp]
+HP
+[heal]
+Hälsa
+[armor]
+Sköld
+[damage]
+Skada
+[food]
+Mat
+[working]
+Arbetar
+[inside]
+Inuti
+[ressources]
+Resurser
+[Wood]
+Trä
+[Corn]
+Vete
+[Papyrus]
+Papyrus
+[Stone]
+Sten
+[Alga]
+Alger
+[Cherry]
+Körsbär
+[Orange]
+Apelsin
+[Prune]
+Katrinplommon
+[Clearing:]
+Skogsglänta:
+[Min required level:]
+Lägsta tillåtna nivå:
+[Bullets]
+Kulor
+[range]
+Avstånd
+[destroy]
+Förstör
+[cancel destroy]
+Avbryt förstörelse
+[wait destroy]
+Inväntar förstörelse
+[upgrade]
+Uppgradera
+[repair]
+Reparera
+[cancel upgrade]
+Avbryt uppgradering
+[cancel repair]
+Avbryt reparation
+[units type]
+enhetstyp
+[workers]
+arbetare
+[explorers]
+utforskare
+[warriors]
+krigare
+[Unit type]
+Enhetstyp
+[Worker]
+Arbetare
+[Explorer]
+Utforskare
+[Warrior]
+Krigare
+[still (w)]
+Fortfarande
+[units working]
+ enheter som arbetar
+[still one unit working]
+En enhet arbetar fortfarande
+[Still (i)]
+Fortfarande 
+[Still one]
+En kvar
+[Building name]
+Byggnadsnamn
+[swarm building]
+Svärm
+[food building]
+Värdshus
+[health building]
+Sjukstuga
+[walkspeed building]
+Tävlingsbana
+[swimspeed building]
+Simbassäng
+[attack building]
+Barrack
+[science building]
+Skola
+[defense building]
+Försvarstorn
+[exploration flag]
+Utforskningsflagga
+[war flag]
+Krigsflagga
+[clearing flag]
+Röjflagga
+[stone wall]
+Stenvägg
+[market]
+Marknad
+[forbidden area]
+Förbjudet område
+[guard area]
+Vaktområde
+[clear area]
+Röjområde
+[Building short explanation]
+Byggnad kort beskrivning (Max 24 karaktärer)
+[swarm building explanation]
+Skapar nya enheter
+[food building explanation]
+Matar dina enheter
+[health building explanation]
+Läker dina enheter
+[walkspeed building explanation]
+Förbättrar hastighet-
+[swimspeed building explanation]
+Förbättrar simhastighet-
+[attack building explanation]
+Förbättrar stridsnivån
+[science building explanation]
+Förbättrar byggnadsnivån
+[defense building explanation]
+Attackerar nära fiender,
+[exploration flag explanation]
+Lockar utforskare
+[war flag explanation]
+Lockar krigare
+[clearing flag explanation]
+Röjer resurser
+[stone wall explanation]
+Passivt försvarselement
+[market explanation]
+Låter dig byta frukt
+[Building short explanation 2]
+Byggnad kort beskrivning 2 (Max 24 )
+[swarm building explanation 2]
+ 
+[food building explanation 2]
+ 
+[health building explanation 2]
+ 
+[walkspeed building explanation 2]
+nivån hos dina enheter
+[swimspeed building explanation 2]
+nivån hos dina enheter
+[attack building explanation 2]
+hos dina krigare
+[science building explanation 2]
+hos dina arbetare
+[defense building explanation 2]
+enheter eller byggnader
+[exploration flag explanation 2]
+ 
+[war flag explanation 2]
+ 
+[clearing flag explanation 2]
+ 
+[stone wall explanation 2]
+ 
+[market explanation 2]
+med dom andra
+[waiting for %s]
+Väntar på %s
+[%s has left the game]
+%s har lämnat spelet.
+[%s has been deconnected of the game]
+%s har blivit frånkopplad.
+[load game]
+Ladda spel
+[save game]
+Spara spel
+[options]
+Inställningar
+[alliances]
+Allianser
+[return to game]
+Återvänd till spelet
+[quit the game]
+Avsluta spelet
+[ok]
+Okej
+[Cancel]
+Avbryt
+[you have lost]
+Du har förlorat!
+[you have won]
+Du har vunnit!
+[campaign]
+Kampanj
+[tutorial]
+Tutorial
+[custom game]
+Eget spel
+[yog]
+Ysagoon Online Gaming
+[Enter your nickname :]
+Skriv ditt smeknamn :
+[Enter your password :]
+Skriv ditt lösenord :
+[lan]
+LAN-spel
+[settings]
+Inställningar
+[Warning, you need to reboot the game for changes to take effect]
+Varning, du måste starta om spelet för att dina ändringar ska få effekt
+[editor]
+Editor
+[credits]
+Credits
+[quit]
+Avsluta
+[create game]
+Skapa spel
+[update list]
+Uppdatera lista
+[connecting to]
+Ansluter till
+[connect]
+Anslut
+[Disconnect]
+Koppla från
+[please wait]
+Var god vänta
+[loading glob2]
+Laddar Globulation 2
+[host]
+Var värd för ett spel
+[join a game]
+Gå med i ett spel
+[join]
+Gå med
+[goto main menu]
+Gå till huvudmeny
+[player name]
+Spelarnamn
+[svr hostname]
+Server värdnamn
+[hp]
+Hälsopoäng
+[carry]
+Bär på :
+[don't carry anything]
+Bär ingenting
+[level]
+Nivå
+[levels]
+Nivåer
+[building site]
+Byggnadsplats
+[create map]
+Skapa karta
+[map size x]
+Kartbredd
+[map size y]
+Karthöjd
+[default terrain]
+Standardterräng
+[water]
+Vatten
+[sand]
+Sand
+[grass]
+Gräs
+[teams]
+ lag
+[choose map]
+Välj en karta
+[choose game]
+Välj ett spel
+[awaiting players]
+Väntar på spelare
+[stat]
+Statistik
+[food left]
+Mat kvar
+[the building is finished]
+Byggnaden är färdig
+[the swarm is finished]
+Svärmen är färdig
+[the food building is finished]
+Värdshuset är färdigt
+[the health building is finished]
+Sjukstugan är färdig
+[the walkspeed building is finished]
+Tävlingsbanan är färdig
+[the swimspeed building is finished]
+Simbassängen är färdig
+[the attack building is finished]
+Baracken är färdig
+[the science building is finished]
+Skolan är färdig
+[the tower building is finished]
+Försvarstornet är färdigt
+[the exploration flag is finished]
+?? Utforskningsflaggan är klar ??
+[the war flag is finished]
+?? Krigsflaggan är klar ??
+[the clearing flag is finished]
+?? Röjflaggan är klar ??
+[the stone wall is finished]
+En väggsektion är klar
+[the market is finished]
+Marknaden är klar
+[the building is under attack]
+Byggnaden är under attack
+[the swarm is under attack]
+Svärmen är under attack
+[the food building is under attack]
+Värdshuset är under attack
+[the health building is under attack]
+Sjukstugan är under attack
+[the walkspeed building is under attack]
+Tävlingsbanan är under attack
+[the swimspeed building is under attack]
+Simbassängen är under attack
+[the attack building is under attack]
+Baracken är under attack
+[the science building is under attack]
+Skolan är under attack
+[the defense building is under attack]
+Ditt försvar är under attack
+[the exploration flag is under attack]
+?? Utforskningsflaggan är under attack ??
+[the war flag is under attack]
+?? Krigsflaggan är under attack ??
+[the clearing flag is under attack]
+?? Röjflaggan är under attack ??
+[the stone wall is under attack]
+Fienden är vid dina väggar
+[the market is under attack]
+Marknaden är under attack
+[Your %s are under attack]
+Din %s är under attack
+[Your unit got converted to another team]
+Din enhet blev omvänd till ett annat lag
+[Another team's unit got converted to your team]
+Ett annat lags enhet blev omvänt till ditt lag
+[Uncontrolled]
+Okontrollerad
+[ai]
+AI
+[closed]
+Stängd
+[close]
+Stäng
+[player]
+Spelare
+[STARTING GAME ...]
+Startar spel... 
+[Statistics]
+Statistik
+[Buildings]
+Byggnader
+[Prestige]
+Prestige
+[Units]
+Enheter
+[Attack]
+Attack
+[Defense]
+Försvar
+[free]
+fria
+[of which]
+av vilka
+[are ok]
+är okej
+[are hungry]
+är hungriga
+[are dying hungry]
+svälter ihjäl
+[are wonded]
+är skadade
+[and]
+och
+[seeking a job]
+letar efter ett arbete
+[Walk]
+Gå
+[Swim]
+Simma
+[Build]
+Bygga
+[Harvest]
+Skörda
+[At. speed]
+At. hastighet
+[At. strength]
+At. styrka
+[Magic At. Air]
+Luftskada
+[Magic At. Ground]
+Markskada
+[Total]
+Totalt
+[free]
+fri
+[seeking]
+letar
+[Free]
+Fri
+[hungry]
+hungriga
+[starving]
+svälter
+[wounded]
+skadade
+[In way]
+På väg
+[On the spot]
+Här
+[Version]
+Version
+[open]
+öppna
+[Add AI]
+Lägg till AI
+[AI]
+AI
+[AINone]
+AIIngen
+[AINumbi]
+AINumbi
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar (unstable)
+[AIToubib]
+AIToubib
+[AIWarrush]
+AIWarrush
+[the games]
+Spel
+[the maps]
+Kartor
+[was]
+var
+[was AI]
+var AI
+[state]
+status
+[Start]
+Start
+[not ready]
+inte redo
+[has joined]
+har anslutit sig
+[has quit]
+har avslutat
+[yog-chat]
+#yog-en
+[speed]
+Hastighet
+[current speed]
+Nuvarande hastighet
+[attack speed]
+Attackhastighet
+[new]
+Ny
+[load]
+Ladda
+[handmade map]
+Handgjord karta
+[mapGenerationDescriptor Methodes]
+Metod för slumpmässigt genererade kartor
+[uniform terrain]
+Likartad terräng
+[random terrain]
+Slumpmässig terräng
+[islands terrain]
+Öar
+[ratios]
+Proportioner
+[smoothing]
+Uppmjukning
+[number of teams]
+antal lag
+[islands size]
+östorlek
+[beach size]
+strandstorlek
+[workers]
+Arbetare
+[bad error in connection system]
+Dåligt fel i anslutningssystemet
+[not connected]
+Ej ansluten
+[presence request sent]
+Närvaroförfrågan skickad ...
+[session request sent]
+Sessionsförfrågan skickad ...
+[checksum sent]
+Checksumma skickad ...
+[connected to server]
+Ansluten till server
+[connecting to all players]
+Ansluter till alla spelar
+[connected to all players]
+Ansluten till alla spelare
+[available lan games]
+Tillgängliga lokala spel
+[login]
+Login
+[from:]
+från:
+[to:]
+till:
+[away:]
+borta:
+[compile]
+Kompilera skript
+[downloaded at]
+Nedladdat på 
+[percent]
+  procent
+[download finished]
+Nedladdning slutförd
+[Map name: %s]
+Kartnamn: %s.
+[one player]
+En spelare har anslutit sig.
+[number of players: %d]
+%d spelare är närvarande.
+[number of teams: %d]
+%d lag.
+[game full]
+Spelet är fullt
+[small]
+liten
+[medium]
+medium
+[large]
+stor
+[network latency]
+Nätverksfördröjning
+[game speed]
+Spelhastighet
+[Paused]
+Pausat
+[Register a new YOG user with password]
+Registrera en ny YOG-användare med lösenord. (osäkert)
+[Remember YOG password localy]
+Kom ihåg mitt lösenord lokalt. (osäkert)
+[YESTS_BAD]
+Internt fel vid anslutning.
+[YESTS_UNABLE_TO_CONNECT]
+Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
+[YESTS_CREATED]
+Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
+[YESTS_CONNECTING]
+Upprättar anslutning till YOG metaserver...
+[YESTS_DECONNECTING]
+Kopplar från YOG metaserver...
+[YESTS_YOG_KILLED]
+En administratör har just stoppat YOG metaserver.
+[YESTS_CONNECTION_LOST]
+Anslutningen till YOG har brutits.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt lösenord.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+YOG metaserver vägrar anslutning därför att det här användarnamnet inte har ett lösenord. Du vill förmodligen registrera ditt användarnamn med det här lösenordet. Aktivera därför inställningen "Registrera en ny YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den inställningen en gång.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG metaserver vägrar anslutning därför att användarnamnet redan är registrerat.  Om det här användarnamnet är ditt, avaktivera inställningen "Registrera en ny YOG-användare med lösenord".
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+YOG metaserver vägrar anslutning därför att ett internt protokollfel uppstod:  du är redan autentiserad. Försök igen på 45 sekunder.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+YOG metaserver vägrar anslutning därför att ett internt protokollfel uppstod:  du är inte ansluten ännu medan du ansluter. Var vänlig rapportera den här buggen.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOG metaserver vägrar anslutning utan att lämna förklaring!
+[The player %s has left YOG]
+%s har lämnat YOG.
+[The player %s has joined YOG]
+%s har anslutit sig till YOG.
+[You are now marked as away]
+Du är markerad som borta.
+[You are no more marked as away]
+Du är inte längre markerad som borta.
+[YOG_HELP]
+YOG:s meddelandesystem har två kommandon, "msg" och "away". Skriv "/help <kommando>" för att lära dig mer om ett av dom.
+[YOG_HELP_AWAY]
+"/away (<meddelande>)" ger dig möjlighet att låta andra YOG-användare veta att du tillfälligt är borta.  Du kan lägga till ett kort beskrivningsmeddelande. Till exempel "/away Jag äter hamburgare och är tillbaks vid klockan ett". Alias /a
+[YOG_HELP_MSG]
+"/msg <name> <message>" skickar ett privat meddelande.  Till exempel, "/msg Sven Hej Sven, hur mår du?". Alias "/m".
+[save before quit?]
+Vill du spara innan du avslutar?
+[Yes]
+Ja
+[No]
+Nej
+[Save]
+Spara
+[auto save]
+Automatisk sparning
+[Total prestige reached]
+Total prestige uppnådd
+[Continue playing]
+Fortsätt spela
+[Lost : your colony is dead]
+Förlust : din koloni är död
+[Won : you defeated your opponents]
+Seger : du besegrade dina motståndare
+[Won : your ally %s has the most prestige]
+Seger : din allierade %s har mest prestige
+[Lost : %s has more prestige than you]
+Lost : %s has more prestige than you
+[Won : you have the most prestige]
+Won : du har mest prestige
+[The game has not been finished]
+Spelet är inte klart
+[display]
+Bildskärm
+[username]
+Användarnamn
+[fullscreen]
+Fullskärm
+[hwaccel]
+Hårdvaruacceleration
+[dblbuff]
+Dubbel buffring
+[lowquality]
+Låg kvalitet
+[audio]
+Ljud
+[Music volume]
+Volym (musik)
+[Happyness]
+Glädje
+[customcur]
+Egen pekare
+[choose campaign]
+Välj en kampanj
+[nick taken]
+Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
+[mute]
+tyst
+[abreaviation explanation A]
+A : Allierade
+[abreaviation explanation V]
+V : Visa synfält för alla byggnader
+[abreaviation explanation Vf]
+Vf : Visa synfält för alla Värdshus (för att stjäla enheter)
+[abreaviation explanation mV]
+mV : Visa synfält för Marknadsbyggnader (för att byta frukt)
+[abreaviation explanation C]
+C : Skicka chattmeddelande till
+[shortcut explanation enter]
+returknapp : skicka ett chattmeddelande
+[shortcut explanation v]
+key v : håll nedtryckt för att prata
+[Delete game]
+Radera valt spel
+[any explorer]
+någon utforskare
+[ground attack]
+markattack

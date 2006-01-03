@@ -15,3 +15,4 @@ data/texts.si.txt
 data/texts.dk.txt
 data/texts.nl.txt
 data/texts.ca.txt
+data/texts.sv.txt
