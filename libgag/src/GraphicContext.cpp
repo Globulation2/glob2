@@ -1847,8 +1847,8 @@ namespace GAGCore
 			toPrint.drawSurface(0, 0, this);
 			SDL_SaveBMP(toPrint.sdlsurface, filename);
 		}
-		#endif
 		else
+		#endif
 			if (sdlsurface)
 				SDL_SaveBMP(sdlsurface, filename);
 	}
