@@ -177,6 +177,9 @@ namespace GAGGUI
 	
 		virtual void paint(void);
 		virtual void onSDLEvent(SDL_Event *event);
+		
+	protected:
+		unsigned getNextHighlightValue(void);
 	};
 	
 	//! The screen is the widget container and has a background

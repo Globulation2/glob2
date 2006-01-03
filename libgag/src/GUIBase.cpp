@@ -288,13 +288,8 @@ namespace GAGGUI
 		}
 	}
 	
-	
-	
-	void HighlightableWidget::paint(void)
+	unsigned HighlightableWidget::getNextHighlightValue(void)
 	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		
 		float actHighlight;
 		if (actAnimationTime > 0)
 		{
@@ -304,12 +299,20 @@ namespace GAGGUI
 		}
 		else
 			actHighlight = nextHighlightValue;
+			
+		return static_cast<unsigned>(255.0 * actHighlight);
+	}
+	
+	void HighlightableWidget::paint(void)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
 		
 		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
 		
-		if (actHighlight > 0)
+		unsigned val = getNextHighlightValue();
+		if (val > 0)
 		{
-			unsigned val = static_cast<unsigned>(255.0 * actHighlight);
 			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, ColorTheme::frontColor.applyAlpha(val));
 		}
 	}
