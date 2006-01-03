@@ -90,14 +90,19 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		if (nextHighlightValue > 0)
+		if (standardId < 0)
 		{
-			if (highlightID>=0)
-				parent->getSurface()->drawSprite(x, y, archPtr, highlightID);
+			HighlightableWidget::paint();
 		}
 		else
 		{
-			if (standardId>=0)
+			unsigned val = getNextHighlightValue();
+			if ((val > 0) && (highlightID>=0))
+			{
+				parent->getSurface()->drawSprite(x, y, archPtr, standardId, 255 - val);
+				parent->getSurface()->drawSprite(x, y, archPtr, highlightID, val);
+			}
+			else
 				parent->getSurface()->drawSprite(x, y, archPtr, standardId);
 		}
 	}
@@ -128,7 +133,6 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		HighlightableWidget::paint();
 		Button::paint();
 	
 		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;

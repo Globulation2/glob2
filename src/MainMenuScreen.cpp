@@ -39,21 +39,21 @@ using namespace GAGCore;
 
 MainMenuScreen::MainMenuScreen()
 {
-	addWidget(new TextButton( 10, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campaign]"), CAMPAIGN));
+	addWidget(new TextButton( 10, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[campaign]"), CAMPAIGN));
 	
-	addWidget(new TextButton( 330, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[tutorial]"), TUTORIAL));
+	addWidget(new TextButton( 330, 100, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[tutorial]"), TUTORIAL));
 	
-	addWidget(new TextButton( 10, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
-	addWidget(new TextButton(330, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[custom game]"), CUSTOM));
+	addWidget(new TextButton( 10, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
+	addWidget(new TextButton(330, 180, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[custom game]"), CUSTOM));
 	
-	addWidget(new TextButton( 10, 260, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[yog]"), MULTIPLAYERS_YOG));
-	addWidget(new TextButton(330, 260, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[lan]"), MULTIPLAYERS_LAN));
+	addWidget(new TextButton( 10, 260, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[yog]"), MULTIPLAYERS_YOG));
+	addWidget(new TextButton(330, 260, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[lan]"), MULTIPLAYERS_LAN));
 	
-	addWidget(new TextButton( 10, 340, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[settings]"), GAME_SETUP));
-	addWidget(new TextButton(330, 340, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[editor]"), EDITOR));
+	addWidget(new TextButton( 10, 340, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[settings]"), GAME_SETUP));
+	addWidget(new TextButton(330, 340, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[editor]"), EDITOR));
 
-	addWidget(new TextButton(10, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[credits]"), CREDITS));
-	addWidget(new TextButton(330, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
+	addWidget(new TextButton(10, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[credits]"), CREDITS));
+	addWidget(new TextButton(330, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	
 	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", GAGCore::nsprintf("V %d.%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, NET_PROTOCOL_VERSION, YOG_PROTOCOL_VERSION).c_str()));
 	
