@@ -202,6 +202,11 @@ namespace GAGGUI
 				*sx=x+((screenw-640)>>1);
 				*sw=w;
 				break;
+				
+			case ALIGN_CENTERED:
+				*sx = (screenw - w) >> 1;
+				*sw = w;
+				break;
 	
 			default:
 				assert(false);
@@ -227,6 +232,11 @@ namespace GAGGUI
 			case ALIGN_SCREEN_CENTERED:
 				*sy=y+((screenh-480)>>1);
 				*sh=h;
+				break;
+				
+			case ALIGN_CENTERED:
+				*sy = (screenh - h) >> 1;
+				*sh = h;
 				break;
 	
 			default:

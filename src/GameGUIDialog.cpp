@@ -32,15 +32,15 @@
 
 //! Main menu screen
 InGameMainScreen::InGameMainScreen(bool showAlliance)
-:OverlayScreen(globalContainer->gfx, 300, 275)
+:OverlayScreen(globalContainer->gfx, 320, 310)
 {
-	addWidget(new TextButton(10, 10, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
-	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
-	addWidget(new TextButton(10, 90, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[options]"), OPTIONS));
+	addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
+	addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
+	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[options]"), OPTIONS));
 	if (showAlliance)
-		addWidget(new TextButton(10, 130, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[alliances]"), ALLIANCES));
-	addWidget(new TextButton(10, 180, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
-	addWidget(new TextButton(10, 230, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
+		addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[alliances]"), ALLIANCES));
+	addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
+	addWidget(new TextButton(0, 260, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
 	dispatchInit();
 }
 
@@ -51,12 +51,12 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 }
 
 InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue)
-:OverlayScreen(globalContainer->gfx, 300, canContinue ? 150 : 100)
+:OverlayScreen(globalContainer->gfx, 320, canContinue ? 150 : 100)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", title));
-	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
+	addWidget(new TextButton(10, 50, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
 	if (canContinue)
-		addWidget(new TextButton(10, 100, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
+		addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
 	dispatchInit();
 }
 
@@ -68,7 +68,7 @@ void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, in
 
 //! Alliance screen
 InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<=8) ? 300 : 600, 390)
+:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<=8) ? 320 : 600, 395)
 {
 	// fill the slots
 	int i;
@@ -129,22 +129,17 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	addWidget(new Text(244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
 	addWidget(new Text(268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 	
-	if (gameGUI->game.session.numberOfPlayer<=8)
-	{
-		// add ok button
-		addWidget(new TextButton(10, 345, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	}
-	else
+	if (gameGUI->game.session.numberOfPlayer > 8)
 	{
 		addWidget(new Text(300+172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
 		addWidget(new Text(300+196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
 		addWidget(new Text(300+220, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "fV"));
 		addWidget(new Text(300+244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
 		addWidget(new Text(300+268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
-		
-		// add ok button
-		addWidget(new TextButton(150, 345, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
+	
+	// add ok button
+	addWidget(new TextButton(0, 345, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27,"menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	
 	// add keyboard shortcut explanations
 	addWidget(new Text(10, 245, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation A]")));
@@ -269,14 +264,14 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 
 //! Option Screen
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, 300, 295)
+:OverlayScreen(globalContainer->gfx, 320, 300)
 {
 	musicVol=new Selector(19, 50, ALIGN_LEFT, ALIGN_TOP, 256, 8, globalContainer->settings.musicVolume, 1);
 	addWidget(musicVol);
 	Text *musicVolText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
 
-	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();
 	
 	std::ostringstream oss;
