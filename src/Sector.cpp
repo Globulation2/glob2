@@ -31,7 +31,7 @@ UnitDeathAnimation::UnitDeathAnimation(int x, int y, Team *team)
 	this->x = x;
 	this->y = y;
 	this->team = team;
-	this->ticksLeft = globalContainer->deathAnimation->getFrameCount();
+	this->ticksLeft = globalContainer->deathAnimation->getFrameCount() - 1;
 }
 
 Sector::Sector(Game *game)
