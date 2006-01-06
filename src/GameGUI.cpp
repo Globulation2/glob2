@@ -199,7 +199,7 @@ void GameGUI::init()
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
-
+	
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
 	typingInputScreen=NULL;
@@ -207,6 +207,7 @@ void GameGUI::init()
 	typingInputScreenPos=0;
 
 	messagesList.clear();
+	eventGoTypeIterator = 0;
 	markList.clear();
 	localTeam=NULL;
 	teamStats=NULL;
@@ -249,14 +250,19 @@ void GameGUI::adjustLocalTeam()
 	assert(game.session.numberOfPlayer<32);
 	assert(localTeamNo<game.session.numberOfTeam);
 	
-	localTeam=game.teams[localTeamNo];
+	localTeam = game.teams[localTeamNo];
 	assert(localTeam);
-	teamStats=&localTeam->stats;
+	teamStats = &localTeam->stats;
 	
 	// recompute local forbidden and guard areas
 	game.map.computeLocalForbidden(localTeamNo);
 	game.map.computeLocalGuardArea(localTeamNo);
 	game.map.computeLocalClearArea(localTeamNo);
+	
+	// set default event position
+	eventGoPosX = localTeam->startPosX;
+	eventGoPosY = localTeam->startPosY;
+	eventGoType = 0;
 }
 
 void GameGUI::adjustInitialViewport()
@@ -434,46 +440,65 @@ void GameGUI::step(void)
 	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
 	{
-		Uint16 gid=localTeam->getEventId();
-		int team=Unit::GIDtoTeam(gid);
-		int id=Unit::GIDtoID(gid);
-		Unit *u=game.teams[team]->myUnits[id];
+		Uint16 gid = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).id;
+		int team = Unit::GIDtoTeam(gid);
+		int id = Unit::GIDtoID(gid);
+		Unit *u = game.teams[team]->myUnits[id];
 		if (u)
 		{
 			int strDec=(int)(u->typeNum);
 			addMessage(200, 30, 30, Toolkit::getStringTable()->getString("[Your %s are under attack]"), Toolkit::getStringTable()->getString("[units type]", strDec));
+			eventGoPosX = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posX;
+			eventGoPosY = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posY;
+			eventGoType = Team::UNIT_UNDER_ATTACK_EVENT;
 		}
 	}
 	if (localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
 	{
-		addMessage(140, 0, 0, Toolkit::getStringTable()->getString("[Your unit got converted to another team]"));
+		int team = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).team;
+		const char *teamName = game.teams[team]->getFirstPlayerName();
+		addMessage(140, 0, 0, Toolkit::getStringTable()->getString("[Your unit got converted to %s's team]"), teamName);
+		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posX;
+		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posY;
+		eventGoType = Team::UNIT_CONVERTED_LOST;
 	}
 	if (localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
 	{
-		addMessage(100, 255, 100, Toolkit::getStringTable()->getString("[Another team's unit got converted to your team]"));
+		int team = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).team;
+		const char *teamName = game.teams[team]->getFirstPlayerName();
+		addMessage(100, 255, 100, Toolkit::getStringTable()->getString("[%s's team unit got converted to your team]"), teamName);
+		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posX;
+		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posY;
+		eventGoType = Team::UNIT_CONVERTED_ACQUIERED;
 	}
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
 	{
-		Uint16 gid=localTeam->getEventId();
-		int team=Building::GIDtoTeam(gid);
-		int id=Building::GIDtoID(gid);
-		Building *b=game.teams[team]->myBuildings[id];
+		Uint16 gid = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).id;
+		int team = Building::GIDtoTeam(gid);
+		int id = Building::GIDtoID(gid);
+		Building *b = game.teams[team]->myBuildings[id];
 		if (b)
 		{
 			int strDec=b->type->shortTypeNum;
 			addMessage(255, 0, 0, "%s", Toolkit::getStringTable()->getString("[the building is under attack]", strDec));
+			eventGoPosX = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posX;
+			eventGoPosY = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posY;
+			eventGoType = Team::BUILDING_UNDER_ATTACK_EVENT;
 		}
 	}
 	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
 	{
-		Uint16 gid=localTeam->getEventId();
-		int team=Building::GIDtoTeam(gid);
-		int id=Building::GIDtoID(gid);
-		Building *b=game.teams[team]->myBuildings[id];
+		Uint16 gid = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).id;
+		int team = Building::GIDtoTeam(gid);
+		int id = Building::GIDtoID(gid);
+		Building *b = game.teams[team]->myBuildings[id];
 		if (b)
 		{
 			int strDec=b->type->shortTypeNum;
 			addMessage(30, 255, 30, "%s",  Toolkit::getStringTable()->getString("[the building is finished]", strDec));
+			eventGoPosX = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posX;
+			eventGoPosY = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posY;
+			eventGoType = Team::BUILDING_FINISHED_EVENT;
 		}
 	}
 	
@@ -868,11 +893,11 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym.sym, true, (event->key.keysym.mod & KMOD_SHIFT) != 0);
+			handleKey(event->key.keysym.sym, true, (event->key.keysym.mod & KMOD_SHIFT) != 0, (event->key.keysym.mod & KMOD_CTRL) != 0);
 		}
 		else if (event->type==SDL_KEYUP)
 		{
-			handleKey(event->key.keysym.sym, false, (event->key.keysym.mod & KMOD_SHIFT) != 0);
+			handleKey(event->key.keysym.sym, false, (event->key.keysym.mod & KMOD_SHIFT) != 0, (event->key.keysym.mod & KMOD_CTRL) != 0);
 		}
 		else if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
@@ -1108,7 +1133,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	}
 }
 
-void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
+void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 {
 	int modifier;
 
@@ -1256,9 +1281,26 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 			case SDLK_SPACE:
 				if (pressed)
 				{
-				    int evX, evY;
-				    int sw, sh;
-					localTeam->getEventPos(&evX, &evY);
+					int evX, evY;
+					int sw, sh;
+					
+					if (ctrl)
+					{
+						eventGoTypeIterator = (eventGoTypeIterator+1) % Team::EVENT_TYPE_SIZE;
+						
+						if (!localTeam->getEvent((Team::EventType)eventGoTypeIterator).validPosition)
+							break;
+							
+						evX = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posX;
+						evY = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posY;
+					}
+					else
+					{
+						eventGoTypeIterator = eventGoType;
+						evX = eventGoPosX;
+						evY = eventGoPosY;
+					}
+				
 					sw=globalContainer->gfx->getW();
 					sh=globalContainer->gfx->getH();
 					viewportX=evX-((sw-128)>>6);

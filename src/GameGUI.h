@@ -120,7 +120,7 @@ private:
 	bool processGameMenu(SDL_Event *event);
 	bool processScrollableWidget(SDL_Event *event);
 	void handleRightClick(void);
-	void handleKey(SDLKey key, bool pressed, bool shift);
+	void handleKey(SDLKey key, bool pressed, bool shift, bool ctrl);
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
 	void handleMouseMotion(int mx, int my, int button);
@@ -289,6 +289,7 @@ private:
 	OverlayScreen *gameMenuScreen;
 
 	bool hasEndOfGameDialogBeenShown;
+	
 	// On screen message handling
 	struct Message
 	{
@@ -300,6 +301,11 @@ private:
 	
 	std::list<Message> messagesList;
 	std::vector<std::string> messageHistory;
+	
+	// Message stuff
+	int eventGoPosX, eventGoPosY; //!< position on map of last event
+	int eventGoType; //!< type of last event
+	int eventGoTypeIterator; //!< iterator to iter on ctrl + space press
 	
 	//! Transform a text to multi line according to screen width
 	void setMultiLine(const std::string &input, std::vector<std::string> *output);

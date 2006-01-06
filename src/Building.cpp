@@ -1076,7 +1076,7 @@ void Building::updateBuildingSite(void)
 			owner->clearingFlags.push_back(this);
 		
 		setMapDiscovered();
-		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
+		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid, owner->teamNumber);
 
 		// we need to do an update again
 		updateCallLists();

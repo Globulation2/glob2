@@ -342,10 +342,10 @@ Inamicul este la ziduri
 Piata este atacată
 [Your %s are under attack]
 %s voastre sunt atacate
-[Your unit got converted to another team]
-Unitatea voastră a trecut de partea adversarului
-[Another team's unit got converted to your team]
-O unitate inamică a trecut de partea voastră
+[Your unit got converted to %s's team]
+Unitatea voastră a trecut de partea %s
+[%s's team unit got converted to your team]
+O unitate %s a trecut de partea voastră
 [Uncontrolled]
 Necontrolat
 [ai]

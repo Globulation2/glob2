@@ -125,7 +125,7 @@ void Sector::step(void)
 				int team = Unit::GIDtoTeam(gid);
 				int id = Unit::GIDtoID(gid);
 				
-				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid);
+				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid, team);
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
@@ -143,7 +143,7 @@ void Sector::step(void)
 					int team = Building::GIDtoTeam(gid);
 					int id = Building::GIDtoID(gid);
 
-					game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::BUILDING_UNDER_ATTACK_EVENT, gid);
+					game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::BUILDING_UNDER_ATTACK_EVENT, gid, team);
 					if (bullet->revealW > 0 && bullet->revealH > 0)
 						game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 					

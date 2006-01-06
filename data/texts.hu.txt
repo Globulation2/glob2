@@ -342,10 +342,10 @@ Az ellenség a falak előtt áll
 Megtámadták a piacot
 [Your %s are under attack]
 Megtámadták a %s -t
-[Your unit got converted to another team]
-Az egységedet az ellenség elfogta
-[Another team's unit got converted to your team]
-Elfogtad az ellenség egységét
+[Your unit got converted to %s's team]
+Az egységedet az ellenség elfogta %s
+[%s's team unit got converted to your team]
+Elfogtad az ellenség egységét %s
 [Uncontrolled]
 Független
 [ai]

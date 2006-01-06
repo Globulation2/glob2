@@ -346,10 +346,10 @@ L'enemic esta atacant la teva muralla
 El mercat està sent atacat
 [Your %s are under attack]
 El teu %s  està sent atacat
-[Your unit got converted to another team]
-La teva unitat s'ha passat a l'enemic
-[Another team's unit got converted to your team]
-La unitat enemiga s'ha passat al teu equip
+[Your unit got converted to %s's team]
+La teva unitat s'ha passat a %s
+[%s's team unit got converted to your team]
+La unitat %s s'ha passat al teu equip
 [Uncontrolled]
 No Controlat
 [ai]

@@ -344,10 +344,10 @@ Sovražnik je pred vrati
 Tržnica je napadena
 [Your %s are under attack]
 Tvoji %s so napadeni
-[Your unit got converted to another team]
-Tvoje enote so bile spreobrnjene
-[Another team's unit got converted to your team]
-Spreobrnil si enoto druge ekipe
+[Your unit got converted to %s's team]
+Tvoje enote so bile spreobrnjene %s
+[%s's team unit got converted to your team]
+Spreobrnil si enoto druge ekipe %s
 [Uncontrolled]
 Nenadzirane
 [ai]

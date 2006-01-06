@@ -346,10 +346,10 @@ L'ennemi est à vos murs
 Le marché est attaqué
 [Your %s are under attack]
 Vos %s sont attaquées
-[Your unit got converted to another team]
-Votre unité est passée à l'équipe adverse
-[Another team's unit got converted to your team]
-Une unité ennemie s'est convertie à votre équipe
+[Your unit got converted to %s's team]
+Votre unité est passée à l'équipe %s
+[%s's team unit got converted to your team]
+Une unité de l'équipe %s s'est convertie à votre équipe
 [Uncontrolled]
 Incontrôlé
 [ai]

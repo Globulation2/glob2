@@ -342,10 +342,10 @@ El enemigo esta en tu muralla
 El mercado esta siendo atacado
 [Your %s are under attack]
 Tu %s esta siendo atacado
-[Your unit got converted to another team]
-Tu unidad se ha convertido al bando enemigo
-[Another team's unit got converted to your team]
-La unidad enemiga se ha pasado a nuestro bando
+[Your unit got converted to %s's team]
+Tu unidad se ha convertido al bando %s
+[%s's team unit got converted to your team]
+La unidad %s se ha pasado a nuestro bando
 [Uncontrolled]
 Incontrolado
 [ai]

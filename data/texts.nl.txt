@@ -346,10 +346,10 @@ Uw muren worden aangevallen
 De markt wordt aangevallen
 [Your %s are under attack]
 Uw %s worden aangevallen
-[Your unit got converted to another team]
-Uw eenheid is geconverteert naar een andere ploeg
-[Another team's unit got converted to your team]
-Een eenheid van een andere ploeg is geconverteert naar uw ploeg
+[Your unit got converted to %s's team]
+Uw eenheid is geconverteert naar een %s ploeg
+[%s's team unit got converted to your team]
+Een eenheid van %s ploeg is geconverteert naar uw ploeg
 [Uncontrolled]
 Ongecontrolleerd
 [ai]
