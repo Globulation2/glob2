@@ -342,10 +342,10 @@ sr
 Пијаца је нападнута
 [Your %s are under attack]
 Нападнута јединица: %s
-[Your unit got converted to another team]
-Ваша јединица је пребегла
-[Another team's unit got converted to your team]
-Противничка јединица је пребегла код нас
+[Your unit got converted to %s's team]
+Ваша јединица је пребегла %s
+[%s's team unit got converted to your team]
+Противничка јединица је пребегла код нас %s
 [Uncontrolled]
 Неконтролисан
 [ai]

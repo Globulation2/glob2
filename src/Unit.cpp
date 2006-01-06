@@ -481,7 +481,7 @@ void Unit::syncStep(void)
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
-			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID);
+			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID, enemyTeam);
 			incrementExperience(degats);
 		}
 		else
@@ -496,7 +496,7 @@ void Unit::syncStep(void)
 				if (degats<=0)
 					degats=1;
 				enemy->hp-=degats;
-				enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyGBID);
+				enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyGBID, enemyTeam);
 				if (enemy->hp<0)
 					enemy->kill();
 				incrementExperience(degats);
@@ -676,7 +676,7 @@ void Unit::handleMagic(void)
 							if (damage > 0)
 							{
 								enemyUnit->hp -= damage;
-								enemyUnit->owner->setEvent(xi, yi, Team::UNIT_UNDER_ATTACK_EVENT, targetGUID);
+								enemyUnit->owner->setEvent(xi, yi, Team::UNIT_UNDER_ATTACK_EVENT, targetGUID, targetTeam);
 								incrementExperience(damage);
 								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
 								hasUsedMagicAction = true;
@@ -701,7 +701,7 @@ void Unit::handleMagic(void)
 							if (damage > 0)
 							{
 								enemyBuilding->hp -= damage;
-								enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID);
+								enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID, targetTeam);
 								if (enemyBuilding->hp <= 0)
 									enemyBuilding->kill();
 								incrementExperience(damage);
@@ -988,9 +988,9 @@ void Unit::handleActivity(void)
 					// Unit conversion code
 					
 					// Send events and keep track of number of unit converted
-					currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum);
+					currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum, targetTeam->teamNumber);
 					currentTeam->unitConversionLost++;
-					targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum);
+					targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum, currentTeam->teamNumber);
 					targetTeam->unitConversionGained++;
 					
 					// Find free slot in other team

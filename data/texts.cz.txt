@@ -344,10 +344,10 @@ Nepřítel utočí na hradby
 Tržiště je pod útokem
 [Your %s are under attack]
 Tvoji %s jsou pod útokem
-[Your unit got converted to another team]
-Tva jednotka změnila víru v jiného hráče
-[Another team's unit got converted to your team]
-Cizí tým změnil víru v Tebe
+[Your unit got converted to %s's team]
+Tva jednotka změnila víru v jiného hráče %s
+[%s's team unit got converted to your team]
+Cizí tým změnil víru v Tebe %s
 [Uncontrolled]
 Neovládaný
 [ai]

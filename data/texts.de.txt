@@ -344,10 +344,10 @@ Der Feind steht vor Ihren Mauern
 Der Markt wird angegriffen
 [Your %s are under attack]
 Eure %s werden angegriffen
-[Your unit got converted to another team]
-Eine Ihreer Einheiten wrde von einem andern Spieler übernommen
-[Another team's unit got converted to your team]
-Sie haben eine Einheit von einem anderen Team übernommen
+[Your unit got converted to %s's team]
+Eine Ihreer Einheiten wrde von einem %s Spieler übernommen
+[%s's team unit got converted to your team]
+Sie haben eine Einheit von einem %s Team übernommen
 [Uncontrolled]
 Unkontrolliert
 [ai]

@@ -342,10 +342,10 @@ Mur został zaatakowany
 Bazar został zaatakowany
 [Your %s are under attack]
 Twój %s jesteś atakowany
-[Your unit got converted to another team]
-Twoja jednostka została przeciągnięta na stronę wroga
-[Another team's unit got converted to your team]
-Jednostka wroga została przeciągnięta na Twoją stronę
+[Your unit got converted to %s's team]
+Twoja jednostka została przeciągnięta na stronę wroga %s
+[%s's team unit got converted to your team]
+Jednostka wroga została przeciągnięta na Twoją stronę %s
 [Uncontrolled]
 Niekontrolowany
 [ai]

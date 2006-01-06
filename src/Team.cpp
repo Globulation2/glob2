@@ -219,12 +219,7 @@ void Team::init(void)
 	subscribeForFlaging.clear();
 
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-	{
-		isEvent[i]=false;
-		eventCooldown[i]=0;
-	}
-	eventPosX=startPosX;
-	eventPosY=startPosY;
+		events[i] = Event();
 	isAlive=true;
 	hasWon=false;
 	prestige=0;
@@ -422,12 +417,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	stats.step(this, true);
 
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-	{
-		isEvent[i] = false;
-		eventCooldown[i] = 0;
-	}
-	eventPosX = startPosX;
-	eventPosY = startPosY;
+		events[i] = Event();
 	isAlive = true;
 
 	stream->readLeaveSection();
@@ -1544,8 +1534,8 @@ void Team::syncStep(void)
 	//isAlive=isAlive && (isEnoughFoodInSwarm || nbUsefullUnitsAlone!=0 || (nbUsefullUnits!=0 && (canFeedUnit.size()>0 || canHealUnit.size()>0)));
 	// decount event cooldown counter
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-		if (eventCooldown[i]>0)
-			eventCooldown[i]--;
+		if (events[i].cooldown > 0)
+			events[i].cooldown--;
 
 	stats.step(this);
 }
@@ -1710,7 +1700,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 
 
-const char *Team::getFirstPlayerName(void)
+const char *Team::getFirstPlayerName(void) const
 {
 	for (int i=0; i<game->session.numberOfPlayer; i++)
 	{

@@ -89,6 +89,21 @@ public:
 		UNIT_CONVERTED_ACQUIERED,
 		EVENT_TYPE_SIZE
 	};
+	
+	//! Events stored in team
+	struct Event
+	{
+		bool validPosition; //!< does the actual position mean anything
+		bool firedLastTick; //!< was an event last tick
+		int cooldown; //!< prevent event overflow
+		int posX, posY; //!< event position
+		Sint32 id; //!< id of event source
+		int team; //!< team of event source. For unit conversion, the other team
+		
+		Event(int cooldown, int posX, int posY, Sint32 id, int team) { validPosition = true; firedLastTick = true; this->cooldown = cooldown; this->posX = posX; this->posY = posY; this->id = id; this->team = team; }
+		Event() { validPosition = false; firedLastTick = false; cooldown = 0; }
+	};
+	
 public:
 	Team(Game *game);
 	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
@@ -122,15 +137,13 @@ public:
 	void checkControllingPlayers(void);
 
 	//! The team is now under attack or a building is finished, push event
-	void setEvent(int posX, int posY, EventType newEvent, Sint32 id) { if (eventCooldown[newEvent]==0)  { isEvent[newEvent]=true; eventPosX=posX; eventPosY=posY; eventId=id; } eventCooldown[newEvent]=50; }
+	void setEvent(int posX, int posY, EventType type, Sint32 id, int team) { if (events[type].cooldown == 0) events[type] = Event(50, posX, posY, id, team); }
 	//! was an event last tick
-	bool wasEvent(EventType type) { return isEvent[type]; }
+	bool wasEvent(EventType type) { return events[type].firedLastTick; }
 	//! return event position
-	void getEventPos(int *posX, int *posY) { *posX=eventPosX; *posY=eventPosY; }
-	//! return event id (int associated with the event)
-	Sint32 getEventId(void) { return eventId; }
+	const Event &getEvent(EventType type) { return events[type]; }
 	//! clear all pending events
-	void clearEvents(void) { std::fill(&isEvent[0], &isEvent[EVENT_TYPE_SIZE], false); }
+	void clearEvents(void) { for (unsigned i = 0; i < EVENT_TYPE_SIZE; i++) events[i].firedLastTick = false; }
 
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
@@ -161,7 +174,7 @@ public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 	
 	//! Return the name of the first player in the team
-	const char *getFirstPlayerName(void);
+	const char *getFirstPlayerName(void) const;
 	
 private:
 	void init(void);
@@ -225,14 +238,7 @@ public:
 	Sint32 teamRessources[MAX_NB_RESSOURCES];
 
 private:
-	//! was an event last tick
-	bool isEvent[EVENT_TYPE_SIZE];
-	//! prevent event overflow
-	int eventCooldown[EVENT_TYPE_SIZE];
-	//! event position
-	int eventPosX, eventPosY;
-	//! event id
-	Sint32 eventId;
+	Event events[EVENT_TYPE_SIZE]; //!< events, one for each type
 
 public:
 	//! If you try to build buildings in the ennemy territory, you will be prevented to build any new buildings for a given time.

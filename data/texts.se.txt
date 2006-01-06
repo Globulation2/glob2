@@ -344,10 +344,10 @@ Fienden är vid din stenmur
 Marknaden är under attack
 [Your %s are under attack]
 Din %s är under attack
-[Your unit got converted to another team]
-Din enhet konverterades till ett annat lag
-[Another team's unit got converted to your team]
-Ett annat lags enhet blev konverterad till ditt lag
+[Your unit got converted to %s's team]
+Din enhet konverterades till ett %s lag
+[%s's team unit got converted to your team]
+Ett %s lags enhet blev konverterad till ditt lag
 [Uncontrolled]
 Okontrollerad
 [ai]

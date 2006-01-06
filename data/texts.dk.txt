@@ -346,10 +346,10 @@ Fjenden er ved dine væge
 Market er under angrib
 [Your %s are under attack]
 Dine %s er under angrib
-[Your unit got converted to another team]
-En af dine enheder blev konverteret til et andet hold
-[Another team's unit got converted to your team]
-Et andet holds enhed blev konverteret til dit hold
+[Your unit got converted to %s's team]
+En af dine enheder blev konverteret til et %s hold
+[%s's team unit got converted to your team]
+Et %s holds enhed blev konverteret til dit hold
 [Uncontrolled]
 Ukontrolleret
 [ai]

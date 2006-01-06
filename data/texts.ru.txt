@@ -342,10 +342,10 @@ Ysagoon-игра в Интернете
 Рынок атакован
 [Your %s are under attack]
 %s
-[Your unit got converted to another team]
-Ваш юнит переметнулся к врагу
-[Another team's unit got converted to your team]
-Вражеский юнит переметнулся к Вам.
+[Your unit got converted to %s's team]
+Ваш юнит переметнулся к врагу %s
+[%s's team unit got converted to your team]
+Вражеский юнит переметнулся к Вам. %s
 [Uncontrolled]
 Неконтролируемый
 [ai]

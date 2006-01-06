@@ -342,10 +342,10 @@ Il muro di roccia è sotto attacco
 Il ercato è sotto attacco
 [Your %s are under attack]
 Il tuo %s sotto attacco
-[Your unit got converted to another team]
-La tua unità è stata convertita in un'altra squadra
-[Another team's unit got converted to your team]
-Un'altra sqadra ha convertito la tua unità
+[Your unit got converted to %s's team]
+La tua unità è stata convertita in %s squadra
+[%s's team unit got converted to your team]
+Un %s sqadra ha convertito la tua unità
 [Uncontrolled]
 Incontrollato
 [ai]
