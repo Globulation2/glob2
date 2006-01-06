@@ -158,11 +158,21 @@ public:
 				setMapBuildingsDiscovered(dx, dy, sharedVision, teams);
 	}
 	
-	void setMapExplored(int x, int y, int w, int h, int team)
+	//! Make the map at rect (x, y, w, h) explored by unit, i.e. to 255
+	void setMapExploredByUnit(int x, int y, int w, int h, int team)
 	{
 		for (int dx = x; dx < x + w; dx++)
 			for (int dy = y; dy < y + h; dy++)
 				exploredArea[team][((dy & hMask) << wDec) | (dx & wMask)] = 255;
+	}
+	
+	//! Make the map at rect (x, y, w, h) explored by building, i.e. to minimum 2
+	void setMapExploredByBuilding(int x, int y, int w, int h, int team)
+	{
+		for (int dx = x; dx < x + w; dx++)
+			for (int dy = y; dy < y + h; dy++)
+				if (exploredArea[team][((dy & hMask) << wDec) | (dx & wMask)] < 2)
+					exploredArea[team][((dy & hMask) << wDec) | (dx & wMask)] = 2;
 	}
 
 	//! Set all map for all teams to undiscovered state

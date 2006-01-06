@@ -524,13 +524,13 @@ void Unit::syncStep(void)
 		{
 			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther);
 			owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther, owner->game->teams);
-			owner->map->setMapExplored(posX-3, posY-3, 7, 7, owner->teamNumber);
+			owner->map->setMapExploredByUnit(posX-3, posY-3, 7, 7, owner->teamNumber);
 		}
 		else
 		{
 			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther);
 			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther, owner->game->teams);
-			owner->map->setMapExplored(posX-1, posY-1, 3, 3, owner->teamNumber);
+			owner->map->setMapExploredByUnit(posX-1, posY-1, 3, 3, owner->teamNumber);
 		}
 	}
 	
@@ -1711,28 +1711,61 @@ void Unit::handleMovement(void)
 			}
 			else if ((movement!=MOV_GOING_DXDY)||((syncRand()&0xFF)<0xEF))
 			{
-				int scoreX = 0;
-				int scoreY = 0;
-				for (int delta = -3; delta <= 3; delta++)
+				// "c" is the center of the unit, "x" are the sample spots:
+				// oxoooxo
+				//ooooooooo
+				//xooooooox
+				//ooooooooo
+				//oooocoooo
+				//ooooooooo
+				//xooooooox
+				//ooooooooo
+				// oxoooxo
+				bool found = false;
+				const int dxTab[8] = {-4, -2, +2, +4, +4, +2, -2, -4};
+				const int dyTab[8] = {-2, -4, -4, -2, +2, +4, +4, +2};
+				int tab[8];
+				for (int i = 0; i < 8; i++)
+					tab[i] = owner->map->getExplored(posX + dxTab[i], posY + dyTab[i], owner->teamNumber);
+				//printf("tab ");
+				//for (int i = 0; i < 8; i++)
+				//	printf("%3d; ", tab[i]);
+				//printf("d=%d\n", direction);
+				for (int di = 0; di < 8; di++)
 				{
-					scoreX -= owner->map->getExplored(posX + 4, posY + delta, owner->teamNumber);
-					scoreX += owner->map->getExplored(posX - 4, posY + delta, owner->teamNumber);
-					scoreY -= owner->map->getExplored(posX + delta, posY + 4, owner->teamNumber);
-					scoreY += owner->map->getExplored(posX + delta, posY - 4, owner->teamNumber);
+					int d = (di + direction + 4) & 7;
+					if ((tab[d] > 0) && (tab[(d + 1) & 7] == 0) && (tab[(d + 2) & 7] == 0))
+					{
+						direction = (d + 1) & 7;
+						dxdyfromDirection();
+						movement = MOV_GOING_DXDY;
+						found = true;
+						break;
+					}
 				}
-				int cdx, cdy;
-				simplifyDirection(scoreX, scoreY, &cdx, &cdy);
-				//printf("score = (%2d, %2d), cd = (%d, %d)\n", scoreX, scoreY, cdx, cdy);
-				if (cdx == 0 && cdy == 0)
-					movement = MOV_RANDOM_FLY;
-				else
+				if (!found)
 				{
-					dx = cdx;
-					dy = cdy;
-					directionFromDxDy();
-					direction=(direction+((syncRand()&1))+7)&7;
-					dxdyfromDirection();
-					movement = MOV_GOING_DXDY;
+					int scoreX = 0;
+					int scoreY = 0;
+					for (int delta = -3; delta <= 3; delta++)
+					{
+						scoreX += owner->map->getExplored(posX - 4, posY + delta, owner->teamNumber);
+						scoreX -= owner->map->getExplored(posX + 4, posY + delta, owner->teamNumber);
+						scoreY += owner->map->getExplored(posX + delta, posY - 4, owner->teamNumber);
+						scoreY -= owner->map->getExplored(posX + delta, posY + 4, owner->teamNumber);
+					}
+					int cdx, cdy;
+					simplifyDirection(scoreX, scoreY, &cdx, &cdy);
+					//printf("score = (%2d, %2d), cd = (%d, %d)\n", scoreX, scoreY, cdx, cdy);
+					if (cdx == 0 && cdy == 0)
+						movement = MOV_RANDOM_FLY;
+					else
+					{
+						dx = cdx;
+						dy = cdy;
+						directionFromDxDy();
+						movement = MOV_GOING_DXDY;
+					}
 				}
 			}
 			if (movement!=MOV_GOING_DXDY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
