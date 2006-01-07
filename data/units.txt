@@ -115,7 +115,7 @@ baseExplorer
 	
 	walkSpeed = 0;
 	swimSpeed = 0;
-	flySpeed = 20;
+	flySpeed = 28;
 	
 	buildSpeed = 0;
 	harvestSpeed = 0;
