@@ -403,8 +403,10 @@ public:
 	
 	//! Transform coordinate from map scale (mx,my) to pixel scale (px,py)
 	void mapCaseToPixelCase(int mx, int my, int *px, int *py) { *px=(mx<<5); *py=(my<<5); }
-	//! Transform coordinate from map (mx,my) to screen (px,py)
+	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a building or an unit to the screen.
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY);
+	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a pathline to the screen.
+	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH);
 	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid aligned object (buildings, ressources, units)
 	void displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY);
 	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid unaligned object (terrain)

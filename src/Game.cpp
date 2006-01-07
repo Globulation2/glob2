@@ -1583,7 +1583,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		assert(false);
 }
 
-void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions)
 {
 	int id=Unit::GIDtoID(gid);
 	int team=Unit::GIDtoTeam(gid);
@@ -1715,7 +1715,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			int lsx, lsy, ldx, ldy;
 			lsx=px+16;
 			lsy=py+16;
-			map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
+			map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, screenW, screenH);
 			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
 		}
 	if (drawOptions & DRAW_ACCESSIBILITY)
@@ -1853,7 +1853,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		{
 			Uint16 gid=map.getGroundUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawOptions);
+				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions);
 		}
 	
 	// We draw debug area:
@@ -2158,7 +2158,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		{
 			Uint16 gid=map.getAirUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawOptions);
+				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions);
 		}
 
 	// Let's paint the bullets and explosions
