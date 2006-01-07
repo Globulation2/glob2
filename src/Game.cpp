@@ -1706,11 +1706,12 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->caryedRessource);
 	}
 	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
-		if (unit->displacement==Unit::DIS_GOING_TO_FLAG
+		if (unit->validTarget)
+		/*TODO: remove this comment when we see the new code works
+			if (unit->displacement==Unit::DIS_GOING_TO_FLAG
 			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
 			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING
-			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND
-				&& (unit->movement==Unit::MOV_GOING_DXDY)))
+			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND && unit->movement==Unit::MOV_GOING_DXDY))*/
 		{
 			int lsx, lsy, ldx, ldy;
 			lsx=px+16;

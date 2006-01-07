@@ -201,6 +201,7 @@ public:
 	Movement movement;
 	Abilities action;
 	Sint32 targetX, targetY;
+	bool validTarget;
 	Sint32 magicActionTimeout;
 
 	// trigger parameters
