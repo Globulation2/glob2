@@ -1785,18 +1785,24 @@ bool Map::isRessourceAllowed(int x, int y, int type)
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
 {
-	int x=mx-viewportX;
-	int y=my-viewportY;
-	
-	if (x>(w-16))
+	int x = (mx - viewportX) & wMask;
+	int y = (my - viewportY) & hMask;
+	if (x > (w - 16))
 		x-=w;
-	if (y>(h-16))
+	if (y > (h - 16))
 		y-=h;
-	if ((x)<-(16))
-		x+=w;
-	if ((y)<-(16))
-		y+=getH();
-	
+	*px=x<<5;
+	*py=y<<5;
+}
+
+void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH)
+{
+	int x = (mx - viewportX) & wMask;
+	int y = (my - viewportY) & hMask;
+	if (x > (w/2 + screenW/2))
+		x-=w;
+	if (y > (h/2 + screenH/2))
+		y-=h;
 	*px=x<<5;
 	*py=y<<5;
 }
@@ -2203,7 +2209,7 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 	size_t listCountRead = 0;
 	while (listCountRead < listCountWrite)
 	{
-		Tint deltaAddrG = listedAddr[listCountRead++];
+		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
 		
 		size_t y = deltaAddrG >> wDec;
 		size_t x = deltaAddrG & wMask;
@@ -2236,7 +2242,7 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 			if (side > 0 && side < g)
 			{
 				*addr = g;
-				listedAddr[listCountWrite++] = deltaAddrC[ci];
+				listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 			}
 		}
 		
@@ -2288,7 +2294,7 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 			}
 		}*/
 	}
-	assert(listCountWrite<=size);
+	//assert(listCountWrite<=size);
 }
 
 /*void Map::updateGlobalGradientSmall(Uint8 *gradient)
