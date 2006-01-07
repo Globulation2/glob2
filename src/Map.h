@@ -272,6 +272,11 @@ public:
 		return exploredArea[team][((y&hMask)<<wDec)+(x&wMask)];
 	}
 	
+	Uint8 getGuardAreasGradient(int x, int y, bool canSwim, int team)
+	{
+		return guardAreasGradient[team][canSwim][((y&hMask)<<wDec)+(x&wMask)];
+	}
+	
 	void setTerrain(int x, int y, Uint16 terrain)
 	{
 		cases[((y&hMask)<<wDec)+(x&wMask)].terrain = terrain;

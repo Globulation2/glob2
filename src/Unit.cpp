@@ -84,6 +84,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	targetX=0;
 	targetY=0;
+	validTarget=false;
 	magicActionTimeout=0;
 
 	// trigger parameters
@@ -159,6 +160,10 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	action = (Abilities)stream->readUint32("action");
 	targetX = (Sint32)stream->readSint32("targetX");
 	targetY = (Sint32)stream->readSint32("targetY");
+	if (versionMinor >= 46)
+		validTarget = (bool)stream->readSint32("validTarget");
+	else
+		validTarget = false;
 	
 	if (versionMinor >= 41)
 		magicActionTimeout = stream->readSint32("magicActionTimeout");
@@ -256,6 +261,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeUint32((Uint32)action, "action");
 	stream->writeSint32(targetX, "targetX");
 	stream->writeSint32(targetY, "targetY");
+	stream->writeSint32(validTarget, "validTarget");
 	stream->writeSint32(magicActionTimeout, "magicActionTimeout");
 
 	// trigger parameters
@@ -364,6 +370,7 @@ void Unit::subscriptionSuccess(void)
 			assert(targetBuilding==attachedBuilding);
 			targetX=targetBuilding->getMidX();
 			targetY=targetBuilding->getMidY();
+			validTarget=true;
 		}
 		break;
 		case MED_FREE:
@@ -376,6 +383,7 @@ void Unit::subscriptionSuccess(void)
 					assert(targetBuilding==attachedBuilding);
 					targetX=attachedBuilding->getMidX();
 					targetY=attachedBuilding->getMidY();
+					validTarget=true;
 				}
 				break;
 				case ACT_UPGRADING:
@@ -384,6 +392,7 @@ void Unit::subscriptionSuccess(void)
 					assert(targetBuilding==attachedBuilding);
 					targetX=targetBuilding->getMidX();
 					targetY=targetBuilding->getMidY();
+					validTarget=true;
 				}
 				break;
 				case ACT_FILLING:
@@ -395,6 +404,7 @@ void Unit::subscriptionSuccess(void)
 						targetBuilding=attachedBuilding;
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
+						validTarget=true;
 					}
 					else if (ownExchangeBuilding)
 					{
@@ -410,6 +420,7 @@ void Unit::subscriptionSuccess(void)
 								targetBuilding=foreingExchangeBuilding;
 								targetX=targetBuilding->getMidX();
 								targetY=targetBuilding->getMidY();
+								validTarget=true;
 							}
 							else
 							{
@@ -417,6 +428,7 @@ void Unit::subscriptionSuccess(void)
 								targetBuilding=ownExchangeBuilding;
 								targetX=targetBuilding->getMidX();
 								targetY=targetBuilding->getMidY();
+								validTarget=true;
 							}
 						}
 						else
@@ -432,6 +444,7 @@ void Unit::subscriptionSuccess(void)
 								targetBuilding=attachedBuilding;
 								targetX=targetBuilding->getMidX();
 								targetY=targetBuilding->getMidY();
+								validTarget=true;
 							}
 							else
 							{
@@ -440,6 +453,7 @@ void Unit::subscriptionSuccess(void)
 								targetBuilding=ownExchangeBuilding;
 								targetX=targetBuilding->getMidX();
 								targetY=targetBuilding->getMidY();
+								validTarget=true;
 							}
 						}
 					}
@@ -447,14 +461,16 @@ void Unit::subscriptionSuccess(void)
 					{
 						displacement=DIS_GOING_TO_RESSOURCE;
 						targetBuilding=NULL;
-						bool rv=owner->map->ressourceAvailable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
-						fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
+						owner->map->ressourceAvailable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						validTarget=true;
+						//fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
 					}
 				}
 				break;
 				case ACT_RANDOM :
 				{
 					displacement=DIS_RANDOM;
+					validTarget=false;
 				}
 				break;
 				default:
@@ -583,6 +599,7 @@ void Unit::standardRandomActivity()
 	foreingExchangeBuilding=NULL;
 	activity=Unit::ACT_RANDOM;
 	displacement=Unit::DIS_RANDOM;
+	validTarget=false;
 	needToRecheckMedical=true;
 	subscribed=false;
 }
@@ -615,6 +632,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	activity=ACT_RANDOM;
 	displacement=DIS_RANDOM;
+	validTarget=false;
 	
 	attachedBuilding->unitsWorking.remove(this);
 	attachedBuilding->unitsWorkingSubscribe.remove(this);
@@ -761,6 +779,7 @@ void Unit::handleMedical(void)
 			}
 			
 			activity=ACT_RANDOM;
+			validTarget=false;
 			
 			// remove from map
 			if (performance[FLY])
@@ -938,6 +957,7 @@ void Unit::handleActivity(void)
 						printf("guid=(%d) Going to heal building\n", gid);
 					targetX=attachedBuilding->getMidX();
 					targetY=attachedBuilding->getMidY();
+					validTarget=true;
 					b->unitsInsideSubscribe.push_front(this);
 					subscribed=true;
 					if (b->subscribeForInside!=1)
@@ -1087,6 +1107,7 @@ void Unit::handleDisplacement(void)
 		if (verbose)
 			printf("guid=(%d) handleDisplacement() subscribed, then displacement=DIS_RANDOM\n", gid);
 		displacement=DIS_RANDOM;
+		validTarget=false;
 	}
 	else switch (activity)
 	{
@@ -1101,6 +1122,7 @@ void Unit::handleDisplacement(void)
 			}
 			else
 				displacement=DIS_RANDOM;
+			validTarget=false;
 		}
 		break;
 		
@@ -1115,7 +1137,10 @@ void Unit::handleDisplacement(void)
 			if (displacement==DIS_GOING_TO_RESSOURCE)
 			{
 				if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
+				{
 					displacement=DIS_HARVESTING;
+					validTarget=false;
+				}
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
@@ -1128,19 +1153,26 @@ void Unit::handleDisplacement(void)
 				
 				targetBuilding=attachedBuilding;
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				{
 					displacement=DIS_FILLING_BUILDING;
+					validTarget=false;
+				}
 				else
 				{
 					displacement=DIS_GOING_TO_BUILDING;
 					targetX=targetBuilding->getMidX();
 					targetY=targetBuilding->getMidY();
+					validTarget=true;
 				}
 			}
 			else if (displacement==DIS_GOING_TO_BUILDING)
 			{
 				assert(targetBuilding);
 				if (owner->map->doesUnitTouchBuilding(this, targetBuilding->gid, &dx, &dy))
+				{
 					displacement=DIS_FILLING_BUILDING;
+					validTarget=false;
+				}
 			}
 			else if (displacement==DIS_FILLING_BUILDING)
 			{
@@ -1192,6 +1224,7 @@ void Unit::handleDisplacement(void)
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
+						validTarget=true;
 						exchangeReady=true;
 						if (verbose)
 							printf("guid=(%d) exchangeReady at foreingExchangeBuilding\n", gid);
@@ -1249,6 +1282,7 @@ void Unit::handleDisplacement(void)
 							displacement=DIS_GOING_TO_BUILDING;
 							targetX=targetBuilding->getMidX();
 							targetY=targetBuilding->getMidY();
+							validTarget=true;
 							exchangeReady=true;
 							if (verbose)
 								printf("guid=(%d) exchangeReady at ownExchangeBuilding\n", gid);
@@ -1283,6 +1317,7 @@ void Unit::handleDisplacement(void)
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
+						validTarget=true;
 						exchangeReady=true;
 						if (verbose)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
@@ -1335,6 +1370,7 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) The building doesn't need me any more.\n", gid);
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
+						validTarget=false;
 						subscribed=false;
 						assert(needToRecheckMedical);
 					}
@@ -1407,16 +1443,21 @@ void Unit::handleDisplacement(void)
 									displacement=DIS_GOING_TO_BUILDING;
 									targetX=targetBuilding->getMidX();
 									targetY=targetBuilding->getMidY();
+									validTarget=true;
 								}
 								else
 								{
 									int dummyDist;
 									if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
+									{
 										displacement=DIS_HARVESTING;
+										validTarget=false;
+									}
 									else if (map->ressourceAvailable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
 									{
 										fprintf(logFile, "[%d] rab targetXY=(%d, %d)\n", gid, targetX, targetY);
 										displacement=DIS_GOING_TO_RESSOURCE;
+										validTarget=true;
 									}
 									else
 									{
@@ -1476,6 +1517,7 @@ void Unit::handleDisplacement(void)
 									targetBuilding=ownExchangeBuilding;
 									targetX=targetBuilding->getMidX();
 									targetY=targetBuilding->getMidY();
+									validTarget=true;
 								}
 								else
 								{
@@ -1501,7 +1543,10 @@ void Unit::handleDisplacement(void)
 				}
 			}
 			else
+			{
 				displacement=DIS_RANDOM;
+				validTarget=false;
+			}
 		}
 		break;
 		
@@ -1512,7 +1557,10 @@ void Unit::handleDisplacement(void)
 			if (displacement==DIS_GOING_TO_BUILDING)
 			{
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				{
 					displacement=DIS_ENTERING_BUILDING;
+					validTarget=false;
+				}
 			}
 			else if (displacement==DIS_ENTERING_BUILDING)
 			{
@@ -1524,6 +1572,7 @@ void Unit::handleDisplacement(void)
 				else
 					owner->map->setGroundUnit(posX-dx, posY-dy, NOGUID);
 				displacement=DIS_INSIDE;
+				validTarget=false;
 				
 				if (destinationPurprose==FEED)
 				{
@@ -1549,6 +1598,7 @@ void Unit::handleDisplacement(void)
 				{
 					//printf("Exiting building\n");
 					displacement=DIS_EXITING_BUILDING;
+					validTarget=false;
 
 					if (destinationPurprose==FEED)
 					{
@@ -1584,24 +1634,29 @@ void Unit::handleDisplacement(void)
 				// we want to get out, so we still stay in displacement==DIS_EXITING_BUILDING.
 			}
 			else
+			{
 				displacement=DIS_RANDOM;
+				validTarget=false;
+			}
 		}
 		break;
 
 		case ACT_FLAG:
 		{
 			assert(attachedBuilding);
+			displacement=DIS_GOING_TO_FLAG;
 			targetX=attachedBuilding->posX;
 			targetY=attachedBuilding->posY;
+			validTarget=true;
 			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
 			int usr=attachedBuilding->unitStayRange;
 			int usr2=usr*usr;
 			if (verbose)
 				printf("guid=(%d) ACT_FLAG distance=%d, usr2=%d\n", gid, distance, usr2);
 			
-			displacement=DIS_GOING_TO_FLAG;
 			if (distance<=usr2)
 			{
+				validTarget=false;
 				if (typeNum==WORKER)
 					displacement=DIS_CLEARING_RESSOURCES;
 				else if (typeNum==EXPLORER)
@@ -1627,6 +1682,7 @@ void Unit::handleDisplacement(void)
 							{
 								dx=tdx;
 								dy=tdy;
+								validTarget=false;
 								displacement=DIS_CLEARING_RESSOURCES;
 								//movement=MOV_HARVESTING;
 								return;
@@ -1821,6 +1877,7 @@ void Unit::handleMovement(void)
 									}
 									targetX=posX+x;
 									targetY=posY+y;
+									validTarget=true;
 									quality=newQuality;
 								}
 							}
@@ -1855,6 +1912,7 @@ void Unit::handleMovement(void)
 										}
 										targetX=posX+x;
 										targetY=posY+y;
+										validTarget=true;
 										quality=newQuality;
 									}
 								}
@@ -1886,11 +1944,49 @@ void Unit::handleMovement(void)
 					movement = MOV_GOING_DXDY;
 					// get the target position of guard area for display
 					owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
+					validTarget=true;
+				}
+				else if (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == 255)
+				{
+					// are we into the guard area and we have to go to the least known area.
+					int bestExplored = 3*255;
+					int bestDirection = -1;
+					for (int di = 0; di < 8; di++)
+					{
+						int d = (direction + di) & 7;
+						int cdx, cdy;
+						dxdyfromDirection(d, &cdx, &cdy);
+						if (!owner->map->isFreeForGroundUnit(posX + cdx, posY + cdy, performance[SWIM]>0, owner->me))
+							continue;
+						if (owner->map->getGuardAreasGradient(posX + cdx, posY + cdy, performance[SWIM]>0, owner->teamNumber) != 255)
+							continue;
+						Uint8 explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);
+						explored += owner->map->getExplored(posX + 2*cdx - cdy, posY + 2*cdy + cdx, owner->teamNumber);
+						explored += owner->map->getExplored(posX + 2*cdx + cdy, posY + 2*cdy - cdx, owner->teamNumber);
+						if (bestExplored > explored)
+						{
+							bestExplored = explored;
+							bestDirection = d;
+						}
+					}
+					if (bestDirection >= 0)
+					{
+						direction = bestDirection;
+						dxdyfromDirection();
+						movement = MOV_GOING_DXDY;
+						validTarget = false;
+					}
+					else
+					{
+						movement = MOV_RANDOM_GROUND;
+						validTarget = false;
+					}
 				}
 				else
 				{
 					// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
 					movement = MOV_RANDOM_GROUND;
+					validTarget = false;
 				}
 			}
 		}
