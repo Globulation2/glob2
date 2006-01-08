@@ -183,12 +183,13 @@ namespace Nicowar
 				unsigned int y;
 				unsigned int width;
 				unsigned int height;
+				bool failed_constraint;
 				unsigned int score;
 				pollType poll_type;
 				pollRecord(int ax, int ay, int awidth, int aheight, int ascore, pollType apoll_type) : x(ax), y(ay), width(awidth), height(aheight), score(ascore), poll_type(apoll_type) {}
 				pollRecord() {}
-				bool operator>(const pollRecord& cmp) const { return score>cmp.score; }
-				bool operator<(const pollRecord& cmp) const { return score<cmp.score; }
+				bool operator>(const pollRecord& cmp) const { if(failed_constraint==false && cmp.failed_constraint==true) return true; return score>cmp.score; }
+				bool operator<(const pollRecord& cmp) const {  if(failed_constraint==true && cmp.failed_constraint==false) return true; return score<cmp.score; }
 				bool operator<=(const pollRecord& cmp) const { return score<=cmp.score; }
 				bool operator>=(const pollRecord& cmp) const { return score>=cmp.score; }
 			};
@@ -770,6 +771,7 @@ namespace Nicowar
 				unsigned int ability;
 				unsigned int unit_type;
 				unsigned int minimum_level;
+				unsigned int number;
 				Priority priority;
 			};
 
@@ -918,9 +920,8 @@ namespace Nicowar
 
 			struct singleInnRecord
 			{
-				singleInnRecord(){food_amount=0; units_eating=0;}
+				explicit singleInnRecord(unsigned int food_amount=0) : food_amount(food_amount) {}
 				unsigned int food_amount;
-				unsigned int units_eating;
 			};
 			struct innRecord
 			{
@@ -1101,6 +1102,8 @@ namespace Nicowar
 	const unsigned int MAX_CONSTRUCTION_AT_ONCE=6;
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
+	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
+		{0, 6, 6, 4, 4, 15, 6, 5, 0, 0, 0, 0, 0};
 
 	//The following constants deal with the function iteration. All of these must be
 	//lower than TIMER_ITERATION.
@@ -1133,21 +1136,22 @@ namespace Nicowar
 
 	//These constants are for the AI's swarm controller.
 	const unsigned int PRIORITY_SCORES[UnitModule::priorityNum]={5, 4, 3, 2, 1};
-	//This means that for every n points it will add in one new worker to the swarms.
-	const unsigned int CREATION_UNIT_REQUIREMENT=8;
+	//The number of units to assign to a swarm
 	const unsigned int MAXIMUM_UNITS_FOR_SWARM=5;
 
 	//These constants are for the AI's inn manager.
 	//Says how many records it should take for each inn before restarting back at the begginning.
-	const unsigned int INN_RECORD_MAX=20;
-	const unsigned int INN_MAX[3]={2, 5, 8};
-	const unsigned int INN_MINIMUM[3]={1, 1, 2};
+	const unsigned int INN_RECORD_MAX=10;
+	///This is the amount of wheat that is needed to constitute assigning an extra unit to the inn.
+	const unsigned int WHEAT_NEEDED_FOR_UNIT=3;
+	const unsigned int INN_MAX[3]={3, 6, 8};
+	const unsigned int INN_MINIMUM[3]={1, 2, 2};
 
 	//These constants are for AINicowars tower controller
 	const unsigned int NUM_PER_TOWER=2;
 
 	//These constants are for the defense system.
-	const unsigned int DEFENSE_ZONE_BUILDING_PADDING=2;
+	const unsigned int DEFENSE_ZONE_BUILDING_PADDING=3;
 	const unsigned int BASE_DEFENSE_WARRIORS=10;
 
 	//These constants are for the attack system.
@@ -1173,9 +1177,18 @@ namespace Nicowar
 	const unsigned int MAX_ATTACKS_AT_ONCE=4;
 	const unsigned int WARRIOR_FACTOR=3;
 	const unsigned int BASE_ATTACK_WARRIORS=static_cast<unsigned int>(MAX_ATTACKS_AT_ONCE*ATTACK_WARRIOR_MINIMUM*WARRIOR_FACTOR);
+	///In order to counter the fact that once the ai started building warriors, it wouldn't continue building enough workers,
+	///i've enabled "chunk construction", meaning the ai will build warriors in chunks rather than all at once. This number
+	///provides a starting point, meaning it will always be developing atleast this number of new warriors, and chunks are
+	///done on top of this.
+	const unsigned int WARRIOR_DEVElOPMENT_CONSISTANT_SIZE=30;
+	///This is the size of chunks for the ai.
+	const unsigned int WARRIOR_DEVELOPMENT_CHUNK_SIZE=5;
 	///The number of warriors per available space to train them, for example, a level 1 barracks would have 2 spaces, and thus
 	///the game would produce 2*WARRIORS_PER_BARRACKS_TRAINING_SPACE. Higher level barracks offer more spaces.
 	const unsigned int WARRIORS_PER_BARRACKS_TRAINING_SPACE=3;
+	///This variable denotes whether the attack system should use the maximum barracks level it has available, or the average attack level of its units.
+	const bool USE_MAX_BARRACKS_LEVEL=false;
 
 	//The following are for the construction manager
 
@@ -1193,7 +1206,7 @@ namespace Nicowar
 	const bool CRAMP_BUILDINGS=true;
 	const unsigned int NOPOS=1023;
 	const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=1;
-	const bool STRICT_NEARBY_BUILDING_MINIMUM=false;
+	const bool STRICT_NEARBY_BUILDING_MINIMUM=true;
 	const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
 	{
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
@@ -1201,7 +1214,7 @@ namespace Nicowar
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_TREES}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_STONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_TREES}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}},
+	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_STONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MINIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
 	{{GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
@@ -1218,7 +1231,7 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{30, 8, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{30, 8, 10, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
@@ -1311,5 +1324,23 @@ namespace Nicowar
 		}
 	}
 
+	inline bool weighted_random_upgrade_comparison(Building* a, Building* b)
+	{
+		if(BUILDING_UPGRADE_WEIGHTS[a->type->shortTypeNum]==0)
+			return false;
+		if(BUILDING_UPGRADE_WEIGHTS[b->type->shortTypeNum]==0)
+			return true;
+		unsigned int num_a=syncRand()%BUILDING_UPGRADE_WEIGHTS[a->type->shortTypeNum];
+		unsigned int num_b=syncRand()%BUILDING_UPGRADE_WEIGHTS[b->type->shortTypeNum];
+		if(num_a>num_b)
+			return true;
+		return false;
+	}
+
+
+	inline int round_up(unsigned int a, unsigned int b)
+	{
+		return (a-a%b)+b;
+	}
 }
 #endif
