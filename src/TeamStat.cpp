@@ -306,28 +306,28 @@ void TeamStats::drawStat(int pos)
 		gfx->drawString(textStartPos, startPoxY+104, font, Free);
 		font->popStyle();
 
-		dec+=font->getStringWidth(Free);
+		/*dec+=font->getStringWidth(Free);
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;
+		dec+=sLen;*/
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 224, 210, 17));
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, hungry);
+		gfx->drawString(textStartPos+64, startPoxY+104, font, hungry);
 		font->popStyle();
 
-		dec+=font->getStringWidth(hungry);
+		/*dec+=font->getStringWidth(hungry);
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;
+		dec+=sLen;*/
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 249, 167, 14));
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, starving);
+		gfx->drawString(textStartPos, startPoxY+104+12, font, starving);
 		font->popStyle();
 
-		dec+=font->getStringWidth(starving);
+		/*dec+=font->getStringWidth(starving);
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;
+		dec+=sLen;*/
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 250, 25, 25));
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, wounded);
+		gfx->drawString(textStartPos+64, startPoxY+104+12, font, wounded);
 		font->popStyle();
 	}
 
@@ -388,10 +388,10 @@ void TeamStats::drawStat(int pos)
 		{
 			nbOk=nbNeedFood=nbNeedHeal=nbNeedFoodCritical=0;
 		}
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12  +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
 	}
 }
 
