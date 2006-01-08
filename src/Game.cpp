@@ -1717,7 +1717,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			lsx=px+16;
 			lsy=py+16;
 			map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, screenW, screenH);
-			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
+			if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+				globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
+			else
+				globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250, 128);
 		}
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{
