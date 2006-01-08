@@ -581,9 +581,9 @@ The YOG metaserver has refused connection because this username has no password 
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
+The YOG metaserver has refused connection because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
+The YOG metaserver has refused the connection because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [The player %s has left YOG]
