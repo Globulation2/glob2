@@ -47,6 +47,7 @@ public:
 	// by order of priority (top = max)
 	Sint32 upgrade[NB_ABILITY]; // What kind on units can be upgraded here
 	Sint32 upgradeTime[NB_ABILITY]; // Time to upgrade an unit, given the upgrade type needed.
+	Sint32 upgradeInParallel; // if true, can learn all upgardes with one learning time into the building
 	Sint32 foodable;
 	Sint32 fillable;
 	Sint32 zonable[NB_UNIT_TYPE]; // If an unit is required for a presence.

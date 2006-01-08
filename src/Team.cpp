@@ -1254,29 +1254,29 @@ Building *Team::findBestUpgrade(Unit *unit)
 	Sint32 score=0x7FFFFFFF;
 	int x=unit->posX;
 	int y=unit->posY;
-	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)										//This is bad code. If WALK ever ceases to be the
-		//first ability or ARMOR ever ceases to be the last, this
-		//code willl fail.
+	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
+		//This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
+		// to be the last, this code willl fail.
 		if (unit->canLearn[ability])
-	{
-		int actLevel=unit->level[ability];
-		for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
 		{
-			Building *b=(*bi);
-			if (b->type->level>=actLevel)
+			int actLevel=unit->level[ability];
+			for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
 			{
-				Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
-				if (newScore<score)
+				Building *b=(*bi);
+				if (b->type->level>=actLevel)
 				{
-					unit->destinationPurprose=(Sint32)ability;
-					//fprintf(logFile, "[%d] score=%d, newScore=%d\n", unit->gid, score, newScore);
-					fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-					choosen=b;
-					score=newScore;
+					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
+					if (newScore<score)
+					{
+						unit->destinationPurprose=(Sint32)ability;
+						//fprintf(logFile, "[%d] score=%d, newScore=%d\n", unit->gid, score, newScore);
+						fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+						choosen=b;
+						score=newScore;
+					}
 				}
 			}
 		}
-	}
 	return choosen;
 }
 
