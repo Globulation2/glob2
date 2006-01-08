@@ -68,6 +68,8 @@ upgradeTimeMagicCreateAlga 0
 upgradeTimeArmor 0
 upgradeTimeHP 0
 
+upgradeInParallel 0
+
 foodable 0
 fillable 0
 
