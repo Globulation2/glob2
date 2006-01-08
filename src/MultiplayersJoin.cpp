@@ -180,7 +180,7 @@ void MultiplayersJoin::closeDownload()
 
 void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 {
-	if (size!=8)
+	if (size!=12)
 	{
 		fprintf(logFile, "Bad size for a Presence packet recieved!\n");
 		waitingState=WS_WAITING_FOR_PRESENCE;
@@ -190,11 +190,14 @@ void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 	}
 	
 	Uint8 serverNetProtocolVersion=data[4];
-	fprintf(logFile, "dataPresenceRecieved (serverNetProtocolVersion=%d)\n", serverNetProtocolVersion);
+	Uint32 serverConfigCheckSum=getUint32(data, 8);
+	fprintf(logFile, "dataPresenceRecieved (serverNetProtocolVersion=%d) (serverConfigCheckSum=%08x)\n",
+			serverNetProtocolVersion, serverConfigCheckSum);
 	
-	if (serverNetProtocolVersion!=NET_PROTOCOL_VERSION)
+	if (serverNetProtocolVersion!=NET_PROTOCOL_VERSION || serverConfigCheckSum!=globalContainer->getConfigCheckSum())
 	{
-		fprintf(logFile, " bad serverNetProtocolVersion!=%d)\n", NET_PROTOCOL_VERSION);
+		fprintf(logFile, " bad serverNetProtocolVersion!=%d or serverNetProtocolVersion!=%08x\n",
+				NET_PROTOCOL_VERSION, globalContainer->getConfigCheckSum());
 		if (shareOnYog)
 			yog->unjoinGame(false);
 		waitingState=WS_TYPING_SERVER_NAME;
@@ -1480,19 +1483,20 @@ void MultiplayersJoin::sendingTime()
 bool MultiplayersJoin::sendPresenceRequest()
 {
 	assert(BasePlayer::MAX_NAME_LENGTH==32);
-	UDPpacket *packet=SDLNet_AllocPacket(40);
+	UDPpacket *packet=SDLNet_AllocPacket(44);
 
 	assert(packet);
 
 	packet->channel=-1;
 	packet->address=serverIP;
-	packet->len=40;
+	packet->len=44;
 	packet->data[0]=NEW_PLAYER_WANTS_PRESENCE;
 	packet->data[1]=NET_PROTOCOL_VERSION;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	addSint32(packet->data, (Sint32)ipFromNAT, 4);
-	strncpy((char *)(packet->data+8), playerName, 32); //TODO: use uid if over YOG.
+	addUint32(packet->data, globalContainer->getConfigCheckSum(), 4);
+	addSint32(packet->data, (Sint32)ipFromNAT, 8);
+	strncpy((char *)(packet->data+12), playerName, 32); //TODO: use uid if over YOG.
 
 	int nbsent=SDLNet_UDP_Send(socket, -1, packet);
 	if (nbsent==1)

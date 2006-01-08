@@ -85,6 +85,7 @@ public:
 		bool fileIsAMap;
 		int mapGenerationMethode;
 		int netProtocolVersion;
+		Uint32 configCheckSum;
 		char mapName[64];
 		bool natSolved;
 		Uint32 huid; //the uid of the game host

@@ -398,6 +398,21 @@ bool BasePlayer::send(const Uint8 u, const Uint8 v)
 	return send(data, 8);
 }
 
+bool BasePlayer::send(const Uint8 u, const Uint8 v, const Uint32 checksum)
+{
+	Uint8 data[12];
+	data[0]=u;
+	data[1]=0;
+	data[2]=0;
+	data[3]=0;
+	data[4]=v;
+	data[5]=0;
+	data[6]=0;
+	data[7]=0;
+	*((Uint32 *)(data+8))=SDL_SwapBE32(checksum);
+	return send(data, 12);
+}
+
 Player::Player()
 :BasePlayer()
 {

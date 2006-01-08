@@ -109,6 +109,9 @@ public:
 	char hostServerPassWord[32];
 	//! hostname for YOG, can be set by cmd line to override default
 	std::string yogHostName;
+	
+public:
+	Uint32 getConfigCheckSum();
 };
 
 extern GlobalContainer *globalContainer;

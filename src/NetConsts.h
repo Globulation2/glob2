@@ -44,6 +44,7 @@
 
 #define NET_PROTOCOL_VERSION 22
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
+// version 22 added ConfigCheckSum to check if all use has the same file config.
 
 enum OrderTypes
 {
