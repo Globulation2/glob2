@@ -187,3 +187,16 @@ BuildingType *BuildingsTypes::getByType(const std::string &s,int level, bool isB
 {
 	return getByType(s.c_str(), level, isBuildingSite);
 }
+
+Uint32 BuildingsTypes::checkSum(void)
+{
+	Uint32 cs = 0;
+	
+	for (size_t i=0; i<entries.size(); ++i)
+	{
+		cs ^= entries[i]->checkSum();
+		cs = (cs<<1) | (cs>>31);
+	}
+	
+	return cs;
+}
