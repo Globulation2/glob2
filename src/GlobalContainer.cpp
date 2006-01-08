@@ -478,3 +478,9 @@ void GlobalContainer::load(void)
 		destroyProgressBar();
 	}
 };
+
+Uint32 GlobalContainer::getConfigCheckSum()
+{
+	// TODO: add the units config
+	return globalContainer->buildingsTypes.checkSum();
+}

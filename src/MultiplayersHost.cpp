@@ -496,7 +496,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 	else
 		fprintf(logFile, "yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
 	
-	Uint8 sdata[64+16];
+	Uint8 sdata[64+20];
 	sdata[0]=YMT_GAME_INFO_FROM_HOST;
 	sdata[1]=0;
 	sdata[2]=0;
@@ -514,10 +514,11 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 	sdata[13]=0; // pad and trick to show a pseudo game name
 	sdata[14]=0; // pad
 	sdata[15]=NET_PROTOCOL_VERSION;
-	strncpy((char *)(sdata+16), sessionInfo.getMapNameC(), 64);
-	int ssize=Utilities::strmlen((char *)(sdata+16), 64)+16;
-	assert(ssize<64+16);
-	UDPpacket *packet=SDLNet_AllocPacket(64+16);
+	addUint32(sdata, globalContainer->getConfigCheckSum(), 16);
+	strncpy((char *)(sdata+20), sessionInfo.getMapNameC(), 64);
+	int ssize=Utilities::strmlen((char *)(sdata+20), 64)+20;
+	assert(ssize<64+20);
+	UDPpacket *packet=SDLNet_AllocPacket(64+20);
 	if (packet==NULL)
 		return;
 	if (ip.host==0)
@@ -540,13 +541,16 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 {
 	fprintf(logFile, "MultiplayersHost::newPlayerPresence().\n");
-	if (size!=40)
+	if (size!=44)
 	{
 		fprintf(logFile, " Bad size(%d) for an Presence request from ip %s.\n", size, Utilities::stringIP(ip));
 		return;
 	}
 	Uint8 playerNetProtocolVersion=data[1];
+	Uint32 playerConfigCheckSum;
+	playerConfigCheckSum=getUint32(data, 4);
 	fprintf(logFile, " playerNetProtocolVersion=%d\n", playerNetProtocolVersion);
+	fprintf(logFile, " playerConfigCheckSum=%08x\n", playerConfigCheckSum);
 	
 	int p=sessionInfo.numberOfPlayer;
 	int t=newTeamIndice();
@@ -554,7 +558,7 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 	if (savedSessionInfo)
 	{
 		char playerName[BasePlayer::MAX_NAME_LENGTH];
-		memcpy(playerName, data+8, 32);
+		memcpy(playerName, data+12, 32);
 		t=savedSessionInfo->getTeamNumber(playerName, t);
 	}
 	
@@ -582,9 +586,9 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 	sessionInfo.players[p].type=BasePlayer::P_IP;
 	sessionInfo.players[p].setNumber(p);
 	sessionInfo.players[p].setTeamNumber(t);
-	memcpy(sessionInfo.players[p].name, data+8, 32);
+	memcpy(sessionInfo.players[p].name, data+12, 32);
 	sessionInfo.players[p].setip(ip);
-	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data, 4);
+	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data, 8);
 	fprintf(logFile, " this ip(%s) has ipFromNAT=(%d)\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
 
 	yog->joinerConnected(ip);
@@ -610,13 +614,14 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 		return;
 	}
 
-	if (playerNetProtocolVersion!=NET_PROTOCOL_VERSION)
+	if (playerNetProtocolVersion!=NET_PROTOCOL_VERSION || playerConfigCheckSum!=globalContainer->getConfigCheckSum())
 	{
-		fprintf(logFile, " bad playerNetProtocolVersion!=%d\n", NET_PROTOCOL_VERSION);
-		sessionInfo.players[p].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION);
+		fprintf(logFile, " bad playerNetProtocolVersion!=%d or playerConfigCheckSum=%08x\n",
+				NET_PROTOCOL_VERSION, globalContainer->getConfigCheckSum());
+		sessionInfo.players[p].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION, globalContainer->getConfigCheckSum());
 		return;
 	}
-	else if (sessionInfo.players[p].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION))
+	else if (sessionInfo.players[p].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION, globalContainer->getConfigCheckSum()))
 	{
 		fprintf(logFile, " newPlayerPresence::this ip(%s) is added in player list. (player %d), name=(%s)\n", Utilities::stringIP(ip), p, sessionInfo.players[p].name);
 		sessionInfo.numberOfPlayer++;
@@ -1573,7 +1578,7 @@ void MultiplayersHost::sendingTime()
 			case BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST :
 			{
 				fprintf(logFile, "\nLets send the presence to player %d.\n", pi);
-				sessionInfo.players[pi].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION);
+				sessionInfo.players[pi].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION, globalContainer->getConfigCheckSum());
 			}
 			break;
 

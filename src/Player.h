@@ -159,6 +159,7 @@ public:
 	bool send(Uint8 *data, int size, const Uint8 v);
 	bool send(const Uint8 v);
 	bool send(const Uint8 u, const Uint8 v);
+	bool send(const Uint8 u, const Uint8 v, const Uint32 checksum);
 
 public:
 	bool destroyNet;
