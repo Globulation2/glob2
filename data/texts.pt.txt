@@ -1,45 +1,45 @@
 [language]
-Español
+Português
 [language-code]
-es
+pt
 [language-tr]
-Idioma
+Língua
 [hp]
 Vida
 [heal]
-Salud
+Saude
 [armor]
 Armadura
 [damage]
-Daño
+Danho
 [food]
 Comida
 [working]
-Trabajando
+Trabalhando
 [inside]
 Dentro
 [ressources]
 Recursos
 [Wood]
-Madera
+Madeira
 [Corn]
-Maíz
+Milho
 [Papyrus]
 Papiro
 [Stone]
-Piedra
+Pedra
 [Alga]
 Algas
 [Cherry]
-Cereza
+Cereja
 [Orange]
-Naranja
+Laranja
 [Prune]
-Pasa
+Passa
 [Clearing:]
-Limpiando:
+Limpando:
 [Min required level:]
-Mín nivel requerido:
+ Mín nível requerido:
 [Bullets]
 Balas
 [range]
@@ -47,105 +47,105 @@ Rango
 [destroy]
 Destruir
 [cancel destroy]
-Cancelar destrucción
+Cancelar destruição
 [wait destroy]
-Esperarando destrucción
+Esperarando destruição
 [upgrade]
-Mejorar
+Melhorar
 [repair]
-Reparar
+Arrumar
 [cancel upgrade]
-Cancelar mejora
+Cancelar melhora
 [cancel repair]
-Cancelar reparación
+Cancelar arrumação
 [units type]
-tipo de unidad
+tipo de unidade
 [workers]
-trabajadores
+trabalhadores
 [explorers]
 exploradores
 [warriors]
-guerreros
+guerreiros
 [Unit type]
-Tipo de unidad
+Tipo de unidade
 [Worker]
-Trabajador
+Trabalhador
 [Explorer]
 Explorador
 [Warrior]
-Guerrero
+Guerreiro
 [still (w)]
-Aún
+Ainda
 [units working]
- unidades trabajando
+ unidades trabalhando
 [still one unit working]
-Aún una unidad trabajando
+Ainda uma unidade trabalhando
 [Still (i)]
-Aún
+Ainda
 [Still one]
-Aún una
+Ainda uma
 [Building name]
-Nombre del edificio
+Nombre do prédio
 [swarm building]
-Colmena
+Colmeia
 [food building]
-Hostal
+Taberna
 [health building]
 Hospital
 [walkspeed building]
-Pista de carreras
+Pista de carreiras
 [swimspeed building]
 Piscina
 [attack building]
-Cuartel
+Quartel
 [science building]
-Escuela
+Escola
 [defense building]
 Torre
 [exploration flag]
-Bandera de exploraciún
+Bandeira de exploração
 [war flag]
-Bandera de guerra
+Bandeira de guerra
 [clearing flag]
-Bandera de limpieza
+Bandeira de limpeza
 [stone wall]
-Muro de piedra
+Muro de pedra
 [market]
 Mercado
 [forbidden area]
-Área prohibida
+Área proibida
 [guard area]
 Área de guardia
 [clear area]
-Área de limpieza
+Área de limpeza
 [Building short explanation]
 
 [swarm building explanation]
-Crea nuevas unidades
+Cria novas unidades
 [food building explanation]
-Alimenta las unidades
+Alimenta as unidades
 [health building explanation]
-Sana las unidades
+Sana as unidades
 [walkspeed building explanation]
-Mejora la velocidad de
+Melhora a velocidade de
 [swimspeed building explanation]
-Mejora la velocidad de
+Melhora a velocidade de
 [attack building explanation]
-Mejora el nivel de lucha
+Melhora o nível de luta
 [science building explanation]
-Mejora los conocimientos
+Melhora as noções
 [defense building explanation]
-Ataca edificios/unidades
+Ataca prédios/unidades
 [exploration flag explanation]
-Atrae exploradores
+Atrai exploradores
 [war flag explanation]
-Atrae guerreros
+Atrai guerreiros
 [clearing flag explanation]
 Elimina recursos
 [stone wall explanation]
 Elemento de defensa
 [market explanation]
-Permite intercambio de
+Permite intercâmbio de
 [Building short explanation 2]
 
 [swarm building explanation 2]
@@ -155,15 +155,15 @@ Permite intercambio de
 [health building explanation 2]
 
 [walkspeed building explanation 2]
-marcha de las unidades
+marcha das unidades
 [swimspeed building explanation 2]
-nado de las unidades
+nado das unidades
 [attack building explanation 2]
-de los guerreros
+dos guerreiros
 [science building explanation 2]
-de los trabajadores
+dos trabalhadores
 [defense building explanation 2]
-enemigos cercanos
+inimigos na cercania
 [exploration flag explanation 2]
 
 [war flag explanation 2]
@@ -171,201 +171,201 @@ enemigos cercanos
 [clearing flag explanation 2]
 
 [stone wall explanation 2]
-pasivo
+passivo
 [market explanation 2]
-frutas con otros
+frutas com outros
 [waiting for %s]
 Esperando a %s
 [%s has left the game]
-%s se ha ido del juego
+%s foi embora do jogo
 [%s has been deconnected of the game]
-%s ha sido desconectado del juego
+%s foi desconectado do jogo
 [load game]
 Cargar partida
 [save game]
 Salvar partida
 [options]
-Opciones
+Opções
 [alliances]
-Alianzas
+Alianças
 [return to game]
-Volver al juego
+Voltar ao jogo
 [quit the game]
-Salir del juego
+Sair do jogo
 [ok]
-Aceptar
+Aceitar
 [Cancel]
 Cancelar
 [you have lost]
-Has perdido
+Você perdeu
 [you have won]
-Has ganado
+Você ganhou
 [campaign]
-Campaña
+Campanha
 [tutorial]
 Tutorial
 [custom game]
-Juego personalizado
+Jogo personalizado
 [yog]
-Juego en línea con Ysagoon
+Jogo em linha com Ysagoon
 [Enter your nickname :]
-Introduce tu apodo:
+Introduza o seu apelido:
 [Enter your password :]
-Introduce tu contraseña:
+Introduza sua contrasenha:
 [lan]
-Juego en red LAN
+Jogo em rede LAN
 [settings]
-Opciones
+Opções
 [Warning, you need to reboot the game for changes to take effect]
-[Advertencia: Debe reiniciarse el juego para que los cambios surtan efecto]
+[Aviso: Deve se reiniciar o jogo para que as mudanças surtam efeito]
 [editor]
 Editor
 [credits]
 Créditos
 [quit]
-Salir
+Sair
 [create game]
-Crear partida
+Criar partida
 [update list]
-Actualizar lista
+Atualizar lista
 [connecting to]
-Conectándose a
+Conectando-se a
 [connect]
 Conectar
 [Disconnect]
 Desconectar
 [please wait]
-Espera por favor
+Espere por favor
 [loading glob2]
 Cargando Globulation 2
 [host]
-Servir una partida
+Servir uma partida
 [join a game]
-Unirse a una partida
+Unir-se a uma partida
 [join]
-Unirse
+Unir-se
 [goto main menu]
-Volver al menú principal
+Voltar ao menu principal
 [player name]
-Nombre del jugador
+Nome do jogador
 [svr hostname]
-Nombre del servidor
+Nome do servidor
 [hp]
 Vida
 [carry]
 Transportando:
 [don't carry anything]
-No transporta nada
+Não transporta nada
 [level]
-Nivel
+Nível
 [levels]
-Niveles
+Níveis
 [building site]
-Lugar de construcción
+Lugar de construição
 [create map]
-Crear mapa
+Criar mapa
 [map size x]
-Ancho del mapa
+Largura do mapa
 [map size y]
-Alto del mapa
+Altura do mapa
 [default terrain]
 Terreno predefinido
 [water]
-Agua
+Água
 [sand]
-Arena
+Areia
 [grass]
-Hierba
+Erva
 [teams]
- equipos
+ times
 [choose map]
-Elegir un mapa
+Eleger um mapa
 [choose game]
-Elegir una partida
+Eleger una partida
 [awaiting players]
-Esperando jugadores
+Esperando jogadores
 [stat]
 Estadísticas
 [food left]
 Comida restante
 [the building is finished]
-Construcción finalizada
+Construçãon finalizada
 [the swarm is finished]
-La colmena ha sido construida
+A colmeia foi construída
 [the food building is finished]
-El hostal ha sido construido
+A taberna foi construída
 [the health building is finished]
-El hospital ha sido construido
+O hospital tem sido construído
 [the walkspeed building is finished]
-La pista de carreras ha sido construida
+A pista de carreiras foi construída
 [the swimspeed building is finished]
-La piscina ha sido contruida
+A piscina foi contruída
 [the attack building is finished]
-El cuartel ha sido construido
+O quartel foi construído
 [the science building is finished]
-La escuela ha sido construida
+A escola foi construída
 [the tower building is finished]
-La torre ha sido construida
+A torre foi construída
 [the exploration flag is finished]
-?? Bandera de exploración finalizada ??
+?? Bandeira de exploração finalizada ??
 [the war flag is finished]
-?? Bandera de guerra finalizada ??
+?? Bandeira de guerra finalizada ??
 [the clearing flag is finished]
-?? Bandera de limpieza finalizada ??
+?? Bandera de limpeza finalizada ??
 [the stone wall is finished]
-El muro de piedra ha sido construido
+O muro de pedra foi construído
 [the market is finished]
-El mercado ha sido construido
+O mercado foi construído
 [the building is under attack]
-El edificio está siendo atacado
+O prédio está sendo atacado
 [the swarm is under attack]
-La colmena está siendo atacada
+A colmeia está siendo atacada
 [the food building is under attack]
-El hostal está siendo atacado
+A taberna está sendo atacada
 [the health building is under attack]
-El hospital está siendo atacado
+O hospital está sendo atacado
 [the walkspeed building is under attack]
-La pista de carreras está siendo atacada
+A pista de carreiras está sendo atacada
 [the swimspeed building is under attack]
-La piscina está siendo atacada
+A piscina está sendo atacada
 [the attack building is under attack]
-El cuartel está siendo atacado
+O quartel está sendo atacado
 [the science building is under attack]
-La escuela está siendo atacada
+A escuela está sendo atacada
 [the defense building is under attack]
-La torre está siendo atacada
+A torre está sendo atacada
 [the exploration flag is under attack]
-?? La bandera de exploración está siendo atacada ??
+?? A bandeira de exploração está sendo atacada ??
 [the war flag is under attack]
-?? La bandera de guerra está siendo atacada ??
+?? A bandeira de guerra está sendo atacada ??
 [the clearing flag is under attack]
-?? La bandera de limpieza está siendo atacada ??
+?? A bandeira de limpeza está sendo atacada ??
 [the stone wall is under attack]
-El enemigo está a tu muralla
+O inimigo está a sua muralha
 [the market is under attack]
-El mercado est� siendo atacado
+O mercado está sendo atacado
 [Your %s are under attack]
-Tus %s están siendo atacados
+Seus %s estão sendo atacados
 [Your unit got converted to another team]
-Una unidad se ha pasado al bando enemigo
+Uma unidade tem se passado ao bando inimigo
 [Another team's unit got converted to your team]
-Una unidad enemiga se ha pasado a tu bando
+Uma unidaed inimiga tem se passado a seu bando
 [Uncontrolled]
-No controlado
+Não controlado
 [ai]
 IA
 [closed]
-Cerrado
+Fechado
 [close]
-Cerrar
+Fechar
 [player]
-Jugador
+Jogador
 [STARTING GAME ...]
 Iniciando partida...
 [Statistics]
 Estadísticas
 [Buildings]
-Edificios
+Prédios
 [Prestige]
 Prestigio
 [Units]
@@ -377,31 +377,31 @@ Defensa
 [free]
 libres
 [of which]
-de los que hay
+dos quais há
 [are ok]
-bien
+bem
 [are hungry]
-hambrientos
+famintos
 [are dying hungry]
-famélicos
+morrendo
 [are wonded]
-heridos
+feridos
 [and]
-y
+e
 [seeking a job]
-buscando trabajo
+procurando trabalho
 [Walk]
-Caminar
+Caminhar
 [Swim]
 Nadar
 [Build]
 Construir
 [Harvest]
-Recolectar
+Coletar
 [At. speed]
-Velocidad ataque
+Veloc. ataque
 [At. strength]
-Fuerza ataque
+Forza ataque
 [Magic At. Air]
 Ataque aéreo
 [Magic At. Ground]
@@ -411,25 +411,25 @@ Total
 [free]
 libres
 [seeking]
-buscando
+procurando
 [Free]
-Bien
+Bem
 [hungry]
-hambr.
+famint.
 [starving]
-famél.
+morrendo
 [wounded]
-heridos
+feridos
 [In way]
-en camino
+a caminho
 [On the spot]
-Aquá
+Aqui
 [Version]
-Versión
+Versão
 [open]
-abierto
+aberto
 [Add AI]
-Añadir IA
+Agregar IA
 [AI]
 IA
 [AINone]
@@ -445,7 +445,7 @@ IAToubib
 [AIWarrush]
 IAWarrush
 [the games]
-Juegos
+Jogos
 [the maps]
 Mapas
 [was]
@@ -455,65 +455,65 @@ era IA
 [state]
 estado
 [Start]
-Comenzar
+Começar
 [not ready]
-no listo
+não pronto
 [has joined]
-ha entrado
+entrou
 [has quit]
-se ha ido
+foi embora
 [yog-chat]
-#yog-es
+#yog-pt
 [speed]
-Velocidad
+Velocidade
 [current speed]
-Velocidad actual
+Velocidade atual
 [attack speed]
-Velocidad ataque
+Velocidade ataque
 [new]
-Nuevo
+Novo
 [load]
-Cargar
+Carregar
 [handmade map]
-Mapa hecho a mano
+Mapa feito a mão
 [mapGenerationDescriptor Methodes]
-Métodos de generación de mapas
+Métodos de geração de mapas
 [uniform terrain]
 Terreno uniforme
 [random terrain]
-Terreno aleatorio
+Terreno aleatório
 [islands terrain]
-Islas
+ínsulas
 [ratios]
-Proporciones
+Proporções
 [smoothing]
 Alisado
 [number of teams]
 Número de bandos
 [islands size]
-Tamaño de las islas
+Tamanho das ínsulas
 [beach size]
-Tamaño de la playa
+Tamanho da praia
 [workers]
-Trabajadores
+Trabalhadores
 [bad error in connection system]
-Error en el sistema de conexión
+Erro no sistema de conexão
 [not connected]
-No conectado
+Não conectado
 [presence request sent]
-Petición de presencia enviada...
+Petição de presença enviada...
 [session request sent]
-Petición de sesión enviada...
+Petição de sesão enviada...
 [checksum sent]
 Checksum enviada...
 [connected to server]
-Conectado al servidor
+Conectado ao servidor
 [connecting to all players]
-Conectándose a todos los jugadores
+Conectándo-se a todos os jogadores
 [connected to all players]
-Conectado a todos los jugadores
+Conectado a todos os jogadores
 [available lan games]
-Partidas LAN disponibles
+Partidas LAN disponíveis
 [login]
 Login
 [from:]
@@ -525,151 +525,151 @@ ausente:
 [compile]
 Compilar script
 [downloaded at]
-Bajado al
+Baixado ao
 [percent]
-  porciento
+  porcento
 [download finished]
-Bajada terminada
+Baixada terminada
 [Map name: %s]
-Nombre del mapa: %s.
+Nome do mapa: %s.
 [one player]
-Un jugador ha entrado
+Um jogador entrou
 [number of players: %d]
-%d jugadores presentes.
+%d jogadores presentes.
 [number of teams: %d]
-%d equipos.
+%d times.
 [game full]
-Partida llena
+Partida alotada
 [small]
-Pequeño
+Pequeno
 [medium]
-mediano
+méio
 [large]
-grande
+comprido
 [network latency]
-Latencia
+Latência
 [game speed]
-Velocidad de juego
+Velocidade de jogo
 [Paused]
 Pausa
 [Register a new YOG user with password]
-Registrar un nuevo usuario de YOG con contraseña. (inseguro)
+Registrar um novo usuário de YOG com contrasenha. (inseguro)
 [Remember YOG password localy]
-Recordar la contraseña localmente. (inseguro)
+Lembrar a contrasenha localmente. (inseguro)
 [YESTS_BAD]
-Error de inconsistencia interna mientras se conectaba.
+Erro de inconsistência interna enquanto se conectava.
 [YESTS_UNABLE_TO_CONNECT]
-Imposible conectarse. Parece que el metaservidor YOG está caído.
+Imposível conectar-se. Parece que o metaservidor YOG está caido.
 [YESTS_CREATED]
-El sistema de conexión está listo para contactarse con el metaservidor YOG.
+O sistema de conexão está pronto para contactar-se com o metaservidor YOG.
 [YESTS_CONNECTING]
-Conectándose al metaservidor YOG...
+Conectándo-se o metaservidor YOG...
 [YESTS_DECONNECTING]
-Desconectándose del metaservidor YOG...
+Desconectándo-se do metaservidor YOG...
 [YESTS_YOG_KILLED]
-Un administrador ha detenido el metaservidor YOG.
+Um administrador tem detenido o metaservidor YOG.
 [YESTS_CONNECTION_LOST]
-Conexión al metaservidor YOG perdida.
+Conexão ao metaservidor YOG perdida.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-El metaservidor YOG ha rechazado la conexión porque el cliente globulation2 es obsoleto.
+O metaservidor YOG tem rejeitado a conexão porque o cliente globulation2 é obsoleto.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-El metaservidor YOG ha rechazado la conexión porque el nombre de usuario está en uso.
+O metaservidor YOG tem rejeitado a conexão porque o nome de usuário está em uso.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-El metaservidor YOG ha rechazado la conexión porque la contraseña suministrada es incorrecta.
+O metaservidor YOG tem rejeitado a conexão porque a contrasenha fornecida é incorrecta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-El metaservidor YOG ha rechazado la conexión porque el usuario no tiene una contraseña aún. Activa por una vez la opción "Registrar un nuevo usuario de YOG con contraseña".
+O metaservidor YOG tem rejeitado a conexão porque  usuário aínda não tem uma contrasenha. Active por uma vez a opção "Registrar um novo usuário de YOG com contrasenha".
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-El metaservidor YOG ha rechazado la conexión porque este usuario ya ha sido registrado. Desactiva la opción "Registrar un nuevo usuario de YOG con contraseña" si este es tu usuario.
+O metaservidor YOG tem rejeitado a conexão porque este usuário já tem sido registrado. Desactive a opção "Registrar um novo usuário de YOG com contrasenha" se este é seu usuário.
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-El metaservidor YOG ha rechazado la conexión por un error de protocolo: ya est�s autenticado. Intenta de nuevo en 45 segundos.
+O metaservidor YOG tem rejeitado a conexão por um erro de protocolo: você já está autenticado. Tente de novo em 45 segundos.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-El metaservidor YOG ha rechazado la conexión por un error de protocolo: no est�s conectado aún al autenticarte. Por favor reporta este fallo.
+O metaservidor YOG tem rejeitado a conexão por um erro de protocolo: você aínda não está conectado ao se autenticar. Por favor reporte este falho.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-El metaservidor YOG ha rechazado la conexión sin dar una explicación.
+O metaservidor YOG tem rejeitado a conexão sem dar uma explicação.
 [The player %s has left YOG]
-%s se ha ido de YOG
+%s foi embora de YOG
 [The player %s has joined YOG]
-%s ha entrado a YOG
+%s entrou a YOG
 [You are now marked as away]
-Estás marcado como ausente.
+Você está marcado como ausente.
 [You are no more marked as away]
-Ya no estás marcado como ausente.
+Voc já ãno está marcado como ausente.
 [YOG_HELP]
-El sistema de mensajes YOG tiene dos comandos, "msg" y "away". Escribe "/help <comando>" para conocer más de ellos.
+O sistema de mensagens YOG tem dois comandos, "msg" e "away". Escreva "/help <comando>" para conhecer mais de eles.
 [YOG_HELP_AWAY]
-El comando "/away [<mensaje>]" te permite dejarles saber a los demás usuarios de YOG que estás temporalmente ausente. Puedes añadir una breve nota de explicación. Por ejemplo "/away Estoy comiendo. Vuelvo a las 13:00". Alias "/a".
+O comando "/away [<mensagem>]" lhe permite deixar-lhes saber aos outros usuários de YOG que você está temporalmente ausente. Pode agregar una breve nota de explicação. Por exemplo "/away Estou comendo. Regresso às 13:00". Alcunha "/a".
 [YOG_HELP_MSG]
-El comando "/msg <nombre> <mensaje>" envía un mensaje privado. Por ejemplo, "/msg Tito Hola Tito, cómo estós?". Alias "/m".
+O comando "/msg <nome> <mensagem>" envía uma mensagem privada. Por exemplo, "/msg Tito Oi Tito, como vai?". Alcunha "/m".
 [save before quit?]
-Guardar antes de salir?
+Guardar antes de sair?
 [Yes]
-Sí
+Sim
 [No]
-No
+Não
 [Save]
 Guardar
 [auto save]
 Autoguardar
 [Total prestige reached]
-Prestigio total alcanzado
+Prestígio total atingido
 [Continue playing]
-Continuar jugando
+Continuar jogando
 [Lost : your colony is dead]
-Perdiste: Tu colonia fue aniquilada
+Você perdeu: Sua colônia foi aniquilada
 [Won : you defeated your opponents]
-Ganaste: Has destruido tus oponentes
+Você ganhou: Tem destruído seus oponentes
 [Won : your ally %s has the most prestige]
-Ganaste: tu aliado %s ha alcanzado el mayor prestigio
+Você ganhou: seus aliados %s tem atingido o maior prestígio
 [Lost : %s has more prestige than you]
-Perdiste: %s tiene más prestigio que tú
+Você perdeu: %s tem mais prestígio do que você
 [Won : you have the most prestige]
-Ganaste: Eres quien más prestigio tiene
+Você ganhou: Você é quem mais prestígio tem
 [The game has not been finished]
-La partida no ha terminado
+A partida não tem terminado
 [display]
-Pantalla
+Tela
 [username]
-Nombre de usuario
+Nome de usuário
 [fullscreen]
-Pantalla completa
+Tela completa
 [hwaccel]
-Aceleración por hardaware
+Aceleração por hardaware
 [dblbuff]
 Double buffering
 [lowquality]
-Calidad baja
+Calidade baixa
 [audio]
-Audio
+Áudio
 [Music volume]
-Volumen (música)
+Volume (música)
 [Happyness]
-Felicidad
+Felicidade
 [customcur]
 Cursor personalizado
 [choose campaign]
-Elegir campaña
+Eleger campanha
 [nick taken]
-Lamentablemente el apodo que elegiste ya está tomado en freenode. Sólo podrás hablar a través de YOG
+Infelizmente o apelido que elegeu já está tomado em freenode. Só poderá falar através de YOG
 [mute]
-silencio
+silêncio
 [abreaviation explanation A]
 A: Aliados
 [abreaviation explanation V]
-V: Mostrar todos los edificios
+V: Mostrar todos os prédios
 [abreaviation explanation Vf]
-Vf: Mostrar hostales (para convertir unidades)
+Vf: Mostrar tabernas (para convertir unidades)
 [abreaviation explanation mV]
 mV: Mostrar mercados (para intercambiar frutas)
 [abreaviation explanation C]
-C: Enviar mensaje de chat a
+C: Enviar mensagem de chat a
 [shortcut explanation enter]
-Intro: Enviar mensaje de chat
+Intro: Enviar mensagem de chat
 [shortcut explanation v]
-V: Pedir la palabra
+V: Pedir a palavra
 [Delete game]
-Borrar la partida seleccionada
+Borrar a partida selecionada
 [any explorer]
-cualquier explorador
+qualquer explorador
 [ground attack]
 ataque terrestre
 [%s's team unit got converted to your team]
