@@ -703,7 +703,7 @@ shortTypeNum 4
 *barracks0c
 
 type barracks
- 
+
 gameSprite data/gfx/buildingsite
 gameSpriteImage 3
 miniSprite data/gfx/minibuildingsite
@@ -736,9 +736,10 @@ miniSprite data/gfx/minibarracks0b
 miniSpriteImage 0
 
 upgradeAttackStrength 1
-upgradeTimeAttackStrength 4
+upgradeTimeAttackStrength 7
 upgradeAttackSpeed 1
-upgradeTimeAttackSpeed 3
+upgradeTimeAttackSpeed 7
+upgradeInParallel 1
 
 width 4
 height 4
@@ -789,9 +790,10 @@ miniSprite data/gfx/minibarracks1b
 miniSpriteImage 0
 
 upgradeAttackStrength 1
-upgradeTimeAttackStrength 7
+upgradeTimeAttackStrength 10
 upgradeAttackSpeed 1
-upgradeTimeAttackSpeed 3
+upgradeTimeAttackSpeed 10
+upgradeInParallel 1
 
 width 4
 height 4
@@ -842,9 +844,10 @@ miniSprite data/gfx/minibarracks2b
 miniSpriteImage 0
 
 upgradeAttackStrength 1
-upgradeTimeAttackStrength 7
+upgradeTimeAttackStrength 14
 upgradeAttackSpeed 1
-upgradeTimeAttackSpeed 7
+upgradeTimeAttackSpeed 14
+upgradeInParallel 1
 
 width 4
 height 4
