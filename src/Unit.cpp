@@ -1952,7 +1952,7 @@ void Unit::handleMovement(void)
 			// if we haven't find anything satisfactory, follow guard area gradients
 			if (movement == MOV_RANDOM_GROUND)
 			{
-				if (owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+				if (!attachedBuilding && owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
 				{
 					directionFromDxDy();
 					movement = MOV_GOING_DXDY;
