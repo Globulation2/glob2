@@ -895,9 +895,10 @@ miniSprite data/gfx/minischool0b
 miniSpriteImage 0
 
 upgradeBuild 1
-upgradeTimeBuild 4
+upgradeTimeBuild 7
 upgradeHarvest 1
-upgradeTimeHarvest 3
+upgradeTimeHarvest 7
+upgradeInParallel 1
 
 width 2
 height 2
@@ -950,9 +951,10 @@ miniSprite data/gfx/minischool1b
 miniSpriteImage 0
 
 upgradeBuild 1
-upgradeTimeBuild 12
+upgradeTimeBuild 19
 upgradeHarvest 1
-upgradeTimeHarvest 7
+upgradeTimeHarvest 19
+upgradeInParallel 1
 
 width 2
 height 2
@@ -1005,11 +1007,12 @@ miniSprite data/gfx/minischool2b
 miniSpriteImage 0
 
 upgradeBuild 1
-upgradeTimeBuild 7
+upgradeTimeBuild 14
 upgradeHarvest 1
-upgradeTimeHarvest 4
+upgradeTimeHarvest 14
 upgradeMagicAttackGround 1
 upgradeTimeMagicAttackGround 14
+upgradeInParallel 1
 
 width 2
 height 2

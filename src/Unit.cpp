@@ -1615,13 +1615,27 @@ void Unit::handleDisplacement(void)
 					}
 					else
 					{
-						//printf("Ability %d got level %d\n", destinationPurprose, attachedBuilding->type->level+1);
-						assert(canLearn[destinationPurprose]);
-						level[destinationPurprose]=attachedBuilding->type->level+1;
-						UnitType *ut=race->getUnitType(typeNum, level[destinationPurprose]);
-						performance[destinationPurprose]=ut->performance[destinationPurprose];
-
-						//printf("New performance[%d]=%d\n", destinationPurprose, performance[destinationPurprose]);
+						if (attachedBuilding->type->upgradeInParallel)
+						{
+							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)
+								if (canLearn[ability] && attachedBuilding->type->upgrade[ability])
+								{
+									level[ability] = attachedBuilding->type->level + 1;
+									UnitType *ut = race->getUnitType(typeNum, level[ability]);
+									performance[ability] = ut->performance[ability];
+								}
+						}
+						else
+						{
+							//printf("Ability %d got level %d\n", destinationPurprose, attachedBuilding->type->level+1);
+							assert(canLearn[destinationPurprose]);
+							level[destinationPurprose] = attachedBuilding->type->level + 1;
+							UnitType *ut = race->getUnitType(typeNum, level[destinationPurprose]);
+							performance[destinationPurprose] = ut->performance[destinationPurprose];
+							//printf("New performance[%d]=%d\n", destinationPurprose, performance[destinationPurprose]);
+						}
+							
+							
 					}
 				}
 				else
