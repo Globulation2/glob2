@@ -1557,7 +1557,7 @@ void Building::subscribeForFlagingStep()
 			/* To choose a good unit, we get a composition of things:
 			1-the closest the unit is, the better it is.
 			2-the less the unit is hungry, the better it is.
-			2-the more hp the unit has, the better it is.
+			3-the more hp the unit has, the better it is.
 			*/
 			if (type->zonable[EXPLORER])
 			{
@@ -1571,7 +1571,7 @@ void Building::subscribeForFlagingStep()
 					int dist=map->warpDistSquare(unit->posX, unit->posY, posX, posY);
 					if (dist<timeLeft)
 					{
-						int value=dist-timeLeft-hp;
+						int value=dist-2*timeLeft-2*hp;
 						if (value<minValue)
 						{
 							minValue=value;
@@ -1580,7 +1580,26 @@ void Building::subscribeForFlagingStep()
 					}
 				}
 			}
-			else
+			else if (type->zonable[WARRIOR])
+			{
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				{
+					Unit *unit=(*it);
+					int timeLeft=unit->hungry/unit->race->hungryness;
+					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
+					int dist;
+					if (map->buildingAvailable(this, unit->performance[SWIM]>0, unit->posX, unit->posY, &dist) && (dist<timeLeft))
+					{
+						int value=dist-2*timeLeft-2*hp;
+						if (value<minValue)
+						{
+							minValue=value;
+							choosen=unit;
+						}
+					}
+				}
+			}
+			else if (type->zonable[WORKER])
 			{
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
@@ -1602,6 +1621,8 @@ void Building::subscribeForFlagingStep()
 					}
 				}
 			}
+			else
+				assert(false);
 			
 			if (choosen)
 			{

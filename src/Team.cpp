@@ -1224,7 +1224,7 @@ Building *Team::findBestZonable(Unit *unit)
 				Building *b=(*bi);
 				if (b->minLevelToFlag<=level)
 				{
-					int buildingDist;																//Not initialized or assigned to in this function, but in map::buildingAvailable below.
+					int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
 					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						Sint32 newScore=buildingDist/(b->maxUnitWorking-b->unitsWorking.size());
