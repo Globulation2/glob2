@@ -36,6 +36,8 @@ public:
 	Sint32 getTypeNum(const std::string &s, int level, bool isBuildingSite);
 	BuildingType *getByType(const char *type, int level, bool isBuildingSite);
 	BuildingType *getByType(const std::string &s, int level, bool isBuildingSite);
+	
+	Uint32 checkSum(void);
 };
 
 #endif

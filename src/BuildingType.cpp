@@ -77,7 +77,6 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgradeTime[14], "upgradeTimeMagicCreateAlga");
 	configBlock->load(upgradeTime[15], "upgradeTimeArmor");
 	configBlock->load(upgradeTime[16], "upgradeTimeHP");
-	configBlock->load(upgradeInParallel, "upgradeInParallel");
 	
 	configBlock->load(foodable, "foodable");
 	configBlock->load(fillable, "fillable");
@@ -170,4 +169,113 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 		if (miniSpriteImage >= 0)
 			miniSpritePtr = Toolkit::getSprite(miniSprite.c_str());
 	}
+}
+
+//! Return a chcksum of all parameter that could lead to a game desynchronization
+Uint32 BuildingType::checkSum(void)
+{
+	Uint32 cs = 0;
+	
+	for (size_t i = 0; i<(size_t)NB_ABILITY; i++)
+	{
+		cs ^= upgrade[i];
+		cs = (cs<<1) | (cs>>31);
+	}
+	for (size_t i = 0; i<(size_t)NB_ABILITY; i++)
+	{
+		cs ^= upgradeTime[i];
+		cs = (cs<<1) | (cs>>31);
+	}
+	cs ^= foodable;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= fillable;
+	cs = (cs<<1) | (cs>>31);
+	for (size_t i = 0; i<(size_t)NB_UNIT_TYPE; i++)
+	{
+		cs ^= zonable[i];
+		cs = (cs<<1) | (cs>>31);
+	}
+	cs ^= zonableForbidden;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= canFeedUnit;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= timeToFeedUnit;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= canHealUnit;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= timeToHealUnit;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= insideSpeed;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= canExchange;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= useTeamRessources;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= width;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= height;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= decLeft;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= decTop;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= isVirtual;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= isCloacked;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= shootingRange;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= shootDamage;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= shootSpeed;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= shootRythme;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= maxBullets;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= multiplierStoneToBullets;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= unitProductionTime;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= ressourceForOneUnit;
+	cs = (cs<<1) | (cs>>31);
+	for (size_t i = 0; i<(size_t)MAX_NB_RESSOURCES; i++)
+	{
+		cs ^= maxRessource[i];
+		cs = (cs<<1) | (cs>>31);
+	}
+	for (size_t i = 0; i<(size_t)MAX_NB_RESSOURCES; i++)
+	{
+		cs ^= multiplierRessource[i];
+		cs = (cs<<1) | (cs>>31);
+	}
+	cs ^= maxUnitInside;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= maxUnitWorking;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= hpInit;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= hpMax;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= hpInc;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= armor;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= level;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= shortTypeNum;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= isBuildingSite;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= defaultUnitStayRange;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= maxUnitStayRange;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= viewingRange;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= regenerationSpeed;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= prestige;
+	
+	return cs;
 }
