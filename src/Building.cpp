@@ -1279,7 +1279,11 @@ bool Building::enoughWorking(void)
 {
 	int neededRessourcesSum = 0;
 	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
-		neededRessourcesSum = (type->maxRessource[ri] - ressources[ri]) / type->multiplierRessource[ri];
+	{
+		int neededRessources = (type->maxRessource[ri] - ressources[ri]) / type->multiplierRessource[ri];
+		if (neededRessources > 0)
+			neededRessourcesSum += neededRessources;
+	}
 	return ((int)unitsWorking.size() >= 2 * neededRessourcesSum);
 }
 
@@ -1295,7 +1299,7 @@ void Building::subscribeToBringRessourcesStep()
 {
 	if (subscriptionWorkingTimer>0)
 		subscriptionWorkingTimer++;
-	if (fullWorking() /*|| enoughWorking()*/)
+	if (fullWorking() || enoughWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 			(*it)->standardRandomActivity();
