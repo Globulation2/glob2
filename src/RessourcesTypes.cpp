@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charri�e
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -17,40 +17,22 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __RACE_H
-#define __RACE_H
+#include <assert.h>
+#include <vector>
+#include <iostream>
 
-#include "UnitType.h"
+#include "RessourcesTypes.h"
+#include "GlobalContainer.h"
 
-namespace GAGCore
+Uint32 RessourcesTypes::checkSum(void)
 {
-	class InputStream;
-	class OutputStream;
+	Uint32 cs = 0;
+	
+	for (std::vector <RessourceType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
+	{
+		cs ^= (*it)->checkSum();
+		cs = (cs<<1) | (cs>>31);
+	}
+	
+	return cs;
 }
-
-class Race
-{
-public:
-	UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-	Sint32 hungryness;
-
-public:
-	Race();
-	virtual ~Race();
-	
-	void load();
-	static void loadDefault();
-	static Uint32 checkSumDefault();
-	
-	UnitType *getUnitType(int type, int level);
-	
-	void save(GAGCore::OutputStream *stream);
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	Uint32 checkSum(void);
-	
-protected:
-	static Race defaultRace;
-};
-
-#endif
- 

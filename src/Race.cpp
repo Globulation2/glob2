@@ -89,6 +89,11 @@ void Race::loadDefault()
 	delete stream;
 }
 
+Uint32 Race::checkSumDefault()
+{
+	return defaultRace.checkSum();
+}
+
 void Race::load()
 {
 	*this = defaultRace;
@@ -256,4 +261,16 @@ bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		hungryness = defaultRace.hungryness;
 	
 	return true;
+}
+
+Uint32 Race::checkSum(void)
+{
+	Uint32 cs = 0;
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+		for(int j=0; j<NB_UNIT_LEVELS; j++)
+		{
+			cs ^= unitTypes[i][j].checkSum();
+			cs = (cs<<1) | (cs>>31);
+		}
+	return cs;
 }
