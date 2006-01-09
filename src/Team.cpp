@@ -1050,9 +1050,12 @@ Building *Team::findBestFillable(Unit *unit)
 		for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
 		{
 			neededRessources[ri] = building->type->maxRessource[ri] - building->ressources[ri];
-			neededRessourcesSum += neededRessources[ri];
-			if ((neededRessources[ri] > 0) && (ressourceDists[ri] < timeLeft))
-				noResourceMatch = false;
+			if (neededRessources[ri] > 0)
+			{
+				neededRessourcesSum += neededRessources[ri];
+				if (ressourceDists[ri] < timeLeft)
+					noResourceMatch = false;
+			}
 		}
 		if (noResourceMatch)
 			continue; // there is nothing we can bring that this building needs.
@@ -1077,7 +1080,7 @@ Building *Team::findBestFillable(Unit *unit)
 				noWeightedResourceMatch = false;
 		}
 		if (noWeightedResourceMatch)
-			continue; // at least two workers are already bringing each resource.$
+			continue; // at least two workers are already bringing each resource.
 		
 		// check if this can help the building:
 		int buildingDist;
