@@ -1150,7 +1150,7 @@ namespace Nicowar
 	//These constants are for AINicowars tower controller
 	const unsigned int NUM_PER_TOWER=2;
 
-	//These constants are for the defense system.
+		//These constants are for the defense system.
 	const unsigned int DEFENSE_ZONE_BUILDING_PADDING=3;
 	const unsigned int BASE_DEFENSE_WARRIORS=10;
 
@@ -1168,6 +1168,13 @@ namespace Nicowar
 		IntBuildingType::MARKET_BUILDING,
 		IntBuildingType::STONE_WALL
 	};
+	const IntBuildingType::Number IGNORED_BUILDINGS[3] =
+	{
+		IntBuildingType::EXPLORATION_FLAG,
+		IntBuildingType::WAR_FLAG,
+		IntBuildingType::CLEARING_FLAG
+	};
+
 	const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
 	const unsigned int ATTACK_ZONE_EXAMINATION_PADDING=10;
 	const unsigned int ATTACK_WARRIOR_MINIMUM=8;
@@ -1227,7 +1234,7 @@ namespace Nicowar
 	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
 		{2, 4, 3, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0};
-	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
+	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=3;
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
