@@ -527,32 +527,24 @@ void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
 void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 {
 	 // we balance the system with Units working on it:
-	for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
-		needs[ri]=(type->maxRessource[ri]-ressources[ri]+1-type->multiplierRessource[ri]);
-	for (std::list<Unit *>::iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurprose>=0)
+	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
+		needs[ri] = (2 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri]);
+	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
+		if ((*ui)->destinationPurprose >= 0)
 		{
-			assert((*ui)->destinationPurprose<MAX_NB_RESSOURCES);
+			assert((*ui)->destinationPurprose < MAX_NB_RESSOURCES);
 			needs[(*ui)->destinationPurprose]--;
 		}
-	for (int i=0; i<20; i++)
-	{
-		for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
-			if (needs[ri]>0)
-				return;
-		for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
-			needs[ri]+=(type->maxRessource[ri]-ressources[ri]+1-type->multiplierRessource[ri]);
-	}
 }
 
 int Building::neededRessource(int r)
 {
-	assert(r>=0);
-	int need=type->maxRessource[r]-ressources[r]+1-type->multiplierRessource[r];
-	if (need>0)
+	assert(r >= 0);
+	int need = type->maxRessource[r] - ressources[r] + 1 - type->multiplierRessource[r];
+	if (need > 0)
 		return need;
 	else
-		return false;
+		return 0;
 }
 
 void Building::launchConstruction(void)
@@ -1280,7 +1272,15 @@ void Building::removeSubscribers(void)
 
 bool Building::fullWorking(void)
 {
-	return ((signed)unitsWorking.size()>=maxUnitWorking);
+	return ((Sint32)unitsWorking.size() >= maxUnitWorking);
+}
+
+bool Building::enoughWorking(void)
+{
+	int neededRessourcesSum = 0;
+	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
+		neededRessourcesSum = (type->maxRessource[ri] - ressources[ri]) / type->multiplierRessource[ri];
+	return ((int)unitsWorking.size() >= 2 * neededRessourcesSum);
 }
 
 bool Building::fullInside(void)
@@ -1295,13 +1295,13 @@ void Building::subscribeToBringRessourcesStep()
 {
 	if (subscriptionWorkingTimer>0)
 		subscriptionWorkingTimer++;
-	if (fullWorking())
+	if (fullWorking() /*|| enoughWorking()*/)
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 			(*it)->standardRandomActivity();
 		unitsWorkingSubscribe.clear();
 		if (verbose)
-			printf("...fullWorking()\n");
+			printf("...enoughWorking()\n");
 		return;
 	}
 	

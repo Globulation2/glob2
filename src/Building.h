@@ -183,6 +183,7 @@ public:
 	void step(void);
 	void removeSubscribers(void);
 	bool fullWorking(void);
+	bool enoughWorking(void);
 	bool fullInside(void);
 	void subscribeToBringRessourcesStep(void);
 	void subscribeForFlagingStep();
