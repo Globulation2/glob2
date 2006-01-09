@@ -23,6 +23,10 @@
 #include "EntitiesTypes.h"
 #include "RessourceType.h"
 
-typedef EntitiesTypes<RessourceType> RessourcesTypes;
+class RessourcesTypes: public EntitiesTypes<RessourceType>
+{
+	public:
+		Uint32 checkSum(void);
+};
 
 #endif

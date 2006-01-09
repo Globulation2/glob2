@@ -43,6 +43,7 @@ public:
 public:
 	RessourceType() { init(); }
 	RessourceType(GAGCore::InputStream *stream) { load(stream); }
+	Uint32 checkSum(void) { return shrinkable+(expendable<<1)+(eternal<<2)+(granular<<3)+(visibleToBeCollected<<4);}
 	virtual ~RessourceType() { }
 	virtual const char **getVars(size_t *size, Uint32 **data)
 	{

@@ -59,6 +59,7 @@ public:
 	
 	void load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
+	Uint32 checkSum(void);
 };
 
 #endif

@@ -482,5 +482,5 @@ void GlobalContainer::load(void)
 Uint32 GlobalContainer::getConfigCheckSum()
 {
 	// TODO: add the units config
-	return globalContainer->buildingsTypes.checkSum();
+	return buildingsTypes.checkSum() + ressourcesTypes.checkSum() + Race::checkSumDefault();
 }

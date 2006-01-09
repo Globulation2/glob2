@@ -167,6 +167,7 @@ EntitiesTypes.h \
 BuildingsTypes.h \
 BuildingsTypes.cpp \
 RessourcesTypes.h \
+RessourcesTypes.cpp \
 GameUtilities.h \
 GameUtilities.cpp \
 BitArray.h \

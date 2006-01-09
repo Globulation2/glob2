@@ -277,8 +277,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						newSelectedGameinfoAvailable=true;
 						selectedGameinfoValid=true;
 					}
-					if (verbose)
-						printf("new game->mapName=%s\n", game->mapName);
+					fprintf(logFile, "new game->mapName=%s\n", game->mapName);
 				}
 	}
 	break;

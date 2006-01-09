@@ -202,3 +202,24 @@ void UnitType::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(experiencePerLevel, "experiencePerLevel");
 	stream->writeSint32(magicActionCooldown, "magicActionCooldown");
 }
+
+Uint32 UnitType::checkSum(void)
+{
+	Uint32 cs = 0;
+	cs ^= hungryness;
+	cs = (cs<<1) | (cs>>31);
+	for (int i=STOP_WALK; i<HP; i++)
+	{
+		cs ^= performance[i];
+		cs = (cs<<1) | (cs>>31);
+	}
+	cs ^= harvestDamage;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= armorReductionPerHappyness;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= experiencePerLevel;
+	cs = (cs<<1) | (cs>>31);
+	cs ^= magicActionCooldown;
+	cs = (cs<<1) | (cs>>31);
+	return cs;
+}
