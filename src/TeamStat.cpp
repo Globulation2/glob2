@@ -129,12 +129,21 @@ void TeamStats::step(Team *team, bool reloaded)
 			stat.totalHP+=u->hp;
 
 			if (u->isUnitHungry())
-				if (u->hp<u->performance[HP])
+			{
+				if (u->attachedBuilding && u->insideTimeout<0 && u->attachedBuilding->type->canFeedUnit)
+					stat.needNothing++;
+				else if (u->hp<u->performance[HP])
 					stat.needFoodCritical++;
 				else
 					stat.needFood++;
+			}
 			else if (u->medical==Unit::MED_DAMAGED)
-				stat.needHeal++;
+			{
+				if (u->attachedBuilding && u->insideTimeout<0 && u->attachedBuilding->type->canHealUnit)
+					stat.needNothing++;
+				else
+					stat.needHeal++;
+			}
 			else
 			{
 				stat.needNothing++;
