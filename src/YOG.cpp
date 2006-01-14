@@ -1428,12 +1428,15 @@ void YOG::joinGame()
 	unjoiningConfirmed=false;
 }
 
-void YOG::unjoinGame(bool strict)
+void YOG::unjoinGame(bool strict, const char *reason)
 {
 	fprintf(logFile, "unjoinGame(%d) yogGlobalState=%d\n", strict, yogGlobalState);
-	assert(yogGlobalState==YGS_CONNECTED);
+	assert(yogGlobalState == YGS_CONNECTED);
 	if (strict)
 		assert(joinedGame);
+	
+	if (reason)
+		addEventMessage(reason);
 	joinedGame=false;
 	
 	joinGameSocketReceived=false;
@@ -1738,4 +1741,15 @@ bool YOG::handleLocalMessageTreatment(const char *message)
 	}
 	else
 		return false;
+}
+
+//! Add a event message with msg text to the event queue
+void YOG::addEventMessage(const char *msg)
+{
+	Message message;
+	message.gameGuiPainted = false;
+	message.messageType = YCMT_EVENT_MESSAGE;
+	strncpy(message.text, msg, sizeof(message.text));
+	message.text[sizeof(message.text) - 1] = 0;
+	receivedMessages.push_back(message);
 }

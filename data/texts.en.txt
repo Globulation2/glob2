@@ -672,3 +672,9 @@ Delete the selected game
 any explorer
 [ground attack]
 ground attack
+[Can't join game, wrong game version]
+Can't join game, wrong game version
+[Can't join game, missmatching game parameters]
+Can't join game, missmatching game parameters
+[Can't join game, timeout]
+Can't join game, timeout

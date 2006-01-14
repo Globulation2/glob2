@@ -672,3 +672,9 @@ Effacer le jeu séléctionné
 Toute exploratrice
 [ground attack]
 Attaque au sol
+[Can't join game, wrong game version]
+Ne peut pas joindre le jeu, mauvaise version
+[Can't join game, missmatching game parameters]
+Ne peut pas joindre le jeu, paramètres de jeu incompatibles
+[Can't join game, timeout]
+Ne peut pas joindre le jeu, délai dépassé

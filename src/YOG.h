@@ -143,7 +143,7 @@ public:
 	void unshareGame();
 	
 	void joinGame();
-	void unjoinGame(bool strict=true);
+	void unjoinGame(bool strict = true, const char *reason = NULL);
 	void joinGameRefused();
 	bool joinedGame;
 	
@@ -169,6 +169,8 @@ public:
 	
 	IPaddress ipFromUserName(char userName[32]);
 	char *userNameFromUID(Uint32 uid);
+	
+	void addEventMessage(const char *msg);
 	
 	bool isConnectedToGameHost;
 	
