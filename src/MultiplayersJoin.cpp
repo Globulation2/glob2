@@ -199,7 +199,13 @@ void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 		fprintf(logFile, " bad serverNetProtocolVersion!=%d or serverNetProtocolVersion!=%08x\n",
 				NET_PROTOCOL_VERSION, globalContainer->getConfigCheckSum());
 		if (shareOnYog)
-			yog->unjoinGame(false);
+		{
+			if (serverNetProtocolVersion != NET_PROTOCOL_VERSION)
+				yog->unjoinGame(false, Toolkit::getStringTable()->getString("[Can't join game, wrong game version]"));
+			else if (serverConfigCheckSum != globalContainer->getConfigCheckSum())
+				yog->unjoinGame(false, Toolkit::getStringTable()->getString("[Can't join game, missmatching game parameters]"));
+			
+		}
 		waitingState=WS_TYPING_SERVER_NAME;
 		waitingTimeout=0;
 		waitingTimeoutSize=0;
@@ -1359,7 +1365,7 @@ void MultiplayersJoin::sendingTime()
 			fprintf(logFile, "Last TOTL spent, server has left\n");
 			waitingState=WS_TYPING_SERVER_NAME;
 			if (shareOnYog)
-				yog->unjoinGame(false);
+				yog->unjoinGame(false, Toolkit::getStringTable()->getString("[Can't join game, timeout]"));
 			if (broadcastState==BS_ENABLE_YOG)
 				broadcastState=BS_DISABLE_YOG;
 			fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
