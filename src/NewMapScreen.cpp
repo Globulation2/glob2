@@ -16,7 +16,6 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
 #include "NewMapScreen.h"
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -69,8 +68,10 @@ NewMapScreen::NewMapScreen()
 	
 	methodes=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
 	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[random terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[swamp terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[river terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
 	methodes->setSelectionIndex(0);
 	addWidget(methodes);
 	
@@ -118,21 +119,71 @@ NewMapScreen::NewMapScreen()
 	numberOfWorkerText->visible=false;
 	addWidget(numberOfWorkerText);
 	
-	// eRANDOM
-	
-	waterRatio=new Ratio(310, 160, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.waterRatio, "menu");
+	waterRatio=new Ratio(310, 160, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.waterRatio, "menu");
+	waterRatio->set(50);
 	waterRatio->visible=false;
 	addWidget(waterRatio);
 	
-	sandRatio=new Ratio(310, 180, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.sandRatio, "menu");
+	sandRatio=new Ratio(310, 180, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.sandRatio, "menu");
+	sandRatio->set(0);
 	sandRatio->visible=false;
 	addWidget(sandRatio);
 	
-	grassRatio=new Ratio(310, 200, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.grassRatio, "menu");
+	grassRatio=new Ratio(310, 200, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.grassRatio, "menu");
+	grassRatio->set(50);
 	grassRatio->visible=false;
 	addWidget(grassRatio);
 	
-	smooth=new Number(310, 220, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	desertRatio=new Ratio(310, 220, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.desertRatio, "menu");
+	desertRatio->set(0);
+	desertRatio->visible=false;
+	addWidget(desertRatio);
+	
+	algaeRatio=new Ratio(310, 240, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.algaeRatio, "menu");
+	algaeRatio->set(50);
+	algaeRatio->visible=false;
+	addWidget(algaeRatio);
+	
+	wheatRatio=new Ratio(310, 260, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.wheatRatio, "menu");
+	wheatRatio->set(50);
+	wheatRatio->visible=false;
+	addWidget(wheatRatio);
+	
+	woodRatio=new Ratio(310, 280, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.woodRatio, "menu");
+	woodRatio->set(50);
+	woodRatio->visible=false;
+	addWidget(woodRatio);
+	
+	stoneRatio=new Ratio(310, 300, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.stoneRatio, "menu");
+	stoneRatio->set(50);
+	stoneRatio->visible=false;
+	addWidget(stoneRatio);
+
+	riverDiameter=new Ratio(310, 320, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.riverDiameter, "menu");
+	riverDiameter->set(50);
+	riverDiameter->visible=false;
+	addWidget(riverDiameter);
+
+	craterDensity=new Ratio(310, 320, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.craterDensity, "menu");
+	craterDensity->set(50);
+	craterDensity->visible=false;
+	addWidget(craterDensity);
+
+	extraIslands=new Number(310, 320, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	extraIslands->add(0);
+	extraIslands->add(1);
+	extraIslands->add(2);
+	extraIslands->add(3);
+	extraIslands->add(4);
+	extraIslands->add(5);
+	extraIslands->add(6);
+	extraIslands->add(7);
+	extraIslands->add(8);
+	extraIslands->setNth(descriptor.extraIslands+1);
+	extraIslands->visible=false;
+	addWidget(extraIslands);
+ 
+	smooth=new Number(310, 340, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	smooth->add(1);
 	smooth->add(2);
 	smooth->add(3);
@@ -157,34 +208,33 @@ NewMapScreen::NewMapScreen()
 	grassText=new Text(480, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[grass]"));
 	grassText->visible=false;
 	addWidget(grassText);
-	smoothingText=new Text(480, 220, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
+	desertText=new Text(480, 220, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[desert]"));
+	desertText->visible=false;
+	addWidget(desertText);
+	algaeText=new Text(480, 240, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[algae]"));
+	algaeText->visible=false;
+	addWidget(algaeText);
+	wheatText=new Text(480, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[wheat]"));
+	wheatText->visible=false;
+	addWidget(wheatText);
+	woodText=new Text(480, 280, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[wood]"));
+	woodText->visible=false;
+	addWidget(woodText);
+	stoneText=new Text(480, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[stone]"));
+	stoneText->visible=false;
+	addWidget(stoneText);
+	riverDiameterText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[river diameter]"));
+	riverDiameterText->visible=false;
+	addWidget(riverDiameterText);
+	craterDensityText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[crater density]"));
+	craterDensityText->visible=false;
+	addWidget(craterDensityText);
+	extraIslandsText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[extra islands]"));
+	extraIslandsText->visible=false;
+	addWidget(extraIslandsText);
+	smoothingText=new Text(480, 340, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
 	smoothingText->visible=false;
 	addWidget(smoothingText);
-
-	
-	// eISLANDS
-
-	islandsSize=new Ratio(310, 140, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.islandsSize, "menu");
-	islandsSize->visible=false;
-	addWidget(islandsSize);
-	
-	beach=new Number(310, 160, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
-	beach->add(0);
-	beach->add(1);
-	beach->add(2);
-	beach->add(3);
-	beach->add(4);
-	beach->setNth(descriptor.beach);
-	beach->visible=false;
-	addWidget(beach);
-	
-	islandSizeText=new Text(430, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[islands size]"));
-	islandSizeText->visible=false;
-	addWidget(islandSizeText);
-	beachSizeText=new Text(430, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[beach size]"));
-	beachSizeText->visible=false;
-	addWidget(beachSizeText);
-	
 	
 	// all
 	
@@ -210,14 +260,10 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.hDec=mapSizeY->getNth()+6;
 		
 		// not eUNIFORM
-		descriptor.nbTeams=nbTeams->getNth()+1;
+		descriptor.nbTeams=nbTeams->getNth();
 		
 		// eRANDOM
-		descriptor.smooth=smooth->getNth()+1;
-		
-		// eISLANDS
-		descriptor.beach=beach->getNth();
-		descriptor.nbWorkers=nbWorkers->getNth()+1;
+		descriptor.smooth=smooth->getNth();
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
@@ -233,44 +279,105 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 			
 			if (old!=descriptor.methode)
 			{
-				// eUNIFORM
-				terrains->setVisible(descriptor.methode==MapGenerationDescriptor::eUNIFORM);
-				
+				terrains->visible=
+				ratioText->visible=
+				waterRatio->visible=waterText->visible=
+				sandRatio->visible=sandText->visible=
+				grassRatio->visible=grassText->visible=
+				desertRatio->visible=desertText->visible=
+				smooth->visible=smoothingText->visible=
+				wheatRatio->visible=wheatText->visible=
+				woodRatio->visible=woodText->visible=
+				stoneRatio->visible=stoneText->visible=
+				algaeRatio->visible=algaeText->visible=
+				riverDiameter->visible=riverDiameterText->visible=
+				extraIslands->visible=extraIslandsText->visible=
+				craterDensity->visible=craterDensityText->visible=
+				riverDiameter->visible=riverDiameterText->visible=
+				false;
+			
 				// not eUNIFORM
 				nbTeams->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
 				nbWorkers->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
 				numberOfTeamText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
 				numberOfWorkerText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				
-				
-				// eRANDOM
-				waterRatio->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				sandRatio->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				grassRatio->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				smooth->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				ratioText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				waterText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				sandText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				grassText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				smoothingText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				
-				// eISLANDS
-				islandsSize->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
-				beach->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
-				islandSizeText->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
-				beachSizeText->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+
+				switch (descriptor.methode)
+				{
+					case MapGenerationDescriptor::eUNIFORM:
+						terrains->visible=true;
+						break;
+					case MapGenerationDescriptor::eSWAMP:
+						ratioText->visible=
+						waterRatio->visible=waterText->visible=
+						grassRatio->visible=grassText->visible=
+						smooth->visible=smoothingText->visible=
+						wheatRatio->visible=wheatText->visible=
+						woodRatio->visible=woodText->visible=
+						stoneRatio->visible=stoneText->visible=
+						algaeRatio->visible=algaeText->visible=
+						true;
+						break;
+					case  MapGenerationDescriptor::eRIVER:
+						ratioText->visible=
+						waterRatio->visible=waterText->visible=
+						sandRatio->visible=sandText->visible=
+						grassRatio->visible=grassText->visible=
+						desertRatio->visible=desertText->visible=
+						smooth->visible=smoothingText->visible=
+						wheatRatio->visible=wheatText->visible=
+						woodRatio->visible=woodText->visible=
+						stoneRatio->visible=stoneText->visible=
+						algaeRatio->visible=algaeText->visible=
+						riverDiameter->visible=riverDiameterText->visible=
+						true;
+						break;
+					case  MapGenerationDescriptor::eISLANDS:
+						ratioText->visible=
+						waterRatio->visible=waterText->visible=
+						sandRatio->visible=sandText->visible=
+						grassRatio->visible=grassText->visible=
+						desertRatio->visible=desertText->visible=
+						smooth->visible=smoothingText->visible=
+						wheatRatio->visible=wheatText->visible=
+						woodRatio->visible=woodText->visible=
+						stoneRatio->visible=stoneText->visible=
+						algaeRatio->visible=algaeText->visible=
+						extraIslands->visible=extraIslandsText->visible=
+						true;
+						break;
+					case  MapGenerationDescriptor::eCRATERLAKES:
+						ratioText->visible=
+						waterRatio->visible=waterText->visible=
+						sandRatio->visible=sandText->visible=
+						grassRatio->visible=grassText->visible=
+						desertRatio->visible=desertText->visible=
+						smooth->visible=smoothingText->visible=
+						wheatRatio->visible=wheatText->visible=
+						woodRatio->visible=woodText->visible=
+						stoneRatio->visible=stoneText->visible=
+						algaeRatio->visible=algaeText->visible=
+						craterDensity->visible=craterDensityText->visible=
+						true;
+						break;
+					default: assert(false);break;
+				}
 			}
 		}
 	}
 	else if (action==RATIO_CHANGED)
 	{
-		//eRANDOM
 		descriptor.waterRatio=waterRatio->get();
 		descriptor.sandRatio=sandRatio->get();
 		descriptor.grassRatio=grassRatio->get();
-
-		//eISLANDS
-		descriptor.islandsSize=islandsSize->get();
+		descriptor.desertRatio=desertRatio->get();
+		descriptor.wheatRatio=wheatRatio->get();
+		descriptor.woodRatio=woodRatio->get();
+		descriptor.algaeRatio=algaeRatio->get();
+		descriptor.stoneRatio=stoneRatio->get();
+		descriptor.riverDiameter=riverDiameter->get();
+		descriptor.craterDensity=craterDensity->get();
+		descriptor.extraIslands=extraIslands->get();
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{

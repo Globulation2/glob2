@@ -66,21 +66,22 @@ public:
 private:
 	Number *mapSizeX, *mapSizeY;
 	List *methodes, *terrains;
-	Ratio *waterRatio, *sandRatio, *grassRatio;
-	Number *smooth;
+	Ratio *waterRatio, *sandRatio, *grassRatio, *desertRatio;
+	Ratio *wheatRatio, *woodRatio, *stoneRatio, *algaeRatio, *craterDensity;
+	Ratio *riverDiameter;
+	Number *smooth, *extraIslands;
 	Number *nbTeams;
 	Ratio *islandsSize;
 	Number *beach;
 	Number *nbWorkers;
-	Text *numberOfTeamText, *numberOfWorkerText;
-	Text *ratioText, *waterText, *sandText, *grassText, *smoothingText;
-	Text *islandSizeText, *beachSizeText;
+	Text *numberOfTeamText, *numberOfWorkerText, *craterDensityText, *extraIslandsText;
+	Text *ratioText, *waterText, *sandText, *grassText, *desertText, *wheatText, *woodText, *stoneText, *algaeText, *smoothingText, *riverDiameterText;
 
 public:
 	//! Constructor
 	NewMapScreen();
 	//! Destructor
-	virtual ~NewMapScreen() { }
+	virtual ~NewMapScreen() { };
 	//! Action handler
 	void onAction(Widget *source, Action action, int par1, int par2);
 };

@@ -26,7 +26,9 @@
 #include "MapGenerationDescriptor.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "HeightMapGenerator.h"
 
+///generates a map that is of one type only
 void Map::makeHomogenMap(TerrainType terrainType)
 {
 	for (int y=0; y<h; y++)
@@ -112,7 +114,7 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 	int grassRatio=(int)(baseGrass*((double)totalRatio));
 	totalRatio=waterRatio+sandRatio+grassRatio;
 	
-	// First, we create a fully random patchwork:
+	/// First, we create a fully random patchwork:
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -309,7 +311,7 @@ void fastSimulateRandomMap(int smooth, double baseWater, double baseSand, double
 	*finalGrass=medianFinalGrass;
 }
 
-bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
+/*bool Map::makeRandomMapOld(MapGenerationDescriptor &descriptor)
 {
 	int waterRatio=descriptor.waterRatio;
 	int sandRatio =descriptor.sandRatio ;
@@ -773,7 +775,230 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	if (verbose)
 		printf("makeRandomMap::success\n");
 	return true;
+}*/
+
+/// This random map generator generates a heightfield and then choses levels at wich to draw the line between water, sand and gras
+bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
+{
+	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
+	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel;
+	/// to influence the roughnes
+	float smoothingFactor=(float)(descriptor.smooth+4)*3;;
+	/// the proportions requested through the gui can directly be translated into tile counts of the undermap.
+	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
+	/// grass + sand + water + desert as from the gui
+
+	unsigned int totalGSWFromUI=descriptor.waterRatio+descriptor.sandRatio+descriptor.grassRatio+descriptor.desertRatio;
+	HeightMap hm(w,h);
+
+	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
+	switch (descriptor.methode)
+	{
+		case MapGenerationDescriptor::eSWAMP:
+			hm.makeSwamp(smoothingFactor);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio*w*h/(float)tmpTotal);
+			sandTiles=0;
+			grassTiles=w*h-waterTiles;
+			break;
+		case MapGenerationDescriptor::eRIVER:
+			hm.makeRiver(descriptor.riverDiameter*(w+h)/2/100,smoothingFactor);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*w*h);
+			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*w*h);
+			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*w*h);
+			break;
+		case MapGenerationDescriptor::eCRATERLAKES:
+			hm.makeCraters(w*h*descriptor.craterDensity/30000, 30, smoothingFactor);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*w*h);
+			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*w*h);
+			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*w*h);
+			break;
+		case MapGenerationDescriptor::eISLANDS:
+			hm.makeIslands(descriptor.nbTeams+descriptor.extraIslands, smoothingFactor);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*w*h);
+			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*w*h);
+			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*w*h);
+			break;
+		default: assert(false);
+			break;
+	}
+	/// wheat/wood needs ground to stand on and water. So:
+	wheatWoodTiles=waterTiles<grassTiles?waterTiles/2:grassTiles/2;
+	algaeTiles=waterTiles/6;
+
+	/// histogram[i] collects the count of all terrain levels == i
+	int histogram[2048];
+	memset(histogram, 0, 2048*sizeof(int));
+
+	for (int i=0; i<w*h; i++)
+	{
+		histogram[hm.uiLevel(i,2048)]++;
+	}
+	for (int i=0; i<2048; i++)
+	{
+		for (int j=0; j<2048*histogram[i]/w/h; j++)
+			std::cout << "#";
+		if(i%10==0)
+			std::cout << "\n";
+	}
+
+	unsigned int accumulatedHistogram=0;
+	int i=0;
+	waterLevel=0;
+	sandLevel=0;
+	grassLevel=0;
+	wheatWoodLevel=0;
+	algaeLevel=0;
+	while ((waterLevel==0) & (i<2048))
+	{
+		accumulatedHistogram+=histogram[i++];
+		if (algaeLevel==0 && accumulatedHistogram >= algaeTiles)
+			algaeLevel = (float)(i-1)/2048.0;
+		if (accumulatedHistogram >= waterTiles)
+			waterLevel = (float)(i-1)/2048.0;
+	}
+	while ((sandLevel==0) && (i<2048))
+	{
+		accumulatedHistogram+=histogram[i++];
+		if (accumulatedHistogram >= waterTiles+sandTiles)
+			sandLevel = (float)(i-1)/2048.0;
+	}
+	while ((grassLevel==0) && (i<2048))
+	{
+		accumulatedHistogram+=histogram[i++];
+		if (wheatWoodLevel==0 && accumulatedHistogram >= waterTiles+sandTiles+wheatWoodTiles)
+			wheatWoodLevel = (float)(i-1)/2048.0;
+		if (accumulatedHistogram >= waterTiles+sandTiles+grassTiles)
+			grassLevel = (float)(i-1)/2048.0;
+	}
+
+	for (int i=0; i<w*h; i++)
+	{
+			if (hm(i)<waterLevel)
+				undermap[i]=WATER;
+			else if (hm(i)<sandLevel)
+				undermap[i]=SAND;
+			else if (hm(i)<grassLevel)
+				undermap[i]=GRASS;
+			else
+				undermap[i]=SAND;
+	}
+	controlSand();
+	std::cout << "writing .raw\n";
+	hm.mapOutput("findError");
+
+	//Now, we have to find suitable places for teams:
+	int nbTeams=descriptor.nbTeams;
+	int minDistSquare=(int)((double)w*h/(double)nbTeams/5);
+	std::cout << "minDistSquare=" << minDistSquare << " (" << sqrt((double)minDistSquare) << ").\n";
+	if (minDistSquare<=0)
+	{
+		std::cout << "debugoutput 1\n";
+		return false;
+	}
+	assert(minDistSquare>0);
+	int* bootX=descriptor.bootX;
+	int* bootY=descriptor.bootY;
+	
+	//TODO: First pass to find the number of available places.
+	for (int team=0; team<nbTeams; team++)
+	{
+		int maxSurface=0;
+		int maxX=0;
+		int maxY=0;
+		for (int y=0; y<h; y++)
+		{
+			int width=0;
+			int startx=0;
+			for (int x=0; x<w; x++)
+			{
+				int a=undermap[y*w+x];
+				if (a==GRASS)
+					width++;
+				else
+				{
+					if (width>7)
+					{
+						int centerx=((x+startx)>>1);
+						int top, bot;
+						for (top=0; top<h; top++)
+							if (getUMTerrain(centerx, y-top)!=GRASS)
+								break;
+						for (bot=0; bot<h; bot++)
+							if (getUMTerrain(centerx, y+bot)!=GRASS)
+								break;
+						int height=top+bot-1;
+						int surface=height*width;
+						assert(surface>0);
+						
+						int centery=y+((bot-top)>>1);
+						bool farEnough=true;
+						for (int ti=0; ti<team; ti++)
+							if (warpDistSquare(centerx, centery, bootX[ti], bootY[ti])<minDistSquare)
+							{
+								farEnough=false;
+								break;
+							}
+						
+						if (surface>maxSurface && farEnough)
+						{
+							maxSurface=surface;
+							maxX=centerx;
+							maxY=centery;
+						}
+					}
+					width=0;
+					startx=x;
+				}
+			}
+		}
+		
+		if (maxSurface<=0)
+		{
+			std::cout << "debugoutput 2\n";
+			return false;
+		}
+		assert(maxSurface);
+		bootX[team]=maxX;
+		bootY[team]=maxY;
+	}
+	
+	std::cout << "debugoutput 3\n";
+/* 	// Let's add some green space for teams:
+	int squareSize=5+(int)(sqrt((double)minDistSquare)/4.5);
+	if (verbose)
+		printf("squareSize=%d.\n", squareSize);
+	for (int team=0; team<nbTeams; team++)
+	{
+		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+0, GRASS, squareSize);
+		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+2, GRASS, squareSize);
+	}
+	std::cout << "debugoutput 3\n";
+ */	controlSand();
+	std::cout << "debugoutput 4\n";
+	regenerateMap(0, 0, w, h);
+	std::cout << "debugoutput 5\n";
+
+	
+	for(int x=0; x<w; x++)
+	{
+		for (int y=0; y<h; y++)
+		{
+		if(hm(x+w*y)<algaeLevel)
+			setRessource(x,y, ALGA, 1);
+		else if(hm(x+w*y)<wheatWoodLevel)
+			//TODO: smoother WOOD-CORN-mixture
+			if(hm((x+w/2)%w+w*y)<hm((x+w/2+1)%w+w*y))
+				setRessource(x,y,CORN,1);
+			else
+				setRessource(x,y,WOOD,1);
+		}
+	}
+
+	if (verbose)
+		printf("makeRandomMap::success\n");
+	return true;
 }
+
 
 void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 {
@@ -783,6 +1008,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 	int limiteDist=(w+h)/(2*nbTeams);
 	
 	// let's add ressources...
+	std::cout << "debugoutput 6\n";
 	for (int team=0; team<nbTeams; team++)
 	{
 		int smallestWidth=limiteDist;
@@ -927,6 +1153,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		if (amount>0)
 			setRessource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
 	}
+	std::cout << "debugoutput 7\n";
 	
 	// Let's smooth ressources...
 	int maxAmount=0;
@@ -936,7 +1163,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 	smoothRessources(maxAmount*3);
 }
 
-bool Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
+/*bool Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 {
 	// First, fill with water:
 	for (int y=0; y<h; y++)
@@ -1413,7 +1640,7 @@ bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	}
 	map.smoothRessources(descriptor.islandsSize/10);
 	return true;
-}
+}*/
 
 bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
@@ -1464,18 +1691,13 @@ bool Game::generateMap(MapGenerationDescriptor &descriptor)
 			map.makeHomogenMap(descriptor.terrainType);
 			addTeam();
 		break;
-		case MapGenerationDescriptor::eRANDOM:
+		case MapGenerationDescriptor::eSWAMP:
+		case MapGenerationDescriptor::eISLANDS:
+		case MapGenerationDescriptor::eRIVER:
+		case MapGenerationDescriptor::eCRATERLAKES:
 			if (!map.makeRandomMap(descriptor))
 				return false;
-			map.addRessourcesRandomMap(descriptor);
 			if (!makeRandomMap(descriptor))
-				return false;
-		break;
-		case MapGenerationDescriptor::eISLANDS:
-			if (!map.makeIslandsMap(descriptor))
-				return false;
-			map.addRessourcesIslandsMap(descriptor);
-			if (!makeIslandsMap(descriptor))
 				return false;
 		break;
 		default:

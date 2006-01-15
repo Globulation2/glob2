@@ -178,10 +178,14 @@ IRC.h \
 IRC.cpp \
 VoiceRecorder.h \
 VoiceRecorder.cpp \
+PerlinNoise.h \
+PerlinNoise.cpp\
 Glob2Screen.h \
 Glob2Screen.cpp \
 Glob2Style.h \
-Glob2Style.cpp
+Glob2Style.cpp\
+HeightMapGenerator.h\
+HeightMapGenerator.cpp
 
 
 if LINKSTATIC
