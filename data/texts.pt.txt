@@ -5,9 +5,9 @@ pt
 [language-tr]
 Língua
 [hp]
-Vida
+Danho
 [heal]
-Saude
+Saúde
 [armor]
 Armadura
 [damage]
@@ -39,7 +39,7 @@ Passa
 [Clearing:]
 Limpando:
 [Min required level:]
- Mín nível requerido:
+Mín. nível requerido:
 [Bullets]
 Balas
 [range]
@@ -75,13 +75,13 @@ Explorador
 [Warrior]
 Guerreiro
 [still (w)]
-Ainda
+Ainda 
 [units working]
- unidades trabalhando
+ unid. trabalhando
 [still one unit working]
-Ainda uma unidade trabalhando
+Ainda uma unid. trabalhando
 [Still (i)]
-Ainda
+Ainda 
 [Still one]
 Ainda uma
 [Building name]
@@ -101,7 +101,7 @@ Quartel
 [science building]
 Escola
 [defense building]
-Torre
+Torre de defesa
 [exploration flag]
 Bandeira de exploração
 [war flag]
@@ -143,7 +143,7 @@ Atrai guerreiros
 [clearing flag explanation]
 Elimina recursos
 [stone wall explanation]
-Elemento de defensa
+Elemento de defesa
 [market explanation]
 Permite intercâmbio de
 [Building short explanation 2]
@@ -181,7 +181,7 @@ Esperando a %s
 [%s has been deconnected of the game]
 %s foi desconectado do jogo
 [load game]
-Cargar partida
+Carregar partida
 [save game]
 Salvar partida
 [options]
@@ -197,9 +197,9 @@ Aceitar
 [Cancel]
 Cancelar
 [you have lost]
-Você perdeu
+¡Você perdeu!
 [you have won]
-Você ganhou
+¡Você ganhou!
 [campaign]
 Campanha
 [tutorial]
@@ -251,7 +251,7 @@ Nome do jogador
 [svr hostname]
 Nome do servidor
 [hp]
-Vida
+Danho
 [carry]
 Transportando:
 [don't carry anything]
@@ -261,7 +261,7 @@ Nível
 [levels]
 Níveis
 [building site]
-Lugar de construição
+Sítio de constr.
 [create map]
 Criar mapa
 [map size x]
@@ -289,7 +289,7 @@ Estadísticas
 [food left]
 Comida restante
 [the building is finished]
-Construçãon finalizada
+Construção finalizada
 [the swarm is finished]
 A colmeia foi construída
 [the food building is finished]
@@ -299,13 +299,13 @@ O hospital tem sido construído
 [the walkspeed building is finished]
 A pista de carreiras foi construída
 [the swimspeed building is finished]
-A piscina foi contruída
+A piscina foi construída
 [the attack building is finished]
 O quartel foi construído
 [the science building is finished]
 A escola foi construída
 [the tower building is finished]
-A torre foi construída
+A torre de defesa foi construída
 [the exploration flag is finished]
 ?? Bandeira de exploração finalizada ??
 [the war flag is finished]
@@ -313,7 +313,7 @@ A torre foi construída
 [the clearing flag is finished]
 ?? Bandera de limpeza finalizada ??
 [the stone wall is finished]
-O muro de pedra foi construído
+Uma seção do muro de pedra foi construída
 [the market is finished]
 O mercado foi construído
 [the building is under attack]
@@ -333,7 +333,7 @@ O quartel está sendo atacado
 [the science building is under attack]
 A escuela está sendo atacada
 [the defense building is under attack]
-A torre está sendo atacada
+A torre de defesa está sendo atacada
 [the exploration flag is under attack]
 ?? A bandeira de exploração está sendo atacada ??
 [the war flag is under attack]
@@ -346,10 +346,10 @@ O inimigo está a sua muralha
 O mercado está sendo atacado
 [Your %s are under attack]
 Seus %s estão sendo atacados
-[Your unit got converted to another team]
-Uma unidade tem se passado ao bando inimigo
-[Another team's unit got converted to your team]
-Uma unidaed inimiga tem se passado a seu bando
+[Your unit got converted to %s's team]
+Uma unidade tem se passado ao bando de %s
+[%s's team unit got converted to your team]
+Uma unidade de %s tem se passado a seu bando
 [Uncontrolled]
 Não controlado
 [ai]
@@ -373,7 +373,7 @@ Unidades
 [Attack]
 Ataque
 [Defense]
-Defensa
+Defesa
 [free]
 libres
 [of which]
@@ -399,13 +399,13 @@ Construir
 [Harvest]
 Coletar
 [At. speed]
-Veloc. ataque
+Velocidade at.
 [At. strength]
-Forza ataque
+Forza at.
 [Magic At. Air]
-Ataque aéreo
+At. aéreo
 [Magic At. Ground]
-Ataque terrestre
+At. terrestre
 [Total]
 Total
 [free]
@@ -421,7 +421,7 @@ morrendo
 [wounded]
 feridos
 [In way]
-a caminho
+A caminho
 [On the spot]
 Aqui
 [Version]
@@ -541,9 +541,9 @@ Um jogador entrou
 [game full]
 Partida alotada
 [small]
-Pequeno
+pequeno
 [medium]
-méio
+médio
 [large]
 comprido
 [network latency]
@@ -575,7 +575,7 @@ O metaservidor YOG tem rejeitado a conexão porque o cliente globulation2 é obs
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 O metaservidor YOG tem rejeitado a conexão porque o nome de usuário está em uso.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-O metaservidor YOG tem rejeitado a conexão porque a contrasenha fornecida é incorrecta.
+O metaservidor YOG tem rejeitado a conexão porque a contrasenha fornecida é incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 O metaservidor YOG tem rejeitado a conexão porque  usuário aínda não tem uma contrasenha. Active por uma vez a opção "Registrar um novo usuário de YOG com contrasenha".
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
@@ -593,7 +593,7 @@ O metaservidor YOG tem rejeitado a conexão sem dar uma explicação.
 [You are now marked as away]
 Você está marcado como ausente.
 [You are no more marked as away]
-Voc já ãno está marcado como ausente.
+Você já não está marcado como ausente.
 [YOG_HELP]
 O sistema de mensagens YOG tem dois comandos, "msg" e "away". Escreva "/help <comando>" para conhecer mais de eles.
 [YOG_HELP_AWAY]
@@ -672,7 +672,9 @@ Borrar a partida selecionada
 qualquer explorador
 [ground attack]
 ataque terrestre
-[%s's team unit got converted to your team]
-%s's team unit got converted to your team
-[Your unit got converted to %s's team]
-Your unit got converted to %s's team
+[Can't join game, wrong game version]
+Impossível unir-se à partida: versão do jogo incorreta
+[Can't join game, missmatching game parameters]
+Impossível unir-se à partida: parâmetros do jogo diferentes
+[Can't join game, timeout]
+Impossível unir-se à partida: tempo de espera esgotado
