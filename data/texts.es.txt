@@ -5,7 +5,7 @@ es
 [language-tr]
 Idioma
 [hp]
-Vida
+Daño
 [heal]
 Salud
 [armor]
@@ -39,7 +39,7 @@ Pasa
 [Clearing:]
 Limpiando:
 [Min required level:]
-Mín nivel requerido:
+Mín. nivel requerido:
 [Bullets]
 Balas
 [range]
@@ -49,7 +49,7 @@ Destruir
 [cancel destroy]
 Cancelar destrucción
 [wait destroy]
-Esperarando destrucción
+Esperando destrucción
 [upgrade]
 Mejorar
 [repair]
@@ -75,13 +75,13 @@ Explorador
 [Warrior]
 Guerrero
 [still (w)]
-Aún
+Aún 
 [units working]
- unidades trabajando
+ unid. trabajando
 [still one unit working]
-Aún una unidad trabajando
+Aún una unid. trabajando
 [Still (i)]
-Aún
+Aún 
 [Still one]
 Aún una
 [Building name]
@@ -89,7 +89,7 @@ Nombre del edificio
 [swarm building]
 Colmena
 [food building]
-Hostal
+Taberna
 [health building]
 Hospital
 [walkspeed building]
@@ -101,9 +101,9 @@ Cuartel
 [science building]
 Escuela
 [defense building]
-Torre
+Torre de defensa
 [exploration flag]
-Bandera de exploraciún
+Bandera de exploración
 [war flag]
 Bandera de guerra
 [clearing flag]
@@ -197,9 +197,9 @@ Aceptar
 [Cancel]
 Cancelar
 [you have lost]
-Has perdido
+¡Has perdido!
 [you have won]
-Has ganado
+¡Has ganado!
 [campaign]
 Campaña
 [tutorial]
@@ -217,7 +217,7 @@ Juego en red LAN
 [settings]
 Opciones
 [Warning, you need to reboot the game for changes to take effect]
-[Advertencia: Debe reiniciarse el juego para que los cambios surtan efecto]
+Advertencia: Se debe reiniciar el juego para que los cambios surtan efecto
 [editor]
 Editor
 [credits]
@@ -251,7 +251,7 @@ Nombre del jugador
 [svr hostname]
 Nombre del servidor
 [hp]
-Vida
+Daño
 [carry]
 Transportando:
 [don't carry anything]
@@ -261,7 +261,7 @@ Nivel
 [levels]
 Niveles
 [building site]
-Lugar de construcción
+Sitio de constr.
 [create map]
 Crear mapa
 [map size x]
@@ -293,19 +293,19 @@ Construcción finalizada
 [the swarm is finished]
 La colmena ha sido construida
 [the food building is finished]
-El hostal ha sido construido
+La taberna ha sido construida
 [the health building is finished]
 El hospital ha sido construido
 [the walkspeed building is finished]
 La pista de carreras ha sido construida
 [the swimspeed building is finished]
-La piscina ha sido contruida
+La piscina ha sido construida
 [the attack building is finished]
 El cuartel ha sido construido
 [the science building is finished]
 La escuela ha sido construida
 [the tower building is finished]
-La torre ha sido construida
+La torre de defensa ha sido construida
 [the exploration flag is finished]
 ?? Bandera de exploración finalizada ??
 [the war flag is finished]
@@ -313,7 +313,7 @@ La torre ha sido construida
 [the clearing flag is finished]
 ?? Bandera de limpieza finalizada ??
 [the stone wall is finished]
-El muro de piedra ha sido construido
+Una sección dl muro de piedra ha sido construida
 [the market is finished]
 El mercado ha sido construido
 [the building is under attack]
@@ -321,7 +321,7 @@ El edificio está siendo atacado
 [the swarm is under attack]
 La colmena está siendo atacada
 [the food building is under attack]
-El hostal está siendo atacado
+La taberna está siendo atacada
 [the health building is under attack]
 El hospital está siendo atacado
 [the walkspeed building is under attack]
@@ -333,7 +333,7 @@ El cuartel está siendo atacado
 [the science building is under attack]
 La escuela está siendo atacada
 [the defense building is under attack]
-La torre está siendo atacada
+La torre de defensa está siendo atacada
 [the exploration flag is under attack]
 ?? La bandera de exploración está siendo atacada ??
 [the war flag is under attack]
@@ -346,10 +346,10 @@ El enemigo está a tu muralla
 El mercado est� siendo atacado
 [Your %s are under attack]
 Tus %s están siendo atacados
-[Your unit got converted to another team]
-Una unidad se ha pasado al bando enemigo
-[Another team's unit got converted to your team]
-Una unidad enemiga se ha pasado a tu bando
+[Your unit got converted to %s's team]
+Una unidad se ha pasado al bando de %s
+[%s's team unit got converted to your team]
+Una unidad de %s se ha pasado a tu bando
 [Uncontrolled]
 No controlado
 [ai]
@@ -399,13 +399,13 @@ Construir
 [Harvest]
 Recolectar
 [At. speed]
-Velocidad ataque
+Velocidad at.
 [At. strength]
-Fuerza ataque
+Fuerza at.
 [Magic At. Air]
-Ataque aéreo
+At. aéreo
 [Magic At. Ground]
-Ataque terrestre
+At. terrestre
 [Total]
 Total
 [free]
@@ -421,9 +421,9 @@ famél.
 [wounded]
 heridos
 [In way]
-en camino
+En camino
 [On the spot]
-Aquá
+Aquí
 [Version]
 Versión
 [open]
@@ -541,7 +541,7 @@ Un jugador ha entrado
 [game full]
 Partida llena
 [small]
-Pequeño
+pequeño
 [medium]
 mediano
 [large]
@@ -657,7 +657,7 @@ A: Aliados
 [abreaviation explanation V]
 V: Mostrar todos los edificios
 [abreaviation explanation Vf]
-Vf: Mostrar hostales (para convertir unidades)
+Vf: Mostrar tabernas (para convertir unidades)
 [abreaviation explanation mV]
 mV: Mostrar mercados (para intercambiar frutas)
 [abreaviation explanation C]
@@ -672,7 +672,9 @@ Borrar la partida seleccionada
 cualquier explorador
 [ground attack]
 ataque terrestre
-[%s's team unit got converted to your team]
-%s's team unit got converted to your team
-[Your unit got converted to %s's team]
-Your unit got converted to %s's team
+[Can't join game, wrong game version]
+Imposible unirse a la partida: versi�n del juego incorrecta
+[Can't join game, missmatching game parameters]
+Imposible unirse a la partida: par�metros del juego diferentes
+[Can't join game, timeout]
+Imposible unirse a la partida: tiempo de espera agotado

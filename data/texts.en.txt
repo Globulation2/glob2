@@ -77,13 +77,13 @@ Warrior
 [still (w)]
 Still
 [units working]
- units work
+ units working
 [still one unit working]
 One unit still working
 [Still (i)]
 Still 
 [Still one]
-One left
+Still one
 [Building name]
 Building name
 [swarm building]
@@ -101,7 +101,7 @@ Barracks
 [science building]
 School
 [defense building]
-Defence Tower
+Defense Tower
 [exploration flag]
 Exploration flag
 [war flag]
@@ -127,13 +127,13 @@ Foods your units
 [health building explanation]
 Heals your units
 [walkspeed building explanation]
-Improves the walking speed
+Improves the walking
 [swimspeed building explanation]
 Improves the swimming
 [attack building explanation]
-Improves fighting level
+Improves the fighting
 [science building explanation]
-Improve the building level
+Improves the building
 [defense building explanation]
 Attacks nearby enemy
 [exploration flag explanation]
@@ -141,11 +141,11 @@ Attracts explorers
 [war flag explanation]
 Attracts warriors
 [clearing flag explanation]
-Clear ressources
+Clears resources
 [stone wall explanation]
-Passive defense element
+Passive defense
 [market explanation]
-Allows to exchange fruits
+Allows the exchange of
 [Building short explanation 2]
 Building short explanation 2 (24 chars max)
 [swarm building explanation 2]
@@ -155,13 +155,13 @@ Building short explanation 2 (24 chars max)
 [health building explanation 2]
  
 [walkspeed building explanation 2]
-level of your units
+speed of your units
 [swimspeed building explanation 2]
-speed level of your units
+speed of your units
 [attack building explanation 2]
-of your warriors
+level of your warriors
 [science building explanation 2]
-of your workers
+level of your workers
 [defense building explanation 2]
 units or buildings
 [exploration flag explanation 2]
@@ -171,9 +171,9 @@ units or buildings
 [clearing flag explanation 2]
  
 [stone wall explanation 2]
- 
+element
 [market explanation 2]
-with the others
+fruits with others
 [waiting for %s]
 Waiting for %s
 [%s has left the game]
@@ -209,9 +209,9 @@ Custom game
 [yog]
 Ysagoon Online Gaming
 [Enter your nickname :]
-Enter your nickname :
+Enter your nickname:
 [Enter your password :]
-Enter your password :
+Enter your password:
 [lan]
 LAN Game
 [settings]
@@ -253,7 +253,7 @@ Server hostname
 [hp]
 Hitpoint
 [carry]
-Carrying :
+Carrying:
 [don't carry anything]
 Not carrying anything
 [level]
@@ -377,19 +377,19 @@ Defense
 [free]
 free
 [of which]
-of which
+there are
 [are ok]
-are ok
+ok
 [are hungry]
-are hungry
+hungry
 [are dying hungry]
-are starving to death
+starving
 [are wonded]
-are wounded
+wounded
 [and]
 and
 [seeking a job]
-are looking for a job
+looking for a job
 [Walk]
 Walk
 [Swim]
@@ -413,7 +413,7 @@ free
 [seeking]
 seeking
 [Free]
-Free
+Ok
 [hungry]
 hungry
 [starving]
@@ -617,13 +617,13 @@ Continue playing
 [Lost : your colony is dead]
 Lost: your colony is dead
 [Won : you defeated your opponents]
-Won : you defeated your opponents
+Won: you defeated your opponents
 [Won : your ally %s has the most prestige]
 Won: your ally %s has the biggest prestige
 [Lost : %s has more prestige than you]
-Lost : %s has more prestige than you
+Lost: %s has more prestige than you
 [Won : you have the most prestige]
-Won : you have the biggest prestige
+Won: you have the biggest prestige
 [The game has not been finished]
 The game has not been finished
 [display]
@@ -653,19 +653,19 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [mute]
 mute
 [abreaviation explanation A]
-A : Allies
+A: Allies
 [abreaviation explanation V]
-V : Show vision for all buildings
+V: Show vision for all buildings
 [abreaviation explanation Vf]
-Vf : Show vision for Inn buildings (to steal units)
+Vf: Show vision for Inn buildings (to steal units)
 [abreaviation explanation mV]
-mV : Show vision for Markets buildings (to exchange fruits)
+mV: Show vision for Markets buildings (to exchange fruits)
 [abreaviation explanation C]
-C : Send chat messages to
+C: Send chat messages to
 [shortcut explanation enter]
-key enter : send a chat message
+Enter: send a chat message
 [shortcut explanation v]
-key v : hold to speak
+V: hold to speak
 [Delete game]
 Delete the selected game
 [any explorer]
