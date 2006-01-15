@@ -217,6 +217,42 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			assert(false);
 
 	}
+	
+	else if (action==TEXT_MODIFIED)
+	{
+		std::string message = textInput->getText();
+		int i=message.length()-1;
+		if ((message[i] == 9 ))
+		{
+			message=message.substr(0,message.length()-1);
+			std::string beginningOfNick;
+			beginningOfNick=message.substr(message.rfind(' '), message.length()-1);
+			/*message[i-1];
+			bool noWhiteSpace=true;
+			while((i>0) && noWhiteSpace)
+			{
+				if(message[--i] != ' ')
+					beginningOfNick=message[--i]+beginningOfNick;
+				else
+					noWhiteSpace=false;
+			}*/
+			std::string foundNick;
+			for (std::list<YOG::Client>::iterator client=yog->clients.begin(); client!=yog->clients.end(); ++client)
+			{
+				if(((std::string)client->userName).find(beginningOfNick, 0))
+				{
+					foundNick=client->userName;
+					message += " " + foundNick;
+				}
+			}
+			
+			message += " hallo";
+			textInput->setText(message);
+			textInput->setCursorPos(message.length());
+			//yog->sendMessage(textInput->getText());
+			//irc.sendCommand(textInput->getText());
+		}
+	}
 	else if (action==TEXT_VALIDATED)
 	{
 		yog->sendMessage(textInput->getText());

@@ -52,16 +52,18 @@ public:
 	{
 		eNONE=-1,
 		eUNIFORM=0,
-		eRANDOM=1,
-		eISLANDS=2
+		eSWAMP=1,
+		eRIVER=2,
+		eISLANDS=3,
+		eCRATERLAKES=4
 	};
+
 	Methode methode;
 	
 	Sint32 wDec, hDec;
 	
-	Sint32 waterRatio, sandRatio, grassRatio;
+	Sint32 waterRatio, sandRatio, grassRatio, desertRatio, wheatRatio, woodRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
 	Sint32 smooth;
-	Sint32 islandsSize, beach;
 	Sint32 ressource[MAX_NB_RESSOURCES];
 
 	Sint32 nbTeams, nbWorkers;
@@ -79,5 +81,4 @@ protected:
 };
 
 
-#endif 
- 
+#endif

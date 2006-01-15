@@ -31,11 +31,11 @@ Stein
 [Alga]
 Algen
 [Cherry]
-Kirsche
+Kirschen
 [Orange]
-Orange
+Orangen
 [Prune]
-Pflaume
+Pflaumen
 [Clearing:]
 Rodung
 [Min required level:]
@@ -47,7 +47,7 @@ Reichweite
 [destroy]
 Zerstören
 [cancel destroy]
-Zerstörung verhindern
+Zerstörung abbrechen
 [wait destroy]
 Warten auf Zerstörung
 [upgrade]
@@ -55,9 +55,9 @@ Verbessern
 [repair]
 Reparieren
 [cancel upgrade]
-Verbesserung stornieren
+Verbesserung abbrechen
 [cancel repair]
-Reparatur stornieren
+Reparatur abbrechen
 [units type]
 Einheitentyp
 [workers]
@@ -77,7 +77,7 @@ Krieger
 [still (w)]
 Noch
 [units working]
- Einheiten arbeiten
+Einheiten arbeiten
 [still one unit working]
 Eine Einheit arbeitet
 [Still (i)]
@@ -117,11 +117,11 @@ Verbotene Zone
 [guard area]
 Zone Bewachen
 [Building short explanation]
-
+Gebäudemenü
 [swarm building explanation]
 Erstellt neue Einheiten
 [food building explanation]
-Füttert Ihre Einheiten
+Ernährt Ihre Einheiten
 [health building explanation]
 Heilt Ihre Einheiten
 [walkspeed building explanation]
@@ -135,9 +135,9 @@ Verbessert die Bau-
 [defense building explanation]
 Greift Feindliche Ge-
 [exploration flag explanation]
-Zieht Entdecker an
+Steuert Entdecker
 [war flag explanation]
-Ziehtt Krieger an
+Steuert Krieger
 [clearing flag explanation]
 Rode Ressourcen
 [stone wall explanation]
@@ -201,15 +201,15 @@ Sie haben gewonnen!
 [campaign]
 Feldzug
 [tutorial]
-Lernprogramm (Englisch)
+Übungsmission
 [custom game]
 Freies Spiel
 [yog]
-Ysagoon-Onlinespiel
+Ysagoon Onlinespiel
 [Enter your nickname :]
-Geben Sie ihren Spitznamen ein :
+Geben Sie ihren Spitznamen ein:
 [Enter your password :]
-Geben Sie ihr Passwort ein :
+Geben Sie ihr Passwort ein:
 [lan]
 Spiel im lokalen Netz
 [settings]
@@ -251,7 +251,7 @@ Server-Rechnername
 [hp]
 Lebenspunkt
 [carry]
-Transportiert :
+Transportiert:
 [don't carry anything]
 Transportiert nichts
 [level]
@@ -643,4 +643,6 @@ Eigener Mauszeiger
 [choose campaign]
 Wählen Sie eine Kampagne aus
 [nick taken]
-Leider ist Ihr Spitzname auf freenode schon besetzt, Sie könen nur durch YOG senden
+Leider ist Ihr Spitzname auf IRC schon besetzt. Sie könen nur durch YOG senden
+[leos random map]
+Leo's Zufallskarte

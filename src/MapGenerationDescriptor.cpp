@@ -35,10 +35,18 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	waterRatio=50;
 	sandRatio=50;
 	grassRatio=50;
+	desertRatio=50;
+	wheatRatio=50;
+	woodRatio=50;
+	stoneRatio=50;
+	algaeRatio=50;
+	riverDiameter=50;
+	craterDensity=50;
+	extraIslands=0;
 	smooth=4;
 	
-	islandsSize=50;
-	beach=1;
+//	islandsSize=50;
+//	beach=1;
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressource[i]=7;
 	
@@ -69,8 +77,8 @@ Uint8 *MapGenerationDescriptor::getData()
 	addSint32(data, grassRatio, 24);
 	addSint32(data, smooth, 28);
 
-	addSint32(data, islandsSize, 32);
-	addSint32(data, beach, 36);
+//	addSint32(data, islandsSize, 32);
+//	addSint32(data, beach, 36);
 
 	addSint32(data, nbWorkers, 40);
 	addSint32(data, nbTeams, 44);
@@ -102,8 +110,8 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	grassRatio=getSint32(data, 24);
 	smooth=getSint32(data, 28);
 	
-	islandsSize=getSint32(data, 32);
-	beach=getSint32(data, 36);
+//	islandsSize=getSint32(data, 32);
+//	beach=getSint32(data, 36);
 
 	nbWorkers=getSint32(data, 40);
 	nbTeams=getSint32(data, 44);
@@ -171,8 +179,8 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs+=smooth<<27;
 	
 	cs=(cs<<31)|(cs>>1);
-	cs^=islandsSize;
-	cs^=beach;
+//	cs^=islandsSize;
+//	cs^=beach;
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 		cs+=ressource[i]<<(3*i);
@@ -210,4 +218,3 @@ void MapGenerationDescriptor::synchronizeNow(void)
 	else
 		saveSyncronization();
 }
-

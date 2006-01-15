@@ -66,7 +66,7 @@ struct Case
 */
 class Map
 {
-	static const bool verbose = false;
+	static const bool verbose = true;
 public:
 	//! Type of terrain (used for undermap)
 
@@ -625,6 +625,7 @@ public:
 	void makeHomogenMap(TerrainType terrainType);
 	void controlSand(void);
 	void smoothRessources(int times);
+	bool makeRandomMapOld(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	void addRessourcesRandomMap(MapGenerationDescriptor &descriptor);
 	bool makeIslandsMap(MapGenerationDescriptor &descriptor);
@@ -636,4 +637,3 @@ protected:
 };
 
 #endif
- 
