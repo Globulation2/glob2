@@ -17,6 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #include "NewMapScreen.h"
+#include <assert.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
