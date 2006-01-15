@@ -40,7 +40,7 @@ public:
 	int getDataLength() {return DATA_SIZE; }
 	
 	void save(GAGCore::OutputStream *stream);
-	bool load(GAGCore::InputStream *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	Uint32 checkSum();
 	void saveSyncronization(void);
 	void loadSyncronization(void);
@@ -74,7 +74,7 @@ public:
 	Sint32 bootX[32];
 	Sint32 bootY[32];
 public:
-	enum {DATA_SIZE=60+MAX_NB_RESSOURCES*4};
+	enum {DATA_SIZE=84+MAX_NB_RESSOURCES*4};
 protected:
 	//! Serialized form of MapGenerationDescriptor
 	Uint8 data[DATA_SIZE];

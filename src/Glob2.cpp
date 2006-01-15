@@ -366,6 +366,7 @@ int Glob2::run(int argc, char *argv[])
 							setRandomSyncRandSeed();
 							if (mapEdit.game.generateMap(newMapScreen.descriptor))
 							{
+								mapEdit.mapHasBeenModiffied(); // make all map as modified by default
 								if (mapEdit.run()==-1)
 									isRunning=false;
 								retryNewMapScreen=false;
