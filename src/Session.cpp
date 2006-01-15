@@ -178,7 +178,7 @@ bool SessionGame::load(GAGCore::InputStream *stream)
 	{
 		stream->seekFromStart(generationDescriptorOffset);
 		mapGenerationDescriptor = new MapGenerationDescriptor();
-		mapGenerationDescriptor->load(stream);
+		mapGenerationDescriptor->load(stream, versionMinor);
 	}
 	else
 		mapGenerationDescriptor = NULL;

@@ -37,6 +37,8 @@ public:
 	//void resize(int sizeX, int sizeY);
 	int run(int sizeX, int sizeY, TerrainType terrainType);
 	int run(void);
+	
+	void mapHasBeenModiffied(void); // moved public so that nely cerated map are modified
 
 private:
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);
@@ -53,8 +55,6 @@ private:
 	void paintCoordinates(int mx, int my);
 	void paintEditMode(bool clearOld, bool mayUpdate);
 	void paintEditMode(int mx, int my, bool clearOld, bool mayUpdate);
-	
-	void mapHasBeenModiffied(void);
 	
 	void handleKeyPressed(SDLKey key, bool pressed);
 public:

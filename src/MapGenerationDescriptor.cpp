@@ -23,6 +23,7 @@
 #include "MapGenerationDescriptor.h"
 #include "Marshaling.h"
 #include "Utilities.h"
+#include <iostream>
 
 MapGenerationDescriptor::MapGenerationDescriptor()
 {
@@ -45,8 +46,6 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	extraIslands=0;
 	smooth=4;
 	
-//	islandsSize=50;
-//	beach=1;
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressource[i]=7;
 	
@@ -64,8 +63,8 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 
 Uint8 *MapGenerationDescriptor::getData()
 {
-	assert(DATA_SIZE==60+MAX_NB_RESSOURCES*4);
-
+	assert(DATA_SIZE==84+MAX_NB_RESSOURCES*4);
+	
 	addSint32(data, wDec, 0);
 	addSint32(data, hDec, 4);
 
@@ -75,27 +74,34 @@ Uint8 *MapGenerationDescriptor::getData()
 	addSint32(data, waterRatio, 16);
 	addSint32(data, sandRatio, 20);
 	addSint32(data, grassRatio, 24);
-	addSint32(data, smooth, 28);
+	addSint32(data, desertRatio, 28);
+	
+	addSint32(data, wheatRatio, 32);
+	addSint32(data, woodRatio, 36);
+	addSint32(data, algaeRatio, 40);
+	addSint32(data, stoneRatio, 44);
+	addSint32(data, riverDiameter, 48);
+	
+	addSint32(data, craterDensity, 52);
+	addSint32(data, extraIslands, 56);
+	addSint32(data, smooth, 60);
 
-//	addSint32(data, islandsSize, 32);
-//	addSint32(data, beach, 36);
+	addSint32(data, nbWorkers, 64);
+	addSint32(data, nbTeams, 68);
 
-	addSint32(data, nbWorkers, 40);
-	addSint32(data, nbTeams, 44);
-
-	addUint32(data, randa, 48);
-	addUint32(data, randb, 52);
-	addUint32(data, randc, 56);
+	addUint32(data, randa, 72);
+	addUint32(data, randb, 76);
+	addUint32(data, randc, 80);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		addSint32(data, ressource[i], 60+i*4);
+		addSint32(data, ressource[i], 84+i*4);
 
 	return data;
 }
 
 bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 {
-	assert(DATA_SIZE==60+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==84+MAX_NB_RESSOURCES*4);
 	assert(getDataLength()==DATA_SIZE);
 	assert(getDataLength()==dataLength);
 	
@@ -108,20 +114,27 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	waterRatio=getSint32(data, 16);
 	sandRatio=getSint32(data, 20);
 	grassRatio=getSint32(data, 24);
-	smooth=getSint32(data, 28);
+	desertRatio = getSint32(data, 28);
 	
-//	islandsSize=getSint32(data, 32);
-//	beach=getSint32(data, 36);
+	wheatRatio = getSint32(data, 32);
+	woodRatio = getSint32(data, 36);
+	algaeRatio = getSint32(data, 40);
+	stoneRatio = getSint32(data, 44);
+	riverDiameter = getSint32(data, 48);
+	
+	craterDensity = getSint32(data, 52);
+	extraIslands = getSint32(data, 56);
+	smooth=getSint32(data, 60);
 
-	nbWorkers=getSint32(data, 40);
-	nbTeams=getSint32(data, 44);
+	nbWorkers=getSint32(data, 64);
+	nbTeams=getSint32(data, 68);
 
-	randa=getSint32(data, 48);
-	randb=getSint32(data, 52);
-	randc=getSint32(data, 56);
+	randa=getSint32(data, 72);
+	randb=getSint32(data, 76);
+	randc=getSint32(data, 80);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		ressource[i]=getSint32(data, 60+i*4);
+		ressource[i]=getSint32(data, 84+i*4);
 
 	bool good=true;
 	if (getDataLength()!=dataLength)
@@ -145,8 +158,13 @@ void MapGenerationDescriptor::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-bool MapGenerationDescriptor::load(GAGCore::InputStream *stream)
+bool MapGenerationDescriptor::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	if (versionMinor < 47)
+	{
+		std::cerr << "Error : map generation description of versionMinor lower than 47 can't be loaded" << std::endl;
+		return false;
+	}
 	stream->readEnterSection("MapGenerationDescriptor");
 	char signature[4];
 	stream->read(signature, 4, "signatureStart");
@@ -170,17 +188,32 @@ Uint32 MapGenerationDescriptor::checkSum()
 	
 	cs^=wDec+(hDec<<16);
 	cs^=(Sint32)terrainType;
-	
 	cs=(cs<<31)|(cs>>1);
 	cs^=(Sint32)methode;
-	cs+=waterRatio<<7;
-	cs+=sandRatio<<14;
-	cs+=grassRatio<<21;
-	cs+=smooth<<27;
-	
 	cs=(cs<<31)|(cs>>1);
-//	cs^=islandsSize;
-//	cs^=beach;
+	cs ^= waterRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= sandRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= grassRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= desertRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= wheatRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= woodRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= algaeRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= stoneRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= riverDiameter;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= craterDensity;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= extraIslands;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= smooth;
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 		cs+=ressource[i]<<(3*i);
