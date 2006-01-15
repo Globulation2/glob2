@@ -260,7 +260,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.hDec=mapSizeY->getNth()+6;
 		
 		// not eUNIFORM
-		descriptor.nbTeams=nbTeams->getNth();
+		descriptor.nbTeams=nbTeams->getNth() + 1;
 		
 		// eRANDOM
 		descriptor.smooth=smooth->getNth();
