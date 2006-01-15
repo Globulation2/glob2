@@ -128,13 +128,13 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		assert(t);
 		if (t==gui->getLocalTeam())
 		{
-			titleText=Toolkit::getStringTable()->getString("[Won : you have the biggest prestige]");
+			titleText=Toolkit::getStringTable()->getString("[Won : you have the most prestige]");
 		}
 		else
 		{
 			const char *strText;
 			if ((t->allies) & (gui->getLocalTeam()->me))
-				strText = Toolkit::getStringTable()->getString("[Won : your ally %s have the biggest prestige]");
+				strText = Toolkit::getStringTable()->getString("[Won : your ally %s has the most prestige]");
 			else
 				strText = Toolkit::getStringTable()->getString("[Lost : %s has more prestige than you]");
 
