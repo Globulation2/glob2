@@ -1996,7 +1996,6 @@ string DistributedNewConstructionManager::getName() const
 
 bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	char signature[4];
 	stream->readEnterSection("DistributedNewConstructionManager");
 	stream->readEnterSection("new_buildings");
 	Uint32 newConstructionRecordSize = stream->readUint32("newConstructionRecordSize");
