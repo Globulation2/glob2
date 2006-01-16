@@ -45,6 +45,10 @@ class Team;
 ///just how devestating an attack of level 3 warriros can be to a guard half the size of level 1 warriors!
 namespace Nicowar
 {
+	///This constant turns on status output. status is output to the file "NicowarStatus.txt" in the current
+	///working directory. It has plenty of information that explains nicowars choices, which is good for
+	///fine tuning Nicowar as well as debugging it.
+	const bool NicowarStatusUpdate = true;
 
 	class Module;
 	class DefenseModule;
@@ -53,6 +57,85 @@ namespace Nicowar
 	class UpgradeRepairModule;
 	class UnitModule;
 	class OtherModule;
+
+	///This class serves as an adaptable full map gradient.
+	class Gradient
+	{
+		public:
+			///This enum holds anything that can be a source in the gradient
+			enum Sources
+			{
+				VillageCenter=1<<0,
+				Wheat=1<<1,
+				Wood=1<<2,
+				Stone=1<<3,
+				TeamBuildings=1<<4,
+			};
+
+			///This enum holds anything that can be an obstacle in the gradient
+			enum Obstacles
+			{
+				None=0,
+				Resource=1<<0,
+				Building=1<<1,
+			};
+
+
+			///Constructs an invalid gradient
+			Gradient() {}
+			///Constructs a new gredient
+			Gradient(Team* team, unsigned sources, unsigned obstacles);
+			///Modifyies an existing gradient with new parameters
+			void reset(Team* team, unsigned sources, unsigned obstacles);
+			///Updates the gradient from the given starting point outwards.
+			///Resources count as obstacles
+			void update();
+			///Gets the height of point x,y
+			unsigned getHeight(unsigned x, unsigned y);
+		private:
+			bool isSource(unsigned x, unsigned y);
+			bool isObstacle(unsigned x, unsigned y);
+			unsigned width;
+			unsigned height;
+			unsigned sources;
+			unsigned obstacles;
+			Team* team;
+			Map* map;
+			std::vector<short int> gradient;
+	};
+
+	///This class serves as a global gradient manager for the team, making sure that no gradients
+	///are produced twice, and bundles all of the gradients together for routine updating
+	class GradientManager
+	{
+		public:
+			GradientManager() {};
+			GradientManager(Team* team) : team(team) {}
+			void setTeam(Team* aTeam)
+			{
+				team=aTeam;
+			}
+			Gradient& getGradient(unsigned sources, unsigned obstacles);
+			void updateGradients();
+		private:
+			struct gradientSignature
+			{
+				gradientSignature(unsigned sources, unsigned obstacles) : sources(sources), obstacles(obstacles) {}
+				unsigned sources;
+				unsigned obstacles;
+				bool operator<(const gradientSignature& cmp) const
+				{
+					if(sources<cmp.sources)
+						return true;
+					return obstacles<cmp.obstacles;
+				}
+			};
+
+			std::map<gradientSignature, Gradient> gradients;
+			std::queue<std::map<gradientSignature, Gradient>::iterator> update_queue;
+			Team* team;
+
+	};
 
 	///This is the base module implementation, it does most of the interfacing with the game engine.
 	class AINicowar : public AIImplementation
@@ -96,7 +179,33 @@ namespace Nicowar
 			}
 
 			std::queue<Order*> orders;
+
+			///This will remove all messages accocciatted with the given catagorizations
+			void clearDebugMessages(string module, string group, string variable)
+			{
+				if(NicowarStatusUpdate)
+					debug_messages[module][group][variable].clear();
+			}
+			///This will add a debug message to the given variable. Note the variable
+			///does not actual have to be a variable name at all, its just a third level
+			///of grouping for messages.
+			void addDebugMessage(string module, string group, string variable, string message)
+			{
+				if(NicowarStatusUpdate)
+					debug_messages[module][group][variable].push_back(message);
+			}
+
+
+			GradientManager& getGradientManager()
+			{
+				return gradient_manager;
+			}
 		private:
+
+			std::map<string, std::map<string, std::map<string, std::vector<string> > > > debug_messages;
+			void outputDebugMessages();
+
+
 			///Initiates the player
 			void init(Player *player);
 			unsigned int timer;
@@ -117,6 +226,7 @@ namespace Nicowar
 			std::vector<Module*> modules;
 			unsigned int module_timer;
 			std::vector<Module*>::iterator active_module;
+			GradientManager gradient_manager;
 	};
 
 	///This set of methods, enumerations and structs are what abstract the map polling system, which is used by several
@@ -573,6 +683,8 @@ namespace Nicowar
 			///Stores a single point on the map
 			struct point
 			{
+				point() {}
+				point(unsigned x, unsigned y) : x(x), y(y) {}
 				unsigned int x;
 				unsigned int y;
 			};
@@ -618,6 +730,16 @@ namespace Nicowar
 				bool operator>(const typePercent& tp) const;
 			};
 
+			///Stores the information for a subgke factor in deciding where a building should be placed
+			struct GradientPoll
+			{
+				GradientPoll() : is_null(true) {}
+				GradientPoll(Gradient::Sources source, float weight) : is_null(false), source(source), weight(weight) {}
+				bool is_null;
+				Gradient::Sources source;
+				float weight;
+			};
+
 			///Stores the various records of what is being built
 			std::vector<newConstructionRecord> new_buildings;
 
@@ -641,6 +763,8 @@ namespace Nicowar
 			//Calculates how many of each type of building the ai should have.
 			bool calculateBuildings();
 
+			void updateImap();
+
 			std::map<unsigned int, unsigned int> num_buildings_wanted;
 
 			///The cache that stores all of the no-build records.
@@ -651,6 +775,8 @@ namespace Nicowar
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
+
+			vector<unsigned> imap;
 	};
 
 	///This module upgrades and repairs buildings at random, up to a designated maximum construction.
@@ -1004,7 +1130,8 @@ namespace Nicowar
 	};
 
 	///This module will check if it has a higher happiness level than any opponents, and if it does,
-	///it will open up in view to those opponents, to steal units.
+	///it will open up in view to those opponents, to steal units. It will also set up explorer
+	///flags on nearby fruit trees.
 	class HappinessHandler : public OtherModule
 	{
 		public:
@@ -1016,11 +1143,14 @@ namespace Nicowar
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
 			{
-				return 1;
+				return 2;
 			}
 
 			///This will change the alliances approprietly depending on the average happiness level.
 			bool adjustAlliances();
+
+			///Wil hunt out groups of fruit trees and put explorer flags on them
+			bool searchFruitTrees();
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
@@ -1198,38 +1328,27 @@ namespace Nicowar
 	const bool USE_MAX_BARRACKS_LEVEL=false;
 
 	//The following are for the construction manager
-
-	const unsigned int BUILD_AREA_WIDTH=8;
-	const unsigned int BUILD_AREA_HEIGHT=8;
-	const unsigned int BUILD_AREA_HORIZONTAL_OVERLAP=4;
-	const unsigned int BUILD_AREA_VERTICAL_OVERLAP=4;
-	const unsigned int BUILD_AREA_EXTENTION_WIDTH=8;
-	const unsigned int BUILD_AREA_EXTENTION_HEIGHT=8;
 	const unsigned int BUILDING_PADDING=1;
-	///This this enabled, buildings are constructed instantly, which is cheating,
-	///although can aid in debugging in certain situations
-	const bool CHEAT_INSTANT_BUILDING=false;
-	///With the following enabled, the new construction manager will try to place buildings as close together as possible that still satisfy the padding.
-	const bool CRAMP_BUILDINGS=true;
-	const unsigned int NOPOS=1023;
-	const unsigned int MINIMUM_NEARBY_BUILDINGS_TO_CONSTRUCT=1;
-	const bool STRICT_NEARBY_BUILDING_MINIMUM=true;
-	const unsigned int CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][3][2]=
-	{
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_CORN}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MINIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_TREES}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::POLL_STONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MINIMUM, GridPollingSystem::FRIENDLY_BUILDINGS}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}},
-	{{GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}, {GridPollingSystem::MAXIMUM, GridPollingSystem::NONE}}
-	};
+	const unsigned int NO_POSITION=1023;
+
+	const unsigned CONSTRUCTOR_FACTORS_COUNT=2;
+
+	const unsigned MAXIMUM_DISTANCE_TO_BUILDING=8;
+	typedef DistributedNewConstructionManager::GradientPoll GradientPoll;
+	const GradientPoll CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][CONSTRUCTOR_FACTORS_COUNT] = 
+		{{GradientPoll(Gradient::Wheat, 1), GradientPoll(Gradient::TeamBuildings, 1)}, //
+		 {GradientPoll(Gradient::Wheat, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::Wood, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::VillageCenter, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::VillageCenter, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::Stone, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::VillageCenter, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(), GradientPoll()},
+		 {GradientPoll(), GradientPoll()},
+		 {GradientPoll(), GradientPoll()},
+		 {GradientPoll(), GradientPoll()},
+		 {GradientPoll(), GradientPoll()}};
+
 
 	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
 	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
@@ -1249,13 +1368,19 @@ namespace Nicowar
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
 		{2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 	///The number of turns before a cached no-build zone gets erased
-	const unsigned int NO_BUILD_CACHE_TIMEOUT=5;
+	const unsigned int NO_BUILD_CACHE_TIMEOUT=1;
 
+	///This this enabled, buildings are constructed instantly, which is cheating,
+	///although can aid in debugging in certain situations
+	const bool CHEAT_INSTANT_BUILDING=false;
 	//These constants are for GeneralsDefense
 	const unsigned int DEFENSE_ZONE_SIZE_INCREASE=2;
 
 	//These constants are for BuildingClearer
 	const unsigned int CLEARING_AREA_BUILDING_PADDING=1;
+
+	//These constants are for HappinessHandler
+	const unsigned int EXPLORERS_PER_GROUP=2;
 
 	//These are for farmer
 	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
