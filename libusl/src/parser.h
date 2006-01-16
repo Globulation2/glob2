@@ -2,11 +2,10 @@
 #define PARSER_H
 
 #include "scanner.h"
-#include "tree.h"
-#include <sstream>
 #include <stdexcept>
 
 class Parser {
+public:
 	enum TokenType {
 		ID,
 		OP,
@@ -21,30 +20,33 @@ class Parser {
 		ERROR,
 		TOKENTYPES,
 	};
+private:
 	static const Token::Type tokenTypes[TOKENTYPES];
 public:
-	Parser(const char* text): scanner(tokenTypes, tokenTypes + TOKENTYPES, text), next(NextToken()) {}
-	Tree* Parse();
+	Parser(const char* text): scanner(tokenTypes, tokenTypes + TOKENTYPES, text), token(NextToken()) {}
 	struct Error: std::runtime_error {
 		const Position position;
 		Error(const Position& position, const std::string& message): std::runtime_error(message), position(position) {}
 	};
-private:
-	Tree* Next();
-	Tree* Next2();
 	void Fail(const std::string& message) {
-		throw Error(next.position, message);
+		throw Error(token.position, message);
 	}
-private:
 	const Token& NextToken() {
 		do {
-			next = scanner.Next();
-		} while(next.type->id == SPACE || next.type->id == COMMENT);
-		//std::cout << next.position.line << ", " << next.position.column << ": " << next.type->desc << " <" << std::string(next.text, next.length) << ">" << std::endl;
-		return next;
+			token = scanner.Next();
+		} while(token.type->id == SPACE || token.type->id == COMMENT);
+		//std::cout << token.position.line << ", " << token.position.column << ": " << token.type->desc << " <" << std::string(token.text, token.length) << ">" << std::endl;
+		return token;
 	}
+	const Token& GetToken() {
+		return token;
+	}
+	int GetTokenType() {
+		return GetToken().type->id;
+	}
+private:
 	Scanner scanner;
-	Token next;
+	Token token;
 };
 
 #endif // ndef PARSER_H

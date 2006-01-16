@@ -19,25 +19,3 @@ Token Scanner::Next() {
 	text += length;
 	return token;
 }
-
-/*
-#include <iostream>
-Token next;
-
-Token nextToken(Scanner& scanner) {
-	next = scanner.nextToken();
-	return next;
-}
-#include <fstream>
-int main() {
-	//std::ifstream file("toto.usl");
-	Scanner scanner(std::cin);
-	while(nextToken(scanner).type != Token::END) {
-		std::cout << next.pos.line << ',' << next.pos.column << ": ";
-		std::cout << next.type;
-		if(next.value.size() > 0)
-			std::cout << " (" << next.value << ')';
-		std::cout << std::endl;
-	}
-}
-*/
