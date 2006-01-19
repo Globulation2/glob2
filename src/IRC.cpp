@@ -93,6 +93,10 @@ bool IRC::disconnect(void)
 
 void IRC::forceDisconnect(void)
 {
+        char command[IRC_MESSAGE_SIZE];
+        snprintf(command, IRC_MESSAGE_SIZE, "QUIT :Globulation2");
+        sendString(command);
+
 	if (socket)
 	{
 		SDLNet_TCP_Close(socket);

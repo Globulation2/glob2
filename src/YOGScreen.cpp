@@ -220,38 +220,58 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	
 	else if (action==TEXT_MODIFIED)
 	{
-		std::string message = textInput->getText();
-		int i=message.length()-1;
-		if ((message[i] == 9 ))
-		{
-			message=message.substr(0,message.length()-1);
-			std::string beginningOfNick;
-			beginningOfNick=message.substr(message.rfind(' '), message.length()-1);
-			/*message[i-1];
-			bool noWhiteSpace=true;
-			while((i>0) && noWhiteSpace)
-			{
-				if(message[--i] != ' ')
-					beginningOfNick=message[--i]+beginningOfNick;
-				else
-					noWhiteSpace=false;
-			}*/
-			std::string foundNick;
-			for (std::list<YOG::Client>::iterator client=yog->clients.begin(); client!=yog->clients.end(); ++client)
-			{
-				if(((std::string)client->userName).find(beginningOfNick, 0))
-				{
-					foundNick=client->userName;
-					message += " " + foundNick;
-				}
-			}
-			
-			message += " hallo";
-			textInput->setText(message);
-			textInput->setCursorPos(message.length());
-			//yog->sendMessage(textInput->getText());
-			//irc.sendCommand(textInput->getText());
-		}
+                std::string message = textInput->getText();
+                int msglen = message.length()-1;
+                if( message[msglen] == 9 )
+                {
+                        std::string foundNick;
+                        std::string msg;
+                        std::string beginningOfNick;
+                        int startlen;
+                        int found = 0;
+
+                        startlen = message.rfind(' ');
+                        if( startlen == -1 ) {
+                                startlen = 0;
+                        }
+                        beginningOfNick = message.substr(startlen, msglen);
+
+                        if( beginningOfNick.compare("") != 0 ) {
+                                for (std::list<YOG::Client>::iterator client=yog->clients.begin(); client!=yog->clients.end(); ++client)
+                                {
+                                        const std::string &user = (std::string)client->userName;
+                                        if( user.find(beginningOfNick) == 0 ) {
+                                                foundNick = user;
+                                                found = 1;
+                                                break;
+                                        }
+                                }
+
+                                if(irc.initChannelUserListing(IRC_CHAN) && found == 0)
+                                {
+                                        while (irc.isMoreChannelUser())
+                                        {
+                                                const std::string &user = irc.getNextChannelUser();
+                                                if( user.find(beginningOfNick) == 0 )
+                                                {
+                                                        if (user.compare(0, 5, "[YOG]") != 0)
+                                                        {
+                                                                foundNick = user;
+                                                                found = 1;
+                                                                break;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                        
+                        if( found == 1 ) {   
+                                msg = foundNick;
+                                msg += ": ";
+                                textInput->setText(msg);
+                                textInput->setCursorPos(msg.length());
+                        }
+                }
 	}
 	else if (action==TEXT_VALIDATED)
 	{
