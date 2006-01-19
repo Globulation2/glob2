@@ -164,7 +164,7 @@ public:
 	Team *getTeamWithMostPrestige(void);
 	
 public:
-	bool makeIslandsMap(MapGenerationDescriptor &descriptor);
+	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool generateMap(MapGenerationDescriptor &descriptor);
 	
@@ -179,4 +179,4 @@ std::string glob2FilenameToName(const char *filename);
 std::string glob2NameToFilename(const char *dir, const char *name, const char *extension=NULL);
 
 
-#endif 
+#endif

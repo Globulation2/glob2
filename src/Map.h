@@ -625,11 +625,11 @@ public:
 	void makeHomogenMap(TerrainType terrainType);
 	void controlSand(void);
 	void smoothRessources(int times);
-	bool makeRandomMapOld(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
-	void addRessourcesRandomMap(MapGenerationDescriptor &descriptor);
-	bool makeIslandsMap(MapGenerationDescriptor &descriptor);
-	void addRessourcesIslandsMap(MapGenerationDescriptor &descriptor);
+	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
+	void oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor);
+	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
+	void oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor);
 
 protected:
 	FILE *logFile;
