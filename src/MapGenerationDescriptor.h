@@ -55,14 +55,18 @@ public:
 		eSWAMP=1,
 		eRIVER=2,
 		eISLANDS=3,
-		eCRATERLAKES=4
+		eCRATERLAKES=4,
+		eOLDRANDOM=5,
+		eOLDISLANDS=6
 	};
 
 	Methode methode;
 	
 	Sint32 wDec, hDec;
 	
-	Sint32 waterRatio, sandRatio, grassRatio, desertRatio, wheatRatio, woodRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
+	Sint32 waterRatio, sandRatio, grassRatio, desertRatio, wheatRatio,
+		woodRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
+	Sint32 oldIslandSize, oldBeach;
 	Sint32 smooth;
 	Sint32 ressource[MAX_NB_RESSOURCES];
 

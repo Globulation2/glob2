@@ -46,6 +46,8 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	extraIslands=0;
 	smooth=4;
 	
+	oldIslandSize=50;
+	oldBeach=1;	
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressource[i]=7;
 	
@@ -63,7 +65,7 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 
 Uint8 *MapGenerationDescriptor::getData()
 {
-	assert(DATA_SIZE==84+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==92+MAX_NB_RESSOURCES*4);
 	
 	addSint32(data, wDec, 0);
 	addSint32(data, hDec, 4);
@@ -86,12 +88,15 @@ Uint8 *MapGenerationDescriptor::getData()
 	addSint32(data, extraIslands, 56);
 	addSint32(data, smooth, 60);
 
-	addSint32(data, nbWorkers, 64);
-	addSint32(data, nbTeams, 68);
+	addUint32(data, nbWorkers, 64);
+	addUint32(data, nbTeams, 68);
 
 	addUint32(data, randa, 72);
 	addUint32(data, randb, 76);
 	addUint32(data, randc, 80);
+	
+	addUint32(data, oldIslandSize, 84);
+	addUint32(data, oldBeach, 88);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 		addSint32(data, ressource[i], 84+i*4);
@@ -101,7 +106,7 @@ Uint8 *MapGenerationDescriptor::getData()
 
 bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 {
-	assert(DATA_SIZE==84+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==92+MAX_NB_RESSOURCES*4);
 	assert(getDataLength()==DATA_SIZE);
 	assert(getDataLength()==dataLength);
 	
@@ -132,6 +137,9 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	randa=getSint32(data, 72);
 	randb=getSint32(data, 76);
 	randc=getSint32(data, 80);
+	
+	oldIslandSize=getSint32(data, 84);
+	oldBeach=getSint32(data, 88);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 		ressource[i]=getSint32(data, 84+i*4);
@@ -214,6 +222,10 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs ^= extraIslands;
 	cs=(cs<<31)|(cs>>1);
 	cs ^= smooth;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= oldIslandSize;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= oldBeach;
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 		cs+=ressource[i]<<(3*i);

@@ -73,6 +73,8 @@ NewMapScreen::NewMapScreen()
 	methodes->addText(Toolkit::getStringTable()->getString("[river terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
 	methodes->setSelectionIndex(0);
 	addWidget(methodes);
 	
@@ -237,6 +239,29 @@ NewMapScreen::NewMapScreen()
 	smoothingText->visible=false;
 	addWidget(smoothingText);
 	
+	// eOLDISLANDS
+
+	oldIslandSize=new Ratio(310, 140, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.oldIslandSize, "menu");
+	oldIslandSize->visible=false;
+	addWidget(oldIslandSize);
+	
+	oldBeach=new Number(310, 160, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	oldBeach->add(0);
+	oldBeach->add(1);
+	oldBeach->add(2);
+	oldBeach->add(3);
+	oldBeach->add(4);
+	oldBeach->setNth(descriptor.oldBeach);
+	oldBeach->visible=false;
+	addWidget(oldBeach);
+	
+	oldIslandSizeText=new Text(430, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[islands size]"));
+	oldIslandSizeText->visible=false;
+	addWidget(oldIslandSizeText);
+	oldBeachSizeText=new Text(430, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[beach size]"));
+	oldBeachSizeText->visible=false;
+	addWidget(oldBeachSizeText);
+	
 	// all
 	
 	addWidget(new TextButton(10, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
@@ -261,10 +286,14 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.hDec=mapSizeY->getNth()+6;
 		
 		// not eUNIFORM
-		descriptor.nbTeams=nbTeams->getNth() + 1;
+		descriptor.nbTeams=nbTeams->getNth()+1;
 		
 		// eRANDOM
-		descriptor.smooth=smooth->getNth();
+		descriptor.smooth=smooth->getNth()+1;
+
+		// eOLDISLANDS
+		descriptor.oldBeach=oldBeach->getNth();
+		descriptor.nbWorkers=nbWorkers->getNth()+1;
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
@@ -294,6 +323,8 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				riverDiameter->visible=riverDiameterText->visible=
 				extraIslands->visible=extraIslandsText->visible=
 				craterDensity->visible=craterDensityText->visible=
+				riverDiameter->visible=riverDiameterText->visible=
+				oldIslandSize->visible=oldIslandSizeText->visible=
 				riverDiameter->visible=riverDiameterText->visible=
 				false;
 			
@@ -347,18 +378,21 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						extraIslands->visible=extraIslandsText->visible=
 						true;
 						break;
-					case  MapGenerationDescriptor::eCRATERLAKES:
+					case  MapGenerationDescriptor::eOLDRANDOM:
 						ratioText->visible=
 						waterRatio->visible=waterText->visible=
 						sandRatio->visible=sandText->visible=
 						grassRatio->visible=grassText->visible=
-						desertRatio->visible=desertText->visible=
 						smooth->visible=smoothingText->visible=
 						wheatRatio->visible=wheatText->visible=
 						woodRatio->visible=woodText->visible=
 						stoneRatio->visible=stoneText->visible=
 						algaeRatio->visible=algaeText->visible=
-						craterDensity->visible=craterDensityText->visible=
+						true;
+						break;
+					case  MapGenerationDescriptor::eOLDISLANDS:
+						oldBeach->visible=oldBeachSizeText->visible=
+						oldIslandSize->visible=oldIslandSizeText->visible=
 						true;
 						break;
 					default: assert(false);break;
@@ -379,9 +413,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.riverDiameter=riverDiameter->get();
 		descriptor.craterDensity=craterDensity->get();
 		descriptor.extraIslands=extraIslands->get();
-	}
-	else if (action==BUTTON_STATE_CHANGED)
-	{
-		
+		//eISLANDS
+		descriptor.oldIslandSize=oldIslandSize->get();
 	}
 }

@@ -71,11 +71,12 @@ private:
 	Ratio *riverDiameter;
 	Number *smooth, *extraIslands;
 	Number *nbTeams;
-	Ratio *islandsSize;
-	Number *beach;
+	Ratio *oldIslandSize;
+	Number *oldBeach;
 	Number *nbWorkers;
 	Text *numberOfTeamText, *numberOfWorkerText, *craterDensityText, *extraIslandsText;
 	Text *ratioText, *waterText, *sandText, *grassText, *desertText, *wheatText, *woodText, *stoneText, *algaeText, *smoothingText, *riverDiameterText;
+	Text *oldIslandSizeText, *oldBeachSizeText;
 
 public:
 	//! Constructor
