@@ -378,6 +378,20 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						extraIslands->visible=extraIslandsText->visible=
 						true;
 						break;
+					case  MapGenerationDescriptor::eCRATERLAKES:
+						ratioText->visible=
+						waterRatio->visible=waterText->visible=
+						sandRatio->visible=sandText->visible=
+						grassRatio->visible=grassText->visible=
+						desertRatio->visible=desertText->visible=
+						smooth->visible=smoothingText->visible=
+						wheatRatio->visible=wheatText->visible=
+						woodRatio->visible=woodText->visible=
+						stoneRatio->visible=stoneText->visible=
+						algaeRatio->visible=algaeText->visible=
+						craterDensity->visible=craterDensityText->visible=
+						true;
+						break;
 					case  MapGenerationDescriptor::eOLDRANDOM:
 						ratioText->visible=
 						waterRatio->visible=waterText->visible=
