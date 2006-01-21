@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UTILITIES_H
-#define __UTILITIES_H
+#ifndef __UTILITIES_H_GZ
+#define __UTILITIES_H_GZ
 
 #include <stdlib.h>
 
@@ -133,6 +133,10 @@ namespace Utilities
 	
 	//! tokenize the string into 32 static char[256] strings. Returns the number of tokens. All tokens are valids
 	int staticTokenize(const char *s, int n, char token[32][256]);
+	
+	//! helpers for fixed points manipulation
+	inline int intToFixed(int i, const int precision = 256) {return  i * precision; }
+	inline int fixedToInt(int f, const int precision = 256) {return  f / precision; }
 };
 
 #endif
