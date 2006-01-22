@@ -1282,7 +1282,7 @@ bool SimpleBuildingDefense::updateFlags()
 			{
 				if(static_cast<int>(score)!=getBuildingFromGid(ai.game, i->flag)->maxUnitWorking)
 				{
-					ai.orders.push(new OrderModifyBuilding(i->flag, score));
+					ai.orders.push(new OrderModifyBuilding(i->flag, std::min(20u, score)));
 					ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, std::min(20u, score), UnitModule::high, i->flag);
 				}
 			}
