@@ -32,8 +32,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "Utilities.h"
 #include <set>
 
-using namespace std;
-
 class Map;
 class Order;
 class Player;
@@ -166,7 +164,7 @@ namespace Nicowar
 			NewConstructionModule* getNewConstructionModule();
 			UpgradeRepairModule* getUpgradeRepairModule();
 			UnitModule* getUnitModule();
-			OtherModule* getOtherModule(string name);
+			OtherModule* getOtherModule(std::string name);
 
 			unsigned int getCenterX() const
 			{
@@ -181,7 +179,7 @@ namespace Nicowar
 			std::queue<Order*> orders;
 
 			///This will remove all messages accocciatted with the given catagorizations
-			void clearDebugMessages(string module, string group, string variable)
+			void clearDebugMessages(std::string module, std::string group, std::string variable)
 			{
 				if(NicowarStatusUpdate)
 					debug_messages[module][group][variable].clear();
@@ -189,7 +187,7 @@ namespace Nicowar
 			///This will add a debug message to the given variable. Note the variable
 			///does not actual have to be a variable name at all, its just a third level
 			///of grouping for messages.
-			void addDebugMessage(string module, string group, string variable, string message)
+			void addDebugMessage(std::string module, std::string group, std::string variable, std::string message)
 			{
 				if(NicowarStatusUpdate)
 					debug_messages[module][group][variable].push_back(message);
@@ -202,7 +200,7 @@ namespace Nicowar
 			}
 		private:
 
-			std::map<string, std::map<string, std::map<string, std::vector<string> > > > debug_messages;
+			std::map<std::string, std::map<std::string, std::map<std::string, std::vector<std::string> > > > debug_messages;
 			void outputDebugMessages();
 
 
@@ -222,7 +220,7 @@ namespace Nicowar
 			NewConstructionModule* new_construction_module;
 			UpgradeRepairModule* upgrade_repair_module;
 			UnitModule* unit_module;
-			std::map<string, OtherModule*> other_modules;
+			std::map<std::string, OtherModule*> other_modules;
 			std::vector<Module*> modules;
 			unsigned int module_timer;
 			std::vector<Module*>::iterator active_module;
@@ -438,7 +436,7 @@ namespace Nicowar
 			///will be called again with the same time_splice_n.
 			virtual bool perform(unsigned int time_slice_n)=0;
 			///Gets the name of this module.
-			virtual string getName() const=0;
+			virtual std::string getName() const=0;
 			///This should load the modules contents from the stream
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 			///This should save the modules contents from the stream
@@ -493,17 +491,17 @@ namespace Nicowar
 			///exception, units with a low priority should simply be created, and do not need to be used imediettly. Its
 			///expectes that a module keep this number up to date, or the whole system can go down, because one module is being
 			///offered units and its never using them.
-			virtual void changeUnits(string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)=0;
+			virtual void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)=0;
 
 			///This function returns the number of units available to the given module, based on the number of free units,
 			///how many units this module has already recieved, and how many it wants.
-			virtual unsigned int available(string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)=0;
+			virtual unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)=0;
 
 			///This function returns true if the module can have the requested number of units for a specific task, and adds
 			///the building to the record books and manages the number of free units so that building can constantly keep full.
 			///This function can also be used to make changes on an existing building. Once you pass a building into UnitModule,
 			///the UnitModule will keep the building full untill you change the number of assigned units.
-			virtual bool request(string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)=0;
+			virtual bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)=0;
 	};
 
 	///This designates other modules that don't fit into the above catagories.
@@ -525,7 +523,7 @@ namespace Nicowar
 
 			~SimpleBuildingDefense() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -581,7 +579,7 @@ namespace Nicowar
 			GeneralsDefense(AINicowar& ai);
 			~GeneralsDefense() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -596,7 +594,7 @@ namespace Nicowar
 				unsigned int enemy_flag;
 			};
 
-			vector<defenseRecord> defending_flags;
+			std::vector<defenseRecord> defending_flags;
 
 			///Searches for enemy flags that it needs to defend against, and if
 			///it finds one, it will make a new flag.
@@ -617,7 +615,7 @@ namespace Nicowar
 			PrioritizedBuildingAttack(AINicowar& ai);
 			~PrioritizedBuildingAttack() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -672,7 +670,7 @@ namespace Nicowar
 			DistributedNewConstructionManager(AINicowar& ai);
 			~DistributedNewConstructionManager() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -776,7 +774,7 @@ namespace Nicowar
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
 
-			vector<unsigned> imap;
+			std::vector<unsigned> imap;
 	};
 
 	///This module upgrades and repairs buildings at random, up to a designated maximum construction.
@@ -787,7 +785,7 @@ namespace Nicowar
 			RandomUpgradeRepairModule(AINicowar& ai);
 			~RandomUpgradeRepairModule() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -878,18 +876,18 @@ namespace Nicowar
 		public:
 			DistributedUnitManager(AINicowar& ai);
 			~DistributedUnitManager() {};
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 
-			void changeUnits(string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority);
-			unsigned int available(string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority);
-			bool request(string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building);
+			void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority);
+			unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority);
+			bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building);
 		protected:
 			///This stores all of the information needed for maintaining a particular building at its maximum unit consumption
 			struct usageRecord
 			{
-				string owner;
+				std::string owner;
 				unsigned int x;
 				unsigned int y;
 				unsigned int type;
@@ -903,7 +901,7 @@ namespace Nicowar
 
 			///This stores all of the buildings and how many units they are using. A buildings usage record is both stored
 			///here and in the related modules moduleRecord for effiency.
-			map<int, usageRecord> buildings;
+			std::map<int, usageRecord> buildings;
 
 			///Module record
 			struct moduleRecord
@@ -926,7 +924,7 @@ namespace Nicowar
 			};
 
 			///This map stores the moduleRecords in accordance to their related module
-			map<string, moduleRecord> module_records;
+			std::map<std::string, moduleRecord> module_records;
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
@@ -940,7 +938,7 @@ namespace Nicowar
 			BasicDistributedSwarmManager(AINicowar& ai);
 			~BasicDistributedSwarmManager() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -966,7 +964,7 @@ namespace Nicowar
 			ExplorationManager(AINicowar& ai);
 			~ExplorationManager() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -1036,7 +1034,7 @@ namespace Nicowar
 			InnManager(AINicowar& ai);
 			~InnManager() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -1053,7 +1051,7 @@ namespace Nicowar
 			{
 				innRecord();
 				unsigned int pos;
-				vector<singleInnRecord> records;
+				std::vector<singleInnRecord> records;
 			};
 
 			///Maps the gid of buildings to their respective innRecord.
@@ -1077,7 +1075,7 @@ namespace Nicowar
 			TowerController(AINicowar& ai);
 			~TowerController() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -1099,7 +1097,7 @@ namespace Nicowar
 			BuildingClearer(AINicowar& ai);
 			~BuildingClearer() {};
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -1117,7 +1115,7 @@ namespace Nicowar
 			};
 
 
-			map<int, clearingRecord> cleared_buildings;
+			std::map<int, clearingRecord> cleared_buildings;
 
 			///Removes the padding around buildings that have been destroyed or upgraded (and their size has changed)
 			bool removeOldPadding();
@@ -1138,7 +1136,7 @@ namespace Nicowar
 			HappinessHandler(AINicowar& ai);
 			~HappinessHandler();
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -1164,7 +1162,7 @@ namespace Nicowar
 			Farmer(AINicowar& ai);
 			~Farmer();
 			bool perform(unsigned int time_slice_n);
-			string getName() const;
+			std::string getName() const;
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
@@ -1205,7 +1203,7 @@ namespace Nicowar
 				}
 			};
 
-			set<point> resources;
+			std::set<point> resources;
 
 			///This function goess through every square on the map, if it is a resource, not hidden,
 			///on an even numbered x or a even numbered y, not both and not neither, and it doesn't
