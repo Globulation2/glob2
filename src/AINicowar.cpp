@@ -33,8 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "Brush.h"
 #include <iostream>
 #include <sstream>
+#include <boost/rational.hpp>
 
-using namespace std;
 using namespace Nicowar;
 
 AINicowar::AINicowar(Player *player)
@@ -99,7 +99,7 @@ void AINicowar::init(Player *player)
 
 AINicowar::~AINicowar()
 {
-	for(vector<Module*>::iterator i=modules.begin(); i!=modules.end(); ++i)
+	for(std::vector<Module*>::iterator i=modules.begin(); i!=modules.end(); ++i)
 	{
 		if(*i)
 			delete *i;
@@ -145,7 +145,7 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 		stream->read(signature, 4, "signatureStart");
 		if (memcmp(signature,"MoSt", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
+			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<std::endl;
 			stream->readLeaveSection();
 			return false;
 		}
@@ -155,7 +155,7 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 		stream->read(signature, 4, "signatureEnd");
 		if (memcmp(signature,"MoEn", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at end of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<endl;
+			std::cout<<"Signature missmatch at end of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<std::endl;
 			stream->readLeaveSection();
 			return false;
 		}
@@ -197,7 +197,7 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("modules");
 	stream->writeUint32(modules.size(), "size");
 	Uint32 moduleIndex=0;
-	for(vector<Module*>::iterator i = modules.begin(); i!=modules.end(); ++i)
+	for(std::vector<Module*>::iterator i = modules.begin(); i!=modules.end(); ++i)
 	{
 		stream->writeEnterSection(moduleIndex++);
 		stream->write("MoSt", 4, "signatureStart");
@@ -229,7 +229,7 @@ Order *AINicowar::getOrder(void)
 	if (timer<STARTUP_TIME)
 		return new NullOrder();
 
-	//	std::cout<<"timer="<<timer<<";"<<endl;
+	//	std::cout<<"timer="<<timer<<";"<<std::endl;
 
 	if(active_module==modules.end() || iteration==0)
 	{
@@ -250,7 +250,7 @@ Order *AINicowar::getOrder(void)
 		iteration+=1;
 		active_module=modules.begin();
 		if(AINicowar_DEBUG)
-			std::cout<<"AINicowar: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<endl;
+			std::cout<<"AINicowar: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<std::endl;
 		outputDebugMessages();
 	}
 
@@ -260,7 +260,7 @@ Order *AINicowar::getOrder(void)
 	if((timer+1)%TIMER_INTERVAL==0)
 	{
 		gradient_manager.updateGradients();
-		//		std::cout<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<endl;
+		//		std::cout<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<std::endl;
 		bool cont = (*active_module)->perform(module_timer);
 		if(!cont)
 			++module_timer;
@@ -395,7 +395,7 @@ UnitModule* AINicowar::getUnitModule()
 
 
 
-OtherModule* AINicowar::getOtherModule(string name)
+OtherModule* AINicowar::getOtherModule(std::string name)
 {
 	return other_modules[name];
 }
@@ -433,21 +433,21 @@ void AINicowar::outputDebugMessages()
 	{
 		size_t wrap_size=60;
 		std::fstream file("NicowarStatus.txt", std::ios_base::out);
-		for(std::map<string, std::map<string, std::map<string, std::vector<string> > > >::iterator i = debug_messages.begin(); i!=debug_messages.end(); ++i)
+		for(std::map<std::string, std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator i = debug_messages.begin(); i!=debug_messages.end(); ++i)
 		{
 			size_t size=(wrap_size-2-i->first.size())/2;
-			file<<string(size, '*')<<" "<<i->first<<" "<<string(size, '*')<<endl;
-			for(std::map<string, std::map<string, std::vector<string> > >::iterator j = i->second.begin(); j!=i->second.end(); ++j)
+			file<<std::string(size, '*')<<" "<<i->first<<" "<<std::string(size, '*')<<std::endl;
+			for(std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator j = i->second.begin(); j!=i->second.end(); ++j)
 			{
-				file<<"    "<<j->first<<":"<<endl;
-				for(std::map<string, std::vector<string> >::iterator k = j->second.begin(); k!=j->second.end(); ++k)
+				file<<"    "<<j->first<<":"<<std::endl;
+				for(std::map<std::string, std::vector<std::string> >::iterator k = j->second.begin(); k!=j->second.end(); ++k)
 				{
 					if(j->second.size()>0)
 					{
-						file<<"        "<<k->first<<":"<<endl;
-						for(std::vector<string>::iterator l = k->second.begin(); l!=k->second.end(); ++l)
+						file<<"        "<<k->first<<":"<<std::endl;
+						for(std::vector<std::string>::iterator l = k->second.begin(); l!=k->second.end(); ++l)
 						{
-							file<<"            "<<*l<<endl;
+							file<<"            "<<*l<<std::endl;
 						}
 					}
 				}
@@ -1120,7 +1120,7 @@ bool SimpleBuildingDefense::perform(unsigned int time_slice_n)
 
 
 
-string SimpleBuildingDefense::getName() const
+std::string SimpleBuildingDefense::getName() const
 {
 	return "SimpleBuildingDefense";
 }
@@ -1190,7 +1190,7 @@ bool SimpleBuildingDefense::findDefense()
 {
 	ai.getUnitModule()->changeUnits("SimpleBuildingDefense", WARRIOR, 0, ATTACK_STRENGTH, 1, UnitModule::low);
 	GridPollingSystem gps(ai);
-	for(map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end(); ++i)
+	for(std::map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end(); ++i)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b && b->type->shortTypeNum!=IntBuildingType::EXPLORATION_FLAG &&
@@ -1211,7 +1211,7 @@ bool SimpleBuildingDefense::findDefense()
 						dr.flagy-=ai.map->getH();
 
 					bool found=false;
-					for(vector<defenseRecord>::iterator j = defending_zones.begin(); j != defending_zones.end(); ++j)
+					for(std::vector<defenseRecord>::iterator j = defending_zones.begin(); j != defending_zones.end(); ++j)
 					{
 						if(b->gid == j->building)
 						{
@@ -1232,7 +1232,7 @@ bool SimpleBuildingDefense::findDefense()
 					defending_zones.push_back(dr);
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 					if(AINicowar_DEBUG)
-						std::cout<<"AINicowar: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<IntBuildingType::reverseConversionMap[b->type->shortTypeNum]<<" at "<<b->posX<<","<<b->posY<<"."<<endl;
+						std::cout<<"AINicowar: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<IntBuildingType::reverseConversionMap[b->type->shortTypeNum]<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 					ai.orders.push(new OrderCreate(ai.team->teamNumber, dr.flagx, dr.flagy, typeNum));
 				}
 			}
@@ -1265,7 +1265,7 @@ bool SimpleBuildingDefense::findDefense()
 bool SimpleBuildingDefense::updateFlags()
 {
 	GridPollingSystem gps(ai);
-	for (vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
+	for (std::vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end();)
 	{
 		if(i->flag!=NOGBID)
 		{
@@ -1273,7 +1273,7 @@ bool SimpleBuildingDefense::updateFlags()
 			if(score==0)
 			{
 				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: updateFlags: Found a flag at "<<i->flagx<<","<<i->flagy<<" that is no longer defending against any enemy units. Removing this flag."<<endl;
+					std::cout<<"AINicowar: updateFlags: Found a flag at "<<i->flagx<<","<<i->flagy<<" that is no longer defending against any enemy units. Removing this flag."<<std::endl;
 				ai.orders.push(new OrderDelete(i->flag));
 				i=defending_zones.erase(i);
 				continue;
@@ -1304,12 +1304,12 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 		{
 			if(b->type->shortTypeNum == IntBuildingType::WAR_FLAG)
 			{
-				for (vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end(); ++i)
+				for (std::vector<defenseRecord>::iterator i=defending_zones.begin(); i!=defending_zones.end(); ++i)
 				{
 					if(i->flag == NOGBID && b->posX == static_cast<int>(i->flagx) && b->posY == static_cast<int>(i->flagy))
 					{
 						if(AINicowar_DEBUG)
-							std::cout<<"AINicowar: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<endl;
+							std::cout<<"AINicowar: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
 						i->flag=b->gid;
 						ai.orders.push(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2));
 						ai.orders.push(new OrderModifyBuilding(b->gid, i->assigned));
@@ -1349,7 +1349,7 @@ bool GeneralsDefense::perform(unsigned int time_slice_n)
 
 
 
-string GeneralsDefense::getName() const
+std::string GeneralsDefense::getName() const
 {
 	return "GeneralsDefense";
 }
@@ -1427,7 +1427,7 @@ bool GeneralsDefense::findEnemyFlags()
 							if(score>0)
 							{
 								bool found=false;
-								for(vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end(); ++i)
+								for(std::vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end(); ++i)
 								{
 									if(i->enemy_flag == b->gid)
 										found=true;
@@ -1440,7 +1440,7 @@ bool GeneralsDefense::findEnemyFlags()
 								dr.enemy_flag=b->gid;
 								defending_flags.push_back(dr);
 								if(AINicowar_DEBUG)
-									std::cout<<"AINicowar: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<endl;
+									std::cout<<"AINicowar: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<std::endl;
 								Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 								ai.orders.push(new OrderCreate(ai.team->teamNumber, b->posX, b->posY, typeNum));
 							}
@@ -1458,7 +1458,7 @@ bool GeneralsDefense::findEnemyFlags()
 
 bool GeneralsDefense::updateDefenseFlags()
 {
-	for(vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end();)
+	for(std::vector<defenseRecord>::iterator i = defending_flags.begin(); i!= defending_flags.end();)
 	{
 		if(buildingStillExists(ai.game, i->enemy_flag)==false)
 		{
@@ -1522,7 +1522,7 @@ bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 
 
 
-string PrioritizedBuildingAttack::getName() const
+std::string PrioritizedBuildingAttack::getName() const
 {
 	return "PrioritizedBuildingAttack";
 }
@@ -1620,7 +1620,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 			}
 		}
 
-		vector<Team*> targets;
+		std::vector<Team*> targets;
 		for(int i=0; i<32; ++i)
 		{
 			Team* t = ai.game->teams[i];
@@ -1636,7 +1636,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 		if(targets.size()>0)
 		{
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: targetEnemy: A new enemy has been chosen."<<endl;
+				std::cout<<"AINicowar: targetEnemy: A new enemy has been chosen."<<std::endl;
 			enemy=targets[syncRand()%targets.size()];
 		}
 	}
@@ -1704,7 +1704,7 @@ bool PrioritizedBuildingAttack::attack()
 		return false;
 
 	//Don't use units that are needed by other flags
-	for(vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
+	for(std::vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
 	{
 		if(i->assigned_level == strength_level)
 		{
@@ -1727,7 +1727,7 @@ bool PrioritizedBuildingAttack::attack()
 
 	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
 	//ATTACK_PRIORITY variable.
-	vector<vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
+	std::vector<std::vector<Building*> > buildings(IntBuildingType::NB_BUILDING);
 	for(int i=0; i<1024; ++i)
 	{
 		Building* b = enemy->myBuildings[i];
@@ -1754,16 +1754,16 @@ bool PrioritizedBuildingAttack::attack()
 	//we run out of available units, or we have reached the maximum number of attacks
 	//at once.
 	unsigned int attack_count=attacks.size();
-	for(vector<vector<Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
+	for(std::vector<std::vector<Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
 	{
-		for(vector<Building*>::iterator j = i->begin(); j!=i->end(); ++j)
+		for(std::vector<Building*>::iterator j = i->begin(); j!=i->end(); ++j)
 		{
 			Building* b = *j;
 			if(attack_count!=MAX_ATTACKS_AT_ONCE && available_units>=ATTACK_WARRIOR_MINIMUM)
 			{
 				//Make sure where not attacking this building already
 				bool found=false;
-				for(vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
+				for(std::vector<attackRecord>::iterator i = attacks.begin(); i!=attacks.end(); ++i)
 				{
 					if(b->gid==i->target)
 					{
@@ -1798,7 +1798,7 @@ bool PrioritizedBuildingAttack::attack()
 				ar.assigned_level=strength_level;
 				attacks.push_back(ar);
 				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<endl;
+					std::cout<<"AINicowar: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 				ai.orders.push(new OrderCreate(ai.team->teamNumber, ar.flagx, ar.flagy, typeNum));
 				++attack_count;
@@ -1840,7 +1840,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 						j->flag=b->gid;
 						unsigned int radius=std::max(j->width, j->height)/2;
 						if(AINicowar_DEBUG)
-							std::cout<<"AINicowar: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<endl;
+							std::cout<<"AINicowar: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<std::endl;
 
 						ai.orders.push(new OrderModifyFlag(b->gid, radius));
 						ai.orders.push(new OrderModifyBuilding(b->gid, j->assigned_units));
@@ -1866,7 +1866,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			if((b==NULL || b->posX!=static_cast<int>(j->target_x) || b->posY!=static_cast<int>(j->target_y)))
 			{
 				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<endl;
+					std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
 				ai.orders.push(new OrderDelete(j->flag));
 				j=attacks.erase(j);
 				continue;
@@ -1927,7 +1927,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			if(new_assigned<ATTACK_WARRIOR_MINIMUM)
 			{
 				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<endl;
+					std::cout<<"AINicowar: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
 				ai.orders.push(new OrderDelete(j->flag));
 				j=attacks.erase(j);
 				continue;
@@ -1938,7 +1938,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			if(new_assigned != j->assigned_units)
 			{
 				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: updateAttackFlags: Changing the "<<j->flagx<<","<<j->flagy<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<endl;
+					std::cout<<"AINicowar: updateAttackFlags: Changing the "<<j->flagx<<","<<j->flagy<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<std::endl;
 				j->assigned_units=new_assigned;
 				ai.orders.push(new OrderModifyBuilding(j->flag, new_assigned));
 				available_units-=new_assigned;
@@ -1986,7 +1986,7 @@ bool DistributedNewConstructionManager::perform(unsigned int time_slice_n)
 
 
 
-string DistributedNewConstructionManager::getName() const
+std::string DistributedNewConstructionManager::getName() const
 {
 	return "DistributedNewConstructionManager";
 }
@@ -2077,7 +2077,7 @@ void DistributedNewConstructionManager::save(GAGCore::OutputStream *stream) cons
 
 DistributedNewConstructionManager::upgradeData DistributedNewConstructionManager::findMaxSize(unsigned int building_type, unsigned int cur_level)
 {
-	string type = IntBuildingType::reverseConversionMap[building_type];
+	std::string type = IntBuildingType::reverseConversionMap[building_type];
 	BuildingType* new_type = globalContainer->buildingsTypes.getByType(type, 2, false);
 	BuildingType* cur_type = globalContainer->buildingsTypes.getByType(type, cur_level, false);
 	upgradeData ud;
@@ -2205,7 +2205,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 		if(NicowarStatusUpdate)
 			ai.addDebugMessage("DistributedNewConstructionManager", "Construction", "General", "There is already too much construction, I will not try to start anymore.");
 		if(local_debug)
-			std::cout<<"Fail 1, too much construction."<<endl;
+			std::cout<<"Fail 1, too much construction."<<std::endl;
 		return false;
 	}
 
@@ -2252,7 +2252,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 	unsigned int min_failed_height=512;
 	for(std::vector<typePercent>::iterator i = construction_priorities.begin(); i!=construction_priorities.end(); ++i)
 	{
-		string building_name=IntBuildingType::reverseConversionMap[i->building_type];
+		std::string building_name=IntBuildingType::reverseConversionMap[i->building_type];
 		if(NicowarStatusUpdate)
 		{
 			ai.clearDebugMessages("DistributedNewConstructionManager", "Construction", building_name);
@@ -2267,7 +2267,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 			{
 				if(local_debug)
-					std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
+					std::cout<<"Fail 1, too much construction, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
 				if(!NicowarStatusUpdate)
 					return false;
 				else
@@ -2277,7 +2277,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW && !CHEAT_INSTANT_BUILDING)
 			{
 				if(local_debug)
-					std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
+					std::cout<<"Fail 2, too few units, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
 				if(!NicowarStatusUpdate)
 					return false;
 				else
@@ -2287,7 +2287,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(under_construction_counts[i->building_type]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i->building_type])
 			{
 				if(local_debug)
-					std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
+					std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
 				if(!NicowarStatusUpdate)
 					break;
 				else
@@ -2297,7 +2297,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(counts[i->building_type]>=num_buildings_wanted[i->building_type])
 			{
 				if(local_debug)
-					std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
+					std::cout<<"Fail 4, building cap reached, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
 				if(!NicowarStatusUpdate)
 					break;
 				else
@@ -2324,7 +2324,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 				min_failed_height=size.height;
 
 				if(local_debug)
-					std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<endl;
+					std::cout<<"Fail 5, no suitable positon found, for "<<IntBuildingType::reverseConversionMap[i->building_type]<<"."<<std::endl;
 				if(NicowarStatusUpdate)
 					ai.addDebugMessage("DistributedNewConstructionManager", "Construction", building_name, "I won't construct this because there is no place to put this building.");
 				break;
@@ -2350,7 +2350,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			new_buildings.push_back(ncr);
 
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i->building_type]<<", at position "<<p.x<<","<<p.y<<"."<<endl;
+				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i->building_type]<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
 			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i->building_type], 0, !CHEAT_INSTANT_BUILDING);
 			ai.orders.push(new OrderCreate(ai.team->teamNumber, p.x, p.y, type));
 			total_construction+=1;
@@ -2565,7 +2565,7 @@ bool RandomUpgradeRepairModule::perform(unsigned int time_slice_n)
 
 
 
-string RandomUpgradeRepairModule::getName() const
+std::string RandomUpgradeRepairModule::getName() const
 {
 	return "RandomUpgradeRepairModule";
 }
@@ -2665,7 +2665,7 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 		if (b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR )
 		{
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<endl;
+				std::cout<<"AINicowar: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, UnitModule::medium, b->gid);
 			i=active_construction.erase(i);
 			ai.orders.push(new OrderModifyBuilding(b->gid, original));
@@ -2694,7 +2694,7 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 		{
 			constructionRecord u=*i;
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: updatePendingConstruction: The "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<endl;
+				std::cout<<"AINicowar: updatePendingConstruction: The "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
 			ai.orders.push(new OrderModifyBuilding(b->gid, assigned));
@@ -2718,7 +2718,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 	}
 
 	//Finally, iterate through the shuffled list of records changing the number of units allocated to upgrade the buildings.
-	for (list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
+	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
 		if(!buildingStillExists(ai.game, b))
@@ -2753,7 +2753,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (!is_repair && available_upgrade==0)
 		{
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
+				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, UnitModule::medium, b->gid);
 			ai.orders.push(new OrderCancelConstruction(b->gid));
 			continue;
@@ -2762,7 +2762,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		else if (is_repair && available_repair==0)
 		{
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<endl;
+				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, UnitModule::medium, b->gid);
 			ai.orders.push(new OrderCancelConstruction(b->gid));
 			continue;
@@ -2789,7 +2789,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (num_to_assign != assigned)
 		{
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: reassignConstruction: Retasking "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<endl;
+				std::cout<<"AINicowar: reassignConstruction: Retasking "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, num_to_assign, UnitModule::medium, b->gid);
 			ai.orders.push(new OrderModifyBuilding(b->gid, num_to_assign));
 			i->assigned=num_to_assign;
@@ -2804,8 +2804,6 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 
 bool RandomUpgradeRepairModule::startNewConstruction(void)
 {
-	ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, MAXIMUM_TO_UPGRADE*MAX_CONSTRUCTION_AT_ONCE, BUILD, 2, UnitModule::medium);
-
 	//If we already have more than our max, don't do any more
 	if (active_construction.size()+pending_construction.size()>=MAX_CONSTRUCTION_AT_ONCE)
 		return false;
@@ -2821,7 +2819,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	for (int j=0; j!=IntBuildingType::NB_BUILDING; j++)
 		construction_counts[j]=0;
 
-	for (list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
+	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
 		Building *b=i->building;
 		if(buildingStillExists(ai.game, b))
@@ -2831,7 +2829,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 		}
 	}
 
-	for (list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
+	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end(); i++)
 	{
 		Building *b=i->building;
 		if(buildingStillExists(ai.game, b))
@@ -2843,7 +2841,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 
 	//Make a copy of the array of buildings, then shuffle it so that every building has a random chance of being upgraded with the spare units.
 	///Also count up the numbers of buildings for each level to allow for ratio'ing and divy up the construction limits between various levels
-	vector<Building*> buildings;
+	std::vector<Building*> buildings;
 	buildings.reserve(1024);
 	for (int i=0; i<1024; i+=1)
 	{
@@ -2882,10 +2880,12 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	selection_sort(buildings.begin(), buildings.end(), weighted_random_upgrade_comparison);
 
 	unsigned int ratio_total=std::accumulate(ratios, ratios+3, 0);
-	float devisor=static_cast<float>(ratio_total)/MAX_CONSTRUCTION_AT_ONCE;
+	boost::rational<unsigned int> devisor(ratio_total, MAX_CONSTRUCTION_AT_ONCE);
 	for(int i=0; i<3; ++i)
 	{
-		ratios[i]=static_cast<unsigned int>(static_cast<float>(ratios[i])/devisor);
+		boost::rational<unsigned int> ratio(ratios[i], 1);
+		ratio/=devisor;
+		ratios[i]=ratio.numerator();
 		ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, ratios[i]*MAX_CONSTRUCTION_AT_ONCE, BUILD, i+1, UnitModule::medium);
 	}
 
@@ -2897,7 +2897,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	}
 
 	//Look through the buildings, and if their are atleast 4 of the correct unit type available to upgrade/repair it, then do it.
-	for (vector<Building*>::iterator i = buildings.begin(); i!=buildings.end(); i++)
+	for (std::vector<Building*>::iterator i = buildings.begin(); i!=buildings.end(); i++)
 	{
 		Building *b=*i;
 		//Check if its worthy of having anything done to it.
@@ -2926,7 +2926,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				if( num_to_assign > MAXIMUM_TO_REPAIR)
 					num_to_assign=MAXIMUM_TO_REPAIR;
 				if(AINicowar_DEBUG)
-					cout<<"AINicowar: startNewConstruction: Found "<<available_repair<<" available workers, assigning "<<num_to_assign<<" workers to repair the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<endl;
+					std::cout<<"AINicowar: startNewConstruction: Found "<<available_repair<<" available workers, assigning "<<num_to_assign<<" workers to repair the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<std::endl;
 				constructionRecord u;
 				u.building=b;
 				u.assigned=num_to_assign;
@@ -2948,7 +2948,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				if( num_to_assign > MAXIMUM_TO_UPGRADE)
 					num_to_assign=MAXIMUM_TO_UPGRADE;
 				if(AINicowar_DEBUG)
-					cout<<"AINicowar: startNewConstruction: Found "<<available_upgrade<<" available workers, assigning "<<num_to_assign<<" workers to upgrade the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<endl;
+					std::cout<<"AINicowar: startNewConstruction: Found "<<available_upgrade<<" available workers, assigning "<<num_to_assign<<" workers to upgrade the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" with "<<b->maxUnitWorking<<" units already working on it."<<std::endl;
 				constructionRecord u;
 				u.building=b;
 				u.assigned=num_to_assign;
@@ -2976,7 +2976,7 @@ DistributedUnitManager::DistributedUnitManager(AINicowar& ai) : ai(ai)
 
 
 
-string DistributedUnitManager::getName() const
+std::string DistributedUnitManager::getName() const
 {
 	return "DistributedUnitManager";
 }
@@ -2993,7 +2993,7 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 	{
 		stream->readEnterSection(unitRecordIndex);
 		moduleRecord mr;
-		string name=stream->readText("name");
+		std::string name=stream->readText("name");
 		for(unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; ++i)
 		{
 			stream->readEnterSection(i);
@@ -3056,7 +3056,7 @@ void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("module_records");
 	stream->writeUint32(module_records.size(), "size");
 	Uint32 unitRecordIndex = 0;
-	for (map<string, moduleRecord>::const_iterator i=module_records.begin(); i!=module_records.end(); ++i)
+	for (std::map<std::string, moduleRecord>::const_iterator i=module_records.begin(); i!=module_records.end(); ++i)
 	{
 		stream->writeEnterSection(unitRecordIndex++);
 		stream->writeText(i->first, "name");
@@ -3089,7 +3089,7 @@ void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("buildings");
 	stream->writeUint32(buildings.size(), "size");
 	unitRecordIndex = 0;
-	for(map<int, usageRecord>::const_iterator i = buildings.begin(); i!=buildings.end(); ++i)
+	for(std::map<int, usageRecord>::const_iterator i = buildings.begin(); i!=buildings.end(); ++i)
 	{
 		stream->writeEnterSection(unitRecordIndex++);
 		stream->writeUint32(i->first, "gid");
@@ -3110,26 +3110,26 @@ void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
 
 
 
-void DistributedUnitManager::changeUnits(string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)
+void DistributedUnitManager::changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)
 {
 	level-=1;
-	//	std::cout<<"moduleName="<<moduleName<<"; unitType="<<unitType<<"; numUnits="<<numUnits<<"; ability="<<ability<<"; level="<<level<<";"<<endl;
+	//	std::cout<<"moduleName="<<moduleName<<"; unitType="<<unitType<<"; numUnits="<<numUnits<<"; ability="<<ability<<"; level="<<level<<";"<<std::endl;
 	module_records[moduleName].requested[unitType][ability][level][priority]=numUnits;
 }
 
 
 
 
-unsigned int DistributedUnitManager::available(string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)
+unsigned int DistributedUnitManager::available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)
 {
 	//	if(level==0)
-	//		std::cout<<"Warning: available passed with 0 for minimum_level. module_name="<<module_name<<";"<<endl;
-	//	std::cout<<"module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; level="<<level<<"; is_minimum="<<is_minimum<<"; priority="<<priority<<";"<<endl;
+	//		std::cout<<"Warning: available passed with 0 for minimum_level. module_name="<<module_name<<";"<<std::endl;
+	//	std::cout<<"module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; level="<<level<<"; is_minimum="<<is_minimum<<"; priority="<<priority<<";"<<std::endl;
 	TeamStatsGenerator stat(ai.team);
 	unsigned int num_available=stat.getUnits(unit_type, Unit::MED_FREE, Unit::ACT_RANDOM, ability, level, is_minimum);
-	//	std::cout<<"    num_available(1)="<<num_available<<";"<<endl;
+	//	std::cout<<"    num_available(1)="<<num_available<<";"<<std::endl;
 	level-=1;
-	for(map<int, usageRecord>::iterator i=buildings.begin(); i!=buildings.end(); ++i)
+	for(std::map<int, usageRecord>::iterator i=buildings.begin(); i!=buildings.end(); ++i)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->type->shortTypeNum != static_cast<int>(i->second.type) || b->type->level!=static_cast<int>(i->second.level))
@@ -3140,7 +3140,7 @@ unsigned int DistributedUnitManager::available(string module_name, unsigned int 
 		if((is_minimum && i->second.ability==ability && i->second.level>=level) || (!is_minimum && i->second.ability==ability && i->second.level==level))
 		{
 			unsigned int needed=b->maxUnitWorking-b->unitsWorking.size();
-			//			std::cout<<"needed="<<needed<<"; i->first="<<i->first<<"; b->type->shortTypeNum="<<b->type->shortTypeNum<<endl;
+			//			std::cout<<"needed="<<needed<<"; i->first="<<i->first<<"; b->type->shortTypeNum="<<b->type->shortTypeNum<<std::endl;
 			if(needed>num_available)
 			{
 				num_available=0;
@@ -3151,14 +3151,14 @@ unsigned int DistributedUnitManager::available(string module_name, unsigned int 
 			}
 		}
 	}
-	//	std::cout<<"    num_available(2)="<<num_available<<";"<<endl;
+	//	std::cout<<"    num_available(2)="<<num_available<<";"<<std::endl;
 
 	///This is given as the 'unreachable' highest value.
 	unsigned int min_percent=10000;
-	string min_module="";
+	std::string min_module="";
 	unsigned int min_total_requested=0;
 	unsigned int min_total_used=0;
-	for(map<string, moduleRecord>::iterator i=module_records.begin(); i!=module_records.end(); ++i)
+	for(std::map<std::string, moduleRecord>::iterator i=module_records.begin(); i!=module_records.end(); ++i)
 	{
 		unsigned int total_requested=0;
 		unsigned int total_used=0;
@@ -3171,7 +3171,7 @@ unsigned int DistributedUnitManager::available(string module_name, unsigned int 
 		}
 		if(total_requested==0)
 			continue;
-		//		std::cout<<"        module_name="<<i->first<<"; total_requested="<<total_requested<<"; total_used="<<total_used<<";"<<endl;
+		//		std::cout<<"        module_name="<<i->first<<"; total_requested="<<total_requested<<"; total_used="<<total_used<<";"<<std::endl;
 		unsigned int percent=0;
 		if(total_requested>0)
 			percent=total_used*100/total_requested;
@@ -3186,9 +3186,9 @@ unsigned int DistributedUnitManager::available(string module_name, unsigned int 
 		}
 	}
 
-	//	std::cout<<"    min_module="<<min_module<<";"<<endl;
-	//	std::cout<<"    min_percent="<<min_percent<<";"<<endl;
-	//	std::cout<<"    min_total_requested="<<min_total_requested<<";"<<endl;
+	//	std::cout<<"    min_module="<<min_module<<";"<<std::endl;
+	//	std::cout<<"    min_percent="<<min_percent<<";"<<std::endl;
+	//	std::cout<<"    min_total_requested="<<min_total_requested<<";"<<std::endl;
 
 	if(min_module!=module_name)
 		return 0;
@@ -3199,10 +3199,10 @@ unsigned int DistributedUnitManager::available(string module_name, unsigned int 
 
 
 
-bool DistributedUnitManager::request(string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)
+bool DistributedUnitManager::request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)
 {
 	//	if(minimum_level==0)
-	//		std::cout<<"Warning: request passed with 0 for minimum_level. request(module_name="<<module_name<<", unit_type="<<unit_type<<", ability="<<ability<<", minimum_level="<<minimum_level<<", number="<<number<<", priority="<<priority<<")"<<endl;
+	//		std::cout<<"Warning: request passed with 0 for minimum_level. request(module_name="<<module_name<<", unit_type="<<unit_type<<", ability="<<ability<<", minimum_level="<<minimum_level<<", number="<<number<<", priority="<<priority<<")"<<std::endl;
 
 	minimum_level-=1;
 	usageRecord ur;
@@ -3258,7 +3258,7 @@ bool BasicDistributedSwarmManager::perform(unsigned int time_slice_n)
 
 
 
-string BasicDistributedSwarmManager::getName() const
+std::string BasicDistributedSwarmManager::getName() const
 {
 	return "BasicDistributedSwarmManager";
 }
@@ -3302,7 +3302,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	}
 
 	//Counts out the requested units from each of the modules
-	for (std::map<string, moduleRecord>::iterator i = module_records.begin(); i!=module_records.end(); i++)
+	for (std::map<std::string, moduleRecord>::iterator i = module_records.begin(); i!=module_records.end(); i++)
 	{
 		for(unsigned int j=0; static_cast<int>(j)<NB_UNIT_TYPE; ++j)
 			for(unsigned int k=0; static_cast<int>(k)<NB_ABILITY; ++k)
@@ -3334,7 +3334,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 		total_wanted_score+=ratios[i];
 	}
 
-	int max=*max_element(ratios, ratios+NB_UNIT_TYPE);
+	int max=*std::max_element(ratios, ratios+NB_UNIT_TYPE);
 	float devisor=1;
 	if(max>16)
 		devisor=static_cast<float>(max)/16.0;
@@ -3365,7 +3365,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 			continue;
 
 		if(AINicowar_DEBUG && need_to_output)
-			std::cout<<"AINicowar: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<endl;
+			std::cout<<"AINicowar: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<std::endl;
 		need_to_output=false;
 		ai.orders.push(new OrderModifySwarm(swarm->gid, ratios));
 	}
@@ -3405,7 +3405,7 @@ bool ExplorationManager::perform(unsigned int time_slice_n)
 
 
 
-string ExplorationManager::getName() const
+std::string ExplorationManager::getName() const
 {
 	return "ExplorationManager";
 }
@@ -3518,7 +3518,7 @@ bool ExplorationManager::exploreWorld(void)
 	GridPollingSystem::getBestZonesSplit* split = gps.getBestZones(p, EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP,
 		EXPLORER_REGION_VERTICAL_OVERLAP, EXPLORER_REGION_HORIZONTAL_EXTENTION,
 		EXPLORER_REGION_VERTICAL_EXTENTION);
-	vector<GridPollingSystem::zone> best = gps.getBestZones(split);
+	std::vector<GridPollingSystem::zone> best = gps.getBestZones(split);
 	unsigned int size=best.size();
 
 	p.mod_1=GridPollingSystem::MAXIMUM;
@@ -3532,18 +3532,18 @@ bool ExplorationManager::exploreWorld(void)
 		EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP, EXPLORER_ATTACK_AREA_HORIZONTAL_EXTENTION,
 		EXPLORER_ATTACK_AREA_VERTICAL_EXTENTION);
 
-	vector<GridPollingSystem::zone> best_attack = gps.getBestZones(split);
+	std::vector<GridPollingSystem::zone> best_attack = gps.getBestZones(split);
 
-	std::copy(best_attack.begin(), best_attack.end(), back_insert_iterator<vector<GridPollingSystem::zone> >(best));
+	std::copy(best_attack.begin(), best_attack.end(), std::back_insert_iterator<std::vector<GridPollingSystem::zone> >(best));
 
-	vector<GridPollingSystem::zone>::iterator attack_start=best.begin()+size;
+	std::vector<GridPollingSystem::zone>::iterator attack_start=best.begin()+size;
 
 	///Erase any zones that already have flags in them
-	for(vector<GridPollingSystem::zone>::iterator i = best.begin(); i!=best.end();)
+	for(std::vector<GridPollingSystem::zone>::iterator i = best.begin(); i!=best.end();)
 	{
 		if(!isFreeOfFlags(i->x+i->width/2, i->y+i->height/2))
 		{
-			//			std::cout<<"removing zone from list!"<<endl;
+			//			std::cout<<"removing zone from list!"<<std::endl;
 			i = best.erase(i);
 		}
 		else
@@ -3552,16 +3552,16 @@ bool ExplorationManager::exploreWorld(void)
 		}
 	}
 
-	vector<GridPollingSystem::zone>::iterator top=best.begin();
+	std::vector<GridPollingSystem::zone>::iterator top=best.begin();
 	if(top<attack_start && gps.pollArea(top->x, top->y, top->width, top->height, GridPollingSystem::MAXIMUM, GridPollingSystem::HIDDEN_SQUARES)==0)
 	{
-		//		std::cout<<"Doing nothing! wanted_exploration="<<wanted_exploration<<";"<<endl;
+		//		std::cout<<"Doing nothing! wanted_exploration="<<wanted_exploration<<";"<<std::endl;
 		return false;
 	}
 
-	for (vector<GridPollingSystem::zone>::iterator i=best.begin(); i!=best.end(); ++i)
+	for (std::vector<GridPollingSystem::zone>::iterator i=best.begin(); i!=best.end(); ++i)
 	{
-		//		std::cout<<"wanted_exploration="<<wanted_exploration<<"; "<<endl;
+		//		std::cout<<"wanted_exploration="<<wanted_exploration<<"; "<<std::endl;
 		GridPollingSystem::zone z = *i;
 		if((i>=attack_start && wanted_attack==0) || (wanted_attack==0 && wanted_exploration==0))
 			break;
@@ -3601,7 +3601,7 @@ bool ExplorationManager::exploreWorld(void)
 
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
 		if(AINicowar_DEBUG)
-			std::cout<<"AINicowar: exploreWorld: Creating a new flag at position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<endl;
+			std::cout<<"AINicowar: exploreWorld: Creating a new flag at position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<std::endl;
 		ai.orders.push(new OrderCreate(ai.team->teamNumber, exploration_record.flag_x, exploration_record.flag_y,typeNum));
 		explorers_wanted+=exploration_record.assigned;
 	}
@@ -3624,13 +3624,13 @@ bool ExplorationManager::updateExplorationFlags(void)
 		{
 			if (b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
 			{
-				for (list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
+				for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
 				{
 					if (i->flag==NULL && b->posX==static_cast<int>(i->flag_x) && b->posY==static_cast<int>(i->flag_y) && b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
 					{
 						i->flag=b;
 						if(AINicowar_DEBUG)
-							std::cout<<"AINicowar: updateExplorationFlags: Found a newly created flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<endl;
+							std::cout<<"AINicowar: updateExplorationFlags: Found a newly created flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<std::endl;
 						ai.orders.push(new OrderModifyFlag(b->gid, i->radius));
 						ai.orders.push(new OrderModifyBuilding(b->gid, i->assigned));
 						ai.getUnitModule()->request("ExplorationManager", EXPLORER, FLY, 1, i->assigned, UnitModule::medium_high, i->flag->gid);
@@ -3654,7 +3654,7 @@ bool ExplorationManager::updateExplorationFlags(void)
 			if(score==0)
 			{
 				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: updateExplorationFlags: Removing a flag this is no longer needed at "<<i->flag_x<<", "<<i->flag_y<<"."<<endl;
+					std::cout<<"AINicowar: updateExplorationFlags: Removing a flag this is no longer needed at "<<i->flag_x<<", "<<i->flag_y<<"."<<std::endl;
 				ai.orders.push(new OrderDelete(i->flag->gid));
 				explorers_wanted-=i->assigned;
 				i=active_exploration.erase(i);
@@ -3755,7 +3755,7 @@ bool ExplorationManager::explorerAttack(void)
 		return false;
 	if(AINicowar_DEBUG)
 		if(!explorer_attacking)
-			std::cout<<"AINicowar: explorerAttack: Enabling explorer attacks."<<endl;
+			std::cout<<"AINicowar: explorerAttack: Enabling explorer attacks."<<std::endl;
 	explorer_attacking=true;
 	return false;
 }
@@ -3786,7 +3786,7 @@ bool InnManager::perform(unsigned int time_slice_n)
 
 
 
-string InnManager::getName() const
+std::string InnManager::getName() const
 {
 	return "InnManager";
 }
@@ -3901,7 +3901,7 @@ bool InnManager::modifyInns()
 		}
 
 		unsigned int average=0;
-		for (vector<singleInnRecord>::iterator record = i->second.records.begin(); record!=i->second.records.end(); ++record)
+		for (std::vector<singleInnRecord>::iterator record = i->second.records.begin(); record!=i->second.records.end(); ++record)
 		{
 			average+=record->food_amount;
 		}
@@ -3912,7 +3912,7 @@ bool InnManager::modifyInns()
 		if(static_cast<int>(to_assign)!=inn->maxUnitWorking)
 		{
 			if(AINicowar_DEBUG)
-				std::cout<<"AINicowar: modifyInns: Changing the number of units assigned to an inn from "<<inn->maxUnitWorking<<" to "<<to_assign<<"."<<endl;
+				std::cout<<"AINicowar: modifyInns: Changing the number of units assigned to an inn from "<<inn->maxUnitWorking<<" to "<<to_assign<<"."<<std::endl;
 			ai.orders.push(new OrderModifyBuilding(inn->gid, to_assign));
 			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, to_assign, UnitModule::medium, inn->gid);
 		}
@@ -3946,7 +3946,7 @@ bool TowerController::perform(unsigned int time_slice_n)
 
 
 
-string TowerController::getName() const
+std::string TowerController::getName() const
 {
 	return "TowerController";
 }
@@ -3990,7 +3990,7 @@ bool TowerController::controlTowers()
 				if(b->maxUnitWorking != static_cast<int>(NUM_PER_TOWER))
 				{
 					if(AINicowar_DEBUG)
-						std::cout<<"AINicowar: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<endl;
+						std::cout<<"AINicowar: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<std::endl;
 					ai.orders.push(new OrderModifyBuilding(b->gid, NUM_PER_TOWER));
 				}
 			}
@@ -4027,7 +4027,7 @@ bool BuildingClearer::perform(unsigned int time_slice_n)
 
 
 
-string BuildingClearer::getName() const
+std::string BuildingClearer::getName() const
 {
 	return "BuildingClearer";
 }
@@ -4066,7 +4066,7 @@ void BuildingClearer::save(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("BuildingClearer");
 	stream->writeUint32(cleared_buildings.size(), "size");
 	Uint32 clearingRecordIndex = 0;
-	for(map<int, clearingRecord>::const_iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
+	for(std::map<int, clearingRecord>::const_iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
 	{
 		stream->writeEnterSection(clearingRecordIndex++);
 		stream->writeUint32(i->second.x, "x");
@@ -4085,7 +4085,7 @@ void BuildingClearer::save(GAGCore::OutputStream *stream) const
 
 bool BuildingClearer::removeOldPadding()
 {
-	for(map<int, clearingRecord>::iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
+	for(std::map<int, clearingRecord>::iterator i=cleared_buildings.begin(); i!=cleared_buildings.end(); ++i)
 	{
 		Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b==NULL || b->type->level != static_cast<int>(i->second.level) || i->second.x!=b->posX-CLEARING_AREA_BUILDING_PADDING || i->second.y!=b->posY-CLEARING_AREA_BUILDING_PADDING)
@@ -4167,7 +4167,7 @@ bool BuildingClearer::updateClearingAreas()
 					}
 				}
 				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<endl;
+					std::cout<<"AINicowar: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 				if(acc.getApplicationCount()>0)
 					ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_ADD, &acc));
 				cleared_buildings[b->gid]=cr;
@@ -4212,7 +4212,7 @@ bool HappinessHandler::perform(unsigned int time_slice_n)
 
 
 
-string HappinessHandler::getName() const
+std::string HappinessHandler::getName() const
 {
 	return "HappinessHandler";
 }
@@ -4280,7 +4280,7 @@ bool HappinessHandler::adjustAlliances()
 	if(food_mask!=ai.team->sharedVisionFood)
 	{
 		if(AINicowar_DEBUG)
-			std::cout<<"AINicowar: adjustAlliances: Adjusting food vision alliance."<<endl;
+			std::cout<<"AINicowar: adjustAlliances: Adjusting food vision alliance."<<std::endl;
 		ai.orders.push(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->enemies, ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther));
 	}
 
@@ -4329,7 +4329,7 @@ bool Farmer::perform(unsigned int time_slice_n)
 
 
 
-string Farmer::getName() const
+std::string Farmer::getName() const
 {
 	return "Farmer";
 }
@@ -4363,7 +4363,7 @@ void Farmer::save(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("Farmer");
 	stream->writeUint32(resources.size(), "size");
 	Uint32 pointsIndex = 0;
-	for(set<point>::const_iterator i=resources.begin(); i!=resources.end(); ++i)
+	for(std::set<point>::const_iterator i=resources.begin(); i!=resources.end(); ++i)
 	{
 		stream->writeEnterSection(pointsIndex++);
 		stream->writeUint16(i->x, "x");
