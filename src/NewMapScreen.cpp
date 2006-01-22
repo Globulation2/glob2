@@ -324,6 +324,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				extraIslands->visible=extraIslandsText->visible=
 				craterDensity->visible=craterDensityText->visible=
 				riverDiameter->visible=riverDiameterText->visible=
+				oldBeach->visible=oldBeachSizeText->visible=
 				oldIslandSize->visible=oldIslandSizeText->visible=
 				riverDiameter->visible=riverDiameterText->visible=
 				false;

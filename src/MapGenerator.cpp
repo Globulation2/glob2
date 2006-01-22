@@ -833,14 +833,14 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	{
 		histogram[hm.uiLevel(i,2048)]++;
 	}
-	for (int i=0; i<2048; i++)
+/* 	for (int i=0; i<2048; i++)
 	{
 		for (int j=0; j<2048*histogram[i]/w/h; j++)
 			std::cout << "#";
 		if(i%10==0)
 			std::cout << "\n";
-	}
-
+	} */
+	
 	unsigned int accumulatedHistogram=0;
 	int i=0;
 	waterLevel=0;
@@ -883,8 +883,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				undermap[i]=SAND;
 	}
 	controlSand();
-	std::cout << "writing .raw\n";
-	hm.mapOutput("findError");
+	//std::cout << "writing heightMap (raw) to your glob folder\n";
+	//hm.mapOutput("heightMap");
 
 	//Now, we have to find suitable places for teams:
 	int nbTeams=descriptor.nbTeams;
@@ -993,7 +993,6 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 	int limiteDist=(w+h)/(2*nbTeams);
 	
 	// let's add ressources...
-	std::cout << "debugoutput 6\n";
 	for (int team=0; team<nbTeams; team++)
 	{
 		int smallestWidth=limiteDist;
@@ -1138,7 +1137,6 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		if (amount>0)
 			setRessource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
 	}
-	std::cout << "debugoutput 7\n";
 	
 	// Let's smooth ressources...
 	int maxAmount=0;

@@ -50,28 +50,6 @@ HeightMap::HeightMap(unsigned int width, unsigned int height)
 {
 	init(width,height);
 }
-/*HeightMap::HeightMap(unsigned int width, unsigned int height, unsigned int playerCount, unsigned int kind)
-{
-	assert(kind<=RANDOM);
-	init(width,height);
-	kind=rand()%RANDOM;
-	float smoothingFactor=(float)(rand()%1000)/1000.0*30.0+15.0;
-	std::cout << width << " " << height << " " << playerCount << " " << kind << " " << smoothingFactor << "\n";
-
-	switch (kind) {
-		case SWAMP: makeSwamp(smoothingFactor);
-			break;
-		case ISLANDS: makeIslands(playerCount+rand()%playerCount,smoothingFactor);
-			break;
-		case RIVER: makeRiver((_w<_h?_w:_h)*(rand()%10)/10,smoothingFactor);
-			break;
-		case CRATERS: makeCraters(_w*_h*(rand()%5 +1)/1500, 20,smoothingFactor);
-			break;
-		default:
-			assert(false);
-			break;
-	}
-};*/
 	
 HeightMap::~HeightMap()
 {
@@ -103,10 +81,6 @@ void HeightMap::makeStamp(unsigned int radius)
 				_stamp[x+y*(2*_r+1)]=(1.0-cos(sqrt(dSquare)*3.14159265/(float)_r))/2.0;
 			else
 				_stamp[x+y*(2*_r+1)]=.9999;
-			// TODO: remove these asserts:
-//				assert(_stamp[x+y*(2*_r+1)])>0.0);//
-//				assert(_stamp[x+y*(2*_r+1)])<1.0);//
-			//********************************
 		}
 	}
 }
@@ -114,7 +88,8 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if(coordX!=oldX & coordY!=oldY){
+	if(coordX!=oldX | coordY!=oldY) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
 		{
@@ -129,18 +104,14 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 		oldX=coordX;
 		oldY=coordY;
 	}
-	//remove if it produces output. otherwise remove the whole if..else
-	else
-	{
-		std::cout << "skip ";
-	}
 }
 
 inline void HeightMap::maxRise(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if(coordX!=oldX & coordY!=oldY){
+	if(coordX!=oldX | coordY!=oldY) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
 		{
@@ -160,7 +131,8 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if(coordX!=oldX & coordY!=oldY){
+	if(coordX!=oldX | coordY!=oldY) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
 		{
@@ -177,8 +149,7 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 
 inline void HeightMap::addNoise(float weight, float smoothingFactor)
 {
-	assert(weight>0 & weight<1);
-	
+	assert(weight>0 & weight<=1.0);
 	for (int x=0; (unsigned int)x<_w; x++)
 	{
 		for (int y=0; (unsigned int)y<_h; y++)
@@ -223,7 +194,7 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 		if(!foundSpot)
 		{
 			std::cout <<count << " " << mindist << " " << tries << " " << newPosX << "/" << newPosY << " " << i << "\n";
-			assert (foundSpot);
+			assert (false);
 		}
 		centerX[i]=newPosX;centerY[i]=newPosY;
 	}
@@ -249,24 +220,41 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
 	float startingPointY=rand()%_h;
 	
 	/// the target=start+(w,h) is set now. tmprand(0,1,2)==position(+h,+w,+w+h)
-	unsigned int tmprand=rand()%3;
-	float targetPointX=startingPointX+(tmprand>0?_w:0);
-	float targetPointY=startingPointY+_h-(tmprand%2)*_h;
+	float targetPointX;
+	float targetPointY;
+	if(_w==_h)
+	{
+		unsigned int tmprand=rand()%3;
+		targetPointX=startingPointX+(tmprand>0?_w:0);
+		targetPointY=startingPointY+_h-(tmprand%2)*_h;
+	}
+	else if (_w>_h)
+	{
+		targetPointX=startingPointX+_w;
+		targetPointY=startingPointY+(rand()%(_w/_h))*_h;
+	}
+	else
+	{
+		targetPointX=startingPointX+(rand()%(_h/_w))*_w;
+		targetPointY=startingPointY+_h;
+	}
 	float targetDirection=asin((targetPointY-startingPointY)/sqrt(pow(targetPointX-startingPointX,2)+pow(targetPointY-startingPointY,2)));
 	float targetDirectionX=cos(targetDirection);
 	float targetDirectionY=sin(targetDirection);
 	/// length of direct line
 	float straightRiverLength=sqrt(pow(targetPointX-startingPointX,2)+pow(targetPointY-startingPointY,2));
-	for(float t=0; t<straightRiverLength;t+=straightRiverLength/(_w+_h))
+	for(float t=0; t<straightRiverLength;t+=straightRiverLength/10.0/(_w+_h))
 	{
-		//TODO: make river match start and end through slider
-		//float slider=t/straightRiverLength+faderCorner((int)(t*(w+h)),0,(int)straightRiverLength,1)*pn.Noise(t/500)*1000.0;
-		float offset=/* faderCorner((int)(t*(w+h)),0,(int)straightRiverLength,1)* */_pn.Noise(t/153.3)*300.0+_pn.Noise(t/13.3)*50.0;
-		float reachedPointX=targetDirectionX*t-targetDirectionY*offset;
-		float reachedPointY=targetDirectionY*t+targetDirectionX*offset;
+		float offset=(1.0-cos(t/straightRiverLength*2*3.14159265))*(_pn.Noise(t/153.3)*300.0+_pn.Noise(t/13.3)*50.0-175.0);
+		if(t<straightRiverLength/2.0)
+			offset+=(1+cos(t/straightRiverLength*2*3.14159265))*(_pn.Noise(t/153.3)*300.0+_pn.Noise(t/13.3)*50.0-175.0);
+		else
+			offset+=(1+cos(t/straightRiverLength*2*3.14159265))*(_pn.Noise((straightRiverLength-t)/153.3)*300.0+_pn.Noise((straightRiverLength-t)/13.3)*50.0-175.0);
+		float reachedPointX=targetDirectionX*t-targetDirectionY*offset/4;
+		float reachedPointY=targetDirectionY*t+targetDirectionX*offset/4;
 		lower((unsigned int)reachedPointX,(unsigned int)reachedPointY);
 	}
-	addNoise(.8,smoothingFactor);
+	addNoise(.1,smoothingFactor);
 	normalize();
 }
 
@@ -324,7 +312,7 @@ void HeightMap::normalize()
 	}
 	min-=.01;
 	max+=.01;
-	std::cout << "min, max=" << min << ", " << max << "\n";
+	//std::cout << "min, max=" << min << ", " << max << "\n";
 	float range=max-min;
 	for(unsigned int i=0; i<_w*_h; i++)
 		_map[i]=(_map[i]-min)/range;
