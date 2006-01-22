@@ -678,3 +678,29 @@ Can't join game, wrong game version
 Can't join game, missmatching game parameters
 [Can't join game, timeout]
 Can't join game, timeout
+[swamp terrain]
+Swamp
+[river terrain]
+River
+[crater lakes terrain]
+Crater Lakes
+[old random terrain]
+old random terrain
+[old islands terrain]
+old random islands
+[desert]
+desert
+[algae]
+algae
+[wheat]
+wheat
+[wood]
+wood
+[stone]
+stone
+[river diameter]
+width of river
+[extra islands]
+empty islands
+[crater density]
+crater count

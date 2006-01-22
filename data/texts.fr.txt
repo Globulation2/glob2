@@ -207,7 +207,7 @@ Didacticiel
 [custom game]
 Jeu libre
 [yog]
-Le jeu en ligne par Ysagoon
+Jeu en ligne (Ysagoon)
 [Enter your nickname :]
 Entrez votre pseudo :
 [Enter your password :]
@@ -678,3 +678,25 @@ Ne peut pas joindre le jeu, mauvaise version
 Ne peut pas joindre le jeu, paramètres de jeu incompatibles
 [Can't join game, timeout]
 Ne peut pas joindre le jeu, délai dépassé
+[swamp terrain]
+Marais
+[river terrain]
+Rivière
+[crater lakes terrain]
+Lacs de cratère
+[desert]
+Désert
+[algae]
+Algues
+[wheat]
+Blé
+[wood]
+Forêt
+[stone]
+Pierre
+[river diameter]
+Diamètre de la rivière
+[extra islands]
+Iles vides
+[crater density]
+densité des cratères

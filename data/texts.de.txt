@@ -483,7 +483,7 @@ Verhältnis
 [smoothing]
 Glättung
 [number of teams]
-Anzahl Mannschaften
+Mannschaften
 [islands size]
 Größe der Inseln
 [beach size]
@@ -644,5 +644,29 @@ Eigener Mauszeiger
 Wählen Sie eine Kampagne aus
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie könen nur durch YOG senden
-[leos random map]
-Leo's Zufallskarte
+[swamp terrain]
+Sumpflandschaft
+[river terrain]
+Flussbett
+[crater lakes terrain]
+Kraterseen
+[old random terrain]
+alte Zufallskarte
+[old islands terrain]
+alte Inselzufallskarte
+[desert]
+Wüste
+[algae]
+Algen
+[wheat]
+Weizen
+[wood]
+Wald
+[stone]
+Stein
+[river diameter]
+Flussbreite
+[extra islands]
+leere Inseln
+[crater density]
+Krateranzahl
