@@ -3204,15 +3204,15 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 
 bool DistributedUnitManager::request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)
 {
-	//	if(minimum_level==0)
-	//		std::cout<<"Warning: request passed with 0 for minimum_level. request(module_name="<<module_name<<", unit_type="<<unit_type<<", ability="<<ability<<", minimum_level="<<minimum_level<<", number="<<number<<", priority="<<priority<<")"<<std::endl;
-
+        std::stringstream s;
+        s<<"Request: module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; minimum_level="<<minimum_level<<"; number="<<number<<"; priority="<<priority<<"; building="<<building<<"; ";
 	minimum_level-=1;
 	usageRecord ur;
 	Building* b=getBuildingFromGid(ai.game, building);
 	if(buildings.find(building)!=buildings.end())
 	{
 		ur=buildings[building];
+                s<<"original_owner="<<ur.owner<<"; original_number="<<ur.number<<"; ";
 		module_records[ur.owner].usingUnits[ur.unit_type][ur.ability][ur.minimum_level][ur.priority]-=ur.number;
 		if(b==NULL)
 		{
@@ -3222,6 +3222,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 	if(b==NULL)
 		return false;
 
+        std::cout<<s.str()<<std::endl;
 	ur.owner=module_name;
 	ur.x=b->posX;
 	ur.y=b->posY;
