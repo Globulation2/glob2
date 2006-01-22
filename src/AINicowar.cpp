@@ -3037,6 +3037,7 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 		ur.ability=stream->readUint32("ability");
 		ur.unit_type=stream->readUint32("unit_type");
 		ur.minimum_level=stream->readUint32("minimum_level");
+		ur.number=stream->readUint32("number");
 		ur.priority=static_cast<UnitModule::Priority>(stream->readUint32("priority"));
 		buildings[gid]=ur;
 		// FIXME : clear the container before load
@@ -3101,7 +3102,9 @@ void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
 		stream->writeUint32(i->second.ability, "ability");
 		stream->writeUint32(i->second.unit_type, "unit_type");
 		stream->writeUint32(i->second.minimum_level, "minimum_level");
+		stream->writeUint32(i->second.number, "number");
 		stream->writeUint32(i->second.priority, "priority");
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
