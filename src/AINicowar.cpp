@@ -2884,7 +2884,10 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	for(int i=0; i<3; ++i)
 	{
 		boost::rational<unsigned int> ratio(ratios[i], 1);
-		ratio/=devisor;
+                if(devisor.numerator()>0 && ratio.numerator()>0)
+			ratio/=devisor;
+		else
+			ratio=boost::rational<unsigned int>(0, 1);
 		ratios[i]=ratio.numerator();
 		ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, ratios[i]*MAX_CONSTRUCTION_AT_ONCE, BUILD, i+1, UnitModule::medium);
 	}
