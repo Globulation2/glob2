@@ -2487,7 +2487,7 @@ void DistributedNewConstructionManager::updateImap()
 					startx+=width;;
 				int starty=y-bsize.vertical_offset-BUILDING_PADDING;
 				if(starty<0)
-					starty+=width;
+					starty+=height;
 				unsigned endx=startx+bsize.width+BUILDING_PADDING*2;
 				if(endx>width)
 					endx-=width;
