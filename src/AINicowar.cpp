@@ -2154,7 +2154,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 				if(!failed)
 				{
 					top_score=static_cast<int>(std::floor(score+0.5));
-					top_point=point(x-size.horizontal_offset, y-size.horizontal_offset);
+					top_point=point(x+size.horizontal_offset, y+size.vertical_offset);
 				}
 			}
 		}
@@ -2357,6 +2357,8 @@ bool DistributedNewConstructionManager::constructBuildings()
 			total_free_workers-=ncr.assigned;
 			under_construction_counts[i->building_type]++;
 			counts[i->building_type]++;
+			///Update the imap
+			updateImap(ncr.x, ncr.y, i->building_type);
 		}
 	}
 	return false;
@@ -2506,6 +2508,42 @@ void DistributedNewConstructionManager::updateImap()
 					}
 				}
 			}
+		}
+	}
+}
+
+
+
+
+void DistributedNewConstructionManager::updateImap(unsigned x, unsigned y, unsigned building_type)
+{
+	upgradeData bsize;
+	bsize=findMaxSize(building_type, 0);
+	//Then mark all the squares this building occupies in its largest upgrade with an extra padding
+
+	const unsigned width=ai.map->getW();
+	const unsigned height=ai.map->getH();
+	int startx=x-bsize.horizontal_offset-BUILDING_PADDING;
+	if(startx<0)
+		startx+=width;;
+	int starty=y-bsize.vertical_offset-BUILDING_PADDING;
+	if(starty<0)
+		starty+=height;
+	unsigned endx=startx+bsize.width+BUILDING_PADDING*2;
+	if(endx>width)
+		endx-=width;
+	unsigned endy=starty+bsize.height+BUILDING_PADDING*2;
+	if(endy>height)
+		endy-=height;
+	for(unsigned x2=startx; x2!=endx; ++x2)
+	{
+		if(x2>=width)
+			x2=0;
+		for(unsigned y2=starty; y2!=endy; ++y2)
+		{
+			if(y2>=height)
+				y2=0;
+			imap[x2*height+y2]=1;
 		}
 	}
 }
@@ -2899,6 +2937,15 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 		free_workers[j]=ai.getUnitModule()->available("RandomUpgradeRepairModule", WORKER, BUILD, j+1, false, UnitModule::medium);
 	}
 
+	for(unsigned i=0; static_cast<int>(i)<IntBuildingType::NB_BUILDING; ++i)
+	{
+                std::string building_name = IntBuildingType::typeFromShortNumber(i);
+                std::stringstream s;
+                s<<"I'm currently constructing "<<construction_counts[i]<<" of this building.";
+		ai.clearDebugMessages("RandomUpgradeRepairModule", "Construction", building_name);
+		ai.addDebugMessage("RandomUpgradeRepairModule", "Construction", building_name, s.str());
+	}
+
 	//Look through the buildings, and if their are atleast 4 of the correct unit type available to upgrade/repair it, then do it.
 	for (std::vector<Building*>::iterator i = buildings.begin(); i!=buildings.end(); i++)
 	{
@@ -3207,15 +3254,15 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 
 bool DistributedUnitManager::request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)
 {
-        std::stringstream s;
-        s<<"Request: module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; minimum_level="<<minimum_level<<"; number="<<number<<"; priority="<<priority<<"; building="<<building<<"; ";
+//        std::stringstream s;
+//        s<<"Request: module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; minimum_level="<<minimum_level<<"; number="<<number<<"; priority="<<priority<<"; building="<<building<<"; ";
 	minimum_level-=1;
 	usageRecord ur;
 	Building* b=getBuildingFromGid(ai.game, building);
 	if(buildings.find(building)!=buildings.end())
 	{
 		ur=buildings[building];
-                s<<"original_owner="<<ur.owner<<"; original_number="<<ur.number<<"; ";
+//                s<<"original_owner="<<ur.owner<<"; original_number="<<ur.number<<"; ";
 		module_records[ur.owner].usingUnits[ur.unit_type][ur.ability][ur.minimum_level][ur.priority]-=ur.number;
 		if(b==NULL)
 		{
@@ -3225,7 +3272,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 	if(b==NULL)
 		return false;
 
-        std::cout<<s.str()<<std::endl;
+//        std::cout<<s.str()<<std::endl;
 	ur.owner=module_name;
 	ur.x=b->posX;
 	ur.y=b->posY;
