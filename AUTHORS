@@ -9,22 +9,24 @@ Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com>
 Additional programming
 
 Martin Nyffenegger <barock[no-spam]ysagoon.com> (SGSL)
-Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (GUI, bug fix and more)
-Hein-Pieter van Braam <hp[no-spam]syntomax.com> (IRC patch, debugging)
-Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (CreditScreen JJ)
+Bradley Arsenault <genixpro[no-spam]gmail.com> (Nicowar Artificial Intelligence)
 Andrew Sayers <globulation2[no-spam]pileofstuff.org> (Miscellaneous bugfixes)
-Bradley Arsenault <genixpro[no-spam]gmail.com> (Nicowar)
 Leo Wandersleb <Leo.Wandersleb[no-spam]gmx.de> (Perlin-noise based map generation)
+Hein-Pieter van Braam <hp[no-spam]syntomax.com> (IRC patch, debugging)
+Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (GUI, bugfixes and more)
+Joe LeBlanc <jdlspeedy@yahoo.com> (YOG & IRC fixes and improvements)
+Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (CreditScreen JJ)
 
 *
 Graphics
 
-Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (land, swarm, old buildings, old units)
 Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (drawing new buildings)
 Cyrille Dunant <cyrille.dunant[no-spam]epfl.ch> (coloring new buildings)
-Joey Marshall <JoeyMarshall[no-spam]ml1.net> (additional drawing, coloring)
+Andrew Sayers <globulation2[no-spam]pileofstuff.org> (new grass and sand)
 Matthew Marshall <mmarshall[no-spam]myrealbox.com> (new units)
-Stéphane Magnenat <nct[no-spam]ysagoon.com> (GUI, bug fix)
+Stéphane Magnenat <nct[no-spam]ysagoon.com> (GUI, new water)
+Joey Marshall <JoeyMarshall[no-spam]ml1.net> (additional drawing, coloring)
+Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (swarm, old terrains, buildings and units)
 Gabriel Walt <diz[no-spam]ysagoon.com> (GUI)
 
 
@@ -66,7 +68,8 @@ Joey Marshall <JoeyMarshall[no-spam]ml1.net> (Joey campaign)
 Game Packaging
 
 Vincent Deffontaines <vincent[no-spam]gryzor.com> (Debian)
-Sebastian Gerlach <minas[no-spam]calodox.org> (Win32)
+Sebastian Gerlach <minas[no-spam]calodox.org> (Win32 VS)
+Alexandru Munteanu <io_alex_2002[no-spam]yahoo.fr> (Win32 mingw32)
 Dejan Lekic <dejan[no-spam]nu6.org> (Win32, Fedora)
 Jens Reimann <ctron[no-spam]dentrassi.de> (Fedora)
 Martin Nyffenegger <barock[no-spam]ysagoon.com> (Mac OS X)
