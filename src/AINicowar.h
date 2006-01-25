@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <map>
 #include "Utilities.h"
 #include <set>
+#include "Order.h"
 
 class Map;
 class Order;
@@ -197,6 +198,11 @@ namespace Nicowar
 			GradientManager& getGradientManager()
 			{
 				return gradient_manager;
+			}
+
+			void flare(unsigned x, unsigned y)
+			{
+				orders.push(new MapMarkOrder(team->teamNumber, x, y));
 			}
 		private:
 
@@ -762,6 +768,7 @@ namespace Nicowar
 			bool calculateBuildings();
 
 			void updateImap();
+			void updateImap(unsigned x, unsigned y, unsigned building_type);
 
 			std::map<unsigned int, unsigned int> num_buildings_wanted;
 
