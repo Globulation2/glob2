@@ -791,6 +791,8 @@ Building *Team::findNearestFood(Unit *unit)
 	Building *bestEnemyFood = NULL;
 	if (concurency)
 	{
+		if (unit->verbose)
+			printf("guid=(%d), Team::findNearestFood(), concurency\n", unit->gid);
 		if (unit->performance[FLY])
 		{
 			Sint32 bestDist = maxDist;
@@ -856,6 +858,8 @@ Building *Team::findNearestFood(Unit *unit)
 				}
 			}
 		}
+		if (unit->verbose && bestEnemyFood)
+			printf("guid=(%d), Team::findNearestFood(), bestEnemyHappyness=%d, bestEnemyFood->gid=%d\n", unit->gid, bestEnemyHappyness, bestEnemyFood->gid);
 	}
 
 	//Second, we check if we have any satisfactory inns on our team.
@@ -1091,7 +1095,7 @@ Building *Team::findBestFillable(Unit *unit)
 		for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
 			if (weightedNeededRessources[ri] > 0)
 			{
-				int newScore = ((buildingDist + ressourceDists[ri]) << 8) / (weightedNeededRessources[ri]);
+				int newScore = (buildingDist + ressourceDists[ri]) / (building->maxUnitWorking - building->unitsWorking.size());
 				if (bestScore > newScore)
 				{
 					bestScore = newScore;
