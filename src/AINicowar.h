@@ -508,6 +508,9 @@ namespace Nicowar
 			///This function can also be used to make changes on an existing building. Once you pass a building into UnitModule,
 			///the UnitModule will keep the building full untill you change the number of assigned units.
 			virtual bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)=0;
+
+                        virtual void reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)=0;
+                        virtual void unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)=0;
 	};
 
 	///This designates other modules that don't fit into the above catagories.
@@ -890,6 +893,8 @@ namespace Nicowar
 			void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority);
 			unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority);
 			bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building);
+                        void reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
+                        void unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
 		protected:
 			///This stores all of the information needed for maintaining a particular building at its maximum unit consumption
 			struct usageRecord
@@ -918,16 +923,21 @@ namespace Nicowar
 					for(int i=0; i<NB_UNIT_TYPE; ++i)
 						for(int j=0; j<NB_ABILITY; ++j)
 							for(int k=0; k<NB_UNIT_LEVELS; ++k)
+							{
+								reservedUnits[i][j][k]=0;
 								for(unsigned int l=0; l<priorityNum; ++l)
 								{
 									requested[i][j][k][l]=0;
 									usingUnits[i][j][k][l]=0;
 								}
+							}
 				}
 				///This is the number of requested units for various categories.
 				unsigned int requested[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS][priorityNum];
 				///This is the units that this module in particular is using for
 				unsigned int usingUnits[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS][priorityNum];
+				///These are units that are reserved by the module, and will be transfered to a building soon
+				unsigned int reservedUnits[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS];
 			};
 
 			///This map stores the moduleRecords in accordance to their related module

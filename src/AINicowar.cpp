@@ -2736,6 +2736,8 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
 			ai.orders.push(new OrderModifyBuilding(b->gid, assigned));
+			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned);
+			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, assigned, UnitModule::medium, b->gid);
 			continue;
 		}
 		i++;
@@ -2984,7 +2986,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				u.is_repair=true;
 				pending_construction.push_back(u);
 				ai.orders.push(new OrderConstruction(b->gid));
-				ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned, UnitModule::medium, b->gid);
+				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned);
 				reduce(free_workers, b->type->level, num_to_assign);
 				construction_counts[b->type->shortTypeNum]+=1;
 			}
@@ -3006,7 +3008,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				u.is_repair=false;
 				pending_construction.push_back(u);
 				ai.orders.push(new OrderConstruction(b->gid));
-				ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+2, u.assigned, UnitModule::medium, b->gid);
+				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+2, u.assigned);
 				reduce(free_workers, b->type->level+1, num_to_assign);
 				construction_counts[b->type->shortTypeNum]+=1;
 			}
@@ -3166,7 +3168,6 @@ void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
 void DistributedUnitManager::changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)
 {
 	level-=1;
-	//	std::cout<<"moduleName="<<moduleName<<"; unitType="<<unitType<<"; numUnits="<<numUnits<<"; ability="<<ability<<"; level="<<level<<";"<<std::endl;
 	module_records[moduleName].requested[unitType][ability][level][priority]=numUnits;
 }
 
@@ -3175,12 +3176,8 @@ void DistributedUnitManager::changeUnits(std::string moduleName, unsigned int un
 
 unsigned int DistributedUnitManager::available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)
 {
-	//	if(level==0)
-	//		std::cout<<"Warning: available passed with 0 for minimum_level. module_name="<<module_name<<";"<<std::endl;
-	//	std::cout<<"module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; level="<<level<<"; is_minimum="<<is_minimum<<"; priority="<<priority<<";"<<std::endl;
 	TeamStatsGenerator stat(ai.team);
 	unsigned int num_available=stat.getUnits(unit_type, Unit::MED_FREE, Unit::ACT_RANDOM, ability, level, is_minimum);
-	//	std::cout<<"    num_available(1)="<<num_available<<";"<<std::endl;
 	level-=1;
 	for(std::map<int, usageRecord>::iterator i=buildings.begin(); i!=buildings.end(); ++i)
 	{
@@ -3192,9 +3189,8 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 		}
 		if((is_minimum && i->second.ability==ability && i->second.level>=level) || (!is_minimum && i->second.ability==ability && i->second.level==level))
 		{
-			unsigned int needed=b->maxUnitWorking-b->unitsWorking.size();
-			//			std::cout<<"needed="<<needed<<"; i->first="<<i->first<<"; b->type->shortTypeNum="<<b->type->shortTypeNum<<std::endl;
-			if(needed>num_available)
+			int needed=b->maxUnitWorking-b->unitsWorking.size();
+			if(needed>static_cast<int>(num_available))
 			{
 				num_available=0;
 			}
@@ -3204,7 +3200,13 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 			}
 		}
 	}
-	//	std::cout<<"    num_available(2)="<<num_available<<";"<<std::endl;
+	for(std::map<std::string, moduleRecord>::iterator i=module_records.begin(); i!=module_records.end(); ++i)
+        {
+            if(i->second.reservedUnits[unit_type][ability][level]>num_available)
+                num_available=0;
+            else
+                num_available-=i->second.reservedUnits[unit_type][ability][level];
+        }
 
 	///This is given as the 'unreachable' highest value.
 	unsigned int min_percent=10000;
@@ -3224,7 +3226,6 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 		}
 		if(total_requested==0)
 			continue;
-		//		std::cout<<"        module_name="<<i->first<<"; total_requested="<<total_requested<<"; total_used="<<total_used<<";"<<std::endl;
 		unsigned int percent=0;
 		if(total_requested>0)
 			percent=total_used*100/total_requested;
@@ -3239,10 +3240,6 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 		}
 	}
 
-	//	std::cout<<"    min_module="<<min_module<<";"<<std::endl;
-	//	std::cout<<"    min_percent="<<min_percent<<";"<<std::endl;
-	//	std::cout<<"    min_total_requested="<<min_total_requested<<";"<<std::endl;
-
 	if(min_module!=module_name)
 		return 0;
 
@@ -3254,15 +3251,12 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 
 bool DistributedUnitManager::request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)
 {
-//        std::stringstream s;
-//        s<<"Request: module_name="<<module_name<<"; unit_type="<<unit_type<<"; ability="<<ability<<"; minimum_level="<<minimum_level<<"; number="<<number<<"; priority="<<priority<<"; building="<<building<<"; ";
 	minimum_level-=1;
 	usageRecord ur;
 	Building* b=getBuildingFromGid(ai.game, building);
 	if(buildings.find(building)!=buildings.end())
 	{
 		ur=buildings[building];
-//                s<<"original_owner="<<ur.owner<<"; original_number="<<ur.number<<"; ";
 		module_records[ur.owner].usingUnits[ur.unit_type][ur.ability][ur.minimum_level][ur.priority]-=ur.number;
 		if(b==NULL)
 		{
@@ -3272,7 +3266,6 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 	if(b==NULL)
 		return false;
 
-//        std::cout<<s.str()<<std::endl;
 	ur.owner=module_name;
 	ur.x=b->posX;
 	ur.y=b->posY;
@@ -3288,6 +3281,20 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 	return true;
 }
 
+
+
+void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
+{
+	module_records[module_name].reservedUnits[unit_type][ability][minimum_level]+=number;
+}
+
+
+
+
+void DistributedUnitManager::unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
+{
+	module_records[module_name].reservedUnits[unit_type][ability][minimum_level]-=number;
+}
 
 
 
