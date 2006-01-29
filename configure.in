@@ -130,7 +130,8 @@ AC_DEFINE([AUDIO_RECORDER_OSS],,[Set the audio input type to OSS; the UNIX Open 
 dnl Set the C++ after the tests
 AC_LANG(C++)
 
-AC_CHECK_HEADERS(vector,,AC_MSG_WARN(STL classes missing ?))
+AC_CHECK_HEADERS(vector,,AC_MSG_ERROR([*** STL classes missing]))
+AC_CHECK_HEADER(boost/rational.hpp,,AC_MSG_ERROR([*** boost headers not found]))
 
 
 dnl Packaging
