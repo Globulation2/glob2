@@ -47,7 +47,7 @@ namespace Nicowar
 	///This constant turns on status output. status is output to the file "NicowarStatus.txt" in the current
 	///working directory. It has plenty of information that explains nicowars choices, which is good for
 	///fine tuning Nicowar as well as debugging it.
-	const bool NicowarStatusUpdate = true;
+	const bool NicowarStatusUpdate = false;
 
 	class Module;
 	class DefenseModule;
@@ -1401,7 +1401,7 @@ namespace Nicowar
 	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
 
 	///This constant turns on debugging output
-	const bool AINicowar_DEBUG = true;
+	const bool AINicowar_DEBUG = false;
 	///@}
 
 	//These are just some handy functions
