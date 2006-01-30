@@ -47,7 +47,7 @@ namespace Nicowar
 	///This constant turns on status output. status is output to the file "NicowarStatus.txt" in the current
 	///working directory. It has plenty of information that explains nicowars choices, which is good for
 	///fine tuning Nicowar as well as debugging it.
-	const bool NicowarStatusUpdate = false;
+	const bool NicowarStatusUpdate = true;
 
 	class Module;
 	class DefenseModule;
@@ -895,6 +895,7 @@ namespace Nicowar
 			bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building);
                         void reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
                         void unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
+			void writeDebug();
 		protected:
 			///This stores all of the information needed for maintaining a particular building at its maximum unit consumption
 			struct usageRecord
@@ -945,6 +946,9 @@ namespace Nicowar
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
+			std::map<int, std::string> unit_names;
+			std::map<int, std::string> ability_names;
+			std::map<int, std::string> priority_names;
 	};
 
 
@@ -1244,7 +1248,7 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_UPGRADE=8;
 	const unsigned int MINIMUM_TO_REPAIR=2;
 	const unsigned int MAXIMUM_TO_REPAIR=8;
-	const unsigned int MAX_CONSTRUCTION_AT_ONCE=6;
+	const unsigned int BUILDINGS_FOR_UPGRADE=6;
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
 	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
@@ -1365,9 +1369,10 @@ namespace Nicowar
 		 {GradientPoll(), GradientPoll()}};
 
 
-	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=6;
+	///This represents for every n buildings the team has, allow one to be upgraded
+	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=8;
 	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-		{2, 4, 3, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0};
+		{2, 4, 3, 1, 1, 2, 2, 0, 0, 0, 0, 0, 0};
 	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=3;
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
@@ -1401,7 +1406,7 @@ namespace Nicowar
 	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
 
 	///This constant turns on debugging output
-	const bool AINicowar_DEBUG = false;
+	const bool AINicowar_DEBUG = true;
 	///@}
 
 	//These are just some handy functions

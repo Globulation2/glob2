@@ -2844,9 +2844,6 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 
 bool RandomUpgradeRepairModule::startNewConstruction(void)
 {
-	//If we already have more than our max, don't do any more
-	if (active_construction.size()+pending_construction.size()>=MAX_CONSTRUCTION_AT_ONCE)
-		return false;
 
 	//This variable indicates the ratios of the demands for various types of buildings to be upgraded,
 	//it will be used to calculate parameters for UnitModule::changeUnits, and in turn will distribute
@@ -2919,18 +2916,18 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 	}
 	selection_sort(buildings.begin(), buildings.end(), weighted_random_upgrade_comparison);
 
-	unsigned int ratio_total=std::accumulate(ratios, ratios+3, 0);
-	boost::rational<unsigned int> devisor(ratio_total, MAX_CONSTRUCTION_AT_ONCE);
+	unsigned total_construction_max=0;
 	for(int i=0; i<3; ++i)
 	{
-		boost::rational<unsigned int> ratio(ratios[i], 1);
-                if(devisor.numerator()>0 && ratio.numerator()>0)
-			ratio/=devisor;
-		else
-			ratio=boost::rational<unsigned int>(0, 1);
-		ratios[i]=ratio.numerator();
-		ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, ratios[i]*MAX_CONSTRUCTION_AT_ONCE, BUILD, i+1, UnitModule::medium);
+		if(ratios[i]!=0)
+			ratios[i]=ratios[i]/BUILDINGS_FOR_UPGRADE+1;
+		total_construction_max+=ratios[i];
+		ai.getUnitModule()->changeUnits("RandomUpgradeRepairModule", WORKER, ratios[i]*MAXIMUM_TO_UPGRADE, BUILD, i+1, UnitModule::medium);
 	}
+
+	//If we already have more than our max, don't do any more
+	if (active_construction.size()+pending_construction.size()>=total_construction_max)
+		return false;
 
 	//Get the numbers of free units
 	int free_workers[NB_UNIT_LEVELS];
@@ -3022,7 +3019,21 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 
 DistributedUnitManager::DistributedUnitManager(AINicowar& ai) : ai(ai)
 {
-
+	unit_names[WORKER]="workers";
+	unit_names[WARRIOR]="warriors";
+	unit_names[EXPLORER]="explorers";
+	ability_names[WALK]="walking";
+	ability_names[SWIM]="swimming";
+	ability_names[FLY]="flying";
+	ability_names[BUILD]="building";
+	ability_names[HARVEST]="harvesting";
+	ability_names[ATTACK_SPEED]="attacking";
+	ability_names[ATTACK_STRENGTH]="attacking";
+	priority_names[low]="low";
+	priority_names[medium_low]="medium low";
+	priority_names[medium]="medium";
+	priority_names[medium_high]="medium high";
+	priority_names[high]="high";
 }
 
 
@@ -3298,6 +3309,57 @@ void DistributedUnitManager::unreserve(std::string module_name, unsigned int uni
 
 
 
+
+void DistributedUnitManager::writeDebug()
+{
+	for(std::map<std::string, moduleRecord>::iterator i=module_records.begin(); i!=module_records.end(); ++i)
+	{
+		ai.clearDebugMessages("DistributedUnitManager", i->first, "Requested Units");
+		ai.clearDebugMessages("DistributedUnitManager", i->first, "Using Units");
+		ai.clearDebugMessages("DistributedUnitManager", i->first, "Reserved Units");
+		for(int j=0; j<NB_UNIT_TYPE; ++j)
+		{
+			for(int k=0; k<NB_ABILITY; ++k)
+			{
+				for(int l=0; l<NB_UNIT_LEVELS; ++l)
+				{
+					if(i->second.reservedUnits[j][k][l]!=0)
+					{
+						std::stringstream s;
+						s<<"This module has "<<i->second.reservedUnits[j][k][l]<<" "<<unit_names[j];
+						s<<" reserved, with a minimum level of "<<l+1<<" in "<<ability_names[k]<<".";
+						ai.addDebugMessage("DistributedUnitManager", i->first, "Reserved Units", s.str());
+					}
+					for(unsigned int m=0; m<priorityNum; ++m)
+					{
+						if(i->second.requested[j][k][l][m]!=0)
+						{
+							std::stringstream s;
+							s<<"This module requests "<<i->second.requested[j][k][l][m]<<" "<<unit_names[j];
+							s<<", with a minimum level of "<<l+1<<" in "<<ability_names[k]<<", and a priority of "<<priority_names[m]<<".";
+							ai.addDebugMessage("DistributedUnitManager", i->first, "Requested Units", s.str());
+						}
+
+						if(i->second.usingUnits[j][k][l][m]!=0)
+						{
+							std::stringstream s;
+							s<<"This module is using "<<i->second.usingUnits[j][k][l][m]<<" "<<unit_names[j];
+							s<<", with a minimum level of "<<l+1<<" in "<<ability_names[k]<<", and a priority of "<<priority_names[m]<<".";
+							ai.addDebugMessage("DistributedUnitManager", i->first, "Using Units", s.str());
+						}
+
+
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
 BasicDistributedSwarmManager::BasicDistributedSwarmManager(AINicowar& ai) : DistributedUnitManager(ai), ai(ai)
 {
 	ai.setUnitModule(this);
@@ -3350,6 +3412,7 @@ void BasicDistributedSwarmManager::save(GAGCore::OutputStream *stream) const
 
 bool BasicDistributedSwarmManager::moderateSwarms()
 {
+	writeDebug();
 	//The number of units we want for each priority level
 	unsigned int num_wanted[NB_UNIT_TYPE][priorityNum];
 	unsigned int total_available[NB_UNIT_TYPE];
@@ -3716,6 +3779,7 @@ bool ExplorationManager::updateExplorationFlags(void)
 			{
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateExplorationFlags: Removing a flag this is no longer needed at "<<i->flag_x<<", "<<i->flag_y<<"."<<std::endl;
+				ai.getUnitModule()->request("ExplorationManager", EXPLORER, FLY, 1, 0, UnitModule::medium_high, i->flag->gid);
 				ai.orders.push(new OrderDelete(i->flag->gid));
 				explorers_wanted-=i->assigned;
 				i=active_exploration.erase(i);
