@@ -1,13 +1,8 @@
 noinst_LIBRARIES = libgag.a
 
-if MINGW
 libgag_a_EXTRA_SRC = \
 	win32_dirent.h\
 	win32_dirent.cpp
-	
-else
-libgag_a_EXTRA_SRC = 
-endif
 
 libgag_a_SOURCES = \
 	GraphicContext.cpp\

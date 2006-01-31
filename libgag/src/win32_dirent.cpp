@@ -18,6 +18,8 @@
 
 */
 
+#ifdef WIN32
+
 #include "win32_dirent.h"
 #include <errno.h>
 #include <io.h>
@@ -132,3 +134,5 @@ void rewinddir(DIR *dir)
         errno = EBADF;
     }
 }
+
+#endif
