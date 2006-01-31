@@ -1248,7 +1248,7 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_UPGRADE=8;
 	const unsigned int MINIMUM_TO_REPAIR=2;
 	const unsigned int MAXIMUM_TO_REPAIR=8;
-	const unsigned int BUILDINGS_FOR_UPGRADE=6;
+	const unsigned int BUILDINGS_FOR_UPGRADE=5;
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
 	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
@@ -1355,12 +1355,12 @@ namespace Nicowar
 	const unsigned MAXIMUM_DISTANCE_TO_BUILDING=8;
 	typedef DistributedNewConstructionManager::GradientPoll GradientPoll;
 	const GradientPoll CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][CONSTRUCTOR_FACTORS_COUNT] = 
-		{{GradientPoll(Gradient::Wheat, 1), GradientPoll(Gradient::TeamBuildings, 1)}, //
-		 {GradientPoll(Gradient::Wheat, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		{{GradientPoll(Gradient::Wheat, 2), GradientPoll(Gradient::TeamBuildings, 1)}, //
+		 {GradientPoll(Gradient::Wheat, 2), GradientPoll(Gradient::TeamBuildings, 1)},
 		 {GradientPoll(Gradient::Wood, 1), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::VillageCenter, 1), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::VillageCenter, 1), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::Stone, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::VillageCenter, 1.5), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::VillageCenter, 1.5), GradientPoll(Gradient::TeamBuildings, 1)},
+		 {GradientPoll(Gradient::Stone, 2), GradientPoll(Gradient::TeamBuildings, 1)},
 		 {GradientPoll(Gradient::VillageCenter, 1), GradientPoll(Gradient::TeamBuildings, 1)},
 		 {GradientPoll(), GradientPoll()},
 		 {GradientPoll(), GradientPoll()},
@@ -1377,13 +1377,13 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{30, 8, 10, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{30, 8, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
 	///priority buildings.
 	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{4, 3, 4, 6, 6, 4, 6, 0, 0, 0, 0, 0};
+		{4, 3, 4, 6, 6, 4, 4, 0, 0, 0, 0, 0};
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
 		{2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0};
