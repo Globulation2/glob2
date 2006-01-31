@@ -2938,11 +2938,14 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 
 	for(unsigned i=0; static_cast<int>(i)<IntBuildingType::NB_BUILDING; ++i)
 	{
-                std::string building_name = IntBuildingType::typeFromShortNumber(i);
-                std::stringstream s;
-                s<<"I'm currently constructing "<<construction_counts[i]<<" of this building.";
-		ai.clearDebugMessages("RandomUpgradeRepairModule", "Construction", building_name);
-		ai.addDebugMessage("RandomUpgradeRepairModule", "Construction", building_name, s.str());
+		if(BUILDING_UPGRADE_WEIGHTS[i]>0)
+		{
+	                std::string building_name = IntBuildingType::typeFromShortNumber(i);
+	                std::stringstream s;
+	                s<<"I'm currently constructing "<<construction_counts[i]<<" of this building.";
+			ai.clearDebugMessages("RandomUpgradeRepairModule", "Construction", building_name);
+			ai.addDebugMessage("RandomUpgradeRepairModule", "Construction", building_name, s.str());
+		}
 	}
 
 	//Look through the buildings, and if their are atleast 4 of the correct unit type available to upgrade/repair it, then do it.
