@@ -1,3 +1,3 @@
 #!/bin/sh
-rsync -z --delete-after maps/*.map nct@yog1.ysagoon.com:~/glob2maps/
-rsync -z --delete-after campaigns/*.map nct@yog1.ysagoon.com:~/glob2campaigns/
+rsync -z --delete-after maps/*.map glob2@yog.globulation2.org:~/glob2maps/
+rsync -z --delete-after campaigns/*.map glob2@yog.globulation2.org:~/glob2campaigns/

@@ -1,7 +1,7 @@
 #!/bin/sh
-rsync -z --delete-after data/gfx/*.png nct@yog1.ysagoon.com:~/glob2data/gfx/
-rsync -z --delete-after data/gfx/cursor/*.png nct@yog1.ysagoon.com:~/glob2data/gfx/cursor
-rsync -z --delete-after data/fonts/*.ttf nct@yog1.ysagoon.com:~/glob2data/fonts/
-rsync -z --delete-after data/gui/*.png nct@yog1.ysagoon.com:~/glob2data/gui/
-rsync -z --delete-after data/zik/*.ogg nct@yog1.ysagoon.com:~/glob2data/zik/
-rsync -z --delete-after data/icons/*.png nct@yog1.ysagoon.com:~/glob2data/icons/
+rsync -z --delete-after data/gfx/*.png glob2@yog.globulation2.org:~/glob2data/gfx/
+rsync -z --delete-after data/gfx/cursor/*.png glob2@yog.globulation2.org:~/glob2data/gfx/cursor
+rsync -z --delete-after data/fonts/*.ttf glob2@yog.globulation2.org:~/glob2data/fonts/
+rsync -z --delete-after data/gui/*.png glob2@yog.globulation2.org:~/glob2data/gui/
+rsync -z --delete-after data/zik/*.ogg glob2@yog.globulation2.org:~/glob2data/zik/
+rsync -z --delete-after data/icons/*.png glob2@yog.globulation2.org:~/glob2data/icons/
