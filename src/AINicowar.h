@@ -124,8 +124,8 @@ namespace Nicowar
 				unsigned obstacles;
 				bool operator<(const gradientSignature& cmp) const
 				{
-					if(sources<cmp.sources)
-						return true;
+					if(sources!=cmp.sources)
+						return sources<cmp.sources;
 					return obstacles<cmp.obstacles;
 				}
 			};
@@ -741,9 +741,10 @@ namespace Nicowar
 			struct GradientPoll
 			{
 				GradientPoll() : is_null(true) {}
-				GradientPoll(Gradient::Sources source, float weight) : is_null(false), source(source), weight(weight) {}
+				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, float weight) : is_null(false), source(source), obstacle(obstacle), weight(weight) {}
 				bool is_null;
 				Gradient::Sources source;
+				Gradient::Obstacles obstacle;
 				float weight;
 			};
 
@@ -1355,13 +1356,13 @@ namespace Nicowar
 	const unsigned MAXIMUM_DISTANCE_TO_BUILDING=8;
 	typedef DistributedNewConstructionManager::GradientPoll GradientPoll;
 	const GradientPoll CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][CONSTRUCTOR_FACTORS_COUNT] = 
-		{{GradientPoll(Gradient::Wheat, 2), GradientPoll(Gradient::TeamBuildings, 1)}, //
-		 {GradientPoll(Gradient::Wheat, 2), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::Wood, 1), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::VillageCenter, 1.5), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::VillageCenter, 1.5), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::Stone, 2), GradientPoll(Gradient::TeamBuildings, 1)},
-		 {GradientPoll(Gradient::VillageCenter, 1), GradientPoll(Gradient::TeamBuildings, 1)},
+		{{GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //
+		 {GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
+		 {GradientPoll(Gradient::Wood, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
+		 {GradientPoll(Gradient::Stone, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
 		 {GradientPoll(), GradientPoll()},
 		 {GradientPoll(), GradientPoll()},
 		 {GradientPoll(), GradientPoll()},
@@ -1373,7 +1374,7 @@ namespace Nicowar
 	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=8;
 	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
 		{2, 4, 3, 1, 1, 2, 2, 0, 0, 0, 0, 0, 0};
-	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=3;
+	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =

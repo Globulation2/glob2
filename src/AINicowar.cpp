@@ -1275,6 +1275,7 @@ bool SimpleBuildingDefense::updateFlags()
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateFlags: Found a flag at "<<i->flagx<<","<<i->flagy<<" that is no longer defending against any enemy units. Removing this flag."<<std::endl;
 				ai.orders.push(new OrderDelete(i->flag));
+				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, 1, 0, UnitModule::medium, i->flag);
 				i=defending_zones.erase(i);
 				continue;
 			}
@@ -1313,7 +1314,7 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 						i->flag=b->gid;
 						ai.orders.push(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2));
 						ai.orders.push(new OrderModifyBuilding(b->gid, i->assigned));
-						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, UnitModule::high, i->flag);
+						ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, UnitModule::high, i->flag);
 						break;
 					}
 				}
@@ -1845,7 +1846,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 						ai.orders.push(new OrderModifyFlag(b->gid, radius));
 						ai.orders.push(new OrderModifyBuilding(b->gid, j->assigned_units));
 						ai.orders.push(new OrderModifyMinLevelToFlag(b->gid, j->assigned_level));
-						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, j->assigned_units, ATTACK_STRENGTH, j->assigned_level, UnitModule::medium, j->flag);
+						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level, j->assigned_units, UnitModule::medium, j->flag);
 						break;
 					}
 				}
@@ -1867,6 +1868,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			{
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
+				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level, 0, UnitModule::medium, j->flag);
 				ai.orders.push(new OrderDelete(j->flag));
 				j=attacks.erase(j);
 				continue;
@@ -1942,7 +1944,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				j->assigned_units=new_assigned;
 				ai.orders.push(new OrderModifyBuilding(j->flag, new_assigned));
 				available_units-=new_assigned;
-				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, new_assigned, ATTACK_STRENGTH, strength_level, UnitModule::medium, j->flag);
+				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, strength_level, new_assigned, UnitModule::medium, j->flag);
 			}
 
 			//If the maximum barracks level has changed, then update the flag
@@ -2122,11 +2124,12 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 				if(!CONSTRUCTION_FACTORS[building_type][factor].is_null)
 				{
 					unsigned source=CONSTRUCTION_FACTORS[building_type][factor].source;
+					unsigned obstacle=CONSTRUCTION_FACTORS[building_type][factor].obstacle;
 					///Get the scores of each of the four corners of the building
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, Gradient::None).getHeight(x, y))*CONSTRUCTION_FACTORS[building_type][factor].weight;
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, Gradient::None).getHeight(x+size.width, y))*CONSTRUCTION_FACTORS[building_type][factor].weight;
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, Gradient::None).getHeight(x, y+size.height))*CONSTRUCTION_FACTORS[building_type][factor].weight;
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, Gradient::None).getHeight(x+size.width, y+size.height))*CONSTRUCTION_FACTORS[building_type][factor].weight;
+					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x, y))*CONSTRUCTION_FACTORS[building_type][factor].weight;
+					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x+size.width, y))*CONSTRUCTION_FACTORS[building_type][factor].weight;
+					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x, y+size.height))*CONSTRUCTION_FACTORS[building_type][factor].weight;
+					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x+size.width, y+size.height))*CONSTRUCTION_FACTORS[building_type][factor].weight;
 				}
 			}
 			score/=4;
@@ -3025,6 +3028,9 @@ DistributedUnitManager::DistributedUnitManager(AINicowar& ai) : ai(ai)
 	unit_names[WORKER]="workers";
 	unit_names[WARRIOR]="warriors";
 	unit_names[EXPLORER]="explorers";
+	ability_names[STOP_WALK]="stop walking";
+	ability_names[STOP_SWIM]="stop swimming";
+	ability_names[STOP_FLY]="stop flying";
 	ability_names[WALK]="walking";
 	ability_names[SWIM]="swimming";
 	ability_names[FLY]="flying";
@@ -3032,6 +3038,16 @@ DistributedUnitManager::DistributedUnitManager(AINicowar& ai) : ai(ai)
 	ability_names[HARVEST]="harvesting";
 	ability_names[ATTACK_SPEED]="attacking";
 	ability_names[ATTACK_STRENGTH]="attacking";
+
+	ability_names[MAGIC_ATTACK_AIR]="air-air attacking";
+	ability_names[MAGIC_ATTACK_GROUND]="air-ground attacking";
+	ability_names[MAGIC_CREATE_WOOD]="creating wood";
+	ability_names[MAGIC_CREATE_CORN]="creating corn";
+	ability_names[MAGIC_CREATE_ALGA]="creating algae";
+	ability_names[ARMOR]="armor";
+	ability_names[HP]="hp";
+	ability_names[HEAL]="healing";
+	ability_names[FEED]="feeding";
 	priority_names[low]="low";
 	priority_names[medium_low]="medium low";
 	priority_names[medium]="medium";
