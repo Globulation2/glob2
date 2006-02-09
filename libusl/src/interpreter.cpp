@@ -44,23 +44,4 @@ struct Identifier: Function {
 };
 
 const std::string Interpreter::Run(Context* context) {
-	while(true) {
-		const Function* atom = Next();
-	}
-}
-
-const Function* Interpreter::Next() {
-	NextToken();
-	switch(GetTokenType()) {
-	case Parser::ID:
-	case Parser::OP:
-		return new Identifier(std::string(GetToken().text, GetToken().length));
-	case Parser::STR:
-		return new String(std::string(GetToken().text, GetToken().length));
-	case Parser::NUM:
-		return new Number(std::atof(std::string(GetToken().text, GetToken().length).c_str()));
-	default:
-		return NULL;
-		break;
-	}
 }

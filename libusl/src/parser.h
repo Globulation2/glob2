@@ -28,6 +28,7 @@ public:
 		const Position position;
 		Error(const Position& position, const std::string& message): std::runtime_error(message), position(position) {}
 	};
+private:
 	void Fail(const std::string& message) {
 		throw Error(token.position, message);
 	}
