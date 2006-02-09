@@ -204,6 +204,10 @@ namespace Nicowar
 			{
 				orders.push(new MapMarkOrder(team->teamNumber, x, y));
 			}
+			void pause()
+			{
+				orders.push(new PauseGameOrder(true));
+			}
 		private:
 
 			std::map<std::string, std::map<std::string, std::map<std::string, std::vector<std::string> > > > debug_messages;
@@ -726,6 +730,7 @@ namespace Nicowar
 				unsigned int y;
 				unsigned int assigned;
 				unsigned int building_type;
+				int no_build_timeout;
 			};
 
 			///Stores the percentage of buildings for a particular type there is.
@@ -1253,7 +1258,7 @@ namespace Nicowar
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
 	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
-		{0, 6, 6, 4, 4, 15, 6, 5, 0, 0, 0, 0, 0};
+		{0, 6, 6, 10, 10, 15, 8, 5, 0, 0, 0, 0, 0};
 
 	//The following constants deal with the function iteration. All of these must be
 	//lower than TIMER_ITERATION.
@@ -1356,13 +1361,13 @@ namespace Nicowar
 	const unsigned MAXIMUM_DISTANCE_TO_BUILDING=8;
 	typedef DistributedNewConstructionManager::GradientPoll GradientPoll;
 	const GradientPoll CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][CONSTRUCTOR_FACTORS_COUNT] = 
-		{{GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //
-		 {GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
-		 {GradientPoll(Gradient::Wood, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
-		 {GradientPoll(Gradient::Stone, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)},
+		{{GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //swarm
+		 {GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //inn
+		 {GradientPoll(Gradient::Wood, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //hospital
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //racetrack
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //swimming
+		 {GradientPoll(Gradient::Stone, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //barracks
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //school
 		 {GradientPoll(), GradientPoll()},
 		 {GradientPoll(), GradientPoll()},
 		 {GradientPoll(), GradientPoll()},
@@ -1390,6 +1395,8 @@ namespace Nicowar
 		{2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 	///The number of turns before a cached no-build zone gets erased
 	const unsigned int NO_BUILD_CACHE_TIMEOUT=1;
+	///The number of turns before a building record that refers to a building that was destroyed before update gets removed
+	const unsigned int BUILDING_RECORD_TIMEOUT=10;
 
 	///This this enabled, buildings are constructed instantly, which is cheating,
 	///although can aid in debugging in certain situations

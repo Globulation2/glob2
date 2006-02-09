@@ -1188,7 +1188,7 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 
 bool SimpleBuildingDefense::findDefense()
 {
-	ai.getUnitModule()->changeUnits("SimpleBuildingDefense", WARRIOR, 0, ATTACK_STRENGTH, 1, UnitModule::low);
+	ai.getUnitModule()->changeUnits("SimpleBuildingDefense", WARRIOR, BASE_DEFENSE_WARRIORS, ATTACK_STRENGTH, 1, UnitModule::low);
 	GridPollingSystem gps(ai);
 	for(std::map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end(); ++i)
 	{
@@ -2010,6 +2010,7 @@ bool DistributedNewConstructionManager::load(GAGCore::InputStream *stream, Playe
 		ncr.y = stream->readUint32("y");
 		ncr.assigned = stream->readUint32("assigned");
 		ncr.building_type = stream->readUint32("building_type");
+		ncr.no_build_timeout = stream->readUint32("no_build_timeout");
 		new_buildings.push_back(ncr);
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
@@ -2053,6 +2054,7 @@ void DistributedNewConstructionManager::save(GAGCore::OutputStream *stream) cons
 		stream->writeUint32(i->y, "y");
 		stream->writeUint32(i->assigned, "assigned");
 		stream->writeUint32(i->building_type, "building_type");
+		stream->writeUint32(i->no_build_timeout, "no_build_timeout");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -2350,6 +2352,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			ncr.assigned=std::min(total_free_workers, std::min(MAXIMUM_TO_CONSTRUCT_NEW, needed_resource_total));
 
 			ncr.building_type=i->building_type;
+			ncr.no_build_timeout=BUILDING_RECORD_TIMEOUT;
 			new_buildings.push_back(ncr);
 
 			if(AINicowar_DEBUG)
@@ -2389,6 +2392,15 @@ bool DistributedNewConstructionManager::updateBuildings()
 				continue;
 			}
 		}
+		if(i->no_build_timeout>-1)
+		{
+			if(i->no_build_timeout==0)
+			{
+				i = new_buildings.erase(i);
+				continue;
+			}
+			i->no_build_timeout-=1;
+		}
 		++i;
 	}
 
@@ -2405,12 +2417,21 @@ bool DistributedNewConstructionManager::updateBuildings()
 				if(i->building==NOGBID && b->type->shortTypeNum == static_cast<int>(i->building_type) && b->posX == static_cast<int>(i->x) && b->posY == static_cast<int>(i->y))
 				{
 					i->building=b->gid;
+					i->no_build_timeout=-1;
 					ai.orders.push(new OrderModifyBuilding(i->building, i->assigned));
 					ai.getUnitModule()->request("DistributedNewConstructionManager", WORKER, BUILD, 1, i->assigned, UnitModule::medium, i->building);
 				}
 			}
 		}
 	}
+//	for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); ++i)
+//	{
+//		if(i->building==NOGBID)
+//		{
+//			ai.pause();
+//			ai.flare(i->x, i->y);
+//		}
+//	}
 	return false;
 }
 
@@ -4035,6 +4056,7 @@ bool InnManager::modifyInns()
 		Building* inn=getBuildingFromGid(ai.game, i->first);
 		if (inn==NULL)
 		{
+			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, 0, UnitModule::medium, i->first);
 			inns.erase(i);
 			continue;
 		}
