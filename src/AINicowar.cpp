@@ -254,12 +254,15 @@ Order *AINicowar::getOrder(void)
 		outputDebugMessages();
 	}
 
+
+	if(timer%200==0)
+		gradient_manager.updateGradients();
+
 	//The +1 here is because the program would end one tick late, so the tick #'s that
 	//it entered each iteration at would be 171, or 441 (for an interval of ten).
 	//This -1 corrects that.
 	if((timer+1)%TIMER_INTERVAL==0)
 	{
-		gradient_manager.updateGradients();
 		//		std::cout<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<std::endl;
 		bool cont = (*active_module)->perform(module_timer);
 		if(!cont)
@@ -1018,6 +1021,28 @@ void Gradient::update()
 		{
 			squares.push(y2*width+x2);
 			gradient[y2*width+x2]=gradient[y*width+x]+1;
+		}
+
+
+		if(gradient[y*width+x1]==0)
+		{
+			squares.push(y*width+x1);
+			gradient[y*width+x1]=gradient[y*width+x]+1;
+		}
+		if(gradient[y*width+x2]==0)
+		{
+			squares.push(y*width+x2);
+			gradient[y*width+x2]=gradient[y*width+x]+1;
+		}
+		if(gradient[y1*width+x]==0)
+		{
+			squares.push(y1*width+x);
+			gradient[y1*width+x]=gradient[y*width+x]+1;
+		}
+		if(gradient[y2*width+x]==0)
+		{
+			squares.push(y2*width+x);
+			gradient[y2*width+x]=gradient[y*width+x]+1;
 		}
 		squares.pop();
 	}
@@ -3235,6 +3260,7 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 		Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->type->shortTypeNum != static_cast<int>(i->second.type) || b->type->level!=static_cast<int>(i->second.level))
 		{
+			module_records[i->second.owner].usingUnits[i->second.unit_type][i->second.ability][i->second.minimum_level][i->second.priority]-=i->second.number;
 			buildings.erase(i);
 			continue;
 		}
@@ -3309,7 +3335,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 	{
 		ur=buildings[building];
 		module_records[ur.owner].usingUnits[ur.unit_type][ur.ability][ur.minimum_level][ur.priority]-=ur.number;
-		if(b==NULL)
+		if(b==NULL || number==0)
 		{
 			buildings.erase(buildings.find(building));
 		}
@@ -3317,18 +3343,22 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 	if(b==NULL)
 		return false;
 
-	ur.owner=module_name;
-	ur.x=b->posX;
-	ur.y=b->posY;
-	ur.type=b->type->shortTypeNum;
-	ur.level=b->type->level;
-	ur.ability=ability;
-	ur.unit_type=unit_type;
-	ur.minimum_level=minimum_level;
-	ur.priority=priority;
-	ur.number=number;
-	buildings[building]=ur;
-	module_records[ur.owner].usingUnits[ur.unit_type][ur.ability][ur.minimum_level][ur.priority]+=number;
+	if(number>0)
+	{
+		ur.owner=module_name;
+		ur.x=b->posX;
+		ur.y=b->posY;
+		ur.type=b->type->shortTypeNum;
+		ur.level=b->type->level;
+		ur.ability=ability;
+		ur.unit_type=unit_type;
+		ur.minimum_level=minimum_level;
+		ur.priority=priority;
+		ur.number=number;
+		buildings[building]=ur;
+		module_records[ur.owner].usingUnits[ur.unit_type][ur.ability][ur.minimum_level][ur.priority]+=number;
+		return true;
+	}
 	return true;
 }
 
