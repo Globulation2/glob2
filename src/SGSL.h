@@ -27,7 +27,6 @@
 #define SGSL_H
 
 #include <string>
-#include <deque>
 #include <vector>
 #include <map>
 #include <stdio.h>
@@ -239,8 +238,10 @@ public:
 	virtual ~Story();
 
 public:
-	std::deque<Token> line;
+	std::vector<Token> line;
 	std::map<std::string, int> labels;
+	int lineSelector; //!< PC : Program Counter
+	int internTimer;
 
 	void syncStep(GameGUI *gui);
 	Sint32 checkSum() { return lineSelector; }
@@ -250,9 +251,8 @@ private:
 	bool conditionTester(const Game *game, int pc, bool l);
 	bool testCondition(GameGUI *gui);
 	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
-	int lineSelector;
+	
 	Mapscript *mapscript;
-	int internTimer;
 	bool recievedSpace;
 };
 
@@ -278,9 +278,9 @@ public:
 	ErrorReport loadScript(const char *filename, Game *game);
 
 	//! Load a script, read source code
-	bool load(GAGCore::InputStream *stream);
+	bool load(GAGCore::InputStream *stream, Game *game);
 	//! Save a script, write source code
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream, const Game *game);
 
 	void syncStep(GameGUI *gui);
 	Sint32 checkSum();
@@ -304,7 +304,7 @@ private:
 	int mainTimer;
 	std::vector<bool> hasWon, hasLost;
 
-	std::deque<Story> stories;
+	std::vector<Story> stories;
 
 	AreaMap areas;
 
