@@ -101,7 +101,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(audioMute);
 	audioMuteText=new Text(260, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
 	addWidget(audioMuteText);
-	musicVol=new Selector(230, 420, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, 8, globalContainer->settings.musicVolume, 1);
+	musicVol=new Selector(230, 420, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256);
 	addWidget(musicVol);
 	musicVolText=new Text(230, 390, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
 	addWidget(musicVolText);

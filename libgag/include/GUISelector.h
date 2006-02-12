@@ -33,9 +33,8 @@ namespace GAGGUI
 	class Selector: public RectangularWidget
 	{
 	protected:
-		Uint32 count;
-		Uint32 markStep;
-		Uint32 size;
+		Uint32 maxValue;
+		Uint32 step;
 		Uint32 value;
 		Sint32 id;
 		std::string sprite;
@@ -44,16 +43,14 @@ namespace GAGGUI
 		GAGCore::Sprite *archPtr;
 	
 	public:
-		Selector() { count=0; value=0; id=0; archPtr=NULL; }
-		Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned markStep=1, unsigned defaultValue=0, unsigned size=16, const char *sprite=NULL, Sint32 id=-1);
+		Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, unsigned defaultValue=0, unsigned maxValue=16, unsigned step=1, const char *sprite=NULL, Sint32 id=-1);
 		virtual ~Selector() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
 		virtual void init(void);
 		virtual void paint(void);
 		virtual Uint32 getValue(void) { return value; }
-		virtual void setValue(Uint32 v) { this->value=v; }
-		virtual Uint32 getCount(void) { return count; }
+		virtual void setValue(Uint32 v) { clipValue(v); }
 	
 	protected:
 		void clipValue(int v);

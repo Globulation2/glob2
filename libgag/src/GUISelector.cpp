@@ -27,17 +27,14 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned markStep, unsigned defaultValue, unsigned size, const char *sprite, Sint32 id)
+	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, unsigned defaultValue, unsigned maxValue, unsigned step, const char *sprite, Sint32 id)
 	{
 		this->x=x;
 		this->y=y;
-		this->count=count;
-		this->markStep=markStep;
-		this->size=size;
-		unsigned hSize = std::max(size, 10u);
-		assert(count>=1);
-		this->w=(count-1)*size+6;
-		this->h=hSize+4;
+		this->maxValue=maxValue;
+		this->step=step;
+		this->w=width;
+		this->h=10;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
 		this->value=defaultValue;
@@ -46,24 +43,24 @@ namespace GAGGUI
 			this->sprite=sprite;
 		this->id=id;
 		archPtr=NULL;
-		std::cerr << "count=" << count << " markStep=" << markStep << " defaultValue=" << defaultValue << " size=" << size << std::endl;
 	}
 	
 	void Selector::clipValue(int v)
 	{
-		if (v>=static_cast<int>(count))
-			value=count-1;
+		if (v>=static_cast<int>(maxValue))
+			value=maxValue;
 		else if (v<0)
 			value=0;
 		else
 			value=static_cast<unsigned>(v);
+		
+		value = step * ((value + step/2) / step);
 	}
 	
 	void Selector::onSDLEvent(SDL_Event *event)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		int iSize=static_cast<int>(size);
 	
 		if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
@@ -71,7 +68,7 @@ namespace GAGGUI
 				(event->button.button == SDL_BUTTON_LEFT))
 			{
 				int dx=event->button.x-x-3;
-				int v=(dx+(iSize>>1))/iSize;
+				int v=dx*static_cast<int>(maxValue)/(w-4);
 				clipValue(v);
 				parent->onAction(this, VALUE_CHANGED, value, 0);
 			}
@@ -81,8 +78,8 @@ namespace GAGGUI
 			if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h) &&
 				(event->motion.state&SDL_BUTTON(1)))
 			{
-				int dx=event->motion.x-x-3;
-				int v=(dx+(iSize>>1))/iSize;
+				int dx=event->button.x-x-3;
+				int v=dx*static_cast<int>(maxValue)/(w-4);
 				clipValue(v);
 				parent->onAction(this, VALUE_CHANGED, value, 0);
 			}
@@ -104,33 +101,23 @@ namespace GAGGUI
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		unsigned l=(count-1)*size-2;
-		unsigned hSize = std::max(size, 10u);
-		
 		assert(parent);
 		assert(parent->getSurface());
 	
-		parent->getSurface()->drawHorzLine(x+4, y+(hSize>>1)+1, l, 180, 180, 180);
-		parent->getSurface()->drawHorzLine(x+4, y+(hSize>>1)+2, l, 180, 180, 180);
-		unsigned i;
-		for (i=0; i<count; i+=markStep)
-		{
-			parent->getSurface()->drawVertLine(x+2+i*size, y+2, hSize, 180, 180, 180);
-			parent->getSurface()->drawVertLine(x+3+i*size, y+2, hSize, 180, 180, 180);
-		}
-		if (i-markStep!=count-1)
-		{
-			parent->getSurface()->drawVertLine(x+2+(count-1)*size, y+2, hSize, 180, 180, 180);
-			parent->getSurface()->drawVertLine(x+3+(count-1)*size, y+2, hSize, 180, 180, 180);
-		}
+		parent->getSurface()->drawHorzLine(x+4, y+(h>>1)+1, w-4, 180, 180, 180);
+		parent->getSurface()->drawHorzLine(x+4, y+(h>>1)+2, w-4, 180, 180, 180);
+		parent->getSurface()->drawVertLine(x+2, y+2, h, 180, 180, 180);
+		parent->getSurface()->drawVertLine(x+3, y+2, h, 180, 180, 180);
+		parent->getSurface()->drawVertLine(x+w-1, y+2, h, 180, 180, 180);
+		parent->getSurface()->drawVertLine(x+w-2, y+2, h, 180, 180, 180);
 	
 		if (id<0)
 		{
-			parent->getSurface()->drawRect(x+size*value, y, 6, hSize+4, 255, 255, 255);
+			parent->getSurface()->drawRect(x+(w-4)*value/maxValue, y, 6, h+4, 255, 255, 255);
 		}
 		else
 		{
-			parent->getSurface()->drawSprite(x+size*value, y, archPtr, id);
+			parent->getSurface()->drawSprite(x+(w-4)*value/maxValue, y, archPtr, id);
 		}
 	}
 }
