@@ -42,6 +42,7 @@ namespace GAGGUI
 		disp=0;
 		blockLength=0;
 		blockPos=0;
+		selectionState = NOTHING_PRESSED;
 	}
 	
 	List::~List()
@@ -55,6 +56,34 @@ namespace GAGGUI
 		nth=-1;
 	}
 	
+	
+	void List::onTimer(Uint32 tick)
+	{
+		unsigned count = (h-4) / textHeight;
+		switch (selectionState)
+		{
+			case UP_ARROW_PRESSED:
+			if (disp)
+				disp--;
+			break;
+			/*case UP_ZONE_PRESSED:
+			if (disp < count)
+				disp = 0;
+			else
+				disp -= count;
+			break;
+			case DOWN_ZONE_PRESSED:
+			disp = std::min(disp + count, strings.size() - count);
+			break;*/
+			case DOWN_ARROW_PRESSED:
+			disp = std::min(disp + 1, strings.size() - count);
+			break;
+			default:
+			break;
+		}
+		
+	}
+	
 	void List::onSDLEvent(SDL_Event *event)
 	{
 		int x, y, w, h;
@@ -62,7 +91,7 @@ namespace GAGGUI
 		
 		HighlightableWidget::onSDLEvent(event);
 	
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+		if (event->type == SDL_MOUSEBUTTONDOWN)
 		{
 			unsigned count = (h-4) / textHeight;
 			unsigned wSel;
@@ -71,33 +100,36 @@ namespace GAGGUI
 				if (isPtInRect(event->button.x, event->button.y, x+w-21, y, 21, 21))
 				{
 					// we scroll one line up
+					selectionState = UP_ARROW_PRESSED;
 					if (disp)
-					{
 						disp--;
-					}
 				}
 				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21, 21, blockPos))
 				{
 					// we one page up
-					if (disp<count)
-						disp=0;
+					selectionState = UP_ZONE_PRESSED;
+					if (disp < count)
+						disp = 0;
 					else
-						disp-=count;
+						disp -= count;
 				}
 				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos+blockLength, 21, h-42-blockPos-blockLength))
 				{
 					// we one page down
-					disp+=count;
-					if (disp>strings.size()-count)
-						disp=strings.size()-count;
+					selectionState = DOWN_ZONE_PRESSED;
+					disp = std::min(disp + count, strings.size() - count);
 				}
 				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+h-21, 21, 21))
 				{
 					// we scroll one line down
-					if (disp<strings.size()-count)
-					{
-						disp++;
-					}
+					selectionState = DOWN_ARROW_PRESSED;
+					disp = std::min(disp + 1, strings.size() - count);
+				}
+				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos, 21, blockLength))
+				{
+					selectionState = HANDLE_PRESSED;
+					mouseDragStartDisp = disp;
+					mouseDragStartPos = event->button.y;
 				}
 				wSel = w-20;
 			}
@@ -139,6 +171,25 @@ namespace GAGGUI
 						disp++;
 					}
 				}
+			}
+		}
+		else if (event->type == SDL_MOUSEBUTTONUP)
+		{
+			selectionState = NOTHING_PRESSED;
+		}
+		else if (event->type == SDL_MOUSEMOTION)
+		{
+			if (selectionState == HANDLE_PRESSED)
+			{
+				int count = (h-4) / textHeight;
+				int newPos = event->motion.y - mouseDragStartPos;
+				int newDisp = mouseDragStartDisp + (newPos * (int)(strings.size() - count)) / (int)((h - 43) - blockLength);
+				if (newDisp < 0)
+					disp = 0;
+				else if (newDisp > (int)(strings.size() - count))
+					disp = strings.size() - count;
+				else
+					disp = newDisp;
 			}
 		}
 	}
@@ -200,6 +251,7 @@ namespace GAGGUI
 			{
 				blockLength = (count * leftSpace) / strings.size();
 				blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
+				parent->getSurface()->drawFilledRect(x+w-20, y+22+blockPos, 19, blockLength, ColorTheme::frontColor.applyAlpha(128));
 				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, ColorTheme::frontColor);
 			}
 			else
