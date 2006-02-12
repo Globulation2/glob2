@@ -35,19 +35,19 @@
 SettingsScreen::SettingsScreen()
 {
 	// language part
-	language=new Text(20, 60, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
+	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidget(language);
-	languageList=new List(20, 90, 160, 200, ALIGN_LEFT, ALIGN_TOP, "standard");
+	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 		languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
 	addWidget(languageList);
 
 	// graphics part
-	display=new Text(245, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]"));
+	display=new Text(230, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[display]"));
 	addWidget(display);
-	actDisplay = new Text(50, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", actDisplayModeToString().c_str());
+	actDisplay = new Text(440, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", actDisplayModeToString().c_str());
 	addWidget(actDisplay);
-	modeList=new List(245, 90, 100, 200, ALIGN_RIGHT, ALIGN_TOP, "standard");
+	modeList=new List(440, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
 	while(globalContainer->gfx->getNextVideoMode(&w, &h))
@@ -59,29 +59,29 @@ SettingsScreen::SettingsScreen()
 	}
 	addWidget(modeList);
 	
-	fullscreen=new OnOffButton(200, 90, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
+	fullscreen=new OnOffButton(230, 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
-	fullscreenText=new Text(20, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
+	fullscreenText=new Text(260, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 180);
 	addWidget(fullscreenText);
 	
 	#ifdef HAVE_OPENGL
 	#endif
-	usegpu=new OnOffButton(200, 90 + 30, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
+	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
 	addWidget(usegpu);
-	usegpuText=new Text(20, 90 + 30, ALIGN_RIGHT, ALIGN_TOP, "standard", "OpenGL", 160);
+	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "OpenGL", 180);
 	addWidget(usegpuText);
 	
-	lowquality=new OnOffButton(200, 90 + 60, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	lowquality=new OnOffButton(230, 90 + 60, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
-	lowqualityText=new Text(20, 90 + 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
+	lowqualityText=new Text(260, 90 + 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 180);
 	addWidget(lowqualityText);
 
-	customcur=new OnOffButton(200, 90 + 90, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
+	customcur=new OnOffButton(230, 90 + 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
 	addWidget(customcur);
-	customcurText=new Text(20, 90 + 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[customcur]"), 160);
+	customcurText=new Text(260, 90 + 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[customcur]"), 180);
 	addWidget(customcurText);
 	
-	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
 	addWidget(rebootWarning);
 	
@@ -89,29 +89,30 @@ SettingsScreen::SettingsScreen()
 	rebootWarning->visible=false;
 
 	// Username part
-	userName=new TextInput(20, 80, 160, 25, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->getUsername(), true, 32);
+	userName=new TextInput(20, 360, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(userName);
-	usernameText=new Text(20, 130, ALIGN_LEFT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[username]"));
+	usernameText=new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[username]"));
 	addWidget(usernameText);
 
 	// Audio part
-	audio=new Text(0, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[audio]"), 300);
+	audio=new Text(230, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[audio]"), 300);
 	addWidget(audio);
-	musicVol=new Selector(20, 80, ALIGN_RIGHT, ALIGN_BOTTOM, 256, 8, globalContainer->settings.musicVolume, 1);
-	addWidget(musicVol);
-	musicVolText=new Text(0, 100, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
-	addWidget(musicVolText);
-	audioMute=new OnOffButton(210, 130, 20, 20, ALIGN_RIGHT, ALIGN_BOTTOM, globalContainer->settings.mute, MUTE);
+	audioMute=new OnOffButton(230, 360, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.mute, MUTE);
 	addWidget(audioMute);
-	audioMuteText=new Text(0, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
+	audioMuteText=new Text(260, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
 	addWidget(audioMuteText);
+	musicVol=new Selector(230, 420, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, 8, globalContainer->settings.musicVolume, 1);
+	addWidget(musicVol);
+	musicVolText=new Text(230, 390, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
+	addWidget(musicVolText);
+	setVisibilityFromAudioSettings();
 	
 	// Screen entry/quit part
-	ok=new TextButton( 60, 20, 200, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
+	ok=new TextButton( 440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
-	cancel=new TextButton(60, 20, 200, 40, ALIGN_RIGHT, ALIGN_BOTTOM, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
-	title=new Text(0, 18, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[settings]"));
+	title=new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[settings]"));
 	addWidget(title);
 
 	oldLanguage = Toolkit::getStringTable()->getLang();
@@ -244,6 +245,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			globalContainer->settings.mute = audioMute->getState();
 			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+			setVisibilityFromAudioSettings();
 		}
 	}
 }
@@ -251,6 +253,12 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 void SettingsScreen::setVisibilityFromGraphicType(void)
 {
 	rebootWarning->visible = globalContainer->settings.screenFlags & GraphicContext::USEGPU;
+}
+
+void SettingsScreen::setVisibilityFromAudioSettings(void)
+{
+	musicVol->visible = !globalContainer->settings.mute;
+	musicVolText->visible = !globalContainer->settings.mute;
 }
 
 void SettingsScreen::updateGfxCtx(void)
