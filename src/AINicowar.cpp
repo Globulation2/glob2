@@ -87,7 +87,7 @@ void AINicowar::init(Player *player)
 	new TowerController(*this);
 	new BuildingClearer(*this);
 	new HappinessHandler(*this);
-	//new Farmer(*this);
+	new Farmer(*this);
 
 	assert(this->team);
 	assert(this->game);
@@ -1074,6 +1074,8 @@ bool Gradient::isSource(unsigned x, unsigned y)
 		if(getBuildingFromGid(team->game, map->getBuilding(x, y))->owner==team)
 			return true;
 	}
+	if(sources&Water && map->getTerrainType(x, y)==WATER)
+		return true;
 	return false;
 }
 
@@ -4495,7 +4497,7 @@ bool HappinessHandler::searchFruitTrees()
 
 
 
-Farmer::Farmer(AINicowar& ai) : ai(ai)
+Farmer::Farmer(AINicowar& ai) : ai(ai), is_water_gradient_computed(false)
 {
 	ai.addOtherModule(this);
 }
@@ -4574,6 +4576,13 @@ void Farmer::save(GAGCore::OutputStream *stream) const
 
 bool Farmer::updateFarm()
 {
+	if(!is_water_gradient_computed)
+	{
+		water_gradient.reset(ai.team, Gradient::Water, Gradient::None);
+		water_gradient.update();
+		is_water_gradient_computed=true;
+	}
+
 	BrushAccumulator del_acc;
 	BrushAccumulator add_acc;
 	for(unsigned int x=0; static_cast<int>(x)<ai.map->getW(); ++x)
@@ -4596,7 +4605,7 @@ bool Farmer::updateFarm()
 				}
 				else
 				{
-					if(resources.find(point(x, y))==resources.end() && ai.map->isMapDiscovered(x, y, ai.team->me))
+					if(resources.find(point(x, y))==resources.end() && ai.map->isMapDiscovered(x, y, ai.team->me) && water_gradient.getHeight(x, y)<=MAX_DISTANCE_FROM_WATER+2)
 					{
 						add_acc.applyBrush(ai.map, BrushApplication(x, y, 0));
 						resources.insert(point(x, y));

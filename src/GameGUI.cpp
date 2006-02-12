@@ -196,6 +196,8 @@ void GameGUI::init()
 	putMark=false;
 	showUnitWorkingToBuilding=false;
 	chatMask=0xFFFFFFFF;
+	hasSpaceBeenClicked=false;
+	swallowSpaceKey=false;
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
@@ -1281,30 +1283,34 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 			case SDLK_SPACE:
 				if (pressed)
 				{
-					int evX, evY;
-					int sw, sh;
-					
-					if (ctrl)
+					setIsSpaceSet(true);
+					if(!swallowSpaceKey)
 					{
-						eventGoTypeIterator = (eventGoTypeIterator+1) % Team::EVENT_TYPE_SIZE;
+						int evX, evY;
+						int sw, sh;
 						
-						if (!localTeam->getEvent((Team::EventType)eventGoTypeIterator).validPosition)
-							break;
+						if (ctrl)
+						{
+							eventGoTypeIterator = (eventGoTypeIterator+1) % Team::EVENT_TYPE_SIZE;
 							
-						evX = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posX;
-						evY = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posY;
+							if (!localTeam->getEvent((Team::EventType)eventGoTypeIterator).validPosition)
+								break;
+								
+							evX = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posX;
+							evY = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posY;
+						}
+						else
+						{
+							eventGoTypeIterator = eventGoType;
+							evX = eventGoPosX;
+							evY = eventGoPosY;
+						}
+					
+						sw=globalContainer->gfx->getW();
+						sh=globalContainer->gfx->getH();
+						viewportX=evX-((sw-128)>>6);
+						viewportY=evY-(sh>>6);
 					}
-					else
-					{
-						eventGoTypeIterator = eventGoType;
-						evX = eventGoPosX;
-						evY = eventGoPosY;
-					}
-				
-					sw=globalContainer->gfx->getW();
-					sh=globalContainer->gfx->getH();
-					viewportX=evX-((sw-128)>>6);
-					viewportY=evY-(sh>>6);
 				}
 				break;
 			case SDLK_HOME:
