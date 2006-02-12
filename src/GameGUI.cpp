@@ -1443,7 +1443,7 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
-	const int scrollZoneWidth=5;
+	const int scrollZoneWidth = 10;
 	game.mouseX=mouseX=mx;
 	game.mouseY=mouseY=my;
 
