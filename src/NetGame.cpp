@@ -529,7 +529,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	
 	int size=wfpo->getDataLength();
 	addUint32(data, executeUStep, 16);
-	addUint32(data, 0, 20); // no revealant gameCheckSum available
+	addUint32(data, 0, 20); // no relevant gameCheckSum available
 	data[24]=size;
 	data[25]=0; //wishedLatency is networkly synchrone
 	data[26]=0; //wishedDelay is networkly synchrone
@@ -592,7 +592,7 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	addUint32(data, SDL_GetTicks(), 12);
 	
 	addUint32(data, executeUStep, 16);
-	addUint32(data, 0, 20); // no revealant gameCheckSum available
+	addUint32(data, 0, 20); // no relevant gameCheckSum available
 	data[24]=orderDataLength;
 	data[25]=myLocalWishedLatency;
 	data[26]=myLocalWishedDelay;
@@ -641,7 +641,7 @@ void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, U
 	addUint32(data, SDL_GetTicks(), 12);
 	
 	addUint32(data, resendingUStep, 16);
-	addUint32(data, 0, 20); // no revealant gameCheckSum available
+	addUint32(data, 0, 20); // no relevant gameCheckSum available
 	data[20]=1;
 	data[21]=myLocalWishedLatency;
 	data[22]=myLocalWishedDelay;
@@ -822,7 +822,7 @@ Order *NetGame::getOrder(int playerNumber)
 		{
 			players[playerNumber]->type=Player::P_LOST_FINAL;
 			players[playerNumber]->team->checkControllingPlayers();
-			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, me, quited\\n", playerNumber);
+			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, me, quited\n", playerNumber);
 			order=new QuitedOrder();
 			dropStatusCommuniquedToGui[playerNumber]=true;
 		}
@@ -1190,9 +1190,9 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 		}
 		else if (orderType==ORDER_DROPPING_PLAYER)
 		{
-			if (orderSize<8+4*numberOfPlayer)
+			if (orderSize<8+4)
 			{
-				fprintf(logFile, "  Error, too small (%d) ORDER_DROPPING_PLAYER order from ip=%s\n",
+				fprintf(logFile, "  Error, too small (%d) ORDER_DROPPING_PLAYER order from ip=%s, v1\n",
 					orderSize, Utilities::stringIP(ip));
 				return;
 			}
@@ -1240,6 +1240,12 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			for (int pi=0; pi<numberOfPlayer; pi++)
 				if (players[pi]->type==Player::P_IP && dropMask&(1<<pi))
 				{
+					if (orderSize<l+4)
+					{
+						fprintf(logFile, "  Error, too small (%d) ORDER_DROPPING_PLAYER order from ip=%s, v2\n",
+							orderSize, Utilities::stringIP(ip));
+						return;
+					}
 					lastAvailableUStep[player][pi]=getUint32(data, l);
 					l+=4;
 					fprintf(logFile, "  lastAvailableUStep[%d][%d]=%d.\n", player, pi, lastAvailableUStep[player][pi]);
