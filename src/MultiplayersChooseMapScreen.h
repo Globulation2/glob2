@@ -53,7 +53,7 @@ private:
 	Text *title;
 	TextButton *toogleButton;
 	MapPreview *mapPreview;
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *methode;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate/*, *methode*/;
 	bool validSessionInfo;
 	bool shareOnYOG;
 

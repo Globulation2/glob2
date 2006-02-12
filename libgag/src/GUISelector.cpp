@@ -46,6 +46,7 @@ namespace GAGGUI
 			this->sprite=sprite;
 		this->id=id;
 		archPtr=NULL;
+		std::cerr << "count=" << count << " markStep=" << markStep << " defaultValue=" << defaultValue << " size=" << size << std::endl;
 	}
 	
 	void Selector::clipValue(int v)
