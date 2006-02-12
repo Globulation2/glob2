@@ -65,6 +65,8 @@ private:
 	
 	//! If GL is enabled, hide useless options
 	void setVisibilityFromGraphicType(void);
+	//! If mute is set, do not show volume slider
+	void setVisibilityFromAudioSettings(void);
 	//! reset res and redraw everything
 	void updateGfxCtx(void);
 	//! Return a string representing the actual display mode
