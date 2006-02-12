@@ -47,6 +47,8 @@ CustomGameScreen::CustomGameScreen() :
 		}
 		else
 		{
+			color[i]->hide();
+			
 			closedText[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[closed]"));
 			addWidget(closedText[i]);
 			
@@ -75,7 +77,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 			color[i]->addColor(sessionInfo.teams[j].colorR, sessionInfo.teams[j].colorG, sessionInfo.teams[j].colorB);
 		color[i]->setSelectedColor();
 	}
-	// find team for human player
+	// find team for human player, not in every map
 	for (i = 0; i<sessionInfo.numberOfTeam; i++)
 	{
 		if (sessionInfo.teams[i].type == BaseTeam::T_HUMAN)
@@ -90,6 +92,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 	{
 		c = (c+1)%sessionInfo.numberOfTeam;
 		color[i]->setSelectedColor(c);
+		color[i]->show();
 		isAI[i]->setState(true);
 		closedText[i]->hide();
 		aiSelector[i]->show();
@@ -98,6 +101,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 	for (; i<16; i++)
 	{
 		isAI[i]->setState(false);
+		color[i]->hide();
 		aiSelector[i]->hide();
 		closedText[i]->show();
 	}
@@ -118,11 +122,13 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 			int n=par1-100;
 			if (isAI[n]->getState())
 			{
+				color[n]->show();
 				closedText[n]->hide();
 				aiSelector[n]->show();
 			}
 			else
 			{
+				color[n]->hide();
 				closedText[n]->show();
 				aiSelector[n]->hide();
 			}
