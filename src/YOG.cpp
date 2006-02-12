@@ -270,7 +270,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						printf("Warning, bad pad YMT_GAME_INFO_FROM_HOST packet received from ip=(%s)\n", Utilities::stringIP(ip));
 					game->netProtocolVersion=(int)(Sint8)data[15];
 					game->configCheckSum=getUint32(data, 16);
-					memcpy(game->mapName, data+16, size-16);
+					memcpy(game->mapName, data+20, size-20);
 					game->mapName[63]=0;
 					if (isSelectedGame && selectedGame==uid)
 					{
