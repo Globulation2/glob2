@@ -63,7 +63,7 @@ protected:
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapVersion, *mapSize;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
 	//! True when the selected map is valid
 	bool validMapSelected;
 
