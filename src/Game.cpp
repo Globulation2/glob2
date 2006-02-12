@@ -947,24 +947,12 @@ bool Game::load(GAGCore::InputStream *stream)
 			teams[i]->integrity();
 		
 		// then script
-		ErrorReport er;
 		if (stream->canSeek())
 			stream->seekFromStart(tempSessionInfo.mapScriptOffset);
-		script.load(stream);
-		er=script.compileScript(this);
-		
-		if (er.type!=ErrorReport::ET_OK)
+		if (!script.load(stream, this))
 		{
-			if (er.type==ErrorReport::ET_NO_SUCH_FILE)
-			{
-				printf("SGSL : Can't find script file testscript.txt\n");
-			}
-			else
-			{
-				printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
-				stream->readLeaveSection();
-				return false;
-			}
+			stream->readLeaveSection();
+			return false;
 		}
 		
 		if (session.versionMinor < 37)
@@ -1056,7 +1044,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 		stream->write("GaPl", 4, "signatureAfterPlayers");
 
 		SAVE_OFFSET(stream, 32, "mapScriptOffset");
-		script.save(stream);
+		script.save(stream, this);
 		
 		stream->writeText(nextMap, "nextMap");
 		stream->writeText(campaignText, "campaignText");
