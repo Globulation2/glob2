@@ -3205,6 +3205,12 @@ void GameGUI::drawOverlayInfos(void)
 				yinc += 20;
 			}
 		}
+		
+		if (swallowSpaceKey)
+		{
+			globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
+			yinc += 20;
+		}
 
 		// show script counter
 		if (game.script.getMainTimer())
