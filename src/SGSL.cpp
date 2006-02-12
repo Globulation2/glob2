@@ -183,6 +183,8 @@ int Story::valueOfVariable(const Game *game, Token::TokenType type, int teamNumb
 			return latestStat->numberBuildingPerTypePerLevel[6][level];
 		case(Token::S_DEFENCE_B):
 			return latestStat->numberBuildingPerTypePerLevel[7][level];
+		case(Token::S_WALL_B):
+			return latestStat->numberBuildingPerTypePerLevel[11][level];
 		default:
 			assert(false);
 			return 0;
@@ -1036,7 +1038,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		} \
 	}
 
-	// Cheks for right number of arguments
+	// Checks for right number of arguments
 	#define CHECK_ARGUMENT \
 	{ \
 		if (donnees->getToken()->type == Token::S_PARCLOSE || donnees->getToken()->type == Token::S_SEMICOL) \
@@ -1556,23 +1558,37 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						if (donnees->getToken()->type >= Token::S_SWARM_B)
 						{
 							// Buildings
-							// level
 							CHECK_PAROPEN;
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
+							// team
 							if (donnees->getToken()->type != Token::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if ((donnees->getToken()->value < 0) || (donnees->getToken()->value > 2))
+							else if (donnees->getToken()->value >= game->session.numberOfTeam)
 							{
-								er.type=ErrorReport::ET_INVALID_VALUE;
+								er.type=ErrorReport::ET_INVALID_TEAM;
 								break;
 							}
 							thisone.line.push_back(*donnees->getToken());
 							CHECK_SEMICOL;
 							NEXT_TOKEN;
+							CHECK_ARGUMENT;
+
+							// level
+							if (donnees->getToken()->type != Token::INT)
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							else if ((donnees->getToken()->value < 0) || (donnees->getToken()->value > 5))
+							{
+								er.type=ErrorReport::ET_INVALID_VALUE;
+								break;
+							}
+							thisone.line.push_back(*donnees->getToken());
 						}
 						else
 						{
@@ -1580,20 +1596,21 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							CHECK_PAROPEN;
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
+							// team
+							if (donnees->getToken()->type != Token::INT)
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							else if (donnees->getToken()->value >= game->session.numberOfTeam)
+							{
+								er.type=ErrorReport::ET_INVALID_TEAM;
+								break;
+							}
+							thisone.line.push_back(*donnees->getToken());
 						}
+						CHECK_PARCLOSE;
 
-						// team
-						if (donnees->getToken()->type != Token::INT)
-						{
-							er.type=ErrorReport::ET_SYNTAX_ERROR;
-							break;
-						}
-						else if (donnees->getToken()->value >= game->session.numberOfTeam)
-						{
-							er.type=ErrorReport::ET_INVALID_TEAM;
-							break;
-						}
-						thisone.line.push_back(*donnees->getToken());
 						/*NEXT_TOKEN;
 						//Optional "areaName"
 						if (donnees->getToken()->type != Token::S_PARCLOSE)
@@ -1616,7 +1633,6 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						else
 						{ // there was no flag name but a closing parenthesis
 						}*/
-						CHECK_PARCLOSE;
 
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
