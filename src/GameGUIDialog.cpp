@@ -21,7 +21,6 @@
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
-#include <GUISelector.h>
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIAnimation.h>
@@ -266,7 +265,7 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 :OverlayScreen(globalContainer->gfx, 320, 300)
 {
-	musicVol=new Selector(19, 50, ALIGN_LEFT, ALIGN_TOP, 256, 8, globalContainer->settings.musicVolume, 1);
+	musicVol=new Selector(19, 50, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256);
 	addWidget(musicVol);
 	Text *musicVolText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
