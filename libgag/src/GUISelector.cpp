@@ -38,6 +38,7 @@ namespace GAGGUI
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
 		this->value=defaultValue;
+		this->dragging = false;
 	
 		if (sprite)
 			this->sprite=sprite;
@@ -67,6 +68,7 @@ namespace GAGGUI
 			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
 				(event->button.button == SDL_BUTTON_LEFT))
 			{
+				dragging = true;
 				int dx=event->button.x-x-3;
 				int v=dx*static_cast<int>(maxValue)/(w-4);
 				clipValue(v);
@@ -75,13 +77,19 @@ namespace GAGGUI
 		}
 		else if (event->type==SDL_MOUSEMOTION)
 		{
-			if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h) &&
-				(event->motion.state&SDL_BUTTON(1)))
+			if (dragging)
 			{
 				int dx=event->button.x-x-3;
 				int v=dx*static_cast<int>(maxValue)/(w-4);
 				clipValue(v);
 				parent->onAction(this, VALUE_CHANGED, value, 0);
+			}
+		}
+		else if (event->type==SDL_MOUSEBUTTONUP)
+		{
+			if (event->button.button == SDL_BUTTON_LEFT)
+			{
+				dragging = false;
 			}
 		}
 	}
