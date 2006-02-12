@@ -20,6 +20,7 @@
 #include "CustomGameScreen.h"
 #include "Utilities.h"
 #include "Game.h"
+#include "GlobalContainer.h"
 #include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 #include <GUIButton.h>
@@ -39,7 +40,7 @@ CustomGameScreen::CustomGameScreen() :
 		addWidget(color[i]);
 		if (i==0)
 		{
-			closedText[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[player]"));
+			closedText[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername());
 			addWidget(closedText[i]);
 			
 			aiSelector[i]=NULL;
