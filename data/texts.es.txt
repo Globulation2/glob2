@@ -678,3 +678,5 @@ Imposible unirse a la partida: versión del juego incorrecta
 Imposible unirse a la partida: parámetros del juego diferentes
 [Can't join game, timeout]
 Imposible unirse a la partida: tiempo de espera agotado
+[press space]
+Presione espacio para continuar.

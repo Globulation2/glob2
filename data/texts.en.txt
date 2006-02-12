@@ -704,3 +704,5 @@ width of river
 empty islands
 [crater density]
 crater count
+[press space]
+Press space to continue.
