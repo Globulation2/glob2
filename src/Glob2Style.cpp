@@ -26,7 +26,7 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 	{
 		if (highlight > 0)
 		{
-			target->drawSprite(x, y, globalContainer->gamegui, 26, 255 - highlight);
+			target->drawSprite(x, y, globalContainer->gamegui, 26);
 			target->drawSprite(x, y, globalContainer->gamegui, 27, highlight);
 		}
 		else
