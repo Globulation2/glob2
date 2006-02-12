@@ -538,17 +538,22 @@ namespace GAGGUI
 	
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 	{
+		int newX, newY;
 		SDL_Event ev=*event;
 		switch (ev.type)
 		{
 			case SDL_MOUSEMOTION:
-				ev.motion.x-=static_cast<Uint16>(decX);
-				ev.motion.y-=static_cast<Uint16>(decY);
+				newX = (int)ev.motion.x - decX;
+				newY = (int)ev.motion.y - decY;
+				ev.motion.x = (unsigned)std::max(0, newX);
+				ev.motion.y = (unsigned)std::max(0, newY);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				ev.button.x-=static_cast<Uint16>(decX);
-				ev.button.y-=static_cast<Uint16>(decY);
+				newX = (int)ev.button.x - decX;
+				newY = (int)ev.button.y - decY;
+				ev.button.x = (unsigned)std::max(0, newX);
+				ev.button.y = (unsigned)std::max(0, newY);
 				break;
 			default:
 				break;
