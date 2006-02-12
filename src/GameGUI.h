@@ -109,6 +109,10 @@ public:
 	void disableFlagsChoice(const std::string &name);
 	void enableGUIElement(int id);
 	void disableGUIElement(int id);
+	bool isSpaceSet() { return hasSpaceBeenClicked; }
+	void setIsSpaceSet(bool value) { hasSpaceBeenClicked=value; }
+	bool isSwallowSpaceKey() { return swallowSpaceKey; }
+	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
 
 	// Stats for engine
 	void setCpuLoad(int s);
@@ -246,6 +250,12 @@ private:
 		HIDABLE_ALLIANCE = 0x10,
 	};
 	Uint32 hiddenGUIElements;
+
+	//! Tells whether a space was clicked recently, to read in by the script engine
+	bool hasSpaceBeenClicked;
+
+	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" it
+	bool swallowSpaceKey;
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;

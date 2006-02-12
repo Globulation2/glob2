@@ -69,6 +69,7 @@ namespace Nicowar
 				Wood=1<<2,
 				Stone=1<<3,
 				TeamBuildings=1<<4,
+				Water=1<<5,
 			};
 
 			///This enum holds anything that can be an obstacle in the gradient
@@ -1239,8 +1240,10 @@ namespace Nicowar
 			///area on that square, but no resource or if clearing area has been put over it
 			bool updateFarm();
 
-			///Holds a refernece to the ai so taht the module can work properly.
+			///Holds a reference to the ai so taht the module can work properly.
 			AINicowar& ai;
+			Gradient water_gradient;
+			bool is_water_gradient_computed;
 	};
 
 	///These constants are what fine tune AINicowar. There is allot of them.
@@ -1412,6 +1415,7 @@ namespace Nicowar
 
 	//These are for farmer
 	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
+	const unsigned int MAX_DISTANCE_FROM_WATER=8;
 
 	///This constant turns on debugging output
 	const bool AINicowar_DEBUG = true;

@@ -65,6 +65,7 @@ struct Token
 
 		// Functions
 		S_WAIT=50,
+		S_SPACE,
 		S_TIMER,
 		S_SHOW,
 		S_HIDE,
@@ -244,6 +245,7 @@ public:
 	void syncStep(GameGUI *gui);
 	Sint32 checkSum() { return lineSelector; }
 
+	void sendSpace() { recievedSpace=true; }
 private:
 	bool conditionTester(const Game *game, int pc, bool l);
 	bool testCondition(GameGUI *gui);
@@ -251,6 +253,7 @@ private:
 	int lineSelector;
 	Mapscript *mapscript;
 	int internTimer;
+	bool recievedSpace;
 };
 
 struct Area

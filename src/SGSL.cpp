@@ -58,6 +58,7 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_NOT, "not" },
 
 	{ S_WAIT, "wait" },
+	{ S_SPACE, "space" },
 	{ S_TIMER, "timer" },
 	{ S_SHOW, "show" },
 	{ S_HIDE, "hide" },
@@ -145,6 +146,7 @@ Story::Story(Mapscript *mapscript)
 {
 	lineSelector = 0;
 	internTimer=0;
+	recievedSpace=false;
 	this->mapscript=mapscript;
 }
 
@@ -497,6 +499,19 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
+			case (Token::S_SPACE):
+			{
+				if(recievedSpace)
+				{
+					return true;
+				}
+				else
+				{
+					gui->setSwallowSpaceKey(true);
+					return false;
+				}
+			}
+
 			case (Token::S_WAIT):
 			{
 				bool negate = false;
@@ -634,6 +649,7 @@ void Story::syncStep(GameGUI *gui)
 		cycleLeft--;
 		if (verbose)
 			std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
+		recievedSpace=false;
 	}
 
 	if (!cycleLeft)
@@ -931,7 +947,14 @@ void Mapscript::syncStep(GameGUI *gui)
 		mainTimer--;
 	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
+		if(gui->isSpaceSet())
+			it->sendSpace();
 		it->syncStep(gui);
+	}
+	if(gui->isSpaceSet())
+	{
+		gui->setIsSpaceSet(false);
+		gui->setSwallowSpaceKey(false);
 	}
 }
 
@@ -1702,6 +1725,13 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				case (Token::S_HIDE):
+				{
+					thisone.line.push_back(*donnees->getToken());
+					NEXT_TOKEN;
+				}
+				break;
+
+				case (Token::S_SPACE):
 				{
 					thisone.line.push_back(*donnees->getToken());
 					NEXT_TOKEN;
