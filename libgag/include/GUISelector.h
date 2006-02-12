@@ -36,6 +36,7 @@ namespace GAGGUI
 		Uint32 maxValue;
 		Uint32 step;
 		Uint32 value;
+		bool dragging;
 		Sint32 id;
 		std::string sprite;
 	
