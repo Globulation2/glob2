@@ -49,6 +49,21 @@ namespace GAGGUI
 		unsigned blockLength, blockPos, textHeight;
 		//! Pointer to font, this is a cache
 		GAGCore::Font *fontPtr;
+		
+		//! Possible states of selection inside this widget
+		enum SelectionState
+		{
+			NOTHING_PRESSED = 0,
+			UP_ARROW_PRESSED,
+			UP_ZONE_PRESSED,
+			DOWN_ZONE_PRESSED,
+			DOWN_ARROW_PRESSED,
+			HANDLE_PRESSED
+		} selectionState; //!< state of selection inside this widget
+		//! Mouse position when handle dragging started
+		int mouseDragStartPos;
+		//! Initial displacement when handle dragging started
+		int mouseDragStartDisp;
 	
 	public:
 		//! Creator
@@ -58,7 +73,7 @@ namespace GAGGUI
 		//! Destructor
 		virtual ~List();
 	
-		virtual void onTimer(Uint32 tick) { }
+		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
 		virtual void init(void);
 		virtual void paint(void);
