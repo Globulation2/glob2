@@ -91,7 +91,7 @@ namespace Nicowar
 			///Resources count as obstacles
 			void update();
 			///Gets the height of point x,y
-			unsigned getHeight(unsigned x, unsigned y);
+			int getHeight(unsigned x, unsigned y);
 		private:
 			bool isSource(unsigned x, unsigned y);
 			bool isObstacle(unsigned x, unsigned y);
@@ -1261,7 +1261,7 @@ namespace Nicowar
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
 	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
-		{0, 6, 10, 10, 10, 15, 8, 5, 0, 0, 0, 0, 0};
+		{0, 6, 8, 10, 10, 15, 8, 5, 0, 0, 0, 0, 0};
 
 	//The following constants deal with the function iteration. All of these must be
 	//lower than TIMER_ITERATION.
