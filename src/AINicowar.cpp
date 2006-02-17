@@ -1051,7 +1051,7 @@ void Gradient::update()
 
 
 
-unsigned Gradient::getHeight(unsigned x, unsigned y)
+int Gradient::getHeight(unsigned x, unsigned y)
 {
 	return gradient[y*width+x]-1;
 }
@@ -1688,7 +1688,7 @@ bool PrioritizedBuildingAttack::attack()
 		{
 			if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
 			{
-				if(b->constructionResultState==Building::NO_CONSTRUCTION && !b->locked[0])
+				if(b->constructionResultState==Building::NO_CONSTRUCTION)
 				{
 					max_barracks_level=std::max(max_barracks_level, static_cast<unsigned int>(b->type->level+1));
 					found_barracks++;
@@ -1761,7 +1761,7 @@ bool PrioritizedBuildingAttack::attack()
 		Building* b = enemy->myBuildings[i];
 		if(b)
 		{
-			if(b->constructionResultState==Building::NO_CONSTRUCTION)
+			if(b->constructionResultState==Building::NO_CONSTRUCTION && !b->locked[1])
 			{
 				if(std::find(IGNORED_BUILDINGS, IGNORED_BUILDINGS+3, b->type->shortTypeNum)==IGNORED_BUILDINGS+3)
 				{
@@ -4605,7 +4605,7 @@ bool Farmer::updateFarm()
 				}
 				else
 				{
-					if(resources.find(point(x, y))==resources.end() && ai.map->isMapDiscovered(x, y, ai.team->me) && water_gradient.getHeight(x, y)<=MAX_DISTANCE_FROM_WATER+2)
+					if(resources.find(point(x, y))==resources.end() && ai.map->isMapDiscovered(x, y, ai.team->me) && water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2))
 					{
 						add_acc.applyBrush(ai.map, BrushApplication(x, y, 0));
 						resources.insert(point(x, y));
