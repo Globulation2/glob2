@@ -235,6 +235,7 @@ Order *AINicowar::getOrder(void)
 	{
 		if(iteration==0)
 		{
+			setRandomSyncRandSeed();
 			setCenter();
 			if(SEE_EVERYTHING)
 			{
@@ -1255,6 +1256,7 @@ bool SimpleBuildingDefense::findDefense()
 					dr.width=b->type->width+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.height=b->type->height+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.assigned=std::min(20u, gps.pollArea(dr.zonex, dr.zoney, dr.width, dr.height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS));
+					dr.assigned=dr.assigned*2;
 					dr.building=b->gid;
 					defending_zones.push_back(dr);
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
@@ -1308,6 +1310,7 @@ bool SimpleBuildingDefense::updateFlags()
 			}
 			else
 			{
+				score=score*2;
 				if(static_cast<int>(score)!=getBuildingFromGid(ai.game, i->flag)->maxUnitWorking)
 				{
 					ai.orders.push(new OrderModifyBuilding(i->flag, std::min(20u, score)));
@@ -1761,7 +1764,7 @@ bool PrioritizedBuildingAttack::attack()
 		Building* b = enemy->myBuildings[i];
 		if(b)
 		{
-			if(b->constructionResultState==Building::NO_CONSTRUCTION && !b->locked[1])
+			if(!b->locked[1])
 			{
 				if(std::find(IGNORED_BUILDINGS, IGNORED_BUILDINGS+3, b->type->shortTypeNum)==IGNORED_BUILDINGS+3)
 				{
@@ -1775,7 +1778,7 @@ bool PrioritizedBuildingAttack::attack()
 	//And now we shuffle then for added randomness
 	for(unsigned int i=0; i<buildings.size(); ++i)
 	{
-		random_shuffle(buildings[i].begin(), buildings[i].end(), syncRandAdapter);
+		selection_sort(buildings[i].begin(), buildings[i].end(), buildingAttackPredicate);
 	}
 
 	//Iterate through the buildings, starting attacks as neccecary, and stopping when
@@ -1810,9 +1813,9 @@ bool PrioritizedBuildingAttack::attack()
 				ar.flag=NOGBID;
 				ar.flagx=b->posX+(b->type->width/2);
 				ar.flagy=b->posY+(b->type->height/2);
-				if(static_cast<int>(ar.flagx) > ai.map->getW())
+				if(static_cast<int>(ar.flagx) >= ai.map->getW())
 					ar.flagx-=ai.map->getW();
-				if(static_cast<int>(ar.flagy) > ai.map->getH())
+				if(static_cast<int>(ar.flagy) >= ai.map->getH())
 					ar.flagy-=ai.map->getH();
 				ar.zonex=b->posX-ATTACK_ZONE_BUILDING_PADDING;
 				ar.zoney=b->posY-ATTACK_ZONE_BUILDING_PADDING;
@@ -2191,6 +2194,23 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 			}
 		}
 	}
+	/*
+	std::cout<<"Looking for a "<<IntBuildingType::typeFromShortNumber(building_type)<<", found x="<<top_point.x<<", found y="<<top_point.y<<", scores: ";
+	for(unsigned int factor=0; factor<CONSTRUCTOR_FACTORS_COUNT; ++factor)
+	{
+		if(!CONSTRUCTION_FACTORS[building_type][factor].is_null)
+		{
+			unsigned source=CONSTRUCTION_FACTORS[building_type][factor].source;
+			unsigned obstacle=CONSTRUCTION_FACTORS[building_type][factor].obstacle;
+			///Get the scores of each of the four corners of the building
+			std::cout<<" factor "<<factor<<", top left: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x, top_point.y))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";";
+			std::cout<<" factor "<<factor<<", top right: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x+size.width, top_point.y))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";";
+			std::cout<<" factor "<<factor<<", lower left: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x, top_point.y+size.height))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";";
+			std::cout<<" factor "<<factor<<", lower right: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x+size.width, top_point.y+size.height))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";";
+		}
+	}
+	std::cout<<std::endl;
+	*/
 
 	return top_point;
 }
@@ -2432,8 +2452,6 @@ bool DistributedNewConstructionManager::updateBuildings()
 	}
 
 	//Update buildings that have just been created.
-	//There is one problem, if a building is destroyed by enemy troops before this gets executed, the new record will hang and never be removed, causing
-	//disruptions throughout the code.
 	for(int i=0; i<1024; ++i)
 	{
 		Building *b = ai.team->myBuildings[i];
@@ -3296,6 +3314,7 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 	{
 		unsigned int total_requested=0;
 		unsigned int total_used=0;
+		total_used+=i->second.reservedUnits[unit_type][ability][level]*PRIORITY_SCORES[high];
 		//UnitModule::low is a special case, units made by it should be ignored
 		for(unsigned int j=0; j<priorityNum && j!=UnitModule::low; ++j)
 		{
@@ -3368,7 +3387,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
-	module_records[module_name].reservedUnits[unit_type][ability][minimum_level]+=number;
+	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]+=number;
 }
 
 
@@ -3376,7 +3395,7 @@ void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
-	module_records[module_name].reservedUnits[unit_type][ability][minimum_level]-=number;
+	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]-=number;
 }
 
 
@@ -3575,8 +3594,7 @@ ExplorationManager::ExplorationManager(AINicowar& ai) : ai(ai)
 {
 	ai.addOtherModule(this);
 	explorers_wanted=0;
-	developing_attack_explorers=false;
-	explorer_attacking=false;
+	original_explorers_wanted=0;
 }
 
 
@@ -3584,16 +3602,11 @@ ExplorationManager::ExplorationManager(AINicowar& ai) : ai(ai)
 
 bool ExplorationManager::perform(unsigned int time_slice_n)
 {
+	explorers_wanted = TOTAL_EXPLORERS;
 	switch(time_slice_n)
 	{
 		case 0:
-			return exploreWorld();
-		case 1:
-			return updateExplorationFlags();
-		case 2:
 			return moderateSwarmsForExplorers();
-		case 3:
-			return explorerAttack();
 	}
 	return false;
 }
@@ -3612,34 +3625,7 @@ std::string ExplorationManager::getName() const
 bool ExplorationManager::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("ExplorationManager");
-	stream->readEnterSection("active_exploration");
-	Uint32 explorationRecordSize = stream->readUint32("size");
-	for (Uint32 explorationRecordIndex = 0; explorationRecordIndex < explorationRecordSize; explorationRecordIndex++)
-	{
-		stream->readEnterSection(explorationRecordIndex);
-		explorationRecord er;
-		unsigned int gid=stream->readUint32("gid");
-		if(!gid)
-			er.flag=NULL;
-		else
-			er.flag=getBuildingFromGid(ai.game, gid);
-		er.flag_x=stream->readUint32("flag_x");
-		er.flag_y=stream->readUint32("flag_y");
-		er.zone_x=stream->readUint32("zone_x");
-		er.zone_y=stream->readUint32("zone_y");
-		er.width=stream->readUint32("width");
-		er.height=stream->readUint32("height");
-		er.assigned=stream->readUint32("assigned");
-		er.radius=stream->readUint32("radius");
-		er.isAssaultFlag=stream->readUint8("isAssaultFlag");
-		active_exploration.push_back(er);
-		// FIXME : clear the container before load
-		stream->readLeaveSection();
-	}
-	stream->readLeaveSection();
 	explorers_wanted=stream->readUint32("explorers_wanted");
-	developing_attack_explorers=stream->readUint8("developing_attack_explorers");
-	explorer_attacking=stream->readUint8("explorer_attacking");
 	stream->readLeaveSection();
 	return true;
 }
@@ -3650,249 +3636,9 @@ bool ExplorationManager::load(GAGCore::InputStream *stream, Player *player, Sint
 void ExplorationManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("ExplorationManager");
-	stream->writeEnterSection("active_exploration");
-	stream->writeUint32(active_exploration.size(), "size");
-	Uint32 explorationRecordIndex = 0;
-	for(std::list<explorationRecord>::const_iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
-	{
-		stream->writeEnterSection(explorationRecordIndex++);
-		if(i->flag!=NULL)
-			stream->writeUint32(i->flag->gid, "gid");
-		else
-			stream->writeUint32(0, "gid");
-		stream->writeUint32(i->flag_x, "flag_x");
-		stream->writeUint32(i->flag_y, "flag_y");
-		stream->writeUint32(i->zone_x, "zone_x");
-		stream->writeUint32(i->zone_y, "zone_y");
-		stream->writeUint32(i->width, "width");
-		stream->writeUint32(i->height, "height");
-		stream->writeUint32(i->assigned, "assigned");
-		stream->writeUint32(i->radius, "radius");
-		stream->writeUint8(i->isAssaultFlag, "isAssaultFlag");
-		stream->writeLeaveSection();
-	}
-	stream->writeLeaveSection();
 	stream->writeUint32(explorers_wanted, "explorers_wanted");
-	stream->writeUint8(developing_attack_explorers, "developing_attack_explorers");
-	stream->writeUint8(explorer_attacking, "explorer_attacking");
 	stream->writeLeaveSection();
 }
-
-
-
-
-bool ExplorationManager::exploreWorld(void)
-{
-	GridPollingSystem gps(ai);
-	unsigned int exploration_count=0;
-	unsigned int attack_count=0;
-	for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
-	{
-
-		if(i->isAssaultFlag)
-			attack_count++;
-		else
-			exploration_count++;
-	}
-
-	int wanted_exploration=EXPLORER_MAX_REGIONS_AT_ONCE-exploration_count;
-	int wanted_attack=EXPLORER_ATTACKS_AT_ONCE-attack_count;
-	if(! explorer_attacking )
-		wanted_attack=0;
-
-	if(wanted_exploration==0 && wanted_attack==0)
-		return false;
-
-	GridPollingSystem::poll p;
-	p.mod_1=GridPollingSystem::MAXIMUM;
-	p.type_1=GridPollingSystem::HIDDEN_SQUARES;
-	p.mod_2=GridPollingSystem::MINIMUM;
-	p.type_2=GridPollingSystem::CENTER_DISTANCE;
-	p.mod_minimum=GridPollingSystem::MAXIMUM;
-	p.minimum_type=GridPollingSystem::VISIBLE_SQUARES;
-	p.minimum_score=1;
-	GridPollingSystem::getBestZonesSplit* split = gps.getBestZones(p, EXPLORER_REGION_WIDTH, EXPLORER_REGION_HEIGHT, EXPLORER_REGION_HORIZONTAL_OVERLAP,
-		EXPLORER_REGION_VERTICAL_OVERLAP, EXPLORER_REGION_HORIZONTAL_EXTENTION,
-		EXPLORER_REGION_VERTICAL_EXTENTION);
-	std::vector<GridPollingSystem::zone> best = gps.getBestZones(split);
-	unsigned int size=best.size();
-
-	p.mod_1=GridPollingSystem::MAXIMUM;
-	p.type_1=GridPollingSystem::ENEMY_BUILDINGS;
-	p.mod_2=GridPollingSystem::MAXIMUM;
-	p.type_2=GridPollingSystem::NONE;
-	p.mod_minimum=GridPollingSystem::MAXIMUM;
-	p.minimum_type=GridPollingSystem::ENEMY_BUILDINGS;
-	p.minimum_score=1;
-	split = gps.getBestZones(p, EXPLORER_ATTACK_AREA_WIDTH, EXPLORER_ATTACK_AREA_HEIGHT, EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP,
-		EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP, EXPLORER_ATTACK_AREA_HORIZONTAL_EXTENTION,
-		EXPLORER_ATTACK_AREA_VERTICAL_EXTENTION);
-
-	std::vector<GridPollingSystem::zone> best_attack = gps.getBestZones(split);
-
-	std::copy(best_attack.begin(), best_attack.end(), std::back_insert_iterator<std::vector<GridPollingSystem::zone> >(best));
-
-	std::vector<GridPollingSystem::zone>::iterator attack_start=best.begin()+size;
-
-	///Erase any zones that already have flags in them
-	for(std::vector<GridPollingSystem::zone>::iterator i = best.begin(); i!=best.end();)
-	{
-		if(!isFreeOfFlags(i->x+i->width/2, i->y+i->height/2))
-		{
-			//			std::cout<<"removing zone from list!"<<std::endl;
-			i = best.erase(i);
-		}
-		else
-		{
-			++i;
-		}
-	}
-
-	std::vector<GridPollingSystem::zone>::iterator top=best.begin();
-	if(top<attack_start && gps.pollArea(top->x, top->y, top->width, top->height, GridPollingSystem::MAXIMUM, GridPollingSystem::HIDDEN_SQUARES)==0)
-	{
-		//		std::cout<<"Doing nothing! wanted_exploration="<<wanted_exploration<<";"<<std::endl;
-		return false;
-	}
-
-	for (std::vector<GridPollingSystem::zone>::iterator i=best.begin(); i!=best.end(); ++i)
-	{
-		//		std::cout<<"wanted_exploration="<<wanted_exploration<<"; "<<std::endl;
-		GridPollingSystem::zone z = *i;
-		if((i>=attack_start && wanted_attack==0) || (wanted_attack==0 && wanted_exploration==0))
-			break;
-
-		if(wanted_exploration==0)
-			continue;
-
-		explorationRecord exploration_record;
-		//This flag will be picked up by findCreatedFlags
-		exploration_record.flag=NULL;
-		exploration_record.flag_x=z.x+(z.width/2);
-		if(static_cast<int>(exploration_record.flag_x)>=ai.map->getW())
-			exploration_record.flag_x-=ai.map->getW();
-		exploration_record.flag_y=z.y+(z.height/2);
-		if(static_cast<int>(exploration_record.flag_y)>=ai.map->getH())
-			exploration_record.flag_y-=ai.map->getH();
-		exploration_record.zone_x=z.x;
-		exploration_record.zone_y=z.y;
-		exploration_record.width=z.width;
-		exploration_record.height=z.height;
-		if(i<attack_start)
-		{
-			exploration_record.assigned=EXPLORERS_PER_REGION;
-			exploration_record.radius=EXPLORATION_FLAG_RADIUS;
-			exploration_record.isAssaultFlag=false;
-			wanted_exploration--;
-		}
-		else
-		{
-			exploration_record.assigned=EXPLORERS_PER_ATTACK;
-			exploration_record.radius=EXPLORATION_FLAG_ATTACK_RADIUS;
-			exploration_record.isAssaultFlag=true;
-			wanted_attack--;
-		}
-
-		active_exploration.push_back(exploration_record);
-
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-		if(AINicowar_DEBUG)
-			std::cout<<"AINicowar: exploreWorld: Creating a new flag at position "<<exploration_record.flag_x<<","<<exploration_record.flag_y<<"."<<std::endl;
-		ai.orders.push(new OrderCreate(ai.team->teamNumber, exploration_record.flag_x, exploration_record.flag_y,typeNum));
-		explorers_wanted+=exploration_record.assigned;
-	}
-	return false;
-}
-
-
-
-
-bool ExplorationManager::updateExplorationFlags(void)
-{
-	GridPollingSystem gps(ai);
-	//Iterate through the buildings (which includes flags), looking for a flag that is not on the lists, that is in the right
-	//spot to be one of our null records flags.
-	Building** myBuildings=ai.team->myBuildings;
-	for (int i=0; i<1024; ++i)
-	{
-		Building* b=myBuildings[i];
-		if (b)
-		{
-			if (b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
-			{
-				for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end(); ++i)
-				{
-					if (i->flag==NULL && b->posX==static_cast<int>(i->flag_x) && b->posY==static_cast<int>(i->flag_y) && b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
-					{
-						i->flag=b;
-						if(AINicowar_DEBUG)
-							std::cout<<"AINicowar: updateExplorationFlags: Found a newly created flag matching our records at positon "<<b->posX<<","<<b->posY<<" , inserting this flag into our records."<<std::endl;
-						ai.orders.push(new OrderModifyFlag(b->gid, i->radius));
-						ai.orders.push(new OrderModifyBuilding(b->gid, i->assigned));
-						ai.getUnitModule()->request("ExplorationManager", EXPLORER, FLY, 1, i->assigned, UnitModule::medium_high, i->flag->gid);
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	for (std::list<explorationRecord>::iterator i = active_exploration.begin(); i!=active_exploration.end();)
-	{
-		if((!i->isAssaultFlag || explorer_attacking) && i->flag!=NULL)
-		{
-			int score=0;
-			if(i->isAssaultFlag)
-				score=gps.pollArea(i->zone_x, i->zone_y, i->width, i->height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_BUILDINGS);
-			else
-				score=gps.pollArea(i->zone_x, i->zone_y, i->width, i->height, GridPollingSystem::MAXIMUM, GridPollingSystem::HIDDEN_SQUARES);
-
-			if(score==0)
-			{
-				if(AINicowar_DEBUG)
-					std::cout<<"AINicowar: updateExplorationFlags: Removing a flag this is no longer needed at "<<i->flag_x<<", "<<i->flag_y<<"."<<std::endl;
-				ai.getUnitModule()->request("ExplorationManager", EXPLORER, FLY, 1, 0, UnitModule::medium_high, i->flag->gid);
-				ai.orders.push(new OrderDelete(i->flag->gid));
-				explorers_wanted-=i->assigned;
-				i=active_exploration.erase(i);
-			}
-			else
-				++i;
-		}
-		else
-			++i;
-	}
-
-	return false;
-}
-
-
-
-
-bool ExplorationManager::isFreeOfFlags(unsigned int x, unsigned int y)
-{
-	//Check if theres any flags of other types on the spot.
-	Building** myBuildings=ai.team->myBuildings;
-	for (int i=0; i<1024; i+=1)
-	{
-		Building *b=myBuildings[i];
-		if (b)
-		{
-			if (    b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG ||
-				b->type->shortTypeNum==IntBuildingType::WAR_FLAG ||
-				b->type->shortTypeNum==IntBuildingType::CLEARING_FLAG)
-			{
-				if (b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
-				{
-					return false;
-				}
-			}
-		}
-	}
-
-	return true;
-}
-
 
 
 
@@ -3900,60 +3646,14 @@ bool ExplorationManager::moderateSwarmsForExplorers(void)
 {
 	//I've raised the priority on explorers temporarily for testing.
 	//	changeUnits("aircontrol", EXPLORER, static_cast<int>(desired_explorers/2) , desired_explorers, 0);
-	ai.getUnitModule()->changeUnits("ExplorationManager", EXPLORER, explorers_wanted, FLY, 1, UnitModule::medium_high);
-	return false;
-}
-
-
-
-
-bool ExplorationManager::explorerAttack(void)
-{
-	bool lvl3_school_exists=false;
-	Building** myBuildings=ai.team->myBuildings;
-	for (int i=0; i<1024; ++i)
+	if(original_explorers_wanted!=explorers_wanted)
 	{
-		Building* b=myBuildings[i];
-		if (b)
-		{
-			if (b->type->shortTypeNum==IntBuildingType::SCIENCE_BUILDING && b->type->level==2)
-			{
-				lvl3_school_exists=true;
-			}
-		}
+		if(original_explorers_wanted>0)
+			ai.getUnitModule()->unreserve("ExplorationManager", EXPLORER, FLY, 1, original_explorers_wanted);
+		ai.getUnitModule()->changeUnits("ExplorationManager", EXPLORER, explorers_wanted, FLY, 1, UnitModule::medium_high);
+		ai.getUnitModule()->reserve("ExplorationManager", EXPLORER, FLY, 1, explorers_wanted);
+		original_explorers_wanted=explorers_wanted;
 	}
-	if (!lvl3_school_exists)
-	{
-		return false;
-	}
-
-	if (!developing_attack_explorers)
-	{
-		developing_attack_explorers=true;
-		return false;
-	}
-
-	//check if we have enough explorers to start launching attacks.
-	int ground_attack_explorers=0;
-	Unit** myUnits = ai.team->myUnits;
-	for (int i=0; i<1024; i++)
-	{
-		Unit* u = myUnits[i];
-		if (u)
-		{
-			if (u->canLearn[MAGIC_ATTACK_GROUND] && u->performance[MAGIC_ATTACK_GROUND])
-			{
-				ground_attack_explorers+=1;
-			}
-		}
-	}
-
-	if (ground_attack_explorers<static_cast<int>(EXPLORERS_PER_ATTACK*EXPLORER_ATTACKS_AT_ONCE))
-		return false;
-	if(AINicowar_DEBUG)
-		if(!explorer_attacking)
-			std::cout<<"AINicowar: explorerAttack: Enabling explorer attacks."<<std::endl;
-	explorer_attacking=true;
 	return false;
 }
 
@@ -4381,6 +4081,7 @@ bool BuildingClearer::updateClearingAreas()
 HappinessHandler::HappinessHandler(AINicowar& ai) : ai(ai)
 {
 	ai.addOtherModule(this);
+	is_fruit_trees_computed=false;
 }
 
 
@@ -4490,8 +4191,188 @@ bool HappinessHandler::adjustAlliances()
 
 bool HappinessHandler::searchFruitTrees()
 {
-	//	ai.getUnitModule()->changeUnits("HappinessHandler", WORKER,
+	ai.getUnitModule()->changeUnits("HappinessHandler", EXPLORER, EXPLORERS_PER_GROUP*HAPPYNESS_COUNT, FLY, 1, UnitModule::medium);
+	computeFruitTrees();
+	int closest_tree_score[HAPPYNESS_COUNT];
+	point flagLocation[HAPPYNESS_COUNT];
+	int flagRadius[HAPPYNESS_COUNT];
+	std::fill(closest_tree_score, closest_tree_score+HAPPYNESS_COUNT, -1);
+	for(std::vector<fruitTreeRecord>::iterator i=fruit_trees.begin(); i!=fruit_trees.end(); ++i)
+	{
+		unsigned center_x=i->fruit_tree_min_x+(i->fruit_tree_max_x-i->fruit_tree_min_x)/2;
+		unsigned center_y=i->fruit_tree_min_y+(i->fruit_tree_max_y-i->fruit_tree_min_y)/2;
+		int nearness_score = intdistance(ai.getCenterX(), center_x)+intdistance(ai.getCenterY(), center_y);
+		if(closest_tree_score[i->fruit_tree_type]==-1 || closest_tree_score[i->fruit_tree_type]>nearness_score)
+		{
+			closest_tree_score[i->fruit_tree_type]=nearness_score;
+			flagLocation[i->fruit_tree_type]=point(center_x, center_y);
+			flagRadius[i->fruit_tree_type]=std::max((i->fruit_tree_max_x-i->fruit_tree_min_x)/2, (i->fruit_tree_max_y-i->fruit_tree_min_y)/2);
+		}
+	}
+
+	int available_units=ai.getUnitModule()->available("HappinessHandler", EXPLORER, FLY, 1, true, UnitModule::medium);
+	for(unsigned int n=0; n<HAPPYNESS_COUNT; ++n)
+	{
+		if(closest_tree_score[n]==-1)
+			continue;
+
+		if(available_units<static_cast<int>(EXPLORERS_PER_GROUP))
+			break;
+
+		bool found=false;
+		for(std::vector<fruitTreeExplorationRecord>::iterator i = exploring_fruit_trees.begin(); i!=exploring_fruit_trees.end(); ++i)
+		{
+			if(i->pos_x == flagLocation[n].x && i->pos_y == flagLocation[n].y)
+			{
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			fruitTreeExplorationRecord fter;
+			if(AINicowar_DEBUG)
+				std::cout<<"AINicowar: searchFruitTrees: Creating a new exploration flag for a group of trees."<<std::endl;
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
+			ai.orders.push(new OrderCreate(ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum));
+			fter.flag=NOGBID;
+			fter.pos_x=flagLocation[n].x;
+			fter.pos_y=flagLocation[n].y;
+			fter.radius=std::max(flagRadius[n], static_cast<int>(MINIMUM_FLAG_SIZE));
+			exploring_fruit_trees.push_back(fter);
+			available_units-=EXPLORERS_PER_GROUP;
+		}
+	}
+
+	for(std::vector<fruitTreeExplorationRecord>::iterator i = exploring_fruit_trees.begin(); i!=exploring_fruit_trees.end(); ++i)
+	{
+		if(i->flag==NOGBID)
+		{
+			for(unsigned int n=0; n<1024; ++n)
+			{
+				Building* b = ai.team->myBuildings[n];
+				if(b)
+				{
+					if(b->posX == i->pos_x && b->posY == i->pos_y && b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
+					{
+						i->flag=b->gid;
+						ai.orders.push(new OrderModifyFlag(i->flag, i->radius));
+						ai.orders.push(new OrderModifyBuilding(i->flag, EXPLORERS_PER_GROUP));
+						ai.getUnitModule()->request("HappinessHandler", EXPLORER, FLY, 1, EXPLORERS_PER_GROUP, UnitModule::medium, i->flag);
+					}
+				}
+			}
+		}
+	}
 	return false;
+}
+
+
+
+
+void HappinessHandler::computeFruitTrees()
+{
+	if(is_fruit_trees_computed==false)
+	{
+		is_fruit_trees_computed=true;
+		std::set<point> examined_points;
+		for(int x=0; x<ai.map->getW(); ++x)
+		{
+			for(int y=0; y<ai.map->getH(); ++y)
+			{
+				int res_type=ai.map->getRessource(x, y).type;
+				if(res_type>=HAPPYNESS_BASE && res_type<MAX_RESSOURCES && examined_points.count(point(x, y))==0)
+				{
+					examined_points.insert(point(x, y));
+					int max_x=x;
+					int max_y=y;
+					int min_x=x;
+					int min_y=y;
+					std::queue<point> points_to_examine;
+					points_to_examine.push(point(x, y));
+					while(!points_to_examine.empty())
+					{
+						point p=points_to_examine.front();
+						points_to_examine.pop();
+						if(p.x>max_x)
+							max_x=p.x;
+						else if(p.x<min_x)
+							min_x=p.x;
+						if(p.y>min_y)
+							max_y=p.y;
+						else if(p.y<min_y)
+							min_y=p.y;
+						int xl=p.x-1;
+						int xr=p.x+1;
+						int yu=p.y-1;
+						int yd=p.y+1;
+						if(xr>=ai.map->getW())
+							xr-=ai.map->getW();
+						if(xl<0)
+							xl+=ai.map->getW();
+						if(yd>=ai.map->getH())
+							yd-=ai.map->getH();
+						if(yu<0)
+							yu+=ai.map->getH();
+						if(ai.map->getRessource(xl, yu).type==res_type && examined_points.count(point(xl, yu))==0)
+						{
+							examined_points.insert(point(xl, yu));
+							points_to_examine.push(point(xl, yu));
+						}
+	
+						if(ai.map->getRessource(x, yu).type==res_type && examined_points.count(point(x, yu))==0)
+						{
+							examined_points.insert(point(x, yu));
+							points_to_examine.push(point(x, yu));
+						}
+	
+						if(ai.map->getRessource(xr, yu).type==res_type && examined_points.count(point(xr, yu))==0)
+						{
+							examined_points.insert(point(xr, yu));
+							points_to_examine.push(point(xr, yu));
+						}
+	
+						if(ai.map->getRessource(xl, y).type==res_type && examined_points.count(point(xl, y))==0)
+						{
+							examined_points.insert(point(xl, y));
+							points_to_examine.push(point(xl, y));
+						}
+	
+						if(ai.map->getRessource(xr, y).type==res_type && examined_points.count(point(xr, y))==0)
+						{
+							examined_points.insert(point(xr, y));
+							points_to_examine.push(point(xr, y));
+						}
+	
+						if(ai.map->getRessource(xl, yd).type==res_type && examined_points.count(point(xl, yd))==0)
+						{
+							examined_points.insert(point(xl, yd));
+							points_to_examine.push(point(xl, yd));
+						}
+	
+						if(ai.map->getRessource(x, yd).type==res_type && examined_points.count(point(x, yd))==0)
+						{
+							examined_points.insert(point(x, yd));
+							points_to_examine.push(point(x, yd));
+						}
+	
+						if(ai.map->getRessource(xr, yd).type==res_type && examined_points.count(point(xr, yd))==0)
+						{
+							examined_points.insert(point(xr, yd));
+							points_to_examine.push(point(xr, yd));
+						}
+					}
+					fruitTreeRecord ftr;
+					ftr.fruit_tree_max_x=max_x;
+					ftr.fruit_tree_min_x=min_x;
+					ftr.fruit_tree_max_y=max_y;
+					ftr.fruit_tree_min_y=min_y;
+					ftr.fruit_tree_type=res_type-HAPPYNESS_BASE;
+					fruit_trees.push_back(ftr);
+				}
+			}
+		}
+	}
 }
 
 

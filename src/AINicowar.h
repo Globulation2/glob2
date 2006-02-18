@@ -983,9 +983,8 @@ namespace Nicowar
 			AINicowar& ai;
 	};
 
-	///The following deal with AINicowars management of explorers. It tries to explore areas covered with fog of war
-	///and, if it has enough exploreres with magic ground damage, it will launch deadly assaults on the enemy using
-	///explorers.
+	///The following deal with AINicowars management of explorers. For most of the time, it just orders the creation of explorers. But eventually,
+	///it will try to launch explorer attacks.
 	class ExplorationManager : public OtherModule
 	{
 		public:
@@ -997,60 +996,19 @@ namespace Nicowar
 			void save(GAGCore::OutputStream *stream) const;
 			unsigned int numberOfTicks() const
 			{
-				return 4;
+				return 1;
 			}
-
-			///Stores a simple record of what areas are being explored and/or attacked.
-			struct explorationRecord
-			{
-				Building* flag;
-				unsigned int flag_x;
-				unsigned int flag_y;
-				unsigned int zone_x;
-				unsigned int zone_y;
-				unsigned int width;
-				unsigned int height;
-				unsigned int assigned;
-				unsigned int radius;
-				bool isAssaultFlag;
-			};
-			///Creates, destroys, or moves explorer flags to explore all of the hidden world.
-			///Important!! Each call to exploreWorld only manages changes (creates, destroys,
-			///or moves) one flag. So if many regions are desired to be explored at once, it
-			///may take several calls to exploreWorld to get them explored.
-			bool exploreWorld(void);
-
-			///When exploreWorld creates a new flag, it isn't able to get a link to the flag
-			///right away to be put into the active_exploration record list. So, instead, it
-			///adds in a NULL pointer, and this function will search out for exploration
-			///flags that have been create, that are not in the active_exploration record
-			///list yet. And it puts them there, as well as assigning them the right radius.
-			bool updateExplorationFlags(void);
-
 			///Controls the swarms in order to get the desired numbers of explorers. It puts
 			///the explorers creation at top priority, and if multiple explorers need to be
 			///created, will distribute them between its swarms.
 			bool moderateSwarmsForExplorers(void);
 
-			///Prepares and launches an explorer attack (if possible). Explorer attacks are
-			///where a group of level 4 explorers are assigned to an explorer flag over an
-			///area, who will spin around the permiter of the flag attack ground units. Can
-			///be devestating if not defended against properly.
-			bool explorerAttack(void);
 
-			///This list keeps a record of what regions are being explored, so when they're
-			///done being explored, it can move on to explore other regions.
-			std::list<explorationRecord> active_exploration;
-
-			///Checks if the given spot is free of flags.
-			bool isFreeOfFlags(unsigned int x, unsigned int y);
-
+			///Thisd is the number of explorers wanted
 			unsigned int explorers_wanted;
-			///True if explorers that are intended to be used in an attack are being created.
-			bool developing_attack_explorers;
-			///True if the conditions are right for an explorer attack.
-			bool explorer_attacking;
-
+			///This variable is only changed when the actual orders are sent to the unit module to request explorers,
+			///it keeps track of when numbers change so that the ai knows when to use UnitModule::reserve
+			unsigned int original_explorers_wanted;
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
 	};
@@ -1172,11 +1130,49 @@ namespace Nicowar
 				return 2;
 			}
 
+			///Stores a single point on the map
+			struct point
+			{
+				point() {}
+				point(int x, int y) : x(x), y(y) {}
+				int x;
+				int y;
+				bool operator<(const point& cmp) const
+				{
+					if(x!=cmp.x)
+						return x<cmp.x;
+					return y<cmp.y;
+				}
+			};
+
+			struct fruitTreeRecord
+			{
+				unsigned int fruit_tree_max_x;
+				unsigned int fruit_tree_max_y;
+				unsigned int fruit_tree_min_y;
+				unsigned int fruit_tree_min_x;
+				int fruit_tree_type;
+			};
+
+			std::vector<fruitTreeRecord> fruit_trees;
+			bool is_fruit_trees_computed;
+			void computeFruitTrees();
+
+			struct fruitTreeExplorationRecord
+			{
+				unsigned flag;
+				int pos_x;
+				int pos_y;
+				unsigned radius;
+			};
+			std::vector<fruitTreeExplorationRecord> exploring_fruit_trees;
+
 			///This will change the alliances approprietly depending on the average happiness level.
 			bool adjustAlliances();
 
 			///Wil hunt out groups of fruit trees and put explorer flags on them
 			bool searchFruitTrees();
+
 
 			///Holds a refernece to the ai so taht the module can work properly.
 			AINicowar& ai;
@@ -1261,7 +1257,7 @@ namespace Nicowar
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
 	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
-		{0, 6, 8, 10, 10, 15, 8, 5, 0, 0, 0, 0, 0};
+		{0, 6, 8, 10, 10, 20, 8, 8, 0, 0, 0, 0, 0};
 
 	//The following constants deal with the function iteration. All of these must be
 	//lower than TIMER_ITERATION.
@@ -1269,28 +1265,8 @@ namespace Nicowar
 	const unsigned int STARTUP_TIME=50;
 
 	//These constants are for the AI's management of exploration and explorer attacks.
-	//Warning, the following four constants must be powers of 2, because map sizes are in powers of two,
-	//or the explorers will leave small strips at the right side of maps unexplored.
-	const unsigned int EXPLORER_REGION_WIDTH=16;
-	const unsigned int EXPLORER_REGION_HEIGHT=16;
-	const int EXPLORER_REGION_HORIZONTAL_OVERLAP=4;
-	const int EXPLORER_REGION_VERTICAL_OVERLAP=4;
-	const int EXPLORER_REGION_HORIZONTAL_EXTENTION=0;
-	const int EXPLORER_REGION_VERTICAL_EXTENTION=0;
-	//Its reccomended that this number is an even number.
-	const unsigned int EXPLORERS_PER_REGION=2;
-	const unsigned int EXPLORATION_FLAG_RADIUS=12;
-	const unsigned int EXPLORER_MAX_REGIONS_AT_ONCE=4;
+	const unsigned int TOTAL_EXPLORERS=8;
 
-	const unsigned int EXPLORER_ATTACK_AREA_WIDTH=8;
-	const unsigned int EXPLORER_ATTACK_AREA_HEIGHT=8;
-	const int EXPLORER_ATTACK_AREA_HORIZONTAL_OVERLAP=4;
-	const int EXPLORER_ATTACK_AREA_VERTICAL_OVERLAP=4;
-	const int EXPLORER_ATTACK_AREA_HORIZONTAL_EXTENTION=0;
-	const int EXPLORER_ATTACK_AREA_VERTICAL_EXTENTION=0;
-	const unsigned int EXPLORERS_PER_ATTACK=2;
-	const unsigned int EXPLORATION_FLAG_ATTACK_RADIUS=5;
-	const unsigned int EXPLORER_ATTACKS_AT_ONCE=4;
 
 	//These constants are for the AI's swarm controller.
 	const unsigned int PRIORITY_SCORES[UnitModule::priorityNum]={5, 4, 3, 2, 1};
@@ -1367,10 +1343,10 @@ namespace Nicowar
 		{{GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //swarm
 		 {GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //inn
 		 {GradientPoll(Gradient::Wood, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //hospital
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //racetrack
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1.5), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //swimming
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 2)}, //racetrack
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 2)}, //swimming
 		 {GradientPoll(Gradient::Stone, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //barracks
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //school
+		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 2)}, //school
 		 {GradientPoll(), GradientPoll()},
 		 {GradientPoll(), GradientPoll()},
 		 {GradientPoll(), GradientPoll()},
@@ -1411,7 +1387,8 @@ namespace Nicowar
 	const unsigned int CLEARING_AREA_BUILDING_PADDING=1;
 
 	//These constants are for HappinessHandler
-	const unsigned int EXPLORERS_PER_GROUP=2;
+	const unsigned int EXPLORERS_PER_GROUP=4;
+	const unsigned int MINIMUM_FLAG_SIZE=3;
 
 	//These are for farmer
 	const Farmer::FarmingMethod FARMING_METHOD=Farmer::CrossSpacing;
@@ -1427,6 +1404,16 @@ namespace Nicowar
 	inline unsigned int syncRandAdapter(unsigned int x)
 	{
 		return syncRand()%x;
+	}
+
+	
+	inline bool buildingAttackPredicate(Building* a, Building* b)
+	{
+		if(a->constructionResultState==Building::NO_CONSTRUCTION && b->constructionResultState!=Building::NO_CONSTRUCTION)
+			return true;
+		else if(a->constructionResultState!=Building::NO_CONSTRUCTION && b->constructionResultState==Building::NO_CONSTRUCTION)
+			return false;
+		return syncRand()%2;
 	}
 
 	///Shuffles the given list.

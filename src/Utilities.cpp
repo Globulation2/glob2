@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <Stream.h>
+#include <ctime>
 
 #include "Utilities.h"
 #include "Game.h"
@@ -80,6 +81,7 @@ void setSyncRandSeedC(Uint32 seed)
 
 void setRandomSyncRandSeed(void)
 {
+	srand(time(NULL));
 	randa=(rand()<<16)|(rand()&0x0000FFFF);
 	randb=(rand()<<16)|(rand()&0x0000FFFF);
 	randc=(rand()<<16)|(rand()&0x0000FFFF);}
