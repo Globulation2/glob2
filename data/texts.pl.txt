@@ -37,9 +37,9 @@ Pomarańcze
 [Prune]
 Śliwki
 [Clearing:]
-
+Czyszczenie
 [Min required level:]
-
+Min wymagany poziom:
 [Bullets]
 Amunicja
 [range]
@@ -61,11 +61,11 @@ Przerwij naprawę
 [units type]
 Typ jednostek
 [workers]
-pracownicy
+Pracownicy
 [explorers]
-odkrywcy
+Odkrywcy
 [warriors]
-wojownicy
+Wojownicy
 [Unit type]
 Typ jednostki
 [Worker]
@@ -75,13 +75,13 @@ Poszukiwacz
 [Warrior]
 Wojownik
 [still (w)]
-Ciągle
+Ciągle 
 [units working]
  jednostek pracujących
 [still one unit working]
 Jeszcze 1 jednostka pracująca
 [Still (i)]
-Wciąż
+Wciąż 
 [Still one]
 Jeszcze jedna
 [Building name]
@@ -113,63 +113,67 @@ Mur kamienny
 [market]
 Bazar
 [forbidden area]
-
+Zakazany obszar
+[guard area]
+Pilnowany obszar
+[clear area]
+Oczyszczany obszar
 [Building short explanation]
 
 [swarm building explanation]
-
+Umożliwia produkcję
 [food building explanation]
-
+Dostarcza żywność
 [health building explanation]
-
+Umożliwia leczenie
 [walkspeed building explanation]
-
+Zwiększa szybkość
 [swimspeed building explanation]
-
+Umożliwia pływanie
 [attack building explanation]
-
+Umożliwia trening
 [science building explanation]
-
+Podnosi kwalifikacje
 [defense building explanation]
-
+Atakuje wrogie
 [exploration flag explanation]
-
+Przyciąga
 [war flag explanation]
-
+Przyciąga
 [clearing flag explanation]
-
+Oczyszcza
 [stone wall explanation]
-
+Pasywny element
 [market explanation]
-
+Umożliwia wymianę
 [Building short explanation 2]
 
 [swarm building explanation 2]
-
+jednostek
 [food building explanation 2]
-
+jednostkom
 [health building explanation 2]
-
+jednostek
 [walkspeed building explanation 2]
-
+jednostek na lądzie
 [swimspeed building explanation 2]
-
+jednostkom
 [attack building explanation 2]
-
+wojowników
 [science building explanation 2]
-
+pracowników
 [defense building explanation 2]
-
+jednostki i budynki
 [exploration flag explanation 2]
-
+poszukiwaczy
 [war flag explanation 2]
-
+wojowników
 [clearing flag explanation 2]
-
+obszar
 [stone wall explanation 2]
-
+obronny
 [market explanation 2]
-
+owoców z innymi
 [waiting for %s]
 Czeka na %s
 [%s has left the game]
@@ -205,15 +209,15 @@ Własna gra
 [yog]
 Ysagoon-Gra w Internecie
 [Enter your nickname :]
-
+Wpisz swoje imię:
 [Enter your password :]
-
+Wpisz swoje hasło:
 [lan]
 Gra sieciowa
 [settings]
 Ustawienia
 [Warning, you need to reboot the game for changes to take effect]
-
+Uwaga, uruchom ponownie grę, aby zmiany odniosły skutek
 [editor]
 Edytor
 [credits]
@@ -303,11 +307,11 @@ Zbudowano szkołę
 [the tower building is finished]
 Zbudowano wieżę obronną
 [the exploration flag is finished]
-?? Postawiono flagę eksploracji ??
+Postawiono flagę eksploracji
 [the war flag is finished]
-?? Postawiono flagę wojenną ??
+Postawiono flagę wojenną
 [the clearing flag is finished]
-?? Postawiono flagę ... ??
+Postawiono flagę oczyszczania
 [the stone wall is finished]
 Zbudowano część muru
 [the market is finished]
@@ -331,21 +335,21 @@ Szkoła została zaatakowana
 [the defense building is under attack]
 Wieża obronna została zaatakowana
 [the exploration flag is under attack]
-?? Flaga eksploracji została zaatakowana ??
+Flaga eksploracji została zaatakowana
 [the war flag is under attack]
-?? Flaga wojenna została zaatakowana ??
+Flaga wojenna została zaatakowana
 [the clearing flag is under attack]
-?? Flaga ... została zaatakowana ??
+Flaga oczyszczania została zaatakowana
 [the stone wall is under attack]
 Mur został zaatakowany
 [the market is under attack]
 Bazar został zaatakowany
 [Your %s are under attack]
-Twój %s jesteś atakowany
+Twój %s jest atakowany
 [Your unit got converted to %s's team]
 Twoja jednostka została przeciągnięta na stronę wroga %s
 [%s's team unit got converted to your team]
-Jednostka wroga została przeciągnięta na Twoją stronę %s
+Jednostka wroga %s została przeciągnięta na Twoją stronę
 [Uncontrolled]
 Niekontrolowany
 [ai]
@@ -367,9 +371,9 @@ Prestiż
 [Units]
 Jednostki
 [Attack]
-
+Atak
 [Defense]
-
+Obrona
 [free]
 wolne
 [of which]
@@ -545,9 +549,9 @@ Prędkość gry
 [Paused]
 Pauza
 [Register a new YOG user with password]
-
+Zarejestruj nowego użytkownika z hasłem
 [Remember YOG password localy]
-
+Zapamiętaj hasło lokalnie
 [YESTS_BAD]
 Błąd spójności podczas łączenia.
 [YESTS_UNABLE_TO_CONNECT]
@@ -563,11 +567,11 @@ Administrator wyłączył metaserwer YOG.
 [YESTS_CONNECTION_LOST]
 Połączenie z YOG zostało utracone.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Metaserwere YOG odmówił połączenia, ponieważ Twoja wersja globulation2 jest zbyt stara, by mógł się z nią komunikować.
+Metaserwer YOG odmówił połączenia, ponieważ Twoja wersja Globulation 2 jest zbyt stara, by mógł się z nią komunikować.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Metaserwer YOG odmówił połączenia ponieważ twój login jest już zajęty przez kogoś innego.
+Metaserwer YOG odmówił połączenia, ponieważ twój login jest już zajęty przez kogoś innego.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-
+Metaserwer YOG odmówił połączenia z powodu błędnego hasła.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
@@ -637,4 +641,4 @@ Głośność (muzyka)
 [Happyness]
 Satysfakcja
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
