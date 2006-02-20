@@ -18,6 +18,7 @@
 */
 
 #include "AICastor.h"
+#include "AINicowar.h"
 
 #include <assert.h>
 #include <string.h>
@@ -1857,8 +1858,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				
 				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->notGrassMap[(x+viewportX)+(y+viewportY)*map.w]);
 				
-				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getExplored(x+viewportX, y+viewportY, 0));
-				
+//				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getExplored(x+viewportX, y+viewportY, 0));
+
+				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((Nicowar::AINicowar*)players[3]->ai->aiImplementation)->getGradientManager().getGradient(Nicowar::Gradient::VillageCenter, Nicowar::Gradient::Resource).getHeight(x+viewportX, y+viewportY));
 				//((AICastor *)players[0].ai->aiImplementation)->wheatCareMap
 			}
 				//if (map.getForbidden(x+viewportX, y+viewportY))
