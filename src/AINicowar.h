@@ -49,6 +49,7 @@ namespace Nicowar
 	///fine tuning Nicowar as well as debugging it.
 	const bool NicowarStatusUpdate = true;
 
+	class AINicowar;
 	class Module;
 	class DefenseModule;
 	class AttackModule;
@@ -84,14 +85,17 @@ namespace Nicowar
 			///Constructs an invalid gradient
 			Gradient() {}
 			///Constructs a new gredient
-			Gradient(Team* team, unsigned sources, unsigned obstacles);
+			Gradient(AINicowar& team, unsigned sources, unsigned obstacles);
 			///Modifyies an existing gradient with new parameters
-			void reset(Team* team, unsigned sources, unsigned obstacles);
+			void reset(AINicowar& team, unsigned sources, unsigned obstacles);
 			///Updates the gradient from the given starting point outwards.
 			///Resources count as obstacles
 			void update();
 			///Gets the height of point x,y
-			int getHeight(unsigned x, unsigned y);
+			int getHeight(int x, int y);
+
+			///Outputs the gradient to the console, warning, very large.
+			void output();
 		private:
 			bool isSource(unsigned x, unsigned y);
 			bool isObstacle(unsigned x, unsigned y);
@@ -101,6 +105,7 @@ namespace Nicowar
 			unsigned obstacles;
 			Team* team;
 			Map* map;
+			AINicowar* ai;
 			std::vector<short int> gradient;
 	};
 
@@ -110,8 +115,8 @@ namespace Nicowar
 	{
 		public:
 			GradientManager() {};
-			GradientManager(Team* team) : team(team) {}
-			void setTeam(Team* aTeam)
+			GradientManager(AINicowar* team) : team(team) {}
+			void setTeam(AINicowar* aTeam)
 			{
 				team=aTeam;
 			}
@@ -133,7 +138,7 @@ namespace Nicowar
 
 			std::map<gradientSignature, Gradient> gradients;
 			std::queue<std::map<gradientSignature, Gradient>::iterator> update_queue;
-			Team* team;
+			AINicowar* team;
 
 	};
 
@@ -428,6 +433,10 @@ namespace Nicowar
 			///not have that ability, or have no skill in it.
 			unsigned int getUnits(unsigned int type, Unit::Medical medical_state, Unit::Activity activity, unsigned int ability, unsigned int level, bool isMinimum);
 
+			///Like the above method, this one returns the total number of units a person has meeting the criteria, not just ones
+			///that go for a particular health of activity level
+			unsigned int getUnits(unsigned int type, unsigned int ability, unsigned int level, bool isMinimum);
+
 			///Returns the highest level that the team has for a particular building type, or 0 for none.
 			unsigned int getMaximumBuildingLevel(unsigned int building_type);
 
@@ -487,32 +496,23 @@ namespace Nicowar
 	class UnitModule : public Module
 	{
 		public:
-			enum Priority
-			{
-				high=0,
-				medium_high,
-				medium,
-				medium_low,
-				low,
-				priorityNum,
-			};
 
 			///This function sets the maximum number of units the module wants for a specific unit type, level, and priority.
 			///This number must be the number of units the module would use, instantly, if granted them. This is with one
 			///exception, units with a low priority should simply be created, and do not need to be used imediettly. Its
 			///expectes that a module keep this number up to date, or the whole system can go down, because one module is being
 			///offered units and its never using them.
-			virtual void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority)=0;
+			virtual void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level)=0;
 
 			///This function returns the number of units available to the given module, based on the number of free units,
 			///how many units this module has already recieved, and how many it wants.
-			virtual unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority)=0;
+			virtual unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum)=0;
 
 			///This function returns true if the module can have the requested number of units for a specific task, and adds
 			///the building to the record books and manages the number of free units so that building can constantly keep full.
 			///This function can also be used to make changes on an existing building. Once you pass a building into UnitModule,
 			///the UnitModule will keep the building full untill you change the number of assigned units.
-			virtual bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building)=0;
+			virtual bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, int building)=0;
 
                         virtual void reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)=0;
                         virtual void unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)=0;
@@ -897,9 +897,9 @@ namespace Nicowar
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream) const;
 
-			void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level, Priority priority);
-			unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum, Priority priority);
-			bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, Priority priority, int building);
+			void changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level);
+			unsigned int available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum);
+			bool request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number, int building);
                         void reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
                         void unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number);
 			void writeDebug();
@@ -916,7 +916,6 @@ namespace Nicowar
 				unsigned int unit_type;
 				unsigned int minimum_level;
 				unsigned int number;
-				Priority priority;
 			};
 
 			///This stores all of the buildings and how many units they are using. A buildings usage record is both stored
@@ -932,21 +931,24 @@ namespace Nicowar
 						for(int j=0; j<NB_ABILITY; ++j)
 							for(int k=0; k<NB_UNIT_LEVELS; ++k)
 							{
+								requested[i][j][k]=0;
+								usingUnits[i][j][k]=0;
 								reservedUnits[i][j][k]=0;
-								for(unsigned int l=0; l<priorityNum; ++l)
-								{
-									requested[i][j][k][l]=0;
-									usingUnits[i][j][k][l]=0;
-								}
 							}
 				}
 				///This is the number of requested units for various categories.
-				unsigned int requested[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS][priorityNum];
+				unsigned int requested[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS];
 				///This is the units that this module in particular is using for
-				unsigned int usingUnits[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS][priorityNum];
+				unsigned int usingUnits[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS];
 				///These are units that are reserved by the module, and will be transfered to a building soon
 				unsigned int reservedUnits[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS];
 			};
+
+			int getUsagePercent(const std::string& module, int unit_type, int ability, int level);
+
+			std::string getMinModule(const std::string& bias, int unit_type, int ability, int level);
+
+			int getNeededUnits(int unit_type, int ability, int level, bool is_minimum);
 
 			///This map stores the moduleRecords in accordance to their related module
 			std::map<std::string, moduleRecord> module_records;
@@ -955,7 +957,6 @@ namespace Nicowar
 			AINicowar& ai;
 			std::map<int, std::string> unit_names;
 			std::map<int, std::string> ability_names;
-			std::map<int, std::string> priority_names;
 	};
 
 
@@ -1257,7 +1258,7 @@ namespace Nicowar
 	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
 		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
 	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
-		{0, 6, 8, 10, 10, 20, 8, 8, 0, 0, 0, 0, 0};
+		{0, 6, 8, 10, 10, 20, 10, 8, 0, 0, 0, 0, 0};
 
 	//The following constants deal with the function iteration. All of these must be
 	//lower than TIMER_ITERATION.
@@ -1269,7 +1270,6 @@ namespace Nicowar
 
 
 	//These constants are for the AI's swarm controller.
-	const unsigned int PRIORITY_SCORES[UnitModule::priorityNum]={5, 4, 3, 2, 1};
 	//The number of units to assign to a swarm
 	const unsigned int MAXIMUM_UNITS_FOR_SWARM=5;
 
@@ -1335,23 +1335,44 @@ namespace Nicowar
 	const unsigned int BUILDING_PADDING=1;
 	const unsigned int NO_POSITION=1023;
 
-	const unsigned CONSTRUCTOR_FACTORS_COUNT=2;
+	const unsigned CONSTRUCTOR_FACTORS_COUNT=3;
 
 	const unsigned MAXIMUM_DISTANCE_TO_BUILDING=8;
 	typedef DistributedNewConstructionManager::GradientPoll GradientPoll;
 	const GradientPoll CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][CONSTRUCTOR_FACTORS_COUNT] = 
-		{{GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //swarm
-		 {GradientPoll(Gradient::Wheat, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //inn
-		 {GradientPoll(Gradient::Wood, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //hospital
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 2)}, //racetrack
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 2)}, //swimming
-		 {GradientPoll(Gradient::Stone, Gradient::None, 2), GradientPoll(Gradient::TeamBuildings, Gradient::None, 1)}, //barracks
-		 {GradientPoll(Gradient::VillageCenter, Gradient::None, 1), GradientPoll(Gradient::TeamBuildings, Gradient::None, 2)}, //school
-		 {GradientPoll(), GradientPoll()},
-		 {GradientPoll(), GradientPoll()},
-		 {GradientPoll(), GradientPoll()},
-		 {GradientPoll(), GradientPoll()},
-		 {GradientPoll(), GradientPoll()}};
+		{{	GradientPoll(Gradient::Wheat, Gradient::None, 2),
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //swarm
+
+		 {	GradientPoll(Gradient::Wheat, Gradient::None, 2), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //inn
+
+		 {	GradientPoll(Gradient::Wood, Gradient::None, 1), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //hospital
+
+		 {	GradientPoll(Gradient::VillageCenter, Gradient::None, 1), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
+			GradientPoll()}, //racetrack
+
+		 {	GradientPoll(Gradient::VillageCenter, Gradient::None, 1), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
+			GradientPoll()}, //swimming pool
+
+		 {	GradientPoll(Gradient::Stone, Gradient::None, 2), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //barracks
+
+		 {	GradientPoll(Gradient::VillageCenter, Gradient::None, 1), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //school
+
+		 {	GradientPoll(), GradientPoll(), GradientPoll()},
+		 {	GradientPoll(), GradientPoll(), GradientPoll()},
+		 {	GradientPoll(), GradientPoll(), GradientPoll()},
+		 {	GradientPoll(), GradientPoll(), GradientPoll()},
+		 {	GradientPoll(), GradientPoll(), GradientPoll()}};
 
 
 	///This represents for every n buildings the team has, allow one to be upgraded
@@ -1368,14 +1389,14 @@ namespace Nicowar
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
 	///priority buildings.
 	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{4, 3, 4, 6, 6, 4, 4, 0, 0, 0, 0, 0};
+		{4, 2, 4, 6, 6, 4, 6, 0, 0, 0, 0, 0};
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+		{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 	///The number of turns before a cached no-build zone gets erased
 	const unsigned int NO_BUILD_CACHE_TIMEOUT=1;
 	///The number of turns before a building record that refers to a building that was destroyed before update gets removed
-	const unsigned int BUILDING_RECORD_TIMEOUT=10;
+	const unsigned int BUILDING_RECORD_TIMEOUT=5;
 
 	///This this enabled, buildings are constructed instantly, which is cheating,
 	///although can aid in debugging in certain situations
@@ -1387,7 +1408,8 @@ namespace Nicowar
 	const unsigned int CLEARING_AREA_BUILDING_PADDING=1;
 
 	//These constants are for HappinessHandler
-	const unsigned int EXPLORERS_PER_GROUP=4;
+	const unsigned int EXPLORERS_PER_GROUP=2;
+	const unsigned int REQUESTED_EXPLORERES=4;
 	const unsigned int MINIMUM_FLAG_SIZE=3;
 
 	//These are for farmer
