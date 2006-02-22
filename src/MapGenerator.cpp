@@ -1702,6 +1702,10 @@ bool Game::generateMap(MapGenerationDescriptor &descriptor)
 	if (session.mapGenerationDescriptor)
 		delete session.mapGenerationDescriptor;
 	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
+	
+	// compile script
+	script.compileScript(this);
+	
 	if (verbose)
 		printf(".... map generated.\n");
 	return true;
