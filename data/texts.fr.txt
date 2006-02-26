@@ -702,3 +702,7 @@ Iles vides
 densité des cratères
 [press space]
 Appuyer sur espace pour continuer.
+[GUIMapPreview text 0]
+Veuillez choisir
+[GUIMapPreview text 1]
+une carte

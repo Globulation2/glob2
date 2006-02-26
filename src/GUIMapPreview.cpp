@@ -208,7 +208,17 @@ void MapPreview::paint(void)
 	}
 	else
 	{
-		parent->getSurface()->drawLine(x, y, x+127, y+127, 255, 0, 0);
-		parent->getSurface()->drawLine(x+127, y, x, y+127, 255, 0, 0);
+		/*parent->getSurface()->drawLine(x, y, x+127, y+127, 255, 0, 0);
+		parent->getSurface()->drawLine(x+127, y, x, y+127, 255, 0, 0);*/
+		parent->getSurface()->drawRect(x, y, 128, 128, ColorTheme::frontColor);
+		Font *standardFont = Toolkit::getFont("standard");
+		assert(standardFont);
+		const char *line0 = Toolkit::getStringTable()->getString("[GUIMapPreview text 0]");
+		const char *line1 = Toolkit::getStringTable()->getString("[GUIMapPreview text 1]");
+		int sw0 = standardFont->getStringWidth(line0);
+		int sw1 = standardFont->getStringWidth(line1);
+		int sh = standardFont->getStringHeight(line0);
+		parent->getSurface()->drawString(x+((128-sw0)>>1), y+64-sh, standardFont, line0);
+		parent->getSurface()->drawString(x+((128-sw1)>>1), y+64, standardFont, line1);
 	}
 }
