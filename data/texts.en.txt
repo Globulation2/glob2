@@ -706,3 +706,7 @@ empty islands
 crater count
 [press space]
 Press space to continue.
+[GUIMapPreview text 0]
+Please choose
+[GUIMapPreview text 1]
+a map
