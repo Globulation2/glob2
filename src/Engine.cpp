@@ -141,7 +141,9 @@ int Engine::initCampaign(const std::string &mapName)
 	if (gui.game.campaignText.length() > 0)
 	{
 		CampaignScreen campaignScreen(gui.game.campaignText);
-		campaignScreen.execute(globalContainer->gfx, 40);
+		int retVal = campaignScreen.execute(globalContainer->gfx, 40);
+		if (retVal)
+			return EE_CANCEL;
 	}
 	
 	// We do some cosmetic fix
