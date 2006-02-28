@@ -1,5 +1,6 @@
 /*
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2005-2006 Bradley Arsenault
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -1306,8 +1307,8 @@ bool SimpleBuildingDefense::findDefense()
 					dr.zoney=b->posY-DEFENSE_ZONE_BUILDING_PADDING;
 					dr.width=b->type->width+DEFENSE_ZONE_BUILDING_PADDING*2;
 					dr.height=b->type->height+DEFENSE_ZONE_BUILDING_PADDING*2;
-					dr.assigned=std::min(20u, gps.pollArea(dr.zonex, dr.zoney, dr.width, dr.height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS));
-					dr.assigned=dr.assigned*2;
+					dr.assigned=gps.pollArea(dr.zonex, dr.zoney, dr.width, dr.height, GridPollingSystem::MAXIMUM, GridPollingSystem::ENEMY_WARRIORS);
+					dr.assigned= std::min(20u, dr.assigned*2);
 					dr.building=b->gid;
 					defending_zones.push_back(dr);
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
