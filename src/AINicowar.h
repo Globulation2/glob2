@@ -1383,7 +1383,7 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{30, 8, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{30, 10, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
@@ -1392,7 +1392,7 @@ namespace Nicowar
 		{4, 2, 4, 6, 6, 4, 6, 0, 0, 0, 0, 0};
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+		{2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0};
 	///The number of turns before a cached no-build zone gets erased
 	const unsigned int NO_BUILD_CACHE_TIMEOUT=1;
 	///The number of turns before a building record that refers to a building that was destroyed before update gets removed
