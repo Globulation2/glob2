@@ -34,9 +34,7 @@ Settings::Settings()
 #	ifdef WIN32
 		newUsername=getenv("USERNAME");
 #	else // angel > case of unix and MacIntosh Systems
-		newUsername=getenv("USER");
-		//donkyhotay > in case of non-localhost hostname
-		computerhostname = getenv("HOSTNAME");
+		newUsername=getenv("USER");		
 #	endif
 	if (!newUsername)
 		newUsername="player";	
@@ -49,6 +47,7 @@ Settings::Settings()
 	defaultLanguage = 0;
 	musicVolume = 255;
 	mute = 0;	
+	computerhostname = getenv("HOSTNAME");
 }
 
 #define READ_PARSED_STRING(var) \
