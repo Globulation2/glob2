@@ -30,13 +30,16 @@ Settings::Settings()
 {
 	// set default values in settings or load them
 	char *newUsername;
+
 #	ifdef WIN32
 		newUsername=getenv("USERNAME");
 #	else // angel > case of unix and MacIntosh Systems
 		newUsername=getenv("USER");
+		//donkyhotay > in case of non-localhost hostname
+		computerhostname = getenv("HOSTNAME");
 #	endif
 	if (!newUsername)
-		newUsername="player";
+		newUsername="player";	
 	username=newUsername;
 
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
@@ -45,7 +48,7 @@ Settings::Settings()
 	optionFlags = 0;
 	defaultLanguage = 0;
 	musicVolume = 255;
-	mute = 0;
+	mute = 0;	
 }
 
 #define READ_PARSED_STRING(var) \
@@ -87,14 +90,14 @@ void Settings::load(const char *filename)
 
 		// read values
 		READ_PARSED_STRING(username);
-		READ_PARSED_STRING(password);
+		READ_PARSED_STRING(password);		
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(defaultLanguage);
 		READ_PARSED_INT(musicVolume);
-		READ_PARSED_INT(mute);
+		READ_PARSED_INT(mute);		
 	}
 	delete stream;
 }
@@ -116,7 +119,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
-		Utilities::streamprintf(stream, "mute=%d\n", mute);
+		Utilities::streamprintf(stream, "mute=%d\n", mute);		
 	}
 	delete stream;
 }
