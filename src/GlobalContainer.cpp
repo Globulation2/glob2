@@ -64,7 +64,7 @@ GlobalContainer::GlobalContainer(void)
 	// load user preference
 	settings.load();
 	userName = settings.username.c_str();
-
+	ComputerHostName = settings.computerhostname.c_str();
 	runNoX = false;
 	runNoXGameName[0] = 0;
 	

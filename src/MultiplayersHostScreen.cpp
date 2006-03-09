@@ -170,9 +170,8 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		strncpy(multiplayersJoin->playerName, globalContainer->getUsername(), 32);
 		multiplayersJoin->playerName[31]=0;
 		strncpy(multiplayersJoin->serverNickName, globalContainer->getUsername(), 32);
-		multiplayersJoin->serverNickName[31]=0;
-		
-		strncpy(multiplayersJoin->serverName, "localhost", 256);
+		multiplayersJoin->serverNickName[31]=0;		
+		strncpy(multiplayersJoin->serverName, globalContainer->getComputerHostName(), 256);
 		
 		multiplayersJoin->serverIP.host=SDL_SwapBE32(0x7F000001);
 		multiplayersJoin->serverIP.port=SDL_SwapBE16(GAME_SERVER_PORT);
