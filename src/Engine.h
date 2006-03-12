@@ -84,6 +84,8 @@ protected:
 protected:
 	int cpuStats[41];
 	int ticksToWaitStats[41];
+	unsigned cpuSumStats;
+	unsigned cpuSumCountStats;
 	FILE *logFile;
 };
 

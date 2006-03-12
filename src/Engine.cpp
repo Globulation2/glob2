@@ -48,6 +48,8 @@
 Engine::Engine()
 {
 	net=NULL;
+	cpuSumStats = 0;
+	cpuSumCountStats = 0;
 	for (int i=0; i<=40; i++)
 		cpuStats[i]=0;
 	logFile = globalContainer->logFileManager->getFile("Engine.log");
@@ -55,13 +57,18 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+	fprintf(logFile, "\n");
+	if (cpuSumCountStats)
+	{
+		double averageCupUsage = (double)cpuSumStats / (double)cpuSumCountStats;
+		fprintf(logFile, "averageCpuUsage = %d%%\n", (int)((double)2.5 * averageCupUsage));
+	}
 	fprintf(logFile, "cpu usage stats:\n");
 	for (int i=0; i<=40; i++)
 		fprintf(logFile, "%3d.%1d %% = %d\n", 100-(i*5)/2, (i&1)*5, cpuStats[i]);
 	int sum=0;
 	for (int i=0; i<=40; i++)
 		sum+=cpuStats[i];
-	fprintf(logFile, "\n");
 	fprintf(logFile, "cpu usage graph:\n");
 	for (int i=0; i<=40; i++)
 	{
@@ -478,7 +485,9 @@ int Engine::run(void)
 				gui.setCpuLoad(ticksSpentInComputation);
 				if (networkReadyToExecute && !gui.gamePaused)
 				{
-					Sint32 i=computationAvailableTicks;
+					Sint32 i = computationAvailableTicks;
+					cpuSumStats += 40 - computationAvailableTicks;
+					cpuSumCountStats++;
 					if (i<0)
 						i=0;
 					else if (i>=40)
