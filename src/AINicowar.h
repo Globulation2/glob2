@@ -92,7 +92,7 @@ namespace Nicowar
 			///Resources count as obstacles
 			void update();
 			///Gets the height of point x,y
-			int getHeight(int x, int y);
+			int getHeight(int x, int y) const;
 
 			///Outputs the gradient to the console, warning, very large.
 			void output();
@@ -743,15 +743,18 @@ namespace Nicowar
 				bool operator>(const typePercent& tp) const;
 			};
 
-			///Stores the information for a subgke factor in deciding where a building should be placed
+			///Stores the information for a single factor in deciding where a building should be placed
 			struct GradientPoll
 			{
 				GradientPoll() : is_null(true) {}
-				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, float weight) : is_null(false), source(source), obstacle(obstacle), weight(weight) {}
-				bool is_null;
+				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, float weight) : is_null(false), source(source), obstacle(obstacle), weight(weight), min_dist(-1), max_dist(-1) {}
+				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, int minimum_distance, int maximum_distance) : is_null(false), source(source), obstacle(obstacle), weight(1), min_dist(minimum_distance), max_dist(maximum_distance) {}
+ 				bool is_null;
 				Gradient::Sources source;
 				Gradient::Obstacles obstacle;
 				float weight;
+				int min_dist;
+				int max_dist;
 			};
 
 			///Stores the various records of what is being built
@@ -1352,11 +1355,11 @@ namespace Nicowar
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
 			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //hospital
 
-		 {	GradientPoll(Gradient::VillageCenter, Gradient::None, 1), 
+		 {	GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1), 
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
 			GradientPoll()}, //racetrack
 
-		 {	GradientPoll(Gradient::VillageCenter, Gradient::None, 1), 
+		 {	GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1), 
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
 			GradientPoll()}, //swimming pool
 
@@ -1364,11 +1367,14 @@ namespace Nicowar
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
 			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //barracks
 
-		 {	GradientPoll(Gradient::VillageCenter, Gradient::None, 1), 
+		 {	GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1), 
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
-			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //school
+			GradientPoll()}, //school
 
-		 {	GradientPoll(), GradientPoll(), GradientPoll()},
+		 {	GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1),
+			GradientPoll(),
+			GradientPoll()}, //Tower
+
 		 {	GradientPoll(), GradientPoll(), GradientPoll()},
 		 {	GradientPoll(), GradientPoll(), GradientPoll()},
 		 {	GradientPoll(), GradientPoll(), GradientPoll()},
@@ -1378,21 +1384,21 @@ namespace Nicowar
 	///This represents for every n buildings the team has, allow one to be upgraded
 	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=8;
 	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-		{2, 4, 3, 1, 1, 2, 2, 0, 0, 0, 0, 0, 0};
+		{2, 4, 3, 1, 1, 2, 2, 2, 0, 0, 0, 0, 0};
 	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{30, 10, 15, 20, 20, 15, 20, 0, 0, 0, 0, 0, 0};
+		{30, 12, 16, 80, 80, 30, 70, 30, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
 	///priority buildings.
 	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{4, 2, 4, 6, 6, 4, 6, 0, 0, 0, 0, 0};
+		{4, 2, 4, 6, 5, 4, 6, 5, 0, 0, 0, 0};
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+		{2, 2, 2, 1, 1, 1, 1, 2, 0, 0, 0, 0};
 	///The number of turns before a cached no-build zone gets erased
 	const unsigned int NO_BUILD_CACHE_TIMEOUT=1;
 	///The number of turns before a building record that refers to a building that was destroyed before update gets removed
