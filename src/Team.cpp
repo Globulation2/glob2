@@ -1313,11 +1313,15 @@ Building *Team::findBestUpgrade(Unit *unit)
 		// to be the last, this code willl fail.
 		if (unit->canLearn[ability])
 		{
+			if (unit->verbose)
+				printf("guid=(%d) unit->canLearn[ability=%d]\n", unit->gid, ability);
 			int actLevel=unit->level[ability];
 			for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
 			{
 				Building *b=(*bi);
-				if (b->type->level>=actLevel)
+				if (unit->verbose)
+					printf("guid=(%d)  b->gid=%d, b->type->level=%d, actLevel=%d\n", unit->gid, b->gid, b->type->level, actLevel);
+				if (b->type->level >= actLevel)
 				{
 					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
 					if (newScore<score)
