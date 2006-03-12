@@ -110,19 +110,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	const char *titleText;
 	char *allocatedText=NULL;
 	
-	if (!gui->getLocalTeam()->isAlive)
-	{
-		titleText=Toolkit::getStringTable()->getString("[Lost : your colony is dead]");
-	}
-	else if (!gui->game.isGameEnded)
-	{
-		titleText=Toolkit::getStringTable()->getString("[The game has not been finished]");
-	}
-	else if (!gui->game.totalPrestigeReached)
-	{
-		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
-	}
-	else
+	if (gui->game.totalPrestigeReached)
 	{
 		Team *t=gui->game.getTeamWithMostPrestige();
 		assert(t);
@@ -146,6 +134,18 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 			snprintf(allocatedText, len, strText, playerText);
 			titleText=allocatedText;
 		}
+	}
+	else if (!gui->getLocalTeam()->isAlive)
+	{
+		titleText=Toolkit::getStringTable()->getString("[Lost : your colony is dead]");
+	}
+	else if (!gui->game.isGameEnded)
+	{
+		titleText=Toolkit::getStringTable()->getString("[The game has not been finished]");
+	}
+	else
+	{
+		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
 	}
 	
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText));
