@@ -238,7 +238,6 @@ Order *AINicowar::getOrder(void)
 		if(iteration==0)
 		{
 			setCenter();
-			setRandomSyncRandSeed();
 			if(SEE_EVERYTHING)
 			{
 				for(int x=0; x<map->getW(); ++x)
@@ -1079,7 +1078,7 @@ void Gradient::update()
 
 
 
-int Gradient::getHeight(int x, int y)
+int Gradient::getHeight(int x, int y) const
 {
 	if(x<0)
 		x+=width;
@@ -2206,19 +2205,62 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 			if(ai.getGradientManager().getGradient(Gradient::VillageCenter, Gradient::Resource).getHeight(x, y)<=0)
 				continue;
 			float score=0;
+			bool failed=false;
 			for(unsigned int factor=0; factor<CONSTRUCTOR_FACTORS_COUNT; ++factor)
 			{
 				if(!CONSTRUCTION_FACTORS[building_type][factor].is_null)
 				{
-					unsigned source=CONSTRUCTION_FACTORS[building_type][factor].source;
-					unsigned obstacle=CONSTRUCTION_FACTORS[building_type][factor].obstacle;
-					///Get the scores of each of the four corners of the building
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x, y))*CONSTRUCTION_FACTORS[building_type][factor].weight;
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x+size.width-1, y))*CONSTRUCTION_FACTORS[building_type][factor].weight;
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x, y+size.height-1))*CONSTRUCTION_FACTORS[building_type][factor].weight;
-					score+=static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(x+size.width-1, y+size.height-1))*CONSTRUCTION_FACTORS[building_type][factor].weight;
+					const unsigned source=CONSTRUCTION_FACTORS[building_type][factor].source;
+					const unsigned obstacle=CONSTRUCTION_FACTORS[building_type][factor].obstacle;
+					const float weight = CONSTRUCTION_FACTORS[building_type][factor].weight;
+					const int min_dist = CONSTRUCTION_FACTORS[building_type][factor].min_dist;
+					const int max_dist = CONSTRUCTION_FACTORS[building_type][factor].max_dist;
+					const Gradient& gradient = ai.getGradientManager().getGradient(source, obstacle);
+					const int top_left=gradient.getHeight(x, y);
+					const int top_right=gradient.getHeight(x+size.width-1, y);
+					const int bottom_left=gradient.getHeight(x, y+size.height-1);
+					const int bottom_right=gradient.getHeight(x+size.width-1, y+size.height-1);
+					if(min_dist!=-1 || max_dist!=-1)
+					{
+						if(min_dist!=-1)
+						{
+							int min=std::numeric_limits<int>::max();
+							min=std::min(min, top_left);
+							min=std::min(min, top_right);
+							min=std::min(min, bottom_left);
+							min=std::min(min, bottom_right);
+							if(min<min_dist)
+							{
+								failed=true;
+								break;
+							}
+						}
+						if(max_dist!=-1)
+						{
+							int max=std::numeric_limits<int>::min();
+							max=std::max(max, top_left);
+							max=std::max(max, top_right);
+							max=std::max(max, bottom_left);
+							max=std::max(max, bottom_right);
+							if(max>max_dist)
+							{
+								failed=true;
+								break;
+							}
+						}
+					}
+					else
+					{
+						///Get the scores of each of the four corners of the building
+						score+=static_cast<float>(top_left)*weight;
+						score+=static_cast<float>(top_right)*weight;
+						score+=static_cast<float>(bottom_left)*weight;
+						score+=static_cast<float>(bottom_right)*weight;
+					}
 				}
 			}
+			if(failed)
+				continue;
 			if(score>0 && (top_score==0 || score<top_score))
 			{
 				unsigned endx=x+size.width;
@@ -2249,37 +2291,6 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 		}
 	}
 	
-	/*
-	std::cout<<"Looking for a "<<IntBuildingType::typeFromShortNumber(building_type)<<", found x="<<top_point.x<<", found y="<<top_point.y<<", scores: "<<std::endl;
-	for(unsigned int factor=0; factor<CONSTRUCTOR_FACTORS_COUNT; ++factor)
-	{
-		if(!CONSTRUCTION_FACTORS[building_type][factor].is_null)
-		{
-			unsigned source=CONSTRUCTION_FACTORS[building_type][factor].source;
-			unsigned obstacle=CONSTRUCTION_FACTORS[building_type][factor].obstacle;
-			///Get the scores of each of the four corners of the building
-			//Top left corner
-			std::cout<<"\tfactor "<<factor<<", top left: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x, top_point.y))<<";"; 
-			std::cout<<" weight: "<<CONSTRUCTION_FACTORS[building_type][factor].weight<<"; total: "<< static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x, top_point.y))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";"<<std::endl;
-
-			//top right corner
-			std::cout<<"\tfactor "<<factor<<", top right: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x+size.width-1, top_point.y))<<";"; 
-			std::cout<<" weight: "<<CONSTRUCTION_FACTORS[building_type][factor].weight<<"; total: "<< static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x+size.width-1, top_point.y))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";"<<std::endl;
-
-			//lower left corner
-			std::cout<<"\tfactor "<<factor<<", lower left: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x, top_point.y+size.height-1))<<";"; 
-			std::cout<<" weight: "<<CONSTRUCTION_FACTORS[building_type][factor].weight<<"; total: "<< static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x, top_point.y+size.height-1))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";"<<std::endl;
-
-			//lower right corner
-			std::cout<<"\tfactor "<<factor<<", lower right: "<<static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x+size.width-1, top_point.y+size.height-1))<<";"; 
-			std::cout<<" weight: "<<CONSTRUCTION_FACTORS[building_type][factor].weight<<"; total: "<< static_cast<float>(ai.getGradientManager().getGradient(source, obstacle).getHeight(top_point.x+size.width-1, top_point.y+size.height-1))*CONSTRUCTION_FACTORS[building_type][factor].weight<<";"<<std::endl;
-
-		}
-	}
-	std::cout<<std::endl;
-	*/
-	
-
 	return top_point;
 }
 
