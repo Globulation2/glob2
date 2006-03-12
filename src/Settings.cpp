@@ -46,8 +46,7 @@ Settings::Settings()
 	optionFlags = 0;
 	defaultLanguage = 0;
 	musicVolume = 255;
-	mute = 0;	
-	computerhostname = getenv("HOSTNAME");
+	mute = 0;
 }
 
 #define READ_PARSED_STRING(var) \

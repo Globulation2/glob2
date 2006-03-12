@@ -189,7 +189,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		{
 			performance[i] = race->getUnitType(typeNum, 0)->performance[i];
 			level[i] = 0;
-			canLearn[i] = (bool)race->getUnitType(typeNum, 1)->performance[i];
+			canLearn[i] = (bool)race->getUnitType(typeNum, NB_UNIT_LEVELS - 1)->performance[i];
 		}
 		else
 		{

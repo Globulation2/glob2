@@ -53,8 +53,7 @@ private:
 	void destroyProgressBar(void);
 
 	const char *userName;
-	const char *ComputerHostName;
-
+	
 public:
 	GlobalContainer(void);
 	virtual ~GlobalContainer(void);
@@ -66,7 +65,7 @@ public:
 	void popUserName();
 	void setUserName(const char *name);
 	const char *getUsername(void) { return userName; }
-	const char *getComputerHostName(void) { return ComputerHostName; }	
+	const char *getComputerHostName(void);
 
 public:
 	FileManager *fileManager;

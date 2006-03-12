@@ -28,7 +28,6 @@ class Settings
 public:
 	std::string username;
 	std::string password;
-	std::string computerhostname;
 	int screenWidth;
 	int screenHeight;
 	Uint32 screenFlags;

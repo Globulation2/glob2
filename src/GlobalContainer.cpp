@@ -64,7 +64,6 @@ GlobalContainer::GlobalContainer(void)
 	// load user preference
 	settings.load();
 	userName = settings.username.c_str();
-	ComputerHostName = settings.computerhostname.c_str();
 	runNoX = false;
 	runNoXGameName[0] = 0;
 	
@@ -484,3 +483,13 @@ Uint32 GlobalContainer::getConfigCheckSum()
 	// TODO: add the units config
 	return buildingsTypes.checkSum() + ressourcesTypes.checkSum() + Race::checkSumDefault();
 }
+
+const char *GlobalContainer::getComputerHostName(void)
+{
+	const char *hostNameFromEnvVar = getenv("HOSTNAME");
+	if (hostNameFromEnvVar)
+		return hostNameFromEnvVar;
+	else
+		return "localhost";
+}
+
