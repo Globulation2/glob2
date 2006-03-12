@@ -401,7 +401,7 @@ Harvest
 [At. speed]
 Att. speed
 [At. strength]
-Att. strength
+Att. str.
 [Magic At. Air]
 Air dmg.
 [Magic At. Ground]
