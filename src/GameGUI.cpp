@@ -3436,6 +3436,7 @@ void GameGUI::checkWonConditions(void)
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have lost]"), true);
 			hasEndOfGameDialogBeenShown=true;
+			miniMapPushed=false;
 		}
 	}
 	else if (localTeam->hasWon==true)
@@ -3445,6 +3446,7 @@ void GameGUI::checkWonConditions(void)
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have won]"), true);
 			hasEndOfGameDialogBeenShown=true;
+			miniMapPushed=false;
 		}
 	}
 	else if (game.totalPrestigeReached)
@@ -3453,6 +3455,8 @@ void GameGUI::checkWonConditions(void)
 		{
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Total prestige reached]"), true);
+			hasEndOfGameDialogBeenShown=true;
+			miniMapPushed=false;
 		}
 	}
 }
