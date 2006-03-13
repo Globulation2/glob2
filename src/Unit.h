@@ -21,6 +21,7 @@
 #define __UNIT_H
 
 #include <vector>
+#include <string>
 #include <assert.h>
 #include <string.h>
 
@@ -32,6 +33,7 @@
 
 class Team;
 class Race;
+class UnitSkin;
 class Building;
 
 namespace GAGCore
@@ -61,19 +63,19 @@ public:
 	static int directionFromDxDy(int dx, int dy);
 	inline static void dxdyfromDirection(int direction, int *dx, int *dy)
 	{
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	*dx=tab[direction][0];
-	*dy=tab[direction][1];
+		const int tab[9][2]={	{ -1, -1},
+								{ 0, -1},
+								{ 1, -1},
+								{ 1, 0},
+								{ 1, 1},
+								{ 0, 1},
+								{ -1, 1},
+								{ -1, 0},
+								{ 0, 0} };
+		assert(direction>=0);
+		assert(direction<=8);
+		*dx=tab[direction][0];
+		*dy=tab[direction][1];
 	}
 	
 	static Sint32 GIDtoID(Uint16 gid);
@@ -173,12 +175,15 @@ protected:
 	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
+	void defaultSkinNameFromType(void);
 	
 public:
 	
 	// unit specification
 	Sint32 typeNum; // Uint8, WORKER, EXPLORER, WARRIOR
 	Race *race;
+	UnitSkin *skin;
+	std::string skinName;
 	
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().

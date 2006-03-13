@@ -184,6 +184,10 @@ Glob2Screen.h \
 Glob2Screen.cpp \
 Glob2Style.h \
 Glob2Style.cpp\
+UnitSkin.h\
+UnitSkin.cpp\
+UnitsSkins.h\
+UnitsSkins.cpp\
 HeightMapGenerator.h\
 HeightMapGenerator.cpp
 

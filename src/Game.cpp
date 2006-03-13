@@ -41,6 +41,7 @@
 #include "LogFileManager.h"
 #include "Order.h"
 #include "Unit.h"
+#include "UnitSkin.h"
 #include "Utilities.h"
 
 #include "Brush.h"
@@ -1591,10 +1592,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			return;
 
 	int imgid;
-	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
-	imgid=ut->startImage[unit->action];
+	imgid=unit->skin->startImage[unit->action];
 	int px, py;
 	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
 	int deltaLeft=255-unit->delta;
@@ -1625,7 +1625,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	// draw unit
-	Sprite *unitSprite=globalContainer->units;
+	Sprite *unitSprite = unit->skin->sprite;
 	unitSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;

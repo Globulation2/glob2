@@ -50,7 +50,6 @@ enum Abilities
 const int NB_MOVE=9;
 const int NB_ABILITY=17;
 
-
 const int WORKER=0;
 const int EXPLORER=1;
 const int WARRIOR=2;

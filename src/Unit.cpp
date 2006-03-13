@@ -19,6 +19,8 @@
 
 #include "Unit.h"
 #include "Race.h"
+#include "UnitSkin.h"
+#include "UnitsSkins.h"
 #include "Team.h"
 #include "Map.h"
 #include "Game.h"
@@ -39,7 +41,9 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	logFile = globalContainer->logFileManager->getFile("Unit.log");
 	
 	// unit specification
-	this->typeNum=typeNum;
+	this->typeNum = typeNum;
+	defaultSkinNameFromType();
+	skin = globalContainer->unitsSkins->getSkin(skinName);
 
 	assert(team);
 	race=&(team->race);
@@ -133,6 +137,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	
 	// unit specification
 	typeNum = stream->readSint32("typeNum");
+	defaultSkinNameFromType();
+	skin = globalContainer->unitsSkins->getSkin(skinName);
+	// TODO : change this to provide user defined units
 	race = &(owner->race);
 	assert(race);
 
@@ -2686,6 +2693,17 @@ void Unit::incrementExperience(int increment)
 		experienceLevel++;
 		experience -= nextLevelThreshold;
 		levelUpAnimation = LEVEL_UP_ANIMATION_FRAME_COUNT;
+	}
+}
+
+void Unit::defaultSkinNameFromType(void)
+{
+	switch (typeNum)
+	{
+		case WORKER: skinName = "worker"; break;
+		case EXPLORER: skinName = "explorer"; break;
+		case WARRIOR: skinName = "warrior"; break;
+		default: assert(false); break;
 	}
 }
 
