@@ -34,6 +34,7 @@
 #include "IntBuildingType.h"
 #include "Race.h"
 #include "Glob2Screen.h"
+#include "UnitsSkins.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -79,6 +80,7 @@ GlobalContainer::GlobalContainer(void)
 	terrainBlack = NULL;
 	ressources = NULL;
 	units = NULL;
+	unitsSkins = NULL;
 
 	menuFont = NULL;
 	standardFont = NULL;
@@ -92,10 +94,14 @@ GlobalContainer::~GlobalContainer(void)
 	// unlink GUI style
 	Style::style = &defaultStyle;
 	
+	// release unit skins
+	if (unitsSkins)
+		delete unitsSkins;
+	
 	// close sound
 	if (mix)
 		delete mix;
-		
+	
 	if (rec)
 		delete rec;
 	
@@ -464,6 +470,7 @@ void GlobalContainer::load(void)
 		updateLoadProgressBar(70);
 		// load units
 		units = Toolkit::getSprite("data/gfx/unit");
+		unitsSkins = new UnitsSkins();
 
 		updateLoadProgressBar(90);
 		// load graphics for gui

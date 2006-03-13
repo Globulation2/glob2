@@ -48,7 +48,9 @@ namespace GAGCore
 		static void close(void);
 	
 		static Sprite *getSprite(const char *name);
+		static Sprite *getSprite(const std::string &name);
 		static void releaseSprite(const char *name);
+		static void releaseSprite(const std::string &name);
 		
 		static void loadFont(const char *filename, unsigned size, const char *name);
 		static Font *getFont(const char *name);

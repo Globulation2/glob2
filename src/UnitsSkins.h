@@ -17,39 +17,30 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __RACE_H
-#define __RACE_H
+#ifndef __UNITSSKINS_H
+#define __UNITSSKINS_H
 
-#include "UnitType.h"
+#include <map>
+#include <string>
 
 namespace GAGCore
 {
-	class InputStream;
-	class OutputStream;
+	class TextInputStream;
 }
+using namespace GAGCore;
+class UnitSkin;
 
-class Race
+class UnitsSkins
 {
 public:
-	UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-	Sint32 hungryness;
-
-public:
-	Race();
-	virtual ~Race();
+	UnitsSkins();
+	virtual ~UnitsSkins();
 	
-	void load();
-	static void loadDefault();
-	static Uint32 checkSumDefault();
-	
-	UnitType *getUnitType(int type, int level);
-	
-	void save(GAGCore::OutputStream *stream);
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	Uint32 checkSum(void);
+	UnitSkin *getSkin(const std::string &name);
 	
 protected:
-	static Race defaultRace;
+	TextInputStream *stream;
+	std::map<std::string, UnitSkin *> unitsSkins;
 };
 
 #endif

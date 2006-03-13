@@ -96,6 +96,11 @@ namespace GAGCore
 		return spriteMap[std::string(name)];
 	}
 	
+	Sprite *Toolkit::getSprite(const std::string &name)
+	{
+		return getSprite(name.c_str());
+	}
+	
 	void Toolkit::releaseSprite(const char *name)
 	{
 		assert(name);
@@ -103,6 +108,11 @@ namespace GAGCore
 		assert(it!=spriteMap.end());
 		delete (*it).second;
 		spriteMap.erase(it);
+	}
+	
+	void Toolkit::releaseSprite(const std::string &name)
+	{
+		return releaseSprite(name.c_str());
 	}
 	
 	void Toolkit::loadFont(const char *filename, unsigned size, const char *name)

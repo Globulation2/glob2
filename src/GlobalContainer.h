@@ -40,6 +40,7 @@ using namespace GAGCore;
 class SoundMixer;
 class VoiceRecorder;
 class LogFileManager;
+class UnitsSkins;
 
 class GlobalContainer
 {
@@ -74,6 +75,7 @@ public:
 	GraphicContext *gfx;
 	SoundMixer *mix;
 	VoiceRecorder *rec;
+	
 	Sprite *terrain;
 	Sprite *terrainWater;
 	Sprite *terrainCloud;
@@ -89,6 +91,8 @@ public:
 	Sprite *gamegui;
 	Sprite *brush;
 	Sprite *magiceffect;
+	
+	UnitsSkins *unitsSkins;
 	
 	Font *menuFont;
 	Font *standardFont;
