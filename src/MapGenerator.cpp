@@ -348,14 +348,12 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 		{
 			double finalAlphaWater, finalAlphaSand, finalAlphaGrass;
 			simulateRandomMap(r, alphaWater, alphaSand, alphaGrass, &finalAlphaWater, &finalAlphaSand, &finalAlphaGrass);
-			//printf("alpha-alpha=(%f, %f, %f) (%f).\n", alphaWater, alphaSand, alphaGrass, alphaWater+alphaSand+alphaGrass);
-			//printf("alpha-final=(%f, %f, %f) (%f).\n", finalAlphaWater, finalAlphaSand, finalAlphaGrass, finalAlphaWater+finalAlphaSand+finalAlphaGrass);
+			
 			
 			double errAlphaWater=finalAlphaWater-baseWater;
 			double errAlphaSand =finalAlphaSand -baseSand ;
 			double errAlphaGrass=finalAlphaGrass-baseGrass;
-			//double errAlpha=(errAlphaWater*errAlphaWater+errAlphaSand*errAlphaSand+errAlphaGrass*errAlphaGrass);
-			//printf("errAlpha=(%f, %f, %f) (%f).\n", errAlphaWater, errAlphaSand, errAlphaGrass, errAlpha);
+			
 
 			double betaWater;
 			double betaSand ; 
@@ -380,22 +378,19 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 			
 			double finalBetaWater, finalBetaSand, finalBetaGrass;
 			simulateRandomMap(r, betaWater, betaSand, betaGrass, &finalBetaWater, &finalBetaSand, &finalBetaGrass);
-			//printf("beta-beta=(%f, %f, %f) (%f).\n", betaWater, betaSand, betaGrass, betaWater+betaSand+betaGrass);
-			//printf("beta-final=(%f, %f, %f) (%f).\n", finalBetaWater, finalBetaSand, finalBetaGrass, finalBetaWater+finalBetaSand+finalBetaGrass);
+			
 			
 			double errBetaWater=finalBetaWater-baseWater;
 			double errBetaSand =finalBetaSand -baseSand ;
 			double errBetaGrass=finalBetaGrass-baseGrass;
-			//double errBeta=(errBetaWater*errBetaWater+errBetaSand*errBetaSand+errBetaGrass*errBetaGrass);
-			//printf("errBeta=(%f, %f, %f) (%f).\n", errBetaWater, errBetaSand, errBetaGrass, errBeta);
+			
 			
 			double projNom=(errBetaWater*errAlphaWater+errBetaSand*errAlphaSand+errBetaGrass*errAlphaGrass);
 			double projDen=(errAlphaWater*errAlphaWater+errAlphaSand*errAlphaSand+errAlphaGrass*errAlphaGrass);
 			if (projDen<=0)
 				continue;
 			double proj=projNom/projDen;
-			//printf("proj=%f.\n", proj);
-			
+						
 			
 			double minErr=DBL_MAX;
 			for (double cfi=0.0; cfi<=1.0; cfi+=0.1)
@@ -421,14 +416,13 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 
 				double finalGammaWater, finalGammaSand, finalGammaGrass;
 				simulateRandomMap(r, gammaWater, gammaSand, gammaGrass, &finalGammaWater, &finalGammaSand, &finalGammaGrass);
-				//printf("[%f]gamma-gamma=(%f, %f, %f) (%f).\n", cf, gammaWater, gammaSand, gammaGrass, gammaWater+gammaSand+gammaGrass);
-				//printf("[%f]gamma-final=(%f, %f, %f) (%f).\n", cf, finalGammaWater, finalGammaSand, finalGammaGrass,  finalGammaWater+finalGammaSand+finalGammaGrass);
+				
 
 				double errGammaWater=finalGammaWater-baseWater;
 				double errGammaSand =finalGammaSand -baseSand ;
 				double errGammaGrass=finalGammaGrass-baseGrass;
 				double errGamma=(errGammaWater*errGammaWater+errGammaSand*errGammaSand+errGammaGrass*errGammaGrass);
-				//printf("[%f]err=%f.\n", cf, errGamma);
+				
 				if (errGamma<minErr)
 				{
 					minErr=errGamma;
@@ -437,8 +431,6 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 					alphaGrass=gammaGrass;
 				}
 			}
-			//printf("best-gamma=(%f, %f, %f) (%f) err=%f.\n", alphaWater, alphaSand, alphaGrass, alphaWater+alphaSand+alphaGrass, minErr);
-			
 		}
 	}
 	
@@ -461,7 +453,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	if (grassRatio<0)
 		grassRatio=0;
 	totalRatio=waterRatio+sandRatio+grassRatio;
-	//printf("ratios=(%d, %d, %d) / (%d).\n", waterRatio, sandRatio, grassRatio, totalRatio);
+	
 	
 	// First, we create a fully random patchwork:
 	for (int y=0; y<h; y++)
@@ -544,7 +536,6 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 		double errSandRatioCount =sandRatioCount -baseSand ;
 		double errGrassRatioCount=grassRatioCount-baseGrass;
 		
-		//printf("[%d]errCount=(%f, %f, %f).\n", i, errWaterRatioCount, errSandRatioCount, errGrassRatioCount);
 		Uint32 allowed[3];
 		if (errWaterRatioCount>0)
 			allowed[0]=(Uint32)(pow(errWaterRatioCount, 0.125)*4294967296.0);
@@ -569,7 +560,6 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 			allowed[1]=0;
 			allowed[2]=0;
 		}
-		//printf("[%d]allowed=(%d, %d, %d).\n", i, allowed[0], allowed[1], allowed[2]);
 		
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
@@ -756,7 +746,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 			for (int dy=0; dy<6; dy++)
 				setUMTerrain(maxX+dx, maxY+dy, GRASS);
 		
-		//printf("team=%d, maxSurface=%d, maxX=%d, maxY=%d.\n", team, maxSurface, maxX, maxY);
+		
 	}
 	
 	// Let's add some green space for teams:
@@ -781,7 +771,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
-	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel;
+	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel, stoneLevel;
 	/// to influence the roughnes
 	float smoothingFactor=(float)(descriptor.smooth+4)*3;;
 	/// the proportions requested through the gui can directly be translated into tile counts of the undermap.
@@ -833,13 +823,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	{
 		histogram[hm.uiLevel(i,2048)]++;
 	}
-/* 	for (int i=0; i<2048; i++)
-	{
-		for (int j=0; j<2048*histogram[i]/w/h; j++)
-			std::cout << "#";
-		if(i%10==0)
-			std::cout << "\n";
-	} */
+
 	
 	unsigned int accumulatedHistogram=0;
 	int i=0;
@@ -847,6 +831,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	sandLevel=0;
 	grassLevel=0;
 	wheatWoodLevel=0;
+	stoneLevel=0;
 	algaeLevel=0;
 	while ((waterLevel==0) & (i<2048))
 	{
@@ -867,6 +852,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		accumulatedHistogram+=histogram[i++];
 		if (wheatWoodLevel==0 && accumulatedHistogram >= waterTiles+sandTiles+wheatWoodTiles)
 			wheatWoodLevel = (float)(i-1)/2048.0;
+		if (stoneLevel==0 && accumulatedHistogram >= waterTiles+sandTiles+(wheatWoodTiles / 3))
+			stoneLevel = (float)(i-1)/2048.0;	
 		if (accumulatedHistogram >= waterTiles+sandTiles+grassTiles)
 			grassLevel = (float)(i-1)/2048.0;
 	}
@@ -883,9 +870,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				undermap[i]=SAND;
 	}
 	controlSand();
-	//std::cout << "writing heightMap (raw) to your glob folder\n";
-	//hm.mapOutput("heightMap");
-
+	
 	//Now, we have to find suitable places for teams:
 	int nbTeams=descriptor.nbTeams;
 	int minDistSquare=(int)((double)w*h/(double)nbTeams/5);
@@ -974,8 +959,9 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		else if(hm(x+w*y)<wheatWoodLevel)
 			if(hm((x+w/2)%w+w*y)<hm((x+w/2+1)%w+w*y))
 				setRessource(x,y,CORN,1);
-			else
-				setRessource(x,y,WOOD,1);
+				else setRessource(x,y,WOOD,1);
+		if(hm(x+w*y) < stoneLevel)
+			setRessource(x,y,STONE,1);
 		}
 	}
 
@@ -1058,7 +1044,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			int d=maxDist-(maxWidth>>1);
 			dx*=d;
 			dy*=d;
-			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", ress, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
+			
 			int amount=descriptor.ressource[ress];
 			if (amount>0)
 				setRessource(bootX[team]+dx, bootY[team]+dy, ress, amount);
@@ -1097,7 +1083,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			int d=maxDist-(maxWidth>>1);
 			dx*=d;
 			dy*=d;
-			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", smallestRessource, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
+			
 			int amount=descriptor.ressource[smallestRessource];
 			if (amount>0)
 				setRessource(bootX[team]+dx, bootY[team]+dy, smallestRessource, amount);
@@ -1132,7 +1118,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		int d=maxDist-(maxWidth>>1);
 		dx*=d;
 		dy*=d;
-		//printf("ALGA, maxDir=%d, maxWidth=%d, d=(%d, %d), pos=(%d, %d).\n", maxDir, maxWidth, dx, dy, bootX[team]+dx, bootY[team]+dy);
+		
 		int amount=descriptor.ressource[ALGA];
 		if (amount>0)
 			setRessource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
@@ -1161,7 +1147,7 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 	if (islandsSize<8)
 		islandsSize=8;
 	int minDistSquare=(w*h)/nbIslands;
-	//printf("minDistSquare=%d.\n", minDistSquare);
+	
 	
 	int c=0;
 	for (int i=0; i<nbIslands; i++)
@@ -1178,7 +1164,7 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 			}
 		if (failed)
 		{
-			//printf("failed new(%d, %d) boot[%d](%d, %d).\n", x, y, i, bootX[j], bootY[j]);
+			
 			i--;
 			if (c++>65536)
 			{
@@ -1186,7 +1172,7 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 				//I think that you need to do this only once, in worst case.
 				//With a few luck you doesn't need to.
 				c=0;
-				//printf("minDistSquare=%d.\n", minDistSquare);
+				
 			}
 		}
 		else
@@ -1199,9 +1185,7 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 		}
 	}
 	
-	//printf("w=%d, h=%d, m=%d\n", w, h, m);
-	//for (int i=0; i<descriptor.nbTeams; i++)
-	//	printf("boot[%d]=(%d, %d).\n", i, bootX[i], bootY[i]);
+	
 	
 	// Three, expands islands
 	for (int s=0; s<islandsSize; s++)
@@ -1541,7 +1525,7 @@ void Map::oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		smallestAmount=amount;
 		smallestRessource=WOOD;
 		
-		//CORN
+		//WHEAT
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s]-d, bootY[s]))
 				break;
@@ -1576,7 +1560,7 @@ void Map::oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		if (amount>0)
 			setRessource(bootX[s]+p, bootY[s]+p, smallestRessource, amount);
 		
-		//ALGA
+		//ALGAE
 		for (d=0; d<2*islandsSize; d++)
 			if (isWater(bootX[s]+d, bootY[s]))
 				break;
