@@ -47,6 +47,8 @@ namespace GAGGUI
 		virtual void setText(const char *text);
 		virtual const char *getText(void) { return text.c_str(); }
 		virtual void addText(const char *text);
+		// migration, const char * have to die at some point
+		void addText(const std::string &text) { addText(text.c_str()); }
 		virtual void addImage(int frame);
 		virtual void addNoImage();
 		virtual void addChar(const char c);

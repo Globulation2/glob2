@@ -92,6 +92,8 @@ public:
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);
 	
+	void skinPointerFromName(void);
+	
 public:
 
 	enum Medical
@@ -215,6 +217,7 @@ public:
 
 	// hungry : maxfood = 100000
 	Sint32 hungry; // (Uint16)
+	Sint32 hungryness;
 	Sint32 trigHungry; // (Uint16)
 	Sint32 trigHungryCarying;
 	Uint32 fruitMask;

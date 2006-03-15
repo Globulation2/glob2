@@ -38,17 +38,22 @@ namespace GAGGUI
 	
 		// cache, recomputed at least on paint
 		GAGCore::Font *fontPtr;
-	
+		
 	public:
-		Text() { fontPtr=NULL; }
-		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", int w=0, int h=0);
+		Text() { fontPtr = NULL; }
+		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text, int w=0, int h=0) { constructor(x, y, hAlign, vAlign, font, text.c_str(), w, h); }
+		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", int w=0, int h=0) { constructor(x, y, hAlign, vAlign, font, text, w, h); }
 		virtual ~Text() { }
+		
 		virtual void init(void);
 		virtual void paint(void);
 		virtual const char *getText() const { return text.c_str(); }
 		virtual void setText(const char *newText);
 		virtual void setText(const std::string &newText) { setText(newText.c_str()); }
 		virtual void setStyle(GAGCore::Font::Style style);
+		
+	protected:
+		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h);
 	};
 }
 

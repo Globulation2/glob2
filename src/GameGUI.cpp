@@ -103,7 +103,7 @@ public:
 	//! React on action from any widget (but there is only one anyway)
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	//! Return the text typed
-	const char *getText(void) const { return textInput->getText(); }
+	const char *getText(void) const { return textInput->getText().c_str(); }
 	//! Set the text
 	void setText(const char *text) const { textInput->setText(text); }
 };
@@ -525,7 +525,7 @@ void GameGUI::step(void)
 		// display IRC messages
 		while (ircPtr->isChatMessage())
 		{
-			addMessage(99, 255, 242, "<%s%s> %s", Toolkit::getStringTable()->getString("[from:]"), ircPtr->getChatMessageSource(), ircPtr->getChatMessage());
+			addMessage(99, 255, 242, "<%s%s> %s", Toolkit::getStringTable()->getString("[from:]"), ircPtr->getChatMessageSource().c_str(), ircPtr->getChatMessage().c_str());
 			ircPtr->freeChatMessage();
 		}
 	}

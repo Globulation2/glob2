@@ -357,12 +357,12 @@ void YOGScreen::onTimer(Uint32 tick)
 			break;
 		}
 		
-		if (irc.getInfoMessageDiffusion())
+		if (irc.getInfoMessageDiffusion() != "")
 		{
 			chatWindow->addText(irc.getInfoMessageDiffusion());
 		}
 		
-		if (irc.getInfoMessageText()[0])
+		if (irc.getInfoMessageText() != "")
 		{
 			chatWindow->addText(" : " );
 			chatWindow->addText(irc.getInfoMessageText());

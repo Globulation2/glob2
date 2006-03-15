@@ -34,12 +34,12 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	multiplayersJoin=new MultiplayersJoin(false);
 
 	serverName=new TextInput(20, 170, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "localhost", true);
-	strncpy(multiplayersJoin->serverName, serverName->getText(), 256);
+	strncpy(multiplayersJoin->serverName, serverName->getText().c_str(), 256);
 	multiplayersJoin->serverName[255]=0;
 	addWidget(serverName);
 
 	playerName=new TextInput(20, 270, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), false, 32);
-	strncpy(multiplayersJoin->playerName, playerName->getText(), 32);
+	strncpy(multiplayersJoin->playerName, playerName->getText().c_str(), 32);
 	multiplayersJoin->playerName[31]=0;
 	addWidget(playerName);
 
@@ -138,12 +138,12 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (source==serverName)
 		{
-			strncpy(multiplayersJoin->serverName, serverName->getText(), 256);
+			strncpy(multiplayersJoin->serverName, serverName->getText().c_str(), 256);
 			multiplayersJoin->serverName[255]=0;
 		}
 		else if (source==playerName)
 		{
-			strncpy(multiplayersJoin->playerName, playerName->getText(), 32);
+			strncpy(multiplayersJoin->playerName, playerName->getText().c_str(), 32);
 			multiplayersJoin->playerName[31]=0;
 		}
 		else
@@ -186,7 +186,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 				if (i==par1)
 				{
 					serverName->setText(Utilities::stringIP(it->ip.host));
-					strncpy(multiplayersJoin->serverName, serverName->getText(), 256);
+					strncpy(multiplayersJoin->serverName, serverName->getText().c_str(), 256);
 					multiplayersJoin->serverName[255]=0;
 					break;
 				}

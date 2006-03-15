@@ -27,6 +27,12 @@ namespace GAGCore
 	class Font;
 }
 using namespace GAGCore;
+namespace GAGGUI
+{
+	class OverlayScreen;
+}
+using namespace GAGGUI;
+class Unit;
 
 class MapEdit
 {
@@ -61,10 +67,12 @@ public:
 	bool load(const char *filename);
 private:
 	bool save(const char *filename, const char *name);
-	// execute the load/save dialog
+	
+	void executeOverlayScreen(OverlayScreen *overlayScreen);
+	
 	void loadSave(bool isLoad);
-	// execute the script editor dialog
 	void scriptEditor(void);
+	void unitEditor(Unit *unit);
 
 	void updateUnits(int x, int y, int w, int h);
 public:

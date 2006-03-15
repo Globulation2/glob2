@@ -114,7 +114,7 @@ int Glob2::runNoX()
 int Glob2::runHostServer()
 {
 	if (verbose)
-		printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->getUsername());
+		std::cout << "Glob2::runHostServer():connecting to YOG as %s" << globalContainer->getUsername() << std::endl;
 	yog->enableConnection(globalContainer->hostServerUserName, globalContainer->hostServerPassWord, false);
 	
 	while(yog->yogGlobalState==YOG::YGS_CONNECTING)

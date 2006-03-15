@@ -35,7 +35,7 @@ using namespace GAGGUI;
 
 #include <algorithm>
 
-//! Main menu screen
+
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 :OverlayScreen(globalContainer->gfx, 600, 400)
 {
@@ -66,6 +66,8 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(new TextButton(230, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Campaign text", TAB_CAMPAIGN_TEXT));
 	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", "Script");
 	addWidget(mode);
+	
+	// important, widgets must be initialised by hand as we use custom event loop
 	dispatchInit();
 }
 

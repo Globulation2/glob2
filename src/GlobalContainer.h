@@ -53,7 +53,7 @@ private:
 	void updateLoadProgressBar(int value);
 	void destroyProgressBar(void);
 
-	const char *userName;
+	std::string userName;
 	
 public:
 	GlobalContainer(void);
@@ -62,10 +62,10 @@ public:
 	void parseArgs(int argc, char *argv[]);
 	void load(void);
 
-	void pushUserName(const char *name);
+	void pushUserName(const std::string &name);
 	void popUserName();
-	void setUserName(const char *name);
-	const char *getUsername(void) { return userName; }
+	void setUserName(const std::string &name);
+	const std::string &getUsername(void) { return userName; }
 	const char *getComputerHostName(void);
 
 public:

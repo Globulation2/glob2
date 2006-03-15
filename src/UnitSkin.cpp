@@ -22,16 +22,17 @@
 #include <Toolkit.h>
 #include <iostream>
 
-void UnitSkin::load(GAGCore::InputStream *stream)
+bool UnitSkin::load(GAGCore::InputStream *stream)
 {
 	std::string spriteName = stream->readText("spriteName");
+	if (spriteName == "")
+		return false;
+		
 	sprite = Toolkit::getSprite(spriteName);
 	if (!sprite)
 	{
-		std::cerr << "Can't unit sprite " << spriteName << ", abording" << std::endl;
-		assert(false);
-		// on release, default to standard unit
-		sprite = Toolkit::getSprite("data/gfx/unit");
+		std::cerr << "Can't load unit sprite " << spriteName << ", abording" << std::endl;
+		return false;
 	}
 	startImage[STOP_WALK] = stream->readUint32("startImageStopWalk");
 	startImage[STOP_SWIM] = stream->readUint32("startImageStopSwim");
@@ -42,4 +43,6 @@ void UnitSkin::load(GAGCore::InputStream *stream)
 	startImage[BUILD] = stream->readUint32("startImageBuild");
 	startImage[HARVEST] = stream->readUint32("startImageHarvest");
 	startImage[ATTACK_SPEED] = stream->readUint32("startImageAttack");
+	
+	return true;
 }

@@ -52,7 +52,7 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(newYogPassword);
 	addWidget(newYogPasswordText);
 	
-	rememberYogPassword=new OnOffButton(20, 440, 21, 21, ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED, password->getTextStdString().length() > 0, NEW_USER);
+	rememberYogPassword=new OnOffButton(20, 440, 21, 21, ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED, password->getText().length() > 0, NEW_USER);
 	rememberYogPasswordText=new Text(47, 440, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
 		Toolkit::getStringTable()->getString("[Remember YOG password localy]"));
 	addWidget(rememberYogPassword);
@@ -129,7 +129,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	{
 		if (rememberYogPassword->getState())
 		{
-			globalContainer->settings.password.assign(password->getText(), 32);
+			globalContainer->settings.password.assign(password->getText(), 0, 32);
 			globalContainer->settings.save();
 		}
 		animation->hide();
@@ -154,7 +154,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	}
 	if (connectOnNextTimer)
 	{
-		yog->enableConnection(login->getText(), password->getText(), newYogPassword->getState());
+		yog->enableConnection(login->getText().c_str(), password->getText().c_str(), newYogPassword->getState());
 		connectOnNextTimer=false;
 	}
 	else if (yog->externalStatusState!=oldYOGExternalStatusState)

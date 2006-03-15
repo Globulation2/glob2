@@ -29,7 +29,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
+	void Text::constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
 	{
 		this->x=x;
 		this->y=y;

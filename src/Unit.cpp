@@ -43,7 +43,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	// unit specification
 	this->typeNum = typeNum;
 	defaultSkinNameFromType();
-	skin = globalContainer->unitsSkins->getSkin(skinName);
+	skinPointerFromName();
 
 	assert(team);
 	race=&(team->race);
@@ -86,34 +86,34 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	else
 		movement=MOV_RANDOM_GROUND;
 
-	targetX=0;
-	targetY=0;
-	validTarget=false;
-	magicActionTimeout=0;
+	targetX = 0;
+	targetY = 0;
+	validTarget = false;
+	magicActionTimeout = 0;
 
 	// trigger parameters
 	hp=0;
 
-	// warriors fight to death TODO: this is overided !?!?
+	// warriors fight to death TODO: this is overridden !?!?
 	if (performance[ATTACK_SPEED])
-		trigHP=0;
+		trigHP = 0;
 	else
-		trigHP=20;
+		trigHP = 20;
 
 	// warriors wait more tiem before going to eat
-	hungry=HUNGRY_MAX;
+	hungry = HUNGRY_MAX;
+	hungryness = race->hungryness;
 	if (performance[ATTACK_SPEED])
-		trigHungry=(hungry*2)/10;
+		trigHungry = (hungry*2)/10;
 	else
-		trigHungry=hungry/4;
-	trigHungryCarying=hungry/10;
-	fruitMask=0;
-	fruitCount=0;
-
+		trigHungry = hungry/4;
+	trigHungryCarying = hungry/10;
+	fruitMask = 0;
+	fruitCount = 0;
 
 	// NOTE : rewrite hp from level
-	hp=this->performance[HP];
-	trigHP=(hp*3)/10;
+	hp = this->performance[HP];
+	trigHP = (hp*3)/10;
 
 	attachedBuilding=NULL;
 	targetBuilding=NULL;
@@ -137,9 +137,11 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	
 	// unit specification
 	typeNum = stream->readSint32("typeNum");
-	defaultSkinNameFromType();
-	skin = globalContainer->unitsSkins->getSkin(skinName);
-	// TODO : change this to provide user defined units
+	if (versionMinor >= 49)
+		skinName = stream->readText("skinName");
+	else
+		defaultSkinNameFromType();
+	skinPointerFromName();
 	race = &(owner->race);
 	assert(race);
 
@@ -183,6 +185,10 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// hungry
 	hungry = stream->readSint32("hungry");
+	if (versionMinor >= 49)
+		hungryness = stream->readSint32("hungryness");
+	else
+		hungryness = race->hungryness;
 	trigHungry = stream->readSint32("trigHungry");
 	trigHungryCarying = (trigHungry*4)/10;
 	fruitMask = stream->readUint32("fruitMask");
@@ -244,6 +250,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	// unit specification
 	// we drop the unittype pointer, we save only the number
 	stream->writeSint32(typeNum, "typeNum");
+	stream->writeText(skinName, "skinName");
 
 	// identity
 	stream->writeUint16(gid, "gid");
@@ -277,6 +284,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 
 	// hungry
 	stream->writeSint32(hungry, "hungry");
+	stream->writeSint32(hungryness, "hungryness");
 	stream->writeSint32(trigHungry, "trigHungry");
 	stream->writeUint32(fruitMask, "fruitMask");
 	stream->writeUint32(fruitCount, "fruitCount");
@@ -751,7 +759,7 @@ void Unit::handleMedical(void)
 	
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
-	hungry-=race->hungryness;
+	hungry -= hungryness;
 	if (hungry<=0)
 		hp--;
 	
@@ -830,7 +838,11 @@ void Unit::handleActivity(void)
 
 				int dist;
 				// Is there a building we can reach in time?
-				const int timeLeft=(hungry-trigHungry)/race->hungryness;
+				int timeLeft;
+				if (hungryness)
+					timeLeft = (hungry-trigHungry) / hungryness;
+				else
+					timeLeft = INT_MAX;
 				if (b!=NULL && owner->map->buildingAvailable(b, performance[SWIM], posX, posY, &dist) && dist<timeLeft)
 				{
 					bool canSubscribe=(caryedRessource>=0) && b->neededRessource(caryedRessource);
@@ -1276,7 +1288,11 @@ void Unit::handleDisplacement(void)
 					if (ressourceToTake>=0)
 					{
 						int foreignBuildingDist;
-						int timeLeft=(hungry-trigHungry)/race->hungryness;
+						int timeLeft;
+						if (hungryness)
+							timeLeft = (hungry-trigHungry) / hungryness;
+						else
+							timeLeft = INT_MAX;
 						if (owner->map->buildingAvailable(foreingExchangeBuilding, performance[SWIM], posX, posY, &foreignBuildingDist)
 							&& (foreignBuildingDist<(timeLeft>>1)))
 						{
@@ -1387,7 +1403,11 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->wishedRessources(needs);
 						int teamNumber=owner->teamNumber;
 						bool canSwim=performance[SWIM];
-						int timeLeft=(hungry-trigHungry)/race->hungryness;
+						int timeLeft;
+						if (hungryness)
+							timeLeft = (hungry-trigHungry) / hungryness;
+						else
+							timeLeft = INT_MAX;
 						
 						if (timeLeft>0)
 						{
@@ -2668,34 +2688,55 @@ Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 	return id+team*1024;
 }
 
+//! Return the real armor, taking into account the reduction due to fruits
 int Unit::getRealArmor(void) const
 {
 	int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
 	return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
 }
 
+//! Return the real attack strengh, taking into account the experience level
 int Unit::getRealAttackStrength(void) const
 {
 	return performance[ATTACK_STRENGTH] + experienceLevel;
 }
 
+//! Return the amount of experience to level-up
 int Unit::getNextLevelThreshold(void) const
 {
 	return (experienceLevel + 1) * (experienceLevel + 1) * race->getUnitType(typeNum, level[ATTACK_STRENGTH])->experiencePerLevel;
 }
 
+//! Increment experience. If level-up occures, handle it. Multiple level-up may occur at once.
 void Unit::incrementExperience(int increment)
 {
-	int nextLevelThreshold = getNextLevelThreshold();
 	experience += increment;
-	if (experience > nextLevelThreshold)
+	int nextLevelThreshold = getNextLevelThreshold();
+	while (experience > nextLevelThreshold)
 	{
-		experienceLevel++;
 		experience -= nextLevelThreshold;
+		experienceLevel++;
+		nextLevelThreshold = getNextLevelThreshold();
 		levelUpAnimation = LEVEL_UP_ANIMATION_FRAME_COUNT;
 	}
 }
 
+//! Compute the skin pointer from a skin name
+void Unit::skinPointerFromName(void)
+{
+	skin = globalContainer->unitsSkins->getSkin(skinName);
+	if (skin == NULL)
+	{
+		// if skin is invalid, retry with default
+		std::cerr << "Unit::skinPointerFromName : invalid skin name " << skinName << std::endl;
+		defaultSkinNameFromType();
+		skin = globalContainer->unitsSkins->getSkin(skinName);
+		if (!skin)
+			abort();
+	}
+}
+
+//! Compute the skin name from the unit type
 void Unit::defaultSkinNameFromType(void)
 {
 	switch (typeNum)
