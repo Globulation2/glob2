@@ -188,6 +188,8 @@ UnitSkin.h\
 UnitSkin.cpp\
 UnitsSkins.h\
 UnitsSkins.cpp\
+UnitEditorScreen.h\
+UnitEditorScreen.cpp\
 HeightMapGenerator.h\
 HeightMapGenerator.cpp
 

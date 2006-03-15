@@ -112,20 +112,20 @@ GlobalContainer::~GlobalContainer(void)
 	delete logFileManager;
 }
 
-void GlobalContainer::setUserName(const char *name)
+void GlobalContainer::setUserName(const std::string &name)
 {
-	settings.username.assign(name, USERNAME_MAX_LENGTH);
-	userName = settings.username.c_str();
+	settings.username.assign(name, 0, USERNAME_MAX_LENGTH);
+	userName = settings.username;
 }
 
-void GlobalContainer::pushUserName(const char *name)
+void GlobalContainer::pushUserName(const std::string &name)
 {
 	userName = name;
 }
 
 void GlobalContainer::popUserName()
 {
-	userName = settings.username.c_str();
+	userName = settings.username;
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])

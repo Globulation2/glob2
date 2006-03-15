@@ -20,13 +20,14 @@
 #ifndef __SCRIPT_EDITOR_SCREEN_H
 #define __SCRIPT_EDITOR_SCREEN_H
 
-#include "GameGUIDialog.h"
+#include <GUIBase.h>
 namespace GAGGUI
 {
 	class TextArea;
 	class Text;
 	class TextButton;
 }
+using namespace GAGGUI;
 class Game;
 class Mapscript;
 

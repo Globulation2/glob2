@@ -51,9 +51,19 @@ UnitSkin *UnitsSkins::getSkin(const std::string &name)
 		return it->second;
 	else
 	{
+		UnitSkin *unitSkin = new UnitSkin;
 		stream->readEnterSection(name.c_str());
-		unitsSkins[name] = new UnitSkin(stream);
+		bool result = unitSkin->load(stream);
 		stream->readLeaveSection();
-		return unitsSkins[name];
+		if (result)
+		{
+			unitsSkins[name] = unitSkin;
+			return unitSkin;
+		}
+		else
+		{
+			delete unitSkin;
+			return NULL;
+		}
 	}
 }

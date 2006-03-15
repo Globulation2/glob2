@@ -302,7 +302,7 @@ void MultiplayersConnectedScreen::onAction(Widget *source, Action action, int pa
 	else if (action==TEXT_VALIDATED)
 	{
 		assert(multiplayersJoin);
-		multiplayersJoin->sendMessage(textInput->getText());
+		multiplayersJoin->sendMessage(textInput->getText().c_str());
 		textInput->setText("");
 	}
 }

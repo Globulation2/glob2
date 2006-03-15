@@ -145,7 +145,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		sendBroadcastLanGameHosting(GAME_JOINER_PORT_3, true);
 	}
 	
-	strncpy(serverNickName, globalContainer->getUsername(), 32);
+	strncpy(serverNickName, globalContainer->getUsername().c_str(), 32);
 }
 
 MultiplayersHost::~MultiplayersHost()
@@ -1123,8 +1123,10 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 	sdata[3]=0;
 	memset(sdata+4, 0, 64);
 	memcpy(sdata+4, sessionInfo.getMapNameC(), 64);
+	sdata[4+64-1] = 0;
 	memset(sdata+4+64, 0, 32);
-	memcpy(sdata+4+64, globalContainer->getUsername(), 32);
+	memcpy(sdata+4+64, globalContainer->getUsername().c_str(), 32);
+	sdata[4+64+32-1] = 0;
 	
 	// TODO: allow to use a game name different than mapName.
 	
@@ -1618,7 +1620,7 @@ void MultiplayersHost::sendingTime()
 				fprintf(logFile, "sessionInfo.getDataLength()=size=%d.\n", size);
 				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%p.\n", sessionInfo.mapGenerationDescriptor);
 
-				int hostUserNameSize=Utilities::strmlen(globalContainer->getUsername(), 32);
+				int hostUserNameSize=Utilities::strmlen(globalContainer->getUsername().c_str(), 32);
 				data=(Uint8 *)malloc(12+hostUserNameSize+size);
 				assert(data);
 
@@ -1628,7 +1630,7 @@ void MultiplayersHost::sendingTime()
 				data[3]=0;
 				addSint32(data, pi, 4);
 				addSint32(data, mapFileCheckSum, 8);
-				memcpy(data+12, globalContainer->getUsername(), hostUserNameSize);
+				memcpy(data+12, globalContainer->getUsername().c_str(), hostUserNameSize);
 				memcpy(data+12+hostUserNameSize, sessionInfo.getData(true), size);
 
 				sessionInfo.players[pi].send(data, 12+hostUserNameSize+size);

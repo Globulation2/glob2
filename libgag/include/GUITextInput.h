@@ -22,6 +22,8 @@
 
 #include "GUIBase.h"
 #include <string>
+#include <iostream>
+#include <sstream>
 
 namespace GAGCore
 {
@@ -32,6 +34,7 @@ namespace GAGGUI
 {
 	class TextInput: public HighlightableWidget
 	{
+		// STATUS nct 20060315 : clean
 	protected:
 		std::string font;
 		std::string text;
@@ -48,61 +51,49 @@ namespace GAGGUI
 		std::string pwd;
 	
 	public:
-		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, size_t maxLength=0, bool password=false);
+		// constructor / destructor
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text="", bool activated=false, size_t maxLength=0, bool password=false) { constructor(x, y, w, h, hAlign, vAlign, font, text.c_str(), activated, maxLength, password); }
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, size_t maxLength=0, bool password=false) { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
 		virtual ~TextInput() { }
 	
+		// methods inherited from widget
 		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
 		virtual void init(void);
 		virtual void paint(void);
-		void setText(const char *newText);
-		void setText(const std::string &newText) { setText(newText.c_str()); }
-		void setCursorPos(size_t pos){cursPos=pos;};
-		const char *getText(void) { return text.c_str(); }
-		const std::string &getTextStdString(void) { return text; }
-		void deactivate(void) { activated=false; recomputeTextInfos(); }
-		/// adds word for autocompletion via <tab>
-		void addAutoCompletableWord(const std::string &word)
+		
+		// text setter / getter
+		void setText(const std::string &newText);
+		template<typename T>
+		void setText(T from)
 		{
-			autocompletableWord.push_back(word);
-		};
-		/// removes word from autocompletion via <tab>
-		void removeAutoCompletableWord(const std::string &word)
-		{
-			std::vector<std::string>::iterator it;
-			for (it = autocompletableWord.begin(); it != autocompletableWord.end(); ++it)
-			{
-				if(*it==word)
-					autocompletableWord.erase(it);
-			}
+			std::ostringstream oss;
+			oss << from;
+			setText(oss.str());
 		}
-		/// returns the count of matching words for autocompletion for word and stores them to wordlist
-		bool getAutoCompleteSuggestion(const std::string & word, std::vector<std::string> & wordlist)
+		
+		const std::string &getText(void) { return text; }
+		template<typename T>
+		T getText(void)
 		{
-			int count = 0;
-			std::vector<std::string>::iterator it;
-			for (it = autocompletableWord.begin(); it != autocompletableWord.end(); ++it)
-			{
-				if(*it==word)
-				{
-					count++;
-					wordlist.push_back(*it);
-				}
-			}
-			if(count>0)
-				return true;
-			return false;
-		};
-		/// returns the n-th suggestion
-		std::string getAutoComplete(const std::string & word, int n)
-		{
-			std::vector<std::string> wordlist;
-			if (getAutoCompleteSuggestion(word, wordlist)>0)
-				return wordlist.at(n);
-			return std::string("");
+			std::istringstream iss(getText());
+			T v;
+			iss >> v;
+			return v;
 		}
+		
+		// cursor / activation
+		void setCursorPos(size_t pos){ cursPos = pos;};
+		void deactivate(void) { activated = false; recomputeTextInfos(); }
+		
+		// autocompletion
+		void addAutoCompletableWord(const std::string &word);
+		void removeAutoCompletableWord(const std::string &word);
+		bool getAutoCompleteSuggestion(const std::string & word, std::vector<std::string> & wordlist);
+		std::string getAutoComplete(const std::string & word, int n);
 
 	protected:
+		void constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, size_t maxLength, bool password);
 		void recomputeTextInfos(void);
 	};
 }

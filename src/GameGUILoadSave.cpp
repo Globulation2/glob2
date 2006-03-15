@@ -132,9 +132,9 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 void LoadSaveScreen::generateFileName(void)
 {
 	if (nameToFilenameFunc)
-		fileName = nameToFilenameFunc(directory.c_str(), fileNameEntry->getText(), extension.c_str());
+		fileName = nameToFilenameFunc(directory.c_str(), fileNameEntry->getText().c_str(), extension.c_str());
 	else
-		fileName = Utilities::concat(directory.c_str(), fileNameEntry->getText(), extension.c_str());
+		fileName = Utilities::concat(directory.c_str(), fileNameEntry->getText().c_str(), extension.c_str());
 }
 
 void LoadSaveScreen::onSDLEvent(SDL_Event *event)
@@ -149,5 +149,5 @@ const char *LoadSaveScreen::getFileName(void)
 
 const char *LoadSaveScreen::getName(void)
 {
-	return fileNameEntry->getText();
+	return fileNameEntry->getText().c_str();
 }

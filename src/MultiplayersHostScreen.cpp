@@ -167,9 +167,9 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	{
 		multiplayersJoin=new MultiplayersJoin(shareOnYOG);
 		assert(BasePlayer::MAX_NAME_LENGTH==32);
-		strncpy(multiplayersJoin->playerName, globalContainer->getUsername(), 32);
+		strncpy(multiplayersJoin->playerName, globalContainer->getUsername().c_str(), 32);
 		multiplayersJoin->playerName[31]=0;
-		strncpy(multiplayersJoin->serverNickName, globalContainer->getUsername(), 32);
+		strncpy(multiplayersJoin->serverNickName, globalContainer->getUsername().c_str(), 32);
 		multiplayersJoin->serverNickName[31]=0;
 		strncpy(multiplayersJoin->serverName, globalContainer->getComputerHostName(), 256);
 		multiplayersJoin->serverName[255]=0;
@@ -387,10 +387,10 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		multiplayersHost->sendMessage(textInput->getText());
+		multiplayersHost->sendMessage(textInput->getText().c_str());
 		if (ircPtr)
 		{
-			const char *message = textInput->getText();
+			const char *message = textInput->getText().c_str();
 			if ((message[0] == '/') && (message[1]=='/'))
 				ircPtr->sendCommand(&message[1]);
 		}

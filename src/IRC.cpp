@@ -38,10 +38,13 @@
 	#define PACKAGE_VERSION "undef"
 #endif
 
+std::string errorString;
+
 IRC::IRC()
 {
 	socket = NULL;
 	socketSet = NULL;
+	errorString = "error, no such data";
 }
 
 IRC::~IRC()
@@ -49,13 +52,13 @@ IRC::~IRC()
 	forceDisconnect();
 }
 
-bool IRC::connect(const char *serverName, int serverPort, const char *nick)
+bool IRC::connect(const std::string &serverName, int serverPort, const std::string &nick)
 {
 	disconnect();
 	
 	IPaddress ip;
 	socketSet = SDLNet_AllocSocketSet(1);
-	if (SDLNet_ResolveHost(&ip, (char *)serverName, serverPort)==-1)
+	if (SDLNet_ResolveHost(&ip, (char *)serverName.c_str(), serverPort)==-1)
 	{
 		fprintf(stderr, "YOG : ResolveHost: %s\n", SDLNet_GetError());
 		return false;
@@ -72,15 +75,10 @@ bool IRC::connect(const char *serverName, int serverPort, const char *nick)
 	
 	// Here we change the nick on yog for the IRC
 	// changing from nick = "nick" to YOGnick = "YOGnick"
-	memcpy(this->nick, "[YOG]", 5);
-	strncpy(this->nick + 5, nick, IRC_NICK_SIZE - 5);
-	this->nick[IRC_NICK_SIZE] = 0;
+	this->nick = "[YOG]" + nick;
 
-	char command[IRC_MESSAGE_SIZE];
-	snprintf(command, IRC_MESSAGE_SIZE, "USER %9s undef undef %s-%s", this->nick, PACKAGE_TARNAME, PACKAGE_VERSION);
-	sendString(command);
-	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", this->nick);
-	sendString(command);
+	sendString("USER " + this->nick + " undef undef " + PACKAGE_TARNAME + "-" + PACKAGE_VERSION);
+	sendString("NICK " + this->nick);
 
 	return true;
 }
@@ -93,9 +91,7 @@ bool IRC::disconnect(void)
 
 void IRC::forceDisconnect(void)
 {
-	char command[IRC_MESSAGE_SIZE];
-	snprintf(command, IRC_MESSAGE_SIZE, "QUIT :Globulation2");
-	sendString(command);
+	sendString("QUIT :Globulation2");
 
 	if (socket)
 	{
@@ -109,14 +105,15 @@ void IRC::forceDisconnect(void)
 	}
 }
 
-void IRC::interpreteIRCMessage(const char *message)
+void IRC::interpreteIRCMessage(const std::string &message)
 {
 	char tempMessage[IRC_MESSAGE_SIZE];
 	char *prefix;
 	char *cmd;
 	char *source;
 
-	strncpy(tempMessage, message, IRC_MESSAGE_SIZE);
+	strncpy(tempMessage, message.c_str(), IRC_MESSAGE_SIZE);
+	tempMessage[IRC_MESSAGE_SIZE - 1] = 0;
 
 	// get informations about packet, homemade parser
 	if (tempMessage[0]==':')
@@ -177,15 +174,9 @@ void IRC::interpreteIRCMessage(const char *message)
 		{
 			if (message && (*(++message)))
 			{
-				strncpy(msg.source,  source, IRC_NICK_SIZE);
-				msg.source[IRC_NICK_SIZE]=0;
-		   
-				strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-				msg.diffusion[IRC_CHANNEL_SIZE]=0;
-
-				strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-				msg.message[IRC_MESSAGE_SIZE]=0;
-			
+				msg.source = source;
+				msg.diffusion = diffusion;
+				msg.message = message;	
 				messages.push_back(msg);
 			}
 		}
@@ -195,10 +186,8 @@ void IRC::interpreteIRCMessage(const char *message)
 		char *diffusion=strtok(NULL, " :\0");
 		InfoMessage msg(IRC_MSG_JOIN);
 		
-		strncpy(msg.source,  source, IRC_NICK_SIZE);
-		msg.source[IRC_NICK_SIZE] = 0;
-		strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-		msg.diffusion[IRC_CHANNEL_SIZE] = 0;
+		msg.source = source;
+		msg.diffusion = diffusion;
 
 		infoMessages.push_back(msg);
 		
@@ -211,20 +200,18 @@ void IRC::interpreteIRCMessage(const char *message)
 		char *message = strtok(NULL, "\0");
 		InfoMessage msg(IRC_MSG_PART);
 
-		strncpy(msg.source,  source, IRC_NICK_SIZE);
-		msg.source[IRC_NICK_SIZE] = 0;
-		strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-		msg.diffusion[IRC_CHANNEL_SIZE] = 0;
+		msg.source = source;
+		msg.diffusion = diffusion;
+		
 		if (message && (*(++message)))
 		{
-			strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-			msg.message[IRC_MESSAGE_SIZE] = 0;
+			msg.message = message;
 		}
 
 		infoMessages.push_back(msg);
 		
 		// if we leave the chan, erase all list
-		if (strcmp(source, nick) == 0)
+		if (source == nick)
 			usersOnChannels[std::string(diffusion)].clear();
 		else
 			usersOnChannels[std::string(diffusion)].erase(std::string(source));
@@ -235,12 +222,10 @@ void IRC::interpreteIRCMessage(const char *message)
 		char *message = strtok(NULL, "\0");
 		InfoMessage msg(IRC_MSG_QUIT);
 
-		strncpy(msg.source,  source, IRC_NICK_SIZE);
-		msg.source[IRC_NICK_SIZE] = 0;
+		msg.source = source;
 		if (message && (*(++message)))
 		{
-			strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-			msg.message[IRC_MESSAGE_SIZE] = 0;
+			msg.message = message;
 		}
 		
 		// erase this nick from all chans
@@ -267,14 +252,9 @@ void IRC::interpreteIRCMessage(const char *message)
 			
 			if (source)
 			{
-				strncpy(msg.source,  source, IRC_NICK_SIZE );
-				msg.source[IRC_NICK_SIZE] = 0;
-			
-				strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-				msg.diffusion[IRC_CHANNEL_SIZE] = 0;
-				strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-				msg.message[IRC_MESSAGE_SIZE] = 0;
-				
+				msg.source = source;
+				msg.diffusion = diffusion;
+				msg.message = message;
 				infoMessages.push_back(msg);
 			}
 		}
@@ -293,21 +273,18 @@ void IRC::interpreteIRCMessage(const char *message)
 
 	else if (strcasecmp(cmd, "433")==0)
 	{
-		if (strlen(this->nick) < IRC_NICK_SIZE)
+		if (nick.size() < IRC_NICK_SIZE)
 		{
-			strcat(this->nick,"_");
-			
-			char command[IRC_MESSAGE_SIZE];
-			snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", this->nick);
-			sendString(command);
+			nick += "_";
+			sendString("NICK " + nick);
 			joinChannel("#glob2");
 		}
 		
 		else
 		{
-			const char *nicktaken = Toolkit::getStringTable()->getString("[nick taken]");
-			const char *ok = Toolkit::getStringTable()->getString("[ok]");
-			int res=(int)MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, nicktaken, ok);
+			const std::string &nicktaken = Toolkit::getStringTable()->getString("[nick taken]");
+			const std::string &ok = Toolkit::getStringTable()->getString("[ok]");
+			int res = (int)MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, nicktaken.c_str(), ok.c_str());
 		
 			if (res != 0 )
 			{
@@ -359,28 +336,28 @@ bool IRC::isChatMessage(void)
 	return messages.size()>0;
 }
 
-const char *IRC::getChatMessage(void)
+const std::string &IRC::getChatMessage(void)
 {
 	if (messages.size()>0)
 		return messages[0].message;
 	else
-		return NULL;
+		return errorString;
 }
 
-const char *IRC::getChatMessageSource(void)
+const std::string &IRC::getChatMessageSource(void)
 {
 	if (messages.size()>0)
 		return messages[0].source;
 	else
-		return NULL;
+		return errorString;
 }
 
-const char *IRC::getChatMessageDiffusion(void)
+const std::string &IRC::getChatMessageDiffusion(void)
 {
 	if (messages.size()>0)
 		return messages[0].diffusion;
 	else
-		return NULL;
+		return errorString;
 }
 
 void IRC::freeChatMessage(void)
@@ -397,34 +374,34 @@ bool IRC::isInfoMessage(void)
 
 const IRC::InfoMessageType IRC::getInfoMessageType(void)
 {
-	if (infoMessages.size()>0)
+	if (infoMessages.size() > 0)
 		return infoMessages[0].type;
 	else
 		return IRC_MSG_NONE;
 }
 
-const char *IRC::getInfoMessageSource(void)
+const std::string &IRC::getInfoMessageSource(void)
 {
-	if (infoMessages.size()>0)
+	if (infoMessages.size() > 0)
 		return infoMessages[0].source;
 	else
-		return NULL;
+		return errorString;
 }
 
-const char *IRC::getInfoMessageDiffusion(void)
+const std::string &IRC::getInfoMessageDiffusion(void)
 {
-	if (infoMessages.size()>0)
+	if (infoMessages.size() > 0)
 		return infoMessages[0].diffusion;
 	else
-		return NULL;
+		return errorString;
 }
 
-const char *IRC::getInfoMessageText(void)
+const std::string &IRC::getInfoMessageText(void)
 {
 	if (infoMessages.size()>0)
 		return infoMessages[0].message;
 	else
-		return NULL;
+		return errorString;
 }
 
 void IRC::freeInfoMessage(void)
@@ -434,16 +411,17 @@ void IRC::freeInfoMessage(void)
 }
 
 
-void IRC::sendCommand(const char *message)
+void IRC::sendCommand(const std::string &message)
 {
 	char command[IRC_MESSAGE_SIZE];
 	if (message[0]=='/')
 	{
 		char tempMessage[IRC_MESSAGE_SIZE];
-		strncpy(tempMessage, message, IRC_MESSAGE_SIZE);
-		char *cmd=strtok(tempMessage, " \t");
-		char *arg1=strtok(NULL, " \t");
-		char *arg2=strtok(NULL, "\0");
+		strncpy(tempMessage, message.c_str(), IRC_MESSAGE_SIZE);
+		tempMessage[IRC_MESSAGE_SIZE - 1] = 0;
+		char *cmd = strtok(tempMessage, " \t");
+		char *arg1 = strtok(NULL, " \t");
+		char *arg2 = strtok(NULL, "\0");
 		if (verbose)
 			printf ("c = [%s] a1 = [%s] a2 = [%s]\n", cmd, arg1, arg2);
 		if ((strcasecmp(cmd, "/msg")==0) && arg1 && arg2)
@@ -471,37 +449,26 @@ void IRC::sendCommand(const char *message)
 	}
 	else
 	{
-		snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", chatChan, message);
+		std::string command = "PRIVMSG " + chatChan + " :" + message;
 		if (verbose)
-			printf("YOG::sendString(%s).\n", command);
+			std::cout << "YOG::sendString(" << command << ")." << std::endl;
 		sendString(command);
 	}
 }
 
-void IRC::setChatChannel(const char *chan)
+void IRC::setChatChannel(const std::string &chan)
 {
-	strncpy(chatChan, chan, IRC_CHANNEL_SIZE);
-	chatChan[IRC_CHANNEL_SIZE]=0;
+	chatChan = chan;
 }
 
-void IRC::joinChannel(const char *channel)
+void IRC::joinChannel(const std::string &channel)
 {
-	char command[IRC_MESSAGE_SIZE];
-	
-	if (channel==NULL)
-		channel=chatChan;
-	snprintf(command, IRC_MESSAGE_SIZE, "JOIN %s", channel);
-	sendString(command);
+	sendString("JOIN " + channel);
 }
 
-void IRC::leaveChannel(const char *channel)
+void IRC::leaveChannel(const std::string &channel)
 {
-	char command[IRC_MESSAGE_SIZE];
-
-	if (channel==NULL)
-		channel=chatChan;
-	snprintf(command, IRC_MESSAGE_SIZE, "PART %s", channel);
-	sendString(command);
+	sendString("PART " + channel);
 }
 
 bool IRC::initChannelUserListing(const std::string &channel)
@@ -573,12 +540,12 @@ bool IRC::getString(char data[IRC_MESSAGE_SIZE])
 	}
 }
 
-bool IRC::sendString(const char *data)
+bool IRC::sendString(const std::string &data)
 {
 	if (socket)
 	{
 		char ircMsg[IRC_MESSAGE_SIZE];
-		snprintf(ircMsg, IRC_MESSAGE_SIZE-1, "%s", data);
+		snprintf(ircMsg, IRC_MESSAGE_SIZE-1, "%s", data.c_str());
 		ircMsg[IRC_MESSAGE_SIZE-1] = 0;
 		int len=strlen(ircMsg);
 		ircMsg[len]='\r';

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -17,27 +17,40 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNITSKIN_H
-#define __UNITSKIN_H
+#ifndef __UNIT_EDITOR_SCREEN_H
+#define __UNIT_EDITOR_SCREEN_H
 
-#include <GAGSys.h>
-#include "UnitConsts.h"
+#include <GUIBase.h>
 
-namespace GAGCore
+// forward declaration to optimise compilation speed
+namespace GAGGUI
 {
-	class InputStream;
-	class Sprite;
+	class TextInput;
 }
-using namespace GAGCore;
+using namespace GAGGUI;
+class Unit;
 
-class UnitSkin
+//! Allow the map editor user to change some unit parameters
+class UnitEditorScreen : public OverlayScreen
 {
 public:
-	Sprite *sprite;
-	Uint32 startImage[NB_MOVE];
+	enum
+	{
+		OK = 0,
+		CANCEL = 1,
+	};
 	
 public:
-	bool load(GAGCore::InputStream *stream);
+	UnitEditorScreen(Unit *toEdit);
+	virtual ~UnitEditorScreen();
+	
+protected:
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	
+protected:
+	Unit *unit; //!< unit being edited
+	TextInput *skin;
+	TextInput *hungryness;
 };
 
 #endif

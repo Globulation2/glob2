@@ -25,6 +25,7 @@
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "ScriptEditorScreen.h"
+#include "UnitEditorScreen.h"
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
@@ -306,7 +307,16 @@ void MapEdit::handleMapClick(int mx, int my)
 	int x=ax, y=ay;
 	bool mapModified=false;
 
-	if (editMode==EM_TERRAIN)
+	if (editMode == EM_NONE)
+	{
+		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
+		Uint16 guid = game.map.getGroundUnit(x, y);
+		if (guid != NOGUID)
+		{
+			unitEditor(game.teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)]);
+		}
+	}
+	else if (editMode == EM_TERRAIN)
 	{
 		game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
 		if ((ax!=x)||(ay!=y)||(atype!=type))
@@ -703,6 +713,26 @@ void MapEdit::drawSelRect(int x, int y, int w, int h)
 	globalContainer->gfx->drawRect(x+1, y+1, w-2, h-2, 255, 0, 0);
 }
 
+//! Execute any overlay screen by sending event to it
+void MapEdit::executeOverlayScreen(OverlayScreen *overlayScreen)
+{
+	SDL_Event event;
+	while (overlayScreen->endValue<0)
+	{
+		while (SDL_PollEvent(&event))
+		{
+			overlayScreen->translateAndProcessEvent(&event);
+		}
+		overlayScreen->dispatchPaint();
+		drawMenu();
+		drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
+		drawMiniMap();
+		globalContainer->gfx->drawSurface(overlayScreen->decX, overlayScreen->decY, overlayScreen->getSurface());
+		globalContainer->gfx->nextFrame();
+	}
+}
+
+//! Execute the load/save dialog
 void MapEdit::loadSave(bool isLoad)
 {
 	// create dialog box
@@ -711,22 +741,11 @@ void MapEdit::loadSave(bool isLoad)
 
 	// save screen
 	globalContainer->gfx->setClipRect();
+	
+	// execute screen
+	executeOverlayScreen(loadSaveScreen);
 
-	SDL_Event event;
-	while(loadSaveScreen->endValue<0)
-	{
-		while (SDL_PollEvent(&event))
-		{
-			loadSaveScreen->translateAndProcessEvent(&event);
-		}
-		loadSaveScreen->dispatchPaint();
-		drawMenu();
-		drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
-		drawMiniMap();
-		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
-		globalContainer->gfx->nextFrame();
-	}
-
+	// react following screen end values
 	if (loadSaveScreen->endValue==0)
 	{
 		if (isLoad)
@@ -746,29 +765,18 @@ void MapEdit::loadSave(bool isLoad)
 	renderMiniMap();
 }
 
+//! Execute the script editor dialog
 void MapEdit::scriptEditor(void)
 {
 	// create dialog box
-	ScriptEditorScreen *scriptEditorScreen=new ScriptEditorScreen(&(game.script), &game);
+	ScriptEditorScreen *scriptEditorScreen = new ScriptEditorScreen(&(game.script), &game);
 	scriptEditorScreen->dispatchPaint();
 
 	// save screen
 	globalContainer->gfx->setClipRect();
 
-	SDL_Event event;
-	while(scriptEditorScreen->endValue<0)
-	{
-		while (SDL_PollEvent(&event))
-		{
-			scriptEditorScreen->translateAndProcessEvent(&event);
-		}
-		scriptEditorScreen->dispatchPaint();
-		drawMenu();
-		drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
-		drawMiniMap();
-		globalContainer->gfx->drawSurface(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getSurface());
-		globalContainer->gfx->nextFrame();
-	}
+	// execute screen
+	executeOverlayScreen(scriptEditorScreen);
 	if (scriptEditorScreen->endValue == ScriptEditorScreen::OK)
 		mapHasBeenModiffied();
 
@@ -776,6 +784,20 @@ void MapEdit::scriptEditor(void)
 	delete scriptEditorScreen;
 
 	renderMiniMap();
+}
+
+//! Execute the unit editor dialog
+void MapEdit::unitEditor(Unit *unit)
+{
+	// create dialog box
+	UnitEditorScreen *unitEditorScreen = new UnitEditorScreen(unit);
+	unitEditorScreen->dispatchPaint();
+	
+	// execute screen
+	executeOverlayScreen(unitEditorScreen);
+	
+	// clean up
+	delete unitEditorScreen;
 }
 
 void MapEdit::askConfirmationToQuit()

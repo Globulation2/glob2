@@ -43,7 +43,9 @@
 //! This class is an IRC client
 class IRC
 {
+	// STATUS nct 20060315 : mostly clean, some string cleanup still welcome though
 	static const bool verbose = false;
+	
 public:
 	enum IRCConst
 	{
@@ -65,21 +67,21 @@ public:
 
 	struct ChatMessage
 	{
-		char source[IRC_NICK_SIZE+1];
-		char diffusion[IRC_CHANNEL_SIZE+1];
-		char message[IRC_MESSAGE_SIZE+1];
+		std::string source;
+		std::string diffusion;
+		std::string message;
 		
-		ChatMessage::ChatMessage() { source[0]=0; diffusion[0]=0; message[0]=0; }
+		ChatMessage::ChatMessage() { source[0] = 0; diffusion[0] = 0; message[0] = 0; }
 	};
 
 	struct InfoMessage
 	{
 		InfoMessageType type;
-		char source[IRC_NICK_SIZE+1];
-		char diffusion[IRC_CHANNEL_SIZE+1];
-		char message[IRC_MESSAGE_SIZE+1];
+		std::string source;
+		std::string diffusion;
+		std::string message;
 		
-		InfoMessage::InfoMessage(InfoMessageType t) { type=t; source[0]=0; diffusion[0]=0; message[0]=0; }
+		InfoMessage::InfoMessage(InfoMessageType t) { type=t; source[0] = 0; diffusion[0] = 0; message[0] = 0; }
 	};
 
 protected:
@@ -104,13 +106,13 @@ protected:
 	std::set<std::string>::const_iterator nextChannelUser;
 	
 	//! The chat where default chat will go
-	char chatChan[IRC_CHANNEL_SIZE+1];
+	std::string chatChan;
 	//! copy of the nick
-	char nick[IRC_NICK_SIZE+1];
+	std::string nick;
 
 protected:
 	//! Interprete a message from IRC; do parsing etc
-	void interpreteIRCMessage(const char *message);
+	void interpreteIRCMessage(const std::string &message);
 	//! Force disconnect (kill socket)
 	void forceDisconnect(void);
 
@@ -122,7 +124,7 @@ public:
 
 	// CONNECTION
 	//! Connect to YOG server (IRC network), return true on sucess
-	bool connect(const char *serverName, int serverPort, const char *nick);
+	bool connect(const std::string &serverName, int serverPort, const std::string &nick);
 	//! Try to disconnect from server in a cleany way
 	bool disconnect(void);
 
@@ -134,17 +136,17 @@ public:
 	//! Return true if there is pending message
 	bool isChatMessage(void);
 	//! Get message
-	const char *getChatMessage(void);
+	const std::string &getChatMessage(void);
 	//! Get the user from where the message is
-	const char *getChatMessageSource(void);
+	const std::string &getChatMessageSource(void);
 	//! Get where the message has been spawned
-	const char *getChatMessageDiffusion(void);
+	const std::string &getChatMessageDiffusion(void);
 	//! Free last message
 	void freeChatMessage(void);
 	//! Send a message (or a command), return true if command has been sent
-	void sendCommand(const char *message);
+	void sendCommand(const std::string &message);
 	//! Set the chat channel
-	void setChatChannel(const char *chan);
+	void setChatChannel(const std::string &chan);
 
 	// INFO
 	//! Return true if there is pending info message
@@ -152,19 +154,19 @@ public:
 	//! Get Info info message type
 	const InfoMessageType getInfoMessageType(void);
 	//! Get the associated nick with info message
-	const char *getInfoMessageSource(void);
+	const std::string &getInfoMessageSource(void);
 	//! Get where the info message has been spawned
-	const char *getInfoMessageDiffusion(void);
+	const std::string &getInfoMessageDiffusion(void);
 	//! Get the associated nick with info message
-	const char *getInfoMessageText(void);
+	const std::string &getInfoMessageText(void);
 	//! Free last info message
 	void freeInfoMessage(void);
 	
 	// CHANNEL
 	//! Join a given channel, if no argument is given, join chat channel
-	void joinChannel(const char *channel=NULL);
+	void joinChannel(const std::string &channel);
 	//! Quit a given channel, if no argument is given, leave chat channel
-	void leaveChannel(const char *channel=NULL);
+	void leaveChannel(const std::string &channel);
 	//! Init current channel iteration for listing users. Return if the channel exists. Iteration has to be completed (iterated until isMoreChannelUser return false) before calling step.
 	bool initChannelUserListing(const std::string &channel);
 	//! Return if there is user to be iterated on the current channel iterator. initChannelUserListing has to be called once before calling this method.
@@ -176,7 +178,7 @@ public:
 
 private:
 	//! Send a string in IRC format
-	bool sendString(const char *data);
+	bool sendString(const std::string &data);
 	//! Get a string in IRC format
 	bool getString(char data[IRC_MESSAGE_SIZE]);
 };

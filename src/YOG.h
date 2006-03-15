@@ -23,6 +23,7 @@
 #include "Header.h"
 #include "YOGConsts.h"
 #include <list>
+#include <string>
 
 class LogFileManager;
 
@@ -148,6 +149,8 @@ public:
 	bool joinedGame;
 	
 	void sendMessage(const char *message);
+	// migration, const char * have to die at some point
+	void sendMessage(const std::string &message) { sendMessage(message.c_str()); }
 	
 	bool newGameList(bool reset);
 	bool newPlayerList(bool reset);
