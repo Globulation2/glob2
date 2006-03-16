@@ -549,4 +549,20 @@ namespace GAGCore
 			destBuffer[i] = val;
 		}
 	}
+	
+	void TextInputStream::getSubSections(const std::string &root, std::set<std::string> *sections)
+	{
+		size_t rootLength = root.length();
+		for (std::map<std::string, std::string>::const_iterator it = table.begin(); it != table.end(); ++it)
+		{
+			const std::string &key = it->first;
+			if ((rootLength == 0) || (key.find(root) == 0))
+			{
+				// root is correct, find non empty subsections
+				std::string::size_type end = key.find('.', rootLength);
+				if (end != std::string::npos)
+					sections->insert(key.substr(rootLength, end - rootLength));
+			}
+		}
+	}
 }

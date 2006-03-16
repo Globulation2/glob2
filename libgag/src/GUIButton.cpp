@@ -235,7 +235,7 @@ namespace GAGGUI
 	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, Uint16 unicode)
 	:TextButton(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, font, text, returnCode, unicode)
 	{
-		textIndex=0;
+		textIndex = 0;
 	}
 	
 	void MultiTextButton::onSDLEvent(SDL_Event *event)
@@ -292,15 +292,18 @@ namespace GAGGUI
 		texts.clear();
 	}
 	
-	void MultiTextButton::setTextIndex(int i)
+	void MultiTextButton::setIndex(int i)
 	{
-		textIndex=i;
+		textIndex = i;
 		setText(texts.at(textIndex));
 	}
 	
-	void MultiTextButton::setFirstTextIndex(int i)
+	void MultiTextButton::setIndexFromText(const std::string &s)
 	{
-		textIndex=i;
-		text=texts.at(textIndex);
+		for (size_t i = 0; i < texts.size(); i++)
+		{
+			if (texts[i] == s)
+				setIndex(i);
+		}
 	}
 }

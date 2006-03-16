@@ -26,6 +26,7 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <set>
 
 namespace GAGCore
 {
@@ -108,6 +109,8 @@ namespace GAGCore
 	public:
 		//! Constructor. Uses backend, but does not delete it
 		TextInputStream(StreamBackend *backend);
+		//! Return all subsections of root
+		void getSubSections(const std::string &root, std::set<std::string> *sections);
 		
 		virtual void read(void *data, size_t size, const char *name);
 		virtual Sint8 readSint8(const char *name) { return static_cast<Sint8>(readFromTable<signed>(name)); }
