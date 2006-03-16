@@ -710,3 +710,9 @@ Press space to continue.
 Please choose
 [GUIMapPreview text 1]
 a map
+[Unit editor]
+Unit editor
+[skin]
+Units type
+[hungryness]
+Units hungryness (set to 0 to disable hunger)

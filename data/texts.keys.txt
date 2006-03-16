@@ -354,3 +354,6 @@
 [press space]
 [GUIMapPreview text 0]
 [GUIMapPreview text 1]
+[Unit editor]
+[skin]
+[hungryness]
