@@ -196,7 +196,7 @@ void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 	
 	if (serverNetProtocolVersion!=NET_PROTOCOL_VERSION || serverConfigCheckSum!=globalContainer->getConfigCheckSum())
 	{
-		fprintf(logFile, " bad serverNetProtocolVersion!=%d or serverNetProtocolVersion!=%08x\n",
+		fprintf(logFile, " bad serverNetProtocolVersion!=%d or serverConfigCheckSum!=%08x\n",
 				NET_PROTOCOL_VERSION, globalContainer->getConfigCheckSum());
 		if (shareOnYog)
 		{
