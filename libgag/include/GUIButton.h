@@ -61,6 +61,7 @@ namespace GAGGUI
 		virtual void paint(void);
 	
 		void setText(const char *text);
+		void setText(const std::string &text) { setText(text.c_str()); }
 	};
 	
 	class OnOffButton:public HighlightableWidget
@@ -123,7 +124,7 @@ namespace GAGGUI
 	class MultiTextButton:public TextButton
 	{
 	protected:
-		std::vector<const char *> texts;
+		std::vector<std::string> texts;
 		unsigned textIndex;
 	
 	public:
@@ -133,12 +134,14 @@ namespace GAGGUI
 	
 		virtual void onSDLEvent(SDL_Event *event);
 		
-		virtual void addText(const char *s);
-		virtual void clearTexts(void);
-		virtual void setTextIndex(int i);
-		virtual void setFirstTextIndex(int i);
-		virtual int getTextIndex(void) { return textIndex; }
-		virtual size_t getTextsSize(void) { return texts.size(); }
+		void addText(const char *s);
+		void addText(const std::string &s) { addText(s.c_str()); }
+		const std::string &getText(void) const { return texts.at(textIndex); }
+		void clearTexts(void);
+		void setIndex(int i);
+		void setIndexFromText(const std::string &s);
+		int getIndex(void) const { return textIndex; }
+		size_t getCount(void) const { return texts.size(); }
 	};
 }
 

@@ -28,6 +28,11 @@ namespace GAGCore
 	class TextInputStream;
 }
 using namespace GAGCore;
+namespace GAGGUI
+{
+	class MultiTextButton;
+}
+using namespace GAGGUI;
 class UnitSkin;
 
 class UnitsSkins
@@ -37,6 +42,7 @@ public:
 	virtual ~UnitsSkins();
 	
 	UnitSkin *getSkin(const std::string &name);
+	void buildSkinsList(MultiTextButton *target) const;
 	
 protected:
 	TextInputStream *stream;

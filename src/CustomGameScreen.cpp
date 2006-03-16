@@ -57,7 +57,7 @@ CustomGameScreen::CustomGameScreen() :
 				aiSelector[i]->addText(Toolkit::getStringTable()->getString("[AI]", aii));
 			addWidget(aiSelector[i]);
 			aiSelector[i]->hide();
-			aiSelector[i]->setFirstTextIndex(AI::NUMBI);
+			aiSelector[i]->setIndex(AI::NUMBI);
 		}
 	}
 }
@@ -143,7 +143,7 @@ bool CustomGameScreen::isAIactive(int i)
 
 AI::ImplementitionID CustomGameScreen::getAiImplementation(int i)
 {
-	return (AI::ImplementitionID)aiSelector[i]->getTextIndex();
+	return (AI::ImplementitionID)aiSelector[i]->getIndex();
 }
 
 int CustomGameScreen::getSelectedColor(int i)

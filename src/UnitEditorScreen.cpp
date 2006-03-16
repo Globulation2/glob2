@@ -20,6 +20,7 @@
 #include "UnitEditorScreen.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include "UnitsSkins.h"
 
 #include <GUIText.h>
 #include <GUITextInput.h>
@@ -38,7 +39,7 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	// parameters
 	int ypos = 50;
 	addWidget(new Text(10, ypos, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[skin]")));
-	skin = new TextInput(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
+	skin = new MultiTextButton(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, NULL, -1, -1, "standard", "", -1);
 	addWidget(skin);
 // 	
 	ypos += 30;
@@ -54,7 +55,8 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	dispatchInit();
 	
 	// change widgets's properties
-	skin->setText(unit->skinName);
+	globalContainer->unitsSkins->buildSkinsList(skin);
+	skin->setIndexFromText(unit->skinName);
 	hungryness->setText(unit->hungryness);
 }
 
@@ -78,12 +80,12 @@ void UnitEditorScreen::onAction(Widget *source, Action action, int par1, int par
 		{
 			endValue = par1;
 		}
-	}
+	}/*
 	if (action==TEXT_ACTIVATED)
 	{
 		if (source==skin)
 			hungryness->deactivate();
 		else if (source==hungryness)
 			skin->deactivate();
-	}
+	}*/
 }
