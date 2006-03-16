@@ -100,7 +100,6 @@ void UnitsSkins::buildSkinsList(MultiTextButton *target) const
 	assert(target);
 	for (std::map<std::string, UnitSkin *>::const_iterator it = unitsSkins.begin(); it != unitsSkins.end(); ++it)
 	{
-		std::cout << "text " << it->first << std::endl;
 		target->addText(it->first);
 	}
 }
