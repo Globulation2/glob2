@@ -715,4 +715,4 @@ Unit editor
 [skin]
 Units type
 [hungryness]
-Units hungryness (set to 0 to disable hunger)
+Units hungryness
