@@ -713,6 +713,6 @@ a map
 [Unit editor]
 Unit editor
 [skin]
-Units type
+Display
 [hungryness]
-Units hungryness
+Hungryness
