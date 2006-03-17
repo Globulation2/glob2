@@ -706,3 +706,9 @@ Appuyer sur espace pour continuer.
 Veuillez choisir
 [GUIMapPreview text 1]
 une carte
+[Unit editor]
+Editeur d'unité
+[skin]
+Affichage
+[hungryness]
+Conso. nourriture
