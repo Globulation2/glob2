@@ -912,7 +912,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 		else if (mx>=116)
 		{
 			// add a team
-			if (game.session.numberOfTeam<32)
+			if (game.session.numberOfTeam<16)
 			{
 				game.addTeam();
 				renderMiniMap();;
