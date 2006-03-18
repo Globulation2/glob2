@@ -1245,7 +1245,6 @@ void Game::removeTeam(void)
 		team->clearMap();
 
 		delete team;
-
 		assert (session.numberOfTeam!=0);
 		for (int i=0; i<session.numberOfTeam; ++i)
 			teams[i]->setCorrectColor(((float)i*360.0f)/(float)session.numberOfTeam);
