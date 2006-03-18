@@ -19,6 +19,8 @@
 
 #include <math.h>
 #include <float.h>
+#include <time.h>
+#include <stdlib.h>
 
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -27,6 +29,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "HeightMapGenerator.h"
+
 
 ///generates a map that is of one type only
 void Map::makeHomogenMap(TerrainType terrainType)
@@ -778,7 +781,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
 	/// grass + sand + water + desert as from the gui
 
-	unsigned int totalGSWFromUI=descriptor.waterRatio+descriptor.sandRatio+descriptor.grassRatio+descriptor.desertRatio;
+	unsigned int totalGSWFromUI=descriptor.waterRatio+descriptor.sandRatio+descriptor.grassRatio+descriptor.desertRatio+descriptor.fruitRatio;
 	HeightMap hm(w,h);
 
 	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
@@ -832,7 +835,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	grassLevel=0;
 	wheatWoodLevel=0;
 	stoneLevel=0;
-	algaeLevel=0;
+	algaeLevel=0;	
 	while ((waterLevel==0) & (i<2048))
 	{
 		accumulatedHistogram+=histogram[i++];
@@ -851,7 +854,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	{
 		accumulatedHistogram+=histogram[i++];
 		if (wheatWoodLevel==0 && accumulatedHistogram >= waterTiles+sandTiles+wheatWoodTiles)
-			wheatWoodLevel = (float)(i-1)/2048.0;
+			wheatWoodLevel = (float)(i-1)/2048.0;		
 		if (stoneLevel==0 && accumulatedHistogram >= waterTiles+sandTiles+(wheatWoodTiles / 3))
 			stoneLevel = (float)(i-1)/2048.0;	
 		if (accumulatedHistogram >= waterTiles+sandTiles+grassTiles)
@@ -949,13 +952,14 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	
 	controlSand();
 	regenerateMap(0, 0, w, h);
-	
+	//now to add primary resources for current map generator
 	for(int x=0; x<w; x++)
 	{
 		for (int y=0; y<h; y++)
 		{
 		if(hm(x+w*y)<algaeLevel)
 			setRessource(x,y, ALGA, 1);
+		//following places stone next to sand & water and keeps wheat & wood more inland without clogging up the interior too badly
 		else if(hm(x+w*y)<wheatWoodLevel)
 			if(hm((x+w/2)%w+w*y)<hm((x+w/2+1)%w+w*y))
 				setRessource(x,y,CORN,1);
@@ -964,7 +968,209 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			setRessource(x,y,STONE,1);
 		}
 	}
-
+	//fruit is special and so is placed seperately
+	if (descriptor.fruitRatio > 0)
+	{
+		srand((unsigned)time(NULL));
+		
+		bool placefruit = false;
+		int x=0;
+		int y=0;
+		int q1=0;
+		int q2=0;
+		int q3=0;
+		int stagger1 = 0;
+		int stagger2 = 0;
+		int grovesize=0;
+		
+		while (placefruit == false)
+		{
+			placefruit = true;
+			for (q1=0; q1<descriptor.fruitRatio; q1++) //counting groves
+			{
+				do//place starter cherry
+				{
+					x=(rand()%w)+1;
+					y=(rand()%h)+1;
+				}
+				while (getUMTerrain(x, y)==WATER);
+				setRessource(x,y,CHERRY,1);
+				grovesize=(rand()%2)+1;
+				grovesize = grovesize + 4; //all groves have 4-6 trees
+				for (q2=0; q2<grovesize; q2++)
+				{
+					q3=0;
+					do//avoid staggering off the grass
+					{
+						q3++;
+						stagger1=0;
+						stagger2=0;
+						stagger1=(rand()%8)+1;
+						switch (stagger1)
+						{
+						case 1: y=y-1;
+						case 2: y=y-1;
+							x=x+1;
+						case 3: x=x+1;
+						case 4: y=y+1;
+							x=x+1;
+						case 5: y=y+1;
+						case 6: y=y+1;
+							x=x-1;
+						case 7: x=x-1;
+						case 8: y=y+1;
+							x=x-1;
+						}
+						do
+						{
+							stagger2=(rand()%8)+1;
+						}
+						while (stagger1 == stagger2); //no staggering back!!!
+						switch (stagger2)
+						{
+						case 1: y=y+1;
+						case 2: y=y+1;
+							x=x-1;
+						case 3: x=x-1;
+						case 4: y=y-1;
+							x=x-1;
+						case 5: y=y-1;
+						case 6: y=y-1;
+							x=x+1;
+						case 7: x=x+1;
+						case 8: y=y-1;
+							x=x+1;
+						}//done staggering
+						if (q3 == 50)
+							placefruit = false;
+							break;//prevent infinite looping in case seed is located in a place grove will not fit
+					}
+					while(getUMTerrain(x, y)==WATER);
+					setRessource(x,y,CHERRY,1);
+				}
+				do//place starter orange
+				{
+					x=(rand()%w)+1;
+					y=(rand()%h)+1;
+				}
+				while (getUMTerrain(x, y)==WATER);
+				setRessource(x,y,ORANGE,1);
+				grovesize=(rand()%2)+1;
+				grovesize = grovesize + 4; //all groves have 4-6 trees
+				for (q2=0; q2<grovesize; q2++)
+				{
+					q3=0;
+					do//avoid staggering off the grass
+					{
+						q3++;
+						stagger1=0;
+						stagger2=0;
+						stagger1=(rand()%8)+1;
+						switch (stagger1)
+						{
+						case 1: y=y-1;
+						case 2: y=y-1;
+							x=x+1;
+						case 3: x=x+1;
+						case 4: y=y+1;
+							x=x+1;
+						case 5: y=y+1;
+						case 6: y=y+1;
+							x=x-1;
+						case 7: x=x-1;
+						case 8: y=y+1;
+							x=x-1;
+						}
+						do
+						{
+							stagger2=(rand()%8)+1;
+						}
+						while (stagger1 == stagger2); //no staggering back!!!
+						switch (stagger2)
+						{
+						case 1: y=y+1;
+						case 2: y=y+1;
+							x=x-1;
+						case 3: x=x-1;
+						case 4: y=y-1;
+							x=x-1;
+						case 5: y=y-1;
+						case 6: y=y-1;
+							x=x+1;
+						case 7: x=x+1;
+						case 8: y=y-1;
+							x=x+1;
+						}//done staggering
+						if (q3 == 50)
+							placefruit = false;
+							break;//prevent infinite looping in case seed is located in a place grove will not fit
+					}
+					while(getUMTerrain(x, y)==WATER);
+					setRessource(x,y,ORANGE,1);
+				}
+				do//place starter prune
+				{
+					x=(rand()%w)+1;
+					y=(rand()%h)+1;
+				}
+				while (getUMTerrain(x, y)==WATER);
+				setRessource(x,y,PRUNE,1);
+				grovesize=(rand()%2)+1;
+				grovesize = grovesize + 4; //all groves have 4-6 trees
+				for (q2=0; q2<grovesize; q2++)
+				{
+					q3=0;
+					do//avoid staggering off the grass
+					{
+						q3++;
+						stagger1=0;
+						stagger2=0;
+						stagger1=(rand()%8)+1;
+						switch (stagger1)
+						{
+						case 1: y=y-1;
+						case 2: y=y-1;
+							x=x+1;
+						case 3: x=x+1;
+						case 4: y=y+1;
+							x=x+1;
+						case 5: y=y+1;
+						case 6: y=y+1;
+							x=x-1;
+						case 7: x=x-1;
+						case 8: y=y+1;
+							x=x-1;
+						}
+						do
+						{
+							stagger2=(rand()%8)+1;
+						}
+						while (stagger1 == stagger2); //no staggering back!!!
+						switch (stagger2)
+						{
+						case 1: y=y+1;
+						case 2: y=y+1;
+							x=x-1;
+						case 3: x=x-1;
+						case 4: y=y-1;
+							x=x-1;
+						case 5: y=y-1;
+						case 6: y=y-1;
+							x=x+1;
+						case 7: x=x+1;
+						case 8: y=y-1;
+							x=x+1;
+						}//done staggering
+						if (q3 == 50)
+							placefruit = false;
+							break;//prevent infinite looping in case seed is located in a place grove will not fit
+					}
+					while(getUMTerrain(x, y)==WATER);
+					setRessource(x,y,PRUNE,1);
+				}
+			}
+		}
+	}
 	if (verbose)
 		printf("makeRandomMap::success\n");
 	return true;
@@ -978,7 +1184,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 	int nbTeams=descriptor.nbTeams;
 	int limiteDist=(w+h)/(2*nbTeams);
 	
-	// let's add ressources...
+	// let's add ressources to old map generator
 	for (int team=0; team<nbTeams; team++)
 	{
 		int smallestWidth=limiteDist;

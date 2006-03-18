@@ -49,6 +49,9 @@ struct Ressource
 #define PAPYRUS 2
 #define STONE 3
 #define ALGA 4
+#define CHERRY 5
+#define ORANGE 6
+#define PRUNE 7
 #define BASIC_COUNT 5
 #define HAPPYNESS_BASE 5
 #define HAPPYNESS_COUNT (MAX_RESSOURCES-BASIC_COUNT)

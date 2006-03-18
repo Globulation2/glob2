@@ -65,7 +65,7 @@ public:
 	Sint32 wDec, hDec;
 	
 	Sint32 waterRatio, sandRatio, grassRatio, desertRatio, wheatRatio,
-		woodRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
+		woodRatio, fruitRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
 	Sint32 oldIslandSize, oldBeach;
 	Sint32 smooth;
 	Sint32 ressource[MAX_NB_RESSOURCES];

@@ -98,6 +98,14 @@ NewMapScreen::NewMapScreen()
 	nbTeams->add(6);
 	nbTeams->add(7);
 	nbTeams->add(8);
+	nbTeams->add(9);
+	nbTeams->add(10);
+	nbTeams->add(11);
+	nbTeams->add(12);
+	nbTeams->add(13);
+	nbTeams->add(14);
+	nbTeams->add(15);
+	nbTeams->add(16);
 	nbTeams->setNth(descriptor.nbTeams-1);
 	nbTeams->visible=false;
 	addWidget(nbTeams);
@@ -118,6 +126,7 @@ NewMapScreen::NewMapScreen()
 	numberOfTeamText=new Text(430, 100, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[number of teams]"));
 	numberOfTeamText->visible=false;
 	addWidget(numberOfTeamText);
+
 	numberOfWorkerText=new Text (430, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[workers]"));
 	numberOfWorkerText->visible=false;
 	addWidget(numberOfWorkerText);
@@ -162,17 +171,22 @@ NewMapScreen::NewMapScreen()
 	stoneRatio->visible=false;
 	addWidget(stoneRatio);
 
-	riverDiameter=new Ratio(310, 320, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.riverDiameter, "menu");
+	fruitRatio=new Ratio(310, 320, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.fruitRatio, "menu");
+	fruitRatio->set(4);
+	fruitRatio->visible=false;
+	addWidget(fruitRatio);
+
+	riverDiameter=new Ratio(310, 340, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.riverDiameter, "menu");
 	riverDiameter->set(50);
 	riverDiameter->visible=false;
 	addWidget(riverDiameter);
 
-	craterDensity=new Ratio(310, 320, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.craterDensity, "menu");
+	craterDensity=new Ratio(310, 340, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.craterDensity, "menu");
 	craterDensity->set(50);
 	craterDensity->visible=false;
 	addWidget(craterDensity);
 
-	extraIslands=new Number(310, 320, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	extraIslands=new Number(310, 340, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	extraIslands->add(0);
 	extraIslands->add(1);
 	extraIslands->add(2);
@@ -186,7 +200,7 @@ NewMapScreen::NewMapScreen()
 	extraIslands->visible=false;
 	addWidget(extraIslands);
  
-	smooth=new Number(310, 340, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	smooth=new Number(310, 360, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	smooth->add(1);
 	smooth->add(2);
 	smooth->add(3);
@@ -226,16 +240,19 @@ NewMapScreen::NewMapScreen()
 	stoneText=new Text(480, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[stone]"));
 	stoneText->visible=false;
 	addWidget(stoneText);
-	riverDiameterText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[river diameter]"));
+	fruitText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("fruit"));
+	fruitText->visible=false;
+	addWidget(fruitText);
+	riverDiameterText=new Text(480, 340, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[river diameter]"));
 	riverDiameterText->visible=false;
 	addWidget(riverDiameterText);
-	craterDensityText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[crater density]"));
+	craterDensityText=new Text(480, 340, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[crater density]"));
 	craterDensityText->visible=false;
 	addWidget(craterDensityText);
-	extraIslandsText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[extra islands]"));
+	extraIslandsText=new Text(480, 340, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[extra islands]"));
 	extraIslandsText->visible=false;
 	addWidget(extraIslandsText);
-	smoothingText=new Text(480, 340, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
+	smoothingText=new Text(480, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
 	smoothingText->visible=false;
 	addWidget(smoothingText);
 	
@@ -327,6 +344,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				oldBeach->visible=oldBeachSizeText->visible=
 				oldIslandSize->visible=oldIslandSizeText->visible=
 				riverDiameter->visible=riverDiameterText->visible=
+				fruitRatio->visible=fruitText->visible=
 				false;
 			
 				// not eUNIFORM
@@ -349,6 +367,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						woodRatio->visible=woodText->visible=
 						stoneRatio->visible=stoneText->visible=
 						algaeRatio->visible=algaeText->visible=
+						fruitRatio->visible=fruitText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eRIVER:
@@ -363,6 +382,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						stoneRatio->visible=stoneText->visible=
 						algaeRatio->visible=algaeText->visible=
 						riverDiameter->visible=riverDiameterText->visible=
+						fruitRatio->visible=fruitText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eISLANDS:
@@ -377,6 +397,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						stoneRatio->visible=stoneText->visible=
 						algaeRatio->visible=algaeText->visible=
 						extraIslands->visible=extraIslandsText->visible=
+						fruitRatio->visible=fruitText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eCRATERLAKES:
@@ -391,6 +412,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						stoneRatio->visible=stoneText->visible=
 						algaeRatio->visible=algaeText->visible=
 						craterDensity->visible=craterDensityText->visible=
+						fruitRatio->visible=fruitText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eOLDRANDOM:
@@ -425,6 +447,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.woodRatio=woodRatio->get();
 		descriptor.algaeRatio=algaeRatio->get();
 		descriptor.stoneRatio=stoneRatio->get();
+		descriptor.fruitRatio=fruitRatio->get();
 		descriptor.riverDiameter=riverDiameter->get();
 		descriptor.craterDensity=craterDensity->get();
 		descriptor.extraIslands=extraIslands->get();

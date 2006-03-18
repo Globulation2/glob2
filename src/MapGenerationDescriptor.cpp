@@ -45,6 +45,7 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	craterDensity=50;
 	extraIslands=0;
 	smooth=4;
+	fruitRatio=4;
 	
 	oldIslandSize=50;
 	oldBeach=1;	
@@ -81,7 +82,7 @@ Uint8 *MapGenerationDescriptor::getData()
 	addSint32(data, wheatRatio, 32);
 	addSint32(data, woodRatio, 36);
 	addSint32(data, algaeRatio, 40);
-	addSint32(data, stoneRatio, 44);
+	addSint32(data, stoneRatio, 44);	
 	addSint32(data, riverDiameter, 48);
 	
 	addSint32(data, craterDensity, 52);
@@ -97,9 +98,10 @@ Uint8 *MapGenerationDescriptor::getData()
 	
 	addUint32(data, oldIslandSize, 84);
 	addUint32(data, oldBeach, 88);
+	addUint32(data, fruitRatio, 92);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		addSint32(data, ressource[i], 84+i*4);
+		addSint32(data, ressource[i], 96+i*4);
 
 	return data;
 }
@@ -140,9 +142,11 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	
 	oldIslandSize=getSint32(data, 84);
 	oldBeach=getSint32(data, 88);
+	
+	fruitRatio = getSint32(data, 92);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		ressource[i]=getSint32(data, 84+i*4);
+		ressource[i]=getSint32(data, 96+i*4);
 
 	bool good=true;
 	if (getDataLength()!=dataLength)
@@ -208,6 +212,8 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs ^= desertRatio;
 	cs=(cs<<31)|(cs>>1);
 	cs ^= wheatRatio;
+	cs=(cs<<31)|(cs>>1);
+	cs ^= fruitRatio;
 	cs=(cs<<31)|(cs>>1);
 	cs ^= woodRatio;
 	cs=(cs<<31)|(cs>>1);
