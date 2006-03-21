@@ -60,8 +60,9 @@ Engine::~Engine()
 	fprintf(logFile, "\n");
 	if (cpuSumCountStats)
 	{
+		fprintf(logFile, "cpuSumCountStats = %d\n", cpuSumCountStats);
 		double averageCupUsage = (double)cpuSumStats / (double)cpuSumCountStats;
-		fprintf(logFile, "averageCpuUsage = %d%%\n", (int)((double)2.5 * averageCupUsage));
+		fprintf(logFile, "averageCpuUsage = %lf%%\n", (double)2.5 * averageCupUsage);
 	}
 	fprintf(logFile, "cpu usage stats:\n");
 	for (int i=0; i<=40; i++)
@@ -486,8 +487,11 @@ int Engine::run(void)
 				if (networkReadyToExecute && !gui.gamePaused)
 				{
 					Sint32 i = computationAvailableTicks;
-					cpuSumStats += 40 - computationAvailableTicks;
-					cpuSumCountStats++;
+					if (cpuSumCountStats < (unsigned)-1)
+					{
+						cpuSumStats += 40 - computationAvailableTicks;
+						cpuSumCountStats++;
+					}
 					if (i<0)
 						i=0;
 					else if (i>=40)
