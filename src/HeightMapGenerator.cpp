@@ -181,7 +181,7 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 		bool foundSpot=false;
 		unsigned int tries = 0;
 		int newPosX, newPosY;
-		while (!foundSpot && tries<count*count*_w*_h)
+		do
 		{
 			newPosX=rand()%_w;
 			newPosY=rand()%_h;
@@ -190,7 +190,7 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 			for (unsigned int j=0; j<i; j++)
 				if(abs(newPosX-centerX[j])<mindist || abs(newPosY-centerY[j]) < mindist || (_w-abs(newPosX-centerX[j]))<mindist || (_h-abs(newPosY-centerY[j])) < mindist)
 					foundSpot=false;
-		}
+		} while (!foundSpot && tries<count*count*_w*_h);
 		if(!foundSpot)
 		{
 			std::cout <<count << " " << mindist << " " << tries << " " << newPosX << "/" << newPosY << " " << i << "\n";
