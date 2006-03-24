@@ -2188,10 +2188,9 @@ template<typename Tint> void Map::updateGlobalGradientSlow(Uint8 *gradient)
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite = 0;
 	// make the first list:
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-			if (gradient[(y << wDec) | x] >= 3)
-				listedAddr[listCountWrite++] = (y << wDec) | x;
+	for (size_t i = 0; i < size; i++)
+		if (gradient[i] >= 3)
+			listedAddr[listCountWrite++] = i;
 	updateGlobalGradient(gradient, listedAddr, listCountWrite);
 	delete[] listedAddr;
 }
