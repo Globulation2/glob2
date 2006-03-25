@@ -173,6 +173,7 @@ GameGUI::~GameGUI()
 
 void GameGUI::init()
 {
+	notmenu = false;
 	isRunning=true;
 	gamePaused=false;
 	hardPause=false;
@@ -885,10 +886,12 @@ void GameGUI::processEvent(SDL_Event *event)
 	// if there is a menu he get events first
 	if (inGameMenu)
 	{
+		notmenu=true;
 		processGameMenu(event);
 	}
 	else
 	{
+		notmenu=false;
 		if (scrollableText)
 		{
 			processScrollableWidget(event);
@@ -1378,42 +1381,45 @@ void GameGUI::handleKeyAlways(void)
 {
 	SDL_PumpEvents();
 	Uint8 *keystate = SDL_GetKeyState(NULL);
-
-	if (keystate[SDLK_UP])
-		viewportY--;
-	if (keystate[SDLK_KP8])
-		viewportY--;
-	if (keystate[SDLK_DOWN])
-		viewportY++;
-	if (keystate[SDLK_KP2])
-		viewportY++;
-	if ((keystate[SDLK_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
-		viewportX--;
-	if (keystate[SDLK_KP4])
-		viewportX--;
-	if ((keystate[SDLK_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
-		viewportX++;
-	if (keystate[SDLK_KP6])
-		viewportX++;
-	if (keystate[SDLK_KP7])
+	//donkyhotay notes: must filter out panning while within menu system
+	if (notmenu == false)
 	{
-		viewportX--;
-		viewportY--;
-	}
-	if (keystate[SDLK_KP9])
-	{
-		viewportX++;
-		viewportY--;
-	}
-	if (keystate[SDLK_KP1])
-	{
-		viewportX--;
-		viewportY++;
-	}
-	if (keystate[SDLK_KP3])
-	{
-		viewportX++;
-		viewportY++;
+		if (keystate[SDLK_UP])
+			viewportY--;
+		if (keystate[SDLK_KP8])
+			viewportY--;
+		if (keystate[SDLK_DOWN])
+			viewportY++;
+		if (keystate[SDLK_KP2])
+			viewportY++;
+		if ((keystate[SDLK_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+			viewportX--;
+		if (keystate[SDLK_KP4])
+			viewportX--;
+		if ((keystate[SDLK_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+			viewportX++;
+		if (keystate[SDLK_KP6])
+			viewportX++;
+		if (keystate[SDLK_KP7])
+		{
+			viewportX--;
+			viewportY--;
+		}
+		if (keystate[SDLK_KP9])
+		{
+			viewportX++;
+			viewportY--;
+		}
+		if (keystate[SDLK_KP1])
+		{
+			viewportX--;
+			viewportY++;
+		}
+		if (keystate[SDLK_KP3])
+		{
+			viewportX++;
+			viewportY++;
+		}
 	}
 }
 
