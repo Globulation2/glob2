@@ -803,7 +803,8 @@ void Unit::handleMedical(void)
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 				
 			// generate death animation
-			owner->map->getSector(posX, posY)->deathAnimations.push_back(new UnitDeathAnimation(posX, posY, owner));
+			if (!globalContainer->runNoX)
+				owner->map->getSector(posX, posY)->deathAnimations.push_back(new UnitDeathAnimation(posX, posY, owner));
 		}
 		isDead = true;
 	}
@@ -2724,16 +2725,21 @@ void Unit::incrementExperience(int increment)
 //! Compute the skin pointer from a skin name
 void Unit::skinPointerFromName(void)
 {
-	skin = globalContainer->unitsSkins->getSkin(skinName);
-	if (skin == NULL)
+	if (!globalContainer->runNoX)
 	{
-		// if skin is invalid, retry with default
-		std::cerr << "Unit::skinPointerFromName : invalid skin name " << skinName << std::endl;
-		defaultSkinNameFromType();
 		skin = globalContainer->unitsSkins->getSkin(skinName);
-		if (!skin)
-			abort();
+		if (skin == NULL)
+		{
+			// if skin is invalid, retry with default
+			std::cerr << "Unit::skinPointerFromName : invalid skin name " << skinName << std::endl;
+			defaultSkinNameFromType();
+			skin = globalContainer->unitsSkins->getSkin(skinName);
+			if (!skin)
+				abort();
+		}
 	}
+	else
+		skin = NULL;
 }
 
 //! Compute the skin name from the unit type

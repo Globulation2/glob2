@@ -71,7 +71,7 @@ public:
 		std::string diffusion;
 		std::string message;
 		
-		ChatMessage::ChatMessage() { source[0] = 0; diffusion[0] = 0; message[0] = 0; }
+		ChatMessage() { source[0] = 0; diffusion[0] = 0; message[0] = 0; }
 	};
 
 	struct InfoMessage
@@ -81,7 +81,7 @@ public:
 		std::string diffusion;
 		std::string message;
 		
-		InfoMessage::InfoMessage(InfoMessageType t) { type=t; source[0] = 0; diffusion[0] = 0; message[0] = 0; }
+		InfoMessage(InfoMessageType t) { type=t; source[0] = 0; diffusion[0] = 0; message[0] = 0; }
 	};
 
 protected:
