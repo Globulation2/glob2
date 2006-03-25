@@ -58,27 +58,34 @@ Engine::Engine()
 Engine::~Engine()
 {
 	fprintf(logFile, "\n");
-	if (cpuSumCountStats)
+	if (globalContainer->runNoX)
 	{
-		fprintf(logFile, "cpuSumCountStats = %d\n", cpuSumCountStats);
-		double averageCupUsage = (double)cpuSumStats / (double)cpuSumCountStats;
-		fprintf(logFile, "averageCpuUsage = %lf%%\n", (double)2.5 * averageCupUsage);
+		fprintf(logFile, "nox:cpuSumCountStats = %d\n", cpuSumCountStats);
 	}
-	fprintf(logFile, "cpu usage stats:\n");
-	for (int i=0; i<=40; i++)
-		fprintf(logFile, "%3d.%1d %% = %d\n", 100-(i*5)/2, (i&1)*5, cpuStats[i]);
-	int sum=0;
-	for (int i=0; i<=40; i++)
-		sum+=cpuStats[i];
-	fprintf(logFile, "cpu usage graph:\n");
-	for (int i=0; i<=40; i++)
+	else
 	{
-		fprintf(logFile, "%3d.%1d %% | ", 100-(i*5)/2, (i&1)*5);
-		double ratio=100.*(double)cpuStats[i]/(double)sum;
-		int jmax=(int)(ratio+0.5);
-		for (int j=0; j<jmax; j++)
-			fprintf(logFile, "*");
-		fprintf(logFile, "\n");
+		if (cpuSumCountStats)
+		{
+			fprintf(logFile, "cpuSumCountStats = %d\n", cpuSumCountStats);
+			double averageCupUsage = (double)cpuSumStats / (double)cpuSumCountStats;
+			fprintf(logFile, "averageCpuUsage = %lf%%\n", (double)2.5 * averageCupUsage);
+		}
+		fprintf(logFile, "cpu usage stats:\n");
+		for (int i=0; i<=40; i++)
+			fprintf(logFile, "%3d.%1d %% = %d\n", 100-(i*5)/2, (i&1)*5, cpuStats[i]);
+		int sum=0;
+		for (int i=0; i<=40; i++)
+			sum+=cpuStats[i];
+		fprintf(logFile, "cpu usage graph:\n");
+		for (int i=0; i<=40; i++)
+		{
+			fprintf(logFile, "%3d.%1d %% | ", 100-(i*5)/2, (i&1)*5);
+			double ratio=100.*(double)cpuStats[i]/(double)sum;
+			int jmax=(int)(ratio+0.5);
+			for (int j=0; j<jmax; j++)
+				fprintf(logFile, "*");
+			fprintf(logFile, "\n");
+		}
 	}
 
 	if (net)
@@ -372,6 +379,8 @@ int Engine::run(void)
 	{
 		globalContainer->mix->setNextTrack(2, true);
 	}
+	if (globalContainer->runNoX)
+		printf("nox::game started\n");
 	
 	while (doRunOnceAgain)
 	{
@@ -458,7 +467,12 @@ int Engine::run(void)
 					gui.game.syncStep(gui.localTeamNo);
 			}
 
-			if (!globalContainer->runNoX)
+			if (globalContainer->runNoX)
+			{
+				if (cpuSumCountStats < (unsigned)-1)
+					cpuSumCountStats++;
+			}
+			else
 			{
 				// we draw
 				gui.drawAll(gui.localTeamNo);

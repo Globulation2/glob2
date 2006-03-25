@@ -106,7 +106,7 @@ public:
 	RessourcesTypes ressourcesTypes;
 
 	bool runNoX;
-	char runNoXGameName[32];
+	std::string runNoXGameName;
 	
 	bool hostServer;
 	char hostServerMapName[32];

@@ -66,7 +66,6 @@ GlobalContainer::GlobalContainer(void)
 	settings.load();
 	userName = settings.username.c_str();
 	runNoX = false;
-	runNoXGameName[0] = 0;
 	
 	hostServer = false;
 	hostServerMapName[0] = 0;
@@ -136,7 +135,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			if (i+1<argc)
 			{
-				strncpy(runNoXGameName, argv[i+1], 32);
+				runNoXGameName = argv[i+1];
 				runNoX = true;
 				i++;
 			}
