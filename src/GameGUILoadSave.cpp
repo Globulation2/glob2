@@ -31,7 +31,7 @@ class FuncFileList: public FileList
 {
 
 public:
-	FuncFileList::FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
+	FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
 		const char *dir, const char *extension, const bool recurse, 
 		std::string (*filenameToNameFunc)(const char *filename),
 		std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
@@ -41,16 +41,16 @@ public:
 		this->generateList();
 	}
 	
-	FuncFileList::~FuncFileList()
+	~FuncFileList()
 	{}
 
 private:
-	std::string FuncFileList::fileToList(const char* fileName) const
+	std::string fileToList(const char* fileName) const
 	{
 		return filenameToNameFunc(fullName(fileName).c_str());
 	}
 	
-	std::string FuncFileList::listToFile(const char* listName) const
+	std::string listToFile(const char* listName) const
 	{
 		return nameToFilenameFunc(fullDir().c_str(), listName, extension.c_str());
 	}

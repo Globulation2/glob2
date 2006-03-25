@@ -64,7 +64,7 @@ protected:
 
 protected:
 	//! resort players
-	void EndGameScreen::sortAndSet(EndOfGameStat::Type type);
+	void sortAndSet(EndOfGameStat::Type type);
 	
 public:
 	EndGameScreen(GameGUI *gui);
