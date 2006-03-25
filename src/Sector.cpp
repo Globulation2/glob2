@@ -158,12 +158,15 @@ void Sector::step(void)
 				}
 			}
 			
-			// create new explosion
-			BulletExplosion *explosion = new BulletExplosion();
-			explosion->x = bullet->targetX;
-			explosion->y = bullet->targetY;
-			explosion->ticksLeft = globalContainer->bulletExplosion->getFrameCount();
-			explosions.push_front(explosion);
+			if (!globalContainer->runNoX)
+			{
+				// create new explosion
+				BulletExplosion *explosion = new BulletExplosion();
+				explosion->x = bullet->targetX;
+				explosion->y = bullet->targetY;
+				explosion->ticksLeft = globalContainer->bulletExplosion->getFrameCount();
+				explosions.push_front(explosion);
+			}
 
 			// remove bullet
 			delete bullet;
