@@ -27,6 +27,7 @@
 
 #include <GAGSys.h>
 #include "UnitConsts.h"
+#include "Ressource.h"
 
 #define LEVEL_UP_ANIMATION_FRAME_COUNT 20
 #define MAGIC_ACTION_ANIMATION_FRAME_COUNT 8
@@ -242,7 +243,18 @@ public:
 	// gui
 	int levelUpAnimation;
 	int magicActionAnimation;
+	
+public:
+	// optimisation cached values
+	int stepsLeftUntilHungry;
+	int minDistToResource[MAX_RESSOURCES];
+	bool allResourcesAreTooFar;
 
+public:
+	// computing optimisation cached values
+	int numberOfStepsLeftUntilHungry(void);
+	void computeMinDistToResources(void);
+	
 public:
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
