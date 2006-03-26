@@ -838,13 +838,9 @@ void Unit::handleActivity(void)
 				Building *b=owner->findBestFoodable(this);
 
 				int dist;
+				int timeLeft = numberOfStepsLeftUntilHungry();
 				// Is there a building we can reach in time?
-				int timeLeft;
-				if (hungryness)
-					timeLeft = (hungry-trigHungry) / hungryness;
-				else
-					timeLeft = INT_MAX;
-				if (b!=NULL && owner->map->buildingAvailable(b, performance[SWIM], posX, posY, &dist) && dist<timeLeft)
+				if (b!=NULL && owner->map->buildingAvailable(b, performance[SWIM], posX, posY, &dist) && dist < timeLeft)
 				{
 					bool canSubscribe=(caryedRessource>=0) && b->neededRessource(caryedRessource);
 
@@ -1289,11 +1285,7 @@ void Unit::handleDisplacement(void)
 					if (ressourceToTake>=0)
 					{
 						int foreignBuildingDist;
-						int timeLeft;
-						if (hungryness)
-							timeLeft = (hungry-trigHungry) / hungryness;
-						else
-							timeLeft = INT_MAX;
+						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (owner->map->buildingAvailable(foreingExchangeBuilding, performance[SWIM], posX, posY, &foreignBuildingDist)
 							&& (foreignBuildingDist<(timeLeft>>1)))
 						{
@@ -1404,13 +1396,8 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->wishedRessources(needs);
 						int teamNumber=owner->teamNumber;
 						bool canSwim=performance[SWIM];
-						int timeLeft;
-						if (hungryness)
-							timeLeft = (hungry-trigHungry) / hungryness;
-						else
-							timeLeft = INT_MAX;
-						
-						if (timeLeft>0)
+						int timeLeft = numberOfStepsLeftUntilHungry();
+						if (timeLeft > 0)
 						{
 							int bestRessource=-1;
 							int minValue=owner->map->getW()+owner->map->getW();
@@ -2742,6 +2729,7 @@ void Unit::skinPointerFromName(void)
 		skin = NULL;
 }
 
+
 //! Compute the skin name from the unit type
 void Unit::defaultSkinNameFromType(void)
 {
@@ -2752,6 +2740,32 @@ void Unit::defaultSkinNameFromType(void)
 		case WARRIOR: skinName = "warrior"; break;
 		default: assert(false); break;
 	}
+}
+
+//! Return how many steps we can do until we are hungry
+int Unit::numberOfStepsLeftUntilHungry(void)
+{
+	int timeLeft;
+	if (hungryness)
+		timeLeft = (hungry-trigHungry) / hungryness;
+	else
+		timeLeft = INT_MAX;
+	stepsLeftUntilHungry = timeLeft;
+	return timeLeft;
+}
+
+//! Iterate on all resource types to see if it is gettable
+void Unit::computeMinDistToResources(void)
+{
+	bool allResourcesAreTooFar = true;
+	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
+		if (!owner->map->ressourceAvailable(owner->teamNumber, ri, performance[SWIM], posX, posY, &minDistToResource[ri]))
+			minDistToResource[ri] = -1;
+		else if (minDistToResource[ri] < stepsLeftUntilHungry)
+			allResourcesAreTooFar = false;
+	// the dist to an already carried resource is zero
+	if (caryedRessource >= 0)
+		minDistToResource[caryedRessource] = 0;
 }
 
 void Unit::integrity()

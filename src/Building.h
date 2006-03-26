@@ -59,6 +59,13 @@ public:
 		UPGRADE=2,
 		REPAIR=3
 	};
+	
+	enum MatchPriority
+	{
+		MP_LOW    = 0x10000000,
+		MP_MEDIUM = 0x20000000,
+		MP_HIGH   = 0x30000000,
+	};
 
 	// type
 	Sint32 typeNum; // number in BuildingTypes
@@ -79,6 +86,7 @@ public:
 	std::list<Unit *> unitsInside;
 	std::list<Unit *> unitsInsideSubscribe;
 	Sint32 subscriptionInsideTimer;
+	MatchPriority matchPriority;
 	
 	// optimisation and consistency
 	// Included in {0: unknow, 1:allready in owner-><same name>, 2:not in owner-><same name>
@@ -111,6 +119,7 @@ public:
 	// Building specific :
 	/// Ammount stocked, or used for building building.
 	Sint32 ressources[MAX_NB_RESSOURCES];
+	Sint32 wishedResources[MAX_NB_RESSOURCES];
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
@@ -160,6 +169,7 @@ public:
 	int neededRessource(void);
 	void neededRessources(int needs[MAX_NB_RESSOURCES]);
 	void wishedRessources(int needs[MAX_NB_RESSOURCES]);
+	void computeWishedRessources();
 	int neededRessource(int r);
 	void launchConstruction(void);
 	void cancelConstruction(void);
