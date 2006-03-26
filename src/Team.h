@@ -169,6 +169,7 @@ public:
 	// Pathfinding related methods:
 	void computeForbiddenArea();
 	void dirtyGlobalGradient();
+	void dirtyWarFlagGradient();
 	
 	//! Compute team checksum
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
