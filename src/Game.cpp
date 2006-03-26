@@ -1215,6 +1215,12 @@ void Game::syncStep(Sint32 localTeam)
 	}
 }
 
+void Game::dirtyWarFlagGradient(void)
+{
+	for (int i=0; i<session.numberOfTeam; i++)
+		teams[i]->dirtyWarFlagGradient();
+}
+
 void Game::addTeam(void)
 {
 	if (session.numberOfTeam<32)

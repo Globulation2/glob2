@@ -107,6 +107,8 @@ public:
 	void clearEventsStep(void);
 	//! called by gui, execute a step for this game. The gui parameter is for the script
 	void syncStep(Sint32 localTeam);
+	
+	void dirtyWarFlagGradient();
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator

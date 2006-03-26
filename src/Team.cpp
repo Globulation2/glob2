@@ -1518,10 +1518,10 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
 		if ((*it)->tryToBuildingSiteRoom())
-	{
-		std::list<Building *>::iterator ittemp=it;
-		it=buildingsTryToBuildingSiteRoom.erase(ittemp);
-	}
+		{
+			std::list<Building *>::iterator ittemp=it;
+			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
+		}
 
 	//printf("subscribeForInside.size()=%d\n", subscribeForInside.size());
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
@@ -1530,11 +1530,11 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
 		if ((*it)->unitsInsideSubscribe.empty())
-	{
-		(*it)->subscribeForInside=2;
-		std::list<Building *>::iterator ittemp=it;
-		it=subscribeForInside.erase(ittemp);
-	}
+		{
+			(*it)->subscribeForInside=2;
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeForInside.erase(ittemp);
+		}
 
 	//subscribeToBringRessourcesStep
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
@@ -1543,11 +1543,11 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
-	{
-		(*it)->subscribeToBringRessources=2;
-		std::list<Building *>::iterator ittemp=it;
-		it=subscribeToBringRessources.erase(ittemp);
-	}
+		{
+			(*it)->subscribeToBringRessources=2;
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeToBringRessources.erase(ittemp);
+		}
 
 	//subscribeForFlagingStep
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
@@ -1556,20 +1556,20 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
 		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
-	{
-		(*it)->subscribeForFlaging=2;
-		std::list<Building *>::iterator ittemp=it;
-		it=subscribeForFlaging.erase(ittemp);
-	}
+		{
+			(*it)->subscribeForFlaging=2;
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeForFlaging.erase(ittemp);
+		}
 
 	bool isEnoughFoodInSwarm=false;
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
-	{
-		if (!(*it)->locked[1] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
-			isEnoughFoodInSwarm=true;
-		(*it)->swarmStep();
-	}
+		{
+			if (!(*it)->locked[1] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
+				isEnoughFoodInSwarm=true;
+			(*it)->swarmStep();
+		}
 
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep();
@@ -1622,6 +1622,7 @@ void Team::checkControllingPlayers(void)
 
 void Team::dirtyGlobalGradient()
 {
+	game->dirtyWarFlagGradient();
 	for (int id=0; id<1024; id++)
 	{
 		Building *b=myBuildings[id];
@@ -1629,7 +1630,7 @@ void Team::dirtyGlobalGradient()
 			for (int canSwim=0; canSwim<2; canSwim++)
 				if (b->globalGradient[canSwim])
 				{
-			//printf("freeing globalGradient for gbid=%d (%p)\n", b->gid, b->globalGradient[canSwim]);
+					//printf("freeing globalGradient for gbid=%d (%p)\n", b->gid, b->globalGradient[canSwim]);
 					delete[] b->globalGradient[canSwim];
 					b->globalGradient[canSwim]=NULL;
 					b->locked[canSwim]=false;
@@ -1637,8 +1638,21 @@ void Team::dirtyGlobalGradient()
 	}
 }
 
-
-
+void Team::dirtyWarFlagGradient()
+{
+	for (std::list<Building *>::const_iterator it = virtualBuildings.begin(); it != virtualBuildings.end(); ++it)
+	{
+		Building *b = *it;
+		if (b->type->zonable[WARRIOR])
+			for (int canSwim=0; canSwim<2; canSwim++)
+				if (b->globalGradient[canSwim])
+				{
+					delete[] b->globalGradient[canSwim];
+					b->globalGradient[canSwim]=NULL;
+					b->locked[canSwim]=false;
+				}
+	}
+}
 
 Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
 {

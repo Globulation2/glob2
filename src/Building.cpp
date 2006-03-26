@@ -2098,6 +2098,9 @@ void Building::kill(void)
 	if (!type->isVirtual)
 	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
+		owner->dirtyGlobalGradient();
+		owner->map->updateForbiddenGradient(owner->teamNumber);
+		owner->map->updateGuardAreasGradient(owner->teamNumber);
 		if (type->isBuildingSite && type->level==0)
 		{
 			bool good=false;
