@@ -421,6 +421,15 @@ public:
 	//! Transform coordinate from building (px,py) to screen (mx,my)
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
 	
+	enum GradientType
+	{
+		GT_UNDEFINED = 0,
+		GT_RESOURCE = 1,
+		GT_BUILDING = 2,
+		GT_FORBIDDEN = 3,
+		GT_GUARD_AREA = 4
+	};
+	
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
@@ -437,7 +446,12 @@ public:
 	
 	void updateGlobalGradientSlow(Uint8 *gradient);
 	template<typename Tint> void updateGlobalGradientSlow(Uint8 *gradient);
-	template<typename Tint> void updateGlobalGradient(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
+	
+	template<typename Tint> void updateGlobalGradientVersionSimple(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
+	template<typename Tint> void updateGlobalGradientVersionSimon(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
+	template<typename Tint> void updateGlobalGradientVersionKai(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
+	template<typename Tint> void updateGlobalGradient(
+		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim);
 	//void updateGlobalGradientSmall(Uint8 *gradient);
 	//void updateGlobalGradientBig(Uint8 *gradient);
 	//void updateGlobalGradient(Uint8 *gradient);
