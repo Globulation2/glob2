@@ -166,14 +166,14 @@ dels teus globuls
 
 [exploration flag explanation 2]
 exploradors a l'area seleccionada
-[war flag explanation]
-guerrers a l'area seleccionada
-[clearing flag explanation]
-perque netegin l'area seleccionada
-[stone wall explanation]
-dificultant els seus atacs
-[market explanation]
-els teus aliats
+[war flag explanation 2]
+
+[clearing flag explanation 2]
+
+[stone wall explanation 2]
+element
+[market explanation 2]
+fruits amb altres
 [waiting for %s]
 Esperant a %s
 [%s has left the game]
@@ -251,7 +251,7 @@ Nom del jugador
 [svr hostname]
 Nom del servidor
 [hp]
-Punts Vida
+Vida
 [carry]
 Transport :
 [don't carry anything]
@@ -347,9 +347,9 @@ El mercat està sent atacat
 [Your %s are under attack]
 El teu %s  està sent atacat
 [Your unit got converted to %s's team]
-La teva unitat s'ha passat a %s
+Una unitat teva s'ha convertit a l'equip de %s
 [%s's team unit got converted to your team]
-La unitat %s s'ha passat al teu equip
+Una unitat de %s s'ha convertit al teu equip
 [Uncontrolled]
 No Controlat
 [ai]
@@ -402,16 +402,16 @@ Recolectar
 At. velocitat
 [At. strength]
 At. força
+[Magic At. Air]
+dany aeri
+[Magic At. Ground]
+dany terrestre
 [Total]
 Total
 [free]
-desocupats
+desocupat
 [seeking]
 Buscant
-[Free]
-lliures
-[seeking]
-esperant
 [Free]
 lliures
 [hungry]
@@ -672,3 +672,35 @@ Esborra la partida seleccionada
 Qualsevol Explorador
 [ground attack]
 Attac en terra
+[Can't join game, wrong game version]
+No pots unirte a la partida, la versió no es correcte
+[Can't join game, missmatching game parameters]
+No pots unirte a la partida, falten parametres
+[Can't join game, timeout]
+No pots unirte a la partida, el servidor no respon
+[swamp terrain]
+pantà
+[river terrain]
+riu
+[crater lakes terrain]
+llac cràter
+[old random terrain]
+vell terreny aleatori
+[old islands terrain]
+vell terreny d'illa
+[desert]
+desert
+[algae]
+algues
+[wheat]
+blat
+[wood]
+fusta
+[stone]
+pedra
+[river diameter]
+ample de riu
+[extra islands]
+illes buides
+[crater density]
+densitat del cràter
