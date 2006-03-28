@@ -2191,20 +2191,12 @@ template<typename Tint> void Map::updateGlobalGradientSlow(Uint8 *gradient)
 	for (size_t i = 0; i < size; i++)
 		if (gradient[i] >= 3)
 			listedAddr[listCountWrite++] = i;
-	updateGlobalGradient(gradient, listedAddr, listCountWrite);
+	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_UNDEFINED, true);
 	delete[] listedAddr;
 }
 
-template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
+template<typename Tint> void Map::updateGlobalGradientVersionSimple(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
 {
-	//Tint *listedAddr = new Tint[size];
-	//size_t listCountWrite = 0;
-	// make the first list:
-	//for (int y = 0; y < h; y++)
-	//	for (int x = 0; x < w; x++)
-	//		if (gradient[(y << wDec) | x] >= 3)
-	//			listedAddr[listCountWrite++] = (y << wDec) | x;
-	
 	size_t listCountRead = 0;
 	while (listCountRead < listCountWrite)
 	{
@@ -2222,11 +2214,6 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 		if (g <= 2)
 			continue;
 		
-		#define GLOB2_SIMPLE_GRADIENT_COMPUTE
-		//#define GLOB2_SIMON_GRADIENT_COMPUTE
-		//#define GLOB2_KAI_GRADIENT_COMPUTE
-		
-		#ifdef GLOB2_SIMPLE_GRADIENT_COMPUTE
 		size_t deltaAddrC[8];
 		Uint8 *addr;
 		Uint8 side;
@@ -2249,9 +2236,29 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 				listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 			}
 		}
-		#endif
+	}
+	//assert(listCountWrite<=size);
+}
+
+template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
+{
+	size_t listCountRead = 0;
+	while (listCountRead < listCountWrite)
+	{
+		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
 		
-		#ifdef GLOB2_SIMON_GRADIENT_COMPUTE
+		size_t y = deltaAddrG >> wDec;
+		size_t x = deltaAddrG & wMask;
+		
+		size_t yu = ((y - 1) & hMask);
+		size_t yd = ((y + 1) & hMask);
+		size_t xl = ((x - 1) & wMask);
+		size_t xr = ((x + 1) & wMask);
+		
+		Uint8 g = gradient[(y << wDec) | x] - 1;
+		if (g <= 2)
+			continue;
+		
 		Uint32 flag = 0;
 		Uint8 *addr;
 		Uint8 side;
@@ -2272,7 +2279,7 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 					*addr = g;
 					listedAddr[listCountWrite++] = deltaAddrC[ci];
 				}
-				else
+				else if (side == 0)
 					flag |= diagFlags[ci];
 			}
 		}
@@ -2296,9 +2303,29 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 				flag >>= 1;
 			}
 		}
-		#endif
+	}
+	//assert(listCountWrite<=size);
+}
+
+template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
+{
+	size_t listCountRead = 0;
+	while (listCountRead < listCountWrite)
+	{
+		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
 		
-		#ifdef GLOB2_KAI_GRADIENT_COMPUTE
+		size_t y = deltaAddrG >> wDec;
+		size_t x = deltaAddrG & wMask;
+		
+		size_t yu = ((y - 1) & hMask);
+		size_t yd = ((y + 1) & hMask);
+		size_t xl = ((x - 1) & wMask);
+		size_t xr = ((x + 1) & wMask);
+		
+		Uint8 g = gradient[(y << wDec) | x] - 1;
+		if (g <= 2)
+			continue;
+		
 		Uint32 flag = 0;
 		Uint8 *addr;
 		Uint8 side;
@@ -2346,125 +2373,15 @@ template<typename Tint> void Map::updateGlobalGradient(Uint8 *gradient, Tint *li
 				flag >>= 1;
 			}
 		}
-		#endif
 	}
 	//assert(listCountWrite<=size);
 }
 
-/*void Map::updateGlobalGradientSmall(Uint8 *gradient)
+template<typename Tint> void Map::updateGlobalGradient(
+	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	Uint16 *listedAddr = new Uint16[size];
-	size_t listCountWrite = 0;
-	
-	// make the first list:
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-			if (gradient[(y << wDec) | x] >= 3)
-				listedAddr[listCountWrite++] = (y << wDec) | x;
-	
-	size_t listCountRead = 0;
-	while (listCountRead < listCountWrite)
-	{
-		Uint16 deltaAddrG = listedAddr[listCountRead++];
-		
-		size_t y = deltaAddrG >> wDec;
-		size_t x = deltaAddrG & wMask;
-		
-		size_t yu = ((y - 1) & hMask);
-		size_t yd = ((y + 1) & hMask);
-		size_t xl = ((x - 1) & wMask);
-		size_t xr = ((x + 1) & wMask);
-		
-		Uint8 g = gradient[(y << wDec) | x] - 1;
-		
-		size_t deltaAddrC[8];
-		Uint8 *addr;
-		Uint8 side;
-		
-		deltaAddrC[0] = (yu << wDec) | xl;
-		deltaAddrC[1] = (yu << wDec) | x ;
-		deltaAddrC[2] = (yu << wDec) | xr;
-		deltaAddrC[3] = (y  << wDec) | xr;
-		deltaAddrC[4] = (yd << wDec) | xr;
-		deltaAddrC[5] = (yd << wDec) | x ;
-		deltaAddrC[6] = (yd << wDec) | xl;
-		deltaAddrC[7] = (y  << wDec) | xl;
-		for (int ci=0; ci<8; ci++)
-		{
-			addr = &gradient[deltaAddrC[ci]];
-			side = *addr;
-			if (side > 0 && side < g)
-			{
-				*addr = g;
-				if (g > 2)
-					listedAddr[listCountWrite++] = deltaAddrC[ci];
-			}
-		}
-	}
-	assert(listCountWrite<=size);
-	delete[] listedAddr;
+	updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite);
 }
-void Map::updateGlobalGradientBig(Uint8 *gradient)
-{
-	size_t *listedAddr = new size_t[size];
-	size_t listCountWrite = 0;
-	
-	// make the first list:
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-			if (gradient[(y << wDec) | x] >= 3)
-				listedAddr[listCountWrite++] = (y << wDec) | x;
-	
-	size_t listCountRead = 0;
-	while (listCountRead < listCountWrite)
-	{
-		size_t deltaAddrG = listedAddr[listCountRead++];
-		
-		size_t y = deltaAddrG >> wDec;
-		size_t x = deltaAddrG & wMask;
-		
-		size_t yu = ((y - 1) & hMask);
-		size_t yd = ((y + 1) & hMask);
-		size_t xl = ((x - 1) & wMask);
-		size_t xr = ((x + 1) & wMask);
-		
-		Uint8 g = gradient[(y << wDec) | x] - 1;
-		
-		size_t deltaAddrC[8];
-		Uint8 *addr;
-		Uint8 side;
-		
-		deltaAddrC[0] = (yu << wDec) | xl;
-		deltaAddrC[1] = (yu << wDec) | x ;
-		deltaAddrC[2] = (yu << wDec) | xr;
-		deltaAddrC[3] = (y  << wDec) | xr;
-		deltaAddrC[4] = (yd << wDec) | xr;
-		deltaAddrC[5] = (yd << wDec) | x ;
-		deltaAddrC[6] = (yd << wDec) | xl;
-		deltaAddrC[7] = (y  << wDec) | xl;
-		for (int ci=0; ci<8; ci++)
-		{
-			addr = &gradient[deltaAddrC[ci]];
-			side = *addr;
-			if (side > 0 && side < g)
-			{
-				*addr = g;
-				if (g > 2)
-					listedAddr[listCountWrite++] = deltaAddrC[ci];
-			}
-		}
-	}
-	assert(listCountWrite<=size);
-	delete[] listedAddr;
-}
-
-void Map::updateGlobalGradient(Uint8 *gradient)
-{
-	if (size<=65536)
-		updateGlobalGradientSmall(gradient);
-	else
-		updateGlobalGradientBig(gradient);
-}*/
 
 void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 {
@@ -2511,7 +2428,7 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 			gradient[i]=0;
 	}
 	
-	updateGlobalGradient<Tint>(gradient, (Tint *)listedAddr, listCountWrite);
+	updateGlobalGradient(gradient, (Tint *)listedAddr, listCountWrite, GT_RESOURCE, canSwim);
 	delete[] listedAddr;
 }
 
@@ -3357,7 +3274,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	else
 		building->locked[canSwim]=false;
 	
-	updateGlobalGradient<Tint>(gradient, listedAddr, listCountWrite);
+	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_BUILDING, canSwim);
 	delete[] listedAddr;
 }
 
@@ -4281,7 +4198,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 	}
 	
 	// Then we propagate the gradient
-	updateGlobalGradient(gradient, listedAddr, listCountWrite);
+	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_FORBIDDEN, canSwim);
 	delete[] listedAddr;
 }
 
@@ -4335,7 +4252,7 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 	}
 	
 	// Then we propagate the gradient
-	updateGlobalGradient(gradient, listedAddr, listCountWrite);
+	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_GUARD_AREA, canSwim);
 	delete[] listedAddr;
 }
 
