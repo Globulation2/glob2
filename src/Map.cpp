@@ -188,6 +188,12 @@ Map::Map()
 	pathfindForbiddenCountSuccess=0;
 	pathfindForbiddenCountFailure=0;
 	
+	#ifdef check_gradient_error_probability
+	// stats to check the probability of an error:
+	listCountSizeStats = NULL;
+	listCountSizeStatsOver = 0;
+	#endif
+	
 	logFile = globalContainer->logFileManager->getFile("Map.log");
 	std::fill(incRessourceLog, incRessourceLog + 16, 0);
 }
@@ -204,6 +210,7 @@ Map::~Map(void)
 
 void Map::clear()
 {
+	logAtClear();
 	if (arraysBuilt)
 	{
 		assert(mapDiscovered);
@@ -314,8 +321,10 @@ void Map::clear()
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				gradientUpdated[t][r][s]=false;
-	
-	
+}
+
+void Map::logAtClear()
+{
 	fprintf(logFile, "\n");
 	if (game)
 		for (int t=0; t<16; t++)
@@ -856,6 +865,26 @@ void Map::clear()
 	pathfindForbiddenCount=0;
 	pathfindForbiddenCountSuccess=0;
 	pathfindForbiddenCountFailure=0;
+	
+	#ifdef check_gradient_error_probability
+	fprintf(logFile, "\n");
+	fprintf(logFile, "listCountSizeStatsOver=%d\n", listCountSizeStatsOver);
+	if (listCountSizeStats)
+	{
+		fprintf(logFile, "listCountSizeStats:\n");
+		for (size_t vi = 0; vi < 64; vi++)
+		{
+			int sum = 0;
+			for (size_t ti = 0; ti < (size / 64); ti++)
+				sum += listCountSizeStats[vi * (size / 64) + ti];
+			fprintf(logFile, "[%5d->%5d]:%5d\n", vi * (size / 64), (vi + 1) * (size / 64) - 1, sum);
+		}
+		fprintf(logFile, "listCountSizeStats:\n");
+		for (size_t i = 0; i< size; i++)
+			if (listCountSizeStats[i])
+				fprintf(logFile, "[%5d]:%5d\n", i, listCountSizeStats[i]);
+	}
+	#endif
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
@@ -915,6 +944,14 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	sectors=new Sector[sizeSector];
 
 	arraysBuilt=true;
+	
+	#ifdef check_gradient_error_probability
+	// stats to check the probability of an error:
+	if (listCountSizeStats)
+		delete[] listCountSizeStats;
+	listCountSizeStats = new int[size];
+	listCountSizeStatsOver = 0;
+	#endif
 }
 
 
@@ -927,6 +964,14 @@ void Map::setGame(Game *game)
 	assert(sectors);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
+	
+	#ifdef check_gradient_error_probability
+	// stats to check the probability of an error:
+	if (listCountSizeStats)
+		delete[] listCountSizeStats;
+	listCountSizeStats = new int[size];
+	listCountSizeStatsOver = 0;
+	#endif
 }
 
 bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *game)
@@ -968,6 +1013,13 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	cases = new Case[size];
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
+	
+	#ifdef check_gradient_error_probability
+	if (listCountSizeStats)
+		delete[] listCountSizeStats;
+	listCountSizeStats = new int[size];
+	listCountSizeStatsOver = 0;
+	#endif
 
 	// We read what's inside the map:
 	stream->read(undermap, size, "undermap");
@@ -1053,7 +1105,7 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
 	arraysBuilt = true;
-
+	
 	stream->readEnterSection("sectors");
 	for (int i=0; i<sizeSector; i++)
 	{
@@ -2198,6 +2250,7 @@ template<typename Tint> void Map::updateGlobalGradientSlow(Uint8 *gradient)
 template<typename Tint> void Map::updateGlobalGradientVersionSimple(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
 {
 	size_t listCountRead = 0;
+	size_t listCountSizeMax = 0;
 	while (listCountRead < listCountWrite)
 	{
 		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
@@ -2234,9 +2287,20 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(Uint8 *gradi
 			{
 				*addr = g;
 				listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
+				#ifdef check_gradient_error_probability
+				size_t listCountSize = listCountWrite - listCountRead;
+				if (listCountSizeMax < listCountSize)
+					listCountSizeMax = listCountSize;
+				#endif
 			}
 		}
 	}
+	#ifdef check_gradient_error_probability
+	if (listCountSizeMax < size)
+		listCountSizeStats[listCountSizeMax]++;
+	else
+		listCountSizeStatsOver++;
+	#endif
 	//assert(listCountWrite<=size);
 }
 
