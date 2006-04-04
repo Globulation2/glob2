@@ -78,6 +78,7 @@ public:
 	virtual ~Map(void);
 	//! Reset map and free arrays
 	void clear();
+	void logAtClear();
 
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, TerrainType terrainType=WATER);
@@ -569,6 +570,12 @@ protected:
 	int pathfindForbiddenCount;
 	int pathfindForbiddenCountSuccess;
 	int pathfindForbiddenCountFailure;
+	
+	#ifdef check_gradient_error_probability
+	// stats to check the probability of an error:
+	int *listCountSizeStats;
+	int listCountSizeStatsOver;
+	#endif
 
 public:
 	Case *cases;
