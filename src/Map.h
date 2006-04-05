@@ -428,7 +428,8 @@ public:
 		GT_RESOURCE = 1,
 		GT_BUILDING = 2,
 		GT_FORBIDDEN = 3,
-		GT_GUARD_AREA = 4
+		GT_GUARD_AREA = 4,
+		GT_SIZE = 5
 	};
 	
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
@@ -448,7 +449,8 @@ public:
 	void updateGlobalGradientSlow(Uint8 *gradient);
 	template<typename Tint> void updateGlobalGradientSlow(Uint8 *gradient);
 	
-	template<typename Tint> void updateGlobalGradientVersionSimple(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
+	template<typename Tint> void updateGlobalGradientVersionSimple(
+		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType);
 	template<typename Tint> void updateGlobalGradientVersionSimon(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
 	template<typename Tint> void updateGlobalGradientVersionKai(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
 	template<typename Tint> void updateGlobalGradient(
@@ -571,10 +573,11 @@ protected:
 	int pathfindForbiddenCountSuccess;
 	int pathfindForbiddenCountFailure;
 	
-	#ifdef check_gradient_error_probability
-	// stats to check the probability of an error:
-	int *listCountSizeStats;
-	int listCountSizeStatsOver;
+	//#define check_disorderable_gradient_error_probability
+	#ifdef check_disorderable_gradient_error_probability
+	// stats to check the probability of an error in the updateGlobalGradientVersionDisorderable gradient computation
+	int *listCountSizeStats[GT_SIZE];
+	int listCountSizeStatsOver[GT_SIZE];
 	#endif
 
 public:

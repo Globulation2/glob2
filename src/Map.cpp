@@ -188,10 +188,13 @@ Map::Map()
 	pathfindForbiddenCountSuccess=0;
 	pathfindForbiddenCountFailure=0;
 	
-	#ifdef check_gradient_error_probability
+	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error:
-	listCountSizeStats = NULL;
-	listCountSizeStatsOver = 0;
+	for (int i = 0; i < GT_SIZE; i++)
+	{
+		listCountSizeStats[i] = NULL;
+		listCountSizeStatsOver[i] = 0;
+	}
 	#endif
 	
 	logFile = globalContainer->logFileManager->getFile("Map.log");
@@ -866,23 +869,26 @@ void Map::logAtClear()
 	pathfindForbiddenCountSuccess=0;
 	pathfindForbiddenCountFailure=0;
 	
-	#ifdef check_gradient_error_probability
+	#ifdef check_disorderable_gradient_error_probability
 	fprintf(logFile, "\n");
-	fprintf(logFile, "listCountSizeStatsOver=%d\n", listCountSizeStatsOver);
-	if (listCountSizeStats)
+	for (int i = 0; i < GT_SIZE; i++)
 	{
-		fprintf(logFile, "listCountSizeStats:\n");
-		for (size_t vi = 0; vi < 64; vi++)
+		fprintf(logFile, "listCountSizeStatsOver[%d]=%d\n", i, listCountSizeStatsOver[i]);
+		if (listCountSizeStats[i])
 		{
-			int sum = 0;
-			for (size_t ti = 0; ti < (size / 64); ti++)
-				sum += listCountSizeStats[vi * (size / 64) + ti];
-			fprintf(logFile, "[%5d->%5d]:%5d\n", vi * (size / 64), (vi + 1) * (size / 64) - 1, sum);
+			fprintf(logFile, "listCountSizeStats[%d]:\n", i);
+			for (size_t vi = 0; vi < 64; vi++)
+			{
+				int sum = 0;
+				for (size_t ti = 0; ti < (size / 64); ti++)
+					sum += listCountSizeStats[i][vi * (size / 64) + ti];
+				fprintf(logFile, "[%5d->%5d]:%5d\n", vi * (size / 64), (vi + 1) * (size / 64) - 1, sum);
+			}
+			/*fprintf(logFile, "listCountSizeStats:\n");
+			for (size_t i = 0; i< size; i++)
+				if (listCountSizeStats[i][i])
+					fprintf(logFile, "[%5d]:%5d\n", i, listCountSizeStats[i][i]);*/
 		}
-		fprintf(logFile, "listCountSizeStats:\n");
-		for (size_t i = 0; i< size; i++)
-			if (listCountSizeStats[i])
-				fprintf(logFile, "[%5d]:%5d\n", i, listCountSizeStats[i]);
 	}
 	#endif
 }
@@ -945,12 +951,15 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	arraysBuilt=true;
 	
-	#ifdef check_gradient_error_probability
+	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error:
-	if (listCountSizeStats)
-		delete[] listCountSizeStats;
-	listCountSizeStats = new int[size];
-	listCountSizeStatsOver = 0;
+	for (int i = 0; i < GT_SIZE; i++)
+	{
+		if (listCountSizeStats[i])
+			delete[] listCountSizeStats[i];
+		listCountSizeStats[i] = new int[size];
+		listCountSizeStatsOver[i] = 0;
+	}
 	#endif
 }
 
@@ -965,12 +974,15 @@ void Map::setGame(Game *game)
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
 	
-	#ifdef check_gradient_error_probability
+	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error:
-	if (listCountSizeStats)
-		delete[] listCountSizeStats;
-	listCountSizeStats = new int[size];
-	listCountSizeStatsOver = 0;
+	for (int i = 0; i < GT_SIZE; i++)
+	{
+		if (listCountSizeStats[i])
+			delete[] listCountSizeStats[i];
+		listCountSizeStats[i] = new int[size];
+		listCountSizeStatsOver[i] = 0;
+	}
 	#endif
 }
 
@@ -1014,11 +1026,14 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	
-	#ifdef check_gradient_error_probability
-	if (listCountSizeStats)
-		delete[] listCountSizeStats;
-	listCountSizeStats = new int[size];
-	listCountSizeStatsOver = 0;
+	#ifdef check_disorderable_gradient_error_probability
+	for (int i = 0; i < GT_SIZE; i++)
+	{
+		if (listCountSizeStats[i])
+			delete[] listCountSizeStats[i];
+		listCountSizeStats[i] = new int[size];
+		listCountSizeStatsOver[i] = 0;
+	}
 	#endif
 
 	// We read what's inside the map:
@@ -2247,10 +2262,16 @@ template<typename Tint> void Map::updateGlobalGradientSlow(Uint8 *gradient)
 	delete[] listedAddr;
 }
 
-template<typename Tint> void Map::updateGlobalGradientVersionSimple(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
+/*! Note that if you don't provide an ordered listedAddr[], the gradient may technically end up
+	wrong. The easiest way to provide an ordered listedAddr[] is to put only 	gradients that
+	starts at the same value. Given the results of the tests, this will not happen.*/
+template<typename Tint> void Map::updateGlobalGradientVersionSimple(
+	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType)
 {
 	size_t listCountRead = 0;
+	#ifdef check_disorderable_gradient_error_probability
 	size_t listCountSizeMax = 0;
+	#endif
 	while (listCountRead < listCountWrite)
 	{
 		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
@@ -2286,20 +2307,21 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(Uint8 *gradi
 			if (side > 0 && side < g)
 			{
 				*addr = g;
-				listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
-				#ifdef check_gradient_error_probability
-				size_t listCountSize = listCountWrite - listCountRead;
+				#ifdef check_disorderable_gradient_error_probability
+				size_t listCountSize = 1 + listCountWrite - listCountRead;
 				if (listCountSizeMax < listCountSize)
 					listCountSizeMax = listCountSize;
 				#endif
+				if (listCountWrite + 1 != listCountRead)
+					listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 			}
 		}
 	}
-	#ifdef check_gradient_error_probability
+	#ifdef check_disorderable_gradient_error_probability
 	if (listCountSizeMax < size)
-		listCountSizeStats[listCountSizeMax]++;
+		listCountSizeStats[gradientType][listCountSizeMax]++;
 	else
-		listCountSizeStatsOver++;
+		listCountSizeStatsOver[gradientType]++;
 	#endif
 	//assert(listCountWrite<=size);
 }
@@ -2444,7 +2466,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite);
+	updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 }
 
 void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
