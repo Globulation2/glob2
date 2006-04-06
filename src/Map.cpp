@@ -2262,9 +2262,12 @@ template<typename Tint> void Map::updateGlobalGradientSlow(Uint8 *gradient)
 	delete[] listedAddr;
 }
 
-/*! Note that if you don't provide an ordered listedAddr[], the gradient may technically end up
-	wrong. The easiest way to provide an ordered listedAddr[] is to put only 	gradients that
-	starts at the same value. Given the results of the tests, this will not happen.*/
+/*! Note that you can't provide any listedAddr[], or the gradient may technically end up
+	wrong. Given the results of the tests, this will never happen. The easiest way to provide
+	a listedAddr[] which guarantee a correct result, is to put only references to gradient
+	heights that are all the same. Currently this is the case of all gradient computation but
+	the AI ones (GT_UNDEFINED). For further undestanding you have to dig into the code and
+	try #define check_disorderable_gradient_error_probability */
 template<typename Tint> void Map::updateGlobalGradientVersionSimple(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType)
 {
@@ -2312,8 +2315,10 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(
 				if (listCountSizeMax < listCountSize)
 					listCountSizeMax = listCountSize;
 				#endif
-				if (listCountWrite + 1 != listCountRead)
+				if (listCountWrite + 1 + size!= listCountRead)
 					listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
+				else
+					fprintf(stderr, "Map::updateGlobalGradientVersionSimple(): listedAddr[] overflow error");
 			}
 		}
 	}
