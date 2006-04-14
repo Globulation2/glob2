@@ -1255,6 +1255,20 @@ void Map::removeTeam(void)
 			delete[] ressourcesGradient[t][r][s];
 			ressourcesGradient[t][r][s]=NULL;
 		}
+
+	for (int s=0; s<2; s++)
+	{
+		assert(forbiddenGradient[t][s] != NULL);
+		delete[] forbiddenGradient[t][s];
+		forbiddenGradient[t][s]=NULL;
+		assert(guardAreasGradient[t][s] != NULL);
+		delete[] guardAreasGradient[t][s];
+		guardAreasGradient[t][s]=NULL;
+	}
+	
+	assert(exploredArea[t] != NULL);
+	delete[] exploredArea[t];
+	exploredArea[t]=NULL;
 }
 
 // TODO: completely recreate:
