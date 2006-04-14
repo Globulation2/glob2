@@ -44,7 +44,7 @@ public:
 	int run(int sizeX, int sizeY, TerrainType terrainType);
 	int run(void);
 	
-	void mapHasBeenModiffied(void); // moved public so that nely cerated map are modified
+	void mapHasBeenModiffied(void); // moved public so that newly cerated map are modified
 
 private:
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);

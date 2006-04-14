@@ -28,6 +28,7 @@ using namespace GAGGUI;
 namespace GAGGUI
 {
 	class Button;
+	class TextButton;
 	class OnOffButton;
 	class ColorButton;
 	class MultiTextButton;
@@ -36,18 +37,20 @@ namespace GAGGUI
 class Glob2FileList;
 class MapPreview;
 
+const int NumberOfPlayerSelectors=16;
+
 //! This screen is used to setup a custom game. AI can be set. Map choosing functionnalities are inherited from ChooseMapScreen
 class CustomGameScreen : public ChooseMapScreen
 {
 private:
 	//! AI enable/disable buttons
-	OnOffButton *isAI[16];
+	OnOffButton *isAI[NumberOfPlayerSelectors];
 	//! Team color buttons
-	ColorButton *color[16];
+	ColorButton *color[NumberOfPlayerSelectors];
 	//! Text shown when entry is disabled
-	Text *closedText[16];
+	Text *closedText[NumberOfPlayerSelectors];
 	//! Multi-text button containing names of availables AIs
-	MultiTextButton *aiSelector[16];
+	MultiTextButton *aiSelector[NumberOfPlayerSelectors];
 
 public:
 	//! Constructor, builds a ChooseMapScreen for maps

@@ -32,7 +32,7 @@
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)
 {
-	for (int i=0; i<16; i++)
+	for (int i=0; i<NumberOfPlayerSelectors; i++)
 	{
 		isAI[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
 		addWidget(isAI[i]);
@@ -70,7 +70,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 {
 	int i;
 	// set the correct number of colors
-	for (i = 0; i<16; i++)
+	for (i = 0; i<NumberOfPlayerSelectors; i++)
 	{
 		color[i]->clearColors();
 		for (int j = 0; j<sessionInfo.numberOfTeam; j++)
@@ -98,7 +98,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 		aiSelector[i]->show();
 	}
 	// Close the rest
-	for (; i<16; i++)
+	for (; i<NumberOfPlayerSelectors; i++)
 	{
 		isAI[i]->setState(false);
 		color[i]->hide();

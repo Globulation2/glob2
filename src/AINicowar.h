@@ -1,6 +1,5 @@
 /*
- Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
- for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+ Copyright 2005-2006 Bradley Arsenault
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -1369,10 +1368,10 @@ namespace Nicowar
 
 		 {	GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1), 
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
-			GradientPoll()}, //school
+			GradientPoll(Gradient::Water, Gradient::None, 10, -1)}, //school
 
-		 {	GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1),
-			GradientPoll(),
+		 {	GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 3),
+			GradientPoll(Gradient::Stone, Gradient::None, 1),
 			GradientPoll()}, //Tower
 
 		 {	GradientPoll(), GradientPoll(), GradientPoll()},
