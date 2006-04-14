@@ -769,7 +769,7 @@ namespace GAGGUI
 			
 			text = &tempText[0];
 			layout();
-			compute();
+			setCursorPos(cursorPos);
 			
 			delete stream;
 			return true;
