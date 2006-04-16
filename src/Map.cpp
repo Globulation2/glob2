@@ -2293,42 +2293,45 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(
 	{
 		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
 		
-		size_t y = deltaAddrG >> wDec;
-		size_t x = deltaAddrG & wMask;
+		size_t y = deltaAddrG >> wDec;      // Calculate the coordinates of
+		size_t x = deltaAddrG & wMask;      // the current field and of the
 		
-		size_t yu = ((y - 1) & hMask);
-		size_t yd = ((y + 1) & hMask);
-		size_t xl = ((x - 1) & wMask);
-		size_t xr = ((x + 1) & wMask);
+		size_t yu = ((y - 1) & hMask);      // fields next to it.
+		size_t yd = ((y + 1) & hMask);      // We live on a torus! If we are on
+		size_t xl = ((x - 1) & wMask);      // the "last line" of the map, the
+		size_t xr = ((x + 1) & wMask);      // next line is the line 0 again.
 		
 		Uint8 g = gradient[(y << wDec) | x] - 1;
-		if (g <= 2)
-			continue;
+		if (g <= 2)        // All free non-source-fields start with gradient=1
+			continue;  // There is no need to propagate gradient when g==2
 		
 		size_t deltaAddrC[8];
 		Uint8 *addr;
 		Uint8 side;
 		
-		deltaAddrC[0] = (yu << wDec) | xl;
-		deltaAddrC[1] = (yu << wDec) | x ;
-		deltaAddrC[2] = (yu << wDec) | xr;
+		deltaAddrC[0] = (yu << wDec) | xl;  // Calculate the positions of the
+		deltaAddrC[1] = (yu << wDec) | x ;  // 8 fields next to us from their
+		deltaAddrC[2] = (yu << wDec) | xr;  // coordinates.
 		deltaAddrC[3] = (y  << wDec) | xr;
 		deltaAddrC[4] = (yd << wDec) | xr;
 		deltaAddrC[5] = (yd << wDec) | x ;
 		deltaAddrC[6] = (yd << wDec) | xl;
 		deltaAddrC[7] = (y  << wDec) | xl;
-		for (int ci=0; ci<8; ci++)
-		{
+		for (int ci=0; ci<8; ci++)          // Check for each of this fields if we
+		{                                   // can improve its gradient value
 			addr = &gradient[deltaAddrC[ci]];
 			side = *addr;
-			if (side > 0 && side < g)
-			{
-				*addr = g;
+			if (side > 0 && side < g)   // side==0 means: you cannot walk on
+			{                           // this field.
+				                    // If we can improve this field
+				*addr = g;          // we must add it as a new source
 				#ifdef check_disorderable_gradient_error_probability
 				size_t listCountSize = 1 + listCountWrite - listCountRead;
 				if (listCountSizeMax < listCountSize)
 					listCountSizeMax = listCountSize;
 				#endif
+				// Here we check if the queue is large enough to
+				// contain this field as a new gradient source.
 				if (listCountWrite + 1 + size!= listCountRead)
 					listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 				else
@@ -2347,6 +2350,24 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(
 
 template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
 {
+/* This algorithm uses the fact that all fields which are adjacent to the field
+   directly below the current one, are also adjacent to either the field to its left
+   or right.  Thus this field only needs to become a source if its left or right
+   is not accessable. The same with the other 3 directions.
+      |       |
+      |       |
+------+-------+------
+      |current|
+      |field  |
+------+-------+------
+   L  | below |   R
+      |       |
+------+-------+------
+ next |next to| next
+ to L | both  | to R
+*/
+
+
 	size_t listCountRead = 0;
 	while (listCountRead < listCountWrite)
 	{
@@ -2367,34 +2388,51 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 		Uint32 flag = 0;
 		Uint8 *addr;
 		Uint8 side;
-		{
+		{ // In this scope we care only about the diagonal neighbours.
+                /* We will use flags to mark if at least one of the 2 fields
+                   next to a adjacent nondiagonal field is not accessable.
+                   Binary representation:
+                    9 = 1001
+                    3 = 0011
+                    6 = 0110
+                   12 = 1100
+                           1 is the upper right
+                          1  is the lower right
+                         1   is the lower left
+                        1    is the upper left
+	        */
 			const Uint32 diagFlags[4] = {9, 3, 6, 12};
 			size_t deltaAddrC[4];
 			
-			deltaAddrC[0] = (yu << wDec) | xl;
-			deltaAddrC[1] = (yu << wDec) | xr;
+			deltaAddrC[0] = (yu << wDec) | xl; // Calculate the position
+			deltaAddrC[1] = (yu << wDec) | xr; // of the 4 diagonal fields
 			deltaAddrC[2] = (yd << wDec) | xr;
 			deltaAddrC[3] = (yd << wDec) | xl;
-			for (size_t ci = 0; ci < 4; ci++)
+                        //  0|_|1
+                        //  _|*|_     * represents the current field
+                        //  3| |2
+			for (size_t ci = 0; ci < 4; ci++)  // Check them
 			{
 				addr = &gradient[deltaAddrC[ci]];
 				side = *addr;
 				if (side > 0 && side < g)
 				{
 					*addr = g;
-					listedAddr[listCountWrite++] = deltaAddrC[ci];
+					listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 				}
-				else if (side == 0)
-					flag |= diagFlags[ci];
+				else if (side == 0)            // If field is inaccessable,
+					flag |= diagFlags[ci]; // mark the corresponding bit
 			}
 		}
-		{
+		{ // Now we take a look at our nondiagonal neighbours
 			size_t deltaAddrC[4];
 			
-			deltaAddrC[0] = (yu << wDec) | x ;
-			deltaAddrC[1] = (y  << wDec) | xr;
-			deltaAddrC[2] = (yd << wDec) | x ;
+			deltaAddrC[0] = (yu << wDec) | x ;   // _|0|_
+			deltaAddrC[1] = (y  << wDec) | xr;   // 3|*|1
+			deltaAddrC[2] = (yd << wDec) | x ;   //  |2| 
 			deltaAddrC[3] = (y  << wDec) | xl;
+
+
 			for (size_t ci = 0; ci < 4; ci++)
 			{
 				addr = &gradient[deltaAddrC[ci]];
@@ -2402,10 +2440,12 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 				if (side > 0 && side < g)
 				{
 					*addr = g;
-					if (flag & 1)
-						listedAddr[listCountWrite++] = deltaAddrC[ci];
+                                // Only mark this as a new source, 
+                                // if its left or right was inaccessable.
+					if (flag & 1) // Information is in the first bit
+						listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 				}
-				flag >>= 1;
+				flag >>= 1;  // Shift the next bit into position
 			}
 		}
 	}
