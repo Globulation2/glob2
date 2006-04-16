@@ -464,7 +464,7 @@ namespace GAGCore
 				ok = false;
 			}
 			// take directories if asked
-			else if (dirEntry->d_type == DT_DIR)
+			else if (isDir(dirEntry->d_name)) // d_type is not portable to all systems
 			{
 				ok = dirs;
 			}
