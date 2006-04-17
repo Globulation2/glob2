@@ -25,11 +25,11 @@ Træ
 [Corn]
 Korn
 [Papyrus]
-Papyrus
+Skrift ruller
 [Stone]
 Sten
 [Alga]
-Algae
+Alger
 [Cherry]
 Kirsebær
 [Orange]
@@ -659,16 +659,60 @@ V : Vis alle dine bygninger
 [abreaviation explanation Vf]
 Vf : Vis alle dine kroer (til at stjæle enheder)
 [abreaviation explanation mV]
-mV : vis alle Market bygninger (til at udvæksle frugt)
+mV : vis alle Market bygninger (til at udveksle frugt)
 [abreaviation explanation C]
 C : Send besked til
 [shortcut explanation enter]
 tast enter : send en besked
 [shortcut explanation v]
-tast v : hold nede for at snakke
+tast v : hold v nede for at snakke
 [Delete game]
 Slet det valgte spil
 [any explorer]
 Tilfældig udforsker
 [ground attack]
 Grund angrib
+[Can't join game, wrong game version]
+Kan ikke forbinde til spillet, forkert version
+[Can't join game, missmatching game parameters]
+Kan ikke forbinde til spillet, differencerne argumenter givet til spillet
+[Can't join game, timeout]
+Kan ikke forbinde til spillet, der er opstået en timeout
+[swamp terrain]
+Svamp
+[river terrain]
+Flod
+[crater lakes terrain]
+Krater søer
+[old random terrain]
+Gamle tilfældige terræn
+[old islands terrain]
+Gamle ø terræn
+[desert]
+Ørken
+[algae]
+alger
+[wheat]
+hvede
+[wood]
+Træ
+[stone]
+Sten
+[river diameter]
+Længde af flod
+[extra islands]
+Tom ø
+[crater density]
+Antal krater
+[press space]
+Tryk på mellemrum for at fortsætte
+[GUIMapPreview text 0]
+Vælg venligst
+[GUIMapPreview text 1]
+Et kort
+[Unit editor]
+Redigere Enhed
+[skin]
+Opløsning
+[hungryness]
+Sulthed
