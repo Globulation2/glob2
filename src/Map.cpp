@@ -2454,78 +2454,142 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 
 template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite)
 {
+	// This version tries to go through the memory in consecutive order
+	// in the hope that the cache usage will be improved.
+	// Instead of picking one individual field and test its neighbours,
+	// we test if the field to its right is the next field we must process.
+	// If it is, we test the field to right of this field and so on.
+	// Otherwise we stop.  We also stop if the gradient value of the field to
+	// the right differs from that of the current field or if we have reached
+	// the end of the line.  (We don't have to, but we do.)
+	// After that we have a horizontal line segment.
+	// Now we check if we can improve the line segment above it, and below it.
+	// And the fields on the left and right.
+
+	size_t sizeMask=size-1;
 	size_t listCountRead = 0;
 	while (listCountRead < listCountWrite)
 	{
-		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
+		Tint deltaAddrG = listedAddr[listCountRead&sizeMask];
 		
 		size_t y = deltaAddrG >> wDec;
 		size_t x = deltaAddrG & wMask;
 		
 		size_t yu = ((y - 1) & hMask);
 		size_t yd = ((y + 1) & hMask);
-		size_t xl = ((x - 1) & wMask);
-		size_t xr = ((x + 1) & wMask);
+
 		
-		Uint8 g = gradient[(y << wDec) | x] - 1;
-		if (g <= 2)
-			continue;
+		Uint8 myg = gradient[(y << wDec) | x];  // Get the gradient of the current field
+		Uint8 g = myg-1;   // g will be the gradient of the children.
+		if (g <= 2)        // All free non-source-fields start with gradient=1
+			continue;  // There is no need to propagate gradient when g==2
 		
-		Uint32 flag = 0;
+
 		Uint8 *addr;
 		Uint8 side;
+		
+                // Get the length of the segment.
+		size_t d;
+		for (d=1;(++listCountRead < listCountWrite) && (d+x <= (size_t) wMask); d++)
+			if ( (listedAddr[listCountRead&sizeMask] != deltaAddrG+d)
+			     || (gradient[deltaAddrG+d] != myg) )
+				break;
+		// x+d-1 is the last element of the line segment.
+		// d is the size of the segment. listCountRead is in correct position.
+
+		bool leftflag=false;   // True if we might need to put the field left
+		bool rightflag=false;  // resp. right of the segment to listedAddr.
+		size_t pos;            // pos stores the combined (x,y) coordinate.
+
+                // Handle the upper line first then the lower line.
+		size_t ylineDec = yu << wDec;   
+		for (int upperOrLower=0;upperOrLower<=1;upperOrLower++)
 		{
-			const Uint32 diagFlags[4] = {9, 3, 6, 12};
-			size_t deltaAddrC[4];
-			
-			deltaAddrC[0] = (yu << wDec) | xl;
-			deltaAddrC[1] = (yu << wDec) | xr;
-			deltaAddrC[2] = (yd << wDec) | xr;
-			deltaAddrC[3] = (yd << wDec) | xl;
-			for (size_t ci = 0; ci < 4; ci++)
+			// The left of the first field is special,
+			// since we have to test its left.
+			pos  = ylineDec | ( (x-1) & wMask );
+			addr = &gradient[pos];
+			side = *addr;
+			if ( side>0 && side<g )     // Check if we can improve.
 			{
-				addr = &gradient[deltaAddrC[ci]];
-				side = *addr;
-				if (side < g)
-				{
-					if (side > 0)
-					{
-						*addr = g;
-						listedAddr[listCountWrite++] = deltaAddrC[ci];
-					}
-					else
-						flag |= diagFlags[ci];
-				}
-			}
-		}
-		{
-			size_t deltaAddrC[4];
-			
-			deltaAddrC[0] = (yu << wDec) | x ;
-			deltaAddrC[1] = (y  << wDec) | xr;
-			deltaAddrC[2] = (yd << wDec) | x ;
-			deltaAddrC[3] = (y  << wDec) | xl;
-			for (size_t ci = 0; ci < 4; ci++)
+				*addr = g;
+				listedAddr[(listCountWrite++)&sizeMask] = pos;				
+			} else if (side == 0)       // See Simons version.
+				leftflag=1;
+
+			// Handle the whole segment:
+			pos  = ylineDec | x;
+			for (size_t i=0; i<d; i++,pos++)
 			{
-				addr = &gradient[deltaAddrC[ci]];
+				addr = &gradient[pos];
 				side = *addr;
-				if (side > 0 && side < g)
+				if ( side>0 && side<g )
 				{
 					*addr = g;
-					if (flag & 1)
-						listedAddr[listCountWrite++] = deltaAddrC[ci];
+					listedAddr[(listCountWrite++)&sizeMask] = pos;
 				}
-				flag >>= 1;
 			}
+
+			// The right of the last field is special,
+			// since we have to test its right.
+			pos = ylineDec | ( (x+d) & wMask );
+			addr = &gradient[pos];
+			side = *addr;
+			if ( side>0 && side<g )
+			{
+				*addr = g;
+				listedAddr[(listCountWrite++)&sizeMask] = pos;				
+			} else if (side == 0)
+				rightflag=1;
+
+			ylineDec = yd << wDec;  // Change attention to the lower line.
+		}
+                // The segment is processed.		
+		// Now handle leftmost and rightmost field.
+		pos = (y << wDec) | ( (x-1) & wMask );
+		addr = &gradient[pos];
+		side = *addr;
+		if ( side>0 && side<g )
+		{
+			*addr = g;
+			if (leftflag)   // See Simons version.
+				listedAddr[(listCountWrite++)&sizeMask] = pos;
+		}
+		pos = (y << wDec) | ( (x+d) & wMask );
+		addr = &gradient[pos];
+		side = *addr;
+		if ( side>0 && side<g )
+		{
+			*addr = g;
+			if (rightflag)
+				listedAddr[(listCountWrite++)&sizeMask] = pos;
 		}
 	}
-	//assert(listCountWrite<=size);
 }
 
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
+
+#ifdef TESTKAICORRECT  // compare the results of updateGlobalGradientVersionKai and the Simon version
+	Tint *testListedAddr = new Tint[size];
+	memcpy (testListedAddr, listedAddr, size);
+	Uint8 *testGradient = new Uint8[size];
+	memcpy (testGradient, gradient, size);
+	updateGlobalGradientVersionKai<Tint>(testGradient, testListedAddr, listCountWrite);
+	updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
+	assert (memcmp (testGradient, gradient, size) == 0);
+#else
+#ifdef KAI   // use updateGlobalGradientVersionKai
+	updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
+#else
+#ifdef SIMON // use updateGlobalGardientVersionSimon
+	updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
+#else
 	updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+#endif
+#endif
+#endif
 }
 
 void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
