@@ -2570,26 +2570,35 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-
-#ifdef TESTKAICORRECT  // compare the results of updateGlobalGradientVersionKai and the Simon version
-	Tint *testListedAddr = new Tint[size];
-	memcpy (testListedAddr, listedAddr, size);
-	Uint8 *testGradient = new Uint8[size];
-	memcpy (testGradient, gradient, size);
-	updateGlobalGradientVersionKai<Tint>(testGradient, testListedAddr, listCountWrite);
-	updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
-	assert (memcmp (testGradient, gradient, size) == 0);
-#else
-#ifdef KAI   // use updateGlobalGradientVersionKai
-	updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
-#else
-#ifdef SIMON // use updateGlobalGardientVersionSimon
-	updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
-#else
-	updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-#endif
-#endif
-#endif
+	#define USE_DYNAMICAL_GRADIENT_VESRION
+	
+	#if defined(USE_GRADIENT_VERSION_TEST_KAI)  // compare the results of updateGlobalGradientVersionKai and the Simon version
+		Tint *testListedAddr = new Tint[size];
+		memcpy (testListedAddr, listedAddr, size);
+		Uint8 *testGradient = new Uint8[size];
+		memcpy (testGradient, gradient, size);
+		updateGlobalGradientVersionKai<Tint>(testGradient, testListedAddr, listCountWrite);
+		updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
+		assert (memcmp (testGradient, gradient, size) == 0);
+		
+	#elif defined(USE_GRADIENT_VERSION_KAI)
+		updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
+		
+	#elif defined(USE_GRADIENT_VERSION_SIMON)
+		updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
+		
+	#elif defined(USE_GRADIENT_VERSION_SIMPLE)
+		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+		
+	#elif defined(USE_DYNAMICAL_GRADIENT_VESRION)
+		if (gradientType == GT_UNDEFINED)
+			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+		else
+			updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
+			
+	#else
+		#error Please select a gradient version
+	#endif
 }
 
 void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
