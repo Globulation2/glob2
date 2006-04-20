@@ -37,7 +37,7 @@ Orangen
 [Prune]
 Pflaumen
 [Clearing:]
-Rodung
+Rodung:
 [Min required level:]
 Mindestlevel:
 [Bullets]
@@ -81,7 +81,7 @@ Einheiten arbeiten
 [still one unit working]
 Eine Einheit arbeitet
 [Still (i)]
-Noch 
+Noch
 [Still one]
 Noch eine
 [Building name]
@@ -91,7 +91,7 @@ Stock
 [food building]
 Gasthof
 [health building]
-Spital
+Hospital
 [walkspeed building]
 Rennbahn
 [swimspeed building]
@@ -115,9 +115,11 @@ Markt
 [forbidden area]
 Verbotene Zone
 [guard area]
-Zone Bewachen
+Zone bewachen
+[clear area]
+Rodungszone
 [Building short explanation]
-Gebäudemenü
+Kurzbeschreibung des Gebäudes (max. 24 Zeichen)
 [swarm building explanation]
 Erstellt neue Einheiten
 [food building explanation]
@@ -139,13 +141,13 @@ Steuert Entdecker
 [war flag explanation]
 Steuert Krieger
 [clearing flag explanation]
-Rode Ressourcen
+Rodet Ressourcen
 [stone wall explanation]
 Passives Verteidigungs-
 [market explanation]
 Erlaubt den Handel mit
 [Building short explanation 2]
-
+2. Kurzbeschreibung des Gebäudes (max. 24 Zeichen)
 [swarm building explanation 2]
 
 [food building explanation 2]
@@ -215,11 +217,11 @@ Spiel im lokalen Netz
 [settings]
 Einstellungen
 [Warning, you need to reboot the game for changes to take effect]
-Achtung: Sie müssen das Spiel neu starten, damit die Änderungen wirksam werden
+Achtung: Sie müssen das Spiel neu starten, damit die Änderungen wirksam werden.
 [editor]
 Editor
 [credits]
-Kredite
+Mitwirkende
 [quit]
 Beenden
 [create game]
@@ -245,9 +247,9 @@ Mitspielen
 [goto main menu]
 Zurück zum Hauptmenu
 [player name]
-Spielerame
+Spielername
 [svr hostname]
-Server-Rechnername
+Server-Hostname
 [hp]
 Lebenspunkt
 [carry]
@@ -259,7 +261,7 @@ Stufe
 [levels]
 Stufen
 [building site]
-baustelle
+Baustelle
 [create map]
 Karte erzeugen
 [map size x]
@@ -345,9 +347,9 @@ Der Markt wird angegriffen
 [Your %s are under attack]
 Eure %s werden angegriffen
 [Your unit got converted to %s's team]
-Eine Ihreer Einheiten wrde von einem %s Spieler übernommen
+Eine Ihrer Einheiten wurde von einem %s-Team übernommen.
 [%s's team unit got converted to your team]
-Sie haben eine Einheit von einem %s Team übernommen
+Sie haben eine Einheit von einem %s-Team übernommen.
 [Uncontrolled]
 Unkontrolliert
 [ai]
@@ -359,7 +361,7 @@ Schließen
 [player]
 Spieler
 [STARTING GAME ...]
-Spielbeginn... 
+Spielbeginn...
 [Statistics]
 Statistiken
 [Buildings]
@@ -389,17 +391,21 @@ und
 [seeking a job]
 suchen Arbeit
 [Walk]
-Geh
+Gehen
 [Swim]
-Schwimm
+Schwimmen
 [Build]
-Bau
+Bauen
 [Harvest]
-Ernte
+Ernten
 [At. speed]
 Geschwindigkeit
 [At. strength]
 Stärke
+[Magic At. Air]
+Kampfstärke/Luft
+[Magic At. Ground]
+Kampfstärke/Boden
 [Total]
 Gesamt
 [free]
@@ -407,7 +413,7 @@ frei
 [seeking]
 suchen
 [Free]
-Frei
+Ok
 [hungry]
 hungrig
 [starving]
@@ -453,9 +459,9 @@ Start
 [not ready]
 nicht bereit
 [has joined]
-ist angeschlossen
+ist verbunden
 [has quit]
-hat verlassen
+ist gegangen
 [yog-chat]
 #yog-de
 [speed]
@@ -471,7 +477,7 @@ Laden
 [handmade map]
 Handgemachte Karte
 [mapGenerationDescriptor Methodes]
-Methoden der Zufallserzeugung von Karten
+Generierungsmethoden für Zufallskarten
 [uniform terrain]
 Einheitliche Landschaft
 [random terrain]
@@ -485,19 +491,19 @@ Glättung
 [number of teams]
 Mannschaften
 [islands size]
-Größe der Inseln
+Inselgrösse
 [beach size]
-Größe des Strandes
+Strandbreite
 [workers]
 Arbeiterinnen
 [bad error in connection system]
 Fataler Fehler im Verbindungssystem
 [not connected]
-Nicht angeschlossen
+Nicht verbunden
 [presence request sent]
 Präsenzanfrage gesendet ...
 [session request sent]
-Sitzungsanfrage gesendet ... 
+Sitzungsanfrage gesendet ...
 [checksum sent]
 Prüfsumme gesendet ...
 [connected to server]
@@ -561,17 +567,17 @@ Verbindungsaufbau zum YOG-Metaserver...
 [YESTS_DECONNECTING]
 Beende Verbindung zum YOG Metaserver...
 [YESTS_YOG_KILLED]
-Ein Administrator hat gerade den YOG-Metaserver abgestellt.
+Ein Administrator hat gerade den YOG-Metaserver abgeschaltet.
 [YESTS_CONNECTION_LOST]
-Die Verbindung ui YOG wurde verloren.
+Die Verbindung zu YOG wurde unterbrochen.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation zu alt ist. 
+Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation 2 zu alt ist.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Pseudo schon vergeben ist.
+Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Spitzname schon von jemand anderem benutzt wird.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Passwort falsch ist.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch kein Passwort hat. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden. 
+Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch nicht registriert ist. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon registriert wurde. Wenn es ihr Benutzername ist deaktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren".
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
@@ -589,11 +595,11 @@ Sie sind als abwesend markiert.
 [You are no more marked as away]
 Sie sind wieder da.
 [YOG_HELP]
-Das YOG-Nachrichtensystem kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" eingeben. 
+Das YOG-Nachrichtensystem kennt zwei Befehle, "msg" und "away". Mehr Informationon bekommen Sie, indem Sie "/help <Befehl>" eingeben.
 [YOG_HELP_AWAY]
-Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, .B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a"
+Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, z.B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a".
 [YOG_HELP_MSG]
-"/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine bestimmte Person zu senden. z.b. "/msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
+"/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine bestimmte Person zu senden. z.B. "/msg Bianca Hallo, wie schlägst du dich ?". Alias "/m".
 [save before quit?]
 Möchten Sie vor dem Beenden abspeichern?
 [Yes]
@@ -627,7 +633,7 @@ Benutzername
 [fullscreen]
 Vollbild
 [hwaccel]
-Hardware Beschleunigung
+Hardwarebeschleunigung
 [dblbuff]
 Double-buffering
 [lowquality]
@@ -643,7 +649,35 @@ Eigener Mauszeiger
 [choose campaign]
 Wählen Sie eine Kampagne aus
 [nick taken]
-Leider ist Ihr Spitzname auf IRC schon besetzt. Sie könen nur durch YOG senden
+Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
+[mute]
+mute
+[abreaviation explanation A]
+A: Verbündete
+[abreaviation explanation V]
+V: Teile die Sicht für alle Gebäude
+[abreaviation explanation Vf]
+fV: Teile die Sicht für Gasthöfe (um Einheiten zu stehlen)
+[abreaviation explanation mV]
+mV: Teile die Sicht für Märkte (um Früchte zu handeln)
+[abreaviation explanation C]
+C: Chatnachrichten senden
+[shortcut explanation enter]
+Enter: Chatnachricht senden
+[shortcut explanation v]
+V: gedrückt halten, um zu sprechen
+[Delete game]
+Ausgewähltes Spiel löschen
+[any explorer]
+beliebige Entdecker
+[ground attack]
+Bodenangriff
+[Can't join game, wrong game version]
+Mitspielen nicht möglich: falsche Spielversion
+[Can't join game, missmatching game parameters]
+Mitspielen nicht möglich: unausgeglichene Spielparameter
+[Can't join game, timeout]
+Mitspielen nicht möglich: Timeout
 [swamp terrain]
 Sumpflandschaft
 [river terrain]
@@ -670,3 +704,15 @@ Flussbreite
 leere Inseln
 [crater density]
 Krateranzahl
+[press space]
+Leertaste drücken, um fortzufahren.
+[GUIMapPreview text 0]
+Bitte wählen Sie
+[GUIMapPreview text 1]
+eine Karte
+[Unit editor]
+Einheiteneditor
+[skin]
+Anzeige
+[hungryness]
+Hunger
