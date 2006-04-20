@@ -2570,7 +2570,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	#define USE_DYNAMICAL_GRADIENT_VESRION
+	#define USE_DYNAMICAL_GRADIENT_VERSION
 	
 	#if defined(USE_GRADIENT_VERSION_TEST_KAI)  // compare the results of updateGlobalGradientVersionKai and the Simon version
 		Tint *testListedAddr = new Tint[size];
@@ -2590,7 +2590,7 @@ template<typename Tint> void Map::updateGlobalGradient(
 	#elif defined(USE_GRADIENT_VERSION_SIMPLE)
 		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 		
-	#elif defined(USE_DYNAMICAL_GRADIENT_VESRION)
+	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION)
 		if (gradientType == GT_UNDEFINED)
 			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 		else
