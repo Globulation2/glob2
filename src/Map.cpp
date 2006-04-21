@@ -2466,9 +2466,11 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 	// Now we check if we can improve the line segment above it, and below it.
 	// And the fields on the left and right.
 
-	size_t sizeMask=size-1;
-	size_t listCountRead = 0;
-	while (listCountRead < listCountWrite)
+	size_t sizeMask = size-1;  // Mask needed to use listedAddr as queue.
+	size_t listCountRead = 0;  // Index of first untreated field in listedAddr.
+
+
+	while (listCountRead < listCountWrite)  // While listedAddr not empty.
 	{
 		Tint deltaAddrG = listedAddr[listCountRead&sizeMask];
 		
@@ -2479,30 +2481,50 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 		size_t yd = ((y + 1) & hMask);
 
 		
-		Uint8 myg = gradient[(y << wDec) | x];  // Get the gradient of the current field
+		Uint8 myg = gradient[deltaAddrG]; // Get the gradient of the current field
 		Uint8 g = myg-1;   // g will be the gradient of the children.
 		if (g <= 2)        // All free non-source-fields start with gradient=1
 			continue;  // There is no need to propagate gradient when g==2
 		
 
-		Uint8 *addr;
-		Uint8 side;
-		
+		Uint8 *addr;       // Pointer to a field.
+		Uint8 side;        // Gradient value of a field.
+		size_t pos;        // pos stores the combined (x,y) coordinate.		
+
+
                 // Get the length of the segment.
-		size_t d;
-		for (d=1;(++listCountRead < listCountWrite) && (d+x <= (size_t) wMask); d++)
-			if ( (listedAddr[listCountRead&sizeMask] != deltaAddrG+d)
-			     || (gradient[deltaAddrG+d] != myg) )
+		size_t d;                     // Length of the line segment.
+		size_t ylineDec = y << wDec;  // Line the field is in.
+		// remember: && and || only compute second argument if they have to.
+		for (d=1; (++listCountRead < listCountWrite); d++) // While not empty.
+		{
+			pos = listedAddr[listCountRead&sizeMask]; // Next untreated field.
+			// We can tollerate gaps of length 1.
+			// Break if this field has not the same g as I, or is not the one
+			// to my right or the one behind this.
+
+			if (gradient[pos] != myg)   // Need same g for all fields in line.
 				break;
-		// x+d-1 is the last element of the line segment.
+			if (pos == (ylineDec | ( (d + x) & wMask ) ) )
+				continue;    // If the next field is beside to the right.
+			if (pos == (ylineDec | ( (d + 1 + x) & wMask ) ) )
+			{       // If it is behind it.  We overleap one field.
+				addr = &gradient[(ylineDec | ( (x+d++) & wMask ) )];
+				side = *addr;
+				if ( side>0 && side<g )     // Check if we can improve,
+					*addr = g;          // the field we overleap.
+				continue;     // Line grew 2 fields longer this time.
+			}
+				break;
+		}
+		// (x+d-1)&wMask is the last element of the line segment.
 		// d is the size of the segment. listCountRead is in correct position.
 
 		bool leftflag=false;   // True if we might need to put the field left
 		bool rightflag=false;  // resp. right of the segment to listedAddr.
-		size_t pos;            // pos stores the combined (x,y) coordinate.
 
                 // Handle the upper line first then the lower line.
-		size_t ylineDec = yu << wDec;   
+		ylineDec = yu << wDec;   
 		for (int upperOrLower=0;upperOrLower<=1;upperOrLower++)
 		{
 			// The left of the first field is special,
@@ -2515,12 +2537,12 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 				*addr = g;
 				listedAddr[(listCountWrite++)&sizeMask] = pos;				
 			} else if (side == 0)       // See Simons version.
-				leftflag=1;
+				leftflag=true;
 
 			// Handle the whole segment:
-			pos  = ylineDec | x;
-			for (size_t i=0; i<d; i++,pos++)
+			for (size_t i=0; i<d; i++)
 			{
+				pos  = ylineDec | ((x+i) & wMask);
 				addr = &gradient[pos];
 				side = *addr;
 				if ( side>0 && side<g )
@@ -2540,7 +2562,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 				*addr = g;
 				listedAddr[(listCountWrite++)&sizeMask] = pos;				
 			} else if (side == 0)
-				rightflag=1;
+				rightflag=true;
 
 			ylineDec = yd << wDec;  // Change attention to the lower line.
 		}
@@ -2570,9 +2592,13 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	#define USE_DYNAMICAL_GRADIENT_VERSION
+	#define  USE_GRADIENT_VERSION_SIMPLE
 	
 	#if defined(USE_GRADIENT_VERSION_TEST_KAI)  // compare the results of updateGlobalGradientVersionKai and the Simon version
+	if (gradientType == GT_UNDEFINED)
+		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+	else
+	{
 		Tint *testListedAddr = new Tint[size];
 		memcpy (testListedAddr, listedAddr, size);
 		Uint8 *testGradient = new Uint8[size];
@@ -2580,6 +2606,7 @@ template<typename Tint> void Map::updateGlobalGradient(
 		updateGlobalGradientVersionKai<Tint>(testGradient, testListedAddr, listCountWrite);
 		updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
 		assert (memcmp (testGradient, gradient, size) == 0);
+	}
 		
 	#elif defined(USE_GRADIENT_VERSION_KAI)
 		updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
