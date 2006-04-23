@@ -17,6 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -27,6 +28,11 @@
 #include <algorithm>
 #include <valarray>
 #include <Stream.h>
+
+
+#if defined( LOG_LINE_LENGTH )
+#include <map>
+#endif
 
 // use deltaOne for first perpendicular direction
 static const int deltaOne[8][2]={
@@ -2469,6 +2475,9 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 	size_t sizeMask = size-1;  // Mask needed to use listedAddr as queue.
 	size_t listCountRead = 0;  // Index of first untreated field in listedAddr.
 
+#if defined( LOG_LINE_LENGTH )
+	std::map<size_t,int> dcount;
+#endif
 
 	while (listCountRead < listCountWrite)  // While listedAddr not empty.
 	{
@@ -2507,6 +2516,8 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 				break;
 			if (pos == (ylineDec | ( (d + x) & wMask ) ) )
 				continue;    // If the next field is beside to the right.
+#define ALLOW_SMALL_GAPS
+#if defined( ALLOW_SMALL_GAPS )
 			if (pos == (ylineDec | ( (d + 1 + x) & wMask ) ) )
 			{       // If it is behind it.  We overleap one field.
 				addr = &gradient[(ylineDec | ( (x+d++) & wMask ) )];
@@ -2515,10 +2526,17 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 					*addr = g;          // the field we overleap.
 				continue;     // Line grew 2 fields longer this time.
 			}
+#endif
 				break;
 		}
 		// (x+d-1)&wMask is the last element of the line segment.
 		// d is the size of the segment. listCountRead is in correct position.
+
+#if defined( LOG_LINE_LENGTH )
+		++dcount[d];
+#endif
+
+
 
 		bool leftflag=false;   // True if we might need to put the field left
 		bool rightflag=false;  // resp. right of the segment to listedAddr.
@@ -2587,24 +2605,37 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 				listedAddr[(listCountWrite++)&sizeMask] = pos;
 		}
 	}
+#if defined( LOG_LINE_LENGTH )
+	FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
+	for (std::map<size_t,int>::iterator it=dcount.begin();it!=dcount.end();it++)
+		fprintf(dlog,"line length: %3d count: %4d\n",it->first,it->second);
+#endif
 }
 
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	#define  USE_GRADIENT_VERSION_SIMPLE
+	#define   USE_GRADIENT_VERSION_SIMPLE
+
+#if defined( LOG_LINE_LENGTH )
+	if (gradientType != GT_UNDEFINED) {
+		FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
+		fprintf(dlog, "gradientType: %d\n", gradientType);
+		fprintf(dlog, "canSwim: %d\n", canSwim);
+	}
+#endif
 	
-	#if defined(USE_GRADIENT_VERSION_TEST_KAI)  // compare the results of updateGlobalGradientVersionKai and the Simon version
+	#if defined( USE_GRADIENT_VERSION_TEST_KAI)
 	if (gradientType == GT_UNDEFINED)
 		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 	else
 	{
 		Tint *testListedAddr = new Tint[size];
-		memcpy (testListedAddr, listedAddr, size);
 		Uint8 *testGradient = new Uint8[size];
+		memcpy (testListedAddr, listedAddr, size);
 		memcpy (testGradient, gradient, size);
 		updateGlobalGradientVersionKai<Tint>(testGradient, testListedAddr, listCountWrite);
-		updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
+		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 		assert (memcmp (testGradient, gradient, size) == 0);
 	}
 		
