@@ -64,6 +64,7 @@ Game::~Game()
 		sum+=ticksGameSum[i];
 	if (sum)
 	{
+		fprintf(logFile, "(sync)stepCounter=%d\n", stepCounter);
 		fprintf(logFile, "execution time of Game::step: sum=%d\n", sum);
 		for (int i=0; i<32; i++)
 			fprintf(logFile, "ticksGameSum[%2d]=%8d, (%f %%)\n", i, ticksGameSum[i], (float)ticksGameSum[i]*100./(float)sum);
