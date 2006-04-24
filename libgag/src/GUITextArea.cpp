@@ -63,7 +63,41 @@ namespace GAGGUI
 		if (sprite)
 			spriteWidth = sprite->getW(0);	
 	}
-
+	
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const char *text, const char *spritelocation)
+		: RectangularWidget(tooltip, tooltipFont)
+	{
+		this->x = x;
+		this->y = y;
+		this->w = w;
+		this->h = h;
+		this->hAlignFlag = hAlign;
+		this->vAlignFlag = vAlign;
+		
+		this->readOnly = readOnly;
+		this->sprite = NULL;
+		this->spriteWidth = 0;
+		// TODO : clean this and store text font
+		this->font = Toolkit::getFont(font);
+		assert(this->font);
+		assert(font);
+		charHeight = this->font->getStringHeight((const char *)NULL);
+		assert(charHeight);
+		areaHeight = (h-8)/charHeight;
+		areaPos=0;
+		
+		cursorPos = 0;
+		cursorPosY = 0;
+		cursorScreenPosY = 0;
+		
+		this->text = text;
+		
+		if (spritelocation)
+			sprite = Toolkit::getSprite(spritelocation);
+		if (sprite)
+			spriteWidth = sprite->getW(0);	
+	}
+	
 	TextArea::~TextArea(void)
 	{
 		
@@ -434,7 +468,7 @@ namespace GAGGUI
 		compute();
 	}
 	
-	void TextArea::init(void)
+	void TextArea::internalInit(void)
 	{
 		layout();
 	}

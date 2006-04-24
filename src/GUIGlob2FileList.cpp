@@ -28,6 +28,14 @@ Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	this->generateList();
 }
 
+Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+														 const char *dir, const std::string& tooltip, const std::string &tooltipFont,
+														 const char *extension, const bool recurse)
+	: FileList(x, y, w, h, hAlign, vAlign, font, dir, tooltip, tooltipFont, extension, recurse)
+{
+	this->generateList();
+}
+
 Glob2FileList::~Glob2FileList()
 {}
 

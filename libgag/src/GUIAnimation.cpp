@@ -47,7 +47,7 @@ namespace GAGGUI
 		this->h=archPtr->getH(start);
 	}
 	
-	void Animation::init(void)
+	void Animation::internalInit(void)
 	{
 		archPtr=Toolkit::getSprite(sprite.c_str());
 		assert(archPtr);

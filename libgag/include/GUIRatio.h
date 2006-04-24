@@ -34,12 +34,14 @@ namespace GAGGUI
 	{
 	public:
 		Ratio() { fontPtr=NULL; }
+		Ratio(const std::string& tooltip, const std::string &tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { fontPtr=NULL; }
 		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
+		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font, const std::string& tooltip, const std::string &tooltipFont);
 		virtual ~Ratio();
 	
 		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 	
 		void set(int newValue) {value=newValue;};

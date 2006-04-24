@@ -53,6 +53,33 @@ namespace GAGGUI
 		ratio=1.0;
 	}
 	
+	Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font, const std::string& tooltip, const std::string &tooltipFont)
+		: HighlightableWidget(tooltip, tooltipFont)
+	{
+		assert(font);
+		
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+	
+		this->size=size;
+		this->value=value;
+		oldValue=value;
+		
+		this->font=font;
+		
+		max=w-size-1;
+		assert(value<max);
+		valueUpdated=true;
+		pressed=false;
+		
+		start=0.0;
+		ratio=1.0;
+	}
+	
 	Ratio::~Ratio()
 	{
 		// Let's sing.
@@ -108,7 +135,7 @@ namespace GAGGUI
 		
 	}
 	
-	void Ratio::init(void)
+	void Ratio::internalInit(void)
 	{
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);

@@ -37,11 +37,13 @@ namespace GAGGUI
 	{
 	public:
 		TextArea() { font=NULL; }
+		TextArea(const std::string &tooltip, const std::string &tooltipFont) : RectangularWidget(tooltip, tooltipFont) { font=NULL; }
 		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="", const char *spritelocation=NULL);
+		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, bool readOnly=true, const char *text="", const char *spritelocation=NULL);
 		virtual ~TextArea();
 	
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 	
 		virtual void setText(const char *text);

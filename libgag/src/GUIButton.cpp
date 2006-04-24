@@ -39,7 +39,22 @@ namespace GAGGUI
 	
 		this->unicodeShortcut=unicodeShortcut;
 	}
+
+	Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode,
+		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut)
+	:HighlightableWidget(tooltip, tooltipFont, returnCode)
+	{
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
 	
+		this->unicodeShortcut=unicodeShortcut;
+	}
+
+
 	
 	void Button::onSDLEvent(SDL_Event *event)
 	{
@@ -78,10 +93,22 @@ namespace GAGGUI
 		this->text=text;
 		fontPtr=NULL;
 	}
-	
-	void TextButton::init(void)
+
+	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode,
+		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode)
+		:Button(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, returnCode, tooltip, tooltipFont, unicode)
 	{
-		Button::init();
+		assert(font);
+		assert(text);
+		this->font=font;
+		this->text=text;
+		fontPtr=NULL;
+	}
+
+
+	void TextButton::internalInit(void)
+	{
+		Button::internalInit();
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);
 	}
@@ -122,6 +149,18 @@ namespace GAGGUI
 		this->state=startState;
 	}
 	
+	OnOffButton::OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont)
+	:HighlightableWidget(tooltip, tooltipFont, returnCode)
+	{
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+	
+		this->state=startState;
+	}
 	void OnOffButton::onSDLEvent(SDL_Event *event)
 	{
 		int x, y, w, h;
@@ -167,6 +206,19 @@ namespace GAGGUI
 	
 	ColorButton::ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode)
 	:HighlightableWidget(returnCode)
+	{
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+	
+		selColor=0;
+	}
+
+	ColorButton::ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string& tooltip, const std::string &tooltipFont, int returnCode)
+	:HighlightableWidget(tooltip, tooltipFont, returnCode)
 	{
 		this->x=x;
 		this->y=y;
@@ -237,7 +289,12 @@ namespace GAGGUI
 	{
 		textIndex = 0;
 	}
-	
+	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode)
+	:TextButton(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, font, text, returnCode, tooltip, tooltipFont, unicode)
+	{
+		textIndex = 0;
+	}
+
 	void MultiTextButton::onSDLEvent(SDL_Event *event)
 	{
 		int x, y, w, h;

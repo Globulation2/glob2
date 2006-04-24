@@ -254,7 +254,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void TextInput::init(void)
+	void TextInput::internalInit(void)
 	{
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);

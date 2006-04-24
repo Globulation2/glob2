@@ -41,6 +41,18 @@ namespace GAGGUI
 		//this->generateList();
 	}
 	
+	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+										const char *dir, const std::string& tooltip, const std::string &tooltipFont,
+										const char *extension, const bool recurse)
+		: List(x, y, w, h, hAlign, vAlign, font, tooltip, tooltipFont),
+			dir(dir),
+			extension(extension), recurse(recurse), 
+			current("")
+	{
+		// There is a problem with this call: it doesn't use the child's virtual methods (fileToList and listToFile)
+		// For now: call it explicitly from the child's constructor or the program
+		//this->generateList();
+	}
 	FileList::~FileList()
 	{}
 	

@@ -93,24 +93,51 @@ namespace GAGGUI
 	//! A widget is a GUI block element
 	class Widget
 	{
+	private:
+		//! Tooltip text
+		std::string tooltip;
+		//! Tick id from last mouse move
+		Uint32 lastIdleTick;
+		//! Current tick id
+		Uint32 currentTick;
+		//! Mouse position
+		int mx, my;
+		//! Tooltip font name
+		std::string tooltipFont;
+		//! We need a font to draw the tooltip
+		GAGCore::Font *tooltipFontPtr;
 	public:
-			//! if the widget is visible it receive paint event, timer event and SDL event. Otherwise it receive no events.
+		//! if the widget is visible it receive paint event, timer event and SDL event. Otherwise it receive no events.
 		bool visible;
 	
 	public:
 		//! Widget constructor
 		Widget();
+		//! Widget constructor, with a tooltip
+		Widget(const std::string& tooltip, const std::string &tooltipFont);
 		//! Widget destructor
 		virtual ~Widget();
 	
-		//! Method called for each timer's tick
+		//! Set the widget's tooltip
+		void setTooltip(const std::string &tt, const std::string &tooltipFont);
+		//! Called when a timer tick occurs. Template method : call onTimer
+		virtual void timerTick(Uint32 tick);
+		//! Specific method called for each timer's tick
 		virtual void onTimer(Uint32 tick) { }
-		//! Method called for each SDL_Event
+		//! Called when an event occurs. Template method : call onSDLevent
+		virtual void handleSDLEvent(SDL_Event *event);
+		//! Specific method of the widget called for each SDL_Event
 		virtual void onSDLEvent(SDL_Event *event) { }
 		//! Drawing methode of the widget
 		virtual void paint(void) = 0;
-		//! Init the widget, called before the first paint
-		virtual void init(void) { }
+		//! Draw the tooltip
+		void displayTooltip(void);
+		//! Initialize the widget, called before the first paint
+		void init(void);
+		//! Specific initialization of the widget. Called before the first paint
+		virtual void internalInit(void) { };
+		//! Return true if the point is in the widget
+		virtual bool isOnWidget(int x, int y) = 0;
 	
 	protected:
 		friend class Screen;
@@ -138,21 +165,24 @@ namespace GAGGUI
 		Sint32 h;
 		Uint32 hAlignFlag;
 		Uint32 vAlignFlag;
-	
 	public:
 		//! RectangularWidget constructor, set all values to 0
 		RectangularWidget();
+		//! Constructs a Widget with a tooltip
+		RectangularWidget(const std::string& tooltip, const std::string &tooltipFont);
 		//! RectangularWidget destructor
 		virtual ~RectangularWidget() { }
-	
+
 		//! Show the widget, put in queue for end of step
 		virtual void show(void);
 	
 		//! Hide the widget, put in queue for end of step
 		virtual void hide(void);
-	
+
 		//! Show or hide the widget, call show or hide depending on visibe
 		virtual void setVisible(bool visible);
+
+		virtual bool isOnWidget(int x, int y);
 	
 	protected:
 		//! Compute the actual position from the layout informations
@@ -172,7 +202,9 @@ namespace GAGGUI
 	
 	public:
 		HighlightableWidget();
+		HighlightableWidget(const std::string& tooltip, const std::string &tooltipFont);
 		HighlightableWidget(Sint32 returnCode);
+		HighlightableWidget(const std::string& tooltip, const std::string &tooltipFont, Sint32 returnCode);
 	
 		virtual ~HighlightableWidget() {}
 	

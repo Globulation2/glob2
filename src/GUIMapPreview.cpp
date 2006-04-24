@@ -46,6 +46,22 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
 	//lastRandomGenerationMethode=eUNIFORM;
 }
 
+MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string &tooltip, const std::string &tooltipFont)
+	: RectangularWidget(tooltip, tooltipFont)
+{
+	this->x = x;
+	this->y = y;
+	this->hAlignFlag = hAlign;
+	this->vAlignFlag = vAlign;
+	this->w = 128;
+	this->h = 128;
+	lastW=0;
+	lastH=0;
+	randomGenerated = false;
+	mapThumbnail = NULL;
+	//lastRandomGenerationMethode=eUNIFORM;
+}
+
 MapPreview::~MapPreview()
 {
 	if (mapThumbnail)

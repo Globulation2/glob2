@@ -39,7 +39,7 @@ namespace GAGGUI
 		this->font=font;
 		this->text=text;
 	
-		init();
+		internalInit();
 		assert(fontPtr);
 		assert(text);
 		
@@ -67,7 +67,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void Text::init(void)
+	void Text::internalInit(void)
 	{
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);

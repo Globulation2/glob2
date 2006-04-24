@@ -43,6 +43,8 @@ class MapPreview: public RectangularWidget
 public:
 	//! Constructor, takes position, alignement and initial map name
 	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign);
+	//! Constructor, takes position, alignement, initial map name and a tooltip
+	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string &tooltip, const std::string &tooltipFont);
 	//! Destructor
 	virtual ~MapPreview();
 	virtual void paint(void);
