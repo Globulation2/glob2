@@ -29,6 +29,10 @@ public:
 	Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
 								const char *dir, 
 								const char *extension=NULL, const bool recurse=false);
+
+	Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
+								const char *dir, const std::string& tooltip, const std::string &tooltipFont,
+								const char *extension=NULL, const bool recurse=false);
 	virtual ~Glob2FileList();
 
 	//! converts glob2 file name to displayed name

@@ -46,6 +46,26 @@ namespace GAGGUI
 		archPtr=NULL;
 	}
 	
+	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, const std::string &tooltip, const std::string &tooltipFont, unsigned defaultValue, unsigned maxValue, unsigned step, const char *sprite, Sint32 id)
+		: RectangularWidget(tooltip, tooltipFont)
+	{
+		this->x=x;
+		this->y=y;
+		this->maxValue=maxValue;
+		this->step=step;
+		this->w=width;
+		this->h=10;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+		this->value=defaultValue;
+		this->dragging = false;
+	
+		if (sprite)
+			this->sprite=sprite;
+		this->id=id;
+		archPtr=NULL;
+	}
+	
 	void Selector::clipValue(int v)
 	{
 		if (v>=static_cast<int>(maxValue))
@@ -94,7 +114,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void Selector::init(void)
+	void Selector::internalInit(void)
 	{
 		if (id>=0)
 		{

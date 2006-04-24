@@ -45,6 +45,24 @@ namespace GAGGUI
 		selectionState = NOTHING_PRESSED;
 	}
 	
+	List::List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font, const std::string& tooltip, const std::string &tooltipFont)
+		: HighlightableWidget(tooltip, tooltipFont)
+	{
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+	
+		this->font=font;
+		nth=-1;
+		disp=0;
+		blockLength=0;
+		blockPos=0;
+		selectionState = NOTHING_PRESSED;
+	}
+	
 	List::~List()
 	{
 	
@@ -199,7 +217,7 @@ namespace GAGGUI
 		this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
 	}
 	
-	void List::init(void)
+	void List::internalInit(void)
 	{
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);

@@ -48,7 +48,7 @@ namespace GAGGUI
 		Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count=1, Sint32 duration=1);
 		virtual ~Animation() { }
 		virtual void onTimer(Uint32 tick);
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 	};
 }

@@ -70,12 +70,16 @@ namespace GAGGUI
 		List() { fontPtr = NULL; }
 		//! Creator, with arguments. x, y, w, h are the positional information. hAlign and vAlign the layouting flags. font the name of the font to use
 		List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font);
+		//! Creator with tooltip
+		List(const std::string& tooltip, const std::string& tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { fontPtr = NULL; }
+		//! Creator with tooltip, with arguments. x, y, w, h are the positional information. hAlign and vAlign the layouting flags. font the name of the font to use
+		List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font, const std::string& tooltip, const std::string &tooltipFont);
 		//! Destructor
 		virtual ~List();
 	
 		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 	
 		//! Add text to pos in the list

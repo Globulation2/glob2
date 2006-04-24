@@ -22,6 +22,8 @@
 #include <GraphicContext.h>
 #include <cmath>
 
+#include <Toolkit.h>
+
 #define SCREEN_ANIMATION_FRAME_COUNT 10
 
 using namespace GAGCore;
@@ -116,20 +118,93 @@ namespace GAGGUI
 	
 	Widget::Widget()
 	{
+		this->tooltipFontPtr = NULL;
 		visible=true;
 		parent=NULL;
+	}
+	
+	Widget::Widget(const std::string& tooltip, const std::string &tooltipFont)
+	{
+		this->tooltipFontPtr = NULL;
+		this->tooltip = tooltip;
+		this->tooltipFont = tooltipFont;
+		lastIdleTick = 0;
+		my = -1;
+		mx = -1;
+		visible = true;
+		parent = NULL;
 	}
 	
 	Widget::~Widget()
 	{
 		
 	}
+
+	void Widget::init(void)
+	{
+		if(tooltipFont.length() != 0 && tooltip.length() != 0) {
+			this->tooltipFontPtr = Toolkit::getFont(tooltipFont.c_str());
+		}
+		internalInit();
+	}
+
+	void Widget::timerTick(Uint32 tick)
+	{
+		currentTick = tick;
+		onTimer(tick);
+	}
+
+	void Widget::handleSDLEvent(SDL_Event *event)
+	{
+		if (event->type == SDL_MOUSEMOTION)
+		{
+			// Mouse has moved
+			lastIdleTick = currentTick;
+			mx = event->motion.x;
+			my = event->motion.y;
+		}	
+		onSDLEvent(event);
+	}
 	
+	void Widget::displayTooltip()
+	{
+		// We have a tooltip and the mouse is idle on our widget for some ticks (1 SDL tick = 1ms)
+		if(tooltipFontPtr != NULL && tooltip.length() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
+		{
+			DrawableSurface *gfx = parent->getSurface();
+			assert(gfx);
+			
+			int width = tooltipFontPtr->getStringWidth(tooltip.c_str());
+			int height = tooltipFontPtr->getStringHeight(tooltip.c_str());
+			int x = mx - width - 10;
+			if(x < 0) x = 0;
+			int y = my - height - 10;
+			if(y < 0) y = 0;
+			
+			gfx->drawFilledRect(x + 1, y + 1, width + 1, height, 22, 0, 0, 128);
+			gfx->drawRect(x,y, width + 2, height + 1, 255, 255, 255);
+			gfx->drawString(x, y, tooltipFontPtr, tooltip);
+
+		}
+	}
 	RectangularWidget::RectangularWidget()
 	{
 		x=y=w=h=hAlignFlag=vAlignFlag=0;
 	}
-	
+
+	RectangularWidget::RectangularWidget(const std::string& tooltip, const std::string &tooltipFont)
+		: Widget(tooltip, tooltipFont)
+	{
+		x=y=w=h=hAlignFlag=vAlignFlag=0;
+	}
+
+	bool RectangularWidget::isOnWidget(int _x, int _y)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		return (isPtInRect(_x, _y, x, y, w, h));
+	}
+
 	void RectangularWidget::show(void)
 	{
 		visible = true;
@@ -254,6 +329,17 @@ namespace GAGGUI
 		actAnimationTime = 0;
 		this->returnCode = 0;
 	}
+
+	HighlightableWidget::HighlightableWidget(const std::string& tooltip, const std::string &tooltipFont, Sint32 returnCode)
+		: RectangularWidget(tooltip, tooltipFont), totalAnimationTime(10)
+	{
+		assert(totalAnimationTime > 0);
+		highlighted = false;
+		prevHighlightValue = 0;
+		nextHighlightValue = 0;
+		actAnimationTime = 0;
+		this->returnCode = returnCode;
+	}
 	
 	HighlightableWidget::HighlightableWidget(Sint32 returnCode)
 	: totalAnimationTime(10)
@@ -265,6 +351,18 @@ namespace GAGGUI
 		actAnimationTime = 0;
 		this->returnCode = returnCode;
 	}
+
+	HighlightableWidget::HighlightableWidget(const std::string& tooltip, const std::string & tooltipFont)
+		: RectangularWidget(tooltip, tooltipFont), totalAnimationTime(10)
+	{
+		assert(totalAnimationTime > 0);
+		highlighted = false;
+		prevHighlightValue = 0;
+		nextHighlightValue = 0;
+		actAnimationTime = 0;
+		this->returnCode = 0;
+	}
+
 	
 	void HighlightableWidget::onSDLEvent(SDL_Event *event)
 	{
@@ -455,7 +553,7 @@ namespace GAGGUI
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
 			if ((*it)->visible)
-				(*it)->onSDLEvent(event);
+				(*it)->handleSDLEvent(event);
 		}
 	}
 	
@@ -465,7 +563,7 @@ namespace GAGGUI
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
 			if ((*it)->visible)
-				(*it)->onTimer(tick);
+				(*it)->timerTick(tick);
 		}
 	}
 	
@@ -487,6 +585,12 @@ namespace GAGGUI
 		{
 			if ((*it)->visible)
 				(*it)->paint();
+		}
+		/* We need a second loop in order to have tooltip over everything else */
+		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+		{
+			if ((*it)->visible)
+				(*it)->displayTooltip();
 		}
 		gfx->nextFrame();
 		

@@ -32,7 +32,31 @@ namespace GAGGUI
 		x = y = w = h = m = nth = 0;
 	}
 	
+	Number::Number(const std::string &tooltip, const std::string &tooltipFont)
+		:HighlightableWidget(tooltip, tooltipFont)
+	{
+		x = y = w = h = m = nth = 0;
+	}
+	
 	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
+	{
+		assert(font);
+		this->font = font;
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+	
+		if (m<1)
+			m=h;
+		this->m=m;
+		nth=0;
+	}
+	
+	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font, const std::string &tooltip, const std::string &tooltipFont)
+		: HighlightableWidget(tooltip, tooltipFont)
 	{
 		assert(font);
 		this->font = font;
@@ -90,7 +114,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void Number::init(void)
+	void Number::internalInit(void)
 	{
 		this->fontPtr=Toolkit::getFont(font.c_str());
 		assert(fontPtr);

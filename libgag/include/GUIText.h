@@ -41,11 +41,17 @@ namespace GAGGUI
 		
 	public:
 		Text() { fontPtr = NULL; }
+		Text(const std::string &tooltip, const std::string &tooltipFont) : RectangularWidget(tooltip, tooltipFont) { fontPtr = NULL; }
+
 		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text, int w=0, int h=0) { constructor(x, y, hAlign, vAlign, font, text.c_str(), w, h); }
+		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text, const std::string &tooltip, const std::string &tooltipFont, int w=0, int h=0) 
+			: RectangularWidget(tooltip, tooltipFont)
+				{ constructor(x, y, hAlign, vAlign, font, text.c_str(), w, h); }
+
 		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", int w=0, int h=0) { constructor(x, y, hAlign, vAlign, font, text, w, h); }
 		virtual ~Text() { }
 		
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 		virtual const char *getText() const { return text.c_str(); }
 		virtual void setText(const char *newText);

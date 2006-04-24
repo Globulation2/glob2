@@ -39,6 +39,8 @@ namespace GAGGUI
 	public:
 		Button() {  }
 		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut=0);
+		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode,
+			const std::string& tooltip, const std::string &font, Uint16 unicodeShortcut=0);
 		virtual ~Button() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
@@ -55,9 +57,11 @@ namespace GAGGUI
 	
 	public:
 		TextButton() { fontPtr=NULL; }
-		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
+		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode,
+		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode=0);
+		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returxnCode, Uint16 unicodeShortcut=0);
 		virtual ~TextButton() { }
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 	
 		void setText(const char *text);
@@ -71,7 +75,9 @@ namespace GAGGUI
 	
 	public:
 		OnOffButton() { state=false; returnCode=0; }
+		OnOffButton(const std::string &tooltip, const std::string &tooltipFont) :HighlightableWidget(tooltip, tooltipFont) { state=false; returnCode=0; }
 		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode);
+		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont);
 		virtual ~OnOffButton() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
@@ -102,6 +108,8 @@ namespace GAGGUI
 		ColorButton() { selColor=returnCode=0; }
 		//! ColorButton constructor
 		ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode);
+		//! With a tooltip
+		ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string& tooltip, const std::string &tooltipFont, int returnCode);
 		//! ColorButton destructor
 		virtual ~ColorButton() { }
 	
@@ -130,6 +138,7 @@ namespace GAGGUI
 	public:
 		MultiTextButton() { textIndex=0; returnCode=0; }
 		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
+		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut=0);
 		virtual ~MultiTextButton() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);

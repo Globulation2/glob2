@@ -45,11 +45,13 @@ namespace GAGGUI
 	
 	public:
 		Number();
+		Number(const std::string& tooltip, const std::string &tooltipFont);
 		Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font);
+		Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font, const std::string& tooltip, const std::string &tooltipFont);
 		virtual ~Number();
 	
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 	
 		void add(int number);

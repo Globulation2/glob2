@@ -54,12 +54,17 @@ namespace GAGGUI
 		// constructor / destructor
 		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text="", bool activated=false, size_t maxLength=0, bool password=false) { constructor(x, y, w, h, hAlign, vAlign, font, text.c_str(), activated, maxLength, password); }
 		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, size_t maxLength=0, bool password=false) { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
+		//! With a tooltip
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, const std::string &text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
+		 { constructor(x, y, w, h, hAlign, vAlign, font, text.c_str(), activated, maxLength, password); }
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, const char *text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
+		 { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
 		virtual ~TextInput() { }
 	
 		// methods inherited from widget
 		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 		
 		// text setter / getter
