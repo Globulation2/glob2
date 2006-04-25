@@ -57,7 +57,7 @@ using namespace GAGCore;
 	public:
 		ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *filename);
 		virtual ~ScrollingText() { }
-		virtual void init(void);
+		virtual void internalInit(void);
 		virtual void paint(void);
 		virtual void onTimer(Uint32 tick);
 	};
