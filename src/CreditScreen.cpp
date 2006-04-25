@@ -104,7 +104,7 @@ ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	delete inputLineStream;
 }
 
-void ScrollingText::init(void)
+void ScrollingText::internalInit(void)
 {
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
