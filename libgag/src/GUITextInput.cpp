@@ -62,39 +62,39 @@ namespace GAGGUI
 		parent->onAction(this, TEXT_SET, 0, 0);
 	}
 	
-	void TextInput::onSDLEvent(SDL_Event *event)
+	void TextInput::onSDLMouseButtonDown(SDL_Event *event)
 	{
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		HighlightableWidget::onSDLEvent(event);
-	
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+			if (activated)
 			{
-				if (activated)
-				{
-					// we move cursor:
-					int dx=event->button.x-x-1;
-	
-					cursPos = text.length();
-					while((cursPos>0) && (fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep)>dx))
-						--cursPos;
-	
-					recomputeTextInfos();
-					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-				}
-				else
-				{
-					activated=true;
-					recomputeTextInfos();
-					parent->onAction(this, TEXT_ACTIVATED, 0, 0);
-				}
+				// we move cursor:
+				int dx=event->button.x-x-1;
+
+				cursPos = text.length();
+				while((cursPos>0) && (fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep)>dx))
+					--cursPos;
+
+				recomputeTextInfos();
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+			}
+			else
+			{
+				activated=true;
+				recomputeTextInfos();
+				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 			}
 		}
+	}
 	
-		if (activated && event->type==SDL_KEYDOWN)
+	void TextInput::onSDLKeyDown(SDL_Event *event)
+	{
+		assert(event->type == SDL_KEYDOWN);
+		if (activated)
 		{
 			SDLKey sym=event->key.keysym.sym;
 			SDLMod mod=event->key.keysym.mod;

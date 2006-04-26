@@ -78,7 +78,6 @@ namespace GAGGUI
 		virtual ~List();
 	
 		virtual void onTimer(Uint32 tick);
-		virtual void onSDLEvent(SDL_Event *event);
 		virtual void internalInit(void);
 		virtual void paint(void);
 	
@@ -108,6 +107,9 @@ namespace GAGGUI
 		void setSelectionIndex(int index);
 		
 	protected:
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
+		virtual void onSDLMouseMotion(SDL_Event *event);
 		//! Draw an item of the list, called by paint
 		virtual void drawItem(int x, int y, size_t element);
 	};

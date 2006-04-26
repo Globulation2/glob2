@@ -34,7 +34,30 @@ namespace GAGCore
 namespace GAGGUI
 {
 	class TextArea:public RectangularWidget
-	{
+	{	
+	protected:
+		bool readOnly;
+		std::string spritelocation;
+		int spriteWidth;
+		GAGCore::Font *font;
+		size_t areaHeight;
+		size_t areaPos;
+		unsigned int charHeight;
+		std::vector <size_t> lines;
+		std::vector <int> lines_frames;
+		std::vector <int> frames;
+		std::string text;
+		std::map<std::string, int> stringWidthCache;
+		GAGCore::Sprite *sprite;
+		
+		// edit mod variables
+		// this one is the only one always valid, other are recomputed from it
+		size_t cursorPos;
+		// this one can be invalid, but must be within textBufferLength
+		size_t cursorPosY;
+		// this one can be anything
+		unsigned int cursorScreenPosY;
+	
 	public:
 		TextArea() { font=NULL; }
 		TextArea(const std::string &tooltip, const std::string &tooltipFont) : RectangularWidget(tooltip, tooltipFont) { font=NULL; }
@@ -42,7 +65,6 @@ namespace GAGGUI
 		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, bool readOnly=true, const char *text="", const char *spritelocation=NULL);
 		virtual ~TextArea();
 	
-		virtual void onSDLEvent(SDL_Event *event);
 		virtual void internalInit(void);
 		virtual void paint(void);
 	
@@ -71,29 +93,8 @@ namespace GAGGUI
 		virtual void layout(void);
 		//! we make sure the repaint will show something correct
 		virtual void compute(void);
-	
-	protected:
-		bool readOnly;
-		std::string spritelocation;
-		int spriteWidth;
-		GAGCore::Font *font;
-		size_t areaHeight;
-		size_t areaPos;
-		unsigned int charHeight;
-		std::vector <size_t> lines;
-		std::vector <int> lines_frames;
-		std::vector <int> frames;
-		std::string text;
-		std::map<std::string, int> stringWidthCache;
-		GAGCore::Sprite *sprite;
-		
-		// edit mod variables
-		// this one is the only one always valid, other are recomputed from it
-		size_t cursorPos;
-		// this one can be invalid, but must be within textBufferLength
-		size_t cursorPosY;
-		// this one can be anything
-		unsigned int cursorScreenPosY;
+		virtual void onSDLKeyDown(SDL_Event *event);
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
 	};
 }
 

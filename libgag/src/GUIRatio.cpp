@@ -93,44 +93,49 @@ namespace GAGGUI
 			valueUpdated = false;
 		}
 	}
-	
-	void Ratio::onSDLEvent(SDL_Event *event)
+		
+	void Ratio::onSDLMouseButtonDown(SDL_Event *event)
 	{
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		HighlightableWidget::onSDLEvent(event);
+		if (isPtInRect(event->button.x, event->button.y, x+value, y, x+value+size, h))
+		{
+			pressed=true;
+			px=event->button.x;
+			py=event->button.y;
+			pValue=value;
+		}
+	}
+	
+	void Ratio::onSDLMouseButtonUp(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEBUTTONUP);
+		pressed=false;
+	}
+	
+	void Ratio::onSDLMouseMotion(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEMOTION);
+		HighlightableWidget::onSDLMouseMotion(event);
 		
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
+		int dx=event->motion.x-px;
+		int dy=event->motion.y-py;
+		if (abs(dy)>h)
+			dx=0;
+		value=pValue+dx;
+		if (value<0)
+			value=0;
+		else if (value>max)
+			value=max;
+		if (oldValue!=value)
 		{
-			if (isPtInRect(event->button.x, event->button.y, x+value, y, x+value+size, h))
-			{
-				pressed=true;
-				px=event->button.x;
-				py=event->button.y;
-				pValue=value;
-			}
-		}
-		else if (event->type==SDL_MOUSEBUTTONUP)
-		{
-			pressed=false;
-		}
-		else  if ((event->type==SDL_MOUSEMOTION) && pressed )
-		{
-			int dx=event->motion.x-px;
-			int dy=event->motion.y-py;
-			if (abs(dy)>h)
-				dx=0;
-			value=pValue+dx;
-			if (value<0)
-				value=0;
-			else if (value>max)
-				value=max;
-			if (oldValue!=value)
-			{
-				oldValue=value;
-				valueUpdated=true;
-			}
+			oldValue=value;
+			valueUpdated=true;
 		}
 		
 	}

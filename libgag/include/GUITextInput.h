@@ -63,7 +63,6 @@ namespace GAGGUI
 	
 		// methods inherited from widget
 		virtual void onTimer(Uint32 tick);
-		virtual void onSDLEvent(SDL_Event *event);
 		virtual void internalInit(void);
 		virtual void paint(void);
 		
@@ -100,6 +99,8 @@ namespace GAGGUI
 	protected:
 		void constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, size_t maxLength, bool password);
 		void recomputeTextInfos(void);
+		virtual void onSDLKeyDown(SDL_Event *event);
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
 	};
 }
 

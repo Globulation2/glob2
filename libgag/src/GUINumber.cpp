@@ -78,37 +78,34 @@ namespace GAGGUI
 		// Let's sing.
 	}
 	
-	void Number::onSDLEvent(SDL_Event *event)
+	void Number::onSDLMouseButtonDown(SDL_Event *event)
 	{
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
-		HighlightableWidget::onSDLEvent(event);
-		
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+		// We can't use isOnWidget since x, y, w, h are needed
+		// out of the test
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+			if (event->button.x-x<m)
 			{
-				if (event->button.x-x<m)
+				// a "Less" click
+				if (nth>0)
 				{
-					// a "Less" click
-					if (nth>0)
+					nth--;
+					if (numbers.size()>0)
 					{
-						nth--;
-						if (numbers.size()>0)
-						{
-							parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
-						}
-					}
-				}
-				else if (x+w-event->button.x<m)
-				{
-					// a "More" click
-					if (nth<((int)numbers.size()-1))
-					{
-						nth++;
 						parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 					}
+				}
+			}
+			else if (x+w-event->button.x<m)
+			{
+				// a "More" click
+				if (nth<((int)numbers.size()-1))
+				{
+					nth++;
+					parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 				}
 			}
 		}
