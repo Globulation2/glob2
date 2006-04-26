@@ -17,3 +17,4 @@ data/texts.nl.txt
 data/texts.ca.txt
 data/texts.sv.txt
 data/texts.pt.txt
+data/texts.tr.txt
