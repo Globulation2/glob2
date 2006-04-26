@@ -102,113 +102,113 @@ namespace GAGGUI
 		
 	}
 	
-	void List::onSDLEvent(SDL_Event *event)
+	void List::onSDLMouseButtonDown(SDL_Event *event)
 	{
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
-		HighlightableWidget::onSDLEvent(event);
-	
-		if (event->type == SDL_MOUSEBUTTONDOWN)
+		unsigned count = (h-4) / textHeight;
+		unsigned wSel;
+		if (strings.size() > count)
 		{
-			unsigned count = (h-4) / textHeight;
-			unsigned wSel;
-			if (strings.size() > count)
+			if (isPtInRect(event->button.x, event->button.y, x+w-21, y, 21, 21))
 			{
-				if (isPtInRect(event->button.x, event->button.y, x+w-21, y, 21, 21))
-				{
-					// we scroll one line up
-					selectionState = UP_ARROW_PRESSED;
-					if (disp)
-						disp--;
-				}
-				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21, 21, blockPos))
-				{
-					// we one page up
-					selectionState = UP_ZONE_PRESSED;
-					if (disp < count)
-						disp = 0;
-					else
-						disp -= count;
-				}
-				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos+blockLength, 21, h-42-blockPos-blockLength))
-				{
-					// we one page down
-					selectionState = DOWN_ZONE_PRESSED;
-					disp = std::min(disp + count, strings.size() - count);
-				}
-				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+h-21, 21, 21))
-				{
-					// we scroll one line down
-					selectionState = DOWN_ARROW_PRESSED;
-					disp = std::min(disp + 1, strings.size() - count);
-				}
-				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos, 21, blockLength))
-				{
-					selectionState = HANDLE_PRESSED;
-					mouseDragStartDisp = disp;
-					mouseDragStartPos = event->button.y;
-				}
-				wSel = w-20;
+				// we scroll one line up
+				selectionState = UP_ARROW_PRESSED;
+				if (disp)
+					disp--;
 			}
-			else
-				wSel = w;
-	
-			if (isPtInRect(event->button.x, event->button.y, x, y, wSel, h))
+			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21, 21, blockPos))
 			{
-				if (event->button.button == SDL_BUTTON_LEFT)
-				{
-					int id=event->button.y-y-2;
-					id/=textHeight;
-					id+=disp;
-					if ((id>=0) &&(id<(int)strings.size()))
-					{
-						if (this->nth != id) 
-						{
-							nth=id;
-							this->selectionChanged();
-						}
-					}
-				}
-			}
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
-			{
-				if (event->button.button == 4)
-				{
-					// we scroll one line up
-					if (disp)
-					{
-						disp--;
-					}
-				}
-				else if (event->button.button == 5)
-				{
-					// we scroll one line down
-					if (disp<strings.size()-count)
-					{
-						disp++;
-					}
-				}
-			}
-		}
-		else if (event->type == SDL_MOUSEBUTTONUP)
-		{
-			selectionState = NOTHING_PRESSED;
-		}
-		else if (event->type == SDL_MOUSEMOTION)
-		{
-			if (selectionState == HANDLE_PRESSED)
-			{
-				int count = (h-4) / textHeight;
-				int newPos = event->motion.y - mouseDragStartPos;
-				int newDisp = mouseDragStartDisp + (newPos * (int)(strings.size() - count)) / (int)((h - 43) - blockLength);
-				if (newDisp < 0)
+				// we one page up
+				selectionState = UP_ZONE_PRESSED;
+				if (disp < count)
 					disp = 0;
-				else if (newDisp > (int)(strings.size() - count))
-					disp = strings.size() - count;
 				else
-					disp = newDisp;
+					disp -= count;
 			}
+			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos+blockLength, 21, h-42-blockPos-blockLength))
+			{
+				// we one page down
+				selectionState = DOWN_ZONE_PRESSED;
+				disp = std::min(disp + count, strings.size() - count);
+			}
+			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+h-21, 21, 21))
+			{
+				// we scroll one line down
+				selectionState = DOWN_ARROW_PRESSED;
+				disp = std::min(disp + 1, strings.size() - count);
+			}
+			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos, 21, blockLength))
+			{
+				selectionState = HANDLE_PRESSED;
+				mouseDragStartDisp = disp;
+				mouseDragStartPos = event->button.y;
+			}
+			wSel = w-20;
+		}
+		else
+			wSel = w;
+
+		if (isPtInRect(event->button.x, event->button.y, x, y, wSel, h))
+		{
+			if (event->button.button == SDL_BUTTON_LEFT)
+			{
+				int id=event->button.y-y-2;
+				id/=textHeight;
+				id+=disp;
+				if ((id>=0) &&(id<(int)strings.size()))
+				{
+					if (this->nth != id) 
+					{
+						nth=id;
+						this->selectionChanged();
+					}
+				}
+			}
+		}
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		{
+			if (event->button.button == 4)
+			{
+				// we scroll one line up
+				if (disp)
+				{
+					disp--;
+				}
+			}
+			else if (event->button.button == 5)
+			{
+				// we scroll one line down
+				if (disp<strings.size()-count)
+				{
+					disp++;
+				}
+			}
+		}
+	}
+	
+	void List::onSDLMouseButtonUp(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEBUTTONUP);
+		selectionState = NOTHING_PRESSED;
+	}
+	
+	void List::onSDLMouseMotion(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEMOTION);
+		HighlightableWidget::onSDLMouseMotion(event);
+		if (selectionState == HANDLE_PRESSED)
+		{
+			int count = (h-4) / textHeight;
+			int newPos = event->motion.y - mouseDragStartPos;
+			int newDisp = mouseDragStartDisp + (newPos * (int)(strings.size() - count)) / (int)((h - 43) - blockLength);
+			if (newDisp < 0)
+				disp = 0;
+			else if (newDisp > (int)(strings.size() - count))
+				disp = strings.size() - count;
+			else
+				disp = newDisp;
 		}
 	}
 	

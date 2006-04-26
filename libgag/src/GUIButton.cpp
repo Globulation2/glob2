@@ -53,34 +53,31 @@ namespace GAGGUI
 	
 		this->unicodeShortcut=unicodeShortcut;
 	}
-
-
 	
-	void Button::onSDLEvent(SDL_Event *event)
+	void Button::onSDLKeyDown(SDL_Event *event)
 	{
+		assert(event->type == SDL_KEYDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		Uint16 typedUnicode=event->key.keysym.unicode;
+		if ((unicodeShortcut)&&(typedUnicode==unicodeShortcut))
+			parent->onAction(this, BUTTON_SHORTCUT, returnCode, unicodeShortcut);
+	}
+
+	void Button::onSDLMouseButtonDown(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
+		if (isOnWidget(event->button.x, event->button.y) &&
+				  (event->button.button == SDL_BUTTON_LEFT))
+		parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
+	}
 	
-		HighlightableWidget::onSDLEvent(event);
-	
-		if (event->type==SDL_KEYDOWN)
-		{
-			Uint16 typedUnicode=event->key.keysym.unicode;
-			if ((unicodeShortcut)&&(typedUnicode==unicodeShortcut))
-				parent->onAction(this, BUTTON_SHORTCUT, returnCode, unicodeShortcut);
-		}
-		else if (event->type==SDL_MOUSEBUTTONDOWN)
-		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+	void Button::onSDLMouseButtonUp(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEBUTTONUP);
+		if (isOnWidget(event->button.x, event->button.y) &&
 				(event->button.button == SDL_BUTTON_LEFT))
-				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
-		}
-		else if (event->type==SDL_MOUSEBUTTONUP)
-		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
-				(event->button.button == SDL_BUTTON_LEFT))
-				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
-		}
+			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
 	
 	
@@ -161,28 +158,24 @@ namespace GAGGUI
 	
 		this->state=startState;
 	}
-	void OnOffButton::onSDLEvent(SDL_Event *event)
+	
+	void OnOffButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		HighlightableWidget::onSDLEvent(event);
-	
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
+		if (isOnWidget(event->button.x, event->button.y) &&
+			(event->button.button == SDL_BUTTON_LEFT))
 		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
-				(event->button.button == SDL_BUTTON_LEFT))
-			{
-				state=!state;
-				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
-				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, state == true ? 1 : 0);
-			}
+			state=!state;
+			parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
+			parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, state == true ? 1 : 0);
 		}
-		else if (event->type==SDL_MOUSEBUTTONUP)
-		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+	}
+	
+	void OnOffButton::onSDLMouseButtonUp(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEBUTTONUP);
+		if (isOnWidget(event->button.x, event->button.y))
 				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
-		}
 	}
 	
 	void OnOffButton::paint()
@@ -230,44 +223,37 @@ namespace GAGGUI
 		selColor=0;
 	}
 	
-	void ColorButton::onSDLEvent(SDL_Event *event)
+	void ColorButton::onMouseButtonDown(SDL_Event *event)
 	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		HighlightableWidget::onSDLEvent(event);
-	
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+		if (isOnWidget(event->button.x, event->button.y) && v.size())
 		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) && v.size())
+			if (event->button.button == SDL_BUTTON_LEFT)
 			{
-				if (event->button.button == SDL_BUTTON_LEFT)
-				{
-					selColor++;
-					if (selColor>=(signed)v.size())
-						selColor=0;
-	
-					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
-					parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
-				}
-				else if (event->button.button == SDL_BUTTON_RIGHT)
-				{
-					selColor--;
-					if (selColor<0)
-						selColor=(signed)v.size()-1;
-					
-					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
-					parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
-				}
+				selColor++;
+				if (selColor>=(signed)v.size())
+					selColor=0;
+		
+				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
+				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
+			}
+			else if (event->button.button == SDL_BUTTON_RIGHT)
+			{
+				selColor--;
+				if (selColor<0)
+					selColor=(signed)v.size()-1;
+				
+				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
+				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 			}
 		}
-		else if (event->type==SDL_MOUSEBUTTONUP)
-		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+	}
+	
+	void ColorButton::onMouseButtonUp(SDL_Event *event)
+	{
+		if (isOnWidget(event->button.x, event->button.y) &&
 				(event->button.button == SDL_BUTTON_LEFT))
-			{
-				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
-			}
+		{
+			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 		}
 	}
 	
@@ -294,48 +280,43 @@ namespace GAGGUI
 	{
 		textIndex = 0;
 	}
-
-	void MultiTextButton::onSDLEvent(SDL_Event *event)
+	
+	void MultiTextButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		HighlightableWidget::onSDLEvent(event);
-	
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
+		if (isOnWidget(event->button.x, event->button.y) && texts.size())
 		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) && texts.size())
+			if (event->button.button == SDL_BUTTON_LEFT)
 			{
-				if (event->button.button == SDL_BUTTON_LEFT)
-				{
-					textIndex++;
-					if (textIndex >= texts.size())
-						textIndex = 0;
-					setText(texts.at(textIndex));
+				textIndex++;
+				if (textIndex >= texts.size())
+					textIndex = 0;
+				setText(texts.at(textIndex));
 	
-					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
-					parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
-				}
-				else if (event->button.button == SDL_BUTTON_RIGHT)
-				{
-					if (textIndex > 0)
-						textIndex--;
-					else
-						textIndex = texts.size()-1;
-					setText(texts.at(textIndex));
-					
-					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
-					parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
-				}
+				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
+				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
+			}
+			else if (event->button.button == SDL_BUTTON_RIGHT)
+			{
+				if (textIndex > 0)
+					textIndex--;
+				else
+					textIndex = texts.size()-1;
+				setText(texts.at(textIndex));
+				
+				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
+				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 			}
 		}
-		else if (event->type==SDL_MOUSEBUTTONUP)
+	}
+	
+	void MultiTextButton::onSDLMouseButtonUp(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEBUTTONUP);
+		if (isOnWidget(event->button.x, event->button.y) &&
+			(event->button.button == SDL_BUTTON_LEFT))
 		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
-				(event->button.button == SDL_BUTTON_LEFT))
-			{
-				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
-			}
+			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 		}
 	}
 	

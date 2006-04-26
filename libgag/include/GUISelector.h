@@ -48,7 +48,6 @@ namespace GAGGUI
 		Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, const std::string& tooltip, const std::string &tooltipFont, unsigned defaultValue=0, unsigned maxValue=16, unsigned step=1, const char *sprite=NULL, Sint32 id=-1);
 		virtual ~Selector() { }
 	
-		virtual void onSDLEvent(SDL_Event *event);
 		virtual void internalInit(void);
 		virtual void paint(void);
 		virtual Uint32 getValue(void) { return value; }
@@ -56,6 +55,9 @@ namespace GAGGUI
 	
 	protected:
 		void clipValue(int v);
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseMotion(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
 }
 

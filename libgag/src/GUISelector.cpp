@@ -78,39 +78,42 @@ namespace GAGGUI
 		value = step * ((value + step/2) / step);
 	}
 	
-	void Selector::onSDLEvent(SDL_Event *event)
+	void Selector::onSDLMouseButtonDown(SDL_Event *event)
 	{
+		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
+		{
+			dragging = true;
+			int dx=event->button.x-x-3;
+			int v=dx*static_cast<int>(maxValue)/(w-4);
+			clipValue(v);
+			parent->onAction(this, VALUE_CHANGED, value, 0);
+		}
+	}
+		
+	void Selector::onSDLMouseMotion(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEMOTION);
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		if (dragging)
+		{
+			int dx=event->button.x-x-3;
+			int v=dx*static_cast<int>(maxValue)/(w-4);
+			clipValue(v);
+			parent->onAction(this, VALUE_CHANGED, value, 0);
+		}
+	}
 	
-		if (event->type==SDL_MOUSEBUTTONDOWN)
+	void Selector::onSDLMouseButtonUp(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEBUTTONUP);
+		if (event->button.button == SDL_BUTTON_LEFT)
 		{
-			if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
-				(event->button.button == SDL_BUTTON_LEFT))
-			{
-				dragging = true;
-				int dx=event->button.x-x-3;
-				int v=dx*static_cast<int>(maxValue)/(w-4);
-				clipValue(v);
-				parent->onAction(this, VALUE_CHANGED, value, 0);
-			}
-		}
-		else if (event->type==SDL_MOUSEMOTION)
-		{
-			if (dragging)
-			{
-				int dx=event->button.x-x-3;
-				int v=dx*static_cast<int>(maxValue)/(w-4);
-				clipValue(v);
-				parent->onAction(this, VALUE_CHANGED, value, 0);
-			}
-		}
-		else if (event->type==SDL_MOUSEBUTTONUP)
-		{
-			if (event->button.button == SDL_BUTTON_LEFT)
-			{
-				dragging = false;
-			}
+			dragging = false;
 		}
 	}
 	

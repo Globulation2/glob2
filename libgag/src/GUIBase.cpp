@@ -154,16 +154,14 @@ namespace GAGGUI
 		onTimer(tick);
 	}
 
-	void Widget::handleSDLEvent(SDL_Event *event)
+	void Widget::SDLMouseMotion(SDL_Event *event)
 	{
-		if (event->type == SDL_MOUSEMOTION)
-		{
-			// Mouse has moved
-			lastIdleTick = currentTick;
-			mx = event->motion.x;
-			my = event->motion.y;
-		}	
-		onSDLEvent(event);
+		assert(event->type == SDL_MOUSEMOTION);
+		// Mouse has moved
+		lastIdleTick = currentTick;
+		mx = event->motion.x;
+		my = event->motion.y;
+		onSDLMouseMotion(event);
 	}
 	
 	void Widget::displayTooltip()
@@ -362,36 +360,32 @@ namespace GAGGUI
 		actAnimationTime = 0;
 		this->returnCode = 0;
 	}
-
 	
-	void HighlightableWidget::onSDLEvent(SDL_Event *event)
+	void HighlightableWidget::onSDLMouseMotion(SDL_Event *event)
 	{
+		assert(event->type == SDL_MOUSEMOTION);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
-		if (event->type==SDL_MOUSEMOTION)
+		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
 		{
-			if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+			if (!highlighted)
 			{
-				if (!highlighted)
-				{
-					highlighted = true;
-					parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
-					prevHighlightValue = actAnimationTime/totalAnimationTime;
-					nextHighlightValue = 1;
-					actAnimationTime = totalAnimationTime-actAnimationTime;
-				}
+				highlighted = true;
+				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
+				prevHighlightValue = actAnimationTime/totalAnimationTime;
+				nextHighlightValue = 1;
+				actAnimationTime = totalAnimationTime-actAnimationTime;
 			}
-			else
+		}
+		else
+		{
+			if (highlighted)
 			{
-				if (highlighted)
-				{
-					highlighted = false;
-					parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
-					prevHighlightValue = 1 - actAnimationTime/totalAnimationTime;
-					nextHighlightValue = 0;
-					actAnimationTime = totalAnimationTime-actAnimationTime;
-				}
+				highlighted = false;
+				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
+				prevHighlightValue = 1 - actAnimationTime/totalAnimationTime;
+				nextHighlightValue = 0;
+				actAnimationTime = totalAnimationTime-actAnimationTime;
 			}
 		}
 	}
@@ -550,10 +544,72 @@ namespace GAGGUI
 	void Screen::dispatchEvents(SDL_Event *event)
 	{
 		onSDLEvent(event);
-		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+		// We put the switch here in order to avoid
+		// a switch in each specific onSDLEvent method
+		// we never receive neither SDL_QUIT nor
+		// SDL_VIDEORESIZE (not dispatched)
+		// For the moment, we do not take the following event in accout :
+		// SDL_SYSWMEVENT, SDL_JOY*****, 
+		switch(event->type)
 		{
-			if ((*it)->visible)
-				(*it)->handleSDLEvent(event);
+			case SDL_ACTIVEEVENT:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLActive(event);
+				}
+				break;
+			case SDL_KEYDOWN:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLKeyDown(event);
+				}
+				break;
+			case SDL_KEYUP:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLKeyUp(event);
+				}
+				break;
+			case SDL_MOUSEMOTION:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->SDLMouseMotion(event);
+				}
+				break;
+			case SDL_MOUSEBUTTONUP:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLMouseButtonUp(event);
+				}
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLMouseButtonDown(event);
+				}
+				break;
+			case SDL_VIDEOEXPOSE:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLVideoExpose(event);
+				}
+				break;
+			default:
+				// Every other event is passed to onSDLEvent
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLEvent(event);
+				}
+				break;
+
 		}
 	}
 	

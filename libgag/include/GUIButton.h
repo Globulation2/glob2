@@ -43,7 +43,10 @@ namespace GAGGUI
 			const std::string& tooltip, const std::string &font, Uint16 unicodeShortcut=0);
 		virtual ~Button() { }
 	
-		virtual void onSDLEvent(SDL_Event *event);
+	protected:
+		virtual void onSDLKeyDown(SDL_Event *event);
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
 	
 	class TextButton:public Button
@@ -80,10 +83,12 @@ namespace GAGGUI
 		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont);
 		virtual ~OnOffButton() { }
 	
-		virtual void onSDLEvent(SDL_Event *event);
 		virtual void paint(void);
 		virtual bool getState(void) { return state; }
 		virtual void setState(bool newState);
+	protected:
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
 	
 	//! A button that can have multiple color
@@ -113,8 +118,6 @@ namespace GAGGUI
 		//! ColorButton destructor
 		virtual ~ColorButton() { }
 	
-		//! Process SDL event
-		virtual void onSDLEvent(SDL_Event *event);
 		virtual void paint(void);
 		//! Add a color to the color list
 		virtual void addColor(int r, int g, int b) { v.push_back(Color(r, g, b)); }
@@ -126,6 +129,9 @@ namespace GAGGUI
 		virtual int getSelectedColor(void) { return selColor; }
 		//! Return the number of possible colors
 		virtual size_t getNumberOfColors(void) { return v.size(); }
+	protected:
+		virtual void onMouseButtonUp(SDL_Event *event);
+		virtual void onMouseButtonDown(SDL_Event *event);
 	};
 	
 	//! A button that can have multiple texts
@@ -141,7 +147,6 @@ namespace GAGGUI
 		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut=0);
 		virtual ~MultiTextButton() { }
 	
-		virtual void onSDLEvent(SDL_Event *event);
 		
 		void addText(const char *s);
 		void addText(const std::string &s) { addText(s.c_str()); }
@@ -151,6 +156,9 @@ namespace GAGGUI
 		void setIndexFromText(const std::string &s);
 		int getIndex(void) const { return textIndex; }
 		size_t getCount(void) const { return texts.size(); }
+	protected:
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
 }
 

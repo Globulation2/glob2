@@ -32,24 +32,6 @@ namespace GAGGUI
 {
 	class Ratio : public HighlightableWidget
 	{
-	public:
-		Ratio() { fontPtr=NULL; }
-		Ratio(const std::string& tooltip, const std::string &tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { fontPtr=NULL; }
-		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
-		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font, const std::string& tooltip, const std::string &tooltipFont);
-		virtual ~Ratio();
-	
-		virtual void onTimer(Uint32 tick);
-		virtual void onSDLEvent(SDL_Event *event);
-		virtual void internalInit(void);
-		virtual void paint(void);
-	
-		void set(int newValue) {value=newValue;};
-		int getMax(void);
-		int get(void);
-	
-		void setScale(float start, float ratio);
-		
 	protected:
 		int textHeight;
 		GAGCore::Font *fontPtr;
@@ -74,6 +56,29 @@ namespace GAGGUI
 		float ratio;
 	
 		bool valueUpdated;
+
+	public:
+		Ratio() { fontPtr=NULL; }
+		Ratio(const std::string& tooltip, const std::string &tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { fontPtr=NULL; }
+		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
+		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font, const std::string& tooltip, const std::string &tooltipFont);
+		virtual ~Ratio();
+	
+		virtual void onTimer(Uint32 tick);
+		virtual void internalInit(void);
+		virtual void paint(void);
+	
+		void set(int newValue) {value=newValue;};
+		int getMax(void);
+		int get(void);
+	
+		void setScale(float start, float ratio);
+		
+
+	protected:
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
+		virtual void onSDLMouseMotion(SDL_Event *event);
 	};
 }
 
