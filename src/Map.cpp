@@ -34,6 +34,7 @@
 #include <map>
 #endif
 
+
 // use deltaOne for first perpendicular direction
 static const int deltaOne[8][2]={
 	{ 0, -1},
@@ -2308,8 +2309,8 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(
 		size_t xr = ((x + 1) & wMask);      // next line is the line 0 again.
 		
 		Uint8 g = gradient[(y << wDec) | x] - 1;
-		if (g <= 2)        // All free non-source-fields start with gradient=1
-			continue;  // There is no need to propagate gradient when g==2
+		if (g <= 1)        // All free non-source-fields start with gradient=1
+			continue;  // There is no need to propagate gradient when g==1
 		
 		size_t deltaAddrC[8];
 		Uint8 *addr;
@@ -2373,6 +2374,11 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
  to L | both  | to R
 */
 
+#if defined(LOG_SIMON)
+	size_t spared=0;
+	size_t listCountWriteStart=listCountWrite;
+#endif
+
 
 	size_t listCountRead = 0;
 	while (listCountRead < listCountWrite)
@@ -2388,7 +2394,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 		size_t xr = ((x + 1) & wMask);
 		
 		Uint8 g = gradient[(y << wDec) | x] - 1;
-		if (g <= 2)
+		if (g <= 1)
 			continue;
 		
 		Uint32 flag = 0;
@@ -2450,11 +2456,19 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
                                 // if its left or right was inaccessable.
 					if (flag & 1) // Information is in the first bit
 						listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
+#if defined(LOG_SIMON)
+					else
+						spared++;
+#endif
 				}
 				flag >>= 1;  // Shift the next bit into position
 			}
 		}
 	}
+#if defined(LOG_SIMON)
+	FILE *logSimon = globalContainer->logFileManager->getFile("Simon.log");
+	fprintf(logSimon,"listed: %4d inserted: %4d spared: %3d\n",listCountWrite, listCountWrite-listCountWriteStart,spared);
+#endif
 	//assert(listCountWrite<=size);
 }
 
@@ -2475,10 +2489,14 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 	size_t sizeMask = size-1;  // Mask needed to use listedAddr as queue.
 	size_t listCountRead = 0;  // Index of first untreated field in listedAddr.
 
-#if defined( LOG_LINE_LENGTH )
+#if defined(LOG_LINE_LENGTH)
 	std::map<size_t,int> dcount;
 #endif
-
+#if defined(LOG_SIMON)
+	size_t spared=0;
+	size_t listCountWriteStart=listCountWrite;
+#endif
+	
 	while (listCountRead < listCountWrite)  // While listedAddr not empty.
 	{
 		Tint deltaAddrG = listedAddr[listCountRead&sizeMask];
@@ -2492,8 +2510,11 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 		
 		Uint8 myg = gradient[deltaAddrG]; // Get the gradient of the current field
 		Uint8 g = myg-1;   // g will be the gradient of the children.
-		if (g <= 2)        // All free non-source-fields start with gradient=1
-			continue;  // There is no need to propagate gradient when g==2
+		if (g <= 1)        // All free non-source-fields start with gradient=1
+		{
+			listCountRead++;
+			continue;  // There is no need to propagate gradient when g==1
+		}
 		
 
 		Uint8 *addr;       // Pointer to a field.
@@ -2594,6 +2615,11 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 			*addr = g;
 			if (leftflag)   // See Simons version.
 				listedAddr[(listCountWrite++)&sizeMask] = pos;
+#if defined(LOG_SIMON)
+			else
+				spared++;
+#endif
+
 		}
 		pos = (y << wDec) | ( (x+d) & wMask );
 		addr = &gradient[pos];
@@ -2603,8 +2629,18 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 			*addr = g;
 			if (rightflag)
 				listedAddr[(listCountWrite++)&sizeMask] = pos;
+#if defined(LOG_SIMON)
+			else
+				spared++;
+#endif
+
 		}
 	}
+#if defined(LOG_SIMON)
+	FILE *logSimon = globalContainer->logFileManager->getFile("Simon.log");
+	fprintf(logSimon,"listed: %4d inserted: %4d spared: %3d\n",listCountWrite, listCountWrite-listCountWriteStart,spared);
+#endif
+
 #if defined( LOG_LINE_LENGTH )
 	FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
 	for (std::map<size_t,int>::iterator it=dcount.begin();it!=dcount.end();it++)
@@ -2615,14 +2651,17 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	#define   USE_GRADIENT_VERSION_SIMPLE
+	#define   USE_DYNAMICAL_GRADIENT_VERSION
 
-#if defined( LOG_LINE_LENGTH )
-	if (gradientType != GT_UNDEFINED) {
-		FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
-		fprintf(dlog, "gradientType: %d\n", gradientType);
-		fprintf(dlog, "canSwim: %d\n", canSwim);
-	}
+#if defined(LOG_LINE_LENGTH)
+	FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
+	fprintf(dlog, "gradientType: %d\n", gradientType);
+	fprintf(dlog, "canSwim: %d\n", canSwim);
+#endif
+#if defined(LOG_SIMON)
+	FILE *logSimon = globalContainer->logFileManager->getFile("Simon.log");
+	fprintf(logSimon, "gradientType: %d\n", gradientType);
+	fprintf(logSimon, "canSwim: %d\n", canSwim);
 #endif
 	
 	#if defined( USE_GRADIENT_VERSION_TEST_KAI)
