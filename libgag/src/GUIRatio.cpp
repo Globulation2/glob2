@@ -120,6 +120,7 @@ namespace GAGGUI
 		assert(event->type == SDL_MOUSEMOTION);
 		HighlightableWidget::onSDLMouseMotion(event);
 		
+		if(!pressed) return;
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
