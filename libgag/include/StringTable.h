@@ -42,9 +42,7 @@ namespace GAGCore
 		int getLang(void) { return actLang; }
 		int getNumberOfLanguage(void) { return languageCount; }
 		bool load(const char *filename);
-		std::string getString(const std::string &stringname, int index = -1) const;
 		const char *getString(const char *stringname, int index = -1) const;
-		std::string getStringInLang(const std::string &stringname, int lang) const;
 		const char *getStringInLang(const char *stringname, int lang) const;
 		void print();
 	
@@ -59,8 +57,6 @@ namespace GAGCore
 		enum {AI_NAME_SIZE=4};
 	};
 
-	//! Translate to current language
-	std::string tr(const std::string &key);
 }
 
 #endif

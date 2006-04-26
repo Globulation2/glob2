@@ -225,14 +225,10 @@ namespace GAGCore
 	
 	const char *StringTable::getString(const char *stringname, int index) const
 	{
-		return getString(std::string(stringname), index).c_str();
-	}
-		
-	std::string StringTable::getString(const std::string &stringname, int index) const
-	{
 		if ((actLang < languageCount) && (actLang >= 0))
 		{
-			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(stringname);
+			std::string key(stringname);
+			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, no such key." << std::endl;
@@ -262,14 +258,10 @@ namespace GAGCore
 	
 	const char *StringTable::getStringInLang(const char *stringname, int lang) const
 	{
-		return getStringInLang(std::string(stringname), lang).c_str();
-	}
-		
-	std::string StringTable::getStringInLang(const std::string &stringname, int lang) const
-	{
 		if ((lang < languageCount) && (lang >= 0))
 		{
-			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(stringname);
+			std::string key(stringname);
+			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, no such key." << std::endl;
@@ -285,11 +277,5 @@ namespace GAGCore
 			std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, bad language selected." << std::endl;
 			return "ERROR, BAD LANG ID";
 		}
-	}
-
-
-	std::string tr(const std::string &key)
-	{
-		return Toolkit::getStringTable()->getString(key);
 	}
 }
