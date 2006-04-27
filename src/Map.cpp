@@ -2651,7 +2651,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	#define   USE_DYNAMICAL_GRADIENT_VERSION
+	#define USE_DYNAMICAL_GRADIENT_VERSION_SR
 
 #if defined(LOG_LINE_LENGTH)
 	FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
@@ -2677,7 +2677,7 @@ template<typename Tint> void Map::updateGlobalGradient(
 		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 		assert (memcmp (testGradient, gradient, size) == 0);
 	}
-		
+	
 	#elif defined(USE_GRADIENT_VERSION_KAI)
 		updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
 		
@@ -2687,11 +2687,52 @@ template<typename Tint> void Map::updateGlobalGradient(
 	#elif defined(USE_GRADIENT_VERSION_SIMPLE)
 		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 		
-	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION)
-		if (gradientType == GT_UNDEFINED)
-			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION_SR)
+		if (gradientType == GT_RESOURCE)
+			updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
 		else
+			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+		
+	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION_KR)
+		if (gradientType == GT_RESOURCE)
 			updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
+		else
+			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+		
+	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION)
+		// use the fastest gradient computation for each GradientType:
+		switch (gradientType)
+		{
+			case GT_UNDEFINED:
+				updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
+				// speed 105.09% compare to simple on test
+			break;
+			
+			case GT_RESOURCE:
+				updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
+				//speed 104.76% compare to simple on test
+			break;
+			
+			case GT_BUILDING:
+				updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
+				// speed 100.29% compare to simple on test
+			break;
+			
+			case GT_FORBIDDEN:
+				updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
+				// speed 100.18% compare to simple on test
+			break;
+			
+			case GT_GUARD_AREA:
+				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+				// fastest one here
+			break;
+			
+			default:
+				assert(false);
+				abort();
+			break;
+		}
 			
 	#else
 		#error Please select a gradient version
