@@ -606,7 +606,7 @@ namespace GAGGUI
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 				{
 					if ((*it)->visible)
-						(*it)->onSDLEvent(event);
+						(*it)->onSDLOtherEvent(event);
 				}
 				break;
 
