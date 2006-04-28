@@ -30,7 +30,7 @@
 #include <Stream.h>
 
 
-#if defined( LOG_LINE_LENGTH )
+#if defined( LOG_GRADIENT_LINE_GRADIENT )
 #include <map>
 #endif
 
@@ -2374,7 +2374,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
  to L | both  | to R
 */
 
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 	size_t spared=0;
 	size_t listCountWriteStart=listCountWrite;
 #endif
@@ -2456,7 +2456,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
                                 // if its left or right was inaccessable.
 					if (flag & 1) // Information is in the first bit
 						listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 					else
 						spared++;
 #endif
@@ -2465,7 +2465,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 			}
 		}
 	}
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 	FILE *logSimon = globalContainer->logFileManager->getFile("Simon.log");
 	fprintf(logSimon,"listed: %4d inserted: %4d spared: %3d\n",listCountWrite, listCountWrite-listCountWriteStart,spared);
 #endif
@@ -2489,10 +2489,10 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 	size_t sizeMask = size-1;  // Mask needed to use listedAddr as queue.
 	size_t listCountRead = 0;  // Index of first untreated field in listedAddr.
 
-#if defined(LOG_LINE_LENGTH)
+#if defined(LOG_GRADIENT_LINE_GRADIENT)
 	std::map<size_t,int> dcount;
 #endif
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 	size_t spared=0;
 	size_t listCountWriteStart=listCountWrite;
 #endif
@@ -2553,7 +2553,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 		// (x+d-1)&wMask is the last element of the line segment.
 		// d is the size of the segment. listCountRead is in correct position.
 
-#if defined( LOG_LINE_LENGTH )
+#if defined( LOG_GRADIENT_LINE_GRADIENT )
 		++dcount[d];
 #endif
 
@@ -2615,7 +2615,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 			*addr = g;
 			if (leftflag)   // See Simons version.
 				listedAddr[(listCountWrite++)&sizeMask] = pos;
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 			else
 				spared++;
 #endif
@@ -2629,19 +2629,19 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 			*addr = g;
 			if (rightflag)
 				listedAddr[(listCountWrite++)&sizeMask] = pos;
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 			else
 				spared++;
 #endif
 
 		}
 	}
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 	FILE *logSimon = globalContainer->logFileManager->getFile("Simon.log");
 	fprintf(logSimon,"listed: %4d inserted: %4d spared: %3d\n",listCountWrite, listCountWrite-listCountWriteStart,spared);
 #endif
 
-#if defined( LOG_LINE_LENGTH )
+#if defined( LOG_GRADIENT_LINE_GRADIENT )
 	FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
 	for (std::map<size_t,int>::iterator it=dcount.begin();it!=dcount.end();it++)
 		fprintf(dlog,"line length: %3d count: %4d\n",it->first,it->second);
@@ -2653,12 +2653,12 @@ template<typename Tint> void Map::updateGlobalGradient(
 {
 	#define USE_DYNAMICAL_GRADIENT_VERSION_SR
 
-#if defined(LOG_LINE_LENGTH)
+#if defined(LOG_GRADIENT_LINE_GRADIENT)
 	FILE *dlog = globalContainer->logFileManager->getFile("GradientLineLength.log");
 	fprintf(dlog, "gradientType: %d\n", gradientType);
 	fprintf(dlog, "canSwim: %d\n", canSwim);
 #endif
-#if defined(LOG_SIMON)
+#if defined(LOG_SIMON_GRADIENT)
 	FILE *logSimon = globalContainer->logFileManager->getFile("Simon.log");
 	fprintf(logSimon, "gradientType: %d\n", gradientType);
 	fprintf(logSimon, "canSwim: %d\n", canSwim);
@@ -4528,13 +4528,92 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 
 template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 {
-	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
-	assert(gradient);
+#define SIMPLE_FORBIDDEN_GRADIENT_INIT
+
+#if defined(TEST_FORBIDDEN_GRADIENT_INIT)
+ #define SIMONS_FORBIDDEN_GRADIENT_INIT
+ #define SIMPLE_FORBIDDEN_GRADIENT_INIT
+#endif
+
+
 	Tint *listedAddr = new Tint[size];
-	size_t listCountWrite = 0;
+	size_t listCountWrite=0;
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+
+
+#if defined(SIMONS_FORBIDDEN_GRADIENT_INIT)
+	Uint8 *testgradient = forbiddenGradient[teamNumber][canSwim];
+	assert(testgradient);
+	size_t listCountWriteInit = 0;
 	
 	// We set the obstacle and free places
-	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	for (size_t i=0; i<size; i++)
+	{
+		Case c=cases[i];
+		if (c.ressource.type!=NO_RES_TYPE)
+			testgradient[i] = 0;
+		else if (c.building!=NOGBID)
+			testgradient[i] = 0;
+		else if (!canSwim && isWater(i))
+			testgradient[i] = 0;
+		else if (c.forbidden&teamMask)
+		{
+			testgradient[i]= 1;  // Later: check if we can set it to 254.
+			listedAddr[listCountWriteInit++] = i;  // Remember this field.
+		}
+		else
+			testgradient[i] = 255;
+	}
+
+	// Now check if the forbidden fields border free fields. 
+	// If a field does, its gradient must be 254 and it can be used as a source
+	// for the forbidden gradient.
+	for (size_t listCountReadInit=0; listCountReadInit<listCountWriteInit; listCountReadInit++)
+	{
+		size_t i = listedAddr[listCountReadInit];
+		size_t y = i >> wDec;               // Calculate the coordinates of
+		size_t x = i & wMask;               // the current field and of the
+		
+		size_t yu = ((y - 1) & hMask);      // fields next to it.
+		size_t yd = ((y + 1) & hMask);
+		size_t xl = ((x - 1) & wMask);
+		size_t xr = ((x + 1) & wMask);
+
+		size_t deltaAddrC[8];
+		deltaAddrC[0] = (yu << wDec) | xl;
+		deltaAddrC[1] = (yu << wDec) | x ;
+		deltaAddrC[2] = (yu << wDec) | xr;
+		deltaAddrC[3] = (y  << wDec) | xr;
+		deltaAddrC[4] = (yd << wDec) | xr;
+		deltaAddrC[5] = (yd << wDec) | x ;
+		deltaAddrC[6] = (yd << wDec) | xl;
+		deltaAddrC[7] = (y  << wDec) | xl;
+		for( int ci=0; ci<8; ci++)
+		{
+			if( testgradient[ deltaAddrC[ci] ] == 255 )
+			{
+				testgradient[i] = 254;
+				listedAddr[listCountWrite++] = i;
+				break;
+			}
+		}
+	}
+	
+	// Then we propagate the gradient
+	updateGlobalGradient(testgradient, listedAddr, listCountWrite, GT_FORBIDDEN, canSwim);
+#endif	
+
+#if defined(SIMPLE_FORBIDDEN_GRADIENT_INIT)
+	listCountWrite = 0;
+ #if defined(TEST_FORBIDDEN_GRADIENT_INIT)
+	Uint8 *gradient = new Uint8[size];
+ #else
+	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
+	assert(gradient);
+ #endif
+
+
+
 	for (size_t i=0; i<size; i++)
 	{
 		Case c=cases[i];
@@ -4545,17 +4624,21 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
 		else if (c.forbidden&teamMask)
-			gradient[i] = 1;
+			gradient[i]= 1;
 		else
 		{
+			listedAddr[listCountWrite++] = i;			
 			gradient[i] = 255;
-			listedAddr[listCountWrite++] = i;
 		}
+		
 	}
-	
-	// Then we propagate the gradient
 	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_FORBIDDEN, canSwim);
+#endif
 	delete[] listedAddr;
+#if defined(TEST_FORBIDDEN_GRADIENT_INIT)
+	assert (memcmp (testgradient, gradient, size) == 0);
+#endif
+
 }
 
 void Map::updateForbiddenGradient(int teamNumber)
