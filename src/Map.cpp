@@ -4528,7 +4528,7 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 
 template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 {
-#define SIMON2_FORBIDDEN_GRADIENT_INIT
+#define SIMONS_FORBIDDEN_GRADIENT_INIT
 
 #if defined(TEST_FORBIDDEN_GRADIENT_INIT)
  #define SIMONS_FORBIDDEN_GRADIENT_INIT
