@@ -60,7 +60,15 @@ Engine::~Engine()
 	fprintf(logFile, "\n");
 	if (globalContainer->runNoX)
 	{
-		fprintf(logFile, "nox:cpuSumCountStats = %d\n", cpuSumCountStats);
+		Sint32 noxTicks = noxEndTick - noxStartTick;
+		double speed = (double)1000 * (double)cpuSumCountStats / (double)noxTicks;
+		fprintf(logFile, "nox::cpuSumCountStats = %d\n", cpuSumCountStats);
+		fprintf(logFile, "nox::noxTicks = %d\n", noxTicks);
+		fprintf(logFile, "nox::speed = %f [steps/s]\n", speed);
+		
+		printf("nox::cpuSumCountStats = %d\n", cpuSumCountStats);
+		printf("nox::noxTicks = %d\n", noxTicks);
+		printf("nox::speed = %f [steps/s]\n", speed);
 	}
 	else
 	{
@@ -380,18 +388,21 @@ int Engine::run(void)
 		globalContainer->mix->setNextTrack(2, true);
 	}
 	if (globalContainer->runNoX)
+	{
 		printf("nox::game started\n");
+		noxStartTick = SDL_GetTicks();
+	}
 	
 	while (doRunOnceAgain)
 	{
 		Uint32 startTick, endTick;
-		bool networkReadyToExecute=true;
-		Sint32 ticksSpentInComputation=40;
-		Sint32 computationAvailableTicks=0;
-		Sint32 ticksToDelayInside=0;
-		Sint32 missedTicksToWait=0;
+		bool networkReadyToExecute = true;
+		Sint32 ticksSpentInComputation = 40;
+		Sint32 computationAvailableTicks = 0;
+		Sint32 ticksToDelayInside = 0;
+		Sint32 missedTicksToWait = 0;
 		
-		startTick=SDL_GetTicks();
+		startTick = SDL_GetTicks();
 		while (gui.isRunning)
 		{
 			// We always allow the user to use the gui:
@@ -401,16 +412,19 @@ int Engine::run(void)
 				{
 					printf("nox::gui.localTeam is dead\n");
 					gui.isRunning=false;
+					noxEndTick = SDL_GetTicks();
 				}
 				else if (gui.getLocalTeam()->hasWon)
 				{
 					printf("nox::gui.localTeam has won\n");
 					gui.isRunning=false;
+					noxEndTick = SDL_GetTicks();
 				}
 				else if (gui.game.totalPrestigeReached)
 				{
 					printf("nox::gui.game.totalPrestigeReached\n");
 					gui.isRunning=false;
+					noxEndTick = SDL_GetTicks();
 				}
 			}
 			else

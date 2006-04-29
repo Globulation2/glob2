@@ -86,6 +86,7 @@ protected:
 	int ticksToWaitStats[41];
 	unsigned cpuSumStats;
 	unsigned cpuSumCountStats;
+	Sint32 noxStartTick, noxEndTick;
 	FILE *logFile;
 };
 

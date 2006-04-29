@@ -101,14 +101,14 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runNoX()
 {
-	Engine engine;
-	if (engine.initCustom(globalContainer->runNoXGameName)==Engine::EE_NO_ERROR)
+	for (int runNoXCount = 0; runNoXCount < globalContainer->runNoXCount; runNoXCount++)
 	{
+		Engine engine;
+		if (engine.initCustom(globalContainer->runNoXGameName) != Engine::EE_NO_ERROR)
+			return 1;
 		engine.run();
-		return 0;
 	}
-	else
-		return 1;
+	return 0;
 }
 
 int Glob2::runHostServer()

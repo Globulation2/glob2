@@ -133,16 +133,20 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	{
 		if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
 		{
-			if (i+1<argc)
+			bool good;
+			if (i + 2 < argc)
 			{
-				runNoXGameName = argv[i+1];
+				runNoXGameName = argv[i + 1];
 				runNoX = true;
-				i++;
+				good = (sscanf(argv[i + 2], "%d", &runNoXCount) == 1);
+				i += 2;
 			}
 			else
+				good = false;
+			if (!good)
 			{
 				printf("usage:\n");
-				printf("--nox <game file name>\n\n");
+				printf("--nox <game file name> <number of runs>\n\n");
 				exit(0);
 			}
 			continue;
