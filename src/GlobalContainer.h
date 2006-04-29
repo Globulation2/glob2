@@ -107,6 +107,7 @@ public:
 
 	bool runNoX;
 	std::string runNoXGameName;
+	int runNoXCount;
 	
 	bool hostServer;
 	char hostServerMapName[32];

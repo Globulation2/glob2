@@ -4037,7 +4037,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 		}
 		else
 		{
-			if (verbose)
+			if (building->verbose)
 				printf("ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			fprintf(logFile, "ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			buildingAvailableCountFarNewFailureEnd++;
@@ -4528,18 +4528,65 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 
 template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 {
-#define SIMPLE_FORBIDDEN_GRADIENT_INIT
+#define SIMON2_FORBIDDEN_GRADIENT_INIT
 
 #if defined(TEST_FORBIDDEN_GRADIENT_INIT)
  #define SIMONS_FORBIDDEN_GRADIENT_INIT
  #define SIMPLE_FORBIDDEN_GRADIENT_INIT
 #endif
 
-
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite=0;
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 
+#ifdef SIMON2_FORBIDDEN_GRADIENT_INIT
+	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
+	assert(gradient);
+	for (size_t i=0; i<size; i++)
+	{
+		Case c=cases[i];
+		if (c.ressource.type!=NO_RES_TYPE)
+			gradient[i] = 0;
+		else if (c.building!=NOGBID)
+			gradient[i] = 0;
+		else if (!canSwim && isWater(i))
+			gradient[i] = 0;
+		else if (c.forbidden&teamMask)
+		{
+			// we compute the 8 addresses around i:
+			// (a stands for address, u for up, d for down, l for left, r for right, m for middle)
+			size_t aul = (i - 1 - w) & (size - 1);
+			size_t aum = (i     - w) & (size - 1);
+			size_t aur = (i + 1 - w) & (size - 1);
+			size_t amr = (i + 1    ) & (size - 1);
+			size_t adr = (i + 1 + w) & (size - 1);
+			size_t adm = (i     + w) & (size - 1);
+			size_t adl = (i - 1 + w) & (size - 1);
+			size_t aml = (i - 1    ) & (size - 1);
+			
+			if( ((cases[aul].forbidden&teamMask) || (cases[aul].building!=NOGBID) || (!canSwim && isWater(aul))) &&
+			    ((cases[aum].forbidden&teamMask) || (cases[aum].building!=NOGBID) || (!canSwim && isWater(aum))) &&
+			    ((cases[aur].forbidden&teamMask) || (cases[aur].building!=NOGBID) || (!canSwim && isWater(aur))) &&
+			    ((cases[amr].forbidden&teamMask) || (cases[amr].building!=NOGBID) || (!canSwim && isWater(amr))) &&
+			    ((cases[adr].forbidden&teamMask) || (cases[adr].building!=NOGBID) || (!canSwim && isWater(adr))) &&
+			    ((cases[adm].forbidden&teamMask) || (cases[adm].building!=NOGBID) || (!canSwim && isWater(adm))) &&
+			    ((cases[adl].forbidden&teamMask) || (cases[adl].building!=NOGBID) || (!canSwim && isWater(adl))) &&
+			    ((cases[aml].forbidden&teamMask) || (cases[aml].building!=NOGBID) || (!canSwim && isWater(aml))) )
+			{
+				gradient[i]= 1;
+			}
+			else
+			{
+				gradient[i]=254;
+				listedAddr[listCountWrite++] = i;
+			}
+		}
+		else
+			gradient[i] = 255;
+	}
+	// Then we propagate the gradient
+	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_FORBIDDEN, canSwim);
+#endif
 
 #if defined(SIMONS_FORBIDDEN_GRADIENT_INIT)
 	Uint8 *testgradient = forbiddenGradient[teamNumber][canSwim];
@@ -4612,8 +4659,6 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 	assert(gradient);
  #endif
 
-
-
 	for (size_t i=0; i<size; i++)
 	{
 		Case c=cases[i];
@@ -4627,10 +4672,9 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			gradient[i]= 1;
 		else
 		{
-			listedAddr[listCountWrite++] = i;			
+			listedAddr[listCountWrite++] = i;
 			gradient[i] = 255;
 		}
-		
 	}
 	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_FORBIDDEN, canSwim);
 #endif
