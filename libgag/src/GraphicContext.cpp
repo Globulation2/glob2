@@ -1238,18 +1238,15 @@ namespace GAGCore
 	}
 	
 	void DrawableSurface::drawString(int x, int y, Font *font, const char *msg, int w, Uint8 alpha)
-	{
+	{	
 		std::string output(msg);
-		
-		// usefull macro to replace some char (like newline) with \0 in string
-		#define FILTER_OUT_CHAR(s, c) { char *_c; if ( (_c=(strchr(s, c)))!=NULL) *_c=0; }
-		
-		FILTER_OUT_CHAR(output.c_str(), '\n');
-		FILTER_OUT_CHAR(output.c_str(), '\r');
-		
-		#undef FILTER_OUT_CHAR
-		
-		// TODO : rewrite this with clean C++
+		std::string::size_type pos = output.find('\n', 0);
+		if(pos != std::string::npos)
+			output = output.substr(0, pos);
+
+		pos = output.find('\r', 0);
+		if(pos != std::string::npos)
+			output = output.substr(0, pos);
 		
 		font->drawString(this, x, y, w, output.c_str(), alpha);
 	}
@@ -1257,16 +1254,13 @@ namespace GAGCore
 	void DrawableSurface::drawString(float x, float y, Font *font, const char *msg, float w, Uint8 alpha)
 	{
 		std::string output(msg);
-		
-		// usefull macro to replace some char (like newline) with \0 in string
-		#define FILTER_OUT_CHAR(s, c) { char *_c; if ( (_c=(strchr(s, c)))!=NULL) *_c=0; }
-		
-		FILTER_OUT_CHAR(output.c_str(), '\n');
-		FILTER_OUT_CHAR(output.c_str(), '\r');
-		
-		#undef FILTER_OUT_CHAR
-		
-		// TODO : rewrite this with clean C++
+		std::string::size_type pos = output.find('\n', 0);
+		if(pos != std::string::npos)
+			output = output.substr(0, pos);
+
+		pos = output.find('\r', 0);
+		if(pos != std::string::npos)
+			output = output.substr(0, pos);
 		
 		font->drawString(this, x, y, w, output.c_str(), alpha);
 	}
