@@ -322,7 +322,7 @@ private:
 	void setMultiLine(const std::string &input, std::vector<std::string> *output);
 
 	//! add a message to the window message list
-	void addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...);
+	void addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText);
 	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;

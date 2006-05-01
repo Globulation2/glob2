@@ -338,58 +338,6 @@ namespace Utilities
 			*decY=0;
 		}
 	}
-
-	char *concat(const char *a, const char *b)
-	{
-		assert(a);
-		assert(b);
-		
-		size_t length=strlen(a);
-		size_t sumLength=length+strlen(b);
-		char *s=new char[sumLength+1];
-		memcpy(s, a, length);
-		memcpy(&s[length], b, strlen(b)+1);
-		return s;
-	}
-	
-	char *concat(const char *a, const char *b, const char *c)
-	{
-		assert(a);
-		assert(b);
-		assert(c);
-		
-		size_t aLen=strlen(a);
-		size_t bLen=strlen(b);
-		size_t cLen=strlen(c);
-		size_t totLen=aLen+bLen+cLen+1;
-		char *s=new char[totLen];
-		sprintf(s, "%s%s%s", a, b, c);
-		s[totLen-1]=0;
-		return s;
-	}
-	
-	char *dencat(const char *a, const char *b)
-	{
-		assert(a);
-		assert(b);
-		
-		size_t length=strlen(a)-strlen(b);
-		assert(length>=0);
-		char *s=new char[length+1];
-		memcpy(s, a, length);
-		s[length]=0;
-		return s;
-	}
-	
-	char *strdup(const char *a)
-	{
-		assert(a);
-		
-		size_t length=strlen(a)+1;
-		char *s=new char[length];
-		memcpy(s, a, length);
-		return s;
-	}
 	
 	Sint32 log2(Sint32 a)
 	{

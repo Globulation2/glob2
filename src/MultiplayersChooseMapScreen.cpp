@@ -30,6 +30,8 @@
 #include <StringTable.h>
 #include "GUIGlob2FileList.h"
 
+#include <boost/format.hpp>
+
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 {
 	this->shareOnYOG=shareOnYOG;
@@ -111,12 +113,12 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			{
 				// update map name & info
 				mapName->setText(sessionInfo.getMapName());
-				char textTemp[256];
-				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, Toolkit::getStringTable()->getString("[teams]"));
+				std::string textTemp;
+				textTemp = str(boost::format("%d%s") % sessionInfo.numberOfTeam % Toolkit::getStringTable()->getString("[teams]"));
 				mapInfo->setText(textTemp);
-				snprintf(textTemp, 256, "%s %d.%d", Toolkit::getStringTable()->getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
+				textTemp = str(boost::format("%s %d.%d") % Toolkit::getStringTable()->getString("[Version]") % sessionInfo.versionMajor % sessionInfo.versionMinor);
 				mapVersion->setText(textTemp);
-				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
+				textTemp = str(boost::format("%d x %d") % mapPreview->getLastWidth() % mapPreview->getLastHeight());
 				mapSize->setText(textTemp);
 				std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
 				mapDate->setText(std::ctime(&mtime));

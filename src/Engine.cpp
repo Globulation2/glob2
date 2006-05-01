@@ -43,6 +43,7 @@
 #include "SoundMixer.h"
 #include "CampaignScreen.h"
 #include <iostream>
+#include <boost/format.hpp>
 
 
 Engine::Engine()
@@ -199,7 +200,7 @@ int Engine::initCustom(void)
 	if (nbTeam==0)
 		return EE_CANCEL;
 
-	char name[BasePlayer::MAX_NAME_LENGTH];
+	std::string name;
 	int i;
 	int nbPlayer=0;
 
@@ -217,8 +218,8 @@ int Engine::initCustom(void)
 			else
 			{
 				AI::ImplementitionID iid=customGameScreen.getAiImplementation(i);
-				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "%s %d", Toolkit::getStringTable()->getString("[AI]", iid), nbPlayer-1);
-				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], Player::playerTypeFromImplementitionID(iid));
+				name = str(boost::format("%s %d") % Toolkit::getStringTable()->getString("[AI]", iid) % (nbPlayer-1));
+				gui.game.players[nbPlayer]=new Player(i, name.c_str(), gui.game.teams[teamColor], Player::playerTypeFromImplementitionID(iid));
 			}
 			gui.game.teams[teamColor]->numberOfPlayer++;
 			gui.game.teams[teamColor]->playersMask|=(1<<nbPlayer);

@@ -239,34 +239,4 @@ namespace GAGCore
 		else
 			return f3;
 	}
-
-	std::string nsprintf(const char* f, ...)
-	{
-		va_list arglist;
-		va_start(arglist, f);
-		std::string ret(vnsprintf(f, arglist));
-		va_end(arglist);
-		return ret;
-	}
-
-	std::string vnsprintf(const char* f, va_list arglist)
-	{
-		char* str;
-//Dejan: There is no vasprintf() in MinGW at the moment (2004-12-09)
-#if ((defined __GNUC__ && __GNUC__ >= 3) && (!defined __MINGW32__))
-		vasprintf(&str, f, arglist);
-#else
-		str = (char*)malloc(256);
-		vsnprintf(str, 256, f, arglist);
-#endif
-		std::string ret(str);
-		free(str);
-		return ret;
-	}
-
-	char* newstrdup(const char* str)
-	{
-		char* newStr = new char[strlen(str)+1];
-		return strcpy(newStr, str);
-	}
 }

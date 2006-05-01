@@ -30,6 +30,8 @@ using namespace GAGCore;
 #include <GUITextArea.h>
 using namespace GAGGUI;
 
+#include <boost/format.hpp>
+
 // Sutpid widget for color rectangles
 class ColorRect: public RectangularWidget
 {
@@ -144,10 +146,10 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		}
 		if ((multiplayersJoin->waitingState>=MultiplayersJoin::WS_SERVER_START_GAME))
 		{
-			char s[128];
-			snprintf(s, 128, "%s%d", Toolkit::getStringTable()->getString("[STARTING GAME ...]"), multiplayersJoin->startGameTimeCounter/20);
+			std::string s;
+			s = str(boost::format("%s%d") %  Toolkit::getStringTable()->getString("[STARTING GAME ...]") % (multiplayersJoin->startGameTimeCounter/20));
 			if (verbose)
-				printf("s=%s.\n", s);
+				printf("s=%s.\n", s.c_str());
 			startTimer->setText(s);
 		}
 	}
@@ -156,14 +158,14 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 	if (lastProgress!=progress)
 	{
 		lastProgress=progress;
-		char s[128];
+		std::string s;
 		if (isFileMapDownload)
 		{
 			int percent=(int)(100.0*progress);
-			snprintf(s, 128, "%s%d%s", Toolkit::getStringTable()->getString("[downloaded at]"), percent, Toolkit::getStringTable()->getString("[percent]"));
+			s = str(boost::format("%s%d%s") % Toolkit::getStringTable()->getString("[downloaded at]") % percent % Toolkit::getStringTable()->getString("[percent]"));
 		}
 		else
-			snprintf(s, 128, "%s", Toolkit::getStringTable()->getString("[download finished]"));
+			s = Toolkit::getStringTable()->getString("[download finished]");
 		startTimer->setText(s);
 	}
 

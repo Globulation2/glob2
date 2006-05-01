@@ -134,7 +134,7 @@ void LoadSaveScreen::generateFileName(void)
 	if (nameToFilenameFunc)
 		fileName = nameToFilenameFunc(directory.c_str(), fileNameEntry->getText().c_str(), extension.c_str());
 	else
-		fileName = Utilities::concat(directory.c_str(), fileNameEntry->getText().c_str(), extension.c_str());
+		fileName = directory + fileNameEntry->getText() + extension;
 }
 
 void LoadSaveScreen::onSDLEvent(SDL_Event *event)

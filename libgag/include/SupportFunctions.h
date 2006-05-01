@@ -49,14 +49,6 @@ namespace GAGCore
 	float fmin(float f1, float f2, float f3);
 	//! return max of f1, f2 and f3
 	float fmax(float f1, float f2, float f3);
-
-	//! c++ version of asprintf (n for new instead of a for alloc)
-	std::string nsprintf(const char* s, ...);
-	//! c++ version of asprintf (n for new instead of a for alloc)
-	std::string vnsprintf(const char* s, va_list args);
-
-	//! strdup function using new
-	char* newstrdup(const char* str);
 };
 
 #endif

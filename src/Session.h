@@ -147,7 +147,7 @@ public:
 	int getAITeamNumber(SessionInfo *currentSessionInfo, int team);
 
 	//! get information on player in a nice string
-	void getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, SessionInfo *savedSessionInfo, int stringLen);
+	void getPlayerInfo(int playerNumber, int *teamNumber, std::string &infoString, SessionInfo *savedSessionInfo);
 
 public:
 //	BaseMap map;

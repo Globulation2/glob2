@@ -33,6 +33,8 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 
+#include <boost/format.hpp>
+
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
 	// we don't want to add AI_NONE
@@ -126,16 +128,16 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			int teamNumber=multiplayersHost->sessionInfo.players[i].teamNumber;
 			char playerName[32];
 			strncpy(playerName, multiplayersHost->sessionInfo.players[i].name, 32);
-			char shownInfo[128];
+			std::string shownInfo;
 			if (multiplayersHost->playerFileTra[i].wantsFile && !multiplayersHost->playerFileTra[i].receivedFile)
 			{
 				int percent=(100*multiplayersHost->playerFileTra[i].unreceivedIndex)/multiplayersHost->fileSize;
-				snprintf(shownInfo, 128, "%s (%d)", playerName, percent);
+				shownInfo = str(boost::format("%s (%d)") % playerName % percent);
 			}
 			else
-				strncpy(shownInfo, playerName, 128);
+				shownInfo = playerName;
 
-			if (strncmp(shownInfo, text[i]->getText(), 128))
+			if (shownInfo == text[i]->getText())
 			{
 				text[i]->setText(shownInfo);
 				color[i]->setSelectedColor(teamNumber);
@@ -184,9 +186,9 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 
 	if (((timeCounter++ % 10)==0)&&(multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER))
 	{
-		char s[128];
-		snprintf(s, sizeof(s), "%s%d", Toolkit::getStringTable()->getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);
-		printf("s=%s.\n", s);
+		std::string s;
+		s = str(boost::format("%s%d") % Toolkit::getStringTable()->getString("[STARTING GAME ...]") % (multiplayersHost->startGameTimeCounter/20));
+		printf("s=%s.\n", s.c_str());
 		startTimer->setText(s);
 	}
 

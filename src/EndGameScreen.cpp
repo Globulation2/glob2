@@ -18,13 +18,14 @@
 */
 
 #include "EndGameScreen.h"
-#include <algorithm>
 #include <GUIText.h>
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include <algorithm>
+
+#include <boost/format.hpp>
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -107,8 +108,7 @@ struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry
 EndGameScreen::EndGameScreen(GameGUI *gui)
 {
 	// title & graph
-	const char *titleText;
-	char *allocatedText=NULL;
+	std::string titleText;
 	
 	if (gui->game.totalPrestigeReached)
 	{
@@ -120,19 +120,15 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 		else
 		{
-			const char *strText;
+			std::string strText;
 			if ((t->allies) & (gui->getLocalTeam()->me))
 				strText = Toolkit::getStringTable()->getString("[Won : your ally %s has the most prestige]");
 			else
 				strText = Toolkit::getStringTable()->getString("[Lost : %s has more prestige than you]");
 
 			const char *playerText = t->getFirstPlayerName();
-			assert(strText);
 			assert(playerText);
-			int len=strlen(strText)+strlen(playerText)-1;
-			allocatedText=new char[len];
-			snprintf(allocatedText, len, strText, playerText);
-			titleText=allocatedText;
+			titleText = str(boost::format(strText) % playerText);
 		}
 	}
 	else if (!gui->getLocalTeam()->isAlive)
@@ -148,9 +144,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
 	}
 	
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText));
-	if (allocatedText)
-		delete[] allocatedText;
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText.c_str()));
 	statWidget=new EndGameStat(20, 80, 180, 150, ALIGN_FILL, ALIGN_FILL, &(gui->game));
 	addWidget(statWidget);
 	
