@@ -43,6 +43,7 @@
 #include "LogFileManager.h"
 #include <StringTable.h>
 
+#include <boost/format.hpp>
 
 // If you don't have SDL_net 1.2.5 some features won't be available.
 #ifndef INADDR_BROADCAST
@@ -706,7 +707,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					Message message;
 					message.gameGuiPainted=false;
 					message.messageType=YCMT_EVENT_MESSAGE;
-					snprintf(message.text, 256, Toolkit::getStringTable()->getString("[The player %s has joined YOG]"), client.userName);
+					std::string tmp(str(boost::format(Toolkit::getStringTable()->getString("[The player %s has joined YOG]")) % client.userName));
+					strncpy(message.text, tmp.c_str(), 512);
 					receivedMessages.push_back(message);
 				}
 				
@@ -757,7 +759,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						Message message;
 						message.gameGuiPainted=false;
 						message.messageType=YCMT_EVENT_MESSAGE;
-						snprintf(message.text, 256, Toolkit::getStringTable()->getString("[The player %s has left YOG]"), client->userName);
+						std::string tmp(str(boost::format(Toolkit::getStringTable()->getString("[The player %s has left YOG]")) % client->userName));
+						strncpy(message.text, tmp.c_str(), 512);
 						receivedMessages.push_back(message);
 						clients.erase(client);
 					}
@@ -781,7 +784,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 								Message message;
 								message.gameGuiPainted=false;
 								message.messageType=YCMT_EVENT_MESSAGE;
-								snprintf(message.text, 256, "%s", Toolkit::getStringTable()->getString("[You are now marked as away]"));
+								strncpy(message.text, Toolkit::getStringTable()->getString("[You are now marked as away]"), 512);
 								receivedMessages.push_back(message);
 							}
 							client->away=true;
@@ -794,7 +797,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 								Message message;
 								message.gameGuiPainted=false;
 								message.messageType=YCMT_EVENT_MESSAGE;
-								snprintf(message.text, 256, "%s", Toolkit::getStringTable()->getString("[You are no more marked as away]"));
+								strncpy(message.text, Toolkit::getStringTable()->getString("[You are no more marked as away]"), 512);
 								receivedMessages.push_back(message);
 							}
 							client->away=false;

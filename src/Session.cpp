@@ -29,6 +29,8 @@
 #include <StringTable.h>
 #include <Stream.h>
 
+#include <boost/format.hpp>
+
 SessionGame::SessionGame()
 {
 	versionMajor=VERSION_MAJOR;
@@ -214,15 +216,15 @@ void SessionInfo::draw(DrawableSurface *gfx)
 	}
 }
 */
-void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, SessionInfo *savedSessionInfo, int stringLen)
+void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, std::string &infoString, SessionInfo *savedSessionInfo)
 {
 	assert(playerNumber>=0);
 	assert(playerNumber<numberOfPlayer);
 	*teamNumber=players[playerNumber].teamNumber;
 	if (players[playerNumber].type==BasePlayer::P_IP)
-		snprintf(infoString, stringLen, "%s : %s", players[playerNumber].name, Utilities::stringIP(players[playerNumber].ip));
+		infoString = str(boost::format("%s : %s") % players[playerNumber].name % Utilities::stringIP(players[playerNumber].ip));
 	else if (players[playerNumber].type>=BasePlayer::P_AI)
-		snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]", players[playerNumber].type-BasePlayer::P_AI));
+		infoString = str(boost::format("%s : (%s)") % players[playerNumber].name % Toolkit::getStringTable()->getString("[AI]", players[playerNumber].type-BasePlayer::P_AI));
 	else
 		assert(false);
 }

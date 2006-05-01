@@ -32,6 +32,8 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 
+#include <boost/format.hpp>
+
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"
 
@@ -517,31 +519,31 @@ void YOGScreen::onTimer(Uint32 tick)
 		{
 			if (verbose)
 				printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
-			char s[128];
-			sprintf(s, Toolkit::getStringTable()->getString("[Map name: %s]"), yogGameInfo->mapName);
-			gameInfo->setText(s);
+			std::string s;
+			s = str(boost::format(Toolkit::getStringTable()->getString("[Map name: %s]")) % yogGameInfo->mapName);
+			gameInfo->setText(s.c_str());
 			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->numberOfPlayer==1)
 			{
-				sprintf(s, "%s", Toolkit::getStringTable()->getString("[one player]")),
+				s = str(boost::format("%s") % Toolkit::getStringTable()->getString("[one player]"));
 				gameInfo->addText(s);
 			}
 			else
 			{
-				sprintf(s, Toolkit::getStringTable()->getString("[number of players: %d]"), yogGameInfo->numberOfPlayer);
+				s = str(boost::format(Toolkit::getStringTable()->getString("[number of players: %d]")) % yogGameInfo->numberOfPlayer);
 				gameInfo->addText(s);
 			}
 			gameInfo->addChar('\n');
 			
-			sprintf(s, Toolkit::getStringTable()->getString("[number of teams: %d]"), yogGameInfo->numberOfTeam);
+			s = str(boost::format(Toolkit::getStringTable()->getString("[number of teams: %d]")) % yogGameInfo->numberOfTeam);
 			gameInfo->addText(s);
 			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->mapGenerationMethode==MapGenerationDescriptor::eNONE)
-				sprintf(s, "%s\n", Toolkit::getStringTable()->getString("[handmade map]"));
+				s = str(boost::format("%s\n") % Toolkit::getStringTable()->getString("[handmade map]"));
 			else
-				sprintf(s, "%s\n", Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
+				s = str(boost::format("%s\n") % Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
 			gameInfo->addText(s);
 			
 			//TODO: display info about yogGameInfo->fileIsAMap

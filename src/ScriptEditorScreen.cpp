@@ -34,6 +34,7 @@ using namespace GAGCore;
 using namespace GAGGUI;
 
 #include <algorithm>
+#include <boost/format.hpp>
 
 
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
@@ -85,7 +86,7 @@ bool ScriptEditorScreen::testCompile(void)
 	else
 	{
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(GAGCore::nsprintf("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString()).c_str());
+		compilationResult->setText(str(boost::format("Compilation failure : %d:%d:(%d):%s") % (er.line+1) % er.col % er.pos % er.getErrorString()).c_str());
 		scriptEditor->setCursorPos(er.pos);
 		return false;
 	}
@@ -209,7 +210,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->load(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(GAGCore::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
+					compilationResult->setText(str(boost::format("Loading script from %s failed") % loadSaveScreen->getName()).c_str());
 				}
 			}
 			else
@@ -217,7 +218,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->save(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(GAGCore::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
+					compilationResult->setText(str(boost::format("Saving script to %s failed") % loadSaveScreen->getName()).c_str());
 				}
 			}
 		}
@@ -228,7 +229,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!campaignTextEditor->load(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(GAGCore::nsprintf("Loading campaign text from %s failed", loadSaveScreen->getName()).c_str());
+					compilationResult->setText(str(boost::format("Loading campaign text from %s failed") % loadSaveScreen->getName()).c_str());
 				}
 			}
 			else
@@ -236,7 +237,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!campaignTextEditor->save(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(GAGCore::nsprintf("Saving campaign text to %s failed", loadSaveScreen->getName()).c_str());
+					compilationResult->setText(str(boost::format("Saving campaign text to %s failed") % loadSaveScreen->getName()).c_str());
 				}
 			}
 		}
