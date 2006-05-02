@@ -4542,16 +4542,16 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 #ifdef SIMON2_FORBIDDEN_GRADIENT_INIT
 	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
-	for (size_t i=0; i<size; i++)
+	for (size_t i = 0; i < size; i++)
 	{
-		Case c=cases[i];
-		if (c.ressource.type!=NO_RES_TYPE)
+		Case c = cases[i];
+		if (c.ressource.type != NO_RES_TYPE)
 			gradient[i] = 0;
 		else if (c.building!=NOGBID)
 			gradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
-		else if (c.forbidden&teamMask)
+		else if (c.forbidden & teamMask)
 		{
 			// we compute the 8 addresses around i:
 			// (a stands for address, u for up, d for down, l for left, r for right, m for middle)
