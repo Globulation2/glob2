@@ -107,7 +107,8 @@ public:
 
 	bool runNoX;
 	std::string runNoXGameName;
-	int runNoXCount;
+	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
+	int runNoXCountSteps; //!< The number of steps you want the no X game to run
 	
 	bool hostServer;
 	char hostServerMapName[32];

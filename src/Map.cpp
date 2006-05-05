@@ -4545,12 +4545,10 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 	for (size_t i = 0; i < size; i++)
 	{
 		Case c = cases[i];
-		if (c.ressource.type != NO_RES_TYPE)
+		if ((c.ressource.type != NO_RES_TYPE) || (c.building!=NOGBID) || (!canSwim && isWater(i)))
+		{
 			gradient[i] = 0;
-		else if (c.building!=NOGBID)
-			gradient[i] = 0;
-		else if (!canSwim && isWater(i))
-			gradient[i] = 0;
+		}
 		else if (c.forbidden & teamMask)
 		{
 			// we compute the 8 addresses around i:
@@ -4564,14 +4562,22 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			size_t adl = (i - 1 + w) & (size - 1);
 			size_t aml = (i - 1    ) & (size - 1);
 			
-			if( ((cases[aul].forbidden&teamMask) || (cases[aul].building!=NOGBID) || (!canSwim && isWater(aul))) &&
-			    ((cases[aum].forbidden&teamMask) || (cases[aum].building!=NOGBID) || (!canSwim && isWater(aum))) &&
-			    ((cases[aur].forbidden&teamMask) || (cases[aur].building!=NOGBID) || (!canSwim && isWater(aur))) &&
-			    ((cases[amr].forbidden&teamMask) || (cases[amr].building!=NOGBID) || (!canSwim && isWater(amr))) &&
-			    ((cases[adr].forbidden&teamMask) || (cases[adr].building!=NOGBID) || (!canSwim && isWater(adr))) &&
-			    ((cases[adm].forbidden&teamMask) || (cases[adm].building!=NOGBID) || (!canSwim && isWater(adm))) &&
-			    ((cases[adl].forbidden&teamMask) || (cases[adl].building!=NOGBID) || (!canSwim && isWater(adl))) &&
-			    ((cases[aml].forbidden&teamMask) || (cases[aml].building!=NOGBID) || (!canSwim && isWater(aml))) )
+			if( ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aul].forbidden&teamMask)
+				|| (cases[aul].building!=NOGBID) || (!canSwim && isWater(aul))) &&
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aum].forbidden&teamMask)
+			    || (cases[aum].building!=NOGBID) || (!canSwim && isWater(aum))) &&
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aur].forbidden&teamMask)
+			    || (cases[aur].building!=NOGBID) || (!canSwim && isWater(aur))) &&
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[amr].forbidden&teamMask)
+			    || (cases[amr].building!=NOGBID) || (!canSwim && isWater(amr))) &&
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[adr].forbidden&teamMask)
+			    || (cases[adr].building!=NOGBID) || (!canSwim && isWater(adr))) &&
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[adm].forbidden&teamMask)
+			    || (cases[adm].building!=NOGBID) || (!canSwim && isWater(adm))) &&
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[adl].forbidden&teamMask)
+			    || (cases[adl].building!=NOGBID) || (!canSwim && isWater(adl))) &&
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aml].forbidden&teamMask)
+			    || (cases[aml].building!=NOGBID) || (!canSwim && isWater(aml))) )
 			{
 				gradient[i]= 1;
 			}
@@ -4582,7 +4588,9 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			}
 		}
 		else
+		{
 			gradient[i] = 255;
+		}
 	}
 	// Then we propagate the gradient
 	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_FORBIDDEN, canSwim);
