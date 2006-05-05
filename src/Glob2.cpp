@@ -101,7 +101,8 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runNoX()
 {
-	for (int runNoXCount = 0; runNoXCount < globalContainer->runNoXCount; runNoXCount++)
+	printf("nox::running %d times %d steps:\n", globalContainer->runNoXCountRuns, globalContainer->runNoXCountSteps);
+	for (int runNoXCount = 0; runNoXCount < globalContainer->runNoXCountRuns; runNoXCount++)
 	{
 		Engine engine;
 		if (engine.initCustom(globalContainer->runNoXGameName) != Engine::EE_NO_ERROR)

@@ -412,19 +412,19 @@ int Engine::run(void)
 				if (!gui.getLocalTeam()->isAlive)
 				{
 					printf("nox::gui.localTeam is dead\n");
-					gui.isRunning=false;
+					gui.isRunning = false;
 					noxEndTick = SDL_GetTicks();
 				}
 				else if (gui.getLocalTeam()->hasWon)
 				{
 					printf("nox::gui.localTeam has won\n");
-					gui.isRunning=false;
+					gui.isRunning = false;
 					noxEndTick = SDL_GetTicks();
 				}
 				else if (gui.game.totalPrestigeReached)
 				{
 					printf("nox::gui.game.totalPrestigeReached\n");
-					gui.isRunning=false;
+					gui.isRunning = false;
 					noxEndTick = SDL_GetTicks();
 				}
 			}
@@ -486,6 +486,12 @@ int Engine::run(void)
 			{
 				if (cpuSumCountStats < (unsigned)-1)
 					cpuSumCountStats++;
+				if ((int)cpuSumCountStats == globalContainer->runNoXCountSteps)
+				{
+					gui.isRunning = false;
+					noxEndTick = SDL_GetTicks();
+					printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
+				}
 			}
 			else
 			{
