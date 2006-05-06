@@ -158,7 +158,8 @@ public:
 public:
 	Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types);
-	virtual ~Building(void) { }
+	virtual ~Building(void);
+	void freeGradients();
 	
 	void load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);

@@ -154,6 +154,34 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	verbose=false;
 }
 
+Building::~Building()
+{
+	freeGradients();
+}
+
+void Building::freeGradients()
+{
+	for (int i=0; i<2; i++)
+	{
+		if (globalGradient[i])
+		{
+			delete[] globalGradient[i];
+			globalGradient[i] = NULL;
+		}
+		if (localRessources[i])
+		{
+			delete[] localRessources[i];
+			localRessources[i] = NULL;
+		}
+		dirtyLocalGradient[i] = true;
+		locked[i] = false;
+		lastGlobalGradientUpdateStepCounter[i] = 0;
+		
+		localRessourcesCleanTime[i] = 0;
+		anyRessourceToClear[i] = 0;
+	}
+}
+
 void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	stream->readEnterSection("Building");
@@ -263,25 +291,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i] = 0;
 	
-	for (int i=0; i<2; i++)
-	{
-		if (globalGradient[i])
-		{
-			delete[] globalGradient[i];
-			globalGradient[i] = NULL;
-		}
-		if (localRessources[i])
-		{
-			delete[] localRessources[i];
-			localRessources[i] = NULL;
-		}
-		dirtyLocalGradient[i] = true;
-		locked[i] = false;
-		lastGlobalGradientUpdateStepCounter[i] = 0;
-		
-		localRessourcesCleanTime[i] = 0;
-		anyRessourceToClear[i] = 0;
-	}
+	freeGradients();
 	
 	verbose = false;
 	stream->readLeaveSection();
