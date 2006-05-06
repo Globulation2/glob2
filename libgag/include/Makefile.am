@@ -25,4 +25,5 @@ SDLGraphicContext.h \
 CursorManager.h \
 SupportFunctions.h \
 GUIMessageBox.h \
-GUIStyle.h
+GUIStyle.h \
+FormatableString.h

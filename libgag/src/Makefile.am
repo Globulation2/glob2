@@ -34,6 +34,7 @@ libgag_a_SOURCES = \
 	Stream.cpp\
 	BinaryStream.cpp\
 	TextStream.cpp\
+	FormatableString.cpp\
 	$(libgag_a_EXTRA_SRC)
 
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I@srcdir@/../include/
