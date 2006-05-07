@@ -84,6 +84,8 @@ GlobalContainer::GlobalContainer(void)
 	menuFont = NULL;
 	standardFont = NULL;
 	littleFont = NULL;
+	
+	voiceRecorder = NULL;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -101,8 +103,8 @@ GlobalContainer::~GlobalContainer(void)
 	if (mix)
 		delete mix;
 	
-	if (rec)
-		delete rec;
+	if (voiceRecorder)
+		delete voiceRecorder;
 	
 	// release ressources
 	Toolkit::close();
@@ -425,7 +427,7 @@ void GlobalContainer::load(void)
 		mix->setNextTrack(1);
 		
 		// create voice recorder
-		rec = new VoiceRecorder();
+		voiceRecorder = new VoiceRecorder();
 		
 		updateLoadProgressBar(10);
 	}

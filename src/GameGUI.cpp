@@ -509,7 +509,7 @@ void GameGUI::step(void)
 	
 	// voice step
 	OrderVoiceData *orderVoiceData;
-	while ((orderVoiceData = globalContainer->rec->getNextOrder()) != NULL)
+	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
 		orderVoiceData->recepientsMask = chatMask;
 		orderQueue.push_back(orderVoiceData);
@@ -1259,18 +1259,18 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				{
 					if (pressed)
 					{
-						if (globalContainer->rec->recordingNow)
-							globalContainer->rec->stopRecording();
+						if (globalContainer->voiceRecorder->recordingNow)
+							globalContainer->voiceRecorder->stopRecording();
 						else
-							globalContainer->rec->startRecording();
+							globalContainer->voiceRecorder->startRecording();
 					}
 				}
 				else
 				{
 					if (pressed)
-						globalContainer->rec->startRecording();
+						globalContainer->voiceRecorder->startRecording();
 					else if (!shift)
-						globalContainer->rec->stopRecording();
+						globalContainer->voiceRecorder->stopRecording();
 				}
 				break;
 			case SDLK_RETURN :
@@ -3301,7 +3301,7 @@ void GameGUI::drawOverlayInfos(void)
 	}
 
 	// Draw icon if trnasmitting
-	if (globalContainer->rec->recordingNow)
+	if (globalContainer->voiceRecorder->recordingNow)
 		globalContainer->gfx->drawSprite(5, globalContainer->gfx->getH()-50, globalContainer->gamegui, 24);
 	
 	// Draw the bar contining number of units, CPU load, etc...

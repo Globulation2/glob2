@@ -48,7 +48,11 @@ Race::~Race()
 
 void Race::loadDefault()
 {
-	TextInputStream *stream = new TextInputStream(Toolkit::getFileManager()->openInputStreamBackend("data/units.txt"));
+	// read datas from backend
+	StreamBackend *backend = Toolkit::getFileManager()->openInputStreamBackend("data/units.txt");
+	TextInputStream *stream = new TextInputStream(backend);
+	delete backend;
+	
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Race::create : error, can't open file data/units.txt." << std::endl;
