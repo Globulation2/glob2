@@ -464,6 +464,7 @@ namespace GAGCore
 	
 	TextInputStream::TextInputStream(StreamBackend *backend)
 	{
+		assert(backend);
 		Parser p(backend);
 		p.parse(&table);
 		/*for (std::map<std::string, std::string>::iterator i = table.begin(); i != table.end(); ++i)

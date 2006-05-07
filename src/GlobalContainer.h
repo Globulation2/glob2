@@ -74,7 +74,7 @@ public:
 
 	GraphicContext *gfx;
 	SoundMixer *mix;
-	VoiceRecorder *rec;
+	VoiceRecorder *voiceRecorder;
 	
 	Sprite *terrain;
 	Sprite *terrainWater;
