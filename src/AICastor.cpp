@@ -1269,6 +1269,7 @@ bool AICastor::addProject(Project *project)
 	if (buildingSum[project->shortTypeNum][0]>=project->amount)
 	{
 		fprintf(logFile,  "will not add project (%s x%d) as it already succeded\n", project->debugName, project->amount);
+		delete project;
 		return false;
 	}
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
