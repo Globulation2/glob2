@@ -174,12 +174,12 @@ enemigos cercanos
 pasivo
 [market explanation 2]
 frutas con otros
-[waiting for %s]
-Esperando a %s
-[%s has left the game]
-%s se ha ido del juego
-[%s has been deconnected of the game]
-%s ha sido desconectado del juego
+[waiting for %0]
+Esperando a %0
+[%0 has left the game]
+%0 se ha ido del juego
+[%0 has been deconnected of the game]
+%0 ha sido desconectado del juego
 [load game]
 Cargar partida
 [save game]
@@ -343,13 +343,13 @@ La torre de defensa está siendo atacada
 [the stone wall is under attack]
 El enemigo está a tu muralla
 [the market is under attack]
-El mercado est� siendo atacado
-[Your %s are under attack]
-Tus %s están siendo atacados
-[Your unit got converted to %s's team]
-Una unidad se ha pasado al bando de %s
-[%s's team unit got converted to your team]
-Una unidad de %s se ha pasado a tu bando
+El mercado est�siendo atacado
+[Your %0 are under attack]
+Tus %0 están siendo atacados
+[Your unit got converted to %0's team]
+Una unidad se ha pasado al bando de %0
+[%0's team unit got converted to your team]
+Una unidad de %0 se ha pasado a tu bando
 [Uncontrolled]
 No controlado
 [ai]
@@ -530,14 +530,14 @@ Bajado al
   porciento
 [download finished]
 Bajada terminada
-[Map name: %s]
-Nombre del mapa: %s.
+[Map name: %0]
+Nombre del mapa: %0.
 [one player]
 Un jugador ha entrado
-[number of players: %d]
-%d jugadores presentes.
-[number of teams: %d]
-%d equipos.
+[number of players: %0]
+%0 jugadores presentes.
+[number of teams: %0]
+%0 equipos.
 [game full]
 Partida llena
 [small]
@@ -581,15 +581,15 @@ El metaservidor YOG ha rechazado la conexión porque el usuario no tiene una con
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 El metaservidor YOG ha rechazado la conexión porque este usuario ya ha sido registrado. Desactiva la opción "Registrar un nuevo usuario de YOG con contraseña" si este es tu usuario.
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-El metaservidor YOG ha rechazado la conexión por un error de protocolo: ya est�s autenticado. Intenta de nuevo en 45 segundos.
+El metaservidor YOG ha rechazado la conexión por un error de protocolo: ya est� autenticado. Intenta de nuevo en 45 segundos.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-El metaservidor YOG ha rechazado la conexión por un error de protocolo: no est�s conectado aún al autenticarte. Por favor reporta este fallo.
+El metaservidor YOG ha rechazado la conexión por un error de protocolo: no est� conectado aún al autenticarte. Por favor reporta este fallo.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 El metaservidor YOG ha rechazado la conexión sin dar una explicación.
-[The player %s has left YOG]
-%s se ha ido de YOG
-[The player %s has joined YOG]
-%s ha entrado a YOG
+[The player %0 has left YOG]
+%0 se ha ido de YOG
+[The player %0 has joined YOG]
+%0 ha entrado a YOG
 [You are now marked as away]
 Estás marcado como ausente.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Continuar jugando
 Perdiste: Tu colonia fue aniquilada
 [Won : you defeated your opponents]
 Ganaste: Has destruido tus oponentes
-[Won : your ally %s has the most prestige]
-Ganaste: tu aliado %s ha alcanzado el mayor prestigio
-[Lost : %s has more prestige than you]
-Perdiste: %s tiene más prestigio que tú
+[Won : your ally %0 has the most prestige]
+Ganaste: tu aliado %0 ha alcanzado el mayor prestigio
+[Lost : %0 has more prestige than you]
+Perdiste: %0 tiene más prestigio que tú
 [Won : you have the most prestige]
 Ganaste: Eres quien más prestigio tiene
 [The game has not been finished]
@@ -673,9 +673,9 @@ cualquier explorador
 [ground attack]
 ataque terrestre
 [Can't join game, wrong game version]
-Imposible unirse a la partida: versi�n del juego incorrecta
+Imposible unirse a la partida: versi� del juego incorrecta
 [Can't join game, missmatching game parameters]
-Imposible unirse a la partida: par�metros del juego diferentes
+Imposible unirse a la partida: par�etros del juego diferentes
 [Can't join game, timeout]
 Imposible unirse a la partida: tiempo de espera agotado
 [press space]

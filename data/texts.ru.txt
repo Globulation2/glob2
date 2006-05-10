@@ -170,12 +170,12 @@ ru
  
 [market explanation 2]
 фруктами с другими
-[waiting for %s]
-Ожидание %s
-[%s has left the game]
-%s покинул игру.
-[%s has been deconnected of the game]
-%s был отключён от игры.
+[waiting for %0]
+Ожидание %0
+[%0 has left the game]
+%0 покинул игру.
+[%0 has been deconnected of the game]
+%0 был отключён от игры.
 [load game]
 Загрузить игру
 [save game]
@@ -340,12 +340,12 @@ Ysagoon-игра в Интернете
 Каменная стена атакована
 [the market is under attack]
 Рынок атакован
-[Your %s are under attack]
-%s
-[Your unit got converted to %s's team]
-Ваш юнит переметнулся к врагу %s
-[%s's team unit got converted to your team]
-Вражеский юнит переметнулся к Вам. %s
+[Your %0 are under attack]
+%0
+[Your unit got converted to %0's team]
+Ваш юнит переметнулся к врагу %0
+[%0's team unit got converted to your team]
+Вражеский юнит переметнулся к Вам. %0
 [Uncontrolled]
 Неконтролируемый
 [ai]
@@ -522,14 +522,14 @@ Login
   процентов
 [download finished]
 Скачивание закончено
-[Map name: %s]
-Название карты: %s.
+[Map name: %0]
+Название карты: %0.
 [one player]
 Подключился игрок.
-[number of players: %d]
-%d игроков в игре
-[number of teams: %d]
-%d команд
+[number of players: %0]
+%0 игроков в игре
+[number of teams: %0]
+%0 команд
 [game full]
 Игра заполнена
 [small]
@@ -578,10 +578,10 @@ Login
 Метасервер YOG отказал в соединении из-за внутренней ошибки протокола: Вы не подключены при аутентификации. Пожалуйста, сообщите об этой ошибке.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Метасервер YOG отказал в соединении без объяснения причин!
-[The player %s has left YOG]
-Игрок %s покинул YOG.
-[The player %s has joined YOG]
-Игрок %s подсоединился к YOG.
+[The player %0 has left YOG]
+Игрок %0 покинул YOG.
+[The player %0 has joined YOG]
+Игрок %0 подсоединился к YOG.
 [You are now marked as away]
 Вы не помечены как неактивный.
 [You are no more marked as away]
@@ -610,10 +610,10 @@ Login
 Поражение: Ваша колония мертва.
 [Won : you defeated your opponents]
 Победа: Вы победили всех соперников.
-[Won : your ally %s has the most prestige]
-%s
-[Lost : %s has more prestige than you]
-Поражение: У %s больший престиж, чем у Вас.
+[Won : your ally %0 has the most prestige]
+%0
+[Lost : %0 has more prestige than you]
+Поражение: У %0 больший престиж, чем у Вас.
 [Won : you have the most prestige]
 Benutzername
 [The game has not been finished]

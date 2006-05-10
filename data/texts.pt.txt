@@ -174,12 +174,12 @@ inimigos na cercania
 passivo
 [market explanation 2]
 frutas com outros
-[waiting for %s]
-Esperando a %s
-[%s has left the game]
-%s foi embora do jogo
-[%s has been deconnected of the game]
-%s foi desconectado do jogo
+[waiting for %0]
+Esperando a %0
+[%0 has left the game]
+%0 foi embora do jogo
+[%0 has been deconnected of the game]
+%0 foi desconectado do jogo
 [load game]
 Carregar partida
 [save game]
@@ -344,12 +344,12 @@ A torre de defesa está sendo atacada
 O inimigo está a sua muralha
 [the market is under attack]
 O mercado está sendo atacado
-[Your %s are under attack]
-Seus %s estão sendo atacados
-[Your unit got converted to %s's team]
-Uma unidade tem se passado ao bando de %s
-[%s's team unit got converted to your team]
-Uma unidade de %s tem se passado a seu bando
+[Your %0 are under attack]
+Seus %0 estão sendo atacados
+[Your unit got converted to %0's team]
+Uma unidade tem se passado ao bando de %0
+[%0's team unit got converted to your team]
+Uma unidade de %0 tem se passado a seu bando
 [Uncontrolled]
 Não controlado
 [ai]
@@ -530,14 +530,14 @@ Baixado ao
   porcento
 [download finished]
 Baixada terminada
-[Map name: %s]
-Nome do mapa: %s.
+[Map name: %0]
+Nome do mapa: %0.
 [one player]
 Um jogador entrou
-[number of players: %d]
-%d jogadores presentes.
-[number of teams: %d]
-%d times.
+[number of players: %0]
+%0 jogadores presentes.
+[number of teams: %0]
+%0 times.
 [game full]
 Partida alotada
 [small]
@@ -586,10 +586,10 @@ O metaservidor YOG tem rejeitado a conexão por um erro de protocolo: você já 
 O metaservidor YOG tem rejeitado a conexão por um erro de protocolo: você aínda não está conectado ao se autenticar. Por favor reporte este falho.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 O metaservidor YOG tem rejeitado a conexão sem dar uma explicação.
-[The player %s has left YOG]
-%s foi embora de YOG
-[The player %s has joined YOG]
-%s entrou a YOG
+[The player %0 has left YOG]
+%0 foi embora de YOG
+[The player %0 has joined YOG]
+%0 entrou a YOG
 [You are now marked as away]
 Você está marcado como ausente.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Continuar jogando
 Você perdeu: Sua colônia foi aniquilada
 [Won : you defeated your opponents]
 Você ganhou: Tem destruído seus oponentes
-[Won : your ally %s has the most prestige]
-Você ganhou: seus aliados %s tem atingido o maior prestígio
-[Lost : %s has more prestige than you]
-Você perdeu: %s tem mais prestígio do que você
+[Won : your ally %0 has the most prestige]
+Você ganhou: seus aliados %0 tem atingido o maior prestígio
+[Lost : %0 has more prestige than you]
+Você perdeu: %0 tem mais prestígio do que você
 [Won : you have the most prestige]
 Você ganhou: Você é quem mais prestígio tem
 [The game has not been finished]

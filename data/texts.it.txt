@@ -170,12 +170,12 @@ Mercato
 
 [market explanation 2]
 
-[waiting for %s]
-Aspettando %s
-[%s has left the game]
-%s ha lasciato il gioco.
-[%s has been deconnected of the game]
-%s si è disconnesso dal gioco.
+[waiting for %0]
+Aspettando %0
+[%0 has left the game]
+%0 ha lasciato il gioco.
+[%0 has been deconnected of the game]
+%0 si è disconnesso dal gioco.
 [load game]
 Carica partita
 [save game]
@@ -340,12 +340,12 @@ La torre da difesa è sotto attacco
 Il muro di roccia è sotto attacco
 [the market is under attack]
 Il ercato è sotto attacco
-[Your %s are under attack]
-Il tuo %s sotto attacco
-[Your unit got converted to %s's team]
-La tua unità è stata convertita in %s squadra
-[%s's team unit got converted to your team]
-Un %s sqadra ha convertito la tua unità
+[Your %0 are under attack]
+Il tuo %0 sotto attacco
+[Your unit got converted to %0's team]
+La tua unità è stata convertita in %0 squadra
+[%0's team unit got converted to your team]
+Un %0 sqadra ha convertito la tua unità
 [Uncontrolled]
 Incontrollato
 [ai]
@@ -522,14 +522,14 @@ Scaricato a
   percento
 [download finished]
 Download completato
-[Map name: %s]
-Nome della mappa: %s.
+[Map name: %0]
+Nome della mappa: %0.
 [one player]
 Giocatore singolo.
-[number of players: %d]
-%d numero di giocatori.
-[number of teams: %d]
-%d numero di sqadre.
+[number of players: %0]
+%0 numero di giocatori.
+[number of teams: %0]
+%0 numero di sqadre.
 [game full]
 Gioco completo
 [small]
@@ -578,10 +578,10 @@ Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel 
 Il metaserver YOG ha respinto la connessione perchè è avvenuto un errore nel protocollo interno: non sei connesso durante l'autenticazione. Per favore, segnala questo bug.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Il metaserver YOG ha respinto la connessione senza spiegazione!
-[The player %s has left YOG]
-Il giocatore %s se n'�andato da YOG.
-[The player %s has joined YOG]
-Il giocatore %s è entrato in YOG.
+[The player %0 has left YOG]
+Il giocatore %0 se n'�andato da YOG.
+[The player %0 has joined YOG]
+Il giocatore %0 è entrato in YOG.
 [You are now marked as away]
 Adesso sei segnato come assente.
 [You are no more marked as away]
@@ -610,10 +610,10 @@ Continua a giocare
 Hai perso: la tua colonia �morta.
 [Won : you defeated your opponents]
 Hai vinto: hai battuto i tuoi avversari
-[Won : your ally %s has the most prestige]
-Hai vinto: il tuo alleato %s ha il maggior prestigio.
-[Lost : %s has more prestige than you]
-Hai perso: %s ha pi prestigio di te
+[Won : your ally %0 has the most prestige]
+Hai vinto: il tuo alleato %0 ha il maggior prestigio.
+[Lost : %0 has more prestige than you]
+Hai perso: %0 ha pi prestigio di te
 [Won : you have the most prestige]
 Hai vinto: hai il magior prestigio
 [The game has not been finished]

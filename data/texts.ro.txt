@@ -170,12 +170,12 @@ din vecinătate
 
 [market explanation 2]
 cu ceilalţi
-[waiting for %s]
-Aşteaptă %s
-[%s has left the game]
-%s a părăsit jocul.
-[%s has been deconnected of the game]
-%s a fost deconectat din joc.
+[waiting for %0]
+Aşteaptă %0
+[%0 has left the game]
+%0 a părăsit jocul.
+[%0 has been deconnected of the game]
+%0 a fost deconectat din joc.
 [load game]
 Încarcă joc
 [save game]
@@ -340,12 +340,12 @@ Apărarea vă este atacată
 Inamicul este la ziduri
 [the market is under attack]
 Piata este atacată
-[Your %s are under attack]
-%s voastre sunt atacate
-[Your unit got converted to %s's team]
-Unitatea voastră a trecut de partea %s
-[%s's team unit got converted to your team]
-O unitate %s a trecut de partea voastră
+[Your %0 are under attack]
+%0 voastre sunt atacate
+[Your unit got converted to %0's team]
+Unitatea voastră a trecut de partea %0
+[%0's team unit got converted to your team]
+O unitate %0 a trecut de partea voastră
 [Uncontrolled]
 Necontrolat
 [ai]
@@ -522,14 +522,14 @@ Descărcat la
   la sută
 [download finished]
 Descărcare terminată
-[Map name: %s]
-Hartă: %s.
+[Map name: %0]
+Hartă: %0.
 [one player]
 Un jucător prezent.
-[number of players: %d]
-%d jucători prezenţi.
-[number of teams: %d]
-%d echipe.
+[number of players: %0]
+%0 jucători prezenţi.
+[number of teams: %0]
+%0 echipe.
 [game full]
 Joc complet
 [small]
@@ -578,10 +578,10 @@ Metaserverul YOG a refuzat sa vă conectaţi dintr-o eroare de protocol: sunteţ
 Metaserverul YOG a refuzat sa vă conectaţi dintr-o eroare de protocol: nu sunteti conectat in faza de autentificare. Vă rog să raportaţi această eroare.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
-[The player %s has left YOG]
-Jucătorul %s a iesit din YOG.
-[The player %s has joined YOG]
-Jucătorul %s a intrat in YOG.
+[The player %0 has left YOG]
+Jucătorul %0 a iesit din YOG.
+[The player %0 has joined YOG]
+Jucătorul %0 a intrat in YOG.
 [You are now marked as away]
 Sunteţi de acum marcat ca fiind absent.
 [You are no more marked as away]
@@ -610,10 +610,10 @@ Continuă jocul
 Pierdut : colonia voastră este moartă
 [Won : you defeated your opponents]
 Câştig : aţi învins pe toţi adversarii
-[Won : your ally %s has the most prestige]
-Câstig : aliatul vostru %s are cel mai mare prestigiu.
-[Lost : %s has more prestige than you]
-Pierdut : %s are un prestigiu mai mare
+[Won : your ally %0 has the most prestige]
+Câstig : aliatul vostru %0 are cel mai mare prestigiu.
+[Lost : %0 has more prestige than you]
+Pierdut : %0 are un prestigiu mai mare
 [Won : you have the most prestige]
 Câştig : aveţi cel mai mare prestigiu
 [The game has not been finished]

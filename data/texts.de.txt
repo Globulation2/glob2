@@ -174,12 +174,12 @@ bäude und Einheiten an
 gebäude
 [market explanation 2]
 Früchten
-[waiting for %s]
-Warten auf %s
-[%s has left the game]
-%s hat das Spiel verlassen.
-[%s has been deconnected of the game]
-Die Verbindung zu %s wurde getrennt.
+[waiting for %0]
+Warten auf %0
+[%0 has left the game]
+%0 hat das Spiel verlassen.
+[%0 has been deconnected of the game]
+Die Verbindung zu %0 wurde getrennt.
 [load game]
 Spiel laden
 [save game]
@@ -344,12 +344,12 @@ Ihre Befestigungen werden angegriffen
 Der Feind steht vor Ihren Mauern
 [the market is under attack]
 Der Markt wird angegriffen
-[Your %s are under attack]
-Eure %s werden angegriffen
-[Your unit got converted to %s's team]
-Eine Ihrer Einheiten wurde von einem %s-Team übernommen.
-[%s's team unit got converted to your team]
-Sie haben eine Einheit von einem %s-Team übernommen.
+[Your %0 are under attack]
+Eure %0 werden angegriffen
+[Your unit got converted to %0's team]
+Eine Ihrer Einheiten wurde von einem %0-Team übernommen.
+[%0's team unit got converted to your team]
+Sie haben eine Einheit von einem %0-Team übernommen.
 [Uncontrolled]
 Unkontrolliert
 [ai]
@@ -530,14 +530,14 @@ Heruntergeladen zu
   Prozent
 [download finished]
 Herunterladen abgeschlossen
-[Map name: %s]
-Karte: %s.
+[Map name: %0]
+Karte: %0.
 [one player]
 Ein Spieler spielt mit.
-[number of players: %d]
-%d Spieler spielen mit.
-[number of teams: %d]
-%d Mannschaften.
+[number of players: %0]
+%0 Spieler spielen mit.
+[number of teams: %0]
+%0 Mannschaften.
 [game full]
 Spiel komplett
 [small]
@@ -586,10 +586,10 @@ Der YOG Metaserver hat die Verbindung abgewiesen da ein Protokolfehler aufgetret
 Der YOG Metaserver hat die Verbindung abgewiesen da ein interner Protokolfehler aufgetreten ist: Sie sind während der Anmeldung nicht verbunden. Bitten melden sie diesen Fehler.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
-[The player %s has left YOG]
-Spieler %s hat YOG verlassen.
-[The player %s has joined YOG]
-Spieler %s ist zu YOG zurückgekehrt.
+[The player %0 has left YOG]
+Spieler %0 hat YOG verlassen.
+[The player %0 has joined YOG]
+Spieler %0 ist zu YOG zurückgekehrt.
 [You are now marked as away]
 Sie sind als abwesend markiert.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Weiterspielen
 Verloren: Ihre Kolonie ist tot
 [Won : you defeated your opponents]
 Gewonnen: Sie haben Ihre Feinde besiegt
-[Won : your ally %s has the most prestige]
-Gewonnen: Ihr Verbündeter %s hat das höchste Prestige
-[Lost : %s has more prestige than you]
-Verloren: %s hat mehr Prestige als Sie
+[Won : your ally %0 has the most prestige]
+Gewonnen: Ihr Verbündeter %0 hat das höchste Prestige
+[Lost : %0 has more prestige than you]
+Verloren: %0 hat mehr Prestige als Sie
 [Won : you have the most prestige]
 Gewonnen: Sie haben das höchste Prestige
 [The game has not been finished]

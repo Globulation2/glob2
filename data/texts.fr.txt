@@ -174,12 +174,12 @@ avoisinantes
  
 [market explanation 2]
 fruits avec les autres
-[waiting for %s]
-Attente de %s
-[%s has left the game]
-%s a quitté la partie.
-[%s has been deconnected of the game]
-%s s'est fait déconnecté de la partie.
+[waiting for %0]
+Attente de %0
+[%0 has left the game]
+%0 a quitté la partie.
+[%0 has been deconnected of the game]
+%0 s'est fait déconnecté de la partie.
 [load game]
 Charger jeu
 [save game]
@@ -344,12 +344,12 @@ Vos défenses sont attaquées
 L'ennemi est à vos murs
 [the market is under attack]
 Le marché est attaqué
-[Your %s are under attack]
-Vos %s sont attaquées
-[Your unit got converted to %s's team]
-Votre unité est passée à l'équipe %s
-[%s's team unit got converted to your team]
-Une unité de l'équipe %s s'est convertie à votre équipe
+[Your %0 are under attack]
+Vos %0 sont attaquées
+[Your unit got converted to %0's team]
+Votre unité est passée à l'équipe %0
+[%0's team unit got converted to your team]
+Une unité de l'équipe %0 s'est convertie à votre équipe
 [Uncontrolled]
 Incontrôlé
 [ai]
@@ -530,14 +530,14 @@ Téléchargé à
   pourcent
 [download finished]
 Téléchargement terminé
-[Map name: %s]
-Carte: %s.
+[Map name: %0]
+Carte: %0.
 [one player]
 Un joueur présent.
-[number of players: %d]
-%d joueurs présents.
-[number of teams: %d]
-%d équipes.
+[number of players: %0]
+%0 joueurs présents.
+[number of teams: %0]
+%0 équipes.
 [game full]
 Jeu complet
 [small]
@@ -586,10 +586,10 @@ Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déjà aut
 Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connexion pour une raison inconnue!
-[The player %s has left YOG]
-Le joueur %s a quitté YOG.
-[The player %s has joined YOG]
-Le joueur %s a rejoint YOG.
+[The player %0 has left YOG]
+Le joueur %0 a quitté YOG.
+[The player %0 has joined YOG]
+Le joueur %0 a rejoint YOG.
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Continuer à jouer
 Perdu : votre colonie est morte
 [Won : you defeated your opponents]
 Gagné : vous avez vaincu vos adversaires
-[Won : your ally %s has the most prestige]
-Gagné : votre allié %s a le plus de prestige
-[Lost : %s has more prestige than you]
-Perdu : %s a plus de prestige que vous
+[Won : your ally %0 has the most prestige]
+Gagné : votre allié %0 a le plus de prestige
+[Lost : %0 has more prestige than you]
+Perdu : %0 a plus de prestige que vous
 [Won : you have the most prestige]
 Gagné : vous avez le plus de prestige
 [The game has not been finished]

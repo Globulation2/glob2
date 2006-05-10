@@ -170,12 +170,12 @@ harcosokat
 
 [market explanation 2]
 gyümölcs árucserét
-[waiting for %s]
-%s -ra várva
-[%s has left the game]
-%s kilépett a játékból.
-[%s has been deconnected of the game]
-%s kapcsolata megszakadt.
+[waiting for %0]
+%0 -ra várva
+[%0 has left the game]
+%0 kilépett a játékból.
+[%0 has been deconnected of the game]
+%0 kapcsolata megszakadt.
 [load game]
 Játék betöltése
 [save game]
@@ -340,12 +340,12 @@ Megtámadták az erődítményeket
 Az ellenség a falak előtt áll
 [the market is under attack]
 Megtámadták a piacot
-[Your %s are under attack]
-Megtámadták a %s -t
-[Your unit got converted to %s's team]
-Az egységedet az ellenség elfogta %s
-[%s's team unit got converted to your team]
-Elfogtad az ellenség egységét %s
+[Your %0 are under attack]
+Megtámadták a %0 -t
+[Your unit got converted to %0's team]
+Az egységedet az ellenség elfogta %0
+[%0's team unit got converted to your team]
+Elfogtad az ellenség egységét %0
 [Uncontrolled]
 Független
 [ai]
@@ -522,14 +522,14 @@ Letöltés
   százalék
 [download finished]
 A letöltés befejeződött
-[Map name: %s]
-A térkép neve: %s.
+[Map name: %0]
+A térkép neve: %0.
 [one player]
 Egy játékos van jelen.
-[number of players: %d]
-%d játékos van jelen.
-[number of teams: %d]
-%d csapat
+[number of players: %0]
+%0 játékos van jelen.
+[number of teams: %0]
+%0 csapat
 [game full]
 A játék megtelt
 [small]
@@ -578,10 +578,10 @@ A YOG metaszerver visszautasította a kapcsolatot egy protokollhiba miatt: már 
 A YOG metaszerver visszautasította a kapcsolatot egy belső protokollhiba miatt: azonosítás alatt még nem történt meg a kapcsolódás. A felmerült hibáról küldj értesítést a fejlesztőknek.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
-[The player %s has left YOG]
-A %s játékos kilépett a YOG-ból.
-[The player %s has joined YOG]
-A %s játékos csatlakozott a YOG-hoz.
+[The player %0 has left YOG]
+A %0 játékos kilépett a YOG-ból.
+[The player %0 has joined YOG]
+A %0 játékos csatlakozott a YOG-hoz.
 [You are now marked as away]
 Távollevőként vagy megjelölve.
 [You are no more marked as away]
@@ -610,10 +610,10 @@ Játék folytatása
 A kolóniád megsemmisült.
 [Won : you defeated your opponents]
 Nyertél: legyőzted az ellenfeleidet.
-[Won : your ally %s has the most prestige]
-Nyertél: a szövetségesed %s elérte a legnagyobb presztízs szintet.
-[Lost : %s has more prestige than you]
-Veszítettél: %s -nak nagyobb a presztízse mint neked.
+[Won : your ally %0 has the most prestige]
+Nyertél: a szövetségesed %0 elérte a legnagyobb presztízs szintet.
+[Lost : %0 has more prestige than you]
+Veszítettél: %0 -nak nagyobb a presztízse mint neked.
 [Won : you have the most prestige]
 Nyertél: neked van a legnagyobb presztízsed.
 [The game has not been finished]

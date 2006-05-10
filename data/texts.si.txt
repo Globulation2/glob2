@@ -172,12 +172,12 @@ tako enote kot stavbe
  
 [market explanation 2]	
 z ostalimi
-[waiting for %s]
-Čakam %s
-[%s has left the game]
-%s je zapustil igro.
-[%s has been deconnected of the game]
-%s je prekinil povezavo
+[waiting for %0]
+Čakam %0
+[%0 has left the game]
+%0 je zapustil igro.
+[%0 has been deconnected of the game]
+%0 je prekinil povezavo
 [load game]
 Naloži igro
 [save game]
@@ -342,12 +342,12 @@ Odstiralna zastava je napadena
 Sovražnik je pred vrati
 [the market is under attack]
 Tržnica je napadena
-[Your %s are under attack]
-Tvoji %s so napadeni
-[Your unit got converted to %s's team]
-Tvoje enote so bile spreobrnjene %s
-[%s's team unit got converted to your team]
-Spreobrnil si enoto druge ekipe %s
+[Your %0 are under attack]
+Tvoji %0 so napadeni
+[Your unit got converted to %0's team]
+Tvoje enote so bile spreobrnjene %0
+[%0's team unit got converted to your team]
+Spreobrnil si enoto druge ekipe %0
 [Uncontrolled]
 Nenadzirane
 [ai]
@@ -524,14 +524,14 @@ naloženo iz
   %
 [download finished]
 Nalaganje končano
-[Map name: %s]
-Ime mape: %s.
+[Map name: %0]
+Ime mape: %0.
 [one player]
 Igralec se je vključil.
-[number of players: %d]
-%d players are present.
-[number of teams: %d]
-%d ekip.
+[number of players: %0]
+%0 players are present.
+[number of teams: %0]
+%0 ekip.
 [game full]
 Igra je polna
 [small]
@@ -580,10 +580,10 @@ YOG metastrežnik je zavrnil povezavo, ker se je pojavila napaka v protokolu. Po
 Yog metastrežnik je zavrnil povezavo zaradi problemov z notranjim protokolom: Nisi še proklopljen med potrjevanjem. Prosim prijavi tega hrošča. Hvala
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Yog metastrežnik je brezobrazložitve zavrnil povezavo!
-[The player %s has left YOG]
-%s je zapustil YOG metastrežnik.
-[The player %s has joined YOG]
-%s se je vkljičil na YOG metastrežnik.
+[The player %0 has left YOG]
+%0 je zapustil YOG metastrežnik.
+[The player %0 has joined YOG]
+%0 se je vkljičil na YOG metastrežnik.
 [You are now marked as away]
 Označen si kot Odsoten.
 [You are no more marked as away]
@@ -612,10 +612,10 @@ Nadaljuj z igranjem
 Poražen si : tvoja kolonija je premagana
 [Won : you defeated your opponents]
 Zmagal si : premagal si vse nasprotnike
-[Won : your ally %s has the most prestige]
-Zmagal si : tvoj zaveznik %s ima najvišji ugled
-[Lost : %s has more prestige than you]
-Izgubil si : %s ima več ugleda kot ti
+[Won : your ally %0 has the most prestige]
+Zmagal si : tvoj zaveznik %0 ima najvišji ugled
+[Lost : %0 has more prestige than you]
+Izgubil si : %0 ima več ugleda kot ti
 [Won : you have the most prestige]
 Zmagal si : imaš najvišji ugled
 [The game has not been finished]
