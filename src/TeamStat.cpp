@@ -19,12 +19,12 @@
 
 #include <sstream>
 
+#include <FormatableString.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
 #include <Stream.h>
-#include <boost/format.hpp>
 
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -203,7 +203,7 @@ void TeamStats::drawText(int pos)
 	
 	// general
 	gfx->drawString(textStartPosX, textStartPosY, font, strings->getString("[Statistics]"));
-	gfx->drawString(textStartPosX, textStartPosY+15, font, str(boost::format("%d %s") % newStats.totalUnit % strings->getString("[Units]")).c_str());
+	gfx->drawString(textStartPosX, textStartPosY+15, font, FormatableString("%0 %1").arg(newStats.totalUnit).arg(strings->getString("[Units]")).c_str());
 	if (newStats.totalUnit)
 	{
 		// worker
@@ -214,30 +214,30 @@ void TeamStats::drawText(int pos)
 			free=0;
 			seeking=newStats.isFree[0];
 		}
-		gfx->drawString(textStartPosX, textStartPosY+30, font, str(boost::format("%d %s (%.0f %%)") % newStats.numberUnitPerType[0] % strings->getString("[workers]") % (((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit))).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+42, font, str(boost::format("%s %d %s") % strings->getString("[of which]") % free % strings->getString("[free]")).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+54, font, str(boost::format("%s %d %s") % strings->getString("[and]") % seeking % strings->getString("[seeking a job]")).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+30, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[0]).arg(strings->getString("[workers]")).arg(((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+42, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(free).arg(strings->getString("[free]")).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+54, font, FormatableString("%0 %1 %2").arg(strings->getString("[and]")).arg(seeking).arg(strings->getString("[seeking a job]")).c_str());
 
 		// explorer
-		gfx->drawString(textStartPosX, textStartPosY+69, font, str(boost::format("%d %s (%.0f %%)") % newStats.numberUnitPerType[1] % strings->getString("[explorers]") % (((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit))).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+81, font, str(boost::format("%s %d %s") % strings->getString("[of which]") % newStats.isFree[1] % strings->getString("[free]")).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+69, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[1]).arg(strings->getString("[explorers]")).arg(((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+81, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[1]).arg(strings->getString("[free]")).c_str());
 		// warrior
-		gfx->drawString(textStartPosX, textStartPosY+96, font, str(boost::format("%d %s (%.0f %%)") % newStats.numberUnitPerType[2] % strings->getString("[warriors]") % (((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit))).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+108, font, str(boost::format("%s %d %s") % strings->getString("[of which]") % newStats.isFree[2] % strings->getString("[free]")).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+96, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[2]).arg(strings->getString("[warriors]")).arg(((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+108, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[2]).arg(strings->getString("[free]")).c_str());
 
 		// living state
-		gfx->drawString(textStartPosX, textStartPosY+123, font, str(boost::format("%d %s (%.0f %%)") % newStats.needNothing % strings->getString("[are ok]") % (((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit))).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+135, font, str(boost::format("%d %s (%.0f %%)") % newStats.needFood % strings->getString("[are hungry]") % (((float)newStats.needFood)*100.0f/((float)newStats.totalUnit))).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+147, font, str(boost::format("%d %s (%.0f %%)") % newStats.needFoodCritical % strings->getString("[are dying hungry]") % (((float)newStats.needFoodCritical)*100.0f/((float)newStats.totalUnit))).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+159, font, str(boost::format("%d %s (%.0f %%)") % newStats.needHeal % strings->getString("[are wonded]") % (((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit))).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+123, font, FormatableString("%0 %1 (%2 %)").arg(newStats.needNothing).arg(strings->getString("[are ok]")).arg(((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+135, font, FormatableString("%0 %1 (%2 %)").arg(newStats.needFood).arg(strings->getString("[are hungry]")).arg(((float)newStats.needFood)*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+147, font, FormatableString("%0 %1 (%2 %)").arg(newStats.needFoodCritical).arg(strings->getString("[are dying hungry]")).arg(((float)newStats.needFoodCritical)*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+159, font, FormatableString("%0 %1 (%2 %)").arg(newStats.needHeal).arg(strings->getString("[are wonded]")).arg(((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
 
 		// upgrade state
-		gfx->drawString(textStartPosX,textStartPosY+174, globalContainer->littleFont, str(boost::format("%s %d/%d/%d/%d") % strings->getString("[Walk]") % newStats.upgradeState[WALK][0] % newStats.upgradeState[WALK][1] % newStats.upgradeState[WALK][2] % newStats.upgradeState[WALK][3]).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+186, globalContainer->littleFont, str(boost::format("%s %d/%d/%d") % strings->getString("[Swim]") % newStats.upgradeState[SWIM][1] % newStats.upgradeState[SWIM][2] % newStats.upgradeState[SWIM][3]).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+198, globalContainer->littleFont, str(boost::format("%s %d/%d/%d/%d") % strings->getString("[Build]") % newStats.upgradeState[BUILD][0] % newStats.upgradeState[BUILD][1] % newStats.upgradeState[BUILD][2] % newStats.upgradeState[BUILD][3]).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+210, globalContainer->littleFont, str(boost::format("%s %d/%d/%d/%d") % strings->getString("[Harvest]") % newStats.upgradeState[HARVEST][0] % newStats.upgradeState[HARVEST][1] % newStats.upgradeState[HARVEST][2] % newStats.upgradeState[HARVEST][3]).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+222, globalContainer->littleFont, str(boost::format("%s %d/%d/%d/%d") % strings->getString("[At. speed]") % newStats.upgradeState[ATTACK_SPEED][0] % newStats.upgradeState[ATTACK_SPEED][1] % newStats.upgradeState[ATTACK_SPEED][2] % newStats.upgradeState[ATTACK_SPEED][3]).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+234, globalContainer->littleFont, str(boost::format("%s %d/%d/%d/%d") % strings->getString("[At. strength]") % newStats.upgradeState[ATTACK_STRENGTH][0] % newStats.upgradeState[ATTACK_STRENGTH][1] % newStats.upgradeState[ATTACK_STRENGTH][2] % newStats.upgradeState[ATTACK_STRENGTH][3]).c_str());
+		gfx->drawString(textStartPosX,textStartPosY+174, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[Walk]")).arg(newStats.upgradeState[WALK][0]).arg(newStats.upgradeState[WALK][1]).arg(newStats.upgradeState[WALK][2]).arg(newStats.upgradeState[WALK][3]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+186, globalContainer->littleFont, FormatableString("%0 %1/%2/%3").arg(strings->getString("[Swim]")).arg(newStats.upgradeState[SWIM][1]).arg(newStats.upgradeState[SWIM][2]).arg(newStats.upgradeState[SWIM][3]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+198, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[Build]")).arg(newStats.upgradeState[BUILD][0]).arg(newStats.upgradeState[BUILD][1]).arg(newStats.upgradeState[BUILD][2]).arg(newStats.upgradeState[BUILD][3]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+210, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[Harvest]")).arg(newStats.upgradeState[HARVEST][0]).arg(newStats.upgradeState[HARVEST][1]).arg(newStats.upgradeState[HARVEST][2]).arg(newStats.upgradeState[HARVEST][3]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+222, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[At. speed]")).arg(newStats.upgradeState[ATTACK_SPEED][0]).arg(newStats.upgradeState[ATTACK_SPEED][1]).arg(newStats.upgradeState[ATTACK_SPEED][2]).arg(newStats.upgradeState[ATTACK_SPEED][3]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+234, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[At. strength]")).arg(newStats.upgradeState[ATTACK_STRENGTH][0]).arg(newStats.upgradeState[ATTACK_STRENGTH][1]).arg(newStats.upgradeState[ATTACK_STRENGTH][2]).arg(newStats.upgradeState[ATTACK_STRENGTH][3]).c_str());
 		
 		// happyness
 		std::stringstream happyness;

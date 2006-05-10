@@ -23,6 +23,8 @@
 #include "MultiplayersConnectedScreen.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
+
+#include <FormatableString.h>
 #include <GUIText.h>
 #include <GUITextInput.h>
 #include <GUITextArea.h>
@@ -31,8 +33,6 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
-
-#include <boost/format.hpp>
 
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"
@@ -520,30 +520,29 @@ void YOGScreen::onTimer(Uint32 tick)
 			if (verbose)
 				printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
 			std::string s;
-			s = str(boost::format(Toolkit::getStringTable()->getString("[Map name: %s]")) % yogGameInfo->mapName);
+			s = FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(yogGameInfo->mapName);
 			gameInfo->setText(s.c_str());
 			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->numberOfPlayer==1)
 			{
-				s = str(boost::format("%s") % Toolkit::getStringTable()->getString("[one player]"));
-				gameInfo->addText(s);
+				gameInfo->addText(Toolkit::getStringTable()->getString("[one player]"));
 			}
 			else
 			{
-				s = str(boost::format(Toolkit::getStringTable()->getString("[number of players: %d]")) % yogGameInfo->numberOfPlayer);
+				s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0]")).arg(yogGameInfo->numberOfPlayer);
 				gameInfo->addText(s);
 			}
 			gameInfo->addChar('\n');
 			
-			s = str(boost::format(Toolkit::getStringTable()->getString("[number of teams: %d]")) % yogGameInfo->numberOfTeam);
+			s = FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg(yogGameInfo->numberOfTeam);
 			gameInfo->addText(s);
 			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->mapGenerationMethode==MapGenerationDescriptor::eNONE)
-				s = str(boost::format("%s\n") % Toolkit::getStringTable()->getString("[handmade map]"));
+				s = FormatableString("%0\n").arg(Toolkit::getStringTable()->getString("[handmade map]"));
 			else
-				s = str(boost::format("%s\n") % Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
+				s = FormatableString("%0\n").arg(Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
 			gameInfo->addText(s);
 			
 			//TODO: display info about yogGameInfo->fileIsAMap

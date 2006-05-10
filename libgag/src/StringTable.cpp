@@ -23,6 +23,7 @@
 #include <Stream.h>
 #include "assert.h"
 #include <iostream>
+#include <cctype>
 
 namespace GAGCore
 {
@@ -151,22 +152,19 @@ namespace GAGCore
 		{
 			// For each entry...
 			bool lcwp=false;
-			int baseCountS=0;
-			int baseCountD=0;
+			int baseCount=0;
 			const std::string &s = it->first;
-			// we check that we only have valid format (from a printf point of view)...
+			// we check that we only have valid format (from a FormatableString point of view)...
 			for (size_t j=0; j<s.length(); j++)
 			{
 				char c = s[j];
 				if (lcwp && c!=' ' && c!='%')
 				{
-					if (c=='s')
-						baseCountS++;
-					else if (c=='d')
-						baseCountD++;
+					if (isdigit(c))
+						baseCount++;
 					else
 					{
-						std::cerr << "StringTable::load(\"" << filename << "\") : error, consistency : text=(" << s << "), Only %d and %s are supported in translations !" << std::endl;
+						std::cerr << "StringTable::load(\"" << filename << "\") : error, consistency : text=(" << s << "), Only %x where x is a number are supported in translations !" << std::endl;
 						assert(false);
 						return false;
 					}
@@ -178,20 +176,17 @@ namespace GAGCore
 			{
 				const std::string &s = strings[it->second]->data[i];
 				bool lcwp=false;
-				int countS=0;
-				int countD=0;
+				int count=0;
 				for (size_t j=0; j<s.length(); j++)
 				{
 					char c=s[j];
 					if (lcwp && c!=' ' && c!='%')
 					{
-						if (c=='s')
-							countS++;
-						else if (c=='d')
-							countD++;
+						if (isdigit(c))
+							count++;
 						else
 						{
-							std::cerr << "StringTable::load(\"" << filename << "\") : error, translation consistency : translation=(" << s << "Only %s and %d are supported in translations !" << std::endl;
+							std::cerr << "StringTable::load(\"" << filename << "\") : error, translation consistency : translation=(" << s << "Only %x where x is a number are supported in translations !" << std::endl;
 							assert(false);
 							return false;
 						}
@@ -199,9 +194,9 @@ namespace GAGCore
 					lcwp=(c=='%');
 				}
 				// if not, issue an error message
-				if (baseCountS!=countS ||baseCountD!=countD)
+				if (baseCount!=count)
 				{
-					std::cerr << "StringTable::load(\"" << filename << "\") : error, translation : in " << translationFiles[i] << ", text = [" << baseCountS << ":" << baseCountD << "] (" << it->first << "), translation = [" << countS << ":" << countD << "] (" << s << "), doesn't match !" << std::endl;
+					std::cerr << "StringTable::load(\"" << filename << "\") : error, translation : in " << translationFiles[i] << ", text = [" << baseCount << "] (" << it->first << "), translation = [" << count << "] (" << s << "), doesn't match !" << std::endl;
 					assert(false);
 					return false;
 				}

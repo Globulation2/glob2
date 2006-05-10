@@ -18,14 +18,13 @@
 */
 
 #include "EndGameScreen.h"
+#include <FormatableString.h>
 #include <GUIText.h>
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include <algorithm>
-
-#include <boost/format.hpp>
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -120,15 +119,16 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 		else
 		{
-			std::string strText;
+			FormatableString strText;
 			if ((t->allies) & (gui->getLocalTeam()->me))
-				strText = Toolkit::getStringTable()->getString("[Won : your ally %s has the most prestige]");
+				strText = Toolkit::getStringTable()->getString("[Won : your ally %0 has the most prestige]");
 			else
-				strText = Toolkit::getStringTable()->getString("[Lost : %s has more prestige than you]");
+				strText = Toolkit::getStringTable()->getString("[Lost : %0 has more prestige than you]");
 
 			const char *playerText = t->getFirstPlayerName();
 			assert(playerText);
-			titleText = str(boost::format(strText) % playerText);
+			strText.arg(playerText);
+			titleText = strText;
 		}
 	}
 	else if (!gui->getLocalTeam()->isAlive)

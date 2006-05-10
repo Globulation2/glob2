@@ -21,14 +21,13 @@
 #include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 #include "Session.h"
+#include <FormatableString.h>
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <Stream.h>
 #include <BinaryStream.h>
-
-#include <boost/format.hpp>
 
 ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool recurse)
 {
@@ -99,11 +98,11 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				// update map name & info
 				mapName->setText(sessionInfo.getMapName());
 				std::string textTemp;
-				textTemp = str(boost::format("%d%s") % sessionInfo.numberOfTeam % Toolkit::getStringTable()->getString("[teams]"));
+				textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
 				mapInfo->setText(textTemp);
-				textTemp = str(boost::format("%s %d.%d") % Toolkit::getStringTable()->getString("[Version]") % sessionInfo.versionMajor % sessionInfo.versionMinor);
+				textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
 				mapVersion->setText(textTemp);
-				textTemp = str(boost::format("%d x %d") % mapPreview->getLastWidth() % mapPreview->getLastHeight());
+				textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
 				mapSize->setText(textTemp);
 				std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
 				mapDate->setText(std::ctime(&mtime));
