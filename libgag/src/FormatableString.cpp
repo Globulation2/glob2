@@ -29,10 +29,8 @@
 namespace GAGCore {
 	void FormatableString::proceedReplace(const std::string &replacement)
 	{
-		std::cout<< *this << std::endl;
 		std::ostringstream search;
 		search << "%" << this->argLevel;
-		std::cout<< "Recherche de " << search.str() << std::endl;
 		std::string::size_type pos = this->find(search.str(), 0);
 		assert(pos != std::string::npos);
 		this->replace(pos, search.str().length(), replacement);
