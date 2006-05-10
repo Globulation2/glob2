@@ -174,12 +174,12 @@ enheder eller bygninger
  
 [market explanation 2]
 med andre
-[waiting for %s]
-Vænter på %s
-[%s has left the game]
-%s har forladt spillet
-[%s has been deconnected of the game]
-%s er blevet afbrut
+[waiting for %0]
+Vænter på %0
+[%0 has left the game]
+%0 har forladt spillet
+[%0 has been deconnected of the game]
+%0 er blevet afbrut
 [load game]
 Lade spil
 [save game]
@@ -344,12 +344,12 @@ Dine forsvar er under angrib
 Fjenden er ved dine væge
 [the market is under attack]
 Market er under angrib
-[Your %s are under attack]
-Dine %s er under angrib
-[Your unit got converted to %s's team]
-En af dine enheder blev konverteret til et %s hold
-[%s's team unit got converted to your team]
-Et %s holds enhed blev konverteret til dit hold
+[Your %0 are under attack]
+Dine %0 er under angrib
+[Your unit got converted to %0's team]
+En af dine enheder blev konverteret til et %0 hold
+[%0's team unit got converted to your team]
+Et %0 holds enhed blev konverteret til dit hold
 [Uncontrolled]
 Ukontrolleret
 [ai]
@@ -530,14 +530,14 @@ Hentet fra
   procent
 [download finished]
 Nedhentning færdig
-[Map name: %s]
-Kort navn: %s.
+[Map name: %0]
+Kort navn: %0.
 [one player]
 En spiller er kommet til.
-[number of players: %d]
-%d antal spillere er tilgængelig
-[number of teams: %d]
-%d hold.
+[number of players: %0]
+%0 antal spillere er tilgængelig
+[number of teams: %0]
+%0 hold.
 [game full]
 Spillet er fyldt op.
 [small]
@@ -586,10 +586,10 @@ YOG meta serveren har afbrudt forbindelsen fordi der er sket en protokol fejl:  
 YOG meta serveren har afbrudt forbindelsen fordi en intern protokol fejl er opstået: du er ikke forbundet mens du forsøgte at loge ind. Rappotere venligst denne fejl.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG meta serveren har afbrudt forbindelsen uden en forklaring!
-[The player %s has left YOG]
-%s har forladt YOG.
-[The player %s has joined YOG]
-%s er kommet til YOG.
+[The player %0 has left YOG]
+%0 har forladt YOG.
+[The player %0 has joined YOG]
+%0 er kommet til YOG.
 [You are now marked as away]
 Du er nu markeret som væk
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Fortsæt spillet
 Tabt : Din koloni er død
 [Won : you defeated your opponents]
 Vundet : Du har slået din modstander
-[Won : your ally %s has the most prestige]
-Vundet: din allierede %s havde den største præstige
-[Lost : %s has more prestige than you]
-Tabt : %s har mere præstige end du har
+[Won : your ally %0 has the most prestige]
+Vundet: din allierede %0 havde den største præstige
+[Lost : %0 has more prestige than you]
+Tabt : %0 har mere præstige end du har
 [Won : you have the most prestige]
 Vundet : du havde den største præstige
 [The game has not been finished]

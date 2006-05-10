@@ -174,12 +174,12 @@ birimler yada binalar
 bilesen
 [market explanation 2]
 baskalariyla alisveris yapar
-[waiting for %s]
-bekleniyor: %s
-[%s has left the game]
-%s oyundan cikti.
-[%s has been deconnected of the game]
-%s koptu.
+[waiting for %0]
+bekleniyor: %0
+[%0 has left the game]
+%0 oyundan cikti.
+[%0 has been deconnected of the game]
+%0 koptu.
 [load game]
 Oyun yukle
 [save game]
@@ -344,12 +344,12 @@ Savunmaniz saldiri altinda
 Dusman duvarlarinizi zorluyor
 [the market is under attack]
 Market saldiri altinda
-[Your %s are under attack]
-%s 'leriniz saldiri altinda
-[Your unit got converted to %s's team]
-Bir biriminiz %s 'nin tarafina gecti
-[%s's team unit got converted to your team]
-%s'nin bir birimi sizin tarafiniza gecti
+[Your %0 are under attack]
+%0 'leriniz saldiri altinda
+[Your unit got converted to %0's team]
+Bir biriminiz %0 'nin tarafina gecti
+[%0's team unit got converted to your team]
+%0'nin bir birimi sizin tarafiniza gecti
 [Uncontrolled]
 Kontrolsuz
 [ai]
@@ -530,14 +530,14 @@ Suradan indirildi:
   yuzde
 [download finished]
 Indirme tamamlandi
-[Map name: %s]
-Harita adi: %s.
+[Map name: %0]
+Harita adi: %0.
 [one player]
 Bir oyuncu katildi.
-[number of players: %d]
-%d oyuncu var.
-[number of teams: %d]
-%d takim var.
+[number of players: %0]
+%0 oyuncu var.
+[number of teams: %0]
+%0 takim var.
 [game full]
 Oyun dolu
 [small]
@@ -586,10 +586,10 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bir protokol hatasi olustu:  Zaten 
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bir ic protokol hatasi olustu: Onaylandigi halde baglantiniz kurulamadi. Lutfen bu bug'i bildiriniz.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
-[The player %s has left YOG]
-%s YOG'dan ayrildi.
-[The player %s has joined YOG]
-%s YOG'a baglandi.
+[The player %0 has left YOG]
+%0 YOG'dan ayrildi.
+[The player %0 has joined YOG]
+%0 YOG'a baglandi.
 [You are now marked as away]
 Uzakta olarak isaretlisiniz.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Oyuna devam et
 Yenilgi: koloniniz oldu
 [Won : you defeated your opponents]
 Zafer: Rakiplerinizi yendiniz
-[Won : your ally %s has the most prestige]
-Zafer: Muttefikiniz %s en buyuk prestije sahip
-[Lost : %s has more prestige than you]
-Yenilgi: %s 'nin prestiji sizinkinden daha fazla
+[Won : your ally %0 has the most prestige]
+Zafer: Muttefikiniz %0 en buyuk prestije sahip
+[Lost : %0 has more prestige than you]
+Yenilgi: %0 'nin prestiji sizinkinden daha fazla
 [Won : you have the most prestige]
 Zafer: En buyuk prestij sizinki
 [The game has not been finished]

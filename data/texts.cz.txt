@@ -172,12 +172,12 @@ Krátké vysvětlení 2 (24 znaků max)
 
 [market explanation 2]
 
-[waiting for %s]
-Čeká se na %s
-[%s has left the game]
-%s opustil hru.
-[%s has been deconnected of the game]
-%s byl odpojen.
+[waiting for %0]
+Čeká se na %0
+[%0 has left the game]
+%0 opustil hru.
+[%0 has been deconnected of the game]
+%0 byl odpojen.
 [load game]
 Nahrát hru
 [save game]
@@ -342,12 +342,12 @@ Obranná věž je pod útokem
 Nepřítel utočí na hradby
 [the market is under attack]
 Tržiště je pod útokem
-[Your %s are under attack]
-Tvoji %s jsou pod útokem
-[Your unit got converted to %s's team]
-Tva jednotka změnila víru v jiného hráče %s
-[%s's team unit got converted to your team]
-Cizí tým změnil víru v Tebe %s
+[Your %0 are under attack]
+Tvoji %0 jsou pod útokem
+[Your unit got converted to %0's team]
+Tva jednotka změnila víru v jiného hráče %0
+[%0's team unit got converted to your team]
+Cizí tým změnil víru v Tebe %0
 [Uncontrolled]
 Neovládaný
 [ai]
@@ -524,14 +524,14 @@ Stahuji
   procent
 [download finished]
 Stáhnuto
-[Map name: %s]
-Jméno mapy: %s.
+[Map name: %0]
+Jméno mapy: %0.
 [one player]
 Jeden hráč se připojil.
-[number of players: %d]
-%d hráčů se připojilo.
-[number of teams: %d]
-%d týmů.
+[number of players: %0]
+%0 hráčů se připojilo.
+[number of teams: %0]
+%0 týmů.
 [game full]
 Plně obsazená hra
 [small]
@@ -580,10 +580,10 @@ YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: už jsi b
 YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: nejsi ještě připojen během ověřování. Prosím reportuj tuto chybu.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver odmítnul spojení bez udání důvodu.
-[The player %s has left YOG]
-Hráč %s se odpojil od YOG.
-[The player %s has joined YOG]
-Hráč %s se připojil k YOG.
+[The player %0 has left YOG]
+Hráč %0 se odpojil od YOG.
+[The player %0 has joined YOG]
+Hráč %0 se připojil k YOG.
 [You are now marked as away]
 Jsi označen, že jsi pryč.
 [You are no more marked as away]
@@ -612,10 +612,10 @@ Pokračovat ve hře
 Tvoje kolonie je zničená ...
 [Won : you defeated your opponents]
 Tvoji nepřátelé byli poraženi ...
-[Won : your ally %s has the most prestige]
-Tvůj spojenec %s má největší prestiž ...
-[Lost : %s has more prestige than you]
-%s má větší prestiž než Ty ...
+[Won : your ally %0 has the most prestige]
+Tvůj spojenec %0 má největší prestiž ...
+[Lost : %0 has more prestige than you]
+%0 má větší prestiž než Ty ...
 [Won : you have the most prestige]
 Ty máš největší prestiž ...
 [The game has not been finished]

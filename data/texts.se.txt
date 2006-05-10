@@ -172,12 +172,12 @@ terräng
  
 [market explanation 2]
 
-[waiting for %s]
-Väntar på %s
-[%s has left the game]
-%s har lämnat spelet.
-[%s has been deconnected of the game]
-%s har blivit bortkopplad från spelet.
+[waiting for %0]
+Väntar på %0
+[%0 has left the game]
+%0 har lämnat spelet.
+[%0 has been deconnected of the game]
+%0 har blivit bortkopplad från spelet.
 [load game]
 Ladda spel
 [save game]
@@ -342,12 +342,12 @@ Kanon tornet blir anfallet
 Fienden är vid din stenmur
 [the market is under attack]
 Marknaden är under attack
-[Your %s are under attack]
-Din %s är under attack
-[Your unit got converted to %s's team]
-Din enhet konverterades till ett %s lag
-[%s's team unit got converted to your team]
-Ett %s lags enhet blev konverterad till ditt lag
+[Your %0 are under attack]
+Din %0 är under attack
+[Your unit got converted to %0's team]
+Din enhet konverterades till ett %0 lag
+[%0's team unit got converted to your team]
+Ett %0 lags enhet blev konverterad till ditt lag
 [Uncontrolled]
 Okontrollerad
 [ai]
@@ -524,14 +524,14 @@ Nerladdad
   procent
 [download finished]
 Nerladdning klar
-[Map name: %s]
-Kart namn: %s.
+[Map name: %0]
+Kart namn: %0.
 [one player]
 En spelare har anslutit.
-[number of players: %d]
-%d spelare är närvarande.
-[number of teams: %d]
-%d lag.
+[number of players: %0]
+%0 spelare är närvarande.
+[number of teams: %0]
+%0 lag.
 [game full]
 Spel fullt
 [small]
@@ -580,10 +580,10 @@ YOG metaservern har avslagit anslutningsbegäran eftersom ett protokoll fel har 
 YOG metaservern har avslagit anslutningsbegäran eftersom ett internt protokoll fel har inträffat: du är inte ansluten medans du är autentiserad. Vänligen rapportera denna bugg.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaservern har avslagit anslutningsbegäran utan förklaring!
-[The player %s has left YOG]
-%s har lämnat YOG.
-[The player %s has joined YOG]
-%s har anslutit till YOG.
+[The player %0 has left YOG]
+%0 har lämnat YOG.
+[The player %0 has joined YOG]
+%0 har anslutit till YOG.
 [You are now marked as away]
 Du är markerad som frånvarande
 [You are no more marked as away]
@@ -612,10 +612,10 @@ Fortsätt spela
 Förlust : Din koloni är död
 [Won : you defeated your opponents]
 Seger : Du besegrade dina motspelare
-[Won : your ally %s has the most prestige]
-Seger : din allierade %s har det bästa anseendet
-[Lost : %s has more prestige than you]
-Förlust : %s har större anseende än dig
+[Won : your ally %0 has the most prestige]
+Seger : din allierade %0 har det bästa anseendet
+[Lost : %0 has more prestige than you]
+Förlust : %0 har större anseende än dig
 [Won : you have the most prestige]
 Seger : Du har det bästa anseendet
 [The game has not been finished]

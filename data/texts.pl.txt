@@ -174,12 +174,12 @@ obszar
 obronny
 [market explanation 2]
 owoców z innymi
-[waiting for %s]
-Czeka na %s
-[%s has left the game]
-%s opuścił grę.
-[%s has been deconnected of the game]
-%s się rozłączył.
+[waiting for %0]
+Czeka na %0
+[%0 has left the game]
+%0 opuścił grę.
+[%0 has been deconnected of the game]
+%0 się rozłączył.
 [load game]
 Załaduj grę
 [save game]
@@ -344,12 +344,12 @@ Flaga oczyszczania została zaatakowana
 Mur został zaatakowany
 [the market is under attack]
 Bazar został zaatakowany
-[Your %s are under attack]
-Twój %s jest atakowany
-[Your unit got converted to %s's team]
-Twoja jednostka została przeciągnięta na stronę wroga %s
-[%s's team unit got converted to your team]
-Jednostka wroga %s została przeciągnięta na Twoją stronę
+[Your %0 are under attack]
+Twój %0 jest atakowany
+[Your unit got converted to %0's team]
+Twoja jednostka została przeciągnięta na stronę wroga %0
+[%0's team unit got converted to your team]
+Jednostka wroga %0 została przeciągnięta na Twoją stronę
 [Uncontrolled]
 Niekontrolowany
 [ai]
@@ -526,14 +526,14 @@ Kompiluj skrypt
   procent
 [download finished]
 Pobieranie zakończone
-[Map name: %s]
-Nazwa mapy: %s.
+[Map name: %0]
+Nazwa mapy: %0.
 [one player]
 Gracz dołaczył do gry.
-[number of players: %d]
-%d graczy dołączyło do gry.
-[number of teams: %d]
-%d drużyny
+[number of players: %0]
+%0 graczy dołączyło do gry.
+[number of teams: %0]
+%0 drużyny
 [game full]
 Komplet graczy
 [small]
@@ -582,10 +582,10 @@ Metaserwer YOG odmówił połączenia z powodu błędnego hasła.
 
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Metaserver YOG odmówił połączenia bez dalszego wyjaśnienia.
-[The player %s has left YOG]
-Gracz %s opuścił YOG.
-[The player %s has joined YOG]
-Gracz %s przyłączył się do YOG.
+[The player %0 has left YOG]
+Gracz %0 opuścił YOG.
+[The player %0 has joined YOG]
+Gracz %0 przyłączył się do YOG.
 [You are now marked as away]
 Jesteś oznaczony jako nieaktywny.
 [You are no more marked as away]
@@ -614,10 +614,10 @@ Kontynuuj grę
 Przegrałeś: Twoja kolonia została wybita.
 [Won : you defeated your opponents]
 Wygrałeś: pokonałeś swoich przeciwników
-[Won : your ally %s has the most prestige]
-Wygrałeś: %s ma największy prestiż
-[Lost : %s has more prestige than you]
-Przegrałeś: %s ma większy prestiż od Twojego
+[Won : your ally %0 has the most prestige]
+Wygrałeś: %0 ma największy prestiż
+[Lost : %0 has more prestige than you]
+Przegrałeś: %0 ma większy prestiż od Twojego
 [Won : you have the most prestige]
 Wygrałeś: Masz największy prestiż
 [The game has not been finished]

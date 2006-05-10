@@ -174,12 +174,12 @@ van uw werkers
  
 [market explanation 2]
 met de anderen
-[waiting for %s]
-Wachten voor %s
-[%s has left the game]
-%s heeft het spel verlaten.
-[%s has been deconnected of the game]
-%s heeft geen verbinding meer.
+[waiting for %0]
+Wachten voor %0
+[%0 has left the game]
+%0 heeft het spel verlaten.
+[%0 has been deconnected of the game]
+%0 heeft geen verbinding meer.
 [load game]
 Laad spel
 [save game]
@@ -344,12 +344,12 @@ Uw verdediging wordt aangevallen
 Uw muren worden aangevallen
 [the market is under attack]
 De markt wordt aangevallen
-[Your %s are under attack]
-Uw %s worden aangevallen
-[Your unit got converted to %s's team]
-Uw eenheid is geconverteert naar een %s ploeg
-[%s's team unit got converted to your team]
-Een eenheid van %s ploeg is geconverteert naar uw ploeg
+[Your %0 are under attack]
+Uw %0 worden aangevallen
+[Your unit got converted to %0's team]
+Uw eenheid is geconverteert naar een %0 ploeg
+[%0's team unit got converted to your team]
+Een eenheid van %0 ploeg is geconverteert naar uw ploeg
 [Uncontrolled]
 Ongecontrolleerd
 [ai]
@@ -530,14 +530,14 @@ Downloaden van
   Procent
 [download finished]
 Downloaden klaar
-[Map name: %s]
-Mapnaam: %s.
+[Map name: %0]
+Mapnaam: %0.
 [one player]
 Een speler is aangesloten.
-[number of players: %d]
-%d spelers zijn aanwezig.
-[number of teams: %d]
-%d ploegen.
+[number of players: %0]
+%0 spelers zijn aanwezig.
+[number of teams: %0]
+%0 ploegen.
 [game full]
 Spel vol
 [small]
@@ -586,10 +586,10 @@ De YOG metaserver heeft uw verbinding afgewezen, er is een protocolfout opgetred
 YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 De YOG metaserver heeft uw verbinding afgewezen zonder uitleg!
-[The player %s has left YOG]
-%s heeft YOG verlaten.
-[The player %s has joined YOG]
-%s heeft zich aangesloten bij YOG.
+[The player %0 has left YOG]
+%0 heeft YOG verlaten.
+[The player %0 has joined YOG]
+%0 heeft zich aangesloten bij YOG.
 [You are now marked as away]
 Je bent 'weg' gemarkeerd.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Doorgaan met spelen
 Verloren: ww colonie is dood
 [Won : you defeated your opponents]
 GeWinnen : je hebt je tegenstanders vernietigt
-[Won : your ally %s has the most prestige]
-Gewonnen: Uw bondgenoot %s heeft de grootste achtbaarheid
-[Lost : %s has more prestige than you]
-Verloren : %s heeft meer achtbaarheid dan jij
+[Won : your ally %0 has the most prestige]
+Gewonnen: Uw bondgenoot %0 heeft de grootste achtbaarheid
+[Lost : %0 has more prestige than you]
+Verloren : %0 heeft meer achtbaarheid dan jij
 [Won : you have the most prestige]
 Gewonnen : je hebt de grootste achtbaarheid
 [The game has not been finished]

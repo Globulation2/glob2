@@ -174,12 +174,12 @@ exploradors a l'area seleccionada
 element
 [market explanation 2]
 fruits amb altres
-[waiting for %s]
-Esperant a %s
-[%s has left the game]
-%s ha marxat
-[%s has been deconnected of the game]
-%s s'ha desconectat del joc
+[waiting for %0]
+Esperant a %0
+[%0 has left the game]
+%0 ha marxat
+[%0 has been deconnected of the game]
+%0 s'ha desconectat del joc
 [load game]
 Cargar partida
 [save game]
@@ -344,12 +344,12 @@ La Torre està sent atacada
 L'enemic esta atacant la teva muralla
 [the market is under attack]
 El mercat està sent atacat
-[Your %s are under attack]
-El teu %s  està sent atacat
-[Your unit got converted to %s's team]
-Una unitat teva s'ha convertit a l'equip de %s
-[%s's team unit got converted to your team]
-Una unitat de %s s'ha convertit al teu equip
+[Your %0 are under attack]
+El teu %0  està sent atacat
+[Your unit got converted to %0's team]
+Una unitat teva s'ha convertit a l'equip de %0
+[%0's team unit got converted to your team]
+Una unitat de %0 s'ha convertit al teu equip
 [Uncontrolled]
 No Controlat
 [ai]
@@ -530,14 +530,14 @@ Baixat al
   porcentatge
 [download finished]
 Descarga finalitzada
-[Map name: %s]
-Nom del mapa: %s.
+[Map name: %0]
+Nom del mapa: %0.
 [one player]
 un jugador
-[number of players: %d]
-%d nombre de jugadors
-[number of teams: %d]
-%d nombre d' equips
+[number of players: %0]
+%0 nombre de jugadors
+[number of teams: %0]
+%0 nombre d' equips
 [game full]
 Partida Completa
 [small]
@@ -586,10 +586,10 @@ El servidor YOG ha rebutjat la conexió per un error d' autentificació, intenti
 El servidor YOG ha rebutjat la conexió per un error intern, si us plau comunica aquest error
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 El servidor YOG ha rebutjat la conexió inexplicablement.
-[The player %s has left YOG]
-El jugador %s ha abandonat YOG
-[The player %s has joined YOG]
-El jugador %s se conectat a YOG
+[The player %0 has left YOG]
+El jugador %0 ha abandonat YOG
+[The player %0 has joined YOG]
+El jugador %0 se conectat a YOG
 [You are now marked as away]
 Estas marcat com ausent.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Continuar jugant
 Perdedor: La teva colonia ha sigut exterminada
 [Won : you defeated your opponents]
 Vencedor: Has destruit als teus enemics
-[Won : your ally %s has the most prestige]
-Vencedor: el teu aliat %s ha alcanzat el major prestigi-
-[Lost : %s has more prestige than you]
-Perdedor: %s te més prestigi que tú
+[Won : your ally %0 has the most prestige]
+Vencedor: el teu aliat %0 ha alcanzat el major prestigi-
+[Lost : %0 has more prestige than you]
+Perdedor: %0 te més prestigi que tú
 [Won : you have the most prestige]
 Guuanyador: Tu ets el que més prestigi té
 [The game has not been finished]

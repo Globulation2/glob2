@@ -174,12 +174,12 @@ units or buildings
 element
 [market explanation 2]
 fruits with others
-[waiting for %s]
-Waiting for %s
-[%s has left the game]
-%s has quit the game.
-[%s has been deconnected of the game]
-%s has been disconnected.
+[waiting for %0]
+Waiting for %0
+[%0 has left the game]
+%0 has quit the game.
+[%0 has been deconnected of the game]
+%0 has been disconnected.
 [load game]
 Load game
 [save game]
@@ -344,12 +344,12 @@ Your defenses are under attack
 The enemy is at your walls
 [the market is under attack]
 The market is under attack
-[Your %s are under attack]
-Your %s are under attack
-[Your unit got converted to %s's team]
-Your unit got converted to %s's team
-[%s's team unit got converted to your team]
-%s's team unit got converted to your team
+[Your %0 are under attack]
+Your %0 are under attack
+[Your unit got converted to %0's team]
+Your unit got converted to %0's team
+[%0's team unit got converted to your team]
+%0's team unit got converted to your team
 [Uncontrolled]
 Uncontrolled
 [ai]
@@ -530,14 +530,14 @@ Downloaded at
   percent
 [download finished]
 Download finished
-[Map name: %s]
-Map name: %s.
+[Map name: %0]
+Map name: %0.
 [one player]
 A player has joined.
-[number of players: %d]
-%d players are present.
-[number of teams: %d]
-%d teams.
+[number of players: %0]
+%0 players are present.
+[number of teams: %0]
+%0 teams.
 [game full]
 Game full
 [small]
@@ -586,10 +586,10 @@ The YOG metaserver has refused connection because a protocol error occured:  you
 The YOG metaserver has refused the connection because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
-[The player %s has left YOG]
-%s has left YOG.
-[The player %s has joined YOG]
-%s has joined YOG.
+[The player %0 has left YOG]
+%0 has left YOG.
+[The player %0 has joined YOG]
+%0 has joined YOG.
 [You are now marked as away]
 You are marked as away.
 [You are no more marked as away]
@@ -618,10 +618,10 @@ Continue playing
 Lost: your colony is dead
 [Won : you defeated your opponents]
 Won: you defeated your opponents
-[Won : your ally %s has the most prestige]
-Won: your ally %s has the biggest prestige
-[Lost : %s has more prestige than you]
-Lost: %s has more prestige than you
+[Won : your ally %0 has the most prestige]
+Won: your ally %0 has the biggest prestige
+[Lost : %0 has more prestige than you]
+Lost: %0 has more prestige than you
 [Won : you have the most prestige]
 Won: you have the biggest prestige
 [The game has not been finished]
