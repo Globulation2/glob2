@@ -26,14 +26,14 @@
 #include "MultiplayersJoin.h"
 #include "NetConsts.h"
 #include "Order.h"
+
+#include <FormatableString.h>
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUITextInput.h>
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-
-#include <boost/format.hpp>
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
@@ -132,7 +132,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			if (multiplayersHost->playerFileTra[i].wantsFile && !multiplayersHost->playerFileTra[i].receivedFile)
 			{
 				int percent=(100*multiplayersHost->playerFileTra[i].unreceivedIndex)/multiplayersHost->fileSize;
-				shownInfo = str(boost::format("%s (%d)") % playerName % percent);
+				shownInfo = FormatableString("%0 (%1)").arg(playerName).arg(percent);
 			}
 			else
 				shownInfo = playerName;
@@ -187,7 +187,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	if (((timeCounter++ % 10)==0)&&(multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER))
 	{
 		std::string s;
-		s = str(boost::format("%s%d") % Toolkit::getStringTable()->getString("[STARTING GAME ...]") % (multiplayersHost->startGameTimeCounter/20));
+		s = FormatableString("%0%1").arg(Toolkit::getStringTable()->getString("[STARTING GAME ...]")).arg((multiplayersHost->startGameTimeCounter/20));
 		printf("s=%s.\n", s.c_str());
 		startTimer->setText(s);
 	}

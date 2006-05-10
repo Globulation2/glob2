@@ -22,6 +22,7 @@
 #include "Version.h"
 #include "YOGConsts.h"
 #include "NetConsts.h"
+#include <FormatableString.h>
 #include <GUIButton.h>
 #include <GUIText.h>
 using namespace GAGGUI;
@@ -29,8 +30,6 @@ using namespace GAGGUI;
 #include <StringTable.h>
 #include <SupportFunctions.h>
 using namespace GAGCore;
-
-#include <boost/format.hpp>
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -58,7 +57,7 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new TextButton(10, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[credits]"), CREDITS));
 	addWidget(new TextButton(330, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	
-	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", str(boost::format("V %d.%d.%d.%d") % VERSION_MAJOR % VERSION_MINOR % NET_PROTOCOL_VERSION % YOG_PROTOCOL_VERSION).c_str()));
+	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", FormatableString("V %0.%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(NET_PROTOCOL_VERSION).arg(YOG_PROTOCOL_VERSION).c_str()));
 	
 	addWidget(new Text(3, 0, ALIGN_LEFT, ALIGN_BOTTOM, "standard", PACKAGE_VERSION));
 	

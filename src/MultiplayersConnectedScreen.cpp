@@ -20,6 +20,8 @@
 #include "MultiplayersConnectedScreen.h"
 #include "MultiplayersJoin.h"
 #include "Order.h"
+
+#include <FormatableString.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -29,8 +31,6 @@ using namespace GAGCore;
 #include <GUITextInput.h>
 #include <GUITextArea.h>
 using namespace GAGGUI;
-
-#include <boost/format.hpp>
 
 // Sutpid widget for color rectangles
 class ColorRect: public RectangularWidget
@@ -147,7 +147,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		if ((multiplayersJoin->waitingState>=MultiplayersJoin::WS_SERVER_START_GAME))
 		{
 			std::string s;
-			s = str(boost::format("%s%d") %  Toolkit::getStringTable()->getString("[STARTING GAME ...]") % (multiplayersJoin->startGameTimeCounter/20));
+			s = FormatableString("%0%1").arg(Toolkit::getStringTable()->getString("[STARTING GAME ...]")).arg(multiplayersJoin->startGameTimeCounter/20);
 			if (verbose)
 				printf("s=%s.\n", s.c_str());
 			startTimer->setText(s);
@@ -162,7 +162,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		if (isFileMapDownload)
 		{
 			int percent=(int)(100.0*progress);
-			s = str(boost::format("%s%d%s") % Toolkit::getStringTable()->getString("[downloaded at]") % percent % Toolkit::getStringTable()->getString("[percent]"));
+			s = FormatableString("%0%1%2").arg(Toolkit::getStringTable()->getString("[downloaded at]")).arg(percent).arg(Toolkit::getStringTable()->getString("[percent]"));
 		}
 		else
 			s = Toolkit::getStringTable()->getString("[download finished]");

@@ -27,6 +27,7 @@
 #include <Toolkit.h>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <FormatableString.h>
 
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
@@ -42,8 +43,8 @@
 #include "YOGScreen.h"
 #include "SoundMixer.h"
 #include "CampaignScreen.h"
+
 #include <iostream>
-#include <boost/format.hpp>
 
 
 Engine::Engine()
@@ -200,7 +201,6 @@ int Engine::initCustom(void)
 	if (nbTeam==0)
 		return EE_CANCEL;
 
-	std::string name;
 	int i;
 	int nbPlayer=0;
 
@@ -218,7 +218,8 @@ int Engine::initCustom(void)
 			else
 			{
 				AI::ImplementitionID iid=customGameScreen.getAiImplementation(i);
-				name = str(boost::format("%s %d") % Toolkit::getStringTable()->getString("[AI]", iid) % (nbPlayer-1));
+				FormatableString name("%0 %1");
+				name.arg(Toolkit::getStringTable()->getString("[AI]", iid)).arg(nbPlayer-1);
 				gui.game.players[nbPlayer]=new Player(i, name.c_str(), gui.game.teams[teamColor], Player::playerTypeFromImplementitionID(iid));
 			}
 			gui.game.teams[teamColor]->numberOfPlayer++;

@@ -23,6 +23,8 @@
 #include "Game.h"
 #include "GameGUILoadSave.h"
 #include "Utilities.h"
+
+#include <FormatableString.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
@@ -34,7 +36,6 @@ using namespace GAGCore;
 using namespace GAGGUI;
 
 #include <algorithm>
-#include <boost/format.hpp>
 
 
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
@@ -86,7 +87,7 @@ bool ScriptEditorScreen::testCompile(void)
 	else
 	{
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(str(boost::format("Compilation failure : %d:%d:(%d):%s") % (er.line+1) % er.col % er.pos % er.getErrorString()).c_str());
+		compilationResult->setText(FormatableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
 		scriptEditor->setCursorPos(er.pos);
 		return false;
 	}
@@ -210,7 +211,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->load(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(str(boost::format("Loading script from %s failed") % loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormatableString("Loading script from %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 			}
 			else
@@ -218,7 +219,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->save(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(str(boost::format("Saving script to %s failed") % loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormatableString("Saving script to %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 			}
 		}
@@ -229,7 +230,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!campaignTextEditor->load(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(str(boost::format("Loading campaign text from %s failed") % loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormatableString("Loading campaign text from %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 			}
 			else
@@ -237,7 +238,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!campaignTextEditor->save(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(str(boost::format("Saving campaign text to %s failed") % loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormatableString("Saving campaign text to %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 			}
 		}

@@ -25,11 +25,11 @@
 #include "Utilities.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+
+#include <FormatableString.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <Stream.h>
-
-#include <boost/format.hpp>
 
 SessionGame::SessionGame()
 {
@@ -222,9 +222,9 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, std::string &
 	assert(playerNumber<numberOfPlayer);
 	*teamNumber=players[playerNumber].teamNumber;
 	if (players[playerNumber].type==BasePlayer::P_IP)
-		infoString = str(boost::format("%s : %s") % players[playerNumber].name % Utilities::stringIP(players[playerNumber].ip));
+		infoString = FormatableString("%0 : %1").arg(players[playerNumber].name).arg(Utilities::stringIP(players[playerNumber].ip));
 	else if (players[playerNumber].type>=BasePlayer::P_AI)
-		infoString = str(boost::format("%s : (%s)") % players[playerNumber].name % Toolkit::getStringTable()->getString("[AI]", players[playerNumber].type-BasePlayer::P_AI));
+		infoString = FormatableString("%0 : (%1)").arg(players[playerNumber].name).arg(Toolkit::getStringTable()->getString("[AI]", players[playerNumber].type-BasePlayer::P_AI));
 	else
 		assert(false);
 }
