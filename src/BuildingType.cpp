@@ -77,6 +77,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgradeTime[14], "upgradeTimeMagicCreateAlga");
 	configBlock->load(upgradeTime[15], "upgradeTimeArmor");
 	configBlock->load(upgradeTime[16], "upgradeTimeHP");
+	configBlock->load(upgradeInParallel, "upgradeInParallel");
 	
 	configBlock->load(foodable, "foodable");
 	configBlock->load(fillable, "fillable");
