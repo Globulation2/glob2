@@ -219,7 +219,7 @@ Paramètres
 [Warning, you need to reboot the game for changes to take effect]
 Attention, il faut relancer le jeu pour que les changements soient pris en compte
 [editor]
-Editeur
+Éditeur
 [credits]
 Crédits
 [quit]
@@ -245,7 +245,7 @@ Joindre une partie
 [join]
 Joindre
 [goto main menu]
-Retourner au menu principal
+Menu principal
 [player name]
 Nom du joueur
 [svr hostname]
@@ -649,9 +649,9 @@ Curseur personalisé
 [choose campaign]
 Choisir une campagne
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
 [mute]
-mute
+muet
 [abreaviation explanation A]
 A : Alliés
 [abreaviation explanation V]
@@ -707,7 +707,7 @@ Veuillez choisir
 [GUIMapPreview text 1]
 une carte
 [Unit editor]
-Editeur d'unité
+Éditeur d'unité
 [skin]
 Affichage
 [hungryness]
