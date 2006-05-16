@@ -47,8 +47,10 @@ Settings::Settings()
 	defaultLanguage = 0;
 	musicVolume = 255;
 	mute = 0;
+	warflagUnit = 10;
+	clearflagUnit = 1;
+	exploreflagUnit = 1;
 }
-
 #define READ_PARSED_STRING(var) \
 { \
 	if (parsed.find(#var) != parsed.end()) \
@@ -88,14 +90,17 @@ void Settings::load(const char *filename)
 
 		// read values
 		READ_PARSED_STRING(username);
-		READ_PARSED_STRING(password);		
+		READ_PARSED_STRING(password);
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(defaultLanguage);
 		READ_PARSED_INT(musicVolume);
-		READ_PARSED_INT(mute);		
+		READ_PARSED_INT(mute);
+		READ_PARSED_INT(warflagUnit);
+		READ_PARSED_INT(clearflagUnit);
+		READ_PARSED_INT(exploreflagUnit);
 	}
 	delete stream;
 }
@@ -117,7 +122,10 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
-		Utilities::streamprintf(stream, "mute=%d\n", mute);		
+		Utilities::streamprintf(stream, "mute=%d\n", mute);
+		Utilities::streamprintf(stream, "warflag=%d\n", warflagUnit);
+		Utilities::streamprintf(stream, "clearflag=%d\n", clearflagUnit);
+		Utilities::streamprintf(stream, "exploreflag=%d\n", exploreflagUnit);
 	}
 	delete stream;
 }

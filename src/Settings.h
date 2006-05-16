@@ -35,6 +35,9 @@ public:
 	Uint32 defaultLanguage;
 	Uint32 musicVolume;
 	int mute;
+	int warflagUnit;
+	int clearflagUnit;
+	int exploreflagUnit;
 
 public:
 	void load(const char *filename="preferences.txt");

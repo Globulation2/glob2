@@ -34,6 +34,13 @@
 
 SettingsScreen::SettingsScreen()
 {
+	//tab choices
+	ok=new TextButton( 10, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("general"), OK, 13);
+	addWidget(ok);
+
+	ok=new TextButton( 120, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("units"), OK, 13);
+	addWidget(ok);
+
 	// language part
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidget(language);
@@ -112,8 +119,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(ok);
 	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
-	title=new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[settings]"));
-	addWidget(title);
+	
 
 	oldLanguage = Toolkit::getStringTable()->getLang();
 	oldScreenW = globalContainer->settings.screenWidth;
@@ -122,6 +128,9 @@ SettingsScreen::SettingsScreen()
 	oldOptionFlags = globalContainer->settings.optionFlags;
 	oldMusicVol = globalContainer->settings.musicVolume;
 	oldMute = globalContainer->settings.mute;
+	oldwarflagUnit = globalContainer->settings.warflagUnit;
+	oldclearflagUnit = globalContainer->settings.clearflagUnit;
+	oldexploreflagUnit = globalContainer->settings.exploreflagUnit;
 
 	gfxAltered = false;
 }

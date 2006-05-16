@@ -69,6 +69,7 @@ public:
 
 	// type
 	Sint32 typeNum; // number in BuildingTypes
+	int shortTypeNum;
 	BuildingType *type;
 
 	// construction state
