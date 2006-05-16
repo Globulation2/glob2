@@ -50,7 +50,7 @@ private:
 	List *languageList;
 	List *modeList;
 	TextInput *userName;
-	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute;
+	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute, oldwarflagUnit, oldexploreflagUnit, oldclearflagUnit;
 	
 	TextButton *ok, *cancel;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
