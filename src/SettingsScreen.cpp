@@ -35,11 +35,11 @@
 SettingsScreen::SettingsScreen()
 {
 	//tab choices
-	ok=new TextButton( 10, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("general"), OK, 13);
-	addWidget(ok);
+	generalsettings=new TextButton( 10, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("general"), GENERALSETTINGS, 8);
+	addWidget(generalsettings);
 
-	ok=new TextButton( 120, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("units"), OK, 13);
-	addWidget(ok);
+	unitsettings=new TextButton( 120, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("units"), UNITSETTINGS, 9);
+	addWidget(unitsettings);
 
 	// language part
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
@@ -167,6 +167,55 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			endExecute(par1);
 		}
+		else if (par1==GENERALSETTINGS)	
+		{
+			language->visible=true;
+			languageList->visible=true;
+			display->visible=true;
+			actDisplay->visible=true;
+			modeList->visible=true;
+			fullscreen->visible=true;
+			fullscreenText->visible=true;
+			usegpu->visible=true;
+			usegpuText->visible=true;
+			lowquality->visible=true;
+			lowqualityText->visible=true;
+			customcur->visible=true;
+			customcurText->visible=true;
+			userName->visible=true;
+			usernameText->visible=true;
+			audio->visible=true;
+			audioMuteText->visible=true;
+			audioMute->visible=true;
+			musicVol->visible=true;
+			musicVolText->visible=true;
+		}
+
+		
+		else if (par1==UNITSETTINGS)
+		{
+			language->visible=false;
+			languageList->visible=false;
+			display->visible=false;
+			actDisplay->visible=false;
+			modeList->visible=false;
+			fullscreen->visible=false;
+			fullscreenText->visible=false;
+			usegpu->visible=false;
+			usegpuText->visible=false;
+			lowquality->visible=false;
+			lowqualityText->visible=false;
+			customcur->visible=false;
+			customcurText->visible=false;
+			userName->visible=false;
+			usernameText->visible=false;
+			audio->visible=false;
+			audioMuteText->visible=false;
+			audioMute->visible=false;
+			musicVol->visible=false;
+			musicVolText->visible=false;
+		}
+
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{

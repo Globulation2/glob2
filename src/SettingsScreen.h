@@ -45,6 +45,8 @@ public:
 		LOWQUALITY = 5,
 		CUSTOMCUR = 6,
 		MUTE = 7,
+		GENERALSETTINGS = 8,
+		UNITSETTINGS = 9,
 	};
 private:
 	List *languageList;
@@ -52,7 +54,7 @@ private:
 	TextInput *userName;
 	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute, oldwarflagUnit, oldexploreflagUnit, oldclearflagUnit;
 	
-	TextButton *ok, *cancel;
+	TextButton *ok, *cancel, *generalsettings, *unitsettings;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
 	Selector *musicVol;
 	OnOffButton *audioMute;
