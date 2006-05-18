@@ -1382,7 +1382,6 @@ void GameGUI::handleKeyAlways(void)
 {
 	SDL_PumpEvents();
 	Uint8 *keystate = SDL_GetKeyState(NULL);
-	//donkyhotay notes: must filter out panning while within menu system
 	if (notmenu == false)
 	{
 		if (keystate[SDLK_UP])

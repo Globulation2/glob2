@@ -26,6 +26,7 @@
 #include <GUIList.h>
 #include <GUIButton.h>
 #include <GUISelector.h>
+#include <GUINumber.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
@@ -34,6 +35,7 @@
 
 SettingsScreen::SettingsScreen()
 {
+	//following are standard choices for all screens
 	//tab choices
 	generalsettings=new TextButton( 10, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("general"), GENERALSETTINGS, 8);
 	addWidget(generalsettings);
@@ -41,6 +43,13 @@ SettingsScreen::SettingsScreen()
 	unitsettings=new TextButton( 120, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("units"), UNITSETTINGS, 9);
 	addWidget(unitsettings);
 
+	// Screen entry/quit part
+	ok=new TextButton( 440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
+	addWidget(ok);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
+	addWidget(cancel);
+
+	//following are all general settings
 	// language part
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidget(language);
@@ -114,12 +123,36 @@ SettingsScreen::SettingsScreen()
 	addWidget(musicVolText);
 	setVisibilityFromAudioSettings();
 	
-	// Screen entry/quit part
-	ok=new TextButton( 440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
-	addWidget(ok);
-	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
-	addWidget(cancel);
+	//following are all unit settings
+	warflagUnitRatio=new Number(20, 90, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	warflagUnitRatio->add(1);
+	warflagUnitRatio->add(2);
+	warflagUnitRatio->add(3);
+	warflagUnitRatio->add(4);
+	warflagUnitRatio->add(5);
+	warflagUnitRatio->add(6);
+	warflagUnitRatio->add(7);
+	warflagUnitRatio->add(8);
+	warflagUnitRatio->add(9);
+	warflagUnitRatio->add(10);
+	warflagUnitRatio->add(11);
+	warflagUnitRatio->add(12);
+	warflagUnitRatio->add(13);
+	warflagUnitRatio->add(14);
+	warflagUnitRatio->add(15);
+	warflagUnitRatio->add(16);
+	warflagUnitRatio->add(17);
+	warflagUnitRatio->add(18);
+	warflagUnitRatio->add(19);
+	warflagUnitRatio->add(20);
+	warflagUnitRatio->setNth(globalContainer->settings.warflagUnit - 1);
+	warflagUnitRatio->visible=false;
+	addWidget(warflagUnitRatio);
 	
+	warflagUnitText=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("default warflag settings"));
+	addWidget(warflagUnitText);
+	warflagUnitText->visible=false;
+
 
 	oldLanguage = Toolkit::getStringTable()->getLang();
 	oldScreenW = globalContainer->settings.screenWidth;
@@ -144,6 +177,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->setUserName(userName->getText());
 
 			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
+			
 
 			globalContainer->settings.save();
 
@@ -164,6 +198,9 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.musicVolume = oldMusicVol;
 			globalContainer->settings.mute = oldMute;
 			globalContainer->mix->setVolume(oldMusicVol, oldMute);
+			globalContainer->settings.warflagUnit = oldwarflagUnit;
+			globalContainer->settings.clearflagUnit = oldclearflagUnit;
+			globalContainer->settings.exploreflagUnit = oldexploreflagUnit;
 
 			endExecute(par1);
 		}
@@ -189,6 +226,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audioMute->visible=true;
 			musicVol->visible=true;
 			musicVolText->visible=true;
+			warflagUnitRatio->visible=false;
+			warflagUnitText->visible=false;
 		}
 
 		
@@ -214,8 +253,14 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audioMute->visible=false;
 			musicVol->visible=false;
 			musicVolText->visible=false;
+			warflagUnitRatio->visible=true;
+			warflagUnitText->visible=true;
 		}
 
+	}
+	else if (action==NUMBER_ELEMENT_SELECTED)
+	{
+	globalContainer->settings.warflagUnit=warflagUnitRatio->getNth()+1;
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{

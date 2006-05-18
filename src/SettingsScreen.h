@@ -31,6 +31,7 @@ namespace GAGGUI
 	class OnOffButton;
 	class Text;
 	class Selector;
+	class Number;
 }
 
 class SettingsScreen : public Glob2Screen
@@ -58,8 +59,9 @@ private:
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
 	Selector *musicVol;
 	OnOffButton *audioMute;
+	Number *warflagUnitRatio;
 	Text *title, *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *warflagUnitText;
 	Text *actDisplay;
 	Text *rebootWarning;
 

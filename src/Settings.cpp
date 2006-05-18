@@ -47,7 +47,7 @@ Settings::Settings()
 	defaultLanguage = 0;
 	musicVolume = 255;
 	mute = 0;
-	warflagUnit = 10;
+	warflagUnit = 1;
 	clearflagUnit = 1;
 	exploreflagUnit = 1;
 }
@@ -96,11 +96,12 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(defaultLanguage);
-		READ_PARSED_INT(musicVolume);
+		READ_PARSED_INT(musicVolume);		
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(warflagUnit);
 		READ_PARSED_INT(clearflagUnit);
 		READ_PARSED_INT(exploreflagUnit);
+		//donk notes: saved file is not loading warflagUnit!!!
 	}
 	delete stream;
 }
@@ -123,9 +124,9 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
-		Utilities::streamprintf(stream, "warflag=%d\n", warflagUnit);
-		Utilities::streamprintf(stream, "clearflag=%d\n", clearflagUnit);
-		Utilities::streamprintf(stream, "exploreflag=%d\n", exploreflagUnit);
+		Utilities::streamprintf(stream, "warflagUnit=%d\n", warflagUnit);
+		Utilities::streamprintf(stream, "clearflagUnit=%d\n", clearflagUnit);
+		Utilities::streamprintf(stream, "exploreflagUnit=%d\n", exploreflagUnit);
 	}
 	delete stream;
 }
