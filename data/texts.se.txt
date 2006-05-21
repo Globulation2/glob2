@@ -577,8 +577,7 @@ Yog metaservern har vägrat anslutningen för att ditt användarnamn redan anvä
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metaservern har vägrat anslutningen för att lösenordet var inkorrekt.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metaservern har vägrat anslutningen för att det här användarnamnet inte har något lösenord ännu. Du vill förmodligen registrera ditt 
-användarnamn med det här lösenordet, aktivera därför 'Register a new YOG user with password' före du ansluter, du behöver bara aktivera den en gång.
+YOG metaservern har vägrat anslutningen för att det här användarnamnet inte har något lösenord ännu. Du vill förmodligen registrera ditt användarnamn med det här lösenordet, aktivera därför 'Register a new YOG user with password' före du ansluter, du behöver bara aktivera den en gång.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 YOG metaservern har vägrat anslutningen för att detta användarnamn redan har blivit registrerat. Om detta användarnamn är ditt, avaktivera 'Register a new YOG user with password".
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
@@ -596,8 +595,7 @@ Du är nu markerad som borta.
 [You are no more marked as away]
 Du är inte längre markerad som borta.
 [YOG_HELP]
-YOG meddelandesystemet har två kommandon, "msg" och "away". Skirv "/help 
-<command>" för att lära dig mer om dem.
+YOG meddelandesystemet har två kommandon, "msg" och "away". Skirv "/help <command>" för att lära dig mer om dem.
 [YOG_HELP_AWAY]
 "/away (<message>)" kommandot tillåter dig att låta andra YOG användare ser att du är temporärt borta.  Du kan lägga till ett kort förklaringsmeddelande.  För exempel "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
 [YOG_HELP_MSG]
