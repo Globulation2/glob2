@@ -59,9 +59,9 @@ private:
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
 	Selector *musicVol;
 	OnOffButton *audioMute;
-	Number *warflagUnitRatio;
+	Number *warflagUnitRatio, *clearflagUnitRatio, *exploreflagUnitRatio;
 	Text *title, *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *warflagUnitText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *warflagUnitText, *clearflagUnitText, *exploreflagUnitText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
