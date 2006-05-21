@@ -124,7 +124,8 @@ SettingsScreen::SettingsScreen()
 	setVisibilityFromAudioSettings();
 	
 	//following are all unit settings
-	warflagUnitRatio=new Number(20, 90, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	warflagUnitRatio=new Number(20, 80, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	warflagUnitRatio->add(0);
 	warflagUnitRatio->add(1);
 	warflagUnitRatio->add(2);
 	warflagUnitRatio->add(3);
@@ -145,13 +146,77 @@ SettingsScreen::SettingsScreen()
 	warflagUnitRatio->add(18);
 	warflagUnitRatio->add(19);
 	warflagUnitRatio->add(20);
-	warflagUnitRatio->setNth(globalContainer->settings.warflagUnit - 1);
+	warflagUnitRatio->setNth(globalContainer->settings.warflagUnit);
 	warflagUnitRatio->visible=false;
 	addWidget(warflagUnitRatio);
 	
-	warflagUnitText=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("default warflag settings"));
+	warflagUnitText=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("war flag"));
 	addWidget(warflagUnitText);
 	warflagUnitText->visible=false;
+
+
+	clearflagUnitRatio=new Number(20, 140, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	clearflagUnitRatio->add(0);
+	clearflagUnitRatio->add(1);
+	clearflagUnitRatio->add(2);
+	clearflagUnitRatio->add(3);
+	clearflagUnitRatio->add(4);
+	clearflagUnitRatio->add(5);
+	clearflagUnitRatio->add(6);
+	clearflagUnitRatio->add(7);
+	clearflagUnitRatio->add(8);
+	clearflagUnitRatio->add(9);
+	clearflagUnitRatio->add(10);
+	clearflagUnitRatio->add(11);
+	clearflagUnitRatio->add(12);
+	clearflagUnitRatio->add(13);
+	clearflagUnitRatio->add(14);
+	clearflagUnitRatio->add(15);
+	clearflagUnitRatio->add(16);
+	clearflagUnitRatio->add(17);
+	clearflagUnitRatio->add(18);
+	clearflagUnitRatio->add(19);
+	clearflagUnitRatio->add(20);
+	clearflagUnitRatio->setNth(globalContainer->settings.clearflagUnit);
+	clearflagUnitRatio->visible=false;
+	addWidget(clearflagUnitRatio);
+	
+	clearflagUnitText=new Text(20, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("clear flag"));
+	addWidget(clearflagUnitText);
+	clearflagUnitText->visible=false;
+
+	
+	exploreflagUnitRatio=new Number(20, 200, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	exploreflagUnitRatio->add(0);
+	exploreflagUnitRatio->add(1);
+	exploreflagUnitRatio->add(2);
+	exploreflagUnitRatio->add(3);
+	exploreflagUnitRatio->add(4);
+	exploreflagUnitRatio->add(5);
+	exploreflagUnitRatio->add(6);
+	exploreflagUnitRatio->add(7);
+	exploreflagUnitRatio->add(8);
+	exploreflagUnitRatio->add(9);
+	exploreflagUnitRatio->add(10);
+	exploreflagUnitRatio->add(11);
+	exploreflagUnitRatio->add(12);
+	exploreflagUnitRatio->add(13);
+	exploreflagUnitRatio->add(14);
+	exploreflagUnitRatio->add(15);
+	exploreflagUnitRatio->add(16);
+	exploreflagUnitRatio->add(17);
+	exploreflagUnitRatio->add(18);
+	exploreflagUnitRatio->add(19);
+	exploreflagUnitRatio->add(20);
+	exploreflagUnitRatio->setNth(globalContainer->settings.exploreflagUnit);
+	exploreflagUnitRatio->visible=false;
+	addWidget(exploreflagUnitRatio);
+	
+	exploreflagUnitText=new Text(20, 180, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("explore flag"));
+	addWidget(exploreflagUnitText);
+	exploreflagUnitText->visible=false;
+
+	//end unit settings
 
 
 	oldLanguage = Toolkit::getStringTable()->getLang();
@@ -228,6 +293,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			musicVolText->visible=true;
 			warflagUnitRatio->visible=false;
 			warflagUnitText->visible=false;
+			clearflagUnitRatio->visible=false;
+			clearflagUnitText->visible=false;
+			exploreflagUnitRatio->visible=false;
+			exploreflagUnitText->visible=false;
 		}
 
 		
@@ -255,12 +324,21 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			musicVolText->visible=false;
 			warflagUnitRatio->visible=true;
 			warflagUnitText->visible=true;
+			clearflagUnitRatio->visible=true;
+			clearflagUnitText->visible=true;
+			exploreflagUnitRatio->visible=true;
+			exploreflagUnitText->visible=true;
 		}
 
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
 	{
-	globalContainer->settings.warflagUnit=warflagUnitRatio->getNth()+1;
+	if (warflagUnitRatio->getNth() == 0){warflagUnitRatio->setNth(1);}
+	globalContainer->settings.warflagUnit=warflagUnitRatio->getNth();
+	if (clearflagUnitRatio->getNth() == 0){clearflagUnitRatio->setNth(1);}
+	globalContainer->settings.clearflagUnit=clearflagUnitRatio->getNth();
+	if (exploreflagUnitRatio->getNth() == 0){exploreflagUnitRatio->setNth(1);}
+	globalContainer->settings.exploreflagUnit=exploreflagUnitRatio->getNth();
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
