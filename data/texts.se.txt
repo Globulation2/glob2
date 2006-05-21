@@ -1,5 +1,5 @@
 [language]
-Swedish
+Svenska
 [language-code]
 se
 [language-tr]
@@ -15,15 +15,15 @@ Skada
 [food]
 Mat
 [working]
-Arbetande
+Fungerande
 [inside]
 Inuti
 [ressources]
 Resurser
 [Wood]
-Ved
+Trä
 [Corn]
-Spannmål
+Vete
 [Papyrus]
 Papyrus
 [Stone]
@@ -37,153 +37,155 @@ Apelsin
 [Prune]
 Sviskon
 [Clearing:]
-Rensa:
+Röjning:
 [Min required level:]
-Minsta tillåtna Nivå:
+Lägsta obligatoriska level:
 [Bullets]
 Kulor
 [range]
-Avstånd
+Räckvidd
 [destroy]
 Förstör
 [cancel destroy]
-Avbryt förstörelse
+Avbryt destruktion
 [wait destroy]
-Avvaktande förstörelse
+Avvaktar destruktion
 [upgrade]
-Uppgradera
+Upgradera
 [repair]
 Reparera
 [cancel upgrade]
 Avbryt uppgradering
 [cancel repair]
-Avbryt reparation
+Avbryt reparering
 [units type]
-Enhets typ
+enhets typ
 [workers]
 arbetare
 [explorers]
-spanare
+utforskare
 [warriors]
 krigare
 [Unit type]
-Enhet typ
+Enehets typ
 [Worker]
 Arbetare
 [Explorer]
-Spanare
+Utforskare
 [Warrior]
 Krigare
 [still (w)]
-Forfarande 
+Fortfarande
 [units working]
- enheter arbetande
+Fungerande enheter
 [still one unit working]
-fortfarande en enhet arbetande
+En enhet fungerar fortfarande
 [Still (i)]
-Fortfarande 
+Fortfarande
 [Still one]
-En kvar
+Fortfarande en
 [Building name]
-Byggnads namn
+Byggnadens namn
 [swarm building]
-Svärm
+Huvudbyggnad
 [food building]
-Värdhus
+Värdshus
 [health building]
 Sjukhus
 [walkspeed building]
-Hinderbana
+Löpbana
 [swimspeed building]
 Simbassäng
 [attack building]
-Kasern
+Logement
 [science building]
 Skola
 [defense building]
-Kanon torn
+Försvarstorn
 [exploration flag]
-Spanings flagga
+Utforskningsfana
 [war flag]
-Krigs flagga
+Krigsfana
 [clearing flag]
-Rensnings flagga
+Röjningsflagga
 [stone wall]
-Stenmurs segment
+Stenmur
 [market]
 Marknad
 [forbidden area]
-Förbjuden yta
+Förbjudet område
 [guard area]
-Vakt yta
+Skyddsområde
+[clear area]
+Röjningsområde
 [Building short explanation]
-Building short explanation (24 chars max)
+Kort byggnadsförklaring (24 bokstäver max)
 [swarm building explanation]
 Skapar nya enheter
 [food building explanation]
-Utfodrar dina enheter
+Utfodra dina enheter
 [health building explanation]
-Helar dina enheter
+Hela dina enheter
 [walkspeed building explanation]
-Ökar enheters
+Förbättrar vandringen
 [swimspeed building explanation]
-Ökar enheters
+Förbättrar simmningen
 [attack building explanation]
-Ökar attack styrkan hos
+Förbättrar stridsförmågan
 [science building explanation]
-Ökar byggnads nivån
+Förbättrar byggnaden
 [defense building explanation]
-Attackerar fientliga
+Attackerar närbelägen fiende
 [exploration flag explanation]
-Kommendera spanare
+Attraherar utforskare
 [war flag explanation]
-Kommendera krigare
+Attraherar krigare
 [clearing flag explanation]
-Kommendera röjning av
+Clears resources
 [stone wall explanation]
-Försvars mur
+Passivt försvar
 [market explanation]
-Möjliggör utbyte av frukt
+Tillåter utbyte av
 [Building short explanation 2]
-Building short explanation 2 (24 chars max)
+Kort byggnadsförklaring 2 (24 bokstäver max)
 [swarm building explanation 2]
- 
+
 [food building explanation 2]
- 
+
 [health building explanation 2]
- 
+
 [walkspeed building explanation 2]
-gånghastighet
+Vandringshastighet av dina enheter
 [swimspeed building explanation 2]
-simmförmåga
+Simhastighet av dina enheter
 [attack building explanation 2]
-krigare
+level av dina krigare
 [science building explanation 2]
-
+level av dina arbetare
 [defense building explanation 2]
-enheter inom räckhåll
+enheter eller byggnader
 [exploration flag explanation 2]
- 
-[war flag explanation 2]
- 
-[clearing flag explanation 2]
-terräng
-[stone wall explanation 2]
- 
-[market explanation 2]
 
+[war flag explanation 2]
+
+[clearing flag explanation 2]
+
+[stone wall explanation 2]
+element
+[market explanation 2]
+frukt med andra
 [waiting for %0]
 Väntar på %0
 [%0 has left the game]
-%0 har lämnat spelet.
+%0 har avlsutat spelet.
 [%0 has been deconnected of the game]
-%0 har blivit bortkopplad från spelet.
+%0 har blivit disconnectad.
 [load game]
 Ladda spel
 [save game]
 Spara spel
 [options]
-Inställningar
+Altenativ
 [alliances]
 Allianser
 [return to game]
@@ -197,9 +199,9 @@ Avbryt
 [you have lost]
 Du har förlorat!
 [you have won]
-Du har segrat!
+Du har vunnit!
 [campaign]
-Fälttåg
+Kampanj
 [tutorial]
 Handledning
 [custom game]
@@ -207,33 +209,33 @@ Eget spel
 [yog]
 Ysagoon Online Gaming
 [Enter your nickname :]
-Ange namn :
+Skriv in ditt nickname:
 [Enter your password :]
-Ange lösenord :
+Skriv in ditt lösenord:
 [lan]
-Lokalt nätverksspel
+LAN spel
 [settings]
 Inställningar
 [Warning, you need to reboot the game for changes to take effect]
-Varning, du behöver starta om spelet för att ändringarna skall träda i kraft
+Varning, du behöver starta om spelet för att inställningarna ska gälla
 [editor]
 Editor
 [credits]
-Skapare
+Credits
 [quit]
 Avsluta
 [create game]
 Skapa spel
 [update list]
-Updatera listan
+Updatera lista
 [connecting to]
-Anslut till
+Ansluter till
 [connect]
 Anslut
 [Disconnect]
-Koppla ifrån
+Disconnecta
 [please wait]
-Var god vänta
+Please wait
 [loading glob2]
 Laddar Globulation 2
 [host]
@@ -247,27 +249,27 @@ Gå tillbaka till huvudmenyn
 [player name]
 Spelar namn
 [svr hostname]
-Server namn
+Server hostname
 [hp]
-Hälsa
+Hitpoint
 [carry]
-Bär på :
+Bär på:
 [don't carry anything]
 Bär ingenting
 [level]
-Nivå
+Level
 [levels]
-Nivåer
+Levels
 [building site]
-Byggnads plats
+Byggplats
 [create map]
-Skapa karta
+Skapa en karta
 [map size x]
-Kart bredd
+Kartbredd
 [map size y]
-Kart höjd
+Karthöjd
 [default terrain]
-Grund terräng
+Default terrain
 [water]
 Vatten
 [sand]
@@ -275,11 +277,11 @@ Sand
 [grass]
 Gräs
 [teams]
- lag
+lag
 [choose map]
 Välj karta
 [choose game]
-Välj spel
+Välj ett spel
 [awaiting players]
 Väntar på spelare
 [stat]
@@ -287,67 +289,67 @@ Statistik
 [food left]
 Mat kvar
 [the building is finished]
-Byggnaden är klar
+Byggnaden är färdig
 [the swarm is finished]
-Svärmen är klar
+Huvudbyggnaden är färdig
 [the food building is finished]
-Värdhuset är klart
+Värdshuset är färdigt
 [the health building is finished]
-Sjukhuset är klart
+Sjukhuset är färdigt
 [the walkspeed building is finished]
-Hinderbanan är klar
+Löpningsbanan är färdig
 [the swimspeed building is finished]
-Simbassängen är klar
+Simbassängen är färdig
 [the attack building is finished]
-Kasernen är klar
+Träningslägret är färdigt
 [the science building is finished]
-Skolan är klar
+Skolan är färdig
 [the tower building is finished]
-Kanon tornet är klart
+Försvarstornet är färdigt
 [the exploration flag is finished]
-?? Exploration flag finished ??
+?? Utforskningsfanan är färdig ??
 [the war flag is finished]
-?? War flag finished ??
+?? Krigsfanan är färdig ??
 [the clearing flag is finished]
-?? Clearing flag finished ??
+?? Röjningsflaggan är färdig ??
 [the stone wall is finished]
-Ett stenmurs segment är klart
+En mursektion är avklarad
 [the market is finished]
-Marknaden är klar
+Marknaden är färdig
 [the building is under attack]
-Byggnaden blir anfallen
+Byggnaden är under attack
 [the swarm is under attack]
-Svärmen blir anfallen
+Huvudbyggnaden är under attack
 [the food building is under attack]
-Värdhuset blir anfallet
+Värdshuset är under attack
 [the health building is under attack]
-Sjukhuset blir anfallet
+Sjukhuset är under attack
 [the walkspeed building is under attack]
-Hinderbanan blir anfallen
+Löpningsbanan är under attack
 [the swimspeed building is under attack]
-Simbassängen blir anfallen
+Simbassängen är under attack
 [the attack building is under attack]
-Kasernen blir anfallen
+Träningslägret är under attack
 [the science building is under attack]
-Skolan blir anfallen
+Skolan är under attack
 [the defense building is under attack]
-Kanon tornet blir anfallet
+Ditt försvar är under attack
 [the exploration flag is under attack]
-?? Exploration flag under attack ??
+?? Utforskningsfanan är under attack ??
 [the war flag is under attack]
-?? War flag under attack ??
+?? Krigsfanan är under attack ??
 [the clearing flag is under attack]
-?? Clearing flag under attack ??
+?? Röjningsflaggan är under attack ??
 [the stone wall is under attack]
-Fienden är vid din stenmur
+Fienden är vid din mur
 [the market is under attack]
 Marknaden är under attack
 [Your %0 are under attack]
 Din %0 är under attack
 [Your unit got converted to %0's team]
-Din enhet konverterades till ett %0 lag
+Din enhet blev omvänd till %0's lag
 [%0's team unit got converted to your team]
-Ett %0 lags enhet blev konverterad till ditt lag
+%0's lags enhet blev omvänd till ditt lag
 [Uncontrolled]
 Okontrollerad
 [ai]
@@ -359,71 +361,75 @@ Stäng
 [player]
 Spelare
 [STARTING GAME ...]
-Startar spel... 
+Startar spel...
 [Statistics]
 Statistik
 [Buildings]
 Byggnader
 [Prestige]
-Anseende
+Prestige
 [Units]
 Enheter
 [Attack]
-Anfall
+Attack
 [Defense]
 Försvar
 [free]
 fri
 [of which]
-av vilka
+Det finns
 [are ok]
-är ok
+ok
 [are hungry]
-är hungriga
+hungrig
 [are dying hungry]
-svälter
+svältande
 [are wonded]
-är skadade
+skadad
 [and]
 och
 [seeking a job]
-söker jobb
+söker efter arbete
 [Walk]
-Går
+Gå
 [Swim]
-Simmar
+Simma
 [Build]
-Bygger
+Bygga
 [Harvest]
-Skördar
+Skörda
 [At. speed]
-I hastighet
+Att. hastighet
 [At. strength]
-I styrka
+Att. styrka.
+[Magic At. Air]
+Air skada.
+[Magic At. Ground]
+Ground skada.
 [Total]
-Totalt
+Total
 [free]
-fria
+fri
 [seeking]
-söker
+sökande
 [Free]
-Fria
+Ok
 [hungry]
-hungriga
+hungrig
 [starving]
 svältande
 [wounded]
-skadade
+skadad
 [In way]
-På väg
+på vägen
 [On the spot]
 Här
 [Version]
 Version
 [open]
-Öppna
+öppna
 [Add AI]
-lägg till AI
+Lägg till AI
 [AI]
 AI
 [AINone]
@@ -447,33 +453,33 @@ var
 [was AI]
 var AI
 [state]
-Läge
+tillstånd
 [Start]
 Start
 [not ready]
-Ej klar
+inte redo
 [has joined]
 har anslutit
 [has quit]
-har kopplat ifrån
+har avslutat
 [yog-chat]
-#yog-se
+#yog-en
 [speed]
 Hastighet
 [current speed]
-Aktuell hastighet
+Nuvarande hastighet
 [attack speed]
-Anfalls hastighet
+Attack hastighet
 [new]
-Nytt
+Ny
 [load]
 Ladda
 [handmade map]
 Handgjord karta
 [mapGenerationDescriptor Methodes]
-Metoder för slumpgenerering av kartor
+Metoder av slumpmässigt framställda kartor
 [uniform terrain]
-Konstant terräng
+Oförändrad terräng
 [random terrain]
 Slumpmässig terräng
 [islands terrain]
@@ -481,35 +487,35 @@ Slumpmässig terräng
 [ratios]
 Proportioner
 [smoothing]
-utjämning
+Smoothing
 [number of teams]
-Antal lag
+antal lag
 [islands size]
-ö storlek
+östorlek
 [beach size]
-Strand längd
+strandstorlek
 [workers]
 Arbetare
 [bad error in connection system]
-Fel i anslutnings systemet
+Fel i anslutningssystemet
 [not connected]
-Ej ansluten
+Inte ansluten
 [presence request sent]
-Närvarande begäran sänd ...
+Närvaro förfrågan skickad ...
 [session request sent]
-Sessions begäran sänd ...
+Sessions förfrågan skickad ...
 [checksum sent]
-Kontrollsumma sänd ...
+Checksum skickad ...
 [connected to server]
 Ansluten till server
 [connecting to all players]
-Ansluter till samtliga spelare
+Ansluter till alla spelare
 [connected to all players]
-Ansluten till samtliga spelare
+Ansluten till alla spelare
 [available lan games]
-tillgängliga lokala spel
+Tillgängliga lokala spel
 [login]
-Logga in
+Login
 [from:]
 från:
 [to:]
@@ -517,9 +523,9 @@ till:
 [away:]
 borta:
 [compile]
-Kompilera skript
+Kompilera script
 [downloaded at]
-Nerladdad 
+Nerladdad på
 [percent]
   procent
 [download finished]
@@ -535,67 +541,69 @@ En spelare har anslutit.
 [game full]
 Spel fullt
 [small]
-litet
+liten
 [medium]
-Medel
+medel
 [large]
-Stort
+stor
 [network latency]
-Nätverks latens
+Nätverks latency
 [game speed]
 Spel hastighet
 [Paused]
-Pause
+Pausad
 [Register a new YOG user with password]
-Registrera en ny YOG användare med lösenord (osäkert)
+Registrera en ny YOG användare med lösenord. (osäker)
 [Remember YOG password localy]
-Kom ihåg lösenordet lokalt. (osäkert)
+Kom ihåg lösenordet lokalt. (osäker)
 [YESTS_BAD]
-Internt konsistens fel vid anslutning.
+Internt konsistens fel under anslutning .
 [YESTS_UNABLE_TO_CONNECT]
-Okapabel att ansluta. Uppenbarligen är YOG metaservern nere.
+Oförmågen att ansluta. Tydligen är YOG metaservern nere.
 [YESTS_CREATED]
-Anslutnings systemet är redo att kontakta YOG metaservern för en anslutning.
+Anlsutningssystemet är redo att kontakta YOG metaservern för anslutning.
 [YESTS_CONNECTING]
-Skapar anslutningen mot YOG metaservern...
+Fastställer anslutningen till YOG metaservern...
 [YESTS_DECONNECTING]
-Kopplar ifrån YOG metaservern...
+Avansluter från YOG metaservern...
 [YESTS_YOG_KILLED]
-En administratör har stoppat YOG metaservern.
+En administratör har just stoppat YOG metaservern.
 [YESTS_CONNECTION_LOST]
-Anslutningen mot YOG har försvunnit.
+Anslutningen till YOG har försvunnit.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metaservern har avslagit anslutningsbegäran eftersom din globulation2 klient är föråldrad.
+YOG metaservern har vägrat anslutning för att din globulation2 klient är föråldrad.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metaservern har avslagit anslutningsbegäran eftersom ditt användarnamn redan brukas av någon annan.
+Yog metaservern har vägrat anslutningen för att ditt användarnamn redan används av någon.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG metaservern har avslagit anslutningsbegäran eftersom det angivna lösenordet var felaktigt.
+YOG metaservern har vägrat anslutningen för att lösenordet var inkorrekt.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metaservern har avslagit anslutningsbegäran eftersom detta användarnamn inte har något lösenord än. Du vill troligtvis registrera ditt användarnamn med detta lösenord så välj inställningen "Registrera en ny YOG användare med lösenord" innan du ansluter. Du behöver bara aktivera denna inställning en gång.
+YOG metaservern har vägrat anslutningen för att det här användarnamnet inte har något lösenord ännu. Du vill förmodligen registrera ditt 
+användarnamn med det här lösenordet, aktivera därför 'Register a new YOG user with password' före du ansluter, du behöver bara aktivera den en gång.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metaservern har avslagit anslutningsbegäran eftersom detta användarnamnet redan har registrerats. Om detta användarnamn är ditt, deaktivera inställningen "Registrera ny YOG användare med lösenord".
+YOG metaservern har vägrat anslutningen för att detta användarnamn redan har blivit registrerat. Om detta användarnamn är ditt, avaktivera 'Register a new YOG user with password".
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metaservern har avslagit anslutningsbegäran eftersom ett protokoll fel har inträffat: du är redan autentiserad. Försök igen om 45 sekunder.
+YOG metaservern har vägrat anslutningen på grund av ett protocoll fel: Du är redan berättigad. Försök igen om 45s.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG metaservern har avslagit anslutningsbegäran eftersom ett internt protokoll fel har inträffat: du är inte ansluten medans du är autentiserad. Vänligen rapportera denna bugg.
+YOG metaservern har vägrat anslutningen på grund av ett internt protocoll fel: du är inte ansluten under verifieringen. Var snäll och raportera den här buggen.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG metaservern har avslagit anslutningsbegäran utan förklaring!
+YOG metaservern har vägrat anslutningen utan förklaring!
 [The player %0 has left YOG]
 %0 har lämnat YOG.
 [The player %0 has joined YOG]
 %0 har anslutit till YOG.
 [You are now marked as away]
-Du är markerad som frånvarande
+Du är nu markerad som borta.
 [You are no more marked as away]
-Du är inte längre markerad som frånvarande
+Du är inte längre markerad som borta.
 [YOG_HELP]
-YOG medelande systemet har två kommandon, "msg" och "away". Skriv "/help <kommando>" för att lära dig mer om en av dem.
+YOG meddelandesystemet har två kommandon, "msg" och "away". Skirv "/help 
+<command>" för att lära dig mer om dem.
 [YOG_HELP_AWAY]
-"/away (<medelande>)" kommandot låter dig medela de andra YOG användarna att du är temporärt frånvarande. Du kan lägga till en kort förklaring. Till exempel "/away Jag äter en kroppkaka och är tillbaka kl. 1". Alias "/a".
+"/away (<message>)" kommandot tillåter dig att låta andra YOG användare ser att du är temporärt borta.  Du kan lägga till ett kort förklaringsmeddelande.  För exempel "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
 [YOG_HELP_MSG]
-"/msg <namn> <medelande>" kommandot sänder ett provat medelande. Till exempel, "/msg Anders, hur mår du?". Alias "/m".
+"/msg <name> <message>" kommandot skickar ett privat meddelande. För exempel "/msg John Hi John, how are you?".  Alias "/m".
 [save before quit?]
-Vill du spara innan du avslutar?
+Vill du spara före du avslutar?
 [Yes]
 Ja
 [No]
@@ -603,40 +611,110 @@ Nej
 [Save]
 Spara
 [auto save]
-Spara automatiskt
+Autospara
 [Total prestige reached]
-Totalt uppnått anseende.
+Total prestige uppnådd
 [Continue playing]
-Fortsätt spela
+Forsätt spela
 [Lost : your colony is dead]
-Förlust : Din koloni är död
+Förlust: Din koloni är död
 [Won : you defeated your opponents]
-Seger : Du besegrade dina motspelare
+Seger: Du besegra dina motsåtndare
 [Won : your ally %0 has the most prestige]
-Seger : din allierade %0 har det bästa anseendet
+Seger: din allierade %0 har mest prestige
 [Lost : %0 has more prestige than you]
-Förlust : %0 har större anseende än dig
+Förlust: %0 har mer prestige än dig
 [Won : you have the most prestige]
-Seger : Du har det bästa anseendet
+Seger: Du har mest prestige.
 [The game has not been finished]
-Spelet har inte avslutats
+Spelet har inte blivit avklarat.
 [display]
-Visa
+Display
 [username]
-Användar namn
+Användarnamn
 [fullscreen]
 Fullskärm
 [hwaccel]
-Hårdvaru accelererat
+Hårdvaru accelaration
 [dblbuff]
-Dubbel buffring
+Double buffering
 [lowquality]
-Låg kvalitet
+Låg kvalite
 [audio]
-Audio
+Ljud
 [Music volume]
 Volym (musik)
 [Happyness]
 Glädje
+[customcur]
+Egen markör
+[choose campaign]
+Völj en kampanj
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Vi är väldigt ledsna men ditt namn är redan taget på freenode, du kommer bara kunna prata genom YOG.
+[mute]
+mute
+[abreaviation explanation A]
+A: Allierade
+[abreaviation explanation V]
+V: Visa synfält för alla byggnader
+[abreaviation explanation Vf]
+Vf: Visa synfält för värdshusbyggnader (för att stjäla enheter)
+[abreaviation explanation mV]
+mV: Visa synfält för marknadsbyggnader (för att byta frukter)
+[abreaviation explanation C]
+C: Skicka chatmeddelanden till
+[shortcut explanation enter]
+Enter: skicka ett charmeddelande
+[shortcut explanation v]
+V: håll för att prata
+[Delete game]
+Förstör det valda spelet
+[any explorer]
+vilken utforskare som helst
+[ground attack]
+markattack
+[Can't join game, wrong game version]
+Kan inte ansluta till spel, fel spelversion.
+[Can't join game, missmatching game parameters]
+Kan inte ansluta till spel: 'missmatching game parameters'
+[Can't join game, timeout]
+Kan inte ansluta till spel, timeout
+[swamp terrain]
+Träsk
+[river terrain]
+Flod
+[crater lakes terrain]
+Kratersjöar
+[old random terrain]
+Gammal slumpmässig terräng
+[old islands terrain]
+Gamla slumpmässiga öar
+[desert]
+öken
+[algae]
+alg
+[wheat]
+wete
+[wood]
+trä
+[stone]
+sten
+[river diameter]
+bredd på flod
+[extra islands]
+tomma öar
+[crater density]
+krater densitet
+[press space]
+Tryck space för att forsätta.
+[GUIMapPreview text 0]
+Snälla välj
+[GUIMapPreview text 1]
+en karta
+[Unit editor]
+enhets utvecklare
+[skin]
+Display
+[hungryness]
+Hunger
