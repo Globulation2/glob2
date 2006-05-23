@@ -35,6 +35,7 @@ public:
 	Uint32 defaultLanguage;
 	Uint32 musicVolume;
 	int mute;
+	bool rememberUnit;
 	int warflagUnit;
 	int clearflagUnit;
 	int exploreflagUnit;

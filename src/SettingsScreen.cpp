@@ -96,6 +96,13 @@ SettingsScreen::SettingsScreen()
 	addWidget(customcur);
 	customcurText=new Text(260, 90 + 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[customcur]"), 180);
 	addWidget(customcurText);
+	//TODO currently rememberUnitButton does nothing but is meant to eventually allow the game to remember the last number of globs assigned to a building/flag so the game will not always use the defaults
+	rememberUnitButton=new OnOffButton(230, 90 + 120, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.rememberUnit, REMEMBERUNIT);
+	addWidget(rememberUnitButton);
+	rememberUnitText=new Text(260, 90 + 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("Remember unit"), 180);
+	addWidget(rememberUnitText);
+
+
 	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
@@ -380,6 +387,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
+		if (source==rememberUnitButton)
+		{
+			globalContainer->settings.rememberUnit=rememberUnitButton->getState();
+		}
 		if (source==lowquality)
 		{
 			globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;

@@ -46,8 +46,9 @@ public:
 		LOWQUALITY = 5,
 		CUSTOMCUR = 6,
 		MUTE = 7,
-		GENERALSETTINGS = 8,
-		UNITSETTINGS = 9,
+		REMEMBERUNIT = 8,
+		GENERALSETTINGS = 9,
+		UNITSETTINGS = 10,
 	};
 private:
 	List *languageList;
@@ -58,10 +59,10 @@ private:
 	TextButton *ok, *cancel, *generalsettings, *unitsettings;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
 	Selector *musicVol;
-	OnOffButton *audioMute;
+	OnOffButton *audioMute, *rememberUnitButton;
 	Number *warflagUnitRatio, *clearflagUnitRatio, *exploreflagUnitRatio;
 	Text *title, *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *warflagUnitText, *clearflagUnitText, *exploreflagUnitText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *warflagUnitText, *clearflagUnitText, *exploreflagUnitText, *rememberUnitText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
