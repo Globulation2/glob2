@@ -1664,6 +1664,12 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		// working bar
 		if (selBuild->type->maxUnitWorking)
 		{
+			//donk notes: test region 
+			//if (selBuild->shortTypeNum==9)
+			//{
+				//globalContainer->settings.warflagUnit = //selBuild->maxUnitWorkingLocal;
+			//}
+			// end test
 			if (((selBuild->owner->allies)&(1<<localTeamNo))
 				&& my>ypos+YOFFSET_TEXT_BAR
 				&& my<ypos+YOFFSET_TEXT_BAR+16
