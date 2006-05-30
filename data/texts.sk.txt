@@ -1,0 +1,718 @@
+[language]
+Slovensky
+[language-code]
+sk
+[language-tr]
+Jazyk
+[hp]
+HP
+[heal]
+Zdravie
+[armor]
+Pancier
+[damage]
+Poškodenie
+[food]
+Jedlo
+[working]
+Precuje
+[inside]
+Vovnútri
+[ressources]
+Suroviny
+[Wood]
+Drevo
+[Corn]
+Pšenica
+[Papyrus]
+Papyrus
+[Stone]
+Kameň
+[Alga]
+Riasy
+[Cherry]
+Čerešňa
+[Orange]
+Pomaranč
+[Prune]
+Slivka
+[Clearing:]
+Čistenie:
+[Min required level:]
+Najnižšia potrebná úroveň:
+[Bullets]
+Nábojov:
+[range]
+Dosah
+[destroy]
+Zničiť
+[cancel destroy]
+Odv. zničenie
+[wait destroy]
+Čakajúce na zničenie
+[upgrade]
+Zdokonaliť
+[repair]
+Opraviť
+[cancel upgrade]
+Odv. zdokonaľovanie
+[cancel repair]
+Odvolať opravu
+[units type]
+typ jednotky
+[workers]
+robotníci
+[explorers]
+prieskumníci
+[warriors]
+bojovníci
+[Unit type]
+Typ jednotky
+[Worker]
+Robotník
+[Explorer]
+Prieskumník
+[Warrior]
+Bojovník
+[still (w)]
+Ešte
+[units working]
+ jednotiek pracuje
+[still one unit working]
+Ešte pracuje jedna jednotka
+[Still (i)]
+Ešte 
+[Still one]
+Ešte jeden
+[Building name]
+Názov budovy
+[swarm building]
+Hniezdo
+[food building]
+Jedáleň
+[health building]
+Nemocnica
+[walkspeed building]
+Bežecká dráha
+[swimspeed building]
+Bazén
+[attack building]
+Kasárne
+[science building]
+Škola
+[defense building]
+Obr. veža
+[exploration flag]
+Vlajka prieskumu
+[war flag]
+Vlajka vojny
+[clearing flag]
+Vlajka čistenia
+[stone wall]
+Hradba
+[market]
+Trhovisko
+[forbidden area]
+Zakázané územie
+[guard area]
+Stráž
+[clear area]
+Čistenie
+[Building short explanation]
+Krátky popis budovy (max 24 znakov)
+[swarm building explanation]
+Produkuje nové jednotky
+[food building explanation]
+Kŕmi jednotky
+[health building explanation]
+Lieči jednotky
+[walkspeed building explanation]
+Zvyšuje rýchlosť kráčania
+[swimspeed building explanation]
+Zvyšuje rýchlosť plávania
+[attack building explanation]
+Učí lepšie bojovať
+[science building explanation]
+Učí lepšie stavať
+[defense building explanation]
+Útočí na blízke jednotky
+[exploration flag explanation]
+Priťahuje Prieskumníkov
+[war flag explanation]
+Priťahuje Bojovníkov
+[clearing flag explanation]
+Čistí suroviny
+[stone wall explanation]
+Pasívna obrana
+[market explanation]
+Umožnňuje výmenu ovocia
+[Building short explanation 2]
+Krátky popis budovy 2 (max 24 znakov)
+[swarm building explanation 2]
+ 
+[food building explanation 2]
+ 
+[health building explanation 2]
+ 
+[walkspeed building explanation 2]
+
+[swimspeed building explanation 2]
+
+[attack building explanation 2]
+tvojich Bojovníkov
+[science building explanation 2]
+
+[defense building explanation 2]
+a budovy nepriateľa
+[exploration flag explanation 2]
+ 
+[war flag explanation 2]
+ 
+[clearing flag explanation 2]
+ 
+[stone wall explanation 2]
+
+[market explanation 2]
+s ostatnými hráčmi
+[waiting for %0]
+Čaká sa na %0
+[%0 has left the game]
+%0 odišiel z hry.
+[%0 has been deconnected of the game]
+%0 bol odpojený.
+[load game]
+Nahrať hru
+[save game]
+Uložiť hru
+[options]
+Nastavenia
+[alliances]
+Aliancie
+[return to game]
+Nazad do hry
+[quit the game]
+Ukončiť hru
+[ok]
+Ok
+[Cancel]
+Zrušiť
+[you have lost]
+Prehral(a) si!
+[you have won]
+Vyhral(a) si!
+[campaign]
+Kampaň
+[tutorial]
+Kurz
+[custom game]
+Voliteľná hra
+[yog]
+Ysagoon Online Gaming
+[Enter your nickname :]
+Zadaj prezývku:
+[Enter your password :]
+Zadaj heslo:
+[lan]
+LAN Hra
+[settings]
+Nastavenia
+[Warning, you need to reboot the game for changes to take effect]
+Pozor, aby sa prejavili zmeny, je potrebné hru reštartovať!
+[editor]
+Editor
+[credits]
+Kredity
+[quit]
+Koniec
+[create game]
+Vytvoriť hru
+[update list]
+Aktualizovať
+[connecting to]
+Pripája sa ku
+[connect]
+Pripojiť
+[Disconnect]
+Odpojiť
+[please wait]
+Čakaj, prosím
+[loading glob2]
+Nahráva sa Globulation 2
+[host]
+Vytvor hru
+[join a game]
+Vstúp do hry
+[join]
+Vstúpiť
+[goto main menu]
+Návrat do menu
+[player name]
+Meno hráča
+[svr hostname]
+Názov servera
+[hp]
+Zdravie
+[carry]
+Nesie:
+[don't carry anything]
+Nič nenesie
+[level]
+Úroveň
+[levels]
+Úrovne
+[building site]
+stavenisko
+[create map]
+Vytvor mapu
+[map size x]
+Šírka mapy
+[map size y]
+Výška mapy
+[default terrain]
+Základný povrch
+[water]
+Voda
+[sand]
+Piesok
+[grass]
+Tráva
+[teams]
+ tímy
+[choose map]
+Vyber si mapu
+[choose game]
+Vyber si hru
+[awaiting players]
+Čaká sa na hráčov
+[stat]
+Štatistiky
+[food left]
+Jedla
+[the building is finished]
+Výstavba dokončená
+[the swarm is finished]
+Hniezdo dokončené
+[the food building is finished]
+Jedáleň dokončená
+[the health building is finished]
+Nemocnica dokončená
+[the walkspeed building is finished]
+Bežecká dráha dokončená
+[the swimspeed building is finished]
+Bazén dokončený
+[the attack building is finished]
+Kasárne dokončené
+[the science building is finished]
+Škola dokončená
+[the tower building is finished]
+Obranná veža dokončená
+[the exploration flag is finished]
+?? Vlajka prieskumu dokončená ??
+[the war flag is finished]
+?? Vlajka vojny dokončená ??
+[the clearing flag is finished]
+?? Vlajka čistenia dokončená ??
+[the stone wall is finished]
+Hradba dokončená
+[the market is finished]
+Trhovisko dokončené
+[the building is under attack]
+Útočia ti na budovu
+[the swarm is under attack]
+Útočia ti na Hniezdo
+[the food building is under attack]
+Útočia ti na Jedáleň
+[the health building is under attack]
+Útočia ti na Nemocnicu
+[the walkspeed building is under attack]
+Útočia ti na Bežeckú dráhu
+[the swimspeed building is under attack]
+Útočia ti na Bazén
+[the attack building is under attack]
+Útočia ti na kasárne
+[the science building is under attack]
+Útočia ti na Školu
+[the defense building is under attack]
+Útočia ti na Obranu
+[the exploration flag is under attack]
+?? Vlajka prieskumu čelí útoku ??
+[the war flag is under attack]
+?? Vlajka vojny čelí útoku ??
+[the clearing flag is under attack]
+?? Vlajka čistenia čelí útoku ??
+[the stone wall is under attack]
+Nepriatelia pri hradbách
+[the market is under attack]
+Útočia ti na Trhovisko
+[Your %0 are under attack]
+Tvoji %0 čelia útoku
+[Your unit got converted to %0's team]
+Tvoja jednotka konvertovala k tímu %0
+[%0's team unit got converted to your team]
+Jednotka tímu %0 konvertovala k tebe
+[Uncontrolled]
+Neobsadené
+[ai]
+UI
+[closed]
+Uzavreté
+[close]
+Zavrieť
+[player]
+Hráč
+[STARTING GAME ...]
+Začína hra... 
+[Statistics]
+Štatistiky
+[Buildings]
+Budovy
+[Prestige]
+Prestíž
+[Units]
+Jednotky
+[Attack]
+Útok
+[Defense]
+Obrana
+[free]
+voľní
+[of which]
+z nich
+[are ok]
+sú ok
+[are hungry]
+sú hladní
+[are dying hungry]
+trpia
+[are wonded]
+sú zranení
+[and]
+a
+[seeking a job]
+hľadajú prácu
+[Walk]
+Kráčanie
+[Swim]
+Plávanie
+[Build]
+Stavanie
+[Harvest]
+Ťažba
+[At. speed]
+Rýchl. út.
+[At. strength]
+Sila út.
+[Magic At. Air]
+Vzduch
+[Magic At. Ground]
+Zem
+[Total]
+Spolu
+[free]
+voľní
+[seeking]
+hľadajú
+[Free]
+Ok
+[hungry]
+hladní
+[starving]
+trpia
+[wounded]
+zranení
+[In way]
+Na ceste
+[On the spot]
+Tu
+[Version]
+Verzia
+[open]
+otvorené
+[Add AI]
+Pridaj UI
+[AI]
+UI
+[AINone]
+UINone
+[AINumbi]
+UINumbi
+[AICastor]
+UICastor
+[AINicowar]
+Nicowar (nestab.)
+[AIToubib]
+UIToubib
+[AIWarrush]
+UIWarrush
+[the games]
+Hry
+[the maps]
+Mapy
+[was]
+bol
+[was AI]
+bol UI
+[state]
+stav
+[Start]
+Štart
+[not ready]
+nepripravený
+[has joined]
+sa pridal
+[has quit]
+odišiel
+[yog-chat]
+#yog-en
+[speed]
+Rýchlosť
+[current speed]
+Súčasná rýchlosť
+[attack speed]
+Rýchlosť útoku
+[new]
+Nová
+[load]
+Nahrať
+[handmade map]
+Ručná mapa
+[mapGenerationDescriptor Methodes]
+Metódy náhodného generovania máp
+[uniform terrain]
+Jednotný povrch
+[random terrain]
+Náhodný povrch
+[islands terrain]
+Ostrovy
+[ratios]
+Proporcie
+[smoothing]
+Vyhľadenie
+[number of teams]
+počet tímov
+[islands size]
+veľkosť ostrovu
+[beach size]
+veľkosť pláže
+[workers]
+Robotníci
+[bad error in connection system]
+Chyba v systéme pripojenia
+[not connected]
+Nepripojené
+[presence request sent]
+Poslaná požiadavka na prítomnosť ...
+[session request sent]
+Poslaná požiadavka na sedenie ...
+[checksum sent]
+Poslaný kontrolný súčet ...
+[connected to server]
+Pripojené k serveru
+[connecting to all players]
+Pripája sa k hráčom
+[connected to all players]
+Pripojené ku všetkým hráčom
+[available lan games]
+Dostupné lokálne hry
+[login]
+Prihlásenie
+[from:]
+od:
+[to:]
+pre:
+[away:]
+preč:
+[compile]
+Kopilovať skript
+[downloaded at]
+Stiahnutých 
+[percent]
+  percent
+[download finished]
+Stiahnuté
+[Map name: %0]
+Názov mapy: %0.
+[one player]
+Pripojil sa hráč.
+[number of players: %0]
+Počet hráčov: %0
+[number of teams: %0]
+Tímov: %0
+[game full]
+Plné
+[small]
+malá
+[medium]
+stredná
+[large]
+veľká
+[network latency]
+Latencia siete
+[game speed]
+Rýchlosť hry
+[Paused]
+Zastavené
+[Register a new YOG user with password]
+Zaregistrovať nové YOG meno s heslom. (nezabezpečené)
+[Remember YOG password localy]
+Zapamätať si heslo. (nezabezpečené)
+[YESTS_BAD]
+Chyba vnútornej konzistenice.
+[YESTS_UNABLE_TO_CONNECT]
+Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
+[YESTS_CREATED]
+Systém pripojenia je pripravený kontaktovať YOG metaserver.
+[YESTS_CONNECTING]
+Pripája sa ku YOG metaserveru...
+[YESTS_DECONNECTING]
+Odpája sa od YOG metaservera...
+[YESTS_YOG_KILLED]
+Administrátor práve zastavil YOG metaserver.
+[YESTS_CONNECTION_LOST]
+Spojenie s YOG stratené.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG metaserver odmietol spojenie, pretože je tvoj Globulation 2 klient zastaralý.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+YOG metaserver odmietol spojenie, pretože bolo zadané zlé heslo.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+YOG metaserver odmietol spojenie, pretože toto meno ešte nemá nastavené heslo. Najprv je potrebné meno a heslo zaregistrovať. Preto aktivuj možnosť  "Zaregistrovať nové YOG meno s heslom" a až potom sa pokús pripojiť. Toto je potrebné swpraviť len raz.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG metaserver odmietol spojenie, pretože toto meno a heslo sú už zaregistrované. Ak je toto meno tvoje, deaktivuj možnosť "Zaregistrovať nové YOG meno s heslom".
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+YOG metaserver odmietol spojenie, pretože nastala chyba protokolu: Už si autentifikovaný. Počkaj 45 sekúnd a skús znovu.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+YOG metaserver odmietol spojenie, pretože nastala chyba protokolu: Ešte nie si pripojený a už sa autentifikuješ. Prosím, ohláste túto chybu.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOG metaserver odmietol spojenie bez vysvetlenia!
+[The player %0 has left YOG]
+%0 odišiel z YOG.
+[The player %0 has joined YOG]
+%0 vstúpil do YOG.
+[You are now marked as away]
+Si preč od klávesnice.
+[You are no more marked as away]
+Vrátil si sa ku klávesnici.
+[YOG_HELP]
+YOG systém správ má dva príkazy - "msg" a "away". Ak o nich chceš vedieť viac, napíš "/help <príkaz>".
+[YOG_HELP_AWAY]
+Príkaz "/away (<správa>)" umožňuje ostatným užívateľom YOG vedieť, že si dočasne preč od PC. Môžše napísať krátke vysvetlenie.  Napríklad "/away Obedujem. Vrátim sa o jednej.". Alias "/a"
+[YOG_HELP_MSG]
+Príkaz "/msg <meno> <správa>" umožňuje poslať súkromnú správu konkrétnemu užívateľovi. Napríklad "/msg Jano Čau, ako žiješ?".  Alias "/m".
+[save before quit?]
+Chceš pred ukončením uložiť zmeny?
+[Yes]
+Áno
+[No]
+Nie
+[Save]
+Uložiť
+[auto save]
+Uložiť automaticky
+[Total prestige reached]
+Dosiahnutá úroveň prestíže
+[Continue playing]
+Pokračovať
+[Lost : your colony is dead]
+Prehra: Tvoja kolónia vymrela
+[Won : you defeated your opponents]
+Výhra: Porazil si svojích nepriateľov
+[Won : your ally %0 has the most prestige]
+Výhra: Tvoj spojenec %0 má najväčšiu prestíž
+[Lost : %0 has more prestige than you]
+Prehra: %0 má väčšiu prestíž ako ty
+[Won : you have the most prestige]
+Výhra: Máš najväčšiu prestíž
+[The game has not been finished]
+Hra ešte neskončila
+[display]
+Zobrazenie
+[username]
+Meno hráča
+[fullscreen]
+Celá obrazovka
+[hwaccel]
+Hardvérová akcelerácia
+[dblbuff]
+Double Buffering
+[lowquality]
+Znížená kvalita
+[audio]
+Zvuky
+[Music volume]
+Hlasitosť (hudba)
+[Happyness]
+Šťastie
+[customcur]
+Špeciálny kurzor
+[choose campaign]
+Vyber si kampaň
+[nick taken]
+Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+[mute]
+Stlmiť
+[abreaviation explanation A]
+A: Spojenci
+[abreaviation explanation V]
+V: Ukáž, čo vidia budovy
+[abreaviation explanation Vf]
+Vf: Ukáž jedálne (na kradnutie jedotiek)
+[abreaviation explanation mV]
+mV: Ukáž Trhoviská (na výmenu ovocia)
+[abreaviation explanation C]
+C: Posielaj správy
+[shortcut explanation enter]
+Enter: Pošli správu
+[shortcut explanation v]
+V: Drž a rozprávaj
+[Delete game]
+Zmazať označenú hru
+[any explorer]
+hociktorý Prieskumník
+[ground attack]
+Schopný útočiť na zem
+[Can't join game, wrong game version]
+Nemožno vstúpiť do hry - zlá verzia
+[Can't join game, missmatching game parameters]
+Nemožno vstúpiť do hry - rozdielne parametre
+[Can't join game, timeout]
+Nemožno vstúpiť do hry - vypršal čas
+[swamp terrain]
+Močiar
+[river terrain]
+Rieka
+[crater lakes terrain]
+Horské jazerá
+[old random terrain]
+starý náhodný terén
+[old islands terrain]
+staré náhodné ostrovy
+[desert]
+púšť
+[algae]
+riesy
+[wheat]
+pšenica
+[wood]
+drevo
+[stone]
+kamene
+[river diameter]
+šírka rieky
+[extra islands]
+prázdne ostrovy
+[crater density]
+počet jazier
+[press space]
+Pre pokračovanie stlač medzeru
+[GUIMapPreview text 0]
+Vyber si
+[GUIMapPreview text 1]
+mapu
+[Unit editor]
+Editor jedotiek
+[skin]
+Povrch
+[hungryness]
+Hlad
