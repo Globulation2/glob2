@@ -298,6 +298,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audioMute->visible=true;
 			musicVol->visible=true;
 			musicVolText->visible=true;
+			rememberUnitButton->visible=true;
+			rememberUnitText->visible=true;
 			warflagUnitRatio->visible=false;
 			warflagUnitText->visible=false;
 			clearflagUnitRatio->visible=false;
@@ -329,6 +331,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audioMute->visible=false;
 			musicVol->visible=false;
 			musicVolText->visible=false;
+			rememberUnitButton->visible=false;
+			rememberUnitText->visible=false;
 			warflagUnitRatio->visible=true;
 			warflagUnitText->visible=true;
 			clearflagUnitRatio->visible=true;
