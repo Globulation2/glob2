@@ -71,15 +71,13 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	shortTypeNum = type->shortTypeNum;
 	maxUnitInside=type->maxUnitInside;
 	maxUnitWorking=type->maxUnitWorking;
-	maxUnitWorkingLocal=maxUnitWorking; //original line
-	//donk notes: following is changes
+	maxUnitWorkingLocal=maxUnitWorking; //default for units not defined within settings
 	if (shortTypeNum == 9)
 		maxUnitWorkingLocal = globalContainer->settings.warflagUnit;
 	if (shortTypeNum == 10)
 		maxUnitWorkingLocal = globalContainer->settings.clearflagUnit;
 	if (shortTypeNum == 8)
 		maxUnitWorkingLocal = globalContainer->settings.exploreflagUnit;
-	//end donknotes: set up a variable to read what type of flag is being place and then setup more flagunits within the global settings container. 
 	maxUnitWorkingPreferred=1;
 	subscriptionInsideTimer=0;
 	subscriptionWorkingTimer=0;
