@@ -1,6 +1,7 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
+  for any question or comment contact us at nct at ysagoon dot com or
+  nuage at ysagoon dot com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -130,12 +131,13 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	seenByMask=0;
 	
+	matchPriority = MP_MEDIUM;
+	
 	subscribeForInside=0;
 	subscribeToBringRessources=0;
 	subscribeForFlaging=0;
 	canFeedUnit=0;
 	canHealUnit=0;
-	foodable=0;
 	fillable=0;
 	
 	zonableWorkers[0]=0; 
@@ -288,7 +290,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	subscribeForFlaging = 0;
 	canFeedUnit = 0;
 	canHealUnit = 0;
-	foodable = 0;
 	fillable = 0;
 	
 	zonableWorkers[0] = 0; 
@@ -537,12 +538,14 @@ int Building::neededRessource(void)
 
 void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
 {
+	// TODO : DEPRECIATED or use computeWishedRessources
 	for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
 		needs[ri]=type->maxRessource[ri]-ressources[ri]+1-type->multiplierRessource[ri];
 }
 
 void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 {
+	// TODO : DEPRECIATED or use computeWishedRessources
 	 // we balance the system with Units working on it:
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
 		needs[ri] = (2 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri]);
@@ -558,7 +561,10 @@ void Building::computeWishedRessources()
 {
 	 // we balance the system with Units working on it:
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		wishedResources[ri] = (2 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri]);
+	{
+		neededResources[ri] = ((type->maxRessource[ri] - ressources[ri]) / (type->multiplierRessource[ri]))
+		wishedResources[ri] = 2 * neededResources[ri];
+	}
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurprose >= 0)
 		{
@@ -623,7 +629,7 @@ void Building::launchConstruction(void)
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
 		maxUnitInside=0;
-		updateCallLists(); // To remove all units working.
+		updateMatcher(); // To remove all units working.
 
 		updateConstructionState(); // To switch to a realy building site, if all units have been freed from building.
 	}
@@ -697,7 +703,7 @@ void Building::cancelConstruction(void)
 		maxUnitWorking=0;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
-	updateCallLists();
+	updateMatcher();
 
 	if (hp>=type->hpInit)
 		hp=type->hpInit;
@@ -749,7 +755,7 @@ void Building::launchDelete(void)
 		maxUnitWorking=0;
 		maxUnitWorkingLocal=0;
 		maxUnitInside=0;
-		updateCallLists();
+		updateMatcher();
 		
 		owner->buildingsWaitingForDestruction.push_front(this);
 	}
@@ -764,7 +770,7 @@ void Building::cancelDelete(void)
 		maxUnitWorking=0;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
-	updateCallLists();
+	updateMatcher();
 	// we do not update owner->buildingsWaitingForDestruction because Team::syncStep will remove this building from the list
 }
 
@@ -792,19 +798,16 @@ void Building::updateClearingFlag(bool canSwim)
 	}
 }
 
-void Building::updateCallLists(void)
+//! Building enter or leave matcher list here given its needs
+void Building::updateMatcher(void)
 {
+	// TODO : check with matcher
 	if (buildingState==DEAD)
 		return;
 	bool ressourceFull=isRessourceFull();
 	if (ressourceFull && !(type->canExchange && owner->openMarket()))
 	{
 		// Then we don't need anyone more to fill me:
-		if (foodable!=2)
-		{
-			owner->foodable.remove(this);
-			foodable=2;
-		}
 		if (fillable!=2)
 		{
 			owner->fillable.remove(this);
@@ -819,12 +822,7 @@ void Building::updateCallLists(void)
 			// Add itself in the right "call-lists":
 			if (!ressourceFull)
 			{
-				if (foodable!=1 && type->foodable)
-				{
-					owner->foodable.push_front(this);
-					foodable=1;
-				}
-				if (fillable!=1 && type->fillable)
+				if (fillable!=1 && (type->fillable || type->foodable))
 				{
 					owner->fillable.push_front(this);
 					fillable=1;
@@ -853,12 +851,7 @@ void Building::updateCallLists(void)
 	else
 	{
 		// delete itself from all Call lists
-		if (foodable!=2 && type->foodable)
-		{
-			owner->foodable.remove(this);
-			foodable=2;
-		}
-		if (fillable!=2 && type->fillable)
+		if (fillable!=2 && (type->fillable || type->foodable))
 		{
 			owner->fillable.remove(this);
 			fillable=2;
@@ -1102,7 +1095,7 @@ void Building::updateBuildingSite(void)
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid, owner->teamNumber);
 
 		// we need to do an update again
-		updateCallLists();
+		updateMatcher();
 	}
 }
 
@@ -1115,10 +1108,87 @@ void Building::update(void)
 		updateClearingFlag(0);
 		updateClearingFlag(1);
 	}
-	updateCallLists();
+	updateMatcher();
 	updateConstructionState();
 	if (type->isBuildingSite)
 		updateBuildingSite();
+}
+
+//! A result of the matching unit with resource, ready for sorting
+class UnitResourceMatchResult
+{
+public:
+	Uint32 score; //!< the bigger the score variable is, the worst the matching is
+	Unit *unit;
+	int resource;
+	
+	bool operator < (const MatchResult &other) const
+	{
+		return score < other.score;
+	}
+	
+	UnitResourceMatchResult(Uint32 score, Unit *unit, int resource) :
+		score(score),
+		unit(unit),
+		resource(resource)
+	{
+	}
+};
+
+//! Find an optimal allocation strategy for all newly matched units to the resources we need
+void Building::allocateNewlyFillingUnitsToResources()
+{
+	std::vector<UnitResourceMatchResult> matchResults;
+	
+	// we first directly allocate units who already carry a resource the building need
+	for (std::list<Unit *>::iterator unitIt = newlyFillingUnits.begin(); unitIt != newlyFillingUnits.end(); ++unitIt)
+	{
+		Unit *unit = unitIt;
+		if ((unit->caryedRessource > 0) && (neededResources[unit->caryedRessource] > 0))
+		{
+			unit->destinationResource = unit->caryedResource;
+			unit->targetBuilding = this;
+			unit->visualTargetX = getMidX();
+			unit->visualTargetY = getMidY();
+			unit->validVisualTarget = true;
+		}
+		else
+		{
+			unit->destinationResource = -1; // mark the unit as it still need to be matched.
+			for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
+				if ((unit->minDistToResource[ri] >= 0) && (wishedResources[ri] > 0))
+					matchResults.push_back(UnitResourceMatchResult(unit->minDistToResource[ri] / wishedResources[ri], unit, ri);
+		}
+	}
+	
+	// We sort the matches by score:
+	std::stable_sort(matchResults.begin(), matchResults.end());
+	
+	// We match each pair we can, from the best to the worse, simply skipping the pairs where the unit is already matched:
+	for (std::vector<UnitResourceMatchResult>::iterator matchResultsIt = matchResults.begin(); matchResultsIt != matchResults.end(); ++matchResultsIt)
+	{
+		Unit *unit = matchResultsIt->unit;
+		if (unit->destinationResource < 0)
+		{
+			unit->destinationResource = matchResultIt->resource;
+			unit->targetBuilding = NULL;
+			unit->validVisualTarget = owner->map->ressourceAvailable(unit->owner->teamNumber, unit->destinationResource, unit->performance[SWIM], unit->posX, unit->posY, &unit->visualTargetX, &unit->visualTargetY, NULL);
+			assert(unit->validVisualTarget);
+		}
+	}
+	
+	// Check that each unit has been allocated. If not, there is a bug
+	for (std::list<Unit *>::iterator unitIt = newlyFillingUnits.begin(); unitIt != newlyFillingUnits.end(); ++unitIt)
+	{
+		Unit *unit = unitIt;
+		if (unit->destinationResource < 0)
+		{
+			std::cerr << FormatableString("Building::allocateNewlyFillingUnitsToResources() : error : trying to allocate units to resources, but some units were not allocated\n");
+			abort();
+		}
+	}
+	
+	newlyFillingUnits.clear();
 }
 
 void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
@@ -1225,7 +1295,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		maxUnitWorking=maxUnitWorkingPreferred;
 		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
-		updateCallLists();
+		updateMatcher();
 
 		// position
 		posX=newPosX;
@@ -1557,7 +1627,7 @@ void Building::subscribeToBringRessourcesStep()
 				break;
 		}
 		
-		updateCallLists();
+		updateMatcher();
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			(*it)->standardRandomActivity();
 		unitsWorkingSubscribe.clear();
@@ -1668,7 +1738,7 @@ void Building::subscribeForFlagingStep()
 				break;
 		}
 		
-		updateCallLists();
+		updateMatcher();
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			(*it)->standardRandomActivity();
 		unitsWorkingSubscribe.clear();
@@ -1732,11 +1802,41 @@ void Building::subscribeForInsideStep()
 				break;
 		}
 		
-		updateCallLists();
+		updateMatcher();
 		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			(*it)->standardRandomActivity();
 		unitsInsideSubscribe.clear();
 	}
+}
+
+//! Make the unit working at this building, update matcher for this building.
+void Building::addUnitWorking(Unit *unit)
+{
+	unitsWorking.push_back(unit);
+	updateMatcher();
+}
+
+//! Make the unit using this building, update matcher for this building.
+void Building::addUnitInside(Unit *unit)
+{
+	unitsInside.push_back(unit);
+	updateMatcher();
+}
+
+//! Stop the unit from working at this building, update matcher for this building.
+void Building::removeUnitWorking(Unit *unit)
+{
+	unitsWorking.remove(unit);
+	unit->attachedBuilding = NULL;
+	updateMatcher();
+}
+
+//! Stop the unit from using this building, update matcher for this building.
+void Building::removeUnitInside(Unit *unit)
+{
+	unitsInside.remove(unit);
+	unit->attachedBuilding = NULL;
+	updateMatcher();
 }
 
 void Building::swarmStep(void)
@@ -1788,7 +1888,7 @@ void Building::swarmStep(void)
 			if (u)
 			{
 				ressources[CORN]-=type->ressourceForOneUnit;
-				updateCallLists();
+				updateMatcher();
 				
 				u->activity=Unit::ACT_RANDOM;
 				u->displacement=Unit::DIS_RANDOM;
@@ -1815,7 +1915,7 @@ void Building::swarmStep(void)
 	}
 }
 
-
+//! This function searches for enemies, computes the best target, and fires a bullet
 void Building::turretStep(void)
 {
 	// create bullet from stones in stock
@@ -1825,7 +1925,7 @@ void Building::turretStep(void)
 		bullets += type->multiplierStoneToBullets;
 		
 		// we need to be stone-feeded
-		updateCallLists();
+		updateMatcher();
 	}
 	
 	// compute cooldown
@@ -2123,7 +2223,7 @@ void Building::kill(void)
 	maxUnitWorking=0;
 	maxUnitWorkingLocal=0;
 	maxUnitInside=0;
-	updateCallLists();
+	updateMatcher();
 
 	if (!type->isVirtual)
 	{
@@ -2340,6 +2440,7 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	return false;
 }
 
+//! get flag from units attached to flag
 void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
 {
 	*goingTo = 0;
@@ -2356,6 +2457,7 @@ void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
 	}
 }
 
+//! return the number of differents fruits in this building. If mask is non-null, return the mask as well
 Uint32 Building::eatOnce(Uint32 *mask)
 {
 	ressources[CORN]--;
@@ -2386,28 +2488,9 @@ int Building::availableHappynessLevel(bool guarantee)
 		return 0;
 	int happyness = 1;
 	for (int i = 0; i < HAPPYNESS_COUNT; i++)
-		if (ressources[i + HAPPYNESS_BASE]  >inside)
+		if (ressources[i + HAPPYNESS_BASE] > inside)
 			happyness++;
 	return happyness;
-}
-
-Sint32 Building::GIDtoID(Uint16 gid)
-{
-	assert(gid<32768);
-	return gid%1024;
-}
-
-Sint32 Building::GIDtoTeam(Uint16 gid)
-{
-	assert(gid<32768);
-	return gid/1024;
-}
-
-Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
-{
-	assert(id<1024);
-	assert(team<32);
-	return id+team*1024;
 }
 
 void Building::integrity()
