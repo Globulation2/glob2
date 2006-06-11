@@ -83,6 +83,8 @@ timeToFeedUnit 0
 canHealUnit 0
 timeToHealUnit 0
 insideSpeed 4
+insideTime 0
+
 canExchange 0
 useTeamRessources 0
 

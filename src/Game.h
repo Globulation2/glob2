@@ -1,6 +1,7 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
+  for any question or comment contact us at nct at ysagoon dot com or
+  nuage at ysagoon dot com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,6 +21,8 @@
 #ifndef __GAME_H
 #define __GAME_H
 
+#include "UnitConsts.h"
+#include "BuildingConsts.h"
 #include "Map.h"
 #include "Session.h"
 #include "SGSL.h"
@@ -121,6 +124,10 @@ public:
 	//void addUnit(int x, int y, int team, int type, int level);
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber);
+	
+	Unit *getUnit(Uint16 guid) { return teams[UnitConsts::GIDtoTeam(guid)]->myUnits[UnitConsts::GIDtoID(guid)]; }
+	Building *getBuilding(Uint16 gbid) { return teams[BuildingConsts::GIDtoTeam(guid)]->myBuildings[BuildingConsts::GIDtoID(guid)]; }
+	
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 	bool removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);

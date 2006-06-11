@@ -1,6 +1,7 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
+  for any question or comment contact us at nct at ysagoon dot com or
+  nuage at ysagoon dot com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -88,18 +89,18 @@ public:
 	std::list<Unit *> unitsInsideSubscribe;
 	Sint32 subscriptionInsideTimer;
 	MatchPriority matchPriority;
+	std::vector<Unit *> newlyFillingUnits; //!< filling units recently matched that must optimally be allocated to resources this building need
 	
 	// optimisation and consistency
-	// Included in {0: unknow, 1:allready in owner-><same name>, 2:not in owner-><same name>
+	// Included in {0: unknow, 1:already in owner-><same name>, 2:not in owner-><same name>
 	Sint32 subscribeForInside, subscribeToBringRessources, subscribeForFlaging; 
-	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
-	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit}
-	Sint32 foodable; // Included in {0: unknow, 1:allready in owner->foodable, 2:not in owner->foodable
-	Sint32 fillable; // Included in {0: unknow, 1:allready in owner->fillable, 2:not in owner->fillable
-	Sint32 zonableWorkers[2]; // Included in {0: unknow, 1:allready in owner->zonableWorkers[x], 2:not in owner->zonableWorkers[x]}
-	Sint32 zonableExplorer; // Included in {0: unknow, 1:allready in owner->zonableExplorer, 2:not in owner->zonableExplorer}
-	Sint32 zonableWarrior;// Included in {0: unknow, 1:allready in owner->zonableWarrior, 2:not in owner->zonableWarrior}
-	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
+	Sint32 canFeedUnit; // Included in {0: unknow, 1:already in owner->canFeedUnit, 2:not in owner->canFeedUnit}
+	Sint32 canHealUnit; // Included in {0: unknow, 1:already in owner->canHealUnit, 2:not in owner->canHealUnit}
+	Sint32 fillable; // Included in {0: unknow, 1:already in owner->fillable, 2:not in owner->fillable
+	Sint32 zonableWorkers[2]; // Included in {0: unknow, 1:already in owner->zonableWorkers[x], 2:not in owner->zonableWorkers[x]}
+	Sint32 zonableExplorer; // Included in {0: unknow, 1:already in owner->zonableExplorer, 2:not in owner->zonableExplorer}
+	Sint32 zonableWarrior;// Included in {0: unknow, 1:already in owner->zonableWarrior, 2:not in owner->zonableWarrior}
+	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:already in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
@@ -112,15 +113,15 @@ public:
 	// Flag usefull :
 	Uint32 unitStayRange; // (Uint8)
 	Uint32 unitStayRangeLocal;
-	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
+	bool clearingRessources[BASIC_COUNT]; // true if the resource has to be cleared.
 	bool clearingRessourcesLocal[BASIC_COUNT];
 	Sint32 minLevelToFlag;
 	Sint32 minLevelToFlagLocal;
 
 	// Building specific :
-	/// Ammount stocked, or used for building building.
-	Sint32 ressources[MAX_NB_RESSOURCES];
-	Sint32 wishedResources[MAX_NB_RESSOURCES];
+	Sint32 ressources[MAX_NB_RESSOURCES]; //!< Amount stocked, or used for building building.
+	Sint32 wishedResources[MAX_NB_RESSOURCES]; //!< number of resource we need, weighted by the need. Recomputed on computeWishedRessources()
+	Sint32 neededResources[MAX_NB_RESSOURCES]; //!< number of resource we do not have. Recomputed on computeWishedRessources()
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
@@ -179,10 +180,12 @@ public:
 	void cancelDelete(void);
 	
 	void updateClearingFlag(bool canSwim);
-	void updateCallLists(void);
+	void updateMatcher(void);
 	void updateConstructionState(void);
 	void updateBuildingSite(void);
 	void update(void);
+	
+	void allocateNewlyFillingUnitsToResources();
 
 	void setMapDiscovered(void);
 
@@ -200,8 +203,12 @@ public:
 	void subscribeToBringRessourcesStep(void);
 	void subscribeForFlagingStep();
 	void subscribeForInsideStep(void);
+	void addUnitWorking(Unit *unit);
+	void addUnitInside(Unit *unit);
+	void removeUnitWorking(Unit *unit);
+	void removeUnitInside(Unit *unit);
+	
 	void swarmStep(void);
-	//! This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(void);
 	void clearingFlagsStep(void);
 	void kill(void);
@@ -213,17 +220,11 @@ public:
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
 	int getLongLevel(void);
 
-	//! get flag from units attached to flag
 	void computeFlagStatLocal(int *goingTo, int *onSpot);
 
-	//! return the number of differents fruits in this building. If mask is non-null, return the mask as well
 	Uint32 eatOnce(Uint32 *mask=NULL);
 	
 	int availableHappynessLevel(bool guarantee);
-
-	static Sint32 GIDtoID(Uint16 gid);
-	static Sint32 GIDtoTeam(Uint16 gid);
-	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
