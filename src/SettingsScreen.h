@@ -49,6 +49,7 @@ public:
 		REMEMBERUNIT = 8,
 		GENERALSETTINGS = 9,
 		UNITSETTINGS = 10,
+		KEYBOARDSETTINGS = 11,
 	};
 private:
 	List *languageList;
@@ -56,7 +57,7 @@ private:
 	TextInput *userName;
 	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute, oldwarflagUnit, oldexploreflagUnit, oldclearflagUnit;
 	
-	TextButton *ok, *cancel, *generalsettings, *unitsettings;
+	TextButton *ok, *cancel, *generalsettings, *unitsettings, *keyboardsettings;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
 	Selector *musicVol;
 	OnOffButton *audioMute, *rememberUnitButton;
