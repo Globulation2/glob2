@@ -43,6 +43,9 @@ SettingsScreen::SettingsScreen()
 	unitsettings=new TextButton( 120, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("units"), UNITSETTINGS, 9);
 	addWidget(unitsettings);
 
+	keyboardsettings=new TextButton( 230, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("keyboard"), KEYBOARDSETTINGS, 9);
+	addWidget(keyboardsettings);
+
 	// Screen entry/quit part
 	ok=new TextButton( 440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
@@ -223,7 +226,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(exploreflagUnitText);
 	exploreflagUnitText->visible=false;
 
-	//end unit settings
+	//following are all keyboard shortcut settings
 
 
 	oldLanguage = Toolkit::getStringTable()->getLang();
