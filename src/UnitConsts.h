@@ -1,7 +1,6 @@
 /*
-  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
-  for any question or comment contact us at nct at ysagoon dot com or
-  nuage at ysagoon dot com
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -58,28 +57,5 @@ const int NB_UNIT_TYPE=3;
 
 const int NB_UNIT_LEVELS=4;
 
-namespace UnitConsts
-{
-	int GIDtoID(Uint16 gid)
-	{
-		assert(gid < 32768);
-		return (gid % 1024);
-	}
-	
-	int GIDtoTeam(Uint16 gid)
-	{
-		assert(gid < 32768);
-		return (gid / 1024);
-	}
-	
-	Uint16 GIDfrom(int id, int team)
-	{
-		assert(id >= 0);
-		assert(id < 1024);
-		assert(team >= 0);
-		assert(team < 32);
-		return id + team * 1024;
-	}
-}
-
 #endif
+ 

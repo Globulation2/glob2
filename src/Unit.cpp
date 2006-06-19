@@ -1,7 +1,6 @@
 /*
-  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
-  for any question or comment contact us at nct at ysagoon dot com or
-  nuage at ysagoon dot com
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,7 +28,6 @@
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include <Stream.h>
-#include <FormatableString.h>
 #include <set>
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
@@ -88,13 +86,10 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	else
 		movement=MOV_RANDOM_GROUND;
 
-	visualTargetX = 0;
-	visualTargetY = 0;
-	validVisualTarget = false;
+	targetX = 0;
+	targetY = 0;
+	validTarget = false;
 	magicActionTimeout = 0;
-	
-	// new states
-	insideBuildingState = IBS_NONE;
 
 	// trigger parameters
 	hp=0;
@@ -126,7 +121,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	foreingExchangeBuilding=NULL;
 	destinationPurprose=-1;
 	subscribed=false;
-	caryedResource=-1;
+	caryedRessource=-1;
 	
 	// gui
 	levelUpAnimation = 0;
@@ -172,20 +167,17 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	displacement = (Displacement)stream->readUint32("displacement");
 	movement = (Movement)stream->readUint32("movement");
 	action = (Abilities)stream->readUint32("action");
-	visualTargetX = (Sint32)stream->readSint32("visualTargetX");
-	visualTargetY = (Sint32)stream->readSint32("visualTargetY");
+	targetX = (Sint32)stream->readSint32("targetX");
+	targetY = (Sint32)stream->readSint32("targetY");
 	if (versionMinor >= 46)
-		validVisualTarget = (bool)stream->readSint32("validVisualTarget");
+		validTarget = (bool)stream->readSint32("validTarget");
 	else
-		validVisualTarget = false;
+		validTarget = false;
 	
 	if (versionMinor >= 41)
 		magicActionTimeout = stream->readSint32("magicActionTimeout");
 	else
 		magicActionTimeout = 0;
-		
-	// new states
-	//TODO: read insideBuildingState zzz
 
 	// trigger parameters
 	hp = stream->readSint32("hp");
@@ -240,7 +232,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	
 	subscribed = (bool)stream->readUint32("subscribed");
 
-	caryedResource = stream->readSint32("caryedResource");
+	caryedRessource = stream->readSint32("caryedRessource");
 	
 	// gui
 	levelUpAnimation = 0;
@@ -281,9 +273,9 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeUint32((Uint32)displacement, "displacement");
 	stream->writeUint32((Uint32)movement, "movement");
 	stream->writeUint32((Uint32)action, "action");
-	stream->writeSint32(visualTargetX, "visualTargetX");
-	stream->writeSint32(visualTargetY, "visualTargetY");
-	stream->writeSint32(validVisualTarget, "validVisualTarget");
+	stream->writeSint32(targetX, "targetX");
+	stream->writeSint32(targetY, "targetY");
+	stream->writeSint32(validTarget, "validTarget");
 	stream->writeSint32(magicActionTimeout, "magicActionTimeout");
 
 	// trigger parameters
@@ -314,7 +306,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 
 	stream->writeSint32(destinationPurprose, "destinationPurprose");
 	stream->writeUint32((Uint32)subscribed, "subscribed");
-	stream->writeSint32(caryedResource, "caryedResource");
+	stream->writeSint32(caryedRessource, "caryedRessource");
 	
 	stream->writeLeaveSection();
 }
@@ -378,482 +370,206 @@ void Unit::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-//! Associate this unit to this building
-void Unit::matchSuccess(Building *matchBuilding, MatcherConsts::Activity matchActivity)
+void Unit::subscriptionSuccess(void)
 {
 	if (verbose)
-		std::cout << FormatableStringprintf("guid=(%0), matchSuccess()\n").arg(gid);
-	
-	// remove from matcher
-	owner->matcher.removeUnit(this);
-	matcherState = MatcherConsts::S_NONE;
-	
-	currentActivity = matchActivity;
-	
-	attachedBuilding = matchBuilding;
-	
-	if (matchActivity != MatcherConsts::A_FILLING)
+		printf("guid=(%d), subscriptionSuccess()\n", gid);
+	subscribed=false;
+	switch(medical)
 	{
-		// we go to building, filling is handeled in Building::matchSuccess because destinationResource can only be choosen by the building who knows where each new unit is.
-		//targetBuilding = matchBuilding;
-		visualTargetX = targetBuilding->getMidX();
-		visualTargetY = targetBuilding->getMidY();
-		validVisualTarget = true;
-	}
-	else
-		matchBuilding->newlyFillingUnits.push_back(this);
-}
-
-
-// helpers called by state machine
-
-//! We are in the middle of an attack movement.
-/*! If there is a unit or a building in our current attack direction,
-	apply damages to it.
-*/
-void Unit::applyWarriorAttack(void)
-{
-	// if unit
-	Uint16 hitGUID = owner->map->getGroundUnit(posX+dx, posY+dy);
-	if (hitGUID != NOGUID)
-	{
-		Unit *hitUnit = owner->game->getUnit(hitGUID);
-		
-		int damage = getRealAttackStrength() - enemy->getRealArmor();
-		damage = std::min(damage, 1);
-		hitUnit->hp -= degats;
-		hitUnit->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, hitGUID, UnitConsts::GIDtoTeam(hitGUID));
-		incrementExperience(damage);
-	}
-	
-	// if building
-	Uint16 hitGBID = owner->map->getBuilding(posX+dx, posY+dy);
-	if (hitGBID != NOGBID)
-	{
-		Building *hitBuilding = owner->game->getBuilding(hitGBID);
-		
-		int damage = getRealAttackStrength() - enemy->type->armor;
-		damage = std::min(damage, 1);
-		hitBuilding->hp -= damage;
-		hitBuilding->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, hitGBID, BuildingConsts::GIDtoTeam(hitGBID));
-		if (hitBuilding->hp < 0)
-			hitBuilding->kill();
-		incrementExperience(damage);
-	}
-}
-
-//! Take the resource out of the map
-void Unit::applyResourceHarvest(void)
-{
-	caryedResource = destinationResource;
-	owner->map->decRessource(posX+dx, posY+dy, caryedResource);
-	
-	/*
-	TODO : move !
-	targetBuilding=attachedBuilding;
-	if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
-	{
-		displacement=DIS_FILLING_BUILDING;
-		validVisualTarget=false;
-	}
-	else
-	{
-		displacement=DIS_GOING_TO_BUILDING;
-		visualTargetX=targetBuilding->getMidX();
-		visualTargetY=targetBuilding->getMidY();
-		validVisualTarget=true;
-	}
-	*/
-}
-
-//! Give the resource to the building
-void Unit::applyResourceFill(void)
-{
-	if (!attachedBuilding)
-		return;
-	
-	attachedBuilding->ressources[caryedResource] += attachedBuilding->type->multiplierRessource[caryedResource];
-	if (attachedBuilding->ressources[caryedResource] > attachedBuilding->type->maxRessource[caryedResource])
-		attachedBuilding->ressources[caryedResource] = attachedBuilding->type->maxRessource[caryedResource];
-	caryedResource = -1;
-	
-	BuildingType *bt = attachedBuilding->type;
-	switch (attachedBuilding->constructionResultState)
-	{
-		case Building::NO_CONSTRUCTION:
-		break;
-	
-		case Building::NEW_BUILDING:
-		case Building::UPGRADE:
+		case MED_HUNGRY :
+		case MED_DAMAGED :
 		{
-			attachedBuilding->hp += bt->hpInc;
-			if (attachedBuilding->hp > bt->hpMax)
-				attachedBuilding->hp = bt->hpMax;
+			activity=ACT_UPGRADING;
+			displacement=DIS_GOING_TO_BUILDING;
+			assert(targetBuilding==attachedBuilding);
+			targetX=targetBuilding->getMidX();
+			targetY=targetBuilding->getMidY();
+			validTarget=true;
 		}
 		break;
-	
-		case Building::REPAIR:
+		case MED_FREE:
 		{
-			int totResources = 0;
-			for (size_t i = 0; i < MAX_NB_RESOURCES; i++)
-				totResources += bt->maxResource[i];
-			attachedBuilding->hp += bt->hpMax / totResources;
+			switch(activity)
+			{
+				case ACT_FLAG:
+				{
+					displacement=DIS_GOING_TO_FLAG;
+					assert(targetBuilding==attachedBuilding);
+					targetX=attachedBuilding->getMidX();
+					targetY=attachedBuilding->getMidY();
+					validTarget=true;
+				}
+				break;
+				case ACT_UPGRADING:
+				{
+					displacement=DIS_GOING_TO_BUILDING;
+					assert(targetBuilding==attachedBuilding);
+					targetX=targetBuilding->getMidX();
+					targetY=targetBuilding->getMidY();
+					validTarget=true;
+				}
+				break;
+				case ACT_FILLING:
+				{
+					assert(attachedBuilding);
+					if (caryedRessource==destinationPurprose)
+					{
+						displacement=DIS_GOING_TO_BUILDING;
+						targetBuilding=attachedBuilding;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+						validTarget=true;
+					}
+					else if (ownExchangeBuilding)
+					{
+						if (foreingExchangeBuilding)
+						{
+							// Here we are exchanging fruits between ownExchangeBuilding and foreingExchangeBuilding.
+							if (caryedRessource>=HAPPYNESS_BASE
+								&& (foreingExchangeBuilding->receiveRessourceMask & (1<<(caryedRessource-HAPPYNESS_BASE)))
+								&& (foreingExchangeBuilding->ressources[caryedRessource]<foreingExchangeBuilding->type->maxRessource[caryedRessource]))
+							{
+								assert((Uint32)destinationPurprose==(ownExchangeBuilding->receiveRessourceMask & foreingExchangeBuilding->sendRessourceMask));
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=foreingExchangeBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+								validTarget=true;
+							}
+							else
+							{
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=ownExchangeBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+								validTarget=true;
+							}
+						}
+						else
+						{
+							assert(false); // Units never get subscription success to fill a food building from an exchange building. (yet)
+							// Here we are taking fruits from ownExchangeBuilding to a food building (attachedBuilding).
+							
+							if (caryedRessource>=HAPPYNESS_BASE
+								&& (attachedBuilding->ressources[caryedRessource]<attachedBuilding->type->maxRessource[caryedRessource]))
+							{
+								assert(destinationPurprose==caryedRessource);
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=attachedBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+								validTarget=true;
+							}
+							else
+							{
+								assert(destinationPurprose>=HAPPYNESS_BASE);
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=ownExchangeBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+								validTarget=true;
+							}
+						}
+					}
+					else
+					{
+						displacement=DIS_GOING_TO_RESSOURCE;
+						targetBuilding=NULL;
+						owner->map->ressourceAvailable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						validTarget=true;
+						//fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
+					}
+				}
+				break;
+				case ACT_RANDOM :
+				{
+					displacement=DIS_RANDOM;
+					validTarget=false;
+				}
+				break;
+				default:
+					assert(false);
+			}
 		}
 		break;
-	
-		default:
-			assert(false);
 	}
-	
-	attachedBuilding->update();
-	linkFree();
 }
 
-//! Update animation related variables.
-void Unit::animationStep(void)
+void Unit::syncStep(void)
 {
+	assert(speed>0);
+	if ((action==ATTACK_SPEED) && (delta>=128) && (delta<(128+speed)))
+	{
+		Uint16 enemyGUID=owner->map->getGroundUnit(posX+dx, posY+dy);
+		if (enemyGUID!=NOGUID)
+		{
+			int enemyID=GIDtoID(enemyGUID);
+			int enemyTeam=GIDtoTeam(enemyGUID);
+			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
+			
+			int degats=getRealAttackStrength()-enemy->getRealArmor();
+			if (degats<=0)
+				degats=1;
+			enemy->hp-=degats;
+			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID, enemyTeam);
+			incrementExperience(degats);
+		}
+		else
+		{
+			Uint16 enemyGBID=owner->map->getBuilding(posX+dx, posY+dy);
+			if (enemyGBID!=NOGBID)
+			{
+				int enemyID=Building::GIDtoID(enemyGBID);
+				int enemyTeam=Building::GIDtoTeam(enemyGBID);
+				Building *enemy=owner->game->teams[enemyTeam]->myBuildings[enemyID];
+				int degats=getRealAttackStrength()-enemy->type->armor;
+				if (degats<=0)
+					degats=1;
+				enemy->hp-=degats;
+				enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyGBID, enemyTeam);
+				if (enemy->hp<0)
+					enemy->kill();
+				incrementExperience(degats);
+			}
+		}
+	}
+	
+//#define BURST_UNIT_MODE
+#ifdef BURST_UNIT_MODE
+	delta=0;
+#else
+	if (delta<=255-speed)
+	{
+		delta+=speed;
+	}
+	else
+#endif
+	{
+		//printf("action=%d, speed=%d, perf[a]=%d, t->perf[a]=%d\n", action, speed, performance[action], race->getUnitType(typeNum, 0)->performance[action]);
+		delta+=(speed-256);
+		
+		endOfAction();
+		
+		if (performance[FLY])
+		{
+			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther);
+			owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther, owner->game->teams);
+			owner->map->setMapExploredByUnit(posX-3, posY-3, 7, 7, owner->teamNumber);
+		}
+		else
+		{
+			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther);
+			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther, owner->game->teams);
+			owner->map->setMapExploredByUnit(posX-1, posY-1, 3, 3, owner->teamNumber);
+		}
+	}
+	
+	// gui
 	if (levelUpAnimation > 0)
 		levelUpAnimation--;
 	if (magicActionAnimation > 0)
 		magicActionAnimation--;
-}
-
-//! Discover the area around the unit.
-void Unit::setMapDiscovered(void)
-{
-	if (performance[FLY])
-	{
-		owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther);
-		owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther, owner->game->teams);
-		owner->map->setMapExploredByUnit(posX-3, posY-3, 7, 7, owner->teamNumber);
-	}
-	else
-	{
-		owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther);
-		owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther, owner->game->teams);
-		owner->map->setMapExploredByUnit(posX-1, posY-1, 3, 3, owner->teamNumber);
-	}
-}
-
-
-//! Put the unit in a state where its object can be safely deleted.
-//! Disconnect it from building, remove it from map and launch a cute death animation.
-void Unit::kill(void)
-{
-	if (!isDead)
-	{
-		// disconnect from building
-		if (attachedBuilding)
-		{
-			// TODO : update for matcher
-			assert((displacement != DIS_ENTERING_BUILDING) && (displacement != DIS_INSIDE) && (displacement != DIS_EXITING_BUILDING));
-			attachedBuilding->unitsWorking.remove(this);
-			attachedBuilding->unitsInside.remove(this);
-			attachedBuilding->unitsWorkingSubscribe.remove(this);
-			attachedBuilding->unitsInsideSubscribe.remove(this);
-			attachedBuilding->updateCallLists();
-			attachedBuilding=NULL;
-			targetBuilding=NULL;
-			ownExchangeBuilding=NULL;
-			foreingExchangeBuilding=NULL;
-			subscribed=false;
-		}
-		
-		// remove from map
-		if (performance[FLY])
-			owner->map->setAirUnit(posX, posY, NOGUID);
-		else
-			owner->map->setGroundUnit(posX, posY, NOGUID);
-			
-		// generate death animation
-		if (!globalContainer->runNoX)
-			owner->map->getSector(posX, posY)->deathAnimations.push_back(new UnitDeathAnimation(posX, posY, owner));
-	}
-	// our object instance will be deleted on next step
-	isDead = true;
-}
-
-//! Update of biological state variables (food, health). Return true if the unit is still alive
-bool Unit::biologicalStep(void)
-{
-	// we are inside a building so we are affected by the biology
-	assert(!((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING)));
-	
-	hungry -= hungryness;
-	if (hungry <= 0)
-		hp--;
-	
-	if (hp < 0)
-	{
-		kill();
-		return false;
-	}
-	return true;
-}
-
-//! The unit is inside a building, check if it is time to go out
-void Unit::insideStep(void)
-{
-	if (insideBuildingState == IBS_ENTERING)
-	{
-		// the unit has just finished entering the building, it is now inside
-		
-		if (performance[FLY])
-			owner->map->setAirUnit(posX-dx, posY-dy, NOGUID);
-		else
-			owner->map->setGroundUnit(posX-dx, posY-dy, NOGUID);
-		insideBuildingState = IBS_INSIDE;
-		validVisualTarget = false;
-		
-		// time depends on the building, excepted for hospital where it also depends on the unit health
-		if (currentActivity == MatcherConsts::A_DAMAGED)
-		{
-			if (performance[HP] > hp)
-				insideTimeout = -(attachedBuilding->type->insideTime * performance[HP] ) / (performance[HP] - hp);
-			else
-			{
-				assert(false);
-				insideTimeout = 0;
-			}
-		}
-		else
-			insideTimeout = -attachedBuilding->type->insideTime;
-		speed = attachedBuilding->type->insideSpeed;
-	}
-	else if (insideBuildingState == IBS_INSIDE)
-	{
-		// we stay inside while the unit eat, heals or upgrade itself
-		if (insideTimeout < 0)
-		{
-			insideTimeout++;
-			return;
-		}
-		
-		// if not room around the building is available, wait
-		if (!exitFound(&posX, &posY))
-			return;
-		
-		// apply result of journey inside building
-		if (currentActivity == MatcherConsts::A_HUNGRY)
-		{
-			hungry = HUNGRY_MAX;
-			fruitCount = attachedBuilding->eatOnce(&fruitMask);
-		}
-		else if (currentActivity == MatcherConsts::A_DAMAGED)
-		{
-			hp = performance[HP];
-		}
-		else if (currentActivity == MatcherConsts::A_UPGRADING)
-		{
-			for (int ability = (int)WALK; ability < (int)ARMOR; ability++)
-				if (canLearn[ability] && attachedBuilding->type->upgrade[ability] && (level[ability] <= attachedBuilding->type->level))
-				{
-					level[ability] = attachedBuilding->type->level + 1;
-					UnitType *ut = race->getUnitType(typeNum, level[ability]);
-					if (performance[ability] > ut->performance[ability])
-						std::cerr << FormatableString("Unit %0 has lost performance on ability = %1\n").arg(guid).arg(ability);
-					performance[ability] = ut->performance[ability];
-				}
-		}
-		else
-			abort();
-		
-		insideBuildingState = IBS_NONE;
-		movement = MOV_EXITING_BUILDING;
-		unlink();
-		recheckLink();
-	}
-	else
-		abort();
-}
-
-//! The unit is healty, look for a new work to do. Cancel current activity
-void Unit::linkFree(void)
-{
-	unlink();
-	matcherState = MatcherConsts::S_FREE;
-	// insert in matcher
-	owner->matcher.addFreeUnit(this);
-}
-
-//! The unit is hungry, look for an inn. Cancel current activity
-void Unit::linkHungry(void)
-{
-	unlink();
-	matcherState = MatcherConsts::S_HUNGRY;
-	// insert in matcher
-	owner->matcher.addHungryUnit(this);
-}
-
-//! The unit is damaged, look for a hospital. Cancel current activity
-void Unit::linkDamaged(void)
-{
-	unlink();
-	matcherState = MatcherConsts::S_DAMAGED;
-	// insert in matcher
-	owner->matcher.addDamagedUnit(this);
-}
-
-//! Cancel current activity and get out of matcher.
-void Unit::unlink(void)
-{
-	// remove the unit from attachedBuilding
-	if (currentActivity != MatcherConsts::A_NONE)
-	{
-		if (
-			(currentActivity == MatcherConsts::A_HUNGRY) ||
-			(currentActivity == MatcherConsts::A_DAMAGED) ||
-			(currentActivity == MatcherConsts::A_UPGRADING))
-		{
-			attachedBuilding->removeUnitInside(this);
-		}
-		else if (
-			(currentActivity == MatcherConsts::A_FILLING) ||
-			(currentActivity == MatcherConsts::A_FLAG))
-		{
-			attachedBuilding->removeUnitWorking(this);
-		}
-		currentActivity = MatcherConsts::A_NONE;
-		
-		if (attachedBuilding)
-		{
-			attachedBuilding->update();
-			attachedBuilding = NULL;
-		}
-	}
-	
-	// remove from matcher
-	if (matcherState != MatcherConsts::S_NONE)
-	{
-		owner->matcher.removeUnit(this);
-		matcherState = MatcherConsts::S_NONE;
-	}
-}
-
-//! Choose a displacement given currentActivity
-void Unit::selectDisplacement(void)
-{
-	if (isHungry())
-	{
-		if (currentActivity == MatcherConsts::A_HUNGRY)
-			displacementHungry();
-		else 
-			displacementInMatcher();
-	}
-	else if (isDamaged())
-	{
-		if (currentActivity == MatcherConsts::A_DAMAGE)
-			displacementDamage();
-		else
-			displacementInMatcher();
-	}
-	else if (currentActivity == MatcherConsts::A_FILLING)
-	{
-		displacementFilling();
-	}
-	else if (currentActivity == MatcherConsts::A_FLAG)
-	{
-		displacementFlag();
-	}
-	else if (currentActivity == MatcherConsts::A_UPGRADING)
-	{
-		displacementUpgrading();
-	}
-	else
-	{
-		displacementInMatcher();
-	}
-}
-
-//! Change links given medical state
-void Unit::recheckLink(void)
-{
-	if (isHungry())
-	{
-		if ((currentActivity != MatcherConsts::A_HUNGRY) && (matcherState != MatcherConsts::S_HUNGRY))
-			linkHungry();
-	}
-	else if (isDamaged())
-	{
-		if ((currentActivity != MatcherConsts::A_DAMAGE) && (matcherState != MatcherConsts::S_DAMAGED))
-			linkDamage();
-	}
-	else
-	{
-		if ((currentActivity == MatcherConsts::A_NONE) && (matcherState != MatcherConsts::S_FREE))
-			linkFree();
-	}
-}
-
-//! We are in matcher, move randomly
-void Unit::displacementInMatcher(void)
-{
-	// TODO
-	movementRandom();
-}
-
-void Unit::movementRandom(void)
-{
-	// TODO
-}
-
-//! We have done half of our movement, apply actions such as attack or harvesting
-void Unit::middleOfMovement(void)
-{
-	// TODO
-	switch (movement)
-	{
-		case MOV_NORMAL:
-		break;
-		
-		case MOV_ATTACK:
-		applyWarriorAttack();
-		break;
-		
-		case MOV_HARVEST:
-		applyResourceHarvest();
-		break;
-		
-		case MOV_FILL:
-		applyResourceFill();
-		break;
-		
-		default:
-		abort();
-		break;
-	}
-}
-
-//! Step called each tick. All called function must be synchronous
-void Unit::syncStep(void)
-{
-	assert(speed > 0);
-	
-	// if we are in the middle of the movement
-	if ((delta >= 128) && (delta < (128 + speed)))
-		middleOfMovement();
-	animationStep();
-	
-	if (delta <= 255 - speed)
-	{
-		// action is not finished
-		delta += speed;
-	}
-	else
-	{
-		// action is finished, choose next one
-		delta += (speed - 256);
-		if (insideBuildingState != IBS_NONE)
-		{
-			insideStep();
-		}
-		else if (biologicalStep())
-		{
-			recheckLink();
-			selectDisplacement();
-			setMapDiscovered();
-		}
-	}
 }
 
 void Unit::selectPreferedMovement(void)
@@ -882,7 +598,7 @@ void Unit::selectPreferedGroundMovement(void)
 bool Unit::isUnitHungry(void)
 {
 	int realTrigHungry;
-	if (caryedResource==-1)
+	if (caryedRessource==-1)
 		realTrigHungry=trigHungry;
 	else
 		realTrigHungry=trigHungryCarying;
@@ -898,7 +614,7 @@ void Unit::standardRandomActivity()
 	foreingExchangeBuilding=NULL;
 	activity=Unit::ACT_RANDOM;
 	displacement=Unit::DIS_RANDOM;
-	validVisualTarget=false;
+	validTarget=false;
 	needToRecheckMedical=true;
 	subscribed=false;
 }
@@ -931,7 +647,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	activity=ACT_RANDOM;
 	displacement=DIS_RANDOM;
-	validVisualTarget=false;
+	validTarget=false;
 	
 	attachedBuilding->unitsWorking.remove(this);
 	attachedBuilding->unitsWorkingSubscribe.remove(this);
@@ -1078,7 +794,7 @@ void Unit::handleMedical(void)
 			}
 			
 			activity=ACT_RANDOM;
-			validVisualTarget=false;
+			validTarget=false;
 			
 			// remove from map
 			if (performance[FLY])
@@ -1126,7 +842,7 @@ void Unit::handleActivity(void)
 				// Is there a building we can reach in time?
 				if (b!=NULL && owner->map->buildingAvailable(b, performance[SWIM], posX, posY, &dist) && dist < timeLeft)
 				{
-					bool canSubscribe=(caryedResource>=0) && b->neededRessource(caryedResource);
+					bool canSubscribe=(caryedRessource>=0) && b->neededRessource(caryedRessource);
 
 					if (!canSubscribe)
 					{
@@ -1255,9 +971,9 @@ void Unit::handleActivity(void)
 					needToRecheckMedical=false;
 					if (verbose)
 						printf("guid=(%d) Going to heal building\n", gid);
-					visualTargetX=attachedBuilding->getMidX();
-					visualTargetY=attachedBuilding->getMidY();
-					validVisualTarget=true;
+					targetX=attachedBuilding->getMidX();
+					targetY=attachedBuilding->getMidY();
+					validTarget=true;
 					b->unitsInsideSubscribe.push_front(this);
 					subscribed=true;
 					if (b->subscribeForInside!=1)
@@ -1407,7 +1123,7 @@ void Unit::handleDisplacement(void)
 		if (verbose)
 			printf("guid=(%d) handleDisplacement() subscribed, then displacement=DIS_RANDOM\n", gid);
 		displacement=DIS_RANDOM;
-		validVisualTarget=false;
+		validTarget=false;
 	}
 	else switch (activity)
 	{
@@ -1422,7 +1138,7 @@ void Unit::handleDisplacement(void)
 			}
 			else
 				displacement=DIS_RANDOM;
-			validVisualTarget=false;
+			validTarget=false;
 		}
 		break;
 		
@@ -1439,15 +1155,15 @@ void Unit::handleDisplacement(void)
 				if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
 				{
 					displacement=DIS_HARVESTING;
-					validVisualTarget=false;
+					validTarget=false;
 				}
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
 				// we got the ressource.
-				caryedResource=destinationPurprose;
+				caryedRessource=destinationPurprose;
 				fprintf(logFile, "[%d] sdp5 destinationPurprose=%d\n", gid, destinationPurprose);
-				owner->map->decRessource(posX+dx, posY+dy, caryedResource);
+				owner->map->decRessource(posX+dx, posY+dy, caryedRessource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
 				
@@ -1455,14 +1171,14 @@ void Unit::handleDisplacement(void)
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					displacement=DIS_FILLING_BUILDING;
-					validVisualTarget=false;
+					validTarget=false;
 				}
 				else
 				{
 					displacement=DIS_GOING_TO_BUILDING;
-					visualTargetX=targetBuilding->getMidX();
-					visualTargetY=targetBuilding->getMidY();
-					validVisualTarget=true;
+					targetX=targetBuilding->getMidX();
+					targetY=targetBuilding->getMidY();
+					validTarget=true;
 				}
 			}
 			else if (displacement==DIS_GOING_TO_BUILDING)
@@ -1471,7 +1187,7 @@ void Unit::handleDisplacement(void)
 				if (owner->map->doesUnitTouchBuilding(this, targetBuilding->gid, &dx, &dy))
 				{
 					displacement=DIS_FILLING_BUILDING;
-					validVisualTarget=false;
+					validTarget=false;
 				}
 			}
 			else if (displacement==DIS_FILLING_BUILDING)
@@ -1493,10 +1209,10 @@ void Unit::handleDisplacement(void)
 					assert(owner==ownExchangeBuilding->owner);
 					assert(owner!=foreingExchangeBuilding->owner);
 					
-					assert(caryedResource>=HAPPYNESS_BASE);
+					assert(caryedRessource>=HAPPYNESS_BASE);
 					// Let's check for possible exchange ressources:
 					
-					bool goodToGive=targetBuilding->ressources[caryedResource]<targetBuilding->type->maxRessource[caryedResource];
+					bool goodToGive=targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource];
 					int ressourceToTake=-1;
 					for (int r=0; r<HAPPYNESS_COUNT; r++)
 						if ((destinationPurprose & (1<<r))
@@ -1509,22 +1225,22 @@ void Unit::handleDisplacement(void)
 					if (goodToGive && (ressourceToTake>=0))
 					{
 						// OK, we can proceed to the exchange.
-						targetBuilding->ressources[caryedResource]+=targetBuilding->type->multiplierRessource[caryedResource];
+						targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
 						targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
 						
-						if (targetBuilding->ressources[caryedResource]>targetBuilding->type->maxRessource[caryedResource])
-							targetBuilding->ressources[caryedResource]=targetBuilding->type->maxRessource[caryedResource];
+						if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
+							targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
 					
 						if (targetBuilding->ressources[ressourceToTake]<0)
 							targetBuilding->ressources[ressourceToTake]=0;
 					
-						caryedResource=ressourceToTake;
+						caryedRessource=ressourceToTake;
 						targetBuilding=ownExchangeBuilding;
 						
 						displacement=DIS_GOING_TO_BUILDING;
-						visualTargetX=targetBuilding->getMidX();
-						visualTargetY=targetBuilding->getMidY();
-						validVisualTarget=true;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+						validTarget=true;
 						exchangeReady=true;
 						if (verbose)
 							printf("guid=(%d) exchangeReady at foreingExchangeBuilding\n", gid);
@@ -1532,7 +1248,7 @@ void Unit::handleDisplacement(void)
 					else
 					{
 						if (verbose)
-							printf("guid=(%d) loopMove at foreingExchangeBuilding, caryedResource=%d, destinationPurprose=%d, goodToGive=%d, goodToTake=%d\n", gid, caryedResource, destinationPurprose, goodToGive, (ressourceToTake>=0));
+							printf("guid=(%d) loopMove at foreingExchangeBuilding, caryedRessource=%d, destinationPurprose=%d, goodToGive=%d, goodToTake=%d\n", gid, caryedRessource, destinationPurprose, goodToGive, (ressourceToTake>=0));
 						loopMove=true;
 					}
 				}
@@ -1549,12 +1265,12 @@ void Unit::handleDisplacement(void)
 					assert(owner==ownExchangeBuilding->owner);
 					assert(owner!=foreingExchangeBuilding->owner);
 					
-					if (caryedResource>=0)
+					if (caryedRessource>=0)
 					{
-						targetBuilding->ressources[caryedResource]+=targetBuilding->type->multiplierRessource[caryedResource];
-						if (targetBuilding->ressources[caryedResource]>targetBuilding->type->maxRessource[caryedResource])
-							targetBuilding->ressources[caryedResource]=targetBuilding->type->maxRessource[caryedResource];
-						caryedResource=-1;
+						targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
+						if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
+							targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
+						caryedRessource=-1;
 					}
 					
 					// Let's grab the right ressource.
@@ -1576,13 +1292,13 @@ void Unit::handleDisplacement(void)
 							targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
 							if (targetBuilding->ressources[ressourceToTake]<0)
 								targetBuilding->ressources[ressourceToTake]=0;
-							caryedResource=ressourceToTake;
+							caryedRessource=ressourceToTake;
 
 							targetBuilding=foreingExchangeBuilding;
 							displacement=DIS_GOING_TO_BUILDING;
-							visualTargetX=targetBuilding->getMidX();
-							visualTargetY=targetBuilding->getMidY();
-							validVisualTarget=true;
+							targetX=targetBuilding->getMidX();
+							targetY=targetBuilding->getMidY();
+							validTarget=true;
 							exchangeReady=true;
 							if (verbose)
 								printf("guid=(%d) exchangeReady at ownExchangeBuilding\n", gid);
@@ -1610,27 +1326,27 @@ void Unit::handleDisplacement(void)
 						targetBuilding->ressources[destinationPurprose]-=targetBuilding->type->multiplierRessource[destinationPurprose];
 						if (targetBuilding->ressources[destinationPurprose]<0)
 							targetBuilding->ressources[destinationPurprose]=0;
-						caryedResource=destinationPurprose;
+						caryedRessource=destinationPurprose;
 						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
 						
 						targetBuilding=attachedBuilding;
 						displacement=DIS_GOING_TO_BUILDING;
-						visualTargetX=targetBuilding->getMidX();
-						visualTargetY=targetBuilding->getMidY();
-						validVisualTarget=true;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+						validTarget=true;
 						exchangeReady=true;
 						if (verbose)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
 					}
 				}
-				else if ((caryedResource>=0) && (targetBuilding->ressources[caryedResource]<targetBuilding->type->maxRessource[caryedResource]))
+				else if ((caryedRessource>=0) && (targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource]))
 				{
 					if (verbose)
-						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedResource]);zzzz
-					targetBuilding->ressources[caryedResource]+=targetBuilding->type->multiplierRessource[caryedResource];
-					if (targetBuilding->ressources[caryedResource]>targetBuilding->type->maxRessource[caryedResource])
-						targetBuilding->ressources[caryedResource]=targetBuilding->type->maxRessource[caryedResource];
-					caryedResource=-1;
+						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedRessource]);
+					targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
+					if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
+						targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
+					caryedRessource=-1;
 					BuildingType *bt=targetBuilding->type;
 					switch (targetBuilding->constructionResultState)
 					{
@@ -1670,7 +1386,7 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) The building doesn't need me any more.\n", gid);
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
-						validVisualTarget=false;
+						validTarget=false;
 						subscribed=false;
 						assert(needToRecheckMedical);
 					}
@@ -1740,9 +1456,9 @@ void Unit::handleDisplacement(void)
 								if (takeInExchangeBuilding)
 								{
 									displacement=DIS_GOING_TO_BUILDING;
-									visualTargetX=targetBuilding->getMidX();
-									visualTargetY=targetBuilding->getMidY();
-									validVisualTarget=true;
+									targetX=targetBuilding->getMidX();
+									targetY=targetBuilding->getMidY();
+									validTarget=true;
 								}
 								else
 								{
@@ -1750,13 +1466,13 @@ void Unit::handleDisplacement(void)
 									if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
 									{
 										displacement=DIS_HARVESTING;
-										validVisualTarget=false;
+										validTarget=false;
 									}
-									else if (map->ressourceAvailable(teamNumber, destinationPurprose, canSwim, posX, posY, &visualTargetX, &visualTargetY, &dummyDist))
+									else if (map->ressourceAvailable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
 									{
-										fprintf(logFile, "[%d] rab visualTargetXY=(%d, %d)\n", gid, visualTargetX, visualTargetY);
+										fprintf(logFile, "[%d] rab targetXY=(%d, %d)\n", gid, targetX, targetY);
 										displacement=DIS_GOING_TO_RESSOURCE;
-										validVisualTarget=true;
+										validTarget=true;
 									}
 									else
 									{
@@ -1814,9 +1530,9 @@ void Unit::handleDisplacement(void)
 									assert(activity==ACT_FILLING);
 									displacement=DIS_GOING_TO_BUILDING;
 									targetBuilding=ownExchangeBuilding;
-									visualTargetX=targetBuilding->getMidX();
-									visualTargetY=targetBuilding->getMidY();
-									validVisualTarget=true;
+									targetX=targetBuilding->getMidX();
+									targetY=targetBuilding->getMidY();
+									validTarget=true;
 								}
 								else
 								{
@@ -1844,7 +1560,7 @@ void Unit::handleDisplacement(void)
 			else
 			{
 				displacement=DIS_RANDOM;
-				validVisualTarget=false;
+				validTarget=false;
 			}
 		}
 		break;
@@ -1858,7 +1574,7 @@ void Unit::handleDisplacement(void)
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					displacement=DIS_ENTERING_BUILDING;
-					validVisualTarget=false;
+					validTarget=false;
 				}
 			}
 			else if (displacement==DIS_ENTERING_BUILDING)
@@ -1871,7 +1587,7 @@ void Unit::handleDisplacement(void)
 				else
 					owner->map->setGroundUnit(posX-dx, posY-dy, NOGUID);
 				displacement=DIS_INSIDE;
-				validVisualTarget=false;
+				validTarget=false;
 				
 				if (destinationPurprose==FEED)
 				{
@@ -1897,7 +1613,7 @@ void Unit::handleDisplacement(void)
 				{
 					//printf("Exiting building\n");
 					displacement=DIS_EXITING_BUILDING;
-					validVisualTarget=false;
+					validTarget=false;
 
 					if (destinationPurprose==FEED)
 					{
@@ -1949,7 +1665,7 @@ void Unit::handleDisplacement(void)
 			else
 			{
 				displacement=DIS_RANDOM;
-				validVisualTarget=false;
+				validTarget=false;
 			}
 		}
 		break;
@@ -1958,10 +1674,10 @@ void Unit::handleDisplacement(void)
 		{
 			assert(attachedBuilding);
 			displacement=DIS_GOING_TO_FLAG;
-			visualTargetX=attachedBuilding->posX;
-			visualTargetY=attachedBuilding->posY;
-			validVisualTarget=true;
-			int distance=owner->map->warpDistSquare(visualTargetX, visualTargetY, posX, posY);
+			targetX=attachedBuilding->posX;
+			targetY=attachedBuilding->posY;
+			validTarget=true;
+			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
 			int usr=attachedBuilding->unitStayRange;
 			int usr2=usr*usr;
 			if (verbose)
@@ -1969,7 +1685,7 @@ void Unit::handleDisplacement(void)
 			
 			if (distance<=usr2)
 			{
-				validVisualTarget=false;
+				validTarget=false;
 				if (typeNum==WORKER)
 					displacement=DIS_CLEARING_RESSOURCES;
 				else if (typeNum==EXPLORER)
@@ -1990,12 +1706,12 @@ void Unit::handleDisplacement(void)
 						{
 							int x=posX+tdx;
 							int y=posY+tdy;
-							if (map->warpDistSquare(x, y, visualTargetX, visualTargetY)<=usr2
+							if (map->warpDistSquare(x, y, targetX, targetY)<=usr2
 								&& map->isRessourceTakeable(x, y, attachedBuilding->clearingRessources))
 							{
 								dx=tdx;
 								dy=tdy;
-								validVisualTarget=false;
+								validTarget=false;
 								displacement=DIS_CLEARING_RESSOURCES;
 								//movement=MOV_HARVESTING;
 								return;
@@ -2188,9 +1904,9 @@ void Unit::handleMovement(void)
 										movement=MOV_GOING_TARGET;
 										tempTargetBuilding=b;
 									}
-									visualTargetX=posX+x;
-									visualTargetY=posY+y;
-									validVisualTarget=true;
+									targetX=posX+x;
+									targetY=posY+y;
+									validTarget=true;
 									quality=newQuality;
 								}
 							}
@@ -2223,9 +1939,9 @@ void Unit::handleMovement(void)
 											movement=MOV_GOING_TARGET;
 											tempTargetBuilding=NULL;
 										}
-										visualTargetX=posX+x;
-										visualTargetY=posY+y;
-										validVisualTarget=true;
+										targetX=posX+x;
+										targetY=posY+y;
+										validTarget=true;
 										quality=newQuality;
 									}
 								}
@@ -2256,8 +1972,8 @@ void Unit::handleMovement(void)
 					directionFromDxDy();
 					movement = MOV_GOING_DXDY;
 					// get the target position of guard area for display
-					owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &visualTargetX, &visualTargetY);
-					validVisualTarget=true;
+					owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
+					validTarget=true;
 				}
 				else if (attachedBuilding || (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == 255))
 				{
@@ -2296,19 +2012,19 @@ void Unit::handleMovement(void)
 						direction = bestDirection;
 						dxdyfromDirection();
 						movement = MOV_GOING_DXDY;
-						validVisualTarget = false;
+						validTarget = false;
 					}
 					else
 					{
 						movement = MOV_RANDOM_GROUND;
-						validVisualTarget = false;
+						validTarget = false;
 					}
 				}
 				else
 				{
 					// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
 					movement = MOV_RANDOM_GROUND;
-					validVisualTarget = false;
+					validTarget = false;
 				}
 			}
 		}
@@ -2702,8 +2418,8 @@ void Unit::setNewValidDirectionAir(void)
 void Unit::flytoTarget()
 {
 	assert(performance[FLY]);
-	int ldx=visualTargetX-posX;
-	int ldy=visualTargetY-posY;
+	int ldx=targetX-posX;
+	int ldy=targetY-posY;
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
 	Map *map=owner->map;
@@ -2747,8 +2463,8 @@ void Unit::flytoTarget()
 
 void Unit::gotoGroundTarget()
 {
-	int ldx=visualTargetX-posX;
-	int ldy=visualTargetY-posY;
+	int ldx=targetX-posX;
+	int ldy=targetY-posY;
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
 	bool canSwim=performance[SWIM];
@@ -2794,8 +2510,8 @@ void Unit::gotoGroundTarget()
 
 void Unit::escapeGroundTarget()
 {
-	int ldx=posX-visualTargetX;
-	int ldy=posY-visualTargetY;
+	int ldx=posX-targetX;
+	int ldy=posY-targetY;
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
 	bool canSwim=performance[SWIM];
@@ -2939,6 +2655,27 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 	}
 }
 
+Sint32 Unit::GIDtoID(Uint16 gid)
+{
+	assert(gid<32768);
+	return (gid%1024);
+}
+
+Sint32 Unit::GIDtoTeam(Uint16 gid)
+{
+	assert(gid<32768);
+	return (gid/1024);
+}
+
+Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
+{
+	assert(id>=0);
+	assert(id<1024);
+	assert(team>=0);
+	assert(team<32);
+	return id+team*1024;
+}
+
 //! Return the real armor, taking into account the reduction due to fruits
 int Unit::getRealArmor(void) const
 {
@@ -3017,19 +2754,6 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 	return timeLeft;
 }
 
-//! Return how many steps we can do until we are hungry
-int Unit::numberOfStepsLeftUntilDead(void)
-{
-	int timeLeft;
-	if (hungryness)
-		timeLeft = (hungry / hungryness) + hp;
-	else
-		timeLeft = INT_MAX;
-	stepsLeftUntilDead = timeLeft;
-	return timeLeft;
-}
-
-
 //! Iterate on all resource types to see if it is gettable
 void Unit::computeMinDistToResources(void)
 {
@@ -3040,8 +2764,8 @@ void Unit::computeMinDistToResources(void)
 		else if (minDistToResource[ri] < stepsLeftUntilHungry)
 			allResourcesAreTooFar = false;
 	// the dist to an already carried resource is zero
-	if (caryedResource >= 0)
-		minDistToResource[caryedResource] = 0;
+	if (caryedRessource >= 0)
+		minDistToResource[caryedRessource] = 0;
 }
 
 void Unit::integrity()
@@ -3128,12 +2852,12 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(action);// [16]
 	cs=(cs<<1)|(cs>>31);
-	cs^=visualTargetX;
+	cs^=targetX;
 	if (checkSumsVector)
-		checkSumsVector->push_back(visualTargetX);// [17]
-	cs^=visualTargetY;
+		checkSumsVector->push_back(targetX);// [17]
+	cs^=targetY;
 	if (checkSumsVector)
-		checkSumsVector->push_back(visualTargetY);// [18]
+		checkSumsVector->push_back(targetY);// [18]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=hp;
@@ -3197,9 +2921,9 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=(Uint32)subscribed;
 	if (checkSumsVector)
 		checkSumsVector->push_back(subscribed);// [32]
-	cs^=caryedResource;
+	cs^=caryedRessource;
 	if (checkSumsVector)
-		checkSumsVector->push_back(caryedResource);// [33]
+		checkSumsVector->push_back(caryedRessource);// [33]
 	
 	if (checkSumsVector)
 		checkSumsVector->push_back(0);// [34]

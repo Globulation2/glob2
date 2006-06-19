@@ -1,7 +1,6 @@
 /*
-  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
-  for any question or comment contact us at nct at ysagoon dot com or
-  nuage at ysagoon dot com
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -47,20 +46,18 @@ public:
 	// could be Uint8, if non 0 tell the number of maximum units locked by bulding for:
 	// by order of priority (top = max)
 	Sint32 upgrade[NB_ABILITY]; // What kind on units can be upgraded here
-	//Sint32 upgradeTime[NB_ABILITY]; // Time to upgrade an unit, given the upgrade type needed.
-	//Sint32 upgradeInParallel; // if true, can learn all upgardes with one learning time into the building
+	Sint32 upgradeTime[NB_ABILITY]; // Time to upgrade an unit, given the upgrade type needed.
+	Sint32 upgradeInParallel; // if true, can learn all upgardes with one learning time into the building
 	Sint32 foodable;
 	Sint32 fillable;
 	Sint32 zonable[NB_UNIT_TYPE]; // If an unit is required for a presence.
 	Sint32 zonableForbidden;
 	
 	Sint32 canFeedUnit;
-	//Sint32 timeToFeedUnit;
+	Sint32 timeToFeedUnit;
 	Sint32 canHealUnit;
-	//Sint32 timeToHealUnit;
+	Sint32 timeToHealUnit;
 	Sint32 insideSpeed;
-	Sint32 insideTime;
-	
 	Sint32 canExchange;
 	Sint32 useTeamRessources;
 
