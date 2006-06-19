@@ -1,7 +1,6 @@
 /*
   Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
-  for any question or comment contact us at nct at ysagoon dot com or
-  nuage at ysagoon dot com
+  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,7 +23,6 @@
 #include <list>
 #include <GAGSys.h>
 #include "UnitConsts.h"
-#include "MatcherConsts.h"
 
 class Unit;
 class Building;
@@ -35,50 +33,35 @@ class Map;
 class Matcher
 {
 public:
-	// Flags or buildings for units to work on/in :
+	// Lists of flags or buildings for units to work on/in :
+	std::list<Building *> foodable; //!< to bring food to
 	std::list<Building *> fillable; //!< to bring resources to
-	std::list<Building *> zonableWorkers; //!< to be visited by Workers.
-	std::list<Building *> zonableExplorers; //!< to be visited by Explorers.
-	std::list<Building *> zonableWarriors; //!< to be visited by Warriors.
+	std::list<Building *> zonableWorkers[2]; //!< to be built by workers who can ([1]) or needn't ([0]) swim.
+	std::list<Building *> zonableExplorer; //!< to be visited by Explorers.
+	std::list<Building *> zonableWarrior; //!< to be visited by Warriors.
 	std::list<Building *> upgrade[NB_ABILITY]; //!< to upgrade the units' abilities.
 	
-	// Buildings which have one specifics abilites.
+	// The lists of building which have one specific ability.
 	std::list<Building *> canFeedUnit; //!< inns with enough food and free room.
 	std::list<Building *> canHealUnit; //!< hospitals with free room
 	std::list<Building *> canExchange; //!< markets
 	
-	// Units in those lists are free and have NULL attachedBuilding
-	std::list<Unit *> freeWorkers; //!< free workers to be allocated
-	std::list<Unit *> freeExplorers; //!< free explorers to be allocated
-	std::list<Unit *> freeWarriors; //!< free warriors to be allocated
-	std::list<Unit *> freeUnits; //!< all free units to be allocated
-	
-	// Units in need and have NULL attachedBuilding
-	std::list<Unit *> hungryUnits; //!< units looking for inns
-	std::list<Unit *> damagedUnits; //!< units looking for hospitals
+	// The lists of the free units
+	std::list<Unit *> workers; //!< free workers to be allocated
+	std::list<Unit *> explorers; //!< free explorers to be allocated
+	std::list<Unit *> warrior; //!< free warriors to be allocated
 	
 	Team *team;
 	Map *map;
 	
 protected:
-	bool canReachGround(Unit *unit, Building *target, Uint32 *dist, const bool ignoreHungryness);
-	bool canReachAir(Unit *unit, Building *target, Uint32 *dist, const bool ignoreHungryness);
-	bool canReach(Unit *unit, Building *building, Uint32 *dist, const bool ignoreHungryness);
-	
-	void matchFree();
-	void matchHungry();
-	void matchDamaged();
+	bool canReach(Unit *unit, Building *target, Uint32 *dist);
 	
 public:
 	Matcher(Team *team);
 	
+	void matchWorkers();
 	void match();
-	
-	void addFreeUnit(Unit *unit);
-	void addHungryUnit(Unit *unit);
-	void addDamagedUnit(Unit *unit);
-	
-	void removeUnit(Unit *unit);
 };
 
 #endif

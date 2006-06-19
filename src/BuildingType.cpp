@@ -60,7 +60,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgrade[14], "upgradeMagicCreateAlga");
 	configBlock->load(upgrade[15], "upgradeArmor");
 	configBlock->load(upgrade[16], "upgradeHP");
-	/*configBlock->load(upgradeTime[0], "upgradeTimeStopWalk");
+	configBlock->load(upgradeTime[0], "upgradeTimeStopWalk");
 	configBlock->load(upgradeTime[1], "upgradeTimeStopSwim");
 	configBlock->load(upgradeTime[2], "upgradeTimeStopFly");
 	configBlock->load(upgradeTime[3], "upgradeTimeWalk");
@@ -76,7 +76,8 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgradeTime[13], "upgradeTimeMagicCreateCorn");
 	configBlock->load(upgradeTime[14], "upgradeTimeMagicCreateAlga");
 	configBlock->load(upgradeTime[15], "upgradeTimeArmor");
-	configBlock->load(upgradeTime[16], "upgradeTimeHP");*/
+	configBlock->load(upgradeTime[16], "upgradeTimeHP");
+	configBlock->load(upgradeInParallel, "upgradeInParallel");
 	
 	configBlock->load(foodable, "foodable");
 	configBlock->load(fillable, "fillable");
@@ -88,12 +89,10 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(zonableForbidden, "zonableForbidden");
 
 	configBlock->load(canFeedUnit, "canFeedUnit");
-	//configBlock->load(timeToFeedUnit, "timeToFeedUnit");
+	configBlock->load(timeToFeedUnit, "timeToFeedUnit");
 	configBlock->load(canHealUnit, "canHealUnit");
-	//configBlock->load(timeToHealUnit, "timeToHealUnit");
+	configBlock->load(timeToHealUnit, "timeToHealUnit");
 	configBlock->load(insideSpeed, "insideSpeed");
-	configBlock->load(insideTime, "insideTime");
-	
 	configBlock->load(canExchange, "canExchange");
 	configBlock->load(useTeamRessources, "useTeamRessources");
 
@@ -173,7 +172,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	}
 }
 
-//! Return a checksum of all parameter that could lead to a game desynchronization
+//! Return a chcksum of all parameter that could lead to a game desynchronization
 Uint32 BuildingType::checkSum(void)
 {
 	Uint32 cs = 0;
