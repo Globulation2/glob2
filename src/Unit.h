@@ -1,7 +1,6 @@
 /*
-  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charriere
-  for any question or comment contact us at nct at ysagoon dot com or
-  nuage at ysagoon dot com
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,7 +27,6 @@
 
 #include <GAGSys.h>
 #include "UnitConsts.h"
-#include "MatcherConsts.h"
 #include "Ressource.h"
 
 #define LEVEL_UP_ANIMATION_FRAME_COUNT 20
@@ -59,29 +57,6 @@ public:
 	void saveCrossRef(GAGCore::OutputStream *stream);
 	
 	void subscriptionSuccess(void); //Called by the building the unit has subscribed to.
-	void matchSuccess(Building *matchBuilding, MatcherConsts::Activity matchActivity);
-	
-	
-	// helpers called by state machine
-protected:
-	void applyWarriorAttack(void);
-	void applyResourceHarvest(void);
-	void applyResourceFill(void);
-	
-	void animationStep(void);
-	void setMapDiscovered(void);
-	void biologicalStep(void);
-	void insideStep(void);
-	void linkFree(void);
-	void linkHungry(void);
-	void linkDamaged(void);
-	void unlink(void);
-	void selectDisplacement(void);
-	void recheckLink(void);
-	void displacementInMatcher(void);
-	void middleOfMovement(void);
-	
-public:
 	void syncStep(void);
 	
 	void directionFromDxDy(void);
@@ -104,6 +79,10 @@ public:
 		*dy=tab[direction][1];
 	}
 	
+	static Sint32 GIDtoID(Uint16 gid);
+	static Sint32 GIDtoTeam(Uint16 gid);
+	static Uint16 GIDfrom(Sint32 id, Sint32 team);
+
 	void selectPreferedMovement(void);
 	void selectPreferedGroundMovement(void);
 	bool isUnitHungry(void);
@@ -120,35 +99,20 @@ public:
 
 	enum Medical
 	{
-		MED_FREE = 0,
-		MED_HUNGRY = 1,
-		MED_DAMAGED = 2
+		MED_FREE=0,
+		MED_HUNGRY=1,
+		MED_DAMAGED=2
 	};
 
 	enum Activity
 	{
-		ACT_RANDOM = 0,
-		ACT_FILLING = 1,
-		ACT_FLAG = 2,
-		ACT_UPGRADING = 3
+		ACT_RANDOM=0,
+		ACT_FILLING=1,
+		ACT_FLAG=2,
+		ACT_UPGRADING=3
 	};
 	
-	enum InsideBuildingState
-	{
-		IBS_NONE = 0,
-		IBS_ENTERING = 1,
-		IBS_INSIDE = 2,
-	};
-	
-	enum Movement
-	{
-		MOV_NORMAL = 0,
-		MOV_ATTACK = 1,
-		MOV_HARVEST = 2,
-		MOV_FILL = 3,
-		MOV_EXITING_BUILDING = 4
-	};
-	/*enum Displacement
+	enum Displacement
 	{
 		DIS_RANDOM=0,
 		
@@ -168,9 +132,8 @@ public:
 		DIS_ENTERING_BUILDING=20,
 		DIS_INSIDE=22,
 		DIS_EXITING_BUILDING=24
-	};*/
+	};
 	
-	/*
 	enum Movement
 	{
 		MOV_RANDOM_GROUND=0,
@@ -184,7 +147,7 @@ public:
 		MOV_INSIDE=8,
 		MOV_EXITING_BUILDING=9,
 		MOV_ATTACKING_TARGET=11
-	};*/
+	};
 
 	enum BypassDirection
 	{
@@ -211,9 +174,9 @@ protected:
 	
 	void setNewValidDirectionGround(void);
 	void setNewValidDirectionAir(void);
-	void flytoTarget(); //This will set (dx,dy) given visualTargetX/Y. air asserted.
-	void gotoGroundTarget(); //This will set (dx,dy) given visualTargetX/Y. ground asserted.
-	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given visualTargetX/Y, without the care of forbidden flags ground asserted.
+	void flytoTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
+	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
+	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
 	void defaultSkinNameFromType(void);
 	
@@ -242,17 +205,12 @@ public:
 	bool needToRecheckMedical;
 	Medical medical;
 	Activity activity;
-	//Displacement displacement;
+	Displacement displacement;
 	Movement movement;
 	Abilities action;
-	Sint32 visualTargetX, visualTargetY;
-	bool validVisualTarget;
+	Sint32 targetX, targetY;
+	bool validTarget;
 	Sint32 magicActionTimeout;
-	
-	// new states
-	InsideBuildingState insideBuildingState;
-	MatcherConsts::Activity currentActivity; //!< What the unit is currently really doing. Set by a successfull match, reset by Unit::unlink() 
-	MatcherConsts::State matcherState;	//!< If we are in matcher, in which category we are (hungry, damaged, free). Set when entering matcher, reset by Unit::matchSuccess().
 
 	// trigger parameters
 	Sint32 hp; // (Uint8)
@@ -275,13 +233,12 @@ public:
 	
 	// building attraction handling
 	Building *attachedBuilding;
-	//Building *targetBuilding;
+	Building *targetBuilding;
 	Building *ownExchangeBuilding;
 	Building *foreingExchangeBuilding;
-	Sint32 destinationResource; //!< the resource we are concerned with our currentActivity (harvesting, transporting, ...)
 	Sint32 destinationPurprose;
 	bool subscribed;
-	int caryedResource;
+	int caryedRessource;
 	
 	// gui
 	int levelUpAnimation;
@@ -290,14 +247,12 @@ public:
 public:
 	// optimisation cached values
 	int stepsLeftUntilHungry;
-	int stepsLeftUntilDead;
-	int minDistToResource[MAX_RESSOURCES]; //!< distance to resource, even if not accessible with current hungryness. -1 if not accessible at all
-	bool allResourcesAreTooFar; //!< true if no resource is accessible with current hungryness
+	int minDistToResource[MAX_RESSOURCES];
+	bool allResourcesAreTooFar;
 
 public:
 	// computing optimisation cached values
 	int numberOfStepsLeftUntilHungry(void);
-	int numberOfStepsLeftUntilDead(void);
 	void computeMinDistToResources(void);
 	
 public:
