@@ -106,7 +106,6 @@ TeamStat.h\
 TeamStat.cpp\
 Matcher.cpp\
 Matcher.h\
-MatcherConsts.h\
 Unit.cpp\
 Unit.h\
 UnitType.cpp\
@@ -165,7 +164,6 @@ Version.h \
 RessourceType.h \
 TerrainType.h \
 UnitConsts.h \
-BuildingConsts.h \
 ConfigFiles.h \
 EntitiesTypes.h \
 BuildingsTypes.h \
