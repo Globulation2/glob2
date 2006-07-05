@@ -1,13 +1,9 @@
 AIWarrush:
--Turn on Inn View in Maintain phase.
--Build hospitals with excess workers.
--Fix the bug that causes barracks not to be built.
--Place an Inn first, just don't build it yet.
+Get the new version working.
 
 Other code:
 -Finish augmenting SGSL.
 -Make some sort of mark on the mini-map for a unit getting attacked (so you can tell where)
 
 Non-code:
--Redesign War Flags.
 -Remember all the other stuff that should be in this list.
