@@ -561,8 +561,7 @@ Error de Consistencia Interna Durante la Conección.
 [YESTS_UNABLE_TO_CONNECT]
 Incapaz de Conectar. Aparentemente el  YOG Metaserver Está Caído.
 [YESTS_CREATED]
-La Conección del Sistema  está lista para contactar al YOG metaserver para 
-la conección.
+La Conección del Sistema  está lista para contactar al YOG metaserver para la conección.
 [YESTS_CONNECTING]
 Estableciendo la Conección con el YOG metaserver...
 [YESTS_DECONNECTING]
@@ -572,34 +571,19 @@ Un Administrador Acaba de Detener el YOG metaserver.
 [YESTS_CONNECTION_LOST]
 La Conección hacia YOG se ha Perdido.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metaserver ha rechazado  la conección porque tu cliente globulation 2 
-es obsoleto.
+YOG metaserver ha rechazado  la conección porque tu cliente globulation 2 es obsoleto.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG ha rechazado  la conección porque tu nombre de usuario ya ha sido 
-utilizado por alguien más.
+YOG ha rechazado  la conección porque tu nombre de usuario ya ha sido utilizado por alguien más.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG metaserver ha rechazado la conección porque la contraseña es 
-incorrecta.
+YOG metaserver ha rechazado la conección porque la contraseña es incorrecta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metaserver ha rechazado la conección porque este nombre de usuario aún 
-no tiene una contraseña. Probablemente deseas registrar tu nombre de 
-Usuario con esta Contraseña. Por lo Tanto, Activa la Opción "Registrar a 
-un Nuevo Usuario YOG con Contraseña"( "Register a new YOG user with 
-password") Antes de Conectarse. Necesitarás Activar Está Opción Solamente 
-una Vez.
+YOG metaserver ha rechazado la conección porque este nombre de usuario aún no tiene una contraseña. Probablemente deseas registrar tu nombre de Usuario con esta Contraseña. Por lo Tanto, Activa la Opción "Registrar a un Nuevo Usuario YOG con Contraseña"( "Register a new YOG user with password") Antes de Conectarse. Necesitarás Activar Está Opción Solamente una Vez.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metaserver ha rechazado la conección porque este nombre de usuario ya 
-ha sido registrado.  Si este nombre de usuario es tuyo, desactiva la opción 
-"Registrar a un Nuevo Usuario YOG con Contraseña"( "Register a new YOG user 
-with password").
+YOG metaserver ha rechazado la conección porque este nombre de usuario ya ha sido registrado.  Si este nombre de usuario es tuyo, desactiva la opción "Registrar a un Nuevo Usuario YOG con Contraseña"( "Register a new YOG user with password").
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metaserver ha rechazado la conección un error del protocolo de 
-comunicaciones occurió:  ya estás verificado.  Inténtalo otra vez en 45 
-segundos.
+YOG metaserver ha rechazado la conección un error del protocolo de comunicaciones occurió:  ya estás verificado.  Inténtalo otra vez en 45 segundos.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG metaserver ha rechazado la conección porque un error del protocolo de 
-comunicaciones ocurrió: no has sido conectado aún durante la 
-verificación.Por favor reporta esta falla.
+YOG metaserver ha rechazado la conección porque un error del protocolo de comunicaciones ocurrió: no has sido conectado aún durante la verificación.Por favor reporta esta falla.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver ha rechazado la conección sin explicación!
 [The player %0 has left YOG]
@@ -611,16 +595,11 @@ Tu estado es ausente.
 [You are no more marked as away]
 Tu estado ya no es ausente
 [YOG_HELP]
-El sistema de mensajes  YOG tiene dos comandos, "msg" y "away". Escribe 
-"/help <command>" para aprender más acerca de ellos.
+El sistema de mensajes  YOG tiene dos comandos, "msg" y "away". Escribe "/help <command>" para aprender más acerca de ellos.
 [YOG_HELP_AWAY]
-El comando "/away (<message>)" te permite hacer saber a los otros usuarios 
-YOG que estás temporalmente ausente. Podrías añadir una breve 
-explicación. Por ejemplo "/away me estoy comiendo una hamburguesa volveré 
-hasta la 1 pm". Alias "/a"
+El comando "/away (<message>)" te permite hacer saber a los otros usuarios YOG que estás temporalmente ausente. Podrías añadir una breve explicación. Por ejemplo "/away me estoy comiendo una hamburguesa volveré hasta la 1 pm". Alias "/a"
 [YOG_HELP_MSG]
-El comando "/msg <name> <message>" manda un mensaje privado.  Por ejemplo, 
-"/msg Juán hola Juán, ¿Cómo estás?".  Alias "/m".
+El comando "/msg <name> <message>" manda un mensaje privado.  Por ejemplo, "/msg Juán hola Juán, ¿Cómo estás?".  Alias "/m".
 [save before quit?]
 ¿Deseas guardar antes de salir?
 [Yes]
@@ -670,8 +649,7 @@ Personalizar cursor
 [choose campaign]
 Escoger Campaña
 [nick taken]
-Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en 
-freenode, solamente  podrás hablar a través de YOG
+Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en freenode, solamente  podrás hablar a través de YOG
 [mute]
 Mudo
 [abreaviation explanation A]
