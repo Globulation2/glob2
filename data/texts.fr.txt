@@ -440,10 +440,10 @@ AINumbi
 AICastor
 [AINicowar]
 Nicowar (instable)
-[AIToubib]
-AIToubib
 [AIWarrush]
 AIWarrush
+[AIToubib]
+AIToubib
 [the games]
 Parties
 [the maps]

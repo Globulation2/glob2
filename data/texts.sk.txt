@@ -440,10 +440,10 @@ UINumbi
 UICastor
 [AINicowar]
 Nicowar (nestab.)
-[AIToubib]
-UIToubib
 [AIWarrush]
 UIWarrush
+[AIToubib]
+UIToubib
 [the games]
 Hry
 [the maps]

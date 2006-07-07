@@ -436,10 +436,10 @@ AINumbi
 AICastor
 [AINicowar]
 Nicowar (unstable)
-[AIToubib]
-AIToubib
 [AIWarrush]
 AIWarrush
+[AIToubib]
+AIToubib
 [the games]
 Gry
 [the maps]

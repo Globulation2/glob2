@@ -440,10 +440,10 @@ AINumbi
 AICastor
 [AINicowar]
 Nicowar (tutarsiz)
-[AIToubib]
-AIToubib
 [AIWarrush]
 AIWarrush
+[AIToubib]
+AIToubib
 [the games]
 Oyunlar
 [the maps]

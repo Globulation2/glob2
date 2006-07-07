@@ -432,10 +432,10 @@ sr
 ВИКастор
 [AINicowar]
 Nicowar (unstable)
-[AIToubib]
-AIToubib
 [AIWarrush]
 AIWarrush
+[AIToubib]
+AIToubib
 [the games]
 Игре
 [the maps]

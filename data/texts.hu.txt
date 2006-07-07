@@ -432,10 +432,10 @@ MINumbi
 MICastor
 [AINicowar]
 Nicowar (unstable)
-[AIToubib]
-MIToubib
 [AIWarrush]
 MIWarrush
+[AIToubib]
+MIToubib
 [the games]
 Játékok
 [the maps]

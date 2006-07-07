@@ -440,10 +440,10 @@ IANumbi
 IACastor
 [AINicowar]
 Nicowar (inestable)
-[AIToubib]
-IAToubib
 [AIWarrush]
 IAWarrush
+[AIToubib]
+IAToubib
 [the games]
 Jogos
 [the maps]
