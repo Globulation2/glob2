@@ -432,10 +432,10 @@ IANumbi
 IACastor
 [AINicowar]
 Nicowar (unstable)
-[AIToubib]
-IAToubib
 [AIWarrush]
 IAWarrush
+[AIToubib]
+IAToubib
 [the games]
 Giochi
 [the maps]

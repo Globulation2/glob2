@@ -44,11 +44,11 @@ public:
 		NUMBI=1,
 		CASTOR=2,
 		NICOWAR=3,
+		WARRUSH=4,
 		
 		SIZE,
 		
 		TOUBIB,
-		WARRUSH,
 		
 		EXPERIMENTAL_SIZE
 	};

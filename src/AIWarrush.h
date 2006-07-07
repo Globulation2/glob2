@@ -32,7 +32,7 @@ class Team;
 class Building;
 
 //ugh. such a large amount of code to work around something simple like "Unit8 gradient[map->w][map->h];"
-// NOte: nct: I've mobved this from AIWarrush.cpp to AIWarrush.h so that AIWarrush.cpp compiles
+// Note: nct: I've moved this from AIWarrush.cpp to AIWarrush.h so that AIWarrush.cpp compiles
 struct DynamicGradientMapArray
 {
 public:
@@ -72,6 +72,7 @@ public:
 	//overly frequent building-creating requests (and potentially from building them extra times
 	//on locations with units and getting extras, but I'm not sure on this one)
 	int buildingDelay;
+	int areaUpdatingDelay;
 
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
@@ -81,20 +82,21 @@ private:
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;
 	//these should be improved, and some should be moved to Team.h.
+	Building *getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int num_workers)const;
+	bool allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const;
+	bool allOfBuildingTypeAreFull(Sint32 shortTypeNum)const;
+	int numberOfExtraBuildings()const;
+	bool percentageOfBuildingsAreFullyWorked(int percentage)const;
 	int numberOfUnitsWithSkillGreaterThanValue(int skill, int value)const;
+	int numberOfUnitsWithSkillEqualToValue(int skill, int value)const;
 	int numberOfBuildingsOfType(Sint32 shortTypeNum)const;
 	bool isAnyUnitWithLessThanOneThirdFood()const;
 	Building *getSwarmWithoutSettings(int workerRatio, int explorerRatio, int warriorRatio)const;
-	Building *getSwarmWithLeastProduction()const;
-	Building *getSwarmWithMostProduction()const;
-	int numberOfJobsForWorkers()const;
-	int numberOfIdleLevel1Warriors()const;
-	bool allBarracksAreCompletedAndFull()const;
+	Building *getSwarmAtRandom()const;
 	//functions called by getOrder, filled with pseudocode and its product,
 	//real code.
-	Order *initialRush(void);
-	Order *maintain(void);
 	Order *setupAttack(void);
+	Order *setupExploreFlagForTeam(Team *enemy_team);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
 	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);
 	Order *buildBuildingOfType(Sint32 shortTypeNum);
