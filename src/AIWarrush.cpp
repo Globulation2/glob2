@@ -32,7 +32,7 @@
 #include <algorithm>
 
 #define BUILDING_DELAY 30
-#define AREAS_DELAY 5
+#define AREAS_DELAY 50
 
 void AIWarrush::init(Player *player)
 {
@@ -440,6 +440,7 @@ Order *AIWarrush::setupAttack(void)
 		}
 	}
 	
+	BrushAccumulator guard_add_acc;
 	//There were no excess guard areas. Place guard area on an enemy building if there is one...
 	for(int i=0;i<32;i++)
 	{
@@ -469,15 +470,13 @@ Order *AIWarrush::setupAttack(void)
 					{
 						if((map->getBuilding(b->posX, b->posY)!=NOGBID)&&(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(b->posX, b->posY))]->me)) //paranoia
 						{
-							BrushAccumulator acc;
 							for(int x = 0; x < bt->width; x++)
 							{
 								for(int y = 0; y < bt->height; y++)
 								{
-									acc.applyBrush(map,BrushApplication(b->posX+x,b->posY+y,6));
+									guard_add_acc.applyBrush(map,BrushApplication(b->posX+x,b->posY+y,6));
 								}
 							}
-							return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&acc);
 						}
 					}
 				}
@@ -485,6 +484,9 @@ Order *AIWarrush::setupAttack(void)
 		}
 	}
 	
+	if(guard_add_acc.getApplicationCount())
+		return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc);
+
 	
 
 	// If we're done attacking, farm.
