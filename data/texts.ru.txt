@@ -114,10 +114,14 @@ ru
 Рынок
 [forbidden area]
 Запретная зона
+[guard area]
+Охранная зона
+[clear area]
+Зона очистки
 [Building short explanation]
 Краткое описание здания (max. 24 символа)
 [swarm building explanation]
-Создаёт новые юниты.
+Создаёт новые юниты
 [food building explanation]
 Еда для юнитов
 [health building explanation]
@@ -213,7 +217,7 @@ Ysagoon-игра в Интернете
 [settings]
 Настройки
 [Warning, you need to reboot the game for changes to take effect]
-Предупреждение: вам нужно перезапустить игру, чтобы изменения вступили в силу.
+Предупреждение: необходимо перезапустить игру, чтобы изменения вступили в силу.
 [editor]
 Редактор
 [credits]
@@ -275,9 +279,9 @@ Ysagoon-игра в Интернете
 [teams]
  команды
 [choose map]
-Выбрать карту
+Выбор карты
 [choose game]
-Выбрать игру
+Выбор игры
 [awaiting players]
 Ожидание игроков
 [stat]
@@ -341,11 +345,11 @@ Ysagoon-игра в Интернете
 [the market is under attack]
 Рынок атакован
 [Your %0 are under attack]
-%0
+%0 под ударом
 [Your unit got converted to %0's team]
 Ваш юнит переметнулся к врагу %0
 [%0's team unit got converted to your team]
-Вражеский юнит переметнулся к Вам. %0
+Вражеский юнит %0 переметнулся к Вам.
 [Uncontrolled]
 Неконтролируемый
 [ai]
@@ -398,6 +402,10 @@ ok
 Скорость атаки
 [At. strength]
 Сила атаки
+[Magic At. Air]
+Сила удара (воздух)
+[Magic At. Ground]
+Сила удара (земля)
 [Total]
 Всего
 [free]
@@ -583,9 +591,9 @@ Login
 [The player %0 has joined YOG]
 Игрок %0 подсоединился к YOG.
 [You are now marked as away]
-Вы не помечены как неактивный.
+Для Вас установлен статус "неактивный".
 [You are no more marked as away]
-Вы больше не помечены как неактивный.
+Для Вас снят статус "неактивный".
 [YOG_HELP]
 Система сообщений YOG имеет две команды: "msg" и "away". Введите "/help <команда>", чтобы подробнее узнать об одной из них.
 [YOG_HELP_AWAY]
@@ -611,11 +619,11 @@ Login
 [Won : you defeated your opponents]
 Победа: Вы победили всех соперников.
 [Won : your ally %0 has the most prestige]
-%0
+Победа: у союзника %0 самый большой престиж
 [Lost : %0 has more prestige than you]
 Поражение: У %0 больший престиж, чем у Вас.
 [Won : you have the most prestige]
-Benutzername
+Победа: у Вас самый большой престиж
 [The game has not been finished]
 Игра не была закончена
 [display]
@@ -636,5 +644,75 @@ Benutzername
 Громкость (музыки)
 [Happyness]
 Счастье
+[customcur]
+Пользовательский курсор
+[choose campaign]
+Выбор кампании
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
+[mute]
+Без звука
+[abreaviation explanation A]
+A: Союзники
+[abreaviation explanation V]
+V: Показ поля зрения для всех зданий
+[abreaviation explanation Vf]
+Vf: Показ поля зрения для здания "Кабак" (переманивание юнитов)
+[abreaviation explanation mV]
+mV: Показ поля зрения для здания "Рынок" (обмен фруктами)
+[abreaviation explanation C]
+C: Послать сообщения в чате следующему пользователю:
+[shortcut explanation enter]
+Enter: Отправить сообщение в чате
+[shortcut explanation v]
+V: Зажать для речевой связи
+[Delete game]
+Удаление выбранной игры
+[any explorer]
+любой разведчик
+[ground attack]
+атака наземных целей
+[Can't join game, wrong game version]
+Невозможно присоединиться к игре: неправильная версия игры
+[Can't join game, missmatching game parameters]
+Невозможно присоединиться к игре: не совпадают параметры игры
+[Can't join game, timeout]
+Невозможно присоединиться к игре: тайм-аут
+[swamp terrain]
+Болото
+[river terrain]
+Река
+[crater lakes terrain]
+Кратерные озера
+[old random terrain]
+старый случайный ландшафт
+[old islands terrain]
+старые случайные острова
+[desert]
+пустыня
+[algae]
+водоросли
+[wheat]
+зерно
+[wood]
+дерево
+[stone]
+камень
+[river diameter]
+ширина реки
+[extra islands]
+пустые острова
+[crater density]
+число кратеров
+[press space]
+Нажмите пробел для продолжения
+[GUIMapPreview text 0]
+Выберите
+[GUIMapPreview text 1]
+карту
+[Unit editor]
+Редактор юнитов
+[skin]
+Отображение
+[hungryness]
+Голод
