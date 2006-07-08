@@ -31,6 +31,8 @@ AI.h\
 AINicowar.cpp \
 AINicowar.h \
 AIImplementation.h\
+AIEcho.\
+AIEcho.cpp\
 AINull.h\
 AINull.cpp\
 AINumbi.h\

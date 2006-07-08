@@ -45,6 +45,7 @@ public:
 		CASTOR=2,
 		NICOWAR=3,
 		WARRUSH=4,
+		REACHTOINFINITY=5,
 		
 		SIZE,
 		

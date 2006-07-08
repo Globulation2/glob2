@@ -397,9 +397,10 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
+		const int speed=40;
 		Uint32 startTick, endTick;
 		bool networkReadyToExecute = true;
-		Sint32 ticksSpentInComputation = 40;
+		Sint32 ticksSpentInComputation = speed;
 		Sint32 computationAvailableTicks = 0;
 		Sint32 ticksToDelayInside = 0;
 		Sint32 missedTicksToWait = 0;
@@ -407,6 +408,7 @@ int Engine::run(void)
 		startTick = SDL_GetTicks();
 		while (gui.isRunning)
 		{
+
 			// We always allow the user to use the gui:
 			if (globalContainer->runNoX)
 			{
@@ -504,7 +506,7 @@ int Engine::run(void)
 				endTick=SDL_GetTicks();
 				Sint32 spentTicks=endTick-startTick;
 				ticksSpentInComputation=spentTicks-ticksDelayedInside;
-				computationAvailableTicks=40-ticksSpentInComputation;
+				computationAvailableTicks=speed-ticksSpentInComputation;
 				Sint32 ticksToWait=computationAvailableTicks+ticksToDelayInside+missedTicksToWait;
 				if (ticksToWait>0)
 				{
@@ -525,13 +527,13 @@ int Engine::run(void)
 					Sint32 i = computationAvailableTicks;
 					if (cpuSumCountStats < (unsigned)-1)
 					{
-						cpuSumStats += 40 - computationAvailableTicks;
+						cpuSumStats += speed - computationAvailableTicks;
 						cpuSumCountStats++;
 					}
 					if (i<0)
 						i=0;
-					else if (i>=40)
-						i=40;
+					else if (i>=speed)
+						i=speed;
 					cpuStats[i]++;
 				}
 			}
@@ -542,7 +544,8 @@ int Engine::run(void)
 		
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"
-		
+
+	
 		doRunOnceAgain=false;
 		
 		if (gui.toLoadGameFileName[0])

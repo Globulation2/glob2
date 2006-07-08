@@ -220,6 +220,7 @@
 [AICastor]
 [AINicowar]
 [AIWarrush]
+[AIReachToInfinity]
 [AIToubib]
 [the games]
 [the maps]
