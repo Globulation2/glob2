@@ -69,18 +69,18 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	// units
 	shortTypeNum = type->shortTypeNum;
-	maxUnitInside=type->maxUnitInside;
-	maxUnitWorking=type->maxUnitWorking;
-	maxUnitWorkingLocal=maxUnitWorking; //default for units not defined within settings
+	maxUnitInside = type->maxUnitInside;
+	maxUnitWorking = type->maxUnitWorking;
+	maxUnitWorkingLocal = maxUnitWorking; //default for units not defined within settings
 	if (shortTypeNum == 9)
 		maxUnitWorkingLocal = globalContainer->settings.warflagUnit;
 	if (shortTypeNum == 10)
 		maxUnitWorkingLocal = globalContainer->settings.clearflagUnit;
 	if (shortTypeNum == 8)
 		maxUnitWorkingLocal = globalContainer->settings.exploreflagUnit;
-	maxUnitWorkingPreferred=1;
-	subscriptionInsideTimer=0;
-	subscriptionWorkingTimer=0;
+	maxUnitWorkingPreferred = 1;
+	subscriptionInsideTimer = 0;
+	subscriptionWorkingTimer = 0;
 
 	// position
 	posX=x;
@@ -279,6 +279,24 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	typeNum = stream->readSint32("typeNum");
 	type = types->get(typeNum);
 	assert(type);
+	
+	// reload data from type
+	shortTypeNum = type->shortTypeNum;
+	maxUnitInside = type->maxUnitInside;
+	maxUnitWorking = type->maxUnitWorking;
+	
+	// init data not loaded
+	maxUnitWorkingLocal = maxUnitWorking;
+	if (shortTypeNum == 9)
+		maxUnitWorkingLocal = globalContainer->settings.warflagUnit;
+	if (shortTypeNum == 10)
+		maxUnitWorkingLocal = globalContainer->settings.clearflagUnit;
+	if (shortTypeNum == 8)
+		maxUnitWorkingLocal = globalContainer->settings.exploreflagUnit;
+	maxUnitWorkingPreferred = 1;
+	subscriptionInsideTimer = 0;
+	subscriptionWorkingTimer = 0;
+	
 	owner->prestige += type->prestige;
 	
 	seenByMask = stream->readUint32("seenByMaskk");
