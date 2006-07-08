@@ -581,6 +581,8 @@ protected:
 	#endif
 
 public:
+	Game *game;
+public:
 	Case *cases;
 	Sint32 w, h;
 	Sint32 wMask, hMask;
@@ -636,7 +638,6 @@ protected:
 	Sint32 wSector, hSector;
 	int sizeSector;
 	
-	Game *game;
 
 public:
 	Uint32 checkSum(bool heavy);

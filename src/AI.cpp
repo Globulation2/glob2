@@ -31,6 +31,7 @@
 #include "AIToubib.h"
 #include "AIWarrush.h"
 #include "AINicowar.h"
+#include "AIEcho.h"
 
 /*AI::AI(Player *player)
 {
@@ -57,11 +58,14 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		case NICOWAR:
 			aiImplementation=new Nicowar::AINicowar(player);
 		break;
-		case TOUBIB:
-			aiImplementation=new AIToubib(player);
-		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
+		break;
+		case REACHTOINFINITY:
+			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
+		break;
+		case TOUBIB:
+			aiImplementation=new AIToubib(player);
 		break;
 		default:
 			assert(false);

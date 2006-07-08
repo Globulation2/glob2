@@ -442,6 +442,8 @@ UICastor
 Nicowar (nestab.)
 [AIWarrush]
 UIWarrush
+[AIReachToInfinity]
+ReachToInfinity
 [AIToubib]
 UIToubib
 [the games]

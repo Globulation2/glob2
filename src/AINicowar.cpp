@@ -1,7 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   Copyright (C) 2005-2006 Bradley Arsenault
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

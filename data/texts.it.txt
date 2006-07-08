@@ -434,6 +434,8 @@ IACastor
 Nicowar (unstable)
 [AIWarrush]
 IAWarrush
+[AIReachToInfinity]
+ReachToInfinity
 [AIToubib]
 IAToubib
 [the games]
