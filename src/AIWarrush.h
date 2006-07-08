@@ -95,7 +95,9 @@ private:
 	Building *getSwarmAtRandom()const;
 	//functions called by getOrder, filled with pseudocode and its product,
 	//real code.
-	Order *setupAttack(void);
+	Order *placeGuardAreas(void);
+	Order *pruneGuardAreas(void);
+	Order *farm(void);
 	Order *setupExploreFlagForTeam(Team *enemy_team);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
 	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);

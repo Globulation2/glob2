@@ -300,8 +300,19 @@ Order *AIWarrush::getOrder(void)
 		Team *enemy_team = game->teams[teamIndex];
 		if((enemy_team)&&(team->enemies & enemy_team->me))return setupExploreFlagForTeam(enemy_team);
 	}
-	
 
+	//keep those areas up to date
+	if(areaUpdatingDelay == AREAS_DELAY*2/3)
+		return pruneGuardAreas();
+	if(areaUpdatingDelay == AREAS_DELAY/3)
+		return placeGuardAreas();
+	if(areaUpdatingDelay <= 0)
+	{
+		areaUpdatingDelay = AREAS_DELAY;
+		return farm();
+	}
+	
+	//assuming we didn't have to mess with areas or explore flags, check if we can build stuff
 	if (buildingDelay <= 0)
 	{
 		bool shouldBuildMore = percentageOfBuildingsAreFullyWorked(90);
@@ -383,65 +394,58 @@ Order *AIWarrush::getOrder(void)
 	//work barracks more too.
 	Building *weak_barracks = getBuildingWithoutWorkersAssigned(IntBuildingType::ATTACK_BUILDING, 3);
 	if (weak_barracks) return new OrderModifyBuilding(weak_barracks->gid, 3);
-
-
-	//if there's nothing else to do, mess with areas...
-	if(areaUpdatingDelay <= 0)
-	{
-		areaUpdatingDelay = AREAS_DELAY;
-		return setupAttack();
-	}
 	
 	//nothing at all to do?!
 	return new NullOrder;
 }
 
-Order *AIWarrush::setupAttack(void)
-{	
+Order *AIWarrush::pruneGuardAreas()
+{
 	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
 	map->computeLocalGuardArea(team->teamNumber);
+	BrushAccumulator acc;
+	for(int x=0;x<map->w;x++)
 	{
-		BrushAccumulator acc;
-		for(int x=0;x<map->w;x++)
+		for(int y=0;y<map->h;y++)
 		{
-			for(int y=0;y<map->h;y++)
+			if(map->isGuardAreaLocal(x,y))
 			{
-				if(map->isGuardAreaLocal(x,y))
+				bool keep = false;
+				for(int xmod=-1;xmod<=1;xmod++)
 				{
-					bool keep = false;
-					for(int xmod=-1;xmod<=1;xmod++)
+					for(int ymod=-1;ymod<=1;ymod++)
 					{
-						for(int ymod=-1;ymod<=1;ymod++)
+						//if there's a building...
+						if(map->getBuilding(x+xmod,y+ymod)!=NOGBID)
 						{
-							//if there's a building...
-							if(map->getBuilding(x+xmod,y+ymod)!=NOGBID)
+							//...AND it's an enemy building...
+							if(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)
 							{
-								//...AND it's an enemy building...
-								if(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)
-								{
-									//...then we still want it guarded.
-									keep=true;
-								}
+								//...then we still want it guarded.
+								keep=true;
 							}
 						}
 					}
-					if(!keep)
-					{
-						acc.applyBrush(map,BrushApplication(x,y,0));
-					}
+				}
+				if(!keep)
+				{
+					acc.applyBrush(map,BrushApplication(x,y,0));
 				}
 			}
 		}
-		//Obviously we don't want to give an actual order if there is no area to remove.
-		//That would prevent the area from ever being placed, in this case.
-		if(acc.getApplicationCount())
-		{
-			return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc);
-		}
 	}
+	if(acc.getApplicationCount())
+	{
+		return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc);
+	}
+	else return new NullOrder;
+}
 	
+Order *AIWarrush::placeGuardAreas()
+{
+	map->computeLocalGuardArea(team->teamNumber);
 	BrushAccumulator guard_add_acc;
-	//There were no excess guard areas. Place guard area on an enemy building if there is one...
+	//Place guard area on an enemy building if there is one...
 	for(int i=0;i<32;i++)
 	{
 		Team *t = game->teams[i];
@@ -485,12 +489,15 @@ Order *AIWarrush::setupAttack(void)
 	}
 	
 	if(guard_add_acc.getApplicationCount())
+	{
 		return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc);
-
+	}
+	else return new NullOrder;
+}
 	
-
-	// If we're done attacking, farm.
-	// Algorithm stolen from Nicowar (initially.)
+Order *AIWarrush::farm()
+{
+	// Algorithm initially stolen from Nicowar.
 	map->computeLocalForbidden(team->teamNumber);
 	map->computeLocalClearArea(team->teamNumber);
 
@@ -624,8 +631,7 @@ Order *AIWarrush::setupAttack(void)
 	if(clr_add_acc.getApplicationCount()>0)
 		return new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc);
 
-	
-	//omg, nothing to do.
+	//nothing to do...
 	return new NullOrder();
 }
 
