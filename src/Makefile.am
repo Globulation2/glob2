@@ -4,6 +4,7 @@ if LINKSTATIC
 glob2_static_lib =\
 	 /usr/lib/libSDL_image.a\
 	 /usr/lib/libSDL_net.a\
+	 /usr/lib/libSDL_ttf.a\
 	 /usr/lib/libpng*.a\
 	 /usr/lib/libtiff.a\
 	 /usr/lib/libjpeg.a\
@@ -31,7 +32,7 @@ AI.h\
 AINicowar.cpp \
 AINicowar.h \
 AIImplementation.h\
-AIEcho.\
+AIEcho.h\
 AIEcho.cpp\
 AINull.h\
 AINull.cpp\
@@ -202,6 +203,6 @@ if LINKSTATIC
 glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)
 LIBS = 
 else
-glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ $(glob2_static_lib)
+glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ -lSDL_ttf $(glob2_static_lib)
 endif
-INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include
+INCLUDES = @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include

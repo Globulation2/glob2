@@ -14,8 +14,6 @@ libgag_a_SOURCES = \
 	StringTable.cpp\
 	CursorManager.cpp\
 	SupportFunctions.cpp\
-	SDL_ttf.c\
-	SDL_ttf.h\
 	GUIBase.cpp\
 	GUIList.cpp\
 	GUIFileList.cpp\
@@ -37,4 +35,4 @@ libgag_a_SOURCES = \
 	FormatableString.cpp\
 	$(libgag_a_EXTRA_SRC)
 
-INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I@srcdir@/../include/
+INCLUDES = @SDL_CFLAGS@ -I@srcdir@/../include/

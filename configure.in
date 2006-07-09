@@ -55,11 +55,10 @@ dnl Check for SDL_image and SDL_net
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 AC_CHECK_HEADER(SDL_image.h,,AC_MSG_ERROR([*** SDL_image headers not found !]))
 AC_CHECK_HEADER(SDL_net.h,,AC_MSG_ERROR([*** SDL_net headers not found !]))
+AC_CHECK_HEADER(SDL_ttf.h,,AC_MSG_ERROR([*** SDL_ttf headers not found !]))
 AC_CHECK_LIB(SDL_image, IMG_Load_RW, SDL_LIBS="$SDL_LIBS -lSDL_image", AC_MSG_ERROR([*** SDL_image library not found !]), $SDL_LIBS)
 AC_CHECK_LIB(SDL_net, SDLNet_UDP_Open, SDL_LIBS="$SDL_LIBS -lSDL_net", AC_MSG_ERROR([*** SDL_net library not found !]), $SDL_LIBS)
-
-dnl Check for FT2
-AC_CHECK_FT2
+AC_CHECK_LIB(SDL_ttf, TTF_Init, SDL_LIBS="$SDL_LIBS -lSDL_ttf", AC_MSG_ERROR([*** SDL_ttf library not found !]), $SDL_LIBS)
 
 dnl Check for libvorbis
 XIPH_PATH_VORBIS
