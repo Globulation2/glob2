@@ -2150,7 +2150,63 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 		}
 	}
-	
+		
+	// draw forbidden and guard areas
+	if ((drawOptions & DRAW_AREA) != 0)
+		for (int y=top; y<bot; y++)
+			for (int x=left; x<right; x++)
+			{
+				if (map.isForbiddenLocal(x+viewportX, y+viewportY))
+				{
+					globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
+					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 32+(x<<5), 16+(y<<5), 128, 0, 0);
+					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);
+					
+					if (!map.isForbiddenLocal(x+viewportX, y+viewportY-1))
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 0, 0);
+					if (!map.isForbiddenLocal(x+viewportX, y+viewportY+1))
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 0, 0);
+					
+					if (!map.isForbiddenLocal(x+viewportX-1, y+viewportY))
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 0, 0);
+					if (!map.isForbiddenLocal(x+viewportX+1, y+viewportY))
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 0, 0);
+				}
+				if (map.isGuardAreaLocal(x+viewportX, y+viewportY))
+				{
+					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), (x<<5), 32+(y<<5), 0, 0, 128);
+					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), (x<<5), 16+(y<<5), 0, 0, 128);
+					globalContainer->gfx->drawLine(32+(x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 0, 0, 128);
+					
+					if (!map.isGuardAreaLocal(x+viewportX, y+viewportY-1))
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 0, 0, 255);
+					if (!map.isGuardAreaLocal(x+viewportX, y+viewportY+1))
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 0, 0, 255);
+					
+					if (!map.isGuardAreaLocal(x+viewportX-1, y+viewportY))
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 0, 0, 255);
+					if (!map.isGuardAreaLocal(x+viewportX+1, y+viewportY))
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 0, 0, 255);
+				}
+				if (map.isClearAreaLocal(x+viewportX, y+viewportY))
+				{
+					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 16+(x<<5), 32+(y<<5), 64, 64, 0);
+					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 64, 64, 0);
+					//globalContainer->gfx->drawLine(8+(x<<5), (y<<5), 8+(x<<5), 32+(y<<5), 128, 128, 0);
+					//globalContainer->gfx->drawLine(24+(x<<5), (y<<5), 24+(x<<5), 32+(y<<5), 128, 128, 0);
+					
+					if (!map.isClearAreaLocal(x+viewportX, y+viewportY-1))
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 128, 128, 0);
+					if (!map.isClearAreaLocal(x+viewportX, y+viewportY+1))
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 128, 128, 0);
+					
+					if (!map.isClearAreaLocal(x+viewportX-1, y+viewportY))
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 128, 128, 0);
+					if (!map.isClearAreaLocal(x+viewportX+1, y+viewportY))
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 128, 128, 0);
+				}
+			}
+
 	
 	// We draw air units:
 	for (int y=top-1; y<=bot; y++)
@@ -2285,62 +2341,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 			}
 	}
-	
-	// draw forbidden and guard areas
-	if ((drawOptions & DRAW_AREA) != 0)
-		for (int y=top; y<bot; y++)
-			for (int x=left; x<right; x++)
-			{
-				if (map.isForbiddenLocal(x+viewportX, y+viewportY))
-				{
-					globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
-					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 32+(x<<5), 16+(y<<5), 128, 0, 0);
-					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);
-					
-					if (!map.isForbiddenLocal(x+viewportX, y+viewportY-1))
-						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 0, 0);
-					if (!map.isForbiddenLocal(x+viewportX, y+viewportY+1))
-						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 0, 0);
-					
-					if (!map.isForbiddenLocal(x+viewportX-1, y+viewportY))
-						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 0, 0);
-					if (!map.isForbiddenLocal(x+viewportX+1, y+viewportY))
-						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 0, 0);
-				}
-				if (map.isGuardAreaLocal(x+viewportX, y+viewportY))
-				{
-					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), (x<<5), 32+(y<<5), 0, 0, 128);
-					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), (x<<5), 16+(y<<5), 0, 0, 128);
-					globalContainer->gfx->drawLine(32+(x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 0, 0, 128);
-					
-					if (!map.isGuardAreaLocal(x+viewportX, y+viewportY-1))
-						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 0, 0, 255);
-					if (!map.isGuardAreaLocal(x+viewportX, y+viewportY+1))
-						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 0, 0, 255);
-					
-					if (!map.isGuardAreaLocal(x+viewportX-1, y+viewportY))
-						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 0, 0, 255);
-					if (!map.isGuardAreaLocal(x+viewportX+1, y+viewportY))
-						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 0, 0, 255);
-				}
-				if (map.isClearAreaLocal(x+viewportX, y+viewportY))
-				{
-					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 16+(x<<5), 32+(y<<5), 64, 64, 0);
-					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 64, 64, 0);
-					//globalContainer->gfx->drawLine(8+(x<<5), (y<<5), 8+(x<<5), 32+(y<<5), 128, 128, 0);
-					//globalContainer->gfx->drawLine(24+(x<<5), (y<<5), 24+(x<<5), 32+(y<<5), 128, 128, 0);
-					
-					if (!map.isClearAreaLocal(x+viewportX, y+viewportY-1))
-						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 128, 128, 0);
-					if (!map.isClearAreaLocal(x+viewportX, y+viewportY+1))
-						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 128, 128, 0);
-					
-					if (!map.isClearAreaLocal(x+viewportX-1, y+viewportY))
-						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 128, 128, 0);
-					if (!map.isClearAreaLocal(x+viewportX+1, y+viewportY))
-						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 128, 128, 0);
-				}
-			}
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
