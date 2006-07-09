@@ -110,7 +110,7 @@ bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 	for (int i=0; i<1024; i++)
 	{
 		Unit *u=myUnits[i];
-		if ((u)&&(u->hungry<(Unit::HUNGRY_MAX/3)))
+		if ((u)&&(u->hungry<(Unit::HUNGRY_MAX/2))) //Yeah, it's a half, not a third. Weird huh? :P
 		{
 			return true;
 		}
@@ -145,6 +145,7 @@ Building *AIWarrush::getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int 
 		if (	(b)
 				&& (b->type->shortTypeNum==shortTypeNum)
 				&& (b->maxUnitWorking != num_workers)
+				&& (b->constructionResultState != Building::NO_CONSTRUCTION || (b->type->shortTypeNum==shortTypeNum != IntBuildingType::ATTACK_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::HEAL_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::WALKSPEED_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::SCIENCE_BUILDING))
 					)
 		{
 			return b;
@@ -247,6 +248,25 @@ int AIWarrush::numberOfExtraBuildings()const
 	return count;
 }
 
+bool AIWarrush::allOfBuildingTypeAreFullyWorked(Sint32 shortTypeNum)const
+{
+	Building **myBuildings=team->myBuildings;
+	for (int i=0; i<1024; i++)
+	{
+		Building *b=myBuildings[i];
+		if((b)&&(b->shortTypeNum == shortTypeNum))
+		{
+			if(b->unitsWorking.size() == (size_t)b->maxUnitWorking)
+			{
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
 
 bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 {
@@ -264,12 +284,6 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 				++num_worked_buildings;
 				if(verbose)std::cout << "A";
 			}
-			/*else if(b->type->shortTypeNum == IntBuildingType::ATTACK_BUILDING
-					&& b->constructionResultState == Building::NO_CONSTRUCTION)
-			{//bug in the game? finished barracks require, but never take, workers. workaround.
-				++num_worked_buildings;
-				if(verbose)std::cout << "B";
-			}*/
 			else if((b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING
 					|| b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING)
 					&&
@@ -315,11 +329,11 @@ Order *AIWarrush::getOrder(void)
 	//assuming we didn't have to mess with areas or explore flags, check if we can build stuff
 	if (buildingDelay <= 0)
 	{
-		bool shouldBuildMore = percentageOfBuildingsAreFullyWorked(90);
+		bool shouldBuildMore = percentageOfBuildingsAreFullyWorked(70);
 		if(verbose)if(shouldBuildMore)std::cout << "AIWarrush is ready to build more stuff!";
 		//Build another swarm if all are swarms are working at capacity, and if we have other random stuff we should-have / need
 		if(verbose)std::cout << "Chance to build swarm: ";
-		if(shouldBuildMore && allOfBuildingTypeAreCompleted(IntBuildingType::SWARM_BUILDING) && numberOfExtraBuildings() >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING))
+		if(shouldBuildMore && allOfBuildingTypeAreCompleted(IntBuildingType::SWARM_BUILDING) && numberOfExtraBuildings() >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) && numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) * 2)
 		{
 			if(verbose)std::cout << "TAKEN!\n";
 			return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
@@ -331,8 +345,16 @@ Order *AIWarrush::getOrder(void)
 		//or lose warriors (so it shouldn't need so many inns.)
 		if(verbose)std::cout << "Chance to build inn: ";
 		if(isAnyUnitWithLessThanOneThirdFood()
-				&& allOfBuildingTypeAreCompleted(IntBuildingType::FOOD_BUILDING)
+				&&
+				shouldBuildMore
+				&&
+				 numberOfExtraBuildings() >= numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) - 1
+				&&
+				(
+				 (allOfBuildingTypeAreCompleted(IntBuildingType::FOOD_BUILDING)
 				&& allOfBuildingTypeAreFull(IntBuildingType::FOOD_BUILDING))
+				|| allOfBuildingTypeAreFullyWorked(IntBuildingType::FOOD_BUILDING))
+				  )
 		{
 			if(verbose)std::cout << "TAKEN!\n";
 			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
@@ -359,8 +381,8 @@ Order *AIWarrush::getOrder(void)
 			if(verbose)std::cout << "TAKEN!\n";
 			Sint32 type;
 			int random_number = syncRand()%100;
-			if(random_number < 60)type = IntBuildingType::HEAL_BUILDING;
-			else if(random_number < 80)type = IntBuildingType::WALKSPEED_BUILDING;
+			if(random_number < 70 || numberOfBuildingsOfType(IntBuildingType::HEAL_BUILDING) == 0)type = IntBuildingType::HEAL_BUILDING;
+			else if(random_number < 80 || numberOfBuildingsOfType(IntBuildingType::WALKSPEED_BUILDING) == 0)type = IntBuildingType::WALKSPEED_BUILDING;
 			else if(random_number < 87)type = IntBuildingType::SWIMSPEED_BUILDING;
 			else if(random_number < 94)type = IntBuildingType::SCIENCE_BUILDING;
 			else type = IntBuildingType::DEFENSE_BUILDING;
@@ -672,8 +694,8 @@ Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 
 bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int height)
 {
-	if(map->isHardSpaceForBuilding(x,y,width,height))
-	{
+	/*if(map->isHardSpaceForBuilding(x,y,width,height))
+	{*/
 		if(		map->isMapDiscovered(x,			y,			team->me)
 			||	map->isMapDiscovered(x+width-1,	y,			team->me)
 			||	map->isMapDiscovered(x+width-1,	y+height-1,	team->me)
@@ -682,7 +704,7 @@ bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int heig
 		{
 			return true;
 		}
-	}
+	/*}*/
 	return false;
 }
 
@@ -765,7 +787,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if(locationIsAvailableForBuilding(x-(bt->width / 2),y-(bt->width / 2),bt->width*2,bt->height*2)) //the extra numbers at the ends expand the building 
+			else if(map->isHardSpaceForBuilding(x-(bt->width / 2),y-(bt->width / 2),bt->width*2,bt->height*2) && locationIsAvailableForBuilding(x,y,bt->width,bt->height)) //the extra numbers at the ends expand the building 
 			{
 				availability_gradient(x, y) = 255;
 			}

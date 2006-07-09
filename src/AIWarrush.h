@@ -85,6 +85,7 @@ private:
 	Building *getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int num_workers)const;
 	bool allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const;
 	bool allOfBuildingTypeAreFull(Sint32 shortTypeNum)const;
+	bool allOfBuildingTypeAreFullyWorked(Sint32 shortTypeNum)const;
 	int numberOfExtraBuildings()const;
 	bool percentageOfBuildingsAreFullyWorked(int percentage)const;
 	int numberOfUnitsWithSkillGreaterThanValue(int skill, int value)const;
