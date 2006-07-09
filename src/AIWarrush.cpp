@@ -402,13 +402,12 @@ Order *AIWarrush::getOrder(void)
 Order *AIWarrush::pruneGuardAreas()
 {
 	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
-	map->computeLocalGuardArea(team->teamNumber);
 	BrushAccumulator acc;
 	for(int x=0;x<map->w;x++)
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			if(map->isGuardAreaLocal(x,y))
+			if(map->isGuardArea(x,y,team->me))
 			{
 				bool keep = false;
 				for(int xmod=-1;xmod<=1;xmod++)
@@ -443,7 +442,6 @@ Order *AIWarrush::pruneGuardAreas()
 	
 Order *AIWarrush::placeGuardAreas()
 {
-	map->computeLocalGuardArea(team->teamNumber);
 	BrushAccumulator guard_add_acc;
 	//Place guard area on an enemy building if there is one...
 	for(int i=0;i<32;i++)
@@ -468,7 +466,7 @@ Order *AIWarrush::placeGuardAreas()
 							&&
 							//do not order a building attacked if the order is already in place.
 							(
-								!map->isGuardAreaLocal(b->posX,b->posY)
+								!map->isGuardArea(b->posX,b->posY,team->me)
 									)			
 										)
 					{
@@ -498,9 +496,6 @@ Order *AIWarrush::placeGuardAreas()
 Order *AIWarrush::farm()
 {
 	// Algorithm initially stolen from Nicowar.
-	map->computeLocalForbidden(team->teamNumber);
-	map->computeLocalClearArea(team->teamNumber);
-
 	DynamicGradientMapArray water_gradient(map->w,map->h);
 	for(int x=0;x<map->w;x++)
 	{
@@ -528,14 +523,14 @@ Order *AIWarrush::farm()
 		{
 			if((!map->isRessourceTakeable(x, y, WOOD) && !map->isRessourceTakeable(x, y, CORN)))
 			{
-				if(map->isForbiddenLocal(x, y))
+				if(map->isForbidden(x, y, team->me))
 				{
 					if(
 						//Make sure we're not deleting buildings' forbidden area!
-						!map->isForbiddenLocal (x + 1,y)
-						&& !map->isForbiddenLocal (x - 1,y)
-						&& !map->isForbiddenLocal (x,y + 1)
-						&& !map->isForbiddenLocal (x,y - 1)
+						!map->isForbidden (x + 1,y,team->me)
+						&& !map->isForbidden (x - 1,y,team->me)
+						&& !map->isForbidden (x,y + 1,team->me)
+						&& !map->isForbidden (x,y - 1,team->me)
 						//Or fruits'!
 						&& !map->isRessourceTakeable(x, y, CHERRY)
 						&& !map->isRessourceTakeable(x, y, ORANGE)
@@ -547,7 +542,7 @@ Order *AIWarrush::farm()
 				}
 			}
 			
-			if(map->isForbiddenLocal(x, y) && map->isClearAreaLocal(x, y))
+			if(map->isForbidden(x, y, team->me) && map->isClearArea(x, y, team->me))
 			{
 				del_acc.applyBrush(map, BrushApplication(x, y, 0));
 			}
@@ -555,7 +550,7 @@ Order *AIWarrush::farm()
 			//we never clear anything but wood
 			if(!map->isRessourceTakeable(x, y, WOOD))
 			{
-				if(map->isClearAreaLocal(x, y))
+				if(map->isClearArea(x, y, team->me))
 				{
 					clr_del_acc.applyBrush(map, BrushApplication(x, y, 0));
 				}
@@ -564,7 +559,7 @@ Order *AIWarrush::farm()
 			//we clear wood if it's next to nice stuff like wheat or buildings
 			if(map->isRessourceTakeable(x, y, WOOD))
 			{
-				if(!map->isClearAreaLocal(x, y) && map->isMapDiscovered(x, y, team->me))
+				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
 					for(int xmod=-1;xmod<=1;xmod++)
 					{
@@ -589,7 +584,7 @@ Order *AIWarrush::farm()
 			{
 				if(map->isRessourceTakeable(x, y, WOOD))
 				{
-					if(!map->isForbiddenLocal(x, y) && !map->isClearAreaLocal(x, y) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
+					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
 					{	
 						add_acc.applyBrush(map, BrushApplication(x, y, 0));
 					}
@@ -600,7 +595,7 @@ Order *AIWarrush::farm()
 			{
 				if(map->isRessourceTakeable(x, y, CORN))
 				{
-					if(!map->isForbiddenLocal(x, y) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
+					if(!map->isForbidden(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
 					{	
 						add_acc.applyBrush(map, BrushApplication(x, y, 0));
 					}
@@ -612,7 +607,7 @@ Order *AIWarrush::farm()
 				(	map->isRessourceTakeable(x, y, CHERRY)
 					|| map->isRessourceTakeable(x, y, ORANGE)
 					|| map->isRessourceTakeable(x, y, PRUNE)	)
-				&& !map->isForbiddenLocal(x, y)
+				&& !map->isForbidden(x, y, team->me)
 				&& map->isMapDiscovered(x, y, team->me)
 					)
 			{
