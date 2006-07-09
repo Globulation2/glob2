@@ -264,12 +264,12 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 				++num_worked_buildings;
 				if(verbose)std::cout << "A";
 			}
-			else if(b->type->shortTypeNum == IntBuildingType::ATTACK_BUILDING
+			/*else if(b->type->shortTypeNum == IntBuildingType::ATTACK_BUILDING
 					&& b->constructionResultState == Building::NO_CONSTRUCTION)
 			{//bug in the game? finished barracks require, but never take, workers. workaround.
 				++num_worked_buildings;
 				if(verbose)std::cout << "B";
-			}
+			}*/
 			else if((b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING
 					|| b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING)
 					&&
@@ -393,7 +393,7 @@ Order *AIWarrush::getOrder(void)
 	
 	//work barracks more too.
 	Building *weak_barracks = getBuildingWithoutWorkersAssigned(IntBuildingType::ATTACK_BUILDING, 3);
-	if (weak_barracks) return new OrderModifyBuilding(weak_barracks->gid, 3);
+	if (weak_barracks && weak_barracks->constructionResultState != Building::NO_CONSTRUCTION) return new OrderModifyBuilding(weak_barracks->gid, 3);
 	
 	//nothing at all to do?!
 	return new NullOrder;
