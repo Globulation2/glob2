@@ -9,17 +9,17 @@ Sterkte
 [heal]
 Gezondheid
 [armor]
-Harnas
+Pantser
 [damage]
 Schade
 [food]
 Voedsel
 [working]
-Werkende
+Werkend
 [inside]
 Binnen
 [ressources]
-Vooraden
+Grondstoffen
 [Wood]
 Hout
 [Corn]
@@ -29,7 +29,7 @@ Papyrus
 [Stone]
 Steen
 [Alga]
-Wier
+Zeewier
 [Cherry]
 Kersen
 [Orange]
@@ -37,29 +37,29 @@ Sinaasappelen
 [Prune]
 Pruimen
 [Clearing:]
-Ruimen:
+Inzamelen:
 [Min required level:]
-Minimale vereiste rang:
+Minimaal vereist niveau:
 [Bullets]
 Kogels
 [range]
 Bereik
 [destroy]
-Vernietigen
+Vernietig
 [cancel destroy]
 Vernietigen annuleren
 [wait destroy]
-Op vernietiging aan het wachten
+Wordt vernietigd
 [upgrade]
 Verbeteren
 [repair]
-Herstellen
+Repareren
 [cancel upgrade]
-Verbetering annuleren
+Verbeteren annuleren
 [cancel repair]
-Herstellen annuleren
+Reparatie annuleren
 [units type]
-Type eenheden
+soort eenheden
 [workers]
 werkers
 [explorers]
@@ -67,7 +67,7 @@ verkenners
 [warriors]
 soldaten
 [Unit type]
-Type eenheid
+soort eenheid
 [Worker]
 Werker
 [Explorer]
@@ -77,37 +77,37 @@ Soldaat
 [still (w)]
 Nog
 [units working]
-Werkende eenheden
+ werkende eenheden
 [still one unit working]
-Nog een eenherd aan het werk
+Nog één eenheid aan het werk
 [Still (i)]
-Nog
+Nog 
 [Still one]
 Nog één
 [Building name]
-Naam gebouw
+Soort gebouw
 [swarm building]
 Zwerm
 [food building]
 Herberg
 [health building]
-Hospitaal
+Ziekenhuis
 [walkspeed building]
 Racebaan
 [swimspeed building]
 Zwembad
 [attack building]
-Kazernes
+Kazerne
 [science building]
 School
 [defense building]
-Verdegingstoren
+Uitkijktoren
 [exploration flag]
-Verkenvlag
+Verkenningsvlag
 [war flag]
-Oorlogsvlag
+Oorlogsvlaf
 [clearing flag]
-Ruimvlag
+Inzamelvlag
 [stone wall]
 Stenen muur
 [market]
@@ -117,159 +117,159 @@ Verboden zone
 [guard area]
 Verdedigingszone
 [clear area]
-Ruimzone
+Inzamel zone
 [Building short explanation]
-Korte uitleg van gebouw (max. 24 characters)
+Korte beschrijving van het gebouw (max. 24 tekens)
 [swarm building explanation]
- Maakt nieuwe eenheden
+Maakt nieuwe eenheden
 [food building explanation]
-Geeft uw eenheden
+Voedt je eenheden
 [health building explanation]
- Heelt uw eenheden
+Geneest je eenheden
 [walkspeed building explanation]
- Verbetert de snelheids-
+Leert je eenheden
 [swimspeed building explanation]
- Verbetert de zwemsnelheidsrang
+Leert je eenheden
 [attack building explanation]
- Verbetert de aanvalsrang
+Leert je eenheden
 [science building explanation]
- Verbetert de bouwrang
+Leert je eenheden
 [defense building explanation]
- Valt vijanden in de buurt aan
+Valt vijanden aan
 [exploration flag explanation]
- Trekt verkenners aan
+Roept verkenners op
 [war flag explanation]
- Trekt soldaten aan
+Roept soldaten op
 [clearing flag explanation]
- Ruim vooraden
+Roept eenheden op om
 [stone wall explanation]
- Passief verdedigingselement
+Passief verdedigings-
 [market explanation]
- Sta u toe fruit te wisselen
+Verhandel fruit
 [Building short explanation 2]
- Korte beschrijving van gebouwen (max. 24 characters)
+Korte beschrijving van het gebouw 2 (max. 24 tekens)
 [swarm building explanation 2]
  
 [food building explanation 2]
-voedsel
+ 
 [health building explanation 2]
  
 [walkspeed building explanation 2]
-rang van uw eenheden
+sneller lopen
 [swimspeed building explanation 2]
-van uw eenheden
+sneller zwemmen
 [attack building explanation 2]
-van uw soldaten
+krachtiger aanvallen
 [science building explanation 2]
-van uw werkers
+sneller bouwen
 [defense building explanation 2]
-
+die in de buurt komen
 [exploration flag explanation 2]
- 
+het terrein te verkennen
 [war flag explanation 2]
- 
+om aan te vallen
 [clearing flag explanation 2]
- 
+in te zamelen
 [stone wall explanation 2]
- 
+element
 [market explanation 2]
-met de anderen
+met anderen
 [waiting for %0]
-Wachten voor %0
+Wachten op %0
 [%0 has left the game]
-%0 heeft het spel verlaten.
+%0 heeft het spel verlaten
 [%0 has been deconnected of the game]
-%0 heeft geen verbinding meer.
+%0 heeft de verbinding verbroken
 [load game]
-Laad spel
+Laden
 [save game]
-Sla spel op
+Opslaan
 [options]
 Opties
 [alliances]
-Alliancies
+Allianties
 [return to game]
-Terug naar het spel
+Speel verder
 [quit the game]
-Sluit het spel af
+Verlaat dit spel
 [ok]
-OK
+Ok
 [Cancel]
 Annuleren
 [you have lost]
-Je bent verloren!
+Je hebt verloren!
 [you have won]
-Je bent gewonnen!
+Je hebt gewonnen!
 [campaign]
-Veldtocht
+Campagne
 [tutorial]
 Oefenen
 [custom game]
 Ander spel
 [yog]
-Ysagoon Online spelen
+Ysagoon Online Gaming
 [Enter your nickname :]
-Vul uw bijnaam in:
+Voer gebruikersnaam in:
 [Enter your password :]
-Vul uw wachtwoord in:
+Voer wachtwoord in:
 [lan]
-LAN spel
+LAN Spel
 [settings]
-Opties
+Instellingen
 [Warning, you need to reboot the game for changes to take effect]
-Opgelet, je moet het spel herstarten voordat de veranderingen effect hebben
+Let op, je moet het spel opnieuw opstarten voordat de veranderingen worden doorgevoerd
 [editor]
-Kaartmaker
+Speelveld maken
 [credits]
-Over
+Met dank aan...
 [quit]
 Afsluiten
 [create game]
-Maak spel
+Start een spel
 [update list]
-Lijst verversen
+Ververs lijst
 [connecting to]
-Aan het verbinden met
+Verbinden met
 [connect]
 Verbinden
 [Disconnect]
-Eindig verbinding
+Verbreek verbinding
 [please wait]
 Even geduld a.u.b.
 [loading glob2]
-Bezig met laden van Globulation
+Bezig met laden van Globulation 2
 [host]
-Host een spel
+Start een server
 [join a game]
-Sluit je bij een spel aan
+Verbind met server
 [join]
-Aansluiten
+Deelnemen
 [goto main menu]
-Ga terug naar hoofdmenu
+Terug naar hoofdmenu
 [player name]
-Speler naam
+Naam speler
 [svr hostname]
-Server hostnaam
+Servernaam
 [hp]
 Sterkte
 [carry]
-bezig met dragen van :
+Draagt:
 [don't carry anything]
-Niets aan het dragen
+Draagt niets
 [level]
-Rang
+Niveau
 [levels]
-Rangen
+Niveaus
 [building site]
-Constructiewerf
+bouwplaats
 [create map]
-Maak een kaart
+Maak speelveld
 [map size x]
-Kaart breette
+Breedte van speelveld
 [map size y]
-Kaart hoogte
+Hoogte van speelveld
 [default terrain]
-Standaart terrein
+Standaard terrein
 [water]
 Water
 [sand]
@@ -277,45 +277,45 @@ Zand
 [grass]
 Gras
 [teams]
- Ploegen
+ teams
 [choose map]
-Kies een kaart
+Kies een speelveld
 [choose game]
 Kies een spel
 [awaiting players]
-Wachten op spelers
+Wacht op spelers
 [stat]
-Statestieken
+Statistieken
 [food left]
 Voedsel over
 [the building is finished]
-Het gebouw is klaar
+Het gebouw is af
 [the swarm is finished]
-The zwerm is klaar
+De zwerm is af
 [the food building is finished]
-De herberg is klaar
+De herberg is af
 [the health building is finished]
-Het hospitaal is klaar
+Het ziekenhuis is af
 [the walkspeed building is finished]
-De racebaan is klaar
+De racebaan is af
 [the swimspeed building is finished]
-Het zwembad is klaar
+Het zwembad is af
 [the attack building is finished]
-De kazerne is klaar
+De kazerne is af
 [the science building is finished]
-De school is klaar
+De school is af
 [the tower building is finished]
-De verdedigingstoren is klaar
+De uitkijktoren is af
 [the exploration flag is finished]
-?? Verkeningsvlag is klaar ??
+?? De verkenningsvlag is klaar ??
 [the war flag is finished]
-?? De Oorlogsvlag is klaar ??
+?? De oorlogsvlag is klaar ??
 [the clearing flag is finished]
-?? De Ruimvlag is klaar ??
+?? De inzamelvlag is klaar ??
 [the stone wall is finished]
-Een muurdeel is klaar
+Er is een stuk muur af
 [the market is finished]
-De markt is klaar
+De markt is af
 [the building is under attack]
 Het gebouw wordt aangevallen
 [the swarm is under attack]
@@ -323,7 +323,7 @@ De zwerm wordt aangevallen
 [the food building is under attack]
 De herberg wordt aangevallen
 [the health building is under attack]
-Het hospitaal wordt aangevallen
+Het ziekenhuis wordt aangevallen
 [the walkspeed building is under attack]
 De racebaan wordt aangevallen
 [the swimspeed building is under attack]
@@ -333,25 +333,25 @@ De kazerne wordt aangevallen
 [the science building is under attack]
 De school wordt aangevallen
 [the defense building is under attack]
-Uw verdediging wordt aangevallen
+Je defensie ligt onder vuur
 [the exploration flag is under attack]
 ?? De verkenningsvlag wordt aangevallen ??
 [the war flag is under attack]
 ?? De oorlogsvlag wordt aangevallen ??
 [the clearing flag is under attack]
-?? De ruimvlag wordt aangevallen ??
+?? De inzamelvlag wordt aangevallen ??
 [the stone wall is under attack]
-Uw muren worden aangevallen
+De vijand nadert je muren
 [the market is under attack]
 De markt wordt aangevallen
 [Your %0 are under attack]
-Uw %0 worden aangevallen
+Je %0 worden aangevallen
 [Your unit got converted to %0's team]
-Uw eenheid is geconverteert naar een %0 ploeg
+Een eenheid van jou is overgelopen naar %0's team
 [%0's team unit got converted to your team]
-Een eenheid van %0 ploeg is geconverteert naar uw ploeg
+Een eenheid van %0's team is overgelopen naar jou
 [Uncontrolled]
-Ongecontrolleerd
+Onbestuurd
 [ai]
 AI
 [closed]
@@ -361,35 +361,35 @@ Sluiten
 [player]
 Speler
 [STARTING GAME ...]
-Bezig met starten van het spel... 
+Start het spel...
 [Statistics]
-Statestieken
+Statistieken
 [Buildings]
 Gebouwen
 [Prestige]
-Achtbaarheid
+Roem
 [Units]
 Eenheden
 [Attack]
 Aanval
 [Defense]
-Verdediging
+Defensie
 [free]
 vrij
 [of which]
 waarvan
 [are ok]
-ok zijn
+ok
 [are hungry]
-hongerig zijn
+hebben honger
 [are dying hungry]
-aan het sterven zijn
+zijn stervende
 [are wonded]
-gewond zijn
+zijn gewond
 [and]
 en
 [seeking a job]
-zijn aan het zoeken voor werk
+werkzoekend
 [Walk]
 Lopen
 [Swim]
@@ -397,15 +397,15 @@ Zwemmen
 [Build]
 Bouwen
 [Harvest]
-Oogsten
+Inzamelen
 [At. speed]
 Snelheid
 [At. strength]
-Sterkte
+Kracht
 [Magic At. Air]
 Luchtschade
 [Magic At. Ground]
-Grondschade
+Gronsschade
 [Total]
 Totaal
 [free]
@@ -413,21 +413,21 @@ vrij
 [seeking]
 zoeken
 [Free]
-Vrij
+Ok
 [hungry]
-hongerig
+honger
 [starving]
-sterven
+stervende
 [wounded]
-gewond zijn
+gewond
 [In way]
 Op weg
 [On the spot]
-Aan het zoeken
-[version]
+Hier
+[Version]
 Versie
 [open]
-openen
+open
 [Add AI]
 Voeg AI toe
 [AI]
@@ -439,31 +439,31 @@ AINumbi
 [AICastor]
 AICastor
 [AINicowar]
-Nicowar (unstable)
+Nicowar (instabiel)
 [AIWarrush]
 AIWarrush
 [AIReachToInfinity]
-ReachToInfinity
+ZuchtNaarEeuwigheid
 [AIToubib]
 AIToubib
 [the games]
-Spelen
+Spellen
 [the maps]
-Kaarten
+Speelvelden
 [was]
 was
 [was AI]
 was AI
 [state]
-status
+Status
 [Start]
 Start
 [not ready]
-niet klaar
+Niet klaar
 [has joined]
-is aangesloten
+neemt deel
 [has quit]
-heeft het spel afgesloten
+is gestopt
 [yog-chat]
 #yog-en
 [speed]
@@ -471,139 +471,139 @@ Snelheid
 [current speed]
 Huidige snelheid
 [attack speed]
-Aanvalssnelheid
+Aanvalskracht
 [new]
 Nieuw
 [load]
-Laad
+Laden
 [handmade map]
-Zelfgemaakte kaart
+Zelfgemaakt speelveld
 [mapGenerationDescriptor Methodes]
-Metoden van random gegenereerde kaart
+Willekeurige generatie van speelveld
 [uniform terrain]
 Effen terrein
 [random terrain]
-Random terrein
+Willekeurig terrein
 [islands terrain]
 Eilanden
 [ratios]
-Hoeveelheid
+Afmetingen
 [smoothing]
-Egaal maken
+Egalisering
 [number of teams]
-aantal spelers
+aantal teams
 [islands size]
-eiland groote
+eiland grootte
 [beach size]
-Strandgroote
+strand grootte
 [workers]
 Werkers
 [bad error in connection system]
-Slechte fout in connectie systeem
+Fout tijdens verbinden
 [not connected]
 Niet verbonden
 [presence request sent]
-Aanwezigheid gezonden ...
+Aanwezigheidsverzoek verzonden...
 [session request sent]
-Periode gezonden ...
+Sessie verzoek verzonden...
 [checksum sent]
-Checksum gezonden ...
+Checksum verzonden...
 [connected to server]
-Verbonen met server
+Verbonden met server
 [connecting to all players]
 Verbinden met alle spelers
 [connected to all players]
 Verbonden met alle spelers
 [available lan games]
-Locale beschikbare spelen
+Beschikbare LAN spellen
 [login]
 Aanmelden
 [from:]
 van:
 [to:]
-naar:
+aan:
 [away:]
 weg:
 [compile]
-compuleerscript
+Compileer script
 [downloaded at]
-Downloaden van 
+Downloaden op
 [percent]
-  Procent
+  procent
 [download finished]
-Downloaden klaar
+Klaar met downloaden
 [Map name: %0]
-Mapnaam: %0.
+Naam speelveld: %0.
 [one player]
-Een speler is aangesloten.
+Een speler neemt deel.
 [number of players: %0]
-%0 spelers zijn aanwezig.
+Er zijn %0 spelers aanwezig.
 [number of teams: %0]
-%0 ploegen.
+%0 teams.
 [game full]
-Spel vol
+Spel is vol
 [small]
 klein
 [medium]
-middelmatig
+middel
 [large]
 groot
 [network latency]
-Network latency
+Verbindingskwaliteit
 [game speed]
-Spel snelheid
+Speelsnelheid
 [Paused]
-Gepauzeerd
+Pauze
 [Register a new YOG user with password]
-Registreer een nieuwe YOG gebruiker met een wachtwoord (onzeker)
+Registreer nieuwe gebruiker met wachtwoord (onveilig)
 [Remember YOG password localy]
-Herinner het wachtwoord. (onzeker)
+Onthoud wachtwoord (onveilig)
 [YESTS_BAD]
-Interne fout bij het connecteren.
+Interne fout bij het verbinden.
 [YESTS_UNABLE_TO_CONNECT]
-Kon niet verbinden. Waarschijnlijk werkt de YOG metaserver niet.
+Kan geen verbinding maken. Waarschijnlijk werkt de YOG server niet.
 [YESTS_CREATED]
-Het conectiesysteem is klaar om te verbinden met de YOG metaserver.
+Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door een vinkje te zetten voor "Registreer nieuwe gebruiker met wachtwoord".
 [YESTS_CONNECTING]
-Bezig met verbingding maken met de YOG metaserver...
+Bezig te verbinden met de YOG server...
 [YESTS_DECONNECTING]
-Bezig met de verbindign met de YOG metaserver af te sluiten...
+Verbinding verbreken met YOG server...
 [YESTS_YOG_KILLED]
-Een administrator heeft de YOG metaserver juist afgesloten.
+Een administrator heeft de YOG server zojuist afgesloten.
 [YESTS_CONNECTION_LOST]
-De verbinding met YOG is afgebroken.
+De verbinding met YOG is verbroken.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-De YOG metaserver heeft uw verbinding afgewezen, uw globulation2 client is te oud.
+De verbinding met de YOG is geweigerd omdat uw globulation2 client te oud is.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-De YOG metaserver heeft uw verbinding afgewezen, uw gebruikernaam is al door iemand anders gebruikt.
+De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al bestaat.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-De YOG metaserver heeft uw verbinding afgewezen, het opgegeven wachtwoord was niet juist.
+De verbinding met de YOG server is geweigerd omdat uw wachtwoord onjuist is.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-De YOG metaserver heeft uw verbinding afgewezen, deze gebruikernaam heeft nog geen wachtwoord. Als je een gebruikernaam met een wachtwoord wilt hebben, activeer daavoor "Registreer een nieuwe YOG gebruiker met een wachtwoord" voor je connecteert. Je moet deze optie maar een keer activeren.
+De verbinding met de YOG server is geweigerd omdat er nog geen wachtwoord is ingesteld voor deze gebruikersnaam. Waarschijnlijk wil je je gebruikersnaam eerst registreren. Om dit te doen kun je een vinkje zetten voor "Registreer nieuwe YOG gebruiker met wachtwoord" alvorens je een verbinding maakt. Je hoeft dit slechts één keer te doen.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-De YOG metaserver heeft uw verbinding afgewezen, deze gebruikernaam is al geregistreerd. Als je met deze gebruikernaam wilt spelen mag je de optie "Registreer een nieuwe YOG gebruiker met een wachtwoord" niet activeren.
+De verbinding met de YOG server is geweigerd omdat deze gebruikersnaam al eerder is geregistreerd. Als dit jouw gebruikersnaam is, haal dan het vinkje weg voor "Registreer nieuwe YOG gebruiker met wachtwoord".
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-De YOG metaserver heeft uw verbinding afgewezen, er is een protocolfout opgetreden: je bent al gecertificerd. Probeer opnieuw over 45 seconden.
+De verbinding met de YOG server is geweigerd vanwege een protocol fout: je bent al aangemeld. Probeer het opnieuw over 45 seconden.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
+De verbinding met de YOG server is verwijderd omdat er een interne fout is opgetreden: je bent niet verbonden tijdens het aanmelden. Maak alstublieft een melding van deze fout.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-De YOG metaserver heeft uw verbinding afgewezen zonder uitleg!
+De verbinding met de YOG server is zonder duidelijke verklaring geweigerd!
 [The player %0 has left YOG]
 %0 heeft YOG verlaten.
 [The player %0 has joined YOG]
-%0 heeft zich aangesloten bij YOG.
+%0 betreedt YOG.
 [You are now marked as away]
-Je bent 'weg' gemarkeerd.
+Je status is "weg".
 [You are no more marked as away]
-Je bent niet meer 'weg' gemarkeerd.
+Je status is "beschikbaar".
 [YOG_HELP]
-Het YOG berichten systeem heeft 2 commando's, "msg" en "away". Type "/help <commando>" om meer over ze te leren.
+Het YOG berichtensysteem kent twee commando's, "msg" en "away". Type "/help <commando> voor een uitgebreide omschrijving.
 [YOG_HELP_AWAY]
-Het "/away (<bericht>)" commando staat YOG gebruikers toe om andere YOG gebruikers the laten weten dat je tijdelijk weg bent. Je mag een korte beschrijving toevoegen.You may add a short explanation message (dit schrijf je best in het engels).  Bv. "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
+Het "/away (<bericht>)" commando staat YOG gebruikers toe om andere YOG gebruikers te laten weten dat je tijdelijk weg bent. Je kan een korte beschrijving toevoegen (dit schrijf je best in het engels). Bijv: "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
 [YOG_HELP_MSG]
-Het "/msg <naam> <bericht>" commando zent een bericht naar iemand (dit schrijf je best in het engels). Bv. "/msg John Hi John, how are you?".  Alias "/m".
+Het "/msg <naam> <bericht>" commando stuurt een privé bericht naar iemand (dit schrijf je best in het engels). Bijv: "/msg John Hi John, how are you?".  Alias "/m".
 [save before quit?]
-Wil je het spel opslaan voor je afsluit?
+Wil je spel opslaan voordat je aflsuiten?
 [Yes]
 Ja
 [No]
@@ -613,60 +613,109 @@ Opslaan
 [auto save]
 Auto opslaan
 [Total prestige reached]
-Totale berijkte achtbaarheid
+Totaal verworven roem
 [Continue playing]
-Doorgaan met spelen
+Speel verder 
 [Lost : your colony is dead]
-Verloren: ww colonie is dood
+Verloren: je kolonie is dood
 [Won : you defeated your opponents]
-GeWinnen : je hebt je tegenstanders vernietigt
+Gewonnen: je hebt je tegenstanders verslagen
 [Won : your ally %0 has the most prestige]
-Gewonnen: Uw bondgenoot %0 heeft de grootste achtbaarheid
+Gewonnen: je bondgenoot %0 heeft de meeste roem
 [Lost : %0 has more prestige than you]
-Verloren : %0 heeft meer achtbaarheid dan jij
+Verloren: %0 heeft meer roem dan jou
 [Won : you have the most prestige]
-Gewonnen : je hebt de grootste achtbaarheid
+Gewonnen: jij hebt de meeste roem
 [The game has not been finished]
-Het spel is nog niet klaar
+Het spel is nog niet afgelopen
 [display]
-Groote
+Beeld
 [username]
-Gebruikernaam
+Gebruikersnaam
 [fullscreen]
 Volledig scherm
 [hwaccel]
 Hardware versnelling
 [dblbuff]
-Dubbele buffering
+Dubbele buffers
 [lowquality]
 Lage kwaliteit
 [audio]
-Audio
+Geluid
 [Music volume]
 Volume (muziek)
 [Happyness]
-Blijheid
+Tevreden
 [customcur]
-Eigen cusor
+Alternative cursor
 [choose campaign]
-Kies een velttocht
+Kies een campagne
 [nick taken]
-Het spijt ons, maar die naam is al op freenode genomen, je zal niet met YOG kunnen verbinden
+Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode. Je kan alleen maar praten via YOG
 [mute]
-mute
+geluid uit
 [abreaviation explanation A]
-A : Bondgenoten
+A: Bondgenoten
 [abreaviation explanation V]
-V : Toon een visioen van alle gebouwen
+V: Toon een visioen voor alle gebouwen
 [abreaviation explanation Vf]
-Vf : Toon een visioen van alle herbergen (om eenheden te stelen)
+Vf: Toon een visioen van alle herbergen (overlopen)
 [abreaviation explanation mV]
-mV : Toon een visioen van alle Markten (om fruit te ruilen)
+mV: Toon een visioen van alle Markten (handel)
 [abreaviation explanation C]
-C : Zend een bericht naar
+C: Stuur een bericht naar
 [shortcut explanation enter]
-key enter : Zent een bericht
+Enter-toets: stuur een bericht
 [shortcut explanation v]
-key v : spreken
+V-toets: ingedrukt houden om te spreken
 [Delete game]
-Verwijder geselecteert spel
+Verwijder dit spel
+[any explorer]
+elke verkenner
+[ground attack]
+grond aanval
+[Can't join game, wrong game version]
+Kan niet deelnemen aan het spel: verschillende versies
+[Can't join game, missmatching game parameters]
+Kan niet deelnemen aan het spel: parmaters tussen beiden partijen verschillen.
+[Can't join game, timeout]
+Kan niet deelnemen aan het spel: timeout
+[swamp terrain]
+Moeras
+[river terrain]
+Rivier
+[crater lakes terrain]
+Krater meren
+[old random terrain]
+oud willekeurig terrein
+[old islands terrain]
+oude eilanden
+[desert]
+woestijn
+[algae]
+zeewier
+[wheat]
+graan
+[wood]
+hout
+[stone]
+steen
+[river diameter]
+breedte van rivier
+[extra islands]
+lege eilanden
+[crater density]
+krater dochtheid
+[press space]
+Druk op spatie om verder te gaan
+[GUIMapPreview text 0]
+Kies a.u.b.
+[GUIMapPreview text 1]
+een speelveld
+[Unit editor]
+Eenheid bewerken
+[skin]
+Uiterlijk
+[hungryness]
+Honger
+
