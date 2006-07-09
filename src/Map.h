@@ -203,6 +203,12 @@ public:
 		return localForbiddenMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
+	//! Returns true if the position(x, y) is a forbideen area for the given team
+	bool isForbidden(int x, int y, Uint32 teamMask)
+	{
+		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden&teamMask;
+	}
+
 	//! Return true if the position (x,y) is a guard area set by the user
 	// or rather, by the team computeLocalGuardArea was last called for
 	bool isGuardAreaLocal(int x, int y)
@@ -210,11 +216,23 @@ public:
 		return localGuardAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
+	//! Returns true if the position(x, y) is a guard area for the given team
+	bool isGuardArea(int x, int y, Uint32 teamMask)
+	{
+		return cases[((y&hMask)<<wDec)+(x&wMask)].guardArea&teamMask;
+	}
+
 	//! Return true if the position (x,y) is a clear area set by the user
 	// or rather, by the team computeLocalClearArea was last called for
 	bool isClearAreaLocal(int x, int y)
 	{
 		return localClearAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
+	}
+
+	//! Returns true if the position(x, y) is a clear area for the given team
+	bool isClearArea(int x, int y, Uint32 teamMask)
+	{
+		return cases[((y&hMask)<<wDec)+(x&wMask)].clearArea&teamMask;
 	}
 	
 	// note - these are only meant to be called for the LOCAL team
