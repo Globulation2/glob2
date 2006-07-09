@@ -197,23 +197,28 @@ public:
 	}
 	
 	//! Return true if the position (x,y) is a forbidden area set by the user
+	// or rather, by the team computeLocalForbidden was last called for
 	bool isForbiddenLocal(int x, int y)
 	{
 		return localForbiddenMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
 	//! Return true if the position (x,y) is a guard area set by the user
+	// or rather, by the team computeLocalGuardArea was last called for
 	bool isGuardAreaLocal(int x, int y)
 	{
 		return localGuardAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
 	//! Return true if the position (x,y) is a clear area set by the user
+	// or rather, by the team computeLocalClearArea was last called for
 	bool isClearAreaLocal(int x, int y)
 	{
 		return localClearAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
+	// note - these are only meant to be called for the LOCAL team
+	// (the one whose stuff is displayed on the screen, etc)
 	//! Compute localForbiddenMap from cases array
 	void computeLocalForbidden(int localTeamNo);
 	//! Compute localGuardAreaMap from cases array
