@@ -971,38 +971,37 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			setRessource(x,y,STONE,1);
 		}
 	}
-	//fruit is special and so is placed seperately
 	//TODO: count of groves(=descriptor.fruitRatio) does not scale with mapsize.
 	//so it has to be adjusted higher on bigger maps now.
 	//TODO: is the use of syncrand obligatory in mapgeneration?
 	srand((unsigned)time(NULL));
-	std::cout << "fruit?\n";
+	//fruit-placement:
 	if (descriptor.fruitRatio > 0)
 	{
-		std::cout << "fruitplacement: " << descriptor.fruitRatio << "groves are ordered\n";
 		for (int q1=0; q1<descriptor.fruitRatio; q1++) //counting groves
 		{
-			int x=0;
-			int y=0;
-			int fruit;//fruit this grove will be
+			//choose fruit
+			int fruit;
 			switch (rand()%3)
 			{
 				case 0: fruit = CHERRY; break;
 				case 1: fruit = ORANGE; break;
 				case 2: fruit = PRUNE; break;
 			}
+			//choose coordinate where there is grass but no ressource yet
+			int x, y;
 			do
 			{
 				x=(rand()%w);
 				y=(rand()%h);
-			} while (getUMTerrain(x, y)!=GRASS || isRessource(x,y));//place starter on grass
-			int grovesize=(rand()%10)+1; //all groves have 1-8 trees
-			std::cout << "grove " << q1 << " will have up to " << grovesize << " trees\n";
+			} while (getUMTerrain(x, y)!=GRASS || isRessource(x,y));
+			//choose size of grove (tree count)
+			int grovesize=(rand()%10)+1;
 			for (int i=0; i<grovesize; i++)
 			{
-				std::cout << "new tree of kind " << fruit << " at (" << x << "," << y << ")\n";
 				setRessource(x,y,fruit,1);
-				for (int k=0; k<100; k++)//max. 50 tries to place the next tree
+				//find a valid neighbor of actual coordinate
+				for (int iTry=0; iTry<100; iTry++)
 				{
 					int xnew=x+rand()%3-1;
 					int ynew=y+rand()%3-1;
