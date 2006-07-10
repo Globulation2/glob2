@@ -139,6 +139,10 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case NICOWAR:
 			aiImplementation=new Nicowar::AINicowar(stream, player, versionMinor);
 		break;
+		case REACHTOINFINITY:
+			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
+			aiImplementation->load(stream, player, versionMinor);
+		break;
 		case TOUBIB:
 			aiImplementation=new AIToubib(stream, player, versionMinor);
 		break;
