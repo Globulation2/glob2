@@ -29,6 +29,7 @@
 #include "Order.h"
 #include <iterator>
 #include "Utilities.h"
+#include "Brush.h"
 
 using namespace AIEcho;
 using namespace AIEcho::Gradients;
@@ -38,6 +39,27 @@ using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
 using namespace AIEcho::UpgradesRepairs;
 using namespace boost::logic;
+
+
+
+void AIEcho::signature_write(GAGCore::OutputStream *stream)
+{
+	stream->write("EchoSig", 7, "signature");
+}
+
+
+
+void AIEcho::signature_check(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	char signature[7];
+	stream->read(signature, 7, "signature");
+	if (memcmp(signature,"EchoSig", 7)!=0)
+	{
+		assert(false);
+	}
+}
+
+
 
 Entities::Building::Building(int building_type, int team, bool under_construction) : building_type(building_type), team(team), under_construction(under_construction)
 {
@@ -640,6 +662,44 @@ void FlagMap::set_flag(int x, int y, int gid)
 
 
 
+bool FlagMap::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("FlagMap");
+	stream->readEnterSection("flagmap");
+	Uint32 size=stream->readUint32("size");
+	flagmap.resize(size);
+	for (Uint32 flagmap_index = 0; flagmap_index < size; flagmap_index++)
+	{
+		stream->readEnterSection(flagmap_index);
+		flagmap[flagmap_index]=stream->readUint32("gid");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	width=stream->readUint32("width");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void FlagMap::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("FlagMap");
+	stream->writeEnterSection("flagmap");
+	stream->writeUint32(flagmap.size(), "size");
+	for (Uint32 flagmap_index = 0; flagmap_index < flagmap.size(); flagmap_index++)
+	{
+		stream->writeEnterSection(flagmap_index);
+		stream->writeUint32(flagmap[flagmap_index], "gid");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeUint32(width, "width");
+	stream->writeLeaveSection();
+}
+
+
+
 BuildingRegister::BuildingRegister(Player* player, Echo& echo) : building_id(0), player(player), echo(echo)
 {
 
@@ -662,6 +722,113 @@ unsigned int BuildingRegister::register_building(int x, int y, int building_type
 {
 	pending_buildings[building_id]=boost::make_tuple(x, y, building_type, 0);
 	return building_id++;
+}
+
+
+
+bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("BuildingRegister");
+
+	signature_check(stream, player, versionMinor);
+
+	stream->readEnterSection("pending_buildings");
+	Uint32 pending_size=stream->readUint32("size");
+	for(Uint32 pending_index=0; pending_index<pending_size; ++pending_index)
+	{
+		stream->readEnterSection(pending_index);
+		pending_buildings[		stream->readUint32("echo_building_id")]=
+			boost::make_tuple(	stream->readUint32("xpos"),
+						stream->readUint32("ypos"),
+						stream->readUint32("building_type"),
+						stream->readUint32("ticks_since_registered"));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	signature_check(stream, player, versionMinor);
+
+	stream->readEnterSection("found_buildings");
+	Uint32 found_size=stream->readUint32("size");
+	for(Uint32 found_index=0; found_index<found_size; ++found_index)
+	{
+		stream->readEnterSection(found_index);
+		Uint32 id=stream->readUint32("echo_building_id");
+		Uint32 xpos=stream->readUint32("xpos");
+		Uint32 ypos=stream->readUint32("ypos");
+		Uint32 building_type=stream->readUint32("building_type");
+		Uint32 gid=stream->readUint32("gid");
+		Uint8 upgrade_status=stream->readUint8("upgrade_status");
+		boost::logic::tribool t;
+		if(upgrade_status==0)
+			t=false;
+		else if(upgrade_status==1)
+			t=true;
+		else
+			t=indeterminate;
+		found_buildings[id]=boost::make_tuple(xpos, ypos, building_type, gid, t);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	signature_check(stream, player, versionMinor);
+
+	building_id=stream->readUint32("building_id");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void BuildingRegister::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("BuildingRegister");
+
+	signature_write(stream);
+
+	stream->writeEnterSection("pending_buildings");
+	unsigned int pending_size=0;
+	stream->writeUint32(pending_buildings.size(), "size");
+	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end(); ++i)
+	{
+		stream->writeEnterSection(pending_size);
+		stream->writeUint32(i->first, "echo_building_id");
+		stream->writeUint32(i->second.get<0>(), "xpos");
+		stream->writeUint32(i->second.get<1>(), "ypos");
+		stream->writeUint32(i->second.get<2>(), "building_type");
+		stream->writeUint32(i->second.get<3>(), "ticks_since_registered");
+		stream->writeLeaveSection();
+		pending_size++;
+	}
+	stream->writeLeaveSection();
+
+	signature_write(stream);
+
+	stream->writeEnterSection("found_buildings");
+	unsigned int found_size=0;
+	stream->writeUint32(found_buildings.size(), "size");
+	for(found_iterator i=found_buildings.begin(); i!=found_buildings.end(); ++i)
+	{
+		stream->writeEnterSection(found_size);
+		stream->writeUint32(i->first, "echo_building_id");
+		stream->writeUint32(i->second.get<0>(), "xpos");
+		stream->writeUint32(i->second.get<1>(), "ypos");
+		stream->writeUint32(i->second.get<2>(), "building_type");
+		stream->writeUint32(i->second.get<3>(), "gid");
+		if(i->second.get<4>())
+			stream->writeUint8(1, "upgrade_status");
+		else if(!i->second.get<4>())
+			stream->writeUint8(0, "upgrade_status");
+		else
+			stream->writeUint8(2, "upgrade_status");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	signature_write(stream);
+
+	stream->writeUint32(building_id, "building_id");
+	stream->writeLeaveSection();
 }
 
 
@@ -795,6 +962,77 @@ int BuildingRegister::get_type(unsigned int id)
 	return found_buildings[id].get<2>();
 }
 
+/*
+			CNotUnderConstruction,
+			CUnderConstruction,
+			CBeingUpgraded,
+			CBeingUpgradedTo,
+			CSpecifcBuildingType,
+			CNotSpecificBuildingType,
+			CBuildingLevel,
+			CUpgradable,
+			CTicksPassed
+*/
+
+Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Condition");
+	ConditionType type=static_cast<ConditionType>(stream->readUint32("type"));
+	Condition* condition=NULL;
+	switch(type)
+	{
+		case CNotUnderConstruction:
+			condition=new NotUnderConstruction;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CUnderConstruction:
+			condition=new UnderConstruction;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CBeingUpgraded:
+			condition=new BeingUpgraded;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CBeingUpgradedTo:
+			condition=new BeingUpgradedTo;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CSpecificBuildingType:
+			condition=new SpecificBuildingType;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CNotSpecificBuildingType:
+			condition=new NotSpecificBuildingType;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CBuildingLevel:
+			condition=new BuildingLevel;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CUpgradable:
+			condition=new Upgradable;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CTicksPassed:
+			condition=new TicksPassed;
+			condition->load(stream, player, versionMinor);
+		break;
+
+	}
+	stream->readLeaveSection();
+	return condition;
+}
+
+
+
+void Condition::save_condition(Condition* condition, GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Condition");
+	stream->writeUint32(condition->get_type(), "type");
+	condition->save(stream);
+	stream->writeLeaveSection();
+}
+
 
 
 bool NotUnderConstruction::passes(Echo& echo, int id)
@@ -804,12 +1042,40 @@ bool NotUnderConstruction::passes(Echo& echo, int id)
 	return result;
 }
 
+bool NotUnderConstruction::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+}
+
+
+
+void NotUnderConstruction::save(GAGCore::OutputStream *stream)
+{
+
+}
+
+
+
 
 bool UnderConstruction::passes(Echo& echo, int id)
 {
 	Building* building = echo.get_building_register().get_building(id);
 	return building->constructionResultState!=::Building::NO_CONSTRUCTION && building->buildingState==Building::ALIVE;
 }
+
+
+bool UnderConstruction::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+}
+
+
+
+void UnderConstruction::save(GAGCore::OutputStream *stream)
+{
+
+}
+
 
 
 
@@ -827,6 +1093,25 @@ bool SpecificBuildingType::passes(Echo& echo, int id)
 	return false;
 }
 
+bool SpecificBuildingType::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("SpecificBuildingType");
+	building_type=stream->readUint32("building_type");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void SpecificBuildingType::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("SpecificBuildingType");
+	stream->writeUint32(building_type, "building_type");
+	stream->writeLeaveSection();
+}
+
+
+
 
 
 NotSpecificBuildingType::NotSpecificBuildingType(int building_type) : building_type(building_type)
@@ -843,12 +1128,46 @@ bool NotSpecificBuildingType::passes(Echo& echo, int id)
 	return false;
 }
 
+bool NotSpecificBuildingType::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("NotSpecificBuildingType");
+	building_type=stream->readUint32("building_type");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void NotSpecificBuildingType::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("NotSpecificBuildingType");
+	stream->writeUint32(building_type, "building_type");
+	stream->writeLeaveSection();
+}
+
+
+
 
 
 bool BeingUpgraded::passes(Echo& echo, int id)
 {
 	return echo.get_building_register().is_building_upgrading(id);
 }
+
+bool BeingUpgraded::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+
+}
+
+
+
+void BeingUpgraded::save(GAGCore::OutputStream *stream)
+{
+
+}
+
+
 
 
 BeingUpgradedTo::BeingUpgradedTo(int level) : level(level)
@@ -872,6 +1191,25 @@ bool BeingUpgradedTo::passes(Echo& echo, int id)
 }
 
 
+bool BeingUpgradedTo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("BeingUpgradedTo");
+	level=stream->readUint32("level");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void BeingUpgradedTo::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("BeingUpgradedTo");
+	stream->writeUint32(level, "level");
+	stream->writeLeaveSection();
+}
+
+
+
 
 BuildingLevel::BuildingLevel(int building_level) : building_level(building_level)
 {
@@ -887,6 +1225,25 @@ bool BuildingLevel::passes(Echo& echo, int id)
 		return true;
 	return false;
 }
+
+
+bool BuildingLevel::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("BuildingLevel");
+	building_level=stream->readUint32("building_level");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void BuildingLevel::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("BeingLevel");
+	stream->writeUint32(building_level, "building_level");
+	stream->writeLeaveSection();
+}
+
 
 
 
@@ -909,6 +1266,18 @@ bool Upgradable::passes(Echo& echo, int id)
 	return false;
 }
 
+bool Upgradable::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+}
+
+
+
+void Upgradable::save(GAGCore::OutputStream *stream)
+{
+
+}
+
 
 
 void ManagementOrder::add_condition(Condition* condition)
@@ -918,7 +1287,7 @@ void ManagementOrder::add_condition(Condition* condition)
 
 
 
-bool ManagementOrder::passes_conditions(Echo& echo, unsigned int building_id)
+bool ManagementOrder::passes_conditions(Echo& echo, int building_id)
 {
 	for(unsigned int i=0; i<conditions.size(); ++i)
 	{
@@ -929,18 +1298,99 @@ bool ManagementOrder::passes_conditions(Echo& echo, unsigned int building_id)
 }
 
 
+
+ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ManagementOrder");
+	signature_check(stream, player, versionMinor);
+	ManagementOrderType mot=static_cast<ManagementOrderType>(stream->readUint32("type"));
+	ManagementOrder* mo=NULL;
+	signature_check(stream, player, versionMinor);
+	switch(mot)
+	{
+		case MAssignWorkers:
+			mo=new AssignWorkers;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MChangeSwarm:
+			mo=new ChangeSwarm;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MDestroyBuilding:
+			mo=new DestroyBuilding;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MAddRessourceTracker:
+			mo=new AddRessourceTracker;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MPauseRessourceTracker:
+			mo=new PauseRessourceTracker;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MUnPauseRessourceTracker:
+			mo=new UnPauseRessourceTracker;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MChangeFlagSize:
+			mo=new ChangeFlagSize;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MChangeFlagMinimumLevel:
+			mo=new ChangeFlagMinimumLevel;
+			mo->load(stream, player, versionMinor);
+			break;
+	}
+	signature_check(stream, player, versionMinor);
+	return mo;
+}
+
+
+
+void ManagementOrder::save_order(ManagementOrder* mo, GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ManagementOrder");
+	signature_write(stream);
+	stream->writeUint32(mo->get_type(), "type");
+	signature_write(stream);
+	mo->save(stream);
+	signature_write(stream);
+	stream->writeLeaveSection();
+}
+
+
+
 AssignWorkers::AssignWorkers(int number_of_workers) : number_of_workers(number_of_workers)
 {
 
 }
 
 
-void AssignWorkers::modify(Echo& echo, unsigned int building_id)
+void AssignWorkers::modify(Echo& echo, int building_id)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 	{
 		echo.push_order(new OrderModifyBuilding(echo.get_building_register().get_building(building_id)->gid, number_of_workers));
 	}
+}
+
+
+
+bool AssignWorkers::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("AssignWorkers");
+	number_of_workers=stream->readUint32("number_of_workers");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void AssignWorkers::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AssignWorkers");
+	stream->writeUint32(number_of_workers, "number_of_workers");
+	stream->writeLeaveSection();
 }
 
 
@@ -951,7 +1401,7 @@ ChangeSwarm::ChangeSwarm(int worker_ratio, int explorer_ratio, int warrior_ratio
 }
 
 
-void ChangeSwarm::modify(Echo& echo, unsigned int building_id)
+void ChangeSwarm::modify(Echo& echo, int building_id)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 	{
@@ -965,12 +1415,51 @@ void ChangeSwarm::modify(Echo& echo, unsigned int building_id)
 
 
 
-void DestroyBuilding::modify(Echo& echo, unsigned int building_id)
+bool ChangeSwarm::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ChangeSwarm");
+	worker_ratio=stream->readUint32("worker_ratio");
+	explorer_ratio=stream->readUint32("explorer_ratio");
+	warrior_ratio=stream->readUint32("warrior_ratio");
+	stream->readLeaveSection();
+	return true;
+
+}
+
+
+
+void ChangeSwarm::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ChangeSwarm");
+	stream->writeUint32(worker_ratio, "worker_ratio");
+	stream->writeUint32(explorer_ratio, "explorer_ratio");
+	stream->writeUint32(warrior_ratio, "warrior_ratio");
+	stream->writeLeaveSection();
+}
+
+
+
+
+void DestroyBuilding::modify(Echo& echo, int building_id)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 	{
 		echo.push_order(new OrderDelete(echo.get_building_register().get_building(building_id)->gid));
 	}
+}
+
+
+
+bool DestroyBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+}
+
+
+
+void DestroyBuilding::save(GAGCore::OutputStream *stream)
+{
+
 }
 
 
@@ -1011,6 +1500,48 @@ int RessourceTracker::get_average_level()
 
 
 
+bool RessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("RessourceTracker");
+	stream->readEnterSection("record");
+	Uint32 size=stream->readUint32("size");
+	record.resize(size);
+	for(unsigned int record_index=0; record_index<size; ++record_index)
+	{
+		stream->readEnterSection(record_index);
+		record[record_index]=stream->readUint32("quantity_of_ressources");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	position=stream->readUint32("position");
+	timer=stream->readUint32("timer");
+	building_id=stream->readUint32("building_id");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void RessourceTracker::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("RessourceTracker");
+	stream->writeEnterSection("record");
+	stream->writeUint32(record.size(), "size");
+	for(unsigned int record_index=0; record_index<record.size(); ++record_index)
+	{
+		stream->writeEnterSection(record_index);
+		stream->writeUint32(record[record_index], "quantity_of_ressources");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeUint32(position, "position");
+	stream->writeUint32(timer, "timer");
+	stream->writeUint32(building_id, "building_id");
+	stream->writeLeaveSection();
+}
+
+
+
 AddRessourceTracker::AddRessourceTracker()
 {
 
@@ -1018,23 +1549,65 @@ AddRessourceTracker::AddRessourceTracker()
 
 
 
-void AddRessourceTracker::modify(Echo& echo, unsigned int building_id)
+void AddRessourceTracker::modify(Echo& echo, int building_id)
 {
 	echo.add_ressource_tracker(new RessourceTracker(echo, building_id), building_id);
 }
 
 
 
-void PauseRessourceTracker::modify(Echo& echo, unsigned int building_id)
+bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+}
+
+
+
+void AddRessourceTracker::save(GAGCore::OutputStream *stream)
+{
+
+}
+
+
+
+void PauseRessourceTracker::modify(Echo& echo, int building_id)
 {
 	echo.pause_ressource_tracker(building_id);
 }
 
 
 
-void UnPauseRessourceTracker::modify(Echo& echo, unsigned int building_id)
+bool PauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+}
+
+
+
+void PauseRessourceTracker::save(GAGCore::OutputStream *stream)
+{
+
+}
+
+
+
+void UnPauseRessourceTracker::modify(Echo& echo, int building_id)
 {
 	echo.unpause_ressource_tracker(building_id);
+}
+
+
+
+bool UnPauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return true;
+}
+
+
+
+void UnPauseRessourceTracker::save(GAGCore::OutputStream *stream)
+{
+
 }
 
 
@@ -1046,12 +1619,256 @@ ChangeFlagSize::ChangeFlagSize(int size) : size(size)
 
 
 
-void ChangeFlagSize::modify(Echo& echo, unsigned int building_id)
+void ChangeFlagSize::modify(Echo& echo, int building_id)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 	{
 		echo.push_order(new OrderModifyFlag(echo.get_building_register().get_building(building_id)->gid, size));
 	}
+}
+
+
+
+bool ChangeFlagSize::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ChangeFlagSize");
+	size=stream->readUint32("size");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void ChangeFlagSize::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ChangeFlagSize");
+	stream->writeUint32(size, "size");
+	stream->writeLeaveSection();
+}
+
+
+
+ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level) : minimum_level(minimum_level)
+{
+
+}
+
+
+
+void ChangeFlagMinimumLevel::modify(Echo& echo, int building_id)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+	{
+		echo.push_order(new OrderModifyMinLevelToFlag(echo.get_building_register().get_building(building_id)->gid, minimum_level));
+	}
+}
+
+
+
+bool ChangeFlagMinimumLevel::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ChangeFlagMinimumLevel");
+	minimum_level=stream->readUint32("minimum_level");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void ChangeFlagMinimumLevel::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ChangeFlagMinimumLevel");
+	stream->writeUint32(minimum_level, "minimum_level");
+	stream->writeLeaveSection();
+}
+
+
+
+GlobalManagementOrder* GlobalManagementOrder::load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("GlobalManagementOrder");
+	GlobalManagementOrderType mot=static_cast<GlobalManagementOrderType>(stream->readUint32("type"));
+	GlobalManagementOrder* mo=NULL;
+	switch(mot)
+	{
+		case MAddArea:
+			mo=new AddArea;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MRemoveArea:
+			mo=new RemoveArea;
+			mo->load(stream, player, versionMinor);
+			break;
+	}
+	return mo;
+}
+
+
+
+void GlobalManagementOrder::save_order(GlobalManagementOrder* mo, GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("GlobalManagementOrder");
+	stream->writeUint32(mo->get_type(), "type");
+	mo->save(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+AddArea::AddArea(AreaType areatype) : areatype(areatype)
+{
+
+}
+
+
+
+void AddArea::add_location(int x, int y)
+{
+	locations.push_back(position(x, y));
+}
+
+
+
+void AddArea::modify(Echo& echo)
+{
+	BrushAccumulator acc;
+	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
+	{
+		acc.applyBrush(echo.player->map, BrushApplication(i->x, i->y, 0));
+	}
+	if(acc.getApplicationCount()>0)
+	{
+		switch(areatype)
+		{
+			case ClearingArea:
+				echo.push_order(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc));
+				break;
+			case ForbiddenArea:
+				echo.push_order(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc));
+				break;
+			case GuardArea:
+				echo.push_order(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc));
+				break;
+		}
+	}
+}
+
+
+
+bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("AddArea");
+	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
+	stream->readEnterSection("locations");
+	Uint32 size=stream->readUint32("size");
+	locations.resize(size);
+	for(Uint32 location_index=0; location_index<size; ++location_index)
+	{
+		stream->readEnterSection(location_index);
+		locations[location_index]=position(stream->readUint32("posx"), stream->readUint32("posy"));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void AddArea::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AddArea");
+	stream->writeUint32(areatype, "area_type");
+	stream->writeEnterSection("locations");
+	stream->writeUint32(locations.size(), "size");
+	for(Uint32 location_index=0; location_index<locations.size(); ++location_index)
+	{
+		stream->writeEnterSection(location_index);
+		stream->writeUint32(locations[location_index].x, "posx");
+		stream->writeUint32(locations[location_index].y, "posy");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+
+
+RemoveArea::RemoveArea(AreaType areatype) : areatype(areatype)
+{
+
+}
+
+
+
+void RemoveArea::add_location(int x, int y)
+{
+	locations.push_back(position(x, y));
+}
+
+
+
+void RemoveArea::modify(Echo& echo)
+{
+	BrushAccumulator acc;
+	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
+	{
+		acc.applyBrush(echo.player->map, BrushApplication(i->x, i->y, 0));
+	}
+	if(acc.getApplicationCount()>0)
+	{
+		switch(areatype)
+		{
+			case ClearingArea:
+				echo.push_order(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc));
+				break;
+			case ForbiddenArea:
+				echo.push_order(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc));
+				break;
+			case GuardArea:
+				echo.push_order(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc));
+				break;
+		}
+	}
+}
+
+
+
+bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("RemoveArea");
+	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
+	stream->readEnterSection("locations");
+	Uint32 size=stream->readUint32("size");
+	locations.resize(size);
+	for(Uint32 location_index=0; location_index<size; ++location_index)
+	{
+		stream->readEnterSection(location_index);
+		locations[location_index]=position(stream->readUint32("posx"), stream->readUint32("posy"));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void RemoveArea::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("RemoveArea");
+	stream->writeUint32(areatype, "area_type");
+	stream->writeEnterSection("locations");
+	stream->writeUint32(locations.size(), "size");
+	for(Uint32 location_index=0; location_index<locations.size(); ++location_index)
+	{
+		stream->writeEnterSection(location_index);
+		stream->writeUint32(locations[location_index].x, "posx");
+		stream->writeUint32(locations[location_index].y, "posy");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
 }
 
 
@@ -1306,7 +2123,7 @@ unsigned int Echo::add_building_order(Construction::BuildingOrder& bo)
 			add_management_order(mo_during_construction, id);
 		}
 		orders.push(new OrderCreate(player->team->teamNumber, p.x, p.y, type));
-		std::cout<<"constructing building x="<<p.x<<" y="<<p.y<<std::endl;
+//		std::cout<<"constructing building x="<<p.x<<" y="<<p.y<<std::endl;
 		return id;
 	}
 	return INVALID_BUILDING;
@@ -1327,7 +2144,7 @@ void Echo::update_management_orders()
 		if(!br.is_building_pending(i->get<1>()) && !is_found)
 		{
 			i=management_orders.erase(i);
-			std::cout<<"Erasing management order!"<<std::endl;
+//			std::cout<<"Erasing management order!"<<std::endl;
 			continue;
 		}
 		if(is_found)
@@ -1343,6 +2160,24 @@ void Echo::update_management_orders()
 	}
 }
 
+
+
+void Echo::add_global_management_order(Management::GlobalManagementOrder* gmo)
+{
+	global_management_orders.push_back(boost::shared_ptr<GlobalManagementOrder>(gmo));
+}
+
+
+
+void Echo::update_global_management_orders()
+{
+	for(std::vector<boost::shared_ptr<GlobalManagementOrder> >::iterator i=global_management_orders.begin(); i!=global_management_orders.end();)
+	{
+		(*i)->modify(*this);
+		i=global_management_orders.erase(i);
+		continue;
+	}
+}
 
 
 
@@ -1416,6 +2251,95 @@ void Echo::update_ressource_trackers()
 
 bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("EchoAI");
+	
+	signature_check(stream, player, versionMinor);
+
+	stream->readEnterSection("orders");
+	Uint32 ordersSize = stream->readUint32("size");
+	for (Uint32 ordersIndex = 0; ordersIndex < ordersSize; ordersIndex++)
+	{
+		stream->readEnterSection(ordersIndex);
+		size_t size=stream->readUint32("size");
+		Uint8* buffer = new Uint8[size];
+		stream->read(buffer, size, "data");
+		orders.push(Order::getOrder(buffer, size));
+		// FIXME : clear the container before load
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	signature_check(stream, player, versionMinor);
+
+
+	br.load(stream, player, versionMinor);
+
+	signature_check(stream, player, versionMinor);
+
+	fm.load(stream, player, versionMinor);
+
+	signature_check(stream, player, versionMinor);
+
+
+	stream->readEnterSection("management_orders");
+	Uint32 managementSize=stream->readUint32("size");
+	for(Uint32 managementIndex = 0; managementIndex < managementSize; ++managementIndex)
+	{
+		stream->readEnterSection(managementIndex);
+		ManagementOrder* mo=ManagementOrder::load_order(stream, player, versionMinor);
+		Uint32 id=stream->readUint32("echo_building_id");
+		management_orders.push_back(boost::make_tuple(mo, id));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+
+	signature_check(stream, player, versionMinor);
+
+	stream->readEnterSection("global_management_orders");
+	Uint32 globalManagementSize=stream->readUint32("size");
+	for(Uint32 globalManagementIndex = 0; globalManagementIndex < globalManagementSize; ++globalManagementIndex)
+	{
+		stream->readEnterSection(globalManagementIndex);
+		global_management_orders.push_back(boost::shared_ptr<Management::GlobalManagementOrder>(Management::GlobalManagementOrder::load_order(stream, player, versionMinor)));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+
+	signature_check(stream, player, versionMinor);
+
+	stream->readEnterSection("ressource_trackers");
+	Uint32 ressourceTrackerSize=stream->readUint32("size");
+	for(Uint32 ressourceTrackerIndex=0; ressourceTrackerIndex<ressourceTrackerSize; ++ressourceTrackerIndex)
+	{
+		stream->readEnterSection(ressourceTrackerIndex);
+		int id=stream->readUint32("echo_building_id");
+		boost::shared_ptr<RessourceTracker> rt(new RessourceTracker(*this, stream, player, versionMinor));
+		bool activated=stream->readUint8("active");
+		ressource_trackers[id]=boost::make_tuple(rt, activated);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+
+	signature_check(stream, player, versionMinor);
+
+	timer=stream->readUint32("timer");
+	update_gm=stream->readUint8("update_gm");
+
+
+	signature_check(stream, player, versionMinor);
+
+	echoai->load(stream, player, versionMinor);
+
+
+	signature_check(stream, player, versionMinor);
+
+	stream->readLeaveSection();
+	signature_check(stream, player, versionMinor);
+
+
 	return true;
 }
 
@@ -1423,35 +2347,115 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 
 void Echo::save(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("EchoAI");
 
+	signature_write(stream);
+
+	stream->writeEnterSection("orders");
+	stream->writeUint32((Uint32)orders.size(), "size");
+	for (Uint32 ordersIndex = 0; ordersIndex < orders.size(); ordersIndex++)
+	{
+		stream->writeEnterSection(ordersIndex);
+		Order* order = orders.front();
+		orders.pop();
+		stream->writeUint32(order->getDataLength()+1, "size");
+		stream->write(order->getData(), order->getDataLength(), "data");
+		delete order;
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	signature_write(stream);
+
+	br.save(stream);
+
+	signature_write(stream);
+
+	fm.save(stream);
+
+	signature_write(stream);
+
+
+	stream->writeEnterSection("management_orders");
+	stream->writeUint32(management_orders.size(), "size");
+	for(Uint32 managementIndex = 0; managementIndex < management_orders.size(); ++managementIndex)
+	{
+		stream->writeEnterSection(managementIndex);
+		Management::ManagementOrder::save_order(management_orders[managementIndex].get<0>().get(), stream);
+		stream->writeUint32(management_orders[managementIndex].get<1>(), "echo_building_id");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+
+	signature_write(stream);
+
+	stream->writeEnterSection("global_management_orders");
+	stream->writeUint32(global_management_orders.size(), "size");
+	for(Uint32 globalManagementIndex = 0; globalManagementIndex < global_management_orders.size(); ++globalManagementIndex)
+	{
+		stream->writeEnterSection(globalManagementIndex);
+		Management::GlobalManagementOrder::save_order(global_management_orders[globalManagementIndex].get(), stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+
+	signature_write(stream);
+
+	stream->writeEnterSection("ressource_trackers");
+	stream->writeUint32(ressource_trackers.size(), "size");
+	Uint32 ressourceTrackerIndex=0;
+	for(tracker_iterator i=ressource_trackers.begin(); i!=ressource_trackers.end(); ++ressourceTrackerIndex, ++i)
+	{
+		stream->writeEnterSection(ressourceTrackerIndex);
+		stream->writeUint32(i->first, "echo_building_id");
+		i->second.get<0>()->save(stream);
+		stream->writeUint8(i->second.get<1>(), "active");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+
+	signature_write(stream);
+
+	stream->writeUint32(timer, "timer");
+	stream->writeUint8(update_gm, "update_gm");
+
+
+	signature_write(stream);
+
+	echoai->save(stream);
+
+
+	signature_write(stream);
+
+	stream->writeLeaveSection();
+	signature_write(stream);
 }
 
 
 
 Order* Echo::getOrder(void)
 {
-	if(timer==0)
+	if(!gm)
 	{
-		br.initiate();
-		if(!gm)
+		gm.reset(new GradientManager(player->map));
+		update_gm=true;
+		for(int x=0; x<32; ++x)
 		{
-			gm.reset(new GradientManager(player->map));
-			update_gm=true;
-			for(int x=0; x<32; ++x)
+			if(player->team->game->players[x]!=NULL)
 			{
-				if(player->team->game->players[x]!=NULL)
+				if(player->team->game->players[x]->type>=BasePlayer::P_AI)
 				{
-					if(player->team->game->players[x]->type>=BasePlayer::P_AI)
+					Echo* other=dynamic_cast<Echo*>(player->team->game->players[x]->ai->aiImplementation);
+					if(other)
 					{
-						Echo* other=dynamic_cast<Echo*>(player->team->game->players[x]->ai->aiImplementation);
-						if(other)
+						if(!other->gm)
 						{
-							if(!other->gm)
-							{
-								other->gm=gm;
-								other->update_gm=false;
-								std::cout<<"Linked with another AI, number "<<x<<std::endl;
-							}
+							other->gm=gm;
+							other->update_gm=false;
+//							std::cout<<"Linked with another AI, number "<<x<<std::endl;
 						}
 					}
 				}
@@ -1459,7 +2463,10 @@ Order* Echo::getOrder(void)
 		}
 	}
 
-
+	if(timer==0)
+	{
+		br.initiate();
+	}
 
 	if(!orders.empty())
 	{
@@ -1475,6 +2482,7 @@ Order* Echo::getOrder(void)
 	update_management_orders();
 	echoai->tick(*this);
 	update_management_orders();
+	update_global_management_orders();
 	timer++;
 	return new NullOrder;
 }
@@ -1489,13 +2497,18 @@ ReachToInfinity::ReachToInfinity()
 
 bool ReachToInfinity::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("ReachToInfinity");
+	timer=stream->readUint32("timer");
+	stream->readLeaveSection();
 	return true;
 }
 
 
 void ReachToInfinity::save(GAGCore::OutputStream *stream)
 {
-
+	stream->writeEnterSection("ReachToInfinity");
+	stream->writeUint32(timer, "timer");
+	stream->writeLeaveSection();
 }
 
 
@@ -1559,7 +2572,7 @@ void ReachToInfinity::tick(Echo& echo)
 
 			if(id!=INVALID_BUILDING)
 			{
-				std::cout<<"Constructing flag, id: "<<id<<std::endl;
+//				std::cout<<"Constructing flag, id: "<<id<<std::endl;
 
 				ManagementOrder* mo_completion=new ChangeFlagSize(4);
 				echo.add_management_order(mo_completion, id);
@@ -1669,7 +2682,7 @@ void ReachToInfinity::tick(Echo& echo)
 			//Add the building order to the list of orders
 			unsigned int id=echo.add_building_order(bo);
 
-			std::cout<<"Swarm ordered, id="<<id<<std::endl;
+//			std::cout<<"Swarm ordered, id="<<id<<std::endl;
 
 			//Change the number of workers assigned when the building is finished
 			ManagementOrder* mo_completion=new AssignWorkers(5);
@@ -1695,7 +2708,7 @@ void ReachToInfinity::tick(Echo& echo)
 		BuildingSearch bs(echo);
 		bs.add_condition(new SpecificBuildingType(IntBuildingType::WALKSPEED_BUILDING));
 		const int number=bs.count_buildings();
-		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<2)
+		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<3)
 		{
 			//The main order for the race track
 			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::WALKSPEED_BUILDING, 6);
@@ -1728,7 +2741,7 @@ void ReachToInfinity::tick(Echo& echo)
 			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
 			//Add the building order to the list of orders
-			const unsigned int id=echo.add_building_order(bo);
+			echo.add_building_order(bo);
 		}
 	}
 
@@ -1738,7 +2751,7 @@ void ReachToInfinity::tick(Echo& echo)
 		BuildingSearch bs(echo);
 		bs.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
 		const int number=bs.count_buildings();
-		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<2)
+		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<3)
 		{
 			//The main order for the swimming pool
 			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::SWIMSPEED_BUILDING, 6);
@@ -1775,7 +2788,7 @@ void ReachToInfinity::tick(Echo& echo)
 			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
 			//Add the building order to the list of orders
-			const unsigned int id=echo.add_building_order(bo);
+			echo.add_building_order(bo);
 		}
 	}
 
@@ -1813,7 +2826,7 @@ void ReachToInfinity::tick(Echo& echo)
 			bo.add_constraint(new AIEcho::Construction::MaximizedDistance(gi_enemy, 3));
 
 			//Add the building order to the list of orders
-			const unsigned int id=echo.add_building_order(bo);
+			echo.add_building_order(bo);
 		}
 	}
 
@@ -1934,7 +2947,7 @@ void ReachToInfinity::tick(Echo& echo)
 			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
 			if(rt->get_age()>1500)
 			{
-				if(rt->get_average_level() < 36*(echo.get_building_register().get_building(*i)->type->level+1))
+				if(rt->get_average_level() < 24*(echo.get_building_register().get_building(*i)->type->level+1))
 				{
 					ManagementOrder* mo_destroy=new DestroyBuilding;
 					echo.add_management_order(mo_destroy, *i);
@@ -1951,7 +2964,7 @@ void ReachToInfinity::tick(Echo& echo)
 			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
 			if(rt->get_age()>2500)
 			{
-				if(rt->get_average_level() < 12)
+				if(rt->get_average_level() < 18)
 				{
 					ManagementOrder* mo_destroy=new DestroyBuilding;
 					echo.add_management_order(mo_destroy, *i);
@@ -1960,4 +2973,41 @@ void ReachToInfinity::tick(Echo& echo)
 		}
 	}
 
+	//Farming wheat and wood near water
+	if((timer%250)==0)
+	{
+		AddArea* mo_farming=new AddArea(ForbiddenArea);
+		RemoveArea* mo_non_farming=new RemoveArea(ForbiddenArea);
+		AIEcho::Gradients::GradientInfo gi_water;
+		gi_water.add_source(new Entities::Water);
+		for(int x=0; x<echo.player->map->getW(); ++x)
+		{
+
+			for(int y=0; y<echo.player->map->getH(); ++y)
+			{
+				if((x%2==1 && y%2==1))
+				{
+					if((!echo.player->map->isRessourceTakeable(x, y, WOOD) &&
+					    !echo.player->map->isRessourceTakeable(x, y, CORN)) &&
+					    echo.player->map->isForbidden(x, y, echo.player->team->me))
+					{
+						mo_non_farming->add_location(x, y);
+					}
+					else
+					{
+						if((echo.player->map->isRessourceTakeable(x, y, WOOD) ||
+						    echo.player->map->isRessourceTakeable(x, y, CORN)) &&
+						    echo.player->map->isMapDiscovered(x, y, echo.player->team->me) &&
+						    !echo.player->map->isForbidden(x, y, echo.player->team->me) &&
+						    echo.get_gradient_manager().get_gradient(gi_water).get_height(x, y)<10)
+						{
+							mo_farming->add_location(x, y);
+						}
+					}
+				}
+			}
+		}
+		echo.add_global_management_order(mo_farming);
+		echo.add_global_management_order(mo_non_farming);
+	}
 }
