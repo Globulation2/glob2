@@ -154,6 +154,10 @@ namespace AIEcho
 				virtual bool is_entity(Map* map, int posx, int posy)=0;
 				///The comparison operator is used to reference gradients by the entities and sources that was use to compute them
 				virtual bool operator==(const Entity& rhs)=0;
+
+				///This function says whether the entity can change during runtime. For example, water never changes during
+				///the coarse of the game, however the layout of buildings can.
+				virtual bool can_change()=0;
 			};
 
 			///Matches any building of a particular type, team, and construction state
@@ -164,6 +168,7 @@ namespace AIEcho
 			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
+				bool can_change();
 			private:
 				int building_type;
 				int team;
@@ -178,6 +183,7 @@ namespace AIEcho
 			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
+				bool can_change();
 			private:
 				int team;
 				bool under_construction;
@@ -191,6 +197,7 @@ namespace AIEcho
 			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
+				bool can_change();
 			private:
 				bool under_construction;
 			};
@@ -203,6 +210,7 @@ namespace AIEcho
 			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
+				bool can_change();
 			private:
 				int ressource_type;
 			};
@@ -215,6 +223,7 @@ namespace AIEcho
 			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
+				bool can_change();
 			};
 
 			///Matches water
@@ -225,6 +234,7 @@ namespace AIEcho
 			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
+				bool can_change();
 			};
 		};
 
@@ -246,9 +256,14 @@ namespace AIEcho
 			bool match_source(Map* map, int posx, int posy);
 			///Returns true if the provided position matches any of the obstacles that where added
 			bool match_obstacle(Map* map, int posx, int posy);
+			///Returns true if this GradientInfo has any entities that can change, causing it to need to be updated.
+			///This is an optmization, as many gradients don't need to be update
+			bool needs_updating() const;
+
 			bool operator==(const GradientInfo& rhs) const;
 			std::vector<Entities::Entity*> sources;
 			std::vector<Entities::Entity*> obstacles;
+			mutable boost::logic::tribool needs_updated;
 		};
 
 		///A generic, all purpose gradient. The gradient is referenced by its GradientInfo, which it uses continually in its computation.
@@ -1110,7 +1125,9 @@ namespace AIEcho
 		void tick(Echo& echo);
 	private:
 		int timer;
-		bool flag_on_fruit;
+		bool flag_on_cherry;
+		bool flag_on_orange;
+		bool flag_on_prune;
 		std::set<int> flags_on_enemy;
 	};
 
@@ -1132,7 +1149,6 @@ namespace AIEcho
 		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
 		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
 
-		Player* player;
 		void flare(int x, int y)
 			{ orders.push(new MapMarkOrder(player->team->teamNumber, x, y)); }
 
@@ -1151,6 +1167,7 @@ namespace AIEcho
 		std::set<int>& get_starting_buildings()
 			{return starting_buildings; }
 
+		Player* player;
 	private:
 
 		friend class AIEcho::Management::AddRessourceTracker;
