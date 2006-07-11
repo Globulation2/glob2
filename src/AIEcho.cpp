@@ -95,10 +95,20 @@ bool Entities::Building::operator==(const Entity& rhs)
 	return false;
 }
 
+
+
+bool Entities::Building::can_change()
+{
+	return true;
+}
+
+
+
 Entities::AnyTeamBuilding::AnyTeamBuilding(int team, bool under_construction) : team(team), under_construction(under_construction)
 {
 
 }
+
 
 
 bool Entities::AnyTeamBuilding::is_entity(Map* map, int posx, int posy)
@@ -117,6 +127,8 @@ bool Entities::AnyTeamBuilding::is_entity(Map* map, int posx, int posy)
 	return false;
 }
 
+
+
 bool Entities::AnyTeamBuilding::operator==(const Entity& rhs)
 {
 	if(typeid(rhs)==typeid(Entities::AnyTeamBuilding) &&
@@ -127,9 +139,19 @@ bool Entities::AnyTeamBuilding::operator==(const Entity& rhs)
 	return false;
 }
 
+
+
+bool Entities::AnyTeamBuilding::can_change()
+{
+	return true;
+}
+
+
+
 Entities::AnyBuilding::AnyBuilding(bool under_construction) : under_construction(under_construction)
 {
 }
+
 
 
 bool Entities::AnyBuilding::is_entity(Map* map, int posx, int posy)
@@ -144,6 +166,8 @@ bool Entities::AnyBuilding::is_entity(Map* map, int posx, int posy)
 	return false;
 }
 
+
+
 bool Entities::AnyBuilding::operator==(const Entity& rhs)
 {
 	if(typeid(rhs)==typeid(Entities::AnyBuilding) &&
@@ -153,10 +177,20 @@ bool Entities::AnyBuilding::operator==(const Entity& rhs)
 	return false;
 }
 
+
+
+bool Entities::AnyBuilding::can_change()
+{
+	return true;
+}
+
+
+
 Entities::Ressource::Ressource(int ressource_type) : ressource_type(ressource_type)
 {
 
 }
+
 
 
 bool Entities::Ressource::is_entity(Map* map, int posx, int posy)
@@ -168,6 +202,8 @@ bool Entities::Ressource::is_entity(Map* map, int posx, int posy)
 	return false;
 }
 
+
+
 bool Entities::Ressource::operator==(const Entity& rhs)
 {
 	if(typeid(rhs)==typeid(Entities::Ressource) &&
@@ -177,10 +213,22 @@ bool Entities::Ressource::operator==(const Entity& rhs)
 	return false;
 }
 
+
+
+bool Entities::Ressource::can_change()
+{
+	if(ressource_type==WOOD || ressource_type==CORN || ressource_type==ALGA)
+		return true;
+	return false;
+}
+
+
+
 Entities::AnyRessource:: AnyRessource()
 {
 
 }
+
 
 
 bool Entities::AnyRessource:: is_entity(Map* map, int posx, int posy)
@@ -192,6 +240,8 @@ bool Entities::AnyRessource:: is_entity(Map* map, int posx, int posy)
 	return false;
 }
 
+
+
 bool Entities::AnyRessource::operator==(const Entity& rhs)
 {
 	if(typeid(rhs)==typeid(Entities::AnyRessource))
@@ -199,10 +249,20 @@ bool Entities::AnyRessource::operator==(const Entity& rhs)
 	return false;
 }
 
+
+
+bool Entities::AnyRessource::can_change()
+{
+	return true;
+}
+
+
+
 Entities::Water:: Water()
 {
 
 }
+
 
 
 bool Entities::Water:: is_entity(Map* map, int posx, int posy)
@@ -214,6 +274,8 @@ bool Entities::Water:: is_entity(Map* map, int posx, int posy)
 	return false;
 }
 
+
+
 bool Entities::Water::operator==(const Entity& rhs)
 {
 	if(typeid(rhs)==typeid(Entities::Water))
@@ -221,9 +283,18 @@ bool Entities::Water::operator==(const Entity& rhs)
 	return false;
 }
 
+
+
+bool Entities::Water::can_change()
+{
+	return false;
+}
+
+
+
 GradientInfo::GradientInfo()
 {
-
+	needs_updated=indeterminate;
 }
 
 
@@ -279,6 +350,38 @@ bool GradientInfo::operator==(const GradientInfo& rhs) const
 			return false;
 	}
 	return true;
+}
+
+
+
+bool GradientInfo::needs_updating() const
+{
+	if(needs_updated)
+		return true;
+	else if(!needs_updated)
+		return false;
+	else
+	{
+		needs_updated=false;
+		for(unsigned int i=0; i<sources.size(); ++i)
+		{
+			if(sources[i]->can_change())
+			{
+				needs_updated=true;
+				return true;
+			}
+		}
+
+		for(unsigned int i=0; i<obstacles.size(); ++i)
+		{
+			if(obstacles[i]->can_change())
+			{
+				needs_updated=true;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 
@@ -424,29 +527,51 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 
 void GradientManager::update()
 {
-/*
+
 	static unsigned int max=0;
+	static unsigned int max_need_updated=0;
 	if(gradients.size()>max)
 	{
 		max=gradients.size();
 		std::cout<<"Max gradients "<<max<<std::endl;
-
 	}
-*/
+	unsigned int need_count=0;
+	for(unsigned int x=0; x<gradients.size(); ++x)
+	{
+		if(gradients[x]->get_gradient_info().needs_updating())
+		{
+			need_count++;
+		}
+	}
+	if(need_count>max_need_updated)
+	{
+		max_need_updated=need_count;
+		std::cout<<"Max update requiring gradients "<<max_need_updated<<std::endl;
+	}
+
 
 	timer++;
 	std::transform(ticks_since_update.begin(), ticks_since_update.end(), ticks_since_update.begin(), increment);
-	if((timer%8)==0 && !gradients.empty())
+	unsigned int orig_cur_update=cur_update;
+	do
 	{
-		if(ticks_since_update[cur_update]>150)
+		if((timer%8)==0 && !gradients.empty())
 		{
-			gradients[cur_update]->recalculate(map);
-			ticks_since_update[cur_update]=0;
-			cur_update++;
-			if(cur_update>=gradients.size())
-				cur_update=0;
+			if(ticks_since_update[cur_update]>150 && gradients[cur_update]->get_gradient_info().needs_updating())
+			{
+				gradients[cur_update]->recalculate(map);
+				ticks_since_update[cur_update]=0;
+				cur_update++;
+				if(cur_update>=gradients.size())
+					cur_update=0;
+				return;
+			}
 		}
+		cur_update++;
+		if(cur_update>=gradients.size())
+			cur_update=0;
 	}
+	while(orig_cur_update!=cur_update);
 }
 
 
@@ -872,12 +997,14 @@ void BuildingRegister::set_upgrading(unsigned int id)
 
 void BuildingRegister::tick()
 {
-	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end(); ++i)
+	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end();)
 	{
 		i->second.get<3>()++;
 		if(i->second.get<3>() > 300)
 		{
-			pending_buildings.erase(i);
+			pending_iterator current=i;
+			++i;
+			pending_buildings.erase(current);
 			continue;
 		}
 		int gbid=NOGBID;
@@ -896,23 +1023,30 @@ void BuildingRegister::tick()
 				echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), gbid);
 			}
 			found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false);
-			pending_buildings.erase(i);
+			pending_iterator current=i;
+			++i;
+			pending_buildings.erase(current);
 			continue;
 		}
+		++i;
 	}
-	for(found_iterator i = found_buildings.begin(); i!=found_buildings.end(); ++i)
+	for(found_iterator i = found_buildings.begin(); i!=found_buildings.end();)
 	{
 		if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
 		{
 			if(echo.get_flag_map().get_flag(i->second.get<0>(), i->second.get<1>())==NOGBID)
 			{
-				found_buildings.erase(i);
+				found_iterator current=i;
+				++i;
+				found_buildings.erase(current);
 				continue;
 			}
 			if(player->team->myBuildings[::Building::GIDtoID(i->second.get<3>())]==NULL)
 			{
 				echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), NOGBID);
-				found_buildings.erase(i);
+				found_iterator current=i;
+				++i;
+				found_buildings.erase(current);
 				continue;
 			}
 		}
@@ -921,13 +1055,17 @@ void BuildingRegister::tick()
 			const int gbid=player->map->getBuilding(i->second.get<0>(), i->second.get<1>());
 			if(gbid==NOGBID)
 			{
-				found_buildings.erase(i);
+				found_iterator current=i;
+				++i;
+				found_buildings.erase(current);
 				continue;
 			}
 			Building* b=player->team->myBuildings[::Building::GIDtoID(gbid)];
 			if(b==NULL)
 			{
-				found_buildings.erase(i);
+				found_iterator current=i;
+				++i;
+				found_buildings.erase(current);
 				continue;
 			}
 			//True
@@ -951,10 +1089,10 @@ void BuildingRegister::tick()
 				if(b->constructionResultState!=::Building::NO_CONSTRUCTION)
 				{
 					i->second.get<4>()=true;
-					continue;
 				}
 			}
 		}
+		++i;
 	}
 }
 
@@ -2579,7 +2717,9 @@ void Echo::update_ressource_trackers()
 	{
 		if(!br.is_building_found(i->first) && !br.is_building_pending(i->first))
 		{
-			ressource_trackers.erase(i);
+			std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator current=i;
+			++i;
+			ressource_trackers.erase(current);
 		}
 		else
 		{
@@ -2901,7 +3041,9 @@ Order* Echo::getOrder(void)
 ReachToInfinity::ReachToInfinity()
 {
 	timer=0;
-	flag_on_fruit=false;
+	flag_on_cherry=false;
+	flag_on_orange=false;
+	flag_on_prune=false;
 }
 
 
@@ -2909,7 +3051,9 @@ bool ReachToInfinity::load(GAGCore::InputStream *stream, Player *player, Sint32 
 {
 	stream->readEnterSection("ReachToInfinity");
 	timer=stream->readUint32("timer");
-	flag_on_fruit=stream->readUint32("flag_on_fruit");
+	flag_on_cherry=stream->readUint32("flag_on_cherry");
+	flag_on_orange=stream->readUint32("flag_on_orange");
+	flag_on_prune=stream->readUint32("flag_on_prune");
 
 	stream->readEnterSection("flags_on_enemy");
 	Uint32 flagsOnEnemySize=stream->readUint32("size");
@@ -2930,7 +3074,9 @@ void ReachToInfinity::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("ReachToInfinity");
 	stream->writeUint32(timer, "timer");
-	stream->writeUint32(flag_on_fruit, "flag_on_fruit");
+	stream->writeUint32(flag_on_cherry, "flag_on_cherry");
+	stream->writeUint32(flag_on_orange, "flag_on_orange");
+	stream->writeUint32(flag_on_prune, "flag_on_prune");
 
 	stream->writeEnterSection("flags_on_enemy");
 	Uint32 flagsOnEnemyIndex=0;
@@ -2982,39 +3128,102 @@ void ReachToInfinity::tick(Echo& echo)
 //		BuildingSearch bs_flag(echo);
 //		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
 //		const int number=bs_flag.count_buildings();
-		if(echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER]>=3 && !flag_on_fruit)
+		if(echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER]>=3 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 		{
-			//The main order for the exploration flag
-			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
-
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
-			//You want the closest fruit possible
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
-			//Constraints arround the location of fruit
-			AIEcho::Gradients::GradientInfo gi_fruit;
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-			//You want to be ontop of the fruit
-			bo.add_constraint(new AIEcho::Construction::MaximumDistance(gi_fruit, 1));
-
-			//Add the building order to the list of orders
-			unsigned int id=echo.add_building_order(bo);
-
-			if(id!=INVALID_BUILDING)
+			if(!flag_on_cherry)
 			{
-				ManagementOrder* mo_completion=new ChangeFlagSize(4);
-				echo.add_management_order(mo_completion, id);
-				flag_on_fruit=true;
+				//The main order for the exploration flag
+				AIEcho::Construction::BuildingOrder bo_cherry(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
 
-				for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+				//You want the closest fruit to your settlement possible
+				bo_cherry.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+
+				//Constraint arround the location of fruit
+				AIEcho::Gradients::GradientInfo gi_cherry;
+				gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+				//You want to be ontop of the cherry trees
+				bo_cherry.add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 1));
+
+				//Add the building order to the list of orders
+				unsigned int id_cherry=echo.add_building_order(bo_cherry);
+
+				if(id_cherry!=INVALID_BUILDING)
 				{
-					GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
-					echo.add_global_management_order(mo_alliance);
+					ManagementOrder* mo_completion=new ChangeFlagSize(4);
+					echo.add_management_order(mo_completion, id_cherry);
+					flag_on_cherry=true;
+
+					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+					{
+						GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+						echo.add_global_management_order(mo_alliance);
+					}
+				}
+			}
+
+			if(!flag_on_orange)
+			{
+				//The main order for the exploration flag
+				AIEcho::Construction::BuildingOrder bo_orange(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
+
+				//You want the closest fruit to your settlement possible
+				bo_orange.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+
+				//Constraints arround the location of fruit
+				AIEcho::Gradients::GradientInfo gi_orange;
+				gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+				//You want to be ontop of the cherry trees
+				bo_orange.add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 1));
+
+				unsigned int id_orange=echo.add_building_order(bo_orange);
+
+				if(id_orange!=INVALID_BUILDING)
+				{
+					ManagementOrder* mo_completion=new ChangeFlagSize(4);
+					echo.add_management_order(mo_completion, id_orange);
+					flag_on_orange=true;
+
+					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+					{
+						GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+						echo.add_global_management_order(mo_alliance);
+					}
+				}
+			}
+
+			if(!flag_on_prune)
+			{
+
+				//The main order for the exploration flag
+				AIEcho::Construction::BuildingOrder bo_prune(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
+
+				//You want the closest fruit to your settlement possible
+				bo_prune.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+
+				AIEcho::Gradients::GradientInfo gi_prune;
+				gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+				//You want to be ontop of the cherry trees
+				bo_prune.add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 1));
+
+				//Add the building order to the list of orders
+				unsigned int id_prune=echo.add_building_order(bo_prune);
+
+				if(id_prune!=INVALID_BUILDING)
+				{
+					ManagementOrder* mo_completion=new ChangeFlagSize(4);
+					echo.add_management_order(mo_completion, id_prune);
+					flag_on_prune=true;
+
+					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+					{
+						GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+						echo.add_global_management_order(mo_alliance);
+					}
 				}
 			}
 		}
@@ -3451,6 +3660,7 @@ void ReachToInfinity::tick(Echo& echo)
 		RemoveArea* mo_non_farming=new RemoveArea(ForbiddenArea);
 		AIEcho::Gradients::GradientInfo gi_water;
 		gi_water.add_source(new Entities::Water);
+		Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_water);
 		for(int x=0; x<echo.player->map->getW(); ++x)
 		{
 
@@ -3470,7 +3680,7 @@ void ReachToInfinity::tick(Echo& echo)
 						    echo.player->map->isRessourceTakeable(x, y, CORN)) &&
 						    echo.player->map->isMapDiscovered(x, y, echo.player->team->me) &&
 						    !echo.player->map->isForbidden(x, y, echo.player->team->me) &&
-						    echo.get_gradient_manager().get_gradient(gi_water).get_height(x, y)<10)
+						    gradient.get_height(x, y)<10)
 						{
 							mo_farming->add_location(x, y);
 						}
