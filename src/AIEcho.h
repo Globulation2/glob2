@@ -33,25 +33,98 @@
 #include <vector>
 #include <queue>
 #include <iterator>
+#include <set>
 
 #include "Order.h"
 
 namespace AIEcho
 {
-	class Echo;
+	class position;
+
+	namespace Gradients
+	{
+		namespace Entities
+		{
+			class Entity;
+			class Building;
+			class AnyTeamBuilding;
+			class AnyBuilding;
+			class Ressource;
+			class AnyRessource;
+			class Water;
+		};
+		class GradientInfo;
+		class Gradient;
+		class GradientManager;
+
+	};
+
+	namespace Construction
+	{
+		class Constraint;
+		class MinimumDistance;
+		class MaximumDistance;
+		class MinimizedDistance;
+		class MaximizedDistance;
+		class CenteredOn;
+		class BuildingOrder;
+		class FlagMap;
+		class BuildingRegister;
+	};
+
+	namespace Conditions
+	{
+		class Condition;
+		class NotUnderConstruction;
+		class UnderConstruction;
+		class BeingUpgraded;
+		class BeingUpgradedTo;
+		class SpecificBuildingType;
+		class NotSpecificBuildingType;
+		class BuildingLevel;
+		class Upgradable;
+		class EnemyBuildingDestroyed;
+		class TicksPassed;
+	};
+
+	namespace Management
+	{
+		class ManagementOrder;
+		class AssignWorkers;
+		class ChangeSwarm;
+		class DestroyBuilding;
+		class RessourceTracker;
+		class AddRessourceTracker;
+		class PauseRessourceTracker;
+		class UnPauseRessourceTracker;
+		class ChangeFlagSize;
+		class ChangeFlagMinimumLevel;
+		class GlobalManagementOrder;
+		class AddArea;
+		class RemoveArea;
+		class ChangeAlliances;
+	};
+
 	namespace SearchTools
 	{
 		class building_search_iterator;
 		class BuildingSearch;
-	};
-	namespace Management
-	{
-		class Tracker;
+		class enemy_team_iterator;
+		class enemy_building_iterator;
 	};
 
+	class Echo;
+	class EchoAI;
+	class ReachToInfinity;
+};
+
+
+namespace AIEcho
+{
 	///A position on a map. Simple x and y cordinates, and a comparison operator for stoarge and maps and sets
-	struct position
+	class position
 	{
+	public:
 		position() : x(0), y(0) {}
 		position(int x, int y) : x(x), y(y) {}
 		int x;
@@ -65,16 +138,6 @@ namespace AIEcho
 		}
 	};
 
-	///Utility function
-	template <typename T> bool pointer_compare(T* t1, T* t2)
-	{
-		return (*t1)==(*t2);
-	}
-
-
-	void signature_write(GAGCore::OutputStream *stream);
-	void signature_check(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-
 	///The gradients namespace stores anything related to Echo's gradient system.
 	namespace Gradients
 	{
@@ -86,6 +149,8 @@ namespace AIEcho
 			{
 			public:
 				virtual ~Entity(){}
+				friend class AIEcho::Gradients::GradientInfo;
+			protected:
 				virtual bool is_entity(Map* map, int posx, int posy)=0;
 				///The comparison operator is used to reference gradients by the entities and sources that was use to compute them
 				virtual bool operator==(const Entity& rhs)=0;
@@ -96,9 +161,9 @@ namespace AIEcho
 			{
 			public:
 				Building(int building_type, int team, bool under_construction);
+			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
-
 			private:
 				int building_type;
 				int team;
@@ -110,6 +175,7 @@ namespace AIEcho
 			{
 			public:
 				AnyTeamBuilding(int team, bool under_construction);
+			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
 			private:
@@ -121,7 +187,8 @@ namespace AIEcho
 			class AnyBuilding : public Entity
 			{
 			public:
-				AnyBuilding(bool under_construction);
+				explicit AnyBuilding(bool under_construction);
+			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
 			private:
@@ -132,7 +199,8 @@ namespace AIEcho
 			class Ressource : public Entity
 			{
 			public:
-				Ressource(int ressource_type);
+				explicit Ressource(int ressource_type);
+			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
 			private:
@@ -144,6 +212,7 @@ namespace AIEcho
 			{
 			public:
 				AnyRessource();
+			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
 			};
@@ -153,6 +222,7 @@ namespace AIEcho
 			{
 			public:
 				Water();
+			protected:
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
 			};
@@ -168,12 +238,15 @@ namespace AIEcho
 			void add_source(Entities::Entity* source);
 			///Adds a provided obstacle to the gradient. Ownership for the obstacle is taken.
 			void add_obstacle(Entities::Entity* obstacle);
+		private:
+			friend class AIEcho::Gradients::Gradient;
+			friend class AIEcho::Gradients::GradientManager;
+
 			///Returns true if the provided position matches any of the sources that where added
 			bool match_source(Map* map, int posx, int posy);
 			///Returns true if the provided position matches any of the obstacles that where added
 			bool match_obstacle(Map* map, int posx, int posy);
 			bool operator==(const GradientInfo& rhs) const;
-		private:
 			std::vector<Entities::Entity*> sources;
 			std::vector<Entities::Entity*> obstacles;
 		};
@@ -184,14 +257,16 @@ namespace AIEcho
 		class Gradient
 		{
 		public:
-			Gradient(const GradientInfo& gi);
-			///Causes the gradient to be updated
-			void recalculate(Map* map);
+			explicit Gradient(const GradientInfo& gi);
 			///Gets the distance of the provided position from the nearest source
 			int get_height(int posx, int posy) const;
+		private:
+			friend class AIEcho::Gradients::GradientManager;
+
+			///Causes the gradient to be updated
+			void recalculate(Map* map);
 			///Returns the gradient info for comparison
 			const GradientInfo& get_gradient_info() const { return gradient_info; }
-		private:
 			int width;
 			int get_pos(int x, int y) const { return y*width + x; }
 			GradientInfo gradient_info;
@@ -206,14 +281,15 @@ namespace AIEcho
 		class GradientManager
 		{
 		public:
-			GradientManager(Map* map);
+			explicit GradientManager(Map* map);
 			///A simple function, returns the Gradient that matches the GradientInfo. Its garunteed to be up to date within the last 150 ticks.
 			///If a matching gradient isn't found, a new one is created. 150 ticks may sound like a large amount of leeway, however, most
 			///gradients are updated sooner than that. As well, at normal game speed, 150 ticks is only 6 seconds, and you can count it yourself,
 			///not much changes in the game in six seconds.
 			Gradient& get_gradient(const GradientInfo& gi);
-			void update();
 		private:
+			friend class AIEcho::Echo;
+			void update();
 			static int increment(const int x) { return x+1; }
 			std::vector<boost::shared_ptr<Gradient> > gradients;
 			std::vector<int> ticks_since_update;
@@ -236,8 +312,10 @@ namespace AIEcho
 		{
 		public:
 			virtual ~Constraint(){}
-			virtual int calculate_constraint(Gradients::GradientManager& gm, int x, int y)=0;
-			virtual bool passes_constraint(Gradients::GradientManager& gm, int x, int y)=0;
+		protected:
+			friend class AIEcho::Construction::BuildingOrder;
+			virtual int calculate_constraint(Echo& echo, int x, int y)=0;
+			virtual bool passes_constraint(Echo& echo, int x, int y)=0;
 		};
 
 		///This constraint keeps buildings from being placed too close to a particular source
@@ -245,8 +323,9 @@ namespace AIEcho
 		{
 		public:
 			MinimumDistance(const Gradients::GradientInfo& gi, int distance);
-			int calculate_constraint(Gradients::GradientManager& gm, int x, int y);
-			bool passes_constraint(Gradients::GradientManager& gm, int x, int y);
+		protected:
+			int calculate_constraint(Echo& echo, int x, int y);
+			bool passes_constraint(Echo& echo, int x, int y);
 		private:
 			const Gradients::GradientInfo& gi;
 			Gradients::Gradient* gradient_cache;
@@ -258,8 +337,9 @@ namespace AIEcho
 		{
 		public:
 			MaximumDistance(const Gradients::GradientInfo& gi, int distance);
-			int calculate_constraint(Gradients::GradientManager& gm, int x, int y);
-			bool passes_constraint(Gradients::GradientManager& gm, int x, int y);
+		protected:
+			int calculate_constraint(Echo& echo, int x, int y);
+			bool passes_constraint(Echo& echo, int x, int y);
 		private:
 			const Gradients::GradientInfo& gi;
 			Gradients::Gradient* gradient_cache;
@@ -272,8 +352,9 @@ namespace AIEcho
 		{
 		public:
 			MinimizedDistance(const Gradients::GradientInfo& gi, int weight);
-			int calculate_constraint(Gradients::GradientManager& gm, int x, int y);
-			bool passes_constraint(Gradients::GradientManager& gm, int x, int y);
+		protected:
+			int calculate_constraint(Echo& echo, int x, int y);
+			bool passes_constraint(Echo& echo, int x, int y);
 		private:
 			const Gradients::GradientInfo& gi;
 			Gradients::Gradient* gradient_cache;
@@ -286,12 +367,29 @@ namespace AIEcho
 		{
 		public:
 			MaximizedDistance(const Gradients::GradientInfo& gi, int weight);
-			int calculate_constraint(Gradients::GradientManager& gm, int x, int y);
-			bool passes_constraint(Gradients::GradientManager& gm, int x, int y);
+		protected:
+			int calculate_constraint(Echo& echo, int x, int y);
+			bool passes_constraint(Echo& echo, int x, int y);
 		private:
 			const Gradients::GradientInfo& gi;
 			Gradients::Gradient* gradient_cache;
 			int weight;
+		};
+
+		///This constraint doesn't use gradients, unlike the other ones. In particular, it only allows one
+		///position to be allowed, the center of the building with the provided GBID. Notice this is not
+		///like other building ID's, it can only be obtained with enemy_building_iterator or a similair
+		///method.
+
+		class CenteredOn : public Constraint
+		{
+		public:
+			explicit CenteredOn(int gbid);
+		protected:
+			int calculate_constraint(Echo& echo, int x, int y);
+			bool passes_constraint(Echo& echo, int x, int y);
+		private:
+			int gbid;
 		};
 
 		///An order for a new building to be constructed. It takes the type of building from IntBuildingType.h,
@@ -302,11 +400,12 @@ namespace AIEcho
 			BuildingOrder(Player* player, int building_type, int number_of_workers);
 			///Addds a constraint to be used in finding a location of the building. This class takes ownership of the constraint.
 			void add_constraint(Constraint*  constraint);
+		private:
+			friend class AIEcho::Echo;
 			///An internal function used to find the location to place the building
 			position find_location(Echo& echo, Map* map, Gradients::GradientManager& manager);
 			int get_building_type() const { return building_type; }
 			int get_number_of_workers() const { return number_of_workers; }
-		private:
 			int building_type;
 			int number_of_workers;
 			Player* player;
@@ -317,12 +416,14 @@ namespace AIEcho
 		class FlagMap
 		{
 		public:
-			FlagMap(Echo& echo);
+			explicit FlagMap(Echo& echo);
 			int get_flag(int x, int y);
+		private:
+			friend class AIEcho::Construction::BuildingRegister;
+			friend class AIEcho::Echo;
 			void set_flag(int x, int y, int gid);
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
-		private:
 			std::vector<int> flagmap;
 			int width;
 			Echo& echo;
@@ -337,33 +438,58 @@ namespace AIEcho
 		{
 		public:
 			BuildingRegister(Player* player, Echo& echo);
+			bool is_building_pending(unsigned int id);
+			bool is_building_found(unsigned int id);
+			bool is_building_upgrading(unsigned int id);
+			int get_type(unsigned int id);
+			int get_level(unsigned int id);
+		private:
+			friend class AIEcho::SearchTools::building_search_iterator;
+			friend class AIEcho::SearchTools::BuildingSearch;
+			friend class AIEcho::Construction::BuildingOrder;
+			friend class AIEcho::Echo;
+
+			friend class AIEcho::Conditions::NotUnderConstruction;
+			friend class AIEcho::Conditions::UnderConstruction;
+			friend class AIEcho::Conditions::BeingUpgraded;
+			friend class AIEcho::Conditions::BeingUpgradedTo;
+			friend class AIEcho::Conditions::SpecificBuildingType;
+			friend class AIEcho::Conditions::NotSpecificBuildingType;
+			friend class AIEcho::Conditions::BuildingLevel;
+			friend class AIEcho::Conditions::Upgradable;
+			friend class AIEcho::Conditions::EnemyBuildingDestroyed;
+			friend class AIEcho::Conditions::TicksPassed;
+
+			friend class AIEcho::Management::AssignWorkers;
+			friend class AIEcho::Management::ChangeSwarm;
+			friend class AIEcho::Management::DestroyBuilding;
+			friend class AIEcho::Management::RessourceTracker;
+			friend class AIEcho::Management::AddRessourceTracker;
+			friend class AIEcho::Management::PauseRessourceTracker;
+			friend class AIEcho::Management::UnPauseRessourceTracker;
+			friend class AIEcho::Management::ChangeFlagSize;
+			friend class AIEcho::Management::ChangeFlagMinimumLevel;
+			friend class AIEcho::Management::GlobalManagementOrder;
+			friend class AIEcho::Management::AddArea;
+			friend class AIEcho::Management::RemoveArea;
+			friend class AIEcho::Management::ChangeAlliances;
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
+
+			Building* get_building(unsigned int id);
+
 			///This function initiates the BuildingRegister with any buildings that already exist on the map.
 			void initiate();
 			///This function registers a new building, it is done automatically by a BuildingOrder
 			unsigned int register_building(int x, int y, int building_type);
-
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream);
-
 			void set_upgrading(unsigned int id);
 			void tick();
-			bool is_building_pending(unsigned int id);
-			bool is_building_found(unsigned int id);
-			bool is_building_upgrading(unsigned int id);
-			Building* get_building(unsigned int id);
-			int get_type(unsigned int id);
-
-
-			friend class SearchTools::building_search_iterator;
-			friend class SearchTools::BuildingSearch;
-		protected:
 
 			typedef std::map<int, boost::tuple<int, int, int, int> >::iterator pending_iterator;
 			typedef std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> >::iterator found_iterator;
 
 			found_iterator begin() { return found_buildings.begin(); }
 			found_iterator end() { return found_buildings.end(); }
-		private:
 			std::map<int, boost::tuple<int, int, int, int> > pending_buildings;
 			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
 			unsigned int building_id;
@@ -389,6 +515,7 @@ namespace AIEcho
 			CNotSpecificBuildingType,
 			CBuildingLevel,
 			CUpgradable,
+			CEnemyBuildingDestroyed,
 			CTicksPassed
 		};
 
@@ -397,6 +524,10 @@ namespace AIEcho
 		{
 		public:
 			virtual ~Condition() {}
+			friend class AIEcho::Management::ManagementOrder;
+			friend class AIEcho::Construction::BuildingOrder;
+			friend class AIEcho::SearchTools::BuildingSearch;
+		protected:
 			virtual bool passes(Echo& echo, int id)=0;
 			virtual ConditionType get_type()=0;
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
@@ -409,6 +540,7 @@ namespace AIEcho
 		class NotUnderConstruction : public Condition
 		{
 		public:
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CNotUnderConstruction; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -419,6 +551,7 @@ namespace AIEcho
 		class UnderConstruction : public Condition
 		{
 		public:
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CUnderConstruction; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -429,6 +562,7 @@ namespace AIEcho
 		class BeingUpgraded : public Condition
 		{
 		public:
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CBeingUpgraded; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -441,7 +575,8 @@ namespace AIEcho
 		{
 		public:
 			BeingUpgradedTo() : level(0) {}
-			BeingUpgradedTo(int level);
+			explicit BeingUpgradedTo(int level);
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CBeingUpgradedTo; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -455,7 +590,8 @@ namespace AIEcho
 		{
 		public:
 			SpecificBuildingType() : building_type(0) {}
-			SpecificBuildingType(int building_type);
+			explicit SpecificBuildingType(int building_type);
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CSpecificBuildingType; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -469,7 +605,8 @@ namespace AIEcho
 		{
 		public:
 			NotSpecificBuildingType() : building_type(0) {}
-			NotSpecificBuildingType(int building_type);
+			explicit NotSpecificBuildingType(int building_type);
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CNotSpecificBuildingType; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -483,7 +620,8 @@ namespace AIEcho
 		{
 		public:
 			BuildingLevel() : building_level(0) {}
-			BuildingLevel(int building_level);
+			explicit BuildingLevel(int building_level);
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CBuildingLevel; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -496,19 +634,42 @@ namespace AIEcho
 		class Upgradable : public Condition
 		{
 		public:
+		protected:
 			bool passes(Echo& echo, int id);
 			ConditionType get_type() { return CUpgradable; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
 
+		///This condition is unlike the others. It matches when the provided building is destroyed
+		///Note, this takes a gbid, not a standard building id. GBID's are obtained from
+		///enemy_building_iterator. This is meant primarily for use with war flags, to destroy
+		///the war flag when the underlieing building has been destroyed.
+		class EnemyBuildingDestroyed : public Condition
+		{
+		public:
+			EnemyBuildingDestroyed() {}
+			EnemyBuildingDestroyed(Echo& echo, int gbid);
+		protected:
+			bool passes(Echo& echo, int id);
+			ConditionType get_type() { return CEnemyBuildingDestroyed; }
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
+		private:
+			int gbid;
+			int type;
+			int level;
+			position location;
+		};
+
 		///This is a debug condition that waits for a certain number of tries before it passes.
-		///Not to be used under normal circumstances.
+		///Not to be used under normal circumstances. Only for debugging!
 		class TicksPassed : public Condition
 		{
 		public:
 			TicksPassed() : num(0) {}
-			TicksPassed(int num) : num(num) {}
+			explicit TicksPassed(int num) : num(num) {}
+		protected:
 			bool passes(Echo& echo, int id) { num--; if(num==0) return true; return false; }
 			ConditionType get_type() { return CTicksPassed; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor) {return false;}
@@ -543,17 +704,19 @@ namespace AIEcho
 			virtual ~ManagementOrder() {}
 			///Adds a new condition to the management order. This assumes ownership of the condition.
 			void add_condition(Conditions::Condition* condition);
-			bool passes_conditions(Echo& echo, int building_id);
+		protected:
 			virtual void modify(Echo& echo, int building_id)=0;
 
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 			virtual void save(GAGCore::OutputStream *stream)=0;
 			virtual ManagementOrderType get_type()=0;
 
+		private:
+			friend class AIEcho::Echo;
+			bool passes_conditions(Echo& echo, int building_id);
 			static ManagementOrder* load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			static void save_order(ManagementOrder* mo, GAGCore::OutputStream *stream);
 
-		private:
 			std::vector<boost::shared_ptr<Conditions::Condition> > conditions;
 		};
 
@@ -562,7 +725,8 @@ namespace AIEcho
 		{
 		public:
 			AssignWorkers() : number_of_workers(0) {}
-			AssignWorkers(int number_of_workers);
+			explicit AssignWorkers(int number_of_workers);
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MAssignWorkers; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -577,6 +741,7 @@ namespace AIEcho
 		public:
 			ChangeSwarm() : worker_ratio(0), explorer_ratio(0), warrior_ratio(0) {}
 			ChangeSwarm(int worker_ratio, int explorer_ratio, int warrior_ratio);
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MChangeSwarm; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -591,6 +756,7 @@ namespace AIEcho
 		class DestroyBuilding : public ManagementOrder
 		{
 		public:
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MDestroyBuilding; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -608,14 +774,15 @@ namespace AIEcho
 			RessourceTracker(Echo& echo, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : echo(echo)
 				{ load(stream, player, versionMinor);  }
 			RessourceTracker(Echo& echo, int building_id);
-			void tick();
 			///Returns the total ressources the building possessed within the time frame
 			int get_average_level();
 			///Returns the number of ticks the ressource tracker has been tracking.
 			int get_age() { return timer; }
+		private:
+			friend class AIEcho::Echo;
+			void tick();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
-		private:
 			std::vector<int> record;
 			unsigned int position;
 			int timer;
@@ -628,6 +795,7 @@ namespace AIEcho
 		{
 		public:
 			AddRessourceTracker();
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MAddRessourceTracker; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -638,6 +806,7 @@ namespace AIEcho
 		class PauseRessourceTracker : public ManagementOrder
 		{
 		public:
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MPauseRessourceTracker; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -648,6 +817,7 @@ namespace AIEcho
 		class UnPauseRessourceTracker : public ManagementOrder
 		{
 		public:
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MUnPauseRessourceTracker; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -659,7 +829,8 @@ namespace AIEcho
 		{
 		public:
 			ChangeFlagSize() : size(0) {}
-			ChangeFlagSize(int size);
+			explicit ChangeFlagSize(int size);
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MChangeFlagSize; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -674,7 +845,8 @@ namespace AIEcho
 		{
 		public:
 			ChangeFlagMinimumLevel() : minimum_level(0) {}
-			ChangeFlagMinimumLevel(int minimum_level); 
+			explicit ChangeFlagMinimumLevel(int minimum_level); 
+		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MChangeFlagMinimumLevel; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -686,7 +858,8 @@ namespace AIEcho
 		enum GlobalManagementOrderType
 		{
 			MAddArea,
-			MRemoveArea
+			MRemoveArea,
+			MChangeAlliances,
 		};
 
 
@@ -697,10 +870,12 @@ namespace AIEcho
 		public:
 			virtual ~GlobalManagementOrder() {}
 			virtual void modify(Echo& echo)=0;
-
+		protected:
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 			virtual void save(GAGCore::OutputStream *stream)=0;
 			virtual GlobalManagementOrderType get_type()=0;
+		private:
+			friend class AIEcho::Echo;
 			static GlobalManagementOrder* load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			static void save_order(GlobalManagementOrder* mo, GAGCore::OutputStream *stream);
 		};
@@ -721,8 +896,9 @@ namespace AIEcho
 		{
 		public:
 			AddArea() {}
-			AddArea(AreaType areatype);
+			explicit AddArea(AreaType areatype);
 			void add_location(int x, int y);
+		protected:
 			void modify(Echo& echo);
 			GlobalManagementOrderType get_type() { return MAddArea; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -739,8 +915,9 @@ namespace AIEcho
 		{
 		public:
 			RemoveArea() {}
-			RemoveArea(AreaType areatype);
+			explicit RemoveArea(AreaType areatype);
 			void add_location(int x, int y);
+		protected:
 			void modify(Echo& echo);
 			GlobalManagementOrderType get_type() { return MRemoveArea; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -748,6 +925,29 @@ namespace AIEcho
 		private:
 			AreaType areatype;
 			std::vector<position> locations;
+		};
+
+		///This class allows you to adjust alliances with other teams.
+		class ChangeAlliances : public GlobalManagementOrder
+		{
+		public:
+			ChangeAlliances() {}
+			///You pass in a team number, that can be retrieved from enemy_team_iterator or a similar method. Then you pass in modifiers
+			///on each of the possible alliances. If you pass in true, that alliance mode is set. If you pass in false, that alliance
+			///mode is unset. If you pass in undeterminate, that alliance mode is not changed, keeping whatever value it had before.
+			ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other);
+			void modify(Echo& echo);
+		protected:
+			GlobalManagementOrderType get_type() { return MChangeAlliances; }
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
+		private:
+			int team;
+			boost::logic::tribool is_allied;
+			boost::logic::tribool is_enemy;
+			boost::logic::tribool view_market;
+			boost::logic::tribool view_inn;
+			boost::logic::tribool view_other;
 		};
 	};
 
@@ -759,9 +959,10 @@ namespace AIEcho
 		{
 		public:
 			UpgradeRepairOrder(Echo& echo, int id, int number_of_workers);
+			friend class AIEcho::Echo;
+		private:
 			int get_id() const { return id; }
 			int get_number_of_workers() const { return number_of_workers; }
-		private:
 			Echo& echo;
 			int id;
 			int number_of_workers;
@@ -771,8 +972,6 @@ namespace AIEcho
 	///This namespace stores anything related to search and iterating through buildings or teams that satisfy particular conditions.
 	namespace SearchTools
 	{
-		class BuildingSearch;
-
 		///This is a standards complying iterator that iterates over buildings that satisfy conditions. Can only be
 		///obtained from a BuildingSearch object
 		class building_search_iterator
@@ -782,16 +981,16 @@ namespace AIEcho
 			building_search_iterator& operator++();
 			building_search_iterator operator++(int);
 			bool operator!=(const building_search_iterator& rhs) const;
-			friend class BuildingSearch;
+
 			typedef std::forward_iterator_tag iterator_category;
 			typedef unsigned int        value_type;
 			typedef size_t   difference_type;
 			typedef unsigned int*           pointer;
 			typedef unsigned int&         reference;
-		protected:
-			building_search_iterator();
-			building_search_iterator(BuildingSearch& search);
 		private:
+			friend class AIEcho::SearchTools::BuildingSearch;
+			building_search_iterator();
+			explicit building_search_iterator(BuildingSearch& search);
 			void set_to_next();
 			int found_id;
 			Construction::BuildingRegister::found_iterator position;
@@ -805,7 +1004,7 @@ namespace AIEcho
 		class BuildingSearch
 		{
 		public:
-			BuildingSearch(Echo& echo);
+			explicit BuildingSearch(Echo& echo);
 			///This adds a condition that the building has to pass in order to be examined.
 			void add_condition(Conditions::Condition* condition);
 			///This counts up all the buildings that satisfy the conditions
@@ -814,23 +1013,19 @@ namespace AIEcho
 			building_search_iterator begin();
 			///Returns the one-past-the-end iterator
 			building_search_iterator end();
-			friend class building_search_iterator;
-		protected:
+		private:
+			friend class AIEcho::SearchTools::building_search_iterator;
 			Echo& echo;
 			bool passes_conditions(int b);
-		private:
 			std::vector<boost::shared_ptr<Conditions::Condition> > conditions;
 		};
-
-		///When provided with a building ID, this function will return its building type in IntBuildingTypes.h
-		int get_building_type(Echo& echo, unsigned int id);
 
 		///This class is a standard iterator that is used to iterate over teams that qualify as "enemies".
 		///It returns an integer corrosponding to the teams id. 
 		class enemy_team_iterator
 		{
 		public:
-			enemy_team_iterator(Echo& echo);
+			explicit enemy_team_iterator(Echo& echo);
 			enemy_team_iterator();
 			const unsigned int operator*();
 			enemy_team_iterator& operator++();
@@ -851,9 +1046,45 @@ namespace AIEcho
 
 		///This function returns whether there is a flag at the given position, and if so, its GID, if not, NOGBID
 		int is_flag(Echo& echo, int x, int y);
-	};
 
-	class Echo;
+		///This is an iterator that is used to iterate over enemy buildings. You only get so much information
+		///about enemy buildings, which is why you can't use the standard Conditions. It returns standard GBIDs,
+		///which are different from the building ID's you get in other portions of the system. If a class or function
+		///requires a GBID instead of a standard building id, it has to come from here. You also don't get information
+		///on buildings you can't see, with one exception, you can get information about buildings you don't see,
+		///as long as those buildings existed when the game started (this simulates a human looking at the map before
+		///a game)
+		class enemy_building_iterator
+		{
+		public:
+			enemy_building_iterator();
+			///These are the three pieces of information you are provided with. If building_type or level are -1,
+			///they are considered a wildcard, any building will match. If construction_site is indeterminate,
+			///the same thing applies, its a wildcard, any building will match.
+			enemy_building_iterator(Echo& echo, int team, int building_type, int level, boost::logic::tribool construction_site);
+
+			const unsigned int operator*();
+			enemy_building_iterator& operator++();
+			enemy_building_iterator operator++(int);
+			bool operator!=(const enemy_building_iterator& rhs) const;
+
+			typedef std::forward_iterator_tag iterator_category;
+			typedef unsigned int        value_type;
+			typedef size_t   difference_type;
+			typedef unsigned int*           pointer;
+			typedef unsigned int&         reference;
+		private:
+			void set_to_next();
+			int current_gid;
+			int current_index;
+			int team;
+			int building_type;
+			int level;
+			boost::logic::tribool construction_site;
+			bool is_end;
+			Echo* echo;
+		};
+	};
 
 	///This is a base class for all EchoAI's
 	class EchoAI
@@ -869,7 +1100,7 @@ namespace AIEcho
 		virtual void tick(Echo& echo)=0;
 	};
 
-	///Reach to infinity is a simple economic test AI for Echo.
+	///Reach To Infinity is a simple economic test AI for Echo.
 	class ReachToInfinity : public EchoAI
 	{
 	public:
@@ -879,6 +1110,8 @@ namespace AIEcho
 		void tick(Echo& echo);
 	private:
 		int timer;
+		bool flag_on_fruit;
+		std::set<int> flags_on_enemy;
 	};
 
 	///This is the part that ties everything together. This bridges the interface between the game and the AI system.
@@ -887,22 +1120,18 @@ namespace AIEcho
 	{
 	public:
 		Echo(EchoAI* echoai, Player* player);
-		unsigned int add_building_order(Construction::BuildingOrder& bo);
-		void add_management_order(Management::ManagementOrder* mo, unsigned int id);		
-		void add_global_management_order(Management::GlobalManagementOrder* gmo);
-		void update_management_orders();
-		void update_global_management_orders();
-		void add_upgrade_repair_order(UpgradesRepairs::UpgradeRepairOrder* uro);
-		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
-		void pause_ressource_tracker(int building_id);
-		void unpause_ressource_tracker(int building_id);
-		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
-		void update_ressource_trackers();
-
 		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 		void save(GAGCore::OutputStream *stream);
 
 		Order *getOrder(void);
+
+		unsigned int add_building_order(Construction::BuildingOrder& bo);
+		void add_management_order(Management::ManagementOrder* mo, unsigned int id);		
+		void add_global_management_order(Management::GlobalManagementOrder* gmo);
+		void add_upgrade_repair_order(UpgradesRepairs::UpgradeRepairOrder* uro);
+		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
+		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
+
 		Player* player;
 		void flare(int x, int y)
 			{ orders.push(new MapMarkOrder(player->team->teamNumber, x, y)); }
@@ -916,8 +1145,32 @@ namespace AIEcho
 		void push_order(Order* order)
 			{ orders.push(order); }
 
-		Gradients::GradientManager& get_gradient_manager() { return *gm; }
+		Gradients::GradientManager& get_gradient_manager()
+			{ return *gm; }
+
+		std::set<int>& get_starting_buildings()
+			{return starting_buildings; }
+
 	private:
+
+		friend class AIEcho::Management::AddRessourceTracker;
+		friend class AIEcho::Management::PauseRessourceTracker;
+		friend class AIEcho::Management::UnPauseRessourceTracker;
+		friend class AIEcho::Management::ChangeAlliances;
+
+		Uint32 allies;
+		Uint32 enemies;
+		Uint32 inn_view;
+		Uint32 market_view;
+		Uint32 other_view;
+
+		void update_management_orders();
+		void update_global_management_orders();
+		void pause_ressource_tracker(int building_id);
+		void unpause_ressource_tracker(int building_id);
+		void init_starting_buildings();
+		void update_ressource_trackers();
+
 		std::queue<Order*> orders;
 		boost::shared_ptr<EchoAI> echoai;
 		boost::shared_ptr<Gradients::GradientManager> gm;
@@ -927,6 +1180,7 @@ namespace AIEcho
 		std::vector<boost::shared_ptr<Management::GlobalManagementOrder> > global_management_orders;
 		std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> > ressource_trackers;
 		typedef std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator tracker_iterator;
+		std::set<int> starting_buildings;
 		int timer;
 		bool update_gm;
 	};
@@ -934,6 +1188,11 @@ namespace AIEcho
 
 	const unsigned int INVALID_BUILDING=65535;
 
+
+
+
+	void signature_write(GAGCore::OutputStream *stream);
+	void signature_check(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 
 };
 

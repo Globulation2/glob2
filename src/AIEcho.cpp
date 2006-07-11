@@ -457,16 +457,16 @@ MinimumDistance::MinimumDistance(const Gradients::GradientInfo& gi, int distance
 }
 
 
-int MinimumDistance::calculate_constraint(Gradients::GradientManager& gm, int x, int y)
+int MinimumDistance::calculate_constraint(Echo& echo, int x, int y)
 {
 	return 0;
 }
 
 
-bool MinimumDistance::passes_constraint(Gradients::GradientManager& gm, int x, int y)
+bool MinimumDistance::passes_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
-		gradient_cache=&gm.get_gradient(gi);
+		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	int height=gradient_cache->get_height(x, y);
 	if(height==-2)
 		return false;
@@ -483,16 +483,16 @@ MaximumDistance::MaximumDistance(const Gradients::GradientInfo& gi, int distance
 }
 
 
-int MaximumDistance::calculate_constraint(Gradients::GradientManager& gm, int x, int y)
+int MaximumDistance::calculate_constraint(Echo& echo, int x, int y)
 {
 	return 0;
 }
 
 
-bool MaximumDistance::passes_constraint(Gradients::GradientManager& gm, int x, int y)
+bool MaximumDistance::passes_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
-		gradient_cache=&gm.get_gradient(gi);
+		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	int height=gradient_cache->get_height(x, y);
 	if(height==-2)
 		return false;
@@ -509,18 +509,18 @@ MinimizedDistance::MinimizedDistance(const Gradients::GradientInfo& gi, int weig
 }
 
 
-int MinimizedDistance::calculate_constraint(Gradients::GradientManager& gm, int x, int y)
+int MinimizedDistance::calculate_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
-		gradient_cache=&gm.get_gradient(gi);
+		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	return -(gradient_cache->get_height(x, y) * weight);
 }
 
 
-bool MinimizedDistance::passes_constraint(Gradients::GradientManager& gm, int x, int y)
+bool MinimizedDistance::passes_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
-		gradient_cache=&gm.get_gradient(gi);
+		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	return gradient_cache->get_height(x, y)!=-2;
 }
 
@@ -532,19 +532,48 @@ MaximizedDistance::MaximizedDistance(const Gradients::GradientInfo& gi, int weig
 }
 
 
-int MaximizedDistance::calculate_constraint(Gradients::GradientManager& gm, int x, int y)
+int MaximizedDistance::calculate_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
-		gradient_cache=&gm.get_gradient(gi);
+		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	return gradient_cache->get_height(x, y) * weight;
 }
 
 
-bool MaximizedDistance::passes_constraint(Gradients::GradientManager& gm, int x, int y)
+bool MaximizedDistance::passes_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
-		gradient_cache=&gm.get_gradient(gi);
+		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	return gradient_cache->get_height(x, y)!=-2;
+}
+
+
+
+CenteredOn::CenteredOn(int gbid) : gbid(gbid)
+{
+
+}
+
+
+
+int CenteredOn::calculate_constraint(Echo& echo, int x, int y)
+{
+	return 0;
+}
+
+
+
+bool CenteredOn::passes_constraint(Echo& echo, int x, int y)
+{
+	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	if(b)
+	{
+		if((b->posX+b->type->width/2)==x && (b->posY+b->type->height/2)==y)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 
@@ -592,22 +621,22 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 				for(int x2=0; x2<type->width && passes; ++x2)
 					for(int y2=0; y2<type->height && passes; ++y2)
 						if((x2==0 || y2==0 || x2==type->width-1 || y2==type->height-1))
-							if(!(*i)->passes_constraint(manager, x+x2, y+y2))
+							if(!(*i)->passes_constraint(echo, x+x2, y+y2))
 								passes=false;
 				if(!passes)
 					break;
 
-				if(!map->isMapDiscovered(x, y, player->team->allies) ||
-				   !map->isMapDiscovered(x+type->width-1, y+type->height-1, player->team->allies)
+				if(!check_flag && (!map->isMapDiscovered(x, y, player->team->allies) ||
+				   !map->isMapDiscovered(x+type->width-1, y+type->height-1, player->team->allies))
 				    )
 				{
 					passes=false;
 					break;
 				}
-				score+=(*i)->calculate_constraint(manager, x, y);
-				score+=(*i)->calculate_constraint(manager, x+type->width-1, y+type->height-1);
-				score+=(*i)->calculate_constraint(manager, x, y+type->height-1);
-				score+=(*i)->calculate_constraint(manager, x+type->width-1, y);
+				score+=(*i)->calculate_constraint(echo, x, y);
+				score+=(*i)->calculate_constraint(echo, x+type->width-1, y+type->height-1);
+				score+=(*i)->calculate_constraint(echo, x, y+type->height-1);
+				score+=(*i)->calculate_constraint(echo, x+type->width-1, y);
 			}
 			if(!passes)
 				continue;
@@ -880,6 +909,12 @@ void BuildingRegister::tick()
 				found_buildings.erase(i);
 				continue;
 			}
+			if(player->team->myBuildings[::Building::GIDtoID(i->second.get<3>())]==NULL)
+			{
+				echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), NOGBID);
+				found_buildings.erase(i);
+				continue;
+			}
 		}
 		else
 		{
@@ -962,17 +997,14 @@ int BuildingRegister::get_type(unsigned int id)
 	return found_buildings[id].get<2>();
 }
 
-/*
-			CNotUnderConstruction,
-			CUnderConstruction,
-			CBeingUpgraded,
-			CBeingUpgradedTo,
-			CSpecifcBuildingType,
-			CNotSpecificBuildingType,
-			CBuildingLevel,
-			CUpgradable,
-			CTicksPassed
-*/
+
+
+int BuildingRegister::get_level(unsigned int id)
+{
+	return get_building(id)->type->level;
+}
+
+
 
 Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -1011,6 +1043,10 @@ Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *playe
 		break;
 		case CUpgradable:
 			condition=new Upgradable;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CEnemyBuildingDestroyed:
+			condition=new EnemyBuildingDestroyed;
 			condition->load(stream, player, versionMinor);
 		break;
 		case CTicksPassed:
@@ -1266,6 +1302,8 @@ bool Upgradable::passes(Echo& echo, int id)
 	return false;
 }
 
+
+
 bool Upgradable::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	return true;
@@ -1276,6 +1314,64 @@ bool Upgradable::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 void Upgradable::save(GAGCore::OutputStream *stream)
 {
 
+}
+
+
+
+EnemyBuildingDestroyed::EnemyBuildingDestroyed(Echo& echo, int gbid) : gbid(gbid)
+{
+	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	type=b->type->shortTypeNum;
+	level=b->type->level;
+	location=position(b->posX, b->posY);
+}
+
+
+
+bool EnemyBuildingDestroyed::passes(Echo& echo, int id)
+{
+	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	if(b==NULL)
+	{
+		return true;
+	}
+	if(b->posX != location.x || b->posY != location.y)
+	{
+		return true;
+	}
+	if(b->type->shortTypeNum != type)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+
+bool EnemyBuildingDestroyed::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("EnemyBuildingDestroyed");
+	gbid=stream->readUint32("gbid");
+	type=stream->readUint32("type");
+	level=stream->readUint32("level");
+	int posx=stream->readUint32("posx");
+	int posy=stream->readUint32("posy");
+	location=position(posx, posy);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void EnemyBuildingDestroyed::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("EnemyBuildingDestroyed");
+	stream->writeUint32(gbid, "gbid");
+	stream->writeUint32(type, "type");
+	stream->writeUint32(level, "level");
+	stream->writeUint32(location.x, "posx");
+	stream->writeUint32(location.y, "posy");
+	stream->writeLeaveSection();
 }
 
 
@@ -1699,6 +1795,10 @@ GlobalManagementOrder* GlobalManagementOrder::load_order(GAGCore::InputStream *s
 			mo=new RemoveArea;
 			mo->load(stream, player, versionMinor);
 			break;
+		case MChangeAlliances:
+			mo=new ChangeAlliances;
+			mo->load(stream, player, versionMinor);
+			break;
 	}
 	return mo;
 }
@@ -1872,6 +1972,156 @@ void RemoveArea::save(GAGCore::OutputStream *stream)
 }
 
 
+ChangeAlliances::ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other) : team(team), is_allied(is_allied), is_enemy(is_enemy), view_market(view_market), view_inn(view_inn), view_other(view_other)
+{
+
+}
+
+
+
+void ChangeAlliances::modify(Echo& echo)
+{
+	Uint32 alliedmask=echo.allies;
+	Uint32 enemymask=echo.enemies;
+	Uint32 market_mask=echo.market_view;
+	Uint32 inn_mask=echo.inn_view;
+	Uint32 other_mask=echo.other_view;
+	Team* t=echo.player->game->teams[team];
+	if(is_allied)
+		alliedmask|=t->me;
+	else if(!is_allied)
+		if(alliedmask&t->me)
+			alliedmask^=t->me;
+
+	if(is_enemy)
+		enemymask|=t->me;
+	else if(!is_enemy)
+		if(enemymask&t->me)
+			enemymask^=t->me;
+
+	if(view_market)
+		market_mask|=t->me;
+	else if(!view_market)
+		if(market_mask&t->me)
+			market_mask^=t->me;
+
+	if(view_inn)
+		inn_mask|=t->me;
+	else if(!view_inn)
+		if(inn_mask&t->me)
+			inn_mask^=t->me;
+
+	if(view_other)
+		other_mask|=t->me;
+	else if(!view_other)
+		if(other_mask&t->me)
+			other_mask^=t->me;
+
+	echo.allies=alliedmask;
+	echo.enemies=enemymask;
+	echo.market_view=market_mask;
+	echo.inn_view=inn_mask;
+	echo.other_view=other_mask;
+
+	echo.push_order(new SetAllianceOrder(echo.player->team->teamNumber, alliedmask, enemymask, market_mask, inn_mask, other_mask));
+}
+
+
+
+bool ChangeAlliances::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ChangeAlliances");
+	team=stream->readUint32("team");
+
+	Uint8 tmp=stream->readUint8("is_allied");
+	if(tmp==1)
+		is_allied=true;
+	else if(tmp==0)
+		is_allied=false;
+	else if(tmp==2)
+		is_allied=indeterminate;
+
+	tmp=stream->readUint8("is_enemy");
+	if(tmp==1)
+		is_enemy=true;
+	else if(tmp==0)
+		is_enemy=false;
+	else if(tmp==2)
+		is_enemy=indeterminate;
+
+	tmp=stream->readUint8("view_market");
+	if(tmp==1)
+		view_market=true;
+	else if(tmp==0)
+		view_market=false;
+	else if(tmp==2)
+		view_market=indeterminate;
+
+	tmp=stream->readUint8("view_inn");
+	if(tmp==1)
+		view_inn=true;
+	else if(tmp==0)
+		view_inn=false;
+	else if(tmp==2)
+		view_inn=indeterminate;
+
+	tmp=stream->readUint8("view_other");
+	if(tmp==1)
+		view_other=true;
+	else if(tmp==0)
+		view_other=false;
+	else if(tmp==2)
+		view_other=indeterminate;
+
+	return true;
+}
+
+
+
+void ChangeAlliances::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ChangeAlliances");
+	stream->writeUint32(team, "team");
+
+	if(is_allied)
+		stream->writeUint8(1, "is_allied");
+	else if(!is_allied)
+		stream->writeUint8(0, "is_allied");
+	else
+		stream->writeUint8(2, "is_allied");
+
+	if(is_enemy)
+		stream->writeUint8(1, "is_enemy");
+	else if(!is_enemy)
+		stream->writeUint8(0, "is_enemy");
+	else
+		stream->writeUint8(2, "is_enemy");
+
+	if(view_market)
+		stream->writeUint8(1, "view_market");
+	else if(!view_market)
+		stream->writeUint8(0, "view_market");
+	else
+		stream->writeUint8(2, "view_market");
+
+	if(view_inn)
+		stream->writeUint8(1, "view_inn");
+	else if(!view_inn)
+		stream->writeUint8(0, "view_inn");
+	else
+		stream->writeUint8(2, "view_inn");
+
+	if(view_other)
+		stream->writeUint8(1, "view_other");
+	else if(!view_other)
+		stream->writeUint8(0, "view_other");
+	else
+		stream->writeUint8(2, "view_other");
+
+	stream->writeLeaveSection();
+}
+
+
 
 UpgradeRepairOrder::UpgradeRepairOrder(Echo& echo, int id, int number_of_workers): echo(echo), id(id), number_of_workers(number_of_workers)
 {
@@ -2005,13 +2255,6 @@ bool BuildingSearch::passes_conditions(int b)
 }
 
 
-
-int SearchTools::get_building_type(Echo& echo, unsigned int id)
-{
-	return echo.get_building_register().get_building(id)->type->shortTypeNum;
-}
-
-
 enemy_team_iterator::enemy_team_iterator(Echo& echo) :  team_number(-1), is_end(false), echo(&echo)
 {
 	set_to_next();
@@ -2097,6 +2340,105 @@ int SearchTools::is_flag(Echo& echo, int x, int y)
 }
 
 
+
+
+enemy_building_iterator::enemy_building_iterator() : is_end(true)
+{
+
+}
+
+
+
+enemy_building_iterator::enemy_building_iterator(Echo& echo, int team, int building_type, int level, boost::logic::tribool construction_site) : current_gid(-1), team(team), building_type(building_type), level(level), construction_site(construction_site), is_end(false), echo(&echo)
+{
+	set_to_next();
+}
+
+
+
+const unsigned int enemy_building_iterator::operator*()
+{
+	return current_gid;
+}
+
+
+
+enemy_building_iterator& enemy_building_iterator::operator++()
+{
+	set_to_next();
+	return *this;
+}
+
+
+
+enemy_building_iterator enemy_building_iterator::operator++(int)
+{
+	enemy_building_iterator copy;
+	set_to_next();
+	return copy;
+}
+
+
+
+bool enemy_building_iterator::operator!=(const enemy_building_iterator& rhs) const
+{
+	if(is_end && rhs.is_end)
+		return false;
+	return is_end!=rhs.is_end || team!=rhs.team || building_type!=rhs.building_type || level!=rhs.level || construction_site!=rhs.construction_site;
+}
+
+
+
+void enemy_building_iterator::set_to_next()
+{
+	if(current_gid==-1)
+	{
+		current_index=0;
+	}
+	else
+		current_index++;
+
+	while(current_index<1024)
+	{
+		Building* b=echo->player->game->teams[team]->myBuildings[current_index];
+		if(b)
+		{
+			if( (b->seenByMask&echo->player->team->me || echo->get_starting_buildings().find(b->gid)!=echo->get_starting_buildings().end()) &&
+				(building_type==-1 || b->type->shortTypeNum==building_type) &&
+				(level==-1 || b->type->level==(level-1)))
+			{
+				if(construction_site)
+				{
+					if(b->type->isBuildingSite)
+					{
+						current_gid=b->gid;
+						break;
+					}
+				}
+				else if(!construction_site)
+				{
+					if(!b->type->isBuildingSite)
+					{
+						current_gid=b->gid;
+						break;
+					}
+				}
+				else
+				{
+					current_gid=b->gid;
+					break;
+				}
+			}
+		}
+		current_index++;
+	}
+
+	if(current_index==1024)
+		is_end=true;
+}
+
+
+
 Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(), br(player, *this), fm(*this), timer(0)
 {
 }
@@ -2123,7 +2465,7 @@ unsigned int Echo::add_building_order(Construction::BuildingOrder& bo)
 			add_management_order(mo_during_construction, id);
 		}
 		orders.push(new OrderCreate(player->team->teamNumber, p.x, p.y, type));
-//		std::cout<<"constructing building x="<<p.x<<" y="<<p.y<<std::endl;
+//		std::cout<<"constructing building x="<<p.x<<" y="<<p.y<<"  id="<<id<<std::endl;
 		return id;
 	}
 	return INVALID_BUILDING;
@@ -2249,6 +2591,26 @@ void Echo::update_ressource_trackers()
 
 
 
+void Echo::init_starting_buildings()
+{
+	for(int t=0; t<32; ++t)
+	{
+		if(player->game->teams[t])
+		{
+			for(int bu=0; bu<1024; ++bu)
+			{
+				Building* b=player->game->teams[t]->myBuildings[bu];
+				if(b)
+				{
+					starting_buildings.insert(b->gid);
+				}
+			}
+		}
+	}
+}
+
+
+
 bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("EchoAI");
@@ -2322,12 +2684,29 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	}
 	stream->readLeaveSection();
 
+	signature_check(stream, player, versionMinor);
+
+	stream->readEnterSection("starting_buildings");
+	Uint32 startingBuildingSize=stream->readUint32("size");
+	for(Uint32 startingBuildingIndex=0; startingBuildingIndex<startingBuildingSize; ++startingBuildingIndex)
+	{
+		stream->readEnterSection(startingBuildingIndex);
+		starting_buildings.insert(stream->readUint32("gid"));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
 
 	signature_check(stream, player, versionMinor);
 
 	timer=stream->readUint32("timer");
 	update_gm=stream->readUint8("update_gm");
 
+	allies=stream->readUint32("allies");
+	enemies=stream->readUint32("enemies");
+	inn_view=stream->readUint32("inn_view");
+	market_view=stream->readUint32("market_view");
+	other_view=stream->readUint32("other_view");
 
 	signature_check(stream, player, versionMinor);
 
@@ -2416,12 +2795,29 @@ void Echo::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeLeaveSection();
 
+	signature_write(stream);
+
+	stream->writeEnterSection("starting_buildings");
+	Uint32 startingBuildingIndex=0;
+	stream->writeUint32(starting_buildings.size(), "size");
+	for(std::set<int>::iterator i=starting_buildings.begin(); i!=starting_buildings.end(); ++i, ++startingBuildingIndex)
+	{
+		stream->writeEnterSection(startingBuildingIndex);
+		stream->writeUint32(*i, "gid");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 
 	signature_write(stream);
 
 	stream->writeUint32(timer, "timer");
 	stream->writeUint8(update_gm, "update_gm");
 
+	stream->writeUint32(allies, "allies");
+	stream->writeUint32(enemies, "enemies");
+	stream->writeUint32(inn_view, "inn_view");
+	stream->writeUint32(market_view, "market_view");
+	stream->writeUint32(other_view, "other_view");
 
 	signature_write(stream);
 
@@ -2438,6 +2834,13 @@ void Echo::save(GAGCore::OutputStream *stream)
 
 Order* Echo::getOrder(void)
 {
+//	for(int x=0; x<player->map->getW(); ++x)
+//	{
+//		for(int y=0; y<player->map->getH(); ++y)
+//		{
+//			player->map->setMapDiscovered(x, y, player->team->me);
+//		}
+//	}
 	if(!gm)
 	{
 		gm.reset(new GradientManager(player->map));
@@ -2466,6 +2869,12 @@ Order* Echo::getOrder(void)
 	if(timer==0)
 	{
 		br.initiate();
+		init_starting_buildings();
+		allies=player->team->allies;
+		enemies=player->team->enemies;
+		market_view=player->team->sharedVisionExchange;
+		inn_view=player->team->sharedVisionFood;
+		other_view=player->team->sharedVisionOther;
 	}
 
 	if(!orders.empty())
@@ -2491,7 +2900,8 @@ Order* Echo::getOrder(void)
 
 ReachToInfinity::ReachToInfinity()
 {
-    timer=0;
+	timer=0;
+	flag_on_fruit=false;
 }
 
 
@@ -2499,6 +2909,18 @@ bool ReachToInfinity::load(GAGCore::InputStream *stream, Player *player, Sint32 
 {
 	stream->readEnterSection("ReachToInfinity");
 	timer=stream->readUint32("timer");
+	flag_on_fruit=stream->readUint32("flag_on_fruit");
+
+	stream->readEnterSection("flags_on_enemy");
+	Uint32 flagsOnEnemySize=stream->readUint32("size");
+	for(Uint32 flagsOnEnemyIndex=0; flagsOnEnemyIndex<flagsOnEnemySize; ++flagsOnEnemyIndex)
+	{
+		stream->readEnterSection(flagsOnEnemyIndex);
+		flags_on_enemy.insert(stream->readUint32("gid"));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
 	stream->readLeaveSection();
 	return true;
 }
@@ -2508,6 +2930,19 @@ void ReachToInfinity::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("ReachToInfinity");
 	stream->writeUint32(timer, "timer");
+	stream->writeUint32(flag_on_fruit, "flag_on_fruit");
+
+	stream->writeEnterSection("flags_on_enemy");
+	Uint32 flagsOnEnemyIndex=0;
+	stream->writeUint32(flags_on_enemy.size(), "size");
+	for(std::set<int>::iterator i=flags_on_enemy.begin(); i!=flags_on_enemy.end(); ++i, ++flagsOnEnemyIndex)
+	{
+		stream->writeEnterSection(flagsOnEnemyIndex);
+		stream->writeUint32(*i, "gid");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
 	stream->writeLeaveSection();
 }
 
@@ -2520,7 +2955,7 @@ void ReachToInfinity::tick(Echo& echo)
 		BuildingSearch bs(echo);
 		for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 		{	
-			if(get_building_type(echo, *i)==IntBuildingType::SWARM_BUILDING)
+			if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 			{
 				ManagementOrder* mo_completion=new AssignWorkers(5);
 				echo.add_management_order(mo_completion, *i);
@@ -2532,7 +2967,7 @@ void ReachToInfinity::tick(Echo& echo)
 				ManagementOrder* mo_tracker=new AddRessourceTracker;
 				echo.add_management_order(mo_tracker, *i);
 			}
-			if(get_building_type(echo, *i)==IntBuildingType::FOOD_BUILDING)
+			if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 			{
 				ManagementOrder* mo_tracker=new AddRessourceTracker;
 				echo.add_management_order(mo_tracker, *i);
@@ -2544,10 +2979,10 @@ void ReachToInfinity::tick(Echo& echo)
 	//Explorer flags on the three nearest fruit trees
 	if((timer%100)==0)
 	{
-		BuildingSearch bs_flag(echo);
-		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
-		const int number=bs_flag.count_buildings();
-		if(echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER]>=3 && number==0)
+//		BuildingSearch bs_flag(echo);
+//		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
+//		const int number=bs_flag.count_buildings();
+		if(echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER]>=3 && !flag_on_fruit)
 		{
 			//The main order for the exploration flag
 			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
@@ -2572,14 +3007,50 @@ void ReachToInfinity::tick(Echo& echo)
 
 			if(id!=INVALID_BUILDING)
 			{
-//				std::cout<<"Constructing flag, id: "<<id<<std::endl;
-
 				ManagementOrder* mo_completion=new ChangeFlagSize(4);
 				echo.add_management_order(mo_completion, id);
+				flag_on_fruit=true;
+
+				for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+				{
+					GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+					echo.add_global_management_order(mo_alliance);
+				}
 			}
 		}
 	}
 
+	//Place exploration flags on the enemy swarms
+	if((timer%120)==0)
+	{
+		if(echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER]>=3)
+		{
+			for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+			{
+				for(enemy_building_iterator ebi(echo, *i, IntBuildingType::SWARM_BUILDING, -1, false); ebi!=enemy_building_iterator(); ++ebi)
+				{
+					if(flags_on_enemy.find(*i)!=flags_on_enemy.end())
+						continue;
+
+					AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::EXPLORATION_FLAG, 1);
+					bo.add_constraint(new CenteredOn(*ebi));
+					unsigned int id=echo.add_building_order(bo);
+
+					if(id!=INVALID_BUILDING)
+					{
+						ManagementOrder* mo_completion=new ChangeFlagSize(12);
+						echo.add_management_order(mo_completion, id);
+
+						ManagementOrder* mo_destroyed=new DestroyBuilding;
+						mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, *ebi));
+						echo.add_management_order(mo_destroyed, id);
+
+						flags_on_enemy.insert(*i);
+					}
+				}
+			}
+		}
+	}
 
 
 	//Standard Inns near wheat
@@ -2861,7 +3332,7 @@ void ReachToInfinity::tick(Echo& echo)
 				UpgradeRepairOrder* uro = new UpgradeRepairOrder(echo, buildings[chosen], 8);
 				echo.add_upgrade_repair_order(uro);
 
-				if(get_building_type(echo, buildings[chosen])==IntBuildingType::FOOD_BUILDING)
+				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
 					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker;
 					mo_tracker_pause->add_condition(new UnderConstruction);
@@ -2917,7 +3388,7 @@ void ReachToInfinity::tick(Echo& echo)
 				UpgradeRepairOrder* uro = new UpgradeRepairOrder(echo, buildings[chosen], 8);
 				echo.add_upgrade_repair_order(uro);
 
-				if(get_building_type(echo, buildings[chosen])==IntBuildingType::FOOD_BUILDING)
+				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
 					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker;
 					mo_tracker_pause->add_condition(new UnderConstruction);
@@ -2947,7 +3418,7 @@ void ReachToInfinity::tick(Echo& echo)
 			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
 			if(rt->get_age()>1500)
 			{
-				if(rt->get_average_level() < 24*(echo.get_building_register().get_building(*i)->type->level+1))
+				if(rt->get_average_level() < 24*(echo.get_building_register().get_level(*i)+1))
 				{
 					ManagementOrder* mo_destroy=new DestroyBuilding;
 					echo.add_management_order(mo_destroy, *i);
