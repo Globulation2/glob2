@@ -1139,7 +1139,7 @@ int BuildingRegister::get_type(unsigned int id)
 
 int BuildingRegister::get_level(unsigned int id)
 {
-	return get_building(id)->type->level;
+	return get_building(id)->type->level+1;
 }
 
 
@@ -1698,7 +1698,7 @@ void DestroyBuilding::save(GAGCore::OutputStream *stream)
 
 
 
-RessourceTracker::RessourceTracker(Echo& echo, int building_id) : record(12, 0), position(0), timer(0), echo(echo), building_id(building_id)
+RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id)
 {
 
 }
@@ -1722,7 +1722,7 @@ void RessourceTracker::tick()
 }
 
 
-int RessourceTracker::get_average_level()
+int RessourceTracker::get_total_level()
 {
 	int sum=0;
 	for(unsigned int n=0; n<record.size(); ++n)
@@ -1738,9 +1738,9 @@ bool RessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32
 {
 	stream->readEnterSection("RessourceTracker");
 	stream->readEnterSection("record");
-	Uint32 size=stream->readUint32("size");
-	record.resize(size);
-	for(unsigned int record_index=0; record_index<size; ++record_index)
+	Uint32 recordsize=stream->readUint32("size");
+	record.resize(recordsize);
+	for(unsigned int record_index=0; record_index<recordsize; ++record_index)
 	{
 		stream->readEnterSection(record_index);
 		record[record_index]=stream->readUint32("quantity_of_ressources");
@@ -1750,6 +1750,7 @@ bool RessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32
 	position=stream->readUint32("position");
 	timer=stream->readUint32("timer");
 	building_id=stream->readUint32("building_id");
+	length=stream->readUint32("length");
 	stream->readLeaveSection();
 	return true;
 }
@@ -1771,12 +1772,13 @@ void RessourceTracker::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(position, "position");
 	stream->writeUint32(timer, "timer");
 	stream->writeUint32(building_id, "building_id");
+	stream->writeUint32(length, "length");
 	stream->writeLeaveSection();
 }
 
 
 
-AddRessourceTracker::AddRessourceTracker()
+AddRessourceTracker::AddRessourceTracker(int length) : length(length)
 {
 
 }
@@ -1785,13 +1787,16 @@ AddRessourceTracker::AddRessourceTracker()
 
 void AddRessourceTracker::modify(Echo& echo, int building_id)
 {
-	echo.add_ressource_tracker(new RessourceTracker(echo, building_id), building_id);
+	echo.add_ressource_tracker(new RessourceTracker(echo, building_id, length), building_id);
 }
 
 
 
 bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("AddRessourceTracker");
+	length=stream->readUint32("length");
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -1799,7 +1804,9 @@ bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sin
 
 void AddRessourceTracker::save(GAGCore::OutputStream *stream)
 {
-
+	stream->writeEnterSection("AddRessourceTracker");
+	stream->writeUint32(length, "length");
+	stream->writeLeaveSection();
 }
 
 
@@ -2692,6 +2699,8 @@ void Echo::add_ressource_tracker(Management::RessourceTracker* rt, int building_
 
 boost::shared_ptr<Management::RessourceTracker> Echo::get_ressource_tracker(int building_id)
 {
+	if(ressource_trackers.find(building_id)==ressource_trackers.end())
+		return boost::shared_ptr<Management::RessourceTracker>();
 	return ressource_trackers[building_id].get<0>();
 }
 
@@ -3110,12 +3119,12 @@ void ReachToInfinity::tick(Echo& echo)
 				mo_ratios->add_condition(new NotUnderConstruction);
 				echo.add_management_order(mo_ratios, *i);
 
-				ManagementOrder* mo_tracker=new AddRessourceTracker;
+				ManagementOrder* mo_tracker=new AddRessourceTracker(12);
 				echo.add_management_order(mo_tracker, *i);
 			}
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 			{
-				ManagementOrder* mo_tracker=new AddRessourceTracker;
+				ManagementOrder* mo_tracker=new AddRessourceTracker(12);
 				echo.add_management_order(mo_tracker, *i);
 			}
 		}
@@ -3128,7 +3137,7 @@ void ReachToInfinity::tick(Echo& echo)
 //		BuildingSearch bs_flag(echo);
 //		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
 //		const int number=bs_flag.count_buildings();
-		if(echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER]>=3 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
+		if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=3 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 		{
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
@@ -3232,7 +3241,7 @@ void ReachToInfinity::tick(Echo& echo)
 	//Place exploration flags on the enemy swarms
 	if((timer%120)==0)
 	{
-		if(echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER]>=3)
+		if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=3)
 		{
 			for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 			{
@@ -3321,7 +3330,7 @@ void ReachToInfinity::tick(Echo& echo)
 			mo_completion->add_condition(new NotUnderConstruction);
 			echo.add_management_order(mo_completion, id);
 
-			ManagementOrder* mo_tracker=new AddRessourceTracker;
+			ManagementOrder* mo_tracker=new AddRessourceTracker(12);
 			mo_tracker->add_condition(new NotUnderConstruction);
 			echo.add_management_order(mo_tracker, id);
 		}
@@ -3375,7 +3384,7 @@ void ReachToInfinity::tick(Echo& echo)
 			echo.add_management_order(mo_ratios, id);
 
 			//Add a tracker
-			ManagementOrder* mo_tracker=new AddRessourceTracker;
+			ManagementOrder* mo_tracker=new AddRessourceTracker(12);
 			mo_tracker->add_condition(new NotUnderConstruction);
 			echo.add_management_order(mo_tracker, id);
 
@@ -3627,7 +3636,7 @@ void ReachToInfinity::tick(Echo& echo)
 			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
 			if(rt->get_age()>1500)
 			{
-				if(rt->get_average_level() < 24*(echo.get_building_register().get_level(*i)+1))
+				if(rt->get_total_level() < 24*echo.get_building_register().get_level(*i))
 				{
 					ManagementOrder* mo_destroy=new DestroyBuilding;
 					echo.add_management_order(mo_destroy, *i);
@@ -3644,7 +3653,7 @@ void ReachToInfinity::tick(Echo& echo)
 			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
 			if(rt->get_age()>2500)
 			{
-				if(rt->get_average_level() < 18)
+				if(rt->get_total_level() < 18)
 				{
 					ManagementOrder* mo_destroy=new DestroyBuilding;
 					echo.add_management_order(mo_destroy, *i);

@@ -24,6 +24,8 @@
 #include <AIImplementation.h>
 #include <BuildingType.h>
 #include <Player.h>
+#include "TeamStat.h"
+#include "Order.h"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -35,7 +37,6 @@
 #include <iterator>
 #include <set>
 
-#include "Order.h"
 
 namespace AIEcho
 {
@@ -788,9 +789,9 @@ namespace AIEcho
 		public:
 			RessourceTracker(Echo& echo, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : echo(echo)
 				{ load(stream, player, versionMinor);  }
-			RessourceTracker(Echo& echo, int building_id);
+			RessourceTracker(Echo& echo, int building_id, int length);
 			///Returns the total ressources the building possessed within the time frame
-			int get_average_level();
+			int get_total_level();
 			///Returns the number of ticks the ressource tracker has been tracking.
 			int get_age() { return timer; }
 		private:
@@ -801,6 +802,7 @@ namespace AIEcho
 			std::vector<int> record;
 			unsigned int position;
 			int timer;
+			int length;
 			Echo& echo;
 			int building_id;
 		};
@@ -809,12 +811,14 @@ namespace AIEcho
 		class AddRessourceTracker : public ManagementOrder
 		{
 		public:
-			AddRessourceTracker();
+			AddRessourceTracker(int length);
+			AddRessourceTracker() {}
 		protected:
 			void modify(Echo& echo, int building_id);
 			ManagementOrderType get_type() { return MAddRessourceTracker; }
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
+			int length;
 		};
 
 		///This pauses a ressource tracker. This is mainly done when a building is about to be upgraded.
@@ -1148,6 +1152,8 @@ namespace AIEcho
 		void add_upgrade_repair_order(UpgradesRepairs::UpgradeRepairOrder* uro);
 		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
 		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
+
+		TeamStat& get_team_stats() { return *player->team->stats.getLatestStat(); }
 
 		void flare(int x, int y)
 			{ orders.push(new MapMarkOrder(player->team->teamNumber, x, y)); }
