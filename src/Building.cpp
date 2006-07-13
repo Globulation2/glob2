@@ -1857,6 +1857,7 @@ void Building::turretStep(void)
 	if (bullets <= 0)
 		return;
 
+	//for some reason, any turret that is not 2x2 makes no sense at all to the game
 	assert(type->width ==2);
 	assert(type->height==2);
 
