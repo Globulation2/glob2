@@ -267,6 +267,16 @@ namespace AIEcho
 			mutable boost::logic::tribool needs_updated;
 		};
 
+		///Heres a few convience functions for creating a Gradient Info
+		///@{
+		GradientInfo make_gradient_info(Entities::Entity* source);
+		GradientInfo make_gradient_info_obstacle(Entities::Entity* source, Entities::Entity* obstacle);
+		GradientInfo make_gradient_info(Entities::Entity* source1, Entities::Entity* source2);
+		GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::Entity* source2, Entities::Entity* obstacle);
+		///@}
+
+
+
 		///A generic, all purpose gradient. The gradient is referenced by its GradientInfo, which it uses continually in its computation.
 		///Echo gradients are probably the slowest gradients in the game. However, they have one key difference compared to other gradinents,
 		///they can be shared, and they are generic, even more so than Nicowar gradients (which where decently generic, but not entirely).
@@ -558,7 +568,7 @@ namespace AIEcho
 		public:
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CNotUnderConstruction; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
@@ -569,7 +579,7 @@ namespace AIEcho
 		public:
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CUnderConstruction; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
@@ -580,7 +590,7 @@ namespace AIEcho
 		public:
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CBeingUpgraded; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
@@ -594,7 +604,7 @@ namespace AIEcho
 			explicit BeingUpgradedTo(int level);
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CBeingUpgradedTo; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -609,7 +619,7 @@ namespace AIEcho
 			explicit SpecificBuildingType(int building_type);
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CSpecificBuildingType; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -624,7 +634,7 @@ namespace AIEcho
 			explicit NotSpecificBuildingType(int building_type);
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CNotSpecificBuildingType; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -639,7 +649,7 @@ namespace AIEcho
 			explicit BuildingLevel(int building_level);
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CBuildingLevel; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -652,7 +662,7 @@ namespace AIEcho
 		public:
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CUpgradable; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
@@ -668,7 +678,7 @@ namespace AIEcho
 			EnemyBuildingDestroyed(Echo& echo, int gbid);
 		protected:
 			bool passes(Echo& echo, int id);
-			ConditionType get_type() { return CEnemyBuildingDestroyed; }
+			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -686,10 +696,10 @@ namespace AIEcho
 			TicksPassed() : num(0) {}
 			explicit TicksPassed(int num) : num(num) {}
 		protected:
-			bool passes(Echo& echo, int id) { num--; if(num==0) return true; return false; }
-			ConditionType get_type() { return CTicksPassed; }
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor) {return false;}
-			void save(GAGCore::OutputStream *stream) {}
+			bool passes(Echo& echo, int id);
+			ConditionType get_type();
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
 		private:
 			int num;
 		};
@@ -744,7 +754,7 @@ namespace AIEcho
 			explicit AssignWorkers(int number_of_workers);
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MAssignWorkers; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -759,7 +769,7 @@ namespace AIEcho
 			ChangeSwarm(int worker_ratio, int explorer_ratio, int warrior_ratio);
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MChangeSwarm; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -774,7 +784,7 @@ namespace AIEcho
 		public:
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MDestroyBuilding; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
@@ -793,7 +803,7 @@ namespace AIEcho
 			///Returns the total ressources the building possessed within the time frame
 			int get_total_level();
 			///Returns the number of ticks the ressource tracker has been tracking.
-			int get_age() { return timer; }
+			int get_age();
 		private:
 			friend class AIEcho::Echo;
 			void tick();
@@ -815,7 +825,7 @@ namespace AIEcho
 			AddRessourceTracker() {}
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MAddRessourceTracker; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 			int length;
@@ -827,7 +837,7 @@ namespace AIEcho
 		public:
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MPauseRessourceTracker; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
@@ -838,7 +848,7 @@ namespace AIEcho
 		public:
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MUnPauseRessourceTracker; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		};
@@ -851,7 +861,7 @@ namespace AIEcho
 			explicit ChangeFlagSize(int size);
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MChangeFlagSize; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -867,7 +877,7 @@ namespace AIEcho
 			explicit ChangeFlagMinimumLevel(int minimum_level); 
 		protected:
 			void modify(Echo& echo, int building_id);
-			ManagementOrderType get_type() { return MChangeFlagMinimumLevel; }
+			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -919,7 +929,7 @@ namespace AIEcho
 			void add_location(int x, int y);
 		protected:
 			void modify(Echo& echo);
-			GlobalManagementOrderType get_type() { return MAddArea; }
+			GlobalManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -938,7 +948,7 @@ namespace AIEcho
 			void add_location(int x, int y);
 		protected:
 			void modify(Echo& echo);
-			GlobalManagementOrderType get_type() { return MRemoveArea; }
+			GlobalManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -957,7 +967,7 @@ namespace AIEcho
 			ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other);
 			void modify(Echo& echo);
 		protected:
-			GlobalManagementOrderType get_type() { return MChangeAlliances; }
+			GlobalManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
@@ -980,8 +990,8 @@ namespace AIEcho
 			UpgradeRepairOrder(Echo& echo, int id, int number_of_workers);
 			friend class AIEcho::Echo;
 		private:
-			int get_id() const { return id; }
-			int get_number_of_workers() const { return number_of_workers; }
+			int get_id() const;
+			int get_number_of_workers() const;
 			Echo& echo;
 			int id;
 			int number_of_workers;
@@ -1103,6 +1113,24 @@ namespace AIEcho
 			bool is_end;
 			Echo* echo;
 		};
+
+
+		///This class is used to get information about the map.
+		class MapInfo
+		{
+		public:
+			MapInfo(Echo& echo);
+			int get_width();
+			int get_height();
+			bool is_forbidden_area(int x, int y);
+			bool is_guard_area(int x, int y);
+			bool is_clearing_area(int x, int y);
+			bool is_discovered(int x, int y);
+			bool is_ressource(int x, int y, int type);
+			bool is_water(int x, int y);
+		private:
+			Echo& echo;
+		};
 	};
 
 	///This is a base class for all EchoAI's
@@ -1153,25 +1181,13 @@ namespace AIEcho
 		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
 		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
 
-		TeamStat& get_team_stats() { return *player->team->stats.getLatestStat(); }
-
-		void flare(int x, int y)
-			{ orders.push(new MapMarkOrder(player->team->teamNumber, x, y)); }
-
-		Construction::BuildingRegister& get_building_register()
-			{ return br; }
-
-		Construction::FlagMap& get_flag_map()
-			{ return fm; }
-
-		void push_order(Order* order)
-			{ orders.push(order); }
-
-		Gradients::GradientManager& get_gradient_manager()
-			{ return *gm; }
-
-		std::set<int>& get_starting_buildings()
-			{return starting_buildings; }
+		TeamStat& get_team_stats();
+		void flare(int x, int y);
+		Construction::BuildingRegister& get_building_register();
+		Construction::FlagMap& get_flag_map();
+		void push_order(Order* order);
+		Gradients::GradientManager& get_gradient_manager();
+		std::set<int>& get_starting_buildings();
 
 		Player* player;
 	private:
@@ -1208,16 +1224,248 @@ namespace AIEcho
 		bool update_gm;
 	};
 
-
 	const unsigned int INVALID_BUILDING=65535;
-
-
-
 
 	void signature_write(GAGCore::OutputStream *stream);
 	void signature_check(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-
 };
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::NotUnderConstruction::get_type()
+{
+	return CNotUnderConstruction;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::UnderConstruction::get_type()
+{
+	return CUnderConstruction;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::BeingUpgraded::get_type()
+{
+	return CBeingUpgraded;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::BeingUpgradedTo::get_type()
+{
+	return CBeingUpgradedTo;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::SpecificBuildingType::get_type()
+{
+	return CSpecificBuildingType;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::NotSpecificBuildingType::get_type()
+{
+	return CNotSpecificBuildingType;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::BuildingLevel::get_type()
+{
+	return CBuildingLevel;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::Upgradable::get_type()
+{
+	return CUpgradable;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::EnemyBuildingDestroyed::get_type()
+{
+	return CEnemyBuildingDestroyed;
+}
+
+
+
+inline bool AIEcho::Conditions::TicksPassed::passes(Echo& echo, int id)
+{
+	num--; if(num==0) return true; return false;
+}
+
+
+
+inline AIEcho::Conditions::ConditionType AIEcho::Conditions::TicksPassed::get_type()
+{
+	return CTicksPassed;
+}
+
+
+
+inline bool AIEcho::Conditions::TicksPassed::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	return false;
+}
+
+
+
+inline void AIEcho::Conditions::TicksPassed::save(GAGCore::OutputStream *stream)
+{
+
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::AssignWorkers::get_type()
+{
+	return MAssignWorkers;
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::ChangeSwarm::get_type()
+{
+	return MChangeSwarm;
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::DestroyBuilding::get_type()
+{
+	return MDestroyBuilding;
+}
+
+
+inline int AIEcho::Management::RessourceTracker::get_age()
+{
+	return timer;
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::AddRessourceTracker::get_type()
+{
+	return MAddRessourceTracker;
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::PauseRessourceTracker::get_type()
+{
+	return MPauseRessourceTracker;
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::UnPauseRessourceTracker::get_type()
+{
+	return MUnPauseRessourceTracker;
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::ChangeFlagSize::get_type()
+{
+	return MChangeFlagSize;
+}
+
+
+
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::ChangeFlagMinimumLevel::get_type()
+{
+	return MChangeFlagMinimumLevel;
+}
+
+
+
+inline AIEcho::Management::GlobalManagementOrderType AIEcho::Management::AddArea::get_type()
+{
+	return MAddArea;
+}
+
+
+
+inline AIEcho::Management::GlobalManagementOrderType AIEcho::Management::RemoveArea::get_type()
+{
+	return MRemoveArea;
+}
+
+
+
+inline AIEcho::Management::GlobalManagementOrderType AIEcho::Management::ChangeAlliances::get_type()
+{
+	return MChangeAlliances;
+}
+
+
+inline int AIEcho::UpgradesRepairs::UpgradeRepairOrder::get_id() const
+{
+	return id;
+}
+
+
+
+inline int AIEcho::UpgradesRepairs::UpgradeRepairOrder::get_number_of_workers() const
+{
+	return number_of_workers;
+}
+
+
+
+inline TeamStat& AIEcho::Echo::get_team_stats()
+{
+	return *player->team->stats.getLatestStat();
+}
+
+
+
+inline void AIEcho::Echo::flare(int x, int y)
+{
+	orders.push(new MapMarkOrder(player->team->teamNumber, x, y));
+}
+
+
+
+inline AIEcho::Construction::BuildingRegister& AIEcho::Echo::get_building_register()
+{
+	return br;
+}
+
+
+
+inline AIEcho::Construction::FlagMap& AIEcho::Echo::get_flag_map()
+{
+	return fm;
+}
+
+
+
+inline void AIEcho::Echo::push_order(Order* order)
+{
+	orders.push(order);
+}
+
+
+
+inline AIEcho::Gradients::GradientManager& AIEcho::Echo::get_gradient_manager()
+{
+	return *gm;
+}
+
+
+
+inline std::set<int>& AIEcho::Echo::get_starting_buildings()
+{
+	return starting_buildings;
+}
+
 
 
 

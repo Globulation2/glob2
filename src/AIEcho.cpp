@@ -386,6 +386,46 @@ bool GradientInfo::needs_updating() const
 
 
 
+GradientInfo make_gradient_info(Entities::Entity* source)
+{
+	GradientInfo gi;
+	gi.add_source(source);
+	return gi;
+}
+
+
+
+GradientInfo make_gradient_info_obstacle(Entities::Entity* source, Entities::Entity* obstacle)
+{
+	GradientInfo gi;
+	gi.add_source(source);
+	gi.add_obstacle(obstacle);
+	return gi;
+}
+
+
+
+GradientInfo make_gradient_info(Entities::Entity* source1, Entities::Entity* source2)
+{
+	GradientInfo gi;
+	gi.add_source(source1);
+	gi.add_source(source2);
+	return gi;
+}
+
+
+
+GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::Entity* source2, Entities::Entity* obstacle)
+{
+	GradientInfo gi;
+	gi.add_source(source1);
+	gi.add_source(source2);
+	gi.add_obstacle(obstacle);
+	return gi;
+}
+
+
+
 Gradient::Gradient(const GradientInfo& gi) 
 {
 	gradient_info=gi;
@@ -527,7 +567,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 
 void GradientManager::update()
 {
-
+/*
 	static unsigned int max=0;
 	static unsigned int max_need_updated=0;
 	if(gradients.size()>max)
@@ -548,7 +588,7 @@ void GradientManager::update()
 		max_need_updated=need_count;
 		std::cout<<"Max update requiring gradients "<<max_need_updated<<std::endl;
 	}
-
+*/
 
 	timer++;
 	std::transform(ticks_since_update.begin(), ticks_since_update.end(), ticks_since_update.begin(), increment);
@@ -2584,6 +2624,71 @@ void enemy_building_iterator::set_to_next()
 
 
 
+
+MapInfo::MapInfo(Echo& echo) : echo(echo)
+{
+
+}
+
+
+
+int MapInfo::get_width()
+{
+	return echo.player->map->getW();
+}
+
+
+
+int MapInfo::get_height()
+{
+	return echo.player->map->getH();
+}
+
+
+
+bool MapInfo::is_forbidden_area(int x, int y)
+{
+	return echo.player->map->isForbidden(x, y, echo.player->team->me);
+}
+
+
+
+bool MapInfo::is_guard_area(int x, int y)
+{
+	return echo.player->map->isGuardArea(x, y, echo.player->team->me);
+}
+
+
+
+bool MapInfo::is_clearing_area(int x, int y)
+{
+	return echo.player->map->isClearArea(x, y, echo.player->team->me);
+}
+
+
+
+bool MapInfo::is_discovered(int x, int y)
+{
+	return echo.player->map->isMapDiscovered(x, y, echo.player->team->me);
+}
+
+
+
+bool MapInfo::is_ressource(int x, int y, int type)
+{
+	return echo.player->map->isRessourceTakeable(x, y, type);
+}
+
+
+
+bool MapInfo::is_water(int x, int y)
+{
+	return echo.player->map->isWater(x, y);
+}
+
+
+
+
 Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(), br(player, *this), fm(*this), timer(0)
 {
 }
@@ -3137,7 +3242,7 @@ void ReachToInfinity::tick(Echo& echo)
 //		BuildingSearch bs_flag(echo);
 //		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
 //		const int number=bs_flag.count_buildings();
-		if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=3 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
+		if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=6 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 		{
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
@@ -3207,7 +3312,6 @@ void ReachToInfinity::tick(Echo& echo)
 
 			if(!flag_on_prune)
 			{
-
 				//The main order for the exploration flag
 				AIEcho::Construction::BuildingOrder bo_prune(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
 
@@ -3670,25 +3774,25 @@ void ReachToInfinity::tick(Echo& echo)
 		AIEcho::Gradients::GradientInfo gi_water;
 		gi_water.add_source(new Entities::Water);
 		Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_water);
-		for(int x=0; x<echo.player->map->getW(); ++x)
+		MapInfo mi(echo);
+		for(int x=0; x<mi.get_width(); ++x)
 		{
-
-			for(int y=0; y<echo.player->map->getH(); ++y)
+			for(int y=0; y<mi.get_height(); ++y)
 			{
 				if((x%2==1 && y%2==1))
 				{
-					if((!echo.player->map->isRessourceTakeable(x, y, WOOD) &&
-					    !echo.player->map->isRessourceTakeable(x, y, CORN)) &&
-					    echo.player->map->isForbidden(x, y, echo.player->team->me))
+					if((!mi.is_ressource(x, y, WOOD) &&
+					    !mi.is_ressource(x, y, CORN)) &&
+					    mi.is_forbidden_area(x, y))
 					{
 						mo_non_farming->add_location(x, y);
 					}
 					else
 					{
-						if((echo.player->map->isRessourceTakeable(x, y, WOOD) ||
-						    echo.player->map->isRessourceTakeable(x, y, CORN)) &&
-						    echo.player->map->isMapDiscovered(x, y, echo.player->team->me) &&
-						    !echo.player->map->isForbidden(x, y, echo.player->team->me) &&
+						if((mi.is_ressource(x, y, WOOD) ||
+						    mi.is_ressource(x, y, CORN)) &&
+						    mi.is_discovered(x, y) &&
+						    !mi.is_forbidden_area(x, y) &&
 						    gradient.get_height(x, y)<10)
 						{
 							mo_farming->add_location(x, y);
