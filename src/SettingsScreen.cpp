@@ -37,13 +37,13 @@ SettingsScreen::SettingsScreen()
 {
 	//following are standard choices for all screens
 	//tab choices
-	generalsettings=new TextButton( 10, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("general"), GENERALSETTINGS, 8);
+	generalsettings=new TextButton( 10, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[general settings]"), GENERALSETTINGS, 8);
 	addWidget(generalsettings);
 
-	unitsettings=new TextButton( 120, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("units"), UNITSETTINGS, 9);
+	unitsettings=new TextButton( 220, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[unit settings]"), UNITSETTINGS, 9);
 	addWidget(unitsettings);
 
-	keyboardsettings=new TextButton( 230, 10, 100, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("keyboard"), KEYBOARDSETTINGS, 9);
+	keyboardsettings=new TextButton( 430, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[keyboard settings]"), KEYBOARDSETTINGS, 9);
 	addWidget(keyboardsettings);
 
 	// Screen entry/quit part
@@ -102,7 +102,7 @@ SettingsScreen::SettingsScreen()
 	//TODO currently rememberUnitButton does nothing but is meant to eventually allow the game to remember the last number of globs assigned to a building/flag so the game will not always use the defaults
 	rememberUnitButton=new OnOffButton(230, 90 + 120, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.rememberUnit, REMEMBERUNIT);
 	addWidget(rememberUnitButton);
-	rememberUnitText=new Text(260, 90 + 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("Remember unit"), 180);
+	rememberUnitText=new Text(260, 90 + 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remember unit]"), 180);
 	addWidget(rememberUnitText);
 
 
@@ -160,7 +160,7 @@ SettingsScreen::SettingsScreen()
 	warflagUnitRatio->visible=false;
 	addWidget(warflagUnitRatio);
 	
-	warflagUnitText=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("war flag"));
+	warflagUnitText=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[war flag]"));
 	addWidget(warflagUnitText);
 	warflagUnitText->visible=false;
 
@@ -191,7 +191,7 @@ SettingsScreen::SettingsScreen()
 	clearflagUnitRatio->visible=false;
 	addWidget(clearflagUnitRatio);
 	
-	clearflagUnitText=new Text(20, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("clear flag"));
+	clearflagUnitText=new Text(20, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[clearing flag]"));
 	addWidget(clearflagUnitText);
 	clearflagUnitText->visible=false;
 
@@ -222,7 +222,7 @@ SettingsScreen::SettingsScreen()
 	exploreflagUnitRatio->visible=false;
 	addWidget(exploreflagUnitRatio);
 	
-	exploreflagUnitText=new Text(20, 180, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("explore flag"));
+	exploreflagUnitText=new Text(20, 180, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[exploration flag]"));
 	addWidget(exploreflagUnitText);
 	exploreflagUnitText->visible=false;
 
