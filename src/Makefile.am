@@ -199,6 +199,31 @@ HeightMapGenerator.h\
 HeightMapGenerator.cpp
 
 
+lua_embedd_sources=\
+AIEchoLua.h\
+AIEchoLua.cpp\
+luabind/src/wrapper_base.cpp \
+luabind/src/pcall.cpp \
+luabind/src/error.cpp \
+luabind/src/ref.cpp \
+luabind/src/scope.cpp \
+luabind/src/class.cpp \
+luabind/src/class_rep.cpp \
+luabind/src/function.cpp \
+luabind/src/find_best_match.cpp \
+luabind/src/implicit_cast.cpp \
+luabind/src/open.cpp \
+luabind/src/create_class.cpp \
+luabind/src/stack_content_by_name.cpp \
+luabind/src/object_rep.cpp \
+luabind/src/class_info.cpp \
+luabind/src/class_registry.cpp \
+luabind/src/link_compatibility.cpp \
+luabind/src/weak_ref.cpp \
+luabind/src/overload_rep.cpp \
+luabind/src/link_compatibility.cpp
+
+
 if LINKSTATIC
 glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)
 LIBS = 
