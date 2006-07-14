@@ -1818,10 +1818,12 @@ void Unit::handleMovement(void)
 				//printf("d=%d\n", direction);
 				for (int di = 0; di < 8; di++)
 				{
-					int d = (di + direction + 4) & 7;
-					if ((tab[d] > 0) && (tab[(d + 1) & 7] == 0) && (tab[(d + 2) & 7] == 0))
+					int d = (di + direction + 4) % 8;
+					//Move in a direction in which you circle counter-clockwise
+					//about explored area, while exploring.
+					if ((tab[d] > 0) && (tab[(d + 1) % 8] == 0) && (tab[(d + 2) % 8] == 0))
 					{
-						direction = (d + 1) & 7;
+						direction = (d + 1) % 8;
 						dxdyfromDirection();
 						movement = MOV_GOING_DXDY;
 						found = true;
@@ -2237,7 +2239,7 @@ void Unit::handleAction(void)
 			owner->map->setAirUnit(posX, posY, NOGUID);
 			dx=-1+syncRand()%3;
 			dy=-1+syncRand()%3;
-			directionFromDxDy(); //TODO: comment here to tell what happens if dx and dy are both 0.
+			directionFromDxDy();
 			setNewValidDirectionAir();
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
