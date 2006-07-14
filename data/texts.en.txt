@@ -288,6 +288,14 @@ Awaiting players
 Statistics
 [food left]
 Food left
+[general settings]
+General Settings
+[unit settings]
+Unit Settings
+[keyboard settings]
+Keyboard Settings
+[remember unit]
+Remember Unit
 [the building is finished]
 The building is finished
 [the swarm is finished]
