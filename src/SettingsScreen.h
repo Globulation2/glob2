@@ -62,7 +62,8 @@ private:
 	Selector *musicVol;
 	OnOffButton *audioMute, *rememberUnitButton;
 	Number *warflagUnitRatio, *clearflagUnitRatio, *exploreflagUnitRatio;
-	Text *title, *language, *display, *usernameText, *audio;
+//	Text *title;
+	Text *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *warflagUnitText, *clearflagUnitText, *exploreflagUnitText, *rememberUnitText;
 	Text *actDisplay;
 	Text *rebootWarning;
