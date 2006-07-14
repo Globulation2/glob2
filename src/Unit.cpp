@@ -2237,7 +2237,7 @@ void Unit::handleAction(void)
 			owner->map->setAirUnit(posX, posY, NOGUID);
 			dx=-1+syncRand()%3;
 			dy=-1+syncRand()%3;
-			directionFromDxDy();
+			directionFromDxDy(); //TODO: comment here to tell what happens if dx and dy are both 0.
 			setNewValidDirectionAir();
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
