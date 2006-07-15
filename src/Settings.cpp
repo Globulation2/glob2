@@ -23,8 +23,10 @@
 #include <BinaryStream.h>
 #include <stdlib.h>
 #include <GAG.h>
-using namespace GAGCore;
 #include <map>
+#include <fstream>
+
+using namespace GAGCore;
 
 Settings::Settings()
 {
@@ -51,6 +53,33 @@ Settings::Settings()
 	warflagUnit = 1;
 	clearflagUnit = 1;
 	exploreflagUnit = 1;
+
+	keyboard_shortcuts["akey"]="toggle draw accessibility aids";
+	keyboard_shortcuts["bkey"]="";
+	keyboard_shortcuts["ckey"]="";
+	keyboard_shortcuts["dkey"]="destroy building";
+	keyboard_shortcuts["ekey"]="";
+	keyboard_shortcuts["fkey"]="";
+	keyboard_shortcuts["gkey"]="";
+	keyboard_shortcuts["hkey"]="";
+	keyboard_shortcuts["ikey"]="toggle draw information";
+	keyboard_shortcuts["jkey"]="";
+	keyboard_shortcuts["kkey"]="";
+	keyboard_shortcuts["lkey"]="";
+	keyboard_shortcuts["mkey"]="mark map";
+	keyboard_shortcuts["nkey"]="";
+	keyboard_shortcuts["okey"]="";
+	keyboard_shortcuts["pkey"]="pause game";
+	keyboard_shortcuts["qkey"]="";
+	keyboard_shortcuts["rkey"]="repair building";
+	keyboard_shortcuts["skey"]="";
+	keyboard_shortcuts["tkey"]="toggle draw unit paths";
+	keyboard_shortcuts["ukey"]="upgrade building";
+	keyboard_shortcuts["vkey"]="record voice";
+	keyboard_shortcuts["wkey"]="";
+	keyboard_shortcuts["xkey"]="";
+	keyboard_shortcuts["ykey"]="";
+	keyboard_shortcuts["zkey"]="";
 }
 #define READ_PARSED_STRING(var) \
 { \
@@ -103,6 +132,12 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(warflagUnit);
 		READ_PARSED_INT(clearflagUnit);
 		READ_PARSED_INT(exploreflagUnit);
+
+		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
+		{
+			if(parsed.find(i->first)!=parsed.end())
+				i->second=parsed[i->first];
+		}
 	}
 	delete stream;
 }
@@ -110,12 +145,35 @@ void Settings::load(const char *filename)
 void Settings::save(const char *filename)
 {
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+//	std::fstream f(filename);
 	if (stream->isEndOfStream())
+//	if (!f.is_open())
 	{
 		std::cerr << "Settings::save(\"" << filename << "\") : error, can't open file." << std::endl;
 	}
 	else
 	{
+/*
+		f<<"username="<<username<<std::endl;
+		f<<"password="<<password<<std::endl;
+		f<<"screenWidth="<<screenWidth<<std::endl;
+		f<<"screenHeight="<<screenHeight<<std::endl;
+		f<<"screenFlags="<<screenFlags<<std::endl;
+		f<<"optionFlags="<<optionFlags<<std::endl;
+		f<<"defaultLanguage="<<defaultLanguage<<std::endl;
+		f<<"musicVolume="<<musicVolume<<std::endl;
+		f<<"mute="<<mute<<std::endl;
+		f<<"rememberUnit="<<rememberUnit<<std::endl;
+		f<<"warflagUnit="<<warflagUnit<<std::endl;
+		f<<"clearflagUnit="<<clearflagUnit<<std::endl;
+		f<<"exploreflagUnit="<<exploreflagUnit<<std::endl;
+
+		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
+		{
+			f<<i->first<<"="<<i->second<<std::endl;
+		}
+*/
+
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
@@ -129,6 +187,10 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "warflagUnit=%d\n", warflagUnit);
 		Utilities::streamprintf(stream, "clearflagUnit=%d\n", clearflagUnit);
 		Utilities::streamprintf(stream, "exploreflagUnit=%d\n", exploreflagUnit);
+		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
+		{
+			Utilities::streamprintf(stream, "%s=%s\n", i->first.c_str(), i->second.c_str());
+		}
 	}
 	delete stream;
 }

@@ -313,6 +313,10 @@ namespace GAGGUI
 		{
 			strings.insert(strings.begin()+pos, text);
 		}
+		else if (pos==0)
+		{
+			strings.push_back(text);
+		}
 	}
 	
 	void List::addText(const std::string &text)

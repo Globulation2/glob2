@@ -296,6 +296,78 @@ Unit Settings
 Keyboard Settings
 [remember unit]
 Remember Unit
+[akey]
+A-key
+[bkey]
+B-key
+[ckey]
+C-key
+[dkey]
+D-key
+[ekey]
+E-key
+[fkey]
+F-key
+[gkey]
+G-key
+[hkey]
+H-key
+[ikey]
+I-key
+[jkey]
+J-key
+[kkey]
+K-key
+[lkey]
+L-key
+[mkey]
+M-key
+[nkey]
+N-key
+[okey]
+O-key
+[pkey]
+P-key
+[qkey]
+Q-key
+[rkey]
+R-key
+[skey]
+S-key
+[tkey]
+T-key
+[ukey]
+U-key
+[vkey]
+V-key
+[wkey]
+W-key
+[xkey]
+X-key
+[ykey]
+Y-key
+[zkey]
+Z-key
+[unassigned]
+Unassigned
+[toggle draw unit paths]
+Toggle Draw Unit Paths
+[toggle draw information]
+Toggle Draw Information
+[toggle draw accessibility aids]
+Toggle Draw Accessibility Aids
+[destroy building]
+Destroy Selected Building
+[upgrade building]
+Upgrade Selected Building
+[repair building]
+Repair Selected Building
+[mark map]
+Mark Map For Allies
+[record voice]
+Initiate Voice Recording
+[pause game]
+Pause Game
 [the building is finished]
 The building is finished
 [the swarm is finished]

@@ -22,6 +22,7 @@
 
 #include "Header.h"
 #include <string>
+#include <map>
 
 class Settings
 {
@@ -39,7 +40,7 @@ public:
 	int warflagUnit;
 	int clearflagUnit;
 	int exploreflagUnit;
-
+	std::map<std::string, std::string> keyboard_shortcuts;
 public:
 	void load(const char *filename="preferences.txt");
 	void save(const char *filename="preferences.txt");
