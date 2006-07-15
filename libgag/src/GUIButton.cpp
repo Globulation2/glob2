@@ -223,7 +223,7 @@ namespace GAGGUI
 		selColor=0;
 	}
 	
-	void ColorButton::onMouseButtonDown(SDL_Event *event)
+	void ColorButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		if (isOnWidget(event->button.x, event->button.y) && v.size())
 		{
@@ -248,7 +248,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void ColorButton::onMouseButtonUp(SDL_Event *event)
+	void ColorButton::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		if (isOnWidget(event->button.x, event->button.y) &&
 				(event->button.button == SDL_BUTTON_LEFT))
