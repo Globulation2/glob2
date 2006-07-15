@@ -50,6 +50,7 @@ public:
 		GENERALSETTINGS = 9,
 		UNITSETTINGS = 10,
 		KEYBOARDSETTINGS = 11,
+		RESTOREDEFAULTSHORTCUTS=12,
 	};
 private:
 	List *languageList;
@@ -72,6 +73,7 @@ private:
 	std::vector<std::string> internal_names;
 	List* keyboard_shortcuts;
 	std::vector<std::string> shortcut_actions;
+	TextButton* restore_default_shortcuts;
 
 	bool gfxAltered;
 	
