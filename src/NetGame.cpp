@@ -774,6 +774,8 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 		fprintf(logFile, "Warning, no gameCheckSum localy provided for player %d, at pushUStep %d\n", playerNumber, pushUStep);
 	}
 	gameCheckSums[playerNumber][pushUStep&255]=order->gameCheckSum;
+
+	std::cout<<"Recieved order from "<<playerNumber<<". checksum provided: "<<order->gameCheckSum<<". step="<<pushUStep<<std::endl;
 	
 	if (localPlayerNumber==playerNumber && ((pushUStep&1)==1))
 	{
