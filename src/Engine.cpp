@@ -397,7 +397,7 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
-		const int speed=40;
+		const int speed=20;
 		Uint32 startTick, endTick;
 		bool networkReadyToExecute = true;
 		Sint32 ticksSpentInComputation = speed;
