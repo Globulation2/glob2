@@ -288,6 +288,86 @@ Warten auf Spieler
 Statistiken
 [food left]
 Nahrung
+[general settings]
+Allgemein
+[unit settings]
+Einheiten
+[keyboard settings]
+Tastatur
+[remember unit]
+Arbeiterzahlen merken
+[akey]
+A
+[bkey]
+B
+[ckey]
+C
+[dkey]
+D
+[ekey]
+E
+[fkey]
+F
+[gkey]
+G
+[hkey]
+H
+[ikey]
+I
+[jkey]
+J
+[kkey]
+K
+[lkey]
+L
+[mkey]
+M
+[nkey]
+N
+[okey]
+O
+[pkey]
+P
+[qkey]
+Q
+[rkey]
+R
+[skey]
+S
+[tkey]
+T
+[ukey]
+U
+[vkey]
+V
+[wkey]
+W
+[xkey]
+X
+[ykey]
+Y
+[zkey]
+Z
+[unassigned]
+Keine Funktion
+[toggle draw unit paths]
+Wege zeigen an/aus
+[toggle draw information]
+Informationen malen an/aus
+[toggle draw accessibility aids]
+Zugänglichkeitshilfen einblenden
+[destroy building]
+Zerstörung einleiten/beenden
+[upgrade building]
+Aufwerten einleiten/beenden
+[repair building]
+Reparatur einleiten/beenden
+[mark map]
+Karte markieren
+[record voice]
+Mikrofon einschalten
+[pause game]
+Pause
 [the building is finished]
 Das Gebäude ist fertig
 [the swarm is finished]
@@ -675,11 +755,11 @@ beliebige Entdecker
 [ground attack]
 Bodenangriff
 [Can't join game, wrong game version]
-Mitspielen nicht möglich: falsche Spielversion
+Verbinden nicht möglich: falsche Spielversion
 [Can't join game, missmatching game parameters]
-Mitspielen nicht möglich: unausgeglichene Spielparameter
+Verbinden nicht möglich: Spielparameter fehlerhaft
 [Can't join game, timeout]
-Mitspielen nicht möglich: Timeout
+Verbinden nicht möglich: Timeout
 [swamp terrain]
 Sumpflandschaft
 [river terrain]
