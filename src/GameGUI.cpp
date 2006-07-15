@@ -1150,6 +1150,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 
 	if (typingInputScreen == NULL)
 	{
+		std::string action="";
 		switch (key)
 		{
 			case SDLK_ESCAPE:
@@ -1189,88 +1190,83 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 					}
 				}
 				break;
-			case SDLK_d:
-				{
-					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-					{
-						Building* selBuild=selection.building;
-						if (selBuild->owner->teamNumber==localTeamNo)
-						{
-							if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-							{
-								orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
-							}
-							else if (selBuild->buildingState==Building::ALIVE)
-							{
-								orderQueue.push_back(new OrderDelete(selBuild->gid));
-							}
-						}
-					}
-				}
+			case SDLK_a :
+				action=globalContainer->settings.keyboard_shortcuts["akey"];
 				break;
-			case SDLK_u:
-				{
-					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-					{
-						Building* selBuild = selection.building;
-						if (selBuild->constructionResultState == Building::UPGRADE)
-							orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
-						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
-							repairAndUpgradeBuilding(selBuild, false, true);
-					}
-				}
+			case SDLK_b :
+				action=globalContainer->settings.keyboard_shortcuts["bkey"];
 				break;
-			case SDLK_r:
-				{
-					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-					{
-						Building* selBuild = selection.building;
-						if (selBuild->constructionResultState == Building::REPAIR)
-							orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
-						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
-							repairAndUpgradeBuilding(selBuild, true, false);
-					}
-				}
+			case SDLK_c :
+				action=globalContainer->settings.keyboard_shortcuts["ckey"];
 				break;
-			case SDLK_t :
-				if (pressed)
-					drawPathLines=!drawPathLines;
+			case SDLK_d :
+				action=globalContainer->settings.keyboard_shortcuts["dkey"];
+				break;
+			case SDLK_e :
+				action=globalContainer->settings.keyboard_shortcuts["ekey"];
+				break;
+			case SDLK_f :
+				action=globalContainer->settings.keyboard_shortcuts["fkey"];
+				break;
+			case SDLK_g :
+				action=globalContainer->settings.keyboard_shortcuts["gkey"];
+				break;
+			case SDLK_h :
+				action=globalContainer->settings.keyboard_shortcuts["hkey"];
 				break;
 			case SDLK_i :
-				if (pressed)
-					drawHealthFoodBar=!drawHealthFoodBar;
+				action=globalContainer->settings.keyboard_shortcuts["ikey"];
 				break;
-			case SDLK_a :
-				if (pressed)
-					drawAccessibilityAids = true;
-				else
-					drawAccessibilityAids = false;
+			case SDLK_j :
+				action=globalContainer->settings.keyboard_shortcuts["jkey"];
+				break;
+			case SDLK_k :
+				action=globalContainer->settings.keyboard_shortcuts["kkey"];
+				break;
+			case SDLK_l :
+				action=globalContainer->settings.keyboard_shortcuts["lkey"];
 				break;
 			case SDLK_m :
-				if (pressed)
-				{
-					putMark=true;
-					globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_MARK);
-				}
+				action=globalContainer->settings.keyboard_shortcuts["mkey"];
+				break;
+			case SDLK_n :
+				action=globalContainer->settings.keyboard_shortcuts["nkey"];
+				break;
+			case SDLK_o :
+				action=globalContainer->settings.keyboard_shortcuts["okey"];
+				break;
+			case SDLK_p :
+				action=globalContainer->settings.keyboard_shortcuts["pkey"];
+				break;
+			case SDLK_q :
+				action=globalContainer->settings.keyboard_shortcuts["qkey"];
+				break;
+			case SDLK_r :
+				action=globalContainer->settings.keyboard_shortcuts["rkey"];
+				break;
+			case SDLK_s :
+				action=globalContainer->settings.keyboard_shortcuts["skey"];
+				break;
+			case SDLK_t :
+				action=globalContainer->settings.keyboard_shortcuts["tkey"];
+				break;
+			case SDLK_u :
+				action=globalContainer->settings.keyboard_shortcuts["ukey"];
 				break;
 			case SDLK_v :
-				if (shift)
-				{
-					if (pressed)
-					{
-						if (globalContainer->voiceRecorder->recordingNow)
-							globalContainer->voiceRecorder->stopRecording();
-						else
-							globalContainer->voiceRecorder->startRecording();
-					}
-				}
-				else
-				{
-					if (pressed)
-						globalContainer->voiceRecorder->startRecording();
-					else if (!shift)
-						globalContainer->voiceRecorder->stopRecording();
-				}
+				action=globalContainer->settings.keyboard_shortcuts["vkey"];
+				break;
+			case SDLK_w :
+				action=globalContainer->settings.keyboard_shortcuts["wkey"];
+				break;
+			case SDLK_x :
+				action=globalContainer->settings.keyboard_shortcuts["xkey"];
+				break;
+			case SDLK_y :
+				action=globalContainer->settings.keyboard_shortcuts["ykey"];
+				break;
+			case SDLK_z :
+				action=globalContainer->settings.keyboard_shortcuts["zkey"];
 				break;
 			case SDLK_RETURN :
 				if (pressed)
@@ -1328,27 +1324,118 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 					viewportY = evY-(sh>>6);
 				}
 				break;
-			case SDLK_p:
 			case SDLK_PAUSE:
-				if (pressed)
-					orderQueue.push_back(new PauseGameOrder(!gamePaused));
+				action="pause game";
 				break;
 			case SDLK_SCROLLOCK:
 				if (pressed)
 					hardPause=!hardPause;
 				break;
-			case SDLK_h:
-				if (pressed)
-					if ( ! scrollableText)
-						scrollableText=new InGameScrollableText(globalContainer->gfx, messageHistory);
-					else 
-					{
-						delete scrollableText;
-						scrollableText=NULL;
-					}
-				break;
 			default:
 			break;
+		}
+		if(action=="toggle draw unit paths")
+		{
+			if (pressed)
+				drawPathLines=!drawPathLines;
+		}
+		else if(action=="destroy building")
+		{
+			if ((pressed) && (selectionMode==BUILDING_SELECTION))
+			{
+				Building* selBuild=selection.building;
+				if (selBuild->owner->teamNumber==localTeamNo)
+				{
+					if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+					{
+						orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
+					}
+					else if (selBuild->buildingState==Building::ALIVE)
+					{
+						orderQueue.push_back(new OrderDelete(selBuild->gid));
+					}
+				}
+			}
+		}
+		else if(action=="upgrade building")
+		{
+			if ((pressed) && (selectionMode==BUILDING_SELECTION))
+			{
+				Building* selBuild = selection.building;
+				if (selBuild->constructionResultState == Building::UPGRADE)
+					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+					repairAndUpgradeBuilding(selBuild, false, true);
+			}
+		}
+		else if(action=="repair building")
+		{
+			if ((pressed) && (selectionMode==BUILDING_SELECTION))
+			{
+				Building* selBuild = selection.building;
+				if (selBuild->constructionResultState == Building::REPAIR)
+					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+					repairAndUpgradeBuilding(selBuild, true, false);
+			}
+		}
+		else if(action=="toggle draw information")
+		{
+			if (pressed)
+				drawHealthFoodBar=!drawHealthFoodBar;
+		}
+		else if(action=="toggle draw accessibility aids")
+		{
+			if (pressed)
+				drawAccessibilityAids = true;
+			else
+				drawAccessibilityAids = false;
+		}
+		else if(action=="mark map")
+		{
+			if (pressed)
+			{
+				putMark=true;
+				globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_MARK);
+			}
+		}
+		else if(action=="record voice")
+		{
+			if (shift)
+			{
+				if (pressed)
+				{
+					if (globalContainer->voiceRecorder->recordingNow)
+						globalContainer->voiceRecorder->stopRecording();
+					else
+						globalContainer->voiceRecorder->startRecording();
+				}
+			}
+			else
+			{
+				if (pressed)
+					globalContainer->voiceRecorder->startRecording();
+				else if (!shift)
+					globalContainer->voiceRecorder->stopRecording();
+			}
+		}
+		else if(action=="view history")
+		{
+			if (pressed)
+			{
+				if ( ! scrollableText)
+					scrollableText=new InGameScrollableText(globalContainer->gfx, messageHistory);
+				else 
+				{
+					delete scrollableText;
+					scrollableText=NULL;
+				}
+			}
+		}
+		else if(action=="pause game")
+		{
+			if (pressed)
+				orderQueue.push_back(new PauseGameOrder(!gamePaused));
 		}
 	}
 }

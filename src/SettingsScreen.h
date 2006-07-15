@@ -68,6 +68,11 @@ private:
 	Text *actDisplay;
 	Text *rebootWarning;
 
+	List* keyboard_shortcut_names;
+	std::vector<std::string> internal_names;
+	List* keyboard_shortcuts;
+	std::vector<std::string> shortcut_actions;
+
 	bool gfxAltered;
 	
 	//! If GL is enabled, hide useless options

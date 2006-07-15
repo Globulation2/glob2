@@ -226,8 +226,43 @@ SettingsScreen::SettingsScreen()
 	addWidget(exploreflagUnitText);
 	exploreflagUnitText->visible=false;
 
-	//following are all keyboard shortcut settings
+	keyboard_shortcut_names=new List(20, 90, 300, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	keyboard_shortcut_names->visible=false;
 
+	keyboard_shortcuts=new List(330, 90, 250, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	keyboard_shortcuts->visible=false;
+
+	addWidget(keyboard_shortcut_names);
+	addWidget(keyboard_shortcuts);
+
+	for(std::map<std::string, std::string>::iterator i=globalContainer->settings.keyboard_shortcuts.begin(); i!=globalContainer->settings.keyboard_shortcuts.end(); ++i)
+	{
+		internal_names.push_back(i->first);
+		std::string keyname=Toolkit::getStringTable()->getString(("["+i->first+"]").c_str());
+		std::string valname=Toolkit::getStringTable()->getString((i->second=="" ? "[unassigned]" : "["+i->second+"]").c_str());
+		keyboard_shortcut_names->addText(keyname + " - " + valname);
+	}
+
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[unassigned]"));
+	shortcut_actions.push_back("");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[toggle draw unit paths]"));
+	shortcut_actions.push_back("toggle draw unit paths");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[destroy building]"));
+	shortcut_actions.push_back("destroy building");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[upgrade building]"));
+	shortcut_actions.push_back("upgrade building");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[repair building]"));
+	shortcut_actions.push_back("repair building");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[toggle draw information]"));
+	shortcut_actions.push_back("toggle draw information");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[toggle draw accessibility aids]"));
+	shortcut_actions.push_back("toggle draw accessibility aids");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[mark map]"));
+	shortcut_actions.push_back("mark map");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[record voice]"));
+	shortcut_actions.push_back("record voice");
+	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[pause game]"));
+	shortcut_actions.push_back("pause game");
 
 	oldLanguage = Toolkit::getStringTable()->getLang();
 	oldScreenW = globalContainer->settings.screenWidth;
@@ -303,12 +338,16 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			musicVolText->visible=true;
 			rememberUnitButton->visible=true;
 			rememberUnitText->visible=true;
+
 			warflagUnitRatio->visible=false;
 			warflagUnitText->visible=false;
 			clearflagUnitRatio->visible=false;
 			clearflagUnitText->visible=false;
 			exploreflagUnitRatio->visible=false;
 			exploreflagUnitText->visible=false;
+
+			keyboard_shortcut_names->visible=false;
+			keyboard_shortcuts->visible=false;
 		}
 
 		
@@ -336,12 +375,52 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			musicVolText->visible=false;
 			rememberUnitButton->visible=false;
 			rememberUnitText->visible=false;
+
 			warflagUnitRatio->visible=true;
 			warflagUnitText->visible=true;
 			clearflagUnitRatio->visible=true;
 			clearflagUnitText->visible=true;
 			exploreflagUnitRatio->visible=true;
 			exploreflagUnitText->visible=true;
+
+			keyboard_shortcut_names->visible=false;
+			keyboard_shortcuts->visible=false;
+		}
+
+		else if (par1==KEYBOARDSETTINGS)
+		{
+			language->visible=false;
+			languageList->visible=false;
+			display->visible=false;
+			actDisplay->visible=false;
+			modeList->visible=false;
+			fullscreen->visible=false;
+			fullscreenText->visible=false;
+			usegpu->visible=false;
+			usegpuText->visible=false;
+			lowquality->visible=false;
+			lowqualityText->visible=false;
+			customcur->visible=false;
+			customcurText->visible=false;
+			userName->visible=false;
+			usernameText->visible=false;
+			audio->visible=false;
+			audioMuteText->visible=false;
+			audioMute->visible=false;
+			musicVol->visible=false;
+			musicVolText->visible=false;
+			rememberUnitButton->visible=false;
+			rememberUnitText->visible=false;
+			
+			warflagUnitRatio->visible=false;
+			warflagUnitText->visible=false;
+			clearflagUnitRatio->visible=false;
+			clearflagUnitText->visible=false;
+			exploreflagUnitRatio->visible=false;
+			exploreflagUnitText->visible=false;
+
+			keyboard_shortcut_names->visible=true;
+			keyboard_shortcuts->visible=true;
 		}
 
 	}
@@ -389,6 +468,25 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
 			updateGfxCtx();
+		}
+		else if (source==keyboard_shortcuts)
+		{
+			if(keyboard_shortcut_names->getSelectionIndex()!=-1)
+			{
+				int pos=par1;
+				int change_pos=keyboard_shortcut_names->getSelectionIndex();
+				std::string keyname=Toolkit::getStringTable()->getString(("["+internal_names[change_pos]+"]").c_str());
+				std::string valname=Toolkit::getStringTable()->getString((shortcut_actions[pos]=="" ? "[unassigned]" : "["+shortcut_actions[pos]+"]").c_str());
+				keyboard_shortcut_names->removeText(change_pos);
+				keyboard_shortcut_names->addText(keyname + " - " + valname, change_pos);
+
+				globalContainer->settings.keyboard_shortcuts[internal_names[change_pos]]=shortcut_actions[pos];
+				keyboard_shortcuts->setSelectionIndex(-1);
+			}
+		}
+		else if (source==keyboard_shortcut_names)
+		{
+			keyboard_shortcuts->setSelectionIndex(-1);
 		}
 	}
 	else if (action==VALUE_CHANGED)
