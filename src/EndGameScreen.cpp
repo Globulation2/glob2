@@ -57,6 +57,8 @@ void EndGameStat::paint(void)
 	// draw background
 	parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
 	
+	if(game->teams[0]->stats.endOfGameStats.size()==0)
+		return;
 	// find maximum
 	int team, maxValue = 1;
 	unsigned int pos=0;
