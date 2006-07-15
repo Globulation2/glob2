@@ -775,7 +775,7 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	}
 	gameCheckSums[playerNumber][pushUStep&255]=order->gameCheckSum;
 
-	std::cout<<"Recieved order from "<<playerNumber<<". checksum provided: "<<order->gameCheckSum<<". step="<<pushUStep<<std::endl;
+	std::cout<<"Recieved order from "<<playerNumber<<". checksum provided: "<<std::hex<<order->gameCheckSum<<". step="<<pushUStep<<std::endl;
 	
 	if (localPlayerNumber==playerNumber && ((pushUStep&1)==1))
 	{
