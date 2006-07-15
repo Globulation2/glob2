@@ -130,8 +130,8 @@ namespace GAGGUI
 		//! Return the number of possible colors
 		virtual size_t getNumberOfColors(void) { return v.size(); }
 	protected:
-		virtual void onMouseButtonUp(SDL_Event *event);
-		virtual void onMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
 	};
 	
 	//! A button that can have multiple texts
