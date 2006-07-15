@@ -226,14 +226,19 @@ SettingsScreen::SettingsScreen()
 	addWidget(exploreflagUnitText);
 	exploreflagUnitText->visible=false;
 
-	keyboard_shortcut_names=new List(20, 90, 300, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	keyboard_shortcut_names=new List(20, 90, 325, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	keyboard_shortcut_names->visible=false;
 
-	keyboard_shortcuts=new List(330, 90, 250, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	keyboard_shortcuts=new List(355, 90, 275, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	keyboard_shortcuts->visible=false;
+
+	restore_default_shortcuts = new TextButton(20, 300, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
+	restore_default_shortcuts->visible=false;
+
 
 	addWidget(keyboard_shortcut_names);
 	addWidget(keyboard_shortcuts);
+	addWidget(restore_default_shortcuts);
 
 	for(std::map<std::string, std::string>::iterator i=globalContainer->settings.keyboard_shortcuts.begin(); i!=globalContainer->settings.keyboard_shortcuts.end(); ++i)
 	{
@@ -263,6 +268,9 @@ SettingsScreen::SettingsScreen()
 	shortcut_actions.push_back("record voice");
 	keyboard_shortcuts->addText(Toolkit::getStringTable()->getString("[pause game]"));
 	shortcut_actions.push_back("pause game");
+
+
+
 
 	oldLanguage = Toolkit::getStringTable()->getLang();
 	oldScreenW = globalContainer->settings.screenWidth;
@@ -348,6 +356,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			keyboard_shortcut_names->visible=false;
 			keyboard_shortcuts->visible=false;
+			restore_default_shortcuts->visible=false;
 		}
 
 		
@@ -385,6 +394,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			keyboard_shortcut_names->visible=false;
 			keyboard_shortcuts->visible=false;
+			restore_default_shortcuts->visible=false;
 		}
 
 		else if (par1==KEYBOARDSETTINGS)
@@ -421,8 +431,25 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			keyboard_shortcut_names->visible=true;
 			keyboard_shortcuts->visible=true;
+			restore_default_shortcuts->visible=true;
 		}
-
+		else if (par1==RESTOREDEFAULTSHORTCUTS)
+		{
+			globalContainer->settings.restoreDefaultShortcuts();
+			unsigned int pos=keyboard_shortcut_names->getSelectionIndex();
+			keyboard_shortcut_names->setSelectionIndex(-1);
+			for(unsigned int x=0; x<globalContainer->settings.keyboard_shortcuts.size(); ++x)
+			{
+				keyboard_shortcut_names->removeText(0);
+			}
+			for(std::map<std::string, std::string>::iterator i=globalContainer->settings.keyboard_shortcuts.begin(); i!=globalContainer->settings.keyboard_shortcuts.end(); ++i)
+			{
+				std::string keyname=Toolkit::getStringTable()->getString(("["+i->first+"]").c_str());
+				std::string valname=Toolkit::getStringTable()->getString((i->second=="" ? "[unassigned]" : "["+i->second+"]").c_str());
+				keyboard_shortcut_names->addText(keyname + " - " + valname);
+			}
+			keyboard_shortcut_names->setSelectionIndex(pos);
+		}
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
 	{
@@ -483,12 +510,18 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if(keyboard_shortcut_names->getSelectionIndex()!=-1)
 			{
 				int pos=par1;
-				int change_pos=keyboard_shortcut_names->getSelectionIndex();
+				unsigned int change_pos=keyboard_shortcut_names->getSelectionIndex();
 				std::string keyname=Toolkit::getStringTable()->getString(("["+internal_names[change_pos]+"]").c_str());
 				std::string valname=Toolkit::getStringTable()->getString((shortcut_actions[pos]=="" ? "[unassigned]" : "["+shortcut_actions[pos]+"]").c_str());
 				keyboard_shortcut_names->removeText(change_pos);
-				keyboard_shortcut_names->addText(keyname + " - " + valname, change_pos);
-
+				if(change_pos==globalContainer->settings.keyboard_shortcuts.size()-1)
+				{
+					keyboard_shortcut_names->addText(keyname + " - " + valname);
+				}
+				else
+				{
+					keyboard_shortcut_names->addText(keyname + " - " + valname, change_pos);
+				}
 				globalContainer->settings.keyboard_shortcuts[internal_names[change_pos]]=shortcut_actions[pos];
 				keyboard_shortcuts->setSelectionIndex(-1);
 			}

@@ -53,7 +53,13 @@ Settings::Settings()
 	warflagUnit = 1;
 	clearflagUnit = 1;
 	exploreflagUnit = 1;
+	restoreDefaultShortcuts();
+}
 
+
+
+void Settings::restoreDefaultShortcuts()
+{
 	keyboard_shortcuts["akey"]="toggle draw accessibility aids";
 	keyboard_shortcuts["bkey"]="";
 	keyboard_shortcuts["ckey"]="";
@@ -81,6 +87,10 @@ Settings::Settings()
 	keyboard_shortcuts["ykey"]="";
 	keyboard_shortcuts["zkey"]="";
 }
+
+
+
+
 #define READ_PARSED_STRING(var) \
 { \
 	if (parsed.find(#var) != parsed.end()) \

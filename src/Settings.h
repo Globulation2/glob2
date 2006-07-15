@@ -41,6 +41,7 @@ public:
 	int clearflagUnit;
 	int exploreflagUnit;
 	std::map<std::string, std::string> keyboard_shortcuts;
+	void restoreDefaultShortcuts();
 public:
 	void load(const char *filename="preferences.txt");
 	void save(const char *filename="preferences.txt");

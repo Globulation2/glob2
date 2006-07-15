@@ -359,15 +359,17 @@ Toggle Draw Accessibility Aids
 [destroy building]
 Destroy Selected Building
 [upgrade building]
-Upgrade Selected Building
+Start/Stop Upgrade
 [repair building]
-Repair Selected Building
+Start/Stop Repair
 [mark map]
 Mark Map For Allies
 [record voice]
 Initiate Voice Recording
 [pause game]
 Pause Game
+[restore default shortcuts]
+Restore Default Keyboard Shortcuts
 [the building is finished]
 The building is finished
 [the swarm is finished]
