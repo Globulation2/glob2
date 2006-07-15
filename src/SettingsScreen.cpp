@@ -426,12 +426,21 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
 	{
-	if (warflagUnitRatio->getNth() == 0){warflagUnitRatio->setNth(1);}
-	globalContainer->settings.warflagUnit=warflagUnitRatio->getNth();
-	if (clearflagUnitRatio->getNth() == 0){clearflagUnitRatio->setNth(1);}
-	globalContainer->settings.clearflagUnit=clearflagUnitRatio->getNth();
-	if (exploreflagUnitRatio->getNth() == 0){exploreflagUnitRatio->setNth(1);}
-	globalContainer->settings.exploreflagUnit=exploreflagUnitRatio->getNth();
+		if (warflagUnitRatio->getNth() == 0)
+		{
+			warflagUnitRatio->setNth(1);
+		}
+		globalContainer->settings.warflagUnit=warflagUnitRatio->getNth();
+		if (clearflagUnitRatio->getNth() == 0)
+		{
+			clearflagUnitRatio->setNth(1);
+		}
+		globalContainer->settings.clearflagUnit=clearflagUnitRatio->getNth();
+		if (exploreflagUnitRatio->getNth() == 0)
+		{
+			exploreflagUnitRatio->setNth(1);
+		}
+		globalContainer->settings.exploreflagUnit=exploreflagUnitRatio->getNth();
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
