@@ -32,15 +32,26 @@
 #include "TeamStat.h"
 #include "Unit.h"
 
+
+EndOfGameStat::EndOfGameStat(int units, int buildings, int prestige, int hp, int attack, int defense)
+{
+	value[TYPE_UNITS]=units;
+	value[TYPE_BUILDINGS]=buildings;
+	value[TYPE_PRESTIGE]=prestige;
+	value[TYPE_HP]=hp;
+	value[TYPE_ATTACK]=attack;
+	value[TYPE_DEFENSE]=defense;
+}
+
+
+
 TeamStats::TeamStats()
 {
 	statsIndex=0;
 	smoothedIndex=0;
-	endOfGameStatIndex=0;
 	
 	memset(stats, 0, sizeof(TeamStat)*STATS_SIZE);
 	memset(smoothedStats, 0, sizeof(TeamSmoothedStat)*STATS_SMOOTH_SIZE);
-	memset(endOfGameStats, 0, sizeof(EndOfGameStat)*END_OF_GAME_STATS_SIZE);
 }
 
 TeamStats::~TeamStats()
@@ -53,16 +64,8 @@ void TeamStats::step(Team *team, bool reloaded)
 	// handle end of game stat step
 	if (((team->game->stepCounter & 0x1FF) == 0) && !reloaded)
 	{
-		// we copy stats to end of game stat
-		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_UNITS] = stats[statsIndex].totalUnit;
-		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_BUILDINGS] = stats[statsIndex].totalBuilding;
-		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_PRESTIGE] = team->prestige;
-		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_HP] = stats[statsIndex].totalHP;
-		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_ATTACK] = stats[statsIndex].totalAttackPower;
-		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_DEFENSE] = stats[statsIndex].totalDefensePower;
-
-		endOfGameStatIndex++;
-		endOfGameStatIndex%=END_OF_GAME_STATS_SIZE;
+		endOfGameStats.push_back(EndOfGameStat(stats[statsIndex].totalUnit, stats[statsIndex].totalBuilding, team->prestige,
+			stats[statsIndex].totalHP, stats[statsIndex].totalAttackPower, stats[statsIndex].totalDefensePower));
 	}
 	
 	// handle in game stat step
@@ -438,19 +441,41 @@ int TeamStats::getStarvingUnits()
 bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("TeamStats");
-	endOfGameStatIndex = stream->readSint32("endOfGameStatIndex");
-	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
+	Uint32 size=0;
+	if(versionMinor>=50)
+	{
+		size=stream->readUint32("size");
+	}
+	else
+	{
+		size=128;
+		stream->readSint32("endOfGameStatIndex");
+	}
+
+	bool stop=false;
+	
+	for (unsigned int i=0; i<size; i++)
 	{
 		stream->readEnterSection(i);
-		endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS] = stream->readSint32("EndOfGameStat::TYPE_UNITS");
-		endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS] = stream->readSint32("EndOfGameStat::TYPE_BUILDINGS");
-		endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE] = stream->readSint32("EndOfGameStat::TYPE_PRESTIGE");
+		Sint32 units = stream->readSint32("EndOfGameStat::TYPE_UNITS");
+		Sint32 buildings = stream->readSint32("EndOfGameStat::TYPE_BUILDINGS");
+		Sint32 prestige = stream->readSint32("EndOfGameStat::TYPE_PRESTIGE");
+		Sint32 hp = 0;
+		Sint32 attack = 0;
+		Sint32 defense = 0;
 		if (versionMinor > 31)
 		{
-			endOfGameStats[i].value[EndOfGameStat::TYPE_HP] = stream->readSint32("EndOfGameStat::TYPE_HP");
-			endOfGameStats[i].value[EndOfGameStat::TYPE_ATTACK] = stream->readSint32("EndOfGameStat::TYPE_ATTACK");
-			endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE] = stream->readSint32("EndOfGameStat::TYPE_DEFENSE");
+			hp = stream->readSint32("EndOfGameStat::TYPE_HP");
+			attack = stream->readSint32("EndOfGameStat::TYPE_ATTACK");
+			defense = stream->readSint32("EndOfGameStat::TYPE_DEFENSE");
 		}
+		if(versionMinor<50)
+		{
+			if(units==0 && buildings==0 && prestige==0 && hp==0 && attack==0 && defense==0)
+				stop=true;
+		}
+		if(!stop)
+			endOfGameStats.push_back(EndOfGameStat(units, buildings, prestige, hp, attack, defense));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -460,8 +485,8 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 void TeamStats::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("TeamStats");
-	stream->writeSint32(endOfGameStatIndex, "endOfGameStatIndex");
-	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
+	stream->writeUint32(endOfGameStats.size(), "size");
+	for (unsigned int i=0; i<endOfGameStats.size(); i++)
 	{
 		stream->writeEnterSection(i);
 		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS], "EndOfGameStat::TYPE_UNITS");

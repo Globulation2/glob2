@@ -58,11 +58,16 @@ void EndGameStat::paint(void)
 	parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
 	
 	// find maximum
-	int team, pos, maxValue = 1;
+	int team, maxValue = 1;
+	unsigned int pos=0;
 	for (team=0; team < game->session.numberOfTeam; team++)
-		for (pos=0; pos<TeamStats::END_OF_GAME_STATS_SIZE; pos++)
+		for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 			maxValue = std::max(maxValue, game->teams[team]->stats.endOfGameStats[pos].value[type]);
 	
+
+	float inc_x=static_cast<float>(w-2)/static_cast<float>(game->teams[0]->stats.endOfGameStats.size()-1);
+	float inc_y=static_cast<float>(h-2)/static_cast<float>(maxValue);
+
 	// draw curve
 	if (maxValue)
 	{
@@ -72,17 +77,16 @@ void EndGameStat::paint(void)
 			Uint8 g = game->teams[team]->colorG;
 			Uint8 b = game->teams[team]->colorB;
 
-			int statsIndex = game->teams[team]->stats.endOfGameStatIndex;
+			int statsIndex = 0;
 			int oy, ox, nx, ny;
 
 			ox = 1;
-			oy = (game->teams[team]->stats.endOfGameStats[statsIndex].value[type] * (h-2))/maxValue;
+			oy = static_cast<int>(game->teams[team]->stats.endOfGameStats[statsIndex].value[type] * inc_y);
 
-			for (pos=1; pos<TeamStats::END_OF_GAME_STATS_SIZE; pos++)
+			for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 			{
-				int index=(statsIndex+pos)&0x7F;
-				nx = (pos*(w-2))/TeamStats::END_OF_GAME_STATS_SIZE;
-				ny = (game->teams[team]->stats.endOfGameStats[index].value[type] * (h-2))/maxValue;
+				nx = static_cast<int>(pos*inc_x);
+				ny = static_cast<int>(game->teams[team]->stats.endOfGameStats[pos].value[type] * inc_y);
 
 				parent->getSurface()->drawLine(x+ox, y+h-oy-1, x+nx, y+h-ny-1, r, g, b);
 
@@ -165,8 +169,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	for (int i=0; i<gui->game.session.numberOfTeam; i++)
 	{
 		Team *t=gui->game.teams[i];
-		int statsIndex = t->stats.endOfGameStatIndex;
-		int endIndex=(statsIndex+(TeamStats::END_OF_GAME_STATS_SIZE-1))&0x7F;
+		int endIndex=t->stats.endOfGameStats.size()-1;
 
 		struct TeamEntry entry;
 		entry.name=t->getFirstPlayerName();

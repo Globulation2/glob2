@@ -24,6 +24,8 @@
 #include "IntBuildingType.h"
 #include "Ressource.h"
 
+#include <vector>
+
 struct TeamStat
 {
 	int totalUnit;
@@ -63,6 +65,8 @@ struct TeamSmoothedStat
 
 struct EndOfGameStat
 {
+	EndOfGameStat(int units, int buildings, int prestige, int hp, int attack, int defense);
+
 	enum Type
 	{
 		TYPE_UNITS = 0,
@@ -112,13 +116,10 @@ private:
 	friend class EndGameStat;
 	friend class EndGameScreen;
 	
-	enum { END_OF_GAME_STATS_SIZE=128 };
-	
 	//! Thoses stats are used when player has ended the game
 	friend class Team;
 	
-	int endOfGameStatIndex;
-	EndOfGameStat endOfGameStats[END_OF_GAME_STATS_SIZE];
+	std::vector<EndOfGameStat> endOfGameStats;
 	
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
