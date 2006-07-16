@@ -1077,7 +1077,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	std::cout<<"size="<<size<<"; data=";
 	for(int x=0; x<size; ++x)
 	{
-		std::cout<<std::hex<<data[x]<<",";
+		std::cout<<std::hex<<static_cast<int>(data[x])<<",";
 	}
 	std::cout<<std::endl;
 
