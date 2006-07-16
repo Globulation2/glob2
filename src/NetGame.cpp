@@ -1074,6 +1074,13 @@ void NetGame::computeMyLocalWishedLatency()
 
 void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 {
+	std::cout<<"size="<<size<<"; data=";
+	for(int x=0; x<size; ++x)
+	{
+		std::cout<<std::hex<<data[x]<<",";
+	}
+	std::cout<<std::endl;
+
 	fprintf(logFile, "treatData\n");
 	if (size<16)
 	{
