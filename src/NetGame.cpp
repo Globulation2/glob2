@@ -775,7 +775,7 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	}
 	gameCheckSums[playerNumber][pushUStep&255]=order->gameCheckSum;
 
-	std::cout<<"Recieved order from "<<playerNumber<<". checksum provided: "<<std::hex<<order->gameCheckSum<<". step="<<pushUStep<<std::endl;
+	std::cout<<"Pushing order from "<<playerNumber<<". checksum provided: "<<std::hex<<order->gameCheckSum<<". step="<<pushUStep<<std::endl;
 	
 	if (localPlayerNumber==playerNumber && ((pushUStep&1)==1))
 	{
@@ -1325,6 +1325,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			ordersQueue[player][orderUStep&255]=order;
 			// Let's store checkSum:
 			gameCheckSums[player][orderUStep&255]=gameCheckSum;
+			std::cout<<"Recieving player data, "<<player<<" at ustep "<<orderUStep<<" with a checksum of "<<std::hex<<gameCheckSum<<std::endl;
 			fprintf(logFile, "  orderUStep=%d, hash=%d\n", orderUStep, orderUStep&255);
 			fprintf(logFile, "  orderType=%d\n", orderType);
 			fprintf(logFile, "  gameCheckSum=%x\n", order->gameCheckSum);
