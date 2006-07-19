@@ -288,6 +288,88 @@ Vyber si hru
 Štatistiky
 [food left]
 Jedla
+[general settings]
+Základ
+[unit settings]
+Jednotky
+[keyboard settings]
+Klávesnica
+[remember unit]
+Uložiť jednotku
+[akey]
+klávesa A
+[bkey]
+klávesa B
+[ckey]
+klávesa C
+[dkey]
+klávesa D
+[ekey]
+klávesa E
+[fkey]
+klávesa F
+[gkey]
+klávesa G
+[hkey]
+klávesa H
+[ikey]
+klávesa I
+[jkey]
+klávesa J
+[kkey]
+klávesa K
+[lkey]
+klávesa L
+[mkey]
+klávesa M
+[nkey]
+klávesa N
+[okey]
+klávesa O
+[pkey]
+klávesa P
+[qkey]
+klávesa Q
+[rkey]
+klávesa R
+[skey]
+klávesa S
+[tkey]
+klávesa T
+[ukey]
+klávesa U
+[vkey]
+klávesa V
+[wkey]
+klávesa W
+[xkey]
+klávesa X
+[ykey]
+klávesa Y
+[zkey]
+klávesa Z
+[unassigned]
+Nepriradené
+[toggle draw unit paths]
+Zobraziť/skryť cesty
+[toggle draw information]
+Prepnúť informácie
+[toggle draw accessibility aids]
+Prepnúť Accessibility Aids
+[destroy building]
+Zničiť vybranú budovu
+[upgrade building]
+Spust./zast. zdokonaľovanie
+[repair building]
+Spust./zast. opravu
+[mark map]
+Označiť mapu
+[record voice]
+Spustiť nahrávanie zvuku
+[pause game]
+Pozastaviť hru
+[restore default shortcuts]
+Pôvodné nastavenia klávesnice
 [the building is finished]
 Výstavba dokončená
 [the swarm is finished]
