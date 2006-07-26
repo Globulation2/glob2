@@ -1242,24 +1242,25 @@ void Map::addTeam(void)
 void Map::removeTeam(void)
 {
 	int numberOfTeam=game->session.numberOfTeam;
-	int oldNumberOfTeam=numberOfTeam+1;
+//	int oldNumberOfTeam=numberOfTeam+1;
 	assert(numberOfTeam<32);
 	
-	for (int t=0; t<oldNumberOfTeam; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
-			for (int s=0; s<2; s++)
-				assert(ressourcesGradient[t][r][s]);
-	for (int t=oldNumberOfTeam; t<32; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
-			for (int s=0; s<2; s++)
-				assert(ressourcesGradient[t][r][s]==NULL);
+//	for (int t=0; t<oldNumberOfTeam; t++)
+//		for (int r=0; r<MAX_RESSOURCES; r++)
+//			for (int s=0; s<2; s++)
+//				assert(ressourcesGradient[t][r][s]);
+//	for (int t=oldNumberOfTeam; t<32; t++)
+//		for (int r=0; r<MAX_RESSOURCES; r++)
+//			for (int s=0; s<2; s++)
+//				assert(ressourcesGradient[t][r][s]==NULL);
 	
 	int t=numberOfTeam;
 	for (int r=0; r<MAX_RESSOURCES; r++)
 		for (int s=0; s<2; s++)
 		{
-			assert(ressourcesGradient[t][r][s]);
-			delete[] ressourcesGradient[t][r][s];
+//			assert(ressourcesGradient[t][r][s]);
+			if(ressourcesGradient[t][r][s])
+				delete[] ressourcesGradient[t][r][s];
 			ressourcesGradient[t][r][s]=NULL;
 		}
 
@@ -1272,6 +1273,7 @@ void Map::removeTeam(void)
 		delete[] guardAreasGradient[t][s];
 		guardAreasGradient[t][s]=NULL;
 	}
+
 	
 	assert(exploredArea[t] != NULL);
 	delete[] exploredArea[t];
@@ -1788,46 +1790,94 @@ void Map::setUMatPos(int x, int y, TerrainType t, int l)
 			if (t==GRASS)
 			{
 				if (getUMTerrain(dx,dy-1)==WATER)
+				{
+// 					setNoRessource(dx, dy-1, 1);
 					setUMTerrain(dx,dy-1,SAND);
+				}
 				if (getUMTerrain(dx,dy+1)==WATER)
+				{
+// 					setNoRessource(dx, dy+1, 1);
 					setUMTerrain(dx,dy+1,SAND);
+				}
 
 				if (getUMTerrain(dx-1,dy)==WATER)
+				{
+// 					setNoRessource(dx-1, dy, 1);
 					setUMTerrain(dx-1,dy,SAND);
+				}
 				if (getUMTerrain(dx+1,dy)==WATER)
+				{
+// 					setNoRessource(dx+1, dy, 1);
 					setUMTerrain(dx+1,dy,SAND);
+				}
 
 				if (getUMTerrain(dx-1,dy-1)==WATER)
+				{
+// 					setNoRessource(dx-1, dy-1, 1);
 					setUMTerrain(dx-1,dy-1,SAND);
+				}
 				if (getUMTerrain(dx+1,dy-1)==WATER)
+				{
+// 					setNoRessource(dx+1, dy-1, 1);
 					setUMTerrain(dx+1,dy-1,SAND);
+				}
 
 				if (getUMTerrain(dx+1,dy+1)==WATER)
+				{
+// 					setNoRessource(dx+1, dy+1, 1);
 					setUMTerrain(dx+1,dy+1,SAND);
+				}
 				if (getUMTerrain(dx-1,dy+1)==WATER)
+				{
+// 					setNoRessource(dx-1, dy+1, 1);
 					setUMTerrain(dx-1,dy+1,SAND);
+				}
 			}
 			else if (t==WATER)
 			{
 				if (getUMTerrain(dx,dy-1)==GRASS)
+				{
+// 					setNoRessource(dx, dy-1, 1);
 					setUMTerrain(dx,dy-1,SAND);
+				}
 				if (getUMTerrain(dx,dy+1)==GRASS)
+				{
+// 					setNoRessource(dx, dy+1, 1);
 					setUMTerrain(dx,dy+1,SAND);
+				}
 
 				if (getUMTerrain(dx-1,dy)==GRASS)
+				{
+// 					setNoRessource(dx-1, dy, 1);
 					setUMTerrain(dx-1,dy,SAND);
+				}
 				if (getUMTerrain(dx+1,dy)==GRASS)
+				{
+// 					setNoRessource(dx+1, dy, 1);
 					setUMTerrain(dx+1,dy,SAND);
+				}
 
 				if (getUMTerrain(dx-1,dy-1)==GRASS)
+				{
+// 					setNoRessource(dx-1, dy-1, 1);
 					setUMTerrain(dx-1,dy-1,SAND);
+				}
 				if (getUMTerrain(dx+1,dy-1)==GRASS)
+				{
+// 					setNoRessource(dx+1, dy-1, 1);
 					setUMTerrain(dx+1,dy-1,SAND);
+				}
 
 				if (getUMTerrain(dx+1,dy+1)==GRASS)
+				{
+// 					setNoRessource(dx+1, dy+1, 1);
 					setUMTerrain(dx+1,dy+1,SAND);
+				}
 				if (getUMTerrain(dx-1,dy+1)==GRASS)
+				{
+// 					setNoRessource(dx-1, dy+1, 1);
 					setUMTerrain(dx-1,dy+1,SAND);
+				}
 			}
 			setUMTerrain(dx,dy,t);
 		}
@@ -1842,8 +1892,8 @@ void Map::setNoRessource(int x, int y, int l)
 	assert(l>=0);
 	assert(l<w);
 	assert(l<h);
-	for (int dx=x-(l>>1); dx<x+(l>>1); dx++)
-		for (int dy=y-(l>>1); dy<y+(l>>1); dy++)
+	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
+		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 			(cases+w*(dy&hMask)+(dx&wMask))->ressource.clear();
 }
 

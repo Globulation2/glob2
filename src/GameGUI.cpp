@@ -3381,7 +3381,7 @@ void GameGUI::drawOverlayInfos(void)
 		}
 	}
 
-	// Draw icon if trnasmitting
+	// Draw icon if trasmitting
 	if (globalContainer->voiceRecorder->recordingNow)
 		globalContainer->gfx->drawSprite(5, globalContainer->gfx->getH()-50, globalContainer->gamegui, 24);
 	

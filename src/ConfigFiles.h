@@ -178,6 +178,7 @@ public:
 		else
 		{
 			std::cerr << "ConfigVector::get(" << static_cast<unsigned int>(id) << ") : warning : id is not valid, returning default" << std::endl;
+			assert(false);
 			return &defaultEntry;
 		}
 	}

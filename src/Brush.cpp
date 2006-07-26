@@ -61,26 +61,26 @@ void BrushTool::handleClick(int x, int y)
 		}
 }
 
-void BrushTool::drawBrush(int x, int y)
+void BrushTool::drawBrush(int x, int y, bool onlines)
 {
-	x &= ~0x1f;
-	y &= ~0x1f;
+	x = ((x+(onlines ? 16 : 0)) & ~0x1f) + (!onlines ? 16 : 0);
+	y = ((y+(onlines ? 16 : 0)) & ~0x1f) + (!onlines ? 16 : 0);
 	if (figure < 4)
 	{
 		int r = (getBrushWidth(figure) + getBrushHeight(figure)) * 8;
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawCircle(x+16, y+16, r, 255, 255, 255);
+			globalContainer->gfx->drawCircle(x, y, r, 255, 255, 255);
 		else
-			globalContainer->gfx->drawCircle(x+16, y+16, r, 200, 200, 200);
+			globalContainer->gfx->drawCircle(x, y, r, 200, 200, 200);
 	}
 	else
 	{
 		int w = getBrushWidth(figure) * 16;
 		int h = getBrushHeight(figure) * 16;
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawRect(x-w+16, y-h+16, 2*w, 2*h, 255, 255, 255);
+			globalContainer->gfx->drawRect(x-w, y-h, 2*w, 2*h, 255, 255, 255);
 		else
-			globalContainer->gfx->drawRect(x-w+16, y-h+16, 2*w, 2*h, 200, 200, 200);
+			globalContainer->gfx->drawRect(x-w, y-h, 2*w, 2*h, 200, 200, 200);
 	}
 }
 

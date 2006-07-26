@@ -2,6 +2,8 @@
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
+  Copyright (C) 2006 Bradley Arsenault
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -21,6 +23,18 @@
 #define __GLOB2EDIT_H
 
 #include "Game.h"
+#include "GUIBase.h"
+#include "Brush.h"
+#include "GameGUILoadSave.h"
+
+#include <string>
+#include <vector>
+#include <map>
+
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
+
+
 namespace GAGCore
 {
 	class Sprite;
@@ -34,92 +48,190 @@ namespace GAGGUI
 using namespace GAGGUI;
 class Unit;
 
+struct Rectangle
+{
+	Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
+	Rectangle() : x(0), y(0), width(0), height(0) {}
+	bool is_in(int posx, int posy) { return posx>x && posx<(x+width) && posy>y && posy<(y+height); }
+
+	int x;
+	int y;
+	int width;
+	int height;
+};
+
+
+
+class MapEditMenuScreen : public OverlayScreen
+{
+public:
+	MapEditMenuScreen();
+	virtual ~MapEditMenuScreen() { }
+	void onAction(Widget *source, Action action, int par1, int par2);
+
+	enum
+	{
+		LOAD_MAP,
+		SAVE_MAP,
+		RETURN_EDITOR,
+		QUIT_EDITOR
+	};
+};
+
+
+
 class MapEdit
 {
-	static const bool verbose = false;
 public:
 	MapEdit();
 	~MapEdit();
+	bool load(const char *filename);
+	bool save(const char *filename, const char *name);
+
 	//void resize(int sizeX, int sizeY);
 	int run(int sizeX, int sizeY, TerrainType terrainType);
 	int run(void);
 	
-	void mapHasBeenModiffied(void); // moved public so that newly cerated map are modified
+	void mapHasBeenModiffied(void) { hasMapBeenModified=true; } // moved public so that newly cerated map are modified
 
+	Game game;
 private:
+	bool do_quit;
+
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);
 	void drawMiniMap(void);
 	void renderMiniMap(void);
-	void drawMenu(void);
-	
-	int processEvent(const SDL_Event *event);
-	void askConfirmationToQuit(void);
-	void handleMenuClick(int mx, int my, int button);
-	void handleMapClick(void);
-	void handleMapClick(int mx, int my);
-	void paintCoordinates(void);
-	void paintCoordinates(int mx, int my);
-	void paintEditMode(bool clearOld, bool mayUpdate);
-	void paintEditMode(int mx, int my, bool clearOld, bool mayUpdate);
-	
-	void handleKeyPressed(SDLKey key, bool pressed);
-public:
-	bool load(const char *filename);
-private:
-	bool save(const char *filename, const char *name);
-	
-	void executeOverlayScreen(OverlayScreen *overlayScreen);
-	
-	void loadSave(bool isLoad);
-	void scriptEditor(void);
-	void unitEditor(Unit *unit);
 
-	void updateUnits(int x, int y, int w, int h);
-public:
-	enum EditMode
+	enum PanelMode
 	{
-		EM_NONE,
-		EM_TERRAIN,
-		EM_RESSOURCE,
-		EM_BUILDING,
-		EM_UNIT,
-		EM_DELETE
+		AddBuildings,
+		AddFlagsAndZones,
+		Terrain,
+		Teams,
 	};
 
-private:
-	void regenerateClipRect(void);
-	void drawSelRect(int x, int y, int w, int h);
-	void viewportFromMxMY(int mx, int my);
+	void drawMenu(void);
+	void drawPanelButtons(int pos);
+	void drawChoice(int pos, std::vector<std::string> &types, unsigned numberPerLine = 2);
+	void drawTextCenter(int x, int y, const char *caption, int i=-1);
+	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
+	void drawFlagView();
+	void drawMenuEyeCandy();
+	void drawTerrainView();
+	void drawTeamView();
+	void drawMultipleSelection(int x, int y, std::vector<std::string>& strings, unsigned int pos);
+	void drawTeamSelector(int x, int y);
+	void drawUnitOnMap();
 
-public:
-	Game game;
-	bool hasMapBeenModiffied;
-private:
-	bool isRunning;
+	void register_buttons();
+	int processEvent(SDL_Event& event);
+	void handleKeyPressed(SDLKey key, bool pressed);
+	void perform_action(const std::string& action);
+	void delegateMenu(SDL_Event& event);
 
-	int viewportX, viewportY;
-	int viewportW, viewportH;
-	int viewportSpeedX[9], viewportSpeedY[9];
-	int centeredTeam; // The last centered team when the user typed "tab".
-	SDL_Rect screenClip, mapClip;
-	GraphicContext *gfx;
+	int viewportX;
+	int viewportY;
+	int xspeed;
+	int yspeed;
+	int mouseX;
+	int mouseY;
 
+	bool hasMapBeenModified;
 	int team;
-	int terrainSize;
-	int level;
-	int type;
-	EditMode editMode;
-	bool wasClickInMap;
-	bool minimapPushed;
-	EditMode pushedBrush;
+
+	PanelMode panelmode;
+	std::vector<std::string> buildingsChoiceName;
+	std::vector<std::string> flagsChoiceName;
+	std::string selectionName;
+	void drawBuildingSelectionOnMap();
+	int building_level;
+	bool is_upgradable(int building_level);
+
+	void disableBuildingsView();
+	void enableBuildingsView();
+	void disableFlagView();
+	void enableFlagView();
+	void disableTerrainView();
+	void enableTerrainView();
+	void disableTeamView();
+	void enableTeamView();
 
 	Sprite *menu;
-
 	Font *font;
-private:
-	int savedMx, savedMy;
-	EditMode oldBrush;
-	int orX, orY, orW, orH;
+
+	enum SelectionMode
+	{
+		PlaceNothing,
+		PlaceBuilding,
+		PlaceZone,
+		PlaceTerrain,
+		PlaceUnit,
+	} selectionMode;
+
+	std::map<std::string, boost::tuple<Rectangle, std::string, bool, bool> > button_areas;
+	void activate_area(const std::string& name);
+	void deactivate_area(const std::string& name);
+	bool is_activated(const std::string& name);
+	void add_area(const std::string& name, const Rectangle& area, const std::string& action, bool is_activated, bool on_release=false);
+	std::string get_action(int x, int y, bool is_release);
+
+	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
+	bool is_dragging_minimap;
+
+	int last_placement_x;
+	int last_placement_y;
+
+	bool showingMenuScreen;
+	MapEditMenuScreen* menuscreen;
+	bool showing_load;
+	bool showing_save;
+	LoadSaveScreen* loadsavescreen;
+
+	// Brushes
+	enum BrushType
+	{
+		ForbiddenBrush,
+		GuardAreaBrush,
+		ClearAreaBrush,
+		NoBrush,
+		
+	} brushType;
+	BrushTool brush;
+	BrushAccumulator brushAccumulator;
+	void handleBrushClick(int mx, int my);
+	bool is_dragging_zone;
+
+	enum SelectedTerrain
+	{
+		Grass,
+		Sand,
+		Water,
+		Wheat,
+		Trees,
+		Stone,
+		Algae,
+		CherryTree,
+		OrangeTree,
+		PruneTree,
+		NoTerrain,
+	} terrainType;
+	void handleTerrainClick(int mx, int my);
+	bool is_dragging_terrain;
+
+	std::vector<std::string> team_view_selector_keys;
+	std::vector<unsigned int> selector_positions;
+
+	enum SelectedUnit
+	{
+		Worker,
+		Explorer,
+		Warrior,
+		NoUnit,
+	} selectedUnit;
+	int unit_level;
 };
+
+
+
 
 #endif 
