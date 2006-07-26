@@ -774,8 +774,6 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 		fprintf(logFile, "Warning, no gameCheckSum localy provided for player %d, at pushUStep %d\n", playerNumber, pushUStep);
 	}
 	gameCheckSums[playerNumber][pushUStep&255]=order->gameCheckSum;
-
-	std::cout<<"Pushing order from "<<playerNumber<<". checksum provided: "<<std::hex<<order->gameCheckSum<<". step="<<pushUStep<<std::endl;
 	
 	if (localPlayerNumber==playerNumber && ((pushUStep&1)==1))
 	{
@@ -1074,13 +1072,6 @@ void NetGame::computeMyLocalWishedLatency()
 
 void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 {
-	std::cout<<"size="<<size<<"; data=";
-	for(int x=0; x<size; ++x)
-	{
-		std::cout<<std::hex<<static_cast<int>(data[x])<<",";
-	}
-	std::cout<<std::endl;
-
 	fprintf(logFile, "treatData\n");
 	if (size<16)
 	{
@@ -1332,7 +1323,6 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			ordersQueue[player][orderUStep&255]=order;
 			// Let's store checkSum:
 			gameCheckSums[player][orderUStep&255]=gameCheckSum;
-			std::cout<<"Recieving player data, "<<player<<" at ustep "<<orderUStep<<" with a checksum of "<<std::hex<<gameCheckSum<<std::endl;
 			fprintf(logFile, "  orderUStep=%d, hash=%d\n", orderUStep, orderUStep&255);
 			fprintf(logFile, "  orderType=%d\n", orderType);
 			fprintf(logFile, "  gameCheckSum=%x\n", order->gameCheckSum);

@@ -1222,20 +1222,22 @@ void Game::dirtyWarFlagGradient(void)
 		teams[i]->dirtyWarFlagGradient();
 }
 
-void Game::addTeam(void)
+void Game::addTeam(int pos)
 {
+	if(pos==-1)
+		pos=session.numberOfTeam;
 	if (session.numberOfTeam<32)
 	{
-		teams[session.numberOfTeam]=new Team(this);
-		teams[session.numberOfTeam]->teamNumber=session.numberOfTeam;
-		teams[session.numberOfTeam]->race.load();
-		teams[session.numberOfTeam]->setCorrectMasks();
+		teams[pos]=new Team(this);
+		teams[pos]->teamNumber=session.numberOfTeam;
+		teams[pos]->race.load();
+		teams[pos]->setCorrectMasks();
 
 		session.numberOfTeam++;
-		for (int i=0; i<session.numberOfTeam; i++)
-			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
+		for (int i=0; i<pos; i++)
+			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
 		
-		prestigeToReach = std::max(MIN_MAX_PRESIGE, session.numberOfTeam*TEAM_MAX_PRESTIGE);
+		prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
 		
 		map.addTeam();
 	}
@@ -1243,11 +1245,13 @@ void Game::addTeam(void)
 		assert(false);
 }
 
-void Game::removeTeam(void)
+void Game::removeTeam(int pos)
 {
+	if(pos==-1)
+		pos=--session.numberOfTeam;
 	if (session.numberOfTeam>0)
 	{
-		Team *team=teams[--session.numberOfTeam];
+		Team *team=teams[pos];
 
 		team->clearMap();
 
@@ -1257,6 +1261,7 @@ void Game::removeTeam(void)
 			teams[i]->setCorrectColor(((float)i*360.0f)/(float)session.numberOfTeam);
 
 		map.removeTeam();
+		teams[pos]=NULL;
 	}
 }
 

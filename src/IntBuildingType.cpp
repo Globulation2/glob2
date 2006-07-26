@@ -71,7 +71,7 @@ int IntBuildingType::shortNumberFromType(const std::string &s)
 		return conversionMap[s];
 	else
 	{
-		std::cerr << "IntBuildingType::shortNumberFromType(" << s << ") : error : type does not exists in conversionMap" << std::endl;
+		std::cerr << "IntBuildingType::shortNumberFromType(\"" << s << "\") : error : type does not exists in conversionMap" << std::endl;
 		assert(false);
 		return -1;
 	}

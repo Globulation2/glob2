@@ -112,8 +112,8 @@ public:
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
-	void addTeam(void);
-	void removeTeam(void);
+	void addTeam(int pos=-1);
+	void removeTeam(int pos=-1);
 	//! If a team is uncontrolled (playerMask == 0), remove units and buildings from map
 	void clearingUncontrolledTeams(void);
 	void regenerateDiscoveryMap(void);

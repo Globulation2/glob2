@@ -192,10 +192,20 @@ Alliances
 Return to game
 [quit the game]
 Quit the game
+[load map]
+Load Map
+[save map]
+Save Map
+[return to editor]
+Return to the editor
+[quit the editor]
+Quit the editor
 [ok]
 Ok
 [Cancel]
 Cancel
+[human]
+human
 [you have lost]
 You have lost!
 [you have won]
