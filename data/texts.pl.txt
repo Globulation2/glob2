@@ -583,7 +583,7 @@ Metaserwer YOG odmówił połączenia z powodu błędnego hasła.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Metaserver YOG odmówił połączenia bez dalszego wyjaśnienia.
+Metaserwer YOG odmĂłwiĹ poĹÄczenia bez dalszego wyjaĹnienia.
 [The player %0 has left YOG]
 Gracz %0 opuścił YOG.
 [The player %0 has joined YOG]
@@ -591,7 +591,7 @@ Gracz %0 przyłączył się do YOG.
 [You are now marked as away]
 Jesteś oznaczony jako nieaktywny.
 [You are no more marked as away]
-Już nie jesteś oznaczony jako nieaktywny.
+Nie jesteĹ juĹź oznaczony jako nieaktywny.
 [YOG_HELP]
 System komunikacji YOG ma dwie komendy, "msg" oraz "away". Napisz "/help <komenda>" aby się o nich więcej dowiedzieć.
 [YOG_HELP_AWAY]
@@ -599,7 +599,7 @@ Komenda "/away (<wiadomość>)" pozwala Ci poinformować innych użytkowników Y
 [YOG_HELP_MSG]
 Komenda "/msg <nazwa> <wiadomość>" pozwala Ci przesłać wiadomość do jednej osoby. Np. "/msg Daemon42 Twoje tłumaczenie ssie...". W skrócie "/m"
 [save before quit?]
-Chcesz zapisać stan gry, przed jej zakończeniem ?
+Czy chcesz zapisaÄ stan gry, przed jej zakoĹczeniem ?
 [Yes]
 Tak
 [No]
@@ -629,11 +629,11 @@ Wyświetlanie
 [username]
 Nazwa użytkownika
 [fullscreen]
-Pełen ekran
+PeĹny ekran
 [hwaccel]
-Dopalanie sprzętowe
+Przyspieszenie sprzÄtowe
 [dblbuff]
-Double-buffering
+PodwĂłjne buforowanie
 [lowquality]
 Niska jakość
 [audio]
