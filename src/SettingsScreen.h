@@ -21,6 +21,7 @@
 #define __SETTINGSSCREEN_H
 
 #include "Glob2Screen.h"
+#include "Settings.h"
 #include <string>
 
 namespace GAGGUI
@@ -51,12 +52,14 @@ public:
 		UNITSETTINGS = 10,
 		KEYBOARDSETTINGS = 11,
 		RESTOREDEFAULTSHORTCUTS=12,
+		GAMESHORTCUTS=13,
+		EDITORSHORTCUTS=14,
 	};
 private:
+	Settings old_settings;
 	List *languageList;
 	List *modeList;
 	TextInput *userName;
-	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute, oldwarflagUnit, oldexploreflagUnit, oldclearflagUnit;
 	
 	TextButton *ok, *cancel, *generalsettings, *unitsettings, *keyboardsettings;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
@@ -69,11 +72,18 @@ private:
 	Text *actDisplay;
 	Text *rebootWarning;
 
+	TextButton* game_shortcuts;
+	TextButton* editor_shortcuts;
 	List* keyboard_shortcut_names;
 	std::vector<std::string> internal_names;
 	List* keyboard_shortcuts;
 	std::vector<std::string> shortcut_actions;
+	std::vector<std::string> shortcut_names;
+	List* editor_keyboard_shortcuts;
+	std::vector<std::string> editor_shortcut_actions;
+	std::vector<std::string> editor_shortcut_names;
 	TextButton* restore_default_shortcuts;
+	void reset_names();
 
 	bool gfxAltered;
 	

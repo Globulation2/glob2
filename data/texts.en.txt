@@ -196,6 +196,8 @@ Quit the game
 Load Map
 [save map]
 Save Map
+[open script editor]
+Open Script Editor
 [return to editor]
 Return to the editor
 [quit the editor]
@@ -306,6 +308,10 @@ Unit Settings
 Keyboard Settings
 [remember unit]
 Remember Unit
+[game shortcuts]
+Game Shortcuts
+[editor shortcuts]
+Editor Shortcuts
 [akey]
 A-key
 [bkey]
@@ -378,6 +384,44 @@ Mark Map For Allies
 Initiate Voice Recording
 [pause game]
 Pause Game
+[switch to building view]
+Switch To Building view
+[switch to flag view]
+Switch to Flags view
+[switch to terrain view]
+Switch to Terrain view
+[switch to teams view]
+Switch to Team view
+[open save menu]
+Open Save Menu
+[open load menu]
+Open Load Menu
+[select swarm building]
+Select Swarm
+[select inn building]
+Select Inn
+[select hospital building]
+Select Hospital
+[select racetrack building]
+Select Racetrack
+[select swimmingpool building]
+Select Swimmingpool
+[select barracks building]
+Select Barracks
+[select school building]
+Select Schoo
+[select tower building]
+Select Tower
+[select wall building]
+Select Wall
+[select market building]
+Select Market
+[select exploration flag]
+Select Exploration Flag
+[select war flag]
+Select War Flag
+[select clearing flag]
+Select Clearing Flag
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [the building is finished]

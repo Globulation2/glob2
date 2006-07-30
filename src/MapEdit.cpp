@@ -92,6 +92,7 @@ MapEdit::MapEdit() : game(NULL)
 	menuscreen = NULL;
 	showing_load=false;
 	showing_save=false;
+	showingScriptEditor=false;
 
 	terrainType=NoTerrain;
 
@@ -221,6 +222,12 @@ int MapEdit::run(void)
 			globalContainer->gfx->setClipRect();
 			loadsavescreen->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)loadsavescreen->decX, (int)loadsavescreen->decY, loadsavescreen->getSurface());
+		}
+		if(showingScriptEditor)
+		{
+			globalContainer->gfx->setClipRect();
+			script_editor->dispatchPaint();
+			globalContainer->gfx->drawSurface((int)script_editor->decX, (int)script_editor->decY, script_editor->getSurface());
 		}
 		globalContainer->gfx->nextFrame();
 
@@ -1101,7 +1108,7 @@ int MapEdit::processEvent(SDL_Event& event)
 	{
 		returnCode=-1;
 	}
-	else if(showingMenuScreen || showing_load || showing_save)
+	else if(showingMenuScreen || showing_load || showing_save || showingScriptEditor)
 	{
 		delegateMenu(event);
 		return 0;
@@ -1189,6 +1196,14 @@ int MapEdit::processEvent(SDL_Event& event)
 		if(is_dragging_terrain)
 			perform_action("terrain drag end");
 	}
+	else if(event.type==SDL_KEYDOWN)
+	{
+		handleKeyPressed(event.key.keysym.sym, true);
+	}
+	else if(event.type==SDL_KEYUP)
+	{
+		handleKeyPressed(event.key.keysym.sym, false);
+	}
 	return returnCode;
 }
 
@@ -1196,13 +1211,151 @@ int MapEdit::processEvent(SDL_Event& event)
 
 void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 {
-
+	switch(key)
+	{
+		case SDLK_UP:
+			if(pressed)
+				perform_action("scroll up");
+			else
+				perform_action("scroll vertical stop");
+			break;
+		case SDLK_DOWN:
+			if(pressed)
+				perform_action("scroll down");
+			else
+				perform_action("scroll vertical stop");
+			break;
+		case SDLK_LEFT:
+			if(pressed)
+				perform_action("scroll left");
+			else
+				perform_action("scroll horizontal stop");
+			break;
+		case SDLK_RIGHT:
+			if(pressed)
+				perform_action("scroll right");
+			else
+				perform_action("scroll horizontal stop");
+			break;
+		case SDLK_a :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["akey"]);
+			break;
+		case SDLK_b :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["bkey"]);
+			break;
+		case SDLK_c :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["ckey"]);
+			break;
+		case SDLK_d :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["dkey"]);
+			break;
+		case SDLK_e :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["ekey"]);
+			break;
+		case SDLK_f :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["fkey"]);
+			break;
+		case SDLK_g :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["gkey"]);
+			break;
+		case SDLK_h :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["hkey"]);
+			break;
+		case SDLK_i :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
+			break;
+		case SDLK_j :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["jkey"]);
+			break;
+		case SDLK_k :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["kkey"]);
+			break;
+		case SDLK_l :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["lkey"]);
+			break;
+		case SDLK_m :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["mkey"]);
+			break;
+		case SDLK_n :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["nkey"]);
+			break;
+		case SDLK_o :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["okey"]);
+			break;
+		case SDLK_p :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["pkey"]);
+			break;
+		case SDLK_q :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["qkey"]);
+			break;
+		case SDLK_r :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["rkey"]);
+			break;
+		case SDLK_s :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["skey"]);
+			break;
+		case SDLK_t :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["tkey"]);
+			break;
+		case SDLK_u :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["ukey"]);
+			break;
+		case SDLK_v :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["vkey"]);
+			break;
+		case SDLK_w :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["wkey"]);
+			break;
+		case SDLK_x :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["xkey"]);
+			break;
+		case SDLK_y :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["ykey"]);
+			break;
+		case SDLK_z :
+			if(pressed)
+				perform_action(globalContainer->settings.editor_keyboard_shortcuts["zkey"]);
+			break;
+		default:
+		break;
+	}
 }
 
 
 
 void MapEdit::perform_action(const std::string& action)
 {
+	if(action.find("&")!=std::string::npos)
+	{
+		int pos=action.find("&");
+		perform_action(action.substr(0, pos));
+		perform_action(action.substr(pos+1, action.size()-pos-1));
+	}
 	if (action=="scroll left")
 	{
 		xspeed=-1;
@@ -1265,7 +1418,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action.substr(0, 29)=="set place building selection ")
 	{
-		std::string type=action.substr(29, action.size());
+		std::string type=action.substr(29, action.size()-29);
 		selectionName=type;
 		selectionMode=PlaceBuilding;
 	}
@@ -1378,6 +1531,20 @@ void MapEdit::perform_action(const std::string& action)
 		delete loadsavescreen;
 		showing_save=false;
 		loadsavescreen=NULL;
+	}
+	else if(action=="open script editor")
+	{
+		perform_action("unselect");
+		perform_action("scroll horizontal stop");
+		perform_action("scroll vertical stop");
+		script_editor=new ScriptEditorScreen(&game.script, &game);
+		showingScriptEditor=true;
+	}
+	else if(action=="close script editor")
+	{
+		delete script_editor;
+		showingScriptEditor=false;
+		script_editor=NULL;
 	}
 	else if(action=="select forbidden zone")
 	{
@@ -1515,7 +1682,7 @@ void MapEdit::perform_action(const std::string& action)
 	else if(action.substr(0, 11)=="click team ")
 	{
 		std::stringstream str;
-		str<<action.substr(11, action.size());
+		str<<action.substr(11, action.size()-11);
 		unsigned int n;
 		str>>n;
 		selector_positions[n]++;
@@ -1641,6 +1808,11 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				perform_action("open save screen");
 			}
 			break;
+			case MapEditMenuScreen::OPEN_SCRIPT_EDITOR:
+			{
+				perform_action("close menu screen");
+				perform_action("open script editor");
+			}
 			case MapEditMenuScreen::RETURN_EDITOR:
 			{
 				perform_action("close menu screen");
@@ -1685,6 +1857,18 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case LoadSaveScreen::CANCEL:
 			{
 				perform_action("close save screen");
+			}
+		}
+	}
+	if(showingScriptEditor)
+	{
+		script_editor->translateAndProcessEvent(&event);
+		switch(script_editor->endValue)
+		{
+			case ScriptEditorScreen::OK:
+			case ScriptEditorScreen::CANCEL:
+			{
+				perform_action("close script editor");
 			}
 		}
 	}
@@ -1962,12 +2146,13 @@ void MapEdit::handleTerrainClick(int mx, int my)
 }
 
 
-MapEditMenuScreen::MapEditMenuScreen() : OverlayScreen(globalContainer->gfx, 320, 210)
+MapEditMenuScreen::MapEditMenuScreen() : OverlayScreen(globalContainer->gfx, 320, 260)
 {
 	addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[load map]"), LOAD_MAP));
 	addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[save map]"), SAVE_MAP));
-	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[quit the editor]"), QUIT_EDITOR));
-	addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[return to editor]"), RETURN_EDITOR, 27));
+	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[open script editor]"), OPEN_SCRIPT_EDITOR, 27));
+	addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[quit the editor]"), QUIT_EDITOR));
+	addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[return to editor]"), RETURN_EDITOR, 27));
 	dispatchInit();
 }
 
@@ -1976,3 +2161,4 @@ void MapEditMenuScreen::onAction(Widget *source, Action action, int par1, int pa
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 		endValue=par1;
 }
+

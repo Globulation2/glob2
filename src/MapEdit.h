@@ -26,6 +26,7 @@
 #include "GUIBase.h"
 #include "Brush.h"
 #include "GameGUILoadSave.h"
+#include "ScriptEditorScreen.h"
 
 #include <string>
 #include <vector>
@@ -73,6 +74,7 @@ public:
 	{
 		LOAD_MAP,
 		SAVE_MAP,
+		OPEN_SCRIPT_EDITOR,
 		RETURN_EDITOR,
 		QUIT_EDITOR
 	};
@@ -183,9 +185,14 @@ private:
 
 	bool showingMenuScreen;
 	MapEditMenuScreen* menuscreen;
+
 	bool showing_load;
 	bool showing_save;
 	LoadSaveScreen* loadsavescreen;
+
+	bool showingScriptEditor;
+	ScriptEditorScreen* script_editor;
+
 
 	// Brushes
 	enum BrushType
