@@ -86,6 +86,33 @@ void Settings::restoreDefaultShortcuts()
 	keyboard_shortcuts["xkey"]="";
 	keyboard_shortcuts["ykey"]="";
 	keyboard_shortcuts["zkey"]="";
+
+	editor_keyboard_shortcuts["akey"]="";
+	editor_keyboard_shortcuts["bkey"]="";
+	editor_keyboard_shortcuts["ckey"]="";
+	editor_keyboard_shortcuts["dkey"]="";
+	editor_keyboard_shortcuts["ekey"]="";
+	editor_keyboard_shortcuts["fkey"]="";
+	editor_keyboard_shortcuts["gkey"]="";
+	editor_keyboard_shortcuts["hkey"]="";
+	editor_keyboard_shortcuts["ikey"]="";
+	editor_keyboard_shortcuts["jkey"]="";
+	editor_keyboard_shortcuts["kkey"]="";
+	editor_keyboard_shortcuts["lkey"]="";
+	editor_keyboard_shortcuts["mkey"]="";
+	editor_keyboard_shortcuts["nkey"]="";
+	editor_keyboard_shortcuts["okey"]="";
+	editor_keyboard_shortcuts["pkey"]="";
+	editor_keyboard_shortcuts["qkey"]="";
+	editor_keyboard_shortcuts["rkey"]="";
+	editor_keyboard_shortcuts["skey"]="";
+	editor_keyboard_shortcuts["tkey"]="";
+	editor_keyboard_shortcuts["ukey"]="";
+	editor_keyboard_shortcuts["vkey"]="";
+	editor_keyboard_shortcuts["wkey"]="";
+	editor_keyboard_shortcuts["xkey"]="";
+	editor_keyboard_shortcuts["ykey"]="";
+	editor_keyboard_shortcuts["zkey"]="";
 }
 
 
@@ -145,8 +172,13 @@ void Settings::load(const char *filename)
 
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{
-			if(parsed.find(i->first)!=parsed.end())
-				i->second=parsed[i->first];
+			if(parsed.find("game_"+i->first)!=parsed.end())
+				i->second=parsed["game_"+i->first];
+		}
+		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
+		{
+			if(parsed.find("editor_"+i->first)!=parsed.end())
+				i->second=parsed["editor_"+i->first];
 		}
 	}
 	delete stream;
@@ -199,7 +231,11 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "exploreflagUnit=%d\n", exploreflagUnit);
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{
-			Utilities::streamprintf(stream, "%s=%s\n", i->first.c_str(), i->second.c_str());
+			Utilities::streamprintf(stream, "game_%s=%s\n", i->first.c_str(), i->second.c_str());
+		}
+		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
+		{
+			Utilities::streamprintf(stream, "editor_%s=%s\n", i->first.c_str(), i->second.c_str());
 		}
 	}
 	delete stream;
