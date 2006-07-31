@@ -1233,7 +1233,7 @@ void Game::addTeam(int pos)
 		teams[pos]->race.load();
 		teams[pos]->setCorrectMasks();
 
-		session.numberOfTeam++;
+		pos=++session.numberOfTeam;
 		for (int i=0; i<pos; i++)
 			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
 		
