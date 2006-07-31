@@ -119,11 +119,31 @@ void Sector::step(void)
 		else
 		{
 			Uint16 gid = map->getGroundUnit(bullet->targetX, bullet->targetY);
+			Uint16 airgid = map->getAirUnit(bullet->targetX, bullet->targetY);
 			if (gid != NOGUID)
 			{
 				// we have hit a unit
 				int team = Unit::GIDtoTeam(gid);
 				int id = Unit::GIDtoID(gid);
+				
+				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid, team);
+				if (bullet->revealW > 0 && bullet->revealH > 0)
+					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
+				
+				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor();
+				if (degats <= 0)
+					degats = 1;
+				game->teams[team]->myUnits[id]->hp -= degats;
+			}
+			//following maybe should be merged into the above?
+			else if (airgid != NOGUID)
+			{
+				// we have hit an air unit
+				// yes, it hits ground units, then air units, then buildings
+				// totally illogical, but matches the preference of guard towers
+				// (ugh, hard-coded preference...)
+				int team = Unit::GIDtoTeam(airgid);
+				int id = Unit::GIDtoID(airgid);
 				
 				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid, team);
 				if (bullet->revealW > 0 && bullet->revealH > 0)

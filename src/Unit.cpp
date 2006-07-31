@@ -24,6 +24,9 @@
 #include "Team.h"
 #include "Map.h"
 #include "Game.h"
+
+#include "Building.h"
+
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
@@ -1730,6 +1733,24 @@ void Unit::handleDisplacement(void)
 	}
 }
 
+bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
+{
+	//TODO: totally fix this totally hacky implementation.
+	for(int i=0;i<32;i++)
+	{
+		Team *t = owner->game->teams[i];
+		if((t)&&(owner->enemies & t->me))
+		{
+			for(int j=0;j<1024;j++)
+			{
+				Building *b = t->myBuildings[j];
+				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,posX,posY) <= b->type->shootingRange + 1))return true;
+			}
+		}
+	}
+	return false;
+}
+
 void Unit::handleMovement(void)
 {
 	// clearArea code, override behaviour locally
@@ -1811,7 +1832,11 @@ void Unit::handleMovement(void)
 				const int dyTab[8] = {-2, -4, -4, -2, +2, +4, +4, +2};
 				int tab[8];
 				for (int i = 0; i < 8; i++)
+				{
 					tab[i] = owner->map->getExplored(posX + dxTab[i], posY + dyTab[i], owner->teamNumber);
+					//also move around enemy towers:
+					if(locationIsInEnemyGuardTowerRange(posX + dxTab[i], posY + dyTab[i]))tab[i]=1;
+				}
 				//printf("tab ");
 				//for (int i = 0; i < 8; i++)
 				//	printf("%3d; ", tab[i]);
@@ -2237,8 +2262,13 @@ void Unit::handleAction(void)
 		{
 			assert(performance[FLY]);
 			owner->map->setAirUnit(posX, posY, NOGUID);
-			dx=-1+syncRand()%3;
-			dy=-1+syncRand()%3;
+			for(int q = 0; q < 5; ++q) //hack - look for a direction safe from guard towers
+			{
+				dx=-1+syncRand()%3;
+				dy=-1+syncRand()%3;
+				if(locationIsInEnemyGuardTowerRange(posX + dx, posY + dy))continue;
+				else break;
+			}
 			directionFromDxDy();
 			setNewValidDirectionAir();
 			posX=(posX+dx)&(owner->map->getMaskW());

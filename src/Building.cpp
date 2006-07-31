@@ -1876,6 +1876,7 @@ void Building::turretStep(void)
 		TARGETTYPE_BUILDING,
 		TARGETTYPE_WORKER,
 		TARGETTYPE_WARRIOR,
+		TARGETTYPE_EXPLORER,
 	};
 	// The type of the best target we have found up to now
 	TargetType targetFound = TARGETTYPE_NONE;
@@ -1936,6 +1937,7 @@ void Building::turretStep(void)
 					break;
 				}
 				int targetGUID = map->getGroundUnit(targetX, targetY);
+				int airTargetGUID = map->getAirUnit(targetX, targetY);
 				if (targetGUID != NOGUID)
 				{
 					Sint32 otherTeam = Unit::GIDtoTeam(targetGUID);
@@ -1995,6 +1997,40 @@ void Building::turretStep(void)
 						}
 					}
 				}
+				//otherwise we shoot explorers - only after workers and warriors, for no particular reason
+				//(this maybe should be changed?)
+				//(this bit maybe should be merged into the above bit, due to being so similar?)
+				//(or made into a function?)
+				if (airTargetGUID != NOGUID && targetFound == TARGETTYPE_NONE)
+				{
+					Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
+					Sint32 targetID = Unit::GIDtoID(airTargetGUID);
+					Uint32 otherTeamMask = 1<<otherTeam;
+					if (enemies & otherTeamMask)
+					{
+						Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
+						if ((owner->sharedVisionExchange & otherTeamMask) == 0)
+						{
+							int targetTicks = (256 - testUnit->delta) / testUnit->speed;
+							// skip this unit if it will move away too soon.
+							if (targetTicks <= ticksToHit)
+								continue;
+							//Using simple calculation for now (should always shoot ground-attackers first, probably)
+							// adjust score for range
+							int targetScore = - testUnit->hp;
+							// lower scores are overriden
+							if (targetScore > bestScore)
+							{
+								bestScore = targetScore;
+								bestTicks = targetTicks;
+								bestTargetX = targetX;
+								bestTargetY = targetY;
+								targetFound = TARGETTYPE_EXPLORER;
+							}
+						}
+					}
+				}
+
 				// shoot building only if no unit is found
 				if (targetFound == TARGETTYPE_NONE)
 				{
@@ -2023,6 +2059,7 @@ void Building::turretStep(void)
 		}
 		if (targetFound == TARGETTYPE_WARRIOR)
 			break;
+		//logic for this? well, we've found a good warrior to shoot at already, and they take priority...
 	}
 
 	if (targetFound != TARGETTYPE_NONE)

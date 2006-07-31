@@ -179,6 +179,8 @@ protected:
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
 	void defaultSkinNameFromType(void);
+
+	bool locationIsInEnemyGuardTowerRange(int x, int y)const;
 	
 public:
 	
