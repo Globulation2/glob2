@@ -208,7 +208,7 @@ int MapEdit::run(void)
 		viewportX&=game.map.getMaskW();
 		viewportY&=game.map.getMaskH();
 
-		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getW(), true, true);
+		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
 		drawMiniMap();
 		drawMenu();
 		if(showingMenuScreen)
