@@ -78,7 +78,7 @@ public:
 	Sint32 bootX[32];
 	Sint32 bootY[32];
 public:
-	enum {DATA_SIZE=84+MAX_NB_RESSOURCES*4};
+	enum {DATA_SIZE=96+MAX_NB_RESSOURCES*4};
 protected:
 	//! Serialized form of MapGenerationDescriptor
 	Uint8 data[DATA_SIZE];

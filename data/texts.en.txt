@@ -202,6 +202,8 @@ Open Script Editor
 Return to the editor
 [quit the editor]
 Quit the editor
+[delete]
+Delete Objects
 [ok]
 Ok
 [Cancel]

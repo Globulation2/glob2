@@ -66,7 +66,7 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 
 Uint8 *MapGenerationDescriptor::getData()
 {
-	assert(DATA_SIZE==92+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==96+MAX_NB_RESSOURCES*4);
 	
 	addSint32(data, wDec, 0);
 	addSint32(data, hDec, 4);
@@ -108,7 +108,7 @@ Uint8 *MapGenerationDescriptor::getData()
 
 bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 {
-	assert(DATA_SIZE==92+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==96+MAX_NB_RESSOURCES*4);
 	assert(getDataLength()==DATA_SIZE);
 	assert(getDataLength()==dataLength);
 	

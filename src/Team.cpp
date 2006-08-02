@@ -1140,8 +1140,8 @@ Building *Team::findBestFillable(Unit *unit)
 	}
 
 	//printf(" allForeignSendRessourceMask=%d, allForeignReceiveRessourceMask=%d\n", allForeignSendRessourceMask, allForeignReceiveRessourceMask);
-	if (allForeignSendRessourceMask==0 || allForeignReceiveRessourceMask==0)
-		return NULL;
+//	if (allForeignSendRessourceMask==0 || allForeignReceiveRessourceMask==0)
+//		return NULL;
 
 	// We compute all what's available from our own ressources: (mask)
 	Uint32 allOwnSendRessourceMask=0;
@@ -1162,8 +1162,8 @@ Building *Team::findBestFillable(Unit *unit)
 	}
 
 	//printf(" allOwnSendRessourceMask=%d, allOwnReceiveRessourceMask=%d\n", allOwnSendRessourceMask, allOwnReceiveRessourceMask);
-	if ((allForeignSendRessourceMask & allOwnReceiveRessourceMask)==0 || (allForeignReceiveRessourceMask & allOwnSendRessourceMask)==0)
-		return NULL;
+//	if ((allForeignSendRessourceMask & allOwnReceiveRessourceMask)==0 || (allForeignReceiveRessourceMask & allOwnSendRessourceMask)==0)
+//		return NULL;
 
 	choosen=NULL;
 	bestScore=INT_MAX;
@@ -1188,25 +1188,25 @@ Building *Team::findBestFillable(Unit *unit)
 						Sint32 missingUnitsToWork=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 						int foreignBuildingDist;
 						if (missingUnitsToWork
-					&& (sendRessourceMask & foreignReceiveRessourceMask)
-					&& (receiveRessourceMask & foreignSendRessourceMask)
-					&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
-					&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
-				{
-					Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/missingUnitsToWork;
-					if (newScore<bestScore)
-					{
-						choosen=*bi;
-						bestScore=newScore;
-						assert(choosen);
-						unit->ownExchangeBuilding=*bi;
-						unit->foreingExchangeBuilding=*fbi;
-						unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
-						fprintf(logFile, "[%d] tdp5 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+							&& (sendRessourceMask & foreignReceiveRessourceMask)
+							&& (receiveRessourceMask & foreignSendRessourceMask)
+							&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
+							&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
+						{
+							Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/missingUnitsToWork;
+							if (newScore<bestScore)
+							{
+								choosen=*bi;
+								bestScore=newScore;
+								assert(choosen);
+								unit->ownExchangeBuilding=*bi;
+								unit->foreingExchangeBuilding=*fbi;
+								unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+								fprintf(logFile, "[%d] tdp5 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+							}
+						}
 					}
 				}
-			}
-		}
 	}
 
 	return choosen;
@@ -1564,6 +1564,13 @@ void Team::syncStep(void)
 
 	bool isEnoughFoodInSwarm=false;
 
+	for (int i=0; i<1024; ++i)
+	{
+		if(myBuildings[i])
+			if(myBuildings[i]->type->useTeamRessources && game->stepCounter%20 == 0)
+				myBuildings[i]->updateCallLists();
+	}
+	
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
 			if (!(*it)->locked[1] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)

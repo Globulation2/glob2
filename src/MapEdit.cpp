@@ -49,6 +49,9 @@ MapEdit::MapEdit() : game(NULL)
 	yspeed=0;
 	mouseX=0;
 	mouseY=0;
+	relMouseX=0;
+	relMouseY=0;
+	wasMinimapRendered=false;
 
 	// load menu
 	menu=Toolkit::getSprite("data/gui/editor");
@@ -84,6 +87,7 @@ MapEdit::MapEdit() : game(NULL)
 	is_dragging_minimap=false;
 	is_dragging_zone=false;
 	is_dragging_terrain=false;
+	is_dragging_delete=false;
 
 	last_placement_x=-1;
 	last_placement_y=-1;
@@ -208,8 +212,18 @@ int MapEdit::run(void)
 		viewportX&=game.map.getMaskW();
 		viewportY&=game.map.getMaskH();
 
+		//special overrides here to allow for scrolling and painting terrain at the same time
+		if(xspeed!=0 || yspeed!=0)
+		{
+			if(is_dragging_zone)
+				perform_action("zone drag motion");
+			else if(is_dragging_terrain)
+				perform_action("terrain drag motion");
+		}
+
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
 		drawMiniMap();
+		wasMinimapRendered=false;
 		drawMenu();
 		if(showingMenuScreen)
 		{
@@ -269,6 +283,8 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 			brush.drawBrush(mouseX, mouseY, (terrainType>Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawUnitOnMap();
+		if(selectionMode==RemoveObject)
+			brush.drawBrush(mouseX, mouseY);
 	}
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
@@ -286,7 +302,11 @@ void MapEdit::drawMiniMap(void)
 
 void MapEdit::renderMiniMap(void)
 {
-	game.renderMiniMap(team, true);
+	if(!wasMinimapRendered)
+	{
+		wasMinimapRendered=true;
+		game.renderMiniMap(team, true);
+	}
 }
 
 
@@ -672,6 +692,7 @@ void MapEdit::disableTerrainView()
 	deactivate_area("cherry tree button");
 	deactivate_area("orange tree button");
 	deactivate_area("prune tree button");
+	deactivate_area("delete objects");
 	deactivate_area("terrain selection");
 }
 
@@ -688,6 +709,7 @@ void MapEdit::enableTerrainView()
 	activate_area("cherry tree button");
 	activate_area("orange tree button");
 	activate_area("prune tree button");
+	activate_area("delete objects");
 	activate_area("terrain selection");
 }
 
@@ -707,10 +729,8 @@ void MapEdit::disableTeamView()
 			str.str("");
 		}
 	}
-	std::stringstream str;
-	str<<count;
-	deactivate_area("add team "+str.str());
-	deactivate_area("remove team "+str.str());
+	deactivate_area("add team");
+	deactivate_area("remove team");
 }
 
 
@@ -728,10 +748,8 @@ void MapEdit::enableTeamView()
 			str.str("");
 		}
 	}
-	std::stringstream str;
-	str<<count;
-	activate_area("add team "+str.str());
-	activate_area("remove team "+str.str());
+	activate_area("add team");
+	activate_area("remove team");
 }
 
 
@@ -906,7 +924,13 @@ void MapEdit::drawTerrainView()
 
 	if(!(selected_x_position==-1))
 		globalContainer->gfx->drawSprite(menuStartW+selected_x_position, selected_y_position, globalContainer->gamegui, 22);
-	brush.draw(menuStartW, 294);
+
+	globalContainer->gfx->drawSprite(menuStartW+8, 294, globalContainer->gamegui, 12);
+	if(selectionMode==RemoveObject)
+		globalContainer->gfx->drawSprite(menuStartW+18, 297, globalContainer->gamegui, 10);
+	globalContainer->gfx->drawString(menuStartW+24, 296, globalContainer->littleFont, Toolkit::getStringTable()->getString("[delete]"));
+
+	brush.draw(menuStartW, 320);
 }
 
 
@@ -926,6 +950,8 @@ void MapEdit::drawTeamView()
 			drawMultipleSelection(xpos+20, nypos+4, team_view_selector_keys, selector_positions[x]);
 		}
 	}
+
+	count=12;
 	globalContainer->gfx->drawFilledRect(xpos, ypos + count*18 + 24, 32, 32, Color(75,0,200));
 	globalContainer->gfx->drawRect(xpos, ypos + count*18 + 24, 32, 32, Color::white);
 	globalContainer->gfx->drawFilledRect(xpos+15, ypos + count*18 + 24 + 2, 2, 28, Color::white);
@@ -1074,7 +1100,8 @@ void MapEdit::register_buttons()
 	add_area("cherry tree button", Rectangle(globalContainer->gfx->getW()-128+0, 248, 32, 32), "select cherry tree", false);
 	add_area("orange tree button", Rectangle(globalContainer->gfx->getW()-128+32, 248, 32, 32), "select orange tree", false);
 	add_area("prune tree button", Rectangle(globalContainer->gfx->getW()-128+64, 248, 32, 32), "select prune tree", false);
-	add_area("terrain selection", Rectangle(globalContainer->gfx->getW()-128, 294, 128, 96), "handle terrain click", false);
+	add_area("delete objects", Rectangle(globalContainer->gfx->getW()-128+8, 294, 112, 16), "select delete objects", false);
+	add_area("terrain selection", Rectangle(globalContainer->gfx->getW()-128, 320, 128, 96), "handle terrain click", false);
 
 	const int xpos=globalContainer->gfx->getW()-128;
 	for(int x=0; x<12; ++x)
@@ -1083,10 +1110,11 @@ void MapEdit::register_buttons()
 		std::stringstream str;
 		str<<x;
 		add_area("select team "+str.str(), Rectangle(xpos+20, ypos, 108, 18), "click team "+str.str(), false);
-		add_area("add team "+str.str(), Rectangle(globalContainer->gfx->getW()-128, ypos+ 24, 32, 32), "add team", false);
-		add_area("remove team "+str.str(), Rectangle(globalContainer->gfx->getW()-128 + 40, ypos+ 24, 32, 32), "remove team", false);
 		str.str("");
 	}
+	const int ypos_team=128 + 40 + 12*18;
+	add_area("add team", Rectangle(globalContainer->gfx->getW()-128, ypos_team+24, 32, 32), "add team", false);
+	add_area("remove team", Rectangle(globalContainer->gfx->getW()-128 + 40, ypos_team+24, 32, 32), "remove team", false);
 
 	for(int n=0; n<12; ++n)
 	{
@@ -1094,7 +1122,7 @@ void MapEdit::register_buttons()
 		const int ypos = globalContainer->gfx->getH()-74 + (n/6)*16;
 		std::stringstream str;
 		str<<n;
-		add_area("select active team "+str.str(), Rectangle(xpos, ypos, 16, 16), "select active team "+str.str(), true);
+		add_area("select active team "+str.str(), Rectangle(xpos, ypos, 16, 16), "select active team "+str.str(), false);
 		str.str("");
 	}
 }
@@ -1117,6 +1145,8 @@ int MapEdit::processEvent(SDL_Event& event)
 	{
 		mouseX=event.motion.x;
 		mouseY=event.motion.y;
+		relMouseX=event.motion.xrel;
+		relMouseY=event.motion.yrel;
 		if(is_dragging_minimap)
 		{
 			if(Rectangle(globalContainer->gfx->getW()-114, 14, 100, 100).is_in(mouseX, mouseY))
@@ -1133,6 +1163,14 @@ int MapEdit::processEvent(SDL_Event& event)
 		{
 			if(Rectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				perform_action("terrain drag motion");
+		}
+		else if(is_scroll_dragging)
+		{
+			perform_action("scroll drag motion");
+		}
+		else if(is_dragging_delete)
+		{
+			perform_action("delete drag motion");
 		}
 		else
 		{
@@ -1177,6 +1215,8 @@ int MapEdit::processEvent(SDL_Event& event)
 				perform_action("terrain drag start");
 			else if(selectionMode==PlaceUnit)
 				perform_action("place unit");
+			else if(selectionMode==RemoveObject)
+				perform_action("delete drag start");
 		}
 		else
 		{
@@ -1185,7 +1225,14 @@ int MapEdit::processEvent(SDL_Event& event)
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_RIGHT)
 	{
-		perform_action("unselect");
+		if(selectionMode!=PlaceNothing)
+			perform_action("unselect");
+		else
+			perform_action("change menu");
+	}
+	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_MIDDLE)
+	{
+		perform_action("scroll drag start");
 	}
 	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_LEFT)
 	{
@@ -1195,6 +1242,13 @@ int MapEdit::processEvent(SDL_Event& event)
 			perform_action("zone drag end");
 		if(is_dragging_terrain)
 			perform_action("terrain drag end");
+		if(is_dragging_delete)
+			perform_action("delete drag end");
+	}
+	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_MIDDLE)
+	{
+		if(is_scroll_dragging)
+			perform_action("scroll drag stop");
 	}
 	else if(event.type==SDL_KEYDOWN)
 	{
@@ -1350,6 +1404,7 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 
 void MapEdit::perform_action(const std::string& action)
 {
+//	std::cout<<action<<std::endl;
 	if(action.find("&")!=std::string::npos)
 	{
 		int pos=action.find("&");
@@ -1379,6 +1434,21 @@ void MapEdit::perform_action(const std::string& action)
 	else if(action=="scroll vertical stop")
 	{
 		yspeed=0;
+	}
+	else if(action=="scroll drag start")
+	{
+		is_scroll_dragging=true;
+	}
+	else if(action=="scroll drag motion")
+	{
+		viewportX+=relMouseX;
+		viewportY+=relMouseY;
+		viewportX&=game.map.getMaskW();
+		viewportY&=game.map.getMaskH();
+	}
+	else if(action=="scroll drag stop")
+	{
+		is_scroll_dragging=false;
 	}
 	else if(action=="switch to building view")
 	{
@@ -1418,6 +1488,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action.substr(0, 29)=="set place building selection ")
 	{
+		perform_action("unselect");
 		std::string type=action.substr(29, action.size()-29);
 		selectionName=type;
 		selectionMode=PlaceBuilding;
@@ -1430,6 +1501,17 @@ void MapEdit::perform_action(const std::string& action)
 		brushType=NoBrush;
 		terrainType=NoTerrain;
 		selectedUnit=NoUnit;
+	}
+	else if(action=="change menu")
+	{
+		if(panelmode==AddBuildings)
+			perform_action("switch to flag view");
+		else if(panelmode==AddFlagsAndZones)
+			perform_action("switch to terrain view");
+		else if(panelmode==Terrain)
+			perform_action("switch to teams view");
+		else if(panelmode==Teams)
+			perform_action("switch to building view");
 	}
 	else if(action=="minimap drag start")
 	{
@@ -1476,6 +1558,7 @@ void MapEdit::perform_action(const std::string& action)
 			}
 			game.regenerateDiscoveryMap();
 			hasMapBeenModified = true;
+			renderMiniMap();
 		}
 	}
 	else if(action=="switch to building level 1")
@@ -1548,6 +1631,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select forbidden zone")
 	{
+		perform_action("unselect");
 		brushType = ForbiddenBrush;
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1555,6 +1639,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select clearing zone")
 	{
+		perform_action("unselect");
 		brushType = ClearAreaBrush;
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1562,6 +1647,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select guard zone")
 	{
+		perform_action("unselect");
 		brushType = GuardAreaBrush;
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1569,9 +1655,10 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="handle zone click")
 	{
-		if(brushType==NoBrush)
-			brushType=ForbiddenBrush;
+		perform_action("unselect");
 		brush.handleClick(mouseX-globalContainer->gfx->getW()+128, mouseY-256);
+		if(brushType==NoBrush)
+			perform_action("select forbidden zone");
 	}
 	else if(action=="zone drag start")
 	{
@@ -1590,6 +1677,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select grass")
 	{
+		perform_action("unselect");
 		terrainType=Grass;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1597,6 +1685,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select sand")
 	{
+		perform_action("unselect");
 		terrainType=Sand;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1604,6 +1693,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select water")
 	{
+		perform_action("unselect");
 		terrainType=Water;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1611,6 +1701,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select wheat")
 	{
+		perform_action("unselect");
 		terrainType=Wheat;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1618,6 +1709,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select trees")
 	{
+		perform_action("unselect");
 		terrainType=Trees;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1625,6 +1717,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select stone")
 	{
+		perform_action("unselect");
 		terrainType=Stone;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1632,6 +1725,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select algae")
 	{
+		perform_action("unselect");
 		terrainType=Algae;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1639,6 +1733,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select cherry tree")
 	{
+		perform_action("unselect");
 		terrainType=CherryTree;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1646,6 +1741,7 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select orange tree")
 	{
+		perform_action("unselect");
 		terrainType=OrangeTree;
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
@@ -1653,16 +1749,25 @@ void MapEdit::perform_action(const std::string& action)
 	}
 	else if(action=="select prune tree")
 	{
+		perform_action("unselect");
 		terrainType=PruneTree;
 		selectionMode=PlaceTerrain;
+		if (brush.getType() == BrushTool::MODE_NONE)
+			brush.defaultSelection();
+	}
+	else if(action=="select delete objects")
+	{
+		perform_action("unselect");
+		selectionMode=RemoveObject;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
 	}
 	else if(action=="handle terrain click")
 	{
 		if(terrainType==NoTerrain)
-			terrainType=Grass;
-		brush.handleClick(mouseX-globalContainer->gfx->getW()+128, mouseY-294);
+			perform_action("select grass");
+		brush.handleClick(mouseX-globalContainer->gfx->getW()+128, mouseY-320);
+		renderMiniMap();
 	}
 	else if(action=="terrain drag start")
 	{
@@ -1676,6 +1781,21 @@ void MapEdit::perform_action(const std::string& action)
 	else if(action=="terrain drag end")
 	{
 		is_dragging_terrain=false;
+		last_placement_x=-1;
+		last_placement_y=-1;
+	}
+	else if(action=="delete drag start")
+	{
+		is_dragging_delete=true;
+		handleDeleteClick(mouseX, mouseY);
+	}
+	else if(action=="delete drag motion")
+	{
+		handleDeleteClick(mouseX, mouseY);
+	}
+	else if(action=="delete drag end")
+	{
+		is_dragging_delete=false;
 		last_placement_x=-1;
 		last_placement_y=-1;
 	}
@@ -1702,7 +1822,11 @@ void MapEdit::perform_action(const std::string& action)
 	{
 		disableTeamView();
 		if(game.session.numberOfTeam > 1)
+		{
+			if(team==game.session.numberOfTeam-1)
+				team-=1;
 			game.removeTeam();
+		}
 		enableTeamView();
 	}
 	else if(action.substr(0, 19)=="select active team ")
@@ -1780,8 +1904,9 @@ void MapEdit::perform_action(const std::string& action)
 			}
 			game.regenerateDiscoveryMap();
 		}
+		renderMiniMap();
 	}
-	if(action=="quit editor")
+	else if(action=="quit editor")
 	{
 		do_quit=true;
 	}
@@ -2143,7 +2268,48 @@ void MapEdit::handleTerrainClick(int mx, int my)
 		assert(false);
 	last_placement_x=mapX;
 	last_placement_y=mapY;
+	renderMiniMap();
 }
+
+
+
+void MapEdit::handleDeleteClick(int mx, int my)
+{
+	int mapX, mapY;
+	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
+	if(last_placement_x==mapX && last_placement_y==mapY)
+		return;
+	int fig = brush.getFigure();
+	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	// we get coordinates
+	int startX = mapX-BrushTool::getBrushDimX(fig);
+	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int width  = BrushTool::getBrushWidth(fig);
+	int height = BrushTool::getBrushHeight(fig);
+	// we update local values
+	if (brush.getType() == BrushTool::MODE_ADD)
+	{
+		for (int y=startY; y<startY+height; y++)
+			for (int x=startX; x<startX+width; x++)
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				{
+					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
+				}
+	}
+	else if (brush.getType() == BrushTool::MODE_DEL)
+	{
+		for (int y=startY; y<startY+height; y++)
+			for (int x=startX; x<startX+width; x++)
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				{
+					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
+				}
+	}
+	last_placement_x=mapX;
+	last_placement_y=mapY;
+	renderMiniMap();
+}
+
 
 
 MapEditMenuScreen::MapEditMenuScreen() : OverlayScreen(globalContainer->gfx, 320, 260)

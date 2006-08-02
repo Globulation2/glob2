@@ -746,12 +746,12 @@ namespace Nicowar
 			struct GradientPoll
 			{
 				GradientPoll() : is_null(true) {}
-				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, float weight) : is_null(false), source(source), obstacle(obstacle), weight(weight), min_dist(-1), max_dist(-1) {}
+				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, int weight) : is_null(false), source(source), obstacle(obstacle), weight(weight), min_dist(-1), max_dist(-1) {}
 				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, int minimum_distance, int maximum_distance) : is_null(false), source(source), obstacle(obstacle), weight(1), min_dist(minimum_distance), max_dist(maximum_distance) {}
  				bool is_null;
 				Gradient::Sources source;
 				Gradient::Obstacles obstacle;
-				float weight;
+				int weight;
 				int min_dist;
 				int max_dist;
 			};
@@ -1342,17 +1342,17 @@ namespace Nicowar
 	const unsigned MAXIMUM_DISTANCE_TO_BUILDING=8;
 	typedef DistributedNewConstructionManager::GradientPoll GradientPoll;
 	const GradientPoll CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][CONSTRUCTOR_FACTORS_COUNT] = 
-		{{	GradientPoll(Gradient::Wheat, Gradient::None, 2),
-			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
-			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //swarm
+		{{	GradientPoll(Gradient::Wheat, Gradient::None, 4),
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1)}, //swarm
 
-		 {	GradientPoll(Gradient::Wheat, Gradient::None, 2), 
-			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
-			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //inn
+		 {	GradientPoll(Gradient::Wheat, Gradient::None, 4), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1)}, //inn
 
-		 {	GradientPoll(Gradient::Wood, Gradient::None, 1), 
-			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
-			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //hospital
+		 {	GradientPoll(Gradient::Wood, Gradient::None, 2), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1)}, //hospital
 
 		 {	GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1), 
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
@@ -1362,9 +1362,9 @@ namespace Nicowar
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
 			GradientPoll()}, //swimming pool
 
-		 {	GradientPoll(Gradient::Stone, Gradient::None, 2), 
-			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 1), 
-			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 0.5)}, //barracks
+		 {	GradientPoll(Gradient::Stone, Gradient::None, 4), 
+			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
+			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1)}, //barracks
 
 		 {	GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1), 
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
