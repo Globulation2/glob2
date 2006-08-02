@@ -131,12 +131,17 @@ private:
 	void perform_action(const std::string& action);
 	void delegateMenu(SDL_Event& event);
 
+	bool wasMinimapRendered;
+
 	int viewportX;
 	int viewportY;
 	int xspeed;
 	int yspeed;
 	int mouseX;
 	int mouseY;
+	int relMouseX;
+	int relMouseY;
+	bool is_scroll_dragging;
 
 	bool hasMapBeenModified;
 	int team;
@@ -168,6 +173,7 @@ private:
 		PlaceZone,
 		PlaceTerrain,
 		PlaceUnit,
+		RemoveObject,
 	} selectionMode;
 
 	std::map<std::string, boost::tuple<Rectangle, std::string, bool, bool> > button_areas;
@@ -224,6 +230,8 @@ private:
 	} terrainType;
 	void handleTerrainClick(int mx, int my);
 	bool is_dragging_terrain;
+	void handleDeleteClick(int mx, int my);
+	bool is_dragging_delete;
 
 	std::vector<std::string> team_view_selector_keys;
 	std::vector<unsigned int> selector_positions;

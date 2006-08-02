@@ -107,13 +107,14 @@ void MapPreview::setMapThumbnail(const char *mapName)
 		// if randomly generated
 		if (session.mapGenerationDescriptor)
 		{
-			randomGenerated = true;
+			//std::cout<<"generated"<<std::endl;
+			//randomGenerated = true;
 			// TODO : uses mapGenerationDescriptor to generate map here
-			lastW = 1<<session.mapGenerationDescriptor->wDec;
-			lastH = 1<<session.mapGenerationDescriptor->hDec;
-			lastRandomGenerationMethode = session.mapGenerationDescriptor->methode;
-			delete stream;
-			return;
+			//lastW = 1<<session.mapGenerationDescriptor->wDec;
+			//lastH = 1<<session.mapGenerationDescriptor->hDec;
+			//lastRandomGenerationMethode = session.mapGenerationDescriptor->methode;
+			//delete stream;
+			//return;
 		}
 		
 		// read map

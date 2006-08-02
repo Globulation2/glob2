@@ -118,9 +118,12 @@ public:
 	Sint32 minLevelToFlagLocal;
 
 	// Building specific :
-	/// Ammount stocked, or used for building building.
-	Sint32 ressources[MAX_NB_RESSOURCES];
+	/// Ammount stocked, or used for building building. Local ressources stores the ressources this particular building contains
+	/// in the event that the building type designates using global ressources instead of local ressources, the ressources pointer
+	/// will be changed to point to the global ressources Team::teamRessources instead of localRessources.
+	Sint32* ressources;
 	Sint32 wishedResources[MAX_NB_RESSOURCES];
+	Sint32 localRessource[MAX_NB_RESSOURCES];
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
@@ -206,6 +209,8 @@ public:
 	void clearingFlagsStep(void);
 	void kill(void);
 
+	void updateRessourcesPointer();
+	
 	int getMidX(void);
 	int getMidY(void);
 	int getMaxUnitStayRange(void);

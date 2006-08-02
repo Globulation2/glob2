@@ -1389,7 +1389,7 @@ fillable 1
 canExchange 1
 useTeamRessources 1
 maxFruit0 200
-maxFruit1 20
+maxFruit1 200
 maxFruit2 200
 maxUnitWorking 1
 

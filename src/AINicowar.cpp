@@ -32,7 +32,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "Brush.h"
 #include <iostream>
 #include <sstream>
-#include <boost/rational.hpp>
 #include <iomanip>
 
 using namespace Nicowar;
@@ -1760,7 +1759,7 @@ bool PrioritizedBuildingAttack::attack()
 		average_unit_strength_level+=ai.team->stats.getLatestStat()->upgradeState[ATTACK_STRENGTH][i]*(i+1);
 	}
 	if(total>0)
-		average_unit_strength_level=static_cast<unsigned int>(std::floor(static_cast<float>(average_unit_strength_level)/static_cast<float>(total)+0.5))-1;
+		average_unit_strength_level=static_cast<unsigned int>(average_unit_strength_level/total)-1;
 
 	unsigned int strength_level=USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level;
 
@@ -1986,7 +1985,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 		average_unit_strength_level+=ai.team->stats.getLatestStat()->upgradeState[ATTACK_STRENGTH][i]*(i+1);
 	}
 	if(total>0)
-		average_unit_strength_level=static_cast<unsigned int>(std::floor(static_cast<float>(average_unit_strength_level)/static_cast<float>(total)+0.5))-1;
+		average_unit_strength_level=static_cast<unsigned int>(average_unit_strength_level/total)-1;
 	unsigned int strength_level=USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level;
 
 	//Get the number of available units, and go though the record, modifying the number of units assigned to each as
@@ -2202,7 +2201,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 				continue;
 			if(ai.getGradientManager().getGradient(Gradient::VillageCenter, Gradient::Resource).getHeight(x, y)<=0)
 				continue;
-			float score=0;
+			unsigned int score=0;
 			bool failed=false;
 			for(unsigned int factor=0; factor<CONSTRUCTOR_FACTORS_COUNT; ++factor)
 			{
@@ -2210,7 +2209,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 				{
 					const unsigned source=CONSTRUCTION_FACTORS[building_type][factor].source;
 					const unsigned obstacle=CONSTRUCTION_FACTORS[building_type][factor].obstacle;
-					const float weight = CONSTRUCTION_FACTORS[building_type][factor].weight;
+					const int weight = CONSTRUCTION_FACTORS[building_type][factor].weight;
 					const int min_dist = CONSTRUCTION_FACTORS[building_type][factor].min_dist;
 					const int max_dist = CONSTRUCTION_FACTORS[building_type][factor].max_dist;
 					const Gradient& gradient = ai.getGradientManager().getGradient(source, obstacle);
@@ -2250,10 +2249,10 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
 					else
 					{
 						///Get the scores of each of the four corners of the building
-						score+=static_cast<float>(top_left)*weight;
-						score+=static_cast<float>(top_right)*weight;
-						score+=static_cast<float>(bottom_left)*weight;
-						score+=static_cast<float>(bottom_right)*weight;
+						score+=top_left*weight;
+						score+=top_right*weight;
+						score+=bottom_left*weight;
+						score+=bottom_right*weight;
 					}
 				}
 			}
@@ -2371,7 +2370,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 		if(num_buildings_wanted[i]==0)
 			tp.percent=100;
 		else
-			tp.percent=static_cast<unsigned int>(static_cast<float>(counts[i])/static_cast<float>(num_buildings_wanted[i])*100);
+			tp.percent=static_cast<unsigned int>((counts[i]*100)/num_buildings_wanted[i]);
 		construction_priorities.push_back(tp);
 	}
 	std::sort(construction_priorities.begin(), construction_priorities.end());
@@ -3625,9 +3624,9 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	}
 
 	int max=*std::max_element(ratios, ratios+NB_UNIT_TYPE);
-	float devisor=1;
+	int devisor=1;
 	if(max>16)
-		devisor=static_cast<float>(max)/16.0;
+		devisor=max/16;
 
 	for(unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; ++i)
 	{
@@ -4080,7 +4079,7 @@ bool BuildingClearer::removeOldPadding()
 				{
 					if(static_cast<int>(y)==ai.map->getH())
 						y=0;
-					if(ai.map->isClearAreaLocal(x,y))
+					if(ai.map->isClearArea(x, y, ai.team->me))
 					{
 						acc.applyBrush(ai.map, BrushApplication(x,y,0));
 					}
@@ -4133,7 +4132,7 @@ bool BuildingClearer::updateClearingAreas()
 					{
 						if(static_cast<int>(y)==ai.map->getH())
 							y=0;
-						if(!ai.map->isClearAreaLocal(x,y))
+						if(!ai.map->isClearArea(x,y, ai.team->me))
 						{
 							acc.applyBrush(ai.map, BrushApplication(x, y, 0));
 						}
@@ -4222,7 +4221,7 @@ bool HappinessHandler::adjustAlliances()
 	{
 		total_happiness+=ai.team->stats.getLatestStat()->happiness[i]*i;
 	}
-	float average_happiness=static_cast<float>(total_happiness)/static_cast<float>(total_units);
+	int average_happiness=total_happiness/total_units;
 
 	for(unsigned int i=0;  i<32; ++i)
 	{
@@ -4242,7 +4241,7 @@ bool HappinessHandler::adjustAlliances()
 				{
 					enemy_happiness+=t->stats.getLatestStat()->happiness[i]*i;
 				}
-				float enemy_average_happiness=static_cast<float>(enemy_happiness)/static_cast<float>(enemy_units);
+				int enemy_average_happiness=enemy_happiness/enemy_units;
 				if(average_happiness>enemy_average_happiness)
 				{
 					food_mask=food_mask|t->me;
@@ -4552,7 +4551,7 @@ bool Farmer::updateFarm()
 				(x%6<4 && y%3==0) && FARMING_METHOD==Row4 ||
 				(x%3==0 && y%6<4) && FARMING_METHOD==Column4)
 			{
-				if((!ai.map->isRessourceTakeable(x, y, WOOD) && !ai.map->isRessourceTakeable(x, y, CORN)) || ai.map->isClearAreaLocal(x, y))
+				if((!ai.map->isRessourceTakeable(x, y, WOOD) && !ai.map->isRessourceTakeable(x, y, CORN)) || ai.map->isClearArea(x, y, ai.team->me))
 				{
 					if(resources.find(point(x, y))!=resources.end())
 					{

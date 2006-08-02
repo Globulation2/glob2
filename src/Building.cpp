@@ -101,12 +101,14 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	
 	// building specific :
 	for(int i=0; i<MAX_NB_RESSOURCES; i++)
-		ressources[i]=0;
+		localRessource[i]=0;
+	updateRessourcesPointer();
 
 	// quality parameters
 	hp=type->hpInit; // (Uint16)
 
 	// prefered parameters
+
 	productionTimeout=type->unitProductionTime;
 
 	totalRatio=0;
@@ -239,8 +241,8 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 	{
 		std::ostringstream oss;
-		oss << "ressources[" << i << "]";
-		ressources[i] = stream->readSint32(oss.str().c_str());
+		oss << "localRessource[" << i << "]";
+		localRessource[i] = stream->readSint32(oss.str().c_str());
 	}
 
 	// quality parameters
@@ -280,6 +282,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	typeNum = stream->readSint32("typeNum");
 	type = types->get(typeNum);
 	assert(type);
+	updateRessourcesPointer();
 	
 	// reload data from type
 	shortTypeNum = type->shortTypeNum;
@@ -353,8 +356,8 @@ void Building::save(GAGCore::OutputStream *stream)
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 	{
 		std::ostringstream oss;
-		oss << "ressources[" << i << "]";
-		stream->writeSint32(ressources[i], oss.str().c_str());
+		oss << "localRessource[" << i << "]";
+		stream->writeSint32(localRessource[i], oss.str().c_str());
 	}
 
 	// quality parameters
@@ -526,9 +529,11 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 
 bool Building::isRessourceFull(void)
 {
-	for (int i=0; i<BASIC_COUNT; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	{
 		if (ressources[i]+type->multiplierRessource[i]<=type->maxRessource[i])
 			return false;
+	}
 	return true;
 }
 
@@ -701,6 +706,9 @@ void Building::cancelConstruction(void)
 	type=recoverType;
 	owner->prestige+=type->prestige;
 	owner->addToStaticAbilitiesLists(this);
+
+	//Update the pointer ressources to the newly changed type
+	updateRessourcesPointer();
 	
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
@@ -1080,6 +1088,10 @@ void Building::updateBuildingSite(void)
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
 
+		//Update the pointer ressources to the newly changed type
+		updateRessourcesPointer();
+	
+
 		// we don't need any worker any more
 
 		// Notice that we could avoid freeing thoses units,
@@ -1219,6 +1231,9 @@ bool Building::tryToBuildingSiteRoom(void)
 		type=targetBt;
 		owner->prestige+=type->prestige;
 
+		//Update the pointer ressources to the newly changed type
+		updateRessourcesPointer();
+	
 		buildingState=ALIVE;
 		owner->addToStaticAbilitiesLists(this);
 		
@@ -2209,6 +2224,22 @@ void Building::kill(void)
 	owner->buildingsToBeDestroyed.push_front(this);
 }
 
+
+
+void Building::updateRessourcesPointer()
+{
+	if(!type->useTeamRessources)
+	{
+		ressources=localRessource;
+	}
+	else
+	{
+		ressources=owner->teamRessources;
+	}
+}
+
+
+
 int Building::getMidX(void)
 {
 	return ((posX-type->decLeft)&owner->map->getMaskW());
@@ -2549,7 +2580,7 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		checkSumsVector->push_back(cs);// [9]
 
 	for (int i=0; i<MAX_RESSOURCES; i++)
-		cs^=ressources[i];
+		cs^=localRessource[i];
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [10]
 	cs=(cs<<31)|(cs>>1);

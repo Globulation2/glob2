@@ -240,7 +240,7 @@ NewMapScreen::NewMapScreen()
 	stoneText=new Text(480, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[stone]"));
 	stoneText->visible=false;
 	addWidget(stoneText);
-	fruitText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("fruit"));
+	fruitText=new Text(480, 320, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fruit]"));
 	fruitText->visible=false;
 	addWidget(fruitText);
 	riverDiameterText=new Text(480, 340, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[river diameter]"));

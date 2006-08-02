@@ -60,7 +60,7 @@ void EndGameStat::paint(void)
 	if(game->teams[0]->stats.endOfGameStats.size()==0)
 		return;
 	// find maximum
-	int team, maxValue = 1;
+	int team, maxValue = 0;
 	unsigned int pos=0;
 	for (team=0; team < game->session.numberOfTeam; team++)
 		for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
