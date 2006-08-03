@@ -3648,32 +3648,21 @@ void GameGUI::executeOrder(Order *order)
 bool GameGUI::loadBase(const SessionInfo *initial)
 {
 	init();
-	if (initial->mapGenerationDescriptor)
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(initial->getFileName()));
+	if (stream->isEndOfStream())
 	{
-		assert(initial->fileIsAMap);
-		initial->mapGenerationDescriptor->synchronizeNow();
-		if (!game.generateMap(*initial->mapGenerationDescriptor))
-			return false;
-		game.setBase(initial);
-	}
+		std::cerr << "GameGUI::loadBase() : error, can't open file " << initial->getFileName() << std::endl;
+		delete stream;
+		return false;
+		}
 	else
 	{
-		InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(initial->getFileName()));
-		if (stream->isEndOfStream())
-		{
-			std::cerr << "GameGUI::loadBase() : error, can't open file " << initial->getFileName() << std::endl;
-			delete stream;
+		bool res = load(stream);
+		delete stream;
+		if (!res)
 			return false;
-		}
-		else
-		{
-			bool res = load(stream);
-			delete stream;
-			if (!res)
-				return false;
-			
-			game.setBase(initial);
-		}
+		
+		game.setBase(initial);
 	}
 
 	return true;

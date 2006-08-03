@@ -303,12 +303,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
 	
 	//do we need to download the file from host ? :
-	if (sessionInfo.mapGenerationDescriptor && sessionInfo.fileIsAMap)
-	{
-		fprintf(logFile, " no need for download, we have a random map.\n");
-		closeDownload();
-	}
-	else if (downloadStream && (filename == sessionInfo.getFileName()))
+	if (downloadStream && (filename == sessionInfo.getFileName()))
 	{
 		fprintf(logFile, " we are already downloading the map.\n");
 		fprintf(logFileDownload, " we are already downloading the map.\n");
