@@ -17,6 +17,7 @@
 [Cherry]
 [Orange]
 [Prune]
+[fruit]
 [Clearing:]
 [Min required level:]
 [Bullets]
