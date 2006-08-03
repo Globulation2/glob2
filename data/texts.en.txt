@@ -36,6 +36,8 @@ Cherry
 Orange
 [Prune]
 Prune
+[fruit]
+fruit
 [Clearing:]
 Clearing:
 [Min required level:]
