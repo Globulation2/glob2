@@ -1,4 +1,4 @@
-﻿[language]
+[language]
 Español
 [language-code]
 es
