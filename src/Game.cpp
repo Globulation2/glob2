@@ -811,163 +811,150 @@ bool Game::load(GAGCore::InputStream *stream)
 		return false;
 	}
 
-	if (tempSessionInfo.mapGenerationDescriptor && tempSessionInfo.fileIsAMap)
-	{
-		tempSessionInfo.mapGenerationDescriptor->synchronizeNow();
-		if (!generateMap(*tempSessionInfo.mapGenerationDescriptor))
-		{
-			fprintf(logFile, "Game::load::generateMap\n");
-			stream->readLeaveSection();
-			return false;
-		}
-	}
-	else
-	{
-		session=(SessionGame)tempSessionInfo;
+	session=(SessionGame)tempSessionInfo;
 
-		if (stream->canSeek())
-			stream->seekFromStart(tempSessionInfo.gameOffset);
+	if (stream->canSeek())
+		stream->seekFromStart(tempSessionInfo.gameOffset);
 
-		char signature[4];
-		stream->read(signature, 4, "signatureStart");
-		if (session.versionMinor >= 31)
-		{
-			if (memcmp(signature,"GaBe", 4)!=0)
-			{
-				fprintf(logFile, "Signature missmatch at begin\n");
-				stream->readLeaveSection();
-				return false;
-			}
-		}
-		else if (memcmp(signature, "GAMb",4)!=0)
+	char signature[4];
+	stream->read(signature, 4, "signatureStart");
+	if (session.versionMinor >= 31)
+	{
+		if (memcmp(signature,"GaBe", 4)!=0)
 		{
 			fprintf(logFile, "Signature missmatch at begin\n");
 			stream->readLeaveSection();
 			return false;
 		}
-		
-		if (session.versionMinor>=31)
-			stepCounter = stream->readUint32("stepCounter");
-		setSyncRandSeedA(stream->readUint32("SyncRandSeedA"));
-		setSyncRandSeedB(stream->readUint32("SyncRandSeedB"));
-		setSyncRandSeedC(stream->readUint32("SyncRandSeedC"));
+	}
+	else if (memcmp(signature, "GAMb",4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch at begin\n");
+		stream->readLeaveSection();
+		return false;
+	}
+	
+	if (session.versionMinor>=31)
+		stepCounter = stream->readUint32("stepCounter");
+	setSyncRandSeedA(stream->readUint32("SyncRandSeedA"));
+	setSyncRandSeedB(stream->readUint32("SyncRandSeedB"));
+	setSyncRandSeedC(stream->readUint32("SyncRandSeedC"));
 
-		stream->read(signature, 4, "signatureAfterSyncRand");
-		if (session.versionMinor>=31)
-		{
-			if (memcmp(signature,"GaSy", 4)!=0)
-			{
-				fprintf(logFile, "Signature missmatch after sync rand\n");
-				stream->readLeaveSection();
-				return false;
-			}
-		}
-		else if (memcmp(signature, "GAMm", 4)!=0)
+	stream->read(signature, 4, "signatureAfterSyncRand");
+	if (session.versionMinor>=31)
+	{
+		if (memcmp(signature,"GaSy", 4)!=0)
 		{
 			fprintf(logFile, "Signature missmatch after sync rand\n");
 			stream->readLeaveSection();
 			return false;
 		}
-
-		// we load teams
-		if (stream->canSeek())
-			stream->seekFromStart(tempSessionInfo.teamsOffset);
-		stream->readEnterSection("teams");
-		for (int i=0; i<session.numberOfTeam; ++i)
-		{
-			stream->readEnterSection(i);
-			teams[i]=new Team(stream, this, session.versionMinor);
-			stream->readLeaveSection();
-		}
+	}
+	else if (memcmp(signature, "GAMm", 4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch after sync rand\n");
 		stream->readLeaveSection();
-		if (session.versionMinor>=31)
+		return false;
+	}
+
+	// we load teams
+	if (stream->canSeek())
+		stream->seekFromStart(tempSessionInfo.teamsOffset);
+	stream->readEnterSection("teams");
+	for (int i=0; i<session.numberOfTeam; ++i)
+	{
+		stream->readEnterSection(i);
+		teams[i]=new Team(stream, this, session.versionMinor);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	if (session.versionMinor>=31)
+	{
+		stream->read(signature, 4, "signatureAfterTeams");
+		if (memcmp(signature,"GaTe", 4)!=0)
 		{
-			stream->read(signature, 4, "signatureAfterTeams");
-			if (memcmp(signature,"GaTe", 4)!=0)
-			{
-				fprintf(logFile, "Signature missmatch after teams\n");
-				stream->readLeaveSection();
-				return false;
-			}
-		}
-		
-		// we have to load team before map
-		if (stream->canSeek())
-			stream->seekFromStart(tempSessionInfo.mapOffset);
-		if(!map.load(stream, &session, this))
-		{
-			fprintf(logFile, "Signature missmatch in map\n");
+			fprintf(logFile, "Signature missmatch after teams\n");
 			stream->readLeaveSection();
 			return false;
 		}
-		stream->read(signature, 4, "signatureAfterMap");
-		if (session.versionMinor>=31)
-		{
-			if (memcmp(signature,"GaMa", 4)!=0)
-			{
-				fprintf(logFile, "Signature missmatch after map\n");
-				stream->readLeaveSection();
-				return false;
-			}
-		}
-		else if (memcmp(signature,"GAMe", 4)!=0)
+	}
+	
+	// we have to load team before map
+	if (stream->canSeek())
+		stream->seekFromStart(tempSessionInfo.mapOffset);
+	if(!map.load(stream, &session, this))
+	{
+		fprintf(logFile, "Signature missmatch in map\n");
+		stream->readLeaveSection();
+		return false;
+	}
+	stream->read(signature, 4, "signatureAfterMap");
+	if (session.versionMinor>=31)
+	{
+		if (memcmp(signature,"GaMa", 4)!=0)
 		{
 			fprintf(logFile, "Signature missmatch after map\n");
 			stream->readLeaveSection();
 			return false;
 		}
-
-		// we have to load map and team before players
-		if (stream->canSeek())
-			stream->seekFromStart(tempSessionInfo.playersOffset);
-		stream->readEnterSection("players");
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			stream->readEnterSection(i);
-			players[i]=new Player(stream, teams, session.versionMinor);
-			stream->readLeaveSection();
-		}
+	}
+	else if (memcmp(signature,"GAMe", 4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch after map\n");
 		stream->readLeaveSection();
-		
-		if (session.versionMinor>=31)
-		{
-			stream->read(signature, 4, "signatureAfterPlayers");
-			if (memcmp(signature,"GaPl", 4)!=0)
-			{
-				fprintf(logFile, "Signature missmatch after players\n");
-				stream->readLeaveSection();
-				return false;
-			}
-		}
-		else
-			stepCounter = stream->readUint32("stepCounter");
+		return false;
+	}
 
-		// we have to finish Team's loading:
-		for (int i=0; i<session.numberOfTeam; i++)
-			teams[i]->update();
-		
-		for (int i=0; i<session.numberOfTeam; i++)
-			teams[i]->integrity();
-		
-		// then script
-		if (stream->canSeek())
-			stream->seekFromStart(tempSessionInfo.mapScriptOffset);
-		if (!script.load(stream, this))
+	// we have to load map and team before players
+	if (stream->canSeek())
+		stream->seekFromStart(tempSessionInfo.playersOffset);
+	stream->readEnterSection("players");
+	for (int i=0; i<session.numberOfPlayer; ++i)
+	{
+		stream->readEnterSection(i);
+		players[i]=new Player(stream, teams, session.versionMinor);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	if (session.versionMinor>=31)
+	{
+		stream->read(signature, 4, "signatureAfterPlayers");
+		if (memcmp(signature,"GaPl", 4)!=0)
 		{
+			fprintf(logFile, "Signature missmatch after players\n");
 			stream->readLeaveSection();
 			return false;
 		}
-		
-		if (session.versionMinor < 37)
-		{
-			nextMap = "";
-			campaignText = "";
-		}
-		else
-		{
-			nextMap = stream->readText("nextMap");
-			campaignText = stream->readText("campaignText");
-		}
+	}
+	else
+		stepCounter = stream->readUint32("stepCounter");
+
+	// we have to finish Team's loading:
+	for (int i=0; i<session.numberOfTeam; i++)
+		teams[i]->update();
+	
+	for (int i=0; i<session.numberOfTeam; i++)
+		teams[i]->integrity();
+	
+	// then script
+	if (stream->canSeek())
+		stream->seekFromStart(tempSessionInfo.mapScriptOffset);
+	if (!script.load(stream, this))
+	{
+		stream->readLeaveSection();
+		return false;
+	}
+	
+	if (session.versionMinor < 37)
+	{
+		nextMap = "";
+		campaignText = "";
+	}
+	else
+	{
+		nextMap = stream->readText("nextMap");
+		campaignText = stream->readText("campaignText");
 	}
 
 	// Compute new max prestige
@@ -1004,54 +991,46 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 	
 	tempSessionInfo.save(stream);
 	
-	if (session.mapGenerationDescriptor && session.fileIsAMap)
+	SAVE_OFFSET(stream, 16, "gameOffset");
+	stream->write("GaBe", 4, "signatureStart");
+
+	stream->writeUint32(stepCounter, "stepCounter");
+	stream->writeUint32(getSyncRandSeedA(), "SyncRandSeedA");
+	stream->writeUint32(getSyncRandSeedB(), "SyncRandSeedB");
+	stream->writeUint32(getSyncRandSeedC(), "SyncRandSeedC");
+	stream->write("GaSy", 4, "signatureAfterSyncRand");
+
+	SAVE_OFFSET(stream, 20, "teamsOffset");
+	stream->writeEnterSection("teams");
+	for (int i=0; i<session.numberOfTeam; ++i)
 	{
-		// In this case, the map is fully determinated by the mapGenerationDescriptor.
-		//printf("giga compression system activated.\n");
+		stream->writeEnterSection(i);
+		teams[i]->save(stream);
+		stream->writeLeaveSection();
 	}
-	else
+	stream->writeLeaveSection();
+	stream->write("GaTe", 4, "signatureAfterTeams");
+
+	SAVE_OFFSET(stream, 28, "mapOffset");
+	map.save(stream);
+	stream->write("GaMa", 4, "signatureAfterMap");
+		
+	SAVE_OFFSET(stream, 24, "playersOffset");
+	stream->writeEnterSection("players");
+	for (int i=0; i<session.numberOfPlayer; ++i)
 	{
-		SAVE_OFFSET(stream, 16, "gameOffset");
-		stream->write("GaBe", 4, "signatureStart");
-
-		stream->writeUint32(stepCounter, "stepCounter");
-		stream->writeUint32(getSyncRandSeedA(), "SyncRandSeedA");
-		stream->writeUint32(getSyncRandSeedB(), "SyncRandSeedB");
-		stream->writeUint32(getSyncRandSeedC(), "SyncRandSeedC");
-		stream->write("GaSy", 4, "signatureAfterSyncRand");
-
-		SAVE_OFFSET(stream, 20, "teamsOffset");
-		stream->writeEnterSection("teams");
-		for (int i=0; i<session.numberOfTeam; ++i)
-		{
-			stream->writeEnterSection(i);
-			teams[i]->save(stream);
-			stream->writeLeaveSection();
-		}
+		stream->writeEnterSection(i);
+		players[i]->save(stream);
 		stream->writeLeaveSection();
-		stream->write("GaTe", 4, "signatureAfterTeams");
-
-		SAVE_OFFSET(stream, 28, "mapOffset");
-		map.save(stream);
-		stream->write("GaMa", 4, "signatureAfterMap");
-		
-		SAVE_OFFSET(stream, 24, "playersOffset");
-		stream->writeEnterSection("players");
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			stream->writeEnterSection(i);
-			players[i]->save(stream);
-			stream->writeLeaveSection();
-		}
-		stream->writeLeaveSection();
-		stream->write("GaPl", 4, "signatureAfterPlayers");
-
-		SAVE_OFFSET(stream, 32, "mapScriptOffset");
-		script.save(stream, this);
-		
-		stream->writeText(nextMap, "nextMap");
-		stream->writeText(campaignText, "campaignText");
 	}
+	stream->writeLeaveSection();
+	stream->write("GaPl", 4, "signatureAfterPlayers");
+
+	SAVE_OFFSET(stream, 32, "mapScriptOffset");
+	script.save(stream, this);
+	
+	stream->writeText(nextMap, "nextMap");
+	stream->writeText(campaignText, "campaignText");
 	stream->writeLeaveSection();
 }
 
