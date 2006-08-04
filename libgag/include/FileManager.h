@@ -80,6 +80,10 @@ namespace GAGCore
 	
 		//! Add a directory to the search list
 		void addDir(const char *dir);
+		//! Return the number of directory in the search list
+		unsigned getDirCount(void) const { return dirList.size(); }
+		//! Return a direction in the search list from its index
+		std::string getDir(unsigned index) const { if (index < getDirCount()) return dirList[index]; else return std::string(); }
 		//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
 		void addWriteSubdir(const char *subdir);
 	

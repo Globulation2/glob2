@@ -60,6 +60,7 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("campaigns");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
+	fileManager->addWriteSubdir("videoshots");
 	logFileManager = new LogFileManager(fileManager);
 	
 	// load user preference
@@ -201,6 +202,14 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
 			exit(0);
 		}
+		if (strcmp(argv[i], "-vs")==0)
+		{
+			if (i+1 < argc)
+			{
+				videoshotName = argv[i+1];
+				i++;
+			}
+		}
 		if (strcmp(argv[i], "-f")==0)
 		{
 			settings.screenFlags |= GraphicContext::FULLSCREEN;
@@ -270,7 +279,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			printf("\nGlobulation 2\n");
 			printf("Command line arguments:\n");
-			printf("-t\ttype of gfx rendere: 0 = SDL, 1 = OpenGL\n");
+			printf("-t\ttype of gfx renderer: 0 = SDL, 1 = OpenGL\n");
 			printf("-s\tset resolution and depth (for instance : -s640x480 or -s640x480x32)\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-r/-R\tset/clear resizable window\n");
@@ -285,6 +294,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-y\tspecify an alternative hostname for YOG server\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
+			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);
 		}

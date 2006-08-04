@@ -404,11 +404,11 @@ int Engine::run(void)
 		Sint32 computationAvailableTicks = 0;
 		Sint32 ticksToDelayInside = 0;
 		Sint32 missedTicksToWait = 0;
+		unsigned frameNumber = 0;
 		
 		startTick = SDL_GetTicks();
 		while (gui.isRunning)
 		{
-
 			// We always allow the user to use the gui:
 			if (globalContainer->runNoX)
 			{
@@ -501,6 +501,16 @@ int Engine::run(void)
 				// we draw
 				gui.drawAll(gui.localTeamNo);
 				globalContainer->gfx->nextFrame();
+				
+				// if required, save videoshot
+				if (!(globalContainer->videoshotName.empty()) && 
+					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+					)
+				{
+					FormatableString fileName = FormatableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(frameNumber++, 10, 10, '0');
+					printf("printing video shot %s\n", fileName.c_str());
+					globalContainer->gfx->printScreen(fileName.c_str());
+				}
 	
 				// we compute timing
 				endTick=SDL_GetTicks();
