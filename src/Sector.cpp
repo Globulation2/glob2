@@ -145,7 +145,7 @@ void Sector::step(void)
 				int team = Unit::GIDtoTeam(airgid);
 				int id = Unit::GIDtoID(airgid);
 				
-				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid, team);
+				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, airgid, team);
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
