@@ -1833,18 +1833,31 @@ namespace GAGCore
 	
 	void GraphicContext::printScreen(const char *filename)
 	{
+		SDL_Surface *toPrintSurface = NULL;
+		
+		// Fetch the surface to print
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			DrawableSurface toPrint(getW(), getH());
 			glFlush();
 			toPrint.drawSurface(0, 0, this);
-			SDL_SaveBMP(toPrint.sdlsurface, filename);
+			toPrintSurface = toPrint.sdlsurface;
 		}
 		else
 		#endif
-			if (sdlsurface)
-				SDL_SaveBMP(sdlsurface, filename);
+			toPrintSurface = sdlsurface; 
+		
+		// Print it using virtual filesystem
+		if (toPrintSurface)
+		{
+			for (size_t i = 0; i < Toolkit::getFileManager()->getDirCount(); i++)
+			{
+				std::string fullFileName = Toolkit::getFileManager()->getDir(i) + DIR_SEPARATOR_S + filename;
+				if (SDL_SaveBMP(toPrintSurface, fullFileName.c_str()) == 0)
+					break;
+			}
+		}
 	}
 	
 	// Font stuff
