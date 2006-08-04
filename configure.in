@@ -1,12 +1,12 @@
 AC_PREREQ(2.59)
-AC_INIT([Globulation 2], 0.8.19, [glob2-devel@nongnu.org], glob2)
+AC_INIT([Globulation 2], 0.8.20, [glob2-devel@nongnu.org], glob2)
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(glob2, 0.8.19)
+AM_INIT_AUTOMAKE(glob2, 0.8.20)
 
 AC_CONFIG_SRCDIR([src/Game.cpp])
 AM_CONFIG_HEADER(config.h)
 
-CXXFLAGS="$CXXFLAGS -Wall -g"
+CXXFLAGS="$CXXFLAGS -O3"
 
 dnl Programs 
 AC_PROG_CXX
