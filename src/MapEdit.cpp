@@ -88,6 +88,7 @@ MapEdit::MapEdit() : game(NULL)
 	is_dragging_zone=false;
 	is_dragging_terrain=false;
 	is_dragging_delete=false;
+	is_scroll_dragging=false;
 
 	last_placement_x=-1;
 	last_placement_y=-1;
