@@ -1,6 +1,12 @@
+glob2 (alpha21) unstable; urgency=low
+
+  * Alpha21
+
+ -- Stéphane Magnenat <nct@ysagoon.com>  Sun,  6 Aug 2006 14:44:24 +0200
+
 glob2 (alpha20) unstable; urgency=low
 
-  *Alpha 20 
+  * Alpha 20 
 
  -- Stephane Magnenat <nct@ysagoon.com>  Fri,  4 Aug 2006 14:36:19 -0400
 
