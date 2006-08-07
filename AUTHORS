@@ -1,15 +1,20 @@
 *
-Game design, core programming and project management
+Game design, initial programming
 
-Stéphane Magnenat <nct[no-spam]ysagoon.com>
 Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com>
-
+Stéphane Magnenat <nct[no-spam]ysagoon.com>
 
 *
-Additional programming
+Maintainer
 
-Martin Nyffenegger <barock[no-spam]ysagoon.com> (SGSL)
+Bradley Arsenault <genixpro[no-spam]gmail.com> (As of August 2006)
+Stéphane Magnenat <nct[no-spam]ysagoon.com> (Until August 2006)
+
+*
+Further programming
+
 Bradley Arsenault <genixpro[no-spam]gmail.com> (Nicowar AI, Echo AI System, New Map Editor, Miscellaneous Bugfixes)
+Martin Nyffenegger <barock[no-spam]ysagoon.com> (SGSL)
 Andrew Sayers <globulation2[no-spam]pileofstuff.org> (Miscellaneous bugfixes)
 Leo Wandersleb <Leo.Wandersleb[no-spam]gmx.de> (Perlin-noise based map generation)
 Hein-Pieter van Braam <hp[no-spam]syntomax.com> (IRC patch, debugging)
