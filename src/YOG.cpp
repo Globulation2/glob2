@@ -19,6 +19,16 @@
  
 // TODO:remove useless includes
 
+/**
+ * global todo list for this file
+ *
+ * @todo remove useless includes
+ * @todo anything that has fix1 is a spelling mistake, but needs to be
+ *		 verified that if it's removed it won't kill the program
+ * @todo logging states var verbosisty = INFO or DEBUG or WARN, etc.
+ * @todo tell Kyle what YMT and YSS stand for
+ */
+
 #include "../gnupg/sha1.c"
 
 
@@ -94,14 +104,20 @@ YOG::YOG()
 	memset(xorpassw, 0, 32);
 }
 
+/**
+ * @todo check connection with YOGServer
+ */
 YOG::~YOG()
 {
 	if (socket)
 		SDLNet_UDP_Close(socket);
-	
-	//TODO: check connection with YOGServer.
 }
 
+/**
+ * Takes all he lovely little UDP data and sends it off!
+ * @param	Uint8 *data 
+ * @param	int size
+ */
 void YOG::send(Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size);
@@ -116,6 +132,13 @@ void YOG::send(Uint8 *data, int size)
 	SDLNet_FreePacket(packet);
 }
 
+/**
+ * Takes all the lovely little UDP data and sends it off!
+ *
+ * @param YOGMessageType v 
+ * @param Uint8 *data 
+ * @param int size
+ */
 void YOG::send(YOGMessageType v, Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
@@ -506,12 +529,12 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 				data[4], data[5], YOG_PROTOCOL_VERSION);
 	}
 	break;
-	case YMT_DECONNECTING:
+	case YMT_DECONNECTING:						//fix1
 	{
-		fprintf(logFile, "deconnected\n");
+		fprintf(logFile, "disconnected\n");
 		yogGlobalState=YGS_NOT_CONNECTING;
 		globalContainer->popUserName();
-		externalStatusState=YESTS_DECONNECTED;
+		externalStatusState=YESTS_DECONNECTED;	//fix1
 	}
 	break;
 	case YMT_SHARING_GAME:
@@ -917,6 +940,16 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	}
 }
 
+/**
+ * Opens up a port on the host computer and listens for connections.
+ *
+ * @param const char *username 
+ * @param const char *passWord 
+ * @param bool newYogPassword
+ * @return boolean
+ * @todo write other functions to allow profiles which includes email addresses
+ *		 for lost passwords
+ */
 bool YOG::enableConnection(const char *userName, const char *passWord, bool newYogPassword)
 {
 	memset(this->userName, 0, 32);
@@ -983,7 +1016,11 @@ bool YOG::enableConnection(const char *userName, const char *passWord, bool newY
 	return true;
 }
 
-void YOG::deconnect()
+/*
+ * disconnects on closing of the metaserver, or so it seems
+ * @todo check my description
+ */
+void YOG::deconnect() //fix1
 {
 	if (connectionLost)
 	{
@@ -1011,9 +1048,12 @@ void YOG::deconnect()
 		sharingGameTimeout=0;
 		sharingGameTOTL=3;
 	}
-	fprintf(logFile, "deconnect() yogGlobalState=%d\n", yogGlobalState);
+	fprintf(logFile, "disconnect() yogGlobalState=%d\n", yogGlobalState);
 }
 
+/**
+ * @todo document
+ */
 void YOG::step()
 {
 	if (socket)
@@ -1029,11 +1069,11 @@ void YOG::step()
 					globalContainer->popUserName();
 					connectionLost=true;
 					externalStatusState=YESTS_DECONNECTED;
-					fprintf(logFile, "unable to deconnect!\n");
+					fprintf(logFile, "unable to disconnect!\n");
 				}
 				else
 				{
-					fprintf(logFile, "sending deconnection request...\n");
+					fprintf(logFile, "sending disconnection request...\n");
 					send(YMT_DECONNECTING);
 					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
 				}
@@ -1336,6 +1376,10 @@ void YOG::step()
 	}
 }
 
+/**
+ * sends the info for a LAN game by the looks of it
+ * @todo am I correct?
+ */
 void YOG::sendGameinfoRequest()
 {
 	assert(isSelectedGame);
@@ -1398,8 +1442,14 @@ void YOG::sendGameinfoRequest()
 	
 }
 
+/**
+ * well, it shares the game, duh!
+ *
+ * @param const char *gameName
+ */
 void YOG::shareGame(const char *gameName)
 {
+	//wtf is YSS?
 	yogSharingState=YSS_SHARING_GAME;
 	strncpy(sharingGameName, gameName, 64);
 	sharingGameName[63]=0;
@@ -1409,6 +1459,10 @@ void YOG::shareGame(const char *gameName)
 	unjoiningConfirmed=false;
 }
 
+/**
+ * stops sharing the game with others
+ * @todo check usage, don't see unshareGame in the logs anywhere
+ */
 void YOG::unshareGame()
 {
 	yogSharingState=YSS_STOP_SHARING_GAME;
@@ -1425,6 +1479,9 @@ void YOG::unshareGame()
 	fprintf(logFile, "unshareGame()\n");
 }
 
+/**
+ * @todo is this function ever used? I don't see joinGame() anywhere in the logs?
+ */
 void YOG::joinGame()
 {
 	fprintf(logFile, "joinGame() was=%d\n", joinedGame);
@@ -1433,6 +1490,11 @@ void YOG::joinGame()
 	unjoiningConfirmed=false;
 }
 
+/**
+ * @param bool strict 
+ * @param const char *reason
+ * @todo proper english should be leaveGame, rename everything
+ */
 void YOG::unjoinGame(bool strict, const char *reason)
 {
 	fprintf(logFile, "unjoinGame(%d) yogGlobalState=%d\n", strict, yogGlobalState);
@@ -1718,6 +1780,10 @@ void YOG::handleMessageAliasing(char *message, int maxSize)
 		memmove(message+2, message+5, Utilities::strmlen(message+5, maxSize-5));
 }
 
+/**
+ * @param const char *message
+ * @return boolean
+ */
 bool YOG::handleLocalMessageTreatment(const char *message)
 {
 	const char *s=NULL;
@@ -1748,7 +1814,9 @@ bool YOG::handleLocalMessageTreatment(const char *message)
 		return false;
 }
 
-//! Add a event message with msg text to the event queue
+/**
+ * @todo Add an event message with msg text to the event queue
+ */
 void YOG::addEventMessage(const char *msg)
 {
 	Message message;
