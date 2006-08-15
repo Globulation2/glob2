@@ -1396,6 +1396,30 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 			if(pressed)
 				perform_action(globalContainer->settings.editor_keyboard_shortcuts["zkey"]);
 			break;
+		case SDLK_ESCAPE :
+		{
+			if(pressed)
+			{
+				if (!showingMenuScreen)
+				{
+					perform_action("unselect");
+					perform_action("scroll horizontal stop");
+					perform_action("scroll vertical stop");
+					menuscreen=new MapEditMenuScreen;
+					showingMenuScreen=true;
+				}
+				else if (showingMenuScreen)
+				{
+					delete menuscreen;
+					menuscreen=NULL;
+					showingMenuScreen=false;
+				}
+				//add in extran "cancels" for other menus
+			}
+			break;	
+		}
+				
+				
 		default:
 		break;
 	}
