@@ -5,6 +5,7 @@
 # Désactivation de tout ce qui est inutile au tutorial
 # Tutorial translated into german by Manuel Soukup (and corrected by Julia Schmitt)
 # Translation to spanish Igor Támara <igor@tamarapatino.org> (and revised by Hernan Quishpe)
+# English version revised by Hernan Quishpe
 
 GuiDisable(AllianceScreen)
 GuiDisable(FlagTab)
@@ -20,19 +21,19 @@ GuiDisable(Market)
 GuiDisable(Wall)
 GUIDisable(Hospital)
 
-show("Welcome to the Globulation 2 tutorial! This tutorial is long and in depth, so you may have to pull out lots of time to complete it. If at any time you feel as if you don't have enough time to complete the tutorial, click the menu icon, which is the small icon on the upper, left hand corner of the mini-map (which is on the upper-right hand corner of the screen), and click save. You can load your game from the main menu by clicking load again. Use the space bar to continue with messages. Some messages may dissapear entirely after you hit space, this is normal.")
+show("Welcome to the Globulation 2 tutorial! This tutorial is long and in depth, so you may have to pull out lots of time to complete it. If at any time you feel as if you don't have enough time to complete the tutorial, click the menu icon, which is the small icon on the upper-left hand corner of the mini-map (which is on the upper-right hand corner of the screen), and click save. You can load your game from the main menu by clicking load again. Use the space bar to continue with messages. Some messages may disappear entirely after you hit space. This is normal.")
 show("Bienvenue dans le didacticiel de Globulation 2 ! Ce tutorial est long et détaillé, vous pouvez donc mettre quelques temps avant de le terminer. À tout moment, si vous pouvez sauvegarder votre progression pour reprendre plus tard en cliquant sur l'icone menu, qui se trouve dans coin supérieur gauche de la mini-carte (qui se trouve dans le coin supérieur droit de l'écran), puis sur sauver. Vous pouvez charger votre partie depuis le menu principale en cliquant sur charger. Utilisez la barre espace pour passer au message suivant. Certains messages peuvent disparaitre complètement une fois que vous avez appuyé sur espace, c'est normal.",fr)
 show("Willkommen bei der Einführung in Globulation 2! Diese Einführung ist lang und sehr tiefgründig, deshalb musst du wahrscheinlich viel Zeit investieren, um diesen Unterrichtskurs zuende zu spielen. Wenn du irgendwann das Gefühl hast, nicht genug Zeit zu haben, um diese Einführung zu beenden, klicke auf das kleine Menü-Icon, welches neben der oberen linken Ecke der Minikarte platziert ist (rechte obere Ecke des Bildschirms), und klicke auf 'Speichern'. Du kannst dein gespeichertes Spiel über das Hauptmenü laden, indem du auf 'Laden' klickst. Benutze die Leertaste um mit der Anleitung fortzufahren. Einige Nachrichten verschwinden ganz, wenn du die Leertaste drückst, das ist aber ganz normal.",de)
 show("Bienvenid@s al tutorial de Globulation 2!  Este tutorial es amplio y profundo, posiblemente requerirás bastante tiempo para completarlo. Si en algún momento sientes que no tienes tiempo suficiente para completarlo, usa el ícono de menu, que está ubicado en la esquina superior izquierda del minimapa(que está en la parte superior derecha de la pantalla), y usa salvar. Puedes cargar tu juego desde el menú principal con cargar.  Usa la barra espaciadora para ir a los mensajes siguientes.  Algunos mensajes pueden desaparecer por completo cuando usas la barra, eso es normal.",es)
 space
 
-show("Let's first have a look at what's going on. You have a swarm and a worker...")
+show("Let's first have a look at what's going on. You have a Swarm and a worker...")
 show("Pour commencer, nous allons observer ce qui se passe. Vous avez une ruche et une ouvrière...",fr)
 show("Lass uns zuerst einen Blick auf das werfen, was gerade passiert. Du hast einen Stock und eine Einheit: einen Arbeiter...",de)
 show("Primero que todo, explicaremos lo que estás viendo. Una colmena y un obrero",es)
 space
 
-show("Your worker harvests wheat and brings it to the swarm. The swarm is a building that constructs new units, so it is very important when playing a game.")
+show("Your worker harvests wheat and brings it to the Swarm. The Swarm is a building that constructs new units, so it is very important when playing a game.")
 show("Votre ouvrière va commencer à récolter du blé et à l'ammener dans la ruche. Celle-ci permet de produire de nouvelles unités, il s'agit donc d'un bâtiment très important dans le jeu.",fr)
 show("Dein Arbeiter sammelt Weizen und bringt ihn zum Stock. Der Stock ist ein Gebäude, dass neue Einheiten konstruiert, deshalb ist er sehr wichtig im Spiel.",de)
 show("Tu obrero recolecta maíz y lo trae a la colmena. La colmena es un edificio que genera nuevas unidades, por lo tanto es muy importante durante el juego.",es)
@@ -44,7 +45,7 @@ show("Jetzt klicke auf den Arbeiter (die sich bewegende Einheit) mit deiner link
 show("Selecciona tu glóbulo(la unidad móvil) con el botón izquierdo del ratón, click.",es)
 space
 
-show("Look on the right side of the screen. It now shows information about that globule. As you can see, its food level is decreasing with time, this means that the globule is getting more and more hungry. The blue bar under the globule reflects its decreasing level of nutrition.")
+show("Look on the right side of the screen. It now shows information about that globule. As you can see, its food level is decreasing with time. This means that the globule is getting more and more hungry. The blue bar under the globule reflects its decreasing level of nutrition.")
 show("Observez la partie droite de l'écran. Elle présente maintenant des informations sur le globule. Vous pouvez voir son niveau de nutrition diminuer petit à petit ce qui signifie qu'il a de plus en plus fin. Ces informations sont reprise par la barre bleue sous le globule.",fr)
 show("Schaue auf die rechte Seite deines Bildschirms. Diese zeigt dir nun Informationen über den Arbeiter. Wie du sehen kannst, verringert sich sein Nahrungssvorrat mit der Zeit, das bedeutet, dass er mehr und mehr Hunger bekommt. Der blaue Balken unter dem Arbeiter zeigt seinen abnehmenden Vorrat an Nahrung an.",de)
 show("Mira hacia la derecha en la pantalla. Se muestra información acerca del glóbulo.  El nivel de comida decrece con el tiempo, esto significa que el glóbulo cada vez tiene más hambre. La barra azul bajo el glóbulo refleja su decreciente nivel de alimento",es)
@@ -56,7 +57,7 @@ show("Deine Arbeiter brauchen einen Gasthof um essen zu können. Deselektiere de
 show("Tu glóbulo necesita una taberna dónde alimentarse. Deselecciona tu glóbulo oprimiendo el botón derecho del ratón",es)
 space
 
-show("Now construct an Inn. To do that, click on the first icon under the mini-map (right now there is only one, but as we will see later, there can be several), then on the Inn icon. Now place your Inn near a wheat field. The wheat may be hard to see, but if you follow the path that your globule took when it was harvesting, you will find one. When your done placing the Inn, exit construction mode by clicking the right mouse button.")
+show("Now construct an Inn. To do that, click on the first icon under the mini-map (right now there is only one, but as we will see later, there can be several), then on the Inn icon. Now place your Inn near a wheat field. The wheat may be hard to see, but if you follow the path that your globule took when it was harvesting, you will find one. When you're done placing the Inn, exit construction mode by clicking the right mouse button.")
 show("Construisez maintenant une auberge. Pour cela, cliquez sur la première icone sous la mini-carte (pour l'instant, il n'y en a qu'une, mais il peut y en avoir plusieurs, comme nous le verrons plus loin), puis sur l'icone de l'auberge. Placez maintenant votre auberge près d'un champ de blé. Le blé peut etre difficile à voir, mais si vous suivez le chemin qu'a pris votre globule lorsqu'il récoltait, vous en trouverez. Lorsque vous avez positionné votre auberge, sortez du mode construction en cliquant sur le bouton droit de la souris.",fr)
 show("Baue jetzt einen Gasthof. Um dies zu tun klicke auf das erste Icon unter der Minikarte (zur Zeit befindet sich dort nur eines, aber wir werden später sehen, dass es durchaus mehrere sind), dann auf das Gasthof-Icon. Jetzt platziere deinen Gasthof in der Nähe eines Weizenfeldes. Der Weizen ist möglicherweise schwer zu sehen, aber wenn du deinem Arbeiter folgst, der Weizen einsammelt, wirst du eines finden. Wenn du es gefunden hast platziere den Gasthof und verlasse den Bau-Modus mit einem rechten Mausklick.",de)
 show("Ahora, construye una taberna.  Para lograrlo, haz clic en el primer botón debajo del mini-mapa (en este momento debe haber uno solamente, pero como veremos más adelante, puede haber muchos), ahora en el ícono taberna.  Coloca tu taberna cerca a un campo de maíz. El maíz puede ser difícil de ver, pero si sigues el camino que tu glóbulo siguió cuando estaba recolectando, encontrarás uno.  Cuando hayas colocado la taberna, sal del modo construcción con el botón derecho del ratón.",es)
@@ -69,7 +70,7 @@ show("Gut...",de)
 show("Bien...",es)
 space
 
-show("Your building site has been placed. You probably saw a second worker appear out of the Swarm, the second worker will work at the Inn. The Inn needs wood to be constructed. So the worker will head over to the nearest forest and harvest some wood to help put the building together. It is just a matter of time before the building will be finished..")
+show("Your building site has been placed. You probably saw a second worker appear out of the Swarm, the second worker will work at the Inn. The Inn needs wood to be constructed, so the worker will head over to the nearest forest and harvest some wood to help put the building together. It is just a matter of time before the building will be finished..")
 show("Votre site de construction a été placé. Une seconde ouvrière est probablement sorti de la ruche, elle travaillera à l'auberge. Pour la construire, elle va avoir besoin de bois qu'elle récoltera dans la foret la plus proche. Ce n'est qu'une question de temps avant que votre bâtiment ne soit terminé.",fr)
 show("Eine neue Baustelle wurde erstellt. Vielleicht hast du den zweiten Arbeiter gesehen, der aus dem Stock kam - der zweite Arbeiter wird am Gasthof arbeiten. Der Gasthof benötigt Holz um errichtet zu werden. Deshalb wird der Arbeiter zum nächstgelegenen Wald gehen um Holz zu sammeln und das Gebäude zu errichten. Es ist nur eine Frage der Zeit bis es fertig ist ...",de)
 show("Has elegido el sitio en el cual estará la taberna.  Probablemente viste un segundo trabajador aparecer de la colmena, el segundo trabajará en la taberna.  La taberna necesita madera para construirse.  Así que el trabajador irá al bosque más cercano para traer madera a la construcción.   Espera un rato a que la construcción esté lista..",es)
@@ -77,13 +78,13 @@ space
 hide
 wait(Inn(0,1) > 0)
 
-show("Now that the Inn is finished, a free worker will begin harvesting wheat for it, in the same manner that the Swarms worker does.")
+show("Now that the Inn is finished, a free worker will begin harvesting wheat for it in the same manner that the Swarm's worker does.")
 show("Maintenant que l'auberge est terminée, une ouvrière libre va l'alimenter avec du blé, comme celle qui travaille à la ruche.",fr)
 show("Nun, da der Gasthof fertig ist, wird ein freier Arbeiter anfangen Weizen für denselbigen zu sammeln, in der selben Weise wie es auch die Arbeiter für den Stock tun.",de)
 show("Una vez que la taberna esté lista, un trabajador que esté libre comenzará a recolectar maíz para esta, de la misma forma que el trabajador de la colmena lo hace.",es)
 space
 
-show("Looking at the Inn, you'll see a yellow bar, that is rising as the globule harvests more wheat. As you may have guessed, this bar represents how much wheat is in the Inn.")
+show("Looking at the Inn, you'll see a yellow bar that is rising as the globule harvests more wheat. As you may have guessed, this bar represents how much wheat is in the Inn.")
 show("En regardant l'auberge de plus près, vous constaterez qu'elle dispose d'une barre jaune, qui croit au fur et à mesure que le globule récolte du blé. Comme vous l'avez peut-etre deviné, il s'agit de la réserve de blé de l'auberge.",fr)
 show("Schau auf den Gasthof, du siehst einen gelben Balken, der wächst, wenn der Arbeiter Weizen bei ihm abläd. Wie du richtig vermutest, repräsentiert dieser Balken die Menge an Weizen im Gasthof.",de)
 show("Cerca a la taberna verás una barra amarilla, que crece a medida que el glóbulo recolecta maíz.  Como lo debes haber deducido, esta barra representa cuanto maíz hay en la taberna.",es)
@@ -95,13 +96,13 @@ show("Lass uns jetzt das Task-System anschauen",de)
 show("Ahora veamos el sistema de tareas",es)
 space
 
-show("For now, you have one unit bringing food to the swarm and the second one to the Inn. One of the two units may be inside the Inn, eating right now. This is ok.")
+show("For now, you have one unit bringing food to the Swarm and the second one to the Inn. One of the two units may be inside the Inn eating right now. This is ok.")
 show("Pour l'instant, vous avez une ouvrière qui amène du blé à la ruche et l'autre à l'auberge. L'une des deux peut se trouver à l'intérieur de l'auberge pour l'instant, elle mange. Tout va bien.",fr)
 show("Fürs Erste hast du einen Arbeiter, der Essen zum Stock bringt und einen zweiten, der Essen zum Gasthof befördert. Einer der zwei befindet sich vielleicht im Gasthof um zu essen. Das ist OK.",de)
 show("En este momento tienes una unidad trayendo comida a la colmena y una segunda a la taberna. Una de las dos puede estar dentro de la taberna,en este momento, comiendo. Lo cuál está bien.",es)
 space
 
-show("Click on the Swarm. If you look to the right hand side again, you'll notice a bar at the top, labelled 'Working'. This bar tells how many units you want to be assigned to the Swarm.")
+show("Click on the Swarm. If you look to the right hand side again, you'll notice a bar at the top, labeled 'Working'. This bar tells how many units you want to be assigned to the Swarm.")
 show("Cliquez sur la ruche. Si vous regardez à nouveau la partie droite de l'écran, vous remarquerez qu'une nouvelle barre intitulée 'Activité' est apparue en haut. Elle indique le nombre d'ouvrière que vous souhaitez affecter à la Ruche.",fr)
 show("Klicke auf den Stock. Wenn du nun auf die rechte Seitenleiste schaust, wird dir eine Leiste mit dem Namen 'An der Arbeit' auffallen. Diese Leiste zeigt dir, wie viele Arbeiter dem Stock zugeteilt sind.",de)
 show("Selecciona la colmena. Si miras hacia la derecha de nuevo, verás que hay una barra en la parte superior titulada 'Trabajando'. Esta barra dice cuántas unidades deseas tener asignadas a la colmena.",es)
@@ -126,14 +127,14 @@ show("Si uno de tus glóbulos no puede encontrar una taberna en donde comer, pue
 space
 
 GuiEnable(Hospital)
-show("Using the same method that you did for the Inn, construct a Hospital. Unlike the Inn, however, your Hospital doesn't need to be near wheat. So, try to place it near wood instead, or even in a more central place, such as near your Swarm.")
+show("Using the same method that you did for the Inn, construct a Hospital. Unlike the Inn, however, your Hospital doesn't need to be near wheat, so try to place it near wood instead, or even in a more central place, such as near your Swarm.")
 show("En utilisant lamêmeméthode que pour l'auberge, construisez un hopital. Cependant, votre hopital n'a pas besoin d'etre près de blé. Aussi, essayez plutot de la placer près d'un bois, oumêmeà un emplacement plus central, à coté de votre Ruche par exemple",fr)
 show("Benutze die selbe Methode wie beim Gasthof um ein Hospital zu bauen. Im Gegensatz zum Gasthof muss dein Krankenhaus nicht in der Nähe von Weizen stehen, deshalb versuche es in die Nähe von Holz zu bauen. Oder gleich an einen zentralen Platz neben deinen Stock.",de)
 show("Construye un hospital de la misma forma como hiciste la taberna. A diferencia de la taberna, el hospital no necesita estar cerca al maíz.  Así que intenta colocarlo cerca a la madera, o mejor, en un lugar más central, por ejemplo, cerca a tu colmena.",es)
 wait(Hospital(0,0) > 0)
 hide
 
-show("Good. Click on the newly built foundation for a hospital, and assign two units to work on it. The hospital will be constructed very quickly now, with that increased number of units.")
+show("Good. Click on the newly built foundation for a hospital, and assign two units to work on it. The hospital will be constructed very quickly now with that increased number of units.")
 show("Bien. Cliquez maintenant sur les fondations qui ont été posées pour l'hopital et assignez-y deux ouvrières. L'hopital devrait etre construit très rapidement maintenant grace à cette main d'oeuvre abondante.",fr)
 show("Gut so. Klicke auf die Baustelle und teile ihr zwei Arbeiter zu. Das Hospital wird nun logischerweise schneller als mit nur einem zugeteilten Arbeiter gebaut werden, da gleich zwei Arbeiter die nötigen Ressourcen heranschaffen.",de)
 show("Bien. Elije el hospital que comenzaste a construir y asígnale dos unidades para que trabajen en él.  El hospital se construirá mucho más rápido debido a que varios están colaborando.",es)
@@ -147,25 +148,25 @@ show("Super. Wenn deine Einheiten jetzt irgendwie verletzt werden, sind sie in d
 show("Lo hiciste.  Ahora si tus glóbulos se hacen daño por algún motivo, tendrán oportunidad de curarse así mismos.",es)
 space
 
-show("Now, you may have noticed that most of the area around your base is black. This is because it is undiscovered zone. When your workers walk into the undiscovered zone, that zone becomes discovered, and you can see whats in it. Unfortenetly, it is quite difficult to control workers in such a manner as to have them explore the undiscovered zone. Fortenetly, there is a unit made just for this! It is called the explorer.")
+show("Now, you may have noticed that most of the area around your base is black. This is because it is undiscovered zone. When your workers walk into the undiscovered zone, that zone becomes discovered, and you can see what's in it. Unfortunately, it is quite difficult to control workers in such a manner as to have them explore the undiscovered zone. Fortunately, there is a unit made just for this! It is called the explorer.")
 show("Vous avez sans doute remarqué que  l'espace autour de votre base est noir, car il n'a pas été exploré. Lorsque vos ouvrières se déplacent au sein d'une zone non explorée, elle est découverte et vous pouvez voir ce qui s'y trouve. Malheureusement, il est assez difficile de controler les ouvrières de façon à ce qu'il explorent des zones inconnues. Heureusement, il existe une unité dédiée à cette tache appelée exploratrice", fr)
 show("Inzwischen wirst du bemerkt haben, dass die meiste Landschaft um die Basis schwarz ist. Dies ist so, weil diese Zonen unentdecktes Land sind. Wenn deine Arbeiter in die Zone laufen wird sie entdeckt und du kannst sehen, was darin ist. Unglücklicherweise ist es schwer Arbeiter so zu kontrollieren, dass sie unentdecktes Land erkunden. Glücklicherweise wurde gerade dafür eine Einheit kreiert! Sie heißt 'Entdecker'.",de)
 show("Puedes notar que alrededor de tu base, la mayor parte está negra.  Esto se debe a que es una zona inexplorada.  Cuando tus trabajadores caminan hacia una zona inexplorada, esa zona se va descubriendo y puedes ver qué hay ahí.  Desafortunadamente es muy difícil controlar los trabajadores para que exploren las zonas por descubrir.  Afortunadamente hay una unidad hecha exactamente para esto! Se llama el explorador.",es)
 space
 
-show("Click on your swarm now. Look about half way down the menu, and you will notice three bars, labelled worker, explorer, and warrior. You will also notice that the worker bar has one small notch in it. If we want to make an explorer, we have to increase a notch on the explorer bar.")
+show("Click on your Swarm now. Look about half way down the menu, and you will notice three bars, labeled worker, explorer, and warrior. You will also notice that the worker bar has one small notch in it. If we want to make an explorer, we have to increase a notch on the explorer bar.")
 show("Cliquez maintenant sur votre ruche.  Regardez au milieu du menu, vous remarquerez trois barres étiquetées ouvrière, exploratrice et guerrière. Vous remarquerez également que la barre ouvrière dispose d'une graduiation pleine. Si nous voulons créer une exploratrice, nous devons remplir une graduation sur la barre des exploratrices.", fr)
 show("Klicke jetzt auf deinen Stock und schaue in die Mitte des Menüs. Dort wirst du 3 Balken sehen: 'Arbeiter', 'Entdecker' und 'Krieger'. Auch wird dir nicht entgangen sein, dass der Arbeiter-Balken 'eins' groß ist. Wenn du einen Entdecker erschaffen willst, musst du den Entdecker-Balken um eins von 0 auf 1 erhöhen.",de)
 show("Elije tu colmena. Mira hacia la mitad del menú y encontrarás tres barras con los títulos trabajador, explorador y guerrero.  Verás también que la del trabajador tiene un cuadro pequeño.  Si queremos invocar un explorador, incrementaremos en uno la barra de explorador.",es)
 space
 
-show("You now have one notch for workers, and one notch for explorers. This means that the swarm will create explorers and workers half and half, one worker, and then one explorer. But this is not what we want! We would like to get one explorer immediatly, rather than waiting. So, decrease one notch for workers, and explorers will be the only type of unit that is created.")
+show("You now have one notch for workers and one notch for explorers. This means that the Swarm will create explorers and workers half and half, one worker and then one explorer. But this is not what we want! We would like to get one explorer immediatly, rather than waiting, so decrease one notch for workers, and explorers will be the only type of unit that is created.")
 show("Vous avez maintenant une graduation pleine pour les ouvrière et une pour les exploratrice. Cela signifie que la ruche créera des exploratrices et des ouvrières à part égales : une ouvrière, puis une exploratrice. Mais ce n'est pas ce que nous voulons ! Nous voudrions une exploratrice tout de suite plutot que d'attendre. Diminuez donc la production d'ouvrière afin que les exploratrices soient le seul type d'unités créé.", fr)
 show("Nun hast du ein Stück blauen Balken für Arbeiter und eins für Entdecker. Das bedeutet, dass der Stock im Wechsel einen Arbeiter und einen Entdecker produziert. Aber das ist ja nicht das, was du willst, du willst nur einen Entdecker und das schnell. Deshalb reduziere den Arbeiter-Balken auf 0. Nun werden nur noch Entdecker erschaffen.",de)
 show("Ahora tienes una unidad para trabajadores y otra para exploradores.  Esto significa que la colmena creará sendos exploradores y trabajadores, uno a uno.  Pero no es lo que queremos! Queremos que el explorador salga inmediatamente en lugar de esperar. Disminuye los trabajadores y así solamente se crearán exploradores.",es)
 space
 
-show("Now, increase the number of units assigned to the swarm back up to 1.")
+show("Now, increase the number of units assigned to the Swarm back up to 1.")
 show("À présent, remettez le nombre d'unités affectées à la ruche à 1", fr)
 show("Erhöhe jetzt die 'An der Arbeit'-Zahl des Stocks wieder auf 1.",de)
 show("Ahora incrementa el número de unidades trabajadoras en 1.",es)
@@ -185,7 +186,7 @@ space
 hide
 wait(Explorer(0) > 0)
 
-show("Wow! The explorer is flying! You will notice that the explorer begins circling your base, quickly revealing more of the area to you. Click back on the swarm, and wait until another explorer is created, having two explorers may be usefull.")
+show("Wow! The explorer is flying! You will notice that the explorer begins circling your base, quickly revealing more of the area to you. Click back on the Swarm, and wait until another explorer is created. Having two explorers may be useful.")
 show("Ohla ! L'exploratrice vole ! Vous remarquerez qu'elle commence à décrire des cercles autour de votre base, vous en apprenant plus sur votre environnement. Recliquez sur la ruche et attendez qu'une seconde exploratrice soit créée, disposer de deux exploratrices peut se révéler utile.", fr)
 show("Wow! Der Entdecker fliegt! Wie du sehen kannst, kreist er um deine Basis. Klicke auf den Stock und warte, bis ein zweiter Entdecker geschaffen ist. Es könnte nützlich sein, zwei Entdecker zu besitzen.",de)
 show("Guau! El explorador vuela! Verás que el explorador comienza a volar en círculos sobre tu base, revelándote más porciones.  Selecciona la colmena de nuevo y espera hasta que otro explorador se cree, contar con dos puede ser útil.",es)
@@ -193,37 +194,37 @@ space
 hide
 wait(Explorer(0) > 1)
 
-show("Good. Now set the explorer production back a notch, and worker production ahead a notch. You can do this in the same way you did before, click on the Swarm, and then click on the up/down arrows on the worker and explorer bar respectivly.")
+show("Good. Now set the explorer production back a notch and worker production ahead a notch. You can do this in the same way you did before. Click on the Swarm, and then click on the up/down arrows on the worker and explorer bar respectivly.")
 show("Bien. Diminuez maintenant la production d'exploratrices et augmentez celle des ouvrières. Vous pouvez le faire comme tout à l'heure, en cliquant sur la Ruche puis en utilisant les flèches des barres ouvrières et exploratrices", fr)
 show("Gut. Nun setze die Entdeckerproduktion um eins zurück und die Arbeiterproduktion um eins nach oben. Das machst du wie bereits erklärt: Klicke auf den Stock und dann auf die jeweiligen Leistenenden von Entdecker und Arbeiter.",de)
 show("Bien. Elimina la producción de exploradores y aumenta en uno la producción de trabajadores. Lo haces de la misma forma en que lo hiciste antes, selecciona la colmena y después selecciona las flechas en las barras de explorador y trabajador, respectivamente.",es)
 space
 
-show("You'll notice that there is a small stone quarry to the right side of your base. Remember this, it may come in handy later.")
+show("You'll notice that there is a small stone quarry to the right side of your base. Remember this. It may come in handy later.")
 show("Vous remarquerez qu'une petite carrière de pierres se trouve à droite de votre base. Souvenez-vous en, elle pourrait vous servir plus tard.", fr)
 show("Auf der rechten Seite deiner Basis ist ein kleiner Steinbruch. Merke dir das, er könnte später nützlich werden.",de)
 show("Notarás que hay un conjunto de pequeñas formaciones rocosas a la derecha de tu base. Recuérdalo, pueden ser de utilidad más adelante.",es)
 space
 
-show("You might also notice that there is a set of trees just below the stone query, however, they don't look like normal trees. If you click on them, the right hand side bar will tell you that those trees are orange trees! You might be wondering what those orange trees are usefull for. We will find out later, for now, focus on your Swarm.")
+show("You might also notice that there is a set of trees just below the stone query. However, they don't look like normal trees. If you click on them, the right hand side bar will tell you that those trees are orange trees! You might be wondering what those orange trees are useful for. We will find out later. For now, focus on your Swarm.")
 show("Vous pourriez également avoir constaté que quelques arbres se trouvent juste en dessous de la carrière, cependant, ils diffèrent des arbres normaux. Si vous cliquez dessus, la barre latérale vous indiquera qu'il s'agit d'orangers ! Nous verrons plus tard à quoi ils servent, pour l'instant, concentrez-vous sur votre Ruche.", fr)
 show("Du wirst die kleine Gruppe Bäume vor den Steinen bemerkt haben, die aber nicht wie normale Bäume aussehen. Wenn du auf sie klickst, wird dir die rechte Menüseite Informationen über diese Bäume - Orangenbäume - anzeigen. Du wunderst dich vielleicht wozu Orangenbäume nützlich sind - du wirst es noch herausfinden. Jetzt klicke erstmal auf deinen Stock.",de)
 show("Tal vez habrás notado que hay un conjunto de árboles justo debajo de la formación rocosa, pero no lucen como árboles normales.  Si los seleccionas con el ratón, la barra derecha te dirá que tales árboles son de naranjas!  Podrás preguntarte para qué sirven esos árboles.  Lo veremos más adelante, por ahora enfoquémonos en tu colmena.",es)
 space
 
-show("Right now, your Swarm should be constructing workers, and only workers. If it is not, you may want to set it to be constructing workers now.")
+show("Right now, your Swarm should be constructing workers and only workers. If it is not, you may want to set it to be constructing workers now.")
 show("Dès maintenant, votre Ruche devrait construire des ouvrières et uniquement des ouvrières. Si ce n'est pas le cas, vous devriez faire ce qu'il faut pour cela", fr)
 show("Im Augenblick sollte dein Stock Arbeiter und nichts als Arbeiter erschaffen. Falls das nicht so ist, ändere das ab.",de)
 show("En este momento tu colmena debe estar creando trabajadores, y solamente trabajadores.  Si no es así, procura que construya trabajadores en este momento.",es)
 space
 
-show("Units seem to be coming out of the Swarm at a very slow pace. We want to kick it up a notch! Having just 3 or 4 workers isn't very usefull in a common game. So select the Swarm, and assign 6 workers to be working on it. Don't be surprised, it may be allot of workers, but very soon we will have that many, and setting it to 6 now saves us the trouble of changing it again later.")
+show("Units seem to be coming out of the Swarm at a very slow pace. We want to kick it up a notch! Having just 3 or 4 workers isn't very useful in a common game, so select the Swarm, and assign 6 workers to be working on it. Don't be surprised. It may be a lot of workers, but very soon we will have that many, and setting it to 6 now saves us the trouble of changing it again later.")
 show("Les unités semblent sortir de la Ruche à une fréquence très faible. Nous voulons les activer un peu ! Ne disposer que de 3 ou 4 ouvrières ne sert pas à grand chose dans une partie classique. Sélectionnez donc la Ruche et assignez-lui 6 ouvrières. Ne soyez pas surpris, cela peut sembler beaucoup, mais très bientôt nous en aurons suffisamment, et en assigner 6 tout de suite nous épargne la peine de le faire plus tard.", fr)
 show("Im Moment kommen die Arbeiter in großen Abständen zu deinem Stock. Das wollen wir etwas verschnellern! Nur 3 bis 4 Arbeiter beim Stock zu beschäftigen ist nicht sehr ratsam während einem normalen Spiel. Selektiere deshalb den Stock und weise ihm 6 Arbeiter zu. Im Moment ist es eigentlich noch nicht notwendig so viele Arbeiter am Stock zu beschäftigen, aber es wird uns später Ärger ersparen.",de)
 show("Las unidades salen de la colmena lentamente. Sería bueno que fuera más rápido!  Solamente 3 o 4 trabajadores no es muy útil en un juego.  Selecciona la colmena y asigna 6 trabajadores para que estén laborando en esta.  No te sorprendas, parecen muchos, pero verás que el tener todos ellos y colocar 6, te ahorrará el tener que hacerlo más adelante.",es)
 space
 
-show("Once we have about 8 workers, we will slow things down, and start some new tasks. But for now, we have to wait some more. Don't be dissapointed, most of the game is not spent waiting.")
+show("Once we have about 8 workers, we will slow things down, and start some new tasks. But for now, we have to wait some more. Don't be dissapointed. Most of the game is not spent waiting.")
 show("Une fois que nous disposons d'environ 8 ouvrières, nous allons ralentire un peut et commencer de nouvelles activités. Mais pour l'instant, nous devons attendre encore un peu. Ne soyez pas déçu, on ne passe pas la majorité du jeu à attendre.", fr)
 show("Sobald du 8 Arbeiter hast gehen wird die Dinge etwas langsamer an und wenden uns Neuem zu. Aber vorerst musst du noch warten. Sei nicht enttäuscht, die meiste Zeit eines Spiel wirst du nicht warten können.",de)
 show("Ahora que tenemos 8 trabajadores, bajaremos el ritmo, y comenzaremos a hacer nuevas tareas.  Pero por ahora tenemos que esperar un poco más. No te desesperes, la mayoría del juego no se desarrolla esperando.",es)
@@ -231,13 +232,13 @@ space
 hide
 wait(Worker(0) > 3)
 
-show("We are making progress towoards our goal. The swarm now has several units assigned to it. This is good, the rest of the units should come out quickly.")
+show("We are making progress towards our goal. The Swarm now has several units assigned to it. This is good. The rest of the units should come out quickly.")
 show("Nous nous acheminons doucement vers notre but. La ruche occupe maintenant plusieurs unités. C'est une bonne chose, le reste des unités devrait etre pret bientôt", fr)
 show("Wir machen Fortschritte auf dem Weg zu unserem Ziel. Dem Stock sind nun mehrere Arbeiter zugewiesen. Die restlichen Arbeiter sollten schnell erstellt sein.",de)
 show("Estamos llegando a nuestra meta. La colmena tiene varios trabajadores asignados a ella.  Es bueno, el resto de unidades deberían salir rápidamente.",es)
 space
 
-show("It takes 5 wheat to create a worker at a Swarm, and it takes a long time to carry the wheat from the field on the left to the swarm on the right. Notice how you can fill up an Inn with wheat with only 1 worker, but yet it takes many workers to keep a Swarm full. When playing a game, try to make sure that buildings that require wheat are nearer to wheat fields.")
+show("It takes 5 wheat to create a worker at a Swarm, and it takes a long time to carry the wheat from the field on the left to the Swarm on the right. Notice how you can fill up an Inn with wheat with only 1 worker, but it takes many workers to keep a Swarm full. When playing a game, try to make sure that buildings that require wheat are nearer to wheat fields.")
 show("La création d'une ouvrière à la Ruche nécessite 5 unités de blé et l'acheminement du blé depuis le champ à gauche vers la ruche à droite. Remarquez que vous pouvez maintenir l'auberge à son taux de remplissage maximal avec seulement une ouvrière, mais vous devez en mobiliser beaucoup pour approvisionner la ruche. Lorsque vous jouez, assurez-vous que les bâtiments qui ont besoin de blé se trouvent très près des champs.", fr)
 show("Es kosten 5 Weizeneinheiten einen Arbeiter zu erstellen und es braucht viel Zeit Weizen vom linken Feld zum Stock auf der rechten Seite zu befördern. Beachte das 1 Arbeiter ausreicht, um einen Gasthof mit Nahrung zu versorgen, aber dass es mehr Arbeiter braucht um einen Stock aufzufüllen. Wenn du spielst stelle sicher, dass Gebäude, die Weizen benötigen, in der Nähe von Weizenfeldern stehen.",de)
 show("Para que una colmena produzca un trabajador se requiere 5 unidades de maíz, y se emplea bastante tiempo traer los insumos del campo de la izquierda a la colmena en la derecha.  Nota que puedes llenar una taberna de maíz con solamente 1 trabajador, pero se requieren varios trabajadores para mantener la colmena llena.  Cuando juegues, asegúrate que las construcciones que requieren maíz estén cerca a los campos de maíz.",es)
@@ -245,20 +246,20 @@ space
 hide
 wait(Worker(0) > 7)
 
-show("Well, we have reached our goal. Now its time to start experimenting. But first, lets slow the rate at which the Swarm creates units down, so we don't get overloaded with units in a moment. Click on the Swarm, and set it so that only 1 worker is assigned to it.")
+show("Well, we have reached our goal. Now it's time to start experimenting. But first, let's slow down the rate at which the Swarm creates units so we don't get overloaded with units in a moment. Click on the Swarm and set it so that only 1 worker is assigned to it.")
 show("Bien, nous avons atteint notre objectif. Il est temps de commencer à découvrir d'autres choses. Mais, tout d'abord, diminuons la vitesse de production de la Ruche sous peine d'etre rapidement surchargés d'unités. Cliquez sur la Ruche et assignez-lui une seule unité", fr)
 show("So, das erste Ziel ist erreicht. Nun ist es an der Zeit zu experimentieren. Aber lass uns zuerst die Rate senken, mit welcher der Stock Arbeiter produziert, damit wir nicht mit Einheiten überschwemmt werden. Klicke auf den Stock und setze den 'An der Arbeit'-Balken so, dass nur 1 Arbeiter am Stock arbeitet.",de)
 show("Hemos alcanzado nuestra meta. Ahora llegó el momento de experimentar. Pero primero, disminuyamos la velocidad a la que la colmena crea unidades, y no tendremos demasiados trabajadores para administrar en cierto momento. Selecciona la colmena y asegúrate que solamente un trabajador esté asignado a ella.",es)
 space
 
-show("Very good. We are making excellent progress with our colony. We need to start expanding, but first, we should put ourselves on a solid footing. With all these units floating around, I don't think one Inn is enough anymore, so, using the same procedure as you did earlier, build another Inn, just north of our existing Inn.")
+show("Very good. We are making excellent progress with our colony. We need to start expanding, but first, we should put ourselves on a solid footing. With all these units floating around, I don't think one Inn is enough anymore, so using the same procedure as you did earlier, build another Inn, just north of our existing Inn.")
 show("Très bien. Notre colonie progresse très bien. Nous allons devoir nous étendre, mais avant tout, nous devons créer des bases solides. Avec toutes ces unités aux alentours, je ne pense pas qu'une seule auberge soit suffisante, aussi, comme précédemment, construisez une autre auberge, à proximité de la première.", fr)
 show("Sehr gut! Wir machen gute Fortschritte mit unserer Kolonie. Wir müssen sie vergrößern, aber zuerst sollten wir uns um genug Nahrung kümmern. Mit all diesen umherwuselnden Einheiten denke ich nicht, dass ein einziger Gasthof genügt. Baue einen neuen Gasthof nördlich von deinem bereits existierenden.",de)
 show("Muy bien. Nuestra colonia está progresando. Ahora viene la expansión, pero primero, fortalezcamos lo que ya es nuestro.  Con todas esas unidades por ahí. No creo que una taberna sea suficiente, crea una nueva, al norte de la que ya está, con el mismo procedimiento que llevaste a cabo antes",es)
 wait(Inn(0,0) > 0)
 hide
 
-show("We have several free workers, so feel free to assign as many workers as you want to the Inn to get it constructed fast. Keep in mind, though, that the Inn only needs three logs of wood, so assigning anymore than 3 workers to the Inn will prove to be a waist of time.")
+show("We have several free workers, so feel free to assign as many workers as you want to the Inn to get it constructed fast. Keep in mind, though, that the Inn only needs three logs of wood, so assigning any more than 3 workers to the Inn will prove to be a waste of time.")
 show("Nous disposons de plusieurs ouvrières libres, sentez-vous libre d'en assigner autant que vous voulez à la construction de l'auberge pour qu'elle soit rapidement terminée. Gardez tout demêmeà l'esprit que l'auberge n'a besoin que de trois unités de bois, donc lui assigner plus de 3 ouvrières serait une perte de temps", fr)
 show("Du hast einige Arbeiter, die nichts zu tun haben, deshalb kannst du so viele  wie du möchtest zum Bau des Gastshofs abkommandieren. Beachte aber, dass die Gaststätte nur 3 Holzeinheiten benötigt - und somit eine Zuteilung von mehr als 3 Arbeitern sinnlos wäre.",de)
 show("Tenemos muchos trabajadores desocupados.  Asigna tantos trabajadores como desees a la construcción de la taberna para que terminen rápido. Recuerda que una taberna solamente necesita tres cargas de madera, y asignar más de 3 trabajadores a la construcción será malgastar los recursos",es)
@@ -272,33 +273,33 @@ show("Super! Nun reduziere die Anzahl der Arbeiter am Gasthof auf einen, da er a
 show("Perfecto.  Reduce a 1 el número de trabajadores asignados en la nueva taberna, debido a que no necesitamos más para recolectar el maíz.",es)
 space
 
-show("Its about time to introduce something new. Our workers seem to walk fairly slowly, we would prefer them to go a little bit faster, so that they can do more things sooner. If you think the problem is hopeless, think again! This is exactly the purpose of the Racetrack.")
+show("It's about time to introduce something new. Our workers seem to walk fairly slowly. We would prefer them to go a little bit faster so that they can do more things sooner. If you think the problem is hopeless, think again! This is exactly the purpose of the Racetrack.")
 show("Il est temps maintenant d'introduire un nouvel élément. Nos ouvrières marchent assez lentement, il serait préférable qu'elles aillent un peu plus vite, afin de pouvoir bientôt faire plus de choses. Si vous pensez que le problème est insoluble, repensez-y ! C'est également le but de la Piste de Course.", fr)
 show("Es ist an der Zeit etwas Neues einzuführen. Deine Arbeiter scheinen sehr langsam zu laufen. Wir möchten sie ein bisschen schneller machen, damit sie mehr Dinge in kürzerer Zeit erledigen können. Wenn du jetzt glaubst, dieses Problem sei nicht zu lösen, dann hast du dich geirrt. Das ist nämlich genau das, was eine Rennbahn macht.",de)
 show("Es hora de algo nuevo. Nuestros trabajadores caminan lentamente, quisiéramos que fueran más rápidos para que sean más eficientes.  Lo que estamos comentando no es fútil, y la pista de carreras nos ayudará en esto.",es)
 space
 
 GuiEnable(Racetrack)
-show("The Racetrack is a really big building. Allot larger than our Inn or our swarm. Lets try to construct one. Remember to click the first icon under the minimap to give you the selection of buildings. But first, we should find out what ressources are needed to construct a Racetrack. So, move your mouse pointer over the Racetrack icon on the right, but don't select a Racetrack just yet. Now look at the bottom of the right hand side menu. It tells us about the Racetrack.")
+show("The Racetrack is a really big building. A lot larger than our Inn or our Swarm. Lets try to construct one. Remember to click the first icon under the minimap to give you the selection of buildings. But first, we should find out what resources are needed to construct a Racetrack, so move your mouse pointer over the Racetrack icon on the right, but don't select a Racetrack just yet. Now look at the bottom of the right hand side menu. It tells us about the Racetrack.")
 show("La piste de course est un très grand bâtiment. Beaucoup plus que notre auberge ou notre ruche. Souvenez-vous que cliquer sur la premiere icone sous la mini-carte vous donne accès à la construction de bâtiments. Mais avant tout, nous devons savoir quelles sont les ressources nécessaires à la construction d'une piste de course. Placez donc votre curseur au-dessus de l'icone de la piste de course sur la droite, sans la sélectionner. Observez maintenant le bas du panneau latéral, vous y trouverez des informations sur la piste de course", fr)
 show("Die Rennstecke ist ein großes Gebäude, viel größer als der Gasthof oder der Stock. Lass uns versuchen eine zu bauen. Aber zuerst solltest du wissen, welche Ressourcen eine Rennbahn benötigt. Fahre mit der Maus über das Icon der Rennstrecke und schau auf den Boden der Leiste.",de)
 show("La pista de carreras es un edificio grande.  Mucho más que una colmena o una taberna. Construyamos una. Recuerda elegir primero el ícono del minimapa para acceder a la selección de construcciones. Pero primero debemos ver qué recursos hacen falta para construir una pista de carreras. Lleva el puntero al ícono de la pista de carreras a la derecha, pero no selecciones la pista todavía, mira en la parte inferior del menú a la derecha. Te ofrece datos acerca de la pista.",es)
 space
 
-show("You may have already figured that the Racetrack needs allot of wood, and a small amount of stone. Because the Racetrack is a big, and somewhat important building, we will also want to place it in a more central location, rather than right up against wood or stone.")
+show("You may have already figured that the Racetrack needs a lot of wood, and a small amount of stone. Because the Racetrack is a big and somewhat important building, we will also want to place it in a more central location, rather than right up against wood or stone.")
 show("Vous avez peut etre déjà réalisé que la Piste de Course nécessite une importante quantité de bois et un peu de pierre. Comme la Piste de Course est un bâtiment imposant et quelque peu important, il est avisé de le placer au centre de la base plutot qu'accolé aux bois ou à la carrière", fr)
 show("Du hast herausgefunden, dass eine Rennstrecke viel Holz und ein paar Steine benötigt. Weil die Rennbahn aber ein großes und wichtiges Gebäude ist, wollen wir es lieber zentral platzieren als in der Nähe von Steinen und Holz.",de)
 show("Habrás notado que la pista exige mucha madera y algo de roca. Debido a que la pista es grande y tiene cierta importancia, buscaremos colocarla en un lugar central, en lugar de ubicarla muy cerca a la madera o la roca.",es)
 space
 
-show("Now, construct a Racetrack. You can build it anywhere you desire, but my personall reccomendation is to build it below the swarm. There is, however, one important thing to remember when constructing a Racetrack. You must leave a gap around the edge of the Racetrack, for reasons that will later become clear.")
+show("Now, construct a Racetrack. You can build it anywhere you desire, but my personal recommendation is to build it below the Swarm. There is, however, one important thing to remember when constructing a Racetrack. You must leave a gap around the edge of the Racetrack, for reasons that will later become clear.")
 show("À présent, construisez une Piste de Course. Vous pouvez la construire où vous le voulez, mais je vous recommande de la placer près de la ruche. Toutefois, il y a un élément important à prendre en compte lors de la construction d'une Piste de Course. Vous devez laisser un espace autour, pour des raisons qui vous seront expliquées plus loin", fr)
 show("Baue jetzt eine Rennstrecke. Du kannst sie bauen wo es dir gefällt, aber meine persönliche Empfehlung wäre, dass du sie unter dem Stock baust. Und es gibt noch etwas, das du wissen solltest. Wenn du eine Rennstrecke baust, musst du um sie herum  etwas Platz lassen. Den Grund wirst du bald erfahren.",de)
 show("Construye una pista de carreras. Puedes colocarla donde desees, pero mi recomendación personal es construirla bajo la colmena.  Aunque hay algo muy importante que debes recordar cuando construyes una de estas: debes dejar espacios libres que la circunden, por razones que serán evidentes más adelante.",es)
 wait(Racetrack(0, 0) > 0)
 hide
 
-show("Good. Now we should make use of our large amount of free workers to put this Racetrack up quickly. Assign between 5 to 7 workers to construct the Racetrack, seeing as it needs 7 resources to complete.")
+show("Good. Now we should make use of our large amount of free workers to put this Racetrack up quickly. Assign between 5 and 7 workers to construct the Racetrack, seeing as it needs 7 resources to complete.")
 show("Bien. Maintenant, nous devrions utiliser nos nombreuses ouvrières innocupées pour construire cette Piste de Course rapidement. Assignez 5 à 7 ouvrières à la construction de la Piste de Course, étant donné qu'elle nécessite 7 ressources", fr)
 show("Gut. Nun solltest du deine freien Arbeiter dazu nutzen, die Rennstrecke schnell zu bauen. Teile der Rennstrecke 5 bis 7 Arbeiter zu, da 7 Ressourcen gebraucht werden.",de)
 show("Bien. Empleemos a esa cantidad de trabajadores en la pista de carreras. Asigna entre 5 y 7 de ellos para construirla, dándonos cuenta que requiere 7 recursos para completarse.  ",es)
@@ -313,49 +314,49 @@ hide
 
 wait(Racetrack(0, 1) > 0)
 
-show("Cool. You should be seeing a bunch of globules heading into the Racetrack. This is good news, the globules are going to begin training, and when they come out, they will be plenty faster.")
+show("Cool. You should be seeing a bunch of globules heading into the Racetrack. This is good news. The globules are going to begin training, and when they come out, they will be plenty faster.")
 show("OK. Vous devriez voir un groupe de globules s'entrainant sur la Piste de Course. C'est une bonne nouvelle, les globules vont commencer à s'entrainer et lorsqu'ils sortiront, ils seront beaucoup plus rapides.", fr)
 show("Cool. Du solltest beobachten wie ein paar Einheiten in der Rennstrecke verschwinden, das sind gute Nachrichten! Die Einheiten werden dort trainiert und wenn sie herauskommen sind sie um einiges schneller als zuvor.",de)
 show("Super! Una manada de glóbulos debe estar dirigiéndose a la pista de carreras. Son buenas noticias! Los glóbulos comenzarán a ejercitarse y cuando salgan serán bastante rápidos.",es)
 space
 
-show("We can examine their progress easily. Click on the Racetrack. You will see a bar on the right hand side menu. There is a bunch of small blue lines slowly making their way along the bar. Those represent your globules, and the closer a globules line is to the end, the closer it is to being finished its training. The units will be done their training very soon.")
+show("We can examine their progress easily. Click on the Racetrack. You will see a bar on the right hand side menu. There is a bunch of small blue lines slowly making their way along the bar. Those represent your globules, and the closer a globule's line is to the end, the closer it is to being finished with its training. The units will be done with their training very soon.")
 show("Il est facile d'observer leurs progrès. Cliquez sur la Piste de Course. Vous verrez une barre dans le menu latéral. Des lignes bleues parcourent lentement la barre. Elles représentent vos globule et plus la ligne d'un globule est proche de l'extrémité de la barre, plus le globule est proche de la fin de son entrainement. Les unités auront fini leur entrainement très bientôt.", fr)
 show("Du kannst ihren Fortschritt leicht überwachen. Klick auf die Rennstrecke. Du wirst einen schmalen Balken auf der rechten Seite sehen. In dem Balken laufen blaue Linien von links nach rechts. Diese blauen Linien repräsentieren deine Einheiten. Und je weiter rechts die Einheiten sind desto weiter fortgeschritten ist ihr Training. Die in der Rennstrecke befindlichen Einheiten werden bald fertig sein.",de)
 show("Podemos examinar su progreso fácilmente. Elije la pista de carreras.  Verás una barra en el menú de la derecha. Hay varias líneas azules moviéndose lentamente de izquierda a derecha.  Representan tus glóbulos y a medida que está más cerca del extremo derecho, indica que está terminando de entrenar.  Las unidades terminarán muy pronto su entrenamiento.",es)
 space
 
-show("Haha! Our new super-workers are fit and ready for work! Your workers now go a lot faster, they will certainly be a usefull attribute to our colony. However, although these units go faster, they will consume food faster. So its a trade-off, but certainly one that is greatly to your advantage, because although they eat faster, they collect wheat faster too.")
+show("Haha! Our new super-workers are fit and ready for work! Your workers now go a lot faster. They will certainly be a useful attribute to our colony. However, although these units go faster, they will consume food faster, so it's a trade-off, but certainly one that is greatly to your advantage, because although they eat faster, they collect wheat faster too.")
 show("Haha ! Nos nouvelles super-ouvrières sont pretes à travailler ! Nos ouvrières se déplacent maintenant beaucoup plus vite, elles seront certainement un atout précieux pour notre colonie. Toutefois, bien que ces unités aillent plus vite, elles consomment leur nourriture plus vite. Il s'agit donc d'un comprimis mais il est certainement grandement à votre avantage, car bien qu'ils mangent plus vite, ils récoltent le blé plus rapidement également", fr)
 show("Ha! Deine neuen Super-Arbeiter sind fit und bereit für die Arbeit. Da deine Arbeiter nun schneller sind, werden sie deiner Kolonie noch mehr nutzen. Jedoch werden sie, da sie sich nun schneller bewegen, auch schneller hungrig. Allerdings sammeln sie jetzt auch schneller Weizen, womit sich das wieder ausgleicht.",de)
 show("Eso es! nuestros nuevos super trabajadores están en forma y listos para trabajar!  Tus trabajadores andarán más rápido, serán muy útiles a nuestra colonia, aunque hacer que anden más rápido significará que consumirán comida más rápido. Es una compensación, pero es ventajoso, porque a pesar de que comen rápido, también recolectan comida más rápido.",es)
 space
 
-show("Look at the very top of the screen, on the left hand side. You should see two numbers. These numbers represent your workers. The first one tells you how many workers you have free, doing nothing. In general, you should be using as many as your workers as possible without overloading them with work. This gives you the best bang for your buck. The second number tells you the totall number of workers you have. It has certainly risen a bit since we had only 8 workers.")
+show("Look at the very top of the screen on the left-hand side. You should see two numbers. These numbers represent your workers. The first one tells you how many workers you have free, doing nothing. In general, you should be using as many of your workers as possible without overloading them with work. This gives you the best bang for your buck. The second number tells you the total number of workers you have. It has certainly risen a bit since we had only 8 workers.")
 show("Observez la partie supérieure de l'écran, à gauche. Vous devriez y voir deux nombres. Ils représentent vos ouvrières. Le premier vous indiquent combien sont innoccupées. En général, vous devriez exploiter un maximum d'ouvrière sans toutefois les surcharger de travail. Le second chiffre vous indique le nombre total d'ouvrières dont vous disposez. Il a certainement augmenté depuis le moment où nous avions seulement 8 ouvrières", fr)
 show("Schaue auf den oberen Teil deines Bildschirms, ganz auf der linken Seite. Du solltest 2 Zahlen sehen. Diese Zahlen repräsentieren deine Arbeiter. Die erste zeigt dir die Zahl der Arbeitern an, die  faul sind und nichts tun. Normalerweise solltest du so viele Arbeiter wie möglich nutzen, ohne sie jedoch zu überlasten. Das gibt deiner Kolonie den letzten Schliff. Die zweite Zahl gibt Auskunft über die Gesamtzahl deiner Arbeiter. Sie ist doch etwas gewachsen seit wir nur 8 Arbeiter hatten.",de)
 show("Mira la parte superior de la pantalla, al lado izquierdo. Hay dos números ahí, representan tus trabajadores.  El primero indica cuantos tienes disponibles, sin hacer nada.  Debes tratar de usar tantos como sea posible sin sobrecargarlos con trabajo.  Será el mejor presupuesto.  El segundo dice la cantidad que tienes en total.  Debe haber crecido desde que comenzamos con 8.",es)
 space
 
-show("Those numbers are very usefull. Remember them for later.")
+show("Those numbers are very useful. Remember them for later.")
 show("Ces nombres sont très utiles, souvenez-vous en.", fr)
 show("Diese Zahlen sind sehr wichtig. Merke sie dir für später!",de)
 show("Esas cifras son muy útiles, haz uso de ellas.",es)
 space
 
-show("Infact, I think these numbers are getting a bit too big! Do you think we can handle this many workers? Well, we have 2 Inns. Each Inn has a place for 4 units. If we think of the worst case scenario, at maximum, 8 of our units can get hungry at the same time.")
+show("In fact, I think these numbers are getting a bit too big! Do you think we can handle this many workers? Well, we have 2 Inns. Each Inn has a place for 4 units. If we think of the worst case scenario, at most 8 of our units can get hungry at the same time.")
 show("En fait, je pense que ces nombres sont en train de devenir trop grands ! Pensez-vous que nous puissions gérer autant d'ouvrières ? Et bien, nous disposont de 2 auberges, chaque auberge a de la place pour 4 unités. En considérant le pire des scénarios, 8 unités au maximum peuvent avoir faim simultanément.", fr)
 show("Ich glaube, dass diese Zahlen etwas zu groß werden. Denkst du, wir können mit so vielen Einheiten umgehen? Nun, du hast 2 Gasthöfe. Jeder Gasthof kann 4 Einheiten verpflegen. Wenn wir an den schlimmsten Fall denken, können nur 8 Einheiten zur selben Zeit essen!",de)
 show("Al parecer esos números están creciendo bastante!  Podremos manejarlos a todos? Tenemos 2 tabernas.  Cada taberna puede atender a 4 unidades.  En el peor de los casos, como máximo, 8 de nuestras unidades pueden estar hambrientas al tiempo.",es)
 space
 
-show("2 Inns does suit us for now, but it won't last us long. If we want to save ourselves effort later, such as dealing with starvation, we should build more Inns now, and forget about the problem untill our colony is allot larger.")
+show("2 Inns does suit us for now, but it won't last us long. If we want to save ourselves effort later, such as dealing with starvation, we should build more Inns now and forget about the problem until our colony is a lot larger.")
 show("Deux auberges nous conviennent pour l'instant, mais pas pour longtemps. Si nous voulons nous épargner des difficultés ultérieures, comme des famines, nous devrions construire plus d'auberges dès maintenant, et oublier le problème jusqu'à ce que la colonie soit beaucoup plus grande.", fr)
 show("2 Gasthöfe reichen im Moment noch aus, aber das wird nicht lange anhalten. Wenn du deine Kolonie vor dem Hungertod bewahren willst, solltest du jetzt noch mehr Gasthöfe bauen und dann dieses Problem fürs erste vergessen, bis deine Kolonie ein ganzes Stück größer ist.",de)
 show("Las tabernas son suficientes por ahora, pero no será así por mucho tiempo.  Si queremos ahorrarnos esfuerzos posteriores y no sufrir de hambrunas, es mejor que hagamos más tabernas ahora y nos olvidemos de los problemas de nuestra colonia hasta que haya crecido mucho.",es)
 space
 
-show("Lets build 3 more Inns. Food is very important, remember to manage your Inns well whenever your playing a game. If a worker can not get any food, it will no longer do any work, and infact, it will die of starvation. By now, you should be fairly comfortable with constructing buildings, it should be no problem for you to construct a few more. Try to keep them along side the wheat, and assign as many workers as you want to each of them.")
+show("Let's build 3 more Inns. Food is very important, so remember to manage your Inns well whenever you're playing a game. If a worker can not get any food, it will no longer do any work, and in fact, it will die of starvation. By now, you should be fairly comfortable with constructing buildings, and it should be no problem for you to construct a few more. Try to keep them alongside the wheat, and assign as many workers as you want to each of them.")
 show("Construisons trois auberges supplémentaires. La nourriture est très importante, pensez à bien gérer vos auberges lorsque vous jouez. Si une ouvrière ne peut pas trouver de quoi se nourrir, il ne travaillera plus et, en fait, mourra de dénutrition. Maintenant, vous devriez etre familier avec la construction de bâtiments, et l'ajout de nouvelles auberges ne devrait pas etre un problème. Essayez de les placer près du blé et assignez-y autant d'ouvrières que vous le désirez.", fr)
 show("Bau jetzt noch 3 Gasthöfe. Nahrung ist sehr wichtig, darum führe deine Gasthöfe gut, wenn du spielst. Wenn ein Arbeiter keine Nahrung bekommt, wird er keine Arbeit mehr verrichten und letztendlich verhungern. Mittlerweile solltest du mit der Errichtung von Gebäuden vertraut sein, es sollte kein Problem für dich sein ein paar mehr zu errichten. Versuche die Gasthöfe in der Nähe des Weizenfeldes zu bauen und lasse so viele Arbeiter daran arbeiten wie du möchtest.",de)
 show("Construyamos 3 tabernas más.  La comida es muy importante, recuerda administrarlas durante el desarrollo del juego.  Si un trabajador no puede obtener comida, no podrá trabajar, y morirá de inanición.  Ahora que eres un constructor no deberías tener problemas para crear otras tres.  Trata de colocarlas cerca al maíz, y asigna los trabajadores que consideres necesarios.",es)
@@ -363,26 +364,26 @@ space
 hide
 wait(Inn(0, 1) > 4)
 
-show("Good work, now reduce those Inns back to one unit, they don't need many workers to keep full of wheat, especcially considering how fast our new workers can collect wheat.")
+show("Good work, now reduce those Inns back to one unit. They don't need many workers to keep full of wheat, especially considering how fast our new workers can collect wheat.")
 show("Bon boulot, réduisez maintenant à un le nombre d'ouvrières assignées aux auberges, elles n'en n'ont pas besoin de beaucoup pour maintenir leurs stocks au maximum, en particulier si l'on regarde la vitesse à laquelle les ouvrières peuvent récolter le blé.", fr)
 show("Gute Arbeit. Reduziere die Arbeiter bei den Gaststätten auf einen, da einer ausreicht, um Weizen zu sammeln. Vor allem, da er es jetzt ja schneller sammelt.",de)
 show("Buen trabajo, reduce ahora los trabajadores a uno, no necesitan muchos trabajadores para que estén llenas de maíz, sobre todo considerando cuan rápido nuestros trabajadores pueden recolectar maíz.",es)
 space
 
-show("Our colony is getting pretty large. We are already seeing the improvements that the Racetrack has given us. So its about time we learn another new skill: swimming.")
+show("Our colony is getting pretty large. We are already seeing the improvements that the Racetrack has given us. So it's about time we learn another new skill: swimming.")
 show("Notre colonie devient relativement grande. Nous avons déjà vu les améliorations apportées par la Piste de Course. Il est maintenant temps de leur apprendre une nouvelle capacité : la nage.", fr)
 show("Deine Kolonie ist stark gewachsen. Du siehst sicherlich die Vorteile, die dir die Rennbahn bringt. Deshalb ist es an der Zeit eine neue Fähigkeit zu lernen: schwimmen",de)
 show("Nuestra colonia está creciendo mucho. Estamos viendo las mejoras que la pista de carreras nos ha dado.  Así que es hora de aprender una nueva habilidad: nadar.",es)
 space
 
 GuiEnable(Pool)
-show("Swimming can be learned at the Swimming Pool. Constructing a swimming pool is as easy as constructing a Racetrack, and they are about the same size. Remember to leave a fairly large gap around the edge of the Swimming Pool, even larger when you place it close to resources, because the resources can grow into that gap you left.")
+show("Swimming can be learned at the Swimming Pool. Constructing a Swimming Pool is as easy as constructing a Racetrack, and they are about the same size. Remember to leave a fairly large gap around the edge of the Swimming Pool, even larger when you place it close to resources, because the resources can grow into that gap you left.")
 show("La nage peut etre apprise à la Piscine. La construction d'une piscine est aussi simple que celle d'une Piste de Course et les deux bâtiments font à peu près lamêmetaille. Souvenez-vous de laisser un espace autour de la Piscine, d'autant plus large qu'elle est pret des ressources, puisque celles-ci peuvent se développer dans les espaces au vous avez laissé.", fr)
 show("Schwimmen kann man in einem Schwimmbad lernen. Baue ein Schwimmbad, es ist genauso einfach wie der Bau der Rennstrecke. Es hat auch ungefähr die selbe Größe. Erinnere dich daran einen schmalen Rand um das Schwimmbad zu lassen. Lass einen sehr viel größeren Rand, wenn dein Schwimmbad in der Nähe von Ressourcen steht, da diese sonst in diesen Rand hinein wachsen können.",de)
 show("Si leemos los datos de la piscina, descubrimos que requiere mucha madera, pero nada más.  Así que buscaremos un espacio libre cerca a la madera.  Creo que vimos uno de esos, justo al noreste de nuestra base principal, debajo de las rocas.  Construyamos nuestra nueva piscina ahí.  Recuerda aprovechar la gran cantidad de trabajadores que tienes desempleados para construir la piscina rápido.",es)
 space
 
-show("If we read the data for Swimming Pool, we discover that it takes up plenty of wood, but not anything else. So, we're looking for a large, open clearing near wood. I think I saw one of those just North-East of our main base, right above the stone. Lets build our new swimming pool there. Remember to take advantage of your large amount of free workers to get the pool put up quickly.")
+show("If we read the data for Swimming Pool, we discover that it takes up plenty of wood, but not anything else. So, we're looking for a large, open clearing near wood. I think I saw one of those just North-East of our main base, right above the stone. Let's build our new Swimming Pool there. Remember to take advantage of your large amount of free workers to get the Pool put up quickly.")
 show("Si nous consultons les informations sur la Piscine, nous découvrons qu'elle nécessite une grande quantité de bois, mais rien d'autre. Nous allons donc nous lancer à la recherche d'une clairière assez grande en bordure d'un bois.  Il me semble en avoir vu une  juste au Nord-Est de notre base, juste au dessus des pierres. Construisons notre nouvelle piscine juste ici. Souvenez-vous de tirer avantage de votre grande quantité d'ouvrières libres pour aller plus vite.", fr)
 show("Wenn du dir die Daten des Schwimmbades ansiehst, stellst du fest, dass nur eine Menge Holz und weiter nichts benötigt wird. Deshalb brauchst du eine große Baufläche in der Nähe vom Wald. Ich denke, ich habe eine gesichtet, nordöstlich deiner Hauptbasis, direkt oberhalb der Steinen. Baue dein neues Schwimmbad dort. Denke daran, so viele freie Arbeiter wie möglich zu nutzen, um den Bau zu beschleunigen.",de)
 show("Si leemos los datos de la piscina, descubrimos que requiere mucha madera, pero nada más.  Así que buscaremos un espacio libre cerca a la madera.  Creo que vimos uno de esos, justo al noreste de nuestra base principal, debajo de las rocas.  Construyamos nuestra nueva piscina ahí.  Recuerda aprovechar la gran cantidad de trabajadores que tienes desempleados para construir la piscina rápido.",es)
@@ -390,50 +391,50 @@ space
 hide
 wait(Pool(0, 1) > 0)
 
-show("Wow! What a large, wonderous pool you have constructed. You should already see your globules heading in to learn a new skill!")
+show("Wow! What a large, wondrous Pool you have constructed. You should already see your globules heading in to learn a new skill!")
 show("Ohla ! Quelle grande et merveilleuse piscine vous avez bati. Vous devriez déjà voir vos globules se précipiter pour apprendre à nager !", fr)
 show("Wow! Was für ein wundervolles Schwimmbad du gebaut hast. Du solltest schon Einheiten bemerken, die in das Schwimmbad gehen um eine neue Fähigkeit zu erlernen.",de)
 show("Guau!  Que gran y maravillosa piscina has construido.  Seguro has visto tus glóbulos encaminarse a ella para aprender una nueva habilidad!",es)
 space
 
-show("Lets keep track of the progress, shall we? Click on the Swimming Pool now, and look at the right hand side menu. Like the Racetrack, there is a long bar, and small, vertical, blue bars travelling along it. However, unlike the Racetrack, only 3 globules may train at a Swimming Pool at any one time.")
+show("Lets keep track of the progress, shall we? Click on the Swimming Pool now, and look at the right-hand side menu. Like on the Racetrack, there is a long bar, and small, vertical, blue bars travelling along it. However, unlike the Racetrack, only 3 globules may train at a Swimming Pool at any one time.")
 show("Si nous jetions un oeil aux progrès de nos globules ? Cliquez sur  la Piscine et observez le menu latéral. Comme pour la Piste de Course, il y a une longue barre et de petites barres latérales qui se déplacent dessus. Cependant, contrairement à la Piste de Course, seuls trois globulent peuvent s'entrainer simultanément.", fr)
 show("Verfolge doch mal den Fortschritt im Schwimmbad. Klicke dazu auf das Schwimmbad und schaue auf das Menü auf der rechten Seite. Wie in der Rennstrecke gibt es einen langen horizontalen Balken und kleine vertikale blaue Balken, die ihn entlanglaufen. Im Gegensatz zur Rennstrecke können im Schwimmbad nur 3 Einheiten trainieren.",de)
 show("Revisemos el progreso, lo hacemos?  Selecciona la piscina, y mira en el menú derecho.  Al igual que la pista de carreras, hay una larga barra, y pequeñas barras verticales azules viajando a través de ella. Pero a diferencia de la pista de carreras, solamente 3 glóbulos pueden entrenar en una piscina en un momento dado.",es)
 space
 
-show("Our globules are now first class swimmers! But, we won't see them doing much swimming just yet, we need to do something that calls upon their newly learned swimming skills.")
+show("Our globules are now first class swimmers! But we won't see them doing much swimming just yet. We need to do something that calls upon their newly learned swimming skills.")
 show("Nos globules sont maintenant des nageurs de premier ordre ! Mais cela ne leur sert pas à grand chose pour l'instant, nous devons faire quelque chsoe faisant appel à leurs nouvelles compétences.", fr)
 show("Unsere Einheiten sind nun erstklassige Schwimmer. Aber wir wollen sie jetzt nicht beim schwimmen im Bad beobachten, wir brauchen etwas, wo sie ihre neu erlernten Schwimmfähigkeiten unter Beweis stellen können.",de)
 show("Nuestros glóbulos son nadadores de primera!  Pero no hemos visto demostración de esto, tendremos que invitarlos a que aprovechen su nueva habilidad de nado.",es)
 space
 
-show("There will be plenty of things that will make swimming usefull. So don't quit out yet, there is still allot to learn. If you don't have enough time to continue, remember that you can save at anytime using the menu icon, which is on the upper-left hand corner of the mini-map.")
+show("There will be plenty of things that will make swimming useful, so don't quit out yet. There is still a lot to learn. If you don't have enough time to continue, remember that you can save at anytime using the menu icon, which is on the upper-left hand corner of the mini-map.")
 show("Il y a plein de choses qui peuvent rendre la nage utile. Ne quittez pas la partie pour l'instant, il reste beaucoup à apprendre. Si vous n'avez pas assez de temps pour finir, souvenez vous que vous pouvez sauvegarder à n'importe quel moment en utilisant l'icone de menu dans le coin supérieur gauche de la mini-carte", fr)
 show("Es wird eine Menge Situationen geben, in denen schwimmen nützlich sein wird. Deshalb höre jetzt nicht auf - es gibt noch viel zu lernen. Wenn du nicht genug Zeit hast jetzt weiter zu spielen, kannst du dein Spiel jederzeit speichern und später fortsetzen. Der Menü-Button ist in der oberen linken Ecke der Minikarte.",de)
 show("Habrá muchas cosas que demostrarán la utilidad de nadar. Así que no desistas todavía, hay mucho por aprender.  Si no tienes tiempo para continuar, recuerda que puedes guardar en cualquier momento con el ícono de menú, que está en la esquina superior izquierda del minimapa.",es)
 space
 
-show("Our empire is becoming more stable. Our globules are becoming better athletes. What we need is to teach our globules to use their brains. What we need, is a School!")
+show("Our empire is becoming more stable. Our globules are becoming better athletes. What we need is to teach our globules to use their brains. What we need is a School!")
 show("Notre empire devient plus stable. Nos globules deviennent des athlètes. Ce dont nous avons besoin est de leur apprendre à utiliser leur cerveau. Ce dont nous avons besoin c'est d'une École !", fr)
 show("Unser Reich wird stabiler. Unsere Einheiten werden bessere Athleten. Wir sollten unseren Einheiten jedoch auch beibringen, ihre Gehirne zu benutzen. Was wir brauchen ist eine Schule!",de)
 show("Nuestro imperio es más estable. Nuestros glóbulos son atléticos. Es indispensable enseñarle a los glóbulos a usar su cerebro. Necesitamos una escuela!",es)
 space
 
 GuiEnable(School)
-show("A school will teach our globs to harvest better and build better buildings. A school needs a few things to be constructed, most importantly, algae. This is where our swimmers are going to come in handy, as the algae only grows on water.")
+show("A School will teach our globs to harvest better and build better buildings. A School needs a few things to be constructed, most importantly, algae. This is where our swimmers are going to come in handy, as the algae only grows on water.")
 show("Une école apprendra à nos globule comment mieux récolter et mieux construire. Pour construire une école, nous avons besoin de quelques éléments, en particulier d'algues. C'est là que nos nageurs vont se révéler utiles, car les algues ne poussent que dans l'eau", fr)
 show("Eine Schule wird deinen Einheiten beibringen bessere Sammler zu werden und bessere Gebäude zu bauen. Eine Schule braucht ein paar Dinge um gebaut zu werden, wichtig sind vor allem Algen. An diesem Punkt werden deine Schwimmer wichtig, weil Algen nur auf dem Wasser wachsen.",de)
 show("En una escuela enseñaremos a nuestros glóbulos a recolectar y construir mejor. Una escuela requiere pocas cosas para construirse, lo más importante: algas.  Aquí es cuando nuestros nadadores serán de utilidad, puesto que las algas crecen en el agua.",es)
 space
 
-show("However, there is one important thing to know about schools. The wrong thing to do with a school is place it near water. Your school is extremely important to your society. During the coarse of the game, not having schools will give your opponent a huge advantage, so its important to keep your schools inland, and protected from your enemies, rather than on the outskirts of your base, just waiting to be destroyed.")
+show("However, there is one important thing to know about Schools. The wrong thing to do with a School is place it near water. Your School is extremely important to your society. During the course of the game, if you don't have Schools, it will give your opponent a huge advantage, so it's important to keep your Schools inland, and protected from your enemies, rather than on the outskirts of your base, just waiting to be destroyed.")
 show("Toutefois, il y a une chose importante à savoir à propos des école. La mauvaise chose à faire serait de la placer près de l'eau. L'école est très importante pour votre société. Au cours du jeu, vous donneriez un avantage substanciel à vos adversaires en ne disposant pas d'école. Il est donc important de conserver vos écoles à un emplacement central, protégées de vos ennemis plutot que de les placer à la périphérie de votre base.", fr)
 show("Es gibt etwas Wichtiges über Schulen zu wissen: Das Falscheste, was du tun kannst, ist, eine Schule ans Wasser oder an den Rand deiner Basis zu bauen. Deine Schule ist extrem wichtig für deine Gesellschaft. Keine Schule zu haben gibt dem Feind einen enormen Vorteil im Spiel, deshalb ist es wichtig, deine Schule in die Basismitte zu bauen und sie vor Feinden zu schützen, damit sie nicht zerstört wird!",de)
 show("Hay algo muy importante acerca de las escuelas. Es una pésima idea colocarla cerca al agua. Tu escuela es sumamente importante para tu sociedad.  Durante un juego, no tener una escuela le dará a tus oponentes gran ventaja, por lo tanto, manténlas al interior y protegidas de tus enemigos, en lugar de los suburbios, esperando a ser destruidas. ",es)
 space
 
-show("Its my suggestion to you to build your school tucked in behind your Swimming Pool, however, if you feel it might be more protected south-west of your swarm beside the Racetrack, or at any other spot of your choice, be my guest to build it there. You probably have lots of units by now, so be sure to take advantage of all of them.")
+show("It's my suggestion to you to build your School tucked in behind your Swimming Pool. However, if you feel it might be more protected south-west of your Swarm beside the Racetrack, or at any other spot of your choice, be my guest to build it there. You probably have lots of units by now, so be sure to take advantage of all of them.")
 show("Je vous suggère de construire votre école à proximité de la piscine, toutefois, si vous trouvez qu'elle serait plus en sécurité au Sud-Ouest de votre ruche à coté de la Piste de Course ou n'importe où ailleurs, sentez vous libre de l'y placer. Vous disposez probablement de beaucoup d'unités désormais, assurez-vous d'en tirer parti.", fr)
 show("Es ist meine Empfehlung deine Schule hinter das Schwimmbad zu bauen. Wie auch immer, baue deine Schule dort wo sie geschützt ist. Vielleicht bei der Rennbahn oder beim Stock. Möglicherweise hast du jetzt schon eine große Anzahl von Einheiten. Wenn dem so ist gehe sicher, dass du sie alle nutzt.",de)
 show("Te sugerimos que construyas tu escuela justo detrás de tu piscina, pero si consideras que tendría más protección al suroeste de tu colmena cerca a la pista de carreras, ese sería otro sitio para elegir. Si así lo deseas, adelante!  Debes tener muchas unidades en este momento, así que asegúrate de darles buen uso.",es)
@@ -441,7 +442,7 @@ wait(School(0, 0) > 0)
 hide
 wait(8)
 
-show("Ahh! Its getting crazy in here with all these globules going this way and that. Ohh I am so confused. It would certainly be usefull to find out where your globules are going. To do this, click 'T'. This will show you direct lines connecting a unit to its destination. You can click 'T' again to undo this effect. As well, if you would like to find out what units are working at a particular building, perhaps the school for example, just click on that building, and hold the mouse button down.")
+show("Ahh! It's getting crazy in here with all these globules going this way and that. Ohh I am so confused. It would certainly be useful to find out where your globules are going. To do this, type 'T'. This will show you direct lines connecting a unit to its destination. You can type 'T' again to undo this effect. Also, if you would like to find out what units are working at a particular building, perhaps the School for example, just click on that building and hold the mouse button down.")
 show("Aaah ! On devient fou à regarder ces globules aller à droite, àgauche. Ooooh je ne m'y retrouve plus. Il serait certainement appréciable de savoir où ils vont. Pour cela, appuyez sur 'T'. Cela activera le tracé de lignes droites entre chaque globule et sa destination. Vous pouvez réappuyer sur 'T' pour le désactiver. Demêmesi vous voulez savoir quelles unités travaillent dans un bâtiment en particulier, comme l'école par exemple, cliquez simplement sur ce bâtiment et maintenez le bouton enfoncé.", fr)
 show("Ahh! Es ist verrückt, so viele Einheiten, die sich in alle möglichen Richtungen bewegen. Ich bin verwirrt. Es ist sicher eine gute Idee herauszufinden, wo die Einheiten sich hinbewegen. Um dies zu tun drücke 'T'. Dies wird dir Linien anzeigen, welche die Einheiten mit ihrem Ziel verbinden. Bei nochmaligem drücken von 'T' verschwinden die Linien so schnell sie gekommen sind. Um herauszufinden, welche Arbeiter an einem Gebäude arbeiten, klicke auf das Gebäude und halte die Maustaste gedrückt.",de)
 show("Hey! Esto está complicándose con esa cantidad de glóbulos de aquí para allá.  Me confundo.  Sería bueno saber a ciencia cierta a dónde se dirigen.  Para descubrirlo usa la 'T'.  Mostrará líneas que conectan las unidades con su destino. Cuando oprimes 'T' de nuevo, ocultas su sentido. Por otra parte, si deseas saber qué unidades están trabajando en qué edificación, por ejemplo en la escuela, oprime en la edificación y mantén el botón pulsado.",es)
@@ -455,19 +456,19 @@ show("Ein Hoch auf deine Kolonie! Du hast eine Rennstrecke und ein Schwimmbad, K
 show("Hurra a nuestra colonia!  Tenemos pista de carreras, piscina, hospital, escuela.  Quién no desearía vivir por acá?",es)
 space
 
-show("Unfortunatly, there is a reason not to want to live in our colony. We are sort of lacking the ... military department. I can't site any warriors to defend our base anywhere. Perhaps that is because we haven't made any.")
+show("Unfortunately, there is a reason not to want to live in our colony. We are sort of lacking the ... military department. I can't sight any warriors to defend our base anywhere. Perhaps that is because we haven't made any.")
 show("Malheureusement, il y a une raison valable pour ne pas vouloir vivre dans notre colonie. Il nous manque... un département militaire. Je ne vois aucune guerrière pour défendre notre base. Peut-etre parce que nous n'en avons créé aucune.", fr)
 show("Unglücklicherweise gibt es einen Grund hier nicht zu leben! Wir haben die militärische Präsenz vernachlässigt. Ich kann keine Krieger sehen um deine Basis zu verteidigen. Vermutlich, weil du noch keine konstruiert hast.",de)
 show("Desafortunadamente hay una razón para no querer vivir en la colonia. Nos hace falta algo como ... la milicia.  No es posible colocar guerreros para defender nuestra base.  Tal vez porque no hemos hecho ninguno hasta el momento.",es)
 space
 
-show("Do you remember how to operate the Swarm? If not, I will give you a quick refresher. Click on your swarm. On the right hand side menu, about half way down, you will see three bars. One of these is labelled 'Warrior'. This is the one we want. Put this bar up two notches. Don't reduce the worker bar, we want to remain constructing workers.")
+show("Do you remember how to operate the Swarm? If not, I will give you a quick refresher. Click on your Swarm. On the right-hand side menu, about halfway down, you will see three bars. One of these is labeled 'Warrior'. This is the one we want. Put this bar up two notches. Don't reduce the worker bar, though. We want to remain constructing workers.")
 show("Vous souvenez-vous comment fonctionne la Ruche ? Si ce n'est pas le cas, laissez-moi vous le rappeler. Cliquez sur votre ruche. À peu près au milieu du menu, vous verrez trois barres. L'une d'elle s'intitule 'Guerrières'. C'est celle que nous voulons. Ajoutez deux crands à cette barre. Ne réduisez pas celle des ouvrières, nous voulons qu'il nous reste des batisseuses.", fr)
 show("Erinnerst du dich wie der Stock arbeitet? Wenn nicht, hier eine kleine Auffrischung: Klicke auf den Stock. In der Mitte der rechten Seite siehst du 3 Balken. Einer trägt die Aufschrift 'Krieger'. Das ist der, den dir wir jetzt brauchen. Erhöhe die Krieger Produktion um 2. Verändere den Arbeiter-Balken jedoch nicht. Wir wollen auch noch Arbeiter produzieren.",de)
 show("Recuerdas cómo operar la colmena?  Si no, te daré un repaso rápido. Elige tu colmena.  En el menú derecho, hacia la mitad, podrás ver tres barras.  Una de ellas etiquetada como 'Guerrero'.  Es la que buscamos.  Haz que valga dos.  No reduzcas la barra de trabajadores, queremos producir trabajadores también.",es)
 space
 
-show("Our swarm will now produce 2 warriors to every 1 worker. This should be good for our purposes. We may also want to assign more units to the Swarm, so that we get units at a faster rate.")
+show("Our Swarm will now produce 2 warriors to every 1 worker. This should be good for our purposes. We may also want to assign more units to the Swarm, so that we get units at a faster rate.")
 show("Notre ruche produira maintenant deux guerrières pour une ouvrière. Cela devrait suffire pour nos besoins. Nous pouvons assigner plus d'unités à la Ruche pour qu'elle produise plus vite", fr)
 show("Unser Stock wird nun 2 Krieger auf einen Arbeiter herstellen. Dies sollte für unseren Zwecke gut sein. Erhöhe auch die Zahl der am Stock arbeitenden Arbeiter, damit die Einheiten schneller hergestellt werden.",de)
 show("Nuestra pequeña colmena producirá 2 guerreros por cada trabajador.  Será bueno para nuestros propósitos.  Desearíamos asignar más unidades a la colmena, de tal forma que obtendríamos unidades más rápido.",es)
@@ -475,7 +476,7 @@ space
 hide
 wait(Warrior(0) > 0)
 
-show("Whoah! Those warrior globs certainly look beefy and mighty, they would certainly do well to defend our colony. You might notice that he's not waisting any time, and going right to work, training. Lets wait for another one to come.")
+show("Whoah! Those warrior globs certainly look beefy and mighty. They would certainly do well to defend our colony. You might notice that he's not waisting any time, and going right to work, training. Let's wait for another one to come.")
 show("Wow ! Cette guerrière a l'air musclée et puissante, elle conviendrat certainement à la défense de notre colonie. Vous pourriez remarquer qu'elle ne perd pas de temps et se met tout de suite au travail. Attendons qu'une deuxième soit prete.", fr)
 show("Whoah! Diese Krieger sehen muskulös und gewaltig aus. Sie werden deine Kolonie sicher gut verteidigen. Dir wird aufgefallen sein, dass er keine Zeit verschwendet und gleich zum Training geht. Lass uns warten bis ein weiterer fertig ist.",de)
 show("Esos glóbulos guerreros se ven tan grandes y poderosos!!, defenderán bien nuestra colonia.  Te habrás dado cuenta que no desperdician su tiempo y van de una vez a trabajar, entrenando.  Esperemos a que salga el siguiente.",es)
@@ -490,20 +491,20 @@ show("Te preguntarás si habrá forma de hacer que el entrenamiento haga que tus
 space
 
 GuiEnable(Camp)
-show("Attack is taught at a Barracks, and is comprised of two parts, Attack Strength, and Attack Speed. Attack Strength makes your units do more damage per hit, and Attack Speed makes your units attack more times per second. Barracks are key buildings, as they allow our warriors to get an edge over opposing warriors. Its often seen that a fully trained warrior can take on as many as 5 untrained warriors!")
+show("Attack is taught at a Barracks, and is comprised of two parts, Attack Strength, and Attack Speed. Attack Strength makes your units do more damage per hit, and Attack Speed makes your units attack more times per second. Barracks are key buildings, as they allow our warriors to get an edge over opposing warriors. It's often seen that a fully trained warrior can take on as many as 5 untrained warriors!")
 show("L'attaque s'apprend à la Caserne et est composée de deux parties. La Force d'Attaque et la Vitesse d'Attaque. La Force permet à vos unités de faire plus de dégats par coup et la Vitesse les fait attaquer plus de fois par seconde. Les Casernes constituent des bâtiments clés, puisqu'elles permettent à nos guerrières de devenir plus puissantes que celles de nos ennemis. Il est courant de voir une guerrière bien entrainée venir à bout de 5 novices.", fr)
 show("Angreifen kann man in einem Trainingslager lernen. Der Angriff besteht aus 2 Teilen: Angriffgeschwindigkeit und Angriffsstärke. Angriffsstärke gibt deinen Kämpfern mehr Schaden pro Schlag und Angriffsgeschwindigkeit lässt sie mehrmals in der Sekunde angreifen. Trainingslager sind Schlüsselgebäude, da mit ihnen deine Krieger besser geschult sind als die des Feindes. Es wurde schon oft beobachtet, dass ein vollständig trainierter Kämpfer es mit 5 untrainierten Kriegern aufnehmen konnte!",de)
 show("El ataque se enseña en los cuarteles, y se conforma de dos partes, la fuerza de ataque y la velocidad de ataque.  La fuerza de ataque hace que tus unidades hagan más daño por cada golpe y la velocidad de ataque hace que ataquen más veces por segundo.  Los cuarteles son claves puesto que habilitan a los guerreros para ganar competencia frente a los atacantes.  Se ha visto que unos guerreros en su máximo estado son capaces de atender a 5 guerreros que no han sido entrenados!",es)
 space
 
-show("You can now construct a Barracks. As the menu says, Barracks need wood to be constructed, so its natural that we place one near wood.")
+show("You can now construct a Barracks. As the menu says, Barracks need wood to be constructed, so it's natural that we place one near wood.")
 show("Vous pouvez maintenant construire une Caserne. Comme l'indique la barre de menu, il faut du bois, il est donc normale que nous la construisions près d'une foret.", fr)
 show("Du kannst nun Trainingslager bauen. Wie das Menü anzeigt, brauchen Trainingslager Holz um gebaut zu werden. Stelle sie also neben einen Wald.",de)
 show("Puedes construir un cuartel.  Como indica el menú, un cuartel necesita madera para construirse, así que el mejor sitio  es cerca al bosque.",es)
 wait(Camp(0, 0) > 0)
 hide
 
-show("Ok, just remember to use all of those free workers, and get that Barracks made quickly. Don't try to use too many workers, however, overworking your workers will cause you to lose some of the direct control over them.")
+show("Ok, just remember to use all of those free workers, and get that Barracks made quickly. Don't try to use too many workers, however. Overworking your workers will cause you to lose some of the direct control over them.")
 show("OK, souvenez-vous bien d'utiliser toutes les ouvrières libres pour construire rapidement la Caserne. N'en employez pas trop tout de meme, les surcharger de travail vous ferait perdre une partie du controle que vous avez sur elles.", fr)
 show("OK denke daran alle freien Arbeiter zu nutzen damit das Trainingslager schnell fertig wird. Benutze aber nicht zu viele. Überarbeitung lässt die Kontrollmöglichkeiten von dir auf deine Arbeiter schwinden!",de)
 show("No olvides usar a esos trabajadores desempleados, y que construyan rápido el cuartel.  No intentes usar demasiados, puesto que sobrecargarlos te impedirá tener control directo sobre ellos.",es)
@@ -511,50 +512,50 @@ space
 hide
 wait(Camp(0, 1) > 0)
 
-show("Wow! A brand spanking new Barracks! Our warriors are going to become the mightiest in the valley, no one should be able to conquer us now!")
+show("Wow! A brand spanking new Barracks! Our warriors are going to become the mightiest in the valley. No one will be able to conquer us now!")
 show("Wahou ! Une belle Caserne toute neuve ! Nos guerrières vont devenir les plus puissantes de la région, personne ne pourra conquérir notre territoire désormais !", fr)
 show("Wow! Ein brandneues Trainingslager! Deine Krieger werden die stärksten im Tal werden. Niemand sollte dich nun besiegen können!",de)
 show("Eso es! Un nuevo cartel! Nuestros guerreros serán los más fuertes del valle, nadie podrá conquistarnos ahora!",es)
 space
 
-show("Our village is filling up fast. Growing. It has much to offer. But we aren't a very advanced society yet. Almost like modern men in a primitive age. What we need is to make our buildings better. What we need, are upgrades!")
+show("Our village is filling up fast. Growing. It has much to offer. But we aren't a very advanced society yet. Almost like modern men in a primitive age. What we need is to make our buildings better. What we need are upgrades!")
 show("Notre village se développe vite. Il propose beaucoup de chose, mais nous ne sommes pas encore une société très avancée. Nous correspondons plus à des Hommes modernes à un stade primitif. Nous avons besoin d'améliorer nos bâtiments !", fr)
 show("Dein Dorf wächst stetig. Es füllt sich. Es hat viel zu bieten. Aber du hast noch keine hochentwickelte Gesellschaft. Fast wie moderne Menschen in einem primitiven Zeitalter. Was wir tun müssen, ist unsere Gebäude verbessern!",de)
 show("Nuestra villa se está poblando rápidamente.  Tiene mucho para ofrecer. Pero no somos una sociedad muy avanzada todavía.  Como casi todos los hombres modernos en la era primitiva.  Necesitamos que nuestros edificios sean mejores. Debemos actualizarlos!",es)
 space
 
-show("Upgrading buildings takes advantage of our school. You may or may not have noticed that when you click on a building, it now has an 'Upgrade' button on the lower portion of the right hand side menu, just above 'Destroy'.")
+show("Upgrading buildings takes advantage of our School. You may or may not have noticed that when you click on a building, it now has an 'Upgrade' button on the lower portion of the right-hand side menu, just above 'Destroy'.")
 show("L'amélioration des bâtiments tire avantage de notre école. Vous avez peut etre remarqué que lorsque vous cliquez sur un bâtiment, il dispose maintenant d'un bouton 'Améliorer' dans la partie inférieure du menu, juste sous 'Détruire'.", fr)
 show("Verbesserte Gebäude profitieren von deinen Schulen. Du hast oder hast auch nicht den 'Verbessern'-Button auf dem rechten Menü von Gebäuden gesehen genau über dem 'Zerstören'-Button.",de)
 show("La Actualización de los edificios se debe al colegio.  Tal vez te diste cuenta o no que cuando seleccionas una edificación, tiene un botón 'Actualizar' hacia la parte inferior del menú derecho, encima de 'Destruir'",es)
 space
 
-show("Now, lets decide what buildings we should upgrade first. Lets look at our Inns. They don't look particularly overworked, infact, a few of them are still empty.")
+show("Now, lets decide what buildings we should upgrade first. Lets look at our Inns. They don't look particularly overworked. In fact, a few of them are still empty.")
 show("Choisissons maintenant les bâtiments à améliorer en priorité. Jeton un oeil à nos auberges. Elles n'ont pas l'air surchargées de travail, certaines d'entre elles sontmêmevides.", fr)
 show("Jetzt musst du entscheiden, welches Gebäude du zuerst verbesserst. Schau dir die Gaststätten an. Sie sehen nicht überlastet aus, manche von ihnen sind sogar leer.",de)
 show("Ahora, decidamos qué edificaciones debemos actualizar primero.  Veamos nuestras tabernas.  No lucen muy elaboradas, de hecho, algunas de ellas están vacías.",es)
 space
 
-show("Our Hospital doesn't look overcrowded either. So, its between our School, our Racetrack, our Swimming Pool, or our Barracks.")
+show("Our Hospital doesn't look overcrowded either. So, it's between our School, our Racetrack, our Swimming Pool, and our Barracks.")
 show("Notre hopital n'a pas l'air encombré lui non plus. Il nous reste donc à choisir entre notre École, notre Piste de Course, notre Piscine et notre Caserne", fr)
 show("Dein Krankenhaus sieht auch nicht überfüllt aus. Es bleiben noch Rennstrecke, Schwimmbad und das Trainingslager. ",de)
 show("Nuestro hospital tampoco está muy lleno. Así que está entre el colegio, la pista de carreras, la piscina o el cuartel.",es)
 space
 
-show("I would venture a guess that our Racetrack would be the most usefull thing to upgrade, so lets upgrade it first.")
+show("I would venture a guess that our Racetrack would be the most useful thing to upgrade, so let's upgrade it first.")
 show("Je parierais que notre Piste de Course serait la chose la plus utile à améliorer, faisons la passer en priorité.", fr)
 show("Ich äußere mal die Vermutung, dass es am nützlichsten wäre, deine Rennstrecke zu verbessern. Also tu das folgendermaßen:",de)
 show("Creo que nuestra pista de carreras será la edificación más útil una vez actualizada, así que vamos primero con ella.",es)
 space
 
-show("To upgrade the Racetrack, click on it, and on the right hand side menu, click 'Upgrade'. The Racetrack will be sent into upgrade mode. Don't be surprised if it doesn't change much just yet, that is because its waiting for all the units to leave it, you wouldn't want to upgrade a building and trap workers helplessly inside now would you?")
+show("To upgrade the Racetrack, click on it, and on the right-hand side menu, click 'Upgrade'. The Racetrack will be sent into upgrade mode. Don't be surprised if it doesn't change much just yet, that is because it's waiting for all the units to leave it. You wouldn't want to upgrade a building and trap workers helplessly inside now, would you?")
 show("Pour améliorer la Piste de Course, sélectionnez-la et cliquez sur 'Améliorer' dans le menu latéral. La Piste de Course entamera le processus d'amélioration. Ne soyez pas surpris si vous ne voyez pas de différence immédiatement, il faut que toutes les unités s'y entrainant le quitte. Vous ne voudriez pas piéger vos ouvrières au sein du bâtiment n'est-ce pas ?", fr)
 show("Um die Rennstrecke zu verbessern, klicke auf sie. Auf der rechten Seite ist das Menü, klicke dort auf 'Verbessern'. Die Rennstrecke wird in den Verbesserungsmodus versetzt. Wundere dich nicht, wenn erstmal nichts passiert. Die Rennstrecke wartet, bis alle deine Einheiten draußen sind. Denn du willst doch nicht, dass die Rennbahn umgebaut wird und noch hilflose Einheiten darin sind, oder?",de)
 show("Para actualizar la pista de carreras, selecciónala, y en la parte inferior del menú derecho usa 'Actualizar'.  La pista de carreras entrará al modo actualización.  No te afanes si no cambia demasiado todavía, esto es porque está esperando a que todas las unidades salgan. No te gustaría hacer una actualización con trabajadores atrapados en la construcción, o sí?",es)
 wait(Racetrack(0, 2) > 0)
 hide
 
-show("Excellent! Your new Racetrack construction is well under way. So, lets assign plenty of free units. Remember, only units that have gone through the school already will be capable of working on the level 2 construction site.")
+show("Excellent! Your new Racetrack construction is well under way. So, lets assign plenty of free units. Remember, only units that have gone through the School already will be capable of working on the level 2 construction site.")
 show("Excellent ! Votre nouvelle Piste de Course est sur les rails. Affectons-lui un maximum d'unités. Souvenez-vous, seules les unités qui ont déjà été à l'école peuvent travailler sur des chantiers de niveau 2.", fr)
 show("Sehr Gut! Deine Rennstrecke ist auf einem guten Weg. Damit sie schneller fertig wird weise ihr mehr freie Arbeiter zu. Bedenke, dass nur Arbeiter, welche die Schule besucht haben, ein Gebäude verbessern können. Denn Level 2 Konstruktion will gelernt sein.",de)
 show("Excelente! Tu nueva construcción en la pista de carrera ha comenzado.  Asignémosle muchas unidades libres.  Recuerda, únicamente las unidades que han pasado por la escuela serán capaces de trabajar en construcciones de segundo nivel.",es)
@@ -568,13 +569,13 @@ space
 hide
 wait(Racetrack(0, 3) > 0)
 
-show("Bam! A shiny new Racetrack! And its not bad looking either, certainly a notable improvement from the last one. You may notice that the Racetrack got larger when you upgraded it. This is why you had to leave a gap between the Racetrack and other things. Buildings can't be upgraded if theres no room for them to expand. So, lets go through and upgrade some more buildings, shall we?")
+show("Bam! A shiny new Racetrack! And its not bad looking either, certainly a notable improvement from the last one. You may notice that the Racetrack got larger when you upgraded it. This is why you had to leave a gap between the Racetrack and other things. Buildings can't be upgraded if there's no room for them to expand. So, lets go through and upgrade some more buildings, shall we?")
 show("Bam ! Une nouvelle Piste de Course rutilante ! Elle n'est pas désagréable à regarder, il s'agit certainement d'une amélioration notable par rapport à la dernière. Vous avez peut-etre constaté que la Piste de Course est désormais plus grande. C'est pourquoi vous devez laisser un espace autours de la Piste de Course et des autres bâtiments. Ils ne peuvent pas etre améliorés s'ils n'ont pas de place pour s'étendre. Continuons et améliorons d'autres bâtiments...", fr)
 show("Bam! Eine brandneue Rennstrecke ist fertig. Und sie sieht gar nicht schlecht aus, gewiss eine Verbesserung zu vorher. Du wirst bemerkt haben, dass die Rennbahn nach der Verbesserung größer geworden ist. Deshalb solltest du vorhin einen Rand um die Rennstrecke und andere Gebäude lassen. Gebäude können nur verbessert werden, wenn Platz dafür vorhanden ist. So. Am Besten, du verbesserst noch mehr Gebäude, oder nicht?",de)
 show("Ahh! Una nueva pista de carreras! y no luce mal, es una mejora sustancial desde la última vez.  Notarás que la pista de carreras se hizo más grande cuando la actualizaste.  Esa era la razón para dejar espacio entre la pista de carreras y otras cosas.  Las edificaciones no pueden actualizarse si no hay espacio para que ellas se expandan.  Hagamos la tarea de actualizar otras construcciones, o.k.?",es)
 space
 
-show("Hmm, what to do next. Its certainly a hard decision. I would go with the Barracks, and then the Swimming Pool. When their both finished, we will then continue.")
+show("Hmm, what to do next. It's certainly a hard decision. I would go with the Barracks, and then the Swimming Pool. When they're both finished, we will then continue.")
 show("Hmm, que faire maintenant ? C'est une décision compliquée. Je continuerais avec la Caserne puis la Piscine. Lorsqu'elles seront toutes deux terminées, nous pourrons continuer.", fr)
 show("Hmm, was ist als Nächstes zu tun? Das ist natürlich eine schwere Entscheidung. Ich würde mit dem Trainingslager weitermachen und dann zum Schwimmbad übergehen. Wenn du mit beiden fertig bist, machen wir weiter.",de)
 show("Hmm, qué hacer ahora? Una decisión nada sencilla.  Comenzaría con el cuartel, después la piscina, y cuando haya finalizado las dos, continuaremos.",es)
@@ -589,13 +590,13 @@ show("Wow, du wirst darin immer besser und die Kolonie wird auch immer schöner 
 show("Maravilloso, te estás volviendo buen@ en esto, y la colonia está cada vez más fuerte.  Las edificaciones de nivel mayor en general pueden procesar más glóbulos al tiempo, y entrenarlas a un nivel más alto.  Por ejemplo en una taberna de nivel 2 se pueden alimentar hasta 7 unidades simultáneamente, y en la mitad del tiempo que en una taberna de primer nivel.",es)
 space
 
-show("The enemy lurks about, we may have a fight on our hands soon!")
+show("The enemy lurks about. We may have a fight on our hands soon!")
 show("L'ennemi est tapi aux alentours, nous risquons d'avoir à nous battre très bientôt !", fr)
 show("Der Feind schleicht herum, wir könnten bald einen Kampf am Hals haben!",de)
 show("El enemigo se está acercando. Podemos tener pronto una pelea en nuestras manos!",es)
 space
 
-show("What to do, what to do to prepare. Wait! I have an idea! We should construct some towers and walls to protect them! A tower is capable of shooting at enemy globs that walk by, and a wall is capable of defending a tower, they are a very good combination.")
+show("What to do, what to do to prepare. Wait! I have an idea! We should construct some towers and walls to protect them! A tower is capable of shooting at enemy globs that walk by, and a wall is capable of defending a tower. They are a very good combination.")
 show("Que faire, que faire pour nous préparer ? Attendez ! J'ai une idée ! Nous devrions construire des tours et des murs pour nous protéger ! Une tour peut tirer sur les globules ennemis qui passent à proximité et un mur peut protéger une tour, ils forment une très bonne équipe.", fr)
 show("Was ist zu tun, was tun um uns vorzubereiten? Warte! Ich habe eine Idee! Wir sollten einige Türme bauen, und Mauern, um die Türme zu schützen. Ein Turm ist in der Lage auf Feinde zu schießen die heran kommen und eine Mauer schützt einen Turm. Das ist eine sehr gute Kombination.",de)
 show("Qué vamos a hacer? cómo prepararnos? Tengo una idea!  Sería bueno que construyéramos unas torres y paredes para protegernos!  Una torre puede disparar a los glóbulos que caminen por ahí, y una pared es capaz de defender una torre, son una muy buena combinación.",es)
@@ -603,13 +604,13 @@ space
 
 GuiEnable(Tower)
 GuiEnable(Wall)
-show("Towers are most usefull in pairs, and when they are surrounded with walls on 3, but not 4 sides. This is because towers require a constant supply of stone to keep running, so you have to leave some space open for the workers to get in and put stone into the tower.")
+show("Towers are most useful in pairs, and when they are surrounded with walls on 3, but not 4 sides. This is because towers require a constant supply of stone to keep running, so you have to leave some space open for the workers to get in and put stone into the tower.")
 show("Les Tours sont plus utiles en paires, et lorsqu'elles sont entourées de murs sur 3 cotés, mais pas 4. En effet, les tours nécessitent un apport constant en pierre pour fonctionner, vous devez donc laisser un passage pour que vos ouvrières puissent l'atteindre et apporter de la pierre.", fr)
 show("Türme sind am effektivsten paarweise und wenn sie von 3, aber nicht von 4 Seiten, mit einer Mauer umgeben sind. Denn dein Turm benötigt einen konstanten Nachschub an Steinen um zu funktionieren und ein Arbeiter muss den Stein ja irgendwie in den Turm bekommen.",de)
 show("Es mejor tener las torres en parejas, y cuando están enceradas por 3 frentes, pero no 4. Esto debido a que las torres necesitan una fuente contínua de roca para disparar, así que debes dejar un espacio para que los trabajadores puedan colocar algo de roca en las torres",es)
 space
 
-show("So, shall we construct some towers? I think there is a spot east of our swimming pool, right above that other patch of fruit trees. It seems to connect to another island! We should defend this point.")
+show("So, shall we construct some towers? I think there is a spot east of our Swimming Pool, right above that other patch of fruit trees. It seems to connect to another island! We should defend this point.")
 show("Bon, on construit des tours ? Je pense qu'il y a un emplacement intéressant à l'Est de notre piscine, juste au-dessus de cette foret d'arbres fruitiers. Il semble etre connecté à une autre ile ! Nous devrions défendre cet endroit.", fr)
 show("So, sollen wir nun ein paar Türme bauen? Ich denke der Punkt östlich deines Schwimmbades, oberhalb der Fruchtbäume, ist ein guter Platz. Dieses Stück Land scheint eine andere Insel mit der deinigen zu verbinden, du solltest dieses Gebiet sichern.",de)
 show("Construimos algunas torres? Creo que hay un punto al este de nuestra piscina, justo encima de los árboles frutales.  Parece que conecta con otra isla! Debemos defender ese punto.",es)
@@ -621,21 +622,21 @@ show("Wenn du die Türme baust gibt es einiges zu bedenken. Als erstes solltest 
 show("Cuando construyas torres hay algunas cosas para tener en cuenta.  Primero, debes dejar espacios libres alrededor de la torre.  El espacio detrás de la torre le servirá a tus trabajadores para colocar rocas.  Es tu decisión si deseas dejar espacio en los otros frentes de la torre, pero usualmente esto es bueno, porque te permite colocarte detrás de las paredes.  Afortunadamente hay espacio suficiente entre esos árboles y la playa, para colocar dos torres que van a estar rodeadas completamente de murallas de roca.",es)
 space
 
-show("You can construct the towers now. Assign between 2 to 3 workers to them, depending on how many workers you have available (check the upper left corner of the screen!).")
+show("You can construct the towers now. Assign between 2 and 3 workers to them, depending on how many workers you have available (check the upper-left corner of the screen!).")
 show("Vous pouvez maintenant construire les tours. Assignez-leur deux à trois ouvrières, selon ce que vous avez de disponible (vérifiez dans le coin supérieur gauche de l'écran !).", fr)
 show("Du kannst nun die zwei Türme bauen. Weise ihnen zwischen 2 und 3 Arbeiter zu, abhängig davon, wie viele du zur Verfügung hast (prüfe das an der Zahl oben links).",de)
 show("Puedes construir las torres. Asigna entre 2 y 3 trabajadores, dependiendo de cuántos trabajadores haya disponibles(Revisa la parte superior izquierda de la pantalla!).",es)
 wait(Tower(0, 0) > 1)
 hide
 
-show("Excellent! Now, to place the walls around them. Don't worry if you can't fit a wall into every corner, it comes with a little practice trying to guess the place to put the Tower in order to leave enough space for a wall. To place the wall, select the wall icon, and place several wall sections, surrounding the three sides of the towers that aren't facing the trees as best as you can.")
+show("Excellent! Now, to place the walls around them. Don't worry if you can't fit a wall into every corner. It comes with a little practice trying to guess the place to put the Tower in order to leave enough space for a wall. To place the wall, select the wall icon, and place several wall sections surrounding the three sides of the towers that aren't facing the trees as best as you can.")
 show("Excellent ! Maintenant, entourez-les de murs. Ne vous inquiétez pas si vous n'arriver pas à les encercler parfaitement, déterminer un emplacement permettant de placer une Tour tout en laissant suffisamment d'espace autour cdemande un peu de pratique. Pour construire un mur, sélectionnez son icone et placez en plusieurs sections sur les trois cotés de la tour qui ne sont pas face aux mur.", fr)
 show("Super! Nun baue die Mauer um den Turm. Verzweifle nicht, wenn du nicht in jede Ecke eine Mauer bauen kannst. Dafür brauchst du ein bisschen Übung darin, den Platz abzuschätzen wo du einen Turm hinbauen musst, damit eine Mauer drumherum passt. Um eine Mauer zu bauen wähle das Mauer-Symbol und platziere die Mauerstücke so gut es geht um den Turm - an den drei Seiten des Turmes, die nicht den Fruchtbäumen gegenüberliegen.",de)
 show("Excelente! Ahora, coloquemos paredes alrededor de ellas.  No te preocupes si no puedes colocar paredes en cada esquina. Se logra con un poco de práctica el colocar las torres para que haya espacio suficiente para las paredes.  Para ubicar las paredes selecciona el ícono de pared, y coloca, tan bien como puedas, muchas secciones de pared rodeando los tres lados de las paredes que no están enfrentados a los árboles .",es)
 wait(Wall(0, 0) > 1)
 hide
 
-show("You will notice that there are allot of walls, and that each of them takes up one of your units. Don't worry if not all of the walls get units working on them, since each wall section needs only one block of stone, it takes very little time to make a large wall.")
+show("You will notice that there are a lot of walls, and that each of them takes up one of your units. Don't worry if not all of the walls get units working on them. Since each wall section needs only one block of stone, it takes very little time to make a large wall.")
 show("Vous remarquerez qu'il y a beaucoup de murs et que chacun utilise l'une de vos unités. Ne vous inquiétez pas si tous les murs ne reçoivent pas une unité, car chaque section ne demande qu'un bloc de pierre. La construction d'un grand mur ne nécessite donc pas beaucoup de temps.", fr)
 show("Du wirst bemerken, dass es viele Mauerstücke gibt und jedes einen deiner Arbeiter zum bauen benötigt. Sei nicht besorgt wenn nicht jedes Stück eine Einheit abbekommt. Eine Mauer braucht nur einen Stein und ist somit schnell gebaut, auch größere Mauern.",de)
 show("Verás que hay muchas paredes, y que cada una de ellas emplea una de tus unidades.  No te preocupes si no todas ellas tiene alguien trabajando, ya que cada una de ellas solamente necesita una carga de roca. En poco tiempo se tiene una pared grande.",es)
@@ -644,13 +645,13 @@ hide
 wait(Tower(0, 1) > 1)
 wait(Wall(0, 1) > 1)
 
-show("Our wall will be finished momentarily. Untill then, lets turn our attention to the towers. Our stone quarry is very far away, so it may take a while for the workers to fill up the towers with stone. If you want, you can increase the number of units assigned to the towers.")
+show("Our wall will be finished momentarily. Until then, let's turn our attention to the towers. Our stone quarry is very far away, so it may take a while for the workers to fill up the towers with stone. If you want, you can increase the number of units assigned to the towers.")
 show("Notre mur sera terminé d'un instant à l'autre. En attendant, occupons nous des tours. Notre carrière de pierre est très éloignée, l'approvisionnement en pierre peut donc demander un petit peu de temps. Si vous le désirez, vous pouvez augmenter le nombre d'unités qui s'en occupent.", fr)
 show("Deine Mauer wird jeden Augenblick fertig sein. Wenn dem so ist lass uns auf die Türme schauen. Unsere Steinhaufen sind weit entfernt und es wird eine Weile dauern den Turm mit Steinen zu füllen. Wenn du willst, kannst du den Türmen mehr Einheiten zuweisen.",de)
 show("Nuestra pared estará terminada en un momento. Mientras tanto, revisemos las torres.  Nuestro yacimiento de roca está bastante lejos, y nuestros trabajadores tardarán bastante en llenarlas de municiones(roca). Si quieres, aumenta la cantidad de trabajadores asignados a las torres.",es)
 space
 
-show("Hahaha! We have everything a good colony would want! We have protection, upgraded buildings, Schools, a Hospital, several Inns, a Racetrack, a Swimming pool, what more could a man want? Turns out, theres not much. You can continue to upgrade things if you wanted, there is infact another level on top of the already upgraded buildings, the ultimate level 3! Reaching level 3 in a game should be a goal, as it gives you signifigant advantages over your enemy.")
+show("Hahaha! We have everything a good colony would want! We have protection, upgraded buildings, Schools, a Hospital, several Inns, a Racetrack, a Swimming pool, what more could a man want? Turns out there's not much. You could continue to upgrade things if you wanted. There is in fact another level on top of the already upgraded buildings, the ultimate level 3! Reaching level 3 in a game should be a goal, as it gives you signifigant advantages over your enemy.")
 show("Hahaha ! Nous avons tout ce que peut désirer une bonne colonie ! Nous sommes protégés, avons des bâtiments améliorés, des Écoles, un Hopital, plusieurs Auberges, une Piste de Course, une Piscine, que vouloir de plus ? En fait, pas grand chose. Vous pouvez continuer à améliorer les bâtiments si vous le souhaitez, il existe un niveau au-dessus des bâtiments que nous avons déjà amélioré, l'ultime niveau 3 ! Atteindre le niveau 3 devrait etre un but en soi dans le jeu, car cela vous donne un avantage significatif sur vos ennemis.", fr)
 show("Hahaha! Du hast auf jeden Fall alles, was eine gute Kolonie braucht. Du hast Verteidigung, verbesserte Gebäude, Schulen, ein Hospital, einige Gasthöfe, eine Rennstrecke, ein Schwimmbad... was könnte ein Mensch noch wollen? Schaut aus, als wäre es nicht mehr viel. Du kannst weiter Gebäude verbessern wenn du willst, es gibt noch einen 3. Level. Level 3 zu erreichen sollte das Ziel jedes Spiels sein, da es dir bedeutsame Vorteile gegenüber deinem Feind verschafft.",de)
 show("Está muy bien!  Tenemos todo aquello que una buena colonia pudiera desear!  Protección, edificaciones actualizadas, colegios, un hospital, muchas tabernas, una pista de carreras, una piscina ¿qué otra cosa quisiera un hombre? Parece que no mucho.  Puedes continuar actualizando las construcciones si lo deseas, pero hay un límite para las edificaciones ya actualizadas, el máximo es 3!  Alcanzar el tercer nivel debe ser una meta, y te da ventaja significativa sobre tus enemigos.",es)
@@ -662,57 +663,57 @@ show("Wo wir gerade über Feinde reden: Hast du es geschafft deinen zu finden? I
 show("Hablando de enemigos  ¿Haz logrado ver dónde están los tuyos?  Creo que se esconde al noroeste de nuestra base, puedes dar un vistazo.",es)
 space
 
-show("It seems like you can see the area, but not very clearly. The area is covered with something called 'fog of war'. If we want to see whos hiding under this dark cloud, we need to yank an explorer over, but how?")
+show("It seems like you can see the area, but not very clearly. The area is covered with something called 'fog of war'. If we want to see who's hiding under this dark cloud, we need to yank an explorer over, but how?")
 show("Vous pouvez voir cette zone mais pas très clairement. La zone est couverte par ce que l'on appelle le 'brouillard de guerre'. Si nous voulons voir qui se cache derrière ce nuage noir, nous devrions envoyer une exploratrice, mais comment ?", fr)
 show("Es sieht danach aus, dass du das Gebiet zwar sehen kannst, aber nicht sehr gut. Das Gebiet ist überlagert vom 'Nebel des Krieges'. Um zu sehen was sich unter dem Nebel befindet müssen wir einen Entdecker dorthin bekommen. Aber wie?",de)
 show("Puedes ver el área, pero no claramente.  El área está cubierta con algo llamado 'niebla de guerra'.  Si queremos ver quién se está escondiendo bajo esa nube oscura, tenemos que enviar un explorador, pero ¿cómo?",es)
 space
 
 GuiEnable(FlagTab)
-show("Look under the minimap, you will notice a new button just appeared. This is called the 'Flag Tab'. Click on it now. It contains a pile of usefull tools for controlling your units, these are called 'flags' and 'zones'.")
+show("Look under the minimap. You will notice a new button just appeared. This is called the 'Flag Tab'. Click on it now. It contains a pile of useful tools for controlling your units. These are called 'flags' and 'zones'.")
 show("Regardez sous la mini-carte, un nouveau bouton vient d'apparaître. Il s'agit de l'Onglet 'Drapeaux'. Cliquez dessus. Il contient un ensemble d'outils pour contrôler vos unités que l'on appelle 'drapeaux' et 'zones'.", fr)
 show("Schau unter die Minikarte. Dir wird dort ein neuer Button auffallen. Dieser Button ist der 'Flaggen-Button'. Klicke nun darauf. Er enthält eine Reihe nützlicher Werkzeuge um deine Einheiten zu kontrollieren. Diese Werkzeuge sind die 'Flaggen' und dei 'Zonen'.",de)
 show("Mira bajo el minimapa, verás que ha aparecido un botón.  Se llama la 'Pestaña de banderas'. Clic en ella. Contiene un montón de herramientas útiles para controlar tus unidades, llamadas 'banderas' o 'zonas'.",es)
 space
 
-show("On the top row, there are flags. Your looking for one particular flag, called the 'Explorer Flag'. It has the shape of a kite. You can click on it, and it is placed similiar to a building, with one exception, you can place flags anywhere! Over water, over land, over ressources, and even in dark zones. This is exactly what we want!")
+show("On the top row, there are flags. You're looking for one particular flag, called the 'Explorer Flag'. It has the shape of a kite. You can click on it, and it is placed similiar to a building, with one exception: you can place flags anywhere! Over water, over land, over ressources, and even in dark zones. This is exactly what we want!")
 show("Les drapeaux se trouvent sur la première ligne. Vous êtes à la recherche d'un drapeau particulier, appelé 'Drapeau d'exploration'. Il a la forme d'un cerf-volant. Vous pouvez cliquer dessus, il se place comme un bâtiment à l'exception qu'il est possible de le déposer n'importe où ! Sur l'eau, la terre, les ressources et même dans les zones sombres. C'est exactement ce que nous voulons !", fr)
 show("Oben sind die 3 Flaggen. Du suchst die 'Entdecker Flagge'. Sie hat das Aussehen eines Drachen. Du kannst auf sie klicken und sie wie ein Gebäude platzieren. Mit einer Ausnahme: du kannst sie, im Gegensatz zu Gebäuden, überall platzieren! Über Wasser, Land, Ressourcen und natürlich über dunklen Zonen. Genau das, was wir brauchen!",de)
 show("En la fila superior hay banderas. Estás buscando una, llamada la 'Bandera de Explorador'.  Tiene forma de cometa.  Selecciónala, se ubica de la misma forma que una edificación, con una excepción: puedes colocar banderas donde desees! Sobre agua, tierra, recursos, e incluso zonas inexploradas.  Eso es justamente lo que queremos!",es)
 space
 
-show("Its time to place a flag. Place it right over your enemy base, you may have to guess a bit about where the flag should go if you can't see the base, but it is not problem, you will see it all soon anyway. Right click to exit construction mode.")
+show("Its time to place a flag. Place it right over your enemy base. You may have to guess a bit about where the flag should go if you can't see the base, but it is not a problem. You will see it all soon anyway. Right-click to exit construction mode.")
 show("Il est temps de poser un drapeau. Placez-le exactement sur la base ennemi, si vous ne voyez pas la base, placez-le au jugé, ne vous inquiétez pas, elle sera bientôt découverte. Faites un clic droit pour sortir du mode construction.", fr)
 show("Es ist Zeit eine Flagge zu platzieren. Platziere sie über der Feindbasis. Du wirst möglicherweise ein bisschen raten müssen, wo sie sich befindet, aber das ist kein Problem, du wirst sie sowieso bald sehen. Rechtsklicke um den Positionsmodus zu verlassen.",de)
 show("Es hora de colocar una bandera. Colócala justo encima de la base enemiga. Deberás adivinar acerca del sitio donde debería ir si no puedes ver la base, pero no es un problema. Verás todo rápidamente.  Usa el botón derecho para ir al modo de construcción.",es)
 space
 
-show("You will notice a big line surrounding the flag. That is the flags radius, and is where the explorer will come and explore in. You will notice the explorer coming soon, continue with space once he arrives.")
+show("You will notice a big line surrounding the flag. That is the flag's radius, and is where the explorer will come and explore in. You will notice the explorer coming soon. Continue with space once he arrives.")
 show("Vous remarquerez qu'une ligne entoure le drapeau. Il s'agit de son rayon et c'est à l'intérieur du cercle que les exploratrices effectueront des recherches. Elles ne tarderont pas à arriver. Appuyez sur espace lorsque c'est le cas.", fr)
 show("Um die Flagge ist eine große blaue Linie. Dies ist der Flaggenradius. In diesem Radius wird der Entdecker herumfliegen. Der Entdecker wird bald da sein. Setze die Einführung mit der Leertaste fort, sobald der Entdecker angekommen ist.",de)
 show("Notarás una linea grande que rodea la bandera.  Es el radio de la bandera, y es donde el explorador se inscribirá.  Verás que el explorador vendrá en poco tiempo. Una vez que haya llegado usa la barra espaciadora.",es)
 space
 
 summonFlag("prepare_flag", 48, 40, 6, 16, 1)
-show("Ohh my! Our enemy seems to have lots of workers, and a sizeable army, and for some reason, their gathering all at the same spot. Could this mean ... their planning an attack? I think so! Quick! We have to set up some defences!")
+show("Ohh my! Our enemy seems to have lots of workers, and a sizeable army, and for some reason, they're gathering all at the same spot. Could this mean ... they're planning an attack? I think so! Quick! We have to set up some defences!")
 show("Ho mon Dieu ! Nos ennemis semblent disposer de beaucoup d'ouvrières et d'une armée raisonnable. Pour une raison étrange, elles sont toutes rassemblées au même endroit. Cela signifierait-il... qu'ils préparent une attaque ? C'est ce que je pense ! Vite ! Nous devons préparer des défenses !", fr)
 show("Ohh! Unser Feind hat anscheinend viele Arbeiter und eine große Armee die sich an einem Punkt sammelt. Könnte das bedeuten, dass sie einen Angriff planen? Ich denke schon! Schnell! Wir müssen eine Verteidigung aufbauen.",de)
 show("Oh Oh! Nuestro enemigo parece que tiene muchos trabajadores, y un ejército de cierto tamaño, y por alguna razón, los está acumulando en cierto lugar.  Esto podría significar... ¿Estarán planeando un ataque? Eso Creo! Rápido!  tenemos que ubicar nuestras defensas!",es)
 space
 
-show("To set up defenses, well, where going to need to set up a defense area. If you click on the same tab that you clicked on to make the explorer flag, you will see a set of three 'zones', they are selectable just under the flags. The blue zone is the one we are after, so click on it. Just under the zones, there are two options, one with an up arrow, and one with a down arrow. We want the down arrow, since we are placing a zone, rather than removing it, which would be the up arrow.")
+show("To set up defenses, well, we're going to need to set up a defense area. If you click on the same tab that you clicked on to make the explorer flag, you will see a set of three 'zones' selectable just under the flags. The blue zone is the one we are after, so click on it. Just under the zones, there are two options, one with an up arrow, and one with a down arrow. We want the down arrow, since we are placing a zone, rather than removing it (which would be the up arrow).")
 show("Pour cela, nous allons devoir établir une zone de défense. Si vous cliquez sur le même onglet que lorsque nous avons créé le drapeau d'exploration, vous verrez qu'il existe trois 'zones' qu'il est possible de sélectionner, juste sous les drapeaux. La zone bleue est celle que nous cherchons, cliquez donc dessus. Juste sous les zones, deux options sont disponibles, l'une avec une flèche vers le haut, l'autre avec une flèche vers le bas. Nous avons besoin de celle avec la flèche vers le bas, ce qui signifie que nous définissons une zone (l'autre option permet de supprimer une zone).", fr)
 show("Um eine Verteidigung aufzubauen brauchst du eine Verteidigungszone. Wenn du auf den Flaggen-Button klickst, siehst du unter den 3 Flaggen die 3 Zonen. Diese kannst du genauso auswählen wie die Flaggen. Die blaue Zone ist die, welche du jetzt benötigst, klicke darauf. Gleich unter den Zonen sind 2 Optionen, eine mit einem Pfeil nach oben und eine mit einem Pfeil nach unten. Da du eine Zone anlegen willst klicke auf den Pfeil nach unten. Zum Entfernen einer Zone einfach auf den Pfeil nach oben klicken.",de)
 show("Para ubicar bien la defensa, necesitaremos establecer un área de defensa.  Si usas la pestaña que empleaste para crear la bandera de explorador, verás un conjunto de tres 'zonas', se pueden seleccionar bajo las banderas.  La zona azul es la que buscamos, clic en ella.  Y bajo las zonas hay dos opciones, una con una flecha arriba y otra abajo.  Usaremos la que está hacia abajo, puesto que estamos estableciendo una zona, en lugar de removerla, que se lograría con la otra flecha.",es)
 space
 
-show("Now we have to select a pattern. There are several to choose from, my personall reccomendation is to choose the large, square one, but don't keep me from stopping you from choosing the circular one if you like it.")
+show("Now we have to select a pattern. There are several to choose from. My personal recommendation is to choose the large, square one, but don't let me stop you from choosing the circular one if you like it.")
 show("Nous devons maintenant sélectionner un modèle. Il en existe plusieurs, je vous conseille le grand carré, mais vous pouvez choisir le cercle s'il vous fait envie.", fr)
 show("Nun musst du eine Struktur wählen. Es gibt einige zur Auswahl. Meine Empfehlung wäre das große, rechteckige, aber das soll dich nicht davon abhalten das kreisförmige Muster zu wählen, wenn du das möchtest.",de)
 show("Ahora tenemos que seleccionar un patrón.  Hay varios para escoger. Mi recomendación especial es escoger el largo y cuadrado, pero no te detendré si vas a escoger el circular o el que te guste.",es)
 space
 
-show("Finally, we are able to place some zone. You can place zone just by clicking on the main screen. If you want to place allot of zone, hold the mouse button down, and drag it all over. We have to anticipate where our enemy will attack from. Looking arround, it may seem to you that the fastest way for them to get into your base is through that little inlet where we placed our towers. So, place some defence zone just behind of your towers.")
+show("Finally, we are able to place some zone. You can place a zone just by clicking on the main screen. If you want to place a lot of zone, hold the mouse button down, and drag it all over. We have to anticipate where our enemy will attack from. Looking around, it may seem to you that the fastest way for them to get into your base is through that little inlet where we placed our towers, so place some defense zone just behind of your towers.")
 show("Enfin, nous pouvons placer la zone. Pour cela, cliquez simplement sur l'écran principal. Si vous voulez placer une grande zone, maintenez le bouton de la souris enfoncé et dessinez-la. Nous devons anticiper l'origine de l'attaque ennemie. En regardant attentivement l'environnement, il semble que la façon la plus rapide pour eux d'atteindre votre base est de passer par cette petite bande de terre où nous avons placé nos tours. Mettons donc une zone de défense juste derrière celles-ci.", fr)
 show("Nun bist du in der Lage die Zone zu platzieren. Das kannst du tun indem du einfach auf den Hauptbildschirm klickst. Wenn du eine größere Zone willst kannst du die Maustaste gedrückt halten und die Zone 'malen'. Du musst dir überlegen, von wo dein Feind angreifen wird. Schau dich um, der kürzeste Weg in deine Basis ist der schmale Übergang, dort, wo deine Türme stehen. Deshalb solltest du eine Verteidigungszone direkt hinter den Türmen anlegen.",de)
 show("Finalmente, podemos establecer una zona.  La estableces seleccionando en la pantalla principal.  Si deseas una gran zona, usa el arrastre del ratón.  Tenemos que anticipar de dónde vendrá el ataque. En un vistazo rápido, es muy posible que la vía más rápida para que ellos lleguen a tu base es a través de esa abertura frente a la cuál colocamos nuestras torres.  Coloquemos la zona de defensa, justo detrás de las torres.",es)
@@ -739,7 +740,7 @@ show("Creo que se están acercando!",es)
 space
 
 wait(area("enemy_attack_zone", 1))
-show("Where under attack! But watch how whimsicle the enemy fights, I bet we could eliminate them in a snap.")
+show("We're under attack! But watch how whimsically the enemy fights. I bet we could eliminate them in a snap.")
 show("Nous sommes attaqués ! Mais regardez comment se bat l'ennemi, je pense que nous n'en ferons qu'une bouchée.", fr)
 show("Wir werden angegriffen! Aber sieh nur wie schlecht der Feind kämpft. Ich wette wir können ihn mit einem Schlag auslöschen.",de)
 show("Estamos siendo atacados! Pero mira cómo pelea nuestro enemigo, apuesto a que los acabamos sin más.",es)
@@ -748,13 +749,13 @@ hide
 
 wait(not(area("enemy_attack_zone", 1)))
 destroyFlag("attack_flag")
-show("We survived the attack! Excellent! I think its about time we launched an attack of our own. To do that, use the flags menu, which is under the minimap, and look for the flag that has a bunch of spikes on it. Now, scroll over to the enemies base. Place a flag over their most important building: the Swarm!")
+show("We survived the attack! Excellent! I think it's about time we launched an attack of our own. To do that, use the flags menu, which is under the minimap, and look for the flag that has a bunch of spikes on it. Now, scroll over to the enemies base. Place a flag over their most important building: the Swarm!")
 show("Nous avons survécu à l'attaque ! Excellent ! Je pense qu'il est temps d'en lancer une de notre côté. Pour cela, utilisé le menu des drapeaux, sous la mini-carte, et recherchez celui qui porte des pics. Maintenant centrez l'écran sur la base ennemi. Placez un drapeau sur leur bâtiment le plus important : la Ruche !",fr)
 show("Wir haben den Angriff überlebt! Super! Ich denke, es ist an der Zeit, dass wird selbst einen Angriff starten. Um dies zu tun benutze das Flaggen-Menü unter der Minikarte. Suche die Flagge, die aussieht wie ein Morgenstern. Scrolle nun zur Feindbasis. Platziere die Flagge über ihrem wichtigsten Gebäude: Ihrem Stock!",de)
 show("Sobrevivimos al ataque! Excelente! Creo que es hora de lanzar un ataque por nuestra cuenta.  Para hacerlo, usa el menú de banderas, que está bajo el minimapa y busca la bandera que tiene muchas puntas en ella.  Dirígete a la base enemiga y coloca la bandera sobre su construcción más importante: La colmena!",es)
 space
 
-show("Now right click, and then click on the flag. There is a few things we might want to change. First of all, assign more than one warrior to the flag. Next, make the radius smaller, as to focus the warriors onto the swarm rather than spreading them apart. Now, wait, and watch the magic!")
+show("Now right-click, and then click on the flag. There are a few things we might want to change. First of all, assign more than one warrior to the flag. Next, make the radius smaller, as to focus the warriors onto the Swarm rather than spreading them apart. Now, wait, and watch the magic!")
 show("Maintenant, effectuez un clic droit puis cliquez sur le drapeau. Il y a deux ou trois choses que nous devrions changé. Tout d'abord, assignons plus d'un guerrier au drapeau. Ensuite, réduisons le rayon d'influence du drapeau pour concentrer les guerriers sur la ruche plutôt que les disperser. Maintenant, attendez et admirez !", fr)
 show("Rechtsklicke und klicke dann auf die Flagge. Es gibt ein paar Dinge zu ändern. Als erstes teile der Flagge mehr Kämpfer zu. Dann solltest du den Radius schmaler machen, damit die Krieger sich auf den Stock konzentrieren und nicht auf die umliegende Gegend. Nun warte ab und sieh, was geschieht.",de)
 show("Usa ahora el botón derecho, y posteriormente selecciona la bandera con el izquierdo.  Hay ciertas cosas que deseamos cambiar.  Primero que todo, asignemos más de un guerrero a la bandera. Ahora hagamos el radio más pequeño, para enfocar los esfuerzos de nuestros guerreros sobre la colmena en lugar de desplegarlos.  Espera y mira la magia!",es)
@@ -764,7 +765,7 @@ hide
 setArea("starting_attack_zone", 72, 34, 10)
 
 wait(area("starting_attack_zone", 0))
-show("Let the attack begin! I think we will have to work our way through these towers to get to the swarm, but that should not be much of a challenge.")
+show("Let the attack begin! I think we will have to work our way through these towers to get to the Swarm, but that should not be much of a challenge.")
 show("Que l'attaque commence ! Je pense que nous allons devoir tailler notre route entre ces tours pour prendre la rouge, mais cela ne devrait pas etre trop compliqué.", fr)
 show("Lass den Angriff beginnen! Ich denke du wirst dir den Weg durch ihre Mauern und Türme bahnen müssen, das sollte aber keine große Herausforderung sein.",de)
 show("Que comience el ataque! Creo que tendremos que limpiar el camino de esas torres para poder llegar a la colmena, aunque no es gran cosa.",es)
@@ -773,7 +774,7 @@ hide
 
 setArea("main_attack_zone", 50, 35, 5)
 wait(area("main_attack_zone", 0))
-show("Where almost there! Lets show those aqua globs whos boss!")
+show("We're almost there! Lets show those aqua globs who's boss!")
 show("Nous y sommes presque ! Montrons à ces globules aquatiques qui est le chef !", fr)
 show("Du bist fast da. Zeige den Aquas, wer hier der Boss ist!",de)
 show("Estamos llegando! Mostremos a esos glóbulos de agua quién es el jefe!",es)
@@ -781,7 +782,7 @@ space
 hide
 
 wait(Swarm(1, 1) = 0)
-show("You did it! Congradulations! This concludes the tutorial, I hoped you have learned allot from the tutorial, and it should jump start your way into playing Globulation 2 like a pro!")
+show("You did it! Congratulations! This concludes the tutorial. I hope you have learned a lot from the tutorial, and it should jump start your way into playing Globulation 2 like a pro!")
 show("Vous avez réussi ! Félicitations ! Ce didacticiel est maintenant terminé, j'espère qu'il vous a beaucoup appris, vous etes maintenant pret à jouer à Globulation 2 comme un pro !", fr)
 show("Du hast es geschafft! Dies schließt die Einführung ab. Ich hoffe du hast viel gelernt - es sollte dir eine Starthilfe auf dem Weg zum Profi sein.",de)
 show("Lo hiciste! Felicitaciones! Esto concluye el tutorial, espero que hayas aprendido mucho acerca del tutorial, y que te haya abierto el camino para jugar Globulation 2 como un profesional!",es)
