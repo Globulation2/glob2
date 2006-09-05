@@ -54,6 +54,7 @@ Settings::Settings()
 	clearflagUnit = 1;
 	exploreflagUnit = 1;
 	restoreDefaultShortcuts();
+	isCampaign = false;
 }
 
 
