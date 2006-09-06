@@ -43,7 +43,8 @@ public:
 	std::map<std::string, std::string> keyboard_shortcuts;
 	std::map<std::string, std::string> editor_keyboard_shortcuts;
 	void restoreDefaultShortcuts();
-	bool isCampaign;
+	int campaignPlace;
+	int campaignPlayed;
 public:
 	void load(const char *filename="preferences.txt");
 	void save(const char *filename="preferences.txt");

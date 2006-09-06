@@ -22,11 +22,17 @@
 
 #include "Glob2Screen.h"
 
+namespace GAGGUI
+{
+	class Button;
+}
+
 class CampaignScreen : public Glob2Screen
 {
 public:
 	CampaignScreen(const std::string &text);
 	void onAction(Widget *source, Action action, int par1, int par2);
+	Button *ok, *cancel;
 };
 
 #endif
