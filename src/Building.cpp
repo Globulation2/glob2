@@ -79,8 +79,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	if (shortTypeNum == 8)
 		maxUnitWorkingLocal = globalContainer->settings.exploreflagUnit;
 	maxUnitWorking = maxUnitWorkingLocal;
-	//maxUnitWorkingPreferred = 1; donksnotes: this is the original line
-	maxUnitWorkingPreferred = maxUnitWorking; //desync fix?
+	maxUnitWorkingPreferred = 1;
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
 
