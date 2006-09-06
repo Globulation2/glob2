@@ -79,7 +79,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	if (shortTypeNum == 8)
 		maxUnitWorkingLocal = globalContainer->settings.exploreflagUnit;
 	maxUnitWorking = maxUnitWorkingLocal;
-	maxUnitWorkingPreferred = 1;
+	//maxUnitWorkingPreferred = 1; donksnotes: this is the original line
+	maxUnitWorkingPreferred = maxUnitWorking; //desync fix?
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
 
@@ -291,12 +292,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	
 	// init data not loaded
 	maxUnitWorkingLocal = maxUnitWorking;
-	if (shortTypeNum == 9)
-		maxUnitWorkingLocal = globalContainer->settings.warflagUnit;
-	if (shortTypeNum == 10)
-		maxUnitWorkingLocal = globalContainer->settings.clearflagUnit;
-	if (shortTypeNum == 8)
-		maxUnitWorkingLocal = globalContainer->settings.exploreflagUnit;
 	maxUnitWorkingPreferred = 1;
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
