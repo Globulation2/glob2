@@ -1259,7 +1259,7 @@ decTop 0
 isVirtual 1
 isCloacked  1
 
-maxUnitWorking 10
+maxUnitWorking 1
 
 shortTypeNum 9
 
