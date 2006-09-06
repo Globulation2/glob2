@@ -52,16 +52,6 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue)
 :OverlayScreen(globalContainer->gfx, 320, canContinue ? 150 : 100)
 {
-	// update campaign if a campaign game was played
-	if (globalContainer->settings.campaignPlayed == globalContainer->settings.campaignPlace)
-	{
-		if (globalContainer->settings.campaignPlayed < 7)
-			{
-				globalContainer->settings.campaignPlace++;
-				globalContainer->settings.campaignPlayed++;
-				globalContainer->settings.save();
-			}
-	}
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", title));
 	addWidget(new TextButton(10, 50, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "data/gfx/gamegui", 26, 27, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
 	if (canContinue)
