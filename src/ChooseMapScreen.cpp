@@ -21,6 +21,7 @@
 #include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 #include "Session.h"
+#include "GlobalContainer.h"
 #include <FormatableString.h>
 #include <GUIButton.h>
 #include <GUIText.h>
@@ -36,6 +37,20 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	
 	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
+	
+	map1 = new TextButton(20, 75, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Escape"), OK, 13);
+	
+	map2 = new TextButton(20, 125, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Growth"), OK, 13);
+	
+	map3 = new TextButton(20, 175, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Aquaglobs"), OK, 13);
+	
+	map4 = new TextButton(20, 225, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Capture"), OK, 13);
+	
+	map5 = new TextButton(20, 275, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Invasion"), OK, 13);
+	
+	map6 = new TextButton(20, 325, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Retaliation"), OK, 13);
+	
+	map7 = new TextButton(20, 375, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Domination"), OK, 13);
 	
 	fileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", directory, extension, recurse);
 	addWidget(fileList);
@@ -56,7 +71,27 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	}
 	else
 	{
-		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose campaign]"));
+		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose scenario]"));
+		fileList->visible = false;
+		addWidget(map1);
+		addWidget(map2);
+		addWidget(map3);
+		addWidget(map4);
+		addWidget(map5);
+		addWidget(map6);
+		addWidget(map7);
+		if (globalContainer->settings.campaignPlace < 7)
+			map7->visible = false;
+		if (globalContainer->settings.campaignPlace < 6)
+			map6->visible = false;
+		if (globalContainer->settings.campaignPlace < 5)
+			map5->visible = false;
+		if (globalContainer->settings.campaignPlace < 4)
+			map4->visible = false;
+		if (globalContainer->settings.campaignPlace < 3)
+			map3->visible = false;
+		if (globalContainer->settings.campaignPlace < 2)
+			map2->visible = false;
 	}
 	addWidget(title);
 	mapName=new Text(440, 60+128+25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
@@ -125,6 +160,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		}
 		else if (source == cancel)
 		{
+			globalContainer->settings.campaignPlayed = 0;
 			endExecute(par1);
 		}
 		else if (source == deleteMap)
@@ -136,6 +172,265 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				Toolkit::getFileManager()->remove(mapFileName);
 				fileList->generateList();
 			}
+		}
+		else if (source == map1)
+		{
+			globalContainer->settings.campaignPlayed = 1;
+			std::string mapFileName = "campaigns/Joey_mission_1.map";
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = sessionInfo.load(stream);
+				if (validMapSelected)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					std::string textTemp;
+					textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+					mapInfo->setText(textTemp);
+					textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(std::ctime(&mtime));
+					
+					// call subclass handler
+					validMapSelectedhandler();
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
+			}
+			delete stream;
+		}
+		else if (source == map2)
+		{
+			globalContainer->settings.campaignPlayed = 2;
+			std::string mapFileName = "campaigns/Joey_mission_2.map";
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = sessionInfo.load(stream);
+				if (validMapSelected)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					std::string textTemp;
+					textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+					mapInfo->setText(textTemp);
+					textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(std::ctime(&mtime));
+					
+					// call subclass handler
+					validMapSelectedhandler();
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
+			}
+			delete stream;
+		}
+		else if (source == map3)
+		{
+			globalContainer->settings.campaignPlayed = 3;
+			std::string mapFileName = "campaigns/Joey_mission_3.map";
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = sessionInfo.load(stream);
+				if (validMapSelected)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					std::string textTemp;
+					textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+					mapInfo->setText(textTemp);
+					textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(std::ctime(&mtime));
+					
+					// call subclass handler
+					validMapSelectedhandler();
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
+			}
+			delete stream;
+		}
+		else if (source == map4)
+		{
+			globalContainer->settings.campaignPlayed = 4;
+			std::string mapFileName = "campaigns/Joey_mission_4.map";
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = sessionInfo.load(stream);
+				if (validMapSelected)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					std::string textTemp;
+					textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+					mapInfo->setText(textTemp);
+					textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(std::ctime(&mtime));
+					
+					// call subclass handler
+					validMapSelectedhandler();
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
+			}
+			delete stream;
+		}
+		else if (source == map5)
+		{
+			globalContainer->settings.campaignPlayed = 5;
+			std::string mapFileName = "campaigns/Joey_mission_5.map";
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = sessionInfo.load(stream);
+				if (validMapSelected)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					std::string textTemp;
+					textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+					mapInfo->setText(textTemp);
+					textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(std::ctime(&mtime));
+					
+					// call subclass handler
+					validMapSelectedhandler();
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
+			}
+			delete stream;
+		}
+		else if (source == map6)
+		{
+			globalContainer->settings.campaignPlayed = 6;
+			std::string mapFileName = "campaigns/Joey_mission_6.map";
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = sessionInfo.load(stream);
+				if (validMapSelected)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					std::string textTemp;
+					textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+					mapInfo->setText(textTemp);
+					textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(std::ctime(&mtime));
+					
+					// call subclass handler
+					validMapSelectedhandler();
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
+			}
+			delete stream;
+		}
+		else if (source == map7)
+		{
+			globalContainer->settings.campaignPlayed = 7;
+			std::string mapFileName = "campaigns/Joey_mission_7.map";
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = sessionInfo.load(stream);
+				if (validMapSelected)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					std::string textTemp;
+					textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+					mapInfo->setText(textTemp);
+					textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(std::ctime(&mtime));
+					
+					// call subclass handler
+					validMapSelectedhandler();
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
+			}
+			delete stream;
 		}
 	}
 }

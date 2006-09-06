@@ -54,7 +54,8 @@ Settings::Settings()
 	clearflagUnit = 1;
 	exploreflagUnit = 1;
 	restoreDefaultShortcuts();
-	isCampaign = false;
+	campaignPlace = 1;
+	campaignPlayed = 0;
 }
 
 
@@ -170,6 +171,7 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(warflagUnit);
 		READ_PARSED_INT(clearflagUnit);
 		READ_PARSED_INT(exploreflagUnit);
+		READ_PARSED_INT(campaignPlace);
 
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{
@@ -230,6 +232,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "warflagUnit=%d\n", warflagUnit);
 		Utilities::streamprintf(stream, "clearflagUnit=%d\n", clearflagUnit);
 		Utilities::streamprintf(stream, "exploreflagUnit=%d\n", exploreflagUnit);
+		Utilities::streamprintf(stream, "campaignPlace=%d\n", campaignPlace);
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{
 			Utilities::streamprintf(stream, "game_%s=%s\n", i->first.c_str(), i->second.c_str());

@@ -66,6 +66,8 @@ protected:
 	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
 	//! True when the selected map is valid
 	bool validMapSelected;
+	// Campaign buttons
+	Button *map1, *map2, *map3, *map4, *map5, *map6, *map7;
 
 public:
 	//! Constructor. Directory is the source of the listed files. extension is the file extension to show. If recurse is true, subdirectoried are shown and can be opened.
