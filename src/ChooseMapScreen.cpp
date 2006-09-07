@@ -38,19 +38,19 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
 	
-	map1 = new TextButton(20, 75, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Escape"), OK, 13);
+	map1 = new TextButton(20, 75, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "Escape", OK, 13);
 	
-	map2 = new TextButton(20, 125, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Growth"), OK, 13);
+	map2 = new TextButton(20, 125, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "Growth", OK, 13);
 	
-	map3 = new TextButton(20, 175, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Aquaglobs"), OK, 13);
+	map3 = new TextButton(20, 175, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "Aquaglobs", OK, 13);
 	
-	map4 = new TextButton(20, 225, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Capture"), OK, 13);
+	map4 = new TextButton(20, 225, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "Capture", OK, 13);
 	
-	map5 = new TextButton(20, 275, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Invasion"), OK, 13);
+	map5 = new TextButton(20, 275, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "Invasion", OK, 13);
 	
-	map6 = new TextButton(20, 325, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Retaliation"), OK, 13);
+	map6 = new TextButton(20, 325, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "Retaliation", OK, 13);
 	
-	map7 = new TextButton(20, 375, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("Domination"), OK, 13);
+	map7 = new TextButton(20, 375, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "Domination", OK, 13);
 	
 	fileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", directory, extension, recurse);
 	addWidget(fileList);
@@ -71,7 +71,7 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	}
 	else
 	{
-		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose scenario]"));
+		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", "choose scenario");
 		fileList->visible = false;
 		addWidget(map1);
 		addWidget(map2);
