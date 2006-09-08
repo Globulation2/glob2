@@ -45,6 +45,7 @@ public:
 	void restoreDefaultShortcuts();
 	int campaignPlace;
 	int campaignPlayed;
+	int tempUnit;
 public:
 	void load(const char *filename="preferences.txt");
 	void save(const char *filename="preferences.txt");

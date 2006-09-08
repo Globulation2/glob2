@@ -1600,9 +1600,23 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
 		else
 			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+		unitCount = 1; //default number of units assigned unless stated otherwise
 
+		//determine custom settings		
+		if (typeNum == 45)
+			unitCount = globalContainer->settings.warflagUnit;
+			
+		if (typeNum == 44)
+			unitCount = globalContainer->settings.exploreflagUnit;
+		
+		if (typeNum == 46)
+			unitCount = globalContainer->settings.clearflagUnit;
+		
 		if (isRoom)
-			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum));
+		{
+			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum, unitCount));
+		}
+		
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{

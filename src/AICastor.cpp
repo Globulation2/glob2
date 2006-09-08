@@ -1215,7 +1215,7 @@ Order *AICastor::controlStrikes()
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			fprintf(logFile,  " create\n");
-			return new OrderCreate(team->teamNumber, x, y, typeNum);
+			return new OrderCreate(team->teamNumber, x, y, typeNum, 1);
 		}
 		else
 		{
@@ -2915,7 +2915,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 		
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
-		return new OrderCreate(team->teamNumber, x, y, typeNum);
+		return new OrderCreate(team->teamNumber, x, y, typeNum, 1);
 	}
 	
 	return NULL;

@@ -207,6 +207,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			bool isRoom=checkRoomForBuilding(posX, posY, bt, oc->teamNumber);
 			if (isVirtual || isRoom)
 			{
+				globalContainer->settings.tempUnit = oc->unitCount;
 				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber);
 				if (b)
 				{

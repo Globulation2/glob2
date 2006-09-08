@@ -171,17 +171,18 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 OrderCreate::OrderCreate(const Uint8 *data, int dataLength)
 :Order()
 {
-	assert(dataLength==16);
+	assert(dataLength==20);
 	bool good=setData(data, dataLength);
 	assert(good);
 }
 
-OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum)
+OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitCount)
 {
 	this->teamNumber=teamNumber;
 	this->posX=posX;
 	this->posY=posY;
 	this->typeNum=typeNum;
+	this->unitCount=unitCount;
 }
 
 Uint8 *OrderCreate::getData(void)
@@ -192,6 +193,7 @@ Uint8 *OrderCreate::getData(void)
 	addSint32(data, this->posX, 4);
 	addSint32(data, this->posY, 8);
 	addSint32(data, this->typeNum, 12);
+	addSint32(data, this->unitCount, 16);
 	
 	return data;
 }
@@ -205,6 +207,7 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 	this->posX=getSint32(data, 4);
 	this->posY=getSint32(data, 8);
 	this->typeNum=getSint32(data, 12);
+	this->unitCount=getSint32(data, 16);
 	
 	memcpy(this->data, data, dataLength);
 	

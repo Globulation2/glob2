@@ -56,6 +56,7 @@ Settings::Settings()
 	restoreDefaultShortcuts();
 	campaignPlace = 1;
 	campaignPlayed = 0;
+	tempUnit = 1;
 }
 
 
