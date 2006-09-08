@@ -71,20 +71,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	shortTypeNum = type->shortTypeNum;
 	maxUnitInside = type->maxUnitInside;
 	maxUnitWorking = type->maxUnitWorking;
-	maxUnitWorkingLocal = maxUnitWorking; //default for units not defined within settings
-	
-	
-	//FIXME the section below allows customized flag settings by changing default
-	//flag values, this results in desyncs with network games as values are not 
-	//transmitted and are assumed by all systems. 
-	/*if (shortTypeNum == 9)
-		maxUnitWorkingLocal = globalContainer->settings.warflagUnit;
-	if (shortTypeNum == 10)
-		maxUnitWorkingLocal = globalContainer->settings.clearflagUnit;
-	if (shortTypeNum == 8)
-		maxUnitWorkingLocal = globalContainer->settings.exploreflagUnit;*/
-		
-	
+	maxUnitWorkingLocal = globalContainer->settings.tempUnit;
+	globalContainer->settings.tempUnit = 1;
 	maxUnitWorking = maxUnitWorkingLocal;
 	maxUnitWorkingPreferred = 1;
 	subscriptionInsideTimer = 0;

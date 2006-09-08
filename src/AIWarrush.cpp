@@ -662,7 +662,7 @@ Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if((b)&&(b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)&&(b->constructionResultState == Building::NO_CONSTRUCTION))
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum);
+			return new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1);
 		}
 	}
 	if(verbose)std::cout << "No swarms found\n";
@@ -673,7 +673,7 @@ Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if(b)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum);
+			return new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1);
 		}
 	}
 	if(verbose)std::cout << "No buildings found\n";
@@ -684,7 +684,7 @@ Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if(u)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return new OrderCreate(team->teamNumber, u->posX, u->posY, typeNum);
+			return new OrderCreate(team->teamNumber, u->posX, u->posY, typeNum, 1);
 		}
 	}
 	//what, enemy has no buildings or units at the beginning of the game? o_O O_o o_O
@@ -830,6 +830,6 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		
 	// create and return order
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
-	return new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum);
+	return new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1);
 }
 

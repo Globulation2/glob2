@@ -62,20 +62,21 @@ class OrderCreate:public Order
 {
 public:
 	OrderCreate(const Uint8 *data, int dataLength);
-	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum);
+	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitCount);
 	virtual ~OrderCreate(void) {}
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 16; }
+	int getDataLength(void) { return 20; }
 
 	Sint32 teamNumber;
 	Sint32 posX;
 	Sint32 posY;
 	Sint32 typeNum;
+	Sint32 unitCount;
 
  private:
-	Uint8 data[16];
+	Uint8 data[20];
 };
 
 

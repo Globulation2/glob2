@@ -878,7 +878,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
-			return new OrderCreate(teamNumber, ex, ey, typeNum);
+			return new OrderCreate(teamNumber, ex, ey, typeNum, 1);
 		}
 		else
 			return new NullOrder();
@@ -939,7 +939,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
 			int teamNumber=team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, typeNum);
+			return new OrderCreate(teamNumber, x, y, typeNum, 1);
 		}
 		//printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
 		return new NullOrder();
@@ -972,7 +972,7 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
 			int teamNumber=team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, typeNum);
+			return new OrderCreate(teamNumber, x, y, typeNum, 1);
 		}
 		return new NullOrder();
 	}
