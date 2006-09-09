@@ -88,7 +88,7 @@ public:
 	bool isUnitHungry(void);
 	void standardRandomActivity();
 	
-	int getRealArmor(void) const;
+	int getRealArmor(bool isMagic) const;
 	int getRealAttackStrength(void) const; //!< Return the real attack strengh for warriors
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);
