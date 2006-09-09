@@ -501,6 +501,7 @@ void Unit::subscriptionSuccess(void)
 
 void Unit::syncStep(void)
 {
+	//warrior attacks?
 	assert(speed>0);
 	if ((action==ATTACK_SPEED) && (delta>=128) && (delta<(128+speed)))
 	{
@@ -511,7 +512,7 @@ void Unit::syncStep(void)
 			int enemyTeam=GIDtoTeam(enemyGUID);
 			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
 			
-			int degats=getRealAttackStrength()-enemy->getRealArmor();
+			int degats=getRealAttackStrength()-enemy->getRealArmor(false);
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
@@ -708,7 +709,7 @@ void Unit::handleMagic(void)
 						if (owner->enemies & targetTeamMask)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
-							Sint32 damage = attackForce + experienceLevel - enemyUnit->getRealArmor();
+							Sint32 damage = attackForce + experienceLevel - enemyUnit->getRealArmor(true);
 							if (damage > 0)
 							{
 								enemyUnit->hp -= damage;
@@ -721,8 +722,9 @@ void Unit::handleMagic(void)
 					}
 				}
 				
-				// damaging enemy buildings:
-				if (performance[MAGIC_ATTACK_GROUND])
+				// damaging enemy buildings: this has been removed for balance purposes
+				
+				/*if (performance[MAGIC_ATTACK_GROUND])
 				{
 					Uint16 targetGBID = map->getBuilding(xi, yi);
 					if (damagedBuildings.insert(targetGBID).second)
@@ -746,7 +748,7 @@ void Unit::handleMagic(void)
 							}
 						}
 					}
-				}
+				}*/
 			}
 		
 		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
@@ -2709,10 +2711,18 @@ Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 }
 
 //! Return the real armor, taking into account the reduction due to fruits
-int Unit::getRealArmor(void) const
+int Unit::getRealArmor(bool isMagic) const
 {
-	int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
-	return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
+	if (isMagic == false)
+	{
+		int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
+		return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
+	}
+	else if(isMagic == true) //magic bypasses armor yet fruit penalties still apply
+	{
+		int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
+		return 0 - fruitCount * armorReductionPerHappyness;
+	}
 }
 
 //! Return the real attack strengh, taking into account the experience level
