@@ -130,7 +130,7 @@ void Sector::step(void)
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
-				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor();
+				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
 				if (degats <= 0)
 					degats = 1;
 				game->teams[team]->myUnits[id]->hp -= degats;
@@ -149,7 +149,7 @@ void Sector::step(void)
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
-				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor();
+				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
 				if (degats <= 0)
 					degats = 1;
 				game->teams[team]->myUnits[id]->hp -= degats;
