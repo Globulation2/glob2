@@ -49,10 +49,10 @@ namespace GAGGUI
 using namespace GAGGUI;
 class Unit;
 
-struct Rectangle
+struct globRectangle
 {
-	Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
-	Rectangle() : x(0), y(0), width(0), height(0) {}
+	globRectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
+	globRectangle() : x(0), y(0), width(0), height(0) {}
 	bool is_in(int posx, int posy) { return posx>x && posx<(x+width) && posy>y && posy<(y+height); }
 
 	int x;
@@ -176,11 +176,11 @@ private:
 		RemoveObject,
 	} selectionMode;
 
-	std::map<std::string, boost::tuple<Rectangle, std::string, bool, bool> > button_areas;
+	std::map<std::string, boost::tuple<globRectangle, std::string, bool, bool> > button_areas;
 	void activate_area(const std::string& name);
 	void deactivate_area(const std::string& name);
 	bool is_activated(const std::string& name);
-	void add_area(const std::string& name, const Rectangle& area, const std::string& action, bool is_activated, bool on_release=false);
+	void add_area(const std::string& name, const globRectangle& area, const std::string& action, bool is_activated, bool on_release=false);
 	std::string get_action(int x, int y, bool is_release);
 
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);

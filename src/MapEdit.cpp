@@ -274,7 +274,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 // 	if (doPaintEditMode)
 // 		paintEditMode(false, false);
 
-	if(Rectangle(sx, sy, sw, sh).is_in(mouseX, mouseY))
+	if(globRectangle(sx, sy, sw, sh).is_in(mouseX, mouseY))
 	{
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
@@ -1047,11 +1047,11 @@ void MapEdit::drawUnitOnMap()
 
 void MapEdit::register_buttons()
 {
-	add_area("minimap drag start", Rectangle(globalContainer->gfx->getW()-114, 14, 100, 100), "minimap drag start", true);
-	add_area("building view button", Rectangle(globalContainer->gfx->getW()-128, 128, 32, 32), "switch to building view", true);
-	add_area("flag view button", Rectangle(globalContainer->gfx->getW()-96, 128, 32, 32), "switch to flag view", true);
-	add_area("terrain view button", Rectangle(globalContainer->gfx->getW()-64, 128, 32, 32), "switch to terrain view", true);
-	add_area("teams view button", Rectangle(globalContainer->gfx->getW()-32, 128, 32, 32), "switch to teams view", true);
+	add_area("minimap drag start", globRectangle(globalContainer->gfx->getW()-114, 14, 100, 100), "minimap drag start", true);
+	add_area("building view button", globRectangle(globalContainer->gfx->getW()-128, 128, 32, 32), "switch to building view", true);
+	add_area("flag view button", globRectangle(globalContainer->gfx->getW()-96, 128, 32, 32), "switch to flag view", true);
+	add_area("terrain view button", globRectangle(globalContainer->gfx->getW()-64, 128, 32, 32), "switch to terrain view", true);
+	add_area("teams view button", globRectangle(globalContainer->gfx->getW()-32, 128, 32, 32), "switch to teams view", true);
 
 	int width = (128 / 2);
 	for (size_t i=0; i<buildingsChoiceName.size(); i++)
@@ -1059,12 +1059,12 @@ void MapEdit::register_buttons()
 		std::string &type = buildingsChoiceName[i];
 		int x=((i % 2)*width)+globalContainer->gfx->getW()-128;
 		int y=((i / 2)*46)+128+32;
-		add_area("building "+type, Rectangle(x, y, 40, 40), "set place building selection "+type, true);
+		add_area("building "+type, globRectangle(x, y, 40, 40), "set place building selection "+type, true);
 	}
-	add_area("building level 1", Rectangle(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-36, 32, 32), "switch to building level 1", true);
-	add_area("building level 2", Rectangle(globalContainer->gfx->getW()-80, globalContainer->gfx->getH()-36, 32, 32), "switch to building level 2", true);
-	add_area("building level 3", Rectangle(globalContainer->gfx->getW()-32, globalContainer->gfx->getH()-36, 32, 32), "switch to building level 3", true);
-	add_area("menubutton", Rectangle(globalContainer->gfx->getW()-160, 0, 32, 32), "open menu screen", true);
+	add_area("building level 1", globRectangle(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-36, 32, 32), "switch to building level 1", true);
+	add_area("building level 2", globRectangle(globalContainer->gfx->getW()-80, globalContainer->gfx->getH()-36, 32, 32), "switch to building level 2", true);
+	add_area("building level 3", globRectangle(globalContainer->gfx->getW()-32, globalContainer->gfx->getH()-36, 32, 32), "switch to building level 3", true);
+	add_area("menubutton", globRectangle(globalContainer->gfx->getW()-160, 0, 32, 32), "open menu screen", true);
 
  	const int YPOS_FLAG=160;
  	const int YPOS_BRUSH=YPOS_FLAG+56;
@@ -1074,35 +1074,35 @@ void MapEdit::register_buttons()
 		std::string &type = flagsChoiceName[i];
 		int x=((i % 3)*width)+globalContainer->gfx->getW()-128;
 		int y=((i / 3)*46)+128+32;
-		add_area("building "+type, Rectangle(x, y, 40, 40), "set place building selection "+type, false);
+		add_area("building "+type, globRectangle(x, y, 40, 40), "set place building selection "+type, false);
 	}
-	add_area("forbidden zone", Rectangle(globalContainer->gfx->getW()-128+8, YPOS_BRUSH, 32, 32), "select forbidden zone", false);
-	add_area("guard zone", Rectangle(globalContainer->gfx->getW()-128+48, YPOS_BRUSH, 32, 32), "select guard zone", false);
-	add_area("clearing zone", Rectangle(globalContainer->gfx->getW()-128+88, YPOS_BRUSH, 32, 32), "select clearing zone", false);
-	add_area("zone selection", Rectangle(globalContainer->gfx->getW()-128, YPOS_BRUSH+40, 128, 96), "handle zone click", false);
+	add_area("forbidden zone", globRectangle(globalContainer->gfx->getW()-128+8, YPOS_BRUSH, 32, 32), "select forbidden zone", false);
+	add_area("guard zone", globRectangle(globalContainer->gfx->getW()-128+48, YPOS_BRUSH, 32, 32), "select guard zone", false);
+	add_area("clearing zone", globRectangle(globalContainer->gfx->getW()-128+88, YPOS_BRUSH, 32, 32), "select clearing zone", false);
+	add_area("zone selection", globRectangle(globalContainer->gfx->getW()-128, YPOS_BRUSH+40, 128, 96), "handle zone click", false);
 
-	add_area("select worker", Rectangle(globalContainer->gfx->getW()-128 + 8, 360, 38, 38), "select worker", false);
-	add_area("select explorer", Rectangle(globalContainer->gfx->getW()-128 + 48, 360, 38, 38), "select explorer", false);
-	add_area("select warrior", Rectangle(globalContainer->gfx->getW()-128 + 88, 360, 38, 38), "select warrior", false);
+	add_area("select worker", globRectangle(globalContainer->gfx->getW()-128 + 8, 360, 38, 38), "select worker", false);
+	add_area("select explorer", globRectangle(globalContainer->gfx->getW()-128 + 48, 360, 38, 38), "select explorer", false);
+	add_area("select warrior", globRectangle(globalContainer->gfx->getW()-128 + 88, 360, 38, 38), "select warrior", false);
 
 	int unitInfoStart=globalContainer->gfx->getH()-36;
-	add_area("select unit level 1", Rectangle(globalContainer->gfx->getW()-128 + 0, unitInfoStart, 32, 32), "select unit level 1", false);
-	add_area("select unit level 2", Rectangle(globalContainer->gfx->getW()-128 + 32, unitInfoStart, 32, 32), "select unit level 2", false);
-	add_area("select unit level 3", Rectangle(globalContainer->gfx->getW()-128 + 64, unitInfoStart, 32, 32), "select unit level 3", false);
-	add_area("select unit level 4", Rectangle(globalContainer->gfx->getW()-128 + 96, unitInfoStart, 32, 32), "select unit level 4", false);
+	add_area("select unit level 1", globRectangle(globalContainer->gfx->getW()-128 + 0, unitInfoStart, 32, 32), "select unit level 1", false);
+	add_area("select unit level 2", globRectangle(globalContainer->gfx->getW()-128 + 32, unitInfoStart, 32, 32), "select unit level 2", false);
+	add_area("select unit level 3", globRectangle(globalContainer->gfx->getW()-128 + 64, unitInfoStart, 32, 32), "select unit level 3", false);
+	add_area("select unit level 4", globRectangle(globalContainer->gfx->getW()-128 + 96, unitInfoStart, 32, 32), "select unit level 4", false);
 
-	add_area("grass button", Rectangle(globalContainer->gfx->getW()-128, 172, 32, 32), "select grass", false);
-	add_area("sand button", Rectangle(globalContainer->gfx->getW()-128+48, 172, 32, 32), "select sand", false);
-	add_area("water button", Rectangle(globalContainer->gfx->getW()-128+96, 172, 32, 32), "select water", false);
-	add_area("wheat button", Rectangle(globalContainer->gfx->getW()-128+0, 210, 32, 32), "select wheat", false);
-	add_area("trees button", Rectangle(globalContainer->gfx->getW()-128+32, 210, 32, 32), "select trees", false);
-	add_area("stone button", Rectangle(globalContainer->gfx->getW()-128+64, 210, 32, 32), "select stone", false);
-	add_area("algae button", Rectangle(globalContainer->gfx->getW()-128+96, 210, 32, 32), "select algae", false);
-	add_area("cherry tree button", Rectangle(globalContainer->gfx->getW()-128+0, 248, 32, 32), "select cherry tree", false);
-	add_area("orange tree button", Rectangle(globalContainer->gfx->getW()-128+32, 248, 32, 32), "select orange tree", false);
-	add_area("prune tree button", Rectangle(globalContainer->gfx->getW()-128+64, 248, 32, 32), "select prune tree", false);
-	add_area("delete objects", Rectangle(globalContainer->gfx->getW()-128+8, 294, 112, 16), "select delete objects", false);
-	add_area("terrain selection", Rectangle(globalContainer->gfx->getW()-128, 320, 128, 96), "handle terrain click", false);
+	add_area("grass button", globRectangle(globalContainer->gfx->getW()-128, 172, 32, 32), "select grass", false);
+	add_area("sand button", globRectangle(globalContainer->gfx->getW()-128+48, 172, 32, 32), "select sand", false);
+	add_area("water button", globRectangle(globalContainer->gfx->getW()-128+96, 172, 32, 32), "select water", false);
+	add_area("wheat button", globRectangle(globalContainer->gfx->getW()-128+0, 210, 32, 32), "select wheat", false);
+	add_area("trees button", globRectangle(globalContainer->gfx->getW()-128+32, 210, 32, 32), "select trees", false);
+	add_area("stone button", globRectangle(globalContainer->gfx->getW()-128+64, 210, 32, 32), "select stone", false);
+	add_area("algae button", globRectangle(globalContainer->gfx->getW()-128+96, 210, 32, 32), "select algae", false);
+	add_area("cherry tree button", globRectangle(globalContainer->gfx->getW()-128+0, 248, 32, 32), "select cherry tree", false);
+	add_area("orange tree button", globRectangle(globalContainer->gfx->getW()-128+32, 248, 32, 32), "select orange tree", false);
+	add_area("prune tree button", globRectangle(globalContainer->gfx->getW()-128+64, 248, 32, 32), "select prune tree", false);
+	add_area("delete objects", globRectangle(globalContainer->gfx->getW()-128+8, 294, 112, 16), "select delete objects", false);
+	add_area("terrain selection", globRectangle(globalContainer->gfx->getW()-128, 320, 128, 96), "handle terrain click", false);
 
 	const int xpos=globalContainer->gfx->getW()-128;
 	for(int x=0; x<12; ++x)
@@ -1110,12 +1110,12 @@ void MapEdit::register_buttons()
 		const int ypos=128 + 40 + x*18;
 		std::stringstream str;
 		str<<x;
-		add_area("select team "+str.str(), Rectangle(xpos+20, ypos, 108, 18), "click team "+str.str(), false);
+		add_area("select team "+str.str(), globRectangle(xpos+20, ypos, 108, 18), "click team "+str.str(), false);
 		str.str("");
 	}
 	const int ypos_team=128 + 40 + 12*18;
-	add_area("add team", Rectangle(globalContainer->gfx->getW()-128, ypos_team+24, 32, 32), "add team", false);
-	add_area("remove team", Rectangle(globalContainer->gfx->getW()-128 + 40, ypos_team+24, 32, 32), "remove team", false);
+	add_area("add team", globRectangle(globalContainer->gfx->getW()-128, ypos_team+24, 32, 32), "add team", false);
+	add_area("remove team", globRectangle(globalContainer->gfx->getW()-128 + 40, ypos_team+24, 32, 32), "remove team", false);
 
 	for(int n=0; n<12; ++n)
 	{
@@ -1123,7 +1123,7 @@ void MapEdit::register_buttons()
 		const int ypos = globalContainer->gfx->getH()-74 + (n/6)*16;
 		std::stringstream str;
 		str<<n;
-		add_area("select active team "+str.str(), Rectangle(xpos, ypos, 16, 16), "select active team "+str.str(), false);
+		add_area("select active team "+str.str(), globRectangle(xpos, ypos, 16, 16), "select active team "+str.str(), false);
 		str.str("");
 	}
 }
@@ -1150,19 +1150,19 @@ int MapEdit::processEvent(SDL_Event& event)
 		relMouseY=event.motion.yrel;
 		if(is_dragging_minimap)
 		{
-			if(Rectangle(globalContainer->gfx->getW()-114, 14, 100, 100).is_in(mouseX, mouseY))
+			if(globRectangle(globalContainer->gfx->getW()-114, 14, 100, 100).is_in(mouseX, mouseY))
 				perform_action("minimap drag motion");
 			perform_action("scroll horizontal stop");
 			perform_action("scroll vertical stop");
 		}
 		else if(is_dragging_zone)
 		{
-			if(Rectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(globRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				perform_action("zone drag motion");
 		}
 		else if(is_dragging_terrain)
 		{
-			if(Rectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(globRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				perform_action("terrain drag motion");
 		}
 		else if(is_scroll_dragging)
@@ -1205,7 +1205,7 @@ int MapEdit::processEvent(SDL_Event& event)
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
 		std::string action=get_action(event.button.x, event.button.y, false);
-		if(action=="nothing" && Rectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if(action=="nothing" && globRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)
@@ -2047,7 +2047,7 @@ bool MapEdit::is_activated(const std::string& name)
 
 
 
-void MapEdit::add_area(const std::string& name, const Rectangle& area, const std::string& action, bool is_activated, bool on_release)
+void MapEdit::add_area(const std::string& name, const globRectangle& area, const std::string& action, bool is_activated, bool on_release)
 {
 	button_areas[name]=boost::make_tuple(area, action, is_activated, on_release);
 }
@@ -2056,7 +2056,7 @@ void MapEdit::add_area(const std::string& name, const Rectangle& area, const std
 
 std::string MapEdit::get_action(int x, int y, bool is_release)
 {
-	for(std::map<std::string, boost::tuple<Rectangle, std::string, bool, bool> >::iterator i=button_areas.begin(); i!=button_areas.end(); ++i)
+	for(std::map<std::string, boost::tuple<globRectangle, std::string, bool, bool> >::iterator i=button_areas.begin(); i!=button_areas.end(); ++i)
 	{
 		if(i->second.get<2>() && is_release==i->second.get<3>() && i->second.get<0>().is_in(x, y))
 			return i->second.get<1>();
