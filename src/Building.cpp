@@ -1956,37 +1956,7 @@ void Building::turretStep(void)
 							// skip this unit if it will move away too soon.
 							if (targetTicks <= ticksToHit)
 								continue;
-							//target explorers first
-							if (airTargetGUID != NOGUID && targetFound == TARGETTYPE_NONE)
-							{
-								Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
-								Sint32 targetID = Unit::GIDtoID(airTargetGUID);
-								Uint32 otherTeamMask = 1<<otherTeam;
-								if (enemies & otherTeamMask)
-								{
-									Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
-									if ((owner->sharedVisionExchange & otherTeamMask) == 0)
-									{
-										int targetTicks = (256 - testUnit->delta) / testUnit->speed;
-										// skip this unit if it will move away too soon.
-										if (targetTicks <= ticksToHit)
-											continue;
-										//Using simple calculation for now (should always shoot ground-attackers first, probably)
-										// adjust score for range
-										int targetScore = - testUnit->hp;
-										// lower scores are overriden
-										if (targetScore > bestScore)
-										{
-											bestScore = targetScore;
-											bestTicks = targetTicks;
-											bestTargetX = targetX;
-											bestTargetY = targetY;
-											targetFound = TARGETTYPE_EXPLORER;
-										}
-									}
-								}
-							}
-							// then target warriors second
+							// shoot warrior first, then workers if no warrior
 							if (testUnit->typeNum == WARRIOR)
 							{
 								int targetOffense = (testUnit->getRealAttackStrength() * testUnit->performance[ATTACK_SPEED]); // 88 to 1024
@@ -2014,7 +1984,6 @@ void Building::turretStep(void)
 									targetFound = TARGETTYPE_WARRIOR;
 								}
 							}
-							//workers are lowest priority targets
 							else if ((targetFound != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER))
 							{
 								// adjust score for range
@@ -2032,7 +2001,40 @@ void Building::turretStep(void)
 						}
 					}
 				}
-				
+				//otherwise we shoot explorers - only after workers and warriors, for no particular reason
+				//(this maybe should be changed?)
+				//(this bit maybe should be merged into the above bit, due to being so similar?)
+				//(or made into a function?)
+				if (airTargetGUID != NOGUID) // && targetFound == TARGETTYPE_NONE)
+				{
+					Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
+					Sint32 targetID = Unit::GIDtoID(airTargetGUID);
+					Uint32 otherTeamMask = 1<<otherTeam;
+					if (enemies & otherTeamMask)
+					{
+						Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
+						if ((owner->sharedVisionExchange & otherTeamMask) == 0)
+						{
+							int targetTicks = (256 - testUnit->delta) / testUnit->speed;
+							// skip this unit if it will move away too soon.
+							if (targetTicks <= ticksToHit)
+								continue;
+							//Using simple calculation for now (should always shoot ground-attackers first, probably)
+							// adjust score for range
+							int targetScore = - testUnit->hp;
+							// lower scores are overriden
+							if (targetScore > bestScore)
+							{
+								bestScore = targetScore;
+								bestTicks = targetTicks;
+								bestTargetX = targetX;
+								bestTargetY = targetY;
+								targetFound = TARGETTYPE_EXPLORER;
+							}
+						}
+					}
+				}
+
 				// shoot building only if no unit is found
 				if (targetFound == TARGETTYPE_NONE)
 				{
@@ -2059,9 +2061,9 @@ void Building::turretStep(void)
 				}
 			}
 		}
-		if (targetFound == TARGETTYPE_WARRIOR)
+		if (targetFound == TARGETTYPE_EXPLORER)
 			break;
-		//logic for this? well, we've found a good warrior to shoot at already, and they take priority...
+		//explorers are priority targets for towers
 	}
 
 	if (targetFound != TARGETTYPE_NONE)
