@@ -1566,7 +1566,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	
 	if (panPushed)
 	{
-		// handle panning
+		// handle paning
 		int dx=(mx-panMouseX)>>1;
 		int dy=(my-panMouseY)>>1;
 		viewportX=(panViewX+dx)&game.map.getMaskW();
