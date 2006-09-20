@@ -50,13 +50,45 @@ Settings::Settings()
 	musicVolume = 255;
 	mute = 0;
 	rememberUnit = 0;
-	warflagUnit = 1;
-	clearflagUnit = 1;
-	exploreflagUnit = 1;
 	restoreDefaultShortcuts();
 	campaignPlace = 1;
 	campaignPlayed = 0;
 	tempUnit = 1;
+	tempUnitFuture = 1;
+	warflagUnit = 1;
+	clearflagUnit = 1;
+	exploreflagUnit = 1;
+	swarmUnit0c = 1;
+	swarmUnit0 = 1;
+	innUnit0c = 1;
+	innUnit0 = 1;
+	innUnit1c = 1;
+	innUnit1 = 1;
+	innUnit2c = 1;
+	innUnit2 = 1;
+	hospitalUnit0c = 1;
+	hospitalUnit1c = 1;
+	hospitalUnit2c = 1;
+	racetrackUnit0c = 1;
+	racetrackUnit1c = 1;
+	racetrackUnit2c = 1;
+	swimmingpoolUnit0c = 1;
+	swimmingpoolUnit1c = 1;
+	swimmingpoolUnit2c = 1;
+	barracksUnit0c = 1;
+	barracksUnit1c = 1;
+	barracksUnit2c = 1;
+	schoolUnit0c = 1;
+	schoolUnit1c = 1;
+	schoolUnit2c = 1;
+	defencetowerUnit0c = 1;
+	defencetowerUnit0 = 1;
+	defencetowerUnit1c = 1;
+	defencetowerUnit1 = 1;
+	defencetowerUnit2c = 1;
+	defencetowerUnit2 = 1;
+	stonewallUnit0c = 1;
+	marketUnit0c = 1;
 }
 
 
@@ -173,6 +205,37 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(clearflagUnit);
 		READ_PARSED_INT(exploreflagUnit);
 		READ_PARSED_INT(campaignPlace);
+		READ_PARSED_INT(swarmUnit0c);
+		READ_PARSED_INT(swarmUnit0);
+		READ_PARSED_INT(innUnit0c);
+		READ_PARSED_INT(innUnit0);
+		READ_PARSED_INT(innUnit1c);
+		READ_PARSED_INT(innUnit1);
+		READ_PARSED_INT(innUnit2c);
+		READ_PARSED_INT(innUnit2);
+		READ_PARSED_INT(hospitalUnit0c);
+		READ_PARSED_INT(hospitalUnit1c);
+		READ_PARSED_INT(hospitalUnit2c);
+		READ_PARSED_INT(racetrackUnit0c);
+		READ_PARSED_INT(racetrackUnit1c);
+		READ_PARSED_INT(racetrackUnit2c);
+		READ_PARSED_INT(swimmingpoolUnit0c);
+		READ_PARSED_INT(swimmingpoolUnit1c);
+		READ_PARSED_INT(swimmingpoolUnit2c);
+		READ_PARSED_INT(barracksUnit0c);
+		READ_PARSED_INT(barracksUnit1c);
+		READ_PARSED_INT(barracksUnit2c);
+		READ_PARSED_INT(schoolUnit0c);
+		READ_PARSED_INT(schoolUnit1c);
+		READ_PARSED_INT(schoolUnit2c);
+		READ_PARSED_INT(defencetowerUnit0c);
+		READ_PARSED_INT(defencetowerUnit0);
+		READ_PARSED_INT(defencetowerUnit1c);
+		READ_PARSED_INT(defencetowerUnit1);
+		READ_PARSED_INT(defencetowerUnit2c);
+		READ_PARSED_INT(defencetowerUnit2);
+		READ_PARSED_INT(stonewallUnit0c);
+		READ_PARSED_INT(marketUnit0c);
 
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{
@@ -234,6 +297,38 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "clearflagUnit=%d\n", clearflagUnit);
 		Utilities::streamprintf(stream, "exploreflagUnit=%d\n", exploreflagUnit);
 		Utilities::streamprintf(stream, "campaignPlace=%d\n", campaignPlace);
+		Utilities::streamprintf(stream, "swarmUnit0c=%d\n", swarmUnit0c);
+		Utilities::streamprintf(stream, "swarmUnit0=%d\n", swarmUnit0);
+		Utilities::streamprintf(stream, "innUnit0c=%d\n",	innUnit0c);
+		Utilities::streamprintf(stream, "innUnit0=%d\n",	innUnit0);
+		Utilities::streamprintf(stream, "innUnit1c=%d\n",	innUnit1c);
+		Utilities::streamprintf(stream, "innUnit1=%d\n",	innUnit1);
+		Utilities::streamprintf(stream, "innUnit2c=%d\n",	innUnit2c);
+		Utilities::streamprintf(stream, "innUnit2=%d\n",	innUnit2);
+		Utilities::streamprintf(stream, "hospitalUnit0c=%d\n",	hospitalUnit0c);
+		Utilities::streamprintf(stream, "hospitalUnit1c=%d\n",	hospitalUnit1c);
+		Utilities::streamprintf(stream, "hospitalUnit2c=%d\n",	hospitalUnit2c);
+		Utilities::streamprintf(stream, "racetrackUnit0c=%d\n",	racetrackUnit0c);
+		Utilities::streamprintf(stream, "racetrackUnit1c=%d\n",	racetrackUnit1c);
+		Utilities::streamprintf(stream, "racetrackUnit2c=%d\n",	racetrackUnit2c);
+		Utilities::streamprintf(stream, "swimmingpoolUnit0c=%d\n",	swimmingpoolUnit0c);
+		Utilities::streamprintf(stream, "swimmingpoolUnit1c=%d\n",	swimmingpoolUnit1c);
+		Utilities::streamprintf(stream, "swimmingpoolUnit2c=%d\n",	swimmingpoolUnit2c);
+		Utilities::streamprintf(stream, "barracksUnit0c=%d\n",	barracksUnit0c);
+		Utilities::streamprintf(stream, "barracksUnit1c=%d\n",	barracksUnit1c);
+		Utilities::streamprintf(stream, "barracksUnit2c=%d\n",	barracksUnit2c);
+		Utilities::streamprintf(stream, "schoolUnit0c=%d\n",	schoolUnit0c);
+		Utilities::streamprintf(stream, "schoolUnit1c=%d\n",	schoolUnit1c);
+		Utilities::streamprintf(stream, "schoolUnit2c=%d\n",	schoolUnit2c);
+		Utilities::streamprintf(stream, "defencetowerUnit0c=%d\n",	defencetowerUnit0c);
+		Utilities::streamprintf(stream, "defencetowerUnit0=%d\n",	defencetowerUnit0);
+		Utilities::streamprintf(stream, "defencetowerUnit1c=%d\n",	defencetowerUnit1c);
+		Utilities::streamprintf(stream, "defencetowerUnit1=%d\n",	defencetowerUnit1);
+		Utilities::streamprintf(stream, "defencetowerUnit2c=%d\n",	defencetowerUnit2c);
+		Utilities::streamprintf(stream, "defencetowerUnit2=%d\n",	defencetowerUnit2);
+		Utilities::streamprintf(stream, "stonewallUnit0c=%d\n",	stonewallUnit0c);
+		Utilities::streamprintf(stream, "marketUnit0c=%d\n",	marketUnit0c);
+		
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{
 			Utilities::streamprintf(stream, "game_%s=%s\n", i->first.c_str(), i->second.c_str());

@@ -26,6 +26,7 @@
 #include "Bullet.h"
 #include "Ressource.h"
 #include "UnitConsts.h"
+#include "Order.h"
 
 namespace GAGCore
 {
@@ -80,6 +81,7 @@ public:
 	Sint32 maxUnitWorkingLocal;
 	Sint32 maxUnitWorking;  // (Uint16)
 	Sint32 maxUnitWorkingPreferred;
+	Sint32 maxUnitWorkingFuture;
 	std::list<Unit *> unitsWorking;
 	std::list<Unit *> unitsWorkingSubscribe;
 	Sint32 subscriptionWorkingTimer;
@@ -233,6 +235,8 @@ public:
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 	int verbose;
+	int findUnitCount(int typeNum);
+	std::list<Order *> orderQueue;
 
 protected:
 	FILE *logFile;

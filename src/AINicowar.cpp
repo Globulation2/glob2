@@ -1310,7 +1310,7 @@ bool SimpleBuildingDefense::findDefense()
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 					if(AINicowar_DEBUG)
 						std::cout<<"AINicowar: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<IntBuildingType::reverseConversionMap[b->type->shortTypeNum]<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-					ai.orders.push(new OrderCreate(ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1));
+					ai.orders.push(new OrderCreate(ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1));
 				}
 			}
 		}
@@ -1522,7 +1522,7 @@ bool GeneralsDefense::findEnemyFlags()
 								if(AINicowar_DEBUG)
 									std::cout<<"AINicowar: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<std::endl;
 								Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-								ai.orders.push(new OrderCreate(ai.team->teamNumber, b->posX, b->posY, typeNum, 1));
+								ai.orders.push(new OrderCreate(ai.team->teamNumber, b->posX, b->posY, typeNum, 1, 1));
 							}
 						}
 					}
@@ -1880,7 +1880,7 @@ bool PrioritizedBuildingAttack::attack()
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-				ai.orders.push(new OrderCreate(ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1));
+				ai.orders.push(new OrderCreate(ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1));
 				++attack_count;
 				available_units-=ar.assigned_units;
 			}
@@ -2487,7 +2487,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i->building_type]<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
 			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i->building_type], 0, !CHEAT_INSTANT_BUILDING);
-			ai.orders.push(new OrderCreate(ai.team->teamNumber, p.x, p.y, type, 1));
+			ai.orders.push(new OrderCreate(ai.team->teamNumber, p.x, p.y, type, 1, 1));
 			total_construction+=1;
 			total_free_workers-=ncr.assigned;
 			under_construction_counts[i->building_type]++;
@@ -4309,7 +4309,7 @@ bool HappinessHandler::searchFruitTrees()
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: searchFruitTrees: Creating a new exploration flag for a group of trees."<<std::endl;
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			ai.orders.push(new OrderCreate(ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1));
+			ai.orders.push(new OrderCreate(ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1));
 			fter.flag=NOGBID;
 			fter.pos_x=flagLocation[n].x;
 			fter.pos_y=flagLocation[n].y;

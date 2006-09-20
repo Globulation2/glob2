@@ -32,6 +32,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 
+
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<2; i++)
@@ -72,11 +73,13 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitInside = type->maxUnitInside;
 	maxUnitWorking = type->maxUnitWorking;
 	maxUnitWorkingLocal = globalContainer->settings.tempUnit;
-	globalContainer->settings.tempUnit = 1;
 	maxUnitWorking = maxUnitWorkingLocal;
-	maxUnitWorkingPreferred = 1;
+	maxUnitWorkingPreferred = maxUnitWorking;
+	maxUnitWorkingFuture = globalContainer->settings.tempUnitFuture;
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
+	globalContainer->settings.tempUnit = 1;
+	globalContainer->settings.tempUnitFuture = 1;
 
 	// position
 	posX=x;
@@ -638,7 +641,7 @@ void Building::launchConstruction(void)
 		maxUnitInside=0;
 		updateCallLists(); // To remove all units working.
 
-		updateConstructionState(); // To switch to a realy building site, if all units have been freed from building.
+		updateConstructionState(); // To switch to a real building site, if all units have been freed from building.
 	}
 }
 
@@ -1081,23 +1084,19 @@ void Building::updateBuildingSite(void)
 		updateRessourcesPointer();
 	
 
-		// we don't need any worker any more
-
-		// Notice that we could avoid freeing thoses units,
-		// this would keep the units working to the same building,
-		// and then ensure that all newly contructed food building to
-		// be filled (at least start to be filled).
-
+		//now that building is complete clear the workers
 		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 			(*it)->standardRandomActivity();
 		unitsWorking.clear();
 
 		if (type->maxUnitWorking)
-			maxUnitWorking=maxUnitWorkingPreferred;
+		{
+			maxUnitWorking = maxUnitWorkingFuture;
+		}
 		else
 			maxUnitWorking=0;
 		maxUnitWorkingLocal=maxUnitWorking;
-
+		
 		// The working units still works for us, but
 		// we don't have any unit in buildings
 		assert(unitsInside.size()==0);
@@ -1120,7 +1119,7 @@ void Building::updateBuildingSite(void)
 		
 		setMapDiscovered();
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid, owner->teamNumber);
-
+		
 		// we need to do an update again
 		updateCallLists();
 	}
@@ -1379,7 +1378,7 @@ void Building::subscribeToBringRessourcesStep()
 			5-if the unit is close of a needed ressource, this is better
 			*/
 			
-			//First: we look only for units with a needed ressource:
+			//First: we look only for units with a needed resource:
 			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 			{
 				Unit *unit=(*it);
@@ -1402,7 +1401,7 @@ void Building::subscribeToBringRessourcesStep()
 				}
 			}
 			
-			//Second: we look for an unit whois not carying a ressource:
+			//Second: we look for an unit who is not carying a ressource:
 			if (choosen==NULL)
 			{
 				int needs[MAX_NB_RESSOURCES];
@@ -1450,7 +1449,7 @@ void Building::subscribeToBringRessourcesStep()
 			if (choosen==NULL && type->canExchange && owner->openMarket())
 			{
 				SessionGame &session=owner->game->session;
-				// We compute all what's available from foreign ressources: (mask)
+				// We compute all what's available from foreign resources: (mask)
 				Uint32 allForeignSendRessourceMask=0;
 				Uint32 allForeignReceiveRessourceMask=0;
 				for (int ti=0; ti<session.numberOfTeam; ti++)
@@ -1531,7 +1530,7 @@ void Building::subscribeToBringRessourcesStep()
 				int needs[MAX_NB_RESSOURCES];
 				wishedRessources(needs);
 				int teamNumber=owner->teamNumber;
-				//Third: we look for an unit whois carying an unwanted ressource:
+				//Third: we look for an unit who is carying an unwanted resource:
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 				{
 					Unit *unit=(*it);
@@ -2001,11 +2000,9 @@ void Building::turretStep(void)
 						}
 					}
 				}
-				//otherwise we shoot explorers - only after workers and warriors, for no particular reason
-				//(this maybe should be changed?)
-				//(this bit maybe should be merged into the above bit, due to being so similar?)
-				//(or made into a function?)
-				if (airTargetGUID != NOGUID) // && targetFound == TARGETTYPE_NONE)
+				//explorers are now priority targets as defined later
+				
+				if (airTargetGUID != NOGUID)
 				{
 					Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
 					Sint32 targetID = Unit::GIDtoID(airTargetGUID);
@@ -2062,8 +2059,7 @@ void Building::turretStep(void)
 			}
 		}
 		if (targetFound == TARGETTYPE_EXPLORER)
-			break;
-		//explorers are priority targets for towers
+			break;//specifying explorers as high priority
 	}
 
 	if (targetFound != TARGETTYPE_NONE)
@@ -2616,5 +2612,111 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	return cs;
 }
 
+int Building::findUnitCount(int typeNum)
+{
+	int unitCount = 1; //default for building not defined within settings
+	//implementing custom settings as defined in either settings or earlier in-game
+	if (typeNum == 0)
+		unitCount = globalContainer->settings.swarmUnitTemp0c;
+				
+	if (typeNum == 1)
+		unitCount = globalContainer->settings.swarmUnitTemp0;
+		
+	if (typeNum == 2)
+		unitCount = globalContainer->settings.innUnitTemp0c;
+		
+	if (typeNum == 3)
+		unitCount =	globalContainer->settings.innUnitTemp0;
+			
+	if (typeNum == 4)
+		unitCount =	globalContainer->settings.innUnitTemp1c;
+		
+	if (typeNum == 5)
+		unitCount =	globalContainer->settings.innUnitTemp1;
+	
+	if (typeNum == 6)
+		unitCount =	globalContainer->settings.innUnitTemp2c;
+		
+	if (typeNum == 7)
+		unitCount =	globalContainer->settings.innUnitTemp2;
+		
+	if (typeNum == 8)
+		unitCount =	globalContainer->settings.hospitalUnitTemp0c;
+		
+	if (typeNum == 10)
+		unitCount =	globalContainer->settings.hospitalUnitTemp1c;
+		
+	if (typeNum == 12)
+		unitCount =	globalContainer->settings.hospitalUnitTemp2c;
+	
+	if (typeNum == 14)
+		unitCount =	globalContainer->settings.racetrackUnitTemp0c;
+		
+	if (typeNum == 16)
+		unitCount =	globalContainer->settings.racetrackUnitTemp1c;
+	
+	if (typeNum == 18)
+		unitCount =	globalContainer->settings.racetrackUnitTemp2c;
+		
+	if (typeNum == 20)
+		unitCount =	globalContainer->settings.swimmingpoolUnitTemp0c;
+		
+	if (typeNum == 22)
+		unitCount =	globalContainer->settings.swimmingpoolUnitTemp1c;
+		
+	if (typeNum == 24)
+		unitCount =	globalContainer->settings.swimmingpoolUnitTemp2c;
+		
+	if (typeNum == 26)
+		unitCount =	globalContainer->settings.barracksUnitTemp0c;
+		
+	if (typeNum == 28)
+		unitCount =	globalContainer->settings.barracksUnitTemp1c;
+	
+	if (typeNum == 30)
+		unitCount =	globalContainer->settings.barracksUnitTemp2c;
+		
+	if (typeNum == 32)
+		unitCount =	globalContainer->settings.schoolUnitTemp0c;
+		
+	if (typeNum == 34)
+		unitCount =	globalContainer->settings.schoolUnitTemp1c;
+		
+	if (typeNum == 36)
+		unitCount =	globalContainer->settings.schoolUnitTemp2c;
+		
+	if (typeNum == 38)
+		unitCount =	globalContainer->settings.defencetowerUnitTemp0c;
+	
+	if (typeNum == 39)
+		unitCount =	globalContainer->settings.defencetowerUnitTemp0;
+		
+	if (typeNum == 40)
+		unitCount =	globalContainer->settings.defencetowerUnitTemp1c;
+	
+	if (typeNum == 41)
+		unitCount =	globalContainer->settings.defencetowerUnitTemp1;
+		
+	if (typeNum == 42)
+		unitCount =	globalContainer->settings.defencetowerUnitTemp2c;
+		
+	if (typeNum == 43)
+		unitCount =	globalContainer->settings.defencetowerUnitTemp2;
+		
+	if (typeNum == 44)
+		unitCount =	globalContainer->settings.exploreflagUnitTemp;
+		
+	if (typeNum == 45)
+		unitCount =	globalContainer->settings.warflagUnitTemp;
+		
+	if (typeNum == 46)
+		unitCount =	globalContainer->settings.clearflagUnitTemp;
+		
+	if (typeNum == 47)
+		unitCount =	globalContainer->settings.stonewallUnitTemp0c;
+		
+	if (typeNum == 49)
+		unitCount =	globalContainer->settings.marketUnitTemp0c;	
 
-
+	return unitCount;
+}
