@@ -349,6 +349,9 @@ private:
 	#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32
 	int smoothedCpuLoad[SMOOTH_CPU_LOAD_WINDOW_LENGTH];
 	unsigned smoothedCpuLoadPos;
+	
+	//determine building type for custom settings
+	int findUnitCount(int typeNum);
 };
 
 #endif

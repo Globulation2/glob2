@@ -2714,7 +2714,7 @@ unsigned int Echo::add_building_order(Construction::BuildingOrder& bo)
 			mo_during_construction->add_condition(new UnderConstruction);
 			add_management_order(mo_during_construction, id);
 		}
-		orders.push(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1));
+		orders.push(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1));
 //		std::cout<<"constructing building x="<<p.x<<" y="<<p.y<<"  id="<<id<<std::endl;
 		return id;
 	}
