@@ -159,10 +159,12 @@ Engine
 *3 Basics of Order
 
 Take a look at src/Order.h. A typical order is "OrderCreate". The important point is that it includes everything needed to know how to add a new building site:
-Uint32 team;
+Sint32 team;
 Sint32 posX;
 Sint32 posY;
 Sint32 typeNumber;
+Sint32 UnitCount; //default number of units assigned to project
+Sint32 UnitCount2; //default number of units assigned after project is complete.
 
 The other stuff (and the super class Order) is used to serialize and deserialize the orders.
 
