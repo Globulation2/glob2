@@ -70,7 +70,6 @@ public:
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer, localTeamNo;
 	int viewportX, viewportY;
-	int unitCount;
 
 public:
 	GameGUI();

@@ -1097,31 +1097,31 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberHealth[0]>numberUpgradingHealth[1])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberAttack[0]>numberUpgradingAttack[1])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberScience[0]>numberUpgradingScience[1]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberDefense[0]>numberUpgradingDefense[1])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 	}
 	
@@ -1134,31 +1134,31 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberHealth[1]>numberUpgradingHealth[2])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberAttack[1]>numberUpgradingAttack[2])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberScience[1]>numberUpgradingScience[2]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		if (numberDefense[1]>numberUpgradingDefense[2])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 	}
 	

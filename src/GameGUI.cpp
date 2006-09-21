@@ -1123,23 +1123,24 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	// we can upgrade or repair only building from our team
 	if (building->owner->teamNumber != localTeamNo)
 		return;
-	
+	int typeNum = building->typeNum + 1; //determines type of updated building
+	int unitCount = findUnitCount(typeNum);
+	int unitCount2 = findUnitCount(typeNum+1);
 	if ((building->hp < buildingType->hpMax) && repair)
 	{
 		// repair
 		if ((building->type->regenerationSpeed == 0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid));
+			orderQueue.push_back(new OrderConstruction(building->gid, 1, 1));
 	}
 	else if (upgrade)
 	{
 		// upgrade
-		int unitCount = findUnitCount(building->typeNum);
 		if ((buildingType->nextLevel != -1) &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
 			(localTeam->maxBuildLevel() > buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid));
+			orderQueue.push_back(new OrderConstruction(building->gid, unitCount, unitCount2));
 	}
 }
 
@@ -1602,7 +1603,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		else
 			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
 		
-		unitCount = findUnitCount(typeNum);
+		int unitCount = findUnitCount(typeNum);
 		int unitCount2 = findUnitCount(typeNum+1);
 		
 		if (isRoom)

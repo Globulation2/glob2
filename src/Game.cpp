@@ -686,6 +686,9 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (!isPlayerAlive)
 				break;
 			Uint16 gid=((OrderConstruction *)order)->gid;
+			globalContainer->settings.tempUnit = ((OrderConstruction *)order)->unitCount;
+			globalContainer->settings.tempUnitFuture = ((OrderConstruction *)order)->unitCount2;
+			
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Team *t=teams[team];

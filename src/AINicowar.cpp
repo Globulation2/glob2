@@ -3136,7 +3136,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				u.original=b->maxUnitWorking;
 				u.is_repair=true;
 				pending_construction.push_back(u);
-				ai.orders.push(new OrderConstruction(b->gid));
+				ai.orders.push(new OrderConstruction(b->gid, 1, 1));
 				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned);
 				reduce(free_workers, b->type->level, num_to_assign);
 				construction_counts[b->type->shortTypeNum]+=1;
@@ -3158,7 +3158,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				u.original=b->maxUnitWorking;
 				u.is_repair=false;
 				pending_construction.push_back(u);
-				ai.orders.push(new OrderConstruction(b->gid));
+				ai.orders.push(new OrderConstruction(b->gid, 1, 1));
 				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+2, u.assigned);
 				reduce(free_workers, b->type->level+1, num_to_assign);
 				construction_counts[b->type->shortTypeNum]+=1;
