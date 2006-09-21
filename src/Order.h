@@ -117,22 +117,24 @@ protected:
 	Uint8 data[2];
 };
 
-//! Upgarde or Repair a building
+// Upgrade or Repair a building
 class OrderConstruction:public Order
 {
 public:
 	OrderConstruction(const Uint8 *data, int dataLength);
-	OrderConstruction(Uint16 gid);
+	OrderConstruction(Uint16 gid, Uint32 unitCount, Uint32 unitCount2);
 	virtual ~OrderConstruction(void) {}
 	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 2; }
+	int getDataLength(void) { return 10; }
 
 	Uint16 gid;
+	Uint32 unitCount;
+	Uint32 unitCount2;
 
 protected:
-	Uint8 data[2];
+	Uint8 data[10];
 };
 
 //! Cancel a building upgarde or repair if pending

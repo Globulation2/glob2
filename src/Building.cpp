@@ -640,7 +640,14 @@ void Building::launchConstruction(void)
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists(); // To remove all units working.
-
+		//following reassigns units to work on upgrade, certain buildings will
+		//glitch if units are not unassigned and then reassigned like this
+		maxUnitWorking = globalContainer->settings.tempUnit;
+		maxUnitWorkingLocal = maxUnitWorking;
+		maxUnitWorkingPreferred = maxUnitWorking;
+		maxUnitWorkingFuture = globalContainer->settings.tempUnitFuture;
+		globalContainer->settings.tempUnit = 1;
+		globalContainer->settings.tempUnitFuture = 1;
 		updateConstructionState(); // To switch to a real building site, if all units have been freed from building.
 	}
 }
@@ -1092,6 +1099,7 @@ void Building::updateBuildingSite(void)
 		if (type->maxUnitWorking)
 		{
 			maxUnitWorking = maxUnitWorkingFuture;
+			maxUnitWorkingFuture = 0;
 		}
 		else
 			maxUnitWorking=0;

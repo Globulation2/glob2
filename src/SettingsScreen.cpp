@@ -396,7 +396,7 @@ SettingsScreen::SettingsScreen()
 	hospitalUnitRatio0c->add(18);
 	hospitalUnitRatio0c->add(19);
 	hospitalUnitRatio0c->add(20);
-	hospitalUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	hospitalUnitRatio0c->setNth(globalContainer->settings.hospitalUnit0c);
 	hospitalUnitRatio0c->visible=false;
 	addWidget(hospitalUnitRatio0c);
 	
@@ -426,7 +426,7 @@ SettingsScreen::SettingsScreen()
 	hospitalUnitRatio1c->add(18);
 	hospitalUnitRatio1c->add(19);
 	hospitalUnitRatio1c->add(20);
-	hospitalUnitRatio1c->setNth(globalContainer->settings.innUnit1c);
+	hospitalUnitRatio1c->setNth(globalContainer->settings.hospitalUnit1c);
 	hospitalUnitRatio1c->visible=false;
 	addWidget(hospitalUnitRatio1c);
 	
@@ -456,7 +456,7 @@ SettingsScreen::SettingsScreen()
 	hospitalUnitRatio2c->add(18);
 	hospitalUnitRatio2c->add(19);
 	hospitalUnitRatio2c->add(20);
-	hospitalUnitRatio2c->setNth(globalContainer->settings.innUnit1c);
+	hospitalUnitRatio2c->setNth(globalContainer->settings.hospitalUnit2c);
 	hospitalUnitRatio2c->visible=false;
 	addWidget(hospitalUnitRatio2c);
 	
@@ -486,7 +486,7 @@ SettingsScreen::SettingsScreen()
 	racetrackUnitRatio0c->add(18);
 	racetrackUnitRatio0c->add(19);
 	racetrackUnitRatio0c->add(20);
-	racetrackUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	racetrackUnitRatio0c->setNth(globalContainer->settings.racetrackUnit0c);
 	racetrackUnitRatio0c->visible=false;
 	addWidget(racetrackUnitRatio0c);
 	
@@ -516,7 +516,7 @@ SettingsScreen::SettingsScreen()
 	racetrackUnitRatio1c->add(18);
 	racetrackUnitRatio1c->add(19);
 	racetrackUnitRatio1c->add(20);
-	racetrackUnitRatio1c->setNth(globalContainer->settings.innUnit1c);
+	racetrackUnitRatio1c->setNth(globalContainer->settings.racetrackUnit1c);
 	racetrackUnitRatio1c->visible=false;
 	addWidget(racetrackUnitRatio1c);
 	
@@ -546,7 +546,7 @@ SettingsScreen::SettingsScreen()
 	racetrackUnitRatio2c->add(18);
 	racetrackUnitRatio2c->add(19);
 	racetrackUnitRatio2c->add(20);
-	racetrackUnitRatio2c->setNth(globalContainer->settings.innUnit1c);
+	racetrackUnitRatio2c->setNth(globalContainer->settings.racetrackUnit2c);
 	racetrackUnitRatio2c->visible=false;
 	addWidget(racetrackUnitRatio2c);
 	
@@ -576,7 +576,7 @@ SettingsScreen::SettingsScreen()
 	swimmingpoolUnitRatio0c->add(18);
 	swimmingpoolUnitRatio0c->add(19);
 	swimmingpoolUnitRatio0c->add(20);
-	swimmingpoolUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	swimmingpoolUnitRatio0c->setNth(globalContainer->settings.swimmingpoolUnit0c);
 	swimmingpoolUnitRatio0c->visible=false;
 	addWidget(swimmingpoolUnitRatio0c);
 	
@@ -606,7 +606,7 @@ SettingsScreen::SettingsScreen()
 	swimmingpoolUnitRatio1c->add(18);
 	swimmingpoolUnitRatio1c->add(19);
 	swimmingpoolUnitRatio1c->add(20);
-	swimmingpoolUnitRatio1c->setNth(globalContainer->settings.innUnit1c);
+	swimmingpoolUnitRatio1c->setNth(globalContainer->settings.swimmingpoolUnit1c);
 	swimmingpoolUnitRatio1c->visible=false;
 	addWidget(swimmingpoolUnitRatio1c);
 	
@@ -636,7 +636,7 @@ SettingsScreen::SettingsScreen()
 	swimmingpoolUnitRatio2c->add(18);
 	swimmingpoolUnitRatio2c->add(19);
 	swimmingpoolUnitRatio2c->add(20);
-	swimmingpoolUnitRatio2c->setNth(globalContainer->settings.innUnit1c);
+	swimmingpoolUnitRatio2c->setNth(globalContainer->settings.swimmingpoolUnit2c);
 	swimmingpoolUnitRatio2c->visible=false;
 	addWidget(swimmingpoolUnitRatio2c);
 	
@@ -666,7 +666,7 @@ SettingsScreen::SettingsScreen()
 	barracksUnitRatio0c->add(18);
 	barracksUnitRatio0c->add(19);
 	barracksUnitRatio0c->add(20);
-	barracksUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	barracksUnitRatio0c->setNth(globalContainer->settings.barracksUnit0c);
 	barracksUnitRatio0c->visible=false;
 	addWidget(barracksUnitRatio0c);
 	
@@ -696,7 +696,7 @@ SettingsScreen::SettingsScreen()
 	barracksUnitRatio1c->add(18);
 	barracksUnitRatio1c->add(19);
 	barracksUnitRatio1c->add(20);
-	barracksUnitRatio1c->setNth(globalContainer->settings.innUnit1c);
+	barracksUnitRatio1c->setNth(globalContainer->settings.barracksUnit1c);
 	barracksUnitRatio1c->visible=false;
 	addWidget(barracksUnitRatio1c);
 	
@@ -726,7 +726,7 @@ SettingsScreen::SettingsScreen()
 	barracksUnitRatio2c->add(18);
 	barracksUnitRatio2c->add(19);
 	barracksUnitRatio2c->add(20);
-	barracksUnitRatio2c->setNth(globalContainer->settings.innUnit1c);
+	barracksUnitRatio2c->setNth(globalContainer->settings.barracksUnit2c);
 	barracksUnitRatio2c->visible=false;
 	addWidget(barracksUnitRatio2c);
 	
@@ -756,7 +756,7 @@ SettingsScreen::SettingsScreen()
 	schoolUnitRatio0c->add(18);
 	schoolUnitRatio0c->add(19);
 	schoolUnitRatio0c->add(20);
-	schoolUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	schoolUnitRatio0c->setNth(globalContainer->settings.schoolUnit0c);
 	schoolUnitRatio0c->visible=false;
 	addWidget(schoolUnitRatio0c);
 	
@@ -786,7 +786,7 @@ SettingsScreen::SettingsScreen()
 	schoolUnitRatio1c->add(18);
 	schoolUnitRatio1c->add(19);
 	schoolUnitRatio1c->add(20);
-	schoolUnitRatio1c->setNth(globalContainer->settings.innUnit1c);
+	schoolUnitRatio1c->setNth(globalContainer->settings.schoolUnit1c);
 	schoolUnitRatio1c->visible=false;
 	addWidget(schoolUnitRatio1c);
 	
@@ -816,7 +816,7 @@ SettingsScreen::SettingsScreen()
 	schoolUnitRatio2c->add(18);
 	schoolUnitRatio2c->add(19);
 	schoolUnitRatio2c->add(20);
-	schoolUnitRatio2c->setNth(globalContainer->settings.innUnit1c);
+	schoolUnitRatio2c->setNth(globalContainer->settings.schoolUnit2c);
 	schoolUnitRatio2c->visible=false;
 	addWidget(schoolUnitRatio2c);
 	
@@ -846,7 +846,7 @@ SettingsScreen::SettingsScreen()
 	defencetowerUnitRatio0c->add(18);
 	defencetowerUnitRatio0c->add(19);
 	defencetowerUnitRatio0c->add(20);
-	defencetowerUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	defencetowerUnitRatio0c->setNth(globalContainer->settings.defencetowerUnit0c);
 	defencetowerUnitRatio0c->visible=false;
 	addWidget(defencetowerUnitRatio0c);
 	
@@ -876,7 +876,7 @@ SettingsScreen::SettingsScreen()
 	defencetowerUnitRatio0->add(18);
 	defencetowerUnitRatio0->add(19);
 	defencetowerUnitRatio0->add(20);
-	defencetowerUnitRatio0->setNth(globalContainer->settings.innUnit1c);
+	defencetowerUnitRatio0->setNth(globalContainer->settings.defencetowerUnit0);
 	defencetowerUnitRatio0->visible=false;
 	addWidget(defencetowerUnitRatio0);
 	
@@ -906,7 +906,7 @@ SettingsScreen::SettingsScreen()
 	defencetowerUnitRatio1c->add(18);
 	defencetowerUnitRatio1c->add(19);
 	defencetowerUnitRatio1c->add(20);
-	defencetowerUnitRatio1c->setNth(globalContainer->settings.innUnit1c);
+	defencetowerUnitRatio1c->setNth(globalContainer->settings.defencetowerUnit1c);
 	defencetowerUnitRatio1c->visible=false;
 	addWidget(defencetowerUnitRatio1c);
 	
@@ -936,7 +936,7 @@ SettingsScreen::SettingsScreen()
 	defencetowerUnitRatio1->add(18);
 	defencetowerUnitRatio1->add(19);
 	defencetowerUnitRatio1->add(20);
-	defencetowerUnitRatio1->setNth(globalContainer->settings.innUnit1c);
+	defencetowerUnitRatio1->setNth(globalContainer->settings.defencetowerUnit1);
 	defencetowerUnitRatio1->visible=false;
 	addWidget(defencetowerUnitRatio1);
 	
@@ -966,7 +966,7 @@ SettingsScreen::SettingsScreen()
 	defencetowerUnitRatio2c->add(18);
 	defencetowerUnitRatio2c->add(19);
 	defencetowerUnitRatio2c->add(20);
-	defencetowerUnitRatio2c->setNth(globalContainer->settings.innUnit1c);
+	defencetowerUnitRatio2c->setNth(globalContainer->settings.defencetowerUnit2c);
 	defencetowerUnitRatio2c->visible=false;
 	addWidget(defencetowerUnitRatio2c);
 	
@@ -996,7 +996,7 @@ SettingsScreen::SettingsScreen()
 	defencetowerUnitRatio2->add(18);
 	defencetowerUnitRatio2->add(19);
 	defencetowerUnitRatio2->add(20);
-	defencetowerUnitRatio2->setNth(globalContainer->settings.innUnit1c);
+	defencetowerUnitRatio2->setNth(globalContainer->settings.defencetowerUnit2);
 	defencetowerUnitRatio2->visible=false;
 	addWidget(defencetowerUnitRatio2);
 	
@@ -1026,7 +1026,7 @@ SettingsScreen::SettingsScreen()
 	stonewallUnitRatio0c->add(18);
 	stonewallUnitRatio0c->add(19);
 	stonewallUnitRatio0c->add(20);
-	stonewallUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	stonewallUnitRatio0c->setNth(globalContainer->settings.stonewallUnit0c);
 	stonewallUnitRatio0c->visible=false;
 	addWidget(stonewallUnitRatio0c);
 	
@@ -1056,7 +1056,7 @@ SettingsScreen::SettingsScreen()
 	marketUnitRatio0c->add(18);
 	marketUnitRatio0c->add(19);
 	marketUnitRatio0c->add(20);
-	marketUnitRatio0c->setNth(globalContainer->settings.innUnit1c);
+	marketUnitRatio0c->setNth(globalContainer->settings.marketUnit0c);
 	marketUnitRatio0c->visible=false;
 	addWidget(marketUnitRatio0c);
 	

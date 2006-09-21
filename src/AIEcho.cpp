@@ -2778,7 +2778,7 @@ void Echo::add_upgrade_repair_order(UpgradesRepairs::UpgradeRepairOrder* uro)
 	const int id=uro->get_id();
 	if(br.is_building_found(id))
 	{
-		orders.push(new OrderConstruction(br.get_building(id)->gid));
+		orders.push(new OrderConstruction(br.get_building(id)->gid, 1, 1));
 		br.set_upgrading(id);
 
 		ManagementOrder* mo_during_construction=new AssignWorkers(uro->get_number_of_workers());

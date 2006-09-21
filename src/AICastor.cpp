@@ -1015,17 +1015,17 @@ Order *AICastor::controlUpgrades()
 		if (b->type->type == "defencetower")
 		{
 			if (b->hp*4<b->type->hpMax*1)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		else if (b->type->maxUnitInside)
 		{
 			if (b->hp*4<b->type->hpMax*3)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 		else
 		{
 			if (b->hp*4<b->type->hpMax*2)
-				return new OrderConstruction(b->gid);
+				return new OrderConstruction(b->gid, 1, 1);
 		}
 	}
 	// Do we want to upgrade it:
@@ -1078,7 +1078,7 @@ Order *AICastor::controlUpgrades()
 		}
 	}
 	controlUpgradeDelay=32;
-	return new OrderConstruction(b->gid);
+	return new OrderConstruction(b->gid, 1, 1);
 }
 
 
