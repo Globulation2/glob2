@@ -894,6 +894,7 @@ type school
 
 gameSprite data/gfx/school0b
 gameSpriteImage 0
+gameSpriteCount 2
 miniSprite data/gfx/minischool0b
 miniSpriteImage 0
 
