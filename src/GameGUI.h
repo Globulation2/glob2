@@ -351,6 +351,7 @@ private:
 	
 	//determine building type for custom settings
 	int findUnitCount(int typeNum);
+	void setRememberUnit(int testBuilding, int nbReq);
 };
 
 #endif
