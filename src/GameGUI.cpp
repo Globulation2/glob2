@@ -1,4 +1,4 @@
-/*
+ob/*
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
@@ -989,6 +989,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							setRememberUnit(selBuild->type, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
@@ -996,6 +997,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
 							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+							setRememberUnit(selBuild->type, nbReq);
 						}
 					}
 				}
@@ -1014,6 +1016,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							setRememberUnit(selBuild->type, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal>0) &&
@@ -1021,6 +1024,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
 							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+							setRememberUnit(selBuild->type, nbReq);
 						}
 					}
 				}
@@ -1177,6 +1181,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							setRememberUnit(selBuild->type, nbReq);
 						}
 					}
 				}
@@ -1191,6 +1196,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							setRememberUnit(selBuild->type, nbReq);
 						}
 					}
 				}
@@ -1789,111 +1795,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
 					}
 				}
-				//modifies in-game unit settings if active
-				if (globalContainer->settings.rememberUnit == 1)
-				{
-					if (selBuild->typeNum == 0)
-						globalContainer->settings.swarmUnitTemp0c = nbReq;
-					
-					if (selBuild->typeNum == 1)
-						globalContainer->settings.swarmUnitTemp0 = nbReq;
-					
-					if (selBuild->typeNum == 2)
-						globalContainer->settings.innUnitTemp0c = nbReq;
-					
-					if (selBuild->typeNum == 3)
-						globalContainer->settings.innUnitTemp0 = nbReq;
-						
-					if (selBuild->typeNum == 4)
-						globalContainer->settings.innUnitTemp1c = nbReq;
-					
-					if (selBuild->typeNum == 5)
-						globalContainer->settings.innUnitTemp1 = nbReq;
-					
-					if (selBuild->typeNum == 6)
-						globalContainer->settings.innUnitTemp2c = nbReq;
-						
-					if (selBuild->typeNum == 7)
-						globalContainer->settings.innUnitTemp2 = nbReq;
-						
-					if (selBuild->typeNum == 8)
-						globalContainer->settings.hospitalUnitTemp0c = nbReq;
-						
-					if (selBuild->typeNum == 10)
-						globalContainer->settings.hospitalUnitTemp1c = nbReq;
-						
-					if (selBuild->typeNum == 12)
-						globalContainer->settings.hospitalUnitTemp2c = nbReq;
-					
-					if (selBuild->typeNum == 14)
-						globalContainer->settings.racetrackUnitTemp0c = nbReq;
-						
-					if (selBuild->typeNum == 16)
-						globalContainer->settings.racetrackUnitTemp1c = nbReq;
-					
-					if (selBuild->typeNum == 18)
-						globalContainer->settings.racetrackUnitTemp2c = nbReq;
-						
-					if (selBuild->typeNum == 20)
-						globalContainer->settings.swimmingpoolUnitTemp0c = nbReq;
-						
-					if (selBuild->typeNum == 22)
-						globalContainer->settings.swimmingpoolUnitTemp1c = nbReq;
-						
-					if (selBuild->typeNum == 24)
-						globalContainer->settings.swimmingpoolUnitTemp2c = nbReq;
-						
-					if (selBuild->typeNum == 26)
-						globalContainer->settings.barracksUnitTemp0c = nbReq;
-						
-					if (selBuild->typeNum == 28)
-						globalContainer->settings.barracksUnitTemp1c = nbReq;
-					
-					if (selBuild->typeNum == 30)
-						globalContainer->settings.barracksUnitTemp2c = nbReq;
-						
-					if (selBuild->typeNum == 32)
-						globalContainer->settings.schoolUnitTemp0c = nbReq;
-						
-					if (selBuild->typeNum == 34)
-						globalContainer->settings.schoolUnitTemp1c = nbReq;
-						
-					if (selBuild->typeNum == 36)
-						globalContainer->settings.schoolUnitTemp2c = nbReq;
-						
-					if (selBuild->typeNum == 38)
-						globalContainer->settings.defencetowerUnitTemp0c = nbReq;
-					
-					if (selBuild->typeNum == 39)
-						globalContainer->settings.defencetowerUnitTemp0 = nbReq;
-						
-					if (selBuild->typeNum == 40)
-						globalContainer->settings.defencetowerUnitTemp1c = nbReq;
-					
-					if (selBuild->typeNum == 41)
-						globalContainer->settings.defencetowerUnitTemp1 = nbReq;
-						
-					if (selBuild->typeNum == 42)
-						globalContainer->settings.defencetowerUnitTemp2c = nbReq;
-						
-					if (selBuild->typeNum == 43)
-						globalContainer->settings.defencetowerUnitTemp2 = nbReq;
-						
-					if (selBuild->typeNum == 44)
-						globalContainer->settings.exploreflagUnitTemp = nbReq;
-						
-					if (selBuild->typeNum == 45)
-						globalContainer->settings.warflagUnitTemp = nbReq;
-						
-					if (selBuild->typeNum == 46)
-						globalContainer->settings.clearflagUnitTemp = nbReq;
-						
-					if (selBuild->typeNum == 47)
-						globalContainer->settings.stonewallUnitTemp0c = nbReq;
-						
-					if (selBuild->typeNum == 49)
-						globalContainer->settings.marketUnitTemp0c = nbReq;
-				}
+				setRememberUnit(selBuild->type, nbReq);				
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
@@ -1928,6 +1830,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
 					}
 				}
+				setRememberUnit(selBuild->type, nbReq);
 			}
 			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
@@ -4363,4 +4266,111 @@ int GameGUI::findUnitCount(int typeNum)
 		unitCount =	globalContainer->settings.marketUnitTemp0c;	
 
 	return unitCount;
+}
+void GameGUI::setRememberUnit(int testBuilding, int nbReq)
+{//modifies in-game unit settings if active
+	if (globalContainer->settings.rememberUnit == 1)
+	{
+		if (testBuilding == 0)
+			globalContainer->settings.swarmUnitTemp0c = nbReq;
+		
+		if (testBuilding == 1)
+			globalContainer->settings.swarmUnitTemp0 = nbReq;
+		
+		if (testBuilding == 2)
+			globalContainer->settings.innUnitTemp0c = nbReq;
+		
+		if (testBuilding == 3)
+			globalContainer->settings.innUnitTemp0 = nbReq;
+			
+		if (testBuilding == 4)
+			globalContainer->settings.innUnitTemp1c = nbReq;
+		
+		if (testBuilding == 5)
+			globalContainer->settings.innUnitTemp1 = nbReq;
+		
+		if (testBuilding == 6)
+			globalContainer->settings.innUnitTemp2c = nbReq;
+			
+		if (testBuilding == 7)
+			globalContainer->settings.innUnitTemp2 = nbReq;
+			
+		if (testBuilding == 8)
+			globalContainer->settings.hospitalUnitTemp0c = nbReq;
+			
+		if (testBuilding == 10)
+			globalContainer->settings.hospitalUnitTemp1c = nbReq;
+			
+		if (testBuilding == 12)
+			globalContainer->settings.hospitalUnitTemp2c = nbReq;
+		
+		if (testBuilding == 14)
+			globalContainer->settings.racetrackUnitTemp0c = nbReq;
+			
+		if (testBuilding == 16)
+			globalContainer->settings.racetrackUnitTemp1c = nbReq;
+		
+		if (testBuilding == 18)
+			globalContainer->settings.racetrackUnitTemp2c = nbReq;
+			
+		if (testBuilding == 20)
+			globalContainer->settings.swimmingpoolUnitTemp0c = nbReq;
+			
+		if (testBuilding == 22)
+			globalContainer->settings.swimmingpoolUnitTemp1c = nbReq;
+			
+		if (testBuilding == 24)
+			globalContainer->settings.swimmingpoolUnitTemp2c = nbReq;
+			
+		if (testBuilding == 26)
+			globalContainer->settings.barracksUnitTemp0c = nbReq;
+			
+		if (testBuilding == 28)
+			globalContainer->settings.barracksUnitTemp1c = nbReq;
+		
+		if (testBuilding == 30)
+			globalContainer->settings.barracksUnitTemp2c = nbReq;
+			
+		if (testBuilding == 32)
+			globalContainer->settings.schoolUnitTemp0c = nbReq;
+			
+		if (testBuilding == 34)
+			globalContainer->settings.schoolUnitTemp1c = nbReq;
+			
+		if (testBuilding == 36)
+			globalContainer->settings.schoolUnitTemp2c = nbReq;
+			
+		if (testBuilding == 38)
+			globalContainer->settings.defencetowerUnitTemp0c = nbReq;
+		
+		if (testBuilding == 39)
+			globalContainer->settings.defencetowerUnitTemp0 = nbReq;
+			
+		if (testBuilding == 40)
+			globalContainer->settings.defencetowerUnitTemp1c = nbReq;
+		
+		if (testBuilding == 41)
+			globalContainer->settings.defencetowerUnitTemp1 = nbReq;
+			
+		if (testBuilding == 42)
+			globalContainer->settings.defencetowerUnitTemp2c = nbReq;
+			
+		if (testBuilding == 43)
+			globalContainer->settings.defencetowerUnitTemp2 = nbReq;
+			
+		if (testBuilding == 44)
+			globalContainer->settings.exploreflagUnitTemp = nbReq;
+			
+		if (testBuilding == 45)
+			globalContainer->settings.warflagUnitTemp = nbReq;
+			
+		if (testBuilding == 46)
+			globalContainer->settings.clearflagUnitTemp = nbReq;
+			
+		if (testBuilding == 47)
+			globalContainer->settings.stonewallUnitTemp0c = nbReq;
+			
+		if (testBuilding == 49)
+			globalContainer->settings.marketUnitTemp0c = nbReq;
+	}
 }
