@@ -1,4 +1,4 @@
-ob/*
+/*
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
@@ -989,7 +989,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->type, nbReq);
+							setRememberUnit(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
@@ -997,7 +997,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
 							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->type, nbReq);
+							setRememberUnit(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1016,7 +1016,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->type, nbReq);
+							setRememberUnit(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal>0) &&
@@ -1024,7 +1024,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
 							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->type, nbReq);
+							setRememberUnit(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1181,7 +1181,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->type, nbReq);
+							setRememberUnit(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1196,7 +1196,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->type, nbReq);
+							setRememberUnit(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1795,7 +1795,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
 					}
 				}
-				setRememberUnit(selBuild->type, nbReq);				
+				setRememberUnit(selBuild->typeNum, nbReq);				
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
@@ -1830,7 +1830,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
 					}
 				}
-				setRememberUnit(selBuild->type, nbReq);
+				setRememberUnit(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
