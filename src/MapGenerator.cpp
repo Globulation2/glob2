@@ -49,30 +49,21 @@ void Map::controlSand(void)
 			int tt=(int)undermap[y*w+x];
 			switch (tt)
 			{
-				case WATER:
+				case WATER: //the direct neighbours get checked for GRASS
 					for (int dy=-1; dy<=1; dy++)
 						for (int dx=-1; dx<=1; dx++)
-						{
-							int stt=getUMTerrain(x+dx, y+dy);
-							if (stt==GRASS)
-								goto bad;
-						}
-				break;
+							if (getUMTerrain(x+dx, y+dy)==GRASS)
+								undermap[y*w+x]=SAND;
+					break;
 				case SAND:
-				continue;
-				case GRASS:
+					break;
+				case GRASS: //the direct neighbours get checked for WATER
 					for (int dy=-1; dy<=1; dy++)
 						for (int dx=-1; dx<=1; dx++)
-						{
-							int stt=getUMTerrain(x+dx, y+dy);
-							if (stt==WATER)
-								goto bad;
-						}
-				break;
+							if (getUMTerrain(x+dx, y+dy)==WATER)
+								undermap[y*w+x]=SAND;
+					break;
 			}
-			continue;
-			bad:
-			undermap[y*w+x]=SAND;
 		}
 }
 
@@ -246,8 +237,7 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 				case 2:
 					grassCount++;
 				continue;
-			}
-	
+			}	
 	int totalCount=waterCount+sandCount+grassCount;
 	
 	*finalWater=((double)waterCount)/((double)totalCount);
@@ -782,35 +772,52 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
 	/// grass + sand + water + desert as from the gui
 	unsigned int totalGSWFromUI=descriptor.waterRatio+descriptor.sandRatio+descriptor.grassRatio+descriptor.desertRatio+descriptor.fruitRatio;
-	/// lets generate a patch of perlin noise. That's a smooth mapping R2 to ]0;1[
-	HeightMap hm(w,h);
+	/// respect symmetry-requirements
+	unsigned int wPower2Divider=0, hPower2Divider=0;
+
+
+
+int power2Divider=2;
+
+
+
+
+	for (unsigned int i = 0; i<power2Divider; i++)
+		if (w/(pow(2,wPower2Divider))>h/(pow(2,hPower2Divider)))
+			wPower2Divider++;
+		else
+			hPower2Divider++;
+	unsigned int wHeightMap=w/(pow(2,wPower2Divider));
+	unsigned int hHeightMap=h/(pow(2,hPower2Divider));
+	/// lets generate a patch of perlin noise. That's a smooth mapping R^2 to ]0;1[
+	HeightMap hm(wHeightMap,hHeightMap);
 	/// 1 to avoid division by zero, 
 	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
 	switch (descriptor.methode)
 	{
 		case MapGenerationDescriptor::eSWAMP:
 			hm.makeSwamp(smoothingFactor);
-			waterTiles=(unsigned int)((float)descriptor.waterRatio*w*h/(float)tmpTotal);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio*wHeightMap*hHeightMap/(float)tmpTotal);
 			sandTiles=0;
-			grassTiles=w*h-waterTiles;
+			grassTiles=wHeightMap*hHeightMap-waterTiles;
 			break;
 		case MapGenerationDescriptor::eRIVER:
-			hm.makeRiver(descriptor.riverDiameter*(w+h)/2/100,smoothingFactor);
-			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*w*h);
-			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*w*h);
-			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*w*h);
+			hm.makeRiver(descriptor.riverDiameter*(wHeightMap+hHeightMap)/2/100,smoothingFactor);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
+			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
+			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
 		case MapGenerationDescriptor::eCRATERLAKES:
-			hm.makeCraters(w*h*descriptor.craterDensity/30000, 30, smoothingFactor);
-			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*w*h);
-			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*w*h);
-			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*w*h);
+			hm.makeCraters(wHeightMap*hHeightMap*descriptor.craterDensity/30000, 30, smoothingFactor);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
+			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
+			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
 		case MapGenerationDescriptor::eISLANDS:
 			hm.makeIslands(descriptor.nbTeams+descriptor.extraIslands, smoothingFactor);
-			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*w*h);
-			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*w*h);
-			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*w*h);
+			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
+			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
+			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
 		default: assert(false);
 			break;
@@ -823,12 +830,10 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	int histogram[2048];
 	memset(histogram, 0, 2048*sizeof(int));
 
-	for (int i=0; i<w*h; i++)
+	for (int i=0; i<wHeightMap*hHeightMap; i++)
 	{
 		histogram[hm.uiLevel(i,2048)]++;
 	}
-
-	
 	unsigned int accumulatedHistogram=0;
 	int i=0;
 	waterLevel=0;
@@ -861,18 +866,22 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		if (accumulatedHistogram >= waterTiles+sandTiles+grassTiles)
 			grassLevel = (float)(i-1)/2048.0;
 	}
-
-	for (int i=0; i<w*h; i++)
-	{
-			if (hm(i)<waterLevel)
-				undermap[i]=WATER;
-			else if (hm(i)<sandLevel)
-				undermap[i]=SAND;
-			else if (hm(i)<grassLevel)
-				undermap[i]=GRASS;
+	for (int y=0; y<hHeightMap; y++)
+		for (int x=0; x<wHeightMap; x++)
+			{
+			int tmpUndermap;
+			if (hm(y*wHeightMap+x)<waterLevel)
+				tmpUndermap=WATER;
+			else if (hm(y*wHeightMap+x)<sandLevel)
+				tmpUndermap=SAND;
+			else if (hm(y*wHeightMap+x)<grassLevel)
+				tmpUndermap=GRASS;
 			else
-				undermap[i]=SAND;
-	}
+				tmpUndermap=SAND;
+			for (int yRepeat=0; yRepeat<pow(2,hPower2Divider); yRepeat++)
+				for (int xRepeat=0; xRepeat<pow(2,wPower2Divider); xRepeat++)
+					undermap[xRepeat*wHeightMap+x+(yRepeat*hHeightMap+y)*w]=tmpUndermap;
+			}
 	controlSand();
 	
 	//Now, we have to find suitable places for teams:
@@ -954,7 +963,28 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	controlSand();
 	regenerateMap(0, 0, w, h);
 	//now to add primary resources for current map generator
-	for(int x=0; x<w; x++)
+	for (int y=0; y<hHeightMap; y++)
+		for (int x=0; x<wHeightMap; x++)
+			{
+			int tmpRessource=-12;//sorry! is there some NONE?
+			if(hm(x+wHeightMap*y)<algaeLevel)
+				tmpRessource=ALGA;
+			//following places stone next to sand & water and keeps wheat & wood more inland without clogging up the interior too badly
+			else if(hm(x+wHeightMap*y) < stoneLevel)
+					tmpRessource=STONE;
+			else if(hm(x+wHeightMap*y)<wheatWoodLevel)
+				//patch to get smooth areas of wheat and wood:
+				//if the map is ascending at x+w/2,y set wheat. else set wood
+				if(hm((x+wHeightMap/2)%wHeightMap+wHeightMap*y)<hm((x+wHeightMap/2+1)%wHeightMap+wHeightMap*y))
+					tmpRessource=CORN;
+				else
+					tmpRessource=WOOD;
+			if (tmpRessource!=-12)
+				for (int yRepeat=0; yRepeat<pow(2,hPower2Divider); yRepeat++)
+					for (int xRepeat=0; xRepeat<pow(2,wPower2Divider); xRepeat++)
+						setRessource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,tmpRessource,1);
+			}
+/*	for(int x=0; x<w; x++)
 	{
 		for (int y=0; y<h; y++)
 		{
@@ -970,7 +1000,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		if(hm(x+w*y) < stoneLevel)
 			setRessource(x,y,STONE,1);
 		}
-	}
+	}*/
 	//TODO: count of groves(=descriptor.fruitRatio) does not scale with mapsize.
 	//so it has to be adjusted higher on bigger maps now.
 	//TODO: is the use of syncrand obligatory in mapgeneration?
@@ -992,14 +1022,16 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			int x, y;
 			do
 			{
-				x=(rand()%w);
-				y=(rand()%h);
+				x=(rand()%wHeightMap);
+				y=(rand()%hHeightMap);
 			} while (getUMTerrain(x, y)!=GRASS || isRessource(x,y));
 			//choose size of grove (tree count)
 			int grovesize=(rand()%10)+1;
 			for (int i=0; i<grovesize; i++)
 			{
-				setRessource(x,y,fruit,1);
+				for (int yRepeat=0; yRepeat<pow(2,hPower2Divider); yRepeat++)
+					for (int xRepeat=0; xRepeat<pow(2,wPower2Divider); xRepeat++)
+						setRessource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,fruit,1);
 				//find a valid neighbor of actual coordinate
 				for (int iTry=0; iTry<100; iTry++)
 				{
