@@ -8,12 +8,12 @@
 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include <Stream.h>
@@ -144,7 +144,7 @@ bool AINicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versio
 		stream->read(signature, 4, "signatureStart");
 		if (memcmp(signature,"MoSt", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<signature<<"\"."<<std::endl;
+			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoSt\", recieved \""<<signature<<"\"."<<std::endl;
 			stream->readLeaveSection();
 			return false;
 		}
@@ -4216,7 +4216,7 @@ bool HappinessHandler::adjustAlliances()
 {
 	Uint32 food_mask=ai.team->me;
 	unsigned int total_happiness=0;
-	unsigned int total_units=ai.team->stats.getLatestStat()->numberUnitPerType[WORKER];
+	unsigned int total_units=std::max(1, ai.team->stats.getLatestStat()->numberUnitPerType[WORKER]);
 	for(unsigned int i=0; i<HAPPYNESS_COUNT+1; ++i)
 	{
 		total_happiness+=ai.team->stats.getLatestStat()->happiness[i]*i;
@@ -4236,7 +4236,7 @@ bool HappinessHandler::adjustAlliances()
 					continue;
 				}
 				unsigned int enemy_happiness=0;
-				unsigned int enemy_units=t->stats.getLatestStat()->numberUnitPerType[WORKER];
+				unsigned int enemy_units=std::max(1, t->stats.getLatestStat()->numberUnitPerType[WORKER]);
 				for(unsigned int i=0; i<HAPPYNESS_COUNT+1; ++i)
 				{
 					enemy_happiness+=t->stats.getLatestStat()->happiness[i]*i;

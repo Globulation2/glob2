@@ -658,7 +658,7 @@ Silenci
 A : Alies
 [abreaviation explanation V]
 V : Mostra la visio de totes les construccions
-[abreaviation explanation Vf]
+[abreaviation explanation fV]
 Vf : Mostra la visio de totes les DESPENSES (per robar unitats)
 [abreaviation explanation mV]
 mV : Mostra la visio de tots els MERCATS (per intercanviar fruita)

@@ -738,7 +738,7 @@ mute
 A: Verbündete
 [abreaviation explanation V]
 V: Teile die Sicht für alle Gebäude
-[abreaviation explanation Vf]
+[abreaviation explanation fV]
 fV: Teile die Sicht für Gasthöfe (um Einheiten zu stehlen)
 [abreaviation explanation mV]
 mV: Teile die Sicht für Märkte (um Früchte zu handeln)

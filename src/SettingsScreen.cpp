@@ -1172,7 +1172,7 @@ SettingsScreen::SettingsScreen()
 	editor_keyboard_shortcuts=new List(355, 110, 275, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	editor_keyboard_shortcuts->visible=false;
 
-	restore_default_shortcuts = new TextButton(20, 320, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
+	restore_default_shortcuts = new TextButton(20, 315, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
 	restore_default_shortcuts->visible=false;
 
 

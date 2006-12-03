@@ -43,15 +43,173 @@ EndOfGameStat::EndOfGameStat(int units, int buildings, int prestige, int hp, int
 	value[TYPE_DEFENSE]=defense;
 }
 
+TeamStat::TeamStat()
+{
+	reset();
+}
+
+
+void TeamStat::reset()
+{
+	totalUnit=0;
+	for(int i=0; i<NB_UNIT_TYPE; ++i)
+	{
+		numberUnitPerType[i]=0;
+		isFree[i]=0;
+	}
+	totalFree=0;
+	totalNeeded=0;
+	for(int i=0; i<4; ++i)
+		totalNeededPerLevel[i]=0;
+	totalBuilding=0;
+	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
+	{
+		numberBuildingPerType[i]=0;
+		for(int j=0; j<6; ++j)
+			numberBuildingPerTypePerLevel[i][j]=0;
+	}
+	needFoodCritical=0;
+	needFood=0;
+	needHeal=0;
+	needNothing=0;
+	for(int i=0; i<NB_ABILITY; ++i)
+		for(int j=0; j<4; ++j)
+			upgradeState[i][j]=0;
+	totalFood=0;
+	totalFoodCapacity=0;
+	totalUnitFoodable=0;
+	totalUnitFooded=0;
+
+	totalHP=0;
+	totalAttackPower=0;
+	totalDefensePower=0;
+
+	for(int i=0; i<HAPPYNESS_COUNT+1; ++i)
+		happiness[i]=0;
+
+	//Set the starving map to 0
+	for(unsigned x=0; x<starvingMap.size(); ++x)
+	{
+		starvingMap[x]=0;
+	}
+	starvingMax=0;
+
+	//Set the damaged map to 0
+	for(unsigned x=0; x<damagedMap.size(); ++x)
+	{
+		damagedMap[x]=0;
+	}
+	damagedMax=0;
+
+	//Set the defense map to 0
+	for(unsigned x=0; x<defenseMap.size(); ++x)
+	{
+		defenseMap[x]=0;
+	}
+	defenseMax=0;
+}
+
+
+
+void TeamStat::setMapSize(int w, int h)
+{
+	starvingMap.resize(w*h);
+	damagedMap.resize(w*h);
+	defenseMap.resize(w*h);
+	width=w;
+}
+
+
+
+int TeamStat::increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map)
+{
+	//Update the map
+	for(int n=0; n<8; ++n)
+	{
+		for(int px=0; px<(n*2+1); ++px)
+		{
+			for(int py=0; py<(n*2+1); ++py)
+			{
+				int posx=x-n+px;
+				int posy=y-n+py;
+
+				if(posx<0)
+					posx+=map->getW();
+				if(posx >= map->getW())
+					posx-=map->getW();
+
+				if(posy<0)
+					posy+=map->getH();
+				if(posy >= map->getH())
+					posy-=map->getH();
+
+				numberMap[getPos(posx, posy)]+=1;
+				max=std::max(max, numberMap[getPos(posx, posy)]);
+			}
+		}
+	}
+}
+
+
+
+int TeamStat::spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance)
+{
+	for (int px=x-distance; px<(x+distance); px++)
+	{
+		for (int py=y-distance; py<(y+distance); py++)
+		{
+				int dist=std::max(std::abs(px-x), std::abs(py-y));
+				int targetX=px;
+				int targetY=py;
+				if(targetX<0)
+					targetX+=map->getW();
+				if(targetX >= map->getW())
+					targetX-=map->getW();
+
+				if(targetY<0)
+					targetY+=map->getH();
+				if(targetY >= map->getH())
+					targetY-=map->getH();
+
+				numberMap[getPos(targetX, targetY)]+=(value/distance)*(distance-dist);
+				max=std::max(max, numberMap[getPos(targetX, targetY)]);
+		}
+	}
+}
+
+
+
+TeamSmoothedStat::TeamSmoothedStat()
+{
+	reset();
+}
+
+
+void TeamSmoothedStat::reset()
+{
+	totalFree=0;
+	for(int i=0; i<NB_UNIT_TYPE; ++i)
+	{
+		isFree[i]=0;
+	}
+	totalNeeded=0;
+	for(int i=0; i<4; ++i)
+		totalNeededPerLevel[i]=0;
+}
+
+
+
+void TeamSmoothedStat::setMapSize(int w, int h)
+{
+}
+
 
 
 TeamStats::TeamStats()
 {
 	statsIndex=0;
 	smoothedIndex=0;
-	
-	memset(stats, 0, sizeof(TeamStat)*STATS_SIZE);
-	memset(smoothedStats, 0, sizeof(TeamSmoothedStat)*STATS_SMOOTH_SIZE);
+	haveSetMapSize=false;
 }
 
 TeamStats::~TeamStats()
@@ -70,7 +228,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	
 	// handle in game stat step
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
-	memset(&smoothedStat, 0, sizeof(TeamSmoothedStat));
+	smoothedStat.reset();
 	for (int i=0; i<1024; i++)
 	{
 		Unit *u=team->myUnits[i];
@@ -81,30 +239,35 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 	
+	std::list<Building *> foodable=team->foodable;
+	for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 	{
-		std::list<Building *> foodable=team->foodable;
-		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
+		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
+		smoothedStat.totalNeededPerLevel[(*bi)->type->level]+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
+	}
+
+	std::list<Building *> fillable=team->fillable;
+	for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
+	{
+		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
+		smoothedStat.totalNeededPerLevel[(*bi)->type->level]+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
+	}
+
+	std::list<Building *> zonable=team->clearingFlags;
+	for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); ++bi)
+		if ((*bi)->anyRessourceToClear[0]!=2 || (*bi)->anyRessourceToClear[1]!=2)
+		{
 			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-	}
-	{
-		std::list<Building *> fillable=team->fillable;
-		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
-			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-	}
-	{
-		std::list<Building *> zonable=team->clearingFlags;
-		for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); ++bi)
-			if ((*bi)->anyRessourceToClear[0]!=2 || (*bi)->anyRessourceToClear[1]!=2)
-				smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-	}
-	
+			smoothedStat.totalNeededPerLevel[(*bi)->type->level]+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
+		}
+
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;
 	if (smoothedIndex)
 		return;
 	
 	TeamSmoothedStat maxStat;
-	memset(&maxStat, 0, sizeof(TeamSmoothedStat));
+	maxStat.setMapSize(width, height);
 	for (int i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
 		TeamSmoothedStat &smoothedStat=smoothedStats[i];
@@ -115,14 +278,23 @@ void TeamStats::step(Team *team, bool reloaded)
 			if (smoothedStat.isFree[j]>maxStat.isFree[j])
 				maxStat.isFree[j]=smoothedStat.isFree[j];
 		if (smoothedStat.totalNeeded>maxStat.totalNeeded)
+		{
 			maxStat.totalNeeded=smoothedStat.totalNeeded;
+		}
+		for(int k=0; k<4; ++k)
+		{
+			if (smoothedStat.totalNeededPerLevel[k]>maxStat.totalNeededPerLevel[k])
+				maxStat.totalNeededPerLevel[k]=smoothedStat.totalNeededPerLevel[k];
+		}
 	}
 
 	// We change current stats:
 	statsIndex++;
 	statsIndex%=STATS_SIZE;
 	TeamStat &stat=stats[statsIndex];
-	memset(&stat, 0, sizeof(TeamStat));
+
+	stat.reset();
+
 	for (int i=0; i<1024; i++)
 	{
 		Unit *u=team->myUnits[i];
@@ -137,7 +309,13 @@ void TeamStats::step(Team *team, bool reloaded)
 				if (u->attachedBuilding && u->insideTimeout<0 && u->attachedBuilding->type->canFeedUnit)
 					stat.needNothing++;
 				else if (u->hp<u->performance[HP])
+				{
+					if(haveSetMapSize)
+					{
+						stat.increasePoint(stat.starvingMap, stat.starvingMax, u->posX, u->posY, team->map);
+					}
 					stat.needFoodCritical++;
+				}
 				else
 					stat.needFood++;
 			}
@@ -146,7 +324,13 @@ void TeamStats::step(Team *team, bool reloaded)
 				if (u->attachedBuilding && u->insideTimeout<0 && u->attachedBuilding->type->canHealUnit)
 					stat.needNothing++;
 				else
+				{
+					if(haveSetMapSize)
+					{
+						stat.increasePoint(stat.damagedMap, stat.damagedMax, u->posX, u->posY, team->map);
+					}
 					stat.needHeal++;
+				}
 			}
 			else
 			{
@@ -181,6 +365,8 @@ void TeamStats::step(Team *team, bool reloaded)
 			stat.numberBuildingPerTypePerLevel[b->type->shortTypeNum][longLevel]++;
 			stat.totalHP += b->hp;
 			stat.totalDefensePower += (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
+			if(b->type->shootDamage > 0)
+				stat.spreadPoint(stat.defenseMap, stat.defenseMax, b->posX, b->posY, team->map, (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE, b->type->shootingRange*2);
 			if (!b->type->isBuildingSite)
 				stat.totalBuilding++;
 		}
@@ -191,6 +377,23 @@ void TeamStats::step(Team *team, bool reloaded)
 	for (int j=0; j<NB_UNIT_TYPE; j++)
 		stat.isFree[j]=maxStat.isFree[j];
 	stat.totalNeeded=maxStat.totalNeeded;
+	for(int k=0; k<4; ++k)
+		stat.totalNeededPerLevel[k]=maxStat.totalNeededPerLevel[k];
+}
+
+void TeamStats::setMapSize(int w, int h)
+{
+	width=w;
+	height=h;
+	for(int i=0; i<STATS_SIZE; ++i)
+	{
+		stats[i].setMapSize(w, h);
+	}
+	for(int i=0; i<STATS_SMOOTH_SIZE; ++i)
+	{
+		smoothedStats[i].setMapSize(w, h);
+	}
+	haveSetMapSize=true;
 }
 
 void TeamStats::drawText(int pos)
@@ -241,13 +444,18 @@ void TeamStats::drawText(int pos)
 		gfx->drawString(textStartPosX, textStartPosY+210, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[Harvest]")).arg(newStats.upgradeState[HARVEST][0]).arg(newStats.upgradeState[HARVEST][1]).arg(newStats.upgradeState[HARVEST][2]).arg(newStats.upgradeState[HARVEST][3]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+222, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[At. speed]")).arg(newStats.upgradeState[ATTACK_SPEED][0]).arg(newStats.upgradeState[ATTACK_SPEED][1]).arg(newStats.upgradeState[ATTACK_SPEED][2]).arg(newStats.upgradeState[ATTACK_SPEED][3]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+234, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[At. strength]")).arg(newStats.upgradeState[ATTACK_STRENGTH][0]).arg(newStats.upgradeState[ATTACK_STRENGTH][1]).arg(newStats.upgradeState[ATTACK_STRENGTH][2]).arg(newStats.upgradeState[ATTACK_STRENGTH][3]).c_str());
-		
+	
+		// jobs
+		gfx->drawString(textStartPosX, textStartPosY+249, globalContainer->littleFont, FormatableString("%0 1 %1: %2").arg(strings->getString("[level]")).arg(strings->getString("[jobs]")).arg(newStats.totalNeededPerLevel[0]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+261, globalContainer->littleFont, FormatableString("%0 2 %1: %2").arg(strings->getString("[level]")).arg(strings->getString("[jobs]")).arg(newStats.totalNeededPerLevel[1]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+273, globalContainer->littleFont, FormatableString("%0 3 %1: %2").arg(strings->getString("[level]")).arg(strings->getString("[jobs]")).arg(newStats.totalNeededPerLevel[2]).c_str());
+	
 		// happyness
 		std::stringstream happyness;
 		happyness << strings->getString("[Happyness]") << " " << newStats.happiness[0];
 		for (int i=1; i<=HAPPYNESS_COUNT; i++)
 			happyness << '/' << newStats.happiness[i];
-		gfx->drawString(textStartPosX, textStartPosY+249, globalContainer->littleFont, happyness.str().c_str());
+		gfx->drawString(textStartPosX, textStartPosY+288, globalContainer->littleFont, happyness.str().c_str());
 	}
 }
 

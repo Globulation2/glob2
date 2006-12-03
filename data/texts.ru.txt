@@ -656,8 +656,8 @@ Login
 A: Союзники
 [abreaviation explanation V]
 V: Показ поля зрения для всех зданий
-[abreaviation explanation Vf]
-Vf: Показ поля зрения для здания "Кабак" (переманивание юнитов)
+[abreaviation explanation fV]
+fV: Показ поля зрения для здания "Кабак" (переманивание юнитов)
 [abreaviation explanation mV]
 mV: Показ поля зрения для здания "Рынок" (обмен фруктами)
 [abreaviation explanation C]

@@ -656,8 +656,8 @@ tyst
 A : Allierade
 [abreaviation explanation V]
 V : Visa synfält för alla byggnader
-[abreaviation explanation Vf]
-Vf : Visa synfält för alla Värdshus (för att stjäla enheter)
+[abreaviation explanation fV]
+fV : Visa synfält för alla Värdshus (för att stjäla enheter)
 [abreaviation explanation mV]
 mV : Visa synfält för Marknadsbyggnader (för att byta frukt)
 [abreaviation explanation C]

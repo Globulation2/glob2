@@ -256,6 +256,7 @@ private:
 	bool recievedSpace;
 };
 
+///These "areas" are now officially deprecated, replaced by "areas" in Map, which operate on a per-square basis
 struct Area
 {
 	int x, y, r;

@@ -656,8 +656,8 @@ silêncio
 A: Aliados
 [abreaviation explanation V]
 V: Mostrar todos os prédios
-[abreaviation explanation Vf]
-Vf: Mostrar tabernas (para convertir unidades)
+[abreaviation explanation fV]
+fV: Mostrar tabernas (para convertir unidades)
 [abreaviation explanation mV]
 mV: Mostrar mercados (para intercambiar frutas)
 [abreaviation explanation C]

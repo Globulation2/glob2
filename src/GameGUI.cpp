@@ -206,6 +206,10 @@ void GameGUI::init()
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
+
+	showStarvingMap=false;
+	showDamagedMap=false;
+	showDefenseMap=false;
 	
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
@@ -2055,6 +2059,33 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					setSelection(TOOL_SELECTION, (void*)flagsChoiceName[id].c_str());
 		}
 	}
+	else if (displayMode==STAT_GRAPH_VIEW)
+	{
+//		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
+		if(mx > 8 && mx < 24)
+		{
+			if(my > YPOS_BASE_STAT+140+64 && my < YPOS_BASE_STAT+140+80)
+			{
+				showDamagedMap=false;
+				showDefenseMap=false;
+				showStarvingMap=!showStarvingMap;
+			}
+
+			if(my > YPOS_BASE_STAT+140+88 && my < YPOS_BASE_STAT+140+104)
+			{
+				showDamagedMap=!showDamagedMap;
+				showStarvingMap=false;
+				showDefenseMap=false;
+			}
+
+			if(my > YPOS_BASE_STAT+140+112 && my < YPOS_BASE_STAT+140+128)
+			{
+				showDefenseMap=!showDefenseMap;
+				showStarvingMap=false;
+				showDamagedMap=false;
+			}
+		}
+	}
 }
 
 Order *GameGUI::getOrder(void)
@@ -2402,6 +2433,17 @@ void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
 			font,
 			FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[ressources]", i)).arg(ressources[i]).c_str());
 	}
+}
+
+void GameGUI::drawCheckButton(int x, int y, const char* caption, bool isSet)
+{
+	globalContainer->gfx->drawRect(x, y, 16, 16, Color::white);
+	if(isSet)
+	{
+		globalContainer->gfx->drawLine(x+4, y+4, x+12, y+12, Color::white);
+		globalContainer->gfx->drawLine(x+12, y+4, x+4, y+12, Color::white);
+	}
+	globalContainer->gfx->drawString(x+20, y, globalContainer->littleFont, caption); 
 }
 
 void GameGUI::drawBuildingInfos(void)
@@ -3038,6 +3080,9 @@ void GameGUI::drawPanel(void)
 	else if (displayMode==STAT_GRAPH_VIEW)
 	{
 		teamStats->drawStat(YPOS_BASE_STAT);
+		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
+		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
+		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
 	}
 }
 
@@ -3388,6 +3433,14 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->gfx->drawVertLine(x, y-ray-4, 8, it->r, it->g, it->b, a);
 			//globalContainer->gfx->drawCircle(x, y, (ray2*11)/8, it->r, it->g, it->b, a);
 
+			//Draw it not just on the minimap
+			game.map.mapCaseToDisplayable(it->x, it->y, &x, &y, viewportX, viewportY);
+			globalContainer->gfx->drawCircle(x, y, (ray*2), it->r, it->g, it->b, a);
+			globalContainer->gfx->drawHorzLine(x+(ray*2)-4+1, y, 8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawHorzLine(x-(ray*2)-4, y, 8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawVertLine(x, y+(ray*2)-4+1, 8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawVertLine(x, y-(ray*2)-4, 8, it->r, it->g, it->b, a);
+
 			// delete old marks
 			if (!(--(it->showTicks)))
 			{
@@ -3481,6 +3534,9 @@ void GameGUI::drawAll(int team)
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
 								(drawAccessibilityAids ? Game::DRAW_ACCESSIBILITY : 0 ) |
 								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
+								((showStarvingMap) ? Game::DRAW_STARVING_OVERLAY : 0) |
+								((showDamagedMap) ? Game::DRAW_DAMAGED_OVERLAY : 0) |
+								((showDefenseMap) ? Game::DRAW_DEFENSE_OVERLAY : 0) |
 								Game::DRAW_AREA;
 	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
@@ -3508,8 +3564,9 @@ void GameGUI::drawAll(int team)
 	drawPanel();
 
 	// draw the minimap
+	drawOptions =0;
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
-	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team);
+	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team, drawOptions);
 
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();

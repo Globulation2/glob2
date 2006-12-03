@@ -658,8 +658,8 @@ sessiz
 A: Muttefikler
 [abreaviation explanation V]
 V: Butun binalari goster
-[abreaviation explanation Vf]
-Vf: Otel binalarini goster (birimleri calmak icin)
+[abreaviation explanation fV]
+fV: Otel binalarini goster (birimleri calmak icin)
 [abreaviation explanation mV]
 mV: Market binalarini goster (mal takasi icin)
 [abreaviation explanation C]

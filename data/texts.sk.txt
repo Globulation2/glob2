@@ -740,8 +740,8 @@ Stlmiť
 A: Spojenci
 [abreaviation explanation V]
 V: Ukáž, čo vidia budovy
-[abreaviation explanation Vf]
-Vf: Ukáž jedálne (na kradnutie jedotiek)
+[abreaviation explanation fV]
+fV: Ukáž jedálne (na kradnutie jedotiek)
 [abreaviation explanation mV]
 mV: Ukáž Trhoviská (na výmenu ovocia)
 [abreaviation explanation C]

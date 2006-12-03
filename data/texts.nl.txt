@@ -658,8 +658,8 @@ geluid uit
 A: Bondgenoten
 [abreaviation explanation V]
 V: Toon een visioen voor alle gebouwen
-[abreaviation explanation Vf]
-Vf: Toon een visioen van alle herbergen (overlopen)
+[abreaviation explanation fV]
+fV: Toon een visioen van alle herbergen (overlopen)
 [abreaviation explanation mV]
 mV: Toon een visioen van alle Markten (handel)
 [abreaviation explanation C]

@@ -26,13 +26,20 @@
 
 #include <vector>
 
+class Map;
+
 struct TeamStat
 {
+	TeamStat();
+	void reset();
+	void setMapSize(int w, int h);
+
 	int totalUnit;
 	int numberUnitPerType[NB_UNIT_TYPE];
 	int totalFree;
 	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
+	int totalNeededPerLevel[4];
 
 	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
 	int numberBuildingPerType[IntBuildingType::NB_BUILDING];
@@ -54,13 +61,30 @@ struct TeamStat
 	int totalDefensePower;
 		
 	int happiness[HAPPYNESS_COUNT+1];
+
+	int width;
+	int getPos(int x, int y) { return y*width+x; } 
+	int increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map);
+	int spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance);
+
+	std::vector<int> starvingMap;
+	int starvingMax;
+	std::vector<int> damagedMap;
+	int damagedMax;
+	std::vector<int> defenseMap;
+	int defenseMax;
 };
 
 struct TeamSmoothedStat
 {
+	TeamSmoothedStat();
+	void reset();
+	void setMapSize(int w, int h);
+
 	int totalFree;
 	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
+	int totalNeededPerLevel[4];
 };
 
 struct EndOfGameStat
@@ -91,6 +115,9 @@ public:
 	virtual ~TeamStats(void);
 	
 	void step(Team *team, bool reloaded = false);
+
+	void setMapSize(int w, int h);
+
 	void drawText(int pos);
 	void drawStat(int pos);
 	int getFreeUnits(int type);
@@ -109,6 +136,7 @@ private:
 	
 	int statsIndex;
 	TeamStat stats[STATS_SIZE];
+	bool haveSetMapSize;
 	
 	int smoothedIndex;
 	TeamSmoothedStat smoothedStats[STATS_SMOOTH_SIZE];
@@ -118,11 +146,15 @@ private:
 	
 	//! Thoses stats are used when player has ended the game
 	friend class Team;
+	friend class Game;
 	
 	std::vector<EndOfGameStat> endOfGameStats;
 	
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
+
+	int width;
+	int height;
 
 public:
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }

@@ -25,6 +25,8 @@
 #include <iostream>
 #include <cctype>
 
+#include <SDLGraphicContext.h>
+
 namespace GAGCore
 {
 	StringTable::StringTable()
@@ -227,6 +229,8 @@ namespace GAGCore
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, no such key." << std::endl;
+				if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
+					GAGCore::DrawableSurface::texts[std::string(stringname)]=key;
 				return stringname;
 			}
 			else
@@ -239,9 +243,17 @@ namespace GAGCore
 				}
 				std::string &s = strings[accessIt->second+dec]->data[actLang];
 				if (s.length() == 0)
+				{
+					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
+						GAGCore::DrawableSurface::texts[strings[accessIt->second+dec]->data[defaultLang]]=key;
 					return strings[accessIt->second+dec]->data[defaultLang].c_str();
+				}
 				else
+				{
+					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
+						GAGCore::DrawableSurface::texts[s]=key;
 					return s.c_str();
+				}
 			}
 		}
 		else

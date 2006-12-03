@@ -144,6 +144,7 @@ private:
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
+	void drawCheckButton(int x, int y, const char* caption, bool isSet);
 
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
@@ -255,7 +256,7 @@ private:
 	//! Tells whether a space was clicked recently, to read in by the script engine
 	bool hasSpaceBeenClicked;
 
-	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" it
+	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" (ignore) it
 	bool swallowSpaceKey;
 
 	//! True if the mouse's button way never relased since selection.
@@ -272,6 +273,10 @@ private:
 	int panMouseX, panMouseY;
 	//! Coordinate of viewport when began panning
 	int panViewX, panViewY;
+
+	bool showStarvingMap;
+	bool showDamagedMap;
+	bool showDefenseMap;
 
 	bool showUnitWorkingToBuilding;
 
