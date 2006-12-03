@@ -1388,13 +1388,13 @@ namespace Nicowar
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
 	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{30, 12, 16, 80, 80, 30, 70, 30, 0, 0, 0, 0, 0};
+		{30, 12, 16, 80, 80, 30, 50, 30, 0, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
 	///priority buildings.
 	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
-		{4, 2, 4, 6, 5, 4, 6, 5, 0, 0, 0, 0};
+		{4, 2, 4, 6, 5, 4, 5, 5, 0, 0, 0, 0};
 	///Buildings with a higher strict priority will *always* go first
 	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
 		{2, 2, 2, 1, 1, 1, 1, 2, 0, 0, 0, 0};

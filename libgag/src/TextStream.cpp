@@ -254,7 +254,7 @@ namespace GAGCore
 					
 					default:
 					{
-						if (isalnum(next) || (next == '.') || (next == '-'))
+						if (isalnum(next) || (next == '.') || (next == '-') || (next == '[') || (next == ']'))
 						{
 							std::string tempValue;
 							do
@@ -262,7 +262,7 @@ namespace GAGCore
 								tempValue += static_cast<std::string::value_type>(next);
 								nextChar();
 							}
-							while (isalnum(next) || (next == '.'));
+							while (isalnum(next) || (next == '.') || (next == '[') || (next==']'));
 							token = Token(Token::VAL, tempValue);
 						}
 						else

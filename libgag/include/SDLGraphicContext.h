@@ -27,6 +27,10 @@
 #include <string>
 #include <iostream>
 
+#include <set>
+#include <boost/tuple/tuple.hpp>
+
+
 namespace GAGCore
 {
 	//! Color is 4 bytes big but provides easy access to components
@@ -196,7 +200,7 @@ namespace GAGCore
 		virtual void getClipRect(int *x, int *y, int *w, int *h);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
-		virtual void nextFrame(void) { }
+		virtual void nextFrame(void) { flushTextPictures(); }
 		virtual bool loadImage(const char *name);
 		virtual bool loadImage(const std::string &name);
 		virtual void shiftHSV(float hue, float sat, float lum);
@@ -257,6 +261,31 @@ namespace GAGCore
 		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawString(int x, int y, Font *font, int i);
+		
+		// This is for translation textshot code, it works by trapping calls to the getString function in the translation StringTables,
+		// then later in drawString, if we are drawing one of the found strings returned by StringTable, it will add it to the list of
+		// rectangles that represent found texts. Just before the next frame begins to draw, all of the rectangle pictures are flushed
+		// into bmp's. This is done because we want the translation pictures to be done when *all* of the screen is already drawn (when
+		// we flushed into a bmp directly from drawString, sometimes the screen was only partially drawn, and the resulting pictures
+		// would be hard to interpret)
+		class SRectangle
+		{
+		public:
+			SRectangle(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
+			int x, y, w, h;
+		};
+		// This holds texts requested by the toolkit, but not yet drawn to the screen
+		static std::map<std::string, std::string> texts;
+		// This holds texts already drawn to the screen and detected, so that pictures aren't taken twice, which would lag the game badly
+		static std::set<std::string> wroteTexts;
+		// This holds detected texts that will be printed on the next flush
+		static std::vector<boost::tuple<SRectangle, std::string, GAGCore::DrawableSurface*> > drawSquares;
+		// This holds the directory the pictures will be stored in. The system is disabled if this string is empty.
+		static std::string translationPicturesDirectory;
+		// This flushes all of the detected texts, making bmp pictures
+		static void flushTextPictures();
+		// This prints out information on all of the texts that where requested but not detected
+		static void printFinishingText();
 	};
 	
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.

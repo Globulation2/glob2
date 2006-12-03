@@ -55,6 +55,15 @@ public:
 		DRAW_AREA = 0x8,
 		DRAW_WHOLE_MAP = 0x10,
 		DRAW_ACCESSIBILITY = 0x20,
+		DRAW_SCRIPT_AREAS = 0x40,
+		DRAW_NO_RESSOURCE_GROWTH_AREAS = 0x80,
+		DRAW_STARVING_OVERLAY = 0x100,
+		DRAW_DAMAGED_OVERLAY = 0x200,
+		DRAW_DEFENSE_OVERLAY = 0x400,
+	};
+
+	enum MinimapDrawOption
+	{
 	};
 	
 	struct BuildProject
@@ -132,7 +141,7 @@ public:
 
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0);
-	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam);
+	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions = 0);
 	void renderMiniMap(int teamSelected, const bool useMapDiscovered=false, int step=0, int stepCount=1);
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 	

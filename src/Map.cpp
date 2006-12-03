@@ -206,6 +206,8 @@ Map::Map()
 	
 	logFile = globalContainer->logFileManager->getFile("Map.log");
 	std::fill(incRessourceLog, incRessourceLog + 16, 0);
+
+	areaNames.resize(9);
 }
 
 Map::~Map(void)
@@ -937,6 +939,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initCase.forbidden = 0;
 	initCase.guardArea = 0;
 	initCase.clearArea = 0;
+	initCase.scriptAreas = 0;
+	initCase.canRessourcesGrow = 1;
 	
 	for (size_t i=0; i<size; i++)
 		cases[i]=initCase;
@@ -1080,10 +1084,30 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 		else
 			cases[i].clearArea = 0;
 		
+		if (sessionGame->versionMinor>=51)
+			cases[i].scriptAreas = stream->readUint16("scriptAreas");
+		else
+			cases[i].scriptAreas = 0;
+
+		if (sessionGame->versionMinor>=53)
+			cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
+		else
+			cases[i].canRessourcesGrow = 1;
+
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
+	if(sessionGame->versionMinor>=51)
+	{
+		for(int n=0; n<9; ++n)
+		{
+			stream->readEnterSection(n);
+			setAreaName(n, stream->readText("areaname"));
+			stream->readLeaveSection();
+		}
+	}
+	
 	if (game)
 	{
 		// This is a game, so we do compute gradients
@@ -1180,9 +1204,19 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(cases[i].forbidden, "forbidden");
 		stream->writeUint32(cases[i].guardArea, "guardArea");
 		stream->writeUint32(cases[i].clearArea, "clearArea");
+		stream->writeUint16(cases[i].scriptAreas, "scriptAreas");
+		stream->writeUint8(cases[i].canRessourcesGrow, "canRessourcesGrow");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+
+	//Save area names
+	for(int n=0; n<9; ++n)
+	{
+		stream->writeEnterSection(n);
+		stream->writeText(getAreaName(n), "areaname");
+		stream->writeLeaveSection();
+	}
 
 	// We save sectors:
 	stream->writeSint32(wSector, "wSector");
@@ -1323,7 +1357,8 @@ void Map::growRessources(void)
 					if (r.amount<=(syncRand()&7))
 					{
 						// we grow ressource:
-						incRessource(x, y, r.type, r.variety);
+						if(canRessourcesGrow(x, y))
+							incRessource(x, y, r.type, r.variety);
 					}
 					else if (globalContainer->ressourcesTypes.get(r.type)->expendable)
 					{
@@ -1332,7 +1367,8 @@ void Map::growRessources(void)
 						Unit::dxdyfromDirection((syncRand()&7), &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						incRessource(nx, ny, r.type, r.variety);
+						if(canRessourcesGrow(nx, ny))
+							incRessource(nx, ny, r.type, r.variety);
 					}
 				}
 			}
@@ -1919,6 +1955,31 @@ void Map::setRessource(int x, int y, int type, int l)
 bool Map::isRessourceAllowed(int x, int y, int type)
 {
 	return (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
+}
+
+bool Map::isPointSet(int n, int x, int y)
+{
+	return getCase(x, y).scriptAreas & 1<<n;
+}
+
+void Map::setPoint(int n, int x, int y)
+{
+	getCase(x, y).scriptAreas |= 1<<n;
+}
+
+void Map::unsetPoint(int n, int x, int y)
+{
+	getCase(x, y).scriptAreas ^= getCase(x, y).scriptAreas & (1<<n);
+}
+
+std::string Map::getAreaName(int n)
+{
+	return areaNames[n];
+}
+
+void Map::setAreaName(int n, std::string name)
+{
+	areaNames[n]=name;
 }
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
@@ -4956,7 +5017,8 @@ Uint32 Map::checkSum(bool heavy)
 				c->ressource.getUint32() +
 				c->groundUnit +
 				c->airUnit +
-				c->forbidden;
+				c->forbidden +
+				c->scriptAreas;
 			cs=(cs<<1)|(cs>>31);
 		}
 	};

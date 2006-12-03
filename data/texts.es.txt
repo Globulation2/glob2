@@ -658,8 +658,8 @@ Mudo
 A: Aliados
 [abreaviation explanation V]
 V: Mostrar vista de todos los edificios
-[abreaviation explanation Vf]
-Vf: Mostrar vista de las posadas (para robar unidades)
+[abreaviation explanation fV]
+fV: Mostrar vista de las posadas (para robar unidades)
 [abreaviation explanation mV]
 mV: Mostrar vista de los mercados (para intercambiar frutos)
 [abreaviation explanation C]

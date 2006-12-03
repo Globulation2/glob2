@@ -2,6 +2,8 @@
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
+  Copyright (C) 2006 Bradley Arsenault
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -57,6 +59,9 @@ struct Case
 	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	Uint32 guardArea; // This is a mask, one bit by team, 1=guard area, 0=normal
 	Uint32 clearArea; // This is a mask, one bit by team, 1=clear area, 0=normal
+
+	Uint16 scriptAreas; // This is also a mask. A single bit represents an area #n, on or off for the square
+	Uint8 canRessourcesGrow; // This is a boolean, it represents whether ressources are allowed to grow into this location.
 };
 
 
@@ -363,6 +368,11 @@ public:
 		return true;
 	}
 
+	bool canRessourcesGrow(int x, int y)
+	{
+		return getCase(x, y).canRessourcesGrow;
+	}
+
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
 	void decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
@@ -429,6 +439,23 @@ public:
 	//! With l==0, it will add ressource only on one case. (Aligned coordinates)
 	void setRessource(int x, int y, int type, int l);
 	bool isRessourceAllowed(int x, int y, int type);
+	
+
+	///The following is for script areas, which are named areas for map scripts set in the editor
+	///@{
+	///Returns whether area #n is set for a particular point. n can be from 0 to 8
+	bool isPointSet(int n, int x, int y);
+	///Sets a particular point on area #n
+	void setPoint(int n, int x, int y);
+	///Unsets a particular point on area #n
+	void unsetPoint(int n, int x, int y);
+	///Returns the name of area #n
+	std::string getAreaName(int n);
+	///Sets the name of area #n
+	void setAreaName(int n, std::string name);
+	///A vector holding the area names
+	std::vector<std::string> areaNames;
+	///@}
 	
 	//! Transform coordinate from map scale (mx,my) to pixel scale (px,py)
 	void mapCaseToPixelCase(int mx, int my, int *px, int *py) { *px=(mx<<5); *py=(my<<5); }

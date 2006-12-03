@@ -46,6 +46,7 @@
 #include "YOGConsts.h"
 #include "NetConsts.h"
 
+#include "GraphicContext.h"
 
 GlobalContainer::GlobalContainer(void)
 {
@@ -210,6 +211,18 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				i++;
 			}
 		}
+		if (strcmp(argv[i], "-textshot")==0)
+		{
+			if(i+1 < argc)
+			{
+				GAGCore::DrawableSurface::translationPicturesDirectory = argv[i+1];
+				i++;
+			}
+			else
+			{
+				std::cerr<<"-textshot requires a directory. Use \"-textshot .\" for the current directory."<<std::endl;
+			}
+		}
 		if (strcmp(argv[i], "-f")==0)
 		{
 			settings.screenFlags |= GraphicContext::FULLSCREEN;
@@ -294,6 +307,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-y\tspecify an alternative hostname for YOG server\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
+			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);

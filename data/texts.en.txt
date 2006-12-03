@@ -16,6 +16,8 @@ Damage
 Food
 [working]
 Working
+[assigned]
+Assigned
 [inside]
 Inside
 [ressources]
@@ -42,6 +44,8 @@ fruit
 Clearing:
 [Min required level:]
 Minimum required level:
+[Minimum Level To Flag]
+Minimum Flag Level
 [Bullets]
 Bullets
 [range]
@@ -68,6 +72,12 @@ workers
 explorers
 [warriors]
 warriors
+[Worker Ratio]
+Worker Ratio
+[Explorer Ratio]
+Explorer Ratio
+[Warrior Ratio]
+Warrior Ratio
 [Unit type]
 Unit type
 [Worker]
@@ -204,8 +214,16 @@ Open Script Editor
 Return to the editor
 [quit the editor]
 Quit the editor
+[Script Areas]
+Script Areas
+[Change Area Name]
+Change Area Name
+[Unnamed Area]
+{Unnamed Area}
 [delete]
-Delete Objects
+Delete
+[no ressources growth areas]
+No Growth Areas
 [ok]
 Ok
 [Cancel]
@@ -530,6 +548,8 @@ wounded
 and
 [seeking a job]
 looking for a job
+[jobs]
+jobs
 [Walk]
 Walk
 [Swim]
@@ -560,6 +580,12 @@ hungry
 starving
 [wounded]
 wounded
+[Starving Map]
+Starving Map
+[Damaged Map]
+Damaged Map
+[Defense Map]
+Defense Map
 [In way]
 On the way
 [On the spot]
@@ -798,8 +824,8 @@ mute
 A: Allies
 [abreaviation explanation V]
 V: Show vision for all buildings
-[abreaviation explanation Vf]
-Vf: Show vision for Inn buildings (to steal units)
+[abreaviation explanation fV]
+fV: Show vision for Inn buildings (to steal units)
 [abreaviation explanation mV]
 mV: Show vision for Markets buildings (to exchange fruits)
 [abreaviation explanation C]

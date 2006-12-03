@@ -973,7 +973,10 @@ bool Game::load(GAGCore::InputStream *stream)
 
 	// we have to finish Team's loading:
 	for (int i=0; i<session.numberOfTeam; i++)
+	{
+		teams[i]->stats.setMapSize(map.getW(), map.getH());
 		teams[i]->update();
+	}
 	
 	for (int i=0; i<session.numberOfTeam; i++)
 		teams[i]->integrity();
@@ -1219,7 +1222,9 @@ void Game::syncStep(Sint32 localTeam)
 		}
 		
 		if (!globalContainer->runNoX)
+		{
 			renderMiniMap(localTeam, false, stepCounter%25, 25);
+		}
 
 		if ((stepCounter&15)==1)
 			buildProjectSyncStep(localTeam);
@@ -2176,7 +2181,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	}
 		
-	// draw forbidden and guard areas
+	// draw forbidden, guard, clearing areas
 	if ((drawOptions & DRAW_AREA) != 0)
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
@@ -2215,20 +2220,41 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 				if (map.isClearAreaLocal(x+viewportX, y+viewportY))
 				{
-					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 16+(x<<5), 32+(y<<5), 64, 64, 0);
-					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 64, 64, 0);
+					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 16+(x<<5), 32+(y<<5), 128, 128, 0);
+//					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 128, 0);
 					//globalContainer->gfx->drawLine(8+(x<<5), (y<<5), 8+(x<<5), 32+(y<<5), 128, 128, 0);
 					//globalContainer->gfx->drawLine(24+(x<<5), (y<<5), 24+(x<<5), 32+(y<<5), 128, 128, 0);
 					
 					if (!map.isClearAreaLocal(x+viewportX, y+viewportY-1))
-						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 128, 128, 0);
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 255, 0);
 					if (!map.isClearAreaLocal(x+viewportX, y+viewportY+1))
-						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 128, 128, 0);
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 255, 0);
 					
 					if (!map.isClearAreaLocal(x+viewportX-1, y+viewportY))
-						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 128, 128, 0);
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 255, 0);
 					if (!map.isClearAreaLocal(x+viewportX+1, y+viewportY))
-						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 128, 128, 0);
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 255, 0);
+				}
+
+				if((drawOptions & DRAW_NO_RESSOURCE_GROWTH_AREAS) != 0)
+				{
+					if(!map.canRessourcesGrow(x+viewportX, y+viewportY))
+					{
+						globalContainer->gfx->drawLine((x<<5), 8+(y<<5), 32+(x<<5), 8+(y<<5), 128, 64, 0);
+						globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 32+(x<<5), 16+(y<<5), 128, 64, 0);
+						globalContainer->gfx->drawLine((x<<5), 24+(y<<5), 32+(x<<5), 24+(y<<5), 128, 64, 0);
+//						globalContainer->gfx->drawLine((x<<5), 32+(y<<5), 32+(x<<5), 32+(y<<5), 128, 64, 0);
+					
+						if (map.canRessourcesGrow(x+viewportX, y+viewportY-1))
+							globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 128, 0);
+						if (map.canRessourcesGrow(x+viewportX, y+viewportY+1))
+							globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 128, 0);
+						
+						if (map.canRessourcesGrow(x+viewportX-1, y+viewportY))
+							globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 128, 0);
+						if (map.canRessourcesGrow(x+viewportX+1, y+viewportY))
+							globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 128, 0);
+						}
 				}
 			}
 
@@ -2242,6 +2268,32 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions);
 		}
 
+	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
+	{
+		for (int y=top; y<bot; y++)
+			for (int x=left; x<right; x++)
+			{
+				std::stringstream str;
+				for(int n=0; n<9; ++n)
+				{
+					if(map.isPointSet(n, x+viewportX, y+viewportY))
+					{
+						str.str("");
+						str<<n+1;
+						globalContainer->gfx->drawString((x<<5)+(n%3)*10, (y<<5)+(n/3)*10, globalContainer->littleFont, str.str());
+	
+//						globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 32+(x<<5), 16+(y<<5), 32, 128, 128);
+//						globalContainer->gfx->drawLine((x<<5), 32+(y<<5), 32+(x<<5), 32+(y<<5), 32, 128, 128);
+					
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 64, 255, 255);
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 64, 255, 255);
+				
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 64, 255, 255);
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 64, 255, 255);
+					}
+				}
+			}
+	}
 	// Let's paint the bullets and explosions
 	// TODO : optimise : test only possible sectors to show bullets.
 
@@ -2367,6 +2419,87 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 	}
 
+	// We draw the overlay maps:
+	TeamStat* latest=teams[localTeam]->stats.getLatestStat();
+	int overlayMax=0;
+	std::vector<int>* overlayMap=NULL;
+	Color overlayColor;
+	if((drawOptions & DRAW_STARVING_OVERLAY))
+	{
+		overlayMax=latest->starvingMax;
+		overlayMap=&latest->starvingMap;
+		overlayColor=Color(192, 0, 0);
+	}
+	if((drawOptions & DRAW_DAMAGED_OVERLAY))
+	{
+		overlayMax=latest->damagedMax;
+		overlayMap=&latest->damagedMap;
+		overlayColor=Color(192, 0, 0);
+	}
+	if((drawOptions & DRAW_DEFENSE_OVERLAY))
+	{
+		overlayMax=latest->defenseMax;
+		overlayMap=&latest->defenseMap;
+		overlayColor=Color(0, 0, 192);
+	}
+
+	if(overlayMap!=NULL && overlayMap->size())
+	{
+		for (int y=top-1; y<=bot; y++)
+		{
+			for (int x=left-1; x<=right; x++)
+			{
+				int rx=(x+viewportX)%map.getW();
+				int ry=(y+viewportY)%map.getH();
+				if((*overlayMap)[latest->getPos(rx, ry)])
+				{
+					if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+					{
+						const int value_c=(*overlayMap)[latest->getPos(rx, ry)];
+						const int alpha_c=40+int(float(160)/float(overlayMax) * float(value_c));
+						globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
+					}
+					else
+					{
+						const int value_c=(*overlayMap)[latest->getPos(rx, ry)];
+						const int value_u=(*overlayMap)[latest->getPos(rx, ry-1)];
+						const int value_d=(*overlayMap)[latest->getPos(rx, ry+1)];
+						const int value_l=(*overlayMap)[latest->getPos(rx-1, ry)];
+						const int value_r=(*overlayMap)[latest->getPos(rx+1, ry)];
+						const int alpha_c=int(float(200)/float(overlayMax) * float(value_c));
+						const int alpha_u=int(float(200)/float(overlayMax) * float(value_u));
+						const int alpha_d=int(float(200)/float(overlayMax) * float(value_d));
+						const int alpha_l=int(float(200)/float(overlayMax) * float(value_l));
+						const int alpha_r=int(float(200)/float(overlayMax) * float(value_r));
+//						const float edge_u_alpha=float(alpha_u+alpha_c)/2;
+//						const float edge_l_alpha=float(alpha_l+alpha_c)/2;
+//						const float edge_r_alpha=float(alpha_r+alpha_c)/2;
+//						const float edge_d_alpha=float(alpha_d+alpha_c)/2;
+						const float edge_u_alpha=float(alpha_u);
+						const float edge_l_alpha=float(alpha_l);
+						const float edge_r_alpha=float(alpha_r);
+						const float edge_d_alpha=float(alpha_d);
+						const float vertical_increment=float(edge_u_alpha - edge_d_alpha)/float(32);
+						const float horizontal_increment=float(edge_l_alpha - edge_r_alpha)/float(32);
+						for(int px=0; px<4; ++px)
+						{
+							for(int py=0; py<4; ++py)
+							{
+	
+								const int pby=(4-py)*8;
+								const int pbx=(4-px)*8;
+								const float vertical_g=float(vertical_increment*pby+edge_d_alpha);
+								const float horizontal_g=float(horizontal_increment*pbx+edge_r_alpha);
+								int alpha=int(horizontal_g + vertical_g)/2;
+								globalContainer->gfx->drawFilledRect((x<<5)+px*8, (y<<5)+py*8, 8, 8, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
 	for (std::list<Building *>::iterator virtualIt=teams[localTeam]->virtualBuildings.begin();
@@ -2460,7 +2593,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					}
 }
 
-void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam)
+void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	// draw the prerendered minimap, decide if we use low speed graphics or nor
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)

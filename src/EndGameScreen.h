@@ -2,6 +2,8 @@
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
+  Copyright (C) 2006 Bradley Arsenault
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -26,6 +28,7 @@
 namespace GAGGUI
 {
 	class Text;
+	class OnOffButton;
 }
 
 //! Widget to display stats at end of game
@@ -38,6 +41,8 @@ public:
 	virtual ~EndGameStat() { }
 	//! Set the type of stats (units, buildings, prestige) to draw
 	void setStatType(EndOfGameStat::Type type);
+	//! Enables / disables a particular team
+	void setEnabledState(int teamNum, bool isEnabled);
 	//! paint routine
 	virtual void paint(void);
 
@@ -46,11 +51,18 @@ protected:
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing
 	Game *game;
+	//! List of true/false values for each team's enabled status
+	bool isTeamEnabled[32];
+	//! This moves the circle indicating the score at the current mouse position.
+	virtual void onSDLMouseMotion(SDL_Event* event);
+	int mouse_x;
+	int mouse_y;
 };
 
 struct TeamEntry
 {
 	std::string name;
+	int teamNum;
 	int endVal[EndOfGameStat::TYPE_NB_STATS];
 	Uint32 r, g, b, a;
 };
@@ -60,7 +72,9 @@ class EndGameScreen : public Glob2Screen
 protected:
 	std::vector<TeamEntry> teams;
 	std::vector<Text *> names;
+	std::vector<OnOffButton *> team_enabled_buttons;
 	EndGameStat *statWidget;
+	Text* graphLabel;
 
 protected:
 	//! resort players

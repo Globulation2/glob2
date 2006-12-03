@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 23
-#define VERSION_MINOR 50
+#define VERSION_MINOR 53
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -64,5 +64,8 @@
 // version 48 added script state load/save
 // version 49 added units skinnning and per-unit hungryness
 // version 50 changed TeamStat code to use std::vector
+// version 51 added script areas to Map
+// version 52 changed the Echo API
+// version 53 added no-growth areas, to limit ressources growth
 
 #endif

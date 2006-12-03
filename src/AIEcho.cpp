@@ -37,7 +37,6 @@ using namespace AIEcho::Construction;
 using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
-using namespace AIEcho::UpgradesRepairs;
 using namespace boost::logic;
 
 
@@ -55,8 +54,58 @@ void AIEcho::signature_check(GAGCore::InputStream *stream, Player *player, Sint3
 	stream->read(signature, 7, "signature");
 	if (memcmp(signature,"EchoSig", 7)!=0)
 	{
+
+		std::cerr<<"Signature match failed. Expected \"EchoSig\", recieved \""<<signature<<"\""<<std::endl;
 		assert(false);
 	}
+}
+
+
+
+Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Entity");
+	EntityType type = static_cast<EntityType>(stream->readUint32("type"));
+	Entity* entity = NULL;
+	switch(type)
+	{
+		case Entities::EBuilding:
+			entity = new Entities::Building;
+			entity->load(stream, player, versionMinor);
+		break;
+		case Entities::EAnyTeamBuilding:
+			entity = new Entities::AnyTeamBuilding;
+			entity->load(stream, player, versionMinor);
+		break;
+		case Entities::EAnyBuilding:
+			entity = new Entities::AnyBuilding;
+			entity->load(stream, player, versionMinor);
+		break;
+		case Entities::ERessource:
+			entity = new Entities::Ressource;
+			entity->load(stream, player, versionMinor);
+		break;
+		case Entities::EAnyRessource:
+			entity = new Entities::AnyRessource;
+			entity->load(stream, player, versionMinor);
+		break;
+		case Entities::EWater:
+			entity = new Entities::Water;
+			entity->load(stream, player, versionMinor);
+		break;
+	};
+	stream->readLeaveSection();
+	return entity;
+}
+
+
+
+void Entities::Entity::save_entity(Entity* entity, GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Entity");
+	stream->writeUint32(entity->get_type(), "type");
+	entity->save(stream);
+	stream->writeLeaveSection();
 }
 
 
@@ -100,6 +149,36 @@ bool Entities::Building::operator==(const Entity& rhs)
 bool Entities::Building::can_change()
 {
 	return true;
+}
+
+
+
+Entities::EntityType Entities::Building::get_type()
+{
+	return Entities::EBuilding;
+}
+
+
+
+bool Entities::Building::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Building");
+	building_type = stream->readSint32("building_type");
+	team = stream->readSint32("team");
+	under_construction = stream->readUint8("under_construction");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Entities::Building::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Building");
+	stream->writeSint32(building_type, "building_type");
+	stream->writeSint32(team, "team");
+	stream->writeUint8(under_construction, "under_construction");
+	stream->writeLeaveSection();
 }
 
 
@@ -148,6 +227,34 @@ bool Entities::AnyTeamBuilding::can_change()
 
 
 
+Entities::EntityType Entities::AnyTeamBuilding::get_type()
+{
+	return Entities::EAnyTeamBuilding;
+}
+
+
+
+bool Entities::AnyTeamBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("AnyTeamBuilding");
+	team = stream->readSint32("team");
+	under_construction = stream->readUint8("under_construction");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Entities::AnyTeamBuilding::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AnyTeamBuilding");
+	stream->writeSint32(team, "team");
+	stream->writeUint8(under_construction, "under_construction");
+	stream->writeLeaveSection();
+}
+
+
+
 Entities::AnyBuilding::AnyBuilding(bool under_construction) : under_construction(under_construction)
 {
 }
@@ -182,6 +289,32 @@ bool Entities::AnyBuilding::operator==(const Entity& rhs)
 bool Entities::AnyBuilding::can_change()
 {
 	return true;
+}
+
+
+
+Entities::EntityType Entities::AnyBuilding::get_type()
+{
+	return Entities::EAnyBuilding;
+}
+
+
+
+bool Entities::AnyBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("AnyBuilding");
+	under_construction = stream->readUint8("under_construction");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AnyBuilding");
+	stream->writeUint8(under_construction, "under_construction");
+	stream->writeLeaveSection();
 }
 
 
@@ -224,6 +357,32 @@ bool Entities::Ressource::can_change()
 
 
 
+Entities::EntityType Entities::Ressource::get_type()
+{
+	return Entities::ERessource;
+}
+
+
+
+bool Entities::Ressource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Ressource");
+	ressource_type = stream->readSint32("ressource_type");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Entities::Ressource::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Ressource");
+	stream->writeSint32(ressource_type, "ressource_type");
+	stream->writeLeaveSection();
+}
+
+
+
 Entities::AnyRessource:: AnyRessource()
 {
 
@@ -254,6 +413,30 @@ bool Entities::AnyRessource::operator==(const Entity& rhs)
 bool Entities::AnyRessource::can_change()
 {
 	return true;
+}
+
+
+
+Entities::EntityType Entities::AnyRessource::get_type()
+{
+	return Entities::EAnyRessource;
+}
+
+
+
+bool Entities::AnyRessource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("AnyRessource");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Entities::AnyRessource::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AnyRessource");
+	stream->writeLeaveSection();
 }
 
 
@@ -292,6 +475,30 @@ bool Entities::Water::can_change()
 
 
 
+Entities::EntityType Entities::Water::get_type()
+{
+	return Entities::EWater;
+}
+
+
+
+bool Entities::Water::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Water");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Entities::Water::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Water");
+	stream->writeLeaveSection();
+}
+
+
+
 GradientInfo::GradientInfo()
 {
 	needs_updated=indeterminate;
@@ -306,13 +513,13 @@ GradientInfo::~GradientInfo()
 
 void GradientInfo::add_source(Entities::Entity* source)
 {
-	sources.push_back(source);
+	sources.push_back(boost::shared_ptr<Entities::Entity>(source));
 }
 
 
 void GradientInfo::add_obstacle(Entities::Entity* obstacle)
 {
-	obstacles.push_back(obstacle);
+	obstacles.push_back(boost::shared_ptr<Entities::Entity>(obstacle));
 }
 
 
@@ -382,6 +589,67 @@ bool GradientInfo::needs_updating() const
 		}
 	}
 	return false;
+}
+
+
+
+bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("GradientInfo");
+
+	stream->readEnterSection("sources");
+	int size=stream->readUint32("size");
+	sources.resize(size);
+	for(int n=0; n<size; ++n)
+	{
+		stream->readEnterSection(n);
+		sources[n]=boost::shared_ptr<Entities::Entity>(Entities::Entity::load_entity(stream, player, versionMinor));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	stream->readEnterSection("obstacles");
+	size=stream->readUint32("size");
+	obstacles.resize(size);
+	for(int n=0; n<size; ++n)
+	{
+		stream->readEnterSection(n);
+		obstacles[n]=boost::shared_ptr<Entities::Entity>(Entities::Entity::load_entity(stream, player, versionMinor));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void GradientInfo::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("GradientInfo");
+
+	stream->writeEnterSection("sources");
+	stream->writeUint32(sources.size(), "size");
+	for(unsigned n=0; n<sources.size(); ++n)
+	{
+		stream->writeEnterSection(n);
+		Entities::Entity::save_entity(sources[n].get(), stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	stream->writeEnterSection("obstacles");
+	stream->writeUint32(obstacles.size(), "size");
+	for(unsigned n=0; n<obstacles.size(); ++n)
+	{
+		stream->writeEnterSection(n);
+		Entities::Entity::save_entity(obstacles[n].get(), stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	stream->writeLeaveSection();
 }
 
 
@@ -616,6 +884,54 @@ void GradientManager::update()
 
 
 
+Constraint* Constraint::load_constraint(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Constraint");
+	ConstraintType type=static_cast<ConstraintType>(stream->readUint32("type"));
+	Constraint* constraint=NULL;
+	switch(type)
+	{
+		case CTMinimumDistance:
+			constraint=new MinimumDistance;
+			constraint->load(stream, player, versionMinor);
+		break;
+		case CTMaximumDistance:
+			constraint=new MaximumDistance;
+			constraint->load(stream, player, versionMinor);
+		break;
+		case CTMinimizedDistance:
+			constraint=new MinimizedDistance;
+			constraint->load(stream, player, versionMinor);
+		break;
+		case CTMaximizedDistance:
+			constraint=new MaximizedDistance;
+			constraint->load(stream, player, versionMinor);
+		break;
+		case CTCenterOfBuilding:
+			constraint=new CenterOfBuilding;
+			constraint->load(stream, player, versionMinor);
+		break;
+		case CTSinglePosition:
+			constraint=new SinglePosition;
+			constraint->load(stream, player, versionMinor);
+		break;
+	}
+	stream->readLeaveSection();
+	return constraint;
+}
+
+
+
+void Constraint::save_constraint(Constraint* constraint, GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Constraint");
+	stream->writeUint32(constraint->get_type(), "type");
+	constraint->save(stream);
+	stream->writeLeaveSection();
+}
+
+
+
 MinimumDistance::MinimumDistance(const Gradients::GradientInfo& gi, int distance) : gi(gi), gradient_cache(NULL), distance(distance)
 {
 
@@ -638,6 +954,33 @@ bool MinimumDistance::passes_constraint(Echo& echo, int x, int y)
 	if(height>=distance)
 		return true;
 	return false;
+}
+
+
+ConstraintType MinimumDistance::get_type()
+{
+	return CTMinimumDistance;
+}
+
+
+
+bool MinimumDistance::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("MinimumDistance");
+	distance = stream->readSint32("distance");
+	gi.load(stream, player, versionMinor);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void MinimumDistance::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("MinimumDistance");
+	stream->writeSint32(distance, "distance");
+	gi.save(stream);
+	stream->writeLeaveSection();
 }
 
 
@@ -667,6 +1010,33 @@ bool MaximumDistance::passes_constraint(Echo& echo, int x, int y)
 }
 
 
+ConstraintType MaximumDistance::get_type()
+{
+	return CTMaximumDistance;
+}
+
+
+
+bool MaximumDistance::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("MaximumDistance");
+	distance = stream->readSint32("distance");
+	gi.load(stream, player, versionMinor);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void MaximumDistance::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("MaximumDistance");
+	stream->writeSint32(distance, "distance");
+	gi.save(stream);
+	stream->writeLeaveSection();
+}
+
+
 
 MinimizedDistance::MinimizedDistance(const Gradients::GradientInfo& gi, int weight) : gi(gi), gradient_cache(NULL), weight(weight)
 {
@@ -687,6 +1057,33 @@ bool MinimizedDistance::passes_constraint(Echo& echo, int x, int y)
 	if(gradient_cache==NULL)
 		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	return gradient_cache->get_height(x, y)!=-2;
+}
+
+
+ConstraintType MinimizedDistance::get_type()
+{
+	return CTMinimizedDistance;
+}
+
+
+
+bool MinimizedDistance::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("MinimizedDistance");
+	weight = stream->readSint32("weight");
+	gi.load(stream, player, versionMinor);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void MinimizedDistance::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("MinimizedDistance");
+	stream->writeSint32(weight, "weight");
+	gi.save(stream);
+	stream->writeLeaveSection();
 }
 
 
@@ -713,22 +1110,49 @@ bool MaximizedDistance::passes_constraint(Echo& echo, int x, int y)
 }
 
 
+ConstraintType MaximizedDistance::get_type()
+{
+	return CTMaximizedDistance;
+}
 
-CenteredOn::CenteredOn(int gbid) : gbid(gbid)
+
+
+bool MaximizedDistance::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("MaximizedDistance");
+	weight = stream->readSint32("weight");
+	gi.load(stream, player, versionMinor);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void MaximizedDistance::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("MaximizedDistance");
+	stream->writeSint32(weight, "weight");
+	gi.save(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+CenterOfBuilding::CenterOfBuilding(int gbid) : gbid(gbid)
 {
 
 }
 
 
 
-int CenteredOn::calculate_constraint(Echo& echo, int x, int y)
+int CenterOfBuilding::calculate_constraint(Echo& echo, int x, int y)
 {
 	return 0;
 }
 
 
 
-bool CenteredOn::passes_constraint(Echo& echo, int x, int y)
+bool CenterOfBuilding::passes_constraint(Echo& echo, int x, int y)
 {
 	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
 	if(b)
@@ -742,11 +1166,155 @@ bool CenteredOn::passes_constraint(Echo& echo, int x, int y)
 }
 
 
+ConstraintType CenterOfBuilding::get_type()
+{
+	return CTCenterOfBuilding;
+}
 
-BuildingOrder::BuildingOrder(Player* player, int building_type, int number_of_workers) : building_type(building_type), number_of_workers(number_of_workers), player(player)
+
+
+bool CenterOfBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("CenterOfBuilding");
+	gbid = stream->readSint32("gbid");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void CenterOfBuilding::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("CenterOfBuilding");
+	stream->writeSint32(gbid, "gbid");
+	stream->writeLeaveSection();
+}
+
+
+
+SinglePosition::SinglePosition(int posx, int posy) : posx(posx), posy(posy)
 {
 
 }
+
+
+
+int SinglePosition::calculate_constraint(Echo& echo, int x, int y)
+{
+	return 0;
+}
+
+
+
+bool SinglePosition::passes_constraint(Echo& echo, int x, int y)
+{
+	if(posx==x && posy==y)
+		return true;
+	return false;
+}
+
+
+
+ConstraintType SinglePosition::get_type()
+{
+	return CTSinglePosition;
+}
+
+
+
+bool SinglePosition::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("SinglePosition");
+	posx = stream->readSint32("posx");
+	posy = stream->readSint32("posy");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void SinglePosition::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("SinglePosition");
+	stream->writeSint32(posx, "posx");
+	stream->writeSint32(posy, "posy");
+	stream->writeLeaveSection();
+}
+
+
+
+BuildingOrder::BuildingOrder(int building_type, int number_of_workers) : building_type(building_type), number_of_workers(number_of_workers)
+{
+
+}
+
+
+
+bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("BuildingOrder");
+
+	building_type=stream->readUint32("building_type");
+	number_of_workers=stream->readUint32("number_of_workers");
+
+	stream->readEnterSection("constraints");
+	Uint32 size = stream->readUint32("size");
+	constraints.resize(size);
+	for(unsigned x=0; x<size; ++x)
+	{
+		stream->readEnterSection(x);
+		constraints[x] = boost::shared_ptr<Constraint>(Constraint::load_constraint(stream, player, versionMinor));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+
+	stream->readEnterSection("conditions");
+	size = stream->readUint32("size");
+	conditions.resize(size);
+	for(unsigned x=0; x<size; ++x)
+	{
+		stream->readEnterSection(x);
+		conditions[x] = boost::shared_ptr<Condition>(Condition::load_condition(stream, player, versionMinor));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void BuildingOrder::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("BuildingOrder");
+
+	stream->writeUint32(building_type, "building_type");
+	stream->writeUint32(number_of_workers, "number_of_workers");
+
+	stream->writeEnterSection("constraints");
+	stream->writeUint32(constraints.size(), "size");
+	for(unsigned x=0; x<constraints.size(); ++x)
+	{
+		stream->writeEnterSection(x);
+		Constraint::save_constraint(constraints[x].get(), stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	stream->writeEnterSection("conditions");
+	stream->writeUint32(conditions.size(), "size");
+	for(unsigned x=0; x<conditions.size(); ++x)
+	{
+		stream->writeEnterSection(x);
+		Condition::save_condition(conditions[x].get(), stream);
+		stream->writeLeaveSection();
+	}
+
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
 
 
 void BuildingOrder::add_constraint(Constraint* constraint)
@@ -755,9 +1323,17 @@ void BuildingOrder::add_constraint(Constraint* constraint)
 }
 
 
+void BuildingOrder::add_condition(Condition* condition)
+{
+	conditions.push_back(boost::shared_ptr<Condition>(condition));
+}
+
+
+
 position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& manager)
 {
 	position best(0,0);
+	Player* player=echo.player;
 	int best_score=std::numeric_limits<int>::min();
 	BuildingType* type=globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(building_type), 0, true);
 	bool check_flag=false;
@@ -786,6 +1362,7 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 				for(int x2=0; x2<type->width && passes; ++x2)
 					for(int y2=0; y2<type->height && passes; ++y2)
 						if((x2==0 || y2==0 || x2==type->width-1 || y2==type->height-1))
+//							if(!(*i)->passes_constraint(echo, (x+x2 > map->getW() ? x+x2-map->getW() : x+x2), (y+y2 > map->getH() ? y+y2-map->getH() : y+y2)))
 							if(!(*i)->passes_constraint(echo, x+x2, y+y2))
 								passes=false;
 				if(!passes)
@@ -832,6 +1409,25 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 	}
 */
 	return best;
+}
+
+
+
+boost::logic::tribool BuildingOrder::passes_conditions(Echo& echo)
+{
+	for(unsigned int i=0; i<conditions.size(); ++i)
+	{
+		boost::logic::tribool passes=conditions[i]->passes(echo);
+		if(passes)
+			continue;
+		else if(!passes)
+			return false;
+		else
+			return indeterminate;
+
+	}
+
+	return true;
 }
 
 
@@ -899,6 +1495,8 @@ BuildingRegister::BuildingRegister(Player* player, Echo& echo) : building_id(0),
 
 }
 
+
+
 void BuildingRegister::initiate()
 {
 	for(unsigned int i=0; i<1024; ++i)
@@ -912,10 +1510,25 @@ void BuildingRegister::initiate()
 }
 
 
-unsigned int BuildingRegister::register_building(int x, int y, int building_type)
+
+unsigned int BuildingRegister::register_building()
 {
-	pending_buildings[building_id]=boost::make_tuple(x, y, building_type, 0);
+	pending_buildings[building_id]=boost::make_tuple(-1, -1, -1, -1);
 	return building_id++;
+}
+
+
+
+void BuildingRegister::issue_order(int id, int x, int y, int building_type)
+{
+	pending_buildings[id]=boost::make_tuple(x, y, building_type, 0);
+}
+
+
+
+void BuildingRegister::remove_building(int id)
+{
+	pending_buildings.erase(id);
 }
 
 
@@ -924,23 +1537,20 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 {
 	stream->readEnterSection("BuildingRegister");
 
-	signature_check(stream, player, versionMinor);
-
 	stream->readEnterSection("pending_buildings");
 	Uint32 pending_size=stream->readUint32("size");
 	for(Uint32 pending_index=0; pending_index<pending_size; ++pending_index)
 	{
 		stream->readEnterSection(pending_index);
-		pending_buildings[		stream->readUint32("echo_building_id")]=
-			boost::make_tuple(	stream->readUint32("xpos"),
-						stream->readUint32("ypos"),
-						stream->readUint32("building_type"),
-						stream->readUint32("ticks_since_registered"));
+		Uint32 id=stream->readSint32("echo_building_id");
+		Uint32 x=stream->readSint32("xpos");
+		Uint32 y=stream->readSint32("ypos");
+		Uint32 type=stream->readSint32("building_type");
+		Uint32 ticks=stream->readSint32("ticks_since_registered");
+		pending_buildings[id]=boost::make_tuple(x, y, type, ticks);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-
-	signature_check(stream, player, versionMinor);
 
 	stream->readEnterSection("found_buildings");
 	Uint32 found_size=stream->readUint32("size");
@@ -965,8 +1575,6 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 	}
 	stream->readLeaveSection();
 
-	signature_check(stream, player, versionMinor);
-
 	building_id=stream->readUint32("building_id");
 	stream->readLeaveSection();
 	return true;
@@ -978,25 +1586,21 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("BuildingRegister");
 
-	signature_write(stream);
-
 	stream->writeEnterSection("pending_buildings");
 	unsigned int pending_size=0;
 	stream->writeUint32(pending_buildings.size(), "size");
 	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end(); ++i)
 	{
 		stream->writeEnterSection(pending_size);
-		stream->writeUint32(i->first, "echo_building_id");
-		stream->writeUint32(i->second.get<0>(), "xpos");
-		stream->writeUint32(i->second.get<1>(), "ypos");
-		stream->writeUint32(i->second.get<2>(), "building_type");
-		stream->writeUint32(i->second.get<3>(), "ticks_since_registered");
+		stream->writeSint32(i->first, "echo_building_id");
+		stream->writeSint32(i->second.get<0>(), "xpos");
+		stream->writeSint32(i->second.get<1>(), "ypos");
+		stream->writeSint32(i->second.get<2>(), "building_type");
+		stream->writeSint32(i->second.get<3>(), "ticks_since_registered");
 		stream->writeLeaveSection();
 		pending_size++;
 	}
 	stream->writeLeaveSection();
-
-	signature_write(stream);
 
 	stream->writeEnterSection("found_buildings");
 	unsigned int found_size=0;
@@ -1016,10 +1620,9 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 		else
 			stream->writeUint8(2, "upgrade_status");
 		stream->writeLeaveSection();
+		found_size++;
 	}
 	stream->writeLeaveSection();
-
-	signature_write(stream);
 
 	stream->writeUint32(building_id, "building_id");
 	stream->writeLeaveSection();
@@ -1039,34 +1642,39 @@ void BuildingRegister::tick()
 {
 	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end();)
 	{
-		i->second.get<3>()++;
-		if(i->second.get<3>() > 300)
+		//When get<3>() is -1, it means that the building order hasen't been sent to the glob2 engine yet.
+		//This is used when the building is registered, but awaiting conditions to be satisfied.
+		if(i->second.get<3>()!=-1)
 		{
-			pending_iterator current=i;
-			++i;
-			pending_buildings.erase(current);
-			continue;
-		}
-		int gbid=NOGBID;
-		if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
-		{
-			gbid=is_flag(echo, i->second.get<0>(), i->second.get<1>());
-		}
-		else
-		{
-			gbid=player->map->getBuilding(i->second.get<0>(), i->second.get<1>());
-		}
-		if(gbid!=NOGBID)
-		{
+			i->second.get<3>()++;
+			if(i->second.get<3>() > 300)
+			{
+				pending_iterator current=i;
+				++i;
+				pending_buildings.erase(current);
+				continue;
+			}
+			int gbid=NOGBID;
 			if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
 			{
-				echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), gbid);
+				gbid=is_flag(echo, i->second.get<0>(), i->second.get<1>());
 			}
-			found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false);
-			pending_iterator current=i;
-			++i;
-			pending_buildings.erase(current);
-			continue;
+			else
+			{
+				gbid=player->map->getBuilding(i->second.get<0>(), i->second.get<1>());
+			}
+			if(gbid!=NOGBID)
+			{
+				if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
+				{
+					echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), gbid);
+				}
+				found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false);
+				pending_iterator current=i;
+				++i;
+				pending_buildings.erase(current);
+				continue;
+			}
 		}
 		++i;
 	}
@@ -1093,7 +1701,7 @@ void BuildingRegister::tick()
 		else
 		{
 			const int gbid=player->map->getBuilding(i->second.get<0>(), i->second.get<1>());
-			if(gbid==NOGBID)
+			if(gbid==NOGBID || gbid != i->second.get<3>())
 			{
 				found_iterator current=i;
 				++i;
@@ -1170,6 +1778,13 @@ Building* BuildingRegister::get_building(unsigned int id)
 
 
 
+BuildingType* BuildingRegister::get_building_type(unsigned int id)
+{
+	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())]->type;
+}
+
+
+
 int BuildingRegister::get_type(unsigned int id)
 {
 	return found_buildings[id].get<2>();
@@ -1184,11 +1799,514 @@ int BuildingRegister::get_level(unsigned int id)
 
 
 
+int BuildingRegister::get_assigned(unsigned int id)
+{
+	return get_building(id)->maxUnitWorking;
+}
+
+
+
 Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("Condition");
 	ConditionType type=static_cast<ConditionType>(stream->readUint32("type"));
 	Condition* condition=NULL;
+	switch(type)
+	{
+		case CParticularBuilding:
+			condition=new ParticularBuilding;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CBuildingDestroyed:
+			condition=new BuildingDestroyed;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CEnemyBuildingDestroyed:
+			condition=new EnemyBuildingDestroyed;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CEitherCondition:
+			condition=new EitherCondition;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CAllConditions:
+			condition=new AllConditions;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CPopulation:
+			condition=new Population;
+			condition->load(stream, player, versionMinor);
+		break;
+	}
+	stream->readLeaveSection();
+	return condition;
+}
+
+
+
+void Condition::save_condition(Condition* condition, GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Condition");
+	stream->writeUint32(condition->get_type(), "type");
+	condition->save(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+ParticularBuilding::ParticularBuilding() : condition(NULL), id(-1)
+{
+
+}
+
+
+
+ParticularBuilding::ParticularBuilding(BuildingCondition* condition, int id) : condition(condition), id(id)
+{
+
+}
+
+
+
+ParticularBuilding::~ParticularBuilding()
+{
+	if(condition)
+		delete condition;
+}
+
+
+
+boost::logic::tribool ParticularBuilding::passes(Echo& echo)
+{
+	if(!echo.get_building_register().is_building_found(id) && !echo.get_building_register().is_building_pending(id))
+	{
+		return indeterminate;
+	}
+	if(echo.get_building_register().is_building_found(id))
+	{
+		bool passes=condition->passes(echo, id);
+		return passes;
+	}
+	return false;
+}
+
+
+
+ConditionType ParticularBuilding::get_type()
+{
+	return CParticularBuilding;
+}
+
+
+
+bool ParticularBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ParticularBuilding");
+	id=stream->readSint32("id");
+	condition=BuildingCondition::load_condition(stream, player, versionMinor);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void ParticularBuilding::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ParticularBuilding");
+	stream->writeSint32(id, "id");
+	BuildingCondition::save_condition(condition, stream);
+	stream->writeLeaveSection();
+}
+
+
+BuildingDestroyed::BuildingDestroyed(int id) : id(id)
+{
+
+}
+
+
+
+boost::logic::tribool BuildingDestroyed::passes(Echo& echo)
+{
+	if(!echo.get_building_register().is_building_found(id) && !echo.get_building_register().is_building_pending(id))
+	{
+		return true;
+	}
+	return false;
+}
+
+
+
+ConditionType BuildingDestroyed::get_type()
+{
+	return CBuildingDestroyed;
+}
+
+
+
+bool BuildingDestroyed::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("BuildingDestroyed");
+	id=stream->readSint32("id");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void BuildingDestroyed::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("BuildingDestroyed");
+	stream->writeSint32(id, "id");
+	stream->writeLeaveSection();
+}
+
+
+
+EnemyBuildingDestroyed::EnemyBuildingDestroyed(Echo& echo, int gbid) : gbid(gbid)
+{
+	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	type=b->type->shortTypeNum;
+	level=b->type->level;
+	location=position(b->posX, b->posY);
+}
+
+
+
+boost::logic::tribool EnemyBuildingDestroyed::passes(Echo& echo)
+{
+	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	if(b==NULL)
+	{
+		return true;
+	}
+	if(b->posX != location.x || b->posY != location.y)
+	{
+		return true;
+	}
+	if(b->type->shortTypeNum != type)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+
+bool EnemyBuildingDestroyed::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("EnemyBuildingDestroyed");
+	gbid=stream->readUint32("gbid");
+	type=stream->readUint32("type");
+	level=stream->readUint32("level");
+	int posx=stream->readUint32("posx");
+	int posy=stream->readUint32("posy");
+	location=position(posx, posy);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void EnemyBuildingDestroyed::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("EnemyBuildingDestroyed");
+	stream->writeUint32(gbid, "gbid");
+	stream->writeUint32(type, "type");
+	stream->writeUint32(level, "level");
+	stream->writeUint32(location.x, "posx");
+	stream->writeUint32(location.y, "posy");
+	stream->writeLeaveSection();
+}
+
+
+EitherCondition::EitherCondition(Condition* condition1, Condition* condition2) : condition1(condition1), condition2(condition2)
+{
+
+}
+
+
+
+EitherCondition::~EitherCondition()
+{
+	delete condition1;
+	delete condition2;
+}
+
+
+
+boost::logic::tribool EitherCondition::passes(Echo& echo)
+{
+	tribool p1=condition1->passes(echo);
+	tribool p2=condition2->passes(echo);
+	if(p1 || p2)
+		return true;
+	else if(!p1 || !p2)
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
+ConditionType EitherCondition::get_type()
+{
+	return CEitherCondition;
+}
+
+
+
+bool EitherCondition::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("EitherCondition");
+	condition1=Condition::load_condition(stream, player, versionMinor);
+	condition2=Condition::load_condition(stream, player, versionMinor);
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void EitherCondition::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("EitherCondition");
+	Condition::save_condition(condition1, stream);
+	Condition::save_condition(condition2, stream);
+	stream->writeLeaveSection();
+}
+
+
+
+EitherCondition::EitherCondition()
+{
+
+}
+
+
+AllConditions::AllConditions(Condition* a, Condition* b, Condition* c, Condition* d) : a(a), b(b), c(c), d(d)
+{
+
+}
+
+
+
+AllConditions::~AllConditions()
+{
+	if(a)
+		delete a;
+	if(b)
+		delete b;
+	if(c)
+		delete c;
+	if(d)
+		delete d;
+
+}
+
+
+
+boost::logic::tribool AllConditions::passes(Echo& echo)
+{
+	tribool a2=true;
+	tribool b2=true;
+	tribool c2=true;
+	tribool d2=true;
+
+	if(a)
+		a2=a->passes(echo);
+	if(b)
+		b2=b->passes(echo);
+	if(c)
+		c2=c->passes(echo);
+	if(d)
+		d2=d->passes(echo);
+
+	if(a2 && b2 && c2 && d2)
+		return true;
+
+	if(a2==indeterminate)
+		return indeterminate;
+	if(b2==indeterminate)
+		return indeterminate;
+	if(c2==indeterminate)
+		return indeterminate;
+	if(d2==indeterminate)
+		return indeterminate;
+
+	return false;
+}
+
+
+
+ConditionType AllConditions::get_type()
+{
+	return CAllConditions;
+}
+
+
+
+bool AllConditions::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("EitherCondition");
+	bool condition_is_null=stream->readUint8("condition_is_null");
+	if(condition_is_null)
+		a=NULL;
+	else
+		a=Condition::load_condition(stream, player, versionMinor);
+
+	condition_is_null=stream->readUint8("condition_is_null");
+	if(condition_is_null)
+		b=NULL;
+	else
+		b=Condition::load_condition(stream, player, versionMinor);
+
+	condition_is_null=stream->readUint8("condition_is_null");
+	if(condition_is_null)
+		c=NULL;
+	else
+		c=Condition::load_condition(stream, player, versionMinor);
+
+	condition_is_null=stream->readUint8("condition_is_null");
+	if(condition_is_null)
+		d=NULL;
+	else
+		d=Condition::load_condition(stream, player, versionMinor);
+
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void AllConditions::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AllConditions");
+	if(a)
+	{
+		stream->writeUint8(false, "condition_is_null");
+		Condition::save_condition(a, stream);
+	}
+	else
+		stream->writeUint8(true, "condition_is_null");
+
+	if(b)
+	{
+		stream->writeUint8(false, "condition_is_null");
+		Condition::save_condition(b, stream);
+	}
+	else
+		stream->writeUint8(true, "condition_is_null");
+
+	if(c)
+	{
+		stream->writeUint8(false, "condition_is_null");
+		Condition::save_condition(c, stream);
+	}
+	else
+		stream->writeUint8(true, "condition_is_null");
+
+	if(d)
+	{
+		stream->writeUint8(false, "condition_is_null");
+		Condition::save_condition(d, stream);
+	}
+	else
+		stream->writeUint8(true, "condition_is_null");
+
+	stream->writeLeaveSection();
+}
+
+
+
+AllConditions::AllConditions()
+{
+
+}
+
+
+
+Population::Population(bool workers, bool explorers, bool warriors, int num, PopulationMethod method) : workers(workers), explorers(explorers), warriors(warriors), num(num), method(method)
+{
+
+}
+
+
+
+Population::~Population()
+{
+
+}
+
+
+
+boost::logic::tribool Population::passes(Echo& echo)
+{
+	int amount=0;
+	if(workers)
+		amount+=echo.player->team->stats.getLatestStat()->numberUnitPerType[WORKER];
+	if(explorers)
+		amount+=echo.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER];
+	if(warriors)
+		amount+=echo.player->team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
+	if(method==Greater)
+	{
+		return (amount >= num);
+	}
+	else if(method==Lesser)
+	{
+		return (amount <= num);
+	}
+	return false;
+}
+
+
+
+ConditionType Population::get_type()
+{
+	return CPopulation;
+}
+
+
+
+bool Population::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Population");
+	workers=stream->readUint8("workers");
+	explorers=stream->readUint8("explorers");
+	warriors=stream->readUint8("warriors");
+	num=stream->readSint32("num");
+	method=static_cast<PopulationMethod>(stream->readUint32("method"));
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Population::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Population");
+	stream->writeUint8(workers, "workers");
+	stream->writeUint8(explorers, "explorers");
+	stream->writeUint8(warriors, "warriors");
+	stream->writeSint32(num, "num");
+	stream->writeUint32(static_cast<Uint32>(method), "method");
+	stream->writeLeaveSection();
+}
+
+
+
+Population::Population()
+{
+
+}
+
+
+
+BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("BuildingCondition");
+	BuildingConditionType type=static_cast<BuildingConditionType>(stream->readUint32("type"));
+	BuildingCondition* condition=NULL;
 	switch(type)
 	{
 		case CNotUnderConstruction:
@@ -1223,8 +2341,12 @@ Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *playe
 			condition=new Upgradable;
 			condition->load(stream, player, versionMinor);
 		break;
-		case CEnemyBuildingDestroyed:
-			condition=new EnemyBuildingDestroyed;
+		case CRessourceTrackerAmount:
+			condition=new RessourceTrackerAmount;
+			condition->load(stream, player, versionMinor);
+		break;
+		case CRessourceTrackerAge:
+			condition=new RessourceTrackerAge;
 			condition->load(stream, player, versionMinor);
 		break;
 		case CTicksPassed:
@@ -1239,9 +2361,9 @@ Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *playe
 
 
 
-void Condition::save_condition(Condition* condition, GAGCore::OutputStream *stream)
+void BuildingCondition::save_condition(BuildingCondition* condition, GAGCore::OutputStream *stream)
 {
-	stream->writeEnterSection("Condition");
+	stream->writeEnterSection("BuildingCondition");
 	stream->writeUint32(condition->get_type(), "type");
 	condition->save(stream);
 	stream->writeLeaveSection();
@@ -1256,8 +2378,12 @@ bool NotUnderConstruction::passes(Echo& echo, int id)
 	return result;
 }
 
+
+
 bool NotUnderConstruction::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("NotUnderConstruction");
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -1265,9 +2391,10 @@ bool NotUnderConstruction::load(GAGCore::InputStream *stream, Player *player, Si
 
 void NotUnderConstruction::save(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("NotUnderConstruction");
+	stream->writeLeaveSection();
 
 }
-
 
 
 
@@ -1278,8 +2405,11 @@ bool UnderConstruction::passes(Echo& echo, int id)
 }
 
 
+
 bool UnderConstruction::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("UnderConstruction");
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -1287,9 +2417,9 @@ bool UnderConstruction::load(GAGCore::InputStream *stream, Player *player, Sint3
 
 void UnderConstruction::save(GAGCore::OutputStream *stream)
 {
-
+	stream->writeEnterSection("UnderConstruction");
+	stream->writeLeaveSection();
 }
-
 
 
 
@@ -1370,15 +2500,17 @@ bool BeingUpgraded::passes(Echo& echo, int id)
 
 bool BeingUpgraded::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("BeingUpgraded");
+	stream->readLeaveSection();
 	return true;
-
 }
 
 
 
 void BeingUpgraded::save(GAGCore::OutputStream *stream)
 {
-
+	stream->writeEnterSection("BeingUpgraded");
+	stream->writeLeaveSection();
 }
 
 
@@ -1453,7 +2585,7 @@ bool BuildingLevel::load(GAGCore::InputStream *stream, Player *player, Sint32 ve
 
 void BuildingLevel::save(GAGCore::OutputStream *stream)
 {
-	stream->writeEnterSection("BeingLevel");
+	stream->writeEnterSection("BuildingLevel");
 	stream->writeUint32(building_level, "building_level");
 	stream->writeLeaveSection();
 }
@@ -1484,6 +2616,8 @@ bool Upgradable::passes(Echo& echo, int id)
 
 bool Upgradable::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("Upgradable");
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -1491,64 +2625,157 @@ bool Upgradable::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 
 void Upgradable::save(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("Upgradable");
+	stream->writeLeaveSection();
+}
+
+
+
+RessourceTrackerAmount::RessourceTrackerAmount(int amount, TrackerMethod tracker_method) : amount(amount), tracker_method(tracker_method)
+{
 
 }
 
 
 
-EnemyBuildingDestroyed::EnemyBuildingDestroyed(Echo& echo, int gbid) : gbid(gbid)
+RessourceTrackerAmount::RessourceTrackerAmount()
 {
-	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
-	type=b->type->shortTypeNum;
-	level=b->type->level;
-	location=position(b->posX, b->posY);
+
 }
 
 
 
-bool EnemyBuildingDestroyed::passes(Echo& echo, int id)
+bool RessourceTrackerAmount::passes(Echo& echo, int id)
 {
-	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
-	if(b==NULL)
+	if(tracker_method==Greater)
 	{
-		return true;
+		return echo.get_ressource_tracker(id)->get_total_level() > amount;
 	}
-	if(b->posX != location.x || b->posY != location.y)
+	else if(tracker_method==Lesser)
 	{
-		return true;
-	}
-	if(b->type->shortTypeNum != type)
-	{
-		return true;
+		return echo.get_ressource_tracker(id)->get_total_level() < amount;
 	}
 	return false;
 }
 
 
 
-bool EnemyBuildingDestroyed::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+BuildingConditionType RessourceTrackerAmount::get_type()
 {
-	stream->readEnterSection("EnemyBuildingDestroyed");
-	gbid=stream->readUint32("gbid");
-	type=stream->readUint32("type");
-	level=stream->readUint32("level");
-	int posx=stream->readUint32("posx");
-	int posy=stream->readUint32("posy");
-	location=position(posx, posy);
+	return CRessourceTrackerAmount;
+}
+
+
+
+bool RessourceTrackerAmount::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("RessourceTrackerAmount");
+	amount=stream->readUint32("amount");
+	tracker_method=static_cast<TrackerMethod>(stream->readUint32("tracker_method"));
 	stream->readLeaveSection();
 	return true;
 }
 
 
 
-void EnemyBuildingDestroyed::save(GAGCore::OutputStream *stream)
+void RessourceTrackerAmount::save(GAGCore::OutputStream *stream)
 {
-	stream->writeEnterSection("EnemyBuildingDestroyed");
-	stream->writeUint32(gbid, "gbid");
-	stream->writeUint32(type, "type");
-	stream->writeUint32(level, "level");
-	stream->writeUint32(location.x, "posx");
-	stream->writeUint32(location.y, "posy");
+	stream->writeEnterSection("RessourceTrackerAmount");
+	stream->writeUint32(amount, "amount");
+	stream->writeUint32(static_cast<Uint32>(tracker_method), "tracker_method");
+	stream->writeLeaveSection();
+}
+
+
+
+RessourceTrackerAge::RessourceTrackerAge(int age, TrackerMethod tracker_method) : age(age), tracker_method(tracker_method)
+{
+
+}
+
+
+
+RessourceTrackerAge::RessourceTrackerAge()
+{
+
+}
+
+
+
+bool RessourceTrackerAge::passes(Echo& echo, int id)
+{
+	if(tracker_method==Greater)
+	{
+		return echo.get_ressource_tracker(id)->get_age() > age;
+	}
+	else if(tracker_method==Lesser)
+	{
+		return echo.get_ressource_tracker(id)->get_age() < age;
+	}
+	return false;
+}
+
+
+
+BuildingConditionType RessourceTrackerAge::get_type()
+{
+	return CRessourceTrackerAge;
+}
+
+
+
+bool RessourceTrackerAge::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("RessourceTrackerAge");
+	age=stream->readUint32("age");
+	tracker_method=static_cast<TrackerMethod>(stream->readUint32("tracker_method"));
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void RessourceTrackerAge::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("RessourceTrackerAge");
+	stream->writeUint32(age, "age");
+	stream->writeUint32(static_cast<Uint32>(tracker_method), "tracker_method");
+	stream->writeLeaveSection();
+}
+
+
+
+bool ManagementOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ManagementOrder");
+	stream->readEnterSection("conditions");
+	Uint32 size = stream->readUint32("size");
+	conditions.resize(size);
+	for(unsigned x=0; x<size; ++x)
+	{
+		stream->readEnterSection(x);
+		conditions[x] = boost::shared_ptr<Condition>(Condition::load_condition(stream, player, versionMinor));
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void ManagementOrder::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ManagementOrder");
+	stream->writeEnterSection("conditions");
+	stream->writeUint32(conditions.size(), "size");
+	for(unsigned x=0; x<conditions.size(); ++x)
+	{
+		stream->writeEnterSection(x);
+		Condition::save_condition(conditions[x].get(), stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
@@ -1561,13 +2788,28 @@ void ManagementOrder::add_condition(Condition* condition)
 
 
 
-bool ManagementOrder::passes_conditions(Echo& echo, int building_id)
+boost::logic::tribool ManagementOrder::passes_conditions(Echo& echo)
 {
 	for(unsigned int i=0; i<conditions.size(); ++i)
 	{
-		if(!conditions[i]->passes(echo, building_id))
+		boost::logic::tribool passes=conditions[i]->passes(echo);
+		if(passes)
+			continue;
+		else if(!passes)
 			return false;
+		else
+			return indeterminate;
+
 	}
+
+	boost::logic::tribool passes=wait(echo);
+	if(passes)
+		return true;
+	if(!passes)
+		return false;
+	else
+		return indeterminate;
+
 	return true;
 }
 
@@ -1576,10 +2818,8 @@ bool ManagementOrder::passes_conditions(Echo& echo, int building_id)
 ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("ManagementOrder");
-	signature_check(stream, player, versionMinor);
 	ManagementOrderType mot=static_cast<ManagementOrderType>(stream->readUint32("type"));
 	ManagementOrder* mo=NULL;
-	signature_check(stream, player, versionMinor);
 	switch(mot)
 	{
 		case MAssignWorkers:
@@ -1614,8 +2854,27 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo=new ChangeFlagMinimumLevel;
 			mo->load(stream, player, versionMinor);
 			break;
+		case MAddArea:
+			mo=new AddArea;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MRemoveArea:
+			mo=new RemoveArea;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MChangeAlliances:
+			mo=new ChangeAlliances;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MUpgradeRepair:
+			mo=new UpgradeRepair;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MSendMessage:
+			mo=new SendMessage;
+			mo->load(stream, player, versionMinor);
+			break;
 	}
-	signature_check(stream, player, versionMinor);
 	return mo;
 }
 
@@ -1624,28 +2883,34 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 void ManagementOrder::save_order(ManagementOrder* mo, GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("ManagementOrder");
-	signature_write(stream);
 	stream->writeUint32(mo->get_type(), "type");
-	signature_write(stream);
 	mo->save(stream);
-	signature_write(stream);
 	stream->writeLeaveSection();
 }
 
 
 
-AssignWorkers::AssignWorkers(int number_of_workers) : number_of_workers(number_of_workers)
+AssignWorkers::AssignWorkers(int number_of_workers, int building_id) : number_of_workers(number_of_workers), building_id(building_id)
 {
 
 }
 
 
-void AssignWorkers::modify(Echo& echo, int building_id)
+void AssignWorkers::modify(Echo& echo)
+{
+	echo.push_order(new OrderModifyBuilding(echo.get_building_register().get_building(building_id)->gid, number_of_workers));
+}
+
+
+
+boost::logic::tribool AssignWorkers::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
-	{
-		echo.push_order(new OrderModifyBuilding(echo.get_building_register().get_building(building_id)->gid, number_of_workers));
-	}
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
 }
 
 
@@ -1653,7 +2918,9 @@ void AssignWorkers::modify(Echo& echo, int building_id)
 bool AssignWorkers::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AssignWorkers");
+	ManagementOrder::load(stream, player, versionMinor);
 	number_of_workers=stream->readUint32("number_of_workers");
+	building_id=stream->readUint32("building_id");
 	stream->readLeaveSection();
 	return true;
 }
@@ -1663,28 +2930,39 @@ bool AssignWorkers::load(GAGCore::InputStream *stream, Player *player, Sint32 ve
 void AssignWorkers::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AssignWorkers");
+	ManagementOrder::save(stream);
 	stream->writeUint32(number_of_workers, "number_of_workers");
+	stream->writeUint32(building_id, "building_id");
 	stream->writeLeaveSection();
 }
 
 
 
-ChangeSwarm::ChangeSwarm(int worker_ratio, int explorer_ratio, int warrior_ratio) : worker_ratio(worker_ratio), explorer_ratio(explorer_ratio), warrior_ratio(warrior_ratio)
+ChangeSwarm::ChangeSwarm(int worker_ratio, int explorer_ratio, int warrior_ratio, int building_id) : worker_ratio(worker_ratio), explorer_ratio(explorer_ratio), warrior_ratio(warrior_ratio), building_id(building_id)
 {
 
 }
 
 
-void ChangeSwarm::modify(Echo& echo, int building_id)
+void ChangeSwarm::modify(Echo& echo)
+{
+	Sint32 ratio[NB_UNIT_TYPE];
+	ratio[0]=worker_ratio;
+	ratio[1]=explorer_ratio;
+	ratio[2]=warrior_ratio;
+	echo.push_order(new OrderModifySwarm(echo.get_building_register().get_building(building_id)->gid, ratio));
+}
+
+
+
+boost::logic::tribool ChangeSwarm::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
-	{
-		Sint32 ratio[NB_UNIT_TYPE];
-		ratio[0]=worker_ratio;
-		ratio[1]=explorer_ratio;
-		ratio[2]=warrior_ratio;
-		echo.push_order(new OrderModifySwarm(echo.get_building_register().get_building(building_id)->gid, ratio));
-	}
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
 }
 
 
@@ -1692,9 +2970,11 @@ void ChangeSwarm::modify(Echo& echo, int building_id)
 bool ChangeSwarm::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("ChangeSwarm");
+	ManagementOrder::load(stream, player, versionMinor);
 	worker_ratio=stream->readUint32("worker_ratio");
 	explorer_ratio=stream->readUint32("explorer_ratio");
 	warrior_ratio=stream->readUint32("warrior_ratio");
+	building_id=stream->readUint32("building_id");
 	stream->readLeaveSection();
 	return true;
 
@@ -1705,27 +2985,48 @@ bool ChangeSwarm::load(GAGCore::InputStream *stream, Player *player, Sint32 vers
 void ChangeSwarm::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("ChangeSwarm");
+	ManagementOrder::save(stream);
 	stream->writeUint32(worker_ratio, "worker_ratio");
 	stream->writeUint32(explorer_ratio, "explorer_ratio");
 	stream->writeUint32(warrior_ratio, "warrior_ratio");
+	stream->writeUint32(building_id, "building_id");
 	stream->writeLeaveSection();
 }
 
 
 
+DestroyBuilding::DestroyBuilding(int building_id) : building_id(building_id)
+{
 
-void DestroyBuilding::modify(Echo& echo, int building_id)
+}
+
+
+
+void DestroyBuilding::modify(Echo& echo)
+{
+	echo.push_order(new OrderDelete(echo.get_building_register().get_building(building_id)->gid));
+}
+
+
+
+boost::logic::tribool DestroyBuilding::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
-	{
-		echo.push_order(new OrderDelete(echo.get_building_register().get_building(building_id)->gid));
-	}
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
 }
 
 
 
 bool DestroyBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("DestroyBuilding");
+	ManagementOrder::load(stream, player, versionMinor);
+	building_id=stream->readUint32("building_id");
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -1733,12 +3034,15 @@ bool DestroyBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 
 
 void DestroyBuilding::save(GAGCore::OutputStream *stream)
 {
-
+	stream->writeEnterSection("DestroyBuilding");
+	ManagementOrder::save(stream);
+	stream->writeUint32(building_id, "building_id");
+	stream->writeLeaveSection();
 }
 
 
 
-RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id)
+RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length, int ressource) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id), ressource(ressource)
 {
 
 }
@@ -1751,10 +3055,7 @@ void RessourceTracker::tick()
 	if((timer%10)==0)
 	{
 		Building* b = echo.get_building_register().get_building(building_id);
-		if(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING || b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING)
-		{
-			record[position]=b->ressources[CORN];
-		}
+		record[position]=b->ressources[ressource];
 		position++;
 		if(position>=record.size())
 			position=0;
@@ -1791,6 +3092,7 @@ bool RessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32
 	timer=stream->readUint32("timer");
 	building_id=stream->readUint32("building_id");
 	length=stream->readUint32("length");
+	ressource=stream->readUint32("ressource");
 	stream->readLeaveSection();
 	return true;
 }
@@ -1813,21 +3115,34 @@ void RessourceTracker::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(timer, "timer");
 	stream->writeUint32(building_id, "building_id");
 	stream->writeUint32(length, "length");
+	stream->writeUint32(ressource, "ressource");
 	stream->writeLeaveSection();
 }
 
 
 
-AddRessourceTracker::AddRessourceTracker(int length) : length(length)
+AddRessourceTracker::AddRessourceTracker(int length, int building_id, int ressource) : length(length), building_id(building_id), ressource(ressource)
 {
 
 }
 
 
 
-void AddRessourceTracker::modify(Echo& echo, int building_id)
+void AddRessourceTracker::modify(Echo& echo)
 {
-	echo.add_ressource_tracker(new RessourceTracker(echo, building_id, length), building_id);
+	echo.add_ressource_tracker(new RessourceTracker(echo, building_id, length, ressource), building_id);
+}
+
+
+
+boost::logic::tribool AddRessourceTracker::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
 }
 
 
@@ -1835,7 +3150,10 @@ void AddRessourceTracker::modify(Echo& echo, int building_id)
 bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AddRessourceTracker");
+	ManagementOrder::load(stream, player, versionMinor);
 	length=stream->readUint32("length");
+	building_id=stream->readUint32("building_id");
+	ressource=stream->readUint32("ressource");
 	stream->readLeaveSection();
 	return true;
 }
@@ -1845,21 +3163,47 @@ bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sin
 void AddRessourceTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AddRessourceTracker");
+	ManagementOrder::save(stream);
 	stream->writeUint32(length, "length");
+	stream->writeUint32(building_id, "building_id");
+	stream->writeUint32(ressource, "ressource");
 	stream->writeLeaveSection();
 }
 
 
 
-void PauseRessourceTracker::modify(Echo& echo, int building_id)
+PauseRessourceTracker::PauseRessourceTracker(int building_id) : building_id(building_id)
+{
+
+}
+
+
+
+void PauseRessourceTracker::modify(Echo& echo)
 {
 	echo.pause_ressource_tracker(building_id);
 }
 
 
 
+boost::logic::tribool PauseRessourceTracker::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
 bool PauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("PauseRessourceTracker");
+	ManagementOrder::load(stream, player, versionMinor);
+	building_id=stream->readUint32("building_id");
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -1867,20 +3211,46 @@ bool PauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, S
 
 void PauseRessourceTracker::save(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("PauseRessourceTracker");
+	ManagementOrder::save(stream);
+	stream->writeUint32(building_id, "building_id");
+	stream->writeLeaveSection();
+}
+
+
+
+UnPauseRessourceTracker::UnPauseRessourceTracker(int building_id) : building_id(building_id)
+{
 
 }
 
 
 
-void UnPauseRessourceTracker::modify(Echo& echo, int building_id)
+void UnPauseRessourceTracker::modify(Echo& echo)
 {
 	echo.unpause_ressource_tracker(building_id);
 }
 
 
 
+boost::logic::tribool UnPauseRessourceTracker::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
 bool UnPauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	stream->readEnterSection("UnPauseRessourceTracker");
+	ManagementOrder::load(stream, player, versionMinor);
+	building_id=stream->readUint32("building_id");
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -1888,24 +3258,36 @@ bool UnPauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player,
 
 void UnPauseRessourceTracker::save(GAGCore::OutputStream *stream)
 {
-
+	stream->writeEnterSection("UnPauseRessourceTracker");
+	ManagementOrder::save(stream);
+	stream->writeUint32(building_id, "building_id");
+	stream->writeLeaveSection();
 }
 
 
 
-ChangeFlagSize::ChangeFlagSize(int size) : size(size)
+ChangeFlagSize::ChangeFlagSize(int size, int building_id) : size(size), building_id(building_id)
 {
 
 }
 
 
 
-void ChangeFlagSize::modify(Echo& echo, int building_id)
+void ChangeFlagSize::modify(Echo& echo)
+{
+	echo.push_order(new OrderModifyFlag(echo.get_building_register().get_building(building_id)->gid, size));
+}
+
+
+
+boost::logic::tribool ChangeFlagSize::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
-	{
-		echo.push_order(new OrderModifyFlag(echo.get_building_register().get_building(building_id)->gid, size));
-	}
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
 }
 
 
@@ -1913,7 +3295,9 @@ void ChangeFlagSize::modify(Echo& echo, int building_id)
 bool ChangeFlagSize::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("ChangeFlagSize");
+	ManagementOrder::load(stream, player, versionMinor);
 	size=stream->readUint32("size");
+	building_id=stream->readUint32("building_id");
 	stream->readLeaveSection();
 	return true;
 }
@@ -1923,25 +3307,36 @@ bool ChangeFlagSize::load(GAGCore::InputStream *stream, Player *player, Sint32 v
 void ChangeFlagSize::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("ChangeFlagSize");
+	ManagementOrder::save(stream);
 	stream->writeUint32(size, "size");
+	stream->writeUint32(building_id, "building_id");
 	stream->writeLeaveSection();
 }
 
 
 
-ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level) : minimum_level(minimum_level)
+ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level, int building_id) : minimum_level(minimum_level), building_id(building_id)
 {
 
 }
 
 
 
-void ChangeFlagMinimumLevel::modify(Echo& echo, int building_id)
+void ChangeFlagMinimumLevel::modify(Echo& echo)
+{
+	echo.push_order(new OrderModifyMinLevelToFlag(echo.get_building_register().get_building(building_id)->gid, minimum_level-1));
+}
+
+
+
+boost::logic::tribool ChangeFlagMinimumLevel::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
-	{
-		echo.push_order(new OrderModifyMinLevelToFlag(echo.get_building_register().get_building(building_id)->gid, minimum_level));
-	}
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
 }
 
 
@@ -1949,7 +3344,9 @@ void ChangeFlagMinimumLevel::modify(Echo& echo, int building_id)
 bool ChangeFlagMinimumLevel::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("ChangeFlagMinimumLevel");
+	ManagementOrder::load(stream, player, versionMinor);
 	minimum_level=stream->readUint32("minimum_level");
+	building_id=stream->readUint32("building_id");
 	stream->readLeaveSection();
 	return true;
 }
@@ -1959,42 +3356,9 @@ bool ChangeFlagMinimumLevel::load(GAGCore::InputStream *stream, Player *player, 
 void ChangeFlagMinimumLevel::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("ChangeFlagMinimumLevel");
+	ManagementOrder::save(stream);
 	stream->writeUint32(minimum_level, "minimum_level");
-	stream->writeLeaveSection();
-}
-
-
-
-GlobalManagementOrder* GlobalManagementOrder::load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	stream->readEnterSection("GlobalManagementOrder");
-	GlobalManagementOrderType mot=static_cast<GlobalManagementOrderType>(stream->readUint32("type"));
-	GlobalManagementOrder* mo=NULL;
-	switch(mot)
-	{
-		case MAddArea:
-			mo=new AddArea;
-			mo->load(stream, player, versionMinor);
-			break;
-		case MRemoveArea:
-			mo=new RemoveArea;
-			mo->load(stream, player, versionMinor);
-			break;
-		case MChangeAlliances:
-			mo=new ChangeAlliances;
-			mo->load(stream, player, versionMinor);
-			break;
-	}
-	return mo;
-}
-
-
-
-void GlobalManagementOrder::save_order(GlobalManagementOrder* mo, GAGCore::OutputStream *stream)
-{
-	stream->writeEnterSection("GlobalManagementOrder");
-	stream->writeUint32(mo->get_type(), "type");
-	mo->save(stream);
+	stream->writeUint32(building_id, "building_id");
 	stream->writeLeaveSection();
 }
 
@@ -2040,9 +3404,17 @@ void AddArea::modify(Echo& echo)
 
 
 
+boost::logic::tribool AddArea::wait(Echo& echo)
+{
+	return true;
+}
+
+
+
 bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AddArea");
+	ManagementOrder::load(stream, player, versionMinor);
 	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
 	stream->readEnterSection("locations");
 	Uint32 size=stream->readUint32("size");
@@ -2063,6 +3435,7 @@ bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 void AddArea::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AddArea");
+	ManagementOrder::save(stream);
 	stream->writeUint32(areatype, "area_type");
 	stream->writeEnterSection("locations");
 	stream->writeUint32(locations.size(), "size");
@@ -2119,9 +3492,17 @@ void RemoveArea::modify(Echo& echo)
 
 
 
+boost::logic::tribool RemoveArea::wait(Echo& echo)
+{
+	return true;
+}
+
+
+
 bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("RemoveArea");
+	ManagementOrder::load(stream, player, versionMinor);
 	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
 	stream->readEnterSection("locations");
 	Uint32 size=stream->readUint32("size");
@@ -2142,6 +3523,7 @@ bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 void RemoveArea::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RemoveArea");
+	ManagementOrder::save(stream);
 	stream->writeUint32(areatype, "area_type");
 	stream->writeEnterSection("locations");
 	stream->writeUint32(locations.size(), "size");
@@ -2213,9 +3595,17 @@ void ChangeAlliances::modify(Echo& echo)
 
 
 
+boost::logic::tribool ChangeAlliances::wait(Echo& echo)
+{
+	return true;
+}
+
+
+
 bool ChangeAlliances::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("ChangeAlliances");
+	ManagementOrder::load(stream, player, versionMinor);
 	team=stream->readUint32("team");
 
 	Uint8 tmp=stream->readUint8("is_allied");
@@ -2266,6 +3656,7 @@ bool ChangeAlliances::load(GAGCore::InputStream *stream, Player *player, Sint32 
 void ChangeAlliances::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("ChangeAlliances");
+	ManagementOrder::save(stream);
 	stream->writeUint32(team, "team");
 
 	if(is_allied)
@@ -2306,11 +3697,105 @@ void ChangeAlliances::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-
-
-UpgradeRepairOrder::UpgradeRepairOrder(Echo& echo, int id, int number_of_workers): echo(echo), id(id), number_of_workers(number_of_workers)
+UpgradeRepair::UpgradeRepair(int id) : id(id)
 {
 
+}
+
+
+
+void UpgradeRepair::modify(Echo& echo)
+{
+	echo.push_order(new OrderConstruction(echo.get_building_register().get_building(id)->gid,1,1));
+	echo.get_building_register().set_upgrading(id);
+}
+
+
+
+boost::logic::tribool UpgradeRepair::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(id))
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
+ManagementOrderType UpgradeRepair::get_type()
+{
+	return MUpgradeRepair;
+}
+
+
+
+bool UpgradeRepair::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("UpgradeRepair");
+	ManagementOrder::load(stream, player, versionMinor);
+	id=stream->readUint32("id");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void UpgradeRepair::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("UpgradeRepair");
+	ManagementOrder::save(stream);
+	stream->writeUint32(id, "id");
+	stream->writeLeaveSection();
+}
+
+
+SendMessage::SendMessage(const std::string& message) : message(message)
+{
+
+}
+
+
+
+void SendMessage::modify(Echo& echo)
+{
+	echo.echoai->handle_message(echo, message);
+}
+
+
+
+boost::logic::tribool SendMessage::wait(Echo& echo)
+{
+	return true;
+}
+
+
+
+ManagementOrderType SendMessage::get_type()
+{
+	return MSendMessage;
+}
+
+
+
+bool SendMessage::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("SendMessage");
+	ManagementOrder::load(stream, player, versionMinor);
+	message=stream->readText("message");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void SendMessage::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("SendMessage");
+	ManagementOrder::save(stream);
+	stream->writeText(message, "message");
+	stream->writeLeaveSection();
 }
 
 
@@ -2393,9 +3878,9 @@ BuildingSearch::BuildingSearch(Echo& echo) : echo(echo)
 
 
 
-void BuildingSearch::add_condition(Conditions::Condition* condition)
+void BuildingSearch::add_condition(Conditions::BuildingCondition* condition)
 {
-	conditions.push_back(boost::shared_ptr<Conditions::Condition>(condition));
+	conditions.push_back(boost::shared_ptr<Conditions::BuildingCondition>(condition));
 }
 
 
@@ -2431,7 +3916,7 @@ building_search_iterator BuildingSearch::end()
 
 bool BuildingSearch::passes_conditions(int b)
 {
-	for(std::vector<boost::shared_ptr<Conditions::Condition> >::iterator i = conditions.begin();  i!=conditions.end(); ++i)
+	for(std::vector<boost::shared_ptr<Conditions::BuildingCondition> >::iterator i = conditions.begin();  i!=conditions.end(); ++i)
 	{
 		if(!(*i)->passes(echo, b))
 			return false;
@@ -2691,106 +4176,47 @@ bool MapInfo::is_water(int x, int y)
 
 Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(), br(player, *this), fm(*this), timer(0)
 {
+	previous_building_id=-1;
+	retry_timer=0;
 }
 
 
-unsigned int Echo::add_building_order(Construction::BuildingOrder& bo)
+unsigned int Echo::add_building_order(Construction::BuildingOrder* bo)
 {
-	position p=bo.find_location(*this, player->map, *gm);	
-	if(p.x != 0 || p.y != 0)
-	{
-		unsigned int id=br.register_building(p.x, p.y, bo.get_building_type());
-		Sint32 type=-1;
-		if(bo.get_building_type()>IntBuildingType::DEFENSE_BUILDING && bo.get_building_type() <IntBuildingType::STONE_WALL)
-		{
-			type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[bo.get_building_type()], 0, false);
-			ManagementOrder* mo_flag=new AssignWorkers(bo.get_number_of_workers());
-			add_management_order(mo_flag, id);
-		}
-		else
-		{
-			type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[bo.get_building_type()], 0, true);
-			ManagementOrder* mo_during_construction=new AssignWorkers(bo.get_number_of_workers());
-			mo_during_construction->add_condition(new UnderConstruction);
-			add_management_order(mo_during_construction, id);
-		}
-		orders.push(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1));
-//		std::cout<<"constructing building x="<<p.x<<" y="<<p.y<<"  id="<<id<<std::endl;
-		return id;
-	}
-	return INVALID_BUILDING;
+	building_orders.push_back(boost::shared_ptr<Construction::BuildingOrder>(bo));
+	unsigned int id=br.register_building();
+	bo->id=id;
+	return id;
 }
 
 
-void Echo::add_management_order(Management::ManagementOrder* mo, unsigned int id)
+void Echo::add_management_order(Management::ManagementOrder* mo)
 {
-	management_orders.push_back(boost::make_tuple(boost::shared_ptr<ManagementOrder>(mo), id));
+	management_orders.push_back(boost::shared_ptr<Management::ManagementOrder>(mo));
 }
 
 
 void Echo::update_management_orders()
 {
-	for(std::vector<boost::tuple<boost::shared_ptr<Management::ManagementOrder>,int> >::iterator i=management_orders.begin(); i!=management_orders.end();)
+	for(std::vector<boost::shared_ptr<Management::ManagementOrder> >::iterator i=management_orders.begin(); i!=management_orders.end();)
 	{
-		bool is_found=br.is_building_found(i->get<1>());
-		if(!br.is_building_pending(i->get<1>()) && !is_found)
+		boost::logic::tribool passes=(*i)->passes_conditions(*this);
+		if(passes)
 		{
+			(*i)->modify(*this);
 			i=management_orders.erase(i);
-//			std::cout<<"Erasing management order!"<<std::endl;
 			continue;
 		}
-		if(is_found)
+		else if(!passes)
 		{
-			if(i->get<0>()->passes_conditions(*this, i->get<1>()))
-			{
-				i->get<0>()->modify(*this, i->get<1>());
-				i=management_orders.erase(i);
-				continue;
-			}
+		}
+		else
+		{
+			i=management_orders.erase(i);
+			continue;
 		}
 		++i;
 	}
-}
-
-
-
-void Echo::add_global_management_order(Management::GlobalManagementOrder* gmo)
-{
-	global_management_orders.push_back(boost::shared_ptr<GlobalManagementOrder>(gmo));
-}
-
-
-
-void Echo::update_global_management_orders()
-{
-	for(std::vector<boost::shared_ptr<GlobalManagementOrder> >::iterator i=global_management_orders.begin(); i!=global_management_orders.end();)
-	{
-		(*i)->modify(*this);
-		i=global_management_orders.erase(i);
-		continue;
-	}
-}
-
-
-
-void Echo::add_upgrade_repair_order(UpgradesRepairs::UpgradeRepairOrder* uro)
-{
-	const int id=uro->get_id();
-	if(br.is_building_found(id))
-	{
-		orders.push(new OrderConstruction(br.get_building(id)->gid, 1, 1));
-		br.set_upgrading(id);
-
-		ManagementOrder* mo_during_construction=new AssignWorkers(uro->get_number_of_workers());
-		mo_during_construction->add_condition(new UnderConstruction);
-		add_management_order(mo_during_construction, id);
-
-		//Change the number of units assigned when the building is finished
-		ManagementOrder* mo_completion=new AssignWorkers(br.get_building(id)->maxUnitWorking);
-		mo_completion->add_condition(new NotUnderConstruction);
-		add_management_order(mo_completion, id);
-	}
-	delete uro;
 }
 
 
@@ -2827,19 +4253,76 @@ void Echo::unpause_ressource_tracker(int building_id)
 
 void Echo::update_ressource_trackers()
 {
-	for(std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator i = ressource_trackers.begin(); i!=ressource_trackers.end(); ++i)
+	for(std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator i = ressource_trackers.begin(); i!=ressource_trackers.end();)
 	{
 		if(!br.is_building_found(i->first) && !br.is_building_pending(i->first))
 		{
 			std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator current=i;
 			++i;
 			ressource_trackers.erase(current);
+			continue;
 		}
 		else
 		{
 			if(i->second.get<1>())
 				i->second.get<0>()->tick();
 		}
+		++i;
+	}
+}
+
+
+
+void Echo::update_building_orders()
+{
+	if(retry_timer>0)
+	{
+		retry_timer--;
+		return;
+	}
+	for(std::vector<boost::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
+	{
+		boost::logic::tribool passes=(*i)->passes_conditions(*this);
+		if(passes)
+		{
+			if(!(previous_building_id==-1 || br.is_building_found(previous_building_id) || !br.is_building_pending(previous_building_id)))
+				break;
+			position p=(*i)->find_location(*this, player->map, *gm);
+			if(p.x != 0 || p.y != 0)
+			{
+				br.issue_order((*i)->id, p.x, p.y, (*i)->get_building_type());
+				Sint32 type=-1;
+				if((*i)->get_building_type()>IntBuildingType::DEFENSE_BUILDING && (*i)->get_building_type() <IntBuildingType::STONE_WALL)
+				{
+					type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[(*i)->get_building_type()], 0, false);
+					ManagementOrder* mo_flag=new AssignWorkers((*i)->get_number_of_workers(), (*i)->id);
+					add_management_order(mo_flag);
+				}
+				else
+				{
+					type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[(*i)->get_building_type()], 0, true);
+					ManagementOrder* mo_during_construction=new AssignWorkers((*i)->get_number_of_workers(), (*i)->id);
+					mo_during_construction->add_condition(new ParticularBuilding(new UnderConstruction, (*i)->id));
+					add_management_order(mo_during_construction);
+				}
+				orders.push(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1));
+				previous_building_id=(*i)->id;
+				i=building_orders.erase(i);
+				break;
+			}
+			else
+				retry_timer=50;
+		}
+		else if(!passes)
+		{
+		}
+		else
+		{
+			br.remove_building((*i)->id);
+			i=building_orders.erase(i);
+			continue;
+		}
+		++i;
 	}
 }
 
@@ -2868,8 +4351,13 @@ void Echo::init_starting_buildings()
 bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("EchoAI");
-	
 	signature_check(stream, player, versionMinor);
+
+	if(versionMinor<52)
+	{
+		std::cerr<<"We deeply apologize, the game could not be loaded. New updates to the Echo AI system have sacrificed backwards compatibility. This means old games using the AI ReachToInfinity or other Echo using AI's can not be loaded with newer versions of Glob2."<<std::endl;
+		return false;
+	}
 
 	stream->readEnterSection("orders");
 	Uint32 ordersSize = stream->readUint32("size");
@@ -2887,7 +4375,6 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 
 	signature_check(stream, player, versionMinor);
 
-
 	br.load(stream, player, versionMinor);
 
 	signature_check(stream, player, versionMinor);
@@ -2902,22 +4389,26 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	for(Uint32 managementIndex = 0; managementIndex < managementSize; ++managementIndex)
 	{
 		stream->readEnterSection(managementIndex);
-		ManagementOrder* mo=ManagementOrder::load_order(stream, player, versionMinor);
-		Uint32 id=stream->readUint32("echo_building_id");
-		management_orders.push_back(boost::make_tuple(mo, id));
+		signature_check(stream, player, versionMinor);
+		signature_check(stream, player, versionMinor);
+		boost::shared_ptr<ManagementOrder> mo=boost::shared_ptr<ManagementOrder>(ManagementOrder::load_order(stream, player, versionMinor));
+		management_orders.push_back(mo);
+		signature_check(stream, player, versionMinor);
+		signature_check(stream, player, versionMinor);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
-
 	signature_check(stream, player, versionMinor);
 
-	stream->readEnterSection("global_management_orders");
-	Uint32 globalManagementSize=stream->readUint32("size");
-	for(Uint32 globalManagementIndex = 0; globalManagementIndex < globalManagementSize; ++globalManagementIndex)
+	stream->readEnterSection("building_orders");
+	Uint32 buildingSize=stream->readUint32("size");
+	building_orders.resize(buildingSize);
+	for(Uint32 buildingIndex = 0; buildingIndex < buildingSize; ++buildingIndex)
 	{
-		stream->readEnterSection(globalManagementIndex);
-		global_management_orders.push_back(boost::shared_ptr<Management::GlobalManagementOrder>(Management::GlobalManagementOrder::load_order(stream, player, versionMinor)));
+		stream->readEnterSection(buildingIndex);
+		building_orders[buildingIndex]=boost::shared_ptr<BuildingOrder>(new BuildingOrder);
+		building_orders[buildingIndex]->load(stream, player, versionMinor);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -2993,7 +4484,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 		orders.pop();
 		stream->writeUint32(order->getDataLength()+1, "size");
 		stream->write(order->getData(), order->getDataLength(), "data");
-		delete order;
+		orders.push(order);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -3014,25 +4505,26 @@ void Echo::save(GAGCore::OutputStream *stream)
 	for(Uint32 managementIndex = 0; managementIndex < management_orders.size(); ++managementIndex)
 	{
 		stream->writeEnterSection(managementIndex);
-		Management::ManagementOrder::save_order(management_orders[managementIndex].get<0>().get(), stream);
-		stream->writeUint32(management_orders[managementIndex].get<1>(), "echo_building_id");
+		signature_write(stream);
+		signature_write(stream);
+		Management::ManagementOrder::save_order(management_orders[managementIndex].get(), stream);
+		signature_write(stream);
+		signature_write(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-
 
 	signature_write(stream);
 
-	stream->writeEnterSection("global_management_orders");
-	stream->writeUint32(global_management_orders.size(), "size");
-	for(Uint32 globalManagementIndex = 0; globalManagementIndex < global_management_orders.size(); ++globalManagementIndex)
+	stream->writeEnterSection("building_orders");
+	stream->writeUint32(building_orders.size(), "size");
+	for(Uint32 buildingIndex = 0; buildingIndex < building_orders.size(); ++buildingIndex)
 	{
-		stream->writeEnterSection(globalManagementIndex);
-		Management::GlobalManagementOrder::save_order(global_management_orders[globalManagementIndex].get(), stream);
+		stream->writeEnterSection(buildingIndex);
+		building_orders[buildingIndex]->save(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-
 
 	signature_write(stream);
 
@@ -3084,7 +4576,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 	signature_write(stream);
 }
 
-
+#include "TextStream.h"
 
 Order* Echo::getOrder(void)
 {
@@ -3095,6 +4587,14 @@ Order* Echo::getOrder(void)
 //			player->map->setMapDiscovered(x, y, player->team->me);
 //		}
 //	}
+/*
+	if(timer%128==0)
+	{
+		OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.world-desynchronization.dump.txt"));
+		player->game->save(stream, false, "glob2.world-desynchronization.dump.txt");
+		delete stream;
+	}
+*/
 	if(!gm)
 	{
 		gm.reset(new GradientManager(player->map));
@@ -3145,7 +4645,7 @@ Order* Echo::getOrder(void)
 	update_management_orders();
 	echoai->tick(*this);
 	update_management_orders();
-	update_global_management_orders();
+	update_building_orders();
 	timer++;
 	return new NullOrder;
 }
@@ -3217,23 +4717,142 @@ void ReachToInfinity::tick(Echo& echo)
 		{	
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 			{
-				ManagementOrder* mo_completion=new AssignWorkers(5);
-				echo.add_management_order(mo_completion, *i);
+				ManagementOrder* mo_completion=new AssignWorkers(5, *i);
+				echo.add_management_order(mo_completion);
 
-				ManagementOrder* mo_ratios=new ChangeSwarm(15, 1, 0);
-				mo_ratios->add_condition(new NotUnderConstruction);
-				echo.add_management_order(mo_ratios, *i);
+				ManagementOrder* mo_ratios=new ChangeSwarm(15, 1, 0, *i);
+				mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
+				echo.add_management_order(mo_ratios);
 
-				ManagementOrder* mo_tracker=new AddRessourceTracker(12);
-				echo.add_management_order(mo_tracker, *i);
+				ManagementOrder* mo_tracker=new AddRessourceTracker(12, *i, CORN);
+				echo.add_management_order(mo_tracker);
 			}
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 			{
-				ManagementOrder* mo_tracker=new AddRessourceTracker(12);
-				echo.add_management_order(mo_tracker, *i);
+				ManagementOrder* mo_tracker=new AddRessourceTracker(12, *i, CORN);
+				echo.add_management_order(mo_tracker);
 			}
 		}
 	}
+
+/*
+	///This is demonstration code for the advanced use of Conditions
+	if(timer==100)
+	{
+		for(int g=0; g<1; ++g)
+		{
+			int prev_id=-1;
+			int first_id=-1;
+			int fifth_id=-1;
+			for(int n=0; n<15; ++n)
+			{
+				//The main order for the inn
+				BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
+	
+				//Constraints arround the location of wheat
+				AIEcho::Gradients::GradientInfo gi_wheat;
+				gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+				//You want to be close to wheat
+				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
+				//You can't be farther than 10 units from wheat
+				bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
+	
+				//Constraints arround nearby settlement
+				AIEcho::Gradients::GradientInfo gi_building;
+				gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+				gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+				//You want to be close to other buildings, but wheat is more important
+				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
+
+				AIEcho::Gradients::GradientInfo gi_building_construction;
+				gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
+				gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+				//You don't want to be too close
+				bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
+
+				//Constraints arround the location of fruit
+				AIEcho::Gradients::GradientInfo gi_fruit;
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+				//You want to be reasnobly close to fruit, closer if possible
+				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
+	
+				if(prev_id!=-1)
+				{
+					bo->add_condition(new EitherCondition(new ParticularBuilding(new NotUnderConstruction, prev_id), new BuildingDestroyed(prev_id)));
+				}
+				else
+					bo->add_condition(new Population(true, true, true, 5, Population::Greater));
+	
+				//Add the building order to the list of orders
+				unsigned int id=echo.add_building_order(bo);
+
+				if(prev_id!=-1)
+				{
+					ManagementOrder* mo_upgrade = new UpgradeRepair(id);
+					mo_upgrade->add_condition(new ParticularBuilding(new NotUnderConstruction, prev_id));
+					mo_upgrade->add_condition(new ParticularBuilding(new BuildingLevel(2), prev_id));
+					echo.add_management_order(mo_upgrade);
+
+					ManagementOrder* mo_assign=new AssignWorkers(6, id);
+					mo_assign->add_condition(new ParticularBuilding(new UnderConstruction, id));
+					mo_assign->add_condition(new ParticularBuilding(new BuildingLevel(2), id));
+					echo.add_management_order(mo_assign);
+
+					ManagementOrder* mo_finish=new AssignWorkers(2, id);
+					mo_finish->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+					mo_finish->add_condition(new ParticularBuilding(new BuildingLevel(2), id));
+					echo.add_management_order(mo_finish);
+				}
+				if(n==0)
+				{
+					first_id=id;
+				}
+				if(n==4)
+				{
+					fifth_id=id;
+				}
+				
+				ManagementOrder* mo_completion=new AssignWorkers(1, id);
+				mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+				echo.add_management_order(mo_completion);
+	
+				ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
+				mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+				echo.add_management_order(mo_tracker);
+
+				ManagementOrder* mo_delete=new DestroyBuilding(id);
+				mo_delete->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+				mo_delete->add_condition(new ParticularBuilding(new RessourceTrackerAge(500, RessourceTrackerAge::Greater), id));
+				mo_delete->add_condition(new ParticularBuilding(new RessourceTrackerAmount(48, RessourceTrackerAmount::Lesser), id));
+				echo.add_management_order(mo_delete);
+
+				ManagementOrder* mo_reconstruct = new SendMessage("construct inn");
+				mo_reconstruct->add_condition(new BuildingDestroyed(id));
+				echo.add_management_order(mo_reconstruct);
+	
+				prev_id=id;
+			}
+
+			ManagementOrder* mo_upgrade = new UpgradeRepair(first_id);
+			mo_upgrade->add_condition(new ParticularBuilding(new NotUnderConstruction, fifth_id));
+			echo.add_management_order(mo_upgrade);
+
+			ManagementOrder* mo_assign=new AssignWorkers(6, first_id);
+			mo_assign->add_condition(new ParticularBuilding(new UnderConstruction, first_id));
+			mo_assign->add_condition(new ParticularBuilding(new BuildingLevel(2), first_id));
+			echo.add_management_order(mo_assign);
+
+			ManagementOrder* mo_finish=new AssignWorkers(2, first_id);
+			mo_finish->add_condition(new ParticularBuilding(new NotUnderConstruction, first_id));
+			mo_finish->add_condition(new ParticularBuilding(new BuildingLevel(2), first_id));
+			echo.add_management_order(mo_finish);
+		}
+	}
+
+*/
+
 
 
 	//Explorer flags on the three nearest fruit trees
@@ -3252,30 +4871,30 @@ void ReachToInfinity::tick(Echo& echo)
 			if(!flag_on_cherry)
 			{
 				//The main order for the exploration flag
-				AIEcho::Construction::BuildingOrder bo_cherry(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
+				BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
 
 				//You want the closest fruit to your settlement possible
-				bo_cherry.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+				bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 				//Constraint arround the location of fruit
 				AIEcho::Gradients::GradientInfo gi_cherry;
 				gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
 				//You want to be ontop of the cherry trees
-				bo_cherry.add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 1));
+				bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 1));
 
 				//Add the building order to the list of orders
 				unsigned int id_cherry=echo.add_building_order(bo_cherry);
 
 				if(id_cherry!=INVALID_BUILDING)
 				{
-					ManagementOrder* mo_completion=new ChangeFlagSize(4);
-					echo.add_management_order(mo_completion, id_cherry);
+					ManagementOrder* mo_completion=new ChangeFlagSize(4, id_cherry);
+					echo.add_management_order(mo_completion);
 					flag_on_cherry=true;
 
 					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 					{
-						GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
-						echo.add_global_management_order(mo_alliance);
+						ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+						echo.add_management_order(mo_alliance);
 					}
 				}
 			}
@@ -3283,29 +4902,29 @@ void ReachToInfinity::tick(Echo& echo)
 			if(!flag_on_orange)
 			{
 				//The main order for the exploration flag
-				AIEcho::Construction::BuildingOrder bo_orange(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
+				BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
 
 				//You want the closest fruit to your settlement possible
-				bo_orange.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+				bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 				//Constraints arround the location of fruit
 				AIEcho::Gradients::GradientInfo gi_orange;
 				gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-				//You want to be ontop of the cherry trees
-				bo_orange.add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 1));
+				//You want to be ontop of the orange trees
+				bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 1));
 
 				unsigned int id_orange=echo.add_building_order(bo_orange);
 
 				if(id_orange!=INVALID_BUILDING)
 				{
-					ManagementOrder* mo_completion=new ChangeFlagSize(4);
-					echo.add_management_order(mo_completion, id_orange);
+					ManagementOrder* mo_completion=new ChangeFlagSize(4, id_orange);
+					echo.add_management_order(mo_completion);
 					flag_on_orange=true;
 
 					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 					{
-						GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
-						echo.add_global_management_order(mo_alliance);
+						ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+						echo.add_management_order(mo_alliance);
 					}
 				}
 			}
@@ -3313,29 +4932,29 @@ void ReachToInfinity::tick(Echo& echo)
 			if(!flag_on_prune)
 			{
 				//The main order for the exploration flag
-				AIEcho::Construction::BuildingOrder bo_prune(echo.player, IntBuildingType::EXPLORATION_FLAG, 2);
+				BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
 
 				//You want the closest fruit to your settlement possible
-				bo_prune.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+				bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 				AIEcho::Gradients::GradientInfo gi_prune;
 				gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-				//You want to be ontop of the cherry trees
-				bo_prune.add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 1));
+				//You want to be ontop of the prune trees
+				bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 1));
 
 				//Add the building order to the list of orders
 				unsigned int id_prune=echo.add_building_order(bo_prune);
 
 				if(id_prune!=INVALID_BUILDING)
 				{
-					ManagementOrder* mo_completion=new ChangeFlagSize(4);
-					echo.add_management_order(mo_completion, id_prune);
+					ManagementOrder* mo_completion=new ChangeFlagSize(4, id_prune);
+					echo.add_management_order(mo_completion);
 					flag_on_prune=true;
 
 					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 					{
-						GlobalManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
-						echo.add_global_management_order(mo_alliance);
+						ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+						echo.add_management_order(mo_alliance);
 					}
 				}
 			}
@@ -3354,18 +4973,18 @@ void ReachToInfinity::tick(Echo& echo)
 					if(flags_on_enemy.find(*i)!=flags_on_enemy.end())
 						continue;
 
-					AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::EXPLORATION_FLAG, 1);
-					bo.add_constraint(new CenteredOn(*ebi));
+					BuildingOrder* bo = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 1);
+					bo->add_constraint(new CenterOfBuilding(*ebi));
 					unsigned int id=echo.add_building_order(bo);
 
 					if(id!=INVALID_BUILDING)
 					{
-						ManagementOrder* mo_completion=new ChangeFlagSize(12);
-						echo.add_management_order(mo_completion, id);
+						ManagementOrder* mo_completion=new ChangeFlagSize(12, id);
+						echo.add_management_order(mo_completion);
 
 						ManagementOrder* mo_destroyed=new DestroyBuilding;
 						mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, *ebi));
-						echo.add_management_order(mo_destroyed, id);
+						echo.add_management_order(mo_destroyed);
 
 						flags_on_enemy.insert(*i);
 					}
@@ -3373,6 +4992,7 @@ void ReachToInfinity::tick(Echo& echo)
 			}
 		}
 	}
+
 
 
 	//Standard Inns near wheat
@@ -3396,28 +5016,28 @@ void ReachToInfinity::tick(Echo& echo)
 		if((echo.player->team->stats.getLatestStat()->totalUnit)>=(number1*8 + number2*12 + number3*16))
 		{
 			//The main order for the inn
-			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::FOOD_BUILDING, 2);
+			BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
 
 			//Constraints arround the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
 			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
 			//You want to be close to wheat
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 			//You can't be farther than 10 units from wheat
-			bo.add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
+			bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
 
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You want to be close to other buildings, but wheat is more important
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You don't want to be too close
-			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
+			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
 			//Constraints arround the location of fruit
 			AIEcho::Gradients::GradientInfo gi_fruit;
@@ -3425,18 +5045,20 @@ void ReachToInfinity::tick(Echo& echo)
 			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
 			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
 			//You want to be reasnobly close to fruit, closer if possible
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 
 			//Add the building order to the list of orders
 			unsigned int id=echo.add_building_order(bo);
-	
-			ManagementOrder* mo_completion=new AssignWorkers(1);
-			mo_completion->add_condition(new NotUnderConstruction);
-			echo.add_management_order(mo_completion, id);
 
-			ManagementOrder* mo_tracker=new AddRessourceTracker(12);
-			mo_tracker->add_condition(new NotUnderConstruction);
-			echo.add_management_order(mo_tracker, id);
+//			std::cout<<"inn ordered, id="<<id<<std::endl;
+	
+			ManagementOrder* mo_completion=new AssignWorkers(1, id);
+			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_completion);
+
+			ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
+			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_tracker);
 		}
 	}
 
@@ -3451,26 +5073,26 @@ void ReachToInfinity::tick(Echo& echo)
 		{
 //			std::cout<<"Constructing swarm"<<std::endl;
 			//The main order for the swarm
-			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::SWARM_BUILDING, 3);
+			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, 3);
 	
 			//Constraints arround the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
 			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
 			//You want to be close to wheat
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You want to be close to other buildings, but wheat is more important
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You don't want to be too close
-			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
+			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
 			//Add the building order to the list of orders
 			unsigned int id=echo.add_building_order(bo);
@@ -3478,19 +5100,19 @@ void ReachToInfinity::tick(Echo& echo)
 //			std::cout<<"Swarm ordered, id="<<id<<std::endl;
 
 			//Change the number of workers assigned when the building is finished
-			ManagementOrder* mo_completion=new AssignWorkers(5);
-			mo_completion->add_condition(new NotUnderConstruction);
-			echo.add_management_order(mo_completion, id);
+			ManagementOrder* mo_completion=new AssignWorkers(5, id);
+			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_completion);
 
 			//Change the ratio of the swarm when its finished
-			ManagementOrder* mo_ratios=new ChangeSwarm(15, 1, 0);
-			mo_ratios->add_condition(new NotUnderConstruction);
-			echo.add_management_order(mo_ratios, id);
+			ManagementOrder* mo_ratios=new ChangeSwarm(15, 1, 0, id);
+			mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_ratios);
 
 			//Add a tracker
-			ManagementOrder* mo_tracker=new AddRessourceTracker(12);
-			mo_tracker->add_condition(new NotUnderConstruction);
-			echo.add_management_order(mo_tracker, id);
+			ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
+			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_tracker);
 
 		}
 	}
@@ -3504,34 +5126,34 @@ void ReachToInfinity::tick(Echo& echo)
 		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<3)
 		{
 			//The main order for the race track
-			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::WALKSPEED_BUILDING, 6);
+			BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, 6);
 	
 			//Constraints arround the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
 			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
 			//You want to be close to wood
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
 			//Constraints arround the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
 			gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
 			//You want to be close to stone
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, 1));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, 1));
 			//But not to close, so you have room to upgrade
-			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
+			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
 
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You want to be close to other buildings, but wheat is more important
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You don't want to be too close
-			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
+			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
 			//Add the building order to the list of orders
 			echo.add_building_order(bo);
@@ -3547,43 +5169,44 @@ void ReachToInfinity::tick(Echo& echo)
 		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<3)
 		{
 			//The main order for the swimming pool
-			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::SWIMSPEED_BUILDING, 6);
+			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, 6);
 	
 			//Constraints arround the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
 			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
 			//You want to be close to wood
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
 			//Constraints arround the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
 			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
 			//You want to be close to wheat
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 1));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 1));
 
 			//Constraints arround the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
 			gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
 			//You don't want to be too close, so you have room to upgrade
-			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
+			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
 
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You want to be close to other buildings, but wheat is more important
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You don't want to be too close
-			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
+			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
 			//Add the building order to the list of orders
 			echo.add_building_order(bo);
 		}
 	}
+
 
 	//Standard school inland away from the enemies
 	if((timer%2000)==1500)
@@ -3594,20 +5217,20 @@ void ReachToInfinity::tick(Echo& echo)
 		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<4)
 		{
 			//The main order for the school
-			AIEcho::Construction::BuildingOrder bo(echo.player, IntBuildingType::SCIENCE_BUILDING, 5);
+			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, 5);
 
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You want to be close to other buildings, but wheat is more important
-			bo.add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 			//You don't want to be too close
-			bo.add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
+			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
 			//Constraints arround the enemy
 			AIEcho::Gradients::GradientInfo gi_enemy;
@@ -3616,12 +5239,13 @@ void ReachToInfinity::tick(Echo& echo)
 				gi_enemy.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(*i, false));
 			}
 			gi_enemy.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
-			bo.add_constraint(new AIEcho::Construction::MaximizedDistance(gi_enemy, 3));
+			bo->add_constraint(new AIEcho::Construction::MaximizedDistance(gi_enemy, 3));
 
 			//Add the building order to the list of orders
 			echo.add_building_order(bo);
 		}
 	}
+
 
 	//Level 1 to level 2 upgrades
 	if((timer%300)==0)
@@ -3651,22 +5275,34 @@ void ReachToInfinity::tick(Echo& echo)
 			if(buildings.size()!=0)
 			{
 				int chosen=syncRand()%buildings.size();
-				UpgradeRepairOrder* uro = new UpgradeRepairOrder(echo, buildings[chosen], 8);
-				echo.add_upgrade_repair_order(uro);
+				ManagementOrder* uro = new UpgradeRepair(buildings[chosen]);
+				echo.add_management_order(uro);
+
+				int assigned=echo.get_building_register().get_assigned(buildings[chosen]);
+
+				ManagementOrder* mo_assign=new AssignWorkers(8, buildings[chosen]);
+				mo_assign->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
+				echo.add_management_order(mo_assign);
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
 					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker;
-					mo_tracker_pause->add_condition(new UnderConstruction);
-					echo.add_management_order(mo_tracker_pause, buildings[chosen]);
+					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_tracker_pause);
 
 					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker;
-					mo_tracker_unpause->add_condition(new NotUnderConstruction);
-					echo.add_management_order(mo_tracker_unpause, buildings[chosen]);
+					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_tracker_unpause);
 
-					ManagementOrder* mo_completion=new AssignWorkers(3);
-					mo_completion->add_condition(new NotUnderConstruction);
-					echo.add_management_order(mo_completion, buildings[chosen]);
+					ManagementOrder* mo_completion=new AssignWorkers(3, buildings[chosen]);
+					mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_completion);
+				}
+				else
+				{
+					ManagementOrder* mo_assign=new AssignWorkers(assigned, buildings[chosen]);
+					mo_assign->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_assign);
 				}
 			}
 		}
@@ -3707,26 +5343,39 @@ void ReachToInfinity::tick(Echo& echo)
 			if(buildings.size()!=0)
 			{
 				int chosen=syncRand()%buildings.size();
-				UpgradeRepairOrder* uro = new UpgradeRepairOrder(echo, buildings[chosen], 8);
-				echo.add_upgrade_repair_order(uro);
+				ManagementOrder* uro = new UpgradeRepair(buildings[chosen]);
+				echo.add_management_order(uro);
+
+				int assigned=echo.get_building_register().get_assigned(buildings[chosen]);
+
+				ManagementOrder* mo_assign=new AssignWorkers(8, buildings[chosen]);
+				mo_assign->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
+				echo.add_management_order(mo_assign);
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
 					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker;
-					mo_tracker_pause->add_condition(new UnderConstruction);
-					echo.add_management_order(mo_tracker_pause, buildings[chosen]);
+					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_tracker_pause);
 
 					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker;
-					mo_tracker_unpause->add_condition(new NotUnderConstruction);
-					echo.add_management_order(mo_tracker_unpause, buildings[chosen]);
+					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_tracker_unpause);
 
-					ManagementOrder* mo_completion=new AssignWorkers(6);
-					mo_completion->add_condition(new NotUnderConstruction);
-					echo.add_management_order(mo_completion, buildings[chosen]);
+					ManagementOrder* mo_completion=new AssignWorkers(6, buildings[chosen]);
+					mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_completion);
+				}
+				else
+				{
+					ManagementOrder* mo_assign=new AssignWorkers(assigned, buildings[chosen]);
+					mo_assign->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
+					echo.add_management_order(mo_assign);
 				}
 			}
 		}
 	}
+
 
 
 	//Delete old inns and swarms that are hard to keep full of wheat
@@ -3742,8 +5391,8 @@ void ReachToInfinity::tick(Echo& echo)
 			{
 				if(rt->get_total_level() < 24*echo.get_building_register().get_level(*i))
 				{
-					ManagementOrder* mo_destroy=new DestroyBuilding;
-					echo.add_management_order(mo_destroy, *i);
+					ManagementOrder* mo_destroy=new DestroyBuilding(*i);
+					echo.add_management_order(mo_destroy);
 				}
 			}
 		}
@@ -3759,8 +5408,8 @@ void ReachToInfinity::tick(Echo& echo)
 			{
 				if(rt->get_total_level() < 18)
 				{
-					ManagementOrder* mo_destroy=new DestroyBuilding;
-					echo.add_management_order(mo_destroy, *i);
+					ManagementOrder* mo_destroy=new DestroyBuilding(*i);
+					echo.add_management_order(mo_destroy);
 				}
 			}
 		}
@@ -3801,7 +5450,60 @@ void ReachToInfinity::tick(Echo& echo)
 				}
 			}
 		}
-		echo.add_global_management_order(mo_farming);
-		echo.add_global_management_order(mo_non_farming);
+		echo.add_management_order(mo_farming);
+		echo.add_management_order(mo_non_farming);
 	}
 }
+
+
+void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
+{
+	if(message=="construct inn")
+	{
+		//The main order for the inn
+		BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
+	
+		//Constraints arround the location of wheat
+		AIEcho::Gradients::GradientInfo gi_wheat;
+		gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+		//You want to be close to wheat
+		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
+		//You can't be farther than 10 units from wheat
+		bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
+
+		//Constraints arround nearby settlement
+		AIEcho::Gradients::GradientInfo gi_building;
+		gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+		//You want to be close to other buildings, but wheat is more important
+		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
+
+		AIEcho::Gradients::GradientInfo gi_building_construction;
+		gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+		//You don't want to be too close
+		bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
+
+		//Constraints arround the location of fruit
+		AIEcho::Gradients::GradientInfo gi_fruit;
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+		//You want to be reasnobly close to fruit, closer if possible
+		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
+
+		//Add the building order to the list of orders
+		unsigned int id=echo.add_building_order(bo);
+
+//				std::cout<<"inn ordered, id="<<id<<std::endl;
+		
+		ManagementOrder* mo_completion=new AssignWorkers(1, id);
+		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+		echo.add_management_order(mo_completion);
+
+		ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
+		mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+		echo.add_management_order(mo_tracker);
+	}
+}
+

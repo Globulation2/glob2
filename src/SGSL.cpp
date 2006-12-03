@@ -545,56 +545,96 @@ bool Story::testCondition(GameGUI *gui)
 					}
 					case (Token::S_AREA):
 					{
-						int incL = 0;
 						execLine++;
 
-						AreaMap::const_iterator fi;
-						if ((fi = mapscript->areas.find(line[execLine].msg)) == mapscript->areas.end())
-							assert(false);
+						std::string areaName=line[execLine].msg;
 
-						Uint32 testMask = 0;
-						if (line[lineSelector+3+negate].type==Token::INT)
+						execLine++;
+						Uint32 teamsToTestMask = 0;
+						//A team number is given
+						if (line[execLine].type==Token::INT)
 						{
-							testMask = 1<<(line[lineSelector+3+negate].value);
+							teamsToTestMask = 1<<(line[execLine].value);
 						}
-						else if (line[lineSelector+3+negate].type==Token::S_ENEMY)
+						//All of the enemies are given
+						else if (line[execLine].type==Token::S_ENEMY)
 						{
-							testMask = game->teams[line[lineSelector+4+negate].value]->enemies;
-							incL = 1;
+							execLine++;
+							teamsToTestMask = game->teams[line[execLine].value]->enemies;
 						}
-						else if (line[lineSelector+3+negate].type==Token::S_ALLY)
+						//All of the allies are given
+						else if (line[execLine].type==Token::S_ALLY)
 						{
-							testMask = game->teams[line[lineSelector+4+negate].value]->allies;
-							incL = 1;
+							execLine++;
+							teamsToTestMask = game->teams[line[execLine].value]->allies;
 						}
 						else
 							assert(false);
 
-						int x = fi->second.x;
-						int y = fi->second.y;
-						int r = fi->second.r;
-						int dx, dy;
-						bool isUnit = false;
-						for (dy=y-r; dy<y+r; dy++)
-							for (dx=x-r; dx<x+r; dx++)
+						int areaN=-1;
+						bool foundUnit=false;
+						//First, check if there is a script area in the map with the same name
+						for(int n=0; n<9; ++n)
+						{
+							if(game->map.getAreaName(n)==areaName)
 							{
-								Uint16 gid=game->map.getGroundUnit(dx, dy);
-								if (gid!=NOGUID)
+								areaN=n;
+								break;
+							}
+						}
+						//There isn't a map script area with the same name, try the old map scripts
+						if(areaN==-1)
+						{
+							AreaMap::const_iterator fi;
+							if ((fi = mapscript->areas.find(line[execLine].msg)) == mapscript->areas.end())
+								assert(false);
+	
+							int x = fi->second.x;
+							int y = fi->second.y;
+							int r = fi->second.r;
+							int dx, dy;
+							for (dy=y-r; dy<y+r && !foundUnit; dy++)
+							{
+								for (dx=x-r; dx<x+r && !foundUnit; dx++)
 								{
-									int team=Unit::GIDtoTeam(gid);
-									if ((1<<team) & testMask)
+									Uint16 gid=game->map.getGroundUnit(dx, dy);
+									if (gid!=NOGUID)
 									{
-										isUnit = true;
-										goto doubleBreak;
+										int team=Unit::GIDtoTeam(gid);
+										if ((1<<team) & teamsToTestMask)
+										{
+											foundUnit = true;
+										}
 									}
 								}
 							}
-
-						doubleBreak:
-
-						if (isUnit ^ negate)
+						}
+						//There is a map script area with the same name, check the positions
+						else
 						{
-							lineSelector += 3+negate+incL;
+							for(int x=0; x<game->map.getW() && !foundUnit; ++x)
+							{
+								for(int y=0; y<game->map.getH() && !foundUnit; ++y)
+								{
+									if(game->map.isPointSet(areaN, x, y))
+									{
+										Uint16 gid=game->map.getGroundUnit(x, y);
+										if (gid!=NOGUID)
+										{
+											int team=Unit::GIDtoTeam(gid);
+											if ((1<<team) & teamsToTestMask)
+											{
+												foundUnit = true;
+											}
+										}
+									}
+								}
+							}
+						}
+
+						if ((foundUnit && !negate) || (!foundUnit && negate))
+						{
+							lineSelector = execLine;
 							return true;
 						}
 						else
@@ -1291,6 +1331,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				case (Token::S_SETAREA):
 				{
 					Area area;
+
+					std::cerr << "SGSL : Use of setArea is deprecated. Use newer script areas in the map editor instead." << std::endl;
+
 					thisone.line.push_back(*donnees->getToken());
 
 					CHECK_PAROPEN;
@@ -1641,7 +1684,18 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (areas.find(donnees->getToken()->msg) == areas.end())
+
+						std::string areaName=donnees->getToken()->msg;
+						int areaN=-1;
+						for(int n=0; n<9; ++n)
+						{
+							if(game->map.getAreaName(n)==areaName)
+							{
+								areaN=n;
+								break;
+							}
+						}
+						if (areaN==-1 && areas.find(areaName) == areas.end())
 						{
 							er.type=ErrorReport::ET_UNDEFINED_AREA_NAME;
 							break;

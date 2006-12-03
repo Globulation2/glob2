@@ -30,6 +30,7 @@
 #include <math.h>
 #include <string.h>
 #include <valarray>
+#include <cstdlib>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -99,13 +100,13 @@ namespace GAGCore
 		int _doScissor;
 		GLint _texture;
 		GLenum _sfactor, _dfactor;
-		bool isTextureRectangle;
+		bool isTextureSRectangle;
 		bool useATIWorkaround;
 	
 		GLState(void)
 		{
 			resetCache();
-			isTextureRectangle = false;
+			isTextureSRectangle = false;
 			useATIWorkaround = false;
 		}
 		
@@ -122,16 +123,16 @@ namespace GAGCore
 		void checkExtensions(void)
 		{
 			const char *glExtensions = (const char *)glGetString(GL_EXTENSIONS);
-			isTextureRectangle = (strstr(glExtensions, "GL_NV_texture_rectangle") != NULL);
-			isTextureRectangle = isTextureRectangle || (strstr(glExtensions, "GL_EXT_texture_rectangle") != NULL);
-			isTextureRectangle = isTextureRectangle || (strstr(glExtensions, "GL_ARB_texture_rectangle") != NULL);
+			isTextureSRectangle = (strstr(glExtensions, "GL_NV_texture_rectangle") != NULL);
+			isTextureSRectangle = isTextureSRectangle || (strstr(glExtensions, "GL_EXT_texture_rectangle") != NULL);
+			isTextureSRectangle = isTextureSRectangle || (strstr(glExtensions, "GL_ARB_texture_rectangle") != NULL);
 
 			const char *glVendor= (const char *)glGetString(GL_VENDOR);
 			if(strstr(glVendor,"ATI"))
 				useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
 
 			if (verbose)
-				if (isTextureRectangle)
+				if (isTextureSRectangle)
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
 				else
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension not present, power of two texture will be used" << std::endl;
@@ -155,7 +156,7 @@ namespace GAGCore
 				return;
 		
 			GLenum cap;
-			if (isTextureRectangle)
+			if (isTextureSRectangle)
 				cap = GL_TEXTURE_RECTANGLE_NV;
 			else
 				cap = GL_TEXTURE_2D;
@@ -172,7 +173,7 @@ namespace GAGCore
 			if (_texture == tex)
 				return;
 		
-			if (isTextureRectangle)
+			if (isTextureSRectangle)
 			{
 				if(useATIWorkaround)
 					glBindTexture(GL_TEXTURE_RECTANGLE_NV, 0);
@@ -295,7 +296,7 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			// only power of two textures are supported
-			if (!glState.isTextureRectangle)
+			if (!glState.isTextureSRectangle)
 			{
 				// TODO : if anyone has a better way to do it, please tell :-)
 				glState.setTexture(texture);
@@ -342,7 +343,7 @@ namespace GAGCore
 			pixelsPtr = sdlsurface->pixels;
 			pixelFormat = GL_BGRA;
 			#endif
-			if (glState.isTextureRectangle)
+			if (glState.isTextureSRectangle)
 			{
 				glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA, sdlsurface->w, sdlsurface->h, 0, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
 			}
@@ -1247,8 +1248,26 @@ namespace GAGCore
 		pos = output.find('\r', 0);
 		if(pos != std::string::npos)
 			output = output.substr(0, pos);
-		
+
 		font->drawString(this, x, y, w, output.c_str(), alpha);
+
+		///////////// The following code is for translation textshots ////////////
+		if(!translationPicturesDirectory.empty())
+		{
+			for(std::map<std::string, std::string>::iterator i=texts.begin(); i!=texts.end(); ++i)
+			{
+				if(output.find(i->first)!=std::string::npos)
+				{
+					int width=font->getStringWidth(i->first.c_str());
+					int height=font->getStringHeight(i->first.c_str());
+					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
+					drawSquares.push_back(boost::make_tuple(SRectangle(x+startx, y, width, height), i->second, this));
+					wroteTexts.insert(i->first);
+					texts.erase(i);
+					break;
+				}
+			}
+		}
 	}
 	
 	void DrawableSurface::drawString(float x, float y, Font *font, const char *msg, float w, Uint8 alpha)
@@ -1261,8 +1280,26 @@ namespace GAGCore
 		pos = output.find('\r', 0);
 		if(pos != std::string::npos)
 			output = output.substr(0, pos);
-		
+
+		///////////// The following code is for translation textshots ////////////
+		if(!translationPicturesDirectory.empty())
+		{
+			for(std::map<std::string, std::string>::iterator i=texts.begin(); i!=texts.end(); ++i)
+			{
+				if(output.find(i->first)!=std::string::npos)
+				{
+					int width=font->getStringWidth(i->first.c_str());
+					int height=font->getStringHeight(i->first.c_str());
+					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
+					drawSquares.push_back(boost::make_tuple(SRectangle(int(x+startx), int(y), width, height), i->second, this));
+					wroteTexts.insert(i->first);
+					texts.erase(i);
+					break;
+				}
+			}
+		}
 		font->drawString(this, x, y, w, output.c_str(), alpha);
+
 	}
 	
 	void DrawableSurface::drawString(int x, int y, Font *font, const std::string &msg, int w, Uint8 alpha)
@@ -1283,8 +1320,55 @@ namespace GAGCore
 		this->drawString(x, y, font, str.str());
 	}
 	
+	//This code is for the textshot code
+	std::map<std::string, std::string> DrawableSurface::texts;
+	std::set<std::string> DrawableSurface::wroteTexts;
+	std::vector<boost::tuple<DrawableSurface::SRectangle, std::string, GAGCore::DrawableSurface*> > DrawableSurface::drawSquares;
+	std::string DrawableSurface::translationPicturesDirectory;
+
+	void DrawableSurface::flushTextPictures()
+	{
+		using namespace GAGCore;
+		for(std::vector<boost::tuple<SRectangle, std::string, DrawableSurface*> >::iterator i=drawSquares.begin(); i!=drawSquares.end();)
+		{
+			DrawableSurface toPrint(i->get<2>()->getW(), i->get<2>()->getH());
+			glFlush();
+			toPrint.drawSurface(0, 0, i->get<2>());
+			int x=i->get<0>().x;
+			int y=i->get<0>().y;
+			int width=i->get<0>().w;
+			int height=i->get<0>().h;
+
+			toPrint.drawRect(x-2, y-2, width+4, height+4, Color(255, 126, 21));
+			toPrint.drawRect(x-3, y-3, width+6, height+6, Color(255, 126, 21));
+			toPrint.drawCircle(x+width/2, y+height/2, std::max(width+4, height+4)/2+4, Color(255, 126, 21));
+			toPrint.drawCircle(x+width/2, y+height/2, std::max(width+4, height+4)/2+5, Color(255, 126, 21));
+			toPrint.drawCircle(x+width/2, y+height/2, std::max(width+4, height+4)/2+6, Color(255, 126, 21));
+
+			// Print it using virtual filesystem
+			for (size_t i2 = 0; i2 < Toolkit::getFileManager()->getDirCount(); i2++)
+			{
+				std::string fullFileName = translationPicturesDirectory + DIR_SEPARATOR_S + "text-" + i->get<1>();
+				if (SDL_SaveBMP(toPrint.sdlsurface, (fullFileName+".bmp").c_str()) == 0)
+				{
+					break;
+				}
+			}
+			i=drawSquares.erase(i);
+		}
+	}
+
+	void DrawableSurface::printFinishingText()
+	{
+		if(!texts.empty())
+			std::cout<<"The following requested translation texts where never drawn to the screen, or too mangled to be detected:"<<std::endl;
+		for(std::map<std::string, std::string>::iterator i=texts.begin(); i!=texts.end(); ++i)
+		{
+			std::cout<<"\t"<<i->second<<std::endl;
+		}
+	}
+
 	// here begin the Graphic Context part
-	
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
 		DrawableSurface::setClipRect(x, y, w, h);
@@ -1811,6 +1895,7 @@ namespace GAGCore
 	
 	void GraphicContext::nextFrame(void)
 	{
+		DrawableSurface::nextFrame();
 		if (sdlsurface)
 		{
 			if (optionFlags & CUSTOMCURSOR)
@@ -1890,3 +1975,5 @@ namespace GAGCore
 		return getStringHeight(temp.str().c_str());
 	}
 }
+
+

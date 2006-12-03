@@ -112,8 +112,8 @@ public:
 	Sint32 posXLocal, posYLocal;
 
 	// Flag usefull :
-	Uint32 unitStayRange; // (Uint8)
-	Uint32 unitStayRangeLocal;
+	Sint32 unitStayRange; // (Uint8)
+	Sint32 unitStayRangeLocal;
 	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
 	bool clearingRessourcesLocal[BASIC_COUNT];
 	Sint32 minLevelToFlag;

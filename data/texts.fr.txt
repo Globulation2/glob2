@@ -658,8 +658,8 @@ muet
 A : Alliés
 [abreaviation explanation V]
 V : Montrer tous les batiments
-[abreaviation explanation Vf]
-Vf : Montrer toutes les auberges (pour voler des unités)
+[abreaviation explanation fV]
+fV : Montrer toutes les auberges (pour voler des unités)
 [abreaviation explanation mV]
 mV : Montrer tous les marchés (pour échanger des fruits)
 [abreaviation explanation C]
