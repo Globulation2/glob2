@@ -1679,7 +1679,6 @@ int MapEdit::processEvent(SDL_Event& event)
 	{
 		handleKeyPressed(event.key.keysym.sym, false);
 	}
-	return returnCode;
 }
 
 
@@ -1688,6 +1687,15 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 {
 	switch(key)
 	{
+		case SDLK_ESCAPE:
+			if(pressed)
+			{
+				if (showingMenuScreen==false)
+					performAction("open menu screen");
+				else if (showingMenuScreen==true)
+					performAction("close menu screen");		
+			}
+			break;
 		case SDLK_UP:
 			if(pressed)
 				performAction("scroll up");
