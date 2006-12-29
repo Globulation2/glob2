@@ -517,7 +517,7 @@ private:
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
-	void performAction(const std::string& action, int relMouseX=-1, int relMouseY=-1);
+	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
 	///This delegates a sdl event to one of the menus, if they are open, and handle end codes appropriettly
 	void delegateMenu(SDL_Event& event);
 
