@@ -1553,62 +1553,62 @@ int MapEdit::processEvent(SDL_Event& event)
 		relMouseY=event.motion.yrel;
 		if(isDraggingMinimap)
 		{
-			performAction("minimap drag motion");
-			performAction("scroll horizontal stop");
-			performAction("scroll vertical stop");
+			performAction("minimap drag motion", relMouseX, relMouseY);
+			performAction("scroll horizontal stop", relMouseX, relMouseY);
+			performAction("scroll vertical stop", relMouseX, relMouseY);
 		}
 		else if(isDraggingZone)
 		{
 			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
-				performAction("zone drag motion");
+				performAction("zone drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingTerrain)
 		{
 			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
-				performAction("terrain drag motion");
+				performAction("terrain drag motion", relMouseX, relMouseY);
 		}
 		else if(isScrollDragging)
 		{
-			performAction("scroll drag motion");
+			performAction("scroll drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingDelete)
 		{
-			performAction("delete drag motion");
+			performAction("delete drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingArea)
 		{
-			performAction("area drag motion");
+			performAction("area drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingNoRessourceGrowthArea)
 		{
-			performAction("no ressource growth area drag motion");
+			performAction("no ressource growth area drag motion", relMouseX, relMouseY);
 		}
 		else
 		{
 			if(globalContainer->gfx->getW()-event.motion.x<15)
 			{
-				performAction("scroll right");
+				performAction("scroll right", relMouseX, relMouseY);
 			}
 			else if(event.motion.x<15)
 			{
-				performAction("scroll left");
+				performAction("scroll left", relMouseX, relMouseY);
 			}
 			else if(xSpeed!=0)
 			{
-				performAction("scroll horizontal stop");
+				performAction("scroll horizontal stop", relMouseX, relMouseY);
 			}
 	
 			if(globalContainer->gfx->getH()-event.motion.y<15)
 			{
-				performAction("scroll down");
+				performAction("scroll down", relMouseX, relMouseY);
 			}
 			else if(event.motion.y<15)
 			{
-				performAction("scroll up");
+				performAction("scroll up", relMouseX, relMouseY);
 			}
 			else if(ySpeed!=0)
 			{
-				performAction("scroll vertical stop");
+				performAction("scroll vertical stop", relMouseX, relMouseY);
 			}
 		}
 	}
