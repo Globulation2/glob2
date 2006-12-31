@@ -290,6 +290,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	// init data not loaded
 	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = 1;
+	maxUnitWorkingFuture = 1;
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
 	
