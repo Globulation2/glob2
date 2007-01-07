@@ -62,7 +62,7 @@ class OrderCreate:public Order
 {
 public:
 	OrderCreate(const Uint8 *data, int dataLength);
-	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitCount, Sint32 unitCount2);
+	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture);
 	virtual ~OrderCreate(void) {}
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
 	Uint8 *getData(void);
@@ -73,8 +73,8 @@ public:
 	Sint32 posX;
 	Sint32 posY;
 	Sint32 typeNum;
-	Sint32 unitCount;
-	Sint32 unitCount2;
+	Sint32 unitWorking;
+	Sint32 unitWorkingFuture;
 
  private:
 	Uint8 data[24];
@@ -122,7 +122,7 @@ class OrderConstruction:public Order
 {
 public:
 	OrderConstruction(const Uint8 *data, int dataLength);
-	OrderConstruction(Uint16 gid, Uint32 unitCount, Uint32 unitCount2);
+	OrderConstruction(Uint16 gid, Uint32 unitWorking, Uint32 unitWorkingFuture);
 	virtual ~OrderConstruction(void) {}
 	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
 	Uint8 *getData(void);
@@ -130,8 +130,8 @@ public:
 	int getDataLength(void) { return 10; }
 
 	Uint16 gid;
-	Uint32 unitCount;
-	Uint32 unitCount2;
+	Uint32 unitWorking;
+	Uint32 unitWorkingFuture;
 
 protected:
 	Uint8 data[10];

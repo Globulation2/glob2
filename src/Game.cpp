@@ -241,11 +241,9 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (!isVirtual && (team->noMoreBuildingSitesCountdown>0))
 				break;
 			bool isRoom=checkRoomForBuilding(posX, posY, bt, oc->teamNumber);
-			globalContainer->settings.tempUnit = oc->unitCount;
-			globalContainer->settings.tempUnitFuture = oc->unitCount2;
 			if (isVirtual || isRoom)
 			{
-				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber);
+				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber, oc->unitWorking, oc->unitWorkingFuture);
 				if (b)
 				{
 					fprintf(logFile, "ORDER_CREATE (%d, %d, %d)", posX, posY, bt->shortTypeNum);
@@ -256,11 +254,13 @@ void Game::executeOrder(Order *order, int localPlayer)
 			else if (!isVirtual && !isRoom && map.isHardSpaceForBuilding(posX, posY, w, h))
 			{
 				BuildProject buildProject;
-				buildProject.posX=posX;
-				buildProject.posY=posY;
+				buildProject.posX = posX;
+				buildProject.posY = posY;
 				fprintf(logFile, "new BuildProject (%d, %d)", posX, posY);
-				buildProject.teamNumber=oc->teamNumber;
-				buildProject.typeNum=oc->typeNum;
+				buildProject.teamNumber = oc->teamNumber;
+				buildProject.typeNum = oc->typeNum;
+				buildProject.unitWorking = oc->unitWorking;
+				buildProject.unitWorkingFuture = oc->unitWorkingFuture;
 				buildProjects.push_back(buildProject);
 				Uint32 teamMask=Team::teamNumberToMask(oc->teamNumber);
 				for (int y=posY; y<posY+h; y++)
@@ -685,9 +685,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			Uint16 gid=((OrderConstruction *)order)->gid;
-			globalContainer->settings.tempUnit = ((OrderConstruction *)order)->unitCount;
-			globalContainer->settings.tempUnitFuture = ((OrderConstruction *)order)->unitCount2;
+			OrderConstruction *oc = ((OrderConstruction *)order);
+			Uint16 gid = oc->gid;
 			
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -696,7 +695,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (b)
 			{
 				fprintf(logFile, "ORDER_CONSTRUCTION");
-				b->launchConstruction();
+				b->launchConstruction(oc->unitWorking, oc->unitWorkingFuture);
 			}
 		}
 		break;
@@ -1105,11 +1104,10 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 				}
 			map.updateForbiddenGradient(teamNumber);
 			buildProjects.erase(bpi);
-			break;
 		}
-		if (checkRoomForBuilding(posX, posY, bt, teamNumber))
+		else if (checkRoomForBuilding(posX, posY, bt, teamNumber))
 		{
-			Building *b=addBuilding(posX, posY, typeNum, teamNumber);
+			Building *b=addBuilding(posX, posY, typeNum, teamNumber, bpi->unitWorking, bpi->unitWorkingFuture);
 			if (b)
 			{
 				Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
@@ -1128,7 +1126,6 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 				b->update();
 				fprintf(logFile, "BuildProject success (%d, %d)\n", posX, posY);
 				buildProjects.erase(bpi);
-				break;
 			}
 		}
 	}
@@ -1370,7 +1367,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	return teams[team]->myUnits[id];
 }
 
-Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
+Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	Team *team=teams[teamNumber];
 	assert(team);
@@ -1391,7 +1388,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 	int w=globalContainer->buildingsTypes.get(typeNum)->width;
 	int h=globalContainer->buildingsTypes.get(typeNum)->height;
 
-	Building *b=new Building(x&map.getMaskW(), y&map.getMaskH(), gid, typeNum, team, &globalContainer->buildingsTypes);
+	Building *b=new Building(x&map.getMaskW(), y&map.getMaskH(), gid, typeNum, team, &globalContainer->buildingsTypes, unitWorking, unitWorkingFuture);
 
 	if (b->type->canExchange)
 		team->canExchange.push_front(b);

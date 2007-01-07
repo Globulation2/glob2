@@ -176,14 +176,14 @@ OrderCreate::OrderCreate(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitCount, Sint32 unitCount2)
+OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	this->teamNumber=teamNumber;
 	this->posX=posX;
 	this->posY=posY;
 	this->typeNum=typeNum;
-	this->unitCount=unitCount;
-	this->unitCount2=unitCount2;
+	this->unitWorking=unitWorking;
+	this->unitWorkingFuture=unitWorkingFuture;
 }
 
 Uint8 *OrderCreate::getData(void)
@@ -194,8 +194,8 @@ Uint8 *OrderCreate::getData(void)
 	addSint32(data, this->posX, 4);
 	addSint32(data, this->posY, 8);
 	addSint32(data, this->typeNum, 12);
-	addSint32(data, this->unitCount, 16);
-	addSint32(data, this->unitCount2, 20);
+	addSint32(data, this->unitWorking, 16);
+	addSint32(data, this->unitWorkingFuture, 20);
 	
 	return data;
 }
@@ -209,8 +209,8 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 	this->posX=getSint32(data, 4);
 	this->posY=getSint32(data, 8);
 	this->typeNum=getSint32(data, 12);
-	this->unitCount=getSint32(data, 16);
-	this->unitCount2=getSint32(data, 20);
+	this->unitWorking=getSint32(data, 16);
+	this->unitWorkingFuture=getSint32(data, 20);
 	
 	memcpy(this->data, data, dataLength);
 	
@@ -290,20 +290,20 @@ OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-OrderConstruction::OrderConstruction(Uint16 gid, Uint32 unitCount, Uint32 unitCount2)
+OrderConstruction::OrderConstruction(Uint16 gid, Uint32 unitWorking, Uint32 unitWorkingFuture)
 {
 	assert(gid<32768);
 	this->gid=gid;
-	this->unitCount=unitCount;
-	this->unitCount2=unitCount2;
+	this->unitWorking=unitWorking;
+	this->unitWorkingFuture=unitWorkingFuture;
 }
 
 Uint8 *OrderConstruction::getData(void)
 {
 	assert(sizeof(data) == getDataLength());
 	addUint16(data, this->gid, 0);
-	addUint32(data, this->unitCount, 2);
-	addUint32(data, this->unitCount2, 6);
+	addUint32(data, this->unitWorking, 2);
+	addUint32(data, this->unitWorkingFuture, 6);
 	return data;
 }
 
@@ -312,8 +312,8 @@ bool OrderConstruction::setData(const Uint8 *data, int dataLength)
 	if (dataLength!=getDataLength())
 		return false;
 	this->gid=getUint16(data, 0);
-	this->unitCount=getUint32(data, 2);
-	this->unitCount2=getUint32(data, 6);
+	this->unitWorking=getUint32(data, 2);
+	this->unitWorkingFuture=getUint32(data, 6);
 	memcpy(this->data, data, dataLength);
 	return true;
 }

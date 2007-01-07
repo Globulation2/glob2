@@ -53,8 +53,6 @@ Settings::Settings()
 	restoreDefaultShortcuts();
 	campaignPlace = 1;
 	campaignPlayed = 0;
-	tempUnit = 1;
-	tempUnitFuture = 1;
 	warflagUnit = 1;
 	clearflagUnit = 1;
 	exploreflagUnit = 1;

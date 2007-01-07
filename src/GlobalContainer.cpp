@@ -292,7 +292,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			printf("\nGlobulation 2\n");
 			printf("Command line arguments:\n");
-			printf("-t\ttype of gfx renderer: 0 = SDL, 1 = OpenGL\n");
 			printf("-s\tset resolution and depth (for instance : -s640x480 or -s640x480x32)\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-r/-R\tset/clear resizable window\n");

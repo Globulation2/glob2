@@ -44,7 +44,7 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	load(stream, types, owner, versionMinor);
 }
 
-Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types)
+Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	logFile = globalContainer->logFileManager->getFile("Building.log");
 	
@@ -71,15 +71,12 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	// units
 	shortTypeNum = type->shortTypeNum;
 	maxUnitInside = type->maxUnitInside;
-	maxUnitWorking = type->maxUnitWorking;
-	maxUnitWorkingLocal = globalContainer->settings.tempUnit;
-	maxUnitWorking = maxUnitWorkingLocal;
+	maxUnitWorking = unitWorking;
+	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = maxUnitWorking;
-	maxUnitWorkingFuture = globalContainer->settings.tempUnitFuture;
+	maxUnitWorkingFuture = unitWorkingFuture;
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
-	globalContainer->settings.tempUnit = 1;
-	globalContainer->settings.tempUnitFuture = 1;
 
 	// position
 	posX=x;
@@ -594,7 +591,7 @@ int Building::neededRessource(int r)
 		return 0;
 }
 
-void Building::launchConstruction(void)
+void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	if ((buildingState==ALIVE) && (!type->isBuildingSite))
 	{
@@ -643,12 +640,10 @@ void Building::launchConstruction(void)
 		updateCallLists(); // To remove all units working.
 		//following reassigns units to work on upgrade, certain buildings will
 		//glitch if units are not unassigned and then reassigned like this
-		maxUnitWorking = globalContainer->settings.tempUnit;
+		maxUnitWorking = unitWorking;
 		maxUnitWorkingLocal = maxUnitWorking;
 		maxUnitWorkingPreferred = maxUnitWorking;
-		maxUnitWorkingFuture = globalContainer->settings.tempUnitFuture;
-		globalContainer->settings.tempUnit = 1;
-		globalContainer->settings.tempUnitFuture = 1;
+		maxUnitWorkingFuture = unitWorkingFuture;
 		updateConstructionState(); // To switch to a real building site, if all units have been freed from building.
 	}
 }
