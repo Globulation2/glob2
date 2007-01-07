@@ -163,7 +163,7 @@ public:
 
 public:
 	Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
-	Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types);
+	Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture);
 	virtual ~Building(void);
 	void freeGradients();
 	
@@ -178,7 +178,7 @@ public:
 	void wishedRessources(int needs[MAX_NB_RESSOURCES]);
 	void computeWishedRessources();
 	int neededRessource(int r);
-	void launchConstruction(void);
+	void launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture);
 	void cancelConstruction(void);
 	void launchDelete(void);
 	void cancelDelete(void);

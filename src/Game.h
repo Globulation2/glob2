@@ -72,6 +72,8 @@ public:
 		int posY;
 		int teamNumber;
 		int typeNum;
+		int unitWorking;
+		int unitWorkingFuture;
 	};
 
 public:
@@ -129,7 +131,7 @@ public:
 
 	//void addUnit(int x, int y, int team, int type, int level);
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
-	Building *addBuilding(int x, int y, int typeNum, int teamNumber);
+	Building *addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking = 1, Sint32 unitWorkingFuture = 1);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 	bool removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
