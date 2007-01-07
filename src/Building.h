@@ -235,7 +235,6 @@ public:
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 	int verbose;
-	int findUnitCount(int typeNum);
 	std::list<Order *> orderQueue;
 
 protected:

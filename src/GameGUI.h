@@ -354,9 +354,15 @@ private:
 	int smoothedCpuLoad[SMOOTH_CPU_LOAD_WINDOW_LENGTH];
 	unsigned smoothedCpuLoadPos;
 	
-	//determine building type for custom settings
-	int findUnitCount(int typeNum);
-	void setRememberUnit(int testBuilding, int nbReq);
+	// determine building type for custom settings
+	#define NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT 50
+	int unitCount[NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT];
+	
+	//! Init all predefined unit settings to from predefined settings
+	friend class Game;
+	void initUnitCount(void);
+	int getUnitCount(unsigned typeNum);
+	void setUnitCount(unsigned typeNum, int nbReq);
 };
 
 #endif
