@@ -43,6 +43,7 @@
 #include "Unit.h"
 #include "UnitSkin.h"
 #include "Utilities.h"
+#include "GameGUI.h"
 
 #include "Brush.h"
 
@@ -99,41 +100,7 @@ Game::~Game()
 
 void Game::init(GameGUI *gui)
 {
-	//reverting all temporary unit settings to predefined settings
-	globalContainer->settings.warflagUnitTemp = globalContainer->settings.warflagUnit;
-	globalContainer->settings.clearflagUnitTemp = globalContainer->settings.clearflagUnit;
-	globalContainer->settings.exploreflagUnitTemp = globalContainer->settings.exploreflagUnit;
-	globalContainer->settings.swarmUnitTemp0c = globalContainer->settings.swarmUnit0c;
-	globalContainer->settings.swarmUnitTemp0 = globalContainer->settings.swarmUnit0;
-	globalContainer->settings.innUnitTemp0c = globalContainer->settings.innUnit0c;
-	globalContainer->settings.innUnitTemp0 = globalContainer->settings.innUnit0;
-	globalContainer->settings.innUnitTemp1c = globalContainer->settings.innUnit1c;
-	globalContainer->settings.innUnitTemp1 = globalContainer->settings.innUnit1;
-	globalContainer->settings.innUnitTemp2c = globalContainer->settings.innUnit2c;
-	globalContainer->settings.innUnitTemp2 = globalContainer->settings.innUnit2;
-	globalContainer->settings.hospitalUnitTemp0c = globalContainer->settings.hospitalUnit0c;
-	globalContainer->settings.hospitalUnitTemp1c = globalContainer->settings.hospitalUnit1c;
-	globalContainer->settings.hospitalUnitTemp2c = globalContainer->settings.hospitalUnit2c;
-	globalContainer->settings.racetrackUnitTemp0c = globalContainer->settings.racetrackUnit0c;
-	globalContainer->settings.racetrackUnitTemp1c = globalContainer->settings.racetrackUnit1c;
-	globalContainer->settings.racetrackUnitTemp2c = globalContainer->settings.racetrackUnit2c;
-	globalContainer->settings.swimmingpoolUnitTemp0c = globalContainer->settings.swimmingpoolUnit0c;
-	globalContainer->settings.swimmingpoolUnitTemp1c = globalContainer->settings.swimmingpoolUnit1c;
-	globalContainer->settings.swimmingpoolUnitTemp2c = globalContainer->settings.swimmingpoolUnit2c;
-	globalContainer->settings.barracksUnitTemp0c = globalContainer->settings.barracksUnit0c;
-	globalContainer->settings.barracksUnitTemp1c = globalContainer->settings.barracksUnit1c;
-	globalContainer->settings.barracksUnitTemp2c = globalContainer->settings.barracksUnit2c;
-	globalContainer->settings.schoolUnitTemp0c = globalContainer->settings.schoolUnit0c;
-	globalContainer->settings.schoolUnitTemp1c = globalContainer->settings.schoolUnit1c;
-	globalContainer->settings.schoolUnitTemp2c = globalContainer->settings.schoolUnit2c;
-	globalContainer->settings.defencetowerUnitTemp0c = globalContainer->settings.defencetowerUnit0c;
-	globalContainer->settings.defencetowerUnitTemp0 = globalContainer->settings.defencetowerUnit0;
-	globalContainer->settings.defencetowerUnitTemp1c = globalContainer->settings.defencetowerUnit1c;
-	globalContainer->settings.defencetowerUnitTemp1 = globalContainer->settings.defencetowerUnit1;
-	globalContainer->settings.defencetowerUnitTemp2c = globalContainer->settings.defencetowerUnit2c;
-	globalContainer->settings.defencetowerUnitTemp2 = globalContainer->settings.defencetowerUnit2;
-	globalContainer->settings.stonewallUnitTemp0c = globalContainer->settings.stonewallUnit0c;
-	globalContainer->settings.marketUnitTemp0c = globalContainer->settings.marketUnit0c;
+	gui->initUnitCount();
 	
 	this->gui=gui;
 	buildProjects.clear();

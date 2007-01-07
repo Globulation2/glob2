@@ -993,7 +993,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->typeNum, nbReq);
+							setUnitCount(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
@@ -1001,7 +1001,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
 							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->typeNum, nbReq);
+							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1020,7 +1020,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->typeNum, nbReq);
+							setUnitCount(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal>0) &&
@@ -1028,7 +1028,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
 							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->typeNum, nbReq);
+							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1132,8 +1132,8 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	if (building->owner->teamNumber != localTeamNo)
 		return;
 	int typeNum = building->typeNum + 1; //determines type of updated building
-	int unitWorking = findUnitCount(typeNum);
-	int unitWorkingFuture = findUnitCount(typeNum+1);
+	int unitWorking = getUnitCount(typeNum);
+	int unitWorkingFuture = getUnitCount(typeNum+1);
 	if ((building->hp < buildingType->hpMax) && repair)
 	{
 		// repair
@@ -1185,7 +1185,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->typeNum, nbReq);
+							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1200,7 +1200,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setRememberUnit(selBuild->typeNum, nbReq);
+							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1613,8 +1613,8 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		else
 			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
 		
-		int unitWorking = findUnitCount(typeNum);
-		int unitWorkingFuture = findUnitCount(typeNum+1);
+		int unitWorking = getUnitCount(typeNum);
+		int unitWorkingFuture = getUnitCount(typeNum+1);
 		
 		if (isRoom)
 		{
@@ -1799,7 +1799,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
 					}
 				}
-				setRememberUnit(selBuild->typeNum, nbReq);				
+				setUnitCount(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
@@ -1834,7 +1834,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
 					}
 				}
-				setRememberUnit(selBuild->typeNum, nbReq);
+				setUnitCount(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
@@ -4216,218 +4216,70 @@ void GameGUI::addMark(MapMarkOrder *mmo)
 	markList.push_front(mark);
 }
 
-int GameGUI::findUnitCount(int typeNum)
+void GameGUI::initUnitCount(void)
 {
-	int unitCount = 0; //for buildings with that do not need units
-	//implementing custom settings as defined in either settings or earlier in-game
-	if (typeNum == 0)
-		unitCount = globalContainer->settings.swarmUnitTemp0c;
-				
-	if (typeNum == 1)
-		unitCount = globalContainer->settings.swarmUnitTemp0;
-		
-	if (typeNum == 2)
-		unitCount = globalContainer->settings.innUnitTemp0c;
-		
-	if (typeNum == 3)
-		unitCount =	globalContainer->settings.innUnitTemp0;
-			
-	if (typeNum == 4)
-		unitCount =	globalContainer->settings.innUnitTemp1c;
-		
-	if (typeNum == 5)
-		unitCount =	globalContainer->settings.innUnitTemp1;
-	
-	if (typeNum == 6)
-		unitCount =	globalContainer->settings.innUnitTemp2c;
-		
-	if (typeNum == 7)
-		unitCount =	globalContainer->settings.innUnitTemp2;
-		
-	if (typeNum == 8)
-		unitCount =	globalContainer->settings.hospitalUnitTemp0c;
-		
-	if (typeNum == 10)
-		unitCount =	globalContainer->settings.hospitalUnitTemp1c;
-		
-	if (typeNum == 12)
-		unitCount =	globalContainer->settings.hospitalUnitTemp2c;
-	
-	if (typeNum == 14)
-		unitCount =	globalContainer->settings.racetrackUnitTemp0c;
-		
-	if (typeNum == 16)
-		unitCount =	globalContainer->settings.racetrackUnitTemp1c;
-	
-	if (typeNum == 18)
-		unitCount =	globalContainer->settings.racetrackUnitTemp2c;
-		
-	if (typeNum == 20)
-		unitCount =	globalContainer->settings.swimmingpoolUnitTemp0c;
-		
-	if (typeNum == 22)
-		unitCount =	globalContainer->settings.swimmingpoolUnitTemp1c;
-		
-	if (typeNum == 24)
-		unitCount =	globalContainer->settings.swimmingpoolUnitTemp2c;
-		
-	if (typeNum == 26)
-		unitCount =	globalContainer->settings.barracksUnitTemp0c;
-		
-	if (typeNum == 28)
-		unitCount =	globalContainer->settings.barracksUnitTemp1c;
-	
-	if (typeNum == 30)
-		unitCount =	globalContainer->settings.barracksUnitTemp2c;
-		
-	if (typeNum == 32)
-		unitCount =	globalContainer->settings.schoolUnitTemp0c;
-		
-	if (typeNum == 34)
-		unitCount =	globalContainer->settings.schoolUnitTemp1c;
-		
-	if (typeNum == 36)
-		unitCount =	globalContainer->settings.schoolUnitTemp2c;
-		
-	if (typeNum == 38)
-		unitCount =	globalContainer->settings.defencetowerUnitTemp0c;
-	
-	if (typeNum == 39)
-		unitCount =	globalContainer->settings.defencetowerUnitTemp0;
-		
-	if (typeNum == 40)
-		unitCount =	globalContainer->settings.defencetowerUnitTemp1c;
-	
-	if (typeNum == 41)
-		unitCount =	globalContainer->settings.defencetowerUnitTemp1;
-		
-	if (typeNum == 42)
-		unitCount =	globalContainer->settings.defencetowerUnitTemp2c;
-		
-	if (typeNum == 43)
-		unitCount =	globalContainer->settings.defencetowerUnitTemp2;
-		
-	if (typeNum == 44)
-		unitCount =	globalContainer->settings.exploreflagUnitTemp;
-		
-	if (typeNum == 45)
-		unitCount =	globalContainer->settings.warflagUnitTemp;
-		
-	if (typeNum == 46)
-		unitCount =	globalContainer->settings.clearflagUnitTemp;
-		
-	if (typeNum == 47)
-		unitCount =	globalContainer->settings.stonewallUnitTemp0c;
-		
-	if (typeNum == 49)
-		unitCount =	globalContainer->settings.marketUnitTemp0c;	
-
-	return unitCount;
+	unitCount[0] = globalContainer->settings.swarmUnit0c;
+	unitCount[1] = globalContainer->settings.swarmUnit0;
+	unitCount[2] = globalContainer->settings.innUnit0c;
+	unitCount[3] = globalContainer->settings.innUnit0;
+	unitCount[4] = globalContainer->settings.innUnit1c;
+	unitCount[5] = globalContainer->settings.innUnit1;
+	unitCount[6] = globalContainer->settings.innUnit2c;
+	unitCount[7] = globalContainer->settings.innUnit2;
+	unitCount[8] = globalContainer->settings.hospitalUnit0c;
+	unitCount[9] = 1; // not used in settings
+	unitCount[10] = globalContainer->settings.hospitalUnit1c;
+	unitCount[11] = 1; // not used in settings
+	unitCount[12] = globalContainer->settings.hospitalUnit2c;
+	unitCount[13] = 1; // not used in settings
+	unitCount[14] = globalContainer->settings.racetrackUnit0c;
+	unitCount[15] = 1; // not used in settings
+	unitCount[16] = globalContainer->settings.racetrackUnit1c;
+	unitCount[17] = 1; // not used in settings
+	unitCount[18] = globalContainer->settings.racetrackUnit2c;
+	unitCount[19] = 1; // not used in settings
+	unitCount[20] = globalContainer->settings.swimmingpoolUnit0c;
+	unitCount[21] = 1; // not used in settings
+	unitCount[22] = globalContainer->settings.swimmingpoolUnit1c;
+	unitCount[23] = 1; // not used in settings
+	unitCount[24] = globalContainer->settings.swimmingpoolUnit2c;
+	unitCount[25] = 1; // not used in settings
+	unitCount[26] = globalContainer->settings.barracksUnit0c;
+	unitCount[27] = 1; // not used in settings
+	unitCount[28] = globalContainer->settings.barracksUnit1c;
+	unitCount[29] = 1; // not used in settings
+	unitCount[30] = globalContainer->settings.barracksUnit2c;
+	unitCount[31] = 1; // not used in settings
+	unitCount[32] = globalContainer->settings.schoolUnit0c;
+	unitCount[33] = 1; // not used in settings
+	unitCount[34] = globalContainer->settings.schoolUnit1c;
+	unitCount[35] = 1; // not used in settings
+	unitCount[36] = globalContainer->settings.schoolUnit2c;
+	unitCount[37] = 1; // not used in settings
+	unitCount[38] = globalContainer->settings.defencetowerUnit0c;
+	unitCount[39] = globalContainer->settings.defencetowerUnit0;
+	unitCount[40] = globalContainer->settings.defencetowerUnit1c;
+	unitCount[41] = globalContainer->settings.defencetowerUnit1;
+	unitCount[42] = globalContainer->settings.defencetowerUnit2c;
+	unitCount[43] = globalContainer->settings.defencetowerUnit2;
+	unitCount[44] = globalContainer->settings.exploreflagUnit;
+	unitCount[45] = globalContainer->settings.warflagUnit;
+	unitCount[46] = globalContainer->settings.clearflagUnit;
+	unitCount[47] = globalContainer->settings.stonewallUnit0c;
+	unitCount[48] = 1; // not used in settings
+	unitCount[49] = globalContainer->settings.marketUnit0c;	
 }
-void GameGUI::setRememberUnit(int testBuilding, int nbReq)
-{//modifies in-game unit settings if active
-	if (globalContainer->settings.rememberUnit == 1)
-	{
-		if (testBuilding == 0)
-			globalContainer->settings.swarmUnitTemp0c = nbReq;
-		
-		if (testBuilding == 1)
-			globalContainer->settings.swarmUnitTemp0 = nbReq;
-		
-		if (testBuilding == 2)
-			globalContainer->settings.innUnitTemp0c = nbReq;
-		
-		if (testBuilding == 3)
-			globalContainer->settings.innUnitTemp0 = nbReq;
-			
-		if (testBuilding == 4)
-			globalContainer->settings.innUnitTemp1c = nbReq;
-		
-		if (testBuilding == 5)
-			globalContainer->settings.innUnitTemp1 = nbReq;
-		
-		if (testBuilding == 6)
-			globalContainer->settings.innUnitTemp2c = nbReq;
-			
-		if (testBuilding == 7)
-			globalContainer->settings.innUnitTemp2 = nbReq;
-			
-		if (testBuilding == 8)
-			globalContainer->settings.hospitalUnitTemp0c = nbReq;
-			
-		if (testBuilding == 10)
-			globalContainer->settings.hospitalUnitTemp1c = nbReq;
-			
-		if (testBuilding == 12)
-			globalContainer->settings.hospitalUnitTemp2c = nbReq;
-		
-		if (testBuilding == 14)
-			globalContainer->settings.racetrackUnitTemp0c = nbReq;
-			
-		if (testBuilding == 16)
-			globalContainer->settings.racetrackUnitTemp1c = nbReq;
-		
-		if (testBuilding == 18)
-			globalContainer->settings.racetrackUnitTemp2c = nbReq;
-			
-		if (testBuilding == 20)
-			globalContainer->settings.swimmingpoolUnitTemp0c = nbReq;
-			
-		if (testBuilding == 22)
-			globalContainer->settings.swimmingpoolUnitTemp1c = nbReq;
-			
-		if (testBuilding == 24)
-			globalContainer->settings.swimmingpoolUnitTemp2c = nbReq;
-			
-		if (testBuilding == 26)
-			globalContainer->settings.barracksUnitTemp0c = nbReq;
-			
-		if (testBuilding == 28)
-			globalContainer->settings.barracksUnitTemp1c = nbReq;
-		
-		if (testBuilding == 30)
-			globalContainer->settings.barracksUnitTemp2c = nbReq;
-			
-		if (testBuilding == 32)
-			globalContainer->settings.schoolUnitTemp0c = nbReq;
-			
-		if (testBuilding == 34)
-			globalContainer->settings.schoolUnitTemp1c = nbReq;
-			
-		if (testBuilding == 36)
-			globalContainer->settings.schoolUnitTemp2c = nbReq;
-			
-		if (testBuilding == 38)
-			globalContainer->settings.defencetowerUnitTemp0c = nbReq;
-		
-		if (testBuilding == 39)
-			globalContainer->settings.defencetowerUnitTemp0 = nbReq;
-			
-		if (testBuilding == 40)
-			globalContainer->settings.defencetowerUnitTemp1c = nbReq;
-		
-		if (testBuilding == 41)
-			globalContainer->settings.defencetowerUnitTemp1 = nbReq;
-			
-		if (testBuilding == 42)
-			globalContainer->settings.defencetowerUnitTemp2c = nbReq;
-			
-		if (testBuilding == 43)
-			globalContainer->settings.defencetowerUnitTemp2 = nbReq;
-			
-		if (testBuilding == 44)
-			globalContainer->settings.exploreflagUnitTemp = nbReq;
-			
-		if (testBuilding == 45)
-			globalContainer->settings.warflagUnitTemp = nbReq;
-			
-		if (testBuilding == 46)
-			globalContainer->settings.clearflagUnitTemp = nbReq;
-			
-		if (testBuilding == 47)
-			globalContainer->settings.stonewallUnitTemp0c = nbReq;
-			
-		if (testBuilding == 49)
-			globalContainer->settings.marketUnitTemp0c = nbReq;
-	}
+
+int GameGUI::getUnitCount(unsigned typeNum)
+{
+	if (typeNum < NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT)
+		return unitCount[typeNum];
+	else
+		return 1;
+}
+
+void GameGUI::setUnitCount(unsigned typeNum, int nbReq)
+{
+	if (typeNum < NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT)
+		unitCount[typeNum] = nbReq;
 }
