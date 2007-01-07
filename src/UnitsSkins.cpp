@@ -28,7 +28,9 @@
 //! Constructor, open a stream from data/unitsSkins.txt
 UnitsSkins::UnitsSkins()
 {
-	stream = new TextInputStream(Toolkit::getFileManager()->openInputStreamBackend("data/unitsSkins.txt"));
+	StreamBackend *backend = Toolkit::getFileManager()->openInputStreamBackend("data/unitsSkins.txt");
+	stream = new TextInputStream(backend);
+	delete backend;
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "UnitsSkins::UnitsSkins() : error, can't open file data/unitsSkins.txt." << std::endl;
