@@ -367,7 +367,7 @@ void TeamStats::step(Team *team, bool reloaded)
 			stat.totalDefensePower += (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
 			if(b->type->shootDamage > 0)
 				stat.spreadPoint(stat.defenseMap, stat.defenseMax, b->posX, b->posY, team->map, (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE, b->type->shootingRange*2);
-			if (!b->type->isBuildingSite)
+			if ((!b->type->isBuildingSite) && (!b->type->isVirtual))
 				stat.totalBuilding++;
 		}
 	}
