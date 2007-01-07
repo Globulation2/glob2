@@ -92,6 +92,8 @@ public:
 	{
 		int centerX, centerY;
 		int minX, minY, maxX, maxY;
+		
+		AreaDimensions() { minX = minY = maxX = maxY = centerX = centerY = 0; }
 	};
 	
 	// FIXME : handle wrap !!!!!!!!!!
