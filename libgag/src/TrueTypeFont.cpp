@@ -24,6 +24,11 @@
 #include <assert.h>
 #include <iostream>
 
+#ifdef HAVE_FRIBIDI 
+#include <fribidi/fribidi.h>
+#endif
+
+using namespace std;
 #define MAX_CACHE_SIZE 128
 
 namespace GAGCore
@@ -179,7 +184,9 @@ namespace GAGCore
 			c.g = styleStack.top().color.g;
 			c.b = styleStack.top().color.b;
 			c.unused = styleStack.top().color.a;
-			
+#ifdef HAVE_FRIBIDI 
+			text=getBIDIString(text);
+#endif			
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
 			if (temp == NULL)
 				return NULL;
@@ -210,7 +217,29 @@ namespace GAGCore
 		now++;
 		return s;
 	}
-	
+#ifdef HAVE_FRIBIDI 
+	const char *TrueTypeFont::getBIDIString (const char *text)
+	{
+		char		*c_str = (char *) text;
+		int		len = strlen(c_str);
+		FriBidiChar	*bidi_logical = new FriBidiChar[len + 2];
+		FriBidiChar	*bidi_visual = new FriBidiChar[len + 2];
+        	FriBidiStrIndex *ltov, *vtol;
+		FriBidiLevel *levels;
+	        FriBidiStrIndex new_len;
+		char		*utf8str = new char[4*len + 1];	//assume worst case here (all 4 Byte characters)
+		FriBidiParType	base_dir = FRIBIDI_PAR_ON;
+		int n;
+		fribidi_set_mirroring (true);
+		n = fribidi_charset_to_unicode (fribidi_parse_charset ("UTF-8"),c_str, len, bidi_logical);
+		fribidi_log2vis(bidi_logical, n, &base_dir, bidi_visual, NULL, NULL, NULL);
+		n =  fribidi_remove_bidi_marks (bidi_visual, n, NULL, NULL, NULL);
+		fribidi_unicode_to_charset (fribidi_parse_charset ("UTF-8"),bidi_visual, n, utf8str);
+		delete bidi_logical;
+		delete bidi_visual;
+		return utf8str;	
+	}
+#endif	
 	void TrueTypeFont::cleanupCache(void)
 	{
 		// when cache is too big, remove the first element
