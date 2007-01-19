@@ -64,7 +64,9 @@ namespace GAGCore
 		DrawableSurface *getStringCached(const char *text);
 		//! If cache is too big, remove old entry
 		void cleanupCache(void);
-		
+#ifdef HAVE_FRIBIDI 
+		const char *getBIDIString (const char *text);
+#endif		
 	protected:
 		TTF_Font *font;
 		std::stack<Style> styleStack;
