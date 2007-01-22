@@ -102,12 +102,14 @@ namespace GAGCore
 		GLenum _sfactor, _dfactor;
 		bool isTextureSRectangle;
 		bool useATIWorkaround;
+		unsigned alocatedTextureCount;
 	
 		GLState(void)
 		{
 			resetCache();
 			isTextureSRectangle = false;
 			useATIWorkaround = false;
+			alocatedTextureCount = 0;
 		}
 		
 		void resetCache(void)
@@ -285,6 +287,7 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
+			glState.alocatedTextureCount++;
 			initTextureSize();
 		}
 		#endif
@@ -362,6 +365,7 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
+			glState.alocatedTextureCount--;
 			glState.resetCache();
 		}
 		#endif
@@ -1909,10 +1913,15 @@ namespace GAGCore
 			
 			#ifdef HAVE_OPENGL
 			if (optionFlags & GraphicContext::USEGPU)
+			{
 				SDL_GL_SwapBuffers();
+				fprintf(stderr, "%d allocated GPU textures\n", glState.alocatedTextureCount);
+			}
 			else
 			#endif
+			{
 				SDL_Flip(sdlsurface);
+			}
 		}
 	}
 	
