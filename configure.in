@@ -114,15 +114,15 @@ fi # from --disable-opengl
 
 
 dnl fribidi support
-have_fribidi=no
-AC_ARG_ENABLE(fribidi, [  --enable-fribidi        Enable the fribidi font renderer (default is disable)],have_fribidi=yes,)
-
+have_fribidi=yes
+AC_ARG_ENABLE(fribidi, [  --disable-fribidi       Disable the fribidi font renderer even if available (default is enabled)],have_fribidi=no,)
 if test "$have_fribidi" = "yes"; then
-	AC_CHECK_HEADER(fribidi/fribidi.h,,AC_MSG_ERROR([*** fribidi headers not found !]))
-	AC_CHECK_LIB(fribidi,fribidi_log2vis,,AC_MSG_ERROR([*** fribidi library not found.]))
+	AC_CHECK_HEADER(fribidi/fribidi.h,,have_fribidi=no)
+	AC_CHECK_LIB(fribidi,fribidi_log2vis,,have_fribidi=no)
+fi
+if test "$have_fribidi" = "yes"; then
 	AC_DEFINE([HAVE_FRIBIDI],[],[Defined when FRIBIDI support is present and compiled])
 fi
-
 
 
 AC_MSG_CHECKING(for Mingw32)
