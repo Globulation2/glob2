@@ -65,7 +65,7 @@ namespace GAGCore
 		//! If cache is too big, remove old entry
 		void cleanupCache(void);
 #ifdef HAVE_FRIBIDI 
-		const char *getBIDIString (const char *text);
+		char *getBIDIString (const char *text);
 #endif		
 	protected:
 		TTF_Font *font;
