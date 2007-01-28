@@ -774,14 +774,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	unsigned int totalGSWFromUI=descriptor.waterRatio+descriptor.sandRatio+descriptor.grassRatio+descriptor.desertRatio+descriptor.fruitRatio;
 	/// respect symmetry-requirements
 	unsigned int wPower2Divider=0, hPower2Divider=0;
-
-
-
-int power2Divider=2;
-
-
-
-
+	int power2Divider=descriptor.logRepeatAreaTimes;
 	for (unsigned int i = 0; i<power2Divider; i++)
 		if (w/(pow(2,wPower2Divider))>h/(pow(2,hPower2Divider)))
 			wPower2Divider++;

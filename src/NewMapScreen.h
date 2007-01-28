@@ -74,8 +74,9 @@ private:
 	Ratio *oldIslandSize;
 	Number *oldBeach;
 	Number *nbWorkers;
+	Number *logRepeatAreaTimes;
 	Text *numberOfTeamText, *numberOfWorkerText, *craterDensityText, *extraIslandsText;
-	Text *ratioText, *waterText, *sandText, *grassText, *desertText, *wheatText, *woodText, *stoneText, *algaeText, *fruitText, *smoothingText, *riverDiameterText;
+	Text *ratioText, *waterText, *sandText, *grassText, *desertText, *wheatText, *woodText, *stoneText, *algaeText, *fruitText, *smoothingText, *riverDiameterText, *areaTimesText;
 	Text *oldIslandSizeText, *oldBeachSizeText;
 	
 

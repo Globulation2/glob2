@@ -66,6 +66,16 @@ NewMapScreen::NewMapScreen()
 	mapSizeY->add(512);
 	mapSizeY->setNth(descriptor.hDec-6);
 	addWidget(mapSizeY);
+
+	logRepeatAreaTimes=new Number(310, 75, 114, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	logRepeatAreaTimes->add(1);
+	logRepeatAreaTimes->add(2);
+	logRepeatAreaTimes->add(4);
+	logRepeatAreaTimes->add(8);
+	logRepeatAreaTimes->add(16);
+	logRepeatAreaTimes->add(32);
+	logRepeatAreaTimes->visible=false;
+	addWidget(logRepeatAreaTimes);
 	
 	methodes=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
 	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
@@ -126,6 +136,10 @@ NewMapScreen::NewMapScreen()
 	numberOfTeamText=new Text(430, 100, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[number of teams]"));
 	numberOfTeamText->visible=false;
 	addWidget(numberOfTeamText);
+
+	areaTimesText=new Text(430, 75, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[repeat area]"));
+	areaTimesText->visible=false;
+	addWidget(areaTimesText);
 
 	numberOfWorkerText=new Text (430, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[workers]"));
 	numberOfWorkerText->visible=false;
@@ -255,7 +269,6 @@ NewMapScreen::NewMapScreen()
 	smoothingText=new Text(480, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
 	smoothingText->visible=false;
 	addWidget(smoothingText);
-	
 	// eOLDISLANDS
 
 	oldIslandSize=new Ratio(310, 140, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.oldIslandSize, "menu");
@@ -311,6 +324,8 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		// eOLDISLANDS
 		descriptor.oldBeach=oldBeach->getNth();
 		descriptor.nbWorkers=nbWorkers->getNth()+1;
+
+		descriptor.logRepeatAreaTimes=logRepeatAreaTimes->getNth();
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
@@ -345,6 +360,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				oldIslandSize->visible=oldIslandSizeText->visible=
 				riverDiameter->visible=riverDiameterText->visible=
 				fruitRatio->visible=fruitText->visible=
+				logRepeatAreaTimes->visible=areaTimesText->visible=
 				false;
 			
 				// not eUNIFORM
@@ -368,6 +384,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						stoneRatio->visible=stoneText->visible=
 						algaeRatio->visible=algaeText->visible=
 						fruitRatio->visible=fruitText->visible=
+						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eRIVER:
@@ -383,6 +400,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						algaeRatio->visible=algaeText->visible=
 						riverDiameter->visible=riverDiameterText->visible=
 						fruitRatio->visible=fruitText->visible=
+						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eISLANDS:
@@ -398,6 +416,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						algaeRatio->visible=algaeText->visible=
 						extraIslands->visible=extraIslandsText->visible=
 						fruitRatio->visible=fruitText->visible=
+						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eCRATERLAKES:
@@ -413,6 +432,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						algaeRatio->visible=algaeText->visible=
 						craterDensity->visible=craterDensityText->visible=
 						fruitRatio->visible=fruitText->visible=
+						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
 					case  MapGenerationDescriptor::eOLDRANDOM:

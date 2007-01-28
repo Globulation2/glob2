@@ -69,6 +69,8 @@ public:
 	Sint32 oldIslandSize, oldBeach;
 	Sint32 smooth;
 	Sint32 ressource[MAX_NB_RESSOURCES];
+	///n=2^n-times the same landscape. So 0=all random.
+	Uint32 logRepeatAreaTimes;
 
 	Sint32 nbTeams, nbWorkers;
 	
@@ -78,7 +80,7 @@ public:
 	Sint32 bootX[32];
 	Sint32 bootY[32];
 public:
-	enum {DATA_SIZE=96+MAX_NB_RESSOURCES*4};
+	enum {DATA_SIZE=100+MAX_NB_RESSOURCES*4};
 protected:
 	//! Serialized form of MapGenerationDescriptor
 	Uint8 data[DATA_SIZE];
