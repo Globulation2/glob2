@@ -251,6 +251,9 @@ void GameGUI::init()
  	for (size_t i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
 		smoothedCpuLoad[i]=0;
 	smoothedCpuLoadPos=0;
+ 	for (int i=0; i<NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT; i++)
+		unitCount[i] = 1;
+
 }
 
 void GameGUI::adjustLocalTeam()
@@ -4218,7 +4221,11 @@ void GameGUI::addMark(MapMarkOrder *mmo)
 
 void GameGUI::initUnitCount(void)
 {
-	unitCount[0] = globalContainer->settings.swarmUnit0c;
+/*	std::cout << (int)(globalContainer->settings.swarmUnit0c) << std::endl;
+	std::cout << unitCount << std::endl;
+	std::cout << "test" << std::endl;
+	unitCount[0] = (int)(globalContainer->settings.swarmUnit0c);
+	std::cout << unitCount[0] << std::endl;
 	unitCount[1] = globalContainer->settings.swarmUnit0;
 	unitCount[2] = globalContainer->settings.innUnit0c;
 	unitCount[3] = globalContainer->settings.innUnit0;
@@ -4257,6 +4264,7 @@ void GameGUI::initUnitCount(void)
 	unitCount[36] = globalContainer->settings.schoolUnit2c;
 	unitCount[37] = 1; // not used in settings
 	unitCount[38] = globalContainer->settings.defencetowerUnit0c;
+	fprintf(stderr, "debuga\n");
 	unitCount[39] = globalContainer->settings.defencetowerUnit0;
 	unitCount[40] = globalContainer->settings.defencetowerUnit1c;
 	unitCount[41] = globalContainer->settings.defencetowerUnit1;
@@ -4267,7 +4275,7 @@ void GameGUI::initUnitCount(void)
 	unitCount[46] = globalContainer->settings.clearflagUnit;
 	unitCount[47] = globalContainer->settings.stonewallUnit0c;
 	unitCount[48] = 1; // not used in settings
-	unitCount[49] = globalContainer->settings.marketUnit0c;	
+	unitCount[49] = globalContainer->settings.marketUnit0c;	*/
 }
 
 int GameGUI::getUnitCount(unsigned typeNum)
