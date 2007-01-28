@@ -441,3 +441,4 @@
 [Unit editor]
 [skin]
 [hungryness]
+[repeat area]

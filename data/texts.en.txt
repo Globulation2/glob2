@@ -884,3 +884,5 @@ Unit editor
 Display
 [hungryness]
 Hungryness
+[repeat area]
+times the same landscape
