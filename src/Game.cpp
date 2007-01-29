@@ -46,6 +46,7 @@
 #include "GameGUI.h"
 
 #include "Brush.h"
+#include "PerlinNoise.h"
 
 #define BULLET_IMGID 0
 
@@ -1738,7 +1739,8 @@ struct BuildingPosComp
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	static int cloudDisplacement = -1023;
+	static int waterDisplacement = -1023;
+	static int cloudDisplacement = 0;
 	int id;
 	int left=(sx>>5);
 	int top=(sy>>5);
@@ -1746,17 +1748,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	int bot=((sy+sh+31)>>5);
 	std::set<Building *, BuildingPosComp> buildingList;
 
-	// compute cloud coordinates, used for displacement of clouds but also water
-	if (cloudDisplacement > 0)
-		cloudDisplacement -= 1024;
+	// compute water coordinates, used for displacement of water
+	if (waterDisplacement > 0)
+		waterDisplacement -= 1024;
 	else
-		cloudDisplacement++;
+		waterDisplacement++;
+	cloudDisplacement++;
 	
 	// we draw water
 	int waterStartX = -((viewportX<<5) % 512);
 	int waterStartY = -((viewportY<<5) % 512);
 	for (int y=waterStartY; y<sh; y += 512)
-		for (int x=waterStartX + (cloudDisplacement / 2); x<sw; x += 512)
+		for (int x=waterStartX + (waterDisplacement / 2); x<sw; x += 512)
 			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
 	
 	// we draw the terrains, eventually with debug rects:
@@ -2332,9 +2335,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	// draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		for (int y=waterStartY + (cloudDisplacement % -512); y<sh; y+=512)
+		/*for (int y=waterStartY + (cloudDisplacement % -512); y<sh; y+=512)
 			for (int x=waterStartX + (cloudDisplacement % -512); x<sw; x+=512)
-				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);
+				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);*/
+		static PerlinNoise pn;//=pn.reseed();
+		static int granularity=5;//on slow PCs change this to 10 before switching off these clouds
+		for (int y=0; y<sh; y+=granularity)
+			for (int x=0; x<sw; x+=granularity)
+				globalContainer->gfx->drawFilledRect(
+					x,y,granularity,granularity,
+					0,0,0,
+					(int)(80.0*(1.0+pn.Noise(
+						(float)(x+(viewportX<<5)-cloudDisplacement)/90.0,
+						(float)(y+(viewportY<<5)-cloudDisplacement)/90.0,
+						(float)cloudDisplacement/100.0)
+					))
+				);//Noise is taken from a shifted coordinate so clouds move. the 3rd dimension of noise makes the clouds change.
 	}
 	
 	// draw black & shading
