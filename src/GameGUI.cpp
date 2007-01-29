@@ -4221,11 +4221,7 @@ void GameGUI::addMark(MapMarkOrder *mmo)
 
 void GameGUI::initUnitCount(void)
 {
-/*	std::cout << (int)(globalContainer->settings.swarmUnit0c) << std::endl;
-	std::cout << unitCount << std::endl;
-	std::cout << "test" << std::endl;
-	unitCount[0] = (int)(globalContainer->settings.swarmUnit0c);
-	std::cout << unitCount[0] << std::endl;
+	unitCount[0] = globalContainer->settings.swarmUnit0c;
 	unitCount[1] = globalContainer->settings.swarmUnit0;
 	unitCount[2] = globalContainer->settings.innUnit0c;
 	unitCount[3] = globalContainer->settings.innUnit0;
@@ -4264,7 +4260,6 @@ void GameGUI::initUnitCount(void)
 	unitCount[36] = globalContainer->settings.schoolUnit2c;
 	unitCount[37] = 1; // not used in settings
 	unitCount[38] = globalContainer->settings.defencetowerUnit0c;
-	fprintf(stderr, "debuga\n");
 	unitCount[39] = globalContainer->settings.defencetowerUnit0;
 	unitCount[40] = globalContainer->settings.defencetowerUnit1c;
 	unitCount[41] = globalContainer->settings.defencetowerUnit1;
@@ -4275,7 +4270,7 @@ void GameGUI::initUnitCount(void)
 	unitCount[46] = globalContainer->settings.clearflagUnit;
 	unitCount[47] = globalContainer->settings.stonewallUnit0c;
 	unitCount[48] = 1; // not used in settings
-	unitCount[49] = globalContainer->settings.marketUnit0c;	*/
+	unitCount[49] = globalContainer->settings.marketUnit0c;
 }
 
 int GameGUI::getUnitCount(unsigned typeNum)
