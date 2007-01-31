@@ -251,9 +251,12 @@ void GameGUI::init()
  	for (size_t i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
 		smoothedCpuLoad[i]=0;
 	smoothedCpuLoadPos=0;
+
  	for (int i=0; i<NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT; i++)
 		unitCount[i] = 1;
 
+	campaign=NULL;
+	missionName="";
 }
 
 void GameGUI::adjustLocalTeam()
@@ -3601,16 +3604,6 @@ void GameGUI::checkWonConditions(void)
 	{
 		if (inGameMenu==IGM_NONE)
 		{
-			// update campaign if a campaign game was played
-			if (globalContainer->settings.campaignPlayed == globalContainer->settings.campaignPlace)
-			{
-				if (globalContainer->settings.campaignPlayed < 7)
-					{
-						globalContainer->settings.campaignPlace++;
-						globalContainer->settings.campaignPlayed++;
-						globalContainer->settings.save();
-					}
-			}
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Total prestige reached]"), true);
 			hasEndOfGameDialogBeenShown=true;
@@ -3631,15 +3624,9 @@ void GameGUI::checkWonConditions(void)
 	{
 		if (inGameMenu==IGM_NONE)
 		{
-			// update campaign if a campaign game was played
-			if (globalContainer->settings.campaignPlayed == globalContainer->settings.campaignPlace)
+			if(campaign!=NULL)
 			{
-				if (globalContainer->settings.campaignPlayed < 7)
-					{
-						globalContainer->settings.campaignPlace++;
-						globalContainer->settings.campaignPlayed++;
-						globalContainer->settings.save();
-					}
+				campaign->unlockAllFrom(missionName);
 			}
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have won]"), true);
@@ -4141,6 +4128,16 @@ void GameGUI::setCpuLoad(int s)
 	smoothedCpuLoad[smoothedCpuLoadPos]=s;
 	smoothedCpuLoadPos=(smoothedCpuLoadPos+1)%SMOOTH_CPU_LOAD_WINDOW_LENGTH;
 }
+
+
+
+void GameGUI::setCampaignGame(Campaign& campaign, const std::string& missionName)
+{
+	this->campaign=&campaign;
+	this->missionName=missionName;
+}
+
+
 
 void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output)
 {

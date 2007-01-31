@@ -605,7 +605,7 @@ AINumbi
 [AICastor]
 AICastor
 [AINicowar]
-Nicowar (unstable)
+Nicowar
 [AIWarrush]
 AIWarrush
 [AIReachToInfinity]
@@ -642,6 +642,30 @@ Attack speed
 New
 [load]
 Load
+[new campaign]
+New Campaign
+[load campaign]
+Load Campaign
+[campaign editor]
+Campaign Editor
+[editing map]
+Editing Map
+[add map]
+Add map
+[edit map]
+Edit Map
+[remove map]
+Remove Map
+[start new campaign]
+Start New Campaign
+[start mission]
+Start Mission
+[unlocked by]
+Unlocked By
+[maps available]
+Maps Available
+[map name]
+Name
 [handmade map]
 Handmade map
 [mapGenerationDescriptor Methodes]

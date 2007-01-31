@@ -30,6 +30,7 @@
 #include "AICastor.h"
 #include "AIToubib.h"
 #include "AIWarrush.h"
+#include "AIOldNicowar.h"
 #include "AINicowar.h"
 #include "AIEcho.h"
 
@@ -56,7 +57,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 			aiImplementation=new AICastor(player);
 		break;
 		case NICOWAR:
-			aiImplementation=new Nicowar::AINicowar(player);
+			aiImplementation=new AIEcho::Echo(new NewNicowar, player);
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
@@ -137,7 +138,13 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AICastor(stream, player, versionMinor);
 		break;
 		case NICOWAR:
-			aiImplementation=new Nicowar::AINicowar(stream, player, versionMinor);
+			if(versionMinor<55)
+				aiImplementation=new Nicowar::AINicowar(stream, player, versionMinor);
+			else
+			{
+				aiImplementation=new AIEcho::Echo(new NewNicowar, player);
+				aiImplementation->load(stream, player, versionMinor);
+			}
 		break;
 		case REACHTOINFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);

@@ -959,12 +959,12 @@ bool Game::load(GAGCore::InputStream *stream)
 	
 	if (session.versionMinor < 37)
 	{
-		nextMap = "";
 		campaignText = "";
 	}
 	else
 	{
-		nextMap = stream->readText("nextMap");
+		if(session.versionMinor < 55)
+			stream->readText("nextMap");
 		campaignText = stream->readText("campaignText");
 	}
 
@@ -1040,7 +1040,6 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 	SAVE_OFFSET(stream, 32, "mapScriptOffset");
 	script.save(stream, this);
 	
-	stream->writeText(nextMap, "nextMap");
 	stream->writeText(campaignText, "campaignText");
 	stream->writeLeaveSection();
 }
@@ -1863,7 +1862,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				
 //				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getExplored(x+viewportX, y+viewportY, 0));
 
-				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((Nicowar::AINicowar*)players[3]->ai->aiImplementation)->getGradientManager().getGradient(Nicowar::Gradient::VillageCenter, Nicowar::Gradient::Resource).getHeight(x+viewportX, y+viewportY));
+//				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((Nicowar::AINicowar*)players[3]->ai->aiImplementation)->getGradientManager().getGradient(Nicowar::Gradient::VillageCenter, Nicowar::Gradient::Resource).getHeight(x+viewportX, y+viewportY));
 				//((AICastor *)players[0].ai->aiImplementation)->wheatCareMap
 			}
 				//if (map.getForbidden(x+viewportX, y+viewportY))

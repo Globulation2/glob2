@@ -51,8 +51,8 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 0;
 	restoreDefaultShortcuts();
-	campaignPlace = 1;
-	campaignPlayed = 0;
+	tempUnit = 1;
+	tempUnitFuture = 1;
 	warflagUnit = 1;
 	clearflagUnit = 1;
 	exploreflagUnit = 1;
@@ -202,7 +202,6 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(warflagUnit);
 		READ_PARSED_INT(clearflagUnit);
 		READ_PARSED_INT(exploreflagUnit);
-		READ_PARSED_INT(campaignPlace);
 		READ_PARSED_INT(swarmUnit0c);
 		READ_PARSED_INT(swarmUnit0);
 		READ_PARSED_INT(innUnit0c);
@@ -294,7 +293,6 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "warflagUnit=%d\n", warflagUnit);
 		Utilities::streamprintf(stream, "clearflagUnit=%d\n", clearflagUnit);
 		Utilities::streamprintf(stream, "exploreflagUnit=%d\n", exploreflagUnit);
-		Utilities::streamprintf(stream, "campaignPlace=%d\n", campaignPlace);
 		Utilities::streamprintf(stream, "swarmUnit0c=%d\n", swarmUnit0c);
 		Utilities::streamprintf(stream, "swarmUnit0=%d\n", swarmUnit0);
 		Utilities::streamprintf(stream, "innUnit0c=%d\n",	innUnit0c);

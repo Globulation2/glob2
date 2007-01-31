@@ -58,8 +58,11 @@ namespace GAGGUI
 		cursPos = 0;
 		textDep = 0;
 		cursorScreenPos = 0;
-		recomputeTextInfos();
-		parent->onAction(this, TEXT_SET, 0, 0);
+		if(parent->getSurface()!=NULL)
+		{
+			recomputeTextInfos();
+			parent->onAction(this, TEXT_SET, 0, 0);
+		}
 	}
 	
 	void TextInput::onSDLMouseButtonDown(SDL_Event *event)

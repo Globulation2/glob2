@@ -33,6 +33,9 @@
 #include "CreditScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "CampaignSelectorScreen.h"
+#include "CampaignEditor.h"
+#include "CampaignMenuScreen.h"
 
 #include <Stream.h>
 #include <BinaryStream.h>
@@ -281,9 +284,41 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::CAMPAIGN:
 			{
-				Engine engine;
-				if (engine.initCampaign() == Engine::EE_NO_ERROR)
-					isRunning = (engine.run() != -1);
+				CampaignChoiceScreen ccs;
+				int rccs=ccs.execute(globalContainer->gfx, 40);
+				if(rccs==CampaignChoiceScreen::NEWCAMPAIGN)
+				{
+					CampaignSelectorScreen css;
+					int rc_css=css.execute(globalContainer->gfx, 40);
+					if(rc_css==CampaignSelectorScreen::OK)
+					{
+						CampaignMenuScreen cms(css.getCampaignName());
+						cms.setNewCampaign();
+						int rc_cms=cms.execute(globalContainer->gfx, 40);
+						if(rc_cms==CampaignMenuScreen::EXIT)
+						{
+						}
+					}
+					else if(rc_css==CampaignSelectorScreen::CANCEL)
+					{
+					}
+				}
+				else if(rccs==CampaignChoiceScreen::LOADCAMPAIGN)
+				{
+					CampaignSelectorScreen css(true);
+					int rc_css=css.execute(globalContainer->gfx, 40);
+					if(rc_css==CampaignSelectorScreen::OK)
+					{
+						CampaignMenuScreen cms(css.getCampaignName());
+						int rc_cms=cms.execute(globalContainer->gfx, 40);
+						if(rc_cms==CampaignMenuScreen::EXIT)
+						{
+						}
+					}
+					else if(rc_css==CampaignSelectorScreen::CANCEL)
+					{
+					}
+				}
 			}
 			break;
 			case MainMenuScreen::TUTORIAL:
@@ -354,7 +389,7 @@ int Glob2::run(int argc, char *argv[])
 			{
 				HowNewMapScreen howNewMapScreen;
 				int rc=howNewMapScreen.execute(globalContainer->gfx, 40);
-				if (rc==HowNewMapScreen::NEW)
+				if (rc==HowNewMapScreen::NEWMAP)
 				{
 					bool retryNewMapScreen=true;
 					while (retryNewMapScreen)
@@ -382,7 +417,7 @@ int Glob2::run(int argc, char *argv[])
 							retryNewMapScreen=false;
 					}
 				}
-				else if (rc==HowNewMapScreen::LOAD)
+				else if (rc==HowNewMapScreen::LOADMAP)
 				{
 					MultiplayersChooseMapScreen multiplayersChooseMapScreen(false);
 					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 40);
@@ -397,12 +432,33 @@ int Glob2::run(int argc, char *argv[])
 					else if (rc==-1)
 						isRunning=false;
 				}
+				else if (rc==HowNewMapScreen::NEWCAMPAIGN)
+				{
+					CampaignEditor ce("");
+					int rc_ce=ce.execute(globalContainer->gfx, 40);
+
+				}
+				else if (rc==HowNewMapScreen::LOADCAMPAIGN)
+				{
+					CampaignSelectorScreen css;
+					int rc_css=css.execute(globalContainer->gfx, 40);
+					if(rc_css==CampaignSelectorScreen::OK)
+					{
+						CampaignEditor ce(css.getCampaignName());
+						int rc_ce=ce.execute(globalContainer->gfx, 40);
+//						if(rc_ce==CampaignEditor::OK)
+					}
+					else if(rc_css==CampaignSelectorScreen::CANCEL)
+					{
+					}
+				}
 				else if (rc==HowNewMapScreen::CANCEL)
 				{
 					// Let's sing.
 				}
 				else
 					assert(false);
+
 			}
 			break;
 			case MainMenuScreen::CREDITS:

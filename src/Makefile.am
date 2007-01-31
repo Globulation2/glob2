@@ -29,6 +29,8 @@ IntBuildingType.h\
 IntBuildingType.cpp\
 AI.cpp \
 AI.h\
+AIOldNicowar.cpp \
+AIOldNicowar.h \
 AINicowar.cpp \
 AINicowar.h \
 AIImplementation.h\
@@ -50,6 +52,14 @@ BuildingType.cpp\
 BuildingType.h\
 Bullet.h\
 Bullet.cpp\
+Campaign.h\
+Campaign.cpp\
+CampaignSelectorScreen.h\
+CampaignSelectorScreen.cpp\
+CampaignEditor.h\
+CampaignEditor.cpp\
+CampaignMenuScreen.h\
+CampaignMenuScreen.cpp\
 CVS\
 Engine.cpp\
 Engine.h\

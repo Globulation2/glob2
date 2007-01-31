@@ -1,6 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+  Copyright (C) 2006 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,16 +16,41 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __CAMPAIGN_SCREEN_H
-#define __CAMPAIGN_SCREEN_H
+#ifndef CAMPAIGN_SELECTOR_SCREEN_H
+#define CAMPAIGN_SELECTOR_SCREEN_H
 
 #include "Glob2Screen.h"
+#include "GUIText.h"
+#include "GUIButton.h"
+#include "GUIFileList.h"
 
-class CampaignScreen : public Glob2Screen
+#include <string>
+
+class CampaignSelectorScreen : public Glob2Screen
 {
 public:
-	CampaignScreen(const std::string &text);
+	CampaignSelectorScreen(bool isSelectingSave=false);
 	void onAction(Widget *source, Action action, int par1, int par2);
+	std::string getCampaignName();
+
+	enum
+	{
+		//! Value returned upon screen execution completion when a valid campaign is selected
+		OK = 1,
+		//! Value returned upon screen execution completion when the campaign selection is canceled
+		CANCEL = 2,
+	};
+private:
+	//! Title of the screen, depends on the directory given in parameter
+	Text *title;
+	//! The ok button
+	Button *ok;
+	//! The cancel button
+	Button *cancel;
+	/// The list of campaigns
+	FileList *fileList;
 };
 
+
 #endif
+

@@ -45,9 +45,6 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	this->game=game;
 	scriptEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
 	addWidget(scriptEditor);
-	nextMapEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->nextMap.c_str());
-	nextMapEditor->visible = false;
-	addWidget(nextMapEditor);
 	campaignTextEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->campaignText.c_str());
 	campaignTextEditor->visible = false;
 	addWidget(campaignTextEditor);
@@ -64,7 +61,6 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(saveButton);
 	
 	addWidget(new TextButton(10, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Script", TAB_SCRIPT));
-	addWidget(new TextButton(120, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Next map", TAB_NEXT_MAP));
 	addWidget(new TextButton(230, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Campaign text", TAB_CAMPAIGN_TEXT));
 	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", "Script");
 	addWidget(mode);
@@ -104,7 +100,6 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 				mapScript->sourceCode = scriptEditor->getText();
 				endValue=par1;
 			}
-			game->nextMap = nextMapEditor->getText();
 			game->campaignText = campaignTextEditor->getText();
 		}
 		else if (par1 == CANCEL)
@@ -132,27 +127,15 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		else if (par1 == TAB_SCRIPT)
 		{
 			scriptEditor->visible = true;
-			nextMapEditor->visible = false;
 			campaignTextEditor->visible = false;
 			compileButton->visible = true;
 			loadButton->visible = true;
 			saveButton->visible = true;
 			mode->setText("Script");
 		}
-		else if (par1 == TAB_NEXT_MAP)
-		{
-			scriptEditor->visible = false;
-			nextMapEditor->visible = true;
-			campaignTextEditor->visible = false;
-			compileButton->visible = false;
-			loadButton->visible = false;
-			saveButton->visible = false;
-			mode->setText("Next map");
-		}
 		else if (par1 == TAB_CAMPAIGN_TEXT)
 		{
 			scriptEditor->visible = false;
-			nextMapEditor->visible = false;
 			campaignTextEditor->visible = true;
 			compileButton->visible = false;
 			loadButton->visible = true;

@@ -105,16 +105,6 @@ Engine::~Engine()
 	}
 }
 
-int Engine::initCampaign()
-{
-	ChooseMapScreen loadCampaignScreen("campaigns", "map", true);;
-	int lgs = loadCampaignScreen.execute(globalContainer->gfx, 40);
-	if (lgs == ChooseMapScreen::CANCEL)
-		return EE_CANCEL;
-
-	return initCampaign(glob2NameToFilename("campaigns", loadCampaignScreen.sessionInfo.getMapNameC(), "map"));
-}
-
 int Engine::initCampaign(const std::string &mapName)
 {
 	if (!loadGame(mapName))
@@ -178,6 +168,13 @@ int Engine::initCampaign(const std::string &mapName)
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	return EE_NO_ERROR;
+}
+
+int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName)
+{
+	int end=initCampaign(mapName);
+	gui.setCampaignGame(campaign, missionName);
+	return end;
 }
 
 int Engine::initCustom(void)
@@ -567,15 +564,6 @@ int Engine::run(void)
 			if (rv==EE_NO_ERROR)
 				doRunOnceAgain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
-		}
-		else if (gui.game.nextMap.length() > 0)
-		{
-			// if we have won, managed to load next map, we do it again. Only campaigns can be linked, so we look into the campaigns subdirectory
-			if (gui.game.isGameEnded && gui.getLocalTeam()->isAlive)
-			{
-				std::string filename = std::string("campaigns/") +  gui.game.nextMap;
-				doRunOnceAgain = (initCampaign(filename.c_str()) == EE_NO_ERROR);
-			}
 		}
 	}
 	
