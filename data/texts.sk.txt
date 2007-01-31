@@ -520,12 +520,12 @@ UINone
 UINumbi
 [AICastor]
 UICastor
-[AINicowar]
-Nicowar (nestab.)
 [AIWarrush]
 UIWarrush
 [AIReachToInfinity]
 ReachToInfinity
+[AINicowar]
+Nicowar
 [AIToubib]
 UIToubib
 [the games]

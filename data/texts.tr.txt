@@ -438,12 +438,12 @@ AINone
 AINumbi
 [AICastor]
 AICastor
-[AINicowar]
-Nicowar (tutarsiz)
 [AIWarrush]
 AIWarrush
 [AIReachToInfinity]
 ReachToInfinity
+[AINicowar]
+Nicowar
 [AIToubib]
 AIToubib
 [the games]

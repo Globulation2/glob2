@@ -604,12 +604,12 @@ AINone
 AINumbi
 [AICastor]
 AICastor
-[AINicowar]
-Nicowar
 [AIWarrush]
 AIWarrush
 [AIReachToInfinity]
 ReachToInfinity
+[AINicowar]
+Nicowar
 [AIToubib]
 AIToubib
 [the games]

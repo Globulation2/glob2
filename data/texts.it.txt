@@ -604,12 +604,12 @@ NienteIA
 IANumbi
 [AICastor]
 IACastor
-[AINicowar]
-Nicowar (instabile)
 [AIWarrush]
 IAWarrush
 [AIReachToInfinity]
 ReachToInfinity
+[AINicowar]
+Nicowar
 [AIToubib]
 IAToubib
 [the games]
