@@ -37,9 +37,11 @@ class HowNewMapScreen : public Glob2Screen
 public:
 	enum
 	{
-		NEW = 1,
-		LOAD = 2,
-		CANCEL = 3
+		NEWMAP = 1,
+		LOADMAP = 2,
+		CANCEL = 3,
+		NEWCAMPAIGN = 4,
+		LOADCAMPAIGN = 5,
 	};
 
 public:

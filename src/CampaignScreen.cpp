@@ -32,11 +32,10 @@ using namespace GAGCore;
 CampaignScreen::CampaignScreen(const std::string &text)
 {
 	
-	ok = new TextButton(20, 20, 70, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Start]"), 0, '\r');
-	addWidget(ok);
+	addWidget(new TextButton(20, 20, 70, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Start]"), 0, '\r'));
+
+	addWidget(new TextButton(20, 20, 70, 25, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), 1, 27));
 	
-	cancel = new TextButton(20, 20, 70, 25, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), 1, 27);
-	addWidget(cancel);
 	
 	addWidget(new TextArea(20, 20, 20, 60, ALIGN_FILL, ALIGN_FILL, "standard", true, text.c_str()));
 }
@@ -44,11 +43,5 @@ CampaignScreen::CampaignScreen(const std::string &text)
 void CampaignScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (source == cancel)
-		{
-			globalContainer->settings.campaignPlayed = 0;
-		}
 		endExecute(par1);
-	}
 }

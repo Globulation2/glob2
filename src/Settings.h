@@ -76,10 +76,10 @@ public:
 	
 	std::map<std::string, std::string> keyboard_shortcuts;
 	std::map<std::string, std::string> editor_keyboard_shortcuts;
-	
-	int campaignPlace;
-	int campaignPlayed;
-	
+
+	int tempUnit;
+	int tempUnitFuture;
+
 public:
 	void restoreDefaultShortcuts();
 	void load(const char *filename="preferences.txt");

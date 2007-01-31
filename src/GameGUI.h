@@ -27,6 +27,7 @@
 #include "Game.h"
 #include "Order.h"
 #include "Brush.h"
+#include "Campaign.h"
 
 namespace GAGCore
 {
@@ -75,6 +76,7 @@ public:
 	GameGUI();
 	~GameGUI();
 
+
 	void init();
 	void adjustInitialViewport();
 	void adjustLocalTeam();
@@ -117,6 +119,9 @@ public:
 
 	// Stats for engine
 	void setCpuLoad(int s);
+
+	/// Sets this game as a campaign game from the provided campaign and the provided mission
+	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
 private:
 	// Helper function for key and menu
@@ -353,7 +358,11 @@ private:
 	#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32
 	int smoothedCpuLoad[SMOOTH_CPU_LOAD_WINDOW_LENGTH];
 	unsigned smoothedCpuLoadPos;
-	
+
+	// Stuff for the correct working of the campaign
+	Campaign* campaign;
+	std::string missionName;
+
 	// determine building type for custom settings
 	#define NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT 50
 	int unitCount[NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT];
@@ -363,6 +372,7 @@ private:
 	void initUnitCount(void);
 	int getUnitCount(unsigned typeNum);
 	void setUnitCount(unsigned typeNum, int nbReq);
+
 };
 
 #endif

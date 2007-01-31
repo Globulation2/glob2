@@ -95,6 +95,10 @@ namespace GAGGUI
 		const std::string &getText(size_t pos) const;
 		//! Returns the value of the current selection. If no selection (mtf == -1), returns "
 		const std::string &get(void) const;
+		//! Changes the text at pos. Asserts pos is in range.
+		void setText(size_t pos, const std::string& text);
+		//! Returns the number of entries in the list
+		size_t getCount(void) const;
 		//! Sorts the list (override it if you don't like it)
 		virtual void sort(void);
 	

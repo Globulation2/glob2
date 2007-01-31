@@ -23,6 +23,7 @@
 #include "Header.h"
 #include "GameGUI.h"
 #include <string>
+#include "Campaign.h"
 
 class MultiplayersJoin;
 class NetGame;
@@ -37,10 +38,10 @@ public:
 	//! Destructor
 	~Engine();
 	
-	//! Display a campaign chooser screen then call initCampaign(mapName) with the selected file
-	int initCampaign();
 	//! Load mapName for campaign, init teams and create netGame
 	int initCampaign(const std::string &mapName);
+	//! Init the map from the campaign
+	int initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName);
 	//! Display a custom map chooser screen, init teams and create netGame
 	int initCustom();
 	//! Init and load a custom game from gameName. init teams and create netGame

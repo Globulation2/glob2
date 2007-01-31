@@ -42,13 +42,11 @@ public:
 		LOAD,
 		SAVE,
 		TAB_SCRIPT = 10,
-		TAB_NEXT_MAP,
 		TAB_CAMPAIGN_TEXT
 	};
 	
 protected:
 	TextArea *scriptEditor;
-	TextArea *nextMapEditor;
 	TextArea *campaignTextEditor;
 	Text *compilationResult;
 	Mapscript *mapScript;

@@ -367,6 +367,17 @@ namespace GAGGUI
 			assert(false);
 	}
 	
+	void List::setText(size_t pos, const std::string& text)
+	{
+		assert(pos < strings.size());
+		strings[pos]=text;
+	}
+	
+	size_t List::getCount(void) const
+	{
+		return strings.size();
+	}
+	
 	int List::getSelectionIndex(void) const
 	{
 		return nth;
