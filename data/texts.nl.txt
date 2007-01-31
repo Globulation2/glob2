@@ -438,12 +438,12 @@ AIGeen
 AINumbi
 [AICastor]
 AICastor
-[AINicowar]
-Nicowar (instabiel)
 [AIWarrush]
 AIWarrush
 [AIReachToInfinity]
 ZuchtNaarEeuwigheid
+[AINicowar]
+Nicowar
 [AIToubib]
 AIToubib
 [the games]

@@ -430,12 +430,12 @@ sr
 ГлупаВИ
 [AICastor]
 ВИКастор
-[AINicowar]
-Nicowar (unstable)
 [AIWarrush]
 AIWarrush
 [AIReachToInfinity]
 ReachToInfinity
+[AINicowar]
+Nicowar
 [AIToubib]
 AIToubib
 [the games]

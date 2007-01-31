@@ -430,12 +430,12 @@ MINone
 MINumbi
 [AICastor]
 MICastor
-[AINicowar]
-Nicowar (unstable)
 [AIWarrush]
 MIWarrush
 [AIReachToInfinity]
 ReachToInfinity
+[AINicowar]
+Nicowar
 [AIToubib]
 MIToubib
 [the games]

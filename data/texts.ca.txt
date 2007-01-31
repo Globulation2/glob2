@@ -438,12 +438,12 @@ IANone
 IANumbi
 [AICastor]
 IACastor
-[AINicowar]
-Nicowar (unstable)
 [AIWarrush]
 AIWarrush
 [AIReachToInfinity]
 ReachToInfinity
+[AINicowar]
+Nicowar
 [AIToubib]
 AIToubib
 [the games]
