@@ -780,8 +780,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			wPower2Divider++;
 		else
 			hPower2Divider++;
-	unsigned int wHeightMap=w/(pow(2,wPower2Divider));
-	unsigned int hHeightMap=h/(pow(2,hPower2Divider));
+	unsigned int wHeightMap=(unsigned int)(w/(pow(2,wPower2Divider)));
+	unsigned int hHeightMap=(unsigned int)(h/(pow(2,hPower2Divider)));
 	/// lets generate a patch of perlin noise. That's a smooth mapping R^2 to ]0;1[
 	HeightMap hm(wHeightMap,hHeightMap);
 	/// 1 to avoid division by zero, 
