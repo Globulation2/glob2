@@ -935,18 +935,18 @@ MapEdit::MapEdit() : game(NULL)
 
 	increaseTeams = new PlusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128, 408, 32, 32), "teams view", "increase teams", "add team");
 	decreaseTeams = new MinusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128+40, 408, 32, 32), "teams view", "decrease teams", "remove team");
-	teamInfo1 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 168, 128, 18), "teams view", "team info 1", "", 0, teamViewSelectorKeys);
-	teamInfo2 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 186, 128, 18), "teams view", "team info 2", "", 1, teamViewSelectorKeys);
-	teamInfo3 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 204, 128, 18), "teams view", "team info 3", "", 2, teamViewSelectorKeys);
-	teamInfo4 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 222, 128, 18), "teams view", "team info 4", "", 3, teamViewSelectorKeys);
-	teamInfo5 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 240, 128, 18), "teams view", "team info 5", "", 4, teamViewSelectorKeys);
-	teamInfo6 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 258, 128, 18), "teams view", "team info 6", "", 5, teamViewSelectorKeys);
-	teamInfo7 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 276, 128, 18), "teams view", "team info 7", "", 6, teamViewSelectorKeys);
-	teamInfo8 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 294, 128, 18), "teams view", "team info 8", "", 7, teamViewSelectorKeys);
-	teamInfo9 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 312, 128, 18), "teams view", "team info 9", "", 8, teamViewSelectorKeys);
-	teamInfo10 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 330, 128, 18), "teams view", "team info 10", "", 9, teamViewSelectorKeys);
-	teamInfo11 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 348, 128, 18), "teams view", "team info 11", "", 10, teamViewSelectorKeys);
-	teamInfo12 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 364, 128, 18), "teams view", "team info 12", "", 11, teamViewSelectorKeys);
+	teamInfo1 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 168, 128, 18), "teams view", "team info 1", "change team info 1", 0, teamViewSelectorKeys);
+	teamInfo2 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 186, 128, 18), "teams view", "team info 2", "change team info 2", 1, teamViewSelectorKeys);
+	teamInfo3 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 204, 128, 18), "teams view", "team info 3", "change team info 3", 2, teamViewSelectorKeys);
+	teamInfo4 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 222, 128, 18), "teams view", "team info 4", "change team info 4", 3, teamViewSelectorKeys);
+	teamInfo5 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 240, 128, 18), "teams view", "team info 5", "change team info 5", 4, teamViewSelectorKeys);
+	teamInfo6 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 258, 128, 18), "teams view", "team info 6", "change team info 6", 5, teamViewSelectorKeys);
+	teamInfo7 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 276, 128, 18), "teams view", "team info 7", "change team info 7", 6, teamViewSelectorKeys);
+	teamInfo8 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 294, 128, 18), "teams view", "team info 8", "change team info 8", 7, teamViewSelectorKeys);
+	teamInfo9 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 312, 128, 18), "teams view", "team info 9", "change team info 9", 8, teamViewSelectorKeys);
+	teamInfo10 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 330, 128, 18), "teams view", "team info 10", "change team info 10", 9, teamViewSelectorKeys);
+	teamInfo11 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 348, 128, 18), "teams view", "team info 11", "change team info 11", 10, teamViewSelectorKeys);
+	teamInfo12 = new TeamInfo(*this, widgetRectangle(globalContainer->gfx->getW()-128, 364, 128, 18), "teams view", "team info 12", "change team info 12", 11, teamViewSelectorKeys);
 	addWidget(increaseTeams);
 	addWidget(decreaseTeams);
 	addWidget(teamInfo1);
@@ -1081,6 +1081,8 @@ MapEdit::MapEdit() : game(NULL)
 	terrainType=TerrainSelector::NoTerrain;
 
 	teamViewSelectorKeys.push_back("[human]");
+	teamViewSelectorKeys.push_back("[ai]");
+
 
 	placingUnit=NoUnit;
 	placingUnitLevel=0;
@@ -1126,6 +1128,31 @@ bool MapEdit::load(const char *filename)
 		// set the editor default values
 		team = 0;
 	
+		if(game.teams[0])
+			teamInfo1->setSelectionPos(game.teams[0]->type);
+		if(game.teams[1])
+			teamInfo2->setSelectionPos(game.teams[1]->type);
+		if(game.teams[2])
+			teamInfo3->setSelectionPos(game.teams[2]->type);
+		if(game.teams[3])
+			teamInfo4->setSelectionPos(game.teams[3]->type);
+		if(game.teams[4])
+			teamInfo5->setSelectionPos(game.teams[4]->type);
+		if(game.teams[5])
+			teamInfo6->setSelectionPos(game.teams[5]->type);
+		if(game.teams[6])
+			teamInfo7->setSelectionPos(game.teams[6]->type);
+		if(game.teams[7])
+			teamInfo8->setSelectionPos(game.teams[7]->type);
+		if(game.teams[8])
+			teamInfo9->setSelectionPos(game.teams[8]->type);
+		if(game.teams[9])
+			teamInfo10->setSelectionPos(game.teams[9]->type);
+		if(game.teams[10])
+			teamInfo11->setSelectionPos(game.teams[10]->type);
+		if(game.teams[11])
+			teamInfo12->setSelectionPos(game.teams[11]->type);
+
 		renderMiniMap();
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
 		return true;
@@ -1188,7 +1215,6 @@ int MapEdit::run(void)
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
-
  			returnCode=(processEvent(event) == -1) ? -1 : returnCode;
 		}
 			
@@ -1679,6 +1705,7 @@ int MapEdit::processEvent(SDL_Event& event)
 	{
 		handleKeyPressed(event.key.keysym.sym, false);
 	}
+	return returnCode;
 }
 
 
@@ -2317,6 +2344,43 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			game.removeTeam();
 		}
 		renderMiniMap();
+	}
+	else if(action.substr(0, 17)=="change team info ")
+	{
+		std::string snumber=action.substr(17, action.size()-17);
+		int number=0;
+		std::stringstream s;
+		s<<snumber;
+		s>>number;
+		int selectionPos=0;
+		if(number==1)
+			selectionPos=teamInfo1->getSelectionPos();
+		if(number==2)
+			selectionPos=teamInfo2->getSelectionPos();
+		if(number==3)
+			selectionPos=teamInfo3->getSelectionPos();
+		if(number==4)
+			selectionPos=teamInfo4->getSelectionPos();
+		if(number==5)
+			selectionPos=teamInfo5->getSelectionPos();
+		if(number==6)
+			selectionPos=teamInfo6->getSelectionPos();
+		if(number==7)
+			selectionPos=teamInfo7->getSelectionPos();
+		if(number==8)
+			selectionPos=teamInfo8->getSelectionPos();
+		if(number==9)
+			selectionPos=teamInfo9->getSelectionPos();
+		if(number==10)
+			selectionPos=teamInfo10->getSelectionPos();
+		if(number==11)
+			selectionPos=teamInfo11->getSelectionPos();
+		if(number==12)
+			selectionPos=teamInfo12->getSelectionPos();
+		if(selectionPos==0)
+			game.teams[number-1]->type=BaseTeam::T_HUMAN;
+		if(selectionPos==1)
+			game.teams[number-1]->type=BaseTeam::T_AI;
 	}
 	else if(action=="select active team")
 	{

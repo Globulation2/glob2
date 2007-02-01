@@ -3121,7 +3121,7 @@ void RessourceTracker::save(GAGCore::OutputStream *stream)
 
 
 
-AddRessourceTracker::AddRessourceTracker(int length, int building_id, int ressource) : length(length), building_id(building_id), ressource(ressource)
+AddRessourceTracker::AddRessourceTracker(int length, int ressource, int building_id) : length(length), ressource(ressource), building_id(building_id)
 {
 
 }
@@ -4724,12 +4724,12 @@ void ReachToInfinity::tick(Echo& echo)
 				mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 				echo.add_management_order(mo_ratios);
 
-				ManagementOrder* mo_tracker=new AddRessourceTracker(12, *i, CORN);
+				ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, *i);
 				echo.add_management_order(mo_tracker);
 			}
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 			{
-				ManagementOrder* mo_tracker=new AddRessourceTracker(12, *i, CORN);
+				ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, *i);
 				echo.add_management_order(mo_tracker);
 			}
 		}
@@ -5056,7 +5056,7 @@ void ReachToInfinity::tick(Echo& echo)
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
 
-			ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
+			ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_tracker);
 		}
@@ -5110,7 +5110,7 @@ void ReachToInfinity::tick(Echo& echo)
 			echo.add_management_order(mo_ratios);
 
 			//Add a tracker
-			ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
+			ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_tracker);
 
@@ -5501,7 +5501,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_completion);
 
-		ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
+		ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, id);
 		mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_tracker);
 	}
