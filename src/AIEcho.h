@@ -746,7 +746,7 @@ namespace AIEcho
 		};
 
 		///This condition matches when the provided gid of the enemy building, obtained from an enemy_building_iterator,
-		///is destroyed. ITs meant for use with war flags or exploration flags.
+		///is destroyed. It's meant for use with war flags or exploration flags.
 		class EnemyBuildingDestroyed : public Condition
 		{
 		public:
@@ -1167,7 +1167,7 @@ namespace AIEcho
 		class AddRessourceTracker : public ManagementOrder
 		{
 		public:
-			AddRessourceTracker(int length, int building_id, int ressource);
+			AddRessourceTracker(int length, int ressource, int building_id);
 			AddRessourceTracker() : length(0), building_id(0), ressource(0) {}
 		protected:
 			void modify(Echo& echo);
