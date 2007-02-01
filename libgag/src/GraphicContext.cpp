@@ -31,6 +31,7 @@
 #include <string.h>
 #include <valarray>
 #include <cstdlib>
+#include "PerlinNoise.h" //TODO: this header file is in the project twice. please someone with knowledge of the structure delete one of them and fix the according include. thanx, Giszmo
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -1575,6 +1576,62 @@ namespace GAGCore
 			DrawableSurface::drawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<int>(radius), color);
 	}
 	
+	void GraphicContext::drawCloudShadowGL(int viewPortX, int viewPortY, int w, int h, int time, unsigned int r, unsigned int g, unsigned int b, Sprite * sprite)
+	{
+		#ifdef HAVE_OPENGL
+		if (GraphicContext::USEGPU)
+		{
+			//tribute to the torrodial world: the viewpot must never jump by more than 31.
+			//if it does, we assume a jump in the opposite direction
+			static int vpX = viewPortX;
+			static int vpY = viewPortY;
+			vpX += (viewPortX-vpX+32)%64-32;
+			vpY += (viewPortY-vpY+32)%64-32;
+			//Correlated Noise
+			static PerlinNoise pn;
+			const int granularity=32;
+			const float max_cloud_speed=8000;
+			const float wind_stability=5000;
+			const float cloud_stability=1000;
+			const float cloud_size=300;
+
+			glState.doBlend(1);
+			glState.doTexture(0);
+			for (int y=0; y<h; y+=granularity)
+			{
+				glBegin(GL_TRIANGLE_STRIP);
+				for (int x=0; x<w; x+=granularity)
+				{
+					glColor4ub(r, g, b, std::max(0,std::min(180,
+							(int)(400.0f*(-.1f+pn.Noise(
+							(float)(x+(vpX<<5)+pn.Noise((float)time/wind_stability)*max_cloud_speed)/cloud_size,
+							(float)(y+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*max_cloud_speed)/cloud_size,
+							(float)time/cloud_stability))))));
+					glVertex2f(x,y);
+					glColor4ub(r, g, b, std::max(0,std::min(180,
+							(int)(400.0f*(-.1f+pn.Noise(
+							(float)(x+(vpX<<5)+pn.Noise((float)time/wind_stability)*max_cloud_speed)/cloud_size,
+							(float)(y+granularity+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*max_cloud_speed)/cloud_size,
+							(float)time/cloud_stability))))));
+					glVertex2f(x,y+granularity);
+				}
+				glEnd();
+			}
+		}
+		else
+		#endif
+		{
+		/*for (int y=waterStartY + (cloudDisplacement % -512); y<sh; y+=512)
+			for (int x=waterStartX + (cloudDisplacement % -512); x<sw; x+=512)
+				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);*/
+			int waterStartX = -((viewPortX<<5) % 512);
+			int waterStartY = -((viewPortY<<5) % 512);
+			for (int y=waterStartY + time % -512; y<1200; y += 512)
+				for (int x=waterStartX + time % -512 ; x<1600; x += 512)
+					drawSprite(x, y, sprite, 0);
+		}
+	}
+	
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
@@ -1915,7 +1972,7 @@ namespace GAGCore
 			if (optionFlags & GraphicContext::USEGPU)
 			{
 				SDL_GL_SwapBuffers();
-				fprintf(stderr, "%d allocated GPU textures\n", glState.alocatedTextureCount);
+				//fprintf(stderr, "%d allocated GPU textures\n", glState.alocatedTextureCount);
 			}
 			else
 			#endif
