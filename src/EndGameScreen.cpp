@@ -82,122 +82,126 @@ void EndGameStat::paint(void)
 		for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 			maxValue = std::max(maxValue, game->teams[team]->stats.endOfGameStats[pos].value[type]);
 
-	//Calculate the maximum width of the numbers so they can be lined up
-	int num=10;
-	maxValue+=num-(maxValue%num);
-	std::stringstream maxstr;
-	maxstr<<maxValue<<std::endl;
-	int max_digit_count=maxstr.str().size();
-	int max_width=-1;
-	double line_seperate=double(h)/double(num);
-	double value_seperate=double(maxValue)/double(h);
-	for(int n=0; n<num; ++n)
+	///You can't draw anything if the game ended so quickly that there wheren't two recorded values to draw a line between
+	if(game->teams[0]->stats.endOfGameStats.size() >= 2)
 	{
-		int pos=int(double(n)*line_seperate+0.5);
-		int value=maxValue-int(double(pos)*value_seperate+0.5);
-		std::stringstream str;
-		str<<value<<std::endl;
-		int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
-		max_width=std::max(width, max_width);
-	}
-
-	//Draw horizontal lines to given the scale of the graphs values.
-	for(int n=0; n<num; ++n)
-	{
-		int pos=int(double(n)*line_seperate+0.5);
-		int value=maxValue-int(double(pos)*value_seperate+0.5);
-		if(n!=0)
-			parent->getSurface()->drawHorzLine(x+w-5, y+pos, 10, 255, 255, 255);
-		std::stringstream str;
-		str<<std::setw(max_digit_count-1)<<std::setfill('0')<<value<<std::endl;
-		int height=globalContainer->littleFont->getStringHeight(str.str().c_str());
-		parent->getSurface()->drawString(x+w-max_width-8, y+pos-height/2, globalContainer->littleFont, str.str().c_str());
-	}
-
-	///Draw vertical lines to give the timescale
-	double time_line_seperate=double(w)/double(15);
-	int time_period=(game->teams[0]->stats.endOfGameStats.size()*512/250)*10;
-	double time_value_seperate=double(time_period)/double(15);
-	for(int n=1; n<16; ++n)
-	{
-		if(n!=16)
-			parent->getSurface()->drawVertLine(int(double(x)+time_line_seperate*double(n)+0.5), y+h-5, 10, 255, 255, 255);
-		std::stringstream str;
-		int min=int(double(n)*time_value_seperate+0.5)/60;
-		int sec=int(double(n)*time_value_seperate+0.5)%60;
-		str<<min<<":"<<std::setw(2)<<std::setfill('0')<<sec<<std::endl;
-		int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
-		parent->getSurface()->drawString(int(double(x)+time_line_seperate*double(n)+0.5)-width/2, y+h-30, globalContainer->littleFont, str.str().c_str());
-	}
-
-	float inc_x=static_cast<float>(w-2)/static_cast<float>(game->teams[0]->stats.endOfGameStats.size()-1);
-	float inc_y=static_cast<float>(h-2)/static_cast<float>(maxValue);
-
-	int best_circle_position_difference=100000;
-	int best_circle_position_value=-1;
-	int best_circle_position_x=-1;
-	int best_circle_position_y=-1;
-
-	// draw curve
-	if (maxValue)
-	{
-		for (team=0; team < game->session.numberOfTeam; team++)
+		//Calculate the maximum width of the numbers so they can be lined up
+		int num=10;
+		maxValue+=num-(maxValue%num);
+		std::stringstream maxstr;
+		maxstr<<maxValue<<std::endl;
+		int max_digit_count=maxstr.str().size();
+		int max_width=-1;
+		double line_seperate=double(h)/double(num);
+		double value_seperate=double(maxValue)/double(h);
+		for(int n=0; n<num; ++n)
 		{
-			if(!isTeamEnabled[team])
-				continue;
-			Uint8 r = game->teams[team]->colorR;
-			Uint8 g = game->teams[team]->colorG;
-			Uint8 b = game->teams[team]->colorB;
+			int pos=int(double(n)*line_seperate+0.5);
+			int value=maxValue-int(double(pos)*value_seperate+0.5);
+			std::stringstream str;
+			str<<value<<std::endl;
+			int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
+			max_width=std::max(width, max_width);
+		}
 
-			int statsIndex = 0;
-			int oy, ox, nx, ny;
+		//Draw horizontal lines to given the scale of the graphs values.
+		for(int n=0; n<num; ++n)
+		{
+			int pos=int(double(n)*line_seperate+0.5);
+			int value=maxValue-int(double(pos)*value_seperate+0.5);
+			if(n!=0)
+				parent->getSurface()->drawHorzLine(x+w-5, y+pos, 10, 255, 255, 255);
+			std::stringstream str;
+			str<<std::setw(max_digit_count-1)<<std::setfill('0')<<value<<std::endl;
+			int height=globalContainer->littleFont->getStringHeight(str.str().c_str());
+			parent->getSurface()->drawString(x+w-max_width-8, y+pos-height/2, globalContainer->littleFont, str.str().c_str());
+		}
 
-			ox = 1;
-			oy = static_cast<int>(game->teams[team]->stats.endOfGameStats[statsIndex].value[type] * inc_y);
+		///Draw vertical lines to give the timescale
+		double time_line_seperate=double(w)/double(15);
+		int time_period=(game->teams[0]->stats.endOfGameStats.size()*512/250)*10;
+		double time_value_seperate=double(time_period)/double(15);
+		for(int n=1; n<16; ++n)
+		{
+			if(n!=16)
+				parent->getSurface()->drawVertLine(int(double(x)+time_line_seperate*double(n)+0.5), y+h-5, 10, 255, 255, 255);
+			std::stringstream str;
+			int min=int(double(n)*time_value_seperate+0.5)/60;
+			int sec=int(double(n)*time_value_seperate+0.5)%60;
+			str<<min<<":"<<std::setw(2)<<std::setfill('0')<<sec<<std::endl;
+			int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
+			parent->getSurface()->drawString(int(double(x)+time_line_seperate*double(n)+0.5)-width/2, y+h-30, globalContainer->littleFont, str.str().c_str());
+		}
 
-			for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
+		float inc_x=static_cast<float>(w-2)/static_cast<float>(game->teams[0]->stats.endOfGameStats.size()-1);
+		float inc_y=static_cast<float>(h-2)/static_cast<float>(maxValue);
+
+		int best_circle_position_difference=100000;
+		int best_circle_position_value=-1;
+		int best_circle_position_x=-1;
+		int best_circle_position_y=-1;
+
+		// draw curve
+		if (maxValue)
+		{
+			for (team=0; team < game->session.numberOfTeam; team++)
 			{
-				nx = static_cast<int>(pos*inc_x);
-				ny = static_cast<int>(game->teams[team]->stats.endOfGameStats[pos].value[type] * inc_y);
+				if(!isTeamEnabled[team])
+					continue;
+				Uint8 r = game->teams[team]->colorR;
+				Uint8 g = game->teams[team]->colorG;
+				Uint8 b = game->teams[team]->colorB;
 
-				///This is for the small circle that indicates the numbers at a particular position.
-				///It will only be shown if the cursor is within 40 pixels of the lines
-				// and it will only show the circle at the closest line.
-				if(mouse_x!=-1)
+				int statsIndex = 0;
+				int oy, ox, nx, ny;
+
+				ox = 1;
+				oy = static_cast<int>(game->teams[team]->stats.endOfGameStats[statsIndex].value[type] * inc_y);
+
+				for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 				{
-					float line_slope=static_cast<float>((y+h-ny-1)-(y+h-oy-1)) / static_cast<float>((x+nx)-(x+ox));
-					if(mouse_x>=(x+ox) && mouse_x<(x+nx))
+					nx = static_cast<int>(pos*inc_x);
+					ny = static_cast<int>(game->teams[team]->stats.endOfGameStats[pos].value[type] * inc_y);
+
+					///This is for the small circle that indicates the numbers at a particular position.
+					///It will only be shown if the cursor is within 40 pixels of the lines
+					// and it will only show the circle at the closest line.
+					if(mouse_x!=-1)
 					{
-						int circle_x=mouse_x;
-						int circle_y=y+h-oy-1 + static_cast<int>((mouse_x-(x+ox))*line_slope+0.5);
-						if(std::abs(mouse_y+y-circle_y) < 40)
+						float line_slope=static_cast<float>((y+h-ny-1)-(y+h-oy-1)) / static_cast<float>((x+nx)-(x+ox));
+						if(mouse_x>=(x+ox) && mouse_x<(x+nx))
 						{
-							if(std::abs(mouse_y+y-circle_y) < best_circle_position_difference)
+							int circle_x=mouse_x;
+							int circle_y=y+h-oy-1 + static_cast<int>((mouse_x-(x+ox))*line_slope+0.5);
+							if(std::abs(mouse_y+y-circle_y) < 40)
 							{
-								best_circle_position_x=circle_x;
-								best_circle_position_y=circle_y;
-								best_circle_position_difference=std::abs(mouse_y+y-circle_y);
-								best_circle_position_value=maxValue-int(double(circle_y-y)*value_seperate+0.5);
+								if(std::abs(mouse_y+y-circle_y) < best_circle_position_difference)
+								{
+									best_circle_position_x=circle_x;
+									best_circle_position_y=circle_y;
+									best_circle_position_difference=std::abs(mouse_y+y-circle_y);
+									best_circle_position_value=maxValue-int(double(circle_y-y)*value_seperate+0.5);
+								}
 							}
 						}
 					}
+
+					parent->getSurface()->drawLine(x+ox, y+h-oy-1, x+nx, y+h-ny-1, r, g, b);
+
+					ox = nx;
+					oy = ny;
+					
+					//std::cout << pos << " : " << team << " : " << game->teams[team]->stats.endOfGameStats[index].value[type] << std::endl;
 				}
-
-				parent->getSurface()->drawLine(x+ox, y+h-oy-1, x+nx, y+h-ny-1, r, g, b);
-
-				ox = nx;
-				oy = ny;
-				
-				//std::cout << pos << " : " << team << " : " << game->teams[team]->stats.endOfGameStats[index].value[type] << std::endl;
 			}
 		}
-	}
-	if(best_circle_position_x!=-1)
-	{
-		parent->getSurface()->drawCircle(best_circle_position_x, best_circle_position_y, 10, Color::white);
-		std::stringstream str;
-		str<<best_circle_position_value;
-		parent->getSurface()->drawString(best_circle_position_x+10, best_circle_position_y+10, globalContainer->littleFont, str.str());
+		if(best_circle_position_x!=-1)
+		{
+			parent->getSurface()->drawCircle(best_circle_position_x, best_circle_position_y, 10, Color::white);
+			std::stringstream str;
+			str<<best_circle_position_value;
+			parent->getSurface()->drawString(best_circle_position_x+10, best_circle_position_y+10, globalContainer->littleFont, str.str());
+		}
 	}
 }
 
