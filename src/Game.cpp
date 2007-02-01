@@ -2337,23 +2337,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		/*for (int y=waterStartY + (cloudDisplacement % -512); y<sh; y+=512)
 			for (int x=waterStartX + (cloudDisplacement % -512); x<sw; x+=512)
 				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);*/
-		static PerlinNoise pn;//=pn.reseed();
-		static int granularity=8;//on slow PCs change this to 10 before switching off these clouds
-		static float max_cloud_speed=10000;
-		static float wind_stability=2000;
-		static float cloud_stability=150;
-		static float cloud_size=300;
-		for (int y=0; y<sh; y+=granularity)
-			for (int x=0; x<sw; x+=granularity)
+		globalContainer->gfx->drawCloudShadowGL(viewportX, viewportY, sw, sh, cloudDisplacement, 0,0,0,globalContainer->terrainCloud);
+		globalContainer->gfx->drawCloudShadowGL(viewportX, viewportY+2, sw, sh, cloudDisplacement, 240, 240, 255, globalContainer->terrainCloud);
+
+/*KIND OF CAUSTICS. MAYBE USE FOR WATER:
 				globalContainer->gfx->drawFilledRect(
 					x,y,granularity,granularity,
 					0,0,0,
 					(int)(127.0f*(1.0f+pn.Noise(
-						(float)(x+(viewportX<<5)+pn.Noise((float)cloudDisplacement/wind_stability)*max_cloud_speed)/cloud_size,
-						(float)(y+(viewportY<<5)+pn.Noise((float)cloudDisplacement/wind_stability*(-1))*max_cloud_speed)/cloud_size,
+						(float)(x+(viewportX<<5)+pn.Noise((float)(x+(viewportX<<5))/1000.0f,(float)(y+(viewportY<<5))/1000.0f)*1000.0f+pn.Noise((float)cloudDisplacement/wind_stability)*max_cloud_speed)/cloud_size,
+						(float)(y+(viewportY<<5)+pn.Noise((float)(x+(viewportX<<5))/1000.0f,(float)(y+(viewportY<<5))/1000.0f+5.0f)*1000.0f+pn.Noise((float)cloudDisplacement/wind_stability*(-1))*max_cloud_speed)/cloud_size,
 						(float)cloudDisplacement/cloud_stability)
 					))
-				);//Noise is taken from a shifted coordinate so clouds move. the 3rd dimension of noise makes the clouds change.
+				);*/
 	}
 	
 	// draw black & shading
