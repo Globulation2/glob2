@@ -1589,12 +1589,12 @@ namespace GAGCore
 			vpY += (viewPortY-vpY+32)%64-32;
 			//Correlated Noise
 			static PerlinNoise pn;
-			const int granularity=32;
+			const int granularity=16;
 			const float max_cloud_speed=8000;
 			const float wind_stability=5000;
 			const float cloud_stability=1000;
 			const float cloud_size=500;
-			const int cloud_height=4;//effective height is this * granularity
+			const int cloud_height=8;//effective height is this * granularity
 			int wGrid=w/granularity+1;
 			int hGrid=h/granularity+cloud_height+1;
 			int * alphaMap=new int[wGrid*hGrid];
