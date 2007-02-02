@@ -1576,7 +1576,7 @@ namespace GAGCore
 			DrawableSurface::drawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<int>(radius), color);
 	}
 	
-	void GraphicContext::drawCloudShadowGL(int viewPortX, int viewPortY, int w, int h, int time, unsigned int r, unsigned int g, unsigned int b, Sprite * sprite)
+	void GraphicContext::drawCloudShadowGL(int viewPortX, int viewPortY, int w, int h, int time)
 	{
 		#ifdef HAVE_OPENGL
 		if (GraphicContext::USEGPU)
@@ -1593,43 +1593,45 @@ namespace GAGCore
 			const float max_cloud_speed=8000;
 			const float wind_stability=5000;
 			const float cloud_stability=1000;
-			const float cloud_size=300;
+			const float cloud_size=500;
+			const int cloud_height=4;//effective height is this * granularity
+			int wGrid=w/granularity+1;
+			int hGrid=h/granularity+cloud_height+1;
+			int * alphaMap=new int[wGrid*hGrid];
+			for (int y=0; y<hGrid; y++)
+				for (int x=0; x<wGrid; x++)
+				alphaMap[wGrid*y+x]=(int)pow(std::max(.0f,std::min(13.0f,
+							(35.0f*(-.05f+pn.Noise(
+							(float)(x*granularity+(vpX<<5)+pn.Noise((float)time/wind_stability)*max_cloud_speed)/cloud_size,
+							(float)(y*granularity+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*max_cloud_speed)/cloud_size,
+							(float)time/cloud_stability))))),2);
 
 			glState.doBlend(1);
 			glState.doTexture(0);
-			for (int y=0; y<h; y+=granularity)
+			for (int y=0; y<hGrid-cloud_height-1; y++)
 			{
 				glBegin(GL_TRIANGLE_STRIP);
-				for (int x=0; x<w; x+=granularity)
+				for (int x=0; x<wGrid; x++)
 				{
-					glColor4ub(r, g, b, std::max(0,std::min(180,
-							(int)(400.0f*(-.1f+pn.Noise(
-							(float)(x+(vpX<<5)+pn.Noise((float)time/wind_stability)*max_cloud_speed)/cloud_size,
-							(float)(y+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*max_cloud_speed)/cloud_size,
-							(float)time/cloud_stability))))));
-					glVertex2f(x,y);
-					glColor4ub(r, g, b, std::max(0,std::min(180,
-							(int)(400.0f*(-.1f+pn.Noise(
-							(float)(x+(vpX<<5)+pn.Noise((float)time/wind_stability)*max_cloud_speed)/cloud_size,
-							(float)(y+granularity+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*max_cloud_speed)/cloud_size,
-							(float)time/cloud_stability))))));
-					glVertex2f(x,y+granularity);
+					glColor4ub(0, 0, 0, alphaMap[wGrid*y+x]);
+					glVertex2f(x*granularity,y*granularity);
+					glColor4ub(0, 0, 0, alphaMap[wGrid*(y+1)+x]);
+					glVertex2f(x*granularity,y*granularity+granularity);
+				}
+				glEnd();
+				glBegin(GL_TRIANGLE_STRIP);
+				for (int x=0; x<wGrid; x++)
+				{
+					glColor4ub(240, 240, 255, alphaMap[wGrid*(y+cloud_height)+x]);
+					glVertex2f(x*granularity,y*granularity);
+					glColor4ub(240, 240, 255, alphaMap[wGrid*(y+cloud_height+1)+x]);
+					glVertex2f(x*granularity,y*granularity+granularity);
 				}
 				glEnd();
 			}
+			delete alphaMap;
 		}
-		else
 		#endif
-		{
-		/*for (int y=waterStartY + (cloudDisplacement % -512); y<sh; y+=512)
-			for (int x=waterStartX + (cloudDisplacement % -512); x<sw; x+=512)
-				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);*/
-			int waterStartX = -((viewPortX<<5) % 512);
-			int waterStartY = -((viewPortY<<5) % 512);
-			for (int y=waterStartY + time % -512; y<1200; y += 512)
-				for (int x=waterStartX + time % -512 ; x<1600; x += 512)
-					drawSprite(x, y, sprite, 0);
-		}
 	}
 	
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
