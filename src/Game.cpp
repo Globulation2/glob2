@@ -1739,31 +1739,17 @@ struct BuildingPosComp
 	}
 };
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+inline void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 {
-	static int waterDisplacement = -1023;
-	static int cloudDisplacement = 0;
-	int id;
-	int left=(sx>>5);
-	int top=(sy>>5);
-	int right=((sx+sw+31)>>5);
-	int bot=((sy+sh+31)>>5);
-	std::set<Building *, BuildingPosComp> buildingList;
-
-	// compute water coordinates, used for displacement of water
-	if (waterDisplacement > 0)
-		waterDisplacement -= 1024;
-	else
-		waterDisplacement++;
-	cloudDisplacement++;
-	
-	// we draw water
-	int waterStartX = -((viewportX<<5) % 512);
+	int waterStartX = -(((viewportX<<5)+time/2) % 512);
 	int waterStartY = -((viewportY<<5) % 512);
 	for (int y=waterStartY; y<sh; y += 512)
-		for (int x=waterStartX + (waterDisplacement / 2); x<sw; x += 512)
+		for (int x=waterStartX; x<sw; x += 512)
 			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
-	
+}
+
+inline void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
@@ -1780,7 +1766,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				// draw terrain
-				id=map.getTerrain(x+viewportX, y+viewportY);
+				int id=map.getTerrain(x+viewportX, y+viewportY);
 				Sprite *sprite;
 				if (id<272)
 				{
@@ -1795,7 +1781,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				if ((id < 256) || (id >= 256+16))
 					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 			}
+}
 
+inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 			if (
@@ -1810,7 +1799,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[localTeam]->me)) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
-				// draw ressource
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
@@ -1833,19 +1821,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 				}
 			}
+}
 
-	//for (int y=top; y<=bot; y++)
-	//	for (int x=left; x<=right; x++)
-	//		if (map.getBuilding(x+viewportX, y+viewportY)!=NOGBID)
-	//			globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
-	
-	//for (int y=top; y<=bot; y++)
-	//	for (int x=left; x<=right; x++)
-	//		if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 0, 0))
-	//			globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
-	
-	// We draw ground units:
-	mouseUnit=NULL;
+inline void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
+	mouseUnit=NULL;//??
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -1853,18 +1833,17 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			if (gid!=NOGUID)
 				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions);
 		}
-	
-	// We draw debug area:
+}
+
+inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 			{
 				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->wheatCareMap[0][(x+viewportX)+(y+viewportY)*map.w]);
-				
 				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->notGrassMap[(x+viewportX)+(y+viewportY)*map.w]);
-				
 //				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getExplored(x+viewportX, y+viewportY, 0));
-
 //				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((Nicowar::AINicowar*)players[3]->ai->aiImplementation)->getGradientManager().getGradient(Nicowar::Gradient::VillageCenter, Nicowar::Gradient::Resource).getHeight(x+viewportX, y+viewportY));
 				//((AICastor *)players[0].ai->aiImplementation)->wheatCareMap
 			}
@@ -1876,7 +1855,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(1, 5, 0, x+viewportX, y+viewportY));
 					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, STONE, 1, x+viewportX, y+viewportY));
 					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.forbiddenGradient[0][0][(x+viewportX)+(y+viewportY)*map.w]);
-					
 					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX)&(map.getMaskW())));
 					//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, ((y+viewportY)&(map.getMaskH())));
 				//}
@@ -1964,8 +1942,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 
 	}
+}
 
-	// We draw ground buildings:
+inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
+	std::set<Building *, BuildingPosComp> buildingList;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -2149,8 +2130,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 		}
 	}
-		
-	// draw forbidden, guard, clearing areas
+}
+
+inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	if ((drawOptions & DRAW_AREA) != 0)
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
@@ -2226,9 +2209,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						}
 				}
 			}
+}
 
-	
-	// We draw air units:
+inline void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -2236,9 +2220,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			if (gid!=NOGUID)
 				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions);
 		}
+}
 
-	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
-	{
+inline void Game::drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY)
+{
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -2251,9 +2236,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						str<<n+1;
 						globalContainer->gfx->drawString((x<<5)+(n%3)*10, (y<<5)+(n/3)*10, globalContainer->littleFont, str.str());
 	
-//						globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 32+(x<<5), 16+(y<<5), 32, 128, 128);
-//						globalContainer->gfx->drawLine((x<<5), 32+(y<<5), 32+(x<<5), 32+(y<<5), 32, 128, 128);
-					
 						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 64, 255, 255);
 						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 64, 255, 255);
 				
@@ -2262,7 +2244,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					}
 				}
 			}
-	}
+}
+
+inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	// Let's paint the bullets and explosions
 	// TODO : optimise : test only possible sectors to show bullets.
 
@@ -2333,29 +2318,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 		}
 	}
-	
-	// draw cloud shadow if we are in high quality
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
-	{
-		/*for (int y=waterStartY + (cloudDisplacement % -512); y<sh; y+=512)
-			for (int x=waterStartX + (cloudDisplacement % -512); x<sw; x+=512)
-				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);*/
-		globalContainer->gfx->drawCloudShadowGL(viewportX, viewportY, sw, sh, cloudDisplacement, 0,0,0,globalContainer->terrainCloud);
-		globalContainer->gfx->drawCloudShadowGL(viewportX, viewportY+2, sw, sh, cloudDisplacement, 240, 240, 255, globalContainer->terrainCloud);
+}
 
-/*KIND OF CAUSTICS. MAYBE USE FOR WATER:
-				globalContainer->gfx->drawFilledRect(
-					x,y,granularity,granularity,
-					0,0,0,
-					(int)(127.0f*(1.0f+pn.Noise(
-						(float)(x+(viewportX<<5)+pn.Noise((float)(x+(viewportX<<5))/1000.0f,(float)(y+(viewportY<<5))/1000.0f)*1000.0f+pn.Noise((float)cloudDisplacement/wind_stability)*max_cloud_speed)/cloud_size,
-						(float)(y+(viewportY<<5)+pn.Noise((float)(x+(viewportX<<5))/1000.0f,(float)(y+(viewportY<<5))/1000.0f+5.0f)*1000.0f+pn.Noise((float)cloudDisplacement/wind_stability*(-1))*max_cloud_speed)/cloud_size,
-						(float)cloudDisplacement/cloud_stability)
-					))
-				);*/
-	}
-	
-	// draw black & shading
+inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
 		// we have decrease on because we do unalign lookup
@@ -2400,8 +2366,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 			}
 	}
+}
 
-	// We draw the overlay maps:
+inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
 	TeamStat* latest=teams[localTeam]->stats.getLatestStat();
 	int overlayMax=0;
 	std::vector<int>* overlayMap=NULL;
@@ -2481,6 +2449,33 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 		}
 	}
+}
+
+void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
+	static int time = 0;
+	int left=(sx>>5);
+	int top=(sy>>5);
+	int right=((sx+sw+31)>>5);
+	int bot=((sy+sh+31)>>5);
+	time++;
+
+	drawMapWater(sw, sh, viewportX, viewportY, time);
+	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
+		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
+	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	// draw cloud shadow if we are in high quality
+	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+		globalContainer->gfx->drawCloudShadowGL(viewportX, viewportY, sw, sh, time);
+	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
