@@ -1049,7 +1049,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 
 void Game::buildProjectSyncStep(Sint32 localTeam)
 {
-	for (std::list<BuildProject>::iterator bpi=buildProjects.begin(); bpi!=buildProjects.end(); bpi++)
+	for (std::list<BuildProject>::iterator bpi=buildProjects.begin(); bpi!=buildProjects.end();)
 	{
 		int posX=bpi->posX&map.getMaskW();
 		int posY=bpi->posY&map.getMaskH();
@@ -1073,7 +1073,10 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 						map.localForbiddenMap.set(index, false);
 				}
 			map.updateForbiddenGradient(teamNumber);
-			buildProjects.erase(bpi);
+			std::list<BuildProject>::iterator to_erase=bpi;
+			bpi++;
+			buildProjects.erase(to_erase);
+			continue;
 		}
 		else if (checkRoomForBuilding(posX, posY, bt, teamNumber))
 		{
@@ -1095,9 +1098,13 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 				b->owner->addToStaticAbilitiesLists(b);
 				b->update();
 				fprintf(logFile, "BuildProject success (%d, %d)\n", posX, posY);
-				buildProjects.erase(bpi);
+				std::list<BuildProject>::iterator to_erase=bpi;
+				bpi++;
+				buildProjects.erase(to_erase);
+				continue;
 			}
 		}
+		bpi++;
 	}
 }
 

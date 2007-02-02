@@ -833,53 +833,61 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 }
 
 
+void GradientManager::queue_gradient(const GradientInfo& gi)
+{
+	for(int i=0; i<gradients.size(); ++i)
+	{
+		if(gradients[i]->get_gradient_info() == gi)
+		{
+			if(gi.needs_updating())
+			{
+				queuedGradients.push(i);
+			}
+			return;
+		}
+	}
+	//Did not find a matching gradient
+	gradients.push_back(boost::shared_ptr<Gradient>(new Gradient(gi)));
+	ticks_since_update.push_back(200);
+	queuedGradients.push(gradients.size()-1);
+}
+
+
+bool GradientManager::is_updated(const GradientInfo& gi)
+{
+	for(std::vector<boost::shared_ptr<Gradient> >::iterator i=gradients.begin(); i!=gradients.end(); ++i)
+	{
+		if((*i)->get_gradient_info() == gi)
+		{
+			if(ticks_since_update[i-gradients.begin()]>150 && (*i)->get_gradient_info().needs_updating())
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+	//If the gradient hasn't been queued to be updated, consider it updated,
+	//and it will be calculated on request
+	return true;
+}
+
+
 void GradientManager::update()
 {
-/*
-	static unsigned int max=0;
-	static unsigned int max_need_updated=0;
-	if(gradients.size()>max)
-	{
-		max=gradients.size();
-		std::cout<<"Max gradients "<<max<<std::endl;
-	}
-	unsigned int need_count=0;
-	for(unsigned int x=0; x<gradients.size(); ++x)
-	{
-		if(gradients[x]->get_gradient_info().needs_updating())
-		{
-			need_count++;
-		}
-	}
-	if(need_count>max_need_updated)
-	{
-		max_need_updated=need_count;
-		std::cout<<"Max update requiring gradients "<<max_need_updated<<std::endl;
-	}
-*/
-
 	timer++;
 	std::transform(ticks_since_update.begin(), ticks_since_update.end(), ticks_since_update.begin(), increment);
-	unsigned int orig_cur_update=cur_update;
-	do
+
+	if((timer%5)==0 && !queuedGradients.empty())
 	{
-		if((timer%8)==0 && !gradients.empty())
+		int g=queuedGradients.front();
+		if(ticks_since_update[g]>50)
 		{
-			if(ticks_since_update[cur_update]>150 && gradients[cur_update]->get_gradient_info().needs_updating())
-			{
-				gradients[cur_update]->recalculate(map);
-				ticks_since_update[cur_update]=0;
-				cur_update++;
-				if(cur_update>=gradients.size())
-					cur_update=0;
-				return;
-			}
+			gradients[g]->recalculate(map);
+			ticks_since_update[g]=0;
 		}
-		cur_update++;
-		if(cur_update>=gradients.size())
-			cur_update=0;
+		queuedGradients.pop();
+		return;
 	}
-	while(orig_cur_update!=cur_update);
 }
 
 
@@ -1344,13 +1352,21 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 		check_flag=true;
 	}
 
-	
 	for(int x=0; x<map->getW(); ++x)
 	{
 		for(int y=0; y<map->getH(); ++y)
 		{
 			if(!check_flag && !map->isHardSpaceForBuilding(x, y, type->width, type->height))
+			{	
+				//The logic here is that the algorithm searches for a building placement left to
+				//right, top to bottom. As its going down, what if one of the bottom squares is
+				//filled? That means that as long as that space is in the buildings area, it will
+				//never clear. So, instead of checking every location that has the faulty square in
+				//it, just skip over all of those squares, saving some time.
+				if(y>0)
+					y+=type->height-1;
 				continue;
+			}
 
 			if(check_flag && echo.get_flag_map().get_flag(x, y)!=NOGBID)
 				continue;
@@ -1362,9 +1378,12 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 				for(int x2=0; x2<type->width && passes; ++x2)
 					for(int y2=0; y2<type->height && passes; ++y2)
 						if((x2==0 || y2==0 || x2==type->width-1 || y2==type->height-1))
-//							if(!(*i)->passes_constraint(echo, (x+x2 > map->getW() ? x+x2-map->getW() : x+x2), (y+y2 > map->getH() ? y+y2-map->getH() : y+y2)))
+						{
 							if(!(*i)->passes_constraint(echo, x+x2, y+y2))
-								passes=false;
+							{
+									passes=false;
+							}
+						}
 				if(!passes)
 					break;
 
@@ -1427,9 +1446,31 @@ boost::logic::tribool BuildingOrder::passes_conditions(Echo& echo)
 
 	}
 
+	for(int n=0; n<constraints.size(); ++n)
+	{
+		if(constraints[n]->get_gradient_info())
+		{
+			bool is_updated=echo.get_gradient_manager().is_updated(*constraints[n]->get_gradient_info());
+			if(!is_updated)
+				return false;
+		}
+	}
+
 	return true;
 }
 
+
+
+void BuildingOrder::queue_gradients(Gradients::GradientManager& manager)
+{
+	for(int n=0; n<constraints.size(); ++n)
+	{
+		if(constraints[n]->get_gradient_info())
+		{
+			manager.queue_gradient(*constraints[n]->get_gradient_info());
+		}
+	}
+}
 
 
 FlagMap::FlagMap(Echo& echo) : flagmap(echo.player->map->getW()*echo.player->map->getH(), NOGBID), width(echo.player->map->getW()), echo(echo)
@@ -4184,6 +4225,7 @@ Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(
 unsigned int Echo::add_building_order(Construction::BuildingOrder* bo)
 {
 	building_orders.push_back(boost::shared_ptr<Construction::BuildingOrder>(bo));
+	bo->queue_gradients(get_gradient_manager());
 	unsigned int id=br.register_building();
 	bo->id=id;
 	return id;
