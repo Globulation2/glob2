@@ -349,7 +349,7 @@ namespace GAGCore
 		virtual void drawLine(int x1, int y1, int x2, int y2, Color color);
 		virtual void drawLine(float x1, float y1, float x2, float y2, Color color);
 		
-		virtual void drawCloudShadowGL(int viewPortX, int viewPortY, int w, int h, int time, unsigned int r, unsigned int g, unsigned int b, Sprite * sprite);
+		virtual void drawCloudShadowGL(int viewPortX, int viewPortY, int w, int h, int time);
 
 		virtual void drawCircle(int x, int y, int radius, Color color);
 		virtual void drawCircle(float x, float y, float radius, Color color);
