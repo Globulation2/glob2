@@ -360,7 +360,7 @@ namespace AIEcho
 		};
 
 		///The gradient manager is a very important part of the system, just like the gradient itself is. The gradient manager takes upon the task
-		///of managing and automatically updating various gradients in the game. It returns a matching gradient when provided a GradientInfo.
+		///of managing and updating various gradients in the game. It returns a matching gradient when provided a GradientInfo.
 		///This object is shared among all Echo AI's, which means gradients that aren't specific to a particular team (such as most Ressource
 		///gradients) don't have to be recalculated for every Echo AI seperately. This saves allot of cpu time when their are multiple Echo AI's.
 		class GradientManager
@@ -372,11 +372,16 @@ namespace AIEcho
 			///gradients are updated sooner than that. As well, at normal game speed, 150 ticks is only 6 seconds, and you can count it yourself,
 			///not much changes in the game in six seconds.
 			Gradient& get_gradient(const GradientInfo& gi);
+			///Queues up a gradient with GradientInfo to be updated. This gradient will be updated once and then never again.
+			void queue_gradient(const GradientInfo& gi);
+			///Returns true if the gradient GradientInfo has been updated recently.
+			bool is_updated(const GradientInfo& gi);
 		private:
 			friend class AIEcho::Echo;
 			void update();
 			static int increment(const int x) { return x+1; }
 			std::vector<boost::shared_ptr<Gradient> > gradients;
+			std::queue<int> queuedGradients;
 			std::vector<int> ticks_since_update;
 			Map* map;
 			unsigned int cur_update;
@@ -411,6 +416,8 @@ namespace AIEcho
 			friend class AIEcho::Construction::BuildingOrder;
 			virtual int calculate_constraint(Echo& echo, int x, int y)=0;
 			virtual bool passes_constraint(Echo& echo, int x, int y)=0;
+			///This function is meant for the registering of GradientInfo, return NULL if the Constraint doesn't use a gradient
+			virtual Gradients::GradientInfo* get_gradient_info()=0;
 			virtual ConstraintType get_type()=0;
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 			virtual void save(GAGCore::OutputStream *stream)=0;
@@ -428,6 +435,7 @@ namespace AIEcho
 			friend class Constraint;
 			int calculate_constraint(Echo& echo, int x, int y);
 			bool passes_constraint(Echo& echo, int x, int y);
+			Gradients::GradientInfo* get_gradient_info() { return &gi; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -447,6 +455,7 @@ namespace AIEcho
 			friend class Constraint;
 			int calculate_constraint(Echo& echo, int x, int y);
 			bool passes_constraint(Echo& echo, int x, int y);
+			Gradients::GradientInfo* get_gradient_info() { return &gi; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -467,6 +476,7 @@ namespace AIEcho
 			friend class Constraint;
 			int calculate_constraint(Echo& echo, int x, int y);
 			bool passes_constraint(Echo& echo, int x, int y);
+			Gradients::GradientInfo* get_gradient_info() { return &gi; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -487,6 +497,7 @@ namespace AIEcho
 			friend class Constraint;
 			int calculate_constraint(Echo& echo, int x, int y);
 			bool passes_constraint(Echo& echo, int x, int y);
+			Gradients::GradientInfo* get_gradient_info() { return &gi; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -509,6 +520,7 @@ namespace AIEcho
 			friend class Constraint;
 			int calculate_constraint(Echo& echo, int x, int y);
 			bool passes_constraint(Echo& echo, int x, int y);
+			Gradients::GradientInfo* get_gradient_info() { return NULL; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -529,6 +541,7 @@ namespace AIEcho
 			friend class Constraint;
 			int calculate_constraint(Echo& echo, int x, int y);
 			bool passes_constraint(Echo& echo, int x, int y);
+			Gradients::GradientInfo* get_gradient_info() { return NULL; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -556,6 +569,8 @@ namespace AIEcho
 			///An internal function used to find the location to place the building
 			position find_location(Echo& echo, Map* map, Gradients::GradientManager& manager);
 			boost::logic::tribool passes_conditions(Echo& echo);
+			///An internal function that has all of the constraints register their respective Gradients with the GradientManager
+			void queue_gradients(Gradients::GradientManager& manager);
 			int get_building_type() const { return building_type; }
 			int get_number_of_workers() const { return number_of_workers; }
 			int building_type;
