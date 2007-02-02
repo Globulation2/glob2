@@ -1590,10 +1590,10 @@ namespace GAGCore
 			//Correlated Noise
 			static PerlinNoise pn;
 			const int granularity=16;
-			const float max_cloud_speed=8000;
-			const float wind_stability=5000;
-			const float cloud_stability=1000;
-			const float cloud_size=500;
+			const float max_cloud_speed=4;
+			const float wind_stability=2000;
+			const float cloud_stability=3000;
+			const float cloud_size=300;
 			const int cloud_height=8;//effective height is this * granularity
 			int wGrid=w/granularity+1;
 			int hGrid=h/granularity+cloud_height+1;
@@ -1602,8 +1602,8 @@ namespace GAGCore
 				for (int x=0; x<wGrid; x++)
 				alphaMap[wGrid*y+x]=(int)pow(std::max(.0f,std::min(13.0f,
 							(35.0f*(-.05f+pn.Noise(
-							(float)(x*granularity+(vpX<<5)+pn.Noise((float)time/wind_stability)*max_cloud_speed)/cloud_size,
-							(float)(y*granularity+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*max_cloud_speed)/cloud_size,
+							(float)(x*granularity+(vpX<<5)+pn.Noise((float)time/wind_stability)*wind_stability*max_cloud_speed)/cloud_size,
+							(float)(y*granularity+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*wind_stability*max_cloud_speed)/cloud_size,
 							(float)time/cloud_stability))))),2);
 
 			glState.doBlend(1);
