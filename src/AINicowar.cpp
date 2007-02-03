@@ -28,6 +28,7 @@ using namespace AIEcho::Construction;
 using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
+using namespace boost::logic;
 
 NewNicowar::NewNicowar()
 {
@@ -37,8 +38,11 @@ NewNicowar::NewNicowar()
 	skilled_work_phase=0;
 	upgrading_phase_1=false;
 	upgrading_phase_2=false;
+	war_preperation=false;
+	war=false;
 	for(int n=0; n<PlacementSize; ++n)
 		buildings_under_construction_per_type[n]=0;
+	attack_flags=0;
 }
 
 
@@ -82,6 +86,7 @@ void NewNicowar::tick(Echo& echo)
 	if(timer%100 == 66)
 	{
 		upgrade_buildings(echo);
+		control_attacks(echo);
 	}
 	order_buildings(echo);
 }
@@ -104,6 +109,10 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 	{
 		int id=boost::lexical_cast<int>(message.substr(11, message.size()-1));
 		manage_inn(echo, id);
+	}
+	if(message == "attack finished")
+	{
+		attack_flags-=1;
 	}
 }
 
@@ -130,8 +139,8 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the skilled work phase:
-	///1) Between 20 and 80 units
-	if(stat->totalUnit>=20 && stat->totalUnit<=80)
+	///1) More than 20 units
+	if(stat->totalUnit>=20)
 	{
 		skilled_work_phase=true;
 	}
@@ -157,7 +166,7 @@ void NewNicowar::check_phases(Echo& echo)
 		upgrading_phase_1=false;
 	}
 
-	///Qualifications for the upgrading phase 1:
+	///Qualifications for the upgrading phase 2:
 	///1) Atleast 1 level 2 or level 3 school
 	///2) Atleast 50 units
 	BuildingSearch schools_2(echo);
@@ -178,6 +187,35 @@ void NewNicowar::check_phases(Echo& echo)
 	{
 		upgrading_phase_2=false;
 	}
+
+	///Qualifications for the war preperation phase:
+	///1) Atleast 50 units
+	///2) Less than 2 barracks OR
+	///3) Less than 50 warriors
+	BuildingSearch barracks(echo);
+	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
+	barracks.add_condition(new NotUnderConstruction);
+	int barracks_count=barracks.count_buildings();
+
+	if(stat->totalUnit>=50 && (stat->numberUnitPerType[WARRIOR] < 50 || barracks_count<2))
+	{
+		war_preperation=true;
+	}
+	else
+	{
+		war_preperation=false;
+	}
+
+	///Qualifications for the war phase:
+	///Atleast 50 warriors and 2 barracks
+	if(stat->numberUnitPerType[WARRIOR] >= 50 && barracks_count>=2)
+	{
+		war=true;
+	}
+	else
+	{
+		war=false;
+	}
 }
 
 
@@ -188,6 +226,8 @@ void NewNicowar::queue_buildings(Echo& echo)
 	queue_racetracks(echo);
 	queue_swimmingpools(echo);
 	queue_schools(echo);
+	queue_barracks(echo);
+	queue_hospitals(echo);
 }
 
 
@@ -323,6 +363,58 @@ void NewNicowar::queue_schools(Echo& echo)
 }
 
 
+void NewNicowar::queue_barracks(Echo& echo)
+{
+	BuildingSearch bs_finished(echo);
+	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
+	bs_finished.add_condition(new NotUnderConstruction);
+
+	BuildingSearch bs_upgrading(echo);
+	bs_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
+	bs_upgrading.add_condition(new BeingUpgraded);
+
+	const int barracks_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularBarracks];
+
+	int demand=0;
+	if(war_preperation)
+	{
+		demand=2;
+	}
+
+	if(demand > barracks_count)
+	{
+		placement_queue.push(RegularBarracks);
+	}
+}
+
+
+void NewNicowar::queue_hospitals(Echo& echo)
+{
+	BuildingSearch bs_finished(echo);
+	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::HEAL_BUILDING));
+	bs_finished.add_condition(new NotUnderConstruction);
+
+	BuildingSearch bs_upgrading(echo);
+	bs_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::HEAL_BUILDING));
+	bs_upgrading.add_condition(new BeingUpgraded);
+
+	const int hospital_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularHospital];
+	const int total_warrior = echo.player->team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
+
+	int demand=1;
+	if(war_preperation)
+	{
+		demand+=total_warrior/20;
+	}
+
+	if(demand > hospital_count)
+	{
+		placement_queue.push(RegularHospital);
+	}
+}
+
+
+
 void NewNicowar::order_buildings(Echo& echo)
 {
 	while(!placement_queue.empty())
@@ -357,6 +449,14 @@ void NewNicowar::order_buildings(Echo& echo)
 		if(b==RegularSchool)
 		{
 			id=order_regular_school(echo);
+		}
+		if(b==RegularBarracks)
+		{
+			id=order_regular_barracks(echo);
+		}
+		if(b==RegularHospital)
+		{
+			id=order_regular_hospital(echo);
 		}
 
 		///This code keeps track of the number of buildings that are under construction at any one point
@@ -455,7 +555,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 }
 
 
-int NewNicowar::order_regular_racetrack(AIEcho::Echo& echo)
+int NewNicowar::order_regular_racetrack(Echo& echo)
 {
 	//The main order for the racetrack
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, 6);
@@ -494,7 +594,7 @@ int NewNicowar::order_regular_racetrack(AIEcho::Echo& echo)
 }
 
 
-int NewNicowar::order_regular_swimmingpool(AIEcho::Echo& echo)
+int NewNicowar::order_regular_swimmingpool(Echo& echo)
 {
 	//The main order for the swimmingpool
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, 6);
@@ -537,7 +637,7 @@ int NewNicowar::order_regular_swimmingpool(AIEcho::Echo& echo)
 }
 
 
-int NewNicowar::order_regular_school(AIEcho::Echo& echo)
+int NewNicowar::order_regular_school(Echo& echo)
 {
 	//The main order for the school
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, 5);
@@ -571,7 +671,76 @@ int NewNicowar::order_regular_school(AIEcho::Echo& echo)
 }
 
 
-void NewNicowar::manage_buildings(AIEcho::Echo& echo)
+int NewNicowar::order_regular_barracks(Echo& echo)
+{
+	//The main order for the barracks
+	BuildingOrder* bo = new BuildingOrder(IntBuildingType::ATTACK_BUILDING, 6);
+
+	//Constraints arround the location of stone
+	AIEcho::Gradients::GradientInfo gi_stone;
+	gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+	//You want to be close to stone
+	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, 5));
+
+	//Constraints arround the location of wood
+	AIEcho::Gradients::GradientInfo gi_wood;
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	//You want to be close to wood
+	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 2));
+
+	//Constraints arround nearby settlement
+	AIEcho::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	//You want to be close to other buildings
+	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+
+	AIEcho::Gradients::GradientInfo gi_building_construction;
+	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	//You don't want to be too close
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 2));
+
+	//Add the building order to the list of orders
+	int id = echo.add_building_order(bo);
+
+	return id;
+}
+
+
+int NewNicowar::order_regular_hospital(Echo& echo)
+{
+	//The main order for the hospital
+	BuildingOrder* bo = new BuildingOrder(IntBuildingType::HEAL_BUILDING, 2);
+
+	//Constraints arround the location of wood
+	AIEcho::Gradients::GradientInfo gi_wood;
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	//You want to be close to wood
+	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 2));
+
+	//Constraints arround nearby settlement
+	AIEcho::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	//You want to be close to other buildings
+	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 3));
+
+	AIEcho::Gradients::GradientInfo gi_building_construction;
+	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	//You don't want to be too close
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 2));
+
+	//Add the building order to the list of orders
+	int id = echo.add_building_order(bo);
+
+	return id;
+
+}
+
+
+void NewNicowar::manage_buildings(Echo& echo)
 {
 	BuildingSearch bs(echo);
 	bs.add_condition(new NotUnderConstruction);
@@ -626,8 +795,8 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 	int explorer_ratio=0;
 	int warrior_ratio=0;
 
-	///Assign double workers to swarms during the growth phase
-	if(growth_phase)
+	///Assign double workers to swarms during the growth phase and the war_preperation phase
+	if(growth_phase || war_preperation)
 	{
 		to_assign=6;
 	}
@@ -645,12 +814,20 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 			explorer_ratio=1;
 		else
 			explorer_ratio=0;
-		warrior_ratio=0;
 	}
 	else
 	{
 		worker_ratio=1;
 		explorer_ratio=0;
+	}
+
+	///Warriors are constructed during the war preperation phase
+	if(war_preperation)
+	{
+		warrior_ratio=2;
+	}
+	else
+	{
 		warrior_ratio=0;
 	}
 
@@ -710,7 +887,7 @@ int NewNicowar::choose_building_upgrade_type_level2(Echo& echo)
 }
 
 
-int NewNicowar::choose_building_upgrade_type(AIEcho::Echo& echo, int level, int inn_ratio, int hospital_ratio, int racetrack_ratio, int swimmingpool_ratio, int barracks_ratio, int school_ratio, int tower_ratio)
+int NewNicowar::choose_building_upgrade_type(Echo& echo, int level, int inn_ratio, int hospital_ratio, int racetrack_ratio, int swimmingpool_ratio, int barracks_ratio, int school_ratio, int tower_ratio)
 {
 	///First count the types of buildings that are available to us for upgrading
 	///you wouldn't want to choose a Barracks to be upgraded if there are none
@@ -773,7 +950,7 @@ int NewNicowar::choose_building_upgrade_type(AIEcho::Echo& echo, int level, int 
 }
 
 
-int NewNicowar::choose_building_for_upgrade(AIEcho::Echo& echo, int type, int level)
+int NewNicowar::choose_building_for_upgrade(Echo& echo, int type, int level)
 {
 	BuildingSearch bs(echo);
 	bs.add_condition(new SpecificBuildingType(type));
@@ -868,3 +1045,55 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 		}
 	}
 }
+
+
+int NewNicowar::choose_building_to_attack(Echo& echo)
+{
+	std::vector<int> buildings_to_attack;
+	buildings_to_attack.reserve(100);
+	for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+	{
+		for(enemy_building_iterator ebi(echo, *i, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
+		{
+			buildings_to_attack.push_back(*ebi);
+		}
+	}
+	int num=syncRand() % buildings_to_attack.size();
+	return buildings_to_attack[num];
+}
+
+
+void NewNicowar::attack_building(Echo& echo)
+{
+	int building=choose_building_to_attack(echo);
+	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WAR_FLAG, 15);
+	bo->add_constraint(new CenterOfBuilding(building));
+	unsigned int id=echo.add_building_order(bo);
+
+	ManagementOrder* mo_destroyed_1=new DestroyBuilding(id);
+	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(echo, building));
+	echo.add_management_order(mo_destroyed_1);
+
+	ManagementOrder* mo_destroyed_2=new SendMessage("attack finished");
+	mo_destroyed_2->add_condition(new EnemyBuildingDestroyed(echo, building));
+	echo.add_management_order(mo_destroyed_2);
+
+	attack_flags+=1;
+}
+
+
+void NewNicowar::control_attacks(Echo& echo)
+{
+	int number_attacks=0;
+	if(war)
+	{
+		number_attacks=2;
+	}
+
+
+	if(attack_flags < number_attacks)
+	{
+		attack_building(echo);
+	}
+}
+

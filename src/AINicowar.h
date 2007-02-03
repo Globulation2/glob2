@@ -42,6 +42,8 @@ private:
 		RegularRacetrack,
 		RegularSwimmingpool,
 		RegularSchool,
+		RegularBarracks,
+		RegularHospital,
 		PlacementSize,
 	};
 
@@ -63,6 +65,10 @@ private:
 	bool upgrading_phase_1;
 	///During the upgrading_phase_2 , Nicowar tries to upgrade its level 2 buildings in small numbers.
 	bool upgrading_phase_2;
+	///During the war preperation phase, warriors are made and barracks are prioritized
+	bool war_preperation;
+	///During the war phase, the enemies are attacked
+	bool war;
 
 
 	///This function decides how many buildings need to be constructed (and with what properties
@@ -80,6 +86,10 @@ private:
 	void queue_swimmingpools(AIEcho::Echo& echo);
 	///This function decides how many schools are needed and queues them up.
 	void queue_schools(AIEcho::Echo& echo);
+	///This function decides how many barracks are needed and queues them up.
+	void queue_barracks(AIEcho::Echo& echo);
+	///This function decides how many hospitals are needed and queues them up.
+	void queue_hospitals(AIEcho::Echo& echo);
 
 
 	///This function starts construction on buildings that are queued for construction. Its carefull
@@ -95,6 +105,10 @@ private:
 	int order_regular_swimmingpool(AIEcho::Echo& echo);
 	///This function starts construction of a RegularSwarm, and returns the ID code
 	int order_regular_school(AIEcho::Echo& echo);
+	///This function starts construction of a RegularBarracks, and returns the ID code
+	int order_regular_barracks(AIEcho::Echo& echo);
+	///This function starts construction of a RegularHospital, and returns the ID code
+	int order_regular_hospital(AIEcho::Echo& echo);
 	///This integer stores the total number of buildings that are currently being constructed
 	int buildings_under_construction;
 	///This integer stores the number of buildings being constructed based on their placement id,
@@ -104,8 +118,6 @@ private:
 	std::queue<BuildingPlacement> placement_queue;
 	///This is the queue for buildings that are going to be constructed
 	std::queue<BuildingPlacement> construction_queue;
-
-	
 
 
 	///This function updates all of the buildings that are not under construction.
@@ -132,6 +144,16 @@ private:
 	int choose_building_for_upgrade(AIEcho::Echo& echo, int type, int level);
 	///This function starts upgrading buildings if the upgrading_phase is active.
 	void upgrade_buildings(AIEcho::Echo& echo);
+
+
+	///This function chooses an enemy building to be destroyed.
+	int choose_building_to_attack(AIEcho::Echo& echo);
+	///This function starts an attack on another enemy building
+	void attack_building(AIEcho::Echo& echo);
+	///This function controls the attacking of enemies, such as how many flags are active at one time
+	void control_attacks(AIEcho::Echo& echo);
+	///This integer stores the number of flags that are active at one time
+	int attack_flags;
 
 
 	int timer;
