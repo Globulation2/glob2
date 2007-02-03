@@ -5053,7 +5053,7 @@ void ReachToInfinity::tick(Echo& echo)
 						ManagementOrder* mo_completion=new ChangeFlagSize(12, id);
 						echo.add_management_order(mo_completion);
 
-						ManagementOrder* mo_destroyed=new DestroyBuilding;
+						ManagementOrder* mo_destroyed=new DestroyBuilding(id);
 						mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, *ebi));
 						echo.add_management_order(mo_destroyed);
 
@@ -5360,11 +5360,11 @@ void ReachToInfinity::tick(Echo& echo)
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
-					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker;
+					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker;
+					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_unpause);
 
@@ -5428,11 +5428,11 @@ void ReachToInfinity::tick(Echo& echo)
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
-					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker;
+					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker;
+					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_unpause);
 
