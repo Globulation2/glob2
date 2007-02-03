@@ -20,17 +20,47 @@
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
 
+Glob2Style::Glob2Style()
+{
+	sprite = Toolkit::getSprite("data/gfx/guitheme");
+};
+
+Glob2Style::~Glob2Style()
+{
+	Toolkit::releaseSprite("data/gfx/guitheme");
+}
+
 void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight)
 {
-	if ((w == 300) && (h == 40))
+	// big buttons
+	if (h == 40)
 	{
+		int ocrX, ocrY, ocrW, ocrH;
+		
+		// base of buttons
+		target->drawSprite(x, y, sprite, 0);
+		
+		target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
+		target->setClipRect(x+20, y, w-40, 40);
+		for (int i = 0; i < w-40; i += 40)
+			target->drawSprite(x+20+i, y, sprite, 2);
+		target->setClipRect(ocrX, ocrY, ocrW, ocrH);
+		
+		target->drawSprite(x+w-20, y, sprite, 4);
+		
+		// hightlight of buttons
 		if (highlight > 0)
 		{
-			target->drawSprite(x, y, globalContainer->gamegui, 26);
-			target->drawSprite(x, y, globalContainer->gamegui, 27, highlight);
+			target->drawSprite(x, y, sprite, 1, highlight);
+		
+			target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
+			target->setClipRect(x+20, y, w-40, 40);
+			for (int i = 0; i < w-40; i += 40)
+				target->drawSprite(x+20+i, y, sprite, 3, highlight);
+			target->setClipRect(ocrX, ocrY, ocrW, ocrH);
+			
+			target->drawSprite(x+w-20, y, sprite, 5, highlight);
 		}
-		else
-			target->drawSprite(x, y, globalContainer->gamegui, 26);
 	}
 	else
 		Style::drawTextButtonBackground(target, x, y, w, h, highlight);

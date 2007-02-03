@@ -35,6 +35,7 @@
 #include "Race.h"
 #include "Glob2Screen.h"
 #include "UnitsSkins.h"
+#include "Glob2Style.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -95,6 +96,7 @@ GlobalContainer::GlobalContainer(void)
 GlobalContainer::~GlobalContainer(void)
 {
 	// unlink GUI style
+	delete Style::style;
 	Style::style = &defaultStyle;
 	
 	// release unit skins
@@ -509,7 +511,9 @@ void GlobalContainer::load(void)
 		gamegui = Toolkit::getSprite("data/gfx/gamegui");
 		brush = Toolkit::getSprite("data/gfx/brush");
 		magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
-		Style::style = &style;
+		
+		// use custom style
+		Style::style = new Glob2Style;
 
 		updateLoadProgressBar(100);
 		destroyProgressBar();

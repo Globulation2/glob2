@@ -26,7 +26,6 @@
 #include "Header.h"
 #include "RessourcesTypes.h"
 #include "Settings.h"
-#include "Glob2Style.h"
 
 namespace GAGCore
 {
@@ -98,8 +97,6 @@ public:
 	Font *standardFont;
 	Font *littleFont;
 	
-	Glob2Style style;
-
 	Settings settings;
 
 	BuildingsTypes buildingsTypes;
