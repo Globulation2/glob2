@@ -877,7 +877,7 @@ void GradientManager::update()
 	timer++;
 	std::transform(ticks_since_update.begin(), ticks_since_update.end(), ticks_since_update.begin(), increment);
 
-	if((timer%5)==0 && !queuedGradients.empty())
+	if((timer%1)==0 && !queuedGradients.empty())
 	{
 		int g=queuedGradients.front();
 		if(ticks_since_update[g]>50)
@@ -2572,7 +2572,7 @@ bool BeingUpgradedTo::passes(Echo& echo, int id)
 	if(b->type->isBuildingSite)
 		if(b->type->level==level-1)
 			return true;
-	else if(b->type->level==level)
+	else if(b->type->level==level-2)
 		return true;
 	return false;
 }
@@ -4219,6 +4219,8 @@ Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(
 {
 	previous_building_id=-1;
 	retry_timer=0;
+	from_load_timer=0;
+	is_fruit=false;
 }
 
 
@@ -4317,7 +4319,7 @@ void Echo::update_ressource_trackers()
 
 void Echo::update_building_orders()
 {
-	if(retry_timer>0)
+	if(retry_timer>1)
 	{
 		retry_timer--;
 		return;
@@ -4325,13 +4327,14 @@ void Echo::update_building_orders()
 	for(std::vector<boost::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
 	{
 		boost::logic::tribool passes=(*i)->passes_conditions(*this);
-		if(passes)
+		if(passes || retry_timer==1)
 		{
 			if(!(previous_building_id==-1 || br.is_building_found(previous_building_id) || !br.is_building_pending(previous_building_id)))
 				break;
 			position p=(*i)->find_location(*this, player->map, *gm);
 			if(p.x != 0 || p.y != 0)
 			{
+				retry_timer=0;
 				br.issue_order((*i)->id, p.x, p.y, (*i)->get_building_type());
 				Sint32 type=-1;
 				if((*i)->get_building_type()>IntBuildingType::DEFENSE_BUILDING && (*i)->get_building_type() <IntBuildingType::STONE_WALL)
@@ -4388,7 +4391,24 @@ void Echo::init_starting_buildings()
 	}
 }
 
-
+void Echo::check_fruit()
+{
+	MapInfo mi(*this);
+	for(int x=0; x<mi.get_width(); ++x)
+	{
+		for(int y=0; y<mi.get_height(); ++y)
+		{
+			if(mi.is_ressource(x, y, CHERRY))
+				is_fruit=true;
+			if(mi.is_ressource(x, y, ORANGE))
+				is_fruit=true;
+			if(mi.is_ressource(x, y, PRUNE))
+				is_fruit=true;
+			if(is_fruit)
+				return;
+		}
+	}
+}
 
 bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -4662,6 +4682,11 @@ Order* Echo::getOrder(void)
 		}
 	}
 
+	if(from_load_timer==0)
+	{
+		check_fruit();
+	}
+
 	if(timer==0)
 	{
 		br.initiate();
@@ -4689,6 +4714,7 @@ Order* Echo::getOrder(void)
 	update_management_orders();
 	update_building_orders();
 	timer++;
+	from_load_timer++;
 	return new NullOrder;
 }
 
@@ -4900,103 +4926,106 @@ void ReachToInfinity::tick(Echo& echo)
 	//Explorer flags on the three nearest fruit trees
 	if((timer%100)==0)
 	{
-//		BuildingSearch bs_flag(echo);
-//		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
-//		const int number=bs_flag.count_buildings();
-		if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=6 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
+		if(echo.is_fruit_on_map())
 		{
-			//Constraints arround nearby settlement
-			AIEcho::Gradients::GradientInfo gi_building;
-			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
-
-			if(!flag_on_cherry)
+	//		BuildingSearch bs_flag(echo);
+	//		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
+	//		const int number=bs_flag.count_buildings();
+			if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=6 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 			{
-				//The main order for the exploration flag
-				BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+				//Constraints arround nearby settlement
+				AIEcho::Gradients::GradientInfo gi_building;
+				gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+				gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 
-				//You want the closest fruit to your settlement possible
-				bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
-
-				//Constraint arround the location of fruit
-				AIEcho::Gradients::GradientInfo gi_cherry;
-				gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-				//You want to be ontop of the cherry trees
-				bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 1));
-
-				//Add the building order to the list of orders
-				unsigned int id_cherry=echo.add_building_order(bo_cherry);
-
-				if(id_cherry!=INVALID_BUILDING)
+				if(!flag_on_cherry)
 				{
-					ManagementOrder* mo_completion=new ChangeFlagSize(4, id_cherry);
-					echo.add_management_order(mo_completion);
-					flag_on_cherry=true;
+					//The main order for the exploration flag
+					BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
 
-					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+					//You want the closest fruit to your settlement possible
+					bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+
+					//Constraint arround the location of fruit
+					AIEcho::Gradients::GradientInfo gi_cherry;
+					gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+					//You want to be ontop of the cherry trees
+					bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 1));
+
+					//Add the building order to the list of orders
+					unsigned int id_cherry=echo.add_building_order(bo_cherry);
+
+					if(id_cherry!=INVALID_BUILDING)
 					{
-						ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
-						echo.add_management_order(mo_alliance);
+						ManagementOrder* mo_completion=new ChangeFlagSize(4, id_cherry);
+						echo.add_management_order(mo_completion);
+						flag_on_cherry=true;
+
+						for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+						{
+							ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+							echo.add_management_order(mo_alliance);
+						}
 					}
 				}
-			}
 
-			if(!flag_on_orange)
-			{
-				//The main order for the exploration flag
-				BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
-
-				//You want the closest fruit to your settlement possible
-				bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
-
-				//Constraints arround the location of fruit
-				AIEcho::Gradients::GradientInfo gi_orange;
-				gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-				//You want to be ontop of the orange trees
-				bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 1));
-
-				unsigned int id_orange=echo.add_building_order(bo_orange);
-
-				if(id_orange!=INVALID_BUILDING)
+				if(!flag_on_orange)
 				{
-					ManagementOrder* mo_completion=new ChangeFlagSize(4, id_orange);
-					echo.add_management_order(mo_completion);
-					flag_on_orange=true;
+					//The main order for the exploration flag
+					BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
 
-					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+					//You want the closest fruit to your settlement possible
+					bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+
+					//Constraints arround the location of fruit
+					AIEcho::Gradients::GradientInfo gi_orange;
+					gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+					//You want to be ontop of the orange trees
+					bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 1));
+
+					unsigned int id_orange=echo.add_building_order(bo_orange);
+
+					if(id_orange!=INVALID_BUILDING)
 					{
-						ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
-						echo.add_management_order(mo_alliance);
+						ManagementOrder* mo_completion=new ChangeFlagSize(4, id_orange);
+						echo.add_management_order(mo_completion);
+						flag_on_orange=true;
+
+						for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+						{
+							ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+							echo.add_management_order(mo_alliance);
+						}
 					}
 				}
-			}
 
-			if(!flag_on_prune)
-			{
-				//The main order for the exploration flag
-				BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
-
-				//You want the closest fruit to your settlement possible
-				bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
-
-				AIEcho::Gradients::GradientInfo gi_prune;
-				gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-				//You want to be ontop of the prune trees
-				bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 1));
-
-				//Add the building order to the list of orders
-				unsigned int id_prune=echo.add_building_order(bo_prune);
-
-				if(id_prune!=INVALID_BUILDING)
+				if(!flag_on_prune)
 				{
-					ManagementOrder* mo_completion=new ChangeFlagSize(4, id_prune);
-					echo.add_management_order(mo_completion);
-					flag_on_prune=true;
+					//The main order for the exploration flag
+					BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
 
-					for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+					//You want the closest fruit to your settlement possible
+					bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+
+					AIEcho::Gradients::GradientInfo gi_prune;
+					gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+					//You want to be ontop of the prune trees
+					bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 1));
+
+					//Add the building order to the list of orders
+					unsigned int id_prune=echo.add_building_order(bo_prune);
+
+					if(id_prune!=INVALID_BUILDING)
 					{
-						ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
-						echo.add_management_order(mo_alliance);
+						ManagementOrder* mo_completion=new ChangeFlagSize(4, id_prune);
+						echo.add_management_order(mo_completion);
+						flag_on_prune=true;
+
+						for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+						{
+							ManagementOrder* mo_alliance=new ChangeAlliances(*i, indeterminate, indeterminate, indeterminate, true, indeterminate);
+							echo.add_management_order(mo_alliance);
+						}
 					}
 				}
 			}
@@ -5081,13 +5110,16 @@ void ReachToInfinity::tick(Echo& echo)
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
-			//Constraints arround the location of fruit
-			AIEcho::Gradients::GradientInfo gi_fruit;
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-			//You want to be reasnobly close to fruit, closer if possible
-			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
+			if(echo.is_fruit_on_map())
+			{
+				//Constraints arround the location of fruit
+				AIEcho::Gradients::GradientInfo gi_fruit;
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+				//You want to be reasnobly close to fruit, closer if possible
+				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
+			}
 
 			//Add the building order to the list of orders
 			unsigned int id=echo.add_building_order(bo);
@@ -5167,7 +5199,7 @@ void ReachToInfinity::tick(Echo& echo)
 		const int number=bs.count_buildings();
 		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<3)
 		{
-			//The main order for the race track
+			//The main order for the racetrack
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, 6);
 	
 			//Constraints arround the location of wood
@@ -5210,7 +5242,7 @@ void ReachToInfinity::tick(Echo& echo)
 		const int number=bs.count_buildings();
 		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<3)
 		{
-			//The main order for the swimming pool
+			//The main order for the swimmingpool
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, 6);
 	
 			//Constraints arround the location of wood
@@ -5527,12 +5559,15 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
 		//Constraints arround the location of fruit
-		AIEcho::Gradients::GradientInfo gi_fruit;
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-		//You want to be reasnobly close to fruit, closer if possible
-		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
+		if(echo.is_fruit_on_map())
+		{
+			AIEcho::Gradients::GradientInfo gi_fruit;
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+			//You want to be reasnobly close to fruit, closer if possible
+			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
+		}
 
 		//Add the building order to the list of orders
 		unsigned int id=echo.add_building_order(bo);

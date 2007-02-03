@@ -1560,6 +1560,8 @@ namespace AIEcho
 		Gradients::GradientManager& get_gradient_manager();
 		std::set<int>& get_starting_buildings();
 
+		bool is_fruit_on_map() { return is_fruit; }
+
 		Player* player;
 	private:
 
@@ -1582,6 +1584,7 @@ namespace AIEcho
 		void init_starting_buildings();
 		void update_ressource_trackers();
 		void update_building_orders();
+		void check_fruit();
 
 		std::queue<Order*> orders;
 		boost::shared_ptr<EchoAI> echoai;
@@ -1600,6 +1603,9 @@ namespace AIEcho
 		int previous_building_id;
 		int retry_timer;
 		bool update_gm;
+		bool is_fruit;
+
+		int from_load_timer;
 	};
 
 	const unsigned int INVALID_BUILDING=65535;

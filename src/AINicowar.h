@@ -31,6 +31,109 @@ public:
 	void tick(AIEcho::Echo& echo);
 	void handle_message(AIEcho::Echo& echo, const std::string& message);
 private:
+	///These are all of the various buildings that can be constructed. Note that,
+	///while their may be more than one for a particular type of building, the
+	///different orders have different properties for deciding where to place the
+	///building
+	enum BuildingPlacement
+	{
+		RegularInn,
+		RegularSwarm,
+		RegularRacetrack,
+		RegularSwimmingpool,
+		RegularSchool,
+		PlacementSize,
+	};
+
+	///This function is called at the very begginning of the game,
+	///to initialize the existing buildings with the right amount of units
+	void initialize(AIEcho::Echo& echo);
+
+
+	///This function is called periodically to choose the strategies
+	///(called phases) that will be used at that time
+	void check_phases(AIEcho::Echo& echo);
+	///During the growth phase, the object of the game is the fast growth of economy.
+	///Swarms become a big priority, so does gaining territory and exploration.
+	bool growth_phase;
+	///During the skilled work phase, Nicowar tries to better the skills of its workers
+	///by building 1 Racetrack, 1 Swimmingpool and 2 Schools
+	bool skilled_work_phase;
+	///During the upgrading_phase_1 , Nicowar tries to upgrade its level 1 buildings in small numbers.
+	bool upgrading_phase_1;
+	///During the upgrading_phase_2 , Nicowar tries to upgrade its level 2 buildings in small numbers.
+	bool upgrading_phase_2;
+
+
+	///This function decides how many buildings need to be constructed (and with what properties
+	///their location must be picked with) and adds them to a queue. Most of the decisions are
+	///made using statistics and depend on the phases that are activated
+	void queue_buildings(AIEcho::Echo& echo);
+	///This function decides how many Inns and of what placements need construction and adds
+	///them to the queue
+	void queue_inns(AIEcho::Echo& echo);
+	///This function decides how many swarms are needed and queues them up
+	void queue_swarms(AIEcho::Echo& echo);
+	///This function decides how many racetracks are needed and queues them up.
+	void queue_racetracks(AIEcho::Echo& echo);
+	///This function decides how many swimmingpools are needed and queues them up.
+	void queue_swimmingpools(AIEcho::Echo& echo);
+	///This function decides how many schools are needed and queues them up.
+	void queue_schools(AIEcho::Echo& echo);
+
+
+	///This function starts construction on buildings that are queued for construction. Its carefull
+	///not to construct too much or too little at once
+	void order_buildings(AIEcho::Echo& echo);
+	///This function starts construction of a RegularInn, and returns the ID code
+	int order_regular_inn(AIEcho::Echo& echo);
+	///This function starts construction of a RegularSwarm, and returns the ID code
+	int order_regular_swarm(AIEcho::Echo& echo);
+	///This function starts construction of a RegularSwarm, and returns the ID code
+	int order_regular_racetrack(AIEcho::Echo& echo);
+	///This function starts construction of a RegularSwarm, and returns the ID code
+	int order_regular_swimmingpool(AIEcho::Echo& echo);
+	///This function starts construction of a RegularSwarm, and returns the ID code
+	int order_regular_school(AIEcho::Echo& echo);
+	///This integer stores the total number of buildings that are currently being constructed
+	int buildings_under_construction;
+	///This integer stores the number of buildings being constructed based on their placement id,
+	///it counts buildings that are queued to be constructed but have not been started yet
+	int buildings_under_construction_per_type[PlacementSize];
+	///This is the queue for buildings that have yet to be proccessed for construction
+	std::queue<BuildingPlacement> placement_queue;
+	///This is the queue for buildings that are going to be constructed
+	std::queue<BuildingPlacement> construction_queue;
+
+	
+
+
+	///This function updates all of the buildings that are not under construction.
+	void manage_buildings(AIEcho::Echo& echo);
+	///This function updates the units assigned to a particular Inn.
+	///Using the messaging system, it is called after the completion
+	///of a new Inn and periodically thereafter
+	void manage_inn(AIEcho::Echo& echo, int id);
+	///This function updated the units assigned and the creation
+	///ratios of a particular Swarm. Its done afeter the completion
+	///of a new swarm and periodically thereafter
+	void manage_swarm(AIEcho::Echo& echo, int id);
+
+
+	///This function chooses the type of level 1 building to be upgraded randomly
+	///(but weighted in favor of certain building depending on the phase)
+	int choose_building_upgrade_type_level1(AIEcho::Echo& echo);
+	///This function chooses the type of level 2 building to be upgraded randomly
+	///(but weighted in favor of certain building depending on the phase)
+	int choose_building_upgrade_type_level2(AIEcho::Echo& echo);
+	///This function is a generic version of the above functions
+	int choose_building_upgrade_type(AIEcho::Echo& echo, int level, int inn_ratio, int hospital_ratio, int racetrack_ratio, int swimmingpool_ratio, int barracks_ratio, int school_ratio, int tower_ratio);
+	///This function chooses a building of the given type and level to be upgraded.
+	int choose_building_for_upgrade(AIEcho::Echo& echo, int type, int level);
+	///This function starts upgrading buildings if the upgrading_phase is active.
+	void upgrade_buildings(AIEcho::Echo& echo);
+
+
 	int timer;
 };
 
