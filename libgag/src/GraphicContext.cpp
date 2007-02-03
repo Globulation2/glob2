@@ -1585,30 +1585,31 @@ namespace GAGCore
 			//if it does, we assume a jump in the opposite direction
 			static int vpX = viewPortX;
 			static int vpY = viewPortY;
-			vpX += (viewPortX-vpX+32)%64-32;
-			vpY += (viewPortY-vpY+32)%64-32;
+			vpX += (viewPortX-vpX+32+512)%64-32;
+			vpY += (viewPortY-vpY+32+512)%64-32;
 			//Correlated Noise
+			
 			static PerlinNoise pn;
 			const int granularity=16;
-			const float max_cloud_speed=4;
-			const float wind_stability=2000;
+			const float max_cloud_speed=5;
+			const float wind_stability=3000;
 			const float cloud_stability=3000;
 			const float cloud_size=300;
-			const int cloud_height=8;//effective height is this * granularity
+			const float cloud_height=1.3;//(cloud - ground) / (eyes - ground)
 			int wGrid=w/granularity+1;
-			int hGrid=h/granularity+cloud_height+1;
+			int hGrid=h/granularity+1;
 			int * alphaMap=new int[wGrid*hGrid];
 			for (int y=0; y<hGrid; y++)
 				for (int x=0; x<wGrid; x++)
 				alphaMap[wGrid*y+x]=(int)pow(std::max(.0f,std::min(13.0f,
-							(35.0f*(-.05f+pn.Noise(
+							(35.0f*(-.08f+pn.Noise(
 							(float)(x*granularity+(vpX<<5)+pn.Noise((float)time/wind_stability)*wind_stability*max_cloud_speed)/cloud_size,
 							(float)(y*granularity+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*wind_stability*max_cloud_speed)/cloud_size,
 							(float)time/cloud_stability))))),2);
 
 			glState.doBlend(1);
 			glState.doTexture(0);
-			for (int y=0; y<hGrid-cloud_height-1; y++)
+			for (int y=0; y<hGrid-1; y++)
 			{
 				glBegin(GL_TRIANGLE_STRIP);
 				for (int x=0; x<wGrid; x++)
@@ -1619,13 +1620,20 @@ namespace GAGCore
 					glVertex2f(x*granularity,y*granularity+granularity);
 				}
 				glEnd();
+			}
+			for (int y=0; y<hGrid-1; y++)
+			{
 				glBegin(GL_TRIANGLE_STRIP);
 				for (int x=0; x<wGrid; x++)
 				{
-					glColor4ub(240, 240, 255, alphaMap[wGrid*(y+cloud_height)+x]);
-					glVertex2f(x*granularity,y*granularity);
-					glColor4ub(240, 240, 255, alphaMap[wGrid*(y+cloud_height+1)+x]);
-					glVertex2f(x*granularity,y*granularity+granularity);
+					glColor4ub(240, 240, 255, alphaMap[wGrid*y+x]);
+					glVertex2f(
+					(((float)x-(float)wGrid/2.0f)*cloud_height+(float)wGrid/2.0f)*granularity,
+					(((float)y-(float)hGrid/2.0f)*cloud_height+(float)hGrid/2.0f)*granularity);
+					glColor4ub(240, 240, 255, alphaMap[wGrid*(y+1)+x]);
+					glVertex2f(
+					(((float)x-wGrid/2.0f)*cloud_height+wGrid/2.0f)*granularity,
+					((((float)y+1)-hGrid/2.0f)*cloud_height+hGrid/2.0f)*granularity);
 				}
 				glEnd();
 			}
@@ -2043,5 +2051,3 @@ namespace GAGCore
 		return getStringHeight(temp.str().c_str());
 	}
 }
-
-
