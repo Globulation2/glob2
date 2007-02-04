@@ -470,8 +470,8 @@ void GlobalContainer::load(void)
 		updateLoadProgressBar(35);
 		
 		// load fonts
-		Toolkit::loadFont("data/fonts/sans.ttf", 22, "menu");
-		Toolkit::loadFont("data/fonts/sans.ttf", 14, "standard");
+		Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
+		Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
 		Toolkit::loadFont("data/fonts/sans.ttf", 10, "little");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::frontColor));

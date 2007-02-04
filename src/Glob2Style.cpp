@@ -62,6 +62,36 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 			target->drawSprite(x+w-20, y, sprite, 5, highlight);
 		}
 	}
+	// small buttons
+	else if (h == 20)
+	{
+		int ocrX, ocrY, ocrW, ocrH;
+		
+		// base of buttons
+		target->drawSprite(x, y, sprite, 6);
+		
+		target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
+		target->setClipRect(x+10, y, w-20, 20);
+		for (int i = 0; i < w-20; i += 20)
+			target->drawSprite(x+10+i, y, sprite, 8);
+		target->setClipRect(ocrX, ocrY, ocrW, ocrH);
+		
+		target->drawSprite(x+w-10, y, sprite, 10);
+		
+		// hightlight of buttons
+		if (highlight > 0)
+		{
+			target->drawSprite(x, y, sprite, 7, highlight);
+		
+			target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
+			target->setClipRect(x+10, y, w-20, 20);
+			for (int i = 0; i < w-20; i += 20)
+				target->drawSprite(x+10+i, y, sprite, 9, highlight);
+			target->setClipRect(ocrX, ocrY, ocrW, ocrH);
+			
+			target->drawSprite(x+w-10, y, sprite, 11, highlight);
+		}
+	}
 	else
 		Style::drawTextButtonBackground(target, x, y, w, h, highlight);
 }

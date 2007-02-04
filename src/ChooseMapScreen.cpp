@@ -52,7 +52,7 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	else if (strcmp(directory, "games") == 0)
 	{
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
-		deleteMap = new TextButton(220, 430, 200, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Delete game]"), DELETEGAME);
+		deleteMap = new TextButton(220, 430, 200, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Delete game]"), DELETEGAME);
 		addWidget(deleteMap);
 	}
 	else

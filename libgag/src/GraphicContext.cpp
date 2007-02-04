@@ -1775,7 +1775,7 @@ namespace GAGCore
 			DrawableSurface::drawAlphaMap(map, mapW, mapH, x, y, cellW, cellH, color);
 	}
 	
-	// compat... this is there because it sems gc is not able to do function overloading with several levels of inheritance
+	// compat... this is there because it seems gcc is not able to do function overloading with several levels of inheritance
 	void GraphicContext::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawPixel(x, y, Color(r, g, b, a));

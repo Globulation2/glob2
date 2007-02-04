@@ -43,21 +43,21 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 {
 	this->mapScript=mapScript;
 	this->game=game;
-	scriptEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
+	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
 	addWidget(scriptEditor);
-	campaignTextEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->campaignText.c_str());
+	campaignTextEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->campaignText.c_str());
 	campaignTextEditor->visible = false;
 	addWidget(campaignTextEditor);
 	
-	compilationResult=new Text(10, 330, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(compilationResult);
-	addWidget(new TextButton(10, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
-	addWidget(new TextButton(120, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
-	compileButton = new TextButton(230, 360, 130, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE);
+	addWidget(new TextButton(10, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
+	addWidget(new TextButton(120, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	compileButton = new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE);
 	addWidget(compileButton);
-	loadButton = new TextButton(370, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD);
+	loadButton = new TextButton(370, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD);
 	addWidget(loadButton);
-	saveButton = new TextButton(480, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE);
+	saveButton = new TextButton(480, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE);
 	addWidget(saveButton);
 	
 	addWidget(new TextButton(10, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Script", TAB_SCRIPT));

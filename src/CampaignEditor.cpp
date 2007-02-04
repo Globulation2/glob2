@@ -155,8 +155,8 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	nameEditorLabel = new Text(405, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map name]"));
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", table.getString("[Cancel]"), CANCEL);
-	addToUnlocked = new TextButton(170, 150, 50, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "<", ADDTOUNLOCKED);
-	removeFromUnlocked = new TextButton(170, 190, 50, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", ">", REMOVEFROMUNLOCKED);
+	addToUnlocked = new TextButton(170, 150, 50, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", "<", ADDTOUNLOCKED);
+	removeFromUnlocked = new TextButton(170, 210, 50, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", ">", REMOVEFROMUNLOCKED);
 	std::set<std::string> unlockedBy;
 	for(int n=0; n<entry.getUnlockedByMaps().size(); ++n)
 	{

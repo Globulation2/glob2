@@ -3412,12 +3412,12 @@ void MapEditMenuScreen::onAction(Widget *source, Action action, int par1, int pa
 
 
 
-AskForTextInput::AskForTextInput(const std::string& aLabel, const std::string& aCurrent) : OverlayScreen(globalContainer->gfx, 300, 110), labelText(aLabel), currentText(aCurrent)
+AskForTextInput::AskForTextInput(const std::string& aLabel, const std::string& aCurrent) : OverlayScreen(globalContainer->gfx, 300, 120), labelText(aLabel), currentText(aCurrent)
 {
 	label = new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString(labelText.c_str()));
 	textEntry = new TextInput(10, 35, 280, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", currentText, true);
-	ok = new TextButton(10, 70, 135, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK);
-	cancel =  new TextButton(155, 70, 135, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
+	ok = new TextButton(10, 70, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK);
+	cancel =  new TextButton(155, 70, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
 	addWidget(label);
 	addWidget(textEntry);
 	addWidget(ok);
