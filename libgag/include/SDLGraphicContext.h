@@ -26,6 +26,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <valarray>
 
 #include <set>
 #include <boost/tuple/tuple.hpp>
@@ -66,7 +67,9 @@ namespace GAGCore
 		bool operator==(const Color &o) const { return pack() == o.pack(); }
 		
 		//! return a new color with a different alpha value
-		Color applyAlpha(Uint8 a) { Color c = *this; c.a = a; return c; }
+		Color applyAlpha(Uint8 _a) const { Color c = *this; c.a = _a; return c; }
+		//! return a new color resulting of the multiplication by alpha
+		Color applyMultiplyAlpha(Uint8 _a) const ;
 		
 		static Color black; //!< black color (0,0,0)
 		static Color white; //!< black color (255,255,255)
@@ -252,6 +255,9 @@ namespace GAGCore
 		void drawString(int x, int y, Font *font, const std::string &msg, int w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		void drawString(float x, float y, Font *font, const std::string &msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
+		//! Draw an alpha map of size mapW, mapH using a specific color at coordinantes x, y using cells of size cellW, cellH
+		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+		
 		// old API, deprecated, do not use. It is only there for compatibility with existing code
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
@@ -365,6 +371,8 @@ namespace GAGCore
 		
 		virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
 		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		
 		// compat
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
