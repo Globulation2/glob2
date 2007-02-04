@@ -48,8 +48,8 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	addWidget(hungryness);
 	
 	// ok / cancel
-	addWidget(new TextButton(10, 10, 135, 35, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
-	addWidget(new TextButton(10, 10, 135, 35, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(10, 10, 135, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
+	addWidget(new TextButton(10, 10, 135, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	
 	// important, widgets must be initialised by hand as we use custom event loop
 	dispatchInit();

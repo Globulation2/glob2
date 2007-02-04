@@ -27,13 +27,13 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 	campaign.load(name);
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", campaign.getName());
 	addWidget(title);
-	startMission = new TextButton(180, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[start mission]"), START);
+	startMission = new TextButton(10, 430, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[start mission]"), START);
 	addWidget(startMission);
-	exit = new TextButton(370, 430, 260, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), EXIT);
+	exit = new TextButton(330, 430, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), EXIT);
 	addWidget(exit);
-	playerName = new TextInput(350, 50, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getPlayerName());
+	playerName = new TextInput(330, 50, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getPlayerName());
 	addWidget(playerName);
-	availableMissions = new List(10, 50, 275, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	availableMissions = new List(10, 50, 300, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	for(int i=0; i<campaign.getMapCount(); ++i)
 	{
 		if(campaign.getMap(i).isUnlocked())
@@ -41,8 +41,6 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 	}
 	addWidget(availableMissions);
 }
-
-
 
 void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
@@ -55,16 +53,19 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if((par1==START))
 		{
-			Engine engine;
-			if (engine.initCampaign(getMissionName(), campaign, availableMissions->get()) == Engine::EE_NO_ERROR)
-				engine.run();
-			availableMissions->clear();
-			for(int i=0; i<campaign.getMapCount(); ++i)
+			if (availableMissions->getSelectionIndex() >= 0)
 			{
-				if(campaign.getMap(i).isUnlocked())
-					availableMissions->addText(campaign.getMap(i).getMapName());
+				Engine engine;
+				if (engine.initCampaign(getMissionName(), campaign, availableMissions->get()) == Engine::EE_NO_ERROR)
+					engine.run();
+				availableMissions->clear();
+				for(int i=0; i<campaign.getMapCount(); ++i)
+				{
+					if(campaign.getMap(i).isUnlocked())
+						availableMissions->addText(campaign.getMap(i).getMapName());
+				}
+				campaign.save(true);
 			}
-			campaign.save(true);
 		}
 	}
 	else if((action==TEXT_MODIFIED))
