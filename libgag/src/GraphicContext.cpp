@@ -87,6 +87,16 @@ namespace GAGCore
 		b = static_cast<Uint8>(255.0f*fb);
 	}
 	
+	Color Color::applyMultiplyAlpha(Uint8 _a) const 
+	{
+		Color c;
+		c.r = (Uint8)(((unsigned)r * (unsigned)_a) / 256);
+		c.g = (Uint8)(((unsigned)g * (unsigned)_a) / 256);
+		c.b = (Uint8)(((unsigned)b * (unsigned)_a) / 256);
+		c.a = (Uint8)(((unsigned)a * (unsigned)_a) / 256);
+		return c;
+	}
+	
 	// Predefined colors
 	Color Color::black = Color(0, 0, 0);
 	Color Color::white = Color(255,255,255);
@@ -1317,6 +1327,15 @@ namespace GAGCore
 		drawString(x, y, font, msg.c_str(), w, alpha);
 	}
 	
+	void DrawableSurface::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	{
+		assert(mapW * mapH <= map.size());
+		
+		for (int dy=0; dy < mapH-1; dy++)
+			for (int dx=0; dx < mapW; dx++)
+				drawFilledRect(x + dx * cellW, y + dy * cellH, cellW, cellH, color.applyMultiplyAlpha((Uint8)(255.0f * map[mapW * dy + dx])));
+	}
+	
 	// compat
 	void DrawableSurface::drawString(int x, int y, Font *font, int i)
 	{
@@ -1723,6 +1742,37 @@ namespace GAGCore
 		else
 		#endif
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
+	}
+	
+	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	{
+		#ifdef HAVE_OPENGL
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
+			assert(mapW * mapH <= map.size());
+			
+			float fr = 255.0f*(float)color.r;
+			float fg = 255.0f*(float)color.g;
+			float fb = 255.0f*(float)color.b;
+			
+			glState.doBlend(1);
+			glState.doTexture(0);
+			for (int dy=0; dy < mapH-1; dy++)
+			{
+				glBegin(GL_TRIANGLE_STRIP);
+				for (int dx=0; dx < mapW; dx++)
+				{
+					glColor4f(fr, fg, fb, map[mapW * dy + dx]);
+					glVertex2f(x + dx * cellW, y + dy * cellH);
+					glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx]);
+					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
+				}
+				glEnd();
+			}
+		}
+		else
+		#endif
+			DrawableSurface::drawAlphaMap(map, mapW, mapH, x, y, cellW, cellH, color);
 	}
 	
 	// compat... this is there because it sems gc is not able to do function overloading with several levels of inheritance
