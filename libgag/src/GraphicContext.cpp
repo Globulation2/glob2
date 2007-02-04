@@ -1332,7 +1332,7 @@ namespace GAGCore
 		assert(mapW * mapH <= map.size());
 		
 		for (int dy=0; dy < mapH-1; dy++)
-			for (int dx=0; dx < mapW; dx++)
+			for (int dx=0; dx < mapW-1; dx++)
 				drawFilledRect(x + dx * cellW, y + dy * cellH, cellW, cellH, color.applyMultiplyAlpha((Uint8)(255.0f * map[mapW * dy + dx])));
 	}
 	
