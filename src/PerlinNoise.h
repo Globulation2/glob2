@@ -33,6 +33,7 @@ private:
 public:
 
   PerlinNoise();
+  PerlinNoise( unsigned int rSeed ) { reseed(rSeed); }
   ~PerlinNoise();
 
   static void reseed(); 
