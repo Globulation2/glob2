@@ -46,7 +46,7 @@
 #include "GameGUI.h"
 
 #include "Brush.h"
-#include "PerlinNoise.h"
+#include "DynamicClouds.h"
 
 #define BULLET_IMGID 0
 
@@ -2480,7 +2480,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	// draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
-		globalContainer->gfx->drawCloudShadowGL(viewportX, viewportY, sw, sh, time);
+	{
+		static DynamicClouds ds;
+		ds.render(globalContainer->gfx, viewportX, viewportY, sw, sh, time);
+	}
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 
