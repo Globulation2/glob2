@@ -206,7 +206,9 @@ UnitsSkins.cpp\
 UnitEditorScreen.h\
 UnitEditorScreen.cpp\
 HeightMapGenerator.h\
-HeightMapGenerator.cpp
+HeightMapGenerator.cpp\
+DynamicClouds.h\
+DynamicClouds.cpp
 
 
 lua_embedd_sources=\

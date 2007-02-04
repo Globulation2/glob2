@@ -19,6 +19,7 @@
 
 #include "Glob2Screen.h"
 #include "GlobalContainer.h"
+#include "DynamicClouds.h"
 
 
 Glob2Screen::Glob2Screen()
@@ -42,7 +43,10 @@ void Glob2Screen::paint(void)
 			gfx->drawSprite(x, y, globalContainer->terrain, getNextTerrain());
 			
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
-		globalContainer->gfx->drawCloudShadowGL(0, 0, getW(), getH(), time);
+	{
+		static DynamicClouds ds;
+		ds.render(globalContainer->gfx, 0, 0, getW(), getH(), time);
+	}
 }
 
 unsigned Glob2Screen::getNextTerrain(void)
