@@ -74,6 +74,14 @@ public:
 	int stonewallUnit0c;
 	int marketUnit0c;
 	
+	int cloudPatchSize;//the bigger the faster the uglier
+	int cloudMaxAlpha;//the higher the nicer the clouds the harder the units are visible
+	int cloudMaxSpeed;
+	int cloudWindStability;//how much will the wind change
+	int cloudStability;//how much will the clouds change shape
+	int cloudSize;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
+	int cloudHeight;//(cloud - ground) / (eyes - ground)
+
 	std::map<std::string, std::string> keyboard_shortcuts;
 	std::map<std::string, std::string> editor_keyboard_shortcuts;
 
@@ -88,4 +96,3 @@ public:
 };
 
 #endif
-

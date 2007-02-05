@@ -25,6 +25,7 @@
 #define _DYNAMICCLOUDS_H
 
 #include "PerlinNoise.h"
+#include "Settings.h"
 #include <math.h>
 
 namespace GAGCore
@@ -35,18 +36,25 @@ using namespace GAGCore;
 
 class DynamicClouds
 {
-	static const int granularity=16;
-	static const unsigned char maxAlpha=130;//[0;255]
-	static const float maxCloudSpeed=3;
-	static const float windStability=3550;
-	static const float cloudStability=1300;
-	static const float cloudSize=300;
-	static const float cloudHeight=1.5;//(cloud - ground) / (eyes - ground)
+	int granularity;
+	unsigned char maxAlpha;
+	float maxCloudSpeed;
+	float windStability;
+	float cloudStability;
+	float cloudSize;
+	float cloudHeight;
 	float rootOfMaxAlpha;
 public:
-	DynamicClouds() 
+	DynamicClouds(Settings * settings) 
 	{
+		granularity=settings->cloudPatchSize;
+		maxAlpha=(unsigned char)settings->cloudMaxAlpha;
 		rootOfMaxAlpha=sqrt((float)maxAlpha);
+		maxCloudSpeed=settings->cloudMaxSpeed;
+		windStability=settings->cloudWindStability;
+		cloudStability=settings->cloudStability;
+		cloudSize=settings->cloudSize;
+		cloudHeight=(float)settings->cloudHeight/100.0f;
 	}
 	virtual ~DynamicClouds() { }
 	void render(DrawableSurface *dest, const int viewPortX,

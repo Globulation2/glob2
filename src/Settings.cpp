@@ -49,44 +49,61 @@ Settings::Settings()
 	defaultLanguage = 0;
 	musicVolume = 255;
 	mute = 0;
-	rememberUnit = 0;
+	rememberUnit = 1;
 	restoreDefaultShortcuts();
 	tempUnit = 1;
 	tempUnitFuture = 1;
-	warflagUnit = 1;
-	clearflagUnit = 1;
+	warflagUnit = 20;
+	clearflagUnit = 2;
 	exploreflagUnit = 1;
-	swarmUnit0c = 1;
-	swarmUnit0 = 1;
-	innUnit0c = 1;
-	innUnit0 = 1;
-	innUnit1c = 1;
-	innUnit1 = 1;
-	innUnit2c = 1;
-	innUnit2 = 1;
-	hospitalUnit0c = 1;
-	hospitalUnit1c = 1;
-	hospitalUnit2c = 1;
-	racetrackUnit0c = 1;
-	racetrackUnit1c = 1;
-	racetrackUnit2c = 1;
-	swimmingpoolUnit0c = 1;
-	swimmingpoolUnit1c = 1;
-	swimmingpoolUnit2c = 1;
-	barracksUnit0c = 1;
-	barracksUnit1c = 1;
-	barracksUnit2c = 1;
-	schoolUnit0c = 1;
-	schoolUnit1c = 1;
-	schoolUnit2c = 1;
-	defencetowerUnit0c = 1;
-	defencetowerUnit0 = 1;
-	defencetowerUnit1c = 1;
-	defencetowerUnit1 = 1;
-	defencetowerUnit2c = 1;
-	defencetowerUnit2 = 1;
+	swarmUnit0c = 7;
+	swarmUnit0 = 4;
+	innUnit0c = 3;
+	innUnit0 = 2;
+	innUnit1c = 5;
+	innUnit1 = 3;
+	innUnit2c = 15;
+	innUnit2 = 8;
+	hospitalUnit0c = 2;
+	hospitalUnit1c = 4;
+	hospitalUnit2c = 6;
+	racetrackUnit0c = 3;
+	racetrackUnit1c = 7;
+	racetrackUnit2c = 12;
+	swimmingpoolUnit0c = 2;
+	swimmingpoolUnit1c = 5;
+	swimmingpoolUnit2c = 12;
+	barracksUnit0c = 3;
+	barracksUnit1c = 6;
+	barracksUnit2c = 9;
+	schoolUnit0c = 5;
+	schoolUnit1c = 10;
+	schoolUnit2c = 20;
+	defencetowerUnit0c = 3;
+	defencetowerUnit0 = 2;
+	defencetowerUnit1c = 5;
+	defencetowerUnit1 = 2;
+	defencetowerUnit2c = 8;
+	defencetowerUnit2 = 2;
 	stonewallUnit0c = 1;
-	marketUnit0c = 1;
+	marketUnit0c = 3;
+
+	cloudPatchSize=16;//the bigger the faster the uglier
+	cloudMaxAlpha=130;//the higher the nicer the clouds the harder the units are visible
+	cloudMaxSpeed=3;
+	cloudWindStability=3550;//how much will the wind change
+	cloudStability=1300;//how much will the clouds change shape
+	cloudSize=300;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
+	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
+/*
+cloudPatchSize=16
+cloudMaxAlpha=130
+cloudMaxSpeed=3
+cloudWindStability=3550
+cloudStability=1300
+cloudSize=300
+cloudHeight=150
+*/
 }
 
 
@@ -234,6 +251,14 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(stonewallUnit0c);
 		READ_PARSED_INT(marketUnit0c);
 
+		READ_PARSED_INT(cloudPatchSize);
+		READ_PARSED_INT(cloudMaxAlpha);
+		READ_PARSED_INT(cloudMaxSpeed);
+		READ_PARSED_INT(cloudWindStability);
+		READ_PARSED_INT(cloudStability);
+		READ_PARSED_INT(cloudSize);
+		READ_PARSED_INT(cloudHeight);
+
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{
 			if(parsed.find("game_"+i->first)!=parsed.end())
@@ -324,6 +349,14 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "defencetowerUnit2=%d\n",	defencetowerUnit2);
 		Utilities::streamprintf(stream, "stonewallUnit0c=%d\n",	stonewallUnit0c);
 		Utilities::streamprintf(stream, "marketUnit0c=%d\n",	marketUnit0c);
+
+		Utilities::streamprintf(stream, "cloudPatchSize=%d\n",	cloudPatchSize);
+		Utilities::streamprintf(stream, "cloudMaxAlpha=%d\n",	cloudMaxAlpha);
+		Utilities::streamprintf(stream, "cloudMaxSpeed=%d\n",	cloudMaxSpeed);
+		Utilities::streamprintf(stream, "cloudWindStability=%d\n",	cloudWindStability);
+		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
+		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
+		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
 		
 		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
 		{

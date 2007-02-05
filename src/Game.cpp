@@ -2481,7 +2481,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	// draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		static DynamicClouds ds;
+		static DynamicClouds ds(&globalContainer->settings);
 		ds.render(globalContainer->gfx, viewportX, viewportY, sw, sh, time);
 	}
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
