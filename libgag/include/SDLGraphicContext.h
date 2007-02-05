@@ -257,6 +257,7 @@ namespace GAGCore
 		
 		//! Draw an alpha map of size mapW, mapH using a specific color at coordinantes x, y using cells of size cellW, cellH
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		
 		// old API, deprecated, do not use. It is only there for compatibility with existing code
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
@@ -355,8 +356,6 @@ namespace GAGCore
 		virtual void drawLine(int x1, int y1, int x2, int y2, Color color);
 		virtual void drawLine(float x1, float y1, float x2, float y2, Color color);
 		
-		virtual void drawCloudShadowGL(int viewPortX, int viewPortY, int w, int h, int time);
-
 		virtual void drawCircle(int x, int y, int radius, Color color);
 		virtual void drawCircle(float x, float y, float radius, Color color);
 		
@@ -373,6 +372,7 @@ namespace GAGCore
 		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
+		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		
 		// compat
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
