@@ -160,6 +160,7 @@ namespace AIEcho
 				ERessource,
 				EAnyRessource,
 				EWater,
+				EPosition,
 			};
 
 			///An entity is any observable object on the map. Its entirely generic, not specific to a certain team
@@ -287,6 +288,24 @@ namespace AIEcho
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
+			};
+
+			///Matches the provided position
+			class Position : public Entity
+			{
+			public:
+				Position(int x, int y);
+			protected:
+				Position() : x(-1), y(-1) {}
+				friend class Entity;
+				bool is_entity(Map* map, int posx, int posy);
+				bool operator==(const Entity& rhs);
+				bool can_change();
+				EntityType get_type();
+				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+				void save(GAGCore::OutputStream *stream);
+				int x;
+				int y;
 			};
 		};
 
@@ -1601,7 +1620,6 @@ namespace AIEcho
 		///Before the next building is constructed, the previous building must be
 		///found on the BuildingRegister
 		int previous_building_id;
-		int retry_timer;
 		bool update_gm;
 		bool is_fruit;
 
