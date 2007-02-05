@@ -44,7 +44,7 @@ void Glob2Screen::paint(void)
 			
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		static DynamicClouds ds;
+		static DynamicClouds ds(&globalContainer->settings);
 		ds.render(globalContainer->gfx, 0, 0, getW(), getH(), time);
 	}
 }
