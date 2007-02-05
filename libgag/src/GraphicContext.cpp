@@ -31,7 +31,6 @@
 #include <string.h>
 #include <valarray>
 #include <cstdlib>
-#include "PerlinNoise.h" //TODO: this header file is in the project twice. please someone with knowledge of the structure delete one of them and fix the according include. thanx, Giszmo
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -1336,6 +1335,15 @@ namespace GAGCore
 				drawFilledRect(x + dx * cellW, y + dy * cellH, cellW, cellH, color.applyMultiplyAlpha((Uint8)(255.0f * map[mapW * dy + dx])));
 	}
 	
+	void DrawableSurface::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	{
+		assert(mapW * mapH <= map.size());
+		
+		for (int dy=0; dy < mapH-1; dy++)
+			for (int dx=0; dx < mapW-1; dx++)
+				drawFilledRect(x + dx * cellW, y + dy * cellH, cellW, cellH, color.applyMultiplyAlpha(map[mapW * dy + dx]));
+	}
+	
 	// compat
 	void DrawableSurface::drawString(int x, int y, Font *font, int i)
 	{
@@ -1595,72 +1603,6 @@ namespace GAGCore
 			DrawableSurface::drawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<int>(radius), color);
 	}
 	
-	void GraphicContext::drawCloudShadowGL(int viewPortX, int viewPortY, int w, int h, int time)
-	{
-		#ifdef HAVE_OPENGL
-		if (GraphicContext::USEGPU)
-		{
-			//tribute to the torrodial world: the viewpot must never jump by more than 31.
-			//if it does, we assume a jump in the opposite direction
-			static int vpX = viewPortX;
-			static int vpY = viewPortY;
-			vpX += (viewPortX-vpX+32+512)%64-32;
-			vpY += (viewPortY-vpY+32+512)%64-32;
-			//Correlated Noise
-			
-			static PerlinNoise pn;
-			const int granularity=16;
-			const float max_cloud_speed=5;
-			const float wind_stability=3000;
-			const float cloud_stability=3000;
-			const float cloud_size=300;
-			const float cloud_height=1.3;//(cloud - ground) / (eyes - ground)
-			int wGrid=w/granularity+1;
-			int hGrid=h/granularity+1;
-			int * alphaMap=new int[wGrid*hGrid];
-			for (int y=0; y<hGrid; y++)
-				for (int x=0; x<wGrid; x++)
-				alphaMap[wGrid*y+x]=(int)pow(std::max(.0f,std::min(13.0f,
-							(35.0f*(-.08f+pn.Noise(
-							(float)(x*granularity+(vpX<<5)+pn.Noise((float)time/wind_stability)*wind_stability*max_cloud_speed)/cloud_size,
-							(float)(y*granularity+(vpY<<5)+pn.Noise((float)time/wind_stability*(-1))*wind_stability*max_cloud_speed)/cloud_size,
-							(float)time/cloud_stability))))),2);
-
-			glState.doBlend(1);
-			glState.doTexture(0);
-			for (int y=0; y<hGrid-1; y++)
-			{
-				glBegin(GL_TRIANGLE_STRIP);
-				for (int x=0; x<wGrid; x++)
-				{
-					glColor4ub(0, 0, 0, alphaMap[wGrid*y+x]);
-					glVertex2f(x*granularity,y*granularity);
-					glColor4ub(0, 0, 0, alphaMap[wGrid*(y+1)+x]);
-					glVertex2f(x*granularity,y*granularity+granularity);
-				}
-				glEnd();
-			}
-			for (int y=0; y<hGrid-1; y++)
-			{
-				glBegin(GL_TRIANGLE_STRIP);
-				for (int x=0; x<wGrid; x++)
-				{
-					glColor4ub(240, 240, 255, alphaMap[wGrid*y+x]);
-					glVertex2f(
-					(((float)x-(float)wGrid/2.0f)*cloud_height+(float)wGrid/2.0f)*granularity,
-					(((float)y-(float)hGrid/2.0f)*cloud_height+(float)hGrid/2.0f)*granularity);
-					glColor4ub(240, 240, 255, alphaMap[wGrid*(y+1)+x]);
-					glVertex2f(
-					(((float)x-wGrid/2.0f)*cloud_height+wGrid/2.0f)*granularity,
-					((((float)y+1)-hGrid/2.0f)*cloud_height+hGrid/2.0f)*granularity);
-				}
-				glEnd();
-			}
-			delete alphaMap;
-		}
-		#endif
-	}
-	
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
@@ -1775,7 +1717,38 @@ namespace GAGCore
 			DrawableSurface::drawAlphaMap(map, mapW, mapH, x, y, cellW, cellH, color);
 	}
 	
-	// compat... this is there because it seems gcc is not able to do function overloading with several levels of inheritance
+	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
+	{
+		#ifdef HAVE_OPENGL
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
+			assert(mapW * mapH <= map.size());
+			
+			float fr = 255.0f*(float)color.r;
+			float fg = 255.0f*(float)color.g;
+			float fb = 255.0f*(float)color.b;
+			
+			glState.doBlend(1);
+			glState.doTexture(0);
+			for (int dy=0; dy < mapH-1; dy++)
+			{
+				glBegin(GL_TRIANGLE_STRIP);
+				for (int dx=0; dx < mapW; dx++)
+				{
+					glColor4ub(fr, fg, fb, map[mapW * dy + dx]);
+					glVertex2f(x + dx * cellW, y + dy * cellH);
+					glColor4ub(fr, fg, fb, map[mapW * (dy + 1) + dx]);
+					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
+				}
+				glEnd();
+			}
+		}
+		else
+		#endif
+			DrawableSurface::drawAlphaMap(map, mapW, mapH, x, y, cellW, cellH, color);
+	}
+	
+	// compat... this is there because it sems gcc is not able to do function overloading with several levels of inheritance
 	void GraphicContext::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawPixel(x, y, Color(r, g, b, a));
