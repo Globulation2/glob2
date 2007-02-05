@@ -69,6 +69,9 @@ private:
 	bool war_preperation;
 	///During the war phase, the enemies are attacked
 	bool war;
+	///During the fruit phase, explorers are stationed on fruit trees and Nicowar starts converting
+	///enemy units
+	bool fruit_phase;
 
 
 	///This function decides how many buildings need to be constructed (and with what properties
@@ -146,14 +149,37 @@ private:
 	void upgrade_buildings(AIEcho::Echo& echo);
 
 
-	///This function chooses an enemy building to be destroyed.
+	///This function chooses an enemy building to be destroyed. It returns -1 if there are no accessible buildings
 	int choose_building_to_attack(AIEcho::Echo& echo);
 	///This function starts an attack on another enemy building
 	void attack_building(AIEcho::Echo& echo);
 	///This function controls the attacking of enemies, such as how many flags are active at one time
 	void control_attacks(AIEcho::Echo& echo);
+	///This function chooses the enemy team to target
+	void choose_enemy_target(AIEcho::Echo& echo);
+	///This function digs out an enemy building that is surrounded by ressources.
+	///It will also cause Nicowar to dig itself out in certain situtation
+	void dig_out_enemy(AIEcho::Echo& echo);
+
 	///This integer stores the number of flags that are active at one time
 	int attack_flags;
+	///This integer stores the currently targetted enemy
+	int target;
+	///This integer stores whether a building is being dug out at the current moment
+	bool is_digging_out;
+
+
+	///This function updates the restricted areas for farming
+	void update_farming(AIEcho::Echo& echo);
+
+	///This function puts exploration flags on fruit trees once the fruit phase
+	///has been activated.
+	void update_fruit_flags(AIEcho::Echo& echo);
+	///This function updates the alliances with opponents once the fruit phase
+	///has been activated.
+	void update_fruit_alliances(AIEcho::Echo& echo);
+	///This variable tells whether their are exploration flags on the fruit trees yet or not
+	bool exploration_on_fruit;
 
 
 	int timer;

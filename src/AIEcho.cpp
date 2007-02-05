@@ -93,6 +93,10 @@ Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Pl
 			entity = new Entities::Water;
 			entity->load(stream, player, versionMinor);
 		break;
+		case Entities::EPosition:
+			entity = new Entities::Position;
+			entity->load(stream, player, versionMinor);
+		break;
 	};
 	stream->readLeaveSection();
 	return entity;
@@ -497,6 +501,61 @@ void Entities::Water::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
+
+Entities::Position::Position(int x, int y) : x(x), y(y)
+{
+
+}
+
+
+bool Entities::Position::is_entity(Map* map, int posx, int posy)
+{
+	if(x==posx && y==posy)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+bool Entities::Position::operator==(const Entity& rhs)
+{
+	if(typeid(rhs)==typeid(Entities::Position) && 
+	   static_cast<const Entities::Position&>(rhs).x==x &&
+	   static_cast<const Entities::Position&>(rhs).y==y) 
+		return true;
+	return false;
+}
+
+
+bool Entities::Position::can_change()
+{
+	return false;
+}
+
+
+Entities::EntityType Entities::Position::get_type()
+{
+	return Entities::EPosition;
+}
+
+
+bool Entities::Position::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Position");
+	x=stream->readSint32("posX");
+	y=stream->readSint32("posY");
+	stream->readLeaveSection();
+}
+
+
+void Entities::Position::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Position");
+	stream->writeSint32(x, "posX");
+	stream->writeSint32(y, "posy");
+	stream->writeLeaveSection();
+}
 
 
 GradientInfo::GradientInfo()
@@ -1357,20 +1416,10 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 		for(int y=0; y<map->getH(); ++y)
 		{
 			if(!check_flag && !map->isHardSpaceForBuilding(x, y, type->width, type->height))
-			{	
-				//The logic here is that the algorithm searches for a building placement left to
-				//right, top to bottom. As its going down, what if one of the bottom squares is
-				//filled? That means that as long as that space is in the buildings area, it will
-				//never clear. So, instead of checking every location that has the faulty square in
-				//it, just skip over all of those squares, saving some time.
-				if(y>0)
-					y+=type->height-1;
 				continue;
-			}
 
 			if(check_flag && echo.get_flag_map().get_flag(x, y)!=NOGBID)
 				continue;
-
 			int score=0;
 			bool passes=true;
 			for(std::vector<boost::shared_ptr<Constraint> >::iterator i=constraints.begin(); i!=constraints.end(); ++i)
@@ -1385,7 +1434,9 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 							}
 						}
 				if(!passes)
+				{
 					break;
+				}
 
 				if(!check_flag && (!map->isMapDiscovered(x, y, player->team->allies) ||
 				   !map->isMapDiscovered(x+type->width-1, y+type->height-1, player->team->allies))
@@ -1409,24 +1460,6 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 		}
 	}
 
-/*
-	int score=0;
-	bool passes=true;
-	for(std::vector<boost::shared_ptr<Constraint> >::iterator i=constraints.begin(); i!=constraints.end(); ++i)
-	{
-		std::cout<<"________final__________"<<std::endl;
-		if(!(*i)->passes_constraint(manager, best.x, best.y) ||
-		   !(*i)->passes_constraint(manager, best.x+type->width-1, best.y) ||
-		   !(*i)->passes_constraint(manager, best.x+type->width-1, best.y+type->height-1) ||
-		   !(*i)->passes_constraint(manager, best.x, best.y+type->height-1) 
-		    )
-		{			
-			passes=false;
-			break;
-		}
-		score+=(*i)->calculate_constraint(manager, best.x, best.y);
-	}
-*/
 	return best;
 }
 
@@ -2570,10 +2603,16 @@ bool BeingUpgradedTo::passes(Echo& echo, int id)
 	if(!echo.get_building_register().is_building_upgrading(id))
 		return false;
 	if(b->type->isBuildingSite)
-		if(b->type->level==level-1)
+	{
+		if(b->type->level==(level-1))
+		{
 			return true;
-	else if(b->type->level==level-2)
+		}
+	}
+	else if(b->type->level==(level-2))
+	{
 		return true;
+	}
 	return false;
 }
 
@@ -3749,6 +3788,7 @@ void UpgradeRepair::modify(Echo& echo)
 {
 	echo.push_order(new OrderConstruction(echo.get_building_register().get_building(id)->gid,1,1));
 	echo.get_building_register().set_upgrading(id);
+	std::cout<<"UpgradeRepair::modify"<<std::endl;
 }
 
 
@@ -4218,7 +4258,6 @@ bool MapInfo::is_water(int x, int y)
 Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(), br(player, *this), fm(*this), timer(0)
 {
 	previous_building_id=-1;
-	retry_timer=0;
 	from_load_timer=0;
 	is_fruit=false;
 }
@@ -4319,22 +4358,16 @@ void Echo::update_ressource_trackers()
 
 void Echo::update_building_orders()
 {
-	if(retry_timer>1)
-	{
-		retry_timer--;
-		return;
-	}
 	for(std::vector<boost::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
 	{
 		boost::logic::tribool passes=(*i)->passes_conditions(*this);
-		if(passes || retry_timer==1)
+		if(passes)
 		{
 			if(!(previous_building_id==-1 || br.is_building_found(previous_building_id) || !br.is_building_pending(previous_building_id)))
 				break;
 			position p=(*i)->find_location(*this, player->map, *gm);
 			if(p.x != 0 || p.y != 0)
 			{
-				retry_timer=0;
 				br.issue_order((*i)->id, p.x, p.y, (*i)->get_building_type());
 				Sint32 type=-1;
 				if((*i)->get_building_type()>IntBuildingType::DEFENSE_BUILDING && (*i)->get_building_type() <IntBuildingType::STONE_WALL)
@@ -4356,7 +4389,12 @@ void Echo::update_building_orders()
 				break;
 			}
 			else
-				retry_timer=50;
+			{
+				std::cout<<"Find place for "<<IntBuildingType::reverseConversionMap[(*i)->get_building_type()]<<" failed"<<std::endl;
+				br.remove_building((*i)->id);
+				i=building_orders.erase(i);
+				continue;
+			}
 		}
 		else if(!passes)
 		{
@@ -4936,7 +4974,6 @@ void ReachToInfinity::tick(Echo& echo)
 				//Constraints arround nearby settlement
 				AIEcho::Gradients::GradientInfo gi_building;
 				gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-				gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 
 				if(!flag_on_cherry)
 				{
@@ -4950,7 +4987,7 @@ void ReachToInfinity::tick(Echo& echo)
 					AIEcho::Gradients::GradientInfo gi_cherry;
 					gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
 					//You want to be ontop of the cherry trees
-					bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 1));
+					bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
 
 					//Add the building order to the list of orders
 					unsigned int id_cherry=echo.add_building_order(bo_cherry);
@@ -4981,7 +5018,7 @@ void ReachToInfinity::tick(Echo& echo)
 					AIEcho::Gradients::GradientInfo gi_orange;
 					gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
 					//You want to be ontop of the orange trees
-					bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 1));
+					bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
 
 					unsigned int id_orange=echo.add_building_order(bo_orange);
 
@@ -5010,7 +5047,7 @@ void ReachToInfinity::tick(Echo& echo)
 					AIEcho::Gradients::GradientInfo gi_prune;
 					gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
 					//You want to be ontop of the prune trees
-					bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 1));
+					bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
 
 					//Add the building order to the list of orders
 					unsigned int id_prune=echo.add_building_order(bo_prune);
