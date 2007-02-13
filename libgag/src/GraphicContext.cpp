@@ -1724,10 +1724,6 @@ namespace GAGCore
 		{
 			assert(mapW * mapH <= map.size());
 			
-			float fr = 255.0f*(float)color.r;
-			float fg = 255.0f*(float)color.g;
-			float fb = 255.0f*(float)color.b;
-			
 			glState.doBlend(1);
 			glState.doTexture(0);
 			for (int dy=0; dy < mapH-1; dy++)
@@ -1735,9 +1731,9 @@ namespace GAGCore
 				glBegin(GL_TRIANGLE_STRIP);
 				for (int dx=0; dx < mapW; dx++)
 				{
-					glColor4ub(fr, fg, fb, map[mapW * dy + dx]);
+					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
 					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glColor4ub(fr, fg, fb, map[mapW * (dy + 1) + dx]);
+					glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
 					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
 				}
 				glEnd();

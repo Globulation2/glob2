@@ -67,6 +67,6 @@ const int viewPortY, const int w, const int h, const int time)
 			wGrid, hGrid,
 			(int)((1.0f-cloudHeight)*.5f*w), (int)((1.0f-cloudHeight)*.5f*h),
 			(int)(cloudHeight*granularity), (int)(cloudHeight*granularity),
-			Color(1,1,1));
+			Color(255,255,255));
 	}
 }
