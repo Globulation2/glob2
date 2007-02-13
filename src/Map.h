@@ -660,16 +660,17 @@ public:
 	
 public:
 	// Used to go to ressources
-	//[int team][int ressourceNumber][bool unitCanSwim][int mapX][int mapY]
-	//255=ressource, 0=obstacle, the higher it is, the closest it is from the ressouce.
+	//TODO: make the 32 into a variable TEAM_COUNT to save memory in almost all cases
+	//[int team][int ressourceNumber][bool unitCanSwim]
+	//255=ressource, 0=obstacle, the higher it is, the closer it is to the ressouce.
 	Uint8 *ressourcesGradient[32][MAX_NB_RESSOURCES][2];
 	
 	// Used to go out of forbidden areas
-	//[int team][bool unitCanSwim][int mapX][int mapY]
+	//[int team][bool unitCanSwim]
 	Uint8 *forbiddenGradient[32][2];
 	
 	// Used to attrack idle warriors into guard areas
-	//[int team][bool unitCanSwim][int mapX][int mapY]
+	//[int team][bool unitCanSwim]
 	Uint8 *guardAreasGradient[32][2];
 	
 	// Used to guide explorers
