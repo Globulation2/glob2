@@ -89,11 +89,11 @@ Krigare
 [still (w)]
 Ännu
 [units working]
-arbetande enheter
+ arbetande enheter
 [still one unit working]
 En enhet arbetar ännu
 [Still (i)]
-Ännu
+Ännu 
 [Still one]
 Ännu en kvar
 [Building name]
@@ -157,15 +157,15 @@ Röjer resurser
 [stone wall explanation]
 Passivt försvarselement
 [market explanation]
-Tillåter utbyte av
+Tillåter utbyte av 
 [Building short explanation 2]
 Kort byggnadsförklaring 2 (max 24 tecken)
 [swarm building explanation 2]
-
+ 
 [food building explanation 2]
-
+ 
 [health building explanation 2]
-
+ 
 [walkspeed building explanation 2]
 hos dina enheter
 [swimspeed building explanation 2]
@@ -177,13 +177,13 @@ hos dina arbetare
 [defense building explanation 2]
 units or buildings
 [exploration flag explanation 2]
-
+ 
 [war flag explanation 2]
-
+ 
 [clearing flag explanation 2]
-
+ 
 [stone wall explanation 2]
-
+ 
 [market explanation 2]
 frukt med andra
 [waiting for %0]
@@ -251,8 +251,7 @@ LAN Spel
 [settings]
 Inställningar
 [Warning, you need to reboot the game for changes to take effect]
-Varning, du behöver starta om spelet för att inställningarna ska börja 
-gälla
+Varning, du behöver starta om spelet för att inställningarna ska börja gälla
 [editor]
 Editor
 [credits]
@@ -312,7 +311,7 @@ Sand
 [grass]
 Gräs
 [teams]
-lag
+ lag
 [choose map]
 Välj en karta
 [choose game]
@@ -520,7 +519,7 @@ Stäng
 [player]
 Spelare
 [STARTING GAME ...]
-Startar spel...
+Startar spel... 
 [Statistics]
 Statistik
 [Buildings]
@@ -718,7 +717,7 @@ borta:
 [compile]
 Kompilera skript
 [downloaded at]
-Nedladdat till
+Nedladdat till 
 [percent]
   procent
 [download finished]
@@ -764,31 +763,19 @@ En administratör har just stoppat YOG metaserver.
 [YESTS_CONNECTION_LOST]
 Anslutningen till YOG har brutits.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metaserver vägrar anslutning eftersom din globulation2-klient är för 
-gammal.
+YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metaserver vägrar anslutning eftersom ditt användarnamn redan 
-används.
+YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt 
-lösenord.
+YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt lösenord.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metaserver vägrar anslutning därför att det här användarnamnet inte 
-har ett lösenord. Du vill förmodligen registrera ditt användarnamn med 
-det här lösenordet. Aktivera därför inställningen "Registrera en ny 
-YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den 
-inställningen en gång.
+YOG metaserver vägrar anslutning därför att det här användarnamnet inte har ett lösenord. Du vill förmodligen registrera ditt användarnamn med det här lösenordet. Aktivera därför inställningen "Registrera en ny YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den inställningen en gång.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metaserver vägrar anslutning därför att användarnamnet redan är 
-registrerat.  Om det här användarnamnet är ditt, avaktivera 
-inställningen "Registrera en ny YOG-användare med lösenord".
+YOG metaserver vägrar anslutning därför att användarnamnet redan är registrerat.  Om det här användarnamnet är ditt, avaktivera inställningen "Registrera en ny YOG-användare med lösenord".
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metaserver vägrar anslutning därför att ett internt protokollfel 
-uppstod:  du är redan autentiserad. Försök igen om 45 sekunder.
+YOG metaserver vägrar anslutning därför att ett internt protokollfel uppstod:  du är redan autentiserad. Försök igen om 45 sekunder.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG metaserver vägrar anslutning därför att ett internt protokollfel 
-uppstod:  du är inte ansluten ännu medan du ansluter. Var vänlig 
-rapportera den här buggen.
+YOG metaserver vägrar anslutning därför att ett internt protokollfel uppstod:  du är inte ansluten ännu medan du ansluter. Var vänlig rapportera den här buggen.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver vägrar anslutning utan att lämna förklaring!
 [The player %0 has left YOG]
@@ -800,16 +787,11 @@ Du är markerad som borta.
 [You are no more marked as away]
 Du är inte längre markerad som borta.
 [YOG_HELP]
-YOG:s meddelandesystem har två kommandon, "msg" och "away". Skriv "/help 
-<kommando>" för att lära dig mer om ett av dom.
+YOG:s meddelandesystem har två kommandon, "msg" och "away". Skriv "/help <kommando>" för att lära dig mer om ett av dom.
 [YOG_HELP_AWAY]
-"/away (<meddelande>)" ger dig möjlighet att låta andra YOG-användare 
-veta att du tillfälligt är borta.  Du kan lägga till ett kort 
-beskrivningsmeddelande. Till exempel "/away Jag äter hamburgare och är 
-tillbaks vid klockan ett". Alias /a
+"/away (<meddelande>)" ger dig möjlighet att låta andra YOG-användare veta att du tillfälligt är borta.  Du kan lägga till ett kort beskrivningsmeddelande. Till exempel "/away Jag äter hamburgare och är tillbaks vid klockan ett". Alias /a
 [YOG_HELP_MSG]
-"/msg <namn> <meddelande>" skickar ett privat meddelande.  Till exempel, 
-"/msg Sven Hej Sven, hur mår du?". Alias "/m".
+"/msg <namn> <meddelande>" skickar ett privat meddelande.  Till exempel, "/msg Sven Hej Sven, hur mår du?". Alias "/m".
 [save before quit?]
 Vill du spara innan du avslutar?
 [Yes]
@@ -859,8 +841,7 @@ Egen pekare
 [choose campaign]
 Välj en kampanj
 [nick taken]
-Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du 
-kommer bara kunna prata genom YOG
+Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
 [mute]
 tyst
 [abreaviation explanation A]
@@ -929,4 +910,3 @@ Display
 Hunger
 [repeat area]
 gånger samma landskap
-

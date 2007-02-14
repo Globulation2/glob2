@@ -23,11 +23,14 @@
  
 #include "DynamicClouds.h"
 #include "GraphicContext.h"
+#include "GlobalContainer.h"  // sorry Leo, I don't know what I'm doing.
+                              // But now the map editor doesn't crash anymore.
 
 void DynamicClouds::render(DrawableSurface *dest, const int viewPortX,
 const int viewPortY, const int w, const int h, const int time)
 {
-	if (GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)  // I don't know if this makes sence.  This and the include are the only changes I made.
+	  //	if (GraphicContext::USEGPU)
 	{
 		//tribute to the torrodial world: the viewpot must never jump by more than 31.
 		//if it does, we assume a jump in the opposite direction
