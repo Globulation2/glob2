@@ -561,7 +561,7 @@ Skörda
 [At. speed]
 Attackhastighet
 [At. strength]
-Attackstyrka
+Styrka
 [Magic At. Air]
 Luftskada
 [Magic At. Ground]
