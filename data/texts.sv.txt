@@ -147,7 +147,7 @@ Förbättrar stridsnivån
 [science building explanation]
 Förbättrar byggnadsnivån
 [defense building explanation]
-Attackerar fiender
+Attackerar fientliga
 [exploration flag explanation]
 Attraherar utforskare
 [war flag explanation]
@@ -175,7 +175,7 @@ hos dina krigare
 [science building explanation 2]
 hos dina arbetare
 [defense building explanation 2]
-units or buildings
+enheter eller byggnader
 [exploration flag explanation 2]
  
 [war flag explanation 2]
