@@ -63,7 +63,7 @@ public:
 	
 	enum MatchPriority
 	{
-		MP_LOW    = 0x10000000,
+		MP_LOW	= 0x10000000,
 		MP_MEDIUM = 0x20000000,
 		MP_HIGH   = 0x30000000,
 	};
@@ -97,10 +97,10 @@ public:
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
 	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit}
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
-    /// This variable indicates whether this building is already in the team call list
-    /// to recieve units. A 1 indicates its already in the call list, and 0 indicates
+	/// This variable indicates whether this building is already in the team call list
+	/// to recieve units. A 1 indicates its already in the call list, and 0 indicates
 	/// that it is not.
-    Uint8 callListState;
+	Uint8 callListState;
 
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
@@ -208,7 +208,7 @@ public:
 	void turretStep(void);
 	void kill(void);
 
-    bool canUnitWorkHere(Unit* unit);
+	bool canUnitWorkHere(Unit* unit);
 
 	void updateRessourcesPointer();
 	

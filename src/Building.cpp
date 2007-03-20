@@ -131,7 +131,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	subscribeForInside=0;
 	canFeedUnit=0;
 	canHealUnit=0;
-    callListState=0;
+	callListState=0;
 
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
@@ -785,34 +785,34 @@ void Building::updateCallLists(void)
 	if (ressourceFull && !(type->canExchange && owner->openMarket()))
 	{
 		// Then we don't need anyone more to fill me, if I'm still in the call list for units,
-        // remove me
-        if(callListState != 0)
-        {
-		    owner->remove_building_needing_work(this);
-            callListState=0;
-        }
+		// remove me
+		if(callListState != 0)
+		{
+			owner->remove_building_needing_work(this);
+			callListState=0;
+		}
 	}
 	
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
 		if (buildingState==ALIVE)
 		{
-            // I need units, if I am not in the call lists, add me
-            if(callListState != 1)
-            {
-			    owner->add_building_needing_work(this);
-                callListState = 1;
-            }
+			// I need units, if I am not in the call lists, add me
+			if(callListState != 1)
+			{
+				owner->add_building_needing_work(this);
+				callListState = 1;
+			}
 		}
 	}
 	else
 	{
 		
-        if(callListState != 0)
-        {
-		    owner->remove_building_needing_work(this);
-            callListState=0;
-        }
+		if(callListState != 0)
+		{
+			owner->remove_building_needing_work(this);
+			callListState=0;
+		}
 
 		if (maxUnitWorking==0)
 		{
@@ -1292,8 +1292,8 @@ void Building::subscribeToBringRessourcesStep()
 				Unit* unit=owner->myUnits[n];
 				if(unit==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
 					continue;
-                if(!canUnitWorkHere(unit))
-                    continue;
+				if(!canUnitWorkHere(unit))
+					continue;
 
 				int r=unit->caryedRessource;
 				int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
@@ -1325,8 +1325,8 @@ void Building::subscribeToBringRessourcesStep()
 					Unit* unit=owner->myUnits[n];
 					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
 						continue;
-                    if(!canUnitWorkHere(unit))
-                        continue;
+					if(!canUnitWorkHere(unit))
+						continue;
 
 					if (unit->caryedRessource<0)
 					{
@@ -1374,8 +1374,8 @@ void Building::subscribeToBringRessourcesStep()
 					Unit* unit=owner->myUnits[n];
 					if(owner->myUnits[n]==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
 						continue;
-                    if(!canUnitWorkHere(unit))
-                        continue;
+					if(!canUnitWorkHere(unit))
+						continue;
 
 					if (unit->caryedRessource>=0)
 					{
@@ -1463,8 +1463,8 @@ void Building::subscribeForFlagingStep()
 					Unit* unit=owner->myUnits[n];
 					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
 						continue;
-              	 	if(!canUnitWorkHere(unit))
-              	      	continue;
+			  	 	if(!canUnitWorkHere(unit))
+			  		  	continue;
 
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
@@ -1489,8 +1489,8 @@ void Building::subscribeForFlagingStep()
 					Unit* unit=owner->myUnits[n];
 					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
 						continue;
-              	 	if(!canUnitWorkHere(unit))
-              	      	continue;
+			  	 	if(!canUnitWorkHere(unit))
+			  		  	continue;
 
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
@@ -1513,8 +1513,8 @@ void Building::subscribeForFlagingStep()
 					Unit* unit=owner->myUnits[n];
 					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
 						continue;
-              	 	if(!canUnitWorkHere(unit))
-              	      	continue;
+			  	 	if(!canUnitWorkHere(unit))
+			  		  	continue;
 
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
@@ -2060,15 +2060,15 @@ void Building::kill(void)
 
 bool Building::canUnitWorkHere(Unit* unit)
 {
-    if(type->isVirtual)
-    {
-        if(type->zonable[unit->typeNum])
-            return true;
-        return false;
-    }
-    else if(unit->typeNum ==  WORKER)
-        return true;
-    return false;
+	if(type->isVirtual)
+	{
+		if(type->zonable[unit->typeNum])
+			return true;
+		return false;
+	}
+	else if(unit->typeNum ==  WORKER)
+		return true;
+	return false;
 
 }
 
