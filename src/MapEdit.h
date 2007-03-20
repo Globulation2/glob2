@@ -505,20 +505,20 @@ private:
 	void drawMenu(void);
 	///Draws some of the fancy bars, and the bar at the top of the screen, the eye-candy so to speek
 	void drawMenuEyeCandy();
-	///Draws a unit under the cursor. This should be done and only done when the user it placing a unit.
+	///Draws a unit under the cursor. This should be done and only done when the user is placing a unit.
 	void drawPlacingUnitOnMap();
 	///Draws a building under the cursor. Like drawPlacingUnitOnMap, it should only be done when placing a building
 	void drawBuildingSelectionOnMap();
 
 	///This proccesses an event from the SDL
 	int processEvent(SDL_Event& event);
-	///Handles a key pressed. For most keys, this meens going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
+	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
 	void handleKeyPressed(SDLKey key, bool pressed);
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
 	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
-	///This delegates a sdl event to one of the menus, if they are open, and handle end codes appropriettly
+	///This delegates a sdl event to one of the menus, if they are open, and handle end codes of the menus appropriettly
 	void delegateMenu(SDL_Event& event);
 
 	///This states whether the minimap was rendered or not
@@ -686,9 +686,10 @@ private:
 	ValueScrollBox* buildingRadiusScrollBox;
 	///@}
 
-	///This is the name of the currently selected building
+	///This is the name of the currently selected building type
 	std::string selectionName;
-	///This is the level of the buildings. It is changed by the button at the bottom of the building menu
+	///This is the level of the buildings in the menu. It is
+    ///changed by the buttons at the bottom of the building menu
 	int buildingLevel;
 	///Returns whether the particular type of building is upgradable
 	bool isUpgradable(int buildingType);
@@ -755,7 +756,7 @@ private:
 		NoBrush,
 		
 	} brushType;
-	///This is a brush tool that the BrushSelector widget
+	///This is a brush tool that the BrushSelector widget uses
 	BrushTool brush;
 	///This is an accumulator, it builds up a list of positions to be changes
 	BrushAccumulator brushAccumulator;
@@ -776,7 +777,7 @@ private:
 	///Tells whether the delete tool is being dragged
 	bool isDraggingDelete;
 
-	///This vector of the keys on the team view, right now only has "human"
+	///This vector of the keys on the team view. It allows one to choose between AI and human teams for campaign games
 	std::vector<std::string> teamViewSelectorKeys;
 
 	///Tells the type of unit that is being placed

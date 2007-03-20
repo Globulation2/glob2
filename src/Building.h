@@ -92,17 +92,16 @@ public:
 	MatchPriority matchPriority;
 	
 	// optimisation and consistency
-	// Included in {0: unknow, 1:allready in owner-><same name>, 2:not in owner-><same name>
-	Sint32 subscribeForInside, subscribeToBringRessources, subscribeForFlaging; 
+	// Included in {0: unknow, 1:already in owner->subscribeForInside, 2:not in owner->subscribeForInside
+	Sint32 subscribeForInside; 
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
 	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit}
-	Sint32 foodable; // Included in {0: unknow, 1:allready in owner->foodable, 2:not in owner->foodable
-	Sint32 fillable; // Included in {0: unknow, 1:allready in owner->fillable, 2:not in owner->fillable
-	Sint32 zonableWorkers[2]; // Included in {0: unknow, 1:allready in owner->zonableWorkers[x], 2:not in owner->zonableWorkers[x]}
-	Sint32 zonableExplorer; // Included in {0: unknow, 1:allready in owner->zonableExplorer, 2:not in owner->zonableExplorer}
-	Sint32 zonableWarrior;// Included in {0: unknow, 1:allready in owner->zonableWarrior, 2:not in owner->zonableWarrior}
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
-	
+    /// This variable indicates whether this building is already in the team call list
+    /// to recieve units. A 1 indicates its already in the call list, and 0 indicates
+	/// that it is not.
+    Uint8 callListState;
+
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
@@ -150,7 +149,7 @@ public:
 	
 	// A true bit meant that the corresponding team can see this building, under FOW or not.
 	Uint32 seenByMask;
-	
+
 	bool dirtyLocalGradient[2];
 	Uint8 localGradient[2][1024];
 	Uint8 *globalGradient[2];
@@ -183,7 +182,6 @@ public:
 	void launchDelete(void);
 	void cancelDelete(void);
 	
-	void updateClearingFlag(bool canSwim);
 	void updateCallLists(void);
 	void updateConstructionState(void);
 	void updateBuildingSite(void);
@@ -208,8 +206,9 @@ public:
 	void swarmStep(void);
 	//! This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(void);
-	void clearingFlagsStep(void);
 	void kill(void);
+
+    bool canUnitWorkHere(Unit* unit);
 
 	void updateRessourcesPointer();
 	

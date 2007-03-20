@@ -56,7 +56,9 @@ public:
 	void loadCrossRef(GAGCore::InputStream *stream, Team *owner);
 	void saveCrossRef(GAGCore::OutputStream *stream);
 	
-	void subscriptionSuccess(void); //Called by the building the unit has subscribed to.
+	///This function is called by a Building that has subscribed this unit.
+	///If the unit has been subscribed for upgrading or for food, inside is true
+	void subscriptionSuccess(Building* building, bool inside);
 	void syncStep(void);
 	
 	void directionFromDxDy(void);
@@ -241,6 +243,9 @@ public:
 	Sint32 destinationPurprose;
 	bool subscribed;
 	int caryedRessource;
+	/// This counts 32 ticks to wait for a job before a unit goes off
+	/// to upgrade or heal when it is otherwise doing nothing.
+	Sint32 jobTimer;
 	
 	// gui
 	int levelUpAnimation;
