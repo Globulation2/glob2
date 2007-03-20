@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 23
-#define VERSION_MINOR 55
+#define VERSION_MINOR 56
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -69,5 +69,6 @@
 // version 53 added no-growth areas, to limit ressources growth
 // version 54 removed campaign map linking for the new campaign system
 // version 55 froze current Nicowar to OldNicowar in preperation of new nicowar system
+// version 56 rewrote the unit allocation system, some backwards compatibility is lost
 
 #endif

@@ -318,11 +318,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 				}
 				else
 				{
-					if (b->type->zonable[WORKER])
-					{
-						b->updateClearingFlag(0);
-						b->updateClearingFlag(1);
-					}
 					for (int i=0; i<2; i++)
 					{
 						b->dirtyLocalGradient[i]=true;
@@ -360,8 +355,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 				memcpy(b->clearingRessources, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
 				if (order->sender!=localPlayer)
 					memcpy(b->clearingRessourcesLocal, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
-				b->updateClearingFlag(0);
-				b->updateClearingFlag(1);
 			}
 		}
 		break;
@@ -422,11 +415,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 				}
 				else
 				{
-					if (drop && b->type->zonable[WORKER])
-					{
-						b->updateClearingFlag(0);
-						b->updateClearingFlag(1);
-					}
 					for (int i=0; i<2; i++)
 					{
 						b->dirtyLocalGradient[i]=true;

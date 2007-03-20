@@ -129,17 +129,10 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	seenByMask=0;
 	
 	subscribeForInside=0;
-	subscribeToBringRessources=0;
-	subscribeForFlaging=0;
 	canFeedUnit=0;
 	canHealUnit=0;
-	foodable=0;
-	fillable=0;
-	
-	zonableWorkers[0]=0; 
-	zonableWorkers[1]=0; 
-	zonableExplorer=0; 
-	zonableWarrior=0;
+    callListState=0;
+
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
 	
@@ -296,17 +289,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	seenByMask = stream->readUint32("seenByMaskk");
 	
 	subscribeForInside = 0;
-	subscribeToBringRessources = 0;
-	subscribeForFlaging = 0;
 	canFeedUnit = 0;
 	canHealUnit = 0;
-	foodable = 0;
-	fillable = 0;
+	callListState = 0;
 	
-	zonableWorkers[0] = 0; 
-	zonableWorkers[1] = 0; 
-	zonableExplorer = 0; 
-	zonableWarrior = 0;
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i] = 0;
 	
@@ -790,29 +776,6 @@ void Building::cancelDelete(void)
 	// we do not update owner->buildingsWaitingForDestruction because Team::syncStep will remove this building from the list
 }
 
-void Building::updateClearingFlag(bool canSwim)
-{
-	if (owner->map->updateLocalRessources(this, canSwim))
-	{
-		if (zonableWorkers[canSwim]!=1)
-		{
-			owner->zonableWorkers[canSwim].push_front(this);
-			zonableWorkers[canSwim]=1;
-		}
-	}
-	else
-	{
-		if (zonableWorkers[canSwim]!=2)
-		{
-			owner->zonableWorkers[canSwim].remove(this);
-			zonableWorkers[canSwim]=2;
-		}
-		
-		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-			(*it)->standardRandomActivity();
-		unitsWorking.clear();
-	}
-}
 
 void Building::updateCallLists(void)
 {
@@ -821,89 +784,36 @@ void Building::updateCallLists(void)
 	bool ressourceFull=isRessourceFull();
 	if (ressourceFull && !(type->canExchange && owner->openMarket()))
 	{
-		// Then we don't need anyone more to fill me:
-		if (foodable!=2)
-		{
-			owner->foodable.remove(this);
-			foodable=2;
-		}
-		if (fillable!=2)
-		{
-			owner->fillable.remove(this);
-			fillable=2;
-		}
+		// Then we don't need anyone more to fill me, if I'm still in the call list for units,
+        // remove me
+        if(callListState != 0)
+        {
+		    owner->remove_building_needing_work(this);
+            callListState=0;
+        }
 	}
 	
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
 		if (buildingState==ALIVE)
 		{
-			// Add itself in the right "call-lists":
-			if (!ressourceFull)
-			{
-				if (foodable!=1 && type->foodable)
-				{
-					owner->foodable.push_front(this);
-					foodable=1;
-				}
-				if (fillable!=1 && type->fillable)
-				{
-					owner->fillable.push_front(this);
-					fillable=1;
-				}
-			}
-			
-			if (type->zonable[WORKER])
-				for (int canSwim=0; canSwim<2; canSwim++)
-					if (anyRessourceToClear[canSwim]!=2 && zonableWorkers[canSwim]!=1)
-					{
-						owner->zonableWorkers[canSwim].push_front(this);
-						zonableWorkers[canSwim]=1;
-					}
-			if (zonableExplorer!=1 && type->zonable[EXPLORER])
-			{
-				owner->zonableExplorer.push_front(this);
-				zonableExplorer=1;
-			}
-			if (zonableWarrior!=1 && type->zonable[WARRIOR])
-			{
-				owner->zonableWarrior.push_front(this);
-				zonableWarrior=1;
-			}
+            // I need units, if I am not in the call lists, add me
+            if(callListState != 1)
+            {
+			    owner->add_building_needing_work(this);
+                callListState = 1;
+            }
 		}
 	}
 	else
 	{
-		// delete itself from all Call lists
-		if (foodable!=2 && type->foodable)
-		{
-			owner->foodable.remove(this);
-			foodable=2;
-		}
-		if (fillable!=2 && type->fillable)
-		{
-			owner->fillable.remove(this);
-			fillable=2;
-		}
 		
-		if (type->zonable[WORKER])
-			for (int canSwim=0; canSwim<2; canSwim++)
-				if (zonableWorkers[canSwim]!=2)
-				{
-					owner->zonableWorkers[canSwim].remove(this);
-					zonableWorkers[canSwim]=2;
-				}
-		if (zonableExplorer!=2 && type->zonable[EXPLORER])
-		{
-			owner->zonableExplorer.remove(this);
-			zonableExplorer=2;
-		}
-		if (zonableWarrior!=2 && type->zonable[WARRIOR])
-		{
-			owner->zonableWarrior.remove(this);
-			zonableWarrior=2;
-		}
-		
+        if(callListState != 0)
+        {
+		    owner->remove_building_needing_work(this);
+            callListState=0;
+        }
+
 		if (maxUnitWorking==0)
 		{
 			// This is only a special optimisation case:
@@ -1133,11 +1043,6 @@ void Building::update(void)
 {
 	if (buildingState==DEAD)
 		return;
-	if (type->zonable[WORKER])
-	{
-		updateClearingFlag(0);
-		updateClearingFlag(1);
-	}
 	updateCallLists();
 	updateConstructionState();
 	if (type->isBuildingSite)
@@ -1353,8 +1258,7 @@ bool Building::fullInside(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
-	if (subscriptionWorkingTimer>0)
-		subscriptionWorkingTimer++;
+	subscriptionWorkingTimer++;
 	if (fullWorking() || enoughWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
@@ -1364,12 +1268,12 @@ void Building::subscribeToBringRessourcesStep()
 			printf("...enoughWorking()\n");
 		return;
 	}
-	
+
 	if (subscriptionWorkingTimer>32)
 	{
 		if (verbose)
 			printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
-		while (((Sint32)unitsWorking.size()<maxUnitWorking) && !unitsWorkingSubscribe.empty())
+		while (((Sint32)unitsWorking.size()<maxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
 		{
 			int minValue=INT_MAX;
 			Unit *choosen=NULL;
@@ -1383,9 +1287,14 @@ void Building::subscribeToBringRessourcesStep()
 			*/
 			
 			//First: we look only for units with a needed resource:
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+			for(int n=0; n<1024; ++n)
 			{
-				Unit *unit=(*it);
+				Unit* unit=owner->myUnits[n];
+				if(unit==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
+					continue;
+                if(!canUnitWorkHere(unit))
+                    continue;
+
 				int r=unit->caryedRessource;
 				int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 				if ((r>=0)&& neededRessource(r))
@@ -1411,9 +1320,14 @@ void Building::subscribeToBringRessourcesStep()
 				int needs[MAX_NB_RESSOURCES];
 				wishedRessources(needs);
 				int teamNumber=owner->teamNumber;
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+				for(int n=0; n<1024; ++n)
 				{
-					Unit *unit=(*it);
+					Unit* unit=owner->myUnits[n];
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
+						continue;
+                    if(!canUnitWorkHere(unit))
+                        continue;
+
 					if (unit->caryedRessource<0)
 					{
 						int x=unit->posX;
@@ -1448,96 +1362,21 @@ void Building::subscribeToBringRessourcesStep()
 					}
 				}
 			}
-			
-			//special case for an exchange building:
-			if (choosen==NULL && type->canExchange && owner->openMarket())
-			{
-				SessionGame &session=owner->game->session;
-				// We compute all what's available from foreign resources: (mask)
-				Uint32 allForeignSendRessourceMask=0;
-				Uint32 allForeignReceiveRessourceMask=0;
-				for (int ti=0; ti<session.numberOfTeam; ti++)
-					if (ti!=owner->teamNumber && (owner->game->teams[ti]->sharedVisionExchange & owner->me))
-					{
-						std::list<Building *> foreignCanExchange=owner->game->teams[ti]->canExchange;
-						for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
-						{
-							Uint32 sendRessourceMask=(*fbi)->sendRessourceMask;
-							for (int r=0; r<HAPPYNESS_COUNT; r++)
-								if ((sendRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]<=0))
-									sendRessourceMask&=(~(1<<r));
-							allForeignSendRessourceMask|=sendRessourceMask;
 
-							Uint32 receiveRessourceMask=(*fbi)->receiveRessourceMask;
-							for (int r=0; r<HAPPYNESS_COUNT; r++)
-								if ((receiveRessourceMask & (1<<r))
-									&& ((*fbi)->ressources[HAPPYNESS_BASE+r]>=(*fbi)->type->maxRessource[HAPPYNESS_BASE+r]))
-									receiveRessourceMask&=(~(1<<r));
-							allForeignReceiveRessourceMask|=receiveRessourceMask;
-						}
-					}
-
-				if ((allForeignSendRessourceMask & receiveRessourceMask) && (allForeignReceiveRessourceMask & sendRessourceMask))
-				{
-					if (verbose)
-						printf(" find best foreign exchangeBuilding\n");
-					
-					for (std::list<Unit *>::iterator uit=unitsWorkingSubscribe.begin(); uit!=unitsWorkingSubscribe.end(); ++uit)
-					{
-						Unit *unit=(*uit);
-						int x=unit->posX;
-						int y=unit->posY;
-						bool canSwim=unit->performance[SWIM];
-						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-						int buildingDist;
-						if (map->buildingAvailable(this, canSwim, x, y, &buildingDist)
-							&& (buildingDist<timeLeft))
-							for (int ti=0; ti<session.numberOfTeam; ti++)
-								if (ti!=owner->teamNumber)
-								{
-									Team *foreignTeam=owner->game->teams[ti];
-									if (foreignTeam->sharedVisionExchange & owner->me)
-									{
-										std::list<Building *> foreignCanExchange=foreignTeam->canExchange;
-										for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
-										{
-											Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
-											Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
-											int foreignBuildingDist;
-											if ((sendRessourceMask & foreignReceiveRessourceMask)
-												&& (receiveRessourceMask & foreignSendRessourceMask)
-												&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
-												&& (buildingDist+(foreignBuildingDist<<1)<timeLeft))
-											{
-												int dist=buildingDist+foreignBuildingDist;
-												if (dist<minValue)
-												{
-													if (verbose)
-														printf(" found unit guid=%d, dist=%d\n", unit->gid, dist);
-													choosen=unit;
-													minValue=dist;
-													unit->ownExchangeBuilding=this;
-													unit->foreingExchangeBuilding=*fbi;
-													unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
-													fprintf(logFile, "[%d] bdp3 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-												}
-											}
-										}
-									}
-								}
-					}
-				}
-			}
-
+			//Third: we look for an unit who is carying an unwanted resource:
 			if (choosen==NULL)
 			{
 				int needs[MAX_NB_RESSOURCES];
 				wishedRessources(needs);
 				int teamNumber=owner->teamNumber;
-				//Third: we look for an unit who is carying an unwanted resource:
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+				for(int n=0; n<1024; ++n)
 				{
-					Unit *unit=(*it);
+					Unit* unit=owner->myUnits[n];
+					if(owner->myUnits[n]==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
+						continue;
+                    if(!canUnitWorkHere(unit))
+                        continue;
+
 					if (unit->caryedRessource>=0)
 					{
 						int x=unit->posX;
@@ -1575,17 +1414,16 @@ void Building::subscribeToBringRessourcesStep()
 			{
 				if (verbose)
 					printf(" unit %d choosen.\n", choosen->gid);
-				unitsWorkingSubscribe.remove(choosen);
 				unitsWorking.push_back(choosen);
-				choosen->subscriptionSuccess();
+				choosen->subscriptionSuccess(this, false);
 			}
 			else
 				break;
 		}
 		
 		updateCallLists();
-		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-			(*it)->standardRandomActivity();
+//		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+//			(*it)->standardRandomActivity();
 		unitsWorkingSubscribe.clear();
 		subscriptionWorkingTimer=0;
 		
@@ -1596,8 +1434,7 @@ void Building::subscribeToBringRessourcesStep()
 
 void Building::subscribeForFlagingStep()
 {
-	if (subscriptionWorkingTimer>0)
-		subscriptionWorkingTimer++;
+	subscriptionWorkingTimer++;
 	if (fullWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
@@ -1608,22 +1445,27 @@ void Building::subscribeForFlagingStep()
 	
 	if (subscriptionWorkingTimer>32)
 	{
-		while (((Sint32)unitsWorking.size()<maxUnitWorking) && !unitsWorkingSubscribe.empty())
+		while (((Sint32)unitsWorking.size()<maxUnitWorking))
 		{
 			int minValue=INT_MAX;
 			Unit *choosen=NULL;
 			Map *map=owner->map;
 			
 			/* To choose a good unit, we get a composition of things:
-			1-the closest the unit is, the better it is.
+			1-the closer the unit is, the better it is.
 			2-the less the unit is hungry, the better it is.
 			3-the more hp the unit has, the better it is.
 			*/
 			if (type->zonable[EXPLORER])
 			{
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				for(int n=0; n<1024; ++n)
 				{
-					Unit *unit=(*it);
+					Unit* unit=owner->myUnits[n];
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
+						continue;
+              	 	if(!canUnitWorkHere(unit))
+              	      	continue;
+
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					timeLeft*=timeLeft;
@@ -1642,9 +1484,14 @@ void Building::subscribeForFlagingStep()
 			}
 			else if (type->zonable[WARRIOR])
 			{
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				for(int n=0; n<1024; ++n)
 				{
-					Unit *unit=(*it);
+					Unit* unit=owner->myUnits[n];
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
+						continue;
+              	 	if(!canUnitWorkHere(unit))
+              	      	continue;
+
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist;
@@ -1661,9 +1508,14 @@ void Building::subscribeForFlagingStep()
 			}
 			else if (type->zonable[WORKER])
 			{
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				for(int n=0; n<1024; ++n)
 				{
-					Unit *unit=(*it);
+					Unit* unit=owner->myUnits[n];
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
+						continue;
+              	 	if(!canUnitWorkHere(unit))
+              	      	continue;
+
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist;
@@ -1688,7 +1540,7 @@ void Building::subscribeForFlagingStep()
 			{
 				unitsWorkingSubscribe.remove(choosen);
 				unitsWorking.push_back(choosen);
-				choosen->subscriptionSuccess();
+				choosen->subscriptionSuccess(this, false);
 			}
 			else
 				break;
@@ -1752,7 +1604,7 @@ void Building::subscribeForInsideStep()
 			{
 				unitsInsideSubscribe.remove(choosen);
 				unitsInside.push_back(choosen);
-				choosen->subscriptionSuccess();
+				choosen->subscriptionSuccess(this, true);
 			}
 			else
 				break;
@@ -2135,14 +1987,6 @@ void Building::turretStep(void)
 
 }
 
-void Building::clearingFlagsStep(void)
-{
-	if (unitsWorking.size()<(unsigned)maxUnitWorking)
-		for (int canSwim=0; canSwim<2; canSwim++)
-			if (localRessourcesCleanTime[canSwim]++>512) // Update every 20.48[s]
-				updateClearingFlag(canSwim);
-}
-
 void Building::kill(void)
 {
 	fprintf(logFile, "kill gid=%d buildingState=%d\n", gid, buildingState);
@@ -2211,6 +2055,21 @@ void Building::kill(void)
 	owner->prestige-=type->prestige;
 	
 	owner->buildingsToBeDestroyed.push_front(this);
+}
+
+
+bool Building::canUnitWorkHere(Unit* unit)
+{
+    if(type->isVirtual)
+    {
+        if(type->zonable[unit->typeNum])
+            return true;
+        return false;
+    }
+    else if(unit->typeNum ==  WORKER)
+        return true;
+    return false;
+
 }
 
 

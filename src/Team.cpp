@@ -215,8 +215,6 @@ void Team::init(void)
 	startPosSet=0;
 
 	subscribeForInside.clear();
-	subscribeToBringRessources.clear();
-	subscribeForFlaging.clear();
 
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 		events[i] = Event();
@@ -320,8 +318,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	stream->readLeaveSection();
 
 	subscribeForInside.clear();
-	subscribeToBringRessources.clear();
-	subscribeForFlaging.clear();
 
 	// resolve cross reference
 	stream->readEnterSection("myUnits");
@@ -347,19 +343,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 			{
 				subscribeForInside.push_back(myBuildings[i]);
 				myBuildings[i]->subscribeForInside=1;
-			}
-			if (myBuildings[i]->unitsWorkingSubscribe.size())
-			{
-				if (myBuildings[i]->type->defaultUnitStayRange)
-				{
-					subscribeForFlaging.push_back(myBuildings[i]);
-					myBuildings[i]->subscribeForFlaging=1;
-				}
-				else
-				{
-					subscribeToBringRessources.push_back(myBuildings[i]);
-					myBuildings[i]->subscribeToBringRessources=1;
-				}
 			}
 			if (myBuildings[i]->type->canExchange)
 				canExchange.push_back(myBuildings[i]);
@@ -553,20 +536,12 @@ void Team::createLists(void)
 
 void Team::clearLists(void)
 {
-	foodable.clear();
-	fillable.clear();
-	zonableWorkers[0].clear();
-	zonableWorkers[1].clear();
-	zonableExplorer.clear();
-	zonableWarrior.clear();
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i].clear();
 	canFeedUnit.clear();
 	canHealUnit.clear();
 	canExchange.clear();
 	subscribeForInside.clear();
-	subscribeToBringRessources.clear();
-	subscribeForFlaging.clear();
 	buildingsWaitingForDestruction.clear();
 	buildingsToBeDestroyed.clear();
 	buildingsTryToBuildingSiteRoom.clear();
@@ -626,22 +601,6 @@ void Team::integrity(void)
 		Building *b=myBuildings[id];
 		if (b)
 			b->integrity();
-	}
-	for (std::list<Building *>::iterator it=foodable.begin(); it!=foodable.end(); ++it)
-	{
-		assert(*it);
-		assert((*it)->type);
-		if (verbose && !(*it)->type->foodable)
-			printf("assert failure with gid=%d\n", (*it)->gid);
-		assert((*it)->type->foodable);
-		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
-	}
-	for (std::list<Building *>::iterator it=fillable.begin(); it!=fillable.end(); ++it)
-	{
-		assert(*it);
-		assert((*it)->type);
-		assert((*it)->type->fillable);
-		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
 	{
@@ -910,398 +869,6 @@ Building *Team::findNearestFood(Unit *unit)
 
 
 
-Building *Team::findBestFoodable(Unit *unit)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	int r=unit->caryedRessource;
-	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
-	bool canSwim=unit->performance[SWIM];
-
-	if (r!=-1)
-	{
-		// I'm already carying a ressource:
-		// I'll only go to a building who need this ressource, if possible.
-		Building *choosen=NULL;
-		Sint32 score=0x7FFFFFFF;
-		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
-		{
-			Building *b=(*bi);
-			if (b->neededRessource(r))
-			{
-				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
-				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
-				{
-					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
-					if (newScore<score)
-					{
-						choosen=b;
-						score=newScore;
-					}
-				}
-			}
-		}
-		if (choosen)
-		{
-			unit->destinationPurprose=r;
-			fprintf(logFile, "[%d] tdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-			return choosen;
-		}
-	}
-	
-	Building *choosen=NULL;
-	Sint32 score=0x7FFFFFFF;
-	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
-		if (ri==CORN || ri>=HAPPYNESS_BASE)
-		{
-			int ressourceDist;
-			if (map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
-				for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
-				{
-					Building *b=(*bi);
-					// skip Inns which have as many workers as needed wheat:
-					if ((int)b->unitsWorking.size() < b->neededRessource(ri) / b->type->multiplierRessource[ri])
-					{
-						int buildingDist;
-						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
-						{
-							Sint32 newScore=((ressourceDist+buildingDist)<<8)/(b->maxUnitWorking-b->unitsWorking.size());
-							if (newScore<score)
-							{
-								choosen=b;
-								score=newScore;
-								unit->destinationPurprose=ri;
-								fprintf(logFile, "[%d] tdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-							}
-						}
-					}
-				}
-		}
-	
-	return choosen;
-}
-
-
-
-
-Building *Team::findBestFillable(Unit *unit)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	int r=unit->caryedRessource;
-	int actLevel=unit->level[HARVEST];
-	assert(!unit->performance[FLY]);
-	bool canSwim=unit->performance[SWIM];
-	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
-
-	if (r!=-1)
-	{
-		// I'm already carying a ressource:
-		// I'll only go to a building who need this ressource, if possible.
-		Building *choosen=NULL;
-		Sint32 score=0x7FFFFFFF;
-		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
-		{
-			Building *b=(*bi);
-			if ((b->type->level<=actLevel)&&(b->neededRessource(r)))
-			{
-				int buildingDist;//Not initialized or assigned to in this function, but in map::buildingAvailable below.
-				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
-				{
-					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
-					if (newScore<score)
-					{
-						choosen=b;
-						score=newScore;
-					}
-				}
-			}
-		}
-		if (choosen)
-		{
-			unit->destinationPurprose=r;
-			fprintf(logFile, "[%d] tdp3 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-			return choosen;
-		}
-	}
-
-	Building *choosen = NULL;
-	int bestScore = INT_MAX; // lower is better
-	int bestRessource = -1;
-	//first, iterate through the resource types to see how easy each is to get.
-	int ressourceDists[MAX_RESSOURCES];
-	bool allResourcesAreTooFar = true;
-	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
-		if (!map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDists[ri]))
-			ressourceDists[ri] = -1;
-		else if (ressourceDists[ri] < timeLeft)
-			allResourcesAreTooFar = false;
-	if (allResourcesAreTooFar)
-		return NULL;
-	//second iterate through the buildings to see which is the best to work at:
-	for (std::list<Building *>::iterator bi = fillable.begin(); bi != fillable.end(); ++bi)
-	{
-		Building *building = (*bi);
-		if (building->locked[canSwim])
-			continue; // the building is not reacheable
-		if (building->type->level > actLevel)
-			continue; // a glob cannot work for a building site of higher level than its skill.
-		
-		// check if the unit can bring anything usefull:
-		bool noResourceMatch = true;
-		int neededRessources[MAX_RESSOURCES];
-		int neededRessourcesSum = 0;
-		for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
-		{
-			neededRessources[ri] = building->type->maxRessource[ri] - building->ressources[ri];
-			if (neededRessources[ri] > 0)
-			{
-				neededRessourcesSum += neededRessources[ri];
-				if (ressourceDists[ri] < timeLeft)
-					noResourceMatch = false;
-			}
-		}
-		if (noResourceMatch)
-			continue; // there is nothing we can bring that this building needs.
-		if ((int)building->unitsWorking.size() >= 2 * neededRessourcesSum)
-			continue; // there are already enough units working on this building
-		
-		// take into account that is already being bring to the building:
-		int otwRessources[MAX_RESSOURCES];// ressources on the way to the building by other working units on it.
-		std::fill(otwRessources, otwRessources + MAX_RESSOURCES, 0);
-		for (std::list<Unit *>::iterator ui = building->unitsWorking.begin(); ui != building->unitsWorking.end(); ++ui)
-			if ((*ui)->destinationPurprose >= 0)
-			{
-				assert((*ui)->destinationPurprose < MAX_RESSOURCES);
-				otwRessources[(*ui)->destinationPurprose]++;
-			}
-		bool noWeightedResourceMatch = true;
-		int weightedNeededRessources[MAX_RESSOURCES];
-		for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
-		{
-			weightedNeededRessources[ri] = (neededRessources[ri] << 1) - otwRessources[ri];
-			if (weightedNeededRessources[ri] > 0)
-				noWeightedResourceMatch = false;
-		}
-		if (noWeightedResourceMatch)
-			continue; // at least two workers are already bringing each resource.
-		
-		// check if this can help the building:
-		int buildingDist;
-		if (!map->buildingAvailable(building, canSwim, x, y, &buildingDist) || (buildingDist >= timeLeft))
-			continue; // the building is too far or not reacheable
-		
-		// find the best resource to bring:
-		for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
-			if (weightedNeededRessources[ri] > 0)
-			{
-				int newScore = (buildingDist + ressourceDists[ri]) / (building->maxUnitWorking - building->unitsWorking.size());
-				if (bestScore > newScore)
-				{
-					bestScore = newScore;
-					choosen = building;
-					bestRessource = ri;
-				}
-			}
-	}
-	if (choosen)
-	{
-		unit->destinationPurprose = bestRessource;
-		return choosen;
-	}
-	
-	if (!openMarket())
-		return NULL;
-
-	//Trading fruit cannot be done unless two teams each have a market and at least one shares market view with the other.
-
-	SessionGame &session=game->session;
-	// We compute all what's available from foreign ressources: (mask)
-	Uint32 allForeignSendRessourceMask=0;
-	Uint32 allForeignReceiveRessourceMask=0;
-	for (int ti=0; ti<session.numberOfTeam; ti++)
-		if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
-	{
-		std::list<Building *> foreignCanExchange=game->teams[ti]->canExchange;
-		for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
-		{
-			Uint32 sendRessourceMask=(*fbi)->sendRessourceMask;
-			for (int r=0; r<HAPPYNESS_COUNT; r++)
-				if ((sendRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]<=0))
-					sendRessourceMask&=(~(1<<r));
-			allForeignSendRessourceMask|=sendRessourceMask;
-
-			Uint32 receiveRessourceMask=(*fbi)->receiveRessourceMask;
-			for (int r=0; r<HAPPYNESS_COUNT; r++)
-				if ((receiveRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]>=(*fbi)->type->maxRessource[HAPPYNESS_BASE+r]))
-					receiveRessourceMask&=(~(1<<r));
-			allForeignReceiveRessourceMask|=receiveRessourceMask;
-		}
-	}
-
-	//printf(" allForeignSendRessourceMask=%d, allForeignReceiveRessourceMask=%d\n", allForeignSendRessourceMask, allForeignReceiveRessourceMask);
-//	if (allForeignSendRessourceMask==0 || allForeignReceiveRessourceMask==0)
-//		return NULL;
-
-	// We compute all what's available from our own ressources: (mask)
-	Uint32 allOwnSendRessourceMask=0;
-	Uint32 allOwnReceiveRessourceMask=0;
-	for (std::list<Building *>::iterator bi=canExchange.begin(); bi!=canExchange.end(); ++bi)
-	{
-		Uint32 sendRessourceMask=(*bi)->sendRessourceMask;
-		for (int r=0; r<HAPPYNESS_COUNT; r++)
-			if ((sendRessourceMask & (1<<r)) && ((*bi)->ressources[HAPPYNESS_BASE+r]<=0))
-				sendRessourceMask&=(~(1<<r));
-		allOwnSendRessourceMask|=sendRessourceMask;
-
-		Uint32 receiveRessourceMask=(*bi)->receiveRessourceMask;
-		for (int r=0; r<HAPPYNESS_COUNT; r++)
-			if ((receiveRessourceMask & (1<<r)) && ((*bi)->ressources[HAPPYNESS_BASE+r]>=(*bi)->type->maxRessource[HAPPYNESS_BASE+r]))
-				receiveRessourceMask&=(~(1<<r));
-		allOwnReceiveRessourceMask|=receiveRessourceMask;
-	}
-
-	//printf(" allOwnSendRessourceMask=%d, allOwnReceiveRessourceMask=%d\n", allOwnSendRessourceMask, allOwnReceiveRessourceMask);
-//	if ((allForeignSendRessourceMask & allOwnReceiveRessourceMask)==0 || (allForeignReceiveRessourceMask & allOwnSendRessourceMask)==0)
-//		return NULL;
-
-	choosen=NULL;
-	bestScore=INT_MAX;
-	for (std::list<Building *>::iterator bi=canExchange.begin(); bi!=canExchange.end(); ++bi)
-	{
-		Uint32 sendRessourceMask=(*bi)->sendRessourceMask;
-		Uint32 receiveRessourceMask=(*bi)->receiveRessourceMask;
-		int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
-		if ((sendRessourceMask & allForeignReceiveRessourceMask)
-			&& (receiveRessourceMask & allForeignSendRessourceMask)
-			&& map->buildingAvailable(*bi, canSwim, x, y, &buildingDist)
-			&& (buildingDist<timeLeft))
-			for (int ti=0; ti<session.numberOfTeam; ti++)
-				if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
-				{
-					Team *foreignTeam=game->teams[ti];
-					std::list<Building *> foreignCanExchange=foreignTeam->canExchange;
-					for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
-					{
-						Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
-						Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
-						Sint32 missingUnitsToWork=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
-						int foreignBuildingDist;
-						if (missingUnitsToWork
-							&& (sendRessourceMask & foreignReceiveRessourceMask)
-							&& (receiveRessourceMask & foreignSendRessourceMask)
-							&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
-							&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
-						{
-							Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/missingUnitsToWork;
-							if (newScore<bestScore)
-							{
-								choosen=*bi;
-								bestScore=newScore;
-								assert(choosen);
-								unit->ownExchangeBuilding=*bi;
-								unit->foreingExchangeBuilding=*fbi;
-								unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
-								fprintf(logFile, "[%d] tdp5 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-							}
-						}
-					}
-				}
-	}
-
-	return choosen;
-}
-
-
-
-
-Building *Team::findBestZonable(Unit *unit)
-{
-	Building *choosen=NULL;
-	Sint32 score=0x7FFFFFFF;
-	int x=unit->posX;
-	int y=unit->posY;
-	bool canSwim=unit->performance[SWIM];
-	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
-	switch (unit->typeNum)
-	{
-		case WORKER:
-			for (std::list<Building *>::iterator bi=zonableWorkers[canSwim].begin(); bi!=zonableWorkers[canSwim].end(); ++bi)
-			{
-				Building *b=(*bi);
-				int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
-				int need=b->maxUnitWorking-b->unitsWorking.size();
-				if ((need>0) && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
-				{
-					Sint32 newScore=(buildingDist<<8)/need;
-					if (newScore<score)
-					{
-						choosen=b;
-						score=newScore;
-					}
-				}
-			}
-			break;
-
-		case EXPLORER:
-		{
-			for (std::list<Building *>::iterator bi=zonableExplorer.begin(); bi!=zonableExplorer.end(); ++bi)
-			{
-				Building *b=(*bi);
-				// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
-				// must be able to do to be accepted at this flag
-				// 0 == any explorer
-				// 1 == must be able to attack ground
-				// if we have requested explorer to be able to attack ground and this one can't, skip it
-				if (b->minLevelToFlag && !unit->level[MAGIC_ATTACK_GROUND])
-					continue;
-
-				int buildingDist2=map->warpDistSquare(b->getMidX(), b->getMidY(), x, y);
-				if (buildingDist2<(timeLeft*timeLeft))
-				{
-					Sint32 newScore=buildingDist2/(b->maxUnitWorking-b->unitsWorking.size());
-					if (newScore<score)
-					{
-						choosen=b;
-						score=newScore;
-					}
-				}
-			}
-		}
-		break;
-
-		case WARRIOR:
-		{
-			int level=std::min(unit->level[ATTACK_SPEED], unit->level[ATTACK_STRENGTH]);
-			for (std::list<Building *>::iterator bi=zonableWarrior.begin(); bi!=zonableWarrior.end(); ++bi)
-			{
-				Building *b=(*bi);
-				if (b->minLevelToFlag<=level)
-				{
-					int buildingDist; //Not initialized or assigned to in this function, but in map::buildingAvailable below.
-					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
-					{
-						Sint32 newScore=buildingDist/(b->maxUnitWorking-b->unitsWorking.size());
-						if (newScore<score)
-						{
-							choosen=b;
-							score=newScore;
-						}
-					}
-				}
-			}
-		}
-		break;
-
-		default:
-			assert(false);
-	}
-	return choosen;
-}
-
-
-
-
 Building *Team::findBestUpgrade(Unit *unit)
 {
 	Building *choosen=NULL;
@@ -1339,6 +906,70 @@ Building *Team::findBestUpgrade(Unit *unit)
 }
 
 
+bool Team::prioritize_building(Building* lhs, Building* rhs)
+{
+	int priority_lhs=0;
+	if(lhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !lhs->type->isBuildingSite)
+		priority_lhs=20;
+	else
+		priority_lhs=10;
+	
+	int priority_rhs=0;
+	if(rhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !rhs->type->isBuildingSite)
+		priority_rhs=20;
+	else
+		priority_rhs=10;
+
+	if(priority_lhs != priority_rhs)	
+	{
+		return priority_lhs < priority_rhs;
+	}
+	else
+	{
+		//This uses some fraction math in order to be able to compare the relative percent of units needed
+		//for each building. The fractions are (needed_units / wanted_units) for both lhs and rhs.
+		//The trick is to put them into a common denominator, which is done by cross multiplying.
+		//The denominators don't actually need to be computed, only the numerators.
+		int ratio_lhs = (lhs->maxUnitWorking  - lhs->unitsWorking.size()) * rhs->unitsWorking.size();
+		int ratio_rhs = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
+		return ratio_lhs < ratio_rhs;
+	}
+	return false;
+}
+
+
+void Team::add_building_needing_work(Building* b)
+{
+	for(int i=0; i<buildingsNeedingUnits.size(); ++i)
+	{
+		if(prioritize_building(buildingsNeedingUnits[i], b))
+		{
+			buildingsNeedingUnits.insert(buildingsNeedingUnits.begin() + i, b);
+			return;
+		}
+	}
+	buildingsNeedingUnits.push_back(b);
+}
+
+
+void Team::remove_building_needing_work(Building* b)
+{
+	buildingsNeedingUnits.erase(std::find(buildingsNeedingUnits.begin(), buildingsNeedingUnits.end(), b));
+}
+
+
+
+void Team::updateAllBuildingTasks()
+{
+	for(int i=0; i<buildingsNeedingUnits.size(); ++i)
+	{
+		if(buildingsNeedingUnits[i]->type->isVirtual)
+			buildingsNeedingUnits[i]->subscribeForFlagingStep();
+		else
+			buildingsNeedingUnits[i]->subscribeToBringRessourcesStep();
+	}
+}
+
 
 
 int Team::maxBuildLevel(void)
@@ -1362,20 +993,6 @@ int Team::maxBuildLevel(void)
 
 void Team::removeFromAbilitiesLists(Building *building)
 {
-	if (building->type->foodable)
-		foodable.remove(building);
-	if (building->type->fillable)
-		fillable.remove(building);
-	if (building->type->zonable[WORKER])
-	{
-		zonableWorkers[0].remove(building);
-		zonableWorkers[1].remove(building);
-	}
-	if (building->type->zonable[EXPLORER])
-		zonableExplorer.remove(building);
-	if (building->type->zonable[WARRIOR])
-		zonableWarrior.remove(building);
-
 	for (int ui=0; ui<NB_ABILITY; ui++)
 		if (building->type->upgrade[ui])
 			upgrade[ui].remove(building);
@@ -1415,7 +1032,7 @@ void Team::addToStaticAbilitiesLists(Building *building)
 
 	if (building->type->zonable[WORKER])
 		clearingFlags.push_back(building);
-
+;
 	if (building->type->isVirtual)
 		virtualBuildings.push_back(building);
 }
@@ -1503,8 +1120,6 @@ void Team::syncStep(void)
 		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
 		subscribeForInside.remove(building);
-		subscribeToBringRessources.remove(building);
-		subscribeForFlaging.remove(building);
 
 		if (game->selectedBuilding==building)
 			game->selectedBuilding=NULL;
@@ -1536,6 +1151,7 @@ void Team::syncStep(void)
 			it=subscribeForInside.erase(ittemp);
 		}
 
+/*
 	//subscribeToBringRessourcesStep
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if (!(*it)->unitsWorkingSubscribe.empty())
@@ -1548,19 +1164,9 @@ void Team::syncStep(void)
 			std::list<Building *>::iterator ittemp=it;
 			it=subscribeToBringRessources.erase(ittemp);
 		}
+*/
 
-	//subscribeForFlagingStep
-	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
-		if (!(*it)->unitsWorkingSubscribe.empty())
-			(*it)->subscribeForFlagingStep();
-
-	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
-		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
-		{
-			(*it)->subscribeForFlaging=2;
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForFlaging.erase(ittemp);
-		}
+	updateAllBuildingTasks();
 
 	bool isEnoughFoodInSwarm=false;
 
@@ -1580,9 +1186,6 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep();
-
-	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
-		(*it)->clearingFlagsStep();
 
 	bool isDying= (playersMask==0)
 		|| (!isEnoughFoodInSwarm && nbUsefullUnitsAlone==0 && (nbUsefullUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
@@ -1696,19 +1299,6 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [4+t*20]
 
-	cs^=foodable.size();
-	cs=(cs<<31)|(cs>>1);
-	if (checkSumsVector)
-		checkSumsVector->push_back(cs); // [5+t*20]
-	cs^=fillable.size();
-	cs=(cs<<31)|(cs>>1);
-	if (checkSumsVector)
-		checkSumsVector->push_back(cs); // [6+t*20]
-
-	cs^=zonableWorkers[0].size();
-	cs^=zonableWorkers[1].size();
-	cs^=zonableExplorer.size();
-	cs^=zonableWarrior.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [7+t*20]

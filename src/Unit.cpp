@@ -125,6 +125,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	destinationPurprose=-1;
 	subscribed=false;
 	caryedRessource=-1;
+	jobTimer = 0;
 	
 	// gui
 	levelUpAnimation = 0;
@@ -237,6 +238,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	caryedRessource = stream->readSint32("caryedRessource");
 	
+	if(versionMinor>=56)
+		jobTimer = stream->readSint32("jobTimer");
+
 	// gui
 	levelUpAnimation = 0;
 	magicActionAnimation = 0;
@@ -309,7 +313,9 @@ void Unit::save(GAGCore::OutputStream *stream)
 
 	stream->writeSint32(destinationPurprose, "destinationPurprose");
 	stream->writeUint32((Uint32)subscribed, "subscribed");
-	stream->writeSint32(caryedRessource, "caryedRessource");
+	stream->writeSint32(caryedRessource, "caryedRessource");	
+	stream->writeSint32(jobTimer, "jobTimer");
+
 	
 	stream->writeLeaveSection();
 }
@@ -373,8 +379,39 @@ void Unit::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-void Unit::subscriptionSuccess(void)
+void Unit::subscriptionSuccess(Building* building, bool inside)
 {
+	Building* b=building;
+	
+	if (building->type->isVirtual)
+	{
+		destinationPurprose=-1;
+		fprintf(logFile, "[%d] sdp1 destinationPurprose=%d\n", gid, destinationPurprose);
+		activity=ACT_FLAG;
+		attachedBuilding=b;
+		targetBuilding=b;
+		if (verbose)
+			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+	}
+	else if(inside == false)
+	{
+		assert(destinationPurprose>=0);
+		assert(b->neededRessource(destinationPurprose));
+		activity=ACT_FILLING;
+		attachedBuilding=b;
+		targetBuilding=NULL;
+		if (verbose)
+			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+	}
+	else
+	{
+		activity=ACT_UPGRADING;
+		attachedBuilding=b;
+		targetBuilding=b;
+		if (verbose)
+			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+	}
+
 	if (verbose)
 		printf("guid=(%d), subscriptionSuccess()\n", gid);
 	subscribed=false;
@@ -382,15 +419,6 @@ void Unit::subscriptionSuccess(void)
 	{
 		case MED_HUNGRY :
 		case MED_DAMAGED :
-		{
-			activity=ACT_UPGRADING;
-			displacement=DIS_GOING_TO_BUILDING;
-			assert(targetBuilding==attachedBuilding);
-			targetX=targetBuilding->getMidX();
-			targetY=targetBuilding->getMidY();
-			validTarget=true;
-		}
-		break;
 		case MED_FREE:
 		{
 			switch(activity)
@@ -423,57 +451,6 @@ void Unit::subscriptionSuccess(void)
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
 						validTarget=true;
-					}
-					else if (ownExchangeBuilding)
-					{
-						if (foreingExchangeBuilding)
-						{
-							// Here we are exchanging fruits between ownExchangeBuilding and foreingExchangeBuilding.
-							if (caryedRessource>=HAPPYNESS_BASE
-								&& (foreingExchangeBuilding->receiveRessourceMask & (1<<(caryedRessource-HAPPYNESS_BASE)))
-								&& (foreingExchangeBuilding->ressources[caryedRessource]<foreingExchangeBuilding->type->maxRessource[caryedRessource]))
-							{
-								assert((Uint32)destinationPurprose==(ownExchangeBuilding->receiveRessourceMask & foreingExchangeBuilding->sendRessourceMask));
-								displacement=DIS_GOING_TO_BUILDING;
-								targetBuilding=foreingExchangeBuilding;
-								targetX=targetBuilding->getMidX();
-								targetY=targetBuilding->getMidY();
-								validTarget=true;
-							}
-							else
-							{
-								displacement=DIS_GOING_TO_BUILDING;
-								targetBuilding=ownExchangeBuilding;
-								targetX=targetBuilding->getMidX();
-								targetY=targetBuilding->getMidY();
-								validTarget=true;
-							}
-						}
-						else
-						{
-							assert(false); // Units never get subscription success to fill a food building from an exchange building. (yet)
-							// Here we are taking fruits from ownExchangeBuilding to a food building (attachedBuilding).
-							
-							if (caryedRessource>=HAPPYNESS_BASE
-								&& (attachedBuilding->ressources[caryedRessource]<attachedBuilding->type->maxRessource[caryedRessource]))
-							{
-								assert(destinationPurprose==caryedRessource);
-								displacement=DIS_GOING_TO_BUILDING;
-								targetBuilding=attachedBuilding;
-								targetX=targetBuilding->getMidX();
-								targetY=targetBuilding->getMidY();
-								validTarget=true;
-							}
-							else
-							{
-								assert(destinationPurprose>=HAPPYNESS_BASE);
-								displacement=DIS_GOING_TO_BUILDING;
-								targetBuilding=ownExchangeBuilding;
-								targetX=targetBuilding->getMidX();
-								targetY=targetBuilding->getMidY();
-								validTarget=true;
-							}
-						}
 					}
 					else
 					{
@@ -824,161 +801,32 @@ void Unit::handleActivity(void)
 	if (verbose)
 		printf("guid=(%d) handleActivity (medical=%d, activity=%d) (needToRecheckMedical=%d) (attachedBuilding=%p)...\n",
 			gid, medical, activity, needToRecheckMedical, attachedBuilding);
-	
+			
+	if(activity!=ACT_RANDOM)
+		jobTimer=0;
+
 	if (medical==MED_FREE)
 	{
 		handleMagic();
-		
+
 		if (activity==ACT_RANDOM)
 		{
-			// look for a "job"
-			// else keep walking around
-			if (verbose)
-				printf("guid=(%d) looking for a job...\n", gid);
-
-			// first we look for a food building to fill, because it is the first priority.
-			// FIXME: Ugly hacks added by Andrew to make sure that globs only subscribe to an inn they have a chance of being accepted at
-			if (performance[HARVEST])
-			{
-				Building *b=owner->findBestFoodable(this);
-
-				int dist;
-				int timeLeft = numberOfStepsLeftUntilHungry();
-				// Is there a building we can reach in time?
-				if (b!=NULL && owner->map->buildingAvailable(b, performance[SWIM], posX, posY, &dist) && dist < timeLeft)
-				{
-					bool canSubscribe=(caryedRessource>=0) && b->neededRessource(caryedRessource);
-
-					if (!canSubscribe)
-					{
-						int needs[MAX_NB_RESSOURCES];
-						b->wishedRessources(needs);
-						for (int r=0; r<MAX_RESSOURCES; r++)
-							if (needs[r]>0 && owner->map->ressourceAvailable(owner->teamNumber, r, performance[SWIM], posX, posY, &dist) && (dist<timeLeft))
-							{
-								canSubscribe=true;
-								break;
-							};
-					};
-
-					if (canSubscribe)
-					{
-						assert(destinationPurprose>=0);
-						assert(b->neededRessource(destinationPurprose));
-						activity=ACT_FILLING;
-						attachedBuilding=b;
-						targetBuilding=NULL;
-						if (verbose)
-							printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-						b->unitsWorkingSubscribe.push_front(this);
-						subscribed=true;
-						if (b->subscribeToBringRessources!=1)
-							{
-								b->subscribeToBringRessources=1;
-								owner->subscribeToBringRessources.push_front(b);
-							}
-						if (b->subscriptionWorkingTimer<=0)
-							b->subscriptionWorkingTimer=1;
-						return;
-					}
-				}
-			}
-			
-			// second we go to flag
-			Building *b;
-			b=owner->findBestZonable(this);
-			if (b)
-			{
-				destinationPurprose=-1;
-				fprintf(logFile, "[%d] sdp1 destinationPurprose=%d\n", gid, destinationPurprose);
-				activity=ACT_FLAG;
-				attachedBuilding=b;
-				targetBuilding=b;
-				if (verbose)
-					printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-				b->unitsWorkingSubscribe.push_front(this);
-				subscribed=true;
-				if (b->subscribeForFlaging!=1)
-				{
-					b->subscribeForFlaging=1;
-					owner->subscribeForFlaging.push_back(b);
-				}
-				if (b->subscriptionWorkingTimer<=0)
-					b->subscriptionWorkingTimer=1;
-				return;
-			}
-
-			// third we look for upgrade
-			b=owner->findBestUpgrade(this);
-			if (b)
-			{
-				assert(destinationPurprose>=WALK);
-				assert(destinationPurprose<ARMOR);
-				activity=ACT_UPGRADING;
-				attachedBuilding=b;
-				targetBuilding=b;
-				if (verbose)
-					printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-				b->unitsInsideSubscribe.push_front(this);
-				subscribed=true;
-				if (b->subscribeForInside!=1)
-				{
-					b->subscribeForInside=1;
-					owner->subscribeForInside.push_front(b);
-				}
-				if (b->subscriptionInsideTimer<=0)
-					b->subscriptionInsideTimer=1;
-				return;
-			}
-			
-			// fourth we harvest for construction, or other lower priority.
-			if (performance[HARVEST])
-			{
-				// if we have a ressource
-				Building *b=owner->findBestFillable(this);
-				if (b)
-				{
-					assert(b->type->canExchange || (destinationPurprose>=0 && b->neededRessource(destinationPurprose)));
-					activity=ACT_FILLING;
-					attachedBuilding=b;
-					targetBuilding=NULL;
-					if (verbose)
-						printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-					b->unitsWorkingSubscribe.push_front(this);
-					subscribed=true;
-					if (b->subscribeToBringRessources!=1)
-					{
-						b->subscribeToBringRessources=1;
-						owner->subscribeToBringRessources.push_front(b);
-					}
-					if (b->subscriptionWorkingTimer<=0)
-						b->subscriptionWorkingTimer=1;
-					return;
-				}
-			}
-			
-			if (verbose)
-				printf("guid=(%d) no job found.\n", gid);
-			
 			// nothing to do:
-			// we go to a heal building if we'r not fully healed: (1/8 trigger)
-			if (hp+(performance[HP]/10) < performance[HP])
+			//Wait for 32 ticks before doing something else
+			jobTimer++;
+			if(jobTimer>32)
 			{
-				Building *b;
-				b=owner->findNearestHeal(this);
+				// We look for an upgrade
+				Building* b=owner->findBestUpgrade(this);
 				if (b)
 				{
-					destinationPurprose=HEAL;
-					fprintf(logFile, "[%d] sdp2 destinationPurprose=%d\n", gid, destinationPurprose);
+					assert(destinationPurprose>=WALK);
+					assert(destinationPurprose<ARMOR);
 					activity=ACT_UPGRADING;
 					attachedBuilding=b;
 					targetBuilding=b;
-					needToRecheckMedical=false;
 					if (verbose)
-						printf("guid=(%d) Going to heal building\n", gid);
-					targetX=attachedBuilding->getMidX();
-					targetY=attachedBuilding->getMidY();
-					validTarget=true;
+						printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->unitsInsideSubscribe.push_front(this);
 					subscribed=true;
 					if (b->subscribeForInside!=1)
@@ -988,14 +836,41 @@ void Unit::handleActivity(void)
 					}
 					if (b->subscriptionInsideTimer<=0)
 						b->subscriptionInsideTimer=1;
+					return;
 				}
-				else
-					activity=ACT_RANDOM;
+
+				// we go to a heal building if we'r not fully healed: (1/8 trigger)
+				if (hp+(performance[HP]/10) < performance[HP])
+				{
+					Building *b;
+					b=owner->findNearestHeal(this);
+					if (b)
+					{
+						destinationPurprose=HEAL;
+						fprintf(logFile, "[%d] sdp2 destinationPurprose=%d\n", gid, destinationPurprose);
+						activity=ACT_UPGRADING;
+						attachedBuilding=b;
+						targetBuilding=b;
+						needToRecheckMedical=false;
+						if (verbose)
+							printf("guid=(%d) Going to heal building\n", gid);
+						targetX=attachedBuilding->getMidX();
+						targetY=attachedBuilding->getMidY();
+						validTarget=true;
+						b->unitsInsideSubscribe.push_front(this);
+						subscribed=true;
+						if (b->subscribeForInside!=1)
+						{
+							b->subscribeForInside=1;
+							owner->subscribeForInside.push_front(b);
+						}
+						if (b->subscriptionInsideTimer<=0)
+							b->subscriptionInsideTimer=1;
+					}
+					else
+						activity=ACT_RANDOM;
+				}
 			}
-		}
-		else
-		{
-			// we keep the job
 		}
 	}
 	else if (needToRecheckMedical)
@@ -1509,8 +1384,8 @@ void Unit::handleDisplacement(void)
 									if (ti!=teamNumber && (owner->game->teams[ti]->sharedVisionExchange & owner->me))
 									{
 										Team *foreignTeam=owner->game->teams[ti];
-										std::list<Building *> foreignFillable=foreignTeam->fillable;
-										for (std::list<Building *>::iterator fbi=foreignFillable.begin(); fbi!=foreignFillable.end(); ++fbi)
+										std::list<Building *> foreignExchange=foreignTeam->canExchange;
+										for (std::list<Building *>::iterator fbi=foreignExchange.begin(); fbi!=foreignExchange.end(); ++fbi)
 											if ((*fbi)->type->canExchange)
 											{
 												Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
@@ -2401,6 +2276,8 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			action=HARVEST;
 			speed=performance[action];
+			if(speed==0)
+				speed/=speed;
 			break;
 		}
 		

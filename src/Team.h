@@ -155,13 +155,17 @@ public:
 	
 	Building *findNearestHeal(Unit *unit);
 	Building *findNearestFood(Unit *unit);
-	
-	//! The 3 next methodes are called by an Unit, in order to find the best work for her.
-	Building *findBestFoodable(Unit *unit);
-	Building *findBestFillable(Unit *unit);
-	Building *findBestZonable(Unit *unit);
-
 	Building *findBestUpgrade(Unit *unit);
+
+	///This function decides whether the lhs building is a higher priority
+	///than the rhs building and returns true.
+	static bool prioritize_building(Building* lhs, Building* rhs);
+	///This function adds the given building to the needing-unit call lists
+	void add_building_needing_work(Building* b);
+	///This function removes the given building from the needing-unit call lists
+	void remove_building_needing_work(Building* b);
+	///This function updates all of the buildings in order of highest priority to lowest
+	void updateAllBuildingTasks();
 
 	//! Return the maximum build level (need at least 1 unit of this level)
 	int maxBuildLevel(void);
@@ -188,13 +192,11 @@ public:
 	Unit *myUnits[1024];
 	
 	Building *myBuildings[1024]; //That's right, you can't build two walls all the way across a 512x512 map.
-	
+
+	///This stores the buildings that need units. They are sorted based on priority.
+	std::vector<Building*> buildingsNeedingUnits;
+
 	// thoses where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
-	std::list<Building *> foodable; //to bring food to
-	std::list<Building *> fillable; //to bring resources to
-	std::list<Building *> zonableWorkers[2]; //to be built by workers who can ([1]) or needn't ([0]) swim.
-	std::list<Building *> zonableExplorer; //to be visited by Explorers.
-	std::list<Building *> zonableWarrior; //to be visited by Warriors.
 	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
 	
 	// The list of building which have one specific ability.
@@ -204,8 +206,6 @@ public:
 	
 	// The lists of building with new subscribed unit:
 	std::list<Building *> subscribeForInside;
-	std::list<Building *> subscribeToBringRessources;
-	std::list<Building *> subscribeForFlaging;
 
 	// The lists of building which needs specials updates:
 	std::list<Building *> buildingsWaitingForDestruction;
@@ -219,8 +219,8 @@ public:
 
 	std::list<Building *> virtualBuildings;
 
-	Uint32 allies; // Who do I thrust and don't fire on. mask
-	Uint32 enemies; // Who I don't thrust and fire on. mask
+	Uint32 allies; // Who do I trust and don't fire on. mask
+	Uint32 enemies; // Who I don't trust and fire on. mask
 	Uint32 sharedVisionExchange; // Who does I share the vision of Exchange building to. mask
 	Uint32 sharedVisionFood; // Who does I share the vision of Food building to. mask
 	Uint32 sharedVisionOther; // Who does I share the vision to. mask

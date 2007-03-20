@@ -3788,7 +3788,6 @@ void UpgradeRepair::modify(Echo& echo)
 {
 	echo.push_order(new OrderConstruction(echo.get_building_register().get_building(id)->gid,1,1));
 	echo.get_building_register().set_upgrading(id);
-	std::cout<<"UpgradeRepair::modify"<<std::endl;
 }
 
 
@@ -4390,7 +4389,6 @@ void Echo::update_building_orders()
 			}
 			else
 			{
-				std::cout<<"Find place for "<<IntBuildingType::reverseConversionMap[(*i)->get_building_type()]<<" failed"<<std::endl;
 				br.remove_building((*i)->id);
 				i=building_orders.erase(i);
 				continue;

@@ -239,27 +239,19 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 	
-	std::list<Building *> foodable=team->foodable;
-	for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
+	for (int i=0; i<1024; i++)
 	{
-		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-		smoothedStat.totalNeededPerLevel[(*bi)->type->level]+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-	}
-
-	std::list<Building *> fillable=team->fillable;
-	for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
-	{
-		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-		smoothedStat.totalNeededPerLevel[(*bi)->type->level]+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-	}
-
-	std::list<Building *> zonable=team->clearingFlags;
-	for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); ++bi)
-		if ((*bi)->anyRessourceToClear[0]!=2 || (*bi)->anyRessourceToClear[1]!=2)
+		Building *b = team->myBuildings[i];
+		if (b)
 		{
-			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-			smoothedStat.totalNeededPerLevel[(*bi)->type->level]+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
-		}
+            if(b->type->foodable || b->type->fillable || b->type->zonable[WORKER])
+            {
+		        smoothedStat.totalNeeded+=b->maxUnitWorking-(int)b->unitsWorking.size();
+		        smoothedStat.totalNeededPerLevel[b->type->level]+=b->maxUnitWorking-(int)b->unitsWorking.size();
+            }
+        }
+    }
+
 
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;
