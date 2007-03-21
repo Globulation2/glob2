@@ -69,6 +69,6 @@
 // version 53 added no-growth areas, to limit ressources growth
 // version 54 removed campaign map linking for the new campaign system
 // version 55 froze current Nicowar to OldNicowar in preperation of new nicowar system
-// version 56 rewrote the unit allocation system, some backwards compatibility is lost
+// version 56 rewrote the unit allocation system
 
 #endif

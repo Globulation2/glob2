@@ -44,6 +44,7 @@ class Building
 {
 public:
 
+	///This is the buildings basic state of existance.
 	enum BuildingState
 	{
 		DEAD=0,
@@ -53,6 +54,8 @@ public:
 		WAITING_FOR_CONSTRUCTION_ROOM=4
 	};
 	
+	///If the building is undergoing any construction,
+	///this state designates what
 	enum ConstructionResultState
 	{
 		NO_CONSTRUCTION=0,
@@ -60,16 +63,10 @@ public:
 		UPGRADE=2,
 		REPAIR=3
 	};
-	
-	enum MatchPriority
-	{
-		MP_LOW	= 0x10000000,
-		MP_MEDIUM = 0x20000000,
-		MP_HIGH   = 0x30000000,
-	};
 
 	// type
 	Sint32 typeNum; // number in BuildingTypes
+	///This is the typenum from IntBuildingType
 	int shortTypeNum;
 	BuildingType *type;
 
@@ -80,16 +77,19 @@ public:
 	// units
 	Sint32 maxUnitWorkingLocal;
 	Sint32 maxUnitWorking;  // (Uint16)
-	Sint32 maxUnitWorkingPreferred;
 	Sint32 maxUnitWorkingFuture;
+	Sint32 maxUnitWorkingPreferred;
+	///This is a constantly updated number that indicates the buildings desired number of units,
+	///say for example that the building is full, it needs no units, so this is 0
+	Sint32 desiredMaxUnitWorking;
+	///This is the list of units activly weorking on the building.
 	std::list<Unit *> unitsWorking;
-	std::list<Unit *> unitsWorkingSubscribe;
+	///The gane waits 32 seconds to find an available unit, rather than looking instantly.
 	Sint32 subscriptionWorkingTimer;
 	Sint32 maxUnitInside;
 	std::list<Unit *> unitsInside;
 	std::list<Unit *> unitsInsideSubscribe;
 	Sint32 subscriptionInsideTimer;
-	MatchPriority matchPriority;
 	
 	// optimisation and consistency
 	// Included in {0: unknow, 1:already in owner->subscribeForInside, 2:not in owner->subscribeForInside
@@ -168,7 +168,7 @@ public:
 	
 	void load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	void loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner);
+	void loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void saveCrossRef(GAGCore::OutputStream *stream);
 
 	bool isRessourceFull(void);
@@ -177,14 +177,21 @@ public:
 	void wishedRessources(int needs[MAX_NB_RESSOURCES]);
 	void computeWishedRessources();
 	int neededRessource(int r);
+	int totalWishedRessource();
 	void launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture);
 	void cancelConstruction(void);
 	void launchDelete(void);
 	void cancelDelete(void);
 	
+	///This function updates the call lists that the Building is on. A call list is a list
+	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
 	void updateConstructionState(void);
 	void updateBuildingSite(void);
+	///This function updates the units working at this building. If there are too many units, it
+	///fires some.
+	void updateUnitsWorking(void);
+	///This function is called after important events in order to update the building
 	void update(void);
 
 	void setMapDiscovered(void);
@@ -195,28 +202,57 @@ public:
 	
 	bool isHardSpaceForBuildingSite(void);
 	bool isHardSpaceForBuildingSite(ConstructionResultState constructionResultState);
+	///This is called every step. The building updates the desiredMaxUnitWorking variable using
+	///the function desiredNumberOfWorkers
 	void step(void);
+	///Removes all of the units subscribed to go inside this building
 	void removeSubscribers(void);
-	bool fullWorking(void);
-	bool enoughWorking(void);
+	///Designates whether we are full inside. For Inns, takes into account how much corn is left
+	///and whether there is enough for more units.
 	bool fullInside(void);
+	///This function tells the number of workers that should be working at this building.
+	///If, for example, the building doesn't need any ressources, then this function will
+	///return 0, because if its already full, it doesn't need any units.
+	int desiredNumberOfWorkers(void);
+	///This function subscribes any building that needs ressources carried to it with units.
+	///It is considered greedy, hiring as many units as it needs in order of its preference
 	void subscribeToBringRessourcesStep(void);
+	///This function subscribes any flag that needs units for a with units.
+	///It is considered greedy, hiring as many units as it needs in order of its preference
 	void subscribeForFlagingStep();
+	///This function accepts the subscriptions from units to go "inside" this building.
+	///These subscriptions come from units, and go into the unitsInsideSubscribe list.
 	void subscribeForInsideStep(void);
+	///This is a step for swarms. Swarms heal themselves and create new units
 	void swarmStep(void);
-	//! This function searches for enemies, computes the best target, and fires a bullet
+	/// This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(void);
+	/// Kills the building, removing all units that are working or inside the building,
+	/// changing the state and adding it to the list of buildings to be deleted
 	void kill(void);
 
+	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,
+	/// the units type and level, and whether this building is a flag, because flags get a couple of special
+	/// rules.
 	bool canUnitWorkHere(Unit* unit);
 
+	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
+	/// or team ressoureces, depending on the BuildingType. 
 	void updateRessourcesPointer();
 	
 	int getMidX(void);
 	int getMidY(void);
 	int getMaxUnitStayRange(void);
+	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
+	/// and provides the x and y cordinates, along with the direction the unit should be travelling
+	/// when it leaves.
 	bool findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim);
+	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
+	/// and provides the x and y cordinates, along with the direction the unit should be travelling
+	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
+	/// Returns the script level number. Construction sites are odd numbers and completed buildings
+	/// even, from 0 to 5
 	int getLongLevel(void);
 
 	//! get flag from units attached to flag

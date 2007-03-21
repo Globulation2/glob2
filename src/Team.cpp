@@ -338,7 +338,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		if (myBuildings[i])
 		{
 			stream->readEnterSection(i);
-			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
+			myBuildings[i]->loadCrossRef(stream, buildingstypes, this, versionMinor);
 			if (myBuildings[i]->unitsInsideSubscribe.size())
 			{
 				subscribeForInside.push_back(myBuildings[i]);
@@ -930,9 +930,18 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		//for each building. The fractions are (needed_units / wanted_units) for both lhs and rhs.
 		//The trick is to put them into a common denominator, which is done by cross multiplying.
 		//The denominators don't actually need to be computed, only the numerators.
-		int ratio_lhs = (lhs->maxUnitWorking  - lhs->unitsWorking.size()) * rhs->unitsWorking.size();
-		int ratio_rhs = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
-		return ratio_lhs < ratio_rhs;
+		int ratio_lhs_unit = (lhs->maxUnitWorking  - lhs->unitsWorking.size()) * rhs->unitsWorking.size();
+		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
+		if(ratio_lhs_unit == ratio_rhs_unit)
+		{
+			int ratio_lhs_ressource = lhs->totalWishedRessource();
+			int ratio_rhs_ressource = rhs->totalWishedRessource();
+			return ratio_lhs_ressource < ratio_rhs_ressource;
+		}
+		else
+		{
+			return ratio_lhs_unit < ratio_rhs_unit;
+		}
 	}
 	return false;
 }
@@ -1114,7 +1123,6 @@ void Team::syncStep(void)
 
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
-		assert(building->unitsWorkingSubscribe.size()==0);
 		assert(building->unitsInsideSubscribe.size()==0);
 
 		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
@@ -1151,21 +1159,6 @@ void Team::syncStep(void)
 			it=subscribeForInside.erase(ittemp);
 		}
 
-/*
-	//subscribeToBringRessourcesStep
-	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
-		if (!(*it)->unitsWorkingSubscribe.empty())
-			(*it)->subscribeToBringRessourcesStep();
-
-	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
-		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
-		{
-			(*it)->subscribeToBringRessources=2;
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeToBringRessources.erase(ittemp);
-		}
-*/
-
 	updateAllBuildingTasks();
 
 	bool isEnoughFoodInSwarm=false;
@@ -1173,8 +1166,15 @@ void Team::syncStep(void)
 	for (int i=0; i<1024; ++i)
 	{
 		if(myBuildings[i])
-			if(myBuildings[i]->type->useTeamRessources && game->stepCounter%20 == 0)
+		{
+			//Step in myBuildings does virtually nothing
+			myBuildings[i]->step();
+			if(game->stepCounter%20 == 0)
+			{
 				myBuildings[i]->updateCallLists();
+				myBuildings[i]->updateUnitsWorking();
+			}
+		}
 	}
 	
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
