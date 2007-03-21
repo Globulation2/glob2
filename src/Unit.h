@@ -57,7 +57,8 @@ public:
 	void saveCrossRef(GAGCore::OutputStream *stream);
 	
 	///This function is called by a Building that has subscribed this unit.
-	///If the unit has been subscribed for upgrading or for food, inside is true
+	///If the unit has been subscribed for upgrading or for food, as opposed
+	///to being subscribed for work, inside is set to true.
 	void subscriptionSuccess(Building* building, bool inside);
 	void syncStep(void);
 	

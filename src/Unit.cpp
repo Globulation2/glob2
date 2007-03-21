@@ -244,7 +244,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	// gui
 	levelUpAnimation = 0;
 	magicActionAnimation = 0;
-	
+	jobTimer = 0;
+
 	verbose = false;
 	
 	stream->readLeaveSection();
@@ -631,7 +632,6 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	validTarget=false;
 	
 	attachedBuilding->unitsWorking.remove(this);
-	attachedBuilding->unitsWorkingSubscribe.remove(this);
 	attachedBuilding->updateCallLists();
 	attachedBuilding=NULL;
 	targetBuilding=NULL;
@@ -765,7 +765,6 @@ void Unit::handleMedical(void)
 				assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
 				attachedBuilding->unitsWorking.remove(this);
 				attachedBuilding->unitsInside.remove(this);
-				attachedBuilding->unitsWorkingSubscribe.remove(this);
 				attachedBuilding->unitsInsideSubscribe.remove(this);
 				attachedBuilding->updateCallLists();
 				attachedBuilding=NULL;
@@ -881,7 +880,6 @@ void Unit::handleActivity(void)
 				printf("guid=(%d) Need medical while working, abort work\n", gid);
 			attachedBuilding->unitsWorking.remove(this);
 			attachedBuilding->unitsInside.remove(this);
-			attachedBuilding->unitsWorkingSubscribe.remove(this);
 			attachedBuilding->unitsInsideSubscribe.remove(this);
 			attachedBuilding->updateCallLists();
 			attachedBuilding=NULL;

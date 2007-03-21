@@ -246,8 +246,8 @@ void TeamStats::step(Team *team, bool reloaded)
 		{
             if(b->type->foodable || b->type->fillable || b->type->zonable[WORKER])
             {
-		        smoothedStat.totalNeeded+=b->maxUnitWorking-(int)b->unitsWorking.size();
-		        smoothedStat.totalNeededPerLevel[b->type->level]+=b->maxUnitWorking-(int)b->unitsWorking.size();
+		        smoothedStat.totalNeeded+=b->desiredMaxUnitWorking-(int)b->unitsWorking.size();
+		        smoothedStat.totalNeededPerLevel[b->type->level]+=b->desiredMaxUnitWorking-(int)b->unitsWorking.size();
             }
         }
     }

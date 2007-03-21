@@ -75,6 +75,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = maxUnitWorking;
 	maxUnitWorkingFuture = unitWorkingFuture;
+	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
 
@@ -281,6 +282,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = 1;
 	maxUnitWorkingFuture = 1;
+	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
 	
@@ -372,7 +374,7 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner)
+void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	stream->readEnterSection("Building");
 	fprintf(logFile, "loadCrossRef (%d)\n", gid);
@@ -393,22 +395,22 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsWorking.push_front(unit);
 	}
 
-	unsigned nbWorkingSubscribe = stream->readUint32("nbWorkingSubscribe");
-	fprintf(logFile, " nbWorkingSubscribe=%d\n", nbWorkingSubscribe);
-	unitsWorkingSubscribe.clear();
-	for (unsigned i=0; i<nbWorkingSubscribe; i++)
+	if(versionMinor<56)
 	{
-		std::ostringstream oss;
-		oss << "unitsWorkingSubscribe[" << i << "]";
-		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-		assert(unit);
-		unitsWorkingSubscribe.push_front(unit);
+		unsigned nbWorkingSubscribe = stream->readUint32("nbWorkingSubscribe");
+		for (unsigned i=0; i<nbWorkingSubscribe; i++)
+		{
+			std::ostringstream oss;
+			oss << "unitsWorkingSubscribe[" << i << "]";
+			stream->readUint16(oss.str().c_str());
+		}
 	}
 
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
 	maxUnitWorkingLocal = maxUnitWorking;
+	desiredMaxUnitWorking = maxUnitWorking;
 	
 	unsigned nbInside = stream->readUint32("nbInside");
 	fprintf(logFile, " nbInside=%d\n", nbInside);
@@ -456,18 +458,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
 		std::ostringstream oss;
 		oss << "unitsWorking[" << i++ << "]";
-		stream->writeUint16((*it)->gid, oss.str().c_str());
-	}
-
-	stream->writeUint32(unitsWorkingSubscribe.size(), "nbWorkingSubscribe");
-	fprintf(logFile, " nbWorkingSubscribe=%zd\n", unitsWorkingSubscribe.size());
-	i = 0;
-	for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-	{
-		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		std::ostringstream oss;
-		oss << "unitsWorkingSubscribe[" << i++ << "]";
 		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 	
@@ -577,6 +567,17 @@ int Building::neededRessource(int r)
 		return 0;
 }
 
+
+int Building::totalWishedRessource()
+{
+	int sum=0;
+	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
+		sum += wishedResources[ri];
+	return sum;
+}
+
+
+
 void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	if ((buildingState==ALIVE) && (!type->isBuildingSite))
@@ -623,7 +624,8 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
 		maxUnitInside=0;
-		updateCallLists(); // To remove all units working.
+		updateCallLists();
+		updateUnitsWorking(); // To remove all units working.
 		//following reassigns units to work on upgrade, certain buildings will
 		//glitch if units are not unassigned and then reassigned like this
 		maxUnitWorking = unitWorking;
@@ -706,6 +708,7 @@ void Building::cancelConstruction(void)
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
+	updateUnitsWorking();
 
 	if (hp>=type->hpInit)
 		hp=type->hpInit;
@@ -757,8 +760,9 @@ void Building::launchDelete(void)
 		maxUnitWorking=0;
 		maxUnitWorkingLocal=0;
 		maxUnitInside=0;
+		desiredMaxUnitWorking = 0;
 		updateCallLists();
-		
+		updateUnitsWorking();
 		owner->buildingsWaitingForDestruction.push_front(this);
 	}
 }
@@ -773,6 +777,7 @@ void Building::cancelDelete(void)
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
+	updateUnitsWorking();
 	// we do not update owner->buildingsWaitingForDestruction because Team::syncStep will remove this building from the list
 }
 
@@ -793,7 +798,7 @@ void Building::updateCallLists(void)
 		}
 	}
 	
-	if (unitsWorking.size()<(unsigned)maxUnitWorking)
+	if (unitsWorking.size()<(unsigned)desiredMaxUnitWorking)
 	{
 		if (buildingState==ALIVE)
 		{
@@ -807,88 +812,11 @@ void Building::updateCallLists(void)
 	}
 	else
 	{
-		
 		if(callListState != 0)
 		{
 			owner->remove_building_needing_work(this);
 			callListState=0;
 		}
-
-		if (maxUnitWorking==0)
-		{
-			// This is only a special optimisation case:
-			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-				(*it)->standardRandomActivity();
-			unitsWorking.clear();
-		}
-		else
-			while (unitsWorking.size()>(unsigned)maxUnitWorking)
-			{
-				int maxDistSquare=0;
-
-				Unit *fu=NULL;
-				std::list<Unit *>::iterator ittemp;
-
-				// First choice: free an unit who has a not needed ressource..
-				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-				{
-					int r=(*it)->caryedRessource;
-					if (r>=0 && !neededRessource(r))
-					{
-						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-						if (newDistSquare>maxDistSquare)
-						{
-							maxDistSquare=newDistSquare;
-							fu=(*it);
-							ittemp=it;
-						}
-					}
-				}
-
-				// Second choice: free an unit who has no ressource..
-				if (fu==NULL)
-				{
-					int minDistSquare=INT_MAX;
-					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-					{
-						int r=(*it)->caryedRessource;
-						if (r<0)
-						{
-							int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-							if (newDistSquare<minDistSquare)
-							{
-								minDistSquare=newDistSquare;
-								fu=(*it);
-								ittemp=it;
-							}
-						}
-					}
-				}
-
-				// Third choice: free any unit..
-				if (fu==NULL)
-					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-					{
-						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-						if (newDistSquare>maxDistSquare)
-						{
-							maxDistSquare=newDistSquare;
-							fu=(*it);
-							ittemp=it;
-						}
-					}
-
-				if (fu!=NULL)
-				{
-					if (verbose)
-						printf("bgid=%d, we free the unit gid=%d\n", gid, fu->gid);
-					// We free the unit.
-					fu->standardRandomActivity();
-					unitsWorking.erase(ittemp);
-				}
-				else
-					break;
-			}
 	}
 
 	if ((signed)unitsInside.size()<maxUnitInside)
@@ -920,7 +848,7 @@ void Building::updateCallLists(void)
 				}
 			}
 
-		// this is for Unit headling
+		// this is for Unit healing
 		if (type->canHealUnit && canHealUnit!=1)
 		{
 			owner->canHealUnit.push_front(this);
@@ -961,7 +889,7 @@ void Building::updateConstructionState(void)
 		{
 			cancelConstruction();
 		}
-		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
+		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsInsideSubscribe.size()==0))
 		{
 			if (buildingState!=WAITING_FOR_CONSTRUCTION_ROOM)
 			{
@@ -972,7 +900,7 @@ void Building::updateConstructionState(void)
 			}
 		}
 		else if (verbose)
-			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
+			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsInsideSubscribe.size());
 	}
 }
 
@@ -1036,14 +964,102 @@ void Building::updateBuildingSite(void)
 		
 		// we need to do an update again
 		updateCallLists();
+		updateUnitsWorking();
 	}
 }
+
+
+
+void Building::updateUnitsWorking(void)
+{
+	if (maxUnitWorking==0)
+	{
+		// This is only a special optimisation case:
+		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+			(*it)->standardRandomActivity();
+		unitsWorking.clear();
+	}
+	else
+	{
+		while (unitsWorking.size()>(unsigned)desiredMaxUnitWorking)
+		{
+			int maxDistSquare=0;
+
+			Unit *fu=NULL;
+			std::list<Unit *>::iterator ittemp;
+
+			// First choice: free an unit who has a not needed ressource..
+			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+			{
+				int r=(*it)->caryedRessource;
+				if (r>=0 && !neededRessource(r))
+				{
+					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+					if (newDistSquare>maxDistSquare)
+					{
+						maxDistSquare=newDistSquare;
+						fu=(*it);
+						ittemp=it;
+					}
+				}
+			}
+
+			// Second choice: free an unit who has no ressource..
+			if (fu==NULL)
+			{
+				int minDistSquare=INT_MAX;
+				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+				{
+					int r=(*it)->caryedRessource;
+					if (r<0)
+					{
+						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+						if (newDistSquare<minDistSquare)
+						{
+							minDistSquare=newDistSquare;
+							fu=(*it);
+							ittemp=it;
+						}
+					}
+				}
+			}
+
+			// Third choice: free any unit..
+			if (fu==NULL)
+				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+				{
+					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+					if (newDistSquare>maxDistSquare)
+					{
+						maxDistSquare=newDistSquare;
+						fu=(*it);
+						ittemp=it;
+					}
+				}
+
+			if (fu!=NULL)
+			{
+				if (verbose)
+					printf("bgid=%d, we free the unit gid=%d\n", gid, fu->gid);
+				// We free the unit.
+				fu->standardRandomActivity();
+				unitsWorking.erase(ittemp);
+			}
+			else
+				break;
+		}
+	}
+}
+
+
 
 void Building::update(void)
 {
 	if (buildingState==DEAD)
 		return;
+	desiredMaxUnitWorking = desiredNumberOfWorkers();
 	updateCallLists();
+	updateUnitsWorking();
 	updateConstructionState();
 	if (type->isBuildingSite)
 		updateBuildingSite();
@@ -1157,6 +1173,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
 		updateCallLists();
+		updateUnitsWorking();
 
 		// position
 		posX=newPosX;
@@ -1216,36 +1233,15 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 
 void Building::step(void)
 {
-	assert(false);
+	desiredMaxUnitWorking = desiredNumberOfWorkers();
 	// NOTE : Unit needs to update itself when it is in a building
 }
 
 void Building::removeSubscribers(void)
 {
-	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-		(*it)->standardRandomActivity();
-	unitsWorkingSubscribe.clear();
-
 	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 		(*it)->standardRandomActivity();
 	unitsInsideSubscribe.clear();
-}
-
-bool Building::fullWorking(void)
-{
-	return ((Sint32)unitsWorking.size() >= maxUnitWorking);
-}
-
-bool Building::enoughWorking(void)
-{
-	int neededRessourcesSum = 0;
-	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
-	{
-		int neededRessources = (type->maxRessource[ri] - ressources[ri]) / type->multiplierRessource[ri];
-		if (neededRessources > 0)
-			neededRessourcesSum += neededRessources;
-	}
-	return ((int)unitsWorking.size() >= 2 * neededRessourcesSum);
 }
 
 bool Building::fullInside(void)
@@ -1256,26 +1252,46 @@ bool Building::fullInside(void)
 		return ((signed)unitsInside.size()>=maxUnitInside);
 }
 
+
+int Building::desiredNumberOfWorkers(void)
+{
+	//If its virtual, than this building is a flag and always gets
+	//full ressources
+	if(type->isVirtual)
+	{
+		return maxUnitWorking;
+	}
+	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed ressource,
+	//thus if no ressources are needed, then no units will be working here.
+	int neededRessourcesSum = 0;
+	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
+	{
+		int neededRessources = (type->maxRessource[ri] - ressources[ri]) / type->multiplierRessource[ri];
+		if (neededRessources > 0)
+			neededRessourcesSum += neededRessources;
+	}
+	int user_num = maxUnitWorking;
+	int max_considering_ressources = 2 * neededRessourcesSum;
+	return std::min(user_num, max_considering_ressources);
+}
+
+
+
 void Building::subscribeToBringRessourcesStep()
 {
-	subscriptionWorkingTimer++;
-	if (fullWorking() || enoughWorking())
-	{
-		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-			(*it)->standardRandomActivity();
-		unitsWorkingSubscribe.clear();
-		if (verbose)
-			printf("...enoughWorking()\n");
+	if (buildingState==DEAD)
 		return;
-	}
+	
+	subscriptionWorkingTimer++;
 
 	if (subscriptionWorkingTimer>32)
 	{
 		if (verbose)
 			printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
-		while (((Sint32)unitsWorking.size()<maxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
+		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
 		{
 			int minValue=INT_MAX;
+			int minLevel=INT_MAX;
 			Unit *choosen=NULL;
 			Map *map=owner->map;
 			/* To choose a good unit, we get a composition of things:
@@ -1303,11 +1319,13 @@ void Building::subscribeToBringRessourcesStep()
 					if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
 					{
 						int value=dist-(timeLeft>>1);
+						int level = unit->level[HARVEST];
 						unit->destinationPurprose=r;
 						fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-						if (value<minValue)
+						if ((level < minLevel) || (level==minLevel && value<minValue))
 						{
 							minValue=value;
+							minLevel=level;
 							choosen=unit;
 						}
 					}
@@ -1327,7 +1345,7 @@ void Building::subscribeToBringRessourcesStep()
 						continue;
 					if(!canUnitWorkHere(unit))
 						continue;
-
+	
 					if (unit->caryedRessource<0)
 					{
 						int x=unit->posX;
@@ -1346,11 +1364,13 @@ void Building::subscribeToBringRessourcesStep()
 									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
-										if (value<minValue)
+										int level = unit->level[HARVEST];
+										if ((level < minLevel) || (level==minLevel && value<minValue))
 										{
 											unit->destinationPurprose=r;
 											fprintf(logFile, "[%d] bdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 											minValue=value;
+											minLevel=level;
 											choosen=unit;
 											if (verbose)
 												printf(" guid=%5d, distUnitRessource=%d, distUnitBuilding=%d, need=%d, value=%d\n", choosen->gid, distUnitRessource, distUnitBuilding, need, value);
@@ -1395,11 +1415,13 @@ void Building::subscribeToBringRessourcesStep()
 									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
-										if (value<minValue)
+										int level = unit->level[HARVEST];
+										if ((level < minLevel) || (level==minLevel && value<minValue))
 										{
 											unit->destinationPurprose=r;
 											fprintf(logFile, "[%d] bdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 											minValue=value;
+											minLevel=level;
 											choosen=unit;
 										}
 									}
@@ -1422,9 +1444,7 @@ void Building::subscribeToBringRessourcesStep()
 		}
 		
 		updateCallLists();
-//		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-//			(*it)->standardRandomActivity();
-		unitsWorkingSubscribe.clear();
+
 		subscriptionWorkingTimer=0;
 		
 		if (verbose)
@@ -1434,20 +1454,17 @@ void Building::subscribeToBringRessourcesStep()
 
 void Building::subscribeForFlagingStep()
 {
-	subscriptionWorkingTimer++;
-	if (fullWorking())
-	{
-		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-			(*it)->standardRandomActivity();
-		unitsWorkingSubscribe.clear();
+	if (buildingState==DEAD)
 		return;
-	}
 	
+	subscriptionWorkingTimer++;
 	if (subscriptionWorkingTimer>32)
 	{
-		while (((Sint32)unitsWorking.size()<maxUnitWorking))
+		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
 		{
 			int minValue=INT_MAX;
+			int minLevel=INT_MAX;
+			int maxLevel=-INT_MAX;
 			Unit *choosen=NULL;
 			Map *map=owner->map;
 			
@@ -1473,10 +1490,14 @@ void Building::subscribeForFlagingStep()
 					int dist=map->warpDistSquare(unit->posX, unit->posY, posX, posY);
 					if (dist<timeLeft)
 					{
+						//Use explorers without ground attack first before ones with, so that ground attacking explorers
+						//are available for more important jobs
 						int value=dist-2*timeLeft-2*hp;
-						if (value<minValue)
+						int level = unit->level[MAGIC_ATTACK_GROUND];
+						if ((level < minLevel) || (level==minLevel && value<minValue))
 						{
 							minValue=value;
+							minLevel=level;
 							choosen=unit;
 						}
 					}
@@ -1498,9 +1519,12 @@ void Building::subscribeForFlagingStep()
 					if (map->buildingAvailable(this, unit->performance[SWIM]>0, unit->posX, unit->posY, &dist) && (dist<timeLeft))
 					{
 						int value=dist-2*timeLeft-2*hp;
-						if (value<minValue)
+						//We want to maximize the attack level, use higher level soldeirs first
+						int level=unit->performance[ATTACK_SPEED]*unit->getRealAttackStrength();
+						if ((level > maxLevel) || (level==maxLevel && value<minValue))
 						{
 							minValue=value;
+							maxLevel=level;
 							choosen=unit;
 						}
 					}
@@ -1525,9 +1549,13 @@ void Building::subscribeForFlagingStep()
 						&& (dist<timeLeft))
 					{
 						int value=dist-timeLeft-hp;
-						if (value<minValue)
+						int level = unit->level[HARVEST];
+						//We want to minimize the level of harvesting units, so that the higher level
+						//units are available for more important work.
+						if ((level < minLevel) || (level==minLevel && value<minValue))
 						{
 							minValue=value;
+							minLevel=level;
 							choosen=unit;
 						}
 					}
@@ -1538,7 +1566,6 @@ void Building::subscribeForFlagingStep()
 			
 			if (choosen)
 			{
-				unitsWorkingSubscribe.remove(choosen);
 				unitsWorking.push_back(choosen);
 				choosen->subscriptionSuccess(this, false);
 			}
@@ -1547,17 +1574,19 @@ void Building::subscribeForFlagingStep()
 		}
 		
 		updateCallLists();
-		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-			(*it)->standardRandomActivity();
-		unitsWorkingSubscribe.clear();
+
 		subscriptionWorkingTimer=0;
 	}
 }
 
 void Building::subscribeForInsideStep()
 {
+	if (buildingState==DEAD)
+		return;
+	
 	if (subscriptionInsideTimer>0)
 		subscriptionInsideTimer++;
+
 	if (fullInside())
 	{
 		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
@@ -2028,7 +2057,9 @@ void Building::kill(void)
 	maxUnitWorking=0;
 	maxUnitWorkingLocal=0;
 	maxUnitInside=0;
+	desiredMaxUnitWorking = 0;
 	updateCallLists();
+	
 
 	if (!type->isVirtual)
 	{
@@ -2063,11 +2094,33 @@ bool Building::canUnitWorkHere(Unit* unit)
 	if(type->isVirtual)
 	{
 		if(type->zonable[unit->typeNum])
-			return true;
-		return false;
+		{
+			if (unit->typeNum == WARRIOR)
+			{
+				int level=std::min(unit->level[ATTACK_SPEED], unit->level[ATTACK_STRENGTH]);
+				if(minLevelToFlag<=level)
+					return true;
+			}
+			else if (unit->typeNum == EXPLORER)
+			{
+				if(minLevelToFlag && !unit->level[MAGIC_ATTACK_GROUND])
+					return false;
+				else
+					return true;
+			}
+			else if (unit->typeNum == WORKER)
+			{
+				return true;
+			}
+
+		}
 	}
 	else if(unit->typeNum ==  WORKER)
-		return true;
+	{
+		int actLevel=unit->level[HARVEST];
+		if(type->level <= actLevel)
+			return true;
+	}
 	return false;
 
 }
@@ -2351,15 +2404,6 @@ void Building::integrity()
 	assert(unitsWorking.size()>=0);
 	assert(unitsWorking.size()<=1024);
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-	{
-		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		assert((*it)->attachedBuilding==this);
-	}
-
-	assert(unitsWorkingSubscribe.size()>=0);
-	assert(unitsWorkingSubscribe.size()<=1024);
-	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 	{
 		assert(*it);
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
