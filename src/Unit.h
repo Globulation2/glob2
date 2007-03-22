@@ -53,7 +53,7 @@ public:
 	
 	void load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	void loadCrossRef(GAGCore::InputStream *stream, Team *owner);
+	void loadCrossRef(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	void saveCrossRef(GAGCore::OutputStream *stream);
 	
 	///This function is called by a Building that has subscribed this unit.
@@ -240,9 +240,7 @@ public:
 	Building *attachedBuilding;
 	Building *targetBuilding;
 	Building *ownExchangeBuilding;
-	Building *foreingExchangeBuilding;
 	Sint32 destinationPurprose;
-	bool subscribed;
 	int caryedRessource;
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.

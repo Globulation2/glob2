@@ -1793,7 +1793,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 					assert(game->teams[otherTeam]);
 					int otherID=Unit::GIDtoID(guid);
 					Unit *otherUnit=game->teams[otherTeam]->myUnits[otherID];
-					if ((otherUnit->foreingExchangeBuilding==NULL) || ((unit->owner->sharedVisionExchange & otherTeamMask)==0))
+					if ((unit->owner->sharedVisionExchange & otherTeamMask)==0)
 					{
 						int time=(256-otherUnit->delta)/otherUnit->speed;
 						if (time<bestTime)

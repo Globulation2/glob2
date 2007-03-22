@@ -203,9 +203,6 @@ public:
 	std::list<Building *> canFeedUnit; // The buildings with not enough food are not in this list.
 	std::list<Building *> canHealUnit;
 	std::list<Building *> canExchange;
-	
-	// The lists of building with new subscribed unit:
-	std::list<Building *> subscribeForInside;
 
 	// The lists of building which needs specials updates:
 	std::list<Building *> buildingsWaitingForDestruction;

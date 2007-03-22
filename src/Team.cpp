@@ -214,8 +214,6 @@ void Team::init(void)
 	startPosX=startPosY=0;
 	startPosSet=0;
 
-	subscribeForInside.clear();
-
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 		events[i] = Event();
 	isAlive=true;
@@ -317,8 +315,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	}
 	stream->readLeaveSection();
 
-	subscribeForInside.clear();
-
 	// resolve cross reference
 	stream->readEnterSection("myUnits");
 	for (int i=0; i<1024; i++)
@@ -326,7 +322,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		if (myUnits[i])
 		{
 			stream->readEnterSection(i);
-			myUnits[i]->loadCrossRef(stream, this);
+			myUnits[i]->loadCrossRef(stream, this, versionMinor);
 			stream->readLeaveSection();
 		}
 	}
@@ -339,11 +335,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		{
 			stream->readEnterSection(i);
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this, versionMinor);
-			if (myBuildings[i]->unitsInsideSubscribe.size())
-			{
-				subscribeForInside.push_back(myBuildings[i]);
-				myBuildings[i]->subscribeForInside=1;
-			}
 			if (myBuildings[i]->type->canExchange)
 				canExchange.push_back(myBuildings[i]);
 			stream->readLeaveSection();
@@ -541,7 +532,6 @@ void Team::clearLists(void)
 	canFeedUnit.clear();
 	canHealUnit.clear();
 	canExchange.clear();
-	subscribeForInside.clear();
 	buildingsWaitingForDestruction.clear();
 	buildingsToBeDestroyed.clear();
 	buildingsTryToBuildingSiteRoom.clear();
@@ -767,7 +757,7 @@ Building *Team::findNearestFood(Unit *unit)
 					Sint32 dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
 					if (dist >= maxDist)
 						continue;
-					int happyness = (*bi)->availableHappynessLevel(true);
+					int happyness = (*bi)->availableHappynessLevel();
 					if (happyness > bestEnemyHappyness)
 					{
 						bestEnemyHappyness = happyness;
@@ -802,7 +792,7 @@ Building *Team::findNearestFood(Unit *unit)
 						continue;
 					if (dist >= maxDist)
 						continue;
-					int happyness = (*bi)->availableHappynessLevel(true);
+					int happyness = (*bi)->availableHappynessLevel();
 					if (happyness > bestEnemyHappyness)
 					{
 						bestEnemyHappyness = happyness;
@@ -829,7 +819,7 @@ Building *Team::findNearestFood(Unit *unit)
 		Building *choosenFood = NULL;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
-			if ((*bi)->availableHappynessLevel(false) < bestEnemyHappyness)
+			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
 			Sint32 dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
 			if (dist >= bestDist)
@@ -847,7 +837,7 @@ Building *Team::findNearestFood(Unit *unit)
 		Building *choosenFood = NULL;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
-			if ((*bi)->availableHappynessLevel(false) < bestEnemyHappyness)
+			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
 			int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
 			if (dist >= bestDist)
@@ -876,6 +866,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 	int x=unit->posX;
 	int y=unit->posY;
 	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
+	{
 		//This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
 		// to be the last, this code willl fail.
 		if (unit->canLearn[ability])
@@ -902,6 +893,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 				}
 			}
 		}
+	}
 	return choosen;
 }
 
@@ -910,19 +902,19 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 {
 	int priority_lhs=0;
 	if(lhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !lhs->type->isBuildingSite)
-		priority_lhs=20;
+		priority_lhs=20+lhs->type->level;
 	else
-		priority_lhs=10;
+		priority_lhs=10+lhs->type->level;
 	
 	int priority_rhs=0;
 	if(rhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !rhs->type->isBuildingSite)
-		priority_rhs=20;
+		priority_rhs=20+lhs->type->level;
 	else
-		priority_rhs=10;
+		priority_rhs=10+lhs->type->level;
 
 	if(priority_lhs != priority_rhs)	
 	{
-		return priority_lhs < priority_rhs;
+		return priority_lhs > priority_rhs;
 	}
 	else
 	{
@@ -936,11 +928,11 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		{
 			int ratio_lhs_ressource = lhs->totalWishedRessource();
 			int ratio_rhs_ressource = rhs->totalWishedRessource();
-			return ratio_lhs_ressource < ratio_rhs_ressource;
+			return ratio_lhs_ressource > ratio_rhs_ressource;
 		}
 		else
 		{
-			return ratio_lhs_unit < ratio_rhs_unit;
+			return ratio_lhs_unit > ratio_rhs_unit;
 		}
 	}
 	return false;
@@ -949,15 +941,18 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 
 void Team::add_building_needing_work(Building* b)
 {
+	bool did_find_position=false;
 	for(int i=0; i<buildingsNeedingUnits.size(); ++i)
 	{
-		if(prioritize_building(buildingsNeedingUnits[i], b))
+		if(prioritize_building(b, buildingsNeedingUnits[i]))
 		{
 			buildingsNeedingUnits.insert(buildingsNeedingUnits.begin() + i, b);
-			return;
+			did_find_position=true;
+			break;
 		}
 	}
-	buildingsNeedingUnits.push_back(b);
+	if(!did_find_position)
+		buildingsNeedingUnits.push_back(b);
 }
 
 
@@ -970,6 +965,7 @@ void Team::remove_building_needing_work(Building* b)
 
 void Team::updateAllBuildingTasks()
 {
+	std::sort(buildingsNeedingUnits.begin(), buildingsNeedingUnits.end(), Team::prioritize_building);
 	for(int i=0; i<buildingsNeedingUnits.size(); ++i)
 	{
 		if(buildingsNeedingUnits[i]->type->isVirtual)
@@ -1123,11 +1119,9 @@ void Team::syncStep(void)
 
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
-		assert(building->unitsInsideSubscribe.size()==0);
 
 		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
-		subscribeForInside.remove(building);
 
 		if (game->selectedBuilding==building)
 			game->selectedBuilding=NULL;
@@ -1140,24 +1134,13 @@ void Team::syncStep(void)
 		buildingsToBeDestroyed.clear();
 
 	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
+	{
 		if ((*it)->tryToBuildingSiteRoom())
 		{
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
 		}
-
-	//printf("subscribeForInside.size()=%d\n", subscribeForInside.size());
-	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
-		if (!(*it)->unitsInsideSubscribe.empty())
-			(*it)->subscribeForInsideStep();
-
-	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
-		if ((*it)->unitsInsideSubscribe.empty())
-		{
-			(*it)->subscribeForInside=2;
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForInside.erase(ittemp);
-		}
+	}
 
 	updateAllBuildingTasks();
 
@@ -1169,11 +1152,6 @@ void Team::syncStep(void)
 		{
 			//Step in myBuildings does virtually nothing
 			myBuildings[i]->step();
-			if(game->stepCounter%20 == 0)
-			{
-				myBuildings[i]->updateCallLists();
-				myBuildings[i]->updateUnitsWorking();
-			}
 		}
 	}
 	
