@@ -76,7 +76,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingPreferred = maxUnitWorking;
 	maxUnitWorkingFuture = unitWorkingFuture;
 	desiredMaxUnitWorking = maxUnitWorking;
-	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
 
 	// position
@@ -129,7 +128,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	seenByMask=0;
 	
-	subscribeForInside=0;
 	canFeedUnit=0;
 	canHealUnit=0;
 	callListState=0;
@@ -283,14 +281,12 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	maxUnitWorkingPreferred = 1;
 	maxUnitWorkingFuture = 1;
 	desiredMaxUnitWorking = maxUnitWorking;
-	subscriptionInsideTimer = 0;
 	subscriptionWorkingTimer = 0;
 	
 	owner->prestige += type->prestige;
 	
 	seenByMask = stream->readUint32("seenByMaskk");
 	
-	subscribeForInside = 0;
 	canFeedUnit = 0;
 	canHealUnit = 0;
 	callListState = 0;
@@ -424,19 +420,18 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsInside.push_front(unit);
 	}
 
-	unsigned nbInsideSubscribe = stream->readUint32("nbInsideSubscribe");
-	fprintf(logFile, " nbInsideSubscribe=%d\n", nbInsideSubscribe);
-	unitsInsideSubscribe.clear();
-	for (unsigned i=0; i<nbInsideSubscribe; i++)
+	if(versionMinor<56)
 	{
-		std::ostringstream oss;
-		oss << "unitsInsideSubscribe[" << i << "]";
-		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-		assert(unit);
-		unitsInsideSubscribe.push_front(unit);
+		unsigned nbInsideSubscribe = stream->readUint32("nbInsideSubscribe");
+		for (unsigned i=0; i<nbInsideSubscribe; i++)
+		{
+			std::ostringstream oss;
+			oss << "unitsInsideSubscribe[" << i << "]";
+			Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
+		}
+		stream->readSint32("subscriptionInsideTimer");
 	}
-	subscriptionInsideTimer = stream->readSint32("subscriptionInsideTimer");
-	
+
 	stream->readLeaveSection();
 }
 
@@ -477,19 +472,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 
-	stream->writeUint32(unitsInsideSubscribe.size(), "nbInsideSubscribe");
-	fprintf(logFile, " nbInsideSubscribe=%zd\n", unitsInsideSubscribe.size());
-	i = 0;
-	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
-	{
-		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		std::ostringstream oss;
-		oss << "unitsInsideSubscribe[" << i++ << "]";
-		stream->writeUint16((*it)->gid, oss.str().c_str());
-	}
-	stream->writeSint32(subscriptionInsideTimer, "subscriptionInsideTimer");
-	
 	stream->writeLeaveSection();
 }
 
@@ -597,8 +579,6 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		owner->removeFromAbilitiesLists(this);
 		
-		removeSubscribers();
-
 		// We remove all units who are going to the building:
 		// Notice that the algotithm is not fast but clean.
 		std::list<Unit *> unitsToRemove;
@@ -738,24 +718,10 @@ void Building::cancelConstruction(void)
 	setMapDiscovered();
 }
 
-void Building::setMapDiscovered(void)
-{
-	assert(type);
-	int vr=type->viewingRange;
-	if (type->canExchange)
-		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionExchange);
-	else if (type->canFeedUnit)
-		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionFood);
-	else
-		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionOther);
-	owner->map->setMapExploredByBuilding(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
-}
-
 void Building::launchDelete(void)
 {
 	if (buildingState==ALIVE)
 	{
-		removeSubscribers();
 		buildingState=WAITING_FOR_DESTRUCTION;
 		maxUnitWorking=0;
 		maxUnitWorkingLocal=0;
@@ -889,7 +855,7 @@ void Building::updateConstructionState(void)
 		{
 			cancelConstruction();
 		}
-		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsInsideSubscribe.size()==0))
+		else if ((unitsWorking.size()==0) && (unitsInside.size()==0))
 		{
 			if (buildingState!=WAITING_FOR_CONSTRUCTION_ROOM)
 			{
@@ -900,7 +866,7 @@ void Building::updateConstructionState(void)
 			}
 		}
 		else if (verbose)
-			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsInsideSubscribe.size());
+			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size());
 	}
 }
 
@@ -1051,8 +1017,6 @@ void Building::updateUnitsWorking(void)
 	}
 }
 
-
-
 void Building::update(void)
 {
 	if (buildingState==DEAD)
@@ -1063,6 +1027,19 @@ void Building::update(void)
 	updateConstructionState();
 	if (type->isBuildingSite)
 		updateBuildingSite();
+}
+
+void Building::setMapDiscovered(void)
+{
+	assert(type);
+	int vr=type->viewingRange;
+	if (type->canExchange)
+		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionExchange);
+	else if (type->canFeedUnit)
+		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionFood);
+	else
+		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionOther);
+	owner->map->setMapExploredByBuilding(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
 }
 
 void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
@@ -1230,20 +1207,6 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 	return owner->map->isHardSpaceForBuilding(x, y, w, h, gid);
 }
 
-
-void Building::step(void)
-{
-	desiredMaxUnitWorking = desiredNumberOfWorkers();
-	// NOTE : Unit needs to update itself when it is in a building
-}
-
-void Building::removeSubscribers(void)
-{
-	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
-		(*it)->standardRandomActivity();
-	unitsInsideSubscribe.clear();
-}
-
 bool Building::fullInside(void)
 {
 	if ((type->canFeedUnit) && (ressources[CORN]<=(int)unitsInside.size()))
@@ -1275,6 +1238,12 @@ int Building::desiredNumberOfWorkers(void)
 	return std::min(user_num, max_considering_ressources);
 }
 
+
+void Building::step(void)
+{
+	desiredMaxUnitWorking = desiredNumberOfWorkers();
+	// NOTE : Unit needs to update itself when it is in a building
+}
 
 
 void Building::subscribeToBringRessourcesStep()
@@ -1579,72 +1548,14 @@ void Building::subscribeForFlagingStep()
 	}
 }
 
-void Building::subscribeForInsideStep()
-{
-	if (buildingState==DEAD)
-		return;
-	
-	if (subscriptionInsideTimer>0)
-		subscriptionInsideTimer++;
 
-	if (fullInside())
-	{
-		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
-			(*it)->standardRandomActivity();
-		unitsInsideSubscribe.clear();
-		return;
-	}
-	
-	if (subscriptionInsideTimer>32)
-	{
-		Sint32 maxRealUnitInside=maxUnitInside;
-		if (type->canFeedUnit)
-			maxRealUnitInside=std::min((Uint32)maxUnitInside,(Uint32)(ressources[CORN]-unitsInside.size()));
-		else
-			maxRealUnitInside=maxUnitInside;
-		while (((Sint32)unitsInside.size()<maxRealUnitInside) && !unitsInsideSubscribe.empty())
-		{
-			int mindist=INT_MAX;
-			Unit *choosen=NULL;
-			Map *map=owner->map;
-			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
-			{
-				Unit *unit=*it;
-				if (unit->performance[FLY])
-				{
-					int dist=map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (dist<mindist)
-					{
-						mindist=dist;
-						choosen=*it;
-					}
-				}
-				else
-				{
-					int dist=map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && (dist<mindist))
-					{
-						mindist=dist;
-						choosen=*it;
-					}
-				}
-			}
-			if (choosen)
-			{
-				unitsInsideSubscribe.remove(choosen);
-				unitsInside.push_back(choosen);
-				choosen->subscriptionSuccess(this, true);
-			}
-			else
-				break;
-		}
-		
-		updateCallLists();
-		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
-			(*it)->standardRandomActivity();
-		unitsInsideSubscribe.clear();
-	}
+void Building::subscribeUnitForInside(Unit* unit)
+{
+	unitsInside.push_back(unit);
+	unit->subscriptionSuccess(this, true);
+	updateCallLists();
 }
+
 
 void Building::swarmStep(void)
 {
@@ -2052,8 +1963,6 @@ void Building::kill(void)
 	}
 	unitsWorking.clear();
 	
-	removeSubscribers();
-	
 	maxUnitWorking=0;
 	maxUnitWorkingLocal=0;
 	maxUnitInside=0;
@@ -2127,6 +2036,22 @@ bool Building::canUnitWorkHere(Unit* unit)
 
 
 
+void Building::removeUnitFromWorking(Unit* unit)
+{
+	unitsWorking.remove(unit);
+	updateCallLists();
+}
+
+
+
+void Building::removeUnitFromInside(Unit* unit)
+{
+	unitsInside.remove(unit);
+	updateCallLists();
+}
+
+
+
 void Building::updateRessourcesPointer()
 {
 	if(!type->useTeamRessources)
@@ -2141,6 +2066,51 @@ void Building::updateRessourcesPointer()
 
 
 
+void Building::addRessourceIntoBuilding(int ressourceType)
+{
+	ressources[ressourceType]+=type->multiplierRessource[ressourceType];
+	//You can not exceed the maximum amount
+	ressources[ressourceType] = std::min(ressources[ressourceType], type->maxRessource[ressourceType]);
+	switch (constructionResultState)
+	{
+		case NO_CONSTRUCTION:
+		break;
+		case NEW_BUILDING:
+		case UPGRADE:
+		{
+			hp+=type->hpInc;
+			hp = std::min(hp, type->hpMax);
+		}
+		break;
+
+		case REPAIR:
+		{
+			int totRessources=0;
+			for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
+				totRessources+=type->maxRessource[i];
+			hp += type->hpMax/totRessources;
+			hp = std::min(hp, type->hpMax);
+		}
+		break;
+
+		default:
+			assert(false);
+	}
+	updateCallLists();
+	updateUnitsWorking();
+}
+
+
+
+void Building::removeRessourceFromBuilding(int ressourceType)
+{
+	ressources[ressourceType]-=type->multiplierRessource[ressourceType];
+	ressources[ressourceType]= std::max(ressources[ressourceType], 0);
+	updateCallLists();
+}
+
+
+
 int Building::getMidX(void)
 {
 	return ((posX-type->decLeft)&owner->map->getMaskW());
@@ -2149,39 +2119,6 @@ int Building::getMidX(void)
 int Building::getMidY(void)
 {
 	return ((posY-type->decTop)&owner->map->getMaskH());
-}
-
-bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
-{
-	for (int xi=this->posX; xi<this->posX+type->width; xi++)
-		for (int yi=this->posY; yi<this->posY+type->height; yi++)
-			if (owner->map->isFreeForAirUnit(xi, yi))
-			{
-				*posX=xi;
-				*posY=yi;
-				int tdx=xi-getMidX();
-				int tdy=yi-getMidY();
-				if (tdx<0)
-					*dx=-1;
-				else if (tdx==0)
-					*dx=0;
-				else
-					*dx=1;
-				
-				if (tdy<0)
-					*dy=-1;
-				else if (tdy==0)
-					*dy=0;
-				else
-					*dy=1;
-				return true;
-			}
-	return false;
-}
-
-int Building::getLongLevel(void)
-{
-	return ((type->level)<<1)+1-type->isBuildingSite;
 }
 
 bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim)
@@ -2329,6 +2266,39 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	return false;
 }
 
+bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
+{
+	for (int xi=this->posX; xi<this->posX+type->width; xi++)
+		for (int yi=this->posY; yi<this->posY+type->height; yi++)
+			if (owner->map->isFreeForAirUnit(xi, yi))
+			{
+				*posX=xi;
+				*posY=yi;
+				int tdx=xi-getMidX();
+				int tdy=yi-getMidY();
+				if (tdx<0)
+					*dx=-1;
+				else if (tdx==0)
+					*dx=0;
+				else
+					*dx=1;
+				
+				if (tdy<0)
+					*dy=-1;
+				else if (tdy==0)
+					*dy=0;
+				else
+					*dy=1;
+				return true;
+			}
+	return false;
+}
+
+int Building::getLongLevel(void)
+{
+	return ((type->level)<<1)+1-type->isBuildingSite;
+}
+
 void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
 {
 	*goingTo = 0;
@@ -2366,11 +2336,9 @@ Uint32 Building::eatOnce(Uint32 *mask)
 	return fruitCount;
 }
 
-int Building::availableHappynessLevel(bool guarantee)
+int Building::availableHappynessLevel()
 {
 	int inside = (int)unitsInside.size();
-	if (guarantee)
-		inside += unitsInsideSubscribe.size();
 	if (ressources[CORN] <= inside)
 		return 0;
 	int happyness = 1;
@@ -2413,15 +2381,6 @@ void Building::integrity()
 	assert(unitsInside.size()>=0);
 	assert(unitsInside.size()<=1024);
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
-	{
-		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		assert((*it)->attachedBuilding==this);
-	}
-
-	assert(unitsInsideSubscribe.size()>=0);
-	assert(unitsInsideSubscribe.size()<=1024);
-	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 	{
 		assert(*it);
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);

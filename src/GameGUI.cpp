@@ -958,21 +958,20 @@ void GameGUI::processEvent(SDL_Event *event)
 				{
 					Building* selBuild=selection.building;
 					assert (selBuild);
-					selBuild->verbose=(selBuild->verbose+1)%5;
-					printf("building gid=(%d)\n", selBuild->gid);
-					if (selBuild->verbose==0)
-						printf(" verbose off\n");
-					else if (selBuild->verbose==1 || selBuild->verbose==2)
-						printf(" verbose global [%d]\n", selBuild->verbose&1);
-					else if (selBuild->verbose==3 || selBuild->verbose==4)
-						printf(" verbose local [%d]\n", selBuild->verbose&1);
-					else
-						assert(false);
-					printf(" pos=(%d, %d)\n", selBuild->posX, selBuild->posY);
-					printf(" dirtyLocalGradient=[%d, %d]\n", selBuild->dirtyLocalGradient[0], selBuild->dirtyLocalGradient[1]);
-					printf(" globalGradient=[%p, %p]\n", selBuild->globalGradient[0], selBuild->globalGradient[1]);
-					printf(" locked=[%d, %d]\n", selBuild->locked[0], selBuild->locked[1]);
-					printf(" unitsInsideSubscribe=%d,\n", static_cast<unsigned>(selBuild->unitsInsideSubscribe.size()));
+//					selBuild->verbose=(selBuild->verbose+1)%5;
+//					printf("building gid=(%d)\n", selBuild->gid);
+//					if (selBuild->verbose==0)
+//						printf(" verbose off\n");
+//					else if (selBuild->verbose==1 || selBuild->verbose==2)
+//						printf(" verbose global [%d]\n", selBuild->verbose&1);
+//					else if (selBuild->verbose==3 || selBuild->verbose==4)
+//						printf(" verbose local [%d]\n", selBuild->verbose&1);
+//					else
+//						assert(false);
+//					printf(" pos=(%d, %d)\n", selBuild->posX, selBuild->posY);
+//					printf(" dirtyLocalGradient=[%d, %d]\n", selBuild->dirtyLocalGradient[0], selBuild->dirtyLocalGradient[1]);
+//					printf(" globalGradient=[%p, %p]\n", selBuild->globalGradient[0], selBuild->globalGradient[1]);
+//					printf(" locked=[%d, %d]\n", selBuild->locked[0], selBuild->locked[1]);
 					
 				}
 				else
@@ -2023,7 +2022,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		else
 			printf(" attachedBuilding NULL\n");
 		printf(" destinationPurprose=%d\n", selUnit->destinationPurprose);
-		printf(" subscribed=%d\n", selUnit->subscribed);
 		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
 	}
 	else if (displayMode==BUILDING_VIEW)
