@@ -1509,6 +1509,17 @@ bool Game::checkHardRoomForBuilding(int x, int y, const BuildingType *bt)
 	return map.isHardSpaceForBuilding(x, y, w, h);
 }
 
+
+
+Unit* Game::getUnit(int guid)
+{
+	if(guid == NOGUID)
+		return NULL;
+	return teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
+}
+
+
+
 void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
 {
 	assert(maxLength>=0);

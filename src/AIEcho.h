@@ -136,7 +136,7 @@ namespace AIEcho
 		position(int x, int y) : x(x), y(y) {}
 		int x;
 		int y;
-		bool operator<(const position& rhs)
+		bool operator<(const position& rhs) const
 		{
 			if(x!=rhs.x)
 				return x<rhs.x;

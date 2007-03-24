@@ -47,6 +47,7 @@ private:
 		PlacementSize,
 	};
 
+
 	///This function is called at the very begginning of the game,
 	///to initialize the existing buildings with the right amount of units
 	void initialize(AIEcho::Echo& echo);
@@ -167,7 +168,6 @@ private:
 	int target;
 	///This integer stores whether a building is being dug out at the current moment
 	bool is_digging_out;
-
 
 	///This function updates the restricted areas for farming
 	void update_farming(AIEcho::Echo& echo);

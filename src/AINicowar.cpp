@@ -22,6 +22,7 @@
 #include "boost/lexical_cast.hpp"
 #include "Utilities.h"
 #include "Game.h"
+#include "Unit.h"
 
 using namespace AIEcho;
 using namespace AIEcho::Gradients;
@@ -802,12 +803,12 @@ void NewNicowar::manage_inn(Echo& echo, int id)
 	}
 	if(level==2 && assigned!=3)
 	{
-		ManagementOrder* mo_assign=new AssignWorkers(2, id);
+		ManagementOrder* mo_assign=new AssignWorkers(3, id);
 		echo.add_management_order(mo_assign);
 	}
 	if(level==3 && assigned!=5)
 	{
-		ManagementOrder* mo_assign=new AssignWorkers(3, id);
+		ManagementOrder* mo_assign=new AssignWorkers(5, id);
 		echo.add_management_order(mo_assign);
 	}
 }
@@ -1037,7 +1038,6 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 	///Level one upgrades
 	if(num_upgrading_level1 < num_to_upgrade_level1)
 	{
-		std::cout<<"starting upgrade "<<num_upgrading_level1<<std::endl;
 		int building_type=choose_building_upgrade_type_level1(echo);
 		if(building_type!=-1)
 		{
@@ -1162,7 +1162,6 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 {
 	if(target==-1 || !echo.player->game->teams[target]->isAlive)
 	{
-		std::cout<<"changing targets"<<std::endl;
 		std::vector<int> available_targets;		
 		for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 		{
@@ -1213,7 +1212,7 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 	gi_pathfind.add_obstacle(new Entities::Ressource(STONE));
 	Gradient& gradient_pathfind=echo.get_gradient_manager().get_gradient(gi_pathfind);
 
-	///Next, find the closest point manhattan distance wise, to that building that is accessible
+	///Next, find the closest point manhattan distance wise, to the building that is accessible
 	MapInfo mi(echo);
 	int closest_x=0;
 	int closest_y=0;
@@ -1236,7 +1235,7 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 	}
 
 	///Next, follow a path arround stone between the closest point and the buildings position, 
-	///placing Clearing flags nas you go
+	///placing Clearing flags as you go
 
 	int xpos=closest_x;
 	int ypos=closest_y;
@@ -1260,53 +1259,52 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 		int cur_dist=gradient_pathfind.get_height(xpos, ypos);
 		int lowest_entity=cur_dist+1;
 
-
 		//Test diagnols first, then the horizontals and verticals.
-		if(gradient_pathfind.get_height(lx, uy) < lowest_entity)
+		if(gradient_pathfind.get_height(lx, uy) < lowest_entity && gradient_pathfind.get_height(lx, uy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(lx, uy);
 			xpos=lx;
 			ypos=uy;
 		}
-		if(gradient_pathfind.get_height(rx, uy) < lowest_entity)
+		if(gradient_pathfind.get_height(rx, uy) < lowest_entity && gradient_pathfind.get_height(rx, uy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(rx, uy);
 			xpos=rx;
 			ypos=uy;
 		}
-		if(gradient_pathfind.get_height(lx, dy) < lowest_entity)
+		if(gradient_pathfind.get_height(lx, dy) < lowest_entity && gradient_pathfind.get_height(lx, dy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(lx, dy);
 			xpos=lx;
 			ypos=dy;
 		}
-		if(gradient_pathfind.get_height(rx, dy) < lowest_entity)
+		if(gradient_pathfind.get_height(rx, dy) < lowest_entity && gradient_pathfind.get_height(rx, dy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(rx, dy);
 			xpos=rx;
 			ypos=dy;
 		}
 
-		if(gradient_pathfind.get_height(xpos, uy) < lowest_entity)
+		if(gradient_pathfind.get_height(xpos, uy) < lowest_entity && gradient_pathfind.get_height(xpos, uy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(xpos, uy);
 			xpos=xpos;
 			ypos=uy;
 		}
 
-		if(gradient_pathfind.get_height(lx, ypos) < lowest_entity)
+		if(gradient_pathfind.get_height(lx, ypos) < lowest_entity && gradient_pathfind.get_height(lx, ypos)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(lx, ypos);
 			xpos=lx;
 			ypos=ypos;
 		}
-		if(gradient_pathfind.get_height(rx, ypos) < lowest_entity)
+		if(gradient_pathfind.get_height(rx, ypos) < lowest_entity && gradient_pathfind.get_height(rx, ypos)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(rx, ypos);
 			xpos=rx;
 			ypos=ypos;
 		}
-		if(gradient_pathfind.get_height(xpos, dy) < lowest_entity)
+		if(gradient_pathfind.get_height(xpos, dy) < lowest_entity && gradient_pathfind.get_height(xpos, dy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(xpos, dy);
 			xpos=xpos;
@@ -1321,7 +1319,7 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 		{
 			flag_dist_count=0;
 			//The main order for the clearing flag
-			BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::CLEARING_FLAG, 5);
+			BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::CLEARING_FLAG, 10);
 			//Place it on the current point
 			bo_flag->add_constraint(new Construction::SinglePosition(xpos, ypos));
 			//Add the building order to the list of orders
@@ -1424,9 +1422,6 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		ManagementOrder* mo_completion_orange=new ChangeFlagSize(4, id_orange);
 		echo.add_management_order(mo_completion_orange);
 
-
-
-
 		//The main order for the exploration flag on prunes
 		BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
 		//You want the closest fruit to your settlement possible
@@ -1439,6 +1434,8 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		unsigned int id_prune=echo.add_building_order(bo_prune);
 		ManagementOrder* mo_completion_prune=new ChangeFlagSize(4, id_prune);
 		echo.add_management_order(mo_completion_prune);
+
+
 
 		exploration_on_fruit=true;
 	}
