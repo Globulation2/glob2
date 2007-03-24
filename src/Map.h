@@ -57,6 +57,9 @@ struct Case
 	Uint16 airUnit;
 
 	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
+	///The difference between forbidden zone and hidden forbidden zone is that hidden forbidden zone
+	///is put there by the game engine and is not draw to the screen.
+	Uint32 hiddenForbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	Uint32 guardArea; // This is a mask, one bit by team, 1=guard area, 0=normal
 	Uint32 clearArea; // This is a mask, one bit by team, 1=clear area, 0=normal
 
@@ -122,6 +125,26 @@ public:
 	int getSectorW(void) const { return wSector; }
 	//! Return the number of sectors on y, which corresponds to the sector map height
 	int getSectorH(void) const { return hSector; }
+
+	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
+	int normalizeX(int x)
+	{
+		if(x>=getW())
+			return x-getW();
+		if(x<0)
+			return x+getW();
+		return x;
+	}
+	
+	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
+	int normalizeY(int y)
+	{
+		if(y>=getH())
+			return y-getH();
+		if(y<0)
+			return y+getH();
+		return y;
+	}
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
 	void setMapDiscovered(int x, int y, Uint32 sharedVision)
@@ -291,9 +314,10 @@ public:
 		return (cases+pos)->ressource;
 	}
 	
+	//Returns the combined forbidden and hidden foribidden masks
 	Uint32 getForbidden(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden;
+		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden | cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden;
 	}
 	
 	Uint8 getExplored(int x, int y, int team)
@@ -314,6 +338,16 @@ public:
 	void setForbidden(int x, int y, Uint32 forbidden)
 	{
 		cases[((y&hMask)<<wDec)+(x&wMask)].forbidden = forbidden;
+	}
+	
+	void addHiddenForbidden(int x, int y, Uint32 teamNum)
+	{
+		cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden |= (1<<teamNum);
+	}
+	void removeHiddenForbidden(int x, int y, Uint32 teamNum)
+	{
+		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
+		c.hiddenForbidden ^= c.hiddenForbidden & (1<<teamNum);
 	}
 	
 	bool isWater(int x, int y)

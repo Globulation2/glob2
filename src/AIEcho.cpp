@@ -1428,7 +1428,7 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 					for(int y2=0; y2<type->height && passes; ++y2)
 						if((x2==0 || y2==0 || x2==type->width-1 || y2==type->height-1))
 						{
-							if(!(*i)->passes_constraint(echo, x+x2, y+y2))
+							if(!(*i)->passes_constraint(echo, map->normalizeX(x+x2), map->normalizeY(y+y2)))
 							{
 									passes=false;
 							}
@@ -1445,10 +1445,10 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 					passes=false;
 					break;
 				}
-				score+=(*i)->calculate_constraint(echo, x, y);
-				score+=(*i)->calculate_constraint(echo, x+type->width-1, y+type->height-1);
-				score+=(*i)->calculate_constraint(echo, x, y+type->height-1);
-				score+=(*i)->calculate_constraint(echo, x+type->width-1, y);
+				score+=(*i)->calculate_constraint(echo, map->normalizeX(x), map->normalizeY(y));
+				score+=(*i)->calculate_constraint(echo, map->normalizeX(x+type->width-1), map->normalizeY(y+type->height-1));
+				score+=(*i)->calculate_constraint(echo, map->normalizeX(x), map->normalizeY(y+type->height-1));
+				score+=(*i)->calculate_constraint(echo, map->normalizeX(x+type->width-1), map->normalizeY(y));
 			}
 			if(!passes)
 				continue;

@@ -1051,7 +1051,6 @@ void Unit::handleDisplacement(void)
 				
 				if (!loopMove && !exchangeReady)
 				{
-					attachedBuilding->update();
 					//NOTE: if attachedBuilding has become NULL; it's beacause the building doesn't need me anymore.
 					if (!attachedBuilding)
 					{
@@ -1067,6 +1066,7 @@ void Unit::handleDisplacement(void)
 						///Find a ressource that the building wants and a location to get it from
 						///The location may be a market, or the harvesting the ressource from the
 						///map.
+						attachedBuilding->update();
 						int needs[MAX_NB_RESSOURCES];
 						attachedBuilding->wishedRessources(needs);
 						int teamNumber=owner->teamNumber;
@@ -1892,6 +1892,10 @@ void Unit::handleAction(void)
 			assert(!performance[FLY]);
 			owner->map->setGroundUnit(posX, posY, NOGUID);
 			gotoGroundTarget();
+			if(dx==0 && dy==0)
+			owner->map->addHiddenForbidden(posX, posY, owner->teamNumber);
+			else
+				owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
 			selectPreferedGroundMovement();
@@ -1926,6 +1930,12 @@ void Unit::handleAction(void)
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 			
 			directionFromDxDy();
+			
+			if(dx==0 && dy==0)
+				owner->map->addHiddenForbidden(posX, posY, owner->teamNumber);
+			else
+				owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
+				
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
 			

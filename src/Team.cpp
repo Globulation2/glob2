@@ -926,6 +926,8 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
+			lhs->computeWishedRessources();
+			rhs->computeWishedRessources();
 			int ratio_lhs_ressource = lhs->totalWishedRessource();
 			int ratio_rhs_ressource = rhs->totalWishedRessource();
 			return ratio_lhs_ressource > ratio_rhs_ressource;

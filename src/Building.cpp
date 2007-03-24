@@ -656,13 +656,15 @@ void Building::cancelConstruction(void)
 		// when the building upgrade" was already canceled.
 		return;
 	}
+	
+	removeForbiddenZoneFromUpgradeArea();
+
 	constructionResultState=NO_CONSTRUCTION;
 	
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
-	
 	owner->removeFromAbilitiesLists(this);
 	owner->prestige-=type->prestige;
 	typeNum=recoverTypeNum;
@@ -752,6 +754,7 @@ void Building::updateCallLists(void)
 {
 	if (buildingState==DEAD)
 		return;
+	desiredMaxUnitWorking = desiredNumberOfWorkers();
 	bool ressourceFull=isRessourceFull();
 	if (ressourceFull && !(type->canExchange && owner->openMarket()))
 	{
@@ -861,6 +864,7 @@ void Building::updateConstructionState(void)
 			{
 				buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
+				addForbiddenZoneToUpgradeArea();
 				if (verbose)
 					printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
 			}
@@ -880,6 +884,8 @@ void Building::updateBuildingSite(void)
 		for(int i=0; i<MAX_RESSOURCES; i++)
 			ressources[i]-=type->maxRessource[i];
 
+		if(constructionResultState!=NEW_BUILDING)
+			removeForbiddenZoneFromUpgradeArea();
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;
 		type=globalContainer->buildingsTypes.get(type->nextLevel);
@@ -1178,6 +1184,66 @@ bool Building::tryToBuildingSiteRoom(void)
 	}
 	return isRoom;
 }
+
+
+
+void Building::addForbiddenZoneToUpgradeArea(void)
+{
+	int midPosX=posX-type->decLeft;
+	int midPosY=posY-type->decTop;
+
+	int targetLevelTypeNum=-1;
+	if (constructionResultState==UPGRADE)
+		targetLevelTypeNum=type->nextLevel;
+	else if (constructionResultState==REPAIR)
+		targetLevelTypeNum=type->prevLevel;
+	else
+		assert(false);
+
+	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
+	int newPosX=midPosX+targetBt->decLeft;
+	int newPosY=midPosY+targetBt->decTop;
+	int newWidth=targetBt->width;
+	int newHeight=targetBt->height;
+	for(int nx=0; nx<newWidth; ++nx)
+	{
+		for(int ny=0; ny<newHeight; ++ny)
+		{
+			owner->map->addHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
+		}
+	}
+}
+
+
+
+void Building::removeForbiddenZoneFromUpgradeArea(void)
+{
+	int midPosX=posX-type->decLeft;
+	int midPosY=posY-type->decTop;
+
+	int targetLevelTypeNum=-1;
+	if (constructionResultState==UPGRADE)
+		targetLevelTypeNum=type->nextLevel;
+	else if (constructionResultState==REPAIR)
+		targetLevelTypeNum=type->prevLevel;
+	else
+		assert(false);
+
+	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
+	int newPosX=midPosX+targetBt->decLeft;
+	int newPosY=midPosY+targetBt->decTop;
+	int newWidth=targetBt->width;
+	int newHeight=targetBt->height;
+	for(int nx=0; nx<newWidth; ++nx)
+	{
+		for(int ny=0; ny<newHeight; ++ny)
+		{
+			owner->map->removeHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
+		}
+	}
+}
+
+
 
 bool Building::isHardSpaceForBuildingSite(void)
 {
@@ -2096,8 +2162,7 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 		default:
 			assert(false);
 	}
-	updateCallLists();
-	updateUnitsWorking();
+	update();
 }
 
 

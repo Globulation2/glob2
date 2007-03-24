@@ -120,6 +120,14 @@ public:
 	///Attempts to find room for a building site. If room is found, the building site is established,
 	///and it returns true.
 	bool tryToBuildingSiteRoom(void);
+
+	///This function puts hidden forbidden area arround a new building site. This dispereses units so that
+	///the building isn't waiting for space when there are lots of units.
+	void addForbiddenZoneToUpgradeArea(void);
+	///This function removes the hidden forbidden area placed by addForbiddenToUpgradeArea
+	///It must be done before any type or position state is changed.
+	void removeForbiddenZoneFromUpgradeArea(void);
+	
 	///Checks if there is hard space for a building. Non hard space is any space occupied by something that
 	///won't move. Units will move, so they are ignored. If there is space for the building site, then this
 	///returns true.
@@ -173,9 +181,9 @@ public:
 	
 	/// This function is called when a Unit places a ressource into the building.
 	void addRessourceIntoBuilding(int ressourceType);
-	
 	/// This function is called when a Unit takes a ressource from a building, such as a market
 	void removeRessourceFromBuilding(int ressourceType);
+
 	///Gets the middle x cordinate relative to posX
 	int getMidX(void);
 	///Gets the middle y cordinate relative to posY
@@ -240,6 +248,7 @@ public:
 	Sint32 subscriptionWorkingTimer;
 	Sint32 maxUnitInside;
 	std::list<Unit *> unitsInside;
+	Sint32 clearingFlagUpdateTimer;
 	
 	// optimisation and consistency
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}

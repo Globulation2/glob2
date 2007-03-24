@@ -25,188 +25,189 @@ glob2_static_lib =
 endif
 
 glob2_SOURCES=\
-IntBuildingType.h\
-IntBuildingType.cpp\
-AI.cpp \
-AI.h\
-AIOldNicowar.cpp \
-AIOldNicowar.h \
-AINicowar.cpp \
-AINicowar.h \
-AIImplementation.h\
-AIEcho.h\
-AIEcho.cpp\
-AINull.h\
-AINull.cpp\
-AINumbi.h\
-AINumbi.cpp\
-AICastor.h\
-AICastor.cpp\
-AIToubib.h\
-AIToubib.cpp\
-AIWarrush.h\
-AIWarrush.cpp\
-Building.cpp\
-Building.h\
-BuildingType.cpp\
-BuildingType.h\
-Bullet.h\
-Bullet.cpp\
-Campaign.h\
-Campaign.cpp\
-CampaignSelectorScreen.h\
-CampaignSelectorScreen.cpp\
-CampaignEditor.h\
-CampaignEditor.cpp\
-CampaignMenuScreen.h\
-CampaignMenuScreen.cpp\
-CVS\
-Engine.cpp\
-Engine.h\
-EntityType.cpp\
-EntityType.h\
-Fatal.cpp\
-Fatal.h\
-GUIGlob2FileList.h \
-GUIGlob2FileList.cpp \
-GUIMapPreview.h \
-GUIMapPreview.cpp \
-Game.cpp\
-Game.h\
-GameGUI.cpp\
-GameGUI.h\
-GameGUIDialog.cpp\
-GameGUIDialog.h\
-GameGUILoadSave.cpp\
-GameGUILoadSave.h\
-Glob2.cpp\
-Glob2.h\
-GlobalContainer.cpp\
-GlobalContainer.h\
-Settings.cpp\
-Settings.h\
-Header.h\
-Makefile.am\
-Map.cpp\
-Map.h\
-MapGenerator.cpp\
-MapEdit.cpp\
-MapEdit.h\
-NetConsts.h\
-NetGame.cpp\
-NetGame.h\
-Order.cpp\
-Order.h\
-Player.cpp\
-Player.h\
-SessionConnection.cpp\
-SessionConnection.h\
-Race.cpp\
-Race.h\
-Ressource.h\
-Ressource.cpp\
-Sector.h\
-Sector.cpp\
-Session.cpp\
-Session.h\
-SGSL.cpp \
-SGSL.h \
-SoundMixer.cpp \
-SoundMixer.h \
-Team.cpp\
-Team.h\
-TeamStat.h\
-TeamStat.cpp\
-Unit.cpp\
-Unit.h\
-UnitType.cpp\
-UnitType.h\
-Utilities.cpp\
-Utilities.h \
-ChooseMapScreen.h \
-ChooseMapScreen.cpp \
-CustomGameScreen.h \
-CustomGameScreen.cpp \
-MainMenuScreen.h \
-MainMenuScreen.cpp \
-CreditScreen.h \
-CreditScreen.cpp \
-CampaignScreen.h \
-CampaignScreen.cpp \
-MultiplayersOfferScreen.h\
-MultiplayersOfferScreen.cpp \
-YOGScreen.h \
-YOGScreen.cpp \
-SettingsScreen.h \
-SettingsScreen.cpp \
-MultiplayersHostScreen.h \
-MultiplayersHostScreen.cpp \
-MultiplayersHost.h \
-MultiplayersHost.cpp \
-MultiplayersJoinScreen.h \
-MultiplayersJoinScreen.cpp \
-MultiplayersJoin.h \
-MultiplayersJoin.cpp \
-MultiplayersConnectedScreen.h \
-MultiplayersConnectedScreen.cpp \
-MultiplayersChooseMapScreen.h \
-MultiplayersChooseMapScreen.cpp \
-MultiplayersCrossConnectable.h \
-MultiplayersCrossConnectable.cpp \
-NonANSICStdWrapper.h \
-NewMapScreen.h \
-NewMapScreen.cpp \
-YOG.h \
-YOG.cpp  \
-MapGenerationDescriptor.h \
-MapGenerationDescriptor.cpp \
-LogFileManager.h \
-LogFileManager.cpp \
-YOGPreScreen.h \
-YOGPreScreen.cpp \
-ScriptEditorScreen.h \
-ScriptEditorScreen.cpp \
-EndGameScreen.h \
-EndGameScreen.cpp \
-Marshaling.h \
-YOGConsts.h \
-NetDefine.h \
-Version.h \
-RessourceType.h \
-TerrainType.h \
-UnitConsts.h \
-ConfigFiles.h \
-EntitiesTypes.h \
-BuildingsTypes.h \
-BuildingsTypes.cpp \
-RessourcesTypes.h \
-RessourcesTypes.cpp \
-GameUtilities.h \
-GameUtilities.cpp \
-BitArray.h \
-BitArray.cpp \
-Brush.h \
-Brush.cpp \
-IRC.h \
-IRC.cpp \
-VoiceRecorder.h \
-VoiceRecorder.cpp \
-PerlinNoise.h \
-PerlinNoise.cpp\
-Glob2Screen.h \
-Glob2Screen.cpp \
-Glob2Style.h \
-Glob2Style.cpp\
-UnitSkin.h\
-UnitSkin.cpp\
-UnitsSkins.h\
-UnitsSkins.cpp\
-UnitEditorScreen.h\
-UnitEditorScreen.cpp\
-HeightMapGenerator.h\
-HeightMapGenerator.cpp\
-DynamicClouds.h\
-DynamicClouds.cpp
+AI.cpp  \
+AI.h \
+AICastor.cpp \
+AICastor.h \
+AIEcho.cpp \
+AIEcho.h \
+AIImplementation.h \
+AINicowar.cpp  \
+AINicowar.h  \
+AINull.cpp \
+AINull.h \
+AINumbi.cpp \
+AINumbi.h \
+AIOldNicowar.cpp  \
+AIOldNicowar.h  \
+AIToubib.cpp \
+AIToubib.h \
+AIWarrush.cpp \
+AIWarrush.h \
+BitArray.cpp  \
+BitArray.h  \
+Brush.cpp  \
+Brush.h  \
+Building.cpp \
+Building.h \
+BuildingType.cpp \
+BuildingType.h \
+BuildingsTypes.cpp  \
+BuildingsTypes.h  \
+Bullet.cpp \
+Bullet.h \
+CVS \
+Campaign.cpp \
+Campaign.h \
+CampaignEditor.cpp \
+CampaignEditor.h \
+CampaignMenuScreen.cpp \
+CampaignMenuScreen.h \
+CampaignScreen.cpp  \
+CampaignScreen.h  \
+CampaignSelectorScreen.cpp \
+CampaignSelectorScreen.h \
+ChooseMapScreen.cpp  \
+ChooseMapScreen.h  \
+ConfigFiles.h  \
+CreditScreen.cpp  \
+CreditScreen.h  \
+CustomGameScreen.cpp  \
+CustomGameScreen.h  \
+DynamicClouds.cpp \
+DynamicClouds.h \
+EndGameScreen.cpp  \
+EndGameScreen.h  \
+Engine.cpp \
+Engine.h \
+EntitiesTypes.h  \
+EntityType.cpp \
+EntityType.h \
+Fatal.cpp \
+Fatal.h \
+GUIGlob2FileList.cpp  \
+GUIGlob2FileList.h  \
+GUIMapPreview.cpp  \
+GUIMapPreview.h  \
+Game.cpp \
+Game.h \
+GameGUI.cpp \
+GameGUI.h \
+GameGUIDialog.cpp \
+GameGUIDialog.h \
+GameGUILoadSave.cpp \
+GameGUILoadSave.h \
+GameUtilities.cpp  \
+GameUtilities.h  \
+Glob2.cpp \
+Glob2.h \
+Glob2Screen.cpp  \
+Glob2Screen.h  \
+Glob2Style.cpp \
+Glob2Style.h  \
+GlobalContainer.cpp \
+GlobalContainer.h \
+Header.h \
+HeightMapGenerator.cpp \
+HeightMapGenerator.h \
+IRC.cpp  \
+IRC.h  \
+IntBuildingType.cpp \
+IntBuildingType.h \
+LogFileManager.cpp  \
+LogFileManager.h  \
+MainMenuScreen.cpp  \
+MainMenuScreen.h  \
+Makefile.am \
+Map.cpp \
+Map.h \
+MapEdit.cpp \
+MapEdit.h \
+MapGenerationDescriptor.cpp  \
+MapGenerationDescriptor.h  \
+MapGenerator.cpp \
+Marshaling.h  \
+MultiplayersChooseMapScreen.cpp  \
+MultiplayersChooseMapScreen.h  \
+MultiplayersConnectedScreen.cpp  \
+MultiplayersConnectedScreen.h  \
+MultiplayersCrossConnectable.cpp  \
+MultiplayersCrossConnectable.h  \
+MultiplayersHost.cpp  \
+MultiplayersHost.h  \
+MultiplayersHostScreen.cpp  \
+MultiplayersHostScreen.h  \
+MultiplayersJoin.cpp  \
+MultiplayersJoin.h  \
+MultiplayersJoinScreen.cpp  \
+MultiplayersJoinScreen.h  \
+MultiplayersOfferScreen.cpp  \
+MultiplayersOfferScreen.h \
+NetConsts.h \
+NetDefine.h  \
+NetGame.cpp \
+NetGame.h \
+NewMapScreen.cpp  \
+NewMapScreen.h  \
+NonANSICStdWrapper.h  \
+Order.cpp \
+Order.h \
+PerlinNoise.cpp \
+PerlinNoise.h  \
+Player.cpp \
+Player.h \
+Race.cpp \
+Race.h \
+Ressource.cpp \
+Ressource.h \
+RessourceType.h  \
+RessourcesTypes.cpp  \
+RessourcesTypes.h  \
+SGSL.cpp  \
+SGSL.h  \
+ScriptEditorScreen.cpp  \
+ScriptEditorScreen.h  \
+Sector.cpp \
+Sector.h \
+Session.cpp \
+Session.h \
+SessionConnection.cpp \
+SessionConnection.h \
+Settings.cpp \
+Settings.h \
+SettingsScreen.cpp  \
+SettingsScreen.h  \
+SoundMixer.cpp  \
+SoundMixer.h  \
+Team.cpp \
+Team.h \
+TeamStat.cpp \
+TeamStat.h \
+TerrainType.h  \
+Unit.cpp \
+Unit.h \
+UnitConsts.h  \
+UnitEditorScreen.cpp \
+UnitEditorScreen.h \
+UnitSkin.cpp \
+UnitSkin.h \
+UnitType.cpp \
+UnitType.h \
+UnitsSkins.cpp \
+UnitsSkins.h \
+Utilities.cpp \
+Utilities.h  \
+Version.h  \
+VoiceRecorder.cpp  \
+VoiceRecorder.h  \
+YOG.cpp   \
+YOG.h  \
+YOGConsts.h  \
+YOGPreScreen.cpp  \
+YOGPreScreen.h  \
+YOGScreen.cpp  \
+YOGScreen.h 
+
 
 if LINKSTATIC
 glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)

@@ -937,6 +937,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initCase.groundUnit = NOGUID;
 	initCase.airUnit = NOGUID;
 	initCase.forbidden = 0;
+	initCase.hiddenForbidden = 0;
 	initCase.guardArea = 0;
 	initCase.clearArea = 0;
 	initCase.scriptAreas = 0;
@@ -1073,6 +1074,10 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 		cases[i].airUnit = stream->readUint16("airUnit");
 
 		cases[i].forbidden = stream->readUint32("forbidden");
+		if(sessionGame->versionMinor >= 56)
+			cases[i].hiddenForbidden = stream->readUint32("hiddenForbidden");
+		else
+			cases[i].hiddenForbidden = 0;
 		
 		if (sessionGame->versionMinor >= 36)
 			cases[i].guardArea = stream->readUint32("guardArea");
@@ -1202,6 +1207,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint16(cases[i].groundUnit, "groundUnit");
 		stream->writeUint16(cases[i].airUnit, "airUnit");
 		stream->writeUint32(cases[i].forbidden, "forbidden");
+		stream->writeUint32(cases[i].hiddenForbidden, "hiddenForbidden");
 		stream->writeUint32(cases[i].guardArea, "guardArea");
 		stream->writeUint32(cases[i].clearArea, "clearArea");
 		stream->writeUint16(cases[i].scriptAreas, "scriptAreas");
@@ -2870,7 +2876,7 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 	for (size_t i=0; i<size; i++)
 	{
 		Case c=cases[i];
-		if (c.forbidden&teamMask)
+		if ((c.forbidden|c.hiddenForbidden)&teamMask)
 			gradient[i]=0;
 		else if (c.ressource.type==NO_RES_TYPE)
 		{
@@ -3229,7 +3235,7 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 		printf("pathfindRandom()\n");
 	int x=unit->posX;
 	int y=unit->posY;
-	if (cases[x+(y<<wDec)].forbidden&unit->owner->me)
+	if ((cases[x+(y<<wDec)].forbidden|cases[x+(y<<wDec)].hiddenForbidden)&unit->owner->me)
 	{
 		if (verbose)
 			printf(" forbidden\n");
@@ -3372,7 +3378,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					gradient[addrl]=0;
 				else if (c.building!=NOGBID && c.building!=bgid)
 					gradient[addrl]=0;
-				else if (c.forbidden&teamMask)
+				else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
 					gradient[addrl]=0;
 				else if (!canSwim && isWater(xg, yg))
 					gradient[addrl]=0;
@@ -3655,7 +3661,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			{
 				if (c.ressource.type!=NO_RES_TYPE)
 					gradient[wyx] = 0;
-				else if (c.forbidden&teamMask)
+				else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
 					gradient[wyx] = 0;
 				else if (!canSwim && isWater(x, y))
 					gradient[wyx] = 0;
@@ -3801,7 +3807,7 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 				}
 				else if (c.building!=NOGBID)
 					gradient[addrl]=0;
-				else if (c.forbidden&teamMask)
+				else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
 					gradient[addrl]=0;
 				else if (!canSwim && isWater(xg, yg))
 					gradient[addrl]=0;
@@ -4168,7 +4174,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	assert(x>=0);
 	assert(y>=0);
 	Uint32 teamMask=building->owner->me;
-	if (((cases[x+y*w].forbidden) & teamMask)!=0)
+	if (((cases[x+y*w].forbidden | cases[x+y*w].hiddenForbidden) & teamMask)!=0)
 	{
 		int teamNumber=building->owner->teamNumber;
 		if (verbose)
@@ -4660,7 +4666,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 		{
 			gradient[i] = 0;
 		}
-		else if (c.forbidden & teamMask)
+		else if ((c.forbidden | c.hiddenForbidden) & teamMask)
 		{
 			// we compute the 8 addresses around i:
 			// (a stands for address, u for up, d for down, l for left, r for right, m for middle)
@@ -4673,21 +4679,21 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			size_t adl = (i - 1 + w) & (size - 1);
 			size_t aml = (i - 1    ) & (size - 1);
 			
-			if( ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aul].forbidden&teamMask)
+			if( ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aul].forbidden | cases[aul].hiddenForbidden) &teamMask)
 				|| (cases[aul].building!=NOGBID) || (!canSwim && isWater(aul))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aum].forbidden&teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aum].forbidden | cases[aum].hiddenForbidden) &teamMask)
 			    || (cases[aum].building!=NOGBID) || (!canSwim && isWater(aum))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aur].forbidden&teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aur].forbidden | cases[aur].hiddenForbidden) &teamMask)
 			    || (cases[aur].building!=NOGBID) || (!canSwim && isWater(aur))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[amr].forbidden&teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[amr].forbidden | cases[amr].hiddenForbidden) &teamMask)
 			    || (cases[amr].building!=NOGBID) || (!canSwim && isWater(amr))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[adr].forbidden&teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adr].forbidden | cases[adr].hiddenForbidden) &teamMask)
 			    || (cases[adr].building!=NOGBID) || (!canSwim && isWater(adr))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[adm].forbidden&teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adm].forbidden | cases[adm].hiddenForbidden) &teamMask)
 			    || (cases[adm].building!=NOGBID) || (!canSwim && isWater(adm))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[adl].forbidden&teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adl].forbidden | cases[adl].hiddenForbidden) &teamMask)
 			    || (cases[adl].building!=NOGBID) || (!canSwim && isWater(adl))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || (cases[aml].forbidden&teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aml].forbidden | cases[aml].hiddenForbidden) &teamMask)
 			    || (cases[aml].building!=NOGBID) || (!canSwim && isWater(aml))) )
 			{
 				gradient[i]= 1;
@@ -4722,7 +4728,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			testgradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			testgradient[i] = 0;
-		else if (c.forbidden&teamMask)
+		else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
 		{
 			testgradient[i]= 1;  // Later: check if we can set it to 254.
 			listedAddr[listCountWriteInit++] = i;  // Remember this field.
@@ -4787,7 +4793,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			gradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
-		else if (c.forbidden&teamMask)
+		else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
 			gradient[i]= 1;
 		else
 		{
@@ -4836,7 +4842,7 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 	for (size_t i=0; i<size; i++)
 	{
 		Case c=cases[i];
-		if (c.forbidden & teamMask)
+		if (c.forbidden & teamMask || c.hiddenForbidden & teamMask)
 			gradient[i] = 0;
 		else if (c.ressource.type != NO_RES_TYPE)
 			gradient[i] = 0;
@@ -5018,6 +5024,7 @@ Uint32 Map::checkSum(bool heavy)
 				c->groundUnit +
 				c->airUnit +
 				c->forbidden +
+				c->hiddenForbidden +
 				c->scriptAreas;
 			cs=(cs<<1)|(cs>>31);
 		}
