@@ -91,7 +91,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(20, 210, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
+	startTimer=new Text(20, 360, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
 	addWidget(startTimer);
 
 	timeCounter=0;
