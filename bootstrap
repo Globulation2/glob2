@@ -27,7 +27,7 @@ fi
 
 rm -rf config.cache autom4te-*.cache
 
-aclocal -I /usr/local/share/aclocal \ 
+aclocal -I /usr/local/share/aclocal \
 && autoheader \
 && automake --foreign --add-missing \
 && autoconf
