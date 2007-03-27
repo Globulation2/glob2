@@ -97,6 +97,10 @@ Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Pl
 			entity = new Entities::Position;
 			entity->load(stream, player, versionMinor);
 		break;
+		case Entities::ESand:
+			entity = new Entities::Sand;
+			entity->load(stream, player, versionMinor);
+		break;
 	};
 	stream->readLeaveSection();
 	return entity;
@@ -445,14 +449,14 @@ void Entities::AnyRessource::save(GAGCore::OutputStream *stream)
 
 
 
-Entities::Water:: Water()
+Entities::Water::Water()
 {
 
 }
 
 
 
-bool Entities::Water:: is_entity(Map* map, int posx, int posy)
+bool Entities::Water::is_entity(Map* map, int posx, int posy)
 {
 	if(map->isWater(posx, posy))
 	{
@@ -556,6 +560,65 @@ void Entities::Position::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(y, "posy");
 	stream->writeLeaveSection();
 }
+
+
+
+Entities::Sand::Sand()
+{
+
+}
+
+
+
+bool Entities::Sand::is_entity(Map* map, int posx, int posy)
+{
+	if(map->getTerrainType(posx, posy) == SAND)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+
+bool Entities::Sand::operator==(const Entity& rhs)
+{
+	if(typeid(rhs)==typeid(Entities::Sand))
+		return true;
+	return false;
+}
+
+
+
+bool Entities::Sand::can_change()
+{
+	return false;
+}
+
+
+
+Entities::EntityType Entities::Sand::get_type()
+{
+	return Entities::ESand;
+}
+
+
+
+bool Entities::Sand::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("Sand");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void Entities::Sand::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("Sand");
+	stream->writeLeaveSection();
+}
+
 
 
 GradientInfo::GradientInfo()
@@ -3463,7 +3526,7 @@ void AddArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(echo.player->map, BrushApplication(i->x, i->y, 0));
+		acc.applyBrush(echo.player->map, BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0));
 	}
 	if(acc.getApplicationCount()>0)
 	{

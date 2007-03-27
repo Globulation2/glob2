@@ -1185,7 +1185,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	return isRoom;
 }
 
-
+#include "GameGUI.h"
 
 void Building::addForbiddenZoneToUpgradeArea(void)
 {
@@ -1212,6 +1212,7 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 			owner->map->addHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
 		}
 	}
+	owner->map->computeLocalForbidden(0);
 }
 
 
@@ -1326,7 +1327,7 @@ void Building::subscribeToBringRessourcesStep()
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
 		{
 			int minValue=INT_MAX;
-			int minLevel=INT_MAX;
+			int maxLevel=-INT_MAX;
 			Unit *choosen=NULL;
 			Map *map=owner->map;
 			/* To choose a good unit, we get a composition of things:
@@ -1348,7 +1349,7 @@ void Building::subscribeToBringRessourcesStep()
 
 				int r=unit->caryedRessource;
 				int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-				if ((r>=0)&& neededRessource(r))
+				if ((r>=0) && neededRessource(r))
 				{
 					int dist;
 					if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
@@ -1357,10 +1358,10 @@ void Building::subscribeToBringRessourcesStep()
 						int level = unit->level[HARVEST];
 						unit->destinationPurprose=r;
 						fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-						if ((level < minLevel) || (level==minLevel && value<minValue))
+						if ((level>maxLevel) || (level==maxLevel && value<minValue))
 						{
 							minValue=value;
-							minLevel=level;
+							maxLevel=level;
 							choosen=unit;
 						}
 					}
@@ -1392,7 +1393,7 @@ void Building::subscribeToBringRessourcesStep()
 						{
 							for (int r=0; r<MAX_RESSOURCES; r++)
 							{
-								int need=needs[r];
+								int need=neededRessource(r);
 								if (need>0)
 								{
 									int distUnitRessource;
@@ -1400,12 +1401,12 @@ void Building::subscribeToBringRessourcesStep()
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
 										int level = unit->level[HARVEST];
-										if ((level < minLevel) || (level==minLevel && value<minValue))
+										if ((level>maxLevel) || (level==maxLevel && value<minValue))
 										{
 											unit->destinationPurprose=r;
 											fprintf(logFile, "[%d] bdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 											minValue=value;
-											minLevel=level;
+											maxLevel=level;
 											choosen=unit;
 											if (verbose)
 												printf(" guid=%5d, distUnitRessource=%d, distUnitBuilding=%d, need=%d, value=%d\n", choosen->gid, distUnitRessource, distUnitBuilding, need, value);
@@ -1443,7 +1444,7 @@ void Building::subscribeToBringRessourcesStep()
 						{
 							for (int r=0; r<MAX_RESSOURCES; r++)
 							{
-								int need=needs[r];
+								int need=neededRessource(r);
 								if (need>0)
 								{
 									int distUnitRessource;
@@ -1451,12 +1452,12 @@ void Building::subscribeToBringRessourcesStep()
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
 										int level = unit->level[HARVEST];
-										if ((level < minLevel) || (level==minLevel && value<minValue))
+										if ((level>maxLevel) || (level==maxLevel && value<minValue))
 										{
 											unit->destinationPurprose=r;
 											fprintf(logFile, "[%d] bdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 											minValue=value;
-											minLevel=level;
+											maxLevel=level;
 											choosen=unit;
 										}
 									}

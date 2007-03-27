@@ -52,7 +52,6 @@ private:
 	///to initialize the existing buildings with the right amount of units
 	void initialize(AIEcho::Echo& echo);
 
-
 	///This function is called periodically to choose the strategies
 	///(called phases) that will be used at that time
 	void check_phases(AIEcho::Echo& echo);
