@@ -25,6 +25,7 @@
 #include <GAG.h>
 #include <map>
 #include <fstream>
+#include "boost/lexical_cast.hpp"
 
 using namespace GAGCore;
 
@@ -53,40 +54,47 @@ Settings::Settings()
 	restoreDefaultShortcuts();
 	tempUnit = 1;
 	tempUnitFuture = 1;
-	warflagUnit = 20;
-	clearflagUnit = 2;
-	exploreflagUnit = 1;
-	swarmUnit0c = 7;
-	swarmUnit0 = 4;
-	innUnit0c = 3;
-	innUnit0 = 2;
-	innUnit1c = 5;
-	innUnit1 = 3;
-	innUnit2c = 15;
-	innUnit2 = 8;
-	hospitalUnit0c = 2;
-	hospitalUnit1c = 4;
-	hospitalUnit2c = 6;
-	racetrackUnit0c = 3;
-	racetrackUnit1c = 7;
-	racetrackUnit2c = 12;
-	swimmingpoolUnit0c = 2;
-	swimmingpoolUnit1c = 5;
-	swimmingpoolUnit2c = 12;
-	barracksUnit0c = 3;
-	barracksUnit1c = 6;
-	barracksUnit2c = 9;
-	schoolUnit0c = 5;
-	schoolUnit1c = 10;
-	schoolUnit2c = 20;
-	defencetowerUnit0c = 3;
-	defencetowerUnit0 = 2;
-	defencetowerUnit1c = 5;
-	defencetowerUnit1 = 2;
-	defencetowerUnit2c = 8;
-	defencetowerUnit2 = 2;
-	stonewallUnit0c = 1;
-	marketUnit0c = 3;
+	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+	{
+		for(int t=0; t<6; ++t)
+		{
+			defaultUnitsAssigned[n][t] = 0;
+		}
+	}
+	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][0] = 20;
+	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][0] = 2;
+	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][0] = 1;
+	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0] = 7;
+	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1] = 4;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3] = 3;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4] = 15;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5] = 8;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0] = 2;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2] = 4;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4] = 6;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2] = 7;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4] = 12;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0] = 2;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4] = 12;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2] = 6;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4] = 9;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0] = 5;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2] = 10;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4] = 20;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3] = 2;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4] = 8;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
+	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
+	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
 
 	cloudPatchSize=16;//the bigger the faster the uglier
 	cloudMaxAlpha=130;//the higher the nicer the clouds the harder the units are visible
@@ -95,15 +103,6 @@ Settings::Settings()
 	cloudStability=1300;//how much will the clouds change shape
 	cloudSize=300;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
 	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
-/*
-cloudPatchSize=16
-cloudMaxAlpha=130
-cloudMaxSpeed=3
-cloudWindStability=3550
-cloudStability=1300
-cloudSize=300
-cloudHeight=150
-*/
 }
 
 
@@ -216,40 +215,16 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(musicVolume);		
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
-		READ_PARSED_INT(warflagUnit);
-		READ_PARSED_INT(clearflagUnit);
-		READ_PARSED_INT(exploreflagUnit);
-		READ_PARSED_INT(swarmUnit0c);
-		READ_PARSED_INT(swarmUnit0);
-		READ_PARSED_INT(innUnit0c);
-		READ_PARSED_INT(innUnit0);
-		READ_PARSED_INT(innUnit1c);
-		READ_PARSED_INT(innUnit1);
-		READ_PARSED_INT(innUnit2c);
-		READ_PARSED_INT(innUnit2);
-		READ_PARSED_INT(hospitalUnit0c);
-		READ_PARSED_INT(hospitalUnit1c);
-		READ_PARSED_INT(hospitalUnit2c);
-		READ_PARSED_INT(racetrackUnit0c);
-		READ_PARSED_INT(racetrackUnit1c);
-		READ_PARSED_INT(racetrackUnit2c);
-		READ_PARSED_INT(swimmingpoolUnit0c);
-		READ_PARSED_INT(swimmingpoolUnit1c);
-		READ_PARSED_INT(swimmingpoolUnit2c);
-		READ_PARSED_INT(barracksUnit0c);
-		READ_PARSED_INT(barracksUnit1c);
-		READ_PARSED_INT(barracksUnit2c);
-		READ_PARSED_INT(schoolUnit0c);
-		READ_PARSED_INT(schoolUnit1c);
-		READ_PARSED_INT(schoolUnit2c);
-		READ_PARSED_INT(defencetowerUnit0c);
-		READ_PARSED_INT(defencetowerUnit0);
-		READ_PARSED_INT(defencetowerUnit1c);
-		READ_PARSED_INT(defencetowerUnit1);
-		READ_PARSED_INT(defencetowerUnit2c);
-		READ_PARSED_INT(defencetowerUnit2);
-		READ_PARSED_INT(stonewallUnit0c);
-		READ_PARSED_INT(marketUnit0c);
+
+		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+		{
+			for(int t=0; t<6; ++t)
+			{
+				std::string keyname="defaultUnitsAssigned["+boost::lexical_cast<std::string>(n)+"]["+boost::lexical_cast<std::string>(t)+"]";
+				if(parsed.find(keyname)!=parsed.end())
+					defaultUnitsAssigned[n][t] = boost::lexical_cast<int>(parsed[keyname]);
+			}
+		}
 
 		READ_PARSED_INT(cloudPatchSize);
 		READ_PARSED_INT(cloudMaxAlpha);
@@ -284,27 +259,6 @@ void Settings::save(const char *filename)
 	}
 	else
 	{
-/*
-		f<<"username="<<username<<std::endl;
-		f<<"password="<<password<<std::endl;
-		f<<"screenWidth="<<screenWidth<<std::endl;
-		f<<"screenHeight="<<screenHeight<<std::endl;
-		f<<"screenFlags="<<screenFlags<<std::endl;
-		f<<"optionFlags="<<optionFlags<<std::endl;
-		f<<"defaultLanguage="<<defaultLanguage<<std::endl;
-		f<<"musicVolume="<<musicVolume<<std::endl;
-		f<<"mute="<<mute<<std::endl;
-		f<<"rememberUnit="<<rememberUnit<<std::endl;
-		f<<"warflagUnit="<<warflagUnit<<std::endl;
-		f<<"clearflagUnit="<<clearflagUnit<<std::endl;
-		f<<"exploreflagUnit="<<exploreflagUnit<<std::endl;
-
-		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
-		{
-			f<<i->first<<"="<<i->second<<std::endl;
-		}
-*/
-
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
@@ -315,40 +269,15 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
-		Utilities::streamprintf(stream, "warflagUnit=%d\n", warflagUnit);
-		Utilities::streamprintf(stream, "clearflagUnit=%d\n", clearflagUnit);
-		Utilities::streamprintf(stream, "exploreflagUnit=%d\n", exploreflagUnit);
-		Utilities::streamprintf(stream, "swarmUnit0c=%d\n", swarmUnit0c);
-		Utilities::streamprintf(stream, "swarmUnit0=%d\n", swarmUnit0);
-		Utilities::streamprintf(stream, "innUnit0c=%d\n",	innUnit0c);
-		Utilities::streamprintf(stream, "innUnit0=%d\n",	innUnit0);
-		Utilities::streamprintf(stream, "innUnit1c=%d\n",	innUnit1c);
-		Utilities::streamprintf(stream, "innUnit1=%d\n",	innUnit1);
-		Utilities::streamprintf(stream, "innUnit2c=%d\n",	innUnit2c);
-		Utilities::streamprintf(stream, "innUnit2=%d\n",	innUnit2);
-		Utilities::streamprintf(stream, "hospitalUnit0c=%d\n",	hospitalUnit0c);
-		Utilities::streamprintf(stream, "hospitalUnit1c=%d\n",	hospitalUnit1c);
-		Utilities::streamprintf(stream, "hospitalUnit2c=%d\n",	hospitalUnit2c);
-		Utilities::streamprintf(stream, "racetrackUnit0c=%d\n",	racetrackUnit0c);
-		Utilities::streamprintf(stream, "racetrackUnit1c=%d\n",	racetrackUnit1c);
-		Utilities::streamprintf(stream, "racetrackUnit2c=%d\n",	racetrackUnit2c);
-		Utilities::streamprintf(stream, "swimmingpoolUnit0c=%d\n",	swimmingpoolUnit0c);
-		Utilities::streamprintf(stream, "swimmingpoolUnit1c=%d\n",	swimmingpoolUnit1c);
-		Utilities::streamprintf(stream, "swimmingpoolUnit2c=%d\n",	swimmingpoolUnit2c);
-		Utilities::streamprintf(stream, "barracksUnit0c=%d\n",	barracksUnit0c);
-		Utilities::streamprintf(stream, "barracksUnit1c=%d\n",	barracksUnit1c);
-		Utilities::streamprintf(stream, "barracksUnit2c=%d\n",	barracksUnit2c);
-		Utilities::streamprintf(stream, "schoolUnit0c=%d\n",	schoolUnit0c);
-		Utilities::streamprintf(stream, "schoolUnit1c=%d\n",	schoolUnit1c);
-		Utilities::streamprintf(stream, "schoolUnit2c=%d\n",	schoolUnit2c);
-		Utilities::streamprintf(stream, "defencetowerUnit0c=%d\n",	defencetowerUnit0c);
-		Utilities::streamprintf(stream, "defencetowerUnit0=%d\n",	defencetowerUnit0);
-		Utilities::streamprintf(stream, "defencetowerUnit1c=%d\n",	defencetowerUnit1c);
-		Utilities::streamprintf(stream, "defencetowerUnit1=%d\n",	defencetowerUnit1);
-		Utilities::streamprintf(stream, "defencetowerUnit2c=%d\n",	defencetowerUnit2c);
-		Utilities::streamprintf(stream, "defencetowerUnit2=%d\n",	defencetowerUnit2);
-		Utilities::streamprintf(stream, "stonewallUnit0c=%d\n",	stonewallUnit0c);
-		Utilities::streamprintf(stream, "marketUnit0c=%d\n",	marketUnit0c);
+
+		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+		{
+			for(int t=0; t<6; ++t)
+			{
+				std::string keyname="defaultUnitsAssigned["+boost::lexical_cast<std::string>(n)+"]["+boost::lexical_cast<std::string>(t)+"]";
+				Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultUnitsAssigned[n][t]);
+			}
+		}
 
 		Utilities::streamprintf(stream, "cloudPatchSize=%d\n",	cloudPatchSize);
 		Utilities::streamprintf(stream, "cloudMaxAlpha=%d\n",	cloudMaxAlpha);
