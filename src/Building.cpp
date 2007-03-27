@@ -1342,7 +1342,7 @@ void Building::subscribeToBringRessourcesStep()
 			for(int n=0; n<1024; ++n)
 			{
 				Unit* unit=owner->myUnits[n];
-				if(unit==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
+				if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || !unit->performance[HARVEST])
 					continue;
 				if(!canUnitWorkHere(unit))
 					continue;
@@ -1377,7 +1377,7 @@ void Building::subscribeToBringRessourcesStep()
 				for(int n=0; n<1024; ++n)
 				{
 					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || !unit->performance[HARVEST])
 						continue;
 					if(!canUnitWorkHere(unit))
 						continue;
@@ -1428,7 +1428,7 @@ void Building::subscribeToBringRessourcesStep()
 				for(int n=0; n<1024; ++n)
 				{
 					Unit* unit=owner->myUnits[n];
-					if(owner->myUnits[n]==NULL || unit->activity != Unit::ACT_RANDOM || !unit->performance[HARVEST])
+					if(owner->myUnits[n]==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || !unit->performance[HARVEST])
 						continue;
 					if(!canUnitWorkHere(unit))
 						continue;

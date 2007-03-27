@@ -908,9 +908,9 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 	
 	int priority_rhs=0;
 	if(rhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !rhs->type->isBuildingSite)
-		priority_rhs=2+lhs->type->level*10;
+		priority_rhs=2+rhs->type->level*10;
 	else
-		priority_rhs=1+lhs->type->level*10;
+		priority_rhs=1+rhs->type->level*10;
 
 	if(priority_lhs != priority_rhs)	
 	{
