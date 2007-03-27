@@ -161,6 +161,7 @@ namespace AIEcho
 				EAnyRessource,
 				EWater,
 				EPosition,
+				ESand,
 			};
 
 			///An entity is any observable object on the map. Its entirely generic, not specific to a certain team
@@ -306,6 +307,21 @@ namespace AIEcho
 				void save(GAGCore::OutputStream *stream);
 				int x;
 				int y;
+			};
+
+			///Matches sand
+			class Sand : public Entity
+			{
+			public:
+				Sand();
+			protected:
+				friend class Entity;
+				bool is_entity(Map* map, int posx, int posy);
+				bool operator==(const Entity& rhs);
+				bool can_change();
+				EntityType get_type();
+				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+				void save(GAGCore::OutputStream *stream);
 			};
 		};
 
@@ -505,7 +521,7 @@ namespace AIEcho
 			int weight;
 		};
 
-		///This constraint tries to make buildings farther to a particular source. It can be given a weight,
+		///This constraint tries to make buildings farther from a particular source. It can be given a weight,
 		///changing the effect the constraint has on the final position of the building
 		class MaximizedDistance : public Constraint
 		{
@@ -570,7 +586,7 @@ namespace AIEcho
 		};
 
 
-		///An order for a new building to be constructed. It takes the type of building from IntBuildingType.h,
+		///An order for new buildings to be constructed. It takes the type of building from IntBuildingType.h,
 		///and the number of workers that should be used to construct it.
 		class BuildingOrder
 		{

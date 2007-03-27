@@ -117,6 +117,24 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 		buildings_under_construction-=1;
 		buildings_under_construction_per_type[placement_num]-=1;
 	}
+	if(message.substr(0,21) == "update clearing zone ")
+	{
+		int id=boost::lexical_cast<int>(message.substr(21, message.size()-1));
+		Building* b = echo.get_building_register().get_building(id);		
+		AddArea* mo_clearing=new AddArea(ClearingArea);
+		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
+		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
+		for(int nx=-1; nx<b->type->width+1; ++nx)
+		{
+			for(int ny=-1; ny<b->type->height+1; ++ny)
+			{
+				mo_clearing->add_location(b->posX+nx, b->posY+ny);
+				mo_remove_clearing->add_location(b->posX+ny, b->posY+ny);
+			}
+		}
+		echo.add_management_order(mo_clearing);
+		echo.add_management_order(mo_remove_clearing);
+	}
 	if(message.substr(0,13) == "update swarm ")
 	{
 		int id=boost::lexical_cast<int>(message.substr(13, message.size()-1));
@@ -141,6 +159,7 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 void NewNicowar::initialize(Echo& echo)
 {
 	manage_buildings(echo);
+	BuildingSearch bs(echo);
 }
 
 
@@ -498,6 +517,10 @@ void NewNicowar::order_buildings(Echo& echo)
 		                             new ParticularBuilding(new NotUnderConstruction, id),
 		                             new BuildingDestroyed(id)));
 		echo.add_management_order(mo_completion_message);
+		
+		ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone "+boost::lexical_cast<std::string>(int(id)));
+		mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+		echo.add_management_order(mo_construction_completion_message);
 	}
 }
 
@@ -613,6 +636,11 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
+	//Constraints arround water. Can't be too close to water/sand.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water); 
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 4));
+
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
@@ -655,6 +683,11 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
+
+	//Constraints arround water. Can't be too close to water/sand.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water); 
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 4));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
@@ -1242,73 +1275,68 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 
 	int flag_dist_count=3;
 
+	int w=mi.get_width();
+	int h=mi.get_height();
+
 	while(xpos != bx || ypos!=by)
 	{
-		int rx=xpos+1;
-		if(rx>=mi.get_width())
-			rx-=mi.get_width();
-		int dy=ypos+1;
-		if(dy>=mi.get_height())
-			dy-=mi.get_height();
-		int lx=xpos-1;
-		if(lx==-1)
-			lx+=mi.get_width();
-		int uy=ypos-1;
-		if(uy==-1)
-			uy+=mi.get_height();
-		int cur_dist=gradient_pathfind.get_height(xpos, ypos);
-		int lowest_entity=cur_dist+1;
+		int nxpos = xpos;
+		int nypos = ypos;
+		int rx=(xpos+1+w) % w;
+		int lx=(xpos-1+w) % w;
+		int dy=(ypos+1+h) % h;
+		int uy=(ypos-1+h) % h;
+		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+2;
 
 		//Test diagnols first, then the horizontals and verticals.
 		if(gradient_pathfind.get_height(lx, uy) < lowest_entity && gradient_pathfind.get_height(lx, uy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(lx, uy);
-			xpos=lx;
-			ypos=uy;
+			nxpos=lx;
+			nypos=uy;
 		}
 		if(gradient_pathfind.get_height(rx, uy) < lowest_entity && gradient_pathfind.get_height(rx, uy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(rx, uy);
-			xpos=rx;
-			ypos=uy;
+			nxpos=rx;
+			nypos=uy;
 		}
 		if(gradient_pathfind.get_height(lx, dy) < lowest_entity && gradient_pathfind.get_height(lx, dy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(lx, dy);
-			xpos=lx;
-			ypos=dy;
+			nxpos=lx;
+			nypos=dy;
 		}
 		if(gradient_pathfind.get_height(rx, dy) < lowest_entity && gradient_pathfind.get_height(rx, dy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(rx, dy);
-			xpos=rx;
-			ypos=dy;
+			nxpos=rx;
+			nypos=dy;
 		}
 
 		if(gradient_pathfind.get_height(xpos, uy) < lowest_entity && gradient_pathfind.get_height(xpos, uy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(xpos, uy);
-			xpos=xpos;
-			ypos=uy;
+			nxpos=xpos;
+			nypos=uy;
 		}
-
 		if(gradient_pathfind.get_height(lx, ypos) < lowest_entity && gradient_pathfind.get_height(lx, ypos)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(lx, ypos);
-			xpos=lx;
-			ypos=ypos;
+			nxpos=lx;
+			nypos=ypos;
 		}
 		if(gradient_pathfind.get_height(rx, ypos) < lowest_entity && gradient_pathfind.get_height(rx, ypos)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(rx, ypos);
-			xpos=rx;
-			ypos=ypos;
+			nxpos=rx;
+			nypos=ypos;
 		}
 		if(gradient_pathfind.get_height(xpos, dy) < lowest_entity && gradient_pathfind.get_height(xpos, dy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(xpos, dy);
-			xpos=xpos;
-			ypos=dy;
+			nxpos=xpos;
+			nypos=dy;
 		}
 
 
@@ -1332,6 +1360,8 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 			ManagementOrder* mo_completion=new ChangeFlagSize(3, id_flag);
 			echo.add_management_order(mo_completion);
 		}
+		xpos = nxpos;
+		ypos = nypos;
 
 	}
 

@@ -129,21 +129,13 @@ public:
 	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
 	int normalizeX(int x)
 	{
-		if(x>=getW())
-			return x-getW();
-		if(x<0)
-			return x+getW();
-		return x;
+		return (x+w)%w;
 	}
 	
 	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
 	int normalizeY(int y)
 	{
-		if(y>=getH())
-			return y-getH();
-		if(y<0)
-			return y+getH();
-		return y;
+		return (y+h)%h;
 	}
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
@@ -264,7 +256,7 @@ public:
 	}
 	
 	// note - these are only meant to be called for the LOCAL team
-	// (the one whose stuff is displayed on the screen, etc)
+	// (the one whose stuff is displayed on the screen)
 	//! Compute localForbiddenMap from cases array
 	void computeLocalForbidden(int localTeamNo);
 	//! Compute localGuardAreaMap from cases array
@@ -340,14 +332,26 @@ public:
 		cases[((y&hMask)<<wDec)+(x&wMask)].forbidden = forbidden;
 	}
 	
+	void addForbidden(int x, int y, Uint32 teamNum)
+	{
+		cases[((y&hMask)<<wDec)+(x&wMask)].forbidden |=  Team::teamNumberToMask(teamNum);
+	}
+
+	void removeForbidden(int x, int y, Uint32 teamNum)
+	{
+		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
+		c.hiddenForbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
+	}
+	
 	void addHiddenForbidden(int x, int y, Uint32 teamNum)
 	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden |= (1<<teamNum);
+		cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden |= Team::teamNumberToMask(teamNum);
 	}
+
 	void removeHiddenForbidden(int x, int y, Uint32 teamNum)
 	{
 		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
-		c.hiddenForbidden ^= c.hiddenForbidden & (1<<teamNum);
+		c.hiddenForbidden ^= c.hiddenForbidden &  Team::teamNumberToMask(teamNum);
 	}
 	
 	bool isWater(int x, int y)
