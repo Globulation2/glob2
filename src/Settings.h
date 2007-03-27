@@ -23,6 +23,7 @@
 #include "Header.h"
 #include <string>
 #include <map>
+#include "IntBuildingType.h"
 
 class Settings
 {
@@ -39,41 +40,10 @@ public:
 	
 	bool rememberUnit;
 	
-	int warflagUnit;
-	int clearflagUnit;
-	int exploreflagUnit;
-	int swarmUnit0c;
-	int swarmUnit0;
-	int innUnit0c;
-	int innUnit0;
-	int innUnit1c;
-	int innUnit1;
-	int innUnit2c;
-	int innUnit2;
-	int hospitalUnit0c;
-	int hospitalUnit1c;
-	int hospitalUnit2c;
-	int racetrackUnit0c;
-	int racetrackUnit1c;
-	int racetrackUnit2c;
-	int swimmingpoolUnit0c;
-	int swimmingpoolUnit1c;
-	int swimmingpoolUnit2c;
-	int barracksUnit0c;
-	int barracksUnit1c;
-	int barracksUnit2c;
-	int schoolUnit0c;
-	int schoolUnit1c;
-	int schoolUnit2c;
-	int defencetowerUnit0c;
-	int defencetowerUnit0;
-	int defencetowerUnit1c;
-	int defencetowerUnit1;
-	int defencetowerUnit2c;
-	int defencetowerUnit2;
-	int stonewallUnit0c;
-	int marketUnit0c;
-	
+	///Levels are from 0 to 5, where even numbers are building
+	///under construction and odd ones are completed buildings.
+	int defaultUnitsAssigned[IntBuildingType::NB_BUILDING][6];
+
 	int cloudPatchSize;//the bigger the faster the uglier
 	int cloudMaxAlpha;//the higher the nicer the clouds the harder the units are visible
 	int cloudMaxSpeed;

@@ -65,13 +65,15 @@ private:
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
 	Selector *musicVol;
 	OnOffButton *audioMute, *rememberUnitButton;
-	Number *swarmUnitRatio0c, *swarmUnitRatio0, *innUnitRatio0c, *innUnitRatio0, *innUnitRatio1c, *innUnitRatio1, *innUnitRatio2c, *innUnitRatio2, *hospitalUnitRatio0c, *hospitalUnitRatio1c, *hospitalUnitRatio2c, *racetrackUnitRatio0c, *racetrackUnitRatio1c, *racetrackUnitRatio2c, *swimmingpoolUnitRatio0c, *swimmingpoolUnitRatio1c, *swimmingpoolUnitRatio2c, *barracksUnitRatio0c, *barracksUnitRatio1c, *barracksUnitRatio2c, *schoolUnitRatio0c, *schoolUnitRatio1c, *schoolUnitRatio2c, *defencetowerUnitRatio0c, *defencetowerUnitRatio0, *defencetowerUnitRatio1c, *defencetowerUnitRatio1, *defencetowerUnitRatio2c, *defencetowerUnitRatio2, *stonewallUnitRatio0c, *marketUnitRatio0c, *warflagUnitRatio, *clearflagUnitRatio, *exploreflagUnitRatio;
+	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
+	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *rememberUnitText;
-	Text *swarmUnitText0c, *swarmUnitText0, *innUnitText0c, *innUnitText0, *innUnitText1c, *innUnitText1, *innUnitText2c, *innUnitText2, *hospitalUnitText0c, *hospitalUnitText1c, *hospitalUnitText2c, *racetrackUnitText0c, *racetrackUnitText1c, *racetrackUnitText2c, *swimmingpoolUnitText0c, *swimmingpoolUnitText1c, *swimmingpoolUnitText2c, *barracksUnitText0c, *barracksUnitText1c, *barracksUnitText2c, *schoolUnitText0c, *schoolUnitText1c, *schoolUnitText2c, *defencetowerUnitText0c, *defencetowerUnitText0, *defencetowerUnitText1c, *defencetowerUnitText1, *defencetowerUnitText2c, *defencetowerUnitText2, *stonewallUnitText0c, *marketUnitText0c, *warflagUnitText, *clearflagUnitText, *exploreflagUnitText;
 	Text *actDisplay;
 	Text *rebootWarning;
+
+	void addNumbersFor(int low, int high, Number* widget);
 
 	TextButton* game_shortcuts;
 	TextButton* editor_shortcuts;
