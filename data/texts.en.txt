@@ -130,6 +130,68 @@ Forbidden area
 Guard area
 [clear area]
 Clearing area
+[build swarm level 0]
+Construct Swarm
+[swarm level 0]
+Swarm
+[build inn level 0]
+Construct Inn 1
+[inn level 0]
+Inn 1
+[build inn level 1]
+Construct Inn 2
+[inn level 1]
+Inn 2
+[build inn level 2]
+Constuct Inn 3
+[inn level 2]
+Inn 3
+[build hospital level 0]
+Construct Hospital 1
+[build hospital level 1]
+Construct Hospital 2
+[build hospital level 2]
+Construct Hospital 3
+[build racetrack level 0]
+Construct Racetrack 1
+[build racetrack level 1]
+Construct Racetrack 2
+[build racetrack level 2]
+Construct Racetrack 3
+[build swimmingpool level 0]
+Construct Swimmingpool 1
+[build swimmingpool level 1]
+Construct Swimmingpool 2
+[build swimmingpool level 2]
+Construct Swimmingpool 3
+[build barracks level 0]
+Construct Barracks 1
+[build barracks level 1]
+Construct Barracks 1
+[build barracks level 2]
+Construct Barracks 1
+[build school level 0]
+Construct School 1
+[build school level 1]
+Construct School 2
+[build school level 2]
+Construct School 3
+[build defencetower level 0]
+Construct Defence Tower 1
+[defencetower level 0]
+Defence Tower 1
+[build defencetower level 1]
+Construct Defence Tower 2
+[defencetower level 1]
+Defence Tower 2
+[build defencetower level 2]
+Construct Defence Tower 3
+[defencetower level 2]
+Defence Tower 3
+[build stonewall level 0]
+Construct Stone Wall
+[build market level 0]
+Construct Market
 [Building short explanation]
 Building short explanation (24 chars max)
 [swarm building explanation]

@@ -238,6 +238,9 @@ namespace GAGGUI
 
 		//! \copydoc Widget::isOnWidget
 		virtual bool isOnWidget(int x, int y);
+		
+		//! Returns width of widget
+		Sint32 getWidth() const { return w; }
 	
 	protected:
 		//! Compute the actual position from the layout informations
