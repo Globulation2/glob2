@@ -22,11 +22,13 @@
 
 #include "Session.h"
 #include "Glob2Screen.h"
+#include <GUINumber.h>
 
 namespace GAGGUI
 {
 	class Button;
 	class Text;
+	class Number;
 }
 class Glob2FileList;
 class MapPreview;
@@ -64,8 +66,11 @@ protected:
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
 	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
+	// The number information about selected map
+	Number *prestigeRatio;
 	//! True when the selected map is valid
 	bool validMapSelected;
+	SessionGame session;
 
 public:
 	//! Constructor. Directory is the source of the listed files. extension is the file extension to show. If recurse is true, subdirectoried are shown and can be opened.

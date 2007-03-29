@@ -54,6 +54,8 @@ Settings::Settings()
 	restoreDefaultShortcuts();
 	tempUnit = 1;
 	tempUnitFuture = 1;
+	//whie a little ugly this is to prevent session.cpp from overriding varPrestige once map is chosen
+	tempVarPrestige = 0;
 	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 	{
 		for(int t=0; t<6; ++t)

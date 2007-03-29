@@ -94,6 +94,7 @@ public:
 
 	Sint32 numberOfPlayer;
 	Sint32 numberOfTeam;
+	Sint32 varPrestige;
 
 	//! TPF = Tick per frame.
 	Sint32 gameTPF;

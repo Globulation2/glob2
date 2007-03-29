@@ -72,6 +72,34 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	mapFileList->visible=mapMode;
 	gameFileList->visible=!mapMode;
 	validSessionInfo=false;
+	
+	globalContainer->settings.tempVarPrestige = 3000;
+	prestigeRatio=new Number(20, 20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	prestigeRatio->add(0);
+	prestigeRatio->add(0);
+	prestigeRatio->add(100);
+	prestigeRatio->add(200);
+	prestigeRatio->add(300);
+	prestigeRatio->add(400);
+	prestigeRatio->add(500);
+	prestigeRatio->add(600);
+	prestigeRatio->add(700);
+	prestigeRatio->add(800);
+	prestigeRatio->add(900);
+	prestigeRatio->add(1000);
+	prestigeRatio->add(1100);
+	prestigeRatio->add(1200);
+	prestigeRatio->add(1300);
+	prestigeRatio->add(1400);
+	prestigeRatio->add(1500);
+	prestigeRatio->add(1600);
+	prestigeRatio->add(1700);
+	prestigeRatio->add(1800);
+	prestigeRatio->add(1900);
+	prestigeRatio->add(2000);
+	prestigeRatio->setNth(1);
+	prestigeRatio->visible=false;
+	addWidget(prestigeRatio);
 }
 
 MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
@@ -158,6 +186,14 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				toogleButton->setText(Toolkit::getStringTable()->getString("[the maps]"));
 			}
 		}
+		else if (action==NUMBER_ELEMENT_SELECTED)
+	{
+		if (prestigeRatio->getNth() == 0)
+		{
+			prestigeRatio->setNth(1);
+		}
+		globalContainer->settings.tempVarPrestige=(prestigeRatio->getNth() - 1) * 100;
+	}
 		else
 			assert(false);
 	}
