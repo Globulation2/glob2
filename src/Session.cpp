@@ -45,6 +45,9 @@ SessionGame::SessionGame()
 
 	numberOfPlayer=0;
 	numberOfTeam=0;
+//yes this is ugly but best way I could find to prevent loss of variables set
+//when map is selected
+	varPrestige=globalContainer->settings.tempVarPrestige;
 	gameTPF=40;
 	gameLatency=5;
 
@@ -83,6 +86,7 @@ SessionGame& SessionGame::operator=(const SessionGame& sessionGame)
 	generationDescriptorOffset=sessionGame.generationDescriptorOffset;
 	numberOfPlayer=sessionGame.numberOfPlayer;
 	numberOfTeam=sessionGame.numberOfTeam;
+	varPrestige=sessionGame.varPrestige;
 	gameTPF=sessionGame.gameTPF;
 	gameLatency=sessionGame.gameLatency;
 	fileIsAMap=sessionGame.fileIsAMap;

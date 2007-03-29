@@ -22,6 +22,7 @@
 
 #include "Session.h"
 #include "Glob2Screen.h"
+#include <GUINumber.h>
 
 namespace GAGGUI
 {
@@ -29,6 +30,7 @@ namespace GAGGUI
 	class List;
 	class Text;
 	class TextButton;
+	class Number;
 }
 class MapPreview;
 
@@ -54,6 +56,7 @@ private:
 	TextButton *toogleButton;
 	MapPreview *mapPreview;
 	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate/*, *methode*/;
+	Number *prestigeRatio;
 	bool validSessionInfo;
 	bool shareOnYOG;
 

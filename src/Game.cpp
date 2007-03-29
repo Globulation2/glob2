@@ -958,10 +958,19 @@ bool Game::load(GAGCore::InputStream *stream)
 			stream->readText("nextMap");
 		campaignText = stream->readText("campaignText");
 	}
-
-	// Compute new max prestige
-	prestigeToReach = std::max(MIN_MAX_PRESIGE, session.numberOfTeam*TEAM_MAX_PRESTIGE);
-
+//game reverts to default prestige settings if higher then maximum (2000)
+//this is done to maximize efficiency if maximum settings are ever changed this 
+//will need to be changed as well 
+	if (session.varPrestige > 2000)
+	{	
+		// default prestige calculation
+		prestigeToReach = std::max(MIN_MAX_PRESIGE, session.numberOfTeam*TEAM_MAX_PRESTIGE);
+	}
+	else
+	{
+	// custom prestige
+		prestigeToReach = session.varPrestige;
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -1098,31 +1107,35 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-	totalPrestige=0;
-	isGameEnded=false;
-	int greatestPrestige=0;
-	
-	for (int i=0; i<session.numberOfTeam; i++)
+// prestige of 0 results in infinite prestige
+	if (session.varPrestige > 0)
 	{
-		bool isOtherAlive=false;
-		for (int j=0; j<session.numberOfTeam; j++)
-		{
-			if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
-				isOtherAlive=true;
-		}
-		teams[i]->hasWon |= !isOtherAlive;
-		isGameEnded |= teams[i]->hasWon;
-		totalPrestige += teams[i]->prestige;
-		if (greatestPrestige < teams[i]->prestige) greatestPrestige = teams[i]->prestige;
-	}
-
-	if (totalPrestige >= prestigeToReach)
-	{
-		totalPrestigeReached=true;
-		isGameEnded=true;
-
+		totalPrestige=0;
+		isGameEnded=false;
+		int greatestPrestige=0;
+		
 		for (int i=0; i<session.numberOfTeam; i++)
-			teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
+		{
+			bool isOtherAlive=false;
+			for (int j=0; j<session.numberOfTeam; j++)
+			{
+				if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
+					isOtherAlive=true;
+			}
+			teams[i]->hasWon |= !isOtherAlive;
+			isGameEnded |= teams[i]->hasWon;
+			totalPrestige += teams[i]->prestige;
+			if (greatestPrestige < teams[i]->prestige) greatestPrestige = teams[i]->prestige;
+		}
+	
+		if (totalPrestige >= prestigeToReach)
+		{
+			totalPrestigeReached=true;
+			isGameEnded=true;
+	
+			for (int i=0; i<session.numberOfTeam; i++)
+				teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
+		}
 	}
 }
 
