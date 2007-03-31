@@ -79,17 +79,6 @@ namespace GAGGUI
 		VALUE_CHANGED,
 	};
 	
-	//! Colors used by GUI element
-	namespace ColorTheme
-	{
-		extern GAGCore::Color textColor; //!< color of text
-		extern GAGCore::Color highlightColor; //!< color of highlighted elements
-		extern GAGCore::Color frameColor; //!< base color of frames
-		extern GAGCore::Color listSelectedElementColor;
-		extern GAGCore::Color backColor; //!< background color
-		extern GAGCore::Color backOverlayColor; //!< overlay background color
-	}
-	
 	class Screen;
 	
 	//! A widget is a GUI block element

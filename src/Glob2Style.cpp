@@ -22,6 +22,13 @@
 
 Glob2Style::Glob2Style()
 {
+	textColor = Color(255, 255, 255);
+	highlightColor = Color(197, 67, 67);
+	frameColor = Color(226, 208, 148);
+	listSelectedElementColor = Color(170, 170, 240);
+	backColor = Color(0, 0, 0);
+	backOverlayColor = Color(0, 0, 40);
+	
 	sprite = Toolkit::getSprite("data/gfx/guitheme");
 };
 

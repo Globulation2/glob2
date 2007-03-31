@@ -18,6 +18,7 @@
 */
 
 #include <GUINumber.h>
+#include <GUIStyle.h>
 #include <assert.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
@@ -129,8 +130,8 @@ namespace GAGGUI
 		
 		HighlightableWidget::paint();
 		
-		parent->getSurface()->drawLine(x+m, y, x+m, y+h, ColorTheme::frameColor);
-		parent->getSurface()->drawLine(x+w-m, y, x+w-m, y+h, ColorTheme::frameColor);
+		parent->getSurface()->drawLine(x+m, y, x+m, y+h, Style::style->frameColor);
+		parent->getSurface()->drawLine(x+w-m, y, x+w-m, y+h, Style::style->frameColor);
 		
 		assert(nth>=0);
 		assert(nth<(int)numbers.size());
