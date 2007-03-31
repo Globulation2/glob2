@@ -238,10 +238,8 @@ namespace GAGGUI
 		int yPos=y+2;
 		int i=0;
 		unsigned elementLength;
-	
-		HighlightableWidget::paint();
-	
 		unsigned count = (h-4) / textHeight;
+		
 		if (strings.size() > count)
 		{
 			// draw line and arrows
@@ -269,8 +267,8 @@ namespace GAGGUI
 			{
 				blockLength = (count * leftSpace) / strings.size();
 				blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
-				parent->getSurface()->drawFilledRect(x+w-20, y+22+blockPos, 19, blockLength, Style::style->highlightColor.applyAlpha(128));
-				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, Style::style->highlightColor);
+				parent->getSurface()->drawFilledRect(x+w-20, y+22+blockPos, 17, blockLength, Style::style->highlightColor.applyAlpha(128));
+				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 17, blockLength, Style::style->highlightColor);
 			}
 			else
 			{
@@ -288,7 +286,7 @@ namespace GAGGUI
 			elementLength = w-2;
 			parent->getSurface()->setClipRect(x+1, y+1, w-2, h-2);
 		}
-	
+		
 		while ((nextSize<h-4) && ((size_t)i<strings.size()))
 		{
 			drawItem(x+2, yPos, static_cast<size_t>(i+disp));
@@ -300,6 +298,8 @@ namespace GAGGUI
 		}
 		
 		parent->getSurface()->setClipRect();
+		
+		HighlightableWidget::paint();
 	}
 	
 	void List::drawItem(int x, int y, size_t element)

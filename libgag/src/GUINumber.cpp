@@ -128,8 +128,6 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		HighlightableWidget::paint();
-		
 		parent->getSurface()->drawLine(x+m, y, x+m, y+h, Style::style->frameColor);
 		parent->getSurface()->drawLine(x+w-m, y, x+w-m, y+h, Style::style->frameColor);
 		
@@ -149,6 +147,8 @@ namespace GAGGUI
 		parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
 		int dx2=(m-fontPtr->getStringWidth("+"))/2;
 		parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
+		
+		HighlightableWidget::paint();
 	}
 	
 	void Number::add(int number)
