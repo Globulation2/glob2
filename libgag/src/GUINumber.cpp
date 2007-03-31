@@ -129,8 +129,8 @@ namespace GAGGUI
 		
 		HighlightableWidget::paint();
 		
-		parent->getSurface()->drawLine(x+m, y, x+m, y+h, ColorTheme::frontFrameColor);
-		parent->getSurface()->drawLine(x+w-m, y, x+w-m, y+h, ColorTheme::frontFrameColor);
+		parent->getSurface()->drawLine(x+m, y, x+m, y+h, ColorTheme::frameColor);
+		parent->getSurface()->drawLine(x+w-m, y, x+w-m, y+h, ColorTheme::frameColor);
 		
 		assert(nth>=0);
 		assert(nth<(int)numbers.size());

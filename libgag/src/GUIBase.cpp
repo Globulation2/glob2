@@ -18,6 +18,7 @@
 */
 
 #include <GUIBase.h>
+#include <GUIStyle.h>
 #include <assert.h>
 #include <GraphicContext.h>
 #include <cmath>
@@ -32,9 +33,10 @@ namespace GAGGUI
 {
 	namespace ColorTheme
 	{
-		// for green theme
-		Color frontColor = Color(255, 255, 255);
-		Color frontFrameColor = Color(0, 200, 100);
+		// for glob2  theme
+		Color textColor = Color(255, 255, 255);
+		Color highlightColor = Color(197, 67, 67);
+		Color frameColor = Color(226, 208, 148);
 		Color listSelectedElementColor = Color(170, 170, 240);
 		Color backColor = Color(0, 0, 0);
 		Color backOverlayColor = Color(0, 0, 40);
@@ -410,13 +412,7 @@ namespace GAGGUI
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
-		
-		unsigned val = getNextHighlightValue();
-		if (val > 0)
-		{
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, ColorTheme::frontColor.applyAlpha(val));
-		}
+		Style::style->drawFrame(parent->getSurface(), x, y, w, h, getNextHighlightValue());
 	}
 	
 	Screen::Screen()
@@ -724,5 +720,6 @@ namespace GAGGUI
 	void OverlayScreen::paint(void)
 	{
 		gfx->drawFilledRect(0, 0, getW(), getH(), ColorTheme::backOverlayColor);
+		Style::style->drawFrame(gfx, 0, 0, getW(), getH(), Color::ALPHA_TRANSPARENT);
 	}
 }

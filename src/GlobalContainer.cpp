@@ -474,11 +474,11 @@ void GlobalContainer::load(void)
 		Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
 		Toolkit::loadFont("data/fonts/sans.ttf", 10, "little");
 		menuFont = Toolkit::getFont("menu");
-		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::frontColor));
+		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::textColor));
 		standardFont = Toolkit::getFont("standard");
-		standardFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::frontColor));
+		standardFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::textColor));
 		littleFont = Toolkit::getFont("little");
-		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::frontColor));
+		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::textColor));
 
 		updateLoadProgressBar(45);
 		// load terrain data

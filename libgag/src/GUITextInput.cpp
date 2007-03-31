@@ -270,11 +270,10 @@ namespace GAGGUI
 		
 		assert(parent);
 		assert(parent->getSurface());
-	
-		recomputeTextInfos();
+		
 		HighlightableWidget::paint();
 		
-		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
+		recomputeTextInfos();
 		
 		if (password)
 		{
@@ -286,10 +285,10 @@ namespace GAGGUI
 		}
 	
 		// we draw the cursor:
-		if(activated)
+		if (activated)
 		{
 			int hbc=fontPtr->getStringHeight(text.c_str());
-			parent->getSurface()->drawLine(x+2+cursorScreenPos, y+3 , x+2+cursorScreenPos, y+3+hbc, ColorTheme::frontColor);
+			parent->getSurface()->drawLine(x+2+cursorScreenPos, y+3 , x+2+cursorScreenPos, y+3+hbc, ColorTheme::textColor);
 		}
 	}
 	

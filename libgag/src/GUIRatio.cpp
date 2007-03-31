@@ -160,9 +160,10 @@ namespace GAGGUI
 		HighlightableWidget::paint();
 		
 		if (pressed)
-			parent->getSurface()->drawRect(x+value+1, y+1, size-2, h-2, ColorTheme::frontColor);
+			parent->getSurface()->drawFilledRect(x+value+1, y+1, size-2, h-2, ColorTheme::highlightColor);
 		else
-			parent->getSurface()->drawRect(x+value+1, y+1, size-2, h-2, ColorTheme::frontFrameColor);
+			parent->getSurface()->drawRect(x+value+1, y+1, size-2, h-2, ColorTheme::frameColor);
+		//Style::style->drawFrame(parent->getSurface(), x+value+1, y+1, size-2, h-2, Color::ALPHA_TRANSPARENT);
 	
 		// We center the string
 		std::stringstream g;
