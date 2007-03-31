@@ -22,13 +22,13 @@ GuiDisable(Wall)
 GUIDisable(Hospital)
 
 show("Welcome to the Globulation 2 tutorial! This tutorial is long and in depth, so you may have to pull out lots of time to complete it. If at any time you feel as if you don't have enough time to complete the tutorial, click the menu icon, which is the small icon on the upper-left hand corner of the mini-map (which is on the upper-right hand corner of the screen), and click save. You can load your game from the main menu by clicking load again. Use the space bar to continue with messages. Some messages may disappear entirely after you hit space. This is normal.")
-show("Bienvenue dans le didacticiel de Globulation 2 ! Ce tutorial est long et détaillé, vous pouvez donc mettre quelques temps avant de le terminer. À tout moment, si vous pouvez sauvegarder votre progression pour reprendre plus tard en cliquant sur l'icone menu, qui se trouve dans coin supérieur gauche de la mini-carte (qui se trouve dans le coin supérieur droit de l'écran), puis sur sauver. Vous pouvez charger votre partie depuis le menu principale en cliquant sur charger. Utilisez la barre espace pour passer au message suivant. Certains messages peuvent disparaitre complètement une fois que vous avez appuyé sur espace, c'est normal.",fr)
+show("Bienvenue dans le didacticiel de Globulation 2 ! Ce tutorial est long et détaillé, vous aurez besoin d'un certain temps pour le terminer. À tout moment, vous pouvez sauvegarder votre progression pour reprendre plus tard. Pour ce faire, cliquez sur l'icone menu qui se trouve près du coin supérieur gauche de la mini-carte, qui elle-même se trouve dans le coin supérieur droit de l'écran, puis sur sauver. Vous pouvez charger votre partie depuis le menu principal en cliquant sur charger. Utilisez la barre espace pour passer au message suivant. Certains messages peuvent disparaitre complètement une fois que vous avez appuyé sur espace, c'est normal.",fr)
 show("Willkommen bei der Einführung in Globulation 2! Diese Einführung ist lang und sehr tiefgründig, deshalb musst du wahrscheinlich viel Zeit investieren, um diesen Unterrichtskurs zuende zu spielen. Wenn du irgendwann das Gefühl hast, nicht genug Zeit zu haben, um diese Einführung zu beenden, klicke auf das kleine Menü-Icon, welches neben der oberen linken Ecke der Minikarte platziert ist (rechte obere Ecke des Bildschirms), und klicke auf 'Speichern'. Du kannst dein gespeichertes Spiel über das Hauptmenü laden, indem du auf 'Laden' klickst. Benutze die Leertaste um mit der Anleitung fortzufahren. Einige Nachrichten verschwinden ganz, wenn du die Leertaste drückst, das ist aber ganz normal.",de)
 show("Bienvenid@s al tutorial de Globulation 2!  Este tutorial es amplio y profundo, posiblemente requerirás bastante tiempo para completarlo. Si en algún momento sientes que no tienes tiempo suficiente para completarlo, usa el ícono de menu, que está ubicado en la esquina superior izquierda del minimapa(que está en la parte superior derecha de la pantalla), y usa salvar. Puedes cargar tu juego desde el menú principal con cargar.  Usa la barra espaciadora para ir a los mensajes siguientes.  Algunos mensajes pueden desaparecer por completo cuando usas la barra, eso es normal.",es)
 space
 
 show("Let's first have a look at what's going on. You have a Swarm and a worker...")
-show("Pour commencer, nous allons observer ce qui se passe. Vous avez une ruche et une ouvrière...",fr)
+show("Pour commencer, nous allons observer ce qui se passe. Vous avez une ruche et une ou plusieurs ouvrière...",fr)
 show("Lass uns zuerst einen Blick auf das werfen, was gerade passiert. Du hast einen Stock und eine Einheit: einen Arbeiter...",de)
 show("Primero que todo, explicaremos lo que estás viendo. Una colmena y un obrero",es)
 space
@@ -40,13 +40,13 @@ show("Tu obrero recolecta maíz y lo trae a la colmena. La colmena es un edifici
 space
 
 show("Now click on your globule (the mobile unit) with your left mouse button.")
-show("Cliquez maintenant sur votre globule (l'unité qui bouge) avec le bouton gauche de votre souris.",fr)
+show("Cliquez maintenant sur un globule (une unité qui bouge) avec le bouton gauche de votre souris.",fr)
 show("Jetzt klicke auf den Arbeiter (die sich bewegende Einheit) mit deiner linken Maustaste.",de)
 show("Selecciona tu glóbulo(la unidad móvil) con el botón izquierdo del ratón, click.",es)
 space
 
 show("Look on the right side of the screen. It now shows information about that globule. As you can see, its food level is decreasing with time. This means that the globule is getting more and more hungry. The blue bar under the globule reflects its decreasing level of nutrition.")
-show("Observez la partie droite de l'écran. Elle présente maintenant des informations sur le globule. Vous pouvez voir son niveau de nutrition diminuer petit à petit ce qui signifie qu'il a de plus en plus fin. Ces informations sont reprise par la barre bleue sous le globule.",fr)
+show("Observez la partie droite de l'écran. Elle présente maintenant des informations sur le globule. Vous pouvez voir son niveau de nutrition diminuer petit à petit, ce qui signifie qu'il a de plus en plus faim. Ces informations sont reprises par la barre bleue sous le globule.",fr)
 show("Schaue auf die rechte Seite deines Bildschirms. Diese zeigt dir nun Informationen über den Arbeiter. Wie du sehen kannst, verringert sich sein Nahrungssvorrat mit der Zeit, das bedeutet, dass er mehr und mehr Hunger bekommt. Der blaue Balken unter dem Arbeiter zeigt seinen abnehmenden Vorrat an Nahrung an.",de)
 show("Mira hacia la derecha en la pantalla. Se muestra información acerca del glóbulo.  El nivel de comida decrece con el tiempo, esto significa que el glóbulo cada vez tiene más hambre. La barra azul bajo el glóbulo refleja su decreciente nivel de alimento",es)
 space
@@ -58,7 +58,7 @@ show("Tu glóbulo necesita una taberna dónde alimentarse. Deselecciona tu glób
 space
 
 show("Now construct an Inn. To do that, click on the first icon under the mini-map (right now there is only one, but as we will see later, there can be several), then on the Inn icon. Now place your Inn near a wheat field. The wheat may be hard to see, but if you follow the path that your globule took when it was harvesting, you will find one. When you're done placing the Inn, exit construction mode by clicking the right mouse button.")
-show("Construisez maintenant une auberge. Pour cela, cliquez sur la première icone sous la mini-carte (pour l'instant, il n'y en a qu'une, mais il peut y en avoir plusieurs, comme nous le verrons plus loin), puis sur l'icone de l'auberge. Placez maintenant votre auberge près d'un champ de blé. Le blé peut etre difficile à voir, mais si vous suivez le chemin qu'a pris votre globule lorsqu'il récoltait, vous en trouverez. Lorsque vous avez positionné votre auberge, sortez du mode construction en cliquant sur le bouton droit de la souris.",fr)
+show("Construisez maintenant une auberge. Pour cela, cliquez sur la première icone sous la mini-carte (pour l'instant, il n'y en a qu'une, mais il peut y en avoir plusieurs, comme nous le verrons plus loin), puis sur l'icone de l'auberge. Placez maintenant votre auberge près d'un champ de blé. Le blé peut être difficile à voir, mais si vous suivez le chemin qu'a pris votre globule lorsqu'il en récoltait, vous en trouverez. Lorsque vous avez positionné votre auberge, sortez du mode construction en cliquant sur le bouton droit de la souris.",fr)
 show("Baue jetzt einen Gasthof. Um dies zu tun klicke auf das erste Icon unter der Minikarte (zur Zeit befindet sich dort nur eines, aber wir werden später sehen, dass es durchaus mehrere sind), dann auf das Gasthof-Icon. Jetzt platziere deinen Gasthof in der Nähe eines Weizenfeldes. Der Weizen ist möglicherweise schwer zu sehen, aber wenn du deinem Arbeiter folgst, der Weizen einsammelt, wirst du eines finden. Wenn du es gefunden hast platziere den Gasthof und verlasse den Bau-Modus mit einem rechten Mausklick.",de)
 show("Ahora, construye una taberna.  Para lograrlo, haz clic en el primer botón debajo del mini-mapa (en este momento debe haber uno solamente, pero como veremos más adelante, puede haber muchos), ahora en el ícono taberna.  Coloca tu taberna cerca a un campo de maíz. El maíz puede ser difícil de ver, pero si sigues el camino que tu glóbulo siguió cuando estaba recolectando, encontrarás uno.  Cuando hayas colocado la taberna, sal del modo construcción con el botón derecho del ratón.",es)
 wait(Inn(0,0) > 0)
@@ -71,7 +71,7 @@ show("Bien...",es)
 space
 
 show("Your building site has been placed. You probably saw a second worker appear out of the Swarm, the second worker will work at the Inn. The Inn needs wood to be constructed, so the worker will head over to the nearest forest and harvest some wood to help put the building together. It is just a matter of time before the building will be finished..")
-show("Votre site de construction a été placé. Une seconde ouvrière est probablement sorti de la ruche, elle travaillera à l'auberge. Pour la construire, elle va avoir besoin de bois qu'elle récoltera dans la foret la plus proche. Ce n'est qu'une question de temps avant que votre bâtiment ne soit terminé.",fr)
+show("Votre site de construction a été placé. Une seconde ouvrière est probablement sortie de la ruche, elle travaillera à l'auberge. Pour la construire, elle va avoir besoin de bois qu'elle récoltera dans la forêt la plus proche. Ce n'est qu'une question de temps avant que votre bâtiment ne soit terminé.",fr)
 show("Eine neue Baustelle wurde erstellt. Vielleicht hast du den zweiten Arbeiter gesehen, der aus dem Stock kam - der zweite Arbeiter wird am Gasthof arbeiten. Der Gasthof benötigt Holz um errichtet zu werden. Deshalb wird der Arbeiter zum nächstgelegenen Wald gehen um Holz zu sammeln und das Gebäude zu errichten. Es ist nur eine Frage der Zeit bis es fertig ist ...",de)
 show("Has elegido el sitio en el cual estará la taberna.  Probablemente viste un segundo trabajador aparecer de la colmena, el segundo trabajará en la taberna.  La taberna necesita madera para construirse.  Así que el trabajador irá al bosque más cercano para traer madera a la construcción.   Espera un rato a que la construcción esté lista..",es)
 space
@@ -85,19 +85,19 @@ show("Una vez que la taberna esté lista, un trabajador que esté libre comenzar
 space
 
 show("Looking at the Inn, you'll see a yellow bar that is rising as the globule harvests more wheat. As you may have guessed, this bar represents how much wheat is in the Inn.")
-show("En regardant l'auberge de plus près, vous constaterez qu'elle dispose d'une barre jaune, qui croit au fur et à mesure que le globule récolte du blé. Comme vous l'avez peut-etre deviné, il s'agit de la réserve de blé de l'auberge.",fr)
+show("En regardant l'auberge de plus près, vous constaterez qu'elle dispose d'une barre jaune, qui croit au fur et à mesure que le globule récolte du blé. Comme vous l'avez peut-être deviné, il s'agit de la réserve de blé de l'auberge.",fr)
 show("Schau auf den Gasthof, du siehst einen gelben Balken, der wächst, wenn der Arbeiter Weizen bei ihm abläd. Wie du richtig vermutest, repräsentiert dieser Balken die Menge an Weizen im Gasthof.",de)
 show("Cerca a la taberna verás una barra amarilla, que crece a medida que el glóbulo recolecta maíz.  Como lo debes haber deducido, esta barra representa cuanto maíz hay en la taberna.",es)
 space
 
 show("Now, let's have a look at the task system.")
-show("À présent, attardons-nous un peu sur le système de taches.",fr)
+show("À présent, attardons-nous un peu sur le système de tâches.",fr)
 show("Lass uns jetzt das Task-System anschauen",de)
 show("Ahora veamos el sistema de tareas",es)
 space
 
 show("For now, you have one unit bringing food to the Swarm and the second one to the Inn. One of the two units may be inside the Inn eating right now. This is ok.")
-show("Pour l'instant, vous avez une ouvrière qui amène du blé à la ruche et l'autre à l'auberge. L'une des deux peut se trouver à l'intérieur de l'auberge pour l'instant, elle mange. Tout va bien.",fr)
+show("Pour l'instant, vous avez une ouvrière qui amène du blé à la ruche et l'autre à l'auberge. L'une des deux peut se trouver à l'intérieur de l'auberge, elle mange. Tout va bien.",fr)
 show("Fürs Erste hast du einen Arbeiter, der Essen zum Stock bringt und einen zweiten, der Essen zum Gasthof befördert. Einer der zwei befindet sich vielleicht im Gasthof um zu essen. Das ist OK.",de)
 show("En este momento tienes una unidad trayendo comida a la colmena y una segunda a la taberna. Una de las dos puede estar dentro de la taberna,en este momento, comiendo. Lo cuál está bien.",es)
 space
@@ -107,6 +107,8 @@ show("Cliquez sur la ruche. Si vous regardez à nouveau la partie droite de l'é
 show("Klicke auf den Stock. Wenn du nun auf die rechte Seitenleiste schaust, wird dir eine Leiste mit dem Namen 'An der Arbeit' auffallen. Diese Leiste zeigt dir, wie viele Arbeiter dem Stock zugeteilt sind.",de)
 show("Selecciona la colmena. Si miras hacia la derecha de nuevo, verás que hay una barra en la parte superior titulada 'Trabajando'. Esta barra dice cuántas unidades deseas tener asignadas a la colmena.",es)
 space
+
+TODO CONTINUE HERE
 
 show("You will notice that on either side of the bar, there are two arrows. You can use the arrows to either increase or decrease the number of notches on the bar, and thus the number of units assigned to the building. Decrease the number of units assigned to the Swarm to 0, and then do the same thing for the Inn.")
 show("Vous remarquerez que de chaque coté de la barre se trouvent deux fl_che. Vous pouvez les utiliser pour augmenter ou diminuer le nombre d'unités assignées au bâtiment. Placez le nombre d'unités affectées à la Ruche à 0 et faites demêmepour l'auberge.", fr)

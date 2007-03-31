@@ -82,8 +82,9 @@ namespace GAGGUI
 	//! Colors used by GUI element
 	namespace ColorTheme
 	{
-		extern GAGCore::Color frontColor; //!< front elements color
-		extern GAGCore::Color frontFrameColor; //!< front frame elements color
+		extern GAGCore::Color textColor; //!< color of text
+		extern GAGCore::Color highlightColor; //!< color of highlighted elements
+		extern GAGCore::Color frameColor; //!< base color of frames
 		extern GAGCore::Color listSelectedElementColor;
 		extern GAGCore::Color backColor; //!< background color
 		extern GAGCore::Color backOverlayColor; //!< overlay background color

@@ -71,7 +71,7 @@ void EndGameStat::paint(void)
 	assert(parent->getSurface());
 	
 	// draw background
-	parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
+	parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frameColor);
 	
 	if(game->teams[0]->stats.endOfGameStats.size()==0)
 		return;

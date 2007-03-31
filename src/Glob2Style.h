@@ -33,6 +33,7 @@ public:
 
 protected:
 	virtual void drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
+	virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 	
 protected:
 	Sprite *sprite;

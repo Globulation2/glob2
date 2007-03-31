@@ -95,3 +95,55 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 	else
 		Style::drawTextButtonBackground(target, x, y, w, h, highlight);
 }
+
+void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, unsigned highlight)
+{
+	/*
+		Sprites index are:
+		
+		12			13			14
+		15						16
+		17			18			19
+		
+		Width of sprites 13 and 18 must be the same
+		Width of sprites 12, 15 and 17 must be the same
+		Width of sprites 14, 16 and 19 must be the same
+		Height of sprites 15 and 16 must be the same
+		Height of sprites 12, 13 and 14 must be the same
+		Height of sprites 17, 18 and 19 must be the same
+	*/
+	
+	// save cliprect
+	int ocrX, ocrY, ocrW, ocrH;
+	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
+	
+	// top, bottom
+	int contentX = x + sprite->getW(12);
+	int contentWidth = w - sprite->getW(12) - sprite->getW(14);
+	target->setClipRect(contentX, y, contentWidth, h);
+	for (int i = 0; i < contentWidth; i += sprite->getW(13))
+	{
+		target->drawSprite(contentX + i, y, sprite, 13);
+		target->drawSprite(contentX + i, y + h - sprite->getH(18), sprite, 18);
+	}
+	
+	// left, right
+	int contentY = y + sprite->getH(12);
+	int contentHeight = h - sprite->getH(12) - sprite->getH(17);
+	target->setClipRect(x, contentY, w, contentHeight);
+	for (int i = 0; i < contentHeight; i += sprite->getH(15))
+	{
+		target->drawSprite(x, contentY + i, sprite, 15);
+		target->drawSprite(x + w - sprite->getW(16), contentY + i, sprite, 16);
+	}
+	
+	// reset cliprect
+	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
+	
+	// corners
+	target->drawSprite(x, y, sprite, 12);
+	target->drawSprite(x + w - sprite->getW(14), y, sprite, 14);
+	target->drawSprite(x, y + h - sprite->getH(17), sprite, 17);
+	target->drawSprite(x + w - sprite->getW(19), y + h - sprite->getH(19), sprite, 19);
+}
+

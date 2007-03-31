@@ -65,7 +65,7 @@ namespace GAGGUI
 	}
 	
 	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const char *text, const char *spritelocation)
-		: RectangularWidget(tooltip, tooltipFont)
+		: HighlightableWidget(tooltip, tooltipFont)
 	{
 		this->x = x;
 		this->y = y;
@@ -478,10 +478,11 @@ namespace GAGGUI
 		
 		assert(parent);
 		assert(parent->getSurface());
-	
+		
+		HighlightableWidget::paint();
+		
 		areaHeight=(h-8)/charHeight;
 		parent->getSurface()->setClipRect(x, y, w, h);
-		parent->getSurface()->drawRect(x, y, w, h, ColorTheme::frontFrameColor);
 		
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
@@ -512,7 +513,7 @@ namespace GAGGUI
 		{
 			int xPos = x+4+cursorScreenPosY;
 			int yPos = y+4+(charHeight*(cursorPosY-areaPos));
-			parent->getSurface()->drawLine(xPos, yPos, xPos, yPos + charHeight, ColorTheme::frontColor);
+			parent->getSurface()->drawLine(xPos, yPos, xPos, yPos + charHeight, ColorTheme::textColor);
 		}
 		parent->getSurface()->setClipRect();
 	}
