@@ -96,7 +96,7 @@ GlobalContainer::GlobalContainer(void)
 GlobalContainer::~GlobalContainer(void)
 {
 	// unlink GUI style
-	delete Style::style;
+	if(!runNoX) delete Style::style;
 	Style::style = &defaultStyle;
 	
 	// release unit skins
