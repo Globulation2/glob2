@@ -225,6 +225,6 @@ void MapPreview::paint(void)
 		int sh = standardFont->getStringHeight(line0);
 		parent->getSurface()->drawString(x+((128-sw0)>>1), y+64-sh, standardFont, line0);
 		parent->getSurface()->drawString(x+((128-sw1)>>1), y+64, standardFont, line1);
-		Style::style->drawFrame(parent->getSurface(), x, y, 128, 128, Color::ALPHA_TRANSPARENT);
 	}
+	Style::style->drawFrame(parent->getSurface(), x, y, 128, 128, Color::ALPHA_TRANSPARENT);
 }

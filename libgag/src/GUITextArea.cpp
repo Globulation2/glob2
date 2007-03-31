@@ -18,6 +18,7 @@
 */
 
 #include <GUITextArea.h>
+#include <GUIStyle.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <StreamBackend.h>
@@ -513,7 +514,7 @@ namespace GAGGUI
 		{
 			int xPos = x+4+cursorScreenPosY;
 			int yPos = y+4+(charHeight*(cursorPosY-areaPos));
-			parent->getSurface()->drawLine(xPos, yPos, xPos, yPos + charHeight, ColorTheme::textColor);
+			parent->getSurface()->drawLine(xPos, yPos, xPos, yPos + charHeight, Style::style->textColor);
 		}
 		parent->getSurface()->setClipRect();
 	}

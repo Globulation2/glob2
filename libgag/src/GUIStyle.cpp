@@ -26,13 +26,16 @@ namespace GAGGUI
 {
 	Style defaultStyle;
 	
-	Color Style::frontColor = Color(255, 255, 255);
-	Color Style::frontFrameColor = Color(0, 200, 100);
-	Color Style::listSelectedElementColor = Color(170, 170, 240);
-	Color Style::backColor = Color(0, 0, 0);
-	Color Style::backOverlayColor = Color(0, 0, 40);
 	Style *Style::style = &defaultStyle;
 	
+	Style::Style()
+	{
+		textColor = highlightColor = Color(255, 255, 255);
+		frameColor = Color(0, 200, 100);
+		listSelectedElementColor = Color(170, 170, 240);
+		backColor = Color(0, 0, 0);
+		backOverlayColor = Color(0, 0, 40);
+	}
 	
 	void Style::drawOnOffButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, bool state)
 	{
@@ -53,8 +56,8 @@ namespace GAGGUI
 	
 	void Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, unsigned highlight)
 	{
-		target->drawRect(x, y, w, h, frontFrameColor);
+		target->drawRect(x, y, w, h, frameColor);
 		if (highlight > 0)
-			target->drawRect(x+1, y+1, w-2, h-2, frontColor.applyAlpha(highlight));
+			target->drawRect(x+1, y+1, w-2, h-2, frameColor.applyAlpha(highlight));
 	}
 }

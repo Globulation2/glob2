@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -200,7 +200,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
 			printf("* YOG Protocol version %d\n\n", YOG_PROTOCOL_VERSION);
 			printf("This program and all related materials are GPL, see COPYING for details.\n");
-			printf("(C) 2001-2005 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
+			printf("(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
 			printf("See AUTHORS for a full list.\n\n");
 			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
 			exit(0);
@@ -474,11 +474,11 @@ void GlobalContainer::load(void)
 		Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
 		Toolkit::loadFont("data/fonts/sans.ttf", 10, "little");
 		menuFont = Toolkit::getFont("menu");
-		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::textColor));
+		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");
-		standardFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::textColor));
+		standardFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		littleFont = Toolkit::getFont("little");
-		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::ColorTheme::textColor));
+		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 
 		updateLoadProgressBar(45);
 		// load terrain data

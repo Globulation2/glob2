@@ -18,6 +18,7 @@
 */
 
 #include <GUIRatio.h>
+#include <GUIStyle.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <assert.h>
@@ -160,9 +161,9 @@ namespace GAGGUI
 		HighlightableWidget::paint();
 		
 		if (pressed)
-			parent->getSurface()->drawFilledRect(x+value+1, y+1, size-2, h-2, ColorTheme::highlightColor);
+			parent->getSurface()->drawFilledRect(x+value+1, y+1, size-2, h-2, Style::style->highlightColor);
 		else
-			parent->getSurface()->drawRect(x+value+1, y+1, size-2, h-2, ColorTheme::frameColor);
+			parent->getSurface()->drawRect(x+value+1, y+1, size-2, h-2, Style::style->frameColor);
 		//Style::style->drawFrame(parent->getSurface(), x+value+1, y+1, size-2, h-2, Color::ALPHA_TRANSPARENT);
 	
 		// We center the string

@@ -31,17 +31,6 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	namespace ColorTheme
-	{
-		// for glob2  theme
-		Color textColor = Color(255, 255, 255);
-		Color highlightColor = Color(197, 67, 67);
-		Color frameColor = Color(226, 208, 148);
-		Color listSelectedElementColor = Color(170, 170, 240);
-		Color backColor = Color(0, 0, 0);
-		Color backOverlayColor = Color(0, 0, 40);
-	}
-	
 	// this function support base unicode (UCS16)
 	void UCS16toUTF8(Uint16 ucs16, char utf8[4])
 	{
@@ -652,7 +641,7 @@ namespace GAGGUI
 	
 	void Screen::paint(void)
 	{
-		gfx->drawFilledRect(0, 0, getW(), getH(), ColorTheme::backColor);
+		gfx->drawFilledRect(0, 0, getW(), getH(), Style::style->backColor);
 	}
 	
 	int Screen::getW(void)
@@ -719,7 +708,7 @@ namespace GAGGUI
 	
 	void OverlayScreen::paint(void)
 	{
-		gfx->drawFilledRect(0, 0, getW(), getH(), ColorTheme::backOverlayColor);
+		gfx->drawFilledRect(0, 0, getW(), getH(), Style::style->backOverlayColor);
 		Style::style->drawFrame(gfx, 0, 0, getW(), getH(), Color::ALPHA_TRANSPARENT);
 	}
 }

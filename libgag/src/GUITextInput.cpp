@@ -18,6 +18,7 @@
 */
 
 #include <GUITextInput.h>
+#include <GUIStyle.h>
 #include <assert.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
@@ -288,7 +289,7 @@ namespace GAGGUI
 		if (activated)
 		{
 			int hbc=fontPtr->getStringHeight(text.c_str());
-			parent->getSurface()->drawLine(x+2+cursorScreenPos, y+3 , x+2+cursorScreenPos, y+3+hbc, ColorTheme::textColor);
+			parent->getSurface()->drawLine(x+2+cursorScreenPos, y+3 , x+2+cursorScreenPos, y+3+hbc, Style::style->textColor);
 		}
 	}
 	
