@@ -37,7 +37,7 @@ Sinaasappelen
 [Prune]
 Pruimen
 [Clearing:]
-Inzamelen:
+Verzamelen:
 [Min required level:]
 Minimaal vereist niveau:
 [Bullets]
@@ -51,7 +51,7 @@ Vernietigen annuleren
 [wait destroy]
 Wordt vernietigd
 [upgrade]
-Verbeteren
+Verbeter
 [repair]
 Repareren
 [cancel upgrade]
@@ -81,7 +81,7 @@ Nog
 [still one unit working]
 Nog één eenheid aan het werk
 [Still (i)]
-Nog 
+Nog
 [Still one]
 Nog één
 [Building name]
@@ -101,13 +101,13 @@ Kazerne
 [science building]
 School
 [defense building]
-Uitkijktoren
+Toren
 [exploration flag]
 Verkenningsvlag
 [war flag]
-Oorlogsvlaf
+Oorlogsvlag
 [clearing flag]
-Inzamelvlag
+Grondstoffenvlag
 [stone wall]
 Stenen muur
 [market]
@@ -117,7 +117,7 @@ Verboden zone
 [guard area]
 Verdedigingszone
 [clear area]
-Inzamel zone
+Grondstoffen zone
 [Building short explanation]
 Korte beschrijving van het gebouw (max. 24 tekens)
 [swarm building explanation]
@@ -149,11 +149,11 @@ Verhandel fruit
 [Building short explanation 2]
 Korte beschrijving van het gebouw 2 (max. 24 tekens)
 [swarm building explanation 2]
- 
+
 [food building explanation 2]
- 
+
 [health building explanation 2]
- 
+
 [walkspeed building explanation 2]
 sneller lopen
 [swimspeed building explanation 2]
@@ -169,7 +169,7 @@ het terrein te verkennen
 [war flag explanation 2]
 om aan te vallen
 [clearing flag explanation 2]
-in te zamelen
+grondstoffen te verzamelen
 [stone wall explanation 2]
 element
 [market explanation 2]
@@ -217,7 +217,7 @@ LAN Spel
 [settings]
 Instellingen
 [Warning, you need to reboot the game for changes to take effect]
-Let op, je moet het spel opnieuw opstarten voordat de veranderingen worden doorgevoerd
+Let op, je moet het spel opnieuw opstarten om de veranderingen te activeren
 [editor]
 Speelveld maken
 [credits]
@@ -305,13 +305,13 @@ De kazerne is af
 [the science building is finished]
 De school is af
 [the tower building is finished]
-De uitkijktoren is af
+De toren is af
 [the exploration flag is finished]
 ?? De verkenningsvlag is klaar ??
 [the war flag is finished]
 ?? De oorlogsvlag is klaar ??
 [the clearing flag is finished]
-?? De inzamelvlag is klaar ??
+?? De grondstoffenvlag is klaar ??
 [the stone wall is finished]
 Er is een stuk muur af
 [the market is finished]
@@ -339,7 +339,7 @@ Je defensie ligt onder vuur
 [the war flag is under attack]
 ?? De oorlogsvlag wordt aangevallen ??
 [the clearing flag is under attack]
-?? De inzamelvlag wordt aangevallen ??
+?? De grondstoffenvlag wordt aangevallen ??
 [the stone wall is under attack]
 De vijand nadert je muren
 [the market is under attack]
@@ -397,7 +397,7 @@ Zwemmen
 [Build]
 Bouwen
 [Harvest]
-Inzamelen
+Verzamelen
 [At. speed]
 Snelheid
 [At. strength]
@@ -405,7 +405,7 @@ Kracht
 [Magic At. Air]
 Luchtschade
 [Magic At. Ground]
-Gronsschade
+Grondschade
 [Total]
 Totaal
 [free]
@@ -471,7 +471,7 @@ Snelheid
 [current speed]
 Huidige snelheid
 [attack speed]
-Aanvalskracht
+Aanvalssnelheid
 [new]
 Nieuw
 [load]
@@ -529,7 +529,7 @@ Compileer script
 [downloaded at]
 Downloaden op
 [percent]
-  procent
+ procent
 [download finished]
 Klaar met downloaden
 [Map name: %0]
@@ -615,7 +615,7 @@ Auto opslaan
 [Total prestige reached]
 Totaal verworven roem
 [Continue playing]
-Speel verder 
+Speel verder
 [Lost : your colony is dead]
 Verloren: je kolonie is dood
 [Won : you defeated your opponents]
@@ -709,7 +709,7 @@ krater dochtheid
 [press space]
 Druk op spatie om verder te gaan
 [GUIMapPreview text 0]
-Kies a.u.b.
+Kies hier
 [GUIMapPreview text 1]
 een speelveld
 [Unit editor]
@@ -718,4 +718,3 @@ Eenheid bewerken
 Uiterlijk
 [hungryness]
 Honger
-
