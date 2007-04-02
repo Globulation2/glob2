@@ -3555,7 +3555,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	// if paused, tint the game area
-	if (gamePaused && false)
+	if (gamePaused)
 	{
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), 0, 0, 0, 127);
 		const char *s = Toolkit::getStringTable()->getString("[Paused]");
