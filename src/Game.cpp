@@ -28,6 +28,7 @@
 #include <functional>
 #include <algorithm>
 #include <sstream>
+#include <cmath>
 
 #include <FileManager.h>
 #include <GraphicContext.h>
@@ -2420,48 +2421,37 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			{
 				int rx=(x+viewportX)%map.getW();
 				int ry=(y+viewportY)%map.getH();
-				if((*overlayMap)[latest->getPos(rx, ry)])
+				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 				{
-					if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+					if((*overlayMap)[latest->getPos(rx, ry)])
 					{
 						const int value_c=(*overlayMap)[latest->getPos(rx, ry)];
-						const int alpha_c=40+int(float(160)/float(overlayMax) * float(value_c));
+						const int alpha_c=int(float(200)/float(overlayMax) * float(value_c));
 						globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
 					}
-					else
+				}
+				else
+				{
+					for(int px=0; px<4; ++px)
 					{
-						const int value_c=(*overlayMap)[latest->getPos(rx, ry)];
-						const int value_u=(*overlayMap)[latest->getPos(rx, ry-1)];
-						const int value_d=(*overlayMap)[latest->getPos(rx, ry+1)];
-						const int value_l=(*overlayMap)[latest->getPos(rx-1, ry)];
-						const int value_r=(*overlayMap)[latest->getPos(rx+1, ry)];
-						const int alpha_c=int(float(200)/float(overlayMax) * float(value_c));
-						const int alpha_u=int(float(200)/float(overlayMax) * float(value_u));
-						const int alpha_d=int(float(200)/float(overlayMax) * float(value_d));
-						const int alpha_l=int(float(200)/float(overlayMax) * float(value_l));
-						const int alpha_r=int(float(200)/float(overlayMax) * float(value_r));
-//						const float edge_u_alpha=float(alpha_u+alpha_c)/2;
-//						const float edge_l_alpha=float(alpha_l+alpha_c)/2;
-//						const float edge_r_alpha=float(alpha_r+alpha_c)/2;
-//						const float edge_d_alpha=float(alpha_d+alpha_c)/2;
-						const float edge_u_alpha=float(alpha_u);
-						const float edge_l_alpha=float(alpha_l);
-						const float edge_r_alpha=float(alpha_r);
-						const float edge_d_alpha=float(alpha_d);
-						const float vertical_increment=float(edge_u_alpha - edge_d_alpha)/float(32);
-						const float horizontal_increment=float(edge_l_alpha - edge_r_alpha)/float(32);
-						for(int px=0; px<4; ++px)
+						for(int py=0; py<4; ++py)
 						{
-							for(int py=0; py<4; ++py)
-							{
-	
-								const int pby=(4-py)*8;
-								const int pbx=(4-px)*8;
-								const float vertical_g=float(vertical_increment*pby+edge_d_alpha);
-								const float horizontal_g=float(horizontal_increment*pbx+edge_r_alpha);
-								int alpha=int(horizontal_g + vertical_g)/2;
-								globalContainer->gfx->drawFilledRect((x<<5)+px*8, (y<<5)+py*8, 8, 8, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha));
-							}
+							//fx and fy represent how far along the gradient the values should be
+							float fx = (float(px)/4.0f);
+							float fy = (float(py)/4.0f);
+							//bx and by represent the base position. Since the maximum height
+							//is at the center if the square, pixels before this are interpolated
+							//between the squares that are before this one
+							int b_val=(*overlayMap)[latest->getPos(rx, ry)];
+							int d_val=(*overlayMap)[latest->getPos(rx, map.normalizeY(ry+1))];
+							int r_val=(*overlayMap)[latest->getPos(map.normalizeX(rx+1), ry)];
+							int dr_val=(*overlayMap)[latest->getPos(map.normalizeX(rx+1), map.normalizeY(ry+1))];
+							float n_top = interpolateValues(b_val, r_val, fx);
+							float n_bottom = interpolateValues(d_val, dr_val, fx);
+							float n_vertical = interpolateValues(n_top, n_bottom, fy);
+							const int alpha_c=int(float(200)/float(overlayMax) * float(n_vertical));
+							if(alpha_c>0)
+								globalContainer->gfx->drawFilledRect((x<<5)+px*8, (y<<5)+py*8, 8, 8, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
 						}
 					}
 				}
@@ -2469,6 +2459,15 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		}
 	}
 }
+
+
+float Game::interpolateValues(float a, float b, float x)
+{
+	float ft = 3.141592653f * x;
+	float f = (1.0f - std::cos(ft)) * 0.5f;
+	return  a*(1.0-f) + b*f;
+}
+	
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
