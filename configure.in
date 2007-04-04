@@ -1,7 +1,7 @@
 AC_PREREQ(2.59)
-AC_INIT([Globulation 2], 0.8.21, [glob2-devel@nongnu.org], glob2)
+AC_INIT([Globulation 2], 0.8.22, [glob2-devel@nongnu.org], glob2)
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(glob2, 0.8.21)
+AM_INIT_AUTOMAKE(glob2, 0.8.22)
 
 AC_CONFIG_SRCDIR([src/Game.cpp])
 AM_CONFIG_HEADER(config.h)
