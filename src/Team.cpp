@@ -535,6 +535,7 @@ void Team::clearLists(void)
 	buildingsWaitingForDestruction.clear();
 	buildingsToBeDestroyed.clear();
 	buildingsTryToBuildingSiteRoom.clear();
+	buildingsNeedingUnits.clear();
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
