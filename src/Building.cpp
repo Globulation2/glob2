@@ -1355,7 +1355,7 @@ void Building::subscribeToBringRessourcesStep()
 					if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
 					{
 						int value=dist-(timeLeft>>1);
-						int level = unit->level[HARVEST];
+						int level = unit->level[HARVEST]*10 + unit->level[WALK];
 						unit->destinationPurprose=r;
 						fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 						if ((level>maxLevel) || (level==maxLevel && value<minValue))
@@ -1400,7 +1400,7 @@ void Building::subscribeToBringRessourcesStep()
 									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
-										int level = unit->level[HARVEST];
+										int level = unit->level[HARVEST]*10 + unit->level[WALK];
 										if ((level>maxLevel) || (level==maxLevel && value<minValue))
 										{
 											unit->destinationPurprose=r;
@@ -1451,7 +1451,7 @@ void Building::subscribeToBringRessourcesStep()
 									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
-										int level = unit->level[HARVEST];
+										int level = unit->level[HARVEST]*10 + unit->level[WALK];
 										if ((level>maxLevel) || (level==maxLevel && value<minValue))
 										{
 											unit->destinationPurprose=r;
