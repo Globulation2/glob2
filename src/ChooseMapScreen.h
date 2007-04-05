@@ -29,6 +29,7 @@ namespace GAGGUI
 	class Button;
 	class Text;
 	class Number;
+	class OnOffButton;
 }
 class Glob2FileList;
 class MapPreview;
@@ -65,11 +66,13 @@ protected:
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
 	// The number information about selected map
 	Number *prestigeRatio;
 	//! True when the selected map is valid
 	bool validMapSelected;
+	OnOffButton *useVarPrestige; //determines if custom prestige will be used
+	bool useNewPrestige;
 	SessionGame session;
 
 public:

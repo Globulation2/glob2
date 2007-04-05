@@ -71,8 +71,14 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	mapDate=new Text(440, 60+128+125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapDate);
 	
-	globalContainer->settings.tempVarPrestige = 3000;
-	prestigeRatio=new Number(20, 20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	globalContainer->settings.tempVarPrestige = 0;
+	useNewPrestige = false;
+	useVarPrestige=new OnOffButton(466, 37, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, useNewPrestige, useNewPrestige);
+	addWidget(useVarPrestige);
+	varPrestigeText=new Text(460, 37, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", "Custom Prestige");
+	addWidget(varPrestigeText);
+	
+	prestigeRatio=new Number(466, 15, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	prestigeRatio->add(0);
 	prestigeRatio->add(0);
 	prestigeRatio->add(100);
@@ -143,6 +149,19 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
 		}
 		delete stream;
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if (useVarPrestige->getState() == false)
+		{
+			prestigeRatio->visible=false;
+			globalContainer->settings.tempVarPrestige = 3000;
+		}
+		else if (useVarPrestige->getState() == true)
+		{
+			prestigeRatio->visible=true;
+			globalContainer->settings.tempVarPrestige=(prestigeRatio->getNth() - 1) * 100;
+		}
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
 	{

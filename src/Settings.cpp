@@ -54,7 +54,8 @@ Settings::Settings()
 	restoreDefaultShortcuts();
 	tempUnit = 1;
 	tempUnitFuture = 1;
-	//whie a little ugly this is to prevent session.cpp from overriding varPrestige once map is chosen
+	//while a little ugly it is necessary to store varPrestige within settings 
+	//to prevent session.cpp from overriding variable once map is chosen
 	tempVarPrestige = 0;
 	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 	{
