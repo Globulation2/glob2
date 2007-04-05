@@ -31,6 +31,7 @@ namespace GAGGUI
 	class Text;
 	class TextButton;
 	class Number;
+	class OnOffButton;
 }
 class MapPreview;
 
@@ -55,8 +56,10 @@ private:
 	Text *title;
 	TextButton *toogleButton;
 	MapPreview *mapPreview;
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate/*, *methode*/;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
 	Number *prestigeRatio;
+	OnOffButton *useVarPrestige; //determines if custom prestige will be used
+	bool useNewPrestige;
 	bool validSessionInfo;
 	bool shareOnYOG;
 

@@ -153,6 +153,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (par1==CONNECT)
 		{
+			globalContainer->settings.tempVarPrestige = 3000;
 			multiplayersJoin->tryConnection(false);
 		}
 		else if (par1==QUIT)

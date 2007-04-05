@@ -73,8 +73,14 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	gameFileList->visible=!mapMode;
 	validSessionInfo=false;
 	
-	globalContainer->settings.tempVarPrestige = 3000;
-	prestigeRatio=new Number(20, 20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	globalContainer->settings.tempVarPrestige = 0;
+	useNewPrestige = false;
+	/*useVarPrestige=new OnOffButton(466, 37, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, useNewPrestige, useNewPrestige);
+	addWidget(useVarPrestige);
+	varPrestigeText=new Text(460, 37, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", "Custom Prestige");
+	addWidget(varPrestigeText);*/
+	
+	prestigeRatio=new Number(466, 20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	prestigeRatio->add(0);
 	prestigeRatio->add(0);
 	prestigeRatio->add(100);
@@ -98,8 +104,18 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	prestigeRatio->add(1900);
 	prestigeRatio->add(2000);
 	prestigeRatio->setNth(1);
-	prestigeRatio->visible=false;
+	prestigeRatio->visible=false; 
 	addWidget(prestigeRatio);
+	/*due to an inability by me to synchronize varPrestige in multiplayer games this
+	 * feature has been disabled completely in multiplayer games. In order to 
+	 * activate custom prestige for multiplayer remember to remove line
+	 * globalContainer->settings.tempVarPrestige = 3000
+	 * within both MultiplayersChooseMapScreen.cpp and MultiplayersJoinMapScreen.cpp
+	 * custom prestige settings currently have 3 range of value. A value of 0 results
+	 * in infinite prestige (essentially turning it off). A value > 2000 (I use 3000)
+	 * results in game reverting to original prestige calculations. Finally, any
+	 * value > 0 and <= 2000 is a set custom prestige setting. 
+	 */
 }
 
 MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
@@ -162,12 +178,18 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		if (source==ok)
 		{
 			if (validSessionInfo)
+			{
+				//remove following when reactivating custom prestige settings
+				globalContainer->settings.tempVarPrestige = 3000;
 				endExecute(OK);
+			}
 			else
 				std::cerr << "MultiplayersChooseMapScreen::onAction : No valid game selected" << std::endl;
 		}
 		else if (source==cancel)
+		{
 			endExecute(par1);
+		}
 		else if (source==toogleButton)
 		{
 			mapMode=!mapMode;
@@ -186,7 +208,8 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				toogleButton->setText(Toolkit::getStringTable()->getString("[the maps]"));
 			}
 		}
-		else if (action==NUMBER_ELEMENT_SELECTED)
+	}
+	else if (action==NUMBER_ELEMENT_SELECTED)
 	{
 		if (prestigeRatio->getNth() == 0)
 		{
@@ -194,8 +217,18 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		}
 		globalContainer->settings.tempVarPrestige=(prestigeRatio->getNth() - 1) * 100;
 	}
-		else
-			assert(false);
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if (useVarPrestige->getState() == false)
+		{
+			prestigeRatio->visible=false;
+			globalContainer->settings.tempVarPrestige = 3000;
+		}
+		else if (useVarPrestige->getState() == true)
+		{
+			prestigeRatio->visible=true;
+			globalContainer->settings.tempVarPrestige=(prestigeRatio->getNth() - 1) * 100;
+		}
 	}
 }
 
