@@ -58,9 +58,6 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	addWidget(mapSize);
 	mapDate=new Text(440, 60+128+125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapDate);
-	/*methode=new Text(440, 60+128+150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(methode);*/
-
 
 	mapFileList=new Glob2FileList(20, 60, 200, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "maps", "map", true);
 	addWidget(mapFileList);
@@ -75,10 +72,10 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	
 	globalContainer->settings.tempVarPrestige = 0;
 	useNewPrestige = false;
-	/*useVarPrestige=new OnOffButton(466, 37, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, useNewPrestige, useNewPrestige);
+	useVarPrestige=new OnOffButton(466, 37, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, useNewPrestige, useNewPrestige);
 	addWidget(useVarPrestige);
 	varPrestigeText=new Text(460, 37, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", "Custom Prestige");
-	addWidget(varPrestigeText);*/
+	addWidget(varPrestigeText);
 	
 	prestigeRatio=new Number(466, 20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	prestigeRatio->add(0);
@@ -106,16 +103,6 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	prestigeRatio->setNth(1);
 	prestigeRatio->visible=false; 
 	addWidget(prestigeRatio);
-	/*due to an inability by me to synchronize varPrestige in multiplayer games this
-	 * feature has been disabled completely in multiplayer games. In order to 
-	 * activate custom prestige for multiplayer remember to remove line
-	 * globalContainer->settings.tempVarPrestige = 3000
-	 * within both MultiplayersChooseMapScreen.cpp and MultiplayersJoinMapScreen.cpp
-	 * custom prestige settings currently have 3 range of value. A value of 0 results
-	 * in infinite prestige (essentially turning it off). A value > 2000 (I use 3000)
-	 * results in game reverting to original prestige calculations. Finally, any
-	 * value > 0 and <= 2000 is a set custom prestige setting. 
-	 */
 }
 
 MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
@@ -166,7 +153,6 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				mapSize->setText(textTemp);
 				std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
 				mapDate->setText(std::ctime(&mtime));
-				//methode->setText(mapPreview->getMethode());
 			}
 			else
 				std::cerr << "MultiplayersChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
@@ -181,6 +167,16 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			{
 				//remove following when reactivating custom prestige settings
 				globalContainer->settings.tempVarPrestige = 3000;
+				/*due to an inability by me to synchronize varPrestige in multiplayer games this
+				 * feature has been disabled completely in multiplayer games. In order to 
+				 * activate custom prestige for multiplayer remember to remove line
+				 * globalContainer->settings.tempVarPrestige = 3000
+				 * within both MultiplayersChooseMapScreen.cpp and MultiplayersJoinMapScreen.cpp
+				 * custom prestige settings currently have 3 range of value. A value of 0 results
+				 * in infinite prestige (essentially turning it off). A value > 2000 (I use 3000)
+				 * results in game reverting to original prestige calculations. Finally, any
+				 * value > 0 and <= 2000 is a set custom prestige setting. 
+				 */
 				endExecute(OK);
 			}
 			else
