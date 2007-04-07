@@ -27,12 +27,18 @@ namespace GAGGUI
 	class Style
 	{
 	public:
+		enum StyleMetrics
+		{
+			STYLE_METRIC_LIST_SCROLLBAR_WIDTH = 0,
+		};
+		
 		GAGCore::Color textColor; //!< color of text
 		GAGCore::Color highlightColor; //!< color of highlighted elements
 		GAGCore::Color frameColor; //!< base color of frames
 		GAGCore::Color listSelectedElementColor;
 		GAGCore::Color backColor; //!< background color
 		GAGCore::Color backOverlayColor; //!< overlay background color
+		
 		static Style *style;
 		
 	public:
@@ -41,6 +47,7 @@ namespace GAGGUI
 		virtual void drawOnOffButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, bool state);
 		virtual void drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 		virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
+		virtual int getStyleMetric(StyleMetrics metric);
 	};
 	
 	extern Style defaultStyle;

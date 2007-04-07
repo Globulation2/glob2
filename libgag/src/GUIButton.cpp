@@ -27,29 +27,29 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut)
-	:HighlightableWidget(returnCode)
+	Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode, Uint16 unicodeShortcut) :
+		HighlightableWidget(returnCode)
 	{
-		this->x=x;
-		this->y=y;
-		this->w=w;
-		this->h=h;
-		this->hAlignFlag=hAlign;
-		this->vAlignFlag=vAlign;
+		this->x = x;
+		this->y = y;
+		this->w = w;
+		this->h = h;
+		this->hAlignFlag = hAlign;
+		this->vAlignFlag = vAlign;
 	
 		this->unicodeShortcut=unicodeShortcut;
 	}
 
-	Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode,
-		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut)
-	:HighlightableWidget(tooltip, tooltipFont, returnCode)
+	Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode,
+		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut) :
+		HighlightableWidget(tooltip, tooltipFont, returnCode)
 	{
-		this->x=x;
-		this->y=y;
-		this->w=w;
-		this->h=h;
-		this->hAlignFlag=hAlign;
-		this->vAlignFlag=vAlign;
+		this->x = x;
+		this->y = y;
+		this->w = w;
+		this->h = h;
+		this->hAlignFlag = hAlign;
+		this->vAlignFlag = vAlign;
 	
 		this->unicodeShortcut=unicodeShortcut;
 	}
@@ -81,8 +81,8 @@ namespace GAGGUI
 	}
 	
 	
-	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, Uint16 unicode)
-	:Button(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, returnCode, unicode)
+	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, Uint16 unicode) :
+		Button(x, y, w, h, hAlign, vAlign, returnCode, unicode)
 	{
 		assert(font);
 		assert(text);
@@ -91,9 +91,8 @@ namespace GAGGUI
 		fontPtr=NULL;
 	}
 
-	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode,
-		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode)
-		:Button(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, returnCode, tooltip, tooltipFont, unicode)
+	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode) :
+		Button(x, y, w, h, hAlign, vAlign, returnCode, tooltip, tooltipFont, unicode)
 	{
 		assert(font);
 		assert(text);
@@ -270,13 +269,13 @@ namespace GAGGUI
 		HighlightableWidget::paint();
 	}
 	
-	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, Uint16 unicode)
-	:TextButton(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, font, text, returnCode, unicode)
+	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, Uint16 unicode) :
+		TextButton(x, y, w, h, hAlign, vAlign, font, text, returnCode, unicode)
 	{
 		textIndex = 0;
 	}
-	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode)
-	:TextButton(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, font, text, returnCode, tooltip, tooltipFont, unicode)
+	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode) :
+		TextButton(x, y, w, h, hAlign, vAlign, font, text, returnCode, tooltip, tooltipFont, unicode)
 	{
 		textIndex = 0;
 	}

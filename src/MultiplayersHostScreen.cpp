@@ -40,13 +40,13 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
 	{
-		TextButton *button = new TextButton(20, 330-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[AI]", i), ADD_AI+i);
+		TextButton *button = new TextButton(20, 330-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[AI]", i), ADD_AI+i);
 		addWidget(button);
 		addAI.push_back(button);
 	}
 	
-	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
-	addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
+	addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 
 	startButton->visible=false;
 	addWidget(startButton);
@@ -82,7 +82,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		addWidget(color[i]);
 		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
-		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[close]"), CLOSE_BUTTONS+i);
+		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[close]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 
 		wasSlotUsed[i]=false;

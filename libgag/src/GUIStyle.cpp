@@ -60,4 +60,13 @@ namespace GAGGUI
 		if (highlight > 0)
 			target->drawRect(x+1, y+1, w-2, h-2, frameColor.applyAlpha(highlight));
 	}
+	
+	int Style::getStyleMetric(StyleMetrics metric)
+	{
+		switch (metric)
+		{
+			case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return 0;
+			default: return 0;
+		}
+	}
 }

@@ -39,7 +39,7 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	// parameters
 	int ypos = 50;
 	addWidget(new Text(10, ypos, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[skin]")));
-	skin = new MultiTextButton(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, NULL, -1, -1, "standard", "", -1);
+	skin = new MultiTextButton(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, "standard", "", -1);
 	addWidget(skin);
 // 	
 	ypos += 30;
@@ -48,8 +48,8 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	addWidget(hungryness);
 	
 	// ok / cancel
-	addWidget(new TextButton(10, 10, 135, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
-	addWidget(new TextButton(10, 10, 135, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(10, 10, 135, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
+	addWidget(new TextButton(10, 10, 135, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	
 	// important, widgets must be initialised by hand as we use custom event loop
 	dispatchInit();

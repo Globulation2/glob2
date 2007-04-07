@@ -27,9 +27,9 @@
 
 MultiplayersOfferScreen::MultiplayersOfferScreen()
 {
-	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED,"data/gfx/gamegui", 26, 27,  "menu", Toolkit::getStringTable()->getString("[host]"), HOST));
-	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27,  "menu", Toolkit::getStringTable()->getString("[join a game]"), JOIN));
-	addWidget(new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27,  "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
+	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[host]"), HOST));
+	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED,  "menu", Toolkit::getStringTable()->getString("[join a game]"), JOIN));
+	addWidget(new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED,  "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[lan]")));
 }
 
