@@ -110,16 +110,20 @@ namespace GAGGUI
 		getScreenPos(&x, &y, &w, &h);
 		unsigned count = (h-4) / textHeight;
 		unsigned wSel;
+		int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
+		int scrollBarX = x + w - scrollBarW;
+		int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
+		int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
 		if (strings.size() > count)
 		{
-			if (isPtInRect(event->button.x, event->button.y, x+w-21, y, 21, 21))
+			if (isPtInRect(event->button.x, event->button.y, scrollBarX, y, scrollBarW, scrollBarTopH))
 			{
 				// we scroll one line up
 				selectionState = UP_ARROW_PRESSED;
 				if (disp)
 					disp--;
 			}
-			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21, 21, blockPos))
+			else if (isPtInRect(event->button.x, event->button.y, scrollBarX, y+scrollBarTopH, scrollBarW, blockPos))
 			{
 				// we one page up
 				selectionState = UP_ZONE_PRESSED;
@@ -128,25 +132,25 @@ namespace GAGGUI
 				else
 					disp -= count;
 			}
-			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos+blockLength, 21, h-42-blockPos-blockLength))
+			else if (isPtInRect(event->button.x, event->button.y, scrollBarX, y+scrollBarTopH+blockPos+blockLength, scrollBarW, h-scrollBarTopH-scrollBarBottomH-blockPos-blockLength))
 			{
 				// we one page down
 				selectionState = DOWN_ZONE_PRESSED;
 				disp = std::min(disp + count, strings.size() - count);
 			}
-			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+h-21, 21, 21))
+			else if (isPtInRect(event->button.x, event->button.y, scrollBarX, y+h-scrollBarBottomH, scrollBarW, scrollBarBottomH))
 			{
 				// we scroll one line down
 				selectionState = DOWN_ARROW_PRESSED;
 				disp = std::min(disp + 1, strings.size() - count);
 			}
-			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos, 21, blockLength))
+			else if (isPtInRect(event->button.x, event->button.y, scrollBarX, y+scrollBarTopH+blockPos, scrollBarW, blockLength))
 			{
 				selectionState = HANDLE_PRESSED;
 				mouseDragStartDisp = disp;
 				mouseDragStartPos = event->button.y;
 			}
-			wSel = w-20;
+			wSel = w - scrollBarW;
 		}
 		else
 			wSel = w;
@@ -233,73 +237,69 @@ namespace GAGGUI
 		
 		assert(parent);
 		assert(parent->getSurface());
-	
-		int nextSize=textHeight;
-		int yPos=y+2;
-		int i=0;
-		unsigned elementLength;
-		unsigned count = (h-4) / textHeight;
 		
-		if (strings.size() > count)
+		int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
+		int scrollBarX = x + w - scrollBarW;
+		int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
+		int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
+		int frameTopHeight = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_TOP_HEIGHT);
+		int frameLeftWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_LEFT_WIDTH);
+		int frameRightWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_RIGHT_WIDTH);
+		int frameBottomHeight = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
+		
+		int elementsHeight = h - frameTopHeight - frameBottomHeight;
+		int count = elementsHeight / textHeight;
+		int elementLength;
+		
+		if (static_cast<int>(strings.size()) > count)
 		{
-			// draw line and arrows
-			parent->getSurface()->drawLine(x+w-21, y, x+w-21, y + h, Style::style->frameColor);
-			parent->getSurface()->drawLine(x+w-20, y+21, x+w-1, y+21, Style::style->frameColor);
-			parent->getSurface()->drawLine(x+w-20, y+h-21, x+w-1, y+h-21, Style::style->frameColor);
-	
-			int j;
-			int baseX = x+w-11;
-			int baseY1 = y+11;
-			int baseY2 = y+h-11;
-			for (j=7; j>4; j--)
-			{
-				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, Style::style->highlightColor);
-				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, Style::style->highlightColor);
-				parent->getSurface()->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, Style::style->highlightColor);
-				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, Style::style->highlightColor);
-				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, Style::style->highlightColor);
-				parent->getSurface()->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, Style::style->highlightColor);
-			}
-	
-			// draw slider
-			int leftSpace = h-43;
+			// recompute slider informations
+			int leftSpace = h - scrollBarTopH - scrollBarBottomH;
 			if (leftSpace)
 			{
 				blockLength = (count * leftSpace) / strings.size();
 				blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
-				parent->getSurface()->drawFilledRect(x+w-20, y+22+blockPos, 17, blockLength, Style::style->highlightColor.applyAlpha(128));
-				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 17, blockLength, Style::style->highlightColor);
+				Style::style->drawScrollBar(parent->getSurface(), scrollBarX, y, w, h, blockPos, blockLength);
 			}
 			else
 			{
-				blockLength=0;
-				blockPos=0;
+				// degenerate case, bad gui design
+				std::cerr << "List::paint() : your gui is badly designed, I do not have vertical room for slider !" << std::endl;
+				blockLength = 0;
+				blockPos = 0;
 			}
-	
-			elementLength = w-22;
-			parent->getSurface()->setClipRect(x+1, y+1, w-22, h-2);
+			elementLength = w - scrollBarW - frameLeftWidth - frameRightWidth;
 		}
 		else
 		{
 			disp = 0;
-	
 			elementLength = w-2;
-			parent->getSurface()->setClipRect(x+1, y+1, w-2, h-2);
 		}
 		
-		while ((nextSize<h-4) && ((size_t)i<strings.size()))
+		// draw content
+		parent->getSurface()->setClipRect(x + frameLeftWidth, y + frameTopHeight, elementLength, elementsHeight);
+		int yPos = y + frameTopHeight;
+		int nextSize = textHeight;
+		size_t i = 0;
+		
+		while ((nextSize < elementsHeight) && (i < strings.size()))
 		{
-			drawItem(x+2, yPos, static_cast<size_t>(i+disp));
-			if (i+static_cast<int>(disp) == nth)
-				parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, Style::style->listSelectedElementColor);
-			nextSize+=textHeight;
+			drawItem(x + frameLeftWidth * 2, yPos, static_cast<size_t>(i+disp));
+			if (static_cast<int>(i + disp) == nth)
+				Style::style->drawFrame(parent->getSurface(), x + frameLeftWidth, yPos, elementLength, textHeight, Color::ALPHA_TRANSPARENT);
+			// TODO : colorise selection frame
+			nextSize += textHeight;
 			i++;
-			yPos+=textHeight;
+			yPos += textHeight;
 		}
 		
 		parent->getSurface()->setClipRect();
 		
-		HighlightableWidget::paint();
+		// draw frame
+		if (static_cast<int>(strings.size()) > count)
+			Style::style->drawFrame(parent->getSurface(), x, y, w - Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH), h, getNextHighlightValue());
+		else
+			Style::style->drawFrame(parent->getSurface(), x, y, w, h, getNextHighlightValue());
 	}
 	
 	void List::drawItem(int x, int y, size_t element)

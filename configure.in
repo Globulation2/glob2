@@ -6,7 +6,7 @@ AM_INIT_AUTOMAKE(glob2, 0.8.22)
 AC_CONFIG_SRCDIR([src/Game.cpp])
 AM_CONFIG_HEADER(config.h)
 
-CXXFLAGS="$CXXFLAGS"
+CXXFLAGS="$CXXFLAGS -Wall"
 
 dnl Programs 
 AC_PROG_CXX

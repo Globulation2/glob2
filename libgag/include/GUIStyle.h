@@ -29,7 +29,13 @@ namespace GAGGUI
 	public:
 		enum StyleMetrics
 		{
-			STYLE_METRIC_LIST_SCROLLBAR_WIDTH = 0,
+			STYLE_METRIC_FRAME_TOP_HEIGHT = 0,
+			STYLE_METRIC_FRAME_LEFT_WIDTH,
+			STYLE_METRIC_FRAME_RIGHT_WIDTH,
+			STYLE_METRIC_FRAME_BOTTOM_HEIGHT,
+			STYLE_METRIC_LIST_SCROLLBAR_WIDTH,
+			STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH,
+			STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH
 		};
 		
 		GAGCore::Color textColor; //!< color of text
@@ -47,6 +53,8 @@ namespace GAGGUI
 		virtual void drawOnOffButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, bool state);
 		virtual void drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 		virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
+		virtual void drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength);
+		
 		virtual int getStyleMetric(StyleMetrics metric);
 	};
 	
