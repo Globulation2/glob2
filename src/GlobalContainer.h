@@ -82,6 +82,7 @@ public:
 	Sprite *terrainShader;
 	Sprite *ressources;
 	Sprite *ressourceMini;
+	Sprite *areas;
 	Sprite *bullet;
 	Sprite *bulletExplosion;
 	Sprite *deathAnimation;

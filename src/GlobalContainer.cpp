@@ -96,7 +96,8 @@ GlobalContainer::GlobalContainer(void)
 GlobalContainer::~GlobalContainer(void)
 {
 	// unlink GUI style
-	if(!runNoX) delete Style::style;
+	if(!runNoX)
+		delete Style::style;
 	Style::style = &defaultStyle;
 	
 	// release unit skins
@@ -496,6 +497,7 @@ void GlobalContainer::load(void)
 		// load ressources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
+		areas = Toolkit::getSprite("data/gfx/area");
 		bullet = Toolkit::getSprite("data/gfx/bullet");
 		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 		deathAnimation = Toolkit::getSprite("data/gfx/death"); 

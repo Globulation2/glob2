@@ -2154,7 +2154,9 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 
 inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	static int areaAnimationTick = 0;
 	if ((drawOptions & DRAW_AREA) != 0)
+	{
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -2192,10 +2194,11 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 				}
 				if (map.isClearAreaLocal(x+viewportX, y+viewportY))
 				{
-					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 16+(x<<5), 32+(y<<5), 128, 128, 0);
+					//globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 16+(x<<5), 32+(y<<5), 128, 128, 0);
 //					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 128, 0);
 					//globalContainer->gfx->drawLine(8+(x<<5), (y<<5), 8+(x<<5), 32+(y<<5), 128, 128, 0);
 					//globalContainer->gfx->drawLine(24+(x<<5), (y<<5), 24+(x<<5), 32+(y<<5), 128, 128, 0);
+					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, 0 + (areaAnimationTick % 8), 200);
 					
 					if (!map.isClearAreaLocal(x+viewportX, y+viewportY-1))
 						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 255, 0);
@@ -2229,6 +2232,8 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 						}
 				}
 			}
+		areaAnimationTick++;
+	}
 }
 
 inline void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
