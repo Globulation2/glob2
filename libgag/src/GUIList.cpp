@@ -273,7 +273,7 @@ namespace GAGGUI
 		else
 		{
 			disp = 0;
-			elementLength = w-2;
+			elementLength = w - frameLeftWidth - frameRightWidth;
 		}
 		
 		// draw content
