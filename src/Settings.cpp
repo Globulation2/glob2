@@ -100,7 +100,7 @@ Settings::Settings()
 	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
 
 	cloudPatchSize=16;//the bigger the faster the uglier
-	cloudMaxAlpha=130;//the higher the nicer the clouds the harder the units are visible
+	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
 	cloudMaxSpeed=3;
 	cloudWindStability=3550;//how much will the wind change
 	cloudStability=1300;//how much will the clouds change shape

@@ -2475,12 +2475,14 @@ float Game::interpolateValues(float a, float b, float x)
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	static int time = 0;
+	static DynamicClouds ds(&globalContainer->settings);
 	int left=(sx>>5);
 	int top=(sy>>5);
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
+	
 	time++;
-
+	
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
@@ -2492,15 +2494,20 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-
-	// draw cloud shadow if we are in high quality
+	
+	// compute and draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		static DynamicClouds ds(&globalContainer->settings);
-		ds.render(globalContainer->gfx, viewportX, viewportY, sw, sh, time);
+		ds.compute(viewportX, viewportY, sw, sh, time);
+		ds.renderShadow(globalContainer->gfx, sw, sh);
 	}
+	
+	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	
+	// draw cloud overlay if we are in high quality
+	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+		ds.renderOverlay(globalContainer->gfx, sw, sh);
 	
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
