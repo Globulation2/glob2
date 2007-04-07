@@ -121,7 +121,7 @@ void TeamStat::setMapSize(int w, int h)
 
 
 
-int TeamStat::increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map)
+void TeamStat::increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map)
 {
 	//Update the map
 	for(int n=0; n<8; ++n)
@@ -152,7 +152,7 @@ int TeamStat::increasePoint(std::vector<int>& numberMap, int& max, int x, int y,
 
 
 
-int TeamStat::spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance)
+void TeamStat::spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance)
 {
 	for (int px=x-distance; px<(x+distance); px++)
 	{

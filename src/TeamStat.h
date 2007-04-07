@@ -64,8 +64,8 @@ struct TeamStat
 
 	int width;
 	int getPos(int x, int y) { return y*width+x; } 
-	int increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map);
-	int spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance);
+	void increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map);
+	void spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance);
 
 	std::vector<int> starvingMap;
 	int starvingMax;

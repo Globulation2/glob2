@@ -2335,11 +2335,14 @@ int Unit::getRealArmor(bool isMagic) const
 		int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
 		return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
 	}
-	else if(isMagic == true) //magic bypasses armor yet fruit penalties still apply
+	else if (isMagic == true) //magic bypasses armor yet fruit penalties still apply
 	{
 		int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
 		return 0 - fruitCount * armorReductionPerHappyness;
 	}
+	else
+		assert(false);
+	return 0;
 }
 
 //! Return the real attack strengh, taking into account the experience level
