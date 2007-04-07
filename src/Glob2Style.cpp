@@ -154,3 +154,49 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 	target->drawSprite(x + w - sprite->getW(19), y + h - sprite->getH(19), sprite, 19);
 }
 
+void Glob2Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength)
+{
+	/*
+		Width of sprites 20, 21 and 22 must be the same
+	*/
+	
+	target->drawSprite(x, y, sprite, 20);
+	target->drawSprite(x, y + h - sprite->getH(22), sprite, 22);
+	
+	// save cliprect
+	int ocrX, ocrY, ocrW, ocrH;
+	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
+	
+	// scroll background
+	int barBackgroundY = y + sprite->getH(20);
+	int barBackgroundHeight = h - sprite->getH(20) - sprite->getH(22);
+	target->setClipRect(x, barBackgroundY, w, barBackgroundHeight);
+	for (int i = 0; i < barBackgroundHeight; i += sprite->getH(21))
+		target->drawSprite(x, barBackgroundY + i, sprite, 21);
+	
+	// scroll bar
+	int barForegroundY = barBackgroundY + blockPos;
+	int barForegroundHeight = blockLength;
+	target->setClipRect(x, barForegroundY, w, barForegroundHeight);
+	for (int i = 0; i < barForegroundHeight; i += sprite->getH(23))
+		target->drawSprite(x + (sprite->getW(21) - sprite->getW(23)) / 2, barForegroundY + i, sprite, 23);
+	
+	// reset cliprect
+	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
+}
+
+int Glob2Style::getStyleMetric(StyleMetrics metric)
+{
+	switch (metric)
+	{
+		case STYLE_METRIC_FRAME_TOP_HEIGHT: return sprite->getH(12);
+		case STYLE_METRIC_FRAME_LEFT_WIDTH: return sprite->getW(12);
+		case STYLE_METRIC_FRAME_RIGHT_WIDTH: return sprite->getW(14);
+		case STYLE_METRIC_FRAME_BOTTOM_HEIGHT: return sprite->getH(17);
+		case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return sprite->getW(20);
+		case STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH: return sprite->getH(20);
+		case STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH: return sprite->getH(22);
+		default: return 0;
+	}
+}
+

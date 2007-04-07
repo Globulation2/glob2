@@ -61,11 +61,42 @@ namespace GAGGUI
 			target->drawRect(x+1, y+1, w-2, h-2, frameColor.applyAlpha(highlight));
 	}
 	
+	void Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength)
+	{
+		// draw line and arrows
+		target->drawLine(x, y, x, y + h, Style::style->frameColor);
+		target->drawLine(x, y+21, x + w, y+21, Style::style->frameColor);
+		target->drawLine(x, y+h-21, x + w, y+h-21, Style::style->frameColor);
+
+		int j;
+		int baseX = x+10;
+		int baseY1 = y+11;
+		int baseY2 = y+h-11;
+		for (j=7; j>4; j--)
+		{
+			target->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, Style::style->highlightColor);
+			target->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, Style::style->highlightColor);
+			target->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, Style::style->highlightColor);
+			target->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, Style::style->highlightColor);
+			target->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, Style::style->highlightColor);
+			target->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, Style::style->highlightColor);
+		}
+
+		target->drawFilledRect(x, y+22+blockPos, 17, blockLength, Style::style->highlightColor.applyAlpha(128));
+		target->drawRect(x+1, y+22+blockPos, 17, blockLength, Style::style->highlightColor);
+	}
+	
 	int Style::getStyleMetric(StyleMetrics metric)
 	{
 		switch (metric)
 		{
-			case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return 0;
+			case STYLE_METRIC_FRAME_TOP_HEIGHT: return 1;
+			case STYLE_METRIC_FRAME_LEFT_WIDTH: return 1;
+			case STYLE_METRIC_FRAME_RIGHT_WIDTH: return 1;
+			case STYLE_METRIC_FRAME_BOTTOM_HEIGHT: return 1;
+			case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return 22;
+			case STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH: return 22;
+			case STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH: return 22;
 			default: return 0;
 		}
 	}
