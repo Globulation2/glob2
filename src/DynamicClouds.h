@@ -27,6 +27,7 @@
 #include "PerlinNoise.h"
 #include "Settings.h"
 #include <math.h>
+#include <valarray>
 
 namespace GAGCore
 {
@@ -44,6 +45,9 @@ class DynamicClouds
 	float cloudSize;
 	float cloudHeight;
 	float rootOfMaxAlpha;
+	int wGrid, hGrid;
+	std::valarray<unsigned char> alphaMap;
+	
 public:
 	DynamicClouds(Settings * settings) 
 	{
@@ -57,8 +61,11 @@ public:
 		cloudHeight=(float)settings->cloudHeight/100.0f;
 	}
 	virtual ~DynamicClouds() { }
-	void render(DrawableSurface *dest, const int viewPortX,
-	const int viewPortY, const int w, const int h, const int time);
+	//void render(DrawableSurface *dest, const int viewPortX,
+	//const int viewPortY, const int w, const int h, const int time);
+	void compute(const int viewPortX, const int viewPortY, const int w, const int h, const int time);
+	void renderShadow(DrawableSurface *dest, const int w, const int h);
+	void renderOverlay(DrawableSurface *dest, const int w, const int h);
 };
 
 #endif /* _DYNAMICCLOUDS_H */
