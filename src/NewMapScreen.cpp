@@ -31,11 +31,11 @@ using namespace GAGGUI;
 
 HowNewMapScreen::HowNewMapScreen()
 {
-	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[new]"), NEWMAP, 13));
-	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[load]"), LOADMAP));
-	addWidget(new TextButton(0, 190, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[new campaign]"), NEWCAMPAIGN));
-	addWidget(new TextButton(0, 250, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOADCAMPAIGN));
-	addWidget(new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27));
+	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new]"), NEWMAP, 13));
+	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load]"), LOADMAP));
+	addWidget(new TextButton(0, 190, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new campaign]"), NEWCAMPAIGN));
+	addWidget(new TextButton(0, 250, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOADCAMPAIGN));
+	addWidget(new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27));
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor]")));
 }
 
@@ -296,8 +296,8 @@ NewMapScreen::NewMapScreen()
 	
 	// all
 	
-	addWidget(new TextButton(10, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
-	addWidget(new TextButton(330, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(10, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
+	addWidget(new TextButton(330, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
 	const char *text= Toolkit::getStringTable()->getString("[create map]");
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", text));

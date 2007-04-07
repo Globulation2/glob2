@@ -32,9 +32,9 @@ using namespace GAGCore;
 CampaignScreen::CampaignScreen(const std::string &text)
 {
 	
-	addWidget(new TextButton(20, 20, 180, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), 0, '\r'));
+	addWidget(new TextButton(20, 20, 180, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Start]"), 0, '\r'));
 
-	addWidget(new TextButton(20, 20, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), 1, 27));
+	addWidget(new TextButton(20, 20, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Cancel]"), 1, 27));
 	
 	
 	addWidget(new TextArea(20, 20, 20, 80, ALIGN_FILL, ALIGN_FILL, "standard", true, text.c_str()));

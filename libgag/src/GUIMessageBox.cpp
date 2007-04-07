@@ -48,7 +48,7 @@ namespace GAGGUI
 			dec=20;
 		for (int i=0; i<captionCount; i++)
 		{
-			addWidget(new TextButton(dec, 50, captionWidth[i], 30, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, font, captionArray[i], i));
+			addWidget(new TextButton(dec, 50, captionWidth[i], 30, ALIGN_LEFT, ALIGN_LEFT, font, captionArray[i], i));
 			dec+=20 + captionWidth[i];
 		}
 		dispatchInit();

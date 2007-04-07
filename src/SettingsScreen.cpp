@@ -40,19 +40,19 @@ SettingsScreen::SettingsScreen()
 	old_settings=globalContainer->settings;
 	//following are standard choices for all screens
 	//tab choices
-	generalsettings=new TextButton( 10, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[general settings]"), GENERALSETTINGS, 8);
+	generalsettings=new TextButton( 10, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[general settings]"), GENERALSETTINGS, 8);
 	addWidget(generalsettings);
 
-	unitsettings=new TextButton( 220, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[unit settings]"), UNITSETTINGS, 9);
+	unitsettings=new TextButton( 220, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[unit settings]"), UNITSETTINGS, 9);
 	addWidget(unitsettings);
 
-	keyboardsettings=new TextButton( 430, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[keyboard settings]"), KEYBOARDSETTINGS, 9);
+	keyboardsettings=new TextButton( 430, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[keyboard settings]"), KEYBOARDSETTINGS, 9);
 	addWidget(keyboardsettings);
 
 	// Screen entry/quit part
-	ok=new TextButton( 230, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
+	ok=new TextButton( 230, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
-	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
 
 	//following are all general settings
@@ -179,10 +179,10 @@ SettingsScreen::SettingsScreen()
 	}
 
 	//shortcuts part
-	game_shortcuts=new TextButton( 20, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
+	game_shortcuts=new TextButton( 20, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
 	game_shortcuts->visible=false;
 
-	editor_shortcuts=new TextButton( 230, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
+	editor_shortcuts=new TextButton( 230, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
 	editor_shortcuts->visible=false;
 	
 	keyboard_shortcut_names=new List(20, 110, 325, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
@@ -194,7 +194,7 @@ SettingsScreen::SettingsScreen()
 	editor_keyboard_shortcuts=new List(355, 110, 275, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	editor_keyboard_shortcuts->visible=false;
 
-	restore_default_shortcuts = new TextButton(20, 315, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
+	restore_default_shortcuts = new TextButton(20, 315, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
 	restore_default_shortcuts->visible=false;
 
 

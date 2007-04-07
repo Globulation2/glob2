@@ -55,8 +55,8 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	statusText=new Text(20, 390, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
 	addWidget(statusText);
 
-	addWidget(new TextButton( 10, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[connect]"), CONNECT, 13));
-	addWidget(new TextButton(330, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "data/gfx/gamegui", 26, 27, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
+	addWidget(new TextButton( 10, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[connect]"), CONNECT, 13));
+	addWidget(new TextButton(330, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
 	
 	lanServers=new List(340, 80, 280, 100, ALIGN_SCREEN_CENTERED, ALIGN_FILL, "standard");
 	addWidget(lanServers);

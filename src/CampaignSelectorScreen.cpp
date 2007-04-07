@@ -25,8 +25,8 @@ CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
 {
 	StringTable& table=*Toolkit::getStringTable();
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[choose campaign]"));
-	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", table.getString("[ok]"), OK, 13);
-	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", table.getString("[Cancel]"), CANCEL, 27);
+	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK, 13);
+	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL, 27);
 	if(isSelectingSave)
 		fileList = new FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "games", "txt", false);
 	else
