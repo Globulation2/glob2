@@ -2157,6 +2157,7 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 	static int areaAnimationTick = 0;
 	const int clearingAreaBaseFrame = 0;
 	const int guardAreaBaseFrame = 8;
+	const int forbiddenAreaBaseFrame = 16;
 	if ((drawOptions & DRAW_AREA) != 0)
 	{
 		for (int y=top; y<bot; y++)
@@ -2164,9 +2165,10 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 			{
 				if (map.isForbiddenLocal(x+viewportX, y+viewportY))
 				{
-					globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
+					/*globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
 					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 32+(x<<5), 16+(y<<5), 128, 0, 0);
-					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);
+					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);*/
+					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, forbiddenAreaBaseFrame + (areaAnimationTick % 16) / 2);
 					
 					if (!map.isForbiddenLocal(x+viewportX, y+viewportY-1))
 						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 0, 0);
