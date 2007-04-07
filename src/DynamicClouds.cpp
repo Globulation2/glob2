@@ -23,14 +23,12 @@
  
 #include "DynamicClouds.h"
 #include "GraphicContext.h"
-#include "GlobalContainer.h"  // sorry Leo, I don't know what I'm doing.
-                              // But now the map editor doesn't crash anymore.
+#include "GlobalContainer.h"
 
 void DynamicClouds::render(DrawableSurface *dest, const int viewPortX,
 const int viewPortY, const int w, const int h, const int time)
 {
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)  // I don't know if this makes sence.  This and the include are the only changes I made.
-	  //	if (GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 	{
 		//tribute to the torrodial world: the viewpot must never jump by more than 31.
 		//if it does, we assume a jump in the opposite direction
@@ -38,7 +36,6 @@ const int viewPortY, const int w, const int h, const int time)
 		static int vpY=0;
 		//Correlated Noise
 		static PerlinNoise pn;
-		static int m_time=0;		
 		
 		static float offsetX=0, offsetY=0;
 		offsetX+=pn.Noise((float)time/windStability+0.7f)*windStability*maxCloudSpeed/1000.0f;
