@@ -88,6 +88,8 @@ std::string CampaignMenuScreen::getMissionName()
 			return campaign.getMap(n).getMapFileName();
 		}
 	}
+	assert(false);
+	return "";
 }
 
 

@@ -116,6 +116,7 @@ bool CampaignMapEntry::load(InputStream* stream, Uint32 versionMinor)
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
+	return true;
 }
 
 
@@ -173,6 +174,7 @@ bool Campaign::load(const std::string& fileName)
 		}
 		stream->readLeaveSection();
 		delete stream;
+		return true;
 	}
 }
 

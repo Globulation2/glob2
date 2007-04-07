@@ -1001,7 +1001,7 @@ void GameGUI::processEvent(SDL_Event *event)
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
-							(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
+							(selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange) &&
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
@@ -1833,7 +1833,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				else
 				{
 					// TODO : check in orderQueue to avoid useless orders.
-					if (selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange)
+					if (selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange)
 					{
 						nbReq=(selBuild->unitStayRangeLocal+=1);
 						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));

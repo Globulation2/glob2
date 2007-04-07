@@ -1328,7 +1328,7 @@ namespace GAGCore
 	
 	void DrawableSurface::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
-		assert(mapW * mapH <= map.size());
+		assert(mapW * mapH <= static_cast<int>(map.size()));
 		
 		for (int dy=0; dy < mapH-1; dy++)
 			for (int dx=0; dx < mapW-1; dx++)
@@ -1337,7 +1337,7 @@ namespace GAGCore
 	
 	void DrawableSurface::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
-		assert(mapW * mapH <= map.size());
+		assert(mapW * mapH <= static_cast<int>(map.size()));
 		
 		for (int dy=0; dy < mapH-1; dy++)
 			for (int dx=0; dx < mapW-1; dx++)
@@ -1691,7 +1691,7 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
-			assert(mapW * mapH <= map.size());
+			assert(mapW * mapH <= static_cast<int>(map.size()));
 			
 			float fr = 255.0f*(float)color.r;
 			float fg = 255.0f*(float)color.g;
@@ -1722,7 +1722,7 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
-			assert(mapW * mapH <= map.size());
+			assert(mapW * mapH <= static_cast<int>(map.size()));
 			
 			glState.doBlend(1);
 			glState.doTexture(0);
