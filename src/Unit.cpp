@@ -2330,19 +2330,11 @@ Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 //! Return the real armor, taking into account the reduction due to fruits
 int Unit::getRealArmor(bool isMagic) const
 {
-	if (isMagic == false)
-	{
-		int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
-		return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
-	}
-	else if (isMagic == true) //magic bypasses armor yet fruit penalties still apply
-	{
-		int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
+	int armorReductionPerHappyness = race->getUnitType(typeNum, level[ARMOR])->armorReductionPerHappyness;
+	if (isMagic) //magic bypasses armor yet fruit penalties still apply
 		return 0 - fruitCount * armorReductionPerHappyness;
-	}
 	else
-		assert(false);
-	return 0;
+		return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
 }
 
 //! Return the real attack strengh, taking into account the experience level
@@ -2594,5 +2586,3 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	
 	return cs;
 }
-
-
