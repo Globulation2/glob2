@@ -2165,10 +2165,9 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 			{
 				if (map.isForbiddenLocal(x+viewportX, y+viewportY))
 				{
-					/*globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
-					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 32+(x<<5), 16+(y<<5), 128, 0, 0);
-					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);*/
-					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, forbiddenAreaBaseFrame + (areaAnimationTick % 16) / 2);
+					int randId = (x+viewportX) * 7919 + (y+viewportY) * 17;
+					int frame = ((randId + areaAnimationTick) % 16) / 2;
+					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, forbiddenAreaBaseFrame + frame);
 					
 					if (!map.isForbiddenLocal(x+viewportX, y+viewportY-1))
 						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 0, 0);
@@ -2182,7 +2181,9 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 				}
 				if (map.isGuardAreaLocal(x+viewportX, y+viewportY))
 				{
-					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, guardAreaBaseFrame + (areaAnimationTick % 8));
+					int randId = (x+viewportX) * 5477 + (y+viewportY) * 13;
+					int frame = (randId + areaAnimationTick) % 8;
+					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, guardAreaBaseFrame + frame);
 					
 					if (!map.isGuardAreaLocal(x+viewportX, y+viewportY-1))
 						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 0, 0, 255);
@@ -2196,7 +2197,9 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 				}
 				if (map.isClearAreaLocal(x+viewportX, y+viewportY))
 				{
-					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, clearingAreaBaseFrame + (areaAnimationTick % 8), 200);
+					int randId = (x+viewportX) * 7451 + (y+viewportY) * 23;
+					int frame = (randId + areaAnimationTick) % 8;
+					globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, clearingAreaBaseFrame + frame, 200);
 					
 					if (!map.isClearAreaLocal(x+viewportX, y+viewportY-1))
 						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 255, 0);
