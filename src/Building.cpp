@@ -22,6 +22,7 @@
 #include <Stream.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <climits>
 
 #include "Building.h"
 #include "BuildingType.h"

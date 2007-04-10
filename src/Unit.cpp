@@ -32,6 +32,7 @@
 #include "LogFileManager.h"
 #include <Stream.h>
 #include <set>
+#include <climits>
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
