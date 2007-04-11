@@ -257,6 +257,8 @@ void GameGUI::init()
 
 	campaign=NULL;
 	missionName="";
+	
+	initUnitCount();
 }
 
 void GameGUI::adjustLocalTeam()
