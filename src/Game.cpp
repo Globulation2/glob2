@@ -107,8 +107,6 @@ void Game::init(GameGUI *gui)
 
     //If the GameGUI provided is not NULL, meaning that this is a real game not a
 	//map edit, that initialize the preset numbers of units to assign to buildings
-	if(gui)
-		gui->initUnitCount();
 	
 	if (globalContainer->runNoX)
 		minimap=NULL;
