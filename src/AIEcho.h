@@ -1386,6 +1386,9 @@ namespace AIEcho
 		};
 
 		///This sends a message to the AI's handle_message function.
+		#ifdef SendMessage
+		#undef SendMessage
+ 		#endif
 		class SendMessage : public ManagementOrder
 		{
 		public:
