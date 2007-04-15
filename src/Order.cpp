@@ -323,21 +323,23 @@ bool OrderConstruction::setData(const Uint8 *data, int dataLength)
 OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLength)
 :Order()
 {
-	assert(dataLength==2);
+	assert(dataLength==6);
 	bool good=setData(data, dataLength);
 	assert(good);
 }
 
-OrderCancelConstruction::OrderCancelConstruction(Uint16 gid)
+OrderCancelConstruction::OrderCancelConstruction(Uint16 gid, Uint32 unitWorking)
 {
 	assert(gid<32768);
 	this->gid=gid;
+	this->unitWorking=unitWorking;
 }
 
 Uint8 *OrderCancelConstruction::getData(void)
 {
 	assert(sizeof(data) == getDataLength());
 	addUint16(data, this->gid, 0);
+	addUint32(data, this->unitWorking, 2);
 	return data;
 }
 
@@ -346,6 +348,7 @@ bool OrderCancelConstruction::setData(const Uint8 *data, int dataLength)
 	if (dataLength!=getDataLength())
 		return false;
 	this->gid=getUint16(data, 0);
+	this->unitWorking=getUint32(data, 2);
 	memcpy(this->data, data, dataLength);
 	return true;
 }

@@ -618,7 +618,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 	}
 }
 
-void Building::cancelConstruction(void)
+void Building::cancelConstruction(Sint32 unitWorking)
 {
 	Sint32 recoverTypeNum=typeNum;
 	BuildingType *recoverType=type;
@@ -689,7 +689,7 @@ void Building::cancelConstruction(void)
 		maxUnitWorking=maxUnitWorkingPreferred;
 	else
 		maxUnitWorking=0;
-	maxUnitWorkingLocal=maxUnitWorking;
+	maxUnitWorkingLocal=unitWorking; //maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
@@ -858,7 +858,10 @@ void Building::updateConstructionState(void)
 	{
 		if (!isHardSpaceForBuildingSite())
 		{
-			cancelConstruction();
+			//this is semi-faulty code and needs to be fixed later
+			//anytime a building is upgraded but unable to do so it reverts to 
+			//one worker working instead of previous value
+			cancelConstruction(1);
 		}
 		else if ((unitsWorking.size()==0) && (unitsInside.size()==0))
 		{

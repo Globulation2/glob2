@@ -2946,7 +2946,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
-			ai.orders.push(new OrderCancelConstruction(b->gid));
+			ai.orders.push(new OrderCancelConstruction(b->gid, 1));
 			continue;
 		}
 
@@ -2955,7 +2955,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
-			ai.orders.push(new OrderCancelConstruction(b->gid));
+			ai.orders.push(new OrderCancelConstruction(b->gid, 1));
 			continue;
 		}
 
