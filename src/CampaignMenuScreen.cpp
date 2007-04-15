@@ -34,7 +34,7 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 	playerName = new TextInput(330, 50, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getPlayerName());
 	addWidget(playerName);
 	availableMissions = new List(10, 50, 300, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	for(int i=0; i<campaign.getMapCount(); ++i)
+	for(unsigned i=0; i<campaign.getMapCount(); ++i)
 	{
 		if(campaign.getMap(i).isUnlocked())
 			availableMissions->addText(campaign.getMap(i).getMapName());
@@ -59,7 +59,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 				if (engine.initCampaign(getMissionName(), campaign, availableMissions->get()) == Engine::EE_NO_ERROR)
 					engine.run();
 				availableMissions->clear();
-				for(int i=0; i<campaign.getMapCount(); ++i)
+				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
 					if(campaign.getMap(i).isUnlocked())
 						availableMissions->addText(campaign.getMap(i).getMapName());
@@ -81,7 +81,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 
 std::string CampaignMenuScreen::getMissionName()
 {
-	for(int n=0; n<campaign.getMapCount(); ++n)
+	for(unsigned n=0; n<campaign.getMapCount(); ++n)
 	{
 		if(campaign.getMap(n).getMapName() == availableMissions->get())
 		{

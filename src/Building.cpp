@@ -429,7 +429,8 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 			std::ostringstream oss;
 			oss << "unitsInsideSubscribe[" << i << "]";
 			Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-		}
+			assert(unit);
+		} 
 		stream->readSint32("subscriptionInsideTimer");
 	}
 

@@ -90,7 +90,7 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source == editMap)
 		{
-			for(int i=0; i<campaign.getMapCount(); ++i)
+			for(unsigned i=0; i<campaign.getMapCount(); ++i)
 			{
 				if(mapList->getSelectionIndex()!=-1 && campaign.getMap(i).getMapName()==mapList->get())
 				{
@@ -110,7 +110,7 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			if(mapList->getSelectionIndex()!=-1)
 			{
-				for(int i=0; i<campaign.getMapCount(); ++i)
+				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
 					std::vector<std::string>::iterator iter=std::find(campaign.getMap(i).getUnlockedByMaps().begin(), campaign.getMap(i).getUnlockedByMaps().end(), mapList->get());
 					if(iter!=campaign.getMap(i).getUnlockedByMaps().end())
@@ -136,7 +136,7 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 
 void CampaignEditor::syncMapList()
 {
-	for(int n=0; n<campaign.getMapCount(); n++)
+	for(unsigned n=0; n<campaign.getMapCount(); n++)
 	{
 		mapList->addText(campaign.getMap(n).getMapName());
 	}
@@ -158,12 +158,12 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	addToUnlocked = new TextButton(170, 150, 50, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "<", ADDTOUNLOCKED);
 	removeFromUnlocked = new TextButton(170, 210, 50, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", ">", REMOVEFROMUNLOCKED);
 	std::set<std::string> unlockedBy;
-	for(int n=0; n<entry.getUnlockedByMaps().size(); ++n)
+	for(unsigned n=0; n<entry.getUnlockedByMaps().size(); ++n)
 	{
 		mapsUnlockedBy->addText(entry.getUnlockedByMaps()[n]);
 		unlockedBy.insert(entry.getUnlockedByMaps()[n]);
 	}
-	for(int n=0; n<campaign.getMapCount(); ++n)
+	for(unsigned n=0; n<campaign.getMapCount(); ++n)
 	{
 		if(unlockedBy.find(campaign.getMap(n).getMapName())==unlockedBy.end())
 		{
@@ -195,7 +195,7 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 		if (source == ok)
 		{
 			///If the maps name was changes, make sure to change it in all of the other map entries
-			for(int i=0; i<campaign.getMapCount(); ++i)
+			for(unsigned i=0; i<campaign.getMapCount(); ++i)
 			{
 				std::vector<std::string>::iterator iter=std::find(campaign.getMap(i).getUnlockedByMaps().begin(), campaign.getMap(i).getUnlockedByMaps().end(), entry.getMapName());
 				if(iter!=campaign.getMap(i).getUnlockedByMaps().end())
@@ -205,7 +205,7 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 			}
 			entry.setMapName(nameEditor->getText());
 			entry.getUnlockedByMaps().clear();
-			for(int n=0; n<mapsUnlockedBy->getCount(); ++n)
+			for(unsigned n=0; n<mapsUnlockedBy->getCount(); ++n)
 			{
 				entry.getUnlockedByMaps().push_back(mapsUnlockedBy->getText(n));
 			}

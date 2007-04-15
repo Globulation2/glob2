@@ -550,6 +550,7 @@ bool Entities::Position::load(GAGCore::InputStream *stream, Player *player, Sint
 	x=stream->readSint32("posX");
 	y=stream->readSint32("posY");
 	stream->readLeaveSection();
+	return false;
 }
 
 
@@ -957,7 +958,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 
 void GradientManager::queue_gradient(const GradientInfo& gi)
 {
-	for(int i=0; i<gradients.size(); ++i)
+	for(unsigned i=0; i<gradients.size(); ++i)
 	{
 		if(gradients[i]->get_gradient_info() == gi)
 		{
@@ -1542,7 +1543,7 @@ boost::logic::tribool BuildingOrder::passes_conditions(Echo& echo)
 
 	}
 
-	for(int n=0; n<constraints.size(); ++n)
+	for(unsigned n=0; n<constraints.size(); ++n)
 	{
 		if(constraints[n]->get_gradient_info())
 		{
@@ -1559,7 +1560,7 @@ boost::logic::tribool BuildingOrder::passes_conditions(Echo& echo)
 
 void BuildingOrder::queue_gradients(Gradients::GradientManager& manager)
 {
-	for(int n=0; n<constraints.size(); ++n)
+	for(unsigned n=0; n<constraints.size(); ++n)
 	{
 		if(constraints[n]->get_gradient_info())
 		{
@@ -3264,9 +3265,9 @@ void RessourceTracker::save(GAGCore::OutputStream *stream)
 
 
 
-AddRessourceTracker::AddRessourceTracker(int length, int ressource, int building_id) : length(length), ressource(ressource), building_id(building_id)
+AddRessourceTracker::AddRessourceTracker(int length, int ressource, int building_id) : length(length), building_id(building_id), ressource(ressource)
 {
-
+	
 }
 
 

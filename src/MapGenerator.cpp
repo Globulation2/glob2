@@ -775,7 +775,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	/// respect symmetry-requirements
 	unsigned int wPower2Divider=0, hPower2Divider=0;
 	int power2Divider=descriptor.logRepeatAreaTimes;
-	for (unsigned int i = 0; i<power2Divider; i++)
+	for (int i = 0; i<power2Divider; i++)
 		if (w/(pow(2,wPower2Divider))>h/(pow(2,hPower2Divider)))
 			wPower2Divider++;
 		else
@@ -823,7 +823,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	int histogram[2048];
 	memset(histogram, 0, 2048*sizeof(int));
 
-	for (int i=0; i<wHeightMap*hHeightMap; i++)
+	for (unsigned i=0; i<wHeightMap*hHeightMap; i++)
 	{
 		histogram[hm.uiLevel(i,2048)]++;
 	}
@@ -859,8 +859,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		if (accumulatedHistogram >= waterTiles+sandTiles+grassTiles)
 			grassLevel = (float)(i-1)/2048.0;
 	}
-	for (int y=0; y<hHeightMap; y++)
-		for (int x=0; x<wHeightMap; x++)
+	for (unsigned y=0; y<hHeightMap; y++)
+		for (unsigned x=0; x<wHeightMap; x++)
 			{
 			int tmpUndermap;
 			if (hm(y*wHeightMap+x)<waterLevel)
@@ -956,8 +956,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	controlSand();
 	regenerateMap(0, 0, w, h);
 	//now to add primary resources for current map generator
-	for (int y=0; y<hHeightMap; y++)
-		for (int x=0; x<wHeightMap; x++)
+	for (unsigned y=0; y<hHeightMap; y++)
+		for (unsigned x=0; x<wHeightMap; x++)
 			{
 			int tmpRessource=-12;//sorry! is there some NONE?
 			if(hm(x+wHeightMap*y)<algaeLevel)

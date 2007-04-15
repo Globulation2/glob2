@@ -946,7 +946,7 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 void Team::add_building_needing_work(Building* b)
 {
 	bool did_find_position=false;
-	for(int i=0; i<buildingsNeedingUnits.size(); ++i)
+	for(unsigned i=0; i<buildingsNeedingUnits.size(); ++i)
 	{
 		if(prioritize_building(b, buildingsNeedingUnits[i]))
 		{
@@ -970,7 +970,7 @@ void Team::remove_building_needing_work(Building* b)
 void Team::updateAllBuildingTasks()
 {
 	std::sort(buildingsNeedingUnits.begin(), buildingsNeedingUnits.end(), Team::prioritize_building);
-	for(int i=0; i<buildingsNeedingUnits.size(); ++i)
+	for(unsigned i=0; i<buildingsNeedingUnits.size(); ++i)
 	{
 		if(buildingsNeedingUnits[i]->type->isVirtual)
 			buildingsNeedingUnits[i]->subscribeForFlagingStep();
