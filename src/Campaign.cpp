@@ -108,7 +108,7 @@ bool CampaignMapEntry::load(InputStream* stream, Uint32 versionMinor)
 	stream->readEnterSection("unlockedBy");
 	Uint32 size=stream->readUint32("size");
 	unlockedBy.resize(size);
-	for(int n=0; n<size; ++n)
+	for(unsigned n=0; n<size; ++n)
 	{
 		stream->readEnterSection(n);
 		unlockedBy[n]=stream->readText("unlockedBy");
@@ -129,7 +129,7 @@ void CampaignMapEntry::save(OutputStream* stream)
 	stream->writeUint8(isLocked, "isLocked");
 	stream->writeEnterSection("unlockedBy");
 	stream->writeUint32(unlockedBy.size(), "size");
-	for(int n=0; n<unlockedBy.size(); ++n)
+	for(unsigned n=0; n<unlockedBy.size(); ++n)
 	{
 		stream->writeEnterSection(n);
 		stream->writeText(unlockedBy[n], "unlockedBy");
@@ -192,7 +192,7 @@ void Campaign::save(bool isGameSave)
 	stream->writeText(playerName, "playerName");
 	stream->writeEnterSection("maps");
 	stream->writeUint32(maps.size(), "mapNum");
-	for(int n=0; n<maps.size(); ++n)
+	for(unsigned n=0; n<maps.size(); ++n)
 	{
 		stream->writeEnterSection(n);
 		maps[n].save(stream);
@@ -234,9 +234,9 @@ void Campaign::removeMap(unsigned n)
 
 void Campaign::unlockAllFrom(const std::string& map)
 {
-	for(int n=0; n<maps.size(); ++n)
+	for(unsigned n=0; n<maps.size(); ++n)
 	{
-		for(int i=0; i<maps[n].getUnlockedByMaps().size(); ++i)
+		for(unsigned i=0; i<maps[n].getUnlockedByMaps().size(); ++i)
 		{
 			if(maps[n].getUnlockedByMaps()[i] == map)
 			{
