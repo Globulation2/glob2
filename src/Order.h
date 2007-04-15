@@ -142,17 +142,18 @@ class OrderCancelConstruction:public Order
 {
 public:
 	OrderCancelConstruction(const Uint8 *data, int dataLength);
-	OrderCancelConstruction(Uint16 gid);
+	OrderCancelConstruction(Uint16 gid, Uint32 unitWorking);
 	virtual ~OrderCancelConstruction(void) {}
 	Uint8 getOrderType(void) { return ORDER_CANCEL_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 2; }
+	int getDataLength(void) { return 6; }
 
 	Uint16 gid;
+	Uint32 unitWorking;
 
 protected:
-	Uint8 data[2];
+	Uint8 data[6];
 };
 
 

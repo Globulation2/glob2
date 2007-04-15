@@ -661,7 +661,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			Uint16 gid=((OrderCancelConstruction *)order)->gid;
+			OrderConstruction *oc = ((OrderConstruction *)order);
+			Uint16 gid=oc->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Team *t=teams[team];
@@ -669,7 +670,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (b)
 			{
 				fprintf(logFile, "ORDER_CANCEL_CONSTRUCTION");
-				b->cancelConstruction();
+				b->cancelConstruction(oc->unitWorking);
 			}
 		}
 		break;

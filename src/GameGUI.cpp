@@ -1380,12 +1380,14 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 			}
 		}
 		else if(action=="upgrade building")
-		{
+		{			
 			if ((pressed) && (selectionMode==BUILDING_SELECTION))
 			{
 				Building* selBuild = selection.building;
+				int typeNum = selBuild->typeNum; //determines type of updated building
+				int unitWorking = getUnitCount(typeNum - 1);
 				if (selBuild->constructionResultState == Building::UPGRADE)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
 				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 					repairAndUpgradeBuilding(selBuild, false, true);
 			}
@@ -1395,8 +1397,10 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 			if ((pressed) && (selectionMode==BUILDING_SELECTION))
 			{
 				Building* selBuild = selection.building;
+				int typeNum = selBuild->typeNum; //determines type of updated building
+				int unitWorking = getUnitCount(typeNum);
 				if (selBuild->constructionResultState == Building::REPAIR)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
 				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 					repairAndUpgradeBuilding(selBuild, true, false);
 			}
@@ -1981,11 +1985,15 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			if (selBuild->constructionResultState==Building::REPAIR)
 			{
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+				int typeNum = selBuild->typeNum; //determines type of updated building
+				int unitWorking = getUnitCount(typeNum);
+				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
+				int typeNum = selBuild->typeNum; //determines type of updated building
+				int unitWorking = getUnitCount(typeNum - 1);
+				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 			{
