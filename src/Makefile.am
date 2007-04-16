@@ -97,6 +97,8 @@ GameGUIDialog.cpp \
 GameGUIDialog.h \
 GameGUILoadSave.cpp \
 GameGUILoadSave.h \
+GameHeader.cpp \
+GameHeader.h \
 GameUtilities.cpp  \
 GameUtilities.h  \
 Glob2.cpp \
@@ -125,6 +127,8 @@ MapEdit.cpp \
 MapEdit.h \
 MapGenerationDescriptor.cpp  \
 MapGenerationDescriptor.h  \
+MapHeader.h \
+MapHeader.cpp \
 MapGenerator.cpp \
 Marshaling.h  \
 MultiplayersChooseMapScreen.cpp  \
