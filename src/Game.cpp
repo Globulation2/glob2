@@ -2488,11 +2488,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
