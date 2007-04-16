@@ -2652,7 +2652,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			bool radius=false;
 			buildingRadiusLabel->setValues(&b->unitStayRange, &b->type->maxUnitStayRange);
 			buildingRadiusScrollBox->setValues(&b->unitStayRange, &b->type->maxUnitStayRange);
-			if(b->shortTypeNum==IntBuildingType::SWARM_BUILDING)
+			if(b->type->isBuildingSite)
+			{
+				hpLabel=true;
+				assignedLabel=true;
+			}
+			else if(b->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 			{
 				hpLabel=true;
 				foodLabel=true;
@@ -2661,29 +2666,29 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				explorerRatioLabel=true;
 				warriorRatioLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::FOOD_BUILDING)
+			else if(b->shortTypeNum==IntBuildingType::FOOD_BUILDING)
 			{
 				hpLabel=true;
 				foodLabel=true;
 				assignedLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::HEAL_BUILDING)
+			else if(b->shortTypeNum==IntBuildingType::HEAL_BUILDING)
 			{
 				hpLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::WALKSPEED_BUILDING)
+			else if(b->shortTypeNum==IntBuildingType::WALKSPEED_BUILDING)
 			{
 				hpLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::SWIMSPEED_BUILDING)
+			else if(b->shortTypeNum==IntBuildingType::SWIMSPEED_BUILDING)
 			{
 				hpLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+			else if(b->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
 			{
 				hpLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
+			else if(b->shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 			{
 				hpLabel=true;
 			}
@@ -2694,28 +2699,28 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				stoneLabel=true;
 				bulletsLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
+			else if(b->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
 			{
 				assignedLabel=true;
 				radius=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::WAR_FLAG)
-			{
-				assignedLabel=true;
-				minimumLevel=true;
-				radius=true;
-			}
-			if(b->shortTypeNum==IntBuildingType::CLEARING_FLAG)
+			else if(b->shortTypeNum==IntBuildingType::WAR_FLAG)
 			{
 				assignedLabel=true;
 				minimumLevel=true;
 				radius=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::STONE_WALL)
+			else if(b->shortTypeNum==IntBuildingType::CLEARING_FLAG)
+			{
+				assignedLabel=true;
+				minimumLevel=true;
+				radius=true;
+			}
+			else if(b->shortTypeNum==IntBuildingType::STONE_WALL)
 			{
 				hpLabel=true;
 			}
-			if(b->shortTypeNum==IntBuildingType::MARKET_BUILDING)
+			else if(b->shortTypeNum==IntBuildingType::MARKET_BUILDING)
 			{
 				hpLabel=true;
 				assignedLabel=true;
