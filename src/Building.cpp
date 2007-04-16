@@ -1201,7 +1201,7 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	if (constructionResultState==UPGRADE)
 		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->prevLevel;
+		targetLevelTypeNum=type->level;
 	else
 		assert(false);
 
@@ -1231,7 +1231,7 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 	if (constructionResultState==UPGRADE)
 		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->prevLevel;
+		targetLevelTypeNum=type->level;
 	else
 		assert(false);
 
