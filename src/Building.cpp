@@ -1217,7 +1217,6 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 			owner->map->addHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
 		}
 	}
-	owner->map->computeLocalForbidden(0);
 }
 
 
