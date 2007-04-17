@@ -1201,7 +1201,7 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	if (constructionResultState==UPGRADE)
 		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->level;
+		targetLevelTypeNum=type->prevLevel;
 	else
 		assert(false);
 
@@ -1228,7 +1228,7 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 
 	int targetLevelTypeNum=-1;
 	if (constructionResultState==UPGRADE)
-		targetLevelTypeNum=type->nextLevel;
+		targetLevelTypeNum=type->level;
 	else if (constructionResultState==REPAIR)
 		targetLevelTypeNum=type->level;
 	else
@@ -1518,7 +1518,7 @@ void Building::subscribeForFlagingStep()
 				for(int n=0; n<1024; ++n)
 				{
 					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 						continue;
 			  	 	if(!canUnitWorkHere(unit))
 			  		  	continue;
@@ -1548,7 +1548,7 @@ void Building::subscribeForFlagingStep()
 				for(int n=0; n<1024; ++n)
 				{
 					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 						continue;
 			  	 	if(!canUnitWorkHere(unit))
 			  		  	continue;
@@ -1575,7 +1575,7 @@ void Building::subscribeForFlagingStep()
 				for(int n=0; n<1024; ++n)
 				{
 					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM)
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 						continue;
 			  	 	if(!canUnitWorkHere(unit))
 			  		  	continue;
@@ -1997,6 +1997,25 @@ void Building::turretStep(void)
 	}
 
 }
+
+
+
+void Building::clearingFlagStep()
+{
+	if (unitsWorking.size()<(unsigned)maxUnitWorking)
+		for (int canSwim=0; canSwim<2; canSwim++)
+			if (localRessourcesCleanTime[canSwim]++>125) // Update every 5[s]
+			{
+				if (!owner->map->updateLocalRessources(this, canSwim))
+				{
+					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+						(*it)->standardRandomActivity();
+					unitsWorking.clear();
+				}
+			}
+}
+
+
 
 void Building::kill(void)
 {

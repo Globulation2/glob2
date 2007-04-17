@@ -1169,6 +1169,9 @@ void Team::syncStep(void)
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep();
 
+	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
+		(*it)->clearingFlagStep();
+
 	bool isDying= (playersMask==0)
 		|| (!isEnoughFoodInSwarm && nbUsefullUnitsAlone==0 && (nbUsefullUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
