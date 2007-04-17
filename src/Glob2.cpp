@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,7 +59,8 @@
 	\section feedback Feedback
 	This documentation is not yet complete, but should help to have an
 	overview of Globulation's 2 code. If you have any comments or suggestions,
-	do not hesitate to send them to <a href="mailto:glob2@ysagoon.com">glob2@ysagoon.com</a>.
+	do not hesitate to contact the development team at
+	http://www.globulation2.org
 */
 
 GlobalContainer *globalContainer=NULL;

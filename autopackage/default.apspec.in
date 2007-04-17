@@ -1,13 +1,13 @@
 # -*-shell-script-*-
 
 [Meta]
-RootName: @glob2.ysagoon.com/glob2:@VERSION@
+RootName: @www.globulation2.org:@VERSION@
 DisplayName: Globulation 2
 ShortName: glob2
 Maintainer: The globulation 2 developers
 Packager: Hein-Pieter van Braam <hp@syntomax.com>
 Summary: Globulation 2 is an innovative new stategy game. 
-URL: http://glob2.ysagoon.com/
+URL: http://www.globulation2.org
 License: GNU General Public License, Version 2
 SoftwareVersion: @VERSION@
 AutopackageTarget: 1.0

@@ -4,7 +4,7 @@
  By Steve Reid <steve@edmweb.com>, with small changes to make it
  fit into mutt by Thomas Roessler <roessler@does-not-exist.org>,
  with small changes to make it fit into glob2 by Luc-Olivier de
- Charrière <Nuage@ysagoon.com>
+ Charrière <NuageBleu at gmail dot com>
 
 */
  

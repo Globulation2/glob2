@@ -1,8 +1,8 @@
 /*
   This file is part of Globulation 2, a free software real-time strategy game
-  http://glob2.ysagoon.com
+  http://www.globulation2.org
   Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
