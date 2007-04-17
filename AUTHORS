@@ -1,40 +1,40 @@
 *
 Game design, initial programming
 
-Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com>
-Stéphane Magnenat <nct[no-spam]ysagoon.com>
+Luc-Olivier de Charrière <NuageBleu at gmail dot com>
+Stéphane Magnenat <stephane at magnenat dot net>
 
 *
 Maintainer
 
-Bradley Arsenault <genixpro[no-spam]gmail.com> (As of August 2006)
-Stéphane Magnenat <nct[no-spam]ysagoon.com> (Until August 2006)
+Bradley Arsenault <genixpro at gmail dot com> (As of August 2006)
+Stéphane Magnenat <stephane at magnenat dot net> (Until August 2006)
 
 *
 Further programming
 
-Bradley Arsenault <genixpro[no-spam]gmail.com> (Nicowar AI, Echo AI System, New Map Editor, Miscellaneous Bugfixes)
-Martin Nyffenegger <barock[no-spam]ysagoon.com> (SGSL)
-Andrew Sayers <globulation2[no-spam]pileofstuff.org> (Miscellaneous bugfixes)
-Leo Wandersleb <Leo.Wandersleb[no-spam]gmx.de> (Perlin-noise based map generation)
-Hein-Pieter van Braam <hp[no-spam]syntomax.com> (IRC patch, debugging)
-Martin Voelkle <marv[no-spam]chaoides.org> (GUI, bugfixes and more)
-Joe LeBlanc <jdlspeedy@yahoo.com> (YOG & IRC fixes and improvements)
-Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (CreditScreen JJ)
-Kevin Clement <donkjunk[no-spam]softhome.net> (improved settings menu & bugfixes)
-Ahmad Sayed <ahmadsayed83[no-spam]yahoo.com> (bidi text support)
+Bradley Arsenault <genixpro at gmail dot com> (Nicowar AI, Echo AI System, New Map Editor, Miscellaneous Bugfixes)
+Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
+Andrew Sayers <globulation2 at pileofstuff dot org> (Miscellaneous bugfixes)
+Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (Perlin-noise based map generation)
+Hein-Pieter van Braam <hp at syntomax dot com> (IRC patch, debugging)
+Martin Voelkle <marv at chaoides dot org> (GUI, bugfixes and more)
+Joe LeBlanc <jdlspeedy@yahoo dot com> (YOG & IRC fixes and improvements)
+Emmanuel Eckard <emmanuel dot eckard at epfl dot ch> (CreditScreen JJ)
+Kevin Clement <donkjunk at softhome dot net> (improved settings menu & bugfixes)
+Ahmad Sayed <ahmadsayed83 at yahoo dot com> (bidi text support)
 
 *
 Graphics
 
-Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (drawing new buildings)
-Cyrille Dunant <cyrille.dunant[no-spam]epfl.ch> (coloring new buildings)
-Andrew Sayers <globulation2[no-spam]pileofstuff.org> (new grass and sand)
-Matthew Marshall <mmarshall[no-spam]myrealbox.com> (new units)
-Stéphane Magnenat <nct[no-spam]ysagoon.com> (GUI, new water)
-Joey Marshall <JoeyMarshall[no-spam]ml1.net> (additional drawing, coloring)
-Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (swarm, old terrains, buildings and units)
-Gabriel Walt <diz[no-spam]ysagoon.com> (GUI)
+Emmanuel Eckard <emmanuel dot eckard at epfl dot ch> (drawing new buildings)
+Cyrille Dunant <cyrille dot dunant at epfl dot ch> (coloring new buildings)
+Andrew Sayers <globulation2 at pileofstuff dot org> (new grass and sand)
+Matthew Marshall <mmarshall at myrealbox dot com> (new units)
+Stéphane Magnenat <stephane at magnenat dot net> (GUI, new water)
+Joey Marshall <JoeyMarshall at ml1 dot net> (additional drawing, coloring)
+Luc-Olivier de Charrière <NuageBleu at gmail dot com> (swarm, old terrains, buildings and units)
+Gabriel Walt <diz at ysagoon dot com> (GUI)
 
 
 *
@@ -46,80 +46,80 @@ Jacques-Paul Grivaz <>
 *
 Translations
 
-Julia Schmitt <zwarntje[no-spam]gmail.com> (Deutsch)
-Michal Turek <bastard.user.from.hell[no-spam]seznam.cz> (Czech)
-Przemyslaw Kaminski <daemon42[no-spam]gazeta.pl> (Polish)
-Łukasz Demianiuk <ldemianiuk[no-spam]gmail.com> (Polish)
-Martin Nyffenegger <barock[no-spam]ysagoon.com> (Deutsch)
-Matthias Warkus <mawarkus[no-spam]gnome.org> (Deutsch)
-Martin Hinrichs <Mail[no-spam]martinhinrichs.net> (Deutsch)
-Manuel Soukup <linuxuser-sky[no-spam]gmx.de> (Deutsch)
-Denis Lianda <lianda[no-spam]nm.ru> (Russian)
-Munteanu Olimpiu Andrei <moa3333[no-spam]fastmail.fm> (Romanian)
-Vakvarju <vakvarju[no-spam]spektrum-3d.hu> (Hungarian)
+Julia Schmitt <zwarntje at gmail dot com> (Deutsch)
+Michal Turek <bastard dot user dot from dot hell at seznam dot cz> (Czech)
+Przemyslaw Kaminski <daemon42 at gazeta dot pl> (Polish)
+Łukasz Demianiuk <ldemianiuk at gmail dot com> (Polish)
+Martin Nyffenegger <barock at ysagoon dot com> (Deutsch)
+Matthias Warkus <mawarkus at gnome dot org> (Deutsch)
+Martin Hinrichs <Mail at martinhinrichs dot net> (Deutsch)
+Manuel Soukup <linuxuser-sky at gmx dot de> (Deutsch)
+Denis Lianda <lianda at nm dot ru> (Russian)
+Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (Romanian)
+Vakvarju <vakvarju at spektrum-3d dot hu> (Hungarian)
 samaritan <> (Serbian)
-Daniel Nilsson <vq[no-spam]telia.com> (Swedish)
-christooss <christooss[no-spam]gmail.com> (Slovene)
-Matic Ahacic <christooss[no-spam]gmail.com> (Slovene)
-Heine Laursen <maillist[no-spam]gozar.dynu.com> (Danish)
-Tobe Deprez <tobedeprez[no-spam]scarlet.be> (Dutch)
-Elías Díaz Molins <gekko04[no-spam]gmail.com> (Catalain - Català)
-Stefan Kangas <stefan.kangas[no-spam]ungvanster.se> (Swedish)
+Daniel Nilsson <vq at telia dot com> (Swedish)
+christooss <christooss at gmail dot com> (Slovene)
+Matic Ahacic <christooss at gmail dot com> (Slovene)
+Heine Laursen <maillist at gozar dot dynu dot com> (Danish)
+Tobe Deprez <tobedeprez at scarlet dot be> (Dutch)
+Elías Díaz Molins <gekko04 at gmail dot com> (Catalain - Català)
+Stefan Kangas <stefan dot kangas at ungvanster dot se> (Swedish)
 David Morán <> (Spanish)
-Fernando J. Rodríguez <groucho[no-spam]lugmen.org.ar> (Portuguese, Spanish)
-Igor TAmara <igor[no-spam]tamarapatino.org> (Spanish)
-Sébastien Le Ray <Beuss[no-spam]fr.st> (French)
+Fernando J. Rodríguez <groucho at lugmen dot org dot ar> (Portuguese, Spanish)
+Igor TAmara <igor at tamarapatino dot org> (Spanish)
+Sébastien Le Ray <Beuss at fr dot st> (French)
 Muhammet Kara <> (Turkish)
-Adam Olausson <gobbladox[no-spam]hotmail.com> (Swedish)
-White Raven <glob[no-spam]wra.visitors.sk> (Slovensky)
+Adam Olausson <gobbladox at hotmail dot com> (Swedish)
+White Raven <glob at wra dot visitors dot sk> (Slovensky)
 Anonymous <> (Spanish)
-Raoul Verveer <lazy-r[no-spam]zonnet.nl> (Nederlands)
-David Barnett <davidbarnett[no-spam]letu.edu> (English)
-Federico Massi <federicomassi[no-spam]tim.it> (Italian)
+Raoul Verveer <lazy-r at zonnet dot nl> (Nederlands)
+David Barnett <davidbarnett at letu dot edu> (English)
+Federico Massi <federicomassi at tim dot it> (Italian)
 Erik Blomqvist <> (Swedish)
-Osoitz Elkorobarrutia <oelkoro[no-spam]gmail.com> (Basque)
+Osoitz Elkorobarrutia <oelkoro at gmail dot com> (Basque)
 
 
 *
 Maps and campaign
 
-Bradley Arsenault <genixpro[no-spam]gmail.com> (new tutorial)
-Joey Marshall <JoeyMarshall[no-spam]ml1.net> (Joey campaign)
+Bradley Arsenault <genixpro at gmail dot com> (new tutorial)
+Joey Marshall <JoeyMarshall at ml1 dot net> (Joey campaign)
 
 
 *
 Game Packaging
 
-Vincent Deffontaines <vincent[no-spam]gryzor.com> (Debian)
-Sebastian Gerlach <minas[no-spam]calodox.org> (Win32 VS)
-Alexandru Munteanu <io_alex_2002[no-spam]yahoo.fr> (Win32 mingw32)
-Dejan Lekic <dejan[no-spam]nu6.org> (Win32, Fedora)
-Jens Reimann <ctron[no-spam]dentrassi.de> (Fedora)
-Martin Nyffenegger <barock[no-spam]ysagoon.com> (Mac OS X)
-Jean-David Maillefer <jdmaillefer[no-spam]bluewin.ch> (Mac OS X)
-Kieran <kieran776[no-spam]hotmail.com> (Win32 runtime/executable, Mandriva RPM/Source RPM)
-Christian <chibar[no-spam]fibertel.com.ar> (Win32 executable images)
-Thierry Thomas <thierry[no-spam]freebsd.org> (FreeBSD)
-"Dave Vasilevsky" <djvasi[no-spam]gmail.com> (Mac OS X)
-Ruben Zilibowitz <rzilibowitz[no-spam]yahoo.com.au> (Mac OS X)
+Vincent Deffontaines <vincent at gryzor dot com> (Debian)
+Sebastian Gerlach <minas at calodox dot org> (Win32 VS)
+Alexandru Munteanu <io_alex_2002 at yahoo dot fr> (Win32 mingw32)
+Dejan Lekic <dejan at nu6 dot org> (Win32, Fedora)
+Jens Reimann <ctron at dentrassi dot de> (Fedora)
+Martin Nyffenegger <barock at ysagoon dot com> (Mac OS X)
+Jean-David Maillefer <jdmaillefer at bluewin dot ch> (Mac OS X)
+Kieran <kieran776 at hotmail dot com> (Win32 runtime/executable, Mandriva RPM/Source RPM)
+Christian <chibar at fibertel dot com dot ar> (Win32 executable images)
+Thierry Thomas <thierry at freebsd dot org> (FreeBSD)
+"Dave Vasilevsky" <djvasi at gmail dot com> (Mac OS X)
+Ruben Zilibowitz <rzilibowitz at yahoo dot com dot au> (Mac OS X)
 
 *
 Internet, documentation and community
 
-Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (yog metaserver)
-Kyle Lutze <kyle[no-spam]randomvoids.com> (hosting, phpbb/mediawiki integration)
-Drazak <dark.drazak[no-spam]gmail.com> (hosting)
-Munteanu Olimpiu Andrei <moa3333[no-spam]fastmail.fm> (wiki)
-Stéphane Magnenat <nct[no-spam]ysagoon.com> (server, wiki, savannah, forum)
-Gabriel Walt <disney[no-spam]ysagoon.com> (hosting, old CMS, wiki, forum)
-Munteanu Alexandru <io_alex_2002[nospam]yahoo.fr> (phpbb/mediawiki integration)
-Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (wiki)
-Leo Wandersleb <Leo.Wandersleb[no-spam]gmx.de> (wiki)
-Louis Gagnon <globulation2.org[no-spam]louisgagnon.com> (wiki)
+Luc-Olivier de Charrière <NuageBleu at gmail dot com> (yog metaserver)
+Kyle Lutze <kyle at randomvoids dot com> (hosting, phpbb/mediawiki integration)
+Drazak <dark dot drazak at gmail dot com> (hosting)
+Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (wiki)
+Stéphane Magnenat <stephane at magnenat dot net> (server, wiki, savannah, forum)
+Gabriel Walt <disney at ysagoon dot com> (hosting, old CMS, wiki, forum)
+Munteanu Alexandru <io_alex_2002[nospam]yahoo dot fr> (phpbb/mediawiki integration)
+Martin Voelkle <martin dot voelkle at epfl dot ch> (wiki)
+Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (wiki)
+Louis Gagnon <globulation2 dot org at louisgagnon dot com> (wiki)
 Loki Azgorodin <> (#glob2)
-Dejan Lekic <dejan[no-spam]nu6.org> (#globulation2)
-Ghislain Leveque <court-jus[no-spam]court-jus.net>
-Kieran <kieran776[no-spam]hotmail.com> (wiki, savannah project site)
+Dejan Lekic <dejan at nu6 dot org> (#globulation2)
+Ghislain Leveque <court-jus at court-jus dot net>
+Kieran <kieran776 at hotmail dot com> (wiki, savannah project site)
 
 
 *

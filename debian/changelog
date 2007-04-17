@@ -2,116 +2,116 @@ glob2 (alpha22) unstable; urgency=low
 
   * Alpha22
 
- -- Stephane Magnenat <nct@ysagoon.com>  Wed,  4 Apr 2007 17:21:54 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Wed,  4 Apr 2007 17:21:54 +0200
 
 glob2 (alpha21) unstable; urgency=low
 
   * Alpha21
 
- -- Stéphane Magnenat <nct@ysagoon.com>  Sun,  6 Aug 2006 14:44:24 +0200
+ -- Stéphane Magnenat <stephane at magnenat dot net>  Sun,  6 Aug 2006 14:44:24 +0200
 
 glob2 (alpha20) unstable; urgency=low
 
   * Alpha 20 
 
- -- Stephane Magnenat <nct@ysagoon.com>  Fri,  4 Aug 2006 14:36:19 -0400
+ -- Stephane Magnenat <stephane at magnenat dot net>  Fri,  4 Aug 2006 14:36:19 -0400
 
 glob2 (alpha19) unstable; urgency=low
 
   * Alpha19
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 12 Mar 2006 17:26:02 +0100
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 12 Mar 2006 17:26:02 +0100
 
 glob2 (alpha18) unstable; urgency=low
 
   * Alpha18
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 29 Jan 2006 19:38:55 +0100
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 29 Jan 2006 19:38:55 +0100
 
 glob2 (alpha17) unstable; urgency=low
 
   * Alpha17
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 11 Dec 2005 15:52:34 +0100
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 11 Dec 2005 15:52:34 +0100
 
 glob2 (alpha16) unstable; urgency=low
 
   * Alpha16
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 20 Nov 2005 11:03:01 +0100
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 20 Nov 2005 11:03:01 +0100
 
 glob2 (alpha15) unstable; urgency=low
 
   * Alpha15
 
- -- Stephane Magnenat <nct@ysagoon.com>  Mon, 16 May 2005 13:34:09 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Mon, 16 May 2005 13:34:09 +0200
 
 glob2 (alpha14) unstable; urgency=low
 
   * Alpha14
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 24 Apr 2005 17:52:58 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 24 Apr 2005 17:52:58 +0200
 
 glob2 (alpha13) unstable; urgency=low
 
   * Alpha13
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sat, 16 Apr 2005 17:42:44 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sat, 16 Apr 2005 17:42:44 +0200
 
 glob2 (alpha12) unstable; urgency=low
 
   * Alpha12
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 13 Feb 2005 13:01:59 +0100
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 13 Feb 2005 13:01:59 +0100
 
 glob2 (alpha11) unstable; urgency=low
 
   * Alpha11
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 16 Jan 2005 00:08:12 +0100
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 16 Jan 2005 00:08:12 +0100
 
 glob2 (alpha10) unstable; urgency=low
 
   * Alpha10, working version
 
- -- Stephane Magnenat <nct@ysagoon.com>  Wed, 29 Dec 2004 12:20:37 +0100
+ -- Stephane Magnenat <stephane at magnenat dot net>  Wed, 29 Dec 2004 12:20:37 +0100
 
 glob2 (alpha10pre) unstable; urgency=low
 
   * Alpha10, preversion
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 24 Oct 2004 19:15:00 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 24 Oct 2004 19:15:00 +0200
 
 glob2 (alpha9) unstable; urgency=low
 
   * Alpha9
 
- -- Stephane Magnenat <nct@ysagoon.com>  Fri,  8 Oct 2004 18:28:02 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Fri,  8 Oct 2004 18:28:02 +0200
 
 glob2 (alpha8) unstable; urgency=low
 
   * Alpha8
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun, 12 Sep 2004 21:10:04 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 12 Sep 2004 21:10:04 +0200
 
 glob2 (alpha7) unstable; urgency=low
 
   * Alpha7
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sun,  8 Aug 2004 22:00:39 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun,  8 Aug 2004 22:00:39 +0200
 
 glob2 (alpha6) unstable; urgency=low
 
   * Alpha6
 
- -- Stephane Magnenat <nct@ysagoon.com>  Wed,  9 Jun 2004 21:29:08 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Wed,  9 Jun 2004 21:29:08 +0200
 
 glob2 (alpha5-post) unstable; urgency=low
 
   * Post Alpha5 CVS
   * Lib GLU deps changed
 
- -- Stephane Magnenat <nct@ysagoon.com>  Sat, 29 May 2004 12:25:00 +0200
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sat, 29 May 2004 12:25:00 +0200
 
 glob2 (alpha3) unstable; urgency=low
 

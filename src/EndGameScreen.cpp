@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   Copyright (C) 2006 Bradley Arsenault
 
