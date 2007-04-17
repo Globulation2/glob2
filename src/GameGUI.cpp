@@ -1184,6 +1184,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				break;
 			case SDLK_PLUS:
 			case SDLK_KP_PLUS:
+			case SDLK_EQUALS:
 				{
 					if ((pressed) && (selectionMode==BUILDING_SELECTION))
 					{
