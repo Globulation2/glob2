@@ -154,10 +154,13 @@ public:
 	void subscribeForFlagingStep();
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
-	///This is a step for swarms. Swarms heal themselves and create new units
+	/// This is a step for swarms. Swarms heal themselves and create new units
 	void swarmStep(void);
 	/// This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(void);
+	/// This step updates clearing flag gradients. When there are no more ressources remaining, units are to
+	/// be fired. When ressources grow back, units have to be rehired.=
+	void clearingFlagStep();
 	/// Kills the building, removing all units that are working or inside the building,
 	/// changing the state and adding it to the list of buildings to be deleted
 	void kill(void);
