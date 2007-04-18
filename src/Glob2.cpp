@@ -436,7 +436,7 @@ int Glob2::run(int argc, char *argv[])
 				else if (rc==HowNewMapScreen::NEWCAMPAIGN)
 				{
 					CampaignEditor ce("");
-					//int rc_ce=ce.execute(globalContainer->gfx, 40);
+					ce.execute(globalContainer->gfx, 40);
 
 				}
 				else if (rc==HowNewMapScreen::LOADCAMPAIGN)
@@ -446,7 +446,7 @@ int Glob2::run(int argc, char *argv[])
 					if(rc_css==CampaignSelectorScreen::OK)
 					{
 						CampaignEditor ce(css.getCampaignName());
-						//int rc_ce=ce.execute(globalContainer->gfx, 40);
+						ce.execute(globalContainer->gfx, 40);
 					}
 					else if(rc_css==CampaignSelectorScreen::CANCEL)
 					{
@@ -490,5 +490,3 @@ int main(int argc, char *argv[])
 	Glob2 glob2;
 	return glob2.run(argc, argv);
 }
-
-
