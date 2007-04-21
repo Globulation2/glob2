@@ -16,6 +16,8 @@ Skade
 Mad
 [working]
 Arbejde
+[assigned]
+Tildelt
 [inside]
 Indenfor
 [ressources]
@@ -36,10 +38,14 @@ Kirsebær
 Appelsin
 [Prune]
 Prune
+[fruit]
+frugt
 [Clearing:]
 Rydning:
 [Min required level:]
 Minimum krævede neavu:
+[Minimum Level To Flag]
+Minimum Flag neavu
 [Bullets]
 Kugler
 [range]
@@ -66,6 +72,12 @@ arbejdere
 udforskere
 [warriors]
 krigere
+[Worker Ratio]
+Arbejder Ratio
+[Explorer Ratio]
+Udforsker Ratio
+[Warrior Ratio]
+Kriger Ratio
 [Unit type]
 enhed type
 [Worker]
@@ -118,6 +130,68 @@ Forbudt arial
 Vagt arial
 [clear area]
 Ophæv arial
+[build swarm level 0]
+Byg Swærm
+[swarm level 0]
+Swærm
+[build inn level 0]
+Byg Kro 1
+[inn level 0]
+Kro 1
+[build inn level 1]
+Construct Inn 2
+[inn level 1]
+Kro 2
+[build inn level 2]
+Byg kro 3
+[inn level 2]
+Kro 3
+[build hospital level 0]
+Byg Hospital 1
+[build hospital level 1]
+Byg Hospital 2
+[build hospital level 2]
+Byg Hospital 3
+[build racetrack level 0]
+Byg Racerbane 1
+[build racetrack level 1]
+Byg Racetrack 2
+[build racetrack level 2]
+Byg Racerbane 3
+[build swimmingpool level 0]
+Byg Svømmepøl 1
+[build swimmingpool level 1]
+Byg Svømmepøl 2
+[build swimmingpool level 2]
+Byg Svømmepøl 3
+[build barracks level 0]
+Byg Kerserne 1
+[build barracks level 1]
+Byg Kerserne 1
+[build barracks level 2]
+Byg Kerserne 1
+[build school level 0]
+Byg Skole 1
+[build school level 1]
+Byg Skole 2
+[build school level 2]
+Byg Skole 3
+[build defencetower level 0]
+Byg Forsvars tårn 1
+[defencetower level 0]
+Byg tårn 1
+[build defencetower level 1]
+Byg Forsvars tårn 2
+[defencetower level 1]
+Byg tårn 2
+[build defencetower level 2]
+Byg Forsvars tårn 3
+[defencetower level 2]
+Forsvars tårn 3
+[build stonewall level 0]
+Byg Sten væg
+[build market level 0]
+Byg Marked
 [Building short explanation]
 Bygning kort forklaring (24 karaktere max)
 [swarm building explanation]
@@ -171,9 +245,9 @@ enheder eller bygninger
 [clearing flag explanation 2]
  
 [stone wall explanation 2]
- 
+element
 [market explanation 2]
-med andre
+Frugt med andre
 [waiting for %0]
 Vænter på %0
 [%0 has left the game]
@@ -192,10 +266,32 @@ Alliance
 Vend tilbage til spillet
 [quit the game]
 Afslut spillet
+[load map]
+Laade Map
+[save map]
+Gæmme Map
+[open script editor]
+Åben Script Editor
+[return to editor]
+Tilbage til editor
+[quit the editor]
+Afslut editor
+[Script Areas]
+Script Områder
+[Change Area Name]
+Ændre område navn
+[Unnamed Area]
+{Unavngivet område}
+[delete]
+Slet
+[no ressources growth areas]
+Ingen vækst område
 [ok]
 Ok
 [Cancel]
 Afbryd
+[human]
+menneskelig
 [you have lost]
 Du har tabt!
 [you have won]
@@ -253,7 +349,7 @@ Serverens host navn
 [hp]
 Liv point
 [carry]
-Bægere på :
+Bægere på:
 [don't carry anything]
 Bægere ikke på noget
 [level]
@@ -288,6 +384,130 @@ Venter på spillere
 Statistikker
 [food left]
 Mad tilbage
+[general settings]
+Generalle instillinger
+[unit settings]
+Enheds instillinger
+[keyboard settings]
+Tastetur instillinger
+[remember unit]
+Husk enhed
+[game shortcuts]
+Gem genveje
+[editor shortcuts]
+Rediger genveje
+[akey]
+A-tast
+[bkey]
+B-tast
+[ckey]
+C-tast
+[dkey]
+D-tast
+[ekey]
+E-tast
+[fkey]
+F-tast
+[gkey]
+G-tast
+[hkey]
+H-tast
+[ikey]
+I-tast
+[jkey]
+J-tast
+[kkey]
+K-tast
+[lkey]
+L-tast
+[mkey]
+M-tast
+[nkey]
+N-tast
+[okey]
+O-tast
+[pkey]
+P-tast
+[qkey]
+Q-tast
+[rkey]
+R-tast
+[skey]
+S-tast
+[tkey]
+T-tast
+[ukey]
+U-tast
+[vkey]
+V-tast
+[wkey]
+W-tast
+[xkey]
+X-tast
+[ykey]
+Y-tast
+[zkey]
+Z-tast
+[unassigned]
+Ikke tildelt
+[toggle draw unit paths]
+Vælg tegn endhd router
+[toggle draw information]
+Vælg tegn information
+[toggle draw accessibility aids]
+Toggle Draw Accessibility Aids
+[destroy building]
+Destruer valgte bygning
+[upgrade building]
+Start/Stop Opgradering
+[repair building]
+Start/Stop Reparation
+[mark map]
+Marker kort for allierede
+[record voice]
+Start volkal optagelse
+[pause game]
+Pause spillet
+[switch to building view]
+Skift til bygningsvisning
+[switch to flag view]
+Skift til flag visning
+[switch to terrain view]
+Skift til terring visning
+[switch to teams view]
+Skift til hold visning
+[open save menu]
+Åben gem menu
+[open load menu]
+Åben lade menu
+[select swarm building]
+Vælg Sværm
+[select inn building]
+Vælg Kro
+[select hospital building]
+Vælg Hospital
+[select racetrack building]
+Vælg Racerbane
+[select swimmingpool building]
+Vælg Svømmepøl
+[select barracks building]
+Vælg Bar
+[select school building]
+Vælg Schoo
+[select tower building]
+Vælg Torn
+[select wall building]
+Vælg væg
+[select market building]
+Vælg Market
+[select exploration flag]
+Vælg Udforsknings Flag
+[select war flag]
+Vælg Krigs Flag
+[select clearing flag]
+Vælg Rydnings Flag
+[restore default shortcuts]
+Gendan standart tastetur genveje
 [the building is finished]
 Bygningen er færdig gjort
 [the swarm is finished]
@@ -390,6 +610,8 @@ er skadet
 og
 [seeking a job]
 leder efter et job
+[jobs]
+jobs
 [Walk]
 Gå
 [Swim]
@@ -420,6 +642,12 @@ Sulten
 dør af sult
 [wounded]
 skadet
+[Starving Map]
+Sulten kort
+[Damaged Map]
+Skadet Kort
+[Defense Map]
+Forsvars Kort
 [In way]
 Er på vej
 [On the spot]
@@ -440,6 +668,8 @@ AINumbi
 AICastor
 [AIWarrush]
 AIWarrush
+[AIReachToInfinity]
+ReachToInfinity
 [AINicowar]
 Nicowar
 [AIToubib]
@@ -474,6 +704,30 @@ Angribs hastighed
 Ny
 [load]
 Lade
+[new campaign]
+Ny Kampanie
+[load campaign]
+Lade Kampanie
+[campaign editor]
+Kampanie redigator
+[editing map]
+Redigere kort
+[add map]
+Tilføj kort
+[edit map]
+Rediger kort
+[remove map]
+Fjern Kort
+[start new campaign]
+Start Ny Kampanie
+[start mission]
+Start Mission
+[unlocked by]
+Låst op af
+[maps available]
+Tilgængelige kort
+[map name]
+Navn
 [handmade map]
 Hånd lavet kort
 [mapGenerationDescriptor Methodes]
@@ -656,7 +910,7 @@ Slå lyd fra
 A : Alliangce
 [abreaviation explanation V]
 V : Vis alle dine bygninger
-[abreaviation explanation Vf]
+[abreaviation explanation fV]
 Vf : Vis alle dine kroer (til at stjæle enheder)
 [abreaviation explanation mV]
 mV : vis alle Market bygninger (til at udveksle frugt)
@@ -716,3 +970,5 @@ Redigere Enhed
 Opløsning
 [hungryness]
 Sulthed
+[repeat area]
+antal gange det samme landskab
