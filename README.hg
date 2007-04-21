@@ -1,0 +1,11 @@
+Glob2 is now using mercurial (hg in short) as Source Control Management system.
+
+More information about mercurial are available here:
+http://www.selenic.com/mercurial/
+
+There is an official repository available in read-only at:
+http://hg.globulation2.org/glob2/
+and in read-write at:
+https://hg.globulation2.org/glob2/
+For read-write access, please ask for it on the developer mailing list:
+http://lists.nongnu.org/mailman/listinfo/glob2-devel

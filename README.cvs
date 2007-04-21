@@ -1,46 +1,7 @@
 Globulation 2
-http://www.ysagoon.com/glob2
+http://www.globulation2.org
 
-GNU and UNIX
-------------
+CVS is not used anymore. Glob 2 has switch to mercurial:
+http://www.selenic.com/mercurial
 
-Short explanation:
-
-To compile glob2 from CVS, run:
-- ./bootstrap (creates ./configure)
-- ./configure (configure the sources)
-- ./syncdata (get the gfx and sounds)
-- ./syncmaps (get the maps)
-- make (compile)
-- make install (install, you need to be root, you can skip this if you want glob2 from src directory)
-
-To compile glob2 from CVS, you need the following libraries and programs:
-- automake
-- autoconf
-- libsdl1.2
-- libsdl-net1.2
-- libsdl-image1.2
-- libsdl-ttf2.0
-- libspeex
-- libvorbis
-Of course, you need the development version of the libs.
-
-
-Long explanation:
-
-If you have taken this from CVS and you want to build the package, run the
-bootstrap script first (or autoreconf).
-
-If SDL is not installed system wide but rather in ${prefix}, add the
-following flags to aclocal:
--I${prefix}/share/aclocal
-i.e. for MacOS X, replace 'aclocal' in the bootstrap script with:
-aclocal -I /usr/local/share/aclocal
-
-If you want do be able to install the game using a build directory different
-from the source directory, use automake version 1.7 instead of version 1.4
-(replace 'automake' with 'automake-1.7' and 'aclocal' with 'aclocal-1.7' in the
-bootstrap script).
-
-You now have a ready-to-configure source.
-Read then the README file.
+Please read README.hg instead.
