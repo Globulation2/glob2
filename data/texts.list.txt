@@ -20,3 +20,4 @@ data/texts.tr.txt
 data/texts.sk.txt
 data/texts.ar.txt
 data/texts.eu.txt
+data/texts.br.txt
