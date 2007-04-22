@@ -1366,13 +1366,23 @@ void Building::subscribeToBringRessourcesStep()
 			int noRes=(r<0?1:0);
 			int wrongRes=(((r>=0) && !neededRessource(r))?1:0);
 			int value = (
-				rightRes*100/(dist+1)+
-				noRes*80/(dist+distUnitRessource+1)+
-				wrongRes*25/(dist+distUnitRessource+1)
-			)/(unit->level[WALK]+1)+
-			enoughTimeLeft*500+
-			100/(unit->level[HARVEST]+1);
-			unit->destinationPurprose=rightRes*r+(1-rightRes)*nr;
+				rightRes*1000/(dist+1)+
+				noRes*800/(dist+distUnitRessource+1)+
+				wrongRes*250/(dist+distUnitRessource+1)
+			)*(unit->level[WALK]+1)+
+			enoughTimeLeft*1000+
+			5*(unit->level[HARVEST]+1);
+			std::cout << "d" << dist
+				<< " dr" << distUnitRessource
+				<< " rr" << rightRes
+				<< " nr" << noRes
+				<< " wr" << wrongRes
+				<< " wa" << unit->level[WALK]
+				<< " ha" << unit->level[HARVEST]
+				<< " va" << value
+				<< std::endl
+				<< std::flush;
+			unit->destinationPurprose=(rightRes>0?r:nr);
 			fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 			if (value>maxValue)
 			{
