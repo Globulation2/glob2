@@ -1,0 +1,21 @@
+syntax: glob
+
+*.Po
+*.map
+*.gif
+*.png
+*.txt
+*.ogg
+Makefile
+Makefile.*
+config.*
+configure
+*.ttf
+aclocal.m4
+output.?
+requests
+traces.?
+default.apspec
+libgag.a
+src/glob2
+stamp-h1
