@@ -980,6 +980,12 @@ void Building::updateUnitsWorking(void)
 					}
 				}
 			}
+			if (fu)
+			{
+				fu->standardRandomActivity();
+				unitsWorking.erase(ittemp);
+				continue;
+			}
 
 			// Second choice: free an unit who has no ressource..
 			if (fu==NULL)
@@ -1350,29 +1356,43 @@ void Building::subscribeToBringRessourcesStep()
 
 			int r=unit->caryedRessource;
 			int dist;
-			map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist); //to fill dist
+			if(!map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist))
+			{
+				//std::cout << ":" << std::flush;
+				continue; //also to fill dist
+			}
 			int distUnitRessource;
 			int nr;
 			for (nr=0; nr<MAX_RESSOURCES; nr++)
 			{
 				if (neededRessource(nr)>0)
 				{
-					map->ressourceAvailable(owner->teamNumber, nr, unit->performance[SWIM], unit->posX, unit->posY, &distUnitRessource); //to fill distUnitRessource
-					break;
+					if(map->ressourceAvailable(owner->teamNumber, nr, unit->performance[SWIM], unit->posX, unit->posY, &distUnitRessource)) //to fill distUnitRessource
+						break;
+					else
+						continue;
 				}
 			}
-			int enoughTimeLeft=((unit->hungry-unit->trigHungry)/unit->race->hungryness/2>(dist+distUnitRessource+1)?1:0);
+			if (neededRessource(nr)<=0)
+			{
+				//std::cout << "," << std::flush;
+				continue;
+			}
 			int rightRes=(((r>=0) && neededRessource(r))?1:0);
+			if(rightRes==1 && (unit->hungry-unit->trigHungry)/unit->race->hungryness/2<dist)
+				continue;
+			else if(rightRes!=1 && (unit->hungry-unit->trigHungry)/unit->race->hungryness/2<(dist+distUnitRessource))
+				continue;
 			int noRes=(r<0?1:0);
 			int wrongRes=(((r>=0) && !neededRessource(r))?1:0);
 			int value = (
-				rightRes*1000/(dist+1)+
-				noRes*800/(dist+distUnitRessource+1)+
-				wrongRes*250/(dist+distUnitRessource+1)
+				rightRes*10*(512-dist)+
+				noRes*8*(512-dist-distUnitRessource)+
+				wrongRes*2*(512-dist-distUnitRessource)
 			)*(unit->level[WALK]+1)+
-			enoughTimeLeft*1000+
-			5*(unit->level[HARVEST]+1);
-			std::cout << "d" << dist
+			//enoughTimeLeft*5000+
+			50*(unit->level[HARVEST]+1);
+			/*std::cout << "d" << dist
 				<< " dr" << distUnitRessource
 				<< " rr" << rightRes
 				<< " nr" << noRes
@@ -1381,7 +1401,12 @@ void Building::subscribeToBringRessourcesStep()
 				<< " ha" << unit->level[HARVEST]
 				<< " va" << value
 				<< std::endl
-				<< std::flush;
+				<< std::flush;*/
+			/*if (value<4000)
+			{
+				//std::cout << "." << std::flush;
+				continue;
+			}*/
 			unit->destinationPurprose=(rightRes>0?r:nr);
 			fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 			if (value>maxValue)
