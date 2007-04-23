@@ -966,27 +966,20 @@ void Building::updateUnitsWorking(void)
 			std::list<Unit *>::iterator ittemp;
 
 			// First choice: free an unit who has a not needed ressource..
-			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
 				int r=(*it)->caryedRessource;
 				if (r>=0 && !neededRessource(r))
 				{
-					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (newDistSquare>maxDistSquare)
-					{
-						maxDistSquare=newDistSquare;
-						fu=(*it);
-						ittemp=it;
-					}
+					fu=(*it);
+					fu->standardRandomActivity();
+					it=unitsWorking.erase(it);
+					continue;
+				} else {
+					++it;
 				}
 			}
-			if (fu)
-			{
-				fu->standardRandomActivity();
-				unitsWorking.erase(ittemp);
-				continue;
-			}
-
+			if(fu!=NULL) continue;
 			// Second choice: free an unit who has no ressource..
 			if (fu==NULL)
 			{
@@ -1391,22 +1384,9 @@ void Building::subscribeToBringRessourcesStep()
 				wrongRes*2*(512-dist-distUnitRessource)
 			)*(unit->level[WALK]+1)+
 			//enoughTimeLeft*5000+
-			50*(unit->level[HARVEST]+1);
-			/*std::cout << "d" << dist
-				<< " dr" << distUnitRessource
-				<< " rr" << rightRes
-				<< " nr" << noRes
-				<< " wr" << wrongRes
-				<< " wa" << unit->level[WALK]
-				<< " ha" << unit->level[HARVEST]
-				<< " va" << value
-				<< std::endl
-				<< std::flush;*/
-			/*if (value<4000)
-			{
-				//std::cout << "." << std::flush;
-				continue;
-			}*/
+			50*(unit->level[HARVEST]+1)+
+			(unit->level[SWIM]>0?-200:0);//swimmer's penalty to keep them free for swimmer tasks
+			//std::cout << "d" << dist << " dr" << distUnitRessource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << unit->level[WALK] << " ha" << unit->level[HARVEST] << " va" << value << std::endl << std::flush;
 			unit->destinationPurprose=(rightRes>0?r:nr);
 			fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 			if (value>maxValue)
