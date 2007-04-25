@@ -1010,6 +1010,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				case 0: fruit = CHERRY; break;
 				case 1: fruit = ORANGE; break;
 				case 2: fruit = PRUNE; break;
+				default: fruit = PRUNE; break;
 			}
 			//choose coordinate where there is grass but no ressource yet
 			int x, y;

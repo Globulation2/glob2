@@ -2484,7 +2484,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	int bot=((sy+sh+31)>>5);
 	
 	time++;
-	
+	std::cout << time << " " << std::flush;
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
