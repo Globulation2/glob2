@@ -55,7 +55,7 @@ BasePlayer::BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 t
 
 void BasePlayer::init()
 {
-	type=P_IP;
+	type=P_NONE;
 	number=0;
 	numberMask=0;
 	strncpy(name, "DEBUG PLAYER", MAX_NAME_LENGTH);
@@ -260,6 +260,20 @@ Uint32 BasePlayer::checkSum()
 	
 	return cs;
 }
+
+
+void Player::makeItAI(AI::ImplementitionID aiType)
+{
+	if (ai)
+	{
+		assert(type>=P_AI);
+		delete ai;
+		ai=NULL;
+	}
+	type=(PlayerType)(P_AI+aiType);
+}
+
+
 
 void BasePlayer::setip(Uint32 host, Uint16 port)
 {
@@ -503,19 +517,6 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	socket=initial->socket;
 	channel=initial->channel;
 };
-
-void Player::makeItAI(AI::ImplementitionID aiType)
-{
-	if (ai)
-	{
-		assert(type>=P_AI);
-		delete ai;
-		ai=NULL;
-	}
-	type=(PlayerType)(P_AI+aiType);
-	ai=new AI(aiType, this);
-	assert(ai);
-}
 
 bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor)
 {

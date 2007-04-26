@@ -30,6 +30,9 @@ class GameHeader
 public:
 	///Gives default values to all entries
 	GameHeader();
+		
+	///Resets the GameHeader to a "blank" state with default values
+	void reset();	
 
 	///Loads game header information from the stream
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
@@ -40,11 +43,17 @@ public:
 	///Returns the number of players in the game
 	Sint32 getNumberOfPlayers() const;
 	
+	///Sets the number of players in the game
+	void setNumberOfPlayers(Sint32 players);
+	
 	///Returns the games latency. This would be 0 for local games, but higher for networked games.
 	Sint32 getGameLatency() const;
 	
 	///Sets the latency of the game.
 	void setGameLatency(Sint32 latency);
+	
+	///Provides access to the base player. n must be between 0 and 31.
+	BasePlayer& getBasePlayer(const int n);
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;
@@ -52,7 +61,7 @@ private:
 	///The number of ticks between an order issue, and the execution of the order.
 	///Used for net games to hide latency.
 	Sint32 gameLatency;
-	
+
 	///Represents the basic player information in the game
 	BasePlayer players[32];
 };

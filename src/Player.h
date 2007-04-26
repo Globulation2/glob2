@@ -148,6 +148,8 @@ public:
 	
 	Uint32 checkSum();
 	
+	void makeItAI(AI::ImplementitionID aiType);
+	
 	void setip(Uint32 host, Uint16 port);
 	void setip(IPaddress ip);
 	bool sameip(IPaddress ip);
@@ -179,8 +181,6 @@ public:
 
 	void setTeam(Team *team);
 	void setBasePlayer(const BasePlayer *initial, Team *teams[32]);
-	
-	void makeItAI(AI::ImplementitionID aiType);
 	
 	bool load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor);
 	void save(GAGCore::OutputStream  *stream);

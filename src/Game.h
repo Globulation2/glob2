@@ -2,6 +2,8 @@
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
+  Copyright (C) 2007 Bradley Arsenault
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -21,9 +23,10 @@
 #define __GAME_H
 
 #include "Map.h"
-#include "Session.h"
 #include "SGSL.h"
 #include <string>
+#include "MapHeader.h"
+#include "GameHeader.h"
 
 namespace GAGCore
 {
@@ -38,6 +41,18 @@ class Game
 {
 	static const bool verbose = false;
 public:
+	///Constructor. GUI can be NULL
+	Game(GameGUI *gui);
+	
+	///Clears all memory that Game uses
+	virtual ~Game();
+
+	///Loads data from a stream
+	bool load(GAGCore::InputStream *stream);
+
+	///Saves data to a stream
+	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
+
 	enum FlagForRemoval
 	{
 		DEL_BUILDING=0x1,
@@ -65,58 +80,31 @@ public:
 	enum MinimapDrawOption
 	{
 	};
+
+	/// This method will prepare the game with this mapHeader
+	void setMapHeader(const MapHeader& mapHeader);
 	
-	struct BuildProject
-	{
-		int posX;
-		int posY;
-		int teamNumber;
-		int typeNum;
-		int unitWorking;
-		int unitWorkingFuture;
-	};
-
-public:
-	Game(GameGUI *gui);
-	virtual ~Game();
-
-private:
-	enum BarOrientation
-	{
-		LEFT_TO_RIGHT,
-		RIGHT_TO_LEFT,
-		TOP_TO_BOTTOM,
-		BOTTOM_TO_TOP
-	};
+	/// This method will prepare the game with the provided gameHeader,
+	/// including initiating the Players
+	void setGameHeader(const GameHeader& gameHeader);
 	
-	void init(GameGUI *gui);
-	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2);
-	
-	//! return true if all human are allied together, flase otherwise
-	bool isHumanAllAllied(void);
-	
-
-public:
-	bool anyPlayerWaited;
-	int anyPlayerWaitedTimeFor;
-	Uint32 maskAwayPlayer;
-
-public:
-
-	//! This methode will overide currents values of *this by the values of *initial.
-	void setBase(const SessionInfo *initial);
+	///Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	void executeOrder(Order *order, int localPlayer);
-	bool load(GAGCore::InputStream *stream);
-	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const char *name);
 
+	///Makes a step for building projects that are waiting for the areas to clear of units.
 	void buildProjectSyncStep(Sint32 localTeam);
-	//! look for each team if it has won or not
+
+	/// Check and update winning conditions
 	void wonSyncStep(void);
-	//! call script.step(), then check conditions and updates internal variables if needed
+
+	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
+
 	//! before any game logic can be executed, we have to clear the event queu from the last tick
 	void clearEventsStep(void);
-	//! called by gui, execute a step for this game. The gui parameter is for the script
+
+	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
+	/// internal proccessing.
 	void syncStep(Sint32 localTeam);
 	
 	void dirtyWarFlagGradient();
@@ -145,8 +133,44 @@ public:
 
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0);
-private:
 
+private:
+	enum BarOrientation
+	{
+		LEFT_TO_RIGHT,
+		RIGHT_TO_LEFT,
+		TOP_TO_BOTTOM,
+		BOTTOM_TO_TOP
+	};
+	
+	struct BuildProject
+	{
+		int posX;
+		int posY;
+		int teamNumber;
+		int typeNum;
+		int unitWorking;
+		int unitWorkingFuture;
+	};
+	
+	///Initiates Game
+	void init(GameGUI *gui);
+
+	///Clears existing game information, deleting the teams and players, in preperation of a new game.
+	void clearGame();
+
+	//! return true if all human are allied together, flase otherwise
+	bool isHumanAllAllied(void);
+
+public:
+	bool anyPlayerWaited;
+	int anyPlayerWaitedTimeFor;
+	Uint32 maskAwayPlayer;
+
+public:
+
+private:
+	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2);
 	inline void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	inline void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
@@ -169,7 +193,11 @@ public:
 	void setAIAlliance(void);
 	
 public:
-	SessionGame session;
+	///This is a static header for a map. It remains the same in between games on the same map.
+	MapHeader mapHeader;
+	///This is a game header. It contains all the settings for a particular game, from AI's to Alliances to victory conditions.
+	GameHeader gameHeader;
+
 	Team *teams[32];
 	Player *players[32];
 	Map map;
@@ -197,16 +225,16 @@ public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool generateMap(MapGenerationDescriptor &descriptor);
-	
+
 protected:
 	FILE *logFile;
 	int ticksGameSum[32];
 };
 
 //! extract the user-visible name from a glob2 map filename, return empty string if filename is an invalid glob2 map
-std::string glob2FilenameToName(const char *filename);
+std::string glob2FilenameToName(const std::string& filename);
 //! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
-std::string glob2NameToFilename(const char *dir, const char *name, const char *extension=NULL);
+std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
 
 
 #endif

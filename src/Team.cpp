@@ -231,7 +231,7 @@ void Team::init(void)
 
 
 
-void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
+void Team::setBaseTeam(const BaseTeam *initial)
 {
 	teamNumber=initial->teamNumber;
 	numberOfPlayer=initial->numberOfPlayer;
@@ -239,14 +239,8 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	race=initial->race;
 	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 
-	// This case is a bit hard to understand.
-	// When you load a teamed saved game, you don't want to change your aliances.
-	// But players may join the network game in adifferent order than when the game was saved.
-	if (overwriteAfterbase)
-	{
-		setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
-		setCorrectMasks();
-	}
+	setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
+	setCorrectMasks();
 }
 
 

@@ -24,18 +24,6 @@
 #include "Player.h"
 #include "Team.h"
 
-//! Save in stream at offset the actual file pos
-#define SAVE_OFFSET(stream, offset, name) \
-	{ \
-		if (stream->canSeek()) \
-		{ \
-			Uint32 pos = stream->getPosition(); \
-			stream->seekFromStart(offset); \
-			stream->writeUint32(pos, name); \
-			stream->seekFromStart(pos); \
-		} \
-	}
-
 //! This is named SessionGame but in fact it is Glob2's map headers.
 //! Map Specific infos are not serialized and don't go through network
 class SessionGame
