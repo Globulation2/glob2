@@ -20,6 +20,13 @@
 
 GameHeader::GameHeader()
 {
+	reset();
+}
+
+
+
+void GameHeader::reset()
+{
 	numberOfPlayers = 0;
 	gameLatency = 5;
 }
@@ -69,6 +76,13 @@ Sint32 GameHeader::getNumberOfPlayers() const
 
 
 
+void GameHeader::setNumberOfPlayers(Sint32 players)
+{
+	numberOfPlayers=players;
+}
+
+
+
 Sint32 GameHeader::getGameLatency() const
 {
 	return gameLatency;
@@ -79,4 +93,12 @@ Sint32 GameHeader::getGameLatency() const
 void GameHeader::setGameLatency(Sint32 latency)
 {
 	gameLatency = latency;
+}
+
+
+
+BasePlayer& getBasePlayer(const int n)
+{
+	assert(n<32 && n>=0);
+	return players[n];
 }

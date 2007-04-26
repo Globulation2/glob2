@@ -21,10 +21,18 @@
 
 MapHeader::MapHeader()
 {
+	reset();
+}
+
+
+
+void MapHeader::reset()
+{
 	versionMajor = VERSION_MAJOR;
 	versionMinor = VERSION_MINOR;
 	numberOfTeams = 0;
 	mapName = "";
+	mapOffset = 0;
 }
 
 
@@ -36,6 +44,15 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	versionMajor = stream->readSint32("versionMajor");
 	versionMinor = stream->readSint32("versionMinor");
 	numberOfTeams = stream->readSint32("numberOfTeams");
+	mapOffset = stream->readUint32("mapOffset");
+	stream->readEnterSection("teams");
+	for(int i=0; i<32; ++i)
+	{
+		stream->readEnterSection(i);
+		teams[i].load(stream, versionMinor);
+		stream->readLeaveSection(i);
+	}
+	stream->readLeaveSection();
 	stream->readLeaveSection();
 }
 
@@ -51,6 +68,15 @@ void MapHeader::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(versionMajor, "versionMajor");
 	stream->writeSint32(versionMinor, "versionMinor");
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
+	stream->writeUint32(mapOffset, "mapOffset");
+	stream->writeEnterSection("teams");
+	for(int i=0; i<32; ++i)
+	{
+		stream->writeEnterSection(i);
+		teams[i].save(stream);
+		stream->writeLeaveSection(i);
+	}
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
@@ -88,12 +114,44 @@ const std::string& MapHeader::getMapName() const
 {
 	return mapName;
 }
-	
+
+
+
+const std::string& MapHeader::getFileName() const
+{
+//	if (fileIsAMap)
+		return glob2NameToFilename("maps", mapName, "map");
+//	else
+//		return glob2NameToFilename("games", mapName, "game");
+}
+
 
 
 void MapHeader::setMapName(const std::string& newMapName)
 {
 	mapName = newMapName;
+}
+
+
+
+Uint32 MapHeader::getMapOffset() const
+{
+	return mapOffset;
+}
+
+
+
+void MapHeader::setMapOffset(Uint32 newMapOffset)
+{
+	mapOffset = newMapOffset;
+}
+
+
+
+BaseTeam& MapHeader::getBaseTeam(const int n)
+{
+	assert(n>=0 && n<32);
+	return teams[n];
 }
 
 
@@ -106,16 +164,6 @@ Uint32 MapHeader::checkSum() const
 	cs^=numberOfTeams;
 	cs=(cs<<31)|(cs>>1);
 	return cs;
-}
-
-
-
-void MapHeader::loadFromSessionGame(SessionGame* session)
-{
-	versionMinor = session->versionMinor;
-	versionMajor = session->versionMajor;
-	numberOfTeams = session->numberOfTeam;
-	mapName = session->getMapName();
 }
 
 

@@ -3737,13 +3737,13 @@ void GameGUI::executeOrder(Order *order)
 	}
 }
 
-bool GameGUI::loadBase(const SessionInfo *initial)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader);
 {
 	init();
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(initial->getFileName()));
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
-		std::cerr << "GameGUI::loadBase() : error, can't open file " << initial->getFileName() << std::endl;
+		std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << initial->getFileName() << std::endl;
 		delete stream;
 		return false;
 		}
@@ -3754,7 +3754,8 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		if (!res)
 			return false;
 		
-		game.setBase(initial);
+		game.setMapHeader(mapHeader);
+		game.setGameHeader(gameHeader);
 	}
 
 	return true;

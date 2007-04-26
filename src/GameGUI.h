@@ -28,6 +28,7 @@
 #include "Order.h"
 #include "Brush.h"
 #include "Campaign.h"
+#include "MapHeader.h"
 
 namespace GAGCore
 {
@@ -66,7 +67,7 @@ public:
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
 	//! if this is not empty, then Engine should load the map with this filename.
-	char toLoadGameFileName[SessionGame::MAP_NAME_MAX_SIZE+5];
+	std::string toLoadGameFileName;
 	//bool showExtendedInformation;
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer, localTeamNo;
@@ -93,7 +94,7 @@ public:
 	void executeOrder(Order *order);
 
 	//!
-	bool loadBase(const SessionInfo *initial);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader);
 	//!
 	bool load(GAGCore::InputStream *stream);
 	void save(GAGCore::OutputStream *stream, const char *name);
