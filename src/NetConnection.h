@@ -18,8 +18,9 @@
 
 #include "SDL_net.h"
 
+class NetListener;
 
-///Net connection represents a low level wrapper arround SDL.
+///NetConnection represents a low level wrapper arround SDL.
 ///It queues Message(s) it recieves from the connection.
 class NetConnection
 {
@@ -29,8 +30,11 @@ public:
 
 	///Initiates the NetConnection as blank
 	NetConnection();
+
+	///Closes the NetConnection down.
+	~NetConnection();
 	
-	///Opens a new connection. Closes the current connection if nesseccarry.
+	///Opens a new connection.
 	void openConnection(const std::string& address, Uint16 port);
 
 	///Closes the current connection.
@@ -46,6 +50,8 @@ public:
 	///Queues a message for sending to the connection.
 	void queueMessage(const Message& message);
 protected:
+	friend class NetListener;
+
 	///This function attempts a connection using the provided TCP server socket.
 	///One can use isConnected to test for success.
 	void attemptConnection(TCPsocket& serverSocket);

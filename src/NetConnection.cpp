@@ -28,7 +28,14 @@ NetConnection::NetConnection(const std::string& address, Uint16 port)
 
 NetConnection::NetConnection()
 {
+	connected = false;
+}
 
+
+
+NetConnection::~NetConnection()
+{
+	closeConnection();
 }
 
 
@@ -40,7 +47,7 @@ void NetConnection::openConnection(const std::string& address, Uint16 port)
 		//Resolve the address
 		if(SDLNet_ResolveHost(&address, ipaddress.c_str(), port) == -1)
 		{
-			printf("NetConnection::openConnection: %s\n", SDLNet_GetError());
+			std::cout<<"NetConnection::openConnection:"<<SDLNet_GetError()<<std::endl;
 			assert(false);
 		}
 		
@@ -48,7 +55,7 @@ void NetConnection::openConnection(const std::string& address, Uint16 port)
 		socket=SDLNet_TCP_Open(&address);
 		if(!socket)
 		{
-			printf("NetConnection::openConnection: %s\n", SDLNet_GetError());
+			std::cout<<"NetConnection::openConnection:"<<SDLNet_GetError()<<std::endl;
 			assert(false);
 		}
 		else
@@ -101,6 +108,7 @@ void NetConnection::attemptConnection(TCPsocket& serverSocket)
 		else
 		{
 			connected=true;
+			address = *SDLNet_TCP_GetPeerAddress(socket);
 		}
 	}
 }
