@@ -23,11 +23,35 @@
 ///It queues Message(s) it recieves from the connection.
 class NetConnection
 {
+public:
+	///Attempts to form a connection with the given address and the given port
+	NetConnection(const std::string& address, Uint16 port);
 
+	///Initiates the NetConnection as blank
+	NetConnection();
+	
+	///Opens a new connection. Closes the current connection if nesseccarry.
+	void openConnection(const std::string& address, Uint16 port);
 
+	///Closes the current connection.
+	void closeConnection();
 
+	///Returns true if this object is connected
+	bool isConnected();
 
+	///Pops the top-most message in the queue of messages.
+	///When there are no messages, it will poll SDL for more packets.
+	Message getMessage();
+	
+	///Queues a message for sending to the connection.
+	void queueMessage(const Message& message);
+protected:
+	///This function attempts a connection using the provided TCP server socket.
+	///One can use isConnected to test for success.
+	void attemptConnection(TCPsocket& serverSocket);
 
-
-
+private:
+	IPaddress address;
+	TCPsocket socket;
+	bool connected;
 };
