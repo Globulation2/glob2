@@ -76,19 +76,20 @@ Uint8 NetSendOrder::getMessageType()
 
 Uint8 *NetSendOrder::encodeData(void)
 {
-	Uint32 length = getDataLength();
+	Uint16 length = getDataLength();
 	Uint8* data = new Uint8[length];
+	Uint32 orderLength = order->getDataLength();
 	data[0] = getMessageType();
 	Uint8* orderData = order->getData();
 	///Copy the data from the order to the local copy
-	std::copy(orderData, orderData+length-1, data+1, data+length);
+	std::copy(orderData, orderData+orderLength, data+1, data+length);
 	delete orderData;
 	return data;
 }
 
 
 
-Uint32 NetSendOrder::getDataLength(void)
+Uint16 NetSendOrder::getDataLength(void)
 {
 	return 1 + order->getDataLength();
 }

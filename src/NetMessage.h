@@ -49,8 +49,8 @@ public:
 
 	///Returns the length of the data that was encoded with the above function.
 	///Derived classes must follow account for the messageType being the first
-	///byte.
-	virtual Uint32 getDataLength(void)=0;
+	///byte. The length should not exceed 64 kilobytes.
+	virtual Uint16 getDataLength(void)=0;
 
 	///Decodes data from the serialized form. Returns true on success, false otherwise.
 	///The first byte is the type from getMessageType, and can be safely ignored by
@@ -90,7 +90,7 @@ public:
 	Uint8 *encodeData(void);
 
 	///Returns the data length
-	Uint32 getDataLength(void);
+	Uint16 getDataLength(void);
 
 	///Decodes the data, and reconstructs the Order.
 	bool decodeData(const Uint8 *data, int dataLength);
