@@ -17,6 +17,8 @@
 */
 
 #include "SDL_net.h"
+#include "NetMessage.h"
+#include <queue>
 
 class NetListener;
 
@@ -43,12 +45,13 @@ public:
 	///Returns true if this object is connected
 	bool isConnected();
 
-	///Pops the top-most message in the queue of messages.
+	///Pops the top-most message in the queue of recieved messages.
 	///When there are no messages, it will poll SDL for more packets.
-	Message getMessage();
+	///The caller assumes ownership of the NetMessage.
+	NetMessage* getMessage();
 	
-	///Queues a message for sending to the connection.
-	void queueMessage(const Message& message);
+	///Sends a message across the connection.
+	void sendMessage(NetMessage* message);
 protected:
 	friend class NetListener;
 
@@ -59,5 +62,7 @@ protected:
 private:
 	IPaddress address;
 	TCPsocket socket;
+	SDLNet_SocketSet set;
 	bool connected;
+	std::queue<NetMessage*> recieved;
 };
