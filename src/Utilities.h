@@ -21,6 +21,7 @@
 #define __UTILITIES_H_GZ
 
 #include <stdlib.h>
+#include <errno.h>
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
@@ -128,6 +129,43 @@ namespace Utilities
 	//! helpers for fixed points manipulation
 	inline int intToFixed(int i, const int precision = 256) {return  i * precision; }
 	inline int fixedToInt(int f, const int precision = 256) {return  f / precision; }
+	
+	
+	// sockets helpers
+	namespace Exception
+	{
+		struct FileDescriptor
+		{
+		
+		};
+	
+		//! An error (not normal disconnection) occcured while reading or writing on the file descriptor.
+		struct FileDescriptorError : public FileDescriptor
+		{
+			FileDescriptorError(int errNumber) : errNumber(errNumber) {}
+			int errNumber;
+		};
+		
+		//! The socket was file descriptor by remote peer, this may happen if file descriptor is a socket for instance.
+		struct FileDescriptorDisconnected : public FileDescriptor
+		{
+		};
+	}
+	
+	
+	/*! Read data on a file descriptor
+		\param fd source file descriptor,
+		\param buf destination pointer where to put the data,
+		\param count exact amout to read. The function only returns when this amount of data has been written or if an exception has been raised.
+	*/
+	void read(int fd, void *buf, size_t count);
+	
+	/*! Write data on a file descriptor
+		\param fd destination file descriptor,
+		\param buf source pointer where to get the data,
+		\param count exact amout to write. The function only returns when this amount of data has been written or if an exception has been raised.
+	*/
+	void write(int fd, const void *buf, size_t count);
 };
 
 #endif
