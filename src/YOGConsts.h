@@ -20,6 +20,22 @@
 #ifndef __YOG_CONSTS_H
 #define __YOG_CONSTS_H
 
+///New YOG constants
+const Uint16 YOG_SERVER_PORT = 7486;
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
 #define YOG_SERVER_IP "yog.globulation2.org"
 #define YOG_SERVER_PORT 7486
 
@@ -129,5 +145,7 @@ enum YOGMessageType
 	YMT_FLUSH_FILES=126,
 	YMT_CLOSE_YOG=127
 };
+*/
+
 
 #endif 
