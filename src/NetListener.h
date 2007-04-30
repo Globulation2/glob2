@@ -16,8 +16,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifndef __NetListener_h
+#define __NetListener_h
+
 #include "SDL_net.h"
 #include "NetConnection.h"
+
+using namespace boost;
 
 ///NetListener represents a low level wrapper arround SDL.
 ///It listens for incoming connections. One should frequently
@@ -52,3 +57,6 @@ private:
 	TCPsocket socket;
 	bool listening;
 };
+
+
+#endif
