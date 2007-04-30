@@ -16,9 +16,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifndef __NetMessage_h
+#define __NetMessage_h
+
 #include "SDL_net.h"
 #include <string>
+#include <boost/shared_ptr.hpp>
 
+using namespace boost;
 
 ///This is the enum of message types
 enum NetMessageType
@@ -40,7 +45,7 @@ public:
 	///Reads the data, and returns an Order containing the data.
 	///The Order may be casted to its particular subclass, using
 	///the getMessageType function
-	static NetMessage* getNetMessage(const Uint8 *netData, int dataLength);
+	static sharded_ptr<NetMessage> getNetMessage(const Uint8 *netData, int dataLength);
 
 	///Encodes the data into its shrunken, serialized form. It is important that
 	///the first byte be the type returned from getMessageType. All
@@ -102,3 +107,6 @@ public:
 private:
 	Order* order;
 };
+
+
+#endif

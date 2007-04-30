@@ -23,12 +23,12 @@
 static NetMessage* NetMessage::getNetMessage(const Uint8 *netData, int dataLength)
 {
 	Uint8 netType = netData[0];
-	NetMessage* message = NULL;
+	shared_ptr<NetMessage> message;
 	switch(netType)
 	{
 		case MNetSendOrder:
 		{
-			message = new NetSendOrder;
+			message.reset(new NetSendOrder);
 			message->decodeData(netData, datalength);
 		}
 		break;

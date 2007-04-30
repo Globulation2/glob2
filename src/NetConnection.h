@@ -16,9 +16,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifndef __NetConnection_h
+#define __NetConnection_h
+
 #include "SDL_net.h"
 #include "NetMessage.h"
 #include <queue>
+#include <boost/shared_ptr.hpp>
+
+using namespace boost;
 
 class NetListener;
 
@@ -48,10 +54,10 @@ public:
 	///Pops the top-most message in the queue of recieved messages.
 	///When there are no messages, it will poll SDL for more packets.
 	///The caller assumes ownership of the NetMessage.
-	NetMessage* getMessage();
+	shared_ptr<NetMessage> getMessage();
 	
 	///Sends a message across the connection.
-	void sendMessage(NetMessage* message);
+	void sendMessage(shared_ptr<NetMessage> message);
 protected:
 	friend class NetListener;
 
@@ -64,5 +70,8 @@ private:
 	TCPsocket socket;
 	SDLNet_SocketSet set;
 	bool connected;
-	std::queue<NetMessage*> recieved;
+	std::queue<shared_ptr<NetMessage> > recieved;
 };
+
+
+#endif

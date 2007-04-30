@@ -41,11 +41,6 @@ NetConnection::~NetConnection()
 {
 	closeConnection();
 	SDLNet_FreeSocketSet(set);
-	while(!queue.empty())
-	{
-		delete queue.top();
-		queue.pop();
-	}
 }
 
 
@@ -97,7 +92,7 @@ bool NetConnection::isConnected()
 
 
 
-NetMessage* NetConnection::getMessage()
+shared_ptr<NetMessage> NetConnection::getMessage()
 {
 	//Poll the SDL_net socket for more messages
 	do
@@ -119,7 +114,7 @@ NetMessage* NetConnection::getMessage()
 			Uint8* data = new Uint8[length];
 			SDLNet_TCP_Recv(socket, data, length);
 			//Now interpret the message from the data, and add it to the queue
-			NetMessage* message = NetMessage::getNetMessage(data, length);
+			shared_ptr<NetMessage> message = NetMessage::getNetMessage(data, length);
 			queue.push(message);
 		}
 	} while (numReady > 0);
@@ -129,7 +124,7 @@ NetMessage* NetConnection::getMessage()
 	//If so, return one, else, return NULL
 	if(!queue.size())
 	{
-		NetMessage* message = queue.front();
+		shared_ptr<NetMessage> message = queue.front();
 		queue.pop();
 		return message;
 	}
@@ -141,7 +136,7 @@ NetMessage* NetConnection::getMessage()
 
 
 	
-void NetConnection::sendMessage(NetMessage* message)
+void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
 	if(connected)
 	{
@@ -157,6 +152,7 @@ void NetConnection::sendMessage(NetMessage* message)
 			closeConnection();
 		}
 		delete data;
+		delete newData;
 	}
 }
 
