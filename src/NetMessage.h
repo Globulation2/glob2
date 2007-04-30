@@ -66,6 +66,12 @@ public:
 	///purposes
 	virtual std::string format()=0;
 
+	///Compares two NetMessages. All derived Messages must implement this by
+	///first testing to see if NetMessage casts to the derived class, and then
+	///comparing internal data.
+	virtual bool operator==(const NetMessage& rhs)=0 const;
+	///This does not need to be overloaded, but can be for efficiency purposes.
+	virtual bool operator!=(const NetMessage& rhs) const;
 };
 
 
@@ -104,6 +110,8 @@ public:
 	///of information.
 	std::string format();
 
+	///Compares with another NetSendOrder
+	bool operator==(const NetMessage& rhs) const;
 private:
 	Order* order;
 };

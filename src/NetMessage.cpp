@@ -37,6 +37,14 @@ static NetMessage* NetMessage::getNetMessage(const Uint8 *netData, int dataLengt
 }
 
 
+
+bool NetMessage::operator!=(const NetMessage& rhs) const
+{
+	return !(*this == rhs);
+}
+
+
+
 NetSendOrder::NetSendOrder()
 {
 	order=NULL;
@@ -119,3 +127,21 @@ std::string NetSendOrder::format()
 }
 
 
+
+bool NetSendOrder::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendOrder)
+	{
+		//Basic type comparison, since Order does not have good comparison facilities
+		const NetSendOrder& r = dynamic_cast<const NetSendOrder&>(rhs);
+		if(order==NULL || rhs.order==NULL)
+		{
+			return order == rhs.order;
+		}
+		if(typeid(r.order) == typeid(order))
+		{
+			return true;
+		}
+	}
+	return false;
+}
