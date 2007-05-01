@@ -20,14 +20,22 @@
 
 YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection) : connection(connection)
 {
-
+	connectionState = WaitingForClientInformation;
 }
 
 
 
 void YOGPlayer::update()
 {
-
+	//Parse incoming messages.
+	shared_ptr<NetMessage> message = nc.getMessage();
+	Uint8 type = message->getMessageType();
+	if(type==MNetSendClientInformation)
+	{
+		shared_ptr<NetSendClientInformation> info = static_pointer_cast<NetSendClientInformation>(message);
+		versionMinor = info->versionMinor;
+		connectionState = NeedToSendServerInformation;
+	}
 }
 
 

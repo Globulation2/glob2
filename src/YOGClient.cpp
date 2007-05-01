@@ -22,6 +22,7 @@
 
 YOGClient::YOGClient(const std::string& server)
 {
+	connectionState = NotConnected;
 	connect(server);
 }
 
@@ -37,13 +38,25 @@ YOGClient::YOGClient()
 void YOGClient::connect(const std::string& server)
 {
 	nc.openConnection(server, YOG_SERVER_PORT);
+	connectionState = NeedToSendClientInformation;
 }
 
 
 
 void YOGClient::update()
 {
-
+	//If we need to send client information, send it
+	if(connectionState == NeedToSendClientInformation)
+	{
+		shared_ptr<NetSendClientInformation> message = new NetSendClientInformation;
+		nc.sendMessage(message);
+		connectionState == WaitingForServerInformation;
+	}
+	
+	
+	//Parse incoming messages.
+	shared_ptr<NetMessage> message = nc.getMessage();
+	Uint8 type = message->getMessageType();
 }
 
 

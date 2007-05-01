@@ -46,6 +46,16 @@ int NetTestSuite::testNetMessages()
 	{
 		return 2;
 	}
+
+	///Now, test NetSendClientInformation's serialization utilities
+	shared_ptr<NetSendClientInformation> clientInfo1 = new NetSendClientInformation;
+	Uint8* clientInfoData = clientInfo1.encodeData();
+	decodedMessage.reset(NetMessage::getNetMessage(clientInfoData, clientInfo1.getDataLength()));
+	delete clientInfoData;
+	if((*clientInfo1) != (*decodedMessage))
+	{
+		return 3;
+	}
 }
 
 
