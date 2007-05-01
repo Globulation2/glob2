@@ -23,6 +23,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include "Order.h"
+#include "Utilities.h"
 
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
@@ -135,10 +136,9 @@ int record(void *pointer)
 			// TODO : Mac OS X code
 			#endif
 			#ifdef AUDIO_RECORDER_OSS
-			size_t readLength = read(dsp, buffer, toReadLength);
-			assert(readLength == toReadLength);
-			totalRead += readLength;
-			voiceRecorder->stopRecordingTimeout -= readLength;
+			Utilities::read(dsp, buffer, toReadLength);
+			totalRead += toReadLength;
+			voiceRecorder->stopRecordingTimeout -= toReadLength;
 			#endif
 			
 			// transforms samples to float

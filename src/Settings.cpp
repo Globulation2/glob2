@@ -112,14 +112,14 @@ Settings::Settings()
 
 void Settings::restoreDefaultShortcuts()
 {
-	keyboard_shortcuts["akey"]="toggle draw accessibility aids";
-	keyboard_shortcuts["bkey"]="";
+	keyboard_shortcuts["akey"]="prefix key select area tool";
+	keyboard_shortcuts["bkey"]="prefix key select building tool";
 	keyboard_shortcuts["ckey"]="";
 	keyboard_shortcuts["dkey"]="destroy building";
 	keyboard_shortcuts["ekey"]="";
-	keyboard_shortcuts["fkey"]="";
+	keyboard_shortcuts["fkey"]="prefix key select flag tool";
 	keyboard_shortcuts["gkey"]="";
-	keyboard_shortcuts["hkey"]="";
+	keyboard_shortcuts["hkey"]="toggle draw accessibility aids";
 	keyboard_shortcuts["ikey"]="toggle draw information";
 	keyboard_shortcuts["jkey"]="";
 	keyboard_shortcuts["kkey"]="";

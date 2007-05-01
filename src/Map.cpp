@@ -1115,6 +1115,11 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	
 	if (game)
 	{
+                /* Must set game field before following action as they
+                   may need it (in particular
+                   makeDiscoveredAreasExplored uses it). */
+		this->game=game;
+
 		// This is a game, so we do compute gradients
 		for (int t=0; t<sessionGame->numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
@@ -1144,9 +1149,8 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 			assert(exploredArea[t] == NULL);
 			exploredArea[t] = new Uint8[size];
 			initExploredArea(t);
+                        makeDiscoveredAreasExplored(t);
 		}
-		
-		this->game=game;
 	}
 
 	// We load sectors:
@@ -4879,6 +4883,23 @@ void Map::updateGuardAreasGradient()
 void Map::initExploredArea(int teamNumber)
 {
 	std::fill(exploredArea[teamNumber], exploredArea[teamNumber] + size, 0);
+}
+
+void Map::makeDiscoveredAreasExplored (int teamNumber)
+{
+  /* This function is a stupid hack to make up for the fact that
+     exploredArea is not saved in saved games.  It allows doing
+     something less awful than simply making everything considered
+     unexplored (which completely messes up explorer behavior and
+     makes them explore the entire world all over again) when games
+     are reloaded. */
+  assert(game->teams[teamNumber]);
+  assert(game->teams[teamNumber]->me);
+  assert(exploredArea[teamNumber]);
+  for (int x = 0; x < getW(); x++) {
+    for (int y = 0; y < getH(); y++) {
+      if (isMapDiscovered (x, y, game->teams[teamNumber]->me)) {
+        setMapExploredByUnit (x, y, 1, 1, teamNumber); }}}
 }
 
 void Map::updateExploredArea(int teamNumber)

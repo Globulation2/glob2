@@ -233,6 +233,47 @@ SettingsScreen::SettingsScreen()
 	shortcut_actions.push_back("record voice");
 	shortcut_names.push_back(Toolkit::getStringTable()->getString("[pause game]"));
 	shortcut_actions.push_back("pause game");
+        char * (commands[]) = {
+          "prefix key select area tool",
+          "prefix key select building tool",
+          "prefix key select flag tool",
+          "select make swarm tool",
+          "select make inn tool",
+          "select make hospital tool",
+          "select make racetrack tool",
+          "select make swimming pool tool",
+          "select make barracks tool",
+          "select make school tool",
+          "select make defense tower tool",
+          "select make stone wall tool",
+          "select make market tool",
+          "select make exploration flag tool",
+          "select make war flag tool",
+          "select make clearing flag tool",
+          "select forbidden area tool",
+          "select guard area tool",
+          "select clearing area tool",
+          "switch to adding areas",
+          "switch to deleting areas",
+          "switch to area brush 1",
+          "switch to area brush 2",
+          "switch to area brush 3",
+          "switch to area brush 4",
+          "switch to area brush 5",
+          "switch to area brush 6",
+          "switch to area brush 7",
+          "switch to area brush 8", };
+        // fprintf (stderr, "before loop: sizeof(commands): %d\n", sizeof (commands));
+        for (int i = 0; i < (sizeof (commands) / (sizeof (commands[0]))); i++) {
+          // fprintf (stderr, "i: %d\n", i);
+          char buffer[100];
+          snprintf (buffer, sizeof(buffer), "[%s]", commands[i]);
+          buffer[99] = '\0';
+          const char * message = Toolkit::getStringTable()->getString(buffer);
+          // fprintf (stderr, "commands[%d]: {%s}, buffer: {%s}, message: {%s}\n", i, commands[i], buffer, message);
+          shortcut_names.push_back (message);
+          shortcut_actions.push_back (commands[i]); }
+        // fprintf (stderr, "after loop\n");
 
 	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[switch to building view]"));
 	editor_shortcut_actions.push_back("switch to building view");

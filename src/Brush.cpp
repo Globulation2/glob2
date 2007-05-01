@@ -63,8 +63,35 @@ void BrushTool::handleClick(int x, int y)
 
 void BrushTool::drawBrush(int x, int y, bool onlines)
 {
+  /* We use 2/3 intensity to indicate removing areas.  This was
+     formerly 78% intensity, which was bright enough that it was hard
+     to notice any difference, so the brightness has been lowered. */
+  int i = ((mode == MODE_ADD) ? 255 : 170);
+  drawBrush(x, y, Color(i,i,i), onlines);
+}
+
+void BrushTool::drawBrush(int x, int y, GAGCore::Color c, bool onlines)
+{
+       /* It violates good abstraction practices that Brush.cpp knows
+          this much about the visual layout of the GUI. */
 	x = ((x+(onlines ? 16 : 0)) & ~0x1f) + (!onlines ? 16 : 0);
 	y = ((y+(onlines ? 16 : 0)) & ~0x1f) + (!onlines ? 16 : 0);
+        int w = getBrushWidth(figure);
+        int h = getBrushHeight(figure);
+        /* Move x and y from center of focus point to upper left of
+           brush shape. */ 
+        const int cell_size = 32; // This file should not know this value!!!
+        x -= ((cell_size * getBrushDimX(figure)) + (cell_size / 2));
+        y -= ((cell_size * getBrushDimY(figure)) + (cell_size / 2));
+        const int inset = 2;
+        for (int cx = 0; cx < w; cx++) {
+          for (int cy = 0; cy < h; cy++) {
+            if (getBrushValue(figure, cx, cy)) {
+              globalContainer->gfx->drawRect(x + (cell_size * cx) + inset, y + (cell_size * cy) + inset, cell_size - inset, cell_size - inset, c); }}}
+        /* The following code is the old way of doing things.  It is
+           kept in case anyone wants to restore it, which might be
+           useful for some of the brush shapes. */
+        /*
 	if (figure < 4)
 	{
 		int r = (getBrushWidth(figure) + getBrushHeight(figure)) * 8;
@@ -82,20 +109,27 @@ void BrushTool::drawBrush(int x, int y, bool onlines)
 		else
 			globalContainer->gfx->drawRect(x-w, y-h, 2*w, 2*h, 200, 200, 200);
 	}
+        */
 }
 
 #define BRUSH_COUNT 8
 
+void BrushTool::setFigure(unsigned f)
+{
+  assert (figure < BRUSH_COUNT);
+  figure = f;
+}
+
 int BrushTool::getBrushWidth(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 5, 5, 3, 5};
+	int dim[BRUSH_COUNT] = { 1, 3, 3, 3, 5, 5, 3, 5};
 	assert(figure < BRUSH_COUNT);
 	return dim[figure];
 }
 
 int BrushTool::getBrushHeight(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 5, 5, 3, 5};
+	int dim[BRUSH_COUNT] = { 1, 3, 3, 3, 5, 5, 3, 5};
 	assert(figure < BRUSH_COUNT);
 	return dim[figure];
 }
@@ -117,18 +151,12 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y)
 	int brush1[] = { 	0, 1, 0,
 						1, 1, 1,
 						0, 1, 0 };
-	int brush2[] = {	0, 1, 1, 1, 0,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						0, 1, 1, 1, 0 };
-	int brush3[] = {	0, 0, 1, 1, 1, 0, 0,
-						0, 1, 1, 1, 1, 1, 0,
-						1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1,
-						0, 1, 1, 1, 1, 1, 0,
-						0, 0, 1, 1, 1, 0, 0 };
+	int brush2[] = {	1, 0, 0,
+				0, 1, 0,
+				0, 0, 1, };
+	int brush3[] = {	0, 0, 1,
+				0, 1, 0,
+				1, 0, 0, };
 	int brush4[] = { 	1, 0, 1, 0, 1,
 						0, 1, 0, 1, 0,
 						1, 0, 1, 0, 1,
