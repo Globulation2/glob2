@@ -41,6 +41,18 @@ public:
 	void update();
 private:
 	NetConnection& nc;
+	///This defines the current state of the connection. There are many states,
+	///due to the asychronous design.
+	enum ConnectionState
+	{
+		//This signified unconnected.
+		NotConnected,
+		///This is the starting state
+		NeedToSendClientInformation,
+		///This means that the client is waiting to recieve server information
+		WaitingForServerInformation,
+	};
+	Uint32 connectionState;
 };
 
 

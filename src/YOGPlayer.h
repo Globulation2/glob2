@@ -38,7 +38,18 @@ public:
 	bool isConnected();
 
 private:
+	enum
+	{
+		///Means this is waiting for the client to send version information to the server.
+		WaitingForClientInformation,
+		///Server information, such as the IRC server and server policies, needs to be sent
+		NeedToSendServerInformation.
+	};
+
+	Uint8 connectionState;
+
 	shared_ptr<NetConnection> connection;
+	Uint16 versionMinor;
 };
 
 

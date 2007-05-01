@@ -29,6 +29,7 @@ using namespace boost;
 enum NetMessageType
 {
 	MNetSendOrder,
+	MNetSendClientInformation,
 };
 
 
@@ -116,5 +117,34 @@ private:
 	Order* order;
 };
 
+
+///This message sends local version information to the server
+class NetSendClientInformation : public NetMessage
+{
+public:
+	///Creates a NetSendClientInformation message
+	NetSendClientInformation();
+
+	///Returns MNetSendClientInformation
+	Uint8 getMessageType();
+
+	///Encodes the data, wraps the encoding of the Order
+	Uint8 *encodeData(void);
+
+	///Returns the data length
+	Uint16 getDataLength(void);
+
+	///Decodes the data, and reconstructs the Order.
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetSendClientInformation message with a small amount
+	///of information.
+	std::string format();
+
+	///Compares with another NetSendClientInformation
+	bool operator==(const NetMessage& rhs) const;
+private:
+	Uint16 versionMinor;
+};
 
 #endif

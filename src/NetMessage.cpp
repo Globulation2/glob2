@@ -145,3 +145,68 @@ bool NetSendOrder::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
+
+
+
+NetSendClientInformation::NetSendClientInformation()
+{
+	versionMinor=VERSION_MINOR;
+}
+
+
+
+Uint8 NetSendClientInformation::getMessageType()
+{
+	return MNetSendClientInformation;
+}
+
+
+
+Uint8 *NetSendClientInformation::encodeData(void)
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	//Write the version minor
+	SDLNet_Write8(length, versionMinor);
+	return data;
+}
+
+
+
+Uint16 NetSendClientInformation::getDataLength(void)
+{
+	return 2;
+}
+
+
+
+bool NetSendClientInformation::decodeData(const Uint8 *data, int dataLength)
+{
+	versionMinor = SDLNet_Read16(data);
+}
+
+
+
+std::string NetSendClientInformation::format()
+{
+	std::ostringstream s;
+	s<<"NetSendClientInformation(versionMinor="<<versionMinor<<")";
+	return s.str();
+}
+
+
+
+bool NetSendClientInformation::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendClientInformation)
+	{
+		//Basic type comparison, since Order does not have good comparison facilities
+		const NetSendClientInformation& r = dynamic_cast<const NetSendClientInformation&>(rhs);
+		if(r.versionMinor == versionMinor)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
