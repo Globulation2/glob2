@@ -582,6 +582,7 @@ public:
 	void updateGuardAreasGradient();
 	
 	void initExploredArea(int teamNumber);
+	void makeDiscoveredAreasExplored(int teamNumber);
 	void updateExploredArea(int teamNumber);
 	
 protected:

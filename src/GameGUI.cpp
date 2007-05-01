@@ -175,6 +175,8 @@ GameGUI::~GameGUI()
 
 }
 
+bool noRawMousewheel = false;
+
 void GameGUI::init()
 {
 	notmenu = false;
@@ -199,7 +201,7 @@ void GameGUI::init()
 	highlightSelection = 0.0f;
 	miniMapPushed=false;
 	putMark=false;
-	showUnitWorkingToBuilding=false;
+	showUnitWorkingToBuilding=true;
 	chatMask=0xFFFFFFFF;
 	hasSpaceBeenClicked=false;
 	swallowSpaceKey=false;
@@ -259,6 +261,9 @@ void GameGUI::init()
 	missionName="";
 	
 	initUnitCount();
+
+        if (getenv ("GLOB2_NO_RAW_MOUSEWHEEL")) {
+          noRawMousewheel = true; }
 }
 
 void GameGUI::adjustLocalTeam()
@@ -323,7 +328,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	}
 }
 
-void GameGUI::brushStep(int mx, int my)
+void GameGUI::brushStep(bool maybeToggleMode, int mx, int my)
 {
 	// if we have an area over 32x32, which mean over 128 bytes, send it
 	if (brushAccumulator.getAreaSurface() > 32*32)
@@ -334,6 +339,26 @@ void GameGUI::brushStep(int mx, int my)
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	int fig = brush.getFigure();
+        /* We treat any brush of size 1 by 1 specially.  If an attempt
+           is made to use the brush which would have no effect, we
+           first toggle the state of whether we are adding or removing
+           the area, so the use of the brush will have an effect.
+           This allows quickly repairing errors without having to
+           explicitly change the mode by hand.  We don't do this when
+           dragging, so only explicit mouse clicks can change the
+           mode. */
+        if (maybeToggleMode && (brush.getBrushHeight(fig) == 1) && (brush.getBrushWidth(fig) == 1)) {
+          int isAlreadyOn =
+            ((brushType == FORBIDDEN_BRUSH) && game.map.isForbiddenLocal(mapX, mapY))
+            || ((brushType == GUARD_AREA_BRUSH) && game.map.isGuardAreaLocal(mapX, mapY))
+            || ((brushType == CLEAR_AREA_BRUSH) && game.map.isClearAreaLocal(mapX, mapY));
+          unsigned mode = brush.getType();
+          if (((mode == BrushTool::MODE_ADD) && isAlreadyOn)
+              || ((mode == BrushTool::MODE_DEL) && !isAlreadyOn)) {
+            sendBrushOrders();
+            brush.setType((mode == BrushTool::MODE_ADD) ? BrushTool::MODE_DEL : BrushTool::MODE_ADD); 
+            brushStep(false, mx,my); // restart action after changing mode; set maybeToggleMode to false to guarantee no further recursion
+            return; }}
 	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
 	// we get coordinates
 	int startX = mapX-BrushTool::getBrushDimX(fig);
@@ -394,10 +419,18 @@ void GameGUI::sendBrushOrders(void)
 	}
 }
 
-void GameGUI::dragStep(void)
+void GameGUI::dragStep(int mx, int my, int button)
 {
-	int mx, my;
-	Uint8 button = SDL_GetMouseState(&mx, &my);
+        /* We used to use SDL_GetMouseState, like the following
+           commented-out code, but that was buggy and prevented
+           dragging from correctly going through intermediate cells.
+           It is vital to use the mouse position and button status as
+           it was at the time in the middle of the event stream, not
+           as it is now.  So instead we make sure the correct data is
+           passed to us as a parameter. */
+	// int mx, my;
+	// Uint8 button = SDL_GetMouseState(&mx, &my);
+        // fprintf (stderr, "enter dragStep: button: %d, mx: %d, selectionMode: %d\n", button, mx, selectionMode);
 	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
 	{
 		// Update flag
@@ -410,24 +443,81 @@ void GameGUI::dragStep(void)
 		// Update brush
 		else if (selectionMode==BRUSH_SELECTION)
 		{
-			brushStep(mx, my);
+			brushStep(false, mx, my);
 		}
 	}
+        // fprintf (stderr, "exit dragStep\n");
 }
+
+/* We need to keep track of the last recorded mouse position for use
+   in drag steps.  We can't simply use SDL_GetMouseState to get this
+   information, because we need the information as it was in the
+   middle of the event stream.  (There may be many later events we
+   have not yet processed.) */
+int lastMouseX = 0, lastMouseY = 0; // can't make these Uint16 because of SDL_GetMouseState
+Uint16 lastMouseButtonState = 0;
 
 void GameGUI::step(void)
 {
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
+        int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type==SDL_MOUSEMOTION)
 		{
+                        lastMouseX = event.motion.x;
+                        lastMouseY = event.motion.y;
+                        lastMouseButtonState = event.motion.state;
+                        int mouseMapX, mouseMapY;
+                        bool onViewport = (lastMouseX < globalContainer->gfx->getW()-128);
+                        /* We keep track for each mouse motion event
+                           of which map cell it corresponds to.  When
+                           dragging, we will use this to make sure we
+                           process at least one event per map cell,
+                           and only discard multiple events when they
+                           are for the same map cell.  This is
+                           necessary to make dragging work correctly
+                           when drawing areas with the brush. */
+                        if (onViewport) {
+                          game.map.cursorToBuildingPos (lastMouseX, lastMouseY, 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY); }
+                        else {
+                          /* We interpret all locations outside the
+                             viewport as being equivalent, and
+                             distinct from any map location. */
+                          mouseMapX = -1;
+                          mouseMapY = -1; }
+                        // fprintf (stderr, "mouse motion: (lastMouseX,lastMouseY): (%d,%d), (mouseMapX,mouseMapY): (%d,%d), (oldMouseMapX,oldMouseMapY): (%d,%d)\n", lastMouseX, lastMouseY, mouseMapX, mouseMapY, oldMouseMapX, oldMouseMapY);
+                        /* Make sure dragging does not skip over map cells by
+                           processing the old stored event rather than throwing
+                           it away. */
+                        if (wasMouseMotion
+                            && (lastMouseButtonState & SDL_BUTTON(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
+                            && ((mouseMapX != oldMouseMapX)
+                                || (mouseMapY != oldMouseMapY))) {
+                          // fprintf (stderr, "processing old event instead of discarding it\n");
+                          processEvent(&mouseMotionEvent); }
+                        oldMouseMapX = mouseMapX;
+                        oldMouseMapY = mouseMapY;
 			mouseMotionEvent=event;
 			wasMouseMotion=true;
 		}
+                else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP)) {
+                  lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
+                  /* We ignore what SDL_GetMouseState does to
+                     lastMouseX and lastMouseY, because that may
+                     reflect many subsequent events that we have not
+                     yet processed.  Technically, we shouldn't use
+                     SDL_GetMouseState at all but should calculate the
+                     button state by keeping track of what has
+                     happened.  However, I haven't had the programming
+                     energy to do this, so I am cheating in the line
+                     above. */
+                  lastMouseX = event.button.x;
+                  lastMouseY = event.button.y;
+                  processEvent (&event); }
 		else if (event.type==SDL_ACTIVEEVENT)
 		{
 			windowEvent=event;
@@ -454,7 +544,7 @@ void GameGUI::step(void)
 	viewportY&=game.map.getMaskH();
 
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
-		dragStep();
+		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
 
 	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
@@ -994,9 +1084,11 @@ void GameGUI::processEvent(SDL_Event *event)
 					if ((selBuild->owner->teamNumber==localTeamNo) &&
 						(selBuild->buildingState==Building::ALIVE))
 					{
+                                                /* fprintf (stderr, "s=SDL_GetModState(): %d, S=KMOD_SHIFT: %d, C=KMOD_CTRL: %d\n",
+                                                         SDL_GetModState(), KMOD_SHIFT, KMOD_CTRL); */
 						if ((selBuild->type->maxUnitWorking) &&
 							(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)&&
-							!(SDL_GetModState()&KMOD_SHIFT))
+                                                        (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
@@ -1023,7 +1115,7 @@ void GameGUI::processEvent(SDL_Event *event)
 					{
 						if ((selBuild->type->maxUnitWorking) &&
 							(selBuild->maxUnitWorkingLocal>0)&&
-							!(SDL_GetModState()&KMOD_SHIFT))
+                                                        (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
@@ -1060,7 +1152,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
-			showUnitWorkingToBuilding=false;
+			// showUnitWorkingToBuilding=false;
 		}
 	}
 
@@ -1159,6 +1251,14 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	}
 }
 
+enum TwoKeyMode
+{
+  TWOKEY_NONE = 0,
+  TWOKEY_BUILDING = 1,
+  TWOKEY_FLAG = 2,
+  TWOKEY_AREA = 3,
+} twoKeyMode = TWOKEY_NONE;
+
 void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 {
 	int modifier;
@@ -1171,6 +1271,108 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 	if (typingInputScreen == NULL)
 	{
 		std::string action="";
+                // fprintf (stderr, "twoKeyMode: %d, key: %d\n", twoKeyMode, key);
+                if (twoKeyMode != TWOKEY_NONE) {
+                  if (pressed) {
+                    switch (twoKeyMode) {
+                    case TWOKEY_BUILDING:
+                      switch (key) {
+                      case SDLK_a: /* swArm */
+                        action = "select make swarm tool";
+                        break;
+                      case SDLK_i: /* Inn */
+                        action = "select make inn tool";
+                        break;
+                      case SDLK_h: /* Hospital */
+                        action = "select make hospital tool";
+                        break;
+                      case SDLK_r: /* Racetrack */
+                        action = "select make racetrack tool";
+                        break;
+                      case SDLK_p: /* swimming Pool */
+                        action = "select make swimming pool tool";
+                        break;
+                      case SDLK_b: /* Barracks */
+                        action = "select make barracks tool";
+                        break;
+                      case SDLK_s: /* School */
+                        action = "select make school tool";
+                        break;
+                      case SDLK_d: /* Defense tower */
+                        action = "select make defense tower tool";
+                        break;
+                      case SDLK_w: /* stone Wall */
+                        action = "select make stone wall tool";
+                        break;
+                      case SDLK_m: /* Market */
+                        action = "select make market tool";
+                        break;
+			default:break;}
+                      break; 
+                    case TWOKEY_FLAG:
+                      switch (key) {
+                      case SDLK_e: /* Exploration */
+                        action = "select make exploration flag tool";
+                        break;
+                      case SDLK_w: /* War */
+                        action = "select make war flag tool";
+                        break;
+                      case SDLK_c: /* Clearing */
+                        action = "select make clearing flag tool";
+                        break;
+			default:break;}
+                      break; 
+                    case TWOKEY_AREA:
+                      switch (key) {
+                      case SDLK_f: /* Forbidden */
+                        action = "select forbidden area tool";
+                        break;
+                      case SDLK_g: /* Guard */
+                        action = "select guard area tool";
+                        break;
+                      case SDLK_c: /* Clearing */
+                        action = "select clearing area tool";
+                        break;
+                      case SDLK_a: /* Add */
+                        action = "switch to adding areas";
+                        break;
+                      case SDLK_d: /* Delete */
+                        action = "switch to deleting areas";
+                        break;
+                      case SDLK_1:
+                        action = "switch to area brush 1";
+                        break;
+                      case SDLK_2:
+                        action = "switch to area brush 2";
+                        break;
+                      case SDLK_3:
+                        action = "switch to area brush 3";
+                        break;
+                      case SDLK_4:
+                        action = "switch to area brush 4";
+                        break;
+                      case SDLK_5:
+                        action = "switch to area brush 5";
+                        break;
+                      case SDLK_6:
+                        action = "switch to area brush 6";
+                        break;
+                      case SDLK_7:
+                        action = "switch to area brush 7";
+                        break;
+                      case SDLK_8:
+                        action = "switch to area brush 8";
+                        break; 
+			default:break;}
+                      break;
+		      default:break;}
+                    key = SDLK_UNKNOWN;
+                    twoKeyMode = TWOKEY_NONE; }
+                  else {
+                    /* this case happens when the initial prefix key is released */
+                  }}
+                // fprintf (stderr, "action: [%s]\n", action.c_str());
+                
 		switch (key)
 		{
 			case SDLK_ESCAPE:
@@ -1464,6 +1666,130 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 			if (pressed)
 				orderQueue.push_back(new PauseGameOrder(!gamePaused));
 		}
+                else if ((action == "prefix key select area tool") && pressed) {
+                  twoKeyMode = TWOKEY_AREA; }
+                else if ((action == "prefix key select building tool") && pressed) {
+                  twoKeyMode = TWOKEY_BUILDING; }
+                else if ((action == "prefix key select flag tool") && pressed) {
+                  twoKeyMode = TWOKEY_FLAG; }
+                else if (pressed
+                         && ((action == "select make swarm tool")
+                             || (action == "select make inn tool")
+                             || (action == "select make hospital tool")
+                             || (action == "select make racetrack tool")
+                             || (action == "select make swimming pool tool")
+                             || (action == "select make barracks tool")
+                             || (action == "select make school tool")
+                             || (action == "select make defense tower tool")
+                             || (action == "select make stone wall tool")
+                             || (action == "select make market tool")
+                             || (action == "select make exploration flag tool")
+                             || (action == "select make war flag tool")
+                             || (action == "select make clearing flag tool")
+                             || (action == "select forbidden area tool")
+                             || (action == "select guard area tool")
+                             || (action == "select clearing area tool")
+                             || (action == "switch to adding areas")
+                             || (action == "switch to deleting areas")
+                             || (action == "switch to area brush 1")
+                             || (action == "switch to area brush 2")
+                             || (action == "switch to area brush 3")
+                             || (action == "switch to area brush 4")
+                             || (action == "switch to area brush 5")
+                             || (action == "switch to area brush 6")
+                             || (action == "switch to area brush 7")
+                             || (action == "switch to area brush 8"))) {
+                  clearSelection();
+                  char * buildingType = NULL;
+                  BrushType tmpBrushType;
+                  bool isArea = false;
+                  BrushTool::Mode tmpBrushMode = BrushTool::MODE_NONE;
+                  int brushFigure;
+                  bool isBrush = false;
+                  char * flagType = NULL;
+                  if (action == "select make swarm tool") {
+                    buildingType = "swarm"; }
+                  else if (action == "select make inn tool") {
+                    buildingType = "inn"; }
+                  else if (action == "select make hospital tool") {
+                    buildingType = "hospital"; }
+                  else if (action == "select make racetrack tool") {
+                    buildingType = "racetrack"; }
+                  else if (action == "select make swimming pool tool") {
+                    buildingType = "swimmingpool"; }
+                  else if (action == "select make barracks tool") {
+                    buildingType = "barracks"; }
+                  else if (action == "select make school tool") {
+                    buildingType = "school"; }
+                  else if (action == "select make defense tower tool") {
+                    buildingType = "defencetower"; }
+                  else if (action == "select make stone wall tool") {
+                    buildingType = "stonewall"; }
+                  else if (action == "select make market tool") {
+                    buildingType = "market"; }
+                  else if (action == "select make exploration flag tool") {
+                    flagType = "explorationflag"; }
+                  else if (action == "select make war flag tool") {
+                    flagType = "warflag"; }
+                  else if (action == "select make clearing flag tool") {
+                    flagType = "clearingflag"; }
+                  else if (action == "select forbidden area tool") {
+                    isArea = true;
+                    tmpBrushType = FORBIDDEN_BRUSH; }
+                  else if (action == "select guard area tool") {
+                    isArea = true;
+                    tmpBrushType = GUARD_AREA_BRUSH; }
+                  else if (action == "select clearing area tool") {
+                    isArea = true;
+                    tmpBrushType = CLEAR_AREA_BRUSH; }
+                  else if (action == "switch to adding areas") {
+                    tmpBrushMode = BrushTool::MODE_ADD; }
+                  else if (action == "switch to deleting areas") {
+                    tmpBrushMode = BrushTool::MODE_DEL; }
+                  else if (action == "switch to area brush 1") {
+                    brushFigure = 0;
+                    isBrush = true; }
+                  else if (action == "switch to area brush 2") {
+                    brushFigure = 1;
+                    isBrush = true; }
+                  else if (action == "switch to area brush 3") {
+                    brushFigure = 2;
+                    isBrush = true; }
+                  else if (action == "switch to area brush 4") {
+                    brushFigure = 3;
+                    isBrush = true; }
+                  else if (action == "switch to area brush 5") {
+                    brushFigure = 4;
+                    isBrush = true; }
+                  else if (action == "switch to area brush 6") {
+                    brushFigure = 5;
+                    isBrush = true; }
+                  else if (action == "switch to area brush 7") {
+                    brushFigure = 6;
+                    isBrush = true; }
+                  else if (action == "switch to area brush 8") {
+                    brushFigure = 7;
+                    isBrush = true; }
+                  if (buildingType) {
+                    if (isBuildingEnabled(std::string(buildingType))) {
+                      displayMode = BUILDING_VIEW; // Can hiddenGUIElements forbid showing building view if the particular building type is enabled?  Do I need to check this?
+                      setSelection(TOOL_SELECTION, (void *) buildingType); }}
+                  else if (flagType) {
+                    if (isFlagEnabled(std::string(flagType))) {
+                      displayMode = FLAG_VIEW;  // Can hiddenGUIElements forbid showing flag view if the particular flag type is enabled?  Do I need to check this?
+                      setSelection(TOOL_SELECTION, (void*) flagType); }}
+                  else if (isArea || (tmpBrushMode != BrushTool::MODE_NONE) || isBrush) {
+                    // Do I need to check if the GUI is enabled for this?
+                    displayMode = FLAG_VIEW;
+                    if (isArea) {
+                      brushType = tmpBrushType; }
+                    if (tmpBrushMode != BrushTool::MODE_NONE) {
+                      brush.setType(tmpBrushMode); }
+                    else if (brush.getType() == BrushTool::MODE_NONE) {
+                      brush.setType(BrushTool::MODE_ADD); }
+                    if (isBrush) {
+                      brush.setFigure (brushFigure); }
+                    setSelection(BRUSH_SELECTION); }}
 	}
 }
 
@@ -1498,42 +1824,70 @@ void GameGUI::handleKeyAlways(void)
 	Uint8 *keystate = SDL_GetKeyState(NULL);
 	if (notmenu == false)
 	{
+                SDLMod modState = SDL_GetModState();
+                int xMotion = 1;
+                int yMotion = 1;
+                /* We check that only Control is held to avoid accidentally
+                   matching window manager bindings for switching windows
+                   and/or desktops. */
+                if ((modState & KMOD_CTRL) && ! (modState & (KMOD_ALT|KMOD_SHIFT))) {
+                  /* It violates good abstraction principles that I
+                     have to do the calculations in the next two
+                     lines.  There should be methods that abstract
+                     these computations. */
+                  /* We move by half screens if Control is held while
+                     the arrow keys are held.  So we shift by 6
+                     instead of 5.  (If we shifted by 5, it would be
+                     good to subtract 1 so that there would be a small
+                     overlap between what is viewable both before and
+                     after the motion.) */
+                  xMotion = ((globalContainer->gfx->getW()-128)>>6);
+                  yMotion = ((globalContainer->gfx->getH())>>6); }
+                else if (modState) {
+                  /* Probably some keys held down as part of window
+                     manager operations. */
+                  xMotion = 0;
+                  yMotion = 0; }
+                // int oldViewportX = viewportX;
+                // int oldViewportY = viewportY;
 		if (keystate[SDLK_UP])
-			viewportY--;
+			viewportY -= yMotion;
 		if (keystate[SDLK_KP8])
-			viewportY--;
+			viewportY -= yMotion;
 		if (keystate[SDLK_DOWN])
-			viewportY++;
+			viewportY += yMotion;
 		if (keystate[SDLK_KP2])
-			viewportY++;
+			viewportY += yMotion;
 		if ((keystate[SDLK_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
-			viewportX--;
+			viewportX -= xMotion;
 		if (keystate[SDLK_KP4])
-			viewportX--;
+			viewportX -= xMotion;
 		if ((keystate[SDLK_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
-			viewportX++;
+			viewportX += xMotion;
 		if (keystate[SDLK_KP6])
-			viewportX++;
+			viewportX += xMotion;
 		if (keystate[SDLK_KP7])
 		{
-			viewportX--;
-			viewportY--;
+			viewportX -= xMotion;
+			viewportY -= yMotion;
 		}
 		if (keystate[SDLK_KP9])
 		{
-			viewportX++;
-			viewportY--;
+			viewportX += xMotion;
+			viewportY -= yMotion;
 		}
 		if (keystate[SDLK_KP1])
 		{
-			viewportX--;
-			viewportY++;
+			viewportX -= xMotion;
+			viewportY += yMotion;
 		}
 		if (keystate[SDLK_KP3])
 		{
-			viewportX++;
-			viewportY++;
+			viewportX += xMotion;
+			viewportY += yMotion;
 		}
+                // if ((oldViewportX != viewportX) || (oldViewportY != viewportY)) {
+                //   fprintf (stderr, "xMotion: %d, yMotion: %d, viewportX: %d, viewportY: %d\n", xMotion, yMotion, viewportX, viewportY); }
 	}
 }
 
@@ -1597,7 +1951,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		viewportY=(panViewY+dy)&game.map.getMaskH();
 	}
 
-	dragStep();
+	dragStep(mx, my, button);
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)
@@ -1636,7 +1990,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		brushStep(mouseX, mouseY);
+		brushStep(true, mouseX, mouseY);
 	}
 	else if (putMark)
 	{
@@ -1707,7 +2061,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				{
 					setSelection(BUILDING_SELECTION, gbid);
 					selectionPushed=true;
-					showUnitWorkingToBuilding=true;
+					// showUnitWorkingToBuilding=true;
 					// handle dump of building characteristics
 					if ((SDL_GetModState() & KMOD_SHIFT) != 0)
 					{
@@ -3287,7 +3641,37 @@ void GameGUI::drawOverlayInfos(void)
 	else if (selectionMode==BRUSH_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-		brush.drawBrush(mouseX, mouseY);
+                /* Instead of using a dimmer intensity to indicate
+                   removing of areas, this should rather use dashed
+                   lines.  (The intensities used below are 2/3 as
+                   bright for the case of removing areas.) */
+                /* This reasoning should be abstracted out and reused
+                   in MapEdit.cpp to choose a color for those cases
+                   where areas are being drawn. */
+                unsigned mode = brush.getType();
+                Color c = Color(0,0,0);
+                /* The following colors have been chosen to match the
+                   colors in the .png files for the animations of
+                   areas as of 2007-04-29.  If those .png files are
+                   updated with different colors, then the following
+                   code should change accordingly. */
+                if (brushType == FORBIDDEN_BRUSH) {
+                  if (mode == BrushTool::MODE_ADD) {
+                    c = Color(255,0,0); }
+                  else {
+                    c = Color(170,0,0); }}
+                else if (brushType == GUARD_AREA_BRUSH) {
+                  if (mode == BrushTool::MODE_ADD) {
+                    c = Color(27,0,255); }
+                  else {
+                    c = Color(18,0,170); }}
+                else if (brushType == CLEAR_AREA_BRUSH) {
+                  if (mode == BrushTool::MODE_ADD) {
+                    /* some of the clearing area images use (252,207,0) instead */
+                    c = Color(251,206,0); }
+                  else {
+                    c = Color(167,137,0); }}
+		brush.drawBrush(mouseX, mouseY, c);
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -3568,7 +3952,7 @@ void GameGUI::drawAll(int team)
 	// if paused, tint the game area
 	if (gamePaused)
 	{
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), 0, 0, 0, 127);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), 0, 0, 0, 20);
 		const char *s = Toolkit::getStringTable()->getString("[Paused]");
 		int x = (globalContainer->gfx->getW()-globalContainer->menuFont->getStringWidth(s))>>1;
 		globalContainer->gfx->drawString(x, globalContainer->gfx->getH()-80, globalContainer->menuFont, s);
@@ -4067,21 +4451,70 @@ void GameGUI::iterateSelection(void)
 			}
 		}
 	}
+        else if (selectionMode == UNIT_SELECTION)
+          {
+            Unit * selUnit = selection.unit;
+            assert(selUnit);
+            Uint16 gid = selUnit->gid;
+            /* to be safe should check if gid is valid here? */
+            /* if looking at one of our pieces, continue with the next
+               one of our pieces of same type, otherwise start at the
+               beginning of our pieces of that type. */
+            Sint32 id = ((Unit::GIDtoTeam(gid) == localTeamNo) ? Unit::GIDtoID(gid) : 0);
+            /* It violates good abstraction principles that we know
+               that the size of the myUnits array is 1024.  This
+               information should be abstracted by some method that we
+               call instead to get the next unit. */
+            id %= 1024; /* just in case! */
+            // std::cerr << "starting id: " << id << std::endl;
+            Sint32 i = id;
+            while (1)
+              {
+                i = ((i + 1) % 1024);
+                if (i == id) break;
+                // std::cerr << "trying id: " << i << std::endl;
+                Unit * u = game.teams[localTeamNo]->myUnits[i];
+                if (u && (u->typeNum == selUnit->typeNum))
+                  {
+                    // std::cerr << "found id: " << i << std::endl;
+                    setSelection(UNIT_SELECTION, u);
+                    centerViewportOnSelection();
+                    break;
+                  }
+              }
+          }
 }
 
 void GameGUI::centerViewportOnSelection(void)
 {
-	if (selectionMode==BUILDING_SELECTION)
-	{
-		Building* b=selection.building;
-		//assert (selBuild);
-		//Building *b=game.teams[Building::GIDtoTeam(selectionGBID)]->myBuildings[Building::GIDtoID(selectionGBID)];
-		assert(b);
-		viewportX=b->getMidX()-((globalContainer->gfx->getW()-128)>>6);
-		viewportY=b->getMidY()-((globalContainer->gfx->getH())>>6);
-		viewportX=viewportX&game.map.getMaskW();
-		viewportY=viewportY&game.map.getMaskH();
-	}
+  if ((selectionMode==BUILDING_SELECTION) || (selectionMode==UNIT_SELECTION))
+    {
+      Sint32 posX, posY;
+      if (selectionMode==BUILDING_SELECTION)
+        {
+          Building* b=selection.building;
+          //assert (selBuild);
+          //Building *b=game.teams[Building::GIDtoTeam(selectionGBID)]->myBuildings[Building::GIDtoID(selectionGBID)];
+          assert(b);
+          posX = b->getMidX();
+          posY = b->getMidY();
+        }
+      else if (selectionMode==UNIT_SELECTION)
+        {
+          Unit * u = selection.unit;
+          assert (u);
+          posX = u->posX;
+          posY = u->posY;
+        }
+      /* It violates good abstraction principles that we know here
+         that the size of the right panel is 128 pixels, and that each
+         map cell is 32 pixels.  This information should be
+         abstracted. */
+      viewportX = posX - ((globalContainer->gfx->getW()-128)>>6);
+      viewportY = posY - ((globalContainer->gfx->getH())>>6);
+      viewportX = viewportX & game.map.getMaskW();
+      viewportY = viewportY & game.map.getMaskH();
+    }
 }
 
 void GameGUI::enableBuildingsChoice(const std::string &name)
@@ -4102,6 +4535,16 @@ void GameGUI::disableBuildingsChoice(const std::string &name)
 	}
 }
 
+bool GameGUI::isBuildingEnabled(const std::string &name)
+{
+	for (size_t i=0; i<buildingsChoiceName.size(); ++i)
+	{
+		if (name == buildingsChoiceName[i])
+                  return buildingsChoiceState[i];
+	}
+        assert (false);
+}
+
 void GameGUI::enableFlagsChoice(const std::string &name)
 {
 	for (size_t i=0; i<flagsChoiceName.size(); ++i)
@@ -4118,6 +4561,16 @@ void GameGUI::disableFlagsChoice(const std::string &name)
 		if (name == flagsChoiceName[i])
 			flagsChoiceState[i] = false;
 	}
+}
+
+bool GameGUI::isFlagEnabled(const std::string &name)
+{
+	for (size_t i=0; i<flagsChoiceName.size(); ++i)
+	{
+		if (name == flagsChoiceName[i])
+                  return flagsChoiceState[i];
+	}
+        assert (false);
 }
 
 void GameGUI::enableGUIElement(int id)

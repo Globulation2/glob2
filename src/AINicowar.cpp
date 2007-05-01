@@ -1200,7 +1200,17 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 		{
 			if(echo.player->game->teams[*i]->isAlive)
 			{
+                          enemy_building_iterator ebi(echo, *i, -1, -1, indeterminate);
+                          /* Make sure we know of at least one
+                             building before committing to a
+                             particular enemy.  It used to be that we
+                             did not (normally) need to test this,
+                             because all starting buildings were
+                             known.  But that was cheating and has
+                             been fixed. */
+                          if (ebi != enemy_building_iterator()) {
 				available_targets.push_back(*i);
+                          }
 			}
 		}
 		if(available_targets.size()==0)

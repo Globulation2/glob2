@@ -21,6 +21,7 @@
 #define __BRUSH_H
 
 #include <vector>
+#include "GraphicContext.h" // just to get Color, really this should only be in GameGUI
 
 //! A click of the brush tool to the map
 struct BrushApplication
@@ -59,10 +60,15 @@ public:
 
 	//! Draw the actual brush (not the brush tool)
 	void drawBrush(int x, int y, bool onlines=false);
+	void drawBrush(int x, int y, GAGCore::Color c, bool onlines=false);
 	//! Return the mode of the brush
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
+	//! Set the mode of the brush
+	void setType(Mode m) { mode = m; }
 	//! Return the id of the actual figure
 	unsigned getFigure(void) { return figure; }
+	//! Set the id of the actual figure
+	void setFigure(unsigned f);
 	
 	//! Return the full width of a brush
 	static int getBrushWidth(unsigned figure);

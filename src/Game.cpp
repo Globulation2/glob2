@@ -2385,7 +2385,7 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 					
 					if (shadeValue==15)
-						globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0, 127);
+						globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0, 40);
 					else if (shadeValue)
 						globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, shadeValue);
 				}
