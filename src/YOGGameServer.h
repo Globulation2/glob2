@@ -42,15 +42,26 @@ class YOGGameServer
 {
 public:
 	///Initiates the YOG Game Server and immeddiattely begins listening on the YOG port.
-	YOGGameServer();
+	YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy);
 	
 	///This is the main update function. This must be called frequently (many times per
 	///second) in order to give fast responce times and low latency for the users.
 	void update();
 
+	///Returns the login policy that is being used by the server
+	YOGLoginPolicy getLoginPolicy() const;
+	
+	///Returns the game policy that is being used by the server
+	YOGGamePolicy getGamePolicy() const;
+
+	///Returns whether the users password is correct.
+	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password);
+
 private:
 	NetListener listener;
 	std::list<YOGPlayer> players;
+	YOGLoginPolicy loginPolicy;
+	YOGGamePolicy gamePolicy;
 };
 
 #endif

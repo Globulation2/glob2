@@ -19,7 +19,8 @@
 #include "YOGGameServer.h"
 
 
-YOGGameServer::YOGGameServer()
+YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
 {
 	nl.startListening(YOG_SERVER_PORT);
 }
@@ -57,4 +58,24 @@ void YOGGameServer::update()
 }
 
 
+
+YOGLoginPolicy YOGGameServer::getLoginPolicy() const
+{
+	return loginPolicy;
+}
+
+
+
+YOGGamePolicy YOGGameServer::getGamePolicy() const
+{
+	return gamePolicy;
+}
+
+
+
+YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username, const std::string& password)
+{
+	///Doesn't do anything yet.
+	return YOGLoginSuccessful;
+}
 
