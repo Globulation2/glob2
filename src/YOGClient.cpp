@@ -23,6 +23,9 @@
 YOGClient::YOGClient(const std::string& server)
 {
 	connectionState = NotConnected;
+	loginPolicy = YOGUnknownLoginPolicy;
+	gamePolicy = YOGUnknownGamePolicy;
+	loginState = YOGLoginUnknown;
 	connect(server);
 }
 
@@ -52,12 +55,69 @@ void YOGClient::update()
 		nc.sendMessage(message);
 		connectionState == WaitingForServerInformation;
 	}
-	
-	
+
+
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = nc.getMessage();
 	Uint8 type = message->getMessageType();
+	//This recieves the server information
+	if(type==MNetSendServerInformation)
+	{
+		shared_ptr<NetSendServerInformation> info = static_pointer_cast<NetSendServerInformation>(message);
+		loginPolicy = info->getLoginPolicy();
+		gamePolicy = info->getGamePolicy();
+		connectionState = WaitingForLoginInformation;
+	}
+	//This recieves a login acceptance message
+	if(type==MNetLoginSuccessful)
+	{
+		shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
+		connectionState = WaitingForGameList;
+		loginState = YOGLoginSuccessful;
+	}
+	//This recieves a login refusal message
+	if(type==MNetRefuseLogin)
+	{
+		shared_ptr<NetRefuseLogin> info = static_pointer_cast<NetRefuseLogin>(message);
+		connectionState = WaitingForLoginInformation;
+		loginState = info->getRefusalReason();
+	}
 }
 
+
+
+ConnectionState YOGClient::getConnectionState() const
+{
+	return connectionState;
+}
+
+
+
+YOGLoginPolicy YOGClient::getLoginPolicy() const
+{
+	return loginPolicy;
+}
+
+
+
+YOGGamePolicy YOGClient::getGamePolicy() const
+{
+	return gamePolicy;
+}
+
+
+
+void YOGClient::attemptLogin(const std::string& username, const std::string& password)
+{
+	shared_ptr<NetAttemptLogin> message = new NetAttemptLogin(username, password);
+	nc.sendMessage(message);
+	connectionState = WaitingForLoginReply;
+}
+
+
+YOGLoginState YOGClient::getLoginState() const
+{
+	return loginState;
+}
 
 

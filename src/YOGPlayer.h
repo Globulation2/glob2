@@ -32,24 +32,34 @@ public:
 	YOGPlayer(shared_ptr<NetConnection> connection);
 
 	///Updates the YOGPlayer. This deals with all incoming messages.
-	void update();
+	void update(YOGGameServer& server);
 
 	///Returns true if this YOGPlayer is still connected
 	bool isConnected();
 
 private:
+	///This enum represents the state machine of a connection.
 	enum
 	{
 		///Means this is waiting for the client to send version information to the server.
 		WaitingForClientInformation,
 		///Server information, such as the IRC server and server policies, needs to be sent
-		NeedToSendServerInformation.
+		NeedToSendServerInformation,
+		///Means its waiting for a login attempt by the client.
+		WaitingForLoginAttempt,
+		///A login accceptance needs to be sent
+		NeedToSendLoginAccepted,
+		///A login refusal needs to be sent
+		NeedToSendLoginRefusal,
+		///Game list information needs to be sent
+		NeedToSendGameList,
 	};
 
 	Uint8 connectionState;
 
 	shared_ptr<NetConnection> connection;
 	Uint16 versionMinor;
+	YOGLoginState loginState;
 };
 
 

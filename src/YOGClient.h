@@ -39,8 +39,7 @@ public:
 
 	///Updates the client. This parses and interprets any incoming messages.
 	void update();
-private:
-	NetConnection& nc;
+	
 	///This defines the current state of the connection. There are many states,
 	///due to the asychronous design.
 	enum ConnectionState
@@ -51,8 +50,47 @@ private:
 		NeedToSendClientInformation,
 		///This means that the client is waiting to recieve server information
 		WaitingForServerInformation,
+		///This means that the YOGClient is waiting for an external force to send
+		///login information to the YOGClient. This would usually be the GUI that
+		///is managing it.
+		WaitingForLoginInformation,
+		///This means that the client is waiting for a reply from a login attempt.
+		WaitingForLoginReply,
+		///This means that the client is waiting for a game list to be sent
+		WaitingForGameList,
 	};
+	
+	///This returns the current connection state. This state includes both internal and external
+	ConnectionState getConnectionState() const;
+	
+	///This will return the current login policy used by the server, if its known.
+	///When unknown, this will return YOGUnknownLoginPolicy
+	YOGLoginPolicy getLoginPolicy() const;
+	
+	///This will return the current game policy used by the server, if its known.
+	///When unknown, this will return YOGUnknownGamePolicy
+	YOGGamePolicy getGamePolicy() const;
+
+	///This will attempt a login with the provided login information. The password is not
+	///mandatory. If the login policy is YOGAnonymousLogin, then the password will simply
+	///be ignored. Login attempts should be done when the client is in the
+	///WaitingForLoginInformation state.
+	void attemptLogin(const std::string& username, const std::string& password = "");
+	
+	///This will return the login state. When this is unknown (it hasn't recieved a reply
+	///yet), this returns YOGLoginUnknown. In the case when there has been multiple
+	///attempts at a login, this returns the state of the most recent attempt that has
+	///gotten a reply.
+	YOGLoginState getLoginState() const;
+	
+private:
+	NetConnection& nc;
+
 	Uint32 connectionState;
+	
+	YOGLoginPolicy loginPolicy;
+	YOGGamePolicy gamePolicy;
+	YOGLoginState loginState;
 };
 
 

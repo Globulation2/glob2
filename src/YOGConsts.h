@@ -23,10 +23,48 @@
 ///New YOG constants
 const Uint16 YOG_SERVER_PORT = 7486;
 
+///Policies for login
+enum YOGLoginPolicy
+{
+	///This represents an unknown policy. Used by the client
+	///before the policy information has been transferred across the network
+	YOGUnknownLoginPolicy,
+	///This policy demands a password with the login
+	YOGRequirePassword,
+	///This policy allows anonymous logins.
+	YOGAnonymousLogin,
+};
 
+///Policies for the games the server hosts
+enum YOGGamePolicy
+{
+	///This represents an unknown policy. Used by the client
+	///before the policy information has been transferred across the network
+	YOGUnknownGamePolicy,
+	///In this policy, the server hosts one game, and all connected are a part of it.
+	YOGSingleGame,
+	///In this policy, the server hosts multiple games, and users can choose what game
+	///they are a part of
+	YOGMultipleGames,
+};
 
-
-
+///Represents the state of a login. Whether it was accepted, or if it
+///was refused, and if so, for what reason.
+enum YOGLoginState
+{
+	///This represents when the login was successful.
+	YOGLoginSuccessful,
+	///This represents when the login state is unknown
+	YOGLoginUnknown,
+	///This means that the password was incorrect.
+	///(only for servers that require registration)
+	YOGPasswordIncorrect,
+	///This means that a user with the same username is already connected.
+	YOGUsernameAlreadyUsed,
+	///This means that no registered user with that username exists
+	///(only for servers that require registration)
+	YOGUserNotRegistered,
+};
 
 
 
