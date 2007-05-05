@@ -19,7 +19,7 @@
 #ifndef AINicowar_h
 #define AINicowar_h
 
-#include <AIEcho.h>
+#include "AIEcho.h"
 
 ///Nicowar is a new powerhouse AI for Globulation 2
 class NewNicowar : public AIEcho::EchoAI

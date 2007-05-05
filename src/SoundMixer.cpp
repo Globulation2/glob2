@@ -29,11 +29,7 @@ using namespace GAGCore;
 	#include <config.h>
 #endif
 
-#ifdef SPEEX_DIR
 #include <speex/speex.h>
-#else
-#include <speex.h>
-#endif
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
