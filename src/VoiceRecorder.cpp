@@ -29,11 +29,7 @@
 	#include <config.h>
 #endif
 
-#ifdef SPEEX_DIR
 #include <speex/speex.h>
-#else
-#include <speex.h>
-#endif
 
 #ifdef WIN32
 	// Windows audio input include
