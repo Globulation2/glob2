@@ -78,6 +78,15 @@ void YOGPlayer::update(YOGGameServer& server)
 		connection->sendMessage(refused);
 		connectionState = WaitingForLoginAttempt;
 	}
+	//Send an updated game list to the user
+	if(connectionState==NeedToSendGameList)
+	{
+		shared_ptr<NetUpdateGameList> gamelist = new NetUpdateGameList;
+		gamelist->updateDifferences(server.getGameList(), playersGames);
+		playersGames = server.getGameList();
+		connection->sendMessage(gamelist);
+		connectionState = ClientOnStandby;
+	}
 }
 
 

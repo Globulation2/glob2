@@ -53,6 +53,8 @@ private:
 		NeedToSendLoginRefusal,
 		///Game list information needs to be sent
 		NeedToSendGameList,
+		///This means the user is on standby, nothing needs to be sent
+		ClientOnStandby,
 	};
 
 	Uint8 connectionState;
@@ -60,6 +62,10 @@ private:
 	shared_ptr<NetConnection> connection;
 	Uint16 versionMinor;
 	YOGLoginState loginState;
+	
+	///Stores a copy of the games that the player knows about, bassically
+	///the list as it was on the last game list update
+	std::list<YOGGameInfo> playersGames;
 };
 
 

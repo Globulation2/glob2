@@ -37,6 +37,12 @@ public:
 	///Returns the name of the game
 	std::string getGameName() const;
 
+	///Sets the unique game ID of the game
+	void setGameID(Uint16 id);
+	
+	///Returns the unique game ID of the game
+	Uint16 getGameID() const;
+
 	///Encodes this YOGGameInfo into a bit stream
 	Uint8* encodeData() const;
 	
@@ -50,6 +56,7 @@ public:
 	bool operator==(const YOGGameInfo& rhs) const;
 	bool operator!=(const YOGGameInfo& rhs) const;
 private:
+	Uint16 gameID;
 	std::string gameName;
 };
 

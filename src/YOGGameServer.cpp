@@ -79,3 +79,9 @@ YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username,
 	return YOGLoginSuccessful;
 }
 
+
+const std::list<YOGGameInfo>& YOGGameServer::getGameList() const
+{
+	return games;
+}
+
