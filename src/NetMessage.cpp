@@ -586,3 +586,199 @@ YOGLoginState NetRefuseLogin::getRefusalReason() const
 }
 
 
+NetUpdateGameList::NetUpdateGameList()
+{
+	
+}
+
+
+
+template<typename container> void NetUpdateGameList::updateDifferences(const container& original, const container& updated)
+{
+	///Find all removed games
+	for(container::const_iterator i = original.begin(); i!=original.end(); ++i)
+	{
+		bool found=false;
+		for(container::const_iterator j = updated.begin(); j!=updated.end(); ++j)
+		{
+			if(i->getGameID() == j->getGameID())
+			{
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			removedGames.push_back(i->getGameID());
+		}
+	}
+	///Find changed games
+	for(container::const_iterator i = original.begin(); i!=original.end(); ++i)
+	{
+		for(container::const_iterator j = updated.begin(); j!=updated.end(); ++j)
+		{
+			///If the ID's are ther same but some other property isn't, then
+			///the game has changed and needs to be updated
+			if((i->getGameID() == j->getGameID()) && ((*i) != (*j)))
+			{
+				updatedGames->push_back(*j);
+				break;
+			}
+		}
+	}
+	///Find added games
+	for(container::const_iterator i = updated.begin(); i!=updated.end(); ++i)
+	{
+		bool found=false;
+		for(container::const_iterator j = original.begin(); j!=original.end(); ++j)
+		{
+			if(i->getGameID() == j->getGameID())
+			{
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			updatedGames.push_back(*i);
+		}
+	}
+}
+
+
+
+Uint8 NetUpdateGameList::getMessageType() const
+{
+	return MNetUpdateGameList;
+}
+
+
+
+Uint8 *NetUpdateGameList::encodeData() const
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	Uint16 pos = 0;
+	data[pos]=getMessageType();
+	pos+=1;
+	data[pos]=removedGames.size();
+	pos+=1;
+	for(int i=0; i<removedGames.size(); ++i)
+	{
+		SDLNet_Write16(removedGames[i], data+pos);
+		pos+=2;
+	}
+	data[pos]=updatedGames.size();
+	pos+=1;
+	for(int i=0; i<updatedGames.size(); ++i)
+	{
+		Uint8* gamedata = updatedGames[i].encodeData();
+		std::copy(gamedata, gamedata + updatedGames[i].getDataLength(), data + pos);
+		pos+=updatedGames[i].getDataLength();
+		delete gamedata;
+	}
+	return data;
+}
+
+
+
+Uint16 NetUpdateGameList::getDataLength() const
+{
+	Uint32 length=removedGames.size()*2;
+	for(int i=0; i<updatedGames.size(); ++i)
+	{
+		length+=updatedGames[i].getDataLength();
+	}
+	return length;
+}
+
+
+
+bool NetUpdateGameList::decodeData(const Uint8 *data, int dataLength)
+{
+	Uint16 pos = 0;
+	Uint8 type = data[pos];
+	pos+=1;
+	Uint8 size = data[pos];
+	pos+=1;
+	removedGames.resize(pos);
+	for(int i=0; i<removedGames.size(); ++i)
+	{
+		removedGames = SDLNet_Read16(data+pos);
+		pos+=2;
+	}
+	size=data[pos];
+	pos+=1;
+	updatedGames.resize(size);
+	for(int i=0; i<updatedGames.size(); ++i)
+	{
+		updatedGames[i].decodeData(data + pos, datalength - pos);
+		pos+=updatedGames[i].getDataLength();
+	}
+	return true;
+}
+
+
+
+std::string NetUpdateGameList::format() const
+{
+	std::ostringstream s;
+	s<<"NetUpdateGameList(removedGames "<<removedGames.size()<<", updatedGames "<<updatedGames.size()<<")";
+	return s.str();
+}
+
+
+
+bool NetUpdateGameList::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetUpdateGameList))
+	{
+		const NetUpdateGameList& r = dynamic_cast<const NetUpdateGameList&>(rhs);
+		if(r.removedGames == removedGames && r.updatedGames == updatedGames)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+	
+template<typename container> void NetUpdateGameList::applyDifferences(container& original) const
+{
+	//Remove the removed games
+	for(int i=0; i<removedGames.size(); ++i)
+	{
+		containter::iterator game = original.end();
+		for(container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			if(j->getGameID() == removedGames[i])
+			{
+				game = j;
+				break;
+			}
+		}
+		orignal.erase(game);
+	}
+	//Change the changed games and add the rest
+	for(int i=0; i<updatedGames.size(); ++i)
+	{
+		bool found=false;
+		for(container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			if(j->getGameID() == updatedGames[i].getGameID())
+			{
+				(*j) = updatedGames[i];
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			original.insert(original.end(), updatedGames[i]);
+		}
+	}
+}
+
+
+	

@@ -58,6 +58,9 @@ public:
 		WaitingForLoginReply,
 		///This means that the client is waiting for a game list to be sent
 		WaitingForGameList,
+		///This means the client is on standby, waiting for the user to ask
+		///for some input
+		ClientOnStandby,
 	};
 	
 	///This returns the current connection state. This state includes both internal and external
@@ -83,6 +86,12 @@ public:
 	///gotten a reply.
 	YOGLoginState getLoginState() const;
 	
+	///This will return the list of games on hosted on the server.
+	const std::list<YOGGameInfo>& getGameList() const;
+
+	///This will send for a manual update of the game list,
+	void requestGameListUpdate();
+
 private:
 	NetConnection& nc;
 
@@ -91,6 +100,8 @@ private:
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 	YOGLoginState loginState;
+	
+	std::list<YOGGameInfo> games;
 };
 
 

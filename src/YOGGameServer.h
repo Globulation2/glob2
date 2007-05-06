@@ -57,9 +57,13 @@ public:
 	///Returns whether the users password is correct.
 	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password);
 
+	///Returns the list of games the server currently has
+	const std::list<YOGGameInfo>& getGameList() const;
+
 private:
 	NetListener listener;
 	std::list<YOGPlayer> players;
+	std::list<YOGGameInfo> games;
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 };

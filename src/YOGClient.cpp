@@ -82,6 +82,13 @@ void YOGClient::update()
 		connectionState = WaitingForLoginInformation;
 		loginState = info->getRefusalReason();
 	}
+	///This recieves a game list update message
+	if(type==MNetUpdateGameList)
+	{
+		shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);
+		info->applyDifferences(games);
+		connectionState = ClientOnStandby;
+	}
 }
 
 
@@ -115,9 +122,24 @@ void YOGClient::attemptLogin(const std::string& username, const std::string& pas
 }
 
 
+
 YOGLoginState YOGClient::getLoginState() const
 {
 	return loginState;
+}
+
+
+
+const std::list<YOGGameInfo>& YOGClient::getGameList() const
+{
+	return games;
+}
+
+
+
+void YOGClient::requestGameListUpdate()
+{
+	//unimplemented
 }
 
 

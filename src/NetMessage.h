@@ -35,6 +35,7 @@ enum NetMessageType
 	MNetAttemptLogin,
 	MNetLoginSuccessful,
 	MNetRefuseLogin,
+	MNetUpdateGameList,
 };
 
 
@@ -287,10 +288,10 @@ public:
 	///Returns MNetRefuseLogin
 	Uint8 getMessageType() const;
 
-	///Encodes the data, however, this message has no data, it must be atleast one byte.
+	///Encodes the data
 	Uint8 *encodeData() const;
 
-	///Returns the data length of 1
+	///Returns the data length
 	Uint16 getDataLength() const;
 
 	///Decodes the data.
@@ -309,5 +310,51 @@ private:
 	YOGLoginState reason;
 };
 
+
+///This message updates the users pre-joining game list. Bassically, it takes what the user already has
+///(the server should have a copy), and the new server game list, and sends a message with the differences
+///between the two, and reassembles the completed list at the other end. This both reduces bandwidth,
+///and eliminates the need for seperate GameAdded, GameRemoved, and GameChanged messages just to keep
+///a connected user updated. For this to work, the server and the client should have synced versions
+///of what the list is, and this message will just pass updates.
+class NetUpdateGameList : public NetMessage
+{
+public:
+	///Creates an empty NetUpdateGameList message.
+	NetUpdateGameList();
+
+	///Computes and stores the differences between the two provided lists of YOGGameInfo objects.
+	///The container can be any container with a ::const_iterator, a begin(), and an end(), for
+	///iterating over the ranges. std containers are most common. For this to work, the original
+	///list has to be the same as the one on the client (while they don't have to be the same
+	///type of container), they must be in sync.
+	template<typename container> void updateDifferences(const container& original, const container& updated);
+
+	///Returns MNetUpdateGameList
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetUpdateGameList message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetUpdateGameList
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Applies the differences that this message has been given to the provided container.
+	///The container must have the methods erase(iter), begin(), end(), and insert(iter, object)
+	template<typename container> void applyDifferences(container& original) const;
+private:
+	std::vector<Uint16> removedGames;
+	std::vector<YOGGameInfo> updatedGames;
+};
 
 #endif

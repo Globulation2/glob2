@@ -17,10 +17,11 @@
 */
 
 #include "YOGGameInfo.h"
-
+#include "SDL_net.h"
 
 YOGGameInfo::YOGGameInfo()
 {
+	gameID=0;
 }
 
 
@@ -39,11 +40,27 @@ std::string YOGGameInfo::getGameName() const
 
 
 
+void YOGGameInfo::setGameID(Uint16 id)
+{
+	gameID=id;
+}
+
+
+
+Uint16 YOGGameInfo::getGameID() const
+{
+	return gameID;
+}
+
+
+
 Uint8* YOGGameInfo::encodeData() const
 {
 	Uint16 length = getDataLength();
 	Uint8* data = new Uint8[length];
 	Uint32 pos = 0;
+	SDLNet_Write16(gameID, data+pos);
+	pos+=2;
 	data[pos] = gameName.size();
 	pos+=1;
 	std::copy(gameName.begin(), gameName.end(), data+pos);
@@ -54,7 +71,7 @@ Uint8* YOGGameInfo::encodeData() const
 	
 Uint16 YOGGameInfo::getDataLength() const
 {
-	return 1 + gameName.size();
+	return 2 + 1 + gameName.size();
 }
 
 
@@ -62,6 +79,8 @@ Uint16 YOGGameInfo::getDataLength() const
 bool YOGGameInfo::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint8 pos = 0;
+	gameID = SDLNet_Read16(data+pos);
+	pos+=2;
 	//Read in the gameName
 	Uint8 gameNameLength = data[pos];
 	pos+=1;
