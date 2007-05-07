@@ -26,36 +26,113 @@ NetTestSuite::NetTestSuite()
 
 
 
+template<typename t> bool NetTestSuite::testMessage(shared_ptr<t> message)
+{
+	shared_ptr<NetSendClientInformation> decodedMessage;
+	Uint8* messageInfo = message.encodeData();
+	decodedMessage.reset(NetMessage::getNetMessage(messageInfo, message.getDataLength()));
+	delete messageInfo;
+	if((*message) != (*decodedMessage))
+	{
+		return false;
+	}
+	return true;
+}
+
+
+
+template<typename t> bool NetTestSuite::testInitialMessageState()
+{
+	shared_ptr<t> message1 = new t;
+	shared_ptr<t> message2 = new t;
+	if((*message1) != (*message2))
+		return false;
+	return true;
+}
+
+
 
 int NetTestSuite::testNetMessages()
 {
-	///The first few tests work with NetSendOrder
-	///Test that the initial states of two NetSendOrder are the same
-	shared_ptr<NetSendOrder> netSendOrder1 = new NetSendOrder;
-	shared_ptr<NetSendOrder> netSendOrder2 = new NetSendOrder;
-	if((*netSendOrder1) != (*netSendOrder2))
-	{
+	///Test NetSendOrder
+	if(!testInitialMessageState<NetSendOrder>())
 		return 1;
-	}
-	///Test that encoding and decoding a NetSendOrder will come out the same
-	netSendOrder1.changeOrder(new OrderDelete(1));
-	Uint8* netSendOrderData = netSendOrder1.encodeData();
-	shared_ptr<NetMessage> decodedMessage = NetMessage::getNetMessage(netSendOrderData, netSendOrder1.getDataLength());
-	delete netSendOrderData;
-	if((*netSendOrder1) != (*decodedMessage))
-	{
-		return 2;
-	}
 
-	///Now, test NetSendClientInformation's serialization utilities
-	shared_ptr<NetSendClientInformation> clientInfo1 = new NetSendClientInformation;
-	Uint8* clientInfoData = clientInfo1.encodeData();
-	decodedMessage.reset(NetMessage::getNetMessage(clientInfoData, clientInfo1.getDataLength()));
-	delete clientInfoData;
-	if((*clientInfo1) != (*decodedMessage))
-	{
+	shared_ptr<NetSendOrder> netSendOrder1 = new NetSendOrder;
+	netSendOrder1.changeOrder(new OrderDelete(1));
+	if(!testMessage(netSendOrder1))
+		return 2;
+
+	///Test NetSendClientInformation
+	if(!testInitialMessageState<NetSendClientInformation>())
 		return 3;
-	}
+
+	shared_ptr<NetSendClientInformation> clientInfo1 = new NetSendClientInformation;
+	if(!testMessage(clientInfo1))
+		return 4;
+		
+	///Test NetSendServerInformation
+	if(!testInitialMessageState<NetSendServerInformation>())
+		return 5;
+	
+	shared_ptr<NetSendServerInformation> serverInfo1 = new NetSendServerInformation(YOGRequirePassword, YOGSingleGame);
+	if(!testMessage(serverInfo1))
+		return 6;
+	
+	///Test NetAttemptLogin
+	if(!testInitialMessageState<NetAttemptLogin>())
+		return 7;
+	
+	shared_ptr<NetAttemptLogin> attemptLogin1 = new NetAttemptLogin("joe", "bob");
+	if(!testMessage(attemptLogin1))
+		return 8;
+	
+	shared_ptr<NetAttemptLogin> attemptLogin2 = new NetAttemptLogin("joe bob", "");
+	if(!testMessage(attemptLogin2))
+		return 9;
+	
+	///Test NetLoginSuccessful
+	if(!testInitialMessageState<NetLoginSuccessful>())
+		return 10;
+		
+	shared_ptr<NetLoginSuccessful> loginSuccess1 = new NetLoginSuccessful;
+	if(!testMessage(loginSuccess1))
+		return 11;
+		
+	//Test NetRefuseLogin
+	if(!testInitialMessageState<NetRefuseLogin>())
+		return 12;
+
+	shared_ptr<NetRefuseLogin> refuseLogin1 = new NetRefuseLogin(YOGPasswordIncorrect);
+	if(!testMessage(refuseLogin1))
+		return 13;
+}
+
+
+
+int  NetTestSuite::testYOGGameInfo()
+{
+	YOGGameInfo ygi;
+	YOGGameInfo decode;
+	//Test the initial state
+	if(decode != ygi)
+		return 1;
+	
+	///Test the game name encoding	
+	ygi.setGameName("Bobs Game");
+	Uint8* messageInfo = ygi.encodeData();
+	decode.decodeData(messageInfo, ygi.getDataLength());
+	delete messageInfo;
+	if(decode != ygi)
+		return 2;
+		
+	//Test the game id encoding
+	ygi.setGameID(1223);
+	messageInfo = ygi.encodeData();
+	decode.decodeData(messageInfo, ygi.getDataLength());
+	delete messageInfo;
+	if(decode != ygi)
+		return 3;
 }
 
 
