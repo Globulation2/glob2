@@ -10,7 +10,7 @@ struct Scope;
 struct Bytecode
 {
 	virtual ~Bytecode() { }
-	virtual size_t execute(size_t programCounter, Thread* thread) = 0;
+	virtual void execute(Thread* thread) = 0;
 };
 
 struct ConstBytecode: Bytecode
@@ -19,7 +19,7 @@ struct ConstBytecode: Bytecode
 		value(value)
 	{}
 	
-	size_t execute(size_t programCounter, Thread* thread);
+	void execute(Thread* thread);
 	
 	Value* value;
 };
@@ -31,7 +31,7 @@ struct ApplyBytecode: Bytecode
 		argCount(argCount)
 	{}
 	
-	size_t execute(size_t programCounter, Thread* thread);
+	void execute(Thread* thread);
 	
 	const std::string method;
 	size_t argCount;

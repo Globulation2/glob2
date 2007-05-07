@@ -54,7 +54,7 @@ struct Integer: Value
 			args.push_back("that");
 		}
 		
-		size_t execute(size_t returnAddress, Thread* thread)
+		void execute(Thread* thread)
 		{
 			// check number of arguments
 			Frame::Stack& stack = thread->frames.top().stack;
@@ -69,8 +69,6 @@ struct Integer: Value
 			stack[stackSize++] = new Integer(thisInt->value + thatInt->value);
 			
 			stack.resize(stackSize);
-			
-			return returnAddress;
 		}
 	} integerAdd;
 	
@@ -205,7 +203,7 @@ int main(int argc, char** argv)
 {
 	//parse();
 	
-	ApplyNode *p = new ApplyNode(new ConstNode(new Integer(1)), "+");
+	ApplyNode *p = new ApplyNode(new ConstNode(new Integer(2)), "+");
 	p->args.push_back(new ConstNode(new Integer(1)));
 	
 	BytecodeVector bytecode;
@@ -213,13 +211,14 @@ int main(int argc, char** argv)
 	
 	Thread t;
 	t.frames.push(Frame());
-	size_t programCounter = 0;
 	
-	while (programCounter < bytecode.size())
+	while (t.frames.top().nextInstr < bytecode.size())
 	{
-		programCounter = bytecode[programCounter]->execute(programCounter, &t);
+		bytecode[t.frames.top().nextInstr++]->execute(&t);
 		cout<< "size: " << t.frames.top().stack.size() << endl;
-		if (t.frames.top().stack.size())
-			cout << "top:  " << dynamic_cast<Integer*>(t.frames.top().stack[0])->value << endl;
+		if (t.frames.top().stack.size() > 0)
+			cout << "[0]: " << dynamic_cast<Integer*>(t.frames.top().stack[0])->value << endl;
+		if (t.frames.top().stack.size() > 1)
+			cout << "[1]: " << dynamic_cast<Integer*>(t.frames.top().stack[1])->value << endl;
 	}
 }
