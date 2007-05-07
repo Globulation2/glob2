@@ -207,6 +207,17 @@ bool NetTestSuite::runAllTests()
 		failed = true;
 		std::cout<<"NetListener & NetConnection test #"<<failNumber<<" failed."<<std::endl;
 	}
+	
+	failNumber = testYOGGameInfo();
+	if(failNumber == 0)
+	{
+		std::cout<<"YOGameInfo tests passed."<<std::endl;
+	}
+	else
+	{
+		failed = true;
+		std::cout<<"YOGameInfo test #"<<failNumber<<" failed."<<std::endl;
+	}
 
 	return !failed;
 }
