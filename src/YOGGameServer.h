@@ -24,6 +24,7 @@
 #include "NetListener.h"
 #include "YOGConsts.h"
 #include "YOGPlayer.h"
+#include "YOGGame.h"
 
 #include <list>
 #include <boost/shared_ptr.hpp>
@@ -66,7 +67,8 @@ public:
 private:
 	NetListener listener;
 	std::list<shared_ptr<YOGPlayer> > players;
-	std::list<YOGGameInfo> games;
+	std::list<YOGGameInfo> gameInfos;
+	std::list<YOGGame> games;
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 };
