@@ -13,12 +13,12 @@ struct Frame
 
 	Scope* scope;
 	Stack stack;
-	size_t returnAddress;
+	size_t nextInstr;
 	
 	Frame()
 	{
 		scope = 0;
-		returnAddress = 0;
+		nextInstr = 0;
 	}
 };
 

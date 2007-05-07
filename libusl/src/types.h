@@ -6,14 +6,6 @@
 #include <string>
 #include <vector>
 
-struct Thread;
-struct Executable
-{
-	std::vector<std::string> args;
-	virtual size_t execute(size_t programCounter, Thread* stack) = 0;
-	virtual ~Executable() {}
-};
-
 struct Prototype;
 struct Value
 {
@@ -26,6 +18,7 @@ struct Value
 	virtual ~Value() { }
 };
 
+struct Executable;
 struct Prototype: Value
 {
 	typedef std::map<std::string, Executable*> Methods;
@@ -54,6 +47,14 @@ struct Prototype: Value
 	}
 };
 
+struct Thread;
+struct Executable
+{
+	std::vector<std::string> args;
+	virtual void execute(Thread* stack) = 0;
+	virtual ~Executable() {}
+};
+
 struct Method: Prototype, Executable
 {
 	size_t address;
@@ -63,7 +64,7 @@ struct Method: Prototype, Executable
 	{ }
 	
 	
-	size_t execute(size_t returnAddress, Thread* stack);
+	void execute(Thread* stack);
 };
 
 struct Scope: Value
