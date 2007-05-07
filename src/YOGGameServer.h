@@ -26,6 +26,9 @@
 #include "YOGPlayer.h"
 
 #include <list>
+#include <boost/shared_ptr.hpp>
+
+using namespace boost;
 
 ///This class encapsulates the YOG server. The YOG server is the games online server.
 ///There is one YOG server hosted by one of the project members. As well, each client
@@ -62,7 +65,7 @@ public:
 
 private:
 	NetListener listener;
-	std::list<YOGPlayer> players;
+	std::list<shared_ptr<YOGPlayer> > players;
 	std::list<YOGGameInfo> games;
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;

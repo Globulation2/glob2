@@ -33,20 +33,20 @@ void YOGGameServer::update()
 	shared_ptr<NetConnection> nc = new NetConnection;
 	while(nl.attemptConnection(*nc))
 	{
-		players.pushBack(YOGPlayer(nc));
+		players.pushBack(shared_ptr<YOGPlayer>(new YOGPlayer(nc)));
 		nc.reset(new NetConnection);
 	}
 
 	//Call update to all of the players
 	for(std::list<YOGPlayer>::iterator i=players.begin(); i!=players.end(); ++i)
 	{
-		i->update();
+		(*i)->update();
 	}
 
 	//Remove all of the players that have disconnected.
 	for(std::list<YOGPlayer>::iterator i=players.begin(); i!=players.end();)
 	{
-		if(!i->isConnected())
+		if(!(*i)->isConnected())
 		{
 			i = players.erase(i);
 		}
