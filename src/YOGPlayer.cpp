@@ -95,3 +95,11 @@ bool YOGPlayer::isConnected()
 	return connection.isConnected();
 }
 
+
+
+void YOGPlayer::sendMessage(shared_ptr<NetMessage> message)
+{
+	connection->sendMessage(message);
+}
+
+

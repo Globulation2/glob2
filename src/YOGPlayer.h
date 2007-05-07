@@ -37,6 +37,11 @@ public:
 	///Returns true if this YOGPlayer is still connected
 	bool isConnected();
 
+	///Sends a message to the player. Caution should be taken
+	///that the client code knows how to handle this message
+	///type.
+	void sendMessage(shared_ptr<NetMessage> message);
+
 private:
 	///This enum represents the state machine of a connection.
 	enum
