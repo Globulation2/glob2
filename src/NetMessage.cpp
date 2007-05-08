@@ -44,6 +44,10 @@ static NetMessage* NetMessage::getNetMessage(const Uint8 *netData, int dataLengt
 		case MNetRefuseLogin:
 		message.reset(new NetRefuseLogin);
 		break;
+		case MNetUpdateGameList:
+		message.reset(new NetUpdateGameList);
+		break;
+		///append_create_point
 	}
 	message->decodeData(netData, datalength);
 	return message;
@@ -781,4 +785,4 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 }
 
 
-	
+//append_code_position

@@ -36,6 +36,7 @@
 #include "CampaignSelectorScreen.h"
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
+#include "YOGClient.h"
 
 #include <Stream.h>
 #include <BinaryStream.h>
