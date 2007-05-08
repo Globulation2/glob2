@@ -1,5 +1,4 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
+/*  Copyright (C) 2007 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +35,7 @@ enum NetMessageType
 	MNetLoginSuccessful,
 	MNetRefuseLogin,
 	MNetUpdateGameList,
+	//type_append_marker
 };
 
 
@@ -356,5 +356,7 @@ private:
 	std::vector<Uint16> removedGames;
 	std::vector<YOGGameInfo> updatedGames;
 };
+
+//message_append_marker
 
 #endif
