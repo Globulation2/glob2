@@ -3,8 +3,6 @@
 
 #include "position.h"
 #include <string>
-#include <cassert>
-#include <regex.h>
 
 struct Token
 {
@@ -28,10 +26,12 @@ struct Token
 	
 	
 	Token(const Position& position, const Type* type, const char* text, size_t length);
+	std::string string() const { return std::string(text, length); }
 	
 	Position position;
 	const Type* type;
-	std::string text;
+	const char* text;
+	size_t length;
 };
 
 #endif // ndef TOKEN_H
