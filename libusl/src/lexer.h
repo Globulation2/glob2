@@ -8,6 +8,9 @@ class Lexer: Tokenizer
 public:
 	enum TokenType
 	{
+		SPACE,
+		VAL,
+		ASSIGN,
 		ID,
 		STR,
 		NUM,
@@ -16,8 +19,8 @@ public:
 		LBRACE,
 		RBRACE,
 		COMMA,
-		SPACE,
 		COMMENT,
+		CR,
 		END,
 		ERROR,
 		TOKENTYPES,
