@@ -47,6 +47,9 @@ static NetMessage* NetMessage::getNetMessage(const Uint8 *netData, int dataLengt
 		case MNetUpdateGameList:
 		message.reset(new NetUpdateGameList);
 		break;
+		case MNetDisconnect:
+		message.reset(new NetDisconnect);
+		break;
 		///append_create_point
 	}
 	message->decodeData(netData, datalength);
@@ -782,6 +785,67 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 			original.insert(original.end(), updatedGames[i]);
 		}
 	}
+}
+
+
+
+NetDisconnect::NetDisconnect()
+{
+
+}
+
+
+
+Uint8 NetDisconnect::getMessageType() const
+{
+	return MNetDisconnect;
+}
+
+
+
+Uint8 *NetDisconnect::encodeData() const
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	data[0] = getMessageType();
+	return data;
+}
+
+
+
+Uint16 NetDisconnect::getDataLength() const
+{
+	return 1;
+}
+
+
+
+bool NetDisconnect::decodeData(const Uint8 *data, int dataLength)
+{
+	Uint16 pos = 0;
+	Uint8 type = data[pos];
+	pos+=1;
+}
+
+
+
+std::string NetDisconnect::format() const
+{
+	std::ostringstream s;
+	s<<"NetDisconnect()";
+	return s.str();
+}
+
+
+
+bool NetDisconnect::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetDisconnect))
+	{
+		const NetDisconnect& r = dynamic_cast<const NetDisconnect&>(rhs);
+		return true;
+	}
+	return false;
 }
 
 
