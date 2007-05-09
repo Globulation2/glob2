@@ -32,7 +32,7 @@
 #include "GlobalContainer.h"
 #include "Settings.h"
 #include "YOGScreen.h"
-#include "YOGPreScreen.h"
+#include "YOGLoginScreen.h"
 
 YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	: client(client)

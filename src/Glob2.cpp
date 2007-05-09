@@ -25,7 +25,7 @@
 #include "MultiplayersOfferScreen.h"
 #include "MapEdit.h"
 #include "Engine.h"
-#include "YOGPreScreen.h"
+#include "YOGLoginScreen.h"
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
 #include "MultiplayersHost.h"
@@ -90,10 +90,10 @@ void Glob2::drawYOGSplashScreen(void)
 void Glob2::mutiplayerYOG(void)
 {
 	if (verbose)
-		printf("Glob2:: starting YOGPreScreen...\n");
-	YOGPreScreen yogPreScreen;
-	int yogReturnCode=yogPreScreen.execute(globalContainer->gfx, 40);
-	if (yogReturnCode==YOGPreScreen::CANCEL)
+		printf("Glob2:: starting YOGLoginScreen...\n");
+	YOGLoginScreen yogLoginScreen;
+	int yogReturnCode=yogLoginScreen.execute(globalContainer->gfx, 40);
+	if (yogReturnCode==YOGLoginScreen::CANCEL)
 		return;
 	if (yogReturnCode==-1)
 	{
@@ -101,7 +101,7 @@ void Glob2::mutiplayerYOG(void)
 		return;
 	}
 	if (verbose)
-		printf("Glob2::YOGPreScreen has ended ...\n");
+		printf("Glob2::YOGLoginScreen has ended ...\n");
 }
 
 int Glob2::runNoX()
