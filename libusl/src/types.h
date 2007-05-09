@@ -18,10 +18,10 @@ struct Value
 	virtual ~Value() { }
 };
 
-struct Executable;
+struct Method;
 struct Prototype: Value
 {
-	typedef std::map<std::string, Executable*> Methods;
+	typedef std::map<std::string, Method*> Methods;
 	
 	Prototype* parent;
 	Methods methods;
@@ -31,53 +31,72 @@ struct Prototype: Value
 	{ // TODO: MetaPrototype
 	}
 	
-	Executable *lookup(const std::string &method)
+	Method* lookup(const std::string &method) const
 	{
 		Methods::const_iterator methodIt = methods.find(method);
-		if (methodIt == methods.end())
+		if (methodIt != methods.end())
 		{
-			if (parent)
-				return parent->lookup(method);
-			else
-				assert(false); // TODO
-				//throw UnknownMethodException(method);
+			return methodIt->second;
+		}
+		else if (parent != 0)
+		{
+			return parent->lookup(method);
 		}
 		else
-			return methodIt->second;
+		{
+			assert(false); // TODO
+			//throw UnknownMethodException(method);
+		}
 	}
 };
 
 struct Thread;
-struct Executable
+struct Method: Prototype
 {
-	std::vector<std::string> args;
-	virtual void execute(Thread* stack) = 0;
-	virtual ~Executable() {}
-};
-
-struct Method: Prototype, Executable
-{
-	size_t address;
+	typedef std::vector<std::string> Args;
+	
+	Args args;
 	
 	Method(Prototype* parent):
 		Prototype(parent)
-	{ }
+	{
+		methods["."] = this;
+	}
 	
-	
-	void execute(Thread* stack);
+	virtual void execute(Thread* stack) = 0;
 };
 
 struct Scope: Value
 {
 	typedef std::map<std::string, Value*> Locals;
 	
-	Value* parent;
+	Scope* parent;
 	Locals locals;
 	
-	Scope(Method* method, Value* parent):
-		Value(method), parent(parent)
+	Scope(Method* method, Scope* parent):
+		Value(method),
+		parent(parent)
 	{
+		locals["."] = this;
 	}
+	
+	Value* lookup(const std::string& name) const
+	{
+		Locals::const_iterator localIt = locals.find(name);
+		if (localIt != locals.end())
+		{
+			return localIt->second;
+		}
+		else if (parent != 0)
+		{
+			return parent->lookup(name);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
 };
 
 #endif // ndef TYPES_H

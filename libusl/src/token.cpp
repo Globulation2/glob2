@@ -1,5 +1,6 @@
 #include "token.h"
-
+#include <cassert>
+#include <regex.h>
 
 struct Token::Type::Regexp
 {
@@ -42,5 +43,5 @@ void Token::Type::init(const char* pattern, size_t length)
 }
 
 Token::Token(const Position& position, const Type* type, const char* text, size_t length):
-	position(position), type(type), text(text, length)
+	position(position), type(type), text(text), length(length)
 { }

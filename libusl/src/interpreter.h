@@ -15,9 +15,9 @@ struct Frame
 	Stack stack;
 	size_t nextInstr;
 	
-	Frame()
+	Frame(Scope* scope):
+		scope(scope)
 	{
-		scope = 0;
 		nextInstr = 0;
 	}
 };

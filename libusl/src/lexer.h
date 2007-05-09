@@ -29,35 +29,30 @@ private:
 public:
 	Lexer(const char* text):
 		Tokenizer(tokenTypes, TOKENTYPES, text),
-		token(Tokenizer::next())
-	{
-		eatSpaces();
-	}
+		token(_next())
+	{ }
 	
 	const Token& next()
 	{
-		token = Tokenizer::next();
-		eatSpaces();
+		token = _next();
 		return token;
 	}
 	
-	const Token& peek()
+	TokenType tokenType() const
 	{
-		return token;
-	}
-	
-	TokenType peekType()
-	{
-		return (TokenType) peek().type->id;
+		return (TokenType) token.type->id;
 	}
 	
 private:
-	void eatSpaces()
+	Token _next()
 	{
+		Token token = Tokenizer::next();
 		while ((token.type->id == SPACE) || (token.type->id == COMMENT))
 			token = Tokenizer::next();
+		return token;
 	}
 	
+public:
 	Token token;
 };
 

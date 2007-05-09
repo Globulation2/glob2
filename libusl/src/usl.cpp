@@ -1,5 +1,8 @@
+#include "lexer.h"
+#include "tree.h"
+#include "code.h"
 #include <cassert>
-#include <map>
+#include <memory>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -9,29 +12,12 @@
 #include <ext/functional>
 #include <utility>
 #include <stack>
-#include "lexer.h"
-#include "bytecode.h"
-#include "interpreter.h"
 
 using namespace std;
-
-struct UnknownPrototypeException
-{
-	string className;
-	string PrototypeName;
-	
-	UnknownPrototypeException(string className, string PrototypeName) :
-		className(className),
-		PrototypeName(PrototypeName)
-	{
-	}
-};
-
 
 struct Class: Method
 {
 	vector<string> fields;
-	// TODO: MetaClass
 };
 
 
@@ -47,9 +33,10 @@ struct Object: Scope
 struct Integer: Value
 {
 	int value;
-	static struct IntegerAdd: Executable
+	static struct IntegerAdd: Method
 	{
-		IntegerAdd()
+		IntegerAdd():
+			Method(&integerPrototype)
 		{
 			args.push_back("that");
 		}
@@ -79,11 +66,6 @@ struct Integer: Value
 		{
 			methods["+"] = &integerAdd;
 		}
-		
-		void execute(Scope* scope, Thread* thread)
-		{
-			assert(false);
-		}
 	} integerPrototype;
 	
 	Integer(int value): Value(&integerPrototype)
@@ -97,125 +79,105 @@ Integer::IntegerPrototype Integer::integerPrototype;
 Integer::IntegerAdd Integer::integerAdd;
 
 
-typedef std::vector<Bytecode*> BytecodeVector;
-
-struct Node
+struct Parser: Lexer
 {
-	virtual ~Node() {}
-	virtual void codeGen(BytecodeVector *bytecodes) = 0;
-};
-
-
-struct ConstNode: Node
-{
-	ConstNode(Value *value):
-		value(value)
-	{}
+	Parser(const char* src):
+		Lexer(src),
+		Nil(0),
+		nil(&Nil)
+	{ }
 	
-	void codeGen(BytecodeVector *bytecodes)
+	Node* applyExpr(Scope* scope)
 	{
-		bytecodes->push_back(new ConstBytecode(value));
-	}
-	
-	Value *value;
-};
-
-
-struct ApplyNode: Node
-{
-	ApplyNode(Node *receiver, const string &method):
-		receiver(receiver),
-		method(method)
-	{}
-	
-	void codeGen(BytecodeVector *bytecodes)
-	{
-		receiver->codeGen(bytecodes);
-		for (size_t i = 0; i < args.size(); i++)
-			args[i]->codeGen(bytecodes);
-		bytecodes->push_back(new ApplyBytecode(method, args.size()));
-	}
-	
-	Node *receiver;
-	const string method;
-	vector<Node*> args;
-};
-
-
-/*
-class Parser
-{
-	Parser()
-	{
-		const char* src = "1 + 1";
-		Lexer lexer(src);
-	}
-	
-	Node *parseMethodCall(const string &method)
-	{
-		auto_ptr<ApplyNode> node(new ApplyNode(method));
-		lexer.next();
-		while (lexer.peekType() != Lexer::RPAR)
+		auto_ptr<Node> node(simpleExpr(scope));
+		while (true)
 		{
-			Node *child = parseExpression();
-			assert(child);
-			node->args.push_back(child);
-			
-			assert(lexer.peekType() == Lexer::COMMA);
-			lexer.next();
+			std::string method;
+			switch (tokenType())
+			{
+				case Lexer::ID:
+					method = token.string();
+					next();
+					break;
+				case Lexer::LPAR:
+					method = ".";
+					break;
+				default:
+					return node.release();
+			}
+			auto_ptr<ApplyNode> apply(new ApplyNode(node.release(), method));
+			apply->args.push_back(simpleExpr(scope));
+			node = apply;
 		}
-		lexer.next();
-		return node.release();
 	}
 	
-	Node *parseExpression()
+	Node* simpleExpr(Scope* scope)
 	{
-		switch (lexer.peekType())
+		switch (tokenType())
 		{
 			case Lexer::ID:
-				string id = lexer.peek().text;
-				lexer.next();
-				if (lexer.peekType() == Lexer::LPAR)
+			{
+				const string name(token.string());
+				next();
+				Value* value = scope->lookup(name);
+				if (value != 0)
 				{
-					parseMethodCall(id);
+					return new LocalNode(name);
 				}
 				else
 				{
-					parseMemberRef(id);
-					// create memeber ref node
-					parse();
+					assert(false);
 				}
-				return;
-			
+			}
 			case Lexer::NUM:
-				int value = atoi(lexer.peek().text.c_str());
+			{
+				string str = token.string();
+				next();
+				int value = atoi(str.c_str());
 				return new ConstNode(new Integer(value));	// todo insert into gc
-				
+			}
+			case Lexer::LPAR:
+				next();
 			default:
-				return;
+				assert(false);
 		}
 	}
+	
+	Prototype Nil;
+	Value nil;
 };
-*/
 
+struct Root: Method
+{
+	Root():
+		Method(0)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		assert(false);
+	}
+} root;
 
 int main(int argc, char** argv)
 {
-	//parse();
+	Parser parser("21\n+21");
+	Node* node = parser.applyExpr(new Scope(&root, 0));
+/*
+	ApplyNode* node = new ApplyNode(new ConstNode(new Integer(2)), "+");
+	node->args.push_back(new ConstNode(new Integer(1)));
+*/
 	
-	ApplyNode *p = new ApplyNode(new ConstNode(new Integer(2)), "+");
-	p->args.push_back(new ConstNode(new Integer(1)));
-	
-	BytecodeVector bytecode;
-	p->codeGen(&bytecode);
+	CodeVector code;
+	node->generate(&code);
 	
 	Thread t;
-	t.frames.push(Frame());
+	t.frames.push(Frame(new Scope(&root, 0)));
 	
-	while (t.frames.top().nextInstr < bytecode.size())
+	while (t.frames.top().nextInstr < code.size())
 	{
-		bytecode[t.frames.top().nextInstr++]->execute(&t);
-		cout<< "size: " << t.frames.top().stack.size() << endl;
+		code[t.frames.top().nextInstr++]->execute(&t);
+		cout << "size: " << t.frames.top().stack.size() << endl;
 		if (t.frames.top().stack.size() > 0)
 			cout << "[0]: " << dynamic_cast<Integer*>(t.frames.top().stack[0])->value << endl;
 		if (t.frames.top().stack.size() > 1)

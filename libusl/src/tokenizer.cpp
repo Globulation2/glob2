@@ -21,7 +21,6 @@ const Token Tokenizer::next()
 			length = newLength;
 		}
 	}
-	assert(length != -1);
 	Token token(position, type, text, length);
 	position.move(text, length);
 	text += length;
