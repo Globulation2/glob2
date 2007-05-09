@@ -151,6 +151,14 @@ NetConsts.h \
 NetDefine.h  \
 NetGame.cpp \
 NetGame.h \
+NetConnection.cpp  \
+NetConnection.h    \
+NetListener.cpp  \
+NetListener.h    \
+NetMessage.cpp \
+NetMessage.h    \
+NetTestSuite.cpp \
+NetTestSuite.h	\
 NewMapScreen.cpp  \
 NewMapScreen.h  \
 NonANSICStdWrapper.h  \
@@ -211,7 +219,18 @@ YOGPreScreen.cpp  \
 YOGPreScreen.h  \
 YOGScreen.cpp  \
 YOGScreen.h 
-
+YOGClient.cpp \
+YOGClient.h \
+YOGGameInfo.cpp \
+YOGGameInfo.h \
+YOGGameServer.cpp \
+YOGGameServer.h \
+YOGLoginScreen.cpp \
+YOGLoginScreen.h \
+YOGGame.cpp \
+YOGGame.h \
+YOGPlayer.cpp \
+YOGPlayer.h \
 
 if LINKSTATIC
 glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)
