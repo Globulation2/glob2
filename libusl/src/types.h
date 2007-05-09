@@ -5,17 +5,36 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <ext/functional>
+#include "interpreter.h"
 
 struct Prototype;
+
 struct Value
 {
 	Prototype* proto;
+	bool marked;
 	
-	Value(Prototype* proto):
+	Value(Thread *thread, Prototype* proto):
 		proto(proto)
-	{ }
+	{
+		marked = false;
+		if (thread)
+			thread->heap.push_back(this);
+	}
 	
 	virtual ~Value() { }
+	
+	virtual void propagateMarkForGC() { }
+	
+	void markForGC()
+	{
+		if (!marked)
+		{
+			marked = true;
+			propagateMarkForGC();
+		}
+	}
 };
 
 struct Method;
@@ -26,9 +45,16 @@ struct Prototype: Value
 	Prototype* parent;
 	Methods methods;
 	
-	Prototype(Prototype* parent):
-		Value(0), parent(parent)
+	Prototype(Thread *thread, Prototype* parent):
+		Value(thread, 0), parent(parent)
 	{ // TODO: MetaPrototype
+	}
+	
+	virtual void propagateMarkForGC()
+	{
+		using namespace std;
+		using namespace __gnu_cxx;
+		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<map<string, Value*>::value_type>()));
 	}
 	
 	Method* lookup(const std::string &method) const
@@ -57,8 +83,8 @@ struct Method: Prototype
 	
 	Args args;
 	
-	Method(Prototype* parent):
-		Prototype(parent)
+	Method(Thread *thread, Prototype* parent):
+		Prototype(thread, parent)
 	{
 		methods["."] = this;
 	}
@@ -73,11 +99,18 @@ struct Scope: Value
 	Scope* parent;
 	Locals locals;
 	
-	Scope(Method* method, Scope* parent):
-		Value(method),
+	Scope(Thread *thread, Method* method, Scope* parent):
+		Value(thread, method),
 		parent(parent)
 	{
 		locals["."] = this;
+	}
+	
+	virtual void propagateMarkForGC()
+	{
+		using namespace std;
+		using namespace __gnu_cxx;
+		for_each(locals.begin(), locals.end(), compose1(mem_fun(&Value::markForGC), select2nd<map<string, Value*>::value_type>()));
 	}
 	
 	Value* lookup(const std::string& name) const

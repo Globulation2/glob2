@@ -4,8 +4,6 @@
 #include <string>
 #include "interpreter.h"
 
-struct Value;
-struct Scope;
 
 struct Code
 {
@@ -21,7 +19,7 @@ struct ConstCode: Code
 	
 	void execute(Thread* thread)
 	{
-		thread->frames.top().stack.push_back(value);
+		thread->topFrame().stack.push_back(value);
 	}
 	
 	Value* value;
@@ -35,7 +33,7 @@ struct LocalCode: Code
 	
 	void execute(Thread* thread)
 	{
-		Frame& frame = thread->frames.top();
+		Thread::Frame& frame = thread->topFrame();
 		frame.stack.push_back(frame.scope->lookup(local));
 	}
 	
@@ -52,7 +50,7 @@ struct ApplyCode: Code
 	void execute(Thread* thread)
 	{
 		// fetch receiver
-		Value* receiver = *(thread->frames.top().stack.end() - argCount - 1);
+		Value* receiver = *(thread->topFrame().stack.end() - argCount - 1);
 		
 		// fetch method
 		Method* method = receiver->proto->lookup(this->method);
