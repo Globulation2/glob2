@@ -72,6 +72,7 @@ struct Integer: Value
 		Value(thread, &integerPrototype),
 		value(value)
 	{
+		this->value = value;
 	}
 };
 
@@ -86,37 +87,74 @@ struct Parser: Lexer
 		Lexer(src),
 		Nil(0, 0),
 		nil(0, &Nil)
-	{ }
+	{}
 	
-	Node* applyExpr(Scope* scope)
+	Node* statement(Scope* scope)
 	{
-		auto_ptr<Node> node(simpleExpr(scope));
+		switch (tokenType())
+		{
+			case VAL:
+			{
+				next();
+				string name = identifier();
+				accept(ASSIGN);
+				scope->locals[name] = &nil;
+				return new ValueNode(name, expression(scope));
+			}
+			default:
+				return expression(scope);
+		}
+	}
+	
+	string identifier()
+	{
+		if (tokenType() == ID)
+		{
+			string id = token.string();
+			next();
+			return id;
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+	
+	void accept(TokenType type)
+	{
+		assert(tokenType() == type);
+		next();
+	}
+	
+	Node* expression(Scope* scope)
+	{
+		auto_ptr<Node> node(simple(scope));
 		while (true)
 		{
 			std::string method;
 			switch (tokenType())
 			{
-				case Lexer::ID:
+				case ID:
 					method = token.string();
 					next();
 					break;
-				case Lexer::LPAR:
+				case LPAR:
 					method = ".";
 					break;
 				default:
 					return node.release();
 			}
 			auto_ptr<ApplyNode> apply(new ApplyNode(node.release(), method));
-			apply->args.push_back(simpleExpr(scope));
+			apply->args.push_back(simple(scope));
 			node = apply;
 		}
 	}
 	
-	Node* simpleExpr(Scope* scope)
+	Node* simple(Scope* scope)
 	{
 		switch (tokenType())
 		{
-			case Lexer::ID:
+			case ID:
 			{
 				const string name(token.string());
 				next();
@@ -130,15 +168,16 @@ struct Parser: Lexer
 					assert(false);
 				}
 			}
-			case Lexer::NUM:
+			case NUM:
 			{
 				string str = token.string();
 				next();
 				int value = atoi(str.c_str());
 				return new ConstNode(new Integer(0, value));	// todo insert into gc or in const table, right now this is LEAK
 			}
-			case Lexer::LPAR:
+			case LPAR:
 				next();
+				// TODO
 			default:
 				assert(false);
 		}
@@ -162,8 +201,8 @@ struct Root: Method
 
 int main(int argc, char** argv)
 {
-	Parser parser("21\n+21");
-	Node* node = parser.applyExpr(new Scope(0, &root, 0));	// todo check garbage collectable, this is LEAKY
+	Parser parser("val x = 21 + 21");
+	Node* node = parser.statement(new Scope(0, &root, 0));	// todo check garbage collectable, this is LEAKY
 /*
 	ApplyNode* node = new ApplyNode(new ConstNode(new Integer(2)), "+");
 	node->args.push_back(new ConstNode(new Integer(1)));
@@ -185,6 +224,7 @@ int main(int argc, char** argv)
 			cout << "[1]: " << dynamic_cast<Integer*>(t.topFrame().stack[1])->value << endl;
 	}
 	
+	cout << "x = " << dynamic_cast<Integer*>(t.frames.top().scope->locals["x"])->value << endl;
 	cout << "heap size: " << t.heap.size() << "\n";
 	cout << "garbage collecting\n";
 	t.garbageCollect();

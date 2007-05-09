@@ -63,4 +63,22 @@ struct ApplyCode: Code
 	size_t argCount;
 };
 
+struct ValueCode: Code
+{
+	ValueCode(const std::string& local):
+		local(local)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Frame& frame = thread->frames.top();
+		Frame::Stack& stack = frame.stack;
+		size_t stackSize = stack.size();
+		frame.scope->locals[local] = stack[--stackSize];
+		stack.resize(stackSize);
+	}
+	
+	const std::string local;
+};
+
 #endif // ndef BYTECODE_H

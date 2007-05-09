@@ -18,3 +18,9 @@ void ApplyNode::generate(CodeVector* code)
 		args[i]->generate(code);
 	code->push_back(new ApplyCode(method, args.size()));
 }
+
+void ValueNode::generate(CodeVector* code)
+{
+	value->generate(code);
+	code->push_back(new ValueCode(local));
+}

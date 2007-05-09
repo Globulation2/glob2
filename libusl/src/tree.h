@@ -43,9 +43,22 @@ struct ApplyNode: Node
 	
 	void generate(CodeVector* code);
 	
-	Node *receiver;
+	Node* receiver;
 	const std::string method;
 	std::vector<Node*> args;
+};
+
+struct ValueNode: Node
+{
+	ValueNode(const std::string& local, Node* value):
+		local(local),
+		value(value)
+	{}
+	
+	void generate(CodeVector* code);
+	
+	const std::string local;
+	Node* value;
 };
 
 #endif // ndef TREE_H
