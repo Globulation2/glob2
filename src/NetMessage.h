@@ -1,4 +1,5 @@
-/*  Copyright (C) 2007 Bradley Arsenault
+/*
+  Copyright (C) 2007 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,6 +36,7 @@ enum NetMessageType
 	MNetLoginSuccessful,
 	MNetRefuseLogin,
 	MNetUpdateGameList,
+	MNetDisconnect,
 	//type_append_marker
 };
 
@@ -356,6 +358,36 @@ private:
 	std::vector<Uint16> removedGames;
 	std::vector<YOGGameInfo> updatedGames;
 };
+
+
+///NetDisconnect informs the server and/or client that the other is disconnecting
+class NetDisconnect : public NetMessage
+{
+public:
+	///Creates a NetDisconnect message
+	NetDisconnect();
+
+	///Returns MNetDisconnect
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetDisconnect message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetDisconnect
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
 
 //message_append_marker
 

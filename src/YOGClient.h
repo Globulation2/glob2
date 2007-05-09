@@ -92,6 +92,9 @@ public:
 	///This will send for a manual update of the game list,
 	void requestGameListUpdate();
 
+	///This will disconnect the client and server
+	void disconnect();
+
 private:
 	NetConnection& nc;
 

@@ -143,3 +143,12 @@ void YOGClient::requestGameListUpdate()
 }
 
 
+
+void YOGClient::disconnect()
+{
+	shared_ptr<NetDisconnect> message = new NetDisconnect();
+	nc.sendMessage(message);
+	nc.closeConnection();
+	connectionState = NotConnected;
+	
+}
