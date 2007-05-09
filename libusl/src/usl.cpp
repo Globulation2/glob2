@@ -224,7 +224,7 @@ int main(int argc, char** argv)
 			cout << "[1]: " << dynamic_cast<Integer*>(t.topFrame().stack[1])->value << endl;
 	}
 	
-	cout << "x = " << dynamic_cast<Integer*>(t.frames.top().scope->locals["x"])->value << endl;
+	cout << "x = " << dynamic_cast<Integer*>(t.topFrame().scope->locals["x"])->value << endl;
 	cout << "heap size: " << t.heap.size() << "\n";
 	cout << "garbage collecting\n";
 	t.garbageCollect();

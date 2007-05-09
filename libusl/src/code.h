@@ -71,8 +71,8 @@ struct ValueCode: Code
 	
 	void execute(Thread* thread)
 	{
-		Frame& frame = thread->frames.top();
-		Frame::Stack& stack = frame.stack;
+		Thread::Frame& frame = thread->topFrame();
+		Thread::Frame::Stack& stack = frame.stack;
 		size_t stackSize = stack.size();
 		frame.scope->locals[local] = stack[--stackSize];
 		stack.resize(stackSize);
