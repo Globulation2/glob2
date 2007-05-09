@@ -35,5 +35,6 @@ void Thread::garbageCollect()
 	// clean heap
 	heap.resize(toKeep.size());
 	copy(toKeep.begin(), toKeep.end(), heap.begin());
+	for_each(heap.begin(), heap.end(), mem_fun(&Value::clearGCMark));
 }
 

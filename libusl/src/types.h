@@ -35,6 +35,8 @@ struct Value
 			propagateMarkForGC();
 		}
 	}
+	
+	void clearGCMark() { marked = false; }
 };
 
 struct Method;
