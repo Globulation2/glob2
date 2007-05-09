@@ -5,6 +5,7 @@ token.cpp
 tokenizer.cpp
 tree.cpp
 usl.cpp
+interpreter.cpp
 )
 
 include_directories(${libusl_SOURCE_DIR}/include)

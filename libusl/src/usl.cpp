@@ -23,8 +23,8 @@ struct Class: Method
 
 struct Object: Scope
 {
-	Object(Class* klass, Scope* parent):
-		Scope(klass, parent)
+	Object(Thread *thread, Class* klass, Scope* parent):
+		Scope(thread, klass, parent)
 	{
 		transform(klass->fields.begin(), klass->fields.end(), inserter(locals, locals.begin()), bind2nd(ptr_fun(make_pair<string, Value*>), 0));
 	}
@@ -36,7 +36,7 @@ struct Integer: Value
 	static struct IntegerAdd: Method
 	{
 		IntegerAdd():
-			Method(&integerPrototype)
+			Method(0, &integerPrototype)
 		{
 			args.push_back("that");
 		}
@@ -44,7 +44,7 @@ struct Integer: Value
 		void execute(Thread* thread)
 		{
 			// check number of arguments
-			Frame::Stack& stack = thread->frames.top().stack;
+			Thread::Frame::Stack& stack = thread->topFrame().stack;
 			size_t stackSize = stack.size();
 			
 			Integer* thatInt = dynamic_cast<Integer*>(stack[--stackSize]);
@@ -53,7 +53,7 @@ struct Integer: Value
 			assert(thisInt);
 			// todo check thatInt type
 			
-			stack[stackSize++] = new Integer(thisInt->value + thatInt->value);
+			stack[stackSize++] = new Integer(thread, thisInt->value + thatInt->value);
 			
 			stack.resize(stackSize);
 		}
@@ -62,15 +62,16 @@ struct Integer: Value
 	static struct IntegerPrototype: Prototype
 	{
 		IntegerPrototype():
-			Prototype(0)
+			Prototype(0, 0)
 		{
 			methods["+"] = &integerAdd;
 		}
 	} integerPrototype;
 	
-	Integer(int value): Value(&integerPrototype)
+	Integer(Thread *thread, int value):
+		Value(thread, &integerPrototype),
+		value(value)
 	{
-		this->value = value;
 	}
 };
 
@@ -83,8 +84,8 @@ struct Parser: Lexer
 {
 	Parser(const char* src):
 		Lexer(src),
-		Nil(0),
-		nil(&Nil)
+		Nil(0, 0),
+		nil(0, &Nil)
 	{ }
 	
 	Node* applyExpr(Scope* scope)
@@ -134,7 +135,7 @@ struct Parser: Lexer
 				string str = token.string();
 				next();
 				int value = atoi(str.c_str());
-				return new ConstNode(new Integer(value));	// todo insert into gc
+				return new ConstNode(new Integer(0, value));	// todo insert into gc or in const table, right now this is LEAK
 			}
 			case Lexer::LPAR:
 				next();
@@ -150,7 +151,7 @@ struct Parser: Lexer
 struct Root: Method
 {
 	Root():
-		Method(0)
+		Method(0, 0)	// todo check garbage collectable itude
 	{}
 	
 	void execute(Thread* thread)
@@ -162,7 +163,7 @@ struct Root: Method
 int main(int argc, char** argv)
 {
 	Parser parser("21\n+21");
-	Node* node = parser.applyExpr(new Scope(&root, 0));
+	Node* node = parser.applyExpr(new Scope(0, &root, 0));	// todo check garbage collectable, this is LEAKY
 /*
 	ApplyNode* node = new ApplyNode(new ConstNode(new Integer(2)), "+");
 	node->args.push_back(new ConstNode(new Integer(1)));
@@ -172,15 +173,20 @@ int main(int argc, char** argv)
 	node->generate(&code);
 	
 	Thread t;
-	t.frames.push(Frame(new Scope(&root, 0)));
+	t.frames.push_back(Thread::Frame(new Scope(&t, &root, 0)));
 	
-	while (t.frames.top().nextInstr < code.size())
+	while (t.topFrame().nextInstr < code.size())
 	{
-		code[t.frames.top().nextInstr++]->execute(&t);
-		cout << "size: " << t.frames.top().stack.size() << endl;
-		if (t.frames.top().stack.size() > 0)
-			cout << "[0]: " << dynamic_cast<Integer*>(t.frames.top().stack[0])->value << endl;
-		if (t.frames.top().stack.size() > 1)
-			cout << "[1]: " << dynamic_cast<Integer*>(t.frames.top().stack[1])->value << endl;
+		code[t.topFrame().nextInstr++]->execute(&t);
+		cout << "size: " << t.topFrame().stack.size() << endl;
+		if (t.topFrame().stack.size() > 0)
+			cout << "[0]: " << dynamic_cast<Integer*>(t.topFrame().stack[0])->value << endl;
+		if (t.topFrame().stack.size() > 1)
+			cout << "[1]: " << dynamic_cast<Integer*>(t.topFrame().stack[1])->value << endl;
 	}
+	
+	cout << "heap size: " << t.heap.size() << "\n";
+	cout << "garbage collecting\n";
+	t.garbageCollect();
+	cout << "heap size: " << t.heap.size() << "\n";
 }
