@@ -193,12 +193,11 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1==CANCEL)
 		{
-			multiplayersJoin->quitThisGame();
 			executionMode=CANCEL;
 		}
 		else if (par1==CREATE_GAME)
 		{
-			multiplayersJoin->quitThisGame();
+		/*
 			Engine engine;
 			// host game and wait for players
 			int rc=engine.initMutiplayerHost(true);
@@ -220,19 +219,21 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if (yog->newPlayerList(true))
 				updatePlayerList();
 			yog->unshareGame();
+		*/
 		}
 		else if (par1==JOIN)
 		{
+		/*
 			assert(source==joinButton);
 			if (yog->isSelectedGame)
 			{
 				selectedGameInfo=new YOG::GameInfo(*yog->getSelectedGameInfo());
 				multiplayersJoin->tryConnection(selectedGameInfo);
 			}
+			*/
 		}
 		else if (par1==-1)
 		{
-			multiplayersJoin->quitThisGame();
 			executionMode=-1;
 		}
 		else

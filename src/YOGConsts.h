@@ -66,6 +66,13 @@ enum YOGLoginState
 	YOGUserNotRegistered,
 };
 
+///This represents the reason why the player could not join a game.
+enum YOGGameJoinRefusalReason
+{
+	///This represents internally an unknown reason
+	YOGJoinRefusalUnknown,
+
+};
 
 
 #define YOG_SERVER_IP "yog.globulation2.org"
