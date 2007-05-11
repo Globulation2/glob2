@@ -517,7 +517,7 @@ public:
 	NetUpdatePlayerList();
 
 	///This computes the differences between the two lists of players. These can be of any container,
-	///so long as they store std::string
+	///so long as they store YOGPlayerInfo
 	template<typename container> void updateDifferences(const container& original, const container& updated);
 
 	///Returns MNetUpdatePlayerList
@@ -543,8 +543,8 @@ public:
 	template<typename container> void applyDifferences(container& original) const;
 
 private:
-	std::vector<Uint8> removedPlayers;
-	std::vector<std::string> newPlayers;
+	std::vector<Uint16> removedPlayers;
+	std::vector<YOGPlayerInfo> updatedPlayers;
 };
 
 

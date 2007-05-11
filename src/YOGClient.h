@@ -23,6 +23,9 @@
 #include "NetConnection.h"
 #include "NetListener.h"
 #include "YOGConsts.h"
+#include "YOGGameInfo.h"
+#include "YOGPlayerInfo.h"
+#include "YOGMessage.h"
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -96,21 +99,44 @@ public:
 	///This will return the list of games on hosted on the server.
 	const std::list<YOGGameInfo>& getGameList() const;
 
+	///This will return the list of players on the server
+	const std::list<YOGPlayerInfo>& getPlayerList() const;
+
 	///This will send for a manual update of the game list,
 	void requestGameListUpdate();
 	
 	///This will send for a manual update of the player list,
 	void requestPlayerListUpdate();
 
+	///Returns true if the list of games has been changed since the last call to
+	///this function. Defaults to false, untill the the game list is first initiated
+	///from the server
+	bool hasGameListChanged();
+
+	///Returns true if the list of players has been changed since the last call to
+	///this function. Defaults to false, untill the the player list is first initiated
+	///from the server
+	bool hasPlayerListChanged();
+
 	///This will disconnect the client and server
 	void disconnect();
-
-	///This will return the list of players on the server
-	const std::list<std::string>& getPlayerList() const;
 
 	///This sends a message to the server to remove the game that the player is connected to.
 	///This will only be accepted if it is from the host of the game.
 	void removeGame();
+
+	///This will send a message indicating the game the host is hosting has begun.
+	void gameHasStarted();
+
+	///This will send a message indicating the game the host is hosting has finished
+	void gameHasFinished();
+
+	///Sends a message through YOG
+	void sendMessage(boost::shared_ptr<YOGMessage> message);
+
+	///Returns a new YOG message if there are any, and returns NULL otherwise
+	boost::shared_ptr<YOGMessage> getMessage();
+
 
 private:
 	NetConnection& nc;
@@ -122,7 +148,9 @@ private:
 	YOGLoginState loginState;
 	
 	std::list<YOGGameInfo> games;
-	std::list<std::string>& players;
+	std::list<YOGPlayerInfo>& players;
+	bool gameListChanged;
+	bool playerListChanged;
 };
 
 

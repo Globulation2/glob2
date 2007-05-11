@@ -95,6 +95,16 @@ public:
 	};
 
 private:
+
+	///This launches the menu when the player is hosting a game, and starts the game engine when nesseccarry
+	void hostGame();
+	///This updates the list of games
+	void updateGameList();
+	///This updates the list of players
+	void updatePlayerList();
+	///This updates the text box that has information about the selected game
+	void updateGameInfo();
+
 	List *gameList;
 	TextArea *gameInfo;
 	YOGPlayerList *playerList;
@@ -104,9 +114,8 @@ private:
 	TextButton *joinButton;
 	
 	IRC irc;
+	
 
-	void updateGameList(void);
-	void updatePlayerList(void);
 
 	int executionMode;
 	boost::shared_ptr<YOGClient> client;
