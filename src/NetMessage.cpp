@@ -957,7 +957,8 @@ bool NetAttemptRegistrationUser::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetAttemptRegistrationUser))
 	{
 		const NetAttemptRegistrationUser& r = dynamic_cast<const NetAttemptRegistrationUser&>(rhs);
-		return true;
+		if(username == r.username && password == r.password)
+			return true;
 	}
 	return false;
 }
@@ -1095,7 +1096,8 @@ bool NetRefuseRegistration::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetRefuseRegistration))
 	{
 		const NetRefuseRegistration& r = dynamic_cast<const NetRefuseRegistration&>(rhs);
-		return true;
+		if(reason == r.reason)
+			return true;
 	}
 	return false;
 }
@@ -1252,7 +1254,8 @@ bool NetUpdatePlayerList::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetUpdatePlayerList))
 	{
 		const NetUpdatePlayerList& r = dynamic_cast<const NetUpdatePlayerList&>(rhs);
-		return true;
+		if(newPlayers == r.newPlayers && removedPlayers == r.removedPlayers)
+			return true;
 	}
 	return false;
 }
