@@ -150,14 +150,14 @@ MultiplayersOfferScreen.h \
 NetConsts.h \
 NetDefine.h  \
 NetGame.cpp \
-NetGame.h \
+NetGame.h  \
 NetConnection.cpp  \
 NetConnection.h    \
 NetListener.cpp  \
 NetListener.h    \
 NetMessage.cpp \
-NetMessage.h    \
-NetTestSuite.cpp \
+NetMessage.h  \
+NetTestSuite.cpp  \
 NetTestSuite.h	\
 NewMapScreen.cpp  \
 NewMapScreen.h  \
@@ -218,7 +218,7 @@ YOGConsts.h  \
 YOGPreScreen.cpp  \
 YOGPreScreen.h  \
 YOGScreen.cpp  \
-YOGScreen.h 
+YOGScreen.h \
 YOGClient.cpp \
 YOGClient.h \
 YOGGameInfo.cpp \
@@ -230,11 +230,10 @@ YOGLoginScreen.h \
 YOGGame.cpp \
 YOGGame.h \
 YOGPlayer.cpp \
-YOGPlayer.h \
+YOGPlayer.h
 
 if LINKSTATIC
 glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)
-LIBS = 
 else
 glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ -lSDL_ttf $(glob2_static_lib)
 endif

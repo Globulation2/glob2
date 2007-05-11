@@ -86,15 +86,13 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		if (par1==CANCEL)
 		{
 			client->disconnect();
-			endExecutionValue=CANCEL;
 		}
 		else if (par1==LOGIN)
 		{
-			client->attemptLogin(login->getText(), password->getText());
-			globalContainer->settings.password.assign(password->getText(), 0, 32);
-			globalContainer->settings.save();
-			animation->show();
-			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
+			if(newYogPassword->getState())
+				attemptRegistration();
+			else
+				attemptLogin();
 		}
 		else if (par1==-1)
 		{
@@ -130,7 +128,13 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]"));
 			}
 		}
-		
+		if(client->getLoginState() == YOGClient::YOGLoginSuccessful)
+		{
+			YOGScreen screen;
+			int rc = screen.run();
+			endExecute(EXECUTING);
+		}
+		oldConnectionState = client->getConnectionState();
 	}
 }
 
@@ -141,10 +145,26 @@ void YOGLoginScreen::attemptLogin()
 	//Save the password
 	globalContainer->settings.password.assign(password->getText(), 0, 32);
 	globalContainer->settings.save();
+	//Update the gui
 	animation->show();
-	///Establish the connection
 	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-	client->attemptLogin(login->getText(), password->getText());
 	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
+	//Attempt the login
+	client->attemptLogin(login->getText(), password->getText());
+}
+
+
+
+void YOGLoginScreen::attemptRegistration()
+{
+	//Save the password
+	globalContainer->settings.password.assign(password->getText(), 0, 32);
+	globalContainer->settings.save();
+	//Update the gui
+	animation->show();
+	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
+	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
+	//Attempt the registration
+	client->attemptRegistration(login->getText(), password->getText());
 }
 

@@ -82,6 +82,20 @@ void YOGClient::update()
 		connectionState = WaitingForLoginInformation;
 		loginState = info->getRefusalReason();
 	}
+	//This recieves a registration acceptance message
+	if(type==MNetAcceptRegistration)
+	{
+		shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
+		connectionState = WaitingForGameList;
+		loginState = YOGLoginSuccessful;
+	}
+	//This recieves a regisration refusal message
+	if(type==MNetRefuseRegistration)
+	{
+		shared_ptr<NetRefuseRegistration> info = static_pointer_cast<NetRefuseRegistration>(message);
+		connectionState = WaitingForLoginInformation;
+		loginState = info->getRefusalReason();
+	}
 	///This recieves a game list update message
 	if(type==MNetUpdateGameList)
 	{
@@ -121,6 +135,13 @@ void YOGClient::attemptLogin(const std::string& username, const std::string& pas
 	connectionState = WaitingForLoginReply;
 }
 
+
+void YOGClient::attemptRegistration(const std::string& username, const std::string& password)
+{
+	shared_ptr<NetAttemptRegistration> message = new NetAttemptRegistration(username, password);
+	nc.sendMessage(message);
+	connectionState = WaitingForRegistrationReply;
+}
 
 
 YOGLoginState YOGClient::getLoginState() const

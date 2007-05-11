@@ -24,6 +24,7 @@
 
 #include "Glob2Screen.h"
 #include "YOGClient.h"
+#include "YOGScreen.h"
 
 namespace GAGGUI
 {
@@ -45,9 +46,6 @@ public:
 	virtual ~YOGLoginScreen();
 
 private:
-	///Specifies whether there should be verbose debugging output.
-	static const bool verbose = false;
-
 	enum
 	{
 		EXECUTING=0,
@@ -65,6 +63,7 @@ private:
 	void onAction(Widget *source, Action action, int par1, int par2);
 
 	void attemptLogin();
+	void attemptRegistration();
 
 	TextInput *login, *password;
 	OnOffButton *newYogPassword, *rememberYogPassword;

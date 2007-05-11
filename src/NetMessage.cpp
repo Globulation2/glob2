@@ -50,6 +50,15 @@ static NetMessage* NetMessage::getNetMessage(const Uint8 *netData, int dataLengt
 		case MNetDisconnect:
 		message.reset(new NetDisconnect);
 		break;
+		case MNetAttemptRegistrationUser:
+		message.reset(new NetAttemptRegistrationUser);
+		break;
+		case MNetAcceptRegistration:
+		message.reset(new NetAcceptRegistration);
+		break;
+		case MNetRefuseRegistration:
+		message.reset(new NetRefuseRegistration);
+		break;
 		///append_create_point
 	}
 	message->decodeData(netData, datalength);
@@ -848,5 +857,251 @@ bool NetDisconnect::operator==(const NetMessage& rhs) const
 	return false;
 }
 
+
+
+NetAttemptRegistrationUser::NetAttemptRegistrationUser()
+{
+
+}
+
+
+
+
+NetAttemptRegistrationUser::NetAttemptRegistrationUser(const std::string& username, const std::string& password)
+	: username(username), password(password)
+{
+	
+}
+	
+
+
+
+Uint8 NetAttemptRegistrationUser::getMessageType() const
+{
+	return MNetAttemptRegistrationUser;
+}
+
+
+
+Uint8 *NetAttemptRegistrationUser::encodeData() const
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	Uint16 pos = 0;
+	data[pos] = getMessageType();
+	pos+=1;
+	//Write the username.
+	data[pos] = static_cast<Uint8>(username.size());
+	pos+=1;
+	std::copy(username.begin(), username.end(), data+pos);
+	pos+=username.size();
+	//Write the password
+	data[pos] = static_cast<Uint8>(password.size());
+	pos+=1;
+	std::copy(password.begin(), password.end(), data+pos);
+	pos+=password.size();
+	return data;
+	return data;
+}
+
+
+
+Uint16 NetAttemptRegistrationUser::getDataLength() const
+{
+	return 1;
+}
+
+
+
+bool NetAttemptRegistrationUser::decodeData(const Uint8 *data, int dataLength)
+{
+	Uint16 pos = 0;
+	Uint8 type = data[pos];
+	pos+=1;
+	
+	//Read in the username
+	Uint8 usernameLength = data[pos];
+	pos+=1;
+	for(int i=0; i<usernameLength; ++i)
+	{
+		username+=static_cast<char>(data[pos]);
+		pos+=1;
+	}
+	
+	//Read in the password
+	Uint8 passwordLength = data[pos];
+	pos+=1;
+	for(int i=0; i<usernameLength; ++i)
+	{
+		password+=static_cast<char>(data[pos]);
+		pos+=1;
+	}
+}
+
+
+
+std::string NetAttemptRegistrationUser::format() const
+{
+	std::ostringstream s;
+	s<<"NetAttemptRegistrationUser(username="<<username<<"; password="<<password<<")";
+	return s.str();
+}
+
+
+
+bool NetAttemptRegistrationUser::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetAttemptRegistrationUser))
+	{
+		const NetAttemptRegistrationUser& r = dynamic_cast<const NetAttemptRegistrationUser&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetAcceptRegistration::NetAcceptRegistration()
+{
+
+}
+
+
+
+Uint8 NetAcceptRegistration::getMessageType() const
+{
+	return MNetAcceptRegistration;
+}
+
+
+
+Uint8 *NetAcceptRegistration::encodeData() const
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	Uint16 pos = 0;
+	data[pos] = getMessageType();
+	pos+=1;
+	return data;
+}
+
+
+
+Uint16 NetAcceptRegistration::getDataLength() const
+{
+	return 1;
+}
+
+
+
+bool NetAcceptRegistration::decodeData(const Uint8 *data, int dataLength)
+{
+	Uint16 pos = 0;
+	Uint8 type = data[pos];
+	pos+=1;
+}
+
+
+
+std::string NetAcceptRegistration::format() const
+{
+	std::ostringstream s;
+	s<<"NetAcceptRegistration()";
+	return s.str();
+}
+
+
+
+bool NetAcceptRegistration::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetAcceptRegistration))
+	{
+		const NetAcceptRegistration& r = dynamic_cast<const NetAcceptRegistration&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetRefuseRegistration::NetRefuseRegistration()
+{
+
+}
+
+
+
+NetRefuseRegistration::NetRefuseRegistration(YOGLoginState reason)
+	: reason(reason)
+{
+
+}
+
+
+
+Uint8 NetRefuseRegistration::getMessageType() const
+{
+	return MNetRefuseRegistration;
+}
+
+
+
+Uint8 *NetRefuseRegistration::encodeData() const
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	Uint16 pos = 0;
+	data[pos] = getMessageType();
+	pos+=1;
+	data[pos] = static_cast<Uint8>(reason);
+	pos+=1;
+	return data;
+}
+
+
+
+Uint16 NetRefuseRegistration::getDataLength() const
+{
+	return 1;
+}
+
+
+
+bool NetRefuseRegistration::decodeData(const Uint8 *data, int dataLength)
+{
+	Uint16 pos = 0;
+	Uint8 type = data[pos];
+	pos+=1;
+	reason = data[pos];
+	pos+=1;
+}
+
+
+
+std::string NetRefuseRegistration::format() const
+{
+	std::ostringstream s;
+	s<<"NetRefuseRegistration(reason="<<reason<<")";
+	return s.str();
+}
+
+
+
+bool NetRefuseRegistration::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRefuseRegistration))
+	{
+		const NetRefuseRegistration& r = dynamic_cast<const NetRefuseRegistration&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+YOGLoginState NetRefuseRegistration::getRefusalReason() const
+{
+	return reason;
+}
 
 //append_code_position
