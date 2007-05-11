@@ -37,19 +37,36 @@
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"
 
-// TODO: is it anyway to do this cleaner ?
-IRC *ircPtr = NULL;
-
-YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font) :
-	List(x, y, w, h, hAlign, vAlign, font)
+YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
+	: List(x, y, w, h, hAlign, vAlign, font)
 {
 	networkSprite = Toolkit::getSprite("data/gui/yog");
 }
+
+
 
 YOGPlayerList::~YOGPlayerList()
 {
 	Toolkit::releaseSprite("data/gui/yog");
 }
+
+
+
+void YOGPlayerList::addPlayer(const std::string &nick, NetworkType network)
+{
+	addText(nick);
+	networks.push_back(network);
+}
+
+
+
+void YOGPlayerList::clear(void)
+{
+	List::clear();
+	networks.clear();
+}
+
+
 
 void YOGPlayerList::drawItem(int x, int y, size_t element)
 {
@@ -65,10 +82,11 @@ void YOGPlayerList::drawItem(int x, int y, size_t element)
 	parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
 }
 
-YOGScreen::YOGScreen()
-{
-	multiplayersJoin=new MultiplayersJoin(true);
 
+
+YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
+	: client(client)
+{
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[yog]")));
 
 	addWidget(new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[create game]"), CREATE_GAME));
@@ -98,6 +116,8 @@ YOGScreen::YOGScreen()
 	irc.setChatChannel(IRC_CHAN);
 	ircPtr = &irc;
 }
+
+
 
 YOGScreen::~YOGScreen()
 {

@@ -102,6 +102,9 @@ public:
 	///This will disconnect the client and server
 	void disconnect();
 
+	///This will return the list of players on the server
+	const std::list<std::string>& getPlayerList() const;
+
 private:
 	NetConnection& nc;
 
@@ -112,6 +115,7 @@ private:
 	YOGLoginState loginState;
 	
 	std::list<YOGGameInfo> games;
+	std::list<std::string>& players;
 };
 
 

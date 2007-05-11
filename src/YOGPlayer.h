@@ -58,6 +58,8 @@ private:
 		NeedToSendLoginRefusal,
 		///Game list information needs to be sent
 		NeedToSendGameList,
+		///Player list information needs to be sent
+		NeedToSendPlayerList,
 		///This means the user is on standby, nothing needs to be sent
 		ClientOnStandby,
 	};
@@ -71,6 +73,9 @@ private:
 	///Stores a copy of the games that the player knows about, bassically
 	///the list as it was on the last game list update
 	std::list<YOGGameInfo> playersGames;
+	///Stores a copy of the players that the player knows about.
+	///This is a synchronized list of what the client has
+	std::list<std::string> playersPlayerList;
 };
 
 

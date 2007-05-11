@@ -103,6 +103,13 @@ void YOGClient::update()
 		info->applyDifferences(games);
 		connectionState = ClientOnStandby;
 	}
+	///This recieves a player list update message
+	if(type==MNetUpdatePlayerList)
+	{
+		shared_ptr<NetUpdatePlayerList> info = static_pointer_cast<NetUpdatePlayerList>(message);
+		info->applyDifferences(players);
+		connectionState = ClientOnStandby;
+	}
 }
 
 
