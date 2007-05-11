@@ -141,7 +141,47 @@ int NetTestSuite::testNetMessages()
 
 	shared_ptr<NetRefuseRegistration> refuseRegistration1 = new NetRefuseRegistration(YOGPasswordIncorrect);
 	if(!testMessage(refuseRegistration1))
-		return 22;	
+		return 22;
+		
+	//Test NetCreateGame
+	if(!testInitialMessageState<NetCreateGame>())
+		return 23;
+
+	shared_ptr<NetCreateGame> createGame1 = new NetCreateGame("my game");
+	if(!testMessage(createGame1))
+		return 24;
+
+	shared_ptr<NetCreateGame> createGame2 = new NetCreateGame("haha my first game woot");
+	if(!testMessage(createGame2))
+		return 25;
+	
+	//Test NetAttemptJoinGame
+	if(!testInitialMessageState<NetAttemptJoinGame>())
+		return 26;
+
+	shared_ptr<NetAttemptJoinGame> attemptJoin1 = new NetAttemptJoinGame(1);
+	if(!testMessage(attemptJoin1))
+		return 27;
+
+	shared_ptr<NetAttemptJoinGame> attemptJoin2 = new NetAttemptJoinGame(6627);
+	if(!testMessage(attemptJoin2))
+		return 27;
+		
+	//Test NetGameJoinAccepted
+	if(!testInitialMessageState<NetGameJoinAccepted>())
+		return 28;
+
+	shared_ptr<NetGameJoinAccepted> joinAccepted1 = new NetGameJoinAccepted;
+	if(!testMessage(joinAccepted1))
+		return 29;
+		
+	//Test NetGameJoinRefused
+	if(!testInitialMessageState<NetGameJoinRefused>())
+		return 30;
+
+	shared_ptr<NetGameJoinRefused> joinRefused1 = new NetGameJoinRefused(YOGJoinRefusalUnknown);
+	if(!testMessage(joinRefused1))
+		return 31;
 
 }
 

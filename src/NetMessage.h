@@ -41,6 +41,10 @@ enum NetMessageType
 	MNetAcceptRegistration,
 	MNetRefuseRegistration,
 	MNetUpdatePlayerList,
+	MNetCreateGame,
+	MNetAttemptJoinGame,
+	MNetGameJoinAccepted,
+	MNetGameJoinRefused,
 	//type_append_marker
 };
 
@@ -540,6 +544,152 @@ public:
 private:
 	std::vector<Uint8> removedPlayers;
 	std::vector<std::string> newPlayers;
+};
+
+
+
+
+///NetCreateGame creates a new game on the server.
+class NetCreateGame : public NetMessage
+{
+public:
+	///Creates a NetCreateGame message
+	NetCreateGame(const std::string& gameName);
+
+	///Creates a NetCreateGame message
+	NetCreateGame();
+
+	///Returns MNetCreateGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetCreateGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetCreateGame
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the game name
+	const std::string& getGameName() const;
+private:
+	std::string gameName;
+};
+
+
+
+
+///NetAttemptJoinGame tries to join a game. Games may be password private and require a password,
+///and so attempts to join a game may not always be successful
+class NetAttemptJoinGame : public NetMessage
+{
+public:
+	///Creates a NetAttemptJoinGame message
+	NetAttemptJoinGame();
+
+	///Creates a NetAttemptJoinGame message
+	NetAttemptJoinGame(Uint16 gameID);
+
+	///Returns MNetAttemptJoinGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetAttemptJoinGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAttemptJoinGame
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the game ID
+	Uint16 getGameID() const;
+private:
+	Uint16 gameID;
+};
+
+
+
+
+///NetGameJoinAccepted means that a NetAttemptJoinGame was accepted and the player is now
+///joined in the game 
+class NetGameJoinAccepted : public NetMessage
+{
+public:
+	///Creates a NetGameJoinAccepted message
+	NetGameJoinAccepted();
+
+	///Returns MNetGameJoinAccepted
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetGameJoinAccepted message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetGameJoinAccepted
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetGameJoinRefused means that the attempt to join a game was denied.
+class NetGameJoinRefused : public NetMessage
+{
+public:
+	///Creates a NetGameJoinRefused message
+	NetGameJoinRefused(YOGGameJoinRefusalReason reason);
+
+	///Creates a NetGameJoinRefused message
+	NetGameJoinRefused();
+
+	///Returns MNetGameJoinRefused
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetGameJoinRefused message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetGameJoinRefused
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the reason why the player could not join the game.
+	YOGGameJoinRefusalReason getRefusalReason() const;
+private:
+	YOGGameJoinRefusalReason reason;
 };
 
 
