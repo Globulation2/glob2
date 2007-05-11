@@ -26,6 +26,8 @@ YOGClient::YOGClient(const std::string& server)
 	loginPolicy = YOGUnknownLoginPolicy;
 	gamePolicy = YOGUnknownGamePolicy;
 	loginState = YOGLoginUnknown;
+	gameListChanged = false;
+	playerListChanged = false;
 	connect(server);
 }
 
@@ -102,6 +104,7 @@ void YOGClient::update()
 		shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);
 		info->applyDifferences(games);
 		connectionState = ClientOnStandby;
+		gameListChanged=true;
 	}
 	///This recieves a player list update message
 	if(type==MNetUpdatePlayerList)
@@ -109,6 +112,7 @@ void YOGClient::update()
 		shared_ptr<NetUpdatePlayerList> info = static_pointer_cast<NetUpdatePlayerList>(message);
 		info->applyDifferences(players);
 		connectionState = ClientOnStandby;
+		playerListChanged=true;
 	}
 }
 
@@ -165,6 +169,13 @@ const std::list<YOGGameInfo>& YOGClient::getGameList() const
 
 
 
+const std::list<YOGPlayerInfo>& YOGClient::getPlayerList() const
+{
+	return players;
+}
+
+
+
 void YOGClient::requestGameListUpdate()
 {
 	//unimplemented
@@ -175,6 +186,27 @@ void YOGClient::requestGameListUpdate()
 void YOGClient::requestPlayerListUpdate()
 {
 	//unimplemented
+}
+
+
+
+bool YOGClient::hasGameListChanged()
+{
+	if(gameListChanged)
+	{
+		gameListChanged = false;
+		return true;
+	}
+}
+
+
+bool YOGClient::hasPlayerListChanged()
+{
+	if(playerListChanged)
+	{
+		playerListChanged = false;
+		return true;
+	}
 }
 
 
@@ -193,3 +225,30 @@ void YOGClient::removeGame()
 	//unimplemented
 }
 
+
+
+void YOGClient::gameHasStarted()
+{
+	//unimplemented
+}
+
+
+
+void YOGClient::gameHasFinished()
+{
+	//unimplemented
+}
+
+
+
+void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> message);
+{
+	//unimplemented
+}
+
+
+boost::shared_ptr<YOGMessage> YOGClient::getMessage()
+{
+	//unimplemented
+	return NULL;
+}

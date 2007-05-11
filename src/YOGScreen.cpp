@@ -108,7 +108,7 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	addWidget(textInput);
 
 	selectedGameInfo=NULL;
-	
+		
 	executionMode=0;
 	
 	irc.connect(IRC_SERVER, 6667, yog->userName);
@@ -143,49 +143,40 @@ YOGScreen::ircDisconnect(void)
 
 void YOGScreen::updateGameList(void)
 {
-	gameList->clear();
-	for (std::list<YOG::GameInfo>::iterator game=yog->games.begin(); game!=yog->games.end(); ++game)
-		gameList->addText(game->name);
+	///only update if the list has changed
+	if(client->hasGameListChanged())
+	{
+		gameList->clear();
+		for (std::list<YOGGameInfo>::iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
+			gameList->addText(game->getGameName());
+	}
 }
 
 void YOGScreen::updatePlayerList(void)
 {
-	// update YOG one
-	playerList->clear();
-	for (std::list<YOG::Client>::iterator client=yog->clients.begin(); client!=yog->clients.end(); ++client)
+	///only update if the list has changed
+	if(client->hasPlayerListChanged() || irc.isChannelUserBeenModified())
 	{
-		std::string listEntry;
-		if (client->playing)
+		// update YOG one
+		playerList->clear();
+		for (std::list<YOGPlayerInfo>::iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
 		{
-			if (client->away)
-			{
-				listEntry = std::string("([") + client->userName + "])";
-			}
-			else
-			{
-				
-				listEntry = std::string("(") + client->userName + ")";
-			}
+			std::string listEntry = player->userName;
+			playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
 		}
-		else if (client->away)
+		// update irc entries, remove one already on YOG
+		if (irc.initChannelUserListing(IRC_CHAN))
 		{
-			listEntry = std::string("[") + client->userName + "]";
-		}
-		else
-			listEntry = client->userName;
-		playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
-	}
-	// update irc entries, remove one already on YOG
-	if (irc.initChannelUserListing(IRC_CHAN))
-	{
-		while (irc.isMoreChannelUser())
-		{
-			const std::string &user = irc.getNextChannelUser();
-			if (user.compare(0, 5, "[YOG]") != 0)
-				playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
+			while (irc.isMoreChannelUser())
+			{
+				const std::string &user = irc.getNextChannelUser();
+				if (user.compare(0, 5, "[YOG]") != 0)
+					playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
+			}
 		}
 	}
 }
+
 
 void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
@@ -197,40 +188,11 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==CREATE_GAME)
 		{
-		/*
-			Engine engine;
-			// host game and wait for players
-			int rc=engine.initMutiplayerHost(true);
-			// execute game
-			if (rc==Engine::EE_NO_ERROR)
-			{
-				irc.leaveChannel(IRC_CHAN);
-				yog->gameStarted();
-				if (engine.run()==-1)
-					executionMode=-1;
-				yog->gameEnded();
-				irc.joinChannel(IRC_CHAN);
-			}
-			else if (rc==-1)
-				executionMode=-1;
-			// redraw all stuff
-			if (yog->newGameList(true))
-				updateGameList();
-			if (yog->newPlayerList(true))
-				updatePlayerList();
-			yog->unshareGame();
-		*/
+			hostGame();
 		}
 		else if (par1==JOIN)
 		{
-		/*
-			assert(source==joinButton);
-			if (yog->isSelectedGame)
-			{
-				selectedGameInfo=new YOG::GameInfo(*yog->getSelectedGameInfo());
-				multiplayersJoin->tryConnection(selectedGameInfo);
-			}
-			*/
+			//unimplemented
 		}
 		else if (par1==-1)
 		{
@@ -261,9 +223,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			if( beginningOfNick.compare("") != 0 )
 			{
-				for (std::list<YOG::Client>::iterator client=yog->clients.begin(); client!=yog->clients.end(); ++client)
+				for (std::list<YOGPlayerInfo>::iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
 				{
-					const std::string &user = (std::string)client->userName;
+					const std::string &user = (std::string)player->getPlayerName();
 					if( user.find(beginningOfNick) == 0 )
 					{
 						foundNick = user;
@@ -301,31 +263,13 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		yog->sendMessage(textInput->getText());
+		client->sendMessage(textInput->getText());
 		irc.sendCommand(textInput->getText());
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		//printf("YOG : LIST_ELEMENT_SELECTED\n");
-		if (!yog->newGameList(false))
-		{
-			std::list<YOG::GameInfo>::iterator game;
-			int i=0;
-			for (game=yog->games.begin(); game!=yog->games.end(); ++game)
-				if (i==par1)
-				{
-					//printf("i=%d\n", i);
-					yog->selectGame(game->uid);
-					assert(game!=yog->games.end());
-					break;
-				}
-				else
-					i++;
-			
-		}
-		else
-			;//TODO: a better communication system between YOG and YOGScreen!
+		updateGameInfo();
 	}
 }
 
@@ -397,69 +341,41 @@ void YOGScreen::onTimer(Uint32 tick)
 		irc.freeInfoMessage();
 	}
 	
-	
 	// YOG and IRC
-	if (yog->newGameList(true))
-		updateGameList();
-	if (yog->newPlayerList(true) || irc.isChannelUserBeenModified())
-		updatePlayerList();
+	client->update();
+	updateGameList();
+	updatePlayerList();
 	
 	//yog->step(); this yog->step() is allready done in multiplayersJoin instance.
-	while (yog->receivedMessages.size()>0)
+	boost::shared_ptr<YOGMessage> message = client->getMessage();
+	while (message)
 	{
-		std::list<YOG::Message>::iterator m=yog->receivedMessages.begin();
-		switch(m->messageType)//set the text color
+		switch(message->getMessageType())
 		{
-		case YCMT_MESSAGE:
+		case YOGNormalMessage:
 			chatWindow->addText("<");
-			chatWindow->addText(m->userName);
+			chatWindow->addText(message->getSender());
 			chatWindow->addText("> ");
-			chatWindow->addText(m->text);
+			chatWindow->addText(message->getMessage());
 			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
-		case YCMT_PRIVATE_MESSAGE:
+		case YOGPrivateMessage:
 			chatWindow->addText("<");
 			chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
-			chatWindow->addText(m->userName);
+			chatWindow->addText(message->getSender());
 			chatWindow->addText("> ");
-			chatWindow->addText(m->text);
+			chatWindow->addText(message->getMessage());
 			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
-		case YCMT_PRIVATE_RECEIPT:
-			chatWindow->addText("<");
-			chatWindow->addText(Toolkit::getStringTable()->getString("[to:]"));
-			chatWindow->addText(m->userName);
-			chatWindow->addText("> ");
-			chatWindow->addText(m->text);
-			chatWindow->addImage(0);
-			chatWindow->addText("\n");
-			chatWindow->scrollToBottom();
-		break;
-		case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
-			chatWindow->addText("<");
-			chatWindow->addText(Toolkit::getStringTable()->getString("[away:]"));
-			chatWindow->addText(m->userName);
-			chatWindow->addText("> ");
-			chatWindow->addText(m->text);
-			chatWindow->addImage(0);
-			chatWindow->addText("\n");
-			chatWindow->scrollToBottom();
-		break;
-		case YCMT_ADMIN_MESSAGE:
+		case YOGAdministratorMessage:
 			chatWindow->addText("[");
-			chatWindow->addText(m->userName);
+			chatWindow->addText(message->getSender());
 			chatWindow->addText("] ");
-			chatWindow->addText(m->text);
-			chatWindow->addImage(0);
-			chatWindow->addText("\n");
-			chatWindow->scrollToBottom();
-		break;
-		case YCMT_EVENT_MESSAGE:
-			chatWindow->addText(m->text);
+			chatWindow->addText(message->getMessage());
 			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
@@ -468,118 +384,57 @@ void YOGScreen::onTimer(Uint32 tick)
 			assert(false);
 		break;
 		}
-		
-		yog->receivedMessages.erase(m);
 	}
 	
-	multiplayersJoin->onTimer(tick);
-	if ((executionMode==-1) || (executionMode==CANCEL))
-	{
-		assert(yog);
-		if (yog->unjoiningConfirmed || yog->connectionLost)
-			endExecute(executionMode);
-	}
-	else if ((multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO) && (yog->unjoining==false))
-	{
-		if (verbose)
-			printf("YOGScreen::joining because state=%d.\n", multiplayersJoin->waitingState);
-		yog->joinGame();
-		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
-		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 40);
-		yog->unjoinGame(false);
-		if (verbose)
-			printf("YOGScreen::rv=%d\n", rv);
-		if (rv==MultiplayersConnectedScreen::DISCONNECT)
-		{
-			if (verbose)
-				printf("YOGScreen::yog game finished DISCONNECT returned.\n");
-		}
-		else if (rv==MultiplayersConnectedScreen::DISCONNECTED)
-		{
-			if (verbose)
-				printf("YOGScreen::unable to join DISCONNECTED returned.\n");
-		}
-		else if (rv==MultiplayersConnectedScreen::STARTED)
-		{
-			Engine engine;
-			engine.startMultiplayer(multiplayersJoin);
-			irc.leaveChannel(IRC_CHAN);
-			yog->gameStarted();
-			int rc=engine.run();
-			yog->gameEnded();
-			irc.joinChannel(IRC_CHAN);
-			delete multiplayersJoin;
-			multiplayersJoin=new MultiplayersJoin(true);
-			assert(multiplayersJoin);
-			if (rc==-1)
-				executionMode=-1;
-			if (verbose)
-				printf("YOGScreen::startMultiplayer() in join ended (rc=%d).\n", rc);
-		}
-		else if (rv==-1)
-		{
-			executionMode=-1;
-		}
-		else
-		{
-			if (verbose)
-				printf("YOGScreen::critical rv=%d\n", rv);
-			assert(false);
-		}
-		if (yog->newGameList(true))
-			updateGameList();
-		if (yog->newPlayerList(true))
-			updatePlayerList();
-		delete multiplayersConnectedScreen;
-	}
-	
-	if (yog->selectedGameinfoUpdated(true))
-	{
-		YOG::GameInfo *yogGameInfo=yog->getSelectedGameInfo();
-		if (yogGameInfo)
-		{
-			if (verbose)
-				printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
-			std::string s;
-			s = FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(yogGameInfo->mapName);
-			gameInfo->setText(s.c_str());
-			gameInfo->addChar('\n');
-			
-			if (yogGameInfo->numberOfPlayer==1)
-			{
-				gameInfo->addText(Toolkit::getStringTable()->getString("[one player]"));
-			}
-			else
-			{
-				s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0]")).arg(yogGameInfo->numberOfPlayer);
-				gameInfo->addText(s);
-			}
-			gameInfo->addChar('\n');
-			
-			s = FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg(yogGameInfo->numberOfTeam);
-			gameInfo->addText(s);
-			gameInfo->addChar('\n');
-			
-			if (yogGameInfo->mapGenerationMethode==MapGenerationDescriptor::eNONE)
-				s = FormatableString("%0\n").arg(Toolkit::getStringTable()->getString("[handmade map]"));
-			else
-				s = FormatableString("%0\n").arg(Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
-			gameInfo->addText(s);
-			
-			//TODO: display info about yogGameInfo->fileIsAMap
-		}
-		else
-		{
-			if (verbose)
-				printf("selectedGameinfoUpdated cleaned\n");
-			gameInfo->setText("");
-		}
-	}
 	
 	if (yog->connectionLost)
 	{
-		multiplayersJoin->quitThisGame();
 		endExecute(CANCEL);
 	}
 	
 }
+
+
+
+void YOGScreen::hostGame()
+{
+/*
+	Engine engine;
+	// host game and wait for players
+	int rc=engine.initMutiplayerHost(true);
+	// execute game
+	if (rc==Engine::EE_NO_ERROR)
+	{
+		irc.leaveChannel(IRC_CHAN);
+		client->gameHasStarted();
+		if (engine.run()==-1)
+			executionMode=-1;
+		client->gameHasFinished();
+		irc.joinChannel(IRC_CHAN);
+	}
+	else if (rc==-1)
+		executionMode=-1;
+	// redraw all stuff
+	updateGameList();
+	updatePlayerList();
+	client->removeGame();
+*/
+}
+
+
+void YOGScreen::updateGameInfo()
+{
+	if (gameList.getSelectionIndex())
+	{
+		YOGGameInfo info=*std::advance(client->getGameList().begin(), gamelist.getSelectionIndex());
+		std::string s;
+		s += info.getGameName();
+		gameInfo->setText(s.c_str());
+		gameInfo->addChar('\n');
+	}
+	else
+	{
+		gameInfo->setText("");
+	}
+}
+

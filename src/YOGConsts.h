@@ -74,6 +74,17 @@ enum YOGGameJoinRefusalReason
 
 };
 
+///This is used to represent the types of messages that can be sent through YOG
+enum YOGMessageType
+{
+	///This means a normal message sent to all connected users
+	YOGNormalMessage,
+	///This means a private message sent to one user
+	YOGPrivateMessage,
+	///This means an administrator message sent by YOG
+	YOGAdministratorMessage,
+};
+
 
 #define YOG_SERVER_IP "yog.globulation2.org"
 #define YOG_SERVER_PORT 7486

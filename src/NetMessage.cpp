@@ -1141,9 +1141,10 @@ template<typename container> void NetUpdatePlayerList::updateDifferences(const c
 		bool found=false;
 		for(container::iterator j = updated.begin(); j!=updated.end(); ++j)
 		{
-			if((*i) == (*j))
+			if(i->getPlayerID() == j->getPlayerID())
 			{
 				found=true;
+				break;
 			}
 		}
 		if(!found)
@@ -1151,19 +1152,25 @@ template<typename container> void NetUpdatePlayerList::updateDifferences(const c
 		index+=1;
 	}
 	
-	//find added players
+	//Find added or changed players
 	for(container::iterator i = updated.begin(); i!=updated.end(); ++i)
 	{
 		bool found=false;
+		bool changed=false;
 		for(container::iterator j = original.begin(); j!=original.end(); ++j)
 		{
-			if((*i) == (*j))
+			if(i->getPlayerID() == j->getPlayerID())
 			{
 				found=true;
+				if((*i) != (*j))
+				{
+					changed=true;
+				}
+				break;
 			}
 		}
-		if(!found)
-			addedPlayers.push_back(*i);
+		if(!found || changed)
+			updatedPlayers.push_back(*i);
 		index+=1;
 	}
 }
@@ -1190,19 +1197,19 @@ Uint8 *NetUpdatePlayerList::encodeData() const
 	pos+=1;
 	for(int i=0; i<removedPlayers.size(); ++i)
 	{
-		data[pos] = removedPlayers[i];
-		pos+=1;
+		SDLNet_Write16(data+pos, removedPlayers[i]);
+		pos+=2;
 	}
 	
-	//Write newPlayers
-	data[pos]=newPlayers.size();
+	//Write updatedPlayers
+	data[pos]=updatedPlayers.size();
 	pos+=1;
-	for(int i=0; i<newPlayers.size(); ++i)
+	for(int i=0; i<updatedPlayers.size(); ++i)
 	{
-		data[pos] = static_cast<Uint8>(newPlayers[i].size());
-		pos+=1;
-		std::copy(newPlayers[i].begin(), newPlayers[i].end(), data + pos);
-		pos+=newPlayers[i].size();
+		Uint8* gamedata = updatedPlayers[i].encodeData();
+		std::copy(gamedata, gamedata + updatedPlayers[i].getDataLength(), data + pos);
+		pos+=updatedPlayers[i].getDataLength();
+		delete gamedata;
 	}
 
 	return data;
@@ -1212,10 +1219,10 @@ Uint8 *NetUpdatePlayerList::encodeData() const
 
 Uint16 NetUpdatePlayerList::getDataLength() const
 {
-	Uint32 length= 3 + removedPlayers.size();
-	for(int i=0; i<newPlayers.size(); ++i)
+	Uint32 length= 3 + removedPlayers.size()*2;
+	for(int i=0; i<updatedPlayers.size(); ++i)
 	{
-		length+=1 + newPlayers[i].size();
+		length+=updatedPlayers[i].getDataLength();
 	}
 	return length;
 }
@@ -1233,23 +1240,17 @@ bool NetUpdatePlayerList::decodeData(const Uint8 *data, int dataLength)
 	removedPlayers.resize(size);
 	for(int i=0; i<removedPlayers.size(); ++i)
 	{
-		removedPlayers = data[pos];
-		pos+=1;
+		removedPlayers = SDLNet_Read16(data + pos);
+		pos+=2;
 	}
 
 	size=data[pos];
 	pos+=1;
-
-	newPlayers.resize(size);
-	for(int i=0; i<newPlayers.size(); ++i)
-	{	
-		Uint8 length = data[pos];
-		pos+=1;
-		for(int i=0; i<length; ++i)
-		{
-			newPlayers[i]+=static_cast<char>(data[pos]);
-			pos+=1;
-		}
+	updatedPlayers.resize(size);
+	for(int i=0; i<updatedGames.size(); ++i)
+	{
+		updatedPlayers[i].decodeData(data + pos, datalength - pos);
+		pos+=updatedPlayers[i].getDataLength();
 	}
 }
 
@@ -1269,10 +1270,48 @@ bool NetUpdatePlayerList::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetUpdatePlayerList))
 	{
 		const NetUpdatePlayerList& r = dynamic_cast<const NetUpdatePlayerList&>(rhs);
-		if(newPlayers == r.newPlayers && removedPlayers == r.removedPlayers)
+		if(updatedPlayers == r.updatedPlayers && removedPlayers == r.removedPlayers)
 			return true;
 	}
 	return false;
+}
+
+
+
+template<typename container> void NetUpdatePlayerList::applyDifferences(container& original) const
+{
+	//Remove removed players
+	for(std::vector<Uint16> i = removedPlayers.begin(); i!=removedPlayers.end(); ++i)
+	{
+		for(container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			if(*i == j->getPlayerID())
+			{
+				original.erase(j);
+				break;
+			}
+		}
+	}
+	
+	//Change and/or add the players that are updated
+	for(std::vector<YOGPlayerInfo>::iterator i=updatedPlayers.begin(); i!=updatedPlayers.end(); ++i)
+	{
+		bool found=false;
+		for(container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			//If the player id's are the same, then this player has somehow changed.
+			if(i->getPlayerID() == j->getPlayerID())
+			{
+				(*j) = (*i);
+				found = true;
+			}
+		}
+		//Not found, meaning this player is a new one
+		if(!found)
+		{
+			original.insert(original.end(), (*j));
+		}	
+	}
 }
 
 
