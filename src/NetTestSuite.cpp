@@ -98,14 +98,51 @@ int NetTestSuite::testNetMessages()
 	shared_ptr<NetLoginSuccessful> loginSuccess1 = new NetLoginSuccessful;
 	if(!testMessage(loginSuccess1))
 		return 11;
-		
+
 	//Test NetRefuseLogin
 	if(!testInitialMessageState<NetRefuseLogin>())
 		return 12;
 
 	shared_ptr<NetRefuseLogin> refuseLogin1 = new NetRefuseLogin(YOGPasswordIncorrect);
 	if(!testMessage(refuseLogin1))
-		return 13;
+		return 13;	
+
+	///Test NetDisconnect
+	if(!testInitialMessageState<NetDisconnect>())
+		return 14;
+		
+	shared_ptr<NetDisconnect> disconnect1 = new NetDisconnect;
+	if(!testMessage(disconnect1))
+		return 15;
+		
+	///Test NetAttemptRegistrationUser
+	if(!testInitialMessageState<NetAttemptRegistrationUser>())
+		return 16;
+	
+	shared_ptr<NetAttemptRegistrationUser> registration1 = new NetAttemptRegistrationUser("joe", "bob");
+	if(!testMessage(registration1))
+		return 17;
+	
+	shared_ptr<NetAttemptRegistrationUser> registration2 = new NetAttemptRegistrationUser("joe bob", "");
+	if(!testMessage(registration2))
+		return 18;
+		
+	///Test NetAcceptRegistration
+	if(!testInitialMessageState<NetAcceptRegistration>())
+		return 19;
+		
+	shared_ptr<NetAcceptRegistration> acceptRegistration1 = new NetAcceptRegistration;
+	if(!testMessage(acceptRegistration1))
+		return 20;
+
+	//Test NetRefuseRegistration
+	if(!testInitialMessageState<NetRefuseRegistration>())
+		return 21;
+
+	shared_ptr<NetRefuseRegistration> refuseRegistration1 = new NetRefuseRegistration(YOGPasswordIncorrect);
+	if(!testMessage(refuseRegistration1))
+		return 22;	
+
 }
 
 
