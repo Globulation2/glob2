@@ -85,6 +85,15 @@ void YOGPlayer::update(YOGGameServer& server)
 		gamelist->updateDifferences(server.getGameList(), playersGames);
 		playersGames = server.getGameList();
 		connection->sendMessage(gamelist);
+		connectionState = NeedToSendPlayerList;
+	}
+	//Send an updated player list to the user
+	if(connectionState==NeedToSendPlayerList)
+	{
+		shared_ptr<NetUpdatePlayerList> playerlist = new NetUpdatePlayerList;
+		gamelistplayerlistupdateDifferences(server.getPlayerList(), playersPlayerList);
+		playersPlayerList = server.getGameList();
+		connection->sendMessage(playerlist);
 		connectionState = ClientOnStandby;
 	}
 }

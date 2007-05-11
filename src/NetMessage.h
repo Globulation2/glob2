@@ -40,6 +40,7 @@ enum NetMessageType
 	MNetAttemptRegistrationUser,
 	MNetAcceptRegistration,
 	MNetRefuseRegistration,
+	MNetUpdatePlayerList,
 	//type_append_marker
 };
 
@@ -498,6 +499,47 @@ public:
 	YOGLoginState getRefusalReason() const;
 private:
 	YOGLoginState reason;
+};
+
+
+
+
+///NetUpdatePlayerList
+class NetUpdatePlayerList : public NetMessage
+{
+public:
+	///Creates a NetUpdatePlayerList message
+	NetUpdatePlayerList();
+
+	///This computes the differences between the two lists of players. These can be of any container,
+	///so long as they store std::string
+	template<typename container> void updateDifferences(const container& original, const container& updated);
+
+	///Returns MNetUpdatePlayerList
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetUpdatePlayerList message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetUpdatePlayerList
+	bool operator==(const NetMessage& rhs) const;
+	
+	///This will apply the recorded differences to the given container
+	template<typename container> void applyDifferences(container& original) const;
+
+private:
+	std::vector<Uint8> removedPlayers;
+	std::vector<std::string> newPlayers;
 };
 
 

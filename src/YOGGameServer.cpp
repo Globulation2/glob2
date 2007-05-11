@@ -85,3 +85,10 @@ const std::list<YOGGameInfo>& YOGGameServer::getGameList() const
 	return gameInfos;
 }
 
+	
+const std::list<std::string>& YOGGameServer::getPlayerList() const
+{
+	return playerList;
+}
+
+
