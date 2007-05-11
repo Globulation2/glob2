@@ -37,6 +37,9 @@ enum NetMessageType
 	MNetRefuseLogin,
 	MNetUpdateGameList,
 	MNetDisconnect,
+	MNetAttemptRegistrationUser,
+	MNetAcceptRegistration,
+	MNetRefuseRegistration,
 	//type_append_marker
 };
 
@@ -385,6 +388,116 @@ public:
 
 	///Compares with another NetDisconnect
 	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetAttemptRegistrationUser attempts to register the user
+class NetAttemptRegistrationUser : public NetMessage
+{
+public:
+	///Creates a NetAttemptRegistrationUser message
+	NetAttemptRegistrationUser();
+	
+	///Creates a NetAttemptRegistrationUser message
+	NetAttemptRegistrationUser(const std::string& username, const std::string& password);
+
+	///Returns MNetAttemptRegistrationUser
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetAttemptRegistrationUser message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAttemptRegistrationUser
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the username
+	std::string getUsername() const;
+	
+	///Returns the password
+	std::string getPassword() const;
+private:
+	std::string username;
+	std::string password;
+};
+
+
+
+
+///NetAcceptRegistration informs the user that their registration information was accepted.
+class NetAcceptRegistration : public NetMessage
+{
+public:
+	///Creates a NetAcceptRegistration message
+	NetAcceptRegistration();
+
+	///Returns MNetAcceptRegistration
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetAcceptRegistration message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAcceptRegistration
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRefuseRegistration informs the user that their registration attemp was denied
+class NetRefuseRegistration : public NetMessage
+{
+public:
+	///Creates a NetRefuseRegistration message
+	NetRefuseRegistration();
+
+	///Creates a NetRefuseRegistration message with the given reason
+	NetRefuseRegistration(YOGLoginState reason);
+	
+	///Returns MNetRefuseRegistration
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetRefuseRegistration message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRefuseRegistration
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the reason why this registration was refused
+	YOGLoginState getRefusalReason() const;
+private:
+	YOGLoginState reason;
 };
 
 

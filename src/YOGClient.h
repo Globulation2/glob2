@@ -52,10 +52,12 @@ public:
 		WaitingForServerInformation,
 		///This means that the YOGClient is waiting for an external force to send
 		///login information to the YOGClient. This would usually be the GUI that
-		///is managing it.
+		///is managing it. This means a call to attemptLogin or attemptRegistration
 		WaitingForLoginInformation,
 		///This means that the client is waiting for a reply from a login attempt.
 		WaitingForLoginReply,
+		///This means that the client is waiting for a reply from a registration attempt.
+		WaitingForRegistrationReply,
 		///This means that the client is waiting for a game list to be sent
 		WaitingForGameList,
 		///This means the client is on standby, waiting for the user to ask
@@ -80,9 +82,14 @@ public:
 	///WaitingForLoginInformation state.
 	void attemptLogin(const std::string& username, const std::string& password = "");
 	
+	///This all attempt to register a new user with the provided login information.
+	///The password is mandatory. After a successful register, the client is
+	///considered logged-in and does not need to attempt a login
+	void attemptRegistration(const std::string& username, const std::string& password);
+	
 	///This will return the login state. When this is unknown (it hasn't recieved a reply
 	///yet), this returns YOGLoginUnknown. In the case when there has been multiple
-	///attempts at a login, this returns the state of the most recent attempt that has
+	///attempts at a login (or registration), this returns the state of the most recent attempt that has
 	///gotten a reply.
 	YOGLoginState getLoginState() const;
 	

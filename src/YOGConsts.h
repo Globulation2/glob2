@@ -68,12 +68,6 @@ enum YOGLoginState
 
 
 
-
-
-
-
-/*
-
 #define YOG_SERVER_IP "yog.globulation2.org"
 #define YOG_SERVER_PORT 7486
 
@@ -183,7 +177,6 @@ enum YOGMessageType
 	YMT_FLUSH_FILES=126,
 	YMT_CLOSE_YOG=127
 };
-*/
 
 
 #endif 
