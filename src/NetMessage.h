@@ -45,6 +45,7 @@ enum NetMessageType
 	MNetAttemptJoinGame,
 	MNetGameJoinAccepted,
 	MNetGameJoinRefused,
+	MNetRemoveGame,
 	//type_append_marker
 };
 
@@ -690,6 +691,45 @@ public:
 	YOGGameJoinRefusalReason getRefusalReason() const;
 private:
 	YOGGameJoinRefusalReason reason;
+};
+
+
+
+
+///NetRemoveGame is used to tell the server that the game has finished, or is
+///begin removed by the host without being played
+class NetRemoveGame : public NetMessage
+{
+public:
+	///Creates a NetRemoveGame message
+	NetRemoveGame(Uint16 gameID);
+
+	///Creates a NetRemoveGame message
+	NetRemoveGame();
+	
+	///Returns MNetRemoveGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetRemoveGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRemoveGame
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the ID of the game to be removed
+	Uint16 getGameID() const;
+private:
+	Uint16 gameID;
 };
 
 

@@ -74,6 +74,9 @@ static NetMessage* NetMessage::getNetMessage(const Uint8 *netData, int dataLengt
 		case MNetGameJoinRefused:
 		message.reset(new NetGameJoinRefused);
 		break;
+		case MNetRemoveGame:
+		message.reset(new NetRemoveGame);
+		break;
 		///append_create_point
 	}
 	message->decodeData(netData, datalength);
@@ -1588,6 +1591,83 @@ bool NetGameJoinRefused::operator==(const NetMessage& rhs) const
 		const NetGameJoinRefused& r = dynamic_cast<const NetGameJoinRefused&>(rhs);
 		if(r.reason == reason)
 			return true;	
+	}
+	return false;
+}
+
+
+
+NetRemoveGame::NetRemoveGame(Uint16 gameID)
+	: gameID(gameID)
+{
+
+}
+
+
+
+NetRemoveGame::NetRemoveGame()
+{
+
+}
+
+
+
+Uint8 NetRemoveGame::getMessageType() const
+{
+	return MNetRemoveGame;
+}
+
+
+
+Uint8 *NetRemoveGame::encodeData() const
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	Uint16 pos = 0;
+	data[pos] = getMessageType();
+	pos+=1;
+	SDLNet_Write16(gameID, data+pos);
+	pos+=2;
+	return data;
+}
+
+
+
+Uint16 NetRemoveGame::getDataLength() const
+{
+	Uint16 length = 3;
+	return length;
+}
+
+
+
+bool NetRemoveGame::decodeData(const Uint8 *data, int dataLength)
+{
+	Uint16 pos = 0;
+	Uint8 type = data[pos];
+	pos+=1;
+	gameID = SDLNet_Read16(data+pos);
+	pos+=2;
+}
+
+
+
+std::string NetRemoveGame::format() const
+{
+	std::ostringstream s;
+	s<<"NetRemoveGame(gameid="<<gameID<<")";
+	return s.str();
+}
+
+
+
+bool NetRemoveGame::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRemoveGame))
+	{
+		const NetRemoveGame& r = dynamic_cast<const NetRemoveGame&>(rhs);
+		if(r.gameID == gameID)
+			return true;
 	}
 	return false;
 }

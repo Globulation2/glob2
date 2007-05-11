@@ -98,12 +98,19 @@ public:
 
 	///This will send for a manual update of the game list,
 	void requestGameListUpdate();
+	
+	///This will send for a manual update of the player list,
+	void requestPlayerListUpdate();
 
 	///This will disconnect the client and server
 	void disconnect();
 
 	///This will return the list of players on the server
 	const std::list<std::string>& getPlayerList() const;
+
+	///This sends a message to the server to remove the game that the player is connected to.
+	///This will only be accepted if it is from the host of the game.
+	void removeGame();
 
 private:
 	NetConnection& nc;
