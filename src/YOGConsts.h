@@ -22,6 +22,8 @@
 
 ///New YOG constants
 const Uint16 YOG_SERVER_PORT = 7486;
+const std::string YOG_SERVER_IP = "yog.globulation2.org";
+const Uint16 YOG_PROTOCOL_VERSION = 6;
 
 ///Policies for login
 enum YOGLoginPolicy
@@ -85,6 +87,8 @@ enum YOGMessageType
 	YOGAdministratorMessage,
 };
 
+
+/*
 
 #define YOG_SERVER_IP "yog.globulation2.org"
 #define YOG_SERVER_PORT 7486
@@ -195,6 +199,6 @@ enum YOGMessageType
 	YMT_FLUSH_FILES=126,
 	YMT_CLOSE_YOG=127
 };
-
+*/
 
 #endif 

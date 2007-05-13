@@ -47,6 +47,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
+	return true;
 }
 
 
@@ -97,7 +98,7 @@ void GameHeader::setGameLatency(Sint32 latency)
 
 
 
-BasePlayer& getBasePlayer(const int n)
+BasePlayer& GameHeader::getBasePlayer(const int n)
 {
 	assert(n<32 && n>=0);
 	return players[n];

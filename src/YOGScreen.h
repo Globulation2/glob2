@@ -22,13 +22,12 @@
 #ifndef __YOGSCREEN_H
 #define __YOGSCREEN_H
 
-#include "MultiplayersJoin.h"
 #include <vector>
-#include "YOG.h"
 #include "IRC.h"
 #include <GUIList.h>
 #include <GraphicContext.h>
 #include "Glob2Screen.h"
+#include "YOGClient.h"
 
 namespace GAGGUI
 {
@@ -61,7 +60,7 @@ public:
 	void addPlayer(const std::string &nick, NetworkType network);
 
 	///Clears the lists of players
-	void clear(void) { List::clear(); networks.clear(); }
+	void clear(void);
 
 private:
 	//! An array that contains for each player the related network
@@ -115,8 +114,6 @@ private:
 	
 	IRC irc;
 	
-
-
 	int executionMode;
 	boost::shared_ptr<YOGClient> client;
 

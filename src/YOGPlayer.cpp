@@ -17,11 +17,12 @@
 */
 
 #include "YOGPlayer.h"
+#include "YOGGameServer.h"
 
 YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection) : connection(connection)
 {
 	connectionState = WaitingForClientInformation;
-	refusalReason = YOGLoginSuccessful;
+	loginState = YOGLoginUnknown;
 }
 
 
@@ -29,7 +30,7 @@ YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection) : connection(connecti
 void YOGPlayer::update(YOGGameServer& server)
 {
 	//Parse incoming messages.
-	shared_ptr<NetMessage> message = nc.getMessage();
+	shared_ptr<NetMessage> message = connection->getMessage();
 	Uint8 type = message->getMessageType();
 	//This recieves the client information
 	if(type==MNetSendClientInformation)
@@ -45,7 +46,7 @@ void YOGPlayer::update(YOGGameServer& server)
 		std::string username = info->getUsername();
 		std::string password = info->getPassword();
 		loginState = server.verifyLoginInformation(username, password);
-		if(refusalReason == YOGLoginSuccessful)
+		if(loginState == YOGLoginSuccessful)
 		{
 			connectionState = NeedToSendLoginAccepted;
 		}
@@ -60,28 +61,28 @@ void YOGPlayer::update(YOGGameServer& server)
 	//Send the server information
 	if(connectionState==NeedToSendServerInformation)
 	{
-		shared_ptr<NetSendServerInformation> info = new NetSendServerInformation(server.getLoginPolicy(), server.getGamePolicy());
+		shared_ptr<NetSendServerInformation> info(new NetSendServerInformation(server.getLoginPolicy(), server.getGamePolicy()));
 		connection->sendMessage(info);
 		connectionState = WaitingForLoginAttempt;
 	}
 	//Send the login accepted message
 	if(connectionState==NeedToSendLoginAccepted)
 	{
-		shared_ptr<NetLoginSuccessful> accepted = new NetLoginSuccessful;
+		shared_ptr<NetLoginSuccessful> accepted(new NetLoginSuccessful);
 		connection->sendMessage(accepted);
 		connectionState = NeedToSendGameList;
 	}
 	//Send the login refused message
 	if(connectionState==NeedToSendLoginRefusal)
 	{
-		shared_ptr<NetRefuseLogin> refused = new NetRefuseLogin(loginState);
+		shared_ptr<NetRefuseLogin> refused(new NetRefuseLogin(loginState));
 		connection->sendMessage(refused);
 		connectionState = WaitingForLoginAttempt;
 	}
 	//Send an updated game list to the user
 	if(connectionState==NeedToSendGameList)
 	{
-		shared_ptr<NetUpdateGameList> gamelist = new NetUpdateGameList;
+		shared_ptr<NetUpdateGameList> gamelist(new NetUpdateGameList);
 		gamelist->updateDifferences(server.getGameList(), playersGames);
 		playersGames = server.getGameList();
 		connection->sendMessage(gamelist);
@@ -90,9 +91,9 @@ void YOGPlayer::update(YOGGameServer& server)
 	//Send an updated player list to the user
 	if(connectionState==NeedToSendPlayerList)
 	{
-		shared_ptr<NetUpdatePlayerList> playerlist = new NetUpdatePlayerList;
-		gamelistplayerlistupdateDifferences(server.getPlayerList(), playersPlayerList);
-		playersPlayerList = server.getGameList();
+		shared_ptr<NetUpdatePlayerList> playerlist(new NetUpdatePlayerList);
+		playerlist->updateDifferences(server.getPlayerList(), playersPlayerList);
+		playersPlayerList = server.getPlayerList();
 		connection->sendMessage(playerlist);
 		connectionState = ClientOnStandby;
 	}
@@ -101,7 +102,7 @@ void YOGPlayer::update(YOGGameServer& server)
 
 bool YOGPlayer::isConnected()
 {
-	return connection.isConnected();
+	return connection->isConnected();
 }
 
 

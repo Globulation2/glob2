@@ -20,7 +20,6 @@
 #include <string.h>
 #include <stdio.h>
 #include "YOGScreen.h"
-#include "MultiplayersConnectedScreen.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
 
@@ -36,6 +35,8 @@
 
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"
+
+IRC* ircPtr = NULL;
 
 YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
 	: List(x, y, w, h, hAlign, vAlign, font)
@@ -106,15 +107,13 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	addWidget(chatWindow);
 	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
-
-	selectedGameInfo=NULL;
 		
 	executionMode=0;
 	
-	irc.connect(IRC_SERVER, 6667, yog->userName);
+	irc.connect(IRC_SERVER, 6667, globalContainer->getUsername());
 	irc.joinChannel(IRC_CHAN);
 	irc.setChatChannel(IRC_CHAN);
-	ircPtr = &irc;
+	ircPtr = & irc;
 }
 
 
@@ -123,23 +122,8 @@ YOGScreen::~YOGScreen()
 {
 	irc.disconnect();
 	ircPtr = NULL;
-	delete multiplayersJoin;
-	if (selectedGameInfo)
-		delete selectedGameInfo;
-}
-/* Should we disconnect from IRC while playing ?
-YOGScreen::ircConnect(void)
-{
-	irc.connect(IRC_SERVER, 6667, yog->userName);
-	irc.joinChannel(IRC_CHAN);
-	irc.setChatChannel(IRC_CHAN);
 }
 
-YOGScreen::ircDisconnect(void)
-{
-	irc.disconnect();
-}
-*/
 
 void YOGScreen::updateGameList(void)
 {
@@ -147,7 +131,7 @@ void YOGScreen::updateGameList(void)
 	if(client->hasGameListChanged())
 	{
 		gameList->clear();
-		for (std::list<YOGGameInfo>::iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
+		for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
 			gameList->addText(game->getGameName());
 	}
 }
@@ -159,9 +143,9 @@ void YOGScreen::updatePlayerList(void)
 	{
 		// update YOG one
 		playerList->clear();
-		for (std::list<YOGPlayerInfo>::iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
+		for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
 		{
-			std::string listEntry = player->userName;
+			std::string listEntry = player->getPlayerName();
 			playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
 		}
 		// update irc entries, remove one already on YOG
@@ -223,7 +207,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			if( beginningOfNick.compare("") != 0 )
 			{
-				for (std::list<YOGPlayerInfo>::iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
+				for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
 				{
 					const std::string &user = (std::string)player->getPlayerName();
 					if( user.find(beginningOfNick) == 0 )
@@ -263,9 +247,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		client->sendMessage(textInput->getText());
-		irc.sendCommand(textInput->getText());
-		textInput->setText("");
+//		client->sendMessage(textInput->getText());
+//		irc.sendCommand(textInput->getText());
+//		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
@@ -386,12 +370,12 @@ void YOGScreen::onTimer(Uint32 tick)
 		}
 	}
 	
-	
+/*	
 	if (yog->connectionLost)
 	{
 		endExecute(CANCEL);
 	}
-	
+*/
 }
 
 
@@ -424,9 +408,10 @@ void YOGScreen::hostGame()
 
 void YOGScreen::updateGameInfo()
 {
-	if (gameList.getSelectionIndex())
+/*
+	if (gameList->getSelectionIndex())
 	{
-		YOGGameInfo info=*std::advance(client->getGameList().begin(), gamelist.getSelectionIndex());
+		YOGGameInfo info=*std::advance(client->getGameList().begin(), gameList->getSelectionIndex());
 		std::string s;
 		s += info.getGameName();
 		gameInfo->setText(s.c_str());
@@ -436,5 +421,6 @@ void YOGScreen::updateGameInfo()
 	{
 		gameInfo->setText("");
 	}
+*/
 }
 

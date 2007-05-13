@@ -31,6 +31,7 @@
 #include "Team.h"
 #include "TerrainType.h"
 #include "BitArray.h"
+#include "MapHeader.h"
 
 class Unit;
 
@@ -93,7 +94,7 @@ public:
 	// !This call is needed to use the Map!
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
-	bool load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *game=NULL);
+	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
 	

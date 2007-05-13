@@ -128,10 +128,10 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]"));
 			}
 		}
-		if(client->getLoginState() == YOGClient::YOGLoginSuccessful)
+		if(client->getLoginState() == YOGLoginSuccessful)
 		{
-			YOGScreen screen;
-			int rc = screen.run();
+			YOGScreen screen(client);
+			int rc = screen.execute(globalContainer->gfx, 40);
 			endExecute(EXECUTING);
 		}
 		oldConnectionState = client->getConnectionState();

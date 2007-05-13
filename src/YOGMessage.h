@@ -19,7 +19,9 @@
 #ifndef __YOGMessage_h
 #define __YOGMessage_h
 
-
+#include <string>
+#include "SDL_net.h"
+#include "YOGConsts.h"
 
 ///This class generically represents a message sent in YOG. This kind of message
 ///can be for any purpose, including administrator messages, private messages,

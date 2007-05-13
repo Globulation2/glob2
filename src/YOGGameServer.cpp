@@ -30,21 +30,21 @@ YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolic
 void YOGGameServer::update()
 {
 	//First attempt connections with new players
-	shared_ptr<NetConnection> nc = new NetConnection;
+	shared_ptr<NetConnection> nc(new NetConnection);
 	while(nl.attemptConnection(*nc))
 	{
-		players.pushBack(shared_ptr<YOGPlayer>(new YOGPlayer(nc)));
+		players.push_back(shared_ptr<YOGPlayer>(new YOGPlayer(nc)));
 		nc.reset(new NetConnection);
 	}
 
 	//Call update to all of the players
-	for(std::list<YOGPlayer>::iterator i=players.begin(); i!=players.end(); ++i)
+	for(std::list<shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 	{
-		(*i)->update();
+		(*i)->update(*this);
 	}
 
 	//Remove all of the players that have disconnected.
-	for(std::list<YOGPlayer>::iterator i=players.begin(); i!=players.end();)
+	for(std::list<shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end();)
 	{
 		if(!(*i)->isConnected())
 		{
@@ -86,7 +86,7 @@ const std::list<YOGGameInfo>& YOGGameServer::getGameList() const
 }
 
 	
-const std::list<std::string>& YOGGameServer::getPlayerList() const
+const std::list<YOGPlayerInfo>& YOGGameServer::getPlayerList() const
 {
 	return playerList;
 }

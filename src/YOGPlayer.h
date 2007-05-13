@@ -19,10 +19,14 @@
 #ifndef __YOGPlayer_h
 #define __YOGPlayer_h
 
-#include "YOGGameServer.h"
 #include <boost/shared_ptr.hpp>
+#include <list>
+#include "NetConnection.h"
+#include "YOGConsts.h"
 
 using namespace boost;
+
+class YOGGameServer;
 
 ///This represents a connected user on the YOG server.
 class YOGPlayer
@@ -75,7 +79,7 @@ private:
 	std::list<YOGGameInfo> playersGames;
 	///Stores a copy of the players that the player knows about.
 	///This is a synchronized list of what the client has
-	std::list<std::string> playersPlayerList;
+	std::list<YOGPlayerInfo> playersPlayerList;
 };
 
 

@@ -65,14 +65,14 @@ public:
 	const std::list<YOGGameInfo>& getGameList() const;
 	
 	///Returns the list of players the server currently has
-	const std::list<std::string>& getPlayerList() const;
+	const std::list<YOGPlayerInfo>& getPlayerList() const;
 
 private:
-	NetListener listener;
+	NetListener nl;
 	std::list<shared_ptr<YOGPlayer> > players;
 	std::list<YOGGameInfo> gameInfos;
 	std::list<YOGGame> games;
-	std::list<std::string> playerList;
+	std::list<YOGPlayerInfo> playerList;
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 };

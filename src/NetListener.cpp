@@ -17,6 +17,7 @@
 */
 
 #include "NetListener.h"
+#include <iostream>
 
 NetListener::NetListener(Uint16 port)
 {
