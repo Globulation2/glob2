@@ -17,7 +17,7 @@
 */
 
 #include "YOGClient.h"
-
+#include <iostream>
 
 
 YOGClient::YOGClient(const std::string& server)
@@ -42,6 +42,7 @@ YOGClient::YOGClient()
 
 void YOGClient::connect(const std::string& server)
 {
+	std::cout<<"server="<<server<<std::endl;
 	nc.openConnection(server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
 }

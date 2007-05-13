@@ -48,6 +48,7 @@ NetConnection::~NetConnection()
 	
 void NetConnection::openConnection(const std::string& connectaddress, Uint16 port)
 {
+	std::cout<<"connectaddress="<<connectaddress<<std::endl;
 	if(!connected)
 	{
 		//Resolve the address

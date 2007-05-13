@@ -18,6 +18,7 @@
 
 #include "NetMessage.h"
 #include <algorithm>
+#include <iostream>
 #include <sstream>
 #include "Version.h"
 
@@ -136,10 +137,10 @@ Uint8 *NetSendOrder::encodeData() const
 	Uint8* data = new Uint8[length];
 	Uint32 orderLength = order->getDataLength();
 	data[0] = getMessageType();
+	data[1] = order->getOrderType();
 	Uint8* orderData = order->getData();
 	///Copy the data from the order to the local copy
-	std::copy(orderData, orderData+orderLength, data+1);
-	delete orderData;
+	std::copy(orderData, orderData+orderLength, data+2);
 	return data;
 }
 
@@ -147,7 +148,7 @@ Uint8 *NetSendOrder::encodeData() const
 
 Uint16 NetSendOrder::getDataLength() const
 {
-	return 1 + order->getDataLength();
+	return 2 + order->getDataLength();
 }
 
 

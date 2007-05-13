@@ -222,7 +222,7 @@ int NetTestSuite::testListenerConnection()
 	NetListener nl(30);
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
-	nc_client.openConnection("localhost", 30);
+	nc_client.openConnection("127.0.0.1", 30);
 	//The server connection
 	NetConnection nc_server;
 	
