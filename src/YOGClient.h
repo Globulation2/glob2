@@ -26,6 +26,7 @@
 #include "YOGGameInfo.h"
 #include "YOGPlayerInfo.h"
 #include "YOGMessage.h"
+#include <list>
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -139,16 +140,16 @@ public:
 
 
 private:
-	NetConnection& nc;
+	NetConnection nc;
 
-	Uint32 connectionState;
+	ConnectionState connectionState;
 	
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 	YOGLoginState loginState;
 	
 	std::list<YOGGameInfo> games;
-	std::list<YOGPlayerInfo>& players;
+	std::list<YOGPlayerInfo> players;
 	bool gameListChanged;
 	bool playerListChanged;
 };

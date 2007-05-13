@@ -53,9 +53,9 @@ void YOGClient::update()
 	//If we need to send client information, send it
 	if(connectionState == NeedToSendClientInformation)
 	{
-		shared_ptr<NetSendClientInformation> message = new NetSendClientInformation;
+		shared_ptr<NetSendClientInformation> message(new NetSendClientInformation);
 		nc.sendMessage(message);
-		connectionState == WaitingForServerInformation;
+		connectionState = WaitingForServerInformation;
 	}
 
 
@@ -118,7 +118,7 @@ void YOGClient::update()
 
 
 
-ConnectionState YOGClient::getConnectionState() const
+YOGClient::ConnectionState YOGClient::getConnectionState() const
 {
 	return connectionState;
 }
@@ -141,7 +141,7 @@ YOGGamePolicy YOGClient::getGamePolicy() const
 
 void YOGClient::attemptLogin(const std::string& username, const std::string& password)
 {
-	shared_ptr<NetAttemptLogin> message = new NetAttemptLogin(username, password);
+	shared_ptr<NetAttemptLogin> message(new NetAttemptLogin(username, password));
 	nc.sendMessage(message);
 	connectionState = WaitingForLoginReply;
 }
@@ -149,7 +149,7 @@ void YOGClient::attemptLogin(const std::string& username, const std::string& pas
 
 void YOGClient::attemptRegistration(const std::string& username, const std::string& password)
 {
-	shared_ptr<NetAttemptRegistration> message = new NetAttemptRegistration(username, password);
+	shared_ptr<NetAttemptRegistration> message(new NetAttemptRegistration(username, password));
 	nc.sendMessage(message);
 	connectionState = WaitingForRegistrationReply;
 }
@@ -213,7 +213,7 @@ bool YOGClient::hasPlayerListChanged()
 
 void YOGClient::disconnect()
 {
-	shared_ptr<NetDisconnect> message = new NetDisconnect();
+	shared_ptr<NetDisconnect> message(new NetDisconnect);
 	nc.sendMessage(message);
 	nc.closeConnection();
 	connectionState = NotConnected;
@@ -241,7 +241,7 @@ void YOGClient::gameHasFinished()
 
 
 
-void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> message);
+void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> message)
 {
 	//unimplemented
 }
@@ -250,5 +250,5 @@ void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> message);
 boost::shared_ptr<YOGMessage> YOGClient::getMessage()
 {
 	//unimplemented
-	return NULL;
+	return boost::shared_ptr<YOGMessage>();
 }

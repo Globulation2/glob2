@@ -18,6 +18,7 @@
 
 #include "NetConnection.h"
 #include <algorithm>
+#include <iostream>
 
 
 NetConnection::NetConnection(const std::string& address, Uint16 port)
@@ -45,12 +46,12 @@ NetConnection::~NetConnection()
 
 
 	
-void NetConnection::openConnection(const std::string& address, Uint16 port)
+void NetConnection::openConnection(const std::string& connectaddress, Uint16 port)
 {
 	if(!connected)
 	{
 		//Resolve the address
-		if(SDLNet_ResolveHost(&address, ipaddress.c_str(), port) == -1)
+		if(SDLNet_ResolveHost(&address, connectaddress.c_str(), port) == -1)
 		{
 			std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
 			assert(false);
@@ -65,7 +66,7 @@ void NetConnection::openConnection(const std::string& address, Uint16 port)
 		}
 		else
 		{
-			SDLNet_TCP_AddSocket(set, socket)
+			SDLNet_TCP_AddSocket(set, socket);
 			connected=true;
 		}
 	}
@@ -77,7 +78,7 @@ void NetConnection::closeConnection()
 {
 	if(connected)
 	{
-		SDLNet_TCP_DelSocket(set, socket)
+		SDLNet_TCP_DelSocket(set, socket);
 		SDLNet_TCP_Close(socket);
 		connected=false;
 	}
@@ -95,17 +96,17 @@ bool NetConnection::isConnected()
 shared_ptr<NetMessage> NetConnection::getMessage()
 {
 	//Poll the SDL_net socket for more messages
-	do
+	while (true)
 	{
+		int numReady = SDLNet_CheckSockets(set, 0);	
 		//This checks if there are any active sockets.
 		//SDLNet_CheckSockets is used because it is non-blocking
-		int numReady = SDLNet_CheckSockets(set, 0);
-		if(numready==-1) {
+		if(numReady==-1) {
 			std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
 			//most of the time this is a system error, so use perror
 			perror("SDLNet_CheckSockets");
 		}
-		else if(numready) {
+		else if(numReady) {
 			//Read and interpret the length of the message
 			Uint8* lengthData = new Uint8[2];
 			SDLNet_TCP_Recv(socket, lengthData, 2);
@@ -115,22 +116,26 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 			SDLNet_TCP_Recv(socket, data, length);
 			//Now interpret the message from the data, and add it to the queue
 			shared_ptr<NetMessage> message = NetMessage::getNetMessage(data, length);
-			queue.push(message);
+			recieved.push(message);
 		}
-	} while (numReady > 0);
+		else
+		{
+			break;
+		}
+	}
 
 
 	//Check if there are messages in the queue.
 	//If so, return one, else, return NULL
-	if(!queue.size())
+	if(!recieved.size())
 	{
-		shared_ptr<NetMessage> message = queue.front();
-		queue.pop();
+		shared_ptr<NetMessage> message = recieved.front();
+		recieved.pop();
 		return message;
 	}
 	else
 	{
-		return NULL;
+		return shared_ptr<NetMessage>();
 	}
 }
 
@@ -140,12 +145,12 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
 	if(connected)
 	{
-		Uint32 length = message.getDataLength();
+		Uint32 length = message->getDataLength();
 		Uint8* data = message->encodeData();
 		Uint8* newData = new Uint8[length+2];
 		SDLNet_Write16(length, newData);
-		std::copy(data, data+length, newData+2, newData+2+length);
-		int result=SDLNet_TCP_Send(socket, data, length);
+		std::copy(data, data+length, newData+2);
+		Uint32 result=SDLNet_TCP_Send(socket, data, length);
 		if(result<length)
 		{
 			std::cout<<"NetConnection::sendMessage: "<<SDLNet_GetError()<<std::endl;
@@ -170,7 +175,7 @@ void NetConnection::attemptConnection(TCPsocket& serverSocket)
 		{
 			connected=true;
 			address = *SDLNet_TCP_GetPeerAddress(socket);
-			SDLNet_TCP_AddSocket(set, socket)
+			SDLNet_TCP_AddSocket(set, socket);
 		}
 	}
 }

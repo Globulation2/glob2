@@ -20,6 +20,7 @@
 #define __YOGPlayerInfo_h
 
 #include <string>
+#include "SDL_net.h"
 
 ///This class contains information related to a player connected to YOG
 class YOGPlayerInfo

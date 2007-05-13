@@ -161,25 +161,15 @@ void Game::clearGame()
 	isGameEnded=false;
 }
 
-	for (int i=0; i<session.numberOfTeam; ++i)
-	{
-		tempSessionInfo.teams[i]=*teams[i];
-		tempSessionInfo.teams[i].disableRecursiveDestruction=true;
-	}
 
-	for (int i=0; i<session.numberOfPlayer; ++i)
-	{
-		tempSessionInfo.players[i]=*players[i];
-		tempSessionInfo.players[i].disableRecursiveDestruction=true;
-	}
 
-void Game::setMapHeader(const MapHeader& newMapHeader);
+void Game::setMapHeader(const MapHeader& newMapHeader)
 {
 	mapHeader = newMapHeader;
 
 	// set the base team, for now the number is corect but we should check that further
 	for (int i=0; i<newMapHeader.getNumberOfTeams(); i++)
-		teams[i]->setBaseTeam(&newMapHeader->getBaseTeam(i));
+		teams[i]->setBaseTeam(&newMapHeader.getBaseTeam(i));
 }
 
 
@@ -194,16 +184,16 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
-		gui.game.teams[i]->playersMask=0;
-		gui.game.teams[i]->numberOfPlayer=0;
+		teams[i]->playersMask=0;
+		teams[i]->numberOfPlayer=0;
 	}
 
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
 		players[i]=new Player();
-		players[i]->setBasePlayer(gameHeader.getBasePlayer(i), teams);
-		gui.game.teams[players[i]->teamNumber]->numberOfPlayer+=1;
-		gui.game.teams[players[i]->teamNumber]->playersMask|=(1<<i);
+		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
+		teams[players[i]->teamNumber]->numberOfPlayer+=1;
+		teams[players[i]->teamNumber]->playersMask|=(1<<i);
 	}
 
 	anyPlayerWaited=false;
@@ -824,6 +814,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Game::load::tempMapHeader.load\n");
 		stream->readLeaveSection();
+		std::cout<<"1"<<std::endl;
 		return false;
 	}
 	mapHeader=tempMapHeader;
@@ -834,10 +825,11 @@ bool Game::load(GAGCore::InputStream *stream)
 	GameHeader tempGameHeader;
 	if (verbose)
 		printf("Loading game header\n");
-	if (!tempGameHeader.load(stream))
+	if (!tempGameHeader.load(stream, versionMinor))
 	{
 		fprintf(logFile, "Game::load::tempMapHeader.load\n");
 		stream->readLeaveSection();
+		std::cout<<"2"<<std::endl;
 		return false;
 	}
 	gameHeader=tempGameHeader;
@@ -850,6 +842,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch at Game::load begin\n");
 		stream->readLeaveSection();
+		std::cout<<"3"<<std::endl;
 		return false;
 	}
 
@@ -864,6 +857,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
 		stream->readLeaveSection();
+		std::cout<<"4"<<std::endl;
 		return false;
 	}
 
@@ -882,14 +876,16 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after Game::load teams\n");
 		stream->readLeaveSection();
+		std::cout<<"5"<<std::endl;
 		return false;
 	}
 	
 	// Load the map. Team has to be saved and loaded first.
-	if(!map.load(stream, &session, this))
+	if(!map.load(stream, mapHeader, this))
 	{
 		fprintf(logFile, "Signature missmatch in map\n");
 		stream->readLeaveSection();
+		std::cout<<"6"<<std::endl;
 		return false;
 	}
 
@@ -898,6 +894,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after map\n");
 		stream->readLeaveSection();
+		std::cout<<"7"<<std::endl;
 		return false;
 	}
 
@@ -916,6 +913,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after players\n");
 		stream->readLeaveSection();
+		std::cout<<"8"<<std::endl;
 		return false;
 	}
 
@@ -934,6 +932,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (!script.load(stream, this))
 	{
 		stream->readLeaveSection();
+		std::cout<<"9"<<std::endl;
 		return false;
 	}
 	
@@ -994,7 +993,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 
 	///Save the map offset to the header, before we save the map
 	///Then, save the map
-	mapHeader->setMapOffset(stream->getPosition());
+	mapHeader.setMapOffset(stream->getPosition());
 	map.save(stream);
 	stream->write("GaMa", 4, "signatureAfterMap");
 
@@ -1219,7 +1218,7 @@ void Game::addTeam(int pos)
 
 		pos=mapHeader.getNumberOfTeams();
 		pos+=1;
-		mapHeader.setNumberOfTeams(pos)
+		mapHeader.setNumberOfTeams(pos);
 		for (int i=0; i<pos; i++)
 			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
 		
@@ -1237,7 +1236,7 @@ void Game::removeTeam(int pos)
 	{
 		pos=mapHeader.getNumberOfTeams();
 		pos-=1;
-		mapHeader.setNumberOfTeams(pos)
+		mapHeader.setNumberOfTeams(pos);
 	}
 	if (mapHeader.getNumberOfTeams()>0)
 	{
@@ -2968,7 +2967,7 @@ std::string glob2NameToFilename(const std::string& dir, const std::string& name,
 {
 	const char* pattern = " \t";
 	const char* endPattern = strchr(pattern, '\0');
-	std::string& fileName = name;
+	std::string fileName = name;
 	std::replace_if(fileName.begin(), fileName.end(), contains<const char*, char>(pattern, endPattern), '_');
 	std::string fullFileName = dir;
 	fullFileName += DIR_SEPARATOR + fileName;

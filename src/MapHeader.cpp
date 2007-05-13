@@ -17,7 +17,7 @@
 */
 
 #include "MapHeader.h"
-
+#include "Game.h"
 
 MapHeader::MapHeader()
 {
@@ -45,6 +45,7 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	versionMinor = stream->readSint32("versionMinor");
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
+	isSavedGame = stream->readUint32("isSavedGame");
 	stream->readEnterSection("teams");
 	for(int i=0; i<32; ++i)
 	{
@@ -54,6 +55,7 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
+	return true;
 }
 
 
@@ -69,6 +71,7 @@ void MapHeader::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(versionMinor, "versionMinor");
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
 	stream->writeUint32(mapOffset, "mapOffset");
+	stream->writeUint8(isSavedGame, "isSavedGame");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<32; ++i)
 	{
@@ -117,12 +120,12 @@ const std::string& MapHeader::getMapName() const
 
 
 
-const std::string& MapHeader::getFileName() const
+std::string MapHeader::getFileName() const
 {
-//	if (fileIsAMap)
+	if (!isSavedGame)
 		return glob2NameToFilename("maps", mapName, "map");
-//	else
-//		return glob2NameToFilename("games", mapName, "game");
+	else
+		return glob2NameToFilename("games", mapName, "game");
 }
 
 
@@ -154,6 +157,27 @@ BaseTeam& MapHeader::getBaseTeam(const int n)
 	return teams[n];
 }
 
+
+
+const BaseTeam& MapHeader::getBaseTeam(const int n) const
+{
+	assert(n>=0 && n<32);
+	return teams[n];
+}
+
+
+
+bool MapHeader::getIsSavedGame() const
+{
+	return isSavedGame;
+}
+
+
+
+void MapHeader::setIsSavedGame(bool newIsSavedGame)
+{
+	isSavedGame = newIsSavedGame;
+}
 
 
 Uint32 MapHeader::checkSum() const

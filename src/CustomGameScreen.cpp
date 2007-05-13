@@ -110,6 +110,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 		aiSelector[i]->hide();
 		closedText[i]->show();
 	}
+	updatePlayers();
 }
 
 
@@ -140,6 +141,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				aiSelector[n]->hide();
 			}
 		}
+		updatePlayers();
 	}
 }
 
@@ -168,6 +170,7 @@ int CustomGameScreen::getSelectedColor(int i)
 
 void CustomGameScreen::updatePlayers()
 {
+	int count = 0;
 	for (int i=0; i<NumberOfPlayerSelectors; i++)
 	{
 		if (isActive(i))
@@ -184,12 +187,14 @@ void CustomGameScreen::updatePlayers()
 				name.arg(Toolkit::getStringTable()->getString("[AI]", iid)).arg(i-1);
 				gameHeader.getBasePlayer(i) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 			}
+			count+=1;
 		}
 		else
 		{
 			gameHeader.getBasePlayer(i) = BasePlayer();
 		}
 	}
+	gameHeader.setNumberOfPlayers(count);
 }
 
 

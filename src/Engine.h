@@ -58,12 +58,6 @@ public:
 	/// Show the load/save dialoge, and use initCustom(gameName) to load the game
 	int initLoadGame();
 
-	//! Start a multiplayer game. Init teams and create netGame
-	void startMultiplayer(MultiplayersJoin *multiplayersJoin);
-	//! Display a map/game chooser screen suitable for multiplayer use when hosting, than call startMultiplayer
-	int initMutiplayerHost(bool shareOnYOG);
-	//! Join the network game, than call startMultiplayer
-	int initMutiplayerJoin();
 	//! Run game. A valid gui and netGame must exists
 	int run();
 

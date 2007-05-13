@@ -20,6 +20,7 @@
 #define __YOGGameInfo_h
 
 #include <string>
+#include "SDL_net.h"
 
 ///This class summarizes hosted game information on the YOG server.
 ///It does not include information about the game itself, just how

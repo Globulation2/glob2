@@ -262,14 +262,8 @@ Uint32 BasePlayer::checkSum()
 }
 
 
-void Player::makeItAI(AI::ImplementitionID aiType)
+void BasePlayer::makeItAI(AI::ImplementitionID aiType)
 {
-	if (ai)
-	{
-		assert(type>=P_AI);
-		delete ai;
-		ai=NULL;
-	}
 	type=(PlayerType)(P_AI+aiType);
 }
 

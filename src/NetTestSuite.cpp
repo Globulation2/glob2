@@ -17,7 +17,7 @@
 */
 
 #include "NetTestSuite.h"
-
+#include <iostream>
 
 NetTestSuite::NetTestSuite()
 {
@@ -28,9 +28,9 @@ NetTestSuite::NetTestSuite()
 
 template<typename t> bool NetTestSuite::testMessage(shared_ptr<t> message)
 {
-	shared_ptr<NetSendClientInformation> decodedMessage;
-	Uint8* messageInfo = message.encodeData();
-	decodedMessage.reset(NetMessage::getNetMessage(messageInfo, message.getDataLength()));
+	shared_ptr<NetMessage> decodedMessage;
+	Uint8* messageInfo = message->encodeData();
+	decodedMessage = NetMessage::getNetMessage(messageInfo, message->getDataLength());
 	delete messageInfo;
 	if((*message) != (*decodedMessage))
 	{
@@ -43,8 +43,8 @@ template<typename t> bool NetTestSuite::testMessage(shared_ptr<t> message)
 
 template<typename t> bool NetTestSuite::testInitialMessageState()
 {
-	shared_ptr<t> message1 = new t;
-	shared_ptr<t> message2 = new t;
+	shared_ptr<t> message1(new t);
+	shared_ptr<t> message2(new t);
 	if((*message1) != (*message2))
 		return false;
 	return true;
@@ -58,8 +58,8 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetSendOrder>())
 		return 1;
 
-	shared_ptr<NetSendOrder> netSendOrder1 = new NetSendOrder;
-	netSendOrder1.changeOrder(new OrderDelete(1));
+	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
+	netSendOrder1->changeOrder(new OrderDelete(1));
 	if(!testMessage(netSendOrder1))
 		return 2;
 
@@ -67,7 +67,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetSendClientInformation>())
 		return 3;
 
-	shared_ptr<NetSendClientInformation> clientInfo1 = new NetSendClientInformation;
+	shared_ptr<NetSendClientInformation> clientInfo1(new NetSendClientInformation);
 	if(!testMessage(clientInfo1))
 		return 4;
 		
@@ -75,7 +75,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetSendServerInformation>())
 		return 5;
 	
-	shared_ptr<NetSendServerInformation> serverInfo1 = new NetSendServerInformation(YOGRequirePassword, YOGSingleGame);
+	shared_ptr<NetSendServerInformation> serverInfo1(new NetSendServerInformation(YOGRequirePassword, YOGSingleGame));
 	if(!testMessage(serverInfo1))
 		return 6;
 	
@@ -83,11 +83,11 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetAttemptLogin>())
 		return 7;
 	
-	shared_ptr<NetAttemptLogin> attemptLogin1 = new NetAttemptLogin("joe", "bob");
+	shared_ptr<NetAttemptLogin> attemptLogin1(new NetAttemptLogin("joe", "bob"));
 	if(!testMessage(attemptLogin1))
 		return 8;
 	
-	shared_ptr<NetAttemptLogin> attemptLogin2 = new NetAttemptLogin("joe bob", "");
+	shared_ptr<NetAttemptLogin> attemptLogin2(new NetAttemptLogin("joe bob", ""));
 	if(!testMessage(attemptLogin2))
 		return 9;
 	
@@ -95,7 +95,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetLoginSuccessful>())
 		return 10;
 		
-	shared_ptr<NetLoginSuccessful> loginSuccess1 = new NetLoginSuccessful;
+	shared_ptr<NetLoginSuccessful> loginSuccess1(new NetLoginSuccessful);
 	if(!testMessage(loginSuccess1))
 		return 11;
 
@@ -103,7 +103,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetRefuseLogin>())
 		return 12;
 
-	shared_ptr<NetRefuseLogin> refuseLogin1 = new NetRefuseLogin(YOGPasswordIncorrect);
+	shared_ptr<NetRefuseLogin> refuseLogin1(new NetRefuseLogin(YOGPasswordIncorrect));
 	if(!testMessage(refuseLogin1))
 		return 13;	
 
@@ -111,19 +111,19 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetDisconnect>())
 		return 14;
 		
-	shared_ptr<NetDisconnect> disconnect1 = new NetDisconnect;
+	shared_ptr<NetDisconnect> disconnect1(new NetDisconnect);
 	if(!testMessage(disconnect1))
 		return 15;
 		
-	///Test NetAttemptRegistrationUser
-	if(!testInitialMessageState<NetAttemptRegistrationUser>())
+	///Test NetAttemptRegistration
+	if(!testInitialMessageState<NetAttemptRegistration>())
 		return 16;
 	
-	shared_ptr<NetAttemptRegistrationUser> registration1 = new NetAttemptRegistrationUser("joe", "bob");
+	shared_ptr<NetAttemptRegistration> registration1(new NetAttemptRegistration("joe", "bob"));
 	if(!testMessage(registration1))
 		return 17;
 	
-	shared_ptr<NetAttemptRegistrationUser> registration2 = new NetAttemptRegistrationUser("joe bob", "");
+	shared_ptr<NetAttemptRegistration> registration2(new NetAttemptRegistration("joe bob", ""));
 	if(!testMessage(registration2))
 		return 18;
 		
@@ -131,7 +131,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetAcceptRegistration>())
 		return 19;
 		
-	shared_ptr<NetAcceptRegistration> acceptRegistration1 = new NetAcceptRegistration;
+	shared_ptr<NetAcceptRegistration> acceptRegistration1(new NetAcceptRegistration);
 	if(!testMessage(acceptRegistration1))
 		return 20;
 
@@ -139,7 +139,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetRefuseRegistration>())
 		return 21;
 
-	shared_ptr<NetRefuseRegistration> refuseRegistration1 = new NetRefuseRegistration(YOGPasswordIncorrect);
+	shared_ptr<NetRefuseRegistration> refuseRegistration1(new NetRefuseRegistration(YOGPasswordIncorrect));
 	if(!testMessage(refuseRegistration1))
 		return 22;
 		
@@ -147,11 +147,11 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetCreateGame>())
 		return 23;
 
-	shared_ptr<NetCreateGame> createGame1 = new NetCreateGame("my game");
+	shared_ptr<NetCreateGame> createGame1(new NetCreateGame("my game"));
 	if(!testMessage(createGame1))
 		return 24;
 
-	shared_ptr<NetCreateGame> createGame2 = new NetCreateGame("haha my first game woot");
+	shared_ptr<NetCreateGame> createGame2(new NetCreateGame("haha my first game woot"));
 	if(!testMessage(createGame2))
 		return 25;
 	
@@ -159,11 +159,11 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetAttemptJoinGame>())
 		return 26;
 
-	shared_ptr<NetAttemptJoinGame> attemptJoin1 = new NetAttemptJoinGame(1);
+	shared_ptr<NetAttemptJoinGame> attemptJoin1(new NetAttemptJoinGame(1));
 	if(!testMessage(attemptJoin1))
 		return 27;
 
-	shared_ptr<NetAttemptJoinGame> attemptJoin2 = new NetAttemptJoinGame(6627);
+	shared_ptr<NetAttemptJoinGame> attemptJoin2(new NetAttemptJoinGame(6627));
 	if(!testMessage(attemptJoin2))
 		return 27;
 		
@@ -171,7 +171,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetGameJoinAccepted>())
 		return 28;
 
-	shared_ptr<NetGameJoinAccepted> joinAccepted1 = new NetGameJoinAccepted;
+	shared_ptr<NetGameJoinAccepted> joinAccepted1(new NetGameJoinAccepted);
 	if(!testMessage(joinAccepted1))
 		return 29;
 		
@@ -179,9 +179,10 @@ int NetTestSuite::testNetMessages()
 	if(!testInitialMessageState<NetGameJoinRefused>())
 		return 30;
 
-	shared_ptr<NetGameJoinRefused> joinRefused1 = new NetGameJoinRefused(YOGJoinRefusalUnknown);
+	shared_ptr<NetGameJoinRefused> joinRefused1(new NetGameJoinRefused(YOGJoinRefusalUnknown));
 	if(!testMessage(joinRefused1))
 		return 31;
+	return 0;
 
 }
 
@@ -210,6 +211,7 @@ int  NetTestSuite::testYOGGameInfo()
 	delete messageInfo;
 	if(decode != ygi)
 		return 3;
+	return 0;
 }
 
 
@@ -241,11 +243,11 @@ int NetTestSuite::testListenerConnection()
 	}
 
 	//Attempts to transmit a NetSendOrder over the connection
-	shared_ptr<NetSendOrder> netSendOrder1 = new NetSendOrder;
-	netSendOrder1.changeOrder(new OrderDelete(1));
-	nc_client.sendMessage(newSendOrder1);
+	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
+	netSendOrder1->changeOrder(new OrderDelete(1));
+	nc_client.sendMessage(netSendOrder1);
 	//Recieves the message on the other end
-	shared_ptr<NetSendOrder> netSendOrder2 = nc_server.getMessage();
+	shared_ptr<NetMessage> netSendOrder2 = nc_server.getMessage();
 	if(!netSendOrder2)
 	{
 		return 4;
@@ -255,6 +257,7 @@ int NetTestSuite::testListenerConnection()
 	{
 		return 5;
 	}
+	return 0;
 }
 
 

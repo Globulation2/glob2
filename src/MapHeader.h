@@ -57,7 +57,7 @@ public:
 	const std::string& getMapName() const;
 	
 	/// Returns the file name of the map
-	const std::string& getFileName() const;
+	std::string getFileName() const;
 	
 	/// Sets the user-friendly name of the map
 	void setMapName(const std::string& newMapName);
@@ -76,10 +76,18 @@ public:
 
 	/// Returns the base team for team n. n must be between 0 and 31
 	BaseTeam& getBaseTeam(const int n);
+	const  BaseTeam& getBaseTeam(const int n) const;
+
+	/// Returns true if this header represents a saved game, otherwise it
+	/// is a map
+	bool getIsSavedGame() const;
+	
+	/// Sets whether or no this header represents a saved game
+	void setIsSavedGame(bool isSavedGame);
 
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
-
+	
 private:
 	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;
@@ -95,6 +103,9 @@ private:
 	///The teams in the map. BaseTeam is used to allow access to information like team numbers and
 	///team colors without loading the entire game.
 	BaseTeam teams[32];
+	
+	///If this is true, this map header represents a saved game, rather than a new map
+	bool isSavedGame;
 
 	std::string mapName;
 };

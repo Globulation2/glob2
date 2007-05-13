@@ -45,7 +45,6 @@ public:
 	YOGLoginScreen(boost::shared_ptr<YOGClient> client);
 	virtual ~YOGLoginScreen();
 
-private:
 	enum
 	{
 		EXECUTING=0,
@@ -53,6 +52,8 @@ private:
 		CANCEL=2,
 		NEW_USER=10
 	};
+
+private:
 	enum
 	{
 		WAITING=1,

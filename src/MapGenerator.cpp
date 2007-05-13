@@ -1653,7 +1653,7 @@ bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 {
 	for (int s=0; s<descriptor.nbTeams; s++)
 	{
-		if (session.numberOfTeam<=s)
+		if (mapHeader.getNumberOfTeams()<=s)
 			addTeam();
 		int squareSize=5+descriptor.oldIslandSize/10;
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, squareSize);
@@ -1687,8 +1687,8 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	for (int s=0; s<descriptor.nbTeams; s++)
 	{
-		assert(session.numberOfTeam==s);
-		if (session.numberOfTeam<=s)
+		assert(mapHeader.getNumberOfTeams()==s);
+		if (mapHeader.getNumberOfTeams()<=s)
 			addTeam();
 		
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, 5);
@@ -1757,9 +1757,6 @@ bool Game::generateMap(MapGenerationDescriptor &descriptor)
 		default:
 			assert(false);
 	}
-	if (session.mapGenerationDescriptor)
-		delete session.mapGenerationDescriptor;
-	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
 	
 	// compile script
 	script.compileScript(this);

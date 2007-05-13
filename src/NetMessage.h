@@ -19,10 +19,15 @@
 #ifndef __NetMessage_h
 #define __NetMessage_h
 
+#include "Order.h"
 #include "SDL_net.h"
-#include <string>
-#include <boost/shared_ptr.hpp>
 #include "YOGConsts.h"
+#include "YOGGameInfo.h"
+#include "YOGPlayerInfo.h"
+#include <string>
+#include <vector>
+#include <boost/shared_ptr.hpp>
+
 
 using namespace boost;
 
@@ -37,7 +42,7 @@ enum NetMessageType
 	MNetRefuseLogin,
 	MNetUpdateGameList,
 	MNetDisconnect,
-	MNetAttemptRegistrationUser,
+	MNetAttemptRegistration,
 	MNetAcceptRegistration,
 	MNetRefuseRegistration,
 	MNetUpdatePlayerList,
@@ -65,7 +70,7 @@ public:
 	///Reads the data, and returns an Order containing the data.
 	///The Order may be casted to its particular subclass, using
 	///the getMessageType function
-	static sharded_ptr<NetMessage> getNetMessage(const Uint8 *netData, int dataLength);
+	static shared_ptr<NetMessage> getNetMessage(const Uint8 *netData, int dataLength);
 
 	///Encodes the data into its shrunken, serialized form. It is important that
 	///the first byte be the type returned from getMessageType. All
@@ -89,7 +94,7 @@ public:
 	///Compares two NetMessages. All derived Messages must implement this by
 	///first testing to see if NetMessage casts to the derived class, and then
 	///comparing internal data.
-	virtual bool operator==(const NetMessage& rhs) = 0 const;
+	virtual bool operator==(const NetMessage& rhs) const = 0;
 	///This does not need to be overloaded, but can be for efficiency purposes.
 	virtual bool operator!=(const NetMessage& rhs) const;
 };
@@ -165,7 +170,7 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 	
 	///Returns the version minor
-	Uint63 getVersionMinor() const;
+	Uint16 getVersionMinor() const;
 private:
 	Uint16 versionMinor;
 };
@@ -399,17 +404,17 @@ public:
 
 
 
-///NetAttemptRegistrationUser attempts to register the user
-class NetAttemptRegistrationUser : public NetMessage
+///NetAttemptRegistration attempts to register the user
+class NetAttemptRegistration : public NetMessage
 {
 public:
-	///Creates a NetAttemptRegistrationUser message
-	NetAttemptRegistrationUser();
+	///Creates a NetAttemptRegistration message
+	NetAttemptRegistration();
 	
-	///Creates a NetAttemptRegistrationUser message
-	NetAttemptRegistrationUser(const std::string& username, const std::string& password);
+	///Creates a NetAttemptRegistration message
+	NetAttemptRegistration(const std::string& username, const std::string& password);
 
-	///Returns MNetAttemptRegistrationUser
+	///Returns MNetAttemptRegistration
 	Uint8 getMessageType() const;
 
 	///Encodes the data
@@ -421,11 +426,11 @@ public:
 	///Decodes the data
 	bool decodeData(const Uint8 *data, int dataLength);
 
-	///Formats the NetAttemptRegistrationUser message with a small amount
+	///Formats the NetAttemptRegistration message with a small amount
 	///of information.
 	std::string format() const;
 
-	///Compares with another NetAttemptRegistrationUser
+	///Compares with another NetAttemptRegistration
 	bool operator==(const NetMessage& rhs) const;
 	
 	///Returns the username
@@ -735,5 +740,180 @@ private:
 
 
 //message_append_marker
+
+
+
+template<typename container> void NetUpdateGameList::updateDifferences(const container& original, const container& updated)
+{
+	///Find all removed games
+	for(typename container::const_iterator i = original.begin(); i!=original.end(); ++i)
+	{
+		bool found=false;
+		for(typename container::const_iterator j = updated.begin(); j!=updated.end(); ++j)
+		{
+			if(i->getGameID() == j->getGameID())
+			{
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			removedGames.push_back(i->getGameID());
+		}
+	}
+	///Find changed games
+	for(typename container::const_iterator i = original.begin(); i!=original.end(); ++i)
+	{
+		for(typename container::const_iterator j = updated.begin(); j!=updated.end(); ++j)
+		{
+			///If the ID's are ther same but some other property isn't, then
+			///the game has changed and needs to be updated
+			if((i->getGameID() == j->getGameID()) && ((*i) != (*j)))
+			{
+				updatedGames.push_back(*j);
+				break;
+			}
+		}
+	}
+	///Find added games
+	for(typename container::const_iterator i = updated.begin(); i!=updated.end(); ++i)
+	{
+		bool found=false;
+		for(typename container::const_iterator j = original.begin(); j!=original.end(); ++j)
+		{
+			if(i->getGameID() == j->getGameID())
+			{
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			updatedGames.push_back(*i);
+		}
+	}
+}
+
+
+
+template<typename container> void NetUpdateGameList::applyDifferences(container& original) const
+{
+	//Remove the removed games
+	for(int i=0; i<removedGames.size(); ++i)
+	{
+		typename container::iterator game = original.end();
+		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			if(j->getGameID() == removedGames[i])
+			{
+				game = j;
+				break;
+			}
+		}
+		original.erase(game);
+	}
+	//Change the changed games and add the rest
+	for(int i=0; i<updatedGames.size(); ++i)
+	{
+		bool found=false;
+		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			if(j->getGameID() == updatedGames[i].getGameID())
+			{
+				(*j) = updatedGames[i];
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			original.insert(original.end(), updatedGames[i]);
+		}
+	}
+}
+
+
+
+template<typename container> void NetUpdatePlayerList::updateDifferences(const container& original, const container& updated)
+{
+	//find removed players
+	int index=0;
+	for(typename container::const_iterator i = original.begin(); i!=original.end(); ++i)
+	{
+		bool found=false;
+		for(typename container::const_iterator j = updated.begin(); j!=updated.end(); ++j)
+		{
+			if(i->getPlayerID() == j->getPlayerID())
+			{
+				found=true;
+				break;
+			}
+		}
+		if(!found)
+			removedPlayers.push_back(index);
+		index+=1;
+	}
+	
+	//Find added or changed players
+	for(typename container::const_iterator i = updated.begin(); i!=updated.end(); ++i)
+	{
+		bool found=false;
+		bool changed=false;
+		for(typename container::const_iterator j = original.begin(); j!=original.end(); ++j)
+		{
+			if(i->getPlayerID() == j->getPlayerID())
+			{
+				found=true;
+				if((*i) != (*j))
+				{
+					changed=true;
+				}
+				break;
+			}
+		}
+		if(!found || changed)
+			updatedPlayers.push_back(*i);
+		index+=1;
+	}
+}
+
+
+
+template<typename container> void NetUpdatePlayerList::applyDifferences(container& original) const
+{
+	//Remove removed players
+	for(std::vector<Uint16>::const_iterator i = removedPlayers.begin(); i!=removedPlayers.end(); ++i)
+	{
+		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			if(*i == j->getPlayerID())
+			{
+				original.erase(j);
+				break;
+			}
+		}
+	}
+	
+	//Change and/or add the players that are updated
+	for(std::vector<YOGPlayerInfo>::const_iterator i=updatedPlayers.begin(); i!=updatedPlayers.end(); ++i)
+	{
+		bool found=false;
+		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)
+		{
+			//If the player id's are the same, then this player has somehow changed.
+			if(i->getPlayerID() == j->getPlayerID())
+			{
+				(*j) = (*i);
+				found = true;
+			}
+		}
+		//Not found, meaning this player is a new one
+		if(!found)
+		{
+			original.insert(original.end(), (*i));
+		}
+	}
+}
 
 #endif
