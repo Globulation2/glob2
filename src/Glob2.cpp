@@ -24,6 +24,7 @@
 #include "MapEdit.h"
 #include "Engine.h"
 #include "YOGLoginScreen.h"
+#include "YOGGameServer.h"
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
 #include "CreditScreen.h"
@@ -269,6 +270,15 @@ int Glob2::run(int argc, char *argv[])
 		return ret;
 	}
 	*/
+	
+	if (globalContainer->hostServer)
+	{
+		YOGGameServer server(YOGAnonymousLogin, YOGMultipleGames);
+		int rc = server.run();
+		return rc;	
+	}
+	
+	
 	if (globalContainer->runNoX)
 	{
 		int ret=runNoX();

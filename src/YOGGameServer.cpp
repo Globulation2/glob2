@@ -17,7 +17,7 @@
 */
 
 #include "YOGGameServer.h"
-
+#include "NetTestSuite.h"
 
 YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
@@ -55,6 +55,27 @@ void YOGGameServer::update()
 			i++;
 		}
 	}
+}
+
+
+
+int YOGGameServer::run()
+{
+	NetTestSuite tests;
+	bool cont = tests.runAllTests();
+	if(!cont)
+		return 1;
+	while(true)
+	{
+		const Uint32 speed = 25;
+		Uint32 startTick, endTick;
+		startTick = SDL_GetTicks();
+		update();
+		endTick=SDL_GetTicks();
+		Uint32 remaining = speed - endTick + startTick;
+		SDL_Delay(remaining);
+	}
+	return 0;
 }
 
 

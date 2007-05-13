@@ -52,6 +52,9 @@ public:
 	///second) in order to give fast responce times and low latency for the users.
 	void update();
 
+	///Runs the server as its own entity. Returns the return code of the execution
+	int run();
+
 	///Returns the login policy that is being used by the server
 	YOGLoginPolicy getLoginPolicy() const;
 	
