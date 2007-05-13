@@ -20,9 +20,8 @@ public:
 		RBRACE,
 		COMMA,
 		COMMENT,
-		CR,
+		NL,
 		END,
-		ERROR,
 		TOKENTYPES,
 	};
 	
@@ -47,13 +46,7 @@ public:
 	}
 	
 private:
-	Token _next()
-	{
-		Token token = Tokenizer::next();
-		while ((token.type->id == SPACE) || (token.type->id == COMMENT))
-			token = Tokenizer::next();
-		return token;
-	}
+	Token _next();
 	
 public:
 	Token token;

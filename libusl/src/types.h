@@ -1,26 +1,25 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <cassert>
+#include "memory.h"
+
 #include <map>
 #include <string>
 #include <vector>
 #include <ext/functional>
-#include "interpreter.h"
 
 struct Prototype;
-
 struct Value
 {
-	Prototype* proto;
+	Prototype* prototype;
 	bool marked;
 	
-	Value(Thread *thread, Prototype* proto):
-		proto(proto)
+	Value(Heap* heap, Prototype* prototype):
+		prototype(prototype)
 	{
 		marked = false;
-		if (thread)
-			thread->heap.push_back(this);
+		if (heap)
+			heap->values.push_back(this);
 	}
 	
 	virtual ~Value() { }
@@ -47,8 +46,8 @@ struct Prototype: Value
 	Prototype* parent;
 	Methods methods;
 	
-	Prototype(Thread *thread, Prototype* parent):
-		Value(thread, 0), parent(parent)
+	Prototype(Heap* heap, Prototype* parent):
+		Value(heap, 0), parent(parent)
 	{ // TODO: MetaPrototype
 	}
 	
@@ -59,22 +58,9 @@ struct Prototype: Value
 		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<map<string, Value*>::value_type>()));
 	}
 	
-	Method* lookup(const std::string &method) const
+	virtual Method* lookup(const std::string &method) const
 	{
-		Methods::const_iterator methodIt = methods.find(method);
-		if (methodIt != methods.end())
-		{
-			return methodIt->second;
-		}
-		else if (parent != 0)
-		{
-			return parent->lookup(method);
-		}
-		else
-		{
-			assert(false); // TODO
-			//throw UnknownMethodException(method);
-		}
+		return methods.find(method)->second;
 	}
 };
 
@@ -85,13 +71,28 @@ struct Method: Prototype
 	
 	Args args;
 	
-	Method(Thread *thread, Prototype* parent):
-		Prototype(thread, parent)
+	Method(Heap* heap, Prototype* parent):
+		Prototype(heap, parent)
+	{
+	}
+	
+	virtual void execute(Thread* thread) = 0;
+};
+
+struct Code;
+struct UserMethod: Method
+{
+	typedef std::vector<Code*> Body;
+	
+	Body body;
+	
+	UserMethod(Heap* heap, Prototype* parent):
+		Method(heap, parent)
 	{
 		methods["."] = this;
 	}
 	
-	virtual void execute(Thread* stack) = 0;
+	void execute(Thread* thread);
 };
 
 struct Scope: Value
@@ -101,8 +102,8 @@ struct Scope: Value
 	Scope* parent;
 	Locals locals;
 	
-	Scope(Thread *thread, Method* method, Scope* parent):
-		Value(thread, method),
+	Scope(Heap* heap, UserMethod* method, Scope* parent):
+		Value(heap, method),
 		parent(parent)
 	{
 		locals["."] = this;
@@ -117,21 +118,13 @@ struct Scope: Value
 	
 	Value* lookup(const std::string& name) const
 	{
-		Locals::const_iterator localIt = locals.find(name);
-		if (localIt != locals.end())
-		{
-			return localIt->second;
-		}
-		else if (parent != 0)
-		{
-			return parent->lookup(name);
-		}
-		else
-		{
-			return 0;
-		}
+		return locals.find(name)->second;
 	}
-
+	
+	UserMethod* method()
+	{
+		return static_cast<UserMethod*>(prototype);
+	}
 };
 
 #endif // ndef TYPES_H
