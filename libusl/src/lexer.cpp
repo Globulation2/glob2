@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+#include <cassert>
+
 const Token::Type Lexer::tokenTypes[] =
 {
 	Token::Type(SPACE,   "a space",                 "[[:blank:]]+"),
@@ -14,7 +16,18 @@ const Token::Type Lexer::tokenTypes[] =
 	Token::Type(RBRACE,  "an end of sequence",      "\\}"),
 	Token::Type(COMMA,   "a comma",                 ","),
 	Token::Type(COMMENT, "a comment",               "\\([\"\'])(\\\\|[^\\])*\\([\"\'])"),
-	Token::Type(CR,      "a new line",              "\n"),
+	Token::Type(NL,      "a new line",              "\n"),
 	Token::Type(END,     "the end of the text",     "$"),
-	Token::Type(ERROR,   "an invalid token",        ""),
 };
+
+Token Lexer::_next()
+{
+	Token token = Tokenizer::next();
+	while ((token.type->id == SPACE) || (token.type->id == COMMENT))
+		token = Tokenizer::next();
+	if (token.type == 0)
+	{
+		assert(false); // TODO
+	}
+	return token;
+}

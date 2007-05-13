@@ -1,26 +1,26 @@
 #include "tree.h"
 #include "code.h"
 
-void ConstNode::generate(CodeVector* code)
+void ConstNode::generate(UserMethod* method)
 {
-	code->push_back(new ConstCode(value));
+	method->body.push_back(new ConstCode(value));
 }
 
-void LocalNode::generate(CodeVector* code)
+void LocalNode::generate(UserMethod* method)
 {
-	code->push_back(new LocalCode(local));
+	method->body.push_back(new LocalCode(local));
 }
 
-void ApplyNode::generate(CodeVector* code)
+void ApplyNode::generate(UserMethod* method)
 {
-	receiver->generate(code);
+	receiver->generate(method);
 	for (size_t i = 0; i < args.size(); i++)
-		args[i]->generate(code);
-	code->push_back(new ApplyCode(method, args.size()));
+		args[i]->generate(method);
+	method->body.push_back(new ApplyCode(name, args.size()));
 }
 
-void ValueNode::generate(CodeVector* code)
+void ValueNode::generate(UserMethod* method)
 {
-	value->generate(code);
-	code->push_back(new ValueCode(local));
+	value->generate(method);
+	method->body.push_back(new ValueCode(local));
 }

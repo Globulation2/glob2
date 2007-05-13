@@ -4,47 +4,49 @@
 #include "types.h"
 
 struct Code;
-typedef std::vector<Code*> CodeVector;
 
 struct Node
 {
 	virtual ~Node() {}
-	virtual void generate(CodeVector* code) = 0;
+	virtual void generate(UserMethod* method) = 0;
 };
 
-struct ConstNode: Node
+struct ExpressionNode: Node
+{};
+
+struct ConstNode: ExpressionNode
 {
 	ConstNode(Value* value):
 		value(value)
 	{}
 	
-	void generate(CodeVector* code);
+	void generate(UserMethod* method);
 	
 	Value* value;
 };
 
-struct LocalNode: Node
+struct LocalNode: ExpressionNode
 {
 	LocalNode(const std::string& local):
 		local(local)
 	{}
 	
-	void generate(CodeVector* code);
+	void generate(UserMethod* method);
 	
 	std::string local;
 };
 
-struct ApplyNode: Node
+struct ApplyNode: ExpressionNode
 {
 	ApplyNode(Node* receiver, const std::string& method):
 		receiver(receiver),
-		method(method)
+		name(name)
 	{}
 	
-	void generate(CodeVector* code);
+	void generate(UserMethod* method);
 	
 	Node* receiver;
-	const std::string method;
+	const std::string name;
 	std::vector<Node*> args;
 };
 
@@ -55,7 +57,7 @@ struct ValueNode: Node
 		value(value)
 	{}
 	
-	void generate(CodeVector* code);
+	void generate(UserMethod* method);
 	
 	const std::string local;
 	Node* value;

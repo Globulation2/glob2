@@ -1,8 +1,8 @@
 #ifndef BYTECODE_H
 #define BYTECODE_H
 
-#include <string>
 #include "interpreter.h"
+#include <cassert>
 
 
 struct Code
@@ -19,7 +19,7 @@ struct ConstCode: Code
 	
 	void execute(Thread* thread)
 	{
-		thread->topFrame().stack.push_back(value);
+		thread->frames.back().stack.push_back(value);
 	}
 	
 	Value* value;
@@ -33,7 +33,7 @@ struct LocalCode: Code
 	
 	void execute(Thread* thread)
 	{
-		Thread::Frame& frame = thread->topFrame();
+		Thread::Frame& frame = thread->frames.back();
 		frame.stack.push_back(frame.scope->lookup(local));
 	}
 	
@@ -42,24 +42,24 @@ struct LocalCode: Code
 
 struct ApplyCode: Code
 {
-	ApplyCode(const std::string& method, size_t argCount):
-		method(method),
+	ApplyCode(const std::string& name, size_t argCount):
+		name(name),
 		argCount(argCount)
 	{}
 	
 	void execute(Thread* thread)
 	{
 		// fetch receiver
-		Value* receiver = *(thread->topFrame().stack.end() - argCount - 1);
+		Value* receiver = *(thread->frames.back().stack.end() - argCount - 1);
 		
 		// fetch method
-		Method* method = receiver->proto->lookup(this->method);
+		Method* method = receiver->prototype->lookup(name);
 		assert(argCount == method->args.size());
 		
 		method->execute(thread);
 	}
 		
-	const std::string method;
+	const std::string name;
 	size_t argCount;
 };
 
@@ -71,14 +71,46 @@ struct ValueCode: Code
 	
 	void execute(Thread* thread)
 	{
-		Thread::Frame& frame = thread->topFrame();
+		Thread::Frame& frame = thread->frames.back();
 		Thread::Frame::Stack& stack = frame.stack;
-		size_t stackSize = stack.size();
-		frame.scope->locals[local] = stack[--stackSize];
-		stack.resize(stackSize);
+		frame.scope->locals[local] = stack.back();
+		stack.pop_back();
 	}
 	
 	const std::string local;
+};
+
+struct PopCode: Code
+{
+	void execute(Thread* thread)
+	{
+		thread->frames.back().stack.pop_back();
+	}
+};
+
+struct MethodCode: Code
+{
+	MethodCode(UserMethod* method):
+		method(method)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame& frame = thread->frames.back();
+		frame.stack.push_back(new Scope(thread->heap, method, frame.scope));
+	}
+	
+	UserMethod* method;
+};
+
+struct ReturnCode: Code
+{
+	void execute(Thread* thread)
+	{
+		Value* value = thread->frames.back().stack.back();
+		thread->frames.pop_back();
+		thread->frames.back().stack.push_back(value);
+	}
 };
 
 #endif // ndef BYTECODE_H

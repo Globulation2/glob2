@@ -6,6 +6,7 @@
 
 struct Scope;
 struct Value;
+struct Heap;
 
 struct Thread
 {
@@ -26,15 +27,16 @@ struct Thread
 		void markForGC();
 	};
 	
-	typedef std::vector<Value*> Heap;
 	typedef std::vector<Frame> Frames;
 	
-	Heap heap;
+	Heap* heap;
 	Frames frames;
 	
+	Thread(Heap* heap):
+		heap(heap)
+	{}
+	
 	void markForGC();
-	void garbageCollect();
-	Frame &topFrame() { return *frames.rbegin(); }
 };
 
 #endif // ndef INTERPRETER_H

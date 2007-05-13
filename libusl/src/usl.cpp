@@ -1,6 +1,7 @@
 #include "lexer.h"
 #include "tree.h"
 #include "code.h"
+#include "memory.h"
 #include <cassert>
 #include <memory>
 #include <vector>
@@ -15,7 +16,7 @@
 
 using namespace std;
 
-struct Class: Method
+struct Class: UserMethod
 {
 	vector<string> fields;
 };
@@ -23,8 +24,8 @@ struct Class: Method
 
 struct Object: Scope
 {
-	Object(Thread *thread, Class* klass, Scope* parent):
-		Scope(thread, klass, parent)
+	Object(Heap* heap, Class* klass, Scope* parent):
+		Scope(heap, klass, parent)
 	{
 		transform(klass->fields.begin(), klass->fields.end(), inserter(locals, locals.begin()), bind2nd(ptr_fun(make_pair<string, Value*>), 0));
 	}
@@ -44,7 +45,7 @@ struct Integer: Value
 		void execute(Thread* thread)
 		{
 			// check number of arguments
-			Thread::Frame::Stack& stack = thread->topFrame().stack;
+			Thread::Frame::Stack& stack = thread->frames.back().stack;
 			size_t stackSize = stack.size();
 			
 			Integer* thatInt = dynamic_cast<Integer*>(stack[--stackSize]);
@@ -53,7 +54,7 @@ struct Integer: Value
 			assert(thisInt);
 			// todo check thatInt type
 			
-			stack[stackSize++] = new Integer(thread, thisInt->value + thatInt->value);
+			stack[stackSize++] = new Integer(thread->heap, thisInt->value + thatInt->value);
 			
 			stack.resize(stackSize);
 		}
@@ -68,41 +69,182 @@ struct Integer: Value
 		}
 	} integerPrototype;
 	
-	Integer(Thread *thread, int value):
-		Value(thread, &integerPrototype),
+	Integer(Heap* heap, int value):
+		Value(heap, &integerPrototype),
 		value(value)
 	{
 		this->value = value;
 	}
 };
 
-
 Integer::IntegerPrototype Integer::integerPrototype;
 Integer::IntegerAdd Integer::integerAdd;
 
 
-struct Parser: Lexer
+struct LookupNode: ExpressionNode
 {
-	Parser(const char* src):
-		Lexer(src),
-		Nil(0, 0),
-		nil(0, &Nil)
+	LookupNode(const string& name):
+		name(name)
 	{}
 	
-	Node* statement(Scope* scope)
+	void generate(UserMethod* method)
+	{
+		assert(false);
+	}
+	
+	const string name;
+};
+
+struct BlockNode: Node
+{
+	typedef vector<Node*> Statements;
+	
+	void generate(UserMethod* method)
+	{
+		for (Statements::const_iterator it = statements.begin(); it != statements.end(); ++it)
+		{
+			Node* statement = *it;
+			statement->generate(method);
+			if (dynamic_cast<ExpressionNode*>(statement) != 0)
+			{
+				// if the statement is an expression, its result is ignored
+				method->body.push_back(new PopCode());
+			}
+		}
+		value->generate(method);
+	}
+	
+	void end(Value* nil)
+	{
+		if (!statements.empty() && dynamic_cast<ExpressionNode*>(statements.back()) != 0)
+		{
+			value = statements.back();
+			statements.pop_back();
+		}
+		else
+		{
+			value = new ConstNode(nil);
+		}
+	}
+	
+	Statements statements;
+	Node* value;
+};
+
+struct Parser: Lexer
+{
+	Parser(const char* src, Heap* heap):
+		Lexer(src),
+		heap(heap),
+		Nil(new Prototype(heap, 0)),
+		nil(new Value(heap, Nil))
+	{}
+	
+	BlockNode* parse()
+	{
+		return statements();
+	}
+	
+	BlockNode* statements()
+	{
+		newlines();
+		auto_ptr<BlockNode> block(new BlockNode());
+		while (true)
+		{
+			switch (tokenType())
+			{
+			case END:
+			case RBRACE:
+				block->end(nil);
+				return block.release();
+			}
+			block->statements.push_back(statement());
+			newlines();
+		}
+	}
+	
+	Node* statement()
 	{
 		switch (tokenType())
 		{
-			case VAL:
+		case VAL:
 			{
 				next();
 				string name = identifier();
 				accept(ASSIGN);
-				scope->locals[name] = &nil;
-				return new ValueNode(name, expression(scope));
+				newlines();
+				return new ValueNode(name, expression());
 			}
+		default:
+			return expression();
+		}
+	}
+	
+	Node* expression()
+	{
+		auto_ptr<Node> node(simple());
+		while (true)
+		{
+			switch (tokenType())
+			{
+			case ID:
+				node = apply(node, identifier());
+				break;
+			case LPAR:
+				node = apply(node, ".");
+				break;
 			default:
-				return expression(scope);
+				return node.release();
+			}
+		}
+	}
+	
+	auto_ptr<ApplyNode> apply(auto_ptr<Node> receiver, const string& method)
+	{
+		auto_ptr<ApplyNode> node(new ApplyNode(receiver.release(), method));
+		node->args.push_back(simple());
+		return node;
+	}
+	
+	Node* simple()
+	{
+		switch (tokenType())
+		{
+		case ID:
+			{
+				return new LookupNode(identifier());
+			}
+		case NUM:
+			{
+				string str = token.string();
+				next();
+				int value = atoi(str.c_str());
+				return new ConstNode(new Integer(heap, value));
+			}
+		case LPAR:
+			{
+				next();
+				// TODO: tuples
+				accept(RPAR);
+				assert(false);
+			}
+		case LBRACE:
+			{
+				next();
+				auto_ptr<Node> block(statements());
+				accept(RBRACE);
+				return block.release();
+			}
+		default:
+			return new ConstNode(nil);
+		}
+	}
+	
+	void newlines()
+	{
+		while (tokenType() == NL)
+		{
+			next();
 		}
 	}
 	
@@ -126,107 +268,39 @@ struct Parser: Lexer
 		next();
 	}
 	
-	Node* expression(Scope* scope)
-	{
-		auto_ptr<Node> node(simple(scope));
-		while (true)
-		{
-			std::string method;
-			switch (tokenType())
-			{
-				case ID:
-					method = token.string();
-					next();
-					break;
-				case LPAR:
-					method = ".";
-					break;
-				default:
-					return node.release();
-			}
-			auto_ptr<ApplyNode> apply(new ApplyNode(node.release(), method));
-			apply->args.push_back(simple(scope));
-			node = apply;
-		}
-	}
-	
-	Node* simple(Scope* scope)
-	{
-		switch (tokenType())
-		{
-			case ID:
-			{
-				const string name(token.string());
-				next();
-				Value* value = scope->lookup(name);
-				if (value != 0)
-				{
-					return new LocalNode(name);
-				}
-				else
-				{
-					assert(false);
-				}
-			}
-			case NUM:
-			{
-				string str = token.string();
-				next();
-				int value = atoi(str.c_str());
-				return new ConstNode(new Integer(0, value));	// todo insert into gc or in const table, right now this is LEAK
-			}
-			case LPAR:
-				next();
-				// TODO
-			default:
-				assert(false);
-		}
-	}
-	
-	Prototype Nil;
-	Value nil;
+	Heap* heap;
+	Prototype* Nil;
+	Value* nil;
 };
-
-struct Root: Method
-{
-	Root():
-		Method(0, 0)	// todo check garbage collectable itude
-	{}
-	
-	void execute(Thread* thread)
-	{
-		assert(false);
-	}
-} root;
 
 int main(int argc, char** argv)
 {
-	Parser parser("val x = 21 + 21");
-	Node* node = parser.statement(new Scope(0, &root, 0));	// todo check garbage collectable, this is LEAKY
+	Heap heap;
+	
+	Parser parser("val x = 21 + 21\n", &heap);
+	Node* node = parser.parse();
 /*
 	ApplyNode* node = new ApplyNode(new ConstNode(new Integer(2)), "+");
 	node->args.push_back(new ConstNode(new Integer(1)));
 */
 	
-	CodeVector code;
-	node->generate(&code);
+	UserMethod root(&heap, 0);
+	node->generate(&root);
 	
-	Thread t;
-	t.frames.push_back(Thread::Frame(new Scope(&t, &root, 0)));
+	Thread thread(&heap);
+	thread.frames.push_back(Thread::Frame(new Scope(&heap, &root, 0)));
 	
-	while (t.topFrame().nextInstr < code.size())
+	while (thread.frames.front().nextInstr < root.body.size())
 	{
-		code[t.topFrame().nextInstr++]->execute(&t);
-		cout << "size: " << t.topFrame().stack.size() << endl;
-		if (t.topFrame().stack.size() > 0)
-			cout << "[0]: " << dynamic_cast<Integer*>(t.topFrame().stack[0])->value << endl;
-		if (t.topFrame().stack.size() > 1)
-			cout << "[1]: " << dynamic_cast<Integer*>(t.topFrame().stack[1])->value << endl;
+		Thread::Frame& frame = thread.frames.back();
+		frame.scope->method()->body[frame.nextInstr++]->execute(&thread);
+		cout << "stack size: " << thread.frames.back().stack.size() << endl;
 	}
 	
-	cout << "x = " << dynamic_cast<Integer*>(t.topFrame().scope->locals["x"])->value << endl;
-	cout << "heap size: " << t.heap.size() << "\n";
+	cout << "x = " << dynamic_cast<Integer*>(thread.frames.back().scope->locals["x"])->value << endl;
+	
+	cout << "heap size: " << heap.values.size() << "\n";
 	cout << "garbage collecting\n";
-	t.garbageCollect();
-	cout << "heap size: " << t.heap.size() << "\n";
+	heap.garbageCollect(&thread);
+	cout << "heap size: " << heap.values.size() << "\n";
 }
