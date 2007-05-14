@@ -35,14 +35,18 @@ YOGClient::YOGClient(const std::string& server)
 
 YOGClient::YOGClient()
 {
-	
+	connectionState = NotConnected;
+	loginPolicy = YOGUnknownLoginPolicy;
+	gamePolicy = YOGUnknownGamePolicy;
+	loginState = YOGLoginUnknown;
+	gameListChanged = false;
+	playerListChanged = false;
 }
 
 
 
 void YOGClient::connect(const std::string& server)
 {
-	std::cout<<"server="<<server<<std::endl;
 	nc.openConnection(server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
 }
@@ -62,6 +66,8 @@ void YOGClient::update()
 
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = nc.getMessage();
+	if(!message)
+		return;
 	Uint8 type = message->getMessageType();
 	//This recieves the server information
 	if(type==MNetSendServerInformation)

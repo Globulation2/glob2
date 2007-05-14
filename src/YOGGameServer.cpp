@@ -18,6 +18,7 @@
 
 #include "YOGGameServer.h"
 #include "NetTestSuite.h"
+#include <algorithm>
 
 YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
@@ -65,14 +66,14 @@ int YOGGameServer::run()
 	bool cont = tests.runAllTests();
 	if(!cont)
 		return 1;
-	while(true)
+	while(nl.isListening())
 	{
-		const Uint32 speed = 25;
-		Uint32 startTick, endTick;
+		const int speed = 25;
+		int startTick, endTick;
 		startTick = SDL_GetTicks();
 		update();
 		endTick=SDL_GetTicks();
-		Uint32 remaining = speed - endTick + startTick;
+		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
 	}
 	return 0;

@@ -683,7 +683,7 @@ bool NetUpdateGameList::decodeData(const Uint8 *data, int dataLength)
 	pos+=1;
 	Uint8 size = data[pos];
 	pos+=1;
-	removedGames.resize(pos);
+	removedGames.resize(size);
 	for(int i=0; i<removedGames.size(); ++i)
 	{
 		removedGames[i] = SDLNet_Read16(data+pos);
@@ -859,7 +859,7 @@ bool NetAttemptRegistration::decodeData(const Uint8 *data, int dataLength)
 	//Read in the password
 	Uint8 passwordLength = data[pos];
 	pos+=1;
-	for(int i=0; i<usernameLength; ++i)
+	for(int i=0; i<passwordLength; ++i)
 	{
 		password+=static_cast<char>(data[pos]);
 		pos+=1;
@@ -955,7 +955,7 @@ bool NetAcceptRegistration::operator==(const NetMessage& rhs) const
 
 NetRefuseRegistration::NetRefuseRegistration()
 {
-
+	reason = YOGLoginUnknown;
 }
 
 
@@ -1240,7 +1240,7 @@ const std::string& NetCreateGame::getGameName() const
 
 NetAttemptJoinGame::NetAttemptJoinGame()
 {
-
+	gameID = 0;
 }
 
 
@@ -1388,7 +1388,7 @@ bool NetGameJoinAccepted::operator==(const NetMessage& rhs) const
 
 NetGameJoinRefused::NetGameJoinRefused()
 {
-
+	reason = YOGJoinRefusalUnknown;
 }
 
 

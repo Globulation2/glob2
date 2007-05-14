@@ -31,6 +31,8 @@ void YOGPlayer::update(YOGGameServer& server)
 {
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = connection->getMessage();
+	if(!message)
+		return;
 	Uint8 type = message->getMessageType();
 	//This recieves the client information
 	if(type==MNetSendClientInformation)
