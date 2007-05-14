@@ -48,7 +48,6 @@ NetConnection::~NetConnection()
 	
 void NetConnection::openConnection(const std::string& connectaddress, Uint16 port)
 {
-	std::cout<<"connectaddress="<<connectaddress<<std::endl;
 	if(!connected)
 	{
 		//Resolve the address
@@ -110,14 +109,32 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 		else if(numReady) {
 			//Read and interpret the length of the message
 			Uint8* lengthData = new Uint8[2];
-			SDLNet_TCP_Recv(socket, lengthData, 2);
-			Uint16 length = SDLNet_Read16(lengthData);
-			//Read in the data.
-			Uint8* data = new Uint8[length];
-			SDLNet_TCP_Recv(socket, data, length);
-			//Now interpret the message from the data, and add it to the queue
-			shared_ptr<NetMessage> message = NetMessage::getNetMessage(data, length);
-			recieved.push(message);
+			Uint16 amount = SDLNet_TCP_Recv(socket, lengthData, 2);
+			if(amount <= 0)
+			{
+				std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
+				closeConnection();
+			}
+			else
+			{
+				Uint16 length = SDLNet_Read16(lengthData);
+				//Read in the data.
+				Uint8* data = new Uint8[length];
+	
+				amount = SDLNet_TCP_Recv(socket, data, length);
+				if(amount <= 0)
+				{
+					std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
+					closeConnection();
+				}
+				else
+				{
+					//Now interpret the message from the data, and add it to the queue
+					shared_ptr<NetMessage> message = NetMessage::getNetMessage(data, length);
+					recieved.push(message);
+					std::cout<<"Recieved: "<<message->format()<<std::endl;
+				}
+			}
 		}
 		else
 		{
@@ -128,7 +145,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 
 	//Check if there are messages in the queue.
 	//If so, return one, else, return NULL
-	if(!recieved.size())
+	if(recieved.size())
 	{
 		shared_ptr<NetMessage> message = recieved.front();
 		recieved.pop();
@@ -146,12 +163,13 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
 	if(connected)
 	{
+		std::cout<<"Sending: "<<message->format()<<std::endl;
 		Uint32 length = message->getDataLength();
-		Uint8* data = message->encodeData();
+		Uint8* data = message->encodeData();		
 		Uint8* newData = new Uint8[length+2];
 		SDLNet_Write16(length, newData);
 		std::copy(data, data+length, newData+2);
-		Uint32 result=SDLNet_TCP_Send(socket, data, length);
+		Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
 		if(result<length)
 		{
 			std::cout<<"NetConnection::sendMessage: "<<SDLNet_GetError()<<std::endl;

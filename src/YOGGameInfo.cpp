@@ -84,6 +84,7 @@ bool YOGGameInfo::decodeData(const Uint8 *data, int dataLength)
 	//Read in the gameName
 	Uint8 gameNameLength = data[pos];
 	pos+=1;
+	gameName="";
 	for(int i=0; i<gameNameLength; ++i)
 	{
 		gameName+=static_cast<char>(data[pos]);
