@@ -1,80 +1,66 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include "token.h"
-#include <vector>
-#include <string>
+#include "types.h"
 
-namespace Trees {
-	struct Token;
-	struct Sequence;
+struct Code;
+
+struct Node
+{
+	virtual ~Node() {}
+	virtual void generate(UserMethod* method) = 0;
 };
 
-struct Tree {
-	struct Visitor {
-		virtual ~Visitor() {}
-		virtual void Visit(Tree& tree);
-		virtual void Visit(Trees::Token& tok) = 0;
-		virtual void Visit(Trees::Sequence& seq);
-	};
+struct ExpressionNode: Node
+{};
+
+struct ConstNode: ExpressionNode
+{
+	ConstNode(Value* value):
+		value(value)
+	{}
 	
-	struct ConstVisitor {
-		virtual ~ConstVisitor() {}
-		virtual void Visit(const Tree& tree);
-		virtual void Visit(const Trees::Token& tok) = 0;
-		virtual void Visit(const Trees::Sequence& seq);
-	};
+	void generate(UserMethod* method);
 	
-	virtual void Accept(Visitor& visitor) = 0;
-	virtual void Accept(ConstVisitor& visitor) const = 0;
-	virtual ~Tree() {}
-	
-protected:
-	Tree(const Position& position): position(position) {}
-private:
-	const Position position;
+	Value* value;
 };
 
-namespace Trees {
-
-	struct Token: public Tree {
-		const ::Token& token;
-		Token(const ::Token& token): Tree(token.position), token(token) {}
-		void Accept(Tree::Visitor& visitor) { return visitor.Visit(self); }
-		void Accept(Tree::ConstVisitor& visitor) const { return visitor.Visit(self); }
-	};
+struct LocalNode: ExpressionNode
+{
+	LocalNode(const std::string& local):
+		local(local)
+	{}
 	
-	struct Sequence: public Tree {
-		typedef std::vector<Tree*> tree_vector;
-		const tree_vector elements;
-		template<typename Iterator>
-		Sequence(const Position& position, Iterator begin, Iterator end): Tree(position), elements(begin, end) {}
-		template<typename Container>
-		Sequence(const Position& position, Container elements): Tree(position), elements(elements.begin(), elements.end()) {}
-		void Accept(Tree::Visitor& visitor) { return visitor.Visit(self); }
-		void Accept(Tree::ConstVisitor& visitor) const { return visitor.Visit(self); }
-	};
+	void generate(UserMethod* method);
 	
+	std::string local;
 };
 
-struct TreeType: Tree::ConstVisitor {
-	enum Type {
-		Token,
-		Sequence
-	};
-	Type result;
-	TreeType(const Tree* tree) {
-		tree->Accept(self);
-	}
-	operator Type() const {
-		return result;
-	}
-	void Visit(const Trees::Token& tok) {
-		result = Token;
-	}
-	void Visit(const Trees::Sequence& sequence) {
-		result = Sequence;
-	}
+struct ApplyNode: ExpressionNode
+{
+	ApplyNode(Node* receiver, const std::string& method):
+		receiver(receiver),
+		name(name)
+	{}
+	
+	void generate(UserMethod* method);
+	
+	Node* receiver;
+	const std::string name;
+	std::vector<Node*> args;
+};
+
+struct ValueNode: Node
+{
+	ValueNode(const std::string& local, Node* value):
+		local(local),
+		value(value)
+	{}
+	
+	void generate(UserMethod* method);
+	
+	const std::string local;
+	Node* value;
 };
 
 #endif // ndef TREE_H

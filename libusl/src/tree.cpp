@@ -1,18 +1,26 @@
 #include "tree.h"
+#include "code.h"
 
-void Tree::Visitor::Visit(Tree& tree) {
-	tree.Accept(self);
+void ConstNode::generate(UserMethod* method)
+{
+	method->body.push_back(new ConstCode(value));
 }
-void Tree::Visitor::Visit(Trees::Sequence& seq) {
-	foreach(iterator, seq.elements.begin(), seq.elements.end()) {
-		(*iterator)->Accept(self);
-	}
+
+void LocalNode::generate(UserMethod* method)
+{
+	method->body.push_back(new LocalCode(local));
 }
-void Tree::ConstVisitor::Visit(const Tree& tree) {
-	tree.Accept(self);
+
+void ApplyNode::generate(UserMethod* method)
+{
+	receiver->generate(method);
+	for (size_t i = 0; i < args.size(); i++)
+		args[i]->generate(method);
+	method->body.push_back(new ApplyCode(name, args.size()));
 }
-void Tree::ConstVisitor::Visit(const Trees::Sequence& seq) {
-	foreach(iterator, seq.elements.begin(), seq.elements.end()) {
-		(*iterator)->Accept(self);
-	}
+
+void ValueNode::generate(UserMethod* method)
+{
+	value->generate(method);
+	method->body.push_back(new ValueCode(local));
 }

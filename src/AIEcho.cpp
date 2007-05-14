@@ -4217,7 +4217,10 @@ void enemy_building_iterator::set_to_next()
 		Building* b=echo->player->game->teams[team]->myBuildings[current_index];
 		if(b)
 		{
-			if( (b->seenByMask&echo->player->team->me || echo->get_starting_buildings().find(b->gid)!=echo->get_starting_buildings().end()) &&
+			if( (b->seenByMask&echo->player->team->me
+                             // Don't allow AIs to cheat!!!!!!
+                             // || echo->get_starting_buildings().find(b->gid)!=echo->get_starting_buildings().end()
+                             ) &&
 				(building_type==-1 || b->type->shortTypeNum==building_type) &&
 				(level==-1 || b->type->level==(level-1)))
 			{

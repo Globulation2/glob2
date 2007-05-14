@@ -34,16 +34,8 @@ AC_CHECK_HEADER(zlib.h,)
 AC_CHECK_LIB(z,gzdopen,,AC_MSG_ERROR([*** zlib library not found. Please install zlib (http://www.gzip.org/zlib).]))
 
 dnl Check for Speex
-have_speex=no
-AC_CHECK_HEADER(speex/speex.h,have_speex=yes,)
-if test "$have_speex" = "yes"; then
-	AC_DEFINE([SPEEX_DIR],,[libspeex headers are in a subdirectory])
-fi
-AC_CHECK_HEADER(speex.h,have_speex=yes,)
+AC_CHECK_HEADER(speex/speex.h,,AC_MSG_ERROR([*** Speex headers not found. Please install Speex (http://www.speex.org).]))
 AC_CHECK_LIB(speex,speex_encoder_init,,AC_MSG_ERROR([*** Speex library not found. Please install Speex (http://www.speex.org).]))
-if test "$have_speex" = "no"; then
-	AC_MSG_ERROR([*** Speex header not found. Please install Speex (http://www.speex.org).])
-fi
 
 dnl Check for SDL
 SDL_VERSION=1.2.0

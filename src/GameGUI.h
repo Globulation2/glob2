@@ -109,8 +109,10 @@ public:
 	// Script interface
 	void enableBuildingsChoice(const std::string &name);
 	void disableBuildingsChoice(const std::string &name);
+	bool isBuildingEnabled(const std::string &name);
 	void enableFlagsChoice(const std::string &name);
 	void disableFlagsChoice(const std::string &name);
+	bool isFlagEnabled(const std::string &name);
 	void enableGUIElement(int id);
 	void disableGUIElement(int id);
 	bool isSpaceSet() { return hasSpaceBeenClicked; }
@@ -182,11 +184,11 @@ private:
 	
 	void moveFlag(int mx, int my, bool drop);
 	//! Update the brush and the local map due to mouse motion
-	void brushStep(int mx, int my);
+	void brushStep(bool maybeToggleMode, int mx, int my);
 	//! Send a brush order and reinitialize the brush accumulator
 	void sendBrushOrders(void);
 	//! One viewport has moved and a flag or a brush is selected, update its position
-	void dragStep(void);
+	void dragStep(int mx, int my, int button);
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
 	

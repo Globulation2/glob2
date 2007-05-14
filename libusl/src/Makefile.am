@@ -6,4 +6,4 @@ libusl_a_SOURCES = scanner.cpp \
                    interpreter.cpp \
                    test.cpp
 
-INCLUDES = -I@srcdir@/../include -I@srcdir@/../../libwee/include
+INCLUDES = -I@srcdir@/../include

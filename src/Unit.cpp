@@ -720,6 +720,23 @@ void Unit::handleMagic(void)
 
 void Unit::handleMedical(void)
 {
+        /* Make sure explorers try to immediately feed after healing to increase their range. */
+        if ((typeNum == EXPLORER)
+            && (displacement == DIS_EXITING_BUILDING)) {
+          medical=MED_FREE;
+          if ((destinationPurprose == HEAL)
+              && (hungry < ((HUNGRY_MAX * 9) / 10))) {
+            // fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
+            needToRecheckMedical = 1;
+            medical = MED_HUNGRY;
+            return; }
+          else if ((destinationPurprose == FEED)
+                   && (hp < (((performance[HP]) * 9) / 10))) {
+            // fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
+            needToRecheckMedical = 1;
+            medical = MED_DAMAGED;
+            return; }}
+
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
 	
@@ -773,8 +790,15 @@ void Unit::handleMedical(void)
 
 void Unit::handleActivity(void)
 {
+        if ((displacement==DIS_EXITING_BUILDING)
+            && (typeNum == EXPLORER)) {
+          // fprintf (stderr, "exiting explorer: gid: %d, medical: %d, destinationPurprose: %d\n", gid, medical, destinationPurprose);
+        }
+
 	// freeze unit health when inside a building
-	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
+	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE)
+            || ((displacement==DIS_EXITING_BUILDING)
+                && ! ((typeNum == EXPLORER) && (medical != MED_FREE))))
 		return;
 	
 	if (verbose)
@@ -853,6 +877,10 @@ void Unit::handleActivity(void)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
+                        if (typeNum == EXPLORER) {
+                          // fprintf (stderr, "gid: %d, b: %x\n", gid, b);
+                        }
+
 			if (b!=NULL)
 			{
 				Team *currentTeam=owner;
@@ -1464,6 +1492,12 @@ void Unit::handleMovement(void)
 						dxdyfromDirection();
 						movement = MOV_GOING_DXDY;
 						found = true;
+                                                /* 
+                                                fprintf (stderr, "gid = %d; changed direction: direction = %d, dx = %d, dy = %d; tab = {", gid, direction, dx, dy);
+                                                for (int i = 0; i < 8; i++) {
+                                                  fprintf (stderr, "%d%s", tab[i], ((i < 7) ? ", " : "")); }
+                                                fprintf (stderr, "}\n");
+                                                */
 						break;
 					}
 				}
@@ -1471,16 +1505,25 @@ void Unit::handleMovement(void)
 				{
 					int scoreX = 0;
 					int scoreY = 0;
-					for (int delta = -3; delta <= 3; delta++)
-					{
-						scoreX += owner->map->getExplored(posX - 4, posY + delta, owner->teamNumber);
-						scoreX -= owner->map->getExplored(posX + 4, posY + delta, owner->teamNumber);
-						scoreY += owner->map->getExplored(posX + delta, posY - 4, owner->teamNumber);
-						scoreY -= owner->map->getExplored(posX + delta, posY + 4, owner->teamNumber);
-					}
+                                        /* The next line should really be calculated only once per game.  How to do this?  The point is to avoid wrapping around the torus in considering what area is closer to us. */
+                                        int maxRange = (std::min(owner->map->getW(), owner->map->getH())) / 2;
+                                        /* We sample cells at various
+                                           distances to decide in what
+                                           direction there is more
+                                           unexplored territory. */
+                                        for (int range = 1; range <= maxRange; range *= 2)
+                                          {
+                                            for (int delta = -3; delta <= 3; delta++)
+                                              {
+						scoreX += owner->map->getExplored(posX - (4*range), posY + (delta*range), owner->teamNumber);
+						scoreX -= owner->map->getExplored(posX + (4*range), posY + (delta*range), owner->teamNumber);
+						scoreY += owner->map->getExplored(posX + (delta*range), posY - (4*range), owner->teamNumber);
+						scoreY -= owner->map->getExplored(posX + (delta*range), posY + (4*range), owner->teamNumber);
+                                              }
+                                          }
 					int cdx, cdy;
 					simplifyDirection(scoreX, scoreY, &cdx, &cdy);
-					//printf("score = (%2d, %2d), cd = (%d, %d)\n", scoreX, scoreY, cdx, cdy);
+					// fprintf(stderr, "gid = %d, maxRange = %d, score = (%2d, %2d), cd = (%d, %d)\n", gid, maxRange, scoreX, scoreY, cdx, cdy);
 					if (cdx == 0 && cdy == 0)
 						movement = MOV_RANDOM_FLY;
 					else
@@ -2290,12 +2333,18 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 	else if (ldy<-(maph>>1))
 		ldy+=maph;
 
-	if (abs(ldx)>(2*abs(ldy)))
+        /* We consider a cell to be vertical or horizontal in
+           direction (rather than diagonal) if it is 2.41 times more
+           vertical than horizontal, or vice versa.  This is because
+           the halfway point between 45 degrees and 90 degrees is 67.5
+           degrees and sin(67.5 deg) / cos(67.5 deg) =
+           2.41421356237. */
+	if ((100 * abs(ldx)) > (241 * abs(ldy)))
 	{
 		*cdx=SIGN(ldx);
 		*cdy=0;
 	}
-	else if (abs(ldy)>(2*abs(ldx)))
+	else if ((100 * abs(ldy)) > (241 * abs(ldx)))
 	{
 		*cdx=0;
 		*cdy=SIGN(ldy);

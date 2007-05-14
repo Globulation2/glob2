@@ -20,10 +20,10 @@
 #define AIEcho_h
 
 
-#include <Map.h>
-#include <AIImplementation.h>
-#include <BuildingType.h>
-#include <Player.h>
+#include "Map.h"
+#include "AIImplementation.h"
+#include "BuildingType.h"
+#include "Player.h"
 #include "TeamStat.h"
 #include "Order.h"
 
