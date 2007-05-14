@@ -33,6 +33,7 @@ void MapHeader::reset()
 	numberOfTeams = 0;
 	mapName = "";
 	mapOffset = 0;
+	isSavedGame=false;
 }
 
 
