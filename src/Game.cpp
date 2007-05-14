@@ -81,19 +81,7 @@ Game::~Game()
 		}
 	}
 	
-	// delete existing teams and players
-	for (int i=0; i<session.numberOfTeam; i++)
-		if (teams[i])
-		{
-			delete teams[i];
-			teams[i]=NULL;
-		}
-	for (int i=0; i<session.numberOfPlayer; i++)
-		if (players[i])
-		{
-			delete players[i];
-			players[i]=NULL;
-		}
+	clearGame();
 
 	if (minimap)
 		delete minimap;
@@ -117,9 +105,9 @@ void Game::init(GameGUI *gui)
 		minimap->drawFilledRect(0, 0, 100, 100, 0, 0, 0);
 	}
 
-	session.numberOfTeam=0;
-	session.numberOfPlayer=0;
-	
+	mapHeader.reset();
+	gameHeader.reset();
+
 	for (int i=0; i<32; i++)
 	{
 		teams[i]=NULL;
@@ -145,45 +133,80 @@ void Game::init(GameGUI *gui)
 		ticksGameSum[i]=0;
 }
 
-void Game::setBase(const SessionInfo *initial)
+
+
+void Game::clearGame()
 {
-	// This function reset some team info and overwrite the players
-
-	assert(initial);
-	assert(initial->numberOfTeam==session.numberOfTeam);
-	// TODO, we should be able to play with less team than planed on the map
-	// for instance, play at 2 on a 4 player map, and we will have to check the following code !!!
-
-	// the GUI asserts that we have not more team that planed on the map
-
-	// set the base team, for now the number is corect but we should check that further
-	for (int i=0; i<session.numberOfTeam; i++)
-		teams[i]->setBaseTeam(&(initial->teams[i]), session.fileIsAMap);
-
-	// set the base players
-	for (int i=0; i<session.numberOfPlayer; i++)
-		delete players[i];
-
-	session.numberOfPlayer=initial->numberOfPlayer;
-
-	for (int i=0; i<initial->numberOfPlayer; i++)
+	// Delete existing teams and players
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		players[i]=new Player();
-		players[i]->setBasePlayer(&(initial->players[i]), teams);
+		if (teams[i])
+		{
+			delete teams[i];
+			teams[i]=NULL;
+		}
+	}
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	{
+		if (players[i])
+		{
+			delete players[i];
+			players[i]=NULL;
+		}
 	}
 
-	session.gameTPF=initial->gameTPF;
-	session.gameLatency=initial->gameLatency;
+	///Clears prestige	
+	totalPrestige=0;
+	totalPrestigeReached=false;
+	isGameEnded=false;
+}
+
+
+
+void Game::setMapHeader(const MapHeader& newMapHeader)
+{
+	mapHeader = newMapHeader;
+
+	// set the base team, for now the number is corect but we should check that further
+	for (int i=0; i<newMapHeader.getNumberOfTeams(); i++)
+		teams[i]->setBaseTeam(&newMapHeader.getBaseTeam(i));
+}
+
+
+
+void Game::setGameHeader(const GameHeader& newGameHeader)
+{
+	// set the base players
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+		delete players[i];
+
+	gameHeader = newGameHeader;
+
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		teams[i]->playersMask=0;
+		teams[i]->numberOfPlayer=0;
+	}
+
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	{
+		players[i]=new Player();
+		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
+		teams[players[i]->teamNumber]->numberOfPlayer+=1;
+		teams[players[i]->teamNumber]->playersMask|=(1<<i);
+	}
 
 	anyPlayerWaited=false;
 }
+
+
 
 void Game::executeOrder(Order *order, int localPlayer)
 {
 	anyPlayerWaited=false;
 	assert(order->sender>=0);
 	assert(order->sender<32);
-	assert(order->sender<session.numberOfPlayer);
+	assert(order->sender < gameHeader.getNumberOfPlayers());
 	Team *team=players[order->sender]->team;
 	assert(team);
 	bool isPlayerAlive=team->isAlive;
@@ -712,7 +735,7 @@ bool Game::isHumanAllAllied(void)
 	Uint32 nonAIMask=0;
 	
 	// AIMask now have the mask of everything which isn't AI
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
 		nonAIMask |= ((teams[i]->type != BaseTeam::T_AI) ? 1 : 0) << i;
 		//printf("team %d is AI is %d\n", i, teams[i]->type == BaseTeam::T_AI);
@@ -720,7 +743,7 @@ bool Game::isHumanAllAllied(void)
 
 	// if there is any non-AI player with which we aren't allied, return false
 	// or if there is any player allied to AI
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		if (teams[i]->type != BaseTeam::T_AI)
 		{
 			if (teams[i]->allies != nonAIMask)
@@ -741,7 +764,7 @@ void Game::setAIAlliance(void)
 		Uint32 aiMask = 0;
 		
 		// find all AI
-		for (int i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			if (teams[i]->type == BaseTeam::T_AI)
 				aiMask |= (1<<i);
 		
@@ -749,7 +772,7 @@ void Game::setAIAlliance(void)
 			printf("AI mask : %x\n", aiMask);
 				
 		// ally them together
-		for (int i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			if (teams[i]->type == BaseTeam::T_AI)
 			{
 				teams[i]->allies = aiMask;
@@ -762,7 +785,7 @@ void Game::setAIAlliance(void)
 			printf("Game : AIs are now in ffa mode\n");
 		
 		// free for all on AI side
-		for (int i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		{
 			if (teams[i]->type == BaseTeam::T_AI)
 			{
@@ -778,242 +801,187 @@ bool Game::load(GAGCore::InputStream *stream)
 	assert(stream);
 	stream->readEnterSection("Game");
 	
-	// delete existing teams
-	for (int i=0; i<session.numberOfTeam; ++i)
-		if (teams[i])
-		{
-			delete teams[i];
-			teams[i]=NULL;
-		}
-	session.numberOfTeam=0;
-	for (int i=0; i<session.numberOfPlayer; ++i)
-		if (players[i])
-		{
-			delete players[i];
-			players[i]=NULL;
-		}
-	session.numberOfPlayer=0;
+	///Clears any previous game
+	clearGame();
+	mapHeader.reset();
+	gameHeader.reset();
 
-	// clear prestige
-	totalPrestige=0;
-	totalPrestigeReached=false;
-	isGameEnded=false;
-
-	// We load the file's header:
-	SessionInfo tempSessionInfo;
+	// We load the map header
+	MapHeader tempMapHeader;
 	if (verbose)
 		printf("Loading map header\n");
-	if (!tempSessionInfo.load(stream))
+	if (!tempMapHeader.load(stream))
 	{
-		fprintf(logFile, "Game::load::tempSessionInfo.load\n");
+		fprintf(logFile, "Game::load::tempMapHeader.load\n");
 		stream->readLeaveSection();
+		std::cout<<"1"<<std::endl;
 		return false;
 	}
+	mapHeader=tempMapHeader;
+	Sint32 versionMinor=mapHeader.getVersionMinor();
+	
+	
+	// We load the game header
+	GameHeader tempGameHeader;
+	if (verbose)
+		printf("Loading game header\n");
+	if (!tempGameHeader.load(stream, versionMinor))
+	{
+		fprintf(logFile, "Game::load::tempMapHeader.load\n");
+		stream->readLeaveSection();
+		std::cout<<"2"<<std::endl;
+		return false;
+	}
+	gameHeader=tempGameHeader;
 
-	session=(SessionGame)tempSessionInfo;
-
-	if (stream->canSeek())
-		stream->seekFromStart(tempSessionInfo.gameOffset);
-
+	// Test the beginning signature. Signatures are basic corruption tests.
+	// Since Game loads many other structures, it has many of them.
 	char signature[4];
 	stream->read(signature, 4, "signatureStart");
-	if (session.versionMinor >= 31)
+	if (memcmp(signature,"GaBe", 4)!=0)
 	{
-		if (memcmp(signature,"GaBe", 4)!=0)
-		{
-			fprintf(logFile, "Signature missmatch at begin\n");
-			stream->readLeaveSection();
-			return false;
-		}
-	}
-	else if (memcmp(signature, "GAMb",4)!=0)
-	{
-		fprintf(logFile, "Signature missmatch at begin\n");
+		fprintf(logFile, "Signature missmatch at Game::load begin\n");
 		stream->readLeaveSection();
+		std::cout<<"3"<<std::endl;
 		return false;
 	}
-	
-	if (session.versionMinor>=31)
-		stepCounter = stream->readUint32("stepCounter");
+
+	///Load the step counter and random seeds	
+	stepCounter = stream->readUint32("stepCounter");
 	setSyncRandSeedA(stream->readUint32("SyncRandSeedA"));
 	setSyncRandSeedB(stream->readUint32("SyncRandSeedB"));
 	setSyncRandSeedC(stream->readUint32("SyncRandSeedC"));
 
 	stream->read(signature, 4, "signatureAfterSyncRand");
-	if (session.versionMinor>=31)
+	if (memcmp(signature,"GaSy", 4)!=0)
 	{
-		if (memcmp(signature,"GaSy", 4)!=0)
-		{
-			fprintf(logFile, "Signature missmatch after sync rand\n");
-			stream->readLeaveSection();
-			return false;
-		}
-	}
-	else if (memcmp(signature, "GAMm", 4)!=0)
-	{
-		fprintf(logFile, "Signature missmatch after sync rand\n");
+		fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
 		stream->readLeaveSection();
+		std::cout<<"4"<<std::endl;
 		return false;
 	}
 
-	// we load teams
-	if (stream->canSeek())
-		stream->seekFromStart(tempSessionInfo.teamsOffset);
+	///Load teams
 	stream->readEnterSection("teams");
-	for (int i=0; i<session.numberOfTeam; ++i)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		stream->readEnterSection(i);
-		teams[i]=new Team(stream, this, session.versionMinor);
+		teams[i]=new Team(stream, this, versionMinor);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	if (session.versionMinor>=31)
+
+	stream->read(signature, 4, "signatureAfterTeams");
+	if (memcmp(signature,"GaTe", 4)!=0)
 	{
-		stream->read(signature, 4, "signatureAfterTeams");
-		if (memcmp(signature,"GaTe", 4)!=0)
-		{
-			fprintf(logFile, "Signature missmatch after teams\n");
-			stream->readLeaveSection();
-			return false;
-		}
+		fprintf(logFile, "Signature missmatch after Game::load teams\n");
+		stream->readLeaveSection();
+		std::cout<<"5"<<std::endl;
+		return false;
 	}
 	
-	// we have to load team before map
-	if (stream->canSeek())
-		stream->seekFromStart(tempSessionInfo.mapOffset);
-	if(!map.load(stream, &session, this))
+	// Load the map. Team has to be saved and loaded first.
+	if(!map.load(stream, mapHeader, this))
 	{
 		fprintf(logFile, "Signature missmatch in map\n");
 		stream->readLeaveSection();
-		return false;
-	}
-	stream->read(signature, 4, "signatureAfterMap");
-	if (session.versionMinor>=31)
-	{
-		if (memcmp(signature,"GaMa", 4)!=0)
-		{
-			fprintf(logFile, "Signature missmatch after map\n");
-			stream->readLeaveSection();
-			return false;
-		}
-	}
-	else if (memcmp(signature,"GAMe", 4)!=0)
-	{
-		fprintf(logFile, "Signature missmatch after map\n");
-		stream->readLeaveSection();
+		std::cout<<"6"<<std::endl;
 		return false;
 	}
 
-	// we have to load map and team before players
-	if (stream->canSeek())
-		stream->seekFromStart(tempSessionInfo.playersOffset);
+	stream->read(signature, 4, "signatureAfterMap");
+	if (memcmp(signature,"GaMa", 4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch after map\n");
+		stream->readLeaveSection();
+		std::cout<<"7"<<std::endl;
+		return false;
+	}
+
+	// Load the players. Both Map and Team must be loaded first.
 	stream->readEnterSection("players");
-	for (int i=0; i<session.numberOfPlayer; ++i)
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 	{
 		stream->readEnterSection(i);
-		players[i]=new Player(stream, teams, session.versionMinor);
+		players[i]=new Player(stream, teams, versionMinor);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	
-	if (session.versionMinor>=31)
+	stream->read(signature, 4, "signatureAfterPlayers");
+	if (memcmp(signature,"GaPl", 4)!=0)
 	{
-		stream->read(signature, 4, "signatureAfterPlayers");
-		if (memcmp(signature,"GaPl", 4)!=0)
-		{
-			fprintf(logFile, "Signature missmatch after players\n");
-			stream->readLeaveSection();
-			return false;
-		}
+		fprintf(logFile, "Signature missmatch after players\n");
+		stream->readLeaveSection();
+		std::cout<<"8"<<std::endl;
+		return false;
 	}
-	else
-		stepCounter = stream->readUint32("stepCounter");
 
-	// we have to finish Team's loading:
-	for (int i=0; i<session.numberOfTeam; i++)
+	// We have to finish Team's loading
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
 		teams[i]->stats.setMapSize(map.getW(), map.getH());
 		teams[i]->update();
 	}
 	
-	for (int i=0; i<session.numberOfTeam; i++)
+	///Check teams integrity
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		teams[i]->integrity();
 	
-	// then script
-	if (stream->canSeek())
-		stream->seekFromStart(tempSessionInfo.mapScriptOffset);
+	// Now load the map script
 	if (!script.load(stream, this))
 	{
 		stream->readLeaveSection();
+		std::cout<<"9"<<std::endl;
 		return false;
 	}
 	
-	if (session.versionMinor < 37)
-	{
-		campaignText = "";
-	}
-	else
-	{
-		if(session.versionMinor < 55)
-			stream->readText("nextMap");
-		campaignText = stream->readText("campaignText");
-	}
-//game reverts to default prestige settings if higher then maximum (2000)
-//this is done to maximize efficiency if maximum settings are ever changed this 
-//will need to be changed as well 
-	if (session.varPrestige > 2000)
-	{	
-		// default prestige calculation
-		prestigeToReach = std::max(MIN_MAX_PRESIGE, session.numberOfTeam*TEAM_MAX_PRESTIGE);
-	}
-	else
-	{
-	// custom prestige
-		prestigeToReach = session.varPrestige;
-	}
+	///Load the campaign text for the game.
+	campaignText = stream->readText("campaignText");
+	
+	// default prestige calculation
+	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
+
 	stream->readLeaveSection();
 	return true;
 }
 
-void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name)
+void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name)
 {
 	assert(stream);
 	stream->writeEnterSection("Game");
 
-	// first we save a session info
-	SessionInfo tempSessionInfo(session);
-
-	// A typical use case: You have loaded a map, and you want to save your game.
-	// In this case, the file is no more a map, but a game.
-	tempSessionInfo.fileIsAMap=(Sint32)fileIsAMap;
-	tempSessionInfo.setMapName(name);
-
-	for (int i=0; i<session.numberOfTeam; ++i)
+	///Save the two headers, record the position in the file because mapHeader will
+	///will need to be overwritten with the mapOffset known
+	Uint32 mapHeaderOffset = stream->getPosition();
+	mapHeader.setMapName(name);
+	
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
-		tempSessionInfo.teams[i]=*teams[i];
-		tempSessionInfo.teams[i].disableRecursiveDestruction=true;
+		mapHeader.getBaseTeam(i)=*teams[i];
+		mapHeader.getBaseTeam(i).disableRecursiveDestruction=true;
 	}
 
-	for (int i=0; i<session.numberOfPlayer; ++i)
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 	{
-		tempSessionInfo.players[i]=*players[i];
-		tempSessionInfo.players[i].disableRecursiveDestruction=true;
+		gameHeader.getBasePlayer(i)=*players[i];
+		gameHeader.getBasePlayer(i).disableRecursiveDestruction=true;
 	}
 	
-	tempSessionInfo.save(stream);
+	mapHeader.save(stream);
+	gameHeader.save(stream);
 	
-	SAVE_OFFSET(stream, 16, "gameOffset");
+	///Save basic informations
 	stream->write("GaBe", 4, "signatureStart");
-
 	stream->writeUint32(stepCounter, "stepCounter");
 	stream->writeUint32(getSyncRandSeedA(), "SyncRandSeedA");
 	stream->writeUint32(getSyncRandSeedB(), "SyncRandSeedB");
 	stream->writeUint32(getSyncRandSeedC(), "SyncRandSeedC");
 	stream->write("GaSy", 4, "signatureAfterSyncRand");
 
-	SAVE_OFFSET(stream, 20, "teamsOffset");
+	///Save teams
 	stream->writeEnterSection("teams");
-	for (int i=0; i<session.numberOfTeam; ++i)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		stream->writeEnterSection(i);
 		teams[i]->save(stream);
@@ -1022,13 +990,16 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 	stream->writeLeaveSection();
 	stream->write("GaTe", 4, "signatureAfterTeams");
 
-	SAVE_OFFSET(stream, 28, "mapOffset");
+
+	///Save the map offset to the header, before we save the map
+	///Then, save the map
+	mapHeader.setMapOffset(stream->getPosition());
 	map.save(stream);
 	stream->write("GaMa", 4, "signatureAfterMap");
-		
-	SAVE_OFFSET(stream, 24, "playersOffset");
+
+	///Save the players
 	stream->writeEnterSection("players");
-	for (int i=0; i<session.numberOfPlayer; ++i)
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 	{
 		stream->writeEnterSection(i);
 		players[i]->save(stream);
@@ -1037,10 +1008,22 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 	stream->writeLeaveSection();
 	stream->write("GaPl", 4, "signatureAfterPlayers");
 
-	SAVE_OFFSET(stream, 32, "mapScriptOffset");
+	///Save the map script state
 	script.save(stream, this);
 	
+	///Save the campaign text
 	stream->writeText(campaignText, "campaignText");
+	
+	///Overwrite the MapHeader. This is done after the map
+	///offset has been set.
+	if (stream->canSeek())
+	{
+		Uint32 position = stream->getPosition();
+		stream->seekFromStart(mapHeaderOffset);
+		mapHeader.save(stream);
+		stream->seekFromStart(position);
+	}
+
 	stream->writeLeaveSection();
 }
 
@@ -1107,17 +1090,17 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-// prestige of 0 results in infinite prestige
-	if (session.varPrestige > 0)
+	// prestige of 0 results in infinite prestige
+	if (prestigeToReach > 0)
 	{
 		totalPrestige=0;
 		isGameEnded=false;
 		int greatestPrestige=0;
 		
-		for (int i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		{
 			bool isOtherAlive=false;
-			for (int j=0; j<session.numberOfTeam; j++)
+			for (int j=0; j<mapHeader.getNumberOfTeams(); j++)
 			{
 				if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
 					isOtherAlive=true;
@@ -1133,7 +1116,7 @@ void Game::wonSyncStep(void)
 			totalPrestigeReached=true;
 			isGameEnded=true;
 	
-			for (int i=0; i<session.numberOfTeam; i++)
+			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 				teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
 		}
 	}
@@ -1145,7 +1128,7 @@ void Game::scriptSyncStep()
 	script.syncStep(gui);
 
 	// alter win/loose conditions
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
 		if (teams[i]->isAlive)
 		{
@@ -1160,7 +1143,7 @@ void Game::scriptSyncStep()
 void Game::clearEventsStep(void)
 {
 	// We clear all events
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		teams[i]->clearEvents();
 }
 
@@ -1170,7 +1153,7 @@ void Game::syncStep(Sint32 localTeam)
 	{
 		Sint32 startTick=SDL_GetTicks();
 		
-		for (int i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 		
 		map.syncStep(stepCounter);
@@ -1180,7 +1163,7 @@ void Game::syncStep(Sint32 localTeam)
 		if ((stepCounter&31)==16)
 		{
 			map.switchFogOfWar();
-			for (int t=0; t<session.numberOfTeam; t++)
+			for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
 				for (int i=0; i<1024; i++)
 				{
 					Building *b=teams[t]->myBuildings[i];
@@ -1218,22 +1201,24 @@ void Game::syncStep(Sint32 localTeam)
 
 void Game::dirtyWarFlagGradient(void)
 {
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		teams[i]->dirtyWarFlagGradient();
 }
 
 void Game::addTeam(int pos)
 {
 	if(pos==-1)
-		pos=session.numberOfTeam;
-	if (session.numberOfTeam<32)
+		pos=mapHeader.getNumberOfTeams();
+	if (mapHeader.getNumberOfTeams()<32)
 	{
 		teams[pos]=new Team(this);
-		teams[pos]->teamNumber=session.numberOfTeam;
+		teams[pos]->teamNumber=mapHeader.getNumberOfTeams();
 		teams[pos]->race.load();
 		teams[pos]->setCorrectMasks();
 
-		pos=++session.numberOfTeam;
+		pos=mapHeader.getNumberOfTeams();
+		pos+=1;
+		mapHeader.setNumberOfTeams(pos);
 		for (int i=0; i<pos; i++)
 			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
 		
@@ -1248,17 +1233,21 @@ void Game::addTeam(int pos)
 void Game::removeTeam(int pos)
 {
 	if(pos==-1)
-		pos=--session.numberOfTeam;
-	if (session.numberOfTeam>0)
+	{
+		pos=mapHeader.getNumberOfTeams();
+		pos-=1;
+		mapHeader.setNumberOfTeams(pos);
+	}
+	if (mapHeader.getNumberOfTeams()>0)
 	{
 		Team *team=teams[pos];
 
 		team->clearMap();
 
 		delete team;
-		assert (session.numberOfTeam!=0);
-		for (int i=0; i<session.numberOfTeam; ++i)
-			teams[i]->setCorrectColor(((float)i*360.0f)/(float)session.numberOfTeam);
+		assert (mapHeader.getNumberOfTeams()!=0);
+		for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+			teams[i]->setCorrectColor(((float)i*360.0f)/(float)mapHeader.getNumberOfTeams());
 
 		map.removeTeam();
 		teams[pos]=NULL;
@@ -1267,7 +1256,7 @@ void Game::removeTeam(int pos)
 
 void Game::clearingUncontrolledTeams(void)
 {
-	for (int ti=0; ti<session.numberOfTeam; ti++)
+	for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
 	{
 		Team *team=teams[ti];
 		if (team->playersMask==0)
@@ -1283,7 +1272,7 @@ void Game::clearingUncontrolledTeams(void)
 void Game::regenerateDiscoveryMap(void)
 {
 	map.unsetMapDiscovered();
-	for (int t=0; t<session.numberOfTeam; t++)
+	for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
 	{
 		for (int i=0; i<1024; i++)
 		{
@@ -1306,7 +1295,7 @@ void Game::regenerateDiscoveryMap(void)
 
 Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta, int dx, int dy)
 {
-	assert(team<session.numberOfTeam);
+	assert(team<mapHeader.getNumberOfTeams());
 
 	UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
 
@@ -1424,7 +1413,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 	}
 	if (flags & DEL_FLAG)
 	{
-		for (int ti=0; ti<session.numberOfTeam; ti++)
+		for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
 			for (std::list<Building *>::iterator bi=teams[ti]->virtualBuildings.begin(); bi!=teams[ti]->virtualBuildings.end(); ++bi)
 				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
@@ -2487,11 +2476,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
@@ -2578,7 +2567,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
-				for (int pi=0; pi<session.numberOfPlayer; pi++)
+				for (int pi=0; pi<gameHeader.getNumberOfPlayers(); pi++)
 					if (players[pi] && players[pi]->ai && players[pi]->ai->implementitionID==AI::CASTOR)
 					{
 						AICastor *ai=(AICastor *)players[pi]->ai->aiImplementation;
@@ -2862,15 +2851,15 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 {
 	Uint32 cs=0;
 
-	Uint32 sessionCs=session.checkSum();
-	cs^=sessionCs;
+	Uint32 headerCs=mapHeader.checkSum();
+	cs^=headerCs;
 	if (checkSumsVector)
-		checkSumsVector->push_back(sessionCs);// [0]
+		checkSumsVector->push_back(headerCs);// [0]
 
 	cs=(cs<<31)|(cs>>1);
 	
 	Uint32 teamsCs=0;
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
 		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits);
 		teamsCs=(teamsCs<<31)|(teamsCs>>1);
@@ -2883,7 +2872,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	cs=(cs<<31)|(cs>>1);
 	
 	Uint32 playersCs=0;
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
 		playersCs^=players[i]->checkSum(checkSumsVector);
 		playersCs=(playersCs<<31)|(playersCs>>1);
@@ -2896,7 +2885,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	cs=(cs<<31)|(cs>>1);
 	
 	bool heavy=false;
-	for (int i=0; i<session.numberOfPlayer; i++)
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 		if (players[i]->type==BasePlayer::P_IP)
 		{
 			heavy=true;
@@ -2932,7 +2921,7 @@ Team *Game::getTeamWithMostPrestige(void)
 	int maxPrestige=0;
 	Team *maxPrestigeTeam=NULL;
 	
-	for (int i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
 		Team *t=teams[i];
 		if (t->prestige > maxPrestige)
@@ -2944,20 +2933,20 @@ Team *Game::getTeamWithMostPrestige(void)
 	return maxPrestigeTeam;
 }
 
-std::string glob2FilenameToName(const char *filename)
+std::string glob2FilenameToName(const std::string& filename)
 {
-	GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename));
+	GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename.c_str()));
 	if (stream->isEndOfStream())
 	{
 		delete stream;
 	}
 	else
 	{
-		SessionInfo tempSession;
-		bool res = tempSession.load(stream);
+		MapHeader tempHeader;
+		bool res = tempHeader.load(stream);
 		delete stream;
 		if (res)
-			return tempSession.getMapName();
+			return tempHeader.getMapName();
 	}
 	return "";
 }
@@ -2973,7 +2962,7 @@ private:
 	const It to;
 };
 
-std::string glob2NameToFilename(const char *dir, const char *name, const char *extension)
+std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension)
 {
 	const char* pattern = " \t";
 	const char* endPattern = strchr(pattern, '\0');
@@ -2981,7 +2970,7 @@ std::string glob2NameToFilename(const char *dir, const char *name, const char *e
 	std::replace_if(fileName.begin(), fileName.end(), contains<const char*, char>(pattern, endPattern), '_');
 	std::string fullFileName = dir;
 	fullFileName += DIR_SEPARATOR + fileName;
-	if (extension && (*extension != '\0'))
+	if (extension != "" && extension != "\0")
 	{
 		fullFileName += '.';
 		fullFileName += extension;

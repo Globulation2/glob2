@@ -231,7 +231,7 @@ void Team::init(void)
 
 
 
-void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
+void Team::setBaseTeam(const BaseTeam *initial)
 {
 	teamNumber=initial->teamNumber;
 	numberOfPlayer=initial->numberOfPlayer;
@@ -239,14 +239,8 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	race=initial->race;
 	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 
-	// This case is a bit hard to understand.
-	// When you load a teamed saved game, you don't want to change your aliances.
-	// But players may join the network game in adifferent order than when the game was saved.
-	if (overwriteAfterbase)
-	{
-		setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
-		setCorrectMasks();
-	}
+	setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
+	setCorrectMasks();
 }
 
 
@@ -667,7 +661,7 @@ void Team::update()
 
 bool Team::openMarket()
 {
-	int numberOfTeam=game->session.numberOfTeam;
+	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	for (int ti=0; ti<numberOfTeam; ti++)
 		if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
 			return true;
@@ -726,10 +720,10 @@ Building *Team::findNearestHeal(Unit *unit)
 
 Building *Team::findNearestFood(Unit *unit)
 {
-	SessionGame &session=game->session;
+	MapHeader& header=game->mapHeader;
 
 	bool concurency = false;//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
-	for (int ti= 0; ti < session.numberOfTeam; ti++)
+	for (int ti= 0; ti < header.getNumberOfTeams(); ti++)
 		if (ti != teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
 		{
 			concurency = true;
@@ -747,7 +741,7 @@ Building *Team::findNearestFood(Unit *unit)
 		if (unit->performance[FLY])
 		{
 			Sint32 bestDist = maxDist;
-			for (int ti = 0; ti < session.numberOfTeam; ti++)
+			for (int ti = 0; ti < header.getNumberOfTeams(); ti++)
 			{
 				if (ti == teamNumber)
 					continue;
@@ -778,7 +772,7 @@ Building *Team::findNearestFood(Unit *unit)
 		{
 			Sint32 bestDist = maxDist;
 			bool canSwim = (unit->performance[SWIM] > 0);
-			for (int ti = 0; ti < session.numberOfTeam; ti++)
+			for (int ti = 0; ti < header.getNumberOfTeams(); ti++)
 			{
 				if (ti == teamNumber)
 					continue;
@@ -1201,7 +1195,7 @@ void Team::checkControllingPlayers(void)
 	if (!hasWon)
 	{
 		bool stillInControl = false;
-		for (int i=0; i<game->session.numberOfPlayer; i++)
+		for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
 		{
 			if ((game->players[i]->teamNumber == teamNumber) &&
 				game->players[i]->type != Player::P_LOST_DROPPING &&
@@ -1356,7 +1350,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 const char *Team::getFirstPlayerName(void) const
 {
-	for (int i=0; i<game->session.numberOfPlayer; i++)
+	for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (game->players[i]->team == this)
 			return game->players[i]->name;

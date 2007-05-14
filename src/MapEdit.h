@@ -79,8 +79,8 @@ public:
 };
 
 
-///This is a text info box. It is used primarily for entering the names of the script areas, however it should be generic
-///enough to be recycled for other purposes.
+///This is a text info box. It is used primarily for entering the names of the script areas,
+///however it is generic enough to be recycled for other purposes.
 class AskForTextInput : public OverlayScreen
 {
 public:

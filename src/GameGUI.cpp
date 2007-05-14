@@ -46,7 +46,6 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "YOG.h"
 #include "IRC.h"
 #include "SoundMixer.h"
 #include "VoiceRecorder.h"
@@ -270,10 +269,10 @@ void GameGUI::adjustLocalTeam()
 {
 	assert(localTeamNo>=0);
 	assert(localTeamNo<32);
-	assert(game.session.numberOfPlayer>0);
-	assert(game.session.numberOfPlayer<32);
-	assert(localTeamNo<game.session.numberOfTeam);
-	
+	assert(game.gameHeader.getNumberOfPlayers()>0);
+	assert(game.gameHeader.getNumberOfPlayers()<32);
+	assert(localTeamNo<game.mapHeader.getNumberOfTeams());
+
 	localTeam = game.teams[localTeamNo];
 	assert(localTeam);
 	teamStats = &localTeam->stats;
@@ -623,7 +622,7 @@ void GameGUI::step(void)
 	musicStep();
 	
 	// do a yog step
-	yog->step();
+//	yog->step();
 	
 	// do a irc step if IRC is enabled
 	if (ircPtr)
@@ -637,6 +636,7 @@ void GameGUI::step(void)
 		}
 	}
 
+/*
 	// display yog chat messages
 	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
 		if (!m->gameGuiPainted)
@@ -644,8 +644,8 @@ void GameGUI::step(void)
 			switch(m->messageType)//set the text color
 			{
 				case YCMT_MESSAGE:
-					/* We don't want YOG messages to appear while in the game.
-					addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);*/
+					//We don't want YOG messages to appear while in the game.
+					//addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);
 				break;
 				case YCMT_PRIVATE_MESSAGE:
 					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(m->userName).arg(m->text));
@@ -669,6 +669,7 @@ void GameGUI::step(void)
 			}
 			m->gameGuiPainted=true;
 		}
+*/
 
 	// do we have won or lost conditions
 	checkWonConditions();
@@ -751,7 +752,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -759,7 +760,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -818,7 +819,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
 					// mask are for players, we need to convert them to team.
-					for (int pi=0; pi<game.session.numberOfPlayer; pi++)
+					for (int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
 					{
 						int otherTeam=game.players[pi]->teamNumber;
 						for (int mi=0; mi<5; mi++)
@@ -833,7 +834,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					
 					// we have a special cases for uncontroled Teams:
 					// FIXME : remove this
-					for (int ti=0; ti<game.session.numberOfTeam; ti++)
+					for (int ti=0; ti<game.mapHeader.getNumberOfTeams(); ti++)
 						if (game.teams[ti]->playersMask==0)
 							teamMask[1]|=(1<<ti); // we want to hit them.
 					
@@ -873,11 +874,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case LoadSaveScreen::OK:
 				{
-					const char *locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
+					std::string locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
 					if (inGameMenu==IGM_LOAD)
 					{
-						strncpy(toLoadGameFileName, locationName, sizeof(toLoadGameFileName));
-						toLoadGameFileName[sizeof(toLoadGameFileName)-1]=0;
+						toLoadGameFileName = locationName;
 						orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 					}
 					else
@@ -944,6 +944,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		
 		typingInputScreen->translateAndProcessEvent(event);
 		
+		/*
 		if (typingInputScreen->endValue==0)
 		{
 			char message[256];
@@ -954,7 +955,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				yog->handleMessageAliasing(message, 256);
 				if (strncmp(message, "/m ", 3)==0)
 				{
-					for (int i=0; i<game.session.numberOfPlayer; i++)
+					for (int i=0; i<game.gameHeader.getNumberOfPlayers(); i++)
 						if (game.players[i] &&
 							(game.players[i]->type>=Player::P_AI||game.players[i]->type==Player::P_IP||game.players[i]->type==Player::P_LOCAL))
 						{
@@ -983,6 +984,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			typingInputScreen->endValue=1;
 			return;
 		}
+		*/
 	}
 
 	// the dump (debug) keys are always handled
@@ -3521,13 +3523,17 @@ void GameGUI::drawTopScreenBar(void)
 	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
 		if (i!=cpuLoadMaxIndex && cpuLoad<smoothedCpuLoad[i])
 			cpuLoad=smoothedCpuLoad[i];
+
+/*
 	if (cpuLoad<game.session.gameTPF-8)
 		memcpy(actC, greenC, sizeof(greenC));
 	else if (cpuLoad<game.session.gameTPF)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	else
 		memcpy(actC, redC, sizeof(redC));
-	
+*/
+
+
 	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoad, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
@@ -3720,7 +3726,7 @@ void GameGUI::drawOverlayInfos(void)
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
 		Uint32 apm=game.maskAwayPlayer;
-		for(int pi=0; pi<game.session.numberOfPlayer; pi++)
+		for(int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
 		{
 			if (pm&apm)
 				nbap++;
@@ -3731,7 +3737,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 255, 255, 255);
 		pm=1;
 		int pnb=0;
-		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
+		for(int pi2=0; pi2<game.gameHeader.getNumberOfPlayers(); pi2++)
 		{
 			if (pm&apm)
 			{
@@ -4103,7 +4109,7 @@ void GameGUI::executeOrder(Order *order)
 		{
 			MapMarkOrder *mmo=(MapMarkOrder *)order;
 
-			assert(game.teams[mmo->teamNumber]->teamNumber<game.session.numberOfTeam);
+			assert(game.teams[mmo->teamNumber]->teamNumber<game.mapHeader.getNumberOfTeams());
 			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
 				addMark(mmo);
 		}
@@ -4121,13 +4127,13 @@ void GameGUI::executeOrder(Order *order)
 	}
 }
 
-bool GameGUI::loadBase(const SessionInfo *initial)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader)
 {
 	init();
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(initial->getFileName()));
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
-		std::cerr << "GameGUI::loadBase() : error, can't open file " << initial->getFileName() << std::endl;
+		std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << std::endl;
 		delete stream;
 		return false;
 		}
@@ -4138,7 +4144,8 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		if (!res)
 			return false;
 		
-		game.setBase(initial);
+		game.setMapHeader(mapHeader);
+		game.setGameHeader(gameHeader);
 	}
 
 	return true;
@@ -4155,8 +4162,8 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		return false;
 	}
-
-	if (!game.session.fileIsAMap)
+//	if (!game.session.fileIsAMap)
+/*
 	{
 		// load gui's specific infos
 		stream->readEnterSection("GameGUI");
@@ -4187,6 +4194,7 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		
 		stream->readLeaveSection();
 	}
+*/
 
 	return true;
 }
@@ -4194,10 +4202,6 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 {
 	// Game is can't be no more automatically generated
-	if (game.session.mapGenerationDescriptor)
-		delete game.session.mapGenerationDescriptor;
-	game.session.mapGenerationDescriptor=NULL;
-
 	game.save(stream, false, name);
 	
 	stream->writeEnterSection("GameGUI");

@@ -834,7 +834,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		// We look for a specific enemy:
 		Uint32 enemies=player->team->enemies;
 		int e=-1;
-		for (int i=0; i<game->session.numberOfTeam; i++)
+		for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 			if (game->teams[i]->me & enemies)
 				e=i;
 		if (e==-1)

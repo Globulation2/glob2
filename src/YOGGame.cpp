@@ -1,6 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  Copyright (C) 2007 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,22 +16,40 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "SessionConnection.h"
+#include "YOGGame.h"
+#include <algorithm>
 
-SessionConnection::SessionConnection()
-{
-	validSessionInfo=false;
-	for (int i=0; i<32; i++)
-		crossPacketRecieved[i]=0;
-
-	socket=NULL;
-	destroyNet=true;
-	channel=-1;
-	startGameTimeCounter=0;
-	myPlayerNumber=-1;
-}
-
-SessionConnection::~SessionConnection()
+YOGGame::YOGGame(Uint16 gameID)
+	: gameID(gameID)
 {
 
 }
+
+
+
+void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
+{
+	players.push_back(player);
+}
+
+
+
+void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
+{
+	std::vector<shared_ptr<YOGPlayer> >::iterator i = std::find(players.begin(), players.end(), player);
+	if(i!=players.end())
+		players.erase(i);
+}
+
+
+
+
+void YOGGame::routeMessage(shared_ptr<NetMessage> message)
+{
+	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		(*i)->sendMessage(message);
+	}
+}
+
+

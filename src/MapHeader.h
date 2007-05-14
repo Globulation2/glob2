@@ -19,9 +19,9 @@
 #ifndef __MAPHEADER_H
 #define __MAPHEADER_H
 
-#include "Session.h"
 #include "Stream.h"
 #include "Version.h"
+#include "Team.h"
 
 ///This is the map header. It is static with the map, and does not change from game to game if
 ///the user is playing on the same map. It holds small details about a map that aren't placed
@@ -29,47 +29,83 @@
 class MapHeader
 {
 public:
-	///Gives default values to all entries
+	/// Gives default values to all entries
 	MapHeader();
 		
-	///Loads map header information from the stream
+	/// Resets the MapHeader to a "blank" state with default values
+	void reset();	
+
+	/// Loads map header information from the stream
 	bool load(GAGCore::InputStream *stream);
 	
-	///Saves map header information to the stream
+	/// Saves map header information to the stream
 	void save(GAGCore::OutputStream *stream);
 
-	///Returns the version major
+	/// Returns the version major
 	Sint32 getVersionMajor() const;
 	
-	///Returns the version minor
+	/// Returns the version minor
 	Sint32 getVersionMinor() const;
 	
-	///Returns the number of teams
+	/// Returns the number of teams
 	Sint32 getNumberOfTeams() const;
 
-	///Sets the number of teams in the map
+	/// Sets the number of teams in the map
 	void setNumberOfTeams(Sint32 teamNum);
 
-	///Returns the user-friendly name of the map	
+	/// Returns the user-friendly name of the map	
 	const std::string& getMapName() const;
 	
-	//! Set the user-friendly name of the map
+	/// Returns the file name of the map
+	std::string getFileName() const;
+	
+	/// Sets the user-friendly name of the map
 	void setMapName(const std::string& newMapName);
 
-	///Returns a checksum of the map header information
+	/// Returns the offset of the Map info in the game save.
+	/// This is used to quickly gain access to Map data, for
+	/// the generation of map previews
+	Uint32 getMapOffset() const;
+
+	/// Sets the map offset. Should only be done during saving
+	/// the game or map.
+	/// Note that technically the MapHeader is the first thing
+	/// written to the file. This means that it has to be 
+	/// *overwritten* after the offset has been found.
+	void setMapOffset(Uint32 mapOffset);
+
+	/// Returns the base team for team n. n must be between 0 and 31
+	BaseTeam& getBaseTeam(const int n);
+	const  BaseTeam& getBaseTeam(const int n) const;
+
+	/// Returns true if this header represents a saved game, otherwise it
+	/// is a map
+	bool getIsSavedGame() const;
+	
+	/// Sets whether or no this header represents a saved game
+	void setIsSavedGame(bool isSavedGame);
+
+	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
-
-	///This loads information from a provided SessionGame instance.
-	///This is used purely for backwards compatibility
-	void loadFromSessionGame(SessionGame* session);
+	
 private:
-	//! Major map version. Change only with structural modification
+	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;
-	//! Minor map version. Change each time something has been changed in serialized version.
+	/// Minor map version. Changes each time something has been changed in serializations
 	Sint32 versionMinor;
-
-	///The number of teams on the map
+	/// The number of teams on the map
 	Sint32 numberOfTeams;
+	/// The offset of Map in the save. This is set during saving,
+	/// and is used to generate Map previews without loading
+	/// the complete file.
+	Uint32 mapOffset;
+	
+	///The teams in the map. BaseTeam is used to allow access to information like team numbers and
+	///team colors without loading the entire game.
+	BaseTeam teams[32];
+	
+	///If this is true, this map header represents a saved game, rather than a new map
+	bool isSavedGame;
 
 	std::string mapName;
 };
