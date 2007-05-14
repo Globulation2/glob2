@@ -4162,8 +4162,7 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		return false;
 	}
-//	if (!game.session.fileIsAMap)
-/*
+	if (game.mapHeader.getIsSavedGame())
 	{
 		// load gui's specific infos
 		stream->readEnterSection("GameGUI");
@@ -4194,7 +4193,6 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		
 		stream->readLeaveSection();
 	}
-*/
 
 	return true;
 }

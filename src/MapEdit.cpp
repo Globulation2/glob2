@@ -1781,7 +1781,11 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 			break;
 		case SDLK_i :
 			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
+			{
+				//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
+				game.map.loadTransitional();
+				renderMiniMap();
+			}
 			break;
 		case SDLK_j :
 			if(pressed)
