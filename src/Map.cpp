@@ -1200,7 +1200,6 @@ void Map::loadTransitional()
 		cases[i].scriptAreas = stream->readUint16("scriptAreas");
 		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
 	}
-	/*
 	//Load area names
 	for(int n=0; n<9; ++n)
 	{
@@ -1208,7 +1207,6 @@ void Map::loadTransitional()
 		setAreaName(n, stream->readText("areaname"));
 		stream->readLeaveSection();
 	}
-	*/
 	delete stream;
 }
 	
