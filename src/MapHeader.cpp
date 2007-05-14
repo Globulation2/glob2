@@ -46,7 +46,7 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	versionMinor = stream->readSint32("versionMinor");
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
-	isSavedGame = stream->readUint32("isSavedGame");
+	isSavedGame = stream->readUint8("isSavedGame");
 	stream->readEnterSection("teams");
 	for(int i=0; i<32; ++i)
 	{
