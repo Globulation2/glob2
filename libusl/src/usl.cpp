@@ -118,24 +118,23 @@ struct BlockNode: ExpressionNode
 	Node* value;
 };
 
-struct BodyNode: ExpressionNode
+struct MethodNode: ExpressionNode
 {
-	BodyNode(ExpressionNode* body, Heap* heap):
-		body(body),
-		heap(heap)
+	MethodNode(UserMethod* method, ExpressionNode* body):
+		method(method),
+		body(body)
 	{}
 	
 	void generate(UserMethod* method)
 	{
-		UserMethod* inner = new UserMethod(heap, method);
-		method->body.push_back(new MethodCode(inner));
+		method->body.push_back(new MethodCode(this->method));
 		method->body.push_back(new ApplyCode(".", 0));
-		body->generate(inner);
-		inner->body.push_back(new ReturnCode());
+		body->generate(this->method);
+		this->method->body.push_back(new ReturnCode());
 	}
 	
+	UserMethod* method;
 	ExpressionNode* body;
-	Heap* heap;
 };
 
 struct Parser: Lexer
@@ -145,12 +144,13 @@ struct Parser: Lexer
 		heap(heap)
 	{}
 	
-	BlockNode* parse()
+	BlockNode* parse(UserMethod* method)
 	{
-		return statements();
+		auto_ptr<Scope> scope(new Scope(heap, method, 0));
+		return statements(scope.get());
 	}
 	
-	BlockNode* statements()
+	BlockNode* statements(Scope* scope)
 	{
 		newlines();
 		auto_ptr<BlockNode> block(new BlockNode());
@@ -172,12 +172,12 @@ struct Parser: Lexer
 				}
 				return block.release();
 			}
-			block->statements.push_back(statement());
+			block->statements.push_back(statement(scope));
 			newlines();
 		}
 	}
 	
-	Node* statement()
+	Node* statement(Scope* scope)
 	{
 		switch (tokenType())
 		{
@@ -187,25 +187,25 @@ struct Parser: Lexer
 				string name = identifier();
 				accept(ASSIGN);
 				newlines();
-				return new ValueNode(name, expression());
+				return new ValueNode(name, expression(scope));
 			}
 		default:
-			return expression();
+			return expression(scope);
 		}
 	}
 	
-	Node* expression()
+	Node* expression(Scope* scope)
 	{
-		auto_ptr<Node> node(simple());
+		auto_ptr<Node> node(simple(scope));
 		while (true)
 		{
 			switch (tokenType())
 			{
 			case ID:
-				node = apply(node, identifier());
+				node = apply(scope, node, identifier());
 				break;
 			case LPAR:
-				node = apply(node, ".");
+				node = apply(scope, node, ".");
 				break;
 			default:
 				return node.release();
@@ -213,14 +213,14 @@ struct Parser: Lexer
 		}
 	}
 	
-	auto_ptr<ApplyNode> apply(auto_ptr<Node> receiver, const string& method)
+	auto_ptr<ApplyNode> apply(Scope* scope, auto_ptr<Node> receiver, const string& method)
 	{
 		auto_ptr<ApplyNode> node(new ApplyNode(receiver.release(), method));
-		node->args.push_back(simple());
+		node->args.push_back(simple(scope));
 		return node;
 	}
 	
-	Node* simple()
+	Node* simple(Scope* scope)
 	{
 		switch (tokenType())
 		{
@@ -245,9 +245,11 @@ struct Parser: Lexer
 		case LBRACE:
 			{
 				next();
-				auto_ptr<ExpressionNode> body(statements());
+				auto_ptr<UserMethod> method(new UserMethod(heap, scope->prototype));
+				auto_ptr<Scope> newScope(new Scope(heap, method.get(), scope));
+				auto_ptr<ExpressionNode> body(statements(newScope.get()));
 				accept(RBRACE);
-				return new BodyNode(body.release(), heap);
+				return new MethodNode(method.release(), body.release());
 			}
 		default:
 			return new ConstNode(&nil);
@@ -288,15 +290,10 @@ struct Parser: Lexer
 int main(int argc, char** argv)
 {
 	Heap heap;
+	UserMethod* root = new UserMethod(&heap, 0);
 	
 	Parser parser("val x = 21 + 21\n", &heap);
-	Node* node = parser.parse();
-/*
-	ApplyNode* node = new ApplyNode(new ConstNode(new Integer(2)), "+");
-	node->args.push_back(new ConstNode(new Integer(1)));
-*/
-	
-	UserMethod* root = new UserMethod(&heap, 0);
+	Node* node = parser.parse(root);
 	node->generate(root);
 	
 	Thread thread(&heap);
