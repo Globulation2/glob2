@@ -8,7 +8,7 @@ void ConstNode::generate(UserMethod* method)
 
 void LocalNode::generate(UserMethod* method)
 {
-	method->body.push_back(new LocalCode(local));
+	method->body.push_back(new LocalCode(depth, local));
 }
 
 void ApplyNode::generate(UserMethod* method)

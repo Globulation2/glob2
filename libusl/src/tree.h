@@ -27,12 +27,14 @@ struct ConstNode: ExpressionNode
 
 struct LocalNode: ExpressionNode
 {
-	LocalNode(const std::string& local):
+	LocalNode(size_t depth, const std::string& local):
+		depth(depth),
 		local(local)
 	{}
 	
 	void generate(UserMethod* method);
 	
+	size_t depth;
 	std::string local;
 };
 

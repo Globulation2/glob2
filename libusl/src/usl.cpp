@@ -118,16 +118,16 @@ struct BlockNode: ExpressionNode
 	Node* value;
 };
 
-struct MethodNode: ExpressionNode
+struct ScopeNode: ExpressionNode
 {
-	MethodNode(UserMethod* method, ExpressionNode* body):
+	ScopeNode(UserMethod* method, ExpressionNode* body):
 		method(method),
 		body(body)
 	{}
 	
 	void generate(UserMethod* method)
 	{
-		method->body.push_back(new MethodCode(this->method));
+		method->body.push_back(new ScopeCode(this->method));
 		method->body.push_back(new ApplyCode(".", 0));
 		body->generate(this->method);
 		this->method->body.push_back(new ReturnCode());
@@ -187,6 +187,7 @@ struct Parser: Lexer
 				string name = identifier();
 				accept(ASSIGN);
 				newlines();
+				scope->locals[name] = &nil;
 				return new ValueNode(name, expression(scope));
 			}
 		default:
@@ -226,7 +227,21 @@ struct Parser: Lexer
 		{
 		case ID:
 			{
-				return new LookupNode(identifier());
+				string name(identifier());
+				
+				Scope* current(scope);
+				size_t depth = 0;
+				do
+				{
+					Value* value = scope->lookup(name);
+					if (value != 0)
+						return new LocalNode(depth, name);
+					current = current->parent;
+					++depth;
+				}
+				while (current != 0);
+				
+				return new LookupNode(name);
 			}
 		case NUM:
 			{
@@ -249,7 +264,7 @@ struct Parser: Lexer
 				auto_ptr<Scope> newScope(new Scope(heap, method.get(), scope));
 				auto_ptr<ExpressionNode> body(statements(newScope.get()));
 				accept(RBRACE);
-				return new MethodNode(method.release(), body.release());
+				return new ScopeNode(method.release(), body.release());
 			}
 		default:
 			return new ConstNode(&nil);
