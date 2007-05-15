@@ -284,20 +284,21 @@ int main(int argc, char** argv)
 	node->args.push_back(new ConstNode(new Integer(1)));
 */
 	
-	UserMethod root(&heap, 0);
-	node->generate(&root);
+	UserMethod* root = new UserMethod(&heap, 0);
+	node->generate(root);
 	
 	Thread thread(&heap);
-	thread.frames.push_back(Thread::Frame(new Scope(&heap, &root, 0)));
+	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
 	
-	while (thread.frames.front().nextInstr < root.body.size())
+	while (thread.frames.front().nextInstr < root->body.size())
 	{
 		Thread::Frame& frame = thread.frames.back();
 		frame.scope->method()->body[frame.nextInstr++]->execute(&thread);
 		cout << "stack size: " << thread.frames.back().stack.size() << endl;
 	}
-	
 	cout << "x = " << dynamic_cast<Integer*>(thread.frames.back().scope->locals["x"])->value << endl;
+	
+	thread.frames.pop_back();
 	
 	cout << "heap size: " << heap.values.size() << "\n";
 	cout << "garbage collecting\n";
