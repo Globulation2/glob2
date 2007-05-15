@@ -46,4 +46,3 @@ To compile glob2 from, you need the following libraries and programs:
 - libsdl-ttf2.0
 - libspeex
 - libvorbis
-
