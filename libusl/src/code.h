@@ -27,17 +27,24 @@ struct ConstCode: Code
 
 struct LocalCode: Code
 {
-	LocalCode(const std::string& local):
+	LocalCode(size_t depth, const std::string& local):
+		depth(depth),
 		local(local)
 	{}
 	
 	void execute(Thread* thread)
 	{
 		Thread::Frame& frame = thread->frames.back();
-		frame.stack.push_back(frame.scope->lookup(local));
+		Scope* scope = frame.scope;
+		for (size_t i = 0; i < depth; ++i)
+		{
+			scope = scope->parent;
+		}
+		frame.stack.push_back(scope->lookup(local));
 	}
 	
-	const std::string local;
+	size_t depth;
+	std::string local;
 };
 
 struct ApplyCode: Code
@@ -88,9 +95,9 @@ struct PopCode: Code
 	}
 };
 
-struct MethodCode: Code
+struct ScopeCode: Code
 {
-	MethodCode(UserMethod* method):
+	ScopeCode(UserMethod* method):
 		method(method)
 	{}
 	
