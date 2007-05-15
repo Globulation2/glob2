@@ -114,3 +114,10 @@ const std::list<YOGPlayerInfo>& YOGGameServer::getPlayerList() const
 }
 
 
+
+void YOGGameServer::propogateMessage(boost::shared_ptr<YOGMessage> message)
+{
+	///unimplemented
+}
+
+

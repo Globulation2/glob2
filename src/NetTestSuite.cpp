@@ -182,6 +182,19 @@ int NetTestSuite::testNetMessages()
 	shared_ptr<NetGameJoinRefused> joinRefused1(new NetGameJoinRefused(YOGJoinRefusalUnknown));
 	if(!testMessage(joinRefused1))
 		return 31;
+		
+	//Test NetSendYOGMessage
+	if(!testInitialMessageState<NetSendYOGMessage>())
+		return 32;
+
+	shared_ptr<YOGMessage> m(new YOGMessage);
+	m->setSender("bob");
+	m->setMessage("hello alice");
+	m->setMessageType(YOGNormalMessage);
+	shared_ptr<NetSendYOGMessage> sendYOGMessage1(new NetSendYOGMessage(m));
+	if(!testMessage(sendYOGMessage1))
+		return 33;
+
 	return 0;
 
 }
@@ -211,6 +224,43 @@ int  NetTestSuite::testYOGGameInfo()
 	delete messageInfo;
 	if(decode != ygi)
 		return 3;
+	return 0;
+}
+
+
+
+int NetTestSuite::testYOGMessage()
+{
+	YOGMessage m1;
+	YOGMessage m2;
+	//Test initial state
+	if(m1 != m2 )
+		return 1;
+	
+	//Test set message
+	m1.setMessage("HAHA!");
+	Uint8* info = m1.encodeData();
+	m2.decodeData(info, m1.getDataLength());
+	delete info;
+	if(m1 != m2)
+		return 2;
+		
+	//Test set sender
+	m1.setSender("Bob!");
+	info = m1.encodeData();
+	m2.decodeData(info, m1.getDataLength());
+	delete info;
+	if(m1 != m2)
+		return 3;
+	
+	//Test set message type
+	m1.setMessageType(YOGAdministratorMessage);
+	info = m1.encodeData();
+	m2.decodeData(info, m1.getDataLength());
+	delete info;
+	if(m1 != m2)
+		return 4;
+
 	return 0;
 }
 
@@ -291,12 +341,23 @@ bool NetTestSuite::runAllTests()
 	failNumber = testYOGGameInfo();
 	if(failNumber == 0)
 	{
-		std::cout<<"YOGameInfo tests passed."<<std::endl;
+		std::cout<<"YOGGameInfo tests passed."<<std::endl;
 	}
 	else
 	{
 		failed = true;
-		std::cout<<"YOGameInfo test #"<<failNumber<<" failed."<<std::endl;
+		std::cout<<"YOGGameInfo test #"<<failNumber<<" failed."<<std::endl;
+	}	
+
+	failNumber = testYOGMessage();
+	if(failNumber == 0)
+	{
+		std::cout<<"YOGMessage tests passed."<<std::endl;
+	}
+	else
+	{
+		failed = true;
+		std::cout<<"YOGMessage test #"<<failNumber<<" failed."<<std::endl;
 	}
 
 	return !failed;

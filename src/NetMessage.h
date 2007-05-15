@@ -24,6 +24,7 @@
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
 #include "YOGPlayerInfo.h"
+#include "YOGMessage.h"
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -51,6 +52,7 @@ enum NetMessageType
 	MNetGameJoinAccepted,
 	MNetGameJoinRefused,
 	MNetRemoveGame,
+	MNetSendYOGMessage,
 	//type_append_marker
 };
 
@@ -739,6 +741,44 @@ private:
 
 
 
+
+///NetSendYOGMessage
+class NetSendYOGMessage : public NetMessage
+{
+public:
+	///Creates a NetSendYOGMessage message
+	NetSendYOGMessage(boost::shared_ptr<YOGMessage> message);
+
+	///Creates a NetSendYOGMessage message
+	NetSendYOGMessage();
+
+	///Returns MNetSendYOGMessage
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetSendYOGMessage message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendYOGMessage
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the YOG message
+	boost::shared_ptr<YOGMessage> getMessage() const;
+private:
+	boost::shared_ptr<YOGMessage> message;
+};
+
+
+
 //message_append_marker
 
 
@@ -800,7 +840,7 @@ template<typename container> void NetUpdateGameList::updateDifferences(const con
 template<typename container> void NetUpdateGameList::applyDifferences(container& original) const
 {
 	//Remove the removed games
-	for(int i=0; i<removedGames.size(); ++i)
+	for(Uint16 i=0; i<removedGames.size(); ++i)
 	{
 		typename container::iterator game = original.end();
 		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)
@@ -814,7 +854,7 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 		original.erase(game);
 	}
 	//Change the changed games and add the rest
-	for(int i=0; i<updatedGames.size(); ++i)
+	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
 		bool found=false;
 		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)
@@ -838,7 +878,7 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 template<typename container> void NetUpdatePlayerList::updateDifferences(const container& original, const container& updated)
 {
 	//find removed players
-	int index=0;
+	Uint16 index=0;
 	for(typename container::const_iterator i = original.begin(); i!=original.end(); ++i)
 	{
 		bool found=false;

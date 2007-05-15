@@ -79,6 +79,9 @@ boost::shared_ptr<NetMessage> NetMessage::getNetMessage(const Uint8 *netData, in
 		case MNetRemoveGame:
 		message.reset(new NetRemoveGame);
 		break;
+		case MNetSendYOGMessage:
+		message.reset(new NetSendYOGMessage);
+		break;
 		///append_create_point
 	}
 	message->decodeData(netData, dataLength);
@@ -155,8 +158,9 @@ Uint16 NetSendOrder::getDataLength() const
 
 bool NetSendOrder::decodeData(const Uint8 *data, int dataLength)
 {
-	Uint8 type = data[0];
+//	Uint8 type = data[0];
 	order = Order::getOrder(data+1, dataLength-1);
+	return true;
 }
 
 
@@ -231,8 +235,9 @@ Uint16 NetSendClientInformation::getDataLength() const
 
 bool NetSendClientInformation::decodeData(const Uint8 *data, int dataLength)
 {
-	Uint8 type = data[0];
+//	Uint8 type = data[0];
 	versionMinor = SDLNet_Read16(data+1);
+	return true;
 }
 
 
@@ -312,9 +317,10 @@ Uint16 NetSendServerInformation::getDataLength() const
 
 bool NetSendServerInformation::decodeData(const Uint8 *data, int dataLength)
 {
-	Uint8 type = data[0];
+//	Uint8 type = data[0];
 	loginPolicy = static_cast<YOGLoginPolicy>(data[1]);
 	gamePolicy = static_cast<YOGGamePolicy>(data[2]);
+	return true;
 }
 
 
@@ -423,7 +429,7 @@ Uint16 NetAttemptLogin::getDataLength() const
 bool NetAttemptLogin::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint8 pos = 0;
-	Uint8 type = data[pos];
+////	Uint8 type = data[pos];
 	pos+=1;
 	
 	//Read in the username
@@ -443,6 +449,7 @@ bool NetAttemptLogin::decodeData(const Uint8 *data, int dataLength)
 		password+=static_cast<char>(data[pos]);
 		pos+=1;
 	}
+	return true;
 }
 
 
@@ -518,7 +525,8 @@ Uint16 NetLoginSuccessful::getDataLength() const
 
 bool NetLoginSuccessful::decodeData(const Uint8 *data, int dataLength)
 {
-	Uint8 type = data[0];
+//	Uint8 type = data[0];
+	return true;
 }
 
 
@@ -536,7 +544,7 @@ bool NetLoginSuccessful::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetLoginSuccessful))
 	{
-		const NetLoginSuccessful& r = dynamic_cast<const NetLoginSuccessful&>(rhs);
+//		const NetLoginSuccessful& r = dynamic_cast<const NetLoginSuccessful&>(rhs);
 		return true;
 	}
 	return false;
@@ -586,8 +594,9 @@ Uint16 NetRefuseLogin::getDataLength() const
 
 bool NetRefuseLogin::decodeData(const Uint8 *data, int dataLength)
 {
-	Uint8 type = data[0];
+//	Uint8 type = data[0];
 	reason = static_cast<YOGLoginState>(data[1]);
+	return true;
 }
 
 
@@ -645,14 +654,14 @@ Uint8 *NetUpdateGameList::encodeData() const
 	pos+=1;
 	data[pos]=removedGames.size();
 	pos+=1;
-	for(int i=0; i<removedGames.size(); ++i)
+	for(Uint16 i=0; i<removedGames.size(); ++i)
 	{
 		SDLNet_Write16(removedGames[i], data+pos);
 		pos+=2;
 	}
 	data[pos]=updatedGames.size();
 	pos+=1;
-	for(int i=0; i<updatedGames.size(); ++i)
+	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
 		Uint8* gamedata = updatedGames[i].encodeData();
 		std::copy(gamedata, gamedata + updatedGames[i].getDataLength(), data + pos);
@@ -667,7 +676,7 @@ Uint8 *NetUpdateGameList::encodeData() const
 Uint16 NetUpdateGameList::getDataLength() const
 {
 	Uint32 length= 3 + removedGames.size()*2;
-	for(int i=0; i<updatedGames.size(); ++i)
+	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
 		length+=updatedGames[i].getDataLength();
 	}
@@ -679,12 +688,12 @@ Uint16 NetUpdateGameList::getDataLength() const
 bool NetUpdateGameList::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+////	Uint8 type = data[pos];
 	pos+=1;
 	Uint8 size = data[pos];
 	pos+=1;
 	removedGames.resize(size);
-	for(int i=0; i<removedGames.size(); ++i)
+	for(Uint16 i=0; i<removedGames.size(); ++i)
 	{
 		removedGames[i] = SDLNet_Read16(data+pos);
 		pos+=2;
@@ -692,7 +701,7 @@ bool NetUpdateGameList::decodeData(const Uint8 *data, int dataLength)
 	size=data[pos];
 	pos+=1;
 	updatedGames.resize(size);
-	for(int i=0; i<updatedGames.size(); ++i)
+	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
 		updatedGames[i].decodeData(data + pos, dataLength - pos);
 		pos+=updatedGames[i].getDataLength();
@@ -760,8 +769,9 @@ Uint16 NetDisconnect::getDataLength() const
 bool NetDisconnect::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
+	return true;
 }
 
 
@@ -779,7 +789,7 @@ bool NetDisconnect::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetDisconnect))
 	{
-		const NetDisconnect& r = dynamic_cast<const NetDisconnect&>(rhs);
+//		const NetDisconnect& r = dynamic_cast<const NetDisconnect&>(rhs);
 		return true;
 	}
 	return false;
@@ -844,7 +854,7 @@ Uint16 NetAttemptRegistration::getDataLength() const
 bool NetAttemptRegistration::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
 	
 	//Read in the username
@@ -864,6 +874,7 @@ bool NetAttemptRegistration::decodeData(const Uint8 *data, int dataLength)
 		password+=static_cast<char>(data[pos]);
 		pos+=1;
 	}
+	return true;
 }
 
 
@@ -926,8 +937,9 @@ Uint16 NetAcceptRegistration::getDataLength() const
 bool NetAcceptRegistration::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
+	return true;
 }
 
 
@@ -945,7 +957,7 @@ bool NetAcceptRegistration::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetAcceptRegistration))
 	{
-		const NetAcceptRegistration& r = dynamic_cast<const NetAcceptRegistration&>(rhs);
+//		const NetAcceptRegistration& r = dynamic_cast<const NetAcceptRegistration&>(rhs);
 		return true;
 	}
 	return false;
@@ -999,10 +1011,11 @@ Uint16 NetRefuseRegistration::getDataLength() const
 bool NetRefuseRegistration::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
 	reason = static_cast<YOGLoginState>(data[pos]);
 	pos+=1;
+	return true;
 }
 
 
@@ -1060,7 +1073,7 @@ Uint8 *NetUpdatePlayerList::encodeData() const
 	//Write removedPlayers
 	data[pos]=removedPlayers.size();
 	pos+=1;
-	for(int i=0; i<removedPlayers.size(); ++i)
+	for(Uint16 i=0; i<removedPlayers.size(); ++i)
 	{
 		SDLNet_Write16(removedPlayers[i], data+pos);
 		pos+=2;
@@ -1069,7 +1082,7 @@ Uint8 *NetUpdatePlayerList::encodeData() const
 	//Write updatedPlayers
 	data[pos]=updatedPlayers.size();
 	pos+=1;
-	for(int i=0; i<updatedPlayers.size(); ++i)
+	for(Uint16 i=0; i<updatedPlayers.size(); ++i)
 	{
 		Uint8* gamedata = updatedPlayers[i].encodeData();
 		std::copy(gamedata, gamedata + updatedPlayers[i].getDataLength(), data + pos);
@@ -1085,7 +1098,7 @@ Uint8 *NetUpdatePlayerList::encodeData() const
 Uint16 NetUpdatePlayerList::getDataLength() const
 {
 	Uint32 length= 3 + removedPlayers.size()*2;
-	for(int i=0; i<updatedPlayers.size(); ++i)
+	for(Uint16 i=0; i<updatedPlayers.size(); ++i)
 	{
 		length+=updatedPlayers[i].getDataLength();
 	}
@@ -1097,13 +1110,13 @@ Uint16 NetUpdatePlayerList::getDataLength() const
 bool NetUpdatePlayerList::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
 	
 	Uint8 size = data[pos];
 	pos+=1;
 	removedPlayers.resize(size);
-	for(int i=0; i<removedPlayers.size(); ++i)
+	for(Uint16 i=0; i<removedPlayers.size(); ++i)
 	{
 		removedPlayers[i] = SDLNet_Read16(data + pos);
 		pos+=2;
@@ -1112,11 +1125,12 @@ bool NetUpdatePlayerList::decodeData(const Uint8 *data, int dataLength)
 	size=data[pos];
 	pos+=1;
 	updatedPlayers.resize(size);
-	for(int i=0; i<updatedPlayers.size(); ++i)
+	for(Uint16 i=0; i<updatedPlayers.size(); ++i)
 	{
 		updatedPlayers[i].decodeData(data + pos, dataLength - pos);
 		pos+=updatedPlayers[i].getDataLength();
 	}
+	return true;
 }
 
 
@@ -1195,7 +1209,7 @@ Uint16 NetCreateGame::getDataLength() const
 bool NetCreateGame::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
 	
 	Uint8 length = data[pos];
@@ -1205,6 +1219,7 @@ bool NetCreateGame::decodeData(const Uint8 *data, int dataLength)
 		gameName+=static_cast<char>(data[pos]);
 		pos+=1;
 	}
+	return true;
 }
 
 
@@ -1285,10 +1300,11 @@ Uint16 NetAttemptJoinGame::getDataLength() const
 bool NetAttemptJoinGame::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
 	gameID = SDLNet_Read16(data+pos);
 	pos+=2;
+	return true;
 }
 
 
@@ -1359,8 +1375,9 @@ Uint16 NetGameJoinAccepted::getDataLength() const
 bool NetGameJoinAccepted::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
+	return true;
 }
 
 
@@ -1378,7 +1395,7 @@ bool NetGameJoinAccepted::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetGameJoinAccepted))
 	{
-		const NetGameJoinAccepted& r = dynamic_cast<const NetGameJoinAccepted&>(rhs);
+//		const NetGameJoinAccepted& r = dynamic_cast<const NetGameJoinAccepted&>(rhs);
 		return true;
 	}
 	return false;
@@ -1433,10 +1450,11 @@ Uint16 NetGameJoinRefused::getDataLength() const
 bool NetGameJoinRefused::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
 	reason = static_cast<YOGGameJoinRefusalReason>(data[pos]);
 	pos+=1;
+	return true;
 }
 
 
@@ -1510,10 +1528,11 @@ Uint16 NetRemoveGame::getDataLength() const
 bool NetRemoveGame::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint16 pos = 0;
-	Uint8 type = data[pos];
+//	Uint8 type = data[pos];
 	pos+=1;
 	gameID = SDLNet_Read16(data+pos);
 	pos+=2;
+	return true;
 }
 
 
@@ -1536,6 +1555,98 @@ bool NetRemoveGame::operator==(const NetMessage& rhs) const
 			return true;
 	}
 	return false;
+}
+
+
+
+NetSendYOGMessage::NetSendYOGMessage(boost::shared_ptr<YOGMessage> message)
+	: message(message)
+{
+
+}
+
+
+
+NetSendYOGMessage::NetSendYOGMessage()
+{
+
+}
+
+
+
+Uint8 NetSendYOGMessage::getMessageType() const
+{
+	return MNetSendYOGMessage;
+}
+
+
+
+Uint8 *NetSendYOGMessage::encodeData() const
+{
+	Uint16 length = getDataLength();
+	Uint8* data = new Uint8[length];
+	Uint16 pos = 0;
+	data[pos] = getMessageType();
+	pos+=1;
+	Uint8* mdata = message->encodeData();
+	std::copy(mdata, mdata + message->getDataLength(), data + pos);
+	delete mdata;
+	return data;
+}
+
+
+
+Uint16 NetSendYOGMessage::getDataLength() const
+{
+	Uint16 length = 1 + message->getDataLength();
+	return length;
+}
+
+
+
+bool NetSendYOGMessage::decodeData(const Uint8 *data, int dataLength)
+{
+	Uint16 pos = 0;
+//	Uint8 type = data[pos];
+	pos+=1;
+	message.reset(new YOGMessage);
+	message->decodeData(data + pos, dataLength-pos);
+	return true;
+}
+
+
+
+std::string NetSendYOGMessage::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendYOGMessage()";
+	return s.str();
+}
+
+
+
+bool NetSendYOGMessage::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendYOGMessage))
+	{
+		const NetSendYOGMessage& r = dynamic_cast<const NetSendYOGMessage&>(rhs);
+		if(!message && !r.message)
+			return true;
+		else if(!message && r.message)
+			return false;
+		else if(message && !r.message)
+			return false;
+		if((*message) == (*r.message))
+			return true;
+	}
+	return false;
+}
+
+
+
+boost::shared_ptr<YOGMessage> NetSendYOGMessage::getMessage() const
+{
+	return message;
 }
 
 

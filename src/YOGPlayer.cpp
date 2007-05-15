@@ -57,6 +57,12 @@ void YOGPlayer::update(YOGGameServer& server)
 			connectionState = NeedToSendLoginRefusal;
 		}
 	}
+	//This recieves a YOGMessage and sends it to the game server to be proccessed
+	else if(type==MNetSendYOGMessage)
+	{
+		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
+		server.propogateMessage(info->getMessage());
+	}
 
 
 	//Send outgoing messages
