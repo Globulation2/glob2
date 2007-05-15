@@ -38,7 +38,7 @@ struct LocalNode: ExpressionNode
 
 struct ApplyNode: ExpressionNode
 {
-	ApplyNode(Node* receiver, const std::string& method):
+	ApplyNode(Node* receiver, const std::string& name):
 		receiver(receiver),
 		name(name)
 	{}

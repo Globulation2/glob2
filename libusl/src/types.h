@@ -18,8 +18,10 @@ struct Value
 		prototype(prototype)
 	{
 		marked = false;
-		if (heap)
+		if (heap != 0)
+		{
 			heap->values.push_back(this);
+		}
 	}
 	
 	virtual ~Value() { }
@@ -55,6 +57,8 @@ struct Prototype: Value
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
+		if (parent != 0)
+			parent->propagateMarkForGC();
 		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<map<string, Value*>::value_type>()));
 	}
 	
@@ -74,6 +78,7 @@ struct Method: Prototype
 	Method(Heap* heap, Prototype* parent):
 		Prototype(heap, parent)
 	{
+		methods["."] = this;
 	}
 	
 	virtual void execute(Thread* thread) = 0;
@@ -89,7 +94,6 @@ struct UserMethod: Method
 	UserMethod(Heap* heap, Prototype* parent):
 		Method(heap, parent)
 	{
-		methods["."] = this;
 	}
 	
 	void execute(Thread* thread);
