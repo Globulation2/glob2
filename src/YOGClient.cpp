@@ -121,6 +121,12 @@ void YOGClient::update()
 		connectionState = ClientOnStandby;
 		playerListChanged=true;
 	}
+	///This recieves a YOGMessage list update message
+	if(type==MNetSendYOGMessage)
+	{
+		shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
+		messages.push(yogmessage->getMessage());
+	}
 }
 
 
@@ -146,8 +152,9 @@ YOGGamePolicy YOGClient::getGamePolicy() const
 
 
 
-void YOGClient::attemptLogin(const std::string& username, const std::string& password)
+void YOGClient::attemptLogin(const std::string& nusername, const std::string& password)
 {
+	username = nusername;
 	shared_ptr<NetAttemptLogin> message(new NetAttemptLogin(username, password));
 	nc.sendMessage(message);
 	connectionState = WaitingForLoginReply;
@@ -204,6 +211,7 @@ bool YOGClient::hasGameListChanged()
 		gameListChanged = false;
 		return true;
 	}
+	return false;
 }
 
 
@@ -214,6 +222,7 @@ bool YOGClient::hasPlayerListChanged()
 		playerListChanged = false;
 		return true;
 	}
+	return false;
 }
 
 
@@ -248,14 +257,31 @@ void YOGClient::gameHasFinished()
 
 
 
-void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> mmessage)
 {
-	//unimplemented
+	messages.push(mmessage);
+
+	shared_ptr<NetSendYOGMessage> message(new NetSendYOGMessage(mmessage));
+	nc.sendMessage(message);
 }
 
 
 boost::shared_ptr<YOGMessage> YOGClient::getMessage()
 {
-	//unimplemented
+	if(messages.size())
+	{
+		boost::shared_ptr<YOGMessage> m = messages.front();
+		messages.pop();
+		return m;
+	}
 	return boost::shared_ptr<YOGMessage>();
 }
+
+
+
+std::string YOGClient::getUsername() const
+{
+	return username;
+}
+
+

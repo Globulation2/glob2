@@ -69,8 +69,6 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	animation->visible=false;
 	addWidget(animation);
 	
-	
-	std::cout<<YOG_SERVER_IP<<std::endl;
 	client->connect(YOG_SERVER_IP);
 	oldConnectionState = client->getConnectionState();
 }

@@ -247,9 +247,13 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-//		client->sendMessage(textInput->getText());
-//		irc.sendCommand(textInput->getText());
-//		textInput->setText("");
+		boost::shared_ptr<YOGMessage> message(new YOGMessage);
+		message->setSender(client->getUsername());
+		message->setMessage(textInput->getText());
+		message->setMessageType(YOGNormalMessage);
+		client->sendMessage(message);
+		irc.sendCommand(textInput->getText());
+		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
@@ -368,6 +372,7 @@ void YOGScreen::onTimer(Uint32 tick)
 			assert(false);
 		break;
 		}
+		message = client->getMessage();
 	}
 	
 /*	

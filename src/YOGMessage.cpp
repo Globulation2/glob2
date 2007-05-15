@@ -21,7 +21,7 @@
 
 YOGMessage::YOGMessage()
 {
-
+	messageType = YOGNormalMessage;
 }
 
 
@@ -113,6 +113,9 @@ bool YOGMessage::decodeData(const Uint8 *data, int dataLength)
 {
 	Uint8 pos = 0;
 
+	message = "";
+	sender = "";
+
 	//Read in the messageType
 	messageType = static_cast<YOGMessageType>(data[pos]);
 	pos+=1;
@@ -122,7 +125,7 @@ bool YOGMessage::decodeData(const Uint8 *data, int dataLength)
 	pos+=1;
 	for(int i=0; i<size; ++i)
 	{
-		message+=static_cast<char>(data[pos]);
+		sender+=static_cast<char>(data[pos]);
 		pos+=1;
 	}
 

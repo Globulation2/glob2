@@ -138,8 +138,12 @@ public:
 	///Returns a new YOG message if there are any, and returns NULL otherwise
 	boost::shared_ptr<YOGMessage> getMessage();
 
+	///Returns the username for the player	
+	std::string getUsername() const;
 
 private:
+	std::string username;
+
 	NetConnection nc;
 
 	ConnectionState connectionState;
@@ -150,6 +154,7 @@ private:
 	
 	std::list<YOGGameInfo> games;
 	std::list<YOGPlayerInfo> players;
+	std::queue<boost::shared_ptr<YOGMessage> > messages;
 	bool gameListChanged;
 	bool playerListChanged;
 };

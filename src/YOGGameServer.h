@@ -70,6 +70,9 @@ public:
 	///Returns the list of players the server currently has
 	const std::list<YOGPlayerInfo>& getPlayerList() const;
 
+	///This function propagates a YOGMessage to all the users on its destination
+	void propogateMessage(boost::shared_ptr<YOGMessage> message);
+
 private:
 	NetListener nl;
 	std::list<shared_ptr<YOGPlayer> > players;

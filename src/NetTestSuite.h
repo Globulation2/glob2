@@ -23,12 +23,13 @@
 #include "NetListener.h"
 #include "NetConnection.h"
 #include "YOGGameInfo.h"
+#include "YOGMessage.h"
 #include <boost/shared_ptr.hpp>
 
 using namespace boost;
 
 ///This is a basic unit test system for the low level net classes,
-///NetConnection, NetListener, NetMessage, and YOGGameInfo
+///NetConnection, NetListener, NetMessage, YOGGameInfo and YOGMessage
 ///When run, it is assumed that the host allows the program to listen on
 //the port 30, and that it can connect to itself via localhost
 class NetTestSuite
@@ -51,6 +52,9 @@ public:
 
 	///Tests the YOGGameInfo class and its serialization
 	int testYOGGameInfo();
+
+	///Tests the YOGMessage class and its serialization
+	int testYOGMessage();
 
 	///This tests NetListener and NetConnection in tandem.
 	int testListenerConnection();
