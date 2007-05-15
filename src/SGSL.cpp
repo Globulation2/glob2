@@ -955,8 +955,8 @@ Mapscript::~Mapscript(void)
 
 bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 {
-	int versionMinor = game->mapHeader.getVersionMinor();
-
+	int versionMinor = game->session.versionMinor;
+	
 	stream->readEnterSection("SGSL");
 	
 	// load source code
@@ -979,7 +979,7 @@ bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 		
 		// load hasWon / hasLost vectors
 		stream->readEnterSection("victoryConditions");
-		for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
+		for (unsigned i = 0; i < (unsigned)game->session.numberOfTeam; i++)
 		{
 			stream->readEnterSection(i);
 			hasWon[i] = stream->readSint32("hasWon") != 0;
@@ -1045,7 +1045,7 @@ void Mapscript::save(GAGCore::OutputStream *stream, const Game *game)
 	
 	// save hasWon / hasLost vectors
 	stream->writeEnterSection("victoryConditions");
-	for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
+	for (unsigned i = 0; i < (unsigned)game->session.numberOfTeam; i++)
 	{
 		stream->writeEnterSection(i);
 		stream->writeSint32(hasWon[i] ? 1 : 0, "hasWon");
@@ -1223,9 +1223,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	reset();
 
 	// Set the size of the won/lost arrays and clear them
-	hasWon.resize(game->mapHeader.getNumberOfTeams());
+	hasWon.resize(game->session.numberOfTeam);
 	std::fill(hasWon.begin(), hasWon.end(), false);
-	hasLost.resize(game->mapHeader.getNumberOfTeams());
+	hasLost.resize(game->session.numberOfTeam);
 	std::fill(hasLost.begin(), hasLost.end(), false);
 
 	NEXT_TOKEN;
@@ -1315,7 +1315,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+					else if (donnees->getToken()->value >= game->session.numberOfTeam)
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1460,7 +1460,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+					else if (donnees->getToken()->value >= game->session.numberOfTeam)
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1506,7 +1506,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+					if (donnees->getToken()->value >= game->session.numberOfTeam)
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1522,7 +1522,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+					if (donnees->getToken()->value >= game->session.numberOfTeam)
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1653,7 +1653,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+						else if (donnees->getToken()->value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_TEAM;
 							break;
@@ -1750,7 +1750,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+							else if (donnees->getToken()->value >= game->session.numberOfTeam)
 							{
 								er.type=ErrorReport::ET_INVALID_TEAM;
 								break;
@@ -1785,7 +1785,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+							else if (donnees->getToken()->value >= game->session.numberOfTeam)
 							{
 								er.type=ErrorReport::ET_INVALID_TEAM;
 								break;
@@ -1911,7 +1911,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
+					else if (donnees->getToken()->value >= game->session.numberOfTeam)
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;

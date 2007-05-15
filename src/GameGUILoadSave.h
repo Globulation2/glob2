@@ -47,8 +47,8 @@ private:
 	std::string extension;
 	std::string directory;
 	std::string fileName;
-	std::string (*filenameToNameFunc)(const std::string& filename);
-	std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension);
+	std::string (*filenameToNameFunc)(const char *filename);
+	std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension);
 	
 private:
 	//! create a filename from user friendly's name
@@ -57,8 +57,8 @@ private:
 public:
 	//! Constructor : directory and extension must be given without the / and the .
 	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL,
-		std::string (*filenameToNameFunc)(const std::string& filename)=NULL,
-		std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension)=NULL);
+		std::string (*filenameToNameFunc)(const char *filename)=NULL,
+		std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension)=NULL);
 	virtual ~LoadSaveScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);

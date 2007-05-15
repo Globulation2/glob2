@@ -71,14 +71,13 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 			int rcms=cms.execute(gfx, 40);
 			if(rcms==ChooseMapScreen::OK)
 			{
-				MapHeader& mapHeader = cms.getMapHeader();
-				CampaignMapEntry cme(mapHeader.getMapName(), glob2NameToFilename("campaigns", mapHeader.getMapName(), "map"));
+				CampaignMapEntry cme(cms.sessionInfo.getMapName(), glob2NameToFilename("campaigns", cms.sessionInfo.getMapName().c_str(), "map"));
 				CampaignMapEntryEditor cmee(campaign, cme);
 				int rcmee = cmee.execute(gfx, 40);
 				if(rcmee==CampaignMapEntryEditor::OK)
 				{
 					campaign.appendMap(cme);
-					mapList->addText(mapHeader.getMapName());
+					mapList->addText(cms.sessionInfo.getMapName());
 				}
 				else if(rcmee==CampaignMapEntryEditor::CANCEL)
 				{

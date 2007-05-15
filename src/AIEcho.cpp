@@ -4530,9 +4530,9 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	{
 		stream->readEnterSection(ordersIndex);
 		size_t size=stream->readUint32("size");
-		Uint8* buffer = new Uint8[size+1];
+		Uint8* buffer = new Uint8[size];
 		stream->read(buffer, size, "data");
-		orders.push(Order::getOrder(buffer, size+1));
+		orders.push(Order::getOrder(buffer, size));
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
@@ -4648,8 +4648,6 @@ void Echo::save(GAGCore::OutputStream *stream)
 		Order* order = orders.front();
 		orders.pop();
 		stream->writeUint32(order->getDataLength()+1, "size");
-		///one byte indicating the type is required to be written for order.
-		stream->writeUint8(order->getOrderType(), "type");
 		stream->write(order->getData(), order->getDataLength(), "data");
 		orders.push(order);
 		stream->writeLeaveSection();

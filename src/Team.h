@@ -110,7 +110,7 @@ public:
 
 	virtual ~Team(void);
 
-	void setBaseTeam(const BaseTeam *initial);
+	void setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase);
 	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	

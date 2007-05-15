@@ -1,5 +1,6 @@
 /*
-  Copyright (C) 2007 Bradley Arsenault
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,33 +17,27 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGGame_h
-#define __YOGGame_h
+#ifndef __SESSION_CONNECTION_H
+#define __SESSION_CONNECTION_H
 
-#include "YOGPlayer.h"
-#include <boost/shared_ptr.hpp>
+#include "Session.h"
 
-///This handles a "game" from the server's point of view. This means that it handles
-///routing between clients, holding the map and game data, etc..
-class YOGGame
+class SessionConnection
 {
 public:
-	///Constructs a new YOG game
-	YOGGame(Uint16 gameID);
+	SessionConnection();
+	virtual ~SessionConnection();
+	bool validSessionInfo;
+	int crossPacketRecieved[32];
+	int startGameTimeCounter;
+	
+public:
+	SessionInfo sessionInfo;
+	Sint32 myPlayerNumber;
+	UDPsocket socket;
+	bool destroyNet;
+	int channel;
 
-	///Adds the player to the game
-	void addPlayer(shared_ptr<YOGPlayer> player);
-
-	///Removes the player from the game
-	void removePlayer(shared_ptr<YOGPlayer> player);
-
-	///Routes the given message to all the players in the game
-	void routeMessage(shared_ptr<NetMessage> message);
-
-private:
-	Uint16 gameID;
-	std::vector<shared_ptr<YOGPlayer> > players;
 };
-
 
 #endif

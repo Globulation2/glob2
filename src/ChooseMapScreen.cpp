@@ -20,6 +20,7 @@
 #include "ChooseMapScreen.h"
 #include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
+#include "Session.h"
 #include "GlobalContainer.h"
 #include <FormatableString.h>
 #include <GUIButton.h>
@@ -70,6 +71,40 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	mapDate=new Text(440, 60+128+125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapDate);
 	
+	globalContainer->settings.tempVarPrestige = 0;
+	useNewPrestige = false;
+	useVarPrestige=new OnOffButton(466, 37, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, useNewPrestige, useNewPrestige);
+	addWidget(useVarPrestige);
+	varPrestigeText=new Text(460, 37, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", "Custom Prestige");
+	addWidget(varPrestigeText);
+	
+	prestigeRatio=new Number(466, 15, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
+	prestigeRatio->add(0);
+	prestigeRatio->add(0);
+	prestigeRatio->add(100);
+	prestigeRatio->add(200);
+	prestigeRatio->add(300);
+	prestigeRatio->add(400);
+	prestigeRatio->add(500);
+	prestigeRatio->add(600);
+	prestigeRatio->add(700);
+	prestigeRatio->add(800);
+	prestigeRatio->add(900);
+	prestigeRatio->add(1000);
+	prestigeRatio->add(1100);
+	prestigeRatio->add(1200);
+	prestigeRatio->add(1300);
+	prestigeRatio->add(1400);
+	prestigeRatio->add(1500);
+	prestigeRatio->add(1600);
+	prestigeRatio->add(1700);
+	prestigeRatio->add(1800);
+	prestigeRatio->add(1900);
+	prestigeRatio->add(2000);
+	prestigeRatio->setNth(1);
+	prestigeRatio->visible=false;
+	addWidget(prestigeRatio);
+	
 	validMapSelected = false;
 }
 
@@ -92,24 +127,49 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		{
 			if (verbose)
 				std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
-			validMapSelected = mapHeader.load(stream);
+			validMapSelected = sessionInfo.load(stream);
 			if (validMapSelected)
 			{
-				validMapSelected = gameHeader.load(stream, mapHeader.getVersionMinor());
-				if (validMapSelected)
-				{
-					updateMapInformation();
-
-					std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
-					mapDate->setText(std::ctime(&mtime));
-				}
-				else
-					std::cerr << "ChooseMapScreen::onAction : invalid game header for map " << mapFileName << std::endl;
+				// update map name & info
+				mapName->setText(sessionInfo.getMapName());
+				std::string textTemp;
+				textTemp = FormatableString("%0%1").arg(sessionInfo.numberOfTeam).arg(Toolkit::getStringTable()->getString("[teams]"));
+				mapInfo->setText(textTemp);
+				textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(sessionInfo.versionMajor).arg(sessionInfo.versionMinor);
+				mapVersion->setText(textTemp);
+				textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+				mapSize->setText(textTemp);
+				std::time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+				mapDate->setText(std::ctime(&mtime));
+				
+				// call subclass handler
+				validMapSelectedhandler();
 			}
 			else
-				std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
+				std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
 		}
 		delete stream;
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if (useVarPrestige->getState() == false)
+		{
+			prestigeRatio->visible=false;
+			globalContainer->settings.tempVarPrestige = 3000;
+		}
+		else if (useVarPrestige->getState() == true)
+		{
+			prestigeRatio->visible=true;
+			globalContainer->settings.tempVarPrestige=(prestigeRatio->getNth() - 1) * 100;
+		}
+	}
+	else if (action==NUMBER_ELEMENT_SELECTED)
+	{
+		if (prestigeRatio->getNth() == 0)
+		{
+			prestigeRatio->setNth(1);
+		}
+		globalContainer->settings.tempVarPrestige=(prestigeRatio->getNth() - 1) * 100;
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
@@ -135,34 +195,3 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		}
 	}
 }
-
-
-void ChooseMapScreen::updateMapInformation()
-{
-	// update map name & info
-	mapName->setText(mapHeader.getMapName());
-	std::string textTemp;
-	textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
-	mapInfo->setText(textTemp);
-	textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
-	mapVersion->setText(textTemp);
-	textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
-	mapSize->setText(textTemp);
-	
-	// call subclass handler
-	validMapSelectedhandler();
-}
-
-
-MapHeader& ChooseMapScreen::getMapHeader()
-{
-	return mapHeader;
-}
-
-
-GameHeader& ChooseMapScreen::getGameHeader()
-{
-	return gameHeader;
-}
-
-
