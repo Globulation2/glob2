@@ -95,7 +95,7 @@ struct LookupNode: ExpressionNode
 	const string name;
 };
 
-struct BlockNode: Node
+struct BlockNode: ExpressionNode
 {
 	typedef vector<Node*> Statements;
 	
@@ -114,30 +114,35 @@ struct BlockNode: Node
 		value->generate(method);
 	}
 	
-	void end(Value* nil)
-	{
-		if (!statements.empty() && dynamic_cast<ExpressionNode*>(statements.back()) != 0)
-		{
-			value = statements.back();
-			statements.pop_back();
-		}
-		else
-		{
-			value = new ConstNode(nil);
-		}
-	}
-	
 	Statements statements;
 	Node* value;
+};
+
+struct BodyNode: ExpressionNode
+{
+	BodyNode(ExpressionNode* body, Heap* heap):
+		body(body),
+		heap(heap)
+	{}
+	
+	void generate(UserMethod* method)
+	{
+		UserMethod* inner = new UserMethod(heap, method);
+		method->body.push_back(new MethodCode(inner));
+		method->body.push_back(new ApplyCode(".", 0));
+		body->generate(inner);
+		inner->body.push_back(new ReturnCode());
+	}
+	
+	ExpressionNode* body;
+	Heap* heap;
 };
 
 struct Parser: Lexer
 {
 	Parser(const char* src, Heap* heap):
 		Lexer(src),
-		heap(heap),
-		Nil(new Prototype(heap, 0)),
-		nil(new Value(heap, Nil))
+		heap(heap)
 	{}
 	
 	BlockNode* parse()
@@ -155,7 +160,16 @@ struct Parser: Lexer
 			{
 			case END:
 			case RBRACE:
-				block->end(nil);
+				BlockNode::Statements& statements = block->statements;
+				if (!statements.empty() && dynamic_cast<ExpressionNode*>(statements.back()) != 0)
+				{
+					block->value = statements.back();
+					statements.pop_back();
+				}
+				else
+				{
+					block->value = new ConstNode(&nil);
+				}
 				return block.release();
 			}
 			block->statements.push_back(statement());
@@ -231,12 +245,12 @@ struct Parser: Lexer
 		case LBRACE:
 			{
 				next();
-				auto_ptr<Node> block(statements());
+				auto_ptr<ExpressionNode> body(statements());
 				accept(RBRACE);
-				return block.release();
+				return new BodyNode(body.release(), heap);
 			}
 		default:
-			return new ConstNode(nil);
+			return new ConstNode(&nil);
 		}
 	}
 	
@@ -269,8 +283,6 @@ struct Parser: Lexer
 	}
 	
 	Heap* heap;
-	Prototype* Nil;
-	Value* nil;
 };
 
 int main(int argc, char** argv)
