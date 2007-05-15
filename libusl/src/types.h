@@ -39,6 +39,7 @@ struct Value
 	
 	void clearGCMark() { marked = false; }
 };
+extern Value nil;
 
 struct Method;
 struct Prototype: Value
@@ -67,6 +68,7 @@ struct Prototype: Value
 		return methods.find(method)->second;
 	}
 };
+extern Prototype Nil;
 
 struct Thread;
 struct Method: Prototype

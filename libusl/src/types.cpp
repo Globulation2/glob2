@@ -3,6 +3,9 @@
 
 #include <cassert>
 
+Prototype Nil(0, 0);
+Value nil(0, &Nil);
+
 void UserMethod::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
