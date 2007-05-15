@@ -79,7 +79,7 @@ void EndGameStat::paint(void)
 	// find maximum
 	int team, maxValue = 0;
 	unsigned int pos=0;
-	for (team=0; team < game->mapHeader.getNumberOfTeams(); team++)
+	for (team=0; team < game->session.numberOfTeam; team++)
 		for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 			maxValue = std::max(maxValue, game->teams[team]->stats.endOfGameStats[pos].value[type]);
 
@@ -145,7 +145,7 @@ void EndGameStat::paint(void)
 		// draw curve
 		if (maxValue)
 		{
-			for (team=0; team < game->mapHeader.getNumberOfTeams(); team++)
+			for (team=0; team < game->session.numberOfTeam; team++)
 			{
 				if(!isTeamEnabled[team])
 					continue;
@@ -292,10 +292,10 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	
 	// add players name
 	Text *text;
-	int inc = (gui->game.mapHeader.getNumberOfTeams() < 16) ? 20 : 10;
+	int inc = (gui->game.session.numberOfTeam < 16) ? 20 : 10;
 
 	// set teams entries for later sort
-	for (int i=0; i<gui->game.mapHeader.getNumberOfTeams(); i++)
+	for (int i=0; i<gui->game.session.numberOfTeam; i++)
 	{
 		Team *t=gui->game.teams[i];
 		int endIndex=t->stats.endOfGameStats.size()-1;

@@ -31,7 +31,6 @@
 #include "Team.h"
 #include "TerrainType.h"
 #include "BitArray.h"
-#include "MapHeader.h"
 
 class Unit;
 
@@ -94,13 +93,9 @@ public:
 	// !This call is needed to use the Map!
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
-	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
+	bool load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *game=NULL);
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
-	
-	/// Load transitional map data. This is temporary map information that was saved by
-	/// the alpha 23 patch for transfering between map formats
-	void loadTransitional();
 	
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.

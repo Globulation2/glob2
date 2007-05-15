@@ -998,11 +998,10 @@ void Map::setGame(Game *game)
 	#endif
 }
 
-bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
+bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *game)
 {
-	assert(header.getVersionMinor()>=16);
-
-	Sint32 versionMinor = header.getVersionMinor();
+	assert(sessionGame);
+	assert(sessionGame->versionMinor>=16);
 
 	clear();
 	
@@ -1061,7 +1060,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		cases[i].building = stream->readUint16("building");
 
 		stream->read(&(cases[i].ressource), 4, "ressource");
-		if (versionMinor < 28)
+		if (sessionGame->versionMinor < 28)
 		{
 			Ressource &r=cases[i].ressource;
 			if (r.type!=NO_RES_TYPE)
@@ -1075,27 +1074,27 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		cases[i].airUnit = stream->readUint16("airUnit");
 
 		cases[i].forbidden = stream->readUint32("forbidden");
-		if(versionMinor >= 56)
+		if(sessionGame->versionMinor >= 56)
 			cases[i].hiddenForbidden = stream->readUint32("hiddenForbidden");
 		else
 			cases[i].hiddenForbidden = 0;
 		
-		if (versionMinor >= 36)
+		if (sessionGame->versionMinor >= 36)
 			cases[i].guardArea = stream->readUint32("guardArea");
 		else
 			cases[i].guardArea = 0;
 		
-		if (versionMinor >= 38)
+		if (sessionGame->versionMinor >= 38)
 			cases[i].clearArea = stream->readUint32("clearArea");
 		else
 			cases[i].clearArea = 0;
 		
-		if (versionMinor>=51)
+		if (sessionGame->versionMinor>=51)
 			cases[i].scriptAreas = stream->readUint16("scriptAreas");
 		else
 			cases[i].scriptAreas = 0;
 
-		if (versionMinor>=53)
+		if (sessionGame->versionMinor>=53)
 			cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
 		else
 			cases[i].canRessourcesGrow = 1;
@@ -1104,7 +1103,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	}
 	stream->readLeaveSection();
 
-	if(versionMinor>=51)
+	if(sessionGame->versionMinor>=51)
 	{
 		for(int n=0; n<9; ++n)
 		{
@@ -1122,7 +1121,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		this->game=game;
 
 		// This is a game, so we do compute gradients
-		for (int t=0; t<header.getNumberOfTeams(); t++)
+		for (int t=0; t<sessionGame->numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
 				{
@@ -1135,7 +1134,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 				for (int s=0; s<1; s++)
 					gradientUpdated[t][r][s]=false;
 
-		for (int t=0; t<header.getNumberOfTeams(); t++)
+		for (int t=0; t<sessionGame->numberOfTeam; t++)
 			for (int s=0; s<2; s++)
 			{
 				assert(forbiddenGradient[t][s] == NULL);
@@ -1145,7 +1144,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 				guardAreasGradient[t][s] = new Uint8[size];
 				updateGuardAreasGradient(t, s);
 			}
-		for (int t=0; t<header.getNumberOfTeams(); t++)
+		for (int t=0; t<sessionGame->numberOfTeam; t++)
 		{
 			assert(exploredArea[t] == NULL);
 			exploredArea[t] = new Uint8[size];
@@ -1166,7 +1165,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	for (int i=0; i<sizeSector; i++)
 	{
 		stream->readEnterSection(i);
-		if (!sectors[i].load(stream, this->game, versionMinor))
+		if (!sectors[i].load(stream, this->game, sessionGame->versionMinor))
 		{
 			stream->readLeaveSection(3);
 			return false;
@@ -1186,30 +1185,6 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	
 	return true;
 }
-
-
-void Map::loadTransitional()
-{
-	std::string fileName = glob2NameToFilename("maps", "output", "");
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName));
-	stream->read(undermap, size, "undermap");
-	for (size_t i=0; i<size ;i++)
-	{
-		cases[i].terrain = stream->readUint16("terrain");
-		stream->read(&(cases[i].ressource), 4, "ressource");
-		cases[i].scriptAreas = stream->readUint16("scriptAreas");
-		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
-	}
-	//Load area names
-	for(int n=0; n<9; ++n)
-	{
-		stream->readEnterSection(n);
-		setAreaName(n, stream->readText("areaname"));
-		stream->readLeaveSection();
-	}
-	delete stream;
-}
-	
 
 void Map::save(GAGCore::OutputStream *stream)
 {
@@ -1271,7 +1246,7 @@ void Map::save(GAGCore::OutputStream *stream)
 
 void Map::addTeam(void)
 {
-	int numberOfTeam=game->mapHeader.getNumberOfTeams();
+	int numberOfTeam=game->session.numberOfTeam;
 	int oldNumberOfTeam=numberOfTeam-1;
 	assert(numberOfTeam>0);
 	
@@ -1310,7 +1285,7 @@ void Map::addTeam(void)
 
 void Map::removeTeam(void)
 {
-	int numberOfTeam=game->mapHeader.getNumberOfTeams();
+	int numberOfTeam=game->session.numberOfTeam;
 //	int oldNumberOfTeam=numberOfTeam+1;
 	assert(numberOfTeam<32);
 	
@@ -1420,7 +1395,7 @@ void Map::syncStep(Uint32 stepCounter)
 	if (stepCounter & 1)
 	{
 		int team = (stepCounter >> 1) & 31;
-		if (team < game->mapHeader.getNumberOfTeams())
+		if (team < game->session.numberOfTeam)
 			updateExploredArea(team);
 	}
 	
@@ -1428,7 +1403,7 @@ void Map::syncStep(Uint32 stepCounter)
 	bool updated=false;
 	while (!updated)
 	{
-		int numberOfTeam=game->mapHeader.getNumberOfTeams();
+		int numberOfTeam=game->session.numberOfTeam;
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
@@ -4847,7 +4822,7 @@ void Map::updateForbiddenGradient(int teamNumber)
 
 void Map::updateForbiddenGradient()
 {
-	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
+	for (int i=0; i<game->session.numberOfTeam; i++)
 		updateForbiddenGradient(i);
 }
 
@@ -4901,7 +4876,7 @@ void Map::updateGuardAreasGradient(int teamNumber)
 
 void Map::updateGuardAreasGradient()
 {
-	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
+	for (int i=0; i<game->session.numberOfTeam; i++)
 		updateGuardAreasGradient(i);
 }
 

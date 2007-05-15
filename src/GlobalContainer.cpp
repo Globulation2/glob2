@@ -161,12 +161,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			}
 			continue;
 		}
-		if (strcmp(argv[i], "-daemon")==0)
-		{
-			runNoX=true;
-			hostServer=true;
-			continue;
-		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
 		{
 			if (i+3<argc)
@@ -314,7 +308,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-u\tspecify a user name\n");
 			printf("-y\tspecify an alternative hostname for YOG server\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
-			printf("-daemon\t runs the YOG server\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-vs <name>\tsave a videoshot as name\n");

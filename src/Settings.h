@@ -57,6 +57,7 @@ public:
 
 	int tempUnit;
 	int tempUnitFuture;
+	int tempVarPrestige;
 
 public:
 	void restoreDefaultShortcuts();

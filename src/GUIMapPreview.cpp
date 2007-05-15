@@ -29,6 +29,7 @@ using namespace GAGCore;
 
 #include "GUIMapPreview.h"
 #include "Map.h"
+#include "Session.h"
 #include "Utilities.h"
 
 MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
@@ -95,9 +96,9 @@ void MapPreview::setMapThumbnail(const char *mapName)
 	}
 	else
 	{
-		// read header
-		MapHeader header;
-		bool good = header.load(stream);
+		// read session
+		SessionGame session;
+		bool good = session.load(stream);
 		if (!good)
 		{
 			delete stream;
@@ -106,13 +107,11 @@ void MapPreview::setMapThumbnail(const char *mapName)
 		
 		// read map
 		if (stream->canSeek())
-			stream->seekFromStart(header.getMapOffset());
+			stream->seekFromStart(session.mapOffset);
 		else
 			; // TODO : enter correct section
-
-
 		Map map;
-		good = map.load(stream, header);
+		good = map.load(stream, &session);
 		delete stream;
 		if (!good)
 			return;

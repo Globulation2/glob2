@@ -33,8 +33,8 @@ class FuncFileList: public FileList
 public:
 	FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
 		const char *dir, const char *extension, const bool recurse, 
-		std::string (*filenameToNameFunc)(const std::string& filename),
-		std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension))
+		std::string (*filenameToNameFunc)(const char *filename),
+		std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
 		: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse), 
 			filenameToNameFunc(filenameToNameFunc), nameToFilenameFunc(nameToFilenameFunc)
 	{
@@ -56,16 +56,15 @@ private:
 	}
 
 private:
-	std::string (*filenameToNameFunc)(const std::string& filename);
-	std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension);
+	std::string (*filenameToNameFunc)(const char *filename);
+	std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension);
 
 };
 
 //! Load/Save screen
-
 LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName,
-	std::string (*filenameToNameFunc)(const std::string& filename),
-	std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension))
+		std::string (*filenameToNameFunc)(const char *filename),
+		std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
 :OverlayScreen(globalContainer->gfx, 300, 275)
 {
 	this->isLoad = isLoad;

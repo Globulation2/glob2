@@ -20,8 +20,7 @@
 #ifndef __CHOOSE_MAP_SCREEN_H
 #define __CHOOSE_MAP_SCREEN_H
 
-#include "MapHeader.h"
-#include "GameHeader.h"
+#include "Session.h"
 #include "Glob2Screen.h"
 #include <GUINumber.h>
 
@@ -38,22 +37,8 @@ class MapPreview;
 //! This screen is the basic screen used to selected map and games
 class ChooseMapScreen : public Glob2Screen
 {
+	static const bool verbose = false;
 public:
-	/// Constructor. Directory is the source of the listed files.
-	/// extension is the file extension to show. If recurse is true,
-	/// subdirectoried are shown and can be opened.
-	ChooseMapScreen(const char *directory, const char *extension, bool recurse);
-	//! Destructor
-	virtual ~ChooseMapScreen();
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	
-	/// Returns the mapHeader of the map that is currently selected
-	MapHeader& getMapHeader();
-	
-	/// Returns the gameHeader, with all of the customized options,
-	/// for the currently selected map.
-	GameHeader& getGameHeader();
-
 	enum
 	{
 		//! Value returned upon screen execution completion when a valid map/game is selected
@@ -63,20 +48,11 @@ public:
 		//! Value returned if screen is for games and delete button has been pressed
 		DELETEGAME = 3,
 	};
-
+	
+	//! Session info, will be used by caller upen screen execution completion
+	SessionInfo sessionInfo;
 
 protected:
-	/// Handle called when a valid map has been selected.
-	/// This is to be overwritten by the derived class.
-	virtual void validMapSelectedhandler(void) { }
-
-	/// The map header of the currently selected map
-	MapHeader mapHeader;
-	/// The game header of the currently selected map
-	GameHeader gameHeader;
-
-private:
-
 	//! Title of the screen, depends on the directory given in parameter
 	Text *title;
 	//! The ok button
@@ -91,14 +67,24 @@ private:
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
 	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
+	// The number information about selected map
+	Number *prestigeRatio;
 	//! True when the selected map is valid
 	bool validMapSelected;
+	OnOffButton *useVarPrestige; //determines if custom prestige will be used
+	bool useNewPrestige;
+	SessionGame session;
 
-	/// Called after a new mapHeader and gameHeader have been loaded.
-	void updateMapInformation();
-
-	/// Designates whether there will be verbose debugging output.
-	static const bool verbose = false;
+public:
+	//! Constructor. Directory is the source of the listed files. extension is the file extension to show. If recurse is true, subdirectoried are shown and can be opened.
+	ChooseMapScreen(const char *directory, const char *extension, bool recurse);
+	//! Destructor
+	virtual ~ChooseMapScreen();
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	
+protected:
+	//! Handle called when a valid map has been selected. Tp be overriden by subclasses
+	virtual void validMapSelectedhandler(void) { }
 };
 
 #endif

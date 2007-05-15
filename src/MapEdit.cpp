@@ -1781,11 +1781,7 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 			break;
 		case SDLK_i :
 			if(pressed)
-			{
-				//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
-				game.map.loadTransitional();
-				renderMiniMap();
-			}
+				performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
 			break;
 		case SDLK_j :
 			if(pressed)
@@ -2049,7 +2045,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", true, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=new LoadSaveScreen("maps", "map", true, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
 		showingLoad=true;
 	}
 	else if(action=="close load screen")
@@ -2063,7 +2059,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=new LoadSaveScreen("maps", "map", false, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
 		showingSave=true;
 	}
 	else if(action=="close save screen")
@@ -2335,15 +2331,15 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	}
 	else if(action=="add team")
 	{
-		if(game.mapHeader.getNumberOfTeams() < 12)
+		if(game.session.numberOfTeam < 12)
 			game.addTeam();
 		renderMiniMap();
 	}
 	else if(action=="remove team")
 	{
-		if(game.mapHeader.getNumberOfTeams() > 1)
+		if(game.session.numberOfTeam > 1)
 		{
-			if(team==game.mapHeader.getNumberOfTeams()-1)
+			if(team==game.session.numberOfTeam-1)
 				team-=1;
 			game.removeTeam();
 		}

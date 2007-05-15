@@ -1115,7 +1115,7 @@ Order *AICastor::controlStrikes()
 	if (!strikeTeamSelected)
 	{
 		int bestLevel=-1;
-		for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+		for (int ti=0; ti<game->session.numberOfTeam; ti++)
 		{
 			Team *enemyTeam=game->teams[ti];
 			Uint32 me=team->me;
@@ -1134,7 +1134,7 @@ Order *AICastor::controlStrikes()
 		}
 		int bestTeam=0;
 		int bestScore=-1;
-		for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+		for (int ti=0; ti<game->session.numberOfTeam; ti++)
 		{
 			int score=0;
 			Team *enemyTeam=game->teams[ti];
@@ -2272,7 +2272,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 		}
 	
 	Game *game=team->game;
-	for (Sint32 ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+	for (Sint32 ti=0; ti<game->session.numberOfTeam; ti++)
 	{
 		Team *team=game->teams[ti];
 		assert(team);
@@ -2609,7 +2609,7 @@ void AICastor::computeEnemyPowerMap()
 	
 	memset(gradient, 0, size);
 	
-	for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+	for (int ti=0; ti<game->session.numberOfTeam; ti++)
 	{
 		Team *enemyTeam=game->teams[ti];
 		Uint32 me=team->me;
@@ -2688,7 +2688,7 @@ void AICastor::computeEnemyRangeMap()
 	
 	memcpy(gradient, obstacleUnitMap, size);
 	
-	for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+	for (int ti=0; ti<game->session.numberOfTeam; ti++)
 	{
 		Team *enemyTeam=game->teams[ti];
 		Uint32 me=team->me;

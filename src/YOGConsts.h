@@ -20,77 +20,6 @@
 #ifndef __YOG_CONSTS_H
 #define __YOG_CONSTS_H
 
-///New YOG constants
-const Uint16 YOG_SERVER_PORT = 7486;
-//const std::string YOG_SERVER_IP = "yog.globulation2.org";
-const std::string YOG_SERVER_IP = "127.0.0.1";
-const Uint16 YOG_PROTOCOL_VERSION = 6;
-
-///Policies for login
-enum YOGLoginPolicy
-{
-	///This represents an unknown policy. Used by the client
-	///before the policy information has been transferred across the network
-	YOGUnknownLoginPolicy,
-	///This policy demands a password with the login
-	YOGRequirePassword,
-	///This policy allows anonymous logins.
-	YOGAnonymousLogin,
-};
-
-///Policies for the games the server hosts
-enum YOGGamePolicy
-{
-	///This represents an unknown policy. Used by the client
-	///before the policy information has been transferred across the network
-	YOGUnknownGamePolicy,
-	///In this policy, the server hosts one game, and all connected are a part of it.
-	YOGSingleGame,
-	///In this policy, the server hosts multiple games, and users can choose what game
-	///they are a part of
-	YOGMultipleGames,
-};
-
-///Represents the state of a login. Whether it was accepted, or if it
-///was refused, and if so, for what reason.
-enum YOGLoginState
-{
-	///This represents when the login was successful.
-	YOGLoginSuccessful,
-	///This represents when the login state is unknown
-	YOGLoginUnknown,
-	///This means that the password was incorrect.
-	///(only for servers that require registration)
-	YOGPasswordIncorrect,
-	///This means that a user with the same username is already connected.
-	YOGUsernameAlreadyUsed,
-	///This means that no registered user with that username exists
-	///(only for servers that require registration)
-	YOGUserNotRegistered,
-};
-
-///This represents the reason why the player could not join a game.
-enum YOGGameJoinRefusalReason
-{
-	///This represents internally an unknown reason
-	YOGJoinRefusalUnknown,
-
-};
-
-///This is used to represent the types of messages that can be sent through YOG
-enum YOGMessageType
-{
-	///This means a normal message sent to all connected users
-	YOGNormalMessage,
-	///This means a private message sent to one user
-	YOGPrivateMessage,
-	///This means an administrator message sent by YOG
-	YOGAdministratorMessage,
-};
-
-
-/*
-
 #define YOG_SERVER_IP "yog.globulation2.org"
 #define YOG_SERVER_PORT 7486
 
@@ -200,6 +129,5 @@ enum YOGMessageType
 	YMT_FLUSH_FILES=126,
 	YMT_CLOSE_YOG=127
 };
-*/
 
 #endif 

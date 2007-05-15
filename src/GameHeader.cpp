@@ -20,13 +20,6 @@
 
 GameHeader::GameHeader()
 {
-	reset();
-}
-
-
-
-void GameHeader::reset()
-{
 	numberOfPlayers = 0;
 	gameLatency = 5;
 }
@@ -47,7 +40,6 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
-	return true;
 }
 
 
@@ -77,13 +69,6 @@ Sint32 GameHeader::getNumberOfPlayers() const
 
 
 
-void GameHeader::setNumberOfPlayers(Sint32 players)
-{
-	numberOfPlayers=players;
-}
-
-
-
 Sint32 GameHeader::getGameLatency() const
 {
 	return gameLatency;
@@ -94,12 +79,4 @@ Sint32 GameHeader::getGameLatency() const
 void GameHeader::setGameLatency(Sint32 latency)
 {
 	gameLatency = latency;
-}
-
-
-
-BasePlayer& GameHeader::getBasePlayer(const int n)
-{
-	assert(n<32 && n>=0);
-	return players[n];
 }
