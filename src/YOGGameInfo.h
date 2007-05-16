@@ -32,6 +32,9 @@ public:
 	///Construct an empty YOGGameInfo
 	YOGGameInfo();
 
+	///Construct a YOGGameInfo
+	YOGGameInfo(const std::string& gameName, Uint16 gameID);
+
 	///Sets the name of the game
 	void setGameName(const std::string& gameName);
 	

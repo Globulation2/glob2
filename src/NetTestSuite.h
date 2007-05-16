@@ -56,6 +56,9 @@ public:
 	///Tests the YOGMessage class and its serialization
 	int testYOGMessage();
 
+	///Tests the YOGPlayerInfo class and its serialization
+	int testYOGPlayerInfo();
+
 	///This tests NetListener and NetConnection in tandem.
 	int testListenerConnection();
 

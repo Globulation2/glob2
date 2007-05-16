@@ -27,6 +27,14 @@ YOGPlayerInfo::YOGPlayerInfo()
 
 
 
+YOGPlayerInfo::YOGPlayerInfo(const std::string& playerName, Uint16 playerID)
+	: playerID(playerID), playerName(playerName)
+{
+
+}
+
+
+
 void YOGPlayerInfo::setPlayerName(const std::string& newPlayerName)
 {
 	playerName = newPlayerName;
@@ -79,6 +87,7 @@ Uint16 YOGPlayerInfo::getDataLength() const
 
 bool YOGPlayerInfo::decodeData(const Uint8 *data, int dataLength)
 {
+	playerName.clear();
 	Uint8 pos = 0;
 	playerID = SDLNet_Read16(data+pos);
 	pos+=2;
