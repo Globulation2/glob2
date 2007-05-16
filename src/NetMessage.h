@@ -781,10 +781,12 @@ private:
 
 //message_append_marker
 
-
+#include <iostream>
 
 template<typename container> void NetUpdateGameList::updateDifferences(const container& original, const container& updated)
 {
+	removedGames.clear();
+	updatedGames.clear();
 	///Find all removed games
 	for(typename container::const_iterator i = original.begin(); i!=original.end(); ++i)
 	{
@@ -807,7 +809,7 @@ template<typename container> void NetUpdateGameList::updateDifferences(const con
 	{
 		for(typename container::const_iterator j = updated.begin(); j!=updated.end(); ++j)
 		{
-			///If the ID's are ther same but some other property isn't, then
+			///If the ID's are the same but some other property isn't, then
 			///the game has changed and needs to be updated
 			if((i->getGameID() == j->getGameID()) && ((*i) != (*j)))
 			{
@@ -853,6 +855,8 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 		}
 		original.erase(game);
 	}
+	
+	
 	//Change the changed games and add the rest
 	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
@@ -877,8 +881,9 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 
 template<typename container> void NetUpdatePlayerList::updateDifferences(const container& original, const container& updated)
 {
+	removedPlayers.clear();
+	updatedPlayers.clear();
 	//find removed players
-	Uint16 index=0;
 	for(typename container::const_iterator i = original.begin(); i!=original.end(); ++i)
 	{
 		bool found=false;
@@ -891,8 +896,7 @@ template<typename container> void NetUpdatePlayerList::updateDifferences(const c
 			}
 		}
 		if(!found)
-			removedPlayers.push_back(index);
-		index+=1;
+			removedPlayers.push_back(i->getPlayerID());
 	}
 	
 	//Find added or changed players
@@ -914,7 +918,6 @@ template<typename container> void NetUpdatePlayerList::updateDifferences(const c
 		}
 		if(!found || changed)
 			updatedPlayers.push_back(*i);
-		index+=1;
 	}
 }
 

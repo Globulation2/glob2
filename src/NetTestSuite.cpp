@@ -195,6 +195,95 @@ int NetTestSuite::testNetMessages()
 	if(!testMessage(sendYOGMessage1))
 		return 33;
 
+	//Test NetUpdateGameList
+	YOGGameInfo gi1("bobs game", 12);
+	YOGGameInfo gi2("jills game", 17);
+	YOGGameInfo gi3("farces game", 35);
+	YOGGameInfo gi4("globulation2 is kick ass", 92);
+	std::vector<YOGGameInfo> lgi1;
+	std::vector<YOGGameInfo> lgi2;
+
+	//Test initial
+	if(!testInitialMessageState<NetUpdateGameList>())
+		return 34;
+	
+	//Add a few to the list, make sure it sends and it reconstructs right
+	shared_ptr<NetUpdateGameList> updateGameList1(new NetUpdateGameList);
+	lgi1.push_back(gi1);
+	lgi1.push_back(gi2);
+	updateGameList1->updateDifferences(lgi2, lgi1);
+	if(!testMessage(updateGameList1))
+		return 35;
+	updateGameList1->applyDifferences(lgi2);
+	if(lgi1 != lgi2)
+		return 36;
+	
+	//Remove one from the list
+	lgi1.erase(lgi1.begin()+1);
+	updateGameList1->updateDifferences(lgi2, lgi1);
+	if(!testMessage(updateGameList1))
+		return 37;
+	updateGameList1->applyDifferences(lgi2);
+	
+	
+	if(lgi1 != lgi2)
+		return 38;
+	
+	//Add two, remove one
+	lgi1.push_back(gi3);
+	lgi1.push_back(gi4);
+	lgi1.erase(lgi1.begin());
+	updateGameList1->updateDifferences(lgi2, lgi1);
+	if(!testMessage(updateGameList1))
+		return 39;
+	updateGameList1->applyDifferences(lgi2);
+	if(lgi1 != lgi2)
+		return 40;
+	
+	//Test NetUpdatePlayerList
+	YOGPlayerInfo pi1("bob", 12);
+	YOGPlayerInfo pi2("jill", 17);
+	YOGPlayerInfo pi3("farce", 35);
+	YOGPlayerInfo pi4("globulation2 is kick ass", 92);
+	std::vector<YOGPlayerInfo> lpi1;
+	std::vector<YOGPlayerInfo> lpi2;
+	
+	//Test initial
+	if(!testInitialMessageState<NetUpdatePlayerList>())
+		return 41;
+	
+	//Add a couple players
+	lpi1.push_back(pi1);
+	lpi1.push_back(pi2);
+	shared_ptr<NetUpdatePlayerList> updatePlayerList1(new NetUpdatePlayerList);
+	updatePlayerList1->updateDifferences(lpi2, lpi1);
+	if(!testMessage(updatePlayerList1))
+		return 42;
+	updatePlayerList1->applyDifferences(lpi2);
+	if(lpi1 != lpi2)
+		return 43;
+		
+	//Remove a player
+	lpi1.erase(lpi1.begin()+1);
+	updatePlayerList1->updateDifferences(lpi2, lpi1);
+	if(!testMessage(updatePlayerList1))
+		return 44;
+	updatePlayerList1->applyDifferences(lpi2);
+	if(lpi1 != lpi2)
+		return 45;
+		
+	//Add two remove one
+	lpi1.push_back(pi3);
+	lpi1.push_back(pi4);
+	lpi1.erase(lpi1.begin());
+	updatePlayerList1->updateDifferences(lpi2, lpi1);
+	if(!testMessage(updatePlayerList1))
+		return 46;
+	updatePlayerList1->applyDifferences(lpi2);
+	if(lpi1 != lpi2)
+		return 47;
+	
+
 	return 0;
 
 }
@@ -261,6 +350,34 @@ int NetTestSuite::testYOGMessage()
 	if(m1 != m2)
 		return 4;
 
+	return 0;
+}
+
+
+
+int NetTestSuite::testYOGPlayerInfo()
+{
+	YOGPlayerInfo ypi;
+	YOGPlayerInfo decode;
+	//Test the initial state
+	if(decode != ypi)
+		return 1;
+	
+	///Test the game name encoding	
+	ypi.setPlayerName("Bob");
+	Uint8* messageInfo = ypi.encodeData();
+	decode.decodeData(messageInfo, ypi.getDataLength());
+	delete messageInfo;
+	if(decode != ypi)
+		return 2;
+		
+	//Test the game id encoding
+	ypi.setPlayerID(1023);
+	messageInfo = ypi.encodeData();
+	decode.decodeData(messageInfo, ypi.getDataLength());
+	delete messageInfo;
+	if(decode != ypi)
+		return 3;
 	return 0;
 }
 
@@ -358,6 +475,17 @@ bool NetTestSuite::runAllTests()
 	{
 		failed = true;
 		std::cout<<"YOGMessage test #"<<failNumber<<" failed."<<std::endl;
+	}	
+
+	failNumber = testYOGPlayerInfo();
+	if(failNumber == 0)
+	{
+		std::cout<<"YOGPlayerInfo tests passed."<<std::endl;
+	}
+	else
+	{
+		failed = true;
+		std::cout<<"YOGPlayerInfo test #"<<failNumber<<" failed."<<std::endl;
 	}
 
 	return !failed;

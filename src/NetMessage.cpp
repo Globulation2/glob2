@@ -174,7 +174,7 @@ std::string NetSendOrder::format() const
 	}
 	else
 	{
-		s<<"NetSendOrder(orderType="<<order->getOrderType()<<")";
+		s<<"NetSendOrder(orderType="<<static_cast<int>(order->getOrderType())<<")";
 	}
 	return s.str();
 }
@@ -457,7 +457,7 @@ bool NetAttemptLogin::decodeData(const Uint8 *data, int dataLength)
 std::string NetAttemptLogin::format() const
 {
 	std::ostringstream s;
-	s<<"NetAttemptLogin("<<"username="<<username<<"; password="<<password<<")";
+	s<<"NetAttemptLogin("<<"username=\""<<username<<"\"; password=\""<<password<<"\")";
 	return s.str();
 }
 
@@ -604,7 +604,18 @@ bool NetRefuseLogin::decodeData(const Uint8 *data, int dataLength)
 std::string NetRefuseLogin::format() const
 {
 	std::ostringstream s;
-	s<<"NetRefuseLogin(reason="<<reason<<")";
+	std::string sreason;
+	if(reason == YOGLoginSuccessful)
+		sreason="YOGLoginSuccessful";
+	if(reason == YOGLoginUnknown)
+		sreason="YOGLoginUnknown";
+	if(reason == YOGPasswordIncorrect)
+		sreason="YOGPasswordIncorrect";
+	if(reason == YOGUsernameAlreadyUsed)
+		sreason="YOGUsernameAlreadyUsed";
+	if(reason == YOGUserNotRegistered)
+		sreason="YOGUserNotRegistered";
+	s<<"NetRefuseLogin(reason="<<sreason<<")";
 	return s.str();
 }
 
@@ -882,7 +893,7 @@ bool NetAttemptRegistration::decodeData(const Uint8 *data, int dataLength)
 std::string NetAttemptRegistration::format() const
 {
 	std::ostringstream s;
-	s<<"NetAttemptRegistration(username="<<username<<"; password="<<password<<")";
+	s<<"NetAttemptRegistration(username=\""<<username<<"\"; password=\""<<password<<"\")";
 	return s.str();
 }
 
@@ -1023,7 +1034,18 @@ bool NetRefuseRegistration::decodeData(const Uint8 *data, int dataLength)
 std::string NetRefuseRegistration::format() const
 {
 	std::ostringstream s;
-	s<<"NetRefuseRegistration(reason="<<reason<<")";
+	std::string sreason;
+	if(reason == YOGLoginSuccessful)
+		sreason="YOGLoginSuccessful";
+	if(reason == YOGLoginUnknown)
+		sreason="YOGLoginUnknown";
+	if(reason == YOGPasswordIncorrect)
+		sreason="YOGPasswordIncorrect";
+	if(reason == YOGUsernameAlreadyUsed)
+		sreason="YOGUsernameAlreadyUsed";
+	if(reason == YOGUserNotRegistered)
+		sreason="YOGUserNotRegistered";
+	s<<"NetRefuseRegistration(reason="<<sreason<<")";
 	return s.str();
 }
 
@@ -1138,7 +1160,7 @@ bool NetUpdatePlayerList::decodeData(const Uint8 *data, int dataLength)
 std::string NetUpdatePlayerList::format() const
 {
 	std::ostringstream s;
-	s<<"NetUpdatePlayerList()";
+	s<<"NetUpdatePlayerList(updatedPlayers "<<updatedPlayers.size()<<", removedPlayers "<<removedPlayers.size()<<")";
 	return s.str();
 }
 
@@ -1227,7 +1249,7 @@ bool NetCreateGame::decodeData(const Uint8 *data, int dataLength)
 std::string NetCreateGame::format() const
 {
 	std::ostringstream s;
-	s<<"NetCreateGame()";
+	s<<"NetCreateGame(gameName=\""<<gameName<<"\")";
 	return s.str();
 }
 
@@ -1462,7 +1484,10 @@ bool NetGameJoinRefused::decodeData(const Uint8 *data, int dataLength)
 std::string NetGameJoinRefused::format() const
 {
 	std::ostringstream s;
-	s<<"NetGameJoinRefused(reason="<<reason<<")";
+	std::string sreason;
+	if(reason == YOGJoinRefusalUnknown)
+		sreason="YOGJoinRefusalUnknown";
+	s<<"NetGameJoinRefused(reason="<<sreason<<")";
 	return s.str();
 }
 

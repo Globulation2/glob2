@@ -26,6 +26,13 @@ YOGGameInfo::YOGGameInfo()
 
 
 
+YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID)
+	: gameID(gameID), gameName(gameName)
+{
+}
+
+
+
 void YOGGameInfo::setGameName(const std::string& newGameName)
 {
 	gameName = newGameName;
@@ -90,6 +97,7 @@ bool YOGGameInfo::decodeData(const Uint8 *data, int dataLength)
 		gameName+=static_cast<char>(data[pos]);
 		pos+=1;
 	}
+	return true;
 }
 
 

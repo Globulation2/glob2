@@ -29,6 +29,9 @@ public:
 	///Construct an empty YOGPlayerInfo
 	YOGPlayerInfo();
 
+	///Construct a YOGPlayerInfo
+	YOGPlayerInfo(const std::string& playerName, Uint16 id);
+
 	///Sets the name of the player
 	void setPlayerName(const std::string& playerName);
 	
