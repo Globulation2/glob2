@@ -8,7 +8,7 @@ struct Code;
 struct Node
 {
 	virtual ~Node() {}
-	virtual void generate(UserMethod* method) = 0;
+	virtual void generate(Definition* def) = 0;
 };
 
 struct ExpressionNode: Node
@@ -16,14 +16,14 @@ struct ExpressionNode: Node
 
 struct LazyNode: ExpressionNode
 {
-	LazyNode(UserMethod* method, ExpressionNode* value):
-		method(method),
+	LazyNode(Definition* def, ExpressionNode* value):
+		def(def),
 		value(value)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(Definition* def);
 	
-	UserMethod* method;
+	Definition* def;
 	ExpressionNode* value;
 };
 
@@ -33,7 +33,7 @@ struct ConstNode: ExpressionNode
 		value(value)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(Definition* def);
 	
 	Value* value;
 };
@@ -45,7 +45,7 @@ struct LocalNode: ExpressionNode
 		local(local)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(Definition* def);
 	
 	size_t depth;
 	std::string local;
@@ -53,16 +53,17 @@ struct LocalNode: ExpressionNode
 
 struct ApplyNode: ExpressionNode
 {
-	ApplyNode(Node* receiver, const std::string& name):
+	ApplyNode(Node* receiver, const std::string& name, Node* argument):
 		receiver(receiver),
-		name(name)
+		name(name),
+		argument(argument)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(Definition* def);
 	
 	Node* receiver;
 	const std::string name;
-	std::vector<Node*> args;
+	Node* argument;
 };
 
 struct ValNode: Node
@@ -72,10 +73,29 @@ struct ValNode: Node
 		value(value)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(Definition* def);
 	
 	const std::string local;
 	Node* value;
+};
+
+struct BlockNode: ExpressionNode
+{
+	typedef std::vector<Node*> Statements;
+	
+	void generate(Definition* def);
+	
+	Statements statements;
+	Node* value;
+};
+
+struct TupleNode: ExpressionNode
+{
+	typedef std::vector<ExpressionNode*> Expressions;
+	
+	void generate(Definition* def);
+	
+	Expressions expressions;
 };
 
 #endif // ndef TREE_H

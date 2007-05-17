@@ -6,7 +6,8 @@
 Prototype Nil(0, 0);
 Value nil(0, &Nil);
 
-void UserMethod::execute(Thread* thread)
+/*
+void Definition::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
@@ -30,3 +31,13 @@ void UserMethod::execute(Thread* thread)
 	// push a new frame
 	frames.push_back(scope);
 }
+*/
+
+
+Tuple::TuplePrototype::TuplePrototype():
+	Prototype(0, 0)
+{
+	// TODO: add some tuple methods
+}
+
+Tuple::TuplePrototype Tuple::tuplePrototype;

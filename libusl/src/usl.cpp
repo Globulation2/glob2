@@ -16,7 +16,7 @@
 
 using namespace std;
 
-struct Class: UserMethod
+struct Class: Definition
 {
 	vector<string> fields;
 };
@@ -31,36 +31,24 @@ struct Object: Scope
 	}
 };
 
-Value* eager(Thread* thread, Value* lazy) {
-	
-}
-
 struct Integer: Value
 {
 	int value;
-	static struct IntegerAdd: Method
+	static struct IntegerAdd: NativeCode::Operation
 	{
 		IntegerAdd():
-			Method(0, &integerPrototype)
-		{
-			args.push_back("that");
-		}
+			NativeCode::Operation(&integerPrototype, "Integer::+", false)
+		{}
 		
-		void execute(Thread* thread)
+		Value* execute(Thread* thread, Value* receiver, Value* argument)
 		{
-			// check number of arguments
-			Thread::Frame::Stack& stack = thread->frames.back().stack;
-			size_t stackSize = stack.size();
-			
-			Integer* thatInt = dynamic_cast<Integer*>(stack[--stackSize]);
-			Integer* thisInt = dynamic_cast<Integer*>(stack[--stackSize]);
+			Integer* thisInt = dynamic_cast<Integer*>(receiver);
+			Integer* thatInt = dynamic_cast<Integer*>(argument);
 			
 			assert(thisInt);
-			// todo check thatInt type
+			assert(thatInt);
 			
-			stack[stackSize++] = new Integer(thread->heap, thisInt->value + thatInt->value);
-			
-			stack.resize(stackSize);
+			return new Integer(thread->heap, thisInt->value + thatInt->value);
 		}
 	} integerAdd;
 	
@@ -79,6 +67,8 @@ struct Integer: Value
 	{
 		this->value = value;
 	}
+	
+	virtual void dumpSpecific(std::ostream &stream) { stream << "= " << value; }
 };
 
 Integer::IntegerPrototype Integer::integerPrototype;
@@ -91,35 +81,12 @@ struct LookupNode: ExpressionNode
 		name(name)
 	{}
 	
-	void generate(UserMethod* method)
+	void generate(Definition* def)
 	{
 		assert(false);
 	}
 	
 	const string name;
-};
-
-struct BlockNode: ExpressionNode
-{
-	typedef vector<Node*> Statements;
-	
-	void generate(UserMethod* method)
-	{
-		for (Statements::const_iterator it = statements.begin(); it != statements.end(); ++it)
-		{
-			Node* statement = *it;
-			statement->generate(method);
-			if (dynamic_cast<ExpressionNode*>(statement) != 0)
-			{
-				// if the statement is an expression, its result is ignored
-				method->body.push_back(new PopCode());
-			}
-		}
-		value->generate(method);
-	}
-	
-	Statements statements;
-	Node* value;
 };
 
 struct Parser: Lexer
@@ -129,9 +96,9 @@ struct Parser: Lexer
 		heap(heap)
 	{}
 	
-	BlockNode* parse(UserMethod* method)
+	BlockNode* parse(Definition* def)
 	{
-		auto_ptr<Scope> scope(new Scope(0, method, 0));
+		auto_ptr<Scope> scope(new Scope(0, def, 0));
 		return statements(scope.get());
 	}
 	
@@ -139,6 +106,7 @@ struct Parser: Lexer
 	{
 		newlines();
 		auto_ptr<BlockNode> block(new BlockNode());
+		scope->locals["this"] = scope;
 		while (true)
 		{
 			switch (tokenType())
@@ -180,7 +148,7 @@ struct Parser: Lexer
 		}
 	}
 	
-	Node* expression(Scope* scope)
+	ExpressionNode* expression(Scope* scope)
 	{
 		auto_ptr<ExpressionNode> node(simple(scope));
 		while (true)
@@ -188,11 +156,11 @@ struct Parser: Lexer
 			switch (tokenType())
 			{
 			case ID:
-				node = apply(scope, node, identifier());
+				node.reset(apply(node, identifier(), scope));
 				break;
 			case LPAR:
 			case LBRACE:
-				node = apply(scope, node, ".");
+				node.reset(apply(node, ".", scope));
 				break;
 			default:
 				return node.release();
@@ -200,11 +168,53 @@ struct Parser: Lexer
 		}
 	}
 	
-	auto_ptr<ApplyNode> apply(Scope* scope, auto_ptr<ExpressionNode> receiver, const string& method)
+	ApplyNode* apply(auto_ptr<ExpressionNode> receiver, const string& method, Scope* scope)
 	{
-		auto_ptr<ApplyNode> node(new ApplyNode(receiver.release(), method));
-		node->args.push_back(lazy(scope));
-		return node;
+		ExpressionNode* argument = lazy(scope);
+		return new ApplyNode(receiver.release(), method, argument);
+	}
+	
+	ExpressionNode *expressions(Scope* scope)
+	{
+		newlines();
+		auto_ptr<TupleNode> tuple(new TupleNode());
+		while (true)
+		{
+			switch (tokenType())
+			{
+			case ID:
+			case NUM:
+			case LPAR:
+			case LBRACE:
+				tuple->expressions.push_back(expression(scope));
+				newlines();
+				break;
+			
+			case COMMA:
+				next();
+				newlines();
+				break;
+			
+			case RPAR:
+				next();
+				switch (tuple->expressions.size())
+				{
+				case 0:
+					return new ConstNode(&nil);
+				case 1:
+					{
+						ExpressionNode* expr = tuple->expressions[0];
+						tuple->expressions.clear();
+						return expr;
+					}
+				default:
+					return tuple.release();
+				}
+			
+			default:
+				assert(false);
+			}
+		}
 	}
 	
 	ExpressionNode* simple(Scope* scope)
@@ -219,10 +229,10 @@ struct Parser: Lexer
 				size_t depth = 0;
 				do
 				{
-					Value* value = scope->lookup(name);
+					Value* value = current->lookup(name);
 					if (value != 0)
 						return new LocalNode(depth, name);
-					current = current->parent;
+					current = dynamic_cast<Scope*>(current->parent);
 					++depth;
 				}
 				while (current != 0);
@@ -239,18 +249,16 @@ struct Parser: Lexer
 		case LPAR:
 			{
 				next();
-				// TODO: tuples
-				accept(RPAR);
-				assert(false);
+				return expressions(scope);
 			}
 		case LBRACE:
 			{
 				next();
-				UserMethod* method(new UserMethod(heap, scope->prototype));
-				auto_ptr<Scope> newScope(new Scope(0, method, scope));
+				Definition* def(new Definition(heap, scope->prototype));
+				auto_ptr<Scope> newScope(new Scope(0, def, scope));
 				auto_ptr<ExpressionNode> body(statements(newScope.get()));
 				accept(RBRACE);
-				return new ApplyNode(new LazyNode(method, body.release()), ".");
+				return new ApplyNode(new LazyNode(def, body.release()), ".", new ConstNode(&nil));
 			}
 		default:
 			return new ConstNode(&nil);
@@ -259,9 +267,9 @@ struct Parser: Lexer
 	
 	LazyNode* lazy(Scope* scope)
 	{
-		UserMethod* method(new UserMethod(heap, scope->prototype));
-		auto_ptr<Scope> newScope(new Scope(0, method, scope));
-		return new LazyNode(method, simple(newScope.get()));
+		Definition* def(new Definition(heap, scope->prototype));
+		auto_ptr<Scope> newScope(new Scope(0, def, scope));
+		return new LazyNode(def, simple(newScope.get()));
 	}
 	
 	void newlines()
@@ -298,9 +306,9 @@ struct Parser: Lexer
 int main(int argc, char** argv)
 {
 	Heap heap;
-	UserMethod* root = new UserMethod(&heap, 0);
+	Definition* root = new Definition(&heap, 0);
 	
-	Parser parser("val x = 21 + 21\n", &heap);
+	Parser parser("val x = 21 + 21", &heap);
 	Node* node = parser.parse(root);
 	node->generate(root);
 	
@@ -310,10 +318,15 @@ int main(int argc, char** argv)
 	while (thread.frames.front().nextInstr < root->body.size())
 	{
 		Thread::Frame& frame = thread.frames.back();
-		frame.scope->method()->body[frame.nextInstr++]->execute(&thread);
-		cout << "stack size: " << thread.frames.back().stack.size() << endl;
+		Code* code = frame.scope->def()->body[frame.nextInstr++];
+		code->execute(&thread);
+		code->dump(cout);
+		cout << ", frames: " << thread.frames.size();
+		cout << ", stack size: " << thread.frames.back().stack.size() << endl;
 	}
-	cout << "x = " << dynamic_cast<Integer*>(thread.frames.back().scope->locals["x"])->value << endl;
+	cout << "x: ";
+	thread.frames.back().scope->locals["x"]->dump(cout);
+	cout << endl;
 	
 	thread.frames.pop_back();
 	
