@@ -1,6 +1,13 @@
 #include "tree.h"
 #include "code.h"
 
+void LazyNode::generate(UserMethod* method)
+{
+	value->generate(this->method);
+	this->method->body.push_back(new ReturnCode());
+	method->body.push_back(new ScopeCode(this->method));
+}
+
 void ConstNode::generate(UserMethod* method)
 {
 	method->body.push_back(new ConstCode(value));
@@ -19,7 +26,7 @@ void ApplyNode::generate(UserMethod* method)
 	method->body.push_back(new ApplyCode(name, args.size()));
 }
 
-void ValueNode::generate(UserMethod* method)
+void ValNode::generate(UserMethod* method)
 {
 	value->generate(method);
 	method->body.push_back(new ValueCode(local));

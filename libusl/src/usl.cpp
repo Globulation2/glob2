@@ -31,6 +31,10 @@ struct Object: Scope
 	}
 };
 
+Value* eager(Thread* thread, Value* lazy) {
+	
+}
+
 struct Integer: Value
 {
 	int value;
@@ -118,25 +122,6 @@ struct BlockNode: ExpressionNode
 	Node* value;
 };
 
-struct ScopeNode: ExpressionNode
-{
-	ScopeNode(UserMethod* method, ExpressionNode* body):
-		method(method),
-		body(body)
-	{}
-	
-	void generate(UserMethod* method)
-	{
-		method->body.push_back(new ScopeCode(this->method));
-		method->body.push_back(new ApplyCode(".", 0));
-		body->generate(this->method);
-		this->method->body.push_back(new ReturnCode());
-	}
-	
-	UserMethod* method;
-	ExpressionNode* body;
-};
-
 struct Parser: Lexer
 {
 	Parser(const char* src, Heap* heap):
@@ -188,7 +173,7 @@ struct Parser: Lexer
 				accept(ASSIGN);
 				newlines();
 				scope->locals[name] = &nil;
-				return new ValueNode(name, expression(scope));
+				return new ValNode(name, expression(scope));
 			}
 		default:
 			return expression(scope);
@@ -197,7 +182,7 @@ struct Parser: Lexer
 	
 	Node* expression(Scope* scope)
 	{
-		auto_ptr<Node> node(simple(scope));
+		auto_ptr<ExpressionNode> node(simple(scope));
 		while (true)
 		{
 			switch (tokenType())
@@ -206,6 +191,7 @@ struct Parser: Lexer
 				node = apply(scope, node, identifier());
 				break;
 			case LPAR:
+			case LBRACE:
 				node = apply(scope, node, ".");
 				break;
 			default:
@@ -214,14 +200,14 @@ struct Parser: Lexer
 		}
 	}
 	
-	auto_ptr<ApplyNode> apply(Scope* scope, auto_ptr<Node> receiver, const string& method)
+	auto_ptr<ApplyNode> apply(Scope* scope, auto_ptr<ExpressionNode> receiver, const string& method)
 	{
 		auto_ptr<ApplyNode> node(new ApplyNode(receiver.release(), method));
-		node->args.push_back(simple(scope));
+		node->args.push_back(lazy(scope));
 		return node;
 	}
 	
-	Node* simple(Scope* scope)
+	ExpressionNode* simple(Scope* scope)
 	{
 		switch (tokenType())
 		{
@@ -260,15 +246,22 @@ struct Parser: Lexer
 		case LBRACE:
 			{
 				next();
-				auto_ptr<UserMethod> method(new UserMethod(heap, scope->prototype));
-				auto_ptr<Scope> newScope(new Scope(heap, method.get(), scope));
+				UserMethod* method(new UserMethod(heap, scope->prototype));
+				auto_ptr<Scope> newScope(new Scope(0, method, scope));
 				auto_ptr<ExpressionNode> body(statements(newScope.get()));
 				accept(RBRACE);
-				return new ScopeNode(method.release(), body.release());
+				return new ApplyNode(new LazyNode(method, body.release()), ".");
 			}
 		default:
 			return new ConstNode(&nil);
 		}
+	}
+	
+	LazyNode* lazy(Scope* scope)
+	{
+		UserMethod* method(new UserMethod(heap, scope->prototype));
+		auto_ptr<Scope> newScope(new Scope(0, method, scope));
+		return new LazyNode(method, simple(newScope.get()));
 	}
 	
 	void newlines()
