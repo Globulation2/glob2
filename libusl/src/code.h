@@ -3,12 +3,14 @@
 
 #include "interpreter.h"
 #include <cassert>
+#include <ostream>
 
 
 struct Code
 {
 	virtual ~Code() { }
 	virtual void execute(Thread* thread) = 0;
+	virtual void dump(std::ostream &stream) { stream << typeid(*this).name(); }
 };
 
 struct ConstCode: Code
@@ -38,7 +40,9 @@ struct LocalCode: Code
 		Scope* scope = frame.scope;
 		for (size_t i = 0; i < depth; ++i)
 		{
-			scope = scope->parent;
+			// scope = static_cast<Scope*>(scope->parent); // Should be safe if the parser is bug-free
+			scope = dynamic_cast<Scope*>(scope->parent);
+			assert(scope);
 		}
 		frame.stack.push_back(scope->lookup(local));
 	}
@@ -49,25 +53,37 @@ struct LocalCode: Code
 
 struct ApplyCode: Code
 {
-	ApplyCode(const std::string& name, size_t argCount):
-		name(name),
-		argCount(argCount)
+	ApplyCode(const std::string& name):
+		name(name)
 	{}
 	
 	void execute(Thread* thread)
 	{
-		// fetch receiver
-		Value* receiver = *(thread->frames.back().stack.end() - argCount - 1);
+		Thread::Frames& frames = thread->frames;
+		Thread::Frame::Stack& stack = frames.back().stack;
 		
-		// fetch method
-		Method* method = receiver->prototype->lookup(name);
-		assert(argCount == method->args.size());
+		// get argument
+		Value* argument = stack.back();
+		stack.pop_back();
 		
-		method->execute(thread);
+		// get receiver
+		Value* receiver = stack.back();
+		stack.pop_back();
+		
+		// get definition
+		Definition* method = receiver->prototype->lookup(name);
+		
+		// create a new scope
+		Scope* scope = new Scope(thread->heap, method, receiver);
+		
+		// put the argument in the scope
+		scope->locals["arg"] = argument;
+		
+		// push a new frame
+		frames.push_back(scope);
 	}
-		
+	
 	const std::string name;
-	size_t argCount;
 };
 
 struct ValueCode: Code
@@ -87,6 +103,19 @@ struct ValueCode: Code
 	const std::string local;
 };
 
+struct ParentCode: Code
+{
+	ParentCode()
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame& frame = thread->frames.back();
+		assert(frame.scope->parent);
+		frame.stack.push_back(frame.scope->parent);
+	}
+};
+
 struct PopCode: Code
 {
 	void execute(Thread* thread)
@@ -97,17 +126,17 @@ struct PopCode: Code
 
 struct ScopeCode: Code
 {
-	ScopeCode(UserMethod* method):
-		method(method)
+	ScopeCode(Definition* def):
+		def(def)
 	{}
 	
 	void execute(Thread* thread)
 	{
 		Thread::Frame& frame = thread->frames.back();
-		frame.stack.push_back(new Scope(thread->heap, method, frame.scope));
+		frame.stack.push_back(new Scope(thread->heap, def, frame.scope));
 	}
 	
-	UserMethod* method;
+	Definition* def;
 };
 
 struct ReturnCode: Code
@@ -118,6 +147,67 @@ struct ReturnCode: Code
 		thread->frames.pop_back();
 		thread->frames.back().stack.push_back(value);
 	}
+};
+
+struct TupleCode: Code
+{
+	TupleCode(size_t size):
+		size(size)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Tuple* tuple = new Tuple(thread->heap);
+		Thread::Frame::Stack &stack = thread->frames.back().stack;
+		Thread::Frame::Stack::const_iterator stackEnd = stack.end();
+		std::copy(stackEnd - size, stackEnd, std::back_inserter(tuple->values));
+		stack.resize(stack.size() - size);
+	}
+	
+	size_t size;
+};
+
+struct NativeCode: Code
+{
+	struct Operation: Definition
+	{
+		Operation(Prototype* parent, const std::string& name, bool lazy):
+			Definition(0, parent),
+			name(name)
+		{
+			body.push_back(new ParentCode());
+			body.push_back(new LocalCode(0, "arg"));
+			if (!lazy)
+			{
+				body.push_back(new ConstCode(&nil));
+				body.push_back(new ApplyCode("."));
+			}
+			body.push_back(new NativeCode(this));
+			body.push_back(new ReturnCode());
+		}
+		
+		virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
+		
+		std::string name;
+	};
+	
+	NativeCode(Operation* operation):
+		operation(operation)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame::Stack& stack = thread->frames.back().stack;
+		
+		Value* argument = stack.back();
+		stack.pop_back();
+		Value* receiver = stack.back();
+		stack.pop_back();
+		
+		stack.push_back(operation->execute(thread, receiver, argument));
+	}
+	
+	Operation* operation;
 };
 
 #endif // ndef BYTECODE_H

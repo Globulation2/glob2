@@ -1,33 +1,59 @@
 #include "tree.h"
 #include "code.h"
 
-void LazyNode::generate(UserMethod* method)
+void LazyNode::generate(Definition* def)
 {
-	value->generate(this->method);
-	this->method->body.push_back(new ReturnCode());
-	method->body.push_back(new ScopeCode(this->method));
+	value->generate(this->def);
+	this->def->body.push_back(new ReturnCode());
+	def->body.push_back(new ScopeCode(this->def));
 }
 
-void ConstNode::generate(UserMethod* method)
+void ConstNode::generate(Definition* def)
 {
-	method->body.push_back(new ConstCode(value));
+	def->body.push_back(new ConstCode(value));
 }
 
-void LocalNode::generate(UserMethod* method)
+void LocalNode::generate(Definition* def)
 {
-	method->body.push_back(new LocalCode(depth, local));
+	def->body.push_back(new LocalCode(depth, local));
 }
 
-void ApplyNode::generate(UserMethod* method)
+void ApplyNode::generate(Definition* def)
 {
-	receiver->generate(method);
-	for (size_t i = 0; i < args.size(); i++)
-		args[i]->generate(method);
-	method->body.push_back(new ApplyCode(name, args.size()));
+	receiver->generate(def);
+	argument->generate(def);
+	def->body.push_back(new ApplyCode(name));
 }
 
-void ValNode::generate(UserMethod* method)
+void ValNode::generate(Definition* def)
 {
-	value->generate(method);
-	method->body.push_back(new ValueCode(local));
+	value->generate(def);
+	def->body.push_back(new ValueCode(local));
 }
+
+void BlockNode::generate(Definition* def)
+{
+	
+	for (Statements::const_iterator it = statements.begin(); it != statements.end(); ++it)
+	{
+		Node* statement = *it;
+		statement->generate(def);
+		if (dynamic_cast<ExpressionNode*>(statement) != 0)
+		{
+			// if the statement is an expression, its result is ignored
+			def->body.push_back(new PopCode());
+		}
+	}
+	value->generate(def);
+}
+
+void TupleNode::generate(Definition* def)
+{
+	for (Expressions::const_iterator it = expressions.begin(); it != expressions.end(); ++it)
+	{
+		Node* expression = *it;
+		expression->generate(def);
+	}
+	def->body.push_back(new TupleCode(expressions.size()));
+}
+
