@@ -146,7 +146,7 @@ struct Parser: Lexer
 	
 	BlockNode* parse(UserMethod* method)
 	{
-		auto_ptr<Scope> scope(new Scope(heap, method, 0));
+		auto_ptr<Scope> scope(new Scope(0, method, 0));
 		return statements(scope.get());
 	}
 	
