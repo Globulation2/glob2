@@ -59,7 +59,7 @@ struct Prototype: Value
 		using namespace std;
 		using namespace __gnu_cxx;
 		if (parent != 0)
-			parent->propagateMarkForGC();
+			parent->markForGC();
 		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<map<string, Value*>::value_type>()));
 	}
 	
