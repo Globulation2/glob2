@@ -14,6 +14,19 @@ struct Node
 struct ExpressionNode: Node
 {};
 
+struct LazyNode: ExpressionNode
+{
+	LazyNode(UserMethod* method, ExpressionNode* value):
+		method(method),
+		value(value)
+	{}
+	
+	void generate(UserMethod* method);
+	
+	UserMethod* method;
+	ExpressionNode* value;
+};
+
 struct ConstNode: ExpressionNode
 {
 	ConstNode(Value* value):
@@ -52,9 +65,9 @@ struct ApplyNode: ExpressionNode
 	std::vector<Node*> args;
 };
 
-struct ValueNode: Node
+struct ValNode: Node
 {
-	ValueNode(const std::string& local, Node* value):
+	ValNode(const std::string& local, Node* value):
 		local(local),
 		value(value)
 	{}
