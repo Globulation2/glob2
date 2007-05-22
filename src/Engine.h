@@ -26,6 +26,7 @@
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "NetEngine.h"
 
 class MultiplayersJoin;
 class NetGame;
@@ -78,7 +79,7 @@ public:
 	//! The GUI, contains the whole game also
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching
-	NetGame *net;
+	NetEngine *net;
 	
 private:
 	/// Initiates a game, provided the map and game header. This initiates the net
