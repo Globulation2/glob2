@@ -27,9 +27,6 @@
 Order::Order(void)
 {
 	sender=-1;
-	wishedLatency=0;
-	wishedDelay=0;
-	latencyPadding=false;
 	ustep=0;
 	gameCheckSum=0;
 	needToBeFreedByEngine=false;

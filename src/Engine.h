@@ -74,12 +74,6 @@ public:
 		//! no suitable player found in the map
 		EE_CANT_FIND_PLAYER=4
 	};
-
-public:
-	//! The GUI, contains the whole game also
-	GameGUI gui;
-	//! The netGame, take care of order queuing and dispatching
-	NetEngine *net;
 	
 private:
 	/// Initiates a game, provided the map and game header. This initiates the net
@@ -102,14 +96,18 @@ private:
 	///This will load the game header of the game with the given filename
 	GameHeader loadGameHeader(const std::string &filename);
 
-protected:
+	//! The GUI, contains the whole game also
+	GameGUI gui;
+	//! The netGame, take care of order queuing and dispatching
+	NetEngine *net;
+
 	int cpuStats[41];
 	int ticksToWaitStats[41];
 	unsigned cpuSumStats;
 	unsigned cpuSumCountStats;
 	Sint32 noxStartTick, noxEndTick;
 	FILE *logFile;
-private:
+
 	static const bool verbose = false;
 };
 
