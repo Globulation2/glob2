@@ -35,7 +35,6 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
-#include "NetGame.h"
 #include "Utilities.h"
 #include "YOGScreen.h"
 #include "SoundMixer.h"
@@ -254,11 +253,12 @@ int Engine::run(void)
 				{
 					gui.syncStep();
 					
+					
 					// We get and push local orders
 					net->pushOrder(gui.getOrder(), gui.localPlayer);
 					
 					// We store full recursive checkSums data:
-					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
+//					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
 
 					// we get and push ai orders
 					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
@@ -267,6 +267,7 @@ int Engine::run(void)
 							Order* order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
 							net->pushOrder(order, i);
 						}
+/*
 					
 					ticksToDelayInside=net->ticksToDelayInside();
 					ticksDelayedInside=ticksToDelayInside+computationAvailableTicks/2;
@@ -274,6 +275,7 @@ int Engine::run(void)
 					if (ticksDelayedInside>0)
 						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
 					else
+*/
 						ticksDelayedInside=0;
 				}
 				else
@@ -283,17 +285,17 @@ int Engine::run(void)
 				gui.game.clearEventsStep();
 				
 				// We proceed network:
-				networkReadyToExecute=net->stepReadyToExecute();
+				networkReadyToExecute=net->allOrdersRecieved();
 
 				// We get all currents orders from the network and execute them:
 				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 				{
-					Order *order=net->getOrder(i);
+					Order *order=net->retrieveOrder(i);
 					gui.executeOrder(order);
 					if (order->needToBeFreedByEngine)
 						delete order;
 				}
-				net->stepExecuted();
+				net->advanceStep();
 
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
@@ -345,7 +347,7 @@ int Engine::run(void)
 				startTick=SDL_GetTicks();
 				
 				// we set CPU stats
-				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
+//				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
 				gui.setCpuLoad(ticksSpentInComputation);
 				if (networkReadyToExecute && !gui.gamePaused)
 				{
@@ -422,7 +424,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader)
 	finalAdjustements();
 
 	// we create the net game
-	net=new NetGame(NULL, gui.game.gameHeader.getNumberOfPlayers(), gui.game.players);
+	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers());
 
 	return EE_NO_ERROR;
 }

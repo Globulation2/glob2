@@ -133,8 +133,8 @@ NetConnection.cpp \
 NetConnection.h \
 NetConsts.h \
 NetDefine.h \
-NetGame.cpp \
-NetGame.h \
+NetEngine.cpp \
+NetEngine.h \
 NetListener.cpp \
 NetListener.h \
 NetMessage.cpp \
