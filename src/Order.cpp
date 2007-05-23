@@ -29,7 +29,6 @@ Order::Order(void)
 	sender=-1;
 	ustep=0;
 	gameCheckSum=0;
-	needToBeFreedByEngine=false;
 }
 
 boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength)
