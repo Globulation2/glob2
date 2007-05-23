@@ -60,7 +60,6 @@ public:
 	int sender; // sender player number, setby NetGame in getOrder() only
 	Uint32 ustep;
 	Uint32 gameCheckSum;
-	bool needToBeFreedByEngine;
 };
 
 
