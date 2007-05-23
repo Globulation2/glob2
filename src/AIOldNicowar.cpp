@@ -35,6 +35,7 @@
 #include <iomanip>
 
 using namespace Nicowar;
+using namespace boost;
 
 AINicowar::AINicowar(Player *player)
 {
@@ -184,11 +185,10 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 	for (Uint32 ordersIndex = 0; ordersIndex < orders.size(); ordersIndex++)
 	{
 		stream->writeEnterSection(ordersIndex);
-		Order* order = orders.front();
+		boost::shared_ptr<Order> order = orders.front();
 		orders.pop();
 		stream->writeUint32(order->getDataLength()+1, "size");
 		stream->write(order->getData(), order->getDataLength(), "data");
-		delete order;
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -211,13 +211,13 @@ void AINicowar::save(GAGCore::OutputStream *stream)
 
 
 
-Order *AINicowar::getOrder(void)
+boost::shared_ptr<Order>AINicowar::getOrder(void)
 {
 
 	//See if there is an existing order that the AI wanted to have done
 	if (!orders.empty())
 	{
-		Order* order = orders.front();
+		boost::shared_ptr<Order> order = orders.front();
 		orders.pop();
 		return order;
 	}
@@ -226,7 +226,7 @@ Order *AINicowar::getOrder(void)
 
 	//Waits for atleast one iteration before it does anything, because of a few odd, 'goes to fast' bugs.
 	if (timer<STARTUP_TIME)
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder());
 
 	//	std::cout<<"timer="<<timer<<";"<<std::endl;
 
@@ -276,12 +276,12 @@ Order *AINicowar::getOrder(void)
 
 	if (!orders.empty())
 	{
-		Order* order = orders.front();
+		boost::shared_ptr<Order> order = orders.front();
 		orders.pop();
 		return order;
 	}
 
-	return new NullOrder();
+	return shared_ptr<Order>(new NullOrder());
 }
 
 
@@ -1310,7 +1310,7 @@ bool SimpleBuildingDefense::findDefense()
 					Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 					if(AINicowar_DEBUG)
 						std::cout<<"AINicowar: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<IntBuildingType::reverseConversionMap[b->type->shortTypeNum]<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-					ai.orders.push(new OrderCreate(ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1));
+					ai.orders.push(shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1)));
 				}
 			}
 		}
@@ -1351,7 +1351,7 @@ bool SimpleBuildingDefense::updateFlags()
 			{
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateFlags: Found a flag at "<<i->flagx<<","<<i->flagy<<" that is no longer defending against any enemy units. Removing this flag."<<std::endl;
-				ai.orders.push(new OrderDelete(i->flag));
+				ai.orders.push(shared_ptr<Order>(new OrderDelete(i->flag)));
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, 1, 0, i->flag);
 				i=defending_zones.erase(i);
 				continue;
@@ -1362,7 +1362,7 @@ bool SimpleBuildingDefense::updateFlags()
 				i->assigned=std::min(20u, score);
 				if(static_cast<int>(score)!=getBuildingFromGid(ai.game, i->flag)->maxUnitWorking)
 				{
-					ai.orders.push(new OrderModifyBuilding(i->flag, std::min(20u, score)));
+					ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(20u, score))));
 					ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, std::min(20u, score), i->flag);
 				}
 			}
@@ -1391,8 +1391,8 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 						if(AINicowar_DEBUG)
 							std::cout<<"AINicowar: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
 						i->flag=b->gid;
-						ai.orders.push(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2));
-						ai.orders.push(new OrderModifyBuilding(b->gid, i->assigned));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2)));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, i->assigned)));
 						ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, i->flag);
 						break;
 					}
@@ -1522,7 +1522,7 @@ bool GeneralsDefense::findEnemyFlags()
 								if(AINicowar_DEBUG)
 									std::cout<<"AINicowar: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<std::endl;
 								Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-								ai.orders.push(new OrderCreate(ai.team->teamNumber, b->posX, b->posY, typeNum, 1, 1));
+								ai.orders.push(shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, b->posX, b->posY, typeNum, 1, 1)));
 							}
 						}
 					}
@@ -1558,9 +1558,9 @@ bool GeneralsDefense::updateDefenseFlags()
 					if(b->type->shortTypeNum == IntBuildingType::WAR_FLAG && b->posX==eb->posX && b->posY==eb->posY)
 					{
 						i->flag=b->gid;
-						ai.orders.push(new OrderModifyFlag(i->flag, eb->unitStayRange));
-						ai.orders.push(new OrderModifyBuilding(i->flag, eb->maxUnitWorking));
-						ai.orders.push(new OrderModifyMinLevelToFlag(i->flag, eb->minLevelToFlag));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyFlag(i->flag, eb->unitStayRange)));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(i->flag, eb->maxUnitWorking)));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, eb->minLevelToFlag)));
 						break;
 					}
 				}
@@ -1691,7 +1691,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 		{
 			if(j->flag!=NOGBID)
 			{
-				ai.orders.push(new OrderDelete(j->flag));
+				ai.orders.push(shared_ptr<Order>(new OrderDelete(j->flag)));
 				j=attacks.erase(j);
 			}
 			else
@@ -1880,7 +1880,7 @@ bool PrioritizedBuildingAttack::attack()
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 				Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-				ai.orders.push(new OrderCreate(ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1));
+				ai.orders.push(shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1)));
 				++attack_count;
 				available_units-=ar.assigned_units;
 			}
@@ -1922,9 +1922,9 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 						if(AINicowar_DEBUG)
 							std::cout<<"AINicowar: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<std::endl;
 
-						ai.orders.push(new OrderModifyFlag(b->gid, radius));
-						ai.orders.push(new OrderModifyBuilding(b->gid, j->assigned_units));
-						ai.orders.push(new OrderModifyMinLevelToFlag(b->gid, j->assigned_level));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyFlag(b->gid, radius)));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, j->assigned_units)));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->gid, j->assigned_level)));
 						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level, j->assigned_units, j->flag);
 						break;
 					}
@@ -1948,7 +1948,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level, 0, j->flag);
-				ai.orders.push(new OrderDelete(j->flag));
+				ai.orders.push(shared_ptr<Order>(new OrderDelete(j->flag)));
 				j=attacks.erase(j);
 				continue;
 			}
@@ -2009,7 +2009,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			{
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
-				ai.orders.push(new OrderDelete(j->flag));
+				ai.orders.push(shared_ptr<Order>(new OrderDelete(j->flag)));
 				j=attacks.erase(j);
 				continue;
 			}
@@ -2021,7 +2021,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateAttackFlags: Changing the "<<j->flagx<<","<<j->flagy<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<std::endl;
 				j->assigned_units=new_assigned;
-				ai.orders.push(new OrderModifyBuilding(j->flag, new_assigned));
+				ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(j->flag, new_assigned)));
 				available_units-=new_assigned;
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, strength_level, new_assigned, j->flag);
 			}
@@ -2030,7 +2030,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			if(strength_level != j->assigned_level)
 			{
 				j->assigned_level=strength_level;
-				ai.orders.push(new OrderModifyMinLevelToFlag(j->flag, strength_level));
+				ai.orders.push(shared_ptr<Order>(new OrderModifyMinLevelToFlag(j->flag, strength_level)));
 			}
 		}
 		++j;
@@ -2487,7 +2487,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: constructBuildings: Starting construction on a "<<IntBuildingType::reverseConversionMap[i->building_type]<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
 			Sint32 type=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::reverseConversionMap[i->building_type], 0, !CHEAT_INSTANT_BUILDING);
-			ai.orders.push(new OrderCreate(ai.team->teamNumber, p.x, p.y, type, 1, 1));
+			ai.orders.push(shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, p.x, p.y, type, 1, 1)));
 			total_construction+=1;
 			total_free_workers-=ncr.assigned;
 			under_construction_counts[i->building_type]++;
@@ -2515,7 +2515,7 @@ bool DistributedNewConstructionManager::updateBuildings()
 				///If its been changed since it was finished (perhaps by another module),
 				///don't undo the changes
 				if(b!=NULL && b->maxUnitWorking==static_cast<int>(i->assigned))
-					ai.orders.push(new OrderModifyBuilding(i->building, 1));
+					ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(i->building, 1)));
 				ai.getUnitModule()->request("DistributedNewConstructionManager", WORKER, BUILD, 1, 0, i->building);
 				i = new_buildings.erase(i);
 				continue;
@@ -2545,7 +2545,7 @@ bool DistributedNewConstructionManager::updateBuildings()
 				{
 					i->building=b->gid;
 					i->no_build_timeout=-1;
-					ai.orders.push(new OrderModifyBuilding(i->building, i->assigned));
+					ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(i->building, i->assigned)));
 					ai.getUnitModule()->request("DistributedNewConstructionManager", WORKER, BUILD, 1, i->assigned, i->building);
 				}
 			}
@@ -2857,7 +2857,7 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 				std::cout<<"AINicowar: removeOldConstruction: Removing an old "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
 			i=active_construction.erase(i);
-			ai.orders.push(new OrderModifyBuilding(b->gid, original));
+			ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, original)));
 			continue;
 		}
 		i++;
@@ -2886,7 +2886,7 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 				std::cout<<"AINicowar: updatePendingConstruction: The "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
-			ai.orders.push(new OrderModifyBuilding(b->gid, assigned));
+			ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, assigned)));
 			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned);
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, assigned, b->gid);
 			continue;
@@ -2946,7 +2946,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
-			ai.orders.push(new OrderCancelConstruction(b->gid, 1));
+			ai.orders.push(shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
 			continue;
 		}
 
@@ -2955,7 +2955,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: There are not enough available units. Canceling repair on the "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, 0, b->gid);
-			ai.orders.push(new OrderCancelConstruction(b->gid, 1));
+			ai.orders.push(shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
 			continue;
 		}
 
@@ -2982,7 +2982,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: reassignConstruction: Retasking "<<IntBuildingType::typeFromShortNumber(b->type->shortTypeNum)<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, num_to_assign, b->gid);
-			ai.orders.push(new OrderModifyBuilding(b->gid, num_to_assign));
+			ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, num_to_assign)));
 			i->assigned=num_to_assign;
 		}
 		reduce(free_workers, b->type->level, num_to_assign);
@@ -3136,7 +3136,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				u.original=b->maxUnitWorking;
 				u.is_repair=true;
 				pending_construction.push_back(u);
-				ai.orders.push(new OrderConstruction(b->gid, 1, 1));
+				ai.orders.push(shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1)));
 				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+1, u.assigned);
 				reduce(free_workers, b->type->level, num_to_assign);
 				construction_counts[b->type->shortTypeNum]+=1;
@@ -3158,7 +3158,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 				u.original=b->maxUnitWorking;
 				u.is_repair=false;
 				pending_construction.push_back(u);
-				ai.orders.push(new OrderConstruction(b->gid, 1, 1));
+				ai.orders.push(shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1)));
 				ai.getUnitModule()->reserve("RandomUpgradeRepairModule", WORKER, BUILD, b->type->level+2, u.assigned);
 				reduce(free_workers, b->type->level+1, num_to_assign);
 				construction_counts[b->type->shortTypeNum]+=1;
@@ -3648,7 +3648,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 				changed=true;
 
 		if(swarm->maxUnitWorking != static_cast<int>(assigned_per_swarm))
-			ai.orders.push(new OrderModifyBuilding(swarm->gid, assigned_per_swarm));
+			ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(swarm->gid, assigned_per_swarm)));
 
 		if(!changed)
 			continue;
@@ -3656,7 +3656,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 		if(AINicowar_DEBUG && need_to_output)
 			std::cout<<"AINicowar: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<std::endl;
 		need_to_output=false;
-		ai.orders.push(new OrderModifySwarm(swarm->gid, ratios));
+		ai.orders.push(shared_ptr<Order>(new OrderModifySwarm(swarm->gid, ratios)));
 	}
 	return false;
 }
@@ -3885,7 +3885,7 @@ bool InnManager::modifyInns()
 		{
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: modifyInns: Changing the number of units assigned to an inn from "<<inn->maxUnitWorking<<" to "<<to_assign<<"."<<std::endl;
-			ai.orders.push(new OrderModifyBuilding(inn->gid, to_assign));
+			ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(inn->gid, to_assign)));
 			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, to_assign, inn->gid);
 		}
 	}
@@ -3963,7 +3963,7 @@ bool TowerController::controlTowers()
 				{
 					if(AINicowar_DEBUG)
 						std::cout<<"AINicowar: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<std::endl;
-					ai.orders.push(new OrderModifyBuilding(b->gid, NUM_PER_TOWER));
+					ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, NUM_PER_TOWER)));
 				}
 			}
 		}
@@ -4086,7 +4086,7 @@ bool BuildingClearer::removeOldPadding()
 				}
 			}
 			if(acc.getApplicationCount()>0)
-				ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_DEL, &acc));
+				ai.orders.push(shared_ptr<Order>(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_DEL, &acc)));
 			cleared_buildings.erase(i);
 		}
 	}
@@ -4141,7 +4141,7 @@ bool BuildingClearer::updateClearingAreas()
 				if(AINicowar_DEBUG)
 					std::cout<<"AINicowar: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 				if(acc.getApplicationCount()>0)
-					ai.orders.push(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_ADD, &acc));
+					ai.orders.push(shared_ptr<Order>(new OrderAlterateClearArea(ai.team->teamNumber, BrushTool::MODE_ADD, &acc)));
 				cleared_buildings[b->gid]=cr;
 			}
 		}
@@ -4254,7 +4254,7 @@ bool HappinessHandler::adjustAlliances()
 	{
 		if(AINicowar_DEBUG)
 			std::cout<<"AINicowar: adjustAlliances: Adjusting food vision alliance."<<std::endl;
-		ai.orders.push(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->enemies, ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther));
+		ai.orders.push(shared_ptr<Order>(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->enemies, ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther)));
 	}
 
 	return false;
@@ -4309,7 +4309,7 @@ bool HappinessHandler::searchFruitTrees()
 			if(AINicowar_DEBUG)
 				std::cout<<"AINicowar: searchFruitTrees: Creating a new exploration flag for a group of trees."<<std::endl;
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			ai.orders.push(new OrderCreate(ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1));
+			ai.orders.push(shared_ptr<Order>(new OrderCreate(ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1)));
 			fter.flag=NOGBID;
 			fter.pos_x=flagLocation[n].x;
 			fter.pos_y=flagLocation[n].y;
@@ -4331,8 +4331,8 @@ bool HappinessHandler::searchFruitTrees()
 					if(b->posX == i->pos_x && b->posY == i->pos_y && b->type->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
 					{
 						i->flag=b->gid;
-						ai.orders.push(new OrderModifyFlag(i->flag, i->radius));
-						ai.orders.push(new OrderModifyBuilding(i->flag, EXPLORERS_PER_GROUP));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyFlag(i->flag, i->radius)));
+						ai.orders.push(shared_ptr<Order>(new OrderModifyBuilding(i->flag, EXPLORERS_PER_GROUP)));
 						ai.getUnitModule()->request("HappinessHandler", EXPLORER, FLY, 1, EXPLORERS_PER_GROUP, i->flag);
 					}
 				}
@@ -4572,8 +4572,8 @@ bool Farmer::updateFarm()
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		ai.orders.push(new OrderAlterateForbidden(ai.team->teamNumber, BrushTool::MODE_DEL, &del_acc));
+		ai.orders.push(shared_ptr<Order>(new OrderAlterateForbidden(ai.team->teamNumber, BrushTool::MODE_DEL, &del_acc)));
 	if(add_acc.getApplicationCount()>0)
-		ai.orders.push(new OrderAlterateForbidden(ai.team->teamNumber, BrushTool::MODE_ADD, &add_acc));
+		ai.orders.push(shared_ptr<Order>(new OrderAlterateForbidden(ai.team->teamNumber, BrushTool::MODE_ADD, &add_acc)));
 	return false;
 }

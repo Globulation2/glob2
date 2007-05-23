@@ -83,6 +83,8 @@
 
 #define YOFFSET_BRUSH 56
 
+using namespace boost;
+
 //! Pointer to IRC client in YOGScreen, NULL if no IRC client is available
 extern IRC *ircPtr;
 
@@ -307,17 +309,19 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 		||(drop && (selectionPushedPosX!=posX || selectionPushedPosY!=posY)))
 	{
 		Uint16 gid=selBuild->gid;
-		OrderMoveFlag *oms=new OrderMoveFlag(gid, posX, posY, drop);
+		shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, posX, posY, drop));
 		// First, we check if anoter move of the same flag is already in the "orderQueue".
 		bool found=false;
-		for (std::list<Order *>::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
+		for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
 		{
-			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG) && ( ((OrderMoveFlag *)(*it))->gid==gid) )
+			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG))
 			{
-				delete (*it);
-				(*it)=oms;
-				found=true;
-				break;
+				if(static_pointer_cast<OrderMoveFlag>(*it)->gid==gid)
+				{
+					(*it) = oms;
+					found=true;
+					break;
+				}
 			}
 		}
 		if (!found)
@@ -407,11 +411,11 @@ void GameGUI::sendBrushOrders(void)
 	{
 		//std::cout << "GameGUI::sendBrushOrders : sending application of size " << brushAccumulator.getAreaSurface()/8 << std::endl;
 		if (brushType == FORBIDDEN_BRUSH)
-			orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator));
+			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator)));
 		else if (brushType == GUARD_AREA_BRUSH)
-			orderQueue.push_back(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator));
+			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator)));
 		else if (brushType == CLEAR_AREA_BRUSH)
-			orderQueue.push_back(new OrderAlterateClearArea(localTeamNo, brush.getType(), &brushAccumulator));
+			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateClearArea(localTeamNo, brush.getType(), &brushAccumulator)));
 		else
 			assert(false);
 		brushAccumulator.clear();
@@ -611,7 +615,7 @@ void GameGUI::step(void)
 	}
 	
 	// voice step
-	OrderVoiceData *orderVoiceData;
+	boost::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
 		orderVoiceData->recepientsMask = chatMask;
@@ -794,7 +798,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
-					orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					return true;
 				}
 				break;
@@ -838,8 +842,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						if (game.teams[ti]->playersMask==0)
 							teamMask[1]|=(1<<ti); // we want to hit them.
 					
-					orderQueue.push_back(new SetAllianceOrder(localTeamNo,
-						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4]));
+					orderQueue.push_back(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
+						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4])));
 					chatMask=((InGameAllianceScreen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
@@ -878,7 +882,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					if (inGameMenu==IGM_LOAD)
 					{
 						toLoadGameFileName = locationName;
-						orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+						orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					}
 					else
 					{
@@ -913,7 +917,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			switch (gameMenuScreen->endValue)
 			{
 				case InGameEndOfGameScreen::QUIT:
-				orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
@@ -963,7 +967,7 @@ void GameGUI::processEvent(SDL_Event *event)
 							int l=Utilities::strnlen(name, BasePlayer::MAX_NAME_LENGTH);
 							if ((strncmp(name, message+3, l)==0)&&(message[3+l]==' '))
 							{
-								orderQueue.push_back(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, message+4+l));
+								orderQueue.push_back(shared_ptr<Order>(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, message+4+l)));
 								foundLocal=true;
 							}
 						}
@@ -977,7 +981,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						ircPtr->sendCommand(&message[1]);
 				}
 				else
-					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message));
+					orderQueue.push_back(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message)));
 				typingInputScreen->setText("");
 			}
 			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
@@ -1093,7 +1097,7 @@ void GameGUI::processEvent(SDL_Event *event)
                                                         (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
@@ -1101,7 +1105,7 @@ void GameGUI::processEvent(SDL_Event *event)
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
-							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1120,7 +1124,7 @@ void GameGUI::processEvent(SDL_Event *event)
                                                         (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
@@ -1128,7 +1132,7 @@ void GameGUI::processEvent(SDL_Event *event)
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
-							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1169,7 +1173,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_QUIT)
 	{
 		exitGlobCompletely=true;
-		orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{
@@ -1241,7 +1245,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((building->type->regenerationSpeed == 0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid, 1, 1));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, 1, 1)));
 	}
 	else if (upgrade)
 	{
@@ -1249,7 +1253,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((buildingType->nextLevel != -1) &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
 			(localTeam->maxBuildLevel() > buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
 	}
 }
 
@@ -1396,7 +1400,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1411,7 +1415,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1575,11 +1579,11 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				{
 					if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 					{
-						orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
+						orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
 					}
 					else if (selBuild->buildingState==Building::ALIVE)
 					{
-						orderQueue.push_back(new OrderDelete(selBuild->gid));
+						orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
 					}
 				}
 			}
@@ -1592,7 +1596,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum - 1);
 				if (selBuild->constructionResultState == Building::UPGRADE)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+					orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 					repairAndUpgradeBuilding(selBuild, false, true);
 			}
@@ -1605,7 +1609,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum);
 				if (selBuild->constructionResultState == Building::REPAIR)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+					orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 					repairAndUpgradeBuilding(selBuild, true, false);
 			}
@@ -1666,7 +1670,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 		else if(action=="pause game")
 		{
 			if (pressed)
-				orderQueue.push_back(new PauseGameOrder(!gamePaused));
+				orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
 		}
                 else if ((action == "prefix key select area tool") && pressed) {
                   twoKeyMode = TWOKEY_AREA; }
@@ -1986,7 +1990,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		
 		if (isRoom)
 		{
-			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum, unitWorking, unitWorkingFuture));
+			orderQueue.push_back(shared_ptr<Order>(new OrderCreate(localTeamNo, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
 		}
 		
 	}
@@ -1998,7 +2002,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	{
 		int markx, marky;
 		game.map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
-		orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+		orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 		putMark = false;
 	}
@@ -2109,7 +2113,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			int markx, marky;
 			minimapMouseToPos(mx, my, &markx, &marky, false);
-			orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
 		}
@@ -2151,20 +2155,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->maxUnitWorkingLocal>0)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal-=1);
-						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 					}
 				}
 				else if (mx<128-18)
 				{
 					nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/92;
-					orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 				}
 				else
 				{
 					if(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal+=1);
-						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 					}
 				}
 				setUnitCount(selBuild->typeNum, nbReq);
@@ -2185,13 +2189,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->unitStayRangeLocal>0)
 					{
 						nbReq=(selBuild->unitStayRangeLocal-=1);
-						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
 				else if (mx<128-18)
 				{
 					nbReq=selBuild->unitStayRangeLocal=((mx-18)*(unsigned)selBuild->type->maxUnitStayRange)/92;
-					orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 				}
 				else
 				{
@@ -2199,7 +2203,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange)
 					{
 						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
 				setUnitCount(selBuild->typeNum, nbReq);
@@ -2224,7 +2228,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 						{
 							selBuild->clearingRessourcesLocal[i]=!selBuild->clearingRessourcesLocal[i];
-							orderQueue.push_back(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal)));
 						}
 						
 						ypos+=YOFFSET_TEXT_PARA;
@@ -2238,7 +2242,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						selBuild->minLevelToFlagLocal=i;
-						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
@@ -2254,7 +2258,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						selBuild->minLevelToFlagLocal=i;
-						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
@@ -2287,7 +2291,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal |= (1<<r);
 						selBuild->sendRessourceMaskLocal &= ~(1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
 				}
 
 				if ((mx>110) && (mx<122))
@@ -2301,7 +2305,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal &= ~(1<<r);
 						selBuild->sendRessourceMaskLocal |= (1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
 				}
 			}
 		}
@@ -2317,20 +2321,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]>0)
 						{
 							selBuild->ratioLocal[i]--;
-							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 						}
 					}
 					else if (mx<128-18)
 					{
 						selBuild->ratioLocal[i]=((mx-18)*MAX_RATIO_RANGE)/92;
-						orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 					}
 					else
 					{
 						if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
 						{
 							selBuild->ratioLocal[i]++;
-							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
@@ -2344,13 +2348,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum);
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum - 1);
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 			{
@@ -2362,11 +2366,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
-				orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
 			}
 			else if (selBuild->buildingState==Building::ALIVE)
 			{
-				orderQueue.push_back(new OrderDelete(selBuild->gid));
+				orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
 			}
 		}
 	}
@@ -2459,11 +2463,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 }
 
-Order *GameGUI::getOrder(void)
+boost::shared_ptr<Order> GameGUI::getOrder(void)
 {
-	Order *order;
+	boost::shared_ptr<Order> order;
 	if (orderQueue.size()==0)
-		order=new NullOrder();
+		order=shared_ptr<Order>(new NullOrder());
 	else
 	{
 		order=orderQueue.front();
@@ -4035,13 +4039,13 @@ void GameGUI::checkWonConditions(void)
 	}
 }
 
-void GameGUI::executeOrder(Order *order)
+void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 {
 	switch (order->getOrderType())
 	{
 		case ORDER_TEXT_MESSAGE :
 		{
-			MessageOrder *mo=(MessageOrder *)order;
+			boost::shared_ptr<MessageOrder> mo=static_pointer_cast<MessageOrder>(order);
 			int sp=mo->sender;
 			Uint32 messageOrderType=mo->messageOrderType;
 
@@ -4077,7 +4081,7 @@ void GameGUI::executeOrder(Order *order)
 		break;
 		case ORDER_VOICE_DATA:
 		{
-			OrderVoiceData *ov = (OrderVoiceData *)order;
+			boost::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
 			if (ov->recepientsMask & (1<<localPlayer))
 				globalContainer->mix->addVoiceData(ov);
 			game.executeOrder(order, localPlayer);
@@ -4107,7 +4111,7 @@ void GameGUI::executeOrder(Order *order)
 		
 		case ORDER_MAP_MARK:
 		{
-			MapMarkOrder *mmo=(MapMarkOrder *)order;
+			boost::shared_ptr<MapMarkOrder> mmo=static_pointer_cast<MapMarkOrder>(order);
 
 			assert(game.teams[mmo->teamNumber]->teamNumber<game.mapHeader.getNumberOfTeams());
 			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
@@ -4116,7 +4120,7 @@ void GameGUI::executeOrder(Order *order)
 		break;
 		case ORDER_PAUSE_GAME:
 		{
-			PauseGameOrder *pgo=(PauseGameOrder *)order;
+			boost::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
 			gamePaused=pgo->pause;
 		}
 		break;
@@ -4667,7 +4671,7 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
 	}
 }
 
-void GameGUI::addMark(MapMarkOrder *mmo)
+void GameGUI::addMark(shared_ptr<MapMarkOrder> mmo)
 {
 	Mark mark;
 	mark.showTicks=Mark::DEFAULT_MARK_SHOW_TICKS;

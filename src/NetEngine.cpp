@@ -35,7 +35,7 @@ void NetEngine::advanceStep()
 	step+=1;
 }
 
-void NetEngine::pushOrder(Order* order, int playerNumber, int targetStep)
+void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, int targetStep)
 {
 	if(targetStep==-1)
 		targetStep=step;
@@ -46,7 +46,7 @@ void NetEngine::pushOrder(Order* order, int playerNumber, int targetStep)
 
 
 
-Order* NetEngine::retrieveOrder(int playerNumber)
+boost::shared_ptr<Order> NetEngine::retrieveOrder(int playerNumber)
 {
 	return orders[hash(playerNumber, step)];
 }

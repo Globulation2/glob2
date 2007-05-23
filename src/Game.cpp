@@ -201,7 +201,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 
 
 
-void Game::executeOrder(Order *order, int localPlayer)
+void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 {
 	anyPlayerWaited=false;
 	assert(order->sender>=0);
@@ -220,7 +220,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 	{
 		case ORDER_CREATE:
 		{
-			OrderCreate *oc=(OrderCreate *)order;
+			boost::shared_ptr<OrderCreate> oc=boost::static_pointer_cast<OrderCreate>(order);
 			if (!isPlayerAlive)
 				break;
 
@@ -272,7 +272,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderModifyBuilding *omb=(OrderModifyBuilding *)order;
+			boost::shared_ptr<OrderModifyBuilding> omb=boost::static_pointer_cast<OrderModifyBuilding>(order);
 			Uint16 gid=omb->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -293,7 +293,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderModifyExchange *ome=(OrderModifyExchange *)order;
+			boost::shared_ptr<OrderModifyExchange> ome=boost::static_pointer_cast<OrderModifyExchange>(order);
 			Uint16 gid=ome->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -316,7 +316,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderModifyFlag *omf=(OrderModifyFlag *)order;
+			boost::shared_ptr<OrderModifyFlag> omf=boost::static_pointer_cast<OrderModifyFlag>(order);
 			Uint16 gid=omf->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -363,7 +363,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderModifyClearingFlag *omcf=(OrderModifyClearingFlag *)order;
+			boost::shared_ptr<OrderModifyClearingFlag> omcf=boost::static_pointer_cast<OrderModifyClearingFlag>(order);
 			Uint16 gid=omcf->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -384,7 +384,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderModifyMinLevelToFlag *omwf=(OrderModifyMinLevelToFlag *)order;
+			boost::shared_ptr<OrderModifyMinLevelToFlag> omwf=boost::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
 			int team=Building::GIDtoTeam(omwf->gid);
 			int id=Building::GIDtoID(omwf->gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -412,7 +412,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderMoveFlag *omf=(OrderMoveFlag *)order;
+			boost::shared_ptr<OrderMoveFlag> omf=boost::static_pointer_cast<OrderMoveFlag> (order);
 			Uint16 gid=omf->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -465,7 +465,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		case ORDER_ALTERATE_FORBIDDEN:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
-			OrderAlterateForbidden *oaa = (OrderAlterateForbidden *)order;
+			boost::shared_ptr<OrderAlterateForbidden> oaa = boost::static_pointer_cast<OrderAlterateForbidden>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -517,7 +517,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		case ORDER_ALTERATE_GUARD_AREA:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_GUARD_AREA");
-			OrderAlterateGuardArea *oaa = (OrderAlterateGuardArea *)order;
+			boost::shared_ptr<OrderAlterateGuardArea> oaa = boost::static_pointer_cast<OrderAlterateGuardArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -564,7 +564,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		case ORDER_ALTERATE_CLEAR_AREA:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_CLEAR_AREA");
-			OrderAlterateClearArea *oaa = (OrderAlterateClearArea *)order;
+			boost::shared_ptr<OrderAlterateClearArea> oaa = boost::static_pointer_cast<OrderAlterateClearArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -611,7 +611,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderModifySwarm *oms=(OrderModifySwarm *)order;
+			boost::shared_ptr<OrderModifySwarm> oms=boost::static_pointer_cast<OrderModifySwarm>(order);
 			Uint16 gid=oms->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -631,7 +631,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_DELETE:
 		{
-			Uint16 gid=((OrderDelete *)order)->gid;
+			Uint16 gid=boost::static_pointer_cast<OrderDelete>(order)->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -651,7 +651,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_CANCEL_DELETE:
 		{
-			Uint16 gid=((OrderCancelDelete *)order)->gid;
+			Uint16 gid=boost::static_pointer_cast<OrderCancelDelete>(order)->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -666,7 +666,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderConstruction *oc = ((OrderConstruction *)order);
+			boost::shared_ptr<OrderConstruction> oc = boost::static_pointer_cast<OrderConstruction>(order);
 			Uint16 gid = oc->gid;
 			
 			int team=Building::GIDtoTeam(gid);
@@ -684,7 +684,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			OrderConstruction *oc = ((OrderConstruction *)order);
+			boost::shared_ptr<OrderConstruction> oc = boost::static_pointer_cast<OrderConstruction>(order);
 			Uint16 gid=oc->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -699,7 +699,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_SET_ALLIANCE:
 		{
-			SetAllianceOrder *sao=((SetAllianceOrder *)order);
+			boost::shared_ptr<SetAllianceOrder> sao=boost::static_pointer_cast<SetAllianceOrder>(order);
 			Uint32 team=sao->teamNumber;
 			teams[team]->allies=sao->alliedMask;
 			teams[team]->enemies=sao->enemyMask;
@@ -713,7 +713,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 		case ORDER_WAITING_FOR_PLAYER:
 		{
 			anyPlayerWaited=true;
-			maskAwayPlayer=((WaitingForPlayerOrder *)order)->maskAwayPlayer;
+			maskAwayPlayer=boost::static_pointer_cast<WaitingForPlayerOrder>(order)->maskAwayPlayer;
 			//fprintf(logFile, "ORDER_WAITING_FOR_PLAYER");
 		}
 		break;

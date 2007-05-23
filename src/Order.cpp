@@ -32,135 +32,135 @@ Order::Order(void)
 	needToBeFreedByEngine=false;
 }
 
-Order *Order::getOrder(const Uint8 *netData, int netDataLength)
+boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength)
 {
 	if (netDataLength<1)
-		return NULL;
+		return boost::shared_ptr<Order>();
 	if (netData==NULL)
-		return NULL;
+		return boost::shared_ptr<Order>();
 	
 	switch (netData[0])
 	{
 
 	case ORDER_CREATE:
 	{
-		return new OrderCreate(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderCreate(netData+1, netDataLength-1));
 	}
 	case ORDER_DELETE:
 	{
-		return new OrderDelete(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderDelete(netData+1, netDataLength-1));
 	}
 	case ORDER_CANCEL_DELETE:
 	{
-		return new OrderCancelDelete(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderCancelDelete(netData+1, netDataLength-1));
 	}
 	case ORDER_CONSTRUCTION:
 	{
-		return new OrderConstruction(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderConstruction(netData+1, netDataLength-1));
 	}
 	case ORDER_CANCEL_CONSTRUCTION:
 	{
-		return new OrderCancelConstruction(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_BUILDING:
 	{
-		return new OrderModifyBuilding(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyBuilding(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_EXCHANGE:
 	{
-		return new OrderModifyExchange(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyExchange(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_SWARM:
 	{
-		return new OrderModifySwarm(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifySwarm(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_FLAG:
 	{
-		return new OrderModifyFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_CLEARING_FLAG:
 	{
-		return new OrderModifyClearingFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyClearingFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
 	{
-		return new OrderModifyMinLevelToFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyMinLevelToFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_MOVE_FLAG:
 	{
-		return new OrderMoveFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_ALTERATE_FORBIDDEN:
 	{
-		return new OrderAlterateForbidden(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1));
 	}
 	case ORDER_ALTERATE_GUARD_AREA:
 	{
-		return new OrderAlterateGuardArea(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1));
 	}
 	case ORDER_ALTERATE_CLEAR_AREA:
 	{
-		return new OrderAlterateClearArea(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1));
 	}
 	case ORDER_QUITED:
 	{
 		assert(false); // Currently, QuitedOrder has to be used only between NetGame and GameGUI, but not the network.
-		return new QuitedOrder();
+		return boost::shared_ptr<Order>(new QuitedOrder());
 	}
 	case ORDER_DECONNECTED:
 	{
 		assert(false); // Currently, DeconnectedOrder has to be used only between NetGame and GameGUI, but not the network.
-		return new DeconnectedOrder();
+		return boost::shared_ptr<Order>(new DeconnectedOrder());
 	}
 	case ORDER_NULL:
 	{
-		return new NullOrder();
+		return boost::shared_ptr<Order>(new NullOrder());
 	}
 	case ORDER_TEXT_MESSAGE:
 	{
-		return new MessageOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new MessageOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_VOICE_DATA:
 	{
-		return new OrderVoiceData(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderVoiceData(netData+1, netDataLength-1));
 	}
 	case ORDER_SET_ALLIANCE:
 	{
-		return new SetAllianceOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new SetAllianceOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_MAP_MARK:
 	{
-		return new MapMarkOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new MapMarkOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_WAITING_FOR_PLAYER:
 	{
-		return new WaitingForPlayerOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new WaitingForPlayerOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_PAUSE_GAME:
 	{
-		return new PauseGameOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new PauseGameOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_DROPPING_PLAYER:
 	{
-		return new DroppingPlayerOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new DroppingPlayerOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_REQUESTING_AWAY:
 	{
-		return new RequestingDeadAwayOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new RequestingDeadAwayOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_NO_MORE_ORDER_AVAILABLES:
 	{
-		return new NoMoreOrdersAvailable(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new NoMoreOrdersAvailable(netData+1, netDataLength-1));
 	}
 	case ORDER_PLAYER_QUIT_GAME :
 	{
-		return new PlayerQuitsGameOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1));
 	}
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
 		
 	}
-	return NULL;
+	return boost::shared_ptr<Order>();
 }
 
 // OrderCreate's code

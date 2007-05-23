@@ -46,7 +46,7 @@ public:
 	virtual Uint8 getOrderType(void)=0;
 
 	///Takes in an arbitrary amount of information and returns its assocciatted order
-	static Order* getOrder(const Uint8 *netData, int netDataLength);
+	static boost::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength);
 
 	///Returns the encoded data buffer of data for the Order
 	virtual Uint8 *getData(void)=0;

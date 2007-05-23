@@ -400,7 +400,7 @@ void SoundMixer::stopMusic(void)
 	mode = MODE_STOP;
 }
 
-void SoundMixer::addVoiceData(OrderVoiceData *order)
+void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 {
 	if (soundEnabled)
 	{

@@ -34,6 +34,8 @@
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2
 
+using namespace boost;
+
 // utilities part:
 
 inline static void dxdyfromDirection(int direction, int *dx, int *dy)
@@ -400,7 +402,7 @@ void AICastor::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-Order *AICastor::getOrder()
+boost::shared_ptr<Order>AICastor::getOrder()
 {
 	timer++;
 	
@@ -410,7 +412,7 @@ Order *AICastor::getOrder()
 	if (computeBoot<32)
 	{
 		computeBoot++;
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder());
 	}
 	else if (computeBoot<17+32)
 	{
@@ -479,7 +481,7 @@ Order *AICastor::getOrder()
 			assert(false);
 		}
 		computeBoot++;
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder());
 	}
 	
 	if ((timer&511)==0)
@@ -496,7 +498,7 @@ Order *AICastor::getOrder()
 	
 	/*// Defense, we check it first, because it will only return true if there is an attack and free warriors
 	{
-		Order *order = controlBaseDefense();
+		boost::shared_ptr<Order>order = controlBaseDefense();
 		if (order)
 			return order;
 	}*/
@@ -527,7 +529,7 @@ Order *AICastor::getOrder()
 	{
 		computeWarLevel();
 		controlSwarmsTimer=timer+256; // each 10s
-		Order *order=controlSwarms();
+		boost::shared_ptr<Order>order=controlSwarms();
 		if (order)
 			return order;
 	}
@@ -551,7 +553,7 @@ Order *AICastor::getOrder()
 			int real=buildingSum[(*pi)->shortTypeNum][0];
 			if (real<=minReal)
 			{
-				Order *order=continueProject(*pi);
+				boost::shared_ptr<Order>order=continueProject(*pi);
 				if (order)
 					return order;
 			}
@@ -562,7 +564,7 @@ Order *AICastor::getOrder()
 			int real=buildingSum[(*pi)->shortTypeNum][0];
 			if (real>minReal)
 			{
-				Order *order=continueProject(*pi);
+				boost::shared_ptr<Order>order=continueProject(*pi);
 				if (order)
 					return order;
 			}
@@ -571,7 +573,7 @@ Order *AICastor::getOrder()
 	if (priority>0 && timer>expandFoodTimer)
 	{
 		expandFoodTimer=timer+256; // each 10s
-		Order *order=expandFood();
+		boost::shared_ptr<Order>order=expandFood();
 		if (order)
 			return order;
 	}
@@ -598,26 +600,26 @@ Order *AICastor::getOrder()
 	
 	if (priority>0)
 	{
-		Order *order=controlFood();
+		boost::shared_ptr<Order>order=controlFood();
 		if (order)
 			return order;
 	}
 	
 	if (priority>0)
 	{
-		Order *order=controlUpgrades();
+		boost::shared_ptr<Order>order=controlUpgrades();
 		if (order)
 			return order;
 	}
 	
 	if (timer>controlStrikesTimer)
 	{
-		Order *order=controlStrikes();
+		boost::shared_ptr<Order>order=controlStrikes();
 		if (order)
 			return order;
 	}
 	
-	return new NullOrder();
+	return shared_ptr<Order>(new NullOrder());
 }
 
 void AICastor::defineStrategy()
@@ -725,7 +727,7 @@ void AICastor::defineStrategy()
 	strategy.maxAmountGoal=10;
 }
 
-Order *AICastor::controlSwarms()
+boost::shared_ptr<Order>AICastor::controlSwarms()
 {
 	Sint32 warriorGoal=warLevel;
 	
@@ -787,11 +789,11 @@ Order *AICastor::controlSwarms()
 							b->ratioLocal[ri]=0;
 						}
 						b->update();
-						return new OrderModifySwarm(b->gid, b->ratioLocal);
+						return shared_ptr<Order>(new OrderModifySwarm(b->gid, b->ratioLocal));
 					}
 		}
 		
-		return NULL;
+		return shared_ptr<Order>();
 	}
 	
 	size_t size=map->w*map->h;
@@ -844,20 +846,20 @@ Order *AICastor::controlSwarms()
 				b->ratio[WARRIOR]=warriorGoal;
 				b->ratioLocal[WARRIOR]=warriorGoal;
 				b->update();
-				return new OrderModifySwarm(b->gid, b->ratioLocal);
+				return shared_ptr<Order>(new OrderModifySwarm(b->gid, b->ratioLocal));
 			}
 		}
 	}
 	
-	return NULL;
+	return shared_ptr<Order>();
 }
 
-Order *AICastor::expandFood()
+boost::shared_ptr<Order>AICastor::expandFood()
 {
 	if (foodSurplus
 		|| (!foodWarning && !enoughFreeWorkers())
 		|| buildingSum[IntBuildingType::FOOD_BUILDING][1]>buildingSum[IntBuildingType::FOOD_BUILDING][0]+1)
-		return NULL;
+		return shared_ptr<Order>();
 	
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("inn", 0, true);
 	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
@@ -878,7 +880,7 @@ Order *AICastor::expandFood()
 	return findGoodBuilding(typeNum, true, false, false);
 }
 
-Order *AICastor::controlFood()
+boost::shared_ptr<Order>AICastor::controlFood()
 {
 	//int w=map->w;
 	//int h=map->h;
@@ -898,9 +900,9 @@ Order *AICastor::controlFood()
 			b=myBuildings[bi];
 		}
 	if (b==NULL)
-		return NULL;
+		return shared_ptr<Order>();
 	if (b->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING && b->type->shortTypeNum!=IntBuildingType::SWARM_BUILDING)
-		return NULL;
+		return shared_ptr<Order>();
 	
 	int bx=b->posX;
 	int by=b->posY;
@@ -938,7 +940,7 @@ Order *AICastor::controlFood()
 			b->update();
 			if (verbose)
 				printf("controlFood(), worstCare=%d\n", worstCare);
-			return new OrderModifyBuilding(b->gid, 0);
+			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 0));
 		}
 	}
 	else if (worstCare>2)
@@ -950,7 +952,7 @@ Order *AICastor::controlFood()
 			b->update();
 			if (verbose)
 				printf("controlFood(), beta, worstCare=%d\n", worstCare);
-			return new OrderModifyBuilding(b->gid, 1);
+			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 1));
 		}
 	}
 	else
@@ -965,7 +967,7 @@ Order *AICastor::controlFood()
 			b->maxUnitWorking=workers;
 			b->maxUnitWorkingLocal=workers;
 			b->update();
-			return new OrderModifyBuilding(b->gid, workers);
+			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers));
 		}
 		else if (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 		{
@@ -977,68 +979,68 @@ Order *AICastor::controlFood()
 			b->maxUnitWorking=workers;
 			b->maxUnitWorkingLocal=workers;
 			b->update();
-			return new OrderModifyBuilding(b->gid, workers);
+			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers));
 		}
 		else
 			assert(false);
 	}
-	return NULL;
+	return shared_ptr<Order>();
 }
 
-Order *AICastor::controlUpgrades()
+boost::shared_ptr<Order>AICastor::controlUpgrades()
 {
 	//printf("controlUpgrades(), controlUpgradeTimer=%d, controlUpgradeDelay=%d, buildsAmount=%d\n",
 	//	controlUpgradeTimer, controlUpgradeDelay, buildsAmount);
 	if (controlUpgradeDelay!=0)
 	{
 		controlUpgradeDelay--;
-		return NULL;
+		return shared_ptr<Order>();
 	}
 	if (buildsAmount<1 || !enoughFreeWorkers())
-		return NULL;
+		return shared_ptr<Order>();
 	int bi=((controlUpgradeTimer++)&1023);
 	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[bi];
 	if (b==NULL)
-		return NULL;
+		return shared_ptr<Order>();
 	if (b->type->isVirtual)
-		return NULL;
+		return shared_ptr<Order>();
 	if (b->maxUnitWorking<1)
-		return new OrderModifyBuilding(b->gid, 1);
+		return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 1));
 	int numberOfFreeWorkers = team->stats.getLatestStat()->isFree[WORKER];
 	int numberOfAbleWorkers = team->stats.getLatestStat()->upgradeState[BUILD][b->type->level];
 	if (numberOfAbleWorkers <= 2 || numberOfFreeWorkers <= 4 || numberOfAbleWorkers <= (numberOfFreeWorkers/8))
-		return NULL;
+		return shared_ptr<Order>();
 	// Is it any repair:
 	if (!b->type->isBuildingSite)
 	{
 		if (b->type->type == "defencetower")
 		{
 			if (b->hp*4<b->type->hpMax*1)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		else if (b->type->maxUnitInside)
 		{
 			if (b->hp*4<b->type->hpMax*3)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		else
 		{
 			if (b->hp*4<b->type->hpMax*2)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 	}
 	// Do we want to upgrade it:
 	// We compute the number of buildings satifying the strategy:
 	int shortTypeNum=b->type->shortTypeNum;
 	if (shortTypeNum>=NB_HARD_BUILDING)
-		return NULL;
+		return shared_ptr<Order>();
 	int level=b->type->level;
 	int upgradeLevelGoal=((buildsAmount+1)>>1);
 	if (upgradeLevelGoal>3)
 		upgradeLevelGoal=3;
 	if (level>=upgradeLevelGoal)
-		return NULL;
+		return shared_ptr<Order>();
 	int sumOver=0;
 	for (int li=(level+1); li<4; li++)
 		for (int si=0; si<2; si++)
@@ -1056,7 +1058,7 @@ Order *AICastor::controlUpgrades()
 	//	bi, shortTypeNum, sumOver, upgradeAmountGoal);
 	
 	if (sumOver>=upgradeAmountGoal)
-		return NULL;
+		return shared_ptr<Order>();
 	
 	if (shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 	{
@@ -1066,7 +1068,7 @@ Order *AICastor::controlUpgrades()
 			buildSum+=team->stats.getWorkersLevel(i);
 		fprintf(logFile,  " buildBase=%d, buildSum=%d\n", buildBase, buildSum);
 		if (buildBase>buildSum)
-			return NULL;
+			return shared_ptr<Order>();
 		int sumEqual=0;
 		for (int li=level; li<4; li++)
 			sumEqual+=buildingLevels[shortTypeNum][0][li];
@@ -1074,16 +1076,16 @@ Order *AICastor::controlUpgrades()
 		if (sumEqual<2)
 		{
 			fprintf(logFile,  " not another building level %d\n", level);
-			return NULL;
+			return shared_ptr<Order>();
 		}
 	}
 	controlUpgradeDelay=32;
-	return new OrderConstruction(b->gid, 1, 1);
+	return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 }
 
 
 // WARNING : Using wasEvent is *NOT* safe, and will *NOT* work through the network
-/*Order *AICastor::controlBaseDefense()
+/*boost::shared_ptr<Order>AICastor::controlBaseDefense()
 {
 	int freeWarriors = team->stats.getFreeUnits(WARRIOR);
 	if (team->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) && (freeWarriors>0))
@@ -1093,18 +1095,18 @@ Order *AICastor::controlUpgrades()
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::WAR_FLAG, 0, false);
 		fprintf(logFile, "controlBaseDefense()\n I'm, under attack !\n Defense war flag set at (%d,%d)\n", x, y);
 		onStrike = true;
-		return new OrderCreate(team->teamNumber, x, y, typeNum);
+		return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum));
 	}
 	return NULL;
 }*/
 
 
-Order *AICastor::controlStrikes()
+boost::shared_ptr<Order>AICastor::controlStrikes()
 {
 	controlStrikesTimer=timer+64;
 	
 	if (!onStrike)
-		return NULL;
+		return shared_ptr<Order>();
 	fprintf(logFile,  "controlStrikes()\n");
 	
 	int warriors=team->stats.getTotalUnits(WARRIOR);
@@ -1215,7 +1217,7 @@ Order *AICastor::controlStrikes()
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			fprintf(logFile,  " create\n");
-			return new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1);
+			return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1));
 		}
 		else
 		{
@@ -1236,14 +1238,14 @@ Order *AICastor::controlStrikes()
 			if (maxSqDist>2 && maxFlag!=NULL)
 			{
 				fprintf(logFile,  " move %d\n", maxFlag->gid);
-				return new OrderMoveFlag(maxFlag->gid, x, y, true);
+				return shared_ptr<Order>(new OrderMoveFlag(maxFlag->gid, x, y, true));
 			}
 			for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 				if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG
 					&& (*it)->maxUnitWorking<20)
 				{
 					fprintf(logFile,  " modify %d\n", (*it)->gid);
-					return new OrderModifyBuilding((*it)->gid, 20);
+					return shared_ptr<Order>(new OrderModifyBuilding((*it)->gid, 20));
 				}
 		}
 	}
@@ -1253,13 +1255,13 @@ Order *AICastor::controlStrikes()
 			if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 			{
 				fprintf(logFile,  " removed %d\n", (*it)->gid);
-				return new OrderDelete((*it)->gid);
+				return shared_ptr<Order>(new OrderDelete((*it)->gid));
 			}
 		strikeTeamSelected=false;
 		onStrike=false;
 	}
 	
-	return NULL;
+	return shared_ptr<Order>();
 }
 
 
@@ -1483,7 +1485,7 @@ void AICastor::addProjects()
 	}
 }
 
-Order *AICastor::continueProject(Project *project)
+boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 {
 	// Phase alpha will make a new Food Building at any price.
 	//printf("(%s)(stn=%d, f=%d, w=[%d, %d, %d], ms=%d, wf=%d), sp=%d\n",
@@ -1493,7 +1495,7 @@ Order *AICastor::continueProject(Project *project)
 	//	project->multipleStart, project->waitFinished, project->subPhase);
 	
 	if (timer<project->timer+32)
-		return NULL;
+		return shared_ptr<Order>();
 	
 	if (foodLock && !project->critical && project->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 	{
@@ -1517,7 +1519,7 @@ Order *AICastor::continueProject(Project *project)
 		if (!project->critical && !enoughFreeWorkers())
 		{
 			project->timer=timer;
-			return NULL;
+			return shared_ptr<Order>();
 		}
 		// find any good building place
 		
@@ -1536,7 +1538,7 @@ Order *AICastor::continueProject(Project *project)
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
 		
-		Order *gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
+		boost::shared_ptr<Order>gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
 		project->timer=timer;
 		if (gfbm)
 		{
@@ -1642,7 +1644,7 @@ Order *AICastor::continueProject(Project *project)
 							b->maxUnitWorkingLocal=mainWorkers;
 							b->update();
 							project->timer=timer;
-							return new OrderModifyBuilding(b->gid, mainWorkers);
+							return shared_ptr<Order>(new OrderModifyBuilding(b->gid, mainWorkers));
 						}
 					}
 					else
@@ -1654,7 +1656,7 @@ Order *AICastor::continueProject(Project *project)
 							b->maxUnitWorkingLocal=finalWorkers;
 							b->update();
 							project->timer=timer;
-							return new OrderModifyBuilding(b->gid, finalWorkers);
+							return shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers));
 						}
 					}
 				}
@@ -1668,7 +1670,7 @@ Order *AICastor::continueProject(Project *project)
 						b->maxUnitWorkingLocal=project->foodWorkers;
 						b->update();
 						project->timer=timer;
-						return new OrderModifyBuilding(b->gid, project->foodWorkers);
+						return shared_ptr<Order>(new OrderModifyBuilding(b->gid, project->foodWorkers));
 					}
 				}
 				else if (b->type->maxUnitWorking!=0)
@@ -1680,7 +1682,7 @@ Order *AICastor::continueProject(Project *project)
 						b->maxUnitWorkingLocal=project->otherWorkers;
 						b->update();
 						project->timer=timer;
-						return new OrderModifyBuilding(b->gid, project->otherWorkers);
+						return shared_ptr<Order>(new OrderModifyBuilding(b->gid, project->otherWorkers));
 					}
 				}
 			}
@@ -1745,7 +1747,7 @@ Order *AICastor::continueProject(Project *project)
 					b->maxUnitWorkingLocal=b->maxUnitWorking;
 					b->update();
 					project->timer=timer;
-					return new OrderModifyBuilding(b->gid, b->maxUnitWorking);
+					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, b->maxUnitWorking));
 				}
 			}
 		}
@@ -1795,7 +1797,7 @@ Order *AICastor::continueProject(Project *project)
 					b->maxUnitWorkingLocal=finalWorkers;
 					b->update();
 					project->timer=timer;
-					return new OrderModifyBuilding(b->gid, finalWorkers);
+					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers));
 				}
 			}
 		}
@@ -1808,7 +1810,7 @@ Order *AICastor::continueProject(Project *project)
 	else
 		assert(false);
 	
-	return NULL;
+	return shared_ptr<Order>();
 }
 
 bool AICastor::enoughFreeWorkers()
@@ -2747,7 +2749,7 @@ void AICastor::computeEnemyWarriorsMap()
 	map->updateGlobalGradientSlow(gradient);
 }
 
-Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical)
+boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical)
 {
 	int w=map->w;
 	int h=map->h;
@@ -2915,10 +2917,10 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 		
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
-		return new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1);
+		return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1));
 	}
 	
-	return NULL;
+	return shared_ptr<Order>();
 }
 
 void AICastor::computeRessourcesCluster()

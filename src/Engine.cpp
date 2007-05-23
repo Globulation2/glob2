@@ -42,6 +42,7 @@
 
 #include <iostream>
 
+using namespace boost;
 
 Engine::Engine()
 {
@@ -264,7 +265,7 @@ int Engine::run(void)
 					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 						if (gui.game.players[i]->ai)
 						{
-							Order* order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
+							shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
 							net->pushOrder(order, i);
 						}
 /*
@@ -290,10 +291,8 @@ int Engine::run(void)
 				// We get all currents orders from the network and execute them:
 				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 				{
-					Order *order=net->retrieveOrder(i);
+					shared_ptr<Order> order=net->retrieveOrder(i);
 					gui.executeOrder(order);
-					if (order->needToBeFreedByEngine)
-						delete order;
 				}
 				net->advanceStep();
 

@@ -34,6 +34,8 @@
 #include "AINicowar.h"
 #include "AIEcho.h"
 
+using namespace boost;
+
 /*AI::AI(Player *player)
 {
 	aiImplementation=new AICastor(player);
@@ -95,12 +97,12 @@ AI::~AI()
 	aiImplementation=NULL;
 }
 
-Order *AI::getOrder(bool paused)
+boost::shared_ptr<Order> AI::getOrder(bool paused)
 {
 	assert(player);
 	step++;
 	if (paused || !player->team->isAlive)
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder());
 	assert(aiImplementation);
 	return aiImplementation->getOrder();
 }
