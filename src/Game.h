@@ -89,7 +89,7 @@ public:
 	void setGameHeader(const GameHeader& gameHeader);
 	
 	///Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
-	void executeOrder(Order *order, int localPlayer);
+	void executeOrder(boost::shared_ptr<Order> order, int localPlayer);
 
 	///Makes a step for building projects that are waiting for the areas to clear of units.
 	void buildProjectSyncStep(Sint32 localTeam);

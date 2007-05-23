@@ -59,7 +59,7 @@ int NetTestSuite::testNetMessages()
 		return 1;
 
 	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
-	netSendOrder1->changeOrder(new OrderDelete(1));
+	netSendOrder1->changeOrder(boost::shared_ptr<Order>(new OrderDelete(1)));
 	if(!testMessage(netSendOrder1))
 		return 2;
 
@@ -411,7 +411,7 @@ int NetTestSuite::testListenerConnection()
 
 	//Attempts to transmit a NetSendOrder over the connection
 	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
-	netSendOrder1->changeOrder(new OrderDelete(1));
+	netSendOrder1->changeOrder(boost::shared_ptr<Order>(new OrderDelete(1)));
 	nc_client.sendMessage(netSendOrder1);
 	//Recieves the message on the other end
 	shared_ptr<NetMessage> netSendOrder2 = nc_server.getMessage();

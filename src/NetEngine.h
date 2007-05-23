@@ -21,6 +21,7 @@
 
 #include <map>
 #include "Order.h"
+#include <boost/shared_ptr.hpp>
 
 ///The purpose of this class is to sort Orders, and hand them out in
 ///the correct time slot. It serves partially to hide latency, Orders
@@ -37,10 +38,10 @@ public:
 	void advanceStep();
 
 	//Pushes an order to the NetEngine for the given step
-	void pushOrder(Order* order, int playerNumber, int targetStep=-1);
+	void pushOrder(boost::shared_ptr<Order> order, int playerNumber, int targetStep=-1);
 	
 	///Retrieves the order for the given player for this turn
-	Order* retrieveOrder(int playerNumber);
+	boost::shared_ptr<Order> retrieveOrder(int playerNumber);
 	
 	///Tells whether the network is ready at the current tick. For
 	///the network to be ready, all Orders from all players must be
@@ -52,7 +53,7 @@ private:
 
 	///This stores orders in an interesting fashion, hashing the playerNumber
 	///together with the targetStep
-	std::map<Uint16, Order*> orders;
+	std::map<Uint16, boost::shared_ptr<Order> > orders;
 	int step;
 	int numberOfPlayers;
 };

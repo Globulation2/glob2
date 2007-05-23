@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "Utilities.h"
 #include <set>
 #include "Order.h"
+#include <boost/shared_ptr.hpp>
 
 class Map;
 class Order;
@@ -157,7 +158,7 @@ namespace Nicowar
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 
-			Order *getOrder(void);
+			boost::shared_ptr<Order> getOrder(void);
 
 			void setDefenseModule(DefenseModule* module);
 			void setAttackModule(AttackModule* module);
@@ -182,7 +183,7 @@ namespace Nicowar
 				return center_y;
 			}
 
-			std::queue<Order*> orders;
+			std::queue<boost::shared_ptr<Order> > orders;
 
 			///This will remove all messages accocciatted with the given catagorizations
 			void clearDebugMessages(std::string module, std::string group, std::string variable)
@@ -207,11 +208,11 @@ namespace Nicowar
 
 			void flare(unsigned x, unsigned y)
 			{
-				orders.push(new MapMarkOrder(team->teamNumber, x, y));
+				orders.push(boost::shared_ptr<Order>(new MapMarkOrder(team->teamNumber, x, y)));
 			}
 			void pause()
 			{
-				orders.push(new PauseGameOrder(true));
+				orders.push(boost::shared_ptr<Order>(new PauseGameOrder(true)));
 			}
 		private:
 

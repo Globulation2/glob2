@@ -31,6 +31,7 @@
 #include <vector>
 #include <queue>
 #include <map>
+#include <boost/shared_ptr.hpp>
 
 class OrderVoiceData;
 
@@ -87,7 +88,7 @@ public:
 	void stopMusic(void);
 	
 	//! Add voice data from order. Data should be copied as order will be destroyed after this call
-	void addVoiceData(OrderVoiceData *order);
+	void addVoiceData(boost::shared_ptr<OrderVoiceData> order);
 };
 
 #endif

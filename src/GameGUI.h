@@ -84,14 +84,14 @@ public:
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
 	//! Get order from gui, return NullOrder if
-	Order *getOrder(void);
+	boost::shared_ptr<Order> getOrder(void);
 	//! Return position on x
 	int getViewportX() { return viewportX; }
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
 	void drawAll(int team);
-	void executeOrder(Order *order);
+	void executeOrder(boost::shared_ptr<Order> order);
 
 	//!
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader);
@@ -293,7 +293,7 @@ private:
 
 	Uint32 chatMask;
 
-	std::list<Order *> orderQueue;
+	std::list<boost::shared_ptr<Order> > orderQueue;
 
 	int mouseX, mouseY;
 	//! for mouse motion
@@ -355,7 +355,7 @@ private:
 	std::list<Mark> markList;
 
 	//! add a minimap mark
-	void addMark(MapMarkOrder *mmo);
+	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
 	
 	// how long the COU has been idle last tick
 	#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32

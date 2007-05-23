@@ -99,28 +99,25 @@ bool NetMessage::operator!=(const NetMessage& rhs) const
 
 NetSendOrder::NetSendOrder()
 {
-	order=NULL;
 }
 
 
 	
-NetSendOrder::NetSendOrder(Order* newOrder)
+NetSendOrder::NetSendOrder(boost::shared_ptr<Order> newOrder)
 {
 	order=newOrder;
 }
 
 
 	
-void NetSendOrder::changeOrder(Order* newOrder)
+void NetSendOrder::changeOrder(boost::shared_ptr<Order> newOrder)
 {
-	if(order!=NULL)
-		delete order;
-	order=newOrder;
+	order = newOrder;
 }
 
 
 	
-Order* NetSendOrder::getOrder()
+boost::shared_ptr<Order> NetSendOrder::getOrder()
 {
 	return order;
 }

@@ -34,6 +34,8 @@
 #define BUILDING_DELAY 30
 #define AREAS_DELAY 50
 
+using namespace boost;
+
 void AIWarrush::init(Player *player)
 {
 	assert(player);
@@ -300,7 +302,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	return num_worked_buildings * 100 >= num_buildings * percentage;
 }
 
-Order *AIWarrush::getOrder(void)
+boost::shared_ptr<Order> AIWarrush::getOrder(void)
 {
 	// reduce delays
 	if (buildingDelay > 0)
@@ -401,27 +403,28 @@ Order *AIWarrush::getOrder(void)
 		if(out_of_date_swarm)
 		{
 			Sint32 settings[3] = {4,1,3};
-			return new OrderModifySwarm(out_of_date_swarm->gid, settings);
+			return shared_ptr<Order>(new OrderModifySwarm(out_of_date_swarm->gid, settings));
 		}
 	}
 	
 	//all swarms should always have 5 workers at them!
 	Building *weak_swarm = getBuildingWithoutWorkersAssigned(IntBuildingType::SWARM_BUILDING, 5);
-	if (weak_swarm) return new OrderModifyBuilding(weak_swarm->gid, 5);
+	if (weak_swarm) return shared_ptr<Order>(new OrderModifyBuilding(weak_swarm->gid, 5));
 
 	//all inns should always have 3 workers at them! (best to build fast, make sure they're fed)
 	Building *weak_inn = getBuildingWithoutWorkersAssigned(IntBuildingType::FOOD_BUILDING, 3);
-	if (weak_inn) return new OrderModifyBuilding(weak_inn->gid, 3);
+	if (weak_inn) return shared_ptr<Order>(new OrderModifyBuilding(weak_inn->gid, 3));
 	
 	//work barracks more too.
 	Building *weak_barracks = getBuildingWithoutWorkersAssigned(IntBuildingType::ATTACK_BUILDING, 3);
-	if (weak_barracks && weak_barracks->constructionResultState != Building::NO_CONSTRUCTION) return new OrderModifyBuilding(weak_barracks->gid, 3);
+	if (weak_barracks && weak_barracks->constructionResultState != Building::NO_CONSTRUCTION)
+	 return shared_ptr<Order>(new OrderModifyBuilding(weak_barracks->gid, 3));
 	
 	//nothing at all to do?!
-	return new NullOrder;
+	return shared_ptr<Order>(new NullOrder);
 }
 
-Order *AIWarrush::pruneGuardAreas()
+boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 {
 	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
 	BrushAccumulator acc;
@@ -457,12 +460,12 @@ Order *AIWarrush::pruneGuardAreas()
 	}
 	if(acc.getApplicationCount())
 	{
-		return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc);
+		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc));
 	}
-	else return new NullOrder;
+	else return shared_ptr<Order>(new NullOrder);
 }
 	
-Order *AIWarrush::placeGuardAreas()
+boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 {
 	BrushAccumulator guard_add_acc;
 	//Place guard area on an enemy building if there is one...
@@ -510,12 +513,12 @@ Order *AIWarrush::placeGuardAreas()
 	
 	if(guard_add_acc.getApplicationCount())
 	{
-		return new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc);
+		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc));
 	}
-	else return new NullOrder;
+	else return shared_ptr<Order>(new NullOrder);
 }
 	
-Order *AIWarrush::farm()
+boost::shared_ptr<Order> AIWarrush::farm()
 {
 	// Algorithm initially stolen from Nicowar.
 	DynamicGradientMapArray water_gradient(map->w,map->h);
@@ -640,20 +643,20 @@ Order *AIWarrush::farm()
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		return new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc);
+		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc));
 	if(add_acc.getApplicationCount()>0)
-		return new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc);
+		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc));
 	if(clr_del_acc.getApplicationCount()>0)
-		return new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc);
+		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc));
 	if(clr_add_acc.getApplicationCount()>0)
-		return new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc);
+		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc));
 
 	//nothing to do...
-	return new NullOrder();
+	return shared_ptr<Order>(new NullOrder());
 }
 
 //Simple hack to place explore flags on opponents' starting swarms.
-Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
+boost::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 {
 	if(verbose)std::cout << "looking for swarms:\n";
 	for(int j=0;j<1024;j++)
@@ -662,7 +665,7 @@ Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if((b)&&(b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)&&(b->constructionResultState == Building::NO_CONSTRUCTION))
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1, 1);
+			return shared_ptr<Order>(new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1, 1));
 		}
 	}
 	if(verbose)std::cout << "No swarms found\n";
@@ -673,7 +676,7 @@ Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if(b)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1, 1);
+			return shared_ptr<Order>(new OrderCreate(team->teamNumber, b->posX, b->posY, typeNum, 1, 1));
 		}
 	}
 	if(verbose)std::cout << "No buildings found\n";
@@ -684,12 +687,12 @@ Order *AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 		if(u)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("explorationflag", 0, false);
-			return new OrderCreate(team->teamNumber, u->posX, u->posY, typeNum, 1, 1);
+			return shared_ptr<Order>(new OrderCreate(team->teamNumber, u->posX, u->posY, typeNum, 1, 1));
 		}
 	}
 	//what, enemy has no buildings or units at the beginning of the game? o_O O_o o_O
 	if(verbose)std::cout << "No buildings found, no units found o_O\n";
-	return new NullOrder;
+	return shared_ptr<Order>(new NullOrder);
 }
 
 bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int height)
@@ -752,7 +755,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 	}
 }
 
-Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
+boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 {
 	
 	// set delay
@@ -801,7 +804,7 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	if (!swarm)
 	{
 		if(verbose)std::cout << "No swarm found!\n";
-		return new NullOrder;
+		return shared_ptr<Order>(new NullOrder);
 	}
 	Sint32 destination_x,destination_y;
 	{
@@ -830,6 +833,6 @@ Order *AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		
 	// create and return order
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
-	return new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1, 1);
+	return shared_ptr<Order>(new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1, 1));
 }
 

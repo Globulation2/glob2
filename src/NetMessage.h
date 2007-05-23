@@ -112,14 +112,14 @@ public:
 	
 	///Creates a NetSendOrder message with the provided Order.
 	///This will assume ownership of the Order.
-	NetSendOrder(Order* newOrder);
+	NetSendOrder(boost::shared_ptr<Order> newOrder);
 	
 	///Changes the Order that NetSendOrder holds. This will
 	///delete an Order that was already present.
-	void changeOrder(Order* newOrder);
+	void changeOrder(boost::shared_ptr<Order> newOrder);
 	
 	///Returns the Order that NetSendOrder holds.
-	Order* getOrder();
+	boost::shared_ptr<Order> getOrder();
 
 	///Returns MNetSendOrder
 	Uint8 getMessageType() const;
@@ -140,7 +140,7 @@ public:
 	///Compares with another NetSendOrder
 	bool operator==(const NetMessage& rhs) const;
 private:
-	Order* order;
+	boost::shared_ptr<Order> order;
 };
 
 
