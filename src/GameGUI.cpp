@@ -4104,6 +4104,8 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;
+			if (qp==localPlayer)
+				isRunning=false;
 			addMessage(200, 200, 200, FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name));
 			game.executeOrder(order, localPlayer);
 		}
@@ -4671,7 +4673,7 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
 	}
 }
 
-void GameGUI::addMark(shared_ptr<MapMarkOrder> mmo)
+void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
 	Mark mark;
 	mark.showTicks=Mark::DEFAULT_MARK_SHOW_TICKS;
