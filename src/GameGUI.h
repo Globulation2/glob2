@@ -59,26 +59,15 @@ class InGameScrollableText;
 class GameGUI
 {
 public:
-	Game game;
-	bool gamePaused;
-	bool hardPause;
-	bool isRunning;
-	bool notmenu;
-	//! true if user close the glob2 window.
-	bool exitGlobCompletely;
-	//! if this is not empty, then Engine should load the map with this filename.
-	std::string toLoadGameFileName;
-	//bool showExtendedInformation;
-	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
-	int localPlayer, localTeamNo;
-	int viewportX, viewportY;
-
-public:
+	///Constructs a GameGUI
 	GameGUI();
+	
+	///Destroys the GameGUI
 	~GameGUI();
 
-
+	///Initializes all variables
 	void init();
+	///Moves the local viewport
 	void adjustInitialViewport();
 	void adjustLocalTeam();
 	//! Handle mouse, keyboard and window resize inputs, and stats
@@ -126,6 +115,20 @@ public:
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
+public:
+	Game game;
+	bool gamePaused;
+	bool hardPause;
+	bool isRunning;
+	bool notmenu;
+	//! true if user close the glob2 window.
+	bool exitGlobCompletely;
+	//! if this is not empty, then Engine should load the map with this filename.
+	std::string toLoadGameFileName;
+	//bool showExtendedInformation;
+	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
+	int localPlayer, localTeamNo;
+	int viewportX, viewportY;
 private:
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
@@ -139,6 +142,7 @@ private:
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
+
 	void handleActivation(Uint8 state, Uint8 gain);
 	void nextDisplayMode(void);
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
