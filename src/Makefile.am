@@ -90,6 +90,8 @@ GUIMapPreview.cpp \
 GUIMapPreview.h \
 Game.cpp \
 Game.h \
+GameEvent.cpp \
+GameEvent.h \
 GameGUI.cpp \
 GameGUI.h \
 GameGUIDialog.cpp \
