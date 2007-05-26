@@ -281,9 +281,6 @@ int Engine::run(void)
 				}
 				else
 					ticksDelayedInside=0;
-					
-				// We clear the last events
-				gui.game.clearEventsStep();
 				
 				// We proceed network:
 				networkReadyToExecute=net->allOrdersRecieved();

@@ -550,68 +550,15 @@ void GameGUI::step(void)
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
 
 	assert(localTeam);
-	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
+	boost::shared_ptr<GameEvent> gevent = localTeam->getEvent();
+	while(gevent)
 	{
-		Uint16 gid = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).id;
-		int team = Unit::GIDtoTeam(gid);
-		int id = Unit::GIDtoID(gid);
-		Unit *u = game.teams[team]->myUnits[id];
-		if (u)
-		{
-			int strDec=(int)(u->typeNum);
-			addMessage(200, 30, 30, FormatableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]")).arg(Toolkit::getStringTable()->getString("[units type]", strDec)));
-			eventGoPosX = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posY;
-			eventGoType = Team::UNIT_UNDER_ATTACK_EVENT;
-		}
-	}
-	if (localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
-	{
-		int team = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).team;
-		const char *teamName = game.teams[team]->getFirstPlayerName();
-		addMessage(140, 0, 0, FormatableString(Toolkit::getStringTable()->getString("[Your unit got converted to %0's team]")).arg(teamName));
-		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posX;
-		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posY;
-		eventGoType = Team::UNIT_CONVERTED_LOST;
-	}
-	if (localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
-	{
-		int team = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).team;
-		const char *teamName = game.teams[team]->getFirstPlayerName();
-		addMessage(100, 255, 100, FormatableString(Toolkit::getStringTable()->getString("[%0's team unit got converted to your team]")).arg(teamName));
-		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posX;
-		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posY;
-		eventGoType = Team::UNIT_CONVERTED_ACQUIERED;
-	}
-	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
-	{
-		Uint16 gid = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).id;
-		int team = Building::GIDtoTeam(gid);
-		int id = Building::GIDtoID(gid);
-		Building *b = game.teams[team]->myBuildings[id];
-		if (b)
-		{
-			int strDec=b->type->shortTypeNum;
-			addMessage(255, 0, 0, Toolkit::getStringTable()->getString("[the building is under attack]", strDec));
-			eventGoPosX = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posY;
-			eventGoType = Team::BUILDING_UNDER_ATTACK_EVENT;
-		}
-	}
-	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
-	{
-		Uint16 gid = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).id;
-		int team = Building::GIDtoTeam(gid);
-		int id = Building::GIDtoID(gid);
-		Building *b = game.teams[team]->myBuildings[id];
-		if (b)
-		{
-			int strDec=b->type->shortTypeNum;
-			addMessage(30, 255, 30, Toolkit::getStringTable()->getString("[the building is finished]", strDec));
-			eventGoPosX = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posY;
-			eventGoType = Team::BUILDING_FINISHED_EVENT;
-		}
+		Color c = gevent->formatColor();
+		addMessage(c.r, c.g, c.b, gevent->formatMessage());
+		eventGoPosX = gevent->getX();
+		eventGoPosY = gevent->getY();
+		eventGoType = gevent->getEventType();
+		gevent = localTeam->getEvent();
 	}
 	
 	// voice step
@@ -688,17 +635,17 @@ void GameGUI::musicStep(void)
 	static unsigned buildingTimeout = 0;
 	
 	// something bad happened
-	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT) ||
-		localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) ||
-		localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
+	if (localTeam->wasRecentEvent(GEUnitUnderAttack) ||
+		localTeam->wasRecentEvent(GEUnitLostConversion) ||
+		localTeam->wasRecentEvent(GEBuildingUnderAttack))
 	{
 	   warTimeout = 220;
 	   globalContainer->mix->setNextTrack(4, true);
 	}
 	
 	// something good happened
-	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT) ||
-		localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
+	if (localTeam->wasRecentEvent(GEUnitGainedConversion) ||
+		localTeam->wasRecentEvent(GEBuildingCompleted))
 	{
 		buildingTimeout = 220;
 		globalContainer->mix->setNextTrack(3, true);
@@ -1520,9 +1467,10 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						int evX, evY;
 						int sw, sh;
 						
+						/*
 						if (ctrl)
 						{
-							eventGoTypeIterator = (eventGoTypeIterator+1) % Team::EVENT_TYPE_SIZE;
+							eventGoTypeIterator = (eventGoTypeIterator+1) % GESize;
 							
 							if (!localTeam->getEvent((Team::EventType)eventGoTypeIterator).validPosition)
 								break;
@@ -1531,6 +1479,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 							evY = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posY;
 						}
 						else
+						*/
 						{
 							eventGoTypeIterator = eventGoType;
 							evX = eventGoPosX;

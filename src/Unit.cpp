@@ -487,7 +487,10 @@ void Unit::syncStep(void)
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
-			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID, enemyTeam);
+			
+			boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
+			enemy->owner->pushGameEvent(event);
+
 			incrementExperience(degats);
 		}
 		else
@@ -502,7 +505,10 @@ void Unit::syncStep(void)
 				if (degats<=0)
 					degats=1;
 				enemy->hp-=degats;
-				enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyGBID, enemyTeam);
+			
+				boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
+				enemy->owner->pushGameEvent(event);
+
 				if (enemy->hp<0)
 					enemy->kill();
 				incrementExperience(degats);
@@ -674,7 +680,11 @@ void Unit::handleMagic(void)
 							if (damage > 0)
 							{
 								enemyUnit->hp -= damage;
-								enemyUnit->owner->setEvent(xi, yi, Team::UNIT_UNDER_ATTACK_EVENT, targetGUID, targetTeam);
+								
+			
+								boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
+								enemyUnit->owner->pushGameEvent(event);
+								
 								incrementExperience(damage);
 								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
 								hasUsedMagicAction = true;
@@ -890,9 +900,12 @@ void Unit::handleActivity(void)
 					// Unit conversion code
 					
 					// Send events and keep track of number of unit converted
-					currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum, targetTeam->teamNumber);
+					boost::shared_ptr<GameEvent> event(new UnitLostConversionEvent(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
+					currentTeam->pushGameEvent(event);
 					currentTeam->unitConversionLost++;
-					targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum, currentTeam->teamNumber);
+					
+					boost::shared_ptr<GameEvent> event2(new UnitGainedConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
+					targetTeam->pushGameEvent(event2);
 					targetTeam->unitConversionGained++;
 					
 					// Find free slot in other team
