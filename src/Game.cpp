@@ -1140,13 +1140,6 @@ void Game::scriptSyncStep()
 	}
 }
 
-void Game::clearEventsStep(void)
-{
-	// We clear all events
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		teams[i]->clearEvents();
-}
-
 void Game::syncStep(Sint32 localTeam)
 {
 	if (!anyPlayerWaited)

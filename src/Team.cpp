@@ -215,8 +215,6 @@ void Team::init(void)
 	startPosX=startPosY=0;
 	startPosSet=0;
 
-	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-		events[i] = Event();
 	isAlive=true;
 	hasWon=false;
 	prestige=0;
@@ -224,6 +222,9 @@ void Team::init(void)
 	unitConversionGained = 0;
 	for(int i=0; i<MAX_NB_RESSOURCES; ++i)
 		teamRessources[i]=0;
+
+	for(int i=0; i<GESize; ++i)
+		eventCooldownTimers[i]=0;
 
 	noMoreBuildingSitesCountdown=0;
 }
@@ -378,6 +379,9 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	}
 
 
+	for(int i=0; i<GESize; ++i)
+		eventCooldownTimers[i]=0;
+
 	if (!stats.load(stream, versionMinor))
 	{
 		stream->readLeaveSection();
@@ -385,8 +389,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	}
 	stats.step(this, true);
 
-	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-		events[i] = Event();
 	isAlive = true;
 
 	stream->readLeaveSection();
@@ -1178,13 +1180,9 @@ void Team::syncStep(void)
 		fprintf(logFile, "  canFeedUnit.size()=%zd\n", canFeedUnit.size());
 		fprintf(logFile, "  canHealUnit.size()=%zd\n", canHealUnit.size());
 	}
-	//isAlive=isAlive && (isEnoughFoodInSwarm || nbUsefullUnitsAlone!=0 || (nbUsefullUnits!=0 && (canFeedUnit.size()>0 || canHealUnit.size()>0)));
-	// decount event cooldown counter
-	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-		if (events[i].cooldown > 0)
-			events[i].cooldown--;
 
 	stats.step(this);
+	updateEvents();
 }
 
 
@@ -1207,6 +1205,60 @@ void Team::checkControllingPlayers(void)
 }
 
 
+
+void Team::pushGameEvent(boost::shared_ptr<GameEvent> event)
+{
+	///Ignore events when the cooldown is above 0
+	if(eventCooldownTimers[event->getEventType()] == 0)
+	{
+		events.push(event);
+		eventCooldownTimers[event->getEventType()]=50;
+	}
+}
+	
+
+
+boost::shared_ptr<GameEvent> Team::getEvent()
+{
+	if(events.empty())
+		return boost::shared_ptr<GameEvent>();
+
+	boost::shared_ptr<GameEvent> event = events.front();
+	events.pop();
+	return event;
+}
+	
+
+
+void Team::updateEvents()
+{
+	for(int i=0; i<GESize; ++i)
+	{
+		if(eventCooldownTimers[i]>0)
+			eventCooldownTimers[i]-=1;
+	}
+
+
+	bool testAnother=true;
+	while(testAnother && !events.empty())
+	{
+		boost::shared_ptr<GameEvent> event = events.front();
+		if((game->stepCounter - event->getStep()) > 100)
+		{
+			events.pop();
+		}
+		else
+		{
+			testAnother=false;
+		}
+	}
+}
+
+	
+bool Team::wasRecentEvent(GameEventType type)
+{
+	return eventCooldownTimers[type]==50;
+}
 
 
 void Team::dirtyGlobalGradient()

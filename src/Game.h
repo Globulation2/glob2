@@ -100,9 +100,6 @@ public:
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
 
-	//! before any game logic can be executed, we have to clear the event queu from the last tick
-	void clearEventsStep(void);
-
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
 	/// internal proccessing.
 	void syncStep(Sint32 localTeam);

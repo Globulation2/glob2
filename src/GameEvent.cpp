@@ -41,7 +41,7 @@ GameEvent::~GameEvent()
 
 
 
-Uint8 GameEvent::getStep()
+Uint32 GameEvent::getStep()
 {
 	return step;
 }
@@ -62,7 +62,7 @@ Sint16 GameEvent::getY()
 
 
 
-UnitUnderAttack::UnitUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 type)
+UnitUnderAttackEvent::UnitUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint32 type)
 	: GameEvent(step, x, y), type(type)
 {
 
@@ -70,7 +70,7 @@ UnitUnderAttack::UnitUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 type)
 
 
 
-std::string UnitUnderAttack::formatMessage()
+std::string UnitUnderAttackEvent::formatMessage()
 {
 	std::string message;
 	message+=FormatableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]"))
@@ -80,14 +80,14 @@ std::string UnitUnderAttack::formatMessage()
 
 
 
-GAGCore::Color UnitUnderAttack::formatColor()
+GAGCore::Color UnitUnderAttackEvent::formatColor()
 {
 	return GAGCore::Color(200, 30, 30);
 }
 
 
 
-Uint8 UnitUnderAttack::getEventType()
+Uint8 UnitUnderAttackEvent::getEventType()
 {
 	return GEUnitUnderAttack;
 }
@@ -95,7 +95,7 @@ Uint8 UnitUnderAttack::getEventType()
 
 
 
-UnitLostConversion::UnitLostConversion(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName)
+UnitLostConversionEvent::UnitLostConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName)
 	: GameEvent(step, x, y), teamName(teamName)
 {
 
@@ -103,7 +103,7 @@ UnitLostConversion::UnitLostConversion(Uint32 step, Sint16 x, Sint16 y, const st
 
 
 
-std::string UnitLostConversion::formatMessage()
+std::string UnitLostConversionEvent::formatMessage()
 {
 	std::string message;
 	message += FormatableString(Toolkit::getStringTable()->getString("[Your unit got converted to %0's team]")).arg(teamName);
@@ -112,14 +112,14 @@ std::string UnitLostConversion::formatMessage()
 
 
 
-GAGCore::Color UnitLostConversion::formatColor()
+GAGCore::Color UnitLostConversionEvent::formatColor()
 {
 	return GAGCore::Color(140, 0, 0);
 }
 
 
 
-Uint8 UnitLostConversion::getEventType()
+Uint8 UnitLostConversionEvent::getEventType()
 {
 	return GEUnitLostConversion;
 }
@@ -127,7 +127,7 @@ Uint8 UnitLostConversion::getEventType()
 
 
 
-UnitGainedConversion::UnitGainedConversion(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName)
+UnitGainedConversionEvent::UnitGainedConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName)
 	: GameEvent(step, x, y), teamName(teamName)
 {
 
@@ -135,7 +135,7 @@ UnitGainedConversion::UnitGainedConversion(Uint32 step, Sint16 x, Sint16 y, cons
 
 
 
-std::string UnitGainedConversion::formatMessage()
+std::string UnitGainedConversionEvent::formatMessage()
 {
 	std::string message;
 	message += FormatableString(Toolkit::getStringTable()->getString("[%0's team unit got converted to your team]")).arg(teamName);
@@ -144,14 +144,14 @@ std::string UnitGainedConversion::formatMessage()
 
 
 
-GAGCore::Color UnitGainedConversion::formatColor()
+GAGCore::Color UnitGainedConversionEvent::formatColor()
 {
 	return GAGCore::Color(100, 255, 100);
 }
 
 
 
-Uint8 UnitGainedConversion::getEventType()
+Uint8 UnitGainedConversionEvent::getEventType()
 {
 	return GEUnitGainedConversion;
 }
@@ -159,7 +159,7 @@ Uint8 UnitGainedConversion::getEventType()
 
 
 
-BuildingUnderAttack::BuildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint8 type)
+BuildingUnderAttackEvent::BuildingUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type)
 	: GameEvent(step, x, y), type(type)
 {
 
@@ -167,7 +167,7 @@ BuildingUnderAttack::BuildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint8 
 
 
 
-std::string BuildingUnderAttack::formatMessage()
+std::string BuildingUnderAttackEvent::formatMessage()
 {
 	std::string message;
 	message += Toolkit::getStringTable()->getString("[the building is under attack]", type);
@@ -176,14 +176,14 @@ std::string BuildingUnderAttack::formatMessage()
 
 
 
-GAGCore::Color BuildingUnderAttack::formatColor()
+GAGCore::Color BuildingUnderAttackEvent::formatColor()
 {
 	return GAGCore::Color(255, 0, 0);
 }
 
 
 
-Uint8 BuildingUnderAttack::getEventType()
+Uint8 BuildingUnderAttackEvent::getEventType()
 {
 	return GEBuildingUnderAttack;
 }
@@ -191,7 +191,7 @@ Uint8 BuildingUnderAttack::getEventType()
 
 
 
-BuildingCompleted::BuildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint8 type)
+BuildingCompletedEvent::BuildingCompletedEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type)
 	: GameEvent(step, x, y), type(type)
 {
 
@@ -199,7 +199,7 @@ BuildingCompleted::BuildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint8 type
 
 
 
-std::string BuildingCompleted::formatMessage()
+std::string BuildingCompletedEvent::formatMessage()
 {
 	std::string message;
 	message += Toolkit::getStringTable()->getString("[the building is finished]", type);
@@ -208,14 +208,14 @@ std::string BuildingCompleted::formatMessage()
 
 
 
-GAGCore::Color BuildingCompleted::formatColor()
+GAGCore::Color BuildingCompletedEvent::formatColor()
 {
 	return GAGCore::Color(30, 255, 30);
 }
 
 
 
-Uint8 BuildingCompleted::getEventType()
+Uint8 BuildingCompletedEvent::getEventType()
 {
 	return GEBuildingCompleted;
 }

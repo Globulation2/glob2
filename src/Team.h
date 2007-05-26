@@ -28,9 +28,13 @@
 
 #include <list>
 #include <algorithm>
+#include <queue>
 
 #include "Race.h"
 #include "TeamStat.h"
+#include "GameEvent.h"
+
+#include <boost/shared_ptr.hpp>
 
 class Building;
 class BuildingsTypes;
@@ -80,31 +84,6 @@ class Team:public BaseTeam
 {
 	static const bool verbose = false;
 public:
-	enum EventType
-	{
-		UNIT_UNDER_ATTACK_EVENT=0,
-		BUILDING_UNDER_ATTACK_EVENT,
-		BUILDING_FINISHED_EVENT,
-		UNIT_CONVERTED_LOST,
-		UNIT_CONVERTED_ACQUIERED,
-		EVENT_TYPE_SIZE
-	};
-	
-	//! Events stored in team
-	struct Event
-	{
-		bool validPosition; //!< does the actual position mean anything
-		bool firedLastTick; //!< was an event last tick
-		int cooldown; //!< prevent event overflow
-		int posX, posY; //!< event position
-		Sint32 id; //!< id of event source
-		int team; //!< team of event source. For unit conversion, the other team
-		
-		Event(int cooldown, int posX, int posY, Sint32 id, int team) { validPosition = true; firedLastTick = true; this->cooldown = cooldown; this->posX = posX; this->posY = posY; this->id = id; this->team = team; }
-		Event() { validPosition = false; firedLastTick = false; cooldown = 0; }
-	};
-	
-public:
 	Team(Game *game);
 	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
@@ -136,14 +115,18 @@ public:
 	//! Check if there is still players controlling this team, if not, it is dead
 	void checkControllingPlayers(void);
 
-	//! The team is now under attack or a building is finished, push event
-	void setEvent(int posX, int posY, EventType type, Sint32 id, int team) { if (events[type].cooldown == 0) events[type] = Event(50, posX, posY, id, team); }
-	//! was an event last tick
-	bool wasEvent(EventType type) { return events[type].firedLastTick; }
-	//! return event position
-	const Event &getEvent(EventType type) { return events[type]; }
-	//! clear all pending events
-	void clearEvents(void) { for (unsigned i = 0; i < EVENT_TYPE_SIZE; i++) events[i].firedLastTick = false; }
+	///Push a new game event into the queue
+	void pushGameEvent(boost::shared_ptr<GameEvent> event);
+	
+	///Return the top-most event from the queue and remove it
+	boost::shared_ptr<GameEvent> getEvent();
+	
+	///This returns whether an event of the given type had occurred on the last tick
+	bool wasRecentEvent(GameEventType type);
+	
+	///Updates the list of events. This automatically clears events that get too old,
+	///and decrements the cooldown timers for each event type
+	void updateEvents();
 
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
@@ -236,8 +219,15 @@ public:
 	Sint32 teamRessources[MAX_NB_RESSOURCES];
 
 private:
-	Event events[EVENT_TYPE_SIZE]; //!< events, one for each type
-
+	///Queue of game events
+	std::queue<boost::shared_ptr<GameEvent> > events;
+	///These timers indicate the cooldown for a particular event type,
+	///This keeps too many events from being pumped at once. If the
+	///timer isn't at 0 when a new event is recieved, the new event
+	///is ignored.
+	Uint8 eventCooldownTimers[GESize];
+	
+	
 public:
 	//! If you try to build buildings in the ennemy territory, you will be prevented to build any new buildings for a given time.
 	//! This is the time left you can't build for. time in ticks.

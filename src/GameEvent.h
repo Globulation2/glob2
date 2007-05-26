@@ -26,12 +26,13 @@
 
 enum GameEventType
 {
-	GEUnitUnderAttack,
+	GEUnitUnderAttack=0,
 	GEUnitLostConversion,
 	GEUnitGainedConversion,
 	GEBuildingUnderAttack,
 	GEBuildingCompleted,
 	//type_append_marker
+	GESize,
 };
 	
 ///This represents an event in the game. This includes events such as building completion,
@@ -51,7 +52,7 @@ public:
 	virtual GAGCore::Color formatColor()=0;
 	
 	///Returns the step of the event
-	Uint8 getStep();
+	Uint32 getStep();
 	
 	///Returns the x-cordinate
 	Sint16 getX();
@@ -71,11 +72,11 @@ private:
 
 
 
-class UnitUnderAttack : public GameEvent
+class UnitUnderAttackEvent : public GameEvent
 {
 public:
 	///Constructs a UnitUnderAttack event
-	UnitUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 type);
+	UnitUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint32 type);
 
 	///This formats a user-readable message, including translating the message 
 	std::string formatMessage();
@@ -92,11 +93,11 @@ private:
 
 
 
-class UnitLostConversion : public GameEvent
+class UnitLostConversionEvent : public GameEvent
 {
 public:
 	///Constructs a UnitLostConversion event
-	UnitLostConversion(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName);
+	UnitLostConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName);
 
 	///This formats a user-readable message, including translating the message 
 	std::string formatMessage();
@@ -113,11 +114,11 @@ private:
 
 
 
-class UnitGainedConversion : public GameEvent
+class UnitGainedConversionEvent : public GameEvent
 {
 public:
 	///Constructs a UnitGainedConversion event
-	UnitGainedConversion(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName);
+	UnitGainedConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName);
 
 	///This formats a user-readable message, including translating the message 
 	std::string formatMessage();
@@ -134,11 +135,11 @@ private:
 
 
 
-class BuildingUnderAttack : public GameEvent
+class BuildingUnderAttackEvent : public GameEvent
 {
 public:
 	///Constructs a BuildingUnderAttack event
-	BuildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint8 type);
+	BuildingUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type);
 
 	///This formats a user-readable message, including translating the message 
 	std::string formatMessage();
@@ -155,11 +156,11 @@ private:
 
 
 
-class BuildingCompleted : public GameEvent
+class BuildingCompletedEvent : public GameEvent
 {
 public:
 	///Constructs a BuildingCompleted event
-	BuildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint8 type);
+	BuildingCompletedEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type);
 
 	///This formats a user-readable message, including translating the message 
 	std::string formatMessage();
