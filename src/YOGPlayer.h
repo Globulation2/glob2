@@ -46,9 +46,15 @@ public:
 	///type.
 	void sendMessage(shared_ptr<NetMessage> message);
 
+	///Sets the player ID for this connection
+	void setPlayerID(Uint16 id);
+
+	///Returns the ID for this player
+	Uint16 getPlayerID();
+
 private:
 	///This enum represents the state machine of a connection.
-	enum
+	enum PlayerState
 	{
 		///Means this is waiting for the client to send version information to the server.
 		WaitingForClientInformation,
@@ -60,15 +66,29 @@ private:
 		NeedToSendLoginAccepted,
 		///A login refusal needs to be sent
 		NeedToSendLoginRefusal,
-		///Game list information needs to be sent
-		NeedToSendGameList,
-		///Player list information needs to be sent
-		NeedToSendPlayerList,
-		///This means the user is on standby, nothing needs to be sent
+		///This means the user is on standby, 
 		ClientOnStandby,
 	};
 
-	Uint8 connectionState;
+	enum GameListState
+	{
+		///Game list information needs to be sent
+		NeedToSendGameList,
+		///Nothing needs to be sent
+		GameListNormal,
+	};
+	
+	enum PlayerListState
+	{
+		///Player list information needs to be sent
+		NeedToSendPlayerList,
+		///Nothing needs to be sent
+		PlayerListNormal,
+	};
+
+	PlayerState connectionState;
+	GameListState gameListState;
+	PlayerListState playerListState;
 
 	shared_ptr<NetConnection> connection;
 	Uint16 versionMinor;
@@ -80,6 +100,8 @@ private:
 	///Stores a copy of the players that the player knows about.
 	///This is a synchronized list of what the client has
 	std::list<YOGPlayerInfo> playersPlayerList;
+	///The playerID, used to identify the assocciatted YOGPlayerInfo
+	Uint16 playerID;
 };
 
 

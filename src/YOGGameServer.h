@@ -73,10 +73,21 @@ public:
 	///This function propagates a YOGMessage to all the users on its destination
 	void propogateMessage(boost::shared_ptr<YOGMessage> message);
 
+	///Tells the server that a player has logged in with the given information,
+	///and returns a player ID. The ID is always greater than 0.
+	Uint16 playerHasLoggedIn(const std::string& username);
+
+	///Tells the server that the player has logged out and disconnected
+	void playerHasLoggedOut(Uint16 playerID);
+	
+	///Tells the server to create a new game with the given game information,
+	///and returns the new id. The id will always be greater than 0
+	Uint16 createNewGame(const std::string& name);
+
 private:
 	NetListener nl;
 	std::list<shared_ptr<YOGPlayer> > players;
-	std::list<YOGGameInfo> gameInfos;
+	std::list<YOGGameInfo> gameList;
 	std::list<YOGGame> games;
 	std::list<YOGPlayerInfo> playerList;
 	YOGLoginPolicy loginPolicy;
