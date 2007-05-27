@@ -141,6 +141,9 @@ public:
 	///Returns the username for the player	
 	std::string getUsername() const;
 
+	///Sends the message to create a new game with the given game name to the server
+	void createGame(const std::string& name);
+
 private:
 	std::string username;
 

@@ -168,7 +168,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1==CANCEL)
 		{
-			executionMode=CANCEL;
+			endExecute(CANCEL);
 		}
 		else if (par1==CREATE_GAME)
 		{
@@ -387,6 +387,7 @@ void YOGScreen::onTimer(Uint32 tick)
 
 void YOGScreen::hostGame()
 {
+	client->createGame("New Game");
 /*
 	Engine engine;
 	// host game and wait for players

@@ -21,6 +21,9 @@
 #include <iostream>
 #include <sstream>
 #include "Version.h"
+#include "BinaryStream.h"
+
+using namespace GAGCore;
 
 boost::shared_ptr<NetMessage> NetMessage::getNetMessage(const Uint8 *netData, int dataLength)
 {
@@ -81,6 +84,9 @@ boost::shared_ptr<NetMessage> NetMessage::getNetMessage(const Uint8 *netData, in
 		break;
 		case MNetSendYOGMessage:
 		message.reset(new NetSendYOGMessage);
+		break;
+		case MNetSendMapHeader:
+		message.reset(new NetSendMapHeader);
 		break;
 		///append_create_point
 	}
@@ -1671,5 +1677,97 @@ boost::shared_ptr<YOGMessage> NetSendYOGMessage::getMessage() const
 	return message;
 }
 
+
+
+NetSendMapHeader::NetSendMapHeader()
+{
+
+}
+
+
+
+NetSendMapHeader::NetSendMapHeader(const MapHeader& mapHeader)
+	: mapHeader(mapHeader)
+{
+
+}
+
+
+
+Uint8 NetSendMapHeader::getMessageType() const
+{
+	return MNetSendMapHeader;
+}
+
+
+
+Uint8 *NetSendMapHeader::encodeData() const
+{
+	MemoryStreamBackend* msb = new MemoryStreamBackend;
+	BinaryOutputStream* bos = new BinaryOutputStream(msb);
+	mapHeader.save(bos);
+	msb->seekFromEnd(0);
+
+	Uint16 length = msb->getPosition();
+	msb->seekFromStart(0);
+
+	Uint8* data = new Uint8[length];
+	Uint16 pos = 0;
+	msb->read(data+pos, length);
+	pos+=length;
+	
+	delete bos;
+	return data;
+}
+
+
+
+Uint16 NetSendMapHeader::getDataLength() const
+{
+	MemoryStreamBackend* msb = new MemoryStreamBackend;
+	BinaryOutputStream* bos = new BinaryOutputStream(msb);
+	mapHeader.save(bos);
+	msb->seekFromEnd(0);
+	Uint16 length = msb->getPosition();
+	delete bos;
+	return length;
+}
+
+
+
+bool NetSendMapHeader::decodeData(const Uint8 *data, int dataLength)
+{
+	MemoryStreamBackend* msb = new MemoryStreamBackend(data, dataLength);
+	BinaryInputStream* bos = new BinaryInputStream(msb);
+	mapHeader.load(bos);
+	delete bos;
+}
+
+
+
+std::string NetSendMapHeader::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendMapHeader(mapname="+mapHeader.getMapName()+")";
+	return s.str();
+}
+
+
+
+bool NetSendMapHeader::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendMapHeader))
+	{
+		//const NetSendMapHeader& r = dynamic_cast<const NetSendMapHeader&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+const MapHeader& NetSendMapHeader::getMapHeader() const
+{
+	return mapHeader;
+}
 
 //append_code_position

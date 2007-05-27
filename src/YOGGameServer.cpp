@@ -49,6 +49,8 @@ void YOGGameServer::update()
 	{
 		if(!(*i)->isConnected())
 		{
+			if((*i)->getPlayerID()!=0)
+				playerHasLoggedOut((*i)->getPlayerID());
 			i = players.erase(i);
 		}
 		else
@@ -104,7 +106,7 @@ YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username,
 
 const std::list<YOGGameInfo>& YOGGameServer::getGameList() const
 {
-	return gameInfos;
+	return gameList;
 }
 
 	
@@ -121,3 +123,67 @@ void YOGGameServer::propogateMessage(boost::shared_ptr<YOGMessage> message)
 }
 
 
+
+Uint16 YOGGameServer::playerHasLoggedIn(const std::string& username)
+{
+	//choose the new player ID.
+	Uint16 newID=1;
+	while(true)
+	{
+		bool found=false;
+		for(std::list<YOGPlayerInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
+		{
+			if(i->getPlayerID() == newID)
+			{
+				found=true;
+				break;
+			}
+		}
+		if(found)
+			newID+=1;
+		else
+			break;
+	}
+	playerList.push_back(YOGPlayerInfo(username, newID));
+	return newID;
+}
+
+
+
+void YOGGameServer::playerHasLoggedOut(Uint16 playerID)
+{
+	for(std::list<YOGPlayerInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
+	{
+		if(i->getPlayerID() == playerID)
+		{
+			playerList.erase(i);
+			break;
+		}
+	}
+}
+
+
+
+Uint16 YOGGameServer::createNewGame(const std::string& name)
+{
+	//choose the new game ID
+	Uint16 newID=1;
+	while(true)
+	{
+		bool found=false;
+		for(std::list<YOGGameInfo>::iterator i=gameList.begin(); i!=gameList.end(); ++i)
+		{
+			if(i->getGameID() == newID)
+			{
+				found=true;
+				break;
+			}
+		}
+		if(found)
+			newID+=1;
+		else
+			break;
+	}
+	gameList.push_back(YOGGameInfo(name, newID));
+	return newID;
+}

@@ -285,3 +285,10 @@ std::string YOGClient::getUsername() const
 }
 
 
+
+void YOGClient::createGame(const std::string& name)
+{
+	shared_ptr<NetCreateGame> message(new NetCreateGame(name));
+	nc.sendMessage(message);
+}
+

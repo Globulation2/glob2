@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-
+#include "MapHeader.h"
 
 using namespace boost;
 
@@ -53,6 +53,7 @@ enum NetMessageType
 	MNetGameJoinRefused,
 	MNetRemoveGame,
 	MNetSendYOGMessage,
+	MNetSendMapHeader,
 	//type_append_marker
 };
 
@@ -775,6 +776,44 @@ public:
 	boost::shared_ptr<YOGMessage> getMessage() const;
 private:
 	boost::shared_ptr<YOGMessage> message;
+};
+
+
+
+
+///NetSendMapHeader sends a map header to the server
+class NetSendMapHeader : public NetMessage
+{
+public:
+	///Creates a NetSendMapHeader message
+	NetSendMapHeader();
+
+	///Creates a NetSendMapHeader message
+	NetSendMapHeader(const MapHeader& mapHeader);
+
+	///Returns MNetSendMapHeader
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	Uint8 *encodeData() const;
+
+	///Returns the data length
+	Uint16 getDataLength() const;
+
+	///Decodes the data
+	bool decodeData(const Uint8 *data, int dataLength);
+
+	///Formats the NetSendMapHeader message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendMapHeader
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the map header
+	const MapHeader& getMapHeader() const;
+private:
+	mutable MapHeader mapHeader;
 };
 
 
