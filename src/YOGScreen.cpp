@@ -33,6 +33,8 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 
+#include "ChooseMapScreen.h"
+
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"
 
@@ -387,7 +389,13 @@ void YOGScreen::onTimer(Uint32 tick)
 
 void YOGScreen::hostGame()
 {
-	client->createGame("New Game");
+	ChooseMapScreen cms("maps", "map", false);
+	int rc = cms.execute(globalContainer->gfx, 40);
+	if(rc == ChooseMapScreen::OK)
+	{
+		client->createGame("New Game");
+		client->sendMapHeader(cms.getMapHeader());
+	}
 /*
 	Engine engine;
 	// host game and wait for players
