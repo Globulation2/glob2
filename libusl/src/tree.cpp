@@ -1,71 +1,71 @@
 #include "tree.h"
 #include "code.h"
 
-void LazyNode::generate(Definition* def)
+void DefRefNode::generate(ScopePrototype* scope)
 {
-	value->generate(this->def);
-	this->def->body.push_back(new ReturnCode());
-	def->body.push_back(new ScopeCode(this->def));
+	value->generate(this->scope);
+	this->scope->body.push_back(new ReturnCode());
+	scope->body.push_back(new ScopeCode(this->scope));
 }
 
-void ConstNode::generate(Definition* def)
+void ConstNode::generate(ScopePrototype* scope)
 {
-	def->body.push_back(new ConstCode(value));
+	scope->body.push_back(new ConstCode(value));
 }
 
-void LocalNode::generate(Definition* def)
+void ValRefNode::generate(ScopePrototype* scope)
 {
-	def->body.push_back(new LocalCode(depth, index));
+	scope->body.push_back(new ValRefCode(depth, index));
 }
 
-void ApplyNode::generate(Definition* def)
+void ApplyNode::generate(ScopePrototype* scope)
 {
-	receiver->generate(def);
-	argument->generate(def);
-	def->body.push_back(new ApplyCode(name));
+	receiver->generate(scope);
+	argument->generate(scope);
+	scope->body.push_back(new ApplyCode(name));
 }
 
-void ValNode::generate(Definition* def)
+void ValNode::generate(ScopePrototype* scope)
 {
-	value->generate(def);
-	def->body.push_back(new ValueCode(local));
+	value->generate(scope);
+	scope->body.push_back(new ValCode(index));
 }
 
-void BlockNode::generate(Definition* def)
+void BlockNode::generate(ScopePrototype* scope)
 {
 	
 	for (Statements::const_iterator it = statements.begin(); it != statements.end(); ++it)
 	{
 		Node* statement = *it;
-		statement->generate(def);
+		statement->generate(scope);
 		if (dynamic_cast<ExpressionNode*>(statement) != 0)
 		{
 			// if the statement is an expression, its result is ignored
-			def->body.push_back(new PopCode());
+			scope->body.push_back(new PopCode());
 		}
 	}
-	value->generate(def);
+	value->generate(scope);
 }
 
-void DefNode::generate(Definition* def)
+void DefNode::generate(ScopePrototype* scope)
 {
-	def = def->methods[name];
-	body->generate(def);
-	def->body.push_back(new ReturnCode());
+	scope = this->scope;
+	body->generate(scope);
+	scope->body.push_back(new ReturnCode());
 }
 
-void ParentNode::generate(Definition* def)
+void ParentNode::generate(ScopePrototype* scope)
 {
-	def->body.push_back(new ParentCode());
+	scope->body.push_back(new ParentCode());
 }
 
-void TupleNode::generate(Definition* def)
+void TupleNode::generate(ScopePrototype* scope)
 {
 	for (Expressions::const_iterator it = expressions.begin(); it != expressions.end(); ++it)
 	{
 		Node* expression = *it;
-		expression->generate(def);
+		expression->generate(scope);
 	}
-	def->body.push_back(new TupleCode(expressions.size()));
+	scope->body.push_back(new TupleCode(expressions.size()));
 }
 

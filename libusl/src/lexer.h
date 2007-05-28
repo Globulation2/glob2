@@ -10,6 +10,7 @@ public:
 	{
 		SPACE,
 		VAL,
+		DEF,
 		ASSIGN,
 		ID,
 		STR,

@@ -27,9 +27,9 @@ struct ConstCode: Code
 	Value* value;
 };
 
-struct LocalCode: Code
+struct ValRefCode: Code
 {
-	LocalCode(size_t depth, size_t index):
+	ValRefCode(size_t depth, size_t index):
 		depth(depth),
 		index(index)
 	{}
@@ -71,8 +71,8 @@ struct ApplyCode: Code
 		Value* receiver = stack.back();
 		stack.pop_back();
 		
-		// get definition
-		Definition* method = receiver->prototype->lookup(name);
+		// get method
+		ScopePrototype* method = receiver->prototype->lookup(name);
 		
 		// create a new scope
 		Scope* scope = new Scope(thread->heap, method, receiver);
@@ -87,10 +87,10 @@ struct ApplyCode: Code
 	const std::string name;
 };
 
-struct ValueCode: Code
+struct ValCode: Code
 {
-	ValueCode(const std::string& local):
-		local(local)
+	ValCode(size_t index):
+		index(index)
 	{}
 	
 	void execute(Thread* thread)
@@ -101,7 +101,7 @@ struct ValueCode: Code
 		stack.pop_back();
 	}
 	
-	const std::string local;
+	size_t index;
 };
 
 struct ParentCode: Code
@@ -127,17 +127,17 @@ struct PopCode: Code
 
 struct ScopeCode: Code
 {
-	ScopeCode(Definition* def):
-		def(def)
+	ScopeCode(ScopePrototype* prototype):
+		prototype(prototype)
 	{}
 	
 	void execute(Thread* thread)
 	{
 		Thread::Frame& frame = thread->frames.back();
-		frame.stack.push_back(new Scope(thread->heap, def, frame.scope));
+		frame.stack.push_back(new Scope(thread->heap, prototype, frame.scope));
 	}
 	
-	Definition* def;
+	ScopePrototype* prototype;
 };
 
 struct ReturnCode: Code
@@ -170,14 +170,14 @@ struct TupleCode: Code
 
 struct NativeCode: Code
 {
-	struct Operation: Definition
+	struct Operation: ScopePrototype
 	{
 		Operation(Prototype* parent, const std::string& name, bool lazy):
-			Definition(0, parent),
+			ScopePrototype(0, parent),
 			name(name)
 		{
 			body.push_back(new ParentCode());
-			body.push_back(new LocalCode(0, 0));
+			body.push_back(new ValRefCode(0, 0));
 			if (!lazy)
 			{
 				body.push_back(new ConstCode(&nil));
