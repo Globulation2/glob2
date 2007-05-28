@@ -18,6 +18,7 @@
 
 #include "YOGGameInfo.h"
 #include "SDL_net.h"
+#include <iostream>
 
 YOGGameInfo::YOGGameInfo()
 {
@@ -61,43 +62,22 @@ Uint16 YOGGameInfo::getGameID() const
 
 
 
-Uint8* YOGGameInfo::encodeData() const
+void YOGGameInfo::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint32 pos = 0;
-	SDLNet_Write16(gameID, data+pos);
-	pos+=2;
-	data[pos] = gameName.size();
-	pos+=1;
-	std::copy(gameName.begin(), gameName.end(), data+pos);
-	return data;
-}
-
-
-	
-Uint16 YOGGameInfo::getDataLength() const
-{
-	return 2 + 1 + gameName.size();
+	stream->writeEnterSection("YOGGameInfo");
+	stream->writeUint16(gameID, "gameID");
+	stream->writeText(gameName, "gameName");
+	stream->writeLeaveSection();
 }
 
 
 
-bool YOGGameInfo::decodeData(const Uint8 *data, int dataLength)
+void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 {
-	Uint8 pos = 0;
-	gameID = SDLNet_Read16(data+pos);
-	pos+=2;
-	//Read in the gameName
-	Uint8 gameNameLength = data[pos];
-	pos+=1;
-	gameName="";
-	for(int i=0; i<gameNameLength; ++i)
-	{
-		gameName+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
-	return true;
+	stream->readEnterSection("YOGGameInfo");
+	gameID=stream->readUint16("gameID");
+	gameName=stream->readText("gameName");
+	stream->readLeaveSection();
 }
 
 

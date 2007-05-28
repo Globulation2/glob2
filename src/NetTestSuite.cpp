@@ -19,6 +19,11 @@
 #include "NetTestSuite.h"
 #include <iostream>
 
+#include "StreamBackend.h"
+#include "BinaryStream.h"
+
+using namespace GAGCore;
+
 NetTestSuite::NetTestSuite()
 {
 
@@ -26,12 +31,22 @@ NetTestSuite::NetTestSuite()
 
 
 
-template<typename t> bool NetTestSuite::testMessage(shared_ptr<t> message)
+template<typename t> bool NetTestSuite::testSerialize(shared_ptr<t> message)
 {
-	shared_ptr<NetMessage> decodedMessage;
-	Uint8* messageInfo = message->encodeData();
-	decodedMessage = NetMessage::getNetMessage(messageInfo, message->getDataLength());
-	delete messageInfo;
+	MemoryStreamBackend* msb = new MemoryStreamBackend;
+	BinaryOutputStream* bos = new BinaryOutputStream(msb);
+
+	shared_ptr<t> decodedMessage(new t);
+	message->encodeData(bos);
+
+	MemoryStreamBackend* msb2 = new MemoryStreamBackend(*msb);
+	msb2->seekFromStart(0);
+	BinaryInputStream* bis = new BinaryInputStream(msb2);
+	
+	decodedMessage->decodeData(bis);
+
+	delete bos;
+	delete bis;
 	if((*message) != (*decodedMessage))
 	{
 		return false;
@@ -41,7 +56,7 @@ template<typename t> bool NetTestSuite::testMessage(shared_ptr<t> message)
 
 
 
-template<typename t> bool NetTestSuite::testInitialMessageState()
+template<typename t> bool NetTestSuite::testInitial()
 {
 	shared_ptr<t> message1(new t);
 	shared_ptr<t> message2(new t);
@@ -55,136 +70,136 @@ template<typename t> bool NetTestSuite::testInitialMessageState()
 int NetTestSuite::testNetMessages()
 {
 	///Test NetSendOrder
-	if(!testInitialMessageState<NetSendOrder>())
+	if(!testInitial<NetSendOrder>())
 		return 1;
 
 	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
 	netSendOrder1->changeOrder(boost::shared_ptr<Order>(new OrderDelete(1)));
-	if(!testMessage(netSendOrder1))
+	if(!testSerialize(netSendOrder1))
 		return 2;
 
 	///Test NetSendClientInformation
-	if(!testInitialMessageState<NetSendClientInformation>())
+	if(!testInitial<NetSendClientInformation>())
 		return 3;
 
 	shared_ptr<NetSendClientInformation> clientInfo1(new NetSendClientInformation);
-	if(!testMessage(clientInfo1))
+	if(!testSerialize(clientInfo1))
 		return 4;
 		
 	///Test NetSendServerInformation
-	if(!testInitialMessageState<NetSendServerInformation>())
+	if(!testInitial<NetSendServerInformation>())
 		return 5;
 	
 	shared_ptr<NetSendServerInformation> serverInfo1(new NetSendServerInformation(YOGRequirePassword, YOGSingleGame));
-	if(!testMessage(serverInfo1))
+	if(!testSerialize(serverInfo1))
 		return 6;
 	
 	///Test NetAttemptLogin
-	if(!testInitialMessageState<NetAttemptLogin>())
+	if(!testInitial<NetAttemptLogin>())
 		return 7;
 	
 	shared_ptr<NetAttemptLogin> attemptLogin1(new NetAttemptLogin("joe", "bob"));
-	if(!testMessage(attemptLogin1))
+	if(!testSerialize(attemptLogin1))
 		return 8;
 	
 	shared_ptr<NetAttemptLogin> attemptLogin2(new NetAttemptLogin("joe bob", ""));
-	if(!testMessage(attemptLogin2))
+	if(!testSerialize(attemptLogin2))
 		return 9;
 	
 	///Test NetLoginSuccessful
-	if(!testInitialMessageState<NetLoginSuccessful>())
+	if(!testInitial<NetLoginSuccessful>())
 		return 10;
 		
 	shared_ptr<NetLoginSuccessful> loginSuccess1(new NetLoginSuccessful);
-	if(!testMessage(loginSuccess1))
+	if(!testSerialize(loginSuccess1))
 		return 11;
 
 	//Test NetRefuseLogin
-	if(!testInitialMessageState<NetRefuseLogin>())
+	if(!testInitial<NetRefuseLogin>())
 		return 12;
 
 	shared_ptr<NetRefuseLogin> refuseLogin1(new NetRefuseLogin(YOGPasswordIncorrect));
-	if(!testMessage(refuseLogin1))
+	if(!testSerialize(refuseLogin1))
 		return 13;	
 
 	///Test NetDisconnect
-	if(!testInitialMessageState<NetDisconnect>())
+	if(!testInitial<NetDisconnect>())
 		return 14;
 		
 	shared_ptr<NetDisconnect> disconnect1(new NetDisconnect);
-	if(!testMessage(disconnect1))
+	if(!testSerialize(disconnect1))
 		return 15;
 		
 	///Test NetAttemptRegistration
-	if(!testInitialMessageState<NetAttemptRegistration>())
+	if(!testInitial<NetAttemptRegistration>())
 		return 16;
 	
 	shared_ptr<NetAttemptRegistration> registration1(new NetAttemptRegistration("joe", "bob"));
-	if(!testMessage(registration1))
+	if(!testSerialize(registration1))
 		return 17;
 	
 	shared_ptr<NetAttemptRegistration> registration2(new NetAttemptRegistration("joe bob", ""));
-	if(!testMessage(registration2))
+	if(!testSerialize(registration2))
 		return 18;
 		
 	///Test NetAcceptRegistration
-	if(!testInitialMessageState<NetAcceptRegistration>())
+	if(!testInitial<NetAcceptRegistration>())
 		return 19;
 		
 	shared_ptr<NetAcceptRegistration> acceptRegistration1(new NetAcceptRegistration);
-	if(!testMessage(acceptRegistration1))
+	if(!testSerialize(acceptRegistration1))
 		return 20;
 
 	//Test NetRefuseRegistration
-	if(!testInitialMessageState<NetRefuseRegistration>())
+	if(!testInitial<NetRefuseRegistration>())
 		return 21;
 
 	shared_ptr<NetRefuseRegistration> refuseRegistration1(new NetRefuseRegistration(YOGPasswordIncorrect));
-	if(!testMessage(refuseRegistration1))
+	if(!testSerialize(refuseRegistration1))
 		return 22;
 		
 	//Test NetCreateGame
-	if(!testInitialMessageState<NetCreateGame>())
+	if(!testInitial<NetCreateGame>())
 		return 23;
 
 	shared_ptr<NetCreateGame> createGame1(new NetCreateGame("my game"));
-	if(!testMessage(createGame1))
+	if(!testSerialize(createGame1))
 		return 24;
 
 	shared_ptr<NetCreateGame> createGame2(new NetCreateGame("haha my first game woot"));
-	if(!testMessage(createGame2))
+	if(!testSerialize(createGame2))
 		return 25;
 	
 	//Test NetAttemptJoinGame
-	if(!testInitialMessageState<NetAttemptJoinGame>())
+	if(!testInitial<NetAttemptJoinGame>())
 		return 26;
 
 	shared_ptr<NetAttemptJoinGame> attemptJoin1(new NetAttemptJoinGame(1));
-	if(!testMessage(attemptJoin1))
+	if(!testSerialize(attemptJoin1))
 		return 27;
 
 	shared_ptr<NetAttemptJoinGame> attemptJoin2(new NetAttemptJoinGame(6627));
-	if(!testMessage(attemptJoin2))
+	if(!testSerialize(attemptJoin2))
 		return 27;
 		
 	//Test NetGameJoinAccepted
-	if(!testInitialMessageState<NetGameJoinAccepted>())
+	if(!testInitial<NetGameJoinAccepted>())
 		return 28;
 
 	shared_ptr<NetGameJoinAccepted> joinAccepted1(new NetGameJoinAccepted);
-	if(!testMessage(joinAccepted1))
+	if(!testSerialize(joinAccepted1))
 		return 29;
 		
 	//Test NetGameJoinRefused
-	if(!testInitialMessageState<NetGameJoinRefused>())
+	if(!testInitial<NetGameJoinRefused>())
 		return 30;
 
 	shared_ptr<NetGameJoinRefused> joinRefused1(new NetGameJoinRefused(YOGJoinRefusalUnknown));
-	if(!testMessage(joinRefused1))
+	if(!testSerialize(joinRefused1))
 		return 31;
 		
 	//Test NetSendYOGMessage
-	if(!testInitialMessageState<NetSendYOGMessage>())
+	if(!testInitial<NetSendYOGMessage>())
 		return 32;
 
 	shared_ptr<YOGMessage> m(new YOGMessage);
@@ -192,7 +207,7 @@ int NetTestSuite::testNetMessages()
 	m->setMessage("hello alice");
 	m->setMessageType(YOGNormalMessage);
 	shared_ptr<NetSendYOGMessage> sendYOGMessage1(new NetSendYOGMessage(m));
-	if(!testMessage(sendYOGMessage1))
+	if(!testSerialize(sendYOGMessage1))
 		return 33;
 
 	//Test NetUpdateGameList
@@ -204,7 +219,7 @@ int NetTestSuite::testNetMessages()
 	std::vector<YOGGameInfo> lgi2;
 
 	//Test initial
-	if(!testInitialMessageState<NetUpdateGameList>())
+	if(!testInitial<NetUpdateGameList>())
 		return 34;
 	
 	//Add a few to the list, make sure it sends and it reconstructs right
@@ -212,7 +227,7 @@ int NetTestSuite::testNetMessages()
 	lgi1.push_back(gi1);
 	lgi1.push_back(gi2);
 	updateGameList1->updateDifferences(lgi2, lgi1);
-	if(!testMessage(updateGameList1))
+	if(!testSerialize(updateGameList1))
 		return 35;
 	updateGameList1->applyDifferences(lgi2);
 	if(lgi1 != lgi2)
@@ -221,7 +236,7 @@ int NetTestSuite::testNetMessages()
 	//Remove one from the list
 	lgi1.erase(lgi1.begin()+1);
 	updateGameList1->updateDifferences(lgi2, lgi1);
-	if(!testMessage(updateGameList1))
+	if(!testSerialize(updateGameList1))
 		return 37;
 	updateGameList1->applyDifferences(lgi2);
 	
@@ -234,7 +249,7 @@ int NetTestSuite::testNetMessages()
 	lgi1.push_back(gi4);
 	lgi1.erase(lgi1.begin());
 	updateGameList1->updateDifferences(lgi2, lgi1);
-	if(!testMessage(updateGameList1))
+	if(!testSerialize(updateGameList1))
 		return 39;
 	updateGameList1->applyDifferences(lgi2);
 	if(lgi1 != lgi2)
@@ -249,7 +264,7 @@ int NetTestSuite::testNetMessages()
 	std::vector<YOGPlayerInfo> lpi2;
 	
 	//Test initial
-	if(!testInitialMessageState<NetUpdatePlayerList>())
+	if(!testInitial<NetUpdatePlayerList>())
 		return 41;
 	
 	//Add a couple players
@@ -257,7 +272,7 @@ int NetTestSuite::testNetMessages()
 	lpi1.push_back(pi2);
 	shared_ptr<NetUpdatePlayerList> updatePlayerList1(new NetUpdatePlayerList);
 	updatePlayerList1->updateDifferences(lpi2, lpi1);
-	if(!testMessage(updatePlayerList1))
+	if(!testSerialize(updatePlayerList1))
 		return 42;
 	updatePlayerList1->applyDifferences(lpi2);
 	if(lpi1 != lpi2)
@@ -266,7 +281,7 @@ int NetTestSuite::testNetMessages()
 	//Remove a player
 	lpi1.erase(lpi1.begin()+1);
 	updatePlayerList1->updateDifferences(lpi2, lpi1);
-	if(!testMessage(updatePlayerList1))
+	if(!testSerialize(updatePlayerList1))
 		return 44;
 	updatePlayerList1->applyDifferences(lpi2);
 	if(lpi1 != lpi2)
@@ -277,7 +292,7 @@ int NetTestSuite::testNetMessages()
 	lpi1.push_back(pi4);
 	lpi1.erase(lpi1.begin());
 	updatePlayerList1->updateDifferences(lpi2, lpi1);
-	if(!testMessage(updatePlayerList1))
+	if(!testSerialize(updatePlayerList1))
 		return 46;
 	updatePlayerList1->applyDifferences(lpi2);
 	if(lpi1 != lpi2)
@@ -290,28 +305,21 @@ int NetTestSuite::testNetMessages()
 
 
 
-int  NetTestSuite::testYOGGameInfo()
+int NetTestSuite::testYOGGameInfo()
 {
-	YOGGameInfo ygi;
-	YOGGameInfo decode;
+	shared_ptr<YOGGameInfo> ygi(new YOGGameInfo);
 	//Test the initial state
-	if(decode != ygi)
+	if(!testInitial<YOGGameInfo>())
 		return 1;
 	
 	///Test the game name encoding	
-	ygi.setGameName("Bobs Game");
-	Uint8* messageInfo = ygi.encodeData();
-	decode.decodeData(messageInfo, ygi.getDataLength());
-	delete messageInfo;
-	if(decode != ygi)
+	ygi->setGameName("Bobs Game");
+	if(!testSerialize(ygi))
 		return 2;
 		
 	//Test the game id encoding
-	ygi.setGameID(1223);
-	messageInfo = ygi.encodeData();
-	decode.decodeData(messageInfo, ygi.getDataLength());
-	delete messageInfo;
-	if(decode != ygi)
+	ygi->setGameID(1223);
+	if(!testSerialize(ygi))
 		return 3;
 	return 0;
 }
@@ -320,34 +328,24 @@ int  NetTestSuite::testYOGGameInfo()
 
 int NetTestSuite::testYOGMessage()
 {
-	YOGMessage m1;
-	YOGMessage m2;
+	shared_ptr<YOGMessage> m1(new YOGMessage);
 	//Test initial state
-	if(m1 != m2 )
+	if(!testInitial<YOGMessage>())
 		return 1;
 	
 	//Test set message
-	m1.setMessage("HAHA!");
-	Uint8* info = m1.encodeData();
-	m2.decodeData(info, m1.getDataLength());
-	delete info;
-	if(m1 != m2)
+	m1->setMessage("HAHA!");
+	if(!testSerialize(m1))
 		return 2;
 		
 	//Test set sender
-	m1.setSender("Bob!");
-	info = m1.encodeData();
-	m2.decodeData(info, m1.getDataLength());
-	delete info;
-	if(m1 != m2)
+	m1->setSender("Bob!");
+	if(!testSerialize(m1))
 		return 3;
 	
 	//Test set message type
-	m1.setMessageType(YOGAdministratorMessage);
-	info = m1.encodeData();
-	m2.decodeData(info, m1.getDataLength());
-	delete info;
-	if(m1 != m2)
+	m1->setMessageType(YOGAdministratorMessage);
+	if(!testSerialize(m1))
 		return 4;
 
 	return 0;
@@ -357,27 +355,21 @@ int NetTestSuite::testYOGMessage()
 
 int NetTestSuite::testYOGPlayerInfo()
 {
-	YOGPlayerInfo ypi;
-	YOGPlayerInfo decode;
+	shared_ptr<YOGPlayerInfo> ypi(new YOGPlayerInfo);
 	//Test the initial state
-	if(decode != ypi)
+	if(!testInitial<YOGPlayerInfo>())
 		return 1;
 	
 	///Test the game name encoding	
-	ypi.setPlayerName("Bob");
-	Uint8* messageInfo = ypi.encodeData();
-	decode.decodeData(messageInfo, ypi.getDataLength());
-	delete messageInfo;
-	if(decode != ypi)
+	ypi->setPlayerName("Bob");
+	if(!testSerialize(ypi))
 		return 2;
 		
 	//Test the game id encoding
-	ypi.setPlayerID(1023);
-	messageInfo = ypi.encodeData();
-	decode.decodeData(messageInfo, ypi.getDataLength());
-	delete messageInfo;
-	if(decode != ypi)
+	ypi->setPlayerID(1023);
+	if(!testSerialize(ypi))
 		return 3;
+
 	return 0;
 }
 
@@ -410,17 +402,16 @@ int NetTestSuite::testListenerConnection()
 	}
 
 	//Attempts to transmit a NetSendOrder over the connection
-	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
-	netSendOrder1->changeOrder(boost::shared_ptr<Order>(new OrderDelete(1)));
-	nc_client.sendMessage(netSendOrder1);
+	shared_ptr<NetLoginSuccessful> netSendLogin1(new NetLoginSuccessful);
+	nc_client.sendMessage(netSendLogin1);
 	//Recieves the message on the other end
-	shared_ptr<NetMessage> netSendOrder2 = nc_server.getMessage();
-	if(!netSendOrder2)
+	shared_ptr<NetMessage> netSendLogin2 = nc_server.getMessage();
+	if(!netSendLogin2)
 	{
 		return 4;
 	}
 	//Makes sure the two are equal
-	if((*netSendOrder1) != (*netSendOrder2))
+	if((*netSendLogin1) != (*netSendLogin2))
 	{
 		return 5;
 	}

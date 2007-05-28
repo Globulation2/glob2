@@ -25,9 +25,9 @@
 
 using namespace GAGCore;
 
-boost::shared_ptr<NetMessage> NetMessage::getNetMessage(const Uint8 *netData, int dataLength)
+shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 {
-	Uint8 netType = netData[0];
+	Uint8 netType = stream->readUint8("messageType");
 	shared_ptr<NetMessage> message;
 	switch(netType)
 	{
@@ -90,7 +90,7 @@ boost::shared_ptr<NetMessage> NetMessage::getNetMessage(const Uint8 *netData, in
 		break;
 		///append_create_point
 	}
-	message->decodeData(netData, dataLength);
+	message->decodeData(stream);
 	return message;
 }
 
@@ -137,33 +137,28 @@ Uint8 NetSendOrder::getMessageType() const
 
 
 
-Uint8 *NetSendOrder::encodeData() const
+void NetSendOrder::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
+	stream->writeEnterSection("NetSendOrder");
 	Uint32 orderLength = order->getDataLength();
-	data[0] = getMessageType();
-	data[1] = order->getOrderType();
-	Uint8* orderData = order->getData();
-	///Copy the data from the order to the local copy
-	std::copy(orderData, orderData+orderLength, data+2);
-	return data;
+	stream->writeUint32(orderLength+1, "size");
+	stream->writeUint8(order->getOrderType(), "orderType");
+	stream->write(order->getData(), order->getDataLength(), "data");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetSendOrder::getDataLength() const
+void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 {
-	return 2 + order->getDataLength();
-}
-
-
-
-bool NetSendOrder::decodeData(const Uint8 *data, int dataLength)
-{
-//	Uint8 type = data[0];
-	order = Order::getOrder(data+1, dataLength-1);
-	return true;
+	stream->readEnterSection("NetSendOrder");
+	size_t size=stream->readUint32("size");
+	Uint8* buffer = new Uint8[size];
+	stream->read(buffer, size, "data");
+	stream->readLeaveSection();
+	
+	order = Order::getOrder(buffer, size);
+	delete buffer;
 }
 
 
@@ -217,30 +212,20 @@ Uint8 NetSendClientInformation::getMessageType() const
 
 
 
-Uint8 *NetSendClientInformation::encodeData() const
+void NetSendClientInformation::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	data[0] = getMessageType();
-	//Write the version minor
-	SDLNet_Write16(versionMinor, data+1);
-	return data;
+	stream->writeEnterSection("NetSendClientInformation");
+	stream->writeUint16(versionMinor, "versionMinor ");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetSendClientInformation::getDataLength() const
+void NetSendClientInformation::decodeData(GAGCore::InputStream* stream)
 {
-	return 3;
-}
-
-
-
-bool NetSendClientInformation::decodeData(const Uint8 *data, int dataLength)
-{
-//	Uint8 type = data[0];
-	versionMinor = SDLNet_Read16(data+1);
-	return true;
+	stream->readEnterSection("NetSendClientInformation");
+	versionMinor=stream->readUint16("versionMinor");
+	stream->readLeaveSection();
 }
 
 
@@ -298,32 +283,21 @@ Uint8 NetSendServerInformation::getMessageType() const
 
 
 
-Uint8 *NetSendServerInformation::encodeData() const
+void NetSendServerInformation::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	data[0] = getMessageType();
-	//Write the policy information
-	data[1] = static_cast<Uint8>(loginPolicy);
-	data[2] = static_cast<Uint8>(gamePolicy);
-	return data;
+	stream->writeEnterSection("NetSendServerInformation");
+	stream->writeUint8(loginPolicy, "loginPolicy ");
+	stream->writeUint8(gamePolicy, "gamePolicy ");
+	stream->writeLeaveSection();
 }
 
 
-
-Uint16 NetSendServerInformation::getDataLength() const
+void NetSendServerInformation::decodeData(GAGCore::InputStream* stream)
 {
-	return 3;
-}
-
-
-
-bool NetSendServerInformation::decodeData(const Uint8 *data, int dataLength)
-{
-//	Uint8 type = data[0];
-	loginPolicy = static_cast<YOGLoginPolicy>(data[1]);
-	gamePolicy = static_cast<YOGGamePolicy>(data[2]);
-	return true;
+	stream->readEnterSection("NetSendServerInformation");
+	loginPolicy=static_cast<YOGLoginPolicy>(stream->readUint8("loginPolicy"));
+	gamePolicy=static_cast<YOGGamePolicy>(stream->readUint8("gamePolicy"));
+	stream->readLeaveSection();
 }
 
 
@@ -399,60 +373,22 @@ Uint8 NetAttemptLogin::getMessageType() const
 
 
 
-Uint8 *NetAttemptLogin::encodeData() const
+void NetAttemptLogin::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	//Use pos to keep track of the position in the data
-	Uint8 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	//Write the username.
-	data[pos] = static_cast<Uint8>(username.size());
-	pos+=1;
-	std::copy(username.begin(), username.end(), data+pos);
-	pos+=username.size();
-	//Write the password
-	data[pos] = static_cast<Uint8>(password.size());
-	pos+=1;
-	std::copy(password.begin(), password.end(), data+pos);
-	pos+=password.size();
-	return data;
+	stream->writeEnterSection("NetAttemptLogin");
+	stream->writeText(username, "username");
+	stream->writeText(password, "password");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetAttemptLogin::getDataLength() const
+void NetAttemptLogin::decodeData(GAGCore::InputStream* stream)
 {
-	return 3 + username.size() + password.size();
-}
-
-
-
-bool NetAttemptLogin::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint8 pos = 0;
-////	Uint8 type = data[pos];
-	pos+=1;
-	
-	//Read in the username
-	Uint8 usernameLength = data[pos];
-	pos+=1;
-	for(int i=0; i<usernameLength; ++i)
-	{
-		username+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
-	
-	//Read in the password
-	Uint8 passwordLength = data[pos];
-	pos+=1;
-	for(int i=0; i<passwordLength; ++i)
-	{
-		password+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
-	return true;
+	stream->readEnterSection("NetAttemptLogin");
+	username=stream->readText("username");
+	password=stream->readText("password");
+	stream->readLeaveSection();
 }
 
 
@@ -509,27 +445,19 @@ Uint8 NetLoginSuccessful::getMessageType() const
 
 
 
-Uint8 *NetLoginSuccessful::encodeData() const
+void NetLoginSuccessful::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	data[0] = getMessageType();
-	return data;
+	stream->writeEnterSection("NetLoginSuccessful");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetLoginSuccessful::getDataLength() const
+void NetLoginSuccessful::decodeData(GAGCore::InputStream* stream)
 {
-	return 1;
-}
+	stream->readEnterSection("NetAttemptLogin");
+	stream->readLeaveSection();
 
-
-
-bool NetLoginSuccessful::decodeData(const Uint8 *data, int dataLength)
-{
-//	Uint8 type = data[0];
-	return true;
 }
 
 
@@ -577,29 +505,20 @@ Uint8 NetRefuseLogin::getMessageType() const
 
 
 
-Uint8 *NetRefuseLogin::encodeData() const
+void NetRefuseLogin::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	data[0] = getMessageType();
-	data[1] = static_cast<Uint8>(reason);
-	return data;
+	stream->writeEnterSection("NetRefuseLogin");
+	stream->writeUint8(reason, "reason");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetRefuseLogin::getDataLength() const
+void NetRefuseLogin::decodeData(GAGCore::InputStream* stream)
 {
-	return 2;
-}
-
-
-
-bool NetRefuseLogin::decodeData(const Uint8 *data, int dataLength)
-{
-//	Uint8 type = data[0];
-	reason = static_cast<YOGLoginState>(data[1]);
-	return true;
+	stream->readEnterSection("NetRefuseLogin");
+	reason=static_cast<YOGLoginState>(stream->readUint8("reason"));
+	stream->readLeaveSection();
 }
 
 
@@ -659,68 +578,53 @@ Uint8 NetUpdateGameList::getMessageType() const
 
 
 
-Uint8 *NetUpdateGameList::encodeData() const
+void NetUpdateGameList::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos]=getMessageType();
-	pos+=1;
-	data[pos]=removedGames.size();
-	pos+=1;
+	stream->writeEnterSection("NetUpdateGameList");
+	stream->writeEnterSection("removedGames");
+	stream->writeUint8(removedGames.size(), "size");
 	for(Uint16 i=0; i<removedGames.size(); ++i)
 	{
-		SDLNet_Write16(removedGames[i], data+pos);
-		pos+=2;
+		stream->writeUint16(removedGames[i], "removedGames[i]");
 	}
-	data[pos]=updatedGames.size();
-	pos+=1;
+	stream->writeLeaveSection();
+	
+	stream->writeEnterSection("updatedGames");
+	stream->writeUint8(updatedGames.size(), "size");
 	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
-		Uint8* gamedata = updatedGames[i].encodeData();
-		std::copy(gamedata, gamedata + updatedGames[i].getDataLength(), data + pos);
-		pos+=updatedGames[i].getDataLength();
-		delete gamedata;
+		updatedGames[i].encodeData(stream);
 	}
-	return data;
+	stream->writeLeaveSection();
+
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetUpdateGameList::getDataLength() const
+void NetUpdateGameList::decodeData(GAGCore::InputStream* stream)
 {
-	Uint32 length= 3 + removedGames.size()*2;
-	for(Uint16 i=0; i<updatedGames.size(); ++i)
-	{
-		length+=updatedGames[i].getDataLength();
-	}
-	return length;
-}
-
-
-
-bool NetUpdateGameList::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-////	Uint8 type = data[pos];
-	pos+=1;
-	Uint8 size = data[pos];
-	pos+=1;
+	stream->readEnterSection("NetUpdateGameList");
+	
+	stream->readEnterSection("removedGames");
+	Uint8 size = stream->readUint8("size");
 	removedGames.resize(size);
 	for(Uint16 i=0; i<removedGames.size(); ++i)
 	{
-		removedGames[i] = SDLNet_Read16(data+pos);
-		pos+=2;
+		removedGames[i]=stream->readUint16("removedGames[i]");
 	}
-	size=data[pos];
-	pos+=1;
+	stream->readLeaveSection();
+	
+	stream->readEnterSection("updatedGames");
+	size = stream->readUint8("size");
 	updatedGames.resize(size);
 	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
-		updatedGames[i].decodeData(data + pos, dataLength - pos);
-		pos+=updatedGames[i].getDataLength();
+		updatedGames[i].decodeData(stream);
 	}
-	return true;
+	stream->readLeaveSection();
+
+	stream->readLeaveSection();
 }
 
 
@@ -763,29 +667,17 @@ Uint8 NetDisconnect::getMessageType() const
 
 
 
-Uint8 *NetDisconnect::encodeData() const
+void NetDisconnect::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	data[0] = getMessageType();
-	return data;
+	stream->writeEnterSection("NetDisconnect");
+	stream->writeLeaveSection();
 }
 
 
-
-Uint16 NetDisconnect::getDataLength() const
+void NetDisconnect::decodeData(GAGCore::InputStream* stream)
 {
-	return 1;
-}
-
-
-
-bool NetDisconnect::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	return true;
+	stream->readEnterSection("NetDisconnect");
+	stream->readLeaveSection();
 }
 
 
@@ -835,60 +727,22 @@ Uint8 NetAttemptRegistration::getMessageType() const
 
 
 
-Uint8 *NetAttemptRegistration::encodeData() const
+void NetAttemptRegistration::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	//Write the username.
-	data[pos] = static_cast<Uint8>(username.size());
-	pos+=1;
-	std::copy(username.begin(), username.end(), data+pos);
-	pos+=username.size();
-	//Write the password
-	data[pos] = static_cast<Uint8>(password.size());
-	pos+=1;
-	std::copy(password.begin(), password.end(), data+pos);
-	pos+=password.size();
-	return data;
-	return data;
+	stream->writeEnterSection("NetAttemptRegistration");
+	stream->writeText(username, "username");
+	stream->writeText(password, "password");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetAttemptRegistration::getDataLength() const
+void NetAttemptRegistration::decodeData(GAGCore::InputStream* stream)
 {
-	return 3 + username.size() + password.size();
-}
-
-
-
-bool NetAttemptRegistration::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	
-	//Read in the username
-	Uint8 usernameLength = data[pos];
-	pos+=1;
-	for(int i=0; i<usernameLength; ++i)
-	{
-		username+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
-	
-	//Read in the password
-	Uint8 passwordLength = data[pos];
-	pos+=1;
-	for(int i=0; i<passwordLength; ++i)
-	{
-		password+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
-	return true;
+	stream->readEnterSection("NetAttemptRegistration");
+	username=stream->readText("username");
+	password=stream->readText("password");
+	stream->readLeaveSection();
 }
 
 
@@ -929,31 +783,18 @@ Uint8 NetAcceptRegistration::getMessageType() const
 
 
 
-Uint8 *NetAcceptRegistration::encodeData() const
+void NetAcceptRegistration::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	return data;
+	stream->writeEnterSection("NetAcceptRegistration");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetAcceptRegistration::getDataLength() const
+void NetAcceptRegistration::decodeData(GAGCore::InputStream* stream)
 {
-	return 1;
-}
-
-
-
-bool NetAcceptRegistration::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	return true;
+	stream->readEnterSection("NetAcceptRegistration");
+	stream->readLeaveSection();
 }
 
 
@@ -1001,35 +842,19 @@ Uint8 NetRefuseRegistration::getMessageType() const
 
 
 
-Uint8 *NetRefuseRegistration::encodeData() const
+void NetRefuseRegistration::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	data[pos] = static_cast<Uint8>(reason);
-	pos+=1;
-	return data;
+	stream->writeEnterSection("NetRefuseRegistration");
+	stream->writeUint8(reason, "reason");
+	stream->writeLeaveSection();
 }
 
 
-
-Uint16 NetRefuseRegistration::getDataLength() const
+void NetRefuseRegistration::decodeData(GAGCore::InputStream* stream)
 {
-	return 2;
-}
-
-
-
-bool NetRefuseRegistration::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	reason = static_cast<YOGLoginState>(data[pos]);
-	pos+=1;
-	return true;
+	stream->readEnterSection("NetRefuseRegistration");
+	reason=static_cast<YOGLoginState>(stream->readUint8("reason"));
+	stream->readLeaveSection();
 }
 
 
@@ -1087,75 +912,53 @@ Uint8 NetUpdatePlayerList::getMessageType() const
 
 
 
-Uint8 *NetUpdatePlayerList::encodeData() const
+void NetUpdatePlayerList::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	
-	//Write removedPlayers
-	data[pos]=removedPlayers.size();
-	pos+=1;
+	stream->writeEnterSection("NetUpdatePlayerList");
+	stream->writeEnterSection("removedPlayers");
+	stream->writeUint8(removedPlayers.size(), "size");
 	for(Uint16 i=0; i<removedPlayers.size(); ++i)
 	{
-		SDLNet_Write16(removedPlayers[i], data+pos);
-		pos+=2;
+		stream->writeUint16(removedPlayers[i], "removedPlayers[i]");
 	}
+	stream->writeLeaveSection();
 	
-	//Write updatedPlayers
-	data[pos]=updatedPlayers.size();
-	pos+=1;
+	stream->writeEnterSection("updatedPlayers");
+	stream->writeUint8(updatedPlayers.size(), "size");
 	for(Uint16 i=0; i<updatedPlayers.size(); ++i)
 	{
-		Uint8* gamedata = updatedPlayers[i].encodeData();
-		std::copy(gamedata, gamedata + updatedPlayers[i].getDataLength(), data + pos);
-		pos+=updatedPlayers[i].getDataLength();
-		delete gamedata;
+		updatedPlayers[i].encodeData(stream);
 	}
+	stream->writeLeaveSection();
 
-	return data;
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetUpdatePlayerList::getDataLength() const
+void NetUpdatePlayerList::decodeData(GAGCore::InputStream* stream)
 {
-	Uint32 length= 3 + removedPlayers.size()*2;
-	for(Uint16 i=0; i<updatedPlayers.size(); ++i)
-	{
-		length+=updatedPlayers[i].getDataLength();
-	}
-	return length;
-}
-
-
-
-bool NetUpdatePlayerList::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
+	stream->readEnterSection("NetUpdatePlayerList");
 	
-	Uint8 size = data[pos];
-	pos+=1;
+	stream->readEnterSection("removedPlayers");
+	Uint8 size = stream->readUint8("size");
 	removedPlayers.resize(size);
 	for(Uint16 i=0; i<removedPlayers.size(); ++i)
 	{
-		removedPlayers[i] = SDLNet_Read16(data + pos);
-		pos+=2;
+		removedPlayers[i]=stream->readUint16("removedPlayers[i]");
 	}
-
-	size=data[pos];
-	pos+=1;
+	stream->readLeaveSection();
+	
+	stream->readEnterSection("updatedPlayers");
+	size = stream->readUint8("size");
 	updatedPlayers.resize(size);
 	for(Uint16 i=0; i<updatedPlayers.size(); ++i)
 	{
-		updatedPlayers[i].decodeData(data + pos, dataLength - pos);
-		pos+=updatedPlayers[i].getDataLength();
+		updatedPlayers[i].decodeData(stream);
 	}
-	return true;
+	stream->readLeaveSection();
+
+	stream->readLeaveSection();
 }
 
 
@@ -1205,46 +1008,20 @@ Uint8 NetCreateGame::getMessageType() const
 
 
 
-Uint8 *NetCreateGame::encodeData() const
+void NetCreateGame::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	
-	data[pos] = static_cast<Uint8>(gameName.size());
-	pos+=1;
-	std::copy(gameName.begin(), gameName.end(), data + pos);
-	pos+=gameName.size();
-
-	return data;
+	stream->writeEnterSection("NetCreateGame");
+	stream->writeText(gameName, "gameName");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetCreateGame::getDataLength() const
+void NetCreateGame::decodeData(GAGCore::InputStream* stream)
 {
-	Uint16 length = 2 + gameName.size();
-	return length;
-}
-
-
-
-bool NetCreateGame::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	
-	Uint8 length = data[pos];
-	pos+=1;
-	for(int i=0; i<length; ++i)
-	{
-		gameName+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
-	return true;
+	stream->readEnterSection("NetCreateGame");
+	gameName=stream->readText("gameName");
+	stream->readLeaveSection();
 }
 
 
@@ -1300,36 +1077,20 @@ Uint8 NetAttemptJoinGame::getMessageType() const
 
 
 
-Uint8 *NetAttemptJoinGame::encodeData() const
+void NetAttemptJoinGame::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	SDLNet_Write16(gameID, data+pos);
-	pos+=2;
-	return data;
+	stream->writeEnterSection("NetAttemptJoinGame");
+	stream->writeUint16(gameID, "gameID");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetAttemptJoinGame::getDataLength() const
+void NetAttemptJoinGame::decodeData(GAGCore::InputStream* stream)
 {
-	Uint16 length = 3;
-	return length;
-}
-
-
-
-bool NetAttemptJoinGame::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	gameID = SDLNet_Read16(data+pos);
-	pos+=2;
-	return true;
+	stream->readEnterSection("NetAttemptJoinGame");
+	gameID=stream->readUint16("gameID");
+	stream->readLeaveSection();
 }
 
 
@@ -1377,32 +1138,18 @@ Uint8 NetGameJoinAccepted::getMessageType() const
 
 
 
-Uint8 *NetGameJoinAccepted::encodeData() const
+void NetGameJoinAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	return data;
+	stream->writeEnterSection("NetGameJoinAccepted");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetGameJoinAccepted::getDataLength() const
+void NetGameJoinAccepted::decodeData(GAGCore::InputStream* stream)
 {
-	Uint16 length = 1;
-	return length;
-}
-
-
-
-bool NetGameJoinAccepted::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	return true;
+	stream->readEnterSection("NetGameJoinAccepted");
+	stream->readLeaveSection();
 }
 
 
@@ -1450,36 +1197,20 @@ Uint8 NetGameJoinRefused::getMessageType() const
 
 
 
-Uint8 *NetGameJoinRefused::encodeData() const
+void NetGameJoinRefused::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	data[pos] = static_cast<Uint8>(reason);
-	pos+=1;
-	return data;
+	stream->writeEnterSection("NetGameJoinRefused");
+	stream->writeUint8(reason, "reason");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetGameJoinRefused::getDataLength() const
+void NetGameJoinRefused::decodeData(GAGCore::InputStream* stream)
 {
-	Uint16 length = 2;
-	return length;
-}
-
-
-
-bool NetGameJoinRefused::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	reason = static_cast<YOGGameJoinRefusalReason>(data[pos]);
-	pos+=1;
-	return true;
+	stream->readEnterSection("NetGameJoinRefused");
+	reason=static_cast<YOGGameJoinRefusalReason>(stream->readUint8("reason"));
+	stream->readLeaveSection();
 }
 
 
@@ -1531,36 +1262,20 @@ Uint8 NetRemoveGame::getMessageType() const
 
 
 
-Uint8 *NetRemoveGame::encodeData() const
+void NetRemoveGame::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	SDLNet_Write16(gameID, data+pos);
-	pos+=2;
-	return data;
+	stream->writeEnterSection("NetRemoveGame");
+	stream->writeUint16(gameID, "gameID");
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetRemoveGame::getDataLength() const
+void NetRemoveGame::decodeData(GAGCore::InputStream* stream)
 {
-	Uint16 length = 3;
-	return length;
-}
-
-
-
-bool NetRemoveGame::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
-	gameID = SDLNet_Read16(data+pos);
-	pos+=2;
-	return true;
+	stream->readEnterSection("NetRemoveGame");
+	gameID=stream->readUint16("gameID");
+	stream->readLeaveSection();
 }
 
 
@@ -1609,37 +1324,21 @@ Uint8 NetSendYOGMessage::getMessageType() const
 
 
 
-Uint8 *NetSendYOGMessage::encodeData() const
+void NetSendYOGMessage::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	data[pos] = getMessageType();
-	pos+=1;
-	Uint8* mdata = message->encodeData();
-	std::copy(mdata, mdata + message->getDataLength(), data + pos);
-	delete mdata;
-	return data;
+	stream->writeEnterSection("NetSendYOGMessage");
+	message->encodeData(stream);
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetSendYOGMessage::getDataLength() const
+void NetSendYOGMessage::decodeData(GAGCore::InputStream* stream)
 {
-	Uint16 length = 1 + message->getDataLength();
-	return length;
-}
-
-
-
-bool NetSendYOGMessage::decodeData(const Uint8 *data, int dataLength)
-{
-	Uint16 pos = 0;
-//	Uint8 type = data[pos];
-	pos+=1;
+	stream->readEnterSection("NetSendYOGMessage");
 	message.reset(new YOGMessage);
-	message->decodeData(data + pos, dataLength-pos);
-	return true;
+	message->decodeData(stream);
+	stream->readLeaveSection();
 }
 
 
@@ -1701,46 +1400,21 @@ Uint8 NetSendMapHeader::getMessageType() const
 
 
 
-Uint8 *NetSendMapHeader::encodeData() const
+void NetSendMapHeader::encodeData(GAGCore::OutputStream* stream) const
 {
-	MemoryStreamBackend* msb = new MemoryStreamBackend;
-	BinaryOutputStream* bos = new BinaryOutputStream(msb);
-	mapHeader.save(bos);
-	msb->seekFromEnd(0);
-
-	Uint16 length = msb->getPosition();
-	msb->seekFromStart(0);
-
-	Uint8* data = new Uint8[length];
-	Uint16 pos = 0;
-	msb->read(data+pos, length);
-	pos+=length;
-	
-	delete bos;
-	return data;
+	stream->writeEnterSection("NetSendMapHeader");
+	stream->writeUint8(getMessageType(), "messageType");
+	mapHeader.save(stream);
+	stream->writeLeaveSection();
 }
 
 
 
-Uint16 NetSendMapHeader::getDataLength() const
+void NetSendMapHeader::decodeData(GAGCore::InputStream* stream)
 {
-	MemoryStreamBackend* msb = new MemoryStreamBackend;
-	BinaryOutputStream* bos = new BinaryOutputStream(msb);
-	mapHeader.save(bos);
-	msb->seekFromEnd(0);
-	Uint16 length = msb->getPosition();
-	delete bos;
-	return length;
-}
-
-
-
-bool NetSendMapHeader::decodeData(const Uint8 *data, int dataLength)
-{
-	MemoryStreamBackend* msb = new MemoryStreamBackend(data, dataLength);
-	BinaryInputStream* bos = new BinaryInputStream(msb);
-	mapHeader.load(bos);
-	delete bos;
+	stream->readEnterSection("NetSendMapHeader");
+	mapHeader.load(stream);
+	stream->readLeaveSection();
 }
 
 

@@ -19,7 +19,10 @@
 #include "NetConnection.h"
 #include <algorithm>
 #include <iostream>
+#include "StreamBackend.h"
+#include "BinaryStream.h"
 
+using namespace GAGCore;
 
 NetConnection::NetConnection(const std::string& address, Uint16 port)
 {
@@ -129,10 +132,16 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 				}
 				else
 				{
+					MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
+					msb->seekFromStart(0);
+					BinaryInputStream* bis = new BinaryInputStream(msb);
+
 					//Now interpret the message from the data, and add it to the queue
-					shared_ptr<NetMessage> message = NetMessage::getNetMessage(data, length);
+					shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
 					recieved.push(message);
 					std::cout<<"Recieved: "<<message->format()<<std::endl;
+					
+					delete bis;
 				}
 			}
 		}
@@ -164,18 +173,27 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 	if(connected)
 	{
 		std::cout<<"Sending: "<<message->format()<<std::endl;
-		Uint32 length = message->getDataLength();
-		Uint8* data = message->encodeData();		
+
+		MemoryStreamBackend* msb = new MemoryStreamBackend;
+		BinaryOutputStream* bos = new BinaryOutputStream(msb);
+		bos->writeUint8(message->getMessageType(), "messageType");
+		message->encodeData(bos);
+		
+		msb->seekFromEnd(0);
+		Uint32 length = msb->getPosition();
+		msb->seekFromStart(0);
+		
 		Uint8* newData = new Uint8[length+2];
 		SDLNet_Write16(length, newData);
-		std::copy(data, data+length, newData+2);
+		msb->read(newData+2, length);
+
 		Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
 		if(result<length)
 		{
 			std::cout<<"NetConnection::sendMessage: "<<SDLNet_GetError()<<std::endl;
 			closeConnection();
 		}
-		delete data;
+		delete bos;
 		delete newData;
 	}
 }

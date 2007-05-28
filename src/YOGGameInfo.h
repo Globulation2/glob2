@@ -20,7 +20,7 @@
 #define __YOGGameInfo_h
 
 #include <string>
-#include "SDL_net.h"
+#include "Stream.h"
 
 ///This class summarizes hosted game information on the YOG server.
 ///It does not include information about the game itself, just how
@@ -48,13 +48,10 @@ public:
 	Uint16 getGameID() const;
 
 	///Encodes this YOGGameInfo into a bit stream
-	Uint8* encodeData() const;
-	
-	///Gets the length of the data returned by encodeData
-	Uint16 getDataLength() const;
+	void encodeData(GAGCore::OutputStream* stream) const;
 
 	///Decodes this YOGGameInfo from a bit stream
-	bool decodeData(const Uint8 *data, int dataLength);
+	void decodeData(GAGCore::InputStream* stream);
 	
 	///Test for equality between two YOGGameInfo
 	bool operator==(const YOGGameInfo& rhs) const;
