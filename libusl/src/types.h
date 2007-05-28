@@ -28,9 +28,9 @@ struct Value
 	
 	virtual ~Value() { }
 	
-	void dump(std::ostream &stream) { stream << typeid(*this).name() << " "; dumpSpecific(stream); }
+	void dump(std::ostream &stream) const { stream << typeid(*this).name() << " "; dumpSpecific(stream); }
 	
-	virtual void dumpSpecific(std::ostream &stream) { }
+	virtual void dumpSpecific(std::ostream &stream) const { }
 	
 	virtual void propagateMarkForGC() { }
 	
@@ -86,8 +86,10 @@ struct Prototype: Value
 struct Code;
 struct Definition: Prototype
 {
+	typedef std::vector<std::string> Locals;
 	typedef std::vector<Code*> Body;
 	
+	Locals locals;
 	Body body;
 	
 	Definition(Heap* heap, Prototype* parent):
@@ -104,7 +106,7 @@ struct Definition: Prototype
 
 struct Scope: Value
 {
-	typedef std::map<std::string, Value*> Locals;
+	typedef std::vector<Value*> Locals;
 	
 	Value* parent;
 	Locals locals;
@@ -114,23 +116,23 @@ struct Scope: Value
 		parent(parent)
 	{}
 	
-	virtual void dumpSpecific(std::ostream &stream)
+	virtual void dumpSpecific(std::ostream& stream)
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		transform(locals.begin(), locals.end(), ostream_iterator<string>(stream, " "), select1st<Locals::value_type>());
+		std::ostream* s = &stream;
+		for(Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
+		{
+			const Value* local = *it;
+			local->dump(stream);
+		}
 	}
 	
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		for_each(locals.begin(), locals.end(), compose1(mem_fun(&Value::markForGC), select2nd<Locals::value_type>()));
-	}
-	
-	Value* lookup(const std::string& name) const
-	{
-		return locals.find(name)->second;
+		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
 	
 	Definition* def()

@@ -40,15 +40,15 @@ struct ConstNode: ExpressionNode
 
 struct LocalNode: ExpressionNode
 {
-	LocalNode(size_t depth, const std::string& local):
+	LocalNode(size_t depth, size_t index):
 		depth(depth),
-		local(local)
+		index(index)
 	{}
 	
 	void generate(Definition* def);
 	
 	size_t depth;
-	std::string local;
+	size_t index;
 };
 
 struct ApplyNode: ExpressionNode
@@ -87,6 +87,24 @@ struct BlockNode: ExpressionNode
 	
 	Statements statements;
 	Node* value;
+};
+
+struct DefNode: Node
+{
+	DefNode(const std::string& name, ExpressionNode* body):
+		name(name),
+		body(body)
+	{}
+	
+	void generate(Definition* def);
+	
+	const std::string name;
+	ExpressionNode* body;
+};
+
+struct ParentNode: ExpressionNode
+{
+	void generate(Definition* def);
 };
 
 struct TupleNode: ExpressionNode

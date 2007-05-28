@@ -29,9 +29,9 @@ struct ConstCode: Code
 
 struct LocalCode: Code
 {
-	LocalCode(size_t depth, const std::string& local):
+	LocalCode(size_t depth, size_t index):
 		depth(depth),
-		local(local)
+		index(index)
 	{}
 	
 	void execute(Thread* thread)
@@ -42,13 +42,14 @@ struct LocalCode: Code
 		{
 			// scope = static_cast<Scope*>(scope->parent); // Should be safe if the parser is bug-free
 			scope = dynamic_cast<Scope*>(scope->parent);
-			assert(scope);
+			assert(scope); // Should not fail if the parser is bug-free
 		}
-		frame.stack.push_back(scope->lookup(local));
+		assert(index < scope->locals.size()); // Should not fail if the parser is bug-free
+		frame.stack.push_back(scope->locals[index]);
 	}
 	
 	size_t depth;
-	std::string local;
+	size_t index;
 };
 
 struct ApplyCode: Code
@@ -77,7 +78,7 @@ struct ApplyCode: Code
 		Scope* scope = new Scope(thread->heap, method, receiver);
 		
 		// put the argument in the scope
-		scope->locals["arg"] = argument;
+		scope->locals.push_back(argument);
 		
 		// push a new frame
 		frames.push_back(scope);
@@ -96,7 +97,7 @@ struct ValueCode: Code
 	{
 		Thread::Frame& frame = thread->frames.back();
 		Thread::Frame::Stack& stack = frame.stack;
-		frame.scope->locals[local] = stack.back();
+		frame.scope->locals.push_back(stack.back());
 		stack.pop_back();
 	}
 	
@@ -176,7 +177,7 @@ struct NativeCode: Code
 			name(name)
 		{
 			body.push_back(new ParentCode());
-			body.push_back(new LocalCode(0, "arg"));
+			body.push_back(new LocalCode(0, 0));
 			if (!lazy)
 			{
 				body.push_back(new ConstCode(&nil));

@@ -1,12 +1,21 @@
 set(libusl_SOURCES
+code.h
 interpreter.cpp
+interpreter.h
 lexer.cpp
+lexer.h
 memory.cpp
+memory.h
 position.cpp
+position.h
 token.cpp
+token.h
 tokenizer.cpp
+tokenizer.h
 tree.cpp
+tree.h
 types.cpp
+types.h
 usl.cpp
 )
 
