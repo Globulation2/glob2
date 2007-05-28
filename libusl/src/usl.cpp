@@ -16,21 +16,6 @@
 
 using namespace std;
 
-struct Class: Definition
-{
-	vector<string> fields;
-};
-
-
-struct Object: Scope
-{
-	Object(Heap* heap, Class* klass, Scope* parent):
-		Scope(heap, klass, parent)
-	{
-		transform(klass->fields.begin(), klass->fields.end(), inserter(locals, locals.begin()), bind2nd(ptr_fun(make_pair<string, Value*>), 0));
-	}
-};
-
 struct Integer: Value
 {
 	int value;
@@ -106,7 +91,10 @@ struct Parser: Lexer
 	{
 		newlines();
 		auto_ptr<BlockNode> block(new BlockNode());
-		scope->locals["this"] = scope;
+		
+		scope->prototype->methods["this"] = new Definition(heap, scope->prototype);
+		block->statements.push_back(new DefNode("this", new ParentNode()));
+		
 		while (true)
 		{
 			switch (tokenType())
@@ -140,7 +128,7 @@ struct Parser: Lexer
 				string name = identifier();
 				accept(ASSIGN);
 				newlines();
-				scope->locals[name] = &nil;
+				scope->def()->locals.push_back(name);
 				return new ValNode(name, expression(scope));
 			}
 		default:
@@ -225,17 +213,18 @@ struct Parser: Lexer
 			{
 				string name(identifier());
 				
-				Scope* current(scope);
+				Definition* def(scope->def());
 				size_t depth = 0;
 				do
 				{
-					Value* value = current->lookup(name);
-					if (value != 0)
-						return new LocalNode(depth, name);
-					current = dynamic_cast<Scope*>(current->parent);
+					Definition::Locals& locals = def->locals;
+					size_t index = find(locals.begin(), locals.end(), name) - locals.begin();
+					if (index < locals.size())
+						return new LocalNode(depth, index);
+					def = dynamic_cast<Definition*>(def->parent);
 					++depth;
 				}
-				while (current != 0);
+				while (def != 0);
 				
 				return new LookupNode(name);
 			}
@@ -305,15 +294,15 @@ struct Parser: Lexer
 
 int main(int argc, char** argv)
 {
-	Heap heap;
-	Definition* root = new Definition(&heap, 0);
+	auto_ptr<Heap> heap(new Heap());
+	Definition* root = new Definition(heap.get(), 0);
 	
-	Parser parser("val x = 21 + 21", &heap);
+	Parser parser("val x = 21 + 21\nx", heap.get());
 	Node* node = parser.parse(root);
 	node->generate(root);
 	
-	Thread thread(&heap);
-	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
+	Thread thread(heap.get());
+	thread.frames.push_back(Thread::Frame(new Scope(heap.get(), root, 0)));
 	
 	while (thread.frames.front().nextInstr < root->body.size())
 	{
@@ -322,16 +311,18 @@ int main(int argc, char** argv)
 		code->execute(&thread);
 		code->dump(cout);
 		cout << ", frames: " << thread.frames.size();
-		cout << ", stack size: " << thread.frames.back().stack.size() << endl;
+		cout << ", stack size: " << thread.frames.back().stack.size();
+		cout << ", locals: " << thread.frames.back().scope->locals.size();
+		cout << endl;
 	}
-	cout << "x: ";
-	thread.frames.back().scope->locals["x"]->dump(cout);
+	cout << "result: ";
+	thread.frames.back().stack.back()->dump(cout);
 	cout << endl;
 	
 	thread.frames.pop_back();
 	
-	cout << "heap size: " << heap.values.size() << "\n";
+	cout << "heap size: " << heap->values.size() << "\n";
 	cout << "garbage collecting\n";
-	heap.garbageCollect(&thread);
-	cout << "heap size: " << heap.values.size() << "\n";
+	heap->garbageCollect(&thread);
+	cout << "heap size: " << heap->values.size() << "\n";
 }

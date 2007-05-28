@@ -15,7 +15,7 @@ void ConstNode::generate(Definition* def)
 
 void LocalNode::generate(Definition* def)
 {
-	def->body.push_back(new LocalCode(depth, local));
+	def->body.push_back(new LocalCode(depth, index));
 }
 
 void ApplyNode::generate(Definition* def)
@@ -45,6 +45,18 @@ void BlockNode::generate(Definition* def)
 		}
 	}
 	value->generate(def);
+}
+
+void DefNode::generate(Definition* def)
+{
+	def = def->methods[name];
+	body->generate(def);
+	def->body.push_back(new ReturnCode());
+}
+
+void ParentNode::generate(Definition* def)
+{
+	def->body.push_back(new ParentCode());
 }
 
 void TupleNode::generate(Definition* def)
