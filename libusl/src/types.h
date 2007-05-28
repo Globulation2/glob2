@@ -3,11 +3,12 @@
 
 #include "memory.h"
 
+#include <cassert>
+#include <iterator>
 #include <map>
+#include <ostream>
 #include <string>
 #include <vector>
-#include <ostream>
-#include <iterator>
 #include <ext/functional>
 
 struct Prototype;
@@ -145,6 +146,26 @@ struct Scope: Value
 	{
 		return static_cast<ScopePrototype*>(prototype);
 	}
+};
+
+struct Function: Value
+{
+	Value* receiver;
+	ScopePrototype* method;
+	
+	Function(Heap* heap, Value* receiver, ScopePrototype* method):
+		Value(heap, &functionPrototype),
+		receiver(receiver),
+		method(method)
+	{
+		assert(method->outer == receiver->prototype);
+	}
+	
+	struct FunctionPrototype: Prototype
+	{
+		FunctionPrototype();
+	};
+	static FunctionPrototype functionPrototype;
 };
 
 struct Tuple: Value
