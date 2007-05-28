@@ -40,7 +40,7 @@ struct Integer: Value
 	static struct IntegerPrototype: Prototype
 	{
 		IntegerPrototype():
-			Prototype(0, 0)
+			Prototype(0)
 		{
 			methods["+"] = &integerAdd;
 		}
@@ -60,9 +60,9 @@ Integer::IntegerPrototype Integer::integerPrototype;
 Integer::IntegerAdd Integer::integerAdd;
 
 
-struct LookupNode: ExpressionNode
+struct DefLookupNode: ExpressionNode
 {
-	LookupNode(const string& name):
+	DefLookupNode(const string& name):
 		name(name)
 	{}
 	
@@ -231,12 +231,12 @@ struct Parser: Lexer
 					size_t index = find(locals.begin(), locals.end(), name) - locals.begin();
 					if (index < locals.size())
 						return new ValRefNode(depth, index);
-					scope = dynamic_cast<ScopePrototype*>(scope->parent);
+					scope = dynamic_cast<ScopePrototype*>(scope->outer);
 					++depth;
 				}
 				while (scope != 0);
 				
-				return new LookupNode(name);
+				return new DefLookupNode(name);
 			}
 		case NUM:
 			{
