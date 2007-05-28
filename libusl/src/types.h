@@ -47,10 +47,10 @@ struct Value
 };
 extern Value nil;
 
-struct Definition;
+struct ScopePrototype;
 struct Prototype: Value
 {
-	typedef std::map<std::string, Definition*> Methods;
+	typedef std::map<std::string, ScopePrototype*> Methods;
 	
 	Prototype* parent;
 	Methods methods;
@@ -60,7 +60,7 @@ struct Prototype: Value
 	{ // TODO: MetaPrototype
 	}
 	
-	virtual void dumpSpecific(std::ostream &stream)
+	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		stream << ": ";
 		using namespace std;
@@ -77,14 +77,14 @@ struct Prototype: Value
 		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<Methods::value_type>()));
 	}
 	
-	virtual Definition* lookup(const std::string &method) const
+	virtual ScopePrototype* lookup(const std::string& name) const
 	{
-		return methods.find(method)->second;
+		return methods.find(name)->second;
 	}
 };
 
 struct Code;
-struct Definition: Prototype
+struct ScopePrototype: Prototype
 {
 	typedef std::vector<std::string> Locals;
 	typedef std::vector<Code*> Body;
@@ -92,13 +92,13 @@ struct Definition: Prototype
 	Locals locals;
 	Body body;
 	
-	Definition(Heap* heap, Prototype* parent):
+	ScopePrototype(Heap* heap, Prototype* parent):
 		Prototype(heap, parent)
 	{
 		methods["."] = this;
 	}
 	
-	virtual void dumpSpecific(std::ostream &stream)
+	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		stream << body.size() << " codes";
 	}
@@ -111,12 +111,12 @@ struct Scope: Value
 	Value* parent;
 	Locals locals;
 	
-	Scope(Heap* heap, Definition* method, Value* parent):
-		Value(heap, method),
+	Scope(Heap* heap, ScopePrototype* prototype, Value* parent):
+		Value(heap, prototype),
 		parent(parent)
 	{}
 	
-	virtual void dumpSpecific(std::ostream& stream)
+	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
@@ -135,9 +135,9 @@ struct Scope: Value
 		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
 	
-	Definition* def()
+	ScopePrototype* def()
 	{
-		return static_cast<Definition*>(prototype);
+		return static_cast<ScopePrototype*>(prototype);
 	}
 };
 
@@ -151,7 +151,7 @@ struct Tuple: Value
 		Value(heap, &tuplePrototype)
 	{ }
 	
-	virtual void dumpSpecific(std::ostream &stream)
+	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		stream << values.size() << " values";
 	}
