@@ -300,3 +300,16 @@ void YOGClient::sendMapHeader(const MapHeader& header)
 	nc.sendMessage(message);
 }
 
+
+
+void YOGClient::setMultiplayerGame(boost::shared_ptr<MultiplayerGame> game)
+{
+	joinedGame=game;
+}
+
+    
+
+void YOGClient::sendNetMessage(boost::shared_ptr<NetMessage> message)
+{
+    nc.sendMessage(message);
+}

@@ -131,6 +131,10 @@ MapGenerator.cpp \
 MapHeader.cpp \
 MapHeader.h \
 Marshaling.h \
+MultiplayerGameScreen.cpp \
+MultiplayerGameScreen.h \
+MultiplayerGame.cpp \
+MultiplayerGame.h \
 NetConnection.cpp \
 NetConnection.h \
 NetConsts.h \

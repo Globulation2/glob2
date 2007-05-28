@@ -34,6 +34,7 @@
 #include <GraphicContext.h>
 
 #include "ChooseMapScreen.h"
+#include "MultiplayerGameScreen.h"
 
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"
@@ -393,8 +394,11 @@ void YOGScreen::hostGame()
 	int rc = cms.execute(globalContainer->gfx, 40);
 	if(rc == ChooseMapScreen::OK)
 	{
-		client->createGame("New Game");
-		client->sendMapHeader(cms.getMapHeader());
+		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+		client->setMultiplayerGame(game);
+		game->createNewGame("New Game");
+		MultiplayerGameScreen mgs(game, &irc, cms.getMapHeader());
+		mgs.execute(globalContainer->gfx, 40);
 	}
 /*
 	Engine engine;
