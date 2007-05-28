@@ -144,6 +144,9 @@ public:
 	///Sends the message to create a new game with the given game name to the server
 	void createGame(const std::string& name);
 
+	///Sends the map header for the game to the server
+	void sendMapHeader(const MapHeader& header);
+
 private:
 	std::string username;
 
