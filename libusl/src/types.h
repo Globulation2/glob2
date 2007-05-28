@@ -52,11 +52,10 @@ struct Prototype: Value
 {
 	typedef std::map<std::string, ScopePrototype*> Methods;
 	
-	Prototype* parent;
 	Methods methods;
 	
-	Prototype(Heap* heap, Prototype* parent):
-		Value(heap, 0), parent(parent)
+	Prototype(Heap* heap):
+		Value(heap, 0)
 	{ // TODO: MetaPrototype
 	}
 	
@@ -72,8 +71,6 @@ struct Prototype: Value
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		if (parent != 0)
-			parent->markForGC();
 		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<Methods::value_type>()));
 	}
 	
@@ -89,11 +86,13 @@ struct ScopePrototype: Prototype
 	typedef std::vector<std::string> Locals;
 	typedef std::vector<Code*> Body;
 	
+	Prototype* outer;
 	Locals locals;
 	Body body;
 	
-	ScopePrototype(Heap* heap, Prototype* parent):
-		Prototype(heap, parent)
+	ScopePrototype(Heap* heap, Prototype* outer):
+		Prototype(heap),
+		outer(outer)
 	{
 		methods["."] = this;
 	}
@@ -102,18 +101,25 @@ struct ScopePrototype: Prototype
 	{
 		stream << body.size() << " codes";
 	}
+	
+	virtual void propagateMarkForGC()
+	{
+		if (outer != 0)
+			outer->markForGC();
+		Prototype::propagateMarkForGC();
+	}
 };
 
 struct Scope: Value
 {
 	typedef std::vector<Value*> Locals;
 	
-	Value* parent;
+	Value* outer;
 	Locals locals;
 	
-	Scope(Heap* heap, ScopePrototype* prototype, Value* parent):
+	Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
 		Value(heap, prototype),
-		parent(parent)
+		outer(outer)
 	{}
 	
 	virtual void dumpSpecific(std::ostream& stream) const

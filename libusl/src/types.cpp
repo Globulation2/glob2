@@ -3,11 +3,11 @@
 
 #include <cassert>
 
-Prototype Nil(0, 0);
+Prototype Nil(0);
 Value nil(0, &Nil);
 
 Tuple::TuplePrototype::TuplePrototype():
-	Prototype(0, 0)
+	Prototype(0)
 {
 	// TODO: add some tuple methods
 }

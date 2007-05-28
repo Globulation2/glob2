@@ -40,8 +40,8 @@ struct ValRefCode: Code
 		Scope* scope = frame.scope;
 		for (size_t i = 0; i < depth; ++i)
 		{
-			// scope = static_cast<Scope*>(scope->parent); // Should be safe if the parser is bug-free
-			scope = dynamic_cast<Scope*>(scope->parent);
+			// scope = static_cast<Scope*>(scope->outer); // Should be safe if the parser is bug-free
+			scope = dynamic_cast<Scope*>(scope->outer);
 			assert(scope); // Should not fail if the parser is bug-free
 		}
 		assert(index < scope->locals.size()); // Should not fail if the parser is bug-free
@@ -112,8 +112,8 @@ struct ParentCode: Code
 	void execute(Thread* thread)
 	{
 		Thread::Frame& frame = thread->frames.back();
-		assert(frame.scope->parent);
-		frame.stack.push_back(frame.scope->parent);
+		assert(frame.scope->outer);
+		frame.stack.push_back(frame.scope->outer);
 	}
 };
 
@@ -172,8 +172,8 @@ struct NativeCode: Code
 {
 	struct Operation: ScopePrototype
 	{
-		Operation(Prototype* parent, const std::string& name, bool lazy):
-			ScopePrototype(0, parent),
+		Operation(Prototype* outer, const std::string& name, bool lazy):
+			ScopePrototype(0, outer),
 			name(name)
 		{
 			body.push_back(new ParentCode());
