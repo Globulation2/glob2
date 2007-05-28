@@ -63,42 +63,22 @@ Uint16 YOGPlayerInfo::getPlayerID() const
 
 
 
-Uint8* YOGPlayerInfo::encodeData() const
+void YOGPlayerInfo::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint32 pos = 0;
-	SDLNet_Write16(playerID, data+pos);
-	pos+=2;
-	data[pos] = playerName.size();
-	pos+=1;
-	std::copy(playerName.begin(), playerName.end(), data+pos);
-	return data;
-}
-
-
-	
-Uint16 YOGPlayerInfo::getDataLength() const
-{
-	return 2 + 1 + playerName.size();
+	stream->writeEnterSection("YOGPlayerInfo");
+	stream->writeUint16(playerID, "playerID");
+	stream->writeText(playerName, "playerName");
+	stream->writeLeaveSection();
 }
 
 
 
-bool YOGPlayerInfo::decodeData(const Uint8 *data, int dataLength)
+void YOGPlayerInfo::decodeData(GAGCore::InputStream* stream)
 {
-	playerName.clear();
-	Uint8 pos = 0;
-	playerID = SDLNet_Read16(data+pos);
-	pos+=2;
-	//Read in the playerName
-	Uint8 playerNameLength = data[pos];
-	pos+=1;
-	for(int i=0; i<playerNameLength; ++i)
-	{
-		playerName+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
+	stream->readEnterSection("YOGPlayerInfo");
+	playerID=stream->readUint16("playerID");
+	playerName=stream->readText("playerName");
+	stream->readLeaveSection();
 }
 
 

@@ -40,10 +40,10 @@ public:
 
 	///This generic test tests the serialization of a provided object
 	///by serializing it, deserializing it, and testing for equality
-	template<typename t> bool testMessage(shared_ptr<t> message);
+	template<typename t> bool testSerialize(shared_ptr<t> message);
 
 	///Tests that the initial states of two messages are equal
-	template<typename t> bool testInitialMessageState();
+	template<typename t> bool testInitial();
 
 	///Tests the various NetMessage classes. This makes sure
 	///that the classes decode back to exactly what they where

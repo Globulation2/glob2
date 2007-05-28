@@ -20,7 +20,7 @@
 #define __YOGPlayerInfo_h
 
 #include <string>
-#include "SDL_net.h"
+#include "Stream.h"
 
 ///This class contains information related to a player connected to YOG
 class YOGPlayerInfo
@@ -45,13 +45,10 @@ public:
 	Uint16 getPlayerID() const;
 
 	///Encodes this YOGPlayerInfo into a bit stream
-	Uint8* encodeData() const;
-	
-	///Gets the length of the data returned by encodeData
-	Uint16 getDataLength() const;
+	void encodeData(GAGCore::OutputStream* stream) const;
 
 	///Decodes this YOGPlayerInfo from a bit stream
-	bool decodeData(const Uint8 *data, int dataLength);
+	void decodeData(GAGCore::InputStream* stream);
 	
 	///Test for equality between two YOGPlayerInfo
 	bool operator==(const YOGPlayerInfo& rhs) const;

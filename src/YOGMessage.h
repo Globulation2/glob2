@@ -20,7 +20,7 @@
 #define __YOGMessage_h
 
 #include <string>
-#include "SDL_net.h"
+#include "Stream.h"
 #include "YOGConsts.h"
 
 ///This class generically represents a message sent in YOG. This kind of message
@@ -54,13 +54,10 @@ public:
 	YOGMessageType getMessageType() const;
 
 	///Encodes this YOGMessage into a bit stream
-	Uint8* encodeData() const;
-	
-	///Gets the length of the data returned by encodeData
-	Uint16 getDataLength() const;
+	void encodeData(GAGCore::OutputStream* stream) const;
 
 	///Decodes this YOGMessage from a bit stream
-	bool decodeData(const Uint8 *data, int dataLength);
+	void decodeData(GAGCore::InputStream* stream);
 	
 	///Test for equality between two YOGMessage
 	bool operator==(const YOGMessage& rhs) const;

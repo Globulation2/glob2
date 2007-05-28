@@ -76,67 +76,25 @@ YOGMessageType YOGMessage::getMessageType() const
 
 
 
-Uint8* YOGMessage::encodeData() const
+void YOGMessage::encodeData(GAGCore::OutputStream* stream) const
 {
-	Uint16 length = getDataLength();
-	Uint8* data = new Uint8[length];
-	Uint32 pos = 0;
-
-	//Write the messageType
-	data[pos] = messageType;
-	pos+=1;
-
-	//Write the sender
-	data[pos] = sender.size();
-	pos+=1;
-	std::copy(sender.begin(), sender.end(), data+pos);
-	pos+=sender.size();
-
-	//Write message
-	SDLNet_Write16(message.size(), data+pos);
-	pos+=2;
-	std::copy(message.begin(), message.end(), data+pos);
-	pos+=message.size();
-	return data;
-}
-
-
-	
-Uint16 YOGMessage::getDataLength() const
-{
-	return 4 + sender.size() + message.size();
+	stream->writeEnterSection("YOGMessage");
+	stream->writeUint16(messageType, "messageType");
+	stream->writeText(sender, "sender");
+	stream->writeText(message, "message");
+	stream->writeLeaveSection();
 }
 
 
 
-bool YOGMessage::decodeData(const Uint8 *data, int dataLength)
+
+void YOGMessage::decodeData(GAGCore::InputStream* stream)
 {
-	Uint8 pos = 0;
-
-	message = "";
-	sender = "";
-
-	//Read in the messageType
-	messageType = static_cast<YOGMessageType>(data[pos]);
-	pos+=1;
-
-	//Read in the sender
-	Uint16 size = data[pos];
-	pos+=1;
-	for(int i=0; i<size; ++i)
-	{
-		sender+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
-
-	//Read in the message
-	size = SDLNet_Read16(data+pos);
-	pos+=2;
-	for(int i=0; i<size; ++i)
-	{
-		message+=static_cast<char>(data[pos]);
-		pos+=1;
-	}
+	stream->readEnterSection("YOGMessage");
+	messageType = static_cast<YOGMessageType>(stream->readUint16("messageType"));
+	sender = stream->readText("sender");
+	message = stream->readText("message");
+	stream->readLeaveSection();
 }
 
 
