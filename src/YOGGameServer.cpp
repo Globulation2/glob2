@@ -185,5 +185,6 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 			break;
 	}
 	gameList.push_back(YOGGameInfo(name, newID));
+	games.push_back(YOGGame(newID));
 	return newID;
 }

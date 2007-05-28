@@ -28,6 +28,8 @@
 #include "YOGMessage.h"
 #include <list>
 
+class MultiplayerGame;
+
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
 {
@@ -147,6 +149,14 @@ public:
 	///Sends the map header for the game to the server
 	void sendMapHeader(const MapHeader& header);
 
+	///Assocciattes the provided MultiplayerGame with this connection
+	void setMultiplayerGame(boost::shared_ptr<MultiplayerGame> game);
+
+protected:
+    friend class MultiplayerGame;
+    
+    ///Sends a message on behalf of the assocciatted MultiplayerGame
+    void sendNetMessage(boost::shared_ptr<NetMessage> message);
 private:
 	std::string username;
 
@@ -163,6 +173,8 @@ private:
 	std::queue<boost::shared_ptr<YOGMessage> > messages;
 	bool gameListChanged;
 	bool playerListChanged;
+	
+	boost::shared_ptr<MultiplayerGame> joinedGame;
 };
 
 
