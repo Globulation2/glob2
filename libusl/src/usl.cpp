@@ -60,18 +60,59 @@ Integer::IntegerPrototype Integer::integerPrototype;
 Integer::IntegerAdd Integer::integerAdd;
 
 
+struct DefRefCode: Code
+{
+	DefRefCode(size_t depth, ScopePrototype* method):
+		depth(depth),
+		method(method)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame& frame = thread->frames.back();
+		Value* receiver = frame.scope;
+		for(size_t i = 0; i < depth; ++i)
+		{
+			Scope* outer = dynamic_cast<Scope*>(receiver);
+			assert(outer); // Should not fail if the parser is bug-free
+			receiver = outer->outer;
+		}
+		Function* function = new Function(thread->heap, receiver, method);
+		frame.stack.push_back(function);
+	}
+	
+	size_t depth;
+	ScopePrototype* method;
+};
+
 struct DefLookupNode: ExpressionNode
 {
-	DefLookupNode(const string& name):
+	DefLookupNode(ScopePrototype* scope, const string& name):
+		scope(scope),
 		name(name)
 	{}
 	
 	void generate(ScopePrototype* scope)
 	{
-		assert(false);
+		// TODO: this should be done in a compiler pass between parsing and code generation
+		size_t depth = 0;
+		do
+		{
+			ScopePrototype* method = scope->lookup(name);
+			if (method != 0)
+			{
+				scope->body.push_back(new DefRefCode(depth, method));
+				return;
+			}
+			scope = dynamic_cast<ScopePrototype*>(scope->outer);
+			++depth;
+		}
+		while (scope != 0);
+		assert(false); // TODO: throw a method not found exception
 	}
 	
-	const string name;
+	ScopePrototype* scope;
+	string name;
 };
 
 struct Parser: Lexer
@@ -224,19 +265,20 @@ struct Parser: Lexer
 			{
 				string name(identifier());
 				
+				ScopePrototype* s = scope;
 				size_t depth = 0;
 				do
 				{
-					ScopePrototype::Locals& locals = scope->locals;
+					ScopePrototype::Locals& locals = s->locals;
 					size_t index = find(locals.begin(), locals.end(), name) - locals.begin();
 					if (index < locals.size())
 						return new ValRefNode(depth, index);
-					scope = dynamic_cast<ScopePrototype*>(scope->outer);
+					s = dynamic_cast<ScopePrototype*>(s->outer);
 					++depth;
 				}
-				while (scope != 0);
+				while (s != 0);
 				
-				return new DefLookupNode(name);
+				return new DefLookupNode(scope, name);
 			}
 		case NUM:
 			{
