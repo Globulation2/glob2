@@ -16,54 +16,31 @@
 
 using namespace std;
 
-struct Class: UserMethod
-{
-	vector<string> fields;
-};
-
-
-struct Object: Scope
-{
-	Object(Heap* heap, Class* klass, Scope* parent):
-		Scope(heap, klass, parent)
-	{
-		transform(klass->fields.begin(), klass->fields.end(), inserter(locals, locals.begin()), bind2nd(ptr_fun(make_pair<string, Value*>), 0));
-	}
-};
-
 struct Integer: Value
 {
 	int value;
-	static struct IntegerAdd: Method
+	static struct IntegerAdd: NativeCode::Operation
 	{
 		IntegerAdd():
-			Method(0, &integerPrototype)
-		{
-			args.push_back("that");
-		}
+			NativeCode::Operation(&integerPrototype, "Integer::+", false)
+		{}
 		
-		void execute(Thread* thread)
+		Value* execute(Thread* thread, Value* receiver, Value* argument)
 		{
-			// check number of arguments
-			Thread::Frame::Stack& stack = thread->frames.back().stack;
-			size_t stackSize = stack.size();
-			
-			Integer* thatInt = dynamic_cast<Integer*>(stack[--stackSize]);
-			Integer* thisInt = dynamic_cast<Integer*>(stack[--stackSize]);
+			Integer* thisInt = dynamic_cast<Integer*>(receiver);
+			Integer* thatInt = dynamic_cast<Integer*>(argument);
 			
 			assert(thisInt);
-			// todo check thatInt type
+			assert(thatInt);
 			
-			stack[stackSize++] = new Integer(thread->heap, thisInt->value + thatInt->value);
-			
-			stack.resize(stackSize);
+			return new Integer(thread->heap, thisInt->value + thatInt->value);
 		}
 	} integerAdd;
 	
 	static struct IntegerPrototype: Prototype
 	{
 		IntegerPrototype():
-			Prototype(0, 0)
+			Prototype(0)
 		{
 			methods["+"] = &integerAdd;
 		}
@@ -75,95 +52,114 @@ struct Integer: Value
 	{
 		this->value = value;
 	}
+	
+	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
 };
 
 Integer::IntegerPrototype Integer::integerPrototype;
 Integer::IntegerAdd Integer::integerAdd;
 
 
-struct LookupNode: ExpressionNode
+struct DefRefCode: Code
 {
-	LookupNode(const string& name):
+	DefRefCode(size_t depth, ScopePrototype* method):
+		depth(depth),
+		method(method)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame& frame = thread->frames.back();
+		Value* receiver = frame.scope;
+		for(size_t i = 0; i < depth; ++i)
+		{
+			Scope* outer = dynamic_cast<Scope*>(receiver);
+			assert(outer); // Should not fail if the parser is bug-free
+			receiver = outer->outer;
+		}
+		Function* function = new Function(thread->heap, receiver, method);
+		frame.stack.push_back(function);
+	}
+	
+	size_t depth;
+	ScopePrototype* method;
+};
+
+struct DefLookupNode: ExpressionNode
+{
+	DefLookupNode(ScopePrototype* scope, const string& name):
+		scope(scope),
 		name(name)
 	{}
 	
-	void generate(UserMethod* method)
+	void generate(ScopePrototype* scope)
 	{
-		assert(false);
-	}
-	
-	const string name;
-};
-
-struct BlockNode: Node
-{
-	typedef vector<Node*> Statements;
-	
-	void generate(UserMethod* method)
-	{
-		for (Statements::const_iterator it = statements.begin(); it != statements.end(); ++it)
+		// TODO: this should be done in a compiler pass between parsing and code generation
+		size_t depth = 0;
+		do
 		{
-			Node* statement = *it;
-			statement->generate(method);
-			if (dynamic_cast<ExpressionNode*>(statement) != 0)
+			ScopePrototype* method = scope->lookup(name);
+			if (method != 0)
 			{
-				// if the statement is an expression, its result is ignored
-				method->body.push_back(new PopCode());
+				scope->body.push_back(new DefRefCode(depth, method));
+				return;
 			}
+			scope = dynamic_cast<ScopePrototype*>(scope->outer);
+			++depth;
 		}
-		value->generate(method);
+		while (scope != 0);
+		assert(false); // TODO: throw a method not found exception
 	}
 	
-	void end(Value* nil)
-	{
-		if (!statements.empty() && dynamic_cast<ExpressionNode*>(statements.back()) != 0)
-		{
-			value = statements.back();
-			statements.pop_back();
-		}
-		else
-		{
-			value = new ConstNode(nil);
-		}
-	}
-	
-	Statements statements;
-	Node* value;
+	ScopePrototype* scope;
+	string name;
 };
 
 struct Parser: Lexer
 {
 	Parser(const char* src, Heap* heap):
 		Lexer(src),
-		heap(heap),
-		Nil(new Prototype(heap, 0)),
-		nil(new Value(heap, Nil))
+		heap(heap)
 	{}
 	
-	BlockNode* parse()
+	BlockNode* parse(ScopePrototype* scope)
 	{
-		return statements();
+		return statements(scope);
 	}
 	
-	BlockNode* statements()
+	BlockNode* statements(ScopePrototype* scope)
 	{
 		newlines();
 		auto_ptr<BlockNode> block(new BlockNode());
+		
+		ScopePrototype* thisMethod = new ScopePrototype(heap, scope);
+		scope->methods["this"] = thisMethod;
+		block->statements.push_back(new DefNode(thisMethod, new ParentNode()));
+		
 		while (true)
 		{
 			switch (tokenType())
 			{
 			case END:
 			case RBRACE:
-				block->end(nil);
+				BlockNode::Statements& statements = block->statements;
+				if (!statements.empty() && dynamic_cast<ExpressionNode*>(statements.back()) != 0)
+				{
+					block->value = statements.back();
+					statements.pop_back();
+				}
+				else
+				{
+					block->value = new ConstNode(&nil);
+				}
 				return block.release();
 			}
-			block->statements.push_back(statement());
+			block->statements.push_back(statement(scope));
 			newlines();
 		}
 	}
 	
-	Node* statement()
+	Node* statement(ScopePrototype* scope)
 	{
 		switch (tokenType())
 		{
@@ -173,25 +169,38 @@ struct Parser: Lexer
 				string name = identifier();
 				accept(ASSIGN);
 				newlines();
-				return new ValueNode(name, expression());
+				size_t index = scope->locals.size();
+				scope->locals.push_back(name);
+				return new ValNode(index, expression(scope));
+			}
+		case DEF:
+			{
+				next();
+				string name = identifier();
+				accept(ASSIGN);
+				newlines();
+				ScopePrototype* method = new ScopePrototype(heap, scope);
+				scope->methods[name] = method;
+				return new DefNode(method, expression(method));
 			}
 		default:
-			return expression();
+			return expression(scope);
 		}
 	}
 	
-	Node* expression()
+	ExpressionNode* expression(ScopePrototype* scope)
 	{
-		auto_ptr<Node> node(simple());
+		auto_ptr<ExpressionNode> node(simple(scope));
 		while (true)
 		{
 			switch (tokenType())
 			{
 			case ID:
-				node = apply(node, identifier());
+				node.reset(apply(node, identifier(), scope));
 				break;
 			case LPAR:
-				node = apply(node, ".");
+			case LBRACE:
+				node.reset(apply(node, ".", scope));
 				break;
 			default:
 				return node.release();
@@ -199,20 +208,77 @@ struct Parser: Lexer
 		}
 	}
 	
-	auto_ptr<ApplyNode> apply(auto_ptr<Node> receiver, const string& method)
+	ApplyNode* apply(auto_ptr<ExpressionNode> receiver, const string& method, ScopePrototype* scope)
 	{
-		auto_ptr<ApplyNode> node(new ApplyNode(receiver.release(), method));
-		node->args.push_back(simple());
-		return node;
+		ExpressionNode* argument = lazyExpr(scope);
+		return new ApplyNode(receiver.release(), method, argument);
 	}
 	
-	Node* simple()
+	ExpressionNode *expressions(ScopePrototype* scope)
+	{
+		newlines();
+		auto_ptr<TupleNode> tuple(new TupleNode());
+		while (true)
+		{
+			switch (tokenType())
+			{
+			case ID:
+			case NUM:
+			case LPAR:
+			case LBRACE:
+				tuple->expressions.push_back(expression(scope));
+				newlines();
+				break;
+			
+			case COMMA:
+				next();
+				newlines();
+				break;
+			
+			case RPAR:
+				next();
+				switch (tuple->expressions.size())
+				{
+				case 0:
+					return new ConstNode(&nil);
+				case 1:
+					{
+						ExpressionNode* expr = tuple->expressions[0];
+						tuple->expressions.clear();
+						return expr;
+					}
+				default:
+					return tuple.release();
+				}
+			
+			default:
+				assert(false);
+			}
+		}
+	}
+	
+	ExpressionNode* simple(ScopePrototype* scope)
 	{
 		switch (tokenType())
 		{
 		case ID:
 			{
-				return new LookupNode(identifier());
+				string name(identifier());
+				
+				ScopePrototype* s = scope;
+				size_t depth = 0;
+				do
+				{
+					ScopePrototype::Locals& locals = s->locals;
+					size_t index = find(locals.begin(), locals.end(), name) - locals.begin();
+					if (index < locals.size())
+						return new ValRefNode(depth, index);
+					s = dynamic_cast<ScopePrototype*>(s->outer);
+					++depth;
+				}
+				while (s != 0);
+				
+				return new DefLookupNode(scope, name);
 			}
 		case NUM:
 			{
@@ -224,20 +290,26 @@ struct Parser: Lexer
 		case LPAR:
 			{
 				next();
-				// TODO: tuples
-				accept(RPAR);
-				assert(false);
+				return expressions(scope);
 			}
 		case LBRACE:
 			{
 				next();
-				auto_ptr<Node> block(statements());
+				auto_ptr<ScopePrototype> block(new ScopePrototype(heap, scope));
+				auto_ptr<ExpressionNode> body(statements(block.get()));
 				accept(RBRACE);
-				return block.release();
+				return new ApplyNode(new DefRefNode(block.release(), body.release()), ".", new ConstNode(&nil));
 			}
 		default:
-			return new ConstNode(nil);
+			return new ConstNode(&nil);
 		}
+	}
+	
+	ExpressionNode* lazyExpr(ScopePrototype* scope)
+	{
+		auto_ptr<ScopePrototype> lazy(new ScopePrototype(heap, scope));
+		ExpressionNode* expr = simple(lazy.get());
+		return new DefRefNode(lazy.release(), expr);
 	}
 	
 	void newlines()
@@ -269,35 +341,36 @@ struct Parser: Lexer
 	}
 	
 	Heap* heap;
-	Prototype* Nil;
-	Value* nil;
 };
 
 int main(int argc, char** argv)
 {
 	Heap heap;
+	ScopePrototype* root = new ScopePrototype(&heap, 0);
 	
-	Parser parser("val x = 21 + 21\n", &heap);
-	Node* node = parser.parse();
-/*
-	ApplyNode* node = new ApplyNode(new ConstNode(new Integer(2)), "+");
-	node->args.push_back(new ConstNode(new Integer(1)));
-*/
-	
-	UserMethod root(&heap, 0);
-	node->generate(&root);
+	Parser parser("def z = 2\nval x = {{21} + {21}}\nx", &heap);
+	Node* node = parser.parse(root);
+	node->generate(root);
 	
 	Thread thread(&heap);
-	thread.frames.push_back(Thread::Frame(new Scope(&heap, &root, 0)));
+	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
 	
-	while (thread.frames.front().nextInstr < root.body.size())
+	while (thread.frames.front().nextInstr < root->body.size())
 	{
 		Thread::Frame& frame = thread.frames.back();
-		frame.scope->method()->body[frame.nextInstr++]->execute(&thread);
-		cout << "stack size: " << thread.frames.back().stack.size() << endl;
+		Code* code = frame.scope->def()->body[frame.nextInstr++];
+		code->execute(&thread);
+		code->dump(cout);
+		cout << ", frames: " << thread.frames.size();
+		cout << ", stack size: " << thread.frames.back().stack.size();
+		cout << ", locals: " << thread.frames.back().scope->locals.size();
+		cout << endl;
 	}
+	cout << "result: ";
+	thread.frames.back().stack.back()->dump(cout);
+	cout << endl;
 	
-	cout << "x = " << dynamic_cast<Integer*>(thread.frames.back().scope->locals["x"])->value << endl;
+	thread.frames.pop_back();
 	
 	cout << "heap size: " << heap.values.size() << "\n";
 	cout << "garbage collecting\n";

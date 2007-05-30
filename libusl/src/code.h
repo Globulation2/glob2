@@ -3,12 +3,14 @@
 
 #include "interpreter.h"
 #include <cassert>
+#include <ostream>
 
 
 struct Code
 {
 	virtual ~Code() { }
 	virtual void execute(Thread* thread) = 0;
+	virtual void dump(std::ostream &stream) { stream << typeid(*this).name(); }
 };
 
 struct ConstCode: Code
@@ -25,59 +27,94 @@ struct ConstCode: Code
 	Value* value;
 };
 
-struct LocalCode: Code
+struct ValRefCode: Code
 {
-	LocalCode(const std::string& local):
-		local(local)
+	ValRefCode(size_t depth, size_t index):
+		depth(depth),
+		index(index)
 	{}
 	
 	void execute(Thread* thread)
 	{
 		Thread::Frame& frame = thread->frames.back();
-		frame.stack.push_back(frame.scope->lookup(local));
+		Scope* scope = frame.scope;
+		for (size_t i = 0; i < depth; ++i)
+		{
+			// scope = static_cast<Scope*>(scope->outer); // Should be safe if the parser is bug-free
+			scope = dynamic_cast<Scope*>(scope->outer);
+			assert(scope); // Should not fail if the parser is bug-free
+		}
+		assert(index < scope->locals.size()); // Should not fail if the parser is bug-free
+		frame.stack.push_back(scope->locals[index]);
 	}
 	
-	const std::string local;
+	size_t depth;
+	size_t index;
 };
 
 struct ApplyCode: Code
 {
-	ApplyCode(const std::string& name, size_t argCount):
-		name(name),
-		argCount(argCount)
+	ApplyCode(const std::string& name):
+		name(name)
 	{}
 	
 	void execute(Thread* thread)
 	{
-		// fetch receiver
-		Value* receiver = *(thread->frames.back().stack.end() - argCount - 1);
+		Thread::Frames& frames = thread->frames;
+		Thread::Frame::Stack& stack = frames.back().stack;
 		
-		// fetch method
-		Method* method = receiver->prototype->lookup(name);
-		assert(argCount == method->args.size());
+		// get argument
+		Value* argument = stack.back();
+		stack.pop_back();
 		
-		method->execute(thread);
+		// get receiver
+		Value* receiver = stack.back();
+		stack.pop_back();
+		
+		// get method
+		ScopePrototype* method = receiver->prototype->lookup(name);
+		
+		// create a new scope
+		Scope* scope = new Scope(thread->heap, method, receiver);
+		
+		// put the argument in the scope
+		scope->locals.push_back(argument);
+		
+		// push a new frame
+		frames.push_back(scope);
 	}
-		
+	
 	const std::string name;
-	size_t argCount;
 };
 
-struct ValueCode: Code
+struct ValCode: Code
 {
-	ValueCode(const std::string& local):
-		local(local)
+	ValCode(size_t index):
+		index(index)
 	{}
 	
 	void execute(Thread* thread)
 	{
 		Thread::Frame& frame = thread->frames.back();
 		Thread::Frame::Stack& stack = frame.stack;
-		frame.scope->locals[local] = stack.back();
+		frame.scope->locals.push_back(stack.back());
 		stack.pop_back();
 	}
 	
-	const std::string local;
+	size_t index;
+};
+
+struct ParentCode: Code
+{
+	ParentCode()
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame& frame = thread->frames.back();
+		assert(frame.scope->outer);
+		frame.stack.push_back(frame.scope->outer);
+	}
 };
 
 struct PopCode: Code
@@ -88,19 +125,19 @@ struct PopCode: Code
 	}
 };
 
-struct MethodCode: Code
+struct ScopeCode: Code
 {
-	MethodCode(UserMethod* method):
-		method(method)
+	ScopeCode(ScopePrototype* prototype):
+		prototype(prototype)
 	{}
 	
 	void execute(Thread* thread)
 	{
 		Thread::Frame& frame = thread->frames.back();
-		frame.stack.push_back(new Scope(thread->heap, method, frame.scope));
+		frame.stack.push_back(new Scope(thread->heap, prototype, frame.scope));
 	}
 	
-	UserMethod* method;
+	ScopePrototype* prototype;
 };
 
 struct ReturnCode: Code
@@ -111,6 +148,67 @@ struct ReturnCode: Code
 		thread->frames.pop_back();
 		thread->frames.back().stack.push_back(value);
 	}
+};
+
+struct TupleCode: Code
+{
+	TupleCode(size_t size):
+		size(size)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Tuple* tuple = new Tuple(thread->heap);
+		Thread::Frame::Stack &stack = thread->frames.back().stack;
+		Thread::Frame::Stack::const_iterator stackEnd = stack.end();
+		std::copy(stackEnd - size, stackEnd, std::back_inserter(tuple->values));
+		stack.resize(stack.size() - size);
+	}
+	
+	size_t size;
+};
+
+struct NativeCode: Code
+{
+	struct Operation: ScopePrototype
+	{
+		Operation(Prototype* outer, const std::string& name, bool lazy):
+			ScopePrototype(0, outer),
+			name(name)
+		{
+			body.push_back(new ParentCode());
+			body.push_back(new ValRefCode(0, 0));
+			if (!lazy)
+			{
+				body.push_back(new ConstCode(&nil));
+				body.push_back(new ApplyCode("."));
+			}
+			body.push_back(new NativeCode(this));
+			body.push_back(new ReturnCode());
+		}
+		
+		virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
+		
+		std::string name;
+	};
+	
+	NativeCode(Operation* operation):
+		operation(operation)
+	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame::Stack& stack = thread->frames.back().stack;
+		
+		Value* argument = stack.back();
+		stack.pop_back();
+		Value* receiver = stack.back();
+		stack.pop_back();
+		
+		stack.push_back(operation->execute(thread, receiver, argument));
+	}
+	
+	Operation* operation;
 };
 
 #endif // ndef BYTECODE_H

@@ -1,26 +1,71 @@
 #include "tree.h"
 #include "code.h"
 
-void ConstNode::generate(UserMethod* method)
+void DefRefNode::generate(ScopePrototype* scope)
 {
-	method->body.push_back(new ConstCode(value));
+	value->generate(this->scope);
+	this->scope->body.push_back(new ReturnCode());
+	scope->body.push_back(new ScopeCode(this->scope));
 }
 
-void LocalNode::generate(UserMethod* method)
+void ConstNode::generate(ScopePrototype* scope)
 {
-	method->body.push_back(new LocalCode(local));
+	scope->body.push_back(new ConstCode(value));
 }
 
-void ApplyNode::generate(UserMethod* method)
+void ValRefNode::generate(ScopePrototype* scope)
 {
-	receiver->generate(method);
-	for (size_t i = 0; i < args.size(); i++)
-		args[i]->generate(method);
-	method->body.push_back(new ApplyCode(name, args.size()));
+	scope->body.push_back(new ValRefCode(depth, index));
 }
 
-void ValueNode::generate(UserMethod* method)
+void ApplyNode::generate(ScopePrototype* scope)
 {
-	value->generate(method);
-	method->body.push_back(new ValueCode(local));
+	receiver->generate(scope);
+	argument->generate(scope);
+	scope->body.push_back(new ApplyCode(name));
 }
+
+void ValNode::generate(ScopePrototype* scope)
+{
+	value->generate(scope);
+	scope->body.push_back(new ValCode(index));
+}
+
+void BlockNode::generate(ScopePrototype* scope)
+{
+	
+	for (Statements::const_iterator it = statements.begin(); it != statements.end(); ++it)
+	{
+		Node* statement = *it;
+		statement->generate(scope);
+		if (dynamic_cast<ExpressionNode*>(statement) != 0)
+		{
+			// if the statement is an expression, its result is ignored
+			scope->body.push_back(new PopCode());
+		}
+	}
+	value->generate(scope);
+}
+
+void DefNode::generate(ScopePrototype* scope)
+{
+	scope = this->scope;
+	body->generate(scope);
+	scope->body.push_back(new ReturnCode());
+}
+
+void ParentNode::generate(ScopePrototype* scope)
+{
+	scope->body.push_back(new ParentCode());
+}
+
+void TupleNode::generate(ScopePrototype* scope)
+{
+	for (Expressions::const_iterator it = expressions.begin(); it != expressions.end(); ++it)
+	{
+		Node* expression = *it;
+		expression->generate(scope);
+	}
+	scope->body.push_back(new TupleCode(expressions.size()));
+}
+
