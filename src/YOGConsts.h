@@ -77,6 +77,13 @@ enum YOGGameJoinRefusalReason
 
 };
 
+///This represents the reason why the player could not join a game.
+enum YOGGameCreateRefusalReason
+{
+	///This represents internally an unknown reason
+	YOGCreateRefusalUnknown,
+};
+
 ///This is used to represent the types of messages that can be sent through YOG
 enum YOGMessageType
 {

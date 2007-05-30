@@ -19,15 +19,17 @@
 #include "YOGPlayer.h"
 #include "YOGGameServer.h"
 
-YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection) : connection(connection)
+YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameServer& server)
+ : connection(connection), server(server), playerID(id)
 {
 	connectionState = WaitingForClientInformation;
 	loginState = YOGLoginUnknown;
+	gameID=0;
 }
 
 
 
-void YOGPlayer::update(YOGGameServer& server)
+void YOGPlayer::update()
 {
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = connection->getMessage();
@@ -50,7 +52,8 @@ void YOGPlayer::update(YOGGameServer& server)
 		loginState = server.verifyLoginInformation(username, password);
 		if(loginState == YOGLoginSuccessful)
 		{
-			playerID = server.playerHasLoggedIn(username);
+			server.playerHasLoggedIn(username, playerID);
+			playerName=username;
 			connectionState = NeedToSendLoginAccepted;
 			gameListState=NeedToSendGameList;
 			playerListState=NeedToSendPlayerList;
@@ -58,7 +61,7 @@ void YOGPlayer::update(YOGGameServer& server)
 		else
 		{
 			connectionState = NeedToSendLoginRefusal;
-		}
+		}	
 	}
 	//This recieves a YOGMessage and sends it to the game server to be proccessed
 	else if(type==MNetSendYOGMessage)
@@ -66,16 +69,69 @@ void YOGPlayer::update(YOGGameServer& server)
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
 		server.propogateMessage(info->getMessage());
 	}
-	//This recieves a YOGMessage and sends it to the game server to be proccessed
+	//This recieves an attempt to create a new game
 	else if(type==MNetCreateGame)
 	{
 		shared_ptr<NetCreateGame> info = static_pointer_cast<NetCreateGame>(message);
-		server.createNewGame(info->getGameName());
-		gameListState = NeedToSendGameList;
+		handleCreateGame(info->getGameName());
+	}
+	//This recieves an attempt to join a game
+	else if(type==MNetAttemptJoinGame)
+	{
+		shared_ptr<NetAttemptJoinGame> info = static_pointer_cast<NetAttemptJoinGame>(message);
+		handleJoinGame(info->getGameID());
+	}
+	//This recieves a message to set the map header
+	else if(type==MNetSendMapHeader)
+	{
+		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
+		game->setMapHeader(info->getMapHeader());
 	}
 
-
 	//Send outgoing messages
+	updateConnectionSates();
+	updateGamePlayerLists();
+}
+
+
+
+bool YOGPlayer::isConnected()
+{
+	return connection->isConnected();
+}
+
+
+
+void YOGPlayer::sendMessage(shared_ptr<NetMessage> message)
+{
+	connection->sendMessage(message);
+}
+
+
+
+void YOGPlayer::setPlayerID(Uint16 id)
+{
+	playerID=id;
+}
+
+
+
+Uint16 YOGPlayer::getPlayerID()
+{
+	return playerID;
+}
+
+
+
+std::string YOGPlayer::getPlayerName()
+{
+	return playerName;
+}
+
+
+
+void YOGPlayer::updateConnectionSates()
+{
 	//Send the server information
 	if(connectionState==NeedToSendServerInformation)
 	{
@@ -97,7 +153,10 @@ void YOGPlayer::update(YOGGameServer& server)
 		connection->sendMessage(refused);
 		connectionState = WaitingForLoginAttempt;
 	}
+}
 
+void YOGPlayer::updateGamePlayerLists()
+{
 	//Send an updated game list to the user
 	if(gameListState==NeedToSendGameList)
 	{
@@ -125,28 +184,46 @@ void YOGPlayer::update(YOGGameServer& server)
 }
 
 
-bool YOGPlayer::isConnected()
+
+void YOGPlayer::handleCreateGame(const std::string& gameName)
 {
-	return connection->isConnected();
+	YOGGameCreateRefusalReason reason = server.canCreateNewGame(gameName);
+	if(reason == YOGCreateRefusalUnknown)
+	{	
+		gameID = server.createNewGame(gameName);
+		game = server.getGame(gameID);
+		game->addPlayer(server.getPlayer(playerID));
+		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted);
+		connection->sendMessage(message);
+		
+		//gameListState = NeedToSendGameList;
+	}
+	else
+	{
+		shared_ptr<NetCreateGameRefused> message(new NetCreateGameRefused(reason));
+		connection->sendMessage(message);
+	}
 }
 
 
 
-void YOGPlayer::sendMessage(shared_ptr<NetMessage> message)
+void YOGPlayer::handleJoinGame(Uint16 ngameID)
 {
-	connection->sendMessage(message);
-}
-
-
-void YOGPlayer::setPlayerID(Uint16 id)
-{
-	playerID=id;
-}
-
-
-Uint16 YOGPlayer::getPlayerID()
-{
-	return playerID;
+	YOGGameJoinRefusalReason reason = server.canJoinGame(ngameID);
+	if(reason == YOGJoinRefusalUnknown)
+	{	
+		gameID = ngameID;
+		game = server.getGame(gameID);
+		game->addPlayer(server.getPlayer(playerID));
+		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted);
+		connection->sendMessage(message);
+		//gameListState = NeedToSendGameList;
+	}
+	else
+	{
+		shared_ptr<NetGameJoinRefused> message(new NetGameJoinRefused(reason));
+		connection->sendMessage(message);
+	}
 }
 
 

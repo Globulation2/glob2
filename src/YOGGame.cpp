@@ -30,6 +30,14 @@ YOGGame::YOGGame(Uint16 gameID)
 void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 {
 	players.push_back(player);
+	for(int i=0; i<32; ++i)
+	{
+		if(gameHeader.getBasePlayer(i).type == BasePlayer::P_NONE)
+		{
+			gameHeader.getBasePlayer(i) = BasePlayer(i, player->getPlayerName().c_str(), i, BasePlayer::P_IP);
+		}
+	}
+	sendGameHeaderPlayers();
 }
 
 
@@ -44,6 +52,14 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 
 
 
+void YOGGame::setMapHeader(const MapHeader& nmapHeader)
+{
+	mapHeader = nmapHeader;
+}
+
+
+
+
 void YOGGame::routeMessage(shared_ptr<NetMessage> message)
 {
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
@@ -53,3 +69,12 @@ void YOGGame::routeMessage(shared_ptr<NetMessage> message)
 }
 
 
+
+void YOGGame::sendGameHeaderPlayers()
+{
+	shared_ptr<NetUpdateGameHeaderPlayers> message(new NetUpdateGameHeaderPlayers(gameHeader));
+	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		(*i)->sendMessage(message);
+	}
+}

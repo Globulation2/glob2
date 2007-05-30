@@ -114,7 +114,7 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	return true;
 }
 
-void BasePlayer::save(GAGCore::OutputStream *stream)
+void BasePlayer::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("BasePlayer");
 	stream->writeUint32((Uint32)type, "type");

@@ -38,7 +38,13 @@ public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	
 	///Saves game header information to the stream
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream) const;
+	
+	///Saves the player information to a stream, and ignores the rest
+	void savePlayerInformation(GAGCore::OutputStream *stream) const;
+	
+	///Loads the player information from a stream, and ignores the rest
+	bool loadPlayerInformation(GAGCore::InputStream *stream, Sint32 versionMinor);
 	
 	///Returns the number of players in the game
 	Sint32 getNumberOfPlayers() const;

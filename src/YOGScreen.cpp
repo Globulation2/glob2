@@ -397,6 +397,7 @@ void YOGScreen::hostGame()
 		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 		client->setMultiplayerGame(game);
 		game->createNewGame("New Game");
+		game->setMapHeader(cms.getMapHeader());
 		MultiplayerGameScreen mgs(game, &irc, cms.getMapHeader());
 		mgs.execute(globalContainer->gfx, 40);
 	}

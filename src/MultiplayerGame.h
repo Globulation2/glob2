@@ -20,6 +20,8 @@
 #define __MultiplayerGame_h
 
 #include "YOGClient.h"
+#include "MapHeader.h"
+#include "GameHeader.h"
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
@@ -31,6 +33,9 @@ public:
 	
 	///Attempt to create a new game on the server with the given name, and wait for reply
 	void createNewGame(const std::string& name);
+	
+	///Attempt to join an existing game on the server with the given id, 
+	void joinGame(Uint16 gameID);
 
 	///Represents the state of joining or creating a game	
 	enum GameJoinCreationState
@@ -45,6 +50,25 @@ public:
 	///Returns the current state of joining or creating a game
 	GameJoinCreationState getGameJoinCreationState() const;
 	
+	///Returns the reason the creation of a game was refused
+	YOGGameCreateRefusalReason getGameCreationState();
+
+	///Returns the reason the joining of a game was refused
+	YOGGameJoinRefusalReason getGameJoinState();
+
+	///Sets the map header
+	void setMapHeader(MapHeader& mapHeader);
+	
+	///Returns the map header
+	const MapHeader& getMapHeader() const;
+
+	///Returns the game header. It can be modified. After modifying it,
+	///one must call updateGameHeader(). At no point should any changes
+	///be done to the base players, they are managed by the server
+	GameHeader& getGameHeader();
+	
+	///Call this to send the the changes of the game header to the server
+	void updateGameHeader();
 protected:
 	friend class YOGClient;
 	///This receives a message that is sent to the game
@@ -52,6 +76,10 @@ protected:
 private:
 	boost::shared_ptr<YOGClient> client;
 	GameJoinCreationState gjcState;
+	YOGGameCreateRefusalReason creationState;
+	YOGGameJoinRefusalReason joinState;
+	MapHeader mapHeader;
+	GameHeader gameHeader;
 };
 
 

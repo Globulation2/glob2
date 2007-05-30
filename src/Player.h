@@ -89,7 +89,7 @@ public:
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream) const;
 
 	Uint32 checkSum();
 	

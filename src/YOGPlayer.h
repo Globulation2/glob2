@@ -27,16 +27,17 @@
 using namespace boost;
 
 class YOGGameServer;
+class YOGGame;
 
 ///This represents a connected user on the YOG server.
 class YOGPlayer
 {
 public:
 	///Establishes a YOGPlayer on the given connection.
-	YOGPlayer(shared_ptr<NetConnection> connection);
+	YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameServer& server);
 
 	///Updates the YOGPlayer. This deals with all incoming messages.
-	void update(YOGGameServer& server);
+	void update();
 
 	///Returns true if this YOGPlayer is still connected
 	bool isConnected();
@@ -52,9 +53,12 @@ public:
 	///Returns the ID for this player
 	Uint16 getPlayerID();
 
+	///Returns the name of the player, or blank if they haven't logged in
+	std::string getPlayerName();
+
 private:
-	///This enum represents the state machine of a connection.
-	enum PlayerState
+	///This enum represents the state machine of the initial connection
+	enum ConnectionState
 	{
 		///Means this is waiting for the client to send version information to the server.
 		WaitingForClientInformation,
@@ -86,13 +90,26 @@ private:
 		PlayerListNormal,
 	};
 
-	PlayerState connectionState;
+	ConnectionState connectionState;
 	GameListState gameListState;
 	PlayerListState playerListState;
 
 	shared_ptr<NetConnection> connection;
+	YOGGameServer& server;
 	Uint16 versionMinor;
 	YOGLoginState loginState;
+
+	///Send outgoing messsages involving ConnectionState
+	void updateConnectionSates();
+
+	///Send outgoing messages involving the game and player lists
+	void updateGamePlayerLists();
+
+	///Handles a request to create a new game
+	void handleCreateGame(const std::string& gameName);
+
+	///Handles a request to join a game
+	void handleJoinGame(Uint16 gameID);
 	
 	///Stores a copy of the games that the player knows about, bassically
 	///the list as it was on the last game list update
@@ -102,6 +119,14 @@ private:
 	std::list<YOGPlayerInfo> playersPlayerList;
 	///The playerID, used to identify the assocciatted YOGPlayerInfo
 	Uint16 playerID;
+	///the name of the player after logging in
+	std::string playerName;
+
+	///Tells what game the player is currently a part of
+	Uint16 gameID;
+	///Links to the connected game
+	shared_ptr<YOGGame> game;
+	
 };
 
 
