@@ -3,7 +3,10 @@
 
 #include "memory.h"
 
+#include <cassert>
+#include <iterator>
 #include <map>
+#include <ostream>
 #include <string>
 #include <vector>
 #include <ext/functional>
@@ -18,11 +21,17 @@ struct Value
 		prototype(prototype)
 	{
 		marked = false;
-		if (heap)
+		if (heap != 0)
+		{
 			heap->values.push_back(this);
+		}
 	}
 	
 	virtual ~Value() { }
+	
+	void dump(std::ostream &stream) const { stream << typeid(*this).name() << " "; dumpSpecific(stream); }
+	
+	virtual void dumpSpecific(std::ostream &stream) const { }
 	
 	virtual void propagateMarkForGC() { }
 	
@@ -37,94 +46,154 @@ struct Value
 	
 	void clearGCMark() { marked = false; }
 };
+extern Value nil;
 
-struct Method;
+struct ScopePrototype;
 struct Prototype: Value
 {
-	typedef std::map<std::string, Method*> Methods;
+	typedef std::map<std::string, ScopePrototype*> Methods;
 	
-	Prototype* parent;
 	Methods methods;
 	
-	Prototype(Heap* heap, Prototype* parent):
-		Value(heap, 0), parent(parent)
+	Prototype(Heap* heap):
+		Value(heap, 0)
 	{ // TODO: MetaPrototype
+	}
+	
+	virtual void dumpSpecific(std::ostream& stream) const
+	{
+		stream << ": ";
+		using namespace std;
+		using namespace __gnu_cxx;
+		transform(methods.begin(), methods.end(), ostream_iterator<string>(stream, " "), select1st<Methods::value_type>());
 	}
 	
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<map<string, Value*>::value_type>()));
+		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<Methods::value_type>()));
 	}
 	
-	virtual Method* lookup(const std::string &method) const
+	virtual ScopePrototype* lookup(const std::string& name) const
 	{
-		return methods.find(method)->second;
+		return methods.find(name)->second;
 	}
-};
-
-struct Thread;
-struct Method: Prototype
-{
-	typedef std::vector<std::string> Args;
-	
-	Args args;
-	
-	Method(Heap* heap, Prototype* parent):
-		Prototype(heap, parent)
-	{
-	}
-	
-	virtual void execute(Thread* thread) = 0;
 };
 
 struct Code;
-struct UserMethod: Method
+struct ScopePrototype: Prototype
 {
+	typedef std::vector<std::string> Locals;
 	typedef std::vector<Code*> Body;
 	
+	Prototype* outer;
+	Locals locals;
 	Body body;
 	
-	UserMethod(Heap* heap, Prototype* parent):
-		Method(heap, parent)
+	ScopePrototype(Heap* heap, Prototype* outer):
+		Prototype(heap),
+		outer(outer)
 	{
 		methods["."] = this;
 	}
 	
-	void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream& stream) const
+	{
+		stream << body.size() << " codes";
+	}
+	
+	virtual void propagateMarkForGC()
+	{
+		if (outer != 0)
+			outer->markForGC();
+		Prototype::propagateMarkForGC();
+	}
 };
 
 struct Scope: Value
 {
-	typedef std::map<std::string, Value*> Locals;
+	typedef std::vector<Value*> Locals;
 	
-	Scope* parent;
+	Value* outer;
 	Locals locals;
 	
-	Scope(Heap* heap, UserMethod* method, Scope* parent):
-		Value(heap, method),
-		parent(parent)
+	Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
+		Value(heap, prototype),
+		outer(outer)
+	{}
+	
+	virtual void dumpSpecific(std::ostream& stream) const
 	{
-		locals["."] = this;
+		using namespace std;
+		using namespace __gnu_cxx;
+		std::ostream* s = &stream;
+		for(Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
+		{
+			const Value* local = *it;
+			local->dump(stream);
+		}
 	}
 	
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		for_each(locals.begin(), locals.end(), compose1(mem_fun(&Value::markForGC), select2nd<map<string, Value*>::value_type>()));
+		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
 	
-	Value* lookup(const std::string& name) const
+	ScopePrototype* def()
 	{
-		return locals.find(name)->second;
+		return static_cast<ScopePrototype*>(prototype);
+	}
+};
+
+struct Function: Value
+{
+	Value* receiver;
+	ScopePrototype* method;
+	
+	Function(Heap* heap, Value* receiver, ScopePrototype* method):
+		Value(heap, &functionPrototype),
+		receiver(receiver),
+		method(method)
+	{
+		assert(method->outer == receiver->prototype);
 	}
 	
-	UserMethod* method()
+	struct FunctionPrototype: Prototype
 	{
-		return static_cast<UserMethod*>(prototype);
+		FunctionPrototype();
+	};
+	static FunctionPrototype functionPrototype;
+};
+
+struct Tuple: Value
+{
+	typedef std::vector<Value*> Values;
+	
+	Values values;
+	
+	Tuple(Heap* heap):
+		Value(heap, &tuplePrototype)
+	{ }
+	
+	virtual void dumpSpecific(std::ostream& stream) const
+	{
+		stream << values.size() << " values";
 	}
+	
+	virtual void propagateMarkForGC()
+	{
+		using namespace std;
+		for_each(values.begin(), values.end(), mem_fun(&Value::markForGC));
+	}
+	
+	struct TuplePrototype: Prototype
+	{
+		TuplePrototype();
+	};
+	static TuplePrototype tuplePrototype;
 };
 
 #endif // ndef TYPES_H

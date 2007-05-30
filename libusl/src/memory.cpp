@@ -3,7 +3,6 @@
 #include "types.h"
 
 using namespace std;
-using namespace __gnu_cxx;
 
 void Heap::garbageCollect(Thread* thread)
 {
@@ -24,4 +23,3 @@ void Heap::garbageCollect(Thread* thread)
 	swap(values, marked);
 	for_each(values.begin(), values.end(), mem_fun(&Value::clearGCMark));
 }
-

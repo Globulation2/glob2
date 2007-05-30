@@ -8,11 +8,24 @@ struct Code;
 struct Node
 {
 	virtual ~Node() {}
-	virtual void generate(UserMethod* method) = 0;
+	virtual void generate(ScopePrototype* scope) = 0;
 };
 
 struct ExpressionNode: Node
 {};
+
+struct DefRefNode: ExpressionNode
+{
+	DefRefNode(ScopePrototype* scope, ExpressionNode* value):
+		scope(scope),
+		value(value)
+	{}
+	
+	void generate(ScopePrototype* scope);
+	
+	ScopePrototype* scope;
+	ExpressionNode* value;
+};
 
 struct ConstNode: ExpressionNode
 {
@@ -20,47 +33,87 @@ struct ConstNode: ExpressionNode
 		value(value)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(ScopePrototype* scope);
 	
 	Value* value;
 };
 
-struct LocalNode: ExpressionNode
+struct ValRefNode: ExpressionNode
 {
-	LocalNode(const std::string& local):
-		local(local)
+	ValRefNode(size_t depth, size_t index):
+		depth(depth),
+		index(index)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(ScopePrototype* scope);
 	
-	std::string local;
+	size_t depth;
+	size_t index;
 };
 
 struct ApplyNode: ExpressionNode
 {
-	ApplyNode(Node* receiver, const std::string& method):
+	ApplyNode(Node* receiver, const std::string& name, Node* argument):
 		receiver(receiver),
-		name(name)
+		name(name),
+		argument(argument)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(ScopePrototype* scope);
 	
 	Node* receiver;
 	const std::string name;
-	std::vector<Node*> args;
+	Node* argument;
 };
 
-struct ValueNode: Node
+struct ValNode: Node
 {
-	ValueNode(const std::string& local, Node* value):
-		local(local),
+	ValNode(size_t index, Node* value):
+		index(index),
 		value(value)
 	{}
 	
-	void generate(UserMethod* method);
+	void generate(ScopePrototype* scope);
 	
-	const std::string local;
+	size_t index;
 	Node* value;
+};
+
+struct BlockNode: ExpressionNode
+{
+	typedef std::vector<Node*> Statements;
+	
+	void generate(ScopePrototype* scope);
+	
+	Statements statements;
+	Node* value;
+};
+
+struct DefNode: Node
+{
+	DefNode(ScopePrototype* scope, ExpressionNode* body):
+		scope(scope),
+		body(body)
+	{}
+	
+	void generate(ScopePrototype* scope);
+	
+	ScopePrototype* scope;
+	ExpressionNode* body;
+};
+
+struct ParentNode: ExpressionNode
+{
+	void generate(ScopePrototype* scope);
+};
+
+struct TupleNode: ExpressionNode
+{
+	typedef std::vector<ExpressionNode*> Expressions;
+	
+	void generate(ScopePrototype* scope);
+	
+	Expressions expressions;
 };
 
 #endif // ndef TREE_H

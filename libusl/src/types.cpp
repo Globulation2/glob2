@@ -3,28 +3,22 @@
 
 #include <cassert>
 
-void UserMethod::execute(Thread* thread)
+Prototype Nil(0);
+Value nil(0, &Nil);
+
+Function::FunctionPrototype::FunctionPrototype():
+	Prototype(0)
 {
-	Thread::Frames& frames = thread->frames;
-	Thread::Frame::Stack& stack = frames.back().stack;
-	
-	size_t argsSize = args.size();
-	
-	// create a new scope
-	Scope* receiver = dynamic_cast<Scope*>(*(stack.rbegin() + argsSize));
-	assert(receiver != 0);
-	Scope* scope = new Scope(thread->heap, this, receiver);
-	
-	// copy arguments
-	Thread::Frame::Stack::const_iterator arg = stack.end() - argsSize;
-	for (size_t i = 0; i < argsSize; ++i)
-	{
-		scope->locals[args[i]] = *arg;
-		++arg;
-	}
-	
-	// pop arguments and receiver
-	stack.resize(stack.size() - argsSize - 1);
-	
-	frames.push_back(scope);
+	// TODO: add some function methods
 }
+
+Function::FunctionPrototype Function::functionPrototype;
+
+
+Tuple::TuplePrototype::TuplePrototype():
+	Prototype(0)
+{
+	// TODO: add some tuple methods
+}
+
+Tuple::TuplePrototype Tuple::tuplePrototype;
