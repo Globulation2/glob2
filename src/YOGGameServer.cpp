@@ -34,24 +34,26 @@ void YOGGameServer::update()
 	shared_ptr<NetConnection> nc(new NetConnection);
 	while(nl.attemptConnection(*nc))
 	{
-		players.push_back(shared_ptr<YOGPlayer>(new YOGPlayer(nc)));
+		Uint16 id = chooseNewPlayerID();
+		players.insert(std::make_pair(id, shared_ptr<YOGPlayer>(new YOGPlayer(nc, id, *this))));
 		nc.reset(new NetConnection);
 	}
 
 	//Call update to all of the players
-	for(std::list<shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+	for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 	{
-		(*i)->update(*this);
+		i->second->update();
 	}
 
 	//Remove all of the players that have disconnected.
-	for(std::list<shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end();)
+	for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end();)
 	{
-		if(!(*i)->isConnected())
+		if(!i->second->isConnected())
 		{
-			if((*i)->getPlayerID()!=0)
-				playerHasLoggedOut((*i)->getPlayerID());
-			i = players.erase(i);
+			playerHasLoggedOut(i->second->getPlayerID());
+			std::map<Uint16, shared_ptr<YOGPlayer> >::iterator to_erase=i;
+			i++;
+			players.erase(to_erase);
 		}
 		else
 		{
@@ -124,28 +126,9 @@ void YOGGameServer::propogateMessage(boost::shared_ptr<YOGMessage> message)
 
 
 
-Uint16 YOGGameServer::playerHasLoggedIn(const std::string& username)
+void YOGGameServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
-	//choose the new player ID.
-	Uint16 newID=1;
-	while(true)
-	{
-		bool found=false;
-		for(std::list<YOGPlayerInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
-		{
-			if(i->getPlayerID() == newID)
-			{
-				found=true;
-				break;
-			}
-		}
-		if(found)
-			newID+=1;
-		else
-			break;
-	}
-	playerList.push_back(YOGPlayerInfo(username, newID));
-	return newID;
+	playerList.push_back(YOGPlayerInfo(username, id));
 }
 
 
@@ -161,6 +144,15 @@ void YOGGameServer::playerHasLoggedOut(Uint16 playerID)
 		}
 	}
 }
+
+
+
+YOGGameCreateRefusalReason YOGGameServer::canCreateNewGame(const std::string& game)
+{
+	//not implemented
+	return YOGCreateRefusalUnknown;
+}
+
 
 
 
@@ -185,6 +177,46 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 			break;
 	}
 	gameList.push_back(YOGGameInfo(name, newID));
-	games.push_back(YOGGame(newID));
+	games[newID] = shared_ptr<YOGGame>(new YOGGame(newID));
+	return newID;
+}
+
+
+YOGGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
+{
+	//not implemented
+	return YOGJoinRefusalUnknown;
+}
+
+
+
+shared_ptr<YOGGame> YOGGameServer::getGame(Uint16 gameID)
+{
+	return games[gameID];
+}
+
+
+
+shared_ptr<YOGPlayer> YOGGameServer::getPlayer(Uint16 playerID)
+{
+	return players[playerID];
+}
+
+
+
+Uint16 YOGGameServer::chooseNewPlayerID()
+{
+	//choose the new player ID.
+	Uint16 newID=1;
+	while(true)
+	{
+		bool found=false;
+		if(players.find(newID) != players.end())
+			found=true;
+		if(found)
+			newID+=1;
+		else
+			break;
+	}
 	return newID;
 }

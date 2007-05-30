@@ -27,6 +27,7 @@
 #include "YOGGame.h"
 
 #include <list>
+#include <map>
 #include <boost/shared_ptr.hpp>
 
 using namespace boost;
@@ -74,21 +75,35 @@ public:
 	void propogateMessage(boost::shared_ptr<YOGMessage> message);
 
 	///Tells the server that a player has logged in with the given information,
-	///and returns a player ID. The ID is always greater than 0.
-	Uint16 playerHasLoggedIn(const std::string& username);
+	void playerHasLoggedIn(const std::string& username, Uint16 id);
 
 	///Tells the server that the player has logged out and disconnected
 	void playerHasLoggedOut(Uint16 playerID);
-	
+
+	///Asks the server whether a new game can be created with the given information.
+	///Return YOGCreateRefusalUnknown if it can, or the refusal reason elsewise
+	YOGGameCreateRefusalReason canCreateNewGame(const std::string& game);
+
 	///Tells the server to create a new game with the given game information,
 	///and returns the new id. The id will always be greater than 0
 	Uint16 createNewGame(const std::string& name);
 
+	///Asks the server whether a player can join the provided game with the information.
+	///Return YOGJoinRefusalUnknown if it can, or the failure reason elsewise
+	YOGGameJoinRefusalReason canJoinGame(Uint16 gameID);
+	
+	///Returns the game assocciatted with the given ID
+	shared_ptr<YOGGame> getGame(Uint16 gameID);
+
+	///Returns the player assocciatted with the given ID
+	shared_ptr<YOGPlayer> getPlayer(Uint16 playerID);
 private:
+	Uint16 chooseNewPlayerID();
+
 	NetListener nl;
-	std::list<shared_ptr<YOGPlayer> > players;
+	std::map<Uint16, shared_ptr<YOGPlayer> > players;
+	std::map<Uint16, shared_ptr<YOGGame> > games;
 	std::list<YOGGameInfo> gameList;
-	std::list<YOGGame> games;
 	std::list<YOGPlayerInfo> playerList;
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;

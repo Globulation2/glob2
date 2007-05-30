@@ -29,6 +29,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "MapHeader.h"
+#include "GameHeader.h"
 
 
 using namespace boost;
@@ -52,9 +53,11 @@ enum NetMessageType
 	MNetAttemptJoinGame,
 	MNetGameJoinAccepted,
 	MNetGameJoinRefused,
-	MNetRemoveGame,
 	MNetSendYOGMessage,
 	MNetSendMapHeader,
+	MNetCreateGameAccepted,
+	MNetCreateGameRefused,
+	MNetUpdateGameHeaderPlayers,
 	//type_append_marker
 };
 
@@ -551,7 +554,7 @@ private:
 
 
 
-///NetAttemptJoinGame tries to join a game. Games may be password private and require a password,
+///NetAttemptJoinGame tries to join a game. In the future, games may be password private and require a password,
 ///and so attempts to join a game may not always be successful
 class NetAttemptJoinGame : public NetMessage
 {
@@ -650,42 +653,6 @@ private:
 
 
 
-///NetRemoveGame is used to tell the server that the game has finished, or is
-///begin removed by the host without being played
-class NetRemoveGame : public NetMessage
-{
-public:
-	///Creates a NetRemoveGame message
-	NetRemoveGame(Uint16 gameID);
-
-	///Creates a NetRemoveGame message
-	NetRemoveGame();
-	
-	///Returns MNetRemoveGame
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetRemoveGame message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetRemoveGame
-	bool operator==(const NetMessage& rhs) const;
-	
-	///Returns the ID of the game to be removed
-	Uint16 getGameID() const;
-private:
-	Uint16 gameID;
-};
-
-
-
-
 ///NetSendYOGMessage
 class NetSendYOGMessage : public NetMessage
 {
@@ -751,6 +718,106 @@ public:
 	const MapHeader& getMapHeader() const;
 private:
 	mutable MapHeader mapHeader;
+};
+
+
+
+
+///NetCreateGameAccepted
+class NetCreateGameAccepted : public NetMessage
+{
+public:
+	///Creates a NetCreateGameAccepted message
+	NetCreateGameAccepted();
+
+	///Returns MNetCreateGameAccepted
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetCreateGameAccepted message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetCreateGameAccepted
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetCreateGameRefused
+class NetCreateGameRefused : public NetMessage
+{
+public:
+	///Creates a NetCreateGameRefused message
+	NetCreateGameRefused();
+
+	///Creates a NetCreateGameRefused message
+	NetCreateGameRefused(YOGGameCreateRefusalReason reason);
+
+	///Returns MNetCreateGameRefused
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetCreateGameRefused message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetCreateGameRefused
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the reason why the player could not join the game.
+	YOGGameCreateRefusalReason getRefusalReason() const;
+private:
+	YOGGameCreateRefusalReason reason;
+};
+
+
+
+
+///NetUpdateGameHeaderPlayers sends the BasePlayers portion of a game header
+///across a network. It is meant to communicate from the server to the clients
+///changes in who has joined or not joined a game. The host handles the other
+///portions of the game header, the game options
+class NetUpdateGameHeaderPlayers : public NetMessage
+{
+public:
+	///Creates a NetUpdateGameHeaderPlayers message
+	NetUpdateGameHeaderPlayers();
+	
+	///Creates a NetUpdateGameHeaderPlayers message
+	NetUpdateGameHeaderPlayers(GameHeader& gameHeader);
+
+	///Returns MNetUpdateGameHeaderPlayers
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetUpdateGameHeaderPlayers message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetUpdateGameHeaderPlayers
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the game header. Note that it may only be partially complete
+	const GameHeader& getGameHeader();
+private:
+	GameHeader gameHeader;
 };
 
 

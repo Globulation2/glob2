@@ -294,14 +294,6 @@ void YOGClient::createGame(const std::string& name)
 
 
 
-void YOGClient::sendMapHeader(const MapHeader& header)
-{
-	shared_ptr<NetSendMapHeader> message(new NetSendMapHeader(header));
-	nc.sendMessage(message);
-}
-
-
-
 void YOGClient::setMultiplayerGame(boost::shared_ptr<MultiplayerGame> game)
 {
 	joinedGame=game;
