@@ -23,6 +23,8 @@ YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameSer
  : connection(connection), server(server), playerID(id)
 {
 	connectionState = WaitingForClientInformation;
+	gameListState=GameListWaiting;
+	playerListState=PlayerListWaiting;
 	loginState = YOGLoginUnknown;
 	gameID=0;
 }
@@ -31,6 +33,10 @@ YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameSer
 
 void YOGPlayer::update()
 {
+	//Send outgoing messages
+	updateConnectionSates();
+	updateGamePlayerLists();
+
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = connection->getMessage();
 	if(!message)
@@ -55,8 +61,8 @@ void YOGPlayer::update()
 			server.playerHasLoggedIn(username, playerID);
 			playerName=username;
 			connectionState = NeedToSendLoginAccepted;
-			gameListState=NeedToSendGameList;
-			playerListState=NeedToSendPlayerList;
+			gameListState=UpdatingGameList;
+			playerListState=UpdatingPlayerList;
 		}
 		else
 		{
@@ -87,10 +93,22 @@ void YOGPlayer::update()
 		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
 		game->setMapHeader(info->getMapHeader());
 	}
-
-	//Send outgoing messages
-	updateConnectionSates();
-	updateGamePlayerLists();
+	//This recieves a message to set the game header
+	else if(type==MNetSendGameHeader)
+	{
+		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
+		game->setGameHeader(info->getGameHeader());
+	}
+	//This recieves a message to set the game header
+	else if(type==MNetStartGame)
+	{
+		game->routeMessage(message, server.getPlayer(playerID));
+	}
+	//This recieves routes an order
+	else if(type==MNetSendOrder)
+	{
+		game->routeMessage(message, server.getPlayer(playerID));
+	}
 }
 
 
@@ -135,7 +153,7 @@ void YOGPlayer::updateConnectionSates()
 	//Send the server information
 	if(connectionState==NeedToSendServerInformation)
 	{
-		shared_ptr<NetSendServerInformation> info(new NetSendServerInformation(server.getLoginPolicy(), server.getGamePolicy()));
+		shared_ptr<NetSendServerInformation> info(new NetSendServerInformation(server.getLoginPolicy(), server.getGamePolicy(), playerID));
 		connection->sendMessage(info);
 		connectionState = WaitingForLoginAttempt;
 	}
@@ -158,7 +176,7 @@ void YOGPlayer::updateConnectionSates()
 void YOGPlayer::updateGamePlayerLists()
 {
 	//Send an updated game list to the user
-	if(gameListState==NeedToSendGameList)
+	if(gameListState==UpdatingGameList)
 	{
 		if(playersGames != server.getGameList())
 		{
@@ -166,11 +184,10 @@ void YOGPlayer::updateGamePlayerLists()
 			gamelist->updateDifferences(playersGames, server.getGameList());
 			playersGames = server.getGameList();
 			connection->sendMessage(gamelist);
-			gameListState=GameListNormal;
 		}
 	}
 	//Send an updated player list to the user
-	if(playerListState==NeedToSendPlayerList)
+	if(playerListState==UpdatingPlayerList)
 	{
 		if(playersPlayerList != server.getPlayerList())
 		{
@@ -178,7 +195,6 @@ void YOGPlayer::updateGamePlayerLists()
 			playerlist->updateDifferences(playersPlayerList, server.getPlayerList());
 			playersPlayerList = server.getPlayerList();
 			connection->sendMessage(playerlist);
-			playerListState=PlayerListNormal;
 		}
 	}
 }

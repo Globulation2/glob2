@@ -34,9 +34,9 @@ namespace GAGGUI
 	class TextButton;
 	class ColorButton;
 }
-class MultiplayersHost;
-class MultiplayersJoin;
 
+///This screen is the setup screen for a multiplayer game. It functions both for the host
+///and the joined player. It uses the information it gets from the given MultiplayerGame.
 class MultiplayerGameScreen : public Glob2Screen
 {
 public:
@@ -58,11 +58,14 @@ private:
 	int executionMode;
 
 public:
-	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> client, IRC* ircPtr, MapHeader header);
+	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, IRC* ircPtr);
 	virtual ~MultiplayerGameScreen();
 
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
+
+	///This function will update the list of joined players
+	void updateJoinedPlayers();
 
 	TextButton *startButton;
 	std::vector<TextButton *> addAI;
@@ -74,11 +77,12 @@ public:
 	TextInput *textInput;
 	TextArea *chatWindow;
 
+	boost::shared_ptr<MultiplayerGame> game;
+
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
 	Text *gameFullText;
-	
-	MapHeader mapHeader;
+
 	IRC* ircPtr;
 };
 #endif

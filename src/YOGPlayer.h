@@ -77,17 +77,17 @@ private:
 	enum GameListState
 	{
 		///Game list information needs to be sent
-		NeedToSendGameList,
+		UpdatingGameList,
 		///Nothing needs to be sent
-		GameListNormal,
+		GameListWaiting,
 	};
 	
 	enum PlayerListState
 	{
 		///Player list information needs to be sent
-		NeedToSendPlayerList,
-		///Nothing needs to be sent
-		PlayerListNormal,
+		UpdatingPlayerList,
+		///Nothing needs to be sent yet
+		PlayerListWaiting,
 	};
 
 	ConnectionState connectionState;

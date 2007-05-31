@@ -18,7 +18,7 @@
 
 #include "YOGClient.h"
 #include <iostream>
-
+#include "MultiplayerGame.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
@@ -28,6 +28,7 @@ YOGClient::YOGClient(const std::string& server)
 	loginState = YOGLoginUnknown;
 	gameListChanged = false;
 	playerListChanged = false;
+	playerID=0;
 	connect(server);
 }
 
@@ -41,6 +42,7 @@ YOGClient::YOGClient()
 	loginState = YOGLoginUnknown;
 	gameListChanged = false;
 	playerListChanged = false;
+	playerID=0;
 }
 
 
@@ -75,6 +77,7 @@ void YOGClient::update()
 		shared_ptr<NetSendServerInformation> info = static_pointer_cast<NetSendServerInformation>(message);
 		loginPolicy = info->getLoginPolicy();
 		gamePolicy = info->getGamePolicy();
+		playerID = info->getPlayerID();
 		connectionState = WaitingForLoginInformation;
 	}
 	//This recieves a login acceptance message
@@ -127,6 +130,47 @@ void YOGClient::update()
 		shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
 		messages.push(yogmessage->getMessage());
 	}
+
+	if(type==MNetCreateGameAccepted)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetCreateGameRefused)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetGameJoinAccepted)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetGameJoinRefused)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendMapHeader)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendGameHeader)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetPlayerJoinsGame)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetPlayerLeavesGame)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetStartGame)
+	{
+		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendOrder)
+	{
+		joinedGame->recieveMessage(message);
+	}
 }
 
 
@@ -148,6 +192,13 @@ YOGLoginPolicy YOGClient::getLoginPolicy() const
 YOGGamePolicy YOGClient::getGamePolicy() const
 {
 	return gamePolicy;
+}
+
+
+
+Uint16 YOGClient::getPlayerID() const
+{
+	return playerID;
 }
 
 
@@ -186,6 +237,17 @@ const std::list<YOGGameInfo>& YOGClient::getGameList() const
 const std::list<YOGPlayerInfo>& YOGClient::getPlayerList() const
 {
 	return players;
+}
+
+
+
+std::string YOGClient::findPlayerName(Uint16 playerID)
+{
+	for(std::list<YOGPlayerInfo>::iterator i = players.begin(); i != players.end(); ++i)
+	{
+		if(i->getPlayerID() == playerID)
+			return i->getPlayerName();
+	}
 }
 
 
@@ -236,26 +298,6 @@ void YOGClient::disconnect()
 }
 
 
-void YOGClient::removeGame()
-{
-	//unimplemented
-}
-
-
-
-void YOGClient::gameHasStarted()
-{
-	//unimplemented
-}
-
-
-
-void YOGClient::gameHasFinished()
-{
-	//unimplemented
-}
-
-
 
 void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> mmessage)
 {
@@ -299,7 +341,11 @@ void YOGClient::setMultiplayerGame(boost::shared_ptr<MultiplayerGame> game)
 	joinedGame=game;
 }
 
-    
+
+boost::shared_ptr<MultiplayerGame> YOGClient::getMultiplayerGame()
+{
+	return joinedGame;
+}
 
 void YOGClient::sendNetMessage(boost::shared_ptr<NetMessage> message)
 {

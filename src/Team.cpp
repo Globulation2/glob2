@@ -1400,12 +1400,12 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 
 
-const char *Team::getFirstPlayerName(void) const
+std::string Team::getFirstPlayerName(void) const
 {
 	for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (game->players[i]->team == this)
 			return game->players[i]->name;
 	}
-	return  Toolkit::getStringTable()->getString("[Uncontrolled]");
+	return Toolkit::getStringTable()->getString("[Uncontrolled]");
 }

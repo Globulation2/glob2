@@ -179,7 +179,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==JOIN)
 		{
-			//unimplemented
+			joinGame();
 		}
 		else if (par1==-1)
 		{
@@ -398,7 +398,7 @@ void YOGScreen::hostGame()
 		client->setMultiplayerGame(game);
 		game->createNewGame("New Game");
 		game->setMapHeader(cms.getMapHeader());
-		MultiplayerGameScreen mgs(game, &irc, cms.getMapHeader());
+		MultiplayerGameScreen mgs(game, &irc);
 		mgs.execute(globalContainer->gfx, 40);
 	}
 /*
@@ -423,6 +423,31 @@ void YOGScreen::hostGame()
 	client->removeGame();
 */
 }
+
+
+
+
+void YOGScreen::joinGame()
+{
+	if(gameList->getSelectionIndex() != -1)
+	{
+		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+		client->setMultiplayerGame(game);
+		Uint16 id = 0;
+		for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
+		{
+			if(gameList->get() == game->getGameName())
+			{
+				id = game->getGameID();
+				break;
+			}
+		}
+		game->joinGame(id);
+		MultiplayerGameScreen mgs(game, &irc);
+		mgs.execute(globalContainer->gfx, 40);
+	}
+}
+
 
 
 void YOGScreen::updateGameInfo()

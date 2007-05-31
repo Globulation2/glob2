@@ -255,8 +255,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 			else
 				strText = Toolkit::getStringTable()->getString("[Lost : %0 has more prestige than you]");
 
-			const char *playerText = t->getFirstPlayerName();
-			assert(playerText);
+			std::string playerText = t->getFirstPlayerName();
 			strText.arg(playerText);
 			titleText = strText;
 		}
