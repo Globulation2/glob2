@@ -57,7 +57,6 @@ void NetConnection::openConnection(const std::string& connectaddress, Uint16 por
 		if(SDLNet_ResolveHost(&address, connectaddress.c_str(), port) == -1)
 		{
 			std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
-			assert(false);
 		}
 		
 		//Open the connection
@@ -65,7 +64,6 @@ void NetConnection::openConnection(const std::string& connectaddress, Uint16 por
 		if(!socket)
 		{
 			std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
-			assert(false);
 		}
 		else
 		{

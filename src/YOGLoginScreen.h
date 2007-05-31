@@ -47,13 +47,19 @@ public:
 
 	enum
 	{
+		Cancelled,
+		LoggedIn,
+	};
+
+private:
+	enum
+	{
 		EXECUTING=0,
 		LOGIN=1,
 		CANCEL=2,
 		NEW_USER=10
 	};
 
-private:
 	enum
 	{
 		WAITING=1,
@@ -63,7 +69,9 @@ private:
 	virtual void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 
+	///Attempt a login with the entered information
 	void attemptLogin();
+	///Attempt a registration with the entered information
 	void attemptRegistration();
 
 	TextInput *login, *password;
@@ -75,6 +83,8 @@ private:
 	YOGClient::ConnectionState oldConnectionState;
 	
 	boost::shared_ptr<YOGClient> client;
+	
+	bool wasConnected;
 };
 
 #endif

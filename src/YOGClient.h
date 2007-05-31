@@ -40,8 +40,14 @@ public:
 	///Initializes the client as empty
 	YOGClient();
 	
+	///Initializes the client as empty
+	void initialize();
+	
 	///Attempts a connection to server.
 	void connect(const std::string& server);
+
+	///Returns whether the client is still connected
+	bool isConnected();
 
 	///Updates the client. This parses and interprets any incoming messages.
 	void update();

@@ -22,19 +22,19 @@
 
 YOGClient::YOGClient(const std::string& server)
 {
-	connectionState = NotConnected;
-	loginPolicy = YOGUnknownLoginPolicy;
-	gamePolicy = YOGUnknownGamePolicy;
-	loginState = YOGLoginUnknown;
-	gameListChanged = false;
-	playerListChanged = false;
-	playerID=0;
 	connect(server);
 }
 
 
 
 YOGClient::YOGClient()
+{
+	initialize();
+}
+
+
+
+void YOGClient::initialize()
 {
 	connectionState = NotConnected;
 	loginPolicy = YOGUnknownLoginPolicy;
@@ -49,8 +49,16 @@ YOGClient::YOGClient()
 
 void YOGClient::connect(const std::string& server)
 {
+	initialize();
 	nc.openConnection(server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
+}
+
+
+
+bool YOGClient::isConnected()
+{
+	return nc.isConnected();
 }
 
 
