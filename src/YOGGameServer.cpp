@@ -35,7 +35,7 @@ void YOGGameServer::update()
 	while(nl.attemptConnection(*nc))
 	{
 		Uint16 id = chooseNewPlayerID();
-		players.insert(std::make_pair(id, shared_ptr<YOGPlayer>(new YOGPlayer(nc, id, *this))));
+		players[id]=shared_ptr<YOGPlayer>(new YOGPlayer(nc, id, *this));
 		nc.reset(new NetConnection);
 	}
 
@@ -72,7 +72,7 @@ int YOGGameServer::run()
 		return 1;
 	while(nl.isListening())
 	{
-		const int speed = 25;
+		const int speed = 4;
 		int startTick, endTick;
 		startTick = SDL_GetTicks();
 		update();

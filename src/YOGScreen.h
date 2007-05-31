@@ -95,8 +95,10 @@ public:
 
 private:
 
-	///This launches the menu when the player is hosting a game, and starts the game engine when nesseccarry
+	///This launches the menu to host a game
 	void hostGame();
+	///This launches the menu to join a game
+	void joinGame();
 	///This updates the list of games
 	void updateGameList();
 	///This updates the list of players

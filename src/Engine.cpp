@@ -190,6 +190,17 @@ int Engine::initLoadGame()
 
 
 
+int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, int localPlayer)
+{
+	gui.localPlayer = localPlayer;
+	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
+	multiplayer = multiplayerGame;
+	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader());
+	multiplayer->setNetEngine(net);
+	return Engine::EE_NO_ERROR;
+}
+
+
 int Engine::run(void)
 {
 	bool doRunOnceAgain=true;
@@ -256,8 +267,12 @@ int Engine::run(void)
 					
 					
 					// We get and push local orders
-					net->pushOrder(gui.getOrder(), gui.localPlayer);
-					
+					shared_ptr<Order> localOrder = gui.getOrder();
+					if(multiplayer)
+						multiplayer->pushOrder(localOrder, gui.localPlayer, gui.game.stepCounter);
+						
+					net->pushOrder(localOrder, gui.localPlayer, gui.game.stepCounter);
+	
 					// We store full recursive checkSums data:
 //					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
 
@@ -282,16 +297,23 @@ int Engine::run(void)
 				else
 					ticksDelayedInside=0;
 				
+				if(multiplayer)
+					multiplayer->update();
+				
 				// We proceed network:
 				networkReadyToExecute=net->allOrdersRecieved();
 
-				// We get all currents orders from the network and execute them:
-				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
+				if(networkReadyToExecute)
 				{
-					shared_ptr<Order> order=net->retrieveOrder(i);
-					gui.executeOrder(order);
+
+					// We get all currents orders from the network and execute them:
+					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
+					{
+						shared_ptr<Order> order=net->retrieveOrder(i);
+						gui.executeOrder(order);
+					}
+					net->advanceStep();
 				}
-				net->advanceStep();
 
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
@@ -401,6 +423,7 @@ int Engine::run(void)
 
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader)
 {
+	std::cout<<gameHeader.getNumberOfPlayers()<<std::endl;
 	if (!gui.loadFromHeaders(mapHeader, gameHeader))
 		return EE_CANT_LOAD_MAP;
 

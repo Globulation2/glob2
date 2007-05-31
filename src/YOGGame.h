@@ -38,19 +38,25 @@ public:
 	///Removes the player from the game
 	void removePlayer(shared_ptr<YOGPlayer> player);
 
-	///Sets the map header of the game, from the given player
+	///Sets the host of the game
+	void setHost(shared_ptr<YOGPlayer> player);
+
+	///Sets the map header of the game
 	void setMapHeader(const MapHeader& mapHeader);
 
-	///Routes the given message to all the players in the game
-	void routeMessage(shared_ptr<NetMessage> message);
+	///Sets the game header of the game
+	void setGameHeader(const GameHeader& gameHeader);
+
+	///Routes the given message to all players except for the sender,
+	///unless sender is null
+	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender);
 
 private:
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	Uint16 gameID;
+	shared_ptr<YOGPlayer> host;
 	std::vector<shared_ptr<YOGPlayer> > players;
-	
-	void sendGameHeaderPlayers();
 };
 
 

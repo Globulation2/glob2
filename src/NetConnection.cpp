@@ -194,7 +194,7 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 			closeConnection();
 		}
 		delete bos;
-		delete newData;
+		delete[] newData;
 	}
 }
 

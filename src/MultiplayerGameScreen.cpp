@@ -36,11 +36,9 @@
 
 #include "IRC.h"
 
-MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> client, IRC* ircPtr, MapHeader header)
-	: ircPtr(ircPtr)
+MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, IRC* ircPtr)
+	: game(game), ircPtr(ircPtr)
 {
-	mapHeader = header;
-
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
 	{
@@ -52,10 +50,10 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
 	addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 
-	startButton->visible=false;
+	startButton->visible=true;
 	addWidget(startButton);
 	notReadyText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
-	notReadyText->visible=true;
+	notReadyText->visible=false;
 	addWidget(notReadyText);
 	gameFullText=new Text(20, 335, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
 	gameFullText->visible=false;
@@ -69,8 +67,8 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		int dx=320*(i/8);
 		int dy=20*(i%8);
 		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, COLOR_BUTTONS+i);
-		for (int j=0; j<mapHeader.getNumberOfTeams(); j++)
-			color[i]->addColor(mapHeader.getBaseTeam(j).colorR, mapHeader.getBaseTeam(j).colorG, mapHeader.getBaseTeam(j).colorB);
+		for (int j=0; j<game->getMapHeader().getNumberOfTeams(); j++)
+			color[i]->addColor(game->getMapHeader().getBaseTeam(j).colorR, game->getMapHeader().getBaseTeam(j).colorG, game->getMapHeader().getBaseTeam(j).colorB);
 		addWidget(color[i]);
 		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
@@ -91,6 +89,8 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 	
+	updateJoinedPlayers();
+	
 	executionMode=START;
 }
 
@@ -101,6 +101,11 @@ MultiplayerGameScreen::~MultiplayerGameScreen()
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
+	game->update();
+	if(game->hasPlayersChanged())
+	{
+		updateJoinedPlayers();
+	}
 /*
 	// Host messages
 	if (multiplayersHost->receivedMessages.size())
@@ -219,12 +224,15 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 		*/
 }
 
+
+
 void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1 == START)
 		{
+			game->startGame();
 		}
 		else if (par1 == CANCEL)
 		{
@@ -285,3 +293,41 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	*/
 	}
 }
+
+
+
+void MultiplayerGameScreen::updateJoinedPlayers()
+{
+	GameHeader& gh = game->getGameHeader();
+	MapHeader& mh = game->getMapHeader();
+	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+	{
+		color[i]->clearColors();
+		for (int j=0; j<mh.getNumberOfTeams(); j++)
+			color[i]->addColor(mh.getBaseTeam(j).colorR, mh.getBaseTeam(j).colorG, mh.getBaseTeam(j).colorB);
+
+		BasePlayer& bp = gh.getBasePlayer(i);
+		if(bp.type != BasePlayer::P_NONE)
+		{
+			text[i]->visible=true;
+			text[i]->setText(bp.name);
+			color[i]->visible=true;
+			kickButton[i]->visible=true;
+		}
+		else if(i < mh.getNumberOfTeams())
+		{
+			text[i]->visible=true;
+			text[i]->setText(Toolkit::getStringTable()->getString("[open]"));
+			color[i]->visible=true;
+			kickButton[i]->visible=true;
+		}
+		else
+		{
+			text[i]->visible=false;
+			color[i]->visible=false;
+			kickButton[i]->visible=false;
+		}
+	}
+}
+
+

@@ -90,7 +90,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetSendServerInformation>())
 		return 5;
 	
-	shared_ptr<NetSendServerInformation> serverInfo1(new NetSendServerInformation(YOGRequirePassword, YOGSingleGame));
+	shared_ptr<NetSendServerInformation> serverInfo1(new NetSendServerInformation(YOGRequirePassword, YOGSingleGame, 17));
 	if(!testSerialize(serverInfo1))
 		return 6;
 	
@@ -297,7 +297,16 @@ int NetTestSuite::testNetMessages()
 	updatePlayerList1->applyDifferences(lpi2);
 	if(lpi1 != lpi2)
 		return 47;
-	
+
+	//Test NetSendMapHeader
+	if(!testInitial<NetSendMapHeader>())
+		return 48;
+
+	MapHeader mh;
+	mh.setMapName("Bobs Map");
+	shared_ptr<NetSendMapHeader> sendHeader1(new NetSendMapHeader(mh));
+	if(!testSerialize(sendHeader1))
+		return 49;
 
 	return 0;
 

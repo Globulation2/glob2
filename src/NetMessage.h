@@ -57,7 +57,10 @@ enum NetMessageType
 	MNetSendMapHeader,
 	MNetCreateGameAccepted,
 	MNetCreateGameRefused,
-	MNetUpdateGameHeaderPlayers,
+	MNetSendGameHeader,
+	MNetPlayerJoinsGame,
+	MNetPlayerLeavesGame,
+	MNetStartGame,
 	//type_append_marker
 };
 
@@ -172,12 +175,13 @@ private:
 
 
 ///This message sends server information to the client. This includes
-///login and game policies (for example anonymous / password required login)
+///login and game policies (for example anonymous / password required login),
+///and the playerID for this connection
 class NetSendServerInformation : public NetMessage
 {
 public:
 	///Creates a NetSendServerInformation message with the provided server information
-	NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy);
+	NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, Uint16 playerID);
 	
 	///Creates an empty NetSendServerInformation message
 	NetSendServerInformation();
@@ -204,9 +208,13 @@ public:
 	///Returns the game policy
 	YOGGamePolicy getGamePolicy() const;
 	
+	///Returns the playerID
+	Uint16 getPlayerID() const;
+	
 private:
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
+	Uint16 playerID;
 };
 
 
@@ -785,20 +793,17 @@ private:
 
 
 
-///NetUpdateGameHeaderPlayers sends the BasePlayers portion of a game header
-///across a network. It is meant to communicate from the server to the clients
-///changes in who has joined or not joined a game. The host handles the other
-///portions of the game header, the game options
-class NetUpdateGameHeaderPlayers : public NetMessage
+///NetSendGameHeader
+class NetSendGameHeader : public NetMessage
 {
 public:
-	///Creates a NetUpdateGameHeaderPlayers message
-	NetUpdateGameHeaderPlayers();
+	///Creates a NetSendGameHeader message
+	NetSendGameHeader();
 	
-	///Creates a NetUpdateGameHeaderPlayers message
-	NetUpdateGameHeaderPlayers(GameHeader& gameHeader);
+	///Creates a NetSendGameHeader message
+	NetSendGameHeader(const GameHeader& gameHeader);
 
-	///Returns MNetUpdateGameHeaderPlayers
+	///Returns MNetSendGameHeader
 	Uint8 getMessageType() const;
 
 	///Encodes the data
@@ -807,17 +812,114 @@ public:
 	///Decodes the data
 	void decodeData(GAGCore::InputStream* stream);
 
-	///Formats the NetUpdateGameHeaderPlayers message with a small amount
+	///Formats the NetSendGameHeader message with a small amount
 	///of information.
 	std::string format() const;
 
-	///Compares with another NetUpdateGameHeaderPlayers
+	///Compares with another NetSendGameHeader
 	bool operator==(const NetMessage& rhs) const;
 	
-	///Returns the game header. Note that it may only be partially complete
-	const GameHeader& getGameHeader();
+	///Returns the game header
+	const GameHeader& getGameHeader() const;
 private:
 	GameHeader gameHeader;
+};
+
+
+
+
+///NetPlayerJoinsGame
+class NetPlayerJoinsGame : public NetMessage
+{
+public:
+	///Creates a NetPlayerJoinsGame message
+	NetPlayerJoinsGame();
+
+	///Creates a NetPlayerJoinsGame message
+	NetPlayerJoinsGame(Uint16 playerID);
+
+	///Returns MNetPlayerJoinsGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPlayerJoinsGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPlayerJoinsGame
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the player ID
+	Uint16 getPlayerID() const;
+private:
+	Uint16 playerID;
+};
+
+
+
+
+///NetPlayerLeavesGame
+class NetPlayerLeavesGame : public NetMessage
+{
+public:
+	///Creates a NetPlayerLeavesGame message
+	NetPlayerLeavesGame();
+	
+	///Creates a NetPlayerLeavesGame message
+	NetPlayerLeavesGame(Uint16 playerID);
+
+	///Returns MNetPlayerLeavesGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPlayerLeavesGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPlayerLeavesGame
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the player ID
+	Uint16 getPlayerID() const;
+private:
+	Uint16 playerID;
+};
+
+
+
+
+///NetStartGame
+class NetStartGame : public NetMessage
+{
+public:
+	///Creates a NetStartGame message
+	NetStartGame();
+
+	///Returns MNetStartGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetStartGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetStartGame
+	bool operator==(const NetMessage& rhs) const;
 };
 
 

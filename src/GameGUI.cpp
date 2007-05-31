@@ -2581,8 +2581,8 @@ void GameGUI::drawUnitInfos(void)
 	title += Toolkit::getStringTable()->getString("[Unit type]", selUnit->typeNum);
 	title += " (";
 
-	const char *textT=selUnit->owner->getFirstPlayerName();
-	if (!textT)
+	std::string textT=selUnit->owner->getFirstPlayerName();
+	if (textT.empty())
 		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 	title += textT;
 	title += ")";
@@ -2784,8 +2784,8 @@ void GameGUI::drawBuildingInfos(void)
 	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
 	{
 		title += " (";
-		const char *textT=selBuild->owner->getFirstPlayerName();
-		if (!textT)
+		std::string textT=selBuild->owner->getFirstPlayerName();
+		if (textT.empty())
 			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 		title += textT;
 		title += ")";

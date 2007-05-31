@@ -31,6 +31,8 @@
 
 #include "AI.h"
 
+#include <string>
+
 class Game;
 class Map;
 class Team;
@@ -72,18 +74,21 @@ public:
 
 	Sint32 number;
 	Uint32 numberMask;
-	char name[MAX_NAME_LENGTH];
+	std::string name;
 	Sint32 teamNumber;
 	Uint32 teamNumberMask;
 	
 	bool quitting; // We have executed the quitting order of player, but we did not freed all his orders.
 	Uint32 quitUStep;
 	Uint32 lastUStepToExecute;
+	
+	///Used to identify the player over the internet
+	Uint32 playerID;
 
 public:
 	
 	BasePlayer(void);
-	BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 teamn, PlayerType type);
+	BasePlayer(Sint32 number, const std::string& name, Sint32 teamn, PlayerType type);
 	void init();
 	virtual ~BasePlayer(void);
 	void setNumber(Sint32 number);
@@ -107,7 +112,7 @@ class Player:public BasePlayer
 public:
 	Player();
 	Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor);
-	Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type);
+	Player(Sint32 number, const std::string& name, Team *team, PlayerType type);
 	virtual ~Player(void);
 
 	void setTeam(Team *team);

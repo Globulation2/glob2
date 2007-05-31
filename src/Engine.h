@@ -27,6 +27,7 @@
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "NetEngine.h"
+#include "MultiplayerGame.h"
 
 class MultiplayersJoin;
 class NetGame;
@@ -58,6 +59,9 @@ public:
 
 	/// Show the load/save dialoge, and use initCustom(gameName) to load the game
 	int initLoadGame();
+
+	/// Initiate a game with the given MultiplayerGame
+	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, int localPlayer);
 
 	//! Run game. A valid gui and netGame must exists
 	int run();
@@ -100,6 +104,8 @@ private:
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching
 	NetEngine *net;
+	//! The MultiplayerGame, recieves orders from across a network
+	shared_ptr<MultiplayerGame> multiplayer;
 
 	int cpuStats[41];
 	int ticksToWaitStats[41];

@@ -162,7 +162,7 @@ public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 	
 	//! Return the name of the first player in the team
-	const char *getFirstPlayerName(void) const;
+	std::string getFirstPlayerName(void) const;
 	
 private:
 	void init(void);

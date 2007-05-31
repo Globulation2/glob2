@@ -33,7 +33,7 @@ BasePlayer::BasePlayer()
 	init();
 };
 
-BasePlayer::BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 teamNumber, PlayerType type)
+BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumber, PlayerType type)
 {
 	init();
 	
@@ -41,14 +41,12 @@ BasePlayer::BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 t
 	assert(number<32);
 	assert(teamNumber>=0);
 	assert(teamNumber<32);
-	assert(name);
+	assert(nname.size());
 
 	setNumber(number);
 	setTeamNumber(teamNumber);
 
-	memset(this->name, 0, MAX_NAME_LENGTH);
-	strncpy(this->name, name, MAX_NAME_LENGTH);
-	this->name[MAX_NAME_LENGTH-1] = 0;
+	name=nname;
 
 	this->type=type;
 };
@@ -58,9 +56,10 @@ void BasePlayer::init()
 	type=P_NONE;
 	number=0;
 	numberMask=0;
-	strncpy(name, "DEBUG PLAYER", MAX_NAME_LENGTH);
+	name = "Debug Player";
 	teamNumber=0;
 	teamNumberMask=0;
+	playerID=0;
 
 	quitting=false;
 	quitUStep=0;
@@ -93,21 +92,10 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
 	stream->readEnterSection("BasePlayer");
 	type = (PlayerType)stream->readUint32("type");
-	// Compatibility
-	if (versionMinor<25)
-	{
-		if (type==3)
-			type=(PlayerType)6;
-		else if (type==4)
-			type=(PlayerType)3;
-		else if (type==5)
-			type=(PlayerType)4;
-		else
-			assert((type>=0) && (type<=2));
-	}
 	number = stream->readUint32("number");
 	numberMask = stream->readUint32("numberMask");
-	stream->read(name, MAX_NAME_LENGTH, "name");
+	playerID = stream->readUint16("playerID");
+	name = stream->readText("name");
 	teamNumber = stream->readSint32("teamNumber");
 	teamNumberMask = stream->readUint32("teamNumberMask");
 	stream->readLeaveSection();
@@ -120,7 +108,8 @@ void BasePlayer::save(GAGCore::OutputStream *stream) const
 	stream->writeUint32((Uint32)type, "type");
 	stream->writeSint32(number, "number");
 	stream->writeUint32(numberMask, "numberMask");
-	stream->write(name, MAX_NAME_LENGTH, "name");
+	stream->writeUint16(playerID, "playerID");
+	stream->writeText(name, "name");
 	stream->writeSint32(teamNumber, "teamNumber");
 	stream->writeUint32(teamNumberMask, "teamNumberMask");
 	stream->writeLeaveSection();
@@ -144,8 +133,7 @@ Uint32 BasePlayer::checkSum()
 	// (we could uses two differents check sums, but the framework would be heavier)
 	//cs^=netPort;
 
-	int l=Utilities::strnlen(name, 32);
-	for (int i=0; i<l; i++)
+	for (int i=0; i<name.size(); i++)
 		cs^=name[i];
 	
 	return cs;
@@ -179,7 +167,7 @@ Player::Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMino
 	assert(success);
 }
 
-Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type)
+Player::Player(Sint32 number, const std::string& name, Team *team, PlayerType type)
 :BasePlayer(number, name, team->teamNumber, type)
 {
 	setTeam(team);
@@ -229,7 +217,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	numberMask=initial->numberMask;
 	teamNumber=initial->teamNumber;
 	teamNumberMask=initial->teamNumberMask;
-	memcpy(this->name, initial->name, MAX_NAME_LENGTH);
+	name = initial->name;
 
 	type=initial->type;
 	setTeam(teams[this->teamNumber]);

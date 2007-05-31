@@ -22,6 +22,7 @@
 #include "YOGClient.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "NetEngine.h"
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
@@ -30,6 +31,9 @@ class MultiplayerGame
 public:
 	///Creates a game instance and links it with the provided YOGClient
 	MultiplayerGame(boost::shared_ptr<YOGClient> client);
+	
+	///Should be called frequently
+	void update();
 	
 	///Attempt to create a new game on the server with the given name, and wait for reply
 	void createNewGame(const std::string& name);
@@ -60,7 +64,7 @@ public:
 	void setMapHeader(MapHeader& mapHeader);
 	
 	///Returns the map header
-	const MapHeader& getMapHeader() const;
+	MapHeader& getMapHeader();
 
 	///Returns the game header. It can be modified. After modifying it,
 	///one must call updateGameHeader(). At no point should any changes
@@ -69,10 +73,31 @@ public:
 	
 	///Call this to send the the changes of the game header to the server
 	void updateGameHeader();
+	
+	///Tells whether the list of players has changed since the last call to this function
+	bool hasPlayersChanged();
+	
+	///Sets the assocciatted net engine to push recieved orders into
+	void setNetEngine(NetEngine* engine);
+	
+	///Sends the given Order across the network
+	void pushOrder(shared_ptr<Order> order, int playerNum, int ustep);
+	
+	///Causes the game to be started
+	void startGame();
 protected:
 	friend class YOGClient;
 	///This receives a message that is sent to the game
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	///Adds a person to the gameHeader
+	void addPerson(Uint16 playerID);
+	///Removes a person from the gameHeader
+	void removePerson(Uint16 playerID);
+	
+	///This will start the game
+	void startEngine();
+	
+	int getLocalPlayer();
 private:
 	boost::shared_ptr<YOGClient> client;
 	GameJoinCreationState gjcState;
@@ -80,6 +105,8 @@ private:
 	YOGGameJoinRefusalReason joinState;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
+	bool playersChanged;
+	NetEngine* netEngine;
 };
 
 

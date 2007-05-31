@@ -461,8 +461,8 @@ void UnitInfoTitle::draw()
 	title += Toolkit::getStringTable()->getString("[Unit type]", u->typeNum);
 	title += " (";
 
-	const char *textT=u->owner->getFirstPlayerName();
-	if (!textT)
+	std::string textT=u->owner->getFirstPlayerName();
+	if (textT.empty())
 		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 	title += textT;
 	title += ")";
@@ -671,8 +671,8 @@ void BuildingInfoTitle::draw()
 	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
 	{
 		title += " (";
-		const char *textT=selBuild->owner->getFirstPlayerName();
-		if (!textT)
+		std::string textT=selBuild->owner->getFirstPlayerName();
+		if (textT.empty())
 			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 		title += textT;
 		title += ")";

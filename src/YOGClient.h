@@ -81,6 +81,10 @@ public:
 	///This will return the current game policy used by the server, if its known.
 	///When unknown, this will return YOGUnknownGamePolicy
 	YOGGamePolicy getGamePolicy() const;
+	
+	///This will return the playerID of the current connection
+	Uint16 getPlayerID() const;
+
 
 	///This will attempt a login with the provided login information. The password is not
 	///mandatory. If the login policy is YOGAnonymousLogin, then the password will simply
@@ -105,6 +109,9 @@ public:
 	///This will return the list of players on the server
 	const std::list<YOGPlayerInfo>& getPlayerList() const;
 
+	///This will find the name of the player with the given ID
+	std::string findPlayerName(Uint16 playerID);
+
 	///This will send for a manual update of the game list,
 	void requestGameListUpdate();
 	
@@ -124,16 +131,6 @@ public:
 	///This will disconnect the client and server
 	void disconnect();
 
-	///This sends a message to the server to remove the game that the player is connected to.
-	///This will only be accepted if it is from the host of the game.
-	void removeGame();
-
-	///This will send a message indicating the game the host is hosting has begun.
-	void gameHasStarted();
-
-	///This will send a message indicating the game the host is hosting has finished
-	void gameHasFinished();
-
 	///Sends a message through YOG
 	void sendMessage(boost::shared_ptr<YOGMessage> message);
 
@@ -149,6 +146,9 @@ public:
 	///Assocciattes the provided MultiplayerGame with this connection
 	void setMultiplayerGame(boost::shared_ptr<MultiplayerGame> game);
 
+	///Returns the assocciatted MultiplayerGame
+	boost::shared_ptr<MultiplayerGame> getMultiplayerGame();
+
 protected:
     friend class MultiplayerGame;
     
@@ -156,6 +156,7 @@ protected:
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
 private:
 	std::string username;
+	Uint16 playerID;
 
 	NetConnection nc;
 
