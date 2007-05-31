@@ -92,7 +92,7 @@ void Glob2::mutiplayerYOG(void)
 	shared_ptr<YOGClient> client(new YOGClient);
 	YOGLoginScreen yogLoginScreen(client);
 	int yogReturnCode=yogLoginScreen.execute(globalContainer->gfx, 40);
-	if (yogReturnCode==YOGLoginScreen::CANCEL)
+	if (yogReturnCode==YOGLoginScreen::Cancelled)
 		return;
 	if (yogReturnCode==-1)
 	{
