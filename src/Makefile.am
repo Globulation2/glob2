@@ -147,6 +147,8 @@ NetMessage.cpp \
 NetMessage.h \
 NetTestSuite.cpp \
 NetTestSuite.h \
+NetTextMessageHandler.cpp \
+NetTextMessageHandler.h \
 NewMapScreen.cpp \
 NewMapScreen.h \
 NonANSICStdWrapper.h \

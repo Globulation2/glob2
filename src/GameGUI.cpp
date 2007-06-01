@@ -85,9 +85,6 @@
 
 using namespace boost;
 
-//! Pointer to IRC client in YOGScreen, NULL if no IRC client is available
-extern IRC *ircPtr;
-
 enum GameGUIGfxId
 {
 	EXCHANGE_BUILDING_ICONS = 21
@@ -574,18 +571,6 @@ void GameGUI::step(void)
 	
 	// do a yog step
 //	yog->step();
-	
-	// do a irc step if IRC is enabled
-	if (ircPtr)
-	{
-		ircPtr->step();
-		// display IRC messages
-		while (ircPtr->isChatMessage())
-		{
-			addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(ircPtr->getChatMessageSource()).arg(ircPtr->getChatMessage()));
-			ircPtr->freeChatMessage();
-		}
-	}
 
 /*
 	// display yog chat messages

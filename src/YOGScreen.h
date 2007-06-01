@@ -28,6 +28,7 @@
 #include <GraphicContext.h>
 #include "Glob2Screen.h"
 #include "YOGClient.h"
+#include "NetTextMessageHandler.h"
 
 namespace GAGGUI
 {
@@ -83,6 +84,7 @@ public:
 	virtual void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 
+private:
 	enum
 	{
 		CANCEL=2,
@@ -92,8 +94,6 @@ public:
 		
 		STARTED=11
 	};
-
-private:
 
 	///This launches the menu to host a game
 	void hostGame();
@@ -113,11 +113,9 @@ private:
 	TextArea *chatWindow;
 	
 	TextButton *joinButton;
-	
-	IRC irc;
-	
-	int executionMode;
+
 	boost::shared_ptr<YOGClient> client;
+	boost::shared_ptr<NetTextMessageHandler> netMessage;
 
 };
 
