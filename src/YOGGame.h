@@ -22,7 +22,7 @@
 #include "YOGPlayer.h"
 #include "MapHeader.h"
 #include <boost/shared_ptr.hpp>
-
+#include "YOGMapDistributor.h"
 
 ///This handles a "game" from the server's point of view. This means that it handles
 ///routing between clients, holding the map and game data, etc..
@@ -31,6 +31,9 @@ class YOGGame
 public:
 	///Constructs a new YOG game
 	YOGGame(Uint16 gameID);
+
+	///Updates the game
+	void update();
 
 	///Adds the player to the game
 	void addPlayer(shared_ptr<YOGPlayer> player);
@@ -51,11 +54,18 @@ public:
 	///unless sender is null
 	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender);
 
+	///Requests a game
+	void requestGame();
+	
+	///Returns the map distributor
+	shared_ptr<YOGMapDistributor> getMapDistributor();
 private:
+	bool requested;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	Uint16 gameID;
 	shared_ptr<YOGPlayer> host;
+	shared_ptr<YOGMapDistributor> distributor;
 	std::vector<shared_ptr<YOGPlayer> > players;
 };
 

@@ -61,6 +61,10 @@ enum NetMessageType
 	MNetPlayerJoinsGame,
 	MNetPlayerLeavesGame,
 	MNetStartGame,
+	MNetRequestMap,
+	MNetSendFileInformation,
+	MNetSendFileChunk,
+	MNetRequestNextChunk,
 	//type_append_marker
 };
 
@@ -919,6 +923,134 @@ public:
 	std::string format() const;
 
 	///Compares with another NetStartGame
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRequestMap
+class NetRequestMap : public NetMessage
+{
+public:
+	///Creates a NetRequestMap message
+	NetRequestMap();
+
+	///Returns MNetRequestMap
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestMap message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestMap
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetSendFileInformation
+class NetSendFileInformation : public NetMessage
+{
+public:
+	///Creates a NetSendFileInformation message
+	NetSendFileInformation();
+
+	///Creates a NetSendFileInformation message with the given file size
+	NetSendFileInformation(Uint32 filesize);
+
+	///Returns MNetSendFileInformation
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendFileInformation message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendFileInformation
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the file size
+	Uint32 getFileSize() const;
+private:
+	Uint32 size;
+};
+
+
+
+
+///NetSendFileChunk
+class NetSendFileChunk : public NetMessage
+{
+public:
+	///Creates a NetSendFileChunk message
+	NetSendFileChunk();
+
+	///Creates a NetSendFileChunk message to read off of the given stream,
+	///either untill the stream ends or the chunk size limit is reached
+	NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream);
+
+	///Returns MNetSendFileChunk
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendFileChunk message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendFileChunk
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Provides an input stream that can be read from
+	boost::shared_ptr<GAGCore::InputStream> getStream() const;
+	
+	///Returns the chunk size
+	Uint32 getChunkSize() const;
+private:
+	std::string data;
+};
+
+
+
+
+///NetRequestNextChunk
+class NetRequestNextChunk : public NetMessage
+{
+public:
+	///Creates a NetRequestNextChunk message
+	NetRequestNextChunk();
+
+	///Returns MNetRequestNextChunk
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestNextChunk message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestNextChunk
 	bool operator==(const NetMessage& rhs) const;
 };
 

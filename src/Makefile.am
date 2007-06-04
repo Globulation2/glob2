@@ -123,6 +123,8 @@ MainMenuScreen.cpp \
 MainMenuScreen.h \
 Map.cpp \
 Map.h \
+MapAssembler.cpp \
+MapAssembler.h \
 MapEdit.cpp \
 MapEdit.h \
 MapGenerationDescriptor.cpp \
@@ -209,6 +211,8 @@ YOGGameServer.cpp \
 YOGGameServer.h \
 YOGLoginScreen.cpp \
 YOGLoginScreen.h \
+YOGMapDistributor.cpp \
+YOGMapDistributor.h \
 YOGMessage.cpp \
 YOGMessage.h \
 YOGPlayer.cpp \

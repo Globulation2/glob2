@@ -103,6 +103,18 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetStartGame:
 		message.reset(new NetStartGame);
 		break;
+		case MNetRequestMap:
+		message.reset(new NetRequestMap);
+		break;
+		case MNetSendFileInformation:
+		message.reset(new NetSendFileInformation);
+		break;
+		case MNetSendFileChunk:
+		message.reset(new NetSendFileChunk);
+		break;
+		case MNetRequestNextChunk:
+		message.reset(new NetRequestNextChunk);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -1792,6 +1804,256 @@ bool NetStartGame::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetStartGame))
 	{
 		const NetStartGame& r = dynamic_cast<const NetStartGame&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetRequestMap::NetRequestMap()
+{
+
+}
+
+
+
+Uint8 NetRequestMap::getMessageType() const
+{
+	return MNetRequestMap;
+}
+
+
+
+void NetRequestMap::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestMap");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestMap::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestMap");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestMap::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestMap()";
+	return s.str();
+}
+
+
+
+bool NetRequestMap::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestMap))
+	{
+		const NetRequestMap& r = dynamic_cast<const NetRequestMap&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetSendFileInformation::NetSendFileInformation()
+	: size(0)
+{
+
+}
+
+
+NetSendFileInformation::NetSendFileInformation(Uint32 filesize)
+	: size(filesize)
+{
+}
+
+
+
+Uint8 NetSendFileInformation::getMessageType() const
+{
+	return MNetSendFileInformation;
+}
+
+
+
+void NetSendFileInformation::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendFileInformation");
+	stream->writeUint32(size, "size");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendFileInformation");
+	size = stream->readUint32("size");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendFileInformation::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendFileInformation(size="<<size<<")";
+	return s.str();
+}
+
+
+
+bool NetSendFileInformation::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendFileInformation))
+	{
+		const NetSendFileInformation& r = dynamic_cast<const NetSendFileInformation&>(rhs);
+		if(r.size == size)
+			return true;
+	}
+	return false;
+}
+
+
+
+Uint32 NetSendFileInformation::getFileSize() const
+{
+	return size;
+}
+
+
+
+NetSendFileChunk::NetSendFileChunk()
+{
+
+}
+
+
+
+NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream)
+{
+	while(!stream->isEndOfStream() && data.size() < 8196)
+	{
+		char buffer;
+		stream->read(&buffer, 1, "lart");
+		data += buffer;
+	}
+}
+
+
+
+Uint8 NetSendFileChunk::getMessageType() const
+{
+	return MNetSendFileChunk;
+}
+
+
+
+void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendFileChunk");
+	stream->writeText(data, "data");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendFileChunk");
+	read = stream->readText("data");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendFileChunk::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendFileChunk(size="<<data.size()<<")";
+	return s.str();
+}
+
+
+
+bool NetSendFileChunk::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendFileChunk))
+	{
+		const NetSendFileChunk& r = dynamic_cast<const NetSendFileChunk&>(rhs);
+		if(data == r.data)
+		return true;
+	}
+	return false;
+}
+
+
+
+boost::shared_ptr<GAGCore::InputStream>  NetSendFileChunk::getStream() const
+{
+	return boost::shared_ptr<GAGCore::InputStream>(new GAGCore::BinaryInputStream(new MemoryStreamBackend(data.c_str(), data.size())));
+}
+
+
+
+Uint32 NetSendFileChunk::getChunkSize() const
+{
+	return data.size();
+}
+
+
+
+NetRequestNextChunk::NetRequestNextChunk()
+{
+
+}
+
+
+
+Uint8 NetRequestNextChunk::getMessageType() const
+{
+	return MNetRequestNextChunk;
+}
+
+
+
+void NetRequestNextChunk::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestNextChunk");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestNextChunk::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestNextChunk");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestNextChunk::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestNextChunk()";
+	return s.str();
+}
+
+
+
+bool NetRequestNextChunk::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestNextChunk))
+	{
+		const NetRequestNextChunk& r = dynamic_cast<const NetRequestNextChunk&>(rhs);
 		return true;
 	}
 	return false;

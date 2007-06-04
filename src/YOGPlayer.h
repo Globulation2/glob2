@@ -56,6 +56,8 @@ public:
 	///Returns the name of the player, or blank if they haven't logged in
 	std::string getPlayerName();
 
+	///Returns the game the player is connected to
+	boost::shared_ptr<YOGGame> getGame();
 private:
 	///This enum represents the state machine of the initial connection
 	enum ConnectionState
@@ -126,7 +128,6 @@ private:
 	Uint16 gameID;
 	///Links to the connected game
 	shared_ptr<YOGGame> game;
-	
 };
 
 
