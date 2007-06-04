@@ -32,6 +32,8 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 void MultiplayerGame::update()
 {
 	client->update();
+	if(assembler)
+		assembler->update();
 }
 
 
@@ -152,6 +154,11 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
 		shared_ptr<Order> order = info->getOrder();
 		netEngine->pushOrder(order, order->sender, order->ustep);
+	}
+	if(type==MNetRequestMap)
+	{
+		assembler.reset(new MapAssembler(client));
+		assembler->startSendingFile(mapHeader.getFileName());
 	}
 }
 

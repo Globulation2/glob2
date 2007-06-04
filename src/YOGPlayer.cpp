@@ -109,6 +109,27 @@ void YOGPlayer::update()
 	{
 		game->routeMessage(message, server.getPlayer(playerID));
 	}
+	//This recieves requests a map file
+	else if(type==MNetRequestMap)
+	{
+		game->getMapDistributor()->addMapRequestee(server.getPlayer(playerID));
+	}
+	//This recieves requests a map file
+	else if(type==MNetRequestNextChunk)
+	{
+		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+	}
+	//This recieves a file chunk
+	else if(type==MNetSendFileChunk)
+	{
+		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+	}
+	//This recieves a file chunk
+	else if(type==MNetSendFileInformation)
+	{
+		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+	}
+	
 }
 
 
@@ -144,6 +165,13 @@ Uint16 YOGPlayer::getPlayerID()
 std::string YOGPlayer::getPlayerName()
 {
 	return playerName;
+}
+
+
+
+boost::shared_ptr<YOGGame> YOGPlayer::getGame()
+{
+	return game;
 }
 
 
@@ -198,7 +226,6 @@ void YOGPlayer::updateGamePlayerLists()
 		}
 	}
 }
-
 
 
 void YOGPlayer::handleCreateGame(const std::string& gameName)

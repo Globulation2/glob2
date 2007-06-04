@@ -107,6 +107,7 @@ private:
 	GameHeader gameHeader;
 	bool playersChanged;
 	NetEngine* netEngine;
+	boost::shared_ptr<MapAssembler> assembler;
 };
 
 

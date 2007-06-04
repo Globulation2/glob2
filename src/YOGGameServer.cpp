@@ -44,6 +44,12 @@ void YOGGameServer::update()
 	{
 		i->second->update();
 	}
+	
+	//Call update to all of the games
+	for(std::map<Uint16, shared_ptr<YOGGame> >::iterator i=games.begin(); i!=games.end(); ++i)
+	{
+		i->second->update();
+	}
 
 	//Remove all of the players that have disconnected.
 	for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end();)

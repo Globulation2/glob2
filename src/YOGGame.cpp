@@ -22,10 +22,14 @@
 YOGGame::YOGGame(Uint16 gameID)
 	: gameID(gameID)
 {
-
+	requested=false;
 }
 
 
+void YOGGame::update()
+{
+	distributor->update();
+}
 
 void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 {
@@ -93,3 +97,31 @@ void YOGGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer>
 			(*i)->sendMessage(message);
 	}
 }
+
+
+
+void YOGGame::requestGame()
+{
+	if(!requested)
+	{
+		shared_ptr<NetRequestMap> message(new NetRequestMap);
+		host->sendMessage(message);
+		request=true;
+	}
+}
+
+
+
+
+shared_ptr<YOGMapDistributor> YOGGame::getMapDistributor()
+{
+	if(!distributor)
+	{
+		//clever trick to get a shared_ptr to this
+		distributor.reset(new YOGMapDistributor(host->getGame(), host));
+	}
+	return distributor;
+}
+
+
+

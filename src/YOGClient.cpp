@@ -19,6 +19,7 @@
 #include "YOGClient.h"
 #include <iostream>
 #include "MultiplayerGame.h"
+#include "MapAssembler.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
@@ -178,6 +179,24 @@ void YOGClient::update()
 	if(type==MNetSendOrder)
 	{
 		joinedGame->recieveMessage(message);
+	}
+	if(type==MNetRequestMap)
+	{
+		joinedGame->recieveMessage(message);
+	}
+
+
+	if(type==MNetSendFileInformation)
+	{
+		assembler->handleMessage(message);
+	}
+	if(type==MNetRequestNextChunk)
+	{
+		assembler->handleMessage(message);
+	}
+	if(type==MNetSendFileChunk)
+	{
+		assembler->handleMessage(message);
 	}
 }
 
@@ -350,12 +369,29 @@ void YOGClient::setMultiplayerGame(boost::shared_ptr<MultiplayerGame> game)
 }
 
 
+
 boost::shared_ptr<MultiplayerGame> YOGClient::getMultiplayerGame()
 {
 	return joinedGame;
 }
 
+
+
 void YOGClient::sendNetMessage(boost::shared_ptr<NetMessage> message)
 {
     nc.sendMessage(message);
+}
+
+
+
+void YOGClient::setMapAssembler(boost::shared_ptr<MapAssembler> nassembler)
+{
+	assembler=nassembler;
+}
+
+
+
+boost::shared_ptr<MapAssembler> YOGClient::getMapAssembler()
+{
+	return assembler;
 }

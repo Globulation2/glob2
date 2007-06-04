@@ -29,6 +29,7 @@
 #include <list>
 
 class MultiplayerGame;
+class MapAssembler;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -155,8 +156,15 @@ public:
 	///Returns the assocciatted MultiplayerGame
 	boost::shared_ptr<MultiplayerGame> getMultiplayerGame();
 
+	///Sets the map assembler for this connection
+	void setMapAssembler(boost::shared_ptr<MapAssembler> assembler);
+	
+	///Returns the map assembler for this connection
+	boost::shared_ptr<MapAssembler> getMapAssembler();
+
 protected:
     friend class MultiplayerGame;
+    friend class MapAssembler;
     
     ///Sends a message on behalf of the assocciatted MultiplayerGame
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
@@ -179,6 +187,7 @@ private:
 	bool playerListChanged;
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
+	boost::shared_ptr<MapAssembler> assembler;
 };
 
 
