@@ -1,4 +1,5 @@
 set(libusl_SOURCES
+code.cpp
 code.h
 interpreter.cpp
 interpreter.h
