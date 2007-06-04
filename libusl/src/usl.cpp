@@ -2,6 +2,7 @@
 #include "tree.h"
 #include "code.h"
 #include "memory.h"
+#include "interpreter.h"
 #include <cassert>
 #include <memory>
 #include <vector>
