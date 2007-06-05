@@ -52,6 +52,8 @@ void SelectCode::execute(Thread* thread)
 	// get method
 	ScopePrototype* method = receiver->prototype->lookup(name);
 	
+	assert(method != 0);
+	
 	// create a function
 	Function* function = new Function(thread->heap, receiver, method);
 	
@@ -86,10 +88,6 @@ void ApplyCode::execute(Thread* thread)
 }
 
 
-ValCode::ValCode(size_t index):
-	index(index)
-{}
-
 void ValCode::execute(Thread* thread)
 {
 	Thread::Frame& frame = thread->frames.back();
@@ -99,12 +97,17 @@ void ValCode::execute(Thread* thread)
 }
 
 
-
 void ParentCode::execute(Thread* thread)
 {
-	Thread::Frame& frame = thread->frames.back();
-	assert(frame.scope->outer);
-	frame.stack.push_back(frame.scope->outer);
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	
+	Value* value = stack.back();
+	stack.pop_back();
+	
+	Scope* scope = dynamic_cast<Scope*>(value);
+	assert(scope != 0); // Should not fail if the parser is bug-free
+	
+	stack.push_back(scope->outer);
 }
 
 
@@ -114,14 +117,10 @@ void PopCode::execute(Thread* thread)
 }
 
 
-ScopeCode::ScopeCode(ScopePrototype* prototype):
-	prototype(prototype)
-{}
-
 void ScopeCode::execute(Thread* thread)
 {
 	Thread::Frame& frame = thread->frames.back();
-	frame.stack.push_back(new Scope(thread->heap, prototype, frame.scope));
+	frame.stack.push_back(frame.scope);
 }
 
 
@@ -151,6 +150,7 @@ NativeCode::Operation::Operation(Prototype* outer, const std::string& name, bool
 	ScopePrototype(0, outer),
 	name(name)
 {
+	body.push_back(new ScopeCode());
 	body.push_back(new ParentCode());
 	body.push_back(new ValRefCode(0, 0));
 	if (!lazy)
@@ -179,21 +179,24 @@ void NativeCode::execute(Thread* thread)
 	stack.push_back(operation->execute(thread, receiver, argument));
 }
 
-DefRefCode::DefRefCode(size_t depth, ScopePrototype* method):
-	depth(depth),
-	method(method)
+
+DefRefCode::DefRefCode(ScopePrototype* method):
+method(method)
 {}
 
 void DefRefCode::execute(Thread* thread)
 {
-	Thread::Frame& frame = thread->frames.back();
-	Value* receiver = frame.scope;
-	for(size_t i = 0; i < depth; ++i)
-	{
-		Scope* outer = dynamic_cast<Scope*>(receiver);
-		assert(outer); // Should not fail if the parser is bug-free
-		receiver = outer->outer;
-	}
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	
+	// get receiver
+	Value* receiver = stack.back();
+	stack.pop_back();
+	
+	assert(method->outer == receiver->prototype); // Should not fail if the parser is bug-free
+	
+	// create a function
 	Function* function = new Function(thread->heap, receiver, method);
-	frame.stack.push_back(function);
+	
+	// put the function on the stack
+	stack.push_back(function);
 }
