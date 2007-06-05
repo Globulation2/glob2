@@ -178,3 +178,22 @@ void NativeCode::execute(Thread* thread)
 	
 	stack.push_back(operation->execute(thread, receiver, argument));
 }
+
+DefRefCode::DefRefCode(size_t depth, ScopePrototype* method):
+	depth(depth),
+	method(method)
+{}
+
+void DefRefCode::execute(Thread* thread)
+{
+	Thread::Frame& frame = thread->frames.back();
+	Value* receiver = frame.scope;
+	for(size_t i = 0; i < depth; ++i)
+	{
+		Scope* outer = dynamic_cast<Scope*>(receiver);
+		assert(outer); // Should not fail if the parser is bug-free
+		receiver = outer->outer;
+	}
+	Function* function = new Function(thread->heap, receiver, method);
+	frame.stack.push_back(function);
+}

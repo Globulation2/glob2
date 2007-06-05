@@ -127,4 +127,17 @@ struct TupleNode: ExpressionNode
 	Expressions expressions;
 };
 
+struct DefLookupNode: ExpressionNode
+{
+	DefLookupNode(ScopePrototype* scope, const std::string& name):
+		scope(scope),
+		name(name)
+	{}
+	
+	void generate(ScopePrototype* scope);
+	
+	ScopePrototype* scope;
+	std::string name;
+};
+
 #endif // ndef TREE_H
