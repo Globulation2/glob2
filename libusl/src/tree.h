@@ -51,19 +51,30 @@ struct ValRefNode: ExpressionNode
 	size_t index;
 };
 
+struct SelectNode: ExpressionNode
+{
+	SelectNode(ExpressionNode* receiver, const std::string& name):
+		receiver(receiver),
+		name(name)
+	{}
+	
+	void generate(ScopePrototype* scope);
+	
+	ExpressionNode* receiver;
+	const std::string name;
+};
+
 struct ApplyNode: ExpressionNode
 {
-	ApplyNode(Node* receiver, const std::string& name, Node* argument):
+	ApplyNode(ExpressionNode* receiver, ExpressionNode* argument):
 		receiver(receiver),
-		name(name),
 		argument(argument)
 	{}
 	
 	void generate(ScopePrototype* scope);
 	
-	Node* receiver;
-	const std::string name;
-	Node* argument;
+	ExpressionNode* receiver;
+	ExpressionNode* argument;
 };
 
 struct ValNode: Node

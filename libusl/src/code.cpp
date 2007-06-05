@@ -37,9 +37,28 @@ void ValRefCode::execute(Thread* thread)
 }
 
 
-ApplyCode::ApplyCode(const std::string& name):
+SelectCode::SelectCode(const std::string& name):
 	name(name)
 {}
+
+void SelectCode::execute(Thread* thread)
+{
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	
+	// get receiver
+	Value* receiver = stack.back();
+	stack.pop_back();
+	
+	// get method
+	ScopePrototype* method = receiver->prototype->lookup(name);
+	
+	// create a function
+	Function* function = new Function(thread->heap, receiver, method);
+	
+	// put the function on the stack
+	stack.push_back(function);
+}
+
 
 void ApplyCode::execute(Thread* thread)
 {
@@ -50,15 +69,14 @@ void ApplyCode::execute(Thread* thread)
 	Value* argument = stack.back();
 	stack.pop_back();
 	
-	// get receiver
-	Value* receiver = stack.back();
+	// get the function
+	Function* function = dynamic_cast<Function*>(stack.back());
 	stack.pop_back();
 	
-	// get method
-	ScopePrototype* method = receiver->prototype->lookup(name);
+	assert(function != 0);
 	
 	// create a new scope
-	Scope* scope = new Scope(thread->heap, method, receiver);
+	Scope* scope = new Scope(thread->heap, function->method, function->receiver);
 	
 	// put the argument in the scope
 	scope->locals.push_back(argument);
@@ -138,7 +156,7 @@ NativeCode::Operation::Operation(Prototype* outer, const std::string& name, bool
 	if (!lazy)
 	{
 		body.push_back(new ConstCode(&nil));
-		body.push_back(new ApplyCode("."));
+		body.push_back(new ApplyCode());
 	}
 	body.push_back(new NativeCode(this));
 	body.push_back(new ReturnCode());

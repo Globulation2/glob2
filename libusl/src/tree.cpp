@@ -18,11 +18,17 @@ void ValRefNode::generate(ScopePrototype* scope)
 	scope->body.push_back(new ValRefCode(depth, index));
 }
 
+void SelectNode::generate(ScopePrototype* scope)
+{
+	receiver->generate(scope);
+	scope->body.push_back(new SelectCode(name));
+}
+
 void ApplyNode::generate(ScopePrototype* scope)
 {
 	receiver->generate(scope);
 	argument->generate(scope);
-	scope->body.push_back(new ApplyCode(name));
+	scope->body.push_back(new ApplyCode());
 }
 
 void ValNode::generate(ScopePrototype* scope)

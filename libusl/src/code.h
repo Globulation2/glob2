@@ -38,13 +38,18 @@ struct ValRefCode: Code
 	size_t index;
 };
 
-struct ApplyCode: Code
+struct SelectCode: Code
 {
-	ApplyCode(const std::string& name);
+	SelectCode(const std::string& name);
 	
 	virtual void execute(Thread* thread);
 	
-	const std::string name;
+	std::string name;
+};
+
+struct ApplyCode: Code
+{
+	virtual void execute(Thread* thread);
 };
 
 struct ValCode: Code

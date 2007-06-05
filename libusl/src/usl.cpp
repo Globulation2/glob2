@@ -96,20 +96,21 @@ struct DefLookupNode: ExpressionNode
 	void generate(ScopePrototype* scope)
 	{
 		// TODO: this should be done in a compiler pass between parsing and code generation
+		Prototype* prototype = scope;
 		size_t depth = 0;
-		do
+		while (true)
 		{
-			ScopePrototype* method = scope->lookup(name);
+			ScopePrototype* method = prototype->lookup(name);
 			if (method != 0)
 			{
 				scope->body.push_back(new DefRefCode(depth, method));
 				return;
 			}
-			scope = dynamic_cast<ScopePrototype*>(scope->outer);
+			ScopePrototype* s = dynamic_cast<ScopePrototype*>(prototype);
+			assert(s); // TODO: throw a method not found exception
+			prototype = s->outer;
 			++depth;
 		}
-		while (scope != 0);
-		assert(false); // TODO: throw a method not found exception
 	}
 	
 	ScopePrototype* scope;
@@ -197,11 +198,11 @@ struct Parser: Lexer
 			switch (tokenType())
 			{
 			case ID:
-				node.reset(apply(node, identifier(), scope));
+				node.reset(selectAndApply(node, identifier(), scope));
 				break;
 			case LPAR:
 			case LBRACE:
-				node.reset(apply(node, ".", scope));
+				node.reset(selectAndApply(node, "!", scope));
 				break;
 			default:
 				return node.release();
@@ -209,10 +210,10 @@ struct Parser: Lexer
 		}
 	}
 	
-	ApplyNode* apply(auto_ptr<ExpressionNode> receiver, const string& method, ScopePrototype* scope)
+	ApplyNode* selectAndApply(auto_ptr<ExpressionNode> receiver, const string& method, ScopePrototype* scope)
 	{
 		ExpressionNode* argument = lazyExpr(scope);
-		return new ApplyNode(receiver.release(), method, argument);
+		return new ApplyNode(new SelectNode(receiver.release(), method), argument);
 	}
 	
 	ExpressionNode *expressions(ScopePrototype* scope)
@@ -299,7 +300,7 @@ struct Parser: Lexer
 				auto_ptr<ScopePrototype> block(new ScopePrototype(heap, scope));
 				auto_ptr<ExpressionNode> body(statements(block.get()));
 				accept(RBRACE);
-				return new ApplyNode(new DefRefNode(block.release(), body.release()), ".", new ConstNode(&nil));
+				return new ApplyNode(new DefRefNode(block.release(), body.release()), new ConstNode(&nil));
 			}
 		default:
 			return new ConstNode(&nil);
