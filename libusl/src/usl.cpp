@@ -61,62 +61,6 @@ Integer::IntegerPrototype Integer::integerPrototype;
 Integer::IntegerAdd Integer::integerAdd;
 
 
-struct DefRefCode: Code
-{
-	DefRefCode(size_t depth, ScopePrototype* method):
-		depth(depth),
-		method(method)
-	{}
-	
-	void execute(Thread* thread)
-	{
-		Thread::Frame& frame = thread->frames.back();
-		Value* receiver = frame.scope;
-		for(size_t i = 0; i < depth; ++i)
-		{
-			Scope* outer = dynamic_cast<Scope*>(receiver);
-			assert(outer); // Should not fail if the parser is bug-free
-			receiver = outer->outer;
-		}
-		Function* function = new Function(thread->heap, receiver, method);
-		frame.stack.push_back(function);
-	}
-	
-	size_t depth;
-	ScopePrototype* method;
-};
-
-struct DefLookupNode: ExpressionNode
-{
-	DefLookupNode(ScopePrototype* scope, const string& name):
-		scope(scope),
-		name(name)
-	{}
-	
-	void generate(ScopePrototype* scope)
-	{
-		// TODO: this should be done in a compiler pass between parsing and code generation
-		Prototype* prototype = scope;
-		size_t depth = 0;
-		while (true)
-		{
-			ScopePrototype* method = prototype->lookup(name);
-			if (method != 0)
-			{
-				scope->body.push_back(new DefRefCode(depth, method));
-				return;
-			}
-			ScopePrototype* s = dynamic_cast<ScopePrototype*>(prototype);
-			assert(s); // TODO: throw a method not found exception
-			prototype = s->outer;
-			++depth;
-		}
-	}
-	
-	ScopePrototype* scope;
-	string name;
-};
-
 struct Parser: Lexer
 {
 	Parser(const char* src, Heap* heap):

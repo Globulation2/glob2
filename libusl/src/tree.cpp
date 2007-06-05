@@ -75,3 +75,22 @@ void TupleNode::generate(ScopePrototype* scope)
 	scope->body.push_back(new TupleCode(expressions.size()));
 }
 
+void DefLookupNode::generate(ScopePrototype* scope)
+{
+	// TODO: this should be done in a compiler pass between parsing and code generation
+	Prototype* prototype = scope;
+	size_t depth = 0;
+	while (true)
+	{
+		ScopePrototype* method = prototype->lookup(name);
+		if (method != 0)
+		{
+			scope->body.push_back(new DefRefCode(depth, method));
+			return;
+		}
+		ScopePrototype* s = dynamic_cast<ScopePrototype*>(prototype);
+		assert(s); // TODO: throw a method not found exception
+		prototype = s->outer;
+		++depth;
+	}
+}

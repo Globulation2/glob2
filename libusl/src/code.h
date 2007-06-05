@@ -112,4 +112,14 @@ struct NativeCode: Code
 	Operation* operation;
 };
 
+struct DefRefCode: Code
+{
+	DefRefCode(size_t depth, ScopePrototype* method);
+	
+	void execute(Thread* thread);
+	
+	size_t depth;
+	ScopePrototype* method;
+};
+
 #endif // ndef BYTECODE_H
