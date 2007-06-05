@@ -14,14 +14,17 @@ struct Node
 struct ExpressionNode: Node
 {};
 
-struct DefRefNode: ExpressionNode
+struct FunctionNode: ExpressionNode
+{};
+
+struct DefRefNode: FunctionNode
 {
 	DefRefNode(ScopePrototype* scope, ExpressionNode* value):
 		scope(scope),
 		value(value)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
 	ScopePrototype* scope;
 	ExpressionNode* value;
@@ -33,7 +36,7 @@ struct ConstNode: ExpressionNode
 		value(value)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
 	Value* value;
 };
@@ -45,20 +48,20 @@ struct ValRefNode: ExpressionNode
 		index(index)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
 	size_t depth;
 	size_t index;
 };
 
-struct SelectNode: ExpressionNode
+struct SelectNode: FunctionNode
 {
 	SelectNode(ExpressionNode* receiver, const std::string& name):
 		receiver(receiver),
 		name(name)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
 	ExpressionNode* receiver;
 	const std::string name;
@@ -66,35 +69,49 @@ struct SelectNode: ExpressionNode
 
 struct ApplyNode: ExpressionNode
 {
-	ApplyNode(ExpressionNode* receiver, ExpressionNode* argument):
+	ApplyNode(FunctionNode* receiver, ExpressionNode* argument):
 		receiver(receiver),
 		argument(argument)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
-	ExpressionNode* receiver;
+	FunctionNode* receiver;
 	ExpressionNode* argument;
 };
 
 struct ValNode: Node
 {
-	ValNode(size_t index, Node* value):
-		index(index),
+	ValNode(Node* value):
 		value(value)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
-	size_t index;
 	Node* value;
+};
+
+struct ScopeNode: ExpressionNode
+{
+	virtual void generate(ScopePrototype* scope);
+};
+
+struct ParentNode: ScopeNode
+{
+	ParentNode(ScopeNode* scope):
+		scope(scope)
+	{}
+	
+	virtual void generate(ScopePrototype* scope);
+	
+	ScopeNode* scope;
 };
 
 struct BlockNode: ExpressionNode
 {
 	typedef std::vector<Node*> Statements;
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
 	Statements statements;
 	Node* value;
@@ -107,36 +124,29 @@ struct DefNode: Node
 		body(body)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
 	ScopePrototype* scope;
 	ExpressionNode* body;
-};
-
-struct ParentNode: ExpressionNode
-{
-	void generate(ScopePrototype* scope);
 };
 
 struct TupleNode: ExpressionNode
 {
 	typedef std::vector<ExpressionNode*> Expressions;
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
 	Expressions expressions;
 };
 
 struct DefLookupNode: ExpressionNode
 {
-	DefLookupNode(ScopePrototype* scope, const std::string& name):
-		scope(scope),
+	DefLookupNode(const std::string& name):
 		name(name)
 	{}
 	
-	void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope);
 	
-	ScopePrototype* scope;
 	std::string name;
 };
 

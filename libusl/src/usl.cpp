@@ -80,7 +80,7 @@ struct Parser: Lexer
 		
 		ScopePrototype* thisMethod = new ScopePrototype(heap, scope);
 		scope->methods["this"] = thisMethod;
-		block->statements.push_back(new DefNode(thisMethod, new ParentNode()));
+		block->statements.push_back(new DefNode(thisMethod, new ParentNode(new ScopeNode())));
 		
 		while (true)
 		{
@@ -115,9 +115,8 @@ struct Parser: Lexer
 				string name = identifier();
 				accept(ASSIGN);
 				newlines();
-				size_t index = scope->locals.size();
 				scope->locals.push_back(name);
-				return new ValNode(index, expression(scope));
+				return new ValNode(expression(scope));
 			}
 		case DEF:
 			{
@@ -146,7 +145,7 @@ struct Parser: Lexer
 				break;
 			case LPAR:
 			case LBRACE:
-				node.reset(selectAndApply(node, "!", scope));
+				node.reset(selectAndApply(node, "apply", scope));
 				break;
 			default:
 				return node.release();
@@ -156,7 +155,7 @@ struct Parser: Lexer
 	
 	ApplyNode* selectAndApply(auto_ptr<ExpressionNode> receiver, const string& method, ScopePrototype* scope)
 	{
-		ExpressionNode* argument = lazyExpr(scope);
+		FunctionNode* argument = lazyExpr(scope);
 		return new ApplyNode(new SelectNode(receiver.release(), method), argument);
 	}
 	
@@ -211,20 +210,19 @@ struct Parser: Lexer
 			{
 				string name(identifier());
 				
-				ScopePrototype* s = scope;
 				size_t depth = 0;
 				do
 				{
-					ScopePrototype::Locals& locals = s->locals;
+					ScopePrototype::Locals& locals = scope->locals;
 					size_t index = find(locals.begin(), locals.end(), name) - locals.begin();
 					if (index < locals.size())
 						return new ValRefNode(depth, index);
-					s = dynamic_cast<ScopePrototype*>(s->outer);
+					scope = dynamic_cast<ScopePrototype*>(scope->outer);
 					++depth;
 				}
-				while (s != 0);
+				while (scope != 0);
 				
-				return new DefLookupNode(scope, name);
+				return new DefLookupNode(name);
 			}
 		case NUM:
 			{
@@ -251,7 +249,7 @@ struct Parser: Lexer
 		}
 	}
 	
-	ExpressionNode* lazyExpr(ScopePrototype* scope)
+	FunctionNode* lazyExpr(ScopePrototype* scope)
 	{
 		auto_ptr<ScopePrototype> lazy(new ScopePrototype(heap, scope));
 		ExpressionNode* expr = simple(lazy.get());
@@ -294,14 +292,14 @@ int main(int argc, char** argv)
 	Heap heap;
 	ScopePrototype* root = new ScopePrototype(&heap, 0);
 	
-	Parser parser("def z = 2\nval x = {{21} + {21}}\nx", &heap);
+	Parser parser("def f = 21 + 21\nf()", &heap);
 	Node* node = parser.parse(root);
 	node->generate(root);
 	
 	Thread thread(&heap);
 	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
 	
-	while (thread.frames.front().nextInstr < root->body.size())
+	while (thread.frames.size() > 1 || thread.frames.front().nextInstr < root->body.size())
 	{
 		Thread::Frame& frame = thread.frames.back();
 		Code* code = frame.scope->def()->body[frame.nextInstr++];

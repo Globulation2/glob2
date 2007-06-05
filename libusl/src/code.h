@@ -54,11 +54,7 @@ struct ApplyCode: Code
 
 struct ValCode: Code
 {
-	ValCode(size_t index);
-	
 	virtual void execute(Thread* thread);
-	
-	size_t index;
 };
 
 struct ParentCode: Code
@@ -73,11 +69,7 @@ struct PopCode: Code
 
 struct ScopeCode: Code
 {
-	ScopeCode(ScopePrototype* prototype);
-	
 	virtual void execute(Thread* thread);
-	
-	ScopePrototype* prototype;
 };
 
 struct ReturnCode: Code
@@ -114,11 +106,10 @@ struct NativeCode: Code
 
 struct DefRefCode: Code
 {
-	DefRefCode(size_t depth, ScopePrototype* method);
+	DefRefCode(ScopePrototype* method);
 	
-	void execute(Thread* thread);
+	virtual void execute(Thread* thread);
 	
-	size_t depth;
 	ScopePrototype* method;
 };
 
