@@ -94,9 +94,7 @@ struct ScopePrototype: Prototype
 	ScopePrototype(Heap* heap, Prototype* outer):
 		Prototype(heap),
 		outer(outer)
-	{
-		methods["."] = this;
-	}
+	{}
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{

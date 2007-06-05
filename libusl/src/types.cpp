@@ -6,6 +6,7 @@
 Prototype Nil(0);
 Value nil(0, &Nil);
 
+
 Function::FunctionPrototype::FunctionPrototype():
 	Prototype(0)
 {
