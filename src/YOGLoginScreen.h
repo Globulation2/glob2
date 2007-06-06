@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -17,11 +19,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOG_PRE_SCREEN_H
-#define __YOG_PRE_SCREEN_H
+#ifndef __YOGLoginScreen_h
+#define __YOGLoginScreen_h
 
 #include "Glob2Screen.h"
-#include "YOG.h"
+#include "YOGClient.h"
+#include "YOGScreen.h"
 
 namespace GAGGUI
 {
@@ -32,10 +35,23 @@ namespace GAGGUI
 	class Animation;
 }
 
-class YOGPreScreen : public Glob2Screen
+///This handles with connecting the user to YOG and logging them in.
+///This assumes the client has not yet connected with YOG
+class YOGLoginScreen : public Glob2Screen
 {
-	static const bool verbose = false;
 public:
+	///Construct with the given YOG client.
+	///The provided client should not yet be connected to YOG.
+	YOGLoginScreen(boost::shared_ptr<YOGClient> client);
+	virtual ~YOGLoginScreen();
+
+	enum
+	{
+		Cancelled,
+		LoggedIn,
+	};
+
+private:
 	enum
 	{
 		EXECUTING=0,
@@ -43,26 +59,33 @@ public:
 		CANCEL=2,
 		NEW_USER=10
 	};
+
 	enum
 	{
 		WAITING=1,
 		STARTED=2
 	};
-public:
-	YOGPreScreen();
-	virtual ~YOGPreScreen();
+
 	virtual void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
-	
-	int endExecutionValue;
+
+	///Attempt a login with the entered information
+	void attemptLogin();
+	///Attempt a registration with the entered information
+	void attemptRegistration();
+
 	TextInput *login, *password;
 	OnOffButton *newYogPassword, *rememberYogPassword;
 	Text *newYogPasswordText, *rememberYogPasswordText;
 	TextArea *statusText;
 	Animation *animation;
-	YOG::ExternalStatusState oldYOGExternalStatusState;
 	
-	bool connectOnNextTimer;
+	YOGClient::ConnectionState oldConnectionState;
+	
+	boost::shared_ptr<YOGClient> client;
+	
+	bool wasConnected;
+	bool waitingToSendLogin;
 };
 
 #endif

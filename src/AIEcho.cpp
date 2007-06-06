@@ -38,6 +38,7 @@ using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
 using namespace boost::logic;
+using namespace boost;
 
 
 
@@ -3042,7 +3043,7 @@ AssignWorkers::AssignWorkers(int number_of_workers, int building_id) : number_of
 
 void AssignWorkers::modify(Echo& echo)
 {
-	echo.push_order(new OrderModifyBuilding(echo.get_building_register().get_building(building_id)->gid, number_of_workers));
+	echo.push_order(shared_ptr<Order>(new OrderModifyBuilding(echo.get_building_register().get_building(building_id)->gid, number_of_workers)));
 }
 
 
@@ -3094,7 +3095,7 @@ void ChangeSwarm::modify(Echo& echo)
 	ratio[0]=worker_ratio;
 	ratio[1]=explorer_ratio;
 	ratio[2]=warrior_ratio;
-	echo.push_order(new OrderModifySwarm(echo.get_building_register().get_building(building_id)->gid, ratio));
+	echo.push_order(shared_ptr<Order>(new OrderModifySwarm(echo.get_building_register().get_building(building_id)->gid, ratio)));
 }
 
 
@@ -3148,7 +3149,7 @@ DestroyBuilding::DestroyBuilding(int building_id) : building_id(building_id)
 
 void DestroyBuilding::modify(Echo& echo)
 {
-	echo.push_order(new OrderDelete(echo.get_building_register().get_building(building_id)->gid));
+	echo.push_order(shared_ptr<Order>(new OrderDelete(echo.get_building_register().get_building(building_id)->gid)));
 }
 
 
@@ -3419,7 +3420,7 @@ ChangeFlagSize::ChangeFlagSize(int size, int building_id) : size(size), building
 
 void ChangeFlagSize::modify(Echo& echo)
 {
-	echo.push_order(new OrderModifyFlag(echo.get_building_register().get_building(building_id)->gid, size));
+	echo.push_order(shared_ptr<Order>(new OrderModifyFlag(echo.get_building_register().get_building(building_id)->gid, size)));
 }
 
 
@@ -3468,7 +3469,7 @@ ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level, int building_i
 
 void ChangeFlagMinimumLevel::modify(Echo& echo)
 {
-	echo.push_order(new OrderModifyMinLevelToFlag(echo.get_building_register().get_building(building_id)->gid, minimum_level-1));
+	echo.push_order(shared_ptr<Order>(new OrderModifyMinLevelToFlag(echo.get_building_register().get_building(building_id)->gid, minimum_level-1)));
 }
 
 
@@ -3534,13 +3535,13 @@ void AddArea::modify(Echo& echo)
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
 				break;
 			case GuardArea:
-				echo.push_order(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
 				break;
 		}
 	}
@@ -3622,13 +3623,13 @@ void RemoveArea::modify(Echo& echo)
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
 				break;
 			case GuardArea:
-				echo.push_order(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
 				break;
 		}
 	}
@@ -3734,7 +3735,7 @@ void ChangeAlliances::modify(Echo& echo)
 	echo.inn_view=inn_mask;
 	echo.other_view=other_mask;
 
-	echo.push_order(new SetAllianceOrder(echo.player->team->teamNumber, alliedmask, enemymask, market_mask, inn_mask, other_mask));
+	echo.push_order(shared_ptr<Order>(new SetAllianceOrder(echo.player->team->teamNumber, alliedmask, enemymask, market_mask, inn_mask, other_mask)));
 }
 
 
@@ -3850,7 +3851,7 @@ UpgradeRepair::UpgradeRepair(int id) : id(id)
 
 void UpgradeRepair::modify(Echo& echo)
 {
-	echo.push_order(new OrderConstruction(echo.get_building_register().get_building(id)->gid,1,1));
+	echo.push_order(shared_ptr<Order>(new OrderConstruction(echo.get_building_register().get_building(id)->gid,1,1)));
 	echo.get_building_register().set_upgrading(id);
 }
 
@@ -4449,7 +4450,7 @@ void Echo::update_building_orders()
 					mo_during_construction->add_condition(new ParticularBuilding(new UnderConstruction, (*i)->id));
 					add_management_order(mo_during_construction);
 				}
-				orders.push(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1));
+				orders.push(shared_ptr<Order>(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1)));
 				previous_building_id=(*i)->id;
 				i=building_orders.erase(i);
 				break;
@@ -4530,9 +4531,9 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	{
 		stream->readEnterSection(ordersIndex);
 		size_t size=stream->readUint32("size");
-		Uint8* buffer = new Uint8[size];
+		Uint8* buffer = new Uint8[size+1];
 		stream->read(buffer, size, "data");
-		orders.push(Order::getOrder(buffer, size));
+		orders.push(Order::getOrder(buffer, size+1));
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
@@ -4645,9 +4646,11 @@ void Echo::save(GAGCore::OutputStream *stream)
 	for (Uint32 ordersIndex = 0; ordersIndex < orders.size(); ordersIndex++)
 	{
 		stream->writeEnterSection(ordersIndex);
-		Order* order = orders.front();
+		boost::shared_ptr<Order> order = orders.front();
 		orders.pop();
 		stream->writeUint32(order->getDataLength()+1, "size");
+		///one byte indicating the type is required to be written for order.
+		stream->writeUint8(order->getOrderType(), "type");
 		stream->write(order->getData(), order->getDataLength(), "data");
 		orders.push(order);
 		stream->writeLeaveSection();
@@ -4743,7 +4746,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 
 #include "TextStream.h"
 
-Order* Echo::getOrder(void)
+boost::shared_ptr<Order> Echo::getOrder(void)
 {
 //	for(int x=0; x<player->map->getW(); ++x)
 //	{
@@ -4803,7 +4806,7 @@ Order* Echo::getOrder(void)
 
 	if(!orders.empty())
 	{
-		Order* order=orders.front();
+		boost::shared_ptr<Order> order=orders.front();
 		orders.pop();
 		return order;
 	}
@@ -4818,7 +4821,7 @@ Order* Echo::getOrder(void)
 	update_building_orders();
 	timer++;
 	from_load_timer++;
-	return new NullOrder;
+	return boost::shared_ptr<Order>();
 }
 
 

@@ -33,7 +33,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor) { return true; }
 	void save(GAGCore::OutputStream *stream) { }
 	
-	Order *getOrder(void);
+	boost::shared_ptr<Order> getOrder(void);
 	
 private:
 };

@@ -27,6 +27,8 @@
 #include "Utilities.h"
 #include "Unit.h"
 
+using namespace boost;
+
 AINumbi::AINumbi(Player *player)
 {
 	init(player);
@@ -125,7 +127,7 @@ void AINumbi::save(GAGCore::OutputStream *stream)
 }
 
 
-Order *AINumbi::getOrder(void)
+boost::shared_ptr<Order>AINumbi::getOrder(void)
 {
 	timer++;
 
@@ -267,7 +269,7 @@ Order *AINumbi::getOrder(void)
 		}
 	}
 
-	return new NullOrder();
+	return shared_ptr<Order>(new NullOrder);
 }
 
 int AINumbi::estimateFood(Building *building)
@@ -397,7 +399,7 @@ int AINumbi::countUnits(const int medicalState)
 	return 0;
 }
 
-Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
+boost::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
 {
 	std::list<Building *> swarms=team->swarms;
 	int ss=swarms.size();
@@ -415,7 +417,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 
 			//printf("AI: (%d) ratioLocal changed.\n", b->gid);
 
-			return new OrderModifySwarm(b->gid, b->ratioLocal);
+			return shared_ptr<Order>(new OrderModifySwarm(b->gid, b->ratioLocal));
 		}
 
 		int f=estimateFood(b);
@@ -431,7 +433,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 		{
 			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
 			b->maxUnitWorkingLocal=numberRequestedTemp;
-			return new OrderModifyBuilding(b->gid, numberRequestedTemp);
+			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp));
 		}
 	}
 	if (ss<minSwarmNumbers)
@@ -444,10 +446,10 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
 			int teamNumber=player->team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, typeNum);
+			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum));
 		}*/
 	}
-	return new NullOrder();
+	return shared_ptr<Order>(new NullOrder);
 }
 
 void AINumbi::nextMainBuilding(const int buildingType)
@@ -781,7 +783,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	return false;
 }
 
-Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested)
+boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested)
 {
 	Unit **myUnits=team->myUnits;
 	int ft=0;
@@ -803,7 +805,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 			//printf("AI:(timeout)new attack with %d units.\n", ft);
 			attackPhase=1;
 		}
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 	}
 	else if (attackPhase==1)
 	{
@@ -811,7 +813,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		{
 			attackPhase=3;
 			//printf("AI:stop attack.\n");
-			return new NullOrder();
+			return shared_ptr<Order>(new NullOrder);
 		}
 
 		int teamNumber=player->team->teamNumber;
@@ -822,23 +824,23 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				Building *b=*bit;
 				int gbid=map->getBuilding(b->posX, b->posY);
 				if (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber)
-					return new OrderDelete(b->gid); // The target has beed successfully killed.
+					return shared_ptr<Order>(new OrderDelete(b->gid)); // The target has beed successfully killed.
 
 				if (b->maxUnitWorking!=numberRequested)
 				{
 					//printf("AI: OrderModifyBuilding(%d, %d)\n", b->gid, numberRequested);
-					return new OrderModifyBuilding(b->gid, numberRequested);
+					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequested));
 				}
 			}
 
 		// We look for a specific enemy:
 		Uint32 enemies=player->team->enemies;
 		int e=-1;
-		for (int i=0; i<game->session.numberOfTeam; i++)
+		for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 			if (game->teams[i]->me & enemies)
 				e=i;
 		if (e==-1)
-			return new NullOrder();
+			return shared_ptr<Order>(new NullOrder);
 
 		int ex=-1, ey=-1;
 		int count=0;
@@ -878,35 +880,35 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
-			return new OrderCreate(teamNumber, ex, ey, typeNum, 1, 1);
+			return shared_ptr<Order>(new OrderCreate(teamNumber, ex, ey, typeNum, 1, 1));
 		}
 		else
-			return new NullOrder();
+			return shared_ptr<Order>(new NullOrder);
 	}
 	else if (attackPhase==2)
 	{
 		assert(false);
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 	}
 	else if (attackPhase==3)
 	{
 		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
 			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
-				return new OrderDelete((*bit)->gid);
+				return shared_ptr<Order>(new OrderDelete((*bit)->gid));
 		attackPhase=0;
 		critticalWarriors*=2;
 		critticalTime*=2;
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 	}
 	else
 	{
 		assert(false);
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 	}
 	
 }
 
-Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
+boost::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
 {
 	Building **myBuildings=team->myBuildings;
 	//Unit **myUnits=player->team->myUnits;
@@ -920,7 +922,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 			fb++;
 			int w=workers;
 			if ((b->maxUnitWorking!=w)&&(b->type->maxUnitWorking))
-				return new OrderModifyBuilding(b->gid, w);
+				return shared_ptr<Order>(new OrderModifyBuilding(b->gid, w));
 		}
 	}
 	
@@ -939,16 +941,16 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
 			int teamNumber=team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, typeNum, 1, 1);
+			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, 1, 1));
 		}
 		//printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 	}
 	else
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 }
 
-Order *AINumbi::checkoutExpands(const int numbers, const int workers)
+boost::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int workers)
 {
 	//std::list<Building *> swarms=team->swarms;
 	//int ss=swarms.size();
@@ -972,15 +974,15 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
 			int teamNumber=team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, typeNum, 1, 1);
+			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, 1, 1));
 		}
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 	}
 	else
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder);
 }
 
-Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
+boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
 	Building **myBuildings=team->myBuildings;
 	int numberFood[4]={0, 0, 0, 0}; // number of food buildings
@@ -1097,31 +1099,31 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberHealth[0]>numberUpgradingHealth[1])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberAttack[0]>numberUpgradingAttack[1])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberScience[0]>numberUpgradingScience[1]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberDefense[0]>numberUpgradingDefense[1])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 	}
 	
@@ -1134,35 +1136,35 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberHealth[1]>numberUpgradingHealth[2])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberAttack[1]>numberUpgradingAttack[2])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberScience[1]>numberUpgradingScience[2]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 		if (numberDefense[1]>numberUpgradingDefense[2])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderConstruction(b->gid, 1, 1);
+				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 	}
 	
-	return new NullOrder();
+	return shared_ptr<Order>(new NullOrder);
 }
 
 

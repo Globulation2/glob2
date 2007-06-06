@@ -1,6 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  Copyright (C) 2007 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,11 +16,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MULTIPLAYERHOSTSCREEN_H
-#define __MULTIPLAYERHOSTSCREEN_H
+#ifndef __MultiplayerGameScreen_h
+#define __MultiplayerGameScreen_h
 
 #include <vector>
 #include "Glob2Screen.h"
+#include "MultiplayerGame.h"
+#include "AI.h"
+#include "MapHeader.h"
+#include "NetTextMessageHandler.h"
 
 namespace GAGGUI
 {
@@ -31,13 +34,23 @@ namespace GAGGUI
 	class TextButton;
 	class ColorButton;
 }
-class SessionInfo;
-class MultiplayersHost;
-class MultiplayersJoin;
 
-class MultiplayersHostScreen : public Glob2Screen
+///This screen is the setup screen for a multiplayer game. It functions both for the host
+///and the joined player. It uses the information it gets from the given MultiplayerGame.
+class MultiplayerGameScreen : public Glob2Screen
 {
 public:
+	///The screen must be provided with the text message handler and the multiplayer game
+	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<NetTextMessageHandler> textMessage);
+	virtual ~MultiplayerGameScreen();
+
+	enum
+	{
+		Cancelled,
+		StartedGame,
+	};
+
+private:
 	enum
 	{
 		START = 1,
@@ -52,20 +65,11 @@ public:
 
 	enum { MAX_NUMBER_OF_PLAYERS = 16};
 
-private:
-	int timeCounter;
-	int executionMode;
-
-public:
-	MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG);
-	virtual ~MultiplayersHostScreen();
-
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 
-	MultiplayersHost *multiplayersHost;
-	MultiplayersJoin *multiplayersJoin;
-	bool shareOnYOG;
+	///This function will update the list of joined players
+	void updateJoinedPlayers();
 
 	TextButton *startButton;
 	std::vector<TextButton *> addAI;
@@ -77,11 +81,12 @@ public:
 	TextInput *textInput;
 	TextArea *chatWindow;
 
+	boost::shared_ptr<MultiplayerGame> game;
+
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
 	Text *gameFullText;
 
-	SessionInfo *savedSessionInfo;
+	boost::shared_ptr<NetTextMessageHandler> textMessage;
 };
-
 #endif

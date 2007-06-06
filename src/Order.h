@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -31,29 +33,33 @@
 #include "Ressource.h"
 #include "UnitConsts.h"
 #include "BitArray.h"
+#include <boost/shared_ptr.hpp>
 
 //! An order is everything a human player or an AI can do to alter game state
 class Order
 {
 public:
+	///Contructs an Order
  	Order(void);
 	virtual ~Order(void) {}
+	///Returns the Order Type
 	virtual Uint8 getOrderType(void)=0;
 
-	static Order *getOrder(const Uint8 *netData, int netDataLength);
+	///Takes in an arbitrary amount of information and returns its assocciatted order
+	static boost::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength);
 
+	///Returns the encoded data buffer of data for the Order
 	virtual Uint8 *getData(void)=0;
+	
+	///Sets the Orders local data from a data buffer
 	virtual bool setData(const Uint8 *data, int dataLength)=0;
+	
+	///Returns the length of the data
 	virtual int getDataLength(void)=0;
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
-	Uint8 wishedLatency;
-	Uint8 wishedDelay;
-	bool latencyPadding; // True if this order has been added to increase latency.
 	Uint32 ustep;
 	Uint32 gameCheckSum;
-	
-	bool needToBeFreedByEngine; // set to true when it's not in NetGame::ordersQueue, in which case it is regulary freed by NetGame.
 };
 
 

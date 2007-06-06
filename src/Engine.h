@@ -24,36 +24,48 @@
 #include "GameGUI.h"
 #include <string>
 #include "Campaign.h"
+#include "MapHeader.h"
+#include "GameHeader.h"
+#include "NetEngine.h"
+#include "MultiplayerGame.h"
 
 class MultiplayersJoin;
 class NetGame;
 
-//! Engine is responsible for loading games and setting up players
+/// Engine is the backend of the game. It is responsible for loading and setting up games and players,
+/// and its run function is meant to run the game that has been loaded.
 class Engine
 {
-	static const bool verbose = false;
 public:
 	//! Constructor
 	Engine();
 	//! Destructor
 	~Engine();
-	
-	//! Load mapName for campaign, init teams and create netGame
-	int initCampaign(const std::string &mapName);
-	//! Init the map from the campaign
+
+	/// Initiates a campaign map. This first loads the MapHeader, and then generates a GameHeader for
+	/// the campaign map. It then informs GameGUI that this map is a campaign, and if the player wins
+	/// it, the given Campaign should be informed. 
 	int initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName);
-	//! Display a custom map chooser screen, init teams and create netGame
+
+	/// Initiates a campaign game that isn't part of a campaign. One example is the tutorial, which
+	/// is a lone map that runs with campaign semantics
+	int initCampaign(const std::string &mapName);
+
+	/// Displays the CustomMap dialogue, and initiates a game from the settings it recieves
 	int initCustom();
-	//! Init and load a custom game from gameName. init teams and create netGame
+
+	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
-	//! Display a game chooser screen then call initCustom(gameName) with the selected file
+
+	/// Show the load/save dialoge, and use initCustom(gameName) to load the game
 	int initLoadGame();
-	//! Start a multiplayer game. Init teams and create netGame
-	void startMultiplayer(MultiplayersJoin *multiplayersJoin);
-	//! Display a map/game chooser screen suitable for multiplayer use when hosting, than call startMultiplayer
-	int initMutiplayerHost(bool shareOnYOG);
-	//! Join the network game, than call startMultiplayer
-	int initMutiplayerJoin();
+
+	/// Initiate a game with the given MultiplayerGame
+	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, int localPlayer);
+
+	///Tells whether a map matching mapHeader is located on this system
+	bool haveMap(const MapHeader& mapHeader);
+
 	//! Run game. A valid gui and netGame must exists
 	int run();
 
@@ -69,26 +81,43 @@ public:
 		//! no suitable player found in the map
 		EE_CANT_FIND_PLAYER=4
 	};
-
-public:
-	//! The GUI, contains the whole game also
-	GameGUI gui;
-	//! The netGame, take care of order queuing and dispatching
-	NetGame *net;
 	
-protected:
+private:
+	/// Initiates a game, provided the map and game header. This initiates the net
+	/// as well.
+	int initGame(MapHeader& mapHeader, GameHeader& gameHeader);
+
+	/// Prepares a GameHeader for the given mapHeader as a campaign map
+	/// Campaign maps have one player per team, and the player can be
+	/// either a human or an AI. AI's are all AINull
+	GameHeader prepareCampaign(MapHeader& mapHeader);
+
 	//! Load a game. Return true on success
 	bool loadGame(const std::string &filename);
 	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
 	void finalAdjustements(void);
 
-protected:
+	///This will load the map header of the game with the given filename
+	MapHeader loadMapHeader(const std::string &filename);
+
+	///This will load the game header of the game with the given filename
+	GameHeader loadGameHeader(const std::string &filename);
+
+	//! The GUI, contains the whole game also
+	GameGUI gui;
+	//! The netGame, take care of order queuing and dispatching
+	NetEngine *net;
+	//! The MultiplayerGame, recieves orders from across a network
+	shared_ptr<MultiplayerGame> multiplayer;
+
 	int cpuStats[41];
 	int ticksToWaitStats[41];
 	unsigned cpuSumStats;
 	unsigned cpuSumCountStats;
 	Sint32 noxStartTick, noxEndTick;
 	FILE *logFile;
+
+	static const bool verbose = false;
 };
 
 #endif

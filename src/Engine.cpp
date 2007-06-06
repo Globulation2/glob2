@@ -35,10 +35,6 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
-#include "MultiplayersHostScreen.h"
-#include "MultiplayersJoinScreen.h"
-#include "MultiplayersChooseMapScreen.h"
-#include "NetGame.h"
 #include "Utilities.h"
 #include "YOGScreen.h"
 #include "SoundMixer.h"
@@ -46,6 +42,7 @@
 
 #include <iostream>
 
+using namespace boost;
 
 Engine::Engine()
 {
@@ -105,77 +102,28 @@ Engine::~Engine()
 	}
 }
 
-int Engine::initCampaign(const std::string &mapName)
-{
-	if (!loadGame(mapName))
-		return EE_CANT_LOAD_MAP;
 
-	// we make a player for each team
-	int playerNumber=0;
-	bool wasHuman=false;
-	char name[BasePlayer::MAX_NAME_LENGTH];
-	for (int i=0; i<gui.game.session.numberOfTeam; i++)
-	{
-		if (gui.game.teams[i]->type==BaseTeam::T_AI)
-		{
-			snprintf(name, BasePlayer::MAX_NAME_LENGTH, "AI Player %d", playerNumber);
-			gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
-		}
-		else if (gui.game.teams[i]->type==BaseTeam::T_HUMAN)
-		{
-			if (!wasHuman)
-			{
-				gui.localPlayer=playerNumber;
-				gui.localTeamNo=i;
-				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "Player %d", playerNumber);
-				wasHuman=true;
-				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
-			}
-			else
-			{
-				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "AI Player %d", playerNumber);
-				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
-			}
-		}
-		else
-			assert(false);
-		gui.game.teams[i]->numberOfPlayer=1;
-		gui.game.teams[i]->playersMask=(1<<playerNumber);
-		playerNumber++;
-	}
-	
-	if (!wasHuman)
-	{
-		std::cerr << " Engine::initCampaign(\"" << mapName << "\") : error, can't find any human player" << std::endl;
-		return EE_CANT_FIND_PLAYER;
-	}
-
-	gui.game.session.numberOfPlayer=playerNumber;
-	
-	// if this is a campaign, show a screen
-	if (gui.game.campaignText.length() > 0)
-	{
-		CampaignScreen campaignScreen(gui.game.campaignText);
-		int retVal = campaignScreen.execute(globalContainer->gfx, 40);
-		if (retVal)
-			return EE_CANCEL;
-	}
-	
-	// We do some cosmetic fix
-	finalAdjustements();
-
-	// we create the net game
-	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
-
-	return EE_NO_ERROR;
-}
 
 int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName)
 {
-	int end=initCampaign(mapName);
+	MapHeader mapHeader = loadMapHeader(mapName);
+	GameHeader gameHeader = prepareCampaign(mapHeader);
+	int end=initGame(mapHeader, gameHeader);
 	gui.setCampaignGame(campaign, missionName);
 	return end;
 }
+
+
+
+int Engine::initCampaign(const std::string &mapName)
+{
+	MapHeader mapHeader = loadMapHeader(mapName);
+	GameHeader gameHeader = prepareCampaign(mapHeader);
+	int end=initGame(mapHeader, gameHeader);
+	return end;
+}
+
+
 
 int Engine::initCustom(void)
 {
@@ -187,91 +135,45 @@ int Engine::initCustom(void)
 		return EE_CANCEL;
 	if (cgs==-1)
 		return -1;
+		
+	int teamColor=customGameScreen.getSelectedColor(0);
+	gui.localPlayer=0;
+	gui.localTeamNo=teamColor;
 
-	if (!gui.loadBase(&(customGameScreen.sessionInfo)))
-	{
-		if (verbose)
-			printf("Engine : Can't load map\n");
-		return EE_CANCEL;
-	}
-	int nbTeam=gui.game.session.numberOfTeam;
-	if (nbTeam==0)
-		return EE_CANCEL;
-
-	int i;
-	int nbPlayer=0;
-
-	for (i=0; i<NumberOfPlayerSelectors; i++)
-	{
-		if (customGameScreen.isAIactive(i))
-		{
-			int teamColor=customGameScreen.getSelectedColor(i);
-			if (i==0)
-			{
-				gui.game.players[nbPlayer]=new Player(0, globalContainer->getUsername().c_str(), gui.game.teams[teamColor], BasePlayer::P_LOCAL);
-				gui.localPlayer=nbPlayer;
-				gui.localTeamNo=teamColor;
-			}
-			else
-			{
-				AI::ImplementitionID iid=customGameScreen.getAiImplementation(i);
-				FormatableString name("%0 %1");
-				name.arg(Toolkit::getStringTable()->getString("[AI]", iid)).arg(nbPlayer-1);
-				gui.game.players[nbPlayer]=new Player(i, name.c_str(), gui.game.teams[teamColor], Player::playerTypeFromImplementitionID(iid));
-			}
-			gui.game.teams[teamColor]->numberOfPlayer++;
-			gui.game.teams[teamColor]->playersMask|=(1<<nbPlayer);
-			nbPlayer++;
-		}
-	}
-	gui.game.session.numberOfPlayer=nbPlayer;
-
-	// We remove uncontrolled stuff from map
-	gui.game.clearingUncontrolledTeams();
+	int ret = initGame(customGameScreen.getMapHeader(), customGameScreen.getGameHeader());
+	if(ret != EE_NO_ERROR)
+		return EE_CANT_LOAD_MAP;
 
 	// set the correct alliance
 	gui.game.setAIAlliance();
-
-	// We do some cosmetic fix
-	finalAdjustements();
-
-	// we create the net game
-	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	return EE_NO_ERROR;
 }
 
 int Engine::initCustom(const std::string &gameName)
 {
-	if (!loadGame(gameName))
-		return EE_CANT_LOAD_MAP;
+	MapHeader mapHeader = loadMapHeader(gameName);
+	GameHeader gameHeader = loadGameHeader(gameName);
 
 	// If the game is a network saved game, we need to toogle net players to ai players:
-	for (int p=0; p<gui.game.session.numberOfPlayer; p++)
+	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
 	{
 		if (verbose)
-			printf("Engine::initCustom::player[%d].type=%d.\n", p, gui.game.players[p]->type);
-		if (gui.game.players[p]->type==BasePlayer::P_IP)
+			printf("Engine::initCustom::player[%d].type=%d.\n", p, gameHeader.getBasePlayer(p).type);
+		if (gameHeader.getBasePlayer(p).type==BasePlayer::P_IP)
 		{
-			gui.game.players[p]->makeItAI(AI::toggleAI);
+			gameHeader.getBasePlayer(p).makeItAI(AI::toggleAI);
 			if (verbose)
 				printf("Engine::initCustom::net player (id %d) was made ai.\n", p);
 		}
 	}
 
-	// We do some cosmetic fix
-	gui.adjustLocalTeam();
-	if (!globalContainer->runNoX)
-	{
-		gui.game.renderMiniMap(gui.localTeamNo);
-		gui.adjustInitialViewport();
-	}
-	
+	int ret = initGame(mapHeader, gameHeader);
+	if(ret != EE_NO_ERROR)
+		return EE_CANT_LOAD_MAP;
+
 	// set the correct alliance
 	gui.game.setAIAlliance();
-
-	// we create the net game
-	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	return EE_NO_ERROR;
 }
@@ -283,97 +185,38 @@ int Engine::initLoadGame()
 	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
 
-	return initCustom(loadGameScreen.sessionInfo.getFileName());
-}
-
-void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
-{
-	int p=multiplayersJoin->myPlayerNumber;
-
-	multiplayersJoin->destroyNet=false;
-	for (int j=0; j<multiplayersJoin->sessionInfo.numberOfPlayer; j++)
-		multiplayersJoin->sessionInfo.players[j].destroyNet=false;
-
-	multiplayersJoin->sessionInfo.setLocal(p);
-
-	gui.loadBase(&multiplayersJoin->sessionInfo);
-
-	gui.localPlayer=p;
-	gui.localTeamNo=multiplayersJoin->sessionInfo.players[p].teamNumber;
-	assert(gui.localTeamNo<multiplayersJoin->sessionInfo.numberOfTeam);
-	gui.localTeamNo=gui.localTeamNo % multiplayersJoin->sessionInfo.numberOfTeam; // Ugly relase case.
-
-	// We remove uncontrolled stuff from map
-	gui.game.clearingUncontrolledTeams();
-
-	// set the correct alliance
-	gui.game.setAIAlliance();
-
-	// We do some cosmetic fix
-	finalAdjustements();
-
-	// we create the net game
-	net=new NetGame(multiplayersJoin->socket, gui.game.session.numberOfPlayer, gui.game.players);
-
-	if (verbose)
-		printf("Engine::localPlayer=%d, localTeamNb=%d\n", gui.localPlayer, gui.localTeamNo);
+	return initCustom(loadGameScreen.getMapHeader().getFileName());
 }
 
 
-int Engine::initMutiplayerHost(bool shareOnYOG)
+
+int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, int localPlayer)
 {
-	MultiplayersChooseMapScreen multiplayersChooseMapScreen(shareOnYOG);
+	gui.localPlayer = localPlayer;
+	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
+	multiplayer = multiplayerGame;
+	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader());
+	multiplayer->setNetEngine(net);
+	return Engine::EE_NO_ERROR;
+}
 
-	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 40);
 
-	if (mpcms==MultiplayersChooseMapScreen::CANCEL)
-		return EE_CANCEL;
-	if (mpcms==-1)
-		return -1;
 
-	if (verbose)
-		printf("Engine::the game is sharing ...\n");
-	
-	MultiplayersHostScreen multiplayersHostScreen(&(multiplayersChooseMapScreen.sessionInfo), shareOnYOG);
-	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 40);
-	if (rc==MultiplayersHostScreen::STARTED)
+bool Engine::haveMap(const MapHeader& mapHeader)
+{
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
+	if (stream->isEndOfStream())
 	{
-		if (multiplayersHostScreen.multiplayersJoin==NULL)
-			return EE_CANCEL;
-		else
-		{
-			if (multiplayersHostScreen.multiplayersJoin->myPlayerNumber!=-1)
-				startMultiplayer(multiplayersHostScreen.multiplayersJoin);
-			else
-				return EE_CANCEL;
-		}
-		return EE_NO_ERROR;
+		return false;
 	}
-	else if (rc==-1)
-		return -1;
-
-	if (verbose)
-		printf("Engine::initMutiplayerHost() rc=%d\n", rc);
-
-	return EE_CANCEL;
+	delete stream;
+	MapHeader mh = loadMapHeader(mapHeader.getFileName());
+	if(mh != mapHeader)
+		return false;
+	return true;
 }
 
-int Engine::initMutiplayerJoin(void)
-{
-	MultiplayersJoinScreen multiplayersJoinScreen;
 
-	int rc=multiplayersJoinScreen.execute(globalContainer->gfx, 40);
-	if (rc==MultiplayersJoinScreen::STARTED)
-	{
-		startMultiplayer(multiplayersJoinScreen.multiplayersJoin);
-
-		return EE_NO_ERROR;
-	}
-	else if (rc==-1)
-		return -1;
-
-	return EE_CANCEL;
-}
 
 int Engine::run(void)
 {
@@ -439,19 +282,25 @@ int Engine::run(void)
 				{
 					gui.syncStep();
 					
-					// We get and push local orders
-					net->pushOrder(gui.getOrder(), gui.localPlayer);
 					
+					// We get and push local orders
+					shared_ptr<Order> localOrder = gui.getOrder();
+					if(multiplayer)
+						multiplayer->pushOrder(localOrder, gui.localPlayer, gui.game.stepCounter);
+						
+					net->pushOrder(localOrder, gui.localPlayer, gui.game.stepCounter);
+	
 					// We store full recursive checkSums data:
-					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
+//					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
 
 					// we get and push ai orders
-					for (int i=0; i<gui.game.session.numberOfPlayer; i++)
+					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 						if (gui.game.players[i]->ai)
 						{
-							Order* order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
+							shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
 							net->pushOrder(order, i);
 						}
+/*
 					
 					ticksToDelayInside=net->ticksToDelayInside();
 					ticksDelayedInside=ticksToDelayInside+computationAvailableTicks/2;
@@ -459,26 +308,29 @@ int Engine::run(void)
 					if (ticksDelayedInside>0)
 						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
 					else
+*/
 						ticksDelayedInside=0;
 				}
 				else
 					ticksDelayedInside=0;
-					
-				// We clear the last events
-				gui.game.clearEventsStep();
+				
+				if(multiplayer)
+					multiplayer->update();
 				
 				// We proceed network:
-				networkReadyToExecute=net->stepReadyToExecute();
+				networkReadyToExecute=net->allOrdersRecieved();
 
-				// We get all currents orders from the network and execute them:
-				for (int i=0; i<gui.game.session.numberOfPlayer; i++)
+				if(networkReadyToExecute)
 				{
-					Order *order=net->getOrder(i);
-					gui.executeOrder(order);
-					if (order->needToBeFreedByEngine)
-						delete order;
+
+					// We get all currents orders from the network and execute them:
+					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
+					{
+						shared_ptr<Order> order=net->retrieveOrder(i);
+						gui.executeOrder(order);
+					}
+					net->advanceStep();
 				}
-				net->stepExecuted();
 
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
@@ -530,7 +382,7 @@ int Engine::run(void)
 				startTick=SDL_GetTicks();
 				
 				// we set CPU stats
-				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
+//				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
 				gui.setCpuLoad(ticksSpentInComputation);
 				if (networkReadyToExecute && !gui.gamePaused)
 				{
@@ -584,6 +436,68 @@ int Engine::run(void)
 	}
 }
 
+
+
+int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader)
+{
+	std::cout<<gameHeader.getNumberOfPlayers()<<std::endl;
+	if (!gui.loadFromHeaders(mapHeader, gameHeader))
+		return EE_CANT_LOAD_MAP;
+
+	// if this has campaign text information, show a screen for it.
+	if (gui.game.campaignText.length() > 0)
+	{
+		CampaignScreen campaignScreen(gui.game.campaignText);
+		int retVal = campaignScreen.execute(globalContainer->gfx, 40);
+		if (retVal)
+			return EE_CANCEL;
+	}
+	
+	// We remove uncontrolled stuff from map
+	gui.game.clearingUncontrolledTeams();
+
+	// We do some cosmetic fix
+	finalAdjustements();
+
+	// we create the net game
+	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers());
+
+	return EE_NO_ERROR;
+}
+
+
+
+GameHeader Engine::prepareCampaign(MapHeader& mapHeader)
+{
+	GameHeader gameHeader;
+
+	// We make a player for each team in the mapHeader
+	int playerNumber=0;
+	// Incase there are multiple "humans" selected, only the first will actually become human
+	bool wasHuman=false;
+	// Each team has a variable, type, that designates whether it is a human or an AI in 
+	// a campaign match.
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+	{
+		if (mapHeader.getBaseTeam(i).type==BaseTeam::T_HUMAN && !wasHuman)
+		{
+			std::string name = FormatableString("Player %0").arg(playerNumber);
+			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
+			wasHuman=true;
+		}
+		else if (mapHeader.getBaseTeam(i).type==BaseTeam::T_AI || wasHuman)
+		{
+			std::string name = FormatableString("AI Player %0").arg(playerNumber);
+			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
+		}
+		playerNumber+=1;
+	}
+	
+	gameHeader.setNumberOfPlayers(playerNumber);
+
+	return gameHeader;
+}
+
 bool Engine::loadGame(const std::string &filename)
 {
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -608,6 +522,55 @@ bool Engine::loadGame(const std::string &filename)
 		std::cout << "Engine::loadGame(\"" << filename << "\") : game successfully loaded." << std::endl;
 	return true;
 }
+
+
+
+MapHeader Engine::loadMapHeader(const std::string &filename)
+{
+	MapHeader mapHeader;
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Engine::loadMapHeader : error, can't open file " << filename  << std::endl;
+	}
+	else
+	{
+		if (verbose)
+			std::cout << "Engine::loadMapHeader : loading map " << filename << std::endl;
+		bool validMapSelected = mapHeader.load(stream);
+		if (!validMapSelected)
+			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
+	}
+	delete stream;
+	return mapHeader;
+}
+
+
+
+GameHeader Engine::loadGameHeader(const std::string &filename)
+{
+	MapHeader mapHeader;
+	GameHeader gameHeader;
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Engine::loadGameHeader : error, can't open file " << filename  << std::endl;
+	}
+	else
+	{
+		if (verbose)
+			std::cout << "Engine::loadGameHeader : loading map " << filename << std::endl;
+		mapHeader.load(stream);
+		bool validMapSelected = gameHeader.load(stream, mapHeader.getVersionMinor());
+		if (!validMapSelected)
+			std::cerr << "Engine::loadGameHeader : invalid game header for map " << filename << std::endl;
+	}
+	delete stream;
+	return gameHeader;
+
+}
+
+
 
 void Engine::finalAdjustements(void)
 {

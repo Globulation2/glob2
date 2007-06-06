@@ -45,7 +45,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
-	Order *getOrder(void);
+	boost::shared_ptr<Order>getOrder(void);
 	
 private:
 	int timer;
@@ -60,16 +60,16 @@ private:
 	int estimateFood(Building *building);
 	int countUnits(void);
 	int countUnits(const int medicalState);
-	Order *swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors);
+	boost::shared_ptr<Order>swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors);
 	void nextMainBuilding(const int buildingType);
 	int nbFreeAround(const int buildingType, int posX, int posY, int width, int height);
 	bool parseBuildingType(const int buildingType);
 	void squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my);
 	bool findNewEmplacement(const int buildingType, int *posX, int *posY);
-	Order *mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested);
-	Order *adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType);
-	Order *checkoutExpands(const int numbers, const int workers);
-	Order *mayUpgrade(const int ptrigger, const int ntrigger);
+	boost::shared_ptr<Order>mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested);
+	boost::shared_ptr<Order>adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType);
+	boost::shared_ptr<Order>checkoutExpands(const int numbers, const int workers);
+	boost::shared_ptr<Order>mayUpgrade(const int ptrigger, const int ntrigger);
 };
 
 #endif

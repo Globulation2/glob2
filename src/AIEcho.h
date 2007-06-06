@@ -1583,7 +1583,7 @@ namespace AIEcho
 		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 		void save(GAGCore::OutputStream *stream);
 
-		Order *getOrder(void);
+		boost::shared_ptr<Order> getOrder(void);
 
 		unsigned int add_building_order(Construction::BuildingOrder* bo);
 		void add_management_order(Management::ManagementOrder* mo);		
@@ -1594,7 +1594,7 @@ namespace AIEcho
 		void flare(int x, int y);
 		Construction::BuildingRegister& get_building_register();
 		Construction::FlagMap& get_flag_map();
-		void push_order(Order* order);
+		void push_order(boost::shared_ptr<Order> order);
 		Gradients::GradientManager& get_gradient_manager();
 		std::set<int>& get_starting_buildings();
 
@@ -1624,7 +1624,7 @@ namespace AIEcho
 		void update_building_orders();
 		void check_fruit();
 
-		std::queue<Order*> orders;
+		std::queue<boost::shared_ptr<Order> > orders;
 		boost::shared_ptr<EchoAI> echoai;
 		boost::shared_ptr<Gradients::GradientManager> gm;
 		Construction::BuildingRegister br;
@@ -1836,7 +1836,7 @@ inline TeamStat& AIEcho::Echo::get_team_stats()
 
 inline void AIEcho::Echo::flare(int x, int y)
 {
-	orders.push(new MapMarkOrder(player->team->teamNumber, x, y));
+	orders.push(boost::shared_ptr<Order>(new MapMarkOrder(player->team->teamNumber, x, y)));
 }
 
 
@@ -1855,7 +1855,7 @@ inline AIEcho::Construction::FlagMap& AIEcho::Echo::get_flag_map()
 
 
 
-inline void AIEcho::Echo::push_order(Order* order)
+inline void AIEcho::Echo::push_order(boost::shared_ptr<Order> order)
 {
 	orders.push(order);
 }

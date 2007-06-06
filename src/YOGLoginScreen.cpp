@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -30,9 +32,10 @@
 #include "GlobalContainer.h"
 #include "Settings.h"
 #include "YOGScreen.h"
-#include "YOGPreScreen.h"
+#include "YOGLoginScreen.h"
 
-YOGPreScreen::YOGPreScreen()
+YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
+	: client(client)
 {
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
@@ -58,48 +61,44 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(rememberYogPassword);
 	addWidget(rememberYogPasswordText);
 	
-	
 	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	addWidget(statusText);
 	
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
-	
-	oldYOGExternalStatusState=YOG::YESTS_BAD;
-	endExecutionValue=EXECUTING;
-	connectOnNextTimer=false;
+		
+	wasConnected=false;
+	waitingToSendLogin=false;
 }
 
-YOGPreScreen::~YOGPreScreen()
+YOGLoginScreen::~YOGLoginScreen()
 {
 	Toolkit::releaseSprite("data/gfx/rotatingEarth");
 	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 }
 
-void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
+void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==CANCEL)
 		{
-			yog->deconnect();
-			endExecutionValue=CANCEL;
+			endExecute(Cancelled);
 		}
 		else if (par1==LOGIN)
 		{
-			char *s=yog->getStatusString(YOG::YESTS_CONNECTING);//This is a small "hack" to looks more user-friendly.
-			statusText->setText(s);
-			delete[] s;
-			oldYOGExternalStatusState=YOG::YESTS_CONNECTING;
-			connectOnNextTimer=true;
-			animation->show();
-			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-		}
-		else if (par1==-1)
-		{
-			yog->deconnect();
-			endExecutionValue=-1;
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
+			client->connect(YOG_SERVER_IP);
+			if(client->isConnected())
+			{
+				wasConnected=true;
+				waitingToSendLogin=true;
+			}
+			else
+			{
+				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
+			}
 		}
 	}
 	if (action==TEXT_ACTIVATED)
@@ -108,66 +107,83 @@ void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
 			password->deactivate();
 		else if (source==password)
 			login->deactivate();
-		else
-		{
-			assert(false);
-			login->deactivate();
-			password->deactivate();
-		}
 	}
 }
 
-void YOGPreScreen::onTimer(Uint32 tick)
+void YOGLoginScreen::onTimer(Uint32 tick)
 {
-	yog->step();
-	if (endExecutionValue!=EXECUTING)
+	//See if the connection is still present
+	if(!client->isConnected() && wasConnected)
 	{
-		if (yog->yogGlobalState<=YOG::YGS_NOT_CONNECTING)
-			endExecute(endExecutionValue);
+		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
 	}
-	else if (yog->yogGlobalState>=YOG::YGS_CONNECTED)
+	else
 	{
-		if (rememberYogPassword->getState())
+		client->update();
+		///If login information needs to be sent
+		if(waitingToSendLogin && client->getConnectionState()==YOGClient::WaitingForLoginInformation)
 		{
-			globalContainer->settings.password.assign(password->getText(), 0, 32);
-			globalContainer->settings.save();
+			if(newYogPassword->getState())
+				attemptRegistration();
+			else
+				attemptLogin();
+			waitingToSendLogin=false;
 		}
-		animation->hide();
-		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
-		if (verbose)
-			printf("YOGPreScreen:: starting YOGScreen...\n");
-		YOGScreen yogScreen;
-		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 40);
-		if (yogReturnCode==YOGScreen::CANCEL)
+		
+		//If the connection state has changed
+		if(client->getConnectionState() != oldConnectionState)
 		{
-			yog->deconnect();
+			YOGLoginState login = client->getLoginState();
+			if(login == YOGPasswordIncorrect)
+			{
+				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]"));
+			}
+			else if(login == YOGUsernameAlreadyUsed)
+			{
+				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
+			}
+			else if(login == YOGUserNotRegistered)
+			{
+				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]"));
+			}
+			else if(client->getLoginState() == YOGLoginSuccessful)
+			{
+				YOGScreen screen(client);
+				int rc = screen.execute(globalContainer->gfx, 40);
+				endExecute(rc);
+			}
+			oldConnectionState = client->getConnectionState();
 		}
-		else if (yogReturnCode==-1)
-		{
-			yog->deconnect();
-			endExecutionValue=-1;
-		}
-		else
-			assert(false);
-		if (verbose)
-			printf("YOGPreScreen:: YOGScreen has ended ...\n");
 	}
-	if (connectOnNextTimer)
-	{
-		yog->enableConnection(login->getText().c_str(), password->getText().c_str(), newYogPassword->getState());
-		connectOnNextTimer=false;
-	}
-	else if (yog->externalStatusState!=oldYOGExternalStatusState)
-	{
-		if (yog->externalStatusState!=YOG::YESTS_CONNECTING)
-		{
-			animation->hide();
-			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
-		}
-		char *s=yog->getStatusString();
-		statusText->setText(s);
-		delete[] s;
-		oldYOGExternalStatusState=yog->externalStatusState;
-	}
-
 }
+
+
+
+void YOGLoginScreen::attemptLogin()
+{
+	//Save the password
+	globalContainer->settings.password.assign(password->getText(), 0, 32);
+	globalContainer->settings.save();
+	//Update the gui
+	animation->show();
+	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
+	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
+	//Attempt the login
+	client->attemptLogin(login->getText(), password->getText());
+}
+
+
+
+void YOGLoginScreen::attemptRegistration()
+{
+	//Save the password
+	globalContainer->settings.password.assign(password->getText(), 0, 32);
+	globalContainer->settings.save();
+	//Update the gui
+	animation->show();
+	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
+	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
+	//Attempt the registration
+	client->attemptRegistration(login->getText(), password->getText());
+}
+

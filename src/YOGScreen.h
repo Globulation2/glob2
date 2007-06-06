@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -20,13 +22,13 @@
 #ifndef __YOGSCREEN_H
 #define __YOGSCREEN_H
 
-#include "MultiplayersJoin.h"
 #include <vector>
-#include "YOG.h"
 #include "IRC.h"
 #include <GUIList.h>
 #include <GraphicContext.h>
 #include "Glob2Screen.h"
+#include "YOGClient.h"
+#include "NetTextMessageHandler.h"
 
 namespace GAGGUI
 {
@@ -35,43 +37,54 @@ namespace GAGGUI
 	class TextButton;
 }
 
-//! A list widget that keeps player list + the network they are using
+/// A widget that maintains the list of players, and draws an icon based
+/// on whether that player is from YOG or from IRC
 class YOGPlayerList : public List
 {
 public:
-	//! The type of network a player can be in
+
+	/// Constructor
+	YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font);
+
+	/// Destructor, release sprites
+	virtual ~YOGPlayerList();
+	
+	/// Represents the type of network a player can be in
 	enum NetworkType
 	{
 		ALL_NETWORK = 0,
 		YOG_NETWORK,
 		IRC_NETWORK,
 	};
-	
-protected:
+
+	/// Add a new player with its network;
+	void addPlayer(const std::string &nick, NetworkType network);
+
+	///Clears the lists of players
+	void clear(void);
+
+private:
 	//! An array that contains for each player the related network
 	std::vector<NetworkType> networks;
 	//! sprite for networks
 	GAGCore::Sprite *networkSprite;
-	
-public:
-	//! Constructor, create sprites and call List constructor
-	YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font);
-	//! Destructor, release sprites
-	virtual ~YOGPlayerList();
-		
-	//! Add a new player and its network
-	void addPlayer(const std::string &nick, NetworkType network) { addText(nick); networks.push_back(network); }
-	
-	void clear(void) { List::clear(); networks.clear(); }
-	
-protected:
+
+	///Draws an item on the screen
 	virtual void drawItem(int x, int y, size_t element);
 };
 
+///This is the main YOG screen
 class YOGScreen : public Glob2Screen
 {
-	static const int verbose = false;
 public:
+	///This takes a YOGClient. The client must be logged in when this is called.
+	YOGScreen(boost::shared_ptr<YOGClient> client);
+
+	virtual ~YOGScreen();
+	virtual void onTimer(Uint32 tick);
+	void onAction(Widget *source, Action action, int par1, int par2);
+
+private:
 	enum
 	{
 		CANCEL=2,
@@ -82,15 +95,17 @@ public:
 		STARTED=11
 	};
 
-	enum
-	{
-		GAME_INFO_MAX_SIZE=1024
-	};
+	///This launches the menu to host a game
+	void hostGame();
+	///This launches the menu to join a game
+	void joinGame();
+	///This updates the list of games
+	void updateGameList();
+	///This updates the list of players
+	void updatePlayerList();
+	///This updates the text box that has information about the selected game
+	void updateGameInfo();
 
-public:
-	MultiplayersJoin *multiplayersJoin;
-
-protected:
 	List *gameList;
 	TextArea *gameInfo;
 	YOGPlayerList *playerList;
@@ -98,21 +113,10 @@ protected:
 	TextArea *chatWindow;
 	
 	TextButton *joinButton;
-	
-	IRC irc;
 
-	void updateGameList(void);
-	void updatePlayerList(void);
+	boost::shared_ptr<YOGClient> client;
+	boost::shared_ptr<NetTextMessageHandler> netMessage;
 
-private:
-	YOG::GameInfo *selectedGameInfo;
-	int executionMode;
-
-public:
-	YOGScreen();
-	virtual ~YOGScreen();
-	virtual void onTimer(Uint32 tick);
-	void onAction(Widget *source, Action action, int par1, int par2);
 };
 
 #endif
