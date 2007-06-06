@@ -275,6 +275,7 @@ std::string YOGClient::findPlayerName(Uint16 playerID)
 		if(i->getPlayerID() == playerID)
 			return i->getPlayerName();
 	}
+	return "";
 }
 
 

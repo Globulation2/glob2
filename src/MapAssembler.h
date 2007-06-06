@@ -20,6 +20,8 @@
 #define __MapAssembler_h
 
 #include "YOGClient.h"
+#include "Stream.h"
+#include "BinaryStream.h"
 
 ///This class holds the responsibility of sending and recieving maps over the network.
 class MapAssembler

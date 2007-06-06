@@ -50,10 +50,10 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
 	addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 
-	startButton->visible=true;
+	startButton->visible=false;
 	addWidget(startButton);
 	notReadyText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
-	notReadyText->visible=false;
+	notReadyText->visible=true;
 	addWidget(notReadyText);
 	gameFullText=new Text(20, 335, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
 	gameFullText->visible=false;
@@ -105,6 +105,16 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 	if(game->hasPlayersChanged())
 	{
 		updateJoinedPlayers();
+	}
+	if(game->isGameReadyToStart())
+	{
+		startButton->visible=true;
+		notReadyText->visible=false;
+	}
+	else
+	{
+		startButton->visible=false;
+		notReadyText->visible=true;
 	}
 /*
 	// Host messages

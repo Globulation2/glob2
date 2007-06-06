@@ -85,6 +85,9 @@ public:
 	
 	///Causes the game to be started
 	void startGame();
+	
+	///This says whether the game is ready to start
+	bool isGameReadyToStart();
 protected:
 	friend class YOGClient;
 	///This receives a message that is sent to the game

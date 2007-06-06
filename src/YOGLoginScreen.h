@@ -85,6 +85,7 @@ private:
 	boost::shared_ptr<YOGClient> client;
 	
 	bool wasConnected;
+	bool waitingToSendLogin;
 };
 
 #endif

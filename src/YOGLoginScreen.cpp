@@ -69,6 +69,7 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	addWidget(animation);
 		
 	wasConnected=false;
+	waitingToSendLogin=false;
 }
 
 YOGLoginScreen::~YOGLoginScreen()
@@ -92,10 +93,7 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if(client->isConnected())
 			{
 				wasConnected=true;
-				if(newYogPassword->getState())
-					attemptRegistration();
-				else
-					attemptLogin();
+				waitingToSendLogin=true;
 			}
 			else
 			{
@@ -122,6 +120,16 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 	else
 	{
 		client->update();
+		///If login information needs to be sent
+		if(waitingToSendLogin && client->getConnectionState()==YOGClient::WaitingForLoginInformation)
+		{
+			if(newYogPassword->getState())
+				attemptRegistration();
+			else
+				attemptLogin();
+			waitingToSendLogin=false;
+		}
+		
 		//If the connection state has changed
 		if(client->getConnectionState() != oldConnectionState)
 		{
@@ -141,8 +149,8 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 			else if(client->getLoginState() == YOGLoginSuccessful)
 			{
 				YOGScreen screen(client);
-				screen.execute(globalContainer->gfx, 40);
-				endExecute(LoggedIn);
+				int rc = screen.execute(globalContainer->gfx, 40);
+				endExecute(rc);
 			}
 			oldConnectionState = client->getConnectionState();
 		}

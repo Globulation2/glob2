@@ -63,6 +63,9 @@ public:
 	/// Initiate a game with the given MultiplayerGame
 	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, int localPlayer);
 
+	///Tells whether a map matching mapHeader is located on this system
+	bool haveMap(const MapHeader& mapHeader);
+
 	//! Run game. A valid gui and netGame must exists
 	int run();
 

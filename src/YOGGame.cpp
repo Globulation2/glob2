@@ -18,6 +18,8 @@
 
 #include "YOGGame.h"
 #include <algorithm>
+#include "YOGMapDistributor.h"
+
 
 YOGGame::YOGGame(Uint16 gameID)
 	: gameID(gameID)
@@ -28,7 +30,8 @@ YOGGame::YOGGame(Uint16 gameID)
 
 void YOGGame::update()
 {
-	distributor->update();
+	if(distributor)
+		distributor->update();
 }
 
 void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
@@ -95,18 +98,6 @@ void YOGGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer>
 	{
 		if((*i) != sender)
 			(*i)->sendMessage(message);
-	}
-}
-
-
-
-void YOGGame::requestGame()
-{
-	if(!requested)
-	{
-		shared_ptr<NetRequestMap> message(new NetRequestMap);
-		host->sendMessage(message);
-		request=true;
 	}
 }
 

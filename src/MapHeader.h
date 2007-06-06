@@ -88,6 +88,7 @@ public:
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
 	
+	bool operator!=(const MapHeader& rhs) const;
 private:
 	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;
