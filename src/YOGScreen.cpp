@@ -272,6 +272,9 @@ void YOGScreen::onTimer(Uint32 tick)
 		chatWindow->addText("\n");
 		message = netMessage->getNextMessage();
 	}
+	updateGameList();
+	updatePlayerList();
+	client->update();
 }
 
 
