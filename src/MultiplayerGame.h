@@ -88,6 +88,18 @@ public:
 	
 	///This says whether the game is ready to start
 	bool isGameReadyToStart();
+	
+	///This is intended to add an AI to the game
+	void addAIPlayer(AI::ImplementitionID type);
+	
+	///This kicks/removes a player from the game
+	void kickPlayer(int playerNum);
+	
+	///This updates the team for a player
+	void changeTeam(int playerNum, int teamNum);
+	
+	///Sends a message to other players in the game
+	void sendMessage(const std::string& message);
 protected:
 	friend class YOGClient;
 	///This receives a message that is sent to the game
