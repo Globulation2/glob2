@@ -286,30 +286,9 @@ void YOGScreen::hostGame()
 		client->setMultiplayerGame(game);
 		game->createNewGame("New Game");
 		game->setMapHeader(cms.getMapHeader());
-		MultiplayerGameScreen mgs(game, netMessage->getIRC().get());
+		MultiplayerGameScreen mgs(game, netMessage);
 		mgs.execute(globalContainer->gfx, 40);
 	}
-/*
-	Engine engine;
-	// host game and wait for players
-	int rc=engine.initMutiplayerHost(true);
-	// execute game
-	if (rc==Engine::EE_NO_ERROR)
-	{
-		irc.leaveChannel(IRC_CHAN);
-		client->gameHasStarted();
-		if (engine.run()==-1)
-			executionMode=-1;
-		client->gameHasFinished();
-		irc.joinChannel(IRC_CHAN);
-	}
-	else if (rc==-1)
-		executionMode=-1;
-	// redraw all stuff
-	updateGameList();
-	updatePlayerList();
-	client->removeGame();
-*/
 }
 
 
@@ -331,7 +310,7 @@ void YOGScreen::joinGame()
 			}
 		}
 		game->joinGame(id);
-		MultiplayerGameScreen mgs(game, netMessage->getIRC().get());
+		MultiplayerGameScreen mgs(game, netMessage);
 		mgs.execute(globalContainer->gfx, 40);
 	}
 }

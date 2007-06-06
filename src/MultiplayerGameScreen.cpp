@@ -36,8 +36,8 @@
 
 #include "IRC.h"
 
-MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, IRC* ircPtr)
-	: game(game), ircPtr(ircPtr)
+MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<NetTextMessageHandler> textMessage)
+	: game(game), textMessage(textMessage)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -90,8 +90,6 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	addWidget(textInput);
 	
 	updateJoinedPlayers();
-	
-	executionMode=START;
 }
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
@@ -116,122 +114,15 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 		startButton->visible=false;
 		notReadyText->visible=true;
 	}
-/*
-	// Host messages
-	if (multiplayersHost->receivedMessages.size())
-		for (std::list<MultiplayersCrossConnectable::Message>::iterator mit=multiplayersHost->receivedMessages.begin(); mit!=multiplayersHost->receivedMessages.end(); ++mit)
-			if (!mit->guiPainted)
-			{
-				switch(mit->messageType)//set the text color
-				{
-				case MessageOrder::NORMAL_MESSAGE_TYPE:
-					chatWindow->addText("<");
-					chatWindow->addText(mit->userName);
-					chatWindow->addText("> ");
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				case MessageOrder::PRIVATE_MESSAGE_TYPE:
-					chatWindow->addText("<");
-					chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
-					chatWindow->addText(mit->userName);
-					chatWindow->addText("> ");
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				case MessageOrder::PRIVATE_RECEIPT_TYPE:
-					chatWindow->addText("<");
-					chatWindow->addText(Toolkit::getStringTable()->getString("[to:]"));
-					chatWindow->addText(mit->userName);
-					chatWindow->addText("> ");
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				default:
-					assert(false);
-				break;
-				}
-				mit->guiPainted=true;
-			}
-*/
-	// IRC messages
-	if (ircPtr)
-	{
-		ircPtr->step();
-		// display IRC messages
-		while (ircPtr->isChatMessage())
-		{
-			chatWindow->addText("<");
-			chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
-			chatWindow->addText(ircPtr->getChatMessageSource());
-			chatWindow->addText("> ");
-			chatWindow->addText(ircPtr->getChatMessage());
-			chatWindow->addText("\n");
-			chatWindow->scrollToBottom();
-			ircPtr->freeChatMessage();
-		}
-	}
 
-/*
-	// YOG messages
-	for (std::list<YOG::Message>::iterator mit=yog->receivedMessages.begin(); mit!=yog->receivedMessages.end(); ++mit)
-		if (!mit->gameGuiPainted)
-		{
-			switch(mit->messageType)//set the text color
-			{
-				case YCMT_MESSAGE:
-					// We don't want YOG messages to appear while in the game.
-				break;
-				case YCMT_PRIVATE_MESSAGE:
-					chatWindow->addText("<");
-					chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
-					chatWindow->addText(mit->userName);
-					chatWindow->addText("> ");
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				case YCMT_ADMIN_MESSAGE:
-					chatWindow->addText("<");
-					chatWindow->addText(mit->userName);
-					chatWindow->addText("> ");
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				case YCMT_PRIVATE_RECEIPT:
-					chatWindow->addText("<");
-					chatWindow->addText(Toolkit::getStringTable()->getString("[to:]"));
-					chatWindow->addText(mit->userName);
-					chatWindow->addText("> ");
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
-					chatWindow->addText("<");
-					chatWindow->addText(Toolkit::getStringTable()->getString("[away:]"));
-					chatWindow->addText(mit->userName);
-					chatWindow->addText("> ");
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				case YCMT_EVENT_MESSAGE:
-					chatWindow->addText(mit->text);
-					chatWindow->addText("\n");
-					chatWindow->scrollToBottom();
-				break;
-				default:
-					assert(false);
-				break;
-			}
-			mit->gameGuiPainted=true;
-		}
-		*/
+	std::string message = textMessage->getNextMessage();
+	while(message!="")
+	{
+		chatWindow->addText(message);
+		textMessage->getNextMessageType();
+		message = textMessage->getNextMessage();
+	}
+	
 }
 
 
@@ -246,61 +137,30 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		}
 		else if (par1 == CANCEL)
 		{
+			endExecute(Cancelled);
 		}
 		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + AI::SIZE))
 		{
-		/*
-			if ((multiplayersHost->hostGlobalState<MultiplayersHost::HGS_GAME_START_SENDED)
-				&&(multiplayersHost->sessionInfo.numberOfPlayer<MAX_NUMBER_OF_PLAYERS))
-			{
-				multiplayersHost->addAI((AI::ImplementitionID)(par1-ADD_AI));
-				if (multiplayersHost->sessionInfo.numberOfPlayer>=16)
-				{
-					for (size_t i=0; i<addAI.size(); i++)
-						addAI[i]->hide();
-					gameFullText->show();
-				}
-			}
-		*/
+			game->addAIPlayer((AI::ImplementitionID)(par1-ADD_AI));
 		}
-		else if (par1 == -1)
+		else if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 		{
-		}
-		else
-		{
-		/*
-			if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
-			{
-				multiplayersHost->kickPlayer(par1-CLOSE_BUTTONS);
-				if (multiplayersHost->sessionInfo.numberOfPlayer<16)
-				{
-					gameFullText->hide();
-					for (size_t i=0; i<addAI.size(); i++)
-						addAI[i]->show();
-				}
-			}
-		*/
+			game->kickPlayer(par1 - CLOSE_BUTTONS);
 		}
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
-	/*
-		if ((par1>=COLOR_BUTTONS)&&(par1<COLOR_BUTTONS+MAX_NUMBER_OF_PLAYERS))
-				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS, par2);
-	*/
+		game->changeTeam(par1 - COLOR_BUTTONS, par2);
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-	/*
-		multiplayersHost->sendMessage(textInput->getText().c_str());
-		if (ircPtr)
+		game->sendMessage(textInput->getText());
+		boost::shared_ptr<IRC> irc = textMessage->getIRC();
+		if(irc)
 		{
-			const char *message = textInput->getText().c_str();
-			if ((message[0] == '/') && (message[1]=='/'))
-				ircPtr->sendCommand(&message[1]);
+			irc->sendCommand(textInput->getText());
+			textInput->setText("");
 		}
-		textInput->setText("");
-	*/
 	}
 }
 

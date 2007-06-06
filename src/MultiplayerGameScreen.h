@@ -24,7 +24,7 @@
 #include "MultiplayerGame.h"
 #include "AI.h"
 #include "MapHeader.h"
-#include "IRC.h"
+#include "NetTextMessageHandler.h"
 
 namespace GAGGUI
 {
@@ -40,6 +40,17 @@ namespace GAGGUI
 class MultiplayerGameScreen : public Glob2Screen
 {
 public:
+	///The screen must be provided with the text message handler and the multiplayer game
+	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<NetTextMessageHandler> textMessage);
+	virtual ~MultiplayerGameScreen();
+
+	enum
+	{
+		Cancelled,
+		StartedGame,
+	};
+
+private:
 	enum
 	{
 		START = 1,
@@ -53,13 +64,6 @@ public:
 	};
 
 	enum { MAX_NUMBER_OF_PLAYERS = 16};
-
-private:
-	int executionMode;
-
-public:
-	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, IRC* ircPtr);
-	virtual ~MultiplayerGameScreen();
 
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
@@ -83,6 +87,6 @@ public:
 	Text *notReadyText;
 	Text *gameFullText;
 
-	IRC* ircPtr;
+	boost::shared_ptr<NetTextMessageHandler> textMessage;
 };
 #endif

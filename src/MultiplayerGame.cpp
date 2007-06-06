@@ -20,6 +20,9 @@
 #include <iostream>
 #include "Engine.h"
 #include "MapAssembler.h"
+#include "FormatableString.h"
+#include "Toolkit.h"
+#include "StringTable.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown)
@@ -91,6 +94,129 @@ void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 MapHeader& MultiplayerGame::getMapHeader()
 {
 	return mapHeader;
+}
+
+
+
+GameHeader& MultiplayerGame::getGameHeader()
+{
+	return gameHeader;
+}
+
+
+
+void MultiplayerGame::updateGameHeader()
+{
+	std::cout<<gameHeader.getNumberOfPlayers()<<std::endl;
+	shared_ptr<NetSendGameHeader> message(new NetSendGameHeader(gameHeader));
+	client->sendNetMessage(message);
+}
+
+
+
+
+bool MultiplayerGame::hasPlayersChanged()
+{
+	if(playersChanged)
+	{
+		playersChanged=false;
+		return true;
+	}
+	return false;
+}
+
+
+
+void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
+{
+	netEngine = nnetEngine;
+}
+
+
+
+void MultiplayerGame::pushOrder(shared_ptr<Order> order, int playerNum, int ustep)
+{
+	order->sender = playerNum;
+	order->ustep = ustep;
+	shared_ptr<NetSendOrder> message(new NetSendOrder(order));
+	client->sendNetMessage(message);
+}
+
+
+
+void MultiplayerGame::startGame()
+{
+	shared_ptr<NetStartGame> message(new NetStartGame);
+	client->sendNetMessage(message);
+	startEngine();
+}
+
+
+
+bool MultiplayerGame::isGameReadyToStart()
+{
+	if(assembler)
+	{
+		if(assembler->isTransferComplete())
+			return true;
+		return false;
+	}
+	return true;
+}
+
+
+
+void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
+{
+	for(int x=0; x<32; ++x)
+	{
+		BasePlayer& bp = gameHeader.getBasePlayer(x);
+		if(bp.type == BasePlayer::P_NONE)
+		{
+			FormatableString name("%0 %1");
+			name.arg(Toolkit::getStringTable()->getString("[AI]", type)).arg(x-1);
+			bp = BasePlayer(x, name, x, Player::playerTypeFromImplementitionID(type));
+			break;
+		}
+	}
+	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
+	playersChanged=true;
+	updateGameHeader();
+}
+
+
+
+void MultiplayerGame::kickPlayer(int playerNum)
+{
+	BasePlayer& bp = gameHeader.getBasePlayer(playerNum);
+	if(bp.type==BasePlayer::P_AI)
+	{
+		bp = BasePlayer();
+	}
+	else if(bp.type==BasePlayer::P_IP)
+	{
+		removePerson(bp.playerID);
+	}
+}
+
+
+
+void MultiplayerGame::changeTeam(int playerNum, int teamNum)
+{
+	BasePlayer& bp = gameHeader.getBasePlayer(playerNum);
+	bp.teamNumber = teamNum;
+	updateGameHeader();
+}
+
+
+
+void MultiplayerGame::sendMessage(const std::string& message)
+{
+	boost::shared_ptr<YOGMessage> tmessage(new YOGMessage);
+	tmessage->setSender(client->getUsername());
+	tmessage->setMessage(message);
+	tmessage->setMessageType(YOGGameMessage);
+	client->sendMessage(tmessage);
 }
 
 
@@ -176,7 +302,6 @@ void MultiplayerGame::addPerson(Uint16 playerID)
 	for(int x=0; x<32; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		std::cout<<"adding "<<playerID<<"; type["<<x<<"]="<<bp.type<<std::endl;
 		if(bp.type == BasePlayer::P_NONE)
 		{
 			bp = BasePlayer(x, client->findPlayerName(playerID).c_str(), x, BasePlayer::P_IP);
@@ -207,73 +332,6 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 	updateGameHeader();
 }
 
-
-
-GameHeader& MultiplayerGame::getGameHeader()
-{
-	return gameHeader;
-}
-
-
-
-void MultiplayerGame::updateGameHeader()
-{
-	std::cout<<gameHeader.getNumberOfPlayers()<<std::endl;
-	shared_ptr<NetSendGameHeader> message(new NetSendGameHeader(gameHeader));
-	client->sendNetMessage(message);
-}
-
-
-
-
-bool MultiplayerGame::hasPlayersChanged()
-{
-	if(playersChanged)
-	{
-		playersChanged=false;
-		return true;
-	}
-	return false;
-}
-
-
-
-void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
-{
-	netEngine = nnetEngine;
-}
-
-
-
-void MultiplayerGame::pushOrder(shared_ptr<Order> order, int playerNum, int ustep)
-{
-	order->sender = playerNum;
-	order->ustep = ustep;
-	shared_ptr<NetSendOrder> message(new NetSendOrder(order));
-	client->sendNetMessage(message);
-}
-
-
-
-void MultiplayerGame::startGame()
-{
-	shared_ptr<NetStartGame> message(new NetStartGame);
-	client->sendNetMessage(message);
-	startEngine();
-}
-
-
-
-bool MultiplayerGame::isGameReadyToStart()
-{
-	if(assembler)
-	{
-		if(assembler->isTransferComplete())
-			return true;
-		return false;
-	}
-	return true;
-}
 
 
 void MultiplayerGame::startEngine()

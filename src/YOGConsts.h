@@ -96,6 +96,8 @@ enum YOGMessageType
 	YOGPrivateMessage,
 	///This means an administrator message sent by YOG
 	YOGAdministratorMessage,
+	///This is a message sent only to members of the same game
+	YOGGameMessage,
 };
 
 
