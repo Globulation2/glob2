@@ -38,22 +38,23 @@ struct ValRefCode: Code
 	size_t index;
 };
 
-struct ApplyCode: Code
+struct SelectCode: Code
 {
-	ApplyCode(const std::string& name);
+	SelectCode(const std::string& name);
 	
 	virtual void execute(Thread* thread);
 	
-	const std::string name;
+	std::string name;
+};
+
+struct ApplyCode: Code
+{
+	virtual void execute(Thread* thread);
 };
 
 struct ValCode: Code
 {
-	ValCode(size_t index);
-	
 	virtual void execute(Thread* thread);
-	
-	size_t index;
 };
 
 struct ParentCode: Code
@@ -68,11 +69,7 @@ struct PopCode: Code
 
 struct ScopeCode: Code
 {
-	ScopeCode(ScopePrototype* prototype);
-	
 	virtual void execute(Thread* thread);
-	
-	ScopePrototype* prototype;
 };
 
 struct ReturnCode: Code
@@ -105,6 +102,15 @@ struct NativeCode: Code
 	virtual void execute(Thread* thread);
 	
 	Operation* operation;
+};
+
+struct DefRefCode: Code
+{
+	DefRefCode(ScopePrototype* method);
+	
+	virtual void execute(Thread* thread);
+	
+	ScopePrototype* method;
 };
 
 #endif // ndef BYTECODE_H
