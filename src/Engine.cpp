@@ -201,6 +201,23 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 }
 
 
+
+bool Engine::haveMap(const MapHeader& mapHeader)
+{
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
+	if (stream->isEndOfStream())
+	{
+		return false;
+	}
+	delete stream;
+	MapHeader mh = loadMapHeader(mapHeader.getFileName());
+	if(mh != mapHeader)
+		return false;
+	return true;
+}
+
+
+
 int Engine::run(void)
 {
 	bool doRunOnceAgain=true;

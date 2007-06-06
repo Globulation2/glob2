@@ -1803,7 +1803,7 @@ bool NetStartGame::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetStartGame))
 	{
-		const NetStartGame& r = dynamic_cast<const NetStartGame&>(rhs);
+		//const NetStartGame& r = dynamic_cast<const NetStartGame&>(rhs);
 		return true;
 	}
 	return false;
@@ -1854,7 +1854,7 @@ bool NetRequestMap::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRequestMap))
 	{
-		const NetRequestMap& r = dynamic_cast<const NetRequestMap&>(rhs);
+		//const NetRequestMap& r = dynamic_cast<const NetRequestMap&>(rhs);
 		return true;
 	}
 	return false;
@@ -1968,7 +1968,7 @@ void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
 void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileChunk");
-	read = stream->readText("data");
+	data = stream->readText("data");
 	stream->readLeaveSection();
 }
 

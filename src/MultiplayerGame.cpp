@@ -19,6 +19,7 @@
 #include "MultiplayerGame.h"
 #include <iostream>
 #include "Engine.h"
+#include "MapAssembler.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown)
@@ -127,6 +128,12 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
 		mapHeader = info->getMapHeader();
 		playersChanged=true;
+		Engine engine;
+		if(!engine.haveMap(mapHeader))
+		{
+			assembler.reset(new MapAssembler(client));
+			assembler->startRecievingFile(mapHeader.getFileName());
+		}
 	}
 	if(type==MNetSendGameHeader)
 	{
@@ -255,6 +262,18 @@ void MultiplayerGame::startGame()
 	startEngine();
 }
 
+
+
+bool MultiplayerGame::isGameReadyToStart()
+{
+	if(assembler)
+	{
+		if(assembler->isTransferComplete())
+			return true;
+		return false;
+	}
+	return true;
+}
 
 
 void MultiplayerGame::startEngine()

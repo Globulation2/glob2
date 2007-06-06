@@ -32,16 +32,16 @@ void YOGMapDistributor::update()
 {
 	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
-		if(player->get<2>() == 0 && fileInfo)
+		if(i->get<2>() == 0 && fileInfo)
 		{
-			player->get<0>()->sendMessage(fileInfo);
-			player->get<2>() = 1;
+			i->get<0>()->sendMessage(fileInfo);
+			i->get<2>() = 1;
 		}
-		if(player->get<2>() == 1 && (player->get<1>() < chunks.size())
+		if(i->get<2>() == 1 && (i->get<1>() < chunks.size()))
 		{
-			player->get<0>()->sendMessage(chunks[player->get<1>());
-			player->get<2>() = 2;
-			player->get<1>() += 1;
+			i->get<0>()->sendMessage(chunks[i->get<1>()]);
+			i->get<2>() = 2;
+			i->get<1>() += 1;
 		}
 	}
 }
@@ -50,7 +50,7 @@ void YOGMapDistributor::update()
 
 void YOGMapDistributor::addMapRequestee(boost::shared_ptr<YOGPlayer> player)
 {
-	if(!sendRequest)
+	if(!sentRequest)
 	{
 		shared_ptr<NetRequestMap> message(new NetRequestMap);
 		host->sendMessage(message);

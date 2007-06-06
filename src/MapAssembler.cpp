@@ -17,8 +17,11 @@
 */
 
 #include "MapAssembler.h"
+#include "Toolkit.h"
+#include "FileManager.h"
 
 using namespace boost;
+using namespace GAGCore;
 
 MapAssembler::MapAssembler(boost::shared_ptr<YOGClient> client)
 	: client(client)
@@ -42,7 +45,7 @@ void MapAssembler::startSendingFile(std::string mapname)
 	finished=0;
 	istream.reset(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname)));
 	istream->seekFromEnd(0);
-	size=istream.position();
+	size=istream->getPosition();
 	istream->seekFromStart(0);
 	shared_ptr<NetSendFileInformation> message(new NetSendFileInformation(size));
 	client->sendNetMessage(message);
@@ -87,7 +90,7 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
 		Uint32 size = info->getChunkSize();
 		Uint8* buffer = new Uint8[size];
-		shared_ptr<GAGCore::BinaryInputStream> s = info->getStream();
+		shared_ptr<GAGCore::InputStream> s(info->getStream());
 		s->read(buffer, size, "data");
 		ostream->write(buffer, size, "");
 		requestNextChunk();
