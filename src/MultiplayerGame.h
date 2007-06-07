@@ -100,6 +100,9 @@ public:
 	
 	///Sends a message to other players in the game
 	void sendMessage(const std::string& message);
+	
+	///Returns the reason for being kicked
+	YOGKickReason getKickReason() const;
 protected:
 	friend class YOGClient;
 	///This receives a message that is sent to the game
@@ -118,6 +121,7 @@ private:
 	GameJoinCreationState gjcState;
 	YOGGameCreateRefusalReason creationState;
 	YOGGameJoinRefusalReason joinState;
+	YOGKickReason kickReason;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	bool playersChanged;

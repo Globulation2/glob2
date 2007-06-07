@@ -115,6 +115,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetRequestNextChunk:
 		message.reset(new NetRequestNextChunk);
 		break;
+		case MNetKickPlayer:
+		message.reset(new NetKickPlayer);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -2053,11 +2056,89 @@ bool NetRequestNextChunk::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRequestNextChunk))
 	{
-		const NetRequestNextChunk& r = dynamic_cast<const NetRequestNextChunk&>(rhs);
+		//const NetRequestNextChunk& r = dynamic_cast<const NetRequestNextChunk&>(rhs);
 		return true;
 	}
 	return false;
 }
+
+
+
+NetKickPlayer::NetKickPlayer()
+	: playerID(0), reason(YOGUnknownKickReason)
+{
+}
+
+
+
+NetKickPlayer::NetKickPlayer(Uint16 playerID, YOGKickReason reason)
+	: playerID(playerID), reason(reason)
+{
+}
+
+
+
+Uint8 NetKickPlayer::getMessageType() const
+{
+	return MNetKickPlayer;
+}
+
+
+
+void NetKickPlayer::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetKickPlayer");
+	stream->writeUint16(playerID, "playerID");
+	stream->writeUint8(reason, "reason");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetKickPlayer::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetKickPlayer");
+	playerID = stream->readUint16("playerID");
+	reason = static_cast<YOGKickReason>(stream->readUint8("reason"));
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetKickPlayer::format() const
+{
+	std::ostringstream s;
+	s<<"NetKickPlayer(playerID="<<playerID<<"; reason="<<reason<<")";
+	return s.str();
+}
+
+
+
+bool NetKickPlayer::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetKickPlayer))
+	{
+		const NetKickPlayer& r = dynamic_cast<const NetKickPlayer&>(rhs);
+		if(r.playerID == playerID && r.reason == reason)
+			return true;
+	}
+	return false;
+}
+
+
+
+Uint16 NetKickPlayer::getPlayerID()
+{
+	return playerID;
+}
+
+
+
+YOGKickReason NetKickPlayer::getReason()
+{
+	return reason;
+}
+
 
 
 //append_code_position

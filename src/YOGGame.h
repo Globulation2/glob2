@@ -57,6 +57,9 @@ public:
 	
 	///Returns the map distributor
 	shared_ptr<YOGMapDistributor> getMapDistributor();
+	
+	///Sends a kick message to the player
+	void sendKickMessage(shared_ptr<NetKickPlayer> message);
 private:
 	bool requested;
 	MapHeader mapHeader;

@@ -100,6 +100,18 @@ enum YOGMessageType
 	YOGGameMessage,
 };
 
+///This is used to represent the various reasons a player may be
+///removed from a game.
+enum YOGKickReason
+{
+	///This means the host has disconnected and all players must quit
+	YOGHostDisconnect,
+	///This means that the host has kicked the player
+	YOGKickedByHost,
+	///This represents an unknown reason
+	YOGUnknownKickReason,
+};
+
 
 /*
 

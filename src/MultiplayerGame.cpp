@@ -29,6 +29,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 {
 	playersChanged = false;
 	netEngine=NULL;
+	kickReason = YOGUnknownKickReason;
 }
 
 
@@ -195,7 +196,9 @@ void MultiplayerGame::kickPlayer(int playerNum)
 	}
 	else if(bp.type==BasePlayer::P_IP)
 	{
+		shared_ptr<NetKickPlayer> message(new NetKickPlayer(bp.playerID, YOGKickedByHost));
 		removePerson(bp.playerID);
+		client->sendNetMessage(message);
 	}
 }
 
@@ -217,6 +220,13 @@ void MultiplayerGame::sendMessage(const std::string& message)
 	tmessage->setMessage(message);
 	tmessage->setMessageType(YOGGameMessage);
 	client->sendMessage(tmessage);
+}
+
+
+
+YOGKickReason MultiplayerGame::getKickReason() const
+{
+	return kickReason;
 }
 
 
@@ -292,6 +302,12 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		assembler.reset(new MapAssembler(client));
 		assembler->startSendingFile(mapHeader.getFileName());
+	}
+	if(type==MNetKickPlayer)
+	{
+		shared_ptr<NetKickPlayer> info = static_pointer_cast<NetKickPlayer>(message);
+		kickReason = info->getReason();
+		gjcState = NothingYet;
 	}
 }
 
