@@ -21,11 +21,13 @@
 
 #include <string>
 #include "SDL_net.h"
+#include "YOGConsts.h"
 
 enum YOGEventType
 {
 	//type_append_marker
 };
+
 
 ///This represents an event recieved from  YOGClient
 ///These are merely data classes, and not much more
