@@ -203,6 +203,10 @@ VoiceRecorder.h \
 YOGClient.cpp \
 YOGClient.h \
 YOGConsts.h \
+YOGEvent.cpp \
+YOGEvent.h \
+YOGEventListener.cpp \
+YOGEventListener.h \
 YOGGame.cpp \
 YOGGame.h \
 YOGGameInfo.cpp \

@@ -24,6 +24,7 @@
 YOGClient::YOGClient(const std::string& server)
 {
 	connect(server);
+	listener=NULL;
 }
 
 
@@ -73,7 +74,6 @@ void YOGClient::update()
 		nc.sendMessage(message);
 		connectionState = WaitingForServerInformation;
 	}
-
 
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = nc.getMessage();
@@ -399,4 +399,11 @@ void YOGClient::setMapAssembler(boost::shared_ptr<MapAssembler> nassembler)
 boost::shared_ptr<MapAssembler> YOGClient::getMapAssembler()
 {
 	return assembler;
+}
+
+
+
+void YOGClient::setEventListener(YOGEventListener* nlistener)
+{
+	listener=nlistener;
 }

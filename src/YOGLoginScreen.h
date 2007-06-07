@@ -37,7 +37,7 @@ namespace GAGGUI
 
 ///This handles with connecting the user to YOG and logging them in.
 ///This assumes the client has not yet connected with YOG
-class YOGLoginScreen : public Glob2Screen
+class YOGLoginScreen : public Glob2Screen, public YOGEventListener
 {
 public:
 	///Construct with the given YOG client.
@@ -68,6 +68,9 @@ private:
 
 	virtual void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
+	
+	///Responds to YOG events
+	void handleYOGEvent(boost::shared_ptr<YOGEvent> event);
 
 	///Attempt a login with the entered information
 	void attemptLogin();
