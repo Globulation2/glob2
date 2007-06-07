@@ -26,6 +26,7 @@
 #include "YOGGameInfo.h"
 #include "YOGPlayerInfo.h"
 #include "YOGMessage.h"
+#include "YOGEventListener.h"
 #include <list>
 
 class MultiplayerGame;
@@ -162,6 +163,10 @@ public:
 	///Returns the map assembler for this connection
 	boost::shared_ptr<MapAssembler> getMapAssembler();
 
+	///This sets the event listener, which will recieve all subsequent events.
+	///Does not take ownership of the object
+	void setEventListener(YOGEventListener* listener);
+
 protected:
     friend class MultiplayerGame;
     friend class MapAssembler;
@@ -188,6 +193,7 @@ private:
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;
+	YOGEventListener* listener;
 };
 
 

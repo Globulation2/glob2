@@ -70,6 +70,7 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 		
 	wasConnected=false;
 	waitingToSendLogin=false;
+	client->setEventListener(this);
 }
 
 YOGLoginScreen::~YOGLoginScreen()
@@ -155,6 +156,13 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 			oldConnectionState = client->getConnectionState();
 		}
 	}
+}
+
+
+
+void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
+{
+
 }
 
 
