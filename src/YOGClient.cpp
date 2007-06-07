@@ -184,6 +184,10 @@ void YOGClient::update()
 	{
 		joinedGame->recieveMessage(message);
 	}
+	if(type==MNetKickPlayer)
+	{
+		joinedGame->recieveMessage(message);
+	}
 
 
 	if(type==MNetSendFileInformation)

@@ -122,7 +122,10 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 		textMessage->getNextMessageType();
 		message = textMessage->getNextMessage();
 	}
-	
+	if(game->getGameJoinCreationState() == MultiplayerGame::NothingYet)
+	{
+		endExecute(Cancelled);
+	}
 }
 
 

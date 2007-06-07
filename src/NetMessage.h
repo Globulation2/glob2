@@ -65,6 +65,7 @@ enum NetMessageType
 	MNetSendFileInformation,
 	MNetSendFileChunk,
 	MNetRequestNextChunk,
+	MNetKickPlayer,
 	//type_append_marker
 };
 
@@ -1052,6 +1053,45 @@ public:
 
 	///Compares with another NetRequestNextChunk
 	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetKickPlayer
+class NetKickPlayer : public NetMessage
+{
+public:
+	///Creates a NetKickPlayer message
+	NetKickPlayer();
+	
+	///Creates a NetKickPlayer message
+	NetKickPlayer(Uint16 playerID, YOGKickReason reason);
+
+	///Returns MNetKickPlayer
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetKickPlayer message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetKickPlayer
+	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the playerID
+	Uint16 getPlayerID();
+	
+	///Returns the reason
+	YOGKickReason getReason();
+private:
+	Uint16 playerID;
+	YOGKickReason reason;
 };
 
 
