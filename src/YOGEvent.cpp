@@ -17,7 +17,8 @@
 */
 
 #include "YOGEvent.h"
-
+#include <typeinfo>
+#include <sstream>
 
 
 //code_append_marker
