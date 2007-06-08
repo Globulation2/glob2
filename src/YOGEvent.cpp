@@ -21,4 +21,145 @@
 #include <sstream>
 
 
+YOGConnectedEvent::YOGConnectedEvent()
+{
+}
+
+
+
+Uint8 YOGConnectedEvent::getEventType() const
+{
+	return YEConnected;
+}
+
+
+
+std::string YOGConnectedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGConnectedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGConnectedEvent::operator==(const YOGEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGConnectedEvent))
+	{
+		//const YOGConnectedEvent& r = dynamic_cast<const YOGConnectedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+YOGConnectionLostEvent::YOGConnectionLostEvent()
+{
+}
+
+
+
+Uint8 YOGConnectionLostEvent::getEventType() const
+{
+	return YEConnectionLost;
+}
+
+
+
+std::string YOGConnectionLostEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGConnectionLostEvent()";
+	return s.str();
+}
+
+
+
+bool YOGConnectionLostEvent::operator==(const YOGEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGConnectionLostEvent))
+	{
+		//const YOGConnectionLostEvent& r = dynamic_cast<const YOGConnectionLostEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+YOGLoginAcceptedEvent::YOGLoginAcceptedEvent()
+{
+}
+
+
+
+Uint8 YOGLoginAcceptedEvent::getEventType() const
+{
+	return YELoginAccepted;
+}
+
+
+
+std::string YOGLoginAcceptedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGLoginAcceptedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGLoginAcceptedEvent::operator==(const YOGEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGLoginAcceptedEvent))
+	{
+		//const YOGLoginAcceptedEvent& r = dynamic_cast<const YOGLoginAcceptedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+YOGLoginRefusedEvent::YOGLoginRefusedEvent(YOGLoginState reason)
+	: reason(reason)
+{
+}
+
+
+
+Uint8 YOGLoginRefusedEvent::getEventType() const
+{
+	return YELoginRefused;
+}
+
+
+
+std::string YOGLoginRefusedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGLoginRefusedEvent("<<"reason="<<reason<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool YOGLoginRefusedEvent::operator==(const YOGEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGLoginRefusedEvent))
+	{
+		const YOGLoginRefusedEvent& r = dynamic_cast<const YOGLoginRefusedEvent&>(rhs);
+		if(r.reason == reason)
+			return true;
+	}
+	return false;
+}
+
+
+YOGLoginState YOGLoginRefusedEvent::getReason() const
+{
+	return reason;
+}
+
+
+
 //code_append_marker

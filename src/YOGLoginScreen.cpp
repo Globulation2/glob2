@@ -67,9 +67,7 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
-		
-	wasConnected=false;
-	waitingToSendLogin=false;
+
 	client->setEventListener(this);
 }
 
@@ -91,12 +89,7 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 			client->connect(YOG_SERVER_IP);
-			if(client->isConnected())
-			{
-				wasConnected=true;
-				waitingToSendLogin=true;
-			}
-			else
+			if(!client->isConnected())
 			{
 				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
 			}
@@ -113,56 +106,56 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void YOGLoginScreen::onTimer(Uint32 tick)
 {
-	//See if the connection is still present
-	if(!client->isConnected() && wasConnected)
-	{
-		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
-	}
-	else
-	{
-		client->update();
-		///If login information needs to be sent
-		if(waitingToSendLogin && client->getConnectionState()==YOGClient::WaitingForLoginInformation)
-		{
-			if(newYogPassword->getState())
-				attemptRegistration();
-			else
-				attemptLogin();
-			waitingToSendLogin=false;
-		}
-		
-		//If the connection state has changed
-		if(client->getConnectionState() != oldConnectionState)
-		{
-			YOGLoginState login = client->getLoginState();
-			if(login == YOGPasswordIncorrect)
-			{
-				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]"));
-			}
-			else if(login == YOGUsernameAlreadyUsed)
-			{
-				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
-			}
-			else if(login == YOGUserNotRegistered)
-			{
-				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]"));
-			}
-			else if(client->getLoginState() == YOGLoginSuccessful)
-			{
-				YOGScreen screen(client);
-				int rc = screen.execute(globalContainer->gfx, 40);
-				endExecute(rc);
-			}
-			oldConnectionState = client->getConnectionState();
-		}
-	}
+	client->update();
 }
 
 
 
 void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 {
-
+	std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
+	Uint8 type = event->getEventType();
+	if(type == YEConnected)
+	{
+		//shared_ptr<YOGConnectedEvent> info = static_pointer_cast<YOGConnectedEvent>(event);
+		if(newYogPassword->getState())
+			attemptRegistration();
+		else
+			attemptLogin();
+	}
+	else if(type == YEConnectionLost)
+	{ 
+		//shared_ptr<YOGConnectionLostEvent> info = static_pointer_cast<YOGConnectionLostEvent>(event);
+		animation->visible=false;
+		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
+	}
+	else if(type == YELoginAccepted)
+	{
+		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
+		animation->visible=false;
+		YOGScreen screen(client);
+		int rc = screen.execute(globalContainer->gfx, 40);
+		endExecute(rc);
+	}
+	else if(type == YELoginRefused)
+	{
+		shared_ptr<YOGLoginRefusedEvent> info = static_pointer_cast<YOGLoginRefusedEvent>(event);
+		animation->visible=false;
+		YOGLoginState reason = info->getReason();
+		if(reason == YOGPasswordIncorrect)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]"));
+		}
+		else if(reason == YOGUsernameAlreadyUsed)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
+		}
+		else if(reason == YOGUserNotRegistered)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]"));
+		}
+		client->disconnect();
+	}
 }
 
 
