@@ -140,6 +140,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		}
 		else if (par1 == CANCEL)
 		{
+			game->leaveGame();
 			endExecute(Cancelled);
 		}
 		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + AI::SIZE))

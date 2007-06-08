@@ -118,6 +118,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetKickPlayer:
 		message.reset(new NetKickPlayer);
 		break;
+		case MNetLeaveGame:
+		message.reset(new NetLeaveGame);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -2139,6 +2142,57 @@ YOGKickReason NetKickPlayer::getReason()
 	return reason;
 }
 
+
+
+
+NetLeaveGame::NetLeaveGame()
+{
+
+}
+
+
+
+Uint8 NetLeaveGame::getMessageType() const
+{
+	return MNetLeaveGame;
+}
+
+
+
+void NetLeaveGame::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetLeaveGame");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetLeaveGame::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetLeaveGame");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetLeaveGame::format() const
+{
+	std::ostringstream s;
+	s<<"NetLeaveGame()";
+	return s.str();
+}
+
+
+
+bool NetLeaveGame::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetLeaveGame))
+	{
+		//const NetLeaveGame& r = dynamic_cast<const NetLeaveGame&>(rhs);
+		return true;
+	}
+	return false;
+}
 
 
 //append_code_position

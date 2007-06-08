@@ -61,7 +61,11 @@ public:
 	///Sends a kick message to the player
 	void sendKickMessage(shared_ptr<NetKickPlayer> message);
 	
-	bool isEmpty();
+	///Returns whether there are no players left in the game
+	bool isEmpty() const;
+	
+	///Returns the game ID
+	Uint16 getGameID() const;
 private:
 	bool requested;
 	MapHeader mapHeader;

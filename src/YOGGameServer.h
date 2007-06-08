@@ -100,6 +100,9 @@ public:
 private:
 	Uint16 chooseNewPlayerID();
 
+	///Removes the GameInfo with the given ID
+	void removeGameInfo(Uint16 gameID);
+
 	NetListener nl;
 	std::map<Uint16, shared_ptr<YOGPlayer> > players;
 	std::map<Uint16, shared_ptr<YOGGame> > games;

@@ -66,6 +66,7 @@ enum NetMessageType
 	MNetSendFileChunk,
 	MNetRequestNextChunk,
 	MNetKickPlayer,
+	MNetLeaveGame,
 	//type_append_marker
 };
 
@@ -1092,6 +1093,33 @@ public:
 private:
 	Uint16 playerID;
 	YOGKickReason reason;
+};
+
+
+
+
+///NetLeaveGame
+class NetLeaveGame : public NetMessage
+{
+public:
+	///Creates a NetLeaveGame message
+	NetLeaveGame();
+
+	///Returns MNetLeaveGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetLeaveGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetLeaveGame
+	bool operator==(const NetMessage& rhs) const;
 };
 
 

@@ -70,6 +70,11 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 	std::vector<shared_ptr<YOGPlayer> >::iterator i = std::find(players.begin(), players.end(), player);
 	if(i!=players.end())
 		players.erase(i);
+	if(player!=host)
+	{
+		shared_ptr<NetPlayerLeavesGame> message(new NetPlayerLeavesGame(player->getPlayerID()));
+		host->sendMessage(message);
+	}
 }
 
 
@@ -138,8 +143,14 @@ void YOGGame::sendKickMessage(shared_ptr<NetKickPlayer> message)
 
 
 
-bool YOGGame::isEmpty()
+bool YOGGame::isEmpty() const
 {
 	return players.empty();
 }
 
+
+
+Uint16 YOGGame::getGameID() const
+{
+	return gameID;
+}

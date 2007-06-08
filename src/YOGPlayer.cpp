@@ -130,6 +130,11 @@ void YOGPlayer::update()
 	{
 		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
 	}
+	//This recieves a leave game message
+	else if(type==MNetLeaveGame)
+	{
+		game->removePlayer(server.getPlayer(playerID));
+	}
 	
 }
 
