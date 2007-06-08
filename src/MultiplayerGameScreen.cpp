@@ -191,8 +191,8 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 		{
 			text[i]->visible=true;
 			text[i]->setText(Toolkit::getStringTable()->getString("[open]"));
-			color[i]->visible=true;
-			kickButton[i]->visible=true;
+			color[i]->visible=false;
+			kickButton[i]->visible=false;
 		}
 		else
 		{
