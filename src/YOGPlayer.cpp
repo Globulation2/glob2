@@ -268,11 +268,11 @@ void YOGPlayer::handleJoinGame(Uint16 ngameID)
 	YOGGameJoinRefusalReason reason = server.canJoinGame(ngameID);
 	if(reason == YOGJoinRefusalUnknown)
 	{	
+		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted);
+		connection->sendMessage(message);
 		gameID = ngameID;
 		game = server.getGame(gameID);
 		game->addPlayer(server.getPlayer(playerID));
-		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted);
-		connection->sendMessage(message);
 		//gameListState = NeedToSendGameList;
 	}
 	else
