@@ -43,8 +43,6 @@ void YOGClient::initialize()
 	loginPolicy = YOGUnknownLoginPolicy;
 	gamePolicy = YOGUnknownGamePolicy;
 	loginState = YOGLoginUnknown;
-	gameListChanged = false;
-	playerListChanged = false;
 	playerID=0;
 }
 
@@ -89,7 +87,7 @@ void YOGClient::update()
 			connectionState = WaitingForServerInformation;
 		}
 
-		//Parse incoming messages.
+		//Parse incoming messages and generate events
 		shared_ptr<NetMessage> message = nc.getMessage();
 		if(!message)
 			return;
@@ -112,7 +110,7 @@ void YOGClient::update()
 		if(type==MNetLoginSuccessful)
 		{
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
-			connectionState = WaitingForGameList;
+			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
 			if(listener)
 			{
@@ -136,7 +134,7 @@ void YOGClient::update()
 		if(type==MNetAcceptRegistration)
 		{
 			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
-			connectionState = WaitingForGameList;
+			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
 			if(listener)
 			{
@@ -161,16 +159,22 @@ void YOGClient::update()
 		{
 			shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);
 			info->applyDifferences(games);
-			connectionState = ClientOnStandby;
-			gameListChanged=true;
+			if(listener)
+			{
+				shared_ptr<YOGGameListUpdatedEvent> event(new YOGGameListUpdatedEvent);
+				listener->handleYOGEvent(event);
+			}
 		}
 		///This recieves a player list update message
 		if(type==MNetUpdatePlayerList)
 		{
 			shared_ptr<NetUpdatePlayerList> info = static_pointer_cast<NetUpdatePlayerList>(message);
 			info->applyDifferences(players);
-			connectionState = ClientOnStandby;
-			playerListChanged=true;
+			if(listener)
+			{
+				shared_ptr<YOGPlayerListUpdatedEvent> event(new YOGPlayerListUpdatedEvent);
+				listener->handleYOGEvent(event);
+			}
 		}
 		///This recieves a YOGMessage list update message
 		if(type==MNetSendYOGMessage)
@@ -334,29 +338,6 @@ void YOGClient::requestGameListUpdate()
 void YOGClient::requestPlayerListUpdate()
 {
 	//unimplemented
-}
-
-
-
-bool YOGClient::hasGameListChanged()
-{
-	if(gameListChanged)
-	{
-		gameListChanged = false;
-		return true;
-	}
-	return false;
-}
-
-
-bool YOGClient::hasPlayerListChanged()
-{
-	if(playerListChanged)
-	{
-		playerListChanged = false;
-		return true;
-	}
-	return false;
 }
 
 

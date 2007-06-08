@@ -29,6 +29,7 @@
 #include "Glob2Screen.h"
 #include "YOGClient.h"
 #include "NetTextMessageHandler.h"
+#include "YOGEventListener.h"
 
 namespace GAGGUI
 {
@@ -74,15 +75,27 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGScreen : public Glob2Screen
+class YOGScreen : public Glob2Screen, public YOGEventListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
 	YOGScreen(boost::shared_ptr<YOGClient> client);
 
 	virtual ~YOGScreen();
+	
+	///Responds to timer events
 	virtual void onTimer(Uint32 tick);
+	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
+	///Responds to YOG events
+	void handleYOGEvent(boost::shared_ptr<YOGEvent> event);
+
+	///The end-codes of the screen
+	enum
+	{
+		ConnectionLost,
+		Cancelled,
+	};
 
 private:
 	enum
@@ -99,12 +112,16 @@ private:
 	void hostGame();
 	///This launches the menu to join a game
 	void joinGame();
+	///This updates the text messages
+	void updateTextMessages();
 	///This updates the list of games
 	void updateGameList();
 	///This updates the list of players
 	void updatePlayerList();
 	///This updates the text box that has information about the selected game
 	void updateGameInfo();
+	///This will try to match and auto-complete a half-entered nick name
+	void autoCompleteNick();
 
 	List *gameList;
 	TextArea *gameInfo;
