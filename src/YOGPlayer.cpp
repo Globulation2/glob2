@@ -74,7 +74,7 @@ void YOGPlayer::update()
 	else if(type==MNetSendYOGMessage)
 	{
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
-		server.propogateMessage(info->getMessage());
+		server.propogateMessage(info->getMessage(), server.getPlayer(playerID));
 	}
 	//This recieves an attempt to create a new game
 	else if(type==MNetCreateGame)
@@ -159,6 +159,13 @@ void YOGPlayer::setPlayerID(Uint16 id)
 Uint16 YOGPlayer::getPlayerID()
 {
 	return playerID;
+}
+
+
+
+Uint16 YOGPlayer::getGameID()
+{
+	return gameID;
 }
 
 

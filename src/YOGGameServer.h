@@ -72,7 +72,7 @@ public:
 	const std::list<YOGPlayerInfo>& getPlayerList() const;
 
 	///This function propagates a YOGMessage to all the users on its destination
-	void propogateMessage(boost::shared_ptr<YOGMessage> message);
+	void propogateMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGPlayer> sender);
 
 	///Tells the server that a player has logged in with the given information,
 	void playerHasLoggedIn(const std::string& username, Uint16 id);

@@ -125,9 +125,29 @@ const std::list<YOGPlayerInfo>& YOGGameServer::getPlayerList() const
 
 
 
-void YOGGameServer::propogateMessage(boost::shared_ptr<YOGMessage> message)
+void YOGGameServer::propogateMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGPlayer> sender)
 {
-	///unimplemented
+	shared_ptr<NetSendYOGMessage> nmessage(new NetSendYOGMessage(message));
+	if(message->getMessageType() == YOGNormalMessage)
+	{
+		for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+		{
+			if(i->second != sender)
+			{
+				i->second->sendMessage(nmessage);
+			}
+		}
+	}
+	else if(message->getMessageType() == YOGGameMessage)
+	{
+		for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+		{
+			if(i->second != sender && sender->getGameID() == i->second->getGameID())
+			{
+				i->second->sendMessage(nmessage);
+			}
+		}
+	}
 }
 
 

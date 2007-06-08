@@ -77,7 +77,6 @@ enum YOGGameJoinRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGJoinRefusalUnknown,
-
 };
 
 ///This represents the reason why the player could not join a game.
