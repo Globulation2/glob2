@@ -52,6 +52,9 @@ public:
 
 	///Returns the ID for this player
 	Uint16 getPlayerID();
+	
+	///Returns the game id
+	Uint16 getGameID();
 
 	///Returns the name of the player, or blank if they haven't logged in
 	std::string getPlayerName();
