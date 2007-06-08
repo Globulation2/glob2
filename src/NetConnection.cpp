@@ -191,7 +191,7 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 
 		for(int i=0; i<length+2; ++i)
 		{
-			std::cout<<(int)(newData[i]);
+			std::cout<<(int)(newData[i])<<", ";
 		}
 		std::cout<<std::endl;
 
