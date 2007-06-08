@@ -207,6 +207,7 @@ void YOGScreen::hostGame()
 		game->setMapHeader(cms.getMapHeader());
 		MultiplayerGameScreen mgs(game, netMessage);
 		mgs.execute(globalContainer->gfx, 40);
+		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 	}
 }
 
@@ -231,6 +232,7 @@ void YOGScreen::joinGame()
 		game->joinGame(id);
 		MultiplayerGameScreen mgs(game, netMessage);
 		mgs.execute(globalContainer->gfx, 40);
+		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 	}
 }
 

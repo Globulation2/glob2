@@ -34,6 +34,14 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 
 
 
+MultiplayerGame::~MultiplayerGame()
+{
+	if(assembler)
+		client->setMapAssembler(boost::shared_ptr<MapAssembler>());
+}
+
+
+
 void MultiplayerGame::update()
 {
 	client->update();
@@ -57,6 +65,14 @@ void MultiplayerGame::joinGame(Uint16 gameID)
 	shared_ptr<NetAttemptJoinGame> message(new NetAttemptJoinGame(gameID));
 	client->sendNetMessage(message);
 	gjcState=WaitingForJoinReply;
+}
+
+
+
+void MultiplayerGame::leaveGame()
+{	
+	shared_ptr<NetLeaveGame> message(new NetLeaveGame);
+	client->sendNetMessage(message);
 }
 
 

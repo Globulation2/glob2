@@ -32,6 +32,8 @@ public:
 	///Creates a game instance and links it with the provided YOGClient
 	MultiplayerGame(boost::shared_ptr<YOGClient> client);
 	
+	~MultiplayerGame();
+	
 	///Should be called frequently
 	void update();
 	
@@ -40,6 +42,9 @@ public:
 	
 	///Attempt to join an existing game on the server with the given id, 
 	void joinGame(Uint16 gameID);
+
+	///Leaves the game you currently occupy
+	void leaveGame();
 
 	///Represents the state of joining or creating a game	
 	enum GameJoinCreationState

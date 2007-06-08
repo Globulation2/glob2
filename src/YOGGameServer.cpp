@@ -71,6 +71,7 @@ void YOGGameServer::update()
 	{
 		if(i->second->isEmpty())
 		{
+			removeGameInfo(i->second->getGameID());
 			std::map<Uint16, shared_ptr<YOGGame> >::iterator to_erase=i;
 			i++;
 			games.erase(to_erase);
@@ -259,4 +260,18 @@ Uint16 YOGGameServer::chooseNewPlayerID()
 			break;
 	}
 	return newID;
+}
+
+
+
+void YOGGameServer::removeGameInfo(Uint16 gameID)
+{
+	for(std::list<YOGGameInfo>::iterator i=gameList.begin(); i!=gameList.end(); ++i)
+	{
+		if(i->getGameID() == gameID)
+		{
+			gameList.erase(i);
+			return;
+		}
+	}
 }
