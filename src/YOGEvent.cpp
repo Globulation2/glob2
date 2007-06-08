@@ -162,4 +162,70 @@ YOGLoginState YOGLoginRefusedEvent::getReason() const
 
 
 
+YOGPlayerListUpdatedEvent::YOGPlayerListUpdatedEvent()
+{
+}
+
+
+
+Uint8 YOGPlayerListUpdatedEvent::getEventType() const
+{
+	return YEPlayerListUpdated;
+}
+
+
+
+std::string YOGPlayerListUpdatedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGPlayerListUpdatedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGPlayerListUpdatedEvent::operator==(const YOGEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGPlayerListUpdatedEvent))
+	{
+		//const YOGPlayerListUpdatedEvent& r = dynamic_cast<const YOGPlayerListUpdatedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+YOGGameListUpdatedEvent::YOGGameListUpdatedEvent()
+{
+}
+
+
+
+Uint8 YOGGameListUpdatedEvent::getEventType() const
+{
+	return YEGameListUpdated;
+}
+
+
+
+std::string YOGGameListUpdatedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGGameListUpdatedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGGameListUpdatedEvent::operator==(const YOGEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGGameListUpdatedEvent))
+	{
+		//const YOGGameListUpdatedEvent& r = dynamic_cast<const YOGGameListUpdatedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

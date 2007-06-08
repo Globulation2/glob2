@@ -72,8 +72,6 @@ public:
 		WaitingForLoginReply,
 		///This means that the client is waiting for a reply from a registration attempt.
 		WaitingForRegistrationReply,
-		///This means that the client is waiting for a game list to be sent
-		WaitingForGameList,
 		///This means the client is on standby, waiting for the user to ask
 		///for some input
 		ClientOnStandby,
@@ -130,11 +128,6 @@ public:
 	///from the server
 	bool hasGameListChanged();
 
-	///Returns true if the list of players has been changed since the last call to
-	///this function. Defaults to false, untill the the player list is first initiated
-	///from the server
-	bool hasPlayerListChanged();
-
 	///This will disconnect the client and server
 	void disconnect();
 
@@ -189,8 +182,6 @@ private:
 	std::list<YOGGameInfo> games;
 	std::list<YOGPlayerInfo> players;
 	std::queue<boost::shared_ptr<YOGMessage> > messages;
-	bool gameListChanged;
-	bool playerListChanged;
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;

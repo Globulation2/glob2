@@ -135,7 +135,11 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 		animation->visible=false;
 		YOGScreen screen(client);
 		int rc = screen.execute(globalContainer->gfx, 40);
-		endExecute(rc);
+		client->setEventListener(this);
+		if(rc == YOGScreen::ConnectionLost)
+			endExecute(ConnectionLost);
+		else
+			endExecute(LoggedIn);
 	}
 	else if(type == YELoginRefused)
 	{

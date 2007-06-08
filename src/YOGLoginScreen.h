@@ -49,6 +49,7 @@ public:
 	{
 		Cancelled,
 		LoggedIn,
+		ConnectionLost,
 	};
 
 private:

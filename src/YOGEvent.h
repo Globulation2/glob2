@@ -29,6 +29,8 @@ enum YOGEventType
 	YEConnectionLost,
 	YELoginAccepted,
 	YELoginRefused,
+	YEPlayerListUpdated,
+	YEGameListUpdated,
 	//type_append_marker
 };
 
@@ -133,6 +135,46 @@ public:
 	YOGLoginState getReason() const;
 private:
 	YOGLoginState reason;
+};
+
+
+
+
+///YOGPlayerListUpdatedEvent
+class YOGPlayerListUpdatedEvent : public YOGEvent
+{
+public:
+	///Creates a YOGPlayerListUpdatedEvent event
+	YOGPlayerListUpdatedEvent();
+
+	///Returns YEPlayerListUpdated
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGEvent& rhs) const;
+};
+
+
+
+
+///YOGGameListUpdatedEvent
+class YOGGameListUpdatedEvent : public YOGEvent
+{
+public:
+	///Creates a YOGGameListUpdatedEvent event
+	YOGGameListUpdatedEvent();
+
+	///Returns YEGameListUpdated
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGEvent& rhs) const;
 };
 
 

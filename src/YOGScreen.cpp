@@ -109,50 +109,14 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	
 	netMessage.reset(new NetTextMessageHandler(client));
 	netMessage->startIRC();
+	
+	client->setEventListener(this);
 }
 
 
 
 YOGScreen::~YOGScreen()
 {
-}
-
-
-void YOGScreen::updateGameList(void)
-{
-	///only update if the list has changed
-	if(client->hasGameListChanged())
-	{
-		gameList->clear();
-		for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
-			gameList->addText(game->getGameName());
-	}
-}
-
-void YOGScreen::updatePlayerList(void)
-{
-	boost::shared_ptr<IRC> irc = netMessage->getIRC();
-	///only update if the list has changed
-	if(client->hasPlayerListChanged() || irc->isChannelUserBeenModified())
-	{
-		// update YOG one
-		playerList->clear();
-		for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
-		{
-			std::string listEntry = player->getPlayerName();
-			playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
-		}
-		// update irc entries, remove one already on YOG
-		if (irc->initChannelUserListing(IRC_CHAN))
-		{
-			while (irc->isMoreChannelUser())
-			{
-				const std::string &user = irc->getNextChannelUser();
-				if (user.compare(0, 5, "[YOG]") != 0)
-					playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
-			}
-		}
-	}
 }
 
 
@@ -172,68 +136,14 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			joinGame();
 		}
-		else
-			assert(false);
 	}
-	
 	else if (action==TEXT_MODIFIED)
 	{
 		std::string message = textInput->getText();
 		int msglen = message.length()-1;
 		if( message[msglen] == 9 )
 		{
-			std::string foundNick;
-			std::string msg;
-			std::string beginningOfNick;
-			int startlen;
-			int found = 0;
-
-			startlen = message.rfind(' ');
-			if( startlen == -1 )
-			{
-				startlen = 0;
-			}
-			beginningOfNick = message.substr(startlen, msglen);
-
-			if( beginningOfNick.compare("") != 0 )
-			{
-				for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
-				{
-					const std::string &user = (std::string)player->getPlayerName();
-					if( user.find(beginningOfNick) == 0 )
-					{
-						foundNick = user;
-						found = 1;
-						break;
-					}
-				}
-
-				boost::shared_ptr<IRC> irc = netMessage->getIRC();
-				if(irc->initChannelUserListing(IRC_CHAN) && found == 0)
-				{
-					while (irc->isMoreChannelUser())
-					{
-						const std::string &user = irc->getNextChannelUser();
-						if( user.find(beginningOfNick) == 0 )
-						{
-							if (user.compare(0, 5, "[YOG]") != 0)
-							{
-								foundNick = user;
-								found = 1;
-								break;
-							}
-						}
-					}
-				}
-			}
-			
-			if( found == 1 )
-			{
-				msg = foundNick;
-				msg += ": ";
-				textInput->setText(msg);
-				textInput->setCursorPos(msg.length());
-			}
+			autoCompleteNick();
 		}
 	}
 	else if (action==TEXT_VALIDATED)
@@ -256,26 +166,32 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 void YOGScreen::onTimer(Uint32 tick)
 {
 	netMessage->update();
-	std::string message = netMessage->getNextMessage();
-	while(message!="")
-	{
-		chatWindow->addText(message);
-		NetTextMessageHandler::TextMessageType type = netMessage->getNextMessageType();
-		if(type==NetTextMessageHandler::IRCTextMessage)
-		{
-			chatWindow->addImage(1);
-		}
-		else if(type==NetTextMessageHandler::YOGTextMessage)
-		{
-			chatWindow->addImage(0);
-		}
-		chatWindow->addText("\n");
-		message = netMessage->getNextMessage();
-	}
 	client->update();
-	updateGameList();
-	updatePlayerList();
+
+	updateTextMessages();
+	if(netMessage->getIRC()->isChannelUserBeenModified())
+		updatePlayerList();
 }
+
+
+
+void YOGScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
+{
+	std::cout<<"YOGScreen: recieved event "<<event->format()<<std::endl;
+	Uint8 type = event->getEventType();
+	if(type == YEConnectionLost)
+	{
+		endExecute(ConnectionLost);
+	}
+	else if(type == YEPlayerListUpdated)
+	{
+		updatePlayerList();
+	}
+	else if(type == YEGameListUpdated)
+	{
+		updateGameList();
+	}
+};
 
 
 
@@ -319,6 +235,61 @@ void YOGScreen::joinGame()
 }
 
 
+	
+void YOGScreen::updateTextMessages()
+{
+	std::string message = netMessage->getNextMessage();
+	while(message!="")
+	{
+		chatWindow->addText(message);
+		NetTextMessageHandler::TextMessageType type = netMessage->getNextMessageType();
+		if(type==NetTextMessageHandler::IRCTextMessage)
+		{
+			chatWindow->addImage(1);
+		}
+		else if(type==NetTextMessageHandler::YOGTextMessage)
+		{
+			chatWindow->addImage(0);
+		}
+		chatWindow->addText("\n");
+		message = netMessage->getNextMessage();
+	}
+}
+
+
+
+void YOGScreen::updateGameList(void)
+{
+	gameList->clear();
+	for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
+		gameList->addText(game->getGameName());
+}
+
+
+
+void YOGScreen::updatePlayerList(void)
+{
+	boost::shared_ptr<IRC> irc = netMessage->getIRC();
+	// update YOG one
+	playerList->clear();
+	for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
+	{
+		std::string listEntry = player->getPlayerName();
+		playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
+	}
+	// update irc entries, remove one already on YOG
+	if (irc->initChannelUserListing(IRC_CHAN))
+	{
+		while (irc->isMoreChannelUser())
+		{
+			const std::string &user = irc->getNextChannelUser();
+			if (user.compare(0, 5, "[YOG]") != 0)
+				playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
+		}
+	}
+}
+
+
 
 void YOGScreen::updateGameInfo()
 {
@@ -336,5 +307,65 @@ void YOGScreen::updateGameInfo()
 		gameInfo->setText("");
 	}
 */
+}
+
+
+
+void YOGScreen::autoCompleteNick()
+{
+	std::string message = textInput->getText();
+	int msglen = message.length()-1;
+	std::string foundNick;
+	std::string msg;
+	std::string beginningOfNick;
+	int startlen;
+	int found = 0;
+
+	startlen = message.rfind(' ');
+	if( startlen == -1 )
+	{
+		startlen = 0;
+	}
+	beginningOfNick = message.substr(startlen, msglen);
+
+	if( beginningOfNick.compare("") != 0 )
+	{
+		for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
+		{
+			const std::string &user = (std::string)player->getPlayerName();
+			if( user.find(beginningOfNick) == 0 )
+			{
+				foundNick = user;
+				found = 1;
+				break;
+			}
+		}
+
+		boost::shared_ptr<IRC> irc = netMessage->getIRC();
+		if(irc->initChannelUserListing(IRC_CHAN) && found == 0)
+		{
+			while (irc->isMoreChannelUser())
+			{
+				const std::string &user = irc->getNextChannelUser();
+				if( user.find(beginningOfNick) == 0 )
+				{
+					if (user.compare(0, 5, "[YOG]") != 0)
+					{
+						foundNick = user;
+						found = 1;
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	if( found == 1 )
+	{
+		msg = foundNick;
+		msg += ": ";
+		textInput->setText(msg);
+		textInput->setCursorPos(msg.length());
+	}
 }
 
