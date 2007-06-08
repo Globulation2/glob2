@@ -25,6 +25,10 @@
 
 enum YOGEventType
 {
+	YEConnected,
+	YEConnectionLost,
+	YELoginAccepted,
+	YELoginRefused,
 	//type_append_marker
 };
 
@@ -44,6 +48,91 @@ public:
 	
 	///Compares two YOGEvent
 	virtual bool operator==(const YOGEvent& rhs) const = 0;
+};
+
+
+
+
+///YOGConnectedEvent
+class YOGConnectedEvent : public YOGEvent
+{
+public:
+	///Creates a YOGConnectedEvent event
+	YOGConnectedEvent();
+
+	///Returns YEConnected
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGEvent& rhs) const;
+};
+
+
+
+
+///YOGConnectionLostEvent
+class YOGConnectionLostEvent : public YOGEvent
+{
+public:
+	///Creates a YOGConnectionLostEvent event
+	YOGConnectionLostEvent();
+
+	///Returns YEConnectionLost
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGEvent& rhs) const;
+};
+
+
+
+
+///YOGLoginAcceptedEvent
+class YOGLoginAcceptedEvent : public YOGEvent
+{
+public:
+	///Creates a YOGLoginAcceptedEvent event
+	YOGLoginAcceptedEvent();
+
+	///Returns YELoginAccepted
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGEvent& rhs) const;
+};
+
+
+
+
+///YOGLoginRefusedEvent
+class YOGLoginRefusedEvent : public YOGEvent
+{
+public:
+	///Creates a YOGLoginRefusedEvent event
+	YOGLoginRefusedEvent(YOGLoginState reason);
+
+	///Returns YELoginRefused
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGEvent& rhs) const;
+
+	///Retrieves reason
+	YOGLoginState getReason() const;
+private:
+	YOGLoginState reason;
 };
 
 

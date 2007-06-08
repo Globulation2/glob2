@@ -93,7 +93,6 @@ public:
 	///This will return the playerID of the current connection
 	Uint16 getPlayerID() const;
 
-
 	///This will attempt a login with the provided login information. The password is not
 	///mandatory. If the login policy is YOGAnonymousLogin, then the password will simply
 	///be ignored. Login attempts should be done when the client is in the
@@ -176,6 +175,8 @@ protected:
 private:
 	std::string username;
 	Uint16 playerID;
+
+	bool wasConnected;
 
 	NetConnection nc;
 

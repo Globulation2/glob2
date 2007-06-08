@@ -107,7 +107,8 @@ YOGGamePolicy YOGGameServer::getGamePolicy() const
 
 YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username, const std::string& password)
 {
-	///Doesn't do anything yet.
+	///Doesn't do anything yet
+	return YOGPasswordIncorrect;
 	return YOGLoginSuccessful;
 }
 
