@@ -66,6 +66,20 @@ void YOGGameServer::update()
 			i++;
 		}
 	}
+	//Remove old games
+	for(std::map<Uint16, shared_ptr<YOGGame> >::iterator i=games.begin(); i!=games.end();)
+	{
+		if(i->second->isEmpty())
+		{
+			std::map<Uint16, shared_ptr<YOGGame> >::iterator to_erase=i;
+			i++;
+			games.erase(to_erase);
+		}
+		else
+		{
+			i++;
+		}
+	}
 }
 
 

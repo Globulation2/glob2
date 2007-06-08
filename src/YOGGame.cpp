@@ -30,6 +30,17 @@ YOGGame::YOGGame(Uint16 gameID)
 
 void YOGGame::update()
 {
+	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end();)
+	{
+		if(!(*i)->isConnected())
+		{
+			i = players.erase(i);
+		}
+		else
+		{
+			i++;
+		}
+	}
 	if(distributor)
 		distributor->update();
 }
@@ -125,4 +136,10 @@ void YOGGame::sendKickMessage(shared_ptr<NetKickPlayer> message)
 	}
 }
 
+
+
+bool YOGGame::isEmpty()
+{
+	return players.empty();
+}
 
