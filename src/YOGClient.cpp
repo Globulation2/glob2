@@ -53,7 +53,8 @@ void YOGClient::connect(const std::string& server)
 	initialize();
 	nc.openConnection(server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
-	wasConnected=true;
+	if(nc.isConnected())
+		wasConnected=true;
 }
 
 
