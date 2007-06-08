@@ -60,6 +60,8 @@ public:
 	
 	///Sends a kick message to the player
 	void sendKickMessage(shared_ptr<NetKickPlayer> message);
+	
+	bool isEmpty();
 private:
 	bool requested;
 	MapHeader mapHeader;
