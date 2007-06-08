@@ -130,6 +130,10 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 				}
 				else
 				{
+					std::cout<<"length="<<length<<std::endl;
+					for(int i=0; i<length;++i)
+						std::cout<<(int)(data[i])<<", ";
+					std::cout<<std::endl;
 					MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
 					msb->seekFromStart(0);
 					BinaryInputStream* bis = new BinaryInputStream(msb);
@@ -184,6 +188,12 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 		Uint8* newData = new Uint8[length+2];
 		SDLNet_Write16(length, newData);
 		msb->read(newData+2, length);
+
+		for(int i=0; i<length+2; ++i)
+		{
+			std::cout<<(int)(newData[i]);
+		}
+		std::cout<<std::endl;
 
 		Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
 		if(result<length)

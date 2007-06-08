@@ -92,7 +92,7 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
 	stream->readEnterSection("BasePlayer");
 	type = (PlayerType)stream->readUint32("type");
-	number = stream->readUint32("number");
+	number = stream->readSint32("number");
 	numberMask = stream->readUint32("numberMask");
 	playerID = stream->readUint16("playerID");
 	name = stream->readText("name");
