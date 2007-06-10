@@ -103,17 +103,17 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 		//This checks if there are any active sockets.
 		//SDLNet_CheckSockets is used because it is non-blocking
 		if(numReady==-1) {
-			std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
+			std::cout<<"NetConnection::getMessage1: " << SDLNet_GetError() << std::endl;
 			//most of the time this is a system error, so use perror
 			perror("SDLNet_CheckSockets");
 		}
 		else if(numReady) {
 			//Read and interpret the length of the message
 			Uint8* lengthData = new Uint8[2];
-			Uint16 amount = SDLNet_TCP_Recv(socket, lengthData, 2);
-			if(amount <= 0)
+			Sint32 amount = SDLNet_TCP_Recv(socket, lengthData, 2);
+			if(amount < 2)
 			{
-				std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
+				std::cout<<"NetConnection::getMessage2: " << SDLNet_GetError() << std::endl;
 				closeConnection();
 			}
 			else
@@ -123,9 +123,10 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 				Uint8* data = new Uint8[length];
 	
 				amount = SDLNet_TCP_Recv(socket, data, length);
-				if(amount <= 0)
+				if(amount < length)
 				{
-					std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
+					std::cout<<"amount="<<amount<<std::endl;
+					std::cout<<"NetConnection::getMessage3: " << SDLNet_GetError() << std::endl;
 					closeConnection();
 				}
 				else
@@ -145,7 +146,9 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 					
 					delete bis;
 				}
+				delete[] data;
 			}
+			delete[] lengthData;
 		}
 		else
 		{
@@ -196,7 +199,7 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 		std::cout<<std::endl;
 
 		Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
-		if(result<length)
+		if(result<(length+2))
 		{
 			std::cout<<"NetConnection::sendMessage: "<<SDLNet_GetError()<<std::endl;
 			closeConnection();

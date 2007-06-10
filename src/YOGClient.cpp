@@ -24,8 +24,6 @@
 YOGClient::YOGClient(const std::string& server)
 {
 	connect(server);
-	listener=NULL;
-	wasConnected=false;
 }
 
 
@@ -44,6 +42,8 @@ void YOGClient::initialize()
 	gamePolicy = YOGUnknownGamePolicy;
 	loginState = YOGLoginUnknown;
 	playerID=0;
+	listener=NULL;
+	wasConnected=false;
 }
 
 
@@ -106,6 +106,7 @@ void YOGClient::update()
 				listener->handleYOGEvent(event);
 			}
 			connectionState = WaitingForLoginInformation;
+			std::cout<<"listener="<<listener<<std::endl;
 		}
 		//This recieves a login acceptance message
 		if(type==MNetLoginSuccessful)
