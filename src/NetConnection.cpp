@@ -110,7 +110,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 		else if(numReady) {
 			//Read and interpret the length of the message
 			Uint8* lengthData = new Uint8[2];
-			Sint32 amount = SDLNet_TCP_Recv(socket, lengthData, 2);
+			int amount = SDLNet_TCP_Recv(socket, lengthData, 2);
 			if(amount < 2)
 			{
 				std::cout<<"NetConnection::getMessage2: " << SDLNet_GetError() << std::endl;
@@ -122,14 +122,17 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 				//Read in the data.
 				Uint8* data = new Uint8[length];
 	
-				amount = SDLNet_TCP_Recv(socket, data, length);
-				if(amount < length)
+				for(int i=0; i<length; ++i)
 				{
-					std::cout<<"amount="<<amount<<std::endl;
-					std::cout<<"NetConnection::getMessage3: " << SDLNet_GetError() << std::endl;
-					closeConnection();
+					amount = SDLNet_TCP_Recv(socket, data+i, 1);
+					if(amount <= 0)
+					{
+						std::cout<<"amount="<<amount<<"; length="<<length<<std::endl;
+						std::cout<<"NetConnection::getMessage3: " << SDLNet_GetError() << std::endl;
+						closeConnection();
+					}
 				}
-				else
+				if(connected)
 				{
 					std::cout<<"length="<<length<<std::endl;
 					for(int i=0; i<length;++i)
