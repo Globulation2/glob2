@@ -56,6 +56,7 @@ void MultiplayerGame::createNewGame(const std::string& name)
 	shared_ptr<NetCreateGame> message(new NetCreateGame(name));
 	client->sendNetMessage(message);
 	gjcState=WaitingForCreateReply;
+	gameHeader.setGameLatency(12);
 }
 
 

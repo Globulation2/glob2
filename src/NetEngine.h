@@ -47,6 +47,15 @@ public:
 	///the network to be ready, all Orders from all players must be
 	///present, otherwise it will have to hold for recieved Orders.
 	bool allOrdersRecieved();
+	
+	///Returns the current step number
+	int getStep();
+	
+	///Adds padding for the player for the given latency,
+	///this is used because with latency, there aren't any
+	///orders for the first few frames
+	void prepareForLatency(int playerNumber, int latency);
+	
 private:
 	///This function produces the 16 bit hash for the stoarge of orders
 	Uint16 hash(int playerNumber, int step);

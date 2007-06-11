@@ -69,3 +69,19 @@ bool NetEngine::allOrdersRecieved()
 	}
 	return true;
 }
+
+
+
+int NetEngine::getStep()
+{
+	return step;
+}
+
+
+void NetEngine::prepareForLatency(int playerNumber, int latency)
+{
+	for(int s=0; s<latency; ++s)
+	{
+		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber, s);
+	}
+}

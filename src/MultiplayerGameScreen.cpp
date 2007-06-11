@@ -115,6 +115,7 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 		notReadyText->visible=true;
 	}
 
+	textMessage->update();
 	std::string message = textMessage->getNextMessage();
 	while(message!="")
 	{
@@ -181,6 +182,9 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 			color[i]->addColor(mh.getBaseTeam(j).colorR, mh.getBaseTeam(j).colorG, mh.getBaseTeam(j).colorB);
 
 		BasePlayer& bp = gh.getBasePlayer(i);
+		
+		color[i]->setSelectedColor(bp.teamNumber);
+		
 		if(bp.type != BasePlayer::P_NONE)
 		{
 			text[i]->visible=true;
