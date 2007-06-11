@@ -283,6 +283,8 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		Engine engine;
 		if(!engine.haveMap(mapHeader))
 		{
+			shared_ptr<NetRequestMap> message(new NetRequestMap);
+			client->sendNetMessage(message);
 			assembler.reset(new MapAssembler(client));
 			assembler->startRecievingFile(mapHeader.getFileName());
 		}
