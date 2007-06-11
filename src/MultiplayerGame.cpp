@@ -287,6 +287,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			client->sendNetMessage(message);
 			assembler.reset(new MapAssembler(client));
 			assembler->startRecievingFile(mapHeader.getFileName());
+			client->setMapAssembler(assembler);
 		}
 	}
 	if(type==MNetSendGameHeader)
@@ -320,6 +321,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		assembler.reset(new MapAssembler(client));
 		assembler->startSendingFile(mapHeader.getFileName());
+		client->setMapAssembler(assembler);
 	}
 	if(type==MNetKickPlayer)
 	{
