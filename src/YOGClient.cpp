@@ -106,7 +106,6 @@ void YOGClient::update()
 				listener->handleYOGEvent(event);
 			}
 			connectionState = WaitingForLoginInformation;
-			std::cout<<"listener="<<listener<<std::endl;
 		}
 		//This recieves a login acceptance message
 		if(type==MNetLoginSuccessful)

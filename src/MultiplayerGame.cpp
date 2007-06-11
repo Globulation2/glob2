@@ -125,7 +125,6 @@ GameHeader& MultiplayerGame::getGameHeader()
 
 void MultiplayerGame::updateGameHeader()
 {
-	std::cout<<gameHeader.getNumberOfPlayers()<<std::endl;
 	shared_ptr<NetSendGameHeader> message(new NetSendGameHeader(gameHeader));
 	client->sendNetMessage(message);
 }
@@ -369,7 +368,6 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 
 void MultiplayerGame::startEngine()
 {
-	std::cout<<gameHeader.getNumberOfPlayers()<<std::endl;
 	Engine engine;
 	// host game and wait for players. This clever trick is meant to get a proper shared_ptr
 	// to (this), because shared_ptr's must be copied from the original
