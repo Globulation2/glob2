@@ -161,7 +161,7 @@ void NetTextMessageHandler::update()
 				assert(false);
 			break;
 		}
-		messages.push(smessage+"\n");
+		messages.push(smessage);
 		messageTypes.push(YOGTextMessage);
 
 		message = client->getMessage();
