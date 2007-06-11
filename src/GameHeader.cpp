@@ -28,7 +28,7 @@ GameHeader::GameHeader()
 void GameHeader::reset()
 {
 	numberOfPlayers = 0;
-	gameLatency = 5;
+	gameLatency = 0;
 }
 
 

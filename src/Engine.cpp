@@ -197,6 +197,15 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 	multiplayer = multiplayerGame;
 	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader());
 	multiplayer->setNetEngine(net);
+
+	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
+	{
+		if (multiplayerGame->getGameHeader().getBasePlayer(p).type==BasePlayer::P_IP)
+		{
+			net->prepareForLatency(p, multiplayerGame->getGameHeader().getGameLatency());
+		}
+	}
+
 	return Engine::EE_NO_ERROR;
 }
 
@@ -286,9 +295,9 @@ int Engine::run(void)
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
 					if(multiplayer)
-						multiplayer->pushOrder(localOrder, gui.localPlayer, gui.game.stepCounter);
+						multiplayer->pushOrder(localOrder, gui.localPlayer, net->getStep() + gui.game.gameHeader.getGameLatency());
 						
-					net->pushOrder(localOrder, gui.localPlayer, gui.game.stepCounter);
+					net->pushOrder(localOrder, gui.localPlayer, net->getStep() + gui.game.gameHeader.getGameLatency());
 	
 					// We store full recursive checkSums data:
 //					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
