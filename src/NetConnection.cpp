@@ -103,7 +103,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 		//This checks if there are any active sockets.
 		//SDLNet_CheckSockets is used because it is non-blocking
 		if(numReady==-1) {
-			std::cout<<"NetConnection::getMessage1: " << SDLNet_GetError() << std::endl;
+			std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
 			//most of the time this is a system error, so use perror
 			perror("SDLNet_CheckSockets");
 		}
@@ -111,9 +111,9 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 			//Read and interpret the length of the message
 			Uint8* lengthData = new Uint8[2];
 			int amount = SDLNet_TCP_Recv(socket, lengthData, 2);
-			if(amount < 2)
+			if(amount <= 0)
 			{
-				std::cout<<"NetConnection::getMessage2: " << SDLNet_GetError() << std::endl;
+				std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
 				closeConnection();
 			}
 			else
@@ -127,17 +127,12 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 					amount = SDLNet_TCP_Recv(socket, data+i, 1);
 					if(amount <= 0)
 					{
-						std::cout<<"amount="<<amount<<"; length="<<length<<std::endl;
-						std::cout<<"NetConnection::getMessage3: " << SDLNet_GetError() << std::endl;
+						std::cout<<"NetConnection::getMessage: " << SDLNet_GetError() << std::endl;
 						closeConnection();
 					}
 				}
 				if(connected)
 				{
-					std::cout<<"length="<<length<<std::endl;
-					for(int i=0; i<length;++i)
-						std::cout<<(int)(data[i])<<", ";
-					std::cout<<std::endl;
 					MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
 					msb->seekFromStart(0);
 					BinaryInputStream* bis = new BinaryInputStream(msb);
@@ -194,12 +189,6 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 		Uint8* newData = new Uint8[length+2];
 		SDLNet_Write16(length, newData);
 		msb->read(newData+2, length);
-
-		for(int i=0; i<length+2; ++i)
-		{
-			std::cout<<(int)(newData[i])<<", ";
-		}
-		std::cout<<std::endl;
 
 		Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
 		if(result<(length+2))

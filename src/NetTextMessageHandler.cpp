@@ -151,6 +151,12 @@ void NetTextMessageHandler::update()
 				smessage+="] ";
 				smessage+=message->getMessage();
 			break;
+			case YOGGameMessage:
+				smessage+="<";
+				smessage+=message->getSender();
+				smessage+="> ";
+				smessage+=message->getMessage();
+			break;
 			default:
 				assert(false);
 			break;
