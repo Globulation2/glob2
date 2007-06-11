@@ -84,16 +84,18 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 	if(type == MNetRequestNextChunk)
 	{
 		//shared_ptr<NetRequestNextChunk> info = static_pointer_cast<NetRequestNextChunk>(message);
-		sendNextChunk();
+		if(finished != size)
+			sendNextChunk();
 	}
 	if(type == MNetSendFileChunk)
 	{
 		shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
-		Uint32 size = info->getChunkSize();
-		Uint8* buffer = new Uint8[size];
+		Uint32 bsize = info->getChunkSize();
+		Uint8* buffer = new Uint8[bsize];
 		shared_ptr<GAGCore::InputStream> s(info->getStream());
-		s->read(buffer, size, "data");
-		ostream->write(buffer, size, "");
+		s->read(buffer, bsize, "data");
+		ostream->write(buffer, bsize, "");
+		finished+=bsize;
 		requestNextChunk();
 	}
 }
