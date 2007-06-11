@@ -79,6 +79,7 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetSendFileInformation> info = static_pointer_cast<NetSendFileInformation>(message);
 		size = info->getFileSize();
+		requestNextChunk();
 	}
 	if(type == MNetRequestNextChunk)
 	{
