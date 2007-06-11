@@ -72,6 +72,8 @@ void YOGMapDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boo
 	else if(messageType == MNetSendFileChunk && host == player)
 	{
 		chunks.push_back(static_pointer_cast<NetSendFileChunk>(message));
+		shared_ptr<NetRequestNextChunk> message(new NetRequestNextChunk);
+		host->sendMessage(message);
 	}
 	else if(messageType == MNetRequestNextChunk)
 	{
