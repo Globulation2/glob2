@@ -1938,18 +1938,21 @@ Uint32 NetSendFileInformation::getFileSize() const
 
 NetSendFileChunk::NetSendFileChunk()
 {
-
+	std::fill(data, data+1024, 0);
+	size=0;
 }
 
 
 
 NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream)
 {
-	while(!stream->isEndOfStream() && data.size() < 8196)
+	size=0;
+	int pos=0;
+	while(!stream->isEndOfStream() && size < 1024)
 	{
-		char buffer;
-		stream->read(&buffer, 1, "lart");
-		data += buffer;
+		stream->read(data+pos, 1, NULL);
+		pos+=1;
+		size+=1;
 	}
 }
 
@@ -1965,7 +1968,8 @@ Uint8 NetSendFileChunk::getMessageType() const
 void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendFileChunk");
-	stream->writeText(data, "data");
+	stream->writeUint32(size, "size");
+	stream->write(data, size, "data");
 	stream->writeLeaveSection();
 }
 
@@ -1974,7 +1978,8 @@ void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
 void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileChunk");
-	data = stream->readText("data");
+	size = stream->readUint32("size");
+	stream->read(data, size, "data");
 	stream->readLeaveSection();
 }
 
@@ -1983,7 +1988,7 @@ void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 std::string NetSendFileChunk::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendFileChunk(size="<<data.size()<<")";
+	s<<"NetSendFileChunk(size="<<size<<")";
 	return s.str();
 }
 
@@ -2004,14 +2009,14 @@ bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 
 boost::shared_ptr<GAGCore::InputStream>  NetSendFileChunk::getStream() const
 {
-	return boost::shared_ptr<GAGCore::InputStream>(new GAGCore::BinaryInputStream(new MemoryStreamBackend(data.c_str(), data.size())));
+	return boost::shared_ptr<GAGCore::InputStream>(new GAGCore::BinaryInputStream(new MemoryStreamBackend(data, size)));
 }
 
 
 
 Uint32 NetSendFileChunk::getChunkSize() const
 {
-	return data.size();
+	return size;
 }
 
 
