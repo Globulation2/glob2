@@ -120,6 +120,7 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 	while(message!="")
 	{
 		chatWindow->addText(message);
+		chatWindow->addText("\n");
 		textMessage->getNextMessageType();
 		message = textMessage->getNextMessage();
 	}
