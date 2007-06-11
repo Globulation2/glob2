@@ -1026,7 +1026,8 @@ public:
 	///Returns the chunk size
 	Uint32 getChunkSize() const;
 private:
-	std::string data;
+	Uint32 size;
+	Uint8 data[1024];
 };
 
 
