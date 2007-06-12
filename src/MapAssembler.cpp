@@ -57,8 +57,7 @@ void MapAssembler::startSendingFile(std::string mapname)
 
 void MapAssembler::startRecievingFile(std::string mapname)
 {
-//	filename=mapname;
-	filename="test2.map";
+	filename=mapname;
 	ostream.reset(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz")));
 	mode=RecivingFile;
 	finished=0;
