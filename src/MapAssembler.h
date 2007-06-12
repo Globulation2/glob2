@@ -61,6 +61,7 @@ private:
 	boost::shared_ptr<YOGClient> client;
 	boost::shared_ptr<GAGCore::BinaryOutputStream> ostream;
 	boost::shared_ptr<GAGCore::BinaryInputStream> istream;
+	std::string filename;
 };
 
 

@@ -42,8 +42,9 @@ void MapAssembler::update()
 
 void MapAssembler::startSendingFile(std::string mapname)
 {
+	Toolkit::getFileManager()->gzip(mapname, mapname+".gz");
 	finished=0;
-	istream.reset(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname)));
+	istream.reset(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname+".gz")));
 	istream->seekFromEnd(0);
 	size=istream->getPosition();
 	istream->seekFromStart(0);
@@ -56,7 +57,9 @@ void MapAssembler::startSendingFile(std::string mapname)
 
 void MapAssembler::startRecievingFile(std::string mapname)
 {
-	ostream.reset(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(mapname)));
+//	filename=mapname;
+	filename="test2.map";
+	ostream.reset(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz")));
 	mode=RecivingFile;
 	finished=0;
 }
@@ -84,19 +87,26 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 	if(type == MNetRequestNextChunk)
 	{
 		//shared_ptr<NetRequestNextChunk> info = static_pointer_cast<NetRequestNextChunk>(message);
-		if(finished != size)
+		if(finished < size)
 			sendNextChunk();
+		else
+			mode=NoTransfer;
 	}
 	if(type == MNetSendFileChunk)
 	{
 		shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
 		Uint32 bsize = info->getChunkSize();
-		Uint8* buffer = new Uint8[bsize];
-		shared_ptr<GAGCore::InputStream> s(info->getStream());
-		s->read(buffer, bsize, "data");
+		const Uint8* buffer = info->getBuffer();
 		ostream->write(buffer, bsize, "");
 		finished+=bsize;
-		requestNextChunk();
+		if(finished<size)
+			requestNextChunk();
+		else
+		{
+			mode=NoTransfer;
+			ostream.reset();
+			Toolkit::getFileManager()->gunzip(filename+".gz", filename);
+		}
 	}
 }
 

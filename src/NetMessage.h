@@ -1020,8 +1020,8 @@ public:
 	///Compares with another NetSendFileChunk
 	bool operator==(const NetMessage& rhs) const;
 	
-	///Provides an input stream that can be read from
-	boost::shared_ptr<GAGCore::InputStream> getStream() const;
+	///Provides the buffer of data
+	const Uint8* getBuffer() const;
 	
 	///Returns the chunk size
 	Uint32 getChunkSize() const;
