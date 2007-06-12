@@ -159,12 +159,12 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	else if (action==TEXT_VALIDATED)
 	{
 		game->sendMessage(textInput->getText());
-		//boost::shared_ptr<IRC> irc = textMessage->getIRC();
-		//if(irc)
-		//{
-			//irc->sendCommand(textInput->getText());
-			//textInput->setText("");
-		//}
+		boost::shared_ptr<IRC> irc = textMessage->getIRC();
+		if(irc)
+		{
+			irc->sendCommand(textInput->getText());
+			textInput->setText("");
+		}
 	}
 }
 

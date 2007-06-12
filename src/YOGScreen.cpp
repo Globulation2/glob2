@@ -198,20 +198,17 @@ void YOGScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 
 void YOGScreen::handleTextMessage(const std::string& message, NetTextMessageType type)
 {
-	if(type != PreGameYOGTextMessage)
+	chatWindow->addText(message);
+	if(type==IRCTextMessage)
 	{
-		chatWindow->addText(message);
-		if(type==IRCTextMessage)
-		{
-			chatWindow->addImage(1);
-		}
-		else if(type==YOGTextMessage)
-		{
-			chatWindow->addImage(0);
-		}
-		chatWindow->addText("\n");
-		chatWindow->scrollToBottom();
+		chatWindow->addImage(1);
 	}
+	else if(type==YOGTextMessage || type==YOGTextMessage)
+	{
+		chatWindow->addImage(0);
+	}
+	chatWindow->addText("\n");
+	chatWindow->scrollToBottom();
 }
 
 
