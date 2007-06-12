@@ -77,6 +77,19 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 		shared_ptr<NetPlayerLeavesGame> message(new NetPlayerLeavesGame(player->getPlayerID()));
 		host->sendMessage(message);
 	}
+	else
+	{
+		//Host disconnected, remove all the other players
+		for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end();)
+		{
+			if((*i) != host)
+			{
+				shared_ptr<NetKickPlayer> message(new NetKickPlayer((*i)->getPlayerID(), YOGHostDisconnect));
+				(*i)->sendMessage(message);
+				i = players.erase(i);
+			}
+		}
+	}
 }
 
 
