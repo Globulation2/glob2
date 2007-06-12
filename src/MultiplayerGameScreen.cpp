@@ -123,6 +123,7 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 		chatWindow->addText("\n");
 		textMessage->getNextMessageType();
 		message = textMessage->getNextMessage();
+		chatWindow->scrollToBottom();
 	}
 	if(game->getGameJoinCreationState() == MultiplayerGame::NothingYet)
 	{

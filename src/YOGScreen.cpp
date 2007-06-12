@@ -255,6 +255,7 @@ void YOGScreen::updateTextMessages()
 		}
 		chatWindow->addText("\n");
 		message = netMessage->getNextMessage();
+		chatWindow->scrollToBottom();
 	}
 }
 
