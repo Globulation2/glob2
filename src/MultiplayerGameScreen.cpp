@@ -106,7 +106,10 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 	}
 	if(game->isGameReadyToStart())
 	{
-		startButton->visible=true;
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+			startButton->visible=true;
+		else
+			startButton->visible=false;
 		notReadyText->visible=false;
 	}
 	else
@@ -192,7 +195,10 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 			text[i]->visible=true;
 			text[i]->setText(bp.name);
 			color[i]->visible=true;
-			kickButton[i]->visible=true;
+			if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+				kickButton[i]->visible=true;
+			else
+				kickButton[i]->visible=false;
 		}
 		else if(i < mh.getNumberOfTeams())
 		{
