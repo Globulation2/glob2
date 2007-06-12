@@ -20,6 +20,9 @@
 #ifndef __YOG_CONSTS_H
 #define __YOG_CONSTS_H
 
+#include <string>
+#include "SDL_net.h"
+
 ///New YOG constants
 const Uint16 YOG_SERVER_PORT = 7486;
 //const std::string YOG_SERVER_IP = "yog.globulation2.org";

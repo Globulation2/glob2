@@ -25,6 +25,7 @@
 #include "YOGConsts.h"
 #include "YOGPlayer.h"
 #include "YOGGame.h"
+#include "YOGPasswordRegistry.h"
 
 #include <list>
 #include <map>
@@ -64,6 +65,9 @@ public:
 
 	///Returns whether the users password is correct.
 	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password);
+	
+	///This reigsters a new user
+	YOGLoginState registerInformation(const std::string& username, const std::string& password);
 
 	///Returns the list of games the server currently has
 	const std::list<YOGGameInfo>& getGameList() const;
@@ -110,6 +114,8 @@ private:
 	std::list<YOGPlayerInfo> playerList;
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
+	
+	YOGPasswordRegistry registry;
 };
 
 #endif

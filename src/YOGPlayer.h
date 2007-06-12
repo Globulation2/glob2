@@ -75,6 +75,10 @@ private:
 		NeedToSendLoginAccepted,
 		///A login refusal needs to be sent
 		NeedToSendLoginRefusal,
+		///A registration acceptance needs to be sent
+		NeedToSendRegistrationAccepted,
+		///A registration acceptance needs to be sent
+		NeedToSendRegistrationRefused,
 		///This means the user is on standby, 
 		ClientOnStandby,
 	};

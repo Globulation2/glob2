@@ -219,6 +219,8 @@ YOGMapDistributor.cpp \
 YOGMapDistributor.h \
 YOGMessage.cpp \
 YOGMessage.h \
+YOGPasswordRegistry.cpp \
+YOGPasswordRegistry.h \
 YOGPlayer.cpp \
 YOGPlayer.h \
 YOGPlayerInfo.cpp \

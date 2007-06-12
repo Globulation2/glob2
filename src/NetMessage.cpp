@@ -817,6 +817,20 @@ bool NetAttemptRegistration::operator==(const NetMessage& rhs) const
 
 
 
+std::string NetAttemptRegistration::getUsername() const
+{
+	return username;
+}
+
+
+
+std::string NetAttemptRegistration::getPassword() const
+{
+	return password;
+}
+
+
+
 NetAcceptRegistration::NetAcceptRegistration()
 {
 
