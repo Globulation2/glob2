@@ -90,11 +90,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	addWidget(textInput);
 	
 	updateJoinedPlayers();
+	
+	textMessage->addTextMessageListener(this);
 }
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
 {
-
+	textMessage->removeTextMessageListener(this);
 }
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)
@@ -118,20 +120,12 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 		notReadyText->visible=true;
 	}
 
-	textMessage->update();
-	std::string message = textMessage->getNextMessage();
-	while(message!="")
-	{
-		chatWindow->addText(message);
-		chatWindow->addText("\n");
-		textMessage->getNextMessageType();
-		message = textMessage->getNextMessage();
-		chatWindow->scrollToBottom();
-	}
 	if(game->getGameJoinCreationState() == MultiplayerGame::NothingYet)
 	{
 		endExecute(Cancelled);
 	}
+
+	textMessage->update();
 }
 
 
@@ -165,13 +159,22 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	else if (action==TEXT_VALIDATED)
 	{
 		game->sendMessage(textInput->getText());
-		boost::shared_ptr<IRC> irc = textMessage->getIRC();
-		if(irc)
-		{
-			irc->sendCommand(textInput->getText());
-			textInput->setText("");
-		}
+		//boost::shared_ptr<IRC> irc = textMessage->getIRC();
+		//if(irc)
+		//{
+			//irc->sendCommand(textInput->getText());
+			//textInput->setText("");
+		//}
 	}
+}
+
+
+
+void MultiplayerGameScreen::handleTextMessage(const std::string& message, NetTextMessageType type)
+{
+	chatWindow->addText(message);
+	chatWindow->addText("\n");
+	chatWindow->scrollToBottom();
 }
 
 

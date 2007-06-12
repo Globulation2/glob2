@@ -108,6 +108,7 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	addWidget(textInput);
 	
 	netMessage.reset(new NetTextMessageHandler(client));
+	netMessage->addTextMessageListener(this);
 	netMessage->startIRC();
 	
 	client->setEventListener(this);
@@ -117,6 +118,7 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 
 YOGScreen::~YOGScreen()
 {
+	netMessage->removeTextMessageListener(this);
 }
 
 
@@ -168,7 +170,6 @@ void YOGScreen::onTimer(Uint32 tick)
 	netMessage->update();
 	client->update();
 
-	updateTextMessages();
 	if(netMessage->getIRC()->isChannelUserBeenModified())
 		updatePlayerList();
 }
@@ -191,7 +192,27 @@ void YOGScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 	{
 		updateGameList();
 	}
-};
+}
+
+
+
+void YOGScreen::handleTextMessage(const std::string& message, NetTextMessageType type)
+{
+	if(type != PreGameYOGTextMessage)
+	{
+		chatWindow->addText(message);
+		if(type==IRCTextMessage)
+		{
+			chatWindow->addImage(1);
+		}
+		else if(type==YOGTextMessage)
+		{
+			chatWindow->addImage(0);
+		}
+		chatWindow->addText("\n");
+		chatWindow->scrollToBottom();
+	}
+}
 
 
 
@@ -233,29 +254,6 @@ void YOGScreen::joinGame()
 		MultiplayerGameScreen mgs(game, netMessage);
 		mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
-	}
-}
-
-
-	
-void YOGScreen::updateTextMessages()
-{
-	std::string message = netMessage->getNextMessage();
-	while(message!="")
-	{
-		chatWindow->addText(message);
-		NetTextMessageHandler::TextMessageType type = netMessage->getNextMessageType();
-		if(type==NetTextMessageHandler::IRCTextMessage)
-		{
-			chatWindow->addImage(1);
-		}
-		else if(type==NetTextMessageHandler::YOGTextMessage)
-		{
-			chatWindow->addImage(0);
-		}
-		chatWindow->addText("\n");
-		message = netMessage->getNextMessage();
-		chatWindow->scrollToBottom();
 	}
 }
 
