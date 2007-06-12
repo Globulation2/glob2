@@ -67,15 +67,6 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
-
-	///Passwords have been temporarily disabled
-	password->visible=false;
-	newYogPassword->visible=false;
-	rememberYogPassword->visible=false;
-	newYogPasswordText->visible=false;
-	rememberYogPasswordText->visible=false;
-	
-	
 	
 	client->setEventListener(this);
 }

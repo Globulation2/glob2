@@ -69,6 +69,25 @@ void YOGPlayer::update()
 		{
 			connectionState = NeedToSendLoginRefusal;
 		}	
+	}	//This recieves a login attempt
+	else if(type==MNetAttemptRegistration)
+	{
+		shared_ptr<NetAttemptRegistration> info = static_pointer_cast<NetAttemptRegistration>(message);
+		std::string username = info->getUsername();
+		std::string password = info->getPassword();
+		loginState = server.registerInformation(username, password);
+		if(loginState == YOGLoginSuccessful)
+		{
+			server.playerHasLoggedIn(username, playerID);
+			playerName=username;
+			connectionState = NeedToSendRegistrationAccepted;
+			gameListState=UpdatingGameList;
+			playerListState=UpdatingPlayerList;
+		}
+		else
+		{
+			connectionState = NeedToSendRegistrationRefused;
+		}	
 	}
 	//This recieves a YOGMessage and sends it to the game server to be proccessed
 	else if(type==MNetSendYOGMessage)
@@ -209,6 +228,20 @@ void YOGPlayer::updateConnectionSates()
 	if(connectionState==NeedToSendLoginRefusal)
 	{
 		shared_ptr<NetRefuseLogin> refused(new NetRefuseLogin(loginState));
+		connection->sendMessage(refused);
+		connectionState = WaitingForLoginAttempt;
+	}
+	//Send the login accepted message
+	if(connectionState==NeedToSendRegistrationAccepted)
+	{
+		shared_ptr<NetAcceptRegistration> accepted(new NetAcceptRegistration);
+		connection->sendMessage(accepted);
+		connectionState = ClientOnStandby;
+	}
+	//Send the login refused message
+	if(connectionState==NeedToSendRegistrationRefused)
+	{
+		shared_ptr<NetRefuseRegistration> refused(new NetRefuseRegistration(loginState));
 		connection->sendMessage(refused);
 		connectionState = WaitingForLoginAttempt;
 	}
