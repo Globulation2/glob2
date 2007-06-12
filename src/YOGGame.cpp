@@ -34,7 +34,9 @@ void YOGGame::update()
 	{
 		if(!(*i)->isConnected())
 		{
-			i = players.erase(i);
+			size_t pos = i - players.begin();
+			removePlayer(*i);
+			i = players.begin() + pos;
 		}
 		else
 		{
