@@ -281,7 +281,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		mapHeader = info->getMapHeader();
 		playersChanged=true;
 		Engine engine;
-		if(!engine.haveMap(mapHeader))
+//		if(!engine.haveMap(mapHeader))
 		{
 			shared_ptr<NetRequestMap> message(new NetRequestMap);
 			client->sendNetMessage(message);

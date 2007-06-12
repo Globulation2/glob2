@@ -1951,8 +1951,12 @@ NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> strea
 	while(!stream->isEndOfStream() && size < 1024)
 	{
 		stream->read(data+pos, 1, NULL);
-		pos+=1;
-		size+=1;
+		//For some reason the last byte is an overread, so it should be ignored
+		if(!stream->isEndOfStream())
+		{
+			pos+=1;
+			size+=1;
+		}
 	}
 }
 
@@ -2007,9 +2011,9 @@ bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 
 
 
-boost::shared_ptr<GAGCore::InputStream>  NetSendFileChunk::getStream() const
+const Uint8* NetSendFileChunk::getBuffer() const
 {
-	return boost::shared_ptr<GAGCore::InputStream>(new GAGCore::BinaryInputStream(new MemoryStreamBackend(data, size)));
+	return data;
 }
 
 
