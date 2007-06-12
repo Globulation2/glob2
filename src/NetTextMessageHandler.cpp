@@ -69,8 +69,7 @@ void NetTextMessageHandler::update()
 			message+=irc->getChatMessageSource();
 			message+=">";
 			message+=irc->getChatMessage();
-			messages.push(message);
-			messageTypes.push(IRCTextMessage);
+			sendToAllListeners(message, IRCTextMessage);
 			irc->freeChatMessage();
 		}
 		
@@ -119,8 +118,7 @@ void NetTextMessageHandler::update()
 				message += " : ";
 				message += irc->getInfoMessageText();
 			}
-			messages.push(message);
-			messageTypes.push(IRCTextMessage);
+			sendToAllListeners(message, IRCTextMessage);
 			irc->freeInfoMessage();
 		}
 	
@@ -161,37 +159,27 @@ void NetTextMessageHandler::update()
 				assert(false);
 			break;
 		}
-		messages.push(smessage);
-		messageTypes.push(YOGTextMessage);
-
+		if(message->getMessageType() == YOGGameMessage)
+			sendToAllListeners(smessage, PreGameYOGTextMessage);
+		else
+			sendToAllListeners(smessage, YOGTextMessage);
 		message = client->getMessage();
 	}
 
 }
 
 
-	
-std::string NetTextMessageHandler::getNextMessage()
+
+void NetTextMessageHandler::addTextMessageListener(NetTextMessageListener* listener)
 {
-	if(!messages.empty())
-	{
-		std::string m = messages.front();
-		messages.pop();
-		return m;
-	}
-	return "";
+	listeners.push_back(listener);
 }
 
 
-NetTextMessageHandler::TextMessageType NetTextMessageHandler::getNextMessageType()
+
+void NetTextMessageHandler::removeTextMessageListener(NetTextMessageListener* listener)
 {
-	if(!messageTypes.empty())
-	{
-		TextMessageType m = messageTypes.front();
-		messageTypes.pop();
-		return m;
-	}
-	return NoTextMessage;
+	listeners.erase(std::find(listeners.begin(), listeners.end(), listener));
 }
 
 
@@ -199,4 +187,14 @@ NetTextMessageHandler::TextMessageType NetTextMessageHandler::getNextMessageType
 boost::shared_ptr<IRC> NetTextMessageHandler::getIRC()
 {
 	return irc;
+}
+
+
+
+void NetTextMessageHandler::sendToAllListeners(const std::string& message, NetTextMessageType type)
+{
+	for(unsigned i=0; i<listeners.size(); ++i)
+	{
+		listeners[i]->handleTextMessage(message, type);
+	}
 }

@@ -25,6 +25,24 @@
 #include "IRC.h"
 #include "YOGClient.h"
 
+enum NetTextMessageType
+{
+	IRCTextMessage,
+	YOGTextMessage,
+	PreGameYOGTextMessage,
+	NoTextMessage,
+};
+
+///This class represents an object that can listen for text messages
+class NetTextMessageListener
+{
+public:
+	virtual ~NetTextMessageListener() {}
+	///This function is meant to handle a text message
+	virtual void handleTextMessage(const std::string& message, NetTextMessageType type)=0;
+};
+
+
 ///This system puts together and formats messages the two sources, YOG and IRC
 class NetTextMessageHandler
 {
@@ -42,30 +60,23 @@ public:
 
 	///Updates the handler
 	void update();
-	
-	///Returns the next message in the queue, and removes it.
-	///An empty text means there are no more
-	std::string getNextMessage();
-	
-	enum TextMessageType
-	{
-		IRCTextMessage,
-		YOGTextMessage,
-		NoTextMessage,
-	};
-	
-	///Returns the type of the message, either from IRC. Should be used in conjunction
-	///with getNextMessage, as it has the same queue idea
-	TextMessageType getNextMessageType();
-	
+
+	///Adds a listener to listen for text messages
+	void addTextMessageListener(NetTextMessageListener* listener);
+
+	///Removes a listener
+	void removeTextMessageListener(NetTextMessageListener* listener);
+
 	///Returns the IRC server to send commands to it
 	boost::shared_ptr<IRC> getIRC();
 
 private:
+	void sendToAllListeners(const std::string& message, NetTextMessageType type);
+
 	boost::shared_ptr<YOGClient> client;
 	boost::shared_ptr<IRC> irc;
-	std::queue<std::string> messages;
-	std::queue<TextMessageType> messageTypes;
+	std::vector<NetTextMessageListener* > listeners;
 };
+
 
 #endif

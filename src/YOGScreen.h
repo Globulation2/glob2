@@ -75,7 +75,7 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGScreen : public Glob2Screen, public YOGEventListener
+class YOGScreen : public Glob2Screen, public YOGEventListener, public NetTextMessageListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
@@ -89,7 +89,8 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	///Responds to YOG events
 	void handleYOGEvent(boost::shared_ptr<YOGEvent> event);
-
+	///Handle text message events
+	void handleTextMessage(const std::string& message, NetTextMessageType type);
 	///The end-codes of the screen
 	enum
 	{
@@ -112,8 +113,6 @@ private:
 	void hostGame();
 	///This launches the menu to join a game
 	void joinGame();
-	///This updates the text messages
-	void updateTextMessages();
 	///This updates the list of games
 	void updateGameList();
 	///This updates the list of players

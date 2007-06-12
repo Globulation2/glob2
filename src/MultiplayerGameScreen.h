@@ -37,7 +37,7 @@ namespace GAGGUI
 
 ///This screen is the setup screen for a multiplayer game. It functions both for the host
 ///and the joined player. It uses the information it gets from the given MultiplayerGame.
-class MultiplayerGameScreen : public Glob2Screen
+class MultiplayerGameScreen : public Glob2Screen, public NetTextMessageListener
 {
 public:
 	///The screen must be provided with the text message handler and the multiplayer game
@@ -67,6 +67,8 @@ private:
 
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
+
+	void handleTextMessage(const std::string& message, NetTextMessageType type);
 
 	///This function will update the list of joined players
 	void updateJoinedPlayers();
