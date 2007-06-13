@@ -169,3 +169,10 @@ Uint16 YOGGame::getGameID() const
 {
 	return gameID;
 }
+
+
+
+void YOGGame::sendReadyToStart(shared_ptr<NetReadyToLaunch> message)
+{
+	host->sendMessage(message);
+}

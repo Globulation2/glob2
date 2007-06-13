@@ -30,6 +30,10 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	playersChanged = false;
 	netEngine=NULL;
 	kickReason = YOGUnknownKickReason;
+	haveMapHeader = false;
+	haveGameHeader = false;
+	for(int i=0; i<32; ++i)
+		readyToStart[i] = true;
 }
 
 
@@ -47,6 +51,19 @@ void MultiplayerGame::update()
 	client->update();
 	if(assembler)
 		assembler->update();
+	if(haveGameHeader && haveMapHeader && gjcState == JoinedGame)
+	{
+		bool sendReady = false;
+		if(assembler && assembler->isTransferComplete())
+			sendReady = true;
+		else if(!assembler)
+			sendReady = true;
+		if(sendReady)
+		{
+			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
+			client->sendNetMessage(message);
+		}
+	}
 }
 
 
@@ -172,6 +189,12 @@ void MultiplayerGame::startGame()
 
 bool MultiplayerGame::isGameReadyToStart()
 {
+	for(int x=0; x<32; ++x)
+	{
+		if(readyToStart[x] == false)
+			return false;
+	}
+
 	if(assembler)
 	{
 		if(assembler->isTransferComplete())
@@ -281,7 +304,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		mapHeader = info->getMapHeader();
 		playersChanged=true;
 		Engine engine;
-//		if(!engine.haveMap(mapHeader))
+		if(!engine.haveMap(mapHeader))
 		{
 			shared_ptr<NetRequestMap> message(new NetRequestMap);
 			client->sendNetMessage(message);
@@ -289,12 +312,14 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			assembler->startRecievingFile(mapHeader.getFileName());
 			client->setMapAssembler(assembler);
 		}
+		haveMapHeader = true;
 	}
 	if(type==MNetSendGameHeader)
 	{
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
 		gameHeader = info->getGameHeader();
 		playersChanged=true;
+		haveGameHeader = true;
 	}
 	if(type==MNetPlayerJoinsGame)
 	{
@@ -329,6 +354,20 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		kickReason = info->getReason();
 		gjcState = NothingYet;
 	}
+	if(type==MNetReadyToLaunch)
+	{
+		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
+		Uint16 id = info->getPlayerID();
+		for(int x=0; x<32; ++x)
+		{
+			BasePlayer& bp = gameHeader.getBasePlayer(x);
+			if(bp.playerID == id)
+			{
+				readyToStart[x] = true;
+				break;
+			}
+		}
+	}
 }
 
 
@@ -341,7 +380,8 @@ void MultiplayerGame::addPerson(Uint16 playerID)
 		if(bp.type == BasePlayer::P_NONE)
 		{
 			bp = BasePlayer(x, client->findPlayerName(playerID).c_str(), x, BasePlayer::P_IP);
-			bp.playerID = playerID;
+			bp.playerID = playerID;			
+			readyToStart[x] = false;
 			break;
 		}
 	}
@@ -359,6 +399,7 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.playerID == playerID)
 		{
+			readyToStart[x] = true;
 			bp = BasePlayer();
 			break;
 		}
