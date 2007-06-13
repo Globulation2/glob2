@@ -67,6 +67,7 @@ enum NetMessageType
 	MNetRequestNextChunk,
 	MNetKickPlayer,
 	MNetLeaveGame,
+	MNetReadyToLaunch,
 	//type_append_marker
 };
 
@@ -1121,6 +1122,41 @@ public:
 
 	///Compares with another NetLeaveGame
 	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetReadyToLaunch
+class NetReadyToLaunch : public NetMessage
+{
+public:
+	///Creates a NetReadyToLaunch message
+	NetReadyToLaunch();
+
+	///Creates a NetReadyToLaunch message
+	NetReadyToLaunch(Uint16 playerID);
+
+	///Returns MNetReadyToLaunch
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetReadyToLaunch message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetReadyToLaunch
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves playerID
+	Uint16 getPlayerID() const;
+private:
+	Uint16 playerID;
 };
 
 

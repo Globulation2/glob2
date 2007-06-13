@@ -66,6 +66,10 @@ public:
 	
 	///Returns the game ID
 	Uint16 getGameID() const;
+
+	///Sends that a player is ready to start
+	void sendReadyToStart(shared_ptr<NetReadyToLaunch> message);
+	
 private:
 	bool requested;
 	MapHeader mapHeader;

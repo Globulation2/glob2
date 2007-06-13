@@ -163,8 +163,8 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		if(irc)
 		{
 			irc->sendCommand(textInput->getText());
-			textInput->setText("");
 		}
+		textInput->setText("");
 	}
 }
 

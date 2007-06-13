@@ -132,6 +132,9 @@ private:
 	bool playersChanged;
 	NetEngine* netEngine;
 	boost::shared_ptr<MapAssembler> assembler;
+	bool haveMapHeader;
+	bool haveGameHeader;
+	bool readyToStart[32];
 };
 
 

@@ -154,6 +154,12 @@ void YOGPlayer::update()
 	{
 		game->removePlayer(server.getPlayer(playerID));
 	}
+	//This recieves a leave game message
+	else if(type==MNetReadyToLaunch)
+	{
+		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
+		game->sendReadyToStart(info);
+	}
 	
 }
 
