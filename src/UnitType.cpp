@@ -139,30 +139,18 @@ void UnitType::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	performance[HARVEST] = stream->readSint32("harvestSpeed");
 	performance[ATTACK_SPEED] = stream->readSint32("attackSpeed");
 	performance[ATTACK_STRENGTH] = stream->readSint32("attackForce");
-	if (versionMinor >= 41)
-	{
-		performance[MAGIC_ATTACK_AIR] = stream->readSint32("magicAttackAir");
-		performance[MAGIC_ATTACK_GROUND] = stream->readSint32("magicAttackGround");
-		performance[MAGIC_CREATE_WOOD] = stream->readSint32("magicCreateWood");
-		performance[MAGIC_CREATE_CORN] = stream->readSint32("magicCreateCorn");
-		performance[MAGIC_CREATE_ALGA] = stream->readSint32("magicCreateAlga");
-	}
+	performance[MAGIC_ATTACK_AIR] = stream->readSint32("magicAttackAir");
+	performance[MAGIC_ATTACK_GROUND] = stream->readSint32("magicAttackGround");
+	performance[MAGIC_CREATE_WOOD] = stream->readSint32("magicCreateWood");
+	performance[MAGIC_CREATE_CORN] = stream->readSint32("magicCreateCorn");
+	performance[MAGIC_CREATE_ALGA] = stream->readSint32("magicCreateAlga");
 	performance[ARMOR] = stream->readSint32("armor");
 	performance[HP] = stream->readSint32("hpMax");
 	
-	if (versionMinor >= 39)
-	{
-		harvestDamage = stream->readSint32("harvestDamage");
-		armorReductionPerHappyness = stream->readSint32("armorReductionPerHappyness");
-	}
-	if (versionMinor >= 40)
-	{
-		experiencePerLevel = stream->readSint32("experiencePerLevel");
-	}
-	if (versionMinor >= 41)
-	{
-		magicActionCooldown = stream->readSint32("magicActionCooldown");
-	}
+	harvestDamage = stream->readSint32("harvestDamage");
+	armorReductionPerHappyness = stream->readSint32("armorReductionPerHappyness");
+	experiencePerLevel = stream->readSint32("experiencePerLevel");
+	magicActionCooldown = stream->readSint32("magicActionCooldown");
 }
 
 void UnitType::save(GAGCore::OutputStream *stream)

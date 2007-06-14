@@ -368,13 +368,6 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	assert(game);
 	
 	stream->readEnterSection("AICastor");
-	
-	if (versionMinor<29)
-	{
-		//TODO:init
-		return true;
-	}
-	
 	Sint32 aiFileVersion = stream->readSint32("aiFileVersion");
 	if (aiFileVersion<AI_FILE_MIN_VERSION)
 	{
@@ -389,7 +382,6 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		timer=0;
 		
 	stream->readLeaveSection();
-	
 	fprintf(logFile, "load success\n");
 	return true;
 }

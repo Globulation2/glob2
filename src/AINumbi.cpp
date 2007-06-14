@@ -81,23 +81,11 @@ bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	critticalTime    = stream->readSint32("critticalTime");
 	attackTimer      = stream->readSint32("attackTimer");
 
-	if (versionMinor<=32)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 	{
-		fprintf(stderr, "AINumbi::load : trying to load too old AINumbi (versionMinor < 33)\n");
-		assert(false);
-	}
-	else if (versionMinor<35)
-	{
-		stream->read(mainBuilding, 13*4, "mainBuilding"); // IntBuildingType::NB_BUILDING==13
-	}
-	else
-	{
-		for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
-		{
-			std::ostringstream oss;
-			oss << "mainBuilding[" << bi << "]";
-			mainBuilding[bi] = stream->readSint32(oss.str().c_str());
-		}
+		std::ostringstream oss;
+		oss << "mainBuilding[" << bi << "]";
+		mainBuilding[bi] = stream->readSint32(oss.str().c_str());
 	}
 	
 	stream->readLeaveSection();

@@ -201,28 +201,18 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
 	unitStayRangeLocal = unitStayRange;
-	if (versionMinor >= 27)
+
+	for (int i=0; i<BASIC_COUNT; i++)
 	{
-		for (int i=0; i<BASIC_COUNT; i++)
-		{
-			std::ostringstream oss;
-			oss << "clearingRessources[" << i << "]";
-			clearingRessources[i] = (bool)stream->readSint32(oss.str().c_str());
-		}
-		assert(clearingRessources[STONE] == false);
+		std::ostringstream oss;
+		oss << "clearingRessources[" << i << "]";
+		clearingRessources[i] = (bool)stream->readSint32(oss.str().c_str());
 	}
-	else
-	{
-		for( int i=0; i<BASIC_COUNT; i++)
-			clearingRessources[i] = true;
-		clearingRessources[STONE] = false;
-	}
+	assert(clearingRessources[STONE] == false);
+
 	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
 	
-	if (versionMinor >= 33)
-		minLevelToFlag = stream->readSint32("minLevelToFlag");
-	else
-		minLevelToFlag = 0;
+	minLevelToFlag = stream->readSint32("minLevelToFlag");
 	minLevelToFlagLocal = minLevelToFlag;
 	
 	// Building Specific
@@ -260,10 +250,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	shootingStep = stream->readUint32("shootingStep");
 	shootingCooldown = stream->readSint32("shootingCooldown");
-	if (versionMinor >= 24)
-		bullets = stream->readSint32("bullets");
-	else
-		bullets = 0;
+	bullets = stream->readSint32("bullets");
 
 	// type
 	// FIXME : do not save typenum but name/isBuildingSite/level
@@ -392,17 +379,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsWorking.push_front(unit);
 	}
 
-	if(versionMinor<56)
-	{
-		unsigned nbWorkingSubscribe = stream->readUint32("nbWorkingSubscribe");
-		for (unsigned i=0; i<nbWorkingSubscribe; i++)
-		{
-			std::ostringstream oss;
-			oss << "unitsWorkingSubscribe[" << i << "]";
-			stream->readUint16(oss.str().c_str());
-		}
-	}
-
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
@@ -419,19 +395,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
 		unitsInside.push_front(unit);
-	}
-
-	if(versionMinor<56)
-	{
-		unsigned nbInsideSubscribe = stream->readUint32("nbInsideSubscribe");
-		for (unsigned i=0; i<nbInsideSubscribe; i++)
-		{
-			std::ostringstream oss;
-			oss << "unitsInsideSubscribe[" << i << "]";
-			Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-			assert(unit);
-		} 
-		stream->readSint32("subscriptionInsideTimer");
 	}
 
 	stream->readLeaveSection();

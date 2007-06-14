@@ -140,10 +140,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	
 	// unit specification
 	typeNum = stream->readSint32("typeNum");
-	if (versionMinor >= 49)
-		skinName = stream->readText("skinName");
-	else
-		defaultSkinNameFromType();
+	skinName = stream->readText("skinName");
 	skinPointerFromName();
 	race = &(owner->race);
 	assert(race);
@@ -172,15 +169,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	action = (Abilities)stream->readUint32("action");
 	targetX = (Sint32)stream->readSint32("targetX");
 	targetY = (Sint32)stream->readSint32("targetY");
-	if (versionMinor >= 46)
-		validTarget = (bool)stream->readSint32("validTarget");
-	else
-		validTarget = false;
-	
-	if (versionMinor >= 41)
-		magicActionTimeout = stream->readSint32("magicActionTimeout");
-	else
-		magicActionTimeout = 0;
+	validTarget = (bool)stream->readSint32("validTarget");
+	magicActionTimeout = stream->readSint32("magicActionTimeout");
 
 	// trigger parameters
 	hp = stream->readSint32("hp");
@@ -188,10 +178,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// hungry
 	hungry = stream->readSint32("hungry");
-	if (versionMinor >= 49)
-		hungryness = stream->readSint32("hungryness");
-	else
-		hungryness = race->hungryness;
+	hungryness = stream->readSint32("hungryness");
 	trigHungry = stream->readSint32("trigHungry");
 	trigHungryCarying = (trigHungry*4)/10;
 	fruitMask = stream->readUint32("fruitMask");
@@ -201,45 +188,22 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	stream->readEnterSection("abilities");
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		if ((versionMinor < 41) && (i >= 10) && (i < 15))
-		{
-			performance[i] = race->getUnitType(typeNum, 0)->performance[i];
-			level[i] = 0;
-			canLearn[i] = (bool)race->getUnitType(typeNum, NB_UNIT_LEVELS - 1)->performance[i];
-		}
-		else
-		{
-			stream->readEnterSection(i);
-			performance[i] = stream->readSint32("performance");
-			level[i] = stream->readSint32("level");
-			canLearn[i] = (bool)stream->readUint32("canLearn");
-			stream->readLeaveSection();
-		}
+		stream->readEnterSection(i);
+		performance[i] = stream->readSint32("performance");
+		level[i] = stream->readSint32("level");
+		canLearn[i] = (bool)stream->readUint32("canLearn");
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	
-	if (versionMinor >= 40)
-	{
-		experience = stream->readSint32("experience");
-		experienceLevel = stream->readSint32("experienceLevel");
-	}
-	else
-	{
-		experience = 0;
-		experienceLevel = 0;
-	}
+
+	experience = stream->readSint32("experience");
+	experienceLevel = stream->readSint32("experienceLevel");
 
 	destinationPurprose = stream->readSint32("destinationPurprose");
-	if (versionMinor < 41 && destinationPurprose >= 10)
-		destinationPurprose += 5;
-	
-	if(versionMinor<56)
-		stream->readUint32("subscribed");
-
 	caryedRessource = stream->readSint32("caryedRessource");
-	
-	if(versionMinor>=56)
-		jobTimer = stream->readSint32("jobTimer");
+
+	jobTimer = stream->readSint32("jobTimer");
 
 	// gui
 	levelUpAnimation = 0;
@@ -342,11 +306,6 @@ void Unit::loadCrossRef(GAGCore::InputStream *stream, Team *owner, Sint32 versio
 		ownExchangeBuilding = NULL;
 	else
 		ownExchangeBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
-
-	if(versionMinor < 56)
-	{
-		gbid = stream->readUint16("foreingExchangeBuilding");
-	}
 		
 	stream->readLeaveSection();
 }
