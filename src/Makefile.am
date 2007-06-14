@@ -135,6 +135,10 @@ MultiplayerGameScreen.cpp \
 MultiplayerGameScreen.h \
 MultiplayerGame.cpp \
 MultiplayerGame.h \
+MultiplayerGameEvent.cpp \
+MultiplayerGameEvent.h \
+MultiplayerGameEventListener.cpp \
+MultiplayerGameEventListener.h \
 NetConnection.cpp \
 NetConnection.h \
 NetConsts.h \

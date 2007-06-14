@@ -23,6 +23,7 @@
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "NetEngine.h"
+#include "MultiplayerGameEventListener.h"
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
@@ -108,6 +109,9 @@ public:
 	
 	///Returns the reason for being kicked
 	YOGKickReason getKickReason() const;
+	
+	///Sets the event listener
+	void setEventListener(MultiplayerGameEventListener* listener);
 protected:
 	friend class YOGClient;
 	///This receives a message that is sent to the game
@@ -129,12 +133,12 @@ private:
 	YOGKickReason kickReason;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
-	bool playersChanged;
 	NetEngine* netEngine;
 	boost::shared_ptr<MapAssembler> assembler;
 	bool haveMapHeader;
 	bool haveGameHeader;
 	bool readyToStart[32];
+	MultiplayerGameEventListener* listener;
 };
 
 

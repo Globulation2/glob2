@@ -102,10 +102,6 @@ MultiplayerGameScreen::~MultiplayerGameScreen()
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
 	game->update();
-	if(game->hasPlayersChanged())
-	{
-		updateJoinedPlayers();
-	}
 	if(game->isGameReadyToStart())
 	{
 		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
@@ -175,6 +171,17 @@ void MultiplayerGameScreen::handleTextMessage(const std::string& message, NetTex
 	chatWindow->addText(message);
 	chatWindow->addText("\n");
 	chatWindow->scrollToBottom();
+}
+
+
+
+void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event)
+{
+	Uint8 type = event->getEventType();
+	if(type == MGEPlayerListChanged)
+	{
+		updateJoinedPlayers();
+	}
 }
 
 
