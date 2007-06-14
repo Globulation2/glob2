@@ -27,13 +27,13 @@
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown)
 {
-	playersChanged = false;
 	netEngine=NULL;
 	kickReason = YOGUnknownKickReason;
 	haveMapHeader = false;
 	haveGameHeader = false;
 	for(int i=0; i<32; ++i)
 		readyToStart[i] = true;
+	listener = NULL;
 }
 
 
@@ -148,19 +148,6 @@ void MultiplayerGame::updateGameHeader()
 
 
 
-
-bool MultiplayerGame::hasPlayersChanged()
-{
-	if(playersChanged)
-	{
-		playersChanged=false;
-		return true;
-	}
-	return false;
-}
-
-
-
 void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
 {
 	netEngine = nnetEngine;
@@ -220,7 +207,11 @@ void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
-	playersChanged=true;
+	if(listener)
+	{
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		listener->handleMultiplayerGameEvent(event);
+	}
 	updateGameHeader();
 }
 
@@ -270,6 +261,13 @@ YOGKickReason MultiplayerGame::getKickReason() const
 
 
 
+void MultiplayerGame::setEventListener(MultiplayerGameEventListener* alistener)
+{
+	listener = alistener;
+}
+
+
+
 void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
@@ -302,7 +300,13 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
 		mapHeader = info->getMapHeader();
-		playersChanged=true;
+
+		if(listener)
+		{
+			shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+			listener->handleMultiplayerGameEvent(event);
+		}
+
 		Engine engine;
 		if(!engine.haveMap(mapHeader))
 		{
@@ -318,7 +322,13 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
 		gameHeader = info->getGameHeader();
-		playersChanged=true;
+		
+		if(listener)
+		{
+			shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+			listener->handleMultiplayerGameEvent(event);
+		}
+		
 		haveGameHeader = true;
 	}
 	if(type==MNetPlayerJoinsGame)
@@ -386,7 +396,11 @@ void MultiplayerGame::addPerson(Uint16 playerID)
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
-	playersChanged=true;
+	if(listener)
+	{
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		listener->handleMultiplayerGameEvent(event);
+	}
 	updateGameHeader();
 }
 
@@ -405,7 +419,11 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()-1);
-	playersChanged=true;
+	if(listener)
+	{
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		listener->handleMultiplayerGameEvent(event);
+	}
 	updateGameHeader();
 }
 
