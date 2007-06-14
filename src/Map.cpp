@@ -1061,57 +1061,24 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		cases[i].building = stream->readUint16("building");
 
 		stream->read(&(cases[i].ressource), 4, "ressource");
-		if (versionMinor < 28)
-		{
-			Ressource &r=cases[i].ressource;
-			if (r.type!=NO_RES_TYPE)
-			{
-				RessourceType *rt=globalContainer->ressourcesTypes.get(r.type);
-				if (r.amount>rt->sizesCount)
-					r.amount=rt->sizesCount;
-			}
-		}
 		cases[i].groundUnit = stream->readUint16("groundUnit");
 		cases[i].airUnit = stream->readUint16("airUnit");
-
 		cases[i].forbidden = stream->readUint32("forbidden");
-		if(versionMinor >= 56)
-			cases[i].hiddenForbidden = stream->readUint32("hiddenForbidden");
-		else
-			cases[i].hiddenForbidden = 0;
-		
-		if (versionMinor >= 36)
-			cases[i].guardArea = stream->readUint32("guardArea");
-		else
-			cases[i].guardArea = 0;
-		
-		if (versionMinor >= 38)
-			cases[i].clearArea = stream->readUint32("clearArea");
-		else
-			cases[i].clearArea = 0;
-		
-		if (versionMinor>=51)
-			cases[i].scriptAreas = stream->readUint16("scriptAreas");
-		else
-			cases[i].scriptAreas = 0;
-
-		if (versionMinor>=53)
-			cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
-		else
-			cases[i].canRessourcesGrow = 1;
+		cases[i].hiddenForbidden = stream->readUint32("hiddenForbidden");
+		cases[i].guardArea = stream->readUint32("guardArea");
+		cases[i].clearArea = stream->readUint32("clearArea");
+		cases[i].scriptAreas = stream->readUint16("scriptAreas");
+		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
 
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
-	if(versionMinor>=51)
+	for(int n=0; n<9; ++n)
 	{
-		for(int n=0; n<9; ++n)
-		{
-			stream->readEnterSection(n);
-			setAreaName(n, stream->readText("areaname"));
-			stream->readLeaveSection();
-		}
+		stream->readEnterSection(n);
+		setAreaName(n, stream->readText("areaname"));
+		stream->readLeaveSection();
 	}
 	
 	if (game)

@@ -4519,12 +4519,6 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	stream->readEnterSection("EchoAI");
 	signature_check(stream, player, versionMinor);
 
-	if(versionMinor<52)
-	{
-		std::cerr<<"We deeply apologize, the game could not be loaded. New updates to the Echo AI system have sacrificed backwards compatibility. This means old games using the AI ReachToInfinity or other Echo using AI's can not be loaded with newer versions of Glob2."<<std::endl;
-		return false;
-	}
-
 	stream->readEnterSection("orders");
 	Uint32 ordersSize = stream->readUint32("size");
 	for (Uint32 ordersIndex = 0; ordersIndex < ordersSize; ordersIndex++)

@@ -72,13 +72,6 @@ void AIToubib::init(Player *player)
 bool AIToubib::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	// check version
-	if (versionMinor< 35)
-	{
-		fprintf(stderr, "AIToubib::load : trying to load too old AIToubib (versionMinor < 35)\n");
-		assert(false);
-		return false;
-	}
-
 	// saving state variables
 	now = stream->readUint32("now");
 	

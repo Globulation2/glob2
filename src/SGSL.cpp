@@ -972,62 +972,59 @@ bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 	}
 	
 	// load state
-	if (versionMinor > 47)
+	// load main timer
+	mainTimer = stream->readSint32("mainTimer");
+	
+	// load hasWon / hasLost vectors
+	stream->readEnterSection("victoryConditions");
+	for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
 	{
-		// load main timer
-		mainTimer = stream->readSint32("mainTimer");
-		
-		// load hasWon / hasLost vectors
-		stream->readEnterSection("victoryConditions");
-		for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
-		{
-			stream->readEnterSection(i);
-			hasWon[i] = stream->readSint32("hasWon") != 0;
-			hasLost[i] = stream->readSint32("hasLost") != 0;
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
-		
-		// load stories datas
-		stream->readEnterSection("stories");
-		for (unsigned i = 0; i < stories.size(); i++)
-		{
-			stream->readEnterSection(i);
-			stories[i].lineSelector = stream->readSint32("ProgramCounter");
-			stories[i].internTimer = stream->readSint32("internTimer");
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
-		
-		// load areas
-		stream->readEnterSection("areas");
-		unsigned areasCount = stream->readUint32("areasCount");
-		for (unsigned i = 0; i < areasCount; i++)
-		{
-			stream->readEnterSection(i);
-			std::string name = stream->readText("name");
-			areas[name].x = stream->readSint32("x");
-			areas[name].y = stream->readSint32("y");
-			areas[name].r = stream->readSint32("r");
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
-		
-		// load flags
-		stream->readEnterSection("flags");
-		unsigned flagsCount = stream->readUint32("flagsCount");
-		for (unsigned i = 0; i < flagsCount; i++)
-		{
-			stream->readEnterSection(i);
-			std::string name = stream->readText("name");
-			Uint16 gbid = stream->readUint16("gbid");
-			Building *b = game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
-			assert(b);
-			flags[name] = b;
-			stream->readLeaveSection();
-		}
+		stream->readEnterSection(i);
+		hasWon[i] = stream->readSint32("hasWon") != 0;
+		hasLost[i] = stream->readSint32("hasLost") != 0;
 		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
+	
+	// load stories datas
+	stream->readEnterSection("stories");
+	for (unsigned i = 0; i < stories.size(); i++)
+	{
+		stream->readEnterSection(i);
+		stories[i].lineSelector = stream->readSint32("ProgramCounter");
+		stories[i].internTimer = stream->readSint32("internTimer");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	// load areas
+	stream->readEnterSection("areas");
+	unsigned areasCount = stream->readUint32("areasCount");
+	for (unsigned i = 0; i < areasCount; i++)
+	{
+		stream->readEnterSection(i);
+		std::string name = stream->readText("name");
+		areas[name].x = stream->readSint32("x");
+		areas[name].y = stream->readSint32("y");
+		areas[name].r = stream->readSint32("r");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	// load flags
+	stream->readEnterSection("flags");
+	unsigned flagsCount = stream->readUint32("flagsCount");
+	for (unsigned i = 0; i < flagsCount; i++)
+	{
+		stream->readEnterSection(i);
+		std::string name = stream->readText("name");
+		Uint16 gbid = stream->readUint16("gbid");
+		Building *b = game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+		assert(b);
+		flags[name] = b;
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
 	stream->readLeaveSection();
 	return true;
 }

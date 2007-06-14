@@ -38,8 +38,6 @@ AINull.cpp \
 AINull.h \
 AINumbi.cpp \
 AINumbi.h \
-AIOldNicowar.cpp \
-AIOldNicowar.h \
 AIToubib.cpp \
 AIToubib.h \
 AIWarrush.cpp \

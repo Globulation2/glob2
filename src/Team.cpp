@@ -55,8 +55,7 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	// loading baseteam
 	stream->readEnterSection("BaseTeam");
-	if (versionMinor>25)
-		type = (TeamType)stream->readUint32("type");
+	type = (TeamType)stream->readUint32("type");
 	teamNumber = stream->readSint32("teamNumber");
 	numberOfPlayer = stream->readSint32("numberOfPlayer");
 	stream->read(&colorR, 1, "colorR");
@@ -346,37 +345,18 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	me = stream->readUint32("me");
 	startPosX = stream->readSint32("startPosX");
 	startPosY = stream->readSint32("startPosY");
-	if (versionMinor >= 29)
-		startPosSet = stream->readSint32("startPosSet");
-	else
-		startPosSet = 0;
-	if (versionMinor >= 36)
-	{
-		unitConversionLost = stream->readSint32("unitConversionLost");
-		unitConversionGained = stream->readSint32("unitConversionGained");
-	}
-	else
-	{
-		unitConversionLost = 0;
-		unitConversionGained = 0;
-	}
+	startPosSet = stream->readSint32("startPosSet");
+	unitConversionLost = stream->readSint32("unitConversionLost");
+	unitConversionGained = stream->readSint32("unitConversionGained");
 
-	if(versionMinor >= 45)
+	stream->readEnterSection("teamRessources");
+	for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
 	{
-		stream->readEnterSection("teamRessources");
-		for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
-		{
-			stream->readEnterSection(i);
-			teamRessources[i] = stream->readUint32("teamRessources");
-			stream->readLeaveSection();
-		}
+		stream->readEnterSection(i);
+		teamRessources[i] = stream->readUint32("teamRessources");
 		stream->readLeaveSection();
 	}
-	else
-	{
-		for(unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
-			teamRessources[i]=0;
-	}
+	stream->readLeaveSection();
 
 
 	for(int i=0; i<GESize; ++i)
