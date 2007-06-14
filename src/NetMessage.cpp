@@ -1508,7 +1508,7 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 
 NetCreateGameRefused::NetCreateGameRefused()
 {
-
+	reason = YOGCreateRefusalUnknown;
 }
 
 
@@ -2020,7 +2020,11 @@ bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendFileChunk))
 	{
 		const NetSendFileChunk& r = dynamic_cast<const NetSendFileChunk&>(rhs);
-		if(data == r.data)
+		for(int i=0; i<1024; ++i)
+		{
+			if(data[i] != r.data[i])
+				return false;
+		}
 		return true;
 	}
 	return false;

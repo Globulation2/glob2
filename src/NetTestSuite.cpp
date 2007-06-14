@@ -263,9 +263,11 @@ int NetTestSuite::testNetMessages()
 	std::vector<YOGPlayerInfo> lpi1;
 	std::vector<YOGPlayerInfo> lpi2;
 	
+	
 	//Test initial
 	if(!testInitial<NetUpdatePlayerList>())
 		return 41;
+	
 	
 	//Add a couple players
 	lpi1.push_back(pi1);
@@ -307,6 +309,116 @@ int NetTestSuite::testNetMessages()
 	shared_ptr<NetSendMapHeader> sendHeader1(new NetSendMapHeader(mh));
 	if(!testSerialize(sendHeader1))
 		return 49;
+
+	//Test NetCreateGameAccepted
+	if(!testInitial<NetCreateGameAccepted>())
+		return 50;
+
+	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted);
+	if(!testSerialize(createGameAccepted1))
+		return 51;
+		
+	//Test NetCreateGameRefused
+	if(!testInitial<NetCreateGameRefused>())
+		return 52;
+
+	shared_ptr<NetCreateGameRefused> createGameRefused1(new NetCreateGameRefused(YOGCreateRefusalUnknown));
+	if(!testSerialize(createGameRefused1))
+		return 53;
+
+	//Test NetSendGameHeader
+	if(!testInitial<NetSendGameHeader>())
+		return 54;
+
+	GameHeader gh;
+	gh.setNumberOfPlayers(17);
+	shared_ptr<NetSendGameHeader> sendGameHeader1(new NetSendGameHeader(gh));
+	if(!testSerialize(sendGameHeader1))
+		return 55;
+
+	//Test NetPlayerJoinsGame
+	if(!testInitial<NetPlayerJoinsGame>())
+		return 56;
+
+	shared_ptr<NetPlayerJoinsGame> playerJoinsGame1(new NetPlayerJoinsGame(1721));
+	if(!testSerialize(playerJoinsGame1))
+		return 57;
+
+	shared_ptr<NetPlayerJoinsGame> playerJoinsGame2(new NetPlayerJoinsGame(42));
+	if(!testSerialize(playerJoinsGame2))
+		return 58;
+
+	//Test NetPlayerLeavesGame
+	if(!testInitial<NetPlayerLeavesGame>())
+		return 59;
+
+	shared_ptr<NetPlayerLeavesGame> playerLeavesGame1(new NetPlayerLeavesGame(1721));
+	if(!testSerialize(playerLeavesGame1))
+		return 60;
+
+	shared_ptr<NetPlayerLeavesGame> playerLeavesGame2(new NetPlayerLeavesGame(42));
+	if(!testSerialize(playerLeavesGame2))
+		return 61;
+
+	//Test NetStartGame
+	if(!testInitial<NetStartGame>())
+		return 62;
+
+	shared_ptr<NetStartGame> startGame1(new NetStartGame);
+	if(!testSerialize(startGame1))
+		return 63;
+
+	//Test NetRequestMap
+	if(!testInitial<NetRequestMap>())
+		return 64;
+
+	shared_ptr<NetRequestMap> requestMap1(new NetRequestMap);
+	if(!testSerialize(requestMap1))
+		return 65;
+
+	//Test NetSendFileInformation
+	if(!testInitial<NetSendFileInformation>())
+		return 66;
+
+	shared_ptr<NetSendFileInformation> sendFileInformation1(new NetSendFileInformation(14194));
+	if(!testSerialize(sendFileInformation1))
+		return 67;
+		
+	//Test NetSendFileChunk
+	if(!testInitial<NetSendFileChunk>())
+		return 68;
+		
+	//Test NetRequestNextChunk
+	if(!testInitial<NetRequestNextChunk>())
+		return 69;
+
+	shared_ptr<NetRequestNextChunk> requestChunk1(new NetRequestNextChunk);
+	if(!testSerialize(requestChunk1))
+		return 70;
+		
+	//Test NetKickPlayer
+	if(!testInitial<NetKickPlayer>())
+		return 71;
+
+	shared_ptr<NetKickPlayer> kickPlayer1(new NetKickPlayer(77, YOGKickedByHost));
+	if(!testSerialize(kickPlayer1))
+		return 72;
+		
+	//Test NetLeaveGame
+	if(!testInitial<NetLeaveGame>())
+		return 73;
+
+	shared_ptr<NetLeaveGame> leaveGame1(new NetLeaveGame);
+	if(!testSerialize(leaveGame1))
+		return 74;
+		
+	//Test NetReadyToLaunch
+	if(!testInitial<NetReadyToLaunch>())
+		return 75;
+
+	shared_ptr<NetReadyToLaunch> readyToLaunch1(new NetReadyToLaunch(1773));
+	if(!testSerialize(readyToLaunch1))
+		return 76;
 
 	return 0;
 
