@@ -47,53 +47,12 @@ using namespace boost;
 Engine::Engine()
 {
 	net=NULL;
-	cpuSumStats = 0;
-	cpuSumCountStats = 0;
-	for (int i=0; i<=40; i++)
-		cpuStats[i]=0;
 	logFile = globalContainer->logFileManager->getFile("Engine.log");
 }
 
 Engine::~Engine()
 {
 	fprintf(logFile, "\n");
-	if (globalContainer->runNoX)
-	{
-		Sint32 noxTicks = noxEndTick - noxStartTick;
-		double speed = (double)1000 * (double)cpuSumCountStats / (double)noxTicks;
-		fprintf(logFile, "nox::cpuSumCountStats = %d\n", cpuSumCountStats);
-		fprintf(logFile, "nox::noxTicks = %d\n", noxTicks);
-		fprintf(logFile, "nox::speed = %f [steps/s]\n", speed);
-		
-		printf("nox::cpuSumCountStats = %d\n", cpuSumCountStats);
-		printf("nox::noxTicks = %d\n", noxTicks);
-		printf("nox::speed = %f [steps/s]\n", speed);
-	}
-	else
-	{
-		if (cpuSumCountStats)
-		{
-			fprintf(logFile, "cpuSumCountStats = %d\n", cpuSumCountStats);
-			double averageCupUsage = (double)cpuSumStats / (double)cpuSumCountStats;
-			fprintf(logFile, "averageCpuUsage = %lf%%\n", (double)2.5 * averageCupUsage);
-		}
-		fprintf(logFile, "cpu usage stats:\n");
-		for (int i=0; i<=40; i++)
-			fprintf(logFile, "%3d.%1d %% = %d\n", 100-(i*5)/2, (i&1)*5, cpuStats[i]);
-		int sum=0;
-		for (int i=0; i<=40; i++)
-			sum+=cpuStats[i];
-		fprintf(logFile, "cpu usage graph:\n");
-		for (int i=0; i<=40; i++)
-		{
-			fprintf(logFile, "%3d.%1d %% | ", 100-(i*5)/2, (i&1)*5);
-			double ratio=100.*(double)cpuStats[i]/(double)sum;
-			int jmax=(int)(ratio+0.5);
-			for (int j=0; j<jmax; j++)
-				fprintf(logFile, "*");
-			fprintf(logFile, "\n");
-		}
-	}
 
 	if (net)
 	{
@@ -247,15 +206,14 @@ int Engine::run(void)
 	while (doRunOnceAgain)
 	{
 		const int speed=40;
-		Uint32 startTick, endTick;
 		bool networkReadyToExecute = true;
-		Sint32 ticksSpentInComputation = speed;
-		Sint32 computationAvailableTicks = 0;
-		Sint32 ticksToDelayInside = 0;
-		Sint32 missedTicksToWait = 0;
-		unsigned frameNumber = 0;
 		
-		startTick = SDL_GetTicks();
+		cpuStats.reset(speed);
+		
+		Sint32 needToBeTime = 0;
+		Sint32 startTime = SDL_GetTicks();
+		unsigned frameNumber = 0;
+
 		while (gui.isRunning)
 		{
 			// We always allow the user to use the gui:
@@ -282,8 +240,7 @@ int Engine::run(void)
 			}
 			else
 				gui.step();
-			
-			Sint32 ticksDelayedInside=0;
+	
 			if (!gui.hardPause)
 			{
 				// But some jobs have to be executed synchronously:
@@ -309,19 +266,7 @@ int Engine::run(void)
 							shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
 							net->pushOrder(order, i);
 						}
-/*
-					
-					ticksToDelayInside=net->ticksToDelayInside();
-					ticksDelayedInside=ticksToDelayInside+computationAvailableTicks/2;
-					ticksDelayedInside=(ticksDelayedInside/10)*10; //SDL_Delay() is only 10[ms] acurate
-					if (ticksDelayedInside>0)
-						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
-					else
-*/
-						ticksDelayedInside=0;
 				}
-				else
-					ticksDelayedInside=0;
 				
 				if(multiplayer)
 					multiplayer->update();
@@ -348,9 +293,7 @@ int Engine::run(void)
 
 			if (globalContainer->runNoX)
 			{
-				if (cpuSumCountStats < (unsigned)-1)
-					cpuSumCountStats++;
-				if ((int)cpuSumCountStats == globalContainer->runNoXCountSteps)
+				if ((int)gui.game.stepCounter == globalContainer->runNoXCountSteps)
 				{
 					gui.isRunning = false;
 					noxEndTick = SDL_GetTicks();
@@ -374,41 +317,30 @@ int Engine::run(void)
 				}
 	
 				// we compute timing
-				endTick=SDL_GetTicks();
-				Sint32 spentTicks=endTick-startTick;
-				ticksSpentInComputation=spentTicks-ticksDelayedInside;
-				computationAvailableTicks=speed-ticksSpentInComputation;
-				Sint32 ticksToWait=computationAvailableTicks+ticksToDelayInside+missedTicksToWait;
-				if (ticksToWait>0)
-				{
-					missedTicksToWait=ticksToWait%10;
-					ticksToWait=ticksToWait-missedTicksToWait; //SDL_Delay() is only 10[ms] acurate
-					if (ticksToWait>0)
-						SDL_Delay(ticksToWait);
-				}
-				else
-					missedTicksToWait=0;
-				startTick=SDL_GetTicks();
+				needToBeTime += speed;
+				Sint32 currentTime = SDL_GetTicks() - startTime;
+				//if we are more than 500 milliseconds behind where we should be,
+				//then truncate it. This is to avoid playing "catchup" for long
+				//periods of time if Glob2 recieved allmost no cpu time
+				if(  (currentTime - needToBeTime) > 500)
+					needToBeTime = currentTime - 500;
+
+				//Any inconsistancies in the delays will be smoothed throughout the following frames,
+				Sint32 delay = std::max(0, needToBeTime - currentTime);
+				std::cout<<"currentTime="<<currentTime<<"; delay="<<delay<<"; needToBeTime="<<needToBeTime<<std::endl;
+				SDL_Delay(delay);
 				
 				// we set CPU stats
 //				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
-				gui.setCpuLoad(ticksSpentInComputation);
+				gui.setCpuLoad((4000-(delay*100)) / 40);
 				if (networkReadyToExecute && !gui.gamePaused)
 				{
-					Sint32 i = computationAvailableTicks;
-					if (cpuSumCountStats < (unsigned)-1)
-					{
-						cpuSumStats += speed - computationAvailableTicks;
-						cpuSumCountStats++;
-					}
-					if (i<0)
-						i=0;
-					else if (i>=speed)
-						i=speed;
-					cpuStats[i]++;
+					cpuStats.addFrameData(delay);
 				}
 			}
 		}
+
+		cpuStats.format();
 
 		delete net;
 		net=NULL;
@@ -449,7 +381,6 @@ int Engine::run(void)
 
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader)
 {
-	std::cout<<gameHeader.getNumberOfPlayers()<<std::endl;
 	if (!gui.loadFromHeaders(mapHeader, gameHeader))
 		return EE_CANT_LOAD_MAP;
 
