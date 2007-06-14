@@ -338,6 +338,9 @@ int Engine::run(void)
 					cpuStats.addFrameData(delay);
 				}
 			}
+			
+			if(gui.exitGlobCompletely)
+				break;
 		}
 
 		cpuStats.format();
