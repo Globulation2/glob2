@@ -67,6 +67,8 @@ CampaignSelectorScreen.h \
 ChooseMapScreen.cpp \
 ChooseMapScreen.h \
 ConfigFiles.h \
+CPUStatisticsManager.cpp \
+CPUStatisticsManager.h \
 CreditScreen.cpp \
 CreditScreen.h \
 CustomGameScreen.cpp \

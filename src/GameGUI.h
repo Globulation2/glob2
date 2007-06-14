@@ -361,10 +361,10 @@ private:
 	//! add a minimap mark
 	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
 	
-	// how long the COU has been idle last tick
-	#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32
-	int smoothedCpuLoad[SMOOTH_CPU_LOAD_WINDOW_LENGTH];
-	unsigned smoothedCpuLoadPos;
+	// records CPU usage percentages 
+	static const unsigned SMOOTHED_CPU_SIZE=32;
+	int smoothedCPULoad[SMOOTHED_CPU_SIZE];
+	int smoothedCPUPos;
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;

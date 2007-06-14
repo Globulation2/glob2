@@ -248,9 +248,9 @@ void GameGUI::init()
 
 	hiddenGUIElements=0;
 	
- 	for (size_t i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		smoothedCpuLoad[i]=0;
-	smoothedCpuLoadPos=0;
+ 	for (size_t i=0; i<SMOOTHED_CPU_SIZE; i++)
+		smoothedCPULoad[i]=0;
+	smoothedCPUPos=0;
 
  	for (int i=0; i<NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT; i++)
 		unitCount[i] = 1;
@@ -3449,30 +3449,22 @@ void GameGUI::drawTopScreenBar(void)
 	
 	// draw CPU load
 	dec += 70;
-	int cpuLoadMax=0;
-	int cpuLoadMaxIndex=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (cpuLoadMax<smoothedCpuLoad[i])
-		{
-			cpuLoadMax=smoothedCpuLoad[i];
-			cpuLoadMaxIndex=i;
-		}
 	int cpuLoad=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (i!=cpuLoadMaxIndex && cpuLoad<smoothedCpuLoad[i])
-			cpuLoad=smoothedCpuLoad[i];
+	for (unsigned i=0; i<SMOOTHED_CPU_SIZE; i++)
+		cpuLoad += smoothedCPULoad[i];
 
-/*
-	if (cpuLoad<game.session.gameTPF-8)
+	cpuLoad /= SMOOTHED_CPU_SIZE;
+
+	if (cpuLoad<50)
 		memcpy(actC, greenC, sizeof(greenC));
-	else if (cpuLoad<game.session.gameTPF)
+	else if (cpuLoad<75)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	else
 		memcpy(actC, redC, sizeof(redC));
-*/
 
+	int cpuLength = int(float(cpuLoad) / 100.0 * 40.0);
 
-	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoad, 8, actC[0], actC[1], actC[2]);
+	globalContainer->gfx->drawFilledRect(dec, 4, cpuLength, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	
@@ -4529,8 +4521,8 @@ void GameGUI::disableGUIElement(int id)
 
 void GameGUI::setCpuLoad(int s)
 {
-	smoothedCpuLoad[smoothedCpuLoadPos]=s;
-	smoothedCpuLoadPos=(smoothedCpuLoadPos+1)%SMOOTH_CPU_LOAD_WINDOW_LENGTH;
+	smoothedCPULoad[smoothedCPUPos]=s;
+	smoothedCPUPos=(smoothedCPUPos+1) % SMOOTHED_CPU_SIZE;
 }
 
 

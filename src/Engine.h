@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -28,6 +30,8 @@
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
+#include "CPUStatisticsManager.h"
+
 
 class MultiplayersJoin;
 class NetGame;
@@ -110,11 +114,10 @@ private:
 	//! The MultiplayerGame, recieves orders from across a network
 	shared_ptr<MultiplayerGame> multiplayer;
 
-	int cpuStats[41];
-	int ticksToWaitStats[41];
-	unsigned cpuSumStats;
-	unsigned cpuSumCountStats;
+	CPUStatisticsManager cpuStats;
+
 	Sint32 noxStartTick, noxEndTick;
+
 	FILE *logFile;
 
 	static const bool verbose = false;
