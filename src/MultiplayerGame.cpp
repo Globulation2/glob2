@@ -34,6 +34,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	for(int i=0; i<32; ++i)
 		readyToStart[i] = true;
 	listener = NULL;
+	sendReadyToStart=false;
 }
 
 
@@ -58,10 +59,11 @@ void MultiplayerGame::update()
 			sendReady = true;
 		else if(!assembler)
 			sendReady = true;
-		if(sendReady)
+		if(sendReady && !sendReadyToStart)
 		{
 			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
 			client->sendNetMessage(message);
+			sendReadyToStart=true;
 		}
 	}
 }
@@ -73,7 +75,7 @@ void MultiplayerGame::createNewGame(const std::string& name)
 	shared_ptr<NetCreateGame> message(new NetCreateGame(name));
 	client->sendNetMessage(message);
 	gjcState=WaitingForCreateReply;
-	gameHeader.setGameLatency(12);
+	setDefaultGameHeaderValues();
 }
 
 
@@ -155,10 +157,9 @@ void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
 
 
 
-void MultiplayerGame::pushOrder(shared_ptr<Order> order, int playerNum, int ustep)
+void MultiplayerGame::pushOrder(shared_ptr<Order> order, int playerNum)
 {
 	order->sender = playerNum;
-	order->ustep = ustep;
 	shared_ptr<NetSendOrder> message(new NetSendOrder(order));
 	client->sendNetMessage(message);
 }
@@ -179,7 +180,10 @@ bool MultiplayerGame::isGameReadyToStart()
 	for(int x=0; x<32; ++x)
 	{
 		if(readyToStart[x] == false)
+		{
+			std::cout<<"ready to start "<<x<<" false"<<std::endl;
 			return false;
+		}
 	}
 
 	if(assembler)
@@ -230,6 +234,7 @@ void MultiplayerGame::kickPlayer(int playerNum)
 		removePerson(bp.playerID);
 		client->sendNetMessage(message);
 	}
+	updateGameHeader();
 }
 
 
@@ -350,7 +355,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
 		shared_ptr<Order> order = info->getOrder();
-		netEngine->pushOrder(order, order->sender, order->ustep);
+		netEngine->pushOrder(order, order->sender);
+		for(int i=0; i<(gameHeader.getOrderRate() - 1); ++i)
+			netEngine->pushOrder(shared_ptr<Order>(new NullOrder), order->sender);
 	}
 	if(type==MNetRequestMap)
 	{
@@ -390,8 +397,9 @@ void MultiplayerGame::addPerson(Uint16 playerID)
 		if(bp.type == BasePlayer::P_NONE)
 		{
 			bp = BasePlayer(x, client->findPlayerName(playerID).c_str(), x, BasePlayer::P_IP);
-			bp.playerID = playerID;			
-			readyToStart[x] = false;
+			bp.playerID = playerID;
+			if(playerID != client->getPlayerID())	
+				readyToStart[x] = false;
 			break;
 		}
 	}
@@ -445,6 +453,14 @@ void MultiplayerGame::startEngine()
 //	else if (rc==-1)
 //		executionMode=-1;
 	// redraw all stuff
+}
+
+
+
+void MultiplayerGame::setDefaultGameHeaderValues()
+{
+	gameHeader.setGameLatency(12);
+	gameHeader.setOrderRate(5);
 }
 
 

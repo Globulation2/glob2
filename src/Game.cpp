@@ -214,7 +214,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	if (orderType!=ORDER_WAITING_FOR_PLAYER)
 	{
 		anyPlayerWaitedTimeFor=0;
-		fprintf(logFile, "[%d] %d %d (", order->ustep, team->teamNumber, order->getOrderType());
+		fprintf(logFile, "[%d] %d %d (", stepCounter, team->teamNumber, order->getOrderType());
 	}
 	switch (orderType)
 	{

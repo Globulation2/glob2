@@ -232,6 +232,10 @@ void YOGClient::update()
 		{
 			joinedGame->recieveMessage(message);
 		}
+		if(type==MNetReadyToLaunch)
+		{
+			joinedGame->recieveMessage(message);
+		}
 
 
 		if(type==MNetSendFileInformation)

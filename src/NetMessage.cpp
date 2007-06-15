@@ -181,7 +181,6 @@ void NetSendOrder::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeUint8(order->getOrderType(), "orderType");
 	stream->write(order->getData(), order->getDataLength(), "data");
 	stream->writeUint8(order->sender, "sender");
-	stream->writeUint32(order->ustep, "ustep");
 	stream->writeLeaveSection();
 }
 
@@ -197,7 +196,6 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	
 	order = Order::getOrder(buffer, size);
 	order->sender = stream->readUint8("sender");
-	order->ustep = stream->readUint32("ustep");
 	
 	delete buffer;
 }

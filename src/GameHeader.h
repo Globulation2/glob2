@@ -52,6 +52,13 @@ public:
 	///Sets the latency of the game.
 	void setGameLatency(Sint32 latency);
 	
+	///Returns the order rate. 1 means an order is sent across the net for every frame,
+	///2 sends at every second frame, 3 at every 3'rd and so on
+	Uint8 getOrderRate() const;
+	
+	///Sets the order frame rate
+	void setOrderRate(Uint8 orderRate);
+	
 	///Provides access to the base player. n must be between 0 and 31.
 	BasePlayer& getBasePlayer(const int n);
 private:
@@ -61,6 +68,9 @@ private:
 	///The number of ticks between an order issue, and the execution of the order.
 	///Used for net games to hide latency.
 	Sint32 gameLatency;
+
+	///Sets the order rate
+	Uint8 orderRate;
 
 	///Represents the basic player information in the game
 	BasePlayer players[32];
