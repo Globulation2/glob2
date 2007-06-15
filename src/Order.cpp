@@ -27,7 +27,6 @@
 Order::Order(void)
 {
 	sender=-1;
-	ustep=0;
 	gameCheckSum=0;
 }
 

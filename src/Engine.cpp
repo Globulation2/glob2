@@ -214,6 +214,8 @@ int Engine::run(void)
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
 
+		unsigned orders_ahead = 0;
+
 		while (gui.isRunning)
 		{
 			// We always allow the user to use the gui:
@@ -248,13 +250,20 @@ int Engine::run(void)
 				{
 					gui.syncStep();
 					
-					
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
-					if(multiplayer)
-						multiplayer->pushOrder(localOrder, gui.localPlayer, net->getStep() + gui.game.gameHeader.getGameLatency());
-						
-					net->pushOrder(localOrder, gui.localPlayer, net->getStep() + gui.game.gameHeader.getGameLatency());
+					//we ignore null orders that aren't required for this order frame
+					if(localOrder->getOrderType() != ORDER_NULL || orders_ahead == 0)
+					{
+						if(multiplayer)
+							multiplayer->pushOrder(localOrder, gui.localPlayer);
+						net->pushOrder(localOrder, gui.localPlayer);
+						for(int i=0; i<(gui.game.gameHeader.getOrderRate()-1); ++i)
+						{
+							net->pushOrder(boost::shared_ptr<Order>(new NullOrder), gui.localPlayer);
+						}
+						orders_ahead+=gui.game.gameHeader.getOrderRate();
+					}
 	
 					// We store full recursive checkSums data:
 //					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
@@ -276,7 +285,7 @@ int Engine::run(void)
 
 				if(networkReadyToExecute)
 				{
-
+					orders_ahead -= 1;
 					// We get all currents orders from the network and execute them:
 					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 					{
@@ -327,7 +336,6 @@ int Engine::run(void)
 
 				//Any inconsistancies in the delays will be smoothed throughout the following frames,
 				Sint32 delay = std::max(0, needToBeTime - currentTime);
-				std::cout<<"currentTime="<<currentTime<<"; delay="<<delay<<"; needToBeTime="<<needToBeTime<<std::endl;
 				SDL_Delay(delay);
 				
 				// we set CPU stats

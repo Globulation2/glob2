@@ -92,11 +92,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	updateJoinedPlayers();
 	
 	textMessage->addTextMessageListener(this);
+	game->setEventListener(this);
 }
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
 {
 	textMessage->removeTextMessageListener(this);
+	game->setEventListener(NULL);
 }
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)

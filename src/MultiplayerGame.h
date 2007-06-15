@@ -87,7 +87,7 @@ public:
 	void setNetEngine(NetEngine* engine);
 	
 	///Sends the given Order across the network
-	void pushOrder(shared_ptr<Order> order, int playerNum, int ustep);
+	void pushOrder(shared_ptr<Order> order, int playerNum);
 	
 	///Causes the game to be started
 	void startGame();
@@ -124,6 +124,9 @@ protected:
 	///This will start the game
 	void startEngine();
 	
+	///Sets the default values for latency and order frame rate in the game header for a YOG game
+	void setDefaultGameHeaderValues();
+	
 	int getLocalPlayer();
 private:
 	boost::shared_ptr<YOGClient> client;
@@ -138,6 +141,7 @@ private:
 	bool haveMapHeader;
 	bool haveGameHeader;
 	bool readyToStart[32];
+	bool sendReadyToStart;
 	MultiplayerGameEventListener* listener;
 };
 

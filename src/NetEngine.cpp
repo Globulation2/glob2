@@ -22,6 +22,7 @@ NetEngine::NetEngine(int numberOfPlayers)
 	: numberOfPlayers(numberOfPlayers)
 {
 	step=0;
+	stepNumber.resize(numberOfPlayers);
 }
 
 
@@ -35,12 +36,11 @@ void NetEngine::advanceStep()
 	step+=1;
 }
 
-void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, int targetStep)
+void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber)
 {
-	if(targetStep==-1)
-		targetStep=step;
+	int targetStep = stepNumber[playerNumber];
+	stepNumber[playerNumber] += 1;
 	order->sender=playerNumber;
-	order->ustep=targetStep;
 	orders[hash(playerNumber, targetStep)] = order;
 }
 
@@ -82,6 +82,6 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 {
 	for(int s=0; s<latency; ++s)
 	{
-		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber, s);
+		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber);
 	}
 }
