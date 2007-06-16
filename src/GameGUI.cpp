@@ -105,7 +105,7 @@ public:
 	//! React on action from any widget (but there is only one anyway)
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	//! Return the text typed
-	const char *getText(void) const { return textInput->getText().c_str(); }
+	std::string getText(void) const { return textInput->getText(); }
 	//! Set the text
 	void setText(const char *text) const { textInput->setText(text); }
 };
@@ -880,47 +880,18 @@ void GameGUI::processEvent(SDL_Event *event)
 		
 		typingInputScreen->translateAndProcessEvent(event);
 		
-		/*
 		if (typingInputScreen->endValue==0)
 		{
-			char message[256];
-			strncpy(message, typingInputScreen->getText(), 256);
-			if (message[0])
+			std::string message = typingInputScreen->getText();
+			if (!message.empty())
 			{
-				bool foundLocal=false;
-				yog->handleMessageAliasing(message, 256);
-				if (strncmp(message, "/m ", 3)==0)
-				{
-					for (int i=0; i<game.gameHeader.getNumberOfPlayers(); i++)
-						if (game.players[i] &&
-							(game.players[i]->type>=Player::P_AI||game.players[i]->type==Player::P_IP||game.players[i]->type==Player::P_LOCAL))
-						{
-							char *name=game.players[i]->name;
-							int l=Utilities::strnlen(name, BasePlayer::MAX_NAME_LENGTH);
-							if ((strncmp(name, message+3, l)==0)&&(message[3+l]==' '))
-							{
-								orderQueue.push_back(shared_ptr<Order>(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, message+4+l)));
-								foundLocal=true;
-							}
-						}
-					if (!foundLocal)
-						yog->sendMessage(message);
-				}
-				else if (message[0]=='/')
-				{
-					yog->sendMessage(message);
-					if (ircPtr && (message[1]=='/'))
-						ircPtr->sendCommand(&message[1]);
-				}
-				else
-					orderQueue.push_back(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message)));
+				orderQueue.push_back(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 				typingInputScreen->setText("");
 			}
 			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
 			typingInputScreen->endValue=1;
 			return;
 		}
-		*/
 	}
 
 	// the dump (debug) keys are always handled
