@@ -89,12 +89,15 @@ struct Parser: Lexer
 			case END:
 			case RBRACE:
 				BlockNode::Statements& statements = block->statements;
-				if (!statements.empty() && dynamic_cast<ExpressionNode*>(statements.back()) != 0)
+				if (!statements.empty())
 				{
-					block->value = statements.back();
-					statements.pop_back();
+					block->value = dynamic_cast<ExpressionNode*>(statements.back());
+					if (block->value != 0)
+					{
+						statements.pop_back();
+					}
 				}
-				else
+				if (block->value == 0)
 				{
 					block->value = new ConstNode(&nil);
 				}
@@ -122,15 +125,31 @@ struct Parser: Lexer
 			{
 				next();
 				string name = identifier();
+				auto_ptr<ScopePrototype> method(new ScopePrototype(heap, scope));
+				auto_ptr<PatternNode> arg;
+				switch (tokenType())
+				{
+				case LPAR:
+					arg.reset(pattern(method.get()));
+				case ASSIGN:
+					break;
+				default:
+					assert(false);
+				}
 				accept(ASSIGN);
 				newlines();
-				ScopePrototype* method = new ScopePrototype(heap, scope);
-				scope->methods[name] = method;
-				return new DefNode(method, expression(method));
+				scope->methods[name] = method.get();
+				ExpressionNode* expr = expression(method.get());
+				return new DefNode(method.release(), expr);
 			}
 		default:
 			return expression(scope);
 		}
+	}
+	
+	PatternNode* pattern(ScopePrototype* scope)
+	{
+		return 0;
 	}
 	
 	ExpressionNode* expression(ScopePrototype* scope)
@@ -295,6 +314,7 @@ int main(int argc, char** argv)
 	Parser parser("def f = 21 + 21\nf()", &heap);
 	Node* node = parser.parse(root);
 	node->generate(root);
+	delete node;
 	
 	Thread thread(&heap);
 	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));

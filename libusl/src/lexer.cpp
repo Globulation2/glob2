@@ -8,6 +8,7 @@ const Token::Type Lexer::tokenTypes[] =
 	Token::Type(VAL,     "'val'",                   "val"),
 	Token::Type(DEF,     "'def'",                   "def"),
 	Token::Type(ASSIGN,  "'='",                     "="),
+	Token::Type(COLON,   "':'",                     ":"),
 	Token::Type(ID,      "an identifier",           "([[:alpha:]][[:alnum:]]*)|([!#$%&*+-./:<=>?@\\^_\\|~]+)"),
 	Token::Type(STR,     "a string",                "([\"\'])(\\\\[\"\']|[^\"\'[:cntrl:]])*[\"\']"),
 	Token::Type(NUM,     "a number",                "[[:digit:]]+|(0x|0X)[[:xdigit:]]+"),

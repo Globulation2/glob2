@@ -12,6 +12,7 @@ public:
 		VAL,
 		DEF,
 		ASSIGN,
+		COLON,
 		ID,
 		STR,
 		NUM,
