@@ -4,6 +4,7 @@
 
 #include <cassert>
 
+
 Prototype Nil(0);
 Value nil(0, &Nil);
 
@@ -25,10 +26,59 @@ Function::FunctionPrototype::FunctionPrototype():
 Function::FunctionPrototype Function::functionPrototype;
 
 
-Tuple::TuplePrototype::TuplePrototype():
+struct IntegerAdd: NativeCode::Operation
+{
+	IntegerAdd():
+		NativeCode::Operation(&Integer::integerPrototype, "Integer::+", false)
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Integer* thisInt = dynamic_cast<Integer*>(receiver);
+		Integer* thatInt = dynamic_cast<Integer*>(argument);
+		
+		assert(thisInt);
+		assert(thatInt);
+		
+		return new Integer(thread->heap, thisInt->value + thatInt->value);
+	}
+} integerAdd;
+
+Integer::IntegerPrototype::IntegerPrototype():
 	Prototype(0)
 {
-	// TODO: add some tuple methods
+	methods["this"] = thisMethod(&integerPrototype);
+	methods["+"] = &integerAdd;
 }
 
-Tuple::TuplePrototype Tuple::tuplePrototype;
+Integer::IntegerPrototype Integer::integerPrototype;
+
+
+struct ArrayGet: NativeCode::Operation
+{
+	ArrayGet():
+		NativeCode::Operation(&Array::arrayPrototype, "Array::get", false)
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Array* array = dynamic_cast<Array*>(receiver);
+		Integer* index = dynamic_cast<Integer*>(argument);
+		
+		assert(array);
+		assert(index);
+		
+		assert(index->value >= 0);
+		assert(index->value < array->values.size());
+		
+		return array->values[index->value];
+	}
+} arrayGet;
+
+Array::ArrayPrototype::ArrayPrototype():
+	Prototype(0)
+{
+	methods["get"] = &arrayGet;
+}
+
+Array::ArrayPrototype Array::arrayPrototype;

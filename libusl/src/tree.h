@@ -137,14 +137,14 @@ struct DefNode: Node
 	ExpressionNode* body;
 };
 
-struct TupleNode: ExpressionNode
+struct ArrayNode: ExpressionNode
 {
-	typedef std::vector<ExpressionNode*> Expressions;
+	typedef std::vector<ExpressionNode*> Elements;
 	
-	virtual ~TupleNode();
+	virtual ~ArrayNode();
 	virtual void generate(ScopePrototype* scope);
 	
-	Expressions expressions;
+	Elements elements;
 };
 
 struct DefLookupNode: ExpressionNode
@@ -160,6 +160,32 @@ struct DefLookupNode: ExpressionNode
 
 struct PatternNode: Node
 {
+};
+
+struct NilPatternNode: PatternNode
+{
+	virtual void generate(ScopePrototype* scope);
+};
+
+struct ValPatternNode: PatternNode
+{
+	ValPatternNode(const std::string& name):
+		name(name)
+	{}
+	
+	virtual void generate(ScopePrototype* scope);
+	
+	std::string name;
+};
+
+struct TuplePatternNode: PatternNode
+{
+	typedef std::vector<PatternNode*> Members;
+	
+	virtual ~TuplePatternNode();
+	virtual void generate(ScopePrototype* scope);
+	
+	Members members;
 };
 
 #endif // ndef TREE_H

@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <iterator>
 #include <algorithm>
 #include <functional>
@@ -16,50 +17,6 @@
 #include <stack>
 
 using namespace std;
-
-struct Integer: Value
-{
-	int value;
-	static struct IntegerAdd: NativeCode::Operation
-	{
-		IntegerAdd():
-			NativeCode::Operation(&integerPrototype, "Integer::+", false)
-		{}
-		
-		Value* execute(Thread* thread, Value* receiver, Value* argument)
-		{
-			Integer* thisInt = dynamic_cast<Integer*>(receiver);
-			Integer* thatInt = dynamic_cast<Integer*>(argument);
-			
-			assert(thisInt);
-			assert(thatInt);
-			
-			return new Integer(thread->heap, thisInt->value + thatInt->value);
-		}
-	} integerAdd;
-	
-	static struct IntegerPrototype: Prototype
-	{
-		IntegerPrototype():
-			Prototype(0)
-		{
-			methods["+"] = &integerAdd;
-		}
-	} integerPrototype;
-	
-	Integer(Heap* heap, int value):
-		Value(heap, &integerPrototype),
-		value(value)
-	{
-		this->value = value;
-	}
-	
-	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
-};
-
-Integer::IntegerPrototype Integer::integerPrototype;
-Integer::IntegerAdd Integer::integerAdd;
-
 
 struct Parser: Lexer
 {
@@ -78,9 +35,7 @@ struct Parser: Lexer
 		newlines();
 		auto_ptr<BlockNode> block(new BlockNode());
 		
-		ScopePrototype* thisMethod = new ScopePrototype(heap, scope);
-		scope->methods["this"] = thisMethod;
-		block->statements.push_back(new DefNode(thisMethod, new ParentNode(new ScopeNode())));
+		scope->methods["this"] = thisMethod(scope);
 		
 		while (true)
 		{
@@ -126,21 +81,26 @@ struct Parser: Lexer
 				next();
 				string name = identifier();
 				auto_ptr<ScopePrototype> method(new ScopePrototype(heap, scope));
-				auto_ptr<PatternNode> arg;
+				auto_ptr<BlockNode> body(new BlockNode());
 				switch (tokenType())
 				{
 				case LPAR:
-					arg.reset(pattern(method.get()));
+					next();
+					body->statements.push_back(pattern(method.get()));
+					accept(RPAR);
+					accept(ASSIGN);
+					break;
 				case ASSIGN:
+					next();
+					body->statements.push_back(new NilPatternNode());
 					break;
 				default:
 					assert(false);
 				}
-				accept(ASSIGN);
 				newlines();
 				scope->methods[name] = method.get();
-				ExpressionNode* expr = expression(method.get());
-				return new DefNode(method.release(), expr);
+				body->value = expression(method.get());
+				return new DefNode(method.release(), body.release());
 			}
 		default:
 			return expression(scope);
@@ -149,7 +109,45 @@ struct Parser: Lexer
 	
 	PatternNode* pattern(ScopePrototype* scope)
 	{
-		return 0;
+		PatternNode* first;
+		if (tokenType() == LPAR)
+		{
+			first = pattern(scope);
+			accept(RPAR);
+		}
+		else if (tokenType() == ID)
+		{
+			string name = identifier();
+			scope->locals.push_back(name);
+			first = new ValPatternNode(name);
+		}
+		else
+		{
+			first = new NilPatternNode();
+		}
+		
+		if (tokenType() != COMMA)
+			return first;
+		
+		auto_ptr<TuplePatternNode> tuple(new TuplePatternNode);
+		tuple->members.push_back(first);
+		
+		do
+		{
+			next();
+			
+			if (tokenType() == LPAR)
+				tuple->members.push_back(pattern(scope));
+			else
+			{
+				string name = identifier();
+				scope->locals.push_back(name);
+				tuple->members.push_back(new ValPatternNode(name));
+			}
+		}
+		while (tokenType() == COMMA);
+		
+		return tuple.release();
 	}
 	
 	ExpressionNode* expression(ScopePrototype* scope)
@@ -164,6 +162,7 @@ struct Parser: Lexer
 				break;
 			case LPAR:
 			case LBRACE:
+			case DOT:
 				node.reset(selectAndApply(node, "apply", scope));
 				break;
 			default:
@@ -181,7 +180,7 @@ struct Parser: Lexer
 	ExpressionNode *expressions(ScopePrototype* scope)
 	{
 		newlines();
-		auto_ptr<TupleNode> tuple(new TupleNode());
+		auto_ptr<ArrayNode> tuple(new ArrayNode());
 		while (true)
 		{
 			switch (tokenType())
@@ -190,7 +189,8 @@ struct Parser: Lexer
 			case NUM:
 			case LPAR:
 			case LBRACE:
-				tuple->expressions.push_back(expression(scope));
+			case DOT:
+				tuple->elements.push_back(lazyExpr(scope));
 				newlines();
 				break;
 			
@@ -201,15 +201,15 @@ struct Parser: Lexer
 			
 			case RPAR:
 				next();
-				switch (tuple->expressions.size())
+				switch (tuple->elements.size())
 				{
 				case 0:
 					return new ConstNode(&nil);
 				case 1:
 					{
-						ExpressionNode* expr = tuple->expressions[0];
-						tuple->expressions.clear();
-						return expr;
+						ExpressionNode* element = tuple->elements[0];
+						tuple->elements.clear();
+						return element;
 					}
 				default:
 					return tuple.release();
@@ -261,10 +261,13 @@ struct Parser: Lexer
 				auto_ptr<ScopePrototype> block(new ScopePrototype(heap, scope));
 				auto_ptr<ExpressionNode> body(statements(block.get()));
 				accept(RBRACE);
-				return new ApplyNode(new DefRefNode(block.release(), body.release()), new ConstNode(&nil));
+				return new ApplyNode(new DefRefNode(block.release(), body.release()), 0);
 			}
-		default:
+		case DOT:
+			next();
 			return new ConstNode(&nil);
+		default:
+			assert(false);
 		}
 	}
 	
@@ -308,10 +311,31 @@ struct Parser: Lexer
 
 int main(int argc, char** argv)
 {
+	if (argc != 2)
+		return 1;
+	
+	ifstream ifs(argv[1]);
+	if (!ifs.good())
+		return 2;
+	
+	cout << "Testing " << argv[1] << "\n\n";
+	
+	string source;
+	while (true)
+	{
+		char c = ifs.get();
+		if (ifs.eof() || !ifs.good())
+			break;
+		source += c;
+	}
+	ifs.close();
+	
+	cout << "* source:\n" << source << "\n";
+
 	Heap heap;
 	ScopePrototype* root = new ScopePrototype(&heap, 0);
 	
-	Parser parser("def f = 21 + 21\nf()", &heap);
+	Parser parser(source.c_str(), &heap);
 	Node* node = parser.parse(root);
 	node->generate(root);
 	delete node;
@@ -319,25 +343,27 @@ int main(int argc, char** argv)
 	Thread thread(&heap);
 	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
 	
+	int instCount = 0;
 	while (thread.frames.size() > 1 || thread.frames.front().nextInstr < root->body.size())
 	{
 		Thread::Frame& frame = thread.frames.back();
 		Code* code = frame.scope->def()->body[frame.nextInstr++];
 		code->execute(&thread);
-		code->dump(cout);
-		cout << ", frames: " << thread.frames.size();
-		cout << ", stack size: " << thread.frames.back().stack.size();
-		cout << ", locals: " << thread.frames.back().scope->locals.size();
-		cout << endl;
+		code->dump(cerr);
+		cerr << ", frames: " << thread.frames.size();
+		cerr << ", stack size: " << thread.frames.back().stack.size();
+		cerr << ", locals: " << thread.frames.back().scope->locals.size();
+		cerr << endl;
+		instCount++;
 	}
-	cout << "result: ";
+	cout << "\n\n* result:\n";
 	thread.frames.back().stack.back()->dump(cout);
 	cout << endl;
 	
 	thread.frames.pop_back();
 	
-	cout << "heap size: " << heap.values.size() << "\n";
-	cout << "garbage collecting\n";
+	cout << "\n* stats:\n";
+	cout << "heap size: " << heap.values.size() << "\tinst count: " << instCount << "\n";
 	heap.garbageCollect(&thread);
-	cout << "heap size: " << heap.values.size() << "\n";
+	//cerr << "heap size: " << heap.values.size() << "\n";
 }
