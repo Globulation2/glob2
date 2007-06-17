@@ -80,11 +80,11 @@ void ApplyCode::execute(Thread* thread)
 	// create a new scope
 	Scope* scope = new Scope(thread->heap, function->method, function->receiver);
 	
-	// put the argument in the scope
-	scope->locals.push_back(argument);
-	
 	// push a new frame
 	frames.push_back(scope);
+	
+	// put the argument on the stack
+	frames.back().stack.push_back(argument);
 }
 
 
@@ -150,6 +150,7 @@ NativeCode::Operation::Operation(Prototype* outer, const std::string& name, bool
 	ScopePrototype(0, outer),
 	name(name)
 {
+	body.push_back(new ValCode());
 	body.push_back(new ScopeCode());
 	body.push_back(new ParentCode());
 	body.push_back(new ValRefCode(0, 0));
@@ -181,7 +182,7 @@ void NativeCode::execute(Thread* thread)
 
 
 DefRefCode::DefRefCode(ScopePrototype* method):
-method(method)
+	method(method)
 {}
 
 void DefRefCode::execute(Thread* thread)

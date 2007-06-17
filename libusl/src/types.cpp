@@ -13,6 +13,7 @@ Function::FunctionPrototype::FunctionPrototype():
 {
 	ScopePrototype* applyMethod = new ScopePrototype(0, this);
 	ScopePrototype::Body& applyBody = applyMethod->body;
+	applyBody.push_back(new ValCode());
 	applyBody.push_back(new ScopeCode());
 	applyBody.push_back(new ParentCode());
 	applyBody.push_back(new ValRefCode(0, 0));
