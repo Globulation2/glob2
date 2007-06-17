@@ -1,6 +1,7 @@
 #include "tree.h"
 #include "code.h"
 #include <memory>
+#include <sstream>
 
 using namespace std;
 
@@ -52,8 +53,9 @@ ApplyNode::~ApplyNode()
 void ApplyNode::generate(ScopePrototype* scope)
 {
 	receiver->generate(scope);
-	argument->generate(scope);
-	scope->body.push_back(new ApplyCode());
+	if (argument)
+		argument->generate(scope);
+	scope->body.push_back(new ApplyCode(argument != 0));
 }
 
 
@@ -126,22 +128,22 @@ void ParentNode::generate(ScopePrototype* scope)
 }
 
 
-TupleNode::~TupleNode()
+ArrayNode::~ArrayNode()
 {
-	for (Expressions::iterator it = expressions.begin(); it != expressions.end(); ++it)
+	for (Elements::iterator it = elements.begin(); it != elements.end(); ++it)
 	{
 		delete *it;
 	}
 }
 
-void TupleNode::generate(ScopePrototype* scope)
+void ArrayNode::generate(ScopePrototype* scope)
 {
-	for (Expressions::const_iterator it = expressions.begin(); it != expressions.end(); ++it)
+	for (Elements::const_iterator it = elements.begin(); it != elements.end(); ++it)
 	{
-		Node* expression = *it;
-		expression->generate(scope);
+		Node* element = *it;
+		element->generate(scope);
 	}
-	scope->body.push_back(new TupleCode(expressions.size()));
+	scope->body.push_back(new ArrayCode(elements.size()));
 }
 
 
@@ -159,11 +161,50 @@ void DefLookupNode::generate(ScopePrototype* scope)
 			break;
 		
 		ScopePrototype* s = dynamic_cast<ScopePrototype*>(prototype);
-		assert(s != 0); // TODO: throw a method not found exception
+		assert(s != 0);
 		receiver.reset(new ParentNode(receiver.release()));
 		prototype = s->outer;
+		assert(prototype != 0); // TODO: throw a method not found exception
 	}
 	
 	receiver->generate(scope);
 	scope->body.push_back(new DefRefCode(method));
+}
+
+
+void NilPatternNode::generate(ScopePrototype* scope)
+{
+	// TODO
+	scope->body.push_back(new PopCode());
+}
+
+
+void ValPatternNode::generate(ScopePrototype* scope)
+{
+	scope->body.push_back(new ApplyCode(false));
+	scope->body.push_back(new ValCode());
+}
+
+
+TuplePatternNode::~TuplePatternNode()
+{
+	for (Members::iterator it = members.begin(); it != members.end(); ++it)
+	{
+		delete *it;
+	}
+}
+
+void TuplePatternNode::generate(ScopePrototype* scope)
+{
+	scope->body.push_back(new ApplyCode(false));
+	int index = 0;
+	for (Members::iterator it = members.begin(); it != members.end(); ++it)
+	{
+		scope->body.push_back(new SelectCode("get", false));
+		scope->body.push_back(new ConstCode(new Integer(0, index))); // TODO: heap-alloc
+		scope->body.push_back(new SelectCode("this"));
+		scope->body.push_back(new ApplyCode());
+		(*it)->generate(scope);
+		++index;
+	}
 }
