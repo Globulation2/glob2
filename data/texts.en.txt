@@ -414,6 +414,8 @@ Join a game
 Join
 [keyboard settings]
 Keyboard Settings
+[kick]
+Kick
 [kkey]
 K-key
 [lan]

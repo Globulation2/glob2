@@ -206,6 +206,7 @@
 [join a game]
 [join]
 [keyboard settings]
+[kick]
 [kkey]
 [lan]
 [language-code]
