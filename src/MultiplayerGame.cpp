@@ -146,6 +146,9 @@ void MultiplayerGame::updateGameHeader()
 {
 	shared_ptr<NetSendGameHeader> message(new NetSendGameHeader(gameHeader));
 	client->sendNetMessage(message);
+	
+	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+	listener->handleMultiplayerGameEvent(event);
 }
 
 
@@ -226,7 +229,7 @@ void MultiplayerGame::kickPlayer(int playerNum)
 	BasePlayer& bp = gameHeader.getBasePlayer(playerNum);
 	if(bp.type==BasePlayer::P_AI)
 	{
-		bp = BasePlayer();
+		bp.type = BasePlayer::P_NONE;
 	}
 	else if(bp.type==BasePlayer::P_IP)
 	{
@@ -269,6 +272,13 @@ YOGKickReason MultiplayerGame::getKickReason() const
 void MultiplayerGame::setEventListener(MultiplayerGameEventListener* alistener)
 {
 	listener = alistener;
+}
+
+
+
+int MultiplayerGame::getLocalPlayerNumber()
+{
+	return getLocalPlayer();
 }
 
 
