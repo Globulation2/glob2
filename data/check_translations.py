@@ -70,15 +70,23 @@ def main():
     for line in keyf:
         line=line.replace("\n", "")
         keys.append(line)
+    keyf.close()
+    nkeys = [(s.lower(), s) for s in keys]
+    nkeys.sort()
+    keyf = open("texts.keys.txt", "w")
+    for key in nkeys:
+        keyf.write(key[1] + "\n")
+    keyf.close()
+    
 
     for line in translations:
         line=line.replace("\n", "")
         if line!="data/texts.keys.txt":
-            data = translation_check(line.replace("data/",""), keys)
+            data = [(s[0].lower(), s[0], s[1]) for s in translation_check(line.replace("data/",""), keys)]
             data.sort()
             f = open(line.replace("data/",""), "w")
             for d in data:
-                f.writeline(d[0]+"\n")
-                f.writeline(d[1]+"\n")
+                f.write(d[1]+"\n")
+                f.write(d[2]+"\n")
 
 main()
