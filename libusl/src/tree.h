@@ -1,25 +1,41 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include "position.h"
 #include "types.h"
 
 struct Code;
 
 struct Node
 {
+	Position position;
+	
+	Node(const Position& position):
+		position(position)
+	{}
+	
 	virtual ~Node() {}
 	virtual void generate(ScopePrototype* scope) = 0;
 };
 
 struct ExpressionNode: Node
-{};
+{
+	ExpressionNode(const Position& position):
+		Node(position)
+	{}
+};
 
 struct FunctionNode: ExpressionNode
-{};
+{
+	FunctionNode(const Position& position):
+		ExpressionNode(position)
+	{}
+};
 
 struct DefRefNode: FunctionNode
 {
-	DefRefNode(ScopePrototype* scope, ExpressionNode* value):
+	DefRefNode(const Position& position, ScopePrototype* scope, ExpressionNode* value):
+		FunctionNode(position),
 		scope(scope),
 		value(value)
 	{}
@@ -33,7 +49,8 @@ struct DefRefNode: FunctionNode
 
 struct ConstNode: ExpressionNode
 {
-	ConstNode(Value* value):
+	ConstNode(const Position& position, Value* value):
+		ExpressionNode(position),
 		value(value)
 	{}
 	
@@ -44,7 +61,8 @@ struct ConstNode: ExpressionNode
 
 struct ValRefNode: ExpressionNode
 {
-	ValRefNode(size_t depth, size_t index):
+	ValRefNode(const Position& position, size_t depth, size_t index):
+		ExpressionNode(position),
 		depth(depth),
 		index(index)
 	{}
@@ -57,7 +75,8 @@ struct ValRefNode: ExpressionNode
 
 struct SelectNode: FunctionNode
 {
-	SelectNode(ExpressionNode* receiver, const std::string& name):
+	SelectNode(const Position& position, ExpressionNode* receiver, const std::string& name):
+		FunctionNode(position),
 		receiver(receiver),
 		name(name)
 	{}
@@ -71,7 +90,8 @@ struct SelectNode: FunctionNode
 
 struct ApplyNode: ExpressionNode
 {
-	ApplyNode(FunctionNode* receiver, ExpressionNode* argument):
+	ApplyNode(const Position& position, FunctionNode* receiver, ExpressionNode* argument):
+		ExpressionNode(position),
 		receiver(receiver),
 		argument(argument)
 	{}
@@ -85,7 +105,8 @@ struct ApplyNode: ExpressionNode
 
 struct ValNode: Node
 {
-	ValNode(ExpressionNode* value):
+	ValNode(const Position& position, ExpressionNode* value):
+		Node(position),
 		value(value)
 	{}
 	
@@ -97,12 +118,17 @@ struct ValNode: Node
 
 struct ScopeNode: ExpressionNode
 {
+	ScopeNode(const Position& position):
+		ExpressionNode(position)
+	{}
+	
 	virtual void generate(ScopePrototype* scope);
 };
 
 struct ParentNode: ScopeNode
 {
-	ParentNode(ScopeNode* scope):
+	ParentNode(const Position& position, ScopeNode* scope):
+		ScopeNode(position),
 		scope(scope)
 	{}
 	
@@ -116,6 +142,10 @@ struct BlockNode: ExpressionNode
 {
 	typedef std::vector<Node*> Statements;
 	
+	BlockNode(const Position& position):
+		ExpressionNode(position)
+	{}
+	
 	virtual ~BlockNode();
 	virtual void generate(ScopePrototype* scope);
 	
@@ -125,7 +155,8 @@ struct BlockNode: ExpressionNode
 
 struct DefNode: Node
 {
-	DefNode(ScopePrototype* scope, ExpressionNode* body):
+	DefNode(const Position& position, ScopePrototype* scope, ExpressionNode* body):
+		Node(position),
 		scope(scope),
 		body(body)
 	{}
@@ -141,6 +172,10 @@ struct ArrayNode: ExpressionNode
 {
 	typedef std::vector<ExpressionNode*> Elements;
 	
+	ArrayNode(const Position& position):
+		ExpressionNode(position)
+	{}
+	
 	virtual ~ArrayNode();
 	virtual void generate(ScopePrototype* scope);
 	
@@ -149,7 +184,8 @@ struct ArrayNode: ExpressionNode
 
 struct DefLookupNode: ExpressionNode
 {
-	DefLookupNode(const std::string& name):
+	DefLookupNode(const Position& position, const std::string& name):
+		ExpressionNode(position),
 		name(name)
 	{}
 	
@@ -160,16 +196,24 @@ struct DefLookupNode: ExpressionNode
 
 struct PatternNode: Node
 {
+	PatternNode(const Position& position):
+		Node(position)
+	{}
 };
 
 struct NilPatternNode: PatternNode
 {
+	NilPatternNode(const Position& position):
+		PatternNode(position)
+	{}
+	
 	virtual void generate(ScopePrototype* scope);
 };
 
 struct ValPatternNode: PatternNode
 {
-	ValPatternNode(const std::string& name):
+	ValPatternNode(const Position& position, const std::string& name):
+		PatternNode(position),
 		name(name)
 	{}
 	
@@ -181,6 +225,10 @@ struct ValPatternNode: PatternNode
 struct TuplePatternNode: PatternNode
 {
 	typedef std::vector<PatternNode*> Members;
+	
+	TuplePatternNode(const Position& position):
+		PatternNode(position)
+	{}
 	
 	virtual ~TuplePatternNode();
 	virtual void generate(ScopePrototype* scope);
