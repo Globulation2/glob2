@@ -220,8 +220,9 @@ namespace GAGCore
 		}
 	}
 	
-	const char *StringTable::getString(const char *stringname, int index) const
+	const char *StringTable::getString(const char *stringname) const
 	{
+		int index=-1;
 		if ((actLang < languageCount) && (actLang >= 0))
 		{
 			std::string key(stringname);

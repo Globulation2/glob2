@@ -458,7 +458,7 @@ void UnitInfoTitle::draw()
 	// draw "unit of player" title
 	Uint8 r, g, b;
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Unit type]", u->typeNum);
+	title += getUnitName(u->typeNum);
 	title += " (";
 
 	std::string textT=u->owner->getFirstPlayerName();
@@ -668,7 +668,8 @@ void BuildingInfoTitle::draw()
 
 	// draw "building" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
+	std::string key = "[" + buildingType->type + "]";
+	title += Toolkit::getStringTable()->getString(key.c_str());
 	{
 		title += " (";
 		std::string textT=selBuild->owner->getFirstPlayerName();

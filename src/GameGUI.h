@@ -153,7 +153,7 @@ private:
 	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
-	void drawTextCenter(int x, int y, const char *caption, int i=-1);
+	void drawTextCenter(int x, int y, const char *caption);
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
 	void drawCheckButton(int x, int y, const char* caption, bool isSet);

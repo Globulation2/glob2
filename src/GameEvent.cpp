@@ -23,6 +23,8 @@
 #include "Toolkit.h"
 #include "StringTable.h"
 #include "FormatableString.h"
+#include "UnitConsts.h"
+#include "IntBuildingType.h"
 
 using namespace GAGCore;
 
@@ -74,7 +76,7 @@ std::string UnitUnderAttackEvent::formatMessage()
 {
 	std::string message;
 	message+=FormatableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]"))
-	                         .arg(Toolkit::getStringTable()->getString("[units type]", type));
+	                         .arg(getUnitName(type));
 	return message;
 }
 
@@ -170,7 +172,10 @@ BuildingUnderAttackEvent::BuildingUnderAttackEvent(Uint32 step, Sint16 x, Sint16
 std::string BuildingUnderAttackEvent::formatMessage()
 {
 	std::string message;
-	message += Toolkit::getStringTable()->getString("[the building is under attack]", type);
+	std::string key = "[the ";
+	key += IntBuildingType::typeFromShortNumber(type);
+	key += " is under attack]";
+	message += Toolkit::getStringTable()->getString(key.c_str());
 	return message;
 }
 
@@ -202,7 +207,10 @@ BuildingCompletedEvent::BuildingCompletedEvent(Uint32 step, Sint16 x, Sint16 y, 
 std::string BuildingCompletedEvent::formatMessage()
 {
 	std::string message;
-	message += Toolkit::getStringTable()->getString("[the building is finished]", type);
+	std::string key = "[the ";
+	key += IntBuildingType::typeFromShortNumber(type);
+	key += " is finished]";
+	message += Toolkit::getStringTable()->getString(key.c_str());
 	return message;
 }
 

@@ -1,4 +1,6 @@
 /*
+  Copyright (C) Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -17,29 +19,19 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Ressource.h"
-#include "StringTable.h"
 #include "Toolkit.h"
+#include "StringTable.h"
+
+#include "UnitConsts.h"
 
 using namespace GAGCore;
 
-std::string getRessourceName(int type)
+std::string getUnitName(int type)
 {
-	if(type == WOOD)
-		return Toolkit::getStringTable()->getString("[Wood]");
-	if(type == CORN)
-		return Toolkit::getStringTable()->getString("[Wheat]");
-	if(type == PAPYRUS)
-		return Toolkit::getStringTable()->getString("[Papyrus]");
-	if(type == STONE)
-		return Toolkit::getStringTable()->getString("[Stone]");
-	if(type == ALGA)
-		return Toolkit::getStringTable()->getString("[Alga]");
-	if(type == CHERRY)
-		return Toolkit::getStringTable()->getString("[Cherry]");
-	if(type == ORANGE)
-		return Toolkit::getStringTable()->getString("[Orange]");
-	if(type == PRUNE)
-		return Toolkit::getStringTable()->getString("[Prune]");
-	return "";
+	if(type == WORKER)
+		return Toolkit::getStringTable()->getString("[Worker]");
+	if(type == WARRIOR)
+		return Toolkit::getStringTable()->getString("[Warrior]");
+	if(type == EXPLORER)
+		return Toolkit::getStringTable()->getString("[Explorer]");
 }
