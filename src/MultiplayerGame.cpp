@@ -208,7 +208,7 @@ void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 		if(bp.type == BasePlayer::P_NONE)
 		{
 			FormatableString name("%0 %1");
-			name.arg(Toolkit::getStringTable()->getString("[AI]", type)).arg(x-1);
+			name.arg(AI::getAIText(type)).arg(x-1);
 			bp = BasePlayer(x, name, x, Player::playerTypeFromImplementitionID(type));
 			break;
 		}

@@ -184,7 +184,7 @@ void CustomGameScreen::updatePlayers()
 			{
 				AI::ImplementitionID iid=getAiImplementation(i);
 				FormatableString name("%0 %1");
-				name.arg(Toolkit::getStringTable()->getString("[AI]", iid)).arg(i-1);
+				name.arg(AI::getAIText(iid)).arg(i-1);
 				gameHeader.getBasePlayer(i) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 			}
 			count+=1;

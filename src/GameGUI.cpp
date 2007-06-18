@@ -2495,12 +2495,14 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 				{
 					int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-					int typeId = IntBuildingType::shortNumberFromType(type);
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
+					std::string key = "[" + type + "]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, key.c_str());
 					
 					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explanation]", typeId);
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explanation 2]", typeId);
+					key = "[" + type + " explanation]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, key.c_str());
+					key = "[" + type + " explanation 2]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, key.c_str());
 					globalContainer->littleFont->popStyle();
 					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
 					if (bt)
@@ -2534,7 +2536,7 @@ void GameGUI::drawUnitInfos(void)
 
 	// draw "unit" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Unit type]", selUnit->typeNum);
+	title += getUnitName(selUnit->typeNum);
 	title += " (";
 
 	std::string textT=selUnit->owner->getFirstPlayerName();
@@ -2711,7 +2713,7 @@ void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
 		int y = i>>1;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+(i&0x1)*64, 256+172-42+y*12,
 			font,
-			FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[ressources]", i)).arg(ressources[i]).c_str());
+			FormatableString("%0: %1").arg(getRessourceName(i)).arg(ressources[i]).c_str());
 	}
 }
 
@@ -2737,7 +2739,8 @@ void GameGUI::drawBuildingInfos(void)
 
 	// draw "building" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
+	std::string key ="[" + buildingType->type + "]";
+	title += Toolkit::getStringTable()->getString(key.c_str());
 	{
 		title += " (";
 		std::string textT=selBuild->owner->getFirstPlayerName();
@@ -2930,7 +2933,7 @@ void GameGUI::drawBuildingInfos(void)
 				if (i!=STONE)
 				{
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,
-						Toolkit::getStringTable()->getString("[ressources]", i));
+						getRessourceName(i));
 					int spriteId;
 					if (selBuild->clearingRessourcesLocal[i])
 						spriteId=20;
@@ -3072,7 +3075,7 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_TEXT_PARA;
 		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(getRessourceName(i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
 
 			int inId, outId;
 			if (selBuild->receiveRessourceMaskLocal & (1<<i))
@@ -3102,7 +3105,7 @@ void GameGUI::drawBuildingInfos(void)
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
 				drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", i));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, getUnitName(i));
 			}
 		}
 		
@@ -3116,7 +3119,7 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				if (buildingType->maxRessource[i])
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[ressources]", i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(getRessourceName(i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
 					j++;
 				}
 			}
@@ -3249,7 +3252,7 @@ void GameGUI::drawRessourceInfos(void)
 	if (r.type!=NO_RES_TYPE)
 	{
 		// Draw ressource name
-		const std::string &ressourceName = Toolkit::getStringTable()->getString("[ressources]", r.type);
+		const std::string &ressourceName = getRessourceName(r.type);
 		int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
 		int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
 		globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
@@ -4183,15 +4186,11 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
 }
 
-void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
+void GameGUI::drawTextCenter(int x, int y, const char *caption)
 {
 	const char *text;
 
-	if (i==-1)
-		text=Toolkit::getStringTable()->getString(caption);
-	else
-		text=Toolkit::getStringTable()->getString(caption, i);
-
+	text=Toolkit::getStringTable()->getString(caption);
 	int dec=(128-globalContainer->littleFont->getStringWidth(text))>>1;
 	globalContainer->gfx->drawString(x+dec, y, globalContainer->littleFont, text);
 }

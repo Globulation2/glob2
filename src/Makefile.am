@@ -190,6 +190,7 @@ TeamStat.h \
 TerrainType.h \
 Unit.cpp \
 Unit.h \
+UnitConsts.cpp \
 UnitConsts.h \
 UnitEditorScreen.cpp \
 UnitEditorScreen.h \

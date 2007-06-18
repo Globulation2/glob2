@@ -70,10 +70,7 @@ MapPreview::~MapPreview()
 
 const char *MapPreview::getMethode(void)
 {
-	if (randomGenerated)
-		return Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", lastRandomGenerationMethode);
-	else
-		return Toolkit::getStringTable()->getString("[handmade map]");
+	return Toolkit::getStringTable()->getString("[handmade map]");
 }
 
 void MapPreview::setMapThumbnail(const char *mapName)
