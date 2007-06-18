@@ -378,10 +378,16 @@ int main(int argc, char** argv)
 	while (thread.frames.size() > 1 || thread.frames.front().nextInstr < root->body.size())
 	{
 		Thread::Frame& frame = thread.frames.back();
-		Code* code = frame.scope->def()->body[frame.nextInstr++];
-		code->execute(&thread);
+		ScopePrototype* scope = frame.scope->def();
+		
+		FilePosition position = debug.find(scope, frame.nextInstr);
+		cerr << position.file << ":" << position.position.line << ":" << position.position.column << ": ";
+		
+		Code* code = scope->body[frame.nextInstr++];
 		code->dump(cerr);
-		cerr << ", frames: " << thread.frames.size();
+		code->execute(&thread);
+		
+		cerr << " => frames: " << thread.frames.size();
 		cerr << ", stack size: " << thread.frames.back().stack.size();
 		cerr << ", locals: " << thread.frames.back().scope->locals.size();
 		cerr << endl;
