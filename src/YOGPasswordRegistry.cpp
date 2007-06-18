@@ -62,7 +62,7 @@ void YOGPasswordRegistry::flushPasswords()
 	for(std::map<std::string, std::string>::iterator i = passwords.begin(); i!=passwords.end(); ++i)
 	{
 		stream->writeText(i->second, "password");
-		stream->writeText(i->second, "username");
+		stream->writeText(i->first, "username");
 	}
 	delete stream;
 }
