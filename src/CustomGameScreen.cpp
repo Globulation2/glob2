@@ -55,7 +55,7 @@ CustomGameScreen::CustomGameScreen() :
 			
 			aiSelector[i]=new MultiTextButton(300, 60+i*25, 100, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI]"), 300+i);
 			for (int aii=0; aii<AI::SIZE; aii++)
-				aiSelector[i]->addText(Toolkit::getStringTable()->getString("[AI]", aii));
+				aiSelector[i]->addText(AI::getAIText(aii));
 			addWidget(aiSelector[i]);
 			aiSelector[i]->hide();
 			aiSelector[i]->setIndex(AI::NUMBI);
