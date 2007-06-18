@@ -71,6 +71,8 @@ private:
 	SDLNet_SocketSet set;
 	bool connected;
 	std::queue<shared_ptr<NetMessage> > recieved;
+	int count;
+	int lastTime;
 };
 
 
