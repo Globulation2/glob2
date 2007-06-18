@@ -66,7 +66,6 @@ void SelectCode::execute(Thread* thread)
 	// get method
 	ScopePrototype* method = receiver->prototype->lookup(name);
 	
-	std::cerr << typeid(*receiver).name() << std::endl;
 	assert(method != 0);
 	
 	// create a function
