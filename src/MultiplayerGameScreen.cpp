@@ -81,7 +81,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		addWidget(color[i]);
 		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
-		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[close]"), CLOSE_BUTTONS+i);
+		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[kick]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 
 		wasSlotUsed[i]=false;
