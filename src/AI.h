@@ -71,6 +71,8 @@ public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
+	static std::string getAIText(int id);
+	
 	boost::shared_ptr<Order> getOrder(bool paused);
 	
 	Uint32 step;

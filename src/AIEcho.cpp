@@ -4815,7 +4815,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	update_building_orders();
 	timer++;
 	from_load_timer++;
-	return boost::shared_ptr<Order>();
+	return boost::shared_ptr<Order>(new NullOrder());
 }
 
 
