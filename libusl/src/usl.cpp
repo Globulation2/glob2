@@ -1,3 +1,4 @@
+#include "debug.h"
 #include "lexer.h"
 #include "tree.h"
 #include "code.h"
@@ -341,7 +342,9 @@ int main(int argc, char** argv)
 	if (argc != 2)
 		return 1;
 	
-	ifstream ifs(argv[1]);
+	string file = argv[1];
+	
+	ifstream ifs(file.c_str());
 	if (!ifs.good())
 		return 2;
 	
@@ -361,10 +364,11 @@ int main(int argc, char** argv)
 
 	Heap heap;
 	ScopePrototype* root = new ScopePrototype(&heap, 0);
+	ProgramDebugInfo debug;
 	
 	Parser parser(source.c_str(), &heap);
 	Node* node = parser.parse(root);
-	node->generate(root);
+	node->generate(root, debug.get(file));
 	delete node;
 	
 	Thread thread(&heap);

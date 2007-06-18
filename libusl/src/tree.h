@@ -2,8 +2,11 @@
 #define TREE_H
 
 #include "position.h"
-#include "types.h"
 
+#include <vector>
+
+struct ScopePrototype;
+struct FileDebugInfo;
 struct Code;
 
 struct Node
@@ -15,7 +18,8 @@ struct Node
 	{}
 	
 	virtual ~Node() {}
-	virtual void generate(ScopePrototype* scope) = 0;
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug) = 0;
+	void generate(ScopePrototype* scope, FileDebugInfo* debug, Code* code);
 };
 
 struct ExpressionNode: Node
@@ -41,12 +45,13 @@ struct DefRefNode: FunctionNode
 	{}
 	
 	virtual ~DefRefNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	ScopePrototype* scope;
 	ExpressionNode* value;
 };
 
+struct Value;
 struct ConstNode: ExpressionNode
 {
 	ConstNode(const Position& position, Value* value):
@@ -54,7 +59,7 @@ struct ConstNode: ExpressionNode
 		value(value)
 	{}
 	
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	Value* value;
 };
@@ -67,7 +72,7 @@ struct ValRefNode: ExpressionNode
 		index(index)
 	{}
 	
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	size_t depth;
 	size_t index;
@@ -82,7 +87,7 @@ struct SelectNode: FunctionNode
 	{}
 	
 	virtual ~SelectNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	ExpressionNode* receiver;
 	const std::string name;
@@ -97,7 +102,7 @@ struct ApplyNode: ExpressionNode
 	{}
 	
 	virtual ~ApplyNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	FunctionNode* receiver;
 	ExpressionNode* argument;
@@ -111,7 +116,7 @@ struct ValNode: Node
 	{}
 	
 	virtual ~ValNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	ExpressionNode* value;
 };
@@ -122,7 +127,7 @@ struct ScopeNode: ExpressionNode
 		ExpressionNode(position)
 	{}
 	
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 };
 
 struct ParentNode: ScopeNode
@@ -133,7 +138,7 @@ struct ParentNode: ScopeNode
 	{}
 	
 	virtual ~ParentNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	ScopeNode* scope;
 };
@@ -147,7 +152,7 @@ struct BlockNode: ExpressionNode
 	{}
 	
 	virtual ~BlockNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	Statements statements;
 	ExpressionNode* value;
@@ -162,7 +167,7 @@ struct DefNode: Node
 	{}
 	
 	virtual ~DefNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	ScopePrototype* scope;
 	ExpressionNode* body;
@@ -177,7 +182,7 @@ struct ArrayNode: ExpressionNode
 	{}
 	
 	virtual ~ArrayNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	Elements elements;
 };
@@ -189,7 +194,7 @@ struct DefLookupNode: ExpressionNode
 		name(name)
 	{}
 	
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	std::string name;
 };
@@ -207,7 +212,7 @@ struct NilPatternNode: PatternNode
 		PatternNode(position)
 	{}
 	
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 };
 
 struct ValPatternNode: PatternNode
@@ -217,7 +222,7 @@ struct ValPatternNode: PatternNode
 		name(name)
 	{}
 	
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	std::string name;
 };
@@ -231,7 +236,7 @@ struct TuplePatternNode: PatternNode
 	{}
 	
 	virtual ~TuplePatternNode();
-	virtual void generate(ScopePrototype* scope);
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	
 	Members members;
 };

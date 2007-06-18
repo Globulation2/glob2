@@ -11,6 +11,8 @@ struct Position
 	Position() {}
 	Position(size_t line, size_t column): line(line), column(column) {}
 	
+	bool operator<(const Position& that) const;
+	
 	void operator+=(char c);
 	void move(const char *text, size_t length);
 };
