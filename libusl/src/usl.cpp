@@ -27,13 +27,13 @@ struct Parser: Lexer
 	
 	BlockNode* parse(ScopePrototype* scope)
 	{
-		return statements(scope);
+		return statements(Position(), scope);
 	}
 	
-	BlockNode* statements(ScopePrototype* scope)
+	BlockNode* statements(const Position& position, ScopePrototype* scope)
 	{
 		newlines();
-		auto_ptr<BlockNode> block(new BlockNode());
+		auto_ptr<BlockNode> block(new BlockNode(position));
 		
 		scope->methods["this"] = thisMethod(scope);
 		
@@ -54,7 +54,7 @@ struct Parser: Lexer
 				}
 				if (block->value == 0)
 				{
-					block->value = new ConstNode(&nil);
+					block->value = new ConstNode(token.position, &nil);
 				}
 				return block.release();
 			}
@@ -69,30 +69,32 @@ struct Parser: Lexer
 		{
 		case VAL:
 			{
+				Position position = token.position;
 				next();
 				string name = identifier();
 				accept(ASSIGN);
 				newlines();
 				scope->locals.push_back(name);
-				return new ValNode(expression(scope));
+				return new ValNode(position, expression(scope));
 			}
 		case DEF:
 			{
+				Position position = token.position;
 				next();
 				string name = identifier();
 				auto_ptr<ScopePrototype> method(new ScopePrototype(heap, scope));
-				auto_ptr<BlockNode> body(new BlockNode());
+				auto_ptr<BlockNode> body(new BlockNode(token.position));
 				switch (tokenType())
 				{
 				case LPAR:
-					next();
-					body->statements.push_back(pattern(method.get()));
-					accept(RPAR);
-					accept(ASSIGN);
+					{
+						body->statements.push_back(pattern(method.get()));
+						accept(ASSIGN);
+					}
 					break;
 				case ASSIGN:
+					body->statements.push_back(new NilPatternNode(token.position));
 					next();
-					body->statements.push_back(new NilPatternNode());
 					break;
 				default:
 					assert(false);
@@ -100,7 +102,7 @@ struct Parser: Lexer
 				newlines();
 				scope->methods[name] = method.get();
 				body->value = expression(method.get());
-				return new DefNode(method.release(), body.release());
+				return new DefNode(position, method.release(), body.release());
 			}
 		default:
 			return expression(scope);
@@ -109,27 +111,33 @@ struct Parser: Lexer
 	
 	PatternNode* pattern(ScopePrototype* scope)
 	{
+		Position position = token.position;
+		next();
+		
 		PatternNode* first;
 		if (tokenType() == LPAR)
 		{
 			first = pattern(scope);
-			accept(RPAR);
 		}
 		else if (tokenType() == ID)
 		{
+			Position position = token.position;
 			string name = identifier();
 			scope->locals.push_back(name);
-			first = new ValPatternNode(name);
+			first = new ValPatternNode(position, name);
 		}
 		else
 		{
-			first = new NilPatternNode();
+			first = new NilPatternNode(token.position);
 		}
 		
 		if (tokenType() != COMMA)
+		{
+			accept(RPAR);
 			return first;
+		}
 		
-		auto_ptr<TuplePatternNode> tuple(new TuplePatternNode);
+		auto_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
 		tuple->members.push_back(first);
 		
 		do
@@ -137,12 +145,15 @@ struct Parser: Lexer
 			next();
 			
 			if (tokenType() == LPAR)
+			{
 				tuple->members.push_back(pattern(scope));
+			}
 			else
 			{
+				Position position = token.position;
 				string name = identifier();
 				scope->locals.push_back(name);
-				tuple->members.push_back(new ValPatternNode(name));
+				tuple->members.push_back(new ValPatternNode(position, name));
 			}
 		}
 		while (tokenType() == COMMA);
@@ -158,12 +169,18 @@ struct Parser: Lexer
 			switch (tokenType())
 			{
 			case ID:
-				node.reset(selectAndApply(node, identifier(), scope));
+				{
+					Position position = token.position;
+					node.reset(selectAndApply(position, node, identifier(), scope));
+				}
 				break;
 			case LPAR:
 			case LBRACE:
 			case DOT:
-				node.reset(selectAndApply(node, "apply", scope));
+				{
+					Position position = token.position;
+					node.reset(selectAndApply(position, node, "apply", scope));
+				}
 				break;
 			default:
 				return node.release();
@@ -171,16 +188,18 @@ struct Parser: Lexer
 		}
 	}
 	
-	ApplyNode* selectAndApply(auto_ptr<ExpressionNode> receiver, const string& method, ScopePrototype* scope)
+	ApplyNode* selectAndApply(const Position& position, auto_ptr<ExpressionNode> receiver, const string& method, ScopePrototype* scope)
 	{
 		FunctionNode* argument = lazyExpr(scope);
-		return new ApplyNode(new SelectNode(receiver.release(), method), argument);
+		return new ApplyNode(position, new SelectNode(position, receiver.release(), method), argument);
 	}
 	
-	ExpressionNode *expressions(ScopePrototype* scope)
+	ExpressionNode* expressions(ScopePrototype* scope)
 	{
+		Position position = token.position;
+		next();
 		newlines();
-		auto_ptr<ArrayNode> tuple(new ArrayNode());
+		auto_ptr<ArrayNode> tuple(new ArrayNode(position));
 		while (true)
 		{
 			switch (tokenType())
@@ -200,21 +219,23 @@ struct Parser: Lexer
 				break;
 			
 			case RPAR:
-				next();
-				switch (tuple->elements.size())
 				{
-				case 0:
-					return new ConstNode(&nil);
-				case 1:
+					Position position = token.position;
+					next();
+					switch (tuple->elements.size())
 					{
-						ExpressionNode* element = tuple->elements[0];
-						tuple->elements.clear();
-						return element;
+					case 0:
+						return new ConstNode(position, &nil);
+					case 1:
+						{
+							ExpressionNode* element = tuple->elements[0];
+							tuple->elements.clear();
+							return element;
+						}
+					default:
+						return tuple.release();
 					}
-				default:
-					return tuple.release();
 				}
-			
 			default:
 				assert(false);
 			}
@@ -227,6 +248,7 @@ struct Parser: Lexer
 		{
 		case ID:
 			{
+				Position position = token.position;
 				string name(identifier());
 				
 				size_t depth = 0;
@@ -235,37 +257,41 @@ struct Parser: Lexer
 					ScopePrototype::Locals& locals = scope->locals;
 					size_t index = find(locals.begin(), locals.end(), name) - locals.begin();
 					if (index < locals.size())
-						return new ValRefNode(depth, index);
+						return new ValRefNode(position, depth, index);
 					scope = dynamic_cast<ScopePrototype*>(scope->outer);
 					++depth;
 				}
 				while (scope != 0);
 				
-				return new DefLookupNode(name);
+				return new DefLookupNode(position, name);
 			}
 		case NUM:
 			{
+				Position position = token.position;
 				string str = token.string();
 				next();
 				int value = atoi(str.c_str());
-				return new ConstNode(new Integer(heap, value));
+				return new ConstNode(position, new Integer(heap, value));
 			}
 		case LPAR:
 			{
-				next();
 				return expressions(scope);
 			}
 		case LBRACE:
 			{
+				Position position = token.position;
 				next();
 				auto_ptr<ScopePrototype> block(new ScopePrototype(heap, scope));
-				auto_ptr<ExpressionNode> body(statements(block.get()));
+				auto_ptr<ExpressionNode> body(statements(position, block.get()));
 				accept(RBRACE);
-				return new ApplyNode(new DefRefNode(block.release(), body.release()), 0);
+				return new ApplyNode(position, new DefRefNode(position, block.release(), body.release()), 0);
 			}
 		case DOT:
-			next();
-			return new ConstNode(&nil);
+			{
+				Position position = token.position;
+				next();
+				return new ConstNode(position, &nil);
+			}
 		default:
 			assert(false);
 		}
@@ -273,9 +299,10 @@ struct Parser: Lexer
 	
 	FunctionNode* lazyExpr(ScopePrototype* scope)
 	{
+		Position position = token.position;
 		auto_ptr<ScopePrototype> lazy(new ScopePrototype(heap, scope));
 		ExpressionNode* expr = simple(lazy.get());
-		return new DefRefNode(lazy.release(), expr);
+		return new DefRefNode(position, lazy.release(), expr);
 	}
 	
 	void newlines()

@@ -149,7 +149,7 @@ void ArrayNode::generate(ScopePrototype* scope)
 
 void DefLookupNode::generate(ScopePrototype* scope)
 {
-	auto_ptr<ScopeNode> receiver(new ScopeNode());
+	auto_ptr<ScopeNode> receiver(new ScopeNode(position));
 	ScopePrototype* method;
 	
 	// TODO: this should be done in a compiler pass between parsing and code generation
@@ -162,7 +162,7 @@ void DefLookupNode::generate(ScopePrototype* scope)
 		
 		ScopePrototype* s = dynamic_cast<ScopePrototype*>(prototype);
 		assert(s != 0);
-		receiver.reset(new ParentNode(receiver.release()));
+		receiver.reset(new ParentNode(position, receiver.release()));
 		prototype = s->outer;
 		assert(prototype != 0); // TODO: throw a method not found exception
 	}

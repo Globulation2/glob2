@@ -1,27 +1,24 @@
 val true = {
-	def select (trueVal, falseVal) = trueVal ()
+	def select (trueVal, falseVal) = trueVal
 	this ()
 }
 
 val false = {
-	def select (trueVal, falseVal) = falseVal ()
+	def select (trueVal, falseVal) = falseVal
 	this ()
 }
 
 def iff(cond) = {
-	def apply (trueVal) = cond select (trueVal(), .)
+	def nil = .
+	def apply (def trueVal) = cond select (trueVal, nil) ()
 }
 
 def if(cond) = {
-	def apply (trueVal) = {
-		def else (falseVal) = cond select (trueVal, falseVal)
+	def apply (def trueVal) = {
+		def else (def falseVal) = cond select (trueVal, falseVal) ()
 		this ()
 	}
 	this ()
 }
 
-if (true) {
-	iff(true) { 1 }
-} else {
-	2
-}
+if (true) ( iff (false) 1 ) else 2
