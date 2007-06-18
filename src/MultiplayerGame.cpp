@@ -460,7 +460,7 @@ void MultiplayerGame::startEngine()
 void MultiplayerGame::setDefaultGameHeaderValues()
 {
 	gameHeader.setGameLatency(12);
-	gameHeader.setOrderRate(1);
+	gameHeader.setOrderRate(4);
 }
 
 

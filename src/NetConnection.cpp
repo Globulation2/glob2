@@ -29,8 +29,6 @@ NetConnection::NetConnection(const std::string& address, Uint16 port)
 	connected = false;
 	set=SDLNet_AllocSocketSet(1);
 	openConnection(address, port);
-	count = 0;
-	lastTime = 0;
 }
 
 
@@ -71,8 +69,6 @@ void NetConnection::openConnection(const std::string& connectaddress, Uint16 por
 		{
 			SDLNet_TCP_AddSocket(set, socket);
 			connected=true;
-			count = 0;
-			lastTime = SDL_GetTicks();
 		}
 	}
 }
@@ -193,15 +189,6 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 		Uint8* newData = new Uint8[length+2];
 		SDLNet_Write16(length, newData);
 		msb->read(newData+2, length);
-		
-		count += length + 2;
-		if(count >= 500)
-		{
-			float speed = (float)(count) / (float)(SDL_GetTicks() - lastTime);
-			std::cout<<"speed "<<speed*1000<<" bp/s"<<std::endl;
-			count = 0;
-			lastTime = SDL_GetTicks();
-		}
 
 		Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
 		if(result<(length+2))
