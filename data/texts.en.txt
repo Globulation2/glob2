@@ -290,6 +290,8 @@ No Growth Areas
 Ok
 [Cancel]
 Cancel
+[Leave Game]
+Leave Game
 [human]
 human
 [you have lost]

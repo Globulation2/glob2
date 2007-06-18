@@ -112,6 +112,10 @@ public:
 	
 	///Sets the event listener
 	void setEventListener(MultiplayerGameEventListener* listener);
+	
+	///Returns the player number of the local player
+	int getLocalPlayerNumber();
+	
 protected:
 	friend class YOGClient;
 	///This receives a message that is sent to the game

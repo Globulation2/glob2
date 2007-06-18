@@ -61,6 +61,7 @@ def translation_check(filename, keys):
         print "  File is clear!"
     print ""
     f.close()
+    return file_data
 
 def main():
     translations=open("texts.list.txt")
@@ -73,6 +74,11 @@ def main():
     for line in translations:
         line=line.replace("\n", "")
         if line!="data/texts.keys.txt":
-            translation_check(line.replace("data/",""), keys)
+            data = translation_check(line.replace("data/",""), keys)
+            data.sort()
+            f = open(line.replace("data/",""), "w")
+            for d in data:
+                f.writeline(d[0]+"\n")
+                f.writeline(d[1]+"\n")
 
 main()

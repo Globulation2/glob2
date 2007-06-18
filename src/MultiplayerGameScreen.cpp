@@ -42,13 +42,20 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
 	{
-		TextButton *button = new TextButton(20, 330-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[AI]", i), ADD_AI+i);
-		addWidget(button);
-		addAI.push_back(button);
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
+		{
+			TextButton *button = new TextButton(20, 330-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[AI]", i), ADD_AI+i);
+			addWidget(button);
+			addAI.push_back(button);
+		}
 	}
 	
 	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
-	addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+
+	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	else
+		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL));
 
 	startButton->visible=false;
 	addWidget(startButton);
@@ -69,6 +76,8 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, COLOR_BUTTONS+i);
 		for (int j=0; j<game->getMapHeader().getNumberOfTeams(); j++)
 			color[i]->addColor(game->getMapHeader().getBaseTeam(j).colorR, game->getMapHeader().getBaseTeam(j).colorG, game->getMapHeader().getBaseTeam(j).colorB);
+		if(!game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
+			color[i]->setClickable(false);
 		addWidget(color[i]);
 		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
@@ -122,6 +131,7 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 	{
 		endExecute(Cancelled);
 	}
+	
 
 	textMessage->update();
 }
@@ -207,7 +217,7 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 			text[i]->visible=true;
 			text[i]->setText(bp.name);
 			color[i]->visible=true;
-			if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+			if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame && bp.number != game->getLocalPlayerNumber())
 				kickButton[i]->visible=true;
 			else
 				kickButton[i]->visible=false;
