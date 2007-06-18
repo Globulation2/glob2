@@ -227,7 +227,7 @@ void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 void MultiplayerGame::kickPlayer(int playerNum)
 {
 	BasePlayer& bp = gameHeader.getBasePlayer(playerNum);
-	if(bp.type==BasePlayer::P_AI)
+	if(bp.type>=BasePlayer::P_AI)
 	{
 		bp.type = BasePlayer::P_NONE;
 	}
