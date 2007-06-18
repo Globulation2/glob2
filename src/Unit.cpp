@@ -859,7 +859,7 @@ void Unit::handleActivity(void)
 					// Unit conversion code
 					
 					// Send events and keep track of number of unit converted
-					boost::shared_ptr<GameEvent> event(new UnitLostConversionEvent(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
+					boost::shared_ptr<GameEvent> event(new UnitLostConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
 					currentTeam->pushGameEvent(event);
 					currentTeam->unitConversionLost++;
 					
