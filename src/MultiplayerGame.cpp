@@ -34,7 +34,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	for(int i=0; i<32; ++i)
 		readyToStart[i] = true;
 	listener = NULL;
-	sendReadyToStart=false;
+	wasReadyToStart=false;
 }
 
 
@@ -52,21 +52,31 @@ void MultiplayerGame::update()
 	client->update();
 	if(assembler)
 		assembler->update();
-	if(haveGameHeader && haveMapHeader && gjcState == JoinedGame)
+
+	if(isGameReadyToStart() && !wasReadyToStart)
 	{
-		bool sendReady = false;
-		if(assembler && assembler->isTransferComplete())
-			sendReady = true;
-		else if(!assembler)
-			sendReady = true;
-		if(sendReady && !sendReadyToStart)
+		shared_ptr<MGReadyToStartEvent> event(new MGReadyToStartEvent);
+		listener->handleMultiplayerGameEvent(event);
+		wasReadyToStart=true;
+		if(gjcState == JoinedGame)
 		{
 			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
 			client->sendNetMessage(message);
-			sendReadyToStart=true;
+		}
+	}
+	else if (!isGameReadyToStart() && wasReadyToStart)
+	{
+		shared_ptr<MGNotReadyToStartEvent> event(new MGNotReadyToStartEvent);
+		listener->handleMultiplayerGameEvent(event);
+		wasReadyToStart=false;
+		if(gjcState == JoinedGame)
+		{
+			shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
+			client->sendNetMessage(message);
 		}
 	}
 }
+
 
 
 
@@ -391,6 +401,20 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			if(bp.playerID == id)
 			{
 				readyToStart[x] = true;
+				break;
+			}
+		}
+	}
+	if(type==MNetNotReadyToLaunch)
+	{
+		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
+		Uint16 id = info->getPlayerID();
+		for(int x=0; x<32; ++x)
+		{
+			BasePlayer& bp = gameHeader.getBasePlayer(x);
+			if(bp.playerID == id)
+			{
+				readyToStart[x] = false;
 				break;
 			}
 		}

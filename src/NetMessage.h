@@ -68,6 +68,7 @@ enum NetMessageType
 	MNetKickPlayer,
 	MNetLeaveGame,
 	MNetReadyToLaunch,
+	MNetNotReadyToLaunch,
 	//type_append_marker
 };
 
@@ -1155,6 +1156,42 @@ public:
 
 	///Retrieves playerID
 	Uint16 getPlayerID() const;
+private:
+	Uint16 playerID;
+};
+
+
+
+
+///NetNotReadyToLaunch
+class NetNotReadyToLaunch : public NetMessage
+{
+public:
+	///Creates a NetNotReadyToLaunch message
+	NetNotReadyToLaunch();
+
+	///Creates a NetNotReadyToLaunch message
+	NetNotReadyToLaunch(Uint16 playerID);
+
+	///Returns MNetNotReadyToLaunch
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetNotReadyToLaunch message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetNotReadyToLaunch
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves playerID
+	Uint16 getPlayerID() const;
+private:
 private:
 	Uint16 playerID;
 };

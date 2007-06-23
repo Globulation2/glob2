@@ -26,6 +26,8 @@ enum MultiplayerGameEventType
 {
 	MGEGameStarted,
 	MGEPlayerListChanged,
+	MGEReadyToStart,
+	MGENotReadyToStart,
 	//type_append_marker
 };
 
@@ -58,6 +60,46 @@ public:
 	MGPlayerListChangedEvent();
 
 	///Returns MGEPlayerListChanged
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGReadyToStartEvent
+class MGReadyToStartEvent : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGReadyToStartEvent event
+	MGReadyToStartEvent();
+
+	///Returns MGEReadyToStart
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGNotReadyToStartEvent
+class MGNotReadyToStartEvent : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGNotReadyToStartEvent event
+	MGNotReadyToStartEvent();
+
+	///Returns MGENotReadyToStart
 	Uint8 getEventType() const;
 
 	///Returns a formatted version of the event

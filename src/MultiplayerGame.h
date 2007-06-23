@@ -145,7 +145,7 @@ private:
 	bool haveMapHeader;
 	bool haveGameHeader;
 	bool readyToStart[32];
-	bool sendReadyToStart;
+	bool wasReadyToStart;
 	MultiplayerGameEventListener* listener;
 };
 

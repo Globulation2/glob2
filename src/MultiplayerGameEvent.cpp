@@ -53,4 +53,70 @@ bool MGPlayerListChangedEvent::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGReadyToStartEvent::MGReadyToStartEvent()
+{
+}
+
+
+
+Uint8 MGReadyToStartEvent::getEventType() const
+{
+	return MGEReadyToStart;
+}
+
+
+
+std::string MGReadyToStartEvent::format() const
+{
+	std::ostringstream s;
+	s<<"MGReadyToStartEvent()";
+	return s.str();
+}
+
+
+
+bool MGReadyToStartEvent::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGReadyToStartEvent))
+	{
+		//const MGReadyToStartEvent& r = dynamic_cast<const MGReadyToStartEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+MGNotReadyToStartEvent::MGNotReadyToStartEvent()
+{
+}
+
+
+
+Uint8 MGNotReadyToStartEvent::getEventType() const
+{
+	return MGENotReadyToStart;
+}
+
+
+
+std::string MGNotReadyToStartEvent::format() const
+{
+	std::ostringstream s;
+	s<<"MGNotReadyToStartEvent()";
+	return s.str();
+}
+
+
+
+bool MGNotReadyToStartEvent::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGNotReadyToStartEvent))
+	{
+		//const MGNotReadyToStartEvent& r = dynamic_cast<const MGNotReadyToStartEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker
