@@ -77,7 +77,11 @@ struct Prototype: Value
 	
 	virtual ScopePrototype* lookup(const std::string& name) const
 	{
-		return methods.find(name)->second;
+		Methods::const_iterator method = methods.find(name);
+		if (method != methods.end())
+			return method->second;
+		else
+			return 0;
 	}
 };
 
@@ -148,6 +152,12 @@ struct Scope: Value
 
 struct Function: Value
 {
+	struct FunctionPrototype: Prototype
+	{
+		FunctionPrototype();
+	};
+	static FunctionPrototype functionPrototype;
+	
 	Value* receiver;
 	ScopePrototype* method;
 	
@@ -158,22 +168,41 @@ struct Function: Value
 	{
 		assert(method->outer == receiver->prototype);
 	}
-	
-	struct FunctionPrototype: Prototype
-	{
-		FunctionPrototype();
-	};
-	static FunctionPrototype functionPrototype;
 };
 
-struct Tuple: Value
+struct Integer: Value
 {
+	struct IntegerPrototype: Prototype
+	{
+		IntegerPrototype();
+	};
+	static IntegerPrototype integerPrototype;
+	
+	int value;
+	
+	Integer(Heap* heap, int value):
+		Value(heap, &integerPrototype),
+		value(value)
+	{}
+	
+	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
+};
+
+
+struct Array: Value
+{
+	struct ArrayPrototype: Prototype
+	{
+		ArrayPrototype();
+	};
+	static ArrayPrototype arrayPrototype;
+	
 	typedef std::vector<Value*> Values;
 	
 	Values values;
 	
-	Tuple(Heap* heap):
-		Value(heap, &tuplePrototype)
+	Array(Heap* heap):
+		Value(heap, &arrayPrototype)
 	{ }
 	
 	virtual void dumpSpecific(std::ostream& stream) const
@@ -186,12 +215,6 @@ struct Tuple: Value
 		using namespace std;
 		for_each(values.begin(), values.end(), mem_fun(&Value::markForGC));
 	}
-	
-	struct TuplePrototype: Prototype
-	{
-		TuplePrototype();
-	};
-	static TuplePrototype tuplePrototype;
 };
 
 #endif // ndef TYPES_H
