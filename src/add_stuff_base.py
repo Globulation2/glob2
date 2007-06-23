@@ -89,9 +89,9 @@ def assemble_initialize_variables(variables):
 def assemble_initialize_variable_defaults(variables):
 	initialize_variables=""
 	for v in variables:
-		scode+=" %s(%s)" % (v[1], v[4])
+		initialize_variables+=" %s(%s)" % (v[1], v[4])
 		if v!=variables[-1]:
-			scode+=","
+			initialize_variables+=","
 	return initialize_variables
 	
 def assemble_format_variables(variables):

@@ -113,25 +113,10 @@ MultiplayerGameScreen::~MultiplayerGameScreen()
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
 	game->update();
-	if(game->isGameReadyToStart())
-	{
-		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
-			startButton->visible=true;
-		else
-			startButton->visible=false;
-		notReadyText->visible=false;
-	}
-	else
-	{
-		startButton->visible=false;
-		notReadyText->visible=true;
-	}
-
 	if(game->getGameJoinCreationState() == MultiplayerGame::NothingYet)
 	{
 		endExecute(Cancelled);
 	}
-	
 
 	textMessage->update();
 }
@@ -193,6 +178,19 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	if(type == MGEPlayerListChanged)
 	{
 		updateJoinedPlayers();
+	}
+	else if(type == MGEReadyToStart)
+	{
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+			startButton->visible=true;
+		else
+			startButton->visible=false;
+		notReadyText->visible=false;
+	}
+	else if(type == MGENotReadyToStart)
+	{
+		startButton->visible=false;
+		notReadyText->visible=true;
 	}
 }
 

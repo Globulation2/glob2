@@ -124,6 +124,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetReadyToLaunch:
 		message.reset(new NetReadyToLaunch);
 		break;
+		case MNetNotReadyToLaunch:
+		message.reset(new NetNotReadyToLaunch);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -2286,6 +2289,75 @@ bool NetReadyToLaunch::operator==(const NetMessage& rhs) const
 
 
 Uint16 NetReadyToLaunch::getPlayerID() const
+{
+	return playerID;
+}
+
+
+
+
+NetNotReadyToLaunch::NetNotReadyToLaunch()
+	: playerID(0)
+{
+
+}
+
+
+
+NetNotReadyToLaunch::NetNotReadyToLaunch(Uint16 playerID)
+	:playerID(playerID)
+{
+}
+
+
+
+Uint8 NetNotReadyToLaunch::getMessageType() const
+{
+	return MNetNotReadyToLaunch;
+}
+
+
+
+void NetNotReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetNotReadyToLaunch");
+	stream->writeUint16(playerID, "playerID");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetNotReadyToLaunch::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetNotReadyToLaunch");
+	playerID = stream->readUint16("playerID");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetNotReadyToLaunch::format() const
+{
+	std::ostringstream s;
+	s<<"NetNotReadyToLaunch("<<"playerID="<<playerID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetNotReadyToLaunch::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetNotReadyToLaunch))
+	{
+		const NetNotReadyToLaunch& r = dynamic_cast<const NetNotReadyToLaunch&>(rhs);
+		if(r.playerID == playerID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetNotReadyToLaunch::getPlayerID() const
 {
 	return playerID;
 }

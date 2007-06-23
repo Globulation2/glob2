@@ -69,6 +69,9 @@ public:
 
 	///Sends that a player is ready to start
 	void sendReadyToStart(shared_ptr<NetReadyToLaunch> message);
+
+	///Sends that a player is not ready to start
+	void sendNotReadyToStart(shared_ptr<NetNotReadyToLaunch> message);
 	
 private:
 	bool requested;

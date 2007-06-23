@@ -144,7 +144,7 @@ void YOGPlayer::update()
 	{
 		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
 	}
-	//This recieves a file chunk
+	//This recieves a file information message
 	else if(type==MNetSendFileInformation)
 	{
 		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
@@ -154,11 +154,17 @@ void YOGPlayer::update()
 	{
 		game->removePlayer(server.getPlayer(playerID));
 	}
-	//This recieves a leave game message
+	//This recieves a ready to launch message
 	else if(type==MNetReadyToLaunch)
 	{
 		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
 		game->sendReadyToStart(info);
+	}
+	//This recieves a not ready to launch message
+	else if(type==MNetNotReadyToLaunch)
+	{
+		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
+		game->sendNotReadyToStart(info);
 	}
 	
 }

@@ -176,3 +176,10 @@ void YOGGame::sendReadyToStart(shared_ptr<NetReadyToLaunch> message)
 {
 	host->sendMessage(message);
 }
+
+
+
+void YOGGame::sendNotReadyToStart(shared_ptr<NetNotReadyToLaunch> message)
+{
+	host->sendMessage(message);
+}
