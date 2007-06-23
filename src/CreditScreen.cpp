@@ -41,27 +41,27 @@ using namespace GAGCore;
 // #include "GUIBase.h"
 // #include <string>
 
-	class ScrollingText:public RectangularWidget
-	{
-	protected:
-		std::string filename;
-		std::string font;
-		std::vector<std::string> text;
-		std::vector<int> xPos; // Pre-calculated postions for text centering
-		int offset;
-		int imgid, imgid0;
-	
-		// cache, recomputed on internalInit
-		GAGCore::Font *fontPtr;
-	
-	public:
-		ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *filename);
-		virtual ~ScrollingText() { }
-		virtual void internalInit(void);
-		virtual void paint(void);
-		virtual void onTimer(Uint32 tick);
-	};
-	
+class ScrollingText:public RectangularWidget
+{
+protected:
+	std::string filename;
+	std::string font;
+	std::vector<std::string> text;
+	std::vector<int> xPos; // Pre-calculated postions for text centering
+	int offset;
+	int imgid, imgid0;
+
+	// cache, recomputed on internalInit
+	GAGCore::Font *fontPtr;
+
+public:
+	ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *filename);
+	virtual ~ScrollingText() { }
+	virtual void internalInit(void);
+	virtual void paint(void);
+	virtual void onTimer(Uint32 tick);
+};
+
 // #endif
 
 ////////////////////////////////////////////////

@@ -12,6 +12,9 @@ class Prototype;
 class Operation;
 
 
+ScopePrototype* thisMethod(Prototype* outer);
+
+
 struct Code
 {
 	virtual ~Code() { }
@@ -40,16 +43,21 @@ struct ValRefCode: Code
 
 struct SelectCode: Code
 {
-	SelectCode(const std::string& name);
+	SelectCode(const std::string& name, bool pop = true);
 	
 	virtual void execute(Thread* thread);
 	
 	std::string name;
+	bool pop;
 };
 
 struct ApplyCode: Code
 {
+	ApplyCode(bool arg = true);
+	
 	virtual void execute(Thread* thread);
+	
+	bool arg;
 };
 
 struct ValCode: Code
@@ -77,9 +85,9 @@ struct ReturnCode: Code
 	virtual void execute(Thread* thread);
 };
 
-struct TupleCode: Code
+struct ArrayCode: Code
 {
-	TupleCode(size_t size);
+	ArrayCode(size_t size);
 	
 	virtual void execute(Thread* thread);
 	

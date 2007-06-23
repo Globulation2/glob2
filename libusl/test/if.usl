@@ -1,0 +1,34 @@
+val true = {
+	def select (trueVal, falseVal) = trueVal
+	def not = false
+	def and (that) = that
+	def or (that) = this ()
+	def xor (that) = that select (false, true)
+	this ()
+}
+
+val false = {
+	def select (trueVal, falseVal) = falseVal
+	def not = true
+	def and (that) = this ()
+	def or (that) = that
+	def xor (that) = that select (true, false)
+	this ()
+}
+
+def getFalse = false
+
+def iff(cond) = {
+	def nil = .
+	def apply (def trueVal) = cond select (trueVal, nil) ()
+}
+
+def if(cond) = {
+	def apply (def trueVal) = {
+		def else (def falseVal) = cond select (trueVal, falseVal) ()
+		this ()
+	}
+	this ()
+}
+
+if (true) ( iff (false) 1 ) else 2

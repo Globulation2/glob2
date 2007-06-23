@@ -1,4 +1,5 @@
 #include "tokenizer.h"
+#include <cassert>
 
 Tokenizer::Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize, const char* text):
 	tokenTypes(tokenTypes),
@@ -21,6 +22,8 @@ const Token Tokenizer::next()
 			length = newLength;
 		}
 	}
+	if (length == -1)
+		assert(false);
 	Token token(position, type, text, length);
 	position.move(text, length);
 	text += length;
