@@ -24,6 +24,7 @@
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
+#include <list>
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
@@ -110,8 +111,11 @@ public:
 	///Returns the reason for being kicked
 	YOGKickReason getKickReason() const;
 	
-	///Sets the event listener
-	void setEventListener(MultiplayerGameEventListener* listener);
+	///Adds an event listener
+	void addEventListener(MultiplayerGameEventListener* listener);
+	
+	///Removes an event listener
+	void removeEventListener(MultiplayerGameEventListener* listener);
 	
 	///Returns the player number of the local player
 	int getLocalPlayerNumber();
@@ -131,6 +135,9 @@ protected:
 	///Sets the default values for latency and order frame rate in the game header for a YOG game
 	void setDefaultGameHeaderValues();
 	
+	///Sends the event to all listeners
+	void sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event);
+	
 	int getLocalPlayer();
 private:
 	boost::shared_ptr<YOGClient> client;
@@ -146,7 +153,7 @@ private:
 	bool haveGameHeader;
 	bool readyToStart[32];
 	bool wasReadyToStart;
-	MultiplayerGameEventListener* listener;
+	std::list<MultiplayerGameEventListener*> listeners;
 };
 
 
