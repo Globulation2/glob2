@@ -101,13 +101,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	updateJoinedPlayers();
 	
 	textMessage->addTextMessageListener(this);
-	game->setEventListener(this);
+	game->addEventListener(this);
 }
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
 {
 	textMessage->removeTextMessageListener(this);
-	game->setEventListener(NULL);
+	game->removeEventListener(this);
 }
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)

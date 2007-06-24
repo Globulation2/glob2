@@ -33,7 +33,6 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	haveGameHeader = false;
 	for(int i=0; i<32; ++i)
 		readyToStart[i] = true;
-	listener = NULL;
 	wasReadyToStart=false;
 }
 
@@ -56,7 +55,7 @@ void MultiplayerGame::update()
 	if(isGameReadyToStart() && !wasReadyToStart)
 	{
 		shared_ptr<MGReadyToStartEvent> event(new MGReadyToStartEvent);
-		listener->handleMultiplayerGameEvent(event);
+		sendToListeners(event);
 		wasReadyToStart=true;
 		if(gjcState == JoinedGame)
 		{
@@ -67,7 +66,7 @@ void MultiplayerGame::update()
 	else if (!isGameReadyToStart() && wasReadyToStart)
 	{
 		shared_ptr<MGNotReadyToStartEvent> event(new MGNotReadyToStartEvent);
-		listener->handleMultiplayerGameEvent(event);
+		sendToListeners(event);
 		wasReadyToStart=false;
 		if(gjcState == JoinedGame)
 		{
@@ -158,7 +157,7 @@ void MultiplayerGame::updateGameHeader()
 	client->sendNetMessage(message);
 	
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-	listener->handleMultiplayerGameEvent(event);
+	sendToListeners(event);
 }
 
 
@@ -224,11 +223,10 @@ void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
-	if(listener)
-	{
-		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-		listener->handleMultiplayerGameEvent(event);
-	}
+	
+	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+	sendToListeners(event);
+	
 	updateGameHeader();
 }
 
@@ -279,9 +277,16 @@ YOGKickReason MultiplayerGame::getKickReason() const
 
 
 
-void MultiplayerGame::setEventListener(MultiplayerGameEventListener* alistener)
+void MultiplayerGame::addEventListener(MultiplayerGameEventListener* alistener)
 {
-	listener = alistener;
+	listeners.push_back(alistener);
+}
+
+
+
+void MultiplayerGame::removeEventListener(MultiplayerGameEventListener* alistener)
+{
+	listeners.remove(alistener);
 }
 
 
@@ -326,11 +331,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
 		mapHeader = info->getMapHeader();
 
-		if(listener)
-		{
-			shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-			listener->handleMultiplayerGameEvent(event);
-		}
+
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
 
 		Engine engine;
 		if(!engine.haveMap(mapHeader))
@@ -348,11 +351,8 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
 		gameHeader = info->getGameHeader();
 		
-		if(listener)
-		{
-			shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-			listener->handleMultiplayerGameEvent(event);
-		}
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
 		
 		haveGameHeader = true;
 	}
@@ -438,11 +438,8 @@ void MultiplayerGame::addPerson(Uint16 playerID)
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
-	if(listener)
-	{
-		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-		listener->handleMultiplayerGameEvent(event);
-	}
+	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+	sendToListeners(event);
 	updateGameHeader();
 }
 
@@ -461,11 +458,8 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()-1);
-	if(listener)
-	{
-		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-		listener->handleMultiplayerGameEvent(event);
-	}
+	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+	sendToListeners(event);
 	updateGameHeader();
 }
 
@@ -495,6 +489,16 @@ void MultiplayerGame::setDefaultGameHeaderValues()
 {
 	gameHeader.setGameLatency(12);
 	gameHeader.setOrderRate(4);
+}
+
+
+
+void MultiplayerGame::sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event)
+{
+	for(std::list<MultiplayerGameEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	{
+		(*i)->handleMultiplayerGameEvent(event);
+	}
 }
 
 
