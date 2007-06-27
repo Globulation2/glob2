@@ -707,9 +707,9 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_PLAYER_QUIT_GAME:
 		{
-			//PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
-			//netGame have to handle this
-			// players[pqgo->player]->type=Player::P_LOST_B;
+			boost::shared_ptr<PlayerQuitsGameOrder> pqgo=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
+			players[pqgo->player]->makeItAI(AI::NONE);
+			gameHeader.getBasePlayer(pqgo->player).makeItAI(AI::NONE);
 			fprintf(logFile, "ORDER_PLAYER_QUIT_GAME");
 		}
 		break;
@@ -2824,19 +2824,6 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 			if ((fy>=stepStart) && (fy<stepStart+stepLength))
 				minimap->drawPixel(fx+decX, fy+decY, r, g, b);
 		}*/
-}
-
-
-
-void Game::handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event)
-{
-	Uint8 type = event->getEventType();
-	if(type == MGEPlayerLost)
-	{
-		boost::shared_ptr<MGPlayerLostEvent> info = boost::static_pointer_cast<MGPlayerLostEvent>(event);
-		players[info->getPlayerNum()]->makeItAI(AI::NONE);
-		gameHeader.getBasePlayer(info->getPlayerNum()).makeItAI(AI::NONE);
-	}
 }
 
 

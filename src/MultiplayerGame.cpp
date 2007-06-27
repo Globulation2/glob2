@@ -452,8 +452,9 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 		{
 			readyToStart[x] = true;
 			bp = BasePlayer();
-			shared_ptr<MGPlayerLostEvent> event(new MGPlayerLostEvent(x));
-			sendToListeners(event);
+			//Inform the game engine a player was lost
+			if(netEngine)
+				netEngine->pushOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(x)), x);
 			break;
 		}
 	}
