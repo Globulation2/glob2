@@ -157,8 +157,6 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader());
 	multiplayer->setNetEngine(net);
 
-	multiplayer->addEventListener(&gui.game);
-
 	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
 	{
 		if (multiplayerGame->getGameHeader().getBasePlayer(p).type==BasePlayer::P_IP)
@@ -362,10 +360,6 @@ int Engine::run(void)
 
 		delete net;
 		net=NULL;
-		
-		
-		if(multiplayer)
-			multiplayer->removeEventListener(&gui.game);
 		
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"

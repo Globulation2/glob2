@@ -119,46 +119,4 @@ bool MGNotReadyToStartEvent::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
-MGPlayerLostEvent::MGPlayerLostEvent(Uint8 playerNum)
-	: playerNum(playerNum)
-{
-}
-
-
-
-Uint8 MGPlayerLostEvent::getEventType() const
-{
-	return MGEPlayerLost;
-}
-
-
-
-std::string MGPlayerLostEvent::format() const
-{
-	std::ostringstream s;
-	s<<"MGPlayerLostEvent("<<"playerNum="<<playerNum<<"; "<<")";
-	return s.str();
-}
-
-
-
-bool MGPlayerLostEvent::operator==(const MultiplayerGameEvent& rhs) const
-{
-	if(typeid(rhs)==typeid(MGPlayerLostEvent))
-	{
-		const MGPlayerLostEvent& r = dynamic_cast<const MGPlayerLostEvent&>(rhs);
-		if(r.playerNum == playerNum)
-			return true;
-	}
-	return false;
-}
-
-
-Uint8 MGPlayerLostEvent::getPlayerNum() const
-{
-	return playerNum;
-}
-
-
-
 //code_append_marker
