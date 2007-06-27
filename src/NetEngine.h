@@ -57,6 +57,10 @@ public:
 	///orders for the first few frames
 	void prepareForLatency(int playerNumber, int latency);
 	
+	///Returns true if the given player has provided an order and is ready to go
+	bool orderRecieved(int playerNumber);
+	
+	
 private:
 	///This function produces the 16 bit hash for the stoarge of orders
 	Uint16 hash(int playerNumber, int step);

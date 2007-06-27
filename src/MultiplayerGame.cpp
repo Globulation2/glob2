@@ -193,7 +193,6 @@ bool MultiplayerGame::isGameReadyToStart()
 	{
 		if(readyToStart[x] == false)
 		{
-			std::cout<<"ready to start "<<x<<" false"<<std::endl;
 			return false;
 		}
 	}
@@ -306,7 +305,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		//shared_ptr<NetCreateGameAccepted> info = static_pointer_cast<NetCreateGameAccepted>(message);
 		gjcState = HostingGame;
-		addPerson(client->getPlayerID());
+		updateGameHeader();
 	}
 	if(type==MNetCreateGameRefused)
 	{
@@ -440,7 +439,6 @@ void MultiplayerGame::addPerson(Uint16 playerID)
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 	sendToListeners(event);
-	updateGameHeader();
 }
 
 
@@ -454,13 +452,14 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 		{
 			readyToStart[x] = true;
 			bp = BasePlayer();
+			shared_ptr<MGPlayerLostEvent> event(new MGPlayerLostEvent(x));
+			sendToListeners(event);
 			break;
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()-1);
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-	sendToListeners(event);
-	updateGameHeader();
+	sendToListeners(event);	
 }
 
 

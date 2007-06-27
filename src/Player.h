@@ -98,7 +98,7 @@ public:
 
 	Uint32 checkSum();
 	
-	void makeItAI(AI::ImplementitionID aiType);
+	virtual void makeItAI(AI::ImplementitionID aiType);
 
 public:
 	bool disableRecursiveDestruction;
@@ -121,6 +121,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor);
 	void save(GAGCore::OutputStream  *stream);
 	
+	void makeItAI(AI::ImplementitionID aiType);
 public:
 	Sint32 startPositionX, startPositionY;
 

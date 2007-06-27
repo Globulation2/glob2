@@ -314,6 +314,16 @@ void Player::save(GAGCore::OutputStream  *stream)
 	stream->writeLeaveSection();
 }
 
+
+
+void Player::makeItAI(AI::ImplementitionID aiType)
+{
+	BasePlayer::makeItAI(aiType);
+	ai=new AI(aiType, this);
+}
+
+
+
 Uint32 Player::checkSum(std::vector<Uint32> *checkSumsVector)
 {
 	Uint32 cs;
