@@ -17,6 +17,8 @@
 */
 
 #include "NetEngine.h"
+#include <iostream>
+
 
 NetEngine::NetEngine(int numberOfPlayers)
 	: numberOfPlayers(numberOfPlayers)
@@ -65,7 +67,9 @@ bool NetEngine::allOrdersRecieved()
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
 		if(orders.find(hash(p, step)) == orders.end())
+		{
 			return false;
+		}
 	}
 	return true;
 }
@@ -78,6 +82,7 @@ int NetEngine::getStep()
 }
 
 
+
 void NetEngine::prepareForLatency(int playerNumber, int latency)
 {
 	for(int s=0; s<latency; ++s)
@@ -85,3 +90,13 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber);
 	}
 }
+
+
+
+bool NetEngine::orderRecieved(int playerNumber)
+{
+	if(orders.find(hash(playerNumber, step)) == orders.end())
+		return false;
+	return true;
+}
+

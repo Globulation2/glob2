@@ -122,7 +122,7 @@ void YOGPlayer::update()
 	//This recieves a message to set the game header
 	else if(type==MNetStartGame)
 	{
-		game->routeMessage(message, server.getPlayer(playerID));
+		game->startGame();
 	}
 	//This recieves routes an order
 	else if(type==MNetSendOrder)

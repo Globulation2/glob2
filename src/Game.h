@@ -27,6 +27,7 @@
 #include <string>
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "MultiplayerGameEventListener.h"
 
 namespace GAGCore
 {
@@ -37,7 +38,7 @@ class MapGenerationDescriptor;
 class GameGUI;
 class BuilgingType;
 
-class Game
+class Game : public MultiplayerGameEventListener
 {
 	static const bool verbose = false;
 public:
@@ -130,6 +131,9 @@ public:
 
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0);
+
+	///This responds to multiplayer game events such as players who quit
+	void handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event);
 
 private:
 	enum BarOrientation

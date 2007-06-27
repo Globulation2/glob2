@@ -157,6 +157,8 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader());
 	multiplayer->setNetEngine(net);
 
+	multiplayer->addEventListener(&gui.game);
+
 	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
 	{
 		if (multiplayerGame->getGameHeader().getBasePlayer(p).type==BasePlayer::P_IP)
@@ -267,14 +269,17 @@ int Engine::run(void)
 	
 					// We store full recursive checkSums data:
 //					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
-
-					// we get and push ai orders
-					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
-						if (gui.game.players[i]->ai)
-						{
-							shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
-							net->pushOrder(order, i);
-						}
+				}
+				
+				
+				// we get and push ai orders, if they are needed for this frame
+				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
+				{
+					if (gui.game.players[i]->ai && !net->orderRecieved(i))
+					{
+						shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
+						net->pushOrder(order, i);
+					}
 				}
 				
 				if(multiplayer)
@@ -355,6 +360,10 @@ int Engine::run(void)
 
 		delete net;
 		net=NULL;
+		
+		
+		if(multiplayer)
+			multiplayer->removeEventListener(&gui.game);
 		
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"
@@ -448,6 +457,8 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader)
 
 	return gameHeader;
 }
+
+
 
 bool Engine::loadGame(const std::string &filename)
 {

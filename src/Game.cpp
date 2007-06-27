@@ -2840,6 +2840,20 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 		}*/
 }
 
+
+
+void Game::handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event)
+{
+	Uint8 type = event->getEventType();
+	if(type == MGEPlayerLost)
+	{
+		boost::shared_ptr<MGPlayerLostEvent> info = boost::static_pointer_cast<MGPlayerLostEvent>(event);
+		players[info->getPlayerNum()]->makeItAI(AI::NONE);
+		gameHeader.getBasePlayer(info->getPlayerNum()).makeItAI(AI::NONE);
+	}
+}
+
+
 Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
 {
 	Uint32 cs=0;

@@ -25,6 +25,7 @@ YOGGame::YOGGame(Uint16 gameID)
 	: gameID(gameID)
 {
 	requested=false;
+	gameStarted=false;
 }
 
 
@@ -59,10 +60,10 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 		shared_ptr<NetSendGameHeader> header2(new NetSendGameHeader(gameHeader));
 		player->sendMessage(header1);
 		player->sendMessage(header2);
-		shared_ptr<NetPlayerJoinsGame> join(new NetPlayerJoinsGame(player->getPlayerID()));
-		host->sendMessage(join);
 	}
 	players.push_back(player);
+	shared_ptr<NetPlayerJoinsGame> join(new NetPlayerJoinsGame(player->getPlayerID()));
+	routeMessage(join);
 }
 
 
@@ -72,10 +73,13 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 	std::vector<shared_ptr<YOGPlayer> >::iterator i = std::find(players.begin(), players.end(), player);
 	if(i!=players.end())
 		players.erase(i);
-	if(player!=host)
+	if(player!=host || gameStarted)
 	{
-		shared_ptr<NetPlayerLeavesGame> message(new NetPlayerLeavesGame(player->getPlayerID()));
-		host->sendMessage(message);
+		for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+		{
+			shared_ptr<NetPlayerLeavesGame> message(new NetPlayerLeavesGame(player->getPlayerID()));
+			(*i)->sendMessage(message);
+		}
 	}
 	else
 	{
@@ -183,3 +187,14 @@ void YOGGame::sendNotReadyToStart(shared_ptr<NetNotReadyToLaunch> message)
 {
 	host->sendMessage(message);
 }
+
+
+
+void YOGGame::startGame()
+{
+	gameStarted=true;
+	boost::shared_ptr<NetStartGame> message(new NetStartGame);
+	routeMessage(message, host);
+}
+
+

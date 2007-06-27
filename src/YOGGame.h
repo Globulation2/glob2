@@ -53,7 +53,7 @@ public:
 
 	///Routes the given message to all players except for the sender,
 	///unless sender is null
-	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender);
+	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender=shared_ptr<YOGPlayer>());
 	
 	///Returns the map distributor
 	shared_ptr<YOGMapDistributor> getMapDistributor();
@@ -73,8 +73,11 @@ public:
 	///Sends that a player is not ready to start
 	void sendNotReadyToStart(shared_ptr<NetNotReadyToLaunch> message);
 	
+	///Starts the game
+	void startGame();
 private:
 	bool requested;
+	bool gameStarted;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	Uint16 gameID;

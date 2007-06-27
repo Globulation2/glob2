@@ -28,6 +28,7 @@ enum MultiplayerGameEventType
 	MGEPlayerListChanged,
 	MGEReadyToStart,
 	MGENotReadyToStart,
+	MGEPlayerLost,
 	//type_append_marker
 };
 
@@ -107,6 +108,31 @@ public:
 	
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGPlayerLostEvent
+class MGPlayerLostEvent : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGPlayerLostEvent event
+	MGPlayerLostEvent(Uint8 playerNum);
+
+	///Returns MGEPlayerLost
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+
+	///Retrieves playerNum
+	Uint8 getPlayerNum() const;
+private:
+	Uint8 playerNum;
 };
 
 
