@@ -100,3 +100,18 @@ bool NetEngine::orderRecieved(int playerNumber)
 	return true;
 }
 
+
+
+Uint32 NetEngine::getWaitingOnMask()
+{
+	Uint32 mask = 0x0;
+	for(int p=0; p<numberOfPlayers; ++p)
+	{
+		if(orders.find(hash(p, step)) == orders.end())
+		{
+			mask |= (1<<p);
+		}
+	}
+	return mask;
+}
+

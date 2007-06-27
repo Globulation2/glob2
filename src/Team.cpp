@@ -94,14 +94,6 @@ void BaseTeam::save(GAGCore::OutputStream *stream)
 
 
 
-Uint8 BaseTeam::getOrderType()
-{
-	return DATA_BASE_TEAM;
-}
-
-
-
-
 Uint8 *BaseTeam::getData()
 {
 	addSint32(data, teamNumber, 0);

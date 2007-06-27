@@ -70,8 +70,7 @@ private:
 public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	
-	Uint8 getOrderType();
+
 	Uint8 *getData();
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength();

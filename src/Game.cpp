@@ -211,11 +211,6 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	assert(team);
 	bool isPlayerAlive=team->isAlive;
 	Uint8 orderType=order->getOrderType();
-	if (orderType!=ORDER_WAITING_FOR_PLAYER)
-	{
-		anyPlayerWaitedTimeFor=0;
-		fprintf(logFile, "[%d] %d %d (", stepCounter, team->teamNumber, order->getOrderType());
-	}
 	switch (orderType)
 	{
 		case ORDER_CREATE:
@@ -710,13 +705,6 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			fprintf(logFile, "ORDER_SET_ALLIANCE");
 		}
 		break;
-		case ORDER_WAITING_FOR_PLAYER:
-		{
-			anyPlayerWaited=true;
-			maskAwayPlayer=boost::static_pointer_cast<WaitingForPlayerOrder>(order)->maskAwayPlayer;
-			//fprintf(logFile, "ORDER_WAITING_FOR_PLAYER");
-		}
-		break;
 		case ORDER_PLAYER_QUIT_GAME:
 		{
 			//PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
@@ -726,8 +714,6 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		}
 		break;
 	}
-	if (orderType!=ORDER_WAITING_FOR_PLAYER)
-		fprintf(logFile, ")\n");
 }
 
 bool Game::isHumanAllAllied(void)
@@ -2852,6 +2838,14 @@ void Game::handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> ev
 		gameHeader.getBasePlayer(info->getPlayerNum()).makeItAI(AI::NONE);
 	}
 }
+
+
+
+void Game::setWaitingOnMask(Uint32 mask)
+{
+	maskAwayPlayer = mask;
+}
+
 
 
 Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)

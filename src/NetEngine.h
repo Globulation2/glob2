@@ -60,6 +60,9 @@ public:
 	///Returns true if the given player has provided an order and is ready to go
 	bool orderRecieved(int playerNumber);
 	
+	///Returns the mask representing each player that the NetEngine is waiting
+	///on for this step
+	Uint32 getWaitingOnMask();
 	
 private:
 	///This function produces the 16 bit hash for the stoarge of orders
