@@ -135,6 +135,8 @@ public:
 	///This responds to multiplayer game events such as players who quit
 	void handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event);
 
+	///Sets the mask respresenting which players the game is waiting on
+	void setWaitingOnMask(Uint32 mask);
 private:
 	enum BarOrientation
 	{

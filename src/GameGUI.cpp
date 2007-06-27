@@ -3987,20 +3987,6 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 			game.executeOrder(order, localPlayer);
 		}
 		break;
-		case ORDER_QUITED :
-		{
-			if (order->sender==localPlayer)
-				isRunning=false;
-			game.executeOrder(order, localPlayer);
-		}
-		break;
-		case ORDER_DECONNECTED :
-		{
-			int qp=order->sender;
-			addMessage(200, 200, 200, FormatableString(Toolkit::getStringTable()->getString("[%0 has been deconnected of the game]")).arg(game.players[qp]->name));
-			game.executeOrder(order, localPlayer);
-		}
-		break;
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;

@@ -282,6 +282,8 @@ int Engine::run(void)
 					}
 				}
 				
+				gui.game.setWaitingOnMask(net->getWaitingOnMask());
+				
 				if(multiplayer)
 					multiplayer->update();
 				
