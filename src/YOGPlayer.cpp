@@ -127,7 +127,8 @@ void YOGPlayer::update()
 	//This recieves routes an order
 	else if(type==MNetSendOrder)
 	{
-		game->routeMessage(message, server.getPlayer(playerID));
+		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
+		game->routeOrder(info, server.getPlayer(playerID));
 	}
 	//This recieves requests a map file
 	else if(type==MNetRequestMap)

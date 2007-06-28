@@ -90,7 +90,7 @@ public:
 	///Sends the given Order across the network
 	void pushOrder(shared_ptr<Order> order, int playerNum);
 	
-	///Causes the game to be started
+	///Causes the game to be started on all clients.
 	void startGame();
 	
 	///This says whether the game is ready to start
