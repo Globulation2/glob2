@@ -133,6 +133,9 @@ public:
 
 	///Sets the mask respresenting which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
+	
+	///This dumps all data in text form to the given file
+	void dumpAllData(const std::string& file);
 private:
 	enum BarOrientation
 	{

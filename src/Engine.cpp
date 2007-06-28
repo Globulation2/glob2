@@ -250,8 +250,11 @@ int Engine::run(void)
 				{
 					gui.syncStep();
 					
+					Uint32 checksum = gui.game.checkSum(NULL,NULL,NULL);
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
+					localOrder->gameCheckSum = checksum;
+					
 					//we ignore null orders that aren't required for this order frame
 					if(localOrder->getOrderType() != ORDER_NULL || orders_ahead == 0)
 					{
@@ -264,9 +267,6 @@ int Engine::run(void)
 						}
 						orders_ahead+=gui.game.gameHeader.getOrderRate();
 					}
-	
-					// We store full recursive checkSums data:
-//					gui.game.checkSum(net->getCheckSumsVectorsStorage(), net->getCheckSumsVectorsStorageForBuildings(), net->getCheckSumsVectorsStorageForUnits());
 				}
 				
 				
@@ -288,16 +288,25 @@ int Engine::run(void)
 				// We proceed network:
 				networkReadyToExecute=net->allOrdersRecieved();
 
+
 				if(networkReadyToExecute)
 				{
-					orders_ahead -= 1;
-					// We get all currents orders from the network and execute them:
-					for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
+					if(!net->matchCheckSums())
 					{
-						shared_ptr<Order> order=net->retrieveOrder(i);
-						gui.executeOrder(order);
+						gui.game.dumpAllData("glob2.world-desynchronization.dump.txt");
+						assert(false);
 					}
-					net->advanceStep();
+					else
+					{
+						orders_ahead -= 1;
+						// We get all currents orders from the network and execute them:
+						for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
+						{
+							shared_ptr<Order> order=net->retrieveOrder(i);
+							gui.executeOrder(order);
+						}
+						net->advanceStep();
+					}
 				}
 
 				// here we do the real work

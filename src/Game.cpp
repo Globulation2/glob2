@@ -49,6 +49,8 @@
 #include "Brush.h"
 #include "DynamicClouds.h"
 
+#include "TextStream.h"
+
 #define BULLET_IMGID 0
 
 #define MIN_MAX_PRESIGE 500
@@ -2831,6 +2833,23 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 void Game::setWaitingOnMask(Uint32 mask)
 {
 	maskAwayPlayer = mask;
+}
+
+
+
+void Game::dumpAllData(const std::string& file)
+{
+	OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(file));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Can't dump full game memory to file "<< file << std::endl;
+	}
+	else
+	{
+		std::cerr << "Dumped full game memory to file "<< file << std::endl;
+		save(stream, false, file);
+	}
+	delete stream;	
 }
 
 

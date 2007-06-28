@@ -63,6 +63,10 @@ public:
 	///Returns the mask representing each player that the NetEngine is waiting
 	///on for this step
 	Uint32 getWaitingOnMask();
+
+	///Checks the checksums of all players for this step.
+	///returns false if they don't match
+	bool matchCheckSums();
 	
 private:
 	///This function produces the 16 bit hash for the stoarge of orders

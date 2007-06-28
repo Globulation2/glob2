@@ -115,3 +115,22 @@ Uint32 NetEngine::getWaitingOnMask()
 	return mask;
 }
 
+
+
+bool NetEngine::matchCheckSums()
+{
+	Uint32 checksum = -1;
+	for(int p=0; p<numberOfPlayers; ++p)
+	{
+		Uint32 playerCheckSum = orders.find(hash(p, step))->second->gameCheckSum;
+		if(playerCheckSum != -1)
+		{
+			if(checksum == -1)
+				checksum = playerCheckSum;
+			else if(playerCheckSum != checksum)
+				return false;
+		}
+	}
+	return true;
+}
+
