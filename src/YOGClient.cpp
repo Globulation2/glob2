@@ -222,7 +222,11 @@ void YOGClient::update()
 		}
 		if(type==MNetSendOrder)
 		{
-			joinedGame->recieveMessage(message);
+			//ignore orders for when there is no joined game,
+			//say, the leftover orders in transit after a player
+			//quits a game
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetRequestMap)
 		{

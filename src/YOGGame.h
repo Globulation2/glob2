@@ -55,6 +55,9 @@ public:
 	///unless sender is null
 	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender=shared_ptr<YOGPlayer>());
 	
+	///Routes the given order to all players except the sender. Sender can be null
+	void routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGPlayer> sender=shared_ptr<YOGPlayer>());
+	
 	///Returns the map distributor
 	shared_ptr<YOGMapDistributor> getMapDistributor();
 	

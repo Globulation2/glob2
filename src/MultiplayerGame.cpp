@@ -372,11 +372,17 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	}
 	if(type==MNetSendOrder)
 	{
-		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
-		shared_ptr<Order> order = info->getOrder();
-		netEngine->pushOrder(order, order->sender);
-		for(int i=0; i<(gameHeader.getOrderRate() - 1); ++i)
-			netEngine->pushOrder(shared_ptr<Order>(new NullOrder), order->sender);
+		//ignore orders for when there is no NetEngine, this occurs when the
+		//player has quit a game, there may still be a few orders in transit
+		//before the quit message reaches the server
+		if(netEngine)
+		{
+			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
+			shared_ptr<Order> order = info->getOrder();
+			netEngine->pushOrder(order, order->sender);
+			for(int i=0; i<(gameHeader.getOrderRate() - 1); ++i)
+				netEngine->pushOrder(shared_ptr<Order>(new NullOrder), order->sender);
+		}
 	}
 	if(type==MNetRequestMap)
 	{
@@ -474,13 +480,21 @@ void MultiplayerGame::startEngine()
 	// execute game
 	if (rc==Engine::EE_NO_ERROR)
 	{
-		engine.run();
-//		if (engine.run()==-1)
-//			executionMode=-1;
+		if (engine.run()==-1)
+		{
+			shared_ptr<MGGameExitEvent> event(new MGGameExitEvent);
+			sendToListeners(event);	
+		}
+		else
+		{
+			shared_ptr<MGGameEndedNormallyEvent> event(new MGGameEndedNormallyEvent);
+			sendToListeners(event);	
+		}
 	}
 //	else if (rc==-1)
 //		executionMode=-1;
 	// redraw all stuff
+	netEngine = NULL;
 }
 
 

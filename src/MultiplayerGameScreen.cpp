@@ -129,6 +129,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	{
 		if (par1 == START)
 		{
+			//MultiplayerGame will send an event when the game is over
 			game->startGame();
 		}
 		else if (par1 == CANCEL)
@@ -191,6 +192,16 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	{
 		startButton->visible=false;
 		notReadyText->visible=true;
+	}
+	else if(type == MGEGameExit)
+	{
+		endExecute(-1);
+		game->leaveGame();
+	}
+	else if(type == MGEGameEndedNormally)
+	{
+		endExecute(StartedGame);
+		game->leaveGame();
 	}
 }
 

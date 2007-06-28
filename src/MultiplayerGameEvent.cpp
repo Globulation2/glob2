@@ -119,4 +119,70 @@ bool MGNotReadyToStartEvent::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGGameExitEvent::MGGameExitEvent()
+{
+}
+
+
+
+Uint8 MGGameExitEvent::getEventType() const
+{
+	return MGEGameExit;
+}
+
+
+
+std::string MGGameExitEvent::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameExitEvent()";
+	return s.str();
+}
+
+
+
+bool MGGameExitEvent::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameExitEvent))
+	{
+		//const MGGameExitEvent& r = dynamic_cast<const MGGameExitEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+MGGameEndedNormallyEvent::MGGameEndedNormallyEvent()
+{
+}
+
+
+
+Uint8 MGGameEndedNormallyEvent::getEventType() const
+{
+	return MGEGameEndedNormally;
+}
+
+
+
+std::string MGGameEndedNormallyEvent::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameEndedNormallyEvent()";
+	return s.str();
+}
+
+
+
+bool MGGameEndedNormallyEvent::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameEndedNormallyEvent))
+	{
+		//const MGGameEndedNormallyEvent& r = dynamic_cast<const MGGameEndedNormallyEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker
