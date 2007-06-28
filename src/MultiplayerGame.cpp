@@ -180,6 +180,8 @@ void MultiplayerGame::pushOrder(shared_ptr<Order> order, int playerNum)
 
 void MultiplayerGame::startGame()
 {
+	//make sure the game headers are synced!
+	updateGameHeader();
 	shared_ptr<NetStartGame> message(new NetStartGame);
 	client->sendNetMessage(message);
 	startEngine();
@@ -458,9 +460,6 @@ void MultiplayerGame::removePerson(Uint16 playerID)
 		{
 			readyToStart[x] = true;
 			bp = BasePlayer();
-			//Inform the game engine a player was lost
-			if(netEngine)
-				netEngine->pushOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(x)), x);
 			break;
 		}
 	}
