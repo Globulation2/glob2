@@ -381,6 +381,8 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		{
 			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
 			shared_ptr<Order> order = info->getOrder();
+			if(order->getOrderType() == ORDER_PLAYER_QUIT_GAME)
+				order->gameCheckSum = -1;
 			netEngine->pushOrder(order, order->sender);
 			for(int i=0; i<(gameHeader.getOrderRate() - 1); ++i)
 				netEngine->pushOrder(shared_ptr<Order>(new NullOrder), order->sender);
