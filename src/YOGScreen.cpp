@@ -224,8 +224,10 @@ void YOGScreen::hostGame()
 		game->createNewGame("New Game");
 		game->setMapHeader(cms.getMapHeader());
 		MultiplayerGameScreen mgs(game, netMessage);
-		mgs.execute(globalContainer->gfx, 40);
+		int rc = mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+		if(rc == -1)
+			endExecute(-1);
 	}
 }
 
@@ -249,8 +251,10 @@ void YOGScreen::joinGame()
 		}
 		game->joinGame(id);
 		MultiplayerGameScreen mgs(game, netMessage);
-		mgs.execute(globalContainer->gfx, 40);
+		int rc = mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+		if(rc == -1)
+			endExecute(-1);
 	}
 }
 

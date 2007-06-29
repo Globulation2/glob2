@@ -139,6 +139,8 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 		client->setEventListener(this);
 		if(rc == YOGScreen::ConnectionLost)
 			endExecute(ConnectionLost);
+		else if(rc == -1)
+			endExecute(-1);
 		else
 			endExecute(LoggedIn);
 	}
