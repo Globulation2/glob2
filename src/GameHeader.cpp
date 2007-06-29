@@ -65,7 +65,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	{
 		stream->writeEnterSection(i);
 		players[i].save(stream);
-		stream->writeLeaveSection(i);
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();

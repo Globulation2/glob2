@@ -78,7 +78,7 @@ void MapHeader::save(GAGCore::OutputStream *stream)
 	{
 		stream->writeEnterSection(i);
 		teams[i].save(stream);
-		stream->writeLeaveSection(i);
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
