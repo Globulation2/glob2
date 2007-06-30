@@ -52,7 +52,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	
 	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
 
-	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 	else
 		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL));
@@ -76,8 +76,6 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, COLOR_BUTTONS+i);
 		for (int j=0; j<game->getMapHeader().getNumberOfTeams(); j++)
 			color[i]->addColor(game->getMapHeader().getBaseTeam(j).colorR, game->getMapHeader().getBaseTeam(j).colorG, game->getMapHeader().getBaseTeam(j).colorB);
-		if(!game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
-			color[i]->setClickable(false);
 		addWidget(color[i]);
 		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
@@ -216,6 +214,11 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 		color[i]->clearColors();
 		for (int j=0; j<mh.getNumberOfTeams(); j++)
 			color[i]->addColor(mh.getBaseTeam(j).colorR, mh.getBaseTeam(j).colorG, mh.getBaseTeam(j).colorB);
+			
+		if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
+			color[i]->setClickable(false);
+		else
+			color[i]->setClickable(true);
 
 		BasePlayer& bp = gh.getBasePlayer(i);
 		
