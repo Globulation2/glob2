@@ -34,6 +34,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	for(int i=0; i<32; ++i)
 		readyToStart[i] = true;
 	wasReadyToStart=false;
+	sentReadyToStart=false;
 }
 
 
@@ -56,22 +57,30 @@ void MultiplayerGame::update()
 	{
 		shared_ptr<MGReadyToStartEvent> event(new MGReadyToStartEvent);
 		sendToListeners(event);
-		wasReadyToStart=true;
 		if(gjcState == JoinedGame)
 		{
 			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
 			client->sendNetMessage(message);
+			wasReadyToStart=true;
+		}
+		else if(gjcState == HostingGame)
+		{
+			wasReadyToStart=true;
 		}
 	}
 	else if (!isGameReadyToStart() && wasReadyToStart)
 	{
 		shared_ptr<MGNotReadyToStartEvent> event(new MGNotReadyToStartEvent);
 		sendToListeners(event);
-		wasReadyToStart=false;
 		if(gjcState == JoinedGame)
 		{
 			shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
 			client->sendNetMessage(message);
+			wasReadyToStart=false;
+		}
+		else if(gjcState == HostingGame)
+		{
+			wasReadyToStart=false;
 		}
 	}
 }
