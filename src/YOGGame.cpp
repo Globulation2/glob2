@@ -186,7 +186,11 @@ void YOGGame::sendKickMessage(shared_ptr<NetKickPlayer> message)
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if((*i)->getPlayerID() == message->getPlayerID())
+		{
 			(*i)->sendMessage(message);
+			removePlayer(*i);
+			break;
+		}
 	}
 }
 

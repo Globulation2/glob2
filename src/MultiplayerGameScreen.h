@@ -50,7 +50,9 @@ public:
 	{
 		Cancelled,
 		StartedGame,
+		GameRefused,
 		Kicked,
+		GameCancelled,
 	};
 
 private:

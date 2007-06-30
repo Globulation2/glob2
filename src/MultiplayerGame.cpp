@@ -258,7 +258,6 @@ void MultiplayerGame::kickPlayer(int playerNum)
 		removePerson(bp.playerID);
 		client->sendNetMessage(message);
 	}
-	updateGameHeader();
 }
 
 
@@ -326,6 +325,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetCreateGameRefused> info = static_pointer_cast<NetCreateGameRefused>(message);
 		gjcState = NothingYet;
 		creationState = info->getRefusalReason();
+		
+		shared_ptr<MGGameRefusedEvent> event(new MGGameRefusedEvent);
+		sendToListeners(event);
 	}
 	//This recieves responces to joining a game
 	if(type==MNetGameJoinAccepted)
@@ -412,6 +414,17 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetKickPlayer> info = static_pointer_cast<NetKickPlayer>(message);
 		kickReason = info->getReason();
 		gjcState = NothingYet;
+		
+		if(kickReason == YOGKickedByHost)
+		{
+			shared_ptr<MGKickedByHostEvent> event(new MGKickedByHostEvent);
+			sendToListeners(event);
+		}
+		else if(kickReason == YOGHostDisconnect)
+		{
+			shared_ptr<MGHostCancelledGameEvent> event(new MGHostCancelledGameEvent);
+			sendToListeners(event);
+		}
 	}
 	if(type==MNetReadyToLaunch)
 	{

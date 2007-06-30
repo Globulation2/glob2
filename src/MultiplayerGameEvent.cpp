@@ -185,4 +185,103 @@ bool MGGameEndedNormallyEvent::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGGameRefusedEvent::MGGameRefusedEvent()
+{
+}
+
+
+
+Uint8 MGGameRefusedEvent::getEventType() const
+{
+	return MGEGameRefused;
+}
+
+
+
+std::string MGGameRefusedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameRefusedEvent()";
+	return s.str();
+}
+
+
+
+bool MGGameRefusedEvent::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameRefusedEvent))
+	{
+		//const MGGameRefusedEvent& r = dynamic_cast<const MGGameRefusedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+MGKickedByHostEvent::MGKickedByHostEvent()
+{
+}
+
+
+
+Uint8 MGKickedByHostEvent::getEventType() const
+{
+	return MGEKickedByHost;
+}
+
+
+
+std::string MGKickedByHostEvent::format() const
+{
+	std::ostringstream s;
+	s<<"MGKickedByHostEvent()";
+	return s.str();
+}
+
+
+
+bool MGKickedByHostEvent::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGKickedByHostEvent))
+	{
+		//const MGKickedByHostEvent& r = dynamic_cast<const MGKickedByHostEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+MGHostCancelledGameEvent::MGHostCancelledGameEvent()
+{
+}
+
+
+
+Uint8 MGHostCancelledGameEvent::getEventType() const
+{
+	return MGEHostCancelledGame;
+}
+
+
+
+std::string MGHostCancelledGameEvent::format() const
+{
+	std::ostringstream s;
+	s<<"MGHostCancelledGameEvent()";
+	return s.str();
+}
+
+
+
+bool MGHostCancelledGameEvent::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGHostCancelledGameEvent))
+	{
+		//const MGHostCancelledGameEvent& r = dynamic_cast<const MGHostCancelledGameEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

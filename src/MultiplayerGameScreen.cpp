@@ -111,11 +111,6 @@ MultiplayerGameScreen::~MultiplayerGameScreen()
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
 	game->update();
-	if(game->getGameJoinCreationState() == MultiplayerGame::NothingYet)
-	{
-		endExecute(Cancelled);
-	}
-
 	textMessage->update();
 }
 
@@ -200,6 +195,18 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	{
 		endExecute(StartedGame);
 		game->leaveGame();
+	}
+	else if(type == MGEGameRefused)
+	{
+		endExecute(GameRefused);
+	}
+	else if(type == MGEKickedByHost)
+	{
+		endExecute(Kicked);
+	}
+	else if(type == MGEHostCancelledGame)
+	{
+		endExecute(GameCancelled);
 	}
 }
 
