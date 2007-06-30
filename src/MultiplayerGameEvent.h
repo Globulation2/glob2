@@ -30,6 +30,9 @@ enum MultiplayerGameEventType
 	MGENotReadyToStart,
 	MGEGameExit,
 	MGEGameEndedNormally,
+	MGEGameRefused,
+	MGEKickedByHost,
+	MGEHostCancelledGame,
 	//type_append_marker
 };
 
@@ -141,6 +144,66 @@ public:
 	MGGameEndedNormallyEvent();
 
 	///Returns MGEGameEndedNormally
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameRefusedEvent
+class MGGameRefusedEvent : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameRefusedEvent event
+	MGGameRefusedEvent();
+
+	///Returns MGEGameRefused
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGKickedByHostEvent
+class MGKickedByHostEvent : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGKickedByHostEvent event
+	MGKickedByHostEvent();
+
+	///Returns MGEKickedByHost
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGHostCancelledGameEvent
+class MGHostCancelledGameEvent : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGHostCancelledGameEvent event
+	MGHostCancelledGameEvent();
+
+	///Returns MGEHostCancelledGame
 	Uint8 getEventType() const;
 
 	///Returns a formatted version of the event

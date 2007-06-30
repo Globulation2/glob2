@@ -198,3 +198,10 @@ void NetTextMessageHandler::sendToAllListeners(const std::string& message, NetTe
 		listeners[i]->handleTextMessage(message, type);
 	}
 }
+
+
+
+void NetTextMessageHandler::addInternalMessage(const std::string& message)
+{
+	sendToAllListeners(message, InternalTextMessage);
+}

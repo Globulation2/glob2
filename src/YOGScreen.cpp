@@ -228,6 +228,8 @@ void YOGScreen::hostGame()
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)
 			endExecute(-1);
+		else if(rc == MultiplayerGameScreen::GameRefused)
+			netMessage->addInternalMessage("Game was refused by server");
 	}
 }
 
@@ -255,6 +257,10 @@ void YOGScreen::joinGame()
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)
 			endExecute(-1);
+		else if(rc == MultiplayerGameScreen::Kicked)
+			netMessage->addInternalMessage("You where kicked from the game");
+		else if(rc == MultiplayerGameScreen::GameCancelled)
+			netMessage->addInternalMessage("The host cancelled the game");
 	}
 }
 

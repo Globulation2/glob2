@@ -167,7 +167,12 @@ void YOGPlayer::update()
 		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
 		game->sendNotReadyToStart(info);
 	}
-	
+	//This recieves a kick message
+	else if(type==MNetKickPlayer)
+	{
+		shared_ptr<NetKickPlayer> info = static_pointer_cast<NetKickPlayer>(message);
+		game->sendKickMessage(info);
+	}
 }
 
 
