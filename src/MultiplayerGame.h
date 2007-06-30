@@ -153,6 +153,7 @@ private:
 	bool haveGameHeader;
 	bool readyToStart[32];
 	bool wasReadyToStart;
+	bool sentReadyToStart;
 	std::list<MultiplayerGameEventListener*> listeners;
 };
 
