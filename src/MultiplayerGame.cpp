@@ -191,11 +191,14 @@ void MultiplayerGame::startGame()
 
 bool MultiplayerGame::isGameReadyToStart()
 {
-	for(int x=0; x<32; ++x)
+	if(gjcState == HostingGame || gjcState == WaitingForCreateReply)
 	{
-		if(readyToStart[x] == false)
+		for(int x=0; x<32; ++x)
 		{
-			return false;
+			if(readyToStart[x] == false)
+			{
+				return false;
+			}
 		}
 	}
 
@@ -361,6 +364,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetPlayerJoinsGame> info = static_pointer_cast<NetPlayerJoinsGame>(message);
 		addPerson(info->getPlayerID());
+		updateGameHeader();
 	}
 	if(type==MNetPlayerLeavesGame)
 	{

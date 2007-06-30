@@ -78,12 +78,12 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	{
 		shared_ptr<NetSendMapHeader> header1(new NetSendMapHeader(mapHeader));
 		shared_ptr<NetSendGameHeader> header2(new NetSendGameHeader(gameHeader));
+		shared_ptr<NetPlayerJoinsGame> join(new NetPlayerJoinsGame(player->getPlayerID()));
+		host->sendMessage(join);
 		player->sendMessage(header1);
 		player->sendMessage(header2);
 	}
 	players.push_back(player);
-	shared_ptr<NetPlayerJoinsGame> join(new NetPlayerJoinsGame(player->getPlayerID()));
-	routeMessage(join);
 }
 
 
