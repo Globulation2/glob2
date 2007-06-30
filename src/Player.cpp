@@ -226,6 +226,10 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	{
 		ai=new AI((AI::ImplementitionID)(type-P_AI), this);
 	}
+	else if(type==P_NONE)
+	{
+		ai=NULL;
+	}
 	else
 	{
 		ai=NULL;
