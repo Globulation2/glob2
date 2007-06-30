@@ -26,7 +26,7 @@
 ///New YOG constants
 const Uint16 YOG_SERVER_PORT = 7486;
 //const std::string YOG_SERVER_IP = "yog.globulation2.org";
-//const std::string YOG_SERVER_IP = "222.155.137.23";
+//const std::string YOG_SERVER_IP = "222.155.128.27";
 const std::string YOG_SERVER_IP = "127.0.0.1";
 const Uint16 YOG_PROTOCOL_VERSION = 6;
 
