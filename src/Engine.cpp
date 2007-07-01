@@ -251,6 +251,8 @@ int Engine::run(void)
 					gui.syncStep();
 					
 					Uint32 checksum = gui.game.checkSum(NULL,NULL,NULL);
+					std::cout<<"checksum on "<<gui.game.stepCounter<<" is "<<checksum<<std::endl;
+					
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
 					localOrder->gameCheckSum = checksum;
