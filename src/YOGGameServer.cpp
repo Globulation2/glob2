@@ -19,6 +19,7 @@
 #include "YOGGameServer.h"
 #include "NetTestSuite.h"
 #include <algorithm>
+#include "NetBroadcaster.h"
 
 YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
@@ -91,6 +92,11 @@ int YOGGameServer::run()
 	bool cont = tests.runAllTests();
 	if(!cont)
 		return 1;
+
+	LANGameInformation info;
+	info.getGameInformation();
+	NetBroadcaster broadcast(info);
+
 	while(nl.isListening())
 	{
 		const int speed = 4;
@@ -100,6 +106,7 @@ int YOGGameServer::run()
 		endTick=SDL_GetTicks();
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
+		broadcast.update();
 	}
 	return 0;
 }

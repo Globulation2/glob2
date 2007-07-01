@@ -37,6 +37,8 @@
 #include <StringTable.h>
 #include "ChooseMapScreen.h"
 
+#include "NetBroadcastListener.h"
+
 #include <Stream.h>
 #include <BinaryStream.h>
 
@@ -363,36 +365,12 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::MULTIPLAYERS_LAN:
 			{
-			/*
-				switch (MultiplayersOfferScreen::menu())
+				NetBroadcastListener listener;
+				while(true)
 				{
-					case MultiplayersOfferScreen::HOST:
-					{
-						Engine engine;
-						if (engine.initMutiplayerHost(false) == Engine::EE_NO_ERROR)
-							isRunning = (engine.run() != -1);
-					}
-					break;
-
-					case MultiplayersOfferScreen::JOIN:
-					{
-						Engine engine;
-						if (engine.initMutiplayerJoin() == Engine::EE_NO_ERROR)
-							isRunning = (engine.run() != -1);
-					}
-					break;
-					case MultiplayersOfferScreen::QUIT:
-					{
-						//continue;
-					}
-					break;
-					case -1 :
-					{
-						isRunning=false;
-					}
-					break;
+					listener.update();
+					SDL_Delay(100);
 				}
-				*/
 			}
 			break;
 			case MainMenuScreen::GAME_SETUP:

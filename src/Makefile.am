@@ -115,6 +115,8 @@ HeightMapGenerator.cpp \
 HeightMapGenerator.h \
 IRC.cpp \
 IRC.h \
+LANGameInformation.cpp \
+LANGameInformation.h \
 IntBuildingType.cpp \
 IntBuildingType.h \
 LogFileManager.cpp \
@@ -141,6 +143,10 @@ MultiplayerGameEvent.cpp \
 MultiplayerGameEvent.h \
 MultiplayerGameEventListener.cpp \
 MultiplayerGameEventListener.h \
+NetBroadcaster.cpp \
+NetBroadcaster.h \
+NetBroadcastListener.cpp \
+NetBroadcastListener.h \
 NetConnection.cpp \
 NetConnection.h \
 NetConsts.h \
