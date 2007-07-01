@@ -20,27 +20,7 @@
 #ifndef __NET_CONSTS_H
 #define __NET_CONSTS_H
 
-#define GAME_SERVER_PORT 7008
-#define GAME_JOINER_PORT_1 7010
-#define GAME_JOINER_PORT_2 7011
-#define GAME_JOINER_PORT_3 7012
-#define GAME_JOINER_FIND_LOCAL_PORT_BASE 7014
-#define ANY_PORT 0
-
-// 1s-3s-7s-14s-22s
-#ifndef SECOND_TIMEOUT
-
-#define SECOND_TIMEOUT 25
-#define SHORT_NETWORK_TIMEOUT 75
-#define DEFAULT_NETWORK_TIMEOUT 175
-#define LONG_NETWORK_TIMEOUT 350
-#define MAX_NETWORK_TIMEOUT 550
-
-#define DEFAULT_NETWORK_TOTL 3
-#endif
-
-// Max packet size for reception in game setup
-#define MAX_PACKET_SIZE 4096
+const unsigned int LAN_BROADCAST_PORT = 7532;
 
 #define NET_PROTOCOL_VERSION 23
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
