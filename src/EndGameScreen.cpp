@@ -134,13 +134,10 @@ void EndGameStat::paint(void)
 			parent->getSurface()->drawString(int(double(x)+time_line_seperate*double(n)+0.5)-width/2, y+h-30, globalContainer->littleFont, str.str().c_str());
 		}
 
-		float inc_x=static_cast<float>(w-2)/static_cast<float>(game->teams[0]->stats.endOfGameStats.size()-1);
-		float inc_y=static_cast<float>(h-2)/static_cast<float>(maxValue);
-
-		int best_circle_position_difference=100000;
-		int best_circle_position_value=-1;
-		int best_circle_position_x=-1;
-		int best_circle_position_y=-1;
+		int closest_position = 41;
+		int circle_position_value=-1;
+		int circle_position_x=-1;
+		int circle_position_y=-1;
 
 		// draw curve
 		if (maxValue)
@@ -153,59 +150,63 @@ void EndGameStat::paint(void)
 				Uint8 g = game->teams[team]->colorG;
 				Uint8 b = game->teams[team]->colorB;
 
-				int statsIndex = 0;
-				int oy, ox, nx, ny;
-
-				ox = 1;
-				oy = static_cast<int>(game->teams[team]->stats.endOfGameStats[statsIndex].value[type] * inc_y);
-
-				for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
+				int previous_y = 0;
+				
+				for(int px=0; px<(w-2); ++px)
 				{
-					nx = static_cast<int>(pos*inc_x);
-					ny = static_cast<int>(game->teams[team]->stats.endOfGameStats[pos].value[type] * inc_y);
-
-					///This is for the small circle that indicates the numbers at a particular position.
-					///It will only be shown if the cursor is within 40 pixels of the lines
-					// and it will only show the circle at the closest line.
-					if(mouse_x!=-1)
+					double value = getValue(double(px) / double(w-2), team, type);
+					int ny = h - int(double(h) * value / double(maxValue));
+					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, Color(r, g, b));
+					previous_y = ny;
+					if(px == (mouse_x - x) && std::abs(mouse_y - ny) < closest_position)
 					{
-						float line_slope=static_cast<float>((y+h-ny-1)-(y+h-oy-1)) / static_cast<float>((x+nx)-(x+ox));
-						if(mouse_x>=(x+ox) && mouse_x<(x+nx))
-						{
-							int circle_x=mouse_x;
-							int circle_y=y+h-oy-1 + static_cast<int>((mouse_x-(x+ox))*line_slope+0.5);
-							if(std::abs(mouse_y+y-circle_y) < 40)
-							{
-								if(std::abs(mouse_y+y-circle_y) < best_circle_position_difference)
-								{
-									best_circle_position_x=circle_x;
-									best_circle_position_y=circle_y;
-									best_circle_position_difference=std::abs(mouse_y+y-circle_y);
-									best_circle_position_value=maxValue-int(double(circle_y-y)*value_seperate+0.5);
-								}
-							}
-						}
+						circle_position_value = int(std::floor(value+0.5));
+						circle_position_x = x + px;
+						circle_position_y = y + ny;
+						closest_position = std::abs(mouse_y - ny);
 					}
-
-					parent->getSurface()->drawLine(x+ox, y+h-oy-1, x+nx, y+h-ny-1, r, g, b);
-
-					ox = nx;
-					oy = ny;
-					
-					//std::cout << pos << " : " << team << " : " << game->teams[team]->stats.endOfGameStats[index].value[type] << std::endl;
 				}
 			}
 		}
-		if(best_circle_position_x!=-1)
+		if(circle_position_x!=-1)
 		{
-			parent->getSurface()->drawCircle(best_circle_position_x, best_circle_position_y, 10, Color::white);
+			parent->getSurface()->drawCircle(circle_position_x, circle_position_y, 10, Color::white);
 			std::stringstream str;
-			str<<best_circle_position_value;
-			parent->getSurface()->drawString(best_circle_position_x+10, best_circle_position_y+10, globalContainer->littleFont, str.str());
+			str<<circle_position_value;
+			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
 		}
 	}
 }
 
+
+
+double EndGameStat::getValue(double position, int team, int type)
+{
+	int s = game->teams[team]->stats.endOfGameStats.size()-1;
+	int lower = int(position * float(s));
+	int upper = lower+1;
+	double mu = (position * float(s)) - lower; 
+	
+	int y0 = game->teams[team]->stats.endOfGameStats[std::max(lower-1, 0)].value[type];
+	int y1 = game->teams[team]->stats.endOfGameStats[lower].value[type];
+	int y2 = game->teams[team]->stats.endOfGameStats[upper].value[type];
+	int y3 = game->teams[team]->stats.endOfGameStats[std::min(upper+1, s)].value[type];
+
+
+	//Cubic interpolation
+	double mu2 = mu * mu;
+	double a0 = y3 - y2 - y0 + y1;
+	double a1 = y0 - y1 - a0;
+	double a2 = y2 - y0;
+	double a3 = y1;
+	return a0*mu*mu2+a1*mu2+a2*mu+a3;
+/*
+	//Cosine interpolation
+	double mu2 = (1-std::cos(mu*3.141592653))/2;
+	return(y1*(1-mu2)+y2*mu2);
+*/
+}
+	
 
 
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)
