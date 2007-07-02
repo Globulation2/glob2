@@ -20,7 +20,7 @@
 #ifndef __NET_CONSTS_H
 #define __NET_CONSTS_H
 
-const unsigned int LAN_BROADCAST_PORT = 7532;
+const unsigned int LAN_BROADCAST_PORT = 7486;
 
 #define NET_PROTOCOL_VERSION 23
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag

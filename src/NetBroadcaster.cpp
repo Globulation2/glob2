@@ -78,8 +78,6 @@ void NetBroadcaster::update()
 		{
 			printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
 		}
-
-		std::cout<<"sending packet: "<<result<<std::endl;
 		
 		delete bos;
 		SDLNet_FreePacket(packet);
