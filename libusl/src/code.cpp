@@ -1,6 +1,17 @@
 #include "code.h"
 #include "interpreter.h"
 
+ScopePrototype* thisMethod(Prototype* outer)
+{
+	ScopePrototype* method = new ScopePrototype(0, outer);
+	method->body.push_back(new PopCode());
+	method->body.push_back(new ScopeCode());
+	method->body.push_back(new ParentCode());
+	method->body.push_back(new ReturnCode());
+	return method;
+}
+
+
 void Code::dump(std::ostream &stream)
 {
 	stream << typeid(*this).name();
@@ -37,17 +48,20 @@ void ValRefCode::execute(Thread* thread)
 }
 
 
-SelectCode::SelectCode(const std::string& name):
-	name(name)
+SelectCode::SelectCode(const std::string& name, bool pop):
+	name(name),
+	pop(pop)
 {}
 
+#include <iostream>
 void SelectCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
 	// get receiver
 	Value* receiver = stack.back();
-	stack.pop_back();
+	if (pop)
+		stack.pop_back();
 	
 	// get method
 	ScopePrototype* method = receiver->prototype->lookup(name);
@@ -62,14 +76,22 @@ void SelectCode::execute(Thread* thread)
 }
 
 
+ApplyCode::ApplyCode(bool arg):
+	arg(arg)
+{}
+
 void ApplyCode::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
 	
 	// get argument
-	Value* argument = stack.back();
-	stack.pop_back();
+	Value* argument;
+	if (arg)
+	{
+		argument = stack.back();
+		stack.pop_back();
+	}
 	
 	// get the function
 	Function* function = dynamic_cast<Function*>(stack.back());
@@ -80,11 +102,14 @@ void ApplyCode::execute(Thread* thread)
 	// create a new scope
 	Scope* scope = new Scope(thread->heap, function->method, function->receiver);
 	
-	// put the argument in the scope
-	scope->locals.push_back(argument);
-	
 	// push a new frame
 	frames.push_back(scope);
+	
+	// put the argument on the stack
+	if (arg)
+		frames.back().stack.push_back(argument);
+	else
+		frames.back().stack.push_back(&nil);
 }
 
 
@@ -132,17 +157,18 @@ void ReturnCode::execute(Thread* thread)
 }
 
 
-TupleCode::TupleCode(size_t size):
+ArrayCode::ArrayCode(size_t size):
 	size(size)
 {}
 
-void TupleCode::execute(Thread* thread)
+void ArrayCode::execute(Thread* thread)
 {
-	Tuple* tuple = new Tuple(thread->heap);
+	Array* array = new Array(thread->heap);
 	Thread::Frame::Stack &stack = thread->frames.back().stack;
 	Thread::Frame::Stack::const_iterator stackEnd = stack.end();
-	std::copy(stackEnd - size, stackEnd, std::back_inserter(tuple->values));
+	std::copy(stackEnd - size, stackEnd, std::back_inserter(array->values));
 	stack.resize(stack.size() - size);
+	stack.push_back(array);
 }
 
 
@@ -150,13 +176,13 @@ NativeCode::Operation::Operation(Prototype* outer, const std::string& name, bool
 	ScopePrototype(0, outer),
 	name(name)
 {
+	body.push_back(new ValCode());
 	body.push_back(new ScopeCode());
 	body.push_back(new ParentCode());
 	body.push_back(new ValRefCode(0, 0));
 	if (!lazy)
 	{
-		body.push_back(new ConstCode(&nil));
-		body.push_back(new ApplyCode());
+		body.push_back(new ApplyCode(false));
 	}
 	body.push_back(new NativeCode(this));
 	body.push_back(new ReturnCode());
@@ -181,7 +207,7 @@ void NativeCode::execute(Thread* thread)
 
 
 DefRefCode::DefRefCode(ScopePrototype* method):
-method(method)
+	method(method)
 {}
 
 void DefRefCode::execute(Thread* thread)

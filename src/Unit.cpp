@@ -140,10 +140,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	
 	// unit specification
 	typeNum = stream->readSint32("typeNum");
-	if (versionMinor >= 49)
-		skinName = stream->readText("skinName");
-	else
-		defaultSkinNameFromType();
+	skinName = stream->readText("skinName");
 	skinPointerFromName();
 	race = &(owner->race);
 	assert(race);
@@ -172,15 +169,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	action = (Abilities)stream->readUint32("action");
 	targetX = (Sint32)stream->readSint32("targetX");
 	targetY = (Sint32)stream->readSint32("targetY");
-	if (versionMinor >= 46)
-		validTarget = (bool)stream->readSint32("validTarget");
-	else
-		validTarget = false;
-	
-	if (versionMinor >= 41)
-		magicActionTimeout = stream->readSint32("magicActionTimeout");
-	else
-		magicActionTimeout = 0;
+	validTarget = (bool)stream->readSint32("validTarget");
+	magicActionTimeout = stream->readSint32("magicActionTimeout");
 
 	// trigger parameters
 	hp = stream->readSint32("hp");
@@ -188,10 +178,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// hungry
 	hungry = stream->readSint32("hungry");
-	if (versionMinor >= 49)
-		hungryness = stream->readSint32("hungryness");
-	else
-		hungryness = race->hungryness;
+	hungryness = stream->readSint32("hungryness");
 	trigHungry = stream->readSint32("trigHungry");
 	trigHungryCarying = (trigHungry*4)/10;
 	fruitMask = stream->readUint32("fruitMask");
@@ -201,45 +188,22 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	stream->readEnterSection("abilities");
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		if ((versionMinor < 41) && (i >= 10) && (i < 15))
-		{
-			performance[i] = race->getUnitType(typeNum, 0)->performance[i];
-			level[i] = 0;
-			canLearn[i] = (bool)race->getUnitType(typeNum, NB_UNIT_LEVELS - 1)->performance[i];
-		}
-		else
-		{
-			stream->readEnterSection(i);
-			performance[i] = stream->readSint32("performance");
-			level[i] = stream->readSint32("level");
-			canLearn[i] = (bool)stream->readUint32("canLearn");
-			stream->readLeaveSection();
-		}
+		stream->readEnterSection(i);
+		performance[i] = stream->readSint32("performance");
+		level[i] = stream->readSint32("level");
+		canLearn[i] = (bool)stream->readUint32("canLearn");
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	
-	if (versionMinor >= 40)
-	{
-		experience = stream->readSint32("experience");
-		experienceLevel = stream->readSint32("experienceLevel");
-	}
-	else
-	{
-		experience = 0;
-		experienceLevel = 0;
-	}
+
+	experience = stream->readSint32("experience");
+	experienceLevel = stream->readSint32("experienceLevel");
 
 	destinationPurprose = stream->readSint32("destinationPurprose");
-	if (versionMinor < 41 && destinationPurprose >= 10)
-		destinationPurprose += 5;
-	
-	if(versionMinor<56)
-		stream->readUint32("subscribed");
-
 	caryedRessource = stream->readSint32("caryedRessource");
-	
-	if(versionMinor>=56)
-		jobTimer = stream->readSint32("jobTimer");
+
+	jobTimer = stream->readSint32("jobTimer");
 
 	// gui
 	levelUpAnimation = 0;
@@ -342,11 +306,6 @@ void Unit::loadCrossRef(GAGCore::InputStream *stream, Team *owner, Sint32 versio
 		ownExchangeBuilding = NULL;
 	else
 		ownExchangeBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
-
-	if(versionMinor < 56)
-	{
-		gbid = stream->readUint16("foreingExchangeBuilding");
-	}
 		
 	stream->readLeaveSection();
 }
@@ -487,7 +446,10 @@ void Unit::syncStep(void)
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
-			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID, enemyTeam);
+			
+			boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
+			enemy->owner->pushGameEvent(event);
+
 			incrementExperience(degats);
 		}
 		else
@@ -502,7 +464,10 @@ void Unit::syncStep(void)
 				if (degats<=0)
 					degats=1;
 				enemy->hp-=degats;
-				enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyGBID, enemyTeam);
+			
+				boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
+				enemy->owner->pushGameEvent(event);
+
 				if (enemy->hp<0)
 					enemy->kill();
 				incrementExperience(degats);
@@ -674,7 +639,11 @@ void Unit::handleMagic(void)
 							if (damage > 0)
 							{
 								enemyUnit->hp -= damage;
-								enemyUnit->owner->setEvent(xi, yi, Team::UNIT_UNDER_ATTACK_EVENT, targetGUID, targetTeam);
+								
+			
+								boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
+								enemyUnit->owner->pushGameEvent(event);
+								
 								incrementExperience(damage);
 								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
 								hasUsedMagicAction = true;
@@ -890,9 +859,12 @@ void Unit::handleActivity(void)
 					// Unit conversion code
 					
 					// Send events and keep track of number of unit converted
-					currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum, targetTeam->teamNumber);
+					boost::shared_ptr<GameEvent> event(new UnitLostConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
+					currentTeam->pushGameEvent(event);
 					currentTeam->unitConversionLost++;
-					targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum, currentTeam->teamNumber);
+					
+					boost::shared_ptr<GameEvent> event2(new UnitGainedConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
+					targetTeam->pushGameEvent(event2);
 					targetTeam->unitConversionGained++;
 					
 					// Find free slot in other team

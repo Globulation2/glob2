@@ -18,6 +18,8 @@
 */
 
 #include <StreamBackend.h>
+#include <iostream>
+#include "SDL_net.h"
 
 namespace GAGCore
 {
@@ -31,9 +33,9 @@ namespace GAGCore
 	void MemoryStreamBackend::write(const void *data, const size_t size)
 	{
 		const char *_data = static_cast<const char *>(data);
-		if (index + size > datas.size())
+		if ((index + size) > datas.size())
 			datas.resize(index + size);
-		datas.replace(index, size, _data);
+		std::copy(_data, _data+size, datas.begin()+index);
 		index += size;
 	}
 	

@@ -69,11 +69,11 @@ void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, in
 
 //! Alliance screen
 InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<=8) ? 320 : 600, 395)
+:OverlayScreen(globalContainer->gfx, (gameGUI->game.gameHeader.getNumberOfPlayers()<=8) ? 320 : 600, 395)
 {
 	// fill the slots
 	int i;
-	for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	for (i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
 		int otherTeam = gameGUI->game.players[i]->teamNumber;
 		unsigned otherTeamMask = 1 << otherTeam;
@@ -130,7 +130,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	addWidget(new Text(244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
 	addWidget(new Text(268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 	
-	if (gameGUI->game.session.numberOfPlayer > 8)
+	if (gameGUI->game.gameHeader.getNumberOfPlayers() > 8)
 	{
 		addWidget(new Text(300+172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
 		addWidget(new Text(300+196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
@@ -164,7 +164,7 @@ void InGameAllianceScreen::onAction(Widget *source, Action action, int par1, int
 	}
 	else if (action == BUTTON_STATE_CHANGED)
 	{
-		for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+		for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 			if ((source == alliance[i]) ||
 				(source == normalVision[i]) ||
 				(source == foodVision[i]) ||
@@ -179,8 +179,8 @@ void InGameAllianceScreen::onAction(Widget *source, Action action, int par1, int
 void InGameAllianceScreen::setCorrectValueForPlayer(int i)
 {
 	Game *game=&(gameGUI->game);
-	assert(i<game->session.numberOfPlayer);
-	for (int j=0; j<game->session.numberOfPlayer; j++)
+	assert(i<game->gameHeader.getNumberOfPlayers());
+	for (int j=0; j<game->gameHeader.getNumberOfPlayers(); j++)
 	{
 		if (j != i)
 		{
@@ -199,7 +199,7 @@ void InGameAllianceScreen::setCorrectValueForPlayer(int i)
 Uint32 InGameAllianceScreen::getAlliedMask(void)
 {
 	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (alliance[i]->getState())
 			mask |= 1<<i;
@@ -210,7 +210,7 @@ Uint32 InGameAllianceScreen::getAlliedMask(void)
 Uint32 InGameAllianceScreen::getEnemyMask(void)
 {
 	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (!alliance[i]->getState())
 			mask |= 1<<i;
@@ -221,7 +221,7 @@ Uint32 InGameAllianceScreen::getEnemyMask(void)
 Uint32 InGameAllianceScreen::getExchangeVisionMask(void)
 {
 	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (marketVision[i]->getState())
 			mask |= 1<<i;
@@ -232,7 +232,7 @@ Uint32 InGameAllianceScreen::getExchangeVisionMask(void)
 Uint32 InGameAllianceScreen::getFoodVisionMask(void)
 {
 	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (foodVision[i]->getState())
 			mask |= 1<<i;
@@ -243,7 +243,7 @@ Uint32 InGameAllianceScreen::getFoodVisionMask(void)
 Uint32 InGameAllianceScreen::getOtherVisionMask(void)
 {
 	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (normalVision[i]->getState())
 			mask |= 1<<i;
@@ -255,7 +255,7 @@ Uint32 InGameAllianceScreen::getOtherVisionMask(void)
 Uint32 InGameAllianceScreen::getChatMask(void)
 {
 	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (chat[i]->getState())
 			mask |= 1<<i;

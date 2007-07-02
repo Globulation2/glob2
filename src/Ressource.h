@@ -26,6 +26,8 @@
 #include <Types.h>
 #endif
 
+#include <string>
+
 //! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are zero.
 #define NO_RES_TYPE 0xFF
 
@@ -41,6 +43,8 @@ struct Ressource
 	//void setUint32(Uint32 i) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
 	Uint32 getUint32() { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };
+
+std::string getRessourceName(int type);
 
 #define MAX_NB_RESSOURCES 15
 #define MAX_RESSOURCES 8

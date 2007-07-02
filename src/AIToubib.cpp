@@ -25,6 +25,8 @@
 #include "Order.h"
 #include "Player.h"
 
+using namespace boost;
+
 AIToubib::AIToubib(Player *player)
 {
 	init(player);
@@ -70,13 +72,6 @@ void AIToubib::init(Player *player)
 bool AIToubib::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	// check version
-	if (versionMinor< 35)
-	{
-		fprintf(stderr, "AIToubib::load : trying to load too old AIToubib (versionMinor < 35)\n");
-		assert(false);
-		return false;
-	}
-
 	// saving state variables
 	now = stream->readUint32("now");
 	
@@ -89,9 +84,9 @@ void AIToubib::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(now, "now");
 }
 
-Order *AIToubib::getOrderBuildingStep(void)
+boost::shared_ptr<Order> AIToubib::getOrderBuildingStep(void)
 {
-	return new NullOrder();
+	return shared_ptr<Order>(new NullOrder());
 }
 
 void AIToubib::computeMyStatsStep(void)
@@ -99,13 +94,13 @@ void AIToubib::computeMyStatsStep(void)
 
 }
 
-Order *AIToubib::getOrder(void)
+boost::shared_ptr<Order> AIToubib::getOrder(void)
 {
 	now++;
 	
 	switch (now % 2)
 	{
 		case 0: return getOrderBuildingStep();
-		default: computeMyStatsStep(); return new NullOrder();
+		default: computeMyStatsStep(); return shared_ptr<Order>(new NullOrder());
 	}
 }

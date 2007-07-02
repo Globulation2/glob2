@@ -1,4 +1,6 @@
 /*
+  Copyright (C) Bradley Arsenault
+ 
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -19,6 +21,8 @@
 
 #ifndef __UNIT_CONSTS_H
 #define __UNIT_CONSTS_H
+
+#include <string>
 
 enum Abilities
 {
@@ -55,6 +59,8 @@ const int WARRIOR=2;
 const int NB_UNIT_TYPE=3;
 
 const int NB_UNIT_LEVELS=4;
+
+std::string getUnitName(int type);
 
 #endif
  

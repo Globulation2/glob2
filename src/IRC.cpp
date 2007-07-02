@@ -45,6 +45,7 @@ IRC::IRC()
 	socket = NULL;
 	socketSet = NULL;
 	errorString = "error, no such data";
+	usersOnChannelsModified=false;
 }
 
 IRC::~IRC()

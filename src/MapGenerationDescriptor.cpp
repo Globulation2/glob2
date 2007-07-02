@@ -176,11 +176,6 @@ void MapGenerationDescriptor::save(GAGCore::OutputStream *stream)
 
 bool MapGenerationDescriptor::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	if (versionMinor < 47)
-	{
-		std::cerr << "Error : map generation description of versionMinor lower than 47 can't be loaded" << std::endl;
-		return false;
-	}
 	stream->readEnterSection("MapGenerationDescriptor");
 	char signature[4];
 	stream->read(signature, 4, "signatureStart");

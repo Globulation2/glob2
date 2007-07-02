@@ -642,15 +642,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("TeamStats");
 	Uint32 size=0;
-	if(versionMinor>=50)
-	{
-		size=stream->readUint32("size");
-	}
-	else
-	{
-		size=128;
-		stream->readSint32("endOfGameStatIndex");
-	}
+	size=stream->readUint32("size");
 
 	bool stop=false;
 	
@@ -663,17 +655,9 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		Sint32 hp = 0;
 		Sint32 attack = 0;
 		Sint32 defense = 0;
-		if (versionMinor > 31)
-		{
-			hp = stream->readSint32("EndOfGameStat::TYPE_HP");
-			attack = stream->readSint32("EndOfGameStat::TYPE_ATTACK");
-			defense = stream->readSint32("EndOfGameStat::TYPE_DEFENSE");
-		}
-		if(versionMinor<50)
-		{
-			if(units==0 && buildings==0 && prestige==0 && hp==0 && attack==0 && defense==0)
-				stop=true;
-		}
+		hp = stream->readSint32("EndOfGameStat::TYPE_HP");
+		attack = stream->readSint32("EndOfGameStat::TYPE_ATTACK");
+		defense = stream->readSint32("EndOfGameStat::TYPE_DEFENSE");
 		if(!stop)
 			endOfGameStats.push_back(EndOfGameStat(units, buildings, prestige, hp, attack, defense));
 		stream->readLeaveSection();

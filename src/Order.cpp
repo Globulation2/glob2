@@ -27,143 +27,112 @@
 Order::Order(void)
 {
 	sender=-1;
-	wishedLatency=0;
-	wishedDelay=0;
-	latencyPadding=false;
-	ustep=0;
-	gameCheckSum=0;
-	needToBeFreedByEngine=false;
+	gameCheckSum=-1;
 }
 
-Order *Order::getOrder(const Uint8 *netData, int netDataLength)
+boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength)
 {
 	if (netDataLength<1)
-		return NULL;
+		return boost::shared_ptr<Order>();
 	if (netData==NULL)
-		return NULL;
+		return boost::shared_ptr<Order>();
 	
 	switch (netData[0])
 	{
 
 	case ORDER_CREATE:
 	{
-		return new OrderCreate(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderCreate(netData+1, netDataLength-1));
 	}
 	case ORDER_DELETE:
 	{
-		return new OrderDelete(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderDelete(netData+1, netDataLength-1));
 	}
 	case ORDER_CANCEL_DELETE:
 	{
-		return new OrderCancelDelete(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderCancelDelete(netData+1, netDataLength-1));
 	}
 	case ORDER_CONSTRUCTION:
 	{
-		return new OrderConstruction(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderConstruction(netData+1, netDataLength-1));
 	}
 	case ORDER_CANCEL_CONSTRUCTION:
 	{
-		return new OrderCancelConstruction(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_BUILDING:
 	{
-		return new OrderModifyBuilding(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyBuilding(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_EXCHANGE:
 	{
-		return new OrderModifyExchange(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyExchange(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_SWARM:
 	{
-		return new OrderModifySwarm(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifySwarm(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_FLAG:
 	{
-		return new OrderModifyFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_CLEARING_FLAG:
 	{
-		return new OrderModifyClearingFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyClearingFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
 	{
-		return new OrderModifyMinLevelToFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderModifyMinLevelToFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_MOVE_FLAG:
 	{
-		return new OrderMoveFlag(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1));
 	}
 	case ORDER_ALTERATE_FORBIDDEN:
 	{
-		return new OrderAlterateForbidden(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1));
 	}
 	case ORDER_ALTERATE_GUARD_AREA:
 	{
-		return new OrderAlterateGuardArea(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1));
 	}
 	case ORDER_ALTERATE_CLEAR_AREA:
 	{
-		return new OrderAlterateClearArea(netData+1, netDataLength-1);
-	}
-	case ORDER_QUITED:
-	{
-		assert(false); // Currently, QuitedOrder has to be used only between NetGame and GameGUI, but not the network.
-		return new QuitedOrder();
-	}
-	case ORDER_DECONNECTED:
-	{
-		assert(false); // Currently, DeconnectedOrder has to be used only between NetGame and GameGUI, but not the network.
-		return new DeconnectedOrder();
+		return boost::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1));
 	}
 	case ORDER_NULL:
 	{
-		return new NullOrder();
+		return boost::shared_ptr<Order>(new NullOrder());
 	}
 	case ORDER_TEXT_MESSAGE:
 	{
-		return new MessageOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new MessageOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_VOICE_DATA:
 	{
-		return new OrderVoiceData(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new OrderVoiceData(netData+1, netDataLength-1));
 	}
 	case ORDER_SET_ALLIANCE:
 	{
-		return new SetAllianceOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new SetAllianceOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_MAP_MARK:
 	{
-		return new MapMarkOrder(netData+1, netDataLength-1);
-	}
-	case ORDER_WAITING_FOR_PLAYER:
-	{
-		return new WaitingForPlayerOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new MapMarkOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_PAUSE_GAME:
 	{
-		return new PauseGameOrder(netData+1, netDataLength-1);
-	}
-	case ORDER_DROPPING_PLAYER:
-	{
-		return new DroppingPlayerOrder(netData+1, netDataLength-1);
-	}
-	case ORDER_REQUESTING_AWAY:
-	{
-		return new RequestingDeadAwayOrder(netData+1, netDataLength-1);
-	}
-	case ORDER_NO_MORE_ORDER_AVAILABLES:
-	{
-		return new NoMoreOrdersAvailable(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new PauseGameOrder(netData+1, netDataLength-1));
 	}
 	case ORDER_PLAYER_QUIT_GAME :
 	{
-		return new PlayerQuitsGameOrder(netData+1, netDataLength-1);
+		return boost::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1));
 	}
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
 		
 	}
-	return NULL;
+	return boost::shared_ptr<Order>();
 }
 
 // OrderCreate's code
@@ -719,20 +688,6 @@ NullOrder::NullOrder()
 {
 }
 
-// QuitedOrder's code
-
-QuitedOrder::QuitedOrder()
-:MiscOrder()
-{
-}
-
-// QuitedOrder's code
-
-DeconnectedOrder::DeconnectedOrder()
-:MiscOrder()
-{
-}
-
 // MessageOrder's code
 
 MessageOrder::MessageOrder(const Uint8 *data, int dataLength)
@@ -927,37 +882,6 @@ bool MapMarkOrder::setData(const Uint8 *data, int dataLength)
 	return true;
 }
 
-// WaitingForPlayerOrder's code
-
-WaitingForPlayerOrder::WaitingForPlayerOrder(const Uint8 *data, int dataLength)
-:MiscOrder()
-{
-	assert(dataLength==4);
-	bool good=setData(data, dataLength);
-	assert(good);
-}
-
-WaitingForPlayerOrder::WaitingForPlayerOrder(Uint32 maskAwayPlayer)
-{
-	this->maskAwayPlayer=maskAwayPlayer;
-}
-
-Uint8 *WaitingForPlayerOrder::getData(void)
-{
-	assert(sizeof(data) == getDataLength());
-	addUint32(data, this->maskAwayPlayer, 0);
-	return data;
-}
-
-bool WaitingForPlayerOrder::setData(const Uint8 *data, int dataLength)
-{
-	if(dataLength!=getDataLength())
-		return false;
-	this->maskAwayPlayer=getUint32(data, 0);
-	memcpy(this->data, data, dataLength);
-	return true;
-}
-
 // PauseGameOrder's code
 
 PauseGameOrder::PauseGameOrder(const Uint8 *data, int dataLength)
@@ -986,115 +910,6 @@ bool PauseGameOrder::setData(const Uint8 *data, int dataLength)
 		return false;
 	pause=(bool)data[0];
 	memcpy(this->data, data, dataLength);
-	return true;
-}
-
-// DroppingPlayerOrder's code
-
-DroppingPlayerOrder::DroppingPlayerOrder(const Uint8 *data, int dataLength)
-:MiscOrder()
-{
-	assert(dataLength==4);
-	bool good=setData(data, dataLength);
-	assert(good);
-}
-
-DroppingPlayerOrder::DroppingPlayerOrder(Uint32 dropingPlayersMask)
-{
-	this->dropingPlayersMask=dropingPlayersMask;
-}
-
-Uint8 *DroppingPlayerOrder::getData(void)
-{
-	assert(sizeof(data) == getDataLength());
-	addUint32(data, this->dropingPlayersMask, 0);
-	return data;
-}
-
-bool DroppingPlayerOrder::setData(const Uint8 *data, int dataLength)
-{
-	if(dataLength!=getDataLength())
-		return false;
-	this->dropingPlayersMask=getUint32(data, 0);
-	memcpy(this->data, data, dataLength);
-	return true;
-}
-
-
-// RequestingDeadAwayOrder's code
-
-RequestingDeadAwayOrder::RequestingDeadAwayOrder(const Uint8 *data, int dataLength)
-:MiscOrder()
-{
-	assert(dataLength==12);
-	bool good=setData(data, dataLength);
-	assert(good);
-}
-
-RequestingDeadAwayOrder::RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAvailableStep)
-{
-	this->player=player;
-	this->missingStep=missingStep;
-	this->lastAvailableStep=lastAvailableStep;
-}
-
-Uint8 *RequestingDeadAwayOrder::getData(void)
-{
-	assert(sizeof(data) == getDataLength());
-	addUint32(data, this->player, 0);
-	addUint32(data, this->missingStep, 4);
-	addUint32(data, this->lastAvailableStep, 8);
-	return data;
-}
-
-bool RequestingDeadAwayOrder::setData(const Uint8 *data, int dataLength)
-{
-	if(dataLength!=getDataLength())
-		return false;
-
-	this->player=getUint32(data, 0);
-	this->missingStep=getUint32(data, 4);
-	this->lastAvailableStep=getUint32(data, 8);
-	
-	memcpy(this->data, data, dataLength);
-	
-	return true;
-}
-
-// NoMoreOrdersAvailable code
-
-NoMoreOrdersAvailable::NoMoreOrdersAvailable(const Uint8 *data, int dataLength)
-:MiscOrder()
-{
-	assert(dataLength==8);
-	bool good=setData(data, dataLength);
-	assert(good);
-}
-
-NoMoreOrdersAvailable::NoMoreOrdersAvailable(Sint32 player, Sint32 lastAvailableStep)
-{
-	this->player=player;
-	this->lastAvailableStep=lastAvailableStep;
-}
-
-Uint8 *NoMoreOrdersAvailable::getData(void)
-{
-	assert(sizeof(data) == getDataLength());
-	addUint32(data, this->player, 0);
-	addUint32(data, this->lastAvailableStep, 4);
-	return data;
-}
-
-bool NoMoreOrdersAvailable::setData(const Uint8 *data, int dataLength)
-{
-	if(dataLength!=getDataLength())
-		return false;
-
-	this->player=getUint32(data, 0);
-	this->lastAvailableStep=getUint32(data, 4);
-	
-	memcpy(this->data, data, dataLength);
-	
 	return true;
 }
 

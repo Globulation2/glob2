@@ -26,6 +26,8 @@
 #include <Types.h>
 #endif
 
+#include <boost/shared_ptr.hpp>
+
 namespace GAGCore
 {
 	class InputStream;
@@ -69,7 +71,9 @@ public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
-	Order *getOrder(bool paused);
+	static std::string getAIText(int id);
+	
+	boost::shared_ptr<Order> getOrder(bool paused);
 	
 	Uint32 step;
 };

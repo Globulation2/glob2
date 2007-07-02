@@ -226,6 +226,8 @@ public:
 	int verbose;
 	std::list<Order *> orderQueue;
 	
+	static std::string getBuildingName(int type);
+	
 public:
 	// type
 	Sint32 typeNum; // number in BuildingTypes

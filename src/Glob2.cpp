@@ -20,22 +20,24 @@
 #include "Glob2.h"
 #include "Header.h"
 #include "Game.h"
-#include "SessionConnection.h"
 #include "MainMenuScreen.h"
-#include "MultiplayersOfferScreen.h"
 #include "MapEdit.h"
 #include "Engine.h"
-#include "YOGPreScreen.h"
+#include "YOGLoginScreen.h"
+#include "YOGGameServer.h"
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
-#include "MultiplayersHost.h"
-#include "MultiplayersChooseMapScreen.h"
 #include "CreditScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "CampaignSelectorScreen.h"
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
+#include "YOGClient.h"
+#include <StringTable.h>
+#include "ChooseMapScreen.h"
+
+#include "NetBroadcastListener.h"
 
 #include <Stream.h>
 #include <BinaryStream.h>
@@ -64,7 +66,6 @@
 */
 
 GlobalContainer *globalContainer=NULL;
-YOG *yog=NULL;
 
 
 void Glob2::drawYOGSplashScreen(void)
@@ -89,10 +90,11 @@ void Glob2::drawYOGSplashScreen(void)
 void Glob2::mutiplayerYOG(void)
 {
 	if (verbose)
-		printf("Glob2:: starting YOGPreScreen...\n");
-	YOGPreScreen yogPreScreen;
-	int yogReturnCode=yogPreScreen.execute(globalContainer->gfx, 40);
-	if (yogReturnCode==YOGPreScreen::CANCEL)
+		printf("Glob2:: starting YOGLoginScreen...\n");
+	shared_ptr<YOGClient> client(new YOGClient);
+	YOGLoginScreen yogLoginScreen(client);
+	int yogReturnCode=yogLoginScreen.execute(globalContainer->gfx, 40);
+	if (yogReturnCode==YOGLoginScreen::Cancelled)
 		return;
 	if (yogReturnCode==-1)
 	{
@@ -100,7 +102,7 @@ void Glob2::mutiplayerYOG(void)
 		return;
 	}
 	if (verbose)
-		printf("Glob2::YOGPreScreen has ended ...\n");
+		printf("Glob2::YOGLoginScreen has ended ...\n");
 }
 
 int Glob2::runNoX()
@@ -118,6 +120,7 @@ int Glob2::runNoX()
 
 int Glob2::runHostServer()
 {
+/*
 	if (verbose)
 		std::cout << "Glob2::runHostServer():connecting to YOG as %s" << globalContainer->getUsername() << std::endl;
 	yog->enableConnection(globalContainer->hostServerUserName, globalContainer->hostServerPassWord, false);
@@ -239,6 +242,7 @@ int Glob2::runHostServer()
 		printf("Glob2::runHostServer():end.\n");
 
 	return 0;
+	*/
 }
 
 int Glob2::run(int argc, char *argv[])
@@ -256,6 +260,7 @@ int Glob2::run(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
+/*
 	yog=new YOG();
 	
 	// TODO : this structure is ugly, do we have to keep hostServer ?
@@ -266,7 +271,17 @@ int Glob2::run(int argc, char *argv[])
 		delete globalContainer;
 		return ret;
 	}
-	else if (globalContainer->runNoX)
+	*/
+	
+	if (globalContainer->hostServer)
+	{
+		YOGGameServer server(YOGAnonymousLogin, YOGMultipleGames);
+		int rc = server.run();
+		return rc;	
+	}
+	
+	
+	if (globalContainer->runNoX)
 	{
 		int ret=runNoX();
 		delete globalContainer;
@@ -350,33 +365,11 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::MULTIPLAYERS_LAN:
 			{
-				switch (MultiplayersOfferScreen::menu())
+				NetBroadcastListener listener;
+				while(true)
 				{
-					case MultiplayersOfferScreen::HOST:
-					{
-						Engine engine;
-						if (engine.initMutiplayerHost(false) == Engine::EE_NO_ERROR)
-							isRunning = (engine.run() != -1);
-					}
-					break;
-
-					case MultiplayersOfferScreen::JOIN:
-					{
-						Engine engine;
-						if (engine.initMutiplayerJoin() == Engine::EE_NO_ERROR)
-							isRunning = (engine.run() != -1);
-					}
-					break;
-					case MultiplayersOfferScreen::QUIT:
-					{
-						//continue;
-					}
-					break;
-					case -1 :
-					{
-						isRunning=false;
-					}
-					break;
+					listener.update();
+					SDL_Delay(100);
 				}
 			}
 			break;
@@ -420,12 +413,12 @@ int Glob2::run(int argc, char *argv[])
 				}
 				else if (rc==HowNewMapScreen::LOADMAP)
 				{
-					MultiplayersChooseMapScreen multiplayersChooseMapScreen(false);
-					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 40);
-					if (rc==MultiplayersChooseMapScreen::OK)
+					ChooseMapScreen chooseMapScreen("maps", "map", false);
+					int rc=chooseMapScreen.execute(globalContainer->gfx, 40);
+					if (rc==ChooseMapScreen::OK)
 					{
 						MapEdit mapEdit;
-						std::string filename = multiplayersChooseMapScreen.sessionInfo.getFileName();
+						std::string filename = chooseMapScreen.getMapHeader().getFileName();
 						mapEdit.load(filename.c_str());
 						if (mapEdit.run()==-1)
 							isRunning=false;
@@ -480,7 +473,7 @@ int Glob2::run(int argc, char *argv[])
 
 	// This is for the textshot code
 	GAGCore::DrawableSurface::printFinishingText();
-	delete yog;
+//	delete yog;
 	delete globalContainer;
 	return 0;
 }
