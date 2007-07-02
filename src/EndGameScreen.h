@@ -47,6 +47,9 @@ public:
 	virtual void paint(void);
 
 protected:
+	//! Returns the value at the given point, by interpolating
+	double getValue(double position, int team, int type);
+
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing
