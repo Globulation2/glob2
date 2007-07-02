@@ -61,12 +61,8 @@ void MultiplayerGame::update()
 		{
 			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
 			client->sendNetMessage(message);
-			wasReadyToStart=true;
 		}
-		else if(gjcState == HostingGame)
-		{
-			wasReadyToStart=true;
-		}
+		wasReadyToStart=true;
 	}
 	else if (!isGameReadyToStart() && wasReadyToStart)
 	{
@@ -76,12 +72,8 @@ void MultiplayerGame::update()
 		{
 			shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
 			client->sendNetMessage(message);
-			wasReadyToStart=false;
 		}
-		else if(gjcState == HostingGame)
-		{
-			wasReadyToStart=false;
-		}
+		wasReadyToStart=false;
 	}
 }
 
@@ -200,7 +192,10 @@ void MultiplayerGame::startGame()
 
 bool MultiplayerGame::isGameReadyToStart()
 {
-	if(gjcState == HostingGame || gjcState == WaitingForCreateReply)
+	if(gjcState == WaitingForCreateReply || gjcState == WaitingForJoinReply)
+		return false;
+
+	if(gjcState == HostingGame)
 	{
 		for(int x=0; x<32; ++x)
 		{

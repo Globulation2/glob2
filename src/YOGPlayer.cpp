@@ -296,14 +296,12 @@ void YOGPlayer::handleCreateGame(const std::string& gameName)
 {
 	YOGGameCreateRefusalReason reason = server.canCreateNewGame(gameName);
 	if(reason == YOGCreateRefusalUnknown)
-	{	
+	{
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
-		game->addPlayer(server.getPlayer(playerID));
 		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted);
 		connection->sendMessage(message);
-		
-		//gameListState = NeedToSendGameList;
+		game->addPlayer(server.getPlayer(playerID));
 	}
 	else
 	{
