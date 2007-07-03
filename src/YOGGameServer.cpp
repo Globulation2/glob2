@@ -19,7 +19,6 @@
 #include "YOGGameServer.h"
 #include "NetTestSuite.h"
 #include <algorithm>
-#include "NetBroadcaster.h"
 
 YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
@@ -82,6 +81,15 @@ void YOGGameServer::update()
 			i++;
 		}
 	}
+	
+	if(broadcaster)
+		broadcaster->update();
+	if(!broadcaster && isBroadcasting && gameList.size())
+	{
+		LANGameInformation info;
+		info.getGameInformation() = *gameList.begin();
+		broadcaster.reset(new NetBroadcaster(info));
+	}
 }
 
 
@@ -93,10 +101,6 @@ int YOGGameServer::run()
 	if(!cont)
 		return 1;
 
-	LANGameInformation info;
-	info.getGameInformation();
-	NetBroadcaster broadcast(info);
-
 	while(nl.isListening())
 	{
 		const int speed = 4;
@@ -106,7 +110,6 @@ int YOGGameServer::run()
 		endTick=SDL_GetTicks();
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
-		broadcast.update();
 	}
 	return 0;
 }
@@ -255,6 +258,27 @@ shared_ptr<YOGGame> YOGGameServer::getGame(Uint16 gameID)
 shared_ptr<YOGPlayer> YOGGameServer::getPlayer(Uint16 playerID)
 {
 	return players[playerID];
+}
+
+
+
+void YOGGameServer::enableLANBroadcasting()
+{
+	if(gameList.size())
+	{
+		LANGameInformation info;
+		info.getGameInformation() = *gameList.begin();
+		broadcaster.reset(new NetBroadcaster(info));
+	}
+	isBroadcasting = true;
+}
+
+
+	
+void YOGGameServer::disableLANBroadcasting()
+{
+	broadcaster.reset();
+	isBroadcasting = false;
 }
 
 

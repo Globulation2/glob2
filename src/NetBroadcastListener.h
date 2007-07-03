@@ -21,6 +21,7 @@
 
 #include "SDL_net.h"
 #include "LANGameInformation.h"
+#include <vector>
 
 ///This listens for sub-net broadcasts (finding a LAN game)
 class NetBroadcastListener
@@ -34,8 +35,15 @@ public:
 	///Updates the broadcast listener
 	void update();
 
+	///Gets a list of all the LAN games
+	const std::vector<LANGameInformation>& getLANGames();
+
 private:
 	UDPsocket socket;
+	std::vector<LANGameInformation> games;
+	std::vector<int> timeouts;
+	std::vector<IPaddress> addresses;
+	Uint32 lastTime;
 };
 
 #endif

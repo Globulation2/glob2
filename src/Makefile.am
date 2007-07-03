@@ -117,6 +117,10 @@ IRC.cpp \
 IRC.h \
 LANGameInformation.cpp \
 LANGameInformation.h \
+LANMenuScreen.cpp \
+LANMenuScreen.h \
+LANFindScreen.cpp \
+LANFindScreen.h \
 IntBuildingType.cpp \
 IntBuildingType.h \
 LogFileManager.cpp \

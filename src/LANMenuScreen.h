@@ -1,6 +1,9 @@
 /*
   Copyright (C) 2007 Bradley Arsenault
 
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -16,31 +19,38 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NetBroadcaster_h
-#define __NetBroadcaster_h
+#ifndef __LAN_MENU_SCREEN_H
+#define __LAN_MENU_SCREEN_H
 
-#include "LANGameInformation.h"
-#include "SDL_net.h"
+#include "Glob2Screen.h"
 
-///This class allows for subnet broadcasting (hosting a LAN game)
-class NetBroadcaster
+class LANMenuScreen : public Glob2Screen
 {
 public:
-	///Creates a new NetBroadcaster with the given information to broadcast
-	NetBroadcaster(LANGameInformation& info);
+
+	///Constructs a LAN menu screen
+	LANMenuScreen();
+	virtual ~LANMenuScreen();
+	void onAction(Widget *source, Action action, int par1, int par2);
+	void paint(int x, int y, int w, int h);
+	static int menu(void);
 	
-	~NetBroadcaster();
+	enum
+	{
+		HostedGame,
+		JoinedGame,
+		QuitMenu
+	};
 	
-	///Begins broadcasting the following game information
-	void broadcast(LANGameInformation& info);
 	
-	///Updates the broadcaster
-	void update();
-private:
-	LANGameInformation info;
-	UDPsocket socket;
-	Uint32 lastTime;
-	Uint32 timer;
+public:
+
+	enum
+	{
+		HOST = 1,
+		JOIN = 4,
+		QUIT = 5
+	};
 };
 
 #endif
