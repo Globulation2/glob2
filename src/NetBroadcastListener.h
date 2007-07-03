@@ -38,6 +38,8 @@ public:
 	///Gets a list of all the LAN games
 	const std::vector<LANGameInformation>& getLANGames();
 
+	///Gets the IP address for the given lan game
+	std::string getIPAddress(size_t num);
 private:
 	UDPsocket socket;
 	std::vector<LANGameInformation> games;

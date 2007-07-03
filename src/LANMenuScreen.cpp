@@ -27,6 +27,9 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include "LANFindScreen.h"
+#include "MultiplayerGameScreen.h"
+#include "ChooseMapScreen.h"
+#include "FormatableString.h"
 
 LANMenuScreen::LANMenuScreen()
 {
@@ -57,6 +60,33 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if(par1 == HOST)
 		{
+			ChooseMapScreen cms("maps", "map", false);
+			int rc = cms.execute(globalContainer->gfx, 40);
+			if(rc == ChooseMapScreen::OK)
+			{
+				shared_ptr<YOGClient> client(new YOGClient);
+				shared_ptr<YOGGameServer> server(new YOGGameServer(YOGAnonymousLogin, YOGSingleGame));
+				server->enableLANBroadcasting();
+				client->attachGameServer(server);
+				client->connect("127.0.0.1");
+				while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
+					client->update();
+				client->attemptLogin(globalContainer->getUsername());
+				while(client->getConnectionState() != YOGClient::ClientOnStandby)
+					client->update();
+		
+				boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+				client->setMultiplayerGame(game);
+				std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(globalContainer->getUsername());
+				game->createNewGame(name);
+				game->setMapHeader(cms.getMapHeader());
+				boost::shared_ptr<NetTextMessageHandler> netMessage(new NetTextMessageHandler(client));
+				MultiplayerGameScreen mgs(game, netMessage);
+				int rc = mgs.execute(globalContainer->gfx, 40);
+				client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+				if(rc == -1)
+					endExecute(-1);
+			}
 			endExecute(HostedGame);
 		}
 		else if(par1 == QUIT)

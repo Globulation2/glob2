@@ -35,9 +35,9 @@ NetBroadcaster::NetBroadcaster(LANGameInformation& info)
 		exit(2);
 	}
 	IPaddress address;
-	SDLNet_ResolveHost(&address, "127.0.0.1", LAN_BROADCAST_PORT);
-	//address.host = INADDR_BROADCAST;
-	//address.port = LAN_BROADCAST_PORT;
+	//SDLNet_ResolveHost(&address, "127.0.0.1", LAN_BROADCAST_PORT);
+	address.host = INADDR_BROADCAST;
+	address.port = LAN_BROADCAST_PORT;
 	SDLNet_UDP_Bind(socket, 0, &address);
 	lastTime = SDL_GetTicks();
 }

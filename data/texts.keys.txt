@@ -1,6 +1,7 @@
 [%0 has been deconnected of the game]
 [%0 has left the game]
 [%0's team unit got converted to your team]
+[%0's game]
 [abreaviation explanation A]
 [abreaviation explanation C]
 [abreaviation explanation fV]

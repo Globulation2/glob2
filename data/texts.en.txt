@@ -4,6 +4,8 @@
 %0 has quit the game.
 [%0's team unit got converted to your team]
 %0's team unit got converted to your team
+[%0's game]
+%0's Game
 [abreaviation explanation A]
 A: Allies
 [abreaviation explanation C]

@@ -28,6 +28,7 @@
 #include "YOGMessage.h"
 #include "YOGEventListener.h"
 #include <list>
+#include "YOGGameServer.h"
 
 class MultiplayerGame;
 class MapAssembler;
@@ -159,6 +160,9 @@ public:
 	///Does not take ownership of the object
 	void setEventListener(YOGEventListener* listener);
 
+	///This attaches a game server to this client, for client-hosted games (such as LAN)
+	void attachGameServer(boost::shared_ptr<YOGGameServer> server);
+
 protected:
     friend class MultiplayerGame;
     friend class MapAssembler;
@@ -186,6 +190,9 @@ private:
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;
 	YOGEventListener* listener;
+	
+	boost::shared_ptr<YOGGameServer> server;
+
 };
 
 

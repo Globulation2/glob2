@@ -132,6 +132,8 @@ YOGGamePolicy YOGGameServer::getGamePolicy() const
 
 YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username, const std::string& password)
 {
+	if(loginPolicy == YOGAnonymousLogin)
+		return YOGLoginSuccessful;
 	return registry.verifyLoginInformation(username, password);
 }
 
