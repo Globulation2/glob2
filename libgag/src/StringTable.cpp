@@ -196,7 +196,7 @@ namespace GAGCore
 					lcwp=(c=='%');
 				}
 				// if not, issue an error message
-				if (baseCount!=count)
+				if (baseCount!=count && s!="")
 				{
 					std::cerr << "StringTable::load(\"" << filename << "\") : error, translation : in " << translationFiles[i] << ", text = [" << baseCount << "] (" << it->first << "), translation = [" << count << "] (" << s << "), doesn't match !" << std::endl;
 					assert(false);
