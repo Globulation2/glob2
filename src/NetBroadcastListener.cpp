@@ -22,6 +22,7 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include <iostream>
+#include <sstream>
 
 using namespace GAGCore;
 
@@ -100,3 +101,17 @@ const std::vector<LANGameInformation>& NetBroadcastListener::getLANGames()
 {
 	return games;
 }
+
+
+
+std::string NetBroadcastListener::getIPAddress(size_t num)
+{
+	std::stringstream s;
+	Uint8* address = reinterpret_cast<Uint8*>(&addresses[num].host);
+	s<<int(address[0])<<".";
+	s<<int(address[1])<<".";
+	s<<int(address[2])<<".";
+	s<<int(address[3]);
+	return s.str();
+}
+

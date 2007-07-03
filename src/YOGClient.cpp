@@ -68,6 +68,9 @@ bool YOGClient::isConnected()
 
 void YOGClient::update()
 {
+	if(server)
+		server->update();
+
 	if(!nc.isConnected() && wasConnected)
 	{
 		if(listener)
@@ -439,3 +442,12 @@ void YOGClient::setEventListener(YOGEventListener* nlistener)
 {
 	listener=nlistener;
 }
+
+
+
+void YOGClient::attachGameServer(boost::shared_ptr<YOGGameServer> nserver)
+{
+	server = nserver;
+}
+
+

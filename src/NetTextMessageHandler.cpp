@@ -35,7 +35,8 @@ NetTextMessageHandler::NetTextMessageHandler(shared_ptr<YOGClient> client)
 
 NetTextMessageHandler::~NetTextMessageHandler()
 {
-	irc->disconnect();
+	if(irc)
+		irc->disconnect();
 }
 
 
@@ -51,7 +52,8 @@ void NetTextMessageHandler::startIRC()
 
 void NetTextMessageHandler::stopIRC()
 {
-	irc->disconnect();
+	if(irc)
+		irc->disconnect();
 }
 
 
