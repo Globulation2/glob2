@@ -95,28 +95,26 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1==CONNECT)
 		{
-			int s = lanServers->getSelectionIndex();
-			if(s!=-1)
-			{
-				shared_ptr<YOGClient> client(new YOGClient);
-				client->connect(listener.getIPAddress(s));
-				while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
-					client->update();
-				client->attemptLogin(globalContainer->getUsername());
-				while(client->getConnectionState() != YOGClient::ClientOnStandby)
-					client->update();
-					
-				boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
-				client->setMultiplayerGame(game);
-				game->joinGame(listener.getLANGames()[s].getGameInformation().getGameID());
+			shared_ptr<YOGClient> client(new YOGClient);
+			client->connect(serverName->getText());
+			if(client->getConnectionState() == YOGClient::NotConnected)
+				return;
+			while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
+				client->update();
+			client->attemptLogin(playerName->getText());
+			while(client->getConnectionState() != YOGClient::ClientOnStandby)
+				client->update();
+				
+			boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+			client->setMultiplayerGame(game);
+			game->joinGame((*client->getGameList().begin()).getGameID());
 
-				boost::shared_ptr<NetTextMessageHandler> netMessage(new NetTextMessageHandler(client));
-				MultiplayerGameScreen mgs(game, netMessage);
-				int rc = mgs.execute(globalContainer->gfx, 40);
-				client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
-				if(rc == -1)
-					endExecute(-1);
-			}
+			boost::shared_ptr<NetTextMessageHandler> netMessage(new NetTextMessageHandler(client));
+			MultiplayerGameScreen mgs(game, netMessage);
+			int rc = mgs.execute(globalContainer->gfx, 40);
+			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+			if(rc == -1)
+				endExecute(-1);
 		}
 		else if (par1==QUIT)
 		{
@@ -141,7 +139,8 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (source==lanServers)
 		{
-
+			int s = lanServers->getSelectionIndex();
+			serverName->setText(listener.getIPAddress(s));
 		}
 	}
 

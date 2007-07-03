@@ -140,7 +140,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 					//Now interpret the message from the data, and add it to the queue
 					shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
 					recieved.push(message);
-					std::cout<<"Recieved: "<<message->format()<<std::endl;
+					//std::cout<<"Recieved: "<<message->format()<<std::endl;
 					
 					delete bis;
 				}
@@ -175,7 +175,7 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
 	if(connected)
 	{
-		std::cout<<"Sending: "<<message->format()<<std::endl;
+		//std::cout<<"Sending: "<<message->format()<<std::endl;
 
 		MemoryStreamBackend* msb = new MemoryStreamBackend;
 		BinaryOutputStream* bos = new BinaryOutputStream(msb);

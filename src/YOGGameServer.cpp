@@ -100,7 +100,8 @@ int YOGGameServer::run()
 	bool cont = tests.runAllTests();
 	if(!cont)
 		return 1;
-
+	
+	std::cout<<"Server started successfully."<<std::endl;
 	while(nl.isListening())
 	{
 		const int speed = 4;
