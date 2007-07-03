@@ -38,6 +38,9 @@
 #include "ChooseMapScreen.h"
 
 #include "NetBroadcastListener.h"
+#include "LANFindScreen.h"
+#include "LANMenuScreen.h"
+
 
 #include <Stream.h>
 #include <BinaryStream.h>
@@ -365,12 +368,10 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::MULTIPLAYERS_LAN:
 			{
-				NetBroadcastListener listener;
-				while(true)
-				{
-					listener.update();
-					SDL_Delay(100);
-				}
+				LANMenuScreen lanms;
+				int rc = lanms.execute(globalContainer->gfx, 40);
+				if(rc == -1)
+					isRunning=false;
 			}
 			break;
 			case MainMenuScreen::GAME_SETUP:

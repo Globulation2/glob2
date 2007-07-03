@@ -26,6 +26,7 @@
 #include "YOGPlayer.h"
 #include "YOGGame.h"
 #include "YOGPasswordRegistry.h"
+#include "NetBroadcaster.h"
 
 #include <list>
 #include <map>
@@ -101,6 +102,12 @@ public:
 
 	///Returns the player assocciatted with the given ID
 	shared_ptr<YOGPlayer> getPlayer(Uint16 playerID);
+	
+	///This starts LAN broadcasting of the first game, if it exists
+	void enableLANBroadcasting();
+	
+	///This stops LAN broadcasting
+	void disableLANBroadcasting();
 private:
 	Uint16 chooseNewPlayerID();
 
@@ -116,6 +123,9 @@ private:
 	YOGGamePolicy gamePolicy;
 	
 	YOGPasswordRegistry registry;
+	
+	boost::shared_ptr<NetBroadcaster> broadcaster;
+	bool isBroadcasting;
 };
 
 #endif

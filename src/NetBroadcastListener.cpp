@@ -27,7 +27,8 @@ using namespace GAGCore;
 
 NetBroadcastListener::NetBroadcastListener()
 {
-	socket = SDLNet_UDP_Open(0);
+	socket = SDLNet_UDP_Open(LAN_BROADCAST_PORT);
+	lastTime = SDL_GetTicks();
 }
 
 
@@ -43,7 +44,6 @@ void NetBroadcastListener::update()
 {
 	UDPpacket* packet = SDLNet_AllocPacket(1024);
 	int result = SDLNet_UDP_Recv(socket, packet);
-	std::cout<<"result="<<result<<std::endl;
 	while(result == 1)
 	{
 		Uint16 length = SDLNet_Read16(packet->data);
@@ -53,11 +53,50 @@ void NetBroadcastListener::update()
 
 		LANGameInformation info;
 		info.decodeData(bis);
+		
+		bool found = false;
+		for(int i=0; i<addresses.size(); ++i)
+		{
+			if(addresses[i].host == packet->address.host)
+			{
+				games[i] = info;
+				timeouts[i] = 1500;
+				found = true;
+				break;
+			}
+		}
 
-		std::cout<<"Recieved a broadcast!"<<std::endl;
-
+		if(!found)
+		{
+			games.push_back(info);
+			timeouts.push_back(1500);
+			addresses.push_back(packet->address);
+		}
+		
 		delete bis;
+		result = SDLNet_UDP_Recv(socket, packet);
 	}
+	
+	int time = SDL_GetTicks() - lastTime;
+	for(int i=0; i<timeouts.size();)
+	{
+		timeouts[i] -= time;
+		if(timeouts[i] <= 0)
+		{
+			timeouts.erase(timeouts.begin() + i);
+			games.erase(games.begin() + i);
+			addresses.erase(addresses.begin() + i);
+		}
+		else
+		{
+			++i;
+		}
+	}
+	lastTime = SDL_GetTicks();
 }
 
 
+const std::vector<LANGameInformation>& NetBroadcastListener::getLANGames()
+{
+	return games;
+}
