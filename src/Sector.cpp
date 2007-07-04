@@ -119,7 +119,8 @@ void Sector::step(void)
 		else
 		{
 			Uint16 gid = map->getGroundUnit(bullet->targetX, bullet->targetY);
-			Uint16 airgid = map->getAirUnit(bullet->targetX, bullet->targetY);
+			if(gid == NOGUID)
+				gid = map->getAirUnit(bullet->targetX, bullet->targetY);
 			if (gid != NOGUID)
 			{
 				// we have hit a unit
@@ -130,26 +131,6 @@ void Sector::step(void)
 				boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
 				game->teams[team]->pushGameEvent(event);
 		
-				if (bullet->revealW > 0 && bullet->revealH > 0)
-					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
-				
-				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
-				if (degats <= 0)
-					degats = 1;
-				game->teams[team]->myUnits[id]->hp -= degats;
-			}
-			//following maybe should be merged into the above?
-			else if (airgid != NOGUID)
-			{
-				// we have hit an air unit
-				// yes, it hits ground units, then air units, then buildings
-				// totally illogical, but matches the preference of guard towers
-				// (ugh, hard-coded preference...)
-				int team = Unit::GIDtoTeam(airgid);
-				int id = Unit::GIDtoID(airgid);
-				
-				boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[airgid]->typeNum));
-				game->teams[team]->pushGameEvent(event);
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
