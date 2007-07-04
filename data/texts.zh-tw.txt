@@ -1,0 +1,974 @@
+[language]
+繁體中文
+[language-code]
+zh-tw
+[language-tr]
+語言
+[hp]
+HP
+[heal]
+健康
+[armor]
+防禦
+[damage]
+傷害
+[food]
+食物
+[working]
+工作中
+[assigned]
+已分配工作
+[inside]
+內部
+[ressources]
+資源
+[Wood]
+木材
+[Corn]
+小麥
+[Papyrus]
+草紙
+[Stone]
+石頭
+[Alga]
+海藻
+[Cherry]
+櫻桃
+[Orange]
+柳橙
+[Prune]
+梅乾
+[fruit]
+水果
+[Clearing:]
+清除:
+[Min required level:]
+最小等級需求:
+[Minimum Level To Flag]
+旗幟最小等級
+[Bullets]
+彈藥
+[range]
+射程
+[destroy]
+摧毀
+[cancel destroy]
+取消摧毀
+[wait destroy]
+等待摧毀
+[upgrade]
+升級
+[repair]
+修復
+[cancel upgrade]
+取消升級
+[cancel repair]
+取消修復
+[units type]
+單位種類
+[workers]
+工人
+[explorers]
+探索者
+[warriors]
+士兵
+[Worker Ratio]
+工人比例
+[Explorer Ratio]
+探索者比例
+[Warrior Ratio]
+士兵比例
+[Unit type]
+單位種類
+[Worker]
+工人
+[Explorer]
+探索者
+[Warrior]
+士兵
+[still (w)]
+仍在
+[units working]
+單位工作
+[still one unit working]
+仍有一個單位正在工作
+[Still (i)]
+仍在 
+[Still one]
+剩下一個
+[Building name]
+建築物名稱
+[swarm building]
+孢子堆
+[food building]
+客棧
+[health building]
+醫院
+[walkspeed building]
+跑道
+[swimspeed building]
+游泳池
+[attack building]
+兵營
+[science building]
+學校
+[defense building]
+防禦塔
+[exploration flag]
+探索旗幟
+[war flag]
+攻擊旗幟
+[clearing flag]
+清除旗幟
+[stone wall]
+石牆
+[market]
+市場
+[forbidden area]
+禁區
+[guard area]
+守衛區
+[clear area]
+清除區
+[build swarm level 0]
+建造孢子堆
+[swarm level 0]
+孢子堆
+[build inn level 0]
+建造客棧 1
+[inn level 0]
+客棧 1
+[build inn level 1]
+建造客棧 2
+[inn level 1]
+客棧 2
+[build inn level 2]
+建造客棧 3
+[inn level 2]
+客棧 3
+[build hospital level 0]
+建造醫院 1
+[build hospital level 1]
+建造醫院 2
+[build hospital level 2]
+建造醫院 3
+[build racetrack level 0]
+建造跑道 1
+[build racetrack level 1]
+建造跑道 2
+[build racetrack level 2]
+建造跑道 3
+[build swimmingpool level 0]
+建造游泳池 1
+[build swimmingpool level 1]
+建造游泳池 2
+[build swimmingpool level 2]
+建造游泳池 3
+[build barracks level 0]
+建造兵營 1
+[build barracks level 1]
+建造兵營 2
+[build barracks level 2]
+建造兵營 3
+[build school level 0]
+建造學校 1
+[build school level 1]
+建造學校 2
+[build school level 2]
+建造學校 3
+[build defencetower level 0]
+建造防禦塔 1
+[defencetower level 0]
+防禦塔 1
+[build defencetower level 1]
+建造防禦塔 2
+[defencetower level 1]
+防禦塔 2
+[build defencetower level 2]
+建造防禦塔 3
+[defencetower level 2]
+防禦塔 3
+[build stonewall level 0]
+建造石牆
+[build market level 0]
+建造市場
+[Building short explanation]
+建立簡短註釋 (最多24字元)
+[swarm building explanation]
+製造新單位
+[food building explanation]
+餵飽你的單位
+[health building explanation]
+治療你的單位
+[walkspeed building explanation]
+增加行走速度
+[swimspeed building explanation]
+增加游泳速度
+[attack building explanation]
+增加戰鬥技巧
+[science building explanation]
+升級建築物
+[defense building explanation]
+攻擊附近敵人
+[exploration flag explanation]
+招集探索者
+[war flag explanation]
+招集士兵
+[clearing flag explanation]
+清除資源
+[stone wall explanation]
+消極防禦
+[market explanation]
+允許交易的資源
+[Building short explanation 2]
+建立簡短註釋 2 (最多24字元)
+[swarm building explanation 2]
+
+[food building explanation 2]
+
+[health building explanation 2]
+
+[walkspeed building explanation 2]
+你的單位的速度
+[swimspeed building explanation 2]
+你的單位的速度
+[attack building explanation 2]
+你的士兵的等級
+[science building explanation 2]
+你的工人的等級
+[defense building explanation 2]
+單位或建築物
+[exploration flag explanation 2]
+ 
+[war flag explanation 2]
+ 
+[clearing flag explanation 2]
+ 
+[stone wall explanation 2]
+元素
+[market explanation 2]
+和他人交易水果
+[waiting for %0]
+等待 %0
+[%0 has left the game]
+%0 已離開遊戲
+[%0 has been deconnected of the game]
+%0 以失去連線
+[load game]
+載入遊戲
+[save game]
+儲存遊戲
+[options]
+選項
+[alliances]
+聯盟
+[return to game]
+返回遊戲
+[quit the game]
+離開遊戲
+[load map]
+載入遊戲
+[save map]
+儲存地圖
+[open script editor]
+開啟語法編輯器
+[return to editor]
+返回編輯器
+[quit the editor]
+離開編輯器
+[Script Areas]
+語法區域
+[Change Area Name]
+更改區域名稱
+[Unnamed Area]
+{未命名區域}
+[delete]
+刪除
+[no ressources growth areas]
+非成長區域
+[ok]
+確定
+[Cancel]
+取消
+[human]
+人類玩家
+[you have lost]
+你輸了!!
+[you have won]
+你贏了!!
+[campaign]
+戰役
+[tutorial]
+教學指導
+[custom game]
+自訂遊戲
+[yog]
+Ysagoon 線上遊戲
+[Enter your nickname :]
+輸入你的暱稱:
+[Enter your password :]
+輸入你的密碼:
+[lan]
+LAN 遊戲
+[settings]
+設定
+[Warning, you need to reboot the game for changes to take effect]
+注意，你需要重新啟動遊戲以見更改
+[editor]
+編輯器
+[credits]
+幕後人員
+[quit]
+離開
+[create game]
+創造遊戲
+[update list]
+更新清單
+[connecting to]
+連線至
+[connect]
+連線
+[Disconnect]
+失聯
+[please wait]
+請稍等
+[loading glob2]
+載入 Globulation 2
+[host]
+開始一局新遊戲
+[join a game]
+加入一局遊戲
+[join]
+加入
+[goto main menu]
+回到主選單
+[player name]
+玩家名稱
+[svr hostname]
+伺服器主機名稱
+[hp]
+生命值
+[carry]
+搬運:
+[don't carry anything]
+沒有在搬運任何東西
+[level]
+等級
+[levels]
+等級
+[building site]
+建築地點
+[create map]
+創造地圖
+[map size x]
+地圖寬度
+[map size y]
+地圖高度
+[default terrain]
+預設地形
+[water]
+水面
+[sand]
+沙礫
+[grass]
+草原
+[teams]
+團隊
+[choose map]
+選擇一個地圖
+[choose game]
+選擇一個遊戲
+[awaiting players]
+正等待的玩家
+[stat]
+統計
+[food left]
+食物剩餘
+[general settings]
+基本設定
+[unit settings]
+單位設定
+[keyboard settings]
+鍵盤設定
+[remember unit]
+記錄單位
+[game shortcuts]
+遊戲快捷鍵
+[editor shortcuts]
+編輯器快捷鍵
+[akey]
+A-鍵
+[bkey]
+B-鍵
+[ckey]
+C-鍵
+[dkey]
+D-鍵
+[ekey]
+E-鍵
+[fkey]
+F-鍵
+[gkey]
+G-鍵
+[hkey]
+H-鍵
+[ikey]
+I-鍵
+[jkey]
+J-鍵
+[kkey]
+K-鍵
+[lkey]
+L-鍵
+[mkey]
+M-鍵
+[nkey]
+N-鍵
+[okey]
+O-鍵
+[pkey]
+P-鍵
+[qkey]
+Q-鍵
+[rkey]
+R-鍵
+[skey]
+S-鍵
+[tkey]
+T-鍵
+[ukey]
+U-鍵
+[vkey]
+V-鍵
+[wkey]
+W-鍵
+[xkey]
+X-鍵
+[ykey]
+Y-鍵
+[zkey]
+Z-鍵
+[unassigned]
+未分配
+[toggle draw unit paths]
+顯示單位動向
+[toggle draw information]
+顯示資訊
+[toggle draw accessibility aids]
+顯至最近支援
+[destroy building]
+摧毀已選擇建築物
+[upgrade building]
+開始/停止 升級
+[repair building]
+開始/停止 修復
+[mark map]
+為盟友標示地圖
+[record voice]
+開始錄音
+[pause game]
+暫停遊戲
+[switch to building view]
+切換至建築物視野
+[switch to flag view]
+切換至旗幟視野
+[switch to terrain view]
+切換至地形視野
+[switch to teams view]
+切換至團隊視野
+[open save menu]
+開啟儲存選單
+[open load menu]
+開啟載入選單
+[select swarm building]
+選擇孢子堆
+[select inn building]
+選擇客棧
+[select hospital building]
+選擇醫院
+[select racetrack building]
+選擇跑道
+[select swimmingpool building]
+選擇游泳池
+[select barracks building]
+選擇兵營
+[select school building]
+選擇學校
+[select tower building]
+選擇塔
+[select wall building]
+選擇牆
+[select market building]
+選擇市場
+[select exploration flag]
+選擇探索旗幟
+[select war flag]
+選擇攻擊旗幟
+[select clearing flag]
+選擇清除旗幟
+[restore default shortcuts]
+還原預設鍵盤快捷鍵
+[the building is finished]
+建築物已完成
+[the swarm is finished]
+孢子堆已完成
+[the food building is finished]
+客棧已完成
+[the health building is finished]
+醫院已完成
+[the walkspeed building is finished]
+跑道已完成
+[the swimspeed building is finished]
+游泳池已完成
+[the attack building is finished]
+訓練營已完成
+[the science building is finished]
+學校已完成
+[the tower building is finished]
+防禦塔已完成
+[the exploration flag is finished]
+?? 探索旗幟已完成 ??
+[the war flag is finished]
+?? 攻擊旗幟已完成 ??
+[the clearing flag is finished]
+?? 清除旗幟已完成 ??
+[the stone wall is finished]
+一段石牆已完成
+[the market is finished]
+市場已完成
+[the building is under attack]
+建築物正遭受攻擊
+[the swarm is under attack]
+孢子堆正遭受攻擊
+[the food building is under attack]
+客棧正遭受攻擊
+[the health building is under attack]
+醫院正遭受攻擊
+[the walkspeed building is under attack]
+跑道正遭受攻擊
+[the swimspeed building is under attack]
+游泳池正遭受攻擊
+[the attack building is under attack]
+訓練營正遭受攻擊
+[the science building is under attack]
+學校正遭受攻擊
+[the defense building is under attack]
+你的防禦正遭受攻擊
+[the exploration flag is under attack]
+?? 探索旗幟正遭受攻擊 ??
+[the war flag is under attack]
+?? 攻擊旗幟正遭受攻擊 ??
+[the clearing flag is under attack]
+?? 清除旗幟正遭受攻擊 ??
+[the stone wall is under attack]
+敵人已在牆下
+[the market is under attack]
+市場正遭受攻擊
+[Your %0 are under attack]
+你的 %0 正遭受攻擊
+[Your unit got converted to %0's team]
+你的單位遭 %0 招降
+[%0's team unit got converted to your team]
+%0 的單位被你招降
+[Uncontrolled]
+未控制
+[ai]
+AI
+[closed]
+已關閉
+[close]
+關閉
+[player]
+玩家
+[STARTING GAME ...]
+開始遊戲... 
+[Statistics]
+統計
+[Buildings]
+建築物
+[Prestige]
+聲望
+[Units]
+單位
+[Attack]
+攻擊
+[Defense]
+防禦
+[free]
+自由
+[of which]
+他們是
+[are ok]
+沒問題的
+[are hungry]
+挨餓的
+[are dying hungry]
+飢餓的
+[are wonded]
+受傷的
+[and]
+而且
+[seeking a job]
+正在找尋工作
+[jobs]
+工作
+[Walk]
+行走
+[Swim]
+游泳
+[Build]
+建造
+[Harvest]
+採收
+[At. speed]
+攻擊速度
+[At. strength]
+攻擊強度
+[Magic At. Air]
+Air dmg.
+[Magic At. Ground]
+地面攻擊
+[Total]
+總共
+[free]
+自由
+[seeking]
+等待
+[Free]
+尚可
+[hungry]
+挨餓
+[starving]
+飢餓
+[wounded]
+受傷
+[Starving Map]
+飢餓地圖
+[Damaged Map]
+傷患地圖
+[Defense Map]
+防禦地圖
+[In way]
+在路上
+[On the spot]
+在這裡
+[Version]
+版本
+[open]
+開啟
+[Add AI]
+新增 AI
+[AI]
+AI
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AICastor]
+AICastor
+[AIWarrush]
+AIWarrush
+[AIReachToInfinity]
+ReachToInfinity
+[AINicowar]
+Nicowar
+[AIToubib]
+AIToubib
+[the games]
+遊戲
+[the maps]
+地圖
+[was]
+曾
+[was AI]
+曾為 AI
+[state]
+狀態
+[Start]
+開始
+[not ready]
+還沒準備好
+[has joined]
+已加入
+[has quit]
+已退出
+[yog-chat]
+#yog-en
+[speed]
+速度
+[current speed]
+目前速度
+[attack speed]
+攻擊速度
+[new]
+新的
+[load]
+載入
+[new campaign]
+新戰役
+[load campaign]
+載入戰役
+[campaign editor]
+戰役編輯器
+[editing map]
+編輯地圖
+[add map]
+新增地圖
+[edit map]
+編輯地圖
+[remove map]
+移除地圖
+[start new campaign]
+開始新戰役
+[start mission]
+開始任務
+[unlocked by]
+解除由
+[maps available]
+可用的地圖
+[map name]
+名稱
+[handmade map]
+手工地圖
+[mapGenerationDescriptor Methodes]
+隨機製造地圖設定
+[uniform terrain]
+平整地形
+[random terrain]
+隨機地形
+[islands terrain]
+島嶼
+[ratios]
+比例
+[smoothing]
+平整度
+[number of teams]
+隊伍數量
+[islands size]
+島嶼大小
+[beach size]
+海灘大小
+[workers]
+工人
+[bad error in connection system]
+連線系統錯誤
+[not connected]
+沒有連線
+[presence request sent]
+傳送前至要求 ...
+[session request sent]
+傳送時間要求 ...
+[checksum sent]
+傳送總檢 ...
+[connected to server]
+連線至伺服器 ...
+[connecting to all players]
+正連線至所有玩家
+[connected to all players]
+已連線至所有玩家
+[available lan games]
+可行的LAN遊戲
+[login]
+登入
+[from:]
+來自:
+[to:]
+前往:
+[away:]
+離至:
+[compile]
+收集語法
+[downloaded at]
+以下載在
+[percent]
+%
+[download finished]
+下載完成
+[Map name: %0]
+地圖名稱: %0。
+[one player]
+一個玩家已經加入。
+[number of players: %0]
+%0 玩家再線.
+[number of teams: %0]
+%0 隊伍.
+[game full]
+遊戲已滿
+[small]
+小
+[medium]
+中
+[large]
+大
+[network latency]
+連線潛在因素
+[game speed]
+遊戲速度
+[Paused]
+暫停
+[Register a new YOG user with password]
+註冊一個新 YOG 帳號和密碼。 (不穩定)
+[Remember YOG password localy]
+記住密碼。 (不穩定)
+[YESTS_BAD]
+連接時系統協調錯誤
+[YESTS_UNABLE_TO_CONNECT]
+無法連接。 YOG meta伺服器已關閉。
+[YESTS_CREATED]
+連線系統已準備連接YOG meta伺服器。
+[YESTS_CONNECTING]
+確定連接至YOG meta伺服器中 ...
+[YESTS_DECONNECTING]
+從YOG meta伺服器失連...
+[YESTS_YOG_KILLED]
+YOG meta伺服器已被管理員關閉。
+[YESTS_CONNECTION_LOST]
+至YOG的連線已消失。
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG meta伺服器拒絕連線因為你的用戶名已被使用。
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+YOG meta伺服器拒絕連線因為你的密碼錯誤。
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+YOG meta伺服器拒絕連線因為你沒有密碼。請選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG meta伺服器拒絕連線因為你的用戶名已被使用。請重新選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+YOG meta伺服器拒絕連線因為傳輸協定錯誤。你早已被確認，請於45秒後再嘗試一次。
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+YOG meta伺服器拒絕連線因為傳輸協定錯誤因為你尚未連線卻已被確認，請回報這個問題。
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOG meta伺服器拒絕連線而沒有任何解釋!!
+[The player %0 has left YOG]
+%0 已離開 YOG。
+[The player %0 has joined YOG]
+%0 已加入 YOG。
+[You are now marked as away]
+你已被顯示離線。
+[You are no more marked as away]
+你已經沒有被顯示離線
+[YOG_HELP]
+YOG 通訊系統有兩種指令， "msg"和"away"輸入"/help <command>"以獲得更多資訊。
+[YOG_HELP_AWAY]
+"/away (<message>)"可以讓其他YOG用戶知道你為離線狀態 ，也可以附加一些註釋，例如 "/away 我正在吃漢堡，我在一點鐘後會回來". Alias "/a"
+[YOG_HELP_MSG]
+"/msg <name> <message>" 這指令會將私人訊息傳至指定用戶，例如 "/msg Jonh ,你好嗎?".  Alias "/m".
+[save before quit?]
+你在離開前要先儲存嗎?
+[Yes]
+是
+[No]
+否
+[Save]
+儲存
+[auto save]
+自動儲存
+[Total prestige reached]
+聲望總計達到
+[Continue playing]
+繼續遊戲
+[Lost : your colony is dead]
+輸: 你的殖民地已被摧毀
+[Won : you defeated your opponents]
+贏: 你打敗了你的對手
+[Won : your ally %0 has the most prestige]
+贏: 你的隊伍 %0 得到了最多的聲望
+[Lost : %0 has more prestige than you]
+輸: %0 的聲望比你還高
+[Won : you have the most prestige]
+贏: 你的聲望最高
+[The game has not been finished]
+遊戲尚未結束
+[display]
+顯示
+[username]
+用戶名
+[fullscreen]
+全螢幕
+[hwaccel]
+硬體加速度
+[dblbuff]
+加倍緩衝存儲器
+[lowquality]
+低畫質
+[audio]
+音效
+[Music volume]
+音量 (音樂)
+[Happyness]
+幸福
+[customcur]
+自訂鼠標
+[choose campaign]
+選擇一個戰役
+[nick taken]
+我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
+[mute]
+沉默
+[abreaviation explanation A]
+A: 盟友
+[abreaviation explanation V]
+V: 顯示所有建築物
+[abreaviation explanation fV]
+fV: 顯示客棧 (以招降敵人單位)
+[abreaviation explanation mV]
+mV: 顯示市場 (以交換水果)
+[abreaviation explanation C]
+C: 傳送訊息至
+[shortcut explanation enter]
+Enter: 傳送訊息
+[shortcut explanation v]
+V: 持鍵以傳送訊息
+[Delete game]
+刪除以選擇的遊戲
+[any explorer]
+任何探索者
+[ground attack]
+地面攻擊
+[Can't join game, wrong game version]
+無法加入遊戲，版本錯誤。
+[Can't join game, missmatching game parameters]
+無法加入遊戲，遊戲參數失對。
+[Can't join game, timeout]
+無法加入遊戲，過時。
+[swamp terrain]
+沼澤
+[river terrain]
+河流
+[crater lakes terrain]
+破碎湖泊
+[old random terrain]
+古老隨機地形
+[old islands terrain]
+古老隨機島嶼
+[desert]
+沙漠
+[algae]
+海藻
+[wheat]
+小麥
+[wood]
+木材
+[stone]
+石頭
+[river diameter]
+河流寬度
+[extra islands]
+空置島嶼
+[crater density]
+破碎程度
+[press space]
+按下空白鍵以繼續
+[GUIMapPreview text 0]
+請選擇
+[GUIMapPreview text 1]
+一個地圖
+[Unit editor]
+單位編輯器
+[skin]
+顯示
+[hungryness]
+飢餓度
+[repeat area]
+在相同地景的時間
