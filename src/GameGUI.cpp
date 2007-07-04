@@ -46,7 +46,6 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "YOG.h"
 #include "IRC.h"
 #include "SoundMixer.h"
 #include "VoiceRecorder.h"
@@ -84,8 +83,7 @@
 
 #define YOFFSET_BRUSH 56
 
-//! Pointer to IRC client in YOGScreen, NULL if no IRC client is available
-extern IRC *ircPtr;
+using namespace boost;
 
 enum GameGUIGfxId
 {
@@ -107,7 +105,7 @@ public:
 	//! React on action from any widget (but there is only one anyway)
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	//! Return the text typed
-	const char *getText(void) const { return textInput->getText().c_str(); }
+	std::string getText(void) const { return textInput->getText(); }
 	//! Set the text
 	void setText(const char *text) const { textInput->setText(text); }
 };
@@ -250,9 +248,9 @@ void GameGUI::init()
 
 	hiddenGUIElements=0;
 	
- 	for (size_t i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		smoothedCpuLoad[i]=0;
-	smoothedCpuLoadPos=0;
+ 	for (size_t i=0; i<SMOOTHED_CPU_SIZE; i++)
+		smoothedCPULoad[i]=0;
+	smoothedCPUPos=0;
 
  	for (int i=0; i<NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT; i++)
 		unitCount[i] = 1;
@@ -270,10 +268,10 @@ void GameGUI::adjustLocalTeam()
 {
 	assert(localTeamNo>=0);
 	assert(localTeamNo<32);
-	assert(game.session.numberOfPlayer>0);
-	assert(game.session.numberOfPlayer<32);
-	assert(localTeamNo<game.session.numberOfTeam);
-	
+	assert(game.gameHeader.getNumberOfPlayers()>0);
+	assert(game.gameHeader.getNumberOfPlayers()<32);
+	assert(localTeamNo<game.mapHeader.getNumberOfTeams());
+
 	localTeam = game.teams[localTeamNo];
 	assert(localTeam);
 	teamStats = &localTeam->stats;
@@ -308,17 +306,19 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 		||(drop && (selectionPushedPosX!=posX || selectionPushedPosY!=posY)))
 	{
 		Uint16 gid=selBuild->gid;
-		OrderMoveFlag *oms=new OrderMoveFlag(gid, posX, posY, drop);
+		shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, posX, posY, drop));
 		// First, we check if anoter move of the same flag is already in the "orderQueue".
 		bool found=false;
-		for (std::list<Order *>::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
+		for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
 		{
-			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG) && ( ((OrderMoveFlag *)(*it))->gid==gid) )
+			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG))
 			{
-				delete (*it);
-				(*it)=oms;
-				found=true;
-				break;
+				if(static_pointer_cast<OrderMoveFlag>(*it)->gid==gid)
+				{
+					(*it) = oms;
+					found=true;
+					break;
+				}
 			}
 		}
 		if (!found)
@@ -408,11 +408,11 @@ void GameGUI::sendBrushOrders(void)
 	{
 		//std::cout << "GameGUI::sendBrushOrders : sending application of size " << brushAccumulator.getAreaSurface()/8 << std::endl;
 		if (brushType == FORBIDDEN_BRUSH)
-			orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator));
+			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator)));
 		else if (brushType == GUARD_AREA_BRUSH)
-			orderQueue.push_back(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator));
+			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator)));
 		else if (brushType == CLEAR_AREA_BRUSH)
-			orderQueue.push_back(new OrderAlterateClearArea(localTeamNo, brush.getType(), &brushAccumulator));
+			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateClearArea(localTeamNo, brush.getType(), &brushAccumulator)));
 		else
 			assert(false);
 		brushAccumulator.clear();
@@ -547,72 +547,19 @@ void GameGUI::step(void)
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
 
 	assert(localTeam);
-	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
+	boost::shared_ptr<GameEvent> gevent = localTeam->getEvent();
+	while(gevent)
 	{
-		Uint16 gid = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).id;
-		int team = Unit::GIDtoTeam(gid);
-		int id = Unit::GIDtoID(gid);
-		Unit *u = game.teams[team]->myUnits[id];
-		if (u)
-		{
-			int strDec=(int)(u->typeNum);
-			addMessage(200, 30, 30, FormatableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]")).arg(Toolkit::getStringTable()->getString("[units type]", strDec)));
-			eventGoPosX = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posY;
-			eventGoType = Team::UNIT_UNDER_ATTACK_EVENT;
-		}
-	}
-	if (localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
-	{
-		int team = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).team;
-		const char *teamName = game.teams[team]->getFirstPlayerName();
-		addMessage(140, 0, 0, FormatableString(Toolkit::getStringTable()->getString("[Your unit got converted to %0's team]")).arg(teamName));
-		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posX;
-		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posY;
-		eventGoType = Team::UNIT_CONVERTED_LOST;
-	}
-	if (localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
-	{
-		int team = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).team;
-		const char *teamName = game.teams[team]->getFirstPlayerName();
-		addMessage(100, 255, 100, FormatableString(Toolkit::getStringTable()->getString("[%0's team unit got converted to your team]")).arg(teamName));
-		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posX;
-		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posY;
-		eventGoType = Team::UNIT_CONVERTED_ACQUIERED;
-	}
-	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
-	{
-		Uint16 gid = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).id;
-		int team = Building::GIDtoTeam(gid);
-		int id = Building::GIDtoID(gid);
-		Building *b = game.teams[team]->myBuildings[id];
-		if (b)
-		{
-			int strDec=b->type->shortTypeNum;
-			addMessage(255, 0, 0, Toolkit::getStringTable()->getString("[the building is under attack]", strDec));
-			eventGoPosX = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posY;
-			eventGoType = Team::BUILDING_UNDER_ATTACK_EVENT;
-		}
-	}
-	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
-	{
-		Uint16 gid = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).id;
-		int team = Building::GIDtoTeam(gid);
-		int id = Building::GIDtoID(gid);
-		Building *b = game.teams[team]->myBuildings[id];
-		if (b)
-		{
-			int strDec=b->type->shortTypeNum;
-			addMessage(30, 255, 30, Toolkit::getStringTable()->getString("[the building is finished]", strDec));
-			eventGoPosX = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posY;
-			eventGoType = Team::BUILDING_FINISHED_EVENT;
-		}
+		Color c = gevent->formatColor();
+		addMessage(c.r, c.g, c.b, gevent->formatMessage());
+		eventGoPosX = gevent->getX();
+		eventGoPosY = gevent->getY();
+		eventGoType = gevent->getEventType();
+		gevent = localTeam->getEvent();
 	}
 	
 	// voice step
-	OrderVoiceData *orderVoiceData;
+	boost::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
 		orderVoiceData->recepientsMask = chatMask;
@@ -623,20 +570,9 @@ void GameGUI::step(void)
 	musicStep();
 	
 	// do a yog step
-	yog->step();
-	
-	// do a irc step if IRC is enabled
-	if (ircPtr)
-	{
-		ircPtr->step();
-		// display IRC messages
-		while (ircPtr->isChatMessage())
-		{
-			addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(ircPtr->getChatMessageSource()).arg(ircPtr->getChatMessage()));
-			ircPtr->freeChatMessage();
-		}
-	}
+//	yog->step();
 
+/*
 	// display yog chat messages
 	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
 		if (!m->gameGuiPainted)
@@ -644,8 +580,8 @@ void GameGUI::step(void)
 			switch(m->messageType)//set the text color
 			{
 				case YCMT_MESSAGE:
-					/* We don't want YOG messages to appear while in the game.
-					addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);*/
+					//We don't want YOG messages to appear while in the game.
+					//addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);
 				break;
 				case YCMT_PRIVATE_MESSAGE:
 					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(m->userName).arg(m->text));
@@ -669,6 +605,7 @@ void GameGUI::step(void)
 			}
 			m->gameGuiPainted=true;
 		}
+*/
 
 	// do we have won or lost conditions
 	checkWonConditions();
@@ -683,17 +620,17 @@ void GameGUI::musicStep(void)
 	static unsigned buildingTimeout = 0;
 	
 	// something bad happened
-	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT) ||
-		localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) ||
-		localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
+	if (localTeam->wasRecentEvent(GEUnitUnderAttack) ||
+		localTeam->wasRecentEvent(GEUnitLostConversion) ||
+		localTeam->wasRecentEvent(GEBuildingUnderAttack))
 	{
 	   warTimeout = 220;
 	   globalContainer->mix->setNextTrack(4, true);
 	}
 	
 	// something good happened
-	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT) ||
-		localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
+	if (localTeam->wasRecentEvent(GEUnitGainedConversion) ||
+		localTeam->wasRecentEvent(GEBuildingCompleted))
 	{
 		buildingTimeout = 220;
 		globalContainer->mix->setNextTrack(3, true);
@@ -751,7 +688,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -759,7 +696,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -793,7 +730,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
-					orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					return true;
 				}
 				break;
@@ -818,7 +755,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
 					// mask are for players, we need to convert them to team.
-					for (int pi=0; pi<game.session.numberOfPlayer; pi++)
+					for (int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
 					{
 						int otherTeam=game.players[pi]->teamNumber;
 						for (int mi=0; mi<5; mi++)
@@ -833,12 +770,12 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					
 					// we have a special cases for uncontroled Teams:
 					// FIXME : remove this
-					for (int ti=0; ti<game.session.numberOfTeam; ti++)
+					for (int ti=0; ti<game.mapHeader.getNumberOfTeams(); ti++)
 						if (game.teams[ti]->playersMask==0)
 							teamMask[1]|=(1<<ti); // we want to hit them.
 					
-					orderQueue.push_back(new SetAllianceOrder(localTeamNo,
-						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4]));
+					orderQueue.push_back(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
+						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4])));
 					chatMask=((InGameAllianceScreen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
@@ -873,12 +810,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case LoadSaveScreen::OK:
 				{
-					const char *locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
+					std::string locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
 					if (inGameMenu==IGM_LOAD)
 					{
-						strncpy(toLoadGameFileName, locationName, sizeof(toLoadGameFileName));
-						toLoadGameFileName[sizeof(toLoadGameFileName)-1]=0;
-						orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+						toLoadGameFileName = locationName;
+						orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					}
 					else
 					{
@@ -913,7 +849,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			switch (gameMenuScreen->endValue)
 			{
 				case InGameEndOfGameScreen::QUIT:
-				orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
@@ -946,37 +882,10 @@ void GameGUI::processEvent(SDL_Event *event)
 		
 		if (typingInputScreen->endValue==0)
 		{
-			char message[256];
-			strncpy(message, typingInputScreen->getText(), 256);
-			if (message[0])
+			std::string message = typingInputScreen->getText();
+			if (!message.empty())
 			{
-				bool foundLocal=false;
-				yog->handleMessageAliasing(message, 256);
-				if (strncmp(message, "/m ", 3)==0)
-				{
-					for (int i=0; i<game.session.numberOfPlayer; i++)
-						if (game.players[i] &&
-							(game.players[i]->type>=Player::P_AI||game.players[i]->type==Player::P_IP||game.players[i]->type==Player::P_LOCAL))
-						{
-							char *name=game.players[i]->name;
-							int l=Utilities::strnlen(name, BasePlayer::MAX_NAME_LENGTH);
-							if ((strncmp(name, message+3, l)==0)&&(message[3+l]==' '))
-							{
-								orderQueue.push_back(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, message+4+l));
-								foundLocal=true;
-							}
-						}
-					if (!foundLocal)
-						yog->sendMessage(message);
-				}
-				else if (message[0]=='/')
-				{
-					yog->sendMessage(message);
-					if (ircPtr && (message[1]=='/'))
-						ircPtr->sendCommand(&message[1]);
-				}
-				else
-					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message));
+				orderQueue.push_back(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 				typingInputScreen->setText("");
 			}
 			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
@@ -1091,7 +1000,7 @@ void GameGUI::processEvent(SDL_Event *event)
                                                         (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
@@ -1099,7 +1008,7 @@ void GameGUI::processEvent(SDL_Event *event)
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
-							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1118,7 +1027,7 @@ void GameGUI::processEvent(SDL_Event *event)
                                                         (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
@@ -1126,7 +1035,7 @@ void GameGUI::processEvent(SDL_Event *event)
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
-							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1167,7 +1076,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_QUIT)
 	{
 		exitGlobCompletely=true;
-		orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{
@@ -1239,7 +1148,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((building->type->regenerationSpeed == 0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid, 1, 1));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, 1, 1)));
 	}
 	else if (upgrade)
 	{
@@ -1247,7 +1156,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((buildingType->nextLevel != -1) &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
 			(localTeam->maxBuildLevel() > buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
 	}
 }
 
@@ -1394,7 +1303,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1409,7 +1318,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							setUnitCount(selBuild->typeNum, nbReq);
 						}
 					}
@@ -1514,9 +1423,10 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 						int evX, evY;
 						int sw, sh;
 						
+						/*
 						if (ctrl)
 						{
-							eventGoTypeIterator = (eventGoTypeIterator+1) % Team::EVENT_TYPE_SIZE;
+							eventGoTypeIterator = (eventGoTypeIterator+1) % GESize;
 							
 							if (!localTeam->getEvent((Team::EventType)eventGoTypeIterator).validPosition)
 								break;
@@ -1525,6 +1435,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 							evY = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posY;
 						}
 						else
+						*/
 						{
 							eventGoTypeIterator = eventGoType;
 							evX = eventGoPosX;
@@ -1573,11 +1484,11 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				{
 					if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 					{
-						orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
+						orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
 					}
 					else if (selBuild->buildingState==Building::ALIVE)
 					{
-						orderQueue.push_back(new OrderDelete(selBuild->gid));
+						orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
 					}
 				}
 			}
@@ -1590,7 +1501,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum - 1);
 				if (selBuild->constructionResultState == Building::UPGRADE)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+					orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 					repairAndUpgradeBuilding(selBuild, false, true);
 			}
@@ -1603,7 +1514,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum);
 				if (selBuild->constructionResultState == Building::REPAIR)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+					orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 					repairAndUpgradeBuilding(selBuild, true, false);
 			}
@@ -1664,7 +1575,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 		else if(action=="pause game")
 		{
 			if (pressed)
-				orderQueue.push_back(new PauseGameOrder(!gamePaused));
+				orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
 		}
                 else if ((action == "prefix key select area tool") && pressed) {
                   twoKeyMode = TWOKEY_AREA; }
@@ -1984,7 +1895,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		
 		if (isRoom)
 		{
-			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum, unitWorking, unitWorkingFuture));
+			orderQueue.push_back(shared_ptr<Order>(new OrderCreate(localTeamNo, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
 		}
 		
 	}
@@ -1996,7 +1907,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	{
 		int markx, marky;
 		game.map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
-		orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+		orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 		putMark = false;
 	}
@@ -2107,7 +2018,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			int markx, marky;
 			minimapMouseToPos(mx, my, &markx, &marky, false);
-			orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
 		}
@@ -2149,20 +2060,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->maxUnitWorkingLocal>0)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal-=1);
-						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 					}
 				}
 				else if (mx<128-18)
 				{
 					nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/92;
-					orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 				}
 				else
 				{
 					if(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal+=1);
-						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 					}
 				}
 				setUnitCount(selBuild->typeNum, nbReq);
@@ -2183,13 +2094,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->unitStayRangeLocal>0)
 					{
 						nbReq=(selBuild->unitStayRangeLocal-=1);
-						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
 				else if (mx<128-18)
 				{
 					nbReq=selBuild->unitStayRangeLocal=((mx-18)*(unsigned)selBuild->type->maxUnitStayRange)/92;
-					orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 				}
 				else
 				{
@@ -2197,7 +2108,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange)
 					{
 						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
 				setUnitCount(selBuild->typeNum, nbReq);
@@ -2222,7 +2133,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 						{
 							selBuild->clearingRessourcesLocal[i]=!selBuild->clearingRessourcesLocal[i];
-							orderQueue.push_back(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal)));
 						}
 						
 						ypos+=YOFFSET_TEXT_PARA;
@@ -2236,7 +2147,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						selBuild->minLevelToFlagLocal=i;
-						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
@@ -2252,7 +2163,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						selBuild->minLevelToFlagLocal=i;
-						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
@@ -2285,7 +2196,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal |= (1<<r);
 						selBuild->sendRessourceMaskLocal &= ~(1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
 				}
 
 				if ((mx>110) && (mx<122))
@@ -2299,7 +2210,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal &= ~(1<<r);
 						selBuild->sendRessourceMaskLocal |= (1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
 				}
 			}
 		}
@@ -2315,20 +2226,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]>0)
 						{
 							selBuild->ratioLocal[i]--;
-							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 						}
 					}
 					else if (mx<128-18)
 					{
 						selBuild->ratioLocal[i]=((mx-18)*MAX_RATIO_RANGE)/92;
-						orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 					}
 					else
 					{
 						if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
 						{
 							selBuild->ratioLocal[i]++;
-							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
@@ -2342,13 +2253,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum);
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
 				int unitWorking = getUnitCount(typeNum - 1);
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 			{
@@ -2360,11 +2271,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
-				orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
 			}
 			else if (selBuild->buildingState==Building::ALIVE)
 			{
-				orderQueue.push_back(new OrderDelete(selBuild->gid));
+				orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
 			}
 		}
 	}
@@ -2457,17 +2368,16 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 }
 
-Order *GameGUI::getOrder(void)
+boost::shared_ptr<Order> GameGUI::getOrder(void)
 {
-	Order *order;
+	boost::shared_ptr<Order> order;
 	if (orderQueue.size()==0)
-		order=new NullOrder();
+		order=shared_ptr<Order>(new NullOrder());
 	else
 	{
 		order=orderQueue.front();
 		orderQueue.pop_front();
 	}
-	order->gameCheckSum=game.checkSum();
 	return order;
 }
 
@@ -2584,12 +2494,14 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 				{
 					int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-					int typeId = IntBuildingType::shortNumberFromType(type);
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
+					std::string key = "[" + type + "]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, key.c_str());
 					
 					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explanation]", typeId);
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explanation 2]", typeId);
+					key = "[" + type + " explanation]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, key.c_str());
+					key = "[" + type + " explanation 2]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, key.c_str());
 					globalContainer->littleFont->popStyle();
 					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
 					if (bt)
@@ -2623,11 +2535,11 @@ void GameGUI::drawUnitInfos(void)
 
 	// draw "unit" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Unit type]", selUnit->typeNum);
+	title += getUnitName(selUnit->typeNum);
 	title += " (";
 
-	const char *textT=selUnit->owner->getFirstPlayerName();
-	if (!textT)
+	std::string textT=selUnit->owner->getFirstPlayerName();
+	if (textT.empty())
 		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 	title += textT;
 	title += ")";
@@ -2800,7 +2712,7 @@ void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
 		int y = i>>1;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+(i&0x1)*64, 256+172-42+y*12,
 			font,
-			FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[ressources]", i)).arg(ressources[i]).c_str());
+			FormatableString("%0: %1").arg(getRessourceName(i)).arg(ressources[i]).c_str());
 	}
 }
 
@@ -2826,11 +2738,12 @@ void GameGUI::drawBuildingInfos(void)
 
 	// draw "building" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
+	std::string key ="[" + buildingType->type + "]";
+	title += Toolkit::getStringTable()->getString(key.c_str());
 	{
 		title += " (";
-		const char *textT=selBuild->owner->getFirstPlayerName();
-		if (!textT)
+		std::string textT=selBuild->owner->getFirstPlayerName();
+		if (textT.empty())
 			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 		title += textT;
 		title += ")";
@@ -3019,7 +2932,7 @@ void GameGUI::drawBuildingInfos(void)
 				if (i!=STONE)
 				{
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,
-						Toolkit::getStringTable()->getString("[ressources]", i));
+						getRessourceName(i));
 					int spriteId;
 					if (selBuild->clearingRessourcesLocal[i])
 						spriteId=20;
@@ -3161,7 +3074,7 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_TEXT_PARA;
 		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(getRessourceName(i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
 
 			int inId, outId;
 			if (selBuild->receiveRessourceMaskLocal & (1<<i))
@@ -3191,7 +3104,7 @@ void GameGUI::drawBuildingInfos(void)
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
 				drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", i));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, getUnitName(i));
 			}
 		}
 		
@@ -3205,7 +3118,7 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				if (buildingType->maxRessource[i])
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[ressources]", i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(getRessourceName(i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
 					j++;
 				}
 			}
@@ -3338,7 +3251,7 @@ void GameGUI::drawRessourceInfos(void)
 	if (r.type!=NO_RES_TYPE)
 	{
 		// Draw ressource name
-		const std::string &ressourceName = Toolkit::getStringTable()->getString("[ressources]", r.type);
+		const std::string &ressourceName = getRessourceName(r.type);
 		int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
 		int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
 		globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
@@ -3509,26 +3422,22 @@ void GameGUI::drawTopScreenBar(void)
 	
 	// draw CPU load
 	dec += 70;
-	int cpuLoadMax=0;
-	int cpuLoadMaxIndex=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (cpuLoadMax<smoothedCpuLoad[i])
-		{
-			cpuLoadMax=smoothedCpuLoad[i];
-			cpuLoadMaxIndex=i;
-		}
 	int cpuLoad=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (i!=cpuLoadMaxIndex && cpuLoad<smoothedCpuLoad[i])
-			cpuLoad=smoothedCpuLoad[i];
-	if (cpuLoad<game.session.gameTPF-8)
+	for (unsigned i=0; i<SMOOTHED_CPU_SIZE; i++)
+		cpuLoad += smoothedCPULoad[i];
+
+	cpuLoad /= SMOOTHED_CPU_SIZE;
+
+	if (cpuLoad<50)
 		memcpy(actC, greenC, sizeof(greenC));
-	else if (cpuLoad<game.session.gameTPF)
+	else if (cpuLoad<75)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	else
 		memcpy(actC, redC, sizeof(redC));
-	
-	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoad, 8, actC[0], actC[1], actC[2]);
+
+	int cpuLength = int(float(cpuLoad) / 100.0 * 40.0);
+
+	globalContainer->gfx->drawFilledRect(dec, 4, cpuLength, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	
@@ -3720,7 +3629,7 @@ void GameGUI::drawOverlayInfos(void)
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
 		Uint32 apm=game.maskAwayPlayer;
-		for(int pi=0; pi<game.session.numberOfPlayer; pi++)
+		for(int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
 		{
 			if (pm&apm)
 				nbap++;
@@ -3731,7 +3640,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 255, 255, 255);
 		pm=1;
 		int pnb=0;
-		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
+		for(int pi2=0; pi2<game.gameHeader.getNumberOfPlayers(); pi2++)
 		{
 			if (pm&apm)
 			{
@@ -4029,13 +3938,13 @@ void GameGUI::checkWonConditions(void)
 	}
 }
 
-void GameGUI::executeOrder(Order *order)
+void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 {
 	switch (order->getOrderType())
 	{
 		case ORDER_TEXT_MESSAGE :
 		{
-			MessageOrder *mo=(MessageOrder *)order;
+			boost::shared_ptr<MessageOrder> mo=static_pointer_cast<MessageOrder>(order);
 			int sp=mo->sender;
 			Uint32 messageOrderType=mo->messageOrderType;
 
@@ -4071,29 +3980,17 @@ void GameGUI::executeOrder(Order *order)
 		break;
 		case ORDER_VOICE_DATA:
 		{
-			OrderVoiceData *ov = (OrderVoiceData *)order;
+			boost::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
 			if (ov->recepientsMask & (1<<localPlayer))
 				globalContainer->mix->addVoiceData(ov);
-			game.executeOrder(order, localPlayer);
-		}
-		break;
-		case ORDER_QUITED :
-		{
-			if (order->sender==localPlayer)
-				isRunning=false;
-			game.executeOrder(order, localPlayer);
-		}
-		break;
-		case ORDER_DECONNECTED :
-		{
-			int qp=order->sender;
-			addMessage(200, 200, 200, FormatableString(Toolkit::getStringTable()->getString("[%0 has been deconnected of the game]")).arg(game.players[qp]->name));
 			game.executeOrder(order, localPlayer);
 		}
 		break;
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;
+			if (qp==localPlayer)
+				isRunning=false;
 			addMessage(200, 200, 200, FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name));
 			game.executeOrder(order, localPlayer);
 		}
@@ -4101,16 +3998,16 @@ void GameGUI::executeOrder(Order *order)
 		
 		case ORDER_MAP_MARK:
 		{
-			MapMarkOrder *mmo=(MapMarkOrder *)order;
+			boost::shared_ptr<MapMarkOrder> mmo=static_pointer_cast<MapMarkOrder>(order);
 
-			assert(game.teams[mmo->teamNumber]->teamNumber<game.session.numberOfTeam);
+			assert(game.teams[mmo->teamNumber]->teamNumber<game.mapHeader.getNumberOfTeams());
 			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
 				addMark(mmo);
 		}
 		break;
 		case ORDER_PAUSE_GAME:
 		{
-			PauseGameOrder *pgo=(PauseGameOrder *)order;
+			boost::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
 			gamePaused=pgo->pause;
 		}
 		break;
@@ -4121,13 +4018,13 @@ void GameGUI::executeOrder(Order *order)
 	}
 }
 
-bool GameGUI::loadBase(const SessionInfo *initial)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader)
 {
 	init();
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(initial->getFileName()));
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
-		std::cerr << "GameGUI::loadBase() : error, can't open file " << initial->getFileName() << std::endl;
+		std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << std::endl;
 		delete stream;
 		return false;
 		}
@@ -4138,7 +4035,8 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		if (!res)
 			return false;
 		
-		game.setBase(initial);
+		game.setMapHeader(mapHeader);
+		game.setGameHeader(gameHeader);
 	}
 
 	return true;
@@ -4155,8 +4053,7 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		return false;
 	}
-
-	if (!game.session.fileIsAMap)
+	if (game.mapHeader.getIsSavedGame())
 	{
 		// load gui's specific infos
 		stream->readEnterSection("GameGUI");
@@ -4194,10 +4091,6 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 {
 	// Game is can't be no more automatically generated
-	if (game.session.mapGenerationDescriptor)
-		delete game.session.mapGenerationDescriptor;
-	game.session.mapGenerationDescriptor=NULL;
-
 	game.save(stream, false, name);
 	
 	stream->writeEnterSection("GameGUI");
@@ -4278,15 +4171,11 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
 }
 
-void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
+void GameGUI::drawTextCenter(int x, int y, const char *caption)
 {
 	const char *text;
 
-	if (i==-1)
-		text=Toolkit::getStringTable()->getString(caption);
-	else
-		text=Toolkit::getStringTable()->getString(caption, i);
-
+	text=Toolkit::getStringTable()->getString(caption);
 	int dec=(128-globalContainer->littleFont->getStringWidth(text))>>1;
 	globalContainer->gfx->drawString(x+dec, y, globalContainer->littleFont, text);
 }
@@ -4587,8 +4476,8 @@ void GameGUI::disableGUIElement(int id)
 
 void GameGUI::setCpuLoad(int s)
 {
-	smoothedCpuLoad[smoothedCpuLoadPos]=s;
-	smoothedCpuLoadPos=(smoothedCpuLoadPos+1)%SMOOTH_CPU_LOAD_WINDOW_LENGTH;
+	smoothedCPULoad[smoothedCPUPos]=s;
+	smoothedCPUPos=(smoothedCPUPos+1) % SMOOTHED_CPU_SIZE;
 }
 
 
@@ -4665,7 +4554,7 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
 	}
 }
 
-void GameGUI::addMark(MapMarkOrder *mmo)
+void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
 	Mark mark;
 	mark.showTicks=Mark::DEFAULT_MARK_SHOW_TICKS;

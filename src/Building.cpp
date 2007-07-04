@@ -201,28 +201,18 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
 	unitStayRangeLocal = unitStayRange;
-	if (versionMinor >= 27)
+
+	for (int i=0; i<BASIC_COUNT; i++)
 	{
-		for (int i=0; i<BASIC_COUNT; i++)
-		{
-			std::ostringstream oss;
-			oss << "clearingRessources[" << i << "]";
-			clearingRessources[i] = (bool)stream->readSint32(oss.str().c_str());
-		}
-		assert(clearingRessources[STONE] == false);
+		std::ostringstream oss;
+		oss << "clearingRessources[" << i << "]";
+		clearingRessources[i] = (bool)stream->readSint32(oss.str().c_str());
 	}
-	else
-	{
-		for( int i=0; i<BASIC_COUNT; i++)
-			clearingRessources[i] = true;
-		clearingRessources[STONE] = false;
-	}
+	assert(clearingRessources[STONE] == false);
+
 	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
 	
-	if (versionMinor >= 33)
-		minLevelToFlag = stream->readSint32("minLevelToFlag");
-	else
-		minLevelToFlag = 0;
+	minLevelToFlag = stream->readSint32("minLevelToFlag");
 	minLevelToFlagLocal = minLevelToFlag;
 	
 	// Building Specific
@@ -260,10 +250,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	shootingStep = stream->readUint32("shootingStep");
 	shootingCooldown = stream->readSint32("shootingCooldown");
-	if (versionMinor >= 24)
-		bullets = stream->readSint32("bullets");
-	else
-		bullets = 0;
+	bullets = stream->readSint32("bullets");
 
 	// type
 	// FIXME : do not save typenum but name/isBuildingSite/level
@@ -392,17 +379,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsWorking.push_front(unit);
 	}
 
-	if(versionMinor<56)
-	{
-		unsigned nbWorkingSubscribe = stream->readUint32("nbWorkingSubscribe");
-		for (unsigned i=0; i<nbWorkingSubscribe; i++)
-		{
-			std::ostringstream oss;
-			oss << "unitsWorkingSubscribe[" << i << "]";
-			stream->readUint16(oss.str().c_str());
-		}
-	}
-
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
@@ -419,19 +395,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
 		unitsInside.push_front(unit);
-	}
-
-	if(versionMinor<56)
-	{
-		unsigned nbInsideSubscribe = stream->readUint32("nbInsideSubscribe");
-		for (unsigned i=0; i<nbInsideSubscribe; i++)
-		{
-			std::ostringstream oss;
-			oss << "unitsInsideSubscribe[" << i << "]";
-			Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
-			assert(unit);
-		} 
-		stream->readSint32("subscriptionInsideTimer");
 	}
 
 	stream->readLeaveSection();
@@ -937,7 +900,8 @@ void Building::updateBuildingSite(void)
 			owner->clearingFlags.push_back(this);
 		
 		setMapDiscovered();
-		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid, owner->teamNumber);
+		boost::shared_ptr<GameEvent> event(new BuildingCompletedEvent(owner->game->stepCounter, getMidX(), getMidY(), shortTypeNum));
+		owner->pushGameEvent(event);
 		
 		// we need to do an update again
 		updateCallLists();
@@ -2533,24 +2497,29 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=typeNum;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [0]
+		
 
 	cs^=buildingState;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [1]
 	cs=(cs<<31)|(cs>>1);
-
+	
 	cs^=maxUnitWorking;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [2]
+	
 	cs^=maxUnitWorkingPreferred;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [3]
+		
 	cs^=unitsWorking.size();
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [4]
+
 	cs^=maxUnitInside;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [5]
+
 	cs^=unitsInside.size();
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [6]
@@ -2559,6 +2528,7 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=posX;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [7]
+	
 	cs^=posY;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [8]
@@ -2581,9 +2551,12 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=productionTimeout;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [12]
+		
+
 	cs^=totalRatio;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [13]
+	
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
@@ -2597,9 +2570,13 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=shootingStep;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [15]
+
+
 	cs^=shootingCooldown;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [16]
+	
+		
 	cs^=bullets;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [17]

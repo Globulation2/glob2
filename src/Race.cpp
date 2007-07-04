@@ -258,11 +258,8 @@ bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].load(stream, versionMinor);
-	
-	if (versionMinor >= 34)
-		hungryness = (Sint32)stream->readSint32("hungryness");
-	else
-		hungryness = defaultRace.hungryness;
+
+	hungryness = (Sint32)stream->readSint32("hungryness");
 	
 	return true;
 }

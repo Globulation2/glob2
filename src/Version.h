@@ -72,5 +72,7 @@
 // version 55 froze current Nicowar to OldNicowar in preperation of new nicowar system
 // version 56 rewrote the unit allocation system, and added "hidden" forbidden zone to Map
 // version 57 added custom prestige settings
+// version 58 made signifigant, irreversible changes to how the map headers work in the game
+//            all old versions have been rendered unreadable
 
 #endif

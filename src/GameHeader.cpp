@@ -20,8 +20,16 @@
 
 GameHeader::GameHeader()
 {
+	reset();
+}
+
+
+
+void GameHeader::reset()
+{
 	numberOfPlayers = 0;
-	gameLatency = 5;
+	gameLatency = 0;
+	orderRate = 1;
 }
 
 
@@ -29,8 +37,9 @@ GameHeader::GameHeader()
 bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("GameHeader");
-	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	gameLatency = stream->readSint32("gameLatency");
+	orderRate = stream->readUint8("orderRate");
+	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	stream->readEnterSection("players");
 	for(int i=0; i<32; ++i)
 	{
@@ -40,31 +49,39 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
+	return true;
 }
 
 
 
-void GameHeader::save(GAGCore::OutputStream *stream)
+void GameHeader::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("GameHeader");
-	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeSint32(gameLatency, "gameLatency");
+	stream->writeUint8(orderRate, "orderRate");
+	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
 	for(int i=0; i<32; ++i)
 	{
 		stream->writeEnterSection(i);
 		players[i].save(stream);
-		stream->writeLeaveSection(i);
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
 
-
 Sint32 GameHeader::getNumberOfPlayers() const
 {
 	return numberOfPlayers;
+}
+
+
+
+void GameHeader::setNumberOfPlayers(Sint32 players)
+{
+	numberOfPlayers=players;
 }
 
 
@@ -79,4 +96,26 @@ Sint32 GameHeader::getGameLatency() const
 void GameHeader::setGameLatency(Sint32 latency)
 {
 	gameLatency = latency;
+}
+
+
+
+Uint8 GameHeader::getOrderRate() const
+{
+	return orderRate;
+}
+
+
+
+void GameHeader::setOrderRate(Uint8 aorderRate)
+{
+	orderRate = aorderRate;
+}
+
+
+
+BasePlayer& GameHeader::getBasePlayer(const int n)
+{
+	assert(n<32 && n>=0);
+	return players[n];
 }

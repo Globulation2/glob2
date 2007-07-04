@@ -60,20 +60,11 @@ bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	shootDamage = stream->readSint32("shootDamage");
 	targetX = stream->readSint32("targetX");
 	targetY = stream->readSint32("targetY");
-	if (versionMinor < 44)
-	{
-		revealX = 0;
-		revealY = 0;
-		revealW = 0;
-		revealH = 0;
-	}
-	else
-	{
-		revealX = stream->readSint32("revealX");
-		revealY = stream->readSint32("revealY");
-		revealW = stream->readSint32("revealW");
-		revealH = stream->readSint32("revealH");
-	}
+
+	revealX = stream->readSint32("revealX");
+	revealY = stream->readSint32("revealY");
+	revealW = stream->readSint32("revealW");
+	revealH = stream->readSint32("revealH");
 	return true;
 }
 

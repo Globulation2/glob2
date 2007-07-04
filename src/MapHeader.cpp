@@ -17,14 +17,23 @@
 */
 
 #include "MapHeader.h"
-
+#include "Game.h"
 
 MapHeader::MapHeader()
+{
+	reset();
+}
+
+
+
+void MapHeader::reset()
 {
 	versionMajor = VERSION_MAJOR;
 	versionMinor = VERSION_MINOR;
 	numberOfTeams = 0;
 	mapName = "";
+	mapOffset = 0;
+	isSavedGame=false;
 }
 
 
@@ -36,7 +45,18 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	versionMajor = stream->readSint32("versionMajor");
 	versionMinor = stream->readSint32("versionMinor");
 	numberOfTeams = stream->readSint32("numberOfTeams");
+	mapOffset = stream->readUint32("mapOffset");
+	isSavedGame = stream->readUint8("isSavedGame");
+	stream->readEnterSection("teams");
+	for(int i=0; i<numberOfTeams; ++i)
+	{
+		stream->readEnterSection(i);
+		teams[i].load(stream, versionMinor);
+		stream->readLeaveSection(i);
+	}
 	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
 }
 
 
@@ -51,6 +71,16 @@ void MapHeader::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(versionMajor, "versionMajor");
 	stream->writeSint32(versionMinor, "versionMinor");
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
+	stream->writeUint32(mapOffset, "mapOffset");
+	stream->writeUint8(isSavedGame, "isSavedGame");
+	stream->writeEnterSection("teams");
+	for(int i=0; i<numberOfTeams; ++i)
+	{
+		stream->writeEnterSection(i);
+		teams[i].save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
@@ -88,7 +118,17 @@ const std::string& MapHeader::getMapName() const
 {
 	return mapName;
 }
-	
+
+
+
+std::string MapHeader::getFileName() const
+{
+	if (!isSavedGame)
+		return glob2NameToFilename("maps", mapName, "map");
+	else
+		return glob2NameToFilename("games", mapName, "game");
+}
+
 
 
 void MapHeader::setMapName(const std::string& newMapName)
@@ -96,6 +136,49 @@ void MapHeader::setMapName(const std::string& newMapName)
 	mapName = newMapName;
 }
 
+
+
+Uint32 MapHeader::getMapOffset() const
+{
+	return mapOffset;
+}
+
+
+
+void MapHeader::setMapOffset(Uint32 newMapOffset)
+{
+	mapOffset = newMapOffset;
+}
+
+
+
+BaseTeam& MapHeader::getBaseTeam(const int n)
+{
+	assert(n>=0 && n<32);
+	return teams[n];
+}
+
+
+
+const BaseTeam& MapHeader::getBaseTeam(const int n) const
+{
+	assert(n>=0 && n<32);
+	return teams[n];
+}
+
+
+
+bool MapHeader::getIsSavedGame() const
+{
+	return isSavedGame;
+}
+
+
+
+void MapHeader::setIsSavedGame(bool newIsSavedGame)
+{
+	isSavedGame = newIsSavedGame;
+}
 
 
 Uint32 MapHeader::checkSum() const
@@ -110,12 +193,16 @@ Uint32 MapHeader::checkSum() const
 
 
 
-void MapHeader::loadFromSessionGame(SessionGame* session)
+bool MapHeader::operator!=(const MapHeader& rhs) const
 {
-	versionMinor = session->versionMinor;
-	versionMajor = session->versionMajor;
-	numberOfTeams = session->numberOfTeam;
-	mapName = session->getMapName();
+	if(rhs.versionMajor != versionMajor ||
+		rhs.versionMinor != versionMinor ||
+		rhs.numberOfTeams != numberOfTeams ||
+		rhs.mapOffset != mapOffset ||
+		rhs.isSavedGame != isSavedGame ||
+		rhs.mapName != mapName)
+		return true;
+	return false;
 }
 
 

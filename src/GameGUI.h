@@ -28,6 +28,7 @@
 #include "Order.h"
 #include "Brush.h"
 #include "Campaign.h"
+#include "MapHeader.h"
 
 namespace GAGCore
 {
@@ -58,42 +59,31 @@ class InGameScrollableText;
 class GameGUI
 {
 public:
-	Game game;
-	bool gamePaused;
-	bool hardPause;
-	bool isRunning;
-	bool notmenu;
-	//! true if user close the glob2 window.
-	bool exitGlobCompletely;
-	//! if this is not empty, then Engine should load the map with this filename.
-	char toLoadGameFileName[SessionGame::MAP_NAME_MAX_SIZE+5];
-	//bool showExtendedInformation;
-	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
-	int localPlayer, localTeamNo;
-	int viewportX, viewportY;
-
-public:
+	///Constructs a GameGUI
 	GameGUI();
+	
+	///Destroys the GameGUI
 	~GameGUI();
 
-
+	///Initializes all variables
 	void init();
+	///Moves the local viewport
 	void adjustInitialViewport();
 	void adjustLocalTeam();
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
 	//! Get order from gui, return NullOrder if
-	Order *getOrder(void);
+	boost::shared_ptr<Order> getOrder(void);
 	//! Return position on x
 	int getViewportX() { return viewportX; }
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
 	void drawAll(int team);
-	void executeOrder(Order *order);
+	void executeOrder(boost::shared_ptr<Order> order);
 
 	//!
-	bool loadBase(const SessionInfo *initial);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader);
 	//!
 	bool load(GAGCore::InputStream *stream);
 	void save(GAGCore::OutputStream *stream, const char *name);
@@ -125,6 +115,20 @@ public:
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
+public:
+	Game game;
+	bool gamePaused;
+	bool hardPause;
+	bool isRunning;
+	bool notmenu;
+	//! true if user close the glob2 window.
+	bool exitGlobCompletely;
+	//! if this is not empty, then Engine should load the map with this filename.
+	std::string toLoadGameFileName;
+	//bool showExtendedInformation;
+	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
+	int localPlayer, localTeamNo;
+	int viewportX, viewportY;
 private:
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
@@ -138,6 +142,7 @@ private:
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
+
 	void handleActivation(Uint8 state, Uint8 gain);
 	void nextDisplayMode(void);
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
@@ -148,7 +153,7 @@ private:
 	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
-	void drawTextCenter(int x, int y, const char *caption, int i=-1);
+	void drawTextCenter(int x, int y, const char *caption);
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
 	void drawCheckButton(int x, int y, const char* caption, bool isSet);
@@ -292,7 +297,7 @@ private:
 
 	Uint32 chatMask;
 
-	std::list<Order *> orderQueue;
+	std::list<boost::shared_ptr<Order> > orderQueue;
 
 	int mouseX, mouseY;
 	//! for mouse motion
@@ -354,12 +359,12 @@ private:
 	std::list<Mark> markList;
 
 	//! add a minimap mark
-	void addMark(MapMarkOrder *mmo);
+	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
 	
-	// how long the COU has been idle last tick
-	#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32
-	int smoothedCpuLoad[SMOOTH_CPU_LOAD_WINDOW_LENGTH];
-	unsigned smoothedCpuLoadPos;
+	// records CPU usage percentages 
+	static const unsigned SMOOTHED_CPU_SIZE=32;
+	int smoothedCPULoad[SMOOTHED_CPU_SIZE];
+	int smoothedCPUPos;
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;
