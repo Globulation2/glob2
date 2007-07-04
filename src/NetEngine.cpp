@@ -128,9 +128,7 @@ bool NetEngine::matchCheckSums()
 			if(checksum == -1)
 				checksum = playerCheckSum;
 			else if(playerCheckSum != checksum)
-			{
-				std::cout<<"player: "<<playerCheckSum<<", checksum: "<<checksum<<std::endl;
-				
+			{				
 				return false;
 			}
 		}

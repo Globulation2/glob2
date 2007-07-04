@@ -2378,7 +2378,6 @@ boost::shared_ptr<Order> GameGUI::getOrder(void)
 		order=orderQueue.front();
 		orderQueue.pop_front();
 	}
-	order->gameCheckSum=game.checkSum();
 	return order;
 }
 
