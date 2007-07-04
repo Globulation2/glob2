@@ -1,3 +1,3 @@
 #!/bin/sh
-rsync -rz glob2@yog.globulation2.org:~/rsync/maps2007/ maps/
-rsync -rz glob2@yog.globulation2.org:~/rsync/campaigns2007/ campaigns/
+rsync -rz yog.globulation2.org:~/rsync/maps2007/ maps/
+rsync -rz yog.globulation2.org:~/rsync/campaigns2007/ campaigns/
