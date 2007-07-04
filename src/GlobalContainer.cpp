@@ -205,7 +205,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("* Map version %d\n", VERSION_MINOR);
 			printf("* Maps up to version %d can still be loaded\n", MINIMUM_VERSION_MINOR);
 			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
-			printf("* YOG Protocol version %d\n\n", YOG_PROTOCOL_VERSION);
 			printf("This program and all related materials are GPL, see COPYING for details.\n");
 			printf("(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
 			printf("See AUTHORS for a full list.\n\n");

@@ -75,4 +75,13 @@
 // version 58 made signifigant, irreversible changes to how the map headers work in the game
 //            all old versions have been rendered unreadable
 
+
+//This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
+//NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above
+#define NET_PROTOCOL_VERSION 24
+// version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
+// version 22 added ConfigCheckSum to check if all use has the same file config.
+// version 23 updated to allow custom prestige settings
+// version 24 rewrote YOG
+
 #endif

@@ -244,7 +244,7 @@ bool NetSendOrder::operator==(const NetMessage& rhs) const
 
 NetSendClientInformation::NetSendClientInformation()
 {
-	versionMinor=VERSION_MINOR;
+	netVersion=NET_PROTOCOL_VERSION;
 }
 
 
@@ -259,7 +259,7 @@ Uint8 NetSendClientInformation::getMessageType() const
 void NetSendClientInformation::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendClientInformation");
-	stream->writeUint16(versionMinor, "versionMinor ");
+	stream->writeUint16(netVersion, "netVersion ");
 	stream->writeLeaveSection();
 }
 
@@ -268,7 +268,7 @@ void NetSendClientInformation::encodeData(GAGCore::OutputStream* stream) const
 void NetSendClientInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendClientInformation");
-	versionMinor=stream->readUint16("versionMinor");
+	netVersion=stream->readUint16("netVersion");
 	stream->readLeaveSection();
 }
 
@@ -277,7 +277,7 @@ void NetSendClientInformation::decodeData(GAGCore::InputStream* stream)
 std::string NetSendClientInformation::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendClientInformation(versionMinor="<<versionMinor<<")";
+	s<<"NetSendClientInformation(netVersion="<<netVersion<<")";
 	return s.str();
 }
 
@@ -288,7 +288,7 @@ bool NetSendClientInformation::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendClientInformation))
 	{
 		const NetSendClientInformation& r = dynamic_cast<const NetSendClientInformation&>(rhs);
-		if(r.versionMinor == versionMinor)
+		if(r.netVersion == netVersion)
 		{
 			return true;
 		}
@@ -297,9 +297,9 @@ bool NetSendClientInformation::operator==(const NetMessage& rhs) const
 }
 
 
-Uint16 NetSendClientInformation::getVersionMinor() const
+Uint16 NetSendClientInformation::getNetVersion() const
 {
-	return versionMinor;
+	return netVersion;
 }
 
 

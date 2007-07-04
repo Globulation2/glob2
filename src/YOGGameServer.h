@@ -65,10 +65,10 @@ public:
 	YOGGamePolicy getGamePolicy() const;
 
 	///Returns whether the users password is correct.
-	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password);
+	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version);
 	
 	///This reigsters a new user
-	YOGLoginState registerInformation(const std::string& username, const std::string& password);
+	YOGLoginState registerInformation(const std::string& username, const std::string& password, Uint16 version);
 
 	///Returns the list of games the server currently has
 	const std::list<YOGGameInfo>& getGameList() const;

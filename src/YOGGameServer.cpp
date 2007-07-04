@@ -131,8 +131,10 @@ YOGGamePolicy YOGGameServer::getGamePolicy() const
 
 
 
-YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username, const std::string& password)
+YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version)
 {
+	if(version < NET_PROTOCOL_VERSION)
+		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
 	return registry.verifyLoginInformation(username, password);
@@ -140,8 +142,12 @@ YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username,
 
 
 
-YOGLoginState YOGGameServer::registerInformation(const std::string& username, const std::string& password)
+YOGLoginState YOGGameServer::registerInformation(const std::string& username, const std::string& password, Uint16 version)
 {
+	if(version < NET_PROTOCOL_VERSION)
+		return YOGClientVersionTooOld;
+	if(loginPolicy == YOGAnonymousLogin)
+		return YOGLoginSuccessful;
 	return registry.registerInformation(username, password);
 }
 
