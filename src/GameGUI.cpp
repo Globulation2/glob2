@@ -1162,10 +1162,10 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 
 enum TwoKeyMode
 {
-  TWOKEY_NONE = 0,
-  TWOKEY_BUILDING = 1,
-  TWOKEY_FLAG = 2,
-  TWOKEY_AREA = 3,
+	TWOKEY_NONE = 0,
+	TWOKEY_BUILDING = 1,
+	TWOKEY_FLAG = 2,
+	TWOKEY_AREA = 3,
 } twoKeyMode = TWOKEY_NONE;
 
 void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
@@ -1180,108 +1180,128 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 	if (typingInputScreen == NULL)
 	{
 		std::string action="";
-                // fprintf (stderr, "twoKeyMode: %d, key: %d\n", twoKeyMode, key);
-                if (twoKeyMode != TWOKEY_NONE) {
-                  if (pressed) {
-                    switch (twoKeyMode) {
-                    case TWOKEY_BUILDING:
-                      switch (key) {
-                      case SDLK_a: /* swArm */
-                        action = "select make swarm tool";
-                        break;
-                      case SDLK_i: /* Inn */
-                        action = "select make inn tool";
-                        break;
-                      case SDLK_h: /* Hospital */
-                        action = "select make hospital tool";
-                        break;
-                      case SDLK_r: /* Racetrack */
-                        action = "select make racetrack tool";
-                        break;
-                      case SDLK_p: /* swimming Pool */
-                        action = "select make swimming pool tool";
-                        break;
-                      case SDLK_b: /* Barracks */
-                        action = "select make barracks tool";
-                        break;
-                      case SDLK_s: /* School */
-                        action = "select make school tool";
-                        break;
-                      case SDLK_d: /* Defense tower */
-                        action = "select make defense tower tool";
-                        break;
-                      case SDLK_w: /* stone Wall */
-                        action = "select make stone wall tool";
-                        break;
-                      case SDLK_m: /* Market */
-                        action = "select make market tool";
-                        break;
-			default:break;}
-                      break; 
-                    case TWOKEY_FLAG:
-                      switch (key) {
-                      case SDLK_e: /* Exploration */
-                        action = "select make exploration flag tool";
-                        break;
-                      case SDLK_w: /* War */
-                        action = "select make war flag tool";
-                        break;
-                      case SDLK_c: /* Clearing */
-                        action = "select make clearing flag tool";
-                        break;
-			default:break;}
-                      break; 
-                    case TWOKEY_AREA:
-                      switch (key) {
-                      case SDLK_f: /* Forbidden */
-                        action = "select forbidden area tool";
-                        break;
-                      case SDLK_g: /* Guard */
-                        action = "select guard area tool";
-                        break;
-                      case SDLK_c: /* Clearing */
-                        action = "select clearing area tool";
-                        break;
-                      case SDLK_a: /* Add */
-                        action = "switch to adding areas";
-                        break;
-                      case SDLK_d: /* Delete */
-                        action = "switch to deleting areas";
-                        break;
-                      case SDLK_1:
-                        action = "switch to area brush 1";
-                        break;
-                      case SDLK_2:
-                        action = "switch to area brush 2";
-                        break;
-                      case SDLK_3:
-                        action = "switch to area brush 3";
-                        break;
-                      case SDLK_4:
-                        action = "switch to area brush 4";
-                        break;
-                      case SDLK_5:
-                        action = "switch to area brush 5";
-                        break;
-                      case SDLK_6:
-                        action = "switch to area brush 6";
-                        break;
-                      case SDLK_7:
-                        action = "switch to area brush 7";
-                        break;
-                      case SDLK_8:
-                        action = "switch to area brush 8";
-                        break; 
-			default:break;}
-                      break;
-		      default:break;}
-                    key = SDLK_UNKNOWN;
-                    twoKeyMode = TWOKEY_NONE; }
-                  else {
-                    /* this case happens when the initial prefix key is released */
-                  }}
-                // fprintf (stderr, "action: [%s]\n", action.c_str());
-                
+		// fprintf (stderr, "twoKeyMode: %d, key: %d\n", twoKeyMode, key);
+		if (twoKeyMode != TWOKEY_NONE)
+		{
+			if (pressed)
+			{
+				switch (twoKeyMode) 
+				{
+					case TWOKEY_BUILDING:
+						switch (key) 
+						{
+							case SDLK_a: /* swArm */
+								action = "select make swarm tool";
+								break;
+							case SDLK_i: /* Inn */
+								action = "select make inn tool";
+								break;
+							case SDLK_h: /* Hospital */
+								action = "select make hospital tool";
+								break;
+							case SDLK_r: /* Racetrack */
+								action = "select make racetrack tool";
+								break;
+							case SDLK_p: /* swimming Pool */
+								action = "select make swimming pool tool";
+								break;
+							case SDLK_b: /* Barracks */
+								action = "select make barracks tool";
+								break;
+							case SDLK_s: /* School */
+								action = "select make school tool";
+								break;
+							case SDLK_d: /* Defense tower */
+								action = "select make defense tower tool";
+								break;
+							case SDLK_w: /* stone Wall */
+								action = "select make stone wall tool";
+								break;
+							case SDLK_m: /* Market */
+								action = "select make market tool";
+								break;
+							default:
+								break;
+						}
+					break;
+					
+					case TWOKEY_FLAG:
+						switch (key)
+						{
+							case SDLK_e: /* Exploration */
+								action = "select make exploration flag tool";
+								break;
+							case SDLK_w: /* War */
+								action = "select make war flag tool";
+								break;
+							case SDLK_c: /* Clearing */
+								action = "select make clearing flag tool";
+								break;
+							default:
+								break;
+						}
+					break;
+					
+					case TWOKEY_AREA:
+						switch (key)
+						{
+							case SDLK_f: /* Forbidden */
+								action = "select forbidden area tool";
+								break;
+							case SDLK_g: /* Guard */
+								action = "select guard area tool";
+								break;
+							case SDLK_c: /* Clearing */
+								action = "select clearing area tool";
+								break;
+							case SDLK_a: /* Add */
+								action = "switch to adding areas";
+								break;
+							case SDLK_d: /* Delete */
+								action = "switch to deleting areas";
+								break;
+							case SDLK_1:
+								action = "switch to area brush 1";
+								break;
+							case SDLK_2:
+								action = "switch to area brush 2";
+								break;
+							case SDLK_3:
+								action = "switch to area brush 3";
+								break;
+							case SDLK_4:
+								action = "switch to area brush 4";
+								break;
+							case SDLK_5:
+								action = "switch to area brush 5";
+								break;
+							case SDLK_6:
+								action = "switch to area brush 6";
+								break;
+							case SDLK_7:
+								action = "switch to area brush 7";
+								break;
+							case SDLK_8:
+								action = "switch to area brush 8";
+							break; 
+							default:
+							break;
+						}
+					break;
+					
+					default:
+					break;
+				}
+				key = SDLK_UNKNOWN;
+				twoKeyMode = TWOKEY_NONE;
+			}
+			else
+			{
+				/* this case happens when the initial prefix key is released */
+			}
+		}
+		// fprintf (stderr, "action: [%s]\n", action.c_str());
+		
 		switch (key)
 		{
 			case SDLK_ESCAPE:
@@ -1577,130 +1597,209 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 			if (pressed)
 				orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
 		}
-                else if ((action == "prefix key select area tool") && pressed) {
-                  twoKeyMode = TWOKEY_AREA; }
-                else if ((action == "prefix key select building tool") && pressed) {
-                  twoKeyMode = TWOKEY_BUILDING; }
-                else if ((action == "prefix key select flag tool") && pressed) {
-                  twoKeyMode = TWOKEY_FLAG; }
-                else if (pressed
-                         && ((action == "select make swarm tool")
-                             || (action == "select make inn tool")
-                             || (action == "select make hospital tool")
-                             || (action == "select make racetrack tool")
-                             || (action == "select make swimming pool tool")
-                             || (action == "select make barracks tool")
-                             || (action == "select make school tool")
-                             || (action == "select make defense tower tool")
-                             || (action == "select make stone wall tool")
-                             || (action == "select make market tool")
-                             || (action == "select make exploration flag tool")
-                             || (action == "select make war flag tool")
-                             || (action == "select make clearing flag tool")
-                             || (action == "select forbidden area tool")
-                             || (action == "select guard area tool")
-                             || (action == "select clearing area tool")
-                             || (action == "switch to adding areas")
-                             || (action == "switch to deleting areas")
-                             || (action == "switch to area brush 1")
-                             || (action == "switch to area brush 2")
-                             || (action == "switch to area brush 3")
-                             || (action == "switch to area brush 4")
-                             || (action == "switch to area brush 5")
-                             || (action == "switch to area brush 6")
-                             || (action == "switch to area brush 7")
-                             || (action == "switch to area brush 8"))) {
-                  clearSelection();
-                  char * buildingType = NULL;
-                  BrushType tmpBrushType;
-                  bool isArea = false;
-                  BrushTool::Mode tmpBrushMode = BrushTool::MODE_NONE;
-                  int brushFigure;
-                  bool isBrush = false;
-                  char * flagType = NULL;
-                  if (action == "select make swarm tool") {
-                    buildingType = "swarm"; }
-                  else if (action == "select make inn tool") {
-                    buildingType = "inn"; }
-                  else if (action == "select make hospital tool") {
-                    buildingType = "hospital"; }
-                  else if (action == "select make racetrack tool") {
-                    buildingType = "racetrack"; }
-                  else if (action == "select make swimming pool tool") {
-                    buildingType = "swimmingpool"; }
-                  else if (action == "select make barracks tool") {
-                    buildingType = "barracks"; }
-                  else if (action == "select make school tool") {
-                    buildingType = "school"; }
-                  else if (action == "select make defense tower tool") {
-                    buildingType = "defencetower"; }
-                  else if (action == "select make stone wall tool") {
-                    buildingType = "stonewall"; }
-                  else if (action == "select make market tool") {
-                    buildingType = "market"; }
-                  else if (action == "select make exploration flag tool") {
-                    flagType = "explorationflag"; }
-                  else if (action == "select make war flag tool") {
-                    flagType = "warflag"; }
-                  else if (action == "select make clearing flag tool") {
-                    flagType = "clearingflag"; }
-                  else if (action == "select forbidden area tool") {
-                    isArea = true;
-                    tmpBrushType = FORBIDDEN_BRUSH; }
-                  else if (action == "select guard area tool") {
-                    isArea = true;
-                    tmpBrushType = GUARD_AREA_BRUSH; }
-                  else if (action == "select clearing area tool") {
-                    isArea = true;
-                    tmpBrushType = CLEAR_AREA_BRUSH; }
-                  else if (action == "switch to adding areas") {
-                    tmpBrushMode = BrushTool::MODE_ADD; }
-                  else if (action == "switch to deleting areas") {
-                    tmpBrushMode = BrushTool::MODE_DEL; }
-                  else if (action == "switch to area brush 1") {
-                    brushFigure = 0;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 2") {
-                    brushFigure = 1;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 3") {
-                    brushFigure = 2;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 4") {
-                    brushFigure = 3;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 5") {
-                    brushFigure = 4;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 6") {
-                    brushFigure = 5;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 7") {
-                    brushFigure = 6;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 8") {
-                    brushFigure = 7;
-                    isBrush = true; }
-                  if (buildingType) {
-                    if (isBuildingEnabled(std::string(buildingType))) {
-                      displayMode = BUILDING_VIEW; // Can hiddenGUIElements forbid showing building view if the particular building type is enabled?  Do I need to check this?
-                      setSelection(TOOL_SELECTION, (void *) buildingType); }}
-                  else if (flagType) {
-                    if (isFlagEnabled(std::string(flagType))) {
-                      displayMode = FLAG_VIEW;  // Can hiddenGUIElements forbid showing flag view if the particular flag type is enabled?  Do I need to check this?
-                      setSelection(TOOL_SELECTION, (void*) flagType); }}
-                  else if (isArea || (tmpBrushMode != BrushTool::MODE_NONE) || isBrush) {
-                    // Do I need to check if the GUI is enabled for this?
-                    displayMode = FLAG_VIEW;
-                    if (isArea) {
-                      brushType = tmpBrushType; }
-                    if (tmpBrushMode != BrushTool::MODE_NONE) {
-                      brush.setType(tmpBrushMode); }
-                    else if (brush.getType() == BrushTool::MODE_NONE) {
-                      brush.setType(BrushTool::MODE_ADD); }
-                    if (isBrush) {
-                      brush.setFigure (brushFigure); }
-                    setSelection(BRUSH_SELECTION); }}
+		else if ((action == "prefix key select area tool") && pressed)
+		{
+			twoKeyMode = TWOKEY_AREA;
+		}
+		else if ((action == "prefix key select building tool") && pressed)
+		{
+			twoKeyMode = TWOKEY_BUILDING;
+		}
+		else if ((action == "prefix key select flag tool") && pressed)
+		{
+			twoKeyMode = TWOKEY_FLAG;
+		}
+		else if (pressed
+					&& ((action == "select make swarm tool")
+						|| (action == "select make inn tool")
+						|| (action == "select make hospital tool")
+						|| (action == "select make racetrack tool")
+						|| (action == "select make swimming pool tool")
+						|| (action == "select make barracks tool")
+						|| (action == "select make school tool")
+						|| (action == "select make defense tower tool")
+						|| (action == "select make stone wall tool")
+						|| (action == "select make market tool")
+						|| (action == "select make exploration flag tool")
+						|| (action == "select make war flag tool")
+						|| (action == "select make clearing flag tool")
+						|| (action == "select forbidden area tool")
+						|| (action == "select guard area tool")
+						|| (action == "select clearing area tool")
+						|| (action == "switch to adding areas")
+						|| (action == "switch to deleting areas")
+						|| (action == "switch to area brush 1")
+						|| (action == "switch to area brush 2")
+						|| (action == "switch to area brush 3")
+						|| (action == "switch to area brush 4")
+						|| (action == "switch to area brush 5")
+						|| (action == "switch to area brush 6")
+						|| (action == "switch to area brush 7")
+						|| (action == "switch to area brush 8")))
+		{
+			clearSelection();
+			char * buildingType = NULL;
+			BrushType tmpBrushType;
+			bool isArea = false;
+			BrushTool::Mode tmpBrushMode = BrushTool::MODE_NONE;
+			int brushFigure;
+			bool isBrush = false;
+			char * flagType = NULL;
+			if (action == "select make swarm tool")
+			{
+				buildingType = "swarm";
+			}
+			else if (action == "select make inn tool")
+			{
+				buildingType = "inn";
+			}
+			else if (action == "select make hospital tool")
+			{
+				buildingType = "hospital";
+			}
+			else if (action == "select make racetrack tool")
+			{
+				buildingType = "racetrack";
+			}
+			else if (action == "select make swimming pool tool")
+			{
+				buildingType = "swimmingpool";
+			}
+			else if (action == "select make barracks tool")
+			{
+				buildingType = "barracks";
+			}
+			else if (action == "select make school tool")
+			{
+				buildingType = "school";
+			}
+			else if (action == "select make defense tower tool")
+			{
+				buildingType = "defencetower";
+			}
+			else if (action == "select make stone wall tool")
+			{
+				buildingType = "stonewall";
+			}
+			else if (action == "select make market tool")
+			{
+				buildingType = "market";
+			}
+			else if (action == "select make exploration flag tool")
+			{
+				flagType = "explorationflag";
+			}
+			else if (action == "select make war flag tool")
+			{
+				flagType = "warflag";
+			}
+			else if (action == "select make clearing flag tool")
+			{
+				flagType = "clearingflag";
+			}
+			else if (action == "select forbidden area tool")
+			{
+				isArea = true;
+				tmpBrushType = FORBIDDEN_BRUSH;
+			}
+			else if (action == "select guard area tool")
+			{
+				isArea = true;
+				tmpBrushType = GUARD_AREA_BRUSH;
+			}
+			else if (action == "select clearing area tool")
+			{
+				isArea = true;
+				tmpBrushType = CLEAR_AREA_BRUSH;
+			}
+			else if (action == "switch to adding areas")
+			{
+				tmpBrushMode = BrushTool::MODE_ADD;
+			}
+			else if (action == "switch to deleting areas")
+			{
+				tmpBrushMode = BrushTool::MODE_DEL;
+			}
+			else if (action == "switch to area brush 1")
+			{
+				brushFigure = 0;
+				isBrush = true;
+			}
+			else if (action == "switch to area brush 2")
+			{
+				brushFigure = 1;
+				isBrush = true;
+			}
+			else if (action == "switch to area brush 3")
+			{
+				brushFigure = 2;
+				isBrush = true;
+			}
+			else if (action == "switch to area brush 4")
+			{
+				brushFigure = 3;
+				isBrush = true;
+			}
+			else if (action == "switch to area brush 5")
+			{
+				brushFigure = 4;
+				isBrush = true;
+			}
+			else if (action == "switch to area brush 6")
+			{
+				brushFigure = 5;
+				isBrush = true;
+			}
+			else if (action == "switch to area brush 7")
+			{
+				brushFigure = 6;
+				isBrush = true;
+			}
+			else if (action == "switch to area brush 8")
+			{
+				brushFigure = 7;
+				isBrush = true; 
+			}
+			
+			if (buildingType) 
+			{
+				if (isBuildingEnabled(std::string(buildingType)))
+				{
+					displayMode = BUILDING_VIEW; // Can hiddenGUIElements forbid showing building view if the particular building type is enabled?  Do I need to check this?
+					setSelection(TOOL_SELECTION, (void *) buildingType);
+				}
+			}
+			else if (flagType)
+			{
+				if (isFlagEnabled(std::string(flagType)))
+				{
+					displayMode = FLAG_VIEW;  // Can hiddenGUIElements forbid showing flag view if the particular flag type is enabled?  Do I need to check this?
+					setSelection(TOOL_SELECTION, (void*) flagType);
+				}
+			}
+			else if (isArea || (tmpBrushMode != BrushTool::MODE_NONE) || isBrush)
+			{
+				// Do I need to check if the GUI is enabled for this?
+				displayMode = FLAG_VIEW;
+				if (isArea)
+				{
+					brushType = tmpBrushType;
+				}
+				if (tmpBrushMode != BrushTool::MODE_NONE)
+				{
+					brush.setType(tmpBrushMode);
+				}
+				else if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
+				if (isBrush)
+				{
+					brush.setFigure (brushFigure);
+				}
+				setSelection(BRUSH_SELECTION); 
+			}
+		}
 	}
 }
 
@@ -1735,32 +1834,36 @@ void GameGUI::handleKeyAlways(void)
 	Uint8 *keystate = SDL_GetKeyState(NULL);
 	if (notmenu == false)
 	{
-                SDLMod modState = SDL_GetModState();
-                int xMotion = 1;
-                int yMotion = 1;
-                /* We check that only Control is held to avoid accidentally
-                   matching window manager bindings for switching windows
-                   and/or desktops. */
-                if ((modState & KMOD_CTRL) && ! (modState & (KMOD_ALT|KMOD_SHIFT))) {
-                  /* It violates good abstraction principles that I
-                     have to do the calculations in the next two
-                     lines.  There should be methods that abstract
-                     these computations. */
-                  /* We move by half screens if Control is held while
-                     the arrow keys are held.  So we shift by 6
-                     instead of 5.  (If we shifted by 5, it would be
-                     good to subtract 1 so that there would be a small
-                     overlap between what is viewable both before and
-                     after the motion.) */
-                  xMotion = ((globalContainer->gfx->getW()-128)>>6);
-                  yMotion = ((globalContainer->gfx->getH())>>6); }
-                else if (modState) {
-                  /* Probably some keys held down as part of window
-                     manager operations. */
-                  xMotion = 0;
-                  yMotion = 0; }
-                // int oldViewportX = viewportX;
-                // int oldViewportY = viewportY;
+		SDLMod modState = SDL_GetModState();
+		int xMotion = 1;
+		int yMotion = 1;
+		/* We check that only Control is held to avoid accidentally
+			matching window manager bindings for switching windows
+			and/or desktops. */
+		if ((modState & KMOD_CTRL) && ! (modState & (KMOD_ALT|KMOD_SHIFT)))
+		{
+			/* It violates good abstraction principles that I
+				have to do the calculations in the next two
+				lines.  There should be methods that abstract
+				these computations. */
+			/* We move by half screens if Control is held while
+				the arrow keys are held.  So we shift by 6
+				instead of 5.  (If we shifted by 5, it would be
+				good to subtract 1 so that there would be a small
+				overlap between what is viewable both before and
+				after the motion.) */
+			xMotion = ((globalContainer->gfx->getW()-128)>>6);
+			yMotion = ((globalContainer->gfx->getH())>>6);
+		}
+		else if (modState)
+		{
+			/* Probably some keys held down as part of window
+				manager operations. */
+			xMotion = 0;
+			yMotion = 0; 
+		}
+		// int oldViewportX = viewportX;
+		// int oldViewportY = viewportY;
 		if (keystate[SDLK_UP])
 			viewportY -= yMotion;
 		if (keystate[SDLK_KP8])
