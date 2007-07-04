@@ -214,7 +214,10 @@ int Engine::run(void)
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
 
-		unsigned orders_ahead = 0;
+		///This is neccessarry so that the game check sum is computed at the right
+		///frame, required for reducing the number of Orders sent over the network
+		std::queue<boost::shared_ptr<Order> > localOrdersQueue;
+		unsigned int skipOrders = 0;
 
 		while (gui.isRunning)
 		{
@@ -254,19 +257,28 @@ int Engine::run(void)
 					shared_ptr<Order> localOrder = gui.getOrder();
 					
 					//we ignore null orders that aren't required for this order frame
-					if(localOrder->getOrderType() != ORDER_NULL || orders_ahead == 0)
+					if(localOrder->getOrderType() != ORDER_NULL || localOrdersQueue.empty())
 					{
+						localOrdersQueue.push(localOrder);
+					}
+				
+					if(skipOrders > 0)
+					{
+						net->pushOrder(boost::shared_ptr<Order>(new NullOrder), gui.localPlayer);
+						skipOrders -= 1;
+					}
+					else
+					{
+						boost::shared_ptr<Order> localOrder = localOrdersQueue.front();
+						localOrdersQueue.pop();
+						Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
+						localOrder->gameCheckSum = checksum;
 						if(multiplayer)
 							multiplayer->pushOrder(localOrder, gui.localPlayer);
 						net->pushOrder(localOrder, gui.localPlayer);
-						for(int i=0; i<(gui.game.gameHeader.getOrderRate()-1); ++i)
-						{
-							net->pushOrder(boost::shared_ptr<Order>(new NullOrder), gui.localPlayer);
-						}
-						orders_ahead+=gui.game.gameHeader.getOrderRate();
+						skipOrders += gui.game.gameHeader.getOrderRate() - 1;
 					}
 				}
-				
 				
 				// we get and push ai orders, if they are needed for this frame
 				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
@@ -297,7 +309,6 @@ int Engine::run(void)
 					}
 					else
 					{
-						orders_ahead -= 1;
 						// We get all currents orders from the network and execute them:
 						for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 						{

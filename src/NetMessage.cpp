@@ -202,7 +202,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
 	
-	delete buffer;
+	delete[] buffer;
 }
 
 

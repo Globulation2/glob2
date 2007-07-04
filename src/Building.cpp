@@ -2497,24 +2497,29 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=typeNum;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [0]
+		
 
 	cs^=buildingState;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [1]
 	cs=(cs<<31)|(cs>>1);
-
+	
 	cs^=maxUnitWorking;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [2]
+	
 	cs^=maxUnitWorkingPreferred;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [3]
+		
 	cs^=unitsWorking.size();
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [4]
+
 	cs^=maxUnitInside;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [5]
+
 	cs^=unitsInside.size();
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [6]
@@ -2523,6 +2528,7 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=posX;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [7]
+	
 	cs^=posY;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [8]
@@ -2545,9 +2551,12 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=productionTimeout;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [12]
+		
+
 	cs^=totalRatio;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [13]
+	
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
@@ -2561,9 +2570,13 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=shootingStep;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [15]
+
+
 	cs^=shootingCooldown;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [16]
+	
+		
 	cs^=bullets;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [17]
