@@ -161,6 +161,10 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 		{
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]"));
 		}
+		else if(reason == YOGClientVersionTooOld)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]"));
+		}
 		client->disconnect();
 	}
 }

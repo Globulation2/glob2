@@ -28,6 +28,7 @@ YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameSer
 	playerListState=PlayerListWaiting;
 	loginState = YOGLoginUnknown;
 	gameID=0;
+	netVersion=0;
 }
 
 
@@ -47,7 +48,7 @@ void YOGPlayer::update()
 	if(type==MNetSendClientInformation)
 	{
 		shared_ptr<NetSendClientInformation> info = static_pointer_cast<NetSendClientInformation>(message);
-		versionMinor = info->getVersionMinor();
+		netVersion = info->getNetVersion();
 		connectionState = NeedToSendServerInformation;
 	}
 	//This recieves a login attempt
@@ -56,7 +57,7 @@ void YOGPlayer::update()
 		shared_ptr<NetAttemptLogin> info = static_pointer_cast<NetAttemptLogin>(message);
 		std::string username = info->getUsername();
 		std::string password = info->getPassword();
-		loginState = server.verifyLoginInformation(username, password);
+		loginState = server.verifyLoginInformation(username, password, netVersion);
 		if(loginState == YOGLoginSuccessful)
 		{
 			server.playerHasLoggedIn(username, playerID);
@@ -75,7 +76,7 @@ void YOGPlayer::update()
 		shared_ptr<NetAttemptRegistration> info = static_pointer_cast<NetAttemptRegistration>(message);
 		std::string username = info->getUsername();
 		std::string password = info->getPassword();
-		loginState = server.registerInformation(username, password);
+		loginState = server.registerInformation(username, password, netVersion);
 		if(loginState == YOGLoginSuccessful)
 		{
 			server.playerHasLoggedIn(username, playerID);
