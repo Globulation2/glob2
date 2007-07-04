@@ -246,6 +246,7 @@ void MultiplayerGame::kickPlayer(int playerNum)
 	if(bp.type>=BasePlayer::P_AI)
 	{
 		bp.type = BasePlayer::P_NONE;
+		updateGameHeader();
 	}
 	else if(bp.type==BasePlayer::P_IP)
 	{
