@@ -105,7 +105,7 @@ private:
 
 	shared_ptr<NetConnection> connection;
 	YOGGameServer& server;
-	Uint16 versionMinor;
+	Uint16 netVersion;
 	YOGLoginState loginState;
 
 	///Send outgoing messsages involving ConnectionState

@@ -174,10 +174,10 @@ public:
 	///Compares with another NetSendClientInformation
 	bool operator==(const NetMessage& rhs) const;
 	
-	///Returns the version minor
-	Uint16 getVersionMinor() const;
+	///Returns the net version
+	Uint16 getNetVersion() const;
 private:
-	Uint16 versionMinor;
+	Uint16 netVersion;
 };
 
 
