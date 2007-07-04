@@ -1,5 +1,4 @@
 #!/bin/sh
-echo Making dist
+echo Making distribution package
 make dist >& /dev/null
-echo Copying
-scp glob2-0.2.tar.gz ysagoon@ysagoon.com:/home/ysagoon/www/glob2/data
+echo Distribution package made
