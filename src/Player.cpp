@@ -218,6 +218,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	teamNumber=initial->teamNumber;
 	teamNumberMask=initial->teamNumberMask;
 	name = initial->name;
+	playerID = initial->playerID;
 
 	type=initial->type;
 	setTeam(teams[this->teamNumber]);

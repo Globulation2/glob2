@@ -278,7 +278,7 @@ int Glob2::run(int argc, char *argv[])
 	
 	if (globalContainer->hostServer)
 	{
-		YOGGameServer server(YOGAnonymousLogin, YOGMultipleGames);
+		YOGGameServer server(YOGRequirePassword, YOGMultipleGames);
 		int rc = server.run();
 		return rc;	
 	}
