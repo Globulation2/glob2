@@ -29,7 +29,6 @@ using namespace GAGCore;
 
 #include "GUIMapPreview.h"
 #include "Map.h"
-#include "Session.h"
 #include "Utilities.h"
 
 MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
@@ -71,10 +70,7 @@ MapPreview::~MapPreview()
 
 const char *MapPreview::getMethode(void)
 {
-	if (randomGenerated)
-		return Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", lastRandomGenerationMethode);
-	else
-		return Toolkit::getStringTable()->getString("[handmade map]");
+	return Toolkit::getStringTable()->getString("[handmade map]");
 }
 
 void MapPreview::setMapThumbnail(const char *mapName)
@@ -96,9 +92,9 @@ void MapPreview::setMapThumbnail(const char *mapName)
 	}
 	else
 	{
-		// read session
-		SessionGame session;
-		bool good = session.load(stream);
+		// read header
+		MapHeader header;
+		bool good = header.load(stream);
 		if (!good)
 		{
 			delete stream;
@@ -107,11 +103,13 @@ void MapPreview::setMapThumbnail(const char *mapName)
 		
 		// read map
 		if (stream->canSeek())
-			stream->seekFromStart(session.mapOffset);
+			stream->seekFromStart(header.getMapOffset());
 		else
 			; // TODO : enter correct section
+
+
 		Map map;
-		good = map.load(stream, &session);
+		good = map.load(stream, header);
 		delete stream;
 		if (!good)
 			return;

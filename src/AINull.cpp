@@ -20,7 +20,7 @@
 #include "AINull.h"
 #include "Order.h"
 
-Order *AINull::getOrder(void)
+boost::shared_ptr<Order> AINull::getOrder(void)
 {
-	return new NullOrder();
+	return boost::shared_ptr<Order>(new NullOrder());
 }

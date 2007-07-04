@@ -42,15 +42,6 @@ const int NumberOfPlayerSelectors=16;
 //! This screen is used to setup a custom game. AI can be set. Map choosing functionnalities are inherited from ChooseMapScreen
 class CustomGameScreen : public ChooseMapScreen
 {
-private:
-	//! AI enable/disable buttons
-	OnOffButton *isAI[NumberOfPlayerSelectors];
-	//! Team color buttons
-	ColorButton *color[NumberOfPlayerSelectors];
-	//! Text shown when entry is disabled
-	Text *closedText[NumberOfPlayerSelectors];
-	//! Multi-text button containing names of availables AIs
-	MultiTextButton *aiSelector[NumberOfPlayerSelectors];
 
 public:
 	//! Constructor, builds a ChooseMapScreen for maps
@@ -60,11 +51,25 @@ public:
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void validMapSelectedhandler(void);
 	//! Returns true if AI i is enabled
-	bool isAIactive(int i);
+	bool isActive(int i);
 	//! Returns the implementation of AI i. If AI is disabled, result is undefined
 	AI::ImplementitionID getAiImplementation(int i);
 	//! Returns the color of AI i. If AI is disabled, result is undefined
 	int getSelectedColor(int i);
+
+private:
+	///Updates the gameHeader with the chosen players for the map
+	void updatePlayers();
+
+	//! Player enable/disable buttons
+	OnOffButton *isPlayerActive[NumberOfPlayerSelectors];
+	//! Team color buttons
+	ColorButton *color[NumberOfPlayerSelectors];
+	//! Text shown when entry is disabled
+	Text *closedText[NumberOfPlayerSelectors];
+	//! Multi-text button containing names of availables Player
+	MultiTextButton *aiSelector[NumberOfPlayerSelectors];
+
 };
 
 #endif

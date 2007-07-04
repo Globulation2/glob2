@@ -1,6 +1,8 @@
 set(libusl_SOURCES
 code.cpp
 code.h
+debug.cpp
+debug.h
 interpreter.cpp
 interpreter.h
 lexer.cpp

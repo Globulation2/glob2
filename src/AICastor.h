@@ -26,6 +26,8 @@
 #include "IntBuildingType.h"
 #include "AIImplementation.h"
 
+#include <boost/shared_ptr.hpp>
+
 class Case;
 class Game;
 class Map;
@@ -130,25 +132,25 @@ public:
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
-	Order *getOrder(void);
+	boost::shared_ptr<Order>getOrder(void);
 	
 private:
 	void init(Player *player);
 	void defineStrategy();
 	
-	Order *controlSwarms();
-	Order *expandFood();
-	Order *controlFood();
-	Order *controlUpgrades();
-	Order *controlStrikes();
-//	Order *controlBaseDefense();
+	boost::shared_ptr<Order>controlSwarms();
+	boost::shared_ptr<Order>expandFood();
+	boost::shared_ptr<Order>controlFood();
+	boost::shared_ptr<Order>controlUpgrades();
+	boost::shared_ptr<Order>controlStrikes();
+//	boost::shared_ptr<Order>controlBaseDefense();
 	
 	bool addProject(Project *project);
 	void addProjects();
 	
 	void choosePhase();
 	
-	Order *continueProject(Project *project);
+	boost::shared_ptr<Order>continueProject(Project *project);
 	
 	bool enoughFreeWorkers();
 	void computeCanSwim();
@@ -174,7 +176,7 @@ private:
 	void computeEnemyRangeMap();
 	void computeEnemyWarriorsMap();
 
-	Order *findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
+	boost::shared_ptr<Order>findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
 	
 	void computeRessourcesCluster();
 	

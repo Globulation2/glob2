@@ -25,6 +25,7 @@
 #include <queue>
 #include <SDL.h>
 #include <SDL_thread.h>
+#include <boost/shared_ptr.hpp>
 
 class OrderVoiceData;
 
@@ -42,7 +43,7 @@ public:
 	//! Mutex for orders
 	SDL_mutex *ordersMutex;
 	//! Queue of orders to be sent through the network
-	std::queue<OrderVoiceData *> orders;
+	std::queue<boost::shared_ptr<OrderVoiceData> > orders;
 	//! True when record thread is running
 	bool recordThreadRun;
 	//! True when recording
@@ -62,7 +63,6 @@ public:
 	//! Stop recording
 	void stopRecording(void);
 	//! Return the next voice data order from the internal queue
-	OrderVoiceData *getNextOrder(void);
+	boost::shared_ptr<OrderVoiceData> getNextOrder(void);
 };
-
 #endif
