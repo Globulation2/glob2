@@ -1364,7 +1364,6 @@ namespace GAGCore
 		for(std::vector<boost::tuple<SRectangle, std::string, DrawableSurface*> >::iterator i=drawSquares.begin(); i!=drawSquares.end();)
 		{
 			DrawableSurface toPrint(i->get<2>()->getW(), i->get<2>()->getH());
-			glFlush();
 			toPrint.drawSurface(0, 0, i->get<2>());
 			int x=i->get<0>().x;
 			int y=i->get<0>().y;
