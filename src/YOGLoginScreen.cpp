@@ -114,7 +114,7 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 
 void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 {
-	std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
+	//std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnected)
 	{

@@ -178,7 +178,7 @@ void YOGScreen::onTimer(Uint32 tick)
 
 void YOGScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 {
-	std::cout<<"YOGScreen: recieved event "<<event->format()<<std::endl;
+	//std::cout<<"YOGScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnectionLost)
 	{
