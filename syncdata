@@ -1,2 +1,2 @@
 #!/bin/sh
-rsync -rz glob2@yog.globulation2.org:~/rsync/data2007/ data/
+rsync -rz yog.globulation2.org:~/rsync/data2007/ data/
