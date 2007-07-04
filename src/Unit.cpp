@@ -863,7 +863,7 @@ void Unit::handleActivity(void)
 					currentTeam->pushGameEvent(event);
 					currentTeam->unitConversionLost++;
 					
-					boost::shared_ptr<GameEvent> event2(new UnitGainedConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
+					boost::shared_ptr<GameEvent> event2(new UnitGainedConversionEvent(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
 					targetTeam->pushGameEvent(event2);
 					targetTeam->unitConversionGained++;
 					
