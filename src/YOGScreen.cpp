@@ -222,7 +222,7 @@ void YOGScreen::hostGame()
 		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 		client->setMultiplayerGame(game);
 		std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
-		game->createNewGame("New Game");
+		game->createNewGame(name);
 		game->setMapHeader(cms.getMapHeader());
 		MultiplayerGameScreen mgs(game, netMessage);
 		int rc = mgs.execute(globalContainer->gfx, 40);
