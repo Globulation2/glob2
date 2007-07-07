@@ -2,6 +2,8 @@
 %0 deskonektatu da.
 [%0 has left the game]
 %0(e)k partida utzi du.
+[%0's game]
+
 [%0's team unit got converted to your team]
 %0(r)en unitatea zure taldera pasatu da
 [abreaviation explanation A]
@@ -64,12 +66,6 @@ Izendatua
 Abiadura
 [At. strength]
 Indarra
-[attack building explanation 2]
-Soldaduen maila
-[attack building explanation]
-Borroka hobetzeko
-[attack building]
-Barrakoia
 [attack speed]
 Eraso abiadura
 [Attack]
@@ -86,10 +82,64 @@ Jokalarien zai
 kanpoan:
 [bad error in connection system]
 Konektatze sisteman akats potoloa
+[barracks explanation 2]
+Soldaduen maila
+[barracks explanation]
+Borroka hobetzeko
+[barracks]
+Barrakoia
 [beach size]
 hondar tamaina
 [bkey]
 B-tekla
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Eraiki
 [Building name]
@@ -140,14 +190,14 @@ Aukeratu mapa
 C-tekla
 [clear area]
 Garbiketa zonaldea
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Baliabideak garbitzeko
-[clearing flag]
-Garbiketa bandera
 [Clearing:]
 Garbitu:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Baliabideak garbitzeko
+[clearingflag]
+Garbiketa bandera
 [close]
 Itxi
 [closed]
@@ -156,8 +206,8 @@ Itxita
 Konpilatu script-a
 [connect]
 Konektatu
-[connected to all players]t
-Jokalari guztietara konektatuta
+[connected to all players]
+
 [connected to server]
 Zerbitzarira konektatuta
 [connecting to all players]
@@ -192,11 +242,17 @@ Kalte mapa
 Buffer bikoitza
 [default terrain]
 Lehenetsitako terrenoa
-[defense building explanation 2]
+[defencetower explanation 2]
 unitateak edo eraikuntzak
-[defense building explanation]
+[defencetower explanation]
 Etsai hurbilak erasotu
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Babes dorrea
 [Defense Map]
 Babes mapa
@@ -238,11 +294,11 @@ E-tekla
 Ezizena sartu:
 [Enter your password :]
 Pasahitza sartu:
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 Miatzaileak erakartzeko
-[exploration flag]
+[explorationflag]
 Miatze bandera
 [Explorer Ratio]
 Miatzaile Ratioa
@@ -254,12 +310,6 @@ miatzaile
 irla hutsak
 [fkey]
 F-tekla
-[food building explanation 2]
- 
-[food building explanation]
-Unitateak elikatzeko
-[food building]
-Ostatua
 [food left]
 Geratzen den janaria
 [food]
@@ -312,14 +362,14 @@ bat egin du
 irten da
 [heal]
 Osasuna
-[health building explanation 2]
- 
-[health building explanation]
-Unitateak sendatzeko
-[health building]
-Hospitala
 [hkey]
 H-tekla
+[hospital explanation 2]
+ 
+[hospital explanation]
+Unitateak sendatzeko
+[hospital]
+Hospitala
 [host]
 Partida bat ostatatu
 [hp]
@@ -338,6 +388,18 @@ Hardware azelerazioa
 I-tekla
 [In way]
 Bidean
+[inn explanation 2]
+ 
+[inn explanation]
+Unitateak elikatzeko
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Ostatua
 [inside]
 Barruan
 [islands size]
@@ -354,6 +416,8 @@ Partidara bat egin
 Bat egin
 [keyboard settings]
 Teklatu ezarpenak
+[kick]
+
 [kkey]
 K-tekla
 [lan]
@@ -366,6 +430,8 @@ Hizkuntza
 Euskara
 [large]
 handia
+[Leave Game]
+
 [level]
 Maila:
 [levels]
@@ -508,6 +574,12 @@ Irten editoretik
 Irten partidatik
 [quit]
 Irten
+[racetrack explanation 2]
+Ibiltze abiadura hobetzeko
+[racetrack explanation]
+Ibilera hobetzeko
+[racetrack]
+Zirkuitoa
 [random terrain]
 Ausazko lurzorua
 [range]
@@ -554,11 +626,11 @@ Gorde partida
 Gorde mapa
 [Save]
 Gorde
-[science building explanation 2]
+[school explanation 2]
 Langileen maila
-[science building explanation]
+[school explanation]
 Eraikitzea hobetzeko
-[science building]
+[school]
 Eskola
 [Script Areas]
 Script Zonaldeak
@@ -568,9 +640,9 @@ lan bila
 bila
 [select barracks building]
 Barrakoia aukeratu
-[select clearing flag]
+[select clearingflag]
 Garbiketa bandera aukeratu
-[select exploration flag]
+[select explorationflag]
 Miatze bandera aukeratu
 [select hospital building]
 Hospitala aukeratu 
@@ -590,7 +662,7 @@ Igerilekua aukeratu
 Babes dorrea aukeratu
 [select wall building]
 Harrizko orma aukeratu
-[select war flag]
+[select warflag]
 Gerra bandera aukeratu
 [session request sent]
 Saio eskaria bidalita ...
@@ -636,33 +708,35 @@ Still
 Unitate bat oraindik lanean
 [Still one]
 Still one
-[stone wall explanation 2]
-elementua
-[stone wall explanation]
-Defentsa pasiboa
-[stone wall]
-Harrizko orma
 [Stone]
 Harria
 [stone]
 harria
+[stonewall explanation 2]
+elementua
+[stonewall explanation]
+Defentsa pasiboa
+[stonewall]
+Harrizko orma
 [svr hostname]
 Zerbitzari izena
 [swamp terrain]
 Aintzira
-[swarm building explanation 2]
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 Unitate berriak sortzeko
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Kofoina
 [Swim]
 Igeri
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 Igeri abiadura hobetzeko
-[swimspeed building explanation]
+[swimmingpool explanation]
 Igeriketa hobetzeko
-[swimspeed building]
+[swimmingpool]
 Igerilekua
 [switch to building view]
 Eraikuntza ikuspegira aldatu
@@ -674,36 +748,38 @@ Talde ikuspegira aldatu
 Lurzoru ikuspegira aldatu
 [teams]
  talde
-[the attack building is finished]
+[the barracks is finished]
 Barrakoia bukatuta dago
-[the attack building is under attack]
+[the barracks is under attack]
 Barrakoia erasopean dago
 [the building is finished]
 Eraikuntza bukatuta dago
 [the building is under attack]
 Eraikuntza erasopean dago
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Clearing flag finished ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Clearing flag under attack ??
-[the defense building is under attack]
+[the defencetower is finished]
+Babes dorrea bukatuta dago
+[the defencetower is under attack]
 Zure babesak erasopean daude
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Exploration flag finished ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Exploration flag under attack ??
-[the food building is finished]
-Ostatua bukatuta dago
-[the food building is under attack]
-Ostatua erasopean dago
 [The game has not been finished]
 Partida ez da bukatu
 [the games]
 Partidak
-[the health building is finished]
+[the hospital is finished]
 Hospitala bukatuta dago
-[the health building is under attack]
+[the hospital is under attack]
 Hospitala erasopean dago
+[the inn is finished]
+Ostatua bukatuta dago
+[the inn is under attack]
+Ostatua erasopean dago
 [the maps]
 Mapak
 [the market is finished]
@@ -714,31 +790,29 @@ Merkatua erasopean dago
 %0 YOGera sartu da.
 [The player %0 has left YOG]
 %0(e)k  YOG utzi du.
-[the science building is finished]
+[the racetrack is finished]
+Zirkuitoa bukatuta dago
+[the racetrack is under attack]
+Zirkuitoa erasopean dago
+[the school is finished]
 Eskola bukatuta dago
-[the science building is under attack]
+[the school is under attack]
 Eskola erasopean dago
-[the stone wall is finished]
+[the stonewall is finished]
 Horma zati bat bukatuta dago
-[the stone wall is under attack]
+[the stonewall is under attack]
 Harrizko orma erasopean dago
 [the swarm is finished]
 Kofoina bukatuta dago
 [the swarm is under attack]
 Kofoina erasopean dago
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Igerilekua bukatuta dago
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Igerilekua erasopean dago
-[the tower building is finished]
-Babes dorrea bukatuta dago
-[the walkspeed building is finished]
-Zirkuitoa bukatuta dago
-[the walkspeed building is under attack]
-Zirkuitoa erasopean dago
-[the war flag is finished]
+[the warflag is finished]
 ?? War flag finished ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? War flag under attack ??
 [tkey]
 T-tekla
@@ -798,17 +872,11 @@ Suntsipenari itxaroten
 %0(r)i itxaroten
 [Walk]
 Ibili
-[walkspeed building explanation 2]
-Ibiltze abiadura hobetzeko
-[walkspeed building explanation]
-Ibilera hobetzeko
-[walkspeed building]
-Zirkuitoa
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 Soldaduak erakartzeko
-[war flag]
+[warflag]
 Gerra bandera
 [Warning, you need to reboot the game for changes to take effect]
 Oharra, programa berrabiarazi behar duzu aldaketak aplikatzeko
@@ -824,6 +892,8 @@ AI zen
 zen
 [water]
 Ura
+[Wheat]
+
 [wheat]
 garia
 [wkey]

@@ -2,6 +2,8 @@
 %0 desconectou.
 [%0 has left the game]
 %0 saiu do jogo.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Uma unidade do time %0 foi convertida para o seu
 [abreaviation explanation A]
@@ -64,12 +66,6 @@ Assigned
 Vel. de ataque
 [At. strength]
 Força de ataque
-[attack building explanation 2]
-melhore seus guerreiros
-[attack building explanation]
-Improves the fighting
-[attack building]
-Barracks
 [attack speed]
 Velocidade de ataque
 [Attack]
@@ -86,6 +82,12 @@ Esperando jogadores
 distante:
 [bad error in connection system]
 Erro no sistema de conexão
+[barracks explanation 2]
+melhore seus guerreiros
+[barracks explanation]
+Improves the fighting
+[barracks]
+Barracks
 [beach size]
 Tamanho da praia
 [bkey]
@@ -188,14 +190,14 @@ Escolha um mapa
 tecla C
 [clear area]
 Área de Limpeza
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Limpa os recursos
-[clearing flag]
-Clearing flag
 [Clearing:]
 Limpando:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Limpa os recursos
+[clearingflag]
+Clearing flag
 [close]
 Fechar
 [closed]
@@ -240,17 +242,17 @@ Mapa de dano
 Buffer duplo
 [default terrain]
 Terreno padrão
+[defencetower explanation 2]
+unidades ou construções
+[defencetower explanation]
+Atacar inimigos próximos
 [defencetower level 0]
 Torre de defesa 1
 [defencetower level 1]
 Torre de defesa 2
 [defencetower level 2]
 Torre de defesa 3
-[defense building explanation 2]
-unidades ou construções
-[defense building explanation]
-Atacar inimigos próximos
-[defense building]
+[defencetower]
 Torre de defesa
 [Defense Map]
 Mapa defensivo
@@ -292,11 +294,11 @@ tecla E
 Digite seu apelido:
 [Enter your password :]
 Digite sua senha:
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 Atrai exploradores
-[exploration flag]
+[explorationflag]
 Exploration flag
 [Explorer Ratio]
 Proporção de exploradores
@@ -308,12 +310,6 @@ exploradores
 ilhas vazias
 [fkey]
 tecla F
-[food building explanation 2]
- 
-[food building explanation]
-Alimenta as suas unidades
-[food building]
-Taverna
 [food left]
 Comida sobrando
 [food]
@@ -366,14 +362,14 @@ juntou-se
 saiu
 [heal]
 Saúde
-[health building explanation 2]
- 
-[health building explanation]
-Cura as suas unidades
-[health building]
-Hospital
 [hkey]
 tecla H
+[hospital explanation 2]
+ 
+[hospital explanation]
+Cura as suas unidades
+[hospital]
+Hospital
 [host]
 Hospedar um jogo
 [hp]
@@ -392,12 +388,20 @@ Aceleração por hardware
 tecla I
 [In way]
 À caminho
+[inn explanation 2]
+ 
+[inn explanation]
+Alimenta as suas unidades
 [Inn level 0]
 Taverna 1
+[inn level 0]
+
 [inn level 1]
 Taverna 2
 [inn level 2]
 Taverna 3
+[inn]
+Taverna
 [inside]
 Dentro
 [islands size]
@@ -414,6 +418,8 @@ Juntar-se a um jogo
 Join
 [keyboard settings]
 Ajustes de teclado
+[kick]
+
 [kkey]
 tecla K
 [lan]
@@ -426,6 +432,8 @@ Linguagem
 Português do Brasil
 [large]
 grande
+[Leave Game]
+
 [level]
 Nível
 [levels]
@@ -568,6 +576,12 @@ Sair do editor
 Sair do jogo
 [quit]
 Sair
+[racetrack explanation 2]
+acelere suas unidades
+[racetrack explanation]
+Melhora o caminhar
+[racetrack]
+Pista de corrida
 [random terrain]
 Terreno aleatório
 [range]
@@ -614,11 +628,11 @@ Gravar Jogo
 Gravar mapa
 [Save]
 Gravar
-[science building explanation 2]
+[school explanation 2]
 melhore seus trabs.
-[science building explanation]
+[school explanation]
 Improves the building
-[science building]
+[school]
 Escola
 [Script Areas]
 Script Areas
@@ -628,9 +642,9 @@ procurando trabalho
 procurando
 [select barracks building]
 Selecionar Barracks
-[select clearing flag]
+[select clearingflag]
 Selecionar Bandeira de limpeza
-[select exploration flag]
+[select explorationflag]
 Selecionar Bandeira de exploração
 [select hospital building]
 Selecionar Hospital
@@ -650,7 +664,7 @@ Selecionar Piscina
 Selecionar Torre
 [select wall building]
 Selecionar Parede
-[select war flag]
+[select warflag]
 Selecionar Bandeira de guerra
 [session request sent]
 Pedido de sessão enviado...
@@ -696,35 +710,35 @@ Ainda
 Ainda uma unidade trabalhando
 [Still one]
 Ainda um
-[stone wall explanation 2]
-elemento
-[stone wall explanation]
-Defesa passiva
-[stone wall]
-Parede de pedra
 [Stone]
 Pedra
 [stone]
 pedra
+[stonewall explanation 2]
+elemento
+[stonewall explanation]
+Defesa passiva
+[stonewall]
+Parede de pedra
 [svr hostname]
 Nome do servidor
 [swamp terrain]
 Pântano
-[swarm building explanation 2]
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 Criar novas unidade
-[swarm building]
-Núcleo de reprod.
 [swarm level 0]
 Núcleo de reprodução
+[swarm]
+Núcleo de reprod.
 [Swim]
 Nadar
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 acelere suas unidades
-[swimspeed building explanation]
+[swimmingpool explanation]
 Melhora a natação
-[swimspeed building]
+[swimmingpool]
 Piscina
 [switch to building view]
 Mudar para visão de construções
@@ -736,36 +750,38 @@ Mudar para visão de times
 Mudar para visão de terrenos
 [teams]
 times
-[the attack building is finished]
+[the barracks is finished]
 O campo de treinamento está pronto
-[the attack building is under attack]
+[the barracks is under attack]
 The training camp is under attack
 [the building is finished]
 A construção está pronta
 [the building is under attack]
 A contrução está sobre ataque
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Clearing flag finished ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Clearing flag under attack ??
-[the defense building is under attack]
+[the defencetower is finished]
+A Torre de defesa está pronta
+[the defencetower is under attack]
 Suas defesas estão sobre ataque
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Exploration flag finished ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Bandeira de exploração sobre ataque ??
-[the food building is finished]
-The Taverna is finished
-[the food building is under attack]
-The Taverna is under attack
 [The game has not been finished]
 O jogo ainda não acabou
 [the games]
 Jogos
-[the health building is finished]
+[the hospital is finished]
 O Hospital está pronto
-[the health building is under attack]
+[the hospital is under attack]
 O Hospital está sendo atacado
+[the inn is finished]
+The Taverna is finished
+[the inn is under attack]
+The Taverna is under attack
 [the maps]
 Mapas
 [the market is finished]
@@ -776,31 +792,29 @@ O Mercado está sendo atacado
 %0 juntou-se ao YOG.
 [The player %0 has left YOG]
 %0 deixou o YOG.
-[the science building is finished]
+[the racetrack is finished]
+A Pista de corrida está pronta
+[the racetrack is under attack]
+A Pista de corrida está sendo atacado
+[the school is finished]
 A Escola está pronta
-[the science building is under attack]
+[the school is under attack]
 A Escola está sendo atacada
-[the stone wall is finished]
+[the stonewall is finished]
 Uma seção de muro está pronta
-[the stone wall is under attack]
+[the stonewall is under attack]
 O inimigo está à sua muralha
 [the swarm is finished]
 O núcleo de reprodução está pronto
 [the swarm is under attack]
 O Núcleo de reprodução está sobre ataque
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 A Piscina está pronta
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 A Piscina está sendo atacada
-[the tower building is finished]
-A Torre de defesa está pronta
-[the walkspeed building is finished]
-A Pista de corrida está pronta
-[the walkspeed building is under attack]
-A Pista de corrida está sendo atacado
-[the war flag is finished]
+[the warflag is finished]
 ?? War flag finished ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Bandeira de guerra sobre ataque ??
 [tkey]
 tecla T
@@ -860,17 +874,11 @@ Esperando destruição
 Esperando por %0
 [Walk]
 Caminhar
-[walkspeed building explanation 2]
-acelere suas unidades
-[walkspeed building explanation]
-Melhora o caminhar
-[walkspeed building]
-Pista de corrida
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 Atrai guerreiros
-[war flag]
+[warflag]
 War flag
 [Warning, you need to reboot the game for changes to take effect]
 Aviso, você precisa reiniciar o jogo para que as modificações tenham efeito
@@ -886,6 +894,8 @@ era IA
 era
 [water]
 Água
+[Wheat]
+
 [wheat]
 trigo
 [wkey]

@@ -2,6 +2,8 @@
 %0 انقطع اتصالهم.
 [%0 has left the game]
 %0 تركو اللعبه.
+[%0's game]
+
 [%0's team unit got converted to your team]
 %0's team unit got converted to your team
 [abreaviation explanation A]
@@ -16,6 +18,8 @@ mV: Show vision for Markets buildings (to exchange fruits)
 V: Show vision for all buildings
 [Add AI]
 Add AI
+[add map]
+
 [AI]
 AI
 [ai]
@@ -62,12 +66,6 @@ Assigned
 Att. speed
 [At. strength]
 Att. str.
-[attack building explanation 2]
-يرفع مستوى المحاربين
-[attack building explanation]
-يحسن القتال
-[attack building]
-ثكنه
 [attack speed]
 سرعة الهجوم
 [Attack]
@@ -84,10 +82,64 @@ Available local games
 بعيدا:
 [bad error in connection system]
 Bad error in connection system
+[barracks explanation 2]
+يرفع مستوى المحاربين
+[barracks explanation]
+يحسن القتال
+[barracks]
+ثكنه
 [beach size]
 حجم الشاطىء
 [bkey]
 B-key
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 يبنى
 [Building name]
@@ -102,6 +154,8 @@ Building short explanation (24 chars max)
 المباني
 [Bullets]
 الرصاص
+[campaign editor]
+
 [campaign]
 الحملة
 [Can't join game, missmatching game parameters]
@@ -136,14 +190,14 @@ Checksum sent ...
 C-key
 [clear area]
 Clearing area
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Clears resources
-[clearing flag]
-Clearing flag
 [Clearing:]
 تبادل:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Clears resources
+[clearingflag]
+Clearing flag
 [close]
 غلق
 [closed]
@@ -188,11 +242,17 @@ Damaged Map
 Double buffering
 [default terrain]
 Default terrain
-[defense building explanation 2]
+[defencetower explanation 2]
 units or buildings
-[defense building explanation]
+[defencetower explanation]
 هجمات العدو القريب
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 برج الدفاع
 [Defense Map]
 Defense Map
@@ -220,6 +280,10 @@ D-key
 Download finished
 [downloaded at]
 Downloaded at 
+[edit map]
+
+[editing map]
+
 [editor shortcuts]
 Editor Shortcuts
 [editor]
@@ -230,11 +294,11 @@ E-key
 ادخل اسمك المستعار :
 [Enter your password :]
 ادخل كلمة المرور :
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 يجذب المستكشفون
-[exploration flag]
+[explorationflag]
 علم استكشاف
 [Explorer Ratio]
 Explorer Ratio
@@ -246,12 +310,6 @@ Explorer Ratio
 جزيره خاليه
 [fkey]
 F-key
-[food building explanation 2]
- 
-[food building explanation]
-اغذيه االوحدات
-[food building]
-كوخ
 [food left]
 ترك الطعام
 [food]
@@ -304,14 +362,14 @@ has joined
 has quit
 [heal]
 الصحه
-[health building explanation 2]
- 
-[health building explanation]
-يشفى لكم الوحدات
-[health building]
-مستشفى
 [hkey]
 H-key
+[hospital explanation 2]
+ 
+[hospital explanation]
+يشفى لكم الوحدات
+[hospital]
+مستشفى
 [host]
 Host a game
 [hp]
@@ -330,6 +388,18 @@ Hardware acceleration
 I-key
 [In way]
 فى الطريق
+[inn explanation 2]
+ 
+[inn explanation]
+اغذيه االوحدات
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+كوخ
 [inside]
 بالداخل
 [islands size]
@@ -346,6 +416,8 @@ Join a game
 Join
 [keyboard settings]
 Keyboard Settings
+[kick]
+
 [kkey]
 K-key
 [lan]
@@ -358,12 +430,16 @@ ar
 العربيه
 [large]
 large
+[Leave Game]
+
 [level]
 المستوى
 [levels]
 المستويات
 [lkey]
 L-key
+[load campaign]
+
 [load game]
 تحميل اللعبه
 [load map]
@@ -386,12 +462,16 @@ Air dmg.
 Ground dmg.
 [Map name: %0]
 Map name: %0.
+[map name]
+
 [map size x]
 Map width
 [map size y]
 Map height
 [mapGenerationDescriptor Methodes]
 Methodes of random generated maps
+[maps available]
+
 [mark map]
 Mark Map For Allies
 [market explanation 2]
@@ -414,6 +494,8 @@ M-key
 كتم الصوت
 [network latency]
 Network latency
+[new campaign]
+
 [new]
 جديد
 [nick taken]
@@ -492,6 +574,12 @@ Q-key
 خروج من اللعبه
 [quit]
 خروج
+[racetrack explanation 2]
+يسرع لكم الوحدات
+[racetrack explanation]
+يحسن المشي
+[racetrack]
+مضمار السباق
 [random terrain]
 Random terrain
 [range]
@@ -506,10 +594,14 @@ Register a new YOG user with a password. (insecure)
 Remember Unit
 [Remember YOG password localy]
 Remember the password locally. (insecure)
+[remove map]
+
 [repair building]
 Start/Stop Repair
 [repair]
 تصليح
+[repeat area]
+
 [ressources]
 موارد
 [restore default shortcuts]
@@ -534,11 +626,11 @@ Do you want to save before quitting?
 حفظ الخريطه
 [Save]
 حفظ
-[science building explanation 2]
+[school explanation 2]
 يرفع مستوى العمال
-[science building explanation]
+[school explanation]
 يحسن بناء
-[science building]
+[school]
 المدرسه
 [Script Areas]
 Script Areas
@@ -548,9 +640,9 @@ Script Areas
 بحث
 [select barracks building]
 Select Barracks
-[select clearing flag]
+[select clearingflag]
 Select Clearing Flag
-[select exploration flag]
+[select explorationflag]
 Select Exploration Flag
 [select hospital building]
 Select Hospital
@@ -570,7 +662,7 @@ Select Swimmingpool
 Select Tower
 [select wall building]
 Select Wall
-[select war flag]
+[select warflag]
 Select War Flag
 [session request sent]
 Session request sent ...
@@ -590,6 +682,10 @@ Display
 صقل
 [speed]
 السرعه
+[start mission]
+
+[start new campaign]
+
 [Start]
 ابدأ
 [STARTING GAME ...]
@@ -612,33 +708,35 @@ state
 وحدة واحدة لا تزال تعم
 [Still one]
 ما زال واحد
-[stone wall explanation 2]
-عنصر
-[stone wall explanation]
-الدفاع السلبي
-[stone wall]
-Stone wall
 [Stone]
 حجارة
 [stone]
 الأحجار
+[stonewall explanation 2]
+عنصر
+[stonewall explanation]
+الدفاع السلبي
+[stonewall]
+Stone wall
 [svr hostname]
 Server hostname
 [swamp terrain]
 المستنقع
-[swarm building explanation 2]
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 انشاء وحدات جديدة
-[swarm building]
+[swarm level 0]
+
+[swarm]
 حشد
 [Swim]
 يسبح
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 يسرع لكم الوحدات
-[swimspeed building explanation]
+[swimmingpool explanation]
 يحسن السباحه
-[swimspeed building]
+[swimmingpool]
 المسبح
 [switch to building view]
 Switch To Building view
@@ -650,36 +748,38 @@ Switch to Team view
 Switch to Terrain view
 [teams]
  فريق
-[the attack building is finished]
+[the barracks is finished]
 انتهى بناء معسكر التدريب
-[the attack building is under attack]
+[the barracks is under attack]
 معسكر التدريب تحت الهجوم
 [the building is finished]
 انتهى بناء المبنى
 [the building is under attack]
 المبنى تحت الهجوم
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Clearing flag finished ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Clearing flag under attack ??
-[the defense building is under attack]
+[the defencetower is finished]
+انتهى بناء برج الدفاع
+[the defencetower is under attack]
 الدفاعت تحت الهجوم
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Exploration flag finished ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Exploration flag under attack ??
-[the food building is finished]
-انتهى بناء الكوخ
-[the food building is under attack]
-الكوخ تحت الهجوم
 [The game has not been finished]
 The game has not been finished
 [the games]
 اﻷلعاب
-[the health building is finished]
+[the hospital is finished]
 انتهى بناء المستشفى
-[the health building is under attack]
+[the hospital is under attack]
 المستشفى تحت الهجوم
+[the inn is finished]
+انتهى بناء الكوخ
+[the inn is under attack]
+الكوخ تحت الهجوم
 [the maps]
 الخرائط
 [the market is finished]
@@ -690,31 +790,29 @@ The game has not been finished
 %0 has joined YOG.
 [The player %0 has left YOG]
 %0 has left YOG.
-[the science building is finished]
+[the racetrack is finished]
+انتهى بناء مضمار السباق
+[the racetrack is under attack]
+مضمار السباق تحت الهجوم
+[the school is finished]
 انتهى بناء المدرسه
-[the science building is under attack]
+[the school is under attack]
 المدرسه تحت الهجوم
-[the stone wall is finished]
+[the stonewall is finished]
 انتهى بناء قطاع الحائط
-[the stone wall is under attack]
+[the stonewall is under attack]
 الاعداء على مشارف المدينه
 [the swarm is finished]
 انتهى بناء الحشد
 [the swarm is under attack]
 الحشد تحت الهجوم
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 انتهى بناء المسبح
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 المسبح تحت الهجوم
-[the tower building is finished]
-انتهى بناء برج الدفاع
-[the walkspeed building is finished]
-انتهى بناء مضمار السباق
-[the walkspeed building is under attack]
-مضمار السباق تحت الهجوم
-[the war flag is finished]
+[the warflag is finished]
 ?? War flag finished ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? War flag under attack ??
 [tkey]
 T-key
@@ -752,6 +850,8 @@ Uniform terrain
 وحدات العمل
 [Units]
 الوحدات
+[unlocked by]
+
 [Unnamed Area]
 {Unnamed Area}
 [update list]
@@ -772,17 +872,11 @@ V-key
 انتظار %0
 [Walk]
 يمشى
-[walkspeed building explanation 2]
-يسرع لكم الوحدات
-[walkspeed building explanation]
-يحسن المشي
-[walkspeed building]
-مضمار السباق
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 يجذب المحاربون
-[war flag]
+[warflag]
 علم الحرب
 [Warning, you need to reboot the game for changes to take effect]
 Warning, you need to restart the game for changes to take effect
@@ -798,6 +892,8 @@ was AI
 was
 [water]
 Water
+[Wheat]
+
 [wheat]
 الذره
 [wkey]

@@ -2,6 +2,8 @@
 %0 si è disconnesso dal gioco.
 [%0 has left the game]
 %0 ha lasciato il gioco.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Un %0 sqadra ha convertito la tua unità
 [abreaviation explanation A]
@@ -16,6 +18,8 @@ mV: Mostra visuale per Mercati (per scambiare frutta)
 V: Mostra visuale per tutte le costruzioni
 [Add AI]
 Aggiungi un IA
+[add map]
+
 [AI]
 IA
 [ai]
@@ -62,12 +66,6 @@ Assegnato
 Velocità Att.
 [At. strength]
 Resistenza Att.
-[attack building explanation 2]
-nemiche nelle vicinanze
-[attack building explanation]
-Migliora il livello di
-[attack building]
-Caserma
 [attack speed]
 Velocità d'attacco
 [Attack]
@@ -84,10 +82,64 @@ In attesa di altri giocatori
 assente:
 [bad error in connection system]
 Brutto errore nel sistema di connessione
+[barracks explanation 2]
+nemiche nelle vicinanze
+[barracks explanation]
+Migliora il livello di
+[barracks]
+Caserma
 [beach size]
 Grandezza della spiaggia
 [bkey]
 tasto B
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Costruire
 [Building name]
@@ -102,6 +154,8 @@ Struttura in costruzione
 Costruzioni
 [Bullets]
 Proiettili
+[campaign editor]
+
 [campaign]
 Campagna
 [Can't join game, missmatching game parameters]
@@ -136,14 +190,14 @@ Seleziona una mappa
 tasto C
 [clear area]
 Area di raccolta
-[clearing flag explanation 2]
-risorse
-[clearing flag explanation]
-Fa raccogliere le
-[clearing flag]
-Bandiera di raccolta
 [Clearing:]
 Raccolta:
+[clearingflag explanation 2]
+risorse
+[clearingflag explanation]
+Fa raccogliere le
+[clearingflag]
+Bandiera di raccolta
 [close]
 Chiudi
 [closed]
@@ -188,11 +242,17 @@ Mappa danneggiati
 Double-buffering
 [default terrain]
 Terreno predefinito
-[defense building explanation 2]
+[defencetower explanation 2]
 attacco dei guerrieri
-[defense building explanation]
+[defencetower explanation]
 Attacca unità e costruzioni
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Torre di difesa
 [Defense Map]
 Mappa Difesa
@@ -220,6 +280,10 @@ Non trasporta nulla
 Download completato
 [downloaded at]
 Scaricato da
+[edit map]
+
+[editing map]
+
 [editor shortcuts]
 Editor delle scorciatoie da tastiera
 [editor]
@@ -230,11 +294,11 @@ tasto E
 Inserisci il tuo soprannome :
 [Enter your password :]
 Inserisci la tua password :
-[exploration flag explanation 2]
+[explorationflag explanation 2]
 esploratori
-[exploration flag explanation]
+[explorationflag explanation]
 Richiama gli
-[exploration flag]
+[explorationflag]
 Bandiera di esplorazione
 [Explorer Ratio]
 Percent.Esploratori
@@ -246,12 +310,6 @@ esploratori
 isole vuote
 [fkey]
 tasto F
-[food building explanation 2]
-
-[food building explanation]
-Approvvigiona le unità
-[food building]
-Mensa
 [food left]
 Cibo rimasto
 [food]
@@ -304,14 +362,14 @@ Raccogliere
 se ne è andato
 [heal]
 Guarisci
-[health building explanation 2]
-
-[health building explanation]
-Cura le unità
-[health building]
-Ospedale
 [hkey]
 tasto H
+[hospital explanation 2]
+
+[hospital explanation]
+Cura le unità
+[hospital]
+Ospedale
 [host]
 Ospita una partita
 [hp]
@@ -330,6 +388,18 @@ Accelerazione Hardware
 tasto I
 [In way]
 Sulla strada
+[inn explanation 2]
+
+[inn explanation]
+Approvvigiona le unità
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Mensa
 [inside]
 Interno
 [islands size]
@@ -346,6 +416,8 @@ Unisciti ad una partita
 Unisci
 [keyboard settings]
 Impostazioni tastiera
+[kick]
+
 [kkey]
 tasto K
 [lan]
@@ -358,12 +430,16 @@ Lingua
 Italiano
 [large]
 largo
+[Leave Game]
+
 [level]
 Livello
 [levels]
 Livelli
 [lkey]
 tasto L
+[load campaign]
+
 [load game]
 Carica partita
 [load map]
@@ -386,12 +462,16 @@ Danno aereo
 Danno a terra
 [Map name: %0]
 Nome della mappa: %0.
+[map name]
+
 [map size x]
 Grandezza x della mappa
 [map size y]
 Grandezza y della mappa
 [mapGenerationDescriptor Methodes]
 Metodi di generazione casuale della mappa
+[maps available]
+
 [mark map]
 Segna la mappa per gli Alleati
 [market explanation 2]
@@ -414,6 +494,8 @@ Volume (musica)
 Nessun Audio
 [network latency]
 Latenza della rete
+[new campaign]
+
 [new]
 Nuovo
 [nick taken]
@@ -492,6 +574,12 @@ Chiudi l'editor
 Esci dal gioco
 [quit]
 Esci
+[racetrack explanation 2]
+terreno delle unità
+[racetrack explanation]
+Migliora la velocità su 
+[racetrack]
+Circuito
 [random terrain]
 Terreno a caso
 [range]
@@ -506,10 +594,14 @@ Registra un nuovo utente YOG con una passord. (non sicuro)
 Ricorda Unità
 [Remember YOG password localy]
 Ricordati la password localmente. (non sicuro)
+[remove map]
+
 [repair building]
 Inizia/Ferma Riparazione
 [repair]
 Ripara
+[repeat area]
+
 [ressources]
 Risorse
 [restore default shortcuts]
@@ -534,11 +626,11 @@ Salva partita
 Salva Mappa
 [Save]
 Salva
-[science building explanation 2]
+[school explanation 2]
 costruire degli operai
-[science building explanation]
+[school explanation]
 Migliora il livello di
-[science building]
+[school]
 Scuola
 [Script Areas]
 Script per aree
@@ -548,9 +640,9 @@ cercano lavoro
 Ricerca
 [select barracks building]
 Seleziona Caserma
-[select clearing flag]
+[select clearingflag]
 Seleziona bandiera di raccolta
-[select exploration flag]
+[select explorationflag]
 Seleziona bandiera di esplorazione
 [select hospital building]
 Seleziona Ospedale
@@ -570,7 +662,7 @@ Seleziona Piscina
 Seleziona Torre di difesa
 [select wall building]
 Seleziona Muro di Pietra
-[select war flag]
+[select warflag]
 Seleziona bandiera di attacco
 [session request sent]
 Richiesta di sessione inviata ...
@@ -590,6 +682,10 @@ piccolo
 Spianatura
 [speed]
 Velocità
+[start mission]
+
+[start new campaign]
+
 [Start]
 Start
 [STARTING GAME ...]
@@ -612,33 +708,35 @@ Ancora
 Ancora un unità al lavoro
 [Still one]
 Ancora uno
-[stone wall explanation 2]
-passiva
-[stone wall explanation]
-Elemento di difesa
-[stone wall]
-Muro di pietra
 [Stone]
 Roccia
 [stone]
 roccia
+[stonewall explanation 2]
+passiva
+[stonewall explanation]
+Elemento di difesa
+[stonewall]
+Muro di pietra
 [svr hostname]
 Nome del server
 [swamp terrain]
 Palude
-[swarm building explanation 2]
+[swarm explanation 2]
 
-[swarm building explanation]
+[swarm explanation]
 Crea nuove unità
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Magazzino
 [Swim]
 Nuotare
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 acqua delle unità
-[swimspeed building explanation]
+[swimmingpool explanation]
 Migliora la velocità in
-[swimspeed building]
+[swimmingpool]
 Piscina
 [switch to building view]
 Passa alla Visualizzazione Costruzioni
@@ -650,36 +748,38 @@ Passa alla Visualizzazione Squadre
 Passa alla Visualizzazione Terreno
 [teams]
  squadre
-[the attack building is finished]
+[the barracks is finished]
 La caserma è stata completata
-[the attack building is under attack]
+[the barracks is under attack]
 La caserma è sotto attacco
 [the building is finished]
 L'edificio è completato
 [the building is under attack]
 L'edificio è sotto attacco
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? La bandiera pulitrice finita ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? La bandiera pulitrice è sotto attacco ??
-[the defense building is under attack]
+[the defencetower is finished]
+La torre di difesa è stata completata
+[the defencetower is under attack]
 La torre di difesa è sotto attacco
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Bandiera di esplorazione finita ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? La bandiera esploratrice è sotto attacco ??
-[the food building is finished]
-La mensa è stata completata
-[the food building is under attack]
-La mensa è sotto attacco
 [The game has not been finished]
 La partita non è finita
 [the games]
 Giochi
-[the health building is finished]
+[the hospital is finished]
 L'ospedale è stato completato
-[the health building is under attack]
+[the hospital is under attack]
 L'ospedale è sotto attacco
+[the inn is finished]
+La mensa è stata completata
+[the inn is under attack]
+La mensa è sotto attacco
 [the maps]
 Mappe
 [the market is finished]
@@ -690,31 +790,29 @@ Il ercato è sotto attacco
 Il giocatore %0 è entrato in YOG.
 [The player %0 has left YOG]
 Il giocatore %0 se n'è andato da YOG.
-[the science building is finished]
+[the racetrack is finished]
+Il circuito è stato completato
+[the racetrack is under attack]
+Il circuito è sotto attacco
+[the school is finished]
 La scuola è stata completata
-[the science building is under attack]
+[the school is under attack]
 La scuola è sotto attacco
-[the stone wall is finished]
+[the stonewall is finished]
 Il muro di pietra è stato completato
-[the stone wall is under attack]
+[the stonewall is under attack]
 Il muro di roccia è sotto attacco
 [the swarm is finished]
 Il magazzino è stato completato
 [the swarm is under attack]
 Il magazzino è sotto attacco
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 La piscina è stata completata
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 La piscina è sotto attacco
-[the tower building is finished]
-La torre di difesa è stata completata
-[the walkspeed building is finished]
-Il circuito è stato completato
-[the walkspeed building is under attack]
-Il circuito è sotto attacco
-[the war flag is finished]
+[the warflag is finished]
 ?? La bandiera da guerra finita ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? La bandiera da guerra è sotto attacco ??
 [tkey]
 tasto T
@@ -752,6 +850,8 @@ Tipo di unità
  unità al lavoro
 [Units]
 Unità
+[unlocked by]
+
 [Unnamed Area]
 {Area senza nome}
 [update list]
@@ -772,17 +872,11 @@ Posticipa la distruzione
 Aspettando %0
 [Walk]
 Camminare
-[walkspeed building explanation 2]
-terreno delle unità
-[walkspeed building explanation]
-Migliora la velocità su 
-[walkspeed building]
-Circuito
-[war flag explanation 2]
+[warflag explanation 2]
 
-[war flag explanation]
+[warflag explanation]
 Richiama i guerrieri
-[war flag]
+[warflag]
 Bandiera di attacco
 [Warning, you need to reboot the game for changes to take effect]
 Attenzione, dovrai riavviare il gioco affinchè i cambiamenti abbiano effetto
@@ -798,6 +892,8 @@ era una IA
 era
 [water]
 Acqua
+[Wheat]
+
 [wheat]
 frumento
 [wkey]

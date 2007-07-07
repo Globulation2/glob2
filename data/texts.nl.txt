@@ -2,6 +2,8 @@
 %0 heeft de verbinding verbroken
 [%0 has left the game]
 %0 heeft het spel verlaten
+[%0's game]
+
 [%0's team unit got converted to your team]
 Een eenheid van %0's team is overgelopen naar jou
 [abreaviation explanation A]
@@ -64,12 +66,6 @@ Toegewezen
 Aanv. snelheid
 [At. strength]
 Aanv. kracht
-[attack building explanation 2]
-beter aanvallen
-[attack building explanation]
-Leert je eenheden
-[attack building]
-Kazerne
 [attack speed]
 Aanvalssnelheid
 [Attack]
@@ -86,6 +82,12 @@ Wacht op spelers
 weg:
 [bad error in connection system]
 Fout tijdens verbinden
+[barracks explanation 2]
+beter aanvallen
+[barracks explanation]
+Leert je eenheden
+[barracks]
+Kazerne
 [beach size]
 Strand grootte
 [bkey]
@@ -188,14 +190,14 @@ Kies een speelveld
 Toets C
 [clear area]
 Grondstoffenzone
-[clearing flag explanation 2]
-grondstoffen te verzamelen
-[clearing flag explanation]
-Roept werkers op
-[clearing flag]
-Grondstoffenvlag
 [Clearing:]
 Verzamelen:
+[clearingflag explanation 2]
+grondstoffen te verzamelen
+[clearingflag explanation]
+Roept werkers op
+[clearingflag]
+Grondstoffenvlag
 [close]
 Sluiten
 [closed]
@@ -240,17 +242,17 @@ Beschadigd
 Dubbele buffers
 [default terrain]
 Standaard terrein
+[defencetower explanation 2]
+die in de buurt komen
+[defencetower explanation]
+Valt vijanden aan
 [defencetower level 0]
 Toren 0
 [defencetower level 1]
 Toren 1
 [defencetower level 2]
 Toren 2
-[defense building explanation 2]
-die in de buurt komen
-[defense building explanation]
-Valt vijanden aan
-[defense building]
+[defencetower]
 Toren
 [Defense Map]
 Defensie
@@ -292,11 +294,11 @@ Toets E
 Voer gebruikersnaam in:
 [Enter your password :]
 Voer wachtwoord in:
-[exploration flag explanation 2]
+[explorationflag explanation 2]
 het terrein te verkennen
-[exploration flag explanation]
+[explorationflag explanation]
 Roept verkenners op
-[exploration flag]
+[explorationflag]
 Verkenningsvlag
 [Explorer Ratio]
 Verkenner ratio
@@ -308,12 +310,6 @@ verkenners
 Lege eilanden
 [fkey]
 Toets F
-[food building explanation 2]
-
-[food building explanation]
-Voedt je eenheden
-[food building]
-Herberg
 [food left]
 Voedsel over
 [food]
@@ -366,14 +362,14 @@ neemt deel
 is gestopt
 [heal]
 Gezondheid
-[health building explanation 2]
-
-[health building explanation]
-Geneest je eenheden
-[health building]
-Ziekenhuis
 [hkey]
 Toets H
+[hospital explanation 2]
+
+[hospital explanation]
+Geneest je eenheden
+[hospital]
+Ziekenhuis
 [host]
 Start een server
 [hp]
@@ -392,12 +388,18 @@ Hardware versnelling
 Toets I
 [In way]
 Op weg
+[inn explanation 2]
+
+[inn explanation]
+Voedt je eenheden
 [inn level 0]
 Herberg 0
 [inn level 1]
 Herberg 1
 [inn level 2]
 Herberg 2
+[inn]
+Herberg
 [inside]
 Binnen
 [islands size]
@@ -414,6 +416,8 @@ Verbind met server
 Deelnemen
 [keyboard settings]
 Toetsenbord
+[kick]
+
 [kkey]
 Toets K
 [lan]
@@ -426,6 +430,8 @@ Taal
 Nederlands
 [large]
 groot
+[Leave Game]
+
 [level]
 Niveau
 [levels]
@@ -568,6 +574,12 @@ Verlaat bewerker
 Verlaat dit spel
 [quit]
 Afsluiten
+[racetrack explanation 2]
+sneller lopen
+[racetrack explanation]
+Leert je eenheden
+[racetrack]
+Racebaan
 [random terrain]
 Willekeurig terrein
 [range]
@@ -614,11 +626,11 @@ Opslaan
 Speelveld opslaan
 [Save]
 Opslaan
-[science building explanation 2]
+[school explanation 2]
 beter bouwen
-[science building explanation]
+[school explanation]
 Leert je eenheden
-[science building]
+[school]
 School
 [Script Areas]
 Scriptgebieden
@@ -628,9 +640,9 @@ werkzoekend
 zoeken
 [select barracks building]
 Selecteer Kazerne
-[select clearing flag]
+[select clearingflag]
 Selecteer Grondstoffenvlag
-[select exploration flag]
+[select explorationflag]
 Selecteer Verkenningsvlag
 [select hospital building]
 Selecteer Ziekenhuis
@@ -650,7 +662,7 @@ Selecteer Zwembad
 Selecteer Toren
 [select wall building]
 Selecteer Muur
-[select war flag]
+[select warflag]
 Selecteer Oorlogsvlag
 [session request sent]
 Sessie verzoek verzonden...
@@ -696,35 +708,35 @@ Nog
 Nog één eenheid aan het werk
 [Still one]
 Nog één
-[stone wall explanation 2]
-element
-[stone wall explanation]
-Passief verdedigings-
-[stone wall]
-Muur
 [Stone]
 Steen
 [stone]
 Steen
+[stonewall explanation 2]
+element
+[stonewall explanation]
+Passief verdedigings-
+[stonewall]
+Muur
 [svr hostname]
 Servernaam
 [swamp terrain]
 Moeras
-[swarm building explanation 2]
+[swarm explanation 2]
 
-[swarm building explanation]
+[swarm explanation]
 Maakt nieuwe eenheden
-[swarm building]
-Zwerm
 [swarm level 0]
+Zwerm
+[swarm]
 Zwerm
 [Swim]
 Zwemmen
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 sneller zwemmen
-[swimspeed building explanation]
+[swimmingpool explanation]
 Leert je eenheden
-[swimspeed building]
+[swimmingpool]
 Zwembad
 [switch to building view]
 Schakel naar gebouwen scherm
@@ -736,36 +748,38 @@ Schakel naar teams scherm
 Schakel naar terrein scherm
 [teams]
  teams
-[the attack building is finished]
+[the barracks is finished]
 De kazerne is voltooid
-[the attack building is under attack]
+[the barracks is under attack]
 De kazerne wordt aangevallen
 [the building is finished]
 Het gebouw is voltooid
 [the building is under attack]
 Het gebouw wordt aangevallen
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? De grondstoffenvlag is klaar ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? De grondstoffenvlag wordt aangevallen ??
-[the defense building is under attack]
+[the defencetower is finished]
+De toren is voltooid
+[the defencetower is under attack]
 Je defensie ligt onder vuur
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? De verkenningsvlag is klaar ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? De verkenningsvlag wordt aangevallen ??
-[the food building is finished]
-De herberg is voltooid
-[the food building is under attack]
-De herberg wordt aangevallen
 [The game has not been finished]
 Het spel is nog niet afgelopen
 [the games]
 Spellen
-[the health building is finished]
+[the hospital is finished]
 Het ziekenhuis is voltooid
-[the health building is under attack]
+[the hospital is under attack]
 Het ziekenhuis wordt aangevallen
+[the inn is finished]
+De herberg is voltooid
+[the inn is under attack]
+De herberg wordt aangevallen
 [the maps]
 Speelvelden
 [the market is finished]
@@ -776,31 +790,29 @@ De markt wordt aangevallen
 %0 betreedt YOG.
 [The player %0 has left YOG]
 %0 heeft YOG verlaten.
-[the science building is finished]
+[the racetrack is finished]
+De racebaan is voltooid
+[the racetrack is under attack]
+De racebaan wordt aangevallen
+[the school is finished]
 De school is voltooid
-[the science building is under attack]
+[the school is under attack]
 De school wordt aangevallen
-[the stone wall is finished]
+[the stonewall is finished]
 Er is een stuk muur af
-[the stone wall is under attack]
+[the stonewall is under attack]
 De vijand nadert je muren
 [the swarm is finished]
 De zwerm is voltooid
 [the swarm is under attack]
 De zwerm wordt aangevallen
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Het zwembad is voltooid
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Het zwembad wordt aangevallen
-[the tower building is finished]
-De toren is voltooid
-[the walkspeed building is finished]
-De racebaan is voltooid
-[the walkspeed building is under attack]
-De racebaan wordt aangevallen
-[the war flag is finished]
+[the warflag is finished]
 ?? De oorlogsvlag is klaar ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? De oorlogsvlag wordt aangevallen ??
 [tkey]
 Toets T
@@ -860,17 +872,11 @@ Wordt vernietigd
 Wachten op %0
 [Walk]
 Lopen
-[walkspeed building explanation 2]
-sneller lopen
-[walkspeed building explanation]
-Leert je eenheden
-[walkspeed building]
-Racebaan
-[war flag explanation 2]
+[warflag explanation 2]
 om aan te vallen
-[war flag explanation]
+[warflag explanation]
 Roept soldaten op
-[war flag]
+[warflag]
 Oorlogsvlag
 [Warning, you need to reboot the game for changes to take effect]
 Let op, je moet het spel opnieuw opstarten om de veranderingen te activeren
@@ -886,6 +892,8 @@ was AI
 was
 [water]
 Water
+[Wheat]
+
 [wheat]
 Graan
 [wkey]
