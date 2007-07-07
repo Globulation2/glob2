@@ -96,6 +96,8 @@ GameGUI.cpp \
 GameGUI.h \
 GameGUIDialog.cpp \
 GameGUIDialog.h \
+GameGUIKeyActions.cpp \
+GameGUIKeyActions.h \
 GameGUILoadSave.cpp \
 GameGUILoadSave.h \
 GameHeader.cpp \
@@ -115,6 +117,8 @@ HeightMapGenerator.cpp \
 HeightMapGenerator.h \
 IRC.cpp \
 IRC.h \
+KeyboardManager.cpp \
+KeyboardManager.h \
 LANGameInformation.cpp \
 LANGameInformation.h \
 LANMenuScreen.cpp \

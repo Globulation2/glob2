@@ -49,6 +49,7 @@
 #include "IRC.h"
 #include "SoundMixer.h"
 #include "VoiceRecorder.h"
+#include "GameGUIKeyActions.h"
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>
@@ -1170,6 +1171,7 @@ enum TwoKeyMode
 
 void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 {
+
 	int modifier;
 
 	if (pressed)
@@ -1179,6 +1181,41 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 
 	if (typingInputScreen == NULL)
 	{
+		if(pressed)
+		{
+			Uint32 action_t = keyboardManager.getAction(key);
+			switch(action_t)
+			{
+				case GameGUIKeyActions::DoNothing:
+				{
+				}
+				break;
+				case GameGUIKeyActions::ShowMainMenu:
+				{
+					if (inGameMenu==IGM_NONE)
+					{
+						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
+						inGameMenu=IGM_MAIN;
+					}
+				}
+				break;
+				case GameGUIKeyActions::UpgradeBuilding:
+				{
+					if (selectionMode==BUILDING_SELECTION)
+					{
+						Building* selBuild = selection.building;
+						int typeNum = selBuild->typeNum; //determines type of updated building
+						int unitWorking = getUnitCount(typeNum - 1);
+						if (selBuild->constructionResultState == Building::UPGRADE)
+							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
+						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+							repairAndUpgradeBuilding(selBuild, false, true);
+					}
+				}
+				break;
+			}
+		}
+	
 		std::string action="";
 		// fprintf (stderr, "twoKeyMode: %d, key: %d\n", twoKeyMode, key);
 		if (twoKeyMode != TWOKEY_NONE)
