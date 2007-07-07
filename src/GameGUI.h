@@ -29,6 +29,7 @@
 #include "Brush.h"
 #include "Campaign.h"
 #include "MapHeader.h"
+#include "KeyboardManager.h"
 
 namespace GAGCore
 {
@@ -115,6 +116,8 @@ public:
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
+	
+	KeyboardManager keyboardManager;
 public:
 	Game game;
 	bool gamePaused;
@@ -379,7 +382,6 @@ private:
 	void initUnitCount(void);
 	int getUnitCount(unsigned typeNum);
 	void setUnitCount(unsigned typeNum, int nbReq);
-
 };
 
 #endif

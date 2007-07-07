@@ -47,7 +47,6 @@ namespace GameGUIKeyActions
 	
 	extern std::vector<std::string> names;
 	extern std::map<std::string, Uint32> keys;
-	
 };
 
 #endif
