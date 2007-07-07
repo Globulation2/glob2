@@ -1,6 +1,6 @@
 project(glob2)
 
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
+SET(CMAKE_MODULE_PATH ${glob2_SOURCE_DIR}/CMake)
 find_package(SDL 1.2 REQUIRED)
 find_package(SDL_ttf REQUIRED)
 find_package(SDL_image REQUIRED)
