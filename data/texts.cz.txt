@@ -2,10 +2,24 @@
 %0 byl odpojen.
 [%0 has left the game]
 %0 opustil hru.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Cizí tým změnil víru v Tebe %0
+[abreaviation explanation A]
+
+[abreaviation explanation C]
+
+[abreaviation explanation fV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation V]
+
 [Add AI]
 Přidej počítač
+[add map]
+
 [AI]
 Počítač
 [ai]
@@ -24,12 +38,18 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
+[akey]
+
 [Alga]
 Řasy
+[algae]
+
 [alliances]
 Spojenectví
 [and]
 a
+[any explorer]
+
 [are dying hungry]
 umírají hlady
 [are hungry]
@@ -40,16 +60,12 @@ v pohodě :-)
 je zraněných
 [armor]
 Opevnění
+[assigned]
+
 [At. speed]
 Rychlost útoku
 [At. strength]
 Síla útoku
-[attack building explanation 2]
-
-[attack building explanation]
-Zlepši bojeschopnost
-[attack building]
-Cvičiště
 [attack speed]
 Útočící rychlost
 [Attack]
@@ -66,8 +82,64 @@ Dostupné místní hry
 pryč:
 [bad error in connection system]
 Kritická chyba v systému připojení
+[barracks explanation 2]
+
+[barracks explanation]
+Zlepši bojeschopnost
+[barracks]
+Cvičiště
 [beach size]
 Velikost pláží
+[bkey]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Stavba
 [Building name]
@@ -82,8 +154,16 @@ staveniště
 Budovy
 [Bullets]
 Střelivo
+[campaign editor]
+
 [campaign]
 Nová hra
+[Can't join game, missmatching game parameters]
+
+[Can't join game, timeout]
+
+[Can't join game, wrong game version]
+
 [cancel destroy]
 Stornuj zničeni
 [cancel repair]
@@ -94,22 +174,30 @@ Stornuj vylepšeni
 Zrušit
 [carry]
 Nesu :
+[Change Area Name]
+
 [checksum sent]
 Kontrolní součet odeslán ...
 [Cherry]
 Třešně
+[choose campaign]
+
 [choose game]
 Výběr hry
 [choose map]
 Výběr mapy
-[clearing flag explanation 2]
+[ckey]
 
-[clearing flag explanation]
-Čistící prostředky
-[clearing flag]
-Čisticí prapor
+[clear area]
+
 [Clearing:]
 Vyčištění:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+Čistící prostředky
+[clearingflag]
+Čisticí prapor
 [close]
 Uzavři
 [closed]
@@ -130,6 +218,10 @@ Připojuji se k
 Pokračovat ve hře
 [Corn]
 Obilí
+[crater density]
+
+[crater lakes terrain]
+
 [create game]
 Vytvoř hru
 [create map]
@@ -140,54 +232,84 @@ Poděkování
 Současná rychlost
 [custom game]
 Volitelná hra
+[customcur]
+
 [damage]
 Poškození
+[Damaged Map]
+
 [dblbuff]
 Double-buffering
 [default terrain]
 Předvolená krajina
-[defense building explanation 2]
+[defencetower explanation 2]
 
-[defense building explanation]
+[defencetower explanation]
 Zaútoč na blízkého nepřítele
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Obranná věž
+[Defense Map]
+
 [Defense]
 Obrana
+[Delete game]
+
+[delete]
+
+[desert]
+
+[destroy building]
+
 [destroy]
 Zničit
 [Disconnect]
 Odpojit
 [display]
 Rozlišení
+[dkey]
+
 [don't carry anything]
 Nic nenesu
 [download finished]
 Stáhnuto
 [downloaded at]
 Stahuji
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
 [editor]
 Editor
+[ekey]
+
 [Enter your nickname :]
 Zadej přezdívku :
 [Enter your password :]
 Zadej heslo:
-[exploration flag explanation 2]
+[explorationflag explanation 2]
 
-[exploration flag explanation]
+[explorationflag explanation]
 Přilákáno průzkumníků
-[exploration flag]
+[explorationflag]
 Průzkumný prapor
+[Explorer Ratio]
+
 [Explorer]
 Průzkumník
 [explorers]
 průzkumníci
-[food building explanation 2]
+[extra islands]
 
-[food building explanation]
-Potrava tvých jednotek
-[food building]
-Hospoda
+[fkey]
+
 [food left]
 Potrava
 [food]
@@ -202,18 +324,32 @@ Volný
 se nudí
 [from:]
 od:
+[fruit]
+
 [fullscreen]
 Fullscreen
 [game full]
 Plně obsazená hra
+[game shortcuts]
+
 [game speed]
 Rychlost hry
+[general settings]
+
+[gkey]
+
 [goto main menu]
 Zpět do hlavního menu
 [grass]
 Tráva
+[ground attack]
+
 [guard area]
 Hlídáná oblast
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 1]
+
 [handmade map]
 Ručně vyrobená mapa
 [Happyness]
@@ -226,11 +362,13 @@ připojen
 odpojil
 [heal]
 Zdravý
-[health building explanation 2]
+[hkey]
 
-[health building explanation]
+[hospital explanation 2]
+
+[hospital explanation]
 Zdravý tvých jednotek
-[health building]
+[hospital]
 Nemocnice
 [host]
 Hostuj hru
@@ -238,22 +376,50 @@ Hostuj hru
 Životy
 [hp]
 Životy
+[human]
+
 [hungry]
 Hladový
+[hungryness]
+
 [hwaccel]
 Hardware akcelerace
+[ikey]
+
 [In way]
 Na cestě
+[inn explanation 2]
+
+[inn explanation]
+Potrava tvých jednotek
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Hospoda
 [inside]
 Uvnitř
 [islands size]
 Velikost ostrovů
 [islands terrain]
 Ostrovy
+[jkey]
+
+[jobs]
+
 [join a game]
 Připojit se do hry
 [join]
 Připojit se
+[keyboard settings]
+
+[kick]
+
+[kkey]
+
 [lan]
 Síťová hra
 [language-code]
@@ -264,12 +430,20 @@ Jazyk
 Česky
 [large]
 velká
+[Leave Game]
+
 [level]
 Úroveň
 [levels]
 Úrovně
+[lkey]
+
+[load campaign]
+
 [load game]
 Nahrát hru
+[load map]
+
 [load]
 Nahrát
 [loading glob2]
@@ -282,14 +456,24 @@ Přihlásit
 Tvoje kolonie je zničená ...
 [lowquality]
 Nízká kvalita
+[Magic At. Air]
+
+[Magic At. Ground]
+
 [Map name: %0]
 Jméno mapy: %0.
+[map name]
+
 [map size x]
 Šířka mapy
 [map size y]
 Výška mapy
 [mapGenerationDescriptor Methodes]
 Metody náhodně vytvořených map
+[maps available]
+
+[mark map]
+
 [market explanation 2]
 
 [market explanation]
@@ -300,14 +484,26 @@ Tržiště
 střední
 [Min required level:]
 Min. úroveň bojovníků:
+[Minimum Level To Flag]
+
+[mkey]
+
 [Music volume]
 Hlasitost (hudba)
+[mute]
+
 [network latency]
 Network latency
+[new campaign]
+
 [new]
 Nová
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[nkey]
+
+[no ressources growth areas]
+
 [No]
 Ne
 [not connected]
@@ -324,10 +520,22 @@ Počet hráčů
 z toho
 [ok]
 Budiž
+[okey]
+
+[old islands terrain]
+
+[old random terrain]
+
 [On the spot]
 Na místě
 [one player]
 Jeden hráč se připojil.
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
 [open]
 Otevřít
 [options]
@@ -336,10 +544,14 @@ Nastavení
 Pomarenče
 [Papyrus]
 Papyrus
+[pause game]
+
 [Paused]
 Pauza
 [percent]
   procent
+[pkey]
+
 [player name]
 Jméno
 [player]
@@ -348,62 +560,138 @@ Hráč
 Čekej prosím
 [presence request sent]
 Požadavek připojení odeslán ...
+[press space]
+
 [Prestige]
 Prestiž
 [Prune]
 Švestky
+[qkey]
+
+[quit the editor]
+
 [quit the game]
 Opustit hru
 [quit]
 Konec
+[racetrack explanation 2]
+
+[racetrack explanation]
+Zlepši chůzi
+[racetrack]
+Závodní dráha
 [random terrain]
 Náhodná krajina
 [range]
 Rozsah
 [ratios]
 Poměry
+[record voice]
+
 [Register a new YOG user with password]
 Registrace nového YOG uživatele s heslem. (nejisté)
+[remember unit]
+
 [Remember YOG password localy]
 Zapamatovat si heslo lokálně? (nejisté)
+[remove map]
+
+[repair building]
+
 [repair]
 Opravit
+[repeat area]
+
 [ressources]
 Prostředky
+[restore default shortcuts]
+
+[return to editor]
+
 [return to game]
 Zpět do hry
+[river diameter]
+
+[river terrain]
+
+[rkey]
+
 [sand]
 Písek
 [save before quit?]
 Chceš uložit před odchodem ?
 [save game]
 Uložit hru
+[save map]
+
 [Save]
 Uložit
-[science building explanation 2]
+[school explanation 2]
 
-[science building explanation]
+[school explanation]
 Zlepši uroveň stavitelství
-[science building]
+[school]
 Škola
+[Script Areas]
+
 [seeking a job]
 hledá práci
 [seeking]
 Hledá
+[select barracks building]
+
+[select clearingflag]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
 [session request sent]
 Požadavek na navázání relace odeslán ...
 [settings]
 Nastavení
+[shortcut explanation enter]
+
+[shortcut explanation v]
+
+[skey]
+
+[skin]
+
 [small]
 malá
 [smoothing]
 Vyhlazení
 [speed]
 Rychlost
+[start mission]
+
+[start new campaign]
+
 [Start]
 Start
 [STARTING GAME ...]
 Startuji hru...
+[Starving Map]
+
 [starving]
 Umírá hlady
 [stat]
@@ -420,62 +708,78 @@ Dosud
 Ještě 1 jednotka pracuje
 [Still one]
 Ještě 1
-[stone wall explanation 2]
-
-[stone wall explanation]
-Pasivní ochraná část
-[stone wall]
-Kamenná hradba
 [Stone]
 Kamení
+[stone]
+
+[stonewall explanation 2]
+
+[stonewall explanation]
+Pasivní ochraná část
+[stonewall]
+Kamenná hradba
 [svr hostname]
 Server hostname
-[swarm building explanation 2]
+[swamp terrain]
 
-[swarm building explanation]
+[swarm explanation 2]
+
+[swarm explanation]
 Vytvoř nové jednotky
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Úl
 [Swim]
 Plavání
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 
-[swimspeed building explanation]
+[swimmingpool explanation]
 Zlepši plavání
-[swimspeed building]
+[swimmingpool]
 Koupaliště
+[switch to building view]
+
+[switch to flag view]
+
+[switch to teams view]
+
+[switch to terrain view]
+
 [teams]
  hráčů
-[the attack building is finished]
+[the barracks is finished]
 Cvičiště postaveno ...
-[the attack building is under attack]
+[the barracks is under attack]
 Cvičiště je pod útokem
 [the building is finished]
 Budova je postavena ...
 [the building is under attack]
 Budova pod útokem
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Čistící prapor připraven ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Čistící prapor v obležení nepřátel ??
-[the defense building is under attack]
+[the defencetower is finished]
+Obranná věž postavena ...
+[the defencetower is under attack]
 Obranná věž je pod útokem
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Průzkumný prapor připraven ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Průzkumný prapor v obležení nepřátel ??
-[the food building is finished]
-Hospoda postavena ...
-[the food building is under attack]
-Hospoda je pod útokem
 [The game has not been finished]
 Hra neskončila
 [the games]
 Hry
-[the health building is finished]
+[the hospital is finished]
 Nemocnice postavena ...
-[the health building is under attack]
+[the hospital is under attack]
 Nemocnice je pod útokem
+[the inn is finished]
+Hospoda postavena ...
+[the inn is under attack]
+Hospoda je pod útokem
 [the maps]
 Mapy
 [the market is finished]
@@ -486,44 +790,58 @@ Tržiště je pod útokem
 Hráč %0 se připojil k YOG.
 [The player %0 has left YOG]
 Hráč %0 se odpojil od YOG.
-[the science building is finished]
+[the racetrack is finished]
+Zavodní dráha postavena ...
+[the racetrack is under attack]
+Závodní dráha pod útokem
+[the school is finished]
 Škola postavena ...
-[the science building is under attack]
+[the school is under attack]
 Škola je pod útokem
-[the stone wall is finished]
+[the stonewall is finished]
 Kus hradby hotov ...
-[the stone wall is under attack]
+[the stonewall is under attack]
 Nepřítel utočí na hradby
 [the swarm is finished]
 Úl postaven ...
 [the swarm is under attack]
 Úl je napaden
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Koupaliště postaveno ...
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Koupaliště je pod útokem
-[the tower building is finished]
-Obranná věž postavena ...
-[the walkspeed building is finished]
-Zavodní dráha postavena ...
-[the walkspeed building is under attack]
-Závodní dráha pod útokem
-[the war flag is finished]
+[the warflag is finished]
 ?? Válečná prapor připraven ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Válečná prapor v obležení nepřátel ??
+[tkey]
+
 [to:]
 pro:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
 [Total prestige reached]
 Dosažená celková prestiž
 [Total]
 Celkem
 [tutorial]
 Tutoriál
+[ukey]
+
+[unassigned]
+
 [Uncontrolled]
 Neovládaný
 [uniform terrain]
 Jednotná krajina
+[Unit editor]
+
+[unit settings]
+
 [Unit type]
 Druh jednotky
 [units type]
@@ -532,34 +850,38 @@ druh jednotek
  jednotek pracuje
 [Units]
 Jednotky
+[unlocked by]
+
+[Unnamed Area]
+
 [update list]
 Obnovit seznam
+[upgrade building]
+
 [upgrade]
 Vylepšit
 [username]
 Jméno uživatele
 [Version]
 Verze
+[vkey]
+
 [wait destroy]
 Očekávám zničení
 [waiting for %0]
 Čeká se na %0
 [Walk]
 Chůze
-[walkspeed building explanation 2]
+[warflag explanation 2]
 
-[walkspeed building explanation]
-Zlepši chůzi
-[walkspeed building]
-Závodní dráha
-[war flag explanation 2]
-
-[war flag explanation]
+[warflag explanation]
 Přilákáno válečníků
-[war flag]
+[warflag]
 Válečný prapor
 [Warning, you need to reboot the game for changes to take effect]
 Varovaní, hra potřebuje znova spustit, aby se uplatinily provedené změny.
+[Warrior Ratio]
+
 [Warrior]
 Válečník
 [warriors]
@@ -570,6 +892,10 @@ byl počítač
 byl
 [water]
 Voda
+[Wheat]
+
+[wkey]
+
 [Won : you defeated your opponents]
 Tvoji nepřátelé byli poraženi ...
 [Won : you have the most prestige]
@@ -578,6 +904,10 @@ Ty máš největší prestiž ...
 Tvůj spojenec %0 má největší prestiž ...
 [Wood]
 Dřevo
+[wood]
+
+[Worker Ratio]
+
 [Worker]
 Dělník
 [workers]
@@ -588,6 +918,8 @@ dělníci
 Pracují
 [wounded]
 Zraněných
+[xkey]
+
 [Yes]
 Ano
 [YESTS_BAD]
@@ -620,6 +952,8 @@ Odpojuji z YOG metaserveru...
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 [YESTS_YOG_KILLED]
 Správce zastavil YOG metaserver.
+[ykey]
+
 [yog-chat]
 #yog-cz
 [yog]
@@ -642,3 +976,5 @@ Vyhrál jsi!
 Tvoji %0 jsou pod útokem
 [Your unit got converted to %0's team]
 Tva jednotka změnila víru v jiného hráče %0
+[zkey]
+

@@ -2,10 +2,24 @@
 %0 je prekinil povezavo
 [%0 has left the game]
 %0 je zapustil igro.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Spreobrnil si enoto druge ekipe %0
+[abreaviation explanation A]
+
+[abreaviation explanation C]
+
+[abreaviation explanation fV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation V]
+
 [Add AI]
 Dodaj UI
+[add map]
+
 [AI]
 UI
 [ai]
@@ -24,12 +38,18 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
+[akey]
+
 [Alga]
 Alga
+[algae]
+
 [alliances]
 Zavezništva
 [and]
 in
+[any explorer]
+
 [are dying hungry]
 umirajo od lakote
 [are hungry]
@@ -40,16 +60,12 @@ so vredu
 so ranjeni
 [armor]
 Ščit
+[assigned]
+
 [At. speed]
 Hit. napada
 [At. strength]
 Moč napada
-[attack building explanation 2]
-tvojih vojakov
-[attack building explanation]
-Izboljša stopnjo bojevenja
-[attack building]
-Vojašnica
 [attack speed]
 Hitrost napada
 [Attack]
@@ -66,8 +82,64 @@ Razpoložljive omrežne igre
 odsoden:
 [bad error in connection system]
 Napaka v povezovalnem sistemu
+[barracks explanation 2]
+tvojih vojakov
+[barracks explanation]
+Izboljša stopnjo bojevenja
+[barracks]
+Vojašnica
 [beach size]
 velikost obal
+[bkey]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Zgradi
 [Building name]
@@ -82,8 +154,16 @@ gradbišče
 Stavbe
 [Bullets]
 Naboji
+[campaign editor]
+
 [campaign]
 Kampanja
+[Can't join game, missmatching game parameters]
+
+[Can't join game, timeout]
+
+[Can't join game, wrong game version]
+
 [cancel destroy]
 Prekliči uničenje
 [cancel repair]
@@ -94,6 +174,8 @@ Prekliči nadgradnjo
 Prekliči
 [carry]
 Nosi :
+[Change Area Name]
+
 [checksum sent]
 Checksum poslan ...
 [Cherry]
@@ -104,14 +186,18 @@ Izberi kampanjo
 Izberi igro
 [choose map]
 Izberi mapo
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Razkreije surovine
-[clearing flag]
-Odstiralna zastava
+[ckey]
+
+[clear area]
+
 [Clearing:]
 Brisanje:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Razkreije surovine
+[clearingflag]
+Odstiralna zastava
 [close]
 Zapri
 [closed]
@@ -132,6 +218,10 @@ Povezujem na
 Nadaljuj z igranjem
 [Corn]
 Pšenica
+[crater density]
+
+[crater lakes terrain]
+
 [create game]
 Ustvari igro
 [create map]
@@ -146,52 +236,80 @@ Naključna igra
 Naključni kazalec
 [damage]
 Škoda
+[Damaged Map]
+
 [dblbuff]
 Dvojni začasni pomnilnik
 [default terrain]
 Default terrain
-[defense building explanation 2]
+[defencetower explanation 2]
 tako enote kot stavbe
-[defense building explanation]
+[defencetower explanation]
 Napada bližnje sovražnike
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Obrambni Stolp
+[Defense Map]
+
 [Defense]
 Obramba
+[Delete game]
+
+[delete]
+
+[desert]
+
+[destroy building]
+
 [destroy]
 Uniči
 [Disconnect]
 Prekini povezavo
 [display]
 Prikaz
+[dkey]
+
 [don't carry anything]
 Ne nosi ničesar
 [download finished]
 Nalaganje končano
 [downloaded at]
 naloženo iz
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
 [editor]
 Urejevalnik
+[ekey]
+
 [Enter your nickname :]
 Vnesi svoj vzdevek :
 [Enter your password :]
 Vnesi svoje geslo :
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 Prevlači raziskovalce
-[exploration flag]
+[explorationflag]
 Raziskovalna zastava
+[Explorer Ratio]
+
 [Explorer]
 Raziskovalec
 [explorers]
 raziskovalci
-[food building explanation 2]
- 
-[food building explanation]
-Nahranjuje tvoje enote
-[food building]
-Restavracija
+[extra islands]
+
+[fkey]
+
 [food left]
 Hreane ostalo
 [food]
@@ -206,18 +324,32 @@ prost/ih
 prost/ih
 [from:]
 od:
+[fruit]
+
 [fullscreen]
 Celotni zaslon
 [game full]
 Igra je polna
+[game shortcuts]
+
 [game speed]
 Hitrost igre
+[general settings]
+
+[gkey]
+
 [goto main menu]
 Nazaj v glavni menu
 [grass]
 Trava
+[ground attack]
+
 [guard area]
 Nadzorovano področje
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 1]
+
 [handmade map]
 Ročno izdelana mapa
 [Happyness]
@@ -230,11 +362,13 @@ se je vkljičil
 je odšel
 [heal]
 Zdravje
-[health building explanation 2]
+[hkey]
+
+[hospital explanation 2]
  
-[health building explanation]
+[hospital explanation]
 Zdravi tvoje enote
-[health building]
+[hospital]
 Bolnišnica
 [host]
 Gostuj igro
@@ -242,22 +376,50 @@ Gostuj igro
 Zd
 [hp]
 Zdravje
+[human]
+
 [hungry]
 lačen
+[hungryness]
+
 [hwaccel]
 Strojno pospeševanje
+[ikey]
+
 [In way]
 Na poti
+[inn explanation 2]
+ 
+[inn explanation]
+Nahranjuje tvoje enote
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Restavracija
 [inside]
 Znotraj
 [islands size]
 velikost otokov
 [islands terrain]
 Otoki
+[jkey]
+
+[jobs]
+
 [join a game]
 Vključi se v igro
 [join]
 Vključi se
+[keyboard settings]
+
+[kick]
+
+[kkey]
+
 [lan]
 LAN Igra
 [language-code]
@@ -268,12 +430,20 @@ Jezik
 Slovenščina
 [large]
 velika
+[Leave Game]
+
 [level]
 Stopnja
 [levels]
 Stopnje
+[lkey]
+
+[load campaign]
+
 [load game]
 Naloži igro
+[load map]
+
 [load]
 Naloži
 [loading glob2]
@@ -286,16 +456,26 @@ Izgubil si : %0 ima več ugleda kot ti
 Poražen si : tvoja kolonija je premagana
 [lowquality]
 Nizka kakovost
+[Magic At. Air]
+
+[Magic At. Ground]
+
 [Map name: %0]
 Ime mape: %0.
+[map name]
+
 [map size x]
 Širina mape
 [map size y]
 Višina mape
 [mapGenerationDescriptor Methodes]
 Načini naključne izdelave mape
-[market explanation 2]	
-z ostalimi
+[maps available]
+
+[mark map]
+
+[market explanation 2]
+
 [market explanation]
 Omogoča menjavo blaga
 [market]
@@ -304,14 +484,26 @@ Tržnica
 srednja
 [Min required level:]
 Najnižja zahtevana stopnja
+[Minimum Level To Flag]
+
+[mkey]
+
 [Music volume]
 Glasnost glasbe
+[mute]
+
 [network latency]
 Pretočnost mreže
+[new campaign]
+
 [new]
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
+[nkey]
+
+[no ressources growth areas]
+
 [No]
 Ne
 [not connected]
@@ -328,10 +520,22 @@ ni pripravljen
 od katerih
 [ok]
 Potrdi
+[okey]
+
+[old islands terrain]
+
+[old random terrain]
+
 [On the spot]
 Tukaj
 [one player]
 Igralec se je vključil.
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
 [open]
 odpri
 [options]
@@ -340,10 +544,14 @@ Možnosti
 Pomaranča
 [Papyrus]
 Papirus
+[pause game]
+
 [Paused]
 Ustavljeno
 [percent]
   %
+[pkey]
+
 [player name]
 Ime igralca
 [player]
@@ -352,62 +560,138 @@ Igralec
 Prosim počakaj
 [presence request sent]
 Zahteva za prisotnost poslana ...
+[press space]
+
 [Prestige]
 Ugled
 [Prune]
 Slive
+[qkey]
+
+[quit the editor]
+
 [quit the game]
 Izhod iz igre
 [quit]
 Izhod
+[racetrack explanation 2]
+tvojih enot
+[racetrack explanation]
+Izboljša hitrost hoje
+[racetrack]
+Tekaška steza
 [random terrain]
 Naklučni teren
 [range]
 Domet
 [ratios]
 Razmerja
+[record voice]
+
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
+[remember unit]
+
 [Remember YOG password localy]
 Zapomni si YOG geslo lokalno. (Ni varno)
+[remove map]
+
+[repair building]
+
 [repair]
 Popravi
+[repeat area]
+
 [ressources]
 Viri
+[restore default shortcuts]
+
+[return to editor]
+
 [return to game]
 Vrnitev v igro
+[river diameter]
+
+[river terrain]
+
+[rkey]
+
 [sand]
 Pesek
 [save before quit?]
 Želiš shraniti preden odideš?
 [save game]
 Shrani igro
+[save map]
+
 [Save]
 Shrani
-[science building explanation 2]
+[school explanation 2]
 tvojih delavcev
-[science building explanation]
+[school explanation]
 Izboljša stopnjo grajenja
-[science building]
+[school]
 Šola
+[Script Areas]
+
 [seeking a job]
 iščejo službo
 [seeking]
 Iščem
+[select barracks building]
+
+[select clearingflag]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
 [session request sent]
 Zahteva za sejo ...
 [settings]
 Nastavitve
+[shortcut explanation enter]
+
+[shortcut explanation v]
+
+[skey]
+
+[skin]
+
 [small]
 majhna
 [smoothing]
 Glajenje
 [speed]
 Hitrost
+[start mission]
+
+[start new campaign]
+
 [Start]
 Začni
 [STARTING GAME ...]
 Zaganjanjam igro ...
+[Starving Map]
+
 [starving]
 lačen
 [stat]
@@ -424,62 +708,78 @@ Statistika
 Ena enota še vedno dela
 [Still one]
 Ena ostaja
-[stone wall explanation 2]
- 
-[stone wall explanation]
-Pasiven obrambni sistem
-[stone wall]
-Kamniti zid
 [Stone]
 Kamenje
+[stone]
+
+[stonewall explanation 2]
+ 
+[stonewall explanation]
+Pasiven obrambni sistem
+[stonewall]
+Kamniti zid
 [svr hostname]
 Strežnikovo ime
-[swarm building explanation 2]
+[swamp terrain]
+
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 Ustvarja nove enote
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Porodnišnica
 [Swim]
 Plavaj
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 sposobnosti tvojih enot
-[swimspeed building explanation]
+[swimmingpool explanation]
 Izboljša plavalne
-[swimspeed building]
+[swimmingpool]
 Bazen
+[switch to building view]
+
+[switch to flag view]
+
+[switch to teams view]
+
+[switch to terrain view]
+
 [teams]
  ekipe
-[the attack building is finished]
+[the barracks is finished]
 Vojašnica je zgrajena
-[the attack building is under attack]
+[the barracks is under attack]
 Vojašnica je napadena
 [the building is finished]
 Stavba je zgrajena
 [the building is under attack]
 Stavba je napadena
-[the clearing flag is finished]
+[the clearingflag is finished]
 Odstiralna zastava je zgrajena
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 Odstiralna zastava je napadena
-[the defense building is under attack]
+[the defencetower is finished]
+Obrambni stolp je zgrajen
+[the defencetower is under attack]
 Obrambna je napadena
-[the exploration flag is finished]
+[the explorationflag is finished]
 Raziskovalna zastava je zgrajena
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 Raziskovalna zastava je napadena
-[the food building is finished]
-Gostilna je zgrajena
-[the food building is under attack]
-Gostilna je napadena
 [The game has not been finished]
 Igra ni bila zaključena
 [the games]
 Igre
-[the health building is finished]
+[the hospital is finished]
 Bolnišnica je zgrajena
-[the health building is under attack]
+[the hospital is under attack]
 Bolnišnica je zgrajena
+[the inn is finished]
+Gostilna je zgrajena
+[the inn is under attack]
+Gostilna je napadena
 [the maps]
 Mape
 [the market is finished]
@@ -490,44 +790,58 @@ Tržnica je napadena
 %0 se je vkljičil na YOG metastrežnik.
 [The player %0 has left YOG]
 %0 je zapustil YOG metastrežnik.
-[the science building is finished]
+[the racetrack is finished]
+Tekaška steza je zgrajena
+[the racetrack is under attack]
+Tekaška steza je napadena 
+[the school is finished]
 Šola je zgrajena
-[the science building is under attack]
+[the school is under attack]
 Šola je napadena
-[the stone wall is finished]
+[the stonewall is finished]
 Kamniti zid je zgrajen
-[the stone wall is under attack]
+[the stonewall is under attack]
 Sovražnik je pred vrati
 [the swarm is finished]
 Porodnišnica je zgrajena
 [the swarm is under attack]
 Porodnišnica je napadena
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Bazen je zgrajen
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Bazen je napaden
-[the tower building is finished]
-Obrambni stolp je zgrajen
-[the walkspeed building is finished]
-Tekaška steza je zgrajena
-[the walkspeed building is under attack]
-Tekaška steza je napadena 
-[the war flag is finished]
+[the warflag is finished]
 Vojaška zastava je zgrajena
-[the war flag is under attack]
+[the warflag is under attack]
 Vojaška zastava je napadena
+[tkey]
+
 [to:]
 za:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
 [Total prestige reached]
 Najvišji dosežen ugled
 [Total]
 Skupaj
 [tutorial]
 Predavanje
+[ukey]
+
+[unassigned]
+
 [Uncontrolled]
 Nenadzirane
 [uniform terrain]
 Obleči teren?
+[Unit editor]
+
+[unit settings]
+
 [Unit type]
 Vrsta enote
 [units type]
@@ -536,34 +850,38 @@ Vrsta enot
  enot dela
 [Units]
 Enote
+[unlocked by]
+
+[Unnamed Area]
+
 [update list]
 Osveži seznam
+[upgrade building]
+
 [upgrade]
 Nadgradi
 [username]
 Uporabniško ime
 [Version]
 Različica
+[vkey]
+
 [wait destroy]
 Počakaj z uničenjem 
 [waiting for %0]
 Čakam %0
 [Walk]
 Hodi
-[walkspeed building explanation 2]
-tvojih enot
-[walkspeed building explanation]
-Izboljša hitrost hoje
-[walkspeed building]
-Tekaška steza
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 Privlači vojake
-[war flag]
+[warflag]
 Vojaška zastava
 [Warning, you need to reboot the game for changes to take effect]
 Pozor, da bi nastavitve stopile v veljavo moraš ponovno zagnati igro
+[Warrior Ratio]
+
 [Warrior]
 Vojak
 [warriors]
@@ -574,6 +892,10 @@ je bil UI
 je bil
 [water]
 Voda
+[Wheat]
+
+[wkey]
+
 [Won : you defeated your opponents]
 Zmagal si : premagal si vse nasprotnike
 [Won : you have the most prestige]
@@ -582,6 +904,10 @@ Zmagal si : imaš najvišji ugled
 Zmagal si : tvoj zaveznik %0 ima najvišji ugled
 [Wood]
 Les
+[wood]
+
+[Worker Ratio]
+
 [Worker]
 Delavec
 [workers]
@@ -592,6 +918,8 @@ delavci
 Izdelujem
 [wounded]
 ranjen
+[xkey]
+
 [Yes]
 Da
 [YESTS_BAD]
@@ -624,6 +952,8 @@ Prekinjam povezavo z YOG metastrežnikom...
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 [YESTS_YOG_KILLED]
 Administrator je ustavil navidezni metastrežnik.
+[ykey]
+
 [yog-chat]
 #yog-en
 [yog]
@@ -646,3 +976,5 @@ Zmagal si!
 Tvoji %0 so napadeni
 [Your unit got converted to %0's team]
 Tvoje enote so bile spreobrnjene %0
+[zkey]
+

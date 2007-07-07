@@ -2,6 +2,8 @@
 %0 s'est fait déconnecté de la partie.
 [%0 has left the game]
 %0 a quitté la partie.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Une unité de l'équipe %0 s'est convertie à votre équipe
 [abreaviation explanation A]
@@ -16,6 +18,8 @@ mV : Montrer tous les marchés (pour échanger des fruits)
 V : Montrer tous les batiments
 [Add AI]
 Ajouter IA
+[add map]
+
 [AI]
 IA
 [ai]
@@ -34,6 +38,8 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
+[akey]
+
 [Alga]
 Algue
 [algae]
@@ -54,16 +60,12 @@ sont ok
 sont blessées
 [armor]
 Armure
+[assigned]
+
 [At. speed]
 Vitesse at.
 [At. strength]
 Force at.
-[attack building explanation 2]
-d'attaque de vos guerrières
-[attack building explanation]
-Améliore le niveau d'attaque
-[attack building]
-Camp d'entraînement
 [attack speed]
 Vitesse d'attaque
 [Attack]
@@ -80,8 +82,64 @@ En attente des joueurs
 absent:
 [bad error in connection system]
 Mauvaise erreur dans le système de connexion
+[barracks explanation 2]
+d'attaque de vos guerrières
+[barracks explanation]
+Améliore le niveau d'attaque
+[barracks]
+Camp d'entraînement
 [beach size]
 taille de la plage
+[bkey]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Construit
 [Building name]
@@ -96,6 +154,8 @@ chantier
 Bâtiments
 [Bullets]
 Boulets
+[campaign editor]
+
 [campaign]
 Campagne
 [Can't join game, missmatching game parameters]
@@ -114,6 +174,8 @@ Annuler amélioration
 Annuler
 [carry]
 Transporte :
+[Change Area Name]
+
 [checksum sent]
 Somme de contrôle envoyée ...
 [Cherry]
@@ -124,16 +186,18 @@ Choisir une campagne
 Choisir une partie
 [choose map]
 Choisir une carte
+[ckey]
+
 [clear area]
 Zone de défrichage
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Enlève les ressources
-[clearing flag]
-Drapeau de défrichage
 [Clearing:]
 Défrichage de:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Enlève les ressources
+[clearingflag]
+Drapeau de défrichage
 [close]
 Fermer
 [closed]
@@ -172,58 +236,80 @@ Jeu libre
 Curseur personalisé
 [damage]
 Dommages
+[Damaged Map]
+
 [dblbuff]
 Double-tampon
 [default terrain]
 Terrain par défaut
-[defense building explanation 2]
+[defencetower explanation 2]
 avoisinantes
-[defense building explanation]
+[defencetower explanation]
 Attaque les unités ennemies
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Tourelle
+[Defense Map]
+
 [Defense]
 Défense
 [Delete game]
 Effacer le jeu séléctionné
+[delete]
+
 [desert]
 Désert
+[destroy building]
+
 [destroy]
 Détruire
 [Disconnect]
 Déconnecter
 [display]
 Affichage
+[dkey]
+
 [don't carry anything]
 Ne transporte rien
 [download finished]
 Téléchargement terminé
 [downloaded at]
 Téléchargé à 
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
 [editor]
 Éditeur
+[ekey]
+
 [Enter your nickname :]
 Entrez votre pseudo :
 [Enter your password :]
 Entrez votre mot de passe :
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 Attire des exploratrices
-[exploration flag]
+[explorationflag]
 Drapeau d'exploration
+[Explorer Ratio]
+
 [Explorer]
 Exploratrice
 [explorers]
 exploratrices
 [extra islands]
 Iles vides
-[food building explanation 2]
- 
-[food building explanation]
-Nourrit vos unités
-[food building]
-Auberge
+[fkey]
+
 [food left]
 Nourriture
 [food]
@@ -238,12 +324,20 @@ libres
 libres
 [from:]
 de:
+[fruit]
+
 [fullscreen]
 Plein écran
 [game full]
 Jeu complet
+[game shortcuts]
+
 [game speed]
 Vitesse du jeu
+[general settings]
+
+[gkey]
+
 [goto main menu]
 Menu principal
 [grass]
@@ -268,11 +362,13 @@ a rejoint
 a quitté
 [heal]
 Santé
-[health building explanation 2]
+[hkey]
+
+[hospital explanation 2]
  
-[health building explanation]
+[hospital explanation]
 Soigne vos unités 
-[health building]
+[hospital]
 Hôpital
 [host]
 Héberger une partie
@@ -280,24 +376,50 @@ Héberger une partie
 Point de vie
 [hp]
 Pts vie
+[human]
+
 [hungry]
 faim
 [hungryness]
 Conso. nourriture
 [hwaccel]
 Accélération matérielle
+[ikey]
+
 [In way]
 En chemin
+[inn explanation 2]
+ 
+[inn explanation]
+Nourrit vos unités
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Auberge
 [inside]
 Dedans
 [islands size]
 taille des îles
 [islands terrain]
 Iles
+[jkey]
+
+[jobs]
+
 [join a game]
 Joindre une partie
 [join]
 Joindre
+[keyboard settings]
+
+[kick]
+
+[kkey]
+
 [lan]
 Jeu en réseau local
 [language-code]
@@ -308,12 +430,20 @@ Langue
 Français
 [large]
 grand
+[Leave Game]
+
 [level]
 Niveau
 [levels]
 Niveaux
+[lkey]
+
+[load campaign]
+
 [load game]
 Charger jeu
+[load map]
+
 [load]
 Charger
 [loading glob2]
@@ -332,12 +462,18 @@ Dmg. air
 Dmg. sol
 [Map name: %0]
 Carte: %0.
+[map name]
+
 [map size x]
 Largeur de la carte
 [map size y]
 Hauteur de la carte
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
+[maps available]
+
+[mark map]
+
 [market explanation 2]
 fruits avec les autres
 [market explanation]
@@ -348,16 +484,26 @@ Marché
 moyen
 [Min required level:]
 Niveau minimum requis:
+[Minimum Level To Flag]
+
+[mkey]
+
 [Music volume]
 Volume (musique)
 [mute]
 muet
 [network latency]
 Latence du réseau
+[new campaign]
+
 [new]
 Nouveau
 [nick taken]
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
+[nkey]
+
+[no ressources growth areas]
+
 [No]
 Non
 [not connected]
@@ -374,10 +520,22 @@ nombre d'équipes
 dont
 [ok]
 Accepter
+[okey]
+
+[old islands terrain]
+
+[old random terrain]
+
 [On the spot]
 Sur place
 [one player]
 Un joueur présent.
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
 [open]
 ouvert
 [options]
@@ -386,10 +544,14 @@ Options
 Orange
 [Papyrus]
 Papyrus
+[pause game]
+
 [Paused]
 Pause
 [percent]
   pourcent
+[pkey]
+
 [player name]
 Nom du joueur
 [player]
@@ -404,48 +566,104 @@ Appuyer sur espace pour continuer.
 Prestige
 [Prune]
 Prune
+[qkey]
+
+[quit the editor]
+
 [quit the game]
 Quitter le jeu
 [quit]
 Quitter
+[racetrack explanation 2]
+marche de vos unités
+[racetrack explanation]
+Améliore la vitesse de marche
+[racetrack]
+Piste de course
 [random terrain]
 Terrain aléatoire
 [range]
 Portée
 [ratios]
 Proportions
+[record voice]
+
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
+[remember unit]
+
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
+[remove map]
+
+[repair building]
+
 [repair]
 Réparer
+[repeat area]
+
 [ressources]
 Ressources
+[restore default shortcuts]
+
+[return to editor]
+
 [return to game]
 Retour au jeu
 [river diameter]
 Diamètre de la rivière
 [river terrain]
 Rivière
+[rkey]
+
 [sand]
 Sable
 [save before quit?]
 Voulez-vous sauver avant de quitter ?
 [save game]
 Sauvegarder jeu
+[save map]
+
 [Save]
 Sauvegarder
-[science building explanation 2]
+[school explanation 2]
 construction des ouvières
-[science building explanation]
+[school explanation]
 Améliore le savoir
-[science building]
+[school]
 Ecole
+[Script Areas]
+
 [seeking a job]
 cherchent du travail
 [seeking]
 recherche
+[select barracks building]
+
+[select clearingflag]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
 [session request sent]
 Requête pour la session envoyée ...
 [settings]
@@ -454,6 +672,8 @@ Paramètres
 touche enter : envoyer un message
 [shortcut explanation v]
 touche v : presser pour parler
+[skey]
+
 [skin]
 Affichage
 [small]
@@ -462,10 +682,16 @@ faible
 Lissage
 [speed]
 Vitesse
+[start mission]
+
+[start new campaign]
+
 [Start]
 Départ
 [STARTING GAME ...]
 Début du jeu... 
+[Starving Map]
+
 [starving]
 trop faim
 [stat]
@@ -482,66 +708,78 @@ Encore
 Une unité travaille encore
 [Still one]
 Encore une
-[stone wall explanation 2]
- 
-[stone wall explanation]
-Elément passif de défense
-[stone wall]
-Mur de pierre
 [Stone]
 Pierre
 [stone]
 Pierre
+[stonewall explanation 2]
+ 
+[stonewall explanation]
+Elément passif de défense
+[stonewall]
+Mur de pierre
 [svr hostname]
 Nom du serveur hôte
 [swamp terrain]
 Marais
-[swarm building explanation 2]
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 Crée de nouvelles unités
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Ruche
 [Swim]
 Nage
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 nage de vos unités
-[swimspeed building explanation]
+[swimmingpool explanation]
 Améliore la vitesse de nage
-[swimspeed building]
+[swimmingpool]
 Piscine
+[switch to building view]
+
+[switch to flag view]
+
+[switch to teams view]
+
+[switch to terrain view]
+
 [teams]
  équipes
-[the attack building is finished]
+[the barracks is finished]
 Le camp d'entraînement est terminé
-[the attack building is under attack]
+[the barracks is under attack]
 Le camp d'entraînement est attaqué
 [the building is finished]
 Le bâtiment est terminé
 [the building is under attack]
 Le bâtiment est attaqué
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Drapeau de défrichage terminé ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Drapeau de défrichage attaqué ??
-[the defense building is under attack]
+[the defencetower is finished]
+La tour de défense est terminée
+[the defencetower is under attack]
 Vos défenses sont attaquées
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Drapeau d'exploration terminé ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Drapeau d'exploration attaqué ??
-[the food building is finished]
-L'auberge est terminée
-[the food building is under attack]
-L'auberge est attaquée
 [The game has not been finished]
 La partie n'a pas été terminée
 [the games]
 Parties
-[the health building is finished]
+[the hospital is finished]
 L'hôpital est terminé
-[the health building is under attack]
+[the hospital is under attack]
 L'hôpital est attaqué
+[the inn is finished]
+L'auberge est terminée
+[the inn is under attack]
+L'auberge est attaquée
 [the maps]
 Cartes
 [the market is finished]
@@ -552,46 +790,58 @@ Le marché est attaqué
 Le joueur %0 a rejoint YOG.
 [The player %0 has left YOG]
 Le joueur %0 a quitté YOG.
-[the science building is finished]
+[the racetrack is finished]
+La piste de course est terminée
+[the racetrack is under attack]
+La piste de course est attaquée
+[the school is finished]
 L'école est terminée
-[the science building is under attack]
+[the school is under attack]
 L'école est attaquée
-[the stone wall is finished]
+[the stonewall is finished]
 Un élément de mur est terminé
-[the stone wall is under attack]
+[the stonewall is under attack]
 L'ennemi est à vos murs
 [the swarm is finished]
 La ruche est terminée
 [the swarm is under attack]
 La ruche est attaquée
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 La piscine est terminée
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 La piscine est attaquée
-[the tower building is finished]
-La tour de défense est terminée
-[the walkspeed building is finished]
-La piste de course est terminée
-[the walkspeed building is under attack]
-La piste de course est attaquée
-[the war flag is finished]
+[the warflag is finished]
 ?? Drapeau de guerre terminé ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Drapeau de guerre attaqué ??
+[tkey]
+
 [to:]
 à:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
 [Total prestige reached]
 Le prestige total a été atteint
 [Total]
 Total
 [tutorial]
 Didacticiel
+[ukey]
+
+[unassigned]
+
 [Uncontrolled]
 Incontrôlé
 [uniform terrain]
 Terrain uniforme
 [Unit editor]
 Éditeur d'unité
+[unit settings]
+
 [Unit type]
 Type d'unité
 [units type]
@@ -600,34 +850,38 @@ type d'unités
  unités travaillent
 [Units]
 Unités
+[unlocked by]
+
+[Unnamed Area]
+
 [update list]
 Mettre à jour
+[upgrade building]
+
 [upgrade]
 Améliorer
 [username]
 Nom d'utilisateur
 [Version]
 Version
+[vkey]
+
 [wait destroy]
 En attente de destruction
 [waiting for %0]
 Attente de %0
 [Walk]
 Marche
-[walkspeed building explanation 2]
-marche de vos unités
-[walkspeed building explanation]
-Améliore la vitesse de marche
-[walkspeed building]
-Piste de course
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 Attire des guerrières
-[war flag]
+[warflag]
 Drapeau de guerre
 [Warning, you need to reboot the game for changes to take effect]
 Attention, il faut relancer le jeu pour que les changements soient pris en compte
+[Warrior Ratio]
+
 [Warrior]
 Guerrière
 [warriors]
@@ -638,8 +892,12 @@ auparavant IA
 auparavant
 [water]
 Eau
+[Wheat]
+
 [wheat]
 Blé
+[wkey]
+
 [Won : you defeated your opponents]
 Gagné : vous avez vaincu vos adversaires
 [Won : you have the most prestige]
@@ -650,6 +908,8 @@ Gagné : votre allié %0 a le plus de prestige
 Bois
 [wood]
 Forêt
+[Worker Ratio]
+
 [Worker]
 Ouvrière
 [workers]
@@ -660,6 +920,8 @@ ouvrières
 Travaillant
 [wounded]
 blessées
+[xkey]
+
 [Yes]
 Oui
 [YESTS_BAD]
@@ -692,6 +954,8 @@ Déconnection du metaserveur YOG...
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
+[ykey]
+
 [yog-chat]
 #yog-fr
 [yog]
@@ -714,3 +978,5 @@ Vous avez gagné!
 Vos %0 sont attaquées
 [Your unit got converted to %0's team]
 Votre unité est passée à l'équipe %0
+[zkey]
+

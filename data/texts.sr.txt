@@ -2,10 +2,24 @@
 %0 би искључен из игре.
 [%0 has left the game]
 %0 напусти игру.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Противничка јединица је пребегла код нас %0
+[abreaviation explanation A]
+
+[abreaviation explanation C]
+
+[abreaviation explanation fV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation V]
+
 [Add AI]
 Додај ВИ
+[add map]
+
 [AI]
 ВИ
 [ai]
@@ -24,12 +38,18 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
+[akey]
+
 [Alga]
 Алге
+[algae]
+
 [alliances]
 Савези
 [and]
 и
+[any explorer]
+
 [are dying hungry]
 умиру од глади
 [are hungry]
@@ -40,16 +60,12 @@ AIWarrush
 су рањене
 [armor]
 Оклоп
+[assigned]
+
 [At. speed]
 Брзина напада
 [At. strength]
 Снага напада
-[attack building explanation 2]
-
-[attack building explanation]
-Касарна служи за ...
-[attack building]
-Касарна
 [attack speed]
 Брзина напада
 [Attack]
@@ -66,8 +82,64 @@ AIWarrush
 одсутан:
 [bad error in connection system]
 Грешка у систему за повезивање
+[barracks explanation 2]
+
+[barracks explanation]
+Касарна служи за ...
+[barracks]
+Касарна
 [beach size]
 Величина плажа
+[bkey]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Гради
 [Building name]
@@ -82,8 +154,16 @@ AIWarrush
 Зграде
 [Bullets]
 Муниција
+[campaign editor]
+
 [campaign]
 Кампања
+[Can't join game, missmatching game parameters]
+
+[Can't join game, timeout]
+
+[Can't join game, wrong game version]
+
 [cancel destroy]
 Заустави уништење
 [cancel repair]
@@ -94,22 +174,30 @@ AIWarrush
 Поништи
 [carry]
 Пренос :
+[Change Area Name]
+
 [checksum sent]
 Послата је контролна сума ...
 [Cherry]
 Вишње
+[choose campaign]
+
 [choose game]
 Избор игре
 [choose map]
 Избор мапе
-[clearing flag explanation 2]
+[ckey]
 
-[clearing flag explanation]
-Застава за чишћење служи за чишћење
-[clearing flag]
-Застава чишћења
+[clear area]
+
 [Clearing:]
 Чишћење:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+Застава за чишћење служи за чишћење
+[clearingflag]
+Застава чишћења
 [close]
 Затвори
 [closed]
@@ -130,6 +218,10 @@ AIWarrush
 Настави игру
 [Corn]
 Жито
+[crater density]
+
+[crater lakes terrain]
+
 [create game]
 Направи игру
 [create map]
@@ -140,54 +232,84 @@ AIWarrush
 Тренутна брзина
 [custom game]
 Произвољна игра
+[customcur]
+
 [damage]
 Штета
+[Damaged Map]
+
 [dblbuff]
 Двоструко баферисање
 [default terrain]
 Подразумевано земљиште
-[defense building explanation 2]
+[defencetower explanation 2]
 
-[defense building explanation]
+[defencetower explanation]
 Стражара служи за осматрање.
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Стражара
+[Defense Map]
+
 [Defense]
 Одбрана
+[Delete game]
+
+[delete]
+
+[desert]
+
+[destroy building]
+
 [destroy]
 Уништи
 [Disconnect]
 Искључи се
 [display]
 Екран
+[dkey]
+
 [don't carry anything]
 Не носи ништа
 [download finished]
 Преузимање је готово
 [downloaded at]
 Преузето са
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
 [editor]
 Уредник
+[ekey]
+
 [Enter your nickname :]
 Унесите надимак :
 [Enter your password :]
 Унесите лозинку :
-[exploration flag explanation 2]
+[explorationflag explanation 2]
 
-[exploration flag explanation]
+[explorationflag explanation]
 Истраживачка застава служи за истраживање.
-[exploration flag]
+[explorationflag]
 Истраживачка застава
+[Explorer Ratio]
+
 [Explorer]
 Извиђач
 [explorers]
 Извиђачи
-[food building explanation 2]
+[extra islands]
 
-[food building explanation]
-Зграда у којој се скупља храна.
-[food building]
-Гостионица
+[fkey]
+
 [food left]
 Преостало хране
 [food]
@@ -202,16 +324,32 @@ AIWarrush
 слободно
 [from:]
 од:
+[fruit]
+
 [fullscreen]
 Цео екран
 [game full]
 Потпуна игра
+[game shortcuts]
+
 [game speed]
 Брзина игре
+[general settings]
+
+[gkey]
+
 [goto main menu]
 Назад на главни избор
 [grass]
 Трава
+[ground attack]
+
+[guard area]
+
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 1]
+
 [handmade map]
 Ручно направљена мапа
 [Happyness]
@@ -224,11 +362,13 @@ AIWarrush
 је отишао
 [heal]
 Здравље
-[health building explanation 2]
+[hkey]
 
-[health building explanation]
+[hospital explanation 2]
+
+[hospital explanation]
 Болница служи за лечење
-[health building]
+[hospital]
 Болница
 [host]
 Рачунар
@@ -236,22 +376,50 @@ AIWarrush
 Живот
 [hp]
 Здравље
+[human]
+
 [hungry]
 гладних
+[hungryness]
+
 [hwaccel]
 Хардверско убрзање
+[ikey]
+
 [In way]
 У путу
+[inn explanation 2]
+
+[inn explanation]
+Зграда у којој се скупља храна.
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Гостионица
 [inside]
 Унутра
 [islands size]
 Величина острва
 [islands terrain]
 Острвско земљиште
+[jkey]
+
+[jobs]
+
 [join a game]
 Придружи се игри
 [join]
 Придружи се
+[keyboard settings]
+
+[kick]
+
+[kkey]
+
 [lan]
 Игра у локалној мрежи
 [language-code]
@@ -262,12 +430,20 @@ sr
 Српски
 [large]
 Велика
+[Leave Game]
+
 [level]
 Ниво
 [levels]
 Нивои
+[lkey]
+
+[load campaign]
+
 [load game]
 Учитај игру
+[load map]
+
 [load]
 Учитај
 [loading glob2]
@@ -280,14 +456,24 @@ sr
 Пораз : Ваша колонија је мртва
 [lowquality]
 Низак квалитет
+[Magic At. Air]
+
+[Magic At. Ground]
+
 [Map name: %0]
 Име мапе: %0.
+[map name]
+
 [map size x]
 Ширина мапе
 [map size y]
 Висина мапе
 [mapGenerationDescriptor Methodes]
 Начин случајног генерисања мапе
+[maps available]
+
+[mark map]
+
 [market explanation 2]
 
 [market explanation]
@@ -298,14 +484,26 @@ sr
 Средња
 [Min required level:]
 Најмањи потребни ниво:
+[Minimum Level To Flag]
+
+[mkey]
+
 [Music volume]
 Јачина (музика)
+[mute]
+
 [network latency]
 Мрежно кашњење
+[new campaign]
+
 [new]
 Нова
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[nkey]
+
+[no ressources growth areas]
+
 [No]
 Не
 [not connected]
@@ -322,10 +520,22 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 од чега
 [ok]
 У реду
+[okey]
+
+[old islands terrain]
+
+[old random terrain]
+
 [On the spot]
 На лицу места
 [one player]
 Један играч.
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
 [open]
 отвори
 [options]
@@ -334,10 +544,14 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Наранџе
 [Papyrus]
 Папирус
+[pause game]
+
 [Paused]
 Пауза
 [percent]
   процен(а)(та)
+[pkey]
+
 [player name]
 Име играча
 [player]
@@ -346,62 +560,138 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Молим сачекајте
 [presence request sent]
 Присуство је пријављено ...
+[press space]
+
 [Prestige]
 Престиж
 [Prune]
 Шљиве
+[qkey]
+
+[quit the editor]
+
 [quit the game]
 Напусти игру
 [quit]
 Излаз
+[racetrack explanation 2]
+
+[racetrack explanation]
+Стадион служи за...
+[racetrack]
+Стадион
 [random terrain]
 Случајно земљиште
 [range]
 Домет
 [ratios]
 Односи
+[record voice]
+
 [Register a new YOG user with password]
 Пријави новог корисника на YOG са лозинком. (није шифровано)
+[remember unit]
+
 [Remember YOG password localy]
 Запамти лозинку у локалу (није шифровано)
+[remove map]
+
+[repair building]
+
 [repair]
 Поправи
+[repeat area]
+
 [ressources]
 Извори
+[restore default shortcuts]
+
+[return to editor]
+
 [return to game]
 Повратак на игру
+[river diameter]
+
+[river terrain]
+
+[rkey]
+
 [sand]
 Песак
 [save before quit?]
 Сними пре изласка?
 [save game]
 Сними игру
+[save map]
+
 [Save]
 Сними
-[science building explanation 2]
+[school explanation 2]
 
-[science building explanation]
+[school explanation]
 Школа служи за учење нових вештина.
-[science building]
+[school]
 Школа
+[Script Areas]
+
 [seeking a job]
 траже посао
 [seeking]
 у потрази
+[select barracks building]
+
+[select clearingflag]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
 [session request sent]
 Послат је захтев за сесију ...
 [settings]
 Подешавања
+[shortcut explanation enter]
+
+[shortcut explanation v]
+
+[skey]
+
+[skin]
+
 [small]
 Мала
 [smoothing]
 Умекшавање
 [speed]
 Брзина
+[start mission]
+
+[start new campaign]
+
 [Start]
 Почетак
 [STARTING GAME ...]
 Игра почиње...
+[Starving Map]
+
 [starving]
 умирућих од глади
 [stat]
@@ -418,62 +708,78 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Једна јединица у послу
 [Still one]
 Још једна
-[stone wall explanation 2]
-
-[stone wall explanation]
-Камени зид служи за...
-[stone wall]
-Камени зид
 [Stone]
 Камен
+[stone]
+
+[stonewall explanation 2]
+
+[stonewall explanation]
+Камени зид служи за...
+[stonewall]
+Камени зид
 [svr hostname]
 Име сервера
-[swarm building explanation 2]
+[swamp terrain]
 
-[swarm building explanation]
+[swarm explanation 2]
+
+[swarm explanation]
 Зграда за ројење.
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Рој
 [Swim]
 Пливај
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 
-[swimspeed building explanation]
+[swimmingpool explanation]
 Пливалиште служи за...
-[swimspeed building]
+[swimmingpool]
 Пливалиште
+[switch to building view]
+
+[switch to flag view]
+
+[switch to teams view]
+
+[switch to terrain view]
+
 [teams]
  екипа
-[the attack building is finished]
+[the barracks is finished]
 Касарна је завршена
-[the attack building is under attack]
+[the barracks is under attack]
 Касарна је нападнута
 [the building is finished]
 Зграда је завршена
 [the building is under attack]
 Зграда је нападнута
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Застава за чишћење је завршена ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Застава за чишћење је нападута ??
-[the defense building is under attack]
+[the defencetower is finished]
+Стражара је завршена
+[the defencetower is under attack]
 Стражара је нападнута
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Истраживачка застава је завршена ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Истраживачка застава је нападнута ??
-[the food building is finished]
-Кантина је завршена
-[the food building is under attack]
-Кантина је нападнута
 [The game has not been finished]
 Игра није завршена
 [the games]
 Игре
-[the health building is finished]
+[the hospital is finished]
 Болница је завршена
-[the health building is under attack]
+[the hospital is under attack]
 Болница је нападнута
+[the inn is finished]
+Кантина је завршена
+[the inn is under attack]
+Кантина је нападнута
 [the maps]
 Мапе
 [the market is finished]
@@ -484,44 +790,58 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Играч %0 се пријавио на YOG
 [The player %0 has left YOG]
 Играч %0 је напустио YOG.
-[the science building is finished]
+[the racetrack is finished]
+Стадион је завршен
+[the racetrack is under attack]
+Стадион је нападнут
+[the school is finished]
 Школа је завршена
-[the science building is under attack]
+[the school is under attack]
 Школа је нападнута
-[the stone wall is finished]
+[the stonewall is finished]
 Камени зид је завршен
-[the stone wall is under attack]
+[the stonewall is under attack]
 Камени зид је нападнут
 [the swarm is finished]
 Ројење је завршено
 [the swarm is under attack]
 Рој је нападнут
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Пливалиште је завршено
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Пливалиште је нападнуто
-[the tower building is finished]
-Стражара је завршена
-[the walkspeed building is finished]
-Стадион је завршен
-[the walkspeed building is under attack]
-Стадион је нападнут
-[the war flag is finished]
+[the warflag is finished]
 ?? Ратна застава је завршена ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Ратна застава је нападнута ??
+[tkey]
+
 [to:]
 ка:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
 [Total prestige reached]
 Укупан постигнут престиж
 [Total]
 Укупно
 [tutorial]
 Уџбеник
+[ukey]
+
+[unassigned]
+
 [Uncontrolled]
 Неконтролисан
 [uniform terrain]
 Једнообразно земљиште
+[Unit editor]
+
+[unit settings]
+
 [Unit type]
 Врста јединице
 [units type]
@@ -530,34 +850,38 @@ We are very sorry but the name you chose is already taken on freenode, you will 
  јединица у послу
 [Units]
 Јединице
+[unlocked by]
+
+[Unnamed Area]
+
 [update list]
 Обнови списак
+[upgrade building]
+
 [upgrade]
 Догради
 [username]
 Корисничко име
 [Version]
 Верзија
+[vkey]
+
 [wait destroy]
 Одложи уништење
 [waiting for %0]
 Чека се на %0
 [Walk]
 Ходај
-[walkspeed building explanation 2]
+[warflag explanation 2]
 
-[walkspeed building explanation]
-Стадион служи за...
-[walkspeed building]
-Стадион
-[war flag explanation 2]
-
-[war flag explanation]
+[warflag explanation]
 Ратна застава служи за ратовање.
-[war flag]
+[warflag]
 Ратна застава
 [Warning, you need to reboot the game for changes to take effect]
 Упозорење: морате да поново покренете игру да би измене биле уважене.
+[Warrior Ratio]
+
 [Warrior]
 Ратник
 [warriors]
@@ -568,6 +892,10 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 је био
 [water]
 Вода
+[Wheat]
+
+[wkey]
+
 [Won : you defeated your opponents]
 Победа : Савладали сте противике.
 [Won : you have the most prestige]
@@ -576,6 +904,10 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Победа : Ваш савезник %0 је достигао највећи могући престиж.
 [Wood]
 Дрво
+[wood]
+
+[Worker Ratio]
+
 [Worker]
 Радник
 [workers]
@@ -586,6 +918,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Ради се
 [wounded]
 рањених
+[xkey]
+
 [Yes]
 Да
 [YESTS_BAD]
@@ -618,6 +952,8 @@ YOG мета-сервер је одбио везу јер корисничко �
 Грешка при прикључењу. Изгледа да YOG сервер није покренут.
 [YESTS_YOG_KILLED]
 Администратор је управо искључио YOG мета-сервер.
+[ykey]
+
 [yog-chat]
 #yog-sr
 [yog]
@@ -640,3 +976,5 @@ YOG мета-сервер је одбио везу јер корисничко �
 Нападнута јединица: %0
 [Your unit got converted to %0's team]
 Ваша јединица је пребегла %0
+[zkey]
+

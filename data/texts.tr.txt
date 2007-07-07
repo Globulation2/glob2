@@ -2,6 +2,8 @@
 %0 koptu.
 [%0 has left the game]
 %0 oyundan cikti.
+[%0's game]
+
 [%0's team unit got converted to your team]
 %0'nin bir birimi sizin tarafiniza gecti
 [abreaviation explanation A]
@@ -16,6 +18,8 @@ mV: Market binalarini goster (mal takasi icin)
 V: Butun binalari goster
 [Add AI]
 AI Ekle
+[add map]
+
 [AI]
 AI
 [ai]
@@ -34,6 +38,8 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
+[akey]
+
 [Alga]
 Suyosunu
 [algae]
@@ -54,16 +60,12 @@ tamam
 yarali
 [armor]
 Zirh
+[assigned]
+
 [At. speed]
 Att. hiz
 [At. strength]
 Att. guc
-[attack building explanation 2]
-savascilarinizin seviyesi
-[attack building explanation]
-Savasmayi gelistirir
-[attack building]
-Kisla
 [attack speed]
 Saldiri hizi
 [Attack]
@@ -80,8 +82,64 @@ Oyuncular bekleniyor
 uzakta:
 [bad error in connection system]
 Baglanti sisteminde kotu bir hata
+[barracks explanation 2]
+savascilarinizin seviyesi
+[barracks explanation]
+Savasmayi gelistirir
+[barracks]
+Kisla
 [beach size]
 sahil boyutu
+[bkey]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Insaa et
 [Building name]
@@ -96,6 +154,8 @@ insaa alani
 Binalar
 [Bullets]
 Mermiler
+[campaign editor]
+
 [campaign]
 Senaryo
 [Can't join game, missmatching game parameters]
@@ -114,6 +174,8 @@ Gelistirmeyi iptal et
 Vazgec
 [carry]
 Tasiyor:
+[Change Area Name]
+
 [checksum sent]
 Sonkontrol gonderildi ...
 [Cherry]
@@ -124,16 +186,18 @@ Bir senaryo secin
 Oyun sec
 [choose map]
 Harita sec
+[ckey]
+
 [clear area]
 Temizlik bolgesi
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Kaynaklari temizler
-[clearing flag]
-Temizlik bayragi
 [Clearing:]
 Aciklik:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Kaynaklari temizler
+[clearingflag]
+Temizlik bayragi
 [close]
 Kapat
 [closed]
@@ -172,58 +236,80 @@ Ozel oyun
 Ozel imlec
 [damage]
 Hasar
+[Damaged Map]
+
 [dblbuff]
 Cift tampon
 [default terrain]
 Varsayilan arazi
-[defense building explanation 2]
+[defencetower explanation 2]
 birimler yada binalar
-[defense building explanation]
+[defencetower explanation]
 Yakindaki dusmana saldirir
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Savunma Kulesi
+[Defense Map]
+
 [Defense]
 Savunma
 [Delete game]
 Secili oyunu sil
+[delete]
+
 [desert]
 col
+[destroy building]
+
 [destroy]
 Yik
 [Disconnect]
 Baglantiyi kes
 [display]
 Gorunum
+[dkey]
+
 [don't carry anything]
 Hicbirsey tasimiyor
 [download finished]
 Indirme tamamlandi
 [downloaded at]
 Suradan indirildi: 
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
 [editor]
 Editor
+[ekey]
+
 [Enter your nickname :]
 Takma adinizi girin:
 [Enter your password :]
 Sifrenizi girin:
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 Kasifleri ceker
-[exploration flag]
+[explorationflag]
 Kesif bayragi
+[Explorer Ratio]
+
 [Explorer]
 Kasif
 [explorers]
 kasifler
 [extra islands]
 bos adalar
-[food building explanation 2]
- 
-[food building explanation]
-Birimlerinizi besler
-[food building]
-Otel
+[fkey]
+
 [food left]
 Kalan besin
 [food]
@@ -238,12 +324,20 @@ serbest
 tanesi bosta
 [from:]
 surdan:
+[fruit]
+
 [fullscreen]
 Tam ekran
 [game full]
 Oyun dolu
+[game shortcuts]
+
 [game speed]
 Oyun hizi
+[general settings]
+
+[gkey]
+
 [goto main menu]
 Ama menuye don
 [grass]
@@ -268,11 +362,13 @@ katildi
 cikti
 [heal]
 Saglik
-[health building explanation 2]
+[hkey]
+
+[hospital explanation 2]
  
-[health building explanation]
+[hospital explanation]
 Birimlerinizi iyilestirir
-[health building]
+[hospital]
 Hastane
 [host]
 Oyun Sunucusu ol
@@ -280,24 +376,50 @@ Oyun Sunucusu ol
 CAN
 [hp]
 Can
+[human]
+
 [hungry]
 ac
 [hungryness]
 Aclik
 [hwaccel]
 Donanim hizlandirma
+[ikey]
+
 [In way]
 Yolda
+[inn explanation 2]
+ 
+[inn explanation]
+Birimlerinizi besler
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Otel
 [inside]
 Icerde
 [islands size]
 ada boyutu
 [islands terrain]
 Adalar
+[jkey]
+
+[jobs]
+
 [join a game]
 Oyuna katil
 [join]
 Katil
+[keyboard settings]
+
+[kick]
+
+[kkey]
+
 [lan]
 Agda Oyna
 [language-code]
@@ -308,12 +430,20 @@ Dil
 Turkce
 [large]
 buyuk
+[Leave Game]
+
 [level]
 Seviye
 [levels]
 Seviyeler
+[lkey]
+
+[load campaign]
+
 [load game]
 Oyun yukle
+[load map]
+
 [load]
 Yukle
 [loading glob2]
@@ -332,12 +462,18 @@ Hava hasari
 Yer hasari
 [Map name: %0]
 Harita adi: %0.
+[map name]
+
 [map size x]
 Harita genisligi
 [map size y]
 Harita yuksekligi
 [mapGenerationDescriptor Methodes]
 Rastgele olusturulmus haritalarin metodlari
+[maps available]
+
+[mark map]
+
 [market explanation 2]
 baskalariyla alisveris yapar
 [market explanation]
@@ -348,16 +484,26 @@ Market
 orta
 [Min required level:]
 Gerekli en dusuk seviye:
+[Minimum Level To Flag]
+
+[mkey]
+
 [Music volume]
 Ses ayari (muzik)
 [mute]
 sessiz
 [network latency]
 Ag gecikmesi
+[new campaign]
+
 [new]
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
+[nkey]
+
+[no ressources growth areas]
+
 [No]
 Hayir
 [not connected]
@@ -374,6 +520,8 @@ takim sayisi
 ayrintilar:
 [ok]
 Tamam
+[okey]
+
 [old islands terrain]
 eski karisik adalar
 [old random terrain]
@@ -382,6 +530,12 @@ eski karisik arazi
 Burada
 [one player]
 Bir oyuncu katildi.
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
 [open]
 Ac
 [options]
@@ -390,10 +544,14 @@ Secenekler
 Portakal
 [Papyrus]
 Papirus
+[pause game]
+
 [Paused]
 Duraklatildi
 [percent]
   yuzde
+[pkey]
+
 [player name]
 Oyuncu adi
 [player]
@@ -408,48 +566,104 @@ Devam etmek icin bosluk tusuna basin.
 Prestij
 [Prune]
 Cir
+[qkey]
+
+[quit the editor]
+
 [quit the game]
 Oyundan cik
 [quit]
 Kapat
+[racetrack explanation 2]
+Birimlerinizin hizi
+[racetrack explanation]
+Yurumeyi gelistirir
+[racetrack]
+Kosuyolu
 [random terrain]
 Karisik saha
 [range]
 Menzil
 [ratios]
 Oranlar
+[record voice]
+
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
+[remember unit]
+
 [Remember YOG password localy]
 Parolayi yerel olarak animsa. (guvenli degil)
+[remove map]
+
+[repair building]
+
 [repair]
 Onar
+[repeat area]
+
 [ressources]
 Kaynaklar
+[restore default shortcuts]
+
+[return to editor]
+
 [return to game]
 Oyuna don
 [river diameter]
 nehir genisligi
 [river terrain]
 Nehir
+[rkey]
+
 [sand]
 Kum
 [save before quit?]
 Cikmadan once kaydetmek istiyor musunuz?
 [save game]
 Oyun kaydet
+[save map]
+
 [Save]
 Kaydet
-[science building explanation 2]
+[school explanation 2]
 iscilerinizin seviyesi
-[science building explanation]
+[school explanation]
 Binayi gelistirir
-[science building]
+[school]
 Akademi
+[Script Areas]
+
 [seeking a job]
 tanesi is ariyor
 [seeking]
 ariyor
+[select barracks building]
+
+[select clearingflag]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
 [session request sent]
 Oturum istegi yollandi ...
 [settings]
@@ -458,6 +672,8 @@ Ayarlar
 Enter: bir sohbet mesaji gonder
 [shortcut explanation v]
 V: konusmak icin basili tut
+[skey]
+
 [skin]
 Gorunum
 [small]
@@ -466,10 +682,16 @@ kucuk
 Duzeltme
 [speed]
 Hiz
+[start mission]
+
+[start new campaign]
+
 [Start]
 Basla
 [STARTING GAME ...]
 Oyun basliyor... 
+[Starving Map]
+
 [starving]
 cok ac
 [stat]
@@ -486,66 +708,78 @@ Hala
 Bir unite hala calisiyor
 [Still one]
 Hala bir
-[stone wall explanation 2]
-bilesen
-[stone wall explanation]
-Pasif savunma
-[stone wall]
-Tas duvar
 [Stone]
 Tas
 [stone]
 tas
+[stonewall explanation 2]
+bilesen
+[stonewall explanation]
+Pasif savunma
+[stonewall]
+Tas duvar
 [svr hostname]
 Sunucu adi
 [swamp terrain]
 Bataklik
-[swarm building explanation 2]
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 Yeni birimler olusturur
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Yuva
 [Swim]
 Yuz
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 Birimlerinizin hizi
-[swimspeed building explanation]
+[swimmingpool explanation]
 Yuzmeyi iyilestirir
-[swimspeed building]
+[swimmingpool]
 Yuzme havuzu
+[switch to building view]
+
+[switch to flag view]
+
+[switch to teams view]
+
+[switch to terrain view]
+
 [teams]
  takimlar
-[the attack building is finished]
+[the barracks is finished]
 Egitim kampi tamamlandi
-[the attack building is under attack]
+[the barracks is under attack]
 Egitim kampi saldiri altinda
 [the building is finished]
 Bina tamamlandi
 [the building is under attack]
 Bina saldiri altinda
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Temizlik bayragi tamamlandi ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Temizlik bayragi saldiri altinda ??
-[the defense building is under attack]
+[the defencetower is finished]
+Savunma kulesi tamamlandi
+[the defencetower is under attack]
 Savunmaniz saldiri altinda
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Kesif bayragi tamamlandi ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Kesif bayragi saldiri altinda ??
-[the food building is finished]
-Otel tamamlandi
-[the food building is under attack]
-Otel saldiri altinda
 [The game has not been finished]
 Oyun tamamlanmadi
 [the games]
 Oyunlar
-[the health building is finished]
+[the hospital is finished]
 Hastane tamamlandi
-[the health building is under attack]
+[the hospital is under attack]
 Hastane saldiri altinda
+[the inn is finished]
+Otel tamamlandi
+[the inn is under attack]
+Otel saldiri altinda
 [the maps]
 Haritalar
 [the market is finished]
@@ -556,46 +790,58 @@ Market saldiri altinda
 %0 YOG'a baglandi.
 [The player %0 has left YOG]
 %0 YOG'dan ayrildi.
-[the science building is finished]
+[the racetrack is finished]
+Kosuyolu tamamlandi
+[the racetrack is under attack]
+Kosuyolu saldiri altinda
+[the school is finished]
 Akademi tamamlandi
-[the science building is under attack]
+[the school is under attack]
 Akademi saldiri altinda
-[the stone wall is finished]
+[the stonewall is finished]
 Bir duvar bolumu tamamlandi
-[the stone wall is under attack]
+[the stonewall is under attack]
 Dusman duvarlarinizi zorluyor
 [the swarm is finished]
 Yuva tamamlandi
 [the swarm is under attack]
 Yuva saldiri altinda
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Yuzme havuzu tamamlandi
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Yuzme havuzu saldiri altinda
-[the tower building is finished]
-Savunma kulesi tamamlandi
-[the walkspeed building is finished]
-Kosuyolu tamamlandi
-[the walkspeed building is under attack]
-Kosuyolu saldiri altinda
-[the war flag is finished]
+[the warflag is finished]
 ?? Savas bayragi tamamlandi ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Savas bayragi saldiri altinda ??
+[tkey]
+
 [to:]
 suraya:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
 [Total prestige reached]
 Kazanilan toplam prestij
 [Total]
 Toplam
 [tutorial]
 Egitim
+[ukey]
+
+[unassigned]
+
 [Uncontrolled]
 Kontrolsuz
 [uniform terrain]
 Tekbicimli saha
 [Unit editor]
 Birim editoru
+[unit settings]
+
 [Unit type]
 Birim tipi
 [units type]
@@ -604,34 +850,38 @@ birim tipi
  calisan birimler
 [Units]
 Birimler
+[unlocked by]
+
+[Unnamed Area]
+
 [update list]
 Listeyi guncelle
+[upgrade building]
+
 [upgrade]
 Gelistir
 [username]
 Kullanici adi
 [Version]
 Versiyon
+[vkey]
+
 [wait destroy]
 Yikilmayi bekliyor
 [waiting for %0]
 bekleniyor: %0
 [Walk]
 Yuru
-[walkspeed building explanation 2]
-Birimlerinizin hizi
-[walkspeed building explanation]
-Yurumeyi gelistirir
-[walkspeed building]
-Kosuyolu
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 Savascilari ceker
-[war flag]
+[warflag]
 Savas bayragi
 [Warning, you need to reboot the game for changes to take effect]
 Uyari, degisikliklerin etkili olabilmesi icin oyunu yeniden baslatmalisiniz
+[Warrior Ratio]
+
 [Warrior]
 Savasci
 [warriors]
@@ -642,8 +892,12 @@ AI idi
 idi
 [water]
 Su
+[Wheat]
+
 [wheat]
 bugday
+[wkey]
+
 [Won : you defeated your opponents]
 Zafer: Rakiplerinizi yendiniz
 [Won : you have the most prestige]
@@ -654,6 +908,8 @@ Zafer: Muttefikiniz %0 en buyuk prestije sahip
 Odun
 [wood]
 odun
+[Worker Ratio]
+
 [Worker]
 Isci
 [workers]
@@ -664,6 +920,8 @@ isciler
 Calisiyor
 [wounded]
 yarali
+[xkey]
+
 [Yes]
 Evet
 [YESTS_BAD]
@@ -696,6 +954,8 @@ YOG onsunucusu ile olan baglanti kesiliyor...
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
 [YESTS_YOG_KILLED]
 Bir yonetici YOG onsunucusunu durdurdu.
+[ykey]
+
 [yog-chat]
 #yog-tr
 [yog]
@@ -718,3 +978,5 @@ Kazandiniz!
 %0 'leriniz saldiri altinda
 [Your unit got converted to %0's team]
 Bir biriminiz %0 'nin tarafina gecti
+[zkey]
+

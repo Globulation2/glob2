@@ -2,6 +2,8 @@
 %0 har blivit frånkopplad.
 [%0 has left the game]
 %0 har lämnat spelet.
+[%0's game]
+
 [%0's team unit got converted to your team]
 %0s lags enhet blev omvänd till ditt lag
 [abreaviation explanation A]
@@ -64,12 +66,6 @@ Tilldelad
 Attackhastighet
 [At. strength]
 Styrka
-[attack building explanation 2]
-hos dina krigare
-[attack building explanation]
-Förbättrar stridsnivån
-[attack building]
-Barrack
 [attack speed]
 Attackhastighet
 [Attack]
@@ -86,10 +82,64 @@ Väntar på spelare
 borta:
 [bad error in connection system]
 Dåligt fel i anslutningssystemet
+[barracks explanation 2]
+hos dina krigare
+[barracks explanation]
+Förbättrar stridsnivån
+[barracks]
+Barrack
 [beach size]
 strandstorlek
 [bkey]
 B
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Bygga
 [Building name]
@@ -140,14 +190,14 @@ Välj en karta
 C
 [clear area]
 Röjningsområde
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Röjer resurser
-[clearing flag]
-Röjningsflagga
 [Clearing:]
 Röjning:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Röjer resurser
+[clearingflag]
+Röjningsflagga
 [close]
 Stäng
 [closed]
@@ -192,11 +242,17 @@ Skadekarta
 Dubbel buffring
 [default terrain]
 Standardterräng
-[defense building explanation 2]
+[defencetower explanation 2]
 enheter eller byggnader
-[defense building explanation]
+[defencetower explanation]
 Attackerar fientliga
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Försvarstorn
 [Defense Map]
 Försvarskarta
@@ -238,11 +294,11 @@ E
 Skriv in ditt smeknamn:
 [Enter your password :]
 Skriv in ditt lösenord:
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 Attraherar utforskare
-[exploration flag]
+[explorationflag]
 Utforskningsflagga
 [Explorer Ratio]
 Utforskare Proportion
@@ -254,12 +310,6 @@ utforskare
 tomma öar
 [fkey]
 F
-[food building explanation 2]
- 
-[food building explanation]
-Utfodrar dina enheter
-[food building]
-Värdshus
 [food left]
 Mat kvar
 [food]
@@ -312,14 +362,14 @@ har anslutit
 har avslutat
 [heal]
 Hälsa
-[health building explanation 2]
- 
-[health building explanation]
-Helar dina enheter
-[health building]
-Sjukhus
 [hkey]
 H
+[hospital explanation 2]
+ 
+[hospital explanation]
+Helar dina enheter
+[hospital]
+Sjukhus
 [host]
 Var värd för ett spel
 [hp]
@@ -338,6 +388,18 @@ Hårdvaruacceleration
 I
 [In way]
 På väg
+[inn explanation 2]
+ 
+[inn explanation]
+Utfodrar dina enheter
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Värdshus
 [inside]
 Inuti
 [islands size]
@@ -354,6 +416,8 @@ Gå med i ett spel
 Gå med
 [keyboard settings]
 Tangentbord
+[kick]
+
 [kkey]
 K
 [lan]
@@ -366,6 +430,8 @@ Språk
 Svenska
 [large]
 stor
+[Leave Game]
+
 [level]
 Nivå
 [levels]
@@ -508,6 +574,12 @@ Avsluta editorn
 Avsluta spelet
 [quit]
 Avsluta
+[racetrack explanation 2]
+hos dina enheter
+[racetrack explanation]
+Ökar gånghastigheten
+[racetrack]
+Löparbana
 [random terrain]
 Slumpmässig terräng
 [range]
@@ -554,11 +626,11 @@ Spara spel
 Spara Karta
 [Save]
 Spara
-[science building explanation 2]
+[school explanation 2]
 hos dina arbetare
-[science building explanation]
+[school explanation]
 Förbättrar byggnadsnivån
-[science building]
+[school]
 Skola
 [Script Areas]
 Skript Områden
@@ -568,9 +640,9 @@ söker efter arbete
 söker
 [select barracks building]
 Välj Barrack
-[select clearing flag]
+[select clearingflag]
 Välj Röjningsflagga
-[select exploration flag]
+[select explorationflag]
 Välj Utforskningsflagga
 [select hospital building]
 Välj Sjukhus
@@ -590,7 +662,7 @@ Välj simbassäng
 Välj Försvarstorn
 [select wall building]
 Välj Stenmur
-[select war flag]
+[select warflag]
 Välj Krigsflagga
 [session request sent]
 Sessionsförfrågan skickad ...
@@ -636,33 +708,35 @@ Statistik
 En enhet arbetar ännu
 [Still one]
 Ännu en kvar
-[stone wall explanation 2]
- 
-[stone wall explanation]
-Passivt försvarselement
-[stone wall]
-Stenmur
 [Stone]
 Sten
 [stone]
 sten
+[stonewall explanation 2]
+ 
+[stonewall explanation]
+Passivt försvarselement
+[stonewall]
+Stenmur
 [svr hostname]
 Server värdnamn
 [swamp terrain]
 Träsk
-[swarm building explanation 2]
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 Skapar nya enheter
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Svärm
 [Swim]
 Simma
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 hos dina enheter
-[swimspeed building explanation]
+[swimmingpool explanation]
 Ökar simhastigheten
-[swimspeed building]
+[swimmingpool]
 Simbassäng
 [switch to building view]
 Byt till Byggnadsvy
@@ -674,36 +748,38 @@ Byt till Lagvy
 Byt till Terrängvy
 [teams]
  lag
-[the attack building is finished]
+[the barracks is finished]
 Baracken är färdig
-[the attack building is under attack]
+[the barracks is under attack]
 Baracken är under attack
 [the building is finished]
 Byggnaden är färdig
 [the building is under attack]
 Byggnaden är under attack
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Röjningsflaggan är klar ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Röjningsflaggan är under attack ??
-[the defense building is under attack]
+[the defencetower is finished]
+Försvarstornet är färdigt
+[the defencetower is under attack]
 Ditt försvar är under attack
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Utforskningsflaggan är klar ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Utforskningsflaggan är under attack ??
-[the food building is finished]
-Värdshuset är färdigt
-[the food building is under attack]
-Värdshuset är under attack
 [The game has not been finished]
 Spelet är inte klart
 [the games]
 Spel
-[the health building is finished]
+[the hospital is finished]
 Sjukhuset är färdigt
-[the health building is under attack]
+[the hospital is under attack]
 Sjukstugan är under attack
+[the inn is finished]
+Värdshuset är färdigt
+[the inn is under attack]
+Värdshuset är under attack
 [the maps]
 Kartor
 [the market is finished]
@@ -714,31 +790,29 @@ Marknaden är under attack
 %0 har anslutit sig till YOG.
 [The player %0 has left YOG]
 %0 har lämnat YOG.
-[the science building is finished]
+[the racetrack is finished]
+Löparbanan är färdig
+[the racetrack is under attack]
+Löparbanan är under attack
+[the school is finished]
 Skolan är färdig
-[the science building is under attack]
+[the school is under attack]
 Skolan är under attack
-[the stone wall is finished]
+[the stonewall is finished]
 En mursektion är klar
-[the stone wall is under attack]
+[the stonewall is under attack]
 Fienden är vid dina murar
 [the swarm is finished]
 Svärmen är färdig
 [the swarm is under attack]
 Svärmen är under attack
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Simbassängen är färdig
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Simbassängen är under attack
-[the tower building is finished]
-Försvarstornet är färdigt
-[the walkspeed building is finished]
-Löparbanan är färdig
-[the walkspeed building is under attack]
-Löparbanan är under attack
-[the war flag is finished]
+[the warflag is finished]
 ?? Krigsflaggan är klar ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Krigsflaggan är under attack ??
 [tkey]
 T
@@ -798,17 +872,11 @@ Avvaktar destruktion
 Väntar på %0
 [Walk]
 Gå
-[walkspeed building explanation 2]
-hos dina enheter
-[walkspeed building explanation]
-Ökar gånghastigheten
-[walkspeed building]
-Löparbana
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 Attraherar krigare
-[war flag]
+[warflag]
 Krigsflagga
 [Warning, you need to reboot the game for changes to take effect]
 Varning, du behöver starta om spelet för att inställningarna ska börja gälla
@@ -824,6 +892,8 @@ var AI
 var
 [water]
 Vatten
+[Wheat]
+
 [wheat]
 vete
 [wkey]

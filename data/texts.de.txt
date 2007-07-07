@@ -2,6 +2,8 @@
 Die Verbindung zu %0 wurde getrennt.
 [%0 has left the game]
 %0 hat das Spiel verlassen.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Sie haben eine Einheit von einem %0-Team übernommen.
 [abreaviation explanation A]
@@ -16,6 +18,8 @@ mV: Teile die Sicht für Märkte (um Früchte zu handeln)
 V: Teile die Sicht für alle Gebäude
 [Add AI]
 KI hinzufügen
+[add map]
+
 [AI]
 KI
 [ai]
@@ -56,16 +60,12 @@ ok
 sind verletzt
 [armor]
 Rüstung
+[assigned]
+
 [At. speed]
 Geschwindigkeit
 [At. strength]
 Stärke
-[attack building explanation 2]
-kraft Ihrer Einheiten
-[attack building explanation]
-Verbessert die Kampf-
-[attack building]
-Trainingslager
 [attack speed]
 Angriffsgeschw.
 [Attack]
@@ -82,10 +82,64 @@ Warten auf Spieler
 weg:
 [bad error in connection system]
 Fataler Fehler im Verbindungssystem
+[barracks explanation 2]
+kraft Ihrer Einheiten
+[barracks explanation]
+Verbessert die Kampf-
+[barracks]
+Trainingslager
 [beach size]
 Strandbreite
 [bkey]
 B
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
 [Build]
 Bauen
 [Building name]
@@ -100,6 +154,8 @@ Baustelle
 Gebäude
 [Bullets]
 Kugeln
+[campaign editor]
+
 [campaign]
 Feldzug
 [Can't join game, missmatching game parameters]
@@ -118,6 +174,8 @@ Verbesserung abbrechen
 Abbrechen
 [carry]
 Transportiert:
+[Change Area Name]
+
 [checksum sent]
 Prüfsumme gesendet ...
 [Cherry]
@@ -132,14 +190,14 @@ Karte auswählen
 C
 [clear area]
 Rodungszone
-[clearing flag explanation 2]
-
-[clearing flag explanation]
-Rodet Ressourcen
-[clearing flag]
-Rodungsflagge
 [Clearing:]
 Rodung:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+Rodet Ressourcen
+[clearingflag]
+Rodungsflagge
 [close]
 Schließen
 [closed]
@@ -178,20 +236,32 @@ Freies Spiel
 Eigener Mauszeiger
 [damage]
 Schaden
+[Damaged Map]
+
 [dblbuff]
 Double-buffering
 [default terrain]
 Vorgabeterrain
-[defense building explanation 2]
+[defencetower explanation 2]
 bäude und Einheiten an
-[defense building explanation]
+[defencetower explanation]
 Greift Feindliche Ge-
-[defense building]
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
 Panzerturm
+[Defense Map]
+
 [Defense]
 Verteidigung
 [Delete game]
 Ausgewähltes Spiel löschen
+[delete]
+
 [desert]
 Wüste
 [destroy building]
@@ -210,6 +280,12 @@ Transportiert nichts
 Herunterladen abgeschlossen
 [downloaded at]
 Heruntergeladen zu
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
 [editor]
 Editor
 [ekey]
@@ -218,12 +294,14 @@ E
 Geben Sie ihren Spitznamen ein:
 [Enter your password :]
 Geben Sie ihr Passwort ein:
-[exploration flag explanation 2]
+[explorationflag explanation 2]
 
-[exploration flag explanation]
+[explorationflag explanation]
 Steuert Entdecker
-[exploration flag]
+[explorationflag]
 Entdeckerflagge
+[Explorer Ratio]
+
 [Explorer]
 Entdecker
 [explorers]
@@ -232,12 +310,6 @@ Entdecker
 leere Inseln
 [fkey]
 F
-[food building explanation 2]
-
-[food building explanation]
-Ernährt Ihre Einheiten
-[food building]
-Gasthof
 [food left]
 Nahrung
 [food]
@@ -252,10 +324,14 @@ frei
 frei
 [from:]
 von:
+[fruit]
+
 [fullscreen]
 Vollbild
 [game full]
 Spiel komplett
+[game shortcuts]
+
 [game speed]
 Spielgeschwindigkeit
 [general settings]
@@ -286,20 +362,22 @@ ist verbunden
 ist gegangen
 [heal]
 Gesundheit
-[health building explanation 2]
-
-[health building explanation]
-Heilt Ihre Einheiten
-[health building]
-Hospital
 [hkey]
 H
+[hospital explanation 2]
+
+[hospital explanation]
+Heilt Ihre Einheiten
+[hospital]
+Hospital
 [host]
 Spiel veranstalten
 [hp]
 Leben
 [hp]
 Lebenspunkt
+[human]
+
 [hungry]
 hungrig
 [hungryness]
@@ -310,6 +388,18 @@ Hardwarebeschleunigung
 I
 [In way]
 Unterwegs
+[inn explanation 2]
+
+[inn explanation]
+Ernährt Ihre Einheiten
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Gasthof
 [inside]
 Drinnen
 [islands size]
@@ -318,12 +408,16 @@ Inselgrösse
 Inseln
 [jkey]
 J
+[jobs]
+
 [join a game]
 Bei einem Spiel mitspielen
 [join]
 Mitspielen
 [keyboard settings]
 Tastatur
+[kick]
+
 [kkey]
 K
 [lan]
@@ -336,14 +430,20 @@ Sprache
 Deutsch
 [large]
 groß
+[Leave Game]
+
 [level]
 Stufe
 [levels]
 Stufen
 [lkey]
 L
+[load campaign]
+
 [load game]
 Spiel laden
+[load map]
+
 [load]
 Laden
 [loading glob2]
@@ -362,12 +462,16 @@ Kampfstärke/Luft
 Kampfstärke/Boden
 [Map name: %0]
 Karte: %0.
+[map name]
+
 [map size x]
 Breite der Karte
 [map size y]
 Höhe der Karte
 [mapGenerationDescriptor Methodes]
 Generierungsmethoden für Zufallskarten
+[maps available]
+
 [mark map]
 Karte markieren
 [market explanation 2]
@@ -380,6 +484,8 @@ Markt
 mittel
 [Min required level:]
 Mindestlevel:
+[Minimum Level To Flag]
+
 [mkey]
 M
 [Music volume]
@@ -388,12 +494,16 @@ Volumen (Musik)
 mute
 [network latency]
 Netzlatenz
+[new campaign]
+
 [new]
 Neu
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
 [nkey]
 N
+[no ressources growth areas]
+
 [No]
 Nein
 [not connected]
@@ -420,6 +530,12 @@ alte Zufallskarte
 Vor Ort
 [one player]
 Ein Spieler spielt mit.
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
 [open]
 offen
 [options]
@@ -452,10 +568,18 @@ Prestige
 Pflaumen
 [qkey]
 Q
+[quit the editor]
+
 [quit the game]
 Spiel beenden
 [quit]
 Beenden
+[racetrack explanation 2]
+digkeit Ihrer Einheiten
+[racetrack explanation]
+Erhöht die Gehgeschwin-
+[racetrack]
+Rennbahn
 [random terrain]
 Zufallslandschaft
 [range]
@@ -470,6 +594,8 @@ Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 Arbeiterzahlen merken
 [Remember YOG password localy]
 Passwort lokal speichern. (unsicher)
+[remove map]
+
 [repair building]
 Reparatur einleiten/beenden
 [repair]
@@ -478,6 +604,10 @@ Reparieren
 mal die selbe Landschaft
 [ressources]
 Ressourcen
+[restore default shortcuts]
+
+[return to editor]
+
 [return to game]
 Zurück zum Spiel
 [river diameter]
@@ -492,18 +622,48 @@ Sand
 Möchten Sie vor dem Beenden abspeichern?
 [save game]
 Spiel speichern
+[save map]
+
 [Save]
 Speichern
-[science building explanation 2]
+[school explanation 2]
 fähigkeit Ihrer Einheiten
-[science building explanation]
+[school explanation]
 Verbessert die Bau-
-[science building]
+[school]
 Schule
+[Script Areas]
+
 [seeking a job]
 suchen Arbeit
 [seeking]
 suchen
+[select barracks building]
+
+[select clearingflag]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
 [session request sent]
 Sitzungsanfrage gesendet ...
 [settings]
@@ -522,10 +682,16 @@ klein
 Glättung
 [speed]
 Geschwindigkeit
+[start mission]
+
+[start new campaign]
+
 [Start]
 Start
 [STARTING GAME ...]
 Spielbeginn...
+[Starving Map]
+
 [starving]
 verhungern
 [stat]
@@ -542,66 +708,78 @@ Noch
 Eine Einheit arbeitet
 [Still one]
 Noch eine
-[stone wall explanation 2]
-gebäude
-[stone wall explanation]
-Passives Verteidigungs-
-[stone wall]
-Steinmauer
 [Stone]
 Stein
 [stone]
 Stein
+[stonewall explanation 2]
+gebäude
+[stonewall explanation]
+Passives Verteidigungs-
+[stonewall]
+Steinmauer
 [svr hostname]
 Server-Hostname
 [swamp terrain]
 Sumpflandschaft
-[swarm building explanation 2]
+[swarm explanation 2]
 
-[swarm building explanation]
+[swarm explanation]
 Erstellt neue Einheiten
-[swarm building]
+[swarm level 0]
+
+[swarm]
 Stock
 [Swim]
 Schwimmen
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 tempo Ihrer Einheiten
-[swimspeed building explanation]
+[swimmingpool explanation]
 Erhöht das Schwimm-
-[swimspeed building]
+[swimmingpool]
 Schwimmbecken
+[switch to building view]
+
+[switch to flag view]
+
+[switch to teams view]
+
+[switch to terrain view]
+
 [teams]
  Mannschaften
-[the attack building is finished]
+[the barracks is finished]
 Das Trainingslager ist fertig
-[the attack building is under attack]
+[the barracks is under attack]
 Das Trainingslager wird angegriffen
 [the building is finished]
 Das Gebäude ist fertig
 [the building is under attack]
 Das Gebäude wird angegriffen
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Rodungsflagge fertig ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Rodungsflagge wird angegriffen ??
-[the defense building is under attack]
+[the defencetower is finished]
+Der Panzerturm ist fertig
+[the defencetower is under attack]
 Ihre Befestigungen werden angegriffen
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Entdeckerflagge fertig ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Entdeckerflagge wird angegriffen ??
-[the food building is finished]
-Der Gasthof ist fertig
-[the food building is under attack]
-Der Gasthof wird angegriffen
 [The game has not been finished]
 Das Spiel wurde nicht abgeschlossen
 [the games]
 Spiele
-[the health building is finished]
+[the hospital is finished]
 Das Hospital ist fertig
-[the health building is under attack]
+[the hospital is under attack]
 Das Hospital wird angegriffen
+[the inn is finished]
+Der Gasthof ist fertig
+[the inn is under attack]
+Der Gasthof wird angegriffen
 [the maps]
 Karten
 [the market is finished]
@@ -612,31 +790,29 @@ Der Markt wird angegriffen
 Spieler %0 ist zu YOG zurückgekehrt.
 [The player %0 has left YOG]
 Spieler %0 hat YOG verlassen.
-[the science building is finished]
+[the racetrack is finished]
+Die Rennbahn ist fertig
+[the racetrack is under attack]
+Die Rennbahn wird angegriffen
+[the school is finished]
 Die Schule ist fertig
-[the science building is under attack]
+[the school is under attack]
 Die Schule wird angegriffen
-[the stone wall is finished]
+[the stonewall is finished]
 Ein Mauerteil ist fertig
-[the stone wall is under attack]
+[the stonewall is under attack]
 Der Feind steht vor Ihren Mauern
 [the swarm is finished]
 Der Stock ist fertig
 [the swarm is under attack]
 Der Stock wird angegriffen
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Das Schwimmbecken ist fertig
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Das Schwimmbecken wird angegriffen
-[the tower building is finished]
-Der Panzerturm ist fertig
-[the walkspeed building is finished]
-Die Rennbahn ist fertig
-[the walkspeed building is under attack]
-Die Rennbahn wird angegriffen
-[the war flag is finished]
+[the warflag is finished]
 ?? Kriegsflagge fertig ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Kriegsflagge wird angegriffen ??
 [tkey]
 T
@@ -674,6 +850,10 @@ Einheitentyp
 Einheiten arbeiten
 [Units]
 Einheiten
+[unlocked by]
+
+[Unnamed Area]
+
 [update list]
 Aktualisieren
 [upgrade building]
@@ -692,20 +872,16 @@ Warten auf Zerstörung
 Warten auf %0
 [Walk]
 Gehen
-[walkspeed building explanation 2]
-digkeit Ihrer Einheiten
-[walkspeed building explanation]
-Erhöht die Gehgeschwin-
-[walkspeed building]
-Rennbahn
-[war flag explanation 2]
+[warflag explanation 2]
 
-[war flag explanation]
+[warflag explanation]
 Steuert Krieger
-[war flag]
+[warflag]
 Kriegsflagge
 [Warning, you need to reboot the game for changes to take effect]
 Achtung: Sie müssen das Spiel neu starten, damit die Änderungen wirksam werden.
+[Warrior Ratio]
+
 [Warrior]
 Krieger
 [warriors]
@@ -716,6 +892,8 @@ vorher KI
 vorher
 [water]
 Wasser
+[Wheat]
+
 [wheat]
 Weizen
 [wkey]
@@ -730,6 +908,8 @@ Gewonnen: Ihr Verbündeter %0 hat das höchste Prestige
 Holz
 [wood]
 Wald
+[Worker Ratio]
+
 [Worker]
 Arbeiter
 [workers]

@@ -2,6 +2,8 @@
 %0 er blevet afbrut
 [%0 has left the game]
 %0 har forladt spillet
+[%0's game]
+
 [%0's team unit got converted to your team]
 Et %0 holds enhed blev konverteret til dit hold
 [abreaviation explanation A]
@@ -64,12 +66,6 @@ Tildelt
 Att. hastighed
 [At. strength]
 Att. styrke
-[attack building explanation 2]
-Af dine krigere
-[attack building explanation]
-Forbedre militlær enheder 
-[attack building]
-Kaserne
 [attack speed]
 Angribs hastighed
 [Attack]
@@ -86,6 +82,12 @@ Venter på spillere
 er væk:
 [bad error in connection system]
 Fejl i forbindelses systemet
+[barracks explanation 2]
+Af dine krigere
+[barracks explanation]
+Forbedre militlær enheder 
+[barracks]
+Kaserne
 [beach size]
 Strand størrelse
 [bkey]
@@ -188,14 +190,14 @@ Vælg et kort
 C-tast
 [clear area]
 Ophæv arial
-[clearing flag explanation 2]
- 
-[clearing flag explanation]
-Fjern ressourcer
-[clearing flag]
-Rydnings flag
 [Clearing:]
 Rydning:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Fjern ressourcer
+[clearingflag]
+Rydnings flag
 [close]
 Luk
 [closed]
@@ -240,17 +242,17 @@ Skadet Kort
 Dobbelt buffering
 [default terrain]
 Standart terring
+[defencetower explanation 2]
+enheder eller bygninger
+[defencetower explanation]
+Angrib nærmeste fjende
 [defencetower level 0]
 Byg tårn 1
 [defencetower level 1]
 Byg tårn 2
 [defencetower level 2]
 Forsvars tårn 3
-[defense building explanation 2]
-enheder eller bygninger
-[defense building explanation]
-Angrib nærmeste fjende
-[defense building]
+[defencetower]
 Forsvars tårn
 [Defense Map]
 Forsvars Kort
@@ -292,11 +294,11 @@ E-tast
 Skriv dit bruger navn :
 [Enter your password :]
 Skriv dit adgangs kode :
-[exploration flag explanation 2]
+[explorationflag explanation 2]
  
-[exploration flag explanation]
+[explorationflag explanation]
 Angrib udforskere
-[exploration flag]
+[explorationflag]
 Udforsknings flag
 [Explorer Ratio]
 Udforsker Ratio
@@ -308,12 +310,6 @@ udforskere
 Tom ø
 [fkey]
 F-tast
-[food building explanation 2]
- 
-[food building explanation]
-Fodre dine enheder
-[food building]
-Kro
 [food left]
 Mad tilbage
 [food]
@@ -366,14 +362,14 @@ er kommet
 er gået
 [heal]
 Liv point
-[health building explanation 2]
- 
-[health building explanation]
-Kurere dine enheder
-[health building]
-Hospital
 [hkey]
 H-tast
+[hospital explanation 2]
+ 
+[hospital explanation]
+Kurere dine enheder
+[hospital]
+Hospital
 [host]
 Opret et spil
 [hp]
@@ -392,12 +388,18 @@ Hardware acceleration
 I-tast
 [In way]
 Er på vej
+[inn explanation 2]
+ 
+[inn explanation]
+Fodre dine enheder
 [inn level 0]
 Kro 1
 [inn level 1]
 Kro 2
 [inn level 2]
 Kro 3
+[inn]
+Kro
 [inside]
 Indenfor
 [islands size]
@@ -414,6 +416,8 @@ Forbind til et spil
 Spil med
 [keyboard settings]
 Tastetur instillinger
+[kick]
+
 [kkey]
 K-tast
 [lan]
@@ -426,6 +430,8 @@ Sprog
 Dansk
 [large]
 stort
+[Leave Game]
+
 [level]
 neavu
 [levels]
@@ -568,6 +574,12 @@ Afslut editor
 Afslut spillet
 [quit]
 Afslut
+[racetrack explanation 2]
+Neavu af dine enheder
+[racetrack explanation]
+Forbedre gå hastighed
+[racetrack]
+Raserbane
 [random terrain]
 Tilfælig terraing
 [range]
@@ -614,11 +626,11 @@ Gemme spil
 Gæmme Map
 [Save]
 Gem
-[science building explanation 2]
+[school explanation 2]
 af dine arbejdere
-[science building explanation]
+[school explanation]
 Forbædre bygnings evnen
-[science building]
+[school]
 Skole
 [Script Areas]
 Script Områder
@@ -628,9 +640,9 @@ leder efter et job
 Leder
 [select barracks building]
 Vælg Bar
-[select clearing flag]
+[select clearingflag]
 Vælg Rydnings Flag
-[select exploration flag]
+[select explorationflag]
 Vælg Udforsknings Flag
 [select hospital building]
 Vælg Hospital
@@ -650,7 +662,7 @@ Vælg Svømmepøl
 Vælg Torn
 [select wall building]
 Vælg væg
-[select war flag]
+[select warflag]
 Vælg Krigs Flag
 [session request sent]
 Session forspørgelse sendt ...
@@ -696,35 +708,35 @@ Stadigvæk
 En enhed arbejder stadigvæk
 [Still one]
 En tilbage
-[stone wall explanation 2]
-element
-[stone wall explanation]
-Passiv forsvar element
-[stone wall]
-Sten væg
 [Stone]
 Sten
 [stone]
 Sten
+[stonewall explanation 2]
+element
+[stonewall explanation]
+Passiv forsvar element
+[stonewall]
+Sten væg
 [svr hostname]
 Serverens host navn
 [swamp terrain]
 Svamp
-[swarm building explanation 2]
+[swarm explanation 2]
  
-[swarm building explanation]
+[swarm explanation]
 Byg en ny enhed
-[swarm building]
-Sværm
 [swarm level 0]
 Swærm
+[swarm]
+Sværm
 [Swim]
 Svøm
-[swimspeed building explanation 2]
+[swimmingpool explanation 2]
 Hastighed af dine enheder
-[swimspeed building explanation]
+[swimmingpool explanation]
 Forbedre svømning
-[swimspeed building]
+[swimmingpool]
 Svømmepøl
 [switch to building view]
 Skift til bygningsvisning
@@ -736,36 +748,38 @@ Skift til hold visning
 Skift til terring visning
 [teams]
  hold
-[the attack building is finished]
+[the barracks is finished]
 Kasernen er færdig gjort
-[the attack building is under attack]
+[the barracks is under attack]
 Kasernen er under angrib
 [the building is finished]
 Bygningen er færdig gjort
 [the building is under attack]
 Bygningn er under angrib
-[the clearing flag is finished]
+[the clearingflag is finished]
 ?? Rydnings flaget er færdig ??
-[the clearing flag is under attack]
+[the clearingflag is under attack]
 ?? Rydnings flaget er under angrib ??
-[the defense building is under attack]
+[the defencetower is finished]
+Forsvar tornet er færdig gjordt
+[the defencetower is under attack]
 Dine forsvar er under angrib
-[the exploration flag is finished]
+[the explorationflag is finished]
 ?? Udforsknings flaget er færdig ??
-[the exploration flag is under attack]
+[the explorationflag is under attack]
 ?? Udforsknings flaget er under angrib ??
-[the food building is finished]
-Kroen er færdig gjordt
-[the food building is under attack]
-Kroen er under angrib
 [The game has not been finished]
 Spillet er ikke færdig
 [the games]
 Spillet
-[the health building is finished]
+[the hospital is finished]
 Hospitalet er færdig gjort
-[the health building is under attack]
+[the hospital is under attack]
 Hospitalet er under angrib
+[the inn is finished]
+Kroen er færdig gjordt
+[the inn is under attack]
+Kroen er under angrib
 [the maps]
 Kort
 [the market is finished]
@@ -776,31 +790,29 @@ Market er under angrib
 %0 er kommet til YOG.
 [The player %0 has left YOG]
 %0 har forladt YOG.
-[the science building is finished]
+[the racetrack is finished]
+Raserbanen er fædtig gjort
+[the racetrack is under attack]
+Raserbanen er under angrib
+[the school is finished]
 Skolen er færdig gjort
-[the science building is under attack]
+[the school is under attack]
 Skolen er under angrib
-[the stone wall is finished]
+[the stonewall is finished]
 En sektion af en væg er færdig
-[the stone wall is under attack]
+[the stonewall is under attack]
 Fjenden er ved dine væge
 [the swarm is finished]
 Sværmen er færdig gjort
 [the swarm is under attack]
 Sværmen er under angrib
-[the swimspeed building is finished]
+[the swimmingpool is finished]
 Svømmepølen er færdig gjort
-[the swimspeed building is under attack]
+[the swimmingpool is under attack]
 Svømme pølen er under angrib
-[the tower building is finished]
-Forsvar tornet er færdig gjordt
-[the walkspeed building is finished]
-Raserbanen er fædtig gjort
-[the walkspeed building is under attack]
-Raserbanen er under angrib
-[the war flag is finished]
+[the warflag is finished]
 ?? Krigs flaget er færdig ??
-[the war flag is under attack]
+[the warflag is under attack]
 ?? Krigs flaget er under angrib ??
 [tkey]
 T-tast
@@ -860,17 +872,11 @@ Vænter på konstruktion
 Vænter på %0
 [Walk]
 Gå
-[walkspeed building explanation 2]
-Neavu af dine enheder
-[walkspeed building explanation]
-Forbedre gå hastighed
-[walkspeed building]
-Raserbane
-[war flag explanation 2]
+[warflag explanation 2]
  
-[war flag explanation]
+[warflag explanation]
 Angrib krigere
-[war flag]
+[warflag]
 Krigs flag
 [Warning, you need to reboot the game for changes to take effect]
 Advarsel. Du skal genstarte spillet for at ændringerne har nogen virkning
@@ -886,6 +892,8 @@ var AI
 var
 [water]
 Vand
+[Wheat]
+
 [wheat]
 hvede
 [wkey]
