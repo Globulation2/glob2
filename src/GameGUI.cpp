@@ -1840,20 +1840,30 @@ void GameGUI::handleKeyAlways(void)
 		/* We check that only Control is held to avoid accidentally
 			matching window manager bindings for switching windows
 			and/or desktops. */
-		if ((modState & KMOD_CTRL) && ! (modState & (KMOD_ALT|KMOD_SHIFT)))
+		if (!(modState & (KMOD_ALT|KMOD_SHIFT)))
 		{
 			/* It violates good abstraction principles that I
 				have to do the calculations in the next two
 				lines.  There should be methods that abstract
 				these computations. */
-			/* We move by half screens if Control is held while
-				the arrow keys are held.  So we shift by 6
-				instead of 5.  (If we shifted by 5, it would be
-				good to subtract 1 so that there would be a small
-				overlap between what is viewable both before and
-				after the motion.) */
-			xMotion = ((globalContainer->gfx->getW()-128)>>6);
-			yMotion = ((globalContainer->gfx->getH())>>6);
+			if ((modState & KMOD_CTRL))
+			{
+				/* We move by half screens if Control is held while
+					the arrow keys are held.  So we shift by 6
+					instead of 5.  (If we shifted by 5, it would be
+					good to subtract 1 so that there would be a small
+					overlap between what is viewable both before and
+					after the motion.) */
+				xMotion = ((globalContainer->gfx->getW()-128)>>6);
+				yMotion = ((globalContainer->gfx->getH())>>6);
+			}
+			else
+			{
+				/* We move the screen by one square at a time if CTRL key
+					is not being help */
+				xMotion = 1;
+				yMotion = 1;
+			}
 		}
 		else if (modState)
 		{
