@@ -52,6 +52,8 @@
 	#include <unistd.h>
 	#include <fcntl.h>
 	#define STOP_RECORDING_TIMEOUT 3000
+#else
+	#define STOP_RECORDING_TIMEOUT 3000
 #endif
 
 #define MAX_VOICE_MULTI_FRAME_LENGTH 256
