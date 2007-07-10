@@ -1,3 +1,5 @@
+changes={"[record voice]" : "[toggle recording voice]"}
+
 def translation_check(filename, keys):
     print "Examining %s" % (filename)
     f=open(filename)
@@ -13,7 +15,7 @@ def translation_check(filename, keys):
             if line == "" or line[0] != '[' or line[-1] != ']':
                 print "\tKey on line %i not in correct format, skipping" % (n)
             else:
-                current_key = line
+                current_key = changes.get(line, line)
                 expect_type="text"
         elif expect_type == "text":
             texts.append((current_key, line))

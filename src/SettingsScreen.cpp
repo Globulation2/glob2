@@ -205,6 +205,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(editor_keyboard_shortcuts);
 	addWidget(restore_default_shortcuts);
 
+/*
 	for(std::map<std::string, std::string>::iterator i=globalContainer->settings.keyboard_shortcuts.begin(); i!=globalContainer->settings.keyboard_shortcuts.end(); ++i)
 	{
 		internal_names.push_back(i->first);
@@ -275,6 +276,7 @@ SettingsScreen::SettingsScreen()
           shortcut_actions.push_back (commands[i]); }
         // fprintf (stderr, "after loop\n");
 
+*/
 	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[switch to building view]"));
 	editor_shortcut_actions.push_back("switch to building view");
 	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[switch to flag view]"));
@@ -314,10 +316,12 @@ SettingsScreen::SettingsScreen()
 	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select clearing flag]"));
 	editor_shortcut_actions.push_back("unselect&switch to flag view&set place building selection clearingflag");
 
+/*
 	for(unsigned int x=0; x<shortcut_names.size(); ++x)
 	{
 		keyboard_shortcuts->addText(shortcut_names[x].c_str());
 	}
+	*/
 	for(unsigned int x=0; x<editor_shortcut_names.size(); ++x)
 	{
 		editor_keyboard_shortcuts->addText(editor_shortcut_names[x].c_str());
@@ -346,7 +350,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->setUserName(userName->getText());
 			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
 			globalContainer->settings.save();
-
+			keyboardManager.saveKeyboardLayout();
 			endExecute(par1);
 		}
 		else if (par1==CANCEL)
@@ -566,6 +570,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source==keyboard_shortcuts || source==editor_keyboard_shortcuts)
 		{
+		/*
 			List* shortcuts=(editor_keyboard_shortcuts->visible ? editor_keyboard_shortcuts : keyboard_shortcuts);
 			std::map<std::string, std::string>& options=(editor_keyboard_shortcuts->visible ? globalContainer->settings.editor_keyboard_shortcuts : globalContainer->settings.keyboard_shortcuts);
 			std::vector<std::string>& actions=(editor_keyboard_shortcuts->visible ? editor_shortcut_actions : shortcut_actions);
@@ -588,6 +593,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 				options[internal_names[change_pos]]=actions[pos];
 				shortcuts->setSelectionIndex(-1);
 			}
+			*/
 		}
 		else if (source==keyboard_shortcut_names)
 		{
@@ -661,6 +667,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void SettingsScreen::reset_names()
 {
+/*
 	std::map<std::string, std::string>& options=(editor_keyboard_shortcuts->visible ? globalContainer->settings.editor_keyboard_shortcuts : globalContainer->settings.keyboard_shortcuts);
 	std::vector<std::string>& names=(editor_keyboard_shortcuts->visible ? editor_shortcut_names : shortcut_names);
 	std::vector<std::string>& actions=(editor_keyboard_shortcuts->visible ? editor_shortcut_actions : shortcut_actions);
@@ -678,6 +685,7 @@ void SettingsScreen::reset_names()
 		keyboard_shortcut_names->addText(keyname + " - " + valname);
 	}
 	keyboard_shortcut_names->setSelectionIndex(pos);
+*/
 }
 
 

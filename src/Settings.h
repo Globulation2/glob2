@@ -52,7 +52,6 @@ public:
 	int cloudSize;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
 	int cloudHeight;//(cloud - ground) / (eyes - ground)
 
-	std::map<std::string, std::string> keyboard_shortcuts;
 	std::map<std::string, std::string> editor_keyboard_shortcuts;
 
 	int tempUnit;

@@ -110,33 +110,6 @@ Settings::Settings()
 
 void Settings::restoreDefaultShortcuts()
 {
-	keyboard_shortcuts["akey"]="prefix key select area tool";
-	keyboard_shortcuts["bkey"]="prefix key select building tool";
-	keyboard_shortcuts["ckey"]="";
-	keyboard_shortcuts["dkey"]="destroy building";
-	keyboard_shortcuts["ekey"]="";
-	keyboard_shortcuts["fkey"]="prefix key select flag tool";
-	keyboard_shortcuts["gkey"]="";
-	keyboard_shortcuts["hkey"]="toggle draw accessibility aids";
-	keyboard_shortcuts["ikey"]="toggle draw information";
-	keyboard_shortcuts["jkey"]="";
-	keyboard_shortcuts["kkey"]="";
-	keyboard_shortcuts["lkey"]="";
-	keyboard_shortcuts["mkey"]="mark map";
-	keyboard_shortcuts["nkey"]="";
-	keyboard_shortcuts["okey"]="";
-	keyboard_shortcuts["pkey"]="pause game";
-	keyboard_shortcuts["qkey"]="";
-	keyboard_shortcuts["rkey"]="repair building";
-	keyboard_shortcuts["skey"]="";
-	keyboard_shortcuts["tkey"]="toggle draw unit paths";
-	keyboard_shortcuts["ukey"]="upgrade building";
-	keyboard_shortcuts["vkey"]="record voice";
-	keyboard_shortcuts["wkey"]="";
-	keyboard_shortcuts["xkey"]="";
-	keyboard_shortcuts["ykey"]="";
-	keyboard_shortcuts["zkey"]="";
-
 	editor_keyboard_shortcuts["akey"]="";
 	editor_keyboard_shortcuts["bkey"]="";
 	editor_keyboard_shortcuts["ckey"]="";
@@ -235,11 +208,6 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
 
-		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
-		{
-			if(parsed.find("game_"+i->first)!=parsed.end())
-				i->second=parsed["game_"+i->first];
-		}
 		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
 		{
 			if(parsed.find("editor_"+i->first)!=parsed.end())
@@ -288,10 +256,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
 		
-		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
-		{
-			Utilities::streamprintf(stream, "game_%s=%s\n", i->first.c_str(), i->second.c_str());
-		}
+
 		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
 		{
 			Utilities::streamprintf(stream, "editor_%s=%s\n", i->first.c_str(), i->second.c_str());

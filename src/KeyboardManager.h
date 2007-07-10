@@ -41,7 +41,7 @@ public:
 	void saveKeyboardLayout();
 	
 	///Loads the keyboard layout
-	void loadKeyboardLayout();
+	void loadKeyboardLayout(const std::string& file);
 private:
 	std::map<SDLKey, Uint32> singleKeys;
 	std::map<SDLKey, std::map<SDLKey, Uint32> > comboKeys;

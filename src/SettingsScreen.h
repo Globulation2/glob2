@@ -24,6 +24,8 @@
 #include "Settings.h"
 #include <string>
 
+#include "KeyboardManager.h"
+
 namespace GAGGUI
 {
 	class List;
@@ -99,6 +101,8 @@ private:
 	//! Return a string representing the actual display mode
 	std::string actDisplayModeToString(void);
 
+
+	KeyboardManager keyboardManager;
 public:
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
