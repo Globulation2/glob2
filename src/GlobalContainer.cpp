@@ -36,6 +36,7 @@
 #include "Glob2Screen.h"
 #include "UnitsSkins.h"
 #include "Glob2Style.h"
+#include "GameGUIKeyActions.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -471,6 +472,9 @@ void GlobalContainer::load(void)
 	Race::loadDefault();
 	// load ressources types
 	ressourcesTypes.load("data/ressources.txt");
+	
+	// initiate keyboard actions
+	GameGUIKeyActions::init();
 	
 	if (!runNoX)
 	{
