@@ -16,36 +16,135 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "KeyboardManager.h"
-#include "Stream.h"
+#include <boost/lexical_cast.hpp>
+#include "FileManager.h"
 #include "FormatableString.h"
 #include "GameGUIKeyActions.h"
-#include <boost/lexical_cast.hpp>
+#include <iostream>
+#include "KeyboardManager.h"
+#include "Stream.h"
 #include "Toolkit.h"
-#include "FileManager.h"
-
 
 using namespace GAGCore;
 
+std::map<std::string, SDLKey> KeyPress::keyMap;
+bool KeyPress::keyMapInitialized;
+
+
+KeyPress::KeyPress(SDLKey key, bool pressed)
+	: key(key), pressed(pressed)
+{
+
+}
+
+
+KeyPress::KeyPress()
+{
+	key=SDLK_UNKNOWN;
+	pressed=true;
+}
+
+
+bool KeyPress::operator<(const KeyPress& rhs) const
+{
+	if(key == rhs.key)
+		return pressed < rhs.pressed;
+	return key < rhs.key;
+}
+
+
+
+bool KeyPress::operator!=(const KeyPress& rhs) const
+{
+	if(key != rhs.key)
+		return true;
+	if(pressed != rhs.pressed)
+		return true;
+	return false;
+}
+
+
+	
+std::string KeyPress::format() const
+{
+	if(!keyMapInitialized)
+		initKeyMap();
+	std::string s;
+	if(!pressed)
+		s+="<unpress>";
+	s+=FormatableString("<%0>").arg(SDL_GetKeyName(key));
+	return s;
+}
+
+
+
+void KeyPress::interpret(const std::string& s)
+{
+	if(!keyMapInitialized)
+		initKeyMap();
+	std::string ks = s;
+	size_t pos =ks.find("<unpress>");
+	if(pos!=std::string::npos)
+	{
+		ks = ks.substr(pos+9);
+		pressed=false;
+	}
+	else
+	{
+		pressed=true;
+	}
+	key = keyMap[ks];
+}
+
+
+
+SDLKey KeyPress::getKey() const
+{
+	return key;
+}
+
+
+
+bool KeyPress::getPressed() const
+{
+	return pressed;
+}
+
+
+
+void KeyPress::initKeyMap()
+{
+	///This is because SDL provides no native function to do the reverse of SDL_GetKeyName
+	for(Uint32 i = Uint32(SDLK_FIRST); i!=Uint32(SDLK_LAST); ++i)
+	{
+		keyMap["<"+std::string(SDL_GetKeyName(SDLKey(i)))+">"] = SDLKey(i);
+	}
+}
+
+
+
 KeyboardManager::KeyboardManager()
 {
-	lastPressedComboKey = SDLKey(0);
+	lastPressedComboKey = KeyPress();
 	setToDefaults();
 }
 
 
-Uint32 KeyboardManager::getAction(SDLKey key)
+Uint32 KeyboardManager::getAction(const KeyPress& key)
 {
-	if(lastPressedComboKey != SDLKey(0))
+	if(lastPressedComboKey != KeyPress())
 	{
-		SDLKey comboKey = lastPressedComboKey;
-		lastPressedComboKey = SDLKey(0);
+		///When doing combo keys, say <b>-<b>, ignore the <unpressed><b> key that will occur between the two <b> presses
+		if(key.getKey() == lastPressedComboKey.getKey() && key.getPressed() == false && lastPressedComboKey.getPressed() == true)
+			return GameGUIKeyActions::DoNothing;
+		KeyPress comboKey = lastPressedComboKey;
+		lastPressedComboKey = KeyPress();
 		if(comboKeys[comboKey].find(key) != comboKeys[comboKey].end())
 			return comboKeys[comboKey][key];
 		else
 			return GameGUIKeyActions::DoNothing;
 	}
-	if(singleKeys.find(key) != singleKeys.end())
+	else if(singleKeys.find(key) != singleKeys.end())
 	{
 		return singleKeys[key];
 	}
@@ -61,72 +160,72 @@ Uint32 KeyboardManager::getAction(SDLKey key)
 
 void KeyboardManager::setToDefaults()
 {
-	singleKeys[SDLK_ESCAPE] = GameGUIKeyActions::ShowMainMenu;
-	singleKeys[SDLK_PLUS] = GameGUIKeyActions::IncreaseUnitsWorking;
-	singleKeys[SDLK_KP_PLUS] = GameGUIKeyActions::IncreaseUnitsWorking;
-	singleKeys[SDLK_EQUALS] = GameGUIKeyActions::IncreaseUnitsWorking;
-	singleKeys[SDLK_MINUS] = GameGUIKeyActions::DecreaseUnitsWorking;
-	singleKeys[SDLK_KP_MINUS] = GameGUIKeyActions::DecreaseUnitsWorking;
-	singleKeys[SDLK_RETURN] = GameGUIKeyActions::OpenChatBox;
-	singleKeys[SDLK_TAB] = GameGUIKeyActions::IterateSelection;
-	singleKeys[SDLK_SPACE] = GameGUIKeyActions::GoToEvent;
-	singleKeys[SDLK_HOME] = GameGUIKeyActions::GoToHome;
-	singleKeys[SDLK_PAUSE] = GameGUIKeyActions::PauseGame;
-	singleKeys[SDLK_SCROLLOCK] = GameGUIKeyActions::HardPause;
+	singleKeys[KeyPress(SDLK_ESCAPE, true)] = GameGUIKeyActions::ShowMainMenu;
+	singleKeys[KeyPress(SDLK_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
+	singleKeys[KeyPress(SDLK_KP_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
+	singleKeys[KeyPress(SDLK_EQUALS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
+	singleKeys[KeyPress(SDLK_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
+	singleKeys[KeyPress(SDLK_KP_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
+	singleKeys[KeyPress(SDLK_RETURN, true)] = GameGUIKeyActions::OpenChatBox;
+	singleKeys[KeyPress(SDLK_TAB, true)] = GameGUIKeyActions::IterateSelection;
+	singleKeys[KeyPress(SDLK_SPACE, true)] = GameGUIKeyActions::GoToEvent;
+	singleKeys[KeyPress(SDLK_HOME, true)] = GameGUIKeyActions::GoToHome;
+	singleKeys[KeyPress(SDLK_PAUSE, true)] = GameGUIKeyActions::PauseGame;
+	singleKeys[KeyPress(SDLK_SCROLLOCK, true)] = GameGUIKeyActions::HardPause;
 	
-	singleKeys[SDLK_t] = GameGUIKeyActions::ToggleDrawUnitPaths;
-	singleKeys[SDLK_d] = GameGUIKeyActions::DestroyBuilding;
-	singleKeys[SDLK_r] = GameGUIKeyActions::RepairBuilding;
-	singleKeys[SDLK_i] = GameGUIKeyActions::ToggleDrawInformation;
-	singleKeys[SDLK_h] = GameGUIKeyActions::ToggleDrawAccessibilityAids;
-	singleKeys[SDLK_m] = GameGUIKeyActions::MarkMap;
-	singleKeys[SDLK_v] = GameGUIKeyActions::ToggleRecordingVoice;
-	singleKeys[SDLK_s] = GameGUIKeyActions::ViewHistory;
-	singleKeys[SDLK_u] = GameGUIKeyActions::UpgradeBuilding;
+	singleKeys[KeyPress(SDLK_t, true)] = GameGUIKeyActions::ToggleDrawUnitPaths;
+	singleKeys[KeyPress(SDLK_d, true)] = GameGUIKeyActions::DestroyBuilding;
+	singleKeys[KeyPress(SDLK_r, true)] = GameGUIKeyActions::RepairBuilding;
+	singleKeys[KeyPress(SDLK_i, true)] = GameGUIKeyActions::ToggleDrawInformation;
+	singleKeys[KeyPress(SDLK_h, true)] = GameGUIKeyActions::ToggleDrawAccessibilityAids;
+	singleKeys[KeyPress(SDLK_m, true)] = GameGUIKeyActions::MarkMap;
+	singleKeys[KeyPress(SDLK_v, true)] = GameGUIKeyActions::ToggleRecordingVoice;
+	singleKeys[KeyPress(SDLK_s, true)] = GameGUIKeyActions::ViewHistory;
+	singleKeys[KeyPress(SDLK_u, true)] = GameGUIKeyActions::UpgradeBuilding;
 	
-	comboKeys[SDLK_b][SDLK_i] = GameGUIKeyActions::SelectConstructInn;
-	comboKeys[SDLK_b][SDLK_a] = GameGUIKeyActions::SelectConstructSwarm;
-	comboKeys[SDLK_b][SDLK_h] = GameGUIKeyActions::SelectConstructHospital;
-	comboKeys[SDLK_b][SDLK_r] = GameGUIKeyActions::SelectConstructRacetrack;
-	comboKeys[SDLK_b][SDLK_p] = GameGUIKeyActions::SelectConstructSwimmingPool;
-	comboKeys[SDLK_b][SDLK_b] = GameGUIKeyActions::SelectConstructBarracks;
-	comboKeys[SDLK_b][SDLK_s] = GameGUIKeyActions::SelectConstructSchool;
-	comboKeys[SDLK_b][SDLK_d] = GameGUIKeyActions::SelectConstructDefenceTower;
-	comboKeys[SDLK_b][SDLK_w] = GameGUIKeyActions::SelectConstructStoneWall;
-	comboKeys[SDLK_b][SDLK_m] = GameGUIKeyActions::SelectConstructMarket;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_i, true)] = GameGUIKeyActions::SelectConstructInn;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SelectConstructSwarm;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_h, true)] = GameGUIKeyActions::SelectConstructHospital;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_r, true)] = GameGUIKeyActions::SelectConstructRacetrack;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_p, true)] = GameGUIKeyActions::SelectConstructSwimmingPool;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_b, true)] = GameGUIKeyActions::SelectConstructBarracks;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_s, true)] = GameGUIKeyActions::SelectConstructSchool;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SelectConstructDefenceTower;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectConstructStoneWall;
+	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_m, true)] = GameGUIKeyActions::SelectConstructMarket;
 	
-	comboKeys[SDLK_f][SDLK_e] = GameGUIKeyActions::SelectPlaceExplorationFlag;
-	comboKeys[SDLK_f][SDLK_w] = GameGUIKeyActions::SelectPlaceWarFlag;
-	comboKeys[SDLK_f][SDLK_c] = GameGUIKeyActions::SelectPlaceClearingFlag;
+	comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_e, true)] = GameGUIKeyActions::SelectPlaceExplorationFlag;
+	comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectPlaceWarFlag;
+	comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingFlag;
 	
-	comboKeys[SDLK_a][SDLK_f] = GameGUIKeyActions::SelectPlaceForbiddenArea;
-	comboKeys[SDLK_a][SDLK_g] = GameGUIKeyActions::SelectPlaceGuardArea;
-	comboKeys[SDLK_a][SDLK_c] = GameGUIKeyActions::SelectPlaceClearingArea;
-	comboKeys[SDLK_a][SDLK_a] = GameGUIKeyActions::SwitchToAddingAreas;
-	comboKeys[SDLK_a][SDLK_d] = GameGUIKeyActions::SwitchToRemovingAreas;
-	comboKeys[SDLK_a][SDLK_1] = GameGUIKeyActions::SwitchToAreaBrush1;
-	comboKeys[SDLK_a][SDLK_2] = GameGUIKeyActions::SwitchToAreaBrush2;
-	comboKeys[SDLK_a][SDLK_3] = GameGUIKeyActions::SwitchToAreaBrush3;
-	comboKeys[SDLK_a][SDLK_4] = GameGUIKeyActions::SwitchToAreaBrush4;
-	comboKeys[SDLK_a][SDLK_5] = GameGUIKeyActions::SwitchToAreaBrush5;
-	comboKeys[SDLK_a][SDLK_6] = GameGUIKeyActions::SwitchToAreaBrush6;
-	comboKeys[SDLK_a][SDLK_7] = GameGUIKeyActions::SwitchToAreaBrush7;
-	comboKeys[SDLK_a][SDLK_8] = GameGUIKeyActions::SwitchToAreaBrush8;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_f, true)] = GameGUIKeyActions::SelectPlaceForbiddenArea;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_g, true)] = GameGUIKeyActions::SelectPlaceGuardArea;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingArea;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SwitchToAddingAreas;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SwitchToRemovingAreas;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_1, true)] = GameGUIKeyActions::SwitchToAreaBrush1;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_2, true)] = GameGUIKeyActions::SwitchToAreaBrush2;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_3, true)] = GameGUIKeyActions::SwitchToAreaBrush3;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_4, true)] = GameGUIKeyActions::SwitchToAreaBrush4;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_5, true)] = GameGUIKeyActions::SwitchToAreaBrush5;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_6, true)] = GameGUIKeyActions::SwitchToAreaBrush6;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_7, true)] = GameGUIKeyActions::SwitchToAreaBrush7;
+	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_8, true)] = GameGUIKeyActions::SwitchToAreaBrush8;
 }
 
 
 void KeyboardManager::saveKeyboardLayout()
 {
 	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend("keyboard_layout.txt"));
-	for(std::map<SDLKey, Uint32>::iterator i = singleKeys.begin(); i!=singleKeys.end(); ++i)
+	for(std::map<KeyPress, Uint32>::iterator i = singleKeys.begin(); i!=singleKeys.end(); ++i)
 	{
-		stream->writeLine(FormatableString("<%0>=%1").arg(SDL_GetKeyName(i->first)).arg(GameGUIKeyActions::getName(i->second)));
+		stream->writeLine(FormatableString("%0=%1").arg(i->first.format()).arg(GameGUIKeyActions::getName(i->second)));
 	}
-	for(std::map<SDLKey, std::map<SDLKey, Uint32> >::iterator i = comboKeys.begin(); i!=comboKeys.end(); ++i)
+	for(std::map<KeyPress, std::map<KeyPress, Uint32> >::iterator i = comboKeys.begin(); i!=comboKeys.end(); ++i)
 	{
-		for(std::map<SDLKey, Uint32>::iterator j = i->second.begin(); j!=i->second.end(); ++j)
+		for(std::map<KeyPress, Uint32>::iterator j = i->second.begin(); j!=i->second.end(); ++j)
 		{
-			stream->writeLine(FormatableString("<%0>-<%1>=%2").arg(SDL_GetKeyName(i->first)).arg(SDL_GetKeyName(j->first)).arg(GameGUIKeyActions::getName(j->second)));
+			stream->writeLine(FormatableString("%0-%1=%2").arg(i->first.format()).arg(j->first.format()).arg(GameGUIKeyActions::getName(j->second)));
 		}
 	}
 	delete stream;
@@ -136,13 +235,6 @@ void KeyboardManager::saveKeyboardLayout()
 
 void KeyboardManager::loadKeyboardLayout(const std::string& file)
 {
-	///This is because SDL provides no native function to go reverse from a keys name to its integer
-	std::map<std::string, SDLKey> keyMap;
-	for(Uint32 i = Uint32(SDLK_FIRST); i!=Uint32(SDLK_LAST); ++i)
-	{
-		keyMap["<"+std::string(SDL_GetKeyName(SDLKey(i)))+">"] = SDLKey(i);
-	}
-
 	InputLineStream *stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(file));
 	while(!stream->isEndOfStream())
 	{
@@ -154,13 +246,19 @@ void KeyboardManager::loadKeyboardLayout(const std::string& file)
 			std::string first_key(line, 0, dash);
 			std::string second_key(line, dash+1, equal - dash - 1);
 			std::string action(line, equal+1, std::string::npos);
-			comboKeys[keyMap[first_key]][keyMap[second_key]] = GameGUIKeyActions::getAction(action);
+			KeyPress f_key;
+			f_key.interpret(first_key);
+			KeyPress s_key;
+			s_key.interpret(second_key);
+			comboKeys[f_key][s_key] = GameGUIKeyActions::getAction(action);
 		}
 		else
 		{
 			std::string key(line, 0, equal);
 			std::string action(line, equal+1, std::string::npos);
-			singleKeys[keyMap[key]] = GameGUIKeyActions::getAction(action);
+			KeyPress f_key;
+			f_key.interpret(key);
+			singleKeys[f_key] = GameGUIKeyActions::getAction(action);
 		}
 	}
 	delete stream;
