@@ -22,6 +22,47 @@
 #include "SDL.h"
 #include <map>
 
+//Steps to add a keyboard shortcut:
+//1) Identify where it goes (either GameGUIKeyboardActions or MapEditorKeyboardActions)
+//2) Add the action to the enum there, and give it an approppriette name in the init function
+//3) Find the handleKey function in either GameGUI or MapEdit and add the code there
+
+///Represents a "key" on the keyboard and how its used
+class KeyPress
+{
+public:
+	///Construct a KeyPress
+	KeyPress(SDLKey key, bool pressed);
+
+	///Construct an empty KeyPress
+	KeyPress();
+
+	///Compares two KeyPress
+	bool operator<(const KeyPress& rhs) const;
+
+	///Compares two KeyPress
+	bool operator!=(const KeyPress& rhs) const;
+	
+	///Formats a key press
+	std::string format() const;
+	
+	///Interprets a key press from a string
+	void interpret(const std::string& s);
+	
+	///Returns the key
+	SDLKey getKey() const;
+	
+	///Returns whether the key is to be pressed in or our
+	bool getPressed() const;
+private:
+	static void initKeyMap();
+	static bool keyMapInitialized;
+	static std::map<std::string, SDLKey> keyMap;
+	SDLKey key;
+	bool pressed;
+};
+
+
 
 ///This class is meant to do keyboard management, handling keyboard shortcuts, layouts and such for GameGUI
 class KeyboardManager
@@ -30,9 +71,8 @@ public:
 	///Constructs a keyboard manager
 	KeyboardManager();
 	
-	///Returns the integer action accossiatted with the provided key. Often it may be
-	///nothing, or it may wait for another key to be pressed, etc.
-	Uint32 getAction(SDLKey key);
+	///Returns the integer action accossiatted with the provided key.
+	Uint32 getAction(const KeyPress& key);
 
 	///Sets the defaults for a keyboard layout
 	void setToDefaults();
@@ -43,9 +83,9 @@ public:
 	///Loads the keyboard layout
 	void loadKeyboardLayout(const std::string& file);
 private:
-	std::map<SDLKey, Uint32> singleKeys;
-	std::map<SDLKey, std::map<SDLKey, Uint32> > comboKeys;
-	SDLKey lastPressedComboKey;
+	std::map<KeyPress, Uint32> singleKeys;
+	std::map<KeyPress, std::map<KeyPress, Uint32> > comboKeys;
+	KeyPress lastPressedComboKey;
 };
 
 #endif

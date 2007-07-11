@@ -1178,431 +1178,429 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 			if(swallowSpaceKey)
 				setIsSpaceSet(true);
 		}
-		else if(pressed)
+		Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
+		switch(action_t)
 		{
-			Uint32 action_t = keyboardManager.getAction(key);
-			switch(action_t)
+			case GameGUIKeyActions::DoNothing:
 			{
-				case GameGUIKeyActions::DoNothing:
-				{
-				}
-				break;
-				case GameGUIKeyActions::ShowMainMenu:
-				{
-					if (inGameMenu==IGM_NONE)
-					{
-						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
-						inGameMenu=IGM_MAIN;
-					}
-				}
-				break;
-				case GameGUIKeyActions::UpgradeBuilding:
-				{
-					if (selectionMode==BUILDING_SELECTION)
-					{
-						Building* selBuild = selection.building;
-						int typeNum = selBuild->typeNum; //determines type of updated building
-						int unitWorking = getUnitCount(typeNum - 1);
-						if (selBuild->constructionResultState == Building::UPGRADE)
-							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
-						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
-							repairAndUpgradeBuilding(selBuild, false, true);
-					}
-				}
-				break;
-				case GameGUIKeyActions::IncreaseUnitsWorking:
-				{
-					if (selectionMode==BUILDING_SELECTION)
-					{
-						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
-						{
-							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							setUnitCount(selBuild->typeNum, nbReq);
-						}
-					}
-				}
-				break;
-				case GameGUIKeyActions::DecreaseUnitsWorking:
-				{
-					if (selectionMode==BUILDING_SELECTION)
-					{
-						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
-						{
-							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							setUnitCount(selBuild->typeNum, nbReq);
-						}
-					}
-				}
-				break;
-				case GameGUIKeyActions::OpenChatBox:
-				{
-					typingInputScreen=new InGameTextInput(globalContainer->gfx);
-					typingInputScreenInc=TYPING_INPUT_BASE_INC;
-					typingInputScreenPos=0;
-				}
-				break;
-				case GameGUIKeyActions::IterateSelection:
-				{
-					iterateSelection();
-				}
-				break;
-				case GameGUIKeyActions::GoToEvent:
-				{
-					int evX, evY;
-					int sw, sh;
-					
-					eventGoTypeIterator = eventGoType;
-					evX = eventGoPosX;
-					evY = eventGoPosY;
-				
-					sw=globalContainer->gfx->getW();
-					sh=globalContainer->gfx->getH();
-					viewportX=evX-((sw-128)>>6);
-					viewportY=evY-(sh>>6);
-				}
-				break;
-				case GameGUIKeyActions::GoToHome:
-				{
-					int evX = localTeam->startPosX;
-					int evY = localTeam->startPosY;
-				    int sw = globalContainer->gfx->getW();
-					int sh = globalContainer->gfx->getH();
-					viewportX = evX-((sw-128)>>6);
-					viewportY = evY-(sh>>6);
-				}
-				break;
-				case GameGUIKeyActions::PauseGame:
-				{
-					orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
-				}
-				break;
-				case GameGUIKeyActions::HardPause:
-				{
-					hardPause=!hardPause;
-				}
-				break;
-				case GameGUIKeyActions::ToggleDrawUnitPaths:
-				{
-					drawPathLines=!drawPathLines;
-				}
-				break;
-				case GameGUIKeyActions::DestroyBuilding:
-				{
-					if (selectionMode==BUILDING_SELECTION)
-					{
-						Building* selBuild=selection.building;
-						if (selBuild->owner->teamNumber==localTeamNo)
-						{
-							if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-							{
-								orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
-							}
-							else if (selBuild->buildingState==Building::ALIVE)
-							{
-								orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
-							}
-						}
-					}
-				}
-				break;
-				case GameGUIKeyActions::RepairBuilding:
-				{
-					if (selectionMode==BUILDING_SELECTION)
-					{
-						Building* selBuild = selection.building;
-						int typeNum = selBuild->typeNum; //determines type of updated building
-						int unitWorking = getUnitCount(typeNum);
-						if (selBuild->constructionResultState == Building::REPAIR)
-							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
-						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
-							repairAndUpgradeBuilding(selBuild, true, false);
-					}
-				}
-				break;
-				case GameGUIKeyActions::ToggleDrawInformation:
-				{
-					drawHealthFoodBar=!drawHealthFoodBar;
-				}
-				case GameGUIKeyActions::ToggleDrawAccessibilityAids:
-				{
-					drawAccessibilityAids = !drawAccessibilityAids;
-				}
-				break;
-				case GameGUIKeyActions::MarkMap:
-				{
-					putMark=true;
-					globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_MARK);
-				}
-				break;
-				case GameGUIKeyActions::ToggleRecordingVoice:
-				{
-					if (globalContainer->voiceRecorder->recordingNow)
-						globalContainer->voiceRecorder->stopRecording();
-					else
-						globalContainer->voiceRecorder->startRecording();
-				}
-				break;
-				case GameGUIKeyActions::ViewHistory:
-				{
-					if ( ! scrollableText)
-						scrollableText=new InGameScrollableText(globalContainer->gfx, messageHistory);
-					else 
-					{
-						delete scrollableText;
-						scrollableText=NULL;
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructInn:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("inn")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("inn"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructSwarm:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("swarm")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("swarm"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructHospital:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("hospital")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("hospital"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructRacetrack:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("racetrack")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("racetrack"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructSwimmingPool:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("swimmingpool")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("swimmingpool"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructBarracks:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("barracks")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("barracks"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructSchool:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("school")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("school"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructDefenceTower:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("defencetower")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("defencetower"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructStoneWall:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("stonewall")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("stonewall"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectConstructMarket:
-				{
-					clearSelection();
-					if (isBuildingEnabled(std::string("market")))
-					{
-						displayMode = BUILDING_VIEW;
-						setSelection(TOOL_SELECTION, (void *)("market"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectPlaceExplorationFlag:
-				{
-					clearSelection();
-					if (isFlagEnabled(std::string("explorationflag")))
-					{
-						displayMode = FLAG_VIEW;
-						setSelection(TOOL_SELECTION, (void*)("explorationflag"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectPlaceWarFlag:
-				{
-					clearSelection();
-					if (isFlagEnabled(std::string("warflag")))
-					{
-						displayMode = FLAG_VIEW;
-						setSelection(TOOL_SELECTION, (void*)("warflag"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectPlaceClearingFlag:
-				{
-					clearSelection();
-					if (isFlagEnabled(std::string("clearingflag")))
-					{
-						displayMode = FLAG_VIEW;
-						setSelection(TOOL_SELECTION, (void*)("clearingflag"));
-					}
-				}
-				break;
-				case GameGUIKeyActions::SelectPlaceForbiddenArea:
-				{
-					clearSelection();
-					brushType = FORBIDDEN_BRUSH;
-					if (brush.getType() == BrushTool::MODE_NONE)
-					{
-						brush.setType(BrushTool::MODE_ADD);
-					}
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SelectPlaceGuardArea:
-				{
-					clearSelection();
-					brushType = GUARD_AREA_BRUSH;
-					if (brush.getType() == BrushTool::MODE_NONE)
-					{
-						brush.setType(BrushTool::MODE_ADD);
-					}
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SelectPlaceClearingArea:
-				{
-					clearSelection();
-					brushType = CLEAR_AREA_BRUSH;
-					if (brush.getType() == BrushTool::MODE_NONE)
-					{
-						brush.setType(BrushTool::MODE_ADD);
-					}
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAddingAreas:
-				{
-					clearSelection();
-					brush.setType(BrushTool::MODE_ADD);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				case GameGUIKeyActions::SwitchToRemovingAreas:
-				{
-					clearSelection();
-					brush.setType(BrushTool::MODE_DEL);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush1:
-				{
-					clearSelection();
-					brush.setFigure(0);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush2:
-				{
-					clearSelection();
-					brush.setFigure(1);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush3:
-				{
-					clearSelection();
-					brush.setFigure(2);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush4:
-				{
-					clearSelection();
-					brush.setFigure(3);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush5:
-				{
-					clearSelection();
-					brush.setFigure(4);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush6:
-				{
-					clearSelection();
-					brush.setFigure(5);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush7:
-				{
-					clearSelection();
-					brush.setFigure(6);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
-				case GameGUIKeyActions::SwitchToAreaBrush8:
-				{
-					clearSelection();
-					brush.setFigure(7);
-					displayMode = FLAG_VIEW;
-					setSelection(BRUSH_SELECTION);
-				}
-				break;
 			}
+			break;
+			case GameGUIKeyActions::ShowMainMenu:
+			{
+				if (inGameMenu==IGM_NONE)
+				{
+					gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
+					inGameMenu=IGM_MAIN;
+				}
+			}
+			break;
+			case GameGUIKeyActions::UpgradeBuilding:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild = selection.building;
+					int typeNum = selBuild->typeNum; //determines type of updated building
+					int unitWorking = getUnitCount(typeNum - 1);
+					if (selBuild->constructionResultState == Building::UPGRADE)
+						orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
+					else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+						repairAndUpgradeBuilding(selBuild, false, true);
+				}
+			}
+			break;
+			case GameGUIKeyActions::IncreaseUnitsWorking:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild=selection.building;
+					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					{
+						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+						setUnitCount(selBuild->typeNum, nbReq);
+					}
+				}
+			}
+			break;
+			case GameGUIKeyActions::DecreaseUnitsWorking:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild=selection.building;
+					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					{
+						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+						setUnitCount(selBuild->typeNum, nbReq);
+					}
+				}
+			}
+			break;
+			case GameGUIKeyActions::OpenChatBox:
+			{
+				typingInputScreen=new InGameTextInput(globalContainer->gfx);
+				typingInputScreenInc=TYPING_INPUT_BASE_INC;
+				typingInputScreenPos=0;
+			}
+			break;
+			case GameGUIKeyActions::IterateSelection:
+			{
+				iterateSelection();
+			}
+			break;
+			case GameGUIKeyActions::GoToEvent:
+			{
+				int evX, evY;
+				int sw, sh;
+				
+				eventGoTypeIterator = eventGoType;
+				evX = eventGoPosX;
+				evY = eventGoPosY;
+			
+				sw=globalContainer->gfx->getW();
+				sh=globalContainer->gfx->getH();
+				viewportX=evX-((sw-128)>>6);
+				viewportY=evY-(sh>>6);
+			}
+			break;
+			case GameGUIKeyActions::GoToHome:
+			{
+				int evX = localTeam->startPosX;
+				int evY = localTeam->startPosY;
+			    int sw = globalContainer->gfx->getW();
+				int sh = globalContainer->gfx->getH();
+				viewportX = evX-((sw-128)>>6);
+				viewportY = evY-(sh>>6);
+			}
+			break;
+			case GameGUIKeyActions::PauseGame:
+			{
+				orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
+			}
+			break;
+			case GameGUIKeyActions::HardPause:
+			{
+				hardPause=!hardPause;
+			}
+			break;
+			case GameGUIKeyActions::ToggleDrawUnitPaths:
+			{
+				drawPathLines=!drawPathLines;
+			}
+			break;
+			case GameGUIKeyActions::DestroyBuilding:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild=selection.building;
+					if (selBuild->owner->teamNumber==localTeamNo)
+					{
+						if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+						{
+							orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
+						}
+						else if (selBuild->buildingState==Building::ALIVE)
+						{
+							orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
+						}
+					}
+				}
+			}
+			break;
+			case GameGUIKeyActions::RepairBuilding:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild = selection.building;
+					int typeNum = selBuild->typeNum; //determines type of updated building
+					int unitWorking = getUnitCount(typeNum);
+					if (selBuild->constructionResultState == Building::REPAIR)
+						orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
+					else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+						repairAndUpgradeBuilding(selBuild, true, false);
+				}
+			}
+			break;
+			case GameGUIKeyActions::ToggleDrawInformation:
+			{
+				drawHealthFoodBar=!drawHealthFoodBar;
+			}
+			break;
+			case GameGUIKeyActions::ToggleDrawAccessibilityAids:
+			{
+				drawAccessibilityAids = !drawAccessibilityAids;
+			}
+			break;
+			case GameGUIKeyActions::MarkMap:
+			{
+				putMark=true;
+				globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_MARK);
+			}
+			break;
+			case GameGUIKeyActions::ToggleRecordingVoice:
+			{
+				if (globalContainer->voiceRecorder->recordingNow)
+					globalContainer->voiceRecorder->stopRecording();
+				else
+					globalContainer->voiceRecorder->startRecording();
+			}
+			break;
+			case GameGUIKeyActions::ViewHistory:
+			{
+				if ( ! scrollableText)
+					scrollableText=new InGameScrollableText(globalContainer->gfx, messageHistory);
+				else 
+				{
+					delete scrollableText;
+					scrollableText=NULL;
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructInn:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("inn")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("inn"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructSwarm:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("swarm")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("swarm"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructHospital:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("hospital")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("hospital"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructRacetrack:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("racetrack")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("racetrack"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructSwimmingPool:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("swimmingpool")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("swimmingpool"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructBarracks:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("barracks")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("barracks"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructSchool:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("school")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("school"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructDefenceTower:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("defencetower")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("defencetower"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructStoneWall:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("stonewall")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("stonewall"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructMarket:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("market")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("market"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceExplorationFlag:
+			{
+				clearSelection();
+				if (isFlagEnabled(std::string("explorationflag")))
+				{
+					displayMode = FLAG_VIEW;
+					setSelection(TOOL_SELECTION, (void*)("explorationflag"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceWarFlag:
+			{
+				clearSelection();
+				if (isFlagEnabled(std::string("warflag")))
+				{
+					displayMode = FLAG_VIEW;
+					setSelection(TOOL_SELECTION, (void*)("warflag"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceClearingFlag:
+			{
+				clearSelection();
+				if (isFlagEnabled(std::string("clearingflag")))
+				{
+					displayMode = FLAG_VIEW;
+					setSelection(TOOL_SELECTION, (void*)("clearingflag"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceForbiddenArea:
+			{
+				clearSelection();
+				brushType = FORBIDDEN_BRUSH;
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceGuardArea:
+			{
+				clearSelection();
+				brushType = GUARD_AREA_BRUSH;
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceClearingArea:
+			{
+				clearSelection();
+				brushType = CLEAR_AREA_BRUSH;
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAddingAreas:
+			{
+				clearSelection();
+				brush.setType(BrushTool::MODE_ADD);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			case GameGUIKeyActions::SwitchToRemovingAreas:
+			{
+				clearSelection();
+				brush.setType(BrushTool::MODE_DEL);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush1:
+			{
+				clearSelection();
+				brush.setFigure(0);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush2:
+			{
+				clearSelection();
+				brush.setFigure(1);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush3:
+			{
+				clearSelection();
+				brush.setFigure(2);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush4:
+			{
+				clearSelection();
+				brush.setFigure(3);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush5:
+			{
+				clearSelection();
+				brush.setFigure(4);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush6:
+			{
+				clearSelection();
+				brush.setFigure(5);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush7:
+			{
+				clearSelection();
+				brush.setFigure(6);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush8:
+			{
+				clearSelection();
+				brush.setFigure(7);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+			}
+			break;
 		}
 	}
 }
