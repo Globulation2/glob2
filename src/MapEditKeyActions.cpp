@@ -99,9 +99,14 @@ namespace MapEditKeyActions
 		return keys[name];
 	}
 	
-	std::string getDefaultConfigurationFile(const std::string& file)
+	std::string getDefaultConfigurationFile()
 	{
 		return "data/keyboard-mapedit.default.txt";
+	}
+	
+	std::string getConfigurationFile()
+	{
+		return "keyboard-mapedit.txt";
 	}
 }
 

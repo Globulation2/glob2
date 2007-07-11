@@ -86,12 +86,13 @@ public:
 	///Saves the keyboard layout
 	void saveKeyboardLayout();
 	
-	///Loads the keyboard layout
-	void loadKeyboardLayout(const std::string& file);
+	///Loads the keyboard layout, returns false in unsuccessfull
+	bool loadKeyboardLayout(const std::string& file);
 private:
 	std::map<KeyPress, Uint32> singleKeys;
 	std::map<KeyPress, std::map<KeyPress, Uint32> > comboKeys;
 	KeyPress lastPressedComboKey;
+	ShortcutMode mode;
 };
 
 #endif

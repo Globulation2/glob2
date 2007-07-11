@@ -36,7 +36,7 @@
 #include "boost/lexical_cast.hpp"
 
 SettingsScreen::SettingsScreen()
- : keyboardManager(KeyboardManager::GameGUIShortcuts)
+ : keyboardManager(KeyboardManager::MapEditShortcuts)
 {
 	old_settings=globalContainer->settings;
 	//following are standard choices for all screens
