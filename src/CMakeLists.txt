@@ -104,10 +104,12 @@ YOGPlayerInfo.cpp
 YOGScreen.cpp
 )
 
-#TODO: remove this from the code
-add_definitions(-DHAVE_OPENGL -DAUDIO_RECORDER_OSS)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-include_directories(${libgag_SOURCE_DIR}/include ${SDL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
+#TODO: remove this from the code
+add_definitions(-DHAVE_CONFIG_H -DHAVE_OPENGL -DAUDIO_RECORDER_OSS)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${libgag_SOURCE_DIR}/include ${SDL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 link_directories(${libgag_BINARY_DIR}/src ${SDL_LIBRARY} ${OPENGL_LIBRARIES})
 
 add_executable(glob2 ${glob2_SOURCES})
