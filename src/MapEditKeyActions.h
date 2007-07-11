@@ -35,6 +35,26 @@ namespace MapEditKeyActions
 	enum
 	{
 		DoNothing = 0,
+		SwitchToBuildingView,
+		SwitchToFlagView,
+		SwitchToTerrainView,
+		SwitchToTeamsView,
+		OpenSaveScreen,
+		OpenLoadScreen,
+		SelectSwarm,
+		SelectInn,
+		SelectHospital,
+		SelectRacetrack,
+		SelectSwimmingpool,
+		SelectSchool,
+		SelectBarracks,
+		SelectTower,
+		SelectStonewall,
+		SelectMarket,
+		SelectExplorationFlag,
+		SelectWarFlag,
+		SelectClearingFlag,
+		ToggleMenuScreen,
 		ActionSize,
 	};
 

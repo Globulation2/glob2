@@ -278,44 +278,6 @@ SettingsScreen::SettingsScreen()
         // fprintf (stderr, "after loop\n");
 
 */
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[switch to building view]"));
-	editor_shortcut_actions.push_back("switch to building view");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[switch to flag view]"));
-	editor_shortcut_actions.push_back("switch to flag view");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[switch to terrain view]"));
-	editor_shortcut_actions.push_back("switch to terrain view");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[switch to teams view]"));
-	editor_shortcut_actions.push_back("switch to teams view");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[open save menu]"));
-	editor_shortcut_actions.push_back("open save screen");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[open load menu]"));
-	editor_shortcut_actions.push_back("open load screen");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select swarm building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection swarm");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select inn building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection inn");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select hospital building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection hospital");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select racetrack building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection racetrack");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select swimmingpool building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection swimmingpool");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select school building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection school");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select barracks building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection barracks");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select tower building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection tower");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select wall building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection stonewall");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select market building]"));
-	editor_shortcut_actions.push_back("unselect&switch to building view&set place building selection market");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select exploration flag]"));
-	editor_shortcut_actions.push_back("unselect&switch to flag view&set place building selection explorationflag");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select war flag]"));
-	editor_shortcut_actions.push_back("unselect&switch to flag view&set place building selection warflag");
-	editor_shortcut_names.push_back(Toolkit::getStringTable()->getString("[select clearing flag]"));
-	editor_shortcut_actions.push_back("unselect&switch to flag view&set place building selection clearingflag");
 
 /*
 	for(unsigned int x=0; x<shortcut_names.size(); ++x)

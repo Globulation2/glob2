@@ -22,15 +22,15 @@
 #ifndef __GLOB2EDIT_H
 #define __GLOB2EDIT_H
 
-#include "Game.h"
-#include "GUIBase.h"
 #include "Brush.h"
 #include "GameGUILoadSave.h"
+#include "Game.h"
+#include "GUIBase.h"
+#include "KeyboardManager.h"
+#include <map>
 #include "ScriptEditorScreen.h"
-
 #include <string>
 #include <vector>
-#include <map>
 
 namespace GAGCore
 {
@@ -542,6 +542,9 @@ private:
 	int relMouseY;
 	///This boolean states whether we are dragging the screen with the middle mouse button
 	bool isScrollDragging;
+
+	///the keyboardManager handles keyboard shortcuts
+	KeyboardManager keyboardManager;
 
 	bool hasMapBeenModified;
 	///Provides the currently active team number
