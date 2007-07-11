@@ -123,10 +123,10 @@ void KeyPress::initKeyMap()
 
 
 
-KeyboardManager::KeyboardManager()
+KeyboardManager::KeyboardManager(ShortcutMode mode)
 {
 	lastPressedComboKey = KeyPress();
-	setToDefaults();
+	setToDefaults(mode);
 }
 
 
@@ -158,59 +158,66 @@ Uint32 KeyboardManager::getAction(const KeyPress& key)
 
 
 
-void KeyboardManager::setToDefaults()
+void KeyboardManager::setToDefaults(ShortcutMode mode)
 {
-	singleKeys[KeyPress(SDLK_ESCAPE, true)] = GameGUIKeyActions::ShowMainMenu;
-	singleKeys[KeyPress(SDLK_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
-	singleKeys[KeyPress(SDLK_KP_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
-	singleKeys[KeyPress(SDLK_EQUALS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
-	singleKeys[KeyPress(SDLK_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
-	singleKeys[KeyPress(SDLK_KP_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
-	singleKeys[KeyPress(SDLK_RETURN, true)] = GameGUIKeyActions::OpenChatBox;
-	singleKeys[KeyPress(SDLK_TAB, true)] = GameGUIKeyActions::IterateSelection;
-	singleKeys[KeyPress(SDLK_SPACE, true)] = GameGUIKeyActions::GoToEvent;
-	singleKeys[KeyPress(SDLK_HOME, true)] = GameGUIKeyActions::GoToHome;
-	singleKeys[KeyPress(SDLK_PAUSE, true)] = GameGUIKeyActions::PauseGame;
-	singleKeys[KeyPress(SDLK_SCROLLOCK, true)] = GameGUIKeyActions::HardPause;
+	if(mode == GameGUIShortcuts)
+	{
+		singleKeys[KeyPress(SDLK_ESCAPE, true)] = GameGUIKeyActions::ShowMainMenu;
+		singleKeys[KeyPress(SDLK_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
+		singleKeys[KeyPress(SDLK_KP_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
+		singleKeys[KeyPress(SDLK_EQUALS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
+		singleKeys[KeyPress(SDLK_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
+		singleKeys[KeyPress(SDLK_KP_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
+		singleKeys[KeyPress(SDLK_RETURN, true)] = GameGUIKeyActions::OpenChatBox;
+		singleKeys[KeyPress(SDLK_TAB, true)] = GameGUIKeyActions::IterateSelection;
+		singleKeys[KeyPress(SDLK_SPACE, true)] = GameGUIKeyActions::GoToEvent;
+		singleKeys[KeyPress(SDLK_HOME, true)] = GameGUIKeyActions::GoToHome;
+		singleKeys[KeyPress(SDLK_PAUSE, true)] = GameGUIKeyActions::PauseGame;
+		singleKeys[KeyPress(SDLK_SCROLLOCK, true)] = GameGUIKeyActions::HardPause;
+		
+		singleKeys[KeyPress(SDLK_t, true)] = GameGUIKeyActions::ToggleDrawUnitPaths;
+		singleKeys[KeyPress(SDLK_d, true)] = GameGUIKeyActions::DestroyBuilding;
+		singleKeys[KeyPress(SDLK_r, true)] = GameGUIKeyActions::RepairBuilding;
+		singleKeys[KeyPress(SDLK_i, true)] = GameGUIKeyActions::ToggleDrawInformation;
+		singleKeys[KeyPress(SDLK_h, true)] = GameGUIKeyActions::ToggleDrawAccessibilityAids;
+		singleKeys[KeyPress(SDLK_m, true)] = GameGUIKeyActions::MarkMap;
+		singleKeys[KeyPress(SDLK_v, true)] = GameGUIKeyActions::ToggleRecordingVoice;
+		singleKeys[KeyPress(SDLK_s, true)] = GameGUIKeyActions::ViewHistory;
+		singleKeys[KeyPress(SDLK_u, true)] = GameGUIKeyActions::UpgradeBuilding;
+		
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_i, true)] = GameGUIKeyActions::SelectConstructInn;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SelectConstructSwarm;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_h, true)] = GameGUIKeyActions::SelectConstructHospital;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_r, true)] = GameGUIKeyActions::SelectConstructRacetrack;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_p, true)] = GameGUIKeyActions::SelectConstructSwimmingPool;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_b, true)] = GameGUIKeyActions::SelectConstructBarracks;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_s, true)] = GameGUIKeyActions::SelectConstructSchool;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SelectConstructDefenceTower;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectConstructStoneWall;
+		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_m, true)] = GameGUIKeyActions::SelectConstructMarket;
+		
+		comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_e, true)] = GameGUIKeyActions::SelectPlaceExplorationFlag;
+		comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectPlaceWarFlag;
+		comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingFlag;
+		
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_f, true)] = GameGUIKeyActions::SelectPlaceForbiddenArea;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_g, true)] = GameGUIKeyActions::SelectPlaceGuardArea;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingArea;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SwitchToAddingAreas;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SwitchToRemovingAreas;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_1, true)] = GameGUIKeyActions::SwitchToAreaBrush1;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_2, true)] = GameGUIKeyActions::SwitchToAreaBrush2;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_3, true)] = GameGUIKeyActions::SwitchToAreaBrush3;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_4, true)] = GameGUIKeyActions::SwitchToAreaBrush4;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_5, true)] = GameGUIKeyActions::SwitchToAreaBrush5;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_6, true)] = GameGUIKeyActions::SwitchToAreaBrush6;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_7, true)] = GameGUIKeyActions::SwitchToAreaBrush7;
+		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_8, true)] = GameGUIKeyActions::SwitchToAreaBrush8;
+	}
+	else if(mode == MapEditShortcuts)
+	{
 	
-	singleKeys[KeyPress(SDLK_t, true)] = GameGUIKeyActions::ToggleDrawUnitPaths;
-	singleKeys[KeyPress(SDLK_d, true)] = GameGUIKeyActions::DestroyBuilding;
-	singleKeys[KeyPress(SDLK_r, true)] = GameGUIKeyActions::RepairBuilding;
-	singleKeys[KeyPress(SDLK_i, true)] = GameGUIKeyActions::ToggleDrawInformation;
-	singleKeys[KeyPress(SDLK_h, true)] = GameGUIKeyActions::ToggleDrawAccessibilityAids;
-	singleKeys[KeyPress(SDLK_m, true)] = GameGUIKeyActions::MarkMap;
-	singleKeys[KeyPress(SDLK_v, true)] = GameGUIKeyActions::ToggleRecordingVoice;
-	singleKeys[KeyPress(SDLK_s, true)] = GameGUIKeyActions::ViewHistory;
-	singleKeys[KeyPress(SDLK_u, true)] = GameGUIKeyActions::UpgradeBuilding;
-	
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_i, true)] = GameGUIKeyActions::SelectConstructInn;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SelectConstructSwarm;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_h, true)] = GameGUIKeyActions::SelectConstructHospital;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_r, true)] = GameGUIKeyActions::SelectConstructRacetrack;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_p, true)] = GameGUIKeyActions::SelectConstructSwimmingPool;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_b, true)] = GameGUIKeyActions::SelectConstructBarracks;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_s, true)] = GameGUIKeyActions::SelectConstructSchool;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SelectConstructDefenceTower;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectConstructStoneWall;
-	comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_m, true)] = GameGUIKeyActions::SelectConstructMarket;
-	
-	comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_e, true)] = GameGUIKeyActions::SelectPlaceExplorationFlag;
-	comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectPlaceWarFlag;
-	comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingFlag;
-	
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_f, true)] = GameGUIKeyActions::SelectPlaceForbiddenArea;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_g, true)] = GameGUIKeyActions::SelectPlaceGuardArea;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingArea;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SwitchToAddingAreas;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SwitchToRemovingAreas;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_1, true)] = GameGUIKeyActions::SwitchToAreaBrush1;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_2, true)] = GameGUIKeyActions::SwitchToAreaBrush2;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_3, true)] = GameGUIKeyActions::SwitchToAreaBrush3;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_4, true)] = GameGUIKeyActions::SwitchToAreaBrush4;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_5, true)] = GameGUIKeyActions::SwitchToAreaBrush5;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_6, true)] = GameGUIKeyActions::SwitchToAreaBrush6;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_7, true)] = GameGUIKeyActions::SwitchToAreaBrush7;
-	comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_8, true)] = GameGUIKeyActions::SwitchToAreaBrush8;
+	}
 }
 
 

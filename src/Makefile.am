@@ -137,6 +137,8 @@ MapAssembler.cpp \
 MapAssembler.h \
 MapEdit.cpp \
 MapEdit.h \
+MapEditKeyActions.cpp \
+MapEditKeyActions.h \
 MapGenerationDescriptor.cpp \
 MapGenerationDescriptor.h \
 MapGenerator.cpp \
