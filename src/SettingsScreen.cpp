@@ -185,111 +185,13 @@ SettingsScreen::SettingsScreen()
 
 	editor_shortcuts=new TextButton( 230, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
 	editor_shortcuts->visible=false;
-	
-	keyboard_shortcut_names=new List(20, 110, 325, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	keyboard_shortcut_names->visible=false;
-
-	keyboard_shortcuts=new List(355, 110, 275, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	keyboard_shortcuts->visible=false;
-
-	editor_keyboard_shortcuts=new List(355, 110, 275, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	editor_keyboard_shortcuts->visible=false;
 
 	restore_default_shortcuts = new TextButton(20, 315, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
 	restore_default_shortcuts->visible=false;
 
-
 	addWidget(game_shortcuts);
 	addWidget(editor_shortcuts);
-	addWidget(keyboard_shortcut_names);
-	addWidget(keyboard_shortcuts);
-	addWidget(editor_keyboard_shortcuts);
 	addWidget(restore_default_shortcuts);
-
-/*
-	for(std::map<std::string, std::string>::iterator i=globalContainer->settings.keyboard_shortcuts.begin(); i!=globalContainer->settings.keyboard_shortcuts.end(); ++i)
-	{
-		internal_names.push_back(i->first);
-		std::string keyname=Toolkit::getStringTable()->getString(("["+i->first+"]").c_str());
-		std::string valname=Toolkit::getStringTable()->getString((i->second=="" ? "[unassigned]" : "["+i->second+"]").c_str());
-		keyboard_shortcut_names->addText(keyname + " - " + valname);
-	}
-
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[unassigned]"));
-	shortcut_actions.push_back("");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[toggle draw unit paths]"));
-	shortcut_actions.push_back("toggle draw unit paths");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[destroy building]"));
-	shortcut_actions.push_back("destroy building");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[upgrade building]"));
-	shortcut_actions.push_back("upgrade building");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[repair building]"));
-	shortcut_actions.push_back("repair building");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[toggle draw information]"));
-	shortcut_actions.push_back("toggle draw information");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[toggle draw accessibility aids]"));
-	shortcut_actions.push_back("toggle draw accessibility aids");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[mark map]"));
-	shortcut_actions.push_back("mark map");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[record voice]"));
-	shortcut_actions.push_back("record voice");
-	shortcut_names.push_back(Toolkit::getStringTable()->getString("[pause game]"));
-	shortcut_actions.push_back("pause game");
-        char * (commands[]) = {
-          "prefix key select area tool",
-          "prefix key select building tool",
-          "prefix key select flag tool",
-          "select make swarm tool",
-          "select make inn tool",
-          "select make hospital tool",
-          "select make racetrack tool",
-          "select make swimming pool tool",
-          "select make barracks tool",
-          "select make school tool",
-          "select make defense tower tool",
-          "select make stone wall tool",
-          "select make market tool",
-          "select make exploration flag tool",
-          "select make war flag tool",
-          "select make clearing flag tool",
-          "select forbidden area tool",
-          "select guard area tool",
-          "select clearing area tool",
-          "switch to adding areas",
-          "switch to deleting areas",
-          "switch to area brush 1",
-          "switch to area brush 2",
-          "switch to area brush 3",
-          "switch to area brush 4",
-          "switch to area brush 5",
-          "switch to area brush 6",
-          "switch to area brush 7",
-          "switch to area brush 8", };
-        // fprintf (stderr, "before loop: sizeof(commands): %d\n", sizeof (commands));
-        for (int i = 0; i < (sizeof (commands) / (sizeof (commands[0]))); i++) {
-          // fprintf (stderr, "i: %d\n", i);
-          char buffer[100];
-          snprintf (buffer, sizeof(buffer), "[%s]", commands[i]);
-          buffer[99] = '\0';
-          const char * message = Toolkit::getStringTable()->getString(buffer);
-          // fprintf (stderr, "commands[%d]: {%s}, buffer: {%s}, message: {%s}\n", i, commands[i], buffer, message);
-          shortcut_names.push_back (message);
-          shortcut_actions.push_back (commands[i]); }
-        // fprintf (stderr, "after loop\n");
-
-*/
-
-/*
-	for(unsigned int x=0; x<shortcut_names.size(); ++x)
-	{
-		keyboard_shortcuts->addText(shortcut_names[x].c_str());
-	}
-	*/
-	for(unsigned int x=0; x<editor_shortcut_names.size(); ++x)
-	{
-		editor_keyboard_shortcuts->addText(editor_shortcut_names[x].c_str());
-	}
-
 
 	gfxAltered = false;
 }
@@ -365,9 +267,6 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			game_shortcuts->visible=false;
 			editor_shortcuts->visible=false;
-			keyboard_shortcut_names->visible=false;
-			keyboard_shortcuts->visible=false;
-			editor_keyboard_shortcuts->visible=false;
 			restore_default_shortcuts->visible=false;
 		}
 
@@ -411,9 +310,6 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	
 			game_shortcuts->visible=false;
 			editor_shortcuts->visible=false;
-			keyboard_shortcut_names->visible=false;
-			keyboard_shortcuts->visible=false;
-			editor_keyboard_shortcuts->visible=false;
 			restore_default_shortcuts->visible=false;
 		}
 
@@ -456,28 +352,16 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	
 			game_shortcuts->visible=true;
 			editor_shortcuts->visible=true;
-			keyboard_shortcut_names->visible=true;
-			keyboard_shortcuts->visible=true;
-			editor_keyboard_shortcuts->visible=false;
 			restore_default_shortcuts->visible=true;
-			reset_names();
 		}
 		else if (par1==RESTOREDEFAULTSHORTCUTS)
 		{
-			globalContainer->settings.restoreDefaultShortcuts();
-			reset_names();
 		}
 		else if(par1==GAMESHORTCUTS)
 		{
-			keyboard_shortcuts->visible=true;
-			editor_keyboard_shortcuts->visible=false;
-			reset_names();
 		}
 		else if(par1==EDITORSHORTCUTS)
 		{
-			keyboard_shortcuts->visible=false;
-			editor_keyboard_shortcuts->visible=true;
-			reset_names();
 		}
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
@@ -530,38 +414,6 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
 			updateGfxCtx();
-		}
-		else if (source==keyboard_shortcuts || source==editor_keyboard_shortcuts)
-		{
-		/*
-			List* shortcuts=(editor_keyboard_shortcuts->visible ? editor_keyboard_shortcuts : keyboard_shortcuts);
-			std::map<std::string, std::string>& options=(editor_keyboard_shortcuts->visible ? globalContainer->settings.editor_keyboard_shortcuts : globalContainer->settings.keyboard_shortcuts);
-			std::vector<std::string>& actions=(editor_keyboard_shortcuts->visible ? editor_shortcut_actions : shortcut_actions);
-			std::vector<std::string>& names=(editor_keyboard_shortcuts->visible ? editor_shortcut_names : shortcut_names);
-			if(keyboard_shortcut_names->getSelectionIndex()!=-1)
-			{
-				int pos=par1;
-				unsigned int change_pos=keyboard_shortcut_names->getSelectionIndex();
-				std::string keyname=Toolkit::getStringTable()->getString(("["+internal_names[change_pos]+"]").c_str());
-				std::string valname=(actions[pos]=="" ? Toolkit::getStringTable()->getString("[unassigned]") : names[pos]);
-				keyboard_shortcut_names->removeText(change_pos);
-				if(change_pos==options.size()-1)
-				{
-					keyboard_shortcut_names->addText(keyname + " - " + valname);
-				}
-				else
-				{
-					keyboard_shortcut_names->addText(keyname + " - " + valname, change_pos);
-				}
-				options[internal_names[change_pos]]=actions[pos];
-				shortcuts->setSelectionIndex(-1);
-			}
-			*/
-		}
-		else if (source==keyboard_shortcut_names)
-		{
-			List* shortcuts=(editor_keyboard_shortcuts->visible ? editor_keyboard_shortcuts : keyboard_shortcuts);
-			shortcuts->setSelectionIndex(-1);
 		}
 	}
 	else if (action==VALUE_CHANGED)
@@ -625,32 +477,6 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 	}
 }
-
-
-
-void SettingsScreen::reset_names()
-{
-/*
-	std::map<std::string, std::string>& options=(editor_keyboard_shortcuts->visible ? globalContainer->settings.editor_keyboard_shortcuts : globalContainer->settings.keyboard_shortcuts);
-	std::vector<std::string>& names=(editor_keyboard_shortcuts->visible ? editor_shortcut_names : shortcut_names);
-	std::vector<std::string>& actions=(editor_keyboard_shortcuts->visible ? editor_shortcut_actions : shortcut_actions);
-
-	unsigned int pos=keyboard_shortcut_names->getSelectionIndex();
-	keyboard_shortcut_names->setSelectionIndex(-1);
-	for(unsigned int x=0; x<options.size(); ++x)
-	{
-		keyboard_shortcut_names->removeText(0);
-	}
-	for(std::map<std::string, std::string>::iterator i=options.begin(); i!=options.end(); ++i)
-	{
-		std::string keyname=Toolkit::getStringTable()->getString(("["+i->first+"]").c_str());
-		std::string valname=(i->second=="" ? Toolkit::getStringTable()->getString("[unassigned]") : names[std::find(actions.begin(), actions.end(), i->second)-actions.begin()]);
-		keyboard_shortcut_names->addText(keyname + " - " + valname);
-	}
-	keyboard_shortcut_names->setSelectionIndex(pos);
-*/
-}
-
 
 
 void SettingsScreen::setVisibilityFromGraphicType(void)

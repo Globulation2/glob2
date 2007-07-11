@@ -51,7 +51,6 @@ Settings::Settings()
 	musicVolume = 255;
 	mute = 0;
 	rememberUnit = 1;
-	restoreDefaultShortcuts();
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	
@@ -104,38 +103,6 @@ Settings::Settings()
 	cloudStability=1300;//how much will the clouds change shape
 	cloudSize=300;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
 	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
-}
-
-
-
-void Settings::restoreDefaultShortcuts()
-{
-	editor_keyboard_shortcuts["akey"]="";
-	editor_keyboard_shortcuts["bkey"]="";
-	editor_keyboard_shortcuts["ckey"]="";
-	editor_keyboard_shortcuts["dkey"]="";
-	editor_keyboard_shortcuts["ekey"]="";
-	editor_keyboard_shortcuts["fkey"]="";
-	editor_keyboard_shortcuts["gkey"]="";
-	editor_keyboard_shortcuts["hkey"]="";
-	editor_keyboard_shortcuts["ikey"]="";
-	editor_keyboard_shortcuts["jkey"]="";
-	editor_keyboard_shortcuts["kkey"]="";
-	editor_keyboard_shortcuts["lkey"]="";
-	editor_keyboard_shortcuts["mkey"]="";
-	editor_keyboard_shortcuts["nkey"]="";
-	editor_keyboard_shortcuts["okey"]="";
-	editor_keyboard_shortcuts["pkey"]="";
-	editor_keyboard_shortcuts["qkey"]="";
-	editor_keyboard_shortcuts["rkey"]="";
-	editor_keyboard_shortcuts["skey"]="";
-	editor_keyboard_shortcuts["tkey"]="";
-	editor_keyboard_shortcuts["ukey"]="";
-	editor_keyboard_shortcuts["vkey"]="";
-	editor_keyboard_shortcuts["wkey"]="";
-	editor_keyboard_shortcuts["xkey"]="";
-	editor_keyboard_shortcuts["ykey"]="";
-	editor_keyboard_shortcuts["zkey"]="";
 }
 
 
@@ -207,12 +174,6 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(cloudStability);
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
-
-		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
-		{
-			if(parsed.find("editor_"+i->first)!=parsed.end())
-				i->second=parsed["editor_"+i->first];
-		}
 	}
 	delete stream;
 }
@@ -255,12 +216,6 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
-		
-
-		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
-		{
-			Utilities::streamprintf(stream, "editor_%s=%s\n", i->first.c_str(), i->second.c_str());
-		}
 	}
 	delete stream;
 }

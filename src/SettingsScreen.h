@@ -79,16 +79,7 @@ private:
 
 	TextButton* game_shortcuts;
 	TextButton* editor_shortcuts;
-	List* keyboard_shortcut_names;
-	std::vector<std::string> internal_names;
-	List* keyboard_shortcuts;
-	std::vector<std::string> shortcut_actions;
-	std::vector<std::string> shortcut_names;
-	List* editor_keyboard_shortcuts;
-	std::vector<std::string> editor_shortcut_actions;
-	std::vector<std::string> editor_shortcut_names;
 	TextButton* restore_default_shortcuts;
-	void reset_names();
 
 	bool gfxAltered;
 	
