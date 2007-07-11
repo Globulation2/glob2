@@ -22,6 +22,7 @@
 #include "GameGUIKeyActions.h"
 #include <iostream>
 #include "KeyboardManager.h"
+#include "MapEditKeyActions.h"
 #include "Stream.h"
 #include "Toolkit.h"
 
@@ -216,7 +217,7 @@ void KeyboardManager::setToDefaults(ShortcutMode mode)
 	}
 	else if(mode == MapEditShortcuts)
 	{
-	
+		singleKeys[KeyPress(SDLK_ESCAPE, true)] = MapEditKeyActions::ToggleMenuScreen;
 	}
 }
 

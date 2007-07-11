@@ -20,23 +20,22 @@
 */
 
 #include <cmath>
-
+#include <FormatableString.h>
 #include <GAG.h>
-#include "Game.h"
 #include "GameGUILoadSave.h"
+#include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "MapEditKeyActions.h"
 #include "ScriptEditorScreen.h"
+#include <sstream>
+#include <StreamFilter.h>
+#include <Stream.h>
 #include "UnitEditorScreen.h"
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
 
-#include <FormatableString.h>
-#include <Stream.h>
-#include <StreamFilter.h>
-
-#include <sstream>
 
 
 MapEditorWidget::MapEditorWidget(MapEdit& me, const widgetRectangle& rectangle, const std::string& group, const std::string& name, const std::string& action)
@@ -805,7 +804,8 @@ void NumberCycler::handleClick(int relMouseX, int relMouseY)
 
 
 
-MapEdit::MapEdit() : game(NULL)
+MapEdit::MapEdit()
+ : game(NULL), keyboardManager(KeyboardManager::MapEditShortcuts)
 {
 	doQuit=false;
 
@@ -1713,17 +1713,128 @@ int MapEdit::processEvent(SDL_Event& event)
 
 void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 {
+	if(key == SDLK_i && pressed)
+	{
+		//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
+		game.map.loadTransitional();
+		renderMiniMap();
+		return;
+	}
+
+	Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
+	switch(action_t)
+	{
+		case MapEditKeyActions::DoNothing:
+		{
+		
+		}
+		break;
+		case MapEditKeyActions::SwitchToBuildingView:
+		{
+			performAction("switch to building view");
+		}
+		break;
+		case MapEditKeyActions::SwitchToFlagView:
+		{
+			performAction("switch to flag view");
+		}
+		break;
+		case MapEditKeyActions::SwitchToTerrainView:
+		{
+			performAction("switch to terrain view");
+		}
+		break;
+		case MapEditKeyActions::SwitchToTeamsView:
+		{
+			performAction("switch to teams view");
+		}
+		break;
+		case MapEditKeyActions::OpenSaveScreen:
+		{
+			performAction("open save screen");
+		}
+		break;
+		case MapEditKeyActions::OpenLoadScreen:
+		{
+			performAction("open load screen");
+		}
+		break;
+		case MapEditKeyActions::SelectSwarm:
+		{
+			performAction("unselect&switch to building view&set place building selection swarm");
+		}
+		break;
+		case MapEditKeyActions::SelectInn:
+		{
+			performAction("unselect&switch to building view&set place building selection inn");
+		}
+		break;
+		case MapEditKeyActions::SelectHospital:
+		{
+			performAction("unselect&switch to building view&set place building selection hospital");
+		}
+		break;
+		case MapEditKeyActions::SelectRacetrack:
+		{
+			performAction("unselect&switch to building view&set place building selection racetrack");
+		}
+		break;
+		case MapEditKeyActions::SelectSwimmingpool:
+		{
+			performAction("unselect&switch to building view&set place building selection swimmingpool");
+		}
+		break;
+		case MapEditKeyActions::SelectSchool:
+		{
+			performAction("unselect&switch to building view&set place building selection school");
+		}
+		break;
+		case MapEditKeyActions::SelectBarracks:
+		{
+			performAction("unselect&switch to building view&set place building selection barracks");
+		}
+		break;
+		case MapEditKeyActions::SelectTower:
+		{
+			performAction("unselect&switch to building view&set place building selection tower");
+		}
+		break;
+		case MapEditKeyActions::SelectStonewall:
+		{
+			performAction("unselect&switch to building view&set place building selection stonewall");
+		}
+		break;
+		case MapEditKeyActions::SelectMarket:
+		{
+			performAction("unselect&switch to building view&set place building selection market");
+		}
+		break;
+		case MapEditKeyActions::SelectExplorationFlag:
+		{
+			performAction("unselect&switch to flag view&set place building selection explorationflag");
+		}
+		break;
+		case MapEditKeyActions::SelectWarFlag:
+		{
+			performAction("unselect&switch to flag view&set place building selection warflag");
+		}
+		break;
+		case MapEditKeyActions::SelectClearingFlag:
+		{
+			performAction("unselect&switch to flag view&set place building selection clearingflag");
+		}
+		break;
+		case MapEditKeyActions::ToggleMenuScreen:
+		{
+			if (showingMenuScreen==false)
+				performAction("open menu screen");
+			else if (showingMenuScreen==true)
+				performAction("close menu screen");
+		}
+		break;
+	}
 	switch(key)
 	{
-		case SDLK_ESCAPE:
-			if(pressed)
-			{
-				if (showingMenuScreen==false)
-					performAction("open menu screen");
-				else if (showingMenuScreen==true)
-					performAction("close menu screen");		
-			}
-			break;
 		case SDLK_UP:
 			if(pressed)
 				performAction("scroll up");
@@ -1747,114 +1858,6 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 				performAction("scroll right");
 			else
 				performAction("scroll horizontal stop");
-			break;
-		case SDLK_a :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["akey"]);
-			break;
-		case SDLK_b :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["bkey"]);
-			break;
-		case SDLK_c :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ckey"]);
-			break;
-		case SDLK_d :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["dkey"]);
-			break;
-		case SDLK_e :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ekey"]);
-			break;
-		case SDLK_f :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["fkey"]);
-			break;
-		case SDLK_g :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["gkey"]);
-			break;
-		case SDLK_h :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["hkey"]);
-			break;
-		case SDLK_i :
-			if(pressed)
-			{
-				//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
-				game.map.loadTransitional();
-				renderMiniMap();
-			}
-			break;
-		case SDLK_j :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["jkey"]);
-			break;
-		case SDLK_k :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["kkey"]);
-			break;
-		case SDLK_l :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["lkey"]);
-			break;
-		case SDLK_m :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["mkey"]);
-			break;
-		case SDLK_n :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["nkey"]);
-			break;
-		case SDLK_o :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["okey"]);
-			break;
-		case SDLK_p :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["pkey"]);
-			break;
-		case SDLK_q :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["qkey"]);
-			break;
-		case SDLK_r :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["rkey"]);
-			break;
-		case SDLK_s :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["skey"]);
-			break;
-		case SDLK_t :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["tkey"]);
-			break;
-		case SDLK_u :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ukey"]);
-			break;
-		case SDLK_v :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["vkey"]);
-			break;
-		case SDLK_w :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["wkey"]);
-			break;
-		case SDLK_x :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["xkey"]);
-			break;
-		case SDLK_y :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ykey"]);
-			break;
-		case SDLK_z :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["zkey"]);
 			break;
 		default:
 		break;
