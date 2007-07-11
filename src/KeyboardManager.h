@@ -68,14 +68,20 @@ private:
 class KeyboardManager
 {
 public:
-	///Constructs a keyboard manager
-	KeyboardManager();
+	enum ShortcutMode
+	{
+		GameGUIShortcuts,
+		MapEditShortcuts,
+	};
+
+	///Constructs a keyboard manager, either to use the MapEdit shortcuts or the GameGUI shortcuts
+	KeyboardManager(ShortcutMode mode);
 	
 	///Returns the integer action accossiatted with the provided key.
 	Uint32 getAction(const KeyPress& key);
 
 	///Sets the defaults for a keyboard layout
-	void setToDefaults();
+	void setToDefaults(ShortcutMode mode);
 	
 	///Saves the keyboard layout
 	void saveKeyboardLayout();
