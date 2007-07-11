@@ -125,9 +125,15 @@ void KeyPress::initKeyMap()
 
 
 KeyboardManager::KeyboardManager(ShortcutMode mode)
+	: mode(mode)
 {
 	lastPressedComboKey = KeyPress();
-	setToDefaults(mode);
+	if(mode == GameGUIShortcuts)
+		if(!loadKeyboardLayout(GameGUIKeyActions::getConfigurationFile()))
+			loadKeyboardLayout(GameGUIKeyActions::getDefaultConfigurationFile());
+	else if(mode == MapEditShortcuts)
+		if(!loadKeyboardLayout(MapEditKeyActions::getConfigurationFile()))
+			loadKeyboardLayout(MapEditKeyActions::getDefaultConfigurationFile());
 }
 
 
@@ -224,26 +230,43 @@ void KeyboardManager::setToDefaults(ShortcutMode mode)
 
 void KeyboardManager::saveKeyboardLayout()
 {
-	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend("keyboard_layout.txt"));
+	std::string file;
+	if(mode == GameGUIShortcuts)
+		file = GameGUIKeyActions::getConfigurationFile();
+	else if(mode == MapEditShortcuts)
+		file = MapEditKeyActions::getConfigurationFile();
+
+	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend(file));
 	for(std::map<KeyPress, Uint32>::iterator i = singleKeys.begin(); i!=singleKeys.end(); ++i)
 	{
-		stream->writeLine(FormatableString("%0=%1").arg(i->first.format()).arg(GameGUIKeyActions::getName(i->second)));
+		if(mode == GameGUIShortcuts)
+			stream->writeLine(FormatableString("%0=%1").arg(i->first.format()).arg(GameGUIKeyActions::getName(i->second)));
+		else if(mode == MapEditShortcuts)
+			stream->writeLine(FormatableString("%0=%1").arg(i->first.format()).arg(MapEditKeyActions::getName(i->second)));
+
 	}
 	for(std::map<KeyPress, std::map<KeyPress, Uint32> >::iterator i = comboKeys.begin(); i!=comboKeys.end(); ++i)
 	{
 		for(std::map<KeyPress, Uint32>::iterator j = i->second.begin(); j!=i->second.end(); ++j)
 		{
-			stream->writeLine(FormatableString("%0-%1=%2").arg(i->first.format()).arg(j->first.format()).arg(GameGUIKeyActions::getName(j->second)));
+			if(mode == GameGUIShortcuts)
+				stream->writeLine(FormatableString("%0-%1=%2").arg(i->first.format()).arg(j->first.format()).arg(GameGUIKeyActions::getName(j->second)));
+			else if(mode == MapEditShortcuts)
+				stream->writeLine(FormatableString("%0-%1=%2").arg(i->first.format()).arg(j->first.format()).arg(MapEditKeyActions::getName(j->second)));
 		}
 	}
 	delete stream;
 }
 
 
-
-void KeyboardManager::loadKeyboardLayout(const std::string& file)
+bool KeyboardManager::loadKeyboardLayout(const std::string& file)
 {
 	InputLineStream *stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(file));
+	if(stream->isEndOfStream())
+	{
+		delete stream;
+		return false;
+	}
 	while(!stream->isEndOfStream())
 	{
 		std::string line = stream->readLine();
@@ -258,7 +281,10 @@ void KeyboardManager::loadKeyboardLayout(const std::string& file)
 			f_key.interpret(first_key);
 			KeyPress s_key;
 			s_key.interpret(second_key);
-			comboKeys[f_key][s_key] = GameGUIKeyActions::getAction(action);
+			if(mode == GameGUIShortcuts)
+				comboKeys[f_key][s_key] = GameGUIKeyActions::getAction(action);
+			else if(mode == MapEditShortcuts)
+				comboKeys[f_key][s_key] = MapEditKeyActions::getAction(action);
 		}
 		else
 		{
@@ -266,9 +292,13 @@ void KeyboardManager::loadKeyboardLayout(const std::string& file)
 			std::string action(line, equal+1, std::string::npos);
 			KeyPress f_key;
 			f_key.interpret(key);
-			singleKeys[f_key] = GameGUIKeyActions::getAction(action);
+			if(mode == GameGUIShortcuts)
+				singleKeys[f_key] = GameGUIKeyActions::getAction(action);
+			else if(mode == MapEditShortcuts)
+				singleKeys[f_key] = MapEditKeyActions::getAction(action);
 		}
 	}
 	delete stream;
+	return true;
 }
 

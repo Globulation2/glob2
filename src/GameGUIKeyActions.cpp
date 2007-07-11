@@ -170,9 +170,14 @@ namespace GameGUIKeyActions
 		return keys[name];
 	}
 	
-	std::string getDefaultConfigurationFile(const std::string& file)
+	std::string getDefaultConfigurationFile()
 	{
-		return "data/keyboard.default.txt";
+		return "data/keyboard-gui.default.txt";
+	}
+	
+	std::string getConfigurationFile()
+	{
+		return "keyboard-gui.txt";
 	}
 }
 

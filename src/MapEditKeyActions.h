@@ -65,7 +65,10 @@ namespace MapEditKeyActions
 	const Uint32 getAction(const std::string& name);
 	
 	///Returns the name of the file for the default configuration
-	std::string getDefaultConfigurationFile(const std::string& file);
+	std::string getDefaultConfigurationFile();
+	
+	///Returns the name of the file for the configuration
+	std::string getConfigurationFile();
 	
 	extern std::vector<std::string> names;
 	extern std::map<std::string, Uint32> keys;

@@ -24,19 +24,20 @@
 #include <GUIBase.h>
 
 #include "FileManager.h"
+#include "GameGUIKeyActions.h"
+#include "Glob2Screen.h"
+#include "Glob2Style.h"
 #include "GlobalContainer.h"
 #include "Header.h"
+#include "IntBuildingType.h"
 #include "LogFileManager.h"
+#include "MapEditKeyActions.h"
 #include "NonANSICStdWrapper.h"
 #include "Player.h"
-#include "SoundMixer.h"
-#include "VoiceRecorder.h"
-#include "IntBuildingType.h"
 #include "Race.h"
-#include "Glob2Screen.h"
+#include "SoundMixer.h"
 #include "UnitsSkins.h"
-#include "Glob2Style.h"
-#include "GameGUIKeyActions.h"
+#include "VoiceRecorder.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -475,6 +476,7 @@ void GlobalContainer::load(void)
 	
 	// initiate keyboard actions
 	GameGUIKeyActions::init();
+	MapEditKeyActions::init();
 	
 	if (!runNoX)
 	{
