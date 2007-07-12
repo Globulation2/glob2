@@ -165,7 +165,7 @@ void InGameScrollableText::readHistory(std::vector<std::string> messageHistory)
 }
 
 GameGUI::GameGUI()
-: keyboardManager(KeyboardManager::GameGUIShortcuts), game(this)
+: keyboardManager(GameGUIShortcuts), game(this)
 {
 }
 

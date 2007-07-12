@@ -805,7 +805,7 @@ void NumberCycler::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
- : game(NULL), keyboardManager(KeyboardManager::MapEditShortcuts)
+ : game(NULL), keyboardManager(MapEditShortcuts)
 {
 	doQuit=false;
 
