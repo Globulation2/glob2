@@ -80,6 +80,8 @@ iochi LAN diponibili
 In attesa di altri giocatori
 [away:]
 assente:
+[backspace]
+
 [bad error in connection system]
 Brutto errore nel sistema di connessione
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Migliora il livello di
 Caserma
 [beach size]
 Grandezza della spiaggia
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Annulla le riparazioni
 Annulla i miglioramenti
 [Cancel]
 Annulla
+[caps lock]
+
 [carry]
 Trasporta :
 [Change Area Name]
@@ -186,6 +192,8 @@ Seleziona una partita
 Seleziona una mappa
 [clear area]
 Area di raccolta
+[clear]
+
 [Clearing:]
 Raccolta:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Chiudi
 Chiuso
 [compile]
 Compila lo script
+[compose]
+
 [connect]
 Connesso
 [connected to all players]
@@ -272,6 +282,8 @@ Disconnettiti
 Visualizza
 [don't carry anything]
 Non trasporta nulla
+[down]
+
 [download finished]
 Download completato
 [downloaded at]
@@ -284,10 +296,20 @@ Scaricato da
 Editor delle scorciatoie da tastiera
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Inserisci il tuo soprannome :
 [Enter your password :]
 Inserisci la tua password :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 esploratori
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Esploratore
 esploratori
 [extra islands]
 isole vuote
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Cibo rimasto
 [food]
@@ -358,6 +410,10 @@ Raccogliere
 se ne è andato
 [heal]
 Guarisci
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ Approvvigiona le unità
 
 [inn]
 Mensa
+[insert]
+
 [inside]
 Interno
 [islands size]
@@ -423,6 +481,8 @@ Italiano
 [large]
 largo
 [Leave Game]
+
+[left]
 
 [level]
 Livello
@@ -472,6 +532,8 @@ Permette lo scambio di
 Mercato
 [medium]
 medio
+[menu]
+
 [Min required level:]
 Livello min.richiesto:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ non pronto
 %0 numero di sqadre.
 [number of teams]
 Numero di squadre
+[numlock]
+
 [of which]
 dei quali
 [ok]
@@ -528,10 +592,16 @@ Apri
 Opzioni
 [Orange]
 Arance
+[page down]
+
+[page up]
+
 [Papyrus]
 Papiro
 [pause game]
 Pausa
+[pause]
+
 [Paused]
 Pausa
 [percent]
@@ -542,12 +612,16 @@ Nome del giocatore
 Giocatore
 [please wait]
 Aspetta un momento
+[power]
+
 [presence request sent]
 Richiesta di presenza inviata ...
 [press space]
 Premi spazio per continuare.
 [Prestige]
 Prestigio
+[print screen]
+
 [Prune]
 Prugne
 [quit the editor]
@@ -592,6 +666,10 @@ Ripristina le scorciatoie da tastiera originali
 Ritorna all'editor
 [return to game]
 Ritorna al gioco
+[return]
+
+[right]
+
 [river diameter]
 Diametro del fiume
 [river terrain]
@@ -614,6 +692,8 @@ Migliora il livello di
 Scuola
 [Script Areas]
 Script per aree
+[scroll lock]
+
 [seeking a job]
 cercano lavoro
 [seeking]
@@ -692,6 +772,8 @@ Mostra
 piccolo
 [smoothing]
 Spianatura
+[space]
+
 [speed]
 Velocità
 [start mission]
@@ -778,6 +860,10 @@ Passa alla Visualizzazione Flag
 Passa alla Visualizzazione Squadre
 [switch to terrain view]
 Passa alla Visualizzazione Terreno
+[sys req]
+
+[tab]
+
 [teams]
  squadre
 [the barracks is finished]
@@ -868,6 +954,8 @@ Esercitazione
 Non assegnato
 [Uncontrolled]
 Incontrollato
+[undo]
+
 [uniform terrain]
 Terreno uniforme
 [Unit editor]
@@ -886,6 +974,8 @@ Unità
 
 [Unnamed Area]
 {Area senza nome}
+[up]
+
 [update list]
 Aggiorna la lista
 [upgrade building]

@@ -28,8 +28,14 @@ using namespace GAGGUI;
 KeyPress::KeyPress(SDL_keysym nkey, bool pressed)
 	: pressed(pressed)
 {
+	std::string key_s = std::string("[") + SDL_GetKeyName(nkey.sym) + std::string("]");
 	Uint16 c=nkey.unicode;
-	if (c)
+	
+	if(Toolkit::getStringTable()->doesStringExist(key_s.c_str()))
+	{
+		key = SDL_GetKeyName(nkey.sym);
+	}
+	else if (c)
 	{
 		char utf8text[4];
 		UCS16toUTF8(c, utf8text);

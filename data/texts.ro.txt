@@ -80,6 +80,8 @@ Jocuri locale disponibile
 În asteptare de jucători
 [away:]
 absent:
+[backspace]
+
 [bad error in connection system]
 Eroare greşită în sistemul de conexie
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Vă ameliorează
 Câmp de-antrenament
 [beach size]
 mărimea plajei
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Anulează reparatia
 Anulează ameliorarea
 [Cancel]
 Anulează
+[caps lock]
+
 [carry]
 Transportă :
 [Change Area Name]
@@ -186,6 +192,8 @@ Alegeţi un joc
 Alegeţi o hartă
 [clear area]
 
+[clear]
+
 [Clearing:]
 Defrişare de:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Steag de defrişare
 Închis
 [compile]
 Compilează scriptul
+[compose]
+
 [connect]
 Conectează
 [connected to all players]
@@ -272,6 +282,8 @@ Deconectează
 Afişaj
 [don't carry anything]
 Nu transportă nimic
+[down]
+
 [download finished]
 Descărcare terminată
 [downloaded at]
@@ -284,10 +296,20 @@ Descărcat la
 
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Introduceţi pseudonimul dvstră :
 [Enter your password :]
 Introduceţi parola dvstră :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -301,6 +323,36 @@ Explorator
 [explorers]
 exploratori
 [extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
 
 [food left]
 Mâncare rămasă
@@ -358,6 +410,10 @@ s-a alăturat
 a ieşit
 [heal]
 Sănătate
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ Vă hrăneşte unitaţile
 
 [inn]
 Popas
+[insert]
+
 [inside]
 Înăuntru
 [islands size]
@@ -423,6 +481,8 @@ Româneste
 [large]
 mare
 [Leave Game]
+
+[left]
 
 [level]
 Nivel
@@ -472,6 +532,8 @@ Permite schimbul de fructe
 Piată
 [medium]
 medie
+[menu]
+
 [Min required level:]
 Nivel minim necesar:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ nu-i gata
 %0 echipe.
 [number of teams]
 numărul echipelor
+[numlock]
+
 [of which]
 dintre care
 [ok]
@@ -528,9 +592,15 @@ deschis
 Opţiuni
 [Orange]
 Portocală
+[page down]
+
+[page up]
+
 [Papyrus]
 Papirus
 [pause game]
+
+[pause]
 
 [Paused]
 Pauză
@@ -542,12 +612,16 @@ Numele jucătorului
 Jucător
 [please wait]
 Vă rugăm aşteptaţi
+[power]
+
 [presence request sent]
 Cerere pentru prezentă trimisă ...
 [press space]
 
 [Prestige]
 Prestigiu
+[print screen]
+
 [Prune]
 Prună
 [quit the editor]
@@ -592,6 +666,10 @@ Resurse
 
 [return to game]
 Înapoi la joc
+[return]
+
+[right]
+
 [river diameter]
 
 [river terrain]
@@ -613,6 +691,8 @@ Vă ameliorează
 [school]
 Şcoală
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 caută de lucru
@@ -692,6 +772,8 @@ Setări
 mică
 [smoothing]
 Lisaj
+[space]
+
 [speed]
 Viteză
 [start mission]
@@ -777,6 +859,10 @@ Piscină
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  echipe
@@ -868,6 +954,8 @@ Tutorial
 
 [Uncontrolled]
 Necontrolat
+[undo]
+
 [uniform terrain]
 Teren uniform
 [Unit editor]
@@ -885,6 +973,8 @@ Unităţi
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Pune la zii lista

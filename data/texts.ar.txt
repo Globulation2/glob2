@@ -80,6 +80,8 @@ Available local games
 انتظار لاعبون
 [away:]
 بعيدا:
+[backspace]
+
 [bad error in connection system]
 Bad error in connection system
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Bad error in connection system
 ثكنه
 [beach size]
 حجم الشاطىء
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Can't join game, wrong game version
 الغاء ترقية
 [Cancel]
 الغاء
+[caps lock]
+
 [carry]
 يحمل:
 [Change Area Name]
@@ -186,6 +192,8 @@ Checksum sent ...
 اختر خريطه
 [clear area]
 Clearing area
+[clear]
+
 [Clearing:]
 تبادل:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Clearing flag
 اغلق
 [compile]
 ترجمة اﻷسكربت
+[compose]
+
 [connect]
 Connect
 [connected to all players]
@@ -272,6 +282,8 @@ Disconnect
 عرض
 [don't carry anything]
 لايحمل شىء
+[down]
+
 [download finished]
 Download finished
 [downloaded at]
@@ -284,10 +296,20 @@ Downloaded at
 Editor Shortcuts
 [editor]
 المحرر
+[end]
+
 [Enter your nickname :]
 ادخل اسمك المستعار :
 [Enter your password :]
 ادخل كلمة المرور :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Explorer Ratio
 المستكشفون
 [extra islands]
 جزيره خاليه
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 ترك الطعام
 [food]
@@ -358,6 +410,10 @@ has joined
 has quit
 [heal]
 الصحه
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +450,8 @@ Hardware acceleration
 
 [inn]
 كوخ
+[insert]
+
 [inside]
 بالداخل
 [islands size]
@@ -423,6 +481,8 @@ ar
 [large]
 large
 [Leave Game]
+
+[left]
 
 [level]
 المستوى
@@ -472,6 +532,8 @@ Mark Map For Allies
 السوق
 [medium]
 medium
+[menu]
+
 [Min required level:]
 المستوى الادنى المطلوب:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ Not connected
 %0 teams.
 [number of teams]
 number of teams
+[numlock]
+
 [of which]
 هنالك
 [ok]
@@ -528,10 +592,16 @@ Open Save Menu
 خيارات
 [Orange]
 البرتقال
+[page down]
+
+[page up]
+
 [Papyrus]
 ورق البردى
 [pause game]
 Pause Game
+[pause]
+
 [Paused]
 Paused
 [percent]
@@ -542,12 +612,16 @@ Paused
 لاعب
 [please wait]
 Please wait
+[power]
+
 [presence request sent]
 Presence request sent ...
 [press space]
 Press space to continue.
 [Prestige]
 سمعه
+[print screen]
+
 [Prune]
 Prune
 [quit the editor]
@@ -592,6 +666,10 @@ Restore Default Keyboard Shortcuts
 عودة الى المحرر
 [return to game]
 العودة الى اللعبة
+[return]
+
+[right]
+
 [river diameter]
 عرض النهر
 [river terrain]
@@ -614,6 +692,8 @@ Do you want to save before quitting?
 المدرسه
 [Script Areas]
 Script Areas
+[scroll lock]
+
 [seeking a job]
 يبحث عن العمل
 [seeking]
@@ -692,6 +772,8 @@ Display
 صغير
 [smoothing]
 صقل
+[space]
+
 [speed]
 السرعه
 [start mission]
@@ -778,6 +860,10 @@ Switch to Flags view
 Switch to Team view
 [switch to terrain view]
 Switch to Terrain view
+[sys req]
+
+[tab]
+
 [teams]
  فريق
 [the barracks is finished]
@@ -868,6 +954,8 @@ Initiate Voice Recording
 Unassigned
 [Uncontrolled]
 خارج السيطره
+[undo]
+
 [uniform terrain]
 Uniform terrain
 [Unit editor]
@@ -886,6 +974,8 @@ Uniform terrain
 
 [Unnamed Area]
 {Unnamed Area}
+[up]
+
 [update list]
 Update list
 [upgrade building]

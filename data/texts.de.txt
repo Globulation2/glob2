@@ -80,6 +80,8 @@ Lokal verfügbare Spiele
 Warten auf Spieler
 [away:]
 weg:
+[backspace]
+
 [bad error in connection system]
 Fataler Fehler im Verbindungssystem
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Verbessert die Kampf-
 Trainingslager
 [beach size]
 Strandbreite
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Reparatur abbrechen
 Verbesserung abbrechen
 [Cancel]
 Abbrechen
+[caps lock]
+
 [carry]
 Transportiert:
 [Change Area Name]
@@ -186,6 +192,8 @@ Spiel auswählen
 Karte auswählen
 [clear area]
 Rodungszone
+[clear]
+
 [Clearing:]
 Rodung:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Schließen
 Geschlossen
 [compile]
 Skript kompilieren
+[compose]
+
 [connect]
 Verbinden
 [connected to all players]
@@ -272,6 +282,8 @@ Trennen
 Anzeige
 [don't carry anything]
 Transportiert nichts
+[down]
+
 [download finished]
 Herunterladen abgeschlossen
 [downloaded at]
@@ -284,10 +296,20 @@ Heruntergeladen zu
 
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Geben Sie ihren Spitznamen ein:
 [Enter your password :]
 Geben Sie ihr Passwort ein:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Entdecker
 Entdecker
 [extra islands]
 leere Inseln
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Nahrung
 [food]
@@ -358,6 +410,10 @@ ist verbunden
 ist gegangen
 [heal]
 Gesundheit
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ Ernährt Ihre Einheiten
 
 [inn]
 Gasthof
+[insert]
+
 [inside]
 Drinnen
 [islands size]
@@ -423,6 +481,8 @@ Deutsch
 [large]
 groß
 [Leave Game]
+
+[left]
 
 [level]
 Stufe
@@ -472,6 +532,8 @@ Erlaubt den Handel mit
 Markt
 [medium]
 mittel
+[menu]
+
 [Min required level:]
 Mindestlevel:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ nicht bereit
 %0 Mannschaften.
 [number of teams]
 Mannschaften
+[numlock]
+
 [of which]
 davon
 [ok]
@@ -528,10 +592,16 @@ offen
 Einstellungen
 [Orange]
 Orangen
+[page down]
+
+[page up]
+
 [Papyrus]
 Papyrus
 [pause game]
 Pause
+[pause]
+
 [Paused]
 Pause
 [percent]
@@ -542,12 +612,16 @@ Spielername
 Spieler
 [please wait]
 Bitte warten
+[power]
+
 [presence request sent]
 Präsenzanfrage gesendet ...
 [press space]
 Leertaste drücken, um fortzufahren.
 [Prestige]
 Prestige
+[print screen]
+
 [Prune]
 Pflaumen
 [quit the editor]
@@ -592,6 +666,10 @@ Ressourcen
 
 [return to game]
 Zurück zum Spiel
+[return]
+
+[right]
+
 [river diameter]
 Flussbreite
 [river terrain]
@@ -613,6 +691,8 @@ Verbessert die Bau-
 [school]
 Schule
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 suchen Arbeit
@@ -692,6 +772,8 @@ Anzeige
 klein
 [smoothing]
 Glättung
+[space]
+
 [speed]
 Geschwindigkeit
 [start mission]
@@ -777,6 +859,10 @@ Schwimmbecken
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  Mannschaften
@@ -868,6 +954,8 @@ Gesamt
 Keine Funktion
 [Uncontrolled]
 Unkontrolliert
+[undo]
+
 [uniform terrain]
 Einheitliche Landschaft
 [Unit editor]
@@ -885,6 +973,8 @@ Einheiten
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Aktualisieren

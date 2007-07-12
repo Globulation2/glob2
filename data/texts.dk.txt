@@ -80,6 +80,8 @@ Tilgængelige lokal spil
 Venter på spillere
 [away:]
 er væk:
+[backspace]
+
 [bad error in connection system]
 Fejl i forbindelses systemet
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Forbedre militlær enheder
 Kaserne
 [beach size]
 Strand størrelse
+[break]
+
 [build barracks level 0]
 Byg Kerserne 1
 [build barracks level 1]
@@ -170,6 +174,8 @@ Afbryd reparing
 Afbryd opgradering
 [Cancel]
 Afbryd
+[caps lock]
+
 [carry]
 Bægere på:
 [Change Area Name]
@@ -186,6 +192,8 @@ Vælg et spil
 Vælg et kort
 [clear area]
 Ophæv arial
+[clear]
+
 [Clearing:]
 Rydning:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Luk
 Lukket
 [compile]
 Kompilere skript
+[compose]
+
 [connect]
 Forbinder
 [connected to all players]
@@ -272,6 +282,8 @@ Afbrudt
 Opløsning
 [don't carry anything]
 Bægere ikke på noget
+[down]
+
 [download finished]
 Nedhentning færdig
 [downloaded at]
@@ -284,10 +296,20 @@ Redigere kort
 Rediger genveje
 [editor]
 Redigere
+[end]
+
 [Enter your nickname :]
 Skriv dit bruger navn :
 [Enter your password :]
 Skriv dit adgangs kode :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Udforsker
 udforskere
 [extra islands]
 Tom ø
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Mad tilbage
 [food]
@@ -358,6 +410,10 @@ er kommet
 er gået
 [heal]
 Liv point
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +450,8 @@ Kro 2
 Kro 3
 [inn]
 Kro
+[insert]
+
 [inside]
 Indenfor
 [islands size]
@@ -423,6 +481,8 @@ Dansk
 [large]
 stort
 [Leave Game]
+
+[left]
 
 [level]
 neavu
@@ -472,6 +532,8 @@ Tillader at bytte frugt
 Market
 [medium]
 mellem
+[menu]
+
 [Min required level:]
 Minimum krævede neavu:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ ikke klar
 %0 hold.
 [number of teams]
 antal af hold
+[numlock]
+
 [of which]
 hvilke af
 [ok]
@@ -528,10 +592,16 @@ En spiller er kommet til.
 Instillinger
 [Orange]
 Appelsin
+[page down]
+
+[page up]
+
 [Papyrus]
 Skrift ruller
 [pause game]
 Pause spillet
+[pause]
+
 [Paused]
 Pause
 [percent]
@@ -542,12 +612,16 @@ Spiller navn
 Spiller
 [please wait]
 Vent venligst
+[power]
+
 [presence request sent]
 Til stede forspørgsel sendt ...
 [press space]
 Tryk på mellemrum for at fortsætte
 [Prestige]
 Præstige
+[print screen]
+
 [Prune]
 Prune
 [quit the editor]
@@ -592,6 +666,10 @@ Gendan standart tastetur genveje
 Tilbage til editor
 [return to game]
 Vend tilbage til spillet
+[return]
+
+[right]
+
 [river diameter]
 Længde af flod
 [river terrain]
@@ -614,6 +692,8 @@ Forbædre bygnings evnen
 Skole
 [Script Areas]
 Script Områder
+[scroll lock]
+
 [seeking a job]
 leder efter et job
 [seeking]
@@ -692,6 +772,8 @@ Opløsning
 lille
 [smoothing]
 Udglatning
+[space]
+
 [speed]
 hastighed
 [start mission]
@@ -778,6 +860,10 @@ Skift til flag visning
 Skift til hold visning
 [switch to terrain view]
 Skift til terring visning
+[sys req]
+
+[tab]
+
 [teams]
  hold
 [the barracks is finished]
@@ -868,6 +954,8 @@ Lær at spille
 Ikke tildelt
 [Uncontrolled]
 Ukontrolleret
+[undo]
+
 [uniform terrain]
 Uniform terraing
 [Unit editor]
@@ -886,6 +974,8 @@ Enheder
 Låst op af
 [Unnamed Area]
 {Unavngivet område}
+[up]
+
 [update list]
 opdatere liste
 [upgrade building]

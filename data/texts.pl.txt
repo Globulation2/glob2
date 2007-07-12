@@ -80,6 +80,8 @@ Dostępne gry sieciowe
 Oczekuj graczy
 [away:]
 zajęty:
+[backspace]
+
 [bad error in connection system]
 Bład w systemie połączeń
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Umożliwia trening
 Baraki
 [beach size]
 Wielkość plaż
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Przerwij naprawę
 Przerwij rozbudowę
 [Cancel]
 Anuluj
+[caps lock]
+
 [carry]
 Transport :
 [Change Area Name]
@@ -186,6 +192,8 @@ Wybierz grę
 Wybierz mapę
 [clear area]
 Oczyszczany obszar
+[clear]
+
 [Clearing:]
 Czyszczenie
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Zamknij
 Zamknięte
 [compile]
 Kompiluj skrypt
+[compose]
+
 [connect]
 Łączę
 [connected to all players]
@@ -272,6 +282,8 @@ Zrywam połączenie
 Wyświetlanie
 [don't carry anything]
 Nic nie transportuje
+[down]
+
 [download finished]
 Pobieranie zakończone
 [downloaded at]
@@ -284,10 +296,20 @@ Pobieranie zakończone
 
 [editor]
 Edytor
+[end]
+
 [Enter your nickname :]
 Wpisz swoje imię:
 [Enter your password :]
 Wpisz swoje hasło:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 poszukiwaczy
 [explorationflag explanation]
@@ -301,6 +323,36 @@ Poszukiwacz
 [explorers]
 Odkrywcy
 [extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
 
 [food left]
 Pozostało jedzenia
@@ -358,6 +410,10 @@ dołączył(a)
 wylogował się
 [heal]
 Leczenie
+[help]
+
+[home]
+
 [hospital explanation 2]
 jednostek
 [hospital explanation]
@@ -394,6 +450,8 @@ Dostarcza żywność
 
 [inn]
 Gospoda
+[insert]
+
 [inside]
 Wewnątrz
 [islands size]
@@ -423,6 +481,8 @@ Polski
 [large]
 duża
 [Leave Game]
+
+[left]
 
 [level]
 Poziom
@@ -472,6 +532,8 @@ Umożliwia wymianę
 Bazar
 [medium]
 średnia
+[menu]
+
 [Min required level:]
 Min wymagany poziom:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ nie gotowy
 %0 drużyny
 [number of teams]
 Ilość drużyn
+[numlock]
+
 [of which]
 z czego
 [ok]
@@ -528,9 +592,15 @@ Otwarty
 Opcje
 [Orange]
 Pomarańcze
+[page down]
+
+[page up]
+
 [Papyrus]
 Papyrus
 [pause game]
+
+[pause]
 
 [Paused]
 Pauza
@@ -542,12 +612,16 @@ Nazwa Gracza
 Gracz
 [please wait]
 Proszę czekaj
+[power]
+
 [presence request sent]
 Wysłano rządanie stanu ...
 [press space]
 
 [Prestige]
 Prestiż
+[print screen]
+
 [Prune]
 Śliwki
 [quit the editor]
@@ -592,6 +666,10 @@ Zasoby
 
 [return to game]
 Powrót do gry
+[return]
+
+[right]
+
 [river diameter]
 
 [river terrain]
@@ -613,6 +691,8 @@ Podnosi kwalifikacje
 [school]
 Szkoła
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 szuka pracy
@@ -692,6 +772,8 @@ Ustawienia
 mała
 [smoothing]
 Wygładzanie
+[space]
+
 [speed]
 Prędkość
 [start mission]
@@ -777,6 +859,10 @@ Pływalnia
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  zespoły
@@ -868,6 +954,8 @@ Samouczek
 
 [Uncontrolled]
 Niekontrolowany
+[undo]
+
 [uniform terrain]
 Rodzaj terenu
 [Unit editor]
@@ -885,6 +973,8 @@ Jednostki
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Uaktualnij listę

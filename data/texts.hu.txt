@@ -80,6 +80,8 @@ Elérhető hálózati játékok
 Játékosokra várva
 [away:]
 távol van:
+[backspace]
+
 [bad error in connection system]
 Végzetes hiba a kapcsolódási rendszerben
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Támadóképesség
 Laktanya
 [beach size]
 a partok méretei
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Javítás megszakítása
 Fejlesztés megszakítása
 [Cancel]
 Mégsem
+[caps lock]
+
 [carry]
 Szállít :
 [Change Area Name]
@@ -186,6 +192,8 @@ Válassz egy játékot
 Válassz egy térképet
 [clear area]
 
+[clear]
+
 [Clearing:]
 Tisztítás: 
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Bezár
 Zárva
 [compile]
 Szkript fordítása
+[compose]
+
 [connect]
 Kapcsolódás
 [connected to all players]
@@ -272,6 +282,8 @@ Kapcsolat megszakítása
 Kijelző
 [don't carry anything]
 Nem szállít semmit
+[down]
+
 [download finished]
 A letöltés befejeződött
 [downloaded at]
@@ -284,10 +296,20 @@ Letöltés
 
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Add meg a nevedet :
 [Enter your password :]
 Add meg a jelszavadat :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 felderítőket
 [explorationflag explanation]
@@ -301,6 +323,36 @@ Felderítő
 [explorers]
 felderítők
 [extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
 
 [food left]
 Maradék élelmiszer
@@ -358,6 +410,10 @@ csatlakozott
 kilépett
 [heal]
 Egészség
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ Egységek élelmezése
 
 [inn]
 Étkezde
+[insert]
+
 [inside]
 Belül
 [islands size]
@@ -423,6 +481,8 @@ Magyar
 [large]
 nagy
 [Leave Game]
+
+[left]
 
 [level]
 Szint
@@ -472,6 +532,8 @@ Lehetővé teszi az
 Piac
 [medium]
 közepes
+[menu]
+
 [Min required level:]
 Minimális szükséges szint:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ nincs készen
 %0 csapat
 [number of teams]
 Csapatok száma
+[numlock]
+
 [of which]
 amelyik
 [ok]
@@ -528,9 +592,15 @@ nyitva
 Opciók
 [Orange]
 Narancs
+[page down]
+
+[page up]
+
 [Papyrus]
 Papírusz
 [pause game]
+
+[pause]
 
 [Paused]
 Szünet
@@ -542,12 +612,16 @@ A játékos neve
 Játékos
 [please wait]
 Kérem várjon
+[power]
+
 [presence request sent]
 Kapcsolódási kérelem elküldve ...
 [press space]
 
 [Prestige]
 Presztízs
+[print screen]
+
 [Prune]
 Szilva
 [quit the editor]
@@ -592,6 +666,10 @@ Erőforrások
 
 [return to game]
 Visszalépés a játékba
+[return]
+
+[right]
+
 [river diameter]
 
 [river terrain]
@@ -613,6 +691,8 @@ A dolgozók építési
 [school]
 Iskola
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 munkát keres
@@ -692,6 +772,8 @@ Beállítások
 kicsi
 [smoothing]
 Simítás
+[space]
+
 [speed]
 Sebesség
 [start mission]
@@ -777,6 +859,10 @@ fejlesztése
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  csapatok
@@ -868,6 +954,8 @@ Gyakorlás
 
 [Uncontrolled]
 Független
+[undo]
+
 [uniform terrain]
 Egységes térkép
 [Unit editor]
@@ -885,6 +973,8 @@ Egységek
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Naprakésszé tétel

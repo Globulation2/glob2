@@ -80,6 +80,8 @@ Partida lokal eskuragarriak
 Jokalarien zai
 [away:]
 kanpoan:
+[backspace]
+
 [bad error in connection system]
 Konektatze sisteman akats potoloa
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Borroka hobetzeko
 Barrakoia
 [beach size]
 hondar tamaina
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Ezeztatu konponketa
 Ezeztatu eguneraketa
 [Cancel]
 Utzi
+[caps lock]
+
 [carry]
 Darama:
 [Change Area Name]
@@ -186,6 +192,8 @@ Aukeratu partida
 Aukeratu mapa
 [clear area]
 Garbiketa zonaldea
+[clear]
+
 [Clearing:]
 Garbitu:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Itxi
 Itxita
 [compile]
 Konpilatu script-a
+[compose]
+
 [connect]
 Konektatu
 [connected to all players]
@@ -272,6 +282,8 @@ Deskonektatu
 Pantaila
 [don't carry anything]
 Ez darama ezer
+[down]
+
 [download finished]
 Deskarga bukatuta
 [downloaded at]
@@ -284,10 +296,20 @@ Mapa editatzen
 Editore teklak
 [editor]
 Editorea
+[end]
+
 [Enter your nickname :]
 Ezizena sartu:
 [Enter your password :]
 Pasahitza sartu:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Miatzailea
 miatzaile
 [extra islands]
 irla hutsak
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Geratzen den janaria
 [food]
@@ -358,6 +410,10 @@ bat egin du
 irten da
 [heal]
 Osasuna
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +450,8 @@ Unitateak elikatzeko
 
 [inn]
 Ostatua
+[insert]
+
 [inside]
 Barruan
 [islands size]
@@ -423,6 +481,8 @@ Euskara
 [large]
 handia
 [Leave Game]
+
+[left]
 
 [level]
 Maila:
@@ -472,6 +532,8 @@ Trukea baimentzen du:
 Merkatua
 [medium]
 ertaina
+[menu]
+
 [Min required level:]
 Gutxienezko maila:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ itxaron...
 %0 talde.
 [number of teams]
 talde kopurua
+[numlock]
+
 [of which]
 hauetatik
 [ok]
@@ -528,10 +592,16 @@ ireki
 Aukerak
 [Orange]
 Laranja
+[page down]
+
+[page up]
+
 [Papyrus]
 Papiroa
 [pause game]
 Gelditu partida
+[pause]
+
 [Paused]
 Geldituta
 [percent]
@@ -542,12 +612,16 @@ Jokalari izena
 Jokalaria
 [please wait]
 Mesedez itxaron
+[power]
+
 [presence request sent]
 Presentzia eskaria bidalita...
 [press space]
 Zanpatu espazio barra jarraitzeko
 [Prestige]
 Izen ona
+[print screen]
+
 [Prune]
 Arana
 [quit the editor]
@@ -592,6 +666,10 @@ Lehenetsitako teklak berezarri
 Itzuli editorera
 [return to game]
 Itzuli partidara
+[return]
+
+[right]
+
 [river diameter]
 errekaren zabalera
 [river terrain]
@@ -614,6 +692,8 @@ Eraikitzea hobetzeko
 Eskola
 [Script Areas]
 Script Zonaldeak
+[scroll lock]
+
 [seeking a job]
 lan bila
 [seeking]
@@ -692,6 +772,8 @@ Itxura
 txikia
 [smoothing]
 Suabetzea
+[space]
+
 [speed]
 Abiadura
 [start mission]
@@ -778,6 +860,10 @@ Bandera ikuspegira aldatu
 Talde ikuspegira aldatu
 [switch to terrain view]
 Lurzoru ikuspegira aldatu
+[sys req]
+
+[tab]
+
 [teams]
  talde
 [the barracks is finished]
@@ -868,6 +954,8 @@ Tutoriala
 Ezarri gabe
 [Uncontrolled]
 Kontrolez kanpo
+[undo]
+
 [uniform terrain]
 Lurzoru uniformea
 [Unit editor]
@@ -886,6 +974,8 @@ Unitateak
 Desblokeatzailea:
 [Unnamed Area]
 {Unnamed Area}
+[up]
+
 [update list]
 Eguneratu zerrenda
 [upgrade building]

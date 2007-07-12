@@ -80,6 +80,8 @@ Dostupné místní hry
 Čeká se na hráče
 [away:]
 pryč:
+[backspace]
+
 [bad error in connection system]
 Kritická chyba v systému připojení
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Zlepši bojeschopnost
 Cvičiště
 [beach size]
 Velikost pláží
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Stornuj opravu
 Stornuj vylepšeni
 [Cancel]
 Zrušit
+[caps lock]
+
 [carry]
 Nesu :
 [Change Area Name]
@@ -186,6 +192,8 @@ Výběr hry
 Výběr mapy
 [clear area]
 
+[clear]
+
 [Clearing:]
 Vyčištění:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Uzavři
 Uzavřeno
 [compile]
 Sestavit skript
+[compose]
+
 [connect]
 Připojit
 [connected to all players]
@@ -272,6 +282,8 @@ Odpojit
 Rozlišení
 [don't carry anything]
 Nic nenesu
+[down]
+
 [download finished]
 Stáhnuto
 [downloaded at]
@@ -284,10 +296,20 @@ Stahuji
 
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Zadej přezdívku :
 [Enter your password :]
 Zadej heslo:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -301,6 +323,36 @@ Průzkumník
 [explorers]
 průzkumníci
 [extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
 
 [food left]
 Potrava
@@ -358,6 +410,10 @@ připojen
 odpojil
 [heal]
 Zdravý
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ Potrava tvých jednotek
 
 [inn]
 Hospoda
+[insert]
+
 [inside]
 Uvnitř
 [islands size]
@@ -423,6 +481,8 @@ Jazyk
 [large]
 velká
 [Leave Game]
+
+[left]
 
 [level]
 Úroveň
@@ -472,6 +532,8 @@ Povolení vyměnit ovoce
 Tržiště
 [medium]
 střední
+[menu]
+
 [Min required level:]
 Min. úroveň bojovníků:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ nepřipraven
 %0 týmů.
 [number of teams]
 Počet hráčů
+[numlock]
+
 [of which]
 z toho
 [ok]
@@ -528,9 +592,15 @@ Otevřít
 Nastavení
 [Orange]
 Pomarenče
+[page down]
+
+[page up]
+
 [Papyrus]
 Papyrus
 [pause game]
+
+[pause]
 
 [Paused]
 Pauza
@@ -542,12 +612,16 @@ Jméno
 Hráč
 [please wait]
 Čekej prosím
+[power]
+
 [presence request sent]
 Požadavek připojení odeslán ...
 [press space]
 
 [Prestige]
 Prestiž
+[print screen]
+
 [Prune]
 Švestky
 [quit the editor]
@@ -592,6 +666,10 @@ Prostředky
 
 [return to game]
 Zpět do hry
+[return]
+
+[right]
+
 [river diameter]
 
 [river terrain]
@@ -613,6 +691,8 @@ Zlepši uroveň stavitelství
 [school]
 Škola
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 hledá práci
@@ -692,6 +772,8 @@ Nastavení
 malá
 [smoothing]
 Vyhlazení
+[space]
+
 [speed]
 Rychlost
 [start mission]
@@ -777,6 +859,10 @@ Koupaliště
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  hráčů
@@ -868,6 +954,8 @@ Tutoriál
 
 [Uncontrolled]
 Neovládaný
+[undo]
+
 [uniform terrain]
 Jednotná krajina
 [Unit editor]
@@ -885,6 +973,8 @@ Jednotky
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Obnovit seznam

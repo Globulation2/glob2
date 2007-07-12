@@ -80,6 +80,8 @@ AIWarrush
 正等待的玩家
 [away:]
 離至:
+[backspace]
+
 [bad error in connection system]
 連線系統錯誤
 [barracks explanation 2]
@@ -90,6 +92,8 @@ AIWarrush
 兵營
 [beach size]
 海灘大小
+[break]
+
 [build barracks level 0]
 建造兵營 1
 [build barracks level 1]
@@ -170,6 +174,8 @@ AIWarrush
 取消升級
 [Cancel]
 取消
+[caps lock]
+
 [carry]
 搬運:
 [Change Area Name]
@@ -186,6 +192,8 @@ AIWarrush
 選擇一個地圖
 [clear area]
 清除區
+[clear]
+
 [Clearing:]
 清除:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ AIWarrush
 已關閉
 [compile]
 收集語法
+[compose]
+
 [connect]
 連線
 [connected to all players]
@@ -272,6 +282,8 @@ AIWarrush
 顯示
 [don't carry anything]
 沒有在搬運任何東西
+[down]
+
 [download finished]
 下載完成
 [downloaded at]
@@ -284,10 +296,20 @@ AIWarrush
 編輯器快捷鍵
 [editor]
 編輯器
+[end]
+
 [Enter your nickname :]
 輸入你的暱稱:
 [Enter your password :]
 輸入你的密碼:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ AIWarrush
 探索者
 [extra islands]
 空置島嶼
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 食物剩餘
 [food]
@@ -358,6 +410,10 @@ AIWarrush
 已退出
 [heal]
 健康
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ HP
 客棧 3
 [inn]
 客棧
+[insert]
+
 [inside]
 內部
 [islands size]
@@ -423,6 +481,8 @@ zh-tw
 [large]
 大
 [Leave Game]
+
+[left]
 
 [level]
 等級
@@ -472,6 +532,8 @@ Air dmg.
 市場
 [medium]
 中
+[menu]
+
 [Min required level:]
 最小等級需求:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ Air dmg.
 %0 隊伍.
 [number of teams]
 隊伍數量
+[numlock]
+
 [of which]
 他們是
 [ok]
@@ -528,10 +592,16 @@ Air dmg.
 選項
 [Orange]
 柳橙
+[page down]
+
+[page up]
+
 [Papyrus]
 草紙
 [pause game]
 暫停遊戲
+[pause]
+
 [Paused]
 暫停
 [percent]
@@ -542,12 +612,16 @@ Air dmg.
 玩家
 [please wait]
 請稍等
+[power]
+
 [presence request sent]
 傳送前至要求 ...
 [press space]
 按下空白鍵以繼續
 [Prestige]
 聲望
+[print screen]
+
 [Prune]
 梅乾
 [quit the editor]
@@ -592,6 +666,10 @@ Air dmg.
 返回編輯器
 [return to game]
 返回遊戲
+[return]
+
+[right]
+
 [river diameter]
 河流寬度
 [river terrain]
@@ -614,6 +692,8 @@ Air dmg.
 學校
 [Script Areas]
 語法區域
+[scroll lock]
+
 [seeking a job]
 正在找尋工作
 [seeking]
@@ -692,6 +772,8 @@ V: 持鍵以傳送訊息
 小
 [smoothing]
 平整度
+[space]
+
 [speed]
 速度
 [start mission]
@@ -778,6 +860,10 @@ V: 持鍵以傳送訊息
 切換至團隊視野
 [switch to terrain view]
 切換至地形視野
+[sys req]
+
+[tab]
+
 [teams]
 團隊
 [the barracks is finished]
@@ -868,6 +954,8 @@ V: 持鍵以傳送訊息
 未分配
 [Uncontrolled]
 未控制
+[undo]
+
 [uniform terrain]
 平整地形
 [Unit editor]
@@ -886,6 +974,8 @@ V: 持鍵以傳送訊息
 解除由
 [Unnamed Area]
 {未命名區域}
+[up]
+
 [update list]
 更新清單
 [upgrade building]
