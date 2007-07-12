@@ -65,6 +65,13 @@ bool KeyPress::operator!=(const KeyPress& rhs) const
 }
 
 
+
+bool KeyPress::operator==(const KeyPress& rhs) const
+{
+	return key == rhs.key && pressed == rhs.pressed;
+}
+
+
 	
 std::string KeyPress::format() const
 {
@@ -120,6 +127,97 @@ void KeyPress::initKeyMap()
 	{
 		keyMap["<"+std::string(SDL_GetKeyName(SDLKey(i)))+">"] = SDLKey(i);
 	}
+	keyMapInitialized=true;
+}
+
+
+
+KeyboardShortcut::KeyboardShortcut()
+{
+	action = 0;
+}
+
+
+
+void KeyboardShortcut::addKeyPress(const KeyPress& key)
+{
+	keys.push_back(key);
+}
+
+
+
+std::string KeyboardShortcut::format(ShortcutMode mode) const
+{
+	std::string s;
+	for(std::vector<KeyPress>::const_iterator i = keys.begin(); i!=keys.end(); ++i)
+	{
+		s += i->format();
+		if(i!=(keys.end()-1))
+			s+="-";
+	}
+	
+	s+= "=";
+
+	if(mode == GameGUIShortcuts)
+		s+=GameGUIKeyActions::getName(action);
+	else if(mode == MapEditShortcuts)
+		MapEditKeyActions::getName(action);
+	return s;
+}
+
+
+
+void KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
+{
+	std::string s = as;
+	std::string left = std::string(s, 0, s.find("="));
+	std::string right = std::string(s, s.find("=")+1, std::string::npos);
+	while(left.find("-") != std::string::npos)
+	{
+		size_t end = left.find("-");
+		KeyPress kp;
+		kp.interpret(left.substr(0, end));
+		keys.push_back(kp);
+		left=left.substr(end+1, std::string::npos);
+	}
+	
+	//Add the key that isn't seperated by a -
+	KeyPress kp;
+	kp.interpret(left);
+	keys.push_back(kp);
+	
+	if(mode == GameGUIShortcuts)
+		action = GameGUIKeyActions::getAction(right);
+	if(mode == MapEditShortcuts)
+		action = MapEditKeyActions::getAction(right);
+}
+
+
+
+size_t KeyboardShortcut::getKeyPressCount() const
+{
+	return keys.size();
+}
+
+
+	
+KeyPress KeyboardShortcut::getKeyPress(size_t n) const
+{
+	return keys[n];
+}
+
+
+	
+void KeyboardShortcut::setAction(Uint32 naction)
+{
+	action = naction;
+}
+
+
+	
+Uint32 KeyboardShortcut::getAction() const
+{
+	return action;
 }
 
 
@@ -127,7 +225,6 @@ void KeyPress::initKeyMap()
 KeyboardManager::KeyboardManager(ShortcutMode mode)
 	: mode(mode)
 {
-	lastPressedComboKey = KeyPress();
 	if(mode == GameGUIShortcuts)
 		if(!loadKeyboardLayout(GameGUIKeyActions::getConfigurationFile()))
 			loadKeyboardLayout(GameGUIKeyActions::getDefaultConfigurationFile());
@@ -137,95 +234,48 @@ KeyboardManager::KeyboardManager(ShortcutMode mode)
 }
 
 
+
 Uint32 KeyboardManager::getAction(const KeyPress& key)
 {
-	if(lastPressedComboKey != KeyPress())
+	//This is to solve a bug due to the system recieving the key-up event
+	//which is not included in multiple-key sequences
+	if(key.getPressed() || lastPresses.empty())
+		lastPresses.push_back(key);
+	int matches = 0;
+	KeyboardShortcut lastMatch;
+	for(std::list<KeyboardShortcut>::iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
 	{
-		///When doing combo keys, say <b>-<b>, ignore the <unpressed><b> key that will occur between the two <b> presses
-		if(key.getKey() == lastPressedComboKey.getKey() && key.getPressed() == false && lastPressedComboKey.getPressed() == true)
-			return GameGUIKeyActions::DoNothing;
-		KeyPress comboKey = lastPressedComboKey;
-		lastPressedComboKey = KeyPress();
-		if(comboKeys[comboKey].find(key) != comboKeys[comboKey].end())
-			return comboKeys[comboKey][key];
-		else
-			return GameGUIKeyActions::DoNothing;
+		if(lastPresses.size() > i->getKeyPressCount())
+			continue;
+		
+		bool matched=true;
+		for(size_t j=0; j<lastPresses.size(); ++j)
+		{
+			if(i->getKeyPress(j) != lastPresses[j])
+			{
+				matched=false;
+				break;
+			}
+		}
+		if(matched == true)
+		{
+			lastMatch = *i;
+			matches += 1;
+		}
 	}
-	else if(singleKeys.find(key) != singleKeys.end())
+	if(matches == 0)
 	{
-		return singleKeys[key];
-	}
-	else if(comboKeys.find(key) != comboKeys.end())
-	{
-		lastPressedComboKey = key;
+		lastPresses.clear();
 		return GameGUIKeyActions::DoNothing;
+	}
+	else if(matches == 1)
+	{
+		lastPresses.clear();
+		return lastMatch.getAction();
 	}
 	return GameGUIKeyActions::DoNothing;
 }
 
-
-
-void KeyboardManager::setToDefaults(ShortcutMode mode)
-{
-	if(mode == GameGUIShortcuts)
-	{
-		singleKeys[KeyPress(SDLK_ESCAPE, true)] = GameGUIKeyActions::ShowMainMenu;
-		singleKeys[KeyPress(SDLK_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
-		singleKeys[KeyPress(SDLK_KP_PLUS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
-		singleKeys[KeyPress(SDLK_EQUALS, true)] = GameGUIKeyActions::IncreaseUnitsWorking;
-		singleKeys[KeyPress(SDLK_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
-		singleKeys[KeyPress(SDLK_KP_MINUS, true)] = GameGUIKeyActions::DecreaseUnitsWorking;
-		singleKeys[KeyPress(SDLK_RETURN, true)] = GameGUIKeyActions::OpenChatBox;
-		singleKeys[KeyPress(SDLK_TAB, true)] = GameGUIKeyActions::IterateSelection;
-		singleKeys[KeyPress(SDLK_SPACE, true)] = GameGUIKeyActions::GoToEvent;
-		singleKeys[KeyPress(SDLK_HOME, true)] = GameGUIKeyActions::GoToHome;
-		singleKeys[KeyPress(SDLK_PAUSE, true)] = GameGUIKeyActions::PauseGame;
-		singleKeys[KeyPress(SDLK_SCROLLOCK, true)] = GameGUIKeyActions::HardPause;
-		
-		singleKeys[KeyPress(SDLK_t, true)] = GameGUIKeyActions::ToggleDrawUnitPaths;
-		singleKeys[KeyPress(SDLK_d, true)] = GameGUIKeyActions::DestroyBuilding;
-		singleKeys[KeyPress(SDLK_r, true)] = GameGUIKeyActions::RepairBuilding;
-		singleKeys[KeyPress(SDLK_i, true)] = GameGUIKeyActions::ToggleDrawInformation;
-		singleKeys[KeyPress(SDLK_h, true)] = GameGUIKeyActions::ToggleDrawAccessibilityAids;
-		singleKeys[KeyPress(SDLK_m, true)] = GameGUIKeyActions::MarkMap;
-		singleKeys[KeyPress(SDLK_v, true)] = GameGUIKeyActions::ToggleRecordingVoice;
-		singleKeys[KeyPress(SDLK_s, true)] = GameGUIKeyActions::ViewHistory;
-		singleKeys[KeyPress(SDLK_u, true)] = GameGUIKeyActions::UpgradeBuilding;
-		
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_i, true)] = GameGUIKeyActions::SelectConstructInn;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SelectConstructSwarm;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_h, true)] = GameGUIKeyActions::SelectConstructHospital;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_r, true)] = GameGUIKeyActions::SelectConstructRacetrack;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_p, true)] = GameGUIKeyActions::SelectConstructSwimmingPool;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_b, true)] = GameGUIKeyActions::SelectConstructBarracks;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_s, true)] = GameGUIKeyActions::SelectConstructSchool;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SelectConstructDefenceTower;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectConstructStoneWall;
-		comboKeys[KeyPress(SDLK_b, true)][KeyPress(SDLK_m, true)] = GameGUIKeyActions::SelectConstructMarket;
-		
-		comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_e, true)] = GameGUIKeyActions::SelectPlaceExplorationFlag;
-		comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_w, true)] = GameGUIKeyActions::SelectPlaceWarFlag;
-		comboKeys[KeyPress(SDLK_f, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingFlag;
-		
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_f, true)] = GameGUIKeyActions::SelectPlaceForbiddenArea;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_g, true)] = GameGUIKeyActions::SelectPlaceGuardArea;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_c, true)] = GameGUIKeyActions::SelectPlaceClearingArea;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_a, true)] = GameGUIKeyActions::SwitchToAddingAreas;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_d, true)] = GameGUIKeyActions::SwitchToRemovingAreas;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_1, true)] = GameGUIKeyActions::SwitchToAreaBrush1;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_2, true)] = GameGUIKeyActions::SwitchToAreaBrush2;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_3, true)] = GameGUIKeyActions::SwitchToAreaBrush3;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_4, true)] = GameGUIKeyActions::SwitchToAreaBrush4;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_5, true)] = GameGUIKeyActions::SwitchToAreaBrush5;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_6, true)] = GameGUIKeyActions::SwitchToAreaBrush6;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_7, true)] = GameGUIKeyActions::SwitchToAreaBrush7;
-		comboKeys[KeyPress(SDLK_a, true)][KeyPress(SDLK_8, true)] = GameGUIKeyActions::SwitchToAreaBrush8;
-	}
-	else if(mode == MapEditShortcuts)
-	{
-		singleKeys[KeyPress(SDLK_ESCAPE, true)] = MapEditKeyActions::ToggleMenuScreen;
-	}
-}
 
 
 void KeyboardManager::saveKeyboardLayout() const
@@ -236,23 +286,16 @@ void KeyboardManager::saveKeyboardLayout() const
 	else if(mode == MapEditShortcuts)
 		file = MapEditKeyActions::getConfigurationFile();
 
+
 	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend(file));
-	for(std::map<KeyPress, Uint32>::const_iterator i = singleKeys.begin(); i!=singleKeys.end(); ++i)
+	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
 	{
-		stream->writeLine(getSingleKeyShortcutName(i));
+		stream->writeLine(i->format(mode));
 	}
-	for(std::map<KeyPress, std::map<KeyPress, Uint32> >::const_iterator i = comboKeys.begin(); i!=comboKeys.end(); ++i)
-	{
-		for(std::map<KeyPress, Uint32>::const_iterator j = i->second.begin(); j!=i->second.end(); ++j)
-		{
-			if(mode == GameGUIShortcuts)
-				stream->writeLine(FormatableString("%0-%1=%2").arg(i->first.format()).arg(j->first.format()).arg(GameGUIKeyActions::getName(j->second)));
-			else if(mode == MapEditShortcuts)
-				stream->writeLine(FormatableString("%0-%1=%2").arg(i->first.format()).arg(j->first.format()).arg(MapEditKeyActions::getName(j->second)));
-		}
-	}
+
 	delete stream;
 }
+
 
 
 bool KeyboardManager::loadKeyboardLayout(const std::string& file)
@@ -268,51 +311,18 @@ bool KeyboardManager::loadKeyboardLayout(const std::string& file)
 		std::string line = stream->readLine();
 		if(line == "")
 			continue;
-		size_t dash = line.find('-');
-		size_t equal = line.find('=');
-		if(dash != std::string::npos)
-		{
-			std::string first_key(line, 0, dash);
-			std::string second_key(line, dash+1, equal - dash - 1);
-			std::string action(line, equal+1, std::string::npos);
-			KeyPress f_key;
-			f_key.interpret(first_key);
-			KeyPress s_key;
-			s_key.interpret(second_key);
-			if(mode == GameGUIShortcuts)
-				comboKeys[f_key][s_key] = GameGUIKeyActions::getAction(action);
-			else if(mode == MapEditShortcuts)
-				comboKeys[f_key][s_key] = MapEditKeyActions::getAction(action);
-		}
-		else
-		{
-			std::string key(line, 0, equal);
-			std::string action(line, equal+1, std::string::npos);
-			KeyPress f_key;
-			f_key.interpret(key);
-			if(mode == GameGUIShortcuts)
-				singleKeys[f_key] = GameGUIKeyActions::getAction(action);
-			else if(mode == MapEditShortcuts)
-				singleKeys[f_key] = MapEditKeyActions::getAction(action);
-		}
+		KeyboardShortcut ks;
+		ks.interpret(line, mode);
+		shortcuts.push_back(ks);
 	}
+
 	delete stream;
 	return true;
 }
 
 
 
-const std::map<KeyPress, Uint32>& KeyboardManager::getSingleKeyShortcuts() const
+const std::list<KeyboardShortcut> KeyboardManager::getKeyboardShortcuts()
 {
-	return singleKeys;
-}
-
-
-
-std::string KeyboardManager::getSingleKeyShortcutName(std::map<KeyPress, Uint32>::const_iterator shortcut) const
-{
-	if(mode == GameGUIShortcuts)
-		return FormatableString("%0=%1").arg(shortcut->first.format()).arg(GameGUIKeyActions::getName(shortcut->second));
-	else if(mode == MapEditShortcuts)
-		return FormatableString("%0=%1").arg(shortcut->first.format()).arg(MapEditKeyActions::getName(shortcut->second));
+	return shortcuts;
 }

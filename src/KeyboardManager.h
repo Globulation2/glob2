@@ -21,6 +21,14 @@
 
 #include "SDL.h"
 #include <map>
+#include <list>
+#include <vector>
+
+enum ShortcutMode
+{
+	GameGUIShortcuts,
+	MapEditShortcuts,
+};
 
 //Steps to add a keyboard shortcut:
 //1) Identify where it goes (either GameGUIKeyboardActions or MapEditorKeyboardActions)
@@ -42,6 +50,9 @@ public:
 
 	///Compares two KeyPress
 	bool operator!=(const KeyPress& rhs) const;
+
+	///Compares two KeyPress
+	bool operator==(const KeyPress& rhs) const;
 	
 	///Formats a key press
 	std::string format() const;
@@ -62,41 +73,61 @@ private:
 	bool pressed;
 };
 
+///This class represents a keyboard shortcut
+class KeyboardShortcut
+{
+public:
+	///Constructs a KeyboardShortcut
+	KeyboardShortcut();
+
+	///Adds a key press
+	void addKeyPress(const KeyPress& key);
+
+	///Formats the shortcut
+	std::string format(ShortcutMode mode) const;
+
+	///Interprets a keyboard shortcut from a string
+	void interpret(const std::string& s, ShortcutMode mode);
+
+	///Counts how many key presses there is
+	size_t getKeyPressCount() const;
+	
+	///Returns the n'th key press
+	KeyPress getKeyPress(size_t n) const;
+	
+	///Sets the action accossiatted with this shortcut
+	void setAction(Uint32 action);
+	
+	///Returns the action accossiatted with this shortcut
+	Uint32 getAction() const;
+private:
+	Uint32 action;
+	std::vector<KeyPress> keys;
+};
+
 
 ///This class is meant to do keyboard management, handling keyboard shortcuts, layouts and such for GameGUI
 class KeyboardManager
 {
 public:
-	enum ShortcutMode
-	{
-		GameGUIShortcuts,
-		MapEditShortcuts,
-	};
-
 	///Constructs a keyboard manager, either to use the MapEdit shortcuts or the GameGUI shortcuts
 	KeyboardManager(ShortcutMode mode);
 	
 	///Returns the integer action accossiatted with the provided key.
 	Uint32 getAction(const KeyPress& key);
-
-	///Sets the defaults for a keyboard layout
-	void setToDefaults(ShortcutMode mode);
 	
 	///Saves the keyboard layout
 	void saveKeyboardLayout() const;
 	
 	///Loads the keyboard layout, returns false in unsuccessfull
 	bool loadKeyboardLayout(const std::string& file);
-	
-	///Returns the map for single-key shortcuts
-	const std::map<KeyPress, Uint32>& getSingleKeyShortcuts() const;
-	
-	///Returns a name for a particular single-key shortcut
-	std::string getSingleKeyShortcutName(std::map<KeyPress, Uint32>::const_iterator shortcut) const;
+
+	///Returns the list of keyboard shortcuts
+	const std::list<KeyboardShortcut> getKeyboardShortcuts();
+
 private:
-	std::map<KeyPress, Uint32> singleKeys;
-	std::map<KeyPress, std::map<KeyPress, Uint32> > comboKeys;
-	KeyPress lastPressedComboKey;
+	std::list<KeyboardShortcut> shortcuts;
+	std::vector<KeyPress> lastPresses;
 	ShortcutMode mode;
 };
 

@@ -106,11 +106,11 @@ private:
 	///Holds the keyboard layout for the game gui
 	KeyboardManager guiKeyboardManager;
 public:
-	KeyboardManager::ShortcutMode currentMode;
+	ShortcutMode currentMode;
 	///Update shortcut_list
-	void updateShorcutList(KeyboardManager::ShortcutMode mode);
+	void updateShorcutList(ShortcutMode mode);
 	///Update the action_list
-	void updateActionList(KeyboardManager::ShortcutMode mode);
+	void updateActionList(ShortcutMode mode);
 	///Updates the boxes from the current shortcut selection
 	void updateShortcutInfoFromSelection();
 	///Updates the KeyboardManager from the shortcut info
