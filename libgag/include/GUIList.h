@@ -110,6 +110,9 @@ namespace GAGGUI
 		//! Set the index of the current selection. Set -1 for no selection
 		void setSelectionIndex(int index);
 		
+		//! Scrolls the List to be centered on item
+		void centerOnItem(int index);
+		
 	protected:
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLMouseButtonUp(SDL_Event *event);

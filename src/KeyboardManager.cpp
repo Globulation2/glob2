@@ -228,7 +228,7 @@ void KeyboardManager::setToDefaults(ShortcutMode mode)
 }
 
 
-void KeyboardManager::saveKeyboardLayout()
+void KeyboardManager::saveKeyboardLayout() const
 {
 	std::string file;
 	if(mode == GameGUIShortcuts)
@@ -237,17 +237,13 @@ void KeyboardManager::saveKeyboardLayout()
 		file = MapEditKeyActions::getConfigurationFile();
 
 	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend(file));
-	for(std::map<KeyPress, Uint32>::iterator i = singleKeys.begin(); i!=singleKeys.end(); ++i)
+	for(std::map<KeyPress, Uint32>::const_iterator i = singleKeys.begin(); i!=singleKeys.end(); ++i)
 	{
-		if(mode == GameGUIShortcuts)
-			stream->writeLine(FormatableString("%0=%1").arg(i->first.format()).arg(GameGUIKeyActions::getName(i->second)));
-		else if(mode == MapEditShortcuts)
-			stream->writeLine(FormatableString("%0=%1").arg(i->first.format()).arg(MapEditKeyActions::getName(i->second)));
-
+		stream->writeLine(getSingleKeyShortcutName(i));
 	}
-	for(std::map<KeyPress, std::map<KeyPress, Uint32> >::iterator i = comboKeys.begin(); i!=comboKeys.end(); ++i)
+	for(std::map<KeyPress, std::map<KeyPress, Uint32> >::const_iterator i = comboKeys.begin(); i!=comboKeys.end(); ++i)
 	{
-		for(std::map<KeyPress, Uint32>::iterator j = i->second.begin(); j!=i->second.end(); ++j)
+		for(std::map<KeyPress, Uint32>::const_iterator j = i->second.begin(); j!=i->second.end(); ++j)
 		{
 			if(mode == GameGUIShortcuts)
 				stream->writeLine(FormatableString("%0-%1=%2").arg(i->first.format()).arg(j->first.format()).arg(GameGUIKeyActions::getName(j->second)));
@@ -270,6 +266,8 @@ bool KeyboardManager::loadKeyboardLayout(const std::string& file)
 	while(!stream->isEndOfStream())
 	{
 		std::string line = stream->readLine();
+		if(line == "")
+			continue;
 		size_t dash = line.find('-');
 		size_t equal = line.find('=');
 		if(dash != std::string::npos)
@@ -302,3 +300,19 @@ bool KeyboardManager::loadKeyboardLayout(const std::string& file)
 	return true;
 }
 
+
+
+const std::map<KeyPress, Uint32>& KeyboardManager::getSingleKeyShortcuts() const
+{
+	return singleKeys;
+}
+
+
+
+std::string KeyboardManager::getSingleKeyShortcutName(std::map<KeyPress, Uint32>::const_iterator shortcut) const
+{
+	if(mode == GameGUIShortcuts)
+		return FormatableString("%0=%1").arg(shortcut->first.format()).arg(GameGUIKeyActions::getName(shortcut->second));
+	else if(mode == MapEditShortcuts)
+		return FormatableString("%0=%1").arg(shortcut->first.format()).arg(MapEditKeyActions::getName(shortcut->second));
+}

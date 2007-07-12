@@ -870,6 +870,8 @@ V-key
 Awaiting destruction
 [waiting for %0]
 Waiting for %0
+[waiting for key]
+waiting for key...
 [Walk]
 Walk
 [warflag explanation 2]
