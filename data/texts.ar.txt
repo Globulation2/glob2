@@ -482,6 +482,10 @@ ar
 large
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Restore Default Keyboard Shortcuts
 [return to game]
 العودة الى اللعبة
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

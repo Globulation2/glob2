@@ -155,6 +155,9 @@ namespace GAGGUI
 	{
 		if (activated)
 		{
+			SDLKey k = event->key.keysym.sym;
+			if(k == SDLK_RSHIFT || k == SDLK_LSHIFT || k==SDLK_RCTRL || k==SDLK_LCTRL || k==SDLK_RALT || k==SDLK_LALT)
+				return;
 			key = KeyPress(event->key.keysym, true);
 			activated=false;
 			

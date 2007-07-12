@@ -482,6 +482,10 @@ Slovenščina
 velika
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Viri
 [return to game]
 Vrnitev v igro
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

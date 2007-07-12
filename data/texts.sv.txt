@@ -482,6 +482,10 @@ Svenska
 stor
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Resurser
 [return to game]
 Återgå till spelet
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

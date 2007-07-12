@@ -482,6 +482,10 @@ Jazyk
 velká
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Prostředky
 [return to game]
 Zpět do hry
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

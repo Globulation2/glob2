@@ -482,6 +482,10 @@ Magyar
 nagy
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Erőforrások
 [return to game]
 Visszalépés a játékba
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

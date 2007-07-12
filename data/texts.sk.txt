@@ -482,6 +482,10 @@ Slovensky
 veľká
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Pôvodné nastavenia klávesnice
 [return to game]
 Nazad do hry
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

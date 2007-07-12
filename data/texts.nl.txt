@@ -482,6 +482,10 @@ Nederlands
 groot
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Terug naar bewerker
 [return to game]
 Speel verder
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

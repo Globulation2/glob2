@@ -482,6 +482,10 @@ Català
 gran
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Recursos
 [return to game]
 Tornar al joc
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

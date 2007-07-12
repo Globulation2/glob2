@@ -482,6 +482,10 @@ Italiano
 largo
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Ritorna all'editor
 [return to game]
 Ritorna al gioco
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

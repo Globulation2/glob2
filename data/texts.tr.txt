@@ -482,6 +482,10 @@ Turkce
 buyuk
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Kaynaklar
 [return to game]
 Oyuna don
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

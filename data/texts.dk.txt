@@ -482,6 +482,10 @@ Dansk
 stort
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Tilbage til editor
 [return to game]
 Vend tilbage til spillet
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 
