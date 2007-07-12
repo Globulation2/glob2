@@ -80,6 +80,8 @@ Tillgängliga lokala spel
 Väntar på spelare
 [away:]
 borta:
+[backspace]
+
 [bad error in connection system]
 Dåligt fel i anslutningssystemet
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Förbättrar stridsnivån
 Barrack
 [beach size]
 strandstorlek
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Avbryt reparation
 Avbryt uppgradering
 [Cancel]
 Avbryt
+[caps lock]
+
 [carry]
 Bär på:
 [Change Area Name]
@@ -186,6 +192,8 @@ Välj ett spel
 Välj en karta
 [clear area]
 Röjningsområde
+[clear]
+
 [Clearing:]
 Röjning:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Stäng
 Stängd
 [compile]
 Kompilera skript
+[compose]
+
 [connect]
 Anslut
 [connected to all players]
@@ -272,6 +282,8 @@ Koppla från
 Bildskärm
 [don't carry anything]
 Bär ingenting
+[down]
+
 [download finished]
 Nedladdning slutförd
 [downloaded at]
@@ -284,10 +296,20 @@ Editerar Karta
 Ändra genvägar
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Skriv in ditt smeknamn:
 [Enter your password :]
 Skriv in ditt lösenord:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Utforskare
 utforskare
 [extra islands]
 tomma öar
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Mat kvar
 [food]
@@ -358,6 +410,10 @@ har anslutit
 har avslutat
 [heal]
 Hälsa
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +450,8 @@ Utfodrar dina enheter
 
 [inn]
 Värdshus
+[insert]
+
 [inside]
 Inuti
 [islands size]
@@ -423,6 +481,8 @@ Svenska
 [large]
 stor
 [Leave Game]
+
+[left]
 
 [level]
 Nivå
@@ -472,6 +532,8 @@ Tillåter utbyte av
 Marknad
 [medium]
 medium
+[menu]
+
 [Min required level:]
 Lägsta tillåtna nivå:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ inte redo
 %0 lag.
 [number of teams]
 antal lag
+[numlock]
+
 [of which]
 av vilka
 [ok]
@@ -528,10 +592,16 @@ En spelare har anslutit.
 Alternativ
 [Orange]
 Apelsin
+[page down]
+
+[page up]
+
 [Papyrus]
 Papyrus
 [pause game]
 Pausa Spel
+[pause]
+
 [Paused]
 Pausat
 [percent]
@@ -542,12 +612,16 @@ Spelarnamn
 Spelare
 [please wait]
 Var god vänta
+[power]
+
 [presence request sent]
 Närvaroförfrågan skickad ...
 [press space]
 Tryck mellanslag för att forsätta.
 [Prestige]
 Prestige
+[print screen]
+
 [Prune]
 Sviskon
 [quit the editor]
@@ -592,6 +666,10 @@ Resurser
 Återgå till editorn
 [return to game]
 Återgå till spelet
+[return]
+
+[right]
+
 [river diameter]
 bredd på flod
 [river terrain]
@@ -614,6 +692,8 @@ Förbättrar byggnadsnivån
 Skola
 [Script Areas]
 Skript Områden
+[scroll lock]
+
 [seeking a job]
 söker efter arbete
 [seeking]
@@ -692,6 +772,8 @@ Display
 liten
 [smoothing]
 Uppmjukning
+[space]
+
 [speed]
 Hastighet
 [start mission]
@@ -778,6 +860,10 @@ Byt till Flaggvy
 Byt till Lagvy
 [switch to terrain view]
 Byt till Terrängvy
+[sys req]
+
+[tab]
+
 [teams]
  lag
 [the barracks is finished]
@@ -868,6 +954,8 @@ Introduktion
 Ej tilldelad
 [Uncontrolled]
 Okontrollerad
+[undo]
+
 [uniform terrain]
 Enhetlig terräng
 [Unit editor]
@@ -886,6 +974,8 @@ Enheter
 Upplåst Av
 [Unnamed Area]
 {Namnlöst Område}
+[up]
+
 [update list]
 Uppdatera lista
 [upgrade building]

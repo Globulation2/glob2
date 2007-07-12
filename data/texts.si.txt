@@ -80,6 +80,8 @@ Razpoložljive omrežne igre
 Čakam igralce
 [away:]
 odsoden:
+[backspace]
+
 [bad error in connection system]
 Napaka v povezovalnem sistemu
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Izboljša stopnjo bojevenja
 Vojašnica
 [beach size]
 velikost obal
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Prekliči popravilo
 Prekliči nadgradnjo
 [Cancel]
 Prekliči
+[caps lock]
+
 [carry]
 Nosi :
 [Change Area Name]
@@ -186,6 +192,8 @@ Izberi igro
 Izberi mapo
 [clear area]
 
+[clear]
+
 [Clearing:]
 Brisanje:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Zapri
 Zaprto
 [compile]
 Zgradi skripto
+[compose]
+
 [connect]
 Vspostavi povezavo
 [connected to all players]
@@ -272,6 +282,8 @@ Prekini povezavo
 Prikaz
 [don't carry anything]
 Ne nosi ničesar
+[down]
+
 [download finished]
 Nalaganje končano
 [downloaded at]
@@ -284,10 +296,20 @@ naloženo iz
 
 [editor]
 Urejevalnik
+[end]
+
 [Enter your nickname :]
 Vnesi svoj vzdevek :
 [Enter your password :]
 Vnesi svoje geslo :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -301,6 +323,36 @@ Raziskovalec
 [explorers]
 raziskovalci
 [extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
 
 [food left]
 Hreane ostalo
@@ -358,6 +410,10 @@ se je vkljičil
 je odšel
 [heal]
 Zdravje
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +450,8 @@ Nahranjuje tvoje enote
 
 [inn]
 Restavracija
+[insert]
+
 [inside]
 Znotraj
 [islands size]
@@ -423,6 +481,8 @@ Slovenščina
 [large]
 velika
 [Leave Game]
+
+[left]
 
 [level]
 Stopnja
@@ -472,6 +532,8 @@ Omogoča menjavo blaga
 Tržnica
 [medium]
 srednja
+[menu]
+
 [Min required level:]
 Najnižja zahtevana stopnja
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ ni pripravljen
 %0 ekip.
 [number of teams]
 Število ekip
+[numlock]
+
 [of which]
 od katerih
 [ok]
@@ -528,9 +592,15 @@ odpri
 Možnosti
 [Orange]
 Pomaranča
+[page down]
+
+[page up]
+
 [Papyrus]
 Papirus
 [pause game]
+
+[pause]
 
 [Paused]
 Ustavljeno
@@ -542,12 +612,16 @@ Ime igralca
 Igralec
 [please wait]
 Prosim počakaj
+[power]
+
 [presence request sent]
 Zahteva za prisotnost poslana ...
 [press space]
 
 [Prestige]
 Ugled
+[print screen]
+
 [Prune]
 Slive
 [quit the editor]
@@ -592,6 +666,10 @@ Viri
 
 [return to game]
 Vrnitev v igro
+[return]
+
+[right]
+
 [river diameter]
 
 [river terrain]
@@ -613,6 +691,8 @@ Izboljša stopnjo grajenja
 [school]
 Šola
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 iščejo službo
@@ -692,6 +772,8 @@ Nastavitve
 majhna
 [smoothing]
 Glajenje
+[space]
+
 [speed]
 Hitrost
 [start mission]
@@ -777,6 +859,10 @@ Bazen
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  ekipe
@@ -868,6 +954,8 @@ Predavanje
 
 [Uncontrolled]
 Nenadzirane
+[undo]
+
 [uniform terrain]
 Obleči teren?
 [Unit editor]
@@ -885,6 +973,8 @@ Enote
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Osveži seznam

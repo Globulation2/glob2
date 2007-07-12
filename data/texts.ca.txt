@@ -80,6 +80,8 @@ jocs LAN disponibles
 Esperant als jugadors
 [away:]
 ausent:
+[backspace]
+
 [bad error in connection system]
 Error al sistema de conexió
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Per augmentar el poder d' atac
 Cuartell
 [beach size]
 Tamany de la platja
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Cancelar Reparació
 Cancelar Millora
 [Cancel]
 Cancelar
+[caps lock]
+
 [carry]
 Transport :
 [Change Area Name]
@@ -186,6 +192,8 @@ Escull un juego
 Escull un mapa
 [clear area]
 Area de Neteja
+[clear]
+
 [Clearing:]
 Netejant
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Tancat
 Tancat
 [compile]
 Compilar el script
+[compose]
+
 [connect]
 Conectat
 [connected to all players]
@@ -272,6 +282,8 @@ Desconectat
 Visualitzador
 [don't carry anything]
 No Transporta res
+[down]
+
 [download finished]
 Descarga finalitzada
 [downloaded at]
@@ -284,10 +296,20 @@ Baixat al
 
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Introdueix el teu nick :
 [Enter your password :]
 Introdueix la contrassenya :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 exploradors a l'area seleccionada
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Explorador
 Exploradors
 [extra islands]
 illes buides
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Menjà restant
 [food]
@@ -358,6 +410,10 @@ s'ha unit a la partida
 ha marxat
 [heal]
 Vida
+[help]
+
+[home]
+
 [hospital explanation 2]
 teus globuls
 [hospital explanation]
@@ -394,6 +450,8 @@ Per alimentar a tots els
 
 [inn]
 Despensa
+[insert]
+
 [inside]
 Dins
 [islands size]
@@ -423,6 +481,8 @@ Català
 [large]
 gran
 [Leave Game]
+
+[left]
 
 [level]
 Nivell
@@ -472,6 +532,8 @@ Per intercambiar fruita amb
 Mercat
 [medium]
 mitjà
+[menu]
+
 [Min required level:]
 Nivell Minim Requerit
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ sense preparar
 %0 nombre d' equips
 [number of teams]
 Nombre d' equips
+[numlock]
+
 [of which]
 dels quals
 [ok]
@@ -528,9 +592,15 @@ Obrir
 Opcions
 [Orange]
 Taronja
+[page down]
+
+[page up]
+
 [Papyrus]
 Papir
 [pause game]
+
+[pause]
 
 [Paused]
 Pausat
@@ -542,12 +612,16 @@ Nom del jugador
 Jugador
 [please wait]
 Esperi un moment
+[power]
+
 [presence request sent]
 Invitació enviada ...
 [press space]
 
 [Prestige]
 Prestigi
+[print screen]
+
 [Prune]
 Passes
 [quit the editor]
@@ -592,6 +666,10 @@ Recursos
 
 [return to game]
 Tornar al joc
+[return]
+
+[right]
+
 [river diameter]
 ample de riu
 [river terrain]
@@ -613,6 +691,8 @@ Per mijorar les construccions
 [school]
 Escola
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 buscant feina
@@ -692,6 +772,8 @@ key v : Presiona per parlar
 Petit
 [smoothing]
 Pla
+[space]
+
 [speed]
 Velocitat
 [start mission]
@@ -777,6 +859,10 @@ Piscina
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  Equips
@@ -868,6 +954,8 @@ Tutorial
 
 [Uncontrolled]
 No Controlat
+[undo]
+
 [uniform terrain]
 Terreny uniforme
 [Unit editor]
@@ -885,6 +973,8 @@ Unitats
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Actualitzar llista

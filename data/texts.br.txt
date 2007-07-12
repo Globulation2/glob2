@@ -80,6 +80,8 @@ Jogos locais disponíveis
 Esperando jogadores
 [away:]
 distante:
+[backspace]
+
 [bad error in connection system]
 Erro no sistema de conexão
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Improves the fighting
 Barracks
 [beach size]
 Tamanho da praia
+[break]
+
 [build barracks level 0]
 Construir Barracks 1
 [build barracks level 1]
@@ -170,6 +174,8 @@ Cancelar reparo
 Cancelar upgrade
 [Cancel]
 Cancela
+[caps lock]
+
 [carry]
 Carregando:
 [Change Area Name]
@@ -186,6 +192,8 @@ Escolha um jogo
 Escolha um mapa
 [clear area]
 Área de Limpeza
+[clear]
+
 [Clearing:]
 Limpando:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Fechar
 Fechado
 [compile]
 Compilar script
+[compose]
+
 [connect]
 Conectar
 [connected to all players]
@@ -272,6 +282,8 @@ Desconectar
 Exposição
 [don't carry anything]
 Está carregando nada
+[down]
+
 [download finished]
 Download terminado
 [downloaded at]
@@ -284,10 +296,20 @@ Editor de mapa
 Atalhos do editor
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Digite seu apelido:
 [Enter your password :]
 Digite sua senha:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Explorador
 exploradores
 [extra islands]
 ilhas vazias
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Comida sobrando
 [food]
@@ -358,6 +410,10 @@ juntou-se
 saiu
 [heal]
 Saúde
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -396,6 +452,8 @@ Taverna 2
 Taverna 3
 [inn]
 Taverna
+[insert]
+
 [inside]
 Dentro
 [islands size]
@@ -425,6 +483,8 @@ Português do Brasil
 [large]
 grande
 [Leave Game]
+
+[left]
 
 [level]
 Nível
@@ -474,6 +534,8 @@ Possibilita a troca de
 Mercado
 [medium]
 médio
+[menu]
+
 [Min required level:]
 Nível mínimo requerido:
 [Minimum Level To Flag]
@@ -504,6 +566,8 @@ não pronto
 %0 times.
 [number of teams]
 Número d etimes
+[numlock]
+
 [of which]
 os quais
 [ok]
@@ -530,10 +594,16 @@ Abrir
 Opções
 [Orange]
 Laranja
+[page down]
+
+[page up]
+
 [Papyrus]
 Papyrus
 [pause game]
 Jogo pausado
+[pause]
+
 [Paused]
 Pausado
 [percent]
@@ -544,12 +614,16 @@ Nome do jogador
 Jogador
 [please wait]
 Por favor espere
+[power]
+
 [presence request sent]
 Requisição de presença enviado...
 [press space]
 Aperte barra de espaço para continuar
 [Prestige]
 Prestígio
+[print screen]
+
 [Prune]
 Ameixa
 [quit the editor]
@@ -594,6 +668,10 @@ Restaurar atalhos de teclado padrões
 Retornar ao editor
 [return to game]
 Retornar ao jogo
+[return]
+
+[right]
+
 [river diameter]
 largura do rio
 [river terrain]
@@ -616,6 +694,8 @@ Improves the building
 Escola
 [Script Areas]
 Script Areas
+[scroll lock]
+
 [seeking a job]
 procurando trabalho
 [seeking]
@@ -694,6 +774,8 @@ Exposição
 pequeno
 [smoothing]
 Alisar
+[space]
+
 [speed]
 Velocidade
 [start mission]
@@ -780,6 +862,10 @@ Mudar para visão de bandeiras
 Mudar para visão de times
 [switch to terrain view]
 Mudar para visão de terrenos
+[sys req]
+
+[tab]
+
 [teams]
 times
 [the barracks is finished]
@@ -870,6 +956,8 @@ Tutorial
 Não designado
 [Uncontrolled]
 Não controlado
+[undo]
+
 [uniform terrain]
 Terreno uniforme
 [Unit editor]
@@ -888,6 +976,8 @@ Unidades
 Destravado por
 [Unnamed Area]
 {Unnamed Area}
+[up]
+
 [update list]
 Update list
 [upgrade building]

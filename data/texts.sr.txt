@@ -80,6 +80,8 @@ AIWarrush
 Чекам играче
 [away:]
 одсутан:
+[backspace]
+
 [bad error in connection system]
 Грешка у систему за повезивање
 [barracks explanation 2]
@@ -90,6 +92,8 @@ AIWarrush
 Касарна
 [beach size]
 Величина плажа
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ AIWarrush
 Одложи дограду
 [Cancel]
 Поништи
+[caps lock]
+
 [carry]
 Пренос :
 [Change Area Name]
@@ -186,6 +192,8 @@ AIWarrush
 Избор мапе
 [clear area]
 
+[clear]
+
 [Clearing:]
 Чишћење:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ AIWarrush
 Затворен
 [compile]
 Преведи скрипт
+[compose]
+
 [connect]
 Прикључи се
 [connected to all players]
@@ -272,6 +282,8 @@ AIWarrush
 Екран
 [don't carry anything]
 Не носи ништа
+[down]
+
 [download finished]
 Преузимање је готово
 [downloaded at]
@@ -284,10 +296,20 @@ AIWarrush
 
 [editor]
 Уредник
+[end]
+
 [Enter your nickname :]
 Унесите надимак :
 [Enter your password :]
 Унесите лозинку :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -301,6 +323,36 @@ AIWarrush
 [explorers]
 Извиђачи
 [extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
 
 [food left]
 Преостало хране
@@ -358,6 +410,10 @@ AIWarrush
 је отишао
 [heal]
 Здравље
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ AIWarrush
 
 [inn]
 Гостионица
+[insert]
+
 [inside]
 Унутра
 [islands size]
@@ -423,6 +481,8 @@ sr
 [large]
 Велика
 [Leave Game]
+
+[left]
 
 [level]
 Ниво
@@ -472,6 +532,8 @@ sr
 Пијаца
 [medium]
 Средња
+[menu]
+
 [Min required level:]
 Најмањи потребни ниво:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Број екипа: %0.
 [number of teams]
 Број тимова
+[numlock]
+
 [of which]
 од чега
 [ok]
@@ -528,9 +592,15 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Избори
 [Orange]
 Наранџе
+[page down]
+
+[page up]
+
 [Papyrus]
 Папирус
 [pause game]
+
+[pause]
 
 [Paused]
 Пауза
@@ -542,12 +612,16 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Играч
 [please wait]
 Молим сачекајте
+[power]
+
 [presence request sent]
 Присуство је пријављено ...
 [press space]
 
 [Prestige]
 Престиж
+[print screen]
+
 [Prune]
 Шљиве
 [quit the editor]
@@ -592,6 +666,10 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [return to game]
 Повратак на игру
+[return]
+
+[right]
+
 [river diameter]
 
 [river terrain]
@@ -613,6 +691,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [school]
 Школа
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 траже посао
@@ -692,6 +772,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Мала
 [smoothing]
 Умекшавање
+[space]
+
 [speed]
 Брзина
 [start mission]
@@ -777,6 +859,10 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  екипа
@@ -868,6 +954,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [Uncontrolled]
 Неконтролисан
+[undo]
+
 [uniform terrain]
 Једнообразно земљиште
 [Unit editor]
@@ -885,6 +973,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Обнови списак

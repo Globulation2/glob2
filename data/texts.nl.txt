@@ -80,6 +80,8 @@ Beschikbare LAN spellen
 Wacht op spelers
 [away:]
 weg:
+[backspace]
+
 [bad error in connection system]
 Fout tijdens verbinden
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Leert je eenheden
 Kazerne
 [beach size]
 Strand grootte
+[break]
+
 [build barracks level 0]
 Bouw Kazerne 0
 [build barracks level 1]
@@ -170,6 +174,8 @@ Stop reparatie
 Stop verbeteren
 [Cancel]
 Annuleren
+[caps lock]
+
 [carry]
 Draagt:
 [Change Area Name]
@@ -186,6 +192,8 @@ Kies een spel
 Kies een speelveld
 [clear area]
 Grondstoffenzone
+[clear]
+
 [Clearing:]
 Verzamelen:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Sluiten
 Gesloten
 [compile]
 Compileer script
+[compose]
+
 [connect]
 Verbinden
 [connected to all players]
@@ -272,6 +282,8 @@ Verbreek verbinding
 Beeld
 [don't carry anything]
 Draagt niets
+[down]
+
 [download finished]
 Klaar met downloaden
 [downloaded at]
@@ -284,10 +296,20 @@ Speelveld bewerken
 Bewerker toetsen
 [editor]
 Bewerker
+[end]
+
 [Enter your nickname :]
 Voer gebruikersnaam in:
 [Enter your password :]
 Voer wachtwoord in:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
 het terrein te verkennen
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Verkenner
 verkenners
 [extra islands]
 Lege eilanden
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Voedsel over
 [food]
@@ -358,6 +410,10 @@ neemt deel
 is gestopt
 [heal]
 Gezondheid
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ Herberg 1
 Herberg 2
 [inn]
 Herberg
+[insert]
+
 [inside]
 Binnen
 [islands size]
@@ -423,6 +481,8 @@ Nederlands
 [large]
 groot
 [Leave Game]
+
+[left]
 
 [level]
 Niveau
@@ -472,6 +532,8 @@ Verhandel fruit
 Markt
 [medium]
 middel
+[menu]
+
 [Min required level:]
 Minimaal vereist niveau:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ Er zijn %0 spelers aanwezig.
 %0 teams.
 [number of teams]
 Aantal teams
+[numlock]
+
 [of which]
 waarvan
 [ok]
@@ -528,10 +592,16 @@ Open
 Opties
 [Orange]
 Sinaasappelen
+[page down]
+
+[page up]
+
 [Papyrus]
 Papyrus
 [pause game]
 Pauzeer het spel
+[pause]
+
 [Paused]
 Pauze
 [percent]
@@ -542,12 +612,16 @@ Naam speler
 Speler
 [please wait]
 Even geduld alsjeblieft
+[power]
+
 [presence request sent]
 Aanwezigheidsverzoek verzonden...
 [press space]
 Druk op spatie om verder te gaan
 [Prestige]
 Roem
+[print screen]
+
 [Prune]
 Pruimen
 [quit the editor]
@@ -592,6 +666,10 @@ Herstel standaard toetsbindingen
 Terug naar bewerker
 [return to game]
 Speel verder
+[return]
+
+[right]
+
 [river diameter]
 Breedte van rivier
 [river terrain]
@@ -614,6 +692,8 @@ Leert je eenheden
 School
 [Script Areas]
 Scriptgebieden
+[scroll lock]
+
 [seeking a job]
 werkzoekend
 [seeking]
@@ -692,6 +772,8 @@ Uiterlijk
 klein
 [smoothing]
 Egalisering
+[space]
+
 [speed]
 Snelheid
 [start mission]
@@ -778,6 +860,10 @@ Schakel naar vlaggen scherm
 Schakel naar teams scherm
 [switch to terrain view]
 Schakel naar terrein scherm
+[sys req]
+
+[tab]
+
 [teams]
  teams
 [the barracks is finished]
@@ -868,6 +954,8 @@ Oefenspel
 Niet toegewezen
 [Uncontrolled]
 Onbestuurd
+[undo]
+
 [uniform terrain]
 Effen terrein
 [Unit editor]
@@ -886,6 +974,8 @@ Eenheden
 Beschikbaar door
 [Unnamed Area]
 {naamloos gebied}
+[up]
+
 [update list]
 Ververs lijst
 [upgrade building]

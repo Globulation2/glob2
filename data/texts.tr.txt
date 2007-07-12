@@ -80,6 +80,8 @@ Uygun yerel oyunlar
 Oyuncular bekleniyor
 [away:]
 uzakta:
+[backspace]
+
 [bad error in connection system]
 Baglanti sisteminde kotu bir hata
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Savasmayi gelistirir
 Kisla
 [beach size]
 sahil boyutu
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Onarmayi iptal et
 Gelistirmeyi iptal et
 [Cancel]
 Vazgec
+[caps lock]
+
 [carry]
 Tasiyor:
 [Change Area Name]
@@ -186,6 +192,8 @@ Oyun sec
 Harita sec
 [clear area]
 Temizlik bolgesi
+[clear]
+
 [Clearing:]
 Aciklik:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Kapat
 Kapali
 [compile]
 Script derle
+[compose]
+
 [connect]
 Baglan
 [connected to all players]
@@ -272,6 +282,8 @@ Baglantiyi kes
 Gorunum
 [don't carry anything]
 Hicbirsey tasimiyor
+[down]
+
 [download finished]
 Indirme tamamlandi
 [downloaded at]
@@ -284,10 +296,20 @@ Suradan indirildi:
 
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Takma adinizi girin:
 [Enter your password :]
 Sifrenizi girin:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Kasif
 kasifler
 [extra islands]
 bos adalar
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Kalan besin
 [food]
@@ -358,6 +410,10 @@ katildi
 cikti
 [heal]
 Saglik
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +450,8 @@ Birimlerinizi besler
 
 [inn]
 Otel
+[insert]
+
 [inside]
 Icerde
 [islands size]
@@ -423,6 +481,8 @@ Turkce
 [large]
 buyuk
 [Leave Game]
+
+[left]
 
 [level]
 Seviye
@@ -472,6 +532,8 @@ Sunun takasina izin verir:
 Market
 [medium]
 orta
+[menu]
+
 [Min required level:]
 Gerekli en dusuk seviye:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ hazir degil
 %0 takim var.
 [number of teams]
 takim sayisi
+[numlock]
+
 [of which]
 ayrintilar:
 [ok]
@@ -528,9 +592,15 @@ Ac
 Secenekler
 [Orange]
 Portakal
+[page down]
+
+[page up]
+
 [Papyrus]
 Papirus
 [pause game]
+
+[pause]
 
 [Paused]
 Duraklatildi
@@ -542,12 +612,16 @@ Oyuncu adi
 Oyuncu
 [please wait]
 Lutfen bekleyin
+[power]
+
 [presence request sent]
 Hazir olma istegi yollandi ...
 [press space]
 Devam etmek icin bosluk tusuna basin.
 [Prestige]
 Prestij
+[print screen]
+
 [Prune]
 Cir
 [quit the editor]
@@ -592,6 +666,10 @@ Kaynaklar
 
 [return to game]
 Oyuna don
+[return]
+
+[right]
+
 [river diameter]
 nehir genisligi
 [river terrain]
@@ -613,6 +691,8 @@ Binayi gelistirir
 [school]
 Akademi
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 tanesi is ariyor
@@ -692,6 +772,8 @@ Gorunum
 kucuk
 [smoothing]
 Duzeltme
+[space]
+
 [speed]
 Hiz
 [start mission]
@@ -777,6 +859,10 @@ Yuzme havuzu
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  takimlar
@@ -868,6 +954,8 @@ Egitim
 
 [Uncontrolled]
 Kontrolsuz
+[undo]
+
 [uniform terrain]
 Tekbicimli saha
 [Unit editor]
@@ -885,6 +973,8 @@ Birimler
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Listeyi guncelle

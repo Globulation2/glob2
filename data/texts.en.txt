@@ -80,6 +80,8 @@ Available local games
 Awaiting players
 [away:]
 away:
+[backspace]
+backspace
 [bad error in connection system]
 Bad error in connection system
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Improves the fighting
 Barracks
 [beach size]
 beach size
+[break]
+break
 [build barracks level 0]
 Construct Barracks 1
 [build barracks level 1]
@@ -170,6 +174,8 @@ Cancel repair
 Cancel upgrade
 [Cancel]
 Cancel
+[caps lock]
+caps lock
 [carry]
 Carrying:
 [Change Area Name]
@@ -186,6 +192,8 @@ Choose a game
 Choose a map
 [clear area]
 Clearing area
+[clear]
+clear
 [Clearing:]
 Clearing:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Close
 Closed
 [compile]
 Compile script
+[compose]
+
 [connect]
 Connect
 [connected to all players]
@@ -260,6 +270,8 @@ Defense
 Delete the selected game
 [delete]
 Delete
+[delete]
+delete
 [desert]
 desert
 [destroy building]
@@ -272,6 +284,8 @@ Disconnect
 Display
 [don't carry anything]
 Not carrying anything
+[down]
+down
 [download finished]
 Download finished
 [downloaded at]
@@ -284,10 +298,20 @@ Editing Map
 Editor Shortcuts
 [editor]
 Editor
+[end]
+end
 [Enter your nickname :]
 Enter your nickname:
 [Enter your password :]
 Enter your password:
+[enter]
+enter
+[equals]
+equals
+[escape]
+escape
+[euro]
+euro
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +326,36 @@ Explorer
 explorers
 [extra islands]
 empty islands
+[f10]
+f10
+[f11]
+f11
+[f12]
+f12
+[f13]
+f13
+[f14]
+f14
+[f15]
+f15
+[f1]
+f1
+[f2]
+f2
+[f3]
+f3
+[f4]
+f4
+[f5]
+f5
+[f6]
+f6
+[f7]
+f7
+[f8]
+f8
+[f9]
+f9
 [food left]
 Food left
 [food]
@@ -358,6 +412,10 @@ has joined
 has quit
 [heal]
 Health
+[help]
+help
+[home]
+home
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +452,8 @@ Inn 2
 Inn 3
 [inn]
 Inn
+[insert]
+insert
 [inside]
 Inside
 [islands size]
@@ -424,6 +484,8 @@ English
 large
 [Leave Game]
 Leave Game
+[left]
+left
 [level]
 Level
 [levels]
@@ -472,6 +534,8 @@ Allows the exchange of
 Market
 [medium]
 medium
+[menu]
+menu
 [Min required level:]
 Minimum required level:
 [Minimum Level To Flag]
@@ -502,6 +566,8 @@ not ready
 %0 teams.
 [number of teams]
 number of teams
+[numlock]
+numlock
 [of which]
 there are
 [ok]
@@ -528,10 +594,16 @@ open
 Options
 [Orange]
 Orange
+[page down]
+page down
+[page up]
+page up
 [Papyrus]
 Papyrus
 [pause game]
 Pause Game
+[pause]
+pause
 [Paused]
 Paused
 [percent]
@@ -542,12 +614,16 @@ Player name
 Player
 [please wait]
 Please wait
+[power]
+power
 [presence request sent]
 Presence request sent ...
 [press space]
 Press space to continue.
 [Prestige]
 Prestige
+[print screen]
+print screen
 [Prune]
 Prune
 [quit the editor]
@@ -592,6 +668,10 @@ Restore Default Keyboard Shortcuts
 Return to the editor
 [return to game]
 Return to game
+[return]
+enter
+[right]
+right
 [river diameter]
 width of river
 [river terrain]
@@ -614,6 +694,8 @@ Improves the building
 School
 [Script Areas]
 Script Areas
+[scroll lock]
+scroll lock
 [seeking a job]
 looking for a job
 [seeking]
@@ -692,6 +774,8 @@ Display
 small
 [smoothing]
 Smoothing
+[space]
+space
 [speed]
 Speed
 [start mission]
@@ -778,6 +862,10 @@ Switch To Removing Areas
 Switch to Team view
 [switch to terrain view]
 Switch to Terrain view
+[sys req]
+sys req
+[tab]
+tab
 [teams]
  teams
 [the barracks is finished]
@@ -870,6 +958,8 @@ Tutorial
 Unassigned
 [Uncontrolled]
 Uncontrolled
+[undo]
+undo
 [uniform terrain]
 Uniform terrain
 [Unit editor]
@@ -888,6 +978,8 @@ Units
 Unlocked By
 [Unnamed Area]
 {Unnamed Area}
+[up]
+up
 [update list]
 Update list
 [upgrade building]

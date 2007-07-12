@@ -80,6 +80,8 @@ Dostupné lokálne hry
 Čaká sa na hráčov
 [away:]
 preč:
+[backspace]
+
 [bad error in connection system]
 Chyba v systéme pripojenia
 [barracks explanation 2]
@@ -90,6 +92,8 @@ Učí lepšie bojovať
 Kasárne
 [beach size]
 veľkosť pláže
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ Odvolať opravu
 Odv. zdokonaľovanie
 [Cancel]
 Zrušiť
+[caps lock]
+
 [carry]
 Nesie:
 [Change Area Name]
@@ -186,6 +192,8 @@ Vyber si hru
 Vyber si mapu
 [clear area]
 Čistenie
+[clear]
+
 [Clearing:]
 Čistenie:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ Zavrieť
 Uzavreté
 [compile]
 Kopilovať skript
+[compose]
+
 [connect]
 Pripojiť
 [connected to all players]
@@ -272,6 +282,8 @@ Odpojiť
 Zobrazenie
 [don't carry anything]
 Nič nenesie
+[down]
+
 [download finished]
 Stiahnuté
 [downloaded at]
@@ -284,10 +296,20 @@ Stiahnutých
 
 [editor]
 Editor
+[end]
+
 [Enter your nickname :]
 Zadaj prezývku:
 [Enter your password :]
 Zadaj heslo:
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ Prieskumník
 prieskumníci
 [extra islands]
 prázdne ostrovy
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Jedla
 [food]
@@ -358,6 +410,10 @@ sa pridal
 odišiel
 [heal]
 Zdravie
+[help]
+
+[home]
+
 [hospital explanation 2]
  
 [hospital explanation]
@@ -394,6 +450,8 @@ Kŕmi jednotky
 
 [inn]
 Jedáleň
+[insert]
+
 [inside]
 Vovnútri
 [islands size]
@@ -423,6 +481,8 @@ Slovensky
 [large]
 veľká
 [Leave Game]
+
+[left]
 
 [level]
 Úroveň
@@ -472,6 +532,8 @@ Umožnňuje výmenu ovocia
 Trhovisko
 [medium]
 stredná
+[menu]
+
 [Min required level:]
 Najnižšia potrebná úroveň:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ Počet hráčov: %0
 Tímov: %0
 [number of teams]
 počet tímov
+[numlock]
+
 [of which]
 z nich
 [ok]
@@ -528,10 +592,16 @@ otvorené
 Nastavenia
 [Orange]
 Pomaranč
+[page down]
+
+[page up]
+
 [Papyrus]
 Papyrus
 [pause game]
 Pozastaviť hru
+[pause]
+
 [Paused]
 Zastavené
 [percent]
@@ -542,12 +612,16 @@ Meno hráča
 Hráč
 [please wait]
 Čakaj, prosím
+[power]
+
 [presence request sent]
 Poslaná požiadavka na prítomnosť ...
 [press space]
 Pre pokračovanie stlač medzeru
 [Prestige]
 Prestíž
+[print screen]
+
 [Prune]
 Slivka
 [quit the editor]
@@ -592,6 +666,10 @@ Pôvodné nastavenia klávesnice
 
 [return to game]
 Nazad do hry
+[return]
+
+[right]
+
 [river diameter]
 šírka rieky
 [river terrain]
@@ -613,6 +691,8 @@ Učí lepšie stavať
 [school]
 Škola
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 hľadajú prácu
@@ -692,6 +772,8 @@ Povrch
 malá
 [smoothing]
 Vyhľadenie
+[space]
+
 [speed]
 Rýchlosť
 [start mission]
@@ -777,6 +859,10 @@ Bazén
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  tímy
@@ -868,6 +954,8 @@ Kurz
 Nepriradené
 [Uncontrolled]
 Neobsadené
+[undo]
+
 [uniform terrain]
 Jednotný povrch
 [Unit editor]
@@ -885,6 +973,8 @@ Jednotky
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Aktualizovať

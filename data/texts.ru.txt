@@ -80,6 +80,8 @@ ok
 Ожидание игроков
 [away:]
 отсутствует:
+[backspace]
+
 [bad error in connection system]
 Критическая ошибка в системе соединения
 [barracks explanation 2]
@@ -90,6 +92,8 @@ ok
 Тренировочный лагерь
 [beach size]
 Размер пляжей
+[break]
+
 [build barracks level 0]
 
 [build barracks level 1]
@@ -170,6 +174,8 @@ ok
 Отмена улучшения
 [Cancel]
 Отмена
+[caps lock]
+
 [carry]
 Несёт :
 [Change Area Name]
@@ -186,6 +192,8 @@ ok
 Выбор карты
 [clear area]
 Зона очистки
+[clear]
+
 [Clearing:]
 Очистка:
 [clearingflag explanation 2]
@@ -200,6 +208,8 @@ ok
 Закрыто
 [compile]
 Компилировать скрипт
+[compose]
+
 [connect]
 Подключиться
 [connected to all players]
@@ -272,6 +282,8 @@ ok
 Экран
 [don't carry anything]
 Ничего не несёт
+[down]
+
 [download finished]
 Скачивание закончено
 [downloaded at]
@@ -284,10 +296,20 @@ ok
 
 [editor]
 Редактор
+[end]
+
 [Enter your nickname :]
 Введите Ваше прозвище :
 [Enter your password :]
 Введите Ваш пароль :
+[enter]
+
+[equals]
+
+[escape]
+
+[euro]
+
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -302,6 +324,36 @@ ok
 Разведчики
 [extra islands]
 пустые острова
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
 [food left]
 Осталось еды
 [food]
@@ -358,6 +410,10 @@ ok
 вышел
 [heal]
 Лечение
+[help]
+
+[home]
+
 [hospital explanation 2]
 
 [hospital explanation]
@@ -394,6 +450,8 @@ ok
 
 [inn]
 Кабак
+[insert]
+
 [inside]
 Внутри
 [islands size]
@@ -423,6 +481,8 @@ ru
 [large]
 большая
 [Leave Game]
+
+[left]
 
 [level]
 Уровень
@@ -472,6 +532,8 @@ Login
 Рынок
 [medium]
 средняя
+[menu]
+
 [Min required level:]
 Минимальный необходимый уровень:
 [Minimum Level To Flag]
@@ -502,6 +564,8 @@ Login
 %0 команд
 [number of teams]
 число команд
+[numlock]
+
 [of which]
 из которых
 [ok]
@@ -528,9 +592,15 @@ Ok
 Настройки
 [Orange]
 Апельсины
+[page down]
+
+[page up]
+
 [Papyrus]
 Папирус
 [pause game]
+
+[pause]
 
 [Paused]
 Пауза
@@ -542,12 +612,16 @@ Ok
 Игрок
 [please wait]
 Пожалуйста, подождите
+[power]
+
 [presence request sent]
 Послан запрос присутствия ...
 [press space]
 Нажмите пробел для продолжения
 [Prestige]
 Престиж
+[print screen]
+
 [Prune]
 Сливы
 [quit the editor]
@@ -592,6 +666,10 @@ Ok
 
 [return to game]
 Вернуться в игру
+[return]
+
+[right]
+
 [river diameter]
 ширина реки
 [river terrain]
@@ -613,6 +691,8 @@ Ok
 [school]
 Школа
 [Script Areas]
+
+[scroll lock]
 
 [seeking a job]
 ищет работу
@@ -692,6 +772,8 @@ V: Зажать для речевой связи
 маленькая
 [smoothing]
 Сглаживание
+[space]
+
 [speed]
 Скорость
 [start mission]
@@ -777,6 +859,10 @@ V: Зажать для речевой связи
 [switch to teams view]
 
 [switch to terrain view]
+
+[sys req]
+
+[tab]
 
 [teams]
  команды
@@ -868,6 +954,8 @@ V: Зажать для речевой связи
 
 [Uncontrolled]
 Неконтролируемый
+[undo]
+
 [uniform terrain]
 Одинаковый ландшафт
 [Unit editor]
@@ -885,6 +973,8 @@ V: Зажать для речевой связи
 [unlocked by]
 
 [Unnamed Area]
+
+[up]
 
 [update list]
 Обновить список
