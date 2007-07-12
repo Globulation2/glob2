@@ -482,6 +482,10 @@ ru
 большая
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Ok
 [return to game]
 Вернуться в игру
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

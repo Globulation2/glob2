@@ -482,6 +482,10 @@ Español
 Grande
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Recursos
 [return to game]
 Regresar al Juego
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

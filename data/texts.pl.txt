@@ -482,6 +482,10 @@ Polski
 duża
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Zasoby
 [return to game]
 Powrót do gry
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

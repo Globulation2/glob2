@@ -484,6 +484,10 @@ English
 large
 [Leave Game]
 Leave Game
+[left meta]
+left meta
+[left super]
+left windows key
 [left]
 left
 [level]
@@ -670,6 +674,10 @@ Return to the editor
 Return to game
 [return]
 enter
+[right meta]
+right meta
+[right super]
+right windows key
 [right]
 right
 [river diameter]

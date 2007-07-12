@@ -482,6 +482,10 @@ sr
 Велика
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [return to game]
 Повратак на игру
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

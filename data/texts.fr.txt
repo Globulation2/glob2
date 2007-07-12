@@ -482,6 +482,10 @@ Français
 grand
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Ressources
 [return to game]
 Retour au jeu
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

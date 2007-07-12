@@ -482,6 +482,10 @@ Româneste
 mare
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Resurse
 [return to game]
 Înapoi la joc
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

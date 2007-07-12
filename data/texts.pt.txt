@@ -482,6 +482,10 @@ Português
 comprido
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Recursos
 [return to game]
 Voltar ao jogo
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

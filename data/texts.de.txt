@@ -482,6 +482,10 @@ Deutsch
 groß
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Ressourcen
 [return to game]
 Zurück zum Spiel
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

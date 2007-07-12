@@ -484,6 +484,10 @@ Português do Brasil
 grande
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -669,6 +673,10 @@ Retornar ao editor
 [return to game]
 Retornar ao jogo
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

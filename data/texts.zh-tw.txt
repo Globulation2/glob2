@@ -482,6 +482,10 @@ zh-tw
 大
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Air dmg.
 [return to game]
 返回遊戲
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 

@@ -482,6 +482,10 @@ Euskara
 handia
 [Leave Game]
 
+[left meta]
+
+[left super]
+
 [left]
 
 [level]
@@ -667,6 +671,10 @@ Itzuli editorera
 [return to game]
 Itzuli partidara
 [return]
+
+[right meta]
+
+[right super]
 
 [right]
 
