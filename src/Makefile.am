@@ -144,6 +144,8 @@ MapGenerationDescriptor.h \
 MapGenerator.cpp \
 MapHeader.cpp \
 MapHeader.h \
+MarkManager.cpp \
+MarkManager.h \
 Marshaling.h \
 MultiplayerGameScreen.cpp \
 MultiplayerGameScreen.h \

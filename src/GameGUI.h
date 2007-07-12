@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -30,6 +32,7 @@
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "KeyboardManager.h"
+#include "MarkManager.h"
 
 namespace GAGCore
 {
@@ -349,18 +352,10 @@ private:
 	InGameScrollableText *scrollableText;
 	int typingInputScreenPos;
 	int typingInputScreenInc;
+
+	///This manages map marks	
+	MarkManager markManager;
 	
-	// Minimap marking handling
-	struct Mark
-	{
-		enum { DEFAULT_MARK_SHOW_TICKS = 50 };
-		int showTicks; // since when it is shown
-		int x, y; // position
-		Uint8 r, g, b; // color
-	};
-
-	std::list<Mark> markList;
-
 	//! add a minimap mark
 	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
 	

@@ -220,7 +220,6 @@ void GameGUI::init()
 
 	messagesList.clear();
 	eventGoTypeIterator = 0;
-	markList.clear();
 	localTeam=NULL;
 	teamStats=NULL;
 
@@ -3625,55 +3624,11 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 
+
 		// display map mark
 		globalContainer->gfx->setClipRect();
-		for (std::list <Mark>::iterator it=markList.begin(); it!=markList.end();)
-		{
+		markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-128+14, 14, 100, viewportX, viewportY, game);
 
-			//int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
-			int ray = (int)(sin((double)(it->showTicks * 2.0)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
-			//int ray2 = (int)(cos((double)(it->showTicks * 2.0)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
-			ray = (abs(ray) * it->showTicks) / Mark::DEFAULT_MARK_SHOW_TICKS;
-			//ray2 = (abs(ray2) * it->showTicks) / Mark::DEFAULT_MARK_SHOW_TICKS;
-			Uint8 a = Color::ALPHA_OPAQUE;
-			
-			int mMax;
-			int szX, szY;
-			int decX, decY;
-			int x, y;
-
-			Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
-			GameUtilities::globalCoordToLocalView(&game, localTeamNo, it->x, it->y, &x, &y);
-			x = (x*100)/mMax;
-			y = (y*100)/mMax;
-			x += globalContainer->gfx->getW()-128+14+decX;
-			y += 14+decY;
-			
-			globalContainer->gfx->drawCircle(x, y, ray, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x+ray-4+1, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x-ray-4, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y+ray-4+1, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y-ray-4, 8, it->r, it->g, it->b, a);
-			//globalContainer->gfx->drawCircle(x, y, (ray2*11)/8, it->r, it->g, it->b, a);
-
-			//Draw it not just on the minimap
-			game.map.mapCaseToDisplayable(it->x, it->y, &x, &y, viewportX, viewportY);
-			globalContainer->gfx->drawCircle(x, y, (ray*2), it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x+(ray*2)-4+1, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x-(ray*2)-4, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y+(ray*2)-4+1, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y-(ray*2)-4, 8, it->r, it->g, it->b, a);
-
-			// delete old marks
-			if (!(--(it->showTicks)))
-			{
-				it=markList.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
 	}
 
 	// Draw icon if trasmitting
@@ -4471,15 +4426,11 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
 
 void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
-	Mark mark;
-	mark.showTicks=Mark::DEFAULT_MARK_SHOW_TICKS;
-	mark.x=mmo->x;
-	mark.y=mmo->y;
-	mark.r=game.teams[mmo->teamNumber]->colorR;
-	mark.g=game.teams[mmo->teamNumber]->colorG;
-	mark.b=game.teams[mmo->teamNumber]->colorB;
+	Uint8 r = game.teams[mmo->teamNumber]->colorR;
+	Uint8 g = game.teams[mmo->teamNumber]->colorG;
+	Uint8 b = game.teams[mmo->teamNumber]->colorB;
 	
-	markList.push_front(mark);
+	markManager.addMark(Mark(mmo->x, mmo->y, r, g, b));
 }
 
 void GameGUI::initUnitCount(void)
