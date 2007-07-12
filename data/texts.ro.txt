@@ -20,6 +20,8 @@ O unitate %0 a trecut de partea voastră
 Adăugaţi IA
 [add map]
 
+[add shortcut]
+
 [AI]
 IA
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-
 [Alga]
 Alge
 [algae]
@@ -90,8 +90,6 @@ Vă ameliorează
 Câmp de-antrenament
 [beach size]
 mărimea plajei
-[bkey]
-
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Cireaşă
 Alegeţi un joc
 [choose map]
 Alegeţi o hartă
-[ckey]
-
 [clear area]
 
 [Clearing:]
@@ -240,6 +236,8 @@ Lovire
 
 [dblbuff]
 Tampon dublu
+[decrease units working]
+
 [default terrain]
 Teren din oficiu
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Distruge
 Deconectează
 [display]
 Afişaj
-[dkey]
-
 [don't carry anything]
 Nu transportă nimic
 [download finished]
@@ -288,8 +284,6 @@ Descărcat la
 
 [editor]
 Editor
-[ekey]
-
 [Enter your nickname :]
 Introduceţi pseudonimul dvstră :
 [Enter your password :]
@@ -307,8 +301,6 @@ Explorator
 [explorers]
 exploratori
 [extra islands]
-
-[fkey]
 
 [food left]
 Mâncare rămasă
@@ -336,7 +328,9 @@ Joc complet
 Viteza jocului
 [general settings]
 
-[gkey]
+[go to event]
+
+[go to home]
 
 [goto main menu]
 Întoarceţi-vă la meniul principal
@@ -354,6 +348,8 @@ Iarbă
 Hartă făcută de mână
 [Happyness]
 Bucurie
+[hard pause]
+
 [Harvest]
 Recoltează
 [has joined]
@@ -362,8 +358,6 @@ s-a alăturat
 a ieşit
 [heal]
 Sănătate
-[hkey]
-
 [hospital explanation 2]
 
 [hospital explanation]
@@ -384,10 +378,10 @@ foame
 
 [hwaccel]
 Acceleratie materială
-[ikey]
-
 [In way]
 Pe drum
+[increase units working]
+
 [inn explanation 2]
 
 [inn explanation]
@@ -406,7 +400,7 @@ Popas
 mărimea insulelor
 [islands terrain]
 Teren cu insule
-[jkey]
+[iterate selection]
 
 [jobs]
 
@@ -417,8 +411,6 @@ Alăturăte
 [keyboard settings]
 
 [kick]
-
-[kkey]
 
 [lan]
 Joc in reţea locală LAN
@@ -436,8 +428,6 @@ mare
 Nivel
 [levels]
 Nivele
-[lkey]
-
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ medie
 Nivel minim necesar:
 [Minimum Level To Flag]
 
-[mkey]
-
 [Music volume]
 Volum  (muzică)
 [mute]
@@ -500,8 +488,6 @@ Latenţa reţelei
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
-[nkey]
-
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ numărul echipelor
 dintre care
 [ok]
 Acceptă
-[okey]
-
 [old islands terrain]
 
 [old random terrain]
@@ -530,6 +514,8 @@ Acceptă
 Aici
 [one player]
 Un jucător prezent.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Papirus
 Pauză
 [percent]
   la sută
-[pkey]
-
 [player name]
 Numele jucătorului
 [player]
@@ -566,8 +550,6 @@ Cerere pentru prezentă trimisă ...
 Prestigiu
 [Prune]
 Prună
-[qkey]
-
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Teren aleatoriu
 Întindere
 [ratios]
 Proportii
-[record voice]
-
 [Register a new YOG user with password]
 Înregistrează noul jucător YOG cu parola. (nesecurizat)
 [remember unit]
@@ -595,6 +575,8 @@ Proportii
 [Remember YOG password localy]
 Memorează parola local. (nesecurizat)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 
@@ -613,8 +595,6 @@ Resurse
 [river diameter]
 
 [river terrain]
-
-[rkey]
 
 [sand]
 Nisip
@@ -642,6 +622,26 @@ caută
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ caută
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,7 +684,7 @@ Setări
 
 [shortcut explanation v]
 
-[skey]
+[show main menu]
 
 [skin]
 
@@ -738,9 +750,29 @@ nivelul de înot
 Ameliorează viteza de
 [swimmingpool]
 Piscină
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ Piscina este atacată
 ?? Steag de război terminat ??
 [the warflag is under attack]
 ?? Steagul de luptă este atacat ??
-[tkey]
-
 [to:]
 către:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ către:
 
 [toggle draw unit paths]
 
+[toggle menu screen]
+
+[toggle recording voice]
+
 [Total prestige reached]
 Prestigiul total a fost atins
 [Total]
 Total
 [tutorial]
 Tutorial
-[ukey]
-
 [unassigned]
 
 [Uncontrolled]
@@ -864,12 +896,14 @@ Ameliorează
 Numele utilizatorului
 [Version]
 Versiune
-[vkey]
+[view history]
 
 [wait destroy]
 În aşteptarea distrugerii
 [waiting for %0]
 Aşteaptă %0
+[waiting for key]
+
 [Walk]
 Merge
 [warflag explanation 2]
@@ -894,8 +928,6 @@ luptători
 Apă
 [Wheat]
 
-[wkey]
-
 [Won : you defeated your opponents]
 Câştig : aţi învins pe toţi adversarii
 [Won : you have the most prestige]
@@ -918,8 +950,6 @@ lucrători
 Lucrează
 [wounded]
 rănite
-[xkey]
-
 [Yes]
 Da
 [YESTS_BAD]
@@ -952,8 +982,6 @@ Deconexiune de la metaservărul YOG...
 Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
 [YESTS_YOG_KILLED]
 Un administrator tocmai a oprit metaserverul YOG.
-[ykey]
-
 [yog-chat]
 #yog-ro
 [yog]
@@ -976,5 +1004,3 @@ Aţi câştigat!
 %0 voastre sunt atacate
 [Your unit got converted to %0's team]
 Unitatea voastră a trecut de partea %0
-[zkey]
-

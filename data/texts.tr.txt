@@ -20,6 +20,8 @@ V: Butun binalari goster
 AI Ekle
 [add map]
 
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-
 [Alga]
 Suyosunu
 [algae]
@@ -90,8 +90,6 @@ Savasmayi gelistirir
 Kisla
 [beach size]
 sahil boyutu
-[bkey]
-
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Bir senaryo secin
 Oyun sec
 [choose map]
 Harita sec
-[ckey]
-
 [clear area]
 Temizlik bolgesi
 [Clearing:]
@@ -240,6 +236,8 @@ Hasar
 
 [dblbuff]
 Cift tampon
+[decrease units working]
+
 [default terrain]
 Varsayilan arazi
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Yik
 Baglantiyi kes
 [display]
 Gorunum
-[dkey]
-
 [don't carry anything]
 Hicbirsey tasimiyor
 [download finished]
@@ -288,8 +284,6 @@ Suradan indirildi:
 
 [editor]
 Editor
-[ekey]
-
 [Enter your nickname :]
 Takma adinizi girin:
 [Enter your password :]
@@ -308,8 +302,6 @@ Kasif
 kasifler
 [extra islands]
 bos adalar
-[fkey]
-
 [food left]
 Kalan besin
 [food]
@@ -336,7 +328,9 @@ Oyun dolu
 Oyun hizi
 [general settings]
 
-[gkey]
+[go to event]
+
+[go to home]
 
 [goto main menu]
 Ama menuye don
@@ -354,6 +348,8 @@ bir harita
 Elyapimi harita
 [Happyness]
 Mutluluk
+[hard pause]
+
 [Harvest]
 Hasat et
 [has joined]
@@ -362,8 +358,6 @@ katildi
 cikti
 [heal]
 Saglik
-[hkey]
-
 [hospital explanation 2]
  
 [hospital explanation]
@@ -384,10 +378,10 @@ ac
 Aclik
 [hwaccel]
 Donanim hizlandirma
-[ikey]
-
 [In way]
 Yolda
+[increase units working]
+
 [inn explanation 2]
  
 [inn explanation]
@@ -406,7 +400,7 @@ Icerde
 ada boyutu
 [islands terrain]
 Adalar
-[jkey]
+[iterate selection]
 
 [jobs]
 
@@ -417,8 +411,6 @@ Katil
 [keyboard settings]
 
 [kick]
-
-[kkey]
 
 [lan]
 Agda Oyna
@@ -436,8 +428,6 @@ buyuk
 Seviye
 [levels]
 Seviyeler
-[lkey]
-
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ orta
 Gerekli en dusuk seviye:
 [Minimum Level To Flag]
 
-[mkey]
-
 [Music volume]
 Ses ayari (muzik)
 [mute]
@@ -500,8 +488,6 @@ Ag gecikmesi
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
-[nkey]
-
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ takim sayisi
 ayrintilar:
 [ok]
 Tamam
-[okey]
-
 [old islands terrain]
 eski karisik adalar
 [old random terrain]
@@ -530,6 +514,8 @@ eski karisik arazi
 Burada
 [one player]
 Bir oyuncu katildi.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Papirus
 Duraklatildi
 [percent]
   yuzde
-[pkey]
-
 [player name]
 Oyuncu adi
 [player]
@@ -566,8 +550,6 @@ Devam etmek icin bosluk tusuna basin.
 Prestij
 [Prune]
 Cir
-[qkey]
-
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Karisik saha
 Menzil
 [ratios]
 Oranlar
-[record voice]
-
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
 [remember unit]
@@ -595,6 +575,8 @@ Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
 [Remember YOG password localy]
 Parolayi yerel olarak animsa. (guvenli degil)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 
@@ -614,8 +596,6 @@ Oyuna don
 nehir genisligi
 [river terrain]
 Nehir
-[rkey]
-
 [sand]
 Kum
 [save before quit?]
@@ -642,6 +622,26 @@ ariyor
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ ariyor
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,7 +684,7 @@ Ayarlar
 Enter: bir sohbet mesaji gonder
 [shortcut explanation v]
 V: konusmak icin basili tut
-[skey]
+[show main menu]
 
 [skin]
 Gorunum
@@ -738,9 +750,29 @@ Birimlerinizin hizi
 Yuzmeyi iyilestirir
 [swimmingpool]
 Yuzme havuzu
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ Yuzme havuzu saldiri altinda
 ?? Savas bayragi tamamlandi ??
 [the warflag is under attack]
 ?? Savas bayragi saldiri altinda ??
-[tkey]
-
 [to:]
 suraya:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ suraya:
 
 [toggle draw unit paths]
 
+[toggle menu screen]
+
+[toggle recording voice]
+
 [Total prestige reached]
 Kazanilan toplam prestij
 [Total]
 Toplam
 [tutorial]
 Egitim
-[ukey]
-
 [unassigned]
 
 [Uncontrolled]
@@ -864,12 +896,14 @@ Gelistir
 Kullanici adi
 [Version]
 Versiyon
-[vkey]
+[view history]
 
 [wait destroy]
 Yikilmayi bekliyor
 [waiting for %0]
 bekleniyor: %0
+[waiting for key]
+
 [Walk]
 Yuru
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Su
 
 [wheat]
 bugday
-[wkey]
-
 [Won : you defeated your opponents]
 Zafer: Rakiplerinizi yendiniz
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ isciler
 Calisiyor
 [wounded]
 yarali
-[xkey]
-
 [Yes]
 Evet
 [YESTS_BAD]
@@ -954,8 +984,6 @@ YOG onsunucusu ile olan baglanti kesiliyor...
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
 [YESTS_YOG_KILLED]
 Bir yonetici YOG onsunucusunu durdurdu.
-[ykey]
-
 [yog-chat]
 #yog-tr
 [yog]
@@ -978,5 +1006,3 @@ Kazandiniz!
 %0 'leriniz saldiri altinda
 [Your unit got converted to %0's team]
 Bir biriminiz %0 'nin tarafina gecti
-[zkey]
-

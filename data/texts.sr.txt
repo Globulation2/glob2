@@ -20,6 +20,8 @@
 Додај ВИ
 [add map]
 
+[add shortcut]
+
 [AI]
 ВИ
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-
 [Alga]
 Алге
 [algae]
@@ -90,8 +90,6 @@ AIWarrush
 Касарна
 [beach size]
 Величина плажа
-[bkey]
-
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ AIWarrush
 Избор игре
 [choose map]
 Избор мапе
-[ckey]
-
 [clear area]
 
 [Clearing:]
@@ -240,6 +236,8 @@ AIWarrush
 
 [dblbuff]
 Двоструко баферисање
+[decrease units working]
+
 [default terrain]
 Подразумевано земљиште
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ AIWarrush
 Искључи се
 [display]
 Екран
-[dkey]
-
 [don't carry anything]
 Не носи ништа
 [download finished]
@@ -288,8 +284,6 @@ AIWarrush
 
 [editor]
 Уредник
-[ekey]
-
 [Enter your nickname :]
 Унесите надимак :
 [Enter your password :]
@@ -307,8 +301,6 @@ AIWarrush
 [explorers]
 Извиђачи
 [extra islands]
-
-[fkey]
 
 [food left]
 Преостало хране
@@ -336,7 +328,9 @@ AIWarrush
 Брзина игре
 [general settings]
 
-[gkey]
+[go to event]
+
+[go to home]
 
 [goto main menu]
 Назад на главни избор
@@ -354,6 +348,8 @@ AIWarrush
 Ручно направљена мапа
 [Happyness]
 Задовољство
+[hard pause]
+
 [Harvest]
 Жањи
 [has joined]
@@ -362,8 +358,6 @@ AIWarrush
 је отишао
 [heal]
 Здравље
-[hkey]
-
 [hospital explanation 2]
 
 [hospital explanation]
@@ -384,10 +378,10 @@ AIWarrush
 
 [hwaccel]
 Хардверско убрзање
-[ikey]
-
 [In way]
 У путу
+[increase units working]
+
 [inn explanation 2]
 
 [inn explanation]
@@ -406,7 +400,7 @@ AIWarrush
 Величина острва
 [islands terrain]
 Острвско земљиште
-[jkey]
+[iterate selection]
 
 [jobs]
 
@@ -417,8 +411,6 @@ AIWarrush
 [keyboard settings]
 
 [kick]
-
-[kkey]
 
 [lan]
 Игра у локалној мрежи
@@ -436,8 +428,6 @@ sr
 Ниво
 [levels]
 Нивои
-[lkey]
-
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ sr
 Најмањи потребни ниво:
 [Minimum Level To Flag]
 
-[mkey]
-
 [Music volume]
 Јачина (музика)
 [mute]
@@ -500,8 +488,6 @@ sr
 Нова
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
-[nkey]
-
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 од чега
 [ok]
 У реду
-[okey]
-
 [old islands terrain]
 
 [old random terrain]
@@ -530,6 +514,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 На лицу места
 [one player]
 Један играч.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Пауза
 [percent]
   процен(а)(та)
-[pkey]
-
 [player name]
 Име играча
 [player]
@@ -566,8 +550,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Престиж
 [Prune]
 Шљиве
-[qkey]
-
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Домет
 [ratios]
 Односи
-[record voice]
-
 [Register a new YOG user with password]
 Пријави новог корисника на YOG са лозинком. (није шифровано)
 [remember unit]
@@ -595,6 +575,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [Remember YOG password localy]
 Запамти лозинку у локалу (није шифровано)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 
@@ -613,8 +595,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [river diameter]
 
 [river terrain]
-
-[rkey]
 
 [sand]
 Песак
@@ -642,6 +622,26 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,7 +684,7 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [shortcut explanation v]
 
-[skey]
+[show main menu]
 
 [skin]
 
@@ -738,9 +750,29 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Пливалиште служи за...
 [swimmingpool]
 Пливалиште
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 ?? Ратна застава је завршена ??
 [the warflag is under attack]
 ?? Ратна застава је нападнута ??
-[tkey]
-
 [to:]
 ка:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [toggle draw unit paths]
 
+[toggle menu screen]
+
+[toggle recording voice]
+
 [Total prestige reached]
 Укупан постигнут престиж
 [Total]
 Укупно
 [tutorial]
 Уџбеник
-[ukey]
-
 [unassigned]
 
 [Uncontrolled]
@@ -864,12 +896,14 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Корисничко име
 [Version]
 Верзија
-[vkey]
+[view history]
 
 [wait destroy]
 Одложи уништење
 [waiting for %0]
 Чека се на %0
+[waiting for key]
+
 [Walk]
 Ходај
 [warflag explanation 2]
@@ -894,8 +928,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Вода
 [Wheat]
 
-[wkey]
-
 [Won : you defeated your opponents]
 Победа : Савладали сте противике.
 [Won : you have the most prestige]
@@ -918,8 +950,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Ради се
 [wounded]
 рањених
-[xkey]
-
 [Yes]
 Да
 [YESTS_BAD]
@@ -952,8 +982,6 @@ YOG мета-сервер је одбио везу јер корисничко �
 Грешка при прикључењу. Изгледа да YOG сервер није покренут.
 [YESTS_YOG_KILLED]
 Администратор је управо искључио YOG мета-сервер.
-[ykey]
-
 [yog-chat]
 #yog-sr
 [yog]
@@ -976,5 +1004,3 @@ YOG мета-сервер је одбио везу јер корисничко �
 Нападнута јединица: %0
 [Your unit got converted to %0's team]
 Ваша јединица је пребегла %0
-[zkey]
-

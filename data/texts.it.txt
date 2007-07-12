@@ -20,6 +20,8 @@ V: Mostra visuale per tutte le costruzioni
 Aggiungi un IA
 [add map]
 
+[add shortcut]
+
 [AI]
 IA
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 IAToubib
 [AIWarrush]
 IAWarrush
-[akey]
-tasto A
 [Alga]
 Alghe
 [algae]
@@ -90,8 +90,6 @@ Migliora il livello di
 Caserma
 [beach size]
 Grandezza della spiaggia
-[bkey]
-tasto B
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Scegli una campagna
 Seleziona una partita
 [choose map]
 Seleziona una mappa
-[ckey]
-tasto C
 [clear area]
 Area di raccolta
 [Clearing:]
@@ -240,6 +236,8 @@ Danno
 Mappa danneggiati
 [dblbuff]
 Double-buffering
+[decrease units working]
+
 [default terrain]
 Terreno predefinito
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Distruggi
 Disconnettiti
 [display]
 Visualizza
-[dkey]
-tasto D
 [don't carry anything]
 Non trasporta nulla
 [download finished]
@@ -288,8 +284,6 @@ Scaricato da
 Editor delle scorciatoie da tastiera
 [editor]
 Editor
-[ekey]
-tasto E
 [Enter your nickname :]
 Inserisci il tuo soprannome :
 [Enter your password :]
@@ -308,8 +302,6 @@ Esploratore
 esploratori
 [extra islands]
 isole vuote
-[fkey]
-tasto F
 [food left]
 Cibo rimasto
 [food]
@@ -336,8 +328,10 @@ Scorciatoie da tastiera
 Velocità di gioco
 [general settings]
 Impostazioni generali
-[gkey]
-tasto G
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Torna al menu principale
 [grass]
@@ -354,6 +348,8 @@ una mappa
 Gestisci mappa
 [Happyness]
 Soddisfazione
+[hard pause]
+
 [Harvest]
 Raccogliere
 [has joined]
@@ -362,8 +358,6 @@ Raccogliere
 se ne è andato
 [heal]
 Guarisci
-[hkey]
-tasto H
 [hospital explanation 2]
 
 [hospital explanation]
@@ -384,10 +378,10 @@ Fame
 Fame
 [hwaccel]
 Accelerazione Hardware
-[ikey]
-tasto I
 [In way]
 Sulla strada
+[increase units working]
+
 [inn explanation 2]
 
 [inn explanation]
@@ -406,8 +400,8 @@ Interno
 Grandezza delle isole
 [islands terrain]
 Terreno a isole
-[jkey]
-tasto J
+[iterate selection]
+
 [jobs]
 lavori
 [join a game]
@@ -418,8 +412,6 @@ Unisci
 Impostazioni tastiera
 [kick]
 
-[kkey]
-tasto K
 [lan]
 Gioca in rete (LAN)
 [language-code]
@@ -436,8 +428,6 @@ largo
 Livello
 [levels]
 Livelli
-[lkey]
-tasto L
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ medio
 Livello min.richiesto:
 [Minimum Level To Flag]
 Livello minimo per la bandiera
-[mkey]
-tasto M
 [Music volume]
 Volume (musica)
 [mute]
@@ -500,8 +488,6 @@ Latenza della rete
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
-[nkey]
-tasto N
 [no ressources growth areas]
 Area che non sviluppa risorse
 [No]
@@ -520,8 +506,6 @@ Numero di squadre
 dei quali
 [ok]
 Ok
-[okey]
-tasto O
 [old islands terrain]
 Vecchie isole casuali
 [old random terrain]
@@ -530,6 +514,8 @@ Vecchio terreno casuale
 Sul posto
 [one player]
 Giocatore singolo.
+[open chat box]
+
 [open load menu]
 Apri Menù Carica
 [open save menu]
@@ -550,8 +536,6 @@ Pausa
 Pausa
 [percent]
   percento
-[pkey]
-tasto P
 [player name]
 Nome del giocatore
 [player]
@@ -566,8 +550,6 @@ Premi spazio per continuare.
 Prestigio
 [Prune]
 Prugne
-[qkey]
-tasto Q
 [quit the editor]
 Chiudi l'editor
 [quit the game]
@@ -586,8 +568,6 @@ Terreno a caso
 Raggio
 [ratios]
 Razioni
-[record voice]
-Inizia Registrazione Vocale
 [Register a new YOG user with password]
 Registra un nuovo utente YOG con una passord. (non sicuro)
 [remember unit]
@@ -595,6 +575,8 @@ Ricorda Unità
 [Remember YOG password localy]
 Ricordati la password localmente. (non sicuro)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 Inizia/Ferma Riparazione
@@ -614,8 +596,6 @@ Ritorna al gioco
 Diametro del fiume
 [river terrain]
 Fiume
-[rkey]
-tasto R
 [sand]
 Sabbia
 [save before quit?]
@@ -642,6 +622,26 @@ Ricerca
 Seleziona Caserma
 [select clearingflag]
 Seleziona bandiera di raccolta
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 Seleziona bandiera di esplorazione
 [select hospital building]
@@ -650,6 +650,18 @@ Seleziona Ospedale
 Seleziona Mensa
 [select market building]
 Seleziona Mercato
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
 [select racetrack building]
 Seleziona Circuito
 [select school building]
@@ -672,8 +684,8 @@ Impostazioni
 Invio: invia un messaggio di chat
 [shortcut explanation v]
 V: hold to speak ???
-[skey]
-tasto S
+[show main menu]
+
 [skin]
 Mostra
 [small]
@@ -738,10 +750,30 @@ acqua delle unità
 Migliora la velocità in
 [swimmingpool]
 Piscina
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 Passa alla Visualizzazione Costruzioni
 [switch to flag view]
 Passa alla Visualizzazione Flag
+[switch to removing areas]
+
 [switch to teams view]
 Passa alla Visualizzazione Squadre
 [switch to terrain view]
@@ -814,8 +846,6 @@ La piscina è sotto attacco
 ?? La bandiera da guerra finita ??
 [the warflag is under attack]
 ?? La bandiera da guerra è sotto attacco ??
-[tkey]
-tasto T
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Toggle Draw Accessibility Aids ???
 Toggle Draw Information ???
 [toggle draw unit paths]
 Toggle Draw Unit Paths ???
+[toggle menu screen]
+
+[toggle recording voice]
+Inizia Registrazione Vocale
 [Total prestige reached]
 Totale prestigio raggiunto
 [Total]
 Totale
 [tutorial]
 Esercitazione
-[ukey]
-tasto U
 [unassigned]
 Non assegnato
 [Uncontrolled]
@@ -864,12 +896,14 @@ Migliora
 Username
 [Version]
 Versione
-[vkey]
-tasto V
+[view history]
+
 [wait destroy]
 Posticipa la distruzione
 [waiting for %0]
 Aspettando %0
+[waiting for key]
+
 [Walk]
 Camminare
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Acqua
 
 [wheat]
 frumento
-[wkey]
-tasto W
 [Won : you defeated your opponents]
 Hai vinto: hai battuto i tuoi avversari
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ operai
 Al lavoro
 [wounded]
 Ferito
-[xkey]
-tasto X
 [Yes]
 Sì
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Disconnessione dal metaserver YOG in corso...
 Non mi riesco a connettere, apparentemente il master server YOG è offline.
 [YESTS_YOG_KILLED]
 Un amministratore ha appena fermato il metaserver YOG.
-[ykey]
-tasto Y
 [yog-chat]
 #yog-it
 [yog]
@@ -978,5 +1006,3 @@ Hai vinto!!!!
 Il tuo %0 sotto attacco
 [Your unit got converted to %0's team]
 La tua unità è stata convertita in %0 squadra
-[zkey]
-tasto Z

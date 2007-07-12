@@ -20,6 +20,8 @@ V: Показ поля зрения для всех зданий
 Добавить AI
 [add map]
 
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ AINumbi
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-
 [Alga]
 Водоросли
 [algae]
@@ -90,8 +90,6 @@ ok
 Тренировочный лагерь
 [beach size]
 Размер пляжей
-[bkey]
-
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ ok
 Выбор игры
 [choose map]
 Выбор карты
-[ckey]
-
 [clear area]
 Зона очистки
 [Clearing:]
@@ -240,6 +236,8 @@ ok
 
 [dblbuff]
 Двойная буферизация
+[decrease units working]
+
 [default terrain]
 Ландшафт по умолчанию
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ ok
 Отключиться
 [display]
 Экран
-[dkey]
-
 [don't carry anything]
 Ничего не несёт
 [download finished]
@@ -288,8 +284,6 @@ ok
 
 [editor]
 Редактор
-[ekey]
-
 [Enter your nickname :]
 Введите Ваше прозвище :
 [Enter your password :]
@@ -308,8 +302,6 @@ ok
 Разведчики
 [extra islands]
 пустые острова
-[fkey]
-
 [food left]
 Осталось еды
 [food]
@@ -336,7 +328,9 @@ ok
 Скорость игры
 [general settings]
 
-[gkey]
+[go to event]
+
+[go to home]
 
 [goto main menu]
 Вернуться в главное меню
@@ -354,6 +348,8 @@ ok
 Самодельная карта
 [Happyness]
 Счастье
+[hard pause]
+
 [Harvest]
 Собирает
 [has joined]
@@ -362,8 +358,6 @@ ok
 вышел
 [heal]
 Лечение
-[hkey]
-
 [hospital explanation 2]
 
 [hospital explanation]
@@ -384,10 +378,10 @@ ok
 Голод
 [hwaccel]
 Аппаратное ускорение
-[ikey]
-
 [In way]
 В пути
+[increase units working]
+
 [inn explanation 2]
 
 [inn explanation]
@@ -406,7 +400,7 @@ ok
 Размер островов
 [islands terrain]
 Острова
-[jkey]
+[iterate selection]
 
 [jobs]
 
@@ -417,8 +411,6 @@ ok
 [keyboard settings]
 
 [kick]
-
-[kkey]
 
 [lan]
 Сетевая игра
@@ -436,8 +428,6 @@ ru
 Уровень
 [levels]
 Уровни
-[lkey]
-
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ Login
 Минимальный необходимый уровень:
 [Minimum Level To Flag]
 
-[mkey]
-
 [Music volume]
 Громкость (музыки)
 [mute]
@@ -500,8 +488,6 @@ Login
 Новая
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
-[nkey]
-
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ Login
 из которых
 [ok]
 Ok
-[okey]
-
 [old islands terrain]
 старые случайные острова
 [old random terrain]
@@ -530,6 +514,8 @@ Ok
 На месте
 [one player]
 Подключился игрок.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Ok
 Пауза
 [percent]
   процентов
-[pkey]
-
 [player name]
 Имя игрока
 [player]
@@ -566,8 +550,6 @@ Ok
 Престиж
 [Prune]
 Сливы
-[qkey]
-
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Ok
 Расстояние
 [ratios]
 Пропорции
-[record voice]
-
 [Register a new YOG user with password]
 Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
 [remember unit]
@@ -595,6 +575,8 @@ Ok
 [Remember YOG password localy]
 Запомнить пароль локально. (небезопасно)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 
@@ -614,8 +596,6 @@ Ok
 ширина реки
 [river terrain]
 Река
-[rkey]
-
 [sand]
 Песок
 [save before quit?]
@@ -642,6 +622,26 @@ Ok
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ Ok
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,7 +684,7 @@ Ok
 Enter: Отправить сообщение в чате
 [shortcut explanation v]
 V: Зажать для речевой связи
-[skey]
+[show main menu]
 
 [skin]
 Отображение
@@ -738,9 +750,29 @@ V: Зажать для речевой связи
 Улучшает скорость
 [swimmingpool]
 Бассейн
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ V: Зажать для речевой связи
 ?? Флаг войны установлен ??
 [the warflag is under attack]
 ?? Флаг войны атакован ??
-[tkey]
-
 [to:]
 к:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ V: Зажать для речевой связи
 
 [toggle draw unit paths]
 
+[toggle menu screen]
+
+[toggle recording voice]
+
 [Total prestige reached]
 Общий достигнутый престиж
 [Total]
 Всего
 [tutorial]
 Самоучитель
-[ukey]
-
 [unassigned]
 
 [Uncontrolled]
@@ -864,12 +896,14 @@ V: Зажать для речевой связи
 Имя пользователя
 [Version]
 Версия
-[vkey]
+[view history]
 
 [wait destroy]
 Ожидает уничтожения
 [waiting for %0]
 Ожидание %0
+[waiting for key]
+
 [Walk]
 Идёт
 [warflag explanation 2]
@@ -896,8 +930,6 @@ V: Зажать для речевой связи
 
 [wheat]
 зерно
-[wkey]
-
 [Won : you defeated your opponents]
 Победа: Вы победили всех соперников.
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ V: Зажать для речевой связи
 Работает
 [wounded]
 раненых
-[xkey]
-
 [Yes]
 Да
 [YESTS_BAD]
@@ -954,8 +984,6 @@ V: Зажать для речевой связи
 Невозможно соединиться. Очевидно, метасервер YOG не работает.
 [YESTS_YOG_KILLED]
 Администратор только что остановил метасервер YOG.
-[ykey]
-
 [yog-chat]
 #yog-ru
 [yog]
@@ -978,5 +1006,3 @@ Ysagoon-игра в Интернете
 %0 под ударом
 [Your unit got converted to %0's team]
 Ваш юнит переметнулся к врагу %0
-[zkey]
-

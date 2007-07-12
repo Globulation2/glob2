@@ -337,6 +337,9 @@ namespace GAGGUI
 			if (static_cast<int>(pos) < nth)
 				nth--;
 		}
+		int count = (h-4) / textHeight;
+		if(disp + count > strings.size())
+			disp-=1;
 	}
 	
 	bool List::isText(const std::string &text) const

@@ -20,6 +20,8 @@ Jednostka wroga %0 została przeciągnięta na Twoją stronę
 Dodaj SI
 [add map]
 
+[add shortcut]
+
 [AI]
 SI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-
 [Alga]
 Algi
 [algae]
@@ -90,8 +90,6 @@ Umożliwia trening
 Baraki
 [beach size]
 Wielkość plaż
-[bkey]
-
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Wiśnie
 Wybierz grę
 [choose map]
 Wybierz mapę
-[ckey]
-
 [clear area]
 Oczyszczany obszar
 [Clearing:]
@@ -240,6 +236,8 @@ Uszkodzenia
 
 [dblbuff]
 PodwĂłjne buforowanie
+[decrease units working]
+
 [default terrain]
 Domyślny teren
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Zniszcz
 Zrywam połączenie
 [display]
 Wyświetlanie
-[dkey]
-
 [don't carry anything]
 Nic nie transportuje
 [download finished]
@@ -288,8 +284,6 @@ Pobieranie zakończone
 
 [editor]
 Edytor
-[ekey]
-
 [Enter your nickname :]
 Wpisz swoje imię:
 [Enter your password :]
@@ -307,8 +301,6 @@ Poszukiwacz
 [explorers]
 Odkrywcy
 [extra islands]
-
-[fkey]
 
 [food left]
 Pozostało jedzenia
@@ -336,7 +328,9 @@ Komplet graczy
 Prędkość gry
 [general settings]
 
-[gkey]
+[go to event]
+
+[go to home]
 
 [goto main menu]
 Wróć do menu głównego
@@ -354,6 +348,8 @@ Pilnowany obszar
 Własna mapa
 [Happyness]
 Satysfakcja
+[hard pause]
+
 [Harvest]
 Zbiera
 [has joined]
@@ -362,8 +358,6 @@ dołączył(a)
 wylogował się
 [heal]
 Leczenie
-[hkey]
-
 [hospital explanation 2]
 jednostek
 [hospital explanation]
@@ -384,10 +378,10 @@ Głodnych
 
 [hwaccel]
 Przyspieszenie sprzÄtowe
-[ikey]
-
 [In way]
 W drodze
+[increase units working]
+
 [inn explanation 2]
 jednostkom
 [inn explanation]
@@ -406,7 +400,7 @@ Wewnątrz
 Wielkość wysp
 [islands terrain]
 Wyspy
-[jkey]
+[iterate selection]
 
 [jobs]
 
@@ -417,8 +411,6 @@ Przyłącz się
 [keyboard settings]
 
 [kick]
-
-[kkey]
 
 [lan]
 Gra sieciowa
@@ -436,8 +428,6 @@ duża
 Poziom
 [levels]
 Poziomy
-[lkey]
-
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ Bazar
 Min wymagany poziom:
 [Minimum Level To Flag]
 
-[mkey]
-
 [Music volume]
 Głośność (muzyka)
 [mute]
@@ -500,8 +488,6 @@ Opóźnienie sieci
 Nowa
 [nick taken]
 Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
-[nkey]
-
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ Ilość drużyn
 z czego
 [ok]
 Ok
-[okey]
-
 [old islands terrain]
 
 [old random terrain]
@@ -530,6 +514,8 @@ Ok
 Na miejscu
 [one player]
 Gracz dołaczył do gry.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Papyrus
 Pauza
 [percent]
   procent
-[pkey]
-
 [player name]
 Nazwa Gracza
 [player]
@@ -566,8 +550,6 @@ Wysłano rządanie stanu ...
 Prestiż
 [Prune]
 Śliwki
-[qkey]
-
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Losowy teren
 Zasięg
 [ratios]
 Proporcje
-[record voice]
-
 [Register a new YOG user with password]
 Zarejestruj nowego użytkownika z hasłem
 [remember unit]
@@ -595,6 +575,8 @@ Zarejestruj nowego użytkownika z hasłem
 [Remember YOG password localy]
 Zapamiętaj hasło lokalnie
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 
@@ -613,8 +595,6 @@ Powrót do gry
 [river diameter]
 
 [river terrain]
-
-[rkey]
 
 [sand]
 Piasek
@@ -642,6 +622,26 @@ szukających
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ szukających
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,7 +684,7 @@ Ustawienia
 
 [shortcut explanation v]
 
-[skey]
+[show main menu]
 
 [skin]
 
@@ -738,9 +750,29 @@ jednostkom
 Umożliwia pływanie
 [swimmingpool]
 Pływalnia
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ Pływalnia została zaatakowana
 Postawiono flagę wojenną
 [the warflag is under attack]
 Flaga wojenna została zaatakowana
-[tkey]
-
 [to:]
 do:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ do:
 
 [toggle draw unit paths]
 
+[toggle menu screen]
+
+[toggle recording voice]
+
 [Total prestige reached]
 Osiągnięty prestiż
 [Total]
 Łącznie
 [tutorial]
 Samouczek
-[ukey]
-
 [unassigned]
 
 [Uncontrolled]
@@ -864,12 +896,14 @@ Rozbudowa
 Nazwa użytkownika
 [Version]
 Wersja
-[vkey]
+[view history]
 
 [wait destroy]
 Oczekiwanie na zniszczenie
 [waiting for %0]
 Czeka na %0
+[waiting for key]
+
 [Walk]
 Chodzi
 [warflag explanation 2]
@@ -894,8 +928,6 @@ był
 Woda
 [Wheat]
 
-[wkey]
-
 [Won : you defeated your opponents]
 Wygrałeś: pokonałeś swoich przeciwników
 [Won : you have the most prestige]
@@ -918,8 +950,6 @@ Pracownicy
 Praca
 [wounded]
 rannych
-[xkey]
-
 [Yes]
 Tak
 [YESTS_BAD]
@@ -952,8 +982,6 @@ Rozłączam z metaserwerem YOG...
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
 [YESTS_YOG_KILLED]
 Administrator wyłączył metaserwer YOG.
-[ykey]
-
 [yog-chat]
 #yog-pl
 [yog]
@@ -976,5 +1004,3 @@ Wygrałeś !!!
 Twój %0 jest atakowany
 [Your unit got converted to %0's team]
 Twoja jednostka została przeciągnięta na stronę wroga %0
-[zkey]
-
