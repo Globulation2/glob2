@@ -5,34 +5,35 @@ libgag_a_EXTRA_SRC = \
 	win32_dirent.cpp
 
 libgag_a_SOURCES = \
-	GraphicContext.cpp\
-	Sprite.cpp\
-	TrueTypeFont.cpp\
-	TrueTypeFont.h\
-	FileManager.cpp\
-	Toolkit.cpp\
-	StringTable.cpp\
+	BinaryStream.cpp\
 	CursorManager.cpp\
-	SupportFunctions.cpp\
+	FileManager.cpp\
+	FormatableString.cpp\
+	GraphicContext.cpp\
+	GUIAnimation.cpp\
 	GUIBase.cpp\
-	GUIList.cpp\
-	GUIFileList.cpp\
-	GUIRatio.cpp\
-	GUITextArea.cpp\
 	GUIButton.cpp\
+	GUIFileList.cpp\
+	GUIKeySelector.cpp\
+	GUIList.cpp\
+	GUIMessageBox.cpp\
 	GUINumber.cpp\
+	GUIRatio.cpp\
+	GUISelector.cpp\
+	GUIStyle.cpp\
+	GUITextArea.cpp\
 	GUIText.cpp\
 	GUITextInput.cpp\
-	GUISelector.cpp\
-	GUIAnimation.cpp\
-	GUIMessageBox.cpp\
-	GUIStyle.cpp\
+	Sprite.cpp\
 	StreamBackend.cpp\
-	StreamFilter.cpp\
 	Stream.cpp\
-	BinaryStream.cpp\
+	StreamFilter.cpp\
+	StringTable.cpp\
+	SupportFunctions.cpp\
 	TextStream.cpp\
-	FormatableString.cpp\
+	Toolkit.cpp\
+	TrueTypeFont.cpp\
+	TrueTypeFont.h\
 	$(libgag_a_EXTRA_SRC)
 
 INCLUDES = @SDL_CFLAGS@ -I@srcdir@/../include/

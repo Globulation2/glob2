@@ -7,6 +7,7 @@ GraphicContext.cpp
 GUIAnimation.cpp
 GUIBase.cpp
 GUIButton.cpp
+GUIKeySelector.cpp
 GUIFileList.cpp
 GUIList.cpp
 GUIMessageBox.cpp

@@ -25,6 +25,7 @@
 #include <string>
 
 #include "KeyboardManager.h"
+#include "GUIKeySelector.h"
 
 namespace GAGGUI
 {
@@ -56,6 +57,7 @@ public:
 		RESTOREDEFAULTSHORTCUTS=12,
 		GAMESHORTCUTS=13,
 		EDITORSHORTCUTS=14,
+		SECONDKEY=15,
 	};
 private:
 	Settings old_settings;
@@ -81,6 +83,12 @@ private:
 	TextButton* editor_shortcuts;
 	TextButton* restore_default_shortcuts;
 
+	List* shortcut_list;
+	KeySelector* select_key_1;
+	OnOffButton *key_2_active;
+	KeySelector* select_key_2;
+	List* action_list;
+
 	bool gfxAltered;
 	
 	//! If GL is enabled, hide useless options
@@ -93,8 +101,21 @@ private:
 	std::string actDisplayModeToString(void);
 
 
-	KeyboardManager keyboardManager;
+	///Holds the keyboard layout for the map editor
+	KeyboardManager mapeditKeyboardManager;
+	///Holds the keyboard layout for the game gui
+	KeyboardManager guiKeyboardManager;
 public:
+	KeyboardManager::ShortcutMode currentMode;
+	///Update shortcut_list
+	void updateShorcutList(KeyboardManager::ShortcutMode mode);
+	///Update the action_list
+	void updateActionList(KeyboardManager::ShortcutMode mode);
+	///Updates the boxes from the current shortcut selection
+	void updateShortcutInfoFromSelection();
+	///Updates the KeyboardManager from the shortcut info
+	void updateKeyboardManagerFromShortcutInfo();
+
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);

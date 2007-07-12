@@ -77,6 +77,8 @@ namespace GAGGUI
 		NUMBER_ELEMENT_SELECTED,
 		RATIO_CHANGED,
 		VALUE_CHANGED,
+		
+		KEY_CHANGED,
 	};
 	
 	class Screen;

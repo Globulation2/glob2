@@ -63,7 +63,6 @@ private:
 };
 
 
-
 ///This class is meant to do keyboard management, handling keyboard shortcuts, layouts and such for GameGUI
 class KeyboardManager
 {
@@ -84,10 +83,16 @@ public:
 	void setToDefaults(ShortcutMode mode);
 	
 	///Saves the keyboard layout
-	void saveKeyboardLayout();
+	void saveKeyboardLayout() const;
 	
 	///Loads the keyboard layout, returns false in unsuccessfull
 	bool loadKeyboardLayout(const std::string& file);
+	
+	///Returns the map for single-key shortcuts
+	const std::map<KeyPress, Uint32>& getSingleKeyShortcuts() const;
+	
+	///Returns a name for a particular single-key shortcut
+	std::string getSingleKeyShortcutName(std::map<KeyPress, Uint32>::const_iterator shortcut) const;
 private:
 	std::map<KeyPress, Uint32> singleKeys;
 	std::map<KeyPress, std::map<KeyPress, Uint32> > comboKeys;

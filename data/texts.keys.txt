@@ -434,6 +434,7 @@
 [vkey]
 [wait destroy]
 [waiting for %0]
+[waiting for key]
 [Walk]
 [warflag explanation 2]
 [warflag explanation]
