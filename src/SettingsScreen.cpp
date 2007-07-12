@@ -188,14 +188,17 @@ SettingsScreen::SettingsScreen()
 	editor_shortcuts=new TextButton( 230, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
 	editor_shortcuts->visible=false;
 
-	restore_default_shortcuts = new TextButton(20, 315, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
+	restore_default_shortcuts = new TextButton(20, 355, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
 	restore_default_shortcuts->visible=false;
 
-	shortcut_list = new List(20, 110, 320, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	action_list = new List(360, 110 , 270, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	select_key_1 = new KeySelector(20, 175, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 125, 25);
-	key_2_active = new OnOffButton(150, 175, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
-	select_key_2 = new KeySelector(180, 175, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 125, 25);
+	shortcut_list = new List(20, 110, 325, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	action_list = new List(365, 110 , 265, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
+	key_2_active = new OnOffButton(170, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
+	select_key_2 = new KeySelector(200, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
+	add_shortcut = new TextButton(20, 305, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
+	remove_shortcut = new TextButton(330, 305, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
+	
 	
 	game_shortcuts->visible = false;
 	editor_shortcuts->visible = false;
@@ -205,15 +208,19 @@ SettingsScreen::SettingsScreen()
 	select_key_1->visible = false;
 	key_2_active->visible = false;
 	select_key_2->visible = false;
+	add_shortcut->visible = false;
+	remove_shortcut->visible = false;
 	
 	addWidget(game_shortcuts);
 	addWidget(editor_shortcuts);
+	addWidget(restore_default_shortcuts);
 	addWidget(shortcut_list);
 	addWidget(action_list);
 	addWidget(select_key_1);
 	addWidget(key_2_active);
 	addWidget(select_key_2);
-	addWidget(restore_default_shortcuts);
+	addWidget(add_shortcut);
+	addWidget(remove_shortcut);
 
 	currentMode = GameGUIShortcuts;
 
@@ -297,6 +304,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			select_key_2->visible=false;
 			shortcut_list->visible=false;
 			action_list->visible=false;
+			add_shortcut->visible=false;
+			remove_shortcut->visible=false;
 			restore_default_shortcuts->visible=false;
 		}
 
@@ -345,6 +354,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			select_key_2->visible=false;
 			shortcut_list->visible=false;
 			action_list->visible=false;
+			add_shortcut->visible=false;
+			remove_shortcut->visible=false;
 			restore_default_shortcuts->visible=false;
 		}
 
@@ -392,40 +403,51 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			select_key_2->visible=true;
 			shortcut_list->visible=true;
 			action_list->visible=true;
+			add_shortcut->visible=true;
+			remove_shortcut->visible=true;
 			restore_default_shortcuts->visible=true;
 			currentMode = GameGUIShortcuts;
-			updateShorcutList(currentMode);
+			updateShortcutList();
 			if(shortcut_list->getCount() == 0)
 				shortcut_list->setSelectionIndex(-1);
 			else
 				shortcut_list->setSelectionIndex(0);
-			updateActionList(currentMode);
+			updateActionList();
 			updateShortcutInfoFromSelection();
 		}
 		else if (par1==RESTOREDEFAULTSHORTCUTS)
 		{
+			loadDefaultKeyboardShortcuts();
 		}
 		else if(par1==GAMESHORTCUTS)
 		{
 			currentMode = GameGUIShortcuts;
-			updateShorcutList(currentMode);
+			updateShortcutList();
 			if(shortcut_list->getCount() == 0)
 				shortcut_list->setSelectionIndex(-1);
 			else
 				shortcut_list->setSelectionIndex(0);
-			updateActionList(currentMode);
+			updateActionList();
 			updateShortcutInfoFromSelection();
 		}
 		else if(par1==EDITORSHORTCUTS)
 		{
 			currentMode = MapEditShortcuts;
-			updateShorcutList(currentMode);
+			updateShortcutList();
 			if(shortcut_list->getCount() == 0)
 				shortcut_list->setSelectionIndex(-1);
 			else
 				shortcut_list->setSelectionIndex(0);
-			updateActionList(currentMode);
+			updateActionList();
 			updateShortcutInfoFromSelection();
+		}
+		else if(par1==ADDSHORTCUT)
+		{
+			addNewShortcut();
+		}
+		else if(par1==REMOVESHORTCUT)
+		{
+			removeShortcut();
 		}
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
@@ -482,6 +504,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source == shortcut_list)
 		{
 			updateShortcutInfoFromSelection();
+		}
+		else if(source == action_list)
+		{
+			updateKeyboardManagerFromShortcutInfo();
 		}
 	}
 	else if (action==VALUE_CHANGED)
@@ -543,10 +569,23 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
 			setVisibilityFromAudioSettings();
 		}
+		else if (source==key_2_active)
+		{
+			if(key_2_active->getState() == true)
+			{
+				select_key_2->setKey(SDLK_ESCAPE);
+				select_key_2->visible=true;
+			}
+			else
+			{
+				select_key_2->visible=false;
+			}
+			updateKeyboardManagerFromShortcutInfo();
+		}
 	}
 	else if (action==KEY_CHANGED)
 	{
-		updateShorcutList(currentMode);
+		updateKeyboardManagerFromShortcutInfo();
 	}
 }
 
@@ -584,35 +623,41 @@ std::string SettingsScreen::actDisplayModeToString(void)
 
 
 
-void SettingsScreen::updateShorcutList(ShortcutMode mode)
+void SettingsScreen::updateShortcutList(int an)
 {
 	KeyboardManager* m = NULL;
-	if(mode == GameGUIShortcuts)
+	if(currentMode == GameGUIShortcuts)
 		m = &guiKeyboardManager;
-	else if(mode == MapEditShortcuts)
+	else if(currentMode == MapEditShortcuts)
 		m = &mapeditKeyboardManager;
 	
 	const std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
 	size_t n = 0;
 	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
 	{
-		std::string name = i->format(mode);
-		if(n >= shortcut_list->getCount())
-			shortcut_list->addText(name);
-		else if(shortcut_list->getText(n) != name)
-			shortcut_list->setText(n, name);
+		if(an==-1 || int(n) == an)
+		{
+			std::string name = i->format(currentMode);
+			if(n >= shortcut_list->getCount())
+				shortcut_list->addText(name);
+			else if(shortcut_list->getText(n) != name)
+				shortcut_list->setText(n, name);
+		}
 		n += 1;
 	}
+	//Remove entries that are off the end
+	while(n < shortcut_list->getCount())
+		shortcut_list->removeText(n);
 }
 
 
 
-void SettingsScreen::updateActionList(ShortcutMode mode)
+void SettingsScreen::updateActionList()
 {
 	action_list->clear();
 	if(shortcut_list->getSelectionIndex() != -1)
 	{
-		if(mode == GameGUIShortcuts)
+		if(currentMode == GameGUIShortcuts)
 		{
 			for(int i=GameGUIKeyActions::ShowMainMenu; i<GameGUIKeyActions::ActionSize; ++i)
 			{
@@ -620,7 +665,7 @@ void SettingsScreen::updateActionList(ShortcutMode mode)
 				action_list->addText(Toolkit::getStringTable()->getString(key.c_str()));
 			}
 		}
-		else if(mode == MapEditShortcuts)
+		else if(currentMode == MapEditShortcuts)
 		{
 			for(int i=MapEditKeyActions::SwitchToBuildingView; i<MapEditKeyActions::ActionSize; ++i)
 			{
@@ -677,7 +722,89 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 
 void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
 {
-	
+	KeyboardManager* m = NULL;
+	if(currentMode == GameGUIShortcuts)
+		m = &guiKeyboardManager;
+	else if(currentMode == MapEditShortcuts)
+		m = &mapeditKeyboardManager;
+
+	std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
+	int selection_n = shortcut_list->getSelectionIndex();
+
+	if(selection_n != -1)
+	{
+		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
+		std::advance(i, selection_n);
+		KeyboardShortcut new_shortcut;
+		new_shortcut.addKeyPress(KeyPress(select_key_1->getKey(), true));
+		if(key_2_active->getState())
+			new_shortcut.addKeyPress(KeyPress(select_key_2->getKey(), true));
+		new_shortcut.setAction(action_list->getSelectionIndex() + 1);
+		(*i) = new_shortcut;
+		updateShortcutList(selection_n);
+	}
+}
+
+
+
+void SettingsScreen::loadDefaultKeyboardShortcuts()
+{
+	KeyboardManager* m = NULL;
+	if(currentMode == GameGUIShortcuts)
+		m = &guiKeyboardManager;
+	else if(currentMode == MapEditShortcuts)
+		m = &mapeditKeyboardManager;
+	m->loadDefaultShortcuts();
+	updateShortcutList();
+	updateShortcutInfoFromSelection();
+}
+
+
+
+void SettingsScreen::addNewShortcut()
+{
+	KeyboardShortcut ks;
+	ks.addKeyPress(KeyPress(SDLK_ESCAPE, true));
+	if(currentMode == GameGUIShortcuts)
+	{
+		ks.setAction(GameGUIKeyActions::ShowMainMenu);
+		std::list<KeyboardShortcut>& shortcuts = guiKeyboardManager.getKeyboardShortcuts();
+		shortcuts.push_back(ks);
+	}
+	else if(currentMode == MapEditShortcuts)
+	{
+		ks.setAction(MapEditKeyActions::SwitchToBuildingView);
+		std::list<KeyboardShortcut>& shortcuts = mapeditKeyboardManager.getKeyboardShortcuts();
+		shortcuts.push_back(ks);
+	}
+	updateShortcutList(shortcut_list->getCount());
+	shortcut_list->setSelectionIndex(shortcut_list->getCount()-1);
+	shortcut_list->centerOnItem(shortcut_list->getCount()-1);
+	updateShortcutInfoFromSelection();
+}
+
+
+
+void SettingsScreen::removeShortcut()
+{
+	int selection_n = shortcut_list->getSelectionIndex();
+	if(currentMode == GameGUIShortcuts)
+	{
+		std::list<KeyboardShortcut>& shortcuts = guiKeyboardManager.getKeyboardShortcuts();
+		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
+		std::advance(i, selection_n);
+		shortcuts.erase(i);
+	}
+	else if(currentMode == MapEditShortcuts)
+	{
+		std::list<KeyboardShortcut>& shortcuts = mapeditKeyboardManager.getKeyboardShortcuts();
+		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
+		std::advance(i, selection_n);
+		shortcuts.erase(i);
+	}
+	shortcut_list->setSelectionIndex(std::max(0, selection_n-1));
+	updateShortcutList();
+	updateShortcutInfoFromSelection();
 }
 
 

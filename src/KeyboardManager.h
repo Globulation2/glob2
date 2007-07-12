@@ -122,8 +122,14 @@ public:
 	///Loads the keyboard layout, returns false in unsuccessfull
 	bool loadKeyboardLayout(const std::string& file);
 
+	///Clears all current shortcuts and loads the defaults
+	void loadDefaultShortcuts();
+
 	///Returns the list of keyboard shortcuts
-	const std::list<KeyboardShortcut> getKeyboardShortcuts();
+	const std::list<KeyboardShortcut>& getKeyboardShortcuts() const;
+
+	///Returns the list of keyboard shortcuts
+	std::list<KeyboardShortcut>& getKeyboardShortcuts();
 
 private:
 	std::list<KeyboardShortcut> shortcuts;

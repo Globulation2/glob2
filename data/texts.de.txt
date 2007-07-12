@@ -20,6 +20,8 @@ V: Teile die Sicht für alle Gebäude
 KI hinzufügen
 [add map]
 
+[add shortcut]
+
 [AI]
 KI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-A
 [Alga]
 Algen
 [algae]
@@ -90,8 +90,6 @@ Verbessert die Kampf-
 Trainingslager
 [beach size]
 Strandbreite
-[bkey]
-B
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Wählen Sie eine Kampagne aus
 Spiel auswählen
 [choose map]
 Karte auswählen
-[ckey]
-C
 [clear area]
 Rodungszone
 [Clearing:]
@@ -240,6 +236,8 @@ Schaden
 
 [dblbuff]
 Double-buffering
+[decrease units working]
+
 [default terrain]
 Vorgabeterrain
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Zerstören
 Trennen
 [display]
 Anzeige
-[dkey]
-D
 [don't carry anything]
 Transportiert nichts
 [download finished]
@@ -288,8 +284,6 @@ Heruntergeladen zu
 
 [editor]
 Editor
-[ekey]
-E
 [Enter your nickname :]
 Geben Sie ihren Spitznamen ein:
 [Enter your password :]
@@ -308,8 +302,6 @@ Entdecker
 Entdecker
 [extra islands]
 leere Inseln
-[fkey]
-F
 [food left]
 Nahrung
 [food]
@@ -336,8 +328,10 @@ Spiel komplett
 Spielgeschwindigkeit
 [general settings]
 Allgemein
-[gkey]
-G
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Zurück zum Hauptmenu
 [grass]
@@ -354,6 +348,8 @@ eine Karte
 Handgemachte Karte
 [Happyness]
 Zufriedenheit
+[hard pause]
+
 [Harvest]
 Ernten
 [has joined]
@@ -362,8 +358,6 @@ ist verbunden
 ist gegangen
 [heal]
 Gesundheit
-[hkey]
-H
 [hospital explanation 2]
 
 [hospital explanation]
@@ -384,10 +378,10 @@ hungrig
 Hunger
 [hwaccel]
 Hardwarebeschleunigung
-[ikey]
-I
 [In way]
 Unterwegs
+[increase units working]
+
 [inn explanation 2]
 
 [inn explanation]
@@ -406,8 +400,8 @@ Drinnen
 Inselgrösse
 [islands terrain]
 Inseln
-[jkey]
-J
+[iterate selection]
+
 [jobs]
 
 [join a game]
@@ -418,8 +412,6 @@ Mitspielen
 Tastatur
 [kick]
 
-[kkey]
-K
 [lan]
 Spiel im lokalen Netz
 [language-code]
@@ -436,8 +428,6 @@ groß
 Stufe
 [levels]
 Stufen
-[lkey]
-L
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ mittel
 Mindestlevel:
 [Minimum Level To Flag]
 
-[mkey]
-M
 [Music volume]
 Volumen (Musik)
 [mute]
@@ -500,8 +488,6 @@ Netzlatenz
 Neu
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
-[nkey]
-N
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ Mannschaften
 davon
 [ok]
 Ok
-[okey]
-O
 [old islands terrain]
 alte Inselzufallskarte
 [old random terrain]
@@ -530,6 +514,8 @@ alte Zufallskarte
 Vor Ort
 [one player]
 Ein Spieler spielt mit.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Pause
 Pause
 [percent]
   Prozent
-[pkey]
-P
 [player name]
 Spielername
 [player]
@@ -566,8 +550,6 @@ Leertaste drücken, um fortzufahren.
 Prestige
 [Prune]
 Pflaumen
-[qkey]
-Q
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Zufallslandschaft
 Reichweite
 [ratios]
 Verhältnis
-[record voice]
-Mikrofon einschalten
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [remember unit]
@@ -595,6 +575,8 @@ Arbeiterzahlen merken
 [Remember YOG password localy]
 Passwort lokal speichern. (unsicher)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 Reparatur einleiten/beenden
@@ -614,8 +596,6 @@ Zurück zum Spiel
 Flussbreite
 [river terrain]
 Flussbett
-[rkey]
-R
 [sand]
 Sand
 [save before quit?]
@@ -642,6 +622,26 @@ suchen
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ suchen
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,8 +684,8 @@ Einstellungen
 Enter: Chatnachricht senden
 [shortcut explanation v]
 V: gedrückt halten, um zu sprechen
-[skey]
-S
+[show main menu]
+
 [skin]
 Anzeige
 [small]
@@ -738,9 +750,29 @@ tempo Ihrer Einheiten
 Erhöht das Schwimm-
 [swimmingpool]
 Schwimmbecken
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ Das Schwimmbecken wird angegriffen
 ?? Kriegsflagge fertig ??
 [the warflag is under attack]
 ?? Kriegsflagge wird angegriffen ??
-[tkey]
-T
 [to:]
 auf:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Zugänglichkeitshilfen einblenden
 Informationen malen an/aus
 [toggle draw unit paths]
 Wege zeigen an/aus
+[toggle menu screen]
+
+[toggle recording voice]
+Mikrofon einschalten
 [Total prestige reached]
 Höchstmögliches Prestige erreicht
 [Total]
 Gesamt
 [tutorial]
 Übungsmission
-[ukey]
-U
 [unassigned]
 Keine Funktion
 [Uncontrolled]
@@ -864,12 +896,14 @@ Verbessern
 Benutzername
 [Version]
 Version
-[vkey]
-V
+[view history]
+
 [wait destroy]
 Warten auf Zerstörung
 [waiting for %0]
 Warten auf %0
+[waiting for key]
+
 [Walk]
 Gehen
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Wasser
 
 [wheat]
 Weizen
-[wkey]
-W
 [Won : you defeated your opponents]
 Gewonnen: Sie haben Ihre Feinde besiegt
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ Arbeiterinnen
 An der Arbeit
 [wounded]
 verletzt
-[xkey]
-X
 [Yes]
 Ja
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Beende Verbindung zum YOG Metaserver...
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 [YESTS_YOG_KILLED]
 Ein Administrator hat gerade den YOG-Metaserver abgeschaltet.
-[ykey]
-Y
 [yog-chat]
 #yog-de
 [yog]
@@ -978,5 +1006,3 @@ Sie haben gewonnen!
 Eure %0 werden angegriffen
 [Your unit got converted to %0's team]
 Eine Ihrer Einheiten wurde von einem %0-Team übernommen.
-[zkey]
-Z

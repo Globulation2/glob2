@@ -20,6 +20,8 @@ Spreobrnil si enoto druge ekipe %0
 Dodaj UI
 [add map]
 
+[add shortcut]
+
 [AI]
 UI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-
 [Alga]
 Alga
 [algae]
@@ -90,8 +90,6 @@ Izboljša stopnjo bojevenja
 Vojašnica
 [beach size]
 velikost obal
-[bkey]
-
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Izberi kampanjo
 Izberi igro
 [choose map]
 Izberi mapo
-[ckey]
-
 [clear area]
 
 [Clearing:]
@@ -240,6 +236,8 @@ Naključni kazalec
 
 [dblbuff]
 Dvojni začasni pomnilnik
+[decrease units working]
+
 [default terrain]
 Default terrain
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Uniči
 Prekini povezavo
 [display]
 Prikaz
-[dkey]
-
 [don't carry anything]
 Ne nosi ničesar
 [download finished]
@@ -288,8 +284,6 @@ naloženo iz
 
 [editor]
 Urejevalnik
-[ekey]
-
 [Enter your nickname :]
 Vnesi svoj vzdevek :
 [Enter your password :]
@@ -307,8 +301,6 @@ Raziskovalec
 [explorers]
 raziskovalci
 [extra islands]
-
-[fkey]
 
 [food left]
 Hreane ostalo
@@ -336,7 +328,9 @@ Igra je polna
 Hitrost igre
 [general settings]
 
-[gkey]
+[go to event]
+
+[go to home]
 
 [goto main menu]
 Nazaj v glavni menu
@@ -354,6 +348,8 @@ Nadzorovano področje
 Ročno izdelana mapa
 [Happyness]
 Zadovoljstvo
+[hard pause]
+
 [Harvest]
 Poberi
 [has joined]
@@ -362,8 +358,6 @@ se je vkljičil
 je odšel
 [heal]
 Zdravje
-[hkey]
-
 [hospital explanation 2]
  
 [hospital explanation]
@@ -384,10 +378,10 @@ lačen
 
 [hwaccel]
 Strojno pospeševanje
-[ikey]
-
 [In way]
 Na poti
+[increase units working]
+
 [inn explanation 2]
  
 [inn explanation]
@@ -406,7 +400,7 @@ Znotraj
 velikost otokov
 [islands terrain]
 Otoki
-[jkey]
+[iterate selection]
 
 [jobs]
 
@@ -417,8 +411,6 @@ Vključi se
 [keyboard settings]
 
 [kick]
-
-[kkey]
 
 [lan]
 LAN Igra
@@ -436,8 +428,6 @@ velika
 Stopnja
 [levels]
 Stopnje
-[lkey]
-
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ srednja
 Najnižja zahtevana stopnja
 [Minimum Level To Flag]
 
-[mkey]
-
 [Music volume]
 Glasnost glasbe
 [mute]
@@ -500,8 +488,6 @@ Pretočnost mreže
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
-[nkey]
-
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ ni pripravljen
 od katerih
 [ok]
 Potrdi
-[okey]
-
 [old islands terrain]
 
 [old random terrain]
@@ -530,6 +514,8 @@ Potrdi
 Tukaj
 [one player]
 Igralec se je vključil.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Papirus
 Ustavljeno
 [percent]
   %
-[pkey]
-
 [player name]
 Ime igralca
 [player]
@@ -566,8 +550,6 @@ Zahteva za prisotnost poslana ...
 Ugled
 [Prune]
 Slive
-[qkey]
-
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Naklučni teren
 Domet
 [ratios]
 Razmerja
-[record voice]
-
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
 [remember unit]
@@ -595,6 +575,8 @@ Prijavi novega YOG uporabnika z geslom. (Ni varno!)
 [Remember YOG password localy]
 Zapomni si YOG geslo lokalno. (Ni varno)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 
@@ -613,8 +595,6 @@ Vrnitev v igro
 [river diameter]
 
 [river terrain]
-
-[rkey]
 
 [sand]
 Pesek
@@ -642,6 +622,26 @@ Iščem
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ Iščem
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,7 +684,7 @@ Nastavitve
 
 [shortcut explanation v]
 
-[skey]
+[show main menu]
 
 [skin]
 
@@ -738,9 +750,29 @@ sposobnosti tvojih enot
 Izboljša plavalne
 [swimmingpool]
 Bazen
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ Bazen je napaden
 Vojaška zastava je zgrajena
 [the warflag is under attack]
 Vojaška zastava je napadena
-[tkey]
-
 [to:]
 za:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ za:
 
 [toggle draw unit paths]
 
+[toggle menu screen]
+
+[toggle recording voice]
+
 [Total prestige reached]
 Najvišji dosežen ugled
 [Total]
 Skupaj
 [tutorial]
 Predavanje
-[ukey]
-
 [unassigned]
 
 [Uncontrolled]
@@ -864,12 +896,14 @@ Nadgradi
 Uporabniško ime
 [Version]
 Različica
-[vkey]
+[view history]
 
 [wait destroy]
 Počakaj z uničenjem 
 [waiting for %0]
 Čakam %0
+[waiting for key]
+
 [Walk]
 Hodi
 [warflag explanation 2]
@@ -894,8 +928,6 @@ je bil
 Voda
 [Wheat]
 
-[wkey]
-
 [Won : you defeated your opponents]
 Zmagal si : premagal si vse nasprotnike
 [Won : you have the most prestige]
@@ -918,8 +950,6 @@ delavci
 Izdelujem
 [wounded]
 ranjen
-[xkey]
-
 [Yes]
 Da
 [YESTS_BAD]
@@ -952,8 +982,6 @@ Prekinjam povezavo z YOG metastrežnikom...
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 [YESTS_YOG_KILLED]
 Administrator je ustavil navidezni metastrežnik.
-[ykey]
-
 [yog-chat]
 #yog-en
 [yog]
@@ -976,5 +1004,3 @@ Zmagal si!
 Tvoji %0 so napadeni
 [Your unit got converted to %0's team]
 Tvoje enote so bile spreobrnjene %0
-[zkey]
-

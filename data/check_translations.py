@@ -1,4 +1,4 @@
-changes={"[record voice]" : "[toggle recording voice]"}
+changes={}
 
 def translation_check(filename, keys):
     print "Examining %s" % (filename)
@@ -18,7 +18,8 @@ def translation_check(filename, keys):
                 current_key = changes.get(line, line)
                 expect_type="text"
         elif expect_type == "text":
-            texts.append((current_key, line))
+            if current_key:
+                texts.append((current_key, line))
             expect_type = "key"
         n += 1
     
@@ -49,7 +50,7 @@ def main():
     keys=[]
     for line in keyf:
         line=line.replace("\n", "")
-        keys.append(line)
+        keys.append(changes.get(line, line))
     keyf.close()
     nkeys = [(s.lower(), s) for s in keys]
     nkeys.sort()

@@ -58,6 +58,8 @@ public:
 		GAMESHORTCUTS=13,
 		EDITORSHORTCUTS=14,
 		SECONDKEY=15,
+		ADDSHORTCUT=16,
+		REMOVESHORTCUT=17,
 	};
 private:
 	Settings old_settings;
@@ -88,6 +90,8 @@ private:
 	OnOffButton *key_2_active;
 	KeySelector* select_key_2;
 	List* action_list;
+	TextButton* add_shortcut;
+	TextButton* remove_shortcut;
 
 	bool gfxAltered;
 	
@@ -107,14 +111,20 @@ private:
 	KeyboardManager guiKeyboardManager;
 public:
 	ShortcutMode currentMode;
-	///Update shortcut_list
-	void updateShorcutList(ShortcutMode mode);
+	///Update shortcut_list, if n is not -1, just update that specific entry
+	void updateShortcutList(int n=-1);
 	///Update the action_list
-	void updateActionList(ShortcutMode mode);
+	void updateActionList();
 	///Updates the boxes from the current shortcut selection
 	void updateShortcutInfoFromSelection();
 	///Updates the KeyboardManager from the shortcut info
 	void updateKeyboardManagerFromShortcutInfo();
+	///Tells the KeyboardManager to load from the defaults
+	void loadDefaultKeyboardShortcuts();
+	///Adds a shortcut to the current keyboard manager
+	void addNewShortcut();
+	///Removes a shortcut from current keyboard manager
+	void removeShortcut();
 
 	SettingsScreen();
 	virtual ~SettingsScreen() { }

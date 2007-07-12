@@ -75,14 +75,14 @@ namespace MapEditKeyActions
 		names[SelectMarket] = "select market building";
 		keys["select market building"] = SelectMarket;
 	
-		names[SelectExplorationFlag] = "select exploration flag";
-		keys["select exploration flag"] = SelectExplorationFlag;
+		names[SelectExplorationFlag] = "select explorationflag";
+		keys["select explorationflag"] = SelectExplorationFlag;
 	
-		names[SelectWarFlag] = "select war flag";
-		keys["select war flag"] = SelectWarFlag;
+		names[SelectWarFlag] = "select warflag";
+		keys["select warflag"] = SelectWarFlag;
 	
-		names[SelectClearingFlag] = "select clearing flag";
-		keys["select clearing flag"] = SelectClearingFlag;
+		names[SelectClearingFlag] = "select clearingflag";
+		keys["select clearingflag"] = SelectClearingFlag;
 	
 		names[ToggleMenuScreen] = "toggle menu screen";
 		keys["toggle menu screen"] = ToggleMenuScreen;

@@ -20,6 +20,8 @@ V: Show vision for all buildings
 Add AI
 [add map]
 
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-A-key
 [Alga]
 طحلب
 [algae]
@@ -90,8 +90,6 @@ Bad error in connection system
 ثكنه
 [beach size]
 حجم الشاطىء
-[bkey]
-B-key
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Checksum sent ...
 اختر لعبه
 [choose map]
 اختر خريطه
-[ckey]
-C-key
 [clear area]
 Clearing area
 [Clearing:]
@@ -240,6 +236,8 @@ Custom cursor
 Damaged Map
 [dblbuff]
 Double buffering
+[decrease units working]
+
 [default terrain]
 Default terrain
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Delete the selected game
 Disconnect
 [display]
 عرض
-[dkey]
-D-key
 [don't carry anything]
 لايحمل شىء
 [download finished]
@@ -288,8 +284,6 @@ Downloaded at
 Editor Shortcuts
 [editor]
 المحرر
-[ekey]
-E-key
 [Enter your nickname :]
 ادخل اسمك المستعار :
 [Enter your password :]
@@ -308,8 +302,6 @@ Explorer Ratio
 المستكشفون
 [extra islands]
 جزيره خاليه
-[fkey]
-F-key
 [food left]
 ترك الطعام
 [food]
@@ -336,8 +328,10 @@ Game Shortcuts
 Game speed
 [general settings]
 اعدادات عامه
-[gkey]
-G-key
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Go back to main menu
 [grass]
@@ -354,6 +348,8 @@ a map
 Handmade map
 [Happyness]
 السعاده
+[hard pause]
+
 [Harvest]
 يحصد
 [has joined]
@@ -362,8 +358,6 @@ has joined
 has quit
 [heal]
 الصحه
-[hkey]
-H-key
 [hospital explanation 2]
  
 [hospital explanation]
@@ -384,10 +378,10 @@ Hitpoint
 الجوع
 [hwaccel]
 Hardware acceleration
-[ikey]
-I-key
 [In way]
 فى الطريق
+[increase units working]
+
 [inn explanation 2]
  
 [inn explanation]
@@ -406,8 +400,8 @@ I-key
 حجم الجزيره
 [islands terrain]
 جزر
-[jkey]
-J-key
+[iterate selection]
+
 [jobs]
 jobs
 [join a game]
@@ -418,8 +412,6 @@ Join
 Keyboard Settings
 [kick]
 
-[kkey]
-K-key
 [lan]
 LAN Game
 [language-code]
@@ -436,8 +428,6 @@ large
 المستوى
 [levels]
 المستويات
-[lkey]
-L-key
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ medium
 المستوى الادنى المطلوب:
 [Minimum Level To Flag]
 Minimum Flag Level
-[mkey]
-M-key
 [Music volume]
 صوت (الموسيقى)
 [mute]
@@ -500,8 +488,6 @@ Network latency
 جديد
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
-[nkey]
-N-key
 [no ressources growth areas]
 No Growth Areas
 [No]
@@ -520,8 +506,6 @@ number of teams
 هنالك
 [ok]
 موافق
-[okey]
-O-key
 [old islands terrain]
 old random islands
 [old random terrain]
@@ -530,6 +514,8 @@ old random terrain
 هنا
 [one player]
 A player has joined.
+[open chat box]
+
 [open load menu]
 Open Load Menu
 [open save menu]
@@ -550,8 +536,6 @@ Pause Game
 Paused
 [percent]
   percent
-[pkey]
-P-key
 [player name]
 اسم الاعب
 [player]
@@ -566,8 +550,6 @@ Press space to continue.
 سمعه
 [Prune]
 Prune
-[qkey]
-Q-key
 [quit the editor]
 الخروج من المحرر
 [quit the game]
@@ -586,8 +568,6 @@ Random terrain
 المدى
 [ratios]
 Proportions
-[record voice]
-Initiate Voice Recording
 [Register a new YOG user with password]
 Register a new YOG user with a password. (insecure)
 [remember unit]
@@ -595,6 +575,8 @@ Remember Unit
 [Remember YOG password localy]
 Remember the password locally. (insecure)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 Start/Stop Repair
@@ -614,8 +596,6 @@ Restore Default Keyboard Shortcuts
 عرض النهر
 [river terrain]
 النهر
-[rkey]
-R-key
 [sand]
 رمل
 [save before quit?]
@@ -642,6 +622,26 @@ Script Areas
 Select Barracks
 [select clearingflag]
 Select Clearing Flag
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 Select Exploration Flag
 [select hospital building]
@@ -650,6 +650,18 @@ Select Hospital
 Select Inn
 [select market building]
 Select Market
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
 [select racetrack building]
 Select Racetrack
 [select school building]
@@ -672,8 +684,8 @@ Session request sent ...
 Enter: send a chat message
 [shortcut explanation v]
 V: hold to speak
-[skey]
-S-key
+[show main menu]
+
 [skin]
 Display
 [small]
@@ -738,10 +750,30 @@ Server hostname
 يحسن السباحه
 [swimmingpool]
 المسبح
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 Switch To Building view
 [switch to flag view]
 Switch to Flags view
+[switch to removing areas]
+
 [switch to teams view]
 Switch to Team view
 [switch to terrain view]
@@ -814,8 +846,6 @@ The game has not been finished
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
-[tkey]
-T-key
 [to:]
 الى:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Toggle Draw Accessibility Aids
 Toggle Draw Information
 [toggle draw unit paths]
 Toggle Draw Unit Paths
+[toggle menu screen]
+
+[toggle recording voice]
+Initiate Voice Recording
 [Total prestige reached]
 بلغ من هيبة
 [Total]
 المحصله
 [tutorial]
 تعليم
-[ukey]
-U-key
 [unassigned]
 Unassigned
 [Uncontrolled]
@@ -864,12 +896,14 @@ Start/Stop Upgrade
 اسم المستخدم
 [Version]
 اﻷصداره
-[vkey]
-V-key
+[view history]
+
 [wait destroy]
 تنتظر التدمير
 [waiting for %0]
 انتظار %0
+[waiting for key]
+
 [Walk]
 يمشى
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Water
 
 [wheat]
 الذره
-[wkey]
-W-key
 [Won : you defeated your opponents]
 Won: you defeated your opponents
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ Worker Ratio
 يعمل
 [wounded]
 مجروح
-[xkey]
-X-key
 [Yes]
 نعم
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Disconnecting from the YOG metaserver...
 Unable to connect. Apparently the YOG metaserver is down.
 [YESTS_YOG_KILLED]
 An administrator has just stopped the YOG metaserver.
-[ykey]
-Y-key
 [yog-chat]
 #yog-en
 [yog]
@@ -978,5 +1006,3 @@ You are marked as away.
 %0 تحت الهجوم
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
-[zkey]
-Z-key

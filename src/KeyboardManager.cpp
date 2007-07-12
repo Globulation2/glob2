@@ -161,7 +161,7 @@ std::string KeyboardShortcut::format(ShortcutMode mode) const
 	if(mode == GameGUIShortcuts)
 		s+=GameGUIKeyActions::getName(action);
 	else if(mode == MapEditShortcuts)
-		MapEditKeyActions::getName(action);
+		s+=MapEditKeyActions::getName(action);
 	return s;
 }
 
@@ -170,15 +170,15 @@ std::string KeyboardShortcut::format(ShortcutMode mode) const
 void KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
 {
 	std::string s = as;
-	std::string left = std::string(s, 0, s.find("="));
-	std::string right = std::string(s, s.find("=")+1, std::string::npos);
-	while(left.find("-") != std::string::npos)
+	std::string left = std::string(s, 0, s.find(">=")+1);
+	std::string right = std::string(s, s.find(">=")+2, std::string::npos);
+	while(left.find(">-") != std::string::npos)
 	{
-		size_t end = left.find("-");
+		size_t end = left.find(">-");
 		KeyPress kp;
-		kp.interpret(left.substr(0, end));
+		kp.interpret(left.substr(0, end+1));
 		keys.push_back(kp);
-		left=left.substr(end+1, std::string::npos);
+		left=left.substr(end+2, std::string::npos);
 	}
 	
 	//Add the key that isn't seperated by a -
@@ -226,11 +226,19 @@ KeyboardManager::KeyboardManager(ShortcutMode mode)
 	: mode(mode)
 {
 	if(mode == GameGUIShortcuts)
+	{
 		if(!loadKeyboardLayout(GameGUIKeyActions::getConfigurationFile()))
+		{
 			loadKeyboardLayout(GameGUIKeyActions::getDefaultConfigurationFile());
+		}
+	}
 	else if(mode == MapEditShortcuts)
+	{
 		if(!loadKeyboardLayout(MapEditKeyActions::getConfigurationFile()))
+		{
 			loadKeyboardLayout(MapEditKeyActions::getDefaultConfigurationFile());
+		}
+	}
 }
 
 
@@ -322,7 +330,26 @@ bool KeyboardManager::loadKeyboardLayout(const std::string& file)
 
 
 
-const std::list<KeyboardShortcut> KeyboardManager::getKeyboardShortcuts()
+void KeyboardManager::loadDefaultShortcuts()
+{
+	shortcuts.clear();
+	lastPresses.clear();
+	if(mode == GameGUIShortcuts)
+		loadKeyboardLayout(GameGUIKeyActions::getDefaultConfigurationFile());
+	else if(mode == MapEditShortcuts)
+		loadKeyboardLayout(MapEditKeyActions::getDefaultConfigurationFile());
+}
+
+
+
+const std::list<KeyboardShortcut>& KeyboardManager::getKeyboardShortcuts() const
+{
+	return shortcuts;
+}
+
+
+
+std::list<KeyboardShortcut>& KeyboardManager::getKeyboardShortcuts()
 {
 	return shortcuts;
 }

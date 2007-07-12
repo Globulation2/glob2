@@ -20,6 +20,8 @@ V: Toon een visioen voor alle gebouwen
 Voeg AI toe
 [add map]
 Toevoegen
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 Toubib
 [AIWarrush]
 Warrush
-[akey]
-Toets A
 [Alga]
 Zeewier
 [algae]
@@ -90,8 +90,6 @@ Leert je eenheden
 Kazerne
 [beach size]
 Strand grootte
-[bkey]
-Toets B
 [build barracks level 0]
 Bouw Kazerne 0
 [build barracks level 1]
@@ -186,8 +184,6 @@ Kies een missie
 Kies een spel
 [choose map]
 Kies een speelveld
-[ckey]
-Toets C
 [clear area]
 Grondstoffenzone
 [Clearing:]
@@ -240,6 +236,8 @@ Schade
 Beschadigd
 [dblbuff]
 Dubbele buffers
+[decrease units working]
+
 [default terrain]
 Standaard terrein
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Vernietig
 Verbreek verbinding
 [display]
 Beeld
-[dkey]
-Toets D
 [don't carry anything]
 Draagt niets
 [download finished]
@@ -288,8 +284,6 @@ Speelveld bewerken
 Bewerker toetsen
 [editor]
 Bewerker
-[ekey]
-Toets E
 [Enter your nickname :]
 Voer gebruikersnaam in:
 [Enter your password :]
@@ -308,8 +302,6 @@ Verkenner
 verkenners
 [extra islands]
 Lege eilanden
-[fkey]
-Toets F
 [food left]
 Voedsel over
 [food]
@@ -336,8 +328,10 @@ Spel toetsen
 Speelsnelheid
 [general settings]
 Algemeen
-[gkey]
-Toets G
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Terug naar hoofdmenu
 [grass]
@@ -354,6 +348,8 @@ een spel/speelveld
 Zelfgemaakt speelveld
 [Happyness]
 Tevreden
+[hard pause]
+
 [Harvest]
 Verzamelen
 [has joined]
@@ -362,8 +358,6 @@ neemt deel
 is gestopt
 [heal]
 Gezondheid
-[hkey]
-Toets H
 [hospital explanation 2]
 
 [hospital explanation]
@@ -384,10 +378,10 @@ honger
 Honger
 [hwaccel]
 Hardware versnelling
-[ikey]
-Toets I
 [In way]
 Op weg
+[increase units working]
+
 [inn explanation 2]
 
 [inn explanation]
@@ -406,8 +400,8 @@ Binnen
 Eiland grootte
 [islands terrain]
 Eilanden
-[jkey]
-Toets J
+[iterate selection]
+
 [jobs]
 werk
 [join a game]
@@ -418,8 +412,6 @@ Deelnemen
 Toetsenbord
 [kick]
 
-[kkey]
-Toets K
 [lan]
 LAN Spel
 [language-code]
@@ -436,8 +428,6 @@ groot
 Niveau
 [levels]
 Niveaus
-[lkey]
-Toets L
 [load campaign]
 Campagne laden
 [load game]
@@ -486,8 +476,6 @@ middel
 Minimaal vereist niveau:
 [Minimum Level To Flag]
 Minimaal vereist niveau:
-[mkey]
-Toets M
 [Music volume]
 Volume (muziek)
 [mute]
@@ -500,8 +488,6 @@ Nieuwe campagne
 Nieuw
 [nick taken]
 Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode. Je kan alleen maar praten via YOG
-[nkey]
-Toets N
 [no ressources growth areas]
 niet-groeigebieden
 [No]
@@ -520,8 +506,6 @@ Aantal teams
 waarvan
 [ok]
 Ok
-[okey]
-Toets O
 [old islands terrain]
 Oude eilanden
 [old random terrain]
@@ -530,6 +514,8 @@ Oud willekeurig terrein
 Hier
 [one player]
 Een speler neemt deel.
+[open chat box]
+
 [open load menu]
 Open menu laden
 [open save menu]
@@ -550,8 +536,6 @@ Pauzeer het spel
 Pauze
 [percent]
   procent
-[pkey]
-Toets P
 [player name]
 Naam speler
 [player]
@@ -566,8 +550,6 @@ Druk op spatie om verder te gaan
 Roem
 [Prune]
 Pruimen
-[qkey]
-Toets Q
 [quit the editor]
 Verlaat bewerker
 [quit the game]
@@ -586,8 +568,6 @@ Willekeurig terrein
 Bereik
 [ratios]
 Afmetingen
-[record voice]
-Spraak opname
 [Register a new YOG user with password]
 Registreer nieuwe gebruiker met wachtwoord (onveilig)
 [remember unit]
@@ -596,6 +576,8 @@ Onthoud eenheid
 Onthoud wachtwoord (onveilig)
 [remove map]
 Verwijderen
+[remove shortcut]
+
 [repair building]
 Start/Stop repareren
 [repair]
@@ -614,8 +596,6 @@ Speel verder
 Breedte van rivier
 [river terrain]
 Rivier
-[rkey]
-Toets R
 [sand]
 Zand
 [save before quit?]
@@ -642,6 +622,26 @@ zoeken
 Selecteer Kazerne
 [select clearingflag]
 Selecteer Grondstoffenvlag
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 Selecteer Verkenningsvlag
 [select hospital building]
@@ -650,6 +650,18 @@ Selecteer Ziekenhuis
 Selecteer Herberg
 [select market building]
 Selecteer Markt
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
 [select racetrack building]
 Selecteer Racebaan
 [select school building]
@@ -672,8 +684,8 @@ Instellingen
 Enter-toets: stuur een bericht
 [shortcut explanation v]
 V-toets: ingedrukt houden om te spreken
-[skey]
-Toets S
+[show main menu]
+
 [skin]
 Uiterlijk
 [small]
@@ -738,10 +750,30 @@ sneller zwemmen
 Leert je eenheden
 [swimmingpool]
 Zwembad
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 Schakel naar gebouwen scherm
 [switch to flag view]
 Schakel naar vlaggen scherm
+[switch to removing areas]
+
 [switch to teams view]
 Schakel naar teams scherm
 [switch to terrain view]
@@ -814,8 +846,6 @@ Het zwembad wordt aangevallen
 ?? De oorlogsvlag is klaar ??
 [the warflag is under attack]
 ?? De oorlogsvlag wordt aangevallen ??
-[tkey]
-Toets T
 [to:]
 aan:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Tekenhulpmiddelen aan/uitschakelen
 Tekeninformatie aan/uitschakelen
 [toggle draw unit paths]
 Paden van eenheden aan/uitschakelen
+[toggle menu screen]
+
+[toggle recording voice]
+Spraak opname
 [Total prestige reached]
 Totaal verworven roem
 [Total]
 Totaal
 [tutorial]
 Oefenspel
-[ukey]
-Toets U
 [unassigned]
 Niet toegewezen
 [Uncontrolled]
@@ -864,12 +896,14 @@ Verbeter
 Gebruikersnaam
 [Version]
 Versie
-[vkey]
-Toets V
+[view history]
+
 [wait destroy]
 Wordt vernietigd
 [waiting for %0]
 Wachten op %0
+[waiting for key]
+
 [Walk]
 Lopen
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Water
 
 [wheat]
 Graan
-[wkey]
-Toets W
 [Won : you defeated your opponents]
 Gewonnen: je hebt je tegenstanders verslagen
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ werkers
 Werkend
 [wounded]
 gewond
-[xkey]
-Toets X
 [Yes]
 Ja
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Verbinding verbreken met YOG server...
 Kan geen verbinding maken. Waarschijnlijk werkt de YOG server niet.
 [YESTS_YOG_KILLED]
 Een administrator heeft de YOG server zojuist afgesloten.
-[ykey]
-Toets Y
 [yog-chat]
 #yog-en
 [yog]
@@ -978,5 +1006,3 @@ Je hebt gewonnen!
 Je %0 worden aangevallen
 [Your unit got converted to %0's team]
 Een eenheid van jou is overgelopen naar %0's team
-[zkey]
-Toets Z

@@ -20,6 +20,8 @@ V: Ukáž, čo vidia budovy
 Pridaj UI
 [add map]
 
+[add shortcut]
+
 [AI]
 UI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 UIToubib
 [AIWarrush]
 UIWarrush
-[akey]
-klávesa A
 [Alga]
 Riasy
 [algae]
@@ -90,8 +90,6 @@ Učí lepšie bojovať
 Kasárne
 [beach size]
 veľkosť pláže
-[bkey]
-klávesa B
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Vyber si kampaň
 Vyber si hru
 [choose map]
 Vyber si mapu
-[ckey]
-klávesa C
 [clear area]
 Čistenie
 [Clearing:]
@@ -240,6 +236,8 @@ Poškodenie
 
 [dblbuff]
 Double Buffering
+[decrease units working]
+
 [default terrain]
 Základný povrch
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Zničiť
 Odpojiť
 [display]
 Zobrazenie
-[dkey]
-klávesa D
 [don't carry anything]
 Nič nenesie
 [download finished]
@@ -288,8 +284,6 @@ Stiahnutých
 
 [editor]
 Editor
-[ekey]
-klávesa E
 [Enter your nickname :]
 Zadaj prezývku:
 [Enter your password :]
@@ -308,8 +302,6 @@ Prieskumník
 prieskumníci
 [extra islands]
 prázdne ostrovy
-[fkey]
-klávesa F
 [food left]
 Jedla
 [food]
@@ -336,8 +328,10 @@ Plné
 Rýchlosť hry
 [general settings]
 Základ
-[gkey]
-klávesa G
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Návrat do menu
 [grass]
@@ -354,6 +348,8 @@ mapu
 Ručná mapa
 [Happyness]
 Šťastie
+[hard pause]
+
 [Harvest]
 Ťažba
 [has joined]
@@ -362,8 +358,6 @@ sa pridal
 odišiel
 [heal]
 Zdravie
-[hkey]
-klávesa H
 [hospital explanation 2]
  
 [hospital explanation]
@@ -384,10 +378,10 @@ hladní
 Hlad
 [hwaccel]
 Hardvérová akcelerácia
-[ikey]
-klávesa I
 [In way]
 Na ceste
+[increase units working]
+
 [inn explanation 2]
  
 [inn explanation]
@@ -406,8 +400,8 @@ Vovnútri
 veľkosť ostrovu
 [islands terrain]
 Ostrovy
-[jkey]
-klávesa J
+[iterate selection]
+
 [jobs]
 
 [join a game]
@@ -418,8 +412,6 @@ Vstúpiť
 Klávesnica
 [kick]
 
-[kkey]
-klávesa K
 [lan]
 LAN Hra
 [language-code]
@@ -436,8 +428,6 @@ veľká
 Úroveň
 [levels]
 Úrovne
-[lkey]
-klávesa L
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ stredná
 Najnižšia potrebná úroveň:
 [Minimum Level To Flag]
 
-[mkey]
-klávesa M
 [Music volume]
 Hlasitosť (hudba)
 [mute]
@@ -500,8 +488,6 @@ Latencia siete
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
-[nkey]
-klávesa N
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ počet tímov
 z nich
 [ok]
 Ok
-[okey]
-klávesa O
 [old islands terrain]
 staré náhodné ostrovy
 [old random terrain]
@@ -530,6 +514,8 @@ starý náhodný terén
 Tu
 [one player]
 Pripojil sa hráč.
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Pozastaviť hru
 Zastavené
 [percent]
   percent
-[pkey]
-klávesa P
 [player name]
 Meno hráča
 [player]
@@ -566,8 +550,6 @@ Pre pokračovanie stlač medzeru
 Prestíž
 [Prune]
 Slivka
-[qkey]
-klávesa Q
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Náhodný povrch
 Dosah
 [ratios]
 Proporcie
-[record voice]
-Spustiť nahrávanie zvuku
 [Register a new YOG user with password]
 Zaregistrovať nové YOG meno s heslom. (nezabezpečené)
 [remember unit]
@@ -595,6 +575,8 @@ Uložiť jednotku
 [Remember YOG password localy]
 Zapamätať si heslo. (nezabezpečené)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 Spust./zast. opravu
@@ -614,8 +596,6 @@ Nazad do hry
 šírka rieky
 [river terrain]
 Rieka
-[rkey]
-klávesa R
 [sand]
 Piesok
 [save before quit?]
@@ -642,6 +622,26 @@ hľadajú
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ hľadajú
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,8 +684,8 @@ Nastavenia
 Enter: Pošli správu
 [shortcut explanation v]
 V: Drž a rozprávaj
-[skey]
-klávesa S
+[show main menu]
+
 [skin]
 Povrch
 [small]
@@ -738,9 +750,29 @@ Plávanie
 Zvyšuje rýchlosť plávania
 [swimmingpool]
 Bazén
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ Bazén dokončený
 ?? Vlajka vojny dokončená ??
 [the warflag is under attack]
 ?? Vlajka vojny čelí útoku ??
-[tkey]
-klávesa T
 [to:]
 pre:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Prepnúť Accessibility Aids
 Prepnúť informácie
 [toggle draw unit paths]
 Zobraziť/skryť cesty
+[toggle menu screen]
+
+[toggle recording voice]
+Spustiť nahrávanie zvuku
 [Total prestige reached]
 Dosiahnutá úroveň prestíže
 [Total]
 Spolu
 [tutorial]
 Kurz
-[ukey]
-klávesa U
 [unassigned]
 Nepriradené
 [Uncontrolled]
@@ -864,12 +896,14 @@ Zdokonaliť
 Meno hráča
 [Version]
 Verzia
-[vkey]
-klávesa V
+[view history]
+
 [wait destroy]
 Čakajúce na zničenie
 [waiting for %0]
 Čaká sa na %0
+[waiting for key]
+
 [Walk]
 Kráčanie
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Voda
 
 [wheat]
 pšenica
-[wkey]
-klávesa W
 [Won : you defeated your opponents]
 Výhra: Porazil si svojích nepriateľov
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ robotníci
 Precuje
 [wounded]
 zranení
-[xkey]
-klávesa X
 [Yes]
 Áno
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Odpája sa od YOG metaservera...
 Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
 [YESTS_YOG_KILLED]
 Administrátor práve zastavil YOG metaserver.
-[ykey]
-klávesa Y
 [yog-chat]
 #yog-en
 [yog]
@@ -978,5 +1006,3 @@ Vyhral(a) si!
 Tvoji %0 čelia útoku
 [Your unit got converted to %0's team]
 Tvoja jednotka konvertovala k tímu %0
-[zkey]
-klávesa Z

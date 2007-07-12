@@ -20,6 +20,8 @@ V : Mostra la visio de totes les construccions
 Afegir IA
 [add map]
 
+[add shortcut]
+
 [AI]
 IA
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-
 [Alga]
 Algues
 [algae]
@@ -90,8 +90,6 @@ Per augmentar el poder d' atac
 Cuartell
 [beach size]
 Tamany de la platja
-[bkey]
-
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Escull una campanya
 Escull un juego
 [choose map]
 Escull un mapa
-[ckey]
-
 [clear area]
 Area de Neteja
 [Clearing:]
@@ -240,6 +236,8 @@ mal
 
 [dblbuff]
 Buffer Doble
+[decrease units working]
+
 [default terrain]
 Terreny predefinit
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Destruir
 Desconectat
 [display]
 Visualitzador
-[dkey]
-
 [don't carry anything]
 No Transporta res
 [download finished]
@@ -288,8 +284,6 @@ Baixat al
 
 [editor]
 Editor
-[ekey]
-
 [Enter your nickname :]
 Introdueix el teu nick :
 [Enter your password :]
@@ -308,8 +302,6 @@ Explorador
 Exploradors
 [extra islands]
 illes buides
-[fkey]
-
 [food left]
 Menjà restant
 [food]
@@ -336,7 +328,9 @@ Partida Completa
 velocitat del joc
 [general settings]
 
-[gkey]
+[go to event]
+
+[go to home]
 
 [goto main menu]
 Tornar al menú principal
@@ -354,6 +348,8 @@ Area de Guardia
 Mapa Fet a Mà
 [Happyness]
 Felicitat
+[hard pause]
+
 [Harvest]
 Recolectar
 [has joined]
@@ -362,8 +358,6 @@ s'ha unit a la partida
 ha marxat
 [heal]
 Vida
-[hkey]
-
 [hospital explanation 2]
 teus globuls
 [hospital explanation]
@@ -384,10 +378,10 @@ afamat
 
 [hwaccel]
 Acceleració de Hardaware
-[ikey]
-
 [In way]
 en camí
+[increase units working]
+
 [inn explanation 2]
 teus globuls
 [inn explanation]
@@ -406,7 +400,7 @@ Dins
 Tamany de les illes
 [islands terrain]
 Illes
-[jkey]
+[iterate selection]
 
 [jobs]
 
@@ -417,8 +411,6 @@ Unir-se
 [keyboard settings]
 
 [kick]
-
-[kkey]
 
 [lan]
 Joc en LAN
@@ -436,8 +428,6 @@ gran
 Nivell
 [levels]
 Nivells
-[lkey]
-
 [load campaign]
 
 [load game]
@@ -486,8 +476,6 @@ mitjà
 Nivell Minim Requerit
 [Minimum Level To Flag]
 
-[mkey]
-
 [Music volume]
 Volum (música)
 [mute]
@@ -500,8 +488,6 @@ llatència
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
-[nkey]
-
 [no ressources growth areas]
 
 [No]
@@ -520,8 +506,6 @@ Nombre d' equips
 dels quals
 [ok]
 OK
-[okey]
-
 [old islands terrain]
 vell terreny d'illa
 [old random terrain]
@@ -530,6 +514,8 @@ vell terreny aleatori
 Aqui
 [one player]
 un jugador
+[open chat box]
+
 [open load menu]
 
 [open save menu]
@@ -550,8 +536,6 @@ Papir
 Pausat
 [percent]
   porcentatge
-[pkey]
-
 [player name]
 Nom del jugador
 [player]
@@ -566,8 +550,6 @@ Invitació enviada ...
 Prestigi
 [Prune]
 Passes
-[qkey]
-
 [quit the editor]
 
 [quit the game]
@@ -586,8 +568,6 @@ Terreny aleatori
 Rang
 [ratios]
 Proporció
-[record voice]
-
 [Register a new YOG user with password]
 Registrar un nou jugador YOG amb contrasenya (insegur)
 [remember unit]
@@ -595,6 +575,8 @@ Registrar un nou jugador YOG amb contrasenya (insegur)
 [Remember YOG password localy]
 Recordar la contrasenya (insegur)
 [remove map]
+
+[remove shortcut]
 
 [repair building]
 
@@ -614,8 +596,6 @@ Tornar al joc
 ample de riu
 [river terrain]
 riu
-[rkey]
-
 [sand]
 Terra
 [save before quit?]
@@ -642,6 +622,26 @@ Buscant
 
 [select clearingflag]
 
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -649,6 +649,18 @@ Buscant
 [select inn building]
 
 [select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
 
 [select racetrack building]
 
@@ -672,7 +684,7 @@ Opcions
 key enter : Envia un missatge de text
 [shortcut explanation v]
 key v : Presiona per parlar
-[skey]
+[show main menu]
 
 [skin]
 
@@ -738,9 +750,29 @@ teus globuls en aigua
 Per augmentar la velocitat dels
 [swimmingpool]
 Piscina
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 
 [switch to flag view]
+
+[switch to removing areas]
 
 [switch to teams view]
 
@@ -814,8 +846,6 @@ La Piscina està sent atacada
 ?? Bandera de Guerra finalizada ??
 [the warflag is under attack]
 ?? La bandera de Guerra està sent atacada ??
-[tkey]
-
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ a:
 
 [toggle draw unit paths]
 
+[toggle menu screen]
+
+[toggle recording voice]
+
 [Total prestige reached]
 Prestigi total alcanzat
 [Total]
 Total
 [tutorial]
 Tutorial
-[ukey]
-
 [unassigned]
 
 [Uncontrolled]
@@ -864,12 +896,14 @@ Millorar
 Nom d' usuari
 [Version]
 Versió
-[vkey]
+[view history]
 
 [wait destroy]
 Esperar a destruir
 [waiting for %0]
 Esperant a %0
+[waiting for key]
+
 [Walk]
 Correr
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Aigua
 
 [wheat]
 blat
-[wkey]
-
 [Won : you defeated your opponents]
 Vencedor: Has destruit als teus enemics
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ Treballadors
 Treballant
 [wounded]
 ferit
-[xkey]
-
 [Yes]
 Sí
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Desconectant del metaservidor YOG...
 Imposible conectar. Metaservidor YOG esta caigut
 [YESTS_YOG_KILLED]
 Un administrador a interrumput el metaservidor YOG.
-[ykey]
-
 [yog-chat]
 #yog-ca
 [yog]
@@ -978,5 +1006,3 @@ Has guanyat
 El teu %0  està sent atacat
 [Your unit got converted to %0's team]
 Una unitat teva s'ha convertit a l'equip de %0
-[zkey]
-

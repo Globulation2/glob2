@@ -20,6 +20,8 @@ V: Bistaratu eraikuntza guztien ikuspegia
 Gehitu AI
 [add map]
 Gehitu mapa
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-A-tekla
 [Alga]
 Algak
 [algae]
@@ -90,8 +90,6 @@ Borroka hobetzeko
 Barrakoia
 [beach size]
 hondar tamaina
-[bkey]
-B-tekla
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Kanpaina aukeratu
 Aukeratu partida
 [choose map]
 Aukeratu mapa
-[ckey]
-C-tekla
 [clear area]
 Garbiketa zonaldea
 [Clearing:]
@@ -240,6 +236,8 @@ Kaltea
 Kalte mapa
 [dblbuff]
 Buffer bikoitza
+[decrease units working]
+
 [default terrain]
 Lehenetsitako terrenoa
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Suntsitu
 Deskonektatu
 [display]
 Pantaila
-[dkey]
-D-tekla
 [don't carry anything]
 Ez darama ezer
 [download finished]
@@ -288,8 +284,6 @@ Mapa editatzen
 Editore teklak
 [editor]
 Editorea
-[ekey]
-E-tekla
 [Enter your nickname :]
 Ezizena sartu:
 [Enter your password :]
@@ -308,8 +302,6 @@ Miatzailea
 miatzaile
 [extra islands]
 irla hutsak
-[fkey]
-F-tekla
 [food left]
 Geratzen den janaria
 [food]
@@ -336,8 +328,10 @@ Partida teklak
 Partida abiadura
 [general settings]
 Ezarpen orokorrak
-[gkey]
-G-tekla
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Menu nagusira itzuli
 [grass]
@@ -354,6 +348,8 @@ mapa bat
 Eskuz egindako mapa
 [Happyness]
 Poztasuna
+[hard pause]
+
 [Harvest]
 Uzta bildu
 [has joined]
@@ -362,8 +358,6 @@ bat egin du
 irten da
 [heal]
 Osasuna
-[hkey]
-H-tekla
 [hospital explanation 2]
  
 [hospital explanation]
@@ -384,10 +378,10 @@ gose
 Gosea
 [hwaccel]
 Hardware azelerazioa
-[ikey]
-I-tekla
 [In way]
 Bidean
+[increase units working]
+
 [inn explanation 2]
  
 [inn explanation]
@@ -406,8 +400,8 @@ Barruan
 irla tamaina
 [islands terrain]
 IrlakYOG 
-[jkey]
-J-tekla
+[iterate selection]
+
 [jobs]
 lanak
 [join a game]
@@ -418,8 +412,6 @@ Bat egin
 Teklatu ezarpenak
 [kick]
 
-[kkey]
-K-tekla
 [lan]
 LAN partida
 [language-code]
@@ -436,8 +428,6 @@ handia
 Maila:
 [levels]
 Mailak
-[lkey]
-L-tekla
 [load campaign]
 Kargatu kanpaina
 [load game]
@@ -486,8 +476,6 @@ ertaina
 Gutxienezko maila:
 [Minimum Level To Flag]
 Banderaren gutxienezko maila
-[mkey]
-M-tekla
 [Music volume]
 Bolumena (musika)
 [mute]
@@ -500,8 +488,6 @@ Kanpaina berria
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
-[nkey]
-N-tekla
 [no ressources growth areas]
 Ez dago hazkunde zonalderik
 [No]
@@ -520,8 +506,6 @@ talde kopurua
 hauetatik
 [ok]
 Ados
-[okey]
-O-tekla
 [old islands terrain]
 ausazko irla lurzoru zaharra
 [old random terrain]
@@ -530,6 +514,8 @@ ausazko lurzoru zaharra
 Bertan
 [one player]
 Jokalari bat batu da
+[open chat box]
+
 [open load menu]
 Ireki kargatzeko menua
 [open save menu]
@@ -550,8 +536,6 @@ Gelditu partida
 Geldituta
 [percent]
   ehunekoa
-[pkey]
-P-tekla
 [player name]
 Jokalari izena
 [player]
@@ -566,8 +550,6 @@ Zanpatu espazio barra jarraitzeko
 Izen ona
 [Prune]
 Arana
-[qkey]
-Q-tekla
 [quit the editor]
 Irten editoretik
 [quit the game]
@@ -586,8 +568,6 @@ Ausazko lurzorua
 Hedadura
 [ratios]
 Proportzioak
-[record voice]
-Hasi ahots grabaketa
 [Register a new YOG user with password]
 YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
 [remember unit]
@@ -596,6 +576,8 @@ Gogoratu unitatea
 Pasahitza gogoratu ordenagailu honetan. (ez segurua)
 [remove map]
 Ezabatu mapa
+[remove shortcut]
+
 [repair building]
 Konponketa hasi/gelditu
 [repair]
@@ -614,8 +596,6 @@ Itzuli partidara
 errekaren zabalera
 [river terrain]
 Erreka
-[rkey]
-R-tekla
 [sand]
 Area
 [save before quit?]
@@ -642,6 +622,26 @@ bila
 Barrakoia aukeratu
 [select clearingflag]
 Garbiketa bandera aukeratu
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 Miatze bandera aukeratu
 [select hospital building]
@@ -650,6 +650,18 @@ Hospitala aukeratu
 Ostatua aukeratu
 [select market building]
 Merkatua aukeratu
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
 [select racetrack building]
 Zirkuitoa aukeratu
 [select school building]
@@ -672,8 +684,8 @@ Ezarpenak
 Enter: Txat mezua bidali
 [shortcut explanation v]
 V: mantendu hitzegiteko
-[skey]
-S-tekla
+[show main menu]
+
 [skin]
 Itxura
 [small]
@@ -738,10 +750,30 @@ Igeri abiadura hobetzeko
 Igeriketa hobetzeko
 [swimmingpool]
 Igerilekua
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 Eraikuntza ikuspegira aldatu
 [switch to flag view]
 Bandera ikuspegira aldatu
+[switch to removing areas]
+
 [switch to teams view]
 Talde ikuspegira aldatu
 [switch to terrain view]
@@ -814,8 +846,6 @@ Igerilekua erasopean dago
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
-[tkey]
-T-tekla
 [to:]
 nori:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Irisgarritasun laguntzak marraztu
 Informazio barrak marraztu
 [toggle draw unit paths]
 Unitate ibilibidea marraztu
+[toggle menu screen]
+
+[toggle recording voice]
+Hasi ahots grabaketa
 [Total prestige reached]
 Gehienezko izen ona lortuta
 [Total]
 Guztira
 [tutorial]
 Tutoriala
-[ukey]
-U-tekla
 [unassigned]
 Ezarri gabe
 [Uncontrolled]
@@ -864,12 +896,14 @@ Eguneratu
 Erabiltzaile izena
 [Version]
 Bertsioa
-[vkey]
-V-tekla
+[view history]
+
 [wait destroy]
 Suntsipenari itxaroten
 [waiting for %0]
 %0(r)i itxaroten
+[waiting for key]
+
 [Walk]
 Ibili
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Ura
 
 [wheat]
 garia
-[wkey]
-W-tekla
 [Won : you defeated your opponents]
 Irabazi duzu: aurkariak zanpatu dituzu
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ langile
 Lanean
 [wounded]
 zauritu
-[xkey]
-X-tekla
 [Yes]
 Bai
 [YESTS_BAD]
@@ -954,8 +984,6 @@ YOG metazerbitzaritik deskonektatzen...
 Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
 [YESTS_YOG_KILLED]
 Administratzaile batek YOG metazerbitzaria gelditu berri du.
-[ykey]
-Y-tekla
 [yog-chat]
 #yog-en
 [yog]
@@ -978,5 +1006,3 @@ Irabazi duzu!
 Zure %0ak erasopean daude
 [Your unit got converted to %0's team]
 Zure unitatea %0(r)en taldera pasatu da
-[zkey]
-Z-tekla

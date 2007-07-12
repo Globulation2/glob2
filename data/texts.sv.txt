@@ -20,6 +20,8 @@ V: Visa synfält för alla byggnader
 Lägg till AI
 [add map]
 Lägg till karta
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-A
 [Alga]
 Alger
 [algae]
@@ -90,8 +90,6 @@ Förbättrar stridsnivån
 Barrack
 [beach size]
 strandstorlek
-[bkey]
-B
 [build barracks level 0]
 
 [build barracks level 1]
@@ -186,8 +184,6 @@ Välj en kampanj
 Välj ett spel
 [choose map]
 Välj en karta
-[ckey]
-C
 [clear area]
 Röjningsområde
 [Clearing:]
@@ -240,6 +236,8 @@ Skada
 Skadekarta
 [dblbuff]
 Dubbel buffring
+[decrease units working]
+
 [default terrain]
 Standardterräng
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Förstör
 Koppla från
 [display]
 Bildskärm
-[dkey]
-D
 [don't carry anything]
 Bär ingenting
 [download finished]
@@ -288,8 +284,6 @@ Editerar Karta
 Ändra genvägar
 [editor]
 Editor
-[ekey]
-E
 [Enter your nickname :]
 Skriv in ditt smeknamn:
 [Enter your password :]
@@ -308,8 +302,6 @@ Utforskare
 utforskare
 [extra islands]
 tomma öar
-[fkey]
-F
 [food left]
 Mat kvar
 [food]
@@ -336,8 +328,10 @@ Spelgenvägar
 Spelhastighet
 [general settings]
 Allmänt
-[gkey]
-G
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Gå till huvudmeny
 [grass]
@@ -354,6 +348,8 @@ en karta
 Handgjord karta
 [Happyness]
 Glädje
+[hard pause]
+
 [Harvest]
 Skörda
 [has joined]
@@ -362,8 +358,6 @@ har anslutit
 har avslutat
 [heal]
 Hälsa
-[hkey]
-H
 [hospital explanation 2]
  
 [hospital explanation]
@@ -384,10 +378,10 @@ hungriga
 Hunger
 [hwaccel]
 Hårdvaruacceleration
-[ikey]
-I
 [In way]
 På väg
+[increase units working]
+
 [inn explanation 2]
  
 [inn explanation]
@@ -406,8 +400,8 @@ Inuti
 östorlek
 [islands terrain]
 Öar
-[jkey]
-J
+[iterate selection]
+
 [jobs]
 job
 [join a game]
@@ -418,8 +412,6 @@ Gå med
 Tangentbord
 [kick]
 
-[kkey]
-K
 [lan]
 LAN Spel
 [language-code]
@@ -436,8 +428,6 @@ stor
 Nivå
 [levels]
 Nivåer
-[lkey]
-L
 [load campaign]
 Ladda Kampanj
 [load game]
@@ -486,8 +476,6 @@ medium
 Lägsta tillåtna nivå:
 [Minimum Level To Flag]
 Lägsta flaggnivå
-[mkey]
-M
 [Music volume]
 Volym (musik)
 [mute]
@@ -500,8 +488,6 @@ Ny Kampanj
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
-[nkey]
-N
 [no ressources growth areas]
 Inga Odlingsområden
 [No]
@@ -520,8 +506,6 @@ antal lag
 av vilka
 [ok]
 Ok
-[okey]
-O
 [old islands terrain]
 Gamla slumpmässiga öar
 [old random terrain]
@@ -530,6 +514,8 @@ Gammal slumpmässig terräng
 Här
 [one player]
 En spelare har anslutit.
+[open chat box]
+
 [open load menu]
 Öppna Ladda Meny
 [open save menu]
@@ -550,8 +536,6 @@ Pausa Spel
 Pausat
 [percent]
   procent
-[pkey]
-P
 [player name]
 Spelarnamn
 [player]
@@ -566,8 +550,6 @@ Tryck mellanslag för att forsätta.
 Prestige
 [Prune]
 Sviskon
-[qkey]
-Q
 [quit the editor]
 Avsluta editorn
 [quit the game]
@@ -586,8 +568,6 @@ Slumpmässig terräng
 Räckvidd
 [ratios]
 Proportioner
-[record voice]
-Initiera röstinspelning
 [Register a new YOG user with password]
 Registrera en ny YOG-användare med lösenord. (osäkert)
 [remember unit]
@@ -596,6 +576,8 @@ Kom Ihåg Enhet
 Kom ihåg mitt lösenord lokalt. (osäkert)
 [remove map]
 Ta Bort Karta
+[remove shortcut]
+
 [repair building]
 Starta/Stoppa Reparation
 [repair]
@@ -614,8 +596,6 @@ Resurser
 bredd på flod
 [river terrain]
 Flod
-[rkey]
-R
 [sand]
 Sand
 [save before quit?]
@@ -642,6 +622,26 @@ söker
 Välj Barrack
 [select clearingflag]
 Välj Röjningsflagga
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 Välj Utforskningsflagga
 [select hospital building]
@@ -650,6 +650,18 @@ Välj Sjukhus
 Välj Värdshus
 [select market building]
 Välj Marknad
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
 [select racetrack building]
 Välj Löparbana
 [select school building]
@@ -672,8 +684,8 @@ Inställningar
 Enter: skicka ett chattmeddelande
 [shortcut explanation v]
 V: håll för att prata
-[skey]
-S
+[show main menu]
+
 [skin]
 Display
 [small]
@@ -738,10 +750,30 @@ hos dina enheter
 Ökar simhastigheten
 [swimmingpool]
 Simbassäng
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 Byt till Byggnadsvy
 [switch to flag view]
 Byt till Flaggvy
+[switch to removing areas]
+
 [switch to teams view]
 Byt till Lagvy
 [switch to terrain view]
@@ -814,8 +846,6 @@ Simbassängen är under attack
 ?? Krigsflaggan är klar ??
 [the warflag is under attack]
 ?? Krigsflaggan är under attack ??
-[tkey]
-T
 [to:]
 till:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Växla Visa Tillgänglighetshjälp
 Växla Visa Information
 [toggle draw unit paths]
 Växla Visa Enhetsdestinationer
+[toggle menu screen]
+
+[toggle recording voice]
+Initiera röstinspelning
 [Total prestige reached]
 Total prestige uppnådd
 [Total]
 Totalt
 [tutorial]
 Introduktion
-[ukey]
-U
 [unassigned]
 Ej tilldelad
 [Uncontrolled]
@@ -864,12 +896,14 @@ Uppgradera
 Användarnamn
 [Version]
 Version
-[vkey]
-V
+[view history]
+
 [wait destroy]
 Avvaktar destruktion
 [waiting for %0]
 Väntar på %0
+[waiting for key]
+
 [Walk]
 Gå
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Vatten
 
 [wheat]
 vete
-[wkey]
-W
 [Won : you defeated your opponents]
 Seger: Du besegrade dina motsåtndare
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ arbetare
 Arbetar
 [wounded]
 skadade
-[xkey]
-X
 [Yes]
 Ja
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Kopplar från YOG metaserver...
 Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
 [YESTS_YOG_KILLED]
 En administratör har just stoppat YOG metaserver.
-[ykey]
-Y
 [yog-chat]
 #yog-en
 [yog]
@@ -978,5 +1006,3 @@ Du har vunnit!
 Din %0 är under attack
 [Your unit got converted to %0's team]
 Din enhet blev omvänd till %0s lag
-[zkey]
-Z

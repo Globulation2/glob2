@@ -20,6 +20,8 @@ V: 顯示所有建築物
 新增 AI
 [add map]
 新增地圖
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-A-鍵
 [Alga]
 海藻
 [algae]
@@ -90,8 +90,6 @@ A-鍵
 兵營
 [beach size]
 海灘大小
-[bkey]
-B-鍵
 [build barracks level 0]
 建造兵營 1
 [build barracks level 1]
@@ -186,8 +184,6 @@ B-鍵
 選擇一個遊戲
 [choose map]
 選擇一個地圖
-[ckey]
-C-鍵
 [clear area]
 清除區
 [Clearing:]
@@ -240,6 +236,8 @@ C-鍵
 傷患地圖
 [dblbuff]
 加倍緩衝存儲器
+[decrease units working]
+
 [default terrain]
 預設地形
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ C-鍵
 失聯
 [display]
 顯示
-[dkey]
-D-鍵
 [don't carry anything]
 沒有在搬運任何東西
 [download finished]
@@ -288,8 +284,6 @@ D-鍵
 編輯器快捷鍵
 [editor]
 編輯器
-[ekey]
-E-鍵
 [Enter your nickname :]
 輸入你的暱稱:
 [Enter your password :]
@@ -308,8 +302,6 @@ E-鍵
 探索者
 [extra islands]
 空置島嶼
-[fkey]
-F-鍵
 [food left]
 食物剩餘
 [food]
@@ -336,8 +328,10 @@ F-鍵
 遊戲速度
 [general settings]
 基本設定
-[gkey]
-G-鍵
+[go to event]
+
+[go to home]
+
 [goto main menu]
 回到主選單
 [grass]
@@ -354,6 +348,8 @@ G-鍵
 手工地圖
 [Happyness]
 幸福
+[hard pause]
+
 [Harvest]
 採收
 [has joined]
@@ -362,8 +358,6 @@ G-鍵
 已退出
 [heal]
 健康
-[hkey]
-H-鍵
 [hospital explanation 2]
 
 [hospital explanation]
@@ -384,10 +378,10 @@ HP
 飢餓度
 [hwaccel]
 硬體加速度
-[ikey]
-I-鍵
 [In way]
 在路上
+[increase units working]
+
 [inn explanation 2]
 
 [inn explanation]
@@ -406,8 +400,8 @@ I-鍵
 島嶼大小
 [islands terrain]
 島嶼
-[jkey]
-J-鍵
+[iterate selection]
+
 [jobs]
 工作
 [join a game]
@@ -418,8 +412,6 @@ J-鍵
 鍵盤設定
 [kick]
 
-[kkey]
-K-鍵
 [lan]
 LAN 遊戲
 [language-code]
@@ -436,8 +428,6 @@ zh-tw
 等級
 [levels]
 等級
-[lkey]
-L-鍵
 [load campaign]
 載入戰役
 [load game]
@@ -486,8 +476,6 @@ Air dmg.
 最小等級需求:
 [Minimum Level To Flag]
 旗幟最小等級
-[mkey]
-M-鍵
 [Music volume]
 音量 (音樂)
 [mute]
@@ -500,8 +488,6 @@ M-鍵
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
-[nkey]
-N-鍵
 [no ressources growth areas]
 非成長區域
 [No]
@@ -520,8 +506,6 @@ N-鍵
 他們是
 [ok]
 確定
-[okey]
-O-鍵
 [old islands terrain]
 古老隨機島嶼
 [old random terrain]
@@ -530,6 +514,8 @@ O-鍵
 在這裡
 [one player]
 一個玩家已經加入。
+[open chat box]
+
 [open load menu]
 開啟載入選單
 [open save menu]
@@ -550,8 +536,6 @@ O-鍵
 暫停
 [percent]
 %
-[pkey]
-P-鍵
 [player name]
 玩家名稱
 [player]
@@ -566,8 +550,6 @@ P-鍵
 聲望
 [Prune]
 梅乾
-[qkey]
-Q-鍵
 [quit the editor]
 離開編輯器
 [quit the game]
@@ -586,8 +568,6 @@ Q-鍵
 射程
 [ratios]
 比例
-[record voice]
-開始錄音
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
 [remember unit]
@@ -596,6 +576,8 @@ Q-鍵
 記住密碼。 (不穩定)
 [remove map]
 移除地圖
+[remove shortcut]
+
 [repair building]
 開始/停止 修復
 [repair]
@@ -614,8 +596,6 @@ Q-鍵
 河流寬度
 [river terrain]
 河流
-[rkey]
-R-鍵
 [sand]
 沙礫
 [save before quit?]
@@ -642,6 +622,26 @@ R-鍵
 選擇兵營
 [select clearingflag]
 選擇清除旗幟
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 選擇探索旗幟
 [select hospital building]
@@ -650,6 +650,18 @@ R-鍵
 選擇客棧
 [select market building]
 選擇市場
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
 [select racetrack building]
 選擇跑道
 [select school building]
@@ -672,8 +684,8 @@ R-鍵
 Enter: 傳送訊息
 [shortcut explanation v]
 V: 持鍵以傳送訊息
-[skey]
-S-鍵
+[show main menu]
+
 [skin]
 顯示
 [small]
@@ -738,10 +750,30 @@ S-鍵
 增加游泳速度
 [swimmingpool]
 游泳池
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 切換至建築物視野
 [switch to flag view]
 切換至旗幟視野
+[switch to removing areas]
+
 [switch to teams view]
 切換至團隊視野
 [switch to terrain view]
@@ -814,8 +846,6 @@ S-鍵
 ?? 攻擊旗幟已完成 ??
 [the warflag is under attack]
 ?? 攻擊旗幟正遭受攻擊 ??
-[tkey]
-T-鍵
 [to:]
 前往:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ T-鍵
 顯示資訊
 [toggle draw unit paths]
 顯示單位動向
+[toggle menu screen]
+
+[toggle recording voice]
+開始錄音
 [Total prestige reached]
 聲望總計達到
 [Total]
 總共
 [tutorial]
 教學指導
-[ukey]
-U-鍵
 [unassigned]
 未分配
 [Uncontrolled]
@@ -864,12 +896,14 @@ U-鍵
 用戶名
 [Version]
 版本
-[vkey]
-V-鍵
+[view history]
+
 [wait destroy]
 等待摧毀
 [waiting for %0]
 等待 %0
+[waiting for key]
+
 [Walk]
 行走
 [warflag explanation 2]
@@ -896,8 +930,6 @@ V-鍵
 
 [wheat]
 小麥
-[wkey]
-W-鍵
 [Won : you defeated your opponents]
 贏: 你打敗了你的對手
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ W-鍵
 工作中
 [wounded]
 受傷
-[xkey]
-X-鍵
 [Yes]
 是
 [YESTS_BAD]
@@ -954,8 +984,6 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。
 無法連接。 YOG meta伺服器已關閉。
 [YESTS_YOG_KILLED]
 YOG meta伺服器已被管理員關閉。
-[ykey]
-Y-鍵
 [yog-chat]
 #yog-en
 [yog]
@@ -978,5 +1006,3 @@ YOG 通訊系統有兩種指令， "msg"和"away"輸入"/help <command>"以獲�
 你的 %0 正遭受攻擊
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
-[zkey]
-Z-鍵

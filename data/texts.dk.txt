@@ -20,6 +20,8 @@ V : Vis alle dine bygninger
 Tilføj AI
 [add map]
 Tilføj kort
+[add shortcut]
+
 [AI]
 AI
 [ai]
@@ -38,8 +40,6 @@ ReachToInfinity
 AIToubib
 [AIWarrush]
 AIWarrush
-[akey]
-A-tast
 [Alga]
 Alger
 [algae]
@@ -90,8 +90,6 @@ Forbedre militlær enheder
 Kaserne
 [beach size]
 Strand størrelse
-[bkey]
-B-tast
 [build barracks level 0]
 Byg Kerserne 1
 [build barracks level 1]
@@ -186,8 +184,6 @@ Vælg en kampagne
 Vælg et spil
 [choose map]
 Vælg et kort
-[ckey]
-C-tast
 [clear area]
 Ophæv arial
 [Clearing:]
@@ -240,6 +236,8 @@ Skade
 Skadet Kort
 [dblbuff]
 Dobbelt buffering
+[decrease units working]
+
 [default terrain]
 Standart terring
 [defencetower explanation 2]
@@ -272,8 +270,6 @@ Destruktion
 Afbrudt
 [display]
 Opløsning
-[dkey]
-D-tast
 [don't carry anything]
 Bægere ikke på noget
 [download finished]
@@ -288,8 +284,6 @@ Redigere kort
 Rediger genveje
 [editor]
 Redigere
-[ekey]
-E-tast
 [Enter your nickname :]
 Skriv dit bruger navn :
 [Enter your password :]
@@ -308,8 +302,6 @@ Udforsker
 udforskere
 [extra islands]
 Tom ø
-[fkey]
-F-tast
 [food left]
 Mad tilbage
 [food]
@@ -336,8 +328,10 @@ Gem genveje
 Spil hastighed
 [general settings]
 Generalle instillinger
-[gkey]
-G-tast
+[go to event]
+
+[go to home]
+
 [goto main menu]
 Gå tilbage til hoved menuen
 [grass]
@@ -354,6 +348,8 @@ Et kort
 Hånd lavet kort
 [Happyness]
 Antal lykkelige
+[hard pause]
+
 [Harvest]
 Høst
 [has joined]
@@ -362,8 +358,6 @@ er kommet
 er gået
 [heal]
 Liv point
-[hkey]
-H-tast
 [hospital explanation 2]
  
 [hospital explanation]
@@ -384,10 +378,10 @@ Sulten
 Sulthed
 [hwaccel]
 Hardware acceleration
-[ikey]
-I-tast
 [In way]
 Er på vej
+[increase units working]
+
 [inn explanation 2]
  
 [inn explanation]
@@ -406,8 +400,8 @@ Indenfor
 Ø størrelse
 [islands terrain]
 Øer
-[jkey]
-J-tast
+[iterate selection]
+
 [jobs]
 jobs
 [join a game]
@@ -418,8 +412,6 @@ Spil med
 Tastetur instillinger
 [kick]
 
-[kkey]
-K-tast
 [lan]
 LAN Spil
 [language-code]
@@ -436,8 +428,6 @@ stort
 neavu
 [levels]
 Neavuer
-[lkey]
-L-tast
 [load campaign]
 Lade Kampanie
 [load game]
@@ -486,8 +476,6 @@ mellem
 Minimum krævede neavu:
 [Minimum Level To Flag]
 Minimum Flag neavu
-[mkey]
-M-tast
 [Music volume]
 Lydstyrke (musik)
 [mute]
@@ -500,8 +488,6 @@ Ny Kampanie
 Ny
 [nick taken]
 Vi er kede af det men det bruger navn du har valgt er allerede taget på freenode, Du vil kun kunde tale gennem YOG
-[nkey]
-N-tast
 [no ressources growth areas]
 Ingen vækst område
 [No]
@@ -520,8 +506,6 @@ antal af hold
 hvilke af
 [ok]
 Ok
-[okey]
-O-tast
 [old islands terrain]
 Gamle ø terræn
 [old random terrain]
@@ -530,6 +514,8 @@ Gamle tilfældige terræn
 Her
 [one player]
 En spiller er kommet til.
+[open chat box]
+
 [open load menu]
 Åben lade menu
 [open save menu]
@@ -550,8 +536,6 @@ Pause spillet
 Pause
 [percent]
   procent
-[pkey]
-P-tast
 [player name]
 Spiller navn
 [player]
@@ -566,8 +550,6 @@ Tryk på mellemrum for at fortsætte
 Præstige
 [Prune]
 Prune
-[qkey]
-Q-tast
 [quit the editor]
 Afslut editor
 [quit the game]
@@ -586,8 +568,6 @@ Tilfælig terraing
 Afstand
 [ratios]
 Proportioner
-[record voice]
-Start volkal optagelse
 [Register a new YOG user with password]
 Registere en ny YOG bruger med adgangs kode. (usikker)
 [remember unit]
@@ -596,6 +576,8 @@ Husk enhed
 Husk adgangs koden lokalt. (usikker)
 [remove map]
 Fjern Kort
+[remove shortcut]
+
 [repair building]
 Start/Stop Reparation
 [repair]
@@ -614,8 +596,6 @@ Vend tilbage til spillet
 Længde af flod
 [river terrain]
 Flod
-[rkey]
-R-tast
 [sand]
 Sand
 [save before quit?]
@@ -642,6 +622,26 @@ Leder
 Vælg Bar
 [select clearingflag]
 Vælg Rydnings Flag
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
 [select explorationflag]
 Vælg Udforsknings Flag
 [select hospital building]
@@ -650,6 +650,18 @@ Vælg Hospital
 Vælg Kro
 [select market building]
 Vælg Market
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
 [select racetrack building]
 Vælg Racerbane
 [select school building]
@@ -672,8 +684,8 @@ Instillinger
 tast enter : send en besked
 [shortcut explanation v]
 tast v : hold v nede for at snakke
-[skey]
-S-tast
+[show main menu]
+
 [skin]
 Opløsning
 [small]
@@ -738,10 +750,30 @@ Hastighed af dine enheder
 Forbedre svømning
 [swimmingpool]
 Svømmepøl
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
 [switch to building view]
 Skift til bygningsvisning
 [switch to flag view]
 Skift til flag visning
+[switch to removing areas]
+
 [switch to teams view]
 Skift til hold visning
 [switch to terrain view]
@@ -814,8 +846,6 @@ Svømme pølen er under angrib
 ?? Krigs flaget er færdig ??
 [the warflag is under attack]
 ?? Krigs flaget er under angrib ??
-[tkey]
-T-tast
 [to:]
 til:
 [toggle draw accessibility aids]
@@ -824,14 +854,16 @@ Toggle Draw Accessibility Aids
 Vælg tegn information
 [toggle draw unit paths]
 Vælg tegn endhd router
+[toggle menu screen]
+
+[toggle recording voice]
+Start volkal optagelse
 [Total prestige reached]
 Total præstige opnået
 [Total]
 Total
 [tutorial]
 Lær at spille
-[ukey]
-U-tast
 [unassigned]
 Ikke tildelt
 [Uncontrolled]
@@ -864,12 +896,14 @@ Opgradere
 Bruger navn
 [Version]
 Version
-[vkey]
-V-tast
+[view history]
+
 [wait destroy]
 Vænter på konstruktion
 [waiting for %0]
 Vænter på %0
+[waiting for key]
+
 [Walk]
 Gå
 [warflag explanation 2]
@@ -896,8 +930,6 @@ Vand
 
 [wheat]
 hvede
-[wkey]
-W-tast
 [Won : you defeated your opponents]
 Vundet : Du har slået din modstander
 [Won : you have the most prestige]
@@ -920,8 +952,6 @@ arbejdere
 Arbejde
 [wounded]
 skadet
-[xkey]
-X-tast
 [Yes]
 Ja
 [YESTS_BAD]
@@ -954,8 +984,6 @@ Afbryder forbindelsen til YOG meta serveren...
 Er ikke muligt at forbinde. Muligvis er YOG meta servern nede.
 [YESTS_YOG_KILLED]
 En administrator har stoppet YOG meta serveren.
-[ykey]
-Y-tast
 [yog-chat]
 #yog-da
 [yog]
@@ -978,5 +1006,3 @@ Du har vundet!
 Dine %0 er under angrib
 [Your unit got converted to %0's team]
 En af dine enheder blev konverteret til et %0 hold
-[zkey]
-Z-tast
