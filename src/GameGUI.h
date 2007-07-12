@@ -139,7 +139,7 @@ private:
 	bool processGameMenu(SDL_Event *event);
 	bool processScrollableWidget(SDL_Event *event);
 	void handleRightClick(void);
-	void handleKey(SDLKey key, bool pressed, bool shift, bool ctrl);
+	void handleKey(SDL_keysym key, bool pressed);
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
 	void handleMouseMotion(int mx, int my, int button);

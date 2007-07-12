@@ -914,11 +914,11 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym.sym, true, (event->key.keysym.mod & KMOD_SHIFT) != 0, (event->key.keysym.mod & KMOD_CTRL) != 0);
+			handleKey(event->key.keysym, true);
 		}
 		else if (event->type==SDL_KEYUP)
 		{
-			handleKey(event->key.keysym.sym, false, (event->key.keysym.mod & KMOD_SHIFT) != 0, (event->key.keysym.mod & KMOD_CTRL) != 0);
+			handleKey(event->key.keysym, false);
 		}
 		else if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
@@ -1161,7 +1161,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	}
 }
 
-void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
+void GameGUI::handleKey(SDL_keysym key, bool pressed)
 {
 
 	int modifier;
@@ -1173,7 +1173,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 
 	if (typingInputScreen == NULL)
 	{
-		if(key == SDLK_SPACE && pressed)
+		if(key.sym == SDLK_SPACE && pressed)
 		{
 			if(swallowSpaceKey)
 				setIsSpaceSet(true);

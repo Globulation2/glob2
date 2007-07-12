@@ -25,112 +25,9 @@
 #include "MapEditKeyActions.h"
 #include "Stream.h"
 #include "Toolkit.h"
+#include "StringTable.h"
 
 using namespace GAGCore;
-
-std::map<std::string, SDLKey> KeyPress::keyMap;
-bool KeyPress::keyMapInitialized;
-
-
-KeyPress::KeyPress(SDLKey key, bool pressed)
-	: key(key), pressed(pressed)
-{
-
-}
-
-
-KeyPress::KeyPress()
-{
-	key=SDLK_UNKNOWN;
-	pressed=true;
-}
-
-
-bool KeyPress::operator<(const KeyPress& rhs) const
-{
-	if(key == rhs.key)
-		return pressed < rhs.pressed;
-	return key < rhs.key;
-}
-
-
-
-bool KeyPress::operator!=(const KeyPress& rhs) const
-{
-	if(key != rhs.key)
-		return true;
-	if(pressed != rhs.pressed)
-		return true;
-	return false;
-}
-
-
-
-bool KeyPress::operator==(const KeyPress& rhs) const
-{
-	return key == rhs.key && pressed == rhs.pressed;
-}
-
-
-	
-std::string KeyPress::format() const
-{
-	if(!keyMapInitialized)
-		initKeyMap();
-	std::string s;
-	if(!pressed)
-		s+="<unpress>";
-	s+=FormatableString("<%0>").arg(SDL_GetKeyName(key));
-	return s;
-}
-
-
-
-void KeyPress::interpret(const std::string& s)
-{
-	if(!keyMapInitialized)
-		initKeyMap();
-	std::string ks = s;
-	size_t pos =ks.find("<unpress>");
-	if(pos!=std::string::npos)
-	{
-		ks = ks.substr(pos+9);
-		pressed=false;
-	}
-	else
-	{
-		pressed=true;
-	}
-	key = keyMap[ks];
-}
-
-
-
-SDLKey KeyPress::getKey() const
-{
-	return key;
-}
-
-
-
-bool KeyPress::getPressed() const
-{
-	return pressed;
-}
-
-
-
-void KeyPress::initKeyMap()
-{
-	///This is because SDL provides no native function to do the reverse of SDL_GetKeyName
-	for(Uint32 i = Uint32(SDLK_FIRST); i!=Uint32(SDLK_LAST); ++i)
-	{
-		keyMap["<"+std::string(SDL_GetKeyName(SDLKey(i)))+">"] = SDLKey(i);
-	}
-	keyMapInitialized=true;
-}
-
-
 
 KeyboardShortcut::KeyboardShortcut()
 {
@@ -190,6 +87,30 @@ void KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
 		action = GameGUIKeyActions::getAction(right);
 	if(mode == MapEditShortcuts)
 		action = MapEditKeyActions::getAction(right);
+}
+
+
+
+std::string KeyboardShortcut::formatTranslated(ShortcutMode mode) const
+{
+	std::string s;
+	for(std::vector<KeyPress>::const_iterator i = keys.begin(); i!=keys.end(); ++i)
+	{
+		s += "<" + i->getTranslated() + ">";
+		if(i!=(keys.end()-1))
+			s+="-";
+	}
+	s+= "=";
+	
+	std::string key_s = "[";
+	if(mode == GameGUIShortcuts)
+		key_s += GameGUIKeyActions::getName(action);
+	else if(mode == MapEditShortcuts)
+		key_s += MapEditKeyActions::getName(action);
+	key_s += "]";
+	
+	s+=Toolkit::getStringTable()->getString(key_s.c_str());
+	return s;
 }
 
 

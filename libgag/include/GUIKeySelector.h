@@ -25,6 +25,7 @@
 #include "GUIBase.h"
 #include "GraphicContext.h"
 #include <string>
+#include "KeyPress.h"
 
 namespace GAGGUI
 {
@@ -43,10 +44,10 @@ namespace GAGGUI
 		virtual void paint(void);
 		
 		///Gets the current key
-		SDLKey getKey();
+		KeyPress getKey();
 		
 		///Sets the key
-		void setKey(SDLKey key);
+		void setKey(const KeyPress& key);
 	protected:
 		///Constructs this widget
 		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, int w, int h);
@@ -61,7 +62,7 @@ namespace GAGGUI
 		///Font style
 		GAGCore::Font::Style style;
 		///The current key
-		SDLKey key;
+		KeyPress key;
 		///the current text
 		std::string text;
 		///Returns whether its activated
