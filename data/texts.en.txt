@@ -1,3 +1,5 @@
+
+
 [%0 has been deconnected of the game]
 %0 has been disconnected.
 [%0 has left the game]
@@ -310,8 +312,6 @@ enter
 equals
 [escape]
 escape
-[euro]
-euro
 [explorationflag explanation 2]
  
 [explorationflag explanation]

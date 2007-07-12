@@ -1,3 +1,5 @@
+
+
 [%0 has been deconnected of the game]
 %0 się rozłączył.
 [%0 has left the game]
@@ -307,8 +309,6 @@ Wpisz swoje hasło:
 [equals]
 
 [escape]
-
-[euro]
 
 [explorationflag explanation 2]
 poszukiwaczy
