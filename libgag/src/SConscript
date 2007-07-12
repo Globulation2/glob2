@@ -1,0 +1,34 @@
+libgag_sources = [
+	"win32_dirent.cpp",
+	"GraphicContext.cpp",
+	"Sprite.cpp",
+	"TrueTypeFont.cpp",
+	"TrueTypeFont.h",
+	"FileManager.cpp",
+	"Toolkit.cpp",
+	"StringTable.cpp",
+	"CursorManager.cpp",
+	"SupportFunctions.cpp",
+	"GUIBase.cpp",
+	"GUIList.cpp",
+	"GUIFileList.cpp",
+	"GUIRatio.cpp",
+	"GUITextArea.cpp",
+	"GUIButton.cpp",
+	"GUINumber.cpp",
+	"GUIText.cpp",
+	"GUITextInput.cpp",
+	"GUISelector.cpp",
+	"GUIAnimation.cpp",
+	"GUIMessageBox.cpp",
+	"GUIStyle.cpp",
+	"StreamBackend.cpp",
+	"StreamFilter.cpp",
+	"Stream.cpp",
+	"BinaryStream.cpp",
+	"TextStream.cpp",
+	"FormatableString.cpp"]
+
+
+Import("env")
+env.Library("gag", libgag_sources)
