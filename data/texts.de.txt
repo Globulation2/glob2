@@ -1,3 +1,5 @@
+
+
 [%0 has been deconnected of the game]
 Die Verbindung zu %0 wurde getrennt.
 [%0 has left the game]
@@ -307,8 +309,6 @@ Geben Sie ihr Passwort ein:
 [equals]
 
 [escape]
-
-[euro]
 
 [explorationflag explanation 2]
 

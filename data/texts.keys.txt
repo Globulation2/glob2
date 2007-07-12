@@ -1,3 +1,4 @@
+
 [%0 has been deconnected of the game]
 [%0 has left the game]
 [%0's game]
@@ -154,7 +155,6 @@
 [enter]
 [equals]
 [escape]
-[euro]
 [explorationflag explanation 2]
 [explorationflag explanation]
 [explorationflag]

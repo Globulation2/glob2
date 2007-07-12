@@ -1,3 +1,5 @@
+
+
 [%0 has been deconnected of the game]
 %0 был отключён от игры.
 [%0 has left the game]
@@ -307,8 +309,6 @@ ok
 [equals]
 
 [escape]
-
-[euro]
 
 [explorationflag explanation 2]
  

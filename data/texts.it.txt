@@ -1,3 +1,5 @@
+
+
 [%0 has been deconnected of the game]
 %0 si è disconnesso dal gioco.
 [%0 has left the game]
@@ -307,8 +309,6 @@ Inserisci la tua password :
 [equals]
 
 [escape]
-
-[euro]
 
 [explorationflag explanation 2]
 esploratori

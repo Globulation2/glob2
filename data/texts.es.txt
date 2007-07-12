@@ -1,3 +1,5 @@
+
+
 [%0 has been deconnected of the game]
 %0 Se ha Desconectado.
 [%0 has left the game]
@@ -307,8 +309,6 @@ Ingresa tu contraseña:
 [equals]
 
 [escape]
-
-[euro]
 
 [explorationflag explanation 2]
 
