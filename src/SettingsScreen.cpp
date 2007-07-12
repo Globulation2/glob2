@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -573,7 +575,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			if(key_2_active->getState() == true)
 			{
-				select_key_2->setKey(SDLK_ESCAPE);
+				select_key_2->setKey(KeyPress());
 				select_key_2->visible=true;
 			}
 			else
@@ -637,7 +639,7 @@ void SettingsScreen::updateShortcutList(int an)
 	{
 		if(an==-1 || int(n) == an)
 		{
-			std::string name = i->format(currentMode);
+			std::string name = i->formatTranslated(currentMode);
 			if(n >= shortcut_list->getCount())
 				shortcut_list->addText(name);
 			else if(shortcut_list->getText(n) != name)
@@ -700,7 +702,7 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 	{
 		std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin();
 		std::advance(i, selection_n);
-		select_key_1->setKey(i->getKeyPress(0).getKey());
+		select_key_1->setKey(i->getKeyPress(0));
 		if(i->getKeyPressCount() == 1)
 		{
 			key_2_active->setState(false);
@@ -708,7 +710,7 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 		}
 		else
 		{
-			select_key_2->setKey(i->getKeyPress(1).getKey());
+			select_key_2->setKey(i->getKeyPress(1));
 			key_2_active->setState(true);
 			select_key_2->visible=true;
 		}
@@ -736,9 +738,9 @@ void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
 		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
 		std::advance(i, selection_n);
 		KeyboardShortcut new_shortcut;
-		new_shortcut.addKeyPress(KeyPress(select_key_1->getKey(), true));
+		new_shortcut.addKeyPress(select_key_1->getKey());
 		if(key_2_active->getState())
-			new_shortcut.addKeyPress(KeyPress(select_key_2->getKey(), true));
+			new_shortcut.addKeyPress(select_key_2->getKey());
 		new_shortcut.setAction(action_list->getSelectionIndex() + 1);
 		(*i) = new_shortcut;
 		updateShortcutList(selection_n);
@@ -764,7 +766,7 @@ void SettingsScreen::loadDefaultKeyboardShortcuts()
 void SettingsScreen::addNewShortcut()
 {
 	KeyboardShortcut ks;
-	ks.addKeyPress(KeyPress(SDLK_ESCAPE, true));
+	ks.addKeyPress(KeyPress());
 	if(currentMode == GameGUIShortcuts)
 	{
 		ks.setAction(GameGUIKeyActions::ShowMainMenu);

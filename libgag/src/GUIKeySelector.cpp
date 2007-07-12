@@ -76,17 +76,17 @@ namespace GAGGUI
 	
 	
 	
-	SDLKey KeySelector::getKey()
+	KeyPress KeySelector::getKey()
 	{
 		return key;
 	}
 	
 	
 	
-	void KeySelector::setKey(SDLKey akey)
+	void KeySelector::setKey(const KeyPress& nkey)
 	{
-		key = akey;
-		this->text = SDL_GetKeyName(key);
+		key = nkey;
+		this->text = nkey.getTranslated();
 	}
 	
 	
@@ -104,11 +104,11 @@ namespace GAGGUI
 		this->font = font;
 		this->activated = false;
 		
-		key = SDLK_ESCAPE;
+		key = KeyPress();
 		
 		fontPtr = Toolkit::getFont(font);
 		
-		this->text = SDL_GetKeyName(key);
+		this->text = key.getTranslated();
 		
 		blinkTimer = 0;
 		blinkVisible = true;
@@ -155,14 +155,10 @@ namespace GAGGUI
 	{
 		if (activated)
 		{
-			SDLKey sym=event->key.keysym.sym;
-			SDLMod mod=event->key.keysym.mod;
-			
-			key = sym;
-			
+			key = KeyPress(event->key.keysym, true);
 			activated=false;
 			
-			this->text = SDL_GetKeyName(key);
+			this->text = key.getTranslated();
 			this->blinkVisible = true;
 			this->blinkTimer = 0;
 			

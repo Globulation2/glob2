@@ -23,6 +23,8 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <string>
+#include "KeyPress.h"
 
 enum ShortcutMode
 {
@@ -33,45 +35,8 @@ enum ShortcutMode
 //Steps to add a keyboard shortcut:
 //1) Identify where it goes (either GameGUIKeyboardActions or MapEditorKeyboardActions)
 //2) Add the action to the enum there, and give it an approppriette name in the init function
-//3) Find the handleKey function in either GameGUI or MapEdit and add the code there
-
-///Represents a "key" on the keyboard and how its used
-class KeyPress
-{
-public:
-	///Construct a KeyPress
-	KeyPress(SDLKey key, bool pressed);
-
-	///Construct an empty KeyPress
-	KeyPress();
-
-	///Compares two KeyPress
-	bool operator<(const KeyPress& rhs) const;
-
-	///Compares two KeyPress
-	bool operator!=(const KeyPress& rhs) const;
-
-	///Compares two KeyPress
-	bool operator==(const KeyPress& rhs) const;
-	
-	///Formats a key press
-	std::string format() const;
-	
-	///Interprets a key press from a string
-	void interpret(const std::string& s);
-	
-	///Returns the key
-	SDLKey getKey() const;
-	
-	///Returns whether the key is to be pressed in or our
-	bool getPressed() const;
-private:
-	static void initKeyMap();
-	static bool keyMapInitialized;
-	static std::map<std::string, SDLKey> keyMap;
-	SDLKey key;
-	bool pressed;
-};
+//3) Find the handleKey function in either GameGUI or MapEdit and add the code for the action
+//4) Add the name you provided to the translation files, as [name], and at the bare minimum, give it an English translation
 
 ///This class represents a keyboard shortcut
 class KeyboardShortcut
@@ -89,6 +54,9 @@ public:
 	///Interprets a keyboard shortcut from a string
 	void interpret(const std::string& s, ShortcutMode mode);
 
+	///Formats a translated version, not for serializtaion
+	std::string formatTranslated(ShortcutMode mode) const;
+	
 	///Counts how many key presses there is
 	size_t getKeyPressCount() const;
 	

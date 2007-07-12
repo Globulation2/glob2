@@ -24,6 +24,7 @@ libgag_a_SOURCES = \
 	GUITextArea.cpp\
 	GUIText.cpp\
 	GUITextInput.cpp\
+	KeyPress.cpp\
 	Sprite.cpp\
 	StreamBackend.cpp\
 	Stream.cpp\

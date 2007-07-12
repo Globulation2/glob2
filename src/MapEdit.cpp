@@ -1700,20 +1700,20 @@ int MapEdit::processEvent(SDL_Event& event)
 	}
 	else if(event.type==SDL_KEYDOWN)
 	{
-		handleKeyPressed(event.key.keysym.sym, true);
+		handleKeyPressed(event.key.keysym, true);
 	}
 	else if(event.type==SDL_KEYUP)
 	{
-		handleKeyPressed(event.key.keysym.sym, false);
+		handleKeyPressed(event.key.keysym, false);
 	}
 	return returnCode;
 }
 
 
 
-void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
+void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 {
-	if(key == SDLK_i && pressed)
+	if(key.sym == SDLK_i && pressed)
 	{
 		//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
 		game.map.loadTransitional();
@@ -1833,7 +1833,7 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 		}
 		break;
 	}
-	switch(key)
+	switch(key.sym)
 	{
 		case SDLK_UP:
 			if(pressed)

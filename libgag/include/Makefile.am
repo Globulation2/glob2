@@ -13,11 +13,13 @@ GUIBase.h \
 GUIButton.h \
 GUIList.h \
 GUIFileList.h\
+GUIKeySelector.h\
 GUINumber.h \
 GUIRatio.h \
 GUIText.h \
 GUITextArea.h \
 GUITextInput.h \
+KeyPress.h \
 GUISelector.h \
 GUIAnimation.h \
 GraphicContext.h \

@@ -43,6 +43,7 @@ namespace GAGCore
 		int getNumberOfLanguage(void) { return languageCount; }
 		bool load(const char *filename);
 		const char *getString(const char *stringname) const;
+		bool doesStringExist(const char *stringname) const;
 		const char *getStringInLang(const char *stringname, int lang) const;
 		void print();
 	

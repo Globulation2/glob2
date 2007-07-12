@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+  
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 

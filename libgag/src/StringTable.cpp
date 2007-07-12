@@ -264,6 +264,17 @@ namespace GAGCore
 		}
 	}
 	
+	bool StringTable::doesStringExist(const char *stringname) const
+	{
+		std::string key(stringname);
+		std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
+		if (accessIt == stringAccess.end())
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	const char *StringTable::getStringInLang(const char *stringname, int lang) const
 	{
 		if ((lang < languageCount) && (lang >= 0))
