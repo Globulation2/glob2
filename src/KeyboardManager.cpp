@@ -229,11 +229,6 @@ void KeyboardManager::saveKeyboardLayout() const
 
 bool KeyboardManager::loadKeyboardLayout(const std::string& file)
 {
-	for(Uint32 j = Uint32(SDLK_UNKNOWN); j!=SDLK_LAST; ++j)
-	{
-		std::cout << SDL_GetKeyName(SDLKey(j)) << std::endl;
-	}
-
 	InputLineStream *stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(file));
 	if(stream->isEndOfStream())
 	{
