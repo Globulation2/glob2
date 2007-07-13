@@ -127,43 +127,6 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
-//! The screen that contains the message history In Game 
-class InGameScrollableText:public OverlayScreen
-{
-protected:
-	//! The textarea widget
-	List *messageList;
-	
-public:
-	//! InGameScrollableText constructor
-	InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory);
-	//! InGameScrollableText destructor
-	virtual ~InGameScrollableText() { }
-	//! Dummy
-	virtual void onAction(Widget *source, Action action, int par1, int par2) { }
-	//! read messageHistory and update widget 
-	void readHistory(std::vector<std::string> messageHistory);
-};
-
-InGameScrollableText::InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory)
-:OverlayScreen(parentCtx, (globalContainer->gfx->getW()-152), 100)
-{
-	messageList=new List(0, 0, (globalContainer->gfx->getW()-152), 100, 0, 0, "standard");
-	addWidget(messageList);
-	readHistory(messageHistory);
-	dispatchInit();
-}
-
-void InGameScrollableText::readHistory(std::vector<std::string> messageHistory)
-{
-	messageList->clear();
-	if (messageHistory.capacity() > 0){
-		for (int i = messageHistory.size() -1; i>=0; i--){
-			messageList->addText(messageHistory[i]);
-		}
-	}
-}
-
 GameGUI::GameGUI()
 : keyboardManager(GameGUIShortcuts), game(this)
 {
@@ -218,7 +181,6 @@ void GameGUI::init()
 	scrollableText=NULL;
 	typingInputScreenPos=0;
 
-	messagesList.clear();
 	eventGoTypeIterator = 0;
 	localTeam=NULL;
 	teamStats=NULL;
@@ -1347,7 +1309,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			case GameGUIKeyActions::ViewHistory:
 			{
 				if ( ! scrollableText)
-					scrollableText=new InGameScrollableText(globalContainer->gfx, messageHistory);
+					scrollableText = messageManager.createScrollableHistoryScreen();
 				else 
 				{
 					delete scrollableText;
@@ -3596,34 +3558,8 @@ void GameGUI::drawOverlayInfos(void)
 
 		ymesg += yinc+2;
 		
-		// display messages
-		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
-		{
-			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, it->r, it->g, it->b, it->a));
-			if (scrollableText) 
-				globalContainer->gfx->drawString(32, ymesg + 105, globalContainer->standardFont, it->text.c_str());
-			else
-				globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text.c_str());
-			globalContainer->standardFont->popStyle();
-			ymesg += 20;
-
-			// delete old messages
-			if (!(--(it->showTicks)))
-			{
-				// update message history
-				messageHistory.push_back(it->text.c_str());
-				// update in-game history if it's there
-				if (scrollableText) {
-					scrollableText->readHistory(messageHistory);
-				}
-				it=messagesList.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
-
+		if(!scrollableText)
+			messageManager.drawAllMessages(32, ymesg);
 
 		// display map mark
 		globalContainer->gfx->setClipRect();
@@ -4403,24 +4339,18 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 }
 
 void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
-{
-	Message message;
-	message.showTicks=Message::DEFAULT_MESSAGE_SHOW_TICKS;
-	message.r = r;
-	message.g = g;
-	message.b = b;
-	message.a = Color::ALPHA_OPAQUE;
-	
+{	
+	//Split into one per line
 	std::vector<std::string> messages;
-	
 	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, 255, 255, 255));
 	setMultiLine(msgText, &messages);
 	globalContainer->standardFont->popStyle();
-	
+
+	///Add each line as a seperate message to the message manager
+	Uint8 a = Color::ALPHA_OPAQUE;
 	for (unsigned i=0; i<messages.size(); i++)
 	{
-		message.text = messages[i];
-		messagesList.push_back(message);
+		messageManager.addMessage(InGameMessage(messages[i], r, g, b, a));
 	}
 }
 

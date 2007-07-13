@@ -100,6 +100,8 @@ GameGUIKeyActions.cpp \
 GameGUIKeyActions.h \
 GameGUILoadSave.cpp \
 GameGUILoadSave.h \
+GameGUIMessageManager.cpp \
+GameGUIMessageManager.h \
 GameHeader.cpp \
 GameHeader.h \
 GameUtilities.cpp \
