@@ -28,8 +28,9 @@ class Game;
 class Minimap
 {
 public:
-	///Construct a minimap to be drawn at the given cordinates, and the given size
-	Minimap(int px, int py, int size);
+	///Construct a minimap to be drawn at the given cordinates, and the given size, provided that
+	///some of that size is a border
+	Minimap(int px, int py, int size, int border);
 
 	~Minimap();
 
@@ -37,10 +38,21 @@ public:
 	void setGame(Game& game);
 
 	///Draws the minimap
-	void draw(int localteam);
+	void draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH);
 	
 	///Renders the full minimap
 	void renderAllRows(int localteam);
+	
+	///This tells whether the given on-screen cordinates are inside the minimap itself
+	bool insideMinimap(int x, int y);
+	
+	///This converts the given on-screen cordinate (provided its within the minimap itself)
+	///to a cordinate on the map. The nx and ny variables are the on-screen cordinates,
+	///the x and y variables are where the map cordinates will be placed.
+	void convertToMap(int nx, int ny, int& x, int& y);
+	
+	///This converts the given map cordinates to the closest on-screen cordinate
+	void convertToScreen(int nx, int ny, int& x, int& y);
 private:
 	///Refreshes a range of rows on the screen, handles wrapping
 	void refreshPixelRows(int start, int end);
@@ -53,11 +65,11 @@ private:
 
 	/// Returns a value by interpolating between given values
 	int interpolate(double mu, int y1, int y2);
-
 	
 	int px;
 	int py;
 	int size;
+	int border;
 	int row;
 	int offset_x;
 	int offset_y;
@@ -74,6 +86,7 @@ private:
 		SelfFOW,
 		AllyFOW,
 		EnemyFOW,
+		Hidden,
 		RessourceColorStart,
 	};
 	
