@@ -34,6 +34,7 @@
 #include "KeyboardManager.h"
 #include "MarkManager.h"
 #include "GameGUIMessageManager.h"
+#include "Minimap.h"
 
 namespace GAGCore
 {
@@ -304,6 +305,8 @@ private:
 	Uint32 chatMask;
 
 	std::list<boost::shared_ptr<Order> > orderQueue;
+
+	Minimap minimap;
 
 	int mouseX, mouseY;
 	//! for mouse motion
