@@ -29,6 +29,7 @@
 #include "Brush.h"
 #include "Campaign.h"
 #include "MapHeader.h"
+#include "OverlayAreas.h"
 
 namespace GAGCore
 {
@@ -289,6 +290,7 @@ private:
 	bool showStarvingMap;
 	bool showDamagedMap;
 	bool showDefenseMap;
+	OverlayArea overlay;
 
 	bool showUnitWorkingToBuilding;
 
