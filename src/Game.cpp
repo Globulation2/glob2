@@ -1162,7 +1162,7 @@ void Game::syncStep(Sint32 localTeam)
 		
 		if (!globalContainer->runNoX)
 		{
-			renderMiniMap(localTeam, false, stepCounter%25, 25);
+			//renderMiniMap(localTeam, false, stepCounter%25, 25);
 		}
 
 		if ((stepCounter&15)==1)

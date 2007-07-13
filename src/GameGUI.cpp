@@ -128,7 +128,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-: keyboardManager(GameGUIShortcuts), game(this), minimap(globalContainer->gfx->getW()-114, 14, 100)
+: keyboardManager(GameGUIShortcuts), game(this), minimap(globalContainer->gfx->getW()-128, 0, 128, 14)
 {
 }
 
@@ -3682,23 +3682,8 @@ void GameGUI::drawAll(int team)
 	//globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
 	//game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team, drawOptions);
 
-
 	globalContainer->gfx->setClipRect();
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-	{
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 0, 128, 14, 0, 0, 0);
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 114, 128, 14, 0, 0, 0);
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 0, 0, 0);
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 0, 0, 0);
-	}
-	else
-	{
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 0, 128, 14, 0, 0, 40, 180);
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 114, 128, 14, 0, 0, 40, 180);
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 0, 0, 40, 180);
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 0, 0, 40, 180);
-	}
-	minimap.draw(localTeamNo);
+	minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-128)/32, globalContainer->gfx->getH()/32 );
 
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
