@@ -149,6 +149,8 @@ MapHeader.h \
 MarkManager.cpp \
 MarkManager.h \
 Marshaling.h \
+Minimap.cpp \
+Minimap.h \
 MultiplayerGameScreen.cpp \
 MultiplayerGameScreen.h \
 MultiplayerGame.cpp \
