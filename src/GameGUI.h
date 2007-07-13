@@ -33,6 +33,7 @@
 #include "MapHeader.h"
 #include "KeyboardManager.h"
 #include "MarkManager.h"
+#include "GameGUIMessageManager.h"
 
 namespace GAGCore
 {
@@ -48,7 +49,6 @@ using namespace GAGGUI;
 
 class TeamStats;
 class InGameTextInput;
-class InGameScrollableText;
 
 
 //! max unit working at a building
@@ -324,18 +324,12 @@ private:
 
 	bool hasEndOfGameDialogBeenShown;
 	
-	// On screen message handling
-	struct Message
-	{
-		enum { DEFAULT_MESSAGE_SHOW_TICKS = 180 };
-		int showTicks; // since when it is shown
-		std::string text;
-		Uint8 r, g, b, a; // color
-	};
-	
-	std::list<Message> messagesList;
-	std::vector<std::string> messageHistory;
-	
+	GameGUIMessageManager messageManager;
+	InGameScrollableHistory* scrollableText;
+
+	/// Add a message to the list of messages
+	void addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText);
+
 	// Message stuff
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
 	int eventGoType; //!< type of last event
@@ -343,13 +337,9 @@ private:
 	
 	//! Transform a text to multi line according to screen width
 	void setMultiLine(const std::string &input, std::vector<std::string> *output);
-
-	//! add a message to the window message list
-	void addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText);
 	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
-	InGameScrollableText *scrollableText;
 	int typingInputScreenPos;
 	int typingInputScreenInc;
 
