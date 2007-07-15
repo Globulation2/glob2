@@ -569,6 +569,16 @@ void GameGUI::step(void)
 		}
 */
 
+	if(game.stepCounter % 25 == 1)
+	{
+		if(showStarvingMap)
+			overlay.compute(game, OverlayArea::Starving, localTeamNo);
+		else if(showDamagedMap)
+			overlay.compute(game, OverlayArea::Damage, localTeamNo);
+		else if(showDefenseMap)
+			overlay.compute(game, OverlayArea::Defence, localTeamNo);
+	}
+
 	// do we have won or lost conditions
 	checkWonConditions();
 	
@@ -2225,6 +2235,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDamagedMap=false;
 				showDefenseMap=false;
 				showStarvingMap=!showStarvingMap;
+				overlay.compute(game, OverlayArea::Starving, localTeamNo);
 			}
 
 			if(my > YPOS_BASE_STAT+140+88 && my < YPOS_BASE_STAT+140+104)
@@ -2232,6 +2243,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDamagedMap=!showDamagedMap;
 				showStarvingMap=false;
 				showDefenseMap=false;
+				overlay.compute(game, OverlayArea::Damage, localTeamNo);
 			}
 
 			if(my > YPOS_BASE_STAT+140+112 && my < YPOS_BASE_STAT+140+128)
@@ -2239,6 +2251,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDefenseMap=!showDefenseMap;
 				showStarvingMap=false;
 				showDamagedMap=false;
+				overlay.compute(game, OverlayArea::Defence, localTeamNo);
 			}
 		}
 	}
@@ -3648,9 +3661,9 @@ void GameGUI::drawAll(int team)
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
 								(drawAccessibilityAids ? Game::DRAW_ACCESSIBILITY : 0 ) |
 								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
-								((showStarvingMap) ? Game::DRAW_STARVING_OVERLAY : 0) |
-								((showDamagedMap) ? Game::DRAW_DAMAGED_OVERLAY : 0) |
-								((showDefenseMap) ? Game::DRAW_DEFENSE_OVERLAY : 0) |
+								((showStarvingMap) ? Game::DRAW_OVERLAY : 0) |
+								((showDamagedMap) ? Game::DRAW_OVERLAY : 0) |
+								((showDefenseMap) ? Game::DRAW_OVERLAY : 0) |
 								Game::DRAW_AREA;
 	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)

@@ -908,7 +908,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	// We have to finish Team's loading
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		teams[i]->stats.setMapSize(map.getW(), map.getH());
 		teams[i]->update();
 	}
 	
@@ -2365,31 +2364,18 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 
 inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	TeamStat* latest=teams[localTeam]->stats.getLatestStat();
 	int overlayMax=0;
-	std::vector<int>* overlayMap=NULL;
 	Color overlayColor;
-	if((drawOptions & DRAW_STARVING_OVERLAY))
+	if(drawOptions & DRAW_OVERLAY)
 	{
-		overlayMax=latest->starvingMax;
-		overlayMap=&latest->starvingMap;
-		overlayColor=Color(192, 0, 0);
-	}
-	if((drawOptions & DRAW_DAMAGED_OVERLAY))
-	{
-		overlayMax=latest->damagedMax;
-		overlayMap=&latest->damagedMap;
-		overlayColor=Color(192, 0, 0);
-	}
-	if((drawOptions & DRAW_DEFENSE_OVERLAY))
-	{
-		overlayMax=latest->defenseMax;
-		overlayMap=&latest->defenseMap;
-		overlayColor=Color(0, 0, 192);
-	}
+		overlayMax=gui->overlay.getMaximum();
+		if(gui->overlay.getOverlayType() == OverlayArea::Starving)
+			overlayColor=Color(192, 0, 0);
+		if(gui->overlay.getOverlayType() == OverlayArea::Damage)
+			overlayColor=Color(192, 0, 0);
+		if(gui->overlay.getOverlayType() == OverlayArea::Defence)
+			overlayColor=Color(0, 0, 192);
 
-	if(overlayMap!=NULL && overlayMap->size())
-	{
 		for (int y=top-1; y<=bot; y++)
 		{
 			for (int x=left-1; x<=right; x++)
@@ -2398,9 +2384,9 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 				int ry=(y+viewportY)%map.getH();
 				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 				{
-					if((*overlayMap)[latest->getPos(rx, ry)])
+					if(gui->overlay.getValue(rx, ry))
 					{
-						const int value_c=(*overlayMap)[latest->getPos(rx, ry)];
+						const int value_c=gui->overlay.getValue(rx, ry);
 						const int alpha_c=int(float(200)/float(overlayMax) * float(value_c));
 						globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
 					}
@@ -2417,10 +2403,10 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 							//bx and by represent the base position. Since the maximum height
 							//is at the center if the square, pixels before this are interpolated
 							//between the squares that are before this one
-							int b_val=(*overlayMap)[latest->getPos(rx, ry)];
-							int d_val=(*overlayMap)[latest->getPos(rx, map.normalizeY(ry+1))];
-							int r_val=(*overlayMap)[latest->getPos(map.normalizeX(rx+1), ry)];
-							int dr_val=(*overlayMap)[latest->getPos(map.normalizeX(rx+1), map.normalizeY(ry+1))];
+							int b_val=gui->overlay.getValue(rx, ry);
+							int d_val=gui->overlay.getValue(rx, map.normalizeY(ry+1));
+							int r_val=gui->overlay.getValue(map.normalizeX(rx+1), ry);
+							int dr_val=gui->overlay.getValue(map.normalizeX(rx+1), map.normalizeY(ry+1));
 							float n_top = interpolateValues(b_val, r_val, fx);
 							float n_bottom = interpolateValues(d_val, dr_val, fx);
 							float n_vertical = interpolateValues(n_top, n_bottom, fy);

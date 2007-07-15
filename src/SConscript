@@ -67,6 +67,7 @@ NetTestSuite.cpp \
 NetTextMessageHandler.cpp \
 NewMapScreen.cpp \
 Order.cpp \
+OverlayAreas.cpp \
 PerlinNoise.cpp \
 Player.cpp \
 Race.cpp \
