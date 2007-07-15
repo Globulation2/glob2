@@ -35,6 +35,7 @@
 #include "MarkManager.h"
 #include "GameGUIMessageManager.h"
 #include "Minimap.h"
+#include "OverlayAreas.h"
 
 namespace GAGCore
 {
@@ -296,6 +297,7 @@ private:
 	bool showStarvingMap;
 	bool showDamagedMap;
 	bool showDefenseMap;
+	OverlayArea overlay;
 
 	bool showUnitWorkingToBuilding;
 

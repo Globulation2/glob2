@@ -182,6 +182,8 @@ NewMapScreen.h \
 NonANSICStdWrapper.h \
 Order.cpp \
 Order.h \
+OverlayAreas.cpp \
+OverlayAreas.h \
 PerlinNoise.cpp \
 PerlinNoise.h \
 Player.cpp \
