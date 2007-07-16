@@ -37,6 +37,7 @@
 #include "Minimap.h"
 #include "OverlayAreas.h"
 #include "GameGUIToolManager.h"
+#include "GameGUIDefaultAssignManager.h"
 
 namespace GAGCore
 {
@@ -126,6 +127,7 @@ public:
 	KeyboardManager keyboardManager;
 public:
 	Game game;
+	friend class Game;
 	bool gamePaused;
 	bool hardPause;
 	bool isRunning;
@@ -350,15 +352,7 @@ private:
 	Campaign* campaign;
 	std::string missionName;
 
-	// determine building type for custom settings
-	#define NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT 50
-	int unitCount[NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT];
-	
-	//! Init all predefined unit settings to from predefined settings
-	friend class Game;
-	void initUnitCount(void);
-	int getUnitCount(unsigned typeNum);
-	void setUnitCount(unsigned typeNum, int nbReq);
+	GameGUIDefaultAssignManager defaultAssign;
 };
 
 #endif

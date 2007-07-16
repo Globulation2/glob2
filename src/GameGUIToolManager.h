@@ -25,6 +25,7 @@
 #include "Game.h"
 #include "boost/shared_ptr.hpp"
 #include "Brush.h"
+#include "GameGUIDefaultAssignManager.h"
 #include <string>
 #include <queue>
 
@@ -33,7 +34,7 @@ class GameGUIToolManager
 {
 public:
 	///Constructs a tool manager
-	GameGUIToolManager(Game& game, BrushTool& brush);
+	GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign);
 	
 	///List of tool modes
 	enum ToolMode
@@ -92,6 +93,7 @@ private:
 
 	Game& game;
 	BrushTool& brush;
+	GameGUIDefaultAssignManager& defaultAssign;
 	BrushAccumulator brushAccumulator;
 	///Tool mode
 	ToolMode mode;

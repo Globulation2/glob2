@@ -128,7 +128,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush),
+: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
   minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
 {
 }
@@ -212,13 +212,8 @@ void GameGUI::init()
 		smoothedCPULoad[i]=0;
 	smoothedCPUPos=0;
 
- 	for (int i=0; i<NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT; i++)
-		unitCount[i] = 1;
-
 	campaign=NULL;
 	missionName="";
-	
-	initUnitCount();
 
         if (getenv ("GLOB2_NO_RAW_MOUSEWHEEL")) {
           noRawMousewheel = true; }
@@ -887,7 +882,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							setUnitCount(selBuild->typeNum, nbReq);
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange) &&
@@ -895,7 +890,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
-							setUnitCount(selBuild->typeNum, nbReq);
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -914,7 +909,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							setUnitCount(selBuild->typeNum, nbReq);
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal>0) &&
@@ -922,7 +917,7 @@ void GameGUI::processEvent(SDL_Event *event)
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
-							setUnitCount(selBuild->typeNum, nbReq);
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1028,8 +1023,8 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	if (building->owner->teamNumber != localTeamNo)
 		return;
 	int typeNum = building->typeNum + 1; //determines type of updated building
-	int unitWorking = getUnitCount(typeNum);
-	int unitWorkingFuture = getUnitCount(typeNum+1);
+	int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
 	if ((building->hp < buildingType->hpMax) && repair)
 	{
 		// repair
@@ -1087,7 +1082,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				{
 					Building* selBuild = selection.building;
 					int typeNum = selBuild->typeNum; //determines type of updated building
-					int unitWorking = getUnitCount(typeNum - 1);
+					int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
 					if (selBuild->constructionResultState == Building::UPGRADE)
 						orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 					else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
@@ -1104,7 +1099,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-						setUnitCount(selBuild->typeNum, nbReq);
+						defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
 				}
 			}
@@ -1118,7 +1113,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-						setUnitCount(selBuild->typeNum, nbReq);
+						defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
 				}
 			}
@@ -1200,7 +1195,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				{
 					Building* selBuild = selection.building;
 					int typeNum = selBuild->typeNum; //determines type of updated building
-					int unitWorking = getUnitCount(typeNum);
+					int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
 					if (selBuild->constructionResultState == Building::REPAIR)
 						orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 					else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
@@ -1850,7 +1845,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 					}
 				}
-				setUnitCount(selBuild->typeNum, nbReq);
+				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
@@ -1885,7 +1880,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
-				setUnitCount(selBuild->typeNum, nbReq);
+				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
@@ -2026,13 +2021,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (selBuild->constructionResultState==Building::REPAIR)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
-				int unitWorking = getUnitCount(typeNum);
+				int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
 				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
-				int unitWorking = getUnitCount(typeNum - 1);
+				int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
 				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
@@ -4156,70 +4151,3 @@ void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 	markManager.addMark(Mark(mmo->x, mmo->y, r, g, b));
 }
 
-void GameGUI::initUnitCount(void)
-{
-	unitCount[0] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0];
-	unitCount[1] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1];
-	unitCount[2] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0];
-	unitCount[3] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1];
-	unitCount[4] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2];
-	unitCount[5] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3];
-	unitCount[6] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4];
-	unitCount[7] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5];
-	unitCount[8] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0];
-	unitCount[9] = 1; // not used in settings
-	unitCount[10] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2];
-	unitCount[11] = 1; // not used in settings
-	unitCount[12] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4];
-	unitCount[13] = 1; // not used in settings
-	unitCount[14] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0];
-	unitCount[15] = 1; // not used in settings
-	unitCount[16] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2];
-	unitCount[17] = 1; // not used in settings
-	unitCount[18] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4];
-	unitCount[19] = 1; // not used in settings
-	unitCount[20] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0];
-	unitCount[21] = 1; // not used in settings
-	unitCount[22] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2];
-	unitCount[23] = 1; // not used in settings
-	unitCount[24] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4];
-	unitCount[25] = 1; // not used in settings
-	unitCount[26] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0];
-	unitCount[27] = 1; // not used in settings
-	unitCount[28] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2];
-	unitCount[29] = 1; // not used in settings
-	unitCount[30] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4];
-	unitCount[31] = 1; // not used in settings
-	unitCount[32] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0];
-	unitCount[33] = 1; // not used in settings
-	unitCount[34] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2];
-	unitCount[35] = 1; // not used in settings
-	unitCount[36] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4];
-	unitCount[37] = 1; // not used in settings
-	unitCount[38] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0];
-	unitCount[39] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1];
-	unitCount[40] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2];
-	unitCount[41] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3];
-	unitCount[42] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4];
-	unitCount[43] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5];
-	unitCount[44] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][0];
-	unitCount[45] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WAR_FLAG][0];
-	unitCount[46] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][0];
-	unitCount[47] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::STONE_WALL][0];
-	unitCount[48] = 1; // not used in settings
-	unitCount[49] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0];
-}
-
-int GameGUI::getUnitCount(unsigned typeNum)
-{
-	if (typeNum < NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT)
-		return unitCount[typeNum];
-	else
-		return 1;
-}
-
-void GameGUI::setUnitCount(unsigned typeNum, int nbReq)
-{
-	if (typeNum < NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT)
-		unitCount[typeNum] = nbReq;
-}
