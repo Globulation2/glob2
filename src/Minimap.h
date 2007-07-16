@@ -31,9 +31,18 @@ class Game;
 class Minimap
 {
 public:
+	enum MinimapMode
+	{
+		///In this mode, FOW and discovered zone is hidden
+		HideFOW,
+		///In this mode, FOW and discovered zones are ignored
+		///and everything is shown
+		ShowFOW,
+	};
+
 	///Construct a minimap to be drawn at the given cordinates, and the given size, provided that
 	///some of that size is a border
-	Minimap(int px, int py, int size, int border);
+	Minimap(int px, int py, int size, int border, MinimapMode minimap_mode);
 
 	~Minimap();
 
@@ -57,6 +66,9 @@ public:
 	///This converts the given map cordinates to the closest on-screen cordinate
 	void convertToScreen(int nx, int ny, int& x, int& y);
 private:
+	///Computes the minimap positioning
+	void computeMinimapPositioning();
+
 	///Refreshes a range of rows on the screen, handles wrapping
 	void refreshPixelRows(int start, int end);
 
@@ -65,9 +77,6 @@ private:
 	
 	/// Returns the value at the given point
 	GAGCore::Color getColor(int xpos, int ypos);
-
-	/// Returns a value by interpolating between given values
-	int interpolate(double mu, int y1, int y2);
 	
 	int px;
 	int py;
@@ -76,6 +85,14 @@ private:
 	int update_row;
 	int offset_x;
 	int offset_y;
+	int mini_x;
+	int mini_y;
+	int mini_w;
+	int mini_h;
+	int mini_offset_x;
+	int mini_offset_y;
+	MinimapMode minimap_mode;
+	
 	Game* game;
 	
 	enum ColorMode

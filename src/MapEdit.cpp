@@ -805,7 +805,7 @@ void NumberCycler::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
- : game(NULL), keyboardManager(MapEditShortcuts)
+ : game(NULL), keyboardManager(MapEditShortcuts), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
 {
 	doQuit=false;
 
@@ -1154,8 +1154,9 @@ bool MapEdit::load(const char *filename)
 		if(game.teams[11])
 			teamInfo12->setSelectionPos(game.teams[11]->type);
 
-		renderMiniMap();
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
+		
+		minimap.setGame(game);
 		return true;
 	}
 }
@@ -1199,7 +1200,6 @@ int MapEdit::run(void)
 
 // 	regenerateClipRect();
 	globalContainer->gfx->setClipRect();
-	renderMiniMap();
 	drawMenu();
 	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getW(), true, true);
 	drawMiniMap();
@@ -1336,19 +1336,8 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 void MapEdit::drawMiniMap(void)
 {
-	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team);
+	minimap.draw(team, viewportX, viewportY, (globalContainer->gfx->getW()-128)/32, globalContainer->gfx->getH()/32 );
 // 	paintCoordinates();
-}
-
-
-
-void MapEdit::renderMiniMap(void)
-{
-	if(!wasMinimapRendered)
-	{
-		wasMinimapRendered=true;
-		game.renderMiniMap(team, true);
-	}
 }
 
 
@@ -1509,7 +1498,7 @@ void MapEdit::drawMenuEyeCandy()
 
 void MapEdit::drawPlacingUnitOnMap()
 {
-	int type;
+	int type=0;
 	if(placingUnit==Worker)
 		type=WORKER;
 	else if(placingUnit==Warrior)
@@ -1717,7 +1706,6 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 	{
 		//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
 		game.map.loadTransitional();
-		renderMiniMap();
 		return;
 	}
 
@@ -2019,7 +2007,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			}
 			game.regenerateDiscoveryMap();
 			hasMapBeenModified = true;
-			renderMiniMap();
 		}
 	}
 	else if(action=="switch to building level 1")
@@ -2263,7 +2250,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		if(terrainType==TerrainSelector::NoTerrain && selectionMode!=RemoveObject && selectionMode!=ChangeAreas && selectionMode!=ChangeNoRessourceGrowthAreas)
 			performAction("select grass");
 		brush.handleClick(relMouseX, relMouseY);
-		renderMiniMap();
 	}
 	else if(action=="terrain drag start")
 	{
@@ -2341,7 +2327,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		if(game.mapHeader.getNumberOfTeams() < 12)
 			game.addTeam();
-		renderMiniMap();
 	}
 	else if(action=="remove team")
 	{
@@ -2351,7 +2336,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				team-=1;
 			game.removeTeam();
 		}
-		renderMiniMap();
 	}
 	else if(action.substr(0, 17)=="change team info ")
 	{
@@ -2396,7 +2380,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		if(game.teams[n])
 		{
 			team=n;
-			renderMiniMap();
 			game.map.computeLocalForbidden(team);
 			game.map.computeLocalClearArea(team);
 			game.map.computeLocalGuardArea(team);
@@ -2438,7 +2421,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	}
 	else if(action=="place unit")
 	{
-		int type;
+		int type=0;
 		if(placingUnit==Worker)
 			type=WORKER;
 		else if(placingUnit==Warrior)
@@ -2462,7 +2445,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			}
 			game.regenerateDiscoveryMap();
 		}
-		renderMiniMap();
 	}
 	else if(action=="select map unit")
 	{
@@ -3286,7 +3268,6 @@ void MapEdit::handleTerrainClick(int mx, int my)
 		assert(false);
 	lastPlacementX=mapX;
 	lastPlacementY=mapY;
-	renderMiniMap();
 }
 
 
@@ -3325,7 +3306,6 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	}
 	lastPlacementX=mapX;
 	lastPlacementY=mapY;
-	renderMiniMap();
 }
 
 

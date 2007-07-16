@@ -128,7 +128,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-: keyboardManager(GameGUIShortcuts), game(this), minimap(globalContainer->gfx->getW()-128, 0, 128, 14)
+: keyboardManager(GameGUIShortcuts), game(this), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
 {
 }
 
@@ -1690,26 +1690,15 @@ void GameGUI::handleKeyAlways(void)
 
 void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport)
 {
-	// get data for minimap
-	int mMax;
-	int szX, szY;
-	int decX, decY;
-	Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
+	minimap.convertToMap(mx, my, *cx, *cy);
 
-	mx-=14+decX;
-	my-=14+decY;
-	*cx=((mx*game.map.getW())/szX);
-	*cy=((my*game.map.getH())/szY);
-	*cx+=localTeam->startPosX-(game.map.getW()/2);
-	*cy+=localTeam->startPosY-(game.map.getH()/2);
+	///when for the screen viewport, center
 	if (forScreenViewport)
 	{
 		*cx-=((globalContainer->gfx->getW()-128)>>6);
 		*cy-=((globalContainer->gfx->getH())>>6);
 	}
 
-	*cx&=game.map.getMaskW();
-	*cy&=game.map.getMaskH();
 }
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
@@ -1720,7 +1709,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 
 	if (miniMapPushed)
 	{
-		minimapMouseToPos(mx-globalContainer->gfx->getW()+128, my, &viewportX, &viewportY, true);
+		minimapMouseToPos(mx, my, &viewportX, &viewportY, true);
 	}
 	else
 	{
@@ -1911,7 +1900,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		else
 		{
 			miniMapPushed=true;
-			minimapMouseToPos(mx, my, &viewportX, &viewportY, true);
+			minimapMouseToPos(globalContainer->gfx->getW() - 128 + mx, my, &viewportX, &viewportY, true);
 		}
 	}
 	else if (my<128+32)

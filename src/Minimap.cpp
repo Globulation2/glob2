@@ -30,8 +30,8 @@
 
 using namespace GAGCore;
 
-Minimap::Minimap(int px, int py, int size, int border)
-  : px(px), py(py), size(size), border(border)
+Minimap::Minimap(int px, int py, int size, int border, MinimapMode minimap_mode)
+  : px(px), py(py), size(size), border(border), minimap_mode(minimap_mode)
 {
 	colors.push_back(Color(10, 240, 20)); //Self
 	colors.push_back(Color(220, 200, 20)); //Ally
@@ -77,6 +77,8 @@ void Minimap::setGame(Game& ngame)
 
 void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
 {
+	computeMinimapPositioning();
+
 	Uint8 borderR;
 	Uint8 borderG;
 	Uint8 borderB;
@@ -101,11 +103,11 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	globalContainer->gfx->drawFilledRect(px, py + border, border, size - border*2, borderR, borderG, borderB, borderA);
 	globalContainer->gfx->drawFilledRect(px + size - border, py + border, border, size-border*2, borderR, borderG, borderB, borderA);
 
-	///Draw a 1 pixel line arround the minimap
+	///Draw a 1 pixel hilight arround the minimap
 	globalContainer->gfx->drawRect(px + border - 1, py + border - 1, size - border * 2 + 2, size - border * 2 + 2, 200, 200, 200);
 
-	offset_x = game->map.getW() / 2 - game->teams[localteam]->startPosX;
-	offset_y = game->map.getW() / 2 - game->teams[localteam]->startPosY;
+	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
+	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
 
 	///What row the scan-line is to be drawn at
 	int line_row = 0;
@@ -115,24 +117,24 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	{
 		renderAllRows(localteam);
 		update_row = 0;
-		refreshPixelRows(0, size - border * 2);
+		refreshPixelRows(0, mini_h);
 	}
 	else
 	{
 		///Render four rows at a time
-		const int rows_to_render = 4;
+		const int rows_to_render = mini_h/25;
 		
-		int first = (int)((float)(update_row) * (float)(game->map.getH()) / (float)(size - border*2));
-		int last  = (int)((float)(update_row + rows_to_render + 1) * (float)(game->map.getH()) / (float)(size - border*2));
+		int first = (int)((float)(update_row) * (float)(game->map.getH()) / (float)(mini_h));
+		int last  = (int)((float)(update_row + rows_to_render + 1) * (float)(game->map.getH()) / (float)(mini_h));
 		
 		for(int r=first; r<=last; ++r)
 		{
 			renderRow(r % (game->map.getH()), localteam);
 		}
 		
-		refreshPixelRows(update_row, (update_row + rows_to_render) % (size - border*2));
+		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h));
 		update_row += rows_to_render;
-		update_row %= (size - border * 2);
+		update_row %= (mini_h);
 		line_row = update_row;
 	}
 	//Draw the surface
@@ -140,13 +142,10 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 
 	//Draw the viewport square, taking into account that it may
 	//wrap arround the sides of the minimap
-	viewportX += offset_x;
-	viewportY += offset_y;
 
 	int startx, starty, endx, endy;
 	convertToScreen(viewportX, viewportY, startx, starty);
 	convertToScreen(viewportX + viewportW, viewportY + viewportH, endx, endy);
-	
 
 	for (int n=startx; n!=endx;)
 	{
@@ -154,23 +153,24 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		globalContainer->gfx->drawPixel(n, endy, 255, 255, 255);
 		
 		n+=1;
-		if(n == (px + size - border))
-			n = px + border;
+		if(n == (mini_x + mini_w))
+			n = mini_x;
 	}
 	for (int n=starty; n!=endy;)
 	{
 		globalContainer->gfx->drawPixel(startx, n, 255, 255, 255);
 		globalContainer->gfx->drawPixel(endx, n, 255, 255, 255);
 		n+=1;
-		if(n == (py + size - border))
-			n = py + border;
+		if(n == (mini_y + mini_h))
+			n = mini_y;
 	}
 	///The lines are out of alignment, so a single pixel in the bottom right hand of the square
 	///is never drawn
 	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
-		
+
 	///Draw the line that shows where the minimap is currently updating
-	globalContainer->gfx->drawHorzLine(px + border, py + border + line_row , size - border*2, 100, 100, 100);
+	if(minimap_mode == HideFOW)
+		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
 }
 
 
@@ -187,8 +187,8 @@ void Minimap::renderAllRows(int localteam)
 
 bool Minimap::insideMinimap(int x, int y)
 {
-	if(x > (px + border) && x < (px + size - border)
-			&& y > (py + border) && y < (py + size - border))
+	if(x > (mini_x) && x < (mini_x + mini_w)
+			&& y > (mini_y) && y < (mini_y + mini_h))
 		return true;
 	return false;
 }
@@ -197,11 +197,12 @@ bool Minimap::insideMinimap(int x, int y)
 
 void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 {
-	int xpos = nx - px - border;
-	int ypos = ny - py - border;
-	x = (offset_x + (int)((float)(game->map.getW()) / (float)(size - border*2) * (float)(xpos))) % game->map.getW();
-	y = (offset_y + (int)((float)(game->map.getH()) / (float)(size - border*2) * (float)(ypos))) % game->map.getH();
+	int xpos = nx - mini_x;
+	int ypos = ny - mini_y;
+	x = (offset_x + (int)((float)(game->map.getW()) / (float)(mini_w) * (float)(xpos))) % game->map.getW();
+	y = (offset_y + (int)((float)(game->map.getH()) / (float)(mini_h) * (float)(ypos))) % game->map.getH();
 }
+
 
 
 void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
@@ -209,23 +210,50 @@ void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 	int xpos = game->map.normalizeX(nx - offset_x);
 	int ypos = game->map.normalizeY(ny - offset_y);
 
-	x = px + border + (int)((float)(xpos) * (float)(size - border*2) / (float)(game->map.getW())) % (size - border*2);
-	y = py + border + (int)((float)(ypos) * (float)(size - border*2) / (float)(game->map.getH())) % (size - border*2);
+	x = mini_x + (int)((float)(xpos) * (float)(mini_w) / (float)(game->map.getW())) % (mini_w);
+	y = mini_y + (int)((float)(ypos) * (float)(mini_h) / (float)(game->map.getH())) % (mini_h);
 }
+
+
+
+void Minimap::computeMinimapPositioning()
+{
+	int msize = size - border*2;
+	if(game->map.getW() > game->map.getH())
+	{
+		mini_w = msize;
+		mini_h = (game->map.getH() * msize) / game->map.getW();
+		mini_offset_x = 0;
+		mini_offset_y = (msize - mini_h)/2;
+		mini_x = px + border + mini_offset_x;
+		mini_y = py + border + mini_offset_y;
+	}
+	else
+	{
+		mini_w = (game->map.getW() * msize) / game->map.getH();
+		mini_h = msize;
+		mini_offset_x = (msize - mini_w)/2;
+		mini_offset_y = 0;
+		mini_x = px + border + mini_offset_x;
+		mini_y = py + border + mini_offset_y;
+	}
+}
+
+
 
 void Minimap::refreshPixelRows(int start, int end)
 {
 	for(int y=start; y!=end;)
 	{
-		for(int x=0; x<(size-border*2); ++x)
+		for(int x=0; x<(mini_w); ++x)
 		{
-			surface->drawPixel(x, y, getColor(x, y));
+			surface->drawPixel(mini_offset_x + x, mini_offset_y + y, getColor(x, y));
 		}
 		
 		y++;
 		if(y == end)
 			break;
-		if(y == (size - border * 2))
+		if(y == mini_h)
 			y = 0;
 	}
 }
@@ -238,13 +266,15 @@ void Minimap::renderRow(int y, int localteam)
 	Uint32 allyMask = game->teams[localteam]->allies;
 	for(int x=0; x<game->map.getW(); ++x)
 	{
-		if(! game->map.isMapDiscovered(offset_x + x, offset_y + y, localMask))
+		if(minimap_mode == HideFOW && !game->map.isMapDiscovered(offset_x + x, offset_y + y, localMask))
 		{
 			colorMap[position(x, y)] = Hidden;
 		}
 		else
 		{
 			bool isVisible = game->map.isFOWDiscovered(offset_x + x, offset_y + y, localMask);
+			if(minimap_mode == ShowFOW)
+				isVisible=true;
 			Uint16 gid = game->map.getAirUnit(offset_x + x, offset_y + y);
 			if(gid == NOGUID)
 			{
@@ -274,22 +304,8 @@ void Minimap::renderRow(int y, int localteam)
 				{
 					//If building is detected, use its color
 					Building* b = game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
-					if(b->seenByMask & localMask)
-					{
-						if(b->owner == game->teams[localteam])
-						{
-							colorMap[position(x, y)] = Self;
-						}
-						else if(b->owner->me & allyMask)
-						{
-							colorMap[position(x, y)] = AllyFOW;
-						}
-						else
-						{
-							colorMap[position(x, y)] = EnemyFOW;
-						}
-					}
-					else if(isVisible)
+					
+					if(isVisible)
 					{
 						if(b->owner == game->teams[localteam])
 						{
@@ -302,6 +318,21 @@ void Minimap::renderRow(int y, int localteam)
 						else
 						{
 							colorMap[position(x, y)] = Enemy;
+						}
+					}
+					else if(b->seenByMask & localMask)
+					{
+						if(b->owner == game->teams[localteam])
+						{
+							colorMap[position(x, y)] = SelfFOW;
+						}
+						else if(b->owner->me & allyMask)
+						{
+							colorMap[position(x, y)] = AllyFOW;
+						}
+						else
+						{
+							colorMap[position(x, y)] = EnemyFOW;
 						}
 					}
 				}
@@ -341,10 +372,10 @@ void Minimap::renderRow(int y, int localteam)
 
 GAGCore::Color Minimap::getColor(int xpos, int ypos)
 {
-	int startx = (int)((float)(xpos) * (float)(game->map.getW()) / (float)(size - border*2));
-	int endx = 	(int)((float)(xpos + 1) * (float)(game->map.getW()) / (float)(size - border*2));
-	int starty = (int)((float)(ypos) * (float)(game->map.getH()) / (float)(size - border*2));
-	int endy = 	(int)((float)(ypos + 1) * (float)(game->map.getH()) / (float)(size - border*2));
+	int startx = (int)((float)(xpos) * (float)(game->map.getW()) / (float)(mini_w));
+	int endx = 	(int)((float)(xpos + 1) * (float)(game->map.getW()) / (float)(mini_w));
+	int starty = (int)((float)(ypos) * (float)(game->map.getH()) / (float)(mini_h));
+	int endy = 	(int)((float)(ypos + 1) * (float)(game->map.getH()) / (float)(mini_h));
 
 	int count = 0;
 	Uint16 r=0;
@@ -371,12 +402,6 @@ GAGCore::Color Minimap::getColor(int xpos, int ypos)
 	}
 
 	return Color(r / count, g / count, b / count);
-}
-
-
-int Minimap::interpolate(double mu, int y1, int y2)
-{
-   return int(y1*(1-mu)+y2*mu);
 }
 
 
