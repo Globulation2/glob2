@@ -11,6 +11,7 @@
 <i>=toggle draw information
 <m>=mark map
 <r>=repair building
+<p>=pause game
 <s>=view history
 <t>=toggle draw unit paths
 <u>=upgrade building
