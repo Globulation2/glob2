@@ -33,6 +33,8 @@ GameEvent.cpp \
 GameGUI.cpp \
 GameGUIDialog.cpp \
 GameGUILoadSave.cpp \
+GameGUIMessageManager.cpp \
+GameGUIToolManager.cpp \
 GameHeader.cpp \
 GameUtilities.cpp \
 Glob2.cpp \
@@ -53,6 +55,8 @@ MapEdit.cpp \
 MapGenerationDescriptor.cpp \
 MapGenerator.cpp \
 MapHeader.cpp \
+MarkManager.cpp \
+Minimap.cpp \
 MultiplayerGameScreen.cpp \
 MultiplayerGame.cpp \
 MultiplayerGameEvent.cpp \
