@@ -41,7 +41,15 @@ void MapHeader::reset()
 bool MapHeader::load(GAGCore::InputStream *stream)
 {
 	stream->readEnterSection("MapHeader");
-	mapName = stream->readText("mapName");
+	try
+	{
+		mapName = stream->readText("mapName");
+	}
+	//This occurs when loading old-style maps
+	catch(std::bad_alloc)
+	{
+		return false;
+	}
 	versionMajor = stream->readSint32("versionMajor");
 	versionMinor = stream->readSint32("versionMinor");
 	numberOfTeams = stream->readSint32("numberOfTeams");
