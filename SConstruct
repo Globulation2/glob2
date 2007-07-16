@@ -2,6 +2,8 @@ env = Environment()
 conf = Configure(env)
 env.Append(CPPPATH='#libgag/include')
 env.Append(LIBPATH='#libgag/src')
+env.Append(CXXFLAGS='-g -pg -O3')
+env.Append(LINKFLAGS='-g -pg -O3')
 env.Append(LIBS=['SDL', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile'])
 
 if not conf.CheckLib('SDL'):
