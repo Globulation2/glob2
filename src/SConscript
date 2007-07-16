@@ -31,7 +31,9 @@ GUIMapPreview.cpp \
 Game.cpp \
 GameEvent.cpp \
 GameGUI.cpp \
+GameGUIDefaultAssignManager.cpp \
 GameGUIDialog.cpp \
+GameGUIKeyActions.cpp \
 GameGUILoadSave.cpp \
 GameGUIMessageManager.cpp \
 GameGUIToolManager.cpp \
@@ -43,6 +45,7 @@ Glob2Style.cpp \
 GlobalContainer.cpp \
 HeightMapGenerator.cpp \
 IRC.cpp \
+KeyboardManager.cpp \
 LANGameInformation.cpp \
 LANMenuScreen.cpp \
 LANFindScreen.cpp \
@@ -52,6 +55,7 @@ MainMenuScreen.cpp \
 Map.cpp \
 MapAssembler.cpp \
 MapEdit.cpp \
+MapEditKeyActions.cpp \
 MapGenerationDescriptor.cpp \
 MapGenerator.cpp \
 MapHeader.cpp \
