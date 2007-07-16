@@ -134,12 +134,16 @@ public:
 	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
 	int normalizeX(int x)
 	{
+		if(x<0)
+			return (x%w) + w;
 		return x%w;
 	}
 	
 	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
 	int normalizeY(int y)
 	{
+		if(y<0)
+			return (y%h) + h;
 		return y%h;
 	}
 

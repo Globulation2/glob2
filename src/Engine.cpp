@@ -222,7 +222,7 @@ int Engine::run(void)
 		while (gui.isRunning)
 		{
 			if(gui.game.stepCounter == 10000)
-				gui.isRunning=false;
+				gui.exitGlobCompletely=true;
 			// We always allow the user to use the gui:
 			if (globalContainer->runNoX)
 			{
@@ -556,7 +556,6 @@ void Engine::finalAdjustements(void)
 	gui.adjustLocalTeam();
 	if (!globalContainer->runNoX)
 	{
-		gui.game.renderMiniMap(gui.localTeamNo);
 		gui.adjustInitialViewport();
 	}
 }

@@ -31,6 +31,7 @@
 #include "ScriptEditorScreen.h"
 #include <string>
 #include <vector>
+#include "Minimap.h"
 
 namespace GAGCore
 {
@@ -487,8 +488,6 @@ private:
 
 	///This draws the minimap
 	void drawMiniMap(void);
-	///This renders the minimap. This should be called whenever a change is made that will change the minimap
-	void renderMiniMap(void);
 
 	///This is the mode of the right-hand-side panel
 	enum PanelMode
@@ -729,6 +728,8 @@ private:
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
 	///Denotes whether the user is holding the mouse button down, dragging the minimap
 	bool isDraggingMinimap;
+	///The minimap
+	Minimap minimap;
 
 	///This is the last placement of terrain, zones, or else, so that the game doesn't use allot of cpu by small mouse movements
 	int lastPlacementX;

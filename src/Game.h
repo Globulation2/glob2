@@ -75,10 +75,6 @@ public:
 		DRAW_OVERLAY = 0x100,
 	};
 
-	enum MinimapDrawOption
-	{
-	};
-
 	/// This method will prepare the game with this mapHeader
 	void setMapHeader(const MapHeader& mapHeader);
 	
@@ -185,8 +181,6 @@ private:
 	inline void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	static float interpolateValues(float a, float b, float x);
 public:
-	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions = 0);
-	void renderMiniMap(int teamSelected, const bool useMapDiscovered=false, int step=0, int stepCount=1);
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 	
 	//! ally or disally AI following human alliances
@@ -201,7 +195,6 @@ public:
 	Team *teams[32];
 	Player *players[32];
 	Map map;
-	DrawableSurface *minimap;
 	Mapscript script;
 	std::string campaignText;
 	GameGUI *gui;
