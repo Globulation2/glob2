@@ -33,29 +33,6 @@ using namespace GAGCore;
 Minimap::Minimap(int px, int py, int size, int border, MinimapMode minimap_mode)
   : px(px), py(py), size(size), border(border), minimap_mode(minimap_mode)
 {
-	colors.push_back(Color(10, 240, 20)); //Self
-	colors.push_back(Color(220, 200, 20)); //Ally
-	colors.push_back(Color(220, 25, 30)); //Enemy
-	colors.push_back(Color((10*3)/5, (240*3)/5, (20*3)/5)); //Self FOW
-	colors.push_back(Color((220*3)/5, (200*3)/5, (20*3)/5)); //Ally FOW
-	colors.push_back(Color((220*3)/5, (25*3)/5, (30*3)/5)); //Enemy FOW
-	colors.push_back(Color(0, 0, 0)); //Hidden
-	colors.push_back(Color(0, 40, 120)); //Water
-	colors.push_back(Color(170, 170, 0)); //Sand
-	colors.push_back(Color(0, 90, 0)); //Grass
-	colors.push_back(Color(0, (40*3) / 4, (120*3)/5)); //Water FOW
-	colors.push_back(Color((170*3)/5, (170*3)/5, 0)); //Sand FOW
-	colors.push_back(Color(0, (90*3)/5, 0)); //Grass FOW
-	for(int i=0; i<MAX_RESSOURCES; ++i)
-	{
-		RessourceType *rt = globalContainer->ressourcesTypes.get(i);
-		colors.push_back(Color(rt->minimapR, rt->minimapG, rt->minimapB));
-	}
-	for(int i=0; i<MAX_RESSOURCES; ++i)
-	{
-		RessourceType *rt = globalContainer->ressourcesTypes.get(i);
-		colors.push_back(Color((rt->minimapR*3)/5, (rt->minimapG*3)/5, (rt->minimapB*3)/5));
-	}
 	update_row = -1;
 	surface=new DrawableSurface(size - border * 2, size - border * 2);
 }
@@ -70,7 +47,6 @@ Minimap::~Minimap()
 void Minimap::setGame(Game& ngame)
 {
 	game = &ngame;
-	colorMap.resize(game->map.getW() * game->map.getH());
 }
 
 
@@ -115,24 +91,15 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
 	{
-		renderAllRows(localteam);
 		update_row = 0;
-		refreshPixelRows(0, mini_h);
+		refreshPixelRows(0, mini_h, localteam);
 	}
 	else
 	{
 		///Render four rows at a time
 		const int rows_to_render = mini_h/25;
 		
-		int first = (int)((float)(update_row) * (float)(game->map.getH()) / (float)(mini_h));
-		int last  = (int)((float)(update_row + rows_to_render + 1) * (float)(game->map.getH()) / (float)(mini_h));
-		
-		for(int r=first; r<=last; ++r)
-		{
-			renderRow(r % (game->map.getH()), localteam);
-		}
-		
-		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h));
+		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
 		update_row += rows_to_render;
 		update_row %= (mini_h);
 		line_row = update_row;
@@ -172,17 +139,6 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	if(minimap_mode == HideFOW)
 		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
 }
-
-
-
-void Minimap::renderAllRows(int localteam)
-{
-	for(int y=0; y<game->map.getH(); ++y)
-	{
-		renderRow(y, localteam);
-	}
-}
-
 
 
 bool Minimap::insideMinimap(int x, int y)
@@ -241,14 +197,11 @@ void Minimap::computeMinimapPositioning()
 
 
 
-void Minimap::refreshPixelRows(int start, int end)
+void Minimap::refreshPixelRows(int start, int end, int localteam)
 {
 	for(int y=start; y!=end;)
 	{
-		for(int x=0; x<(mini_w); ++x)
-		{
-			surface->drawPixel(mini_offset_x + x, mini_offset_y + y, getColor(x, y));
-		}
+		computeColors(y, localteam);
 		
 		y++;
 		if(y == end)
@@ -260,149 +213,165 @@ void Minimap::refreshPixelRows(int start, int end)
 
 
 
-void Minimap::renderRow(int y, int localteam)
+void Minimap::computeColors(int row, int localTeam)
 {
-	Uint32 localMask = game->teams[localteam]->me;
-	Uint32 allyMask = game->teams[localteam]->allies;
-	for(int x=0; x<game->map.getW(); ++x)
+	float dMx, dMy;
+	int dx, dy;
+	float minidx, minidy;
+	int r, g, b;
+	int nCount;
+	int UnitOrBuildingIndex = -1;
+	assert(localTeam>=0);
+	assert(localTeam<32);
+
+	int terrainColor[3][3] = {
+		{ 0, 40, 120 }, // Water
+		{ 170, 170, 0 }, // Sand
+		{ 0, 90, 0 }, // Grass
+	};
+
+	int buildingsUnitsColor[6][3] = {
+		{ 10, 240, 20 }, // self
+		{ 220, 200, 20 }, // ally
+		{ 220, 25, 30 }, // enemy
+		{ (10*3)/5, (240*3)/5, (20*3)/5 }, // self FOW
+		{ (220*3)/5, (200*3)/5, (20*3)/5 }, // ally FOW
+		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
+	};
+
+	int pcol[3+MAX_RESSOURCES];
+	int pcolIndex, pcolAddValue;
+	int teamId;
+
+	int decSPX, decSPY;
+
+	// get data
+	int szX = mini_w, szY = mini_h;
+	int decX = mini_offset_x, decY = mini_offset_y;
+
+	dMx=(float)(game->map.getW()) / (float)(mini_w);
+	dMy=(float)(game->map.getH()) / (float)(mini_h);
+
+	decSPX=offset_x;
+	decSPY=offset_y;
+
+	dy = row;
+
+	bool useMapDiscovered = minimap_mode == ShowFOW;
+
+	for (dx=0; dx<szX; dx++)
 	{
-		if(minimap_mode == HideFOW && !game->map.isMapDiscovered(offset_x + x, offset_y + y, localMask))
+		memset(pcol, 0, sizeof(pcol));
+		nCount=0;
+		
+		// compute
+		for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
 		{
-			colorMap[position(x, y)] = Hidden;
-		}
-		else
-		{
-			bool isVisible = game->map.isFOWDiscovered(offset_x + x, offset_y + y, localMask);
-			if(minimap_mode == ShowFOW)
-				isVisible=true;
-			Uint16 gid = game->map.getAirUnit(offset_x + x, offset_y + y);
-			if(gid == NOGUID)
+			for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
 			{
-				gid = game->map.getGroundUnit(offset_x + x, offset_y + y);
-			}
-			if(gid != NOGUID && isVisible)
-			{
-				//If a unit is detected, use its color
-				Team* owner = game->teams[Unit::GIDtoTeam(gid)];
-				if(owner == game->teams[localteam])
+				Uint16 gid;
+				bool seenUnderFOW = false;
+
+				gid=game->map.getAirUnit((Sint16)minidx, (Sint16)minidy);
+				if (gid==NOGUID)
+					gid=game->map.getGroundUnit((Sint16)minidx, (Sint16)minidy);
+				if (gid==NOGUID)
 				{
-					colorMap[position(x, y)] = Self;
-				}
-				else if(owner->me & allyMask)
-				{
-					colorMap[position(x, y)] = Ally;
-				}
-				else
-				{
-					colorMap[position(x, y)] = Enemy;
-				}
-			}
-			else
-			{
-				gid = game->map.getBuilding(offset_x + x, offset_y + y);
-				if(gid != NOGBID)
-				{
-					//If building is detected, use its color
-					Building* b = game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
-					
-					if(isVisible)
+					gid=game->map.getBuilding((Sint16)minidx, (Sint16)minidy);
+					if (gid!=NOGUID)
 					{
-						if(b->owner == game->teams[localteam])
+						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & game->teams[localTeam]->me)
 						{
-							colorMap[position(x, y)] = Self;
-						}
-						else if(b->owner->me & allyMask)
-						{
-							colorMap[position(x, y)] = Ally;
-						}
-						else
-						{
-							colorMap[position(x, y)] = Enemy;
-						}
-					}
-					else if(b->seenByMask & localMask)
-					{
-						if(b->owner == game->teams[localteam])
-						{
-							colorMap[position(x, y)] = SelfFOW;
-						}
-						else if(b->owner->me & allyMask)
-						{
-							colorMap[position(x, y)] = AllyFOW;
-						}
-						else
-						{
-							colorMap[position(x, y)] = EnemyFOW;
+							seenUnderFOW = true;
 						}
 					}
 				}
-				else
+				if (gid!=NOGUID)
 				{
-					if(isVisible)
+					teamId=gid/1024;
+					if (useMapDiscovered || game->map.isFOWDiscovered((int)minidx, (int)minidy, game->teams[localTeam]->me))
 					{
-						int ressource = game->map.getRessource(offset_x + x, offset_y + y).type;
-						if(ressource != NO_RES_TYPE)
-						{
-							colorMap[position(x, y)] = ColorMode(int(RessourceColorStart) + ressource);
-						}
+						if (teamId==localTeam)
+							UnitOrBuildingIndex = 0;
+						else if ((game->teams[localTeam]->allies) & (game->teams[teamId]->me))
+							UnitOrBuildingIndex = 1;
 						else
-						{
-							colorMap[position(x, y)] = (ColorMode)(TerrainWater + game->map.getUMTerrain((int)offset_x + x,(int)offset_y + y));
-						}
+							UnitOrBuildingIndex = 2;
+						goto unitOrBuildingFound;
+					}
+					else if (seenUnderFOW)
+					{
+						if (teamId==localTeam)
+							UnitOrBuildingIndex = 3;
+						else if ((game->teams[localTeam]->allies) & (game->teams[teamId]->me))
+							UnitOrBuildingIndex = 4;
+						else
+							UnitOrBuildingIndex = 5;
+						goto unitOrBuildingFound;
+					}
+				}
+				
+				if (useMapDiscovered || game->map.isMapDiscovered((int)minidx, (int)minidy, game->teams[localTeam]->me))
+				{
+					// get color to add
+					Ressource r=game->map.getRessource((int)minidx, (int)minidy);
+					if (r.type!=NO_RES_TYPE)
+					{
+						pcolIndex=r.type + 3;
 					}
 					else
 					{
-						int ressource = game->map.getRessource(offset_x + x, offset_y + y).type;
-						if(ressource != NO_RES_TYPE)
-						{
-							colorMap[position(x, y)] = ColorMode(int(RessourceColorStart + MAX_RESSOURCES) + ressource);
-						}
-						else
-						{
-							colorMap[position(x, y)] = (ColorMode)(TerrainWaterFOW + game->map.getUMTerrain((int)offset_x + x,(int)offset_y + y));
-						}
+						pcolIndex=game->map.getUMTerrain((int)minidx,(int)minidy);
 					}
+					
+					// get weight to add
+					if (useMapDiscovered || game->map.isFOWDiscovered((int)minidx, (int)minidy, game->teams[localTeam]->me))
+						pcolAddValue=5;
+					else
+						pcolAddValue=3;
+
+					pcol[pcolIndex]+=pcolAddValue;
 				}
+
+				nCount++;
 			}
 		}
-	}
-}
 
+		// Yes I know, this is *ugly*, but this piece of code *needs* speedup
+		unitOrBuildingFound:
 
-
-GAGCore::Color Minimap::getColor(int xpos, int ypos)
-{
-	int startx = (int)((float)(xpos) * (float)(game->map.getW()) / (float)(mini_w));
-	int endx = 	(int)((float)(xpos + 1) * (float)(game->map.getW()) / (float)(mini_w));
-	int starty = (int)((float)(ypos) * (float)(game->map.getH()) / (float)(mini_h));
-	int endy = 	(int)((float)(ypos + 1) * (float)(game->map.getH()) / (float)(mini_h));
-
-	int count = 0;
-	Uint16 r=0;
-	Uint16 g=0;
-	Uint16 b=0;
-
-	for(int x=startx; x<=endx; ++x)
-	{
-		for(int y=starty; y<=endy; ++y)
+		if (UnitOrBuildingIndex >= 0)
 		{
-			ColorMode mode = colorMap[position(game->map.normalizeX(x), game->map.normalizeY(y))];
-			if(mode < Hidden)
-			{
-				return colors[mode];
-			}
-			else
-			{
-				r += colors[mode].r;
-				g += colors[mode].g;
-				b += colors[mode].b;
-			}
-			count+= 1;
+			r = buildingsUnitsColor[UnitOrBuildingIndex][0];
+			g = buildingsUnitsColor[UnitOrBuildingIndex][1];
+			b = buildingsUnitsColor[UnitOrBuildingIndex][2];
+			UnitOrBuildingIndex = -1;
 		}
+		else
+		{
+			nCount*=5;
+
+			int lr, lg, lb;
+			lr = lg = lb = 0;
+			for (int i=0; i<3; i++)
+			{
+				lr += pcol[i]*terrainColor[i][0];
+				lg += pcol[i]*terrainColor[i][1];
+				lb += pcol[i]*terrainColor[i][2];
+			}
+			for (int i=0; i<MAX_RESSOURCES; i++)
+			{
+				RessourceType *rt = globalContainer->ressourcesTypes.get(i);
+				lr += pcol[i+3]*(rt->minimapR);
+				lg += pcol[i+3]*(rt->minimapG);
+				lb += pcol[i+3]*(rt->minimapB);
+			}
+
+			r = lr/nCount;
+			g = lg/nCount;
+			b = lb/nCount;
+		}
+		surface->drawPixel(dx+decX, dy+decY, r, g, b, Color::ALPHA_OPAQUE);
 	}
-
-	return Color(r / count, g / count, b / count);
 }
-
-
 

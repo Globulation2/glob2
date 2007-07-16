@@ -51,10 +51,7 @@ public:
 
 	///Draws the minimap
 	void draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH);
-	
-	///Renders the full minimap
-	void renderAllRows(int localteam);
-	
+
 	///This tells whether the given on-screen cordinates are inside the minimap itself
 	bool insideMinimap(int x, int y);
 	
@@ -70,13 +67,10 @@ private:
 	void computeMinimapPositioning();
 
 	///Refreshes a range of rows on the screen, handles wrapping
-	void refreshPixelRows(int start, int end);
+	void refreshPixelRows(int start, int end, int localteam);
 
-	///Renders a single row on the colorMap, based on the given y cordinate
-	void renderRow(int y, int localteam);
-	
-	/// Returns the value at the given point
-	GAGCore::Color getColor(int xpos, int ypos);
+	/// Computes the colors for positions in the given row
+	void computeColors(int row, int localteam);
 	
 	int px;
 	int py;
@@ -94,29 +88,7 @@ private:
 	MinimapMode minimap_mode;
 	
 	Game* game;
-	
-	enum ColorMode
-	{
-		Self=0,
-		Ally,
-		Enemy,
-		SelfFOW,
-		AllyFOW,
-		EnemyFOW,
-		Hidden,
-		TerrainWater,
-		TerrainSand,
-		TerrainGrass,
-		TerrainWaterFOW,
-		TerrainSandFOW,
-		TerrainGrassFOW,
-		RessourceColorStart,
-	};
-	
-	///This represents the colors for every position on the map (not pixels)
-	std::vector<ColorMode> colorMap;
-	///This represents the color for a particular mode
-	std::vector<GAGCore::Color> colors;
+
 	///Converts x & y to a position in the color map
 	int position(int x, int y) { return (x * game->map.getH() + y); }
 	
