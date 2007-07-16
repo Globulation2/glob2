@@ -33,23 +33,31 @@ using namespace GAGCore;
 Minimap::Minimap(int px, int py, int size, int border)
   : px(px), py(py), size(size), border(border)
 {
-	colors.push_back(Color(0, 40, 120)); //Water
-	colors.push_back(Color(170, 170, 0)); //Sand
-	colors.push_back(Color(0, 90, 0)); //Grass
 	colors.push_back(Color(10, 240, 20)); //Self
 	colors.push_back(Color(220, 200, 20)); //Ally
 	colors.push_back(Color(220, 25, 30)); //Enemy
 	colors.push_back(Color((10*3)/5, (240*3)/5, (20*3)/5)); //Self FOW
 	colors.push_back(Color((220*3)/5, (200*3)/5, (20*3)/5)); //Ally FOW
 	colors.push_back(Color((220*3)/5, (25*3)/5, (30*3)/5)); //Enemy FOW
-	colors.push_back(Color(0, 0, 0)); //Enemy FOW
+	colors.push_back(Color(0, 0, 0)); //Hidden
+	colors.push_back(Color(0, 40, 120)); //Water
+	colors.push_back(Color(170, 170, 0)); //Sand
+	colors.push_back(Color(0, 90, 0)); //Grass
+	colors.push_back(Color(0, (40*3) / 4, (120*3)/5)); //Water FOW
+	colors.push_back(Color((170*3)/5, (170*3)/5, 0)); //Sand FOW
+	colors.push_back(Color(0, (90*3)/5, 0)); //Grass FOW
 	for(int i=0; i<MAX_RESSOURCES; ++i)
 	{
 		RessourceType *rt = globalContainer->ressourcesTypes.get(i);
 		colors.push_back(Color(rt->minimapR, rt->minimapG, rt->minimapB));
 	}
-	row = -1;
-	surface=new DrawableSurface(size, size);
+	for(int i=0; i<MAX_RESSOURCES; ++i)
+	{
+		RessourceType *rt = globalContainer->ressourcesTypes.get(i);
+		colors.push_back(Color((rt->minimapR*3)/5, (rt->minimapG*3)/5, (rt->minimapB*3)/5));
+	}
+	update_row = -1;
+	surface=new DrawableSurface(size - border * 2, size - border * 2);
 }
 
 
@@ -99,37 +107,36 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	offset_x = game->map.getW() / 2 - game->teams[localteam]->startPosX;
 	offset_y = game->map.getW() / 2 - game->teams[localteam]->startPosY;
 
+	///What row the scan-line is to be drawn at
+	int line_row = 0;
+
 	//Render the colorMap and blit the surface
-	
-	if(row == -1)
+	if(update_row == -1)
 	{
 		renderAllRows(localteam);
-		row = 0;
+		update_row = 0;
 		refreshPixelRows(0, size - border * 2);
 	}
 	else
 	{
-		row += 1;
-		row %= game->map.getH();
-		renderRow(row, localteam);
-
-		row += 1;
-		row %= game->map.getH();
-		renderRow(row, localteam);
-
-		row += 1;
-		row %= game->map.getH();
-		renderRow(row, localteam);
+		///Render four rows at a time
+		const int rows_to_render = 4;
 		
-		int lower_pixel_row = int((float)(row-3) / (float)(game->map.getH()) * (float)(size - border*2));
-		lower_pixel_row = (lower_pixel_row + (size - border*2)) % (size - border*2);
-		int upper_pixel_row = int((float)(row+1) / (float)(game->map.getH()) * (float)(size - border*2));
-		upper_pixel_row = (upper_pixel_row + (size - border*2)) % (size - border*2);
+		int first = (int)((float)(update_row) * (float)(game->map.getH()) / (float)(size - border*2));
+		int last  = (int)((float)(update_row + rows_to_render + 1) * (float)(game->map.getH()) / (float)(size - border*2));
 		
-		refreshPixelRows(lower_pixel_row, upper_pixel_row);
+		for(int r=first; r<=last; ++r)
+		{
+			renderRow(r % (game->map.getH()), localteam);
+		}
+		
+		refreshPixelRows(update_row, (update_row + rows_to_render) % (size - border*2));
+		update_row += rows_to_render;
+		update_row %= (size - border * 2);
+		line_row = update_row;
 	}
 	//Draw the surface
-	globalContainer->gfx->drawSurface(px, py, surface);
+	globalContainer->gfx->drawSurface(px + border, py + border, surface);
 
 	//Draw the viewport square, taking into account that it may
 	//wrap arround the sides of the minimap
@@ -150,11 +157,6 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		if(n == (px + size - border))
 			n = px + border;
 	}
-	
-	///The end lines are out of alignment, so a single pixel in the bottom right hand of the square
-	///is never drawn
-	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
-	
 	for (int n=starty; n!=endy;)
 	{
 		globalContainer->gfx->drawPixel(startx, n, 255, 255, 255);
@@ -163,6 +165,12 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		if(n == (py + size - border))
 			n = py + border;
 	}
+	///The lines are out of alignment, so a single pixel in the bottom right hand of the square
+	///is never drawn
+	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
+		
+	///Draw the line that shows where the minimap is currently updating
+	globalContainer->gfx->drawHorzLine(px + border, py + border + line_row , size - border*2, 100, 100, 100);
 }
 
 
@@ -182,6 +190,7 @@ bool Minimap::insideMinimap(int x, int y)
 	if(x > (px + border) && x < (px + size - border)
 			&& y > (py + border) && y < (py + size - border))
 		return true;
+	return false;
 }
 
 
@@ -210,7 +219,7 @@ void Minimap::refreshPixelRows(int start, int end)
 	{
 		for(int x=0; x<(size-border*2); ++x)
 		{
-			surface->drawPixel(x + border, y + border, getColor(double(x) / double(size-border*2), double(y) / double(size - border*2)));
+			surface->drawPixel(x, y, getColor(x, y));
 		}
 		
 		y++;
@@ -230,7 +239,9 @@ void Minimap::renderRow(int y, int localteam)
 	for(int x=0; x<game->map.getW(); ++x)
 	{
 		if(! game->map.isMapDiscovered(offset_x + x, offset_y + y, localMask))
+		{
 			colorMap[position(x, y)] = Hidden;
+		}
 		else
 		{
 			bool isVisible = game->map.isFOWDiscovered(offset_x + x, offset_y + y, localMask);
@@ -244,11 +255,17 @@ void Minimap::renderRow(int y, int localteam)
 				//If a unit is detected, use its color
 				Team* owner = game->teams[Unit::GIDtoTeam(gid)];
 				if(owner == game->teams[localteam])
+				{
 					colorMap[position(x, y)] = Self;
+				}
 				else if(owner->me & allyMask)
+				{
 					colorMap[position(x, y)] = Ally;
+				}
 				else
+				{
 					colorMap[position(x, y)] = Enemy;
+				}
 			}
 			else
 			{
@@ -260,33 +277,60 @@ void Minimap::renderRow(int y, int localteam)
 					if(b->seenByMask & localMask)
 					{
 						if(b->owner == game->teams[localteam])
+						{
 							colorMap[position(x, y)] = Self;
+						}
 						else if(b->owner->me & allyMask)
+						{
 							colorMap[position(x, y)] = AllyFOW;
+						}
 						else
+						{
 							colorMap[position(x, y)] = EnemyFOW;
+						}
 					}
 					else if(isVisible)
 					{
 						if(b->owner == game->teams[localteam])
+						{
 							colorMap[position(x, y)] = Self;
+						}
 						else if(b->owner->me & allyMask)
+						{
 							colorMap[position(x, y)] = Ally;
+						}
 						else
+						{
 							colorMap[position(x, y)] = Enemy;
+						}
 					}
 				}
 				else
 				{
-					int ressource = game->map.getRessource(offset_x + x, offset_y + y).type;
-					if(ressource != NO_RES_TYPE)
-						colorMap[position(x, y)] = ColorMode(int(RessourceColorStart) + ressource);
-					else if(game->map.isWater(offset_x + x, offset_y + y))
-						colorMap[position(x, y)] = TerrainWater;
-					else if(game->map.isSand(offset_x + x, offset_y + y))
-						colorMap[position(x, y)] = TerrainSand;
-					else if(game->map.isGrass(offset_x + x, offset_y + y))
-						colorMap[position(x, y)] = TerrainGrass;
+					if(isVisible)
+					{
+						int ressource = game->map.getRessource(offset_x + x, offset_y + y).type;
+						if(ressource != NO_RES_TYPE)
+						{
+							colorMap[position(x, y)] = ColorMode(int(RessourceColorStart) + ressource);
+						}
+						else
+						{
+							colorMap[position(x, y)] = (ColorMode)(TerrainWater + game->map.getUMTerrain((int)offset_x + x,(int)offset_y + y));
+						}
+					}
+					else
+					{
+						int ressource = game->map.getRessource(offset_x + x, offset_y + y).type;
+						if(ressource != NO_RES_TYPE)
+						{
+							colorMap[position(x, y)] = ColorMode(int(RessourceColorStart + MAX_RESSOURCES) + ressource);
+						}
+						else
+						{
+							colorMap[position(x, y)] = (ColorMode)(TerrainWaterFOW + game->map.getUMTerrain((int)offset_x + x,(int)offset_y + y));
+						}
+					}
 				}
 			}
 		}
@@ -295,28 +339,38 @@ void Minimap::renderRow(int y, int localteam)
 
 
 
-GAGCore::Color Minimap::getColor(double xpos, double ypos)
+GAGCore::Color Minimap::getColor(int xpos, int ypos)
 {
-	
-	int lower_x = game->map.normalizeX(int(xpos * double(game->map.getW())));
-	int upper_x = game->map.normalizeX(lower_x+1);
-	double mu_x = (xpos * double(game->map.getW())) - lower_x;
-	
-	int lower_y = game->map.normalizeY(int(ypos * double(game->map.getH())));
-	int upper_y = game->map.normalizeY(lower_y+1);
-	double mu_y = (ypos * double(game->map.getH())) - lower_y;
-	
-	Color u_l = colors[colorMap[position(lower_x, lower_y)]];
-	Color u_r = colors[colorMap[position(upper_x, lower_y)]];
-	Color d_l = colors[colorMap[position(lower_x, upper_y)]];
-	Color d_r = colors[colorMap[position(upper_x, upper_y)]];
+	int startx = (int)((float)(xpos) * (float)(game->map.getW()) / (float)(size - border*2));
+	int endx = 	(int)((float)(xpos + 1) * (float)(game->map.getW()) / (float)(size - border*2));
+	int starty = (int)((float)(ypos) * (float)(game->map.getH()) / (float)(size - border*2));
+	int endy = 	(int)((float)(ypos + 1) * (float)(game->map.getH()) / (float)(size - border*2));
 
-	//interpolate each color in three dimensions
-	int final_r = interpolate(mu_y, interpolate(mu_x, u_l.r, u_r.r), interpolate(mu_x, d_l.r, d_r.r));
-	int final_g = interpolate(mu_y, interpolate(mu_x, u_l.g, u_r.g), interpolate(mu_x, d_l.g, d_r.g));
-	int final_b = interpolate(mu_y, interpolate(mu_x, u_l.b, u_r.b), interpolate(mu_x, d_l.b, d_r.b));
-	
-	return Color(final_r, final_g, final_b);
+	int count = 0;
+	Uint16 r=0;
+	Uint16 g=0;
+	Uint16 b=0;
+
+	for(int x=startx; x<=endx; ++x)
+	{
+		for(int y=starty; y<=endy; ++y)
+		{
+			ColorMode mode = colorMap[position(game->map.normalizeX(x), game->map.normalizeY(y))];
+			if(mode < Hidden)
+			{
+				return colors[mode];
+			}
+			else
+			{
+				r += colors[mode].r;
+				g += colors[mode].g;
+				b += colors[mode].b;
+			}
+			count+= 1;
+		}
+	}
+
+	return Color(r / count, g / count, b / count);
 }
 
 

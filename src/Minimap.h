@@ -63,8 +63,8 @@ private:
 	///Renders a single row on the colorMap, based on the given y cordinate
 	void renderRow(int y, int localteam);
 	
-	/// Returns the value at the given point, by interpolating between colors
-	GAGCore::Color getColor(double xpos, double ypos);
+	/// Returns the value at the given point
+	GAGCore::Color getColor(int xpos, int ypos);
 
 	/// Returns a value by interpolating between given values
 	int interpolate(double mu, int y1, int y2);
@@ -73,23 +73,26 @@ private:
 	int py;
 	int size;
 	int border;
-	int row;
+	int update_row;
 	int offset_x;
 	int offset_y;
 	Game* game;
 	
 	enum ColorMode
 	{
-		TerrainWater=0,
-		TerrainSand,
-		TerrainGrass,
-		Self,
+		Self=0,
 		Ally,
 		Enemy,
 		SelfFOW,
 		AllyFOW,
 		EnemyFOW,
 		Hidden,
+		TerrainWater,
+		TerrainSand,
+		TerrainGrass,
+		TerrainWaterFOW,
+		TerrainSandFOW,
+		TerrainGrassFOW,
 		RessourceColorStart,
 	};
 	
