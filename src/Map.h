@@ -134,13 +134,13 @@ public:
 	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
 	int normalizeX(int x)
 	{
-		return (x+w)%w;
+		return x%w;
 	}
 	
 	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
 	int normalizeY(int y)
 	{
-		return (y+h)%h;
+		return y%h;
 	}
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
