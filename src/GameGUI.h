@@ -36,6 +36,7 @@
 #include "GameGUIMessageManager.h"
 #include "Minimap.h"
 #include "OverlayAreas.h"
+#include "GameGUIToolManager.h"
 
 namespace GAGCore
 {
@@ -195,10 +196,6 @@ private:
 	void drawInGameScrollableText(void);
 	
 	void moveFlag(int mx, int my, bool drop);
-	//! Update the brush and the local map due to mouse motion
-	void brushStep(bool maybeToggleMode, int mx, int my);
-	//! Send a brush order and reinitialize the brush accumulator
-	void sendBrushOrders(void);
 	//! One viewport has moved and a flag or a brush is selected, update its position
 	void dragStep(int mx, int my, int button);
 	//! on each step, check if we have won or lost
@@ -233,12 +230,12 @@ private:
 	{
 		Building* building;
 		Unit* unit;
-		const char *build;
 		int ressource;
 	} selection;
 	
-	//! Value between 0 and 1 that indicates if selection has to be highlighten
-	float highlightSelection;
+	// Brushes
+	BrushTool brush;
+	GameGUIToolManager toolManager;
 
 	//! Unset and clean everything related to the selection so a new one can be set
 	void cleanOldSelection(void);
@@ -247,16 +244,6 @@ private:
 	void clearSelection(void) { setSelection(NO_SELECTION); }
 	void checkSelection(void);
 	
-	// Brushes
-	enum BrushType
-	{
-		FORBIDDEN_BRUSH = 0,
-		GUARD_AREA_BRUSH = 1,
-		CLEAR_AREA_BRUSH = 2
-		
-	} brushType;
-	BrushTool brush;
-	BrushAccumulator brushAccumulator;
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;

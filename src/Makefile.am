@@ -102,6 +102,8 @@ GameGUILoadSave.cpp \
 GameGUILoadSave.h \
 GameGUIMessageManager.cpp \
 GameGUIMessageManager.h \
+GameGUIToolManager.cpp \
+GameGUIToolManager.h \
 GameHeader.cpp \
 GameHeader.h \
 GameUtilities.cpp \

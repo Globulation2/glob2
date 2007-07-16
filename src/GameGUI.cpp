@@ -128,7 +128,8 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-: keyboardManager(GameGUIShortcuts), game(this), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
+: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush),
+  minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
 {
 }
 
@@ -157,10 +158,8 @@ void GameGUI::init()
 	displayMode=BUILDING_VIEW;
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
-	selection.build = 0;
 	selection.building = NULL;
 	selection.unit = NULL;
-	highlightSelection = 0.0f;
 	miniMapPushed=false;
 	putMark=false;
 	showUnitWorkingToBuilding=true;
@@ -187,7 +186,6 @@ void GameGUI::init()
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
-	brushType = FORBIDDEN_BRUSH;
 
 	buildingsChoiceName.clear();
 	buildingsChoiceName.push_back("swarm");
@@ -290,97 +288,6 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	}
 }
 
-void GameGUI::brushStep(bool maybeToggleMode, int mx, int my)
-{
-	// if we have an area over 32x32, which mean over 128 bytes, send it
-	if (brushAccumulator.getAreaSurface() > 32*32)
-	{
-		sendBrushOrders();
-	}
-	// we add brush to accumulator
-	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
-	int fig = brush.getFigure();
-        /* We treat any brush of size 1 by 1 specially.  If an attempt
-           is made to use the brush which would have no effect, we
-           first toggle the state of whether we are adding or removing
-           the area, so the use of the brush will have an effect.
-           This allows quickly repairing errors without having to
-           explicitly change the mode by hand.  We don't do this when
-           dragging, so only explicit mouse clicks can change the
-           mode. */
-        if (maybeToggleMode && (brush.getBrushHeight(fig) == 1) && (brush.getBrushWidth(fig) == 1)) {
-          int isAlreadyOn =
-            ((brushType == FORBIDDEN_BRUSH) && game.map.isForbiddenLocal(mapX, mapY))
-            || ((brushType == GUARD_AREA_BRUSH) && game.map.isGuardAreaLocal(mapX, mapY))
-            || ((brushType == CLEAR_AREA_BRUSH) && game.map.isClearAreaLocal(mapX, mapY));
-          unsigned mode = brush.getType();
-          if (((mode == BrushTool::MODE_ADD) && isAlreadyOn)
-              || ((mode == BrushTool::MODE_DEL) && !isAlreadyOn)) {
-            sendBrushOrders();
-            brush.setType((mode == BrushTool::MODE_ADD) ? BrushTool::MODE_DEL : BrushTool::MODE_ADD); 
-            brushStep(false, mx,my); // restart action after changing mode; set maybeToggleMode to false to guarantee no further recursion
-            return; }}
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
-	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
-	int width  = BrushTool::getBrushWidth(fig);
-	int height = BrushTool::getBrushHeight(fig);
-	// we update local values
-	if (brush.getType() == BrushTool::MODE_ADD)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
-				{
-					if (brushType == FORBIDDEN_BRUSH)
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else if (brushType == GUARD_AREA_BRUSH)
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else if (brushType == CLEAR_AREA_BRUSH)
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else
-						assert(false);
-				}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
-				{
-					if (brushType == FORBIDDEN_BRUSH)
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else if (brushType == GUARD_AREA_BRUSH)
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else if (brushType == CLEAR_AREA_BRUSH)
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else
-						assert(false);
-				}
-	}
-	else
-		assert(false);
-}
-
-void GameGUI::sendBrushOrders(void)
-{
-	if (brushAccumulator.getApplicationCount() > 0)
-	{
-		//std::cout << "GameGUI::sendBrushOrders : sending application of size " << brushAccumulator.getAreaSurface()/8 << std::endl;
-		if (brushType == FORBIDDEN_BRUSH)
-			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator)));
-		else if (brushType == GUARD_AREA_BRUSH)
-			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator)));
-		else if (brushType == CLEAR_AREA_BRUSH)
-			orderQueue.push_back(shared_ptr<Order>(new OrderAlterateClearArea(localTeamNo, brush.getType(), &brushAccumulator)));
-		else
-			assert(false);
-		brushAccumulator.clear();
-	}
-}
-
 void GameGUI::dragStep(int mx, int my, int button)
 {
         /* We used to use SDL_GetMouseState, like the following
@@ -402,10 +309,10 @@ void GameGUI::dragStep(int mx, int my, int button)
 			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
 				moveFlag(mx, my, false);
 		}
-		// Update brush
-		else if (selectionMode==BRUSH_SELECTION)
+		// Update tool
+		else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
 		{
-			brushStep(false, mx, my);
+			toolManager.handleMouseDrag(mx, my, localTeamNo, viewportX, viewportY);
 		}
 	}
         // fprintf (stderr, "exit dragStep\n");
@@ -568,6 +475,13 @@ void GameGUI::step(void)
 			m->gameGuiPainted=true;
 		}
 */
+	boost::shared_ptr<Order> order = toolManager.getOrder();
+	while(order)
+	{
+		orderQueue.push_back(order);
+		order = toolManager.getOrder();
+	}
+
 
 	if(game.stepCounter % 25 == 1)
 	{
@@ -1025,9 +939,11 @@ void GameGUI::processEvent(SDL_Event *event)
 					moveFlag(mx, my, true);
 			}
 			// We send the order
-			else if (selectionMode==BRUSH_SELECTION)
+			else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
 			{
-				sendBrushOrders();
+				int mx, my;
+				SDL_GetMouseState(&mx, &my);
+				toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
 			}
 	
 			miniMapPushed=false;
@@ -1460,37 +1376,37 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			case GameGUIKeyActions::SelectPlaceForbiddenArea:
 			{
 				clearSelection();
-				brushType = FORBIDDEN_BRUSH;
 				if (brush.getType() == BrushTool::MODE_NONE)
 				{
 					brush.setType(BrushTool::MODE_ADD);
 				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
 			}
 			break;
 			case GameGUIKeyActions::SelectPlaceGuardArea:
 			{
 				clearSelection();
-				brushType = GUARD_AREA_BRUSH;
 				if (brush.getType() == BrushTool::MODE_NONE)
 				{
 					brush.setType(BrushTool::MODE_ADD);
 				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool(GameGUIToolManager::Guard);
 			}
 			break;
 			case GameGUIKeyActions::SelectPlaceClearingArea:
 			{
 				clearSelection();
-				brushType = CLEAR_AREA_BRUSH;
 				if (brush.getType() == BrushTool::MODE_NONE)
 				{
 					brush.setType(BrushTool::MODE_ADD);
 				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool(GameGUIToolManager::Clearing);
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAddingAreas:
@@ -1499,6 +1415,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setType(BrushTool::MODE_ADD);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			case GameGUIKeyActions::SwitchToRemovingAreas:
 			{
@@ -1506,6 +1423,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setType(BrushTool::MODE_DEL);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush1:
@@ -1514,6 +1432,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(0);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush2:
@@ -1522,6 +1441,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(1);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush3:
@@ -1530,6 +1450,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(2);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush4:
@@ -1538,6 +1459,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(3);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush5:
@@ -1546,6 +1468,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(4);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush6:
@@ -1554,6 +1477,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(5);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush7:
@@ -1562,6 +1486,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(6);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush8:
@@ -1570,6 +1495,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				brush.setFigure(7);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
 			}
 			break;
 		}
@@ -1744,39 +1670,12 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 {
 	if (selectionMode==TOOL_SELECTION)
 	{
-		// we get the type of building
-		// try to get the building site, if it doesn't exists, get the finished building (for flags)
-		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, true);
-		if (typeNum==-1)
-		{
-			typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
-			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
-		}
-		assert (typeNum!=-1);
-
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-
-		int mapX, mapY;
-		int tempX, tempY;
-		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		if (bt->isVirtual)
-			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
-		else
-			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-		
-		int unitWorking = getUnitCount(typeNum);
-		int unitWorkingFuture = getUnitCount(typeNum+1);
-		
-		if (isRoom)
-		{
-			orderQueue.push_back(shared_ptr<Order>(new OrderCreate(localTeamNo, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
-		}
+		toolManager.handleMouseDown(mx, my, localTeamNo, viewportX, viewportY);
 		
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		brushStep(true, mouseX, mouseY);
+		toolManager.handleMouseDown(mx, my, localTeamNo, viewportX, viewportY);
 	}
 	else if (putMark)
 	{
@@ -2193,11 +2092,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (my < YOFFSET_BRUSH+40)
 			{
 				if (mx < 44)
-					brushType = FORBIDDEN_BRUSH;
+					toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
 				else if (mx < 84)
-					brushType = GUARD_AREA_BRUSH;
+					toolManager.activateZoneTool(GameGUIToolManager::Guard);
 				else
-					brushType = CLEAR_AREA_BRUSH;
+					toolManager.activateZoneTool(GameGUIToolManager::Clearing);
 			}
 			// anyway, update the tool
 			brush.handleClick(mx, my-YOFFSET_BRUSH-40);
@@ -2309,7 +2208,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 	{
 		std::string &type = types[i];
 
-		if ((selectionMode==TOOL_SELECTION) && (type == (const char *)selection.build))
+		if ((selectionMode==TOOL_SELECTION) && (type == toolManager.getBuildingName()))
 			sel = i;
 
 		if (states[i])
@@ -3201,7 +3100,7 @@ void GameGUI::drawPanel(void)
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+88, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
 		if (brush.getType() != BrushTool::MODE_NONE)
 		{
-			int decX = 8 + ((int)brushType) * 40;
+			int decX = 8 + ((int)toolManager.getZoneType()) * 40;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 		}
 		// draw brush
@@ -3222,11 +3121,11 @@ void GameGUI::drawPanel(void)
 			}
 			else
 			{
-				if (brushType == FORBIDDEN_BRUSH)
+				if (toolManager.getZoneType() == GameGUIToolManager::Forbidden)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
-				else if (brushType == GUARD_AREA_BRUSH)
+				else if (toolManager.getZoneType() == GameGUIToolManager::Guard)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[guard area]");
-				else if (brushType == CLEAR_AREA_BRUSH)
+				else if (toolManager.getZoneType() == GameGUIToolManager::Clearing)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[clear area]");
 				else
 					assert(false);
@@ -3341,124 +3240,11 @@ void GameGUI::drawOverlayInfos(void)
 {
 	if (selectionMode==TOOL_SELECTION)
 	{
-		// we get the type of building
-		int typeNum = globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
-		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-		Sprite *sprite = bt->gameSpritePtr;
-		
-		// we translate dimensions and situation
-		int tempX, tempY;
-		int mapX, mapY;
-		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		if (bt->isVirtual)
-			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
-		else
-			isRoom = game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-			
-		// modifiy highlight given room
-		if (isRoom)
-			highlightSelection = std::min(highlightSelection + 0.1f, 1.0f);
-		else
-			highlightSelection = std::max(highlightSelection - 0.1f, 0.0f);
-		
-		// we get the screen dimensions of the building
-		int batW = (bt->width)<<5;
-		int batH = sprite->getH(bt->gameSpriteImage);
-		int batX = (((mapX-viewportX)&(game.map.wMask))<<5);
-		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
-		
-		// we draw the building
-		sprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
-		
-		if (!bt->isVirtual)
-		{
-			if (localTeam->noMoreBuildingSitesCountdown>0)
-			{
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
-				
-				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(localTeam->noMoreBuildingSitesCountdown/40).arg((localTeam->noMoreBuildingSitesCountdown%40)/4).c_str());
-				globalContainer->littleFont->popStyle();
-			}
-			else
-			{
-				if (isRoom)
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
-				else
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				
-				// We look for its maximum extension size
-				// we find last's level type num:
-				BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
-				int lastTypeNum=typeNum;
-				int max=0;
-				while (lastbt->nextLevel>=0)
-				{
-					lastTypeNum=lastbt->nextLevel;
-					lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
-					if (max++>200)
-					{
-						printf("GameGUI: Error: nextLevel architecture is broken.\n");
-						assert(false);
-						break;
-					}
-				}
-					
-				int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
-				bool isExtendedRoom = game.checkHardRoomForBuilding(tempX, tempY, lastbt, &exMapX, &exMapY);
-				int exBatX=((exMapX-viewportX)&(game.map.wMask))<<5;
-				int exBatY=((exMapY-viewportY)&(game.map.hMask))<<5;
-				int exBatW=(lastbt->width)<<5;
-				int exBatH=(lastbt->height)<<5;
-
-				if (isRoom && isExtendedRoom)
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
-				else
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 0, 0, 127);
-			}
-		}
-
+		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-                /* Instead of using a dimmer intensity to indicate
-                   removing of areas, this should rather use dashed
-                   lines.  (The intensities used below are 2/3 as
-                   bright for the case of removing areas.) */
-                /* This reasoning should be abstracted out and reused
-                   in MapEdit.cpp to choose a color for those cases
-                   where areas are being drawn. */
-                unsigned mode = brush.getType();
-                Color c = Color(0,0,0);
-                /* The following colors have been chosen to match the
-                   colors in the .png files for the animations of
-                   areas as of 2007-04-29.  If those .png files are
-                   updated with different colors, then the following
-                   code should change accordingly. */
-                if (brushType == FORBIDDEN_BRUSH) {
-                  if (mode == BrushTool::MODE_ADD) {
-                    c = Color(255,0,0); }
-                  else {
-                    c = Color(170,0,0); }}
-                else if (brushType == GUARD_AREA_BRUSH) {
-                  if (mode == BrushTool::MODE_ADD) {
-                    c = Color(27,0,255); }
-                  else {
-                    c = Color(18,0,170); }}
-                else if (brushType == CLEAR_AREA_BRUSH) {
-                  if (mode == BrushTool::MODE_ADD) {
-                    /* some of the clearing area images use (252,207,0) instead */
-                    c = Color(251,206,0); }
-                  else {
-                    c = Color(167,137,0); }}
-		brush.drawBrush(mouseX, mouseY, c);
+		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -4046,7 +3832,7 @@ void GameGUI::cleanOldSelection(void)
 	else if (selectionMode==UNIT_SELECTION)
 		game.selectedUnit=NULL;
 	else if (selectionMode==BRUSH_SELECTION)
-		brush.unselect();
+		toolManager.deactivateTool();
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
@@ -4097,7 +3883,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
-		selection.build=(char*)newSelection;
+		toolManager.activateBuildingTool((char*)(newSelection));
 	}
 }
 
@@ -4141,7 +3927,7 @@ void GameGUI::iterateSelection(void)
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(toolManager.getBuildingName(), 0, false);
 		for (int i=0; i<1024; i++)
 		{
 			Building *b=game.teams[localTeamNo]->myBuildings[i];
