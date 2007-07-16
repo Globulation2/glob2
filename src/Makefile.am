@@ -94,6 +94,8 @@ GameEvent.cpp \
 GameEvent.h \
 GameGUI.cpp \
 GameGUI.h \
+GameGUIDefaultAssignManager.cpp \
+GameGUIDefaultAssignManager.h \ 
 GameGUIDialog.cpp \
 GameGUIDialog.h \
 GameGUIKeyActions.cpp \

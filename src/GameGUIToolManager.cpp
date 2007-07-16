@@ -28,8 +28,8 @@
 using namespace GAGGUI;
 using namespace GAGCore;
 
-GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush)
-	: game(game), brush(brush)
+GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign)
+	: game(game), brush(brush), defaultAssign(defaultAssign)
 {
 	hilightStrength = 0;
 	mode = NoTool;
@@ -256,11 +256,8 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		else
 			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
 		
-		//int unitWorking = getUnitCount(typeNum);
-		//int unitWorkingFuture = getUnitCount(typeNum+1);
-		
-		int unitWorking = 0;
-		int unitWorkingFuture = 0;
+		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
 		
 		if (isRoom)
 		{
