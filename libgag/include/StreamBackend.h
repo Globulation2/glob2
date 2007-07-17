@@ -24,12 +24,15 @@
 #include <string>
 #include <stdio.h>
 #include <assert.h>
+#include "zlib.h"
 #ifdef putc
 #undef putc
 #endif
 
 namespace GAGCore
 {
+	class MemoryStreamBackend;
+
 	//! A stream backend is a low-level serialization structure, that can be a file, a memory area, a network socket, ...
 	class StreamBackend
 	{
@@ -73,6 +76,31 @@ namespace GAGCore
 		virtual bool isValid(void) { return (fp != NULL); }
 	};
 	
+	//! The zlib implementation of stream backend. *important* all zlib activity is run through full-file buffer in memory
+	class ZLibStreamBackend : public StreamBackend
+	{
+	private:
+		MemoryStreamBackend* buffer;
+		std::string file;
+		bool isRead;
+	public:
+		//! Constructor. If file is "", isEndOfStream returns true and all other functions excepted destructor are invalid and will assert false if called
+		ZLibStreamBackend(const std::string& file, bool read);
+		virtual ~ZLibStreamBackend();
+		
+		virtual void write(const void *data, const size_t size);
+		virtual void flush(void);
+		virtual void read(void *data, size_t size);
+		virtual void putc(int c);
+		virtual int getc(void);
+		virtual void seekFromStart(int displacement);
+		virtual void seekFromEnd(int displacement);
+		virtual void seekRelative(int displacement);
+		virtual size_t getPosition(void);
+		virtual bool isEndOfStream(void);
+		virtual bool isValid(void);
+	};
+	
 	//! A stream backend that lies in memory
 	class MemoryStreamBackend : public StreamBackend
 	{
@@ -96,6 +124,7 @@ namespace GAGCore
 		virtual size_t getPosition(void);
 		virtual bool isEndOfStream(void);
 		virtual bool isValid(void) { return true; }
+		virtual const char* getBuffer() { return datas.c_str(); }
 	};
 }
 

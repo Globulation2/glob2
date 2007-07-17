@@ -456,6 +456,9 @@ public:
 	///Saves the game to a particular file name
 	bool save(const char *filename, const char *name);
 
+	///Updates the editor after map generation
+	void update();
+
 	///This function sets the map a particular size and uniform terrain type, then goes into the main loop
 	int run(int sizeX, int sizeY, TerrainType terrainType);
 	///This is the main loop function. It "ticks" every 33 miliseconds, handling events and drawing as it goes.
