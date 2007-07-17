@@ -23,6 +23,93 @@
 
 namespace GAGCore
 {
+
+	ZLibStreamBackend::ZLibStreamBackend(const std::string& file, bool read)
+	{
+		this->file = file;
+		isRead = read;
+		buffer = new MemoryStreamBackend();
+		if(isRead && isValid())
+		{
+			gzFile fp = gzopen(file.c_str(), "rb");
+			while(!gzeof(fp))
+			{
+				unsigned char b[1024];
+				long ammount = gzread(fp, b, 1024);
+				buffer->write(b, ammount);
+			}
+			buffer->seekFromStart(0);
+		}
+	}
+
+	ZLibStreamBackend::~ZLibStreamBackend()
+	{
+		if(!isRead && isValid())
+		{
+			buffer->seekFromEnd(0);
+			long size = buffer->getPosition();
+			buffer->seekFromStart(0);
+			gzFile fp = gzopen(file.c_str(), "wb9");
+			gzwrite(fp, buffer->getBuffer(), size);
+			gzclose(fp);
+		}
+	}
+		
+	void ZLibStreamBackend::write(const void *data, const size_t size)
+	{
+		buffer->write(data, size);
+	}
+	
+	void ZLibStreamBackend::flush(void)
+	{
+		buffer->flush();
+	}
+	
+	void ZLibStreamBackend::read(void *data, size_t size)
+	{
+		buffer->read(data, size);
+	}
+	
+	void ZLibStreamBackend::putc(int c)
+	{
+		buffer->putc(c);
+	}
+	
+	int ZLibStreamBackend::getc(void)
+	{
+		return buffer->getc();
+	}
+	
+	void ZLibStreamBackend::seekFromStart(int displacement)
+	{
+		buffer->seekFromStart(displacement);
+	}
+	
+	void ZLibStreamBackend::seekFromEnd(int displacement)
+	{
+		buffer->seekFromEnd(displacement);
+	}
+	
+	void ZLibStreamBackend::seekRelative(int displacement)
+	{
+		buffer->seekRelative(displacement);
+	}
+	
+	size_t ZLibStreamBackend::getPosition(void)
+	{
+		return buffer->getPosition();
+	}
+	
+	bool ZLibStreamBackend::isEndOfStream(void)
+	{
+		return !isValid();
+	}
+	
+	bool ZLibStreamBackend::isValid(void)
+	{
+		return (file.size()>0 && buffer->isValid());
+	}
+
 	MemoryStreamBackend::MemoryStreamBackend(const void *data, const size_t size)
 	{
 		index = 0;
