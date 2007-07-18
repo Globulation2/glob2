@@ -186,8 +186,8 @@ void FertilityCalculator::operator()()
 				Uint8 gcorn = game.map.getGradient(localteam, CORN, false, x, y);
 				Uint8 gwood = game.map.getGradient(localteam, WOOD, false, x, y);
 				//if g = 1, then no path can be found. Allow drawing for values of 0
-				//(obstacle) only when its wheat or corn
-				if(gcorn > 1 || gwood > 1 || game.map.isRessourceTakeable(x, y, CORN) || game.map.isRessourceTakeable(x, y, WOOD))
+				//(obstacle) only when its wheat or corn or a building
+				if(gcorn > 1 || gwood > 1 || game.map.isRessourceTakeable(x, y, CORN) || game.map.isRessourceTakeable(x, y, WOOD) || game.map.getBuilding(x, y) != NOGBID)
 				{
 					Uint16 total=0;
 					for(int nx = -15; nx <= 15; ++nx)
