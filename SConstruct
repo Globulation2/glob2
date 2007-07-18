@@ -4,7 +4,7 @@ env.Append(CPPPATH='#libgag/include')
 env.Append(LIBPATH='#libgag/src')
 env.Append(CXXFLAGS='-g -pg')
 env.Append(LINKFLAGS='-g -pg')
-env.Append(LIBS=['SDL', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile'])
+env.Append(LIBS=['SDL', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile', 'boost_thread'])
 
 if not conf.CheckLib('SDL'):
     print "Could not find libSDL"
@@ -26,7 +26,10 @@ elif not conf.CheckLib('vorbisfile'):
     Exit(1)
 elif not conf.CheckLib('z') or not conf.CheckCHeader('zlib.h'):
     print "Could not find zlib.h"
-    Exit(1)  
+    Exit(1)
+elif not conf.CheckLib('boost_thread') or not conf.CheckCXXHeader('boost/thread/thread.hpp'):
+    print "Could not find boost_thread or boost/thread/thread.hpp"
+    Exit(1)
 elif not conf.CheckLib('GL') or not conf.CheckCHeader('GL/gl.h'):
     if not conf.CheckLib('GL') or not conf.CheckCHeader('OpenGL/gl.h'):
         if not conf.CheckLib('opengl32') or not conf.CheckCHeader('GL/gl.h'):

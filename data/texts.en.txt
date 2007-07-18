@@ -356,6 +356,8 @@ f7
 f8
 [f9]
 f9
+[Fertility Map]
+Fertility Map
 [food left]
 Food left
 [food]

@@ -95,7 +95,7 @@ GameEvent.h \
 GameGUI.cpp \
 GameGUI.h \
 GameGUIDefaultAssignManager.cpp \
-GameGUIDefaultAssignManager.h \ 
+GameGUIDefaultAssignManager.h \
 GameGUIDialog.cpp \
 GameGUIDialog.h \
 GameGUIKeyActions.cpp \
@@ -263,8 +263,8 @@ YOGScreen.h
 
 
 if LINKSTATIC
-glob2_LDADD = ../libgag/src/libgag.a -lGL -lGLU -lpthread $(glob2_static_lib)
+glob2_LDADD = ../libgag/src/libgag.a -lGL -lboost_thread -lpthread $(glob2_static_lib)
 else
-glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ -lSDL_ttf $(glob2_static_lib)
+glob2_LDADD = ../libgag/src/libgag.a @LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ -lboost_thread -lSDL_ttf $(glob2_static_lib)
 endif
 INCLUDES = @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include

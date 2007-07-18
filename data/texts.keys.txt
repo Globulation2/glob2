@@ -177,6 +177,7 @@
 [f7]
 [f8]
 [f9]
+[Fertility Map]
 [food left]
 [food]
 [forbidden area]

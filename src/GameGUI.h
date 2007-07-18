@@ -286,6 +286,7 @@ private:
 	bool showStarvingMap;
 	bool showDamagedMap;
 	bool showDefenseMap;
+	bool showFertilityMap;
 	OverlayArea overlay;
 
 	bool showUnitWorkingToBuilding;
