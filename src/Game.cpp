@@ -2395,7 +2395,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 							float n_vertical = interpolateValues(n_top, n_bottom, fy);
 							const int alpha_c=int(float(200)/float(overlayMax) * float(n_vertical));
 							if(alpha_c>0)
-								globalContainer->gfx->drawFilledRect((x<<5)+px*8, (y<<5)+py*8, 8, 8, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
+								globalContainer->gfx->drawFilledRect((x<<5)+px*8 + 16, (y<<5)+py*8 + 16, 8, 8, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
 						}
 					}
 				}
