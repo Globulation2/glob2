@@ -173,6 +173,7 @@ void GameGUI::init()
 	showStarvingMap=false;
 	showDamagedMap=false;
 	showDefenseMap=false;
+	showFertilityMap=false;
 	
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
@@ -486,6 +487,8 @@ void GameGUI::step(void)
 			overlay.compute(game, OverlayArea::Damage, localTeamNo);
 		else if(showDefenseMap)
 			overlay.compute(game, OverlayArea::Defence, localTeamNo);
+		else if(showFertilityMap)
+			overlay.compute(game, OverlayArea::Fertility, localTeamNo);
 	}
 
 	// do we have won or lost conditions
@@ -2117,6 +2120,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				showDamagedMap=false;
 				showDefenseMap=false;
+				showFertilityMap=false;
 				showStarvingMap=!showStarvingMap;
 				overlay.compute(game, OverlayArea::Starving, localTeamNo);
 			}
@@ -2126,6 +2130,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDamagedMap=!showDamagedMap;
 				showStarvingMap=false;
 				showDefenseMap=false;
+				showFertilityMap=false;
 				overlay.compute(game, OverlayArea::Damage, localTeamNo);
 			}
 
@@ -2134,7 +2139,17 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDefenseMap=!showDefenseMap;
 				showStarvingMap=false;
 				showDamagedMap=false;
+				showFertilityMap=false;
 				overlay.compute(game, OverlayArea::Defence, localTeamNo);
+			}
+
+			if(my > YPOS_BASE_STAT+140+136 && my < YPOS_BASE_STAT+140+152)
+			{
+				showFertilityMap=!showFertilityMap;
+				showDefenseMap=false;
+				showStarvingMap=false;
+				showDamagedMap=false;
+				overlay.compute(game, OverlayArea::Fertility, localTeamNo);
 			}
 		}
 	}
@@ -3137,6 +3152,7 @@ void GameGUI::drawPanel(void)
 		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
 		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
 		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
+		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
 	}
 }
 
@@ -3434,6 +3450,7 @@ void GameGUI::drawAll(int team)
 								((showStarvingMap) ? Game::DRAW_OVERLAY : 0) |
 								((showDamagedMap) ? Game::DRAW_OVERLAY : 0) |
 								((showDefenseMap) ? Game::DRAW_OVERLAY : 0) |
+								((showFertilityMap) ? Game::DRAW_OVERLAY : 0) |
 								Game::DRAW_AREA;
 	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)

@@ -2354,6 +2354,8 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			overlayColor=Color(192, 0, 0);
 		if(gui->overlay.getOverlayType() == OverlayArea::Defence)
 			overlayColor=Color(0, 0, 192);
+		if(gui->overlay.getOverlayType() == OverlayArea::Fertility)
+			overlayColor=Color(0, 192, 128);
 
 		for (int y=top-1; y<=bot; y++)
 		{
@@ -2361,6 +2363,8 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			{
 				int rx=(x+viewportX)%map.getW();
 				int ry=(y+viewportY)%map.getH();
+				if(!map.isMapDiscovered(rx, ry, teams[localTeam]->me))
+					continue;
 				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 				{
 					if(gui->overlay.getValue(rx, ry))
