@@ -66,16 +66,20 @@ if test "$have_opengl" != "no"; then # if --disable-opengl was given don't test 
 
 if test "$have_opengl" = "yes"; then
 	AC_CHECK_HEADER(GL/gl.h,,have_opengl=no)
+	AC_CHECK_HEADER(GL/glu.h,,have_opengl=no)
 	AC_CHECK_LIB(GL, glBegin,,have_opengl=no,-lpthread)
+	AC_CHECK_LIB(GLU, gluOrtho2D,,have_opengl=no,-lpthread)
 fi
 # test for OpenGL/, Mac OS X
 if test "$have_opengl" = "no"; then
 	have_opengl=yes
 	AC_CHECK_HEADER(OpenGL/gl.h,,have_opengl=no)
+	AC_CHECK_HEADER(OpenGL/glu.h,,have_opengl=no)
 	saved_libs="$LIBS"
 	LIBS="-framework OpenGL $LIBS"
-	AC_TRY_LINK([#include <OpenGL/gl.h>],
-			[glBegin(GL_POINTS);],
+	AC_TRY_LINK([#include <OpenGL/gl.h>
+			#include <OpenGL/glu.h>],
+			[glBegin(GL_POINTS); gluOrtho2D(0, 0, 0, 0);],
 			[AC_MSG_NOTICE([Found OpenGL framework on OS X])],
 			[LIBS="$saved_libs"
 			have_opengl=no])
@@ -87,7 +91,9 @@ fi
 if test "$have_opengl" = "no"; then
 	have_opengl=yes
 	AC_CHECK_HEADER(GL/gl.h,,have_opengl=no)
+	AC_CHECK_HEADER(GL/glu.h,,have_opengl=no)
 	AC_CHECK_LIB(opengl32, main,,have_opengl=no)
+	AC_CHECK_LIB(glu32, main,,have_opengl=no)
 fi
 
 if test "$have_opengl" = "yes"; then
