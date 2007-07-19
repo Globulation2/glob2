@@ -640,7 +640,7 @@ namespace AIEcho
 		///The system puts buildings through three stages. The first is where the building order has been
 		///issued by the ai, but it hasn't satisfied its conditions, and thus hasn't been sent to the glob2
 		///engine. The second is where the building conditions are satisfied and the building order
-		///has been sent, but the engine is awaiting the pertimiter of the building to be clearing before
+		///has been sent, but the engine is awaiting the pertimiter of the building to be cleared before
 		///it sets the building in place. The third stage is where the building has been set in place,
 		///and was detected on the map. In this stage, an engine gid has been found and a pointer to
 		///the building in memory secured. The fourth stage is where the building is being upgraded.
