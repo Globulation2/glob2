@@ -108,7 +108,7 @@ def configure(env):
 def main():
     env = Environment()
     establish_options(env)
-    #configure(env)
+    configure(env)
     env.Append(CPPPATH='#libgag/include')
     env.Append(LIBPATH='#libgag/src')
     if env['release']:
