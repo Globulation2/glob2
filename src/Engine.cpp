@@ -221,8 +221,6 @@ int Engine::run(void)
 
 		while (gui.isRunning)
 		{
-			if(gui.game.stepCounter == 10000)
-				gui.exitGlobCompletely=true;
 			// We always allow the user to use the gui:
 			if (globalContainer->runNoX)
 			{
