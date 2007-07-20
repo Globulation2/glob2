@@ -9,3 +9,5 @@ interpreter.h    position.h    tree.h""")
 Import("env")
 
 env.Library("usl", usl_sources)
+
+env.Tar(env["TARFILE"], "SConscript")

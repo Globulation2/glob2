@@ -1,1 +1,2 @@
+env.Tar(env["TARFILE"], "SConscript")
 SConscript("src/SConscript")

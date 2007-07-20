@@ -5,3 +5,5 @@ if "mksprite" in COMMAND_LINE_TARGETS:
     env.ParseConfig("Magick++-config --cxxflags --cppflags")
     env.ParseConfig("Magick++-config --ldflags --libs")
     env.Program("mksprite", "mksprite.cpp")
+
+env.Tar(env["TARFILE"], "SConscript")
