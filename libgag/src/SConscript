@@ -1,35 +1,20 @@
-libgag_sources = [
-	"win32_dirent.cpp",
-	"GraphicContext.cpp",
-	"Sprite.cpp",
-	"TrueTypeFont.cpp",
-	"TrueTypeFont.h",
-	"FileManager.cpp",
-	"Toolkit.cpp",
-	"StringTable.cpp",
-	"CursorManager.cpp",
-	"SupportFunctions.cpp",
-	"GUIBase.cpp",
-	"GUIList.cpp",
-	"GUIFileList.cpp",
-	"GUIKeySelector.cpp",
-	"GUIRatio.cpp",
-	"GUITextArea.cpp",
-	"GUIButton.cpp",
-	"GUINumber.cpp",
-	"GUIText.cpp",
-	"GUITextInput.cpp",
-	"KeyPress.cpp",
-	"GUISelector.cpp",
-	"GUIAnimation.cpp",
-	"GUIMessageBox.cpp",
-	"GUIStyle.cpp",
-	"StreamBackend.cpp",
-	"StreamFilter.cpp",
-	"Stream.cpp",
-	"BinaryStream.cpp",
-	"TextStream.cpp",
-	"FormatableString.cpp"]
+libgag_sources = Split("""
+BinaryStream.cpp      GUIStyle.cpp
+CursorManager.cpp     GUITextArea.cpp
+FileManager.cpp       GUIText.cpp
+FormatableString.cpp  GUITextInput.cpp
+GraphicContext.cpp    KeyPress.cpp
+GUIAnimation.cpp      Sprite.cpp
+GUIBase.cpp           StreamBackend.cpp
+GUIButton.cpp         Stream.cpp
+GUIFileList.cpp       StreamFilter.cpp
+GUIKeySelector.cpp    StringTable.cpp
+GUIList.cpp           SupportFunctions.cpp
+GUIMessageBox.cpp     TextStream.cpp
+GUINumber.cpp         Toolkit.cpp
+GUIRatio.cpp          TrueTypeFont.cpp
+GUISelector.cpp       win32_dirent.cpp""").sort()
+
 
 
 Import("env")
