@@ -40,6 +40,14 @@ GameHeader.cpp                   NewMapScreen.cpp""")
 
 
 Import('env')
-env = env.Clone()
-env.Append(LIBS=['gag'])
-env.Program("glob2", source_files)
+local = env.Clone()
+local.Append(LIBS=['gag'])
+p = local.Program("glob2", source_files)
+local.Default(p)
+
+import os
+
+for file in os.listdir("."):
+    if file.find(".cpp") != -1:
+        env.Tar(env["TARFILE"], file)
+
