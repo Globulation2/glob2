@@ -28,7 +28,7 @@ def configure(env):
     configfile.add("PACKAGE_DATA_DIR", "data directory", "/usr/local/share/glob2")
     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "Globulation 2")
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "glob2")
-    configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "0.8.23")
+    configfile.add("PACKAGE_VERSION", "Define to the version of this package.", env["VERSION"])
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
     #Simple checks for required libraries
     if not conf.CheckLib('SDL'):
@@ -107,6 +107,7 @@ def configure(env):
 
 def main():
     env = Environment()
+    env["VERSION"] = "0.8.24"
     establish_options(env)
     configure(env)
     env.Append(CPPPATH='#libgag/include')
@@ -118,7 +119,15 @@ def main():
     env.ParseConfig("sdl-config --cflags")
     env.ParseConfig("sdl-config --libs")
     Export('env')
-    SConscript("src/SConscript")
+    env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar"
+    SConscript("campaigns/SConscript")
+    SConscript("data/SConscript")
+    SConscript("gnupg/SConscript")
     SConscript("libgag/SConscript")
+    SConscript("libusl/SConscript")
+    SConscript("maps/SConscript")
+    SConscript("scripts/SConscript")
+    SConscript("src/SConscript")
+    SConscript("tools/SConscript")
     
 main()

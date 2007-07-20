@@ -1,0 +1,13 @@
+import os
+
+Import('env')
+
+for file in os.listdir("."):
+    if file.find(".txt") != -1:
+        env.Tar(env["TARFILE"], file)
+        
+SConscript("fonts/SConscript")
+SConscript("gfx/SConscript")
+SConscript("gui/SConscript")
+SConscript("icons/SConscript")
+SConscript("zik/SConscript")

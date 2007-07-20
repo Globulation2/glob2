@@ -1,1 +1,2 @@
 SConscript("src/SConscript")
+SConscript("include/SConscript")
