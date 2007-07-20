@@ -36,7 +36,7 @@ GameGUIKeyActions.cpp            NetListener.cpp                   YOGPasswordRe
 GameGUILoadSave.cpp              NetMessage.cpp                    YOGPlayer.cpp
 GameGUIMessageManager.cpp        NetTestSuite.cpp                  YOGPlayerInfo.cpp
 GameGUIToolManager.cpp           NetTextMessageHandler.cpp         YOGScreen.cpp
-GameHeader.cpp                   NewMapScreen.cpp""")
+GameHeader.cpp                   NewMapScreen.cpp""").sort()
 
 
 Import('env')
@@ -48,7 +48,7 @@ local.Default(p)
 import os
 
 for file in os.listdir("."):
-    if file.find(".cpp") != -1:
+    if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
         env.Tar(env["TARFILE"], file)
 
 env.Tar(env["TARFILE"], "SConscript")

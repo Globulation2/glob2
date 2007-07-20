@@ -6,4 +6,5 @@ if "mksprite" in COMMAND_LINE_TARGETS:
     env.ParseConfig("Magick++-config --ldflags --libs")
     env.Program("mksprite", "mksprite.cpp")
 
+Import("env")
 env.Tar(env["TARFILE"], "SConscript")
