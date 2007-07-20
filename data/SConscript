@@ -11,3 +11,5 @@ SConscript("gfx/SConscript")
 SConscript("gui/SConscript")
 SConscript("icons/SConscript")
 SConscript("zik/SConscript")
+
+env.Tar(env["TARFILE"], "SConscript")

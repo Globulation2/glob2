@@ -7,3 +7,5 @@ for file in os.listdir("."):
         env.Tar(env["TARFILE"], file)
 
 SConscript("cursor/SConscript")
+
+env.Tar(env["TARFILE"], "SConscript")

@@ -41,3 +41,5 @@ import os
 for file in os.listdir("."):
     if file.find(".cpp") != -1:
         env.Tar(env["TARFILE"], file)
+
+env.Tar(env["TARFILE"], "SConscript")

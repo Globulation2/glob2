@@ -120,6 +120,7 @@ def main():
     env.ParseConfig("sdl-config --libs")
     Export('env')
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar"
+    env.Tar(env["TARFILE"], "AUTHORS COPYING Doxyfile INSTALL mkdata mkdist mkmap README README.hg SConstruct syncdata syncmaps TODO")
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
     SConscript("gnupg/SConscript")
