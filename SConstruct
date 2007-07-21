@@ -1,6 +1,7 @@
 def establish_options(env):
     opts = Options('options_cache.py')
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g -pg")
+    opts.Add("LDFLAGS", "Manually add to the LDFLAGS", "")
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled", 0))
     Help(opts.GenerateHelpText(env))
@@ -116,7 +117,8 @@ def main():
         env.Append(CXXFLAGS='-O3')
         env.Append(LINKFLAGS='')
     if env['mingw']:
-        env.Append(CXXFLAGS=" -ISDL")
+        env.Append(CXXFLAGS=" -I/mingw/include/SDL")
+        env.Append(LIBS=["ogg", "winsock32"])
     env.Append(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile', 'boost_thread'])
     env.ParseConfig("sh sdl-config --cflags")
     env.ParseConfig("sh sdl-config --libs")
