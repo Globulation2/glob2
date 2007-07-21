@@ -118,7 +118,7 @@ def main():
         env.Append(LINKFLAGS='')
     if env['mingw']:
         env.Append(CXXFLAGS=" -I/mingw/include/SDL")
-        env.Append(LIBS=["ogg", "winsock32"])
+        env.Append(LIBS=["ogg", "wsock32"])
     env.Append(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile', 'boost_thread'])
     env.ParseConfig("sh sdl-config --cflags")
     env.ParseConfig("sh sdl-config --libs")
