@@ -118,8 +118,8 @@ def main():
     if env['mingw']:
         env.Append(CXXFLAGS="-ISDL")
     env.Append(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile', 'boost_thread'])
-    env.ParseConfig("sdl-config --cflags")
-    env.ParseConfig("sdl-config --libs")
+    env.ParseConfig("sh sdl-config --cflags")
+    env.ParseConfig("sh sdl-config --libs")
     Export('env')
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar"
     env.Tar(env["TARFILE"], Split("AUTHORS COPYING Doxyfile INSTALL mkdata mkdist mkmap README README.hg SConstruct syncdata syncmaps TODO"))
