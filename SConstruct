@@ -47,7 +47,7 @@ def configure(env):
         print "Could not find libspeex or could not find 'speex/speex.h'"
         Exit(1)
     if not conf.CheckLib('vorbisfile'):
-        print "Could not find libvorbisfile to link gainst"
+        print "Could not find libvorbisfile to link against"
         Exit(1)
     if not conf.CheckLib('z') or not conf.CheckCHeader('zlib.h'):
         print "Could not find zlib.h"
@@ -115,6 +115,8 @@ def main():
     if env['release']:
         env.Append(CXXFLAGS='-O3')
         env.Append(LINKFLAGS='')
+    if env['mingw']:
+        env.Append(CXXFLAGS="-ISDL")
     env.Append(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile', 'boost_thread'])
     env.ParseConfig("sdl-config --cflags")
     env.ParseConfig("sdl-config --libs")
