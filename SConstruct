@@ -116,7 +116,7 @@ def main():
         env.Append(CXXFLAGS='-O3')
         env.Append(LINKFLAGS='')
     if env['mingw']:
-        env.Append(CXXFLAGS="-ISDL")
+        env.Append(CXXFLAGS=" -ISDL")
     env.Append(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile', 'boost_thread'])
     env.ParseConfig("sh sdl-config --cflags")
     env.ParseConfig("sh sdl-config --libs")
