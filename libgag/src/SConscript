@@ -11,7 +11,7 @@ TrueTypeFont.cpp    win32_dirent.cpp""")
 
 
 Import("env")
-l = env.Library("gag", libgag_sources)
+l = env.StaticLibrary("gag", libgag_sources)
 Default(l)
 
 import os
