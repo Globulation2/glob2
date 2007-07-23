@@ -1,36 +1,23 @@
-libgag_sources = [
-	"win32_dirent.cpp",
-	"GraphicContext.cpp",
-	"Sprite.cpp",
-	"TrueTypeFont.cpp",
-	"TrueTypeFont.h",
-	"FileManager.cpp",
-	"Toolkit.cpp",
-	"StringTable.cpp",
-	"CursorManager.cpp",
-	"SupportFunctions.cpp",
-	"GUIBase.cpp",
-	"GUIList.cpp",
-	"GUIFileList.cpp",
-	"GUIKeySelector.cpp",
-	"GUIRatio.cpp",
-	"GUITextArea.cpp",
-	"GUIButton.cpp",
-	"GUINumber.cpp",
-	"GUIText.cpp",
-	"GUITextInput.cpp",
-	"KeyPress.cpp",
-	"GUISelector.cpp",
-	"GUIAnimation.cpp",
-	"GUIMessageBox.cpp",
-	"GUIStyle.cpp",
-	"StreamBackend.cpp",
-	"StreamFilter.cpp",
-	"Stream.cpp",
-	"BinaryStream.cpp",
-	"TextStream.cpp",
-	"FormatableString.cpp"]
+libgag_sources = Split("""
+BinaryStream.cpp    CursorManager.cpp     FileManager.cpp   FormatableString.cpp
+GraphicContext.cpp  GUIAnimation.cpp      GUIBase.cpp       GUIButton.cpp
+GUIFileList.cpp     GUIKeySelector.cpp    GUIList.cpp       GUIMessageBox.cpp
+GUINumber.cpp       GUIRatio.cpp          GUISelector.cpp   GUIStyle.cpp
+GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  KeyPress.cpp
+Sprite.cpp          StreamBackend.cpp     Stream.cpp        StreamFilter.cpp
+StringTable.cpp     SupportFunctions.cpp  TextStream.cpp    Toolkit.cpp
+TrueTypeFont.cpp    win32_dirent.cpp""")
+
 
 
 Import("env")
-env.Library("gag", libgag_sources)
+l = env.StaticLibrary("gag", libgag_sources)
+Default(l)
+
+import os
+
+for file in os.listdir("."):
+    if file.find(".cpp") != -1:
+        env.Tar(env["TARFILE"], file)
+
+env.Tar(env["TARFILE"], "SConscript")

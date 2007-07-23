@@ -1,0 +1,13 @@
+usl_sources = Split("""
+code.cpp         lexer.cpp     token.cpp      types.cpp
+code.h           lexer.h       token.h        types.h
+debug.cpp        memory.cpp    tokenizer.cpp  usl.cpp
+debug.h          memory.h      tokenizer.h
+interpreter.cpp  position.cpp  tree.cpp
+interpreter.h    position.h    tree.h""")
+
+Import("env")
+
+env.Library("usl", usl_sources)
+
+env.Tar(env["TARFILE"], "SConscript")

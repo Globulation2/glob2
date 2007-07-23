@@ -1,118 +1,56 @@
-source_files = Split("AI.cpp \
-AICastor.cpp \
-AIEcho.cpp \
-AINicowar.cpp \
-AINull.cpp \
-AINumbi.cpp \
-AIToubib.cpp \
-AIWarrush.cpp \
-BitArray.cpp \
-Brush.cpp \
-Building.cpp \
-BuildingType.cpp \
-BuildingsTypes.cpp \
-Bullet.cpp \
-Campaign.cpp \
-CampaignEditor.cpp \
-CampaignMenuScreen.cpp \
-CampaignScreen.cpp \
-CampaignSelectorScreen.cpp \
-ChooseMapScreen.cpp \
-CPUStatisticsManager.cpp \
-CreditScreen.cpp \
-CustomGameScreen.cpp \
-DynamicClouds.cpp \
-EndGameScreen.cpp \
-Engine.cpp \
-EntityType.cpp \
-Fatal.cpp \
-GUIGlob2FileList.cpp \
-GUIMapPreview.cpp \
-Game.cpp \
-GameEvent.cpp \
-GameGUI.cpp \
-GameGUIDefaultAssignManager.cpp \
-GameGUIDialog.cpp \
-GameGUIKeyActions.cpp \
-GameGUILoadSave.cpp \
-GameGUIMessageManager.cpp \
-GameGUIToolManager.cpp \
-GameHeader.cpp \
-GameUtilities.cpp \
-Glob2.cpp \
-Glob2Screen.cpp \
-Glob2Style.cpp \
-GlobalContainer.cpp \
-HeightMapGenerator.cpp \
-IRC.cpp \
-KeyboardManager.cpp \
-LANGameInformation.cpp \
-LANMenuScreen.cpp \
-LANFindScreen.cpp \
-IntBuildingType.cpp \
-LogFileManager.cpp \
-MainMenuScreen.cpp \
-Map.cpp \
-MapAssembler.cpp \
-MapEdit.cpp \
-MapEditKeyActions.cpp \
-MapGenerationDescriptor.cpp \
-MapGenerator.cpp \
-MapHeader.cpp \
-MarkManager.cpp \
-Minimap.cpp \
-MultiplayerGameScreen.cpp \
-MultiplayerGame.cpp \
-MultiplayerGameEvent.cpp \
-MultiplayerGameEventListener.cpp \
-NetBroadcaster.cpp \
-NetBroadcastListener.cpp \
-NetConnection.cpp \
-NetEngine.cpp \
-NetListener.cpp \
-NetMessage.cpp \
-NetTestSuite.cpp \
-NetTextMessageHandler.cpp \
-NewMapScreen.cpp \
-Order.cpp \
-OverlayAreas.cpp \
-PerlinNoise.cpp \
-Player.cpp \
-Race.cpp \
-Ressource.cpp \
-RessourcesTypes.cpp \
-SGSL.cpp \
-ScriptEditorScreen.cpp \
-Sector.cpp \
-Settings.cpp \
-SettingsScreen.cpp \
-SoundMixer.cpp \
-Team.cpp \
-TeamStat.cpp \
-Unit.cpp \
-UnitConsts.cpp \
-UnitEditorScreen.cpp \
-UnitSkin.cpp \
-UnitType.cpp \
-UnitsSkins.cpp \
-Utilities.cpp \
-VoiceRecorder.cpp \
-YOGClient.cpp \
-YOGEvent.cpp \
-YOGEventListener.cpp \
-YOGGame.cpp \
-YOGGameInfo.cpp \
-YOGGameServer.cpp \
-YOGLoginScreen.cpp \
-YOGMapDistributor.cpp \
-YOGMessage.cpp \
-YOGPasswordRegistry.cpp \
-YOGPlayer.cpp \
-YOGPlayerInfo.cpp \
-YOGScreen.cpp")
+source_files = Split("""
+AICastor.cpp                AI.cpp                           AIEcho.cpp
+AINicowar.cpp               AINull.cpp                       AINumbi.cpp
+AIToubib.cpp                AIWarrush.cpp                    BitArray.cpp
+Brush.cpp                   Building.cpp                     BuildingsTypes.cpp
+BuildingType.cpp            Bullet.cpp                       Campaign.cpp
+CampaignEditor.cpp          CampaignMenuScreen.cpp           CampaignScreen.cpp
+CampaignSelectorScreen.cpp  ChooseMapScreen.cpp              CPUStatisticsManager.cpp
+CreditScreen.cpp            CustomGameScreen.cpp             DynamicClouds.cpp
+EndGameScreen.cpp           Engine.cpp                       EntityType.cpp
+Fatal.cpp                   Game.cpp                         GameEvent.cpp
+GameGUI.cpp                 GameGUIDefaultAssignManager.cpp  GameGUIDialog.cpp
+GameGUIKeyActions.cpp       GameGUILoadSave.cpp              GameGUIMessageManager.cpp
+GameGUIToolManager.cpp      GameHeader.cpp                   GameUtilities.cpp
+Glob2.cpp                   Glob2Screen.cpp                  Glob2Style.cpp
+GlobalContainer.cpp         GUIGlob2FileList.cpp             GUIMapPreview.cpp
+HeightMapGenerator.cpp      IntBuildingType.cpp              IRC.cpp
+KeyboardManager.cpp         LANFindScreen.cpp                LANGameInformation.cpp
+LANMenuScreen.cpp           LogFileManager.cpp               MainMenuScreen.cpp
+MapAssembler.cpp            Map.cpp                          MapEdit.cpp
+MapEditKeyActions.cpp       MapGenerationDescriptor.cpp      MapGenerator.cpp
+MapHeader.cpp               MarkManager.cpp                  Minimap.cpp
+MultiplayerGame.cpp         MultiplayerGameEvent.cpp         MultiplayerGameEventListener.cpp
+MultiplayerGameScreen.cpp   NetBroadcaster.cpp               NetBroadcastListener.cpp
+NetConnection.cpp           NetEngine.cpp                    NetListener.cpp
+NetMessage.cpp              NetTestSuite.cpp                 NetTextMessageHandler.cpp
+NewMapScreen.cpp            Order.cpp                        OverlayAreas.cpp
+PerlinNoise.cpp             Player.cpp                       Race.cpp
+Ressource.cpp               RessourcesTypes.cpp              ScriptEditorScreen.cpp
+Sector.cpp                  Settings.cpp                     SettingsScreen.cpp
+SGSL.cpp                    SoundMixer.cpp                   Team.cpp
+TeamStat.cpp                UnitConsts.cpp                   Unit.cpp
+UnitEditorScreen.cpp        UnitSkin.cpp                     UnitsSkins.cpp
+UnitType.cpp                Utilities.cpp                    VoiceRecorder.cpp
+YOGClient.cpp                                                YOGEvent.cpp
+YOGEventListener.cpp        YOGGame.cpp                      YOGGameInfo.cpp
+YOGGameServer.cpp           YOGLoginScreen.cpp               YOGMapDistributor.cpp
+YOGMessage.cpp              YOGPasswordRegistry.cpp          YOGPlayer.cpp
+YOGPlayerInfo.cpp           YOGScreen.cpp""")
+
 
 Import('env')
-env = env.Clone()
-env.Append(LIBS=['gag'])
-id = env.Object(source_files)
-env.Program("glob2", id)
+local = env.Clone()
+if env["mingw"]:
+    source_files.extend(["C:/msys/1.0/local/lib/libvorbisfile.a", "C:/msys/1.0/local/lib/libvorbis.a", "C:/msys/1.0/local/lib/libogg.a"])
+#Add libgag, not as a library, but as an object
+source_files.append("#libgag//src/libgag.a")
+p = local.Program("glob2", source_files)
+local.Default(p)
+
+import os
+for file in os.listdir("."):
+    if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
+        env.Tar(env["TARFILE"], file)
+
+env.Tar(env["TARFILE"], "SConscript")

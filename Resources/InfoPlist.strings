@@ -1,6 +1,0 @@
-/* Localized versions of Info.plist keys */
-
-CFBundleName = "Globulation 2";
-CFBundleShortVersionString = "Globulation 2";
-CFBundleGetInfoString = "Globulation 2 , 2003 Ysagoon.com";
-NSHumanReadableCopyright = "GPL 2003 Ysagoon";

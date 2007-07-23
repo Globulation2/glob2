@@ -1,0 +1,13 @@
+import os
+
+Import("env")
+
+#Added this check because this was running extremely slow
+if "dist" in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".png") != -1:
+            env.Tar(env["TARFILE"], file)
+
+env.Tar(env["TARFILE"], "SConscript")
+
+SConscript("cursor/SConscript")
