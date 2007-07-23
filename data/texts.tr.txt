@@ -1,5 +1,3 @@
-
-
 [%0 has been deconnected of the game]
 %0 koptu.
 [%0 has left the game]
@@ -353,6 +351,8 @@ bos adalar
 [f8]
 
 [f9]
+
+[Fertility Map]
 
 [food left]
 Kalan besin

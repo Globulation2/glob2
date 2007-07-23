@@ -1,5 +1,3 @@
-
-
 [%0 has been deconnected of the game]
 %0 się rozłączył.
 [%0 has left the game]
@@ -353,6 +351,8 @@ Odkrywcy
 [f8]
 
 [f9]
+
+[Fertility Map]
 
 [food left]
 Pozostało jedzenia
