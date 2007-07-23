@@ -41,10 +41,10 @@ YOGPlayerInfo.cpp           YOGScreen.cpp""")
 
 Import('env')
 local = env.Clone()
-local['LIBS'] = env['LIBS']
-local.AppendUnique(LIBS=['gag'])
 if env["mingw"]:
     source_files.extend(["C:/msys/1.0/local/lib/libvorbisfile.a", "C:/msys/1.0/local/lib/libvorbis.a", "C:/msys/1.0/local/lib/libogg.a"])
+#Add libgag, not as a library, but as an object
+source_files.append("#libgag//src/libgag.a")
 p = local.Program("glob2", source_files)
 local.Default(p)
 

@@ -1,7 +1,7 @@
 def establish_options(env):
     opts = Options('options_cache.py')
-    opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g -pg")
-    opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g -pg")
+    opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "")
+    opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "")
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled", 0))
     Help(opts.GenerateHelpText(env))
@@ -22,15 +22,17 @@ class Configuration:
 
 def configure(env):
     """Configures glob2"""
-    conf = Configure(env)
+    conf = Configure(env.Clone())
     configfile = Configuration()
-    configfile.add("PACKAGE", "Name of package", "glob2")
-    configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "glob2-devel@nongnu.org")
-    configfile.add("PACKAGE_DATA_DIR", "data directory", "/usr/local/share/glob2")
-    configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "Globulation 2")
-    configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "glob2")
-    configfile.add("PACKAGE_VERSION", "Define to the version of this package.", env["VERSION"])
+    configfile.add("PACKAGE", "Name of package", "\"glob2\"")
+    configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
+    configfile.add("PACKAGE_DATA_DIR", "data directory", "\"/usr/local/share/glob2\"")
+    configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath + "\"")
+    configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
+    configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
+    configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "\""+env["VERSION"]+"\"")
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
+    env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
     #Simple checks for required libraries
     if not conf.CheckLib('SDL'):
         print "Could not find libSDL"
@@ -50,9 +52,17 @@ def configure(env):
     if not conf.CheckLib('vorbisfile'):
         print "Could not find libvorbisfile to link against"
         Exit(1)
-    if not conf.CheckLib('z') or not conf.CheckCHeader('zlib.h'):
+    if not conf.CheckCHeader('zlib.h'):
         print "Could not find zlib.h"
         Exit(1)
+    else:
+        if conf.CheckLib('z'):
+            env.Append(LIBS="z")
+        elif conf.CheckLib('zlib1'):
+            env.Append(LIBS="zlib1")
+        else:
+            print "Coulf not find libz or zlib1.dll"
+            Exit(1)
     if not conf.CheckLib('boost_thread') or not conf.CheckCXXHeader('boost/thread/thread.hpp'):
         print "Could not find libboost_thread or boost/thread/thread.hpp"
         Exit(1)
@@ -97,12 +107,12 @@ def configure(env):
     
     if gl_libraries:
         configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
-        env.AppendUnique(LIBS=gl_libraries)
+        env.Append(LIBS=gl_libraries)
     
     #Do checks for fribidi
     if conf.CheckLib('fribidi') and conf.CheckCHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
-        env.AppendUnique(LIBS=['fribidi'])
+        env.Append(LIBS=['fribidi'])
 
 
 
@@ -110,26 +120,25 @@ def main():
     env = Environment()
     env["VERSION"] = "0.8.24"
     establish_options(env)
-    configure(env)
-    env.AppendUnique(CPPPATH='#libgag/include')
-    env.AppendUnique(LIBPATH='#libgag/src')
-    if env['release']:
-        env.AppendUnique(CXXFLAGS='-O3')
-        env.AppendUnique(LINKFLAGS='')
+    #Add the paths to important mingw libraries
     if env['mingw']:
-        env.AppendUnique(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/local/bin"])
-        env.AppendUnique(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include"])
-        env.AppendUnique(LIBS=['wsock32'])
-    else:
-        print 'foo'
-        env.AppendUnique(LIBS=['vorbisfile'])
+        env.Append(LIBPATH=["C:/msys/1.0/local/lib"])
+        env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include"])
+    configure(env)
+    env.Append(CPPPATH=['#libgag/include', '#'])
+    if env['release']:
+        env.Append(CXXFLAGS='-O3')
+    if env['mingw']:
+        #These four options must be present before the object files when compiling in mingw
+        env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
+        env.Append(LIBS=['wsock32'])
     env.ParseConfig("sh sdl-config --cflags")
     env.ParseConfig("sh sdl-config --libs")
-    env.AppendUnique(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread', 'zlib1.dll'])
-    Export('env')
+    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread'])
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar"
     env.Tar(env["TARFILE"], Split("AUTHORS COPYING Doxyfile INSTALL mkdata mkdist mkmap README README.hg SConstruct syncdata syncmaps TODO"))
     env.Alias("dist", env["TARFILE"])
+    Export('env')
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
     SConscript("gnupg/SConscript")
