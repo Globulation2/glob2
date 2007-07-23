@@ -41,12 +41,14 @@ YOGPlayerInfo.cpp           YOGScreen.cpp""")
 
 Import('env')
 local = env.Clone()
-local.Append(LIBS=['gag'])
+local['LIBS'] = env['LIBS']
+local.AppendUnique(LIBS=['gag'])
+if env["mingw"]:
+    source_files.extend(["C:/msys/1.0/local/lib/libvorbisfile.a", "C:/msys/1.0/local/lib/libvorbis.a", "C:/msys/1.0/local/lib/libogg.a"])
 p = local.Program("glob2", source_files)
 local.Default(p)
 
 import os
-
 for file in os.listdir("."):
     if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
         env.Tar(env["TARFILE"], file)

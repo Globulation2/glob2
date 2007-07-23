@@ -1,7 +1,7 @@
 def establish_options(env):
     opts = Options('options_cache.py')
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g -pg")
-    opts.Add("LDFLAGS", "Manually add to the LDFLAGS", "")
+    opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g -pg")
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled", 0))
     Help(opts.GenerateHelpText(env))
@@ -97,12 +97,12 @@ def configure(env):
     
     if gl_libraries:
         configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
-        env.Append(LIBS=gl_libraries)
+        env.AppendUnique(LIBS=gl_libraries)
     
     #Do checks for fribidi
     if conf.CheckLib('fribidi') and conf.CheckCHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
-        env.Append(LIBS=['fribidi'])
+        env.AppendUnique(LIBS=['fribidi'])
 
 
 
@@ -111,17 +111,21 @@ def main():
     env["VERSION"] = "0.8.24"
     establish_options(env)
     configure(env)
-    env.Append(CPPPATH='#libgag/include')
-    env.Append(LIBPATH='#libgag/src')
+    env.AppendUnique(CPPPATH='#libgag/include')
+    env.AppendUnique(LIBPATH='#libgag/src')
     if env['release']:
-        env.Append(CXXFLAGS='-O3')
-        env.Append(LINKFLAGS='')
+        env.AppendUnique(CXXFLAGS='-O3')
+        env.AppendUnique(LINKFLAGS='')
     if env['mingw']:
-        env.Append(CXXFLAGS=" -I/mingw/include/SDL")
-        env.Append(LIBS=["libogg.a", "libvorbis.a", "wsock32"])
-    env.Append(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'vorbisfile', 'boost_thread'])
+        env.AppendUnique(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/local/bin"])
+        env.AppendUnique(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include"])
+        env.AppendUnique(LIBS=['wsock32'])
+    else:
+        print 'foo'
+        env.AppendUnique(LIBS=['vorbisfile'])
     env.ParseConfig("sh sdl-config --cflags")
     env.ParseConfig("sh sdl-config --libs")
+    env.AppendUnique(LIBS=['SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread', 'zlib1.dll'])
     Export('env')
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar"
     env.Tar(env["TARFILE"], Split("AUTHORS COPYING Doxyfile INSTALL mkdata mkdist mkmap README README.hg SConstruct syncdata syncmaps TODO"))
