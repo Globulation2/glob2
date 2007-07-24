@@ -127,7 +127,7 @@ def main():
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     if env['release']:
-        env.Append(CXXFLAGS='-O3')
+        env.Append(CXXFLAGS=' -O3')
     if env['mingw']:
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
