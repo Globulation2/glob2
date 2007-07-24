@@ -27,7 +27,7 @@ def configure(env):
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
     configfile.add("PACKAGE_DATA_DIR", "data directory", "\"/usr/local/share/glob2\"")
-    configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath + "\"")
+    configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
     configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "\""+env["VERSION"]+"\"")
