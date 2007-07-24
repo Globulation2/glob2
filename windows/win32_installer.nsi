@@ -72,9 +72,6 @@
   ;------------------------------------
   ;Install Globulation 2 runtime
   ;------------------------------------
-    SetOutPath $INSTDIR
-      File ..\src\glob2.exe
-      ;File ..\src\*.dll       whats this line for Brad? I've got no dll files in my source folder
     SetOutPath $INSTDIR\data
       File /r ..\data\*
     SetOutPath $INSTDIR\campaigns
@@ -84,14 +81,20 @@
       File /nonfatal ..\maps\*.map
     SetOutPath $INSTDIR\scripts
       File /nonfatal ..\scripts\*.sgsl
+    SetOutPath $INSTDIR
+      File ..\src\glob2.exe
+      File ..\*.dll
+      File glob2.ico
+      File ..\AUTHORS
+      File ..\COPYING
   ;------------------------------------
   ;Install shortcuts
   ;------------------------------------
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\glob2win32-uninst.exe" "" "$INSTDIR\glob2win32-uninst.exe" 0
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Globulation 2.lnk" "$INSTDIR\glob2.exe" "" "glob2.ico"
-    CreateShortCut "$DESKTOP\Globulation 2.lnk" "$INSTDIR\glob2.exe" "" "glob2.ico"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Globulation 2.lnk" "$INSTDIR\glob2.exe" "" "$INSTDIR\glob2.ico"
+    CreateShortCut "$DESKTOP\Globulation 2.lnk" "$INSTDIR\glob2.exe" "" "$INSTDIR\glob2.ico"
     !insertmacro MUI_STARTMENU_WRITE_END
   ;------------------------------------
   ;Set registery values
@@ -99,7 +102,7 @@
     WriteRegStr HKCU "Software\Globulation_2" "" $INSTDIR
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "DisplayName" "Globulation 2"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "UninstallString" "$INSTDIR\glob2win32-uninst.exe"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "DisplayIcon" "glob2.ico"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "DisplayIcon" "$INSTDIR\glob2.ico"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "NoModify" "1"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "NoRepair" "1"
   ;------------------------------------
