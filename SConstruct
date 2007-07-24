@@ -132,8 +132,11 @@ def main():
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
         env.Append(LIBS=['wsock32'])
-    env.ParseConfig("sh sdl-config --cflags")
-    env.ParseConfig("sh sdl-config --libs")
+        env.ParseConfig("sh sdl-config --cflags")
+        env.ParseConfig("sh sdl-config --libs")
+    else:
+        env.ParseConfig("sdl-config --cflags")
+        env.ParseConfig("sdl-config --libs")
     env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread'])
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar"
     env.Tar(env["TARFILE"], Split("AUTHORS COPYING Doxyfile INSTALL mkdata mkdist mkmap README README.hg SConstruct syncdata syncmaps TODO"))
