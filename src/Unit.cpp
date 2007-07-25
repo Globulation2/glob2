@@ -1909,7 +1909,7 @@ void Unit::handleAction(void)
 			owner->map->setGroundUnit(posX, posY, NOGUID);
 			gotoGroundTarget();
 			if(dx==0 && dy==0)
-			owner->map->addHiddenForbidden(posX, posY, owner->teamNumber);
+				owner->map->addHiddenForbidden(posX, posY, owner->teamNumber);
 			else
 				owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
 			posX=(posX+dx)&(owner->map->getMaskW());
@@ -2022,6 +2022,10 @@ void Unit::handleAction(void)
 		case MOV_ATTACKING_TARGET:
 		{
 			directionFromDxDy();
+			if(dx==0 && dy==0)
+				owner->map->addHiddenForbidden(posX, posY, owner->teamNumber);
+			else
+				owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
 			action=ATTACK_SPEED;
 			speed=performance[action];
 			break;

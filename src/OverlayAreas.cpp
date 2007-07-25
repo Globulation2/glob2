@@ -77,7 +77,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	else if(type == Fertility)
 	{
 		computeFertility(game, localteam);
-		if(fertilityComputed == 2)
+		if(fertilityComputed == 2 || lasttype != Fertility)
 		{
 			for(size_t i=0; i<fertility.size(); ++i)
 			{

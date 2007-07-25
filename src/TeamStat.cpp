@@ -70,6 +70,7 @@ void TeamStat::reset()
 	}
 	needFoodCritical=0;
 	needFood=0;
+	needFoodNoInns=0;
 	needHeal=0;
 	needNothing=0;
 	for(int i=0; i<NB_ABILITY; ++i)
@@ -210,6 +211,11 @@ void TeamStats::step(Team *team, bool reloaded)
 				}
 				else
 					stat.needFood++;
+					
+				if(u->activity != Unit::ACT_UPGRADING)
+				{
+					stat.needFoodNoInns++;
+				}
 			}
 			else if (u->medical==Unit::MED_DAMAGED)
 			{
