@@ -286,7 +286,7 @@ void NewNicowar::check_phases(Echo& echo)
 	else if(barracks_count_3 > 0)
 		maximum_barracks_level = 3;
 	int warrior_count=0;
-	for(int i=1; i<=maximum_barracks_level; ++i)
+	for(int i=maximum_barracks_level; i<=3; ++i)
 	{
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
@@ -1571,12 +1571,12 @@ void NewNicowar::update_farming(Echo& echo)
 				mi.is_ressource(x, y, CORN)) &&
 				mi.is_discovered(x, y))
 			{
-				if(mi.backs_onto_sand(x, y))
+				/*if(mi.backs_onto_sand(x, y))
 				{
 					if(!mi.is_forbidden_area(x, y))
 						mo_farming->add_location(x, y);
 				}
-				else if((x%2==1 && y%2==1) &&
+				else */if((x%2==1 && y%2==1) &&
 						gradient.get_height(x, y)<(mi.is_ressource(x, y, WOOD) ? 6 : 10))
 				{
 					if(!mi.is_forbidden_area(x, y))
