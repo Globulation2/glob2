@@ -91,6 +91,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
 	{
+		surface->drawFilledRect(0, 0, size - border * 2, size - border * 2, 0,0,0,Color::ALPHA_OPAQUE);
 		update_row = 0;
 		refreshPixelRows(0, mini_h, localteam);
 	}
