@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "Making distribution file"
+scons dist
+echo "Distribution file made"
