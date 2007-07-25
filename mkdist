@@ -1,4 +1,0 @@
-#!/bin/sh
-echo Making distribution package
-make dist >& /dev/null
-echo Distribution package made
