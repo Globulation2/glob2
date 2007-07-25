@@ -205,7 +205,7 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
-		const int speed=10;
+		const int speed=40;
 		bool networkReadyToExecute = true;
 		
 		cpuStats.reset(speed);

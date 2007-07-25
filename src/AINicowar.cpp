@@ -263,30 +263,12 @@ void NewNicowar::check_phases(Echo& echo)
 	///1) Atleast 50 units
 	///2) Less than 2 barracks OR
 	///3) Less than 30 trained warriors
-	BuildingSearch barracks_1(echo);
-	barracks_1.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
-	barracks_1.add_condition(new BuildingLevel(1));
-	int barracks_count_1=barracks_1.count_buildings();
+	BuildingSearch barracks(echo);
+	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
+	int barracks_count=barracks.count_buildings();
 
-	BuildingSearch barracks_2(echo);
-	barracks_2.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
-	barracks_2.add_condition(new BuildingLevel(2));
-	int barracks_count_2=barracks_2.count_buildings();
-
-	BuildingSearch barracks_3(echo);
-	barracks_3.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
-	barracks_3.add_condition(new BuildingLevel(3));
-	int barracks_count_3=barracks_3.count_buildings();
-	
-	int barracks_count = barracks_count_1 + barracks_count_2 + barracks_count_3;
-	
-	int maximum_barracks_level = 1;
-	if(barracks_count_2 > 0)
-		maximum_barracks_level = 2;
-	else if(barracks_count_3 > 0)
-		maximum_barracks_level = 3;
 	int warrior_count=0;
-	for(int i=maximum_barracks_level; i<=3; ++i)
+	for(int i=1; i<=3; ++i)
 	{
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
