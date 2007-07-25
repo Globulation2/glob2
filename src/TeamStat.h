@@ -45,6 +45,8 @@ struct TeamStat
 	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][6];
 
 	int needFoodCritical;
+	// Number of units that are hungry but there aren't able to eat
+	int needFoodNoInns;
 	int needFood;
 	int needHeal;
 	int needNothing;

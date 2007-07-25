@@ -38,6 +38,7 @@ private:
 	enum BuildingPlacement
 	{
 		RegularInn,
+		StarvingRecoveryInn,
 		RegularSwarm,
 		RegularRacetrack,
 		RegularSwimmingpool,
@@ -72,6 +73,10 @@ private:
 	///During the fruit phase, explorers are stationed on fruit trees and Nicowar starts converting
 	///enemy units
 	bool fruit_phase;
+	///During the starving recovery phase, swarms are turned off and extra inns may be created
+	bool starving_recovery;
+	///During the no worker phase, no workers are created, which occurs if there are too many free
+	bool no_workers_phase;
 
 
 	///This function decides how many buildings need to be constructed (and with what properties
@@ -93,7 +98,8 @@ private:
 	void queue_barracks(AIEcho::Echo& echo);
 	///This function decides how many hospitals are needed and queues them up.
 	void queue_hospitals(AIEcho::Echo& echo);
-
+	///This counts how many StarvingRecoveryInn's there are under construction
+	int starving_recovery_inns;
 
 	///This function starts construction on buildings that are queued for construction. Its carefull
 	///not to construct too much or too little at once
