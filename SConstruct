@@ -152,5 +152,5 @@ def main():
     SConscript("scripts/SConscript")
     SConscript("src/SConscript")
     SConscript("tools/SConscript")
-    
+    SConscript("windows/SConscript")
 main()
