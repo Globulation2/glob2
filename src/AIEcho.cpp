@@ -574,7 +574,7 @@ Entities::Sand::Sand()
 
 bool Entities::Sand::is_entity(Map* map, int posx, int posy)
 {
-	if(map->getTerrainType(posx, posy) == SAND)
+	if(map->hasSand(posx, posy))
 	{
 		return true;
 	}
@@ -4319,6 +4319,35 @@ bool MapInfo::is_water(int x, int y)
 	return echo.player->map->isWater(x, y);
 }
 
+
+
+bool MapInfo::backs_onto_sand(int x, int y)
+{
+	if(echo.player->map->hasSand(x-1, y))
+		return true;
+	if(echo.player->map->hasSand(x+1, y))
+		return true;
+	if(echo.player->map->hasSand(x-1, y-1))
+		return true;
+	if(echo.player->map->hasSand(x, y-1))
+		return true;
+	if(echo.player->map->hasSand(x+1, y-1))
+		return true;
+	if(echo.player->map->hasSand(x-1, y+1))
+		return true;
+	if(echo.player->map->hasSand(x, y+1))
+		return true;
+	if(echo.player->map->hasSand(x+1, y+1))
+		return true;
+	return false;
+}
+
+
+
+int MapInfo::get_ammount_ressource(int x, int y)
+{
+	return echo.player->map->getRessource(x, y).amount;
+}
 
 
 

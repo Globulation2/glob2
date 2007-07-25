@@ -385,6 +385,12 @@ public:
 		int t=getTerrain(x, y);
 		return ((t>=128)&&(t<128+16));
 	}
+	
+	bool hasSand(int x, int y)
+	{
+		int t=getTerrain(x, y);
+		return ((t>=16)&&(t<=255));
+	}
 
 	bool isRessource(int x, int y)
 	{

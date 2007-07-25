@@ -1155,8 +1155,6 @@ bool MapEdit::load(const char *filename)
 			teamInfo12->setSelectionPos(game.teams[11]->type);
 
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
-		
-		minimap.setGame(game);
 		return true;
 	}
 }
@@ -1199,6 +1197,9 @@ int MapEdit::run(void)
 	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 
 // 	regenerateClipRect();
+
+		
+	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMenu();
 	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getW(), true, true);
