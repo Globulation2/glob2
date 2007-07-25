@@ -7,4 +7,9 @@ if "mksprite" in COMMAND_LINE_TARGETS:
     env.Program("mksprite", "mksprite.cpp")
 
 Import("env")
+
+env.Tar(env["TARFILE"], "mksprite.cpp")
+env.Tar(env["TARFILE"], "README")
+
 env.Tar(env["TARFILE"], "SConscript")
+
