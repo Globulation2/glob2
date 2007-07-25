@@ -138,8 +138,9 @@ def main():
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
     env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread'])
-    env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar"
-    env.Tar(env["TARFILE"], Split("AUTHORS COPYING Doxyfile INSTALL mkdata mkdist mkmap README README.hg SConstruct syncdata syncmaps TODO"))
+    env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
+    env["TARFLAGS"] = "-c -z"
+    env.Tar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist README README.hg SConstruct syncdata syncmaps TODO"))
     env.Alias("dist", env["TARFILE"])
     Export('env')
     SConscript("campaigns/SConscript")
