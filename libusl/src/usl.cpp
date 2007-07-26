@@ -90,7 +90,7 @@ struct Parser: Lexer
 				{
 				case LPAR:
 					{
-						ScopePrototype* fun = new ScopePrototype(heap, def);
+						Method* fun = new Method(heap, def);
 						Position position = token.position;
 						auto_ptr<PatternNode> arg(pattern(fun));
 						accept(ASSIGN);
@@ -163,6 +163,7 @@ struct Parser: Lexer
 		}
 		while (tokenType() == COMMA);
 		
+		accept(RPAR);
 		return tuple.release();
 	}
 	

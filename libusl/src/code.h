@@ -13,7 +13,7 @@ class Operation;
 
 
 ScopePrototype* thisMember(Prototype* outer);
-ScopePrototype* wrapMethod(Method* method);
+ScopePrototype* nativeMethodMember(Method* method);
 
 
 struct Code
@@ -126,11 +126,11 @@ struct DefRefCode: Code
 
 struct FunCode: Code
 {
-	FunCode(ScopePrototype* method);
+	FunCode(Method* method);
 	
 	virtual void execute(Thread* thread);
 	
-	ScopePrototype* method;
+	Method* method;
 };
 
 #endif // ndef BYTECODE_H
