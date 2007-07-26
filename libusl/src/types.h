@@ -51,9 +51,9 @@ extern Value nil;
 struct ScopePrototype;
 struct Prototype: Value
 {
-	typedef std::map<std::string, ScopePrototype*> Methods;
+	typedef std::map<std::string, ScopePrototype*> Members;
 	
-	Methods methods;
+	Members members;
 	
 	Prototype(Heap* heap):
 		Value(heap, 0)
@@ -65,20 +65,20 @@ struct Prototype: Value
 		stream << ": ";
 		using namespace std;
 		using namespace __gnu_cxx;
-		transform(methods.begin(), methods.end(), ostream_iterator<string>(stream, " "), select1st<Methods::value_type>());
+		transform(members.begin(), members.end(), ostream_iterator<string>(stream, " "), select1st<Members::value_type>());
 	}
 	
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		for_each(methods.begin(), methods.end(), compose1(mem_fun(&Value::markForGC), select2nd<Methods::value_type>()));
+		for_each(members.begin(), members.end(), compose1(mem_fun(&Value::markForGC), select2nd<Members::value_type>()));
 	}
 	
 	virtual ScopePrototype* lookup(const std::string& name) const
 	{
-		Methods::const_iterator method = methods.find(name);
-		if (method != methods.end())
+		Members::const_iterator method = members.find(name);
+		if (method != members.end())
 			return method->second;
 		else
 			return 0;
@@ -150,7 +150,41 @@ struct Scope: Value
 	}
 };
 
-struct Function: Value
+struct PatternNode;
+struct Method: ScopePrototype
+{
+	Method(Heap* heap, Prototype* outer, PatternNode* argument);
+};
+
+struct NativeMethod: Method
+{
+	NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument);
+	std::string name;
+	virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
+};
+
+struct Thunk: Value
+{
+	Value* receiver;
+	ScopePrototype* method;
+	
+	Thunk(Heap* heap, Value* receiver, ScopePrototype* method):
+		Value(heap, 0),
+		receiver(receiver),
+		method(method)
+	{}
+	
+protected:
+	Thunk(Heap* heap, Prototype* prototype, Value* receiver, ScopePrototype* method):
+		Value(heap, prototype),
+		receiver(receiver),
+		method(method)
+	{
+		assert(method->outer == receiver->prototype);
+	}
+};
+
+struct Function: Thunk
 {
 	struct FunctionPrototype: Prototype
 	{
@@ -158,16 +192,9 @@ struct Function: Value
 	};
 	static FunctionPrototype functionPrototype;
 	
-	Value* receiver;
-	ScopePrototype* method;
-	
 	Function(Heap* heap, Value* receiver, ScopePrototype* method):
-		Value(heap, &functionPrototype),
-		receiver(receiver),
-		method(method)
-	{
-		assert(method->outer == receiver->prototype);
-	}
+		Thunk(heap, &functionPrototype, receiver, method)
+	{}
 };
 
 struct Integer: Value

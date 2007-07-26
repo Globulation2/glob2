@@ -1,6 +1,8 @@
 #include "types.h"
+
 #include "code.h"
 #include "interpreter.h"
+#include "tree.h"
 
 #include <cassert>
 
@@ -9,27 +11,57 @@ Prototype Nil(0);
 Value nil(0, &Nil);
 
 
+Method::Method(Heap* heap, Prototype* outer, PatternNode* argument):
+	ScopePrototype(heap, outer)
+{
+	argument->generate(this, 0);
+}
+
+
+NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument):
+	Method(0, outer, argument),
+	name(name)
+{
+	body.push_back(new ScopeCode());
+	body.push_back(new ParentCode());
+	body.push_back(new ValRefCode(0, 0));
+	body.push_back(new NativeCode(this));
+	body.push_back(new ReturnCode());
+}
+
+/*
+struct FunctionApply: NativeCode::Operation
+{
+	FunctionApply():
+		NativeCode::Operation(&Integer::integerPrototype, "Function::apply", false)
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Integer* thisInt = dynamic_cast<Integer*>(receiver);
+		Integer* thatInt = dynamic_cast<Integer*>(argument);
+		
+		assert(thisInt);
+		assert(thatInt);
+		
+		return new Integer(thread->heap, thisInt->value + thatInt->value);
+	}
+} functionApply;
+*/
+
 Function::FunctionPrototype::FunctionPrototype():
 	Prototype(0)
 {
-	ScopePrototype* applyMethod = new ScopePrototype(0, this);
-	ScopePrototype::Body& applyBody = applyMethod->body;
-	applyBody.push_back(new ValCode());
-	applyBody.push_back(new ScopeCode());
-	applyBody.push_back(new ParentCode());
-	applyBody.push_back(new ValRefCode(0, 0));
-	applyBody.push_back(new ApplyCode());
-	applyBody.push_back(new ReturnCode());
-	methods["apply"] = applyMethod;
+	members["apply"] = thisMember(this);
 }
 
 Function::FunctionPrototype Function::functionPrototype;
 
 
-struct IntegerAdd: NativeCode::Operation
+struct IntegerAdd: NativeMethod
 {
 	IntegerAdd():
-		NativeCode::Operation(&Integer::integerPrototype, "Integer::+", false)
+		NativeMethod(&Integer::integerPrototype, "Integer::+", new ValPatternNode(Position(), "that"))
 	{}
 	
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
@@ -47,17 +79,17 @@ struct IntegerAdd: NativeCode::Operation
 Integer::IntegerPrototype::IntegerPrototype():
 	Prototype(0)
 {
-	methods["this"] = thisMethod(&integerPrototype);
-	methods["+"] = &integerAdd;
+	//members["this"] = thisMethod(&integerPrototype);
+	members["+"] = wrapMethod(&integerAdd);
 }
 
 Integer::IntegerPrototype Integer::integerPrototype;
 
 
-struct ArrayGet: NativeCode::Operation
+struct ArrayGet: NativeMethod
 {
 	ArrayGet():
-		NativeCode::Operation(&Array::arrayPrototype, "Array::get", false)
+		NativeMethod(&Array::arrayPrototype, "Array::get", new ValPatternNode(Position(), "index"))
 	{}
 	
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
@@ -78,7 +110,7 @@ struct ArrayGet: NativeCode::Operation
 Array::ArrayPrototype::ArrayPrototype():
 	Prototype(0)
 {
-	methods["get"] = &arrayGet;
+	members["get"] = &arrayGet;
 }
 
 Array::ArrayPrototype Array::arrayPrototype;

@@ -29,6 +29,19 @@ void Node::generate(ScopePrototype* scope, FileDebugInfo* debug, Code* code)
 	}
 }
 
+void Node::dump(std::ostream &stream, unsigned indent) const
+{
+	for (unsigned i = 0; i < indent; ++i)
+		stream << '\t';
+	stream << position.line << ":" << position.column << ": " << typeid(*this).name();
+	dumpSpecific(stream, indent);
+}
+
+void Node::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+}
+
 
 DefRefNode::~DefRefNode()
 {
@@ -43,16 +56,53 @@ void DefRefNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 	Node::generate(scope, debug, new DefRefCode(this->scope));
 }
 
+void DefRefNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	value->dump(stream, indent + 1);
+}
+
 
 void ConstNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	Node::generate(scope, debug, new ConstCode(value));
 }
 
+void ConstNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << ' ';
+	value->dump(stream);
+	stream << '\n';
+}
+
 
 void ValRefNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	Node::generate(scope, debug, new ValRefCode(depth, index));
+}
+
+void ValRefNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << " " << depth << ", " << index;
+	stream << '\n';
+}
+
+
+EvalNode::~EvalNode()
+{
+	delete thunk;
+}
+
+void EvalNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	thunk->generate(scope, debug);
+	Node::generate(scope, debug, new EvalCode());
+}
+
+void EvalNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	thunk->dump(stream, indent + 1);
 }
 
 
@@ -67,19 +117,32 @@ void SelectNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 	Node::generate(scope, debug, new SelectCode(name));
 }
 
+void SelectNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << " " << name;
+	stream << '\n';
+	receiver->dump(stream, indent + 1);
+}
+
 
 ApplyNode::~ApplyNode()
 {
-	delete receiver;
+	delete function;
 	delete argument;
 }
 
 void ApplyNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
-	receiver->generate(scope, debug);
-	if (argument)
-		argument->generate(scope, debug);
-	Node::generate(scope, debug, new ApplyCode(argument != 0));
+	function->generate(scope, debug);
+	argument->generate(scope, debug);
+	Node::generate(scope, debug, new ApplyCode());
+}
+
+void ApplyNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	function->dump(stream, indent + 1);
+	argument->dump(stream, indent + 1);
 }
 
 
@@ -92,6 +155,36 @@ void ValNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	value->generate(scope, debug);
 	Node::generate(scope, debug, new ValCode());
+}
+
+void ValNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	value->dump(stream, indent + 1);
+}
+
+
+void ScopeNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	Node::generate(scope, debug, new ScopeCode());
+}
+
+
+ParentNode::~ParentNode()
+{
+	delete scope;
+}
+
+void ParentNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	this->scope->generate(scope, debug);
+	Node::generate(scope, debug, new ParentCode());
+}
+
+void ParentNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	scope->dump(stream, indent + 1);
 }
 
 
@@ -120,6 +213,16 @@ void BlockNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 	value->generate(scope, debug);
 }
 
+void BlockNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	for (Statements::const_iterator it = statements.begin(); it != statements.end(); ++it)
+	{
+		(*it)->dump(stream, indent + 1);
+	}
+	value->dump(stream, indent + 1);
+}
+
 
 DefNode::~DefNode()
 {
@@ -133,22 +236,10 @@ void DefNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 	Node::generate(scope, debug, new ReturnCode());
 }
 
-
-void ScopeNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+void DefNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 {
-	Node::generate(scope, debug, new ScopeCode());
-}
-
-
-ParentNode::~ParentNode()
-{
-	delete scope;
-}
-
-void ParentNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
-{
-	this->scope->generate(scope, debug);
-	Node::generate(scope, debug, new ParentCode());
+	stream << '\n';
+	body->dump(stream, indent + 1);
 }
 
 
@@ -168,6 +259,15 @@ void ArrayNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 		element->generate(scope, debug);
 	}
 	Node::generate(scope, debug, new ArrayCode(elements.size()));
+}
+
+void ArrayNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	for (Elements::const_iterator it = elements.begin(); it != elements.end(); ++it)
+	{
+		(*it)->dump(stream, indent + 1);
+	}
 }
 
 
@@ -193,6 +293,13 @@ void DefLookupNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 	
 	receiver->generate(scope, debug);
 	Node::generate(scope, debug, new DefRefCode(method));
+	Node::generate(scope, debug, new EvalCode());
+}
+
+void DefLookupNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << "(" << name << ")";
+	stream << '\n';
 }
 
 
@@ -205,8 +312,14 @@ void NilPatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 
 void ValPatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
-	Node::generate(scope, debug, new ApplyCode(false));
+	Node::generate(scope, debug, new EvalCode());
 	Node::generate(scope, debug, new ValCode());
+}
+
+void ValPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << "(" << name << ")";
+	stream << '\n';
 }
 
 
@@ -220,15 +333,43 @@ TuplePatternNode::~TuplePatternNode()
 
 void TuplePatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
-	Node::generate(scope, debug, new ApplyCode(false));
+	Node::generate(scope, debug, new EvalCode());
 	int index = 0;
 	for (Members::iterator it = members.begin(); it != members.end(); ++it)
 	{
-		Node::generate(scope, debug, new SelectCode("get", false));
+		Node::generate(scope, debug, new DupCode());
+		Node::generate(scope, debug, new SelectCode("get"));
 		Node::generate(scope, debug, new ConstCode(new Integer(0, index))); // TODO: heap-alloc
 		Node::generate(scope, debug, new SelectCode("this"));
 		Node::generate(scope, debug, new ApplyCode());
 		(*it)->generate(scope, debug);
 		++index;
 	}
+	Node::generate(scope, debug, new PopCode());
+}
+
+void TuplePatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	for (Members::const_iterator it = members.begin(); it != members.end(); ++it)
+	{
+		(*it)->dump(stream, indent + 1);
+	}
+}
+
+
+FunNode::~FunNode()
+{
+	delete body;
+}
+
+void FunNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	assert(false);
+}
+
+void FunNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	body->dump(stream, indent + 1);
 }

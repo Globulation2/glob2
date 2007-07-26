@@ -40,11 +40,11 @@ FilePosition ProgramDebugInfo::find(ScopePrototype* scope, size_t address)
 	}
 	else
 	{
-		NativeCode::Operation* operation = dynamic_cast<NativeCode::Operation*>(scope);
-		if (operation != 0)
+		NativeMethod* native = dynamic_cast<NativeMethod*>(scope);
+		if (native != 0)
 		{
 			std::string name = "<";
-			name += operation->name;
+			name += native->name;
 			name += ">";
 			return FilePosition(name, invalidPosition);
 		}
