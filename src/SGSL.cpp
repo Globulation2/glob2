@@ -955,8 +955,8 @@ Mapscript::~Mapscript(void)
 
 bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 {
-	int versionMinor = game->session.versionMinor;
-	
+	int versionMinor = game->mapHeader.getVersionMinor();
+
 	stream->readEnterSection("SGSL");
 	
 	// load source code
@@ -972,62 +972,59 @@ bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 	}
 	
 	// load state
-	if (versionMinor > 47)
+	// load main timer
+	mainTimer = stream->readSint32("mainTimer");
+	
+	// load hasWon / hasLost vectors
+	stream->readEnterSection("victoryConditions");
+	for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
 	{
-		// load main timer
-		mainTimer = stream->readSint32("mainTimer");
-		
-		// load hasWon / hasLost vectors
-		stream->readEnterSection("victoryConditions");
-		for (unsigned i = 0; i < (unsigned)game->session.numberOfTeam; i++)
-		{
-			stream->readEnterSection(i);
-			hasWon[i] = stream->readSint32("hasWon") != 0;
-			hasLost[i] = stream->readSint32("hasLost") != 0;
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
-		
-		// load stories datas
-		stream->readEnterSection("stories");
-		for (unsigned i = 0; i < stories.size(); i++)
-		{
-			stream->readEnterSection(i);
-			stories[i].lineSelector = stream->readSint32("ProgramCounter");
-			stories[i].internTimer = stream->readSint32("internTimer");
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
-		
-		// load areas
-		stream->readEnterSection("areas");
-		unsigned areasCount = stream->readUint32("areasCount");
-		for (unsigned i = 0; i < areasCount; i++)
-		{
-			stream->readEnterSection(i);
-			std::string name = stream->readText("name");
-			areas[name].x = stream->readSint32("x");
-			areas[name].y = stream->readSint32("y");
-			areas[name].r = stream->readSint32("r");
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
-		
-		// load flags
-		stream->readEnterSection("flags");
-		unsigned flagsCount = stream->readUint32("flagsCount");
-		for (unsigned i = 0; i < flagsCount; i++)
-		{
-			stream->readEnterSection(i);
-			std::string name = stream->readText("name");
-			Uint16 gbid = stream->readUint16("gbid");
-			Building *b = game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
-			assert(b);
-			flags[name] = b;
-			stream->readLeaveSection();
-		}
+		stream->readEnterSection(i);
+		hasWon[i] = stream->readSint32("hasWon") != 0;
+		hasLost[i] = stream->readSint32("hasLost") != 0;
 		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
+	
+	// load stories datas
+	stream->readEnterSection("stories");
+	for (unsigned i = 0; i < stories.size(); i++)
+	{
+		stream->readEnterSection(i);
+		stories[i].lineSelector = stream->readSint32("ProgramCounter");
+		stories[i].internTimer = stream->readSint32("internTimer");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	// load areas
+	stream->readEnterSection("areas");
+	unsigned areasCount = stream->readUint32("areasCount");
+	for (unsigned i = 0; i < areasCount; i++)
+	{
+		stream->readEnterSection(i);
+		std::string name = stream->readText("name");
+		areas[name].x = stream->readSint32("x");
+		areas[name].y = stream->readSint32("y");
+		areas[name].r = stream->readSint32("r");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	
+	// load flags
+	stream->readEnterSection("flags");
+	unsigned flagsCount = stream->readUint32("flagsCount");
+	for (unsigned i = 0; i < flagsCount; i++)
+	{
+		stream->readEnterSection(i);
+		std::string name = stream->readText("name");
+		Uint16 gbid = stream->readUint16("gbid");
+		Building *b = game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+		assert(b);
+		flags[name] = b;
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
 	stream->readLeaveSection();
 	return true;
 }
@@ -1045,7 +1042,7 @@ void Mapscript::save(GAGCore::OutputStream *stream, const Game *game)
 	
 	// save hasWon / hasLost vectors
 	stream->writeEnterSection("victoryConditions");
-	for (unsigned i = 0; i < (unsigned)game->session.numberOfTeam; i++)
+	for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
 	{
 		stream->writeEnterSection(i);
 		stream->writeSint32(hasWon[i] ? 1 : 0, "hasWon");
@@ -1223,9 +1220,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	reset();
 
 	// Set the size of the won/lost arrays and clear them
-	hasWon.resize(game->session.numberOfTeam);
+	hasWon.resize(game->mapHeader.getNumberOfTeams());
 	std::fill(hasWon.begin(), hasWon.end(), false);
-	hasLost.resize(game->session.numberOfTeam);
+	hasLost.resize(game->mapHeader.getNumberOfTeams());
 	std::fill(hasLost.begin(), hasLost.end(), false);
 
 	NEXT_TOKEN;
@@ -1315,7 +1312,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (donnees->getToken()->value >= game->session.numberOfTeam)
+					else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1460,7 +1457,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (donnees->getToken()->value >= game->session.numberOfTeam)
+					else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1506,7 +1503,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					if (donnees->getToken()->value >= game->session.numberOfTeam)
+					if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1522,7 +1519,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					if (donnees->getToken()->value >= game->session.numberOfTeam)
+					if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
@@ -1653,7 +1650,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees->getToken()->value >= game->session.numberOfTeam)
+						else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 						{
 							er.type=ErrorReport::ET_INVALID_TEAM;
 							break;
@@ -1750,7 +1747,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees->getToken()->value >= game->session.numberOfTeam)
+							else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 							{
 								er.type=ErrorReport::ET_INVALID_TEAM;
 								break;
@@ -1785,7 +1782,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees->getToken()->value >= game->session.numberOfTeam)
+							else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 							{
 								er.type=ErrorReport::ET_INVALID_TEAM;
 								break;
@@ -1911,7 +1908,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (donnees->getToken()->value >= game->session.numberOfTeam)
+					else if (donnees->getToken()->value >= game->mapHeader.getNumberOfTeams())
 					{
 						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;

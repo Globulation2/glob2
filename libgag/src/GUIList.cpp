@@ -337,6 +337,9 @@ namespace GAGGUI
 			if (static_cast<int>(pos) < nth)
 				nth--;
 		}
+		int count = (h-4) / textHeight;
+		if(disp + count > strings.size())
+			disp-=1;
 	}
 	
 	bool List::isText(const std::string &text) const
@@ -387,5 +390,11 @@ namespace GAGGUI
 	{
 		if ((index >= -1 ) && (index < static_cast<int>(strings.size())))
 			this->nth = index;
+	}
+	
+	void List::centerOnItem(int index)
+	{
+		int count = (h-4) / textHeight;
+		disp = std::max(std::min(index - count/2, int(strings.size() - count)), 0);
 	}
 }

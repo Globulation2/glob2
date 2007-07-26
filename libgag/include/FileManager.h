@@ -109,6 +109,17 @@ namespace GAGCore
 		//! Open an input stream backend, use it to construct specific input streams, std::string version
 		StreamBackend *openInputStreamBackend(const std::string &filename) { return openInputStreamBackend(filename.c_str()); }
 		
+		//! Open a compressed output stream backend, use it to construct specific output streams, const char *version
+		StreamBackend *openCompressedOutputStreamBackend(const char *filename);
+		//! Open a compressed output stream backend, use it to construct specific output streams, std::string version
+		StreamBackend *openCompressedOutputStreamBackend(const std::string &filename) { return openCompressedOutputStreamBackend(filename.c_str()); }
+		
+		//! Open a compressed input stream backend, use it to construct specific input streams, const char *version
+		StreamBackend *openCompressedInputStreamBackend(const char *filename);
+		//! Open a compressed input stream backend, use it to construct specific input streams, std::string version
+		StreamBackend *openCompressedInputStreamBackend(const std::string &filename) { return openCompressedInputStreamBackend(filename.c_str()); }
+		
+		
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, const char *version
 		SDL_RWops *open(const char *filename, const char *mode="rb");
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, std::string version

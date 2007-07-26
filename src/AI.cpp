@@ -25,14 +25,17 @@
 #include <assert.h>
 #include <Stream.h>
 
+#include "StringTable.h"
+
 #include "AINull.h"
 #include "AINumbi.h"
 #include "AICastor.h"
 #include "AIToubib.h"
 #include "AIWarrush.h"
-#include "AIOldNicowar.h"
 #include "AINicowar.h"
 #include "AIEcho.h"
+
+using namespace boost;
 
 /*AI::AI(Player *player)
 {
@@ -95,12 +98,12 @@ AI::~AI()
 	aiImplementation=NULL;
 }
 
-Order *AI::getOrder(bool paused)
+boost::shared_ptr<Order> AI::getOrder(bool paused)
 {
 	assert(player);
 	step++;
 	if (paused || !player->team->isAlive)
-		return new NullOrder();
+		return shared_ptr<Order>(new NullOrder());
 	assert(aiImplementation);
 	return aiImplementation->getOrder();
 }
@@ -138,13 +141,8 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AICastor(stream, player, versionMinor);
 		break;
 		case NICOWAR:
-			if(versionMinor<55)
-				aiImplementation=new Nicowar::AINicowar(stream, player, versionMinor);
-			else
-			{
-				aiImplementation=new AIEcho::Echo(new NewNicowar, player);
-				aiImplementation->load(stream, player, versionMinor);
-			}
+			aiImplementation=new AIEcho::Echo(new NewNicowar, player);
+			aiImplementation->load(stream, player, versionMinor);
 		break;
 		case REACHTOINFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
@@ -185,4 +183,35 @@ void AI::save(GAGCore::OutputStream *stream)
 	
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
+}
+
+
+
+std::string AI::getAIText(int id)
+{
+	if(id == NONE)
+	{
+		return Toolkit::getStringTable()->getString("[AINone]");
+	}
+	else if(id == NUMBI)
+	{
+		return Toolkit::getStringTable()->getString("[AINumbi]");
+	}
+	else if(id == CASTOR)
+	{
+		return Toolkit::getStringTable()->getString("[AICastor]");
+	}
+	else if(id == WARRUSH)
+	{
+		return Toolkit::getStringTable()->getString("[AIWarrush]");
+	}
+	else if(id == REACHTOINFINITY)
+	{
+		return Toolkit::getStringTable()->getString("[AIReachToInfinity]");
+	}
+	else if(id == NICOWAR)
+	{
+		return Toolkit::getStringTable()->getString("[AINicowar]");
+	}
+	return "";
 }

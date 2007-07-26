@@ -1,974 +1,1106 @@
-[language]
-Dansk
-[language-code]
-dk
-[language-tr]
-Sprog
-[hp]
-HP
-[heal]
-Liv point
-[armor]
-Rystning
-[damage]
-Skade
-[food]
-Mad
-[working]
-Arbejde
-[assigned]
-Tildelt
-[inside]
-Indenfor
-[ressources]
-Resourcer
-[Wood]
-Træ
-[Corn]
-Korn
-[Papyrus]
-Skrift ruller
-[Stone]
-Sten
+[%0 has been deconnected of the game]
+%0 er blevet afbrut
+[%0 has left the game]
+%0 har forladt spillet
+[%0's game]
+
+[%0's team unit got converted to your team]
+Et %0 holds enhed blev konverteret til dit hold
+[abreaviation explanation A]
+A : Alliangce
+[abreaviation explanation C]
+C : Send besked til
+[abreaviation explanation fV]
+Vf : Vis alle dine kroer (til at stjæle enheder)
+[abreaviation explanation mV]
+mV : vis alle Market bygninger (til at udveksle frugt)
+[abreaviation explanation V]
+V : Vis alle dine bygninger
+[Add AI]
+Tilføj AI
+[add map]
+Tilføj kort
+[add shortcut]
+
+[AI]
+AI
+[ai]
+AI
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AIReachToInfinity]
+ReachToInfinity
+[AIToubib]
+AIToubib
+[AIWarrush]
+AIWarrush
 [Alga]
 Alger
-[Cherry]
-Kirsebær
-[Orange]
-Appelsin
-[Prune]
-Prune
-[fruit]
-frugt
-[Clearing:]
-Rydning:
-[Min required level:]
-Minimum krævede neavu:
-[Minimum Level To Flag]
-Minimum Flag neavu
-[Bullets]
-Kugler
-[range]
-Afstand
-[destroy]
-Destruktion
-[cancel destroy]
-Afbryd Destruktion
-[wait destroy]
-Vænter på konstruktion
-[upgrade]
-Opgradere
-[repair]
-Reparere
-[cancel upgrade]
-Afbryd opgradering
-[cancel repair]
-Afbryd reparing
-[units type]
-Enhed type
-[workers]
-arbejdere
-[explorers]
-udforskere
-[warriors]
-krigere
-[Worker Ratio]
-Arbejder Ratio
-[Explorer Ratio]
-Udforsker Ratio
-[Warrior Ratio]
-Kriger Ratio
-[Unit type]
-enhed type
-[Worker]
-Arbejder
-[Explorer]
-Udforsker
-[Warrior]
-Krigere
-[still (w)]
-Stadigvæk
-[units working]
- Enheder der arbejder
-[still one unit working]
-En enhed arbejder stadigvæk
-[Still (i)]
-Stadigvæk
-[Still one]
-En tilbage
-[Building name]
-Bygnings navn
-[swarm building]
-Sværm
-[food building]
-Kro
-[health building]
-Hospital
-[walkspeed building]
-Raserbane
-[swimspeed building]
-Svømmepøl
-[attack building]
+[algae]
+alger
+[alliances]
+Alliance
+[and]
+og
+[any explorer]
+Tilfældig udforsker
+[are dying hungry]
+dør af sult
+[are hungry]
+er sultne
+[are ok]
+er ok
+[are wonded]
+er skadet
+[armor]
+Rystning
+[assigned]
+Tildelt
+[At. speed]
+Att. hastighed
+[At. strength]
+Att. styrke
+[attack speed]
+Angribs hastighed
+[Attack]
+Angrib
+[audio]
+Lyd
+[auto save]
+Auto gem
+[available lan games]
+Tilgængelige lokal spil
+[awaiting players]
+Venter på spillere
+[away:]
+er væk:
+[backspace]
+
+[bad error in connection system]
+Fejl i forbindelses systemet
+[barracks explanation 2]
+Af dine krigere
+[barracks explanation]
+Forbedre militlær enheder 
+[barracks]
 Kaserne
-[science building]
-Skole
-[defense building]
-Forsvars tårn
-[exploration flag]
-Udforsknings flag
-[war flag]
-Krigs flag
-[clearing flag]
-Rydnings flag
-[stone wall]
-Sten væg
-[market]
-Market
-[forbidden area]
-Forbudt arial
-[guard area]
-Vagt arial
-[clear area]
-Ophæv arial
-[build swarm level 0]
-Byg Swærm
-[swarm level 0]
-Swærm
-[build inn level 0]
-Byg Kro 1
-[inn level 0]
-Kro 1
-[build inn level 1]
-Construct Inn 2
-[inn level 1]
-Kro 2
-[build inn level 2]
-Byg kro 3
-[inn level 2]
-Kro 3
-[build hospital level 0]
-Byg Hospital 1
-[build hospital level 1]
-Byg Hospital 2
-[build hospital level 2]
-Byg Hospital 3
-[build racetrack level 0]
-Byg Racerbane 1
-[build racetrack level 1]
-Byg Racetrack 2
-[build racetrack level 2]
-Byg Racerbane 3
-[build swimmingpool level 0]
-Byg Svømmepøl 1
-[build swimmingpool level 1]
-Byg Svømmepøl 2
-[build swimmingpool level 2]
-Byg Svømmepøl 3
+[beach size]
+Strand størrelse
+[break]
+
 [build barracks level 0]
 Byg Kerserne 1
 [build barracks level 1]
 Byg Kerserne 1
 [build barracks level 2]
 Byg Kerserne 1
+[build defencetower level 0]
+Byg Forsvars tårn 1
+[build defencetower level 1]
+Byg Forsvars tårn 2
+[build defencetower level 2]
+Byg Forsvars tårn 3
+[build hospital level 0]
+Byg Hospital 1
+[build hospital level 1]
+Byg Hospital 2
+[build hospital level 2]
+Byg Hospital 3
+[build inn level 0]
+Byg Kro 1
+[build inn level 1]
+Construct Inn 2
+[build inn level 2]
+Byg kro 3
+[build market level 0]
+Byg Marked
+[build racetrack level 0]
+Byg Racerbane 1
+[build racetrack level 1]
+Byg Racetrack 2
+[build racetrack level 2]
+Byg Racerbane 3
 [build school level 0]
 Byg Skole 1
 [build school level 1]
 Byg Skole 2
 [build school level 2]
 Byg Skole 3
-[build defencetower level 0]
-Byg Forsvars tårn 1
-[defencetower level 0]
-Byg tårn 1
-[build defencetower level 1]
-Byg Forsvars tårn 2
-[defencetower level 1]
-Byg tårn 2
-[build defencetower level 2]
-Byg Forsvars tårn 3
-[defencetower level 2]
-Forsvars tårn 3
 [build stonewall level 0]
 Byg Sten væg
-[build market level 0]
-Byg Marked
-[Building short explanation]
-Bygning kort forklaring (24 karaktere max)
-[swarm building explanation]
-Byg en ny enhed
-[food building explanation]
-Fodre dine enheder
-[health building explanation]
-Kurere dine enheder
-[walkspeed building explanation]
-Forbedre gå hastighed
-[swimspeed building explanation]
-Forbedre svømning
-[attack building explanation]
-Forbedre militlær enheder 
-[science building explanation]
-Forbædre bygnings evnen
-[defense building explanation]
-Angrib nærmeste fjende
-[exploration flag explanation]
-Angrib udforskere
-[war flag explanation]
-Angrib krigere
-[clearing flag explanation]
-Fjern ressourcer
-[stone wall explanation]
-Passiv forsvar element
-[market explanation]
-Tillader at bytte frugt
-[Building short explanation 2]
-Bygning kort forklaring 2 (24 karaktere max)
-[swarm building explanation 2]
- 
-[food building explanation 2]
- 
-[health building explanation 2]
- 
-[walkspeed building explanation 2]
-Neavu af dine enheder
-[swimspeed building explanation 2]
-Hastighed af dine enheder
-[attack building explanation 2]
-Af dine krigere
-[science building explanation 2]
-af dine arbejdere
-[defense building explanation 2]
-enheder eller bygninger
-[exploration flag explanation 2]
- 
-[war flag explanation 2]
- 
-[clearing flag explanation 2]
- 
-[stone wall explanation 2]
-element
-[market explanation 2]
-Frugt med andre
-[waiting for %0]
-Vænter på %0
-[%0 has left the game]
-%0 har forladt spillet
-[%0 has been deconnected of the game]
-%0 er blevet afbrut
-[load game]
-Lade spil
-[save game]
-Gemme spil
-[options]
-Instillinger
-[alliances]
-Alliance
-[return to game]
-Vend tilbage til spillet
-[quit the game]
-Afslut spillet
-[load map]
-Laade Map
-[save map]
-Gæmme Map
-[open script editor]
-Åben Script Editor
-[return to editor]
-Tilbage til editor
-[quit the editor]
-Afslut editor
-[Script Areas]
-Script Områder
-[Change Area Name]
-Ændre område navn
-[Unnamed Area]
-{Unavngivet område}
-[delete]
-Slet
-[no ressources growth areas]
-Ingen vækst område
-[ok]
-Ok
-[Cancel]
-Afbryd
-[human]
-menneskelig
-[you have lost]
-Du har tabt!
-[you have won]
-Du har vundet!
-[campaign]
-Kampagne
-[tutorial]
-Lær at spille
-[custom game]
-Tilfældigt spil
-[yog]
-Ysagoon Online Gaming
-[Enter your nickname :]
-Skriv dit bruger navn :
-[Enter your password :]
-Skriv dit adgangs kode :
-[lan]
-LAN Spil
-[settings]
-Instillinger
-[Warning, you need to reboot the game for changes to take effect]
-Advarsel. Du skal genstarte spillet for at ændringerne har nogen virkning
-[editor]
-Redigere
-[credits]
-Credit
-[quit]
-Afslut
-[create game]
-Lav spil
-[update list]
-opdatere liste
-[connecting to]
-Forbinder til
-[connect]
-Forbinder
-[Disconnect]
-Afbrudt
-[please wait]
-Vent venligst
-[loading glob2]
-Lader Globulation 2
-[host]
-Opret et spil
-[join a game]
-Forbind til et spil
-[join]
-Spil med
-[goto main menu]
-Gå tilbage til hoved menuen
-[player name]
-Spiller navn
-[svr hostname]
-Serverens host navn
-[hp]
-Liv point
-[carry]
-Bægere på:
-[don't carry anything]
-Bægere ikke på noget
-[level]
-neavu
-[levels]
-Neavuer
-[building site]
-bygnings sted
-[create map]
-Lave et kort
-[map size x]
-Kort bredte
-[map size y]
-Kort højde
-[default terrain]
-Standart terring
-[water]
-Vand
-[sand]
-Sand
-[grass]
-Gras
-[teams]
- hold
-[choose map]
-Vælg et kort
-[choose game]
-Vælg et spil
-[awaiting players]
-Venter på spillere
-[stat]
-Statistikker
-[food left]
-Mad tilbage
-[general settings]
-Generalle instillinger
-[unit settings]
-Enheds instillinger
-[keyboard settings]
-Tastetur instillinger
-[remember unit]
-Husk enhed
-[game shortcuts]
-Gem genveje
-[editor shortcuts]
-Rediger genveje
-[akey]
-A-tast
-[bkey]
-B-tast
-[ckey]
-C-tast
-[dkey]
-D-tast
-[ekey]
-E-tast
-[fkey]
-F-tast
-[gkey]
-G-tast
-[hkey]
-H-tast
-[ikey]
-I-tast
-[jkey]
-J-tast
-[kkey]
-K-tast
-[lkey]
-L-tast
-[mkey]
-M-tast
-[nkey]
-N-tast
-[okey]
-O-tast
-[pkey]
-P-tast
-[qkey]
-Q-tast
-[rkey]
-R-tast
-[skey]
-S-tast
-[tkey]
-T-tast
-[ukey]
-U-tast
-[vkey]
-V-tast
-[wkey]
-W-tast
-[xkey]
-X-tast
-[ykey]
-Y-tast
-[zkey]
-Z-tast
-[unassigned]
-Ikke tildelt
-[toggle draw unit paths]
-Vælg tegn endhd router
-[toggle draw information]
-Vælg tegn information
-[toggle draw accessibility aids]
-Toggle Draw Accessibility Aids
-[destroy building]
-Destruer valgte bygning
-[upgrade building]
-Start/Stop Opgradering
-[repair building]
-Start/Stop Reparation
-[mark map]
-Marker kort for allierede
-[record voice]
-Start volkal optagelse
-[pause game]
-Pause spillet
-[switch to building view]
-Skift til bygningsvisning
-[switch to flag view]
-Skift til flag visning
-[switch to terrain view]
-Skift til terring visning
-[switch to teams view]
-Skift til hold visning
-[open save menu]
-Åben gem menu
-[open load menu]
-Åben lade menu
-[select swarm building]
-Vælg Sværm
-[select inn building]
-Vælg Kro
-[select hospital building]
-Vælg Hospital
-[select racetrack building]
-Vælg Racerbane
-[select swimmingpool building]
-Vælg Svømmepøl
-[select barracks building]
-Vælg Bar
-[select school building]
-Vælg Schoo
-[select tower building]
-Vælg Torn
-[select wall building]
-Vælg væg
-[select market building]
-Vælg Market
-[select exploration flag]
-Vælg Udforsknings Flag
-[select war flag]
-Vælg Krigs Flag
-[select clearing flag]
-Vælg Rydnings Flag
-[restore default shortcuts]
-Gendan standart tastetur genveje
-[the building is finished]
-Bygningen er færdig gjort
-[the swarm is finished]
-Sværmen er færdig gjort
-[the food building is finished]
-Kroen er færdig gjordt
-[the health building is finished]
-Hospitalet er færdig gjort
-[the walkspeed building is finished]
-Raserbanen er fædtig gjort
-[the swimspeed building is finished]
-Svømmepølen er færdig gjort
-[the attack building is finished]
-Kasernen er færdig gjort
-[the science building is finished]
-Skolen er færdig gjort
-[the tower building is finished]
-Forsvar tornet er færdig gjordt
-[the exploration flag is finished]
-?? Udforsknings flaget er færdig ??
-[the war flag is finished]
-?? Krigs flaget er færdig ??
-[the clearing flag is finished]
-?? Rydnings flaget er færdig ??
-[the stone wall is finished]
-En sektion af en væg er færdig
-[the market is finished]
-Market er færdig gjort.
-[the building is under attack]
-Bygningn er under angrib
-[the swarm is under attack]
-Sværmen er under angrib
-[the food building is under attack]
-Kroen er under angrib
-[the health building is under attack]
-Hospitalet er under angrib
-[the walkspeed building is under attack]
-Raserbanen er under angrib
-[the swimspeed building is under attack]
-Svømme pølen er under angrib
-[the attack building is under attack]
-Kasernen er under angrib
-[the science building is under attack]
-Skolen er under angrib
-[the defense building is under attack]
-Dine forsvar er under angrib
-[the exploration flag is under attack]
-?? Udforsknings flaget er under angrib ??
-[the war flag is under attack]
-?? Krigs flaget er under angrib ??
-[the clearing flag is under attack]
-?? Rydnings flaget er under angrib ??
-[the stone wall is under attack]
-Fjenden er ved dine væge
-[the market is under attack]
-Market er under angrib
-[Your %0 are under attack]
-Dine %0 er under angrib
-[Your unit got converted to %0's team]
-En af dine enheder blev konverteret til et %0 hold
-[%0's team unit got converted to your team]
-Et %0 holds enhed blev konverteret til dit hold
-[Uncontrolled]
-Ukontrolleret
-[ai]
-AI
-[closed]
-Lukket
-[close]
-Luk
-[player]
-Spiller
-[STARTING GAME ...]
-Starter Spillet...
-[Statistics]
-Statistikker
-[Buildings]
-Bygninger
-[Prestige]
-Præstige
-[Units]
-Enheder
-[Attack]
-Angrib
-[Defense]
-Forsvar
-[free]
-Fri
-[of which]
-hvilke af
-[are ok]
-er ok
-[are hungry]
-er sultne
-[are dying hungry]
-dør af sult
-[are wonded]
-er skadet
-[and]
-og
-[seeking a job]
-leder efter et job
-[jobs]
-jobs
-[Walk]
-Gå
-[Swim]
-Svøm
+[build swarm level 0]
+Byg Swærm
+[build swimmingpool level 0]
+Byg Svømmepøl 1
+[build swimmingpool level 1]
+Byg Svømmepøl 2
+[build swimmingpool level 2]
+Byg Svømmepøl 3
 [Build]
 Byg
-[Harvest]
-Høst
-[At. speed]
-Att. hastighed
-[At. strength]
-Att. styrke
-[Magic At. Air]
-Luft skade.
-[Magic At. Ground]
-Jord skade.
-[Total]
-Total
-[free]
-fri
-[seeking]
-Leder
-[Free]
-Fri
-[hungry]
-Sulten
-[starving]
-dør af sult
-[wounded]
-skadet
-[Starving Map]
-Sulten kort
-[Damaged Map]
-Skadet Kort
-[Defense Map]
-Forsvars Kort
-[In way]
-Er på vej
-[On the spot]
-Her
-[Version]
-Version
-[open]
-Åben
-[Add AI]
-Tilføj AI
-[AI]
-AI
-[AINone]
-AINone
-[AINumbi]
-AINumbi
-[AICastor]
-AICastor
-[AIWarrush]
-AIWarrush
-[AIReachToInfinity]
-ReachToInfinity
-[AINicowar]
-Nicowar
-[AIToubib]
-AIToubib
-[the games]
-Spillet
-[the maps]
-Kort
-[was]
-var
-[was AI]
-var AI
-[state]
-tilstand
-[Start]
-Start
-[not ready]
-ikke klar
-[has joined]
-er kommet
-[has quit]
-er gået
-[yog-chat]
-#yog-da
-[speed]
-hastighed
-[current speed]
-Nuværende hastighed
-[attack speed]
-Angribs hastighed
-[new]
-Ny
-[load]
-Lade
-[new campaign]
-Ny Kampanie
-[load campaign]
-Lade Kampanie
+[Building name]
+Bygnings navn
+[Building short explanation 2]
+Bygning kort forklaring 2 (24 karaktere max)
+[Building short explanation]
+Bygning kort forklaring (24 karaktere max)
+[building site]
+bygnings sted
+[Buildings]
+Bygninger
+[Bullets]
+Kugler
 [campaign editor]
 Kampanie redigator
-[editing map]
-Redigere kort
-[add map]
-Tilføj kort
-[edit map]
-Rediger kort
-[remove map]
-Fjern Kort
-[start new campaign]
-Start Ny Kampanie
-[start mission]
-Start Mission
-[unlocked by]
-Låst op af
-[maps available]
-Tilgængelige kort
-[map name]
-Navn
-[handmade map]
-Hånd lavet kort
-[mapGenerationDescriptor Methodes]
-Metoder af tilfældig genereret kort
-[uniform terrain]
-Uniform terraing
-[random terrain]
-Tilfælig terraing
-[islands terrain]
-Øer
-[ratios]
-Proportioner
-[smoothing]
-Udglatning
-[number of teams]
-antal af hold
-[islands size]
-Ø størrelse
-[beach size]
-Strand størrelse
-[workers]
-Arbejdere
-[bad error in connection system]
-Fejl i forbindelses systemet
-[not connected]
-Ikke forbundet
-[presence request sent]
-Til stede forspørgsel sendt ...
-[session request sent]
-Session forspørgelse sendt ...
+[campaign]
+Kampagne
+[Can't join game, missmatching game parameters]
+Kan ikke forbinde til spillet, differencerne argumenter givet til spillet
+[Can't join game, timeout]
+Kan ikke forbinde til spillet, der er opstået en timeout
+[Can't join game, wrong game version]
+Kan ikke forbinde til spillet, forkert version
+[cancel destroy]
+Afbryd Destruktion
+[cancel repair]
+Afbryd reparing
+[cancel upgrade]
+Afbryd opgradering
+[Cancel]
+Afbryd
+[caps lock]
+
+[carry]
+Bægere på:
+[Change Area Name]
+Ændre område navn
 [checksum sent]
 Kontrol værdi sendt ...
+[Cherry]
+Kirsebær
+[choose campaign]
+Vælg en kampagne
+[choose game]
+Vælg et spil
+[choose map]
+Vælg et kort
+[clear area]
+Ophæv arial
+[clear]
+
+[Clearing:]
+Rydning:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Fjern ressourcer
+[clearingflag]
+Rydnings flag
+[close]
+Luk
+[closed]
+Lukket
+[compile]
+Kompilere skript
+[compose]
+
+[connect]
+Forbinder
+[connected to all players]
+Forbundet til alle spillere
 [connected to server]
 Forbundet til server
 [connecting to all players]
 Forbinder til alle spillere
-[connected to all players]
-Forbundet til alle spillere
-[available lan games]
-Tilgængelige lokal spil
-[login]
-Log ind
-[from:]
-fra:
-[to:]
-til:
-[away:]
-er væk:
-[compile]
-Kompilere skript
-[downloaded at]
-Hentet fra
-[percent]
-  procent
+[connecting to]
+Forbinder til
+[Continue playing]
+Fortsæt spillet
+[Corn]
+Korn
+[crater density]
+Antal krater
+[crater lakes terrain]
+Krater søer
+[create game]
+Lav spil
+[create map]
+Lave et kort
+[credits]
+Credit
+[current speed]
+Nuværende hastighed
+[custom game]
+Tilfældigt spil
+[customcur]
+Ændre cursor
+[damage]
+Skade
+[Damaged Map]
+Skadet Kort
+[dblbuff]
+Dobbelt buffering
+[decrease units working]
+
+[default terrain]
+Standart terring
+[defencetower explanation 2]
+enheder eller bygninger
+[defencetower explanation]
+Angrib nærmeste fjende
+[defencetower level 0]
+Byg tårn 1
+[defencetower level 1]
+Byg tårn 2
+[defencetower level 2]
+Forsvars tårn 3
+[defencetower]
+Forsvars tårn
+[Defense Map]
+Forsvars Kort
+[Defense]
+Forsvar
+[Delete game]
+Slet det valgte spil
+[delete]
+Slet
+[desert]
+Ørken
+[destroy building]
+Destruer valgte bygning
+[destroy]
+Destruktion
+[Disconnect]
+Afbrudt
+[display]
+Opløsning
+[don't carry anything]
+Bægere ikke på noget
+[down]
+
 [download finished]
 Nedhentning færdig
+[downloaded at]
+Hentet fra
+[edit map]
+Rediger kort
+[editing map]
+Redigere kort
+[editor shortcuts]
+Rediger genveje
+[editor]
+Redigere
+[end]
+
+[Enter your nickname :]
+Skriv dit bruger navn :
+[Enter your password :]
+Skriv dit adgangs kode :
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+Angrib udforskere
+[explorationflag]
+Udforsknings flag
+[Explorer Ratio]
+Udforsker Ratio
+[Explorer]
+Udforsker
+[explorers]
+udforskere
+[extra islands]
+Tom ø
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[food left]
+Mad tilbage
+[food]
+Mad
+[forbidden area]
+Forbudt arial
+[Free]
+Fri
+[free]
+Fri
+[free]
+fri
+[from:]
+fra:
+[fruit]
+frugt
+[fullscreen]
+Fuld skærm tilstand
+[game full]
+Spillet er fyldt op.
+[game shortcuts]
+Gem genveje
+[game speed]
+Spil hastighed
+[general settings]
+Generalle instillinger
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Gå tilbage til hoved menuen
+[grass]
+Gras
+[ground attack]
+Grund angrib
+[guard area]
+Vagt arial
+[GUIMapPreview text 0]
+Vælg venligst
+[GUIMapPreview text 1]
+Et kort
+[handmade map]
+Hånd lavet kort
+[Happyness]
+Antal lykkelige
+[hard pause]
+
+[Harvest]
+Høst
+[has joined]
+er kommet
+[has quit]
+er gået
+[heal]
+Liv point
+[help]
+
+[home]
+
+[hospital explanation 2]
+ 
+[hospital explanation]
+Kurere dine enheder
+[hospital]
+Hospital
+[host]
+Opret et spil
+[hp]
+HP
+[hp]
+Liv point
+[human]
+menneskelig
+[hungry]
+Sulten
+[hungryness]
+Sulthed
+[hwaccel]
+Hardware acceleration
+[In way]
+Er på vej
+[increase units working]
+
+[inn explanation 2]
+ 
+[inn explanation]
+Fodre dine enheder
+[inn level 0]
+Kro 1
+[inn level 1]
+Kro 2
+[inn level 2]
+Kro 3
+[inn]
+Kro
+[insert]
+
+[inside]
+Indenfor
+[islands size]
+Ø størrelse
+[islands terrain]
+Øer
+[iterate selection]
+
+[jobs]
+jobs
+[join a game]
+Forbind til et spil
+[join]
+Spil med
+[keyboard settings]
+Tastetur instillinger
+[kick]
+
+[lan]
+LAN Spil
+[language-code]
+dk
+[language-tr]
+Sprog
+[language]
+Dansk
+[large]
+stort
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+neavu
+[levels]
+Neavuer
+[load campaign]
+Lade Kampanie
+[load game]
+Lade spil
+[load map]
+Laade Map
+[load]
+Lade
+[loading glob2]
+Lader Globulation 2
+[login]
+Log ind
+[Lost : %0 has more prestige than you]
+Tabt : %0 har mere præstige end du har
+[Lost : your colony is dead]
+Tabt : Din koloni er død
+[lowquality]
+Lav kvalitet
+[Magic At. Air]
+Luft skade.
+[Magic At. Ground]
+Jord skade.
 [Map name: %0]
 Kort navn: %0.
-[one player]
-En spiller er kommet til.
+[map name]
+Navn
+[map size x]
+Kort bredte
+[map size y]
+Kort højde
+[mapGenerationDescriptor Methodes]
+Metoder af tilfældig genereret kort
+[maps available]
+Tilgængelige kort
+[mark map]
+Marker kort for allierede
+[market explanation 2]
+Frugt med andre
+[market explanation]
+Tillader at bytte frugt
+[market]
+Market
+[medium]
+mellem
+[menu]
+
+[Min required level:]
+Minimum krævede neavu:
+[Minimum Level To Flag]
+Minimum Flag neavu
+[Music volume]
+Lydstyrke (musik)
+[mute]
+Slå lyd fra
+[network latency]
+Netværk begrænsning
+[new campaign]
+Ny Kampanie
+[new]
+Ny
+[nick taken]
+Vi er kede af det men det bruger navn du har valgt er allerede taget på freenode, Du vil kun kunde tale gennem YOG
+[no ressources growth areas]
+Ingen vækst område
+[No]
+Nej
+[not connected]
+Ikke forbundet
+[not ready]
+ikke klar
 [number of players: %0]
 %0 antal spillere er tilgængelig
 [number of teams: %0]
 %0 hold.
-[game full]
-Spillet er fyldt op.
-[small]
-lille
-[medium]
-mellem
-[large]
-stort
-[network latency]
-Netværk begrænsning
-[game speed]
-Spil hastighed
+[number of teams]
+antal af hold
+[numlock]
+
+[of which]
+hvilke af
+[ok]
+Ok
+[old islands terrain]
+Gamle ø terræn
+[old random terrain]
+Gamle tilfældige terræn
+[On the spot]
+Her
+[one player]
+En spiller er kommet til.
+[open chat box]
+
+[open load menu]
+Åben lade menu
+[open save menu]
+Åben gem menu
+[open script editor]
+Åben Script Editor
+[open]
+Åben
+[options]
+Instillinger
+[Orange]
+Appelsin
+[page down]
+
+[page up]
+
+[Papyrus]
+Skrift ruller
+[pause game]
+Pause spillet
+[pause]
+
 [Paused]
 Pause
+[percent]
+  procent
+[player name]
+Spiller navn
+[player]
+Spiller
+[please wait]
+Vent venligst
+[power]
+
+[presence request sent]
+Til stede forspørgsel sendt ...
+[press space]
+Tryk på mellemrum for at fortsætte
+[Prestige]
+Præstige
+[print screen]
+
+[Prune]
+Prune
+[quit the editor]
+Afslut editor
+[quit the game]
+Afslut spillet
+[quit]
+Afslut
+[racetrack explanation 2]
+Neavu af dine enheder
+[racetrack explanation]
+Forbedre gå hastighed
+[racetrack]
+Raserbane
+[random terrain]
+Tilfælig terraing
+[range]
+Afstand
+[ratios]
+Proportioner
 [Register a new YOG user with password]
 Registere en ny YOG bruger med adgangs kode. (usikker)
+[remember unit]
+Husk enhed
 [Remember YOG password localy]
 Husk adgangs koden lokalt. (usikker)
+[remove map]
+Fjern Kort
+[remove shortcut]
+
+[repair building]
+Start/Stop Reparation
+[repair]
+Reparere
+[repeat area]
+antal gange det samme landskab
+[ressources]
+Resourcer
+[restore default shortcuts]
+Gendan standart tastetur genveje
+[return to editor]
+Tilbage til editor
+[return to game]
+Vend tilbage til spillet
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+Længde af flod
+[river terrain]
+Flod
+[sand]
+Sand
+[save before quit?]
+Vil du gemme for du afslutter?
+[save game]
+Gemme spil
+[save map]
+Gæmme Map
+[Save]
+Gem
+[school explanation 2]
+af dine arbejdere
+[school explanation]
+Forbædre bygnings evnen
+[school]
+Skole
+[Script Areas]
+Script Områder
+[scroll lock]
+
+[seeking a job]
+leder efter et job
+[seeking]
+Leder
+[select barracks building]
+Vælg Bar
+[select clearingflag]
+Vælg Rydnings Flag
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select explorationflag]
+Vælg Udforsknings Flag
+[select hospital building]
+Vælg Hospital
+[select inn building]
+Vælg Kro
+[select market building]
+Vælg Market
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+Vælg Racerbane
+[select school building]
+Vælg Schoo
+[select swarm building]
+Vælg Sværm
+[select swimmingpool building]
+Vælg Svømmepøl
+[select tower building]
+Vælg Torn
+[select wall building]
+Vælg væg
+[select warflag]
+Vælg Krigs Flag
+[session request sent]
+Session forspørgelse sendt ...
+[settings]
+Instillinger
+[shortcut explanation enter]
+tast enter : send en besked
+[shortcut explanation v]
+tast v : hold v nede for at snakke
+[show main menu]
+
+[skin]
+Opløsning
+[small]
+lille
+[smoothing]
+Udglatning
+[space]
+
+[speed]
+hastighed
+[start mission]
+Start Mission
+[start new campaign]
+Start Ny Kampanie
+[Start]
+Start
+[STARTING GAME ...]
+Starter Spillet...
+[Starving Map]
+Sulten kort
+[starving]
+dør af sult
+[stat]
+Statistikker
+[state]
+tilstand
+[Statistics]
+Statistikker
+[Still (i)]
+Stadigvæk
+[still (w)]
+Stadigvæk
+[still one unit working]
+En enhed arbejder stadigvæk
+[Still one]
+En tilbage
+[Stone]
+Sten
+[stone]
+Sten
+[stonewall explanation 2]
+element
+[stonewall explanation]
+Passiv forsvar element
+[stonewall]
+Sten væg
+[svr hostname]
+Serverens host navn
+[swamp terrain]
+Svamp
+[swarm explanation 2]
+ 
+[swarm explanation]
+Byg en ny enhed
+[swarm level 0]
+Swærm
+[swarm]
+Sværm
+[Swim]
+Svøm
+[swimmingpool explanation 2]
+Hastighed af dine enheder
+[swimmingpool explanation]
+Forbedre svømning
+[swimmingpool]
+Svømmepøl
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+Skift til bygningsvisning
+[switch to flag view]
+Skift til flag visning
+[switch to removing areas]
+
+[switch to teams view]
+Skift til hold visning
+[switch to terrain view]
+Skift til terring visning
+[sys req]
+
+[tab]
+
+[teams]
+ hold
+[the barracks is finished]
+Kasernen er færdig gjort
+[the barracks is under attack]
+Kasernen er under angrib
+[the building is finished]
+Bygningen er færdig gjort
+[the building is under attack]
+Bygningn er under angrib
+[the clearingflag is finished]
+?? Rydnings flaget er færdig ??
+[the clearingflag is under attack]
+?? Rydnings flaget er under angrib ??
+[the defencetower is finished]
+Forsvar tornet er færdig gjordt
+[the defencetower is under attack]
+Dine forsvar er under angrib
+[the explorationflag is finished]
+?? Udforsknings flaget er færdig ??
+[the explorationflag is under attack]
+?? Udforsknings flaget er under angrib ??
+[The game has not been finished]
+Spillet er ikke færdig
+[the games]
+Spillet
+[the hospital is finished]
+Hospitalet er færdig gjort
+[the hospital is under attack]
+Hospitalet er under angrib
+[the inn is finished]
+Kroen er færdig gjordt
+[the inn is under attack]
+Kroen er under angrib
+[the maps]
+Kort
+[the market is finished]
+Market er færdig gjort.
+[the market is under attack]
+Market er under angrib
+[The player %0 has joined YOG]
+%0 er kommet til YOG.
+[The player %0 has left YOG]
+%0 har forladt YOG.
+[the racetrack is finished]
+Raserbanen er fædtig gjort
+[the racetrack is under attack]
+Raserbanen er under angrib
+[the school is finished]
+Skolen er færdig gjort
+[the school is under attack]
+Skolen er under angrib
+[the stonewall is finished]
+En sektion af en væg er færdig
+[the stonewall is under attack]
+Fjenden er ved dine væge
+[the swarm is finished]
+Sværmen er færdig gjort
+[the swarm is under attack]
+Sværmen er under angrib
+[the swimmingpool is finished]
+Svømmepølen er færdig gjort
+[the swimmingpool is under attack]
+Svømme pølen er under angrib
+[the warflag is finished]
+?? Krigs flaget er færdig ??
+[the warflag is under attack]
+?? Krigs flaget er under angrib ??
+[to:]
+til:
+[toggle draw accessibility aids]
+Toggle Draw Accessibility Aids
+[toggle draw information]
+Vælg tegn information
+[toggle draw unit paths]
+Vælg tegn endhd router
+[toggle menu screen]
+
+[toggle recording voice]
+Start volkal optagelse
+[Total prestige reached]
+Total præstige opnået
+[Total]
+Total
+[tutorial]
+Lær at spille
+[unassigned]
+Ikke tildelt
+[Uncontrolled]
+Ukontrolleret
+[undo]
+
+[uniform terrain]
+Uniform terraing
+[Unit editor]
+Redigere Enhed
+[unit settings]
+Enheds instillinger
+[Unit type]
+enhed type
+[units type]
+Enhed type
+[units working]
+ Enheder der arbejder
+[Units]
+Enheder
+[unlocked by]
+Låst op af
+[Unnamed Area]
+{Unavngivet område}
+[up]
+
+[update list]
+opdatere liste
+[upgrade building]
+Start/Stop Opgradering
+[upgrade]
+Opgradere
+[username]
+Bruger navn
+[Version]
+Version
+[view history]
+
+[wait destroy]
+Vænter på konstruktion
+[waiting for %0]
+Vænter på %0
+[waiting for key]
+
+[Walk]
+Gå
+[warflag explanation 2]
+ 
+[warflag explanation]
+Angrib krigere
+[warflag]
+Krigs flag
+[Warning, you need to reboot the game for changes to take effect]
+Advarsel. Du skal genstarte spillet for at ændringerne har nogen virkning
+[Warrior Ratio]
+Kriger Ratio
+[Warrior]
+Krigere
+[warriors]
+krigere
+[was AI]
+var AI
+[was]
+var
+[water]
+Vand
+[Wheat]
+
+[wheat]
+hvede
+[Won : you defeated your opponents]
+Vundet : Du har slået din modstander
+[Won : you have the most prestige]
+Vundet : du havde den største præstige
+[Won : your ally %0 has the most prestige]
+Vundet: din allierede %0 havde den største præstige
+[Wood]
+Træ
+[wood]
+Træ
+[Worker Ratio]
+Arbejder Ratio
+[Worker]
+Arbejder
+[workers]
+Arbejdere
+[workers]
+arbejdere
+[working]
+Arbejde
+[wounded]
+skadet
+[Yes]
+Ja
 [YESTS_BAD]
 intern konsistens fejl imens forbindelsen blev oprettet.
-[YESTS_UNABLE_TO_CONNECT]
-Er ikke muligt at forbinde. Muligvis er YOG meta servern nede.
-[YESTS_CREATED]
-Forbindelse systemet er klar til at forbinde til YOG meta serveren.
 [YESTS_CONNECTING]
 Establere forbindelsen til YOG meta serveren...
-[YESTS_DECONNECTING]
-Afbryder forbindelsen til YOG meta serveren...
-[YESTS_YOG_KILLED]
-En administrator har stoppet YOG meta serveren.
 [YESTS_CONNECTION_LOST]
 Forbindelsen til YOG er blevet afbrudt.
-[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG meta serveren har afbrudt forbindelsen fordi din globulation2 klient er forældet.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG meta serveren har afbrudt forbindelsen fordi dit bruger navn er allerede i brug af en anden.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+YOG meta serveren har afbrudt forbindelsen fordi der er sket en protokol fejl:  du er allerede logget ind.  Prøv igen om 45 sekunder.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG meta serveren har afbrudt forbindelsen fordi dette brugernavn er allerede registeret. Hvis dette brugernavn er dit, deaktivere funktionen "Registerere en ny YOG bruger med adgangs kode".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG meta serveren har afbrudt forbindelsen fordi det indtastet adgangs kode er forkert.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG meta serveren har afbrudt forbindelsen fordi dette brugernavn har ingen adgangskode endny. Du vil muligvis registerere dit brugernavn med adgangs kode. Der for aktivere funktionen "Registere en ny YOG bruger med adgangs kode" får du prøver at forbinde. Du er nød til at aktivere denne funktion når du vil registerere.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG meta serveren har afbrudt forbindelsen fordi dette brugernavn er allerede registeret. Hvis dette brugernavn er dit, deaktivere funktionen "Registerere en ny YOG bruger med adgangs kode".
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG meta serveren har afbrudt forbindelsen fordi der er sket en protokol fejl:  du er allerede logget ind.  Prøv igen om 45 sekunder.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 YOG meta serveren har afbrudt forbindelsen fordi en intern protokol fejl er opstået: du er ikke forbundet mens du forsøgte at loge ind. Rappotere venligst denne fejl.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG meta serveren har afbrudt forbindelsen fordi din globulation2 klient er forældet.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG meta serveren har afbrudt forbindelsen uden en forklaring!
-[The player %0 has left YOG]
-%0 har forladt YOG.
-[The player %0 has joined YOG]
-%0 er kommet til YOG.
-[You are now marked as away]
-Du er nu markeret som væk
-[You are no more marked as away]
-Du er ikke længere markeret som væk.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG meta serveren har afbrudt forbindelsen fordi dit bruger navn er allerede i brug af en anden.
+[YESTS_CREATED]
+Forbindelse systemet er klar til at forbinde til YOG meta serveren.
+[YESTS_DECONNECTING]
+Afbryder forbindelsen til YOG meta serveren...
+[YESTS_UNABLE_TO_CONNECT]
+Er ikke muligt at forbinde. Muligvis er YOG meta servern nede.
+[YESTS_YOG_KILLED]
+En administrator har stoppet YOG meta serveren.
+[yog-chat]
+#yog-da
+[yog]
+Ysagoon Online Gaming
 [YOG_HELP]
 YOG meddelses systemet har to komandoer, "msg" og "away". Tast "/help <komando<" for at lære mere om en af disse.
 [YOG_HELP_AWAY]
 "/away (<besked>)" kommando tillander dig at gøre andre YOG brugere opmærksom på at du er midlertidig væk. Du må tilføje en kort forklarende besked. For eksempel "/away Jeg spiser en hamburger og jeg vil være tilbage klokken 1". Kort form "/a"
 [YOG_HELP_MSG]
 "/msg <navn> <besked> kommando sender en privat besked. for eksempel, "/msg John Hej John, hvordan har du det?". Kort form "/m".
-[save before quit?]
-Vil du gemme for du afslutter?
-[Yes]
-Ja
-[No]
-Nej
-[Save]
-Gem
-[auto save]
-Auto gem
-[Total prestige reached]
-Total præstige opnået
-[Continue playing]
-Fortsæt spillet
-[Lost : your colony is dead]
-Tabt : Din koloni er død
-[Won : you defeated your opponents]
-Vundet : Du har slået din modstander
-[Won : your ally %0 has the most prestige]
-Vundet: din allierede %0 havde den største præstige
-[Lost : %0 has more prestige than you]
-Tabt : %0 har mere præstige end du har
-[Won : you have the most prestige]
-Vundet : du havde den største præstige
-[The game has not been finished]
-Spillet er ikke færdig
-[display]
-Opløsning
-[username]
-Bruger navn
-[fullscreen]
-Fuld skærm tilstand
-[hwaccel]
-Hardware acceleration
-[dblbuff]
-Dobbelt buffering
-[lowquality]
-Lav kvalitet
-[audio]
-Lyd
-[Music volume]
-Lydstyrke (musik)
-[Happyness]
-Antal lykkelige
-[customcur]
-Ændre cursor
-[choose campaign]
-Vælg en kampagne
-[nick taken]
-Vi er kede af det men det bruger navn du har valgt er allerede taget på freenode, Du vil kun kunde tale gennem YOG
-[mute]
-Slå lyd fra
-[abreaviation explanation A]
-A : Alliangce
-[abreaviation explanation V]
-V : Vis alle dine bygninger
-[abreaviation explanation fV]
-Vf : Vis alle dine kroer (til at stjæle enheder)
-[abreaviation explanation mV]
-mV : vis alle Market bygninger (til at udveksle frugt)
-[abreaviation explanation C]
-C : Send besked til
-[shortcut explanation enter]
-tast enter : send en besked
-[shortcut explanation v]
-tast v : hold v nede for at snakke
-[Delete game]
-Slet det valgte spil
-[any explorer]
-Tilfældig udforsker
-[ground attack]
-Grund angrib
-[Can't join game, wrong game version]
-Kan ikke forbinde til spillet, forkert version
-[Can't join game, missmatching game parameters]
-Kan ikke forbinde til spillet, differencerne argumenter givet til spillet
-[Can't join game, timeout]
-Kan ikke forbinde til spillet, der er opstået en timeout
-[swamp terrain]
-Svamp
-[river terrain]
-Flod
-[crater lakes terrain]
-Krater søer
-[old random terrain]
-Gamle tilfældige terræn
-[old islands terrain]
-Gamle ø terræn
-[desert]
-Ørken
-[algae]
-alger
-[wheat]
-hvede
-[wood]
-Træ
-[stone]
-Sten
-[river diameter]
-Længde af flod
-[extra islands]
-Tom ø
-[crater density]
-Antal krater
-[press space]
-Tryk på mellemrum for at fortsætte
-[GUIMapPreview text 0]
-Vælg venligst
-[GUIMapPreview text 1]
-Et kort
-[Unit editor]
-Redigere Enhed
-[skin]
-Opløsning
-[hungryness]
-Sulthed
-[repeat area]
-antal gange det samme landskab
+[You are no more marked as away]
+Du er ikke længere markeret som væk.
+[You are now marked as away]
+Du er nu markeret som væk
+[you have lost]
+Du har tabt!
+[you have won]
+Du har vundet!
+[Your %0 are under attack]
+Dine %0 er under angrib
+[Your unit got converted to %0's team]
+En af dine enheder blev konverteret til et %0 hold

@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -28,6 +30,14 @@
 #include "Order.h"
 #include "Brush.h"
 #include "Campaign.h"
+#include "MapHeader.h"
+#include "KeyboardManager.h"
+#include "MarkManager.h"
+#include "GameGUIMessageManager.h"
+#include "Minimap.h"
+#include "OverlayAreas.h"
+#include "GameGUIToolManager.h"
+#include "GameGUIDefaultAssignManager.h"
 
 namespace GAGCore
 {
@@ -43,7 +53,6 @@ using namespace GAGGUI;
 
 class TeamStats;
 class InGameTextInput;
-class InGameScrollableText;
 
 
 //! max unit working at a building
@@ -58,42 +67,31 @@ class InGameScrollableText;
 class GameGUI
 {
 public:
-	Game game;
-	bool gamePaused;
-	bool hardPause;
-	bool isRunning;
-	bool notmenu;
-	//! true if user close the glob2 window.
-	bool exitGlobCompletely;
-	//! if this is not empty, then Engine should load the map with this filename.
-	char toLoadGameFileName[SessionGame::MAP_NAME_MAX_SIZE+5];
-	//bool showExtendedInformation;
-	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
-	int localPlayer, localTeamNo;
-	int viewportX, viewportY;
-
-public:
+	///Constructs a GameGUI
 	GameGUI();
+	
+	///Destroys the GameGUI
 	~GameGUI();
 
-
+	///Initializes all variables
 	void init();
+	///Moves the local viewport
 	void adjustInitialViewport();
 	void adjustLocalTeam();
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
 	//! Get order from gui, return NullOrder if
-	Order *getOrder(void);
+	boost::shared_ptr<Order> getOrder(void);
 	//! Return position on x
 	int getViewportX() { return viewportX; }
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
 	void drawAll(int team);
-	void executeOrder(Order *order);
+	void executeOrder(boost::shared_ptr<Order> order);
 
 	//!
-	bool loadBase(const SessionInfo *initial);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader);
 	//!
 	bool load(GAGCore::InputStream *stream);
 	void save(GAGCore::OutputStream *stream, const char *name);
@@ -125,6 +123,23 @@ public:
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
+	
+	KeyboardManager keyboardManager;
+public:
+	Game game;
+	friend class Game;
+	bool gamePaused;
+	bool hardPause;
+	bool isRunning;
+	bool notmenu;
+	//! true if user close the glob2 window.
+	bool exitGlobCompletely;
+	//! if this is not empty, then Engine should load the map with this filename.
+	std::string toLoadGameFileName;
+	//bool showExtendedInformation;
+	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
+	int localPlayer, localTeamNo;
+	int viewportX, viewportY;
 private:
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
@@ -132,12 +147,13 @@ private:
 	bool processGameMenu(SDL_Event *event);
 	bool processScrollableWidget(SDL_Event *event);
 	void handleRightClick(void);
-	void handleKey(SDLKey key, bool pressed, bool shift, bool ctrl);
+	void handleKey(SDL_keysym key, bool pressed);
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
+
 	void handleActivation(Uint8 state, Uint8 gain);
 	void nextDisplayMode(void);
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
@@ -148,7 +164,7 @@ private:
 	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
-	void drawTextCenter(int x, int y, const char *caption, int i=-1);
+	void drawTextCenter(int x, int y, const char *caption);
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
 	void drawCheckButton(int x, int y, const char* caption, bool isSet);
@@ -182,10 +198,6 @@ private:
 	void drawInGameScrollableText(void);
 	
 	void moveFlag(int mx, int my, bool drop);
-	//! Update the brush and the local map due to mouse motion
-	void brushStep(bool maybeToggleMode, int mx, int my);
-	//! Send a brush order and reinitialize the brush accumulator
-	void sendBrushOrders(void);
 	//! One viewport has moved and a flag or a brush is selected, update its position
 	void dragStep(int mx, int my, int button);
 	//! on each step, check if we have won or lost
@@ -220,12 +232,12 @@ private:
 	{
 		Building* building;
 		Unit* unit;
-		const char *build;
 		int ressource;
 	} selection;
 	
-	//! Value between 0 and 1 that indicates if selection has to be highlighten
-	float highlightSelection;
+	// Brushes
+	BrushTool brush;
+	GameGUIToolManager toolManager;
 
 	//! Unset and clean everything related to the selection so a new one can be set
 	void cleanOldSelection(void);
@@ -234,16 +246,6 @@ private:
 	void clearSelection(void) { setSelection(NO_SELECTION); }
 	void checkSelection(void);
 	
-	// Brushes
-	enum BrushType
-	{
-		FORBIDDEN_BRUSH = 0,
-		GUARD_AREA_BRUSH = 1,
-		CLEAR_AREA_BRUSH = 2
-		
-	} brushType;
-	BrushTool brush;
-	BrushAccumulator brushAccumulator;
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;
@@ -284,6 +286,8 @@ private:
 	bool showStarvingMap;
 	bool showDamagedMap;
 	bool showDefenseMap;
+	bool showFertilityMap;
+	OverlayArea overlay;
 
 	bool showUnitWorkingToBuilding;
 
@@ -292,7 +296,9 @@ private:
 
 	Uint32 chatMask;
 
-	std::list<Order *> orderQueue;
+	std::list<boost::shared_ptr<Order> > orderQueue;
+
+	Minimap minimap;
 
 	int mouseX, mouseY;
 	//! for mouse motion
@@ -313,18 +319,12 @@ private:
 
 	bool hasEndOfGameDialogBeenShown;
 	
-	// On screen message handling
-	struct Message
-	{
-		enum { DEFAULT_MESSAGE_SHOW_TICKS = 180 };
-		int showTicks; // since when it is shown
-		std::string text;
-		Uint8 r, g, b, a; // color
-	};
-	
-	std::list<Message> messagesList;
-	std::vector<std::string> messageHistory;
-	
+	GameGUIMessageManager messageManager;
+	InGameScrollableHistory* scrollableText;
+
+	/// Add a message to the list of messages
+	void addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText);
+
 	// Message stuff
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
 	int eventGoType; //!< type of last event
@@ -332,49 +332,28 @@ private:
 	
 	//! Transform a text to multi line according to screen width
 	void setMultiLine(const std::string &input, std::vector<std::string> *output);
-
-	//! add a message to the window message list
-	void addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText);
 	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
-	InGameScrollableText *scrollableText;
 	int typingInputScreenPos;
 	int typingInputScreenInc;
+
+	///This manages map marks	
+	MarkManager markManager;
 	
-	// Minimap marking handling
-	struct Mark
-	{
-		enum { DEFAULT_MARK_SHOW_TICKS = 50 };
-		int showTicks; // since when it is shown
-		int x, y; // position
-		Uint8 r, g, b; // color
-	};
-
-	std::list<Mark> markList;
-
 	//! add a minimap mark
-	void addMark(MapMarkOrder *mmo);
+	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
 	
-	// how long the COU has been idle last tick
-	#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32
-	int smoothedCpuLoad[SMOOTH_CPU_LOAD_WINDOW_LENGTH];
-	unsigned smoothedCpuLoadPos;
+	// records CPU usage percentages 
+	static const unsigned SMOOTHED_CPU_SIZE=32;
+	int smoothedCPULoad[SMOOTHED_CPU_SIZE];
+	int smoothedCPUPos;
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;
 	std::string missionName;
 
-	// determine building type for custom settings
-	#define NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT 50
-	int unitCount[NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT];
-	
-	//! Init all predefined unit settings to from predefined settings
-	friend class Game;
-	void initUnitCount(void);
-	int getUnitCount(unsigned typeNum);
-	void setUnitCount(unsigned typeNum, int nbReq);
-
+	GameGUIDefaultAssignManager defaultAssign;
 };
 
 #endif

@@ -51,12 +51,9 @@ Settings::Settings()
 	musicVolume = 255;
 	mute = 0;
 	rememberUnit = 1;
-	restoreDefaultShortcuts();
 	tempUnit = 1;
 	tempUnitFuture = 1;
-	//while a little ugly it is necessary to store varPrestige within settings 
-	//to prevent session.cpp from overriding variable once map is chosen
-	tempVarPrestige = 0;
+	
 	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 	{
 		for(int t=0; t<6; ++t)
@@ -106,65 +103,6 @@ Settings::Settings()
 	cloudStability=1300;//how much will the clouds change shape
 	cloudSize=300;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
 	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
-}
-
-
-
-void Settings::restoreDefaultShortcuts()
-{
-	keyboard_shortcuts["akey"]="prefix key select area tool";
-	keyboard_shortcuts["bkey"]="prefix key select building tool";
-	keyboard_shortcuts["ckey"]="";
-	keyboard_shortcuts["dkey"]="destroy building";
-	keyboard_shortcuts["ekey"]="";
-	keyboard_shortcuts["fkey"]="prefix key select flag tool";
-	keyboard_shortcuts["gkey"]="";
-	keyboard_shortcuts["hkey"]="toggle draw accessibility aids";
-	keyboard_shortcuts["ikey"]="toggle draw information";
-	keyboard_shortcuts["jkey"]="";
-	keyboard_shortcuts["kkey"]="";
-	keyboard_shortcuts["lkey"]="";
-	keyboard_shortcuts["mkey"]="mark map";
-	keyboard_shortcuts["nkey"]="";
-	keyboard_shortcuts["okey"]="";
-	keyboard_shortcuts["pkey"]="pause game";
-	keyboard_shortcuts["qkey"]="";
-	keyboard_shortcuts["rkey"]="repair building";
-	keyboard_shortcuts["skey"]="";
-	keyboard_shortcuts["tkey"]="toggle draw unit paths";
-	keyboard_shortcuts["ukey"]="upgrade building";
-	keyboard_shortcuts["vkey"]="record voice";
-	keyboard_shortcuts["wkey"]="";
-	keyboard_shortcuts["xkey"]="";
-	keyboard_shortcuts["ykey"]="";
-	keyboard_shortcuts["zkey"]="";
-
-	editor_keyboard_shortcuts["akey"]="";
-	editor_keyboard_shortcuts["bkey"]="";
-	editor_keyboard_shortcuts["ckey"]="";
-	editor_keyboard_shortcuts["dkey"]="";
-	editor_keyboard_shortcuts["ekey"]="";
-	editor_keyboard_shortcuts["fkey"]="";
-	editor_keyboard_shortcuts["gkey"]="";
-	editor_keyboard_shortcuts["hkey"]="";
-	editor_keyboard_shortcuts["ikey"]="";
-	editor_keyboard_shortcuts["jkey"]="";
-	editor_keyboard_shortcuts["kkey"]="";
-	editor_keyboard_shortcuts["lkey"]="";
-	editor_keyboard_shortcuts["mkey"]="";
-	editor_keyboard_shortcuts["nkey"]="";
-	editor_keyboard_shortcuts["okey"]="";
-	editor_keyboard_shortcuts["pkey"]="";
-	editor_keyboard_shortcuts["qkey"]="";
-	editor_keyboard_shortcuts["rkey"]="";
-	editor_keyboard_shortcuts["skey"]="";
-	editor_keyboard_shortcuts["tkey"]="";
-	editor_keyboard_shortcuts["ukey"]="";
-	editor_keyboard_shortcuts["vkey"]="";
-	editor_keyboard_shortcuts["wkey"]="";
-	editor_keyboard_shortcuts["xkey"]="";
-	editor_keyboard_shortcuts["ykey"]="";
-	editor_keyboard_shortcuts["zkey"]="";
 }
 
 
@@ -236,17 +174,6 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(cloudStability);
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
-
-		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
-		{
-			if(parsed.find("game_"+i->first)!=parsed.end())
-				i->second=parsed["game_"+i->first];
-		}
-		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
-		{
-			if(parsed.find("editor_"+i->first)!=parsed.end())
-				i->second=parsed["editor_"+i->first];
-		}
 	}
 	delete stream;
 }
@@ -289,15 +216,6 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
-		
-		for(std::map<std::string, std::string>::iterator i=keyboard_shortcuts.begin(); i!=keyboard_shortcuts.end(); ++i)
-		{
-			Utilities::streamprintf(stream, "game_%s=%s\n", i->first.c_str(), i->second.c_str());
-		}
-		for(std::map<std::string, std::string>::iterator i=editor_keyboard_shortcuts.begin(); i!=editor_keyboard_shortcuts.end(); ++i)
-		{
-			Utilities::streamprintf(stream, "editor_%s=%s\n", i->first.c_str(), i->second.c_str());
-		}
 	}
 	delete stream;
 }

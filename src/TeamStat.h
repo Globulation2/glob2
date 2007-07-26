@@ -32,7 +32,6 @@ struct TeamStat
 {
 	TeamStat();
 	void reset();
-	void setMapSize(int w, int h);
 
 	int totalUnit;
 	int numberUnitPerType[NB_UNIT_TYPE];
@@ -46,6 +45,8 @@ struct TeamStat
 	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][6];
 
 	int needFoodCritical;
+	// Number of units that are hungry but there aren't able to eat
+	int needFoodNoInns;
 	int needFood;
 	int needHeal;
 	int needNothing;
@@ -61,25 +62,12 @@ struct TeamStat
 	int totalDefensePower;
 		
 	int happiness[HAPPYNESS_COUNT+1];
-
-	int width;
-	int getPos(int x, int y) { return y*width+x; } 
-	void increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map);
-	void spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance);
-
-	std::vector<int> starvingMap;
-	int starvingMax;
-	std::vector<int> damagedMap;
-	int damagedMax;
-	std::vector<int> defenseMap;
-	int defenseMax;
 };
 
 struct TeamSmoothedStat
 {
 	TeamSmoothedStat();
 	void reset();
-	void setMapSize(int w, int h);
 
 	int totalFree;
 	int isFree[NB_UNIT_TYPE];
@@ -116,8 +104,6 @@ public:
 	
 	void step(Team *team, bool reloaded = false);
 
-	void setMapSize(int w, int h);
-
 	void drawText(int pos);
 	void drawStat(int pos);
 	int getFreeUnits(int type);
@@ -152,9 +138,6 @@ private:
 	
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-
-	int width;
-	int height;
 
 public:
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }

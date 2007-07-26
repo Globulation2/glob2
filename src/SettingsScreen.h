@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2007 Bradley Arsenault
+  
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -23,6 +25,9 @@
 #include "Glob2Screen.h"
 #include "Settings.h"
 #include <string>
+
+#include "KeyboardManager.h"
+#include "GUIKeySelector.h"
 
 namespace GAGGUI
 {
@@ -54,6 +59,9 @@ public:
 		RESTOREDEFAULTSHORTCUTS=12,
 		GAMESHORTCUTS=13,
 		EDITORSHORTCUTS=14,
+		SECONDKEY=15,
+		ADDSHORTCUT=16,
+		REMOVESHORTCUT=17,
 	};
 private:
 	Settings old_settings;
@@ -77,16 +85,15 @@ private:
 
 	TextButton* game_shortcuts;
 	TextButton* editor_shortcuts;
-	List* keyboard_shortcut_names;
-	std::vector<std::string> internal_names;
-	List* keyboard_shortcuts;
-	std::vector<std::string> shortcut_actions;
-	std::vector<std::string> shortcut_names;
-	List* editor_keyboard_shortcuts;
-	std::vector<std::string> editor_shortcut_actions;
-	std::vector<std::string> editor_shortcut_names;
 	TextButton* restore_default_shortcuts;
-	void reset_names();
+
+	List* shortcut_list;
+	KeySelector* select_key_1;
+	OnOffButton *key_2_active;
+	KeySelector* select_key_2;
+	List* action_list;
+	TextButton* add_shortcut;
+	TextButton* remove_shortcut;
 
 	bool gfxAltered;
 	
@@ -99,7 +106,28 @@ private:
 	//! Return a string representing the actual display mode
 	std::string actDisplayModeToString(void);
 
+
+	///Holds the keyboard layout for the map editor
+	KeyboardManager mapeditKeyboardManager;
+	///Holds the keyboard layout for the game gui
+	KeyboardManager guiKeyboardManager;
 public:
+	ShortcutMode currentMode;
+	///Update shortcut_list, if n is not -1, just update that specific entry
+	void updateShortcutList(int n=-1);
+	///Update the action_list
+	void updateActionList();
+	///Updates the boxes from the current shortcut selection
+	void updateShortcutInfoFromSelection();
+	///Updates the KeyboardManager from the shortcut info
+	void updateKeyboardManagerFromShortcutInfo();
+	///Tells the KeyboardManager to load from the defaults
+	void loadDefaultKeyboardShortcuts();
+	///Adds a shortcut to the current keyboard manager
+	void addNewShortcut();
+	///Removes a shortcut from current keyboard manager
+	void removeShortcut();
+
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);

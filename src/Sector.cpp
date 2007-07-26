@@ -119,33 +119,18 @@ void Sector::step(void)
 		else
 		{
 			Uint16 gid = map->getGroundUnit(bullet->targetX, bullet->targetY);
-			Uint16 airgid = map->getAirUnit(bullet->targetX, bullet->targetY);
+			if(gid == NOGUID)
+				gid = map->getAirUnit(bullet->targetX, bullet->targetY);
 			if (gid != NOGUID)
 			{
 				// we have hit a unit
 				int team = Unit::GIDtoTeam(gid);
 				int id = Unit::GIDtoID(gid);
 				
-				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid, team);
-				if (bullet->revealW > 0 && bullet->revealH > 0)
-					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
-				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
-				if (degats <= 0)
-					degats = 1;
-				game->teams[team]->myUnits[id]->hp -= degats;
-			}
-			//following maybe should be merged into the above?
-			else if (airgid != NOGUID)
-			{
-				// we have hit an air unit
-				// yes, it hits ground units, then air units, then buildings
-				// totally illogical, but matches the preference of guard towers
-				// (ugh, hard-coded preference...)
-				int team = Unit::GIDtoTeam(airgid);
-				int id = Unit::GIDtoID(airgid);
-				
-				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, airgid, team);
+				boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
+				game->teams[team]->pushGameEvent(event);
+		
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 				
@@ -162,13 +147,16 @@ void Sector::step(void)
 					// we have hit a building
 					int team = Building::GIDtoTeam(gid);
 					int id = Building::GIDtoID(gid);
-
-					game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::BUILDING_UNDER_ATTACK_EVENT, gid, team);
+					
 					if (bullet->revealW > 0 && bullet->revealH > 0)
 						game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 					
 					Building *building = game->teams[team]->myBuildings[id];
 					int damage = bullet->shootDamage-building->type->armor; 
+					
+					boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
+					game->teams[team]->pushGameEvent(event);
+					
 					if (damage > 0)
 						building->hp -= damage;
 					else

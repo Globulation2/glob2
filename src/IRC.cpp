@@ -33,8 +33,11 @@
 // version related stuff
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
-#else
+#endif
+#ifndef PACKAGE_TARNAME
 	#define PACKAGE_TARNAME "glob2"
+#endif
+#ifndef PACKAGE_VERSION
 	#define PACKAGE_VERSION "undef"
 #endif
 
@@ -45,6 +48,7 @@ IRC::IRC()
 	socket = NULL;
 	socketSet = NULL;
 	errorString = "error, no such data";
+	usersOnChannelsModified=false;
 }
 
 IRC::~IRC()

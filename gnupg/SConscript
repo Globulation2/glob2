@@ -1,0 +1,6 @@
+Import("env")
+
+env.Tar(env["TARFILE"], "sha1.c")
+env.Tar(env["TARFILE"], "sha1.h")
+
+env.Tar(env["TARFILE"], "SConscript")

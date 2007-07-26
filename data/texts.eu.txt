@@ -1,912 +1,1106 @@
-[language]
-Euskara
-[language-code]
-eu
-[language-tr]
-Hizkuntza
-[hp]
-Osotasuna
-[heal]
-Osasuna
-[armor]
-Armadura
-[damage]
-Kaltea
-[food]
-Janaria
-[working]
-Lanean
-[assigned]
-Izendatua
-[inside]
-Barruan
-[ressources]
-Baliabideak
-[Wood]
-Egurra
-[Corn]
-Garia
-[Papyrus]
-Papiroa
-[Stone]
-Harria
-[Alga]
-Algak
-[Cherry]
-Gerezia
-[Orange]
-Laranja
-[Prune]
-Arana
-[fruit]
-fruta
-[Clearing:]
-Garbitu:
-[Min required level:]
-Gutxienezko maila:
-[Minimum Level To Flag]
-Banderaren gutxienezko maila
-[Bullets]
-Balak
-[range]
-Hedadura
-[destroy]
-Suntsitu
-[cancel destroy]
-Ezeztatu suntsipena
-[wait destroy]
-Suntsipenari itxaroten
-[upgrade]
-Eguneratu
-[repair]
-Konpondu
-[cancel upgrade]
-Ezeztatu eguneraketa
-[cancel repair]
-Ezeztatu konponketa
-[units type]
-unitate mota
-[workers]
-langile
-[explorers]
-miatzaile
-[warriors]
-soldadu
-[Worker Ratio]
-Langile Ratioa
-[Explorer Ratio]
-Miatzaile Ratioa
-[Warrior Ratio]
-Soldadu Ratioa
-[Unit type]
-Unitate mota
-[Worker]
-Langilea
-[Explorer]
-Miatzailea
-[Warrior]
-Soldadua
-[still (w)]
-Still
-[units working]
- unitate lanean
-[still one unit working]
-Unitate bat oraindik lanean
-[Still (i)]
-Still 
-[Still one]
-Still one
-[Building name]
-Eraikuntzaren izena
-[swarm building]
-Kofoina
-[food building]
-Ostatua
-[health building]
-Hospitala
-[walkspeed building]
-Zirkuitoa
-[swimspeed building]
-Igerilekua
-[attack building]
-Barrakoia
-[science building]
-Eskola
-[defense building]
-Babes dorrea
-[exploration flag]
-Miatze bandera
-[war flag]
-Gerra bandera
-[clearing flag]
-Garbiketa bandera
-[stone wall]
-Harrizko orma
-[market]
-Merkatua
-[forbidden area]
-Debekatutako zonaldea
-[guard area]
-Babes zonaldea
-[clear area]
-Garbiketa zonaldea
-[Building short explanation]
-Eraikuntzaren azalpen laburra (24 karaktere gehienez)
-[swarm building explanation]
-Unitate berriak sortzeko
-[food building explanation]
-Unitateak elikatzeko
-[health building explanation]
-Unitateak sendatzeko
-[walkspeed building explanation]
-Ibilera hobetzeko
-[swimspeed building explanation]
-Igeriketa hobetzeko
-[attack building explanation]
-Borroka hobetzeko
-[science building explanation]
-Eraikitzea hobetzeko
-[defense building explanation]
-Etsai hurbilak erasotu
-[exploration flag explanation]
-Miatzaileak erakartzeko
-[war flag explanation]
-Soldaduak erakartzeko
-[clearing flag explanation]
-Baliabideak garbitzeko
-[stone wall explanation]
-Defentsa pasiboa
-[market explanation]
-Trukea baimentzen du: 
-[Building short explanation 2]
-Eraikuntzaren 2. azalpen laburra (24 karaktere gehienez)
-[swarm building explanation 2]
- 
-[food building explanation 2]
- 
-[health building explanation 2]
- 
-[walkspeed building explanation 2]
-Ibiltze abiadura hobetzeko
-[swimspeed building explanation 2]
-Igeri abiadura hobetzeko
-[attack building explanation 2]
-Soldaduen maila
-[science building explanation 2]
-Langileen maila
-[defense building explanation 2]
-unitateak edo eraikuntzak
-[exploration flag explanation 2]
- 
-[war flag explanation 2]
- 
-[clearing flag explanation 2]
- 
-[stone wall explanation 2]
-elementua
-[market explanation 2]
-fruta
-[waiting for %0]
-%0(r)i itxaroten
-[%0 has left the game]
-%0(e)k partida utzi du.
 [%0 has been deconnected of the game]
 %0 deskonektatu da.
-[load game]
-Kargatu partida
-[save game]
-Gorde partida
-[options]
-Aukerak
-[alliances]
-Aliantzak
-[return to game]
-Itzuli partidara
-[quit the game]
-Irten partidatik
-[load map]
-Kargatu mapa
-[save map]
-Gorde mapa
-[open script editor]
-Ireki Script editorea
-[return to editor]
-Itzuli editorera
-[quit the editor]
-Irten editoretik
-[Script Areas]
-Script Zonaldeak
-[Change Area Name]
-Aldatu zonalde izena
-[Unnamed Area]
-{Unnamed Area}
-[delete]
-Ezabatu
-[no ressources growth areas]
-Ez dago hazkunde zonalderik
-[ok]
-Ados
-[Cancel]
-Utzi
-[human]
-gizakia
-[you have lost]
-Galdu duzu!
-[you have won]
-Irabazi duzu!
-[campaign]
-Kanpaina
-[tutorial]
-Tutoriala
-[custom game]
-Partida neurrira
-[yog]
-Ysagoon Online Gaming
-[Enter your nickname :]
-Ezizena sartu:
-[Enter your password :]
-Pasahitza sartu:
-[lan]
-LAN partida
-[settings]
-Ezarpenak
-[Warning, you need to reboot the game for changes to take effect]
-Oharra, programa berrabiarazi behar duzu aldaketak aplikatzeko
-[editor]
-Editorea
-[credits]
-Kredituak
-[quit]
-Irten
-[create game]
-Sortu partida
-[update list]
-Eguneratu zerrenda
-[connecting to]
-Hona konektatzen:
-[connect]
-Konektatu
-[Disconnect]
-Deskonektatu
-[please wait]
-Mesedez itxaron
-[loading glob2]
-Globulation 2 kargatzen
-[host]
-Partida bat ostatatu
-[join a game]
-Partidara bat egin
-[join]
-Bat egin
-[goto main menu]
-Menu nagusira itzuli
-[player name]
-Jokalari izena
-[svr hostname]
-Zerbitzari izena
-[hp]
-Osotasuna
-[carry]
-Darama:
-[don't carry anything]
-Ez darama ezer
-[level]
-Maila:
-[levels]
-Mailak
-[building site]
-eraikitzen
-[create map]
-Sortu mapa
-[map size x]
-Maparen zabalera
-[map size y]
-Maparen altuera
-[default terrain]
-Lehenetsitako terrenoa
-[water]
-Ura
-[sand]
-Area
-[grass]
-Bedarra
-[teams]
- talde
-[choose map]
-Aukeratu mapa
-[choose game]
-Aukeratu partida
-[awaiting players]
-Jokalarien zai
-[stat]
-Estatistikak
-[food left]
-Geratzen den janaria
-[general settings]
-Ezarpen orokorrak
-[unit settings]
-Unitate ezarpenak
-[keyboard settings]
-Teklatu ezarpenak
-[remember unit]
-Gogoratu unitatea
-[game shortcuts]
-Partida teklak
-[editor shortcuts]
-Editore teklak
-[akey]
-A-tekla
-[bkey]
-B-tekla
-[ckey]
-C-tekla
-[dkey]
-D-tekla
-[ekey]
-E-tekla
-[fkey]
-F-tekla
-[gkey]
-G-tekla
-[hkey]
-H-tekla
-[ikey]
-I-tekla
-[jkey]
-J-tekla
-[kkey]
-K-tekla
-[lkey]
-L-tekla
-[mkey]
-M-tekla
-[nkey]
-N-tekla
-[okey]
-O-tekla
-[pkey]
-P-tekla
-[qkey]
-Q-tekla
-[rkey]
-R-tekla
-[skey]
-S-tekla
-[tkey]
-T-tekla
-[ukey]
-U-tekla
-[vkey]
-V-tekla
-[wkey]
-W-tekla
-[xkey]
-X-tekla
-[ykey]
-Y-tekla
-[zkey]
-Z-tekla
-[unassigned]
-Ezarri gabe
-[toggle draw unit paths]
-Unitate ibilibidea marraztu
-[toggle draw information]
-Informazio barrak marraztu
-[toggle draw accessibility aids]
-Irisgarritasun laguntzak marraztu
-[destroy building]
-Suntsitu aukeratutako eraikuntza
-[upgrade building]
-Eguneraketa hasi/gelditu
-[repair building]
-Konponketa hasi/gelditu
-[mark map]
-Markatu mapa aliatuentzat
-[record voice]
-Hasi ahots grabaketa
-[pause game]
-Gelditu partida
-[switch to building view]
-Eraikuntza ikuspegira aldatu
-[switch to flag view]
-Bandera ikuspegira aldatu
-[switch to terrain view]
-Lurzoru ikuspegira aldatu
-[switch to teams view]
-Talde ikuspegira aldatu
-[open save menu]
-Ireki gordetzeko menua
-[open load menu]
-Ireki kargatzeko menua
-[select swarm building]
-Kofoina aukeratu
-[select inn building]
-Ostatua aukeratu
-[select hospital building]
-Hospitala aukeratu 
-[select racetrack building]
-Zirkuitoa aukeratu
-[select swimmingpool building]
-Igerilekua aukeratu
-[select barracks building]
-Barrakoia aukeratu
-[select school building]
-Eskola aukeratu
-[select tower building]
-Babes dorrea aukeratu
-[select wall building]
-Harrizko orma aukeratu
-[select market building]
-Merkatua aukeratu
-[select exploration flag]
-Miatze bandera aukeratu
-[select war flag]
-Gerra bandera aukeratu
-[select clearing flag]
-Garbiketa bandera aukeratu
-[restore default shortcuts]
-Lehenetsitako teklak berezarri
-[the building is finished]
-Eraikuntza bukatuta dago
-[the swarm is finished]
-Kofoina bukatuta dago
-[the food building is finished]
-Ostatua bukatuta dago
-[the health building is finished]
-Hospitala bukatuta dago
-[the walkspeed building is finished]
-Zirkuitoa bukatuta dago
-[the swimspeed building is finished]
-Igerilekua bukatuta dago
-[the attack building is finished]
-Barrakoia bukatuta dago
-[the science building is finished]
-Eskola bukatuta dago
-[the tower building is finished]
-Babes dorrea bukatuta dago
-[the exploration flag is finished]
-?? Exploration flag finished ??
-[the war flag is finished]
-?? War flag finished ??
-[the clearing flag is finished]
-?? Clearing flag finished ??
-[the stone wall is finished]
-Horma zati bat bukatuta dago
-[the market is finished]
-Merkatua bukatuta dago
-[the building is under attack]
-Eraikuntza erasopean dago
-[the swarm is under attack]
-Kofoina erasopean dago
-[the food building is under attack]
-Ostatua erasopean dago
-[the health building is under attack]
-Hospitala erasopean dago
-[the walkspeed building is under attack]
-Zirkuitoa erasopean dago
-[the swimspeed building is under attack]
-Igerilekua erasopean dago
-[the attack building is under attack]
-Barrakoia erasopean dago
-[the science building is under attack]
-Eskola erasopean dago
-[the defense building is under attack]
-Zure babesak erasopean daude
-[the exploration flag is under attack]
-?? Exploration flag under attack ??
-[the war flag is under attack]
-?? War flag under attack ??
-[the clearing flag is under attack]
-?? Clearing flag under attack ??
-[the stone wall is under attack]
-Harrizko orma erasopean dago
-[the market is under attack]
-Merkatua erasopean dago
-[Your %0 are under attack]
-Zure %0ak erasopean daude
-[Your unit got converted to %0's team]
-Zure unitatea %0(r)en taldera pasatu da
+[%0 has left the game]
+%0(e)k partida utzi du.
+[%0's game]
+
 [%0's team unit got converted to your team]
 %0(r)en unitatea zure taldera pasatu da
-[Uncontrolled]
-Kontrolez kanpo
-[ai]
-AI
-[closed]
-Itxita
-[close]
-Itxi
-[player]
-Jokalaria
-[STARTING GAME ...]
-Partida hasten... 
-[Statistics]
-Estatistikak
-[Buildings]
-Eraikuntzak
-[Prestige]
-Izen ona
-[Units]
-Unitateak
-[Attack]
-Erasoa
-[Defense]
-Babesa
-[free]
-libre
-[of which]
-hauetatik
-[are ok]
-ongi
-[are hungry]
-gose
-[are dying hungry]
-gosez hiltzen
-[are wonded]
-zauritu
-[and]
-eta
-[seeking a job]
-lan bila
-[jobs]
-lanak
-[Walk]
-Ibili
-[Swim]
-Igeri
-[Build]
-Eraiki
-[Harvest]
-Uzta bildu
-[At. speed]
-Abiadura
-[At. strength]
-Indarra
-[Magic At. Air]
-Kaltea airean
-[Magic At. Ground]
-Kaltea lurrean
-[Total]
-Guztira
-[free]
-libre
-[seeking]
-bila
-[Free]
-Ongi
-[hungry]
-gose
-[starving]
-gosez hiltzen
-[wounded]
-zauritu
-[Starving Map]
-Gosete mapa
-[Damaged Map]
-Kalte mapa
-[Defense Map]
-Babes mapa
-[In way]
-Bidean
-[On the spot]
-Bertan
-[Version]
-Bertsioa
-[open]
-ireki
+[abreaviation explanation A]
+A: Aliatuak
+[abreaviation explanation C]
+C: Txat mezuak bidali honi: 
+[abreaviation explanation fV]
+fV: Bistaratu ostatuen ikuspegia (unitateak lapurtzeko)
+[abreaviation explanation mV]
+mV: Bistaratu merkatuen ikuspegia (frutak trukatzeko)
+[abreaviation explanation V]
+V: Bistaratu eraikuntza guztien ikuspegia
 [Add AI]
 Gehitu AI
+[add map]
+Gehitu mapa
+[add shortcut]
+
 [AI]
 AI
+[ai]
+AI
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar
 [AINone]
 AINone
 [AINumbi]
 AINumbi
-[AICastor]
-AICastor
-[AIWarrush]
-AIWarrush
 [AIReachToInfinity]
 ReachToInfinity
-[AINicowar]
-Nicowar
 [AIToubib]
 AIToubib
-[the games]
-Partidak
-[the maps]
-Mapak
-[was]
-zen
-[was AI]
-AI zen
-[state]
-egoera
-[Start]
-Hasi
-[not ready]
-itxaron...
-[has joined]
-bat egin du
-[has quit]
-irten da
-[yog-chat]
-#yog-en
-[speed]
+[AIWarrush]
+AIWarrush
+[Alga]
+Algak
+[algae]
+algak
+[alliances]
+Aliantzak
+[and]
+eta
+[any explorer]
+edozein miatzaile
+[are dying hungry]
+gosez hiltzen
+[are hungry]
+gose
+[are ok]
+ongi
+[are wonded]
+zauritu
+[armor]
+Armadura
+[assigned]
+Izendatua
+[At. speed]
 Abiadura
-[current speed]
-Oraingo abiadura
+[At. strength]
+Indarra
 [attack speed]
 Eraso abiadura
-[new]
-Berria
-[load]
-Kargatu
-[new campaign]
-Kanpaina berria
-[load campaign]
-Kargatu kanpaina
-[campaign editor]
-Kanpaina editorea
-[editing map]
-Mapa editatzen
-[add map]
-Gehitu mapa
-[edit map]
-Editatu mapa
-[remove map]
-Ezabatu mapa
-[start new campaign]
-Hasi kanpaina berria
-[start mission]
-Hasi misioa
-[unlocked by]
-Desblokeatzailea:
-[maps available]
-Mapa eskuragarriak
-[map name]
-Izena
-[handmade map]
-Eskuz egindako mapa
-[mapGenerationDescriptor Methodes]
-Ausaz sortutako mapa metodoak
-[uniform terrain]
-Lurzoru uniformea
-[random terrain]
-Ausazko lurzorua
-[islands terrain]
-IrlakYOG 
-[ratios]
-Proportzioak
-[smoothing]
-Suabetzea
-[number of teams]
-talde kopurua
-[islands size]
-irla tamaina
-[beach size]
-hondar tamaina
-[workers]
-langile
+[Attack]
+Erasoa
+[audio]
+Soinua
+[auto save]
+Gordeketa automatikoa
+[available lan games]
+Partida lokal eskuragarriak
+[awaiting players]
+Jokalarien zai
+[away:]
+kanpoan:
+[backspace]
+
 [bad error in connection system]
 Konektatze sisteman akats potoloa
-[not connected]
-Konektatu gabe
-[presence request sent]
-Presentzia eskaria bidalita...
-[session request sent]
-Saio eskaria bidalita ...
+[barracks explanation 2]
+Soldaduen maila
+[barracks explanation]
+Borroka hobetzeko
+[barracks]
+Barrakoia
+[beach size]
+hondar tamaina
+[break]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
+[Build]
+Eraiki
+[Building name]
+Eraikuntzaren izena
+[Building short explanation 2]
+Eraikuntzaren 2. azalpen laburra (24 karaktere gehienez)
+[Building short explanation]
+Eraikuntzaren azalpen laburra (24 karaktere gehienez)
+[building site]
+eraikitzen
+[Buildings]
+Eraikuntzak
+[Bullets]
+Balak
+[campaign editor]
+Kanpaina editorea
+[campaign]
+Kanpaina
+[Can't join game, missmatching game parameters]
+Ezin da partidarekin bat egin, parametroak ez datoz bat
+[Can't join game, timeout]
+Ezin da partidarekin bat egin, denbora muga gainditu da
+[Can't join game, wrong game version]
+Ezin da partidarekin bat egin, bertsio desegokia
+[cancel destroy]
+Ezeztatu suntsipena
+[cancel repair]
+Ezeztatu konponketa
+[cancel upgrade]
+Ezeztatu eguneraketa
+[Cancel]
+Utzi
+[caps lock]
+
+[carry]
+Darama:
+[Change Area Name]
+Aldatu zonalde izena
 [checksum sent]
 Checksum eskaria bidalita ...
+[Cherry]
+Gerezia
+[choose campaign]
+Kanpaina aukeratu
+[choose game]
+Aukeratu partida
+[choose map]
+Aukeratu mapa
+[clear area]
+Garbiketa zonaldea
+[clear]
+
+[Clearing:]
+Garbitu:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Baliabideak garbitzeko
+[clearingflag]
+Garbiketa bandera
+[close]
+Itxi
+[closed]
+Itxita
+[compile]
+Konpilatu script-a
+[compose]
+
+[connect]
+Konektatu
+[connected to all players]
+
 [connected to server]
 Zerbitzarira konektatuta
 [connecting to all players]
 Jokalari guztietara konektatzen
-[connected to all players]t
-Jokalari guztietara konektatuta
-[available lan games]
-Partida lokal eskuragarriak
-[login]
-Saioa hasi
-[from:]
-nork:
-[to:]
-nori:
-[away:]
-kanpoan:
-[compile]
-Konpilatu script-a
-[downloaded at]
-Hemen deskargatua:
-[percent]
-  ehunekoa
+[connecting to]
+Hona konektatzen:
+[Continue playing]
+Jolasten jarraitu
+[Corn]
+Garia
+[crater density]
+krater zenbaketa
+[crater lakes terrain]
+Krater Lakuak
+[create game]
+Sortu partida
+[create map]
+Sortu mapa
+[credits]
+Kredituak
+[current speed]
+Oraingo abiadura
+[custom game]
+Partida neurrira
+[customcur]
+Kurtsore pertsonalizatua
+[damage]
+Kaltea
+[Damaged Map]
+Kalte mapa
+[dblbuff]
+Buffer bikoitza
+[decrease units working]
+
+[default terrain]
+Lehenetsitako terrenoa
+[defencetower explanation 2]
+unitateak edo eraikuntzak
+[defencetower explanation]
+Etsai hurbilak erasotu
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
+Babes dorrea
+[Defense Map]
+Babes mapa
+[Defense]
+Babesa
+[Delete game]
+Ezabatu aukeratutako partida
+[delete]
+Ezabatu
+[desert]
+desertua
+[destroy building]
+Suntsitu aukeratutako eraikuntza
+[destroy]
+Suntsitu
+[Disconnect]
+Deskonektatu
+[display]
+Pantaila
+[don't carry anything]
+Ez darama ezer
+[down]
+
 [download finished]
 Deskarga bukatuta
+[downloaded at]
+Hemen deskargatua:
+[edit map]
+Editatu mapa
+[editing map]
+Mapa editatzen
+[editor shortcuts]
+Editore teklak
+[editor]
+Editorea
+[end]
+
+[Enter your nickname :]
+Ezizena sartu:
+[Enter your password :]
+Pasahitza sartu:
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+Miatzaileak erakartzeko
+[explorationflag]
+Miatze bandera
+[Explorer Ratio]
+Miatzaile Ratioa
+[Explorer]
+Miatzailea
+[explorers]
+miatzaile
+[extra islands]
+irla hutsak
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[food left]
+Geratzen den janaria
+[food]
+Janaria
+[forbidden area]
+Debekatutako zonaldea
+[Free]
+Ongi
+[free]
+libre
+[free]
+libre
+[from:]
+nork:
+[fruit]
+fruta
+[fullscreen]
+Pantaila osoa
+[game full]
+Partida osorik
+[game shortcuts]
+Partida teklak
+[game speed]
+Partida abiadura
+[general settings]
+Ezarpen orokorrak
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Menu nagusira itzuli
+[grass]
+Bedarra
+[ground attack]
+Lurrezko erasoa
+[guard area]
+Babes zonaldea
+[GUIMapPreview text 0]
+Mesedez aukeratu
+[GUIMapPreview text 1]
+mapa bat
+[handmade map]
+Eskuz egindako mapa
+[Happyness]
+Poztasuna
+[hard pause]
+
+[Harvest]
+Uzta bildu
+[has joined]
+bat egin du
+[has quit]
+irten da
+[heal]
+Osasuna
+[help]
+
+[home]
+
+[hospital explanation 2]
+ 
+[hospital explanation]
+Unitateak sendatzeko
+[hospital]
+Hospitala
+[host]
+Partida bat ostatatu
+[hp]
+Osotasuna
+[hp]
+Osotasuna
+[human]
+gizakia
+[hungry]
+gose
+[hungryness]
+Gosea
+[hwaccel]
+Hardware azelerazioa
+[In way]
+Bidean
+[increase units working]
+
+[inn explanation 2]
+ 
+[inn explanation]
+Unitateak elikatzeko
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Ostatua
+[insert]
+
+[inside]
+Barruan
+[islands size]
+irla tamaina
+[islands terrain]
+IrlakYOG 
+[iterate selection]
+
+[jobs]
+lanak
+[join a game]
+Partidara bat egin
+[join]
+Bat egin
+[keyboard settings]
+Teklatu ezarpenak
+[kick]
+
+[lan]
+LAN partida
+[language-code]
+eu
+[language-tr]
+Hizkuntza
+[language]
+Euskara
+[large]
+handia
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+Maila:
+[levels]
+Mailak
+[load campaign]
+Kargatu kanpaina
+[load game]
+Kargatu partida
+[load map]
+Kargatu mapa
+[load]
+Kargatu
+[loading glob2]
+Globulation 2 kargatzen
+[login]
+Saioa hasi
+[Lost : %0 has more prestige than you]
+Galdu duzu: %0 zuk baino izen on gehiago du
+[Lost : your colony is dead]
+Galdu duzu: zure kolonia hil da
+[lowquality]
+Kalitate baxua
+[Magic At. Air]
+Kaltea airean
+[Magic At. Ground]
+Kaltea lurrean
 [Map name: %0]
 Mapa izena: %0.
-[one player]
-Jokalari bat batu da
+[map name]
+Izena
+[map size x]
+Maparen zabalera
+[map size y]
+Maparen altuera
+[mapGenerationDescriptor Methodes]
+Ausaz sortutako mapa metodoak
+[maps available]
+Mapa eskuragarriak
+[mark map]
+Markatu mapa aliatuentzat
+[market explanation 2]
+fruta
+[market explanation]
+Trukea baimentzen du: 
+[market]
+Merkatua
+[medium]
+ertaina
+[menu]
+
+[Min required level:]
+Gutxienezko maila:
+[Minimum Level To Flag]
+Banderaren gutxienezko maila
+[Music volume]
+Bolumena (musika)
+[mute]
+Isilik
+[network latency]
+Sare latentzia
+[new campaign]
+Kanpaina berria
+[new]
+Berria
+[nick taken]
+Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
+[no ressources growth areas]
+Ez dago hazkunde zonalderik
+[No]
+Ez
+[not connected]
+Konektatu gabe
+[not ready]
+itxaron...
 [number of players: %0]
 %0 jokalari daude bertan.
 [number of teams: %0]
 %0 talde.
-[game full]
-Partida osorik
-[small]
-txikia
-[medium]
-ertaina
-[large]
-handia
-[network latency]
-Sare latentzia
-[game speed]
-Partida abiadura
+[number of teams]
+talde kopurua
+[numlock]
+
+[of which]
+hauetatik
+[ok]
+Ados
+[old islands terrain]
+ausazko irla lurzoru zaharra
+[old random terrain]
+ausazko lurzoru zaharra
+[On the spot]
+Bertan
+[one player]
+Jokalari bat batu da
+[open chat box]
+
+[open load menu]
+Ireki kargatzeko menua
+[open save menu]
+Ireki gordetzeko menua
+[open script editor]
+Ireki Script editorea
+[open]
+ireki
+[options]
+Aukerak
+[Orange]
+Laranja
+[page down]
+
+[page up]
+
+[Papyrus]
+Papiroa
+[pause game]
+Gelditu partida
+[pause]
+
 [Paused]
 Geldituta
+[percent]
+  ehunekoa
+[player name]
+Jokalari izena
+[player]
+Jokalaria
+[please wait]
+Mesedez itxaron
+[power]
+
+[presence request sent]
+Presentzia eskaria bidalita...
+[press space]
+Zanpatu espazio barra jarraitzeko
+[Prestige]
+Izen ona
+[print screen]
+
+[Prune]
+Arana
+[quit the editor]
+Irten editoretik
+[quit the game]
+Irten partidatik
+[quit]
+Irten
+[racetrack explanation 2]
+Ibiltze abiadura hobetzeko
+[racetrack explanation]
+Ibilera hobetzeko
+[racetrack]
+Zirkuitoa
+[random terrain]
+Ausazko lurzorua
+[range]
+Hedadura
+[ratios]
+Proportzioak
 [Register a new YOG user with password]
 YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
+[remember unit]
+Gogoratu unitatea
 [Remember YOG password localy]
 Pasahitza gogoratu ordenagailu honetan. (ez segurua)
+[remove map]
+Ezabatu mapa
+[remove shortcut]
+
+[repair building]
+Konponketa hasi/gelditu
+[repair]
+Konpondu
+[repeat area]
+aldiz lurzoru bera
+[ressources]
+Baliabideak
+[restore default shortcuts]
+Lehenetsitako teklak berezarri
+[return to editor]
+Itzuli editorera
+[return to game]
+Itzuli partidara
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+errekaren zabalera
+[river terrain]
+Erreka
+[sand]
+Area
+[save before quit?]
+Partida gorde irten aurretik?
+[save game]
+Gorde partida
+[save map]
+Gorde mapa
+[Save]
+Gorde
+[school explanation 2]
+Langileen maila
+[school explanation]
+Eraikitzea hobetzeko
+[school]
+Eskola
+[Script Areas]
+Script Zonaldeak
+[scroll lock]
+
+[seeking a job]
+lan bila
+[seeking]
+bila
+[select barracks building]
+Barrakoia aukeratu
+[select clearingflag]
+Garbiketa bandera aukeratu
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select explorationflag]
+Miatze bandera aukeratu
+[select hospital building]
+Hospitala aukeratu 
+[select inn building]
+Ostatua aukeratu
+[select market building]
+Merkatua aukeratu
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+Zirkuitoa aukeratu
+[select school building]
+Eskola aukeratu
+[select swarm building]
+Kofoina aukeratu
+[select swimmingpool building]
+Igerilekua aukeratu
+[select tower building]
+Babes dorrea aukeratu
+[select wall building]
+Harrizko orma aukeratu
+[select warflag]
+Gerra bandera aukeratu
+[session request sent]
+Saio eskaria bidalita ...
+[settings]
+Ezarpenak
+[shortcut explanation enter]
+Enter: Txat mezua bidali
+[shortcut explanation v]
+V: mantendu hitzegiteko
+[show main menu]
+
+[skin]
+Itxura
+[small]
+txikia
+[smoothing]
+Suabetzea
+[space]
+
+[speed]
+Abiadura
+[start mission]
+Hasi misioa
+[start new campaign]
+Hasi kanpaina berria
+[Start]
+Hasi
+[STARTING GAME ...]
+Partida hasten... 
+[Starving Map]
+Gosete mapa
+[starving]
+gosez hiltzen
+[stat]
+Estatistikak
+[state]
+egoera
+[Statistics]
+Estatistikak
+[Still (i)]
+Still 
+[still (w)]
+Still
+[still one unit working]
+Unitate bat oraindik lanean
+[Still one]
+Still one
+[Stone]
+Harria
+[stone]
+harria
+[stonewall explanation 2]
+elementua
+[stonewall explanation]
+Defentsa pasiboa
+[stonewall]
+Harrizko orma
+[svr hostname]
+Zerbitzari izena
+[swamp terrain]
+Aintzira
+[swarm explanation 2]
+ 
+[swarm explanation]
+Unitate berriak sortzeko
+[swarm level 0]
+
+[swarm]
+Kofoina
+[Swim]
+Igeri
+[swimmingpool explanation 2]
+Igeri abiadura hobetzeko
+[swimmingpool explanation]
+Igeriketa hobetzeko
+[swimmingpool]
+Igerilekua
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+Eraikuntza ikuspegira aldatu
+[switch to flag view]
+Bandera ikuspegira aldatu
+[switch to removing areas]
+
+[switch to teams view]
+Talde ikuspegira aldatu
+[switch to terrain view]
+Lurzoru ikuspegira aldatu
+[sys req]
+
+[tab]
+
+[teams]
+ talde
+[the barracks is finished]
+Barrakoia bukatuta dago
+[the barracks is under attack]
+Barrakoia erasopean dago
+[the building is finished]
+Eraikuntza bukatuta dago
+[the building is under attack]
+Eraikuntza erasopean dago
+[the clearingflag is finished]
+?? Clearing flag finished ??
+[the clearingflag is under attack]
+?? Clearing flag under attack ??
+[the defencetower is finished]
+Babes dorrea bukatuta dago
+[the defencetower is under attack]
+Zure babesak erasopean daude
+[the explorationflag is finished]
+?? Exploration flag finished ??
+[the explorationflag is under attack]
+?? Exploration flag under attack ??
+[The game has not been finished]
+Partida ez da bukatu
+[the games]
+Partidak
+[the hospital is finished]
+Hospitala bukatuta dago
+[the hospital is under attack]
+Hospitala erasopean dago
+[the inn is finished]
+Ostatua bukatuta dago
+[the inn is under attack]
+Ostatua erasopean dago
+[the maps]
+Mapak
+[the market is finished]
+Merkatua bukatuta dago
+[the market is under attack]
+Merkatua erasopean dago
+[The player %0 has joined YOG]
+%0 YOGera sartu da.
+[The player %0 has left YOG]
+%0(e)k  YOG utzi du.
+[the racetrack is finished]
+Zirkuitoa bukatuta dago
+[the racetrack is under attack]
+Zirkuitoa erasopean dago
+[the school is finished]
+Eskola bukatuta dago
+[the school is under attack]
+Eskola erasopean dago
+[the stonewall is finished]
+Horma zati bat bukatuta dago
+[the stonewall is under attack]
+Harrizko orma erasopean dago
+[the swarm is finished]
+Kofoina bukatuta dago
+[the swarm is under attack]
+Kofoina erasopean dago
+[the swimmingpool is finished]
+Igerilekua bukatuta dago
+[the swimmingpool is under attack]
+Igerilekua erasopean dago
+[the warflag is finished]
+?? War flag finished ??
+[the warflag is under attack]
+?? War flag under attack ??
+[to:]
+nori:
+[toggle draw accessibility aids]
+Irisgarritasun laguntzak marraztu
+[toggle draw information]
+Informazio barrak marraztu
+[toggle draw unit paths]
+Unitate ibilibidea marraztu
+[toggle menu screen]
+
+[toggle recording voice]
+Hasi ahots grabaketa
+[Total prestige reached]
+Gehienezko izen ona lortuta
+[Total]
+Guztira
+[tutorial]
+Tutoriala
+[unassigned]
+Ezarri gabe
+[Uncontrolled]
+Kontrolez kanpo
+[undo]
+
+[uniform terrain]
+Lurzoru uniformea
+[Unit editor]
+Unitate editorea
+[unit settings]
+Unitate ezarpenak
+[Unit type]
+Unitate mota
+[units type]
+unitate mota
+[units working]
+ unitate lanean
+[Units]
+Unitateak
+[unlocked by]
+Desblokeatzailea:
+[Unnamed Area]
+{Unnamed Area}
+[up]
+
+[update list]
+Eguneratu zerrenda
+[upgrade building]
+Eguneraketa hasi/gelditu
+[upgrade]
+Eguneratu
+[username]
+Erabiltzaile izena
+[Version]
+Bertsioa
+[view history]
+
+[wait destroy]
+Suntsipenari itxaroten
+[waiting for %0]
+%0(r)i itxaroten
+[waiting for key]
+
+[Walk]
+Ibili
+[warflag explanation 2]
+ 
+[warflag explanation]
+Soldaduak erakartzeko
+[warflag]
+Gerra bandera
+[Warning, you need to reboot the game for changes to take effect]
+Oharra, programa berrabiarazi behar duzu aldaketak aplikatzeko
+[Warrior Ratio]
+Soldadu Ratioa
+[Warrior]
+Soldadua
+[warriors]
+soldadu
+[was AI]
+AI zen
+[was]
+zen
+[water]
+Ura
+[Wheat]
+
+[wheat]
+garia
+[Won : you defeated your opponents]
+Irabazi duzu: aurkariak zanpatu dituzu
+[Won : you have the most prestige]
+Irabazi duzu: zuk duzu inork baino izen on gehiago
+[Won : your ally %0 has the most prestige]
+Irabazi duzu: %0 zure aliatuak izen on gehien du
+[Wood]
+Egurra
+[wood]
+egurra
+[Worker Ratio]
+Langile Ratioa
+[Worker]
+Langilea
+[workers]
+langile
+[workers]
+langile
+[working]
+Lanean
+[wounded]
+zauritu
+[Yes]
+Bai
 [YESTS_BAD]
 Barne konsistentzia arazoa konektatzerakoan.
-[YESTS_UNABLE_TO_CONNECT]
-Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
-[YESTS_CREATED]
-Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
 [YESTS_CONNECTING]
 YOG metazerbitzarira konektatzen...
-[YESTS_DECONNECTING]
-YOG metazerbitzaritik deskonektatzen...
-[YESTS_YOG_KILLED]
-Administratzaile batek YOG metazerbitzaria gelditu berri du.
 [YESTS_CONNECTION_LOST]
 YOG zerbitzarira esteka galdu da.
-[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metazerbitzariak estekatzea ukatu du zure globulation2 bezeroa zaharregia delako.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek duelako.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+YOG metazerbitzariak estekatzea ukatu du protokolo arazo bat gertatu delako: konektatuta zaude jada. Saiatu berriro 45 segundu barru.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG metazerbitzariak estekatzea ukatu du erabiltzaile izen hau jada hartuta dagoelako. Erabiltzaile izen hau zurea bada, desmarkatu "YOG erabiltzaile gisa izena eman pasahitza barne" aukera.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metazerbitzariak estekatzea ukatu du zure pasahitza gaizki dagoelako.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metazerbitzariak estekatzea ukatu du zerabiltzaile izen honek ez duelako pasahitzik oraindik. Ziur aski izena eman nahi duzu. Kasu hortan, markatu "YOG erabiltzaile gisa izena eman pasahitza barne" konektatu aurretik. Aukera hau behin bakarrik markatu beharko duzu.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metazerbitzariak estekatzea ukatu du erabiltzaile izen hau jada hartuta dagoelako. Erabiltzaile izen hau zurea bada, desmarkatu "YOG erabiltzaile gisa izena eman pasahitza barne" aukera.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metazerbitzariak estekatzea ukatu du protokolo arazo bat gertatu delako: konektatuta zaude jada. Saiatu berriro 45 segundu barru.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 YOG metazerbitzariak estekatzea ukatu du barne protokolo arazo bat suertatu delako: "you are not connected yet while authenticating". Mesedez arazo honen berri eman.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG metazerbitzariak estekatzea ukatu du zure globulation2 bezeroa zaharregia delako.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metazerbitzariak estekatzea ukatu du inolako azalpenik eman gabe!
-[The player %0 has left YOG]
-%0(e)k  YOG utzi du.
-[The player %0 has joined YOG]
-%0 YOGera sartu da.
-[You are now marked as away]
-Kanpoan egotearen marka duzu.
-[You are no more marked as away]
-Ez duzu jada kanpoan egotearen marka.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek duelako.
+[YESTS_CREATED]
+Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
+[YESTS_DECONNECTING]
+YOG metazerbitzaritik deskonektatzen...
+[YESTS_UNABLE_TO_CONNECT]
+Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
+[YESTS_YOG_KILLED]
+Administratzaile batek YOG metazerbitzaria gelditu berri du.
+[yog-chat]
+#yog-en
+[yog]
+Ysagoon Online Gaming
 [YOG_HELP]
 YOG mezularitza sistemak bi komando ditu, "msg" eta "away". Idatzi "/help <komandoa>" hauetaz gehiago jakiteko.
 [YOG_HELP_AWAY]
 "/away (<mezua>)" komanduak YOG erabiltzaileei momentu batez kanpoan zaudela esatea baimentzen du. Azalpen mezu bat gehitu dezakezu.  Adibidez "/away Talo bat jatera joan naiz eta ordubitarako bueltan nago". Alias "/a"
 [YOG_HELP_MSG]
 "/msg <izena> <mezua>" komandoak mezu pribatu bat bidaltzen du.  Adibidez, "/msg Iker Kaixo Iker, zer moduz?".  Alias "/m".
-[save before quit?]
-Partida gorde irten aurretik?
-[Yes]
-Bai
-[No]
-Ez
-[Save]
-Gorde
-[auto save]
-Gordeketa automatikoa
-[Total prestige reached]
-Gehienezko izen ona lortuta
-[Continue playing]
-Jolasten jarraitu
-[Lost : your colony is dead]
-Galdu duzu: zure kolonia hil da
-[Won : you defeated your opponents]
-Irabazi duzu: aurkariak zanpatu dituzu
-[Won : your ally %0 has the most prestige]
-Irabazi duzu: %0 zure aliatuak izen on gehien du
-[Lost : %0 has more prestige than you]
-Galdu duzu: %0 zuk baino izen on gehiago du
-[Won : you have the most prestige]
-Irabazi duzu: zuk duzu inork baino izen on gehiago
-[The game has not been finished]
-Partida ez da bukatu
-[display]
-Pantaila
-[username]
-Erabiltzaile izena
-[fullscreen]
-Pantaila osoa
-[hwaccel]
-Hardware azelerazioa
-[dblbuff]
-Buffer bikoitza
-[lowquality]
-Kalitate baxua
-[audio]
-Soinua
-[Music volume]
-Bolumena (musika)
-[Happyness]
-Poztasuna
-[customcur]
-Kurtsore pertsonalizatua
-[choose campaign]
-Kanpaina aukeratu
-[nick taken]
-Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
-[mute]
-Isilik
-[abreaviation explanation A]
-A: Aliatuak
-[abreaviation explanation V]
-V: Bistaratu eraikuntza guztien ikuspegia
-[abreaviation explanation fV]
-fV: Bistaratu ostatuen ikuspegia (unitateak lapurtzeko)
-[abreaviation explanation mV]
-mV: Bistaratu merkatuen ikuspegia (frutak trukatzeko)
-[abreaviation explanation C]
-C: Txat mezuak bidali honi: 
-[shortcut explanation enter]
-Enter: Txat mezua bidali
-[shortcut explanation v]
-V: mantendu hitzegiteko
-[Delete game]
-Ezabatu aukeratutako partida
-[any explorer]
-edozein miatzaile
-[ground attack]
-Lurrezko erasoa
-[Can't join game, wrong game version]
-Ezin da partidarekin bat egin, bertsio desegokia
-[Can't join game, missmatching game parameters]
-Ezin da partidarekin bat egin, parametroak ez datoz bat
-[Can't join game, timeout]
-Ezin da partidarekin bat egin, denbora muga gainditu da
-[swamp terrain]
-Aintzira
-[river terrain]
-Erreka
-[crater lakes terrain]
-Krater Lakuak
-[old random terrain]
-ausazko lurzoru zaharra
-[old islands terrain]
-ausazko irla lurzoru zaharra
-[desert]
-desertua
-[algae]
-algak
-[wheat]
-garia
-[wood]
-egurra
-[stone]
-harria
-[river diameter]
-errekaren zabalera
-[extra islands]
-irla hutsak
-[crater density]
-krater zenbaketa
-[press space]
-Zanpatu espazio barra jarraitzeko
-[GUIMapPreview text 0]
-Mesedez aukeratu
-[GUIMapPreview text 1]
-mapa bat
-[Unit editor]
-Unitate editorea
-[skin]
-Itxura
-[hungryness]
-Gosea
-[repeat area]
-aldiz lurzoru bera
+[You are no more marked as away]
+Ez duzu jada kanpoan egotearen marka.
+[You are now marked as away]
+Kanpoan egotearen marka duzu.
+[you have lost]
+Galdu duzu!
+[you have won]
+Irabazi duzu!
+[Your %0 are under attack]
+Zure %0ak erasopean daude
+[Your unit got converted to %0's team]
+Zure unitatea %0(r)en taldera pasatu da

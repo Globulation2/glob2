@@ -1,646 +1,1104 @@
-[language]
-Polski
-[language-code]
-pl
-[language-tr]
-Język
-[hp]
-Życie
-[heal]
-Leczenie
-[armor]
-Zbroja
-[damage]
-Uszkodzenia
-[food]
-Jedzenie
-[working]
-Praca
-[inside]
-Wewnątrz
-[ressources]
-Zasoby
-[Wood]
-Drewno
-[Corn]
-Zboże
-[Papyrus]
-Papyrus
-[Stone]
-Kamień
-[Alga]
-Algi
-[Cherry]
-Wiśnie
-[Orange]
-Pomarańcze
-[Prune]
-Śliwki
-[Clearing:]
-Czyszczenie
-[Min required level:]
-Min wymagany poziom:
-[Bullets]
-Amunicja
-[range]
-Zasięg
-[destroy]
-Zniszcz
-[cancel destroy]
-Przerwij niszczenie
-[wait destroy]
-Oczekiwanie na zniszczenie
-[upgrade]
-Rozbudowa
-[repair]
-Naprawa
-[cancel upgrade]
-Przerwij rozbudowę
-[cancel repair]
-Przerwij naprawę
-[units type]
-Typ jednostek
-[workers]
-Pracownicy
-[explorers]
-Odkrywcy
-[warriors]
-Wojownicy
-[Unit type]
-Typ jednostki
-[Worker]
-Pracownik
-[Explorer]
-Poszukiwacz
-[Warrior]
-Wojownik
-[still (w)]
-Ciągle 
-[units working]
- jednostek pracujących
-[still one unit working]
-Jeszcze 1 jednostka pracująca
-[Still (i)]
-Wciąż 
-[Still one]
-Jeszcze jedna
-[Building name]
-Nazwa budowli
-[swarm building]
-Rój
-[food building]
-Gospoda
-[health building]
-Szpital
-[walkspeed building]
-Tor wyścigowy
-[swimspeed building]
-Pływalnia
-[attack building]
-Baraki
-[science building]
-Szkoła
-[defense building]
-Wieża obronna
-[exploration flag]
-Flaga eksploracji
-[war flag]
-Flaga wojenna
-[clearing flag]
-Flaga oczyszczania
-[stone wall]
-Mur kamienny
-[market]
-Bazar
-[forbidden area]
-Zakazany obszar
-[guard area]
-Pilnowany obszar
-[clear area]
-Oczyszczany obszar
-[Building short explanation]
-
-[swarm building explanation]
-Umożliwia produkcję
-[food building explanation]
-Dostarcza żywność
-[health building explanation]
-Umożliwia leczenie
-[walkspeed building explanation]
-Zwiększa szybkość
-[swimspeed building explanation]
-Umożliwia pływanie
-[attack building explanation]
-Umożliwia trening
-[science building explanation]
-Podnosi kwalifikacje
-[defense building explanation]
-Atakuje wrogie
-[exploration flag explanation]
-Przyciąga
-[war flag explanation]
-Przyciąga
-[clearing flag explanation]
-Oczyszcza
-[stone wall explanation]
-Pasywny element
-[market explanation]
-Umożliwia wymianę
-[Building short explanation 2]
-
-[swarm building explanation 2]
-jednostek
-[food building explanation 2]
-jednostkom
-[health building explanation 2]
-jednostek
-[walkspeed building explanation 2]
-jednostek na lądzie
-[swimspeed building explanation 2]
-jednostkom
-[attack building explanation 2]
-wojowników
-[science building explanation 2]
-pracowników
-[defense building explanation 2]
-jednostki i budynki
-[exploration flag explanation 2]
-poszukiwaczy
-[war flag explanation 2]
-wojowników
-[clearing flag explanation 2]
-obszar
-[stone wall explanation 2]
-obronny
-[market explanation 2]
-owoców z innymi
-[waiting for %0]
-Czeka na %0
-[%0 has left the game]
-%0 opuścił grę.
 [%0 has been deconnected of the game]
 %0 się rozłączył.
-[load game]
-Załaduj grę
-[save game]
-Zapisz grę
-[options]
-Opcje
-[alliances]
-Sojusze
-[return to game]
-Powrót do gry
-[quit the game]
-Zakończ grę
-[ok]
-Ok
-[Cancel]
-Anuluj
-[you have lost]
-Przegrałeś...
-[you have won]
-Wygrałeś !!!
-[campaign]
-Kampania
-[tutorial]
-Samouczek
-[custom game]
-Własna gra
-[yog]
-Ysagoon-Gra w Internecie
-[Enter your nickname :]
-Wpisz swoje imię:
-[Enter your password :]
-Wpisz swoje hasło:
-[lan]
-Gra sieciowa
-[settings]
-Ustawienia
-[Warning, you need to reboot the game for changes to take effect]
-Uwaga, uruchom ponownie grę, aby zmiany odniosły skutek
-[editor]
-Edytor
-[credits]
-O twórcach
-[quit]
-Zakończ
-[create game]
-Nowa gra
-[update list]
-Uaktualnij listę
-[connecting to]
-Połącz z
-[connect]
-Łączę
-[Disconnect]
-Zrywam połączenie
-[please wait]
-Proszę czekaj
-[loading glob2]
-Wczytuję Globulation 2
-[host]
-Host w grze
-[join a game]
-Przyłącz się do gry
-[join]
-Przyłącz się
-[goto main menu]
-Wróć do menu głównego
-[player name]
-Nazwa Gracza
-[svr hostname]
-Nazwa hosta
-[hp]
-Punkty życia
-[carry]
-Transport :
-[don't carry anything]
-Nic nie transportuje
-[level]
-Poziom
-[levels]
-Poziomy
-[building site]
-plac budowy
-[create map]
-Stwórz mapę
-[map size x]
-Szerokość mapy
-[map size y]
-Wysokość mapy
-[default terrain]
-Domyślny teren
-[water]
-Woda
-[sand]
-Piasek
-[grass]
-Trawa
-[teams]
- zespoły
-[choose map]
-Wybierz mapę
-[choose game]
-Wybierz grę
-[awaiting players]
-Oczekuj graczy
-[stat]
-Statystyki
-[food left]
-Pozostało jedzenia
-[the building is finished]
-Postawiono budowlę
-[the swarm is finished]
-Rój został zbudowany
-[the food building is finished]
-Zbudowano gospodę
-[the health building is finished]
-Zbudowano szpital
-[the walkspeed building is finished]
-Zbudowano tor wyścigowy
-[the swimspeed building is finished]
-Zbudowano pływalnię
-[the attack building is finished]
-Zbudowano baraki
-[the science building is finished]
-Zbudowano szkołę
-[the tower building is finished]
-Zbudowano wieżę obronną
-[the exploration flag is finished]
-Postawiono flagę eksploracji
-[the war flag is finished]
-Postawiono flagę wojenną
-[the clearing flag is finished]
-Postawiono flagę oczyszczania
-[the stone wall is finished]
-Zbudowano część muru
-[the market is finished]
-Zbudowano bazar 
-[the building is under attack]
-Budowla została zaatakowana
-[the swarm is under attack]
-Rój został zaatakowany
-[the food building is under attack]
-Gospoda została zaatakowana
-[the health building is under attack]
-Szpital został zaatakowany
-[the walkspeed building is under attack]
-Tor wyścigowy został zaatakowany
-[the swimspeed building is under attack]
-Pływalnia została zaatakowana
-[the attack building is under attack]
-Baraki zostały zaatakowane
-[the science building is under attack]
-Szkoła została zaatakowana
-[the defense building is under attack]
-Wieża obronna została zaatakowana
-[the exploration flag is under attack]
-Flaga eksploracji została zaatakowana
-[the war flag is under attack]
-Flaga wojenna została zaatakowana
-[the clearing flag is under attack]
-Flaga oczyszczania została zaatakowana
-[the stone wall is under attack]
-Mur został zaatakowany
-[the market is under attack]
-Bazar został zaatakowany
-[Your %0 are under attack]
-Twój %0 jest atakowany
-[Your unit got converted to %0's team]
-Twoja jednostka została przeciągnięta na stronę wroga %0
+[%0 has left the game]
+%0 opuścił grę.
+[%0's game]
+
 [%0's team unit got converted to your team]
 Jednostka wroga %0 została przeciągnięta na Twoją stronę
-[Uncontrolled]
-Niekontrolowany
-[ai]
-SI
-[closed]
-Zamknięte
-[close]
-Zamknij
-[player]
-Gracz
-[STARTING GAME ...]
-Początek gry...
-[Statistics]
-Statystyka
-[Buildings]
-Budowle
-[Prestige]
-Prestiż
-[Units]
-Jednostki
-[Attack]
-Atak
-[Defense]
-Obrona
-[free]
-wolne
-[of which]
-z czego
-[are ok]
-jest ok
-[are hungry]
-odczuwa głód
-[are dying hungry]
-umiera z głodu
-[are wonded]
-rannych
-[and]
-i
-[seeking a job]
-szuka pracy
-[Walk]
-Chodzi
-[Swim]
-Pływa
-[Build]
-Buduje
-[Harvest]
-Zbiera
-[At. speed]
-Prędkość ataku
-[At. strength]
-Siła ataku
-[Total]
-Łącznie
-[free]
-wolnych
-[seeking]
-szukających
-[Free]
-Wolnych
-[hungry]
-Głodnych
-[starving]
-umierających z głodu
-[wounded]
-rannych
-[In way]
-W drodze
-[On the spot]
-Na miejscu
-[Version]
-Wersja
-[open]
-Otwarty
+[abreaviation explanation A]
+
+[abreaviation explanation C]
+
+[abreaviation explanation fV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation V]
+
 [Add AI]
 Dodaj SI
+[add map]
+
+[add shortcut]
+
 [AI]
 SI
+[ai]
+SI
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar
 [AINone]
 AINone
 [AINumbi]
 AINumbi
-[AICastor]
-AICastor
-[AIWarrush]
-AIWarrush
 [AIReachToInfinity]
 ReachToInfinity
-[AINicowar]
-Nicowar
 [AIToubib]
 AIToubib
-[the games]
-Gry
-[the maps]
-Mapy
-[was]
-był
-[was AI]
-był SI
-[state]
-stan
-[Start]
-Start
-[not ready]
-nie gotowy
-[has joined]
-dołączył(a)
-[has quit]
-wylogował się
-[yog-chat]
-#yog-pl
-[speed]
-Prędkość
-[current speed]
-Aktualna prędkość
+[AIWarrush]
+AIWarrush
+[Alga]
+Algi
+[algae]
+
+[alliances]
+Sojusze
+[and]
+i
+[any explorer]
+
+[are dying hungry]
+umiera z głodu
+[are hungry]
+odczuwa głód
+[are ok]
+jest ok
+[are wonded]
+rannych
+[armor]
+Zbroja
+[assigned]
+
+[At. speed]
+Prędkość ataku
+[At. strength]
+Siła ataku
 [attack speed]
 Prędkość ataku
-[new]
-Nowa
-[load]
-Ładuj
-[handmade map]
-Własna mapa
-[mapGenerationDescriptor Methodes]
-Metody generowania losowych map
-[uniform terrain]
-Rodzaj terenu
-[random terrain]
-Losowy teren
-[islands terrain]
-Wyspy
-[ratios]
-Proporcje
-[smoothing]
-Wygładzanie
-[number of teams]
-Ilość drużyn
-[islands size]
-Wielkość wysp
-[beach size]
-Wielkość plaż
-[workers]
-Pracownicy
+[Attack]
+Atak
+[audio]
+Audio
+[auto save]
+Autozapis
+[available lan games]
+Dostępne gry sieciowe
+[awaiting players]
+Oczekuj graczy
+[away:]
+zajęty:
+[backspace]
+
 [bad error in connection system]
 Bład w systemie połączeń
-[not connected]
-Nie połączony
-[presence request sent]
-Wysłano rządanie stanu ...
-[session request sent]
-Wysłano rządanie sesji ...
+[barracks explanation 2]
+wojowników
+[barracks explanation]
+Umożliwia trening
+[barracks]
+Baraki
+[beach size]
+Wielkość plaż
+[break]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
+[Build]
+Buduje
+[Building name]
+Nazwa budowli
+[Building short explanation 2]
+
+[Building short explanation]
+
+[building site]
+plac budowy
+[Buildings]
+Budowle
+[Bullets]
+Amunicja
+[campaign editor]
+
+[campaign]
+Kampania
+[Can't join game, missmatching game parameters]
+
+[Can't join game, timeout]
+
+[Can't join game, wrong game version]
+
+[cancel destroy]
+Przerwij niszczenie
+[cancel repair]
+Przerwij naprawę
+[cancel upgrade]
+Przerwij rozbudowę
+[Cancel]
+Anuluj
+[caps lock]
+
+[carry]
+Transport :
+[Change Area Name]
+
 [checksum sent]
 Wysłano sumę kontrolną ...
+[Cherry]
+Wiśnie
+[choose campaign]
+
+[choose game]
+Wybierz grę
+[choose map]
+Wybierz mapę
+[clear area]
+Oczyszczany obszar
+[clear]
+
+[Clearing:]
+Czyszczenie
+[clearingflag explanation 2]
+obszar
+[clearingflag explanation]
+Oczyszcza
+[clearingflag]
+Flaga oczyszczania
+[close]
+Zamknij
+[closed]
+Zamknięte
+[compile]
+Kompiluj skrypt
+[compose]
+
+[connect]
+Łączę
+[connected to all players]
+Połączono z resztą graczy
 [connected to server]
 Połączono z serwerem
 [connecting to all players]
 Łączenie z resztą graczy
-[connected to all players]
-Połączono z resztą graczy
-[available lan games]
-Dostępne gry sieciowe
-[login]
-Login
-[from:]
-od:
-[to:]
-do:
-[away:]
-zajęty:
-[compile]
-Kompiluj skrypt
-[downloaded at]
-Ściągniete z
-[percent]
-  procent
+[connecting to]
+Połącz z
+[Continue playing]
+Kontynuuj grę
+[Corn]
+Zboże
+[crater density]
+
+[crater lakes terrain]
+
+[create game]
+Nowa gra
+[create map]
+Stwórz mapę
+[credits]
+O twórcach
+[current speed]
+Aktualna prędkość
+[custom game]
+Własna gra
+[customcur]
+
+[damage]
+Uszkodzenia
+[Damaged Map]
+
+[dblbuff]
+PodwĂłjne buforowanie
+[decrease units working]
+
+[default terrain]
+Domyślny teren
+[defencetower explanation 2]
+jednostki i budynki
+[defencetower explanation]
+Atakuje wrogie
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
+Wieża obronna
+[Defense Map]
+
+[Defense]
+Obrona
+[Delete game]
+
+[delete]
+
+[desert]
+
+[destroy building]
+
+[destroy]
+Zniszcz
+[Disconnect]
+Zrywam połączenie
+[display]
+Wyświetlanie
+[don't carry anything]
+Nic nie transportuje
+[down]
+
 [download finished]
 Pobieranie zakończone
+[downloaded at]
+Ściągniete z
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
+[editor]
+Edytor
+[end]
+
+[Enter your nickname :]
+Wpisz swoje imię:
+[Enter your password :]
+Wpisz swoje hasło:
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+poszukiwaczy
+[explorationflag explanation]
+Przyciąga
+[explorationflag]
+Flaga eksploracji
+[Explorer Ratio]
+
+[Explorer]
+Poszukiwacz
+[explorers]
+Odkrywcy
+[extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[food left]
+Pozostało jedzenia
+[food]
+Jedzenie
+[forbidden area]
+Zakazany obszar
+[Free]
+Wolnych
+[free]
+wolne
+[free]
+wolnych
+[from:]
+od:
+[fruit]
+
+[fullscreen]
+PeĹny ekran
+[game full]
+Komplet graczy
+[game shortcuts]
+
+[game speed]
+Prędkość gry
+[general settings]
+
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Wróć do menu głównego
+[grass]
+Trawa
+[ground attack]
+
+[guard area]
+Pilnowany obszar
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 1]
+
+[handmade map]
+Własna mapa
+[Happyness]
+Satysfakcja
+[hard pause]
+
+[Harvest]
+Zbiera
+[has joined]
+dołączył(a)
+[has quit]
+wylogował się
+[heal]
+Leczenie
+[help]
+
+[home]
+
+[hospital explanation 2]
+jednostek
+[hospital explanation]
+Umożliwia leczenie
+[hospital]
+Szpital
+[host]
+Host w grze
+[hp]
+Punkty życia
+[hp]
+Życie
+[human]
+
+[hungry]
+Głodnych
+[hungryness]
+
+[hwaccel]
+Przyspieszenie sprzÄtowe
+[In way]
+W drodze
+[increase units working]
+
+[inn explanation 2]
+jednostkom
+[inn explanation]
+Dostarcza żywność
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Gospoda
+[insert]
+
+[inside]
+Wewnątrz
+[islands size]
+Wielkość wysp
+[islands terrain]
+Wyspy
+[iterate selection]
+
+[jobs]
+
+[join a game]
+Przyłącz się do gry
+[join]
+Przyłącz się
+[keyboard settings]
+
+[kick]
+
+[lan]
+Gra sieciowa
+[language-code]
+pl
+[language-tr]
+Język
+[language]
+Polski
+[large]
+duża
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+Poziom
+[levels]
+Poziomy
+[load campaign]
+
+[load game]
+Załaduj grę
+[load map]
+
+[load]
+Ładuj
+[loading glob2]
+Wczytuję Globulation 2
+[login]
+Login
+[Lost : %0 has more prestige than you]
+Przegrałeś: %0 ma większy prestiż od Twojego
+[Lost : your colony is dead]
+Przegrałeś: Twoja kolonia została wybita.
+[lowquality]
+Niska jakość
+[Magic At. Air]
+
+[Magic At. Ground]
+
 [Map name: %0]
 Nazwa mapy: %0.
-[one player]
-Gracz dołaczył do gry.
+[map name]
+
+[map size x]
+Szerokość mapy
+[map size y]
+Wysokość mapy
+[mapGenerationDescriptor Methodes]
+Metody generowania losowych map
+[maps available]
+
+[mark map]
+
+[market explanation 2]
+owoców z innymi
+[market explanation]
+Umożliwia wymianę
+[market]
+Bazar
+[medium]
+średnia
+[menu]
+
+[Min required level:]
+Min wymagany poziom:
+[Minimum Level To Flag]
+
+[Music volume]
+Głośność (muzyka)
+[mute]
+
+[network latency]
+Opóźnienie sieci
+[new campaign]
+
+[new]
+Nowa
+[nick taken]
+Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
+[no ressources growth areas]
+
+[No]
+Nie
+[not connected]
+Nie połączony
+[not ready]
+nie gotowy
 [number of players: %0]
 %0 graczy dołączyło do gry.
 [number of teams: %0]
 %0 drużyny
-[game full]
-Komplet graczy
-[small]
-mała
-[medium]
-średnia
-[large]
-duża
-[network latency]
-Opóźnienie sieci
-[game speed]
-Prędkość gry
+[number of teams]
+Ilość drużyn
+[numlock]
+
+[of which]
+z czego
+[ok]
+Ok
+[old islands terrain]
+
+[old random terrain]
+
+[On the spot]
+Na miejscu
+[one player]
+Gracz dołaczył do gry.
+[open chat box]
+
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
+[open]
+Otwarty
+[options]
+Opcje
+[Orange]
+Pomarańcze
+[page down]
+
+[page up]
+
+[Papyrus]
+Papyrus
+[pause game]
+
+[pause]
+
 [Paused]
 Pauza
+[percent]
+  procent
+[player name]
+Nazwa Gracza
+[player]
+Gracz
+[please wait]
+Proszę czekaj
+[power]
+
+[presence request sent]
+Wysłano rządanie stanu ...
+[press space]
+
+[Prestige]
+Prestiż
+[print screen]
+
+[Prune]
+Śliwki
+[quit the editor]
+
+[quit the game]
+Zakończ grę
+[quit]
+Zakończ
+[racetrack explanation 2]
+jednostek na lądzie
+[racetrack explanation]
+Zwiększa szybkość
+[racetrack]
+Tor wyścigowy
+[random terrain]
+Losowy teren
+[range]
+Zasięg
+[ratios]
+Proporcje
 [Register a new YOG user with password]
 Zarejestruj nowego użytkownika z hasłem
+[remember unit]
+
 [Remember YOG password localy]
 Zapamiętaj hasło lokalnie
+[remove map]
+
+[remove shortcut]
+
+[repair building]
+
+[repair]
+Naprawa
+[repeat area]
+
+[ressources]
+Zasoby
+[restore default shortcuts]
+
+[return to editor]
+
+[return to game]
+Powrót do gry
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+
+[river terrain]
+
+[sand]
+Piasek
+[save before quit?]
+Czy chcesz zapisaÄ stan gry, przed jej zakoĹczeniem ?
+[save game]
+Zapisz grę
+[save map]
+
+[Save]
+Zapisz
+[school explanation 2]
+pracowników
+[school explanation]
+Podnosi kwalifikacje
+[school]
+Szkoła
+[Script Areas]
+
+[scroll lock]
+
+[seeking a job]
+szuka pracy
+[seeking]
+szukających
+[select barracks building]
+
+[select clearingflag]
+
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
+[session request sent]
+Wysłano rządanie sesji ...
+[settings]
+Ustawienia
+[shortcut explanation enter]
+
+[shortcut explanation v]
+
+[show main menu]
+
+[skin]
+
+[small]
+mała
+[smoothing]
+Wygładzanie
+[space]
+
+[speed]
+Prędkość
+[start mission]
+
+[start new campaign]
+
+[Start]
+Start
+[STARTING GAME ...]
+Początek gry...
+[Starving Map]
+
+[starving]
+umierających z głodu
+[stat]
+Statystyki
+[state]
+stan
+[Statistics]
+Statystyka
+[Still (i)]
+Wciąż 
+[still (w)]
+Ciągle 
+[still one unit working]
+Jeszcze 1 jednostka pracująca
+[Still one]
+Jeszcze jedna
+[Stone]
+Kamień
+[stone]
+
+[stonewall explanation 2]
+obronny
+[stonewall explanation]
+Pasywny element
+[stonewall]
+Mur kamienny
+[svr hostname]
+Nazwa hosta
+[swamp terrain]
+
+[swarm explanation 2]
+jednostek
+[swarm explanation]
+Umożliwia produkcję
+[swarm level 0]
+
+[swarm]
+Rój
+[Swim]
+Pływa
+[swimmingpool explanation 2]
+jednostkom
+[swimmingpool explanation]
+Umożliwia pływanie
+[swimmingpool]
+Pływalnia
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+
+[switch to flag view]
+
+[switch to removing areas]
+
+[switch to teams view]
+
+[switch to terrain view]
+
+[sys req]
+
+[tab]
+
+[teams]
+ zespoły
+[the barracks is finished]
+Zbudowano baraki
+[the barracks is under attack]
+Baraki zostały zaatakowane
+[the building is finished]
+Postawiono budowlę
+[the building is under attack]
+Budowla została zaatakowana
+[the clearingflag is finished]
+Postawiono flagę oczyszczania
+[the clearingflag is under attack]
+Flaga oczyszczania została zaatakowana
+[the defencetower is finished]
+Zbudowano wieżę obronną
+[the defencetower is under attack]
+Wieża obronna została zaatakowana
+[the explorationflag is finished]
+Postawiono flagę eksploracji
+[the explorationflag is under attack]
+Flaga eksploracji została zaatakowana
+[The game has not been finished]
+Gra nie została skończona
+[the games]
+Gry
+[the hospital is finished]
+Zbudowano szpital
+[the hospital is under attack]
+Szpital został zaatakowany
+[the inn is finished]
+Zbudowano gospodę
+[the inn is under attack]
+Gospoda została zaatakowana
+[the maps]
+Mapy
+[the market is finished]
+Zbudowano bazar 
+[the market is under attack]
+Bazar został zaatakowany
+[The player %0 has joined YOG]
+Gracz %0 przyłączył się do YOG.
+[The player %0 has left YOG]
+Gracz %0 opuścił YOG.
+[the racetrack is finished]
+Zbudowano tor wyścigowy
+[the racetrack is under attack]
+Tor wyścigowy został zaatakowany
+[the school is finished]
+Zbudowano szkołę
+[the school is under attack]
+Szkoła została zaatakowana
+[the stonewall is finished]
+Zbudowano część muru
+[the stonewall is under attack]
+Mur został zaatakowany
+[the swarm is finished]
+Rój został zbudowany
+[the swarm is under attack]
+Rój został zaatakowany
+[the swimmingpool is finished]
+Zbudowano pływalnię
+[the swimmingpool is under attack]
+Pływalnia została zaatakowana
+[the warflag is finished]
+Postawiono flagę wojenną
+[the warflag is under attack]
+Flaga wojenna została zaatakowana
+[to:]
+do:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
+[toggle menu screen]
+
+[toggle recording voice]
+
+[Total prestige reached]
+Osiągnięty prestiż
+[Total]
+Łącznie
+[tutorial]
+Samouczek
+[unassigned]
+
+[Uncontrolled]
+Niekontrolowany
+[undo]
+
+[uniform terrain]
+Rodzaj terenu
+[Unit editor]
+
+[unit settings]
+
+[Unit type]
+Typ jednostki
+[units type]
+Typ jednostek
+[units working]
+ jednostek pracujących
+[Units]
+Jednostki
+[unlocked by]
+
+[Unnamed Area]
+
+[up]
+
+[update list]
+Uaktualnij listę
+[upgrade building]
+
+[upgrade]
+Rozbudowa
+[username]
+Nazwa użytkownika
+[Version]
+Wersja
+[view history]
+
+[wait destroy]
+Oczekiwanie na zniszczenie
+[waiting for %0]
+Czeka na %0
+[waiting for key]
+
+[Walk]
+Chodzi
+[warflag explanation 2]
+wojowników
+[warflag explanation]
+Przyciąga
+[warflag]
+Flaga wojenna
+[Warning, you need to reboot the game for changes to take effect]
+Uwaga, uruchom ponownie grę, aby zmiany odniosły skutek
+[Warrior Ratio]
+
+[Warrior]
+Wojownik
+[warriors]
+Wojownicy
+[was AI]
+był SI
+[was]
+był
+[water]
+Woda
+[Wheat]
+
+[Won : you defeated your opponents]
+Wygrałeś: pokonałeś swoich przeciwników
+[Won : you have the most prestige]
+Wygrałeś: Masz największy prestiż
+[Won : your ally %0 has the most prestige]
+Wygrałeś: %0 ma największy prestiż
+[Wood]
+Drewno
+[wood]
+
+[Worker Ratio]
+
+[Worker]
+Pracownik
+[workers]
+Pracownicy
+[workers]
+Pracownicy
+[working]
+Praca
+[wounded]
+rannych
+[Yes]
+Tak
 [YESTS_BAD]
 Błąd spójności podczas łączenia.
-[YESTS_UNABLE_TO_CONNECT]
-Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
-[YESTS_CREATED]
-System jest gotowy do połączenia z metaserwerem YOG.
 [YESTS_CONNECTING]
 Nawiązuje połączenie z metaserwerem YOG...
-[YESTS_DECONNECTING]
-Rozłączam z metaserwerem YOG...
-[YESTS_YOG_KILLED]
-Administrator wyłączył metaserwer YOG.
 [YESTS_CONNECTION_LOST]
 Połączenie z YOG zostało utracone.
-[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Metaserwer YOG odmówił połączenia, ponieważ Twoja wersja Globulation 2 jest zbyt stara, by mógł się z nią komunikować.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Metaserwer YOG odmówił połączenia, ponieważ twój login jest już zajęty przez kogoś innego.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Metaserwer YOG odmówił połączenia z powodu błędnego hasła.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Metaserwer YOG odmówił połączenia, ponieważ Twoja wersja Globulation 2 jest zbyt stara, by mógł się z nią komunikować.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Metaserwer YOG odmĂłwiĹ poĹÄczenia bez dalszego wyjaĹnienia.
-[The player %0 has left YOG]
-Gracz %0 opuścił YOG.
-[The player %0 has joined YOG]
-Gracz %0 przyłączył się do YOG.
-[You are now marked as away]
-Jesteś oznaczony jako nieaktywny.
-[You are no more marked as away]
-Nie jesteĹ juĹź oznaczony jako nieaktywny.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Metaserwer YOG odmówił połączenia, ponieważ twój login jest już zajęty przez kogoś innego.
+[YESTS_CREATED]
+System jest gotowy do połączenia z metaserwerem YOG.
+[YESTS_DECONNECTING]
+Rozłączam z metaserwerem YOG...
+[YESTS_UNABLE_TO_CONNECT]
+Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
+[YESTS_YOG_KILLED]
+Administrator wyłączył metaserwer YOG.
+[yog-chat]
+#yog-pl
+[yog]
+Ysagoon-Gra w Internecie
 [YOG_HELP]
 System komunikacji YOG ma dwie komendy, "msg" oraz "away". Napisz "/help <komenda>" aby się o nich więcej dowiedzieć.
 [YOG_HELP_AWAY]
 Komenda "/away (<wiadomość>)" pozwala Ci poinformować innych użytkowników YOG o Twojej tymczasowej nieobecności. Możesz dodać krótką notę informacyjną. Np. "/away Jem obiad będę o 14". Możesz użyć też skrótu "/a".
 [YOG_HELP_MSG]
 Komenda "/msg <nazwa> <wiadomość>" pozwala Ci przesłać wiadomość do jednej osoby. Np. "/msg Daemon42 Twoje tłumaczenie ssie...". W skrócie "/m"
-[save before quit?]
-Czy chcesz zapisaÄ stan gry, przed jej zakoĹczeniem ?
-[Yes]
-Tak
-[No]
-Nie
-[Save]
-Zapisz
-[auto save]
-Autozapis
-[Total prestige reached]
-Osiągnięty prestiż
-[Continue playing]
-Kontynuuj grę
-[Lost : your colony is dead]
-Przegrałeś: Twoja kolonia została wybita.
-[Won : you defeated your opponents]
-Wygrałeś: pokonałeś swoich przeciwników
-[Won : your ally %0 has the most prestige]
-Wygrałeś: %0 ma największy prestiż
-[Lost : %0 has more prestige than you]
-Przegrałeś: %0 ma większy prestiż od Twojego
-[Won : you have the most prestige]
-Wygrałeś: Masz największy prestiż
-[The game has not been finished]
-Gra nie została skończona
-[display]
-Wyświetlanie
-[username]
-Nazwa użytkownika
-[fullscreen]
-PeĹny ekran
-[hwaccel]
-Przyspieszenie sprzÄtowe
-[dblbuff]
-PodwĂłjne buforowanie
-[lowquality]
-Niska jakość
-[audio]
-Audio
-[Music volume]
-Głośność (muzyka)
-[Happyness]
-Satysfakcja
-[nick taken]
-Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
+[You are no more marked as away]
+Nie jesteĹ juĹź oznaczony jako nieaktywny.
+[You are now marked as away]
+Jesteś oznaczony jako nieaktywny.
+[you have lost]
+Przegrałeś...
+[you have won]
+Wygrałeś !!!
+[Your %0 are under attack]
+Twój %0 jest atakowany
+[Your unit got converted to %0's team]
+Twoja jednostka została przeciągnięta na stronę wroga %0

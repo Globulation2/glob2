@@ -1,0 +1,5 @@
+Import("env")
+
+env.Tar(env["TARFILE"], "sans.ttf")
+
+env.Tar(env["TARFILE"], "SConscript")

@@ -55,8 +55,7 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	// loading baseteam
 	stream->readEnterSection("BaseTeam");
-	if (versionMinor>25)
-		type = (TeamType)stream->readUint32("type");
+	type = (TeamType)stream->readUint32("type");
 	teamNumber = stream->readSint32("teamNumber");
 	numberOfPlayer = stream->readSint32("numberOfPlayer");
 	stream->read(&colorR, 1, "colorR");
@@ -90,14 +89,6 @@ void BaseTeam::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(playersMask, "playersMask");
 	stream->writeLeaveSection();
 	race.save(stream);
-}
-
-
-
-
-Uint8 BaseTeam::getOrderType()
-{
-	return DATA_BASE_TEAM;
 }
 
 
@@ -215,8 +206,6 @@ void Team::init(void)
 	startPosX=startPosY=0;
 	startPosSet=0;
 
-	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-		events[i] = Event();
 	isAlive=true;
 	hasWon=false;
 	prestige=0;
@@ -225,13 +214,16 @@ void Team::init(void)
 	for(int i=0; i<MAX_NB_RESSOURCES; ++i)
 		teamRessources[i]=0;
 
+	for(int i=0; i<GESize; ++i)
+		eventCooldownTimers[i]=0;
+
 	noMoreBuildingSitesCountdown=0;
 }
 
 
 
 
-void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
+void Team::setBaseTeam(const BaseTeam *initial)
 {
 	teamNumber=initial->teamNumber;
 	numberOfPlayer=initial->numberOfPlayer;
@@ -239,14 +231,8 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	race=initial->race;
 	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 
-	// This case is a bit hard to understand.
-	// When you load a teamed saved game, you don't want to change your aliances.
-	// But players may join the network game in adifferent order than when the game was saved.
-	if (overwriteAfterbase)
-	{
-		setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
-		setCorrectMasks();
-	}
+	setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
+	setCorrectMasks();
 }
 
 
@@ -351,38 +337,22 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	me = stream->readUint32("me");
 	startPosX = stream->readSint32("startPosX");
 	startPosY = stream->readSint32("startPosY");
-	if (versionMinor >= 29)
-		startPosSet = stream->readSint32("startPosSet");
-	else
-		startPosSet = 0;
-	if (versionMinor >= 36)
-	{
-		unitConversionLost = stream->readSint32("unitConversionLost");
-		unitConversionGained = stream->readSint32("unitConversionGained");
-	}
-	else
-	{
-		unitConversionLost = 0;
-		unitConversionGained = 0;
-	}
+	startPosSet = stream->readSint32("startPosSet");
+	unitConversionLost = stream->readSint32("unitConversionLost");
+	unitConversionGained = stream->readSint32("unitConversionGained");
 
-	if(versionMinor >= 45)
+	stream->readEnterSection("teamRessources");
+	for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
 	{
-		stream->readEnterSection("teamRessources");
-		for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
-		{
-			stream->readEnterSection(i);
-			teamRessources[i] = stream->readUint32("teamRessources");
-			stream->readLeaveSection();
-		}
+		stream->readEnterSection(i);
+		teamRessources[i] = stream->readUint32("teamRessources");
 		stream->readLeaveSection();
 	}
-	else
-	{
-		for(unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
-			teamRessources[i]=0;
-	}
+	stream->readLeaveSection();
 
+
+	for(int i=0; i<GESize; ++i)
+		eventCooldownTimers[i]=0;
 
 	if (!stats.load(stream, versionMinor))
 	{
@@ -391,8 +361,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	}
 	stats.step(this, true);
 
-	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-		events[i] = Event();
 	isAlive = true;
 
 	stream->readLeaveSection();
@@ -667,7 +635,7 @@ void Team::update()
 
 bool Team::openMarket()
 {
-	int numberOfTeam=game->session.numberOfTeam;
+	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	for (int ti=0; ti<numberOfTeam; ti++)
 		if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
 			return true;
@@ -726,10 +694,10 @@ Building *Team::findNearestHeal(Unit *unit)
 
 Building *Team::findNearestFood(Unit *unit)
 {
-	SessionGame &session=game->session;
+	MapHeader& header=game->mapHeader;
 
 	bool concurency = false;//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
-	for (int ti= 0; ti < session.numberOfTeam; ti++)
+	for (int ti= 0; ti < header.getNumberOfTeams(); ti++)
 		if (ti != teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
 		{
 			concurency = true;
@@ -747,7 +715,7 @@ Building *Team::findNearestFood(Unit *unit)
 		if (unit->performance[FLY])
 		{
 			Sint32 bestDist = maxDist;
-			for (int ti = 0; ti < session.numberOfTeam; ti++)
+			for (int ti = 0; ti < header.getNumberOfTeams(); ti++)
 			{
 				if (ti == teamNumber)
 					continue;
@@ -778,7 +746,7 @@ Building *Team::findNearestFood(Unit *unit)
 		{
 			Sint32 bestDist = maxDist;
 			bool canSwim = (unit->performance[SWIM] > 0);
-			for (int ti = 0; ti < session.numberOfTeam; ti++)
+			for (int ti = 0; ti < header.getNumberOfTeams(); ti++)
 			{
 				if (ti == teamNumber)
 					continue;
@@ -1184,13 +1152,9 @@ void Team::syncStep(void)
 		fprintf(logFile, "  canFeedUnit.size()=%zd\n", canFeedUnit.size());
 		fprintf(logFile, "  canHealUnit.size()=%zd\n", canHealUnit.size());
 	}
-	//isAlive=isAlive && (isEnoughFoodInSwarm || nbUsefullUnitsAlone!=0 || (nbUsefullUnits!=0 && (canFeedUnit.size()>0 || canHealUnit.size()>0)));
-	// decount event cooldown counter
-	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-		if (events[i].cooldown > 0)
-			events[i].cooldown--;
 
 	stats.step(this);
+	updateEvents();
 }
 
 
@@ -1201,7 +1165,7 @@ void Team::checkControllingPlayers(void)
 	if (!hasWon)
 	{
 		bool stillInControl = false;
-		for (int i=0; i<game->session.numberOfPlayer; i++)
+		for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
 		{
 			if ((game->players[i]->teamNumber == teamNumber) &&
 				game->players[i]->type != Player::P_LOST_DROPPING &&
@@ -1213,6 +1177,60 @@ void Team::checkControllingPlayers(void)
 }
 
 
+
+void Team::pushGameEvent(boost::shared_ptr<GameEvent> event)
+{
+	///Ignore events when the cooldown is above 0
+	if(eventCooldownTimers[event->getEventType()] == 0)
+	{
+		events.push(event);
+		eventCooldownTimers[event->getEventType()]=50;
+	}
+}
+	
+
+
+boost::shared_ptr<GameEvent> Team::getEvent()
+{
+	if(events.empty())
+		return boost::shared_ptr<GameEvent>();
+
+	boost::shared_ptr<GameEvent> event = events.front();
+	events.pop();
+	return event;
+}
+	
+
+
+void Team::updateEvents()
+{
+	for(int i=0; i<GESize; ++i)
+	{
+		if(eventCooldownTimers[i]>0)
+			eventCooldownTimers[i]-=1;
+	}
+
+
+	bool testAnother=true;
+	while(testAnother && !events.empty())
+	{
+		boost::shared_ptr<GameEvent> event = events.front();
+		if((game->stepCounter - event->getStep()) > 100)
+		{
+			events.pop();
+		}
+		else
+		{
+			testAnother=false;
+		}
+	}
+}
+
+	
+bool Team::wasRecentEvent(GameEventType type)
+{
+	return eventCooldownTimers[type]==50;
+}
 
 
 void Team::dirtyGlobalGradient()
@@ -1354,12 +1372,12 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 
 
-const char *Team::getFirstPlayerName(void) const
+std::string Team::getFirstPlayerName(void) const
 {
-	for (int i=0; i<game->session.numberOfPlayer; i++)
+	for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
 	{
 		if (game->players[i]->team == this)
 			return game->players[i]->name;
 	}
-	return  Toolkit::getStringTable()->getString("[Uncontrolled]");
+	return Toolkit::getStringTable()->getString("[Uncontrolled]");
 }

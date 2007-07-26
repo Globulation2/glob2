@@ -70,6 +70,7 @@ void TeamStat::reset()
 	}
 	needFoodCritical=0;
 	needFood=0;
+	needFoodNoInns=0;
 	needHeal=0;
 	needNothing=0;
 	for(int i=0; i<NB_ABILITY; ++i)
@@ -86,95 +87,6 @@ void TeamStat::reset()
 
 	for(int i=0; i<HAPPYNESS_COUNT+1; ++i)
 		happiness[i]=0;
-
-	//Set the starving map to 0
-	for(unsigned x=0; x<starvingMap.size(); ++x)
-	{
-		starvingMap[x]=0;
-	}
-	starvingMax=0;
-
-	//Set the damaged map to 0
-	for(unsigned x=0; x<damagedMap.size(); ++x)
-	{
-		damagedMap[x]=0;
-	}
-	damagedMax=0;
-
-	//Set the defense map to 0
-	for(unsigned x=0; x<defenseMap.size(); ++x)
-	{
-		defenseMap[x]=0;
-	}
-	defenseMax=0;
-}
-
-
-
-void TeamStat::setMapSize(int w, int h)
-{
-	starvingMap.resize(w*h);
-	damagedMap.resize(w*h);
-	defenseMap.resize(w*h);
-	width=w;
-}
-
-
-
-void TeamStat::increasePoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map)
-{
-	//Update the map
-	for(int n=0; n<8; ++n)
-	{
-		for(int px=0; px<(n*2+1); ++px)
-		{
-			for(int py=0; py<(n*2+1); ++py)
-			{
-				int posx=x-n+px;
-				int posy=y-n+py;
-
-				if(posx<0)
-					posx+=map->getW();
-				if(posx >= map->getW())
-					posx-=map->getW();
-
-				if(posy<0)
-					posy+=map->getH();
-				if(posy >= map->getH())
-					posy-=map->getH();
-
-				numberMap[getPos(posx, posy)]+=1;
-				max=std::max(max, numberMap[getPos(posx, posy)]);
-			}
-		}
-	}
-}
-
-
-
-void TeamStat::spreadPoint(std::vector<int>& numberMap, int& max, int x, int y, Map* map, int value, int distance)
-{
-	for (int px=x-distance; px<(x+distance); px++)
-	{
-		for (int py=y-distance; py<(y+distance); py++)
-		{
-				int dist=std::max(std::abs(px-x), std::abs(py-y));
-				int targetX=px;
-				int targetY=py;
-				if(targetX<0)
-					targetX+=map->getW();
-				if(targetX >= map->getW())
-					targetX-=map->getW();
-
-				if(targetY<0)
-					targetY+=map->getH();
-				if(targetY >= map->getH())
-					targetY-=map->getH();
-
-				numberMap[getPos(targetX, targetY)]+=(value/distance)*(distance-dist);
-				max=std::max(max, numberMap[getPos(targetX, targetY)]);
-		}
-	}
 }
 
 
@@ -195,12 +107,6 @@ void TeamSmoothedStat::reset()
 	totalNeeded=0;
 	for(int i=0; i<4; ++i)
 		totalNeededPerLevel[i]=0;
-}
-
-
-
-void TeamSmoothedStat::setMapSize(int w, int h)
-{
 }
 
 
@@ -259,7 +165,6 @@ void TeamStats::step(Team *team, bool reloaded)
 		return;
 	
 	TeamSmoothedStat maxStat;
-	maxStat.setMapSize(width, height);
 	for (int i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
 		TeamSmoothedStat &smoothedStat=smoothedStats[i];
@@ -302,14 +207,15 @@ void TeamStats::step(Team *team, bool reloaded)
 					stat.needNothing++;
 				else if (u->hp<u->performance[HP])
 				{
-					if(haveSetMapSize)
-					{
-						stat.increasePoint(stat.starvingMap, stat.starvingMax, u->posX, u->posY, team->map);
-					}
 					stat.needFoodCritical++;
 				}
 				else
 					stat.needFood++;
+					
+				if(u->activity != Unit::ACT_UPGRADING)
+				{
+					stat.needFoodNoInns++;
+				}
 			}
 			else if (u->medical==Unit::MED_DAMAGED)
 			{
@@ -317,10 +223,6 @@ void TeamStats::step(Team *team, bool reloaded)
 					stat.needNothing++;
 				else
 				{
-					if(haveSetMapSize)
-					{
-						stat.increasePoint(stat.damagedMap, stat.damagedMax, u->posX, u->posY, team->map);
-					}
 					stat.needHeal++;
 				}
 			}
@@ -357,8 +259,6 @@ void TeamStats::step(Team *team, bool reloaded)
 			stat.numberBuildingPerTypePerLevel[b->type->shortTypeNum][longLevel]++;
 			stat.totalHP += b->hp;
 			stat.totalDefensePower += (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
-			if(b->type->shootDamage > 0)
-				stat.spreadPoint(stat.defenseMap, stat.defenseMax, b->posX, b->posY, team->map, (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE, b->type->shootingRange*2);
 			if ((!b->type->isBuildingSite) && (!b->type->isVirtual))
 				stat.totalBuilding++;
 		}
@@ -371,21 +271,6 @@ void TeamStats::step(Team *team, bool reloaded)
 	stat.totalNeeded=maxStat.totalNeeded;
 	for(int k=0; k<4; ++k)
 		stat.totalNeededPerLevel[k]=maxStat.totalNeededPerLevel[k];
-}
-
-void TeamStats::setMapSize(int w, int h)
-{
-	width=w;
-	height=h;
-	for(int i=0; i<STATS_SIZE; ++i)
-	{
-		stats[i].setMapSize(w, h);
-	}
-	for(int i=0; i<STATS_SMOOTH_SIZE; ++i)
-	{
-		smoothedStats[i].setMapSize(w, h);
-	}
-	haveSetMapSize=true;
 }
 
 void TeamStats::drawText(int pos)
@@ -642,15 +527,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("TeamStats");
 	Uint32 size=0;
-	if(versionMinor>=50)
-	{
-		size=stream->readUint32("size");
-	}
-	else
-	{
-		size=128;
-		stream->readSint32("endOfGameStatIndex");
-	}
+	size=stream->readUint32("size");
 
 	bool stop=false;
 	
@@ -663,17 +540,9 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		Sint32 hp = 0;
 		Sint32 attack = 0;
 		Sint32 defense = 0;
-		if (versionMinor > 31)
-		{
-			hp = stream->readSint32("EndOfGameStat::TYPE_HP");
-			attack = stream->readSint32("EndOfGameStat::TYPE_ATTACK");
-			defense = stream->readSint32("EndOfGameStat::TYPE_DEFENSE");
-		}
-		if(versionMinor<50)
-		{
-			if(units==0 && buildings==0 && prestige==0 && hp==0 && attack==0 && defense==0)
-				stop=true;
-		}
+		hp = stream->readSint32("EndOfGameStat::TYPE_HP");
+		attack = stream->readSint32("EndOfGameStat::TYPE_ATTACK");
+		defense = stream->readSint32("EndOfGameStat::TYPE_DEFENSE");
 		if(!stop)
 			endOfGameStats.push_back(EndOfGameStat(units, buildings, prestige, hp, attack, defense));
 		stream->readLeaveSection();
