@@ -13,7 +13,7 @@ Stéphane Magnenat <stephane at magnenat dot net> (Until August 2006)
 *
 Further programming
 
-Bradley Arsenault <genixpro at gmail dot com> (Nicowar AI, Echo AI System, New Map Editor, Miscellaneous Bugfixes)
+Bradley Arsenault <genixpro at gmail dot com> (AI's, Map Editor, new YOG, bugfixes)
 Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
 Andrew Sayers <globulation2 at pileofstuff dot org> (Miscellaneous bugfixes)
 Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (Perlin-noise based map generation)
@@ -79,6 +79,7 @@ David Barnett <davidbarnett at letu dot edu> (English)
 Federico Massi <federicomassi at tim dot it> (Italian)
 Erik Blomqvist <> (Swedish)
 Osoitz Elkorobarrutia <oelkoro at gmail dot com> (Basque)
+Erik Lai <katostelo at gmail dot com> (Chinese(T))
 
 
 *
@@ -98,7 +99,7 @@ Dejan Lekic <dejan at nu6 dot org> (Win32, Fedora)
 Jens Reimann <ctron at dentrassi dot de> (Fedora)
 Martin Nyffenegger <barock at ysagoon dot com> (Mac OS X)
 Jean-David Maillefer <jdmaillefer at bluewin dot ch> (Mac OS X)
-Kieran <kieran776 at hotmail dot com> (Win32 runtime/executable, Mandriva RPM/Source RPM)
+Kieran <kieran776 at hotmail dot com> (source package, Win32 runtime/executable, Mandriva RPM/Source RPM)
 Christian <chibar at fibertel dot com dot ar> (Win32 executable images)
 Thierry Thomas <thierry at freebsd dot org> (FreeBSD)
 "Dave Vasilevsky" <djvasi at gmail dot com> (Mac OS X)
@@ -111,7 +112,7 @@ Luc-Olivier de Charrière <NuageBleu at gmail dot com> (yog metaserver)
 Kyle Lutze <kyle at randomvoids dot com> (hosting, phpbb/mediawiki integration)
 Drazak <dark dot drazak at gmail dot com> (hosting)
 Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (wiki)
-Stéphane Magnenat <stephane at magnenat dot net> (server, wiki, savannah, forum)
+Stéphane Magnenat <stephane at magnenat dot net> (server, wiki, savannah, forum, mercurial)
 Gabriel Walt <disney at ysagoon dot com> (hosting, old CMS, wiki, forum)
 Munteanu Alexandru <io_alex_2002[nospam]yahoo dot fr> (phpbb/mediawiki integration)
 Martin Voelkle <martin dot voelkle at epfl dot ch> (wiki)
@@ -120,7 +121,7 @@ Louis Gagnon <globulation2 dot org at louisgagnon dot com> (wiki)
 Loki Azgorodin <> (#glob2)
 Dejan Lekic <dejan at nu6 dot org> (#globulation2)
 Ghislain Leveque <court-jus at court-jus dot net>
-Kieran <kieran776 at hotmail dot com> (wiki, savannah project site)
+Kieran <kieran776 at hotmail dot com> (wiki, savannah, sourceforge, freshmeat)
 
 
 *

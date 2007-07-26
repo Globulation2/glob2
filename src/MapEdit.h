@@ -22,15 +22,16 @@
 #ifndef __GLOB2EDIT_H
 #define __GLOB2EDIT_H
 
-#include "Game.h"
-#include "GUIBase.h"
 #include "Brush.h"
 #include "GameGUILoadSave.h"
+#include "Game.h"
+#include "GUIBase.h"
+#include "KeyboardManager.h"
+#include <map>
 #include "ScriptEditorScreen.h"
-
 #include <string>
 #include <vector>
-#include <map>
+#include "Minimap.h"
 
 namespace GAGCore
 {
@@ -79,8 +80,8 @@ public:
 };
 
 
-///This is a text info box. It is used primarily for entering the names of the script areas, however it should be generic
-///enough to be recycled for other purposes.
+///This is a text info box. It is used primarily for entering the names of the script areas,
+///however it is generic enough to be recycled for other purposes.
 class AskForTextInput : public OverlayScreen
 {
 public:
@@ -455,6 +456,9 @@ public:
 	///Saves the game to a particular file name
 	bool save(const char *filename, const char *name);
 
+	///Updates the editor after map generation
+	void update();
+
 	///This function sets the map a particular size and uniform terrain type, then goes into the main loop
 	int run(int sizeX, int sizeY, TerrainType terrainType);
 	///This is the main loop function. It "ticks" every 33 miliseconds, handling events and drawing as it goes.
@@ -487,8 +491,6 @@ private:
 
 	///This draws the minimap
 	void drawMiniMap(void);
-	///This renders the minimap. This should be called whenever a change is made that will change the minimap
-	void renderMiniMap(void);
 
 	///This is the mode of the right-hand-side panel
 	enum PanelMode
@@ -513,7 +515,7 @@ private:
 	///This proccesses an event from the SDL
 	int processEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
-	void handleKeyPressed(SDLKey key, bool pressed);
+	void handleKeyPressed(SDL_keysym key, bool pressed);
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
@@ -542,6 +544,9 @@ private:
 	int relMouseY;
 	///This boolean states whether we are dragging the screen with the middle mouse button
 	bool isScrollDragging;
+
+	///the keyboardManager handles keyboard shortcuts
+	KeyboardManager keyboardManager;
 
 	bool hasMapBeenModified;
 	///Provides the currently active team number
@@ -726,6 +731,8 @@ private:
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
 	///Denotes whether the user is holding the mouse button down, dragging the minimap
 	bool isDraggingMinimap;
+	///The minimap
+	Minimap minimap;
 
 	///This is the last placement of terrain, zones, or else, so that the game doesn't use allot of cpu by small mouse movements
 	int lastPlacementX;

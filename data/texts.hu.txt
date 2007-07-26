@@ -1,642 +1,1104 @@
-[language]
-Magyar
-[language-code]
-hu
-[language-tr]
-Nyelv
-[hp]
-Életpont
-[heal]
-Egészség
-[armor]
-Páncél
-[damage]
-Kár
-[food]
-Élelmiszer
-[working]
-Dolgozik
-[inside]
-Belül
-[ressources]
-Erőforrások
-[Wood]
-Fa
-[Corn]
-Búza
-[Papyrus]
-Papírusz
-[Stone]
-Kő
-[Alga]
-Alga
-[Cherry]
-Cseresznye
-[Orange]
-Narancs
-[Prune]
-Szilva
-[Clearing:]
-Tisztítás: 
-[Min required level:]
-Minimális szükséges szint:
-[Bullets]
-Lőszer
-[range]
-Hatótávolság
-[destroy]
-Megsemmisít
-[cancel destroy]
-Megsemmisítés megszakítása
-[wait destroy]
-Megsemmisítésre várva
-[upgrade]
-Fejleszteni
-[repair]
-Megjavítani
-[cancel upgrade]
-Fejlesztés megszakítása
-[cancel repair]
-Javítás megszakítása
-[units type]
-Egység típus
-[workers]
-dolgozók
-[explorers]
-felderítők
-[warriors]
-harcosok
-[Unit type]
-Egység típus
-[Worker]
-Dolgozó
-[Explorer]
-Felderítő
-[Warrior]
-Harcos
-[still (w)]
-Még mindig
-[units working]
- az egységek dolgoznak
-[still one unit working]
-Egy egység dolgozik
-[Still (i)]
-Még mindig
-[Still one]
-Még egy
-[Building name]
-Az épület elnevezése
-[swarm building]
-Raj
-[food building]
-Étkezde
-[health building]
-Kórház
-[walkspeed building]
-Versenypálya
-[swimspeed building]
-Úszómedence
-[attack building]
-Laktanya
-[science building]
-Iskola
-[defense building]
-Páncéltorony
-[exploration flag]
-Felderítő zászló
-[war flag]
-Hadizászló
-[clearing flag]
-Tisztítás zászló
-[stone wall]
-Kőfal
-[market]
-Piac
-[forbidden area]
-
-[Building short explanation]
-Az épület rövid leírása  (max. 24 karater)
-[swarm building explanation]
-Új egységek létrehozása
-[food building explanation]
-Egységek élelmezése
-[health building explanation]
-Egységek gyógyítása
-[walkspeed building explanation]
-Haladási sebesség
-[swimspeed building explanation]
-Úszási sebesség
-[attack building explanation]
-Támadóképesség
-[science building explanation]
-A dolgozók építési
-[defense building explanation]
-Megtámadja a közeli
-[exploration flag explanation]
-Összevonja a
-[war flag explanation]
-Összevonja a
-[clearing flag explanation]
-Erőforrások feltárása
-[stone wall explanation]
-Passzív védelmi elem
-[market explanation]
-Lehetővé teszi az
-[Building short explanation 2]
-Épületek rövid megnevezése 2 (max. 24 karakter)
-[swarm building explanation 2]
-
-[food building explanation 2]
-
-[health building explanation 2]
-
-[walkspeed building explanation 2]
-fejlesztése
-[swimspeed building explanation 2]
-fejlesztése
-[attack building explanation 2]
-fejlesztése
-[science building explanation 2]
-sebességének fejlesztése
-[defense building explanation 2]
-ellenséges egységeket
-[exploration flag explanation 2]
-felderítőket
-[war flag explanation 2]
-harcosokat
-[clearing flag explanation 2]
-
-[stone wall explanation 2]
-
-[market explanation 2]
-gyümölcs árucserét
-[waiting for %0]
-%0 -ra várva
-[%0 has left the game]
-%0 kilépett a játékból.
 [%0 has been deconnected of the game]
 %0 kapcsolata megszakadt.
-[load game]
-Játék betöltése
-[save game]
-Játék elmentése
-[options]
-Opciók
-[alliances]
-Szövetségek
-[return to game]
-Visszalépés a játékba
-[quit the game]
-Kilépés a játékból
-[ok]
-Rendben
-[Cancel]
-Mégsem
-[you have lost]
-Elvesztetted a játékot!
-[you have won]
-Megnyerted a játékot!
-[campaign]
-Hadjárat
-[tutorial]
-Gyakorlás
-[custom game]
-Szabadjáték
-[yog]
-Ysagoon Online Játék
-[Enter your nickname :]
-Add meg a nevedet :
-[Enter your password :]
-Add meg a jelszavadat :
-[lan]
-Játék a helyi hálózaton
-[settings]
-Beállítások
-[Warning, you need to reboot the game for changes to take effect]
+[%0 has left the game]
+%0 kilépett a játékból.
+[%0's game]
 
-[editor]
-Editor
-[credits]
-Szerzők
-[quit]
-Kilépés
-[create game]
-Új játék
-[update list]
-Naprakésszé tétel
-[connecting to]
-Kapcsolódás
-[connect]
-Kapcsolódás
-[Disconnect]
-Kapcsolat megszakítása
-[please wait]
-Kérem várjon
-[loading glob2]
-A Globulation 2 betöltése
-[host]
-Játék hostolása
-[join a game]
-Csatlakozás egy játékhoz
-[join]
-Csatlakozás
-[goto main menu]
-Vissza a főmenübe
-[player name]
-A játékos neve
-[svr hostname]
-A játékszerver neve
-[hp]
-Életpont
-[carry]
-Szállít :
-[don't carry anything]
-Nem szállít semmit
-[level]
-Szint
-[levels]
-Szintek
-[building site]
-építési terület
-[create map]
-Térkép készítése
-[map size x]
-Térkép szélessége
-[map size y]
-Térkép hosszúsága
-[default terrain]
-Alapértelmezett terep
-[water]
-Víz
-[sand]
-Homok
-[grass]
-Fű
-[teams]
- csapatok
-[choose map]
-Válassz egy térképet
-[choose game]
-Válassz egy játékot
-[awaiting players]
-Játékosokra várva
-[stat]
-Statisztika
-[food left]
-Maradék élelmiszer
-[the building is finished]
-Az épület elkészült
-[the swarm is finished]
-A raj elkészült
-[the food building is finished]
-Az étkezde elkészült
-[the health building is finished]
-A kórház elkészült
-[the walkspeed building is finished]
-A versenypálya elkészült
-[the swimspeed building is finished]
-At úszómedence elkészült
-[the attack building is finished]
-A laktanya elkészült
-[the science building is finished]
-Az iskola elkészült
-[the tower building is finished]
-A páncéltorony elkészült
-[the exploration flag is finished]
-?? A felderítőzászló elkészült ??
-[the war flag is finished]
-?? A hadizászló elkészült ??
-[the clearing flag is finished]
-?? A tisztító zászló elkészült ??
-[the stone wall is finished]
-A kőfal elkészült
-[the market is finished]
-A piac elkészült
-[the building is under attack]
-Megtámadták az épületet
-[the swarm is under attack]
-Megtámadták a rajt
-[the food building is under attack]
-Megtámadták az étkezdét
-[the health building is under attack]
-Megtámadták a kórházat
-[the walkspeed building is under attack]
-Megtámadták a versenypályát
-[the swimspeed building is under attack]
-Megtámadták az úszómedencét
-[the attack building is under attack]
-Megtámadták a laktanyát
-[the science building is under attack]
-Megtámadták az iskolát
-[the defense building is under attack]
-Megtámadták az erődítményeket
-[the exploration flag is under attack]
-?? Megtámadták a felderítózászlót ??
-[the war flag is under attack]
-?? Megtámadták a hadizászlót ??
-[the clearing flag is under attack]
-?? Megtámadták a tisztító zászlót ??
-[the stone wall is under attack]
-Az ellenség a falak előtt áll
-[the market is under attack]
-Megtámadták a piacot
-[Your %0 are under attack]
-Megtámadták a %0 -t
-[Your unit got converted to %0's team]
-Az egységedet az ellenség elfogta %0
 [%0's team unit got converted to your team]
 Elfogtad az ellenség egységét %0
-[Uncontrolled]
-Független
-[ai]
-MI
-[closed]
-Zárva
-[close]
-Bezár
-[player]
-Játékos
-[STARTING GAME ...]
-Indul a játék...
-[Statistics]
-Statisztika
-[Buildings]
-Épületek
-[Prestige]
-Presztízs
-[Units]
-Egységek
-[Attack]
-Támadás
-[Defense]
-Védelem
-[free]
-szabad
-[of which]
-amelyik
-[are ok]
-rendben van
-[are hungry]
-éhes
-[are dying hungry]
-éhen hal
-[are wonded]
-megsebesült
-[and]
-és
-[seeking a job]
-munkát keres
-[Walk]
-megy
-[Swim]
-Úszik
-[Build]
-Épít
-[Harvest]
-Betakarít
-[At. speed]
-Támadási sebesség
-[At. strength]
-Támadási erő
-[Total]
-Összesen
-[free]
-szabad
-[seeking]
-keresés
-[Free]
-Szabad
-[hungry]
-éhes
-[starving]
-éhezik
-[wounded]
-sebesült
-[In way]
-Úton van
-[On the spot]
-Helyszínen van
-[Version]
-Verzió
-[open]
-nyitva
+[abreaviation explanation A]
+
+[abreaviation explanation C]
+
+[abreaviation explanation fV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation V]
+
 [Add AI]
 MI-t hozzáad
+[add map]
+
+[add shortcut]
+
 [AI]
 MI
+[ai]
+MI
+[AICastor]
+MICastor
+[AINicowar]
+Nicowar
 [AINone]
 MINone
 [AINumbi]
 MINumbi
-[AICastor]
-MICastor
-[AIWarrush]
-MIWarrush
 [AIReachToInfinity]
 ReachToInfinity
-[AINicowar]
-Nicowar
 [AIToubib]
 MIToubib
-[the games]
-Játékok
-[the maps]
-Térképek
-[was]
-volt
-[was AI]
-korábbi MI
-[state]
-állapot
-[Start]
-Kezdés
-[not ready]
-nincs készen
-[has joined]
-csatlakozott
-[has quit]
-kilépett
-[yog-chat]
-#yog-hu
-[speed]
-Sebesség
-[current speed]
-Aktuális sebesség
+[AIWarrush]
+MIWarrush
+[Alga]
+Alga
+[algae]
+
+[alliances]
+Szövetségek
+[and]
+és
+[any explorer]
+
+[are dying hungry]
+éhen hal
+[are hungry]
+éhes
+[are ok]
+rendben van
+[are wonded]
+megsebesült
+[armor]
+Páncél
+[assigned]
+
+[At. speed]
+Támadási sebesség
+[At. strength]
+Támadási erő
 [attack speed]
 Támadási sebesség
-[new]
-Új
-[load]
-Betölt
-[handmade map]
-Saját készítésű térkép
-[mapGenerationDescriptor Methodes]
-Véletlenszerű térkép előállítási eljárások
-[uniform terrain]
-Egységes térkép
-[random terrain]
-Véletlenszerű térkép
-[islands terrain]
-Szigetek
-[ratios]
-Arányok
-[smoothing]
-Simítás
-[number of teams]
-Csapatok száma
-[islands size]
-a szigetek mérete
-[beach size]
-a partok méretei
-[workers]
-dolgozók
+[Attack]
+Támadás
+[audio]
+Audió
+[auto save]
+Automatikus mentés
+[available lan games]
+Elérhető hálózati játékok
+[awaiting players]
+Játékosokra várva
+[away:]
+távol van:
+[backspace]
+
 [bad error in connection system]
 Végzetes hiba a kapcsolódási rendszerben
-[not connected]
-Nincs kapcsolat
-[presence request sent]
-Kapcsolódási kérelem elküldve ...
-[session request sent]
-Csatlakozási kérelem elküldve ...
+[barracks explanation 2]
+fejlesztése
+[barracks explanation]
+Támadóképesség
+[barracks]
+Laktanya
+[beach size]
+a partok méretei
+[break]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
+[Build]
+Épít
+[Building name]
+Az épület elnevezése
+[Building short explanation 2]
+Épületek rövid megnevezése 2 (max. 24 karakter)
+[Building short explanation]
+Az épület rövid leírása  (max. 24 karater)
+[building site]
+építési terület
+[Buildings]
+Épületek
+[Bullets]
+Lőszer
+[campaign editor]
+
+[campaign]
+Hadjárat
+[Can't join game, missmatching game parameters]
+
+[Can't join game, timeout]
+
+[Can't join game, wrong game version]
+
+[cancel destroy]
+Megsemmisítés megszakítása
+[cancel repair]
+Javítás megszakítása
+[cancel upgrade]
+Fejlesztés megszakítása
+[Cancel]
+Mégsem
+[caps lock]
+
+[carry]
+Szállít :
+[Change Area Name]
+
 [checksum sent]
 Ellenőrzőösszeg elküldve ...
+[Cherry]
+Cseresznye
+[choose campaign]
+
+[choose game]
+Válassz egy játékot
+[choose map]
+Válassz egy térképet
+[clear area]
+
+[clear]
+
+[Clearing:]
+Tisztítás: 
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+Erőforrások feltárása
+[clearingflag]
+Tisztítás zászló
+[close]
+Bezár
+[closed]
+Zárva
+[compile]
+Szkript fordítása
+[compose]
+
+[connect]
+Kapcsolódás
+[connected to all players]
+Csatlakozott a játékosokhoz
 [connected to server]
 Szerverhez történő csatlakozás sikeres
 [connecting to all players]
 Csatlakozás a játékosokhoz
-[connected to all players]
-Csatlakozott a játékosokhoz
-[available lan games]
-Elérhető hálózati játékok
-[login]
-Bejelentkezés
-[from:]
-honnan:
-[to:]
-hová:
-[away:]
-távol van:
-[compile]
-Szkript fordítása
-[downloaded at]
-Letöltés
-[percent]
-  százalék
+[connecting to]
+Kapcsolódás
+[Continue playing]
+Játék folytatása
+[Corn]
+Búza
+[crater density]
+
+[crater lakes terrain]
+
+[create game]
+Új játék
+[create map]
+Térkép készítése
+[credits]
+Szerzők
+[current speed]
+Aktuális sebesség
+[custom game]
+Szabadjáték
+[customcur]
+
+[damage]
+Kár
+[Damaged Map]
+
+[dblbuff]
+Dupla pufferelés
+[decrease units working]
+
+[default terrain]
+Alapértelmezett terep
+[defencetower explanation 2]
+ellenséges egységeket
+[defencetower explanation]
+Megtámadja a közeli
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
+Páncéltorony
+[Defense Map]
+
+[Defense]
+Védelem
+[Delete game]
+
+[delete]
+
+[desert]
+
+[destroy building]
+
+[destroy]
+Megsemmisít
+[Disconnect]
+Kapcsolat megszakítása
+[display]
+Kijelző
+[don't carry anything]
+Nem szállít semmit
+[down]
+
 [download finished]
 A letöltés befejeződött
+[downloaded at]
+Letöltés
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
+[editor]
+Editor
+[end]
+
+[Enter your nickname :]
+Add meg a nevedet :
+[Enter your password :]
+Add meg a jelszavadat :
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+felderítőket
+[explorationflag explanation]
+Összevonja a
+[explorationflag]
+Felderítő zászló
+[Explorer Ratio]
+
+[Explorer]
+Felderítő
+[explorers]
+felderítők
+[extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[food left]
+Maradék élelmiszer
+[food]
+Élelmiszer
+[forbidden area]
+
+[Free]
+Szabad
+[free]
+szabad
+[free]
+szabad
+[from:]
+honnan:
+[fruit]
+
+[fullscreen]
+Teljes képernyő
+[game full]
+A játék megtelt
+[game shortcuts]
+
+[game speed]
+A játék sebessége
+[general settings]
+
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Vissza a főmenübe
+[grass]
+Fű
+[ground attack]
+
+[guard area]
+
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 1]
+
+[handmade map]
+Saját készítésű térkép
+[Happyness]
+Boldogság
+[hard pause]
+
+[Harvest]
+Betakarít
+[has joined]
+csatlakozott
+[has quit]
+kilépett
+[heal]
+Egészség
+[help]
+
+[home]
+
+[hospital explanation 2]
+
+[hospital explanation]
+Egységek gyógyítása
+[hospital]
+Kórház
+[host]
+Játék hostolása
+[hp]
+Életpont
+[hp]
+Életpont
+[human]
+
+[hungry]
+éhes
+[hungryness]
+
+[hwaccel]
+Hardveres gyorsítás
+[In way]
+Úton van
+[increase units working]
+
+[inn explanation 2]
+
+[inn explanation]
+Egységek élelmezése
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Étkezde
+[insert]
+
+[inside]
+Belül
+[islands size]
+a szigetek mérete
+[islands terrain]
+Szigetek
+[iterate selection]
+
+[jobs]
+
+[join a game]
+Csatlakozás egy játékhoz
+[join]
+Csatlakozás
+[keyboard settings]
+
+[kick]
+
+[lan]
+Játék a helyi hálózaton
+[language-code]
+hu
+[language-tr]
+Nyelv
+[language]
+Magyar
+[large]
+nagy
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+Szint
+[levels]
+Szintek
+[load campaign]
+
+[load game]
+Játék betöltése
+[load map]
+
+[load]
+Betölt
+[loading glob2]
+A Globulation 2 betöltése
+[login]
+Bejelentkezés
+[Lost : %0 has more prestige than you]
+Veszítettél: %0 -nak nagyobb a presztízse mint neked.
+[Lost : your colony is dead]
+A kolóniád megsemmisült.
+[lowquality]
+Alacsony képminőség
+[Magic At. Air]
+
+[Magic At. Ground]
+
 [Map name: %0]
 A térkép neve: %0.
-[one player]
-Egy játékos van jelen.
+[map name]
+
+[map size x]
+Térkép szélessége
+[map size y]
+Térkép hosszúsága
+[mapGenerationDescriptor Methodes]
+Véletlenszerű térkép előállítási eljárások
+[maps available]
+
+[mark map]
+
+[market explanation 2]
+gyümölcs árucserét
+[market explanation]
+Lehetővé teszi az
+[market]
+Piac
+[medium]
+közepes
+[menu]
+
+[Min required level:]
+Minimális szükséges szint:
+[Minimum Level To Flag]
+
+[Music volume]
+Hangerősség (zene)
+[mute]
+
+[network latency]
+Hálózati várakozási idő
+[new campaign]
+
+[new]
+Új
+[nick taken]
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no ressources growth areas]
+
+[No]
+Nem
+[not connected]
+Nincs kapcsolat
+[not ready]
+nincs készen
 [number of players: %0]
 %0 játékos van jelen.
 [number of teams: %0]
 %0 csapat
-[game full]
-A játék megtelt
-[small]
-kicsi
-[medium]
-közepes
-[large]
-nagy
-[network latency]
-Hálózati várakozási idő
-[game speed]
-A játék sebessége
+[number of teams]
+Csapatok száma
+[numlock]
+
+[of which]
+amelyik
+[ok]
+Rendben
+[old islands terrain]
+
+[old random terrain]
+
+[On the spot]
+Helyszínen van
+[one player]
+Egy játékos van jelen.
+[open chat box]
+
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
+[open]
+nyitva
+[options]
+Opciók
+[Orange]
+Narancs
+[page down]
+
+[page up]
+
+[Papyrus]
+Papírusz
+[pause game]
+
+[pause]
+
 [Paused]
 Szünet
+[percent]
+  százalék
+[player name]
+A játékos neve
+[player]
+Játékos
+[please wait]
+Kérem várjon
+[power]
+
+[presence request sent]
+Kapcsolódási kérelem elküldve ...
+[press space]
+
+[Prestige]
+Presztízs
+[print screen]
+
+[Prune]
+Szilva
+[quit the editor]
+
+[quit the game]
+Kilépés a játékból
+[quit]
+Kilépés
+[racetrack explanation 2]
+fejlesztése
+[racetrack explanation]
+Haladási sebesség
+[racetrack]
+Versenypálya
+[random terrain]
+Véletlenszerű térkép
+[range]
+Hatótávolság
+[ratios]
+Arányok
 [Register a new YOG user with password]
 Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
+[remember unit]
+
 [Remember YOG password localy]
 A jleszót helyileg tárolja. (nem biztonságos)
+[remove map]
+
+[remove shortcut]
+
+[repair building]
+
+[repair]
+Megjavítani
+[repeat area]
+
+[ressources]
+Erőforrások
+[restore default shortcuts]
+
+[return to editor]
+
+[return to game]
+Visszalépés a játékba
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+
+[river terrain]
+
+[sand]
+Homok
+[save before quit?]
+El kívánod a játékot menteni kilépés előtt?
+[save game]
+Játék elmentése
+[save map]
+
+[Save]
+Mentés
+[school explanation 2]
+sebességének fejlesztése
+[school explanation]
+A dolgozók építési
+[school]
+Iskola
+[Script Areas]
+
+[scroll lock]
+
+[seeking a job]
+munkát keres
+[seeking]
+keresés
+[select barracks building]
+
+[select clearingflag]
+
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
+[session request sent]
+Csatlakozási kérelem elküldve ...
+[settings]
+Beállítások
+[shortcut explanation enter]
+
+[shortcut explanation v]
+
+[show main menu]
+
+[skin]
+
+[small]
+kicsi
+[smoothing]
+Simítás
+[space]
+
+[speed]
+Sebesség
+[start mission]
+
+[start new campaign]
+
+[Start]
+Kezdés
+[STARTING GAME ...]
+Indul a játék...
+[Starving Map]
+
+[starving]
+éhezik
+[stat]
+Statisztika
+[state]
+állapot
+[Statistics]
+Statisztika
+[Still (i)]
+Még mindig
+[still (w)]
+Még mindig
+[still one unit working]
+Egy egység dolgozik
+[Still one]
+Még egy
+[Stone]
+Kő
+[stone]
+
+[stonewall explanation 2]
+
+[stonewall explanation]
+Passzív védelmi elem
+[stonewall]
+Kőfal
+[svr hostname]
+A játékszerver neve
+[swamp terrain]
+
+[swarm explanation 2]
+
+[swarm explanation]
+Új egységek létrehozása
+[swarm level 0]
+
+[swarm]
+Raj
+[Swim]
+Úszik
+[swimmingpool explanation 2]
+fejlesztése
+[swimmingpool explanation]
+Úszási sebesség
+[swimmingpool]
+Úszómedence
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+
+[switch to flag view]
+
+[switch to removing areas]
+
+[switch to teams view]
+
+[switch to terrain view]
+
+[sys req]
+
+[tab]
+
+[teams]
+ csapatok
+[the barracks is finished]
+A laktanya elkészült
+[the barracks is under attack]
+Megtámadták a laktanyát
+[the building is finished]
+Az épület elkészült
+[the building is under attack]
+Megtámadták az épületet
+[the clearingflag is finished]
+?? A tisztító zászló elkészült ??
+[the clearingflag is under attack]
+?? Megtámadták a tisztító zászlót ??
+[the defencetower is finished]
+A páncéltorony elkészült
+[the defencetower is under attack]
+Megtámadták az erődítményeket
+[the explorationflag is finished]
+?? A felderítőzászló elkészült ??
+[the explorationflag is under attack]
+?? Megtámadták a felderítózászlót ??
+[The game has not been finished]
+A játék nem fejeződött be
+[the games]
+Játékok
+[the hospital is finished]
+A kórház elkészült
+[the hospital is under attack]
+Megtámadták a kórházat
+[the inn is finished]
+Az étkezde elkészült
+[the inn is under attack]
+Megtámadták az étkezdét
+[the maps]
+Térképek
+[the market is finished]
+A piac elkészült
+[the market is under attack]
+Megtámadták a piacot
+[The player %0 has joined YOG]
+A %0 játékos csatlakozott a YOG-hoz.
+[The player %0 has left YOG]
+A %0 játékos kilépett a YOG-ból.
+[the racetrack is finished]
+A versenypálya elkészült
+[the racetrack is under attack]
+Megtámadták a versenypályát
+[the school is finished]
+Az iskola elkészült
+[the school is under attack]
+Megtámadták az iskolát
+[the stonewall is finished]
+A kőfal elkészült
+[the stonewall is under attack]
+Az ellenség a falak előtt áll
+[the swarm is finished]
+A raj elkészült
+[the swarm is under attack]
+Megtámadták a rajt
+[the swimmingpool is finished]
+At úszómedence elkészült
+[the swimmingpool is under attack]
+Megtámadták az úszómedencét
+[the warflag is finished]
+?? A hadizászló elkészült ??
+[the warflag is under attack]
+?? Megtámadták a hadizászlót ??
+[to:]
+hová:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
+[toggle menu screen]
+
+[toggle recording voice]
+
+[Total prestige reached]
+Elérted a legmagasabb presztízs szintet
+[Total]
+Összesen
+[tutorial]
+Gyakorlás
+[unassigned]
+
+[Uncontrolled]
+Független
+[undo]
+
+[uniform terrain]
+Egységes térkép
+[Unit editor]
+
+[unit settings]
+
+[Unit type]
+Egység típus
+[units type]
+Egység típus
+[units working]
+ az egységek dolgoznak
+[Units]
+Egységek
+[unlocked by]
+
+[Unnamed Area]
+
+[up]
+
+[update list]
+Naprakésszé tétel
+[upgrade building]
+
+[upgrade]
+Fejleszteni
+[username]
+Felhasználónév
+[Version]
+Verzió
+[view history]
+
+[wait destroy]
+Megsemmisítésre várva
+[waiting for %0]
+%0 -ra várva
+[waiting for key]
+
+[Walk]
+megy
+[warflag explanation 2]
+harcosokat
+[warflag explanation]
+Összevonja a
+[warflag]
+Hadizászló
+[Warning, you need to reboot the game for changes to take effect]
+
+[Warrior Ratio]
+
+[Warrior]
+Harcos
+[warriors]
+harcosok
+[was AI]
+korábbi MI
+[was]
+volt
+[water]
+Víz
+[Wheat]
+
+[Won : you defeated your opponents]
+Nyertél: legyőzted az ellenfeleidet.
+[Won : you have the most prestige]
+Nyertél: neked van a legnagyobb presztízsed.
+[Won : your ally %0 has the most prestige]
+Nyertél: a szövetségesed %0 elérte a legnagyobb presztízs szintet.
+[Wood]
+Fa
+[wood]
+
+[Worker Ratio]
+
+[Worker]
+Dolgozó
+[workers]
+dolgozók
+[workers]
+dolgozók
+[working]
+Dolgozik
+[wounded]
+sebesült
+[Yes]
+Igen
 [YESTS_BAD]
 Belső összefüggési hiba a kapcsolódás alatt.
-[YESTS_UNABLE_TO_CONNECT]
-A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
-[YESTS_CREATED]
-A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
 [YESTS_CONNECTING]
 A kapcsolat felvétele a YOG metaszerverrel.
-[YESTS_DECONNECTING]
-Lecsatlakozás a YOG metaszerverről...
-[YESTS_YOG_KILLED]
-Egy adminisztrátor leállította a YOG metaszervert.
 [YESTS_CONNECTION_LOST]
 A kapcsolat a YOG metaszerverrel megszakadt.
-[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+A YOG metaszerver visszautasította a kapcsolatot egy protokollhiba miatt: már be vagy jelentkezve. Próbálkozz újra 45 másodperc múlva.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-A YOG metaszerver visszautasította a kapcsolatot egy protokollhiba miatt: már be vagy jelentkezve. Próbálkozz újra 45 másodperc múlva.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 A YOG metaszerver visszautasította a kapcsolatot egy belső protokollhiba miatt: azonosítás alatt még nem történt meg a kapcsolódás. A felmerült hibáról küldj értesítést a fejlesztőknek.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
-[The player %0 has left YOG]
-A %0 játékos kilépett a YOG-ból.
-[The player %0 has joined YOG]
-A %0 játékos csatlakozott a YOG-hoz.
-[You are now marked as away]
-Távollevőként vagy megjelölve.
-[You are no more marked as away]
-Már nem vagy távollevőként megjelölve.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
+[YESTS_CREATED]
+A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
+[YESTS_DECONNECTING]
+Lecsatlakozás a YOG metaszerverről...
+[YESTS_UNABLE_TO_CONNECT]
+A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
+[YESTS_YOG_KILLED]
+Egy adminisztrátor leállította a YOG metaszervert.
+[yog-chat]
+#yog-hu
+[yog]
+Ysagoon Online Játék
 [YOG_HELP]
 A YOG üzenettovábbító rendszer két parancsot ismer: "msg" és "away". A "/help <parancs>" beütésével lehet használatukkal kapcsolatban további információkat kapni.
 [YOG_HELP_AWAY]
 A "/away (<üzenet>)" parancs segítségével lehet a többi YOG felhasználóval közölni, hogy jelenleg nem tartózkodsz a gép közelében. Ezen kívül lehetőség van egy kis magyarázó üzenet hozzáadására is. Például a "/away Elugrottam meginni egy sört". Alias "/a"
 [YOG_HELP_MSG]
 A "/msg <név> <üzenet>" paranccsal üzenetet küldhetsz. Például "/msg Jani Hello Jani hogy vagy?". Alias "/m"
-[save before quit?]
-El kívánod a játékot menteni kilépés előtt?
-[Yes]
-Igen
-[No]
-Nem
-[Save]
-Mentés
-[auto save]
-Automatikus mentés
-[Total prestige reached]
-Elérted a legmagasabb presztízs szintet
-[Continue playing]
-Játék folytatása
-[Lost : your colony is dead]
-A kolóniád megsemmisült.
-[Won : you defeated your opponents]
-Nyertél: legyőzted az ellenfeleidet.
-[Won : your ally %0 has the most prestige]
-Nyertél: a szövetségesed %0 elérte a legnagyobb presztízs szintet.
-[Lost : %0 has more prestige than you]
-Veszítettél: %0 -nak nagyobb a presztízse mint neked.
-[Won : you have the most prestige]
-Nyertél: neked van a legnagyobb presztízsed.
-[The game has not been finished]
-A játék nem fejeződött be
-[display]
-Kijelző
-[username]
-Felhasználónév
-[fullscreen]
-Teljes képernyő
-[hwaccel]
-Hardveres gyorsítás
-[dblbuff]
-Dupla pufferelés
-[lowquality]
-Alacsony képminőség
-[audio]
-Audió
-[Music volume]
-Hangerősség (zene)
-[Happyness]
-Boldogság
-[nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[You are no more marked as away]
+Már nem vagy távollevőként megjelölve.
+[You are now marked as away]
+Távollevőként vagy megjelölve.
+[you have lost]
+Elvesztetted a játékot!
+[you have won]
+Megnyerted a játékot!
+[Your %0 are under attack]
+Megtámadták a %0 -t
+[Your unit got converted to %0's team]
+Az egységedet az ellenség elfogta %0

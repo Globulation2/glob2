@@ -20,23 +20,22 @@
 */
 
 #include <cmath>
-
+#include <FormatableString.h>
 #include <GAG.h>
-#include "Game.h"
 #include "GameGUILoadSave.h"
+#include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "MapEditKeyActions.h"
 #include "ScriptEditorScreen.h"
+#include <sstream>
+#include <StreamFilter.h>
+#include <Stream.h>
 #include "UnitEditorScreen.h"
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
 
-#include <FormatableString.h>
-#include <Stream.h>
-#include <StreamFilter.h>
-
-#include <sstream>
 
 
 MapEditorWidget::MapEditorWidget(MapEdit& me, const widgetRectangle& rectangle, const std::string& group, const std::string& name, const std::string& action)
@@ -458,11 +457,11 @@ void UnitInfoTitle::draw()
 	// draw "unit of player" title
 	Uint8 r, g, b;
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Unit type]", u->typeNum);
+	title += getUnitName(u->typeNum);
 	title += " (";
 
-	const char *textT=u->owner->getFirstPlayerName();
-	if (!textT)
+	std::string textT=u->owner->getFirstPlayerName();
+	if (textT.empty())
 		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 	title += textT;
 	title += ")";
@@ -668,11 +667,12 @@ void BuildingInfoTitle::draw()
 
 	// draw "building" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
+	std::string key = "[" + buildingType->type + "]";
+	title += Toolkit::getStringTable()->getString(key.c_str());
 	{
 		title += " (";
-		const char *textT=selBuild->owner->getFirstPlayerName();
-		if (!textT)
+		std::string textT=selBuild->owner->getFirstPlayerName();
+		if (textT.empty())
 			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 		title += textT;
 		title += ")";
@@ -804,7 +804,8 @@ void NumberCycler::handleClick(int relMouseX, int relMouseY)
 
 
 
-MapEdit::MapEdit() : game(NULL)
+MapEdit::MapEdit()
+ : game(NULL), keyboardManager(MapEditShortcuts), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
 {
 	doQuit=false;
 
@@ -1153,7 +1154,6 @@ bool MapEdit::load(const char *filename)
 		if(game.teams[11])
 			teamInfo12->setSelectionPos(game.teams[11]->type);
 
-		renderMiniMap();
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
 		return true;
 	}
@@ -1197,8 +1197,10 @@ int MapEdit::run(void)
 	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 
 // 	regenerateClipRect();
+
+		
+	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
-	renderMiniMap();
 	drawMenu();
 	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getW(), true, true);
 	drawMiniMap();
@@ -1335,19 +1337,8 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 void MapEdit::drawMiniMap(void)
 {
-	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team);
+	minimap.draw(team, viewportX, viewportY, (globalContainer->gfx->getW()-128)/32, globalContainer->gfx->getH()/32 );
 // 	paintCoordinates();
-}
-
-
-
-void MapEdit::renderMiniMap(void)
-{
-	if(!wasMinimapRendered)
-	{
-		wasMinimapRendered=true;
-		game.renderMiniMap(team, true);
-	}
 }
 
 
@@ -1508,7 +1499,7 @@ void MapEdit::drawMenuEyeCandy()
 
 void MapEdit::drawPlacingUnitOnMap()
 {
-	int type;
+	int type=0;
 	if(placingUnit==Worker)
 		type=WORKER;
 	else if(placingUnit==Warrior)
@@ -1699,30 +1690,140 @@ int MapEdit::processEvent(SDL_Event& event)
 	}
 	else if(event.type==SDL_KEYDOWN)
 	{
-		handleKeyPressed(event.key.keysym.sym, true);
+		handleKeyPressed(event.key.keysym, true);
 	}
 	else if(event.type==SDL_KEYUP)
 	{
-		handleKeyPressed(event.key.keysym.sym, false);
+		handleKeyPressed(event.key.keysym, false);
 	}
 	return returnCode;
 }
 
 
 
-void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
+void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 {
-	switch(key)
+	if(key.sym == SDLK_i && pressed)
 	{
-		case SDLK_ESCAPE:
-			if(pressed)
-			{
-				if (showingMenuScreen==false)
-					performAction("open menu screen");
-				else if (showingMenuScreen==true)
-					performAction("close menu screen");		
-			}
-			break;
+		//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
+		game.map.loadTransitional();
+		return;
+	}
+
+	Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
+	switch(action_t)
+	{
+		case MapEditKeyActions::DoNothing:
+		{
+		
+		}
+		break;
+		case MapEditKeyActions::SwitchToBuildingView:
+		{
+			performAction("switch to building view");
+		}
+		break;
+		case MapEditKeyActions::SwitchToFlagView:
+		{
+			performAction("switch to flag view");
+		}
+		break;
+		case MapEditKeyActions::SwitchToTerrainView:
+		{
+			performAction("switch to terrain view");
+		}
+		break;
+		case MapEditKeyActions::SwitchToTeamsView:
+		{
+			performAction("switch to teams view");
+		}
+		break;
+		case MapEditKeyActions::OpenSaveScreen:
+		{
+			performAction("open save screen");
+		}
+		break;
+		case MapEditKeyActions::OpenLoadScreen:
+		{
+			performAction("open load screen");
+		}
+		break;
+		case MapEditKeyActions::SelectSwarm:
+		{
+			performAction("unselect&switch to building view&set place building selection swarm");
+		}
+		break;
+		case MapEditKeyActions::SelectInn:
+		{
+			performAction("unselect&switch to building view&set place building selection inn");
+		}
+		break;
+		case MapEditKeyActions::SelectHospital:
+		{
+			performAction("unselect&switch to building view&set place building selection hospital");
+		}
+		break;
+		case MapEditKeyActions::SelectRacetrack:
+		{
+			performAction("unselect&switch to building view&set place building selection racetrack");
+		}
+		break;
+		case MapEditKeyActions::SelectSwimmingpool:
+		{
+			performAction("unselect&switch to building view&set place building selection swimmingpool");
+		}
+		break;
+		case MapEditKeyActions::SelectSchool:
+		{
+			performAction("unselect&switch to building view&set place building selection school");
+		}
+		break;
+		case MapEditKeyActions::SelectBarracks:
+		{
+			performAction("unselect&switch to building view&set place building selection barracks");
+		}
+		break;
+		case MapEditKeyActions::SelectTower:
+		{
+			performAction("unselect&switch to building view&set place building selection tower");
+		}
+		break;
+		case MapEditKeyActions::SelectStonewall:
+		{
+			performAction("unselect&switch to building view&set place building selection stonewall");
+		}
+		break;
+		case MapEditKeyActions::SelectMarket:
+		{
+			performAction("unselect&switch to building view&set place building selection market");
+		}
+		break;
+		case MapEditKeyActions::SelectExplorationFlag:
+		{
+			performAction("unselect&switch to flag view&set place building selection explorationflag");
+		}
+		break;
+		case MapEditKeyActions::SelectWarFlag:
+		{
+			performAction("unselect&switch to flag view&set place building selection warflag");
+		}
+		break;
+		case MapEditKeyActions::SelectClearingFlag:
+		{
+			performAction("unselect&switch to flag view&set place building selection clearingflag");
+		}
+		break;
+		case MapEditKeyActions::ToggleMenuScreen:
+		{
+			if (showingMenuScreen==false)
+				performAction("open menu screen");
+			else if (showingMenuScreen==true)
+				performAction("close menu screen");
+		}
+		break;
+	}
+	switch(key.sym)
+	{
 		case SDLK_UP:
 			if(pressed)
 				performAction("scroll up");
@@ -1746,110 +1847,6 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 				performAction("scroll right");
 			else
 				performAction("scroll horizontal stop");
-			break;
-		case SDLK_a :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["akey"]);
-			break;
-		case SDLK_b :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["bkey"]);
-			break;
-		case SDLK_c :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ckey"]);
-			break;
-		case SDLK_d :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["dkey"]);
-			break;
-		case SDLK_e :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ekey"]);
-			break;
-		case SDLK_f :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["fkey"]);
-			break;
-		case SDLK_g :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["gkey"]);
-			break;
-		case SDLK_h :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["hkey"]);
-			break;
-		case SDLK_i :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
-			break;
-		case SDLK_j :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["jkey"]);
-			break;
-		case SDLK_k :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["kkey"]);
-			break;
-		case SDLK_l :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["lkey"]);
-			break;
-		case SDLK_m :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["mkey"]);
-			break;
-		case SDLK_n :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["nkey"]);
-			break;
-		case SDLK_o :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["okey"]);
-			break;
-		case SDLK_p :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["pkey"]);
-			break;
-		case SDLK_q :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["qkey"]);
-			break;
-		case SDLK_r :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["rkey"]);
-			break;
-		case SDLK_s :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["skey"]);
-			break;
-		case SDLK_t :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["tkey"]);
-			break;
-		case SDLK_u :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ukey"]);
-			break;
-		case SDLK_v :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["vkey"]);
-			break;
-		case SDLK_w :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["wkey"]);
-			break;
-		case SDLK_x :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["xkey"]);
-			break;
-		case SDLK_y :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["ykey"]);
-			break;
-		case SDLK_z :
-			if(pressed)
-				performAction(globalContainer->settings.editor_keyboard_shortcuts["zkey"]);
 			break;
 		default:
 		break;
@@ -2011,7 +2008,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			}
 			game.regenerateDiscoveryMap();
 			hasMapBeenModified = true;
-			renderMiniMap();
 		}
 	}
 	else if(action=="switch to building level 1")
@@ -2045,7 +2041,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", true, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=new LoadSaveScreen("maps", "map", true, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 		showingLoad=true;
 	}
 	else if(action=="close load screen")
@@ -2059,7 +2055,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", false, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=new LoadSaveScreen("maps", "map", false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 		showingSave=true;
 	}
 	else if(action=="close save screen")
@@ -2255,7 +2251,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		if(terrainType==TerrainSelector::NoTerrain && selectionMode!=RemoveObject && selectionMode!=ChangeAreas && selectionMode!=ChangeNoRessourceGrowthAreas)
 			performAction("select grass");
 		brush.handleClick(relMouseX, relMouseY);
-		renderMiniMap();
 	}
 	else if(action=="terrain drag start")
 	{
@@ -2331,19 +2326,17 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	}
 	else if(action=="add team")
 	{
-		if(game.session.numberOfTeam < 12)
+		if(game.mapHeader.getNumberOfTeams() < 12)
 			game.addTeam();
-		renderMiniMap();
 	}
 	else if(action=="remove team")
 	{
-		if(game.session.numberOfTeam > 1)
+		if(game.mapHeader.getNumberOfTeams() > 1)
 		{
-			if(team==game.session.numberOfTeam-1)
+			if(team==game.mapHeader.getNumberOfTeams()-1)
 				team-=1;
 			game.removeTeam();
 		}
-		renderMiniMap();
 	}
 	else if(action.substr(0, 17)=="change team info ")
 	{
@@ -2388,7 +2381,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		if(game.teams[n])
 		{
 			team=n;
-			renderMiniMap();
 			game.map.computeLocalForbidden(team);
 			game.map.computeLocalClearArea(team);
 			game.map.computeLocalGuardArea(team);
@@ -2430,7 +2422,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	}
 	else if(action=="place unit")
 	{
-		int type;
+		int type=0;
 		if(placingUnit==Worker)
 			type=WORKER;
 		else if(placingUnit==Warrior)
@@ -2454,7 +2446,6 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			}
 			game.regenerateDiscoveryMap();
 		}
-		renderMiniMap();
 	}
 	else if(action=="select map unit")
 	{
@@ -3278,7 +3269,6 @@ void MapEdit::handleTerrainClick(int mx, int my)
 		assert(false);
 	lastPlacementX=mapX;
 	lastPlacementY=mapY;
-	renderMiniMap();
 }
 
 
@@ -3317,7 +3307,6 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	}
 	lastPlacementX=mapX;
 	lastPlacementY=mapY;
-	renderMiniMap();
 }
 
 

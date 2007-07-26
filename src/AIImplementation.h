@@ -23,10 +23,11 @@
 /*
 What's in AI ?
 AI represents the behaviour of an artificial intelligence player.
-The main method is Order *getOrder() which return the order to be used by the AI's team.
+The main method is boost::shared_ptr<Order> getOrder() which return the order to be used by the AI's team.
 */
 
 #include "BuildingType.h"
+#include <boost/shared_ptr.hpp>
 
 namespace GAGCore
 {
@@ -78,7 +79,7 @@ public:
 	virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 	virtual void save(GAGCore::OutputStream *stream)=0;
 	
-	virtual Order *getOrder(void)=0;
+	virtual boost::shared_ptr<Order> getOrder(void)=0;
 };
 
 #endif

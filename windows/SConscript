@@ -1,0 +1,9 @@
+Import("env")
+
+env.Tar(env["TARFILE"], "glob2.ico")
+env.Tar(env["TARFILE"], "header.bmp")
+env.Tar(env["TARFILE"], "NSIS.lnk")
+env.Tar(env["TARFILE"], "side.bmp")
+env.Tar(env["TARFILE"], "win32_installer.nsi")
+
+env.Tar(env["TARFILE"], "SConscript")

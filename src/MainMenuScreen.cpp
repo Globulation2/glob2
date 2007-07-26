@@ -34,7 +34,8 @@ using namespace GAGCore;
 // version related stuff
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
-#else
+#endif
+#ifndef PACKAGE_VERSION
 	#define PACKAGE_VERSION "System Specific - not using autoconf"
 #endif
 
@@ -57,7 +58,7 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new TextButton(10, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[credits]"), CREDITS));
 	addWidget(new TextButton(330, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	
-	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", FormatableString("V %0.%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(NET_PROTOCOL_VERSION).arg(YOG_PROTOCOL_VERSION).c_str()));
+	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", FormatableString("V %0.%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(NET_PROTOCOL_VERSION).c_str()));
 	
 	addWidget(new Text(3, 0, ALIGN_LEFT, ALIGN_BOTTOM, "standard", PACKAGE_VERSION));
 	

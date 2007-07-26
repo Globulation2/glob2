@@ -1,912 +1,1106 @@
-[language]
-Svenska
-[language-code]
-sv
-[language-tr]
-Språk
-[hp]
-HP
-[heal]
-Hälsa
-[armor]
-Pansar
-[damage]
-Skada
-[food]
-Mat
-[working]
-Arbetar
-[assigned]
-Tilldelad
-[inside]
-Inuti
-[ressources]
-Resurser
-[Wood]
-Trä
-[Corn]
-Vete
-[Papyrus]
-Papyrus
-[Stone]
-Sten
-[Alga]
-Alger
-[Cherry]
-Körsbär
-[Orange]
-Apelsin
-[Prune]
-Sviskon
-[fruit]
-Frukt
-[Clearing:]
-Röjning:
-[Min required level:]
-Lägsta tillåtna nivå:
-[Minimum Level To Flag]
-Lägsta flaggnivå
-[Bullets]
-Kulor
-[range]
-Räckvidd
-[destroy]
-Förstör
-[cancel destroy]
-Avbryt destruktion
-[wait destroy]
-Avvaktar destruktion
-[upgrade]
-Uppgradera
-[repair]
-Reparera
-[cancel upgrade]
-Avbryt uppgradering
-[cancel repair]
-Avbryt reparation
-[units type]
-enhetstyp
-[workers]
-arbetare
-[explorers]
-utforskare
-[warriors]
-krigare
-[Worker Ratio]
-Arbetare Proportion
-[Explorer Ratio]
-Utforskare Proportion
-[Warrior Ratio]
-Krigare Proportion
-[Unit type]
-Enhetstyp
-[Worker]
-Arbetare
-[Explorer]
-Utforskare
-[Warrior]
-Krigare
-[still (w)]
-Ännu
-[units working]
- arbetande enheter
-[still one unit working]
-En enhet arbetar ännu
-[Still (i)]
-Ännu 
-[Still one]
-Ännu en kvar
-[Building name]
-Byggnadsnamn
-[swarm building]
-Svärm
-[food building]
-Värdshus
-[health building]
-Sjukhus
-[walkspeed building]
-Löparbana
-[swimspeed building]
-Simbassäng
-[attack building]
-Barrack
-[science building]
-Skola
-[defense building]
-Försvarstorn
-[exploration flag]
-Utforskningsflagga
-[war flag]
-Krigsflagga
-[clearing flag]
-Röjningsflagga
-[stone wall]
-Stenmur
-[market]
-Marknad
-[forbidden area]
-Förbjudet område
-[guard area]
-Vaktområde
-[clear area]
-Röjningsområde
-[Building short explanation]
-Kort byggnadsförklaring (max 24 tecken)
-[swarm building explanation]
-Skapar nya enheter
-[food building explanation]
-Utfodrar dina enheter
-[health building explanation]
-Helar dina enheter
-[walkspeed building explanation]
-Ökar gånghastigheten
-[swimspeed building explanation]
-Ökar simhastigheten
-[attack building explanation]
-Förbättrar stridsnivån
-[science building explanation]
-Förbättrar byggnadsnivån
-[defense building explanation]
-Attackerar fientliga
-[exploration flag explanation]
-Attraherar utforskare
-[war flag explanation]
-Attraherar krigare
-[clearing flag explanation]
-Röjer resurser
-[stone wall explanation]
-Passivt försvarselement
-[market explanation]
-Tillåter utbyte av 
-[Building short explanation 2]
-Kort byggnadsförklaring 2 (max 24 tecken)
-[swarm building explanation 2]
- 
-[food building explanation 2]
- 
-[health building explanation 2]
- 
-[walkspeed building explanation 2]
-hos dina enheter
-[swimspeed building explanation 2]
-hos dina enheter
-[attack building explanation 2]
-hos dina krigare
-[science building explanation 2]
-hos dina arbetare
-[defense building explanation 2]
-enheter eller byggnader
-[exploration flag explanation 2]
- 
-[war flag explanation 2]
- 
-[clearing flag explanation 2]
- 
-[stone wall explanation 2]
- 
-[market explanation 2]
-frukt med andra
-[waiting for %0]
-Väntar på %0
-[%0 has left the game]
-%0 har lämnat spelet.
 [%0 has been deconnected of the game]
 %0 har blivit frånkopplad.
-[load game]
-Ladda spel
-[save game]
-Spara spel
-[options]
-Alternativ
-[alliances]
-Allianser
-[return to game]
-Återgå till spelet
-[quit the game]
-Avsluta spelet
-[load map]
-Ladda Karta
-[save map]
-Spara Karta
-[open script editor]
-Öppna Skript Editor
-[return to editor]
-Återgå till editorn
-[quit the editor]
-Avsluta editorn
-[Script Areas]
-Skript Områden
-[Change Area Name]
-Ändra Områdesnamn
-[Unnamed Area]
-{Namnlöst Område}
-[delete]
-Ta bort
-[no ressources growth areas]
-Inga Odlingsområden
-[ok]
-Ok
-[Cancel]
-Avbryt
-[human]
-mänsklig
-[you have lost]
-Du har förlorat!
-[you have won]
-Du har vunnit!
-[campaign]
-Kampanj
-[tutorial]
-Introduktion
-[custom game]
-Eget Spel
-[yog]
-Ysagoon Online Spel
-[Enter your nickname :]
-Skriv in ditt smeknamn:
-[Enter your password :]
-Skriv in ditt lösenord:
-[lan]
-LAN Spel
-[settings]
-Inställningar
-[Warning, you need to reboot the game for changes to take effect]
-Varning, du behöver starta om spelet för att inställningarna ska börja gälla
-[editor]
-Editor
-[credits]
-Credits
-[quit]
-Avsluta
-[create game]
-Skapa spel
-[update list]
-Uppdatera lista
-[connecting to]
-Ansluter till
-[connect]
-Anslut
-[Disconnect]
-Koppla från
-[please wait]
-Var god vänta
-[loading glob2]
-Laddar Globulation 2
-[host]
-Var värd för ett spel
-[join a game]
-Gå med i ett spel
-[join]
-Gå med
-[goto main menu]
-Gå till huvudmeny
-[player name]
-Spelarnamn
-[svr hostname]
-Server värdnamn
-[hp]
-Hälsopoäng
-[carry]
-Bär på:
-[don't carry anything]
-Bär ingenting
-[level]
-Nivå
-[levels]
-Nivåer
-[building site]
-byggarbetsplats
-[create map]
-Skapa karta
-[map size x]
-Kartbredd
-[map size y]
-Karthöjd
-[default terrain]
-Standardterräng
-[water]
-Vatten
-[sand]
-Sand
-[grass]
-Gräs
-[teams]
- lag
-[choose map]
-Välj en karta
-[choose game]
-Välj ett spel
-[awaiting players]
-Väntar på spelare
-[stat]
-Statistik
-[food left]
-Mat kvar
-[general settings]
-Allmänt
-[unit settings]
-Enheter
-[keyboard settings]
-Tangentbord
-[remember unit]
-Kom Ihåg Enhet
-[game shortcuts]
-Spelgenvägar
-[editor shortcuts]
-Ändra genvägar
-[akey]
-A
-[bkey]
-B
-[ckey]
-C
-[dkey]
-D
-[ekey]
-E
-[fkey]
-F
-[gkey]
-G
-[hkey]
-H
-[ikey]
-I
-[jkey]
-J
-[kkey]
-K
-[lkey]
-L
-[mkey]
-M
-[nkey]
-N
-[okey]
-O
-[pkey]
-P
-[qkey]
-Q
-[rkey]
-R
-[skey]
-S
-[tkey]
-T
-[ukey]
-U
-[vkey]
-V
-[wkey]
-W
-[xkey]
-X
-[ykey]
-Y
-[zkey]
-Z
-[unassigned]
-Ej tilldelad
-[toggle draw unit paths]
-Växla Visa Enhetsdestinationer
-[toggle draw information]
-Växla Visa Information
-[toggle draw accessibility aids]
-Växla Visa Tillgänglighetshjälp
-[destroy building]
-Förstör vald byggnad
-[upgrade building]
-Starta/Stoppa Uppgradering
-[repair building]
-Starta/Stoppa Reparation
-[mark map]
-Markera Karta För Allierade
-[record voice]
-Initiera röstinspelning
-[pause game]
-Pausa Spel
-[switch to building view]
-Byt till Byggnadsvy
-[switch to flag view]
-Byt till Flaggvy
-[switch to terrain view]
-Byt till Terrängvy
-[switch to teams view]
-Byt till Lagvy
-[open save menu]
-Öppna Spara Meny
-[open load menu]
-Öppna Ladda Meny
-[select swarm building]
-Välj Svärm
-[select inn building]
-Välj Värdshus
-[select hospital building]
-Välj Sjukhus
-[select racetrack building]
-Välj Löparbana
-[select swimmingpool building]
-Välj simbassäng
-[select barracks building]
-Välj Barrack
-[select school building]
-Välj skola
-[select tower building]
-Välj Försvarstorn
-[select wall building]
-Välj Stenmur
-[select market building]
-Välj Marknad
-[select exploration flag]
-Välj Utforskningsflagga
-[select war flag]
-Välj Krigsflagga
-[select clearing flag]
-Välj Röjningsflagga
-[restore default shortcuts]
-Återställ Till Ursprungliga Tangentbordsgenvägar
-[the building is finished]
-Byggnaden är färdig
-[the swarm is finished]
-Svärmen är färdig
-[the food building is finished]
-Värdshuset är färdigt
-[the health building is finished]
-Sjukhuset är färdigt
-[the walkspeed building is finished]
-Löparbanan är färdig
-[the swimspeed building is finished]
-Simbassängen är färdig
-[the attack building is finished]
-Baracken är färdig
-[the science building is finished]
-Skolan är färdig
-[the tower building is finished]
-Försvarstornet är färdigt
-[the exploration flag is finished]
-?? Utforskningsflaggan är klar ??
-[the war flag is finished]
-?? Krigsflaggan är klar ??
-[the clearing flag is finished]
-?? Röjningsflaggan är klar ??
-[the stone wall is finished]
-En mursektion är klar
-[the market is finished]
-Marknaden är klar
-[the building is under attack]
-Byggnaden är under attack
-[the swarm is under attack]
-Svärmen är under attack
-[the food building is under attack]
-Värdshuset är under attack
-[the health building is under attack]
-Sjukstugan är under attack
-[the walkspeed building is under attack]
-Löparbanan är under attack
-[the swimspeed building is under attack]
-Simbassängen är under attack
-[the attack building is under attack]
-Baracken är under attack
-[the science building is under attack]
-Skolan är under attack
-[the defense building is under attack]
-Ditt försvar är under attack
-[the exploration flag is under attack]
-?? Utforskningsflaggan är under attack ??
-[the war flag is under attack]
-?? Krigsflaggan är under attack ??
-[the clearing flag is under attack]
-?? Röjningsflaggan är under attack ??
-[the stone wall is under attack]
-Fienden är vid dina murar
-[the market is under attack]
-Marknaden är under attack
-[Your %0 are under attack]
-Din %0 är under attack
-[Your unit got converted to %0's team]
-Din enhet blev omvänd till %0s lag
+[%0 has left the game]
+%0 har lämnat spelet.
+[%0's game]
+
 [%0's team unit got converted to your team]
 %0s lags enhet blev omvänd till ditt lag
-[Uncontrolled]
-Okontrollerad
-[ai]
-AI
-[closed]
-Stängd
-[close]
-Stäng
-[player]
-Spelare
-[STARTING GAME ...]
-Startar spel... 
-[Statistics]
-Statistik
-[Buildings]
-Byggnader
-[Prestige]
-Prestige
-[Units]
-Enheter
-[Attack]
-Attack
-[Defense]
-Försvar
-[free]
-är fria
-[of which]
-av vilka
-[are ok]
-är okej
-[are hungry]
-är hungriga
-[are dying hungry]
-svälter
-[are wonded]
-är skadade
-[and]
-och
-[seeking a job]
-söker efter arbete
-[jobs]
-job
-[Walk]
-Gå
-[Swim]
-Simma
-[Build]
-Bygga
-[Harvest]
-Skörda
-[At. speed]
-Attackhastighet
-[At. strength]
-Styrka
-[Magic At. Air]
-Luftskada
-[Magic At. Ground]
-Markskada
-[Total]
-Totalt
-[free]
-är fria
-[seeking]
-söker
-[Free]
-Ok
-[hungry]
-hungriga
-[starving]
-svälter
-[wounded]
-skadade
-[Starving Map]
-Svältkarta
-[Damaged Map]
-Skadekarta
-[Defense Map]
-Försvarskarta
-[In way]
-På väg
-[On the spot]
-Här
-[Version]
-Version
-[open]
-öppna
+[abreaviation explanation A]
+A: Allierade
+[abreaviation explanation C]
+C: Skicka chattmeddelanden till
+[abreaviation explanation fV]
+fV: Visa synfält för värdshusbyggnader (för att stjäla enheter)
+[abreaviation explanation mV]
+mV: Visa synfält för marknadsbyggnader (för att byta frukter)
+[abreaviation explanation V]
+V: Visa synfält för alla byggnader
 [Add AI]
 Lägg till AI
+[add map]
+Lägg till karta
+[add shortcut]
+
 [AI]
 AI
+[ai]
+AI
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar
 [AINone]
 AIIngen
 [AINumbi]
 AINumbi
-[AICastor]
-AICastor
-[AIWarrush]
-AIWarrush
 [AIReachToInfinity]
 ReachToInfinity
-[AINicowar]
-Nicowar
 [AIToubib]
 AIToubib
-[the games]
-Spel
-[the maps]
-Kartor
-[was]
-var
-[was AI]
-var AI
-[state]
-status
-[Start]
-Starta
-[not ready]
-inte redo
-[has joined]
-har anslutit
-[has quit]
-har avslutat
-[yog-chat]
-#yog-en
-[speed]
-Hastighet
-[current speed]
-Nuvarande hastighet
+[AIWarrush]
+AIWarrush
+[Alga]
+Alger
+[algae]
+alger
+[alliances]
+Allianser
+[and]
+och
+[any explorer]
+någon utforskare
+[are dying hungry]
+svälter
+[are hungry]
+är hungriga
+[are ok]
+är okej
+[are wonded]
+är skadade
+[armor]
+Pansar
+[assigned]
+Tilldelad
+[At. speed]
+Attackhastighet
+[At. strength]
+Styrka
 [attack speed]
 Attackhastighet
-[new]
-Ny
-[load]
-Ladda
-[new campaign]
-Ny Kampanj
-[load campaign]
-Ladda Kampanj
-[campaign editor]
-Kampanj Editor
-[editing map]
-Editerar Karta
-[add map]
-Lägg till karta
-[edit map]
-Editera Karta
-[remove map]
-Ta Bort Karta
-[start new campaign]
-Starta Ny Kampanj
-[start mission]
-Starta Uppdrag
-[unlocked by]
-Upplåst Av
-[maps available]
-Tillgängliga Kartor
-[map name]
-Namn
-[handmade map]
-Handgjord karta
-[mapGenerationDescriptor Methodes]
-Metoder för slumpmässigt genererade kartor
-[uniform terrain]
-Enhetlig terräng
-[random terrain]
-Slumpmässig terräng
-[islands terrain]
-Öar
-[ratios]
-Proportioner
-[smoothing]
-Uppmjukning
-[number of teams]
-antal lag
-[islands size]
-östorlek
-[beach size]
-strandstorlek
-[workers]
-Arbetare
+[Attack]
+Attack
+[audio]
+Ljud
+[auto save]
+Autospara
+[available lan games]
+Tillgängliga lokala spel
+[awaiting players]
+Väntar på spelare
+[away:]
+borta:
+[backspace]
+
 [bad error in connection system]
 Dåligt fel i anslutningssystemet
-[not connected]
-Ej ansluten
-[presence request sent]
-Närvaroförfrågan skickad ...
-[session request sent]
-Sessionsförfrågan skickad ...
+[barracks explanation 2]
+hos dina krigare
+[barracks explanation]
+Förbättrar stridsnivån
+[barracks]
+Barrack
+[beach size]
+strandstorlek
+[break]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
+[Build]
+Bygga
+[Building name]
+Byggnadsnamn
+[Building short explanation 2]
+Kort byggnadsförklaring 2 (max 24 tecken)
+[Building short explanation]
+Kort byggnadsförklaring (max 24 tecken)
+[building site]
+byggarbetsplats
+[Buildings]
+Byggnader
+[Bullets]
+Kulor
+[campaign editor]
+Kampanj Editor
+[campaign]
+Kampanj
+[Can't join game, missmatching game parameters]
+Kan inte ansluta till spel, omatchande spelparametrar
+[Can't join game, timeout]
+Kan inte ansluta till spel, timeout
+[Can't join game, wrong game version]
+Kan inte ansluta till spel, fel spelversion
+[cancel destroy]
+Avbryt destruktion
+[cancel repair]
+Avbryt reparation
+[cancel upgrade]
+Avbryt uppgradering
+[Cancel]
+Avbryt
+[caps lock]
+
+[carry]
+Bär på:
+[Change Area Name]
+Ändra Områdesnamn
 [checksum sent]
 Checksumma skickad ...
+[Cherry]
+Körsbär
+[choose campaign]
+Välj en kampanj
+[choose game]
+Välj ett spel
+[choose map]
+Välj en karta
+[clear area]
+Röjningsområde
+[clear]
+
+[Clearing:]
+Röjning:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Röjer resurser
+[clearingflag]
+Röjningsflagga
+[close]
+Stäng
+[closed]
+Stängd
+[compile]
+Kompilera skript
+[compose]
+
+[connect]
+Anslut
+[connected to all players]
+Ansluten till alla spelare
 [connected to server]
 Ansluten till server
 [connecting to all players]
 Ansluter till alla spelar
-[connected to all players]
-Ansluten till alla spelare
-[available lan games]
-Tillgängliga lokala spel
-[login]
-Logga in
-[from:]
-från:
-[to:]
-till:
-[away:]
-borta:
-[compile]
-Kompilera skript
-[downloaded at]
-Nedladdat till 
-[percent]
-  procent
+[connecting to]
+Ansluter till
+[Continue playing]
+Fortsätt spela
+[Corn]
+Vete
+[crater density]
+krater densitet
+[crater lakes terrain]
+Kratersjöar
+[create game]
+Skapa spel
+[create map]
+Skapa karta
+[credits]
+Credits
+[current speed]
+Nuvarande hastighet
+[custom game]
+Eget Spel
+[customcur]
+Egen pekare
+[damage]
+Skada
+[Damaged Map]
+Skadekarta
+[dblbuff]
+Dubbel buffring
+[decrease units working]
+
+[default terrain]
+Standardterräng
+[defencetower explanation 2]
+enheter eller byggnader
+[defencetower explanation]
+Attackerar fientliga
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
+Försvarstorn
+[Defense Map]
+Försvarskarta
+[Defense]
+Försvar
+[Delete game]
+Radera valt spel
+[delete]
+Ta bort
+[desert]
+öken
+[destroy building]
+Förstör vald byggnad
+[destroy]
+Förstör
+[Disconnect]
+Koppla från
+[display]
+Bildskärm
+[don't carry anything]
+Bär ingenting
+[down]
+
 [download finished]
 Nedladdning slutförd
+[downloaded at]
+Nedladdat till 
+[edit map]
+Editera Karta
+[editing map]
+Editerar Karta
+[editor shortcuts]
+Ändra genvägar
+[editor]
+Editor
+[end]
+
+[Enter your nickname :]
+Skriv in ditt smeknamn:
+[Enter your password :]
+Skriv in ditt lösenord:
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+Attraherar utforskare
+[explorationflag]
+Utforskningsflagga
+[Explorer Ratio]
+Utforskare Proportion
+[Explorer]
+Utforskare
+[explorers]
+utforskare
+[extra islands]
+tomma öar
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[food left]
+Mat kvar
+[food]
+Mat
+[forbidden area]
+Förbjudet område
+[Free]
+Ok
+[free]
+är fria
+[free]
+är fria
+[from:]
+från:
+[fruit]
+Frukt
+[fullscreen]
+Fullskärm
+[game full]
+Spelet är fullt
+[game shortcuts]
+Spelgenvägar
+[game speed]
+Spelhastighet
+[general settings]
+Allmänt
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Gå till huvudmeny
+[grass]
+Gräs
+[ground attack]
+markattack
+[guard area]
+Vaktområde
+[GUIMapPreview text 0]
+Välj
+[GUIMapPreview text 1]
+en karta
+[handmade map]
+Handgjord karta
+[Happyness]
+Glädje
+[hard pause]
+
+[Harvest]
+Skörda
+[has joined]
+har anslutit
+[has quit]
+har avslutat
+[heal]
+Hälsa
+[help]
+
+[home]
+
+[hospital explanation 2]
+ 
+[hospital explanation]
+Helar dina enheter
+[hospital]
+Sjukhus
+[host]
+Var värd för ett spel
+[hp]
+HP
+[hp]
+Hälsopoäng
+[human]
+mänsklig
+[hungry]
+hungriga
+[hungryness]
+Hunger
+[hwaccel]
+Hårdvaruacceleration
+[In way]
+På väg
+[increase units working]
+
+[inn explanation 2]
+ 
+[inn explanation]
+Utfodrar dina enheter
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Värdshus
+[insert]
+
+[inside]
+Inuti
+[islands size]
+östorlek
+[islands terrain]
+Öar
+[iterate selection]
+
+[jobs]
+job
+[join a game]
+Gå med i ett spel
+[join]
+Gå med
+[keyboard settings]
+Tangentbord
+[kick]
+
+[lan]
+LAN Spel
+[language-code]
+sv
+[language-tr]
+Språk
+[language]
+Svenska
+[large]
+stor
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+Nivå
+[levels]
+Nivåer
+[load campaign]
+Ladda Kampanj
+[load game]
+Ladda spel
+[load map]
+Ladda Karta
+[load]
+Ladda
+[loading glob2]
+Laddar Globulation 2
+[login]
+Logga in
+[Lost : %0 has more prestige than you]
+Förlust: %0 har mer prestige än dig
+[Lost : your colony is dead]
+Förlust: Din koloni är död
+[lowquality]
+Låg kvalitet
+[Magic At. Air]
+Luftskada
+[Magic At. Ground]
+Markskada
 [Map name: %0]
 Kartnamn: %0.
-[one player]
-En spelare har anslutit.
+[map name]
+Namn
+[map size x]
+Kartbredd
+[map size y]
+Karthöjd
+[mapGenerationDescriptor Methodes]
+Metoder för slumpmässigt genererade kartor
+[maps available]
+Tillgängliga Kartor
+[mark map]
+Markera Karta För Allierade
+[market explanation 2]
+frukt med andra
+[market explanation]
+Tillåter utbyte av 
+[market]
+Marknad
+[medium]
+medium
+[menu]
+
+[Min required level:]
+Lägsta tillåtna nivå:
+[Minimum Level To Flag]
+Lägsta flaggnivå
+[Music volume]
+Volym (musik)
+[mute]
+tyst
+[network latency]
+Nätverksfördröjning
+[new campaign]
+Ny Kampanj
+[new]
+Ny
+[nick taken]
+Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
+[no ressources growth areas]
+Inga Odlingsområden
+[No]
+Nej
+[not connected]
+Ej ansluten
+[not ready]
+inte redo
 [number of players: %0]
 %0 spelare är närvarande.
 [number of teams: %0]
 %0 lag.
-[game full]
-Spelet är fullt
-[small]
-liten
-[medium]
-medium
-[large]
-stor
-[network latency]
-Nätverksfördröjning
-[game speed]
-Spelhastighet
+[number of teams]
+antal lag
+[numlock]
+
+[of which]
+av vilka
+[ok]
+Ok
+[old islands terrain]
+Gamla slumpmässiga öar
+[old random terrain]
+Gammal slumpmässig terräng
+[On the spot]
+Här
+[one player]
+En spelare har anslutit.
+[open chat box]
+
+[open load menu]
+Öppna Ladda Meny
+[open save menu]
+Öppna Spara Meny
+[open script editor]
+Öppna Skript Editor
+[open]
+öppna
+[options]
+Alternativ
+[Orange]
+Apelsin
+[page down]
+
+[page up]
+
+[Papyrus]
+Papyrus
+[pause game]
+Pausa Spel
+[pause]
+
 [Paused]
 Pausat
+[percent]
+  procent
+[player name]
+Spelarnamn
+[player]
+Spelare
+[please wait]
+Var god vänta
+[power]
+
+[presence request sent]
+Närvaroförfrågan skickad ...
+[press space]
+Tryck mellanslag för att forsätta.
+[Prestige]
+Prestige
+[print screen]
+
+[Prune]
+Sviskon
+[quit the editor]
+Avsluta editorn
+[quit the game]
+Avsluta spelet
+[quit]
+Avsluta
+[racetrack explanation 2]
+hos dina enheter
+[racetrack explanation]
+Ökar gånghastigheten
+[racetrack]
+Löparbana
+[random terrain]
+Slumpmässig terräng
+[range]
+Räckvidd
+[ratios]
+Proportioner
 [Register a new YOG user with password]
 Registrera en ny YOG-användare med lösenord. (osäkert)
+[remember unit]
+Kom Ihåg Enhet
 [Remember YOG password localy]
 Kom ihåg mitt lösenord lokalt. (osäkert)
+[remove map]
+Ta Bort Karta
+[remove shortcut]
+
+[repair building]
+Starta/Stoppa Reparation
+[repair]
+Reparera
+[repeat area]
+gånger samma landskap
+[ressources]
+Resurser
+[restore default shortcuts]
+Återställ Till Ursprungliga Tangentbordsgenvägar
+[return to editor]
+Återgå till editorn
+[return to game]
+Återgå till spelet
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+bredd på flod
+[river terrain]
+Flod
+[sand]
+Sand
+[save before quit?]
+Vill du spara innan du avslutar?
+[save game]
+Spara spel
+[save map]
+Spara Karta
+[Save]
+Spara
+[school explanation 2]
+hos dina arbetare
+[school explanation]
+Förbättrar byggnadsnivån
+[school]
+Skola
+[Script Areas]
+Skript Områden
+[scroll lock]
+
+[seeking a job]
+söker efter arbete
+[seeking]
+söker
+[select barracks building]
+Välj Barrack
+[select clearingflag]
+Välj Röjningsflagga
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select explorationflag]
+Välj Utforskningsflagga
+[select hospital building]
+Välj Sjukhus
+[select inn building]
+Välj Värdshus
+[select market building]
+Välj Marknad
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+Välj Löparbana
+[select school building]
+Välj skola
+[select swarm building]
+Välj Svärm
+[select swimmingpool building]
+Välj simbassäng
+[select tower building]
+Välj Försvarstorn
+[select wall building]
+Välj Stenmur
+[select warflag]
+Välj Krigsflagga
+[session request sent]
+Sessionsförfrågan skickad ...
+[settings]
+Inställningar
+[shortcut explanation enter]
+Enter: skicka ett chattmeddelande
+[shortcut explanation v]
+V: håll för att prata
+[show main menu]
+
+[skin]
+Display
+[small]
+liten
+[smoothing]
+Uppmjukning
+[space]
+
+[speed]
+Hastighet
+[start mission]
+Starta Uppdrag
+[start new campaign]
+Starta Ny Kampanj
+[Start]
+Starta
+[STARTING GAME ...]
+Startar spel... 
+[Starving Map]
+Svältkarta
+[starving]
+svälter
+[stat]
+Statistik
+[state]
+status
+[Statistics]
+Statistik
+[Still (i)]
+Ännu 
+[still (w)]
+Ännu
+[still one unit working]
+En enhet arbetar ännu
+[Still one]
+Ännu en kvar
+[Stone]
+Sten
+[stone]
+sten
+[stonewall explanation 2]
+ 
+[stonewall explanation]
+Passivt försvarselement
+[stonewall]
+Stenmur
+[svr hostname]
+Server värdnamn
+[swamp terrain]
+Träsk
+[swarm explanation 2]
+ 
+[swarm explanation]
+Skapar nya enheter
+[swarm level 0]
+
+[swarm]
+Svärm
+[Swim]
+Simma
+[swimmingpool explanation 2]
+hos dina enheter
+[swimmingpool explanation]
+Ökar simhastigheten
+[swimmingpool]
+Simbassäng
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+Byt till Byggnadsvy
+[switch to flag view]
+Byt till Flaggvy
+[switch to removing areas]
+
+[switch to teams view]
+Byt till Lagvy
+[switch to terrain view]
+Byt till Terrängvy
+[sys req]
+
+[tab]
+
+[teams]
+ lag
+[the barracks is finished]
+Baracken är färdig
+[the barracks is under attack]
+Baracken är under attack
+[the building is finished]
+Byggnaden är färdig
+[the building is under attack]
+Byggnaden är under attack
+[the clearingflag is finished]
+?? Röjningsflaggan är klar ??
+[the clearingflag is under attack]
+?? Röjningsflaggan är under attack ??
+[the defencetower is finished]
+Försvarstornet är färdigt
+[the defencetower is under attack]
+Ditt försvar är under attack
+[the explorationflag is finished]
+?? Utforskningsflaggan är klar ??
+[the explorationflag is under attack]
+?? Utforskningsflaggan är under attack ??
+[The game has not been finished]
+Spelet är inte klart
+[the games]
+Spel
+[the hospital is finished]
+Sjukhuset är färdigt
+[the hospital is under attack]
+Sjukstugan är under attack
+[the inn is finished]
+Värdshuset är färdigt
+[the inn is under attack]
+Värdshuset är under attack
+[the maps]
+Kartor
+[the market is finished]
+Marknaden är klar
+[the market is under attack]
+Marknaden är under attack
+[The player %0 has joined YOG]
+%0 har anslutit sig till YOG.
+[The player %0 has left YOG]
+%0 har lämnat YOG.
+[the racetrack is finished]
+Löparbanan är färdig
+[the racetrack is under attack]
+Löparbanan är under attack
+[the school is finished]
+Skolan är färdig
+[the school is under attack]
+Skolan är under attack
+[the stonewall is finished]
+En mursektion är klar
+[the stonewall is under attack]
+Fienden är vid dina murar
+[the swarm is finished]
+Svärmen är färdig
+[the swarm is under attack]
+Svärmen är under attack
+[the swimmingpool is finished]
+Simbassängen är färdig
+[the swimmingpool is under attack]
+Simbassängen är under attack
+[the warflag is finished]
+?? Krigsflaggan är klar ??
+[the warflag is under attack]
+?? Krigsflaggan är under attack ??
+[to:]
+till:
+[toggle draw accessibility aids]
+Växla Visa Tillgänglighetshjälp
+[toggle draw information]
+Växla Visa Information
+[toggle draw unit paths]
+Växla Visa Enhetsdestinationer
+[toggle menu screen]
+
+[toggle recording voice]
+Initiera röstinspelning
+[Total prestige reached]
+Total prestige uppnådd
+[Total]
+Totalt
+[tutorial]
+Introduktion
+[unassigned]
+Ej tilldelad
+[Uncontrolled]
+Okontrollerad
+[undo]
+
+[uniform terrain]
+Enhetlig terräng
+[Unit editor]
+Enhetseditor
+[unit settings]
+Enheter
+[Unit type]
+Enhetstyp
+[units type]
+enhetstyp
+[units working]
+ arbetande enheter
+[Units]
+Enheter
+[unlocked by]
+Upplåst Av
+[Unnamed Area]
+{Namnlöst Område}
+[up]
+
+[update list]
+Uppdatera lista
+[upgrade building]
+Starta/Stoppa Uppgradering
+[upgrade]
+Uppgradera
+[username]
+Användarnamn
+[Version]
+Version
+[view history]
+
+[wait destroy]
+Avvaktar destruktion
+[waiting for %0]
+Väntar på %0
+[waiting for key]
+
+[Walk]
+Gå
+[warflag explanation 2]
+ 
+[warflag explanation]
+Attraherar krigare
+[warflag]
+Krigsflagga
+[Warning, you need to reboot the game for changes to take effect]
+Varning, du behöver starta om spelet för att inställningarna ska börja gälla
+[Warrior Ratio]
+Krigare Proportion
+[Warrior]
+Krigare
+[warriors]
+krigare
+[was AI]
+var AI
+[was]
+var
+[water]
+Vatten
+[Wheat]
+
+[wheat]
+vete
+[Won : you defeated your opponents]
+Seger: Du besegrade dina motsåtndare
+[Won : you have the most prestige]
+Seger: Du har mest prestige.
+[Won : your ally %0 has the most prestige]
+Seger: din allierade %0 har mest prestige
+[Wood]
+Trä
+[wood]
+trä
+[Worker Ratio]
+Arbetare Proportion
+[Worker]
+Arbetare
+[workers]
+Arbetare
+[workers]
+arbetare
+[working]
+Arbetar
+[wounded]
+skadade
+[Yes]
+Ja
 [YESTS_BAD]
 Internt fel vid anslutning.
-[YESTS_UNABLE_TO_CONNECT]
-Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
-[YESTS_CREATED]
-Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
 [YESTS_CONNECTING]
 Upprättar anslutningen till YOG metaserver...
-[YESTS_DECONNECTING]
-Kopplar från YOG metaserver...
-[YESTS_YOG_KILLED]
-En administratör har just stoppat YOG metaserver.
 [YESTS_CONNECTION_LOST]
 Anslutningen till YOG har brutits.
-[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+YOG metaserver vägrar anslutning därför att ett internt protokollfel uppstod:  du är redan autentiserad. Försök igen om 45 sekunder.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG metaserver vägrar anslutning därför att användarnamnet redan är registrerat.  Om det här användarnamnet är ditt, avaktivera inställningen "Registrera en ny YOG-användare med lösenord".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt lösenord.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver vägrar anslutning därför att det här användarnamnet inte har ett lösenord. Du vill förmodligen registrera ditt användarnamn med det här lösenordet. Aktivera därför inställningen "Registrera en ny YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den inställningen en gång.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metaserver vägrar anslutning därför att användarnamnet redan är registrerat.  Om det här användarnamnet är ditt, avaktivera inställningen "Registrera en ny YOG-användare med lösenord".
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metaserver vägrar anslutning därför att ett internt protokollfel uppstod:  du är redan autentiserad. Försök igen om 45 sekunder.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 YOG metaserver vägrar anslutning därför att ett internt protokollfel uppstod:  du är inte ansluten ännu medan du ansluter. Var vänlig rapportera den här buggen.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver vägrar anslutning utan att lämna förklaring!
-[The player %0 has left YOG]
-%0 har lämnat YOG.
-[The player %0 has joined YOG]
-%0 har anslutit sig till YOG.
-[You are now marked as away]
-Du är markerad som borta.
-[You are no more marked as away]
-Du är inte längre markerad som borta.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
+[YESTS_CREATED]
+Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
+[YESTS_DECONNECTING]
+Kopplar från YOG metaserver...
+[YESTS_UNABLE_TO_CONNECT]
+Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
+[YESTS_YOG_KILLED]
+En administratör har just stoppat YOG metaserver.
+[yog-chat]
+#yog-en
+[yog]
+Ysagoon Online Spel
 [YOG_HELP]
 YOG:s meddelandesystem har två kommandon, "msg" och "away". Skriv "/help <kommando>" för att lära dig mer om ett av dom.
 [YOG_HELP_AWAY]
 "/away (<meddelande>)" ger dig möjlighet att låta andra YOG-användare veta att du tillfälligt är borta.  Du kan lägga till ett kort beskrivningsmeddelande. Till exempel "/away Jag äter hamburgare och är tillbaks vid klockan ett". Alias /a
 [YOG_HELP_MSG]
 "/msg <namn> <meddelande>" skickar ett privat meddelande.  Till exempel, "/msg Sven Hej Sven, hur mår du?". Alias "/m".
-[save before quit?]
-Vill du spara innan du avslutar?
-[Yes]
-Ja
-[No]
-Nej
-[Save]
-Spara
-[auto save]
-Autospara
-[Total prestige reached]
-Total prestige uppnådd
-[Continue playing]
-Fortsätt spela
-[Lost : your colony is dead]
-Förlust: Din koloni är död
-[Won : you defeated your opponents]
-Seger: Du besegrade dina motsåtndare
-[Won : your ally %0 has the most prestige]
-Seger: din allierade %0 har mest prestige
-[Lost : %0 has more prestige than you]
-Förlust: %0 har mer prestige än dig
-[Won : you have the most prestige]
-Seger: Du har mest prestige.
-[The game has not been finished]
-Spelet är inte klart
-[display]
-Bildskärm
-[username]
-Användarnamn
-[fullscreen]
-Fullskärm
-[hwaccel]
-Hårdvaruacceleration
-[dblbuff]
-Dubbel buffring
-[lowquality]
-Låg kvalitet
-[audio]
-Ljud
-[Music volume]
-Volym (musik)
-[Happyness]
-Glädje
-[customcur]
-Egen pekare
-[choose campaign]
-Välj en kampanj
-[nick taken]
-Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
-[mute]
-tyst
-[abreaviation explanation A]
-A: Allierade
-[abreaviation explanation V]
-V: Visa synfält för alla byggnader
-[abreaviation explanation fV]
-fV: Visa synfält för värdshusbyggnader (för att stjäla enheter)
-[abreaviation explanation mV]
-mV: Visa synfält för marknadsbyggnader (för att byta frukter)
-[abreaviation explanation C]
-C: Skicka chattmeddelanden till
-[shortcut explanation enter]
-Enter: skicka ett chattmeddelande
-[shortcut explanation v]
-V: håll för att prata
-[Delete game]
-Radera valt spel
-[any explorer]
-någon utforskare
-[ground attack]
-markattack
-[Can't join game, wrong game version]
-Kan inte ansluta till spel, fel spelversion
-[Can't join game, missmatching game parameters]
-Kan inte ansluta till spel, omatchande spelparametrar
-[Can't join game, timeout]
-Kan inte ansluta till spel, timeout
-[swamp terrain]
-Träsk
-[river terrain]
-Flod
-[crater lakes terrain]
-Kratersjöar
-[old random terrain]
-Gammal slumpmässig terräng
-[old islands terrain]
-Gamla slumpmässiga öar
-[desert]
-öken
-[algae]
-alger
-[wheat]
-vete
-[wood]
-trä
-[stone]
-sten
-[river diameter]
-bredd på flod
-[extra islands]
-tomma öar
-[crater density]
-krater densitet
-[press space]
-Tryck mellanslag för att forsätta.
-[GUIMapPreview text 0]
-Välj
-[GUIMapPreview text 1]
-en karta
-[Unit editor]
-Enhetseditor
-[skin]
-Display
-[hungryness]
-Hunger
-[repeat area]
-gånger samma landskap
+[You are no more marked as away]
+Du är inte längre markerad som borta.
+[You are now marked as away]
+Du är markerad som borta.
+[you have lost]
+Du har förlorat!
+[you have won]
+Du har vunnit!
+[Your %0 are under attack]
+Din %0 är under attack
+[Your unit got converted to %0's team]
+Din enhet blev omvänd till %0s lag

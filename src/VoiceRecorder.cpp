@@ -52,6 +52,8 @@
 	#include <unistd.h>
 	#include <fcntl.h>
 	#define STOP_RECORDING_TIMEOUT 3000
+#else
+	#define STOP_RECORDING_TIMEOUT 3000
 #endif
 
 #define MAX_VOICE_MULTI_FRAME_LENGTH 256
@@ -150,7 +152,7 @@ int record(void *pointer)
 			int byteLength = speex_bits_nbytes(&bits);
 			if (byteLength > MAX_VOICE_MULTI_FRAME_LENGTH || totalRead > MAX_VOICE_MULTI_FRAME_SAMPLE_COUNT)
 			{
-				OrderVoiceData *order = new OrderVoiceData(0, byteLength, frameCount, NULL);
+				boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 				int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 				assert(byteLength == nbBytes);
 				
@@ -169,7 +171,7 @@ int record(void *pointer)
 		int byteLength = speex_bits_nbytes(&bits);
 		if (byteLength > 0)
 		{
-			OrderVoiceData *order = new OrderVoiceData(0, byteLength, frameCount, NULL);
+			boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 			int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 			assert(byteLength == nbBytes);
 			
@@ -244,13 +246,13 @@ void VoiceRecorder::stopRecording(void)
 	recordingNow = false;
 }
 
-OrderVoiceData *VoiceRecorder::getNextOrder(void)
+boost::shared_ptr<OrderVoiceData> VoiceRecorder::getNextOrder(void)
 {
-	OrderVoiceData *order;
+	boost::shared_ptr<OrderVoiceData> order;
 	SDL_LockMutex(ordersMutex);
 	if (orders.empty())
 	{
-		order = NULL;
+		order = boost::shared_ptr<OrderVoiceData>();
 	}
 	else
 	{

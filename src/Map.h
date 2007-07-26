@@ -31,6 +31,7 @@
 #include "Team.h"
 #include "TerrainType.h"
 #include "BitArray.h"
+#include "MapHeader.h"
 
 class Unit;
 
@@ -93,9 +94,13 @@ public:
 	// !This call is needed to use the Map!
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
-	bool load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *game=NULL);
+	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
+	
+	/// Load transitional map data. This is temporary map information that was saved by
+	/// the alpha 23 patch for transfering between map formats
+	void loadTransitional();
 	
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.
@@ -129,13 +134,17 @@ public:
 	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
 	int normalizeX(int x)
 	{
-		return (x+w)%w;
+		if(x<0)
+			return (x%w) + w;
+		return x%w;
 	}
 	
 	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
 	int normalizeY(int y)
 	{
-		return (y+h)%h;
+		if(y<0)
+			return (y%h) + h;
+		return y%h;
 	}
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
@@ -375,6 +384,12 @@ public:
 	{
 		int t=getTerrain(x, y);
 		return ((t>=128)&&(t<128+16));
+	}
+	
+	bool hasSand(int x, int y)
+	{
+		int t=getTerrain(x, y);
+		return ((t>=16)&&(t<=255));
 	}
 
 	bool isRessource(int x, int y)

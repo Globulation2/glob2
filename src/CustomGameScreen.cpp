@@ -28,14 +28,15 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <Stream.h>
+#include <FormatableString.h>
 
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)
 {
 	for (int i=0; i<NumberOfPlayerSelectors; i++)
 	{
-		isAI[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
-		addWidget(isAI[i]);
+		isPlayerActive[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
+		addWidget(isPlayerActive[i]);
 		color[i]=new ColorButton(265, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 200+i);
 		addWidget(color[i]);
 		if (i==0)
@@ -54,7 +55,7 @@ CustomGameScreen::CustomGameScreen() :
 			
 			aiSelector[i]=new MultiTextButton(300, 60+i*25, 100, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI]"), 300+i);
 			for (int aii=0; aii<AI::SIZE; aii++)
-				aiSelector[i]->addText(Toolkit::getStringTable()->getString("[AI]", aii));
+				aiSelector[i]->addText(AI::getAIText(aii));
 			addWidget(aiSelector[i]);
 			aiSelector[i]->hide();
 			aiSelector[i]->setIndex(AI::NUMBI);
@@ -62,9 +63,13 @@ CustomGameScreen::CustomGameScreen() :
 	}
 }
 
+
+
 CustomGameScreen::~CustomGameScreen()
 {
 }
+
+
 
 void CustomGameScreen::validMapSelectedhandler(void)
 {
@@ -73,14 +78,14 @@ void CustomGameScreen::validMapSelectedhandler(void)
 	for (i = 0; i<NumberOfPlayerSelectors; i++)
 	{
 		color[i]->clearColors();
-		for (int j = 0; j<sessionInfo.numberOfTeam; j++)
-			color[i]->addColor(sessionInfo.teams[j].colorR, sessionInfo.teams[j].colorG, sessionInfo.teams[j].colorB);
+		for (int j = 0; j<mapHeader.getNumberOfTeams(); j++)
+			color[i]->addColor(mapHeader.getBaseTeam(j).colorR, mapHeader.getBaseTeam(j).colorG, mapHeader.getBaseTeam(j).colorB);
 		color[i]->setSelectedColor();
 	}
 	// find team for human player, not in every map
-	for (i = 0; i<sessionInfo.numberOfTeam; i++)
+	for (i = 0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		if (sessionInfo.teams[i].type == BaseTeam::T_HUMAN)
+		if (mapHeader.getBaseTeam(i).type == BaseTeam::T_HUMAN)
 		{
 			color[0]->setSelectedColor(i);
 			break;
@@ -88,24 +93,27 @@ void CustomGameScreen::validMapSelectedhandler(void)
 	}
 	// Fill the others
 	int c = color[0]->getSelectedColor();
-	for (i = 1; i<sessionInfo.numberOfTeam; i++)
+	for (i = 1; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		c = (c+1)%sessionInfo.numberOfTeam;
+		c = (c+1)%mapHeader.getNumberOfTeams();
 		color[i]->setSelectedColor(c);
 		color[i]->show();
-		isAI[i]->setState(true);
+		isPlayerActive[i]->setState(true);
 		closedText[i]->hide();
 		aiSelector[i]->show();
 	}
 	// Close the rest
 	for (; i<NumberOfPlayerSelectors; i++)
 	{
-		isAI[i]->setState(false);
+		isPlayerActive[i]->setState(false);
 		color[i]->hide();
 		aiSelector[i]->hide();
 		closedText[i]->show();
 	}
+	updatePlayers();
 }
+
+
 
 void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
@@ -115,12 +123,12 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	{
 		if (par1==100)
 		{
-			isAI[0]->setState(true);
+			isPlayerActive[0]->setState(true);
 		}
 		else if ((par1>100) && (par1<200))
 		{
 			int n=par1-100;
-			if (isAI[n]->getState())
+			if (isPlayerActive[n]->getState())
 			{
 				color[n]->show();
 				closedText[n]->hide();
@@ -133,21 +141,61 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				aiSelector[n]->hide();
 			}
 		}
+		updatePlayers();
 	}
 }
 
-bool CustomGameScreen::isAIactive(int i)
+
+
+bool CustomGameScreen::isActive(int i)
 {
-	return isAI[i]->getState();
+	return isPlayerActive[i]->getState();
 }
+
+
 
 AI::ImplementitionID CustomGameScreen::getAiImplementation(int i)
 {
 	return (AI::ImplementitionID)aiSelector[i]->getIndex();
 }
 
+
+
 int CustomGameScreen::getSelectedColor(int i)
 {
 	return color[i]->getSelectedColor();
 }
+
+
+
+void CustomGameScreen::updatePlayers()
+{
+	int count = 0;
+	for (int i=0; i<NumberOfPlayerSelectors; i++)
+	{
+		if (isActive(i))
+		{
+			int teamColor=getSelectedColor(i);
+			if (i==0)
+			{
+				gameHeader.getBasePlayer(i) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			}
+			else
+			{
+				AI::ImplementitionID iid=getAiImplementation(i);
+				FormatableString name("%0 %1");
+				name.arg(AI::getAIText(iid)).arg(i-1);
+				gameHeader.getBasePlayer(i) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+			}
+			count+=1;
+		}
+		else
+		{
+			gameHeader.getBasePlayer(i) = BasePlayer();
+		}
+	}
+	gameHeader.setNumberOfPlayers(count);
+}
+
+
 

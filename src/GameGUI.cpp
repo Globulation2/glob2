@@ -46,10 +46,10 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "YOG.h"
 #include "IRC.h"
 #include "SoundMixer.h"
 #include "VoiceRecorder.h"
+#include "GameGUIKeyActions.h"
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>
@@ -84,8 +84,7 @@
 
 #define YOFFSET_BRUSH 56
 
-//! Pointer to IRC client in YOGScreen, NULL if no IRC client is available
-extern IRC *ircPtr;
+using namespace boost;
 
 enum GameGUIGfxId
 {
@@ -107,7 +106,7 @@ public:
 	//! React on action from any widget (but there is only one anyway)
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	//! Return the text typed
-	const char *getText(void) const { return textInput->getText().c_str(); }
+	std::string getText(void) const { return textInput->getText(); }
 	//! Set the text
 	void setText(const char *text) const { textInput->setText(text); }
 };
@@ -128,45 +127,9 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
-//! The screen that contains the message history In Game 
-class InGameScrollableText:public OverlayScreen
-{
-protected:
-	//! The textarea widget
-	List *messageList;
-	
-public:
-	//! InGameScrollableText constructor
-	InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory);
-	//! InGameScrollableText destructor
-	virtual ~InGameScrollableText() { }
-	//! Dummy
-	virtual void onAction(Widget *source, Action action, int par1, int par2) { }
-	//! read messageHistory and update widget 
-	void readHistory(std::vector<std::string> messageHistory);
-};
-
-InGameScrollableText::InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory)
-:OverlayScreen(parentCtx, (globalContainer->gfx->getW()-152), 100)
-{
-	messageList=new List(0, 0, (globalContainer->gfx->getW()-152), 100, 0, 0, "standard");
-	addWidget(messageList);
-	readHistory(messageHistory);
-	dispatchInit();
-}
-
-void InGameScrollableText::readHistory(std::vector<std::string> messageHistory)
-{
-	messageList->clear();
-	if (messageHistory.capacity() > 0){
-		for (int i = messageHistory.size() -1; i>=0; i--){
-			messageList->addText(messageHistory[i]);
-		}
-	}
-}
-
 GameGUI::GameGUI()
-:game(this)
+: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
+  minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
 {
 }
 
@@ -195,10 +158,8 @@ void GameGUI::init()
 	displayMode=BUILDING_VIEW;
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
-	selection.build = 0;
 	selection.building = NULL;
 	selection.unit = NULL;
-	highlightSelection = 0.0f;
 	miniMapPushed=false;
 	putMark=false;
 	showUnitWorkingToBuilding=true;
@@ -212,6 +173,7 @@ void GameGUI::init()
 	showStarvingMap=false;
 	showDamagedMap=false;
 	showDefenseMap=false;
+	showFertilityMap=false;
 	
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
@@ -219,15 +181,12 @@ void GameGUI::init()
 	scrollableText=NULL;
 	typingInputScreenPos=0;
 
-	messagesList.clear();
 	eventGoTypeIterator = 0;
-	markList.clear();
 	localTeam=NULL;
 	teamStats=NULL;
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
-	brushType = FORBIDDEN_BRUSH;
 
 	buildingsChoiceName.clear();
 	buildingsChoiceName.push_back("swarm");
@@ -250,17 +209,12 @@ void GameGUI::init()
 
 	hiddenGUIElements=0;
 	
- 	for (size_t i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		smoothedCpuLoad[i]=0;
-	smoothedCpuLoadPos=0;
-
- 	for (int i=0; i<NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT; i++)
-		unitCount[i] = 1;
+ 	for (size_t i=0; i<SMOOTHED_CPU_SIZE; i++)
+		smoothedCPULoad[i]=0;
+	smoothedCPUPos=0;
 
 	campaign=NULL;
 	missionName="";
-	
-	initUnitCount();
 
         if (getenv ("GLOB2_NO_RAW_MOUSEWHEEL")) {
           noRawMousewheel = true; }
@@ -270,10 +224,10 @@ void GameGUI::adjustLocalTeam()
 {
 	assert(localTeamNo>=0);
 	assert(localTeamNo<32);
-	assert(game.session.numberOfPlayer>0);
-	assert(game.session.numberOfPlayer<32);
-	assert(localTeamNo<game.session.numberOfTeam);
-	
+	assert(game.gameHeader.getNumberOfPlayers()>0);
+	assert(game.gameHeader.getNumberOfPlayers()<32);
+	assert(localTeamNo<game.mapHeader.getNumberOfTeams());
+
 	localTeam = game.teams[localTeamNo];
 	assert(localTeam);
 	teamStats = &localTeam->stats;
@@ -308,114 +262,25 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 		||(drop && (selectionPushedPosX!=posX || selectionPushedPosY!=posY)))
 	{
 		Uint16 gid=selBuild->gid;
-		OrderMoveFlag *oms=new OrderMoveFlag(gid, posX, posY, drop);
+		shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, posX, posY, drop));
 		// First, we check if anoter move of the same flag is already in the "orderQueue".
 		bool found=false;
-		for (std::list<Order *>::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
+		for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
 		{
-			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG) && ( ((OrderMoveFlag *)(*it))->gid==gid) )
+			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG))
 			{
-				delete (*it);
-				(*it)=oms;
-				found=true;
-				break;
+				if(static_pointer_cast<OrderMoveFlag>(*it)->gid==gid)
+				{
+					(*it) = oms;
+					found=true;
+					break;
+				}
 			}
 		}
 		if (!found)
 			orderQueue.push_back(oms);
 		selBuild->posXLocal=posX;
 		selBuild->posYLocal=posY;
-	}
-}
-
-void GameGUI::brushStep(bool maybeToggleMode, int mx, int my)
-{
-	// if we have an area over 32x32, which mean over 128 bytes, send it
-	if (brushAccumulator.getAreaSurface() > 32*32)
-	{
-		sendBrushOrders();
-	}
-	// we add brush to accumulator
-	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
-	int fig = brush.getFigure();
-        /* We treat any brush of size 1 by 1 specially.  If an attempt
-           is made to use the brush which would have no effect, we
-           first toggle the state of whether we are adding or removing
-           the area, so the use of the brush will have an effect.
-           This allows quickly repairing errors without having to
-           explicitly change the mode by hand.  We don't do this when
-           dragging, so only explicit mouse clicks can change the
-           mode. */
-        if (maybeToggleMode && (brush.getBrushHeight(fig) == 1) && (brush.getBrushWidth(fig) == 1)) {
-          int isAlreadyOn =
-            ((brushType == FORBIDDEN_BRUSH) && game.map.isForbiddenLocal(mapX, mapY))
-            || ((brushType == GUARD_AREA_BRUSH) && game.map.isGuardAreaLocal(mapX, mapY))
-            || ((brushType == CLEAR_AREA_BRUSH) && game.map.isClearAreaLocal(mapX, mapY));
-          unsigned mode = brush.getType();
-          if (((mode == BrushTool::MODE_ADD) && isAlreadyOn)
-              || ((mode == BrushTool::MODE_DEL) && !isAlreadyOn)) {
-            sendBrushOrders();
-            brush.setType((mode == BrushTool::MODE_ADD) ? BrushTool::MODE_DEL : BrushTool::MODE_ADD); 
-            brushStep(false, mx,my); // restart action after changing mode; set maybeToggleMode to false to guarantee no further recursion
-            return; }}
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
-	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
-	int width  = BrushTool::getBrushWidth(fig);
-	int height = BrushTool::getBrushHeight(fig);
-	// we update local values
-	if (brush.getType() == BrushTool::MODE_ADD)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
-				{
-					if (brushType == FORBIDDEN_BRUSH)
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else if (brushType == GUARD_AREA_BRUSH)
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else if (brushType == CLEAR_AREA_BRUSH)
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else
-						assert(false);
-				}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
-				{
-					if (brushType == FORBIDDEN_BRUSH)
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else if (brushType == GUARD_AREA_BRUSH)
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else if (brushType == CLEAR_AREA_BRUSH)
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else
-						assert(false);
-				}
-	}
-	else
-		assert(false);
-}
-
-void GameGUI::sendBrushOrders(void)
-{
-	if (brushAccumulator.getApplicationCount() > 0)
-	{
-		//std::cout << "GameGUI::sendBrushOrders : sending application of size " << brushAccumulator.getAreaSurface()/8 << std::endl;
-		if (brushType == FORBIDDEN_BRUSH)
-			orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator));
-		else if (brushType == GUARD_AREA_BRUSH)
-			orderQueue.push_back(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator));
-		else if (brushType == CLEAR_AREA_BRUSH)
-			orderQueue.push_back(new OrderAlterateClearArea(localTeamNo, brush.getType(), &brushAccumulator));
-		else
-			assert(false);
-		brushAccumulator.clear();
 	}
 }
 
@@ -440,10 +305,10 @@ void GameGUI::dragStep(int mx, int my, int button)
 			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
 				moveFlag(mx, my, false);
 		}
-		// Update brush
-		else if (selectionMode==BRUSH_SELECTION)
+		// Update tool
+		else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
 		{
-			brushStep(false, mx, my);
+			toolManager.handleMouseDrag(mx, my, localTeamNo, viewportX, viewportY);
 		}
 	}
         // fprintf (stderr, "exit dragStep\n");
@@ -547,72 +412,19 @@ void GameGUI::step(void)
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
 
 	assert(localTeam);
-	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
+	boost::shared_ptr<GameEvent> gevent = localTeam->getEvent();
+	while(gevent)
 	{
-		Uint16 gid = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).id;
-		int team = Unit::GIDtoTeam(gid);
-		int id = Unit::GIDtoID(gid);
-		Unit *u = game.teams[team]->myUnits[id];
-		if (u)
-		{
-			int strDec=(int)(u->typeNum);
-			addMessage(200, 30, 30, FormatableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]")).arg(Toolkit::getStringTable()->getString("[units type]", strDec)));
-			eventGoPosX = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::UNIT_UNDER_ATTACK_EVENT).posY;
-			eventGoType = Team::UNIT_UNDER_ATTACK_EVENT;
-		}
-	}
-	if (localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
-	{
-		int team = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).team;
-		const char *teamName = game.teams[team]->getFirstPlayerName();
-		addMessage(140, 0, 0, FormatableString(Toolkit::getStringTable()->getString("[Your unit got converted to %0's team]")).arg(teamName));
-		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posX;
-		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_LOST).posY;
-		eventGoType = Team::UNIT_CONVERTED_LOST;
-	}
-	if (localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
-	{
-		int team = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).team;
-		const char *teamName = game.teams[team]->getFirstPlayerName();
-		addMessage(100, 255, 100, FormatableString(Toolkit::getStringTable()->getString("[%0's team unit got converted to your team]")).arg(teamName));
-		eventGoPosX = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posX;
-		eventGoPosY = localTeam->getEvent(Team::UNIT_CONVERTED_ACQUIERED).posY;
-		eventGoType = Team::UNIT_CONVERTED_ACQUIERED;
-	}
-	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
-	{
-		Uint16 gid = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).id;
-		int team = Building::GIDtoTeam(gid);
-		int id = Building::GIDtoID(gid);
-		Building *b = game.teams[team]->myBuildings[id];
-		if (b)
-		{
-			int strDec=b->type->shortTypeNum;
-			addMessage(255, 0, 0, Toolkit::getStringTable()->getString("[the building is under attack]", strDec));
-			eventGoPosX = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::BUILDING_UNDER_ATTACK_EVENT).posY;
-			eventGoType = Team::BUILDING_UNDER_ATTACK_EVENT;
-		}
-	}
-	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
-	{
-		Uint16 gid = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).id;
-		int team = Building::GIDtoTeam(gid);
-		int id = Building::GIDtoID(gid);
-		Building *b = game.teams[team]->myBuildings[id];
-		if (b)
-		{
-			int strDec=b->type->shortTypeNum;
-			addMessage(30, 255, 30, Toolkit::getStringTable()->getString("[the building is finished]", strDec));
-			eventGoPosX = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posX;
-			eventGoPosY = localTeam->getEvent(Team::BUILDING_FINISHED_EVENT).posY;
-			eventGoType = Team::BUILDING_FINISHED_EVENT;
-		}
+		Color c = gevent->formatColor();
+		addMessage(c.r, c.g, c.b, gevent->formatMessage());
+		eventGoPosX = gevent->getX();
+		eventGoPosY = gevent->getY();
+		eventGoType = gevent->getEventType();
+		gevent = localTeam->getEvent();
 	}
 	
 	// voice step
-	OrderVoiceData *orderVoiceData;
+	boost::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
 		orderVoiceData->recepientsMask = chatMask;
@@ -623,20 +435,9 @@ void GameGUI::step(void)
 	musicStep();
 	
 	// do a yog step
-	yog->step();
-	
-	// do a irc step if IRC is enabled
-	if (ircPtr)
-	{
-		ircPtr->step();
-		// display IRC messages
-		while (ircPtr->isChatMessage())
-		{
-			addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(ircPtr->getChatMessageSource()).arg(ircPtr->getChatMessage()));
-			ircPtr->freeChatMessage();
-		}
-	}
+//	yog->step();
 
+/*
 	// display yog chat messages
 	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
 		if (!m->gameGuiPainted)
@@ -644,8 +445,8 @@ void GameGUI::step(void)
 			switch(m->messageType)//set the text color
 			{
 				case YCMT_MESSAGE:
-					/* We don't want YOG messages to appear while in the game.
-					addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);*/
+					//We don't want YOG messages to appear while in the game.
+					//addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);
 				break;
 				case YCMT_PRIVATE_MESSAGE:
 					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(m->userName).arg(m->text));
@@ -669,6 +470,26 @@ void GameGUI::step(void)
 			}
 			m->gameGuiPainted=true;
 		}
+*/
+	boost::shared_ptr<Order> order = toolManager.getOrder();
+	while(order)
+	{
+		orderQueue.push_back(order);
+		order = toolManager.getOrder();
+	}
+
+
+	if(game.stepCounter % 25 == 1)
+	{
+		if(showStarvingMap)
+			overlay.compute(game, OverlayArea::Starving, localTeamNo);
+		else if(showDamagedMap)
+			overlay.compute(game, OverlayArea::Damage, localTeamNo);
+		else if(showDefenseMap)
+			overlay.compute(game, OverlayArea::Defence, localTeamNo);
+		else if(showFertilityMap)
+			overlay.compute(game, OverlayArea::Fertility, localTeamNo);
+	}
 
 	// do we have won or lost conditions
 	checkWonConditions();
@@ -683,17 +504,17 @@ void GameGUI::musicStep(void)
 	static unsigned buildingTimeout = 0;
 	
 	// something bad happened
-	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT) ||
-		localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) ||
-		localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
+	if (localTeam->wasRecentEvent(GEUnitUnderAttack) ||
+		localTeam->wasRecentEvent(GEUnitLostConversion) ||
+		localTeam->wasRecentEvent(GEBuildingUnderAttack))
 	{
 	   warTimeout = 220;
 	   globalContainer->mix->setNextTrack(4, true);
 	}
 	
 	// something good happened
-	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT) ||
-		localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
+	if (localTeam->wasRecentEvent(GEUnitGainedConversion) ||
+		localTeam->wasRecentEvent(GEBuildingCompleted))
 	{
 		buildingTimeout = 220;
 		globalContainer->mix->setNextTrack(3, true);
@@ -751,7 +572,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -759,7 +580,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -793,7 +614,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
-					orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					return true;
 				}
 				break;
@@ -818,7 +639,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
 					// mask are for players, we need to convert them to team.
-					for (int pi=0; pi<game.session.numberOfPlayer; pi++)
+					for (int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
 					{
 						int otherTeam=game.players[pi]->teamNumber;
 						for (int mi=0; mi<5; mi++)
@@ -833,12 +654,12 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					
 					// we have a special cases for uncontroled Teams:
 					// FIXME : remove this
-					for (int ti=0; ti<game.session.numberOfTeam; ti++)
+					for (int ti=0; ti<game.mapHeader.getNumberOfTeams(); ti++)
 						if (game.teams[ti]->playersMask==0)
 							teamMask[1]|=(1<<ti); // we want to hit them.
 					
-					orderQueue.push_back(new SetAllianceOrder(localTeamNo,
-						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4]));
+					orderQueue.push_back(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
+						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4])));
 					chatMask=((InGameAllianceScreen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
@@ -873,12 +694,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case LoadSaveScreen::OK:
 				{
-					const char *locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
+					std::string locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
 					if (inGameMenu==IGM_LOAD)
 					{
-						strncpy(toLoadGameFileName, locationName, sizeof(toLoadGameFileName));
-						toLoadGameFileName[sizeof(toLoadGameFileName)-1]=0;
-						orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+						toLoadGameFileName = locationName;
+						orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					}
 					else
 					{
@@ -913,7 +733,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			switch (gameMenuScreen->endValue)
 			{
 				case InGameEndOfGameScreen::QUIT:
-				orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
@@ -946,37 +766,10 @@ void GameGUI::processEvent(SDL_Event *event)
 		
 		if (typingInputScreen->endValue==0)
 		{
-			char message[256];
-			strncpy(message, typingInputScreen->getText(), 256);
-			if (message[0])
+			std::string message = typingInputScreen->getText();
+			if (!message.empty())
 			{
-				bool foundLocal=false;
-				yog->handleMessageAliasing(message, 256);
-				if (strncmp(message, "/m ", 3)==0)
-				{
-					for (int i=0; i<game.session.numberOfPlayer; i++)
-						if (game.players[i] &&
-							(game.players[i]->type>=Player::P_AI||game.players[i]->type==Player::P_IP||game.players[i]->type==Player::P_LOCAL))
-						{
-							char *name=game.players[i]->name;
-							int l=Utilities::strnlen(name, BasePlayer::MAX_NAME_LENGTH);
-							if ((strncmp(name, message+3, l)==0)&&(message[3+l]==' '))
-							{
-								orderQueue.push_back(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, message+4+l));
-								foundLocal=true;
-							}
-						}
-					if (!foundLocal)
-						yog->sendMessage(message);
-				}
-				else if (message[0]=='/')
-				{
-					yog->sendMessage(message);
-					if (ircPtr && (message[1]=='/'))
-						ircPtr->sendCommand(&message[1]);
-				}
-				else
-					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message));
+				orderQueue.push_back(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 				typingInputScreen->setText("");
 			}
 			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
@@ -1004,11 +797,11 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym.sym, true, (event->key.keysym.mod & KMOD_SHIFT) != 0, (event->key.keysym.mod & KMOD_CTRL) != 0);
+			handleKey(event->key.keysym, true);
 		}
 		else if (event->type==SDL_KEYUP)
 		{
-			handleKey(event->key.keysym.sym, false, (event->key.keysym.mod & KMOD_SHIFT) != 0, (event->key.keysym.mod & KMOD_CTRL) != 0);
+			handleKey(event->key.keysym, false);
 		}
 		else if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
@@ -1091,16 +884,16 @@ void GameGUI::processEvent(SDL_Event *event)
                                                         (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setUnitCount(selBuild->typeNum, nbReq);
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange) &&
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
-							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
-							setUnitCount(selBuild->typeNum, nbReq);
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1118,16 +911,16 @@ void GameGUI::processEvent(SDL_Event *event)
                                                         (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setUnitCount(selBuild->typeNum, nbReq);
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal>0) &&
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
-							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
-							setUnitCount(selBuild->typeNum, nbReq);
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
+							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 					}
 				}
@@ -1144,9 +937,11 @@ void GameGUI::processEvent(SDL_Event *event)
 					moveFlag(mx, my, true);
 			}
 			// We send the order
-			else if (selectionMode==BRUSH_SELECTION)
+			else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
 			{
-				sendBrushOrders();
+				int mx, my;
+				SDL_GetMouseState(&mx, &my);
+				toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
 			}
 	
 			miniMapPushed=false;
@@ -1167,7 +962,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_QUIT)
 	{
 		exitGlobCompletely=true;
-		orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{
@@ -1231,15 +1026,15 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	if (building->owner->teamNumber != localTeamNo)
 		return;
 	int typeNum = building->typeNum + 1; //determines type of updated building
-	int unitWorking = getUnitCount(typeNum);
-	int unitWorkingFuture = getUnitCount(typeNum+1);
+	int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
 	if ((building->hp < buildingType->hpMax) && repair)
 	{
 		// repair
 		if ((building->type->regenerationSpeed == 0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid, 1, 1));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, 1, 1)));
 	}
 	else if (upgrade)
 	{
@@ -1247,20 +1042,13 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((buildingType->nextLevel != -1) &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
 			(localTeam->maxBuildLevel() > buildingType->level))
-			orderQueue.push_back(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
 	}
 }
 
-enum TwoKeyMode
+void GameGUI::handleKey(SDL_keysym key, bool pressed)
 {
-  TWOKEY_NONE = 0,
-  TWOKEY_BUILDING = 1,
-  TWOKEY_FLAG = 2,
-  TWOKEY_AREA = 3,
-} twoKeyMode = TWOKEY_NONE;
 
-void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
-{
 	int modifier;
 
 	if (pressed)
@@ -1270,526 +1058,445 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift, bool ctrl)
 
 	if (typingInputScreen == NULL)
 	{
-		std::string action="";
-                // fprintf (stderr, "twoKeyMode: %d, key: %d\n", twoKeyMode, key);
-                if (twoKeyMode != TWOKEY_NONE) {
-                  if (pressed) {
-                    switch (twoKeyMode) {
-                    case TWOKEY_BUILDING:
-                      switch (key) {
-                      case SDLK_a: /* swArm */
-                        action = "select make swarm tool";
-                        break;
-                      case SDLK_i: /* Inn */
-                        action = "select make inn tool";
-                        break;
-                      case SDLK_h: /* Hospital */
-                        action = "select make hospital tool";
-                        break;
-                      case SDLK_r: /* Racetrack */
-                        action = "select make racetrack tool";
-                        break;
-                      case SDLK_p: /* swimming Pool */
-                        action = "select make swimming pool tool";
-                        break;
-                      case SDLK_b: /* Barracks */
-                        action = "select make barracks tool";
-                        break;
-                      case SDLK_s: /* School */
-                        action = "select make school tool";
-                        break;
-                      case SDLK_d: /* Defense tower */
-                        action = "select make defense tower tool";
-                        break;
-                      case SDLK_w: /* stone Wall */
-                        action = "select make stone wall tool";
-                        break;
-                      case SDLK_m: /* Market */
-                        action = "select make market tool";
-                        break;
-			default:break;}
-                      break; 
-                    case TWOKEY_FLAG:
-                      switch (key) {
-                      case SDLK_e: /* Exploration */
-                        action = "select make exploration flag tool";
-                        break;
-                      case SDLK_w: /* War */
-                        action = "select make war flag tool";
-                        break;
-                      case SDLK_c: /* Clearing */
-                        action = "select make clearing flag tool";
-                        break;
-			default:break;}
-                      break; 
-                    case TWOKEY_AREA:
-                      switch (key) {
-                      case SDLK_f: /* Forbidden */
-                        action = "select forbidden area tool";
-                        break;
-                      case SDLK_g: /* Guard */
-                        action = "select guard area tool";
-                        break;
-                      case SDLK_c: /* Clearing */
-                        action = "select clearing area tool";
-                        break;
-                      case SDLK_a: /* Add */
-                        action = "switch to adding areas";
-                        break;
-                      case SDLK_d: /* Delete */
-                        action = "switch to deleting areas";
-                        break;
-                      case SDLK_1:
-                        action = "switch to area brush 1";
-                        break;
-                      case SDLK_2:
-                        action = "switch to area brush 2";
-                        break;
-                      case SDLK_3:
-                        action = "switch to area brush 3";
-                        break;
-                      case SDLK_4:
-                        action = "switch to area brush 4";
-                        break;
-                      case SDLK_5:
-                        action = "switch to area brush 5";
-                        break;
-                      case SDLK_6:
-                        action = "switch to area brush 6";
-                        break;
-                      case SDLK_7:
-                        action = "switch to area brush 7";
-                        break;
-                      case SDLK_8:
-                        action = "switch to area brush 8";
-                        break; 
-			default:break;}
-                      break;
-		      default:break;}
-                    key = SDLK_UNKNOWN;
-                    twoKeyMode = TWOKEY_NONE; }
-                  else {
-                    /* this case happens when the initial prefix key is released */
-                  }}
-                // fprintf (stderr, "action: [%s]\n", action.c_str());
-                
-		switch (key)
+		if(key.sym == SDLK_SPACE && pressed)
 		{
-			case SDLK_ESCAPE:
-				{
-					if ((inGameMenu==IGM_NONE) && (pressed))
-					{
-						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
-						inGameMenu=IGM_MAIN;
-					}
-				}
-				break;
-			case SDLK_PLUS:
-			case SDLK_KP_PLUS:
-			case SDLK_EQUALS:
-				{
-					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-					{
-						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
-						{
-							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setUnitCount(selBuild->typeNum, nbReq);
-						}
-					}
-				}
-				break;
-			case SDLK_MINUS:
-			case SDLK_KP_MINUS:
-				{
-					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-					{
-						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
-						{
-							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
-							setUnitCount(selBuild->typeNum, nbReq);
-						}
-					}
-				}
-				break;
-			case SDLK_a :
-				action=globalContainer->settings.keyboard_shortcuts["akey"];
-				break;
-			case SDLK_b :
-				action=globalContainer->settings.keyboard_shortcuts["bkey"];
-				break;
-			case SDLK_c :
-				action=globalContainer->settings.keyboard_shortcuts["ckey"];
-				break;
-			case SDLK_d :
-				action=globalContainer->settings.keyboard_shortcuts["dkey"];
-				break;
-			case SDLK_e :
-				action=globalContainer->settings.keyboard_shortcuts["ekey"];
-				break;
-			case SDLK_f :
-				action=globalContainer->settings.keyboard_shortcuts["fkey"];
-				break;
-			case SDLK_g :
-				action=globalContainer->settings.keyboard_shortcuts["gkey"];
-				break;
-			case SDLK_h :
-				action=globalContainer->settings.keyboard_shortcuts["hkey"];
-				break;
-			case SDLK_i :
-				action=globalContainer->settings.keyboard_shortcuts["ikey"];
-				break;
-			case SDLK_j :
-				action=globalContainer->settings.keyboard_shortcuts["jkey"];
-				break;
-			case SDLK_k :
-				action=globalContainer->settings.keyboard_shortcuts["kkey"];
-				break;
-			case SDLK_l :
-				action=globalContainer->settings.keyboard_shortcuts["lkey"];
-				break;
-			case SDLK_m :
-				action=globalContainer->settings.keyboard_shortcuts["mkey"];
-				break;
-			case SDLK_n :
-				action=globalContainer->settings.keyboard_shortcuts["nkey"];
-				break;
-			case SDLK_o :
-				action=globalContainer->settings.keyboard_shortcuts["okey"];
-				break;
-			case SDLK_p :
-				action=globalContainer->settings.keyboard_shortcuts["pkey"];
-				break;
-			case SDLK_q :
-				action=globalContainer->settings.keyboard_shortcuts["qkey"];
-				break;
-			case SDLK_r :
-				action=globalContainer->settings.keyboard_shortcuts["rkey"];
-				break;
-			case SDLK_s :
-				action=globalContainer->settings.keyboard_shortcuts["skey"];
-				break;
-			case SDLK_t :
-				action=globalContainer->settings.keyboard_shortcuts["tkey"];
-				break;
-			case SDLK_u :
-				action=globalContainer->settings.keyboard_shortcuts["ukey"];
-				break;
-			case SDLK_v :
-				action=globalContainer->settings.keyboard_shortcuts["vkey"];
-				break;
-			case SDLK_w :
-				action=globalContainer->settings.keyboard_shortcuts["wkey"];
-				break;
-			case SDLK_x :
-				action=globalContainer->settings.keyboard_shortcuts["xkey"];
-				break;
-			case SDLK_y :
-				action=globalContainer->settings.keyboard_shortcuts["ykey"];
-				break;
-			case SDLK_z :
-				action=globalContainer->settings.keyboard_shortcuts["zkey"];
-				break;
-			case SDLK_RETURN :
-				if (pressed)
-				{
-					typingInputScreen=new InGameTextInput(globalContainer->gfx);
-					typingInputScreenInc=TYPING_INPUT_BASE_INC;
-					typingInputScreenPos=0;
-				}
-				break;
-			case SDLK_TAB:
-				if (pressed)
-					iterateSelection();
-				break;
-			case SDLK_SPACE:
-				if (pressed)
-				{
-					setIsSpaceSet(true);
-					if(!swallowSpaceKey)
-					{
-						int evX, evY;
-						int sw, sh;
-						
-						if (ctrl)
-						{
-							eventGoTypeIterator = (eventGoTypeIterator+1) % Team::EVENT_TYPE_SIZE;
-							
-							if (!localTeam->getEvent((Team::EventType)eventGoTypeIterator).validPosition)
-								break;
-								
-							evX = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posX;
-							evY = localTeam->getEvent((Team::EventType)eventGoTypeIterator).posY;
-						}
-						else
-						{
-							eventGoTypeIterator = eventGoType;
-							evX = eventGoPosX;
-							evY = eventGoPosY;
-						}
-					
-						sw=globalContainer->gfx->getW();
-						sh=globalContainer->gfx->getH();
-						viewportX=evX-((sw-128)>>6);
-						viewportY=evY-(sh>>6);
-					}
-				}
-				break;
-			case SDLK_HOME:
-				if (pressed)
-				{
-					int evX = localTeam->startPosX;
-					int evY = localTeam->startPosY;
-				    int sw = globalContainer->gfx->getW();
-					int sh = globalContainer->gfx->getH();
-					viewportX = evX-((sw-128)>>6);
-					viewportY = evY-(sh>>6);
-				}
-				break;
-			case SDLK_PAUSE:
-				action="pause game";
-				break;
-			case SDLK_SCROLLOCK:
-				if (pressed)
-					hardPause=!hardPause;
-				break;
-			default:
+			if(swallowSpaceKey)
+				setIsSpaceSet(true);
+		}
+		Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
+		switch(action_t)
+		{
+			case GameGUIKeyActions::DoNothing:
+			{
+			}
 			break;
-		}
-		if(action=="toggle draw unit paths")
-		{
-			if (pressed)
-				drawPathLines=!drawPathLines;
-		}
-		else if(action=="destroy building")
-		{
-			if ((pressed) && (selectionMode==BUILDING_SELECTION))
+			case GameGUIKeyActions::ShowMainMenu:
 			{
-				Building* selBuild=selection.building;
-				if (selBuild->owner->teamNumber==localTeamNo)
+				if (inGameMenu==IGM_NONE)
 				{
-					if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+					gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
+					inGameMenu=IGM_MAIN;
+				}
+			}
+			break;
+			case GameGUIKeyActions::UpgradeBuilding:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild = selection.building;
+					int typeNum = selBuild->typeNum; //determines type of updated building
+					int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
+					if (selBuild->constructionResultState == Building::UPGRADE)
+						orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
+					else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+						repairAndUpgradeBuilding(selBuild, false, true);
+				}
+			}
+			break;
+			case GameGUIKeyActions::IncreaseUnitsWorking:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild=selection.building;
+					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 					{
-						orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
-					}
-					else if (selBuild->buildingState==Building::ALIVE)
-					{
-						orderQueue.push_back(new OrderDelete(selBuild->gid));
+						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+						defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
 				}
 			}
-		}
-		else if(action=="upgrade building")
-		{			
-			if ((pressed) && (selectionMode==BUILDING_SELECTION))
+			break;
+			case GameGUIKeyActions::DecreaseUnitsWorking:
 			{
-				Building* selBuild = selection.building;
-				int typeNum = selBuild->typeNum; //determines type of updated building
-				int unitWorking = getUnitCount(typeNum - 1);
-				if (selBuild->constructionResultState == Building::UPGRADE)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
-				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
-					repairAndUpgradeBuilding(selBuild, false, true);
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild=selection.building;
+					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					{
+						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+						defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
+					}
+				}
 			}
-		}
-		else if(action=="repair building")
-		{
-			if ((pressed) && (selectionMode==BUILDING_SELECTION))
+			break;
+			case GameGUIKeyActions::OpenChatBox:
 			{
-				Building* selBuild = selection.building;
-				int typeNum = selBuild->typeNum; //determines type of updated building
-				int unitWorking = getUnitCount(typeNum);
-				if (selBuild->constructionResultState == Building::REPAIR)
-					orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
-				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
-					repairAndUpgradeBuilding(selBuild, true, false);
+				typingInputScreen=new InGameTextInput(globalContainer->gfx);
+				typingInputScreenInc=TYPING_INPUT_BASE_INC;
+				typingInputScreenPos=0;
 			}
-		}
-		else if(action=="toggle draw information")
-		{
-			if (pressed)
+			break;
+			case GameGUIKeyActions::IterateSelection:
+			{
+				iterateSelection();
+			}
+			break;
+			case GameGUIKeyActions::GoToEvent:
+			{
+				int evX, evY;
+				int sw, sh;
+				
+				eventGoTypeIterator = eventGoType;
+				evX = eventGoPosX;
+				evY = eventGoPosY;
+			
+				sw=globalContainer->gfx->getW();
+				sh=globalContainer->gfx->getH();
+				viewportX=evX-((sw-128)>>6);
+				viewportY=evY-(sh>>6);
+			}
+			break;
+			case GameGUIKeyActions::GoToHome:
+			{
+				int evX = localTeam->startPosX;
+				int evY = localTeam->startPosY;
+			    int sw = globalContainer->gfx->getW();
+				int sh = globalContainer->gfx->getH();
+				viewportX = evX-((sw-128)>>6);
+				viewportY = evY-(sh>>6);
+			}
+			break;
+			case GameGUIKeyActions::PauseGame:
+			{
+				orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
+			}
+			break;
+			case GameGUIKeyActions::HardPause:
+			{
+				hardPause=!hardPause;
+			}
+			break;
+			case GameGUIKeyActions::ToggleDrawUnitPaths:
+			{
+				drawPathLines=!drawPathLines;
+			}
+			break;
+			case GameGUIKeyActions::DestroyBuilding:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild=selection.building;
+					if (selBuild->owner->teamNumber==localTeamNo)
+					{
+						if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+						{
+							orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
+						}
+						else if (selBuild->buildingState==Building::ALIVE)
+						{
+							orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
+						}
+					}
+				}
+			}
+			break;
+			case GameGUIKeyActions::RepairBuilding:
+			{
+				if (selectionMode==BUILDING_SELECTION)
+				{
+					Building* selBuild = selection.building;
+					int typeNum = selBuild->typeNum; //determines type of updated building
+					int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+					if (selBuild->constructionResultState == Building::REPAIR)
+						orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
+					else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
+						repairAndUpgradeBuilding(selBuild, true, false);
+				}
+			}
+			break;
+			case GameGUIKeyActions::ToggleDrawInformation:
+			{
 				drawHealthFoodBar=!drawHealthFoodBar;
-		}
-		else if(action=="toggle draw accessibility aids")
-		{
-			if (pressed)
-				drawAccessibilityAids = true;
-			else
-				drawAccessibilityAids = false;
-		}
-		else if(action=="mark map")
-		{
-			if (pressed)
+			}
+			break;
+			case GameGUIKeyActions::ToggleDrawAccessibilityAids:
+			{
+				drawAccessibilityAids = !drawAccessibilityAids;
+			}
+			break;
+			case GameGUIKeyActions::MarkMap:
 			{
 				putMark=true;
 				globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_MARK);
 			}
-		}
-		else if(action=="record voice")
-		{
-			if (shift)
+			break;
+			case GameGUIKeyActions::ToggleRecordingVoice:
 			{
-				if (pressed)
-				{
-					if (globalContainer->voiceRecorder->recordingNow)
-						globalContainer->voiceRecorder->stopRecording();
-					else
-						globalContainer->voiceRecorder->startRecording();
-				}
-			}
-			else
-			{
-				if (pressed)
-					globalContainer->voiceRecorder->startRecording();
-				else if (!shift)
+				if (globalContainer->voiceRecorder->recordingNow)
 					globalContainer->voiceRecorder->stopRecording();
+				else
+					globalContainer->voiceRecorder->startRecording();
 			}
-		}
-		else if(action=="view history")
-		{
-			if (pressed)
+			break;
+			case GameGUIKeyActions::ViewHistory:
 			{
 				if ( ! scrollableText)
-					scrollableText=new InGameScrollableText(globalContainer->gfx, messageHistory);
+					scrollableText = messageManager.createScrollableHistoryScreen();
 				else 
 				{
 					delete scrollableText;
 					scrollableText=NULL;
 				}
 			}
+			break;
+			case GameGUIKeyActions::SelectConstructInn:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("inn")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("inn"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructSwarm:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("swarm")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("swarm"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructHospital:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("hospital")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("hospital"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructRacetrack:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("racetrack")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("racetrack"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructSwimmingPool:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("swimmingpool")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("swimmingpool"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructBarracks:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("barracks")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("barracks"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructSchool:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("school")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("school"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructDefenceTower:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("defencetower")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("defencetower"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructStoneWall:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("stonewall")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("stonewall"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectConstructMarket:
+			{
+				clearSelection();
+				if (isBuildingEnabled(std::string("market")))
+				{
+					displayMode = BUILDING_VIEW;
+					setSelection(TOOL_SELECTION, (void *)("market"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceExplorationFlag:
+			{
+				clearSelection();
+				if (isFlagEnabled(std::string("explorationflag")))
+				{
+					displayMode = FLAG_VIEW;
+					setSelection(TOOL_SELECTION, (void*)("explorationflag"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceWarFlag:
+			{
+				clearSelection();
+				if (isFlagEnabled(std::string("warflag")))
+				{
+					displayMode = FLAG_VIEW;
+					setSelection(TOOL_SELECTION, (void*)("warflag"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceClearingFlag:
+			{
+				clearSelection();
+				if (isFlagEnabled(std::string("clearingflag")))
+				{
+					displayMode = FLAG_VIEW;
+					setSelection(TOOL_SELECTION, (void*)("clearingflag"));
+				}
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceForbiddenArea:
+			{
+				clearSelection();
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceGuardArea:
+			{
+				clearSelection();
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool(GameGUIToolManager::Guard);
+			}
+			break;
+			case GameGUIKeyActions::SelectPlaceClearingArea:
+			{
+				clearSelection();
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool(GameGUIToolManager::Clearing);
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAddingAreas:
+			{
+				clearSelection();
+				brush.setType(BrushTool::MODE_ADD);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			case GameGUIKeyActions::SwitchToRemovingAreas:
+			{
+				clearSelection();
+				brush.setType(BrushTool::MODE_DEL);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush1:
+			{
+				clearSelection();
+				brush.setFigure(0);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush2:
+			{
+				clearSelection();
+				brush.setFigure(1);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush3:
+			{
+				clearSelection();
+				brush.setFigure(2);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush4:
+			{
+				clearSelection();
+				brush.setFigure(3);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush5:
+			{
+				clearSelection();
+				brush.setFigure(4);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush6:
+			{
+				clearSelection();
+				brush.setFigure(5);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush7:
+			{
+				clearSelection();
+				brush.setFigure(6);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
+			case GameGUIKeyActions::SwitchToAreaBrush8:
+			{
+				clearSelection();
+				brush.setFigure(7);
+				displayMode = FLAG_VIEW;
+				setSelection(BRUSH_SELECTION);
+				toolManager.activateZoneTool();
+			}
+			break;
 		}
-		else if(action=="pause game")
-		{
-			if (pressed)
-				orderQueue.push_back(new PauseGameOrder(!gamePaused));
-		}
-                else if ((action == "prefix key select area tool") && pressed) {
-                  twoKeyMode = TWOKEY_AREA; }
-                else if ((action == "prefix key select building tool") && pressed) {
-                  twoKeyMode = TWOKEY_BUILDING; }
-                else if ((action == "prefix key select flag tool") && pressed) {
-                  twoKeyMode = TWOKEY_FLAG; }
-                else if (pressed
-                         && ((action == "select make swarm tool")
-                             || (action == "select make inn tool")
-                             || (action == "select make hospital tool")
-                             || (action == "select make racetrack tool")
-                             || (action == "select make swimming pool tool")
-                             || (action == "select make barracks tool")
-                             || (action == "select make school tool")
-                             || (action == "select make defense tower tool")
-                             || (action == "select make stone wall tool")
-                             || (action == "select make market tool")
-                             || (action == "select make exploration flag tool")
-                             || (action == "select make war flag tool")
-                             || (action == "select make clearing flag tool")
-                             || (action == "select forbidden area tool")
-                             || (action == "select guard area tool")
-                             || (action == "select clearing area tool")
-                             || (action == "switch to adding areas")
-                             || (action == "switch to deleting areas")
-                             || (action == "switch to area brush 1")
-                             || (action == "switch to area brush 2")
-                             || (action == "switch to area brush 3")
-                             || (action == "switch to area brush 4")
-                             || (action == "switch to area brush 5")
-                             || (action == "switch to area brush 6")
-                             || (action == "switch to area brush 7")
-                             || (action == "switch to area brush 8"))) {
-                  clearSelection();
-                  char * buildingType = NULL;
-                  BrushType tmpBrushType;
-                  bool isArea = false;
-                  BrushTool::Mode tmpBrushMode = BrushTool::MODE_NONE;
-                  int brushFigure;
-                  bool isBrush = false;
-                  char * flagType = NULL;
-                  if (action == "select make swarm tool") {
-                    buildingType = "swarm"; }
-                  else if (action == "select make inn tool") {
-                    buildingType = "inn"; }
-                  else if (action == "select make hospital tool") {
-                    buildingType = "hospital"; }
-                  else if (action == "select make racetrack tool") {
-                    buildingType = "racetrack"; }
-                  else if (action == "select make swimming pool tool") {
-                    buildingType = "swimmingpool"; }
-                  else if (action == "select make barracks tool") {
-                    buildingType = "barracks"; }
-                  else if (action == "select make school tool") {
-                    buildingType = "school"; }
-                  else if (action == "select make defense tower tool") {
-                    buildingType = "defencetower"; }
-                  else if (action == "select make stone wall tool") {
-                    buildingType = "stonewall"; }
-                  else if (action == "select make market tool") {
-                    buildingType = "market"; }
-                  else if (action == "select make exploration flag tool") {
-                    flagType = "explorationflag"; }
-                  else if (action == "select make war flag tool") {
-                    flagType = "warflag"; }
-                  else if (action == "select make clearing flag tool") {
-                    flagType = "clearingflag"; }
-                  else if (action == "select forbidden area tool") {
-                    isArea = true;
-                    tmpBrushType = FORBIDDEN_BRUSH; }
-                  else if (action == "select guard area tool") {
-                    isArea = true;
-                    tmpBrushType = GUARD_AREA_BRUSH; }
-                  else if (action == "select clearing area tool") {
-                    isArea = true;
-                    tmpBrushType = CLEAR_AREA_BRUSH; }
-                  else if (action == "switch to adding areas") {
-                    tmpBrushMode = BrushTool::MODE_ADD; }
-                  else if (action == "switch to deleting areas") {
-                    tmpBrushMode = BrushTool::MODE_DEL; }
-                  else if (action == "switch to area brush 1") {
-                    brushFigure = 0;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 2") {
-                    brushFigure = 1;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 3") {
-                    brushFigure = 2;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 4") {
-                    brushFigure = 3;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 5") {
-                    brushFigure = 4;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 6") {
-                    brushFigure = 5;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 7") {
-                    brushFigure = 6;
-                    isBrush = true; }
-                  else if (action == "switch to area brush 8") {
-                    brushFigure = 7;
-                    isBrush = true; }
-                  if (buildingType) {
-                    if (isBuildingEnabled(std::string(buildingType))) {
-                      displayMode = BUILDING_VIEW; // Can hiddenGUIElements forbid showing building view if the particular building type is enabled?  Do I need to check this?
-                      setSelection(TOOL_SELECTION, (void *) buildingType); }}
-                  else if (flagType) {
-                    if (isFlagEnabled(std::string(flagType))) {
-                      displayMode = FLAG_VIEW;  // Can hiddenGUIElements forbid showing flag view if the particular flag type is enabled?  Do I need to check this?
-                      setSelection(TOOL_SELECTION, (void*) flagType); }}
-                  else if (isArea || (tmpBrushMode != BrushTool::MODE_NONE) || isBrush) {
-                    // Do I need to check if the GUI is enabled for this?
-                    displayMode = FLAG_VIEW;
-                    if (isArea) {
-                      brushType = tmpBrushType; }
-                    if (tmpBrushMode != BrushTool::MODE_NONE) {
-                      brush.setType(tmpBrushMode); }
-                    else if (brush.getType() == BrushTool::MODE_NONE) {
-                      brush.setType(BrushTool::MODE_ADD); }
-                    if (isBrush) {
-                      brush.setFigure (brushFigure); }
-                    setSelection(BRUSH_SELECTION); }}
 	}
 }
 
@@ -1824,32 +1531,46 @@ void GameGUI::handleKeyAlways(void)
 	Uint8 *keystate = SDL_GetKeyState(NULL);
 	if (notmenu == false)
 	{
-                SDLMod modState = SDL_GetModState();
-                int xMotion = 1;
-                int yMotion = 1;
-                /* We check that only Control is held to avoid accidentally
-                   matching window manager bindings for switching windows
-                   and/or desktops. */
-                if ((modState & KMOD_CTRL) && ! (modState & (KMOD_ALT|KMOD_SHIFT))) {
-                  /* It violates good abstraction principles that I
-                     have to do the calculations in the next two
-                     lines.  There should be methods that abstract
-                     these computations. */
-                  /* We move by half screens if Control is held while
-                     the arrow keys are held.  So we shift by 6
-                     instead of 5.  (If we shifted by 5, it would be
-                     good to subtract 1 so that there would be a small
-                     overlap between what is viewable both before and
-                     after the motion.) */
-                  xMotion = ((globalContainer->gfx->getW()-128)>>6);
-                  yMotion = ((globalContainer->gfx->getH())>>6); }
-                else if (modState) {
-                  /* Probably some keys held down as part of window
-                     manager operations. */
-                  xMotion = 0;
-                  yMotion = 0; }
-                // int oldViewportX = viewportX;
-                // int oldViewportY = viewportY;
+		SDLMod modState = SDL_GetModState();
+		int xMotion = 1;
+		int yMotion = 1;
+		/* We check that only Control is held to avoid accidentally
+			matching window manager bindings for switching windows
+			and/or desktops. */
+		if (!(modState & (KMOD_ALT|KMOD_SHIFT)))
+		{
+			/* It violates good abstraction principles that I
+				have to do the calculations in the next two
+				lines.  There should be methods that abstract
+				these computations. */
+			if ((modState & KMOD_CTRL))
+			{
+				/* We move by half screens if Control is held while
+					the arrow keys are held.  So we shift by 6
+					instead of 5.  (If we shifted by 5, it would be
+					good to subtract 1 so that there would be a small
+					overlap between what is viewable both before and
+					after the motion.) */
+				xMotion = ((globalContainer->gfx->getW()-128)>>6);
+				yMotion = ((globalContainer->gfx->getH())>>6);
+			}
+			else
+			{
+				/* We move the screen by one square at a time if CTRL key
+					is not being help */
+				xMotion = 1;
+				yMotion = 1;
+			}
+		}
+		else if (modState)
+		{
+			/* Probably some keys held down as part of window
+				manager operations. */
+			xMotion = 0;
+			yMotion = 0; 
+		}
+		// int oldViewportX = viewportX;
+		// int oldViewportY = viewportY;
 		if (keystate[SDLK_UP])
 			viewportY -= yMotion;
 		if (keystate[SDLK_KP8])
@@ -1893,26 +1614,15 @@ void GameGUI::handleKeyAlways(void)
 
 void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport)
 {
-	// get data for minimap
-	int mMax;
-	int szX, szY;
-	int decX, decY;
-	Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
+	minimap.convertToMap(mx, my, *cx, *cy);
 
-	mx-=14+decX;
-	my-=14+decY;
-	*cx=((mx*game.map.getW())/szX);
-	*cy=((my*game.map.getH())/szY);
-	*cx+=localTeam->startPosX-(game.map.getW()/2);
-	*cy+=localTeam->startPosY-(game.map.getH()/2);
+	///when for the screen viewport, center
 	if (forScreenViewport)
 	{
 		*cx-=((globalContainer->gfx->getW()-128)>>6);
 		*cy-=((globalContainer->gfx->getH())>>6);
 	}
 
-	*cx&=game.map.getMaskW();
-	*cy&=game.map.getMaskH();
 }
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
@@ -1923,7 +1633,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 
 	if (miniMapPushed)
 	{
-		minimapMouseToPos(mx-globalContainer->gfx->getW()+128, my, &viewportX, &viewportY, true);
+		minimapMouseToPos(mx, my, &viewportX, &viewportY, true);
 	}
 	else
 	{
@@ -1958,45 +1668,18 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 {
 	if (selectionMode==TOOL_SELECTION)
 	{
-		// we get the type of building
-		// try to get the building site, if it doesn't exists, get the finished building (for flags)
-		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, true);
-		if (typeNum==-1)
-		{
-			typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
-			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
-		}
-		assert (typeNum!=-1);
-
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-
-		int mapX, mapY;
-		int tempX, tempY;
-		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		if (bt->isVirtual)
-			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
-		else
-			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-		
-		int unitWorking = getUnitCount(typeNum);
-		int unitWorkingFuture = getUnitCount(typeNum+1);
-		
-		if (isRoom)
-		{
-			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum, unitWorking, unitWorkingFuture));
-		}
+		toolManager.handleMouseDown(mx, my, localTeamNo, viewportX, viewportY);
 		
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		brushStep(true, mouseX, mouseY);
+		toolManager.handleMouseDown(mx, my, localTeamNo, viewportX, viewportY);
 	}
 	else if (putMark)
 	{
 		int markx, marky;
 		game.map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
-		orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+		orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 		putMark = false;
 	}
@@ -2107,14 +1790,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			int markx, marky;
 			minimapMouseToPos(mx, my, &markx, &marky, false);
-			orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
 		}
 		else
 		{
 			miniMapPushed=true;
-			minimapMouseToPos(mx, my, &viewportX, &viewportY, true);
+			minimapMouseToPos(globalContainer->gfx->getW() - 128 + mx, my, &viewportX, &viewportY, true);
 		}
 	}
 	else if (my<128+32)
@@ -2149,23 +1832,23 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->maxUnitWorkingLocal>0)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal-=1);
-						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 					}
 				}
 				else if (mx<128-18)
 				{
 					nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/92;
-					orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 				}
 				else
 				{
 					if(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal+=1);
-						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 					}
 				}
-				setUnitCount(selBuild->typeNum, nbReq);
+				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
@@ -2183,13 +1866,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->unitStayRangeLocal>0)
 					{
 						nbReq=(selBuild->unitStayRangeLocal-=1);
-						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
 				else if (mx<128-18)
 				{
 					nbReq=selBuild->unitStayRangeLocal=((mx-18)*(unsigned)selBuild->type->maxUnitStayRange)/92;
-					orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 				}
 				else
 				{
@@ -2197,10 +1880,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange)
 					{
 						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
-				setUnitCount(selBuild->typeNum, nbReq);
+				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
@@ -2222,7 +1905,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 						{
 							selBuild->clearingRessourcesLocal[i]=!selBuild->clearingRessourcesLocal[i];
-							orderQueue.push_back(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal)));
 						}
 						
 						ypos+=YOFFSET_TEXT_PARA;
@@ -2236,7 +1919,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						selBuild->minLevelToFlagLocal=i;
-						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
@@ -2252,7 +1935,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						selBuild->minLevelToFlagLocal=i;
-						orderQueue.push_back(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
@@ -2285,7 +1968,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal |= (1<<r);
 						selBuild->sendRessourceMaskLocal &= ~(1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
 				}
 
 				if ((mx>110) && (mx<122))
@@ -2299,7 +1982,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal &= ~(1<<r);
 						selBuild->sendRessourceMaskLocal |= (1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
 				}
 			}
 		}
@@ -2315,20 +1998,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]>0)
 						{
 							selBuild->ratioLocal[i]--;
-							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 						}
 					}
 					else if (mx<128-18)
 					{
 						selBuild->ratioLocal[i]=((mx-18)*MAX_RATIO_RANGE)/92;
-						orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 					}
 					else
 					{
 						if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
 						{
 							selBuild->ratioLocal[i]++;
-							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
+							orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
@@ -2341,14 +2024,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (selBuild->constructionResultState==Building::REPAIR)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
-				int unitWorking = getUnitCount(typeNum);
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+				int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
 				int typeNum = selBuild->typeNum; //determines type of updated building
-				int unitWorking = getUnitCount(typeNum - 1);
-				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid, unitWorking));
+				int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 			{
@@ -2360,11 +2043,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
-				orderQueue.push_back(new OrderCancelDelete(selBuild->gid));
+				orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
 			}
 			else if (selBuild->buildingState==Building::ALIVE)
 			{
-				orderQueue.push_back(new OrderDelete(selBuild->gid));
+				orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
 			}
 		}
 	}
@@ -2407,11 +2090,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (my < YOFFSET_BRUSH+40)
 			{
 				if (mx < 44)
-					brushType = FORBIDDEN_BRUSH;
+					toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
 				else if (mx < 84)
-					brushType = GUARD_AREA_BRUSH;
+					toolManager.activateZoneTool(GameGUIToolManager::Guard);
 				else
-					brushType = CLEAR_AREA_BRUSH;
+					toolManager.activateZoneTool(GameGUIToolManager::Clearing);
 			}
 			// anyway, update the tool
 			brush.handleClick(mx, my-YOFFSET_BRUSH-40);
@@ -2437,7 +2120,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				showDamagedMap=false;
 				showDefenseMap=false;
+				showFertilityMap=false;
 				showStarvingMap=!showStarvingMap;
+				overlay.compute(game, OverlayArea::Starving, localTeamNo);
 			}
 
 			if(my > YPOS_BASE_STAT+140+88 && my < YPOS_BASE_STAT+140+104)
@@ -2445,6 +2130,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDamagedMap=!showDamagedMap;
 				showStarvingMap=false;
 				showDefenseMap=false;
+				showFertilityMap=false;
+				overlay.compute(game, OverlayArea::Damage, localTeamNo);
 			}
 
 			if(my > YPOS_BASE_STAT+140+112 && my < YPOS_BASE_STAT+140+128)
@@ -2452,22 +2139,32 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showDefenseMap=!showDefenseMap;
 				showStarvingMap=false;
 				showDamagedMap=false;
+				showFertilityMap=false;
+				overlay.compute(game, OverlayArea::Defence, localTeamNo);
+			}
+
+			if(my > YPOS_BASE_STAT+140+136 && my < YPOS_BASE_STAT+140+152)
+			{
+				showFertilityMap=!showFertilityMap;
+				showDefenseMap=false;
+				showStarvingMap=false;
+				showDamagedMap=false;
+				overlay.compute(game, OverlayArea::Fertility, localTeamNo);
 			}
 		}
 	}
 }
 
-Order *GameGUI::getOrder(void)
+boost::shared_ptr<Order> GameGUI::getOrder(void)
 {
-	Order *order;
+	boost::shared_ptr<Order> order;
 	if (orderQueue.size()==0)
-		order=new NullOrder();
+		order=shared_ptr<Order>(new NullOrder());
 	else
 	{
 		order=orderQueue.front();
 		orderQueue.pop_front();
 	}
-	order->gameCheckSum=game.checkSum();
 	return order;
 }
 
@@ -2521,7 +2218,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 	{
 		std::string &type = types[i];
 
-		if ((selectionMode==TOOL_SELECTION) && (type == (const char *)selection.build))
+		if ((selectionMode==TOOL_SELECTION) && (type == toolManager.getBuildingName()))
 			sel = i;
 
 		if (states[i])
@@ -2584,12 +2281,14 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 				{
 					int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-					int typeId = IntBuildingType::shortNumberFromType(type);
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
+					std::string key = "[" + type + "]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, key.c_str());
 					
 					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explanation]", typeId);
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explanation 2]", typeId);
+					key = "[" + type + " explanation]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, key.c_str());
+					key = "[" + type + " explanation 2]";
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, key.c_str());
 					globalContainer->littleFont->popStyle();
 					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
 					if (bt)
@@ -2623,11 +2322,11 @@ void GameGUI::drawUnitInfos(void)
 
 	// draw "unit" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Unit type]", selUnit->typeNum);
+	title += getUnitName(selUnit->typeNum);
 	title += " (";
 
-	const char *textT=selUnit->owner->getFirstPlayerName();
-	if (!textT)
+	std::string textT=selUnit->owner->getFirstPlayerName();
+	if (textT.empty())
 		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 	title += textT;
 	title += ")";
@@ -2800,7 +2499,7 @@ void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
 		int y = i>>1;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+(i&0x1)*64, 256+172-42+y*12,
 			font,
-			FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[ressources]", i)).arg(ressources[i]).c_str());
+			FormatableString("%0: %1").arg(getRessourceName(i)).arg(ressources[i]).c_str());
 	}
 }
 
@@ -2826,11 +2525,12 @@ void GameGUI::drawBuildingInfos(void)
 
 	// draw "building" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
+	std::string key ="[" + buildingType->type + "]";
+	title += Toolkit::getStringTable()->getString(key.c_str());
 	{
 		title += " (";
-		const char *textT=selBuild->owner->getFirstPlayerName();
-		if (!textT)
+		std::string textT=selBuild->owner->getFirstPlayerName();
+		if (textT.empty())
 			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
 		title += textT;
 		title += ")";
@@ -3019,7 +2719,7 @@ void GameGUI::drawBuildingInfos(void)
 				if (i!=STONE)
 				{
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,
-						Toolkit::getStringTable()->getString("[ressources]", i));
+						getRessourceName(i));
 					int spriteId;
 					if (selBuild->clearingRessourcesLocal[i])
 						spriteId=20;
@@ -3161,7 +2861,7 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_TEXT_PARA;
 		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(getRessourceName(i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
 
 			int inId, outId;
 			if (selBuild->receiveRessourceMaskLocal & (1<<i))
@@ -3191,7 +2891,7 @@ void GameGUI::drawBuildingInfos(void)
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
 				drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", i));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, getUnitName(i));
 			}
 		}
 		
@@ -3205,7 +2905,7 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				if (buildingType->maxRessource[i])
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[ressources]", i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(getRessourceName(i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
 					j++;
 				}
 			}
@@ -3338,7 +3038,7 @@ void GameGUI::drawRessourceInfos(void)
 	if (r.type!=NO_RES_TYPE)
 	{
 		// Draw ressource name
-		const std::string &ressourceName = Toolkit::getStringTable()->getString("[ressources]", r.type);
+		const std::string &ressourceName = getRessourceName(r.type);
 		int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
 		int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
 		globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
@@ -3410,7 +3110,7 @@ void GameGUI::drawPanel(void)
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+88, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
 		if (brush.getType() != BrushTool::MODE_NONE)
 		{
-			int decX = 8 + ((int)brushType) * 40;
+			int decX = 8 + ((int)toolManager.getZoneType()) * 40;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 		}
 		// draw brush
@@ -3431,11 +3131,11 @@ void GameGUI::drawPanel(void)
 			}
 			else
 			{
-				if (brushType == FORBIDDEN_BRUSH)
+				if (toolManager.getZoneType() == GameGUIToolManager::Forbidden)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
-				else if (brushType == GUARD_AREA_BRUSH)
+				else if (toolManager.getZoneType() == GameGUIToolManager::Guard)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[guard area]");
-				else if (brushType == CLEAR_AREA_BRUSH)
+				else if (toolManager.getZoneType() == GameGUIToolManager::Clearing)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[clear area]");
 				else
 					assert(false);
@@ -3452,6 +3152,7 @@ void GameGUI::drawPanel(void)
 		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
 		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
 		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
+		drawCheckButton(globalContainer->gfx->getW()-128+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
 	}
 }
 
@@ -3509,26 +3210,22 @@ void GameGUI::drawTopScreenBar(void)
 	
 	// draw CPU load
 	dec += 70;
-	int cpuLoadMax=0;
-	int cpuLoadMaxIndex=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (cpuLoadMax<smoothedCpuLoad[i])
-		{
-			cpuLoadMax=smoothedCpuLoad[i];
-			cpuLoadMaxIndex=i;
-		}
 	int cpuLoad=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (i!=cpuLoadMaxIndex && cpuLoad<smoothedCpuLoad[i])
-			cpuLoad=smoothedCpuLoad[i];
-	if (cpuLoad<game.session.gameTPF-8)
+	for (unsigned i=0; i<SMOOTHED_CPU_SIZE; i++)
+		cpuLoad += smoothedCPULoad[i];
+
+	cpuLoad /= SMOOTHED_CPU_SIZE;
+
+	if (cpuLoad<50)
 		memcpy(actC, greenC, sizeof(greenC));
-	else if (cpuLoad<game.session.gameTPF)
+	else if (cpuLoad<75)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	else
 		memcpy(actC, redC, sizeof(redC));
-	
-	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoad, 8, actC[0], actC[1], actC[2]);
+
+	int cpuLength = int(float(cpuLoad) / 100.0 * 40.0);
+
+	globalContainer->gfx->drawFilledRect(dec, 4, cpuLength, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	
@@ -3554,124 +3251,11 @@ void GameGUI::drawOverlayInfos(void)
 {
 	if (selectionMode==TOOL_SELECTION)
 	{
-		// we get the type of building
-		int typeNum = globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
-		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-		Sprite *sprite = bt->gameSpritePtr;
-		
-		// we translate dimensions and situation
-		int tempX, tempY;
-		int mapX, mapY;
-		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		if (bt->isVirtual)
-			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
-		else
-			isRoom = game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-			
-		// modifiy highlight given room
-		if (isRoom)
-			highlightSelection = std::min(highlightSelection + 0.1f, 1.0f);
-		else
-			highlightSelection = std::max(highlightSelection - 0.1f, 0.0f);
-		
-		// we get the screen dimensions of the building
-		int batW = (bt->width)<<5;
-		int batH = sprite->getH(bt->gameSpriteImage);
-		int batX = (((mapX-viewportX)&(game.map.wMask))<<5);
-		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
-		
-		// we draw the building
-		sprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
-		
-		if (!bt->isVirtual)
-		{
-			if (localTeam->noMoreBuildingSitesCountdown>0)
-			{
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
-				
-				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(localTeam->noMoreBuildingSitesCountdown/40).arg((localTeam->noMoreBuildingSitesCountdown%40)/4).c_str());
-				globalContainer->littleFont->popStyle();
-			}
-			else
-			{
-				if (isRoom)
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
-				else
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				
-				// We look for its maximum extension size
-				// we find last's level type num:
-				BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
-				int lastTypeNum=typeNum;
-				int max=0;
-				while (lastbt->nextLevel>=0)
-				{
-					lastTypeNum=lastbt->nextLevel;
-					lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
-					if (max++>200)
-					{
-						printf("GameGUI: Error: nextLevel architecture is broken.\n");
-						assert(false);
-						break;
-					}
-				}
-					
-				int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
-				bool isExtendedRoom = game.checkHardRoomForBuilding(tempX, tempY, lastbt, &exMapX, &exMapY);
-				int exBatX=((exMapX-viewportX)&(game.map.wMask))<<5;
-				int exBatY=((exMapY-viewportY)&(game.map.hMask))<<5;
-				int exBatW=(lastbt->width)<<5;
-				int exBatH=(lastbt->height)<<5;
-
-				if (isRoom && isExtendedRoom)
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
-				else
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 0, 0, 127);
-			}
-		}
-
+		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-                /* Instead of using a dimmer intensity to indicate
-                   removing of areas, this should rather use dashed
-                   lines.  (The intensities used below are 2/3 as
-                   bright for the case of removing areas.) */
-                /* This reasoning should be abstracted out and reused
-                   in MapEdit.cpp to choose a color for those cases
-                   where areas are being drawn. */
-                unsigned mode = brush.getType();
-                Color c = Color(0,0,0);
-                /* The following colors have been chosen to match the
-                   colors in the .png files for the animations of
-                   areas as of 2007-04-29.  If those .png files are
-                   updated with different colors, then the following
-                   code should change accordingly. */
-                if (brushType == FORBIDDEN_BRUSH) {
-                  if (mode == BrushTool::MODE_ADD) {
-                    c = Color(255,0,0); }
-                  else {
-                    c = Color(170,0,0); }}
-                else if (brushType == GUARD_AREA_BRUSH) {
-                  if (mode == BrushTool::MODE_ADD) {
-                    c = Color(27,0,255); }
-                  else {
-                    c = Color(18,0,170); }}
-                else if (brushType == CLEAR_AREA_BRUSH) {
-                  if (mode == BrushTool::MODE_ADD) {
-                    /* some of the clearing area images use (252,207,0) instead */
-                    c = Color(251,206,0); }
-                  else {
-                    c = Color(167,137,0); }}
-		brush.drawBrush(mouseX, mouseY, c);
+		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -3720,7 +3304,7 @@ void GameGUI::drawOverlayInfos(void)
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
 		Uint32 apm=game.maskAwayPlayer;
-		for(int pi=0; pi<game.session.numberOfPlayer; pi++)
+		for(int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
 		{
 			if (pm&apm)
 				nbap++;
@@ -3731,7 +3315,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 255, 255, 255);
 		pm=1;
 		int pnb=0;
-		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
+		for(int pi2=0; pi2<game.gameHeader.getNumberOfPlayers(); pi2++)
 		{
 			if (pm&apm)
 			{
@@ -3773,83 +3357,13 @@ void GameGUI::drawOverlayInfos(void)
 
 		ymesg += yinc+2;
 		
-		// display messages
-		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
-		{
-			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, it->r, it->g, it->b, it->a));
-			if (scrollableText) 
-				globalContainer->gfx->drawString(32, ymesg + 105, globalContainer->standardFont, it->text.c_str());
-			else
-				globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text.c_str());
-			globalContainer->standardFont->popStyle();
-			ymesg += 20;
-
-			// delete old messages
-			if (!(--(it->showTicks)))
-			{
-				// update message history
-				messageHistory.push_back(it->text.c_str());
-				// update in-game history if it's there
-				if (scrollableText) {
-					scrollableText->readHistory(messageHistory);
-				}
-				it=messagesList.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
+		if(!scrollableText)
+			messageManager.drawAllMessages(32, ymesg);
 
 		// display map mark
 		globalContainer->gfx->setClipRect();
-		for (std::list <Mark>::iterator it=markList.begin(); it!=markList.end();)
-		{
+		markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-128+14, 14, 100, viewportX, viewportY, game);
 
-			//int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
-			int ray = (int)(sin((double)(it->showTicks * 2.0)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
-			//int ray2 = (int)(cos((double)(it->showTicks * 2.0)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
-			ray = (abs(ray) * it->showTicks) / Mark::DEFAULT_MARK_SHOW_TICKS;
-			//ray2 = (abs(ray2) * it->showTicks) / Mark::DEFAULT_MARK_SHOW_TICKS;
-			Uint8 a = Color::ALPHA_OPAQUE;
-			
-			int mMax;
-			int szX, szY;
-			int decX, decY;
-			int x, y;
-
-			Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
-			GameUtilities::globalCoordToLocalView(&game, localTeamNo, it->x, it->y, &x, &y);
-			x = (x*100)/mMax;
-			y = (y*100)/mMax;
-			x += globalContainer->gfx->getW()-128+14+decX;
-			y += 14+decY;
-			
-			globalContainer->gfx->drawCircle(x, y, ray, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x+ray-4+1, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x-ray-4, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y+ray-4+1, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y-ray-4, 8, it->r, it->g, it->b, a);
-			//globalContainer->gfx->drawCircle(x, y, (ray2*11)/8, it->r, it->g, it->b, a);
-
-			//Draw it not just on the minimap
-			game.map.mapCaseToDisplayable(it->x, it->y, &x, &y, viewportX, viewportY);
-			globalContainer->gfx->drawCircle(x, y, (ray*2), it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x+(ray*2)-4+1, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawHorzLine(x-(ray*2)-4, y, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y+(ray*2)-4+1, 8, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawVertLine(x, y-(ray*2)-4, 8, it->r, it->g, it->b, a);
-
-			// delete old marks
-			if (!(--(it->showTicks)))
-			{
-				it=markList.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
 	}
 
 	// Draw icon if trasmitting
@@ -3933,9 +3447,10 @@ void GameGUI::drawAll(int team)
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
 								(drawAccessibilityAids ? Game::DRAW_ACCESSIBILITY : 0 ) |
 								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
-								((showStarvingMap) ? Game::DRAW_STARVING_OVERLAY : 0) |
-								((showDamagedMap) ? Game::DRAW_DAMAGED_OVERLAY : 0) |
-								((showDefenseMap) ? Game::DRAW_DEFENSE_OVERLAY : 0) |
+								((showStarvingMap) ? Game::DRAW_OVERLAY : 0) |
+								((showDamagedMap) ? Game::DRAW_OVERLAY : 0) |
+								((showDefenseMap) ? Game::DRAW_OVERLAY : 0) |
+								((showFertilityMap) ? Game::DRAW_OVERLAY : 0) |
 								Game::DRAW_AREA;
 	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
@@ -3963,9 +3478,12 @@ void GameGUI::drawAll(int team)
 	drawPanel();
 
 	// draw the minimap
-	drawOptions =0;
-	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
-	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team, drawOptions);
+	drawOptions = 0;
+	//globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
+	//game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team, drawOptions);
+
+	globalContainer->gfx->setClipRect();
+	minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-128)/32, globalContainer->gfx->getH()/32 );
 
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
@@ -4029,13 +3547,13 @@ void GameGUI::checkWonConditions(void)
 	}
 }
 
-void GameGUI::executeOrder(Order *order)
+void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 {
 	switch (order->getOrderType())
 	{
 		case ORDER_TEXT_MESSAGE :
 		{
-			MessageOrder *mo=(MessageOrder *)order;
+			boost::shared_ptr<MessageOrder> mo=static_pointer_cast<MessageOrder>(order);
 			int sp=mo->sender;
 			Uint32 messageOrderType=mo->messageOrderType;
 
@@ -4071,29 +3589,17 @@ void GameGUI::executeOrder(Order *order)
 		break;
 		case ORDER_VOICE_DATA:
 		{
-			OrderVoiceData *ov = (OrderVoiceData *)order;
+			boost::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
 			if (ov->recepientsMask & (1<<localPlayer))
 				globalContainer->mix->addVoiceData(ov);
-			game.executeOrder(order, localPlayer);
-		}
-		break;
-		case ORDER_QUITED :
-		{
-			if (order->sender==localPlayer)
-				isRunning=false;
-			game.executeOrder(order, localPlayer);
-		}
-		break;
-		case ORDER_DECONNECTED :
-		{
-			int qp=order->sender;
-			addMessage(200, 200, 200, FormatableString(Toolkit::getStringTable()->getString("[%0 has been deconnected of the game]")).arg(game.players[qp]->name));
 			game.executeOrder(order, localPlayer);
 		}
 		break;
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;
+			if (qp==localPlayer)
+				isRunning=false;
 			addMessage(200, 200, 200, FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name));
 			game.executeOrder(order, localPlayer);
 		}
@@ -4101,16 +3607,16 @@ void GameGUI::executeOrder(Order *order)
 		
 		case ORDER_MAP_MARK:
 		{
-			MapMarkOrder *mmo=(MapMarkOrder *)order;
+			boost::shared_ptr<MapMarkOrder> mmo=static_pointer_cast<MapMarkOrder>(order);
 
-			assert(game.teams[mmo->teamNumber]->teamNumber<game.session.numberOfTeam);
+			assert(game.teams[mmo->teamNumber]->teamNumber<game.mapHeader.getNumberOfTeams());
 			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
 				addMark(mmo);
 		}
 		break;
 		case ORDER_PAUSE_GAME:
 		{
-			PauseGameOrder *pgo=(PauseGameOrder *)order;
+			boost::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
 			gamePaused=pgo->pause;
 		}
 		break;
@@ -4121,13 +3627,13 @@ void GameGUI::executeOrder(Order *order)
 	}
 }
 
-bool GameGUI::loadBase(const SessionInfo *initial)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader)
 {
 	init();
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(initial->getFileName()));
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
-		std::cerr << "GameGUI::loadBase() : error, can't open file " << initial->getFileName() << std::endl;
+		std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << std::endl;
 		delete stream;
 		return false;
 		}
@@ -4138,7 +3644,8 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		if (!res)
 			return false;
 		
-		game.setBase(initial);
+		game.setMapHeader(mapHeader);
+		game.setGameHeader(gameHeader);
 	}
 
 	return true;
@@ -4155,8 +3662,7 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		return false;
 	}
-
-	if (!game.session.fileIsAMap)
+	if (game.mapHeader.getIsSavedGame())
 	{
 		// load gui's specific infos
 		stream->readEnterSection("GameGUI");
@@ -4187,6 +3693,8 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		
 		stream->readLeaveSection();
 	}
+	
+	minimap.setGame(game);
 
 	return true;
 }
@@ -4194,10 +3702,6 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 {
 	// Game is can't be no more automatically generated
-	if (game.session.mapGenerationDescriptor)
-		delete game.session.mapGenerationDescriptor;
-	game.session.mapGenerationDescriptor=NULL;
-
 	game.save(stream, false, name);
 	
 	stream->writeEnterSection("GameGUI");
@@ -4278,15 +3782,11 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
 }
 
-void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
+void GameGUI::drawTextCenter(int x, int y, const char *caption)
 {
 	const char *text;
 
-	if (i==-1)
-		text=Toolkit::getStringTable()->getString(caption);
-	else
-		text=Toolkit::getStringTable()->getString(caption, i);
-
+	text=Toolkit::getStringTable()->getString(caption);
 	int dec=(128-globalContainer->littleFont->getStringWidth(text))>>1;
 	globalContainer->gfx->drawString(x+dec, y, globalContainer->littleFont, text);
 }
@@ -4344,7 +3844,7 @@ void GameGUI::cleanOldSelection(void)
 	else if (selectionMode==UNIT_SELECTION)
 		game.selectedUnit=NULL;
 	else if (selectionMode==BRUSH_SELECTION)
-		brush.unselect();
+		toolManager.deactivateTool();
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
@@ -4395,7 +3895,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
-		selection.build=(char*)newSelection;
+		toolManager.activateBuildingTool((char*)(newSelection));
 	}
 }
 
@@ -4439,7 +3939,7 @@ void GameGUI::iterateSelection(void)
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(toolManager.getBuildingName(), 0, false);
 		for (int i=0; i<1024; i++)
 		{
 			Building *b=game.teams[localTeamNo]->myBuildings[i];
@@ -4587,8 +4087,8 @@ void GameGUI::disableGUIElement(int id)
 
 void GameGUI::setCpuLoad(int s)
 {
-	smoothedCpuLoad[smoothedCpuLoadPos]=s;
-	smoothedCpuLoadPos=(smoothedCpuLoadPos+1)%SMOOTH_CPU_LOAD_WINDOW_LENGTH;
+	smoothedCPULoad[smoothedCPUPos]=s;
+	smoothedCPUPos=(smoothedCPUPos+1) % SMOOTHED_CPU_SIZE;
 }
 
 
@@ -4644,104 +4144,27 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 }
 
 void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
-{
-	Message message;
-	message.showTicks=Message::DEFAULT_MESSAGE_SHOW_TICKS;
-	message.r = r;
-	message.g = g;
-	message.b = b;
-	message.a = Color::ALPHA_OPAQUE;
-	
+{	
+	//Split into one per line
 	std::vector<std::string> messages;
-	
 	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, 255, 255, 255));
 	setMultiLine(msgText, &messages);
 	globalContainer->standardFont->popStyle();
-	
+
+	///Add each line as a seperate message to the message manager
+	Uint8 a = Color::ALPHA_OPAQUE;
 	for (unsigned i=0; i<messages.size(); i++)
 	{
-		message.text = messages[i];
-		messagesList.push_back(message);
+		messageManager.addMessage(InGameMessage(messages[i], r, g, b, a));
 	}
 }
 
-void GameGUI::addMark(MapMarkOrder *mmo)
+void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
-	Mark mark;
-	mark.showTicks=Mark::DEFAULT_MARK_SHOW_TICKS;
-	mark.x=mmo->x;
-	mark.y=mmo->y;
-	mark.r=game.teams[mmo->teamNumber]->colorR;
-	mark.g=game.teams[mmo->teamNumber]->colorG;
-	mark.b=game.teams[mmo->teamNumber]->colorB;
+	Uint8 r = game.teams[mmo->teamNumber]->colorR;
+	Uint8 g = game.teams[mmo->teamNumber]->colorG;
+	Uint8 b = game.teams[mmo->teamNumber]->colorB;
 	
-	markList.push_front(mark);
+	markManager.addMark(Mark(mmo->x, mmo->y, r, g, b));
 }
 
-void GameGUI::initUnitCount(void)
-{
-	unitCount[0] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0];
-	unitCount[1] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1];
-	unitCount[2] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0];
-	unitCount[3] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1];
-	unitCount[4] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2];
-	unitCount[5] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3];
-	unitCount[6] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4];
-	unitCount[7] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5];
-	unitCount[8] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0];
-	unitCount[9] = 1; // not used in settings
-	unitCount[10] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2];
-	unitCount[11] = 1; // not used in settings
-	unitCount[12] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4];
-	unitCount[13] = 1; // not used in settings
-	unitCount[14] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0];
-	unitCount[15] = 1; // not used in settings
-	unitCount[16] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2];
-	unitCount[17] = 1; // not used in settings
-	unitCount[18] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4];
-	unitCount[19] = 1; // not used in settings
-	unitCount[20] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0];
-	unitCount[21] = 1; // not used in settings
-	unitCount[22] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2];
-	unitCount[23] = 1; // not used in settings
-	unitCount[24] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4];
-	unitCount[25] = 1; // not used in settings
-	unitCount[26] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0];
-	unitCount[27] = 1; // not used in settings
-	unitCount[28] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2];
-	unitCount[29] = 1; // not used in settings
-	unitCount[30] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4];
-	unitCount[31] = 1; // not used in settings
-	unitCount[32] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0];
-	unitCount[33] = 1; // not used in settings
-	unitCount[34] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2];
-	unitCount[35] = 1; // not used in settings
-	unitCount[36] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4];
-	unitCount[37] = 1; // not used in settings
-	unitCount[38] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0];
-	unitCount[39] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1];
-	unitCount[40] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2];
-	unitCount[41] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3];
-	unitCount[42] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4];
-	unitCount[43] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5];
-	unitCount[44] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][0];
-	unitCount[45] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::WAR_FLAG][0];
-	unitCount[46] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][0];
-	unitCount[47] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::STONE_WALL][0];
-	unitCount[48] = 1; // not used in settings
-	unitCount[49] = globalContainer->settings.defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0];
-}
-
-int GameGUI::getUnitCount(unsigned typeNum)
-{
-	if (typeNum < NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT)
-		return unitCount[typeNum];
-	else
-		return 1;
-}
-
-void GameGUI::setUnitCount(unsigned typeNum, int nbReq)
-{
-	if (typeNum < NUMBER_BUILDING_TYPE_NUM_WITH_PREDEFINED_UNIT_COUNT)
-		unitCount[typeNum] = nbReq;
-}

@@ -107,9 +107,10 @@ namespace GAGGUI
 	
 		Sint32 selColor;
 		std::vector<Color> v;
+		bool isClickable;
 	
 	public:
-		ColorButton() { selColor=returnCode=0; }
+		ColorButton() { selColor=returnCode=0; isClickable=true; }
 		//! ColorButton constructor
 		ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode);
 		//! With a tooltip
@@ -128,6 +129,8 @@ namespace GAGGUI
 		virtual int getSelectedColor(void) { return selColor; }
 		//! Return the number of possible colors
 		virtual size_t getNumberOfColors(void) { return v.size(); }
+		//! Makes it so that nothing occurs on click
+		virtual void setClickable(bool enabled) { isClickable = enabled; }
 	protected:
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 		virtual void onSDLMouseButtonDown(SDL_Event *event);

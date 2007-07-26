@@ -196,7 +196,7 @@ namespace GAGCore
 					lcwp=(c=='%');
 				}
 				// if not, issue an error message
-				if (baseCount!=count)
+				if (baseCount!=count && s!="")
 				{
 					std::cerr << "StringTable::load(\"" << filename << "\") : error, translation : in " << translationFiles[i] << ", text = [" << baseCount << "] (" << it->first << "), translation = [" << count << "] (" << s << "), doesn't match !" << std::endl;
 					assert(false);
@@ -220,8 +220,9 @@ namespace GAGCore
 		}
 	}
 	
-	const char *StringTable::getString(const char *stringname, int index) const
+	const char *StringTable::getString(const char *stringname) const
 	{
+		int index=-1;
 		if ((actLang < languageCount) && (actLang >= 0))
 		{
 			std::string key(stringname);
@@ -261,6 +262,17 @@ namespace GAGCore
 			std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, bad language selected." << std::endl;
 			return "ERROR, BAD LANG";
 		}
+	}
+	
+	bool StringTable::doesStringExist(const char *stringname) const
+	{
+		std::string key(stringname);
+		std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
+		if (accessIt == stringAccess.end())
+		{
+			return false;
+		}
+		return true;
 	}
 	
 	const char *StringTable::getStringInLang(const char *stringname, int lang) const
