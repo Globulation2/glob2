@@ -6,6 +6,7 @@
 #include <vector>
 
 struct ScopePrototype;
+struct Method;
 struct FileDebugInfo;
 struct Code;
 
@@ -273,9 +274,10 @@ struct TuplePatternNode: PatternNode
 
 struct FunNode: ExpressionNode
 {
-	FunNode(const Position& position, ScopePrototype* scope, PatternNode* arg, ExpressionNode* body):
+	FunNode(const Position& position, Method* method, PatternNode* arg, ExpressionNode* body):
 		ExpressionNode(position),
-		scope(scope),
+		method(method),
+		arg(arg),
 		body(body)
 	{}
 	
@@ -283,7 +285,8 @@ struct FunNode: ExpressionNode
 	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
-	ScopePrototype* scope;
+	Method* method;
+	PatternNode* arg;
 	ExpressionNode* body;
 };
 

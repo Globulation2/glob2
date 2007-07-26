@@ -334,13 +334,17 @@ TuplePatternNode::~TuplePatternNode()
 void TuplePatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	Node::generate(scope, debug, new EvalCode());
+	Node::generate(scope, debug, new SelectCode("get"));
 	int index = 0;
 	for (Members::iterator it = members.begin(); it != members.end(); ++it)
 	{
+		ScopePrototype* arg = new ScopePrototype(0, scope); // TODO: heap-alloc
+		Node::generate(arg, debug, new ConstCode(new Integer(0, index))); // TODO: heap-alloc
+		Node::generate(arg, debug, new ReturnCode());
+		
 		Node::generate(scope, debug, new DupCode());
-		Node::generate(scope, debug, new SelectCode("get"));
-		Node::generate(scope, debug, new ConstCode(new Integer(0, index))); // TODO: heap-alloc
-		Node::generate(scope, debug, new SelectCode("this"));
+		Node::generate(scope, debug, new ScopeCode());
+		Node::generate(scope, debug, new DefRefCode(arg));
 		Node::generate(scope, debug, new ApplyCode());
 		(*it)->generate(scope, debug);
 		++index;
@@ -365,7 +369,13 @@ FunNode::~FunNode()
 
 void FunNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
-	assert(false);
+	Node::generate(scope, debug, new ScopeCode());
+	//Node::generate(scope, debug, new ParentCode());
+	Node::generate(scope, debug, new FunCode(method));
+	Node::generate(scope, debug, new ReturnCode());
+	arg->generate(method, debug);
+	body->generate(method, debug);
+	Node::generate(method, debug, new ReturnCode());
 }
 
 void FunNode::dumpSpecific(std::ostream &stream, unsigned indent) const

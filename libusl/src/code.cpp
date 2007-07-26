@@ -10,7 +10,7 @@ ScopePrototype* thisMember(Prototype* outer)
 	return thunk;
 }
 
-ScopePrototype* wrapMethod(Method* method)
+ScopePrototype* nativeMethodMember(Method* method)
 {
 	ScopePrototype* thunk = new ScopePrototype(0, method->outer); // TODO: GC
 	thunk->body.push_back(new ScopeCode());
@@ -257,7 +257,7 @@ void DefRefCode::execute(Thread* thread)
 }
 
 
-FunCode::FunCode(ScopePrototype* method):
+FunCode::FunCode(Method* method):
 	method(method)
 {}
 

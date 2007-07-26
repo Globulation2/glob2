@@ -153,7 +153,7 @@ struct Scope: Value
 struct PatternNode;
 struct Method: ScopePrototype
 {
-	Method(Heap* heap, Prototype* outer, PatternNode* argument);
+	Method(Heap* heap, Prototype* outer);
 };
 
 struct NativeMethod: Method
