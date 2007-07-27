@@ -12,14 +12,16 @@ class Prototype;
 class Operation;
 
 
-ScopePrototype* thisMethod(Prototype* outer);
+ScopePrototype* thisMember(Prototype* outer);
+ScopePrototype* wrapMethod(Method* method);
 
 
 struct Code
 {
 	virtual ~Code() { }
 	virtual void execute(Thread* thread) = 0;
-	virtual void dump(std::ostream &stream);
+	void dump(std::ostream &stream) const;
+	virtual void dumpSpecific(std::ostream &stream) const {};
 };
 
 struct ConstCode: Code
@@ -27,6 +29,7 @@ struct ConstCode: Code
 	ConstCode(Value* value);
 	
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	Value* value;
 };
@@ -36,28 +39,30 @@ struct ValRefCode: Code
 	ValRefCode(size_t depth, size_t index);
 	
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	size_t depth;
 	size_t index;
 };
 
-struct SelectCode: Code
+struct EvalCode: Code
 {
-	SelectCode(const std::string& name, bool pop = true);
-	
 	virtual void execute(Thread* thread);
-	
-	std::string name;
-	bool pop;
 };
 
-struct ApplyCode: Code
+struct SelectCode: EvalCode
 {
-	ApplyCode(bool arg = true);
+	SelectCode(const std::string& name);
 	
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
 	
-	bool arg;
+	std::string name;
+};
+
+struct ApplyCode: EvalCode
+{
+	virtual void execute(Thread* thread);
 };
 
 struct ValCode: Code
@@ -71,6 +76,11 @@ struct ParentCode: Code
 };
 
 struct PopCode: Code
+{
+	virtual void execute(Thread* thread);
+};
+
+struct DupCode: Code
 {
 	virtual void execute(Thread* thread);
 };
@@ -90,31 +100,33 @@ struct ArrayCode: Code
 	ArrayCode(size_t size);
 	
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	size_t size;
 };
 
 struct NativeCode: Code
 {
-	struct Operation: ScopePrototype
-	{
-		Operation(Prototype* outer, const std::string& name, bool lazy);
-		
-		virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
-		
-		std::string name;
-	};
-	
-	NativeCode(Operation* operation);
+	NativeCode(NativeMethod* method);
 	
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
 	
-	Operation* operation;
+	NativeMethod* method;
 };
 
 struct DefRefCode: Code
 {
-	DefRefCode(ScopePrototype* method);
+	DefRefCode(ScopePrototype* def);
+	
+	virtual void execute(Thread* thread);
+	
+	ScopePrototype* def;
+};
+
+struct FunCode: Code
+{
+	FunCode(ScopePrototype* method);
 	
 	virtual void execute(Thread* thread);
 	

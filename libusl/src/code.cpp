@@ -1,20 +1,30 @@
 #include "code.h"
 #include "interpreter.h"
 
-ScopePrototype* thisMethod(Prototype* outer)
+ScopePrototype* thisMember(Prototype* outer)
 {
-	ScopePrototype* method = new ScopePrototype(0, outer);
-	method->body.push_back(new PopCode());
-	method->body.push_back(new ScopeCode());
-	method->body.push_back(new ParentCode());
-	method->body.push_back(new ReturnCode());
-	return method;
+	ScopePrototype* thunk = new ScopePrototype(0, outer); // TODO: GC
+	thunk->body.push_back(new ScopeCode());
+	thunk->body.push_back(new ParentCode());
+	thunk->body.push_back(new ReturnCode());
+	return thunk;
+}
+
+ScopePrototype* wrapMethod(Method* method)
+{
+	ScopePrototype* thunk = new ScopePrototype(0, method->outer); // TODO: GC
+	thunk->body.push_back(new ScopeCode());
+	thunk->body.push_back(new ParentCode());
+	thunk->body.push_back(new FunCode(method));
+	thunk->body.push_back(new ReturnCode());
+	return thunk;
 }
 
 
-void Code::dump(std::ostream &stream)
+void Code::dump(std::ostream &stream) const
 {
 	stream << typeid(*this).name();
+	dumpSpecific(stream);
 }
 
 
@@ -25,6 +35,12 @@ ConstCode::ConstCode(Value* value):
 void ConstCode::execute(Thread* thread)
 {
 	thread->frames.back().stack.push_back(value);
+}
+
+void ConstCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " ";
+	value->dump(stream);
 }
 
 
@@ -47,38 +63,64 @@ void ValRefCode::execute(Thread* thread)
 	frame.stack.push_back(scope->locals[index]);
 }
 
+void ValRefCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " " << depth << ", " << index;
+}
 
-SelectCode::SelectCode(const std::string& name, bool pop):
-	name(name),
-	pop(pop)
+
+void EvalCode::execute(Thread* thread)
+{
+	Thread::Frames& frames = thread->frames;
+	Thread::Frame::Stack& stack = frames.back().stack;
+	
+	assert(stack.size() >= 1);
+	
+	// get the function
+	Thunk* thunk = dynamic_cast<Thunk*>(stack.back());
+	stack.pop_back();
+	
+	assert(thunk != 0);
+	
+	// create a new scope
+	Scope* scope = new Scope(thread->heap, thunk->method, thunk->receiver);
+	
+	// push a new frame
+	frames.push_back(scope);
+}
+
+
+SelectCode::SelectCode(const std::string& name):
+	name(name)
 {}
 
-#include <iostream>
 void SelectCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
 	// get receiver
 	Value* receiver = stack.back();
-	if (pop)
-		stack.pop_back();
+	stack.pop_back();
 	
-	// get method
-	ScopePrototype* method = receiver->prototype->lookup(name);
+	// get definition
+	ScopePrototype* def = receiver->prototype->lookup(name);
+	assert(def != 0);
 	
-	assert(method != 0);
+	// create a thunk
+	Thunk* thunk = new Thunk(thread->heap, receiver, def);
 	
-	// create a function
-	Function* function = new Function(thread->heap, receiver, method);
+	// put the thunk on the stack
+	stack.push_back(thunk);
 	
-	// put the function on the stack
-	stack.push_back(function);
+	// evaluate the thunk
+	EvalCode::execute(thread);
 }
 
+void SelectCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " " << name;
+}
 
-ApplyCode::ApplyCode(bool arg):
-	arg(arg)
-{}
 
 void ApplyCode::execute(Thread* thread)
 {
@@ -86,35 +128,22 @@ void ApplyCode::execute(Thread* thread)
 	Thread::Frame::Stack& stack = frames.back().stack;
 	
 	// get argument
-	Value* argument;
-	if (arg)
-	{
-		argument = stack.back();
-		stack.pop_back();
-	}
-	
-	// get the function
-	Function* function = dynamic_cast<Function*>(stack.back());
+	Value* argument = stack.back();
 	stack.pop_back();
 	
-	assert(function != 0);
-	
-	// create a new scope
-	Scope* scope = new Scope(thread->heap, function->method, function->receiver);
-	
 	// push a new frame
-	frames.push_back(scope);
+	EvalCode::execute(thread);
 	
 	// put the argument on the stack
-	if (arg)
-		frames.back().stack.push_back(argument);
-	else
-		frames.back().stack.push_back(&nil);
+	frames.back().stack.push_back(argument);
 }
 
 
 void ValCode::execute(Thread* thread)
 {
+	assert(thread->frames.size() > 0);
+	assert(thread->frames.back().stack.size() > 0);
+	
 	Thread::Frame& frame = thread->frames.back();
 	Thread::Frame::Stack& stack = frame.stack;
 	frame.scope->locals.push_back(stack.back());
@@ -139,6 +168,13 @@ void ParentCode::execute(Thread* thread)
 void PopCode::execute(Thread* thread)
 {
 	thread->frames.back().stack.pop_back();
+}
+
+
+void DupCode::execute(Thread* thread)
+{
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	stack.push_back(stack.back());
 }
 
 
@@ -171,26 +207,14 @@ void ArrayCode::execute(Thread* thread)
 	stack.push_back(array);
 }
 
-
-NativeCode::Operation::Operation(Prototype* outer, const std::string& name, bool lazy):
-	ScopePrototype(0, outer),
-	name(name)
+void ArrayCode::dumpSpecific(std::ostream &stream) const
 {
-	body.push_back(new ValCode());
-	body.push_back(new ScopeCode());
-	body.push_back(new ParentCode());
-	body.push_back(new ValRefCode(0, 0));
-	if (!lazy)
-	{
-		body.push_back(new ApplyCode(false));
-	}
-	body.push_back(new NativeCode(this));
-	body.push_back(new ReturnCode());
+	stream << " " << size;
 }
 
 
-NativeCode::NativeCode(Operation* operation):
-	operation(operation)
+NativeCode::NativeCode(NativeMethod* method):
+	method(method)
 {}
 
 void NativeCode::execute(Thread* thread)
@@ -202,15 +226,42 @@ void NativeCode::execute(Thread* thread)
 	Value* receiver = stack.back();
 	stack.pop_back();
 	
-	stack.push_back(operation->execute(thread, receiver, argument));
+	stack.push_back(method->execute(thread, receiver, argument));
+}
+
+void NativeCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " " << method->name;
 }
 
 
-DefRefCode::DefRefCode(ScopePrototype* method):
-	method(method)
+DefRefCode::DefRefCode(ScopePrototype* def):
+def(def)
 {}
 
 void DefRefCode::execute(Thread* thread)
+{
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	
+	// get receiver
+	Value* receiver = stack.back();
+	stack.pop_back();
+	
+	assert(def->outer == receiver->prototype); // Should not fail if the parser is bug-free
+	
+	// create a thunk
+	Thunk* thunk = new Thunk(thread->heap, receiver, def);
+	
+	// put the function on the stack
+	stack.push_back(thunk);
+}
+
+
+FunCode::FunCode(ScopePrototype* method):
+	method(method)
+{}
+
+void FunCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	

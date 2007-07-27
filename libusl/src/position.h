@@ -8,7 +8,7 @@ struct Position
 	size_t line;
 	size_t column;
 	
-	Position() {}
+	Position(): line(0), column(0) {}
 	Position(size_t line, size_t column): line(line), column(column) {}
 	
 	bool operator<(const Position& that) const;
