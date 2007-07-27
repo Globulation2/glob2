@@ -702,6 +702,8 @@ Escola
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 buscant feina
 [seeking]

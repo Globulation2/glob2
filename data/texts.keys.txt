@@ -351,6 +351,7 @@
 [school]
 [Script Areas]
 [scroll lock]
+[scroll wheel enabled]
 [seeking a job]
 [seeking]
 [select barracks building]

@@ -702,6 +702,8 @@ Ok
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 ищет работу
 [seeking]

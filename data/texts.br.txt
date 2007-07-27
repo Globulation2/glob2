@@ -704,6 +704,8 @@ Escola
 Script Areas
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 procurando trabalho
 [seeking]

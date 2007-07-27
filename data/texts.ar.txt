@@ -702,6 +702,8 @@ Do you want to save before quitting?
 Script Areas
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 يبحث عن العمل
 [seeking]

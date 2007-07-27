@@ -702,6 +702,8 @@ School
 Scriptgebieden
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 werkzoekend
 [seeking]

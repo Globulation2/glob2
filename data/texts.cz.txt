@@ -702,6 +702,8 @@ Zlepši uroveň stavitelství
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 hledá práci
 [seeking]

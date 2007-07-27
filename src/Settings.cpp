@@ -53,6 +53,8 @@ Settings::Settings()
 	rememberUnit = 1;
 	tempUnit = 1;
 	tempUnitFuture = 1;
+
+	scrollWheelEnabled=true;
 	
 	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 	{
@@ -156,6 +158,7 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(musicVolume);		
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
+		READ_PARSED_INT(scrollWheelEnabled);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
@@ -199,6 +202,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
+		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", rememberUnit);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
