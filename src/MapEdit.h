@@ -32,6 +32,7 @@
 #include <string>
 #include <vector>
 #include "Minimap.h"
+#include "OverlayAreas.h"
 
 namespace GAGCore
 {
@@ -445,6 +446,20 @@ private:
 
 
 
+///This widget has a checkbox, when set, it adjusts the given variable
+class Checkbox : public MapEditorWidget
+{
+public:
+	Checkbox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& text, bool& isActivated);
+	void draw();
+	void handleClick(int relMouseX, int relMouseY);
+private:
+	std::string text;
+	bool& isActivated;
+};
+
+
+
 ///This is the map editor class in all its glory.
 class MapEdit
 {
@@ -482,6 +497,11 @@ public:
 	friend class MinusIcon;
 	friend class TeamInfo;
 	friend class BuildingInfoTitle;
+	
+	///This is used for the Fertility Overlay
+	OverlayArea overlay;
+	///Tells whether the fertility overlay is set or not
+	bool isFertilityOn;
 private:
 	///If this is set, the map editor will exit as soon as it finishes drawing and proccessing events
 	bool doQuit;
@@ -617,6 +637,7 @@ private:
 	NumberCycler* areaNumber;
 	TextLabel* areaNameLabel;
 	BrushSelector* terrainBrushSelector;
+	Checkbox* showFertilityOverlay;
 	///@}
 
 	///Teams view
@@ -815,6 +836,7 @@ private:
 	bool isDraggingNoRessourceGrowthArea;
 	///Handles a click or drag of the no ressource growth area placement tool
 	void handleNoRessourceGrowthClick(int mx, int my);
+
 };
 
 

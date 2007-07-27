@@ -46,6 +46,8 @@
 #include "Utilities.h"
 #include "GameGUI.h"
 
+#include "MapEdit.h"
+
 #include "Brush.h"
 #include "DynamicClouds.h"
 
@@ -56,10 +58,10 @@
 #define MIN_MAX_PRESIGE 500
 #define TEAM_MAX_PRESTIGE 150
 
-Game::Game(GameGUI *gui)
+Game::Game(GameGUI *gui, MapEdit* edit)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
-	init(gui);
+	init(gui, edit);
 }
 
 Game::~Game()
@@ -86,9 +88,10 @@ Game::~Game()
 	clearGame();
 }
 
-void Game::init(GameGUI *gui)
+void Game::init(GameGUI *gui, MapEdit* edit)
 {	
 	this->gui=gui;
+	this->edit=edit;
 	buildProjects.clear();
 
 	mapHeader.reset();
@@ -2343,18 +2346,23 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 
 inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	OverlayArea* overlays;
+	if(gui)
+		overlays=&gui->overlay;
+	else if(edit)
+		overlays=&edit->overlay;
 	int overlayMax=0;
 	Color overlayColor;
 	if(drawOptions & DRAW_OVERLAY)
 	{
-		overlayMax=gui->overlay.getMaximum();
-		if(gui->overlay.getOverlayType() == OverlayArea::Starving)
+		overlayMax=overlays->getMaximum();
+		if(overlays->getOverlayType() == OverlayArea::Starving)
 			overlayColor=Color(192, 0, 0);
-		if(gui->overlay.getOverlayType() == OverlayArea::Damage)
+		if(overlays->getOverlayType() == OverlayArea::Damage)
 			overlayColor=Color(192, 0, 0);
-		if(gui->overlay.getOverlayType() == OverlayArea::Defence)
+		if(overlays->getOverlayType() == OverlayArea::Defence)
 			overlayColor=Color(0, 0, 192);
-		if(gui->overlay.getOverlayType() == OverlayArea::Fertility)
+		if(overlays->getOverlayType() == OverlayArea::Fertility)
 			overlayColor=Color(0, 192, 128);
 
 		for (int y=top-1; y<=bot; y++)
@@ -2363,13 +2371,14 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			{
 				int rx=(x+viewportX)%map.getW();
 				int ry=(y+viewportY)%map.getH();
-				if(!map.isMapDiscovered(rx, ry, teams[localTeam]->me))
+				///All spots shown when map edit is active
+				if(!edit && !map.isMapDiscovered(rx, ry, teams[localTeam]->me))
 					continue;
 				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 				{
-					if(gui->overlay.getValue(rx, ry))
+					if(overlays->getValue(rx, ry))
 					{
-						const int value_c=gui->overlay.getValue(rx, ry);
+						const int value_c=overlays->getValue(rx, ry);
 						const int alpha_c=int(float(200)/float(overlayMax) * float(value_c));
 						globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
 					}
@@ -2386,10 +2395,10 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 							//bx and by represent the base position. Since the maximum height
 							//is at the center if the square, pixels before this are interpolated
 							//between the squares that are before this one
-							int b_val=gui->overlay.getValue(rx, ry);
-							int d_val=gui->overlay.getValue(rx, map.normalizeY(ry+1));
-							int r_val=gui->overlay.getValue(map.normalizeX(rx+1), ry);
-							int dr_val=gui->overlay.getValue(map.normalizeX(rx+1), map.normalizeY(ry+1));
+							int b_val=overlays->getValue(rx, ry);
+							int d_val=overlays->getValue(rx, map.normalizeY(ry+1));
+							int r_val=overlays->getValue(map.normalizeX(rx+1), ry);
+							int dr_val=overlays->getValue(map.normalizeX(rx+1), map.normalizeY(ry+1));
 							float n_top = interpolateValues(b_val, r_val, fx);
 							float n_bottom = interpolateValues(d_val, dr_val, fx);
 							float n_vertical = interpolateValues(n_top, n_bottom, fy);

@@ -77,7 +77,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	else if(type == Fertility)
 	{
 		computeFertility(game, localteam);
-		if(fertilityComputed == 2 || lasttype != Fertility)
+		if(fertilityComputed > 1 && (fertilityComputed == 2 || lasttype != Fertility))
 		{
 			for(size_t i=0; i<fertility.size(); ++i)
 			{
@@ -109,6 +109,31 @@ Uint16 OverlayArea::getMaximum()
 OverlayArea::OverlayType OverlayArea::getOverlayType()
 {
 	return type;
+}
+
+
+
+void OverlayArea::computeFertility(Game& game, int localteam)
+{
+	if(fertilityComputed == 0)
+	{
+		//Create the thread
+		boost::thread thread(FertilityCalculator(fertility, fertilitymax, game, localteam, width, height, fertilityComputed));
+	}
+}
+
+
+
+void OverlayArea::forceFertilityRecompute()
+{
+	fertilityComputed = 0;
+}
+
+
+
+bool OverlayArea::isFertilityBeingCalculated()
+{
+	return fertilityComputed == 1;
 }
 
 
@@ -152,20 +177,6 @@ void OverlayArea::spreadPoint(int x, int y, int value, int distance, std::vector
 
 
 
-void OverlayArea::computeFertility(Game& game, int localteam)
-{
-	if(fertilityComputed == 0)
-	{
-		std::fill(overlay.begin(), overlay.end(), 0);
-		overlaymax = 0;
-
-		//Create the thread
-		boost::thread thread(FertilityCalculator(fertility, fertilitymax, game, localteam, width, height, fertilityComputed));
-	}
-}
-
-
-
 FertilityCalculator::FertilityCalculator(std::vector<Uint16>& fertility, Uint16& fertilityMax, Game& game, int localteam, int width, int height, int& fertilityComputed)
 	: fertility(fertility), fertilitymax(fertilityMax), game(game), localteam(localteam), width(width), height(height), fertilityComputed(fertilityComputed)
 {
@@ -174,6 +185,7 @@ FertilityCalculator::FertilityCalculator(std::vector<Uint16>& fertility, Uint16&
 void FertilityCalculator::operator()()
 {
 	fertilityComputed = 1;
+	computeRessourcesGradient();	
 	fertilitymax = 0;
 	fertility.resize(width * height);
 	std::fill(fertility.begin(), fertility.end(), 0);
@@ -183,11 +195,9 @@ void FertilityCalculator::operator()()
 		{
 			if(game.map.isGrass(x, y))
 			{
-				Uint8 gcorn = game.map.getGradient(localteam, CORN, false, x, y);
-				Uint8 gwood = game.map.getGradient(localteam, WOOD, false, x, y);
-				//if g = 1, then no path can be found. Allow drawing for values of 0
-				//(obstacle) only when its wheat or corn or a building
-				if(gcorn > 1 || gwood > 1 || game.map.isRessourceTakeable(x, y, CORN) || game.map.isRessourceTakeable(x, y, WOOD) || game.map.getBuilding(x, y) != NOGBID)
+				Uint8 dist = gradient[get_pos(x,y)];
+				//if dist = 0 or 1, then no path can be found.
+				if(dist > 1)
 				{
 					Uint16 total=0;
 					for(int nx = -15; nx <= 15; ++nx)
@@ -207,5 +217,89 @@ void FertilityCalculator::operator()()
 		}
 	}
 	fertilityComputed = 2;
+}
+
+
+
+void FertilityCalculator::computeRessourcesGradient()
+{
+	gradient.resize(width*height);
+	std::fill(gradient.begin(), gradient.end(),0); 
+
+	std::queue<position> positions;
+	for(int x=0; x<width; ++x)
+	{
+		for(int y=0; y<height; ++y)
+		{
+			if(game.map.isRessourceTakeable(x, y, CORN) || game.map.isRessourceTakeable(x, y, WOOD))
+			{
+				gradient[get_pos(x, y)]=2;
+				positions.push(position(x, y));
+			}
+			else if(!game.map.isGrass(x, y))
+				gradient[get_pos(x, y)]=1;
+		}
+	}
+	while(!positions.empty())
+	{
+		position p=positions.front();
+		positions.pop();
+
+		int left=game.map.normalizeX(p.x-1);
+		int right=game.map.normalizeX(p.x+1);
+		int up=game.map.normalizeY(p.y-1);
+		int down=game.map.normalizeY(p.y+1);
+		int center_h=p.x;
+		int center_y=p.y;
+		int n=gradient[get_pos(center_h, center_y)];
+
+		if(gradient[get_pos(left, up)]==0)
+		{
+			gradient[get_pos(left, up)]=n+1;
+			positions.push(position(left, up));
+		}
+
+		if(gradient[get_pos(center_h, up)]==0)
+		{
+			gradient[get_pos(center_h, up)]=n+1;
+			positions.push(position(center_h, up));
+		}
+
+		if(gradient[get_pos(right, up)]==0)
+		{
+			gradient[get_pos(right, up)]=n+1;
+			positions.push(position(right, up));
+		}
+
+		if(gradient[get_pos(left, center_y)]==0)
+		{
+			gradient[get_pos(left, center_y)]=n+1;
+			positions.push(position(left, center_y));
+		}
+
+		if(gradient[get_pos(right, center_y)]==0)
+		{
+			gradient[get_pos(right, center_y)]=n+1;
+			positions.push(position(right, center_y));
+		}
+
+		if(gradient[get_pos(left, down)]==0)
+		{
+			gradient[get_pos(left, down)]=n+1;
+			positions.push(position(left, down));
+		}
+
+		if(gradient[get_pos(center_h, down)]==0)
+		{
+			gradient[get_pos(center_h, down)]=n+1;
+			positions.push(position(center_h, down));
+		}
+
+		if(gradient[get_pos(right, down)]==0)
+		{
+			gradient[get_pos(right, down)]=n+1;
+			positions.push(position(right, down));
+		}
+	}
 }
 
