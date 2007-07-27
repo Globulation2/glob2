@@ -702,6 +702,8 @@ Skole
 Script Områder
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 leder efter et job
 [seeking]

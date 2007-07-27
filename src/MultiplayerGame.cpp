@@ -225,11 +225,14 @@ void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 		if(bp.type == BasePlayer::P_NONE)
 		{
 			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(type)).arg(x-1);
-			bp = BasePlayer(x, name, x, Player::playerTypeFromImplementitionID(type));
+			name.arg(AI::getAIText(type)).arg(x+1);
+			bp = BasePlayer(x, name, x % mapHeader.getNumberOfTeams(), Player::playerTypeFromImplementitionID(type));
 			break;
 		}
 	}
+	
+
+	
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
 	
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);

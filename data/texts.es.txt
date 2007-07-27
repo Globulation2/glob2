@@ -702,6 +702,8 @@ Escuela
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 Buscando Trabajo
 [seeking]

@@ -702,6 +702,8 @@ Skola
 Skript Områden
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 söker efter arbete
 [seeking]

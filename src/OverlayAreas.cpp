@@ -117,6 +117,8 @@ void OverlayArea::computeFertility(Game& game, int localteam)
 {
 	if(fertilityComputed == 0)
 	{
+		height = game.map.getH();
+		width = game.map.getW();
 		//Create the thread
 		boost::thread thread(FertilityCalculator(fertility, fertilitymax, game, localteam, width, height, fertilityComputed));
 	}

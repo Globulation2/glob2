@@ -702,6 +702,8 @@ Eskola
 Script Zonaldeak
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 lan bila
 [seeking]
