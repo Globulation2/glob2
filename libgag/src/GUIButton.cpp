@@ -205,7 +205,8 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+		this->isClickable=true;
+		
 		selColor=0;
 	}
 
@@ -218,6 +219,7 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
+		this->isClickable=true;
 	
 		selColor=0;
 	}
