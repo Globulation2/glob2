@@ -479,6 +479,11 @@ void GameGUI::step(void)
 	}
 
 
+	if(game.stepCounter == 60)
+	{
+		overlay.computeFertility(game, localTeamNo);
+	}
+
 	if(game.stepCounter % 25 == 1)
 	{
 		if(showStarvingMap)
