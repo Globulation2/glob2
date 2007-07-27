@@ -1,5 +1,7 @@
 #include "debug.h"
 
+#include "code.h"
+
 static const Position invalidPosition;
 static const FilePosition invalidFilePosition("???", invalidPosition);
 
@@ -38,7 +40,16 @@ FilePosition ProgramDebugInfo::find(ScopePrototype* scope, size_t address)
 	}
 	else
 	{
-		return invalidFilePosition;
+		NativeMethod* native = dynamic_cast<NativeMethod*>(scope);
+		if (native != 0)
+		{
+			std::string name = "<";
+			name += native->name;
+			name += ">";
+			return FilePosition(name, invalidPosition);
+		}
+		else
+			return invalidFilePosition;
 	}
 	
 }

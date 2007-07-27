@@ -36,7 +36,7 @@ struct Parser: Lexer
 		newlines();
 		auto_ptr<BlockNode> block(new BlockNode(position));
 		
-		scope->methods["this"] = thisMethod(scope);
+		scope->members["this"] = thisMember(scope);
 		
 		while (true)
 		{
@@ -73,9 +73,9 @@ struct Parser: Lexer
 				Position position = token.position;
 				next();
 				string name = identifier();
+				scope->locals.push_back(name);
 				accept(ASSIGN);
 				newlines();
-				scope->locals.push_back(name);
 				return new ValNode(position, expression(scope));
 			}
 		case DEF:
@@ -83,27 +83,31 @@ struct Parser: Lexer
 				Position position = token.position;
 				next();
 				string name = identifier();
-				auto_ptr<ScopePrototype> method(new ScopePrototype(heap, scope));
-				auto_ptr<BlockNode> body(new BlockNode(token.position));
+				ScopePrototype* def = new ScopePrototype(heap, scope);
+				scope->members[name] = def;
+				ExpressionNode* body;
 				switch (tokenType())
 				{
 				case LPAR:
 					{
-						body->statements.push_back(pattern(method.get()));
+						ScopePrototype* fun = new ScopePrototype(heap, def);
+						Position position = token.position;
+						auto_ptr<PatternNode> arg(pattern(fun));
 						accept(ASSIGN);
+						newlines();
+						body = expression(fun);
+						body = new FunNode(position, fun, arg.release(), body);
 					}
 					break;
 				case ASSIGN:
-					body->statements.push_back(new NilPatternNode(token.position));
 					next();
+					newlines();
+					body = expression(def);
 					break;
 				default:
 					assert(false);
 				}
-				newlines();
-				scope->methods[name] = method.get();
-				body->value = expression(method.get());
-				return new DefNode(position, method.release(), body.release());
+				return new DefNode(position, def, body);
 			}
 		default:
 			return expression(scope);
@@ -285,7 +289,7 @@ struct Parser: Lexer
 				auto_ptr<ScopePrototype> block(new ScopePrototype(heap, scope));
 				auto_ptr<ExpressionNode> body(statements(position, block.get()));
 				accept(RBRACE);
-				return new ApplyNode(position, new DefRefNode(position, block.release(), body.release()), 0);
+				return new EvalNode(position, new DefRefNode(position, block.release(), body.release()));
 			}
 		case DOT:
 			{
@@ -337,16 +341,46 @@ struct Parser: Lexer
 	Heap* heap;
 };
 
+
+void dumpCode(ScopePrototype* scope, FileDebugInfo* debug, ostream& stream)
+{
+	for (size_t i = 0; i < scope->body.size(); ++i)
+	{
+		Position pos = debug->find(scope, i);
+		stream << pos.line << ":" << pos.column << ": ";
+		scope->body[i]->dump(stream);
+		stream << '\n';
+	}
+	stream << '\n';
+}
+
+void dumpCode(Heap* heap, FileDebugInfo* debug, ostream& stream)
+{
+	for (Heap::Values::iterator values = heap->values.begin(); values != heap->values.end(); ++values)
+	{
+		ScopePrototype* scope = dynamic_cast<ScopePrototype*>(*values);
+		if (scope != 0)
+			dumpCode(scope, debug, stream);
+	}
+}
+
+
 int main(int argc, char** argv)
 {
 	if (argc != 2)
+	{
+		cerr << "Wrong number of arguments" << endl;
 		return 1;
+	}
 	
 	string file = argv[1];
 	
 	ifstream ifs(file.c_str());
 	if (!ifs.good())
+	{
+		cerr << "Can't open file " << file << endl;
 		return 2;
+	}
 	
 	cout << "Testing " << argv[1] << "\n\n";
 	
@@ -368,8 +402,12 @@ int main(int argc, char** argv)
 	
 	Parser parser(source.c_str(), &heap);
 	Node* node = parser.parse(root);
+	node->dump(cout);
 	node->generate(root, debug.get(file));
 	delete node;
+	
+	cout << '\n';
+	dumpCode(&heap, debug.get(file), cout);
 	
 	Thread thread(&heap);
 	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
