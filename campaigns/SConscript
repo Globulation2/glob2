@@ -7,7 +7,7 @@ for file in os.listdir("."):
     if file.find(".txt") != -1:
         any=True
         env.Tar(env["TARFILE"], file)
-        env.Install(env["INSTALLDIR"]+"/glob2/campaigns", hello)
+        env.Install(env["INSTALLDIR"]+"/glob2/campaigns", file)
 
 if any:
     env.Alias("install", env["INSTALLDIR"]+"/glob2/campaigns")
