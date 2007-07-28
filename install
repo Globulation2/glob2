@@ -9,11 +9,18 @@
 # of running "scons install" to install the files compiled for playing.
 #
 
+
 echo " ----------------------------------------------------"
 echo "  Installing distribution files"
 echo " ----------------------------------------------------"
 echo ""
 scons            #build the files in preperation for installation
+echo ""
+echo " ----------------------------------------------------"
+echo "  Remove any old files that are installed"
+echo " ----------------------------------------------------"
+echo ""
+scons -c install    #remove the files from their default directories for any previous installation
 echo ""
 echo " ----------------------------------------------------"
 echo "  Built distribution files"
