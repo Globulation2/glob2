@@ -143,7 +143,7 @@ def main():
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
-    env.Tar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist README README.hg SConstruct syncdata syncmaps TODO"))
+    env.Tar(env["TARFILE"], Split("AUTHORS COPYING INSTALL install mkdist README README.hg SConstruct syncdata syncmaps TODO"))
     env.Alias("dist", env["TARFILE"])
     
     Export('env')

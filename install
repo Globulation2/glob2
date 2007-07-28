@@ -1,0 +1,22 @@
+#!/bin/sh
+
+#
+# USE THIS SCRIPT FOR INSTALLATION
+#
+# While the script calls "scons install", the targets must be built first (the
+# install script does this, but then fails to install data, only the executable).
+# To avoid it from incorrectly installing, use this script, "./install" instead
+# of running "scons install" to install the files compiled for playing.
+#
+
+echo " ----------------------------------------------------"
+echo "  Installing distribution files"
+echo " ----------------------------------------------------"
+echo ""
+scons            #build the files in preperation for installation
+echo ""
+echo " ----------------------------------------------------"
+echo "  Built distribution files"
+echo " ----------------------------------------------------"
+echo ""
+scons install    #install the files to their default directories
