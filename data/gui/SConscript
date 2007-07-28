@@ -5,5 +5,7 @@ Import("env")
 for file in os.listdir("."):
     if file.find(".png") != -1:
         env.Tar(env["TARFILE"], file)
+        env.Install(env["INSTALLDIR"]+"/glob2/data/gui", file)
 
+env.Alias("install", env["INSTALLDIR"]+"/glob2/data/gui")
 env.Tar(env["TARFILE"], "SConscript")

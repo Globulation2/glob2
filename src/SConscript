@@ -48,6 +48,11 @@ source_files.append("#libgag//src/libgag.a")
 p = local.Program("glob2", source_files)
 local.Default(p)
 
+Import('env')
+
+env.Install(env["BINDIR"], "glob2")
+env.Alias("install", env["BINDIR"])
+
 import os
 for file in os.listdir("."):
     if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:

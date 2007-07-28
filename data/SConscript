@@ -5,7 +5,13 @@ Import('env')
 for file in os.listdir("."):
     if file.find(".txt") != -1:
         env.Tar(env["TARFILE"], file)
+        env.Install(env["INSTALLDIR"] + "/glob2/data", file)
         
+
+env.Install(env["INSTALLDIR"] + "/applications", "glob2.desktop")
+env.Alias("install", env["INSTALLDIR"]+"/glob2/data")
+env.Alias("install", env["INSTALLDIR"]+"/applications")
+
 SConscript("fonts/SConscript")
 SConscript("gfx/SConscript")
 SConscript("gui/SConscript")
