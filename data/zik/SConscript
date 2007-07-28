@@ -7,4 +7,5 @@ for file in os.listdir("."):
         env.Tar(env["TARFILE"], file)
         env.Install(env["INSTALLDIR"]+"/glob2/data/zik", file)
 
+env.Alias("install", env["INSTALLDIR"]+"/glob2/data/zik")
 env.Tar(env["TARFILE"], "SConscript")
