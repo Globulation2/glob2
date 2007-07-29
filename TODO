@@ -1,3 +1,23 @@
+===================
+WARNING - OUTDATED
+===================
+   This file is very old, and no longer updated (and thus some features listed here are no longer valid, have
+been implemented, or rejected). Also, the links point to the old domain name Globulation 2 used to be hosted on.
+Therefore, you might choose to refer to the following three pages which are open and updated more regularly:
+
+    http://globulation2.org/wiki/Wishlist
+        A list of features the Globulation 2's players want to see in the 1.0.0 release.
+
+    http://globulation2.org/wiki/Things_to_do_before_1.0.0
+        A list of features that will hopefully be included in the 1.0.0 release.
+
+    http://globulation2.org/wiki/Developer_Todo
+        A list of features the developers have chosen they will make after the 1.0.0 release.
+
+========================
+(note: many of these todo items are in french, as the 2 developers (at the time the file was made) are French)
+========================
+
 Pending small changes:
 - Add doesFileExists in FileManager and fix line 315 MultiplayerJoin.cpp
 - Add ->checkSum() to ::SteamBackend.
