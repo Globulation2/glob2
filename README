@@ -5,12 +5,13 @@ http://www.globulation2.org/
 
 This game is still in heavy development, so consider that:
 - the graphics are not definitive,
-- there is a lot of debug output,
-- it's slow,
-- it crashes sometimes.
+- there is a bit of debug output,
+- it's slow in some parts (like overlays),
+- and it crashes sometimes.
 
 If you get a crash, submit a bug report with the last lines of the output as
-well as the log files (in ${HOME}/.glob2/log) as attachments.
+well as the log files (in ~/.glob2/logs) as attachments (preferably all
+in a .tar.gz or .tar.bz2 file to save bandwidth).
 Please use Savannah (http://savannah.gnu.org/projects/glob2) for bug reports.
 
 If you got the source from mercurial, read README.hg first.
@@ -19,16 +20,26 @@ If you got the source from mercurial, read README.hg first.
 GNU and UNIX
 ------------
 
-First, configure the program by running the configure script.
-Then, run 'make' to build the package.
-Finally, run 'make install' to install it.
+First, run 'scons' to build all targets.
+Then, run './install' to install them.
+Finally, run 'glob2' to start and play the game.
 You can read the INSTALL file for more information about these steps.
 
 
 Microsoft Windows
 -----------------
 
-To build the program, use glob2.dsw with MSDEV.
+To build the program, refer to the Mingw Compilation guide available at
+http://globulation2.org/wiki/Mingw_compilation
+
+
+Other
+-----------------
+
+For other operating systems (such as Mac OSX), check the wiki, forums, or bug
+tracker for any records of other attempted compilations (and if successful, the
+steps to compile yourself).
+
 
 
 Have fun,

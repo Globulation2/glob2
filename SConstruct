@@ -143,12 +143,13 @@ def main():
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
-    env.Tar(env["TARFILE"], Split("AUTHORS COPYING INSTALL install mkdist README README.hg SConstruct syncdata syncmaps TODO"))
+    env.Tar(env["TARFILE"], Split("AUTHORS COPYING INSTALL install mkdist README README.hg SConstruct syncdata syncmaps TODO uninstall"))
     env.Alias("dist", env["TARFILE"])
     
     Export('env')
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
+    SConscript("debian/SConscript")
     SConscript("gnupg/SConscript")
     SConscript("libgag/SConscript")
     SConscript("libusl/SConscript")
