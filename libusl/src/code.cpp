@@ -44,28 +44,26 @@ void ConstCode::dumpSpecific(std::ostream &stream) const
 }
 
 
-ValRefCode::ValRefCode(size_t depth, size_t index):
-	depth(depth),
+ValRefCode::ValRefCode(size_t index):
 	index(index)
 {}
 
 void ValRefCode::execute(Thread* thread)
 {
-	Thread::Frame& frame = thread->frames.back();
-	Scope* scope = frame.scope;
-	for (size_t i = 0; i < depth; ++i)
-	{
-		// scope = static_cast<Scope*>(scope->outer); // Should be safe if the parser is bug-free
-		scope = dynamic_cast<Scope*>(scope->outer);
-		assert(scope); // Should not fail if the parser is bug-free
-	}
-	assert(index < scope->locals.size()); // Should not fail if the parser is bug-free
-	frame.stack.push_back(scope->locals[index]);
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	
+	Value* value = stack.back();
+	stack.pop_back();
+	
+	Scope* scope = dynamic_cast<Scope*>(value);
+	assert(scope != 0); // Should not fail if the parser is bug-free
+	
+	stack.push_back(scope->locals[index]);
 }
 
 void ValRefCode::dumpSpecific(std::ostream &stream) const
 {
-	stream << " " << depth << ", " << index;
+	stream << " " << index;
 }
 
 
@@ -236,7 +234,7 @@ void NativeCode::dumpSpecific(std::ostream &stream) const
 
 
 DefRefCode::DefRefCode(ScopePrototype* def):
-def(def)
+	def(def)
 {}
 
 void DefRefCode::execute(Thread* thread)
@@ -254,6 +252,11 @@ void DefRefCode::execute(Thread* thread)
 	
 	// put the function on the stack
 	stack.push_back(thunk);
+}
+
+void DefRefCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " " << def;
 }
 
 

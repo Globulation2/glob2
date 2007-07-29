@@ -13,6 +13,7 @@ public:
 		DEF,
 		ASSIGN,
 		COLON,
+		WILDCARD,
 		DOT,
 		ID,
 		STR,
@@ -32,6 +33,14 @@ private:
 	static const Token::Type tokenTypes[TOKENTYPES];
 	
 public:
+	static const Token::Type* getType(TokenType id)
+	{
+		for (size_t i = 0; i < TOKENTYPES; ++i)
+			if (tokenTypes[i].id == id)
+				return &tokenTypes[i];
+		return 0;
+	}
+
 	Lexer(const char* text):
 		Tokenizer(tokenTypes, TOKENTYPES, text),
 		token(_next())

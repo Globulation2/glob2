@@ -23,7 +23,8 @@ NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNod
 	argument->generate(this, 0);
 	body.push_back(new ScopeCode());
 	body.push_back(new ParentCode());
-	body.push_back(new ValRefCode(0, 0));
+	body.push_back(new ScopeCode());
+	body.push_back(new ValRefCode(0));
 	body.push_back(new NativeCode(this));
 	body.push_back(new ReturnCode());
 }
@@ -100,7 +101,7 @@ struct ArrayGet: NativeMethod
 		assert(index);
 		
 		assert(index->value >= 0);
-		assert(index->value < array->values.size());
+		assert(size_t(index->value) < array->values.size());
 		
 		return array->values[index->value];
 	}
