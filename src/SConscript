@@ -49,6 +49,7 @@ p = local.Program("glob2", source_files)
 local.Default(p)
 
 Import('env')
+Import("PackTar")
 
 env.Install(env["BINDIR"], "glob2")
 env.Alias("install", env["BINDIR"])
@@ -56,6 +57,6 @@ env.Alias("install", env["BINDIR"])
 import os
 for file in os.listdir("."):
     if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
-        env.Tar(env["TARFILE"], file)
+        PackTar(env["TARFILE"], file)
 
-env.Tar(env["TARFILE"], "SConscript")
+PackTar(env["TARFILE"], "SConscript")

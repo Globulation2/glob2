@@ -115,6 +115,7 @@ def configure(env):
     if conf.CheckLib('fribidi') and conf.CheckCHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
+    conf.Finish() 
 
 
 
@@ -143,10 +144,27 @@ def main():
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
-    env.Tar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist README README.hg SConstruct syncdata syncmaps TODO"))
     env.Alias("dist", env["TARFILE"])
     
+    def PackTar(target, source):
+        if not list(source) == source:
+            source = [source]
+            
+        for s in source:
+            if env.File(s).path.find("/") != -1:
+                new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+                f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
+                env.Tar(target, f)
+            else:
+                new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+                f = env.Install(new_dir, s)
+                env.Tar(target, f)
+                
+              
+    PackTar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist README README.hg SConstruct syncdata syncmaps TODO"))
+    
     Export('env')
+    Export('PackTar')
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
     SConscript("gnupg/SConscript")
