@@ -48,8 +48,8 @@ public:
 	enum ZoneType
 	{
 		Forbidden=0,
-		Clearing,
 		Guard,
+		Clearing,
 	};
 
 	///Activates the building tool with the given building or flag type

@@ -4671,7 +4671,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 		stream->writeEnterSection(ordersIndex);
 		boost::shared_ptr<Order> order = orders.front();
 		orders.pop();
-		stream->writeUint32(order->getDataLength()+1, "size");
+		stream->writeUint32(order->getDataLength(), "size");
 		///one byte indicating the type is required to be written for order.
 		stream->writeUint8(order->getOrderType(), "type");
 		stream->write(order->getData(), order->getDataLength(), "data");
@@ -5589,12 +5589,15 @@ void ReachToInfinity::tick(Echo& echo)
 		for(building_search_iterator i=inns.begin(); i!=inns.end(); ++i)
 		{
 			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
-			if(rt->get_age()>1500)
+			if(rt)
 			{
-				if(rt->get_total_level() < 24*echo.get_building_register().get_level(*i))
+				if(rt->get_age()>1500)
 				{
-					ManagementOrder* mo_destroy=new DestroyBuilding(*i);
-					echo.add_management_order(mo_destroy);
+					if(rt->get_total_level() < 24*echo.get_building_register().get_level(*i))
+					{
+						ManagementOrder* mo_destroy=new DestroyBuilding(*i);
+						echo.add_management_order(mo_destroy);
+					}
 				}
 			}
 		}
@@ -5606,12 +5609,15 @@ void ReachToInfinity::tick(Echo& echo)
 		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
 		{
 			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
-			if(rt->get_age()>2500)
+			if(rt)
 			{
-				if(rt->get_total_level() < 18)
+				if(rt->get_age()>2500)
 				{
-					ManagementOrder* mo_destroy=new DestroyBuilding(*i);
-					echo.add_management_order(mo_destroy);
+					if(rt->get_total_level() < 18)
+					{
+						ManagementOrder* mo_destroy=new DestroyBuilding(*i);
+						echo.add_management_order(mo_destroy);
+					}
 				}
 			}
 		}

@@ -479,6 +479,11 @@ void GameGUI::step(void)
 	}
 
 
+	if(game.stepCounter == 60)
+	{
+		overlay.computeFertility(game, localTeamNo);
+	}
+
 	if(game.stepCounter % 25 == 1)
 	{
 		if(showStarvingMap)
@@ -871,7 +876,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==4)
 			{
-				if (selectionMode==BUILDING_SELECTION)
+				if (selectionMode==BUILDING_SELECTION && globalContainer->settings.scrollWheelEnabled)
 				{
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) &&
@@ -900,7 +905,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==5)
 			{
-				if (selectionMode==BUILDING_SELECTION)
+				if (selectionMode==BUILDING_SELECTION && globalContainer->settings.scrollWheelEnabled)
 				{
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) &&
@@ -1883,7 +1888,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
-				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
@@ -2100,6 +2104,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			brush.handleClick(mx, my-YOFFSET_BRUSH-40);
 			// set the selection
 			setSelection(BRUSH_SELECTION);
+			toolManager.activateZoneTool();
 		}
 		else
 		{
@@ -3701,6 +3706,8 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 
 void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 {
+	game.mapHeader.setIsSavedGame(true);
+
 	// Game is can't be no more automatically generated
 	game.save(stream, false, name);
 	

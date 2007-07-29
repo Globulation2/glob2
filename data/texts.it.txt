@@ -702,6 +702,8 @@ Scuola
 Script per aree
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 cercano lavoro
 [seeking]

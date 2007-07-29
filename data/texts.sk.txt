@@ -702,6 +702,8 @@ Učí lepšie stavať
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 hľadajú prácu
 [seeking]

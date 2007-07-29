@@ -2,6 +2,8 @@ def establish_options(env):
     opts = Options('options_cache.py')
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "")
+    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
+    opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled", 0))
     Help(opts.GenerateHelpText(env))
@@ -26,7 +28,7 @@ def configure(env):
     configfile = Configuration()
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
-    configfile.add("PACKAGE_DATA_DIR", "data directory", "\"/usr/local/share/glob2\"")
+    configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["INSTALLDIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
@@ -113,6 +115,7 @@ def configure(env):
     if conf.CheckLib('fribidi') and conf.CheckCHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
+    conf.Finish() 
 
 
 
@@ -138,11 +141,30 @@ def main():
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
     env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread'])
+    
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
-    env.Tar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist README README.hg SConstruct syncdata syncmaps TODO"))
     env.Alias("dist", env["TARFILE"])
+    
+    def PackTar(target, source):
+        if not list(source) == source:
+            source = [source]
+            
+        for s in source:
+            if env.File(s).path.find("/") != -1:
+                new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+                f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
+                env.Tar(target, f)
+            else:
+                new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+                f = env.Install(new_dir, s)
+                env.Tar(target, f)
+                
+              
+    PackTar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist README README.hg SConstruct syncdata syncmaps TODO"))
+    
     Export('env')
+    Export('PackTar')
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
     SConscript("gnupg/SConscript")

@@ -1,48 +1,57 @@
 Glob2 is now using mercurial (hg in short) as Source Control Management system.
 
-More information about mercurial are available here:
-http://www.selenic.com/mercurial/
+I. More information about mercurial are available here: http://www.selenic.com/mercurial/
 
-There is an official repository available in read-only at:
-http://hg.globulation2.org/glob2/
-and in read-write at:
-https://hg.globulation2.org/glob2/
-For read-write access, please ask for it on the developer mailing list:
+II. There is an official repository available in read-only at: http://hg.globulation2.org/glob2/
+and in read-write at: https://hg.globulation2.org/glob2/
+
+III. For read-write access, please ask for it on the developer mailing list:
 http://lists.nongnu.org/mailman/listinfo/glob2-devel
 
+
 Please use the master branch unless you want to help a developer:
-# hg clone -r master http://hg.globulation2.org/glob2
+(see INSTALL for the steps to compile and install the source once you have it)
 
-You don't need to clone that repository again.
-To get the latest changes just do:
-# hg pull -r master http://hg.globulation2.org/glob2
-inside the cloned directory.
-
-
-When cloning you can specify a directory name for the repository:
-# hg clone -r master http://hg.globulation2.org/glob2 <name for the directory>
-
-Alternatively you can just rename the directory.
+# hg clone http://hg.globulation2.org/glob2
+# hg clone -r master glob2 glob2-master
+# cd glob2-master
+# hg update tip
 
 
+You don't need to clone that repository again. To get the latest changes just do:
 
-Building glob2 explanation:
-
-To compile glob2 from CVS, run:
-- ./bootstrap (creates ./configure)
-- ./configure (configure the sources)
-- ./syncdata (get the gfx and sounds)
-- ./syncmaps (get the maps)
-- make (compile)
-- make install (install, you need to be root, you can skip this if you want glob2 from src directory)
+# cd glob2
+# hg pull
+# cd ../glob2-master
+# hg pull -r master ../glob2
+# hg update tip
 
 
-To compile glob2 from, you need the following libraries and programs:
-- automake
-- autoconf
-- libsdl1.2
-- libsdl-net1.2
-- libsdl-image1.2
-- libsdl-ttf2.0
-- libspeex
-- libvorbis
+When cloning you can specify a directory name for the repository, and the revision you want:
+
+# hg clone http://hg.globulation2.org/glob2
+then
+# hg clone -r master glob2 glob2-master
+or
+# hg clone -r branched_code glob2 glob2-branched
+or
+# hg clone -r rewrite_branch glob2 glob2-rewrite
+
+
+Alternatively you can just rename the directory, eg:
+
+# hg clone http://hg.globulation2.org/glob2
+# hg clone -r master glob2 code
+# mv code glob2-master
+
+
+When you want to push changes for everyone to use (provided you have write access, see II.), then run:
+
+# hg commit --message="you commit message, what you have changed"
+# hg push -r master https://hg.globulation2.org/glob2/
+
+(https://, not http://, and change "-r master" to whatever revision you want to push to, for example:)
+
+# hg push -r mynew_branch https://hg.globulation2.org/glob2/
+or
+# hg push -r existing_branch https://hg.globulation2.org/glob2/

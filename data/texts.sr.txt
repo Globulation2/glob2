@@ -702,6 +702,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 траже посао
 [seeking]

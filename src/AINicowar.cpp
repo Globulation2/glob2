@@ -49,8 +49,8 @@ NewNicowar::NewNicowar()
 	exploration_on_fruit=false;
 	for(int n=0; n<PlacementSize; ++n)
 		buildings_under_construction_per_type[n]=0;
-	attack_flags=0;
 	target=-1;
+	attack_flags.clear();
 	is_digging_out=false;
 }
 
@@ -152,9 +152,10 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 		int id=boost::lexical_cast<int>(message.substr(11, message.size()-1));
 		manage_inn(echo, id);
 	}
-	if(message == "attack finished")
+	if(message.substr(0,16)  == "attack finished ")
 	{
-		attack_flags-=1;
+		int id=boost::lexical_cast<int>(message.substr(16, message.size()-1));
+		attack_flags.erase(std::find(attack_flags.begin(), attack_flags.end(), id));
 	}
 	if(message == "finished digging out")
 	{
@@ -260,7 +261,7 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the war preperation phase:
-	///1) Atleast 50 units
+	///1) Atleast 30 units
 	///2) Less than 2 barracks OR
 	///3) Less than 30 trained warriors
 	BuildingSearch barracks(echo);
@@ -273,7 +274,7 @@ void NewNicowar::check_phases(Echo& echo)
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
 
-	if(stat->totalUnit>=50 && (warrior_count < 30 || barracks_count<2))
+	if(stat->totalUnit>=30 && (warrior_count < 30 || barracks_count<2))
 	{
 		war_preperation=true;
 	}
@@ -828,6 +829,7 @@ int NewNicowar::order_regular_school(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
@@ -964,7 +966,7 @@ void NewNicowar::manage_inn(Echo& echo, int id)
 	
 	if(level==3 && total_ressource_level>(17*25))
 		to_assign=5;
-	else if(level==3 && total_ressource_level<=(10*25))
+	else if(level==3 && total_ressource_level<=(17*25))
 		to_assign=7;
 	
 	///The number of units assigned to an Inn depends entirely on its level
@@ -1035,7 +1037,7 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 
 	int needed_explorers=3;
 	if(fruit_phase)
-		needed_explorers+=6;
+		needed_explorers+=9;
 
 	if(total_explorers<needed_explorers)
 		explorer_ratio=1;
@@ -1312,11 +1314,11 @@ void NewNicowar::attack_building(Echo& echo)
 	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(echo, building));
 	echo.add_management_order(mo_destroyed_1);
 
-	ManagementOrder* mo_destroyed_2=new SendMessage("attack finished");
+	ManagementOrder* mo_destroyed_2=new SendMessage("attack finished "+boost::lexical_cast<std::string>(id));
 	mo_destroyed_2->add_condition(new BuildingDestroyed(id));
 	echo.add_management_order(mo_destroyed_2);
-
-	attack_flags+=1;
+	
+	attack_flags.push_back(id);
 }
 
 
@@ -1333,9 +1335,23 @@ void NewNicowar::control_attacks(Echo& echo)
 		}
 		
 	
-		if(attack_flags < number_attacks)
+		if(attack_flags.size() < number_attacks)
 		{
 			attack_building(echo);
+		}
+	}
+
+	BuildingSearch bs_pool(echo);
+	bs_pool.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
+	int num_pool=bs_pool.count_buildings();
+	
+	for(int i=0; i<attack_flags.size(); ++i)
+	{
+		Building* b = echo.get_building_register().get_building(i);
+		if((num_pool && b->locked[true]) || (num_pool==0 && b->locked[false]))
+		{
+			ManagementOrder* mo_destroy=new DestroyBuilding(i);
+			echo.add_management_order(mo_destroy);
 		}
 	}
 }

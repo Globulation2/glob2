@@ -112,6 +112,12 @@ SettingsScreen::SettingsScreen()
 	rememberUnitText=new Text(260, 90 + 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remember unit]"), 180);
 	addWidget(rememberUnitText);
 
+	scrollwheel=new OnOffButton(230, 90 + 150, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.scrollWheelEnabled, SCROLLWHEEL);
+	addWidget(scrollwheel);
+	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
+	addWidget(scrollwheelText);
+
+
 
 	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
@@ -523,7 +529,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			globalContainer->settings.rememberUnit=rememberUnitButton->getState();
 		}
-		if (source==lowquality)
+		else if (source==scrollwheel)
+		{
+			globalContainer->settings.scrollWheelEnabled=scrollwheel->getState();
+		}
+		else if (source==lowquality)
 		{
 			globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
 		}
