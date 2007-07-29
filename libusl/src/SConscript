@@ -7,5 +7,6 @@ interpreter.cpp  position.cpp  tree.cpp
 interpreter.h    position.h    tree.h""")
 
 Import("env")
+Import("PackTar")
 
 env.Library("usl", usl_sources)

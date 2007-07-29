@@ -1,10 +1,11 @@
 import os
 
 Import("env")
+Import("PackTar")
 
 for file in os.listdir("."):
     if file.find(".ogg") != -1:
-        env.Tar(env["TARFILE"], file)
+        PackTar(env["TARFILE"], file)
         env.Install(env["INSTALLDIR"]+"/glob2/data/zik", file)
 
-env.Tar(env["TARFILE"], "SConscript")
+PackTar(env["TARFILE"], "SConscript")

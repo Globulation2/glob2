@@ -1,6 +1,7 @@
 Import("env")
+Import("PackTar")
 
-env.Tar(env["TARFILE"], "sha1.c")
-env.Tar(env["TARFILE"], "sha1.h")
+PackTar(env["TARFILE"], "sha1.c")
+PackTar(env["TARFILE"], "sha1.h")
 
-env.Tar(env["TARFILE"], "SConscript")
+PackTar(env["TARFILE"], "SConscript")
