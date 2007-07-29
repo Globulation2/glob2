@@ -43,6 +43,30 @@ void Node::dumpSpecific(std::ostream &stream, unsigned indent) const
 }
 
 
+void ScopeNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	Node::generate(scope, debug, new ScopeCode());
+}
+
+
+ParentNode::~ParentNode()
+{
+	delete scope;
+}
+
+void ParentNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	this->scope->generate(scope, debug);
+	Node::generate(scope, debug, new ParentCode());
+}
+
+void ParentNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << '\n';
+	scope->dump(stream, indent + 1);
+}
+
+
 DefRefNode::~DefRefNode()
 {
 	delete value;
@@ -78,12 +102,13 @@ void ConstNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 
 void ValRefNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
-	Node::generate(scope, debug, new ValRefCode(depth, index));
+	this->scope->generate(scope, debug);
+	Node::generate(scope, debug, new ValRefCode(index));
 }
 
 void ValRefNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 {
-	stream << " " << depth << ", " << index;
+	stream << " " << index;
 	stream << '\n';
 }
 
@@ -155,36 +180,17 @@ void ValNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	value->generate(scope, debug);
 	Node::generate(scope, debug, new ValCode());
+	
+	Node::generate(getter, debug, new ScopeCode());
+	Node::generate(getter, debug, new ParentCode());
+	Node::generate(getter, debug, new ValRefCode(index));
+	Node::generate(getter, debug, new ReturnCode());
 }
 
 void ValNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 {
 	stream << '\n';
 	value->dump(stream, indent + 1);
-}
-
-
-void ScopeNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
-{
-	Node::generate(scope, debug, new ScopeCode());
-}
-
-
-ParentNode::~ParentNode()
-{
-	delete scope;
-}
-
-void ParentNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
-{
-	this->scope->generate(scope, debug);
-	Node::generate(scope, debug, new ParentCode());
-}
-
-void ParentNode::dumpSpecific(std::ostream &stream, unsigned indent) const
-{
-	stream << '\n';
-	scope->dump(stream, indent + 1);
 }
 
 
@@ -231,9 +237,8 @@ DefNode::~DefNode()
 
 void DefNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
-	scope = this->scope;
-	body->generate(scope, debug);
-	Node::generate(scope, debug, new ReturnCode());
+	body->generate(this->scope, debug);
+	Node::generate(this->scope, debug, new ReturnCode());
 }
 
 void DefNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -303,6 +308,12 @@ void DefLookupNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 }
 
 
+void IgnorePatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	Node::generate(scope, debug, new PopCode());
+}
+
+
 void NilPatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	// TODO: check we really got nil
@@ -314,9 +325,41 @@ void ValPatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	Node::generate(scope, debug, new EvalCode());
 	Node::generate(scope, debug, new ValCode());
+	
+	if (getter)
+	{
+		size_t index = find(scope->locals.begin(), scope->locals.end(), name) - scope->locals.begin();
+		assert(index < scope->locals.size());
+		
+		Node::generate(getter, debug, new ScopeCode());
+		Node::generate(getter, debug, new ParentCode());
+		Node::generate(getter, debug, new ValRefCode(index));
+		Node::generate(getter, debug, new ReturnCode());
+	}
 }
 
 void ValPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
+{
+	stream << "(" << name << ")";
+	stream << '\n';
+}
+
+
+void DefPatternNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
+{
+	Node::generate(scope, debug, new ValCode());
+	
+	size_t index = find(scope->locals.begin(), scope->locals.end(), name) - scope->locals.begin();
+	assert(index < scope->locals.size());
+
+	Node::generate(getter, debug, new ScopeCode());
+	Node::generate(getter, debug, new ParentCode());
+	Node::generate(getter, debug, new ValRefCode(index));
+	Node::generate(getter, debug, new EvalCode());
+	Node::generate(getter, debug, new ReturnCode());
+}
+
+void DefPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 {
 	stream << "(" << name << ")";
 	stream << '\n';
@@ -370,9 +413,7 @@ FunNode::~FunNode()
 void FunNode::generate(ScopePrototype* scope, FileDebugInfo* debug)
 {
 	Node::generate(scope, debug, new ScopeCode());
-	//Node::generate(scope, debug, new ParentCode());
 	Node::generate(scope, debug, new FunCode(method));
-	Node::generate(scope, debug, new ReturnCode());
 	arg->generate(method, debug);
 	body->generate(method, debug);
 	Node::generate(method, debug, new ReturnCode());

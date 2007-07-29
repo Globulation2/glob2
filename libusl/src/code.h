@@ -36,12 +36,11 @@ struct ConstCode: Code
 
 struct ValRefCode: Code
 {
-	ValRefCode(size_t depth, size_t index);
+	ValRefCode(size_t index);
 	
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
-	size_t depth;
 	size_t index;
 };
 
@@ -120,6 +119,7 @@ struct DefRefCode: Code
 	DefRefCode(ScopePrototype* def);
 	
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	ScopePrototype* def;
 };

@@ -129,7 +129,6 @@ struct Scope: Value
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		std::ostream* s = &stream;
 		for(Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
 		{
 			const Value* local = *it;
