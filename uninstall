@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#
+# OPTIONAL: USING THIS SCRIPT FOR UNINSTALLATION
+#
+# This script simply calls "scons -c install" from the source directory of
+# the package, nothing fancy. The command can be run itself, but "./uninstall"
+# is easier to remember and more openly viewed (being a file in the directory
+# as apposed to a feature in scons).
+#
+
+echo " ----------------------------------------------------"
+echo "  Uninstalling distribution files"
+echo " ----------------------------------------------------"
+echo ""
+scons -c install    #uninstall the files from their default directories
