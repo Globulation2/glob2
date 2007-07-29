@@ -1,2 +1,3 @@
 Import("env")
+Import("PackTar")
 SConscript("src/SConscript")
