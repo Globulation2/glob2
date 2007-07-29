@@ -702,6 +702,8 @@ Air dmg.
 語法區域
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 正在找尋工作
 [seeking]

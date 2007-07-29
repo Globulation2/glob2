@@ -702,6 +702,8 @@ Iskola
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 munkát keres
 [seeking]

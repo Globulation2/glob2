@@ -36,13 +36,14 @@ using namespace GAGCore;
 class MapGenerationDescriptor;
 class GameGUI;
 class BuilgingType;
+class MapEdit;
 
 class Game
 {
 	static const bool verbose = false;
 public:
 	///Constructor. GUI can be NULL
-	Game(GameGUI *gui);
+	Game(GameGUI *gui, MapEdit* edit=NULL);
 	
 	///Clears all memory that Game uses
 	virtual ~Game();
@@ -150,7 +151,7 @@ private:
 	};
 	
 	///Initiates Game
-	void init(GameGUI *gui);
+	void init(GameGUI *gui, MapEdit* edit);
 
 	///Clears existing game information, deleting the teams and players, in preperation of a new game.
 	void clearGame();
@@ -198,6 +199,7 @@ public:
 	Mapscript script;
 	std::string campaignText;
 	GameGUI *gui;
+	MapEdit *edit;
 	std::list<BuildProject> buildProjects;
 
 public:

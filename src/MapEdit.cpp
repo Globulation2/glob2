@@ -804,8 +804,42 @@ void NumberCycler::handleClick(int relMouseX, int relMouseY)
 
 
 
+
+Checkbox::Checkbox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& text, bool& isActivated)
+	: MapEditorWidget(me, area, group, name, action), text(text), isActivated(isActivated)
+{
+
+}
+
+
+
+void Checkbox::draw()
+{
+	globalContainer->gfx->drawRect(area.x, area.y, 16, 16, Color::white);
+	if(isActivated)
+	{
+		globalContainer->gfx->drawLine(area.x+4, area.y+4, area.x+12, area.y+12, Color::white);
+		globalContainer->gfx->drawLine(area.x+12, area.y+4, area.x+4, area.y+12, Color::white);
+	}
+	
+	std::string translatedText;
+	translatedText=Toolkit::getStringTable()->getString(text.c_str());
+	
+	globalContainer->gfx->drawString(area.x+20, area.y, globalContainer->littleFont, translatedText); 
+}
+
+
+
+void Checkbox::handleClick(int relMouseX, int relMouseY)
+{
+	MapEditorWidget::handleClick(relMouseX, relMouseY);
+	isActivated = !isActivated;
+}
+
+
+
 MapEdit::MapEdit()
- : game(NULL), keyboardManager(MapEditShortcuts), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
+ : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
 {
 	doQuit=false;
 
@@ -916,6 +950,7 @@ MapEdit::MapEdit()
 	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 362, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
 	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-128+24, 362, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
 	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 388, 128, 96), "terrain view", "terrain brush selector", "handle terrain click", brush);
+	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 492, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
 	addWidget(grass);
 	addWidget(sand);
 	addWidget(water);
@@ -933,6 +968,7 @@ MapEdit::MapEdit()
 	addWidget(areaNumber);
 	addWidget(areaNameLabel);
 	addWidget(terrainBrushSelector);
+	addWidget(showFertilityOverlay);
 
 	increaseTeams = new PlusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128, 408, 32, 32), "teams view", "increase teams", "add team");
 	decreaseTeams = new MinusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128+40, 408, 32, 32), "teams view", "decrease teams", "remove team");
@@ -1093,6 +1129,8 @@ MapEdit::MapEdit()
 
 	areaName=NULL;
 	isShowingAreaName=false;
+	
+	isFertilityOn=false;
 }
 
 
@@ -1237,6 +1275,11 @@ int MapEdit::run(void)
 				performAction("terrain drag motion");
 		}
 		
+		if(isFertilityOn)
+		{
+			overlay.compute(game, OverlayArea::Fertility, team);
+		}
+		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
 		drawMiniMap();
 		wasMinimapRendered=false;
@@ -1266,7 +1309,10 @@ int MapEdit::run(void)
 			areaName->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
 		}
+		
+		
 		globalContainer->gfx->nextFrame();
+		
 
 		endTick=SDL_GetTicks();
 		deltaTick=endTick-startTick;
@@ -1292,7 +1338,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
-	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team, Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESSOURCE_GROWTH_AREAS);
+	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESSOURCE_GROWTH_AREAS;
+	if(isFertilityOn)
+	{
+		drawOptions |= Game::DRAW_OVERLAY;
+	}
+
+	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team, drawOptions);
 // 	if (doPaintEditMode)
 // 		paintEditMode(false, false);
 
@@ -2877,6 +2929,10 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				ypos+=32;
 			}
 		}
+	}
+	else if(action=="compute fertility")
+	{
+		overlay.forceFertilityRecompute();
 	}
 	else if(action=="quit editor")
 	{

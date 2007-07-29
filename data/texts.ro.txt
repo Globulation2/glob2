@@ -702,6 +702,8 @@ Vă ameliorează
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 caută de lucru
 [seeking]

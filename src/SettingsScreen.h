@@ -62,6 +62,7 @@ public:
 		SECONDKEY=15,
 		ADDSHORTCUT=16,
 		REMOVESHORTCUT=17,
+		SCROLLWHEEL=18,
 	};
 private:
 	Settings old_settings;
@@ -70,14 +71,14 @@ private:
 	TextInput *userName;
 	
 	TextButton *ok, *cancel, *generalsettings, *unitsettings, *keyboardsettings;
-	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
+	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
 	Selector *musicVol;
 	OnOffButton *audioMute, *rememberUnitButton;
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *rememberUnitText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *rememberUnitText, *scrollwheelText;
 	Text *actDisplay;
 	Text *rebootWarning;
 

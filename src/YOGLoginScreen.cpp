@@ -174,8 +174,12 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 void YOGLoginScreen::attemptLogin()
 {
 	//Save the password
-	globalContainer->settings.password.assign(password->getText(), 0, 32);
-	globalContainer->settings.save();
+	if(rememberYogPassword->getState())
+	{
+		globalContainer->settings.password=password->getText();
+		globalContainer->settings.username=login->getText();
+		globalContainer->settings.save();
+	}
 	//Update the gui
 	animation->show();
 	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
@@ -189,8 +193,12 @@ void YOGLoginScreen::attemptLogin()
 void YOGLoginScreen::attemptRegistration()
 {
 	//Save the password
-	globalContainer->settings.password.assign(password->getText(), 0, 32);
-	globalContainer->settings.save();
+	if(rememberYogPassword->getState())
+	{
+		globalContainer->settings.password=password->getText();
+		globalContainer->settings.username=login->getText();
+		globalContainer->settings.save();
+	}
 	//Update the gui
 	animation->show();
 	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);

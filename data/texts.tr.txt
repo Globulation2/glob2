@@ -702,6 +702,8 @@ Akademi
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 tanesi is ariyor
 [seeking]

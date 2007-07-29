@@ -167,12 +167,12 @@ private:
 	///It will also cause Nicowar to dig itself out in certain situtation
 	void dig_out_enemy(AIEcho::Echo& echo);
 
-	///This integer stores the number of flags that are active at one time
-	int attack_flags;
 	///This integer stores the currently targetted enemy
 	int target;
 	///This integer stores whether a building is being dug out at the current moment
 	bool is_digging_out;
+	///This vector stores the ID's for all current war flags
+	std::vector<int> attack_flags;
 
 	///This function updates the restricted areas for farming
 	void update_farming(AIEcho::Echo& echo);

@@ -702,6 +702,8 @@ Izboljša stopnjo grajenja
 
 [scroll lock]
 
+[scroll wheel enabled]
+
 [seeking a job]
 iščejo službo
 [seeking]
