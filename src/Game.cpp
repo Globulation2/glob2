@@ -179,6 +179,8 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
+		if(players[i])
+			delete players[i];
 		players[i]=new Player();
 		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;

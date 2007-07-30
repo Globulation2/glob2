@@ -88,8 +88,9 @@ public:
 	
 private:
 	/// Initiates a game, provided the map and game header. This initiates the net
-	/// as well.
-	int initGame(MapHeader& mapHeader, GameHeader& gameHeader);
+	/// as well. When setGameHeader is true, the gameHeader given will replace the
+	/// one loaded with the map.
+	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true);
 
 	/// Prepares a GameHeader for the given mapHeader as a campaign map
 	/// Campaign maps have one player per team, and the player can be
