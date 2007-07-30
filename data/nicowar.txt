@@ -26,3 +26,5 @@ war_preperation_phase_barracks_max 3
 war_phase_trained_warrior_min 5
 war_preparation_phase_number_of_barracks 3
 base_number_of_explorers 6
+war_phase_war_flag_units_assigned 5
+war_phase_num_attack_flags 3
