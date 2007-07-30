@@ -959,9 +959,9 @@ void NewNicowar::manage_inn(Echo& echo, int id)
 	else if(level==1 && total_ressource_level<=(5*25))
 		to_assign=2;
 
-	if(level==2 && total_ressource_level>(15*25))
+	if(level==2 && total_ressource_level>(8*25))
 		to_assign=3;
-	else if(level==2 && total_ressource_level<=(6*25))
+	else if(level==2 && total_ressource_level<=(8*25))
 		to_assign=5;
 	
 	if(level==3 && total_ressource_level>(17*25))
