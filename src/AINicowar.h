@@ -20,6 +20,172 @@
 #define AINicowar_h
 
 #include "AIEcho.h"
+#include "ConfigFiles.h"
+
+///This class represents the configuragle strategy that Nicowar will take. It uses the same algorithms,
+///but this can allow it to fine tune the variables in those algorithms
+class NicowarStrategy : LoadableFromConfigFile
+{
+public:
+	///Constructs a new NicowarStrategy
+	NicowarStrategy();
+
+	///Loads the strategy from the configuration block
+	void loadFromConfigFile(const ConfigBlock *configBlock);
+	
+	///Maximum number of units for the growth phase
+	int growth_phase_unit_max;
+	///Minimum number of units for the skilled work phase
+	int skilled_work_phase_unit_min;
+	///Minimum number of schools to activate the upgrading phase 1
+	int upgrading_phase_1_school_min;
+	///Minimum number of units to activate the upgrading phase 1
+	int upgrading_phase_1_unit_min;
+	///Minimum number of trained workers to activate the upgrading phase 1
+	int upgrading_phase_1_trained_worker_min;
+	///Minimum number of level 2/3 schools to activate the upgrading phase 2
+	int upgrading_phase_2_school_min;
+	///Minimum number of units to activate the upgrading phase 2
+	int upgrading_phase_2_unit_min;
+	///Minimum number of trained workers to activate the upgrading phase 2
+	int upgrading_phase_2_trained_worker_min;
+	///The minimum warrior level to be considered "trained" for the war preperation and war phases, starting at 0
+	int minimum_warrior_level_for_trained;
+	///Minimum number of units to activate the war preperation phase
+	int war_preperation_phase_unit_min;
+	///Maximum number of barracks to activate the war preperation phase
+	int war_preperation_phase_barracks_max;
+	///Maximum number of trained warriors to activate the war preperation phase
+	int war_preperation_phase_trained_warrior_max;
+	///Minimum number of trained warriors to activate the war phase
+	int war_phase_trained_warrior_min;
+	///Minimum number of units to activate the fruit phase
+	int fruit_phase_unit_min;
+	///Minimum percentage of starving units that can't find an Inn to eat at to trigger the starvation recovery phase
+	int starvation_recovery_phase_starving_no_inn_min_percent;
+	///How many un-fed units to trigger placing a starving recovery Inn when in the starving recovery phase
+	int starving_recovery_phase_unfed_per_new_inn;
+	///Minimum, percentage of workers free to trigger the no workers phase
+	int no_workers_phase_free_worker_minimum_percent;
+	///How many units a level 1 Inn can feed, used to determine when more inns are needed
+	int level_1_inn_units_can_feed;
+	///How many units a level 2 Inn can feed, used to determine when more inns are needed
+	int level_2_inn_units_can_feed;
+	///How many units a level 3 Inn can feed, used to determine when more inns are needed
+	int level_3_inn_units_can_feed;
+	///How many units it takes to consitute a new swarm when in the growth phase
+	int growth_phase_units_per_swarm;
+	///How many units it takes to consitute a new swarm when not in the growth phase
+	int non_growth_phase_units_per_swarm;
+	///The maximum number of swarms that can be made during the growth phase
+	int growth_phase_maximum_swarms;
+	///The number of racetracks to be built during the skilled work phase
+	int skilled_work_phase_number_of_racetracks;
+	///The number of swimmingpools to be built during the skilled work phase
+	int skilled_work_phase_number_of_swimmingpools;
+	///The number of schools to be built during the skilled work phase
+	int skilled_work_phase_number_of_schools;
+	///The number of barracks to be built during the war preperation phase
+	int war_preparation_phase_number_of_barracks;
+	///The base number of hospitals to build
+	int base_number_of_hospitals;
+	///The number of warriors required to trigger another hospital
+	int war_preperation_phase_warriors_per_hospital;
+	///The base number of construction sites that can go at once
+	int base_number_of_construction_sites;
+	///The number of extra construction sites when in starving recovery mode (to facilitate extra inns to be constructed0
+	int starving_recovery_phase_number_of_extra_construction_sites;
+	///The ammount of wheat that triggers a level 1 inn to increase the units working
+	int level_1_inn_low_wheat_trigger_ammount;
+	///The ammount of wheat that triggers a level 2 inn to increase the units working
+	int level_2_inn_low_wheat_trigger_ammount;
+	///The ammount of wheat that triggers a level 3 inn to increase the units working
+	int level_3_inn_low_wheat_trigger_ammount;
+	///The number of units to assign to an level 1 inn when its wheat is above the trigger
+	int level_1_inn_units_assigned_normal_wheat;
+	///The number of units to assign to an level 2 inn when its wheat is above the trigger
+	int level_2_inn_units_assigned_normal_wheat;
+	///The number of units to assign to an level 3 inn when its wheat is above the trigger
+	int level_3_inn_units_assigned_normal_wheat;
+	///The number of units to assign to an level 1 inn when its wheat is below the trigger
+	int level_1_inn_units_assigned_low_wheat;
+	///The number of units to assign to an level 2 inn when its wheat is below the trigger
+	int level_2_inn_units_assigned_low_wheat;
+	///The number of units to assign to an level 3 inn when its wheat is below the trigger
+	int level_3_inn_units_assigned_low_wheat;
+	///The base number of units to assign to a swarm, which is doubled/halved based on conditions
+	int base_swarm_units_assigned;
+	///The ammount of ressources that caused a swarm to double its units assigned if it goes below this ammount
+	int base_swarm_low_wheat_trigger_ammount;
+	///The percentage of units that are hungry/starving that will cause swarms to halve the number of units assigned, (more wheat to inns)
+	int base_swarm_hungry_reduce_trigger_percent;
+	///The ratio of workers assigned to swarms during the growth phase
+	int growth_phase_swarm_worker_ratio;
+	///The ratio of workers assigned to swarms when not in the growth phase
+	int non_growth_phase_swarm_worker_ratio;
+	///The base number of explorers needed
+	int base_number_of_explorers;
+	///The extra number of explorers needed during the fruit phase
+	int fruit_phase_extra_number_of_explorers;
+	///The base ratio of explorers to use when explorers are needed
+	int base_swarm_explorer_ratio;
+	///The warrior ratio during the war preperation phase
+	int war_preperation_swarm_warrior_ratio;
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an inn
+	int upgrading_phase_1_inn_chance;
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an hospital
+	int upgrading_phase_1_hospital_chance;
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an racetrack
+	int upgrading_phase_1_racetrack_chance;
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an swimmingpool
+	int upgrading_phase_1_swimmingpool_chance;
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an barracks
+	int upgrading_phase_1_barracks_chance;
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an school
+	int upgrading_phase_1_school_chance;
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an tower
+	int upgrading_phase_1_tower_chance;
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an inn
+	int upgrading_phase_2_inn_chance;
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an hospital
+	int upgrading_phase_2_hospital_chance;
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an racetrack
+	int upgrading_phase_2_racetrack_chance;
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an swimmingpool
+	int upgrading_phase_2_swimmingpool_chance;
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an barracks
+	int upgrading_phase_2_barracks_chance;
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an school
+	int upgrading_phase_2_school_chance;
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an tower
+	int upgrading_phase_2_tower_chance;
+	///The number of units to assign to an upgrade for upgrading phase level 1
+	int upgrading_phase_1_units_assigned;
+	///The number of units to assign to an upgrade for upgrading phase level 2
+	int upgrading_phase_2_units_assigned;
+	///The number of buildings to upgrade at once for upgrading phase 1
+	int upgrading_phase_1_num_upgrades_at_once;
+	///The number of buildings to upgrade at once for upgrading phase 2
+	int upgrading_phase_2_num_upgrades_at_once;
+	///The number of units to assign to a war flag attacking an enemy building
+	int war_phase_war_flag_units_assigned;
+	///The number of flags to attack with at any one time
+	int war_phase_num_attack_flags;
+};
+
+///This class is meant to load a Nicowar Strategy
+class NicowarStrategyLoader : ConfigVector<NicowarStrategy>
+{
+public:
+	///Loads all strategies from the strategy files
+	NicowarStrategyLoader();
+	
+	///This chooses a strategy at random
+	NicowarStrategy chooseRandomStrategy();
+	
+	///This chooses a strategy with a particular name
+	NicowarStrategy getParticularStrategy(const std::string& name);
+};
 
 ///Nicowar is a new powerhouse AI for Globulation 2
 class NewNicowar : public AIEcho::EchoAI
@@ -31,6 +197,13 @@ public:
 	void tick(AIEcho::Echo& echo);
 	void handle_message(AIEcho::Echo& echo, const std::string& message);
 private:
+	///This function loads up all available strategies, and selects one at random.
+	///As such, Nicowar may be going war-rush style, or it may try a longer game.
+	void selectStrategy();
+
+	///This is the basic, variable strategy that Nicowar will be taking at all times
+	NicowarStrategy strategy;
+
 	///These are all of the various buildings that can be constructed. Note that,
 	///while their may be more than one for a particular type of building, the
 	///different orders have different properties for deciding where to place the
@@ -47,7 +220,6 @@ private:
 		RegularHospital,
 		PlacementSize,
 	};
-
 
 	///This function is called at the very begginning of the game,
 	///to initialize the existing buildings with the right amount of units
