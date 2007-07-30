@@ -59,7 +59,63 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 {
 	stream->readEnterSection("NewNicowar");
 	timer=stream->readUint32("timer");
-	stream->readLeaveSection();
+	if(versionMinor >= 59)
+	{
+		growth_phase=stream->readUint8("growth_phase");
+		skilled_work_phase=stream->readUint8("skilled_work_phase");
+		upgrading_phase_1=stream->readUint8("upgrading_phase_1");
+		upgrading_phase_2=stream->readUint8("upgrading_phase_2");
+		war_preperation=stream->readUint8("war_preperation");
+		war=stream->readUint8("war");
+		fruit_phase=stream->readUint8("fruit_phase");
+		starving_recovery=stream->readUint8("starving_recovery");
+		no_workers_phase=stream->readUint8("no_workers_phase");
+		starving_recovery_inns=stream->readUint8("starving_recovery_inns");
+		buildings_under_construction=stream->readUint32("buildings_under_construction");
+		for(int n=0; n<PlacementSize; ++n)
+		{
+			buildings_under_construction_per_type[n]=stream->readUint8(FormatableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
+		}
+			
+		stream->readEnterSection("placement_queue");
+		size_t size = stream->readUint16("size");
+		for(size_t n = 0; n<size; ++n)
+		{
+			stream->readEnterSection(n);
+			BuildingPlacement bp = static_cast<BuildingPlacement>(stream->readUint8("placement"));
+			placement_queue.push(bp);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+
+		stream->readEnterSection("construction_queue");
+		size = stream->readUint16("size");
+		for(size_t n = 0; n<size; ++n)
+		{
+			stream->readEnterSection(n);
+			BuildingPlacement bp = static_cast<BuildingPlacement>(stream->readUint8("placement"));
+			construction_queue.push(bp);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+
+		target = stream->readSint8("target");
+		is_digging_out = stream->readUint8("is_digging_out");
+
+		stream->readEnterSection("attack_flags");
+		size = stream->readUint16("size");
+		for(size_t n = 0; n<size; ++n)
+		{
+			stream->readEnterSection(n);
+			int flag = stream->readUint32("flag");
+			attack_flags.push_back(flag);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+
+		exploration_on_fruit=stream->readUint8("exploration_on_fruit");
+		stream->readLeaveSection();
+	}
 	return true;
 }
 
@@ -68,6 +124,65 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("NewNicowar");
 	stream->writeUint32(timer, "timer");
+	
+	stream->writeUint8(growth_phase, "growth_phase");
+	stream->writeUint8(skilled_work_phase, "skilled_work_phase");
+	stream->writeUint8(upgrading_phase_1, "upgrading_phase_1");
+	stream->writeUint8(upgrading_phase_2, "upgrading_phase_2");
+	stream->writeUint8(war_preperation, "war_preperation");
+	stream->writeUint8(war, "war");
+	stream->writeUint8(fruit_phase, "fruit_phase");
+	stream->writeUint8(starving_recovery, "starving_recovery");
+	stream->writeUint8(no_workers_phase, "no_workers_phase");
+	stream->writeUint8(starving_recovery_inns, "starving_recovery_inns");
+	stream->writeUint32(buildings_under_construction, "buildings_under_construction");
+	for(int n=0; n<PlacementSize; ++n)
+	{
+		stream->writeUint8(buildings_under_construction_per_type[n], FormatableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
+	}
+		
+	stream->writeEnterSection("placement_queue");
+	stream->writeUint16(placement_queue.size(), "size");
+	size_t n = 0;
+	while(!placement_queue.empty())
+	{
+		stream->writeEnterSection(n);
+		BuildingPlacement bp = placement_queue.front();
+		placement_queue.pop();
+		stream->writeUint8(static_cast<Uint8>(bp), "placement");
+		stream->writeLeaveSection();
+		n+=1;
+	}
+	stream->writeLeaveSection();
+
+	stream->writeEnterSection("construction_queue");
+	stream->writeUint16(construction_queue.size(), "size");
+	n = 0;
+	while(!construction_queue.empty())
+	{
+		stream->writeEnterSection(n);
+		BuildingPlacement bp = construction_queue.front();
+		construction_queue.pop();
+		stream->writeUint8(static_cast<Uint8>(bp), "placement");
+		stream->writeLeaveSection();
+		n+=1;
+	}
+	stream->writeLeaveSection();
+
+	stream->writeUint8(target, "target");
+	stream->writeUint8(is_digging_out, "is_digging_out");
+
+	stream->writeEnterSection("attack_flags");
+	stream->writeUint16(attack_flags.size(), "size");
+	for(n = 0; n<attack_flags.size(); ++n)
+	{
+		stream->writeEnterSection(n);
+		stream->writeUint32(attack_flags[n], "flag");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	stream->writeUint8(exploration_on_fruit, "exploration_on_fruit");
 	stream->writeLeaveSection();
 }
 
