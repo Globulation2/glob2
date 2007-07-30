@@ -249,6 +249,8 @@ private:
 	bool starving_recovery;
 	///During the no worker phase, no workers are created, which occurs if there are too many free
 	bool no_workers_phase;
+	///During this phase, the colonies workers are "able to swim"
+	bool can_swim;
 
 
 	///This function decides how many buildings need to be constructed (and with what properties
@@ -337,7 +339,8 @@ private:
 	void choose_enemy_target(AIEcho::Echo& echo);
 	///This function digs out an enemy building that is surrounded by ressources.
 	///It will also cause Nicowar to dig itself out in certain situtation
-	void dig_out_enemy(AIEcho::Echo& echo);
+	///Returns true if there are buildings that it can dig out, false otherwise
+	bool dig_out_enemy(AIEcho::Echo& echo);
 
 	///This integer stores the currently targetted enemy
 	int target;

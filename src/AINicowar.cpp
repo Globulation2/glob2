@@ -152,6 +152,7 @@ NewNicowar::NewNicowar()
 	fruit_phase=false;
 	starving_recovery=false;
 	no_workers_phase=false;
+	can_swim=false;
 	starving_recovery_inns = 0;
 	exploration_on_fruit=false;
 	for(int n=0; n<PlacementSize; ++n)
@@ -463,6 +464,20 @@ void NewNicowar::check_phases(Echo& echo)
 	{
 		no_workers_phase=false;
 	}
+	
+	///Qualifications for the can swim phase:
+	///1) Atleast one worker that can swim
+	int total_can_swim=0;
+	for(int i=0; i<4; ++i)
+		total_can_swim += stat->upgradeStatePerType[WORKER][SWIM][i];
+	if(total_can_swim>0)
+	{
+		can_swim=true;
+	}
+	else
+	{
+		can_swim=false;
+	}
 }
 
 
@@ -766,12 +781,16 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 4));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
@@ -825,12 +844,16 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 2));
 
@@ -873,6 +896,8 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
@@ -884,6 +909,8 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
@@ -921,6 +948,8 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
@@ -932,6 +961,8 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
@@ -951,13 +982,16 @@ int NewNicowar::order_regular_school(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
+	if(!can_swim)
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
@@ -998,13 +1032,16 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
+	if(!can_swim)
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 2));
 
@@ -1030,12 +1067,16 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 3));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	if(!can_swim)
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 2));
 
@@ -1231,7 +1272,7 @@ int NewNicowar::choose_building_upgrade_type_level2(Echo& echo)
 	if(school_counts_upgrading>0 || (school_counts_level2 + school_counts_level3)<2)
 		school_chance=0;
 
-	return choose_building_upgrade_type(echo, 1, strategy.upgrading_phase_2_inn_chance, strategy.upgrading_phase_2_hospital_chance, strategy.upgrading_phase_2_racetrack_chance, strategy.upgrading_phase_2_swimmingpool_chance, strategy.upgrading_phase_2_barracks_chance, school_chance, strategy.upgrading_phase_2_tower_chance);
+	return choose_building_upgrade_type(echo, 2, strategy.upgrading_phase_2_inn_chance, strategy.upgrading_phase_2_hospital_chance, strategy.upgrading_phase_2_racetrack_chance, strategy.upgrading_phase_2_swimmingpool_chance, strategy.upgrading_phase_2_barracks_chance, school_chance, strategy.upgrading_phase_2_tower_chance);
 }
 
 
@@ -1428,7 +1469,10 @@ void NewNicowar::attack_building(Echo& echo)
 	if(building==-1)
 	{
 		if(!is_digging_out)
-			dig_out_enemy(echo);
+			if(!dig_out_enemy(echo))
+			{
+				target = -1;
+			}
 		return;
 	}
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WAR_FLAG, strategy.war_phase_war_flag_units_assigned);
@@ -1485,6 +1529,11 @@ void NewNicowar::control_attacks(Echo& echo)
 
 void NewNicowar::choose_enemy_target(Echo& echo)
 {
+	AIEcho::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	gi_building.add_obstacle(new Entities::AnyRessource);
+	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
+
 	if(target==-1 || !echo.player->game->teams[target]->isAlive)
 	{
 		std::vector<int> available_targets;		
@@ -1494,15 +1543,20 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 			{
 				enemy_building_iterator ebi(echo, *i, -1, -1, indeterminate);
 				/* Make sure we know of at least one
-				   building before committing to a
-				   particular enemy.  It used to be that we
-				   did not (normally) need to test this,
-				   because all starting buildings were
-				   known.  But that was cheating and has
-				   been fixed. */
-				if (ebi != enemy_building_iterator())
+				   building that we can directly attack
+				   before committing to a particular enemy.
+				   It used to be that we did not (normally)
+				   need to test this, because all starting
+				   buildings were known. But that was
+				   cheating and has been fixed. */
+				for(; ebi != enemy_building_iterator(); ++ebi)
 				{
-					available_targets.push_back(*i);
+					Building* b=echo.player->game->teams[*i]->myBuildings[Building::GIDtoID(*ebi)];
+					if(gradient.get_height(b->posX, b->posY) != -2)
+					{
+						available_targets.push_back(*i);
+						break;
+					}
 				}
 			}
 		}
@@ -1515,7 +1569,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 
 
 
-void NewNicowar::dig_out_enemy(Echo& echo)
+bool NewNicowar::dig_out_enemy(Echo& echo)
 {
 	///First choose an enemy building to dig out
 	std::vector<int> buildings_to_attack;
@@ -1534,7 +1588,7 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 	}
 
 	if(buildings_to_attack.size() == 0)
-		return;
+		return false;
 
 	int num=syncRand() % buildings_to_attack.size();
 
@@ -1673,6 +1727,8 @@ void NewNicowar::dig_out_enemy(Echo& echo)
 	echo.add_management_order(mo_destroyed);
 
 	is_digging_out=true;
+	
+	return true;
 }
 
 
