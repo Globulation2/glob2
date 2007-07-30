@@ -51,6 +51,7 @@ struct TeamStat
 	int needHeal;
 	int needNothing;
 	int upgradeState[NB_ABILITY][4];
+	int upgradeStatePerType[NB_UNIT_TYPE][NB_ABILITY][4];
 
 	int totalFood;
 	int totalFoodCapacity;
