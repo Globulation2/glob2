@@ -152,7 +152,9 @@ void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
 
 std::string filenameToName(const std::string& fullfilename)
 {
-	std::string filename = fullfilename + DIR_SEPARATOR + '.';
+	std::string filename = fullfilename;
+	filename.erase(0, 8);
+	filename.erase(filename.find(".sgsl"));
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }
