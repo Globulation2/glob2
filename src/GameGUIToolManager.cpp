@@ -314,7 +314,10 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 
 void GameGUIToolManager::handleMouseDrag(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
 {
-	handleZonePlacement(mouseX, mouseY, localteam, viewportX, viewportY);
+	if(mode == PlaceZone)
+	{
+		handleZonePlacement(mouseX, mouseY, localteam, viewportX, viewportY);
+	}
 }
 
 
@@ -398,11 +401,17 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 	if (brushAccumulator.getApplicationCount() > 0)
 	{
 		if (zoneType == Forbidden)
+		{
 			orders.push(boost::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator)));
+		}
 		else if (zoneType == Guard)
+		{
 			orders.push(boost::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator)));
+		}
 		else if (zoneType == Clearing)
+		{
 			orders.push(boost::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator)));
+		}
 		else
 			assert(false);
 		brushAccumulator.clear();
