@@ -134,7 +134,7 @@ void EndGameStat::paint(void)
 			parent->getSurface()->drawString(int(double(x)+time_line_seperate*double(n)+0.5)-width/2, y+h-30, globalContainer->littleFont, str.str().c_str());
 		}
 
-		int closest_position = 41;
+		int closest_position = 1681;
 		int circle_position_value=-1;
 		int circle_position_x=-1;
 		int circle_position_y=-1;
@@ -158,12 +158,13 @@ void EndGameStat::paint(void)
 					int ny = h - int(double(h) * value / double(maxValue));
 					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, Color(r, g, b));
 					previous_y = ny;
-					if(px == (mouse_x - x) && std::abs(mouse_y - ny) < closest_position)
+					int dist = (mouse_y-ny)*(mouse_y-ny) + (mouse_x-px-1)*(mouse_x-px-1);
+					if(dist < closest_position)
 					{
 						circle_position_value = int(std::floor(value+0.5));
 						circle_position_x = x + px;
 						circle_position_y = y + ny;
-						closest_position = std::abs(mouse_y - ny);
+						closest_position = dist;
 					}
 				}
 			}
@@ -215,7 +216,7 @@ void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 	getScreenPos(&x, &y, &w, &h);
 	if(event->motion.x > x && event->motion.x < x+w && event->motion.y > y && event->motion.y < y+h)
 	{
-		mouse_x=event->motion.x-x+21;
+		mouse_x=event->motion.x-x;
 		mouse_y=event->motion.y-y;
 	}
 	else
