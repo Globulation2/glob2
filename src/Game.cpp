@@ -791,7 +791,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Game::load::tempMapHeader.load\n");
 		stream->readLeaveSection();
-		std::cout<<"1"<<std::endl;
 		return false;
 	}
 	mapHeader=tempMapHeader;
@@ -806,7 +805,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Game::load::tempMapHeader.load\n");
 		stream->readLeaveSection();
-		std::cout<<"2"<<std::endl;
 		return false;
 	}
 	gameHeader=tempGameHeader;
@@ -819,7 +817,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch at Game::load begin\n");
 		stream->readLeaveSection();
-		std::cout<<"3"<<std::endl;
 		return false;
 	}
 
@@ -834,7 +831,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
 		stream->readLeaveSection();
-		std::cout<<"4"<<std::endl;
 		return false;
 	}
 
@@ -853,7 +849,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after Game::load teams\n");
 		stream->readLeaveSection();
-		std::cout<<"5"<<std::endl;
 		return false;
 	}
 	
@@ -862,7 +857,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch in map\n");
 		stream->readLeaveSection();
-		std::cout<<"6"<<std::endl;
 		return false;
 	}
 
@@ -871,7 +865,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after map\n");
 		stream->readLeaveSection();
-		std::cout<<"7"<<std::endl;
 		return false;
 	}
 
@@ -890,7 +883,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 		fprintf(logFile, "Signature missmatch after players\n");
 		stream->readLeaveSection();
-		std::cout<<"8"<<std::endl;
 		return false;
 	}
 
@@ -908,7 +900,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (!script.load(stream, this))
 	{
 		stream->readLeaveSection();
-		std::cout<<"9"<<std::endl;
 		return false;
 	}
 	
