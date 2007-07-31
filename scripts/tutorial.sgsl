@@ -800,7 +800,6 @@ show("Notarás una linea grande que rodea la bandera.  Es el radio de la bandera
 show("Je zult een grote lijn rondom de vlag zien. Dit is de reikwijdte van de vlag en geeft aan waar de verkenner zijn werk zal doen. Je zal de verkenner snel zien arriveren. Zo niet, kijk dan naar de getallen bovenin het scherm en controleer of je nog verkenners hebt. Produceer zonodig een nieuwe verkenner met je Zwerm. Druk op de spatiebalk zodra hij er is.",nl)
 space
 
-summonFlag("prepare_flag", 48, 40, 6, 16, 1)
 show("Ohh my! Our enemy seems to have lots of workers, and a sizeable army, and for some reason, they're gathering all at the same spot. Could this mean ... they're planning an attack? I think so! Quick! We have to set up some defences!")
 show("Ho mon Dieu ! Nos ennemis semblent disposer de beaucoup d'ouvrières et d'une armée raisonnable. Pour une raison étrange, elles sont toutes rassemblées au même endroit. Cela signifierait-il... qu'ils préparent une attaque ? C'est ce que je pense ! Vite ! Nous devons préparer des défenses !", fr)
 show("Ohh! Unser Feind hat anscheinend viele Arbeiter und eine große Armee die sich an einem Punkt sammelt. Könnte das bedeuten, dass sie einen Angriff planen? Ich denke schon! Schnell! Wir müssen eine Verteidigung aufbauen.",de)
@@ -836,12 +835,8 @@ show("Verás algunos guerreros aprestarse hacia la zona de defensa.  Es magnífi
 show("De soldaten rennen nu naar de verdedigingszone. Dit is fantastisch! We verdedigen die plaats nu. Houd er rekening mee om de verdigingszone groot genoeg te maken voor al je soldaten, maar een te grote verdedigingszone zal je soldaten te veel verspreiden in plaats van deze specifieke plek te verdedigen. Nu hoeven we alleen nog maar te wachten...",nl)
 space
 hide
-destroyFlag("prepare_flag")
-
 
 summonFlag("attack_flag", 125, 70, 4, 16, 1)
-setArea("enemy_unit_close_zone", 106, 44, 8)
-setArea("enemy_attack_zone", 125, 62, 6)
 
 wait(area("enemy_unit_close_zone", 1))
 show("I think they're getting close!")
@@ -877,7 +872,6 @@ show("Klik nu op de rechter muisknop en vervolgens op de vlag. Er zijn een aanta
 space
 hide
 
-setArea("starting_attack_zone", 72, 34, 10)
 
 wait(area("starting_attack_zone", 0))
 show("Let the attack begin! I think we will have to work our way through these towers to get to the Swarm, but that should not be much of a challenge.")
@@ -888,7 +882,6 @@ show("Laat de aanval beginnen! We zullen ons een weg moeten werken langs de Tore
 space
 hide
 
-setArea("main_attack_zone", 50, 35, 5)
 wait(area("main_attack_zone", 0))
 show("We're almost there! Lets show those aqua globs who's boss!")
 show("Nous y sommes presque! Montrons à ces globules aquatiques qui est le chef !", fr)
