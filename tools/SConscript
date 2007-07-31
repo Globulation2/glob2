@@ -1,16 +1,17 @@
 import os
-
+    
 if "mksprite" in COMMAND_LINE_TARGETS:
     env = Environment()
     env.ParseConfig("Magick++-config --cxxflags --cppflags")
     env.ParseConfig("Magick++-config --ldflags --libs")
     env.Program("mksprite", "mksprite.cpp")
-
+    
 Import("env")
 Import("PackTar")
-
-PackTar(env["TARFILE"], "mksprite.cpp")
-PackTar(env["TARFILE"], "README")
-
-PackTar(env["TARFILE"], "SConscript")
-
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    PackTar(env["TARFILE"], "mksprite.cpp")
+    PackTar(env["TARFILE"], "README")
+    
+    PackTar(env["TARFILE"], "SConscript")
+    

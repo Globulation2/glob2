@@ -5,12 +5,12 @@ def establish_options(env):
     opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add(BoolOption("release", "Build for release", 0))
-    opts.Add(BoolOption("mingw", "Build with mingw enabled", 0))
+    opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save('options_cache.py', env)
-
-
+    
+    
 class Configuration:
     """Handles the config.h file"""
     def __init__(self):
@@ -21,7 +21,7 @@ class Configuration:
         self.f.write("// %s\n" % doc)
         self.f.write("#define %s %s\n" % (variable, value))
         self.f.write("\n")
-
+    
 def configure(env):
     """Configures glob2"""
     conf = Configure(env.Clone())
@@ -116,22 +116,26 @@ def configure(env):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
     conf.Finish() 
-
-
-
+    
+    
+    
 def main():
     env = Environment()
-    env["VERSION"] = "0.8.24"
+    try:
+        env.Clone()
+    except AttributeError:
+        env.Clone = env.Copy
+    env["VERSION"] = "0.9.1"
     establish_options(env)
     #Add the paths to important mingw libraries
-    if env['mingw']:
-        env.Append(LIBPATH=["C:/msys/1.0/local/lib"])
-        env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include"])
+    if env['mingw'] or env['PLATFORM'] == 'win32':
+        env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
+        env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     if env['release']:
         env.Append(CXXFLAGS=' -O3')
-    if env['mingw']:
+    if env['mingw'] or env['PLATFORM'] == 'win32':
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
         env.Append(LIBS=['wsock32'])
@@ -147,19 +151,19 @@ def main():
     env.Alias("dist", env["TARFILE"])
     
     def PackTar(target, source):
-        if not list(source) == source:
-            source = [source]
-            
-        for s in source:
-            if env.File(s).path.find("/") != -1:
-                new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
-                f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
-                env.Tar(target, f)
-            else:
-                new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
-                f = env.Install(new_dir, s)
-                env.Tar(target, f)
-                
+    	if "dist" in COMMAND_LINE_TARGETS:
+		    if not list(source) == source:
+		        source = [source]
+		        
+		    for s in source:
+		        if env.File(s).path.find("/") != -1:
+		            new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+		            f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
+		            env.Tar(target, f)
+		        else:
+		            new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+		            f = env.Install(new_dir, s)
+		            env.Tar(target, f)
               
     PackTar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist README README.hg SConstruct syncdata syncmaps TODO"))
     

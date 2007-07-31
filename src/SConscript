@@ -37,26 +37,27 @@ YOGEventListener.cpp        YOGGame.cpp                      YOGGameInfo.cpp
 YOGGameServer.cpp           YOGLoginScreen.cpp               YOGMapDistributor.cpp
 YOGMessage.cpp              YOGPasswordRegistry.cpp          YOGPlayer.cpp
 YOGPlayerInfo.cpp           YOGScreen.cpp""")
-
-
+    
+    
 Import('env')
 local = env.Clone()
-if env["mingw"]:
+if env["mingw"] or env['PLATFORM'] == 'win32':
     source_files.extend(["C:/msys/1.0/local/lib/libvorbisfile.a", "C:/msys/1.0/local/lib/libvorbis.a", "C:/msys/1.0/local/lib/libogg.a"])
 #Add libgag, not as a library, but as an object
 source_files.append("#libgag//src/libgag.a")
 p = local.Program("glob2", source_files)
 local.Default(p)
-
+    
 Import('env')
 Import("PackTar")
-
-env.Install(env["BINDIR"], "glob2")
-env.Alias("install", env["BINDIR"])
-
-import os
-for file in os.listdir("."):
-    if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
-        PackTar(env["TARFILE"], file)
-
-PackTar(env["TARFILE"], "SConscript")
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    env.Install(env["BINDIR"], "glob2")
+    env.Alias("install", env["BINDIR"])
+    
+    import os
+    for file in os.listdir("."):
+        if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
+            PackTar(env["TARFILE"], file)
+    
+    PackTar(env["TARFILE"], "SConscript")
