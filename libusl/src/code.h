@@ -13,7 +13,7 @@ class Operation;
 
 
 ScopePrototype* thisMember(Prototype* outer);
-ScopePrototype* wrapMethod(Method* method);
+ScopePrototype* nativeMethodMember(Method* method);
 
 
 struct Code
@@ -36,12 +36,11 @@ struct ConstCode: Code
 
 struct ValRefCode: Code
 {
-	ValRefCode(size_t depth, size_t index);
+	ValRefCode(size_t index);
 	
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
-	size_t depth;
 	size_t index;
 };
 
@@ -120,17 +119,18 @@ struct DefRefCode: Code
 	DefRefCode(ScopePrototype* def);
 	
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	ScopePrototype* def;
 };
 
 struct FunCode: Code
 {
-	FunCode(ScopePrototype* method);
+	FunCode(Method* method);
 	
 	virtual void execute(Thread* thread);
 	
-	ScopePrototype* method;
+	Method* method;
 };
 
 #endif // ndef BYTECODE_H

@@ -5,9 +5,24 @@
 struct Token::Type::Regexp
 {
 	regex_t regex;
-	Regexp(const char* pattern, int cflags = 0) { regcomp(&regex, pattern, cflags); }
+	Regexp(const char* pattern, int cflags = 0);
 	~Regexp() { regfree(&regex); }
 };
+
+Token::Type::Regexp::Regexp(const char* pattern, int cflags)
+{
+	int result = regcomp(&regex, pattern, cflags);
+#ifndef NDEBUG
+	if (result != 0)
+	{
+		size_t length = regerror(result, &regex, 0, 0);
+		char* error = static_cast<char*>(alloca(length));
+		regerror(result, &regex, error, length);
+		fprintf(stderr, "regcomp error in '%s': %s\n", pattern, error);
+		assert(false);
+	}
+#endif
+}
 
 
 Token::Type::Type(int id, const std::string& desc, const char* pattern): id(id), desc(desc)

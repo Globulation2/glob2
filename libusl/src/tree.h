@@ -6,8 +6,10 @@
 #include <vector>
 
 struct ScopePrototype;
+struct Method;
 struct FileDebugInfo;
 struct Code;
+struct Value;
 
 struct Node
 {
@@ -30,6 +32,29 @@ struct ExpressionNode: Node
 	ExpressionNode(const Position& position):
 		Node(position)
 	{}
+};
+
+struct ScopeNode: ExpressionNode
+{
+	ScopeNode(const Position& position):
+		ExpressionNode(position)
+	{}
+	
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
+};
+
+struct ParentNode: ScopeNode
+{
+	ParentNode(const Position& position, ScopeNode* scope):
+		ScopeNode(position),
+		scope(scope)
+	{}
+	
+	virtual ~ParentNode();
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
+	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
+	
+	ScopeNode* scope;
 };
 
 struct FunctionNode: ExpressionNode
@@ -55,7 +80,6 @@ struct DefRefNode: FunctionNode
 	ExpressionNode* value;
 };
 
-struct Value;
 struct ConstNode: ExpressionNode
 {
 	ConstNode(const Position& position, Value* value):
@@ -71,16 +95,16 @@ struct ConstNode: ExpressionNode
 
 struct ValRefNode: ExpressionNode
 {
-	ValRefNode(const Position& position, size_t depth, size_t index):
+	ValRefNode(const Position& position, ScopeNode* scope, size_t index):
 		ExpressionNode(position),
-		depth(depth),
+		scope(scope),
 		index(index)
 	{}
 	
 	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
-	size_t depth;
+	ScopeNode* scope;
 	size_t index;
 };
 
@@ -132,9 +156,11 @@ struct ApplyNode: ExpressionNode
 
 struct ValNode: Node
 {
-	ValNode(const Position& position, ExpressionNode* value):
+	ValNode(const Position& position, ExpressionNode* value, size_t index, ScopePrototype* getter):
 		Node(position),
-		value(value)
+		value(value),
+		index(index),
+		getter(getter)
 	{}
 	
 	virtual ~ValNode();
@@ -142,29 +168,8 @@ struct ValNode: Node
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	ExpressionNode* value;
-};
-
-struct ScopeNode: ExpressionNode
-{
-	ScopeNode(const Position& position):
-		ExpressionNode(position)
-	{}
-	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
-};
-
-struct ParentNode: ScopeNode
-{
-	ParentNode(const Position& position, ScopeNode* scope):
-		ScopeNode(position),
-		scope(scope)
-	{}
-	
-	virtual ~ParentNode();
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
-	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
-	
-	ScopeNode* scope;
+	size_t index;
+	ScopePrototype* getter;
 };
 
 struct BlockNode: ExpressionNode
@@ -234,6 +239,15 @@ struct PatternNode: Node
 	{}
 };
 
+struct IgnorePatternNode: PatternNode
+{
+	IgnorePatternNode(const Position& position):
+		PatternNode(position)
+	{}
+	
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
+};
+
 struct NilPatternNode: PatternNode
 {
 	NilPatternNode(const Position& position):
@@ -245,15 +259,32 @@ struct NilPatternNode: PatternNode
 
 struct ValPatternNode: PatternNode
 {
-	ValPatternNode(const Position& position, const std::string& name):
+	ValPatternNode(const Position& position, const std::string& name, ScopePrototype* getter = 0):
 		PatternNode(position),
-		name(name)
+		name(name),
+		getter(getter)
 	{}
 	
 	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	std::string name;
+	ScopePrototype* getter;
+};
+
+struct DefPatternNode: PatternNode
+{
+	DefPatternNode(const Position& position, const std::string& name, ScopePrototype* getter):
+		PatternNode(position),
+		name(name),
+		getter(getter)
+	{}
+	
+	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
+	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
+	
+	std::string name;
+	ScopePrototype* getter;
 };
 
 struct TuplePatternNode: PatternNode
@@ -273,9 +304,10 @@ struct TuplePatternNode: PatternNode
 
 struct FunNode: ExpressionNode
 {
-	FunNode(const Position& position, ScopePrototype* scope, PatternNode* arg, ExpressionNode* body):
+	FunNode(const Position& position, Method* method, PatternNode* arg, ExpressionNode* body):
 		ExpressionNode(position),
-		scope(scope),
+		method(method),
+		arg(arg),
 		body(body)
 	{}
 	
@@ -283,7 +315,8 @@ struct FunNode: ExpressionNode
 	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
-	ScopePrototype* scope;
+	Method* method;
+	PatternNode* arg;
 	ExpressionNode* body;
 };
 
