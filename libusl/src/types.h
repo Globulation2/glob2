@@ -129,7 +129,6 @@ struct Scope: Value
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
-		std::ostream* s = &stream;
 		for(Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
 		{
 			const Value* local = *it;
@@ -153,7 +152,7 @@ struct Scope: Value
 struct PatternNode;
 struct Method: ScopePrototype
 {
-	Method(Heap* heap, Prototype* outer, PatternNode* argument);
+	Method(Heap* heap, Prototype* outer);
 };
 
 struct NativeMethod: Method
