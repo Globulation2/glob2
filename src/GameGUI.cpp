@@ -1838,12 +1838,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal-=1);
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+				        defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
 				}
 				else if (mx<128-18)
 				{
 					nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/92;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+		        	defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 				}
 				else
 				{
@@ -1851,9 +1853,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					{
 						nbReq=(selBuild->maxUnitWorkingLocal+=1);
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+			        	defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
 				}
-				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
