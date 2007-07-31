@@ -5,8 +5,15 @@ debug.cpp        memory.cpp    tokenizer.cpp  usl.cpp
 debug.h          memory.h      tokenizer.h
 interpreter.cpp  position.cpp  tree.cpp
 interpreter.h    position.h    tree.h""")
-
+    
 Import("env")
 Import("PackTar")
-
+import os
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".cpp") != -1 or file.find(".h") != -1:
+            PackTar(env["TARFILE"], file)
+    PackTar(env["TARFILE"], "SConscript")
+    
 env.Library("usl", usl_sources)
