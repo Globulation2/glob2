@@ -3,7 +3,7 @@
 [%0 has left the game]
 %0 saiu do jogo.
 [%0's game]
-
+jogo do %0
 [%0's team unit got converted to your team]
 Uma unidade do time %0 foi convertida para o seu
 [abreaviation explanation A]
@@ -21,7 +21,7 @@ Ad. IA
 [add map]
 Adicionar mapa
 [add shortcut]
-
+Adicionar atalho
 [AI]
 IA
 [ai]
@@ -61,7 +61,7 @@ machucados
 [armor]
 Armadura
 [assigned]
-Assigned
+Designado
 [At. speed]
 Vel. de ataque
 [At. strength]
@@ -75,25 +75,25 @@ Ataque
 [auto save]
 Auto-gravação
 [available lan games]
-Jogos locais disponíveis
+Jogos em lan disponíveis
 [awaiting players]
 Esperando jogadores
 [away:]
 distante:
 [backspace]
-
+backspace
 [bad error in connection system]
 Erro no sistema de conexão
 [barracks explanation 2]
 melhore seus guerreiros
 [barracks explanation]
-Improves the fighting
+Melhora a capacidade de luta
 [barracks]
 Barracks
 [beach size]
 Tamanho da praia
 [break]
-
+break
 [build barracks level 0]
 Construir Barracks 1
 [build barracks level 1]
@@ -149,9 +149,9 @@ Nome da construção
 [Building short explanation 2]
 Curta explicação sobre construções 2
 [Building short explanation]
-Building short explanation (24 chars max)
+Curta explicação sobre construções (24 chars max)
 [building site]
-construction site
+Construindo...
 [Buildings]
 Construções
 [Bullets]
@@ -175,7 +175,7 @@ Cancelar upgrade
 [Cancel]
 Cancela
 [caps lock]
-
+Caps lock
 [carry]
 Carregando:
 [Change Area Name]
@@ -193,7 +193,7 @@ Escolha um mapa
 [clear area]
 Área de Limpeza
 [clear]
-
+Limpo
 [Clearing:]
 Limpando:
 [clearingflag explanation 2]
@@ -209,7 +209,7 @@ Fechado
 [compile]
 Compilar script
 [compose]
-
+Compôr
 [connect]
 Conectar
 [connected to all players]
@@ -239,7 +239,7 @@ Velocidade corrente
 [custom game]
 Jogo customizado
 [customcur]
-Cursores customizados
+Cursor customizado
 [damage]
 Dano
 [Damaged Map]
@@ -247,7 +247,7 @@ Mapa de dano
 [dblbuff]
 Buffer duplo
 [decrease units working]
-
+Diminuir unidades trabalhando
 [default terrain]
 Terreno padrão
 [defencetower explanation 2]
@@ -270,6 +270,8 @@ Defesa
 Apagar jogo selecionado
 [delete]
 Apagar
+[delete]
+delete
 [desert]
 deserto
 [destroy building]
@@ -279,11 +281,11 @@ Destruir
 [Disconnect]
 Desconectar
 [display]
-Exposição
+Vídeo
 [don't carry anything]
 Está carregando nada
 [down]
-
+baixo
 [download finished]
 Download terminado
 [downloaded at]
@@ -297,23 +299,23 @@ Atalhos do editor
 [editor]
 Editor
 [end]
-
+fim
 [Enter your nickname :]
 Digite seu apelido:
 [Enter your password :]
 Digite sua senha:
 [enter]
-
+enter
 [equals]
-
+igual
 [escape]
-
+esc
 [explorationflag explanation 2]
  
 [explorationflag explanation]
 Atrai exploradores
 [explorationflag]
-Exploration flag
+Bandeira de exploração
 [Explorer Ratio]
 Proporção de exploradores
 [Explorer]
@@ -323,37 +325,37 @@ exploradores
 [extra islands]
 ilhas vazias
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
-
+Mapa de Fertilidade
 [food left]
 Comida sobrando
 [food]
@@ -381,9 +383,9 @@ Velocidade do jogo
 [general settings]
 Ajustes gerais
 [go to event]
-
+go to event
 [go to home]
-
+Vai para o Núcleo de repr.
 [goto main menu]
 Voltar para o menu principal
 [grass]
@@ -401,7 +403,7 @@ Mapa feito à mão
 [Happyness]
 Felicidade
 [hard pause]
-
+Hard Pause
 [Harvest]
 Coletar
 [has joined]
@@ -411,9 +413,9 @@ saiu
 [heal]
 Saúde
 [help]
-
+ajuda
 [home]
-
+home
 [hospital explanation 2]
  
 [hospital explanation]
@@ -437,15 +439,13 @@ Aceleração por hardware
 [In way]
 À caminho
 [increase units working]
-
+aumentar unidades trabalhando
 [inn explanation 2]
  
 [inn explanation]
 Alimenta as suas unidades
-[Inn level 0]
-Taverna 1
 [inn level 0]
-
+Taverna 1
 [inn level 1]
 Taverna 2
 [inn level 2]
@@ -453,7 +453,7 @@ Taverna 3
 [inn]
 Taverna
 [insert]
-
+Inserir
 [inside]
 Dentro
 [islands size]
@@ -461,7 +461,7 @@ Tamanho da ilha
 [islands terrain]
 Ilhas
 [iterate selection]
-
+Vai para a próxima unidade
 [jobs]
 trabalhos
 [join a game]
@@ -471,7 +471,7 @@ Join
 [keyboard settings]
 Ajustes de teclado
 [kick]
-
+Kickar
 [lan]
 Jogo em LAN
 [language-code]
@@ -483,13 +483,13 @@ Português do Brasil
 [large]
 grande
 [Leave Game]
-
+Deixar o jogo
 [left meta]
-
+left meta
 [left super]
-
+left windows key
 [left]
-
+esquerda
 [level]
 Nível
 [levels]
@@ -539,7 +539,7 @@ Mercado
 [medium]
 médio
 [menu]
-
+menu
 [Min required level:]
 Nível mínimo requerido:
 [Minimum Level To Flag]
@@ -571,7 +571,7 @@ não pronto
 [number of teams]
 Número d etimes
 [numlock]
-
+numlock
 [of which]
 os quais
 [ok]
@@ -585,7 +585,7 @@ Aqui
 [one player]
 Um jogador conectou
 [open chat box]
-
+Abrir janela de chat
 [open load menu]
 Abrir Menu de carregamento
 [open save menu]
@@ -599,15 +599,15 @@ Opções
 [Orange]
 Laranja
 [page down]
-
+page down
 [page up]
-
+page up
 [Papyrus]
 Papyrus
 [pause game]
-Jogo pausado
+Congelar jogo
 [pause]
-
+Pause
 [Paused]
 Pausado
 [percent]
@@ -619,7 +619,7 @@ Jogador
 [please wait]
 Por favor espere
 [power]
-
+liga
 [presence request sent]
 Requisição de presença enviado...
 [press space]
@@ -627,7 +627,7 @@ Aperte barra de espaço para continuar
 [Prestige]
 Prestígio
 [print screen]
-
+print screen
 [Prune]
 Ameixa
 [quit the editor]
@@ -657,7 +657,7 @@ Lembrar a senha localmente. (inseguro)
 [remove map]
 Remover mapa
 [remove shortcut]
-
+Remover atalho
 [repair building]
 Começar/Parar Repair
 [repair]
@@ -673,13 +673,13 @@ Retornar ao editor
 [return to game]
 Retornar ao jogo
 [return]
-
+enter
 [right meta]
-
+right meta
 [right super]
-
+right super
 [right]
-
+direita
 [river diameter]
 largura do rio
 [river terrain]
@@ -703,9 +703,9 @@ Escola
 [Script Areas]
 Script Areas
 [scroll lock]
-
+scroll lock
 [scroll wheel enabled]
-
+Roda do mouse ativada
 [seeking a job]
 procurando trabalho
 [seeking]
@@ -715,25 +715,25 @@ Selecionar Barracks
 [select clearingflag]
 Selecionar Bandeira de limpeza
 [select construct barracks]
-
+Selecionar construção de Barracks
 [select construct defencetower]
-
+Selecionar construção de Torre de defesa
 [select construct hospital]
-
+Selecionar construção de hospital
 [select construct inn]
-
+Selecionar construção de Taverna
 [select construct market]
-
+Selecionar construção de Mercado
 [select construct racetrack]
-
+Selecionar construção de Pista de Corrida
 [select construct school]
-
+Selecionar construção de Escola
 [select construct stonewall]
-
+Selecionar construção de Muro de Pedra
 [select construct swarm]
-
+Selecionar construção de Núcleo de Repr.
 [select construct swimmingpool]
-
+Selecioner construção de Piscina
 [select explorationflag]
 Selecionar Bandeira de exploração
 [select hospital building]
@@ -743,17 +743,17 @@ Selecionar Taverna
 [select market building]
 Selecionar Mercado
 [select place clearing area]
-
+Selecionar lugar de limpeza de área
 [select place clearingflag]
-
+Selecionar lugar de bandeira de limpeza
 [select place explorationflag]
-
+Selecionar lugar de bandeira de exploração 
 [select place forbidden area]
-
+Selecionar lugar para área proibida
 [select place guard area]
-
+Selecionar área para guarda
 [select place warflag]
-
+Selecionar lugar para bandeira de guerra
 [select racetrack building]
 Selecionar Pista de corrida
 [select school building]
@@ -777,7 +777,7 @@ Enter: manda uma mensagem via chat
 [shortcut explanation v]
 V: pressione para falar
 [show main menu]
-
+Mostrar menu principal
 [skin]
 Exposição
 [small]
@@ -785,7 +785,7 @@ pequeno
 [smoothing]
 Alisar
 [space]
-
+barra de espaço
 [speed]
 Velocidade
 [start mission]
@@ -799,11 +799,11 @@ Começando jogo...
 [Starving Map]
 Mapa de fome
 [starving]
-morrendo de fome
+muita fome
 [stat]
 Estatísticas
 [state]
-state
+estado
 [Statistics]
 Estatísticas
 [Still (i)]
@@ -845,43 +845,43 @@ Melhora a natação
 [swimmingpool]
 Piscina
 [switch to adding areas]
-
+switch to adding areas
 [switch to area brush 1]
-
+switch to area brush 1
 [switch to area brush 2]
-
+switch to area brush 2
 [switch to area brush 3]
-
+switch to area brush 3
 [switch to area brush 4]
-
+switch to area brush 4
 [switch to area brush 5]
-
+switch to area brush 5
 [switch to area brush 6]
-
+switch to area brush 6
 [switch to area brush 7]
-
+switch to area brush 7
 [switch to area brush 8]
-
+switch to area brush 8
 [switch to building view]
 Mudar para visão de construções
 [switch to flag view]
 Mudar para visão de bandeiras
 [switch to removing areas]
-
+switch to removing areas
 [switch to teams view]
 Mudar para visão de times
 [switch to terrain view]
 Mudar para visão de terrenos
 [sys req]
-
+sys req
 [tab]
-
+tab
 [teams]
 times
 [the barracks is finished]
 O campo de treinamento está pronto
 [the barracks is under attack]
-The training camp is under attack
+O campo de treinamento está sob ataque.
 [the building is finished]
 A construção está pronta
 [the building is under attack]
@@ -953,7 +953,7 @@ Informações
 [toggle draw unit paths]
 Desenhar caminhos das unidades
 [toggle menu screen]
-
+Tela de menu
 [toggle recording voice]
 Iniciar gravação de voz
 [Total prestige reached]
@@ -967,7 +967,7 @@ Não designado
 [Uncontrolled]
 Não controlado
 [undo]
-
+desfaz
 [uniform terrain]
 Terreno uniforme
 [Unit editor]
@@ -987,9 +987,9 @@ Destravado por
 [Unnamed Area]
 {Unnamed Area}
 [up]
-
+cima
 [update list]
-Update list
+Lista de updates
 [upgrade building]
 Começar/Parar Upgrade
 [upgrade]
@@ -999,13 +999,13 @@ Nome de usuário
 [Version]
 Versão
 [view history]
-
+Ver histórico de mensagens
 [wait destroy]
 Esperando destruição
 [waiting for %0]
 Esperando por %0
 [waiting for key]
-
+Esperando por uma tecla
 [Walk]
 Caminhar
 [warflag explanation 2]
@@ -1013,7 +1013,7 @@ Caminhar
 [warflag explanation]
 Atrai guerreiros
 [warflag]
-War flag
+Bandeira de guerra
 [Warning, you need to reboot the game for changes to take effect]
 Aviso, você precisa reiniciar o jogo para que as modificações tenham efeito
 [Warrior Ratio]
@@ -1029,8 +1029,6 @@ era
 [water]
 Água
 [Wheat]
-
-[wheat]
 trigo
 [Won : you defeated your opponents]
 Venceu: você derrotou seus oponentes
