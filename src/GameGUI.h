@@ -90,8 +90,9 @@ public:
 	void drawAll(int team);
 	void executeOrder(boost::shared_ptr<Order> order);
 
-	//!
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader);
+	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
+	/// the map, otherwise it will be ignored
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader);
 	//!
 	bool load(GAGCore::InputStream *stream);
 	void save(GAGCore::OutputStream *stream, const char *name);

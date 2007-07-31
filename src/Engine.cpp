@@ -127,7 +127,7 @@ int Engine::initCustom(const std::string &gameName)
 		}
 	}
 
-	int ret = initGame(mapHeader, gameHeader);
+	int ret = initGame(mapHeader, gameHeader, false);
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
 
@@ -414,9 +414,9 @@ int Engine::run(void)
 
 
 
-int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader)
+int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader))
+	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader))
 		return EE_CANT_LOAD_MAP;
 
 	// if this has campaign text information, show a screen for it.
