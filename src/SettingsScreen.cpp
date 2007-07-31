@@ -292,6 +292,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			musicVolText->visible=true;
 			rememberUnitButton->visible=true;
 			rememberUnitText->visible=true;
+			scrollwheel->visible=true;
+			scrollwheelText->visible=true;
 			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
@@ -342,6 +344,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			musicVolText->visible=false;
 			rememberUnitButton->visible=false;
 			rememberUnitText->visible=false;
+			scrollwheel->visible=false;
+			scrollwheelText->visible=false;
 
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
@@ -391,6 +395,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			musicVolText->visible=false;
 			rememberUnitButton->visible=false;
 			rememberUnitText->visible=false;
+			scrollwheel->visible=false;
+			scrollwheelText->visible=false;
 			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
