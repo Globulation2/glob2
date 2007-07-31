@@ -1,13 +1,10 @@
-import os
-    
 Import("env")
 Import("PackTar")
+import os
     
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
-        if file.find(".png") != -1:
+        if file.find(".usl") != -1:
             PackTar(env["TARFILE"], file)
-            env.Install(env["INSTALLDIR"]+"/glob2/data/icons", file)
-    
-    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/icons")
     PackTar(env["TARFILE"], "SConscript")
+    

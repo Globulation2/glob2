@@ -7,20 +7,21 @@ GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  KeyPress.cpp
 Sprite.cpp          StreamBackend.cpp     Stream.cpp        StreamFilter.cpp
 StringTable.cpp     SupportFunctions.cpp  TextStream.cpp    Toolkit.cpp
 TrueTypeFont.cpp    win32_dirent.cpp""")
-
-
-
+    
+    
+    
 Import("env")
 l = env.StaticLibrary("gag", libgag_sources)
 Default(l)
-
-
+    
+    
 Import("env")
 Import("PackTar")
 import os
-
-for file in os.listdir("."):
-    if file.find(".cpp") != -1:
-        PackTar(env["TARFILE"], file)
-
-PackTar(env["TARFILE"], "SConscript")
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".cpp") != -1:
+            PackTar(env["TARFILE"], file)
+    
+    PackTar(env["TARFILE"], "SConscript")
