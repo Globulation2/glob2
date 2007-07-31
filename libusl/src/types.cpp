@@ -20,7 +20,7 @@ NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNod
 	Method(0, outer),
 	name(name)
 {
-	argument->generate(this, 0);
+	argument->generate(this, 0, (Heap*) 0);
 	body.push_back(new ScopeCode());
 	body.push_back(new ParentCode());
 	body.push_back(new ScopeCode());

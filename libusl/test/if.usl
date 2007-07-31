@@ -2,7 +2,7 @@ val true = {
 	def select (ifTrue, _) = ifTrue
 	def not = false
 	def and (that) = that
-	def or (that) = this
+	def or (_) = this
 	def xor (that) = that select (false, true)
 	this
 }
@@ -10,7 +10,7 @@ val true = {
 val false = {
 	def select (_, ifFalse) = ifFalse
 	def not = true
-	def and (that) = this
+	def and (_) = this
 	def or (that) = that
 	def xor (that) = that select (true, false)
 	this
@@ -29,4 +29,4 @@ def if(cond) = {
 	this
 }
 
-if (true) { iff (true) { 1 } } else { 2 }
+if (false) { iff (true) { 1 } } else ( 2 )
