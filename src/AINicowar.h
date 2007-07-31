@@ -33,6 +33,12 @@ public:
 	///Loads the strategy from the configuration block
 	void loadFromConfigFile(const ConfigBlock *configBlock);
 	
+	///Returns the name of the strategy
+	std::string getStrategyName();
+	
+	///Sets the name of the strategy
+	void setStrategyName(const std::string& name);
+	
 	///Maximum number of units for the growth phase
 	int growth_phase_unit_max;
 	///Minimum number of units for the skilled work phase
@@ -171,6 +177,9 @@ public:
 	int war_phase_war_flag_units_assigned;
 	///The number of flags to attack with at any one time
 	int war_phase_num_attack_flags;
+private:
+	///The name of the strategy.
+	std::string name;
 };
 
 ///This class is meant to load a Nicowar Strategy
