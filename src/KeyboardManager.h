@@ -68,6 +68,10 @@ public:
 	
 	///Returns the action accossiatted with this shortcut
 	Uint32 getAction() const;
+	
+	///Returns whether this shortcut is valid. Shortcuts are invalid if any of the
+	///KeyPresses where not changed from "no key"
+	bool isShortcutValid() const;
 private:
 	Uint32 action;
 	std::vector<KeyPress> keys;

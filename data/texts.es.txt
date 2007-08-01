@@ -280,6 +280,8 @@ Destruir
 Desconectar
 [display]
 Desplegar
+[do nothing]
+
 [don't carry anything]
 No Portando Nada
 [down]
@@ -554,6 +556,8 @@ Letargo de Red
 Nuevo
 [nick taken]
 Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en freenode, solamente  podrás hablar a través de YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

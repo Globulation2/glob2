@@ -24,8 +24,8 @@ namespace GameGUIKeyActions
 	{
 		names.resize(ActionSize);
 	
-		names[DoNothing] = "";
-		keys[""] = DoNothing;
+		names[DoNothing] = "do nothing";
+		keys["do nothing"] = DoNothing;
 
 		names[UpgradeBuilding] = "upgrade building";
 		keys["upgrade building"] = UpgradeBuilding;

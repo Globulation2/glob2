@@ -280,6 +280,8 @@ Distruggi
 Disconnettiti
 [display]
 Visualizza
+[do nothing]
+
 [don't carry anything]
 Non trasporta nulla
 [down]
@@ -554,6 +556,8 @@ Latenza della rete
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
+[no key]
+
 [no ressources growth areas]
 Area che non sviluppa risorse
 [No]

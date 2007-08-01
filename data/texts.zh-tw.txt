@@ -280,6 +280,8 @@ AIWarrush
 失聯
 [display]
 顯示
+[do nothing]
+
 [don't carry anything]
 沒有在搬運任何東西
 [down]
@@ -554,6 +556,8 @@ Air dmg.
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
+[no key]
+
 [no ressources growth areas]
 非成長區域
 [No]

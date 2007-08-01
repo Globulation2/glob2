@@ -280,6 +280,8 @@ ok
 Отключиться
 [display]
 Экран
+[do nothing]
+
 [don't carry anything]
 Ничего не несёт
 [down]
@@ -554,6 +556,8 @@ Login
 Новая
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

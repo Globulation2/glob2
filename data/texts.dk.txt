@@ -280,6 +280,8 @@ Destruktion
 Afbrudt
 [display]
 Opløsning
+[do nothing]
+
 [don't carry anything]
 Bægere ikke på noget
 [down]
@@ -554,6 +556,8 @@ Ny Kampanie
 Ny
 [nick taken]
 Vi er kede af det men det bruger navn du har valgt er allerede taget på freenode, Du vil kun kunde tale gennem YOG
+[no key]
+
 [no ressources growth areas]
 Ingen vækst område
 [No]

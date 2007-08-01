@@ -280,6 +280,8 @@ Zničit
 Odpojit
 [display]
 Rozlišení
+[do nothing]
+
 [don't carry anything]
 Nic nenesu
 [down]
@@ -554,6 +556,8 @@ Network latency
 Nová
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

@@ -280,6 +280,8 @@ Suntsitu
 Deskonektatu
 [display]
 Pantaila
+[do nothing]
+
 [don't carry anything]
 Ez darama ezer
 [down]
@@ -554,6 +556,8 @@ Kanpaina berria
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
+[no key]
+
 [no ressources growth areas]
 Ez dago hazkunde zonalderik
 [No]

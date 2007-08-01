@@ -280,6 +280,8 @@ Zniszcz
 Zrywam połączenie
 [display]
 Wyświetlanie
+[do nothing]
+
 [don't carry anything]
 Nic nie transportuje
 [down]
@@ -554,6 +556,8 @@ Opóźnienie sieci
 Nowa
 [nick taken]
 Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
+[no key]
+
 [no ressources growth areas]
 
 [No]
