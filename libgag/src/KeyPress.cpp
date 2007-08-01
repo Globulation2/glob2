@@ -51,7 +51,7 @@ KeyPress::KeyPress(SDL_keysym nkey, bool pressed)
 
 KeyPress::KeyPress()
 {
-	key="escape";
+	key="no key";
 	pressed=true;
 }
 

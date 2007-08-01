@@ -280,6 +280,8 @@ Zničiť
 Odpojiť
 [display]
 Zobrazenie
+[do nothing]
+
 [don't carry anything]
 Nič nenesie
 [down]
@@ -554,6 +556,8 @@ Latencia siete
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

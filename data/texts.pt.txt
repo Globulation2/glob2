@@ -280,6 +280,8 @@ Destruir
 Desconectar
 [display]
 Tela
+[do nothing]
+
 [don't carry anything]
 Não transporta nada
 [down]
@@ -554,6 +556,8 @@ Latência
 Novo
 [nick taken]
 Infelizmente o apelido que elegeu já está tomado em freenode. Só poderá falar através de YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

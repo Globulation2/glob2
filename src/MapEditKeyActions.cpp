@@ -24,8 +24,8 @@ namespace MapEditKeyActions
 	{
 		names.resize(ActionSize);
 	
-		names[DoNothing] = "";
-		keys[""] = DoNothing;
+		names[DoNothing] = "do nothing";
+		keys["do nothing"] = DoNothing;
 	
 		names[SwitchToBuildingView] = "switch to building view";
 		keys["switch to building view"] = SwitchToBuildingView;

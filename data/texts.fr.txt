@@ -280,6 +280,8 @@ Détruire
 Déconnecter
 [display]
 Affichage
+[do nothing]
+
 [don't carry anything]
 Ne transporte rien
 [down]
@@ -554,6 +556,8 @@ Latence du réseau
 Nouveau
 [nick taken]
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

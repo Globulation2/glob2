@@ -280,6 +280,8 @@ Megsemmisít
 Kapcsolat megszakítása
 [display]
 Kijelző
+[do nothing]
+
 [don't carry anything]
 Nem szállít semmit
 [down]
@@ -554,6 +556,8 @@ Hálózati várakozási idő
 Új
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

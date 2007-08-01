@@ -280,6 +280,8 @@ Zerstören
 Trennen
 [display]
 Anzeige
+[do nothing]
+
 [don't carry anything]
 Transportiert nichts
 [down]
@@ -554,6 +556,8 @@ Netzlatenz
 Neu
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
+[no key]
+
 [no ressources growth areas]
 
 [No]
