@@ -147,7 +147,6 @@ void GameGUI::init()
 	gamePaused=false;
 	hardPause=false;
 	exitGlobCompletely=false;
-	toLoadGameFileName[0]=0;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
 	drawAccessibilityAids=false;
@@ -577,7 +576,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", true, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -585,7 +584,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -707,6 +706,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
+    					defualtGameSaveName=locationName;
 						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
 						if (stream->isEndOfStream())
 						{
@@ -3670,6 +3670,7 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		return false;
 	}
+	defualtGameSaveName = game.mapHeader.getMapName();
 	if (game.mapHeader.getIsSavedGame())
 	{
 		// load gui's specific infos
