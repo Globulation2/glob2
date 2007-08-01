@@ -318,6 +318,10 @@ private:
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;
 
+	///Denotes the name of the game save for saving,
+	///set on loading the map	
+	std::string defualtGameSaveName;
+
 	bool hasEndOfGameDialogBeenShown;
 	
 	GameGUIMessageManager messageManager;
