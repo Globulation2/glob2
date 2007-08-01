@@ -150,7 +150,7 @@ void EndGameStat::paint(void)
 				Uint8 g = game->teams[team]->colorG;
 				Uint8 b = game->teams[team]->colorB;
 
-				int previous_y = 0;
+				int previous_y = h - int(double(h) * getValue(0, team, type) / double(maxValue));
 				
 				for(int px=0; px<(w-2); ++px)
 				{
@@ -188,12 +188,15 @@ double EndGameStat::getValue(double position, int team, int type)
 	int upper = lower+1;
 	double mu = (position * float(s)) - lower; 
 	
-	int y0 = game->teams[team]->stats.endOfGameStats[std::max(lower-1, 0)].value[type];
+	//int y0 = game->teams[team]->stats.endOfGameStats[std::max(lower-1, 0)].value[type];
 	int y1 = game->teams[team]->stats.endOfGameStats[lower].value[type];
 	int y2 = game->teams[team]->stats.endOfGameStats[upper].value[type];
-	int y3 = game->teams[team]->stats.endOfGameStats[std::min(upper+1, s)].value[type];
+	//int y3 = game->teams[team]->stats.endOfGameStats[std::min(upper+1, s)].value[type];
 
+	//Linear interpolation
+	return (1-mu) * y1 + mu * y2;
 
+/*
 	//Cubic interpolation
 	double mu2 = mu * mu;
 	double a0 = y3 - y2 - y0 + y1;
@@ -201,6 +204,7 @@ double EndGameStat::getValue(double position, int team, int type)
 	double a2 = y2 - y0;
 	double a3 = y1;
 	return a0*mu*mu2+a1*mu2+a2*mu+a3;
+*/
 /*
 	//Cosine interpolation
 	double mu2 = (1-std::cos(mu*3.141592653))/2;
