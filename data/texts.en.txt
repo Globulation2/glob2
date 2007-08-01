@@ -282,6 +282,8 @@ Destroy
 Disconnect
 [display]
 Display
+[do nothing]
+Do Nothing
 [don't carry anything]
 Not carrying anything
 [down]
@@ -556,6 +558,8 @@ New Campaign
 New
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no key]
+no key yet
 [no ressources growth areas]
 No Growth Areas
 [No]

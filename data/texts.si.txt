@@ -280,6 +280,8 @@ Uniči
 Prekini povezavo
 [display]
 Prikaz
+[do nothing]
+
 [don't carry anything]
 Ne nosi ničesar
 [down]
@@ -554,6 +556,8 @@ Pretočnost mreže
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
+[no key]
+
 [no ressources growth areas]
 
 [No]

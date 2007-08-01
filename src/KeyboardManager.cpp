@@ -143,6 +143,17 @@ Uint32 KeyboardShortcut::getAction() const
 
 
 
+bool KeyboardShortcut::isShortcutValid() const
+{
+	for(std::vector<KeyPress>::const_iterator i = keys.begin(); i!=keys.end(); ++i)
+	{
+		if(i->getKey() == "no key")
+			return false;
+	}
+	return true;
+}
+
+
 KeyboardManager::KeyboardManager(ShortcutMode mode)
 	: mode(mode)
 {
@@ -219,7 +230,8 @@ void KeyboardManager::saveKeyboardLayout() const
 	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend(file));
 	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
 	{
-		stream->writeLine(i->format(mode));
+		if(i->isShortcutValid())
+			stream->writeLine(i->format(mode));
 	}
 
 	delete stream;

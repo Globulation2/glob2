@@ -282,6 +282,8 @@ Destruir
 Desconectar
 [display]
 Vídeo
+[do nothing]
+
 [don't carry anything]
 Está carregando nada
 [down]
@@ -556,6 +558,8 @@ Nova campanha
 Novo
 [nick taken]
 Lamentamos mas o nome que você escolheu já existe na freenode, você poerá falar somente pelo YOG
+[no key]
+
 [no ressources growth areas]
 Nenhuma área de crescimento
 [No]

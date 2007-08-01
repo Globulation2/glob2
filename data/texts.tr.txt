@@ -280,6 +280,8 @@ Yik
 Baglantiyi kes
 [display]
 Gorunum
+[do nothing]
+
 [don't carry anything]
 Hicbirsey tasimiyor
 [down]
@@ -554,6 +556,8 @@ Ag gecikmesi
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
+[no key]
+
 [no ressources growth areas]
 
 [No]

@@ -7,12 +7,12 @@
 <->=decrease units working
 <=>=increase units working
 <d>=destroy building
-<h>=toggle draw accessibility aids
+<h>=view history
 <i>=toggle draw information
 <m>=mark map
 <r>=repair building
 <p>=pause game
-<s>=view history
+<s>=toggle draw accessibility aids
 <t>=toggle draw unit paths
 <u>=upgrade building
 <v>=toggle recording voice

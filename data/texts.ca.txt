@@ -280,6 +280,8 @@ Destruir
 Desconectat
 [display]
 Visualitzador
+[do nothing]
+
 [don't carry anything]
 No Transporta res
 [down]
@@ -554,6 +556,8 @@ llatència
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
+[no key]
+
 [no ressources growth areas]
 
 [No]

@@ -280,6 +280,8 @@ Förstör
 Koppla från
 [display]
 Bildskärm
+[do nothing]
+
 [don't carry anything]
 Bär ingenting
 [down]
@@ -554,6 +556,8 @@ Ny Kampanj
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
+[no key]
+
 [no ressources growth areas]
 Inga Odlingsområden
 [No]

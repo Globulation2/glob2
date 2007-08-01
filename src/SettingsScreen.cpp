@@ -677,7 +677,7 @@ void SettingsScreen::updateActionList()
 	{
 		if(currentMode == GameGUIShortcuts)
 		{
-			for(int i=GameGUIKeyActions::ShowMainMenu; i<GameGUIKeyActions::ActionSize; ++i)
+			for(int i=GameGUIKeyActions::DoNothing; i<GameGUIKeyActions::ActionSize; ++i)
 			{
 				std::string key = "[" + GameGUIKeyActions::getName(i) + "]";
 				action_list->addText(Toolkit::getStringTable()->getString(key.c_str()));
@@ -685,7 +685,7 @@ void SettingsScreen::updateActionList()
 		}
 		else if(currentMode == MapEditShortcuts)
 		{
-			for(int i=MapEditKeyActions::SwitchToBuildingView; i<MapEditKeyActions::ActionSize; ++i)
+			for(int i=MapEditKeyActions::DoNothing; i<MapEditKeyActions::ActionSize; ++i)
 			{
 				std::string key = "[" + MapEditKeyActions::getName(i) + "]";
 				action_list->addText(Toolkit::getStringTable()->getString(key.c_str()));
@@ -731,7 +731,7 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 			select_key_2->visible=true;
 		}
 
-		action_list->setSelectionIndex(i->getAction() - 1);
+		action_list->setSelectionIndex(i->getAction());
 		action_list->centerOnItem(action_list->getSelectionIndex());
 	}
 }
@@ -757,7 +757,7 @@ void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
 		new_shortcut.addKeyPress(select_key_1->getKey());
 		if(key_2_active->getState())
 			new_shortcut.addKeyPress(select_key_2->getKey());
-		new_shortcut.setAction(action_list->getSelectionIndex() + 1);
+		new_shortcut.setAction(action_list->getSelectionIndex());
 		(*i) = new_shortcut;
 		updateShortcutList(selection_n);
 	}
@@ -785,13 +785,13 @@ void SettingsScreen::addNewShortcut()
 	ks.addKeyPress(KeyPress());
 	if(currentMode == GameGUIShortcuts)
 	{
-		ks.setAction(GameGUIKeyActions::ShowMainMenu);
+		ks.setAction(GameGUIKeyActions::DoNothing);
 		std::list<KeyboardShortcut>& shortcuts = guiKeyboardManager.getKeyboardShortcuts();
 		shortcuts.push_back(ks);
 	}
 	else if(currentMode == MapEditShortcuts)
 	{
-		ks.setAction(MapEditKeyActions::SwitchToBuildingView);
+		ks.setAction(MapEditKeyActions::DoNothing);
 		std::list<KeyboardShortcut>& shortcuts = mapeditKeyboardManager.getKeyboardShortcuts();
 		shortcuts.push_back(ks);
 	}
