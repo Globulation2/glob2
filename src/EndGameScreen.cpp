@@ -134,7 +134,7 @@ void EndGameStat::paint(void)
 			parent->getSurface()->drawString(int(double(x)+time_line_seperate*double(n)+0.5)-width/2, y+h-30, globalContainer->littleFont, str.str().c_str());
 		}
 
-		int closest_position = 41;
+		int closest_position = 1681;
 		int circle_position_value=-1;
 		int circle_position_x=-1;
 		int circle_position_y=-1;
@@ -150,7 +150,7 @@ void EndGameStat::paint(void)
 				Uint8 g = game->teams[team]->colorG;
 				Uint8 b = game->teams[team]->colorB;
 
-				int previous_y = 0;
+				int previous_y = h - int(double(h) * getValue(0, team, type) / double(maxValue));
 				
 				for(int px=0; px<(w-2); ++px)
 				{
@@ -158,12 +158,13 @@ void EndGameStat::paint(void)
 					int ny = h - int(double(h) * value / double(maxValue));
 					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, Color(r, g, b));
 					previous_y = ny;
-					if(px == (mouse_x - x) && std::abs(mouse_y - ny) < closest_position)
+					int dist = (mouse_y-ny)*(mouse_y-ny) + (mouse_x-px-1)*(mouse_x-px-1);
+					if(dist < closest_position)
 					{
 						circle_position_value = int(std::floor(value+0.5));
 						circle_position_x = x + px;
 						circle_position_y = y + ny;
-						closest_position = std::abs(mouse_y - ny);
+						closest_position = dist;
 					}
 				}
 			}
@@ -187,12 +188,15 @@ double EndGameStat::getValue(double position, int team, int type)
 	int upper = lower+1;
 	double mu = (position * float(s)) - lower; 
 	
-	int y0 = game->teams[team]->stats.endOfGameStats[std::max(lower-1, 0)].value[type];
+	//int y0 = game->teams[team]->stats.endOfGameStats[std::max(lower-1, 0)].value[type];
 	int y1 = game->teams[team]->stats.endOfGameStats[lower].value[type];
 	int y2 = game->teams[team]->stats.endOfGameStats[upper].value[type];
-	int y3 = game->teams[team]->stats.endOfGameStats[std::min(upper+1, s)].value[type];
+	//int y3 = game->teams[team]->stats.endOfGameStats[std::min(upper+1, s)].value[type];
 
+	//Linear interpolation
+	return (1-mu) * y1 + mu * y2;
 
+/*
 	//Cubic interpolation
 	double mu2 = mu * mu;
 	double a0 = y3 - y2 - y0 + y1;
@@ -200,6 +204,7 @@ double EndGameStat::getValue(double position, int team, int type)
 	double a2 = y2 - y0;
 	double a3 = y1;
 	return a0*mu*mu2+a1*mu2+a2*mu+a3;
+*/
 /*
 	//Cosine interpolation
 	double mu2 = (1-std::cos(mu*3.141592653))/2;
