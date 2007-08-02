@@ -1105,7 +1105,8 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 					{
-						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+						int nbReq=std::min(20, selBuild->maxUnitWorkingLocal+1);
+						selBuild->maxUnitWorkingLocal = nbReq;
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 						defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
@@ -1119,7 +1120,8 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 					{
-						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+						int nbReq=std::max(0, selBuild->maxUnitWorkingLocal-1);
+						selBuild->maxUnitWorkingLocal = nbReq;
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 						defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
