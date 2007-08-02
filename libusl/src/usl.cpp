@@ -26,17 +26,15 @@ struct Parser: Lexer
 		heap(heap)
 	{}
 	
-	BlockNode* parse(ScopePrototype* scope)
+	BlockNode* parse()
 	{
-		return statements(Position(), scope);
+		return statements(Position());
 	}
 	
-	BlockNode* statements(const Position& position, ScopePrototype* scope)
+	BlockNode* statements(const Position& position)
 	{
 		newlines();
 		auto_ptr<BlockNode> block(new BlockNode(position));
-		
-		scope->members["this"] = thisMember(scope);
 		
 		while (true)
 		{
@@ -44,27 +42,15 @@ struct Parser: Lexer
 			{
 			case END:
 			case RBRACE:
-				BlockNode::Statements& statements = block->statements;
-				if (!statements.empty())
-				{
-					block->value = dynamic_cast<ExpressionNode*>(statements.back());
-					if (block->value != 0)
-					{
-						statements.pop_back();
-					}
-				}
-				if (block->value == 0)
-				{
-					block->value = new ConstNode(token.position, &nil);
-				}
 				return block.release();
+			default:
+				block->statements.push_back(statement());
+				newlines();
 			}
-			block->statements.push_back(statement(scope));
-			newlines();
 		}
 	}
 	
-	Node* statement(ScopePrototype* scope)
+	Node* statement()
 	{
 		switch (tokenType())
 		{
@@ -73,102 +59,95 @@ struct Parser: Lexer
 				Position position = token.position;
 				next();
 				string name = identifier();
-				scope->locals.push_back(name);
 				accept(ASSIGN);
 				newlines();
-				return new ValNode(position, expression(scope));
+				return new ValNode(position, name, expression());
 			}
 		case DEF:
 			{
 				Position position = token.position;
 				next();
 				string name = identifier();
-				ScopePrototype* def = new ScopePrototype(heap, scope);
-				scope->members[name] = def;
 				ExpressionNode* body;
 				switch (tokenType())
 				{
 				case LPAR:
 					{
-						ScopePrototype* fun = new ScopePrototype(heap, def);
 						Position position = token.position;
-						auto_ptr<PatternNode> arg(pattern(fun));
+						auto_ptr<PatternNode> arg(pattern());
 						accept(ASSIGN);
 						newlines();
-						body = expression(fun);
-						body = new FunNode(position, fun, arg.release(), body);
+						body = expression();
+						body = new FunNode(position, arg.release(), body);
 					}
 					break;
 				case ASSIGN:
 					next();
 					newlines();
-					body = expression(def);
+					body = expression();
 					break;
 				default:
 					assert(false);
 				}
-				return new DefNode(position, def, body);
+				return new DefNode(position, name, body);
 			}
 		default:
-			return expression(scope);
+			return expression();
 		}
 	}
 	
-	PatternNode* pattern(ScopePrototype* scope)
+	PatternNode* pattern()
 	{
 		Position position = token.position;
-		next();
-		
-		PatternNode* first;
-		if (tokenType() == LPAR)
+		switch (tokenType())
 		{
-			first = pattern(scope);
-		}
-		else if (tokenType() == ID)
-		{
-			Position position = token.position;
-			string name = identifier();
-			scope->locals.push_back(name);
-			first = new ValPatternNode(position, name);
-		}
-		else
-		{
-			first = new NilPatternNode(token.position);
-		}
-		
-		if (tokenType() != COMMA)
-		{
-			accept(RPAR);
-			return first;
-		}
-		
-		auto_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
-		tuple->members.push_back(first);
-		
-		do
-		{
+		case LPAR:
 			next();
-			
-			if (tokenType() == LPAR)
+			if (tokenType() == RPAR)
 			{
-				tuple->members.push_back(pattern(scope));
+				return new NilPatternNode(position);
 			}
 			else
 			{
-				Position position = token.position;
-				string name = identifier();
-				scope->locals.push_back(name);
-				tuple->members.push_back(new ValPatternNode(position, name));
+				auto_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
+				tuple->members.push_back(pattern());
+				while (tokenType() == COMMA)
+				{
+					next();
+					tuple->members.push_back(pattern());
+				}
+				accept(RPAR);
+				if (tuple->members.size() > 1)
+					return tuple.release();
+				else
+				{
+					PatternNode* pattern = tuple->members.back();
+					tuple->members.pop_back();
+					return pattern;
+				}
 			}
+		case ID:
+			{
+				string name = identifier();
+				return new ValPatternNode(position, name);
+			}
+		case DEF:
+			{
+				next();
+				string name = identifier();
+				return new DefPatternNode(position, name);
+			}
+		case WILDCARD:
+			next();
+			return new IgnorePatternNode(position);
+		default:
+			assert(false);
 		}
-		while (tokenType() == COMMA);
-		
-		return tuple.release();
 	}
 	
-	ExpressionNode* expression(ScopePrototype* scope)
+	ExpressionNode* expression()
 	{
-		auto_ptr<ExpressionNode> node(simple(scope));
+		auto_ptr<ExpressionNode> node(simple());
 		while (true)
 		{
 			switch (tokenType())
@@ -176,7 +155,7 @@ struct Parser: Lexer
 			case ID:
 				{
 					Position position = token.position;
-					node.reset(selectAndApply(position, node, identifier(), scope));
+					node.reset(selectAndApply(position, node, identifier()));
 				}
 				break;
 			case LPAR:
@@ -184,7 +163,7 @@ struct Parser: Lexer
 			case DOT:
 				{
 					Position position = token.position;
-					node.reset(selectAndApply(position, node, "apply", scope));
+					node.reset(selectAndApply(position, node, "apply"));
 				}
 				break;
 			default:
@@ -193,13 +172,13 @@ struct Parser: Lexer
 		}
 	}
 	
-	ApplyNode* selectAndApply(const Position& position, auto_ptr<ExpressionNode> receiver, const string& method, ScopePrototype* scope)
+	ApplyNode* selectAndApply(const Position& position, auto_ptr<ExpressionNode> receiver, const string& method)
 	{
-		FunctionNode* argument = lazyExpr(scope);
+		ExpressionNode* argument = simple();
 		return new ApplyNode(position, new SelectNode(position, receiver.release(), method), argument);
 	}
 	
-	ExpressionNode* expressions(ScopePrototype* scope)
+	ExpressionNode* expressions()
 	{
 		Position position = token.position;
 		next();
@@ -214,7 +193,7 @@ struct Parser: Lexer
 			case LPAR:
 			case LBRACE:
 			case DOT:
-				tuple->elements.push_back(lazyExpr(scope));
+				tuple->elements.push_back(expression());
 				newlines();
 				break;
 			
@@ -247,28 +226,13 @@ struct Parser: Lexer
 		}
 	}
 	
-	ExpressionNode* simple(ScopePrototype* scope)
+	ExpressionNode* simple()
 	{
 		switch (tokenType())
 		{
 		case ID:
 			{
-				Position position = token.position;
-				string name(identifier());
-				
-				size_t depth = 0;
-				do
-				{
-					ScopePrototype::Locals& locals = scope->locals;
-					size_t index = find(locals.begin(), locals.end(), name) - locals.begin();
-					if (index < locals.size())
-						return new ValRefNode(position, depth, index);
-					scope = dynamic_cast<ScopePrototype*>(scope->outer);
-					++depth;
-				}
-				while (scope != 0);
-				
-				return new DefLookupNode(position, name);
+				return new DefLookupNode(token.position, identifier());
 			}
 		case NUM:
 			{
@@ -280,16 +244,15 @@ struct Parser: Lexer
 			}
 		case LPAR:
 			{
-				return expressions(scope);
+				return expressions();
 			}
 		case LBRACE:
 			{
 				Position position = token.position;
 				next();
-				auto_ptr<ScopePrototype> block(new ScopePrototype(heap, scope));
-				auto_ptr<ExpressionNode> body(statements(position, block.get()));
+				auto_ptr<ExpressionNode> block(statements(position));
 				accept(RBRACE);
-				return new EvalNode(position, new DefRefNode(position, block.release(), body.release()));
+				return block.release();
 			}
 		case DOT:
 			{
@@ -300,14 +263,6 @@ struct Parser: Lexer
 		default:
 			assert(false);
 		}
-	}
-	
-	FunctionNode* lazyExpr(ScopePrototype* scope)
-	{
-		Position position = token.position;
-		auto_ptr<ScopePrototype> lazy(new ScopePrototype(heap, scope));
-		ExpressionNode* expr = simple(lazy.get());
-		return new DefRefNode(position, lazy.release(), expr);
 	}
 	
 	void newlines()
@@ -328,14 +283,24 @@ struct Parser: Lexer
 		}
 		else
 		{
+			cout << token.position.line << ":" << token.position.column << ": ";
+			cout << "expecting " << getType(ID)->desc << ", found " << token.type->desc << "\n";
 			assert(false);
 		}
 	}
 	
 	void accept(TokenType type)
 	{
-		assert(tokenType() == type);
-		next();
+		if (tokenType() == type)
+		{
+			next();
+		}
+		else
+		{
+			cout << token.position.line << ":" << token.position.column << ": ";
+			cout << "expecting " << getType(type)->desc << ", found " << token.type->desc << "\n";
+			assert(false);
+		}
 	}
 	
 	Heap* heap;
@@ -344,6 +309,7 @@ struct Parser: Lexer
 
 void dumpCode(ScopePrototype* scope, FileDebugInfo* debug, ostream& stream)
 {
+	stream << scope << '\n';
 	for (size_t i = 0; i < scope->body.size(); ++i)
 	{
 		Position pos = debug->find(scope, i);
@@ -401,9 +367,9 @@ int main(int argc, char** argv)
 	ProgramDebugInfo debug;
 	
 	Parser parser(source.c_str(), &heap);
-	Node* node = parser.parse(root);
+	Node* node = parser.parse();
 	node->dump(cout);
-	node->generate(root, debug.get(file));
+	node->generate(root, debug.get(file), &heap);
 	delete node;
 	
 	cout << '\n';
@@ -418,17 +384,17 @@ int main(int argc, char** argv)
 		Thread::Frame& frame = thread.frames.back();
 		ScopePrototype* scope = frame.scope->def();
 		
+		for (size_t i = 0; i < thread.frames.size(); ++i)
+			cout << "[" << thread.frames[i].scope->locals.size() << "," << thread.frames[i].stack.size() << "]";
+		
 		FilePosition position = debug.find(scope, frame.nextInstr);
-		cerr << position.file << ":" << position.position.line << ":" << position.position.column << ": ";
+		cout << " " << position.file << ":" << position.position.line << ":" << position.position.column << ": ";
 		
 		Code* code = scope->body[frame.nextInstr++];
-		code->dump(cerr);
+		code->dump(cout);
+		cout << endl;
 		code->execute(&thread);
 		
-		cerr << " => frames: " << thread.frames.size();
-		cerr << ", stack size: " << thread.frames.back().stack.size();
-		cerr << ", locals: " << thread.frames.back().scope->locals.size();
-		cerr << endl;
 		instCount++;
 	}
 	cout << "\n\n* result:\n";
