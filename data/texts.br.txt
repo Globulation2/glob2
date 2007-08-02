@@ -283,7 +283,7 @@ Desconectar
 [display]
 Vídeo
 [do nothing]
-
+faz nada
 [don't carry anything]
 Está carregando nada
 [down]
@@ -557,9 +557,9 @@ Nova campanha
 [new]
 Novo
 [nick taken]
-Lamentamos mas o nome que você escolheu já existe na freenode, você poerá falar somente pelo YOG
+Lamentamos mas o nome que você escolheu já existe na freenode, você poderá falar somente pelo YOG
 [no key]
-
+sem tecla ainda
 [no ressources growth areas]
 Nenhuma área de crescimento
 [No]
@@ -573,7 +573,7 @@ não pronto
 [number of teams: %0]
 %0 times.
 [number of teams]
-Número d etimes
+Número de times
 [numlock]
 numlock
 [of which]
