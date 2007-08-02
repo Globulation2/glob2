@@ -1378,7 +1378,8 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SelectPlaceForbiddenArea:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				if (brush.getType() == BrushTool::MODE_NONE)
 				{
 					brush.setType(BrushTool::MODE_ADD);
@@ -1390,7 +1391,8 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SelectPlaceGuardArea:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				if (brush.getType() == BrushTool::MODE_NONE)
 				{
 					brush.setType(BrushTool::MODE_ADD);
@@ -1402,7 +1404,8 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SelectPlaceClearingArea:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				if (brush.getType() == BrushTool::MODE_NONE)
 				{
 					brush.setType(BrushTool::MODE_ADD);
@@ -1414,15 +1417,18 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAddingAreas:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setType(BrushTool::MODE_ADD);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
 			}
+			break;
 			case GameGUIKeyActions::SwitchToRemovingAreas:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setType(BrushTool::MODE_DEL);
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
@@ -1431,8 +1437,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush1:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(0);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
@@ -1440,8 +1451,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush2:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(1);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
@@ -1449,8 +1465,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush3:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(2);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
@@ -1458,8 +1479,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush4:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(3);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
@@ -1467,8 +1493,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush5:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(4);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
@@ -1476,8 +1507,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush6:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(5);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
@@ -1485,8 +1521,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush7:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(6);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
@@ -1494,8 +1535,13 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			break;
 			case GameGUIKeyActions::SwitchToAreaBrush8:
 			{
-				clearSelection();
+				if(selectionMode != BRUSH_SELECTION)
+					clearSelection();
 				brush.setFigure(7);
+				if (brush.getType() == BrushTool::MODE_NONE)
+				{
+					brush.setType(BrushTool::MODE_ADD);
+				}
 				displayMode = FLAG_VIEW;
 				setSelection(BRUSH_SELECTION);
 				toolManager.activateZoneTool();
