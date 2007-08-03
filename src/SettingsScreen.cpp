@@ -140,7 +140,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(audioMute);
 	audioMuteText=new Text(260, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
 	addWidget(audioMuteText);
-	musicVol=new Selector(320, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256);
+	musicVol=new Selector(320, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256, true);
 	addWidget(musicVol);
 	musicVolText=new Text(320, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
 	addWidget(musicVolText);
@@ -317,6 +317,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			add_shortcut->visible=false;
 			remove_shortcut->visible=false;
 			restore_default_shortcuts->visible=false;
+			setVisibilityFromAudioSettings();
 		}
 
 		

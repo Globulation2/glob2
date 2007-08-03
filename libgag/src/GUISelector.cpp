@@ -27,11 +27,12 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, unsigned defaultValue, unsigned maxValue, unsigned step, const char *sprite, Sint32 id)
+	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, unsigned defaultValue, unsigned maxValue, bool taper, unsigned step, const char *sprite, Sint32 id)
 	{
 		this->x=x;
 		this->y=y;
 		this->maxValue=maxValue;
+		this->taper=taper;
 		this->step=step;
 		this->w=width;
 		this->h=10;
@@ -46,12 +47,13 @@ namespace GAGGUI
 		archPtr=NULL;
 	}
 	
-	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, const std::string &tooltip, const std::string &tooltipFont, unsigned defaultValue, unsigned maxValue, unsigned step, const char *sprite, Sint32 id)
+	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, const std::string &tooltip, const std::string &tooltipFont, unsigned defaultValue, unsigned maxValue, bool taper, unsigned step, const char *sprite, Sint32 id)
 		: RectangularWidget(tooltip, tooltipFont)
 	{
 		this->x=x;
 		this->y=y;
 		this->maxValue=maxValue;
+		this->taper=taper;
 		this->step=step;
 		this->w=width;
 		this->h=10;
@@ -135,8 +137,21 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 	
-		parent->getSurface()->drawHorzLine(x+4, y+(h>>1)+1, w-4, 180, 180, 180);
-		parent->getSurface()->drawHorzLine(x+4, y+(h>>1)+2, w-4, 180, 180, 180);
+		///Taper the line to show a definitive larger end on the right
+		if(taper)
+		{
+			parent->getSurface()->drawLine(x+4, y+(h>>1)+1, x+w-3, y+(h>>1)-1, 180, 180, 180);
+			parent->getSurface()->drawLine(x+4, y+(h>>1)+1, x+w-3, y+(h>>1), 180, 180, 180);
+			parent->getSurface()->drawLine(x+4, y+(h>>1)+1, x+w-3, y+(h>>1)+1, 180, 180, 180);
+			parent->getSurface()->drawLine(x+4, y+(h>>1)+2, x+w-3, y+(h>>1)+2, 180, 180, 180);
+			parent->getSurface()->drawLine(x+4, y+(h>>1)+2, x+w-3, y+(h>>1)+3, 180, 180, 180);
+			parent->getSurface()->drawLine(x+4, y+(h>>1)+2, x+w-3, y+(h>>1)+4, 180, 180, 180);
+		}
+		else
+		{
+			parent->getSurface()->drawHorzLine(x+4, y+(h>>1)+1, w-4, 180, 180, 180);
+			parent->getSurface()->drawHorzLine(x+4, y+(h>>1)+2, w-4, 180, 180, 180);
+		}
 		parent->getSurface()->drawVertLine(x+2, y+2, h, 180, 180, 180);
 		parent->getSurface()->drawVertLine(x+3, y+2, h, 180, 180, 180);
 		parent->getSurface()->drawVertLine(x+w-1, y+2, h, 180, 180, 180);
