@@ -138,8 +138,6 @@ GameGUI::~GameGUI()
 
 }
 
-bool noRawMousewheel = false;
-
 void GameGUI::init()
 {
 	notmenu = false;
@@ -214,9 +212,6 @@ void GameGUI::init()
 
 	campaign=NULL;
 	missionName="";
-
-        if (getenv ("GLOB2_NO_RAW_MOUSEWHEEL")) {
-          noRawMousewheel = true; }
 }
 
 void GameGUI::adjustLocalTeam()
@@ -876,7 +871,8 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==4)
 			{
-				if (selectionMode==BUILDING_SELECTION && globalContainer->settings.scrollWheelEnabled)
+				SDLMod modState = SDL_GetModState();
+				if (selectionMode==BUILDING_SELECTION)
 				{
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) &&
@@ -886,7 +882,7 @@ void GameGUI::processEvent(SDL_Event *event)
                                                          SDL_GetModState(), KMOD_SHIFT, KMOD_CTRL); */
 						if ((selBuild->type->maxUnitWorking) &&
 							(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)&&
-                                                        (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
+                                                        (!globalContainer->settings.scrollWheelEnabled ? (modState & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
@@ -905,7 +901,8 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==5)
 			{
-				if (selectionMode==BUILDING_SELECTION && globalContainer->settings.scrollWheelEnabled)
+				SDLMod modState = SDL_GetModState();
+				if (selectionMode==BUILDING_SELECTION)
 				{
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) &&
@@ -913,7 +910,7 @@ void GameGUI::processEvent(SDL_Event *event)
 					{
 						if ((selBuild->type->maxUnitWorking) &&
 							(selBuild->maxUnitWorkingLocal>0)&&
-                                                        (noRawMousewheel ? (SDL_GetModState() & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
+                                                        (!globalContainer->settings.scrollWheelEnabled ? (modState & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
