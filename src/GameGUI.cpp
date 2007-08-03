@@ -876,7 +876,8 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==4)
 			{
-				if (selectionMode==BUILDING_SELECTION && globalContainer->settings.scrollWheelEnabled)
+				SDLMod modState = SDL_GetModState();
+				if (selectionMode==BUILDING_SELECTION && (globalContainer->settings.scrollWheelEnabled || modState & KMOD_CTRL) )
 				{
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) &&
@@ -905,7 +906,8 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==5)
 			{
-				if (selectionMode==BUILDING_SELECTION && globalContainer->settings.scrollWheelEnabled)
+				SDLMod modState = SDL_GetModState();
+				if (selectionMode==BUILDING_SELECTION && (globalContainer->settings.scrollWheelEnabled || modState & KMOD_CTRL) )
 				{
 					Building* selBuild=selection.building;
 					if ((selBuild->owner->teamNumber==localTeamNo) &&
