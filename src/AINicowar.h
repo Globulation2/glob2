@@ -307,9 +307,9 @@ private:
 	///it counts buildings that are queued to be constructed but have not been started yet
 	int buildings_under_construction_per_type[PlacementSize];
 	///This is the queue for buildings that have yet to be proccessed for construction
-	std::queue<BuildingPlacement> placement_queue;
+	std::list<BuildingPlacement> placement_queue;
 	///This is the queue for buildings that are going to be constructed
-	std::queue<BuildingPlacement> construction_queue;
+	std::list<BuildingPlacement> construction_queue;
 
 
 	///This function updates all of the buildings that are not under construction.

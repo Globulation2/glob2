@@ -4479,7 +4479,7 @@ void Echo::update_building_orders()
 					mo_during_construction->add_condition(new ParticularBuilding(new UnderConstruction, (*i)->id));
 					add_management_order(mo_during_construction);
 				}
-				orders.push(shared_ptr<Order>(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1)));
+				orders.push_back(shared_ptr<Order>(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1)));
 				previous_building_id=(*i)->id;
 				i=building_orders.erase(i);
 				break;
@@ -4556,7 +4556,7 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 		size_t size=stream->readUint32("size");
 		Uint8* buffer = new Uint8[size+1];
 		stream->read(buffer, size, "data");
-		orders.push(Order::getOrder(buffer, size+1));
+		orders.push_back(Order::getOrder(buffer, size+1));
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
@@ -4666,17 +4666,16 @@ void Echo::save(GAGCore::OutputStream *stream)
 
 	stream->writeEnterSection("orders");
 	stream->writeUint32((Uint32)orders.size(), "size");
-	for (Uint32 ordersIndex = 0; ordersIndex < orders.size(); ordersIndex++)
+	Uint32 ordersIndex = 0;
+	for (std::list<boost::shared_ptr<Order> >::iterator i = orders.begin(); i!=orders.end(); ++i)
 	{
 		stream->writeEnterSection(ordersIndex);
-		boost::shared_ptr<Order> order = orders.front();
-		orders.pop();
-		stream->writeUint32(order->getDataLength(), "size");
+		stream->writeUint32((*i)->getDataLength(), "size");
 		///one byte indicating the type is required to be written for order.
-		stream->writeUint8(order->getOrderType(), "type");
-		stream->write(order->getData(), order->getDataLength(), "data");
-		orders.push(order);
+		stream->writeUint8((*i)->getOrderType(), "type");
+		stream->write((*i)->getData(), (*i)->getDataLength(), "data");
 		stream->writeLeaveSection();
+		ordersIndex++;
 	}
 	stream->writeLeaveSection();
 
@@ -4830,7 +4829,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	if(!orders.empty())
 	{
 		boost::shared_ptr<Order> order=orders.front();
-		orders.pop();
+		orders.erase(orders.begin());
 		return order;
 	}
 
