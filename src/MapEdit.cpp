@@ -3227,7 +3227,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					else if (terrainType == TerrainSelector::Sand)
 					{
 						game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT);
-						game.map.setNoRessource(x, y, 1);
+						game.map.setNoRessource(x, y, 3);
 						game.map.setUMatPos(x, y, SAND, 1);
 					}
 					else if (terrainType == TerrainSelector::Water)
