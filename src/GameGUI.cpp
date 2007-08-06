@@ -1115,7 +1115,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				if (selectionMode==BUILDING_SELECTION)
 				{
 					Building* selBuild=selection.building;
-					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
 					{
 						int nbReq=std::max(0, selBuild->maxUnitWorkingLocal-1);
 						selBuild->maxUnitWorkingLocal = nbReq;
