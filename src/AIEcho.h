@@ -1626,7 +1626,7 @@ namespace AIEcho
 		void update_building_orders();
 		void check_fruit();
 
-		std::queue<boost::shared_ptr<Order> > orders;
+		std::list<boost::shared_ptr<Order> > orders;
 		boost::shared_ptr<EchoAI> echoai;
 		boost::shared_ptr<Gradients::GradientManager> gm;
 		Construction::BuildingRegister br;
@@ -1838,7 +1838,7 @@ inline TeamStat& AIEcho::Echo::get_team_stats()
 
 inline void AIEcho::Echo::flare(int x, int y)
 {
-	orders.push(boost::shared_ptr<Order>(new MapMarkOrder(player->team->teamNumber, x, y)));
+	orders.push_back(boost::shared_ptr<Order>(new MapMarkOrder(player->team->teamNumber, x, y)));
 }
 
 
@@ -1859,7 +1859,7 @@ inline AIEcho::Construction::FlagMap& AIEcho::Echo::get_flag_map()
 
 inline void AIEcho::Echo::push_order(boost::shared_ptr<Order> order)
 {
-	orders.push(order);
+	orders.push_back(order);
 }
 
 
