@@ -83,7 +83,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		{
 			stream->readEnterSection(n);
 			BuildingPlacement bp = static_cast<BuildingPlacement>(stream->readUint8("placement"));
-			placement_queue.push(bp);
+			placement_queue.push_back(bp);
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
@@ -94,7 +94,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		{
 			stream->readEnterSection(n);
 			BuildingPlacement bp = static_cast<BuildingPlacement>(stream->readUint8("placement"));
-			construction_queue.push(bp);
+			construction_queue.push_back(bp);
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
@@ -144,12 +144,10 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("placement_queue");
 	stream->writeUint16(placement_queue.size(), "size");
 	size_t n = 0;
-	while(!placement_queue.empty())
+	for(std::list<BuildingPlacement>::iterator i = placement_queue.begin(); i!=placement_queue.end(); ++i)
 	{
 		stream->writeEnterSection(n);
-		BuildingPlacement bp = placement_queue.front();
-		placement_queue.pop();
-		stream->writeUint8(static_cast<Uint8>(bp), "placement");
+		stream->writeUint8(static_cast<Uint8>(*i), "placement");
 		stream->writeLeaveSection();
 		n+=1;
 	}
@@ -158,12 +156,10 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("construction_queue");
 	stream->writeUint16(construction_queue.size(), "size");
 	n = 0;
-	while(!construction_queue.empty())
+	for(std::list<BuildingPlacement>::iterator i = construction_queue.begin(); i!=construction_queue.end(); ++i)
 	{
 		stream->writeEnterSection(n);
-		BuildingPlacement bp = construction_queue.front();
-		construction_queue.pop();
-		stream->writeUint8(static_cast<Uint8>(bp), "placement");
+		stream->writeUint8(static_cast<Uint8>(*i), "placement");
 		stream->writeLeaveSection();
 		n+=1;
 	}
@@ -503,7 +499,7 @@ void NewNicowar::queue_inns(Echo& echo)
 	///A level 1 Inn can handle 8 units, a level 2 can handle 12 and a level 3 can handle 16
 	if((total_workers+total_explorers+total_warriors)>=(number1*8 + number2*12 + number3*16))
 	{
-		placement_queue.push(RegularInn);
+		placement_queue.push_back(RegularInn);
 	}
 	
 	//Place for starving recovery inns
@@ -514,7 +510,7 @@ void NewNicowar::queue_inns(Echo& echo)
 		if(starving_recovery_inns < required_inns)
 		{
 			starving_recovery_inns += 1;
-			placement_queue.push(StarvingRecoveryInn);
+			placement_queue.push_back(StarvingRecoveryInn);
 		}
 	}
 }
@@ -539,7 +535,7 @@ void NewNicowar::queue_swarms(Echo& echo)
 
 	if(demand > swarm_count)
 	{
-		placement_queue.push(RegularSwarm);
+		placement_queue.push_back(RegularSwarm);
 	}
 }
 
@@ -564,7 +560,7 @@ void NewNicowar::queue_racetracks(Echo& echo)
 
 	if(demand > racetrack_count)
 	{
-		placement_queue.push(RegularRacetrack);
+		placement_queue.push_back(RegularRacetrack);
 	}
 }
 
@@ -589,7 +585,7 @@ void NewNicowar::queue_swimmingpools(Echo& echo)
 
 	if(demand > swimmingpool_count)
 	{
-		placement_queue.push(RegularSwimmingpool);
+		placement_queue.push_back(RegularSwimmingpool);
 	}
 }
 
@@ -614,7 +610,7 @@ void NewNicowar::queue_schools(Echo& echo)
 
 	if(demand > school_count)
 	{
-		placement_queue.push(RegularSchool);
+		placement_queue.push_back(RegularSchool);
 	}
 }
 
@@ -639,7 +635,7 @@ void NewNicowar::queue_barracks(Echo& echo)
 
 	if(demand > barracks_count)
 	{
-		placement_queue.push(RegularBarracks);
+		placement_queue.push_back(RegularBarracks);
 	}
 }
 
@@ -665,7 +661,7 @@ void NewNicowar::queue_hospitals(Echo& echo)
 
 	if(demand > hospital_count)
 	{
-		placement_queue.push(RegularHospital);
+		placement_queue.push_back(RegularHospital);
 	}
 }
 
@@ -676,8 +672,8 @@ void NewNicowar::order_buildings(Echo& echo)
 	while(!placement_queue.empty())
 	{
 		BuildingPlacement b=placement_queue.front();
-		placement_queue.pop();
-		construction_queue.push(b);
+		placement_queue.erase(placement_queue.begin());
+		construction_queue.push_back(b);
 		buildings_under_construction_per_type[int(b)]+=1;
 	}
 	///Increase the maximum number of buildings under construction when starving recovery is active
@@ -689,7 +685,7 @@ void NewNicowar::order_buildings(Echo& echo)
 	{
 		int id=-1;
 		BuildingPlacement b=construction_queue.front();
-		construction_queue.pop();
+		construction_queue.erase(construction_queue.begin());
 		if(b==RegularInn)
 		{
 			id=order_regular_inn(echo);
