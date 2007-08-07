@@ -202,7 +202,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
-		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", rememberUnit);
+		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
