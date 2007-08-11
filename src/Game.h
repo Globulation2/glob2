@@ -25,6 +25,7 @@
 #include "Map.h"
 #include "SGSL.h"
 #include <string>
+#include <valarray>
 #include "MapHeader.h"
 #include "GameHeader.h"
 
@@ -201,6 +202,8 @@ public:
 	GameGUI *gui;
 	MapEdit *edit;
 	std::list<BuildProject> buildProjects;
+	///This is meant to avoid re-allocated the valarray for every frame
+	std::valarray<unsigned char> overlayAlphas;
 
 public:
 	int mouseX, mouseY;
