@@ -89,10 +89,10 @@ namespace GAGCore
 	Color Color::applyMultiplyAlpha(Uint8 _a) const 
 	{
 		Color c;
-		c.r = (Uint8)(((unsigned)r * (unsigned)_a) / 256);
-		c.g = (Uint8)(((unsigned)g * (unsigned)_a) / 256);
-		c.b = (Uint8)(((unsigned)b * (unsigned)_a) / 256);
-		c.a = (Uint8)(((unsigned)a * (unsigned)_a) / 256);
+		c.r = r;
+		c.g = g;
+		c.b = b;
+		c.a = _a;
 		return c;
 	}
 	

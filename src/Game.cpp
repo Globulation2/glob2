@@ -2339,16 +2339,15 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 
 inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	OverlayArea* overlays;
-	if(gui)
-		overlays=&gui->overlay;
-	else if(edit)
-		overlays=&edit->overlay;
-	int overlayMax=0;
-	Color overlayColor;
 	if(drawOptions & DRAW_OVERLAY)
 	{
-		overlayMax=overlays->getMaximum();
+		OverlayArea* overlays;
+		if(gui)
+			overlays=&gui->overlay;
+		else if(edit)
+			overlays=&edit->overlay;
+		int overlayMax=overlays->getMaximum();
+		Color overlayColor;
 		if(overlays->getOverlayType() == OverlayArea::Starving)
 			overlayColor=Color(192, 0, 0);
 		if(overlays->getOverlayType() == OverlayArea::Damage)
@@ -2357,52 +2356,32 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			overlayColor=Color(0, 0, 192);
 		if(overlays->getOverlayType() == OverlayArea::Fertility)
 			overlayColor=Color(0, 192, 128);
+		int width = (right - left) + 1;
+		int height = (bot - top) + 1;
 
+		overlayAlphas.resize(width * height);
 		for (int y=top-1; y<=bot; y++)
 		{
 			for (int x=left-1; x<=right; x++)
 			{
 				int rx=(x+viewportX)%map.getW();
 				int ry=(y+viewportY)%map.getH();
-				///All spots shown when map edit is active
 				if(!edit && !map.isMapDiscovered(rx, ry, teams[localTeam]->me))
 					continue;
-				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+				if(overlays->getValue(rx, ry))
 				{
-					if(overlays->getValue(rx, ry))
-					{
-						const int value_c=overlays->getValue(rx, ry);
-						const int alpha_c=int(float(200)/float(overlayMax) * float(value_c));
-						globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
-					}
-				}
-				else
-				{
-					for(int px=0; px<4; ++px)
-					{
-						for(int py=0; py<4; ++py)
-						{
-							//fx and fy represent how far along the gradient the values should be
-							float fx = (float(px)/4.0f);
-							float fy = (float(py)/4.0f);
-							//bx and by represent the base position. Since the maximum height
-							//is at the center if the square, pixels before this are interpolated
-							//between the squares that are before this one
-							int b_val=overlays->getValue(rx, ry);
-							int d_val=overlays->getValue(rx, map.normalizeY(ry+1));
-							int r_val=overlays->getValue(map.normalizeX(rx+1), ry);
-							int dr_val=overlays->getValue(map.normalizeX(rx+1), map.normalizeY(ry+1));
-							float n_top = interpolateValues(b_val, r_val, fx);
-							float n_bottom = interpolateValues(d_val, dr_val, fx);
-							float n_vertical = interpolateValues(n_top, n_bottom, fy);
-							const int alpha_c=int(float(200)/float(overlayMax) * float(n_vertical));
-							if(alpha_c>0)
-								globalContainer->gfx->drawFilledRect((x<<5)+px*8 + 16, (y<<5)+py*8 + 16, 8, 8, Color(overlayColor.r, overlayColor.g, overlayColor.b, alpha_c));
-						}
-					}
+					const int value_c=overlays->getValue(rx, ry);
+					const int alpha_c=int(float(200)/float(overlayMax) * float(value_c));
+					overlayAlphas[width * y + x] = alpha_c;
 				}
 			}
 		}
+		
+		///This is to correct OpenGL's blending not beeing offset correctly to line up with the map tiles
+		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, 16, 16, 32, 32, overlayColor);
+		else
+			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, 0, 0, 32, 32, overlayColor);
 	}
 }
 
