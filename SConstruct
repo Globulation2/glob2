@@ -6,6 +6,7 @@ def establish_options(env):
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
+    opts.Add(BoolOption("osx", "Build for OSX", 0))
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save('options_cache.py', env)
@@ -93,8 +94,10 @@ def configure(env):
     elif conf.CheckLib('opengl32') and conf.CheckCHeader('GL/gl.h'):
         gl_libraries.append("opengl32")
     else:
-        print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
-        Exit(1)
+    	#Quick fix for OSX, ignore libraries not found
+    	if not env['osx']
+	        print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
+    	    Exit(1)
     
     #Do checks for GLU, which is different on every system
     if conf.CheckLib('GLU') and conf.CheckCHeader("GL/glu.h"):
@@ -144,6 +147,8 @@ def main():
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
+    if env['osx']:
+    	env.Append(CXXFLAGS="-framework OpenGL")
     env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread'])
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
