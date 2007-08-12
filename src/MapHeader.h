@@ -56,8 +56,8 @@ public:
 	/// Returns the user-friendly name of the map	
 	const std::string& getMapName() const;
 	
-	/// Returns the file name of the map
-	std::string getFileName() const;
+	/// Returns the file name of the map. isCampaignMap is a special override when the game is loading campaign maps
+	std::string getFileName(bool isCampaignMap=false) const;
 	
 	/// Sets the user-friendly name of the map
 	void setMapName(const std::string& newMapName);

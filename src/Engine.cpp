@@ -66,7 +66,7 @@ Engine::~Engine()
 int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName)
 {
 	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = prepareCampaign(mapHeader);
+	GameHeader gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
 	int end=initGame(mapHeader, gameHeader);
 	gui.setCampaignGame(campaign, missionName);
 	return end;
@@ -77,7 +77,7 @@ int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const s
 int Engine::initCampaign(const std::string &mapName)
 {
 	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = prepareCampaign(mapHeader);
+	GameHeader gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
 	int end=initGame(mapHeader, gameHeader);
 	return end;
 }
@@ -442,7 +442,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 
 
 
-GameHeader Engine::prepareCampaign(MapHeader& mapHeader)
+GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& localTeam)
 {
 	GameHeader gameHeader;
 
@@ -456,6 +456,8 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader)
 	{
 		if (mapHeader.getBaseTeam(i).type==BaseTeam::T_HUMAN && !wasHuman)
 		{
+			localPlayer = playerNumber;
+			localTeam = i;
 			std::string name = FormatableString("Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
 			wasHuman=true;
@@ -466,6 +468,11 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader)
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
 		}
 		playerNumber+=1;
+	}
+	if(!wasHuman)
+	{
+		localPlayer = 0;
+		localTeam = gameHeader.getBasePlayer(0).teamNumber;
 	}
 	
 	gameHeader.setNumberOfPlayers(playerNumber);

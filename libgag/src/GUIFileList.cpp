@@ -128,7 +128,7 @@ namespace GAGGUI
 	std::string FileList::fileToList(const char* fileName) const
 	{
 		// this default behaviour is probably not what you want
-		std::cout << "FileList::fileToList(\"" << fileName << "\") !" << std::endl;
+		//std::cout << "FileList::fileToList(\"" << fileName << "\") !" << std::endl;
 		std::string listName(fileName);
 		if (! extension.empty())
 			listName.resize(listName.size() - (extension.size() + 1));
@@ -138,7 +138,7 @@ namespace GAGGUI
 	std::string FileList::listToFile(const char* listName) const
 	{
 		// this default behaviour is probably not what you want
-		std::cout << "FileList::listToFile(\"" << listName << "\") !" << std::endl;
+		//std::cout << "FileList::listToFile(\"" << listName << "\") !" << std::endl;
 		std::string fileName(listName);
 		if (! this->extension.empty())
 		{
