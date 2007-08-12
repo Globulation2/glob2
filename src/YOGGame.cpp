@@ -19,10 +19,10 @@
 #include "YOGGame.h"
 #include <algorithm>
 #include "YOGMapDistributor.h"
+#include "YOGGameServer.h"
 
-
-YOGGame::YOGGame(Uint16 gameID)
-	: gameID(gameID)
+YOGGame::YOGGame(Uint16 gameID, YOGGameServer& server)
+	: gameID(gameID), server(server)
 {
 	requested=false;
 	gameStarted=false;
@@ -229,6 +229,7 @@ void YOGGame::startGame()
 	gameStarted=true;
 	boost::shared_ptr<NetStartGame> message(new NetStartGame);
 	routeMessage(message, host);
+	server.getGameInfo(gameID).setGameState(YOGGameInfo::GameRunning);
 }
 
 

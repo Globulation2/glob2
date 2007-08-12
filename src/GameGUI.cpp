@@ -3685,21 +3685,23 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
-		std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << std::endl;
-		delete stream;
-		return false;
-		}
-	else
-	{
-		bool res = load(stream);
-		delete stream;
-		if (!res)
+		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
+		if(!stream)
+		{
+			std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << " or " << mapHeader.getFileName(true) << std::endl;
+			delete stream;
 			return false;
-
-		game.setMapHeader(mapHeader);
-		if(setGameHeader)
-			game.setGameHeader(gameHeader);
+		}
 	}
+	
+	bool res = load(stream);
+	delete stream;
+	if (!res)
+		return false;
+
+	game.setMapHeader(mapHeader);
+	if(setGameHeader)
+		game.setGameHeader(gameHeader);
 
 	return true;
 }

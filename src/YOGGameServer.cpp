@@ -244,7 +244,7 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 			break;
 	}
 	gameList.push_back(YOGGameInfo(name, newID));
-	games[newID] = shared_ptr<YOGGame>(new YOGGame(newID));
+	games[newID] = shared_ptr<YOGGame>(new YOGGame(newID, *this));
 	return newID;
 }
 
@@ -288,6 +288,19 @@ void YOGGameServer::disableLANBroadcasting()
 {
 	broadcaster.reset();
 	isBroadcasting = false;
+}
+
+
+
+YOGGameInfo& YOGGameServer::getGameInfo(Uint16 gameID)
+{
+	for(std::list<YOGGameInfo>::iterator i=gameList.begin(); i!=gameList.end(); ++i)
+	{
+		if(i->getGameID() == gameID)
+		{
+			return *i;
+		}
+	}
 }
 
 

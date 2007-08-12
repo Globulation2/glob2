@@ -83,5 +83,6 @@
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
 // version 24 rewrote YOG
+// version 25 changed YOGGameInfo to include game state information so that running games aren't shown
 
 #endif

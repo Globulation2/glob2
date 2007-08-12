@@ -94,8 +94,10 @@ private:
 
 	/// Prepares a GameHeader for the given mapHeader as a campaign map
 	/// Campaign maps have one player per team, and the player can be
-	/// either a human or an AI. AI's are all AINull
-	GameHeader prepareCampaign(MapHeader& mapHeader);
+	/// either a human or an AI. AI's are all AINull. When the human
+	/// is found, the player number is put in localPlayer, and the
+	/// team number is put in localTeam
+	GameHeader prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& localTeam);
 
 	//! Load a game. Return true on success
 	bool loadGame(const std::string &filename);

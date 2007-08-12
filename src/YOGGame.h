@@ -24,6 +24,7 @@
 #include <boost/shared_ptr.hpp>
 
 class YOGMapDistributor;
+class YOGGameServer;
 
 ///This handles a "game" from the server's point of view. This means that it handles
 ///routing between clients, holding the map and game data, etc..
@@ -31,7 +32,7 @@ class YOGGame
 {
 public:
 	///Constructs a new YOG game
-	YOGGame(Uint16 gameID);
+	YOGGame(Uint16 gameID, YOGGameServer& server);
 
 	///Updates the game
 	void update();
@@ -87,6 +88,7 @@ private:
 	shared_ptr<YOGPlayer> host;
 	shared_ptr<YOGMapDistributor> distributor;
 	std::vector<shared_ptr<YOGPlayer> > players;
+	YOGGameServer& server;
 };
 
 
