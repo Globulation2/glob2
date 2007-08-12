@@ -480,14 +480,18 @@ void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
 
 void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 {
+	assert(type);
+	assert(type->multiplierRessource);
+	assert(type->maxRessource);
+	assert(ressources);
 	 // we balance the system with Units working on it:
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		needs[ri] = (2 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri]);
+		needs[ri] = 2 * (type->maxRessource[ri] - ressources[ri]) / (type->multiplierRessource[ri]);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurprose >= 0)
+		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurprose < MAX_NB_RESSOURCES);
-			needs[(*ui)->destinationPurprose]--;
+			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
+			needs[(*ui)->destinationPurpose]--;
 		}
 }
 
@@ -497,10 +501,10 @@ void Building::computeWishedRessources()
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
 		wishedResources[ri] = (2 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri]);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurprose >= 0)
+		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurprose < MAX_NB_RESSOURCES);
-			wishedResources[(*ui)->destinationPurprose]--;
+			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
+			wishedResources[(*ui)->destinationPurpose]--;
 		}
 }
 
@@ -910,7 +914,20 @@ void Building::updateBuildingSite(void)
 }
 
 
-
+void Building::updateUnitsWorkingFreeAllThatBringUnwantedRessources(void)
+{
+	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
+	{
+		int r=(*it)->carriedRessource;
+		if (r>=0 && !neededRessource(r))
+		{
+			(*it)->standardRandomActivity();
+			it=unitsWorking.erase(it);
+		} else {
+			it++;
+		}
+	}
+}
 void Building::updateUnitsWorking(void)
 {
 	if (maxUnitWorking==0)
@@ -922,35 +939,20 @@ void Building::updateUnitsWorking(void)
 	}
 	else
 	{
+		updateUnitsWorkingFreeAllThatBringUnwantedRessources();
 		while (unitsWorking.size()>(unsigned)desiredMaxUnitWorking)
 		{
 			int maxDistSquare=0;
 
 			Unit *fu=NULL;
 			std::list<Unit *>::iterator ittemp;
-
-			// First choice: free an unit who has a not needed ressource..
-			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
-			{
-				int r=(*it)->caryedRessource;
-				if (r>=0 && !neededRessource(r))
-				{
-					fu=(*it);
-					fu->standardRandomActivity();
-					it=unitsWorking.erase(it);
-					continue;
-				} else {
-					++it;
-				}
-			}
-			if(fu!=NULL) continue;
 			// Second choice: free an unit who has no ressource..
 			if (fu==NULL)
 			{
 				int minDistSquare=INT_MAX;
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int r=(*it)->caryedRessource;
+					int r=(*it)->carriedRessource;
 					if (r<0)
 					{
 						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
@@ -1292,13 +1294,13 @@ void Building::subscribeToBringRessourcesStep()
 		Unit *choosen=NULL;
 		Map *map=owner->map;
 		/* To choose a good unit, we get a composition of things:
-		1-the closest the unit is, the better it is.
+		1-the closer the unit is, the better it is.
 		2-the less the unit is hungry, the better it is.
 		3-if the unit has a needed ressource, this is better.
-		4-if the unit as a not needed ressource, this is worse.
-		5-if the unit is close of a needed ressource, this is better
+		4-if the unit has a not needed ressource, this is worse.
+		5-if the unit has not a needed ressource and is close to a needed one, this is better
 
-		score_to_max=(rightRes*100/d+noRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeleft>>2 - (d+dr))*500+100/harvest
+		score_to_max=(hasRightRes*100/d+hasNoRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeleft>>2 - (d+dr))*500+100/harvest
 		*/
 		for(int n=0; n<1024; ++n)
 		{
@@ -1311,7 +1313,7 @@ void Building::subscribeToBringRessourcesStep()
 			if(!canUnitWorkHere(unit))
 				continue;
 
-			int r=unit->caryedRessource;
+			int r=unit->carriedRessource;
 			int dist;
 			if(!map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist))
 			{
@@ -1351,8 +1353,8 @@ void Building::subscribeToBringRessourcesStep()
 			50*(unit->level[HARVEST]+1)+
 			(unit->level[SWIM]>0?-200:0);//swimmer's penalty to keep them free for swimmer tasks
 			//std::cout << "d" << dist << " dr" << distUnitRessource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << unit->level[WALK] << " ha" << unit->level[HARVEST] << " va" << value << std::endl << std::flush;
-			unit->destinationPurprose=(rightRes>0?r:nr);
-			fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+			unit->destinationPurpose=(rightRes>0?r:nr);
+			fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 			if (value>maxValue)
 			{
 				maxValue=value;
@@ -1369,7 +1371,7 @@ void Building::subscribeToBringRessourcesStep()
 			if(!canUnitWorkHere(unit))
 				continue;
 
-			int r=unit->caryedRessource;
+			int r=unit->carriedRessource;
 			int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 			if ((r>=0) && neededRessource(r))
 			{
@@ -1378,8 +1380,8 @@ void Building::subscribeToBringRessourcesStep()
 				{
 					int value=dist-(timeLeft>>1);
 					int level = unit->level[HARVEST]*10 + unit->level[WALK];
-					unit->destinationPurprose=r;
-					fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+					unit->destinationPurpose=r;
+					fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 					if ((level>maxLevel) || (level==maxLevel && value<minValue))
 					{
 						minValue=value;
@@ -1404,7 +1406,7 @@ void Building::subscribeToBringRessourcesStep()
 				if(!canUnitWorkHere(unit))
 					continue;
 
-				if (unit->caryedRessource<0)
+				if (unit->carriedRessource<0)
 				{
 					int x=unit->posX;
 					int y=unit->posY;
@@ -1425,8 +1427,8 @@ void Building::subscribeToBringRessourcesStep()
 									int level = unit->level[HARVEST]*10 + unit->level[WALK];
 									if ((level>maxLevel) || (level==maxLevel && value<minValue))
 									{
-										unit->destinationPurprose=r;
-										fprintf(logFile, "[%d] bdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+										unit->destinationPurpose=r;
+										fprintf(logFile, "[%d] bdp2 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 										minValue=value;
 										maxLevel=level;
 										choosen=unit;
@@ -1455,7 +1457,7 @@ void Building::subscribeToBringRessourcesStep()
 				if(!canUnitWorkHere(unit))
 					continue;
 
-				if (unit->caryedRessource>=0)
+				if (unit->carriedRessource>=0)
 				{
 					int x=unit->posX;
 					int y=unit->posY;
@@ -1476,8 +1478,8 @@ void Building::subscribeToBringRessourcesStep()
 									int level = unit->level[HARVEST]*10 + unit->level[WALK];
 									if ((level>maxLevel) || (level==maxLevel && value<minValue))
 									{
-										unit->destinationPurprose=r;
-										fprintf(logFile, "[%d] bdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+										unit->destinationPurpose=r;
+										fprintf(logFile, "[%d] bdp4 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 										minValue=value;
 										maxLevel=level;
 										choosen=unit;

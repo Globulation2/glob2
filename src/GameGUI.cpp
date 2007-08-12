@@ -2120,8 +2120,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			printf(" attachedBuilding bgid=%d\n", selUnit->attachedBuilding->gid);
 		else
 			printf(" attachedBuilding NULL\n");
-		printf(" destinationPurprose=%d\n", selUnit->destinationPurprose);
-		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
+		printf(" destinationPurpose=%d\n", selUnit->destinationPurpose);
+		printf(" carriedRessource=%d\n", selUnit->carriedRessource);
 	}
 	else if (displayMode==BUILDING_VIEW)
 	{
@@ -2458,9 +2458,9 @@ void GameGUI::drawUnitInfos(void)
 
 	if (selUnit->performance[HARVEST])
 	{
-		if (selUnit->caryedRessource>=0)
+		if (selUnit->carriedRessource>=0)
 		{
-			const RessourceType* r = globalContainer->ressourcesTypes.get(selUnit->caryedRessource);
+			const RessourceType* r = globalContainer->ressourcesTypes.get(selUnit->carriedRessource);
 			unsigned resImg = r->gfxId + r->sizesCount - 1;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, ypos, globalContainer->ressources, resImg);

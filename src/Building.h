@@ -108,6 +108,7 @@ public:
 	///This function updates the units working at this building. If there are too many units, it
 	///fires some.
 	void updateUnitsWorking(void);
+	void updateUnitsWorkingFreeAllThatBringUnwantedRessources(void);
 	///This function is called after important events in order to update the building
 	void update(void);
 
@@ -327,4 +328,3 @@ protected:
 };
 
 #endif
- 
