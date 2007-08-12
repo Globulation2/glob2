@@ -51,6 +51,7 @@ void CPUStatisticsManager::addFrameData(int cpu_time_used)
 
 void CPUStatisticsManager::format()
 {
+/*
 	std::string logName = "logs/";
 	logName += globalContainer->getUsername();
 	logName += "CPU.log";
@@ -86,5 +87,6 @@ void CPUStatisticsManager::format()
 	}
 	
 	delete stream;
+*/
 }
 
