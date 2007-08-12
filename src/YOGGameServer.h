@@ -108,6 +108,9 @@ public:
 	
 	///This stops LAN broadcasting
 	void disableLANBroadcasting();
+
+	///Returns the YOGGameInfo for modification
+	YOGGameInfo& getGameInfo(Uint16 gameID);
 private:
 	Uint16 chooseNewPlayerID();
 

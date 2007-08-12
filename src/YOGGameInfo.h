@@ -47,6 +47,19 @@ public:
 	///Returns the unique game ID of the game
 	Uint16 getGameID() const;
 
+	///This enum represents the possible game states
+	enum GameState
+	{
+		GameOpen,
+		GameRunning,
+	};
+
+	///Returns the game state
+	GameState getGameState() const;
+	
+	///Sets the game state
+	void setGameState(const GameState& state);
+
 	///Encodes this YOGGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
@@ -56,9 +69,11 @@ public:
 	///Test for equality between two YOGGameInfo
 	bool operator==(const YOGGameInfo& rhs) const;
 	bool operator!=(const YOGGameInfo& rhs) const;
+
 private:
 	Uint16 gameID;
 	std::string gameName;
+	GameState gameState;
 };
 
 #endif
