@@ -240,8 +240,8 @@ public:
 	Building *attachedBuilding;
 	Building *targetBuilding;
 	Building *ownExchangeBuilding;
-	Sint32 destinationPurprose;
-	int caryedRessource;
+	Sint32 destinationPurpose;
+	int carriedRessource;
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.
 	Sint32 jobTimer;
