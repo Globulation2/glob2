@@ -131,9 +131,11 @@ const std::string& MapHeader::getMapName() const
 
 
 
-std::string MapHeader::getFileName() const
+std::string MapHeader::getFileName(bool isCampaignMap) const
 {
-	if (!isSavedGame)
+	if(isCampaignMap)
+		return glob2NameToFilename("campaigns", mapName, "map");
+	else if (!isSavedGame)
 		return glob2NameToFilename("maps", mapName, "map");
 	else
 		return glob2NameToFilename("games", mapName, "game");
