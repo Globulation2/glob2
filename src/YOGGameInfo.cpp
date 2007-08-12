@@ -23,12 +23,13 @@
 YOGGameInfo::YOGGameInfo()
 {
 	gameID=0;
+	gameState = GameOpen;
 }
 
 
 
 YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID)
-	: gameID(gameID), gameName(gameName)
+	: gameID(gameID), gameName(gameName), gameState(GameOpen)
 {
 }
 
@@ -62,11 +63,26 @@ Uint16 YOGGameInfo::getGameID() const
 
 
 
+YOGGameInfo::GameState YOGGameInfo::getGameState() const
+{
+	return gameState;
+}
+
+
+	
+void YOGGameInfo::setGameState(const YOGGameInfo::GameState& state)
+{
+	gameState = state;
+}
+
+
+
 void YOGGameInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGGameInfo");
 	stream->writeUint16(gameID, "gameID");
 	stream->writeText(gameName, "gameName");
+	stream->writeUint8(static_cast<Uint8>(gameState), "gameState");
 	stream->writeLeaveSection();
 }
 
@@ -77,6 +93,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("YOGGameInfo");
 	gameID=stream->readUint16("gameID");
 	gameName=stream->readText("gameName");
+	gameState=static_cast<GameState>(stream->readUint8("gameState"));
 	stream->readLeaveSection();
 }
 
@@ -84,7 +101,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	
 bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 {
-	if(gameName == rhs.gameName)
+	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState)
 	{
 		return true;
 	}
@@ -99,7 +116,7 @@ bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 	
 bool YOGGameInfo::operator!=(const YOGGameInfo& rhs) const
 {
-	if(gameName != rhs.gameName)
+	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState)
 	{
 		return true;
 	}

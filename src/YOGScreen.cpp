@@ -271,7 +271,10 @@ void YOGScreen::updateGameList(void)
 {
 	gameList->clear();
 	for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
-		gameList->addText(game->getGameName());
+	{
+		if(game->getGameState() == YOGGameInfo::GameOpen)
+			gameList->addText(game->getGameName());
+	}
 }
 
 

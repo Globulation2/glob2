@@ -442,6 +442,12 @@ int NetTestSuite::testYOGGameInfo()
 	ygi->setGameID(1223);
 	if(!testSerialize(ygi))
 		return 3;
+		
+	///Test the game state
+	ygi->setGameState(YOGGameInfo::GameRunning);
+	if(!testSerialize(ygi))
+		return 4;
+	
 	return 0;
 }
 
