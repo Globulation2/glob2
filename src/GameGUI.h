@@ -359,6 +359,13 @@ private:
 	std::string missionName;
 
 	GameGUIDefaultAssignManager defaultAssign;
+	
+	///Because its possible to move the scrollwheel faster than the engine can handle it
+	///multiple scroll wheel events compound
+	int scrollWheelChanges;
+	
+	///This function flushes orders from the scrollWheel at the end of every frame
+	void flushScrollWheelOrders();
 };
 
 #endif
