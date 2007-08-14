@@ -247,7 +247,7 @@ NewMapScreen::NewMapScreen()
 	algaeText=new Text(480, 240, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[algae]"));
 	algaeText->visible=false;
 	addWidget(algaeText);
-	wheatText=new Text(480, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[wheat]"));
+	wheatText=new Text(480, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Wheat]"));
 	wheatText->visible=false;
 	addWidget(wheatText);
 	woodText=new Text(480, 280, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[wood]"));

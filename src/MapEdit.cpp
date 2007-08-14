@@ -1040,7 +1040,7 @@ MapEdit::MapEdit()
 	buildingPicture = new BuildingPicture(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 203, 56, 46), "building editor", "building editor picture", "", NULL);
 	buildingHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
 	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor hp scroll box", "", NULL, static_cast<Sint32*>(NULL));
-	buildingFoodQuantityLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor food label", "", "[wheat]", NULL, static_cast<Sint32*>(NULL));
+	buildingFoodQuantityLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor food label", "", "[Wheat]", NULL, static_cast<Sint32*>(NULL));
 	buildingFoodQuantityScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor food scroll box", "", NULL, static_cast<Sint32*>(NULL));
 	buildingAssignedLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor assigned label", "", "[assigned]", NULL, 20);
 	buildingAssignedScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor assigned scroll box", "", NULL, 20);
