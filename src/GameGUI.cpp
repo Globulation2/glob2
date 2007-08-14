@@ -212,6 +212,8 @@ void GameGUI::init()
 
 	campaign=NULL;
 	missionName="";
+	
+	scrollWheelChanges=0;
 }
 
 void GameGUI::adjustLocalTeam()
@@ -391,6 +393,8 @@ void GameGUI::step(void)
 		processEvent(&mouseMotionEvent);
 	if (wasWindowEvent)
 		processEvent(&windowEvent);
+
+	flushScrollWheelOrders();
 
 	int oldViewportX=viewportX;
 	int oldViewportY=viewportY;
@@ -871,61 +875,12 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==4)
 			{
-				SDLMod modState = SDL_GetModState();
-				if (selectionMode==BUILDING_SELECTION)
-				{
-					Building* selBuild=selection.building;
-					if ((selBuild->owner->teamNumber==localTeamNo) &&
-						(selBuild->buildingState==Building::ALIVE))
-					{
-                                                /* fprintf (stderr, "s=SDL_GetModState(): %d, S=KMOD_SHIFT: %d, C=KMOD_CTRL: %d\n",
-                                                         SDL_GetModState(), KMOD_SHIFT, KMOD_CTRL); */
-						if ((selBuild->type->maxUnitWorking) &&
-							(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)&&
-                                                        (!globalContainer->settings.scrollWheelEnabled ? (modState & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
-						{
-							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
-						}
-						else if ((selBuild->type->defaultUnitStayRange) &&
-							(selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange) &&
-							(SDL_GetModState()&KMOD_SHIFT))
-						{
-							int nbReq=(selBuild->unitStayRangeLocal+=1);
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
-						}
-					}
-				}
+				scrollWheelChanges += 1;
+
 			}
 			else if (button==5)
 			{
-				SDLMod modState = SDL_GetModState();
-				if (selectionMode==BUILDING_SELECTION)
-				{
-					Building* selBuild=selection.building;
-					if ((selBuild->owner->teamNumber==localTeamNo) &&
-						(selBuild->buildingState==Building::ALIVE))
-					{
-						if ((selBuild->type->maxUnitWorking) &&
-							(selBuild->maxUnitWorkingLocal>0)&&
-                                                        (!globalContainer->settings.scrollWheelEnabled ? (modState & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
-						{
-							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
-						}
-						else if ((selBuild->type->defaultUnitStayRange) &&
-							(selBuild->unitStayRangeLocal>0) &&
-							(SDL_GetModState()&KMOD_SHIFT))
-						{
-							int nbReq=(selBuild->unitStayRangeLocal-=1);
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
-							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
-						}
-					}
-				}
+				scrollWheelChanges -= 1;
 			}
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
@@ -951,6 +906,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			panPushed=false;
 			// showUnitWorkingToBuilding=false;
 		}
+		
 	}
 
 	if (event->type==SDL_MOUSEMOTION)
@@ -4226,3 +4182,32 @@ void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 	markManager.addMark(Mark(mmo->x, mmo->y, r, g, b));
 }
 
+
+void GameGUI::flushScrollWheelOrders()
+{
+	SDLMod modState = SDL_GetModState();
+	if (scrollWheelChanges!=0 && selectionMode==BUILDING_SELECTION)
+	{
+		Building* selBuild=selection.building;
+		if ((selBuild->owner->teamNumber==localTeamNo) &&
+			(selBuild->buildingState==Building::ALIVE))
+		{
+			if ((selBuild->type->maxUnitWorking) &&
+                                            (!globalContainer->settings.scrollWheelEnabled ? (modState & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
+			{
+				selBuild->maxUnitWorkingLocal+=scrollWheelChanges;
+				int nbReq=selBuild->maxUnitWorkingLocal=std::min(20, std::max(0, (selBuild->maxUnitWorkingLocal)));
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
+			}
+			else if ((selBuild->type->defaultUnitStayRange) &&
+				(SDL_GetModState()&KMOD_SHIFT))
+			{
+				selBuild->unitStayRangeLocal+=scrollWheelChanges;
+				int nbReq=selBuild->unitStayRangeLocal=std::min(selBuild->type->maxUnitStayRange, std::max(0, (selBuild->unitStayRangeLocal)));
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
+			}
+		}
+	}
+	scrollWheelChanges=0;
+}

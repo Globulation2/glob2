@@ -50,7 +50,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 				{
 					increasePoint(u->posX, u->posY, 8, overlay, overlaymax);
 				}
-				else if(type == Starving && u->medical==Unit::MED_DAMAGED)
+				else if(type == Damage && u->medical==Unit::MED_DAMAGED)
 				{
 					increasePoint(u->posX, u->posY, 8, overlay, overlaymax);
 				}

@@ -188,7 +188,7 @@ void Settings::save(const char *filename)
 	if (stream->isEndOfStream())
 //	if (!f.is_open())
 	{
-		std::cerr << "Settings::save(\"" << filename << "\") : error, can't open file." << std::endl;
+		//std::cerr << "Settings::save(\"" << filename << "\") : error, can't open file." << std::endl;
 	}
 	else
 	{
