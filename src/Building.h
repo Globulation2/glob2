@@ -147,6 +147,8 @@ public:
 	///This is called every step. The building updates the desiredMaxUnitWorking variable using
 	///the function desiredNumberOfWorkers
 	void step(void);
+	///Value of a unit to a building when needing resource
+	int Score(Unit * u, int resource);
 	///This function subscribes any building that needs ressources carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	void subscribeToBringRessourcesStep(void);

@@ -1245,12 +1245,12 @@ void Unit::handleDisplacement(void)
 					}
 					else
 					{
-						if (attachedBuilding->type->upgradeInParallel)
+						if (attachedBuilding->type->upgradeInParallel)//Leo: ??
 						{
-							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)
+							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)//Leo: Why WALK..ARMOR?? this looks error prone
 								if (canLearn[ability] && attachedBuilding->type->upgrade[ability])
 								{
-									level[ability] = attachedBuilding->type->level + 1;
+									level[ability] = attachedBuilding->type->level + 1;//not very clean to assume a level n building can upgrade all abilities to n+1. so a school l3 upgrades explorers to attack l4?
 									UnitType *ut = race->getUnitType(typeNum, level[ability]);
 									performance[ability] = ut->performance[ability];
 								}
@@ -1264,8 +1264,6 @@ void Unit::handleDisplacement(void)
 							performance[destinationPurpose] = ut->performance[destinationPurpose];
 							//printf("New performance[%d]=%d\n", destinationPurpose, performance[destinationPurpose]);
 						}
-							
-							
 					}
 				}
 				else
