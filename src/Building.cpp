@@ -33,7 +33,6 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<2; i++)
@@ -1341,10 +1340,8 @@ score=
 	return INT_MAX-penaltyWalk-penaltyLoosingResource-penaltyHarvest-penaltySwim;
 	//std::cout << "d" << distBuilding << " dr" << distResource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << u->level[WALK] << " ha" << u->level[HARVEST] << " va" << value << std::endl << std::flush;
 }
-
 void Building::subscribeToBringRessourcesStep()
 {
-	Unit * u=NULL;
 	int value=INT_MIN;
 	static int thisTurnsResource=0;
 	if (buildingState==DEAD 
@@ -1354,19 +1351,18 @@ void Building::subscribeToBringRessourcesStep()
 	while ( neededRessource(thisTurnsResource) <= 0)
 		thisTurnsResource=(thisTurnsResource+1)%MAX_RESSOURCES;
 	if (verbose) printf("search resource %d\n", thisTurnsResource);
-	std::list<boost::tuple<int, Unit *> > sortableUnitList;
+	std::list<boost::tuple<int, int> > sortableUnitList;
 	for(int n=0; n<1024; ++n)
 	{
-		u=owner->myUnits[n];
-		value=Score(u,thisTurnsResource);
+		value=Score(owner->myUnits[n],thisTurnsResource);
 		if (value > INT_MIN)
-			sortableUnitList.push_back(boost::make_tuple(value,u));
+			sortableUnitList.push_back(boost::make_tuple(value, n));
 	}
 	sortableUnitList.sort();
-	std::list<boost::tuple<int, Unit *> >::iterator it = sortableUnitList.end();
+	std::list<boost::tuple<int, int> >::iterator it = sortableUnitList.end();
 	if (it->get<0>() > INT_MIN)
 	{
-		Unit * chosen=it->get<1>();
+		Unit * chosen=owner->myUnits[it->get<1>()];
 		if (verbose) printf(" unit %d choosen.\n", chosen->gid);
 		chosen->destinationPurpose=thisTurnsResource;
 		fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", chosen->gid, chosen->destinationPurpose);
