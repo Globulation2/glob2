@@ -76,6 +76,12 @@ void TeamStat::reset()
 	for(int i=0; i<NB_ABILITY; ++i)
 		for(int j=0; j<4; ++j)
 			upgradeState[i][j]=0;
+	for(int k=0; k<NB_UNIT_TYPE; ++k)
+	{
+		for(int i=0; i<NB_ABILITY; ++i)
+			for(int j=0; j<4; ++j)
+				upgradeStatePerType[k][i][j]=0;
+	}
 	totalFood=0;
 	totalFoodCapacity=0;
 	totalUnitFoodable=0;
@@ -238,7 +244,10 @@ void TeamStats::step(Team *team, bool reloaded)
 			for (int j=0; j<NB_ABILITY; j++)
 			{
 				if (u->performance[j])
+				{
 					stat.upgradeState[j][u->level[j]]++;
+					stat.upgradeStatePerType[(int)u->typeNum][j][u->level[j]]++;
+				}
 			}
 			if (u->typeNum==WARRIOR)
 				stat.totalAttackPower+=u->performance[ATTACK_SPEED]*u->getRealAttackStrength();

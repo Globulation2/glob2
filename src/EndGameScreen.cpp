@@ -220,7 +220,7 @@ void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 	getScreenPos(&x, &y, &w, &h);
 	if(event->motion.x > x && event->motion.x < x+w && event->motion.y > y && event->motion.y < y+h)
 	{
-		mouse_x=event->motion.x-x+21;
+		mouse_x=event->motion.x-x;
 		mouse_y=event->motion.y-y;
 	}
 	else
