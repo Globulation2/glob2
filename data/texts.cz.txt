@@ -474,6 +474,8 @@ Připojit se
 
 [lan]
 Síťová hra
+[language incomplete]
+Česky - Incomplete
 [language-code]
 cz
 [language-tr]

@@ -237,6 +237,7 @@
 [keyboard settings]
 [kick]
 [lan]
+[language incomplete]
 [language-code]
 [language-tr]
 [language]

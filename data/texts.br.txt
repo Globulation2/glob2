@@ -476,6 +476,8 @@ Ajustes de teclado
 Kickar
 [lan]
 Jogo em LAN
+[language incomplete]
+Português do Brasil - Incomplete
 [language-code]
 br
 [language-tr]

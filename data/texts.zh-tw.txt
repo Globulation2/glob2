@@ -474,6 +474,8 @@ HP
 
 [lan]
 LAN 遊戲
+[language incomplete]
+繁體中文 - Incomplete
 [language-code]
 zh-tw
 [language-tr]

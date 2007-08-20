@@ -474,6 +474,8 @@ Przyłącz się
 
 [lan]
 Gra sieciowa
+[language incomplete]
+Polski - Incomplete
 [language-code]
 pl
 [language-tr]

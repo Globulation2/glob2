@@ -436,6 +436,14 @@ void GlobalContainer::load(void)
 		assert(false);
 		exit(-1);
 	}
+	// load texts
+	if (!Toolkit::getStringTable()->loadIncompleteList("data/texts.incomplete.txt"))
+	{
+		std::cerr << "Fatal error : while loading \"data/texts.incomplete.txt\"" << std::endl;
+		assert(false);
+		exit(-1);
+	}
+	
 	Toolkit::getStringTable()->setLang(settings.defaultLanguage);
 
 	if (!runNoX)

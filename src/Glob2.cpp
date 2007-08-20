@@ -342,9 +342,26 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::TUTORIAL:
 			{
-				Engine engine;
-				if (engine.initCampaign("maps/tutorial.map") == Engine::EE_NO_ERROR)
-					isRunning = (engine.run() != -1);
+				Campaign campaign;
+				if(campaign.load("games/tutorial.txt"))
+				{
+					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
+					int rc_cms=cms.execute(globalContainer->gfx, 40);
+					if(rc_cms==CampaignMenuScreen::EXIT)
+					{
+					}
+				}
+				else
+				{
+					CampaignMenuScreen cms("campaigns/Tutorial_Campaign.txt");
+					int rc_cms=cms.execute(globalContainer->gfx, 40);
+					if(rc_cms==CampaignMenuScreen::EXIT)
+					{
+					}
+				}
+				//Engine engine;
+				//if (engine.initCampaign("maps/tutorial.map") == Engine::EE_NO_ERROR)
+					//isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::LOAD_GAME:

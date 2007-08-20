@@ -3363,6 +3363,7 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	}
 	lastPlacementX=mapX;
 	lastPlacementY=mapY;
+	game.regenerateDiscoveryMap();
 }
 
 

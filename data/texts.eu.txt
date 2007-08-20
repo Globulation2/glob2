@@ -474,6 +474,8 @@ Teklatu ezarpenak
 
 [lan]
 LAN partida
+[language incomplete]
+Euskara - Incomplete
 [language-code]
 eu
 [language-tr]
