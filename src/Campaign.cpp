@@ -154,7 +154,7 @@ bool Campaign::load(const std::string& fileName)
 	StreamBackend* backend = Toolkit::getFileManager()->openInputStreamBackend(fileName);
 	if (backend->isEndOfStream())
 	{
-		std::cerr << "Campaign::load(\"" << name << "\") : error, can't open file." << std::endl;
+		//std::cerr << "Campaign::load(\"" << fileName << "\") : error, can't open file." << std::endl;
 		delete backend;
 		return false;
 	}
@@ -186,7 +186,7 @@ void Campaign::save(bool isGameSave)
 	if(!isGameSave)
 		filename = glob2NameToFilename("campaigns", name.c_str(), "txt");
 	else
-		filename = glob2NameToFilename("games", (name+"-"+playerName).c_str(), "txt");
+		filename = glob2NameToFilename("games", name.c_str(), "txt");
 	TextOutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
 	stream->writeText(name, "campaignName");
 	stream->writeText(playerName, "playerName");
