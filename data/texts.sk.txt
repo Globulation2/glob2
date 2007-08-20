@@ -474,6 +474,8 @@ Klávesnica
 
 [lan]
 LAN Hra
+[language incomplete]
+Slovensky - Incomplete
 [language-code]
 sk
 [language-tr]

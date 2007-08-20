@@ -474,6 +474,8 @@ Tastatur
 
 [lan]
 Spiel im lokalen Netz
+[language incomplete]
+Deutsch - Incomplete
 [language-code]
 de
 [language-tr]

@@ -66,7 +66,12 @@ SettingsScreen::SettingsScreen()
 	addWidget(language);
 	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
-		languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
+	{
+		if(!Toolkit::getStringTable()->isLangComplete(i))
+			languageList->addText(Toolkit::getStringTable()->getStringInLang("[language incomplete]", i));
+		else
+			languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
+	}
 	addWidget(languageList);
 
 	// graphics part

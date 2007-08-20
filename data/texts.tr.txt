@@ -474,6 +474,8 @@ Katil
 
 [lan]
 Agda Oyna
+[language incomplete]
+Turkce - Incomplete
 [language-code]
 tr
 [language-tr]

@@ -474,6 +474,8 @@ Csatlakozás
 
 [lan]
 Játék a helyi hálózaton
+[language incomplete]
+Magyar - Incomplete
 [language-code]
 hu
 [language-tr]

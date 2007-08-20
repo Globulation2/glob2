@@ -474,6 +474,8 @@ ok
 
 [lan]
 Сетевая игра
+[language incomplete]
+Русский - Incomplete
 [language-code]
 ru
 [language-tr]

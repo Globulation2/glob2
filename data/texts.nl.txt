@@ -474,6 +474,8 @@ Toetsenbord
 
 [lan]
 LAN Spel
+[language incomplete]
+Nederlands - Incomplete
 [language-code]
 nl
 [language-tr]

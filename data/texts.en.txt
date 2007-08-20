@@ -476,6 +476,8 @@ Keyboard Settings
 Kick
 [lan]
 LAN Game
+[language incomplete]
+English - Incomplete
 [language-code]
 en
 [language-tr]

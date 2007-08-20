@@ -474,6 +474,8 @@ Unirse
 
 [lan]
 Juego LAN
+[language incomplete]
+Español - Incomplete
 [language-code]
 es
 [language-tr]

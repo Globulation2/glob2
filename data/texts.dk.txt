@@ -474,6 +474,8 @@ Tastetur instillinger
 
 [lan]
 LAN Spil
+[language incomplete]
+Dansk - Incomplete
 [language-code]
 dk
 [language-tr]

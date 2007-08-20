@@ -474,6 +474,8 @@ Impostazioni tastiera
 
 [lan]
 Gioca in rete (LAN)
+[language incomplete]
+Italiano - Incomplete
 [language-code]
 it
 [language-tr]
