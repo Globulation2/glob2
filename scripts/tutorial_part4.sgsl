@@ -1,0 +1,167 @@
+# glob2's tutorial, (c) 2003-2007 Ghislain "Court-Jus" Leveque and Stéphane Magnenat and Bradley Arsenault and Kieran P
+# This map is released under the GNU GPL, see COPYING for more infos
+
+# Tutorial, scénario 4
+# Désactivation de tout ce qui est inutile au tutorial
+# Tutorial translated into german by Manuel Soukup (and corrected by Julia Schmitt)
+# Translation to spanish Igor Támara <igor@tamarapatino.org> (and revised by Hernan Quishpe)
+# English version revised by Hernan Quishpe
+# Translated to Dutch by Raoul Verveer
+
+GuiDisable(AllianceScreen)
+GuiDisable(FlagTab)
+GuiDisable(TextStatTab)
+GuiDisable(GfxStatTab)
+GuiDisable(Swarm)
+GuiDisable(Market)
+
+show("Hahaha! We have everything a good colony would want! We have protection, upgraded buildings, Schools, a Hospital, several Inns, a Racetrack, a Swimming pool, what more could a man want? Turns out there's not much. You could continue to upgrade things if you wanted. There is in fact another level on top of the already upgraded buildings, the ultimate level 3! Reaching level 3 in a game should be a goal, as it gives you signifigant advantages over your enemy.")
+show("Hahaha ! Nous avons tout ce que peut désirer une bonne colonie ! Nous sommes protégés, avons des bâtiments améliorés, des Écoles, un Hopital, plusieurs Auberges, une Piste de Course, une Piscine, que vouloir de plus ? En fait, pas grand chose. Vous pouvez continuer à améliorer les bâtiments si vous le souhaitez, il existe un niveau au-dessus des bâtiments que nous avons déjà amélioré, l'ultime niveau 3 ! Atteindre le niveau 3 devrait etre un but en soi dans le jeu, car cela vous donne un avantage significatif sur vos ennemis.", fr)
+show("Hahaha! Du hast auf jeden Fall alles, was eine gute Kolonie braucht. Du hast Verteidigung, verbesserte Gebäude, Schulen, ein Hospital, einige Gasthöfe, eine Rennstrecke, ein Schwimmbad... was könnte ein Mensch noch wollen? Schaut aus, als wäre es nicht mehr viel. Du kannst weiter Gebäude verbessern wenn du willst, es gibt noch einen 3. Level. Level 3 zu erreichen sollte das Ziel jedes Spiels sein, da es dir bedeutsame Vorteile gegenüber deinem Feind verschafft.",de)
+show("Está muy bien!  Tenemos todo aquello que una buena colonia pudiera desear!  Protección, edificaciones actualizadas, colegios, un hospital, muchas tabernas, una pista de carreras, una piscina ¿qué otra cosa quisiera un hombre? Parece que no mucho.  Puedes continuar actualizando las construcciones si lo deseas, pero hay un límite para las edificaciones ya actualizadas, el máximo es 3!  Alcanzar el tercer nivel debe ser una meta, y te da ventaja significativa sobre tus enemigos.",es)
+show("Hahaha! We hebben nu alles wat een goede kolonie nodig heeft! We hebben een goede verdediging, verbeterde gebouwen, een School, een Ziekenhuis, een aantal Herbergen en Racebaan, een Zwembad... wat willen we nog meer? Veel meer te wensen is er dan ook niet. Je kan door blijven gaan met het verbeteren van je gebouwen. Nu we het daar over hebben: het is mogelijk om gebouwen van een nog hoger nivau te bouwen. Het ultieme nivau drie! Het bereiken van niveau drie in een spel is een belangrijk doel, omdat dit een significante voorsprong geeft op je vijanden.",nl)
+space
+
+show("Talking about enemies, have you managed to spot yours? I think he is hiding north-west from our base. You can scroll there now.")
+show("En parlant d'ennemis, avez-vous pensé à rechercher les votres ? Je pense qu'ils se cachent au Nord-Ouest de notre base. Vous pouvez aller regarder dès maintenant.", fr)
+show("Wo wir gerade über Feinde reden: Hast du es geschafft deinen zu finden? Ich denke er versteckt sich im Nordwesten deiner Basis. Du kannst nun dorthin scrollen.",de)
+show("Hablando de enemigos  ¿Haz logrado ver dónde están los tuyos?  Creo que se esconde al noroeste de nuestra base, puedes dar un vistazo.",es)
+show("En nu we het over vijanden hebben, heb je de jouwe al gezien? Volgens mij verstopt hij zich ten noord-westen van onze basis. Neem er maar eens een kijkje.",nl)
+space
+
+show("It seems like you can see the area, but not very clearly. The area is covered with something called 'fog of war'. If we want to see who's hiding under this dark cloud, we need to yank an explorer over, but how?")
+show("Vous pouvez voir cette zone mais pas très clairement. La zone est couverte par ce que l'on appelle le 'brouillard de guerre'. Si nous voulons voir qui se cache derrière ce nuage noir, nous devrions envoyer une exploratrice, mais comment ?", fr)
+show("Es sieht danach aus, dass du das Gebiet zwar sehen kannst, aber nicht sehr gut. Das Gebiet ist überlagert vom 'Nebel des Krieges'. Um zu sehen was sich unter dem Nebel befindet müssen wir einen Entdecker dorthin bekommen. Aber wie?",de)
+show("Puedes ver el área, pero no claramente.  El área está cubierta con algo llamado 'niebla de guerra'.  Si queremos ver quién se está escondiendo bajo esa nube oscura, tenemos que enviar un explorador, pero ¿cómo?",es)
+show("Je kan het gebied wel zien, maar niet erg helder. Het gebied is bedekt met iets dat we 'oorlogsmist' noemen. Als we willen zien wat er zich onder deze donkere wolk bevind, moeten we er een verkenner op af sturen. Maar hoe?",nl)
+space
+
+GuiEnable(FlagTab)
+show("Look under the minimap. You will notice a new button just appeared. This is called the 'Flag Tab'. Click on it now. It contains a pile of useful tools for controlling your units. These are called 'flags' and 'zones'.")
+show("Regardez sous la mini-carte, un nouveau bouton vient d'apparaître. Il s'agit de l'Onglet 'Drapeaux'. Cliquez dessus. Il contient un ensemble d'outils pour contrôler vos unités que l'on appelle 'drapeaux' et 'zones'.", fr)
+show("Schau unter die Minikarte. Dir wird dort ein neuer Button auffallen. Dieser Button ist der 'Flaggen-Button'. Klicke nun darauf. Er enthält eine Reihe nützlicher Werkzeuge um deine Einheiten zu kontrollieren. Diese Werkzeuge sind die 'Flaggen' und dei 'Zonen'.",de)
+show("Mira bajo el minimapa, verás que ha aparecido un botón.  Se llama la 'Pestaña de banderas'. Clic en ella. Contiene un montón de herramientas útiles para controlar tus unidades, llamadas 'banderas' o 'zonas'.",es)
+show("Kijk onder de minikaart. Er is zojuist een nieuwe knop verschenen. Deze knop is het 'Vlag Tabblad'. Klik er op. Het biedt ons een aantal nuttige gereedschappen waarmee we onze eenheden kunnen beïnvloeden. Deze gereedschappen noemen we 'Vlaggen' en 'Zones'.",nl)
+space
+
+show("On the top row, there are flags. You're looking for one particular flag, called the 'Explorer Flag'. It has the shape of a kite. You can click on it, and it is placed similiar to a building, with one exception: you can place flags anywhere! Over water, over land, over resources, and even in dark zones. This is exactly what we want!")
+show("Les drapeaux se trouvent sur la première ligne. Vous êtes à la recherche d'un drapeau particulier, appelé 'Drapeau d'exploration'. Il a la forme d'un cerf-volant. Vous pouvez cliquer dessus, il se place comme un bâtiment à l'exception qu'il est possible de le déposer n'importe où ! Sur l'eau, la terre, les ressources et même dans les zones sombres. C'est exactement ce que nous voulons !", fr)
+show("Oben sind die 3 Flaggen. Du suchst die 'Entdecker Flagge'. Sie hat das Aussehen eines Drachen. Du kannst auf sie klicken und sie wie ein Gebäude platzieren. Mit einer Ausnahme: du kannst sie, im Gegensatz zu Gebäuden, überall platzieren! Über Wasser, Land, Ressourcen und natürlich über dunklen Zonen. Genau das, was wir brauchen!",de)
+show("En la fila superior hay banderas. Estás buscando una, llamada la 'Bandera de Explorador'.  Tiene forma de cometa.  Selecciónala, se ubica de la misma forma que una edificación, con una excepción: puedes colocar banderas donde desees! Sobre agua, tierra, recursos, e incluso zonas inexploradas.  Eso es justamente lo que queremos!",es)
+show("In de bovenste rij bevinden zich de vlaggen. We zoeken nu één vlag in het bijzonder, namelijk de 'Verkenningsvlag'. Hij heeft de vorm van een vlieger. Je kan erop klikken en op eenzelfde manier plaatsen als je een gebouw plaatst, met één uizondering: vlaggen kunnen overal geplaatst worden! In het water, op het land, op grondstoffen en zelfs in donkere gebieden. Dit is precies wat we nodig hebben!",nl)
+space
+
+show("Its time to place a flag. Place it right over your enemy base. You may have to guess a bit about where the flag should go if you can't see the base, but it is not a problem. You will see it all soon anyway. Right-click to exit construction mode.")
+show("Il est temps de poser un drapeau. Placez-le exactement sur la base ennemi, si vous ne voyez pas la base, placez-le au jugé, ne vous inquiétez pas, elle sera bientôt découverte. Faites un clic droit pour sortir du mode construction.", fr)
+show("Es ist Zeit eine Flagge zu platzieren. Platziere sie über der Feindbasis. Du wirst möglicherweise ein bisschen raten müssen, wo sie sich befindet, aber das ist kein Problem, du wirst sie sowieso bald sehen. Rechtsklicke um den Positionsmodus zu verlassen.",de)
+show("Es hora de colocar una bandera. Colócala justo encima de la base enemiga. Deberás adivinar acerca del sitio donde debería ir si no puedes ver la base, pero no es un problema. Verás todo rápidamente.  Usa el botón derecho para ir al modo de construcción.",es)
+show("Het is tijd om een vlag te plaatsen. Plaats hem precies op de vijandige basis. Je zult een beetje moeten gokken waar dat is, als je de basis niet kunt zien, maar dat maakt niets uit. Je zal de basis snel genoeg zien. Klik met de rechter muisknop om de constructiemodus te verlaten.",nl)
+space
+
+show("You will notice a big line surrounding the flag. That is the flag's radius, and is where the explorer will come and explore in. You will notice the explorer coming soon. If it doesn't, remember to check the numbers on the top of the screen to see if you still have explorers left. If necessary, produce a new one using your Swarm. Continue with space once it arrives.")
+show("Vous remarquerez qu'une ligne entoure le drapeau. Il s'agit de son rayon et c'est à l'intérieur du cercle que les exploratrices effectueront des recherches. Elles ne tarderont pas à arriver. Appuyez sur espace lorsque c'est le cas.", fr)
+show("Um die Flagge ist eine große blaue Linie. Dies ist der Flaggenradius. In diesem Radius wird der Entdecker herumfliegen. Der Entdecker wird bald da sein. Setze die Einführung mit der Leertaste fort, sobald der Entdecker angekommen ist.",de)
+show("Notarás una linea grande que rodea la bandera.  Es el radio de la bandera, y es donde el explorador se inscribirá.  Verás que el explorador vendrá en poco tiempo. Una vez que haya llegado usa la barra espaciadora.",es)
+show("Je zult een grote lijn rondom de vlag zien. Dit is de reikwijdte van de vlag en geeft aan waar de verkenner zijn werk zal doen. Je zal de verkenner snel zien arriveren. Zo niet, kijk dan naar de getallen bovenin het scherm en controleer of je nog verkenners hebt. Produceer zonodig een nieuwe verkenner met je Zwerm. Druk op de spatiebalk zodra hij er is.",nl)
+space
+
+show("Ohh my! Our enemy seems to have lots of workers, and a sizeable army, and for some reason, they're gathering all at the same spot. Could this mean ... they're planning an attack? I think so! Quick! We have to set up some defences!")
+show("Ho mon Dieu ! Nos ennemis semblent disposer de beaucoup d'ouvrières et d'une armée raisonnable. Pour une raison étrange, elles sont toutes rassemblées au même endroit. Cela signifierait-il... qu'ils préparent une attaque ? C'est ce que je pense ! Vite ! Nous devons préparer des défenses !", fr)
+show("Ohh! Unser Feind hat anscheinend viele Arbeiter und eine große Armee die sich an einem Punkt sammelt. Könnte das bedeuten, dass sie einen Angriff planen? Ich denke schon! Schnell! Wir müssen eine Verteidigung aufbauen.",de)
+show("Oh Oh! Nuestro enemigo parece que tiene muchos trabajadores, y un ejército de cierto tamaño, y por alguna razón, los está acumulando en cierto lugar.  Esto podría significar... ¿Estarán planeando un ataque? Eso Creo! Rápido!  tenemos que ubicar nuestras defensas!",es)
+show("Grote griebels! Onze vijand heeft veel werkers en een behoorlijk groot leger. Ze lijken ze zich te verzamelen op één punt. Zou dit beteken dat... ze zich opmaken voor een aanval? Ik denk het wel! Snel! We moeten onze verdediging opzetten!",nl)
+space
+
+show("To set up defenses, well, we're going to need to set up a defense area. If you click on the same tab that you clicked on to make the explorer flag, you will see a set of three 'zones' selectable just under the flags. The blue zone is the one we are after, so click on it. Just under the zones, there are two options, one with an up arrow, and one with a down arrow. We want the down arrow, since we are placing a zone, rather than removing it (which would be the up arrow).")
+show("Pour cela, nous allons devoir établir une zone de défense. Si vous cliquez sur le même onglet que lorsque nous avons créé le drapeau d'exploration, vous verrez qu'il existe trois 'zones' qu'il est possible de sélectionner, juste sous les drapeaux. La zone bleue est celle que nous cherchons, cliquez donc dessus. Juste sous les zones, deux options sont disponibles, l'une avec une flèche vers le haut, l'autre avec une flèche vers le bas. Nous avons besoin de celle avec la flèche vers le bas, ce qui signifie que nous définissons une zone (l'autre option permet de supprimer une zone).", fr)
+show("Um eine Verteidigung aufzubauen brauchst du eine Verteidigungszone. Wenn du auf den Flaggen-Button klickst, siehst du unter den 3 Flaggen die 3 Zonen. Diese kannst du genauso auswählen wie die Flaggen. Die blaue Zone ist die, welche du jetzt benötigst, klicke darauf. Gleich unter den Zonen sind 2 Optionen, eine mit einem Pfeil nach oben und eine mit einem Pfeil nach unten. Da du eine Zone anlegen willst klicke auf den Pfeil nach unten. Zum Entfernen einer Zone einfach auf den Pfeil nach oben klicken.",de)
+show("Para ubicar bien la defensa, necesitaremos establecer un área de defensa.  Si usas la pestaña que empleaste para crear la bandera de explorador, verás un conjunto de tres 'zonas', se pueden seleccionar bajo las banderas.  La zona azul es la que buscamos, clic en ella.  Y bajo las zonas hay dos opciones, una con una flecha arriba y otra abajo.  Usaremos la que está hacia abajo, puesto que estamos estableciendo una zona, en lugar de removerla, que se lograría con la otra flecha.",es)
+show("Om de verdediging op te zetten, moeten we een gebied selecteren waarin verdedigd wordt. Als je op hetzelfde tabblad klikt dat we gebruikte voor de verkenningsvlag, zie je dat er drie soorten 'zones' beschikbaar zijn. We hebben nu de blauwe zone nodig, dus klik daar maar op. Vlak onder de zones zijn twee opties: één met een pijl omhoog en één met een pijl omlaag. We willen de pijl omlaag, omdat we nu een zone willen plaatsten. Een zone verwijderen gaat dus met de pijl omhoog.",nl)
+space
+
+show("Now we have to select a pattern. There are several to choose from. My personal recommendation is to choose the large, square one, but don't let me stop you from choosing the circular one if you like it.")
+show("Nous devons maintenant sélectionner un modèle. Il en existe plusieurs, je vous conseille le grand carré, mais vous pouvez choisir le cercle s'il vous fait envie.", fr)
+show("Nun musst du eine Struktur wählen. Es gibt einige zur Auswahl. Meine Empfehlung wäre das große, rechteckige, aber das soll dich nicht davon abhalten das kreisförmige Muster zu wählen, wenn du das möchtest.",de)
+show("Ahora tenemos que seleccionar un patrón.  Hay varios para escoger. Mi recomendación especial es escoger el largo y cuadrado, pero no te detendré si vas a escoger el circular o el que te guste.",es)
+show("Nu kunnen we een patroon selecteren. Er zijn er een aantal om uit te kiezen. Mijn persoonlijke voorkeur gaat uit naar het grote vierkant. Laat dat je niet tegenhouden om de ronde vorm te kiezen als dat je beter lijkt.",nl)
+space
+
+show("Finally, we are able to place some zone. You can place a zone just by clicking on the main screen. If you want to place a lot of zone, hold the mouse button down, and drag it all over. We have to anticipate where our enemy will attack from. Looking around, it may seem to you that the fastest way for them to get into your base is through that little inlet where we placed our towers, so place some defense zone just behind of your towers.")
+show("Enfin, nous pouvons placer la zone. Pour cela, cliquez simplement sur l'écran principal. Si vous voulez placer une grande zone, maintenez le bouton de la souris enfoncé et dessinez-la. Nous devons anticiper l'origine de l'attaque ennemie. En regardant attentivement l'environnement, il semble que la façon la plus rapide pour eux d'atteindre votre base est de passer par cette petite bande de terre où nous avons placé nos tours. Mettons donc une zone de défense juste derrière celles-ci.", fr)
+show("Nun bist du in der Lage die Zone zu platzieren. Das kannst du tun indem du einfach auf den Hauptbildschirm klickst. Wenn du eine größere Zone willst kannst du die Maustaste gedrückt halten und die Zone 'malen'. Du musst dir überlegen, von wo dein Feind angreifen wird. Schau dich um, der kürzeste Weg in deine Basis ist der schmale Übergang, dort, wo deine Türme stehen. Deshalb solltest du eine Verteidigungszone direkt hinter den Türmen anlegen.",de)
+show("Finalmente, podemos establecer una zona.  La estableces seleccionando en la pantalla principal.  Si deseas una gran zona, usa el arrastre del ratón.  Tenemos que anticipar de dónde vendrá el ataque. En un vistazo rápido, es muy posible que la vía más rápida para que ellos lleguen a tu base es a través de esa abertura frente a la cuál colocamos nuestras torres.  Coloquemos la zona de defensa, justo detrás de las torres.",es)
+show("Nu kunnen we de zone plaatsen. Je kan een zone plaatsen gewoon door te klikken op het hoofdscherm. Als je een grote zone wilt plaatsen, houd dan de muisknop ingedrukt en sleep de zone groter. We moeten goed anticiperen op waar de vijand vandaan komt. Als je eens rondkijkt, lijkt de snelste weg naar je basis door het pad waar we de Torens hebben gebouwd. Plaats de verdegingszone dus vlak achter je Torens.",nl)
+space
+
+show("You will see some of your warriors rushing over to the defense zone. This is great! We are defending the spot. Remember to make enough defense zone to hold all of the warriors, but too much defense zone wil spread your warriors out instead of defending this one particular spot. Now, all we can do is wait..")
+show("Vous observerez que certaines de vos guerrières se précipitent à la zone de défense. C'est bien ! Nous défendons la position. Souvenez vous de créer suffisamment de zones de défense pour occuper toutes vos guerrières, mais pas trop pour ne pas qu'elles se dispersent. Maintenant, tout ce que nous avons à faire est attendre...", fr)
+show("Du wirst einige von deinen Kriegern sehen, die auf die Verteidigungszone zu rennen. Das ist großartig! Wir verteidigen diesen Punkt. Mache eine so große Zone, dass alle Krieger genutzt werden, aber zu groß darf sie auch nicht werden, sonst verteilen sich die Kämpfer zu sehr um einen Punkt zu sichern. Nun können wir nur noch warten...",de)
+show("Verás algunos guerreros aprestarse hacia la zona de defensa.  Es magnífico!  Estamos defendiendo el punto.  Recuerda hacer suficiente zona de defensa para colocar a los guerreros en posición. Demasiada zona los desplegará en lugar de defender puntos específicos. Ahora, esperemos a ver qué sucede...",es)
+show("De soldaten rennen nu naar de verdedigingszone. Dit is fantastisch! We verdedigen die plaats nu. Houd er rekening mee om de verdigingszone groot genoeg te maken voor al je soldaten, maar een te grote verdedigingszone zal je soldaten te veel verspreiden in plaats van deze specifieke plek te verdedigen. Nu hoeven we alleen nog maar te wachten...",nl)
+space
+hide
+
+summonFlag("attack_flag", 125, 70, 4, 16, 1)
+
+wait(area("enemy_unit_close_zone", 1))
+show("I think they're getting close!")
+show("Je pense qu'ils arrivent !", fr)
+show("Ich denke sie kommen näher!",de)
+show("Creo que se están acercando!",es)
+show("Ik heb het gevoel dat ze dichtbij zijn!",nl)
+space
+
+wait(area("enemy_attack_zone", 1))
+show("We're under attack! But watch how whimsically the enemy fights. I bet we could eliminate them in a snap.")
+show("Nous sommes attaqués ! Mais regardez comment se bat l'ennemi, je pense que nous n'en ferons qu'une bouchée.", fr)
+show("Wir werden angegriffen! Aber sieh nur wie schlecht der Feind kämpft. Ich wette wir können ihn mit einem Schlag auslöschen.",de)
+show("Estamos siendo atacados! Pero mira cómo pelea nuestro enemigo, apuesto a que los acabamos sin más.",es)
+show("We worden aangevallen! Maar kijk hoe belabberd de vijand vecht. Ik wed dat we ze in een mum van tijd hebben verslagen.",nl)
+space
+hide
+
+wait(not(area("enemy_attack_zone", 1)))
+destroyFlag("attack_flag")
+show("We survived the attack! Excellent! I think it's about time we launched an attack of our own. To do that, use the flags menu, which is under the minimap, and look for the flag that has a bunch of spikes on it. Now, scroll over to the enemies base. Place a flag over their most important building: the Swarm!")
+show("Nous avons survécu à l'attaque ! Excellent ! Je pense qu'il est temps d'en lancer une de notre côté. Pour cela, utilisé le menu des drapeaux, sous la mini-carte, et recherchez celui qui porte des pics. Maintenant centrez l'écran sur la base ennemi. Placez un drapeau sur leur bâtiment le plus important : la Ruche !",fr)
+show("Wir haben den Angriff überlebt! Super! Ich denke, es ist an der Zeit, dass wird selbst einen Angriff starten. Um dies zu tun benutze das Flaggen-Menü unter der Minikarte. Suche die Flagge, die aussieht wie ein Morgenstern. Scrolle nun zur Feindbasis. Platziere die Flagge über ihrem wichtigsten Gebäude: Ihrem Stock!",de)
+show("Sobrevivimos al ataque! Excelente! Creo que es hora de lanzar un ataque por nuestra cuenta.  Para hacerlo, usa el menú de banderas, que está bajo el minimapa y busca la bandera que tiene muchas puntas en ella.  Dirígete a la base enemiga y coloca la bandera sobre su construcción más importante: La colmena!",es)
+show("We hebben de aanval overleefd! Geweldig! Ik denk dat het tijd wordt om zelf over te gaan op de aanval. Gebruik daarvoor weer het vlag tabblad onder de minikaart en zoek voor de puntige vlag. Ga nu naar de basis van de vijand en plaats de vlag op het belangrijkste gebouw: de Zwerm!",nl)
+space
+
+show("Now right-click, and then click on the flag. There are a few things we might want to change. First of all, assign more than one warrior to the flag. Next, make the radius smaller, as to focus the warriors onto the Swarm rather than spreading them apart. Now, wait, and watch the magic!")
+show("Maintenant, effectuez un clic droit puis cliquez sur le drapeau. Il y a deux ou trois choses que nous devrions changé. Tout d'abord, assignons plus d'un guerrier au drapeau. Ensuite, réduisons le rayon d'influence du drapeau pour concentrer les guerriers sur la ruche plutôt que les disperser. Maintenant, attendez et admirez !", fr)
+show("Rechtsklicke und klicke dann auf die Flagge. Es gibt ein paar Dinge zu ändern. Als erstes teile der Flagge mehr Kämpfer zu. Dann solltest du den Radius schmaler machen, damit die Krieger sich auf den Stock konzentrieren und nicht auf die umliegende Gegend. Nun warte ab und sieh, was geschieht.",de)
+show("Usa ahora el botón derecho, y posteriormente selecciona la bandera con el izquierdo.  Hay ciertas cosas que deseamos cambiar.  Primero que todo, asignemos más de un guerrero a la bandera. Ahora hagamos el radio más pequeño, para enfocar los esfuerzos de nuestros guerreros sobre la colmena en lugar de desplegarlos.  Espera y mira la magia!",es)
+show("Klik nu op de rechter muisknop en vervolgens op de vlag. Er zijn een aantal instellingen die we willen veranderen. Ten eerste willen we meer eenheden aan de vlag toewijzen. Daarna willen we de reikwijdte kleiner maken om de soldaten ertoe te dwingen naar de Zwerm te gaan in plaats van zich over het gebied te verspreiden. En nu maar wachten en de magie aanschouwen!",nl)
+space
+hide
+
+
+wait(area("starting_attack_zone", 0))
+show("Let the attack begin! I think we will have to work our way through these towers to get to the Swarm, but that should not be much of a challenge.")
+show("Que l'attaque commence ! Je pense que nous allons devoir tailler notre route entre ces tours pour prendre la rouge, mais cela ne devrait pas etre trop compliqué.", fr)
+show("Lass den Angriff beginnen! Ich denke du wirst dir den Weg durch ihre Mauern und Türme bahnen müssen, das sollte aber keine große Herausforderung sein.",de)
+show("Que comience el ataque! Creo que tendremos que limpiar el camino de esas torres para poder llegar a la colmena, aunque no es gran cosa.",es)
+show("Laat de aanval beginnen! We zullen ons een weg moeten werken langs de Torens om bij de Zwerm te komen, maar dat zal geen grote uitdaging vormen.",nl)
+space
+hide
+
+wait(area("main_attack_zone", 0))
+show("We're almost there! Lets show those aqua globs who's boss!")
+show("Nous y sommes presque! Montrons à ces globules aquatiques qui est le chef !", fr)
+show("Du bist fast da. Zeige den Aquas, wer hier der Boss ist!",de)
+show("Estamos llegando! Mostremos a esos glóbulos de agua quién es el jefe!",es)
+show("We zijn er bijna! We zullen die Aqua globules eens laten zien wie hier de baas is!",nl)
+space
+hide
+
+wait(Swarm(1, 1) = 0)
+show("You did it! Congratulations! This concludes the tutorial. I hope you have learned a lot from the tutorial, and it should jump start your way into playing Globulation 2 like a pro!")
+show("Vous avez réussi ! Félicitations ! Ce didacticiel est maintenant terminé, j'espère qu'il vous a beaucoup appris, vous etes maintenant pret à jouer à Globulation 2 comme un pro !", fr)
+show("Du hast es geschafft! Dies schließt die Einführung ab. Ich hoffe du hast viel gelernt - es sollte dir eine Starthilfe auf dem Weg zum Profi sein.",de)
+show("Lo hiciste! Felicitaciones! Esto concluye el tutorial, espero que hayas aprendido mucho acerca del tutorial, y que te haya abierto el camino para jugar Globulation 2 como un profesional!",es)
+show("Het is je gelukt! Gefeliciteerd! Dit beëindigd het oefenspel. Ik hoop dat je er veel van hebt geleerd en dat je nu een vliegende start hebt gemaakt om Globulation 2 te spelen als een professional!",nl)
+space
+
+win(0)
