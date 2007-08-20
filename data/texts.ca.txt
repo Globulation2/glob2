@@ -474,6 +474,8 @@ Unir-se
 
 [lan]
 Joc en LAN
+[language incomplete]
+Català - Incomplete
 [language-code]
 ca
 [language-tr]

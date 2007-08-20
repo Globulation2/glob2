@@ -474,6 +474,8 @@ AIWarrush
 
 [lan]
 Игра у локалној мрежи
+[language incomplete]
+Српски - Incomplete
 [language-code]
 sr
 [language-tr]

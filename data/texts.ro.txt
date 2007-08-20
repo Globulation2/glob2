@@ -474,6 +474,8 @@ Alăturăte
 
 [lan]
 Joc in reţea locală LAN
+[language incomplete]
+Româneste - Incomplete
 [language-code]
 ro
 [language-tr]

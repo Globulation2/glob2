@@ -474,6 +474,8 @@ Keyboard Settings
 
 [lan]
 LAN Game
+[language incomplete]
+العربيه - incomplete
 [language-code]
 ar
 [language-tr]

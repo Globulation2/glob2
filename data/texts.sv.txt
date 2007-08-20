@@ -474,6 +474,8 @@ Tangentbord
 
 [lan]
 LAN Spel
+[language incomplete]
+Svenska - Incomplete
 [language-code]
 sv
 [language-tr]

@@ -474,6 +474,8 @@ Vključi se
 
 [lan]
 LAN Igra
+[language incomplete]
+Slovenščina - Incomplete
 [language-code]
 si
 [language-tr]

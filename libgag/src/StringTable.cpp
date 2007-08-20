@@ -43,13 +43,37 @@ namespace GAGCore
 			delete strings[i];
 	}
 	
+	bool StringTable::loadIncompleteList(const char *filename)
+	{
+		// Read index file
+		InputLineStream *inputLineStream= new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+		if (inputLineStream->isEndOfStream())
+		{
+			delete inputLineStream;
+			return false;
+		}
+		else
+		{
+			while (!inputLineStream->isEndOfStream())
+			{
+				const std::string &s = inputLineStream->readLine();
+				if (s.find("*") != std::string::npos)
+					incomplete.push_back(true);
+				else
+					incomplete.push_back(false);
+			}
+			delete inputLineStream;
+		}
+		return true;
+	}
+	
+	
 	/*
 		Load, argument is a file listing the key file and translation files
 		
 		The key file contains all keys, each one on a different line
 		A translation file contains pair of key-value for the given translation
 	*/
-	
 	bool StringTable::load(const char *filename)
 	{
 		std::string keyFile;

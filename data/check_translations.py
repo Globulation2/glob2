@@ -1,4 +1,4 @@
-changes={}
+changes={"[%0 incomplete]" : "[language incomplete]"}
 
 def translation_check(filename, keys):
     print "Examining %s" % (filename)

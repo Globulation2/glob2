@@ -40,7 +40,9 @@ namespace GAGCore
 		void setLang(int l) { actLang = l; }
 		void setDefaultLang(int l) { defaultLang = l; }
 		int getLang(void) { return actLang; }
+		bool isLangComplete(int l) { return !incomplete[l]; }
 		int getNumberOfLanguage(void) { return languageCount; }
+		bool loadIncompleteList(const char *filename);
 		bool load(const char *filename);
 		const char *getString(const char *stringname) const;
 		bool doesStringExist(const char *stringname) const;
@@ -53,6 +55,7 @@ namespace GAGCore
 		int actLang;
 		int defaultLang;
 		int languageCount;
+		std::vector<bool> incomplete;
 		
 	public:
 		enum {AI_NAME_SIZE=4};

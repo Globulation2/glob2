@@ -474,6 +474,8 @@ Joindre
 
 [lan]
 Jeu en réseau local
+[language incomplete]
+Français - Incomplet
 [language-code]
 fr
 [language-tr]
