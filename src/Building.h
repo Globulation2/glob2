@@ -28,8 +28,6 @@
 #include "UnitConsts.h"
 #include "Order.h"
 #include "boost/tuple/tuple.hpp"
-#include "boost/lexical_cast.hpp"
-
 #include "boost/tuple/tuple_comparison.hpp"
 
 namespace GAGCore

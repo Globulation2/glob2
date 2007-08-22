@@ -32,6 +32,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "GameGUI.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -933,56 +934,43 @@ void Building::updateUnitsWorking(void)
 	}
 	else
 	{
-		updateUnitsWorkingFreeAllThatBringUnwantedRessources();
-		while (unitsWorking.size()>(unsigned)desiredMaxUnitWorking)
+		//updateUnitsWorkingFreeAllThatBringUnwantedRessources();
+		std::list<boost::tuple<int, int> > sortableUnitList;
+		for (std::list<Unit *>::iterator it=unitsWorking.begin();
+			it!=unitsWorking.end();
+			++it)
 		{
-			int maxDistSquare=0;
-
-			Unit *fu=NULL;
-			std::list<Unit *>::iterator ittemp;
-			// Second choice: free an unit who has no ressource..
-			if (fu==NULL)
+			int r=(*it)->carriedRessource;
+			int value=Score(*it,r);
+			sortableUnitList.push_back(boost::make_tuple(value, (*it)->gid));
+		}
+		if (sortableUnitList.size() > 0)
+		{
+			if (verbose)
 			{
-				int minDistSquare=INT_MAX;
-				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-				{
-					int r=(*it)->carriedRessource;
-					if (r<0)
-					{
-						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-						if (newDistSquare<minDistSquare)
-						{
-							minDistSquare=newDistSquare;
-							fu=(*it);
-							ittemp=it;
-						}
-					}
-				}
+				printf(" %d units found\n", sortableUnitList.size());
+				for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
+					it2!=sortableUnitList.end();
+					it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
 			}
-
-			// Third choice: free any unit..
-			if (fu==NULL)
-				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-				{
-					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (newDistSquare>maxDistSquare)
-					{
-						maxDistSquare=newDistSquare;
-						fu=(*it);
-						ittemp=it;
-					}
-				}
-
-			if (fu!=NULL)
+			sortableUnitList.sort();
+			if (verbose)
 			{
-				if (verbose)
-					printf("bgid=%d, we free the unit gid=%d\n", gid, fu->gid);
-				// We free the unit.
-				fu->standardRandomActivity();
-				unitsWorking.erase(ittemp);
+				printf(" %d units found\n", sortableUnitList.size());
+				for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
+					it2!=sortableUnitList.end();
+					it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
+				//printf(" unit %d choosen. (Unit %d in upper list)\n", chosen->gid, it->get<1>());
 			}
-			else
-				break;
+			for (std::list<boost::tuple<int, int> >::iterator it = sortableUnitList.begin();
+				unitsWorking.size() > (unsigned)desiredMaxUnitWorking;
+				it++)
+			{
+				Unit * chosen=owner->myUnits[it->get<1>() % 1024];
+				chosen->standardRandomActivity();
+				unitsWorking.erase(chosen);
+				if (verbose) printf("fired unit %D.\n", it->get<1>() % 1024);
+			}
 		}
 	}
 }
@@ -1148,8 +1136,6 @@ bool Building::tryToBuildingSiteRoom(void)
 	}
 	return isRoom;
 }
-
-#include "GameGUI.h"
 
 void Building::addForbiddenZoneToUpgradeArea(void)
 {
@@ -1358,18 +1344,33 @@ void Building::subscribeToBringRessourcesStep()
 		if (value > INT_MIN)
 			sortableUnitList.push_back(boost::make_tuple(value, n));
 	}
-	sortableUnitList.sort();
-	std::list<boost::tuple<int, int> >::iterator it = sortableUnitList.end();
-	if (it->get<0>() > INT_MIN)
+	if (sortableUnitList.size() > 0)
 	{
+		if (verbose)
+		{
+			printf(" %d units found\n", sortableUnitList.size());
+			for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
+				it2!=sortableUnitList.end();
+				it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
+		}
+		sortableUnitList.sort();
+		sortableUnitList.reverse();
+		std::list<boost::tuple<int, int> >::iterator it = sortableUnitList.begin();
 		Unit * chosen=owner->myUnits[it->get<1>()];
-		if (verbose) printf(" unit %d choosen.\n", chosen->gid);
+		if (verbose)
+		{
+			printf(" %d units found\n", sortableUnitList.size());
+			for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
+				it2!=sortableUnitList.end();
+				it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
+			printf(" unit %d choosen. (Unit %d in upper list)\n", chosen->gid, it->get<1>());
+		}
 		chosen->destinationPurpose=thisTurnsResource;
 		fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", chosen->gid, chosen->destinationPurpose);
 		unitsWorking.push_back(chosen);
 		chosen->subscriptionSuccess(this, false);
-		updateCallLists();//if we did anything, update call lists
 	}
+	updateCallLists();//if we did anything, update call lists
 }
 
 void Building::subscribeForFlagingStep()
