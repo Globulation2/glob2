@@ -135,7 +135,8 @@ GameGUI::GameGUI()
 
 GameGUI::~GameGUI()
 {
-
+	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
+		delete *it;
 }
 
 void GameGUI::init()
@@ -329,56 +330,65 @@ void GameGUI::step(void)
 	{
 		if (event.type==SDL_MOUSEMOTION)
 		{
-                        lastMouseX = event.motion.x;
-                        lastMouseY = event.motion.y;
-                        lastMouseButtonState = event.motion.state;
-                        int mouseMapX, mouseMapY;
-                        bool onViewport = (lastMouseX < globalContainer->gfx->getW()-128);
-                        /* We keep track for each mouse motion event
-                           of which map cell it corresponds to.  When
-                           dragging, we will use this to make sure we
-                           process at least one event per map cell,
-                           and only discard multiple events when they
-                           are for the same map cell.  This is
-                           necessary to make dragging work correctly
-                           when drawing areas with the brush. */
-                        if (onViewport) {
-                          game.map.cursorToBuildingPos (lastMouseX, lastMouseY, 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY); }
-                        else {
-                          /* We interpret all locations outside the
-                             viewport as being equivalent, and
-                             distinct from any map location. */
-                          mouseMapX = -1;
-                          mouseMapY = -1; }
-                        // fprintf (stderr, "mouse motion: (lastMouseX,lastMouseY): (%d,%d), (mouseMapX,mouseMapY): (%d,%d), (oldMouseMapX,oldMouseMapY): (%d,%d)\n", lastMouseX, lastMouseY, mouseMapX, mouseMapY, oldMouseMapX, oldMouseMapY);
-                        /* Make sure dragging does not skip over map cells by
-                           processing the old stored event rather than throwing
-                           it away. */
-                        if (wasMouseMotion
-                            && (lastMouseButtonState & SDL_BUTTON(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
-                            && ((mouseMapX != oldMouseMapX)
-                                || (mouseMapY != oldMouseMapY))) {
-                          // fprintf (stderr, "processing old event instead of discarding it\n");
-                          processEvent(&mouseMotionEvent); }
-                        oldMouseMapX = mouseMapX;
-                        oldMouseMapY = mouseMapY;
+			lastMouseX = event.motion.x;
+			lastMouseY = event.motion.y;
+			lastMouseButtonState = event.motion.state;
+			int mouseMapX, mouseMapY;
+			bool onViewport = (lastMouseX < globalContainer->gfx->getW()-128);
+			/* We keep track for each mouse motion event
+				of which map cell it corresponds to.  When
+				dragging, we will use this to make sure we
+				process at least one event per map cell,
+				and only discard multiple events when they
+				are for the same map cell.  This is
+				necessary to make dragging work correctly
+				when drawing areas with the brush. */
+			if (onViewport)
+			{
+				game.map.cursorToBuildingPos (lastMouseX, lastMouseY, 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
+			}
+			else
+			{
+				/* We interpret all locations outside the
+					viewport as being equivalent, and
+					distinct from any map location. */
+				mouseMapX = -1;
+				mouseMapY = -1;
+			}
+			// fprintf (stderr, "mouse motion: (lastMouseX,lastMouseY): (%d,%d), (mouseMapX,mouseMapY): (%d,%d), (oldMouseMapX,oldMouseMapY): (%d,%d)\n", lastMouseX, lastMouseY, mouseMapX, mouseMapY, oldMouseMapX, oldMouseMapY);
+			/* Make sure dragging does not skip over map cells by
+				processing the old stored event rather than throwing
+				it away. */
+			if (wasMouseMotion
+				&& (lastMouseButtonState & SDL_BUTTON(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
+				&& ((mouseMapX != oldMouseMapX)
+					|| (mouseMapY != oldMouseMapY))
+			)
+			{
+				// fprintf (stderr, "processing old event instead of discarding it\n");
+				processEvent(&mouseMotionEvent);
+			}
+			oldMouseMapX = mouseMapX;
+			oldMouseMapY = mouseMapY;
 			mouseMotionEvent=event;
 			wasMouseMotion=true;
 		}
-                else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP)) {
-                  lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
-                  /* We ignore what SDL_GetMouseState does to
-                     lastMouseX and lastMouseY, because that may
-                     reflect many subsequent events that we have not
-                     yet processed.  Technically, we shouldn't use
-                     SDL_GetMouseState at all but should calculate the
-                     button state by keeping track of what has
-                     happened.  However, I haven't had the programming
-                     energy to do this, so I am cheating in the line
-                     above. */
-                  lastMouseX = event.button.x;
-                  lastMouseY = event.button.y;
-                  processEvent (&event); }
+		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
+		{
+			lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
+			/* We ignore what SDL_GetMouseState does to
+				lastMouseX and lastMouseY, because that may
+				reflect many subsequent events that we have not
+				yet processed.  Technically, we shouldn't use
+				SDL_GetMouseState at all but should calculate the
+				button state by keeping track of what has
+				happened.  However, I haven't had the programming
+				energy to do this, so I am cheating in the line
+				above. */
+			lastMouseX = event.button.x;
+			lastMouseY = event.button.y;
+			processEvent (&event);
+		}
 		else if (event.type==SDL_ACTIVEEVENT)
 		{
 			windowEvent=event;
@@ -396,18 +406,22 @@ void GameGUI::step(void)
 
 	flushScrollWheelOrders();
 
-	int oldViewportX=viewportX;
-	int oldViewportY=viewportY;
-	viewportX+=game.map.getW();
-	viewportY+=game.map.getH();
+	int oldViewportX = viewportX;
+	int oldViewportY = viewportY;
+	
+	viewportX += game.map.getW();
+	viewportY += game.map.getH();
 	handleKeyAlways();
-	viewportX+=viewportSpeedX;
-	viewportY+=viewportSpeedY;
-	viewportX&=game.map.getMaskW();
-	viewportY&=game.map.getMaskH();
+	viewportX += viewportSpeedX;
+	viewportY += viewportSpeedY;
+	viewportX &= game.map.getMaskW();
+	viewportY &= game.map.getMaskH();
 
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
+	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
+		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+	}
 
 	assert(localTeam);
 	boost::shared_ptr<GameEvent> gevent = localTeam->getEvent();
@@ -1096,27 +1110,35 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				break;
 				case GameGUIKeyActions::GoToEvent:
 				{
-					int evX, evY;
-					int sw, sh;
-					
 					eventGoTypeIterator = eventGoType;
-					evX = eventGoPosX;
-					evY = eventGoPosY;
+					int evX = eventGoPosX;
+					int evY = eventGoPosY;
 				
-					sw=globalContainer->gfx->getW();
-					sh=globalContainer->gfx->getH();
-					viewportX=evX-((sw-128)>>6);
-					viewportY=evY-(sh>>6);
+					int oldViewportX = viewportX;
+					int oldViewportY = viewportY;
+					
+					int sw = globalContainer->gfx->getW();
+					int sh = globalContainer->gfx->getH();
+					viewportX = evX-((sw-128)>>6);
+					viewportY = evY-(sh>>6);
+					
+					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::GoToHome:
 				{
 					int evX = localTeam->startPosX;
 					int evY = localTeam->startPosY;
+					
+					int oldViewportX = viewportX;
+					int oldViewportY = viewportY;
+					
 				    int sw = globalContainer->gfx->getW();
 					int sh = globalContainer->gfx->getH();
 					viewportX = evX-((sw-128)>>6);
 					viewportY = evY-(sh>>6);
+					
+					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:
@@ -1577,8 +1599,7 @@ void GameGUI::handleKeyAlways(void)
 			xMotion = 0;
 			yMotion = 0; 
 		}
-		// int oldViewportX = viewportX;
-		// int oldViewportY = viewportY;
+		
 		if (keystate[SDLK_UP])
 			viewportY -= yMotion;
 		if (keystate[SDLK_KP8])
@@ -1615,8 +1636,6 @@ void GameGUI::handleKeyAlways(void)
 			viewportX += xMotion;
 			viewportY += yMotion;
 		}
-                // if ((oldViewportX != viewportX) || (oldViewportY != viewportY)) {
-                //   fprintf (stderr, "xMotion: %d, yMotion: %d, viewportX: %d, viewportY: %d\n", xMotion, yMotion, viewportX, viewportY); }
 	}
 }
 
@@ -1639,6 +1658,9 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	game.mouseX=mouseX=mx;
 	game.mouseY=mouseY=my;
 
+	int oldViewportX = viewportX;
+	int oldViewportY = viewportY;
+	
 	if (miniMapPushed)
 	{
 		minimapMouseToPos(mx, my, &viewportX, &viewportY, true);
@@ -1663,11 +1685,13 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	if (panPushed)
 	{
 		// handle paning
-		int dx=(mx-panMouseX)>>1;
-		int dy=(my-panMouseY)>>1;
-		viewportX=(panViewX+dx)&game.map.getMaskW();
-		viewportY=(panViewY+dy)&game.map.getMaskH();
+		int dx = (mx-panMouseX)>>1;
+		int dy = (my-panMouseY)>>1;
+		viewportX = (panViewX+dx)&game.map.getMaskW();
+		viewportY = (panViewY+dy)&game.map.getMaskH();
 	}
+	
+	moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 
 	dragStep(mx, my, button);
 }
@@ -1805,7 +1829,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		else
 		{
 			miniMapPushed=true;
+			int oldViewportX = viewportX;
+			int oldViewportY = viewportY;
 			minimapMouseToPos(globalContainer->gfx->getW() - 128 + mx, my, &viewportX, &viewportY, true);
+			moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 		}
 	}
 	else if (my<128+32)
@@ -2176,6 +2203,55 @@ boost::shared_ptr<Order> GameGUI::getOrder(void)
 		orderQueue.pop_front();
 	}
 	return order;
+}
+
+void GameGUI::drawParticles(void)
+{
+	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); )
+	{
+		Particle* p = *it;
+		
+		// delete old particles
+		if (p->age >= p->lifeSpan)
+		{
+			ParticleSet::iterator oldIt = it;
+			++it;
+			
+			delete *oldIt;
+			particles.erase(oldIt);
+			
+			continue;
+		}
+		else
+			p->age++;
+		
+		// do stupid physics
+		p->x += p->vx;
+		p->y += p->vy;
+		p->vx += p->ax;
+		p->vy += p->ay;
+		
+		// get image
+		float img = (float)p->startImg + (float)((p->endImg - p->startImg) * p->age) / (float)p->lifeSpan;
+		Uint8 alpha = (Uint8)(255.f * (img - truncf(img)));
+		int imgA = (int)img;
+		
+		// first image
+		int w = globalContainer->particles->getW(imgA);
+		int h = globalContainer->particles->getH(imgA);
+		globalContainer->gfx->drawSprite(p->x - 0.5f * w, p->y - 0.5f * h, globalContainer->particles, imgA, alpha);
+		
+		// second image
+		int imgB = imgA + 1;
+		if (imgB < p->endImg)
+		{
+			w = globalContainer->particles->getW(imgA);
+			h = globalContainer->particles->getH(imgA);
+			globalContainer->gfx->drawSprite(p->x - 0.5f * w, p->y - 0.5f * h, globalContainer->particles, imgB, 255-alpha);
+		}
+		
+		++it;
+	}
 }
 
 void GameGUI::drawPanelButtons(int pos)
@@ -3470,10 +3546,17 @@ void GameGUI::drawAll(int team)
 	}
 	else
 	{
+		std::set<Building*> visibleBuildings;
+		
 		globalContainer->gfx->setClipRect();
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions);
+		
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
+		
+		// generate and draw particles
+		generateNewParticles(&visibleBuildings);
+		drawParticles();
 	}
-
+	
 	// if paused, tint the game area
 	if (gamePaused)
 	{
@@ -3967,70 +4050,77 @@ void GameGUI::iterateSelection(void)
 			}
 		}
 	}
-        else if (selectionMode == UNIT_SELECTION)
-          {
-            Unit * selUnit = selection.unit;
-            assert(selUnit);
-            Uint16 gid = selUnit->gid;
-            /* to be safe should check if gid is valid here? */
-            /* if looking at one of our pieces, continue with the next
-               one of our pieces of same type, otherwise start at the
-               beginning of our pieces of that type. */
-            Sint32 id = ((Unit::GIDtoTeam(gid) == localTeamNo) ? Unit::GIDtoID(gid) : 0);
-            /* It violates good abstraction principles that we know
-               that the size of the myUnits array is 1024.  This
-               information should be abstracted by some method that we
-               call instead to get the next unit. */
-            id %= 1024; /* just in case! */
-            // std::cerr << "starting id: " << id << std::endl;
-            Sint32 i = id;
-            while (1)
-              {
-                i = ((i + 1) % 1024);
-                if (i == id) break;
-                // std::cerr << "trying id: " << i << std::endl;
-                Unit * u = game.teams[localTeamNo]->myUnits[i];
-                if (u && (u->typeNum == selUnit->typeNum))
-                  {
-                    // std::cerr << "found id: " << i << std::endl;
-                    setSelection(UNIT_SELECTION, u);
-                    centerViewportOnSelection();
-                    break;
-                  }
-              }
-          }
+	else if (selectionMode == UNIT_SELECTION)
+	{
+		Unit * selUnit = selection.unit;
+		assert(selUnit);
+		Uint16 gid = selUnit->gid;
+		/* to be safe should check if gid is valid here? */
+		/* if looking at one of our pieces, continue with the next
+			one of our pieces of same type, otherwise start at the
+			beginning of our pieces of that type. */
+		Sint32 id = ((Unit::GIDtoTeam(gid) == localTeamNo) ? Unit::GIDtoID(gid) : 0);
+		/* It violates good abstraction principles that we know
+			that the size of the myUnits array is 1024.  This
+			information should be abstracted by some method that we
+			call instead to get the next unit. */
+		id %= 1024; /* just in case! */
+		// std::cerr << "starting id: " << id << std::endl;
+		Sint32 i = id;
+		while (1)
+		{
+			i = ((i + 1) % 1024);
+			if (i == id) break;
+			// std::cerr << "trying id: " << i << std::endl;
+			Unit * u = game.teams[localTeamNo]->myUnits[i];
+			if (u && (u->typeNum == selUnit->typeNum))
+			{
+				// std::cerr << "found id: " << i << std::endl;
+				setSelection(UNIT_SELECTION, u);
+				centerViewportOnSelection();
+				break;
+			}
+		}
+	}
 }
 
 void GameGUI::centerViewportOnSelection(void)
 {
-  if ((selectionMode==BUILDING_SELECTION) || (selectionMode==UNIT_SELECTION))
-    {
-      Sint32 posX, posY;
-      if (selectionMode==BUILDING_SELECTION)
-        {
-          Building* b=selection.building;
-          //assert (selBuild);
-          //Building *b=game.teams[Building::GIDtoTeam(selectionGBID)]->myBuildings[Building::GIDtoID(selectionGBID)];
-          assert(b);
-          posX = b->getMidX();
-          posY = b->getMidY();
-        }
-      else if (selectionMode==UNIT_SELECTION)
-        {
-          Unit * u = selection.unit;
-          assert (u);
-          posX = u->posX;
-          posY = u->posY;
-        }
-      /* It violates good abstraction principles that we know here
-         that the size of the right panel is 128 pixels, and that each
-         map cell is 32 pixels.  This information should be
-         abstracted. */
-      viewportX = posX - ((globalContainer->gfx->getW()-128)>>6);
-      viewportY = posY - ((globalContainer->gfx->getH())>>6);
-      viewportX = viewportX & game.map.getMaskW();
-      viewportY = viewportY & game.map.getMaskH();
-    }
+	if ((selectionMode==BUILDING_SELECTION) || (selectionMode==UNIT_SELECTION))
+	{
+		Sint32 posX, posY;
+		if (selectionMode==BUILDING_SELECTION)
+		{
+			Building* b=selection.building;
+			//assert (selBuild);
+			//Building *b=game.teams[Building::GIDtoTeam(selectionGBID)]->myBuildings[Building::GIDtoID(selectionGBID)];
+			assert(b);
+			posX = b->getMidX();
+			posY = b->getMidY();
+		}
+		else if (selectionMode==UNIT_SELECTION)
+		{
+			Unit * u = selection.unit;
+			assert (u);
+			posX = u->posX;
+			posY = u->posY;
+		}
+		
+		/* It violates good abstraction principles that we know here
+			that the size of the right panel is 128 pixels, and that each
+			map cell is 32 pixels.  This information should be
+			abstracted. */
+		
+		int oldViewportX = viewportX;
+		int oldViewportY = viewportY;
+		
+		viewportX = posX - ((globalContainer->gfx->getW()-128)>>6);
+		viewportY = posY - ((globalContainer->gfx->getH())>>6);
+		viewportX = viewportX & game.map.getMaskW();
+		viewportY = viewportY & game.map.getMaskH();
+		
+		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+	}
 }
 
 void GameGUI::enableBuildingsChoice(const std::string &name)
@@ -4058,7 +4148,7 @@ bool GameGUI::isBuildingEnabled(const std::string &name)
 		if (name == buildingsChoiceName[i])
                   return buildingsChoiceState[i];
 	}
-        assert (false);
+	assert (false);
 }
 
 void GameGUI::enableFlagsChoice(const std::string &name)
@@ -4213,3 +4303,59 @@ void GameGUI::flushScrollWheelOrders()
 	}
 	scrollWheelChanges=0;
 }
+
+void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
+{
+	for (std::set<Building*>::iterator it = visibleBuildings->begin(); it != visibleBuildings->end(); ++it)
+	{
+		Building* building = *it;
+		BuildingType* type = building->type;
+		int x, y;
+		int dx, dy;
+		game.map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+		
+		// building is burning
+		if ((building->hp < type->hpMax / 3) && !type->isBuildingSite)
+		{
+			Particle* p = new Particle;
+			p->x = x + type->width * 16;
+			p->y = y + type->height * 16;
+			p->vx = 0.5f - (float)rand() / (float)RAND_MAX;
+			p->vy = - 2.f * (float)rand() / (float)RAND_MAX;
+			p->ax = 0.f;
+			p->ay = -0.01f;
+			p->age = 0;
+			p->lifeSpan = 50;
+			p->startImg = 0;
+			p->endImg = 3;
+			particles.insert(p);
+		}
+	}
+}
+
+void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
+{
+	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
+		return;
+	
+	int dx = viewportX - oldViewportX;
+	if (dx > game.map.getW() / 2)
+		dx -= game.map.getW();
+	else if (dx < -game.map.getW() / 2)
+		dx += game.map.getW();
+	
+	int dy = viewportY - oldViewportY;
+	if (dy > game.map.getH() / 2)
+		dy -= game.map.getH();
+	else if (dy < -game.map.getH() / 2)
+		dy += game.map.getH();
+	
+	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
+	{
+		Particle* p = *it;
+		p->x -= dx * 32;
+		p->y -= dy * 32;
+	}
+}
+
+
