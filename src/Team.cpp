@@ -854,9 +854,9 @@ Building *Team::findBestUpgrade(Unit *unit)
 					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
 					if (newScore<score)
 					{
-						unit->destinationPurprose=(Sint32)ability;
+						unit->destinationPurpose=(Sint32)ability;
 						//fprintf(logFile, "[%d] score=%d, newScore=%d\n", unit->gid, score, newScore);
-						fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+						fprintf(logFile, "[%d] tdp6 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 						choosen=b;
 						score=newScore;
 					}

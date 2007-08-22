@@ -53,7 +53,7 @@ public:
 	Sint32 zonable[NB_UNIT_TYPE]; // If an unit is required for a presence.
 	Sint32 zonableForbidden;
 	
-	Sint32 canFeedUnit;
+	Sint32 canFeedUnit;//Leo: 1?? 2?? what's the meaning of this?
 	Sint32 timeToFeedUnit;
 	Sint32 canHealUnit;
 	Sint32 timeToHealUnit;
@@ -118,4 +118,3 @@ public:
 };
 
 #endif
- 

@@ -122,8 +122,8 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	attachedBuilding=NULL;
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
-	destinationPurprose=-1;
-	caryedRessource=-1;
+	destinationPurpose=-1;
+	carriedRessource=-1;
 	jobTimer = 0;
 	
 	// gui
@@ -200,8 +200,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	experience = stream->readSint32("experience");
 	experienceLevel = stream->readSint32("experienceLevel");
 
-	destinationPurprose = stream->readSint32("destinationPurprose");
-	caryedRessource = stream->readSint32("caryedRessource");
+	destinationPurpose = stream->readSint32("destinationPurpose");
+	carriedRessource = stream->readSint32("carriedRessource");
 
 	jobTimer = stream->readSint32("jobTimer");
 
@@ -276,8 +276,8 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(experience, "experience");
 	stream->writeSint32(experienceLevel, "experienceLevel");
 
-	stream->writeSint32(destinationPurprose, "destinationPurprose");
-	stream->writeSint32(caryedRessource, "caryedRessource");	
+	stream->writeSint32(destinationPurpose, "destinationPurpose");
+	stream->writeSint32(carriedRessource, "carriedRessource");	
 	stream->writeSint32(jobTimer, "jobTimer");
 
 	
@@ -338,23 +338,23 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 	
 	if (building->type->isVirtual)
 	{
-		destinationPurprose=-1;
-		fprintf(logFile, "[%d] sdp1 destinationPurprose=%d\n", gid, destinationPurprose);
+		destinationPurpose=-1;
+		fprintf(logFile, "[%d] sdp1 destinationPurpose=%d\n", gid, destinationPurpose);
 		activity=ACT_FLAG;
 		attachedBuilding=b;
 		targetBuilding=b;
 		if (verbose)
-			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurpose, b->gid);
 	}
 	else if(inside == false)
 	{
-		assert(destinationPurprose>=0);
-		assert(b->neededRessource(destinationPurprose));
+		assert(destinationPurpose>=0);
+		assert(b->neededRessource(destinationPurpose));
 		activity=ACT_FILLING;
 		attachedBuilding=b;
 		targetBuilding=NULL;
 		if (verbose)
-			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurpose, b->gid);
 	}
 	else
 	{
@@ -362,7 +362,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 		attachedBuilding=b;
 		targetBuilding=b;
 		if (verbose)
-			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurpose, b->gid);
 	}
 
 	if (verbose)
@@ -397,7 +397,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				case ACT_FILLING:
 				{
 					assert(attachedBuilding);
-					if (caryedRessource==destinationPurprose)
+					if (carriedRessource==destinationPurpose)
 					{
 						displacement=DIS_GOING_TO_BUILDING;
 						targetBuilding=attachedBuilding;
@@ -409,7 +409,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					{
 						displacement=DIS_GOING_TO_RESSOURCE;
 						targetBuilding=NULL;
-						owner->map->ressourceAvailable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						owner->map->ressourceAvailable(owner->teamNumber, destinationPurpose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;
 						//fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
 					}
@@ -538,7 +538,7 @@ void Unit::selectPreferedGroundMovement(void)
 bool Unit::isUnitHungry(void)
 {
 	int realTrigHungry;
-	if (caryedRessource==-1)
+	if (carriedRessource==-1)
 		realTrigHungry=trigHungry;
 	else
 		realTrigHungry=trigHungryCarying;
@@ -569,7 +569,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 		if (activity==ACT_UPGRADING)
 		{
 			assert(displacement==DIS_GOING_TO_BUILDING);
-			if (destinationPurprose==HEAL || destinationPurprose==FEED)
+			if (destinationPurpose==HEAL || destinationPurpose==FEED)
 				needToRecheckMedical=true;
 		}
 	}
@@ -693,13 +693,13 @@ void Unit::handleMedical(void)
         if ((typeNum == EXPLORER)
             && (displacement == DIS_EXITING_BUILDING)) {
           medical=MED_FREE;
-          if ((destinationPurprose == HEAL)
+          if ((destinationPurpose == HEAL)
               && (hungry < ((HUNGRY_MAX * 9) / 10))) {
             // fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
             needToRecheckMedical = 1;
             medical = MED_HUNGRY;
             return; }
-          else if ((destinationPurprose == FEED)
+          else if ((destinationPurpose == FEED)
                    && (hp < (((performance[HP]) * 9) / 10))) {
             // fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
             needToRecheckMedical = 1;
@@ -761,7 +761,7 @@ void Unit::handleActivity(void)
 {
         if ((displacement==DIS_EXITING_BUILDING)
             && (typeNum == EXPLORER)) {
-          // fprintf (stderr, "exiting explorer: gid: %d, medical: %d, destinationPurprose: %d\n", gid, medical, destinationPurprose);
+          // fprintf (stderr, "exiting explorer: gid: %d, medical: %d, destinationPurpose: %d\n", gid, medical, destinationPurpose);
         }
 
 	// freeze unit health when inside a building
@@ -792,13 +792,13 @@ void Unit::handleActivity(void)
 				Building* b=owner->findBestUpgrade(this);
 				if (b)
 				{
-					assert(destinationPurprose>=WALK);
-					assert(destinationPurprose<ARMOR);
+					assert(destinationPurpose>=WALK);
+					assert(destinationPurpose<ARMOR);
 					activity=ACT_UPGRADING;
 					attachedBuilding=b;
 					targetBuilding=b;
 					if (verbose)
-						printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+						printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurpose, b->gid);
 					b->subscribeUnitForInside(this);
 					return;
 				}
@@ -810,8 +810,8 @@ void Unit::handleActivity(void)
 					b=owner->findNearestHeal(this);
 					if (b)
 					{
-						destinationPurprose=HEAL;
-						fprintf(logFile, "[%d] sdp2 destinationPurprose=%d\n", gid, destinationPurprose);
+						destinationPurpose=HEAL;
+						fprintf(logFile, "[%d] sdp2 destinationPurpose=%d\n", gid, destinationPurpose);
 						activity=ACT_UPGRADING;
 						attachedBuilding=b;
 						targetBuilding=b;
@@ -901,8 +901,8 @@ void Unit::handleActivity(void)
 					}
 				}
 
-				destinationPurprose=FEED;
-				fprintf(logFile, "[%d] sdp3 destinationPurprose=%d\n", gid, destinationPurprose);
+				destinationPurpose=FEED;
+				fprintf(logFile, "[%d] sdp3 destinationPurpose=%d\n", gid, destinationPurpose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				targetBuilding=b;
@@ -920,8 +920,8 @@ void Unit::handleActivity(void)
 			b=owner->findNearestHeal(this);
 			if (b!=NULL)
 			{
-				destinationPurprose=HEAL;
-				fprintf(logFile, "[%d] sdp4 destinationPurprose=%d\n", gid, destinationPurprose);
+				destinationPurpose=HEAL;
+				fprintf(logFile, "[%d] sdp4 destinationPurpose=%d\n", gid, destinationPurpose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				targetBuilding=b;
@@ -967,7 +967,7 @@ void Unit::handleDisplacement(void)
 			
 			if (displacement==DIS_GOING_TO_RESSOURCE)
 			{
-				if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
+				if (owner->map->doesUnitTouchRessource(this, destinationPurpose, &dx, &dy))
 				{
 					displacement=DIS_HARVESTING;
 					validTarget=false;
@@ -976,9 +976,9 @@ void Unit::handleDisplacement(void)
 			else if (displacement==DIS_HARVESTING)
 			{
 				// we got the ressource.
-				caryedRessource=destinationPurprose;
-				fprintf(logFile, "[%d] sdp5 destinationPurprose=%d\n", gid, destinationPurprose);
-				owner->map->decRessource(posX+dx, posY+dy, caryedRessource);
+				carriedRessource=destinationPurpose;
+				fprintf(logFile, "[%d] sdp5 destinationPurpose=%d\n", gid, destinationPurpose);
+				owner->map->decRessource(posX+dx, posY+dy, carriedRessource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
 				
@@ -1021,15 +1021,15 @@ void Unit::handleDisplacement(void)
 					
 					assert(attachedBuilding);
 					assert(attachedBuilding->type->canFeedUnit);
-					assert(destinationPurprose>=HAPPYNESS_BASE);
+					assert(destinationPurpose>=HAPPYNESS_BASE);
 					
 					// Let's grab the right ressource.
 					
-					if (targetBuilding->ressources[destinationPurprose]>0)
+					if (targetBuilding->ressources[destinationPurpose]>0)
 					{
-						targetBuilding->removeRessourceFromBuilding(destinationPurprose);
-						caryedRessource=destinationPurprose;
-						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
+						targetBuilding->removeRessourceFromBuilding(destinationPurpose);
+						carriedRessource=destinationPurpose;
+						fprintf(logFile, "[%d] sdp6 destinationPurpose=%d\n", gid, destinationPurpose);
 						
 						targetBuilding=attachedBuilding;
 						displacement=DIS_GOING_TO_BUILDING;
@@ -1041,12 +1041,12 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
 					}
 				}
-				else if ((caryedRessource>=0) && (targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource]))
+				else if ((carriedRessource>=0) && (targetBuilding->ressources[carriedRessource]<targetBuilding->type->maxRessource[carriedRessource]))
 				{
 					if (verbose)
-						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedRessource]);
-					targetBuilding->addRessourceIntoBuilding(caryedRessource);
-					caryedRessource=-1;
+						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->ressources[carriedRessource]);
+					targetBuilding->addRessourceIntoBuilding(carriedRessource);
+					carriedRessource=-1;
 
 				}
 				
@@ -1125,8 +1125,8 @@ void Unit::handleDisplacement(void)
 
 							if (bestRessource>=0)
 							{
-								destinationPurprose=bestRessource;
-								fprintf(logFile, "[%d] sdp7 destinationPurprose=%d\n", gid, destinationPurprose);
+								destinationPurpose=bestRessource;
+								fprintf(logFile, "[%d] sdp7 destinationPurpose=%d\n", gid, destinationPurpose);
 								assert(activity==ACT_FILLING);
 								if (takeInExchangeBuilding)
 								{
@@ -1138,12 +1138,12 @@ void Unit::handleDisplacement(void)
 								else
 								{
 									int dummyDist;
-									if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
+									if (owner->map->doesUnitTouchRessource(this, destinationPurpose, &dx, &dy))
 									{
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->ressourceAvailable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+									else if (map->ressourceAvailable(teamNumber, destinationPurpose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
 									{
 										fprintf(logFile, "[%d] rab targetXY=(%d, %d)\n", gid, targetX, targetY);
 										displacement=DIS_GOING_TO_RESSOURCE;
@@ -1204,12 +1204,12 @@ void Unit::handleDisplacement(void)
 				displacement=DIS_INSIDE;
 				validTarget=false;
 				
-				if (destinationPurprose==FEED)
+				if (destinationPurpose==FEED)
 				{
 					insideTimeout=-attachedBuilding->type->timeToFeedUnit;
 					speed=attachedBuilding->type->insideSpeed;
 				}
-				else if (destinationPurprose==HEAL)
+				else if (destinationPurpose==HEAL)
 				{
 					//insideTimeout=-(attachedBuilding->type->timeToHealUnit*(performance[HP]-hp))/performance[HP];
 					insideTimeout=-attachedBuilding->type->timeToHealUnit;
@@ -1217,7 +1217,7 @@ void Unit::handleDisplacement(void)
 				}
 				else
 				{
-					insideTimeout=-attachedBuilding->type->upgradeTime[destinationPurprose];
+					insideTimeout=-attachedBuilding->type->upgradeTime[destinationPurpose];
 					speed=attachedBuilding->type->insideSpeed;
 				}
 			}
@@ -1230,14 +1230,14 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_EXITING_BUILDING;
 					validTarget=false;
 
-					if (destinationPurprose==FEED)
+					if (destinationPurpose==FEED)
 					{
 						hungry=HUNGRY_MAX;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask);
 						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}
-					else if (destinationPurprose==HEAL)
+					else if (destinationPurpose==HEAL)
 					{
 						hp=performance[HP];
 						//printf("I'm healed : healt h %d/%d\n", hp, performance[HP]);
@@ -1245,27 +1245,25 @@ void Unit::handleDisplacement(void)
 					}
 					else
 					{
-						if (attachedBuilding->type->upgradeInParallel)
+						if (attachedBuilding->type->upgradeInParallel)//Leo: ??
 						{
-							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)
+							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)//Leo: Why WALK..ARMOR?? this looks error prone
 								if (canLearn[ability] && attachedBuilding->type->upgrade[ability])
 								{
-									level[ability] = attachedBuilding->type->level + 1;
+									level[ability] = attachedBuilding->type->level + 1;//not very clean to assume a level n building can upgrade all abilities to n+1. so a school l3 upgrades explorers to attack l4?
 									UnitType *ut = race->getUnitType(typeNum, level[ability]);
 									performance[ability] = ut->performance[ability];
 								}
 						}
 						else
 						{
-							//printf("Ability %d got level %d\n", destinationPurprose, attachedBuilding->type->level+1);
-							assert(canLearn[destinationPurprose]);
-							level[destinationPurprose] = attachedBuilding->type->level + 1;
-							UnitType *ut = race->getUnitType(typeNum, level[destinationPurprose]);
-							performance[destinationPurprose] = ut->performance[destinationPurprose];
-							//printf("New performance[%d]=%d\n", destinationPurprose, performance[destinationPurprose]);
+							//printf("Ability %d got level %d\n", destinationPurpose, attachedBuilding->type->level+1);
+							assert(canLearn[destinationPurpose]);
+							level[destinationPurpose] = attachedBuilding->type->level + 1;
+							UnitType *ut = race->getUnitType(typeNum, level[destinationPurpose]);
+							performance[destinationPurpose] = ut->performance[destinationPurpose];
+							//printf("New performance[%d]=%d\n", destinationPurpose, performance[destinationPurpose]);
 						}
-							
-							
 					}
 				}
 				else
@@ -1824,17 +1822,17 @@ void Unit::handleMovement(void)
 			int teamNumber=owner->teamNumber;
 			bool canSwim=performance[SWIM]>0;
 			bool stopWork;
-			if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy, &stopWork, verbose))
+			if (map->pathfindRessource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork, verbose))
 			{
 				if (verbose)
-					printf("guid=(%d) Unit found path r pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
+					printf("guid=(%d) Unit found path r pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurpose, dx, dy);
 				directionFromDxDy();
 				movement=MOV_GOING_DXDY;
 			}
 			else
 			{
 				if (verbose)
-					printf("guid=(%d) Unit failed path r pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
+					printf("guid=(%d) Unit failed path r pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurpose);
 
 				if (stopWork)
 					stopAttachedForBuilding(false);
@@ -2440,8 +2438,8 @@ void Unit::computeMinDistToResources(void)
 		else if (minDistToResource[ri] < stepsLeftUntilHungry)
 			allResourcesAreTooFar = false;
 	// the dist to an already carried resource is zero
-	if (caryedRessource >= 0)
-		minDistToResource[caryedRessource] = 0;
+	if (carriedRessource >= 0)
+		minDistToResource[carriedRessource] = 0;
 }
 
 void Unit::integrity()
@@ -2453,7 +2451,7 @@ void Unit::integrity()
 	if (!needToRecheckMedical)
 	{
 		assert(activity==ACT_UPGRADING);
-		assert(destinationPurprose==HEAL || destinationPurprose==FEED);
+		assert(destinationPurpose==HEAL || destinationPurpose==FEED);
 	}
 }
 
@@ -2586,12 +2584,12 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 		checkSumsVector->push_back((ownExchangeBuilding!=NULL ? 1:0));// [29]
 	cs=(cs<<1)|(cs>>31);
 	
-	cs^=destinationPurprose;
+	cs^=destinationPurpose;
 	if (checkSumsVector)
-		checkSumsVector->push_back(destinationPurprose);// [31]
-	cs^=caryedRessource;
+		checkSumsVector->push_back(destinationPurpose);// [31]
+	cs^=carriedRessource;
 	if (checkSumsVector)
-		checkSumsVector->push_back(caryedRessource);// [33]
+		checkSumsVector->push_back(carriedRessource);// [33]
 	
 	if (checkSumsVector)
 		checkSumsVector->push_back(0);// [34]

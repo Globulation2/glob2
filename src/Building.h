@@ -27,6 +27,8 @@
 #include "Ressource.h"
 #include "UnitConsts.h"
 #include "Order.h"
+#include "boost/tuple/tuple.hpp"
+#include "boost/tuple/tuple_comparison.hpp"
 
 namespace GAGCore
 {
@@ -108,6 +110,7 @@ public:
 	///This function updates the units working at this building. If there are too many units, it
 	///fires some.
 	void updateUnitsWorking(void);
+	void updateUnitsWorkingFreeAllThatBringUnwantedRessources(void);
 	///This function is called after important events in order to update the building
 	void update(void);
 
@@ -146,6 +149,8 @@ public:
 	///This is called every step. The building updates the desiredMaxUnitWorking variable using
 	///the function desiredNumberOfWorkers
 	void step(void);
+	///Value of a unit to a building when needing resource
+	int Score(Unit * u, int resource);
 	///This function subscribes any building that needs ressources carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	void subscribeToBringRessourcesStep(void);
@@ -332,4 +337,3 @@ protected:
 };
 
 #endif
- 
