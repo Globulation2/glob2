@@ -146,9 +146,7 @@ void EndGameStat::paint(void)
 			{
 				if(!isTeamEnabled[team])
 					continue;
-				Uint8 r = game->teams[team]->colorR;
-				Uint8 g = game->teams[team]->colorG;
-				Uint8 b = game->teams[team]->colorB;
+				const Color& color = game->teams[team]->color;
 
 				int previous_y = h - int(double(h) * getValue(0, team, type) / double(maxValue));
 				
@@ -156,7 +154,7 @@ void EndGameStat::paint(void)
 				{
 					double value = getValue(double(px) / double(w-2), team, type);
 					int ny = h - int(double(h) * value / double(maxValue));
-					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, Color(r, g, b));
+					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, color);
 					previous_y = ny;
 					int dist = (mouse_y-ny)*(mouse_y-ny) + (mouse_x-px-1)*(mouse_x-px-1);
 					if(dist < closest_position)
@@ -308,10 +306,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		struct TeamEntry entry;
 		entry.name=t->getFirstPlayerName();
 		entry.teamNum=i;
-		entry.r=t->colorR;
-		entry.g=t->colorG;
-		entry.b=t->colorB;
-		entry.a=0;
+		entry.color=t->color;
 		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
 		{
 			entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
@@ -331,7 +326,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		team_enabled_buttons.push_back(enabled_button);
 		addWidget(enabled_button);
 		text=new Text(10+inc, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", teams[i].name.c_str(), 140);
-		text->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].r, teams[i].g, teams[i].b));
+		text->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
 		names.push_back(text);
 		addWidget(text);
 	}
@@ -380,7 +375,7 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 				}
 			
 				names[i]->setText(str.str().c_str());
-				names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].r, teams[i].g, teams[i].b));
+				names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
 				team_enabled_buttons[i]->returnCode=6+i;
 			}
 		}
@@ -403,7 +398,7 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	std::sort(teams.begin(), teams.end(), moreScore);
 	for (unsigned i=0; i<names.size(); i++)
 	{
-		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].r, teams[i].g, teams[i].b));
+		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
 		names[i]->setText(teams[i].name.c_str());
 	}
 }
