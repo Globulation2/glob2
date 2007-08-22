@@ -2232,14 +2232,14 @@ void GameGUI::drawParticles(void)
 		p->vy += p->ay;
 		
 		// get image
-		float img = (float)p->startImg + (float)((p->endImg - p->startImg) * p->age) / (float)p->lifeSpan;
+		float img = (float)p->startImg + (float)((p->endImg - p->startImg) * p->age) / ((float)p->lifeSpan + 1);
 		Uint8 alpha = (Uint8)(255.f * (img - truncf(img)));
 		int imgA = (int)img;
 		
 		// first image
 		int w = globalContainer->particles->getW(imgA);
 		int h = globalContainer->particles->getH(imgA);
-		globalContainer->gfx->drawSprite(p->x - 0.5f * w, p->y - 0.5f * h, globalContainer->particles, imgA, alpha);
+		globalContainer->gfx->drawSprite(p->x - 0.5f * w, p->y - 0.5f * h, globalContainer->particles, imgA, 255-alpha);
 		
 		// second image
 		int imgB = imgA + 1;
@@ -2247,7 +2247,7 @@ void GameGUI::drawParticles(void)
 		{
 			w = globalContainer->particles->getW(imgA);
 			h = globalContainer->particles->getH(imgA);
-			globalContainer->gfx->drawSprite(p->x - 0.5f * w, p->y - 0.5f * h, globalContainer->particles, imgB, 255-alpha);
+			globalContainer->gfx->drawSprite(p->x - 0.5f * w, p->y - 0.5f * h, globalContainer->particles, imgB, alpha);
 		}
 		
 		++it;
