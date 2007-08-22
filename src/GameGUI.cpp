@@ -4319,37 +4319,36 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 			// damaged building smoke
 			float hpRatio = (float)building->hp / (float)type->hpMax;
 			if (
-				(hpRatio < 0.15) ||
-				(hpRatio < 0.25 && ((game.stepCounter & 0x1) == 0)) ||
-				(hpRatio < 0.50 && ((game.stepCounter & 0x3) == 0))
+				(hpRatio < 0.2 && ((game.stepCounter & 0x1) == 0)) ||
+				(hpRatio < 0.5 && ((game.stepCounter & 0x3) == 0))
 			)
 			{
 				Particle* p = new Particle;
 				p->x = x + type->width * 16;
 				p->y = y + type->height * 16;
-				if (hpRatio < 0.25)
+				if (hpRatio < 0.2)
 				{
 					p->vx = 0.5f - (float)rand() / (float)RAND_MAX;
-					p->vy = - 2.f * (float)rand() / (float)RAND_MAX;
+					p->vy = - 3.f * (float)rand() / (float)RAND_MAX;
 				}
 				else
 				{
 					p->vx = 0.3f - (float)rand() / (float)RAND_MAX;
-					p->vy = - 1.2f * (float)rand() / (float)RAND_MAX;
+					p->vy = - 1.8f * (float)rand() / (float)RAND_MAX;
 				}
 				p->ax = 0.f;
 				p->ay = -0.01f;
 				p->age = 0;
 				p->lifeSpan = 50;
 				p->startImg = 0;
-				p->endImg = 3;
+				p->endImg = 2;
 				particles.insert(p);
 			}
 			
 			// turret firing
 			if (building->lastShootStep != 0xFFFFFFFF)
 			{
-				if (game.stepCounter - building->lastShootStep < 5)
+				if ((game.stepCounter - building->lastShootStep < 6) && (game.stepCounter % 2 == 0))
 				{
 					float norm = building->lastShootSpeedX * building->lastShootSpeedX + building->lastShootSpeedY * building->lastShootSpeedY;
 					float w2 = type->width * 16;
@@ -4366,7 +4365,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 					p->age = 0;
 					p->lifeSpan = 30;
 					p->startImg = 0;
-					p->endImg = 3;
+					p->endImg = 2;
 					particles.insert(p);
 				}
 			}
