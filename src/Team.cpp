@@ -1135,7 +1135,7 @@ void Team::syncStep(void)
 		}
 
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
-		(*it)->turretStep();
+		(*it)->turretStep(game->stepCounter);
 
 	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
 		(*it)->clearingFlagStep();
