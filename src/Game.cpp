@@ -1907,7 +1907,7 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 	}
 }
 
-inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
 	std::set<Building *, BuildingPosComp> buildingList;
 	for (int y=top-1; y<=bot; y++)
@@ -1928,7 +1928,11 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 					|| Building::GIDtoTeam(gid)==localTeam
 					|| (building->seenByMask & teams[localTeam]->me)
 					|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
+				{
 					buildingList.insert(building);
+					if (visibleBuildings)
+						visibleBuildings->insert(building);
+				}
 			}
 		}
 	
@@ -2394,7 +2398,7 @@ float Game::interpolateValues(float a, float b, float x)
 }
 	
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
 	static int time = 0;
 	static DynamicClouds ds(&globalContainer->settings);
@@ -2409,7 +2413,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings);
 	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);

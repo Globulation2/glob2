@@ -3,7 +3,7 @@
 [%0 has left the game]
 %0 a quitté la partie.
 [%0's game]
-
+jeu de %0
 [%0's team unit got converted to your team]
 Une unité de l'équipe %0 s'est convertie à votre équipe
 [abreaviation explanation A]
@@ -19,9 +19,9 @@ V : Montrer tous les batiments
 [Add AI]
 Ajouter IA
 [add map]
-
+Ajouter carte
 [add shortcut]
-
+Ajouter raccourcis
 [AI]
 IA
 [ai]
@@ -61,7 +61,7 @@ sont blessées
 [armor]
 Armure
 [assigned]
-
+assigné
 [At. speed]
 Vitesse at.
 [At. strength]
@@ -81,7 +81,7 @@ En attente des joueurs
 [away:]
 absent:
 [backspace]
-
+retour arrière
 [bad error in connection system]
 Mauvaise erreur dans le système de connexion
 [barracks explanation 2]
@@ -93,7 +93,7 @@ Camp d'entraînement
 [beach size]
 taille de la plage
 [break]
-
+casser
 [build barracks level 0]
 
 [build barracks level 1]
@@ -157,7 +157,7 @@ Bâtiments
 [Bullets]
 Boulets
 [campaign editor]
-
+Editeur de campagne
 [campaign]
 Campagne
 [Can't join game, missmatching game parameters]
@@ -175,11 +175,11 @@ Annuler amélioration
 [Cancel]
 Annuler
 [caps lock]
-
+verouillage majuscule
 [carry]
 Transporte :
 [Change Area Name]
-
+Changer le nom de la zone
 [checksum sent]
 Somme de contrôle envoyée ...
 [Cherry]
@@ -193,7 +193,7 @@ Choisir une carte
 [clear area]
 Zone de défrichage
 [clear]
-
+Défricher
 [Clearing:]
 Défrichage de:
 [clearingflag explanation 2]
@@ -243,11 +243,11 @@ Curseur personalisé
 [damage]
 Dommages
 [Damaged Map]
-
+Carte endomagée
 [dblbuff]
 Double-tampon
 [decrease units working]
-
+Diminuer le nombre d'unité travaillant
 [default terrain]
 Terrain par défaut
 [defencetower explanation 2]
@@ -263,17 +263,17 @@ Attaque les unités ennemies
 [defencetower]
 Tourelle
 [Defense Map]
-
+Carte de défense
 [Defense]
 Défense
 [Delete game]
 Effacer le jeu séléctionné
 [delete]
-
+Effacer 
 [desert]
 Désert
 [destroy building]
-
+Détruire batiment
 [destroy]
 Détruire
 [Disconnect]
@@ -281,35 +281,35 @@ Déconnecter
 [display]
 Affichage
 [do nothing]
-
+Ne fait rien
 [don't carry anything]
 Ne transporte rien
 [down]
-
+Bas
 [download finished]
 Téléchargement terminé
 [downloaded at]
 Téléchargé à 
 [edit map]
-
+Editer la carte
 [editing map]
-
+Edition de la carte
 [editor shortcuts]
-
+Raccourcis de l'éditeur
 [editor]
 Éditeur
 [end]
-
+Fin
 [Enter your nickname :]
 Entrez votre pseudo :
 [Enter your password :]
 Entrez votre mot de passe :
 [enter]
-
+Entrée
 [equals]
-
+Egal
 [escape]
-
+Echapement
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -317,7 +317,7 @@ Attire des exploratrices
 [explorationflag]
 Drapeau d'exploration
 [Explorer Ratio]
-
+Rapport des exploratrices
 [Explorer]
 Exploratrice
 [explorers]
@@ -325,37 +325,37 @@ exploratrices
 [extra islands]
 Iles vides
 [f10]
-
+F10
 [f11]
-
+F11
 [f12]
-
+F12
 [f13]
-
+F13
 [f14]
-
+F14
 [f15]
-
+F15
 [f1]
-
+F1
 [f2]
-
+F2
 [f3]
-
+F3
 [f4]
-
+F4
 [f5]
-
+F5
 [f6]
-
+F6
 [f7]
-
+F7
 [f8]
-
+F8
 [f9]
-
+F9
 [Fertility Map]
-
+Carte de fertilité
 [food left]
 Nourriture
 [food]
@@ -371,21 +371,21 @@ libres
 [from:]
 de:
 [fruit]
-
+Fruit
 [fullscreen]
 Plein écran
 [game full]
 Jeu complet
 [game shortcuts]
-
+Raccourcis du jeu
 [game speed]
 Vitesse du jeu
 [general settings]
-
+Réglages généraux
 [go to event]
-
+Aller à l'évenement
 [go to home]
-
+Aller à la maison
 [goto main menu]
 Menu principal
 [grass]
@@ -403,7 +403,7 @@ Carte faite à la main
 [Happyness]
 Satisfaction
 [hard pause]
-
+Pause dur
 [Harvest]
 Récolte
 [has joined]
@@ -413,9 +413,9 @@ a quitté
 [heal]
 Santé
 [help]
-
+Aide
 [home]
-
+Maison
 [hospital explanation 2]
  
 [hospital explanation]
@@ -429,7 +429,7 @@ Point de vie
 [hp]
 Pts vie
 [human]
-
+Humain
 [hungry]
 faim
 [hungryness]
@@ -439,7 +439,7 @@ Accélération matérielle
 [In way]
 En chemin
 [increase units working]
-
+Augmenter le nombre d'unité travaillant
 [inn explanation 2]
  
 [inn explanation]
@@ -453,7 +453,7 @@ Nourrit vos unités
 [inn]
 Auberge
 [insert]
-
+Insérer
 [inside]
 Dedans
 [islands size]
@@ -461,17 +461,17 @@ taille des îles
 [islands terrain]
 Iles
 [iterate selection]
-
+Itérer la séléction
 [jobs]
-
+Travaux
 [join a game]
 Joindre une partie
 [join]
 Joindre
 [keyboard settings]
-
+Réglages du clavier
 [kick]
-
+Ejecter
 [lan]
 Jeu en réseau local
 [language incomplete]
@@ -485,23 +485,23 @@ Français
 [large]
 grand
 [Leave Game]
-
+Quitter le jeu
 [left meta]
-
+Méta gauche
 [left super]
-
+Super gauche
 [left]
-
+Gauche
 [level]
 Niveau
 [levels]
 Niveaux
 [load campaign]
-
+Charger la campagne
 [load game]
 Charger jeu
 [load map]
-
+Charger la carte
 [load]
 Charger
 [loading glob2]
@@ -521,7 +521,7 @@ Dmg. sol
 [Map name: %0]
 Carte: %0.
 [map name]
-
+Nom de la carte
 [map size x]
 Largeur de la carte
 [map size y]
@@ -529,9 +529,9 @@ Hauteur de la carte
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
 [maps available]
-
+Carte disponible
 [mark map]
-
+Marquer la carte
 [market explanation 2]
 fruits avec les autres
 [market explanation]
@@ -541,11 +541,11 @@ Marché
 [medium]
 moyen
 [menu]
-
+Menu
 [Min required level:]
 Niveau minimum requis:
 [Minimum Level To Flag]
-
+Niveau minimum au drapeau
 [Music volume]
 Volume (musique)
 [mute]
@@ -553,15 +553,15 @@ muet
 [network latency]
 Latence du réseau
 [new campaign]
-
+Nouvelle campagne
 [new]
 Nouveau
 [nick taken]
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
 [no key]
-
+Aucune touche
 [no ressources growth areas]
-
+Aucune zone de croissance de resources
 [No]
 Non
 [not connected]
@@ -575,27 +575,27 @@ pas prêt
 [number of teams]
 nombre d'équipes
 [numlock]
-
+Verouillage du pavé numérique
 [of which]
 dont
 [ok]
 Accepter
 [old islands terrain]
-
+Ancien terrain d'île
 [old random terrain]
-
+Ancien terrain aléatoire
 [On the spot]
 Sur place
 [one player]
 Un joueur présent.
 [open chat box]
-
+Ouvrir boîte de discussion
 [open load menu]
-
+Ouvrir menu de chargement
 [open save menu]
-
+Ouvrir menu de sauvegarde
 [open script editor]
-
+Ouvrir éditeur de script
 [open]
 ouvert
 [options]
@@ -603,15 +603,15 @@ Options
 [Orange]
 Orange
 [page down]
-
+Page suivante
 [page up]
-
+Page précédente
 [Papyrus]
 Papyrus
 [pause game]
-
+Mettre le jeu en pause
 [pause]
-
+Pause
 [Paused]
 Pause
 [percent]
@@ -623,7 +623,7 @@ Joueur
 [please wait]
 Attendre SVP
 [power]
-
+Puissance
 [presence request sent]
 Requête pour présence envoyée ...
 [press space]
@@ -631,11 +631,11 @@ Appuyer sur espace pour continuer.
 [Prestige]
 Prestige
 [print screen]
-
+Impriment l'écran
 [Prune]
 Prune
 [quit the editor]
-
+Quitter l'éditeur
 [quit the game]
 Quitter le jeu
 [quit]
@@ -655,35 +655,35 @@ Proportions
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 [remember unit]
-
+Se rappeler l'unité
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
 [remove map]
-
+Enlever la carte
 [remove shortcut]
-
+Enlever le raccourcis
 [repair building]
-
+Réparer la bâtiment
 [repair]
 Réparer
 [repeat area]
-
+Répéter la zone
 [ressources]
 Ressources
 [restore default shortcuts]
-
+Restaurer les raccourcis par défaut
 [return to editor]
-
+Retourner à l'éditeur
 [return to game]
 Retour au jeu
 [return]
-
+Retour
 [right meta]
-
+Méta droite
 [right super]
-
+Super droite
 [right]
-
+Droite
 [river diameter]
 Diamètre de la rivière
 [river terrain]
@@ -695,7 +695,7 @@ Voulez-vous sauver avant de quitter ?
 [save game]
 Sauvegarder jeu
 [save map]
-
+Sauvegarder la carte
 [Save]
 Sauvegarder
 [school explanation 2]
@@ -705,11 +705,11 @@ Améliore le savoir
 [school]
 Ecole
 [Script Areas]
-
+Zones du script
 [scroll lock]
-
+Verouillage de défilement
 [scroll wheel enabled]
-
+Roulette de la souris activée
 [seeking a job]
 cherchent du travail
 [seeking]
@@ -781,7 +781,7 @@ touche enter : envoyer un message
 [shortcut explanation v]
 touche v : presser pour parler
 [show main menu]
-
+Montrer le menu principal
 [skin]
 Affichage
 [small]
@@ -789,19 +789,19 @@ faible
 [smoothing]
 Lissage
 [space]
-
+Espace
 [speed]
 Vitesse
 [start mission]
-
+Démarrer la mission
 [start new campaign]
-
+Démarrer la campagne
 [Start]
 Départ
 [STARTING GAME ...]
 Début du jeu... 
 [Starving Map]
-
+Carte de famine
 [starving]
 trop faim
 [stat]
@@ -849,7 +849,7 @@ Améliore la vitesse de nage
 [swimmingpool]
 Piscine
 [switch to adding areas]
-
+Changer vers l'ajout de zones
 [switch to area brush 1]
 
 [switch to area brush 2]
@@ -867,19 +867,19 @@ Piscine
 [switch to area brush 8]
 
 [switch to building view]
-
+Changer vers la vue bâtiment
 [switch to flag view]
-
+Changer vers la vue drapeau
 [switch to removing areas]
-
+Changer vers la suppression des zones
 [switch to teams view]
-
+Changer vers la vue des équipes
 [switch to terrain view]
-
+Changer vers la vue du terrain
 [sys req]
-
+Sys Req
 [tab]
-
+Tab
 [teams]
  équipes
 [the barracks is finished]
@@ -951,15 +951,15 @@ La piscine est attaquée
 [to:]
 à:
 [toggle draw accessibility aids]
-
+Basculer l'affichage des aides d'accessibilité
 [toggle draw information]
-
+Basculer l'affichage des informations
 [toggle draw unit paths]
-
+Basculer l'affichage du chemin des unités
 [toggle menu screen]
-
+Basculer l'écran du menu
 [toggle recording voice]
-
+Basculer la transmission de la voix
 [Total prestige reached]
 Le prestige total a été atteint
 [Total]
@@ -967,17 +967,17 @@ Total
 [tutorial]
 Didacticiel
 [unassigned]
-
+Non assigné
 [Uncontrolled]
 Incontrôlé
 [undo]
-
+Annuler
 [uniform terrain]
 Terrain uniforme
 [Unit editor]
 Éditeur d'unité
 [unit settings]
-
+Réglages de l'unité
 [Unit type]
 Type d'unité
 [units type]
@@ -987,15 +987,15 @@ type d'unités
 [Units]
 Unités
 [unlocked by]
-
+Dévérouille par
 [Unnamed Area]
-
+Zone sans nom
 [up]
-
+Haut
 [update list]
 Mettre à jour
 [upgrade building]
-
+Améliorer le bâtiment
 [upgrade]
 Améliorer
 [username]
@@ -1003,13 +1003,13 @@ Nom d'utilisateur
 [Version]
 Version
 [view history]
-
+Voir l'historique
 [wait destroy]
 En attente de destruction
 [waiting for %0]
 Attente de %0
 [waiting for key]
-
+Attend une touche
 [Walk]
 Marche
 [warflag explanation 2]
@@ -1021,7 +1021,7 @@ Drapeau de guerre
 [Warning, you need to reboot the game for changes to take effect]
 Attention, il faut relancer le jeu pour que les changements soient pris en compte
 [Warrior Ratio]
-
+Rapport des guerrières
 [Warrior]
 Guerrière
 [warriors]
@@ -1033,7 +1033,7 @@ auparavant
 [water]
 Eau
 [Wheat]
-
+Blé
 [wheat]
 Blé
 [Won : you defeated your opponents]
@@ -1047,7 +1047,7 @@ Bois
 [wood]
 Forêt
 [Worker Ratio]
-
+Rapport des travailleuses
 [Worker]
 Ouvrière
 [workers]
