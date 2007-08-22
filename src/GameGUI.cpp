@@ -4314,9 +4314,9 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 		int dx, dy;
 		game.map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 		
-		// building is burning
 		if (!type->isBuildingSite)
 		{
+			// damaged building smoke
 			float hpRatio = (float)building->hp / (float)type->hpMax;
 			if (
 				(hpRatio < 0.15) ||
@@ -4344,6 +4344,31 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 				p->startImg = 0;
 				p->endImg = 3;
 				particles.insert(p);
+			}
+			
+			// turret firing
+			if (building->lastShootStep != 0xFFFFFFFF)
+			{
+				if (game.stepCounter - building->lastShootStep < 5)
+				{
+					float norm = building->lastShootSpeedX * building->lastShootSpeedX + building->lastShootSpeedY * building->lastShootSpeedY;
+					float w2 = type->width * 16;
+					float h2 = type->height * 16;
+					float dx = (building->lastShootSpeedX * w2) / sqrt(norm);
+					float dy = (building->lastShootSpeedY * h2) / sqrt(norm);
+					Particle* p = new Particle;
+					p->x = x + w2 + dx;
+					p->y = y + h2 + dy;
+					p->vx = 0.3f - (float)rand() / (float)RAND_MAX;
+					p->vy = - 1.2f * (float)rand() / (float)RAND_MAX;
+					p->ax = 0.f;
+					p->ay = -0.02f;
+					p->age = 0;
+					p->lifeSpan = 30;
+					p->startImg = 0;
+					p->endImg = 3;
+					particles.insert(p);
+				}
 			}
 		}
 	}
@@ -4373,5 +4398,3 @@ void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, i
 		p->y -= dy * 32;
 	}
 }
-
-
