@@ -79,7 +79,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 	{
 		color[i]->clearColors();
 		for (int j = 0; j<mapHeader.getNumberOfTeams(); j++)
-			color[i]->addColor(mapHeader.getBaseTeam(j).colorR, mapHeader.getBaseTeam(j).colorG, mapHeader.getBaseTeam(j).colorB);
+			color[i]->addColor(mapHeader.getBaseTeam(j).color);
 		color[i]->setSelectedColor();
 	}
 	// find team for human player, not in every map

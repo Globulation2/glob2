@@ -103,7 +103,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		
 			
 		// Draw the building
-		sprite->setBaseColor(game.teams[localteam]->colorR, game.teams[localteam]->colorG, game.teams[localteam]->colorB);
+		sprite->setBaseColor(game.teams[localteam]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
 		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);

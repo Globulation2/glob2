@@ -22,8 +22,8 @@
 #include "GlobalContainer.h"
 #include <cmath>
 
-Mark::Mark(int px, int py, Uint8 r, Uint8 g, Uint8 b, int time)
-  : showTicks(time), totalTime(time), px(px), py(py),r(r), g(g), b(b)
+Mark::Mark(int px, int py, GAGCore::Color color, int time)
+  : showTicks(time), totalTime(time), px(px), py(py), color(color)
 {
 
 }
@@ -46,11 +46,11 @@ void Mark::draw(int x, int y, float scale)
 	int pixel_ray = static_cast<int>(ray);
 	int line_length = static_cast<int>(8 * scale);
 	int line_pos = static_cast<int>(4 * scale);
-	globalContainer->gfx->drawCircle(x, y, pixel_ray, r, g, b, a);
-	globalContainer->gfx->drawHorzLine(x + pixel_ray-line_pos+1, y, line_length, r, g, b, a);
-	globalContainer->gfx->drawHorzLine(x-pixel_ray-line_pos, y, line_length, r, g, b, a);
-	globalContainer->gfx->drawVertLine(x, y+pixel_ray-line_pos+1, line_length, r, g, b, a);
-	globalContainer->gfx->drawVertLine(x, y-pixel_ray-line_pos, line_length, r, g, b, a);			
+	globalContainer->gfx->drawCircle(x, y, pixel_ray, color);
+	globalContainer->gfx->drawHorzLine(x + pixel_ray-line_pos+1, y, line_length, color);
+	globalContainer->gfx->drawHorzLine(x-pixel_ray-line_pos, y, line_length, color);
+	globalContainer->gfx->drawVertLine(x, y+pixel_ray-line_pos+1, line_length, color);
+	globalContainer->gfx->drawVertLine(x, y-pixel_ray-line_pos, line_length, color);
 }
 
 
