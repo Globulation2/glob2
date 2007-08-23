@@ -1259,6 +1259,7 @@ int MapEdit::run(void)
 		}
 			
 
+		handleMapScroll();
 		// redraw on scroll
 // 		bool doRedraw=false;
 		viewportX+=xSpeed;
@@ -1652,34 +1653,6 @@ int MapEdit::processEvent(SDL_Event& event)
 		{
 			performAction("no ressource growth area drag motion", relMouseX, relMouseY);
 		}
-		else
-		{
-			if(globalContainer->gfx->getW()-event.motion.x<15)
-			{
-				performAction("scroll right", relMouseX, relMouseY);
-			}
-			else if(event.motion.x<15)
-			{
-				performAction("scroll left", relMouseX, relMouseY);
-			}
-			else if(xSpeed!=0)
-			{
-				performAction("scroll horizontal stop", relMouseX, relMouseY);
-			}
-	
-			if(globalContainer->gfx->getH()-event.motion.y<15)
-			{
-				performAction("scroll down", relMouseX, relMouseY);
-			}
-			else if(event.motion.y<15)
-			{
-				performAction("scroll up", relMouseX, relMouseY);
-			}
-			else if(ySpeed!=0)
-			{
-				performAction("scroll vertical stop", relMouseX, relMouseY);
-			}
-		}
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
@@ -1874,35 +1847,6 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 		}
 		break;
 	}
-	switch(key.sym)
-	{
-		case SDLK_UP:
-			if(pressed)
-				performAction("scroll up");
-			else
-				performAction("scroll vertical stop");
-			break;
-		case SDLK_DOWN:
-			if(pressed)
-				performAction("scroll down");
-			else
-				performAction("scroll vertical stop");
-			break;
-		case SDLK_LEFT:
-			if(pressed)
-				performAction("scroll left");
-			else
-				performAction("scroll horizontal stop");
-			break;
-		case SDLK_RIGHT:
-			if(pressed)
-				performAction("scroll right");
-			else
-				performAction("scroll horizontal stop");
-			break;
-		default:
-		break;
-	}
 }
 
 
@@ -1916,31 +1860,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction(action.substr(0, pos));
 		performAction(action.substr(pos+1, action.size()-pos-1));
 	}
-	if (action=="scroll left")
-	{
-		xSpeed=-1;
-	}
-	else if(action=="scroll right")
-	{
-		xSpeed=1;
-	}
-	else if(action=="scroll horizontal stop")
-	{
-		xSpeed=0;
-	}
-	else if(action=="scroll up")
-	{
-		ySpeed=-1;
-	}
-	else if(action=="scroll down")
-	{
-		ySpeed=1;
-	}
-	else if(action=="scroll vertical stop")
-	{
-		ySpeed=0;
-	}
-	else if(action=="scroll drag start")
+	if(action=="scroll drag start")
 	{
 		isScrollDragging=true;
 	}
@@ -2946,7 +2866,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 {
 	if(showingMenuScreen)
 	{
-		menuScreen->translateAndProcessEvent(&event);
+			menuScreen->translateAndProcessEvent(&event);
 		switch (menuScreen->endValue)
 		{
 			case MapEditMenuScreen::LOAD_MAP:
@@ -3036,6 +2956,111 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close area name");
 			}
 		}
+	}
+}
+
+
+
+void MapEdit::handleMapScroll()
+{
+	xSpeed = 0;
+	ySpeed = 0;
+
+	SDL_PumpEvents();
+	Uint8 *keystate = SDL_GetKeyState(NULL);
+	SDLMod modState = SDL_GetModState();
+	int xMotion = 1;
+	int yMotion = 1;
+	/* We check that only Control is held to avoid accidentally
+		matching window manager bindings for switching windows
+		and/or desktops. */
+	if (!(modState & (KMOD_ALT|KMOD_SHIFT)))
+	{
+		/* It violates good abstraction principles that I
+			have to do the calculations in the next two
+			lines.  There should be methods that abstract
+			these computations. */
+		if ((modState & KMOD_CTRL))
+		{
+			/* We move by half screens if Control is held while
+				the arrow keys are held.  So we shift by 6
+				instead of 5.  (If we shifted by 5, it would be
+				good to subtract 1 so that there would be a small
+				overlap between what is viewable both before and
+				after the motion.) */
+			xMotion = ((globalContainer->gfx->getW()-128)>>6);
+			yMotion = ((globalContainer->gfx->getH())>>6);
+		}
+		else
+		{
+			/* We move the screen by one square at a time if CTRL key
+				is not being help */
+			xMotion = 1;
+			yMotion = 1;
+		}
+	}
+	else if (modState)
+	{
+		/* Probably some keys held down as part of window
+			manager operations. */
+		xMotion = 0;
+		yMotion = 0; 
+	}
+	// int oldViewportX = viewportX;
+	// int oldViewportY = viewportY;
+	if (keystate[SDLK_UP])
+		ySpeed = -yMotion;
+	if (keystate[SDLK_KP8])
+		ySpeed = -yMotion;
+	if (keystate[SDLK_DOWN])
+		ySpeed = yMotion;
+	if (keystate[SDLK_KP2])
+		ySpeed = yMotion;
+	if ((keystate[SDLK_LEFT]))
+		xSpeed = -xMotion;
+	if (keystate[SDLK_KP4])
+		xSpeed = -xMotion;
+	if ((keystate[SDLK_RIGHT]))
+		xSpeed = xMotion;
+	if (keystate[SDLK_KP6])
+		xSpeed = xMotion;
+	if (keystate[SDLK_KP7])
+	{
+		xSpeed = -xMotion;
+		ySpeed = -yMotion;
+	}
+	if (keystate[SDLK_KP9])
+	{
+		xSpeed = xMotion;
+		ySpeed = -yMotion;
+	}
+	if (keystate[SDLK_KP1])
+	{
+		xSpeed = -xMotion;
+		ySpeed = yMotion;
+	}
+	if (keystate[SDLK_KP3])
+	{
+		xSpeed = -xMotion;
+		ySpeed = yMotion;
+	}
+	
+	if(globalContainer->gfx->getW()-mouseX<15)
+	{
+		xSpeed = 1;
+	}
+	else if(mouseX<15)
+	{
+		xSpeed = -1;
+	}
+
+	if(globalContainer->gfx->getH()-mouseY<15)
+	{
+		ySpeed = 1;
+	}
+	else if(mouseY<15)
+	{
+		ySpeed = -1;
 	}
 }
 
