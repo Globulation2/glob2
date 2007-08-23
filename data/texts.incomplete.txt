@@ -1,5 +1,5 @@
 data/texts.en.txt
-*data/texts.fr.txt
+data/texts.fr.txt
 *data/texts.es.txt
 *data/texts.de.txt
 *data/texts.cz.txt
