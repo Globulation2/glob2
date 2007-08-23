@@ -542,6 +542,8 @@ private:
 	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
 	///This delegates a sdl event to one of the menus, if they are open, and handle end codes of the menus appropriettly
 	void delegateMenu(SDL_Event& event);
+	///Handles the scrolling of the map, by arrow keys and by putting the mouse near the edge of the screen
+	void handleMapScroll();
 
 	///This states whether the minimap was rendered or not
 	bool wasMinimapRendered;
