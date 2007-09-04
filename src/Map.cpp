@@ -3366,7 +3366,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		for (int xl=0; xl<32; xl++)
 		{
 			int xg=(xl+posX-15)&wMask;
-			Case c=cases[wyg+xg];
+			const Case& c=cases[wyg+xg];
 			int addrl=wyl+xl;
 			if (gradient[addrl]!=255)
 			{
@@ -3785,7 +3785,7 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 		for (int xl=0; xl<32; xl++)
 		{
 			int xg=(xl+posX-15)&wMask;
-			Case c=cases[wyg+xg];
+			const Case& c=cases[wyg+xg];
 			int addrl=wyl+xl;
 			int dist2=(xl-15)*(xl-15)+dyl2;
 			if (dist2<=range2)
@@ -3886,22 +3886,28 @@ void Map::expandLocalGradient(Uint8 *gradient)
 								else
 									xr=x+1;
 
-								Uint8 side[8];
-								side[0]=gradient[wyu+xl];
-								side[1]=gradient[wyu+x ];
-								side[2]=gradient[wyu+xr];
+								Uint8 side;
+								
+								side=gradient[wyu+xl];
+								if (side > max) max=side;
+								side=gradient[wyu+x ];
+								if (side > max) max=side;
+								side=gradient[wyu+xr];
+								if (side > max) max=side;
 
-								side[3]=gradient[wy +xr];
+								side=gradient[wy +xr];
+								if (side > max) max=side;
 
-								side[4]=gradient[wyd+xr];
-								side[5]=gradient[wyd+x ];
-								side[6]=gradient[wyd+xl];
+								side=gradient[wyd+xr];
+								if (side > max) max=side;
+								side=gradient[wyd+x ];
+								if (side > max) max=side;
+								side=gradient[wyd+xl];
+								if (side > max) max=side;
 
-								side[7]=gradient[wy +xl];
+								side=gradient[wy +xl];
+								if (side > max) max=side;
 
-								for (int i=0; i<8; i++)
-									if (side[i]>max)
-										max=side[i];
 								assert(max);
 								if (max==1)
 									gradient[wy+x]=1;
