@@ -3334,7 +3334,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					if (yyi<0)
 						yyi=0;
 					else if (yyi>31)
-						xxi=31;
+						yyi=31;
 					gradient[xxi+(yyi<<5)]=255;
 				}
 		}
@@ -3352,7 +3352,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					if (yyi<0)
 						yyi=0;
 					else if (yyi>31)
-						xxi=31;
+						yyi=31;
 					gradient[xxi+(yyi<<5)]=255;
 				}
 
@@ -3402,7 +3402,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					if (yyi<0)
 						yyi=0;
 					else if (yyi>31)
-						xxi=31;
+						yyi=31;
 					gradient[xxi+(yyi<<5)]=255;
 				}
 			}
