@@ -19,3 +19,7 @@ default.apspec
 libgag.a
 src/glob2
 stamp-h1
+.sconf_temp
+.sconsign.dblite
+src/*.o
+
