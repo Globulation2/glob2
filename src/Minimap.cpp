@@ -216,22 +216,16 @@ void Minimap::refreshPixelRows(int start, int end, int localteam)
 
 void Minimap::computeColors(int row, int localTeam)
 {
-	float dMx, dMy;
-	int dx, dy;
-	float minidx, minidy;
-	int r, g, b;
-	int nCount;
-	int UnitOrBuildingIndex = -1;
 	assert(localTeam>=0);
 	assert(localTeam<32);
 
-	int terrainColor[3][3] = {
+	const int terrainColor[3][3] = {
 		{ 0, 40, 120 }, // Water
 		{ 170, 170, 0 }, // Sand
 		{ 0, 90, 0 }, // Grass
 	};
 
-	int buildingsUnitsColor[6][3] = {
+	const int buildingsUnitsColor[6][3] = {
 		{ 10, 240, 20 }, // self
 		{ 220, 200, 20 }, // ally
 		{ 220, 25, 30 }, // enemy
@@ -241,44 +235,40 @@ void Minimap::computeColors(int row, int localTeam)
 	};
 
 	int pcol[3+MAX_RESSOURCES];
-	int pcolIndex, pcolAddValue;
-	int teamId;
-
-	int decSPX, decSPY;
 
 	// get data
-	int szX = mini_w, szY = mini_h;
+	int szX = mini_w;
 	int decX = mini_offset_x, decY = mini_offset_y;
 
-	dMx=(float)(game->map.getW()) / (float)(mini_w);
-	dMy=(float)(game->map.getH()) / (float)(mini_h);
-
-	decSPX=offset_x;
-	decSPY=offset_y;
-
-	dy = row;
+	// Variables for traversing each map square within a minimap square.
+	// Using ?.16 fixed-point representation (gives a 2x speedup):
+	const int dMx = ((game->map.getW())<<16) / (mini_w);
+	const int dMy = ((game->map.getH())<<16) / (mini_h);
+	const int decSPX=offset_x<<16, decSPY=offset_y<<16;
 
 	bool useMapDiscovered = minimap_mode == ShowFOW;
 
-	for (dx=0; dx<szX; dx++)
+	const int dy = row;
+	for (int dx=0; dx<szX; dx++)
 	{
 		memset(pcol, 0, sizeof(pcol));
-		nCount=0;
+		int nCount = 0;
+		int UnitOrBuildingIndex = -1;
 		
 		// compute
-		for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
-		{
-			for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
+		for (int minidyFP=dMy*dy+decSPY; minidyFP<=(dMy*(dy+1))+decSPY; minidyFP+=(1<<16)) { // Fixed-point numbers
+			int minidy = minidyFP>>16;
+			for (int minidxFP=dMx*dx+decSPX; minidxFP<=(dMx*(dx+1))+decSPX; minidxFP+=(1<<16)) // Fixed-point numbers
 			{
-				Uint16 gid;
+				int minidx = minidxFP>>16;
 				bool seenUnderFOW = false;
 
-				gid=game->map.getAirUnit((Sint16)minidx, (Sint16)minidy);
+				Uint16 gid=game->map.getAirUnit(minidx, minidy);
 				if (gid==NOGUID)
-					gid=game->map.getGroundUnit((Sint16)minidx, (Sint16)minidy);
+					gid=game->map.getGroundUnit(minidx, minidy);
 				if (gid==NOGUID)
 				{
-					gid=game->map.getBuilding((Sint16)minidx, (Sint16)minidy);
+					gid=game->map.getBuilding(minidx, minidy);
 					if (gid!=NOGUID)
 					{
 						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & game->teams[localTeam]->me)
@@ -289,8 +279,8 @@ void Minimap::computeColors(int row, int localTeam)
 				}
 				if (gid!=NOGUID)
 				{
-					teamId=gid/1024;
-					if (useMapDiscovered || game->map.isFOWDiscovered((int)minidx, (int)minidy, game->teams[localTeam]->me))
+					int teamId=gid/1024;
+					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 0;
@@ -312,22 +302,23 @@ void Minimap::computeColors(int row, int localTeam)
 					}
 				}
 				
-				if (useMapDiscovered || game->map.isMapDiscovered((int)minidx, (int)minidy, game->teams[localTeam]->me))
+				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, game->teams[localTeam]->me))
 				{
 					// get color to add
-					Ressource r=game->map.getRessource((int)minidx, (int)minidy);
+					int pcolIndex;
+					Ressource r=game->map.getRessource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
 						pcolIndex=r.type + 3;
 					}
 					else
 					{
-						pcolIndex=game->map.getUMTerrain((int)minidx,(int)minidy);
+						pcolIndex=game->map.getUMTerrain(minidx,minidy);
 					}
 					
 					// get weight to add
-					if (useMapDiscovered || game->map.isFOWDiscovered((int)minidx, (int)minidy, game->teams[localTeam]->me))
-						pcolAddValue=5;
+					int pcolAddValue;
+					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))						pcolAddValue=5;
 					else
 						pcolAddValue=3;
 
@@ -341,6 +332,7 @@ void Minimap::computeColors(int row, int localTeam)
 		// Yes I know, this is *ugly*, but this piece of code *needs* speedup
 		unitOrBuildingFound:
 
+		int r, g, b;
 		if (UnitOrBuildingIndex >= 0)
 		{
 			r = buildingsUnitsColor[UnitOrBuildingIndex][0];
