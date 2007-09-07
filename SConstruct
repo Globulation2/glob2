@@ -141,7 +141,7 @@ def main():
         env.Append(CXXFLAGS=' -O3')
     if env['profile']:
         env.Append(CXXFLAGS=' -pg')
-        env.Append(LINKFLAGS=' -pg')
+        env.Append(LINKFLAGS='-pg')
         env.Append(CXXFLAGS=' -O3')
     if env['mingw'] or env['PLATFORM'] == 'win32':
         #These four options must be present before the object files when compiling in mingw
