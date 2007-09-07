@@ -5,6 +5,7 @@ def establish_options(env):
     opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add(BoolOption("release", "Build for release", 0))
+    opts.Add(BoolOption("profile", 'Build with profiling on', 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
     opts.Add(BoolOption("osx", "Build for OSX", 0))
     Help(opts.GenerateHelpText(env))
@@ -137,6 +138,10 @@ def main():
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     if env['release']:
+        env.Append(CXXFLAGS=' -O3')
+    if env['profile']:
+        env.Append(CXXFLAGS=' -pg')
+        env.Append(LINKFLAGS=' -pg')
         env.Append(CXXFLAGS=' -O3')
     if env['mingw'] or env['PLATFORM'] == 'win32':
         #These four options must be present before the object files when compiling in mingw
