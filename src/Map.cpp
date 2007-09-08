@@ -3306,6 +3306,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	//printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	assert(building->type);
+	bool wasDirty = building->dirtyLocalGradient[canSwim];
 	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
@@ -3368,16 +3369,18 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	}
 	
 	// 2. NEED TO UPDATE? Check boundary conditions to see if they have changed.
-	bool change = false;
-	for (int i=0; i<1024; i++) {
-		// The boundary conditions - do they match?
-		if (gradient[i]==0 || gradient[i]==255 || tgtGradient[i]==0 || tgtGradient[i]==255) {
-			if (gradient[i] != tgtGradient[i]) {
-				change = true; break;
+	if (!wasDirty) { // We can trust the original version
+		bool change = false;
+		for (int i=0; i<1024; i++) {
+			// The boundary conditions - do they match?
+			if (gradient[i]==0 || gradient[i]==255 || tgtGradient[i]==0 || tgtGradient[i]==255) {
+				if (gradient[i] != tgtGradient[i]) {
+					change = true; break;
+				}
 			}
 		}
+		if (!change) return; // No need to update; boundary conditions are unchanged.
 	}
-	if (!change) return; // No need to update; boundary conditions are unchanged.
 
 	// 3. Check that the building is REACHABLE.
 	if (!building->type->isVirtual)
@@ -3422,6 +3425,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		localBuildingGradientUpdateLocked++;
 		//fprintf(logFile, "...not updatedLocalGradient! building bgid=%d is locked!\n", building->gid);
 		//printf("...not updatedLocalGradient! building bgid=%d is locked!\n", building->gid);
+		memcpy(tgtGradient, gradient, 1024); // Don't leave gradient as-is (it might be dirty)
 		return;
 		doubleBreak:;
 	}
