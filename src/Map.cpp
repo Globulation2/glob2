@@ -3373,8 +3373,10 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		bool change = false;
 		for (int i=0; i<1024; i++) {
 			// The boundary conditions - do they match?
-			if (gradient[i]==0 || gradient[i]==255 || tgtGradient[i]==0 || tgtGradient[i]==255) {
-				if (gradient[i] != tgtGradient[i]) {
+			if (gradient[i] != tgtGradient[i]) {
+				if (((gradient[i]+1)&0xFE)==0 ||  // Is either gradient or tgtGradient 0 or 255?
+				    ((tgtGradient[i]+1)&0xFE)==0)
+				{
 					change = true; break;
 				}
 			}
