@@ -52,8 +52,8 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 		
 		int iCloudSize = (int)((1<<16) /cloudSize);
 		int iCloudStability = (int)((1<<16) /cloudStability);
-		int iOffsetX = (vpX<<5) + (int)(offsetX*iCloudSize),
-		    iOffsetY = (vpY<<5) + (int)(offsetY*iCloudSize);
+		int iOffsetX = (int)(((vpX<<5) + offsetX)*iCloudSize),
+		    iOffsetY = (int)(((vpY<<5) + offsetY)*iCloudSize);
 
  		int noiseMultiplier = (int)((1<<8) *rootOfMaxAlpha*1.8f);
 		for (int y=0; y<hGrid; y++)
