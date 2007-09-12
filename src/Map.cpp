@@ -3695,6 +3695,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		globalBuildingGradientUpdateLocked++;
 		//printf("...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
 		//fprintf(logFile, "...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
+		delete[] listedAddr;
 		return;
 		doubleBreak:;
 	}

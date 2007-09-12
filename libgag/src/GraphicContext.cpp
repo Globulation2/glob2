@@ -1898,6 +1898,8 @@ namespace GAGCore
 		#endif
 		
 		// create surface
+		if (sdlsurface)
+			SDL_FreeSurface(sdlsurface);
 		sdlsurface = SDL_SetVideoMode(w, h, 32, sdlFlags);
 		_gc = this;
 		
