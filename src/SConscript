@@ -28,6 +28,7 @@ NewMapScreen.cpp            Order.cpp                        OverlayAreas.cpp
 PerlinNoise.cpp             Player.cpp                       Race.cpp
 Ressource.cpp               RessourcesTypes.cpp              ScriptEditorScreen.cpp
 Sector.cpp                  Settings.cpp                     SettingsScreen.cpp
+SimplexNoise.cpp
 SGSL.cpp                    SoundMixer.cpp                   Team.cpp
 TeamStat.cpp                UnitConsts.cpp                   Unit.cpp
 UnitEditorScreen.cpp        UnitSkin.cpp                     UnitsSkins.cpp
