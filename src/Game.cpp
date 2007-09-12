@@ -102,28 +102,23 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 		teams[i]=NULL;
 		players[i]=NULL;
 	}
+	clearGame();
 	
 	setSyncRandSeed();
 	fprintf(logFile, "setSyncRandSeed(%d, %d, %d)\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	
 	mouseX=0;
 	mouseY=0;
-	mouseUnit=NULL;
-	selectedUnit=NULL;
-	selectedBuilding=NULL;
 
 	stepCounter=0;
-	totalPrestige=0;
 	prestigeToReach=0;
-	totalPrestigeReached=false;
-	isGameEnded=false;
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
 }
 
 
-
+/** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
 	// Delete existing teams and players
@@ -148,6 +143,11 @@ void Game::clearGame()
 	totalPrestige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
+
+	// Clears selections
+	mouseUnit = NULL;
+	selectedUnit = NULL;
+	selectedBuilding = NULL;
 }
 
 
