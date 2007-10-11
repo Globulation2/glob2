@@ -1,0 +1,1116 @@
+[%0 has been deconnected of the game]
+%0 έχει αποσυνδεθεί.
+[%0 has left the game]
+%0 έχει τερματίσει το παιχνίδι.
+[%0's game]
+%0 του Παιχνιδιού
+[%0's team unit got converted to your team]
+%0's team unit got converted to your team
+[abreaviation explanation A]
+A: Σύμμαχοι
+[abreaviation explanation C]
+C: Στείλτε chat μηνύματα στο
+[abreaviation explanation fV]
+fV: Εμφάνιση όρασης για τα Πανδοχεία (για κλοπή μονάδων)
+[abreaviation explanation mV]
+mV: Εμφάνιση όρασης για τα κτίρια Αγορών (για ανταλλαγές φρούτων)
+[abreaviation explanation V]
+V: Εμφάνιση όρασης για όλα τα κτίρια
+[Add AI]
+Προσθήκη AI
+[add map]
+Προσθήκη χάρτη
+[add shortcut]
+Προσθήκη Συντόμευσης
+[AI]
+AI
+[ai]
+AI
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AIReachToInfinity]
+ΦτάσεΣτοΆπειρο
+[AIToubib]
+AIToubib
+[AIWarrush]
+AIWarrush
+[Alga]
+Algae
+[algae]
+algae
+[alliances]
+Συμμαχίες
+[and]
+και
+[any explorer]
+κάθε εξερευνητής
+[are dying hungry]
+λιμοκτονούν
+[are hungry]
+πεινάνε
+[are ok]
+όλα καλά
+[are wonded]
+πληγωμένοι
+[armor]
+Θωράκιση
+[assigned]
+Ορισμένος
+[At. speed]
+Ταχύτητα Επ.
+[At. strength]
+Δύναμη Επ.
+[attack speed]
+Ταχύτητα επίθεσης
+[Attack]
+Επίθεση
+[audio]
+Ήχος
+[auto save]
+Αυτόματη αποθήκευση
+[available lan games]
+Διαθέσιμα τοπικά παιχνίδια
+[awaiting players]
+Αναμένοντας παίκτες
+[away:]
+εκτός:
+[backspace]
+backspace
+[bad error in connection system]
+Πρόβλημα στο σύστημα σύνδεσης
+[barracks explanation 2]
+επίπεδο των πολεμιστών σου
+[barracks explanation]
+Βελτιώνει την μαχητικότητα
+[barracks]
+Στρατώνες
+[beach size]
+μέγεθως παραλίας
+[break]
+διακοπή
+[build barracks level 0]
+Κατασκευή Στρατώνων 1
+[build barracks level 1]
+Κατασκευή Στρατώνων 2
+[build barracks level 2]
+Κατασκευή Στρατώνων 3
+[build defencetower level 0]
+Κατασκευή Αμυντικού Πύργου 1
+[build defencetower level 1]
+Κατασκευή Αμυντικού Πύργου 2
+[build defencetower level 2]
+Κατασκευή Αμυντικού Πύργου 3
+[build hospital level 0]
+Κατασκευή Νοσοκομείου 1
+[build hospital level 1]
+Κατασκευή Νοσοκομείου 2
+[build hospital level 2]
+Κατασκευή Νοσοκομείου 3
+[build inn level 0]
+Κατασκευή Πανδοχείου 1
+[build inn level 1]
+Κατασκευή Πανδοχείου 2
+[build inn level 2]
+Κατασκευή Πανδοχείου 3
+[build market level 0]
+Κατασκευή Αγοράς
+[build racetrack level 0]
+Κατασκευή Ιπποδρόμου 1
+[build racetrack level 1]
+Κατασκευή Ιπποδρόμου 2
+[build racetrack level 2]
+Κατασκευή Ιπποδρόμου 3
+[build school level 0]
+Κατασκευή Σχολείου 1
+[build school level 1]
+Κατασκευή Σχολείου 2
+[build school level 2]
+Κατασκευή Σχολείου 3
+[build stonewall level 0]
+Κατασκευή πέτρινου τείχους
+[build swarm level 0]
+Κατασκευή Σμήνους
+[build swimmingpool level 0]
+Κατασκευή Πισίνας 1
+[build swimmingpool level 1]
+Κατασκευή Πισίνας 2
+[build swimmingpool level 2]
+Κατασκευή Πισίνας 3
+[Build]
+Κτίσμα
+[Building name]
+Όνομα κτιρίου
+[Building short explanation 2]
+Σύντομη περιγραφή κτιρίου 2 (μέγιστο 24 χαρακτήρες)
+[Building short explanation]
+Σύντομη περιγραφή κτιρίου (μέγιστο 24 χαρακτήρες)
+[building site]
+τόπος κατασκευής
+[Buildings]
+Κτίρια
+[Bullets]
+Σφαίρες
+[campaign editor]
+Επεξεραστής Εκστραστείας
+[campaign]
+Εκστρατεία
+[Can't join game, missmatching game parameters]
+Δεν μπορείτε να συμμετέχετε στο παιχνίδι, κακός συνδιασμός παραμέτρων
+[Can't join game, timeout]
+Δεν μπορείτε να συμμετέχετε στο παιχνίδι, timeout
+[Can't join game, wrong game version]
+Δεν μπορείτε να συμμετέχετε στο παιχνίδι, λάθος έκδοση
+[cancel destroy]
+Ακύρωση καταστροφής
+[cancel repair]
+Ακύρωση επιδιόρθωσης
+[cancel upgrade]
+Ακύρωση αναβάθμισης
+[Cancel]
+Άκυρο
+[caps lock]
+caps lock
+[carry]
+Μεταφορά:
+[Change Area Name]
+Αλλαγή Ονόματος Περιοχής
+[checksum sent]
+Checksum εστάλει ...
+[Cherry]
+Κεράσι
+[choose campaign]
+Επιλέξτε μία εκστρατεία
+[choose game]
+Επιλέξτε ένα παιχνίδι
+[choose map]
+Επιλέξτε ένα χάρτη
+[clear area]
+Καθαρισμός περιοχής
+[clear]
+καθαρισμός
+[Clearing:]
+Καθαρισμός:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Καθαρισμός Πόρων
+[clearingflag]
+Καθαρισμός Flag
+[close]
+Κλείσιμο
+[closed]
+Κλειστό
+[compile]
+Μεταγλώττιση script
+[compose]
+
+[connect]
+Σύνδεση
+[connected to all players]
+Συνδεδεμένος με όλους τους παίκτες
+[connected to server]
+Συνδεδεμένος στον εξυπηρετητή
+[connecting to all players]
+Σύνδεση με όλους τους παίκτες
+[connecting to]
+Σύνδεση στο
+[Continue playing]
+Συνέχεια
+[Corn]
+Σιτάρι
+[crater density]
+μέτρηση crater
+[crater lakes terrain]
+Crater Lakes
+[create game]
+Δημιουργία παιχνιδιού
+[create map]
+Δημιουργία χάρτη
+[credits]
+Εύσημα
+[current speed]
+Τωρινή ταχύτητα
+[custom game]
+Προσαρμοσμένο παιχνίδι
+[customcur]
+Προσαρμοσμένος κέρσορας
+[damage]
+Ζημιά
+[Damaged Map]
+Κατεστραμένος Χάρτης
+[dblbuff]
+Διπλό buffering
+[decrease units working]
+Μείωση Εργαζόμενων Μονάδων
+[default terrain]
+Προκαθορισμένο έδαφος
+[defencetower explanation 2]
+μονάδες ή κτίρια
+[defencetower explanation]
+Επιθέσεις κοντά στον εχθρό
+[defencetower level 0]
+Αμυντικός Πύργος 1
+[defencetower level 1]
+Αμυντικός Πύργος 2
+[defencetower level 2]
+Αμυντικός Πύργος 3
+[defencetower]
+Αμυντικός Πύργος
+[Defense Map]
+Χάρτης Άμυνας
+[Defense]
+Άμυνα
+[Delete game]
+Διαγραφή του επιλεγμένου παιχνιδιού
+[delete]
+Διαγραφή
+[delete]
+διαγραφή
+[desert]
+έρημος
+[destroy building]
+Καταστροφή Επιλεγμένου Κτιρίου
+[destroy]
+Καταστροφή
+[Disconnect]
+Αποσύνδεση
+[display]
+Εμφάνιση
+[do nothing]
+Μην κάνεις τίποτα
+[don't carry anything]
+Δεν μεταφέρει τίποτα
+[down]
+κάτω
+[download finished]
+Το Download ολοκληρώθηκε
+[downloaded at]
+Κατέβηκε στο 
+[edit map]
+Επεξεργασία Χάρτη
+[editing map]
+Επεξεργασία Χάρτη
+[editor shortcuts]
+Συντομέυσεις Επεξεργαστή
+[editor]
+Επεξεργαστής
+[end]
+τέλος
+[Enter your nickname :]
+Δώστε το ψευδώνυμο σας:
+[Enter your password :]
+Δώστε τον κωδικό σας:
+[enter]
+είσοδος
+[equals]
+ίσον
+[escape]
+έξοδος
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+Έλκει εξερευνητές
+[explorationflag]
+Σημαία Εξερεύνησης
+[Explorer Ratio]
+Αναλογία Εξερευνητή
+[Explorer]
+Εξερευνητής
+[explorers]
+εξερευνητές
+[extra islands]
+άδεια νησιά
+[f10]
+f10
+[f11]
+f11
+[f12]
+f12
+[f13]
+f13
+[f14]
+f14
+[f15]
+f15
+[f1]
+f1
+[f2]
+f2
+[f3]
+f3
+[f4]
+f4
+[f5]
+f5
+[f6]
+f6
+[f7]
+f7
+[f8]
+f8
+[f9]
+f9
+[Fertility Map]
+Χάρτης Γονιμότητας
+[food left]
+Εναπομείναν τροφή
+[food]
+Τροφή
+[forbidden area]
+Απαγορευμένη περιοχή
+[Free]
+Ok
+[free]
+ελεύθερο
+[free]
+ελεύθερο
+[from:]
+από:
+[fruit]
+φρούτο
+[fullscreen]
+Πλήρης Οθόνη
+[game full]
+Πλήρης παιχνίδι
+[game shortcuts]
+Συντομεύσεις παιχνιδιού
+[game speed]
+Ταχύτητα παιχνιδιού
+[general settings]
+Γενικές Ρυθμίσεις
+[go to event]
+Πήγαινε στο Συμβάν
+[go to home]
+Πήγαινε στο Σπίτι
+[goto main menu]
+Πήγαινε πίσω στο κυρίως μενού
+[grass]
+Γρασίδι
+[ground attack]
+επίθεση εδάφους
+[guard area]
+Φυλασσόμενη περιοχή
+[GUIMapPreview text 0]
+Παρακαλώ επιλέξτε
+[GUIMapPreview text 1]
+ένα χάρτη
+[handmade map]
+Χειροποίητος χάρτης
+[Happyness]
+Ευτυχία
+[hard pause]
+Σκληρή Παύση
+[Harvest]
+Συγκομιδή
+[has joined]
+συνδέθηκε
+[has quit]
+αποσυνδέθηκε
+[heal]
+Υγεία
+[help]
+Βοήθεια
+[home]
+σπίτι
+[hospital explanation 2]
+ 
+[hospital explanation]
+Γιαίνει τις μονάδες
+[hospital]
+Νοσοκομείο
+[host]
+Παροχή ενός παιχνιδιού
+[hp]
+HP
+[hp]
+Hitpoint
+[human]
+άνθρωπος
+[hungry]
+πείνα
+[hungryness]
+Κορεσμός
+[hwaccel]
+Επιτάχυνση υλικού
+[In way]
+Στον δρόμο
+[increase units working]
+Αύξηση Εργαζόμενων Μονάδων
+[inn explanation 2]
+ 
+[inn explanation]
+Ταϊζει τις μονάδες σας
+[inn level 0]
+Πανδοχείο 1
+[inn level 1]
+Πανδοχείο 2
+[inn level 2]
+Πανδοχείο 3
+[inn]
+Πανδοχείο
+[insert]
+εισαγωγή
+[inside]
+Μέσα
+[islands size]
+μέγεθος νησιού
+[islands terrain]
+Νησιά
+[iterate selection]
+Προχώρησε στην Επόμενη Επιλογή
+[jobs]
+εργασίες
+[join a game]
+Συμμετοχή σε ένα παιχνίδι
+[join]
+Συμμετοχή
+[keyboard settings]
+Ρυθμίσεις Πληκτρολογίου
+[kick]
+Kick
+[lan]
+LAN Game
+[language-code]
+gr
+[language-tr]
+Anastasios M. Pingios
+[language]
+Ελληνικά
+[large]
+μεγάλο
+[Leave Game]
+Έξοδος από το παιχνίδι
+[left meta]
+αριστερό meta
+[left super]
+αριστερό πλήκτρο windows
+[left]
+αριστερά
+[level]
+Επίπεδο
+[levels]
+Επίπεδα
+[load campaign]
+Φόρτωση εκστρατείας
+[load game]
+Φόρτωση παιχνιδιού
+[load map]
+Φόρτωση χάρτη
+[load]
+Φόρτωση
+[loading glob2]
+Φόρτωση Globulation 2
+[login]
+Σύνδεση
+[Lost : %0 has more prestige than you]
+Χαμένος: %0 έχει περισσότερο κύρος από εσάς
+[Lost : your colony is dead]
+Χαμμένος: η αποικία σας είναι νεκρή
+[lowquality]
+Χαμηλή ποιότητα
+[Magic At. Air]
+Εναέρια dmg.
+[Magic At. Ground]
+Επίγεια dmg.
+[Map name: %0]
+Όνομα χάρτη: %0.
+[map name]
+Όνομα
+[map size x]
+Πλάτος χάρτη
+[map size y]
+Μήκος χάρτη
+[mapGenerationDescriptor Methodes]
+Μέθοδοι τυχαίων χαρτών
+[maps available]
+Διαθέσιμοι Χάρτες
+[mark map]
+Σημείωση Χάρτη για Συμμάχους
+[market explanation 2]
+φρούτα με άλλους
+[market explanation]
+Επιτρέπει την ανταλλαγή
+[market]
+Αγορά
+[medium]
+μέσο
+[menu]
+μενού
+[Min required level:]
+Ελάχιστο απαιτούμενο επίπεδο:
+[Minimum Level To Flag]
+Ελάχιστο Flag Επίπεδο
+[Music volume]
+Ένταση (μουσική)
+[mute]
+σίγαση
+[network latency]
+Καθυστέρηση δικτύου
+[new campaign]
+Νέα Εκστρατεία
+[new]
+Νέα
+[nick taken]
+Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
+[no key]
+κανένα κλειδί ακόμα
+[no ressources growth areas]
+Καμία Περιοχή Ανάπτυξης
+[No]
+Όχι
+[not connected]
+Μη συνδεδεμένος
+[not ready]
+Μη έτοιμος
+[number of players: %0]
+%0 παίκτες είναι παρώντες.
+[number of teams: %0]
+%0 ομάδες.
+[number of teams]
+αριθμός των ομάδων
+[numlock]
+numlock
+[of which]
+υπάρχουν
+[ok]
+Ok
+[old islands terrain]
+παλιά τυχαία νησιά
+[old random terrain]
+παλιά τυχαία πεδία
+[On the spot]
+Εδώ
+[one player]
+Ένας παίκτης συνδέθηκε.
+[open chat box]
+Άνοιγμα παραθύρου chat
+[open load menu]
+Άνοιγμα Μενού Φόρτωσης
+[open save menu]
+Άνοιγμα Μενού Αποθήκευσης
+[open script editor]
+Άνοιγμα Επεξεργαστή Script
+[open]
+άνοιγμα
+[options]
+Επιλογές
+[Orange]
+Πορτοκαλι
+[page down]
+page down
+[page up]
+page up
+[Papyrus]
+Πάπυρος
+[pause game]
+Πάυση παιχνιδιού
+[pause]
+παύση
+[Paused]
+Σταματημένο
+[percent]
+  τις εκατό
+[player name]
+Όνομα παίκτη
+[player]
+Παίκτης
+[please wait]
+Παρακαλώ περιμένετε
+[power]
+ενέργεια
+[presence request sent]
+Αίτημα παρουσίας εστάλει ...
+[press space]
+Πατήστε space για να συνεχίσετε.
+[Prestige]
+Κύρος
+[print screen]
+print screen
+[Prune]
+Κλάδεμα
+[quit the editor]
+Τερματισμός επεξεργαστή
+[quit the game]
+Τερματισμός παιχνιδιού
+[quit]
+Τερματισμός
+[racetrack explanation 2]
+ταχύτητα των μονάδων
+[racetrack explanation]
+Βελτιώνει το περπάτημα
+[racetrack]
+Ιππόδρομος
+[random terrain]
+Τυχαίο πεδίο
+[range]
+Εύρος
+[ratios]
+Αναλογίες
+[Register a new YOG user with password]
+Καταχωρήστε ένα νέο YOG χρήστη με κωδικό. (μη ασφαλές)
+[remember unit]
+Να Θυμάσαι την Μονάδα
+[Remember YOG password localy]
+Αποθήκευση του κωδικού τοπικά. (μη ασφαλές)
+[remove map]
+Αφαίρεση Χάρτη
+[remove shortcut]
+Αφαίρεση Συντόμευσης
+[repair building]
+Εκκίνηση/Παύση Επιδιόρθωσης
+[repair]
+Επιδιόρθωση
+[repeat area]
+φορές το ίδιο περιβάλλον
+[ressources]
+Πόροι
+[restore default shortcuts]
+Επαναφορά Προκαθορισμένων Συντομεύσεων Πληκτρολογίου
+[return to editor]
+Επιστροφή στον Επεξεργαστή
+[return to game]
+Επιστροφή στο παιχνίδι
+[return]
+enter
+[right meta]
+δεξί meta
+[right super]
+δεξί πλήκτρο windows
+[right]
+δεξί
+[river diameter]
+πλάτος ποταμού
+[river terrain]
+Ποτάμι
+[sand]
+Άμμος
+[save before quit?]
+Θέλετε να αποθηκεύσετε πρίν τερματίσετε;
+[save game]
+Αποθήκευση παιχνιδιού
+[save map]
+Αποθήκευση χάρτη
+[Save]
+Αποθήκευση
+[school explanation 2]
+επίπεδο των εργατών σας
+[school explanation]
+Βελτιώνει το κτίσιμο
+[school]
+Σχολείο
+[Script Areas]
+Χώρος Script
+[scroll lock]
+scroll lock
+[scroll wheel enabled]
+Scroll Wheel Ενεργοποιημένο
+[seeking a job]
+ψάχνοντας για εργασία
+[seeking]
+ψάχνοντας
+[select barracks building]
+Επιογή Στρατώνες
+[select clearingflag]
+Επιλογή clearingflag
+[select construct barracks]
+Επιλογή Κατασκευή Στρατώνων
+[select construct defencetower]
+Επιλογή Κατασκευή Αμυντικού Πύργου
+[select construct hospital]
+Επιλογή Κατασκευή Νοσοκομείου
+[select construct inn]
+Επιλογή Κατασκευή Πανδοχείου
+[select construct market]
+Επιλογή Κατασκευή Αγοράς
+[select construct racetrack]
+Επιλογή Κατασκευή Ιπποδρόμου
+[select construct school]
+Επιλογή Κατασκευή Σχολείου
+[select construct stonewall]
+Επιλογή Κατασκευή Πέτρινου Τείχους
+[select construct swarm]
+Επιλογή Κατασκευή Σμήνους
+[select construct swimmingpool]
+Επιλογή Κατασκευή Πισίνας
+[select explorationflag]
+Επιλογή explorationflag
+[select hospital building]
+Επιλογή Νοσοκομείου
+[select inn building]
+Επιλογή Πανδοχείου
+[select market building]
+Επιλογή Αγοράς
+[select place clearing area]
+Επιλογή Πεδίου Καθαρισμού Περιοχής
+[select place clearingflag]
+Επιλογή Πεδίου Καθαρισμού Σημαίας
+[select place explorationflag]
+Επιλογή Πεδίου Σημαίας Εξερεύνησης
+[select place forbidden area]
+Επιλογή Πεδίου Απαγορευμένης Περιοχής
+[select place guard area]
+Επιλογή Πεδίου Φυλασσόμενης Περιοχής
+[select place warflag]
+Επιλογή Πεδίου Σημαίας Μάχης
+[select racetrack building]
+Επιλογή Ιπποδρόμου
+[select school building]
+Επιλογή Σχολείου
+[select swarm building]
+Επιλογή Σμήνους
+[select swimmingpool building]
+Επιλογή Πισίνας
+[select tower building]
+Επιλογή Πύργου
+[select wall building]
+Επιλογή τείχους
+[select warflag]
+Επιλογή warflag
+[session request sent]
+Αίτημα συνόδου εστάλει ...
+[settings]
+Ρυθμίσεις
+[shortcut explanation enter]
+Enter: στείλτε ένα chat μύνημα
+[shortcut explanation v]
+V: κρατήστε για να μιλίσετε
+[show main menu]
+Εμφάνιση Κυρίως Μενού
+[skin]
+Εμφάνιση
+[small]
+μικρό
+[smoothing]
+Πιο ομαλό
+[space]
+κενό
+[speed]
+Ταχύτητα
+[start mission]
+Εκκίνηση Αποστολής
+[start new campaign]
+Εκκίνηση Νέας Εκστρατείας
+[Start]
+Εκκίνηση
+[STARTING GAME ...]
+Εκκίνηση Παιχνιδιού... 
+[Starving Map]
+Χάρτης Λιμοκτονούντων
+[starving]
+λιμοκτονούν
+[stat]
+Στατιστικά
+[state]
+κατάσταση
+[Statistics]
+Στατιστικά
+[Still (i)]
+Ακόμα 
+[still (w)]
+Ακόμα
+[still one unit working]
+Μία μονάδα ακόμα δουλεύει
+[Still one]
+Ακόμα ένα
+[Stone]
+Πέτρα
+[stone]
+πέτρα
+[stonewall explanation 2]
+στοιχείο
+[stonewall explanation]
+Παθητική άμυνα
+[stonewall]
+Πέτρινο Τείχος
+[svr hostname]
+Όνομα εξυπηρετητή
+[swamp terrain]
+Βάλτος
+[swarm explanation 2]
+ 
+[swarm explanation]
+Δημιουργεί νέες μονάδες
+[swarm level 0]
+Σμήνος
+[swarm]
+Σμήνος
+[Swim]
+Κολύμβηση
+[swimmingpool explanation 2]
+ταχύτητα των μονάδων σας
+[swimmingpool explanation]
+Βελτιώνει την κολύμβηση
+[swimmingpool]
+Πισίνα
+[switch to adding areas]
+Αλλαγή Σε Πρόσθεση Περιοχών
+[switch to area brush 1]
+Αλλαγή Σε Βούρτσα Περιοχής 1
+[switch to area brush 2]
+Αλλαγή Σε Βούρτσα Περιοχής 2
+[switch to area brush 3]
+Αλλαγή Σε Βούρτσα Περιοχής 3
+[switch to area brush 4]
+Αλλαγή Σε Βούρτσα Περιοχής 4
+[switch to area brush 5]
+Αλλαγή Σε Βούρτσα Περιοχής 5
+[switch to area brush 6]
+Αλλαγή Σε Βούρτσα Περιοχής 6
+[switch to area brush 7]
+Αλλαγή Σε Βούρτσα Περιοχής 7
+[switch to area brush 8]
+Αλλαγή Σε Βούρτσα Περιοχής 8
+[switch to building view]
+Αλλαγή Σε Εμφάνιση Κτιρίων
+[switch to flag view]
+Αλλαγή σε εμφάνιση σημαιών
+[switch to removing areas]
+Αλλαγή Σε Αφαίρεση Περιοχών 
+[switch to teams view]
+Αλλαγή Σε Εμφάνιση Ομάδων
+[switch to terrain view]
+Αλλαγή Σε Εμφάνιση Πεδίου
+[sys req]
+sys req
+[tab]
+tab
+[teams]
+ ομάδες
+[the barracks is finished]
+Ο χώρος εκπαίδευσης ολοκληρώθηκε
+[the barracks is under attack]
+Ο χώρος εκπαίδευσης δέχετε επίθεση
+[the building is finished]
+Το κτίσιμο ολοκληρώθηκε
+[the building is under attack]
+Το κτίριο δέχετε επίθεση
+[the clearingflag is finished]
+?? clearingflag ολοκληρώθηκε ??
+[the clearingflag is under attack]
+?? clearingflag δέχετε επίθεση ??
+[the defencetower is finished]
+Ο αμυντικός πύργος ολοκληρώθηκε
+[the defencetower is under attack]
+Ο αμυντικός πύργος δέχετε επίθεση
+[the explorationflag is finished]
+?? explorationflag ολοκληρώθηκε ??
+[the explorationflag is under attack]
+?? explorationflag δέχετε επίθεση ??
+[The game has not been finished]
+Το παιχνίδι δεν ολοκληρώθηκε
+[the games]
+Παιχνίδια
+[the hospital is finished]
+Το νοσοκομείο ολοκληρώθηκε
+[the hospital is under attack]
+Το νοσοκομείο δέχετε επίθεση
+[the inn is finished]
+Το πανδοχείο ολοκληρώθηκε
+[the inn is under attack]
+Το πανδοχείο δέχετε επίθεση
+[the maps]
+Χάρτες
+[the market is finished]
+Η αγορά ολοκληρώθηκε
+[the market is under attack]
+Η αγορά δέχετε επίθεση
+[The player %0 has joined YOG]
+%0 έχουν συνδεθεί στο YOG.
+[The player %0 has left YOG]
+%0 έφυγε από το YOG.
+[the racetrack is finished]
+Ο ιππόδρομος ολοκληρώθηκε
+[the racetrack is under attack]
+Ο ιππόδρομος δέχετε επίθεση
+[the school is finished]
+Το σχολείο ολοκληρώθηκε
+[the school is under attack]
+Το σχολείο δέχετε επίθεση
+[the stonewall is finished]
+Το τείχος ολοκληρώθηκε
+[the stonewall is under attack]
+Ο εχθρός είναι στα τείχοι σας
+[the swarm is finished]
+Το σμήνος ολοκληρώθηκε
+[the swarm is under attack]
+Το σμήνος δέχετε επίθεση
+[the swimmingpool is finished]
+Η πισίνα ολοκληρώθηκε
+[the swimmingpool is under attack]
+Η πισίνα δέχετε επίθεση
+[the warflag is finished]
+?? warflag ολοκληρώθηκε ??
+[the warflag is under attack]
+?? warflag δέχετε επίθεση ??
+[to:]
+στο:
+[toggle draw accessibility aids]
+Εναλλαγή Δημιουργίας Αναγκών Προσιτότητας
+[toggle draw information]
+Εναλλαγή Δημιουργίας Πληροφοριών
+[toggle draw unit paths]
+Εναλλαγή Δημιουργίας Μονοπατιών Μονάδων
+[toggle menu screen]
+Εναλλαγή Οθόνης Μενού
+[toggle recording voice]
+Έναρξη Ηχογράφησης Φωνής
+[toggle recording voice]
+Εναλλαγή Εγγραφής Φωνής
+[Total prestige reached]
+Συνολικό ρεκοπ κύρους
+[Total]
+Σύνολο
+[tutorial]
+Tutorial
+[unassigned]
+Μη Ορισμένο
+[Uncontrolled]
+Εκτός Ελέγχου
+[undo]
+Αναίρεση
+[uniform terrain]
+Ομαδοποίηση πεδίου
+[Unit editor]
+Επεξεργαστής μονάδας
+[unit settings]
+Ρυθμίσεις Μονάδας
+[Unit type]
+Τύπος μονάδας
+[units type]
+τύπος μονάδας
+[units working]
+ εργαζόμενες μονάδες
+[Units]
+Μονάδες
+[unlocked by]
+Ξεκλειδώθηκε από
+[Unnamed Area]
+{Ανώμυμη Περιοχή}
+[up]
+πάνω
+[update list]
+Λίστα αναβαθμίσεων
+[upgrade building]
+Εκκίνηση/Παύση Αναβάθμισης
+[upgrade]
+Αναβάθμιση
+[username]
+Όνομα Χρήστη
+[Version]
+Έκδοση
+[view history]
+Εμφάνιση Ιστορικού
+[wait destroy]
+Αναμονή καταστροφής
+[waiting for %0]
+Αναμονή για %0
+[waiting for key]
+αναμονή για πλήκτρο...
+[Walk]
+Περπάτα
+[warflag explanation 2]
+ 
+[warflag explanation]
+Έλκει πολεμιστές
+[warflag]
+Σημαία Πολέμου
+[Warning, you need to reboot the game for changes to take effect]
+Προσοχή, πρέπει να επανεκκινήσετε το παιχνίδι για να ισχύσουν οι αλλαγές
+[Warrior Ratio]
+Αναλογία Πολεμιστή
+[Warrior]
+Πολεμιστής
+[warriors]
+πολεμιστές
+[was AI]
+ηταν AI
+[was]
+ηταν
+[water]
+Νερό
+[Wheat]
+Σιτάρι
+[Won : you defeated your opponents]
+Νίκη: κέρδισες τους αντιπάλους σου
+[Won : you have the most prestige]
+Νίκη: έχεις το περισσότερο κύρος
+[Won : your ally %0 has the most prestige]
+Νίκη: ο σύμμαχος %0 έχει το περισσότερο κύρος
+[Wood]
+Ξύλο
+[wood]
+ξύλο
+[Worker Ratio]
+Αναλογία εργάτη
+[Worker]
+Εργάτης
+[workers]
+Εργάτες
+[workers]
+εργάτες
+[working]
+Εργάζεται
+[wounded]
+πληγωμένος
+[Yes]
+Ναι
+[YESTS_BAD]
+Εσωτερικό πρόβλημα συνέπειας κατά την σύνδεση.
+[YESTS_CONNECTING]
+Ξεκινά η σύνδεση με τον YOG metaserver...
+[YESTS_CONNECTION_LOST]
+Η σύνδεση με το YOG χάθηκε.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ένα λάθος πρωτοκόλλου δημιουργήθικε:  Είστε ήδη πιστοποιηένος.  Δοκιμάστε ξανά σε 45 δευτερόλεπτα.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Ο YOG metaserver αρνήθηκε την σύνδεση γιατί αυτό το όνομα χρήστη είναι ήδη καταχωρημένο.  Εαν είναι δικό σας, απενεργοποιήστε την επιλογή "Καταχωρήστε νέου YOG χρήστη με κωδικό".
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ο κωδικός που δώσατε ήταν λάνθασμενος.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη δεν έχει ακόμα κωδικό. Πιθανόν θέλετε να καταχωρήσετε αυτό το όνομα χρήστη με αυτό τον κωδικό. Γι' αυτό, ενεργοποιήστε την επιλογή "Καταχώρηση νέου YOG χρήστη με κωδικό" πριν συνδεθείτε. Θα πρέπει να ενεργοποιήσετε αυτή την επιλογή μόνο μία φορά.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ένα εσωτερικό πρόβλημα πρωτοκόλλου δημιουργήθικε: δεν είστε συνδεδεμένος ακόμα κατά την πιστοποίηση. Παρακαλούμε αναφέρετε αυτό το πρόβλημα.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το globulation2 client σας είναι παλιό.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Ο YOG metaserver αρνήθηκε την σύνδεση χωρίς εξήγηση!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη είναι ήδη σε χρήση από κάποιον άλλον.
+[YESTS_CREATED]
+Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
+[YESTS_DECONNECTING]
+Αποσύνδεση από το YOG metaserver...
+[YESTS_UNABLE_TO_CONNECT]
+Αδύνατη η σύνδεση. Προφανώς ο YOG metaserver δεν λειτουργεί.
+[YESTS_YOG_KILLED]
+Ένας administrator μόλις σταμάτησε τον YOG metaserver.
+[yog-chat]
+#yog-en
+[yog]
+Ysagoon Online Gaming
+[YOG_HELP]
+Το σύστημα μυνημάτων YOG έχει δύο εντολές, "msg" και "away". Πατήστε "/help <εντολή>" για να μάθετε περισσότερα για την κάθε μία.
+[YOG_HELP_AWAY]
+Η εντολή "/away (<message>)" σας επιτρέπει να κάνετε γνωστό στους άλλους χρήστες του YOG ότι είστε προσωρινά εκτός.  Μπορείτε να προσθέσετε μια μικρή εξήγηση.  Για παράδειγμα "/away Τρώω ένα hamburger και θα είμαι πίσω στη 1 ακριβώς." Συντόμευση "/a"
+[YOG_HELP_MSG]
+Η εντολή "/msg <name> <message>" στέλνει ένα προσωπικό μύνημα.  Για παράδειγμα, "/msg John Hi John, πως είσαι;."  Συντόμευση "/m"
+[You are no more marked as away]
+Δεν είστε πια σημαδεμένος ως away.
+[You are now marked as away]
+Είστε σημαδεμένος ως away.
+[you have lost]
+Χάσατε!
+[you have won]
+Κερδίσατε!
+[Your %0 are under attack]
+Το %0 δέχετε επίθεση
+[Your unit got converted to %0's team]
+Η μονάδα σας άλλαξε σε %0 ομάδα
+
+
