@@ -3289,8 +3289,23 @@ void GameGUI::drawTopScreenBar(void)
 	}
 
 	// draw prestige stats
-	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormatableString("%0 / %1 / %2").arg(localTeam->prestige).arg(game.totalPrestige).arg(game.prestigeToReach).c_str());
-	
+	if (game.prestigeMode == Game::PRESTIGE_FIXED)
+	{
+		globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormatableString("%0 / %1 / %2").arg(localTeam->prestige).arg(game.totalPrestige).arg(game.prestigeToReach).c_str());
+	}
+	else if (game.prestigeMode == Game::PRESTIGE_DYNAMIC)
+	{
+
+		if (game.prestigeLeaderTimeStamp != 0)
+		{
+			int prestigeBar = (game.stepCounter - game.prestigeLeaderTimeStamp) * 80 / game.prestigeTimeOut;
+			if (prestigeBar > 80) prestigeBar = 80;
+			globalContainer->gfx->drawFilledRect (dec+0, 0, 80, 14, 0, 255, 0);
+			globalContainer->gfx->drawFilledRect (dec+0, 0, prestigeBar, 14, 255, 0, 255);
+		}
+		globalContainer->gfx->drawString(dec+2, 0, globalContainer->littleFont, FormatableString("%0 / %1").arg(localTeam->prestige).arg(game.prestigeLeaderScore).c_str());
+	}
+
 	dec += 90;
 	
 	// draw unit conversion stats

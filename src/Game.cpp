@@ -111,7 +111,12 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	mouseY=0;
 
 	stepCounter=0;
+	prestigeMode = PRESTIGE_DYNAMIC;
 	prestigeToReach=0;
+	prestigeLeaderTimeStamp = 0;
+	prestigeLeaderScore = 0;
+	prestigeLeader = 0;
+	prestigeTimeOut = 7500;
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
@@ -140,6 +145,8 @@ void Game::clearGame()
 	}
 
 	///Clears prestige	
+	prestigeLeaderScore = 0;
+	prestigeLeaderTimeStamp = 0;
 	totalPrestige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
@@ -1063,6 +1070,7 @@ void Game::wonSyncStep(void)
 		totalPrestige=0;
 		isGameEnded=false;
 		int greatestPrestige=0;
+		int greatestPrestigeTeam=0;
 		
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		{
@@ -1075,16 +1083,48 @@ void Game::wonSyncStep(void)
 			teams[i]->hasWon |= !isOtherAlive;
 			isGameEnded |= teams[i]->hasWon;
 			totalPrestige += teams[i]->prestige;
-			if (greatestPrestige < teams[i]->prestige) greatestPrestige = teams[i]->prestige;
+			if (greatestPrestige < teams[i]->prestige)
+			{
+				greatestPrestige = teams[i]->prestige;
+				greatestPrestigeTeam = i;
+			}
+			if ((prestigeLeaderTimeStamp == 0) || (prestigeLeader != i))
+			{
+				if (prestigeLeaderScore < teams[i]->prestige)
+				{
+					prestigeLeaderTimeStamp = stepCounter;
+					prestigeLeaderScore = teams[i]->prestige;
+					prestigeLeader = greatestPrestigeTeam;
+					gui->addMessage (Color(255,0,255), "A new prestige record has been set! Time runs down!");
+				}
+				else if ((prestigeLeaderScore <= teams[i]->prestige) && prestigeLeaderTimeStamp != 0)
+				{
+					prestigeLeaderTimeStamp = 0;
+					gui->addMessage (Color(255,0,255), "The prestige record has been broken.");
+				}
+			}
+			else if (prestigeLeader == i)
+			{
+				prestigeLeaderScore = teams[i]->prestige;
+			}
 		}
 	
-		if (totalPrestige >= prestigeToReach)
+		if ((prestigeMode == PRESTIGE_FIXED) && (totalPrestige >= prestigeToReach))
 		{
 			totalPrestigeReached=true;
 			isGameEnded=true;
 	
 			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 				teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
+		}
+		else if ((prestigeMode == PRESTIGE_DYNAMIC) && (totalPrestige > 0))
+		{
+			if ((prestigeLeaderTimeStamp != 0) &&
+				((stepCounter - prestigeLeaderTimeStamp) >= prestigeTimeOut))
+			{
+				totalPrestigeReached = true;
+				isGameEnded = true;
+			}
 		}
 	}
 }
