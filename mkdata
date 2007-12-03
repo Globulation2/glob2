@@ -1,7 +1,0 @@
-#!/bin/sh
-rsync -rz --delete-after data/gfx/*.png glob2@yog.globulation2.org:~/rsync/data2007/gfx/
-rsync -rz --delete-after data/gfx/cursor/*.png glob2@yog.globulation2.org:~/rsync/data2007/gfx/cursor/
-rsync -rz --delete-after data/fonts/*.ttf glob2@yog.globulation2.org:~/rsync/data2007/fonts/
-rsync -rz --delete-after data/gui/*.png glob2@yog.globulation2.org:~/rsync/data2007/gui/
-rsync -rz --delete-after data/zik/*.ogg glob2@yog.globulation2.org:~/rsync/data2007/zik/
-rsync -rz --delete-after data/icons/*.png glob2@yog.globulation2.org:~/rsync/data2007/icons/

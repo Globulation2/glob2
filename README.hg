@@ -13,25 +13,25 @@ Please use the master branch unless you want to help a developer:
 (see INSTALL for the steps to compile and install the source once you have it)
 
 # hg clone http://hg.globulation2.org/glob2
-# hg clone -r master glob2 glob2-master
-# cd glob2-master
-# hg update tip
+# hg clone -r default glob2 glob2-work
+# cd glob2-work
+# hg update tip -C
 
 
 You don't need to clone that repository again. To get the latest changes just do:
 
 # cd glob2
 # hg pull
-# cd ../glob2-master
-# hg pull -r master ../glob2
-# hg update tip
+# cd ../glob2-work
+# hg pull -r default ../glob2
+# hg update tip -C
 
 
 When cloning you can specify a directory name for the repository, and the revision you want:
 
 # hg clone http://hg.globulation2.org/glob2
 then
-# hg clone -r master glob2 glob2-master
+# hg clone -r default glob2 glob2-work
 or
 # hg clone -r branched_code glob2 glob2-branched
 or
@@ -41,17 +41,16 @@ or
 Alternatively you can just rename the directory, eg:
 
 # hg clone http://hg.globulation2.org/glob2
-# hg clone -r master glob2 code
-# mv code glob2-master
+# hg clone -r default glob2 code
+# mv code glob2-work
 
 
 When you want to push changes for everyone to use (provided you have write access, see II.), then run:
 
-# hg commit --message="you commit message, what you have changed"
-# hg push -r master https://hg.globulation2.org/glob2/
+# hg commit -m "you commit message, what you have changed"
+# hg push -r default https://hg.globulation2.org/glob2/
 
-(https://, not http://, and change "-r master" to whatever revision you want to push to, for example:)
+("https://" not "http://")
+If you work in a different branch change the "-r default" to whatever branch your working on, for example:)
 
 # hg push -r mynew_branch https://hg.globulation2.org/glob2/
-or
-# hg push -r existing_branch https://hg.globulation2.org/glob2/
