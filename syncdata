@@ -1,4 +1,0 @@
-#!/bin/sh
-rsync -rzv yog.globulation2.org::glob2data-2007 data
-
-
