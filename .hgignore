@@ -1,17 +1,17 @@
 syntax: glob
 
-*.Po
-*.map
-*.gif
-*.png
-*.txt
-*.ogg
+# *.Po
+# *.map
+# *.gif
+# *.png
+# *.txt
+# *.ogg
 Makefile
 Makefile.*
-config.*
-configure
-*.ttf
-aclocal.m4
+# config.*
+# configure
+# *.ttf
+# aclocal.m4
 output.?
 requests
 traces.?
