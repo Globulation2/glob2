@@ -15,7 +15,7 @@ Please use the master branch unless you want to help a developer:
 # hg clone http://hg.globulation2.org/glob2
 # hg clone -r default glob2 glob2-work
 # cd glob2-work
-# hg update tip -C
+# hg update -C tip
 
 
 You don't need to clone that repository again. To get the latest changes just do:
@@ -24,7 +24,7 @@ You don't need to clone that repository again. To get the latest changes just do
 # hg pull
 # cd ../glob2-work
 # hg pull -r default ../glob2
-# hg update tip -C
+# hg update -C tip
 
 
 When cloning you can specify a directory name for the repository, and the revision you want:
