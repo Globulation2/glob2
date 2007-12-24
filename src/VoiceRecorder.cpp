@@ -113,7 +113,6 @@ int record(void *pointer)
 		
 		ioctl(dsp, SNDCTL_DSP_SPEED , &rate);
 		ioctl(dsp, SNDCTL_DSP_CHANNELS , &channels);
-		ioctl(dsp, SOUND_PCM_READ_RATE , &rate);
 		ioctl(dsp, SNDCTL_DSP_SETFMT , &format);
 		#endif
 		#if !defined(AUDIO_RECORDER_OSS) && !defined(WIN32) && !defined(__APPLE__)
