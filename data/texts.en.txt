@@ -635,7 +635,7 @@ Prestige
 [print screen]
 print screen
 [Prune]
-Prune
+Plum
 [quit the editor]
 Quit the editor
 [quit the game]
