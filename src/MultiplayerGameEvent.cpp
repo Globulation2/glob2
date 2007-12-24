@@ -18,7 +18,7 @@
 
 #include "MultiplayerGameEvent.h"
 #include <sstream>
-
+#include <typeinfo>
 
 MGPlayerListChangedEvent::MGPlayerListChangedEvent()
 {

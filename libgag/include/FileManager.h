@@ -133,9 +133,9 @@ namespace GAGCore
 		//! Return the checksum of a file, std::string version
 		Uint32 checksum(const std::string &filename) { return checksum(filename.c_str()); }
 		//! Return the modification date of a file, const char *version
-		std::time_t mtime(const char *filename);
+		time_t mtime(const char *filename);
 		//! Return the modification date of a file, std::string version
-		std::time_t mtime(const std::string &filename) { return mtime(filename.c_str()); }
+		time_t mtime(const std::string &filename) { return mtime(filename.c_str()); }
 	
 		// FIXME : the following functions are not thread-safe :
 		//! must be call before directory listening, return true if success
