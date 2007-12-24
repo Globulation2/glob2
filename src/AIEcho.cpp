@@ -21,6 +21,7 @@
 #include <stack>
 #include <queue>
 #include <map>
+#include <limits>
 #include <algorithm>
 #include "BuildingsTypes.h"
 #include "IntBuildingType.h"
