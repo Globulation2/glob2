@@ -1901,43 +1901,6 @@ namespace GAGCore
 		if (sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		sdlsurface = SDL_SetVideoMode(w, h, 32, sdlFlags);
-		_gc = this;
-		
-		// set _glFormat
-		if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
-		{
-			_glFormat.palette = NULL;
-			_glFormat.BitsPerPixel = 32;
-			_glFormat.BytesPerPixel = 4;
-			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-			_glFormat.Rmask = 0x000000ff;
-			_glFormat.Rshift = 0;
-			_glFormat.Gmask = 0x0000ff00;
-			_glFormat.Gshift = 8;
-			_glFormat.Bmask = 0x00ff0000;
-			_glFormat.Bshift = 16;
-			#else
-			_glFormat.Rmask = 0x00ff0000;
-			_glFormat.Rshift = 16;
-			_glFormat.Gmask = 0x0000ff00;
-			_glFormat.Gshift = 8;
-			_glFormat.Bmask = 0x000000ff;
-			_glFormat.Bshift = 0;
-			#endif
-			_glFormat.Amask = 0xff000000;
-			_glFormat.Ashift = 24;
-			_glFormat.Rloss = 0;
-			_glFormat.Gloss = 0;
-			_glFormat.Bloss = 0;
-			_glFormat.Aloss = 0;
-			_glFormat.colorkey = 0;
-			_glFormat.alpha = 255;
-			//_glFormat = *SDL_AllocFormat(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-		}
-		else
-		{
-			memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
-		}
 		
 		// check surface
 		if (!sdlsurface)
@@ -1948,6 +1911,44 @@ namespace GAGCore
 		}
 		else
 		{
+			_gc = this;
+			
+			// set _glFormat
+			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
+			{
+				_glFormat.palette = NULL;
+				_glFormat.BitsPerPixel = 32;
+				_glFormat.BytesPerPixel = 4;
+				#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+				_glFormat.Rmask = 0x000000ff;
+				_glFormat.Rshift = 0;
+				_glFormat.Gmask = 0x0000ff00;
+				_glFormat.Gshift = 8;
+				_glFormat.Bmask = 0x00ff0000;
+				_glFormat.Bshift = 16;
+				#else
+				_glFormat.Rmask = 0x00ff0000;
+				_glFormat.Rshift = 16;
+				_glFormat.Gmask = 0x0000ff00;
+				_glFormat.Gshift = 8;
+				_glFormat.Bmask = 0x000000ff;
+				_glFormat.Bshift = 0;
+				#endif
+				_glFormat.Amask = 0xff000000;
+				_glFormat.Ashift = 24;
+				_glFormat.Rloss = 0;
+				_glFormat.Gloss = 0;
+				_glFormat.Bloss = 0;
+				_glFormat.Aloss = 0;
+				_glFormat.colorkey = 0;
+				_glFormat.alpha = 255;
+				//_glFormat = *SDL_AllocFormat(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			}
+			else
+			{
+				memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
+			}
+			
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 				glState.checkExtensions();
