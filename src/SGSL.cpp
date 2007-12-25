@@ -76,6 +76,7 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_ISDEAD, "isdead" },
 	{ S_ALLY, "ally" },
 	{ S_ENEMY, "enemy" },
+	{ S_ONLY, "only" },
 
 	{ S_WORKER, "Worker" },
 	{ S_EXPLORER, "Explorer" },
@@ -190,22 +191,29 @@ int Story::valueOfVariable(const Game *game, Token::TokenType type, int teamNumb
 	}
 }
 
-//code for testing conditions
-bool Story::conditionTester(const Game *game, int pc, bool l)
+// code for testing conditions. If readLevel is true, for building check for specific level. If atMin is true, add higher levels too
+bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 {
 	Token::TokenType type, operation;
 	int level, teamNumber, amount;
 
 	type = line[pc++].type;
 	teamNumber = line[pc++].value;
-	if (l)
+	if (readLevel)
 		level = line[pc++].value;
 	else
 		level = -1;
 	operation = line[pc++].type;
 	amount = line[pc].value;
-
-	int val = valueOfVariable(game, type, teamNumber, level);
+	
+	// if we want all unit over one level, sum
+	int val = 0;
+	if (!only)
+		for (int i = level; i < 6; i++)
+			val += valueOfVariable(game, type, teamNumber, i);
+	else
+		val = valueOfVariable(game, type, teamNumber, level);
+	
 	switch (operation)
 	{
 		case (Token::S_HIGHER):
@@ -646,11 +654,12 @@ bool Story::testCondition(GameGUI *gui)
 					case (Token::S_EXPLORER):
 					case (Token::S_WARRIOR):
 					{
-						bool conditionResult = conditionTester(game, execLine, false);
+						bool conditionResult = conditionTester(game, execLine, false, false);
 						conditionResult ^= negate;
 						if (conditionResult)
 						{
-							lineSelector += 4+negate;
+							lineSelector += 4;
+							lineSelector += negate ? 1 : 0;
 							return true;
 						}
 						else
@@ -659,11 +668,22 @@ bool Story::testCondition(GameGUI *gui)
 					break;
 					default: //Test conditions
 					{
-						bool conditionResult = conditionTester(game, execLine, true);
+						// Check if we have the "atmin" keyword
+						bool only = false;
+						if (line[execLine].type == Token::S_ONLY)
+						{
+							only = true;
+							execLine++;
+						}
+						
+						// Do the test
+						bool conditionResult = conditionTester(game, execLine, true, only);
 						conditionResult ^= negate;
 						if (conditionResult)
 						{
-							lineSelector += 5+negate;
+							lineSelector += 5;
+							lineSelector += negate ? 1 : 0;
+							lineSelector += only ? 1 : 0;
 							return true;
 						}
 						else
@@ -716,6 +736,7 @@ const char *ErrorReport::getErrorString(void)
 		"Missing argument",
 		"Invalid alliance level. Level must be between 0 and 3",
 		"Not a valid language identifier",
+		"Summing of a specific level is only valid for buildings",
 		"Unknown error"
 	};
 	assert(type >= 0);
@@ -760,7 +781,7 @@ const char *index(const char *str, char f)
 //Tokenizer
 void Aquisition::nextToken()
 {
-	string mot;
+	string word;
 	int c;
 	lastCol=actCol;
 	lastLine=actLine;
@@ -796,7 +817,7 @@ void Aquisition::nextToken()
 		return;
 	}
 
-	// push char in mot
+	// push char in word
 	bool isInString=false;
 	bool isInMot = false;
 	while(( c=this->getChar() )!=EOF)
@@ -832,33 +853,33 @@ void Aquisition::nextToken()
 				{
 					//no need to come back
 					HANDLE_ERROR_POS(c);
-					mot+= (char)c;
+					word+= (char)c;
 				}
 				break;
 			}
 			isInMot=true;
 		}
 		HANDLE_ERROR_POS(c);
-		mot+= (char)c;
+		word+= (char)c;
 	}
 
 
-	if (mot.size()>0)
+	if (word.size()>0)
 	{
-		if ((mot[0]>='0') && (mot[0]<='9'))
+		if ((word[0]>='0') && (word[0]<='9'))
 		{
 			token.type = Token::INT;
-			token.value = atoi(mot.c_str());
+			token.value = atoi(word.c_str());
 		}
-		else if (mot[0]=='"')
+		else if (word[0]=='"')
 		{
-			string::size_type start=mot.find_first_of("\"");
-			string::size_type end=mot.find_last_of("\"");
+			string::size_type start=word.find_first_of("\"");
+			string::size_type end=word.find_last_of("\"");
 			if ((start!=string::npos) && (end!=string::npos))
 			{
 				token.type = Token::STRING;
 				assert(end-start-1>=0);
-				token.msg = mot.substr(start+1, end-start-1);
+				token.msg = word.substr(start+1, end-start-1);
 			}
 			else
 				token.type = Token::NIL;
@@ -868,7 +889,7 @@ void Aquisition::nextToken()
 			// is it a language ?
 			for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 			{
-				if (mot == std::string(Toolkit::getStringTable()->getStringInLang("[language-code]", i)))
+				if (word == std::string(Toolkit::getStringTable()->getStringInLang("[language-code]", i)))
 				{
 					token.type = Token::LANG;
 					token.value = i;
@@ -877,7 +898,7 @@ void Aquisition::nextToken()
 			}
 			
 			// so it is another token
-			token.type = Token::getTypeByName(mot.c_str());
+			token.type = Token::getTypeByName(word.c_str());
 		}
 	}
 	else
@@ -1616,11 +1637,12 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				}
 				break;
 
-				// Wait | wait ( int) or wait ( isdead( teamNumber ) ) or wait( condition ) or wait( not( condition ) )
+				// Wait | wait ( int) or wait ( isdead( teamNumber ) ) or wait( [only] condition ) or wait( not( [atmin] condition ) )
 				case (Token::S_WAIT):
 				{
 					bool enter = false;
 					bool negate = false;
+					bool atmin = false;
 					thisone.line.push_back(*donnees->getToken());
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
@@ -1727,13 +1749,23 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						CHECK_PARCLOSE;
 					}
+					
+					// only
+					bool only = false;
+					if (donnees->getToken()->type == Token::S_ONLY && !enter)
+					{
+						only = true;
+						thisone.line.push_back(*donnees->getToken());
+						NEXT_TOKEN;
+					}
+					
 					//Comparaison| ( Variable( team , "flagName" ) cond value ) : variable = unit
 					//( Variable( level , team , "flagName" ) cond value ) : variable = building
 					//"flagName" can be omitted !
 					if ((donnees->getToken()->type >= Token::S_WORKER) && (donnees->getToken()->type <= Token::S_MARKET_B) && !enter)
 					{
 						enter = true;
-
+						
 						thisone.line.push_back(*donnees->getToken());
 						if (donnees->getToken()->type >= Token::S_SWARM_B)
 						{
@@ -1772,6 +1804,13 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						else
 						{
+							// only is invalid for units
+							if (only)
+							{
+								er.type=ErrorReport::ET_INVALID_ONLY;
+								break;
+							}
+							
 							// Units
 							CHECK_PAROPEN;
 							NEXT_TOKEN;
