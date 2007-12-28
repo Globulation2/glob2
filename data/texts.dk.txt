@@ -1,19 +1,19 @@
 [%0 has been deconnected of the game]
-%0 er blevet afbrut
+%0 er blevet afkoblet
 [%0 has left the game]
 %0 har forladt spillet
 [%0's game]
-
+%0s spil
 [%0's team unit got converted to your team]
 Et %0 holds enhed blev konverteret til dit hold
 [abreaviation explanation A]
-A : Alliangce
+A : Alliance
 [abreaviation explanation C]
 C : Send besked til
 [abreaviation explanation fV]
 Vf : Vis alle dine kroer (til at stjæle enheder)
 [abreaviation explanation mV]
-mV : vis alle Market bygninger (til at udveksle frugt)
+mV : vis alle markeder (til at udveksle frugt)
 [abreaviation explanation V]
 V : Vis alle dine bygninger
 [Add AI]
@@ -21,7 +21,7 @@ Tilføj AI
 [add map]
 Tilføj kort
 [add shortcut]
-
+Tilf�j genvejstast
 [AI]
 AI
 [ai]
@@ -45,11 +45,11 @@ Alger
 [algae]
 alger
 [alliances]
-Alliance
+Alliancer
 [and]
 og
 [any explorer]
-Tilfældig udforsker
+Vilkårlig udforsker
 [are dying hungry]
 dør af sult
 [are hungry]
@@ -57,25 +57,25 @@ er sultne
 [are ok]
 er ok
 [are wonded]
-er skadet
+er skadede
 [armor]
-Rystning
+Rustning
 [assigned]
 Tildelt
 [At. speed]
-Att. hastighed
+Angrebshastighed
 [At. strength]
-Att. styrke
+Angrebsstyrke
 [attack speed]
-Angribs hastighed
+Angrebshastighed
 [Attack]
 Angrib
 [audio]
 Lyd
 [auto save]
-Auto gem
+Auto-gem
 [available lan games]
-Tilgængelige lokal spil
+Tilgængelige lokale spil
 [awaiting players]
 Venter på spillere
 [away:]
@@ -83,29 +83,29 @@ er væk:
 [backspace]
 
 [bad error in connection system]
-Fejl i forbindelses systemet
+Fejl i forbindelsessystemet
 [barracks explanation 2]
 Af dine krigere
 [barracks explanation]
-Forbedre militlær enheder 
+Forbedre militærenheder 
 [barracks]
 Kaserne
 [beach size]
-Strand størrelse
+Strandstørrelse
 [break]
 
 [build barracks level 0]
-Byg Kerserne 1
+Byg Kaserne niv. 0
 [build barracks level 1]
-Byg Kerserne 1
+Byg Kaserne niv. 1
 [build barracks level 2]
-Byg Kerserne 1
+Byg Kaserne niv. 2
 [build defencetower level 0]
-Byg Forsvars tårn 1
+Byg Forsvarstårn 1
 [build defencetower level 1]
-Byg Forsvars tårn 2
+Byg Forsvarstårn 2
 [build defencetower level 2]
-Byg Forsvars tårn 3
+Byg Forsvarstårn 3
 [build hospital level 0]
 Byg Hospital 1
 [build hospital level 1]
@@ -121,11 +121,11 @@ Byg kro 3
 [build market level 0]
 Byg Marked
 [build racetrack level 0]
-Byg Racerbane 1
+Byg Træningsbane 1
 [build racetrack level 1]
-Byg Racetrack 2
+Byg Træningsbane 2
 [build racetrack level 2]
-Byg Racerbane 3
+Byg Træningsbane 3
 [build school level 0]
 Byg Skole 1
 [build school level 1]
@@ -135,7 +135,7 @@ Byg Skole 3
 [build stonewall level 0]
 Byg Sten væg
 [build swarm level 0]
-Byg Swærm
+Byg Sværm
 [build swimmingpool level 0]
 Byg Svømmepøl 1
 [build swimmingpool level 1]
@@ -145,29 +145,29 @@ Byg Svømmepøl 3
 [Build]
 Byg
 [Building name]
-Bygnings navn
+Bygningsnavn
 [Building short explanation 2]
-Bygning kort forklaring 2 (24 karaktere max)
+Bygning kort forklaring 2 (max 24 tegn)
 [Building short explanation]
-Bygning kort forklaring (24 karaktere max)
+Bygning kort forklaring (max 24 tegn)
 [building site]
-bygnings sted
+bygningssted
 [Buildings]
 Bygninger
 [Bullets]
 Kugler
 [campaign editor]
-Kampanie redigator
+Kampagne redigator
 [campaign]
 Kampagne
 [Can't join game, missmatching game parameters]
-Kan ikke forbinde til spillet, differencerne argumenter givet til spillet
+Kan ikke forbinde til spillet, spilparametrene stemmer ikke overens
 [Can't join game, timeout]
 Kan ikke forbinde til spillet, der er opstået en timeout
 [Can't join game, wrong game version]
-Kan ikke forbinde til spillet, forkert version
+Kan ikke forbinde til spillet, spilversionen er forkert
 [cancel destroy]
-Afbryd Destruktion
+Afbryd destruktion
 [cancel repair]
 Afbryd reparing
 [cancel upgrade]
@@ -177,11 +177,11 @@ Afbryd
 [caps lock]
 
 [carry]
-Bægere på:
+Bærer på:
 [Change Area Name]
-Ændre område navn
+Ændr områdenavn
 [checksum sent]
-Kontrol værdi sendt ...
+Kontrolværdi sendt ...
 [Cherry]
 Kirsebær
 [choose campaign]
@@ -191,7 +191,7 @@ Vælg et spil
 [choose map]
 Vælg et kort
 [clear area]
-Ophæv arial
+Ophæv areal
 [clear]
 
 [Clearing:]
@@ -201,7 +201,7 @@ Rydning:
 [clearingflag explanation]
 Fjern ressourcer
 [clearingflag]
-Rydnings flag
+Rydningsflag
 [close]
 Luk
 [closed]
@@ -225,13 +225,13 @@ Fortsæt spillet
 [Corn]
 Korn
 [crater density]
-Antal krater
+Antal kratere
 [crater lakes terrain]
-Krater søer
+Kratersøer
 [create game]
 Lav spil
 [create map]
-Lave et kort
+Lav et kort
 [credits]
 Credit
 [current speed]
@@ -239,11 +239,11 @@ Nuværende hastighed
 [custom game]
 Tilfældigt spil
 [customcur]
-Ændre cursor
+Ændr cursor
 [damage]
 Skade
 [Damaged Map]
-Skadet Kort
+Skade-kort
 [dblbuff]
 Dobbelt buffering
 [decrease units working]
@@ -263,7 +263,7 @@ Forsvars tårn 3
 [defencetower]
 Forsvars tårn
 [Defense Map]
-Forsvars Kort
+Forsvarskort
 [Defense]
 Forsvar
 [Delete game]
@@ -293,17 +293,17 @@ Hentet fra
 [edit map]
 Rediger kort
 [editing map]
-Redigere kort
+Rediger kort
 [editor shortcuts]
 Rediger genveje
 [editor]
-Redigere
+Rediger bane
 [end]
 
 [Enter your nickname :]
-Skriv dit bruger navn :
+Skriv dit brugernavn :
 [Enter your password :]
-Skriv dit adgangs kode :
+Skriv din adgangskode :
 [enter]
 
 [equals]
@@ -379,15 +379,15 @@ Spillet er fyldt op.
 [game shortcuts]
 Gem genveje
 [game speed]
-Spil hastighed
+Spilhastighed
 [general settings]
-Generalle instillinger
+Generelt
 [go to event]
 
 [go to home]
 
 [goto main menu]
-Gå tilbage til hoved menuen
+Tilbage til hovedmenuen
 [grass]
 Gras
 [ground attack]
@@ -469,11 +469,11 @@ Forbind til et spil
 [join]
 Spil med
 [keyboard settings]
-Tastetur instillinger
+Genvejstaster
 [kick]
 
 [lan]
-LAN Spil
+Lokalt netspil
 [language incomplete]
 Dansk - Incomplete
 [language-code]
@@ -493,23 +493,23 @@ stort
 [left]
 
 [level]
-neavu
+niveau
 [levels]
-Neavuer
+Niveauer
 [load campaign]
-Lade Kampanie
+Hent Kampagne
 [load game]
-Lade spil
+Hent spil
 [load map]
-Laade Map
+Hent bane
 [load]
-Lade
+hent
 [loading glob2]
-Lader Globulation 2
+Indlæser Globulation 2
 [login]
 Log ind
 [Lost : %0 has more prestige than you]
-Tabt : %0 har mere præstige end du har
+Tabt : %0 har mere prestige end du har
 [Lost : your colony is dead]
 Tabt : Din koloni er død
 [lowquality]
@@ -543,9 +543,9 @@ mellem
 [menu]
 
 [Min required level:]
-Minimum krævede neavu:
+Minimum krævede niveau:
 [Minimum Level To Flag]
-Minimum Flag neavu
+Minimum Flag niveau
 [Music volume]
 Lydstyrke (musik)
 [mute]
@@ -553,15 +553,15 @@ Slå lyd fra
 [network latency]
 Netværk begrænsning
 [new campaign]
-Ny Kampanie
+Ny Kampagne
 [new]
 Ny
 [nick taken]
-Vi er kede af det men det bruger navn du har valgt er allerede taget på freenode, Du vil kun kunde tale gennem YOG
+Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
 [no key]
 
 [no ressources growth areas]
-Ingen vækst område
+Ingen vækstområde
 [No]
 Nej
 [not connected]
@@ -599,7 +599,7 @@ En spiller er kommet til.
 [open]
 Åben
 [options]
-Instillinger
+Indstillinger
 [Orange]
 Appelsin
 [page down]
@@ -617,7 +617,7 @@ Pause
 [percent]
   procent
 [player name]
-Spiller navn
+Spillernavn
 [player]
 Spiller
 [please wait]
@@ -629,7 +629,7 @@ Til stede forspørgsel sendt ...
 [press space]
 Tryk på mellemrum for at fortsætte
 [Prestige]
-Præstige
+Prestige
 [print screen]
 
 [Prune]
@@ -641,11 +641,11 @@ Afslut spillet
 [quit]
 Afslut
 [racetrack explanation 2]
-Neavu af dine enheder
+Niveau af dine enheder
 [racetrack explanation]
-Forbedre gå hastighed
+Forbedre gåhastighed
 [racetrack]
-Raserbane
+Træningsbane
 [random terrain]
 Tilfælig terraing
 [range]
@@ -653,11 +653,11 @@ Afstand
 [ratios]
 Proportioner
 [Register a new YOG user with password]
-Registere en ny YOG bruger med adgangs kode. (usikker)
+Register en ny YOG bruger med adgangskode. (usikker)
 [remember unit]
 Husk enhed
 [Remember YOG password localy]
-Husk adgangs koden lokalt. (usikker)
+Husk adgangskoden lokalt. (usikker)
 [remove map]
 Fjern Kort
 [remove shortcut]
@@ -671,7 +671,7 @@ antal gange det samme landskab
 [ressources]
 Resourcer
 [restore default shortcuts]
-Gendan standart tastetur genveje
+Gendan standard-tastaturgenveje
 [return to editor]
 Tilbage til editor
 [return to game]
@@ -695,7 +695,7 @@ Vil du gemme for du afslutter?
 [save game]
 Gemme spil
 [save map]
-Gæmme Map
+Gem bane
 [Save]
 Gem
 [school explanation 2]
@@ -759,15 +759,15 @@ Vælg Market
 [select place warflag]
 
 [select racetrack building]
-Vælg Racerbane
+Vælg Træningsbane
 [select school building]
-Vælg Schoo
+Vælg Skole
 [select swarm building]
 Vælg Sværm
 [select swimmingpool building]
 Vælg Svømmepøl
 [select tower building]
-Vælg Torn
+Vælg Tårn
 [select wall building]
 Vælg væg
 [select warflag]
@@ -775,7 +775,7 @@ Vælg Krigs Flag
 [session request sent]
 Session forspørgelse sendt ...
 [settings]
-Instillinger
+Indstillinger
 [shortcut explanation enter]
 tast enter : send en besked
 [shortcut explanation v]
@@ -795,13 +795,13 @@ hastighed
 [start mission]
 Start Mission
 [start new campaign]
-Start Ny Kampanie
+Start Ny Kampagne
 [Start]
 Start
 [STARTING GAME ...]
 Starter Spillet...
 [Starving Map]
-Sulten kort
+Sult-kort
 [starving]
 dør af sult
 [stat]
@@ -821,23 +821,23 @@ En tilbage
 [Stone]
 Sten
 [stone]
-Sten
+sten
 [stonewall explanation 2]
 element
 [stonewall explanation]
-Passiv forsvar element
+Passivt forsvarselement
 [stonewall]
-Sten væg
+Stenvæg
 [svr hostname]
-Serverens host navn
+Serverens maskinnavn
 [swamp terrain]
-Svamp
+Sump
 [swarm explanation 2]
  
 [swarm explanation]
 Byg en ny enhed
 [swarm level 0]
-Swærm
+Sværm
 [swarm]
 Sværm
 [Swim]
@@ -885,41 +885,41 @@ Skift til terring visning
 [the barracks is finished]
 Kasernen er færdig gjort
 [the barracks is under attack]
-Kasernen er under angrib
+Kasernen er under angreb
 [the building is finished]
 Bygningen er færdig gjort
 [the building is under attack]
-Bygningn er under angrib
+Bygningn er under angreb
 [the clearingflag is finished]
 ?? Rydnings flaget er færdig ??
 [the clearingflag is under attack]
-?? Rydnings flaget er under angrib ??
+?? Rydnings flaget er under angreb ??
 [the defencetower is finished]
-Forsvar tornet er færdig gjordt
+Forsvarstårnet er færdigbygget
 [the defencetower is under attack]
-Dine forsvar er under angrib
+Forsvarstårnet er under angreb
 [the explorationflag is finished]
 ?? Udforsknings flaget er færdig ??
 [the explorationflag is under attack]
-?? Udforsknings flaget er under angrib ??
+?? Udforsknings flaget er under angreb ??
 [The game has not been finished]
-Spillet er ikke færdig
+Spillet er ikke færdigt
 [the games]
 Spillet
 [the hospital is finished]
-Hospitalet er færdig gjort
+Hospitalet er færdigbygget
 [the hospital is under attack]
-Hospitalet er under angrib
+Hospitalet er under angreb
 [the inn is finished]
 Kroen er færdig gjordt
 [the inn is under attack]
-Kroen er under angrib
+Kroen er under angreb
 [the maps]
 Kort
 [the market is finished]
 Market er færdig gjort.
 [the market is under attack]
-Market er under angrib
+Market er under angreb
 [The player %0 has joined YOG]
 %0 er kommet til YOG.
 [The player %0 has left YOG]
@@ -927,11 +927,11 @@ Market er under angrib
 [the racetrack is finished]
 Raserbanen er fædtig gjort
 [the racetrack is under attack]
-Raserbanen er under angrib
+Raserbanen er under angreb
 [the school is finished]
 Skolen er færdig gjort
 [the school is under attack]
-Skolen er under angrib
+Skolen er under angreb
 [the stonewall is finished]
 En sektion af en væg er færdig
 [the stonewall is under attack]
@@ -939,15 +939,15 @@ Fjenden er ved dine væge
 [the swarm is finished]
 Sværmen er færdig gjort
 [the swarm is under attack]
-Sværmen er under angrib
+Sværmen er under angreb
 [the swimmingpool is finished]
 Svømmepølen er færdig gjort
 [the swimmingpool is under attack]
-Svømme pølen er under angrib
+Svømme pølen er under angreb
 [the warflag is finished]
 ?? Krigs flaget er færdig ??
 [the warflag is under attack]
-?? Krigs flaget er under angrib ??
+?? Krigs flaget er under angreb ??
 [to:]
 til:
 [toggle draw accessibility aids]
@@ -961,7 +961,7 @@ Vælg tegn endhd router
 [toggle recording voice]
 Start volkal optagelse
 [Total prestige reached]
-Total præstige opnået
+Total prestige opnået
 [Total]
 Total
 [tutorial]
@@ -975,15 +975,15 @@ Ukontrolleret
 [uniform terrain]
 Uniform terraing
 [Unit editor]
-Redigere Enhed
+Rediger Enhed
 [unit settings]
-Enheds instillinger
+Enheder
 [Unit type]
 enhed type
 [units type]
 Enhed type
 [units working]
- Enheder der arbejder
+Enheder der arbejder
 [Units]
 Enheder
 [unlocked by]
@@ -999,7 +999,7 @@ Start/Stop Opgradering
 [upgrade]
 Opgradere
 [username]
-Bruger navn
+Brugernavn
 [Version]
 Version
 [view history]
@@ -1019,7 +1019,7 @@ Angrib krigere
 [warflag]
 Krigs flag
 [Warning, you need to reboot the game for changes to take effect]
-Advarsel. Du skal genstarte spillet for at ændringerne har nogen virkning
+Advarsel: Du skal genstarte spillet for at ændringerne har nogen virkning
 [Warrior Ratio]
 Kriger Ratio
 [Warrior]
@@ -1039,9 +1039,9 @@ hvede
 [Won : you defeated your opponents]
 Vundet : Du har slået din modstander
 [Won : you have the most prestige]
-Vundet : du havde den største præstige
+Vundet : du havde den største prestige
 [Won : your ally %0 has the most prestige]
-Vundet: din allierede %0 havde den største præstige
+Vundet: din allierede %0 havde den største prestige
 [Wood]
 Træ
 [wood]
@@ -1063,43 +1063,45 @@ Ja
 [YESTS_BAD]
 intern konsistens fejl imens forbindelsen blev oprettet.
 [YESTS_CONNECTING]
-Establere forbindelsen til YOG meta serveren...
+Establere forbindelsen til YOG-metaserveren...
 [YESTS_CONNECTION_LOST]
 Forbindelsen til YOG er blevet afbrudt.
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG meta serveren har afbrudt forbindelsen fordi der er sket en protokol fejl:  du er allerede logget ind.  Prøv igen om 45 sekunder.
+YOG-metaserveren har afbrudt forbindelsen fordi der er sket en protokol fejl:  du er allerede logget ind.  Prøv igen om 45 sekunder.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG meta serveren har afbrudt forbindelsen fordi dette brugernavn er allerede registeret. Hvis dette brugernavn er dit, deaktivere funktionen "Registerere en ny YOG bruger med adgangs kode".
+YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn er allerede registeret. Hvis dette brugernavn er dit, deaktivere funktionen "Registerer en ny YOG bruger med adgangskode".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG meta serveren har afbrudt forbindelsen fordi det indtastet adgangs kode er forkert.
+YOG-metaserveren har afbrudt forbindelsen fordi den indtastede adgangskode er forkert.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG meta serveren har afbrudt forbindelsen fordi dette brugernavn har ingen adgangskode endny. Du vil muligvis registerere dit brugernavn med adgangs kode. Der for aktivere funktionen "Registere en ny YOG bruger med adgangs kode" får du prøver at forbinde. Du er nød til at aktivere denne funktion når du vil registerere.
+YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn har
+ingen adgangskode endny. Du vil muligvis registerere dit brugernavn
+med adgangskode. Aktiver derfor funktionen "Registere en ny YOG bruger med adgangs kode", før du prøver at forbinde. Du er nødt til at aktivere denne funktion, når du vil registerere.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG meta serveren har afbrudt forbindelsen fordi en intern protokol fejl er opstået: du er ikke forbundet mens du forsøgte at loge ind. Rappotere venligst denne fejl.
+YOG-metaserveren har afbrudt forbindelsen, fordi en intern protokol fejl er opstået: du er endnu ikke forbundet mens du forsøger at logge ind. Rapporter venligst denne fejl.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG meta serveren har afbrudt forbindelsen fordi din globulation2 klient er forældet.
+YOG-metaserveren har afbrudt forbindelsen, fordi din Globulation2-klient er forældet.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG meta serveren har afbrudt forbindelsen uden en forklaring!
+YOG-metaserveren har afbrudt forbindelsen uden en forklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG meta serveren har afbrudt forbindelsen fordi dit bruger navn er allerede i brug af en anden.
+YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i brug af en anden.
 [YESTS_CREATED]
-Forbindelse systemet er klar til at forbinde til YOG meta serveren.
+Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
 [YESTS_DECONNECTING]
-Afbryder forbindelsen til YOG meta serveren...
+Afbryder forbindelsen til YOG-metaserveren...
 [YESTS_UNABLE_TO_CONNECT]
-Er ikke muligt at forbinde. Muligvis er YOG meta servern nede.
+Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
 [YESTS_YOG_KILLED]
-En administrator har stoppet YOG meta serveren.
+En administrator har stoppet YOG-metaserveren.
 [yog-chat]
 #yog-da
 [yog]
 Ysagoon Online Gaming
 [YOG_HELP]
-YOG meddelses systemet har to komandoer, "msg" og "away". Tast "/help <komando<" for at lære mere om en af disse.
+YOG-meddelsessystemet har to komandoer, "msg" og "away". Tast "/help <komando<" for at lære mere om en af disse.
 [YOG_HELP_AWAY]
-"/away (<besked>)" kommando tillander dig at gøre andre YOG brugere opmærksom på at du er midlertidig væk. Du må tilføje en kort forklarende besked. For eksempel "/away Jeg spiser en hamburger og jeg vil være tilbage klokken 1". Kort form "/a"
+"/away (<besked>)" kommando tillander dig at gøre andre YOG brugere opmærksom på at du er midlertidig væk. Du må tilføje en kort forklarende besked. For eksempel "/away Jeg spiser en hamburger og jeg vil være tilbage klokken 1". Kortform: "/a"
 [YOG_HELP_MSG]
-"/msg <navn> <besked> kommando sender en privat besked. for eksempel, "/msg John Hej John, hvordan har du det?". Kort form "/m".
+"/msg <navn> <besked> kommando sender en privat besked. for eksempel, "/msg John Hej John, hvordan har du det?". Kortform: "/m".
 [You are no more marked as away]
 Du er ikke længere markeret som væk.
 [You are now marked as away]
@@ -1109,6 +1111,6 @@ Du har tabt!
 [you have won]
 Du har vundet!
 [Your %0 are under attack]
-Dine %0 er under angrib
+Dine %0 er under angreb
 [Your unit got converted to %0's team]
 En af dine enheder blev konverteret til et %0 hold

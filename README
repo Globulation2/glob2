@@ -21,7 +21,7 @@ GNU and UNIX
 ------------
 
 First, run 'scons' to build all targets.
-Then, run './install' to install them.
+Then, run 'scons install' to install them.
 Finally, run 'glob2' to start and play the game.
 You can read the INSTALL file for more information about these steps.
 
