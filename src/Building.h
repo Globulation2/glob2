@@ -213,6 +213,9 @@ public:
 	/// get flag from units attached to flag.
 	void computeFlagStatLocal(int *goingTo, int *onSpot);
 
+	/// prints the list of tuples for debugging
+	void printScoreUnitList(std::list<boost::tuple<int, Unit *> > ul);
+
 	/// Eats one wheat and one of each of the available fruit from the building.
 	/// Return the number of differents fruits in this building. If mask is non-null,
 	/// set masks value to the mask as well
@@ -232,7 +235,7 @@ public:
 	std::list<Order *> orderQueue;
 	
 	static std::string getBuildingName(int type);
-	
+
 public:
 	// type
 	Sint32 typeNum; // number in BuildingTypes

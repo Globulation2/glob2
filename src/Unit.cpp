@@ -1047,9 +1047,7 @@ void Unit::handleDisplacement(void)
 						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->ressources[carriedRessource]);
 					targetBuilding->addRessourceIntoBuilding(carriedRessource);
 					carriedRessource=-1;
-
 				}
-				
 				if (!loopMove && !exchangeReady)
 				{
 					//NOTE: if attachedBuilding has become NULL; it's beacause the building doesn't need me anymore.
