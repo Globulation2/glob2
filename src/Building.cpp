@@ -942,47 +942,47 @@ void Building::updateUnitsWorking(void)
 	}
 	else
 	{
-		//updateUnitsWorkingFreeAllThatBringUnwantedRessources();
-		std::list<boost::tuple<int, int> > sortableUnitList;
+		updateUnitsWorkingFreeAllThatBringUnwantedRessources();
+		std::list<boost::tuple<int, Unit *> > sortableUnitList;
 		for (std::list<Unit *>::iterator it=unitsWorking.begin();
 			it!=unitsWorking.end();
 			++it)
 		{
 			int r=(*it)->carriedRessource;
-			int value=Score(*it,r);
-			sortableUnitList.push_back(boost::make_tuple(value, (*it)->gid));
+			int value=Score(*it, r);
+			if (verbose)
+				printf("%d carrying %d\n", *it, r);
+
+			sortableUnitList.push_back(boost::make_tuple(value, *it));
 		}
 		if (sortableUnitList.size() > 0)
 		{
 			if (verbose)
-			{
-				printf(" %d units found\n", sortableUnitList.size());
-				for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
-					it2!=sortableUnitList.end();
-					it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
-			}
+				printScoreUnitList(sortableUnitList);
 			sortableUnitList.sort();
 			if (verbose)
-			{
-				printf(" %d units found\n", sortableUnitList.size());
-				for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
-					it2!=sortableUnitList.end();
-					it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
-				//printf(" unit %d choosen. (Unit %d in upper list)\n", chosen->gid, it->get<1>());
-			}
-			for (std::list<boost::tuple<int, int> >::iterator it = sortableUnitList.begin();
+				printScoreUnitList(sortableUnitList);
+			for (std::list<boost::tuple<int, Unit *> >::iterator it = sortableUnitList.begin();
 				unitsWorking.size() > (unsigned)desiredMaxUnitWorking;
 				it++)
 			{
-				Unit * chosen=owner->myUnits[it->get<1>() % 1024];
+				Unit * chosen= it->get<1>();
 				chosen->standardRandomActivity();
-				unitsWorking.erase(chosen);
-				if (verbose) printf("fired unit %D.\n", it->get<1>() % 1024);
+				unitsWorking.remove(chosen);
+				if (verbose) printf("fired unit %d.\n", it->get<0>());
 			}
 		}
 	}
 }
-
+void Building::printScoreUnitList(std::list<boost::tuple<int, Unit *> > ul)
+{
+	printf(" %d units in list\nScore\tUnit *\n", ul.size());
+	for (std::list<boost::tuple<int, Unit *> >::iterator it = ul.begin();
+		it!=ul.end();
+		it++)
+		printf("%d\t%d\n", it->get<0>(), it->get<1>());
+	
+}
 void Building::update(void)
 {
 	if (buildingState==DEAD)
@@ -1284,7 +1284,6 @@ score=
 	+100/harvest
 */
 	if(u==NULL
-	|| u->activity != Unit::ACT_RANDOM
 	|| u->medical != Unit::MED_FREE
 	|| !u->performance[HARVEST])
 	{
@@ -1348,7 +1347,11 @@ void Building::subscribeToBringRessourcesStep()
 	std::list<boost::tuple<int, int> > sortableUnitList;
 	for(int n=0; n<1024; ++n)
 	{
-		value=Score(owner->myUnits[n],thisTurnsResource);
+		if(owner->myUnits[n]==NULL
+		|| owner->myUnits[n]->activity != Unit::ACT_RANDOM)
+			value=INT_MIN;
+		else
+			value=Score(owner->myUnits[n],thisTurnsResource);
 		if (value > INT_MIN)
 			sortableUnitList.push_back(boost::make_tuple(value, n));
 	}
