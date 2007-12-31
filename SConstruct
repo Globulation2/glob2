@@ -67,9 +67,18 @@ def configure(env):
         else:
             print "Coulf not find libz or zlib1.dll"
             Exit(1)
-    if not conf.CheckLib('boost_thread') or not conf.CheckCXXHeader('boost/thread/thread.hpp'):
-        print "Could not find libboost_thread or boost/thread/thread.hpp"
+
+    boost_thread = ''
+    if conf.CheckLib('boost_thread') and conf.CheckCXXHeader('boost/thread/thread.hpp'):
+        boost_thread='boost_thread'
+    elif conf.CheckLib('boost_thread-mt') and conf.CheckCXXHeader('boost/thread/thread.hpp'):
+        boost_thread='boost_thread-mt'
+    else:
+        print "Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp"
         Exit(1)
+    env.Append(LIBS=[boost_thread])
+    
+
     if not conf.CheckCXXHeader('boost/shared_ptr.hpp'):
         print "Could not find boost/shared_ptr.hpp"
         Exit(1)
@@ -154,7 +163,7 @@ def main():
         env.ParseConfig("sdl-config --libs")
     if env['osx']:
         env.Append(CXXFLAGS="-framework OpenGL")
-    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread'])
+    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
