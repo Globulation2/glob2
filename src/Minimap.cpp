@@ -30,9 +30,11 @@
 
 using namespace GAGCore;
 
-Minimap::Minimap(int px, int py, int size, int border, MinimapMode minimap_mode)
-  : px(px), py(py), size(size), border(border), minimap_mode(minimap_mode)
+Minimap::Minimap(bool nox, int px, int py, int size, int border, MinimapMode minimap_mode)
+	: noX(nox), px(px), py(py), size(size), border(border), minimap_mode(minimap_mode)
 {
+	if(this->noX) return;
+
 	update_row = -1;
 	surface=new DrawableSurface(size - border * 2, size - border * 2);
 }
@@ -46,6 +48,7 @@ Minimap::~Minimap()
 
 void Minimap::setGame(Game& ngame)
 {
+	if (noX) return;
 	game = &ngame;
 }
 
@@ -53,6 +56,8 @@ void Minimap::setGame(Game& ngame)
 
 void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
 {
+	if (noX) return;
+
 	computeMinimapPositioning();
 
 	Uint8 borderR;
@@ -144,6 +149,8 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 
 bool Minimap::insideMinimap(int x, int y)
 {
+	if (noX) return false;
+
 	if(x > (mini_x) && x < (mini_x + mini_w)
 			&& y > (mini_y) && y < (mini_y + mini_h))
 		return true;
@@ -154,6 +161,8 @@ bool Minimap::insideMinimap(int x, int y)
 
 void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 {
+	if (noX) return;
+
 	int xpos = nx - mini_x;
 	int ypos = ny - mini_y;
 	x = (offset_x + (int)((float)(game->map.getW()) / (float)(mini_w) * (float)(xpos))) % game->map.getW();
@@ -164,6 +173,8 @@ void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 
 void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 {
+	if (noX) return;
+
 	int xpos = game->map.normalizeX(nx - offset_x);
 	int ypos = game->map.normalizeY(ny - offset_y);
 
@@ -175,6 +186,8 @@ void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 
 void Minimap::computeMinimapPositioning()
 {
+	if (noX) return;
+
 	int msize = size - border*2;
 	if(game->map.getW() > game->map.getH())
 	{
@@ -200,6 +213,8 @@ void Minimap::computeMinimapPositioning()
 
 void Minimap::refreshPixelRows(int start, int end, int localteam)
 {
+	if (noX) return;
+
 	for(int y=start; y!=end;)
 	{
 		computeColors(y, localteam);
@@ -216,6 +231,8 @@ void Minimap::refreshPixelRows(int start, int end, int localteam)
 
 void Minimap::computeColors(int row, int localTeam)
 {
+	if (noX) return;
+
 	assert(localTeam>=0);
 	assert(localTeam<32);
 
