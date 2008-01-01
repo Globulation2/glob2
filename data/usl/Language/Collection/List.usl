@@ -3,6 +3,7 @@ import Language.FlowControl.if as if
 // An immutable, single linked list.
 // This list cannot be created empty.
 // The language being dynamically typed, check for emptynes by invoking isNil on your object.
+// Stephane Magnenat <stephane at magnenat dot net> - 2008
 
 private def List(element, next) := (
 	
