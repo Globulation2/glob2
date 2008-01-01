@@ -7,6 +7,7 @@ import Language.FlowControl.if as if
 
 private def Set(left, element, right) := (
 	
+	// Inserts an element in the set
 	def ::(x) := {
 		if (x == element) {
 			this
@@ -62,6 +63,24 @@ private def Set(left, element, right) := (
 			else
 				right.contains(x)
 		}
+	}
+	
+	// Returns a set consisting of the union of this set and x
+	def union(x:Set) := {
+		val xUnionLeft = {
+			if (!left.isNil)
+				left.union(x)
+			else
+				x
+		}
+		val xUnionElement = xUnionLeft :: element
+		val xUnionRight = {
+			if (!right.isNil)
+				right.union(xUnionElement)
+			else
+				xUnionElement
+		}
+		xUnionRight
 	}
 )
 
