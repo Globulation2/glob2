@@ -3,12 +3,13 @@ import Language.FlowControl.if as if
 // An immutable, O(log n) Set
 // The Set cannot be created empty
 // The language being dynamically typed, check for emptynes by invoking isNil on your object.
+// Stephane Magnenat <stephane at magnenat dot net> - 2008 
 
 private def Set(left, element, right) := (
 	
 	def ::(x) := {
 		if (x == element) {
-			Nil
+			this
 		} else if (x < element) {
 			if (left.isNil)
 				Set(Set(Nil, x, Nil), element, right)
