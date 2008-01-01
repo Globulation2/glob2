@@ -1,0 +1,41 @@
+import Language.FlowControl.if as if
+
+// An immutable, single linked list.
+// This list cannot be created empty.
+// The language being dynamically typed, check for emptynes by invoking isNil on your object.
+
+private def List(element, next) := (
+	
+	def ::(x) := List(x, this)
+	
+	def map(function) := {
+		val mappedElement := function(element)
+		val mappedNext := {
+			if (!next.isNil)
+				next.map(function)
+			else
+				Nil
+		}
+		List(mappedElement, mappedNext)
+	}
+	
+	def foreach(function) := {
+		function(element)
+		if (!next.isNil)
+			next.foreach(function)
+	}
+	
+	def contains(x) := {
+		if (x == element)
+			true
+		else if (!next.isNil)
+			next.contains(x)
+		else
+			false
+	}
+)
+
+def list(element) := List(element, Nil)
+
+// we should be able to write:
+// val a := list 1 :: 2 :: 3 :: 4
