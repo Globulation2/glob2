@@ -1,0 +1,70 @@
+import Language.FlowControl.if as if
+
+// An immutable, O(log n) Set
+// The Set cannot be created empty
+// The language being dynamically typed, check for emptynes by invoking isNil on your object.
+
+private def Set(left, element, right) := (
+	
+	def ::(x) := {
+		if (x == element) {
+			Nil
+		} else if (x < element) {
+			if (left.isNil)
+				Set(Set(Nil, x, Nil), element, right)
+			else
+				Set(left :: x, element, right)
+		} else {
+			if (right.isNil)
+				Set(left, element, Set(Nil, x, Nil))
+			else
+				Set(left, element, right :: x)
+		}
+	}
+	
+	def map(function) := {
+		val mappedLeft := {
+			if (!left.isNil)
+				left.map(function)
+			else
+				Nil
+		}
+		val mappedElement := function(element)
+		val mappedRight := {
+			if (!right.isNil)
+				right.map(function)
+			else
+				Nil
+		}
+		Set(mappedLeft, mappedElement, mappedRight)
+	}
+	
+	def foreach(function) := {
+		if (!left.isNil)
+			left.foreach(function)
+		function(element)
+		if (!right.isNil)
+			right.foreach(function)
+	}
+	
+	def contains(x) := {
+		if (x == element) {
+			true
+		} else if (x < element) {
+			if (left.isNil)
+				false
+			else
+				left.contains(x)
+		} else {
+			if (right.isNil)
+				false
+			else
+				right.contains(x)
+		}
+	}
+)
+
+def set(element) := Set(Nil, element, Nil)
+
+// we should be able to write:
+// val a := set 1 :: 2 :: 3 :: 4
