@@ -42,7 +42,7 @@ public:
 
 	///Construct a minimap to be drawn at the given cordinates, and the given size, provided that
 	///some of that size is a border
-	Minimap(int px, int py, int size, int border, MinimapMode minimap_mode);
+	Minimap(bool nox, int px, int py, int size, int border, MinimapMode minimap_mode);
 
 	~Minimap();
 
@@ -72,6 +72,7 @@ private:
 	/// Computes the colors for positions in the given row
 	void computeColors(int row, int localteam);
 	
+	bool noX;
 	int px;
 	int py;
 	int size;
