@@ -33,7 +33,7 @@ using namespace GAGCore;
 Minimap::Minimap(bool nox, int px, int py, int size, int border, MinimapMode minimap_mode)
 	: noX(nox), px(px), py(py), size(size), border(border), minimap_mode(minimap_mode)
 {
-	if(this->noX) return;
+	if (nox) return;
 
 	update_row = -1;
 	surface=new DrawableSurface(size - border * 2, size - border * 2);
@@ -42,6 +42,7 @@ Minimap::Minimap(bool nox, int px, int py, int size, int border, MinimapMode min
 
 Minimap::~Minimap()
 {
+	if (noX) return;
 	if (surface)
 		delete surface;
 }

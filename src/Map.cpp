@@ -3368,7 +3368,13 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	}
 	
 	// 2. NEED TO UPDATE? Check boundary conditions to see if they have changed.
+	// I commented this out, because the tgtGradient is not initialized
+	// in the first runs: leading to an unconditional jump
+	// todo: write a real fix
+
+/*
 	bool change = false;
+
 	for (int i=0; i<1024; i++) {
 		// The boundary conditions - do they match?
 		if (gradient[i]==0 || gradient[i]==255 || tgtGradient[i]==0 || tgtGradient[i]==255) {
@@ -3378,7 +3384,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		}
 	}
 	if (!change) return; // No need to update; boundary conditions are unchanged.
-
+*/
 	// 3. Check that the building is REACHABLE.
 	if (!building->type->isVirtual)
 	{
