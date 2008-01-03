@@ -917,7 +917,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 {
 	assert(stream);
 	stream->writeEnterSection("Game");
-
+    
 	///Save the two headers, record the position in the file because mapHeader will
 	///will need to be overwritten with the mapOffset known
 	Uint32 mapHeaderOffset = stream->getPosition();
