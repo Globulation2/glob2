@@ -3994,6 +3994,7 @@ bool building_search_iterator::operator!=(const building_search_iterator& rhs) c
 
 void building_search_iterator::set_to_next()
 {
+	Construction::BuildingRegister::found_iterator positionSaved = position;
 	if(is_end)
 		return;
 	if(found_id==-1)
@@ -4011,6 +4012,11 @@ void building_search_iterator::set_to_next()
 	{
 		is_end=true;
 		return;
+	}
+	if(position->first==-1 && positionSaved==position)
+	{                        // This fixes an infinit loop.
+		is_end=true;     // In some special cases the program Logic 
+		return;          // must have been wrong.
 	}
 	found_id=position->first;
 }
