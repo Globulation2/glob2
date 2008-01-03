@@ -3742,7 +3742,9 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	if (!res)
 		return false;
 
-	game.setMapHeader(mapHeader);
+    //Use the map header from the file, the one sent across the network is in the latest format version, where as the actual map
+    //may be an older file version.
+	//game.setMapHeader(mapHeader);
 	if(setGameHeader)
 		game.setGameHeader(gameHeader);
 
