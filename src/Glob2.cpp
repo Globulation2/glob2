@@ -55,6 +55,11 @@
 #	include <time.h>
 #endif
 
+#ifdef __APPLE__
+#	include <Carbon/Carbon.h>
+#	include <sys/param.h>
+#endif
+
 /*!	\mainpage Globulation 2 Reference documentation
 
 	\section intro Introduction
@@ -498,6 +503,25 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+#ifdef __APPLE__
+	/* SDL has this annoying "feature" of setting working directory to parent
+	   of bundle during static initalization.  We want to set it back to the
+	   main bundle directory so we can find our Resources directory. */
+	CFBundleRef mainBundle = CFBundleGetMainBundle();
+	assert(mainBundle);
+	CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+	assert(mainBundleURL);
+	CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
+	assert(cfStringRef);
+	
+	char path[MAXPATHLEN];
+	CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
+	chdir(path);
+	
+	CFRelease(mainBundleURL);
+	CFRelease(cfStringRef);
+#endif
+
 	Glob2 glob2;
 	return glob2.run(argc, argv);
 }
