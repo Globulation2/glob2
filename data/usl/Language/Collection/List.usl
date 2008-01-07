@@ -66,17 +66,15 @@ private def List(element, next) := (
 	*/
 )
 
+
 def list(elements:Array) := {
-	def buildfromend(n) := {
-		if (n + 1 == size)
-			List(elements[n], Nil)
+	def build(i, l) := {
+		if (i < 0)
+			l
 		else
-			List(elements[n], buildfromend(n+1))
+			build(i - 1, List(elements at i, l))
 	}
-	if (elements.size == 0)
-		Nil
-	else
-		buildfromend(elements.size)
+	build(elements.size - 1, Nil)
 }
 
 // we should be able to write:
