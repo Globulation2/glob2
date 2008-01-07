@@ -8,19 +8,19 @@ import Language.FlowControl.if as if
 private def Set(left, element, right) := (
 	
 	// Inserts an element in the set
-	def ::(x) := {
+	def insert(x) := {
 		if (x == element) {
 			this
 		} else if (x < element) {
 			if (left.isNil)
 				Set(Set(Nil, x, Nil), element, right)
 			else
-				Set(left :: x, element, right)
+				Set(left.insert(x), element, right)
 		} else {
 			if (right.isNil)
 				Set(left, element, Set(Nil, x, Nil))
 			else
-				Set(left, element, right :: x)
+				Set(left, element, right.insert(x))
 		}
 	}
 	
@@ -73,7 +73,7 @@ private def Set(left, element, right) := (
 			else
 				x
 		}
-		val xUnionElement = xUnionLeft :: element
+		val xUnionElement = xUnionLeft.insert(element)
 		val xUnionRight = {
 			if (!right.isNil)
 				right.union(xUnionElement)
@@ -84,7 +84,20 @@ private def Set(left, element, right) := (
 	}
 )
 
-def set(element) := Set(Nil, element, Nil)
+
+def set(elements:Array) := {
+	def build(i) := {
+		if (i == 0)
+			Set(Nil, elements at i, Nil)
+		else
+			build (i - 1) insert elements at i
+	}
+	if (elements.size == 0)
+		Nil
+	else
+		build(elements.size - 1)
+}
+
 
 // we should be able to write:
-// val a := set 1 :: 2 :: 3 :: 4
+val a := set [1, 2, 3, 4]
