@@ -12,14 +12,10 @@ private def List(element, next) := (
 	
 	// Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := {
-		def pushatend(l, e) := {
-			if (l.next.isNil)
-				List(e, Nil)
-			else
-				List(l.element, pushatend(l.next, e))
-				
-		}
-		pushatend(this, x)
+		if (next.isNil)
+			List(x, Nil)
+		else
+			List(element, next.append(x))
 	}
 	
 	// Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
@@ -27,13 +23,10 @@ private def List(element, next) := (
 	
 	// Returns a list resulting from the concatenation of list x at the end of this list
 	def concat (x:List) := {
-		def pushatend(l, e) := {
-			if (l.next.isNil)
-				List(l.element, e)
-			else
-				List(l.element, pushatend(l.next, e))
-		}
-		pushatend(this, x)
+		if (next.isNil)
+			List(element, x)
+		else
+			List(element, next.concat(e))
 	}
 	
 	def map(function) := {
