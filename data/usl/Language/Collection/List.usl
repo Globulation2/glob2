@@ -1,81 +1,85 @@
 import Language.FlowControl.if as if
 
 // An immutable, single linked list.
-// This list cannot be created empty.
-// The language being dynamically typed, check for emptynes by invoking isNil on your object.
 // Stephane Magnenat <stephane at magnenat dot net> - 2008
+// Martin Voelkle <martin voelkle@gmail com> - 2008
 
-private def List(element, next) := (
-	
+// the interface
+def List := interface (
+	def isEmpty := abstract
+
 	// Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
-	def prepend(x) := List(x, this)
+	def prepend(x) := Cons(x, this)
 	
 	// Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := {
-		if (next.isNil)
-			List(x, Nil)
+		if (isEmpty)
+			Cons(x, Nil)
 		else
-			List(element, next.append(x))
+			Cons(this.head, this.tail append x)
 	}
-	
-	// Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
-	def .(x) := append(x)
 	
 	// Returns a list resulting from the concatenation of list x at the end of this list
 	def concat (x:List) := {
-		if (next.isNil)
-			List(element, x)
+		if (isEmpty)
+			x
 		else
-			List(element, next.concat(e))
+			Cons(this.head, this.tail concat x)
 	}
-	
+
 	def map(function) := {
-		val mappedElement := function(element)
-		val mappedNext := {
-			if (next.isNil)
-				Nil
-			else
-				next.map(function)
-		}
-		List(mappedElement, mappedNext)
+		if (this.isEmpty)
+			Nil
+		else
+			Cons(function(this.head), this.tail map function)
 	}
 	
-	def foreach(function) := {
-		function(element)
-		if (!next.isNil)
-			next.foreach(function)
+	def foreach(function) := if (!isEmpty) {
+		function(this.head)
+		this.tail foreach function
 	}
 	
 	def contains(x) := {
-		if (x == element)
-			true
-		else if (!next.isNil)
-			next.contains(x)
+		if (isEmpty)
+			False
 		else
-			false
+			(this.head == x) || (this.tail contains x)
 	}
-	/*
-	// Returns a list consiting of the elements of this list in the reverse order
+
+	// Returns a list containing the elements of this list in the reverse order
 	def reverse := {
-		
-		if (next.isNil)
-			List(
-		else
-			List(element, Nil)
+		def reverse(source, result) := {
+			if (source.isEmpty)
+				result
+			else
+				reverse(source.tail, List(source.head, result))
+		}
+		reverse(this, Nil)
 	}
-	*/
+
+	def zip(that) := abstract
 )
 
+// the empty list
+Nil := List with (
+	def isEmpty := True
+)
 
-def list(elements:Array) := {
+// a non-empty list
+Cons := List with fun (head, tail) => (
+	def isEmpty := False
+)
+
+def list(elements: Array) := {
 	def build(i, l) := {
 		if (i < 0)
 			l
 		else
-			build(i - 1, List(elements at i, l))
+			build(i - 1, Cons(elements at i, l))
 	}
 	build(elements.size - 1, Nil)
 }
 
 // we should be able to write:
 val a := list [1, 2, 3, 4]
+
