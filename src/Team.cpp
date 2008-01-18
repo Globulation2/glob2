@@ -990,16 +990,12 @@ void Team::addToStaticAbilitiesLists(Building *building)
 {
 	if (building->type->canExchange)
 		canExchange.push_back(building);
-
 	if (building->type->unitProductionTime)
 		swarms.push_back(building);
-
 	if (building->type->shootingRange)
 		turrets.push_back(building);
-
 	if (building->type->zonable[WORKER])
 		clearingFlags.push_back(building);
-;
 	if (building->type->isVirtual)
 		virtualBuildings.push_back(building);
 }
