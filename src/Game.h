@@ -212,13 +212,8 @@ public:
 	Building *selectedBuilding;
 	
 	Uint32 stepCounter;
-	enum {PRESTIGE_NONE, PRESTIGE_FIXED, PRESTIGE_DYNAMIC} prestigeMode;
 	int totalPrestige;
 	int prestigeToReach;
-	int prestigeLeaderTimeStamp;
-	int prestigeLeaderScore;
-	int prestigeLeader;
-	int prestigeTimeOut;
 	bool totalPrestigeReached;
 	bool isGameEnded;
 	

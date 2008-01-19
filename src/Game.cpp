@@ -53,12 +53,6 @@
 
 #include "TextStream.h"
 
-
-#include "Brush.h"
-#include "DynamicClouds.h"
-
-#include "TextStream.h"
-
 #define BULLET_IMGID 0
 
 #define MIN_MAX_PRESIGE 500
@@ -117,12 +111,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	mouseY=0;
 
 	stepCounter=0;
-	prestigeMode = PRESTIGE_DYNAMIC;
 	prestigeToReach=0;
-	prestigeLeaderTimeStamp = 0;
-	prestigeLeaderScore = 0;
-	prestigeLeader = 0;
-	prestigeTimeOut = 7500;
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
@@ -151,8 +140,6 @@ void Game::clearGame()
 	}
 
 	///Clears prestige	
-	prestigeLeaderScore = 0;
-	prestigeLeaderTimeStamp = 0;
 	totalPrestige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
@@ -1076,7 +1063,6 @@ void Game::wonSyncStep(void)
 		totalPrestige=0;
 		isGameEnded=false;
 		int greatestPrestige=0;
-		int greatestPrestigeTeam=0;
 		
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		{
@@ -1089,46 +1075,16 @@ void Game::wonSyncStep(void)
 			teams[i]->hasWon |= !isOtherAlive;
 			isGameEnded |= teams[i]->hasWon;
 			totalPrestige += teams[i]->prestige;
-			if (greatestPrestige < teams[i]->prestige)
-			{
-				greatestPrestige = teams[i]->prestige;
-				greatestPrestigeTeam = i;
-			}
-			if ((prestigeLeaderTimeStamp == 0) || (prestigeLeader != i))
-			{
-				if (prestigeLeaderScore < teams[i]->prestige)
-				{
-					prestigeLeaderTimeStamp = stepCounter;
-					prestigeLeaderScore = teams[i]->prestige;
-					prestigeLeader = greatestPrestigeTeam;
-				}
-				else if (prestigeLeaderScore <= teams[i]->prestige)
-				{
-					prestigeLeaderTimeStamp = 0;
-				}
-			}
-			else if (prestigeLeader == i)
-			{
-				prestigeLeaderScore = teams[i]->prestige;
-			}
+			if (greatestPrestige < teams[i]->prestige) greatestPrestige = teams[i]->prestige;
 		}
 	
-		if ((prestigeMode == PRESTIGE_FIXED) && (totalPrestige >= prestigeToReach))
+		if (totalPrestige >= prestigeToReach)
 		{
 			totalPrestigeReached=true;
 			isGameEnded=true;
 	
 			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 				teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
-		}
-		else if ((prestigeMode == PRESTIGE_DYNAMIC) && (totalPrestige > 0))
-		{
-			if ((prestigeLeaderTimeStamp != 0) &&
-				((stepCounter - prestigeLeaderTimeStamp) >= prestigeTimeOut))
-			{
-				totalPrestigeReached = true;
-				isGameEnded = true;
-			}
 		}
 	}
 }
@@ -1582,16 +1538,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	else
 		assert(false);
 }
-/* void Game::drawPrestigeTimer(int teamID, int timeLeft, int maxTimeLeft)
-{
-	if (timeLeft<=0)
-		return;
-	Uint32 newTime = SDL_GetTicks();
-	Uint8 barWidth = (50+(newTime*maxTimeLeft/(timeLeft+1))%100)/10
-	globalContainer->gfx->drawFilledRect(40, sh*.5, 100, barWidth, 0, 0, 0);
-	globalContainer->gfx->drawFilledRect(41, sh*.5+1, 98*timeLeft/maxTimeLeft, barWidth-2, 0, 0, 0);
-}
- */
+
 void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions)
 {
 	int id=Unit::GIDtoID(gid);
@@ -2486,7 +2433,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	// draw cloud overlay if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 		ds.renderOverlay(globalContainer->gfx, sw, sh);
-	
 	
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
