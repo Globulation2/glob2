@@ -5,7 +5,7 @@ import Language.FlowControl.if as if
 // Martin Voelkle <martin voelkle@gmail com> - 2008
 
 // the interface
-def List := interface (
+List := interface (
 	def isEmpty := abstract
 
 	// Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
