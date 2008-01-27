@@ -278,18 +278,18 @@ namespace GAGGUI
 		
 		if (password)
 		{
-			parent->getSurface()->drawString(x+2, y+3, fontPtr, pwd.c_str(), w-6);
+			parent->getSurface()->drawString(x+3, y+3, fontPtr, pwd.c_str(), w-6);
 		}
 		else
 		{
-			parent->getSurface()->drawString(x+2, y+3, fontPtr, text.c_str()+textDep, w-6);
+			parent->getSurface()->drawString(x+3, y+3, fontPtr, text.c_str()+textDep, w-6);
 		}
 	
 		// we draw the cursor:
 		if (activated)
 		{
-			int hbc=fontPtr->getStringHeight(text.c_str());
-			parent->getSurface()->drawLine(x+2+cursorScreenPos, y+3 , x+2+cursorScreenPos, y+3+hbc, Style::style->textColor);
+			int hbc=fontPtr->getStringHeight("I");
+			parent->getSurface()->drawLine(x+3+cursorScreenPos, y+3 , x+3+cursorScreenPos, y+3+hbc, Style::style->textColor);
 		}
 	}
 	

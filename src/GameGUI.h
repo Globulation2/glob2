@@ -329,7 +329,7 @@ private:
 	InGameScrollableHistory* scrollableText;
 
 	/// Add a message to the list of messages
-	void addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText);
+	void addMessage(const GAGCore::Color& color, const std::string &msgText);
 
 	// Message stuff
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
@@ -379,6 +379,7 @@ private:
 		
 		int startImg; //!< image of the particle at birth
 		int endImg; //!< image of the partile at death
+		Color color; //!< color (team) of this particle
 	};
 	
 	typedef std::set<Particle*> ParticleSet;

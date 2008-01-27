@@ -95,7 +95,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 
 		Text *text = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
 		Team *team = gameGUI->game.players[i]->team;
-		text->setStyle(Font::Style(Font::STYLE_NORMAL, team->colorR, team->colorG, team->colorB));
+		text->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
 		addWidget(text);
 		
 		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);

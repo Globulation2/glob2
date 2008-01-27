@@ -169,9 +169,9 @@ namespace GAGCore
 		
 	protected:
 		//! draw a vertical line. This function is private because it is only a helper one
-		void _drawVertLine(int x, int y, int l, Color color);
+		void _drawVertLine(int x, int y, int l, const Color& color);
 		//! draw a horizontal line. This function is private because it is only a helper one
-		void _drawHorzLine(int x, int y, int l, Color color);
+		void _drawHorzLine(int x, int y, int l, const Color& color);
 		
 	protected:
 		//! Protectedconstructor, only called by GraphicContext
@@ -216,20 +216,20 @@ namespace GAGCore
 		virtual bool canDrawStretchedSprite(void) { return false; }
 		
 		// drawing commands
-		virtual void drawPixel(int x, int y, Color color);
-		virtual void drawPixel(float x, float y, Color color);
+		virtual void drawPixel(int x, int y, const Color& color);
+		virtual void drawPixel(float x, float y, const Color& color);
 		
-		virtual void drawRect(int x, int y, int w, int h, Color color);
-		virtual void drawRect(float x, float y, float w, float h, Color color);
+		virtual void drawRect(int x, int y, int w, int h, const Color& color);
+		virtual void drawRect(float x, float y, float w, float h, const Color& color);
 		
-		virtual void drawFilledRect(int x, int y, int w, int h, Color color);
-		virtual void drawFilledRect(float x, float y, float w, float h, Color color);
+		virtual void drawFilledRect(int x, int y, int w, int h, const Color& color);
+		virtual void drawFilledRect(float x, float y, float w, float h, const Color& color);
 		
-		virtual void drawLine(int x1, int y1, int x2, int y2, Color color);
-		virtual void drawLine(float x1, float y1, float x2, float y2, Color color);
+		virtual void drawLine(int x1, int y1, int x2, int y2, const Color& color);
+		virtual void drawLine(float x1, float y1, float x2, float y2, const Color& color);
 		
-		virtual void drawCircle(int x, int y, int radius, Color color);
-		virtual void drawCircle(float x, float y, float radius, Color color);
+		virtual void drawCircle(int x, int y, int radius, const Color& color);
+		virtual void drawCircle(float x, float y, float radius, const Color& color);
 		
 		virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
 		virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
@@ -264,7 +264,9 @@ namespace GAGCore
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawVertLine(int x, int y, int l, const Color& color) { _drawVertLine(x, y, l, color); }
 		virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawHorzLine(int x, int y, int l, const Color& color) { _drawHorzLine(x, y, l, color); }
 		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawString(int x, int y, Font *font, int i);
@@ -344,20 +346,20 @@ namespace GAGCore
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
 		virtual bool canDrawStretchedSprite(void) { return (optionFlags & USEGPU) != 0; }
 		
-		virtual void drawPixel(int x, int y, Color color);
-		virtual void drawPixel(float x, float y, Color color);
+		virtual void drawPixel(int x, int y, const Color& color);
+		virtual void drawPixel(float x, float y, const Color& color);
 		
-		virtual void drawRect(int x, int y, int w, int h, Color color);
-		virtual void drawRect(float x, float y, float w, float h, Color color);
+		virtual void drawRect(int x, int y, int w, int h, const Color& color);
+		virtual void drawRect(float x, float y, float w, float h, const Color& color);
 		
-		virtual void drawFilledRect(int x, int y, int w, int h, Color color);
-		virtual void drawFilledRect(float x, float y, float w, float h, Color color);
+		virtual void drawFilledRect(int x, int y, int w, int h, const Color& color);
+		virtual void drawFilledRect(float x, float y, float w, float h, const Color& color);
 		
-		virtual void drawLine(int x1, int y1, int x2, int y2, Color color);
-		virtual void drawLine(float x1, float y1, float x2, float y2, Color color);
+		virtual void drawLine(int x1, int y1, int x2, int y2, const Color& color);
+		virtual void drawLine(float x1, float y1, float x2, float y2, const Color& color);
 		
-		virtual void drawCircle(int x, int y, int radius, Color color);
-		virtual void drawCircle(float x, float y, float radius, Color color);
+		virtual void drawCircle(int x, int y, int radius, const Color& color);
+		virtual void drawCircle(float x, float y, float radius, const Color& color);
 		
 		virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
 		virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
@@ -379,7 +381,9 @@ namespace GAGCore
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawVertLine(int x, int y, int l, const Color& color) { _drawVertLine(x, y, l, color); }
 		virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawHorzLine(int x, int y, int l, const Color& color) { _drawHorzLine(x, y, l, color); }
 		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		
@@ -438,6 +442,8 @@ namespace GAGCore
 	
 		//! Set the (r,g,b) color to a sprite's base color
 		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor = Color(r, g, b); }
+		//! Set the color to a sprite's base color
+		virtual void setBaseColor(const Color& color) { actColor = color; }
 		
 		//! Return the width of index frame of the sprite
 		virtual int getW(int index);

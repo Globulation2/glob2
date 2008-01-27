@@ -1,0 +1,85 @@
+import Language.FlowControl.if as if
+
+// An immutable, single linked list.
+// Stephane Magnenat <stephane at magnenat dot net> - 2008
+// Martin Voelkle <martin voelkle@gmail com> - 2008
+
+// the interface
+List := interface (
+	def isEmpty := abstract
+
+	// Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
+	def prepend(x) := Cons(x, this)
+	
+	// Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
+	def append(x) := {
+		if (isEmpty)
+			Cons(x, Nil)
+		else
+			Cons(this.head, this.tail append x)
+	}
+	
+	// Returns a list resulting from the concatenation of list x at the end of this list
+	def concat (x:List) := {
+		if (isEmpty)
+			x
+		else
+			Cons(this.head, this.tail concat x)
+	}
+
+	def map(function) := {
+		if (this.isEmpty)
+			Nil
+		else
+			Cons(function(this.head), this.tail map function)
+	}
+	
+	def foreach(function) := if (!isEmpty) {
+		function(this.head)
+		this.tail foreach function
+	}
+	
+	def contains(x) := {
+		if (isEmpty)
+			False
+		else
+			(this.head == x) || (this.tail contains x)
+	}
+
+	// Returns a list containing the elements of this list in the reverse order
+	def reverse := {
+		def reverse(source, result) := {
+			if (source.isEmpty)
+				result
+			else
+				reverse(source.tail, List(source.head, result))
+		}
+		reverse(this, Nil)
+	}
+
+	def zip(that) := abstract
+)
+
+// the empty list
+Nil := List with (
+	def isEmpty := True
+)
+
+// a non-empty list
+Cons := List with fun (head, tail) => (
+	def isEmpty := False
+)
+
+def list(elements: Array) := {
+	def build(i, l) := {
+		if (i < 0)
+			l
+		else
+			build(i - 1, Cons(elements at i, l))
+	}
+	build(elements.size - 1, Nil)
+}
+
+// we should be able to write:
+val a := list [1, 2, 3, 4]
+

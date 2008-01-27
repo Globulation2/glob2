@@ -37,7 +37,7 @@ class InGameMessage
 {
 public:
 	///Constructs an in game message with the text, the color, and a time to be displayed, in ms
-	InGameMessage(const std::string& text, Uint8 r, Uint8 g, Uint8 b, Uint8 a, int time=8000);
+	InGameMessage(const std::string& text, const GAGCore::Color& color, int time=8000);
 	
 	///Returns the text in this message
 	std::string getText() const;
@@ -49,10 +49,7 @@ protected:
 private:
 	Uint32 lastTime;
 	std::string text;
-	Uint8 r;
-	Uint8 g;
-	Uint8 b;
-	Uint8 a;
+	GAGCore::Color color;
 };
 
 ///This class handles text messages (including game events), and the text message history,

@@ -67,7 +67,7 @@ struct TeamEntry
 	std::string name;
 	int teamNum;
 	int endVal[EndOfGameStat::TYPE_NB_STATS];
-	Uint32 r, g, b, a;
+	GAGCore::Color color;
 };
 
 class EndGameScreen : public Glob2Screen

@@ -57,7 +57,7 @@ public:
 	TeamType type;
 	Sint32 teamNumber; // index of the current team in the game::teams[] array.
 	Sint32 numberOfPlayer; // number of controling players
-	Uint8 colorR, colorG, colorB, colorPAD;
+	GAGCore::Color color;
 	Uint32 playersMask;
 	Race race;
 	
@@ -128,7 +128,7 @@ public:
 	void updateEvents();
 
 	void setCorrectMasks(void);
-	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
+	void setCorrectColor(const GAGCore::Color& color);
 	void setCorrectColor(float value);
 	inline static Uint32 teamNumberToMask(int team) { return 1<<team; }
 	

@@ -102,28 +102,23 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 		teams[i]=NULL;
 		players[i]=NULL;
 	}
+	clearGame();
 	
 	setSyncRandSeed();
 	fprintf(logFile, "setSyncRandSeed(%d, %d, %d)\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	
 	mouseX=0;
 	mouseY=0;
-	mouseUnit=NULL;
-	selectedUnit=NULL;
-	selectedBuilding=NULL;
 
 	stepCounter=0;
-	totalPrestige=0;
 	prestigeToReach=0;
-	totalPrestigeReached=false;
-	isGameEnded=false;
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
 }
 
 
-
+/** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
 	// Delete existing teams and players
@@ -148,6 +143,11 @@ void Game::clearGame()
 	totalPrestige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
+
+	// Clears selections
+	mouseUnit = NULL;
+	selectedUnit = NULL;
+	selectedBuilding = NULL;
 }
 
 
@@ -917,7 +917,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 {
 	assert(stream);
 	stream->writeEnterSection("Game");
-
+    
 	///Save the two headers, record the position in the file because mapHeader will
 	///will need to be overwritten with the mapOffset known
 	Uint32 mapHeaderOffset = stream->getPosition();
@@ -1592,7 +1592,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	// draw unit
 	Sprite *unitSprite = unit->skin->sprite;
-	unitSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
+	unitSprite->setBaseColor(teams[team]->color);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
 	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
@@ -1986,7 +1986,7 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 		Sprite *buildingSprite = type->gameSpritePtr;
 		dx = (type->width<<5)-buildingSprite->getW(imgid);
 		dy = (type->height<<5)-buildingSprite->getH(imgid);
-		buildingSprite->setBaseColor(team->colorR, team->colorG, team->colorB);
+		buildingSprite->setBaseColor(team->color);
 
 		// draw building
 		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
@@ -2286,7 +2286,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 				int decY = globalContainer->deathAnimation->getH(frame)>>1;
 				Team *team = (*it)->team;
 				
-				globalContainer->deathAnimation->setBaseColor(team->colorR, team->colorG, team->colorB);
+				globalContainer->deathAnimation->setBaseColor(team->color);
 				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY-frame, globalContainer->deathAnimation, frame);
 			}
 		}
@@ -2451,7 +2451,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 		// all flags are hued:
 		Sprite *buildingSprite = type->gameSpritePtr;
-		buildingSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
+		buildingSprite->setBaseColor(teams[team]->color);
 		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 		// flag circle:

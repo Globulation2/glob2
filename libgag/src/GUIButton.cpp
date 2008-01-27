@@ -267,7 +267,7 @@ namespace GAGGUI
 		assert(parent->getSurface());
 		
 		if (v.size())
-			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
+			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor]);
 		HighlightableWidget::paint();
 	}
 	

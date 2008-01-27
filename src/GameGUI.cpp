@@ -128,8 +128,8 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
-  minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
+	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
+	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
 {
 }
 
@@ -428,7 +428,7 @@ void GameGUI::step(void)
 	while(gevent)
 	{
 		Color c = gevent->formatColor();
-		addMessage(c.r, c.g, c.b, gevent->formatMessage());
+		addMessage(c, gevent->formatMessage());
 		eventGoPosX = gevent->getX();
 		eventGoPosY = gevent->getY();
 		eventGoType = gevent->getEventType();
@@ -2236,6 +2236,8 @@ void GameGUI::drawParticles(void)
 		Uint8 alpha = (Uint8)(255.f * (img - truncf(img)));
 		int imgA = (int)img;
 		
+		globalContainer->particles->setBaseColor(p->color);
+		
 		// first image
 		int w = globalContainer->particles->getW(imgA);
 		int h = globalContainer->particles->getH(imgA);
@@ -2332,7 +2334,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			int decX = (width-buildingSprite->getW(imgid))>>1;
 			int decY = (46-buildingSprite->getW(imgid))>>1;
 
-			buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
+			buildingSprite->setBaseColor(localTeam->color);
 			globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
 		}
 	}
@@ -2457,7 +2459,7 @@ void GameGUI::drawUnitInfos(void)
 	}
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(unit->owner->colorR, unit->owner->colorG, unit->owner->colorB);
+	unitSprite->setBaseColor(unit->owner->color);
 	int decX = (32-unitSprite->getW(imgid))>>1;
 	int decY = (32-unitSprite->getH(imgid))>>1;
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+14+decX, ypos+7+4+decY, unitSprite, imgid);
@@ -2678,7 +2680,7 @@ void GameGUI::drawBuildingInfos(void)
 	}
 	int dx = (56-miniSprite->getW(imgid))>>1;
 	int dy = (46-miniSprite->getH(imgid))>>1;
-	miniSprite->setBaseColor(selBuild->owner->colorR, selBuild->owner->colorG, selBuild->owner->colorB);
+	miniSprite->setBaseColor(selBuild->owner->color);
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+2+dx, ypos+4+dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+2, ypos+4, globalContainer->gamegui, 18);
 
@@ -3263,7 +3265,7 @@ void GameGUI::drawTopScreenBar(void)
 	int dec = (globalContainer->gfx->getW()-640)>>2;
 	dec += 10;
 
-	globalContainer->unitmini->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
+	globalContainer->unitmini->setBaseColor(localTeam->color);
 	for (int i=0; i<3; i++)
 	{
 		free = teamStats->getFreeUnits(i);
@@ -3653,12 +3655,12 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
 				if (mo->recepientsMask &(1<<localPlayer))
-					addMessage(230, 230, 230, FormatableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()));
+					addMessage(Color(230, 230, 230), FormatableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()));
 			}
 			else if (messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
 				if (mo->recepientsMask &(1<<localPlayer))
-					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()));
+					addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()));
 				else if (sp==localPlayer)
 				{
 					Uint32 rm=mo->recepientsMask;
@@ -3666,7 +3668,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 					for (k=0; k<32; k++)
 						if (rm==1)
 						{
-							addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()));
+							addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()));
 							break;
 						}
 						else
@@ -3693,7 +3695,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 			int qp=order->sender;
 			if (qp==localPlayer)
 				isRunning=false;
-			addMessage(200, 200, 200, FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name));
+			addMessage(Color(200, 200, 200), FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name));
 			game.executeOrder(order, localPlayer);
 		}
 		break;
@@ -3740,7 +3742,9 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	if (!res)
 		return false;
 
-	game.setMapHeader(mapHeader);
+    //Use the map header from the file, the one sent across the network is in the latest format version, where as the actual map
+    //may be an older file version.
+	//game.setMapHeader(mapHeader);
 	if(setGameHeader)
 		game.setGameHeader(gameHeader);
 
@@ -4249,7 +4253,7 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 		output->push_back(lastLine);
 }
 
-void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
+void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText)
 {	
 	//Split into one per line
 	std::vector<std::string> messages;
@@ -4258,20 +4262,15 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText)
 	globalContainer->standardFont->popStyle();
 
 	///Add each line as a seperate message to the message manager
-	Uint8 a = Color::ALPHA_OPAQUE;
 	for (unsigned i=0; i<messages.size(); i++)
 	{
-		messageManager.addMessage(InGameMessage(messages[i], r, g, b, a));
+		messageManager.addMessage(InGameMessage(messages[i], color));
 	}
 }
 
 void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
-	Uint8 r = game.teams[mmo->teamNumber]->colorR;
-	Uint8 g = game.teams[mmo->teamNumber]->colorG;
-	Uint8 b = game.teams[mmo->teamNumber]->colorB;
-	
-	markManager.addMark(Mark(mmo->x, mmo->y, r, g, b));
+	markManager.addMark(Mark(mmo->x, mmo->y, game.teams[mmo->teamNumber]->color));
 }
 
 
@@ -4342,6 +4341,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 				p->lifeSpan = 50;
 				p->startImg = 0;
 				p->endImg = 2;
+				p->color = building->owner->color;
 				particles.insert(p);
 			}
 			
@@ -4366,6 +4366,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 					p->lifeSpan = 30;
 					p->startImg = 0;
 					p->endImg = 2;
+					p->color = building->owner->color;
 					particles.insert(p);
 				}
 			}

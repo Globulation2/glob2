@@ -494,7 +494,7 @@ namespace GAGCore
 		dirty = true;
 	}
 	
-	void DrawableSurface::drawPixel(int x, int y, Color color)
+	void DrawableSurface::drawPixel(int x, int y, const Color& color)
 	{
 		// clip
 		if ((x<clipRect.x) || (x>=clipRect.x+clipRect.w) || (y<clipRect.y) || (y>=clipRect.y+clipRect.h))
@@ -509,8 +509,7 @@ namespace GAGCore
 		{
 			Uint32 a = color.a;
 			Uint32 na = 255 - a;
-			color.a = Color::ALPHA_OPAQUE;
-			Uint32 colorValue = color.pack();
+			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
 			
@@ -528,7 +527,7 @@ namespace GAGCore
 		dirty = true;
 	}
 	
-	void DrawableSurface::drawPixel(float x, float y, Color color)
+	void DrawableSurface::drawPixel(float x, float y, const Color& color)
 	{
 		drawPixel(static_cast<int>(x), static_cast<int>(y), color);
 	}
@@ -539,7 +538,7 @@ namespace GAGCore
 		drawPixel(x, y, Color(r, g, b, a));
 	}
 	
-	void DrawableSurface::drawRect(int x, int y, int w, int h, Color color)
+	void DrawableSurface::drawRect(int x, int y, int w, int h, const Color& color)
 	{
 		_drawHorzLine(x, y, w, color);
 		_drawHorzLine(x, y+h-1, w, color);
@@ -547,7 +546,7 @@ namespace GAGCore
 		_drawVertLine(x+w-1, y, h, color);
 	}
 	
-	void DrawableSurface::drawRect(float x, float y, float w, float h, Color color)
+	void DrawableSurface::drawRect(float x, float y, float w, float h, const Color& color)
 	{
 		drawRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
 	}
@@ -558,7 +557,7 @@ namespace GAGCore
 		drawRect(x, y, w, h, Color(r, g, b, a));
 	}
 	
-	void DrawableSurface::drawFilledRect(int x, int y, int w, int h, Color color)
+	void DrawableSurface::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
 		// clip
 		if (x < clipRect.x)
@@ -601,8 +600,7 @@ namespace GAGCore
 		{
 			Uint32 a = color.a;
 			Uint32 na = 255 - a;
-			color.a = Color::ALPHA_OPAQUE;
-			Uint32 colorValue = color.pack();
+			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
 			
@@ -625,7 +623,7 @@ namespace GAGCore
 		dirty = true;
 	}
 	
-	void DrawableSurface::drawFilledRect(float x, float y, float w, float h, Color color)
+	void DrawableSurface::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
 		drawFilledRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
 	}
@@ -635,7 +633,7 @@ namespace GAGCore
 		drawFilledRect(x, y, w, h, Color(r, g, b, a));
 	}
 	
-	void DrawableSurface::_drawVertLine(int x, int y, int l, Color color)
+	void DrawableSurface::_drawVertLine(int x, int y, int l, const Color& color)
 	{
 		// clip
 		// be sure we have to draw something
@@ -684,8 +682,7 @@ namespace GAGCore
 		{
 			Uint32 a = color.a;
 			Uint32 na = 255 - a;
-			color.a = Color::ALPHA_OPAQUE;
-			Uint32 colorValue = color.pack();
+			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
 			
@@ -704,7 +701,7 @@ namespace GAGCore
 		dirty = true;
 	}
 	
-	void DrawableSurface::_drawHorzLine(int x, int y, int l, Color color)
+	void DrawableSurface::_drawHorzLine(int x, int y, int l, const Color& color)
 	{
 		// clip
 		// be sure we have to draw something
@@ -751,8 +748,7 @@ namespace GAGCore
 		{
 			Uint32 a = color.a;
 			Uint32 na = 255 - a;
-			color.a = Color::ALPHA_OPAQUE;
-			Uint32 colorValue = color.pack();
+			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
 			
@@ -770,8 +766,11 @@ namespace GAGCore
 		dirty = true;
 	}
 	
-	void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, Color color)
+	void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, const Color& _color)
 	{
+		// we want to modify the color
+		Color color = _color;
+		
 		// compute deltas
 		int dx = x2 - x1;
 		if (dx == 0)
@@ -948,7 +947,7 @@ namespace GAGCore
 		}
 	}
 	
-	void DrawableSurface::drawLine(float x1, float y1, float x2, float y2, Color color)
+	void DrawableSurface::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
 		drawRect(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2), color);
 	}
@@ -969,8 +968,11 @@ namespace GAGCore
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
 	
-	void DrawableSurface::drawCircle(int x, int y, int radius, Color color)
+	void DrawableSurface::drawCircle(int x, int y, int radius, const Color& _color)
 	{
+		// we want to modify the color
+		Color color = _color;
+		
 		// clip
 		if ((x+radius < clipRect.x) || (x-radius >= clipRect.x+clipRect.w) || (y+radius < clipRect.y) || (y-radius >= clipRect.y+clipRect.h))
 			return;
@@ -1013,7 +1015,7 @@ namespace GAGCore
 		}
 	}
 	
-	void DrawableSurface::drawCircle(float x, float y, float radius, Color color)
+	void DrawableSurface::drawCircle(float x, float y, float radius, const Color& color)
 	{
 		drawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<int>(radius), color);
 	}
@@ -1423,7 +1425,7 @@ namespace GAGCore
 	
 	// drawing, reimplementation for GL
 	
-	void GraphicContext::drawPixel(int x, int y, Color color)
+	void GraphicContext::drawPixel(int x, int y, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1433,7 +1435,7 @@ namespace GAGCore
 			DrawableSurface::drawPixel(x, y, color);
 	}
 	
-	void GraphicContext::drawPixel(float x, float y, Color color)
+	void GraphicContext::drawPixel(float x, float y, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1444,7 +1446,7 @@ namespace GAGCore
 	}
 	
 	
-	void GraphicContext::drawRect(int x, int y, int w, int h, Color color)
+	void GraphicContext::drawRect(int x, int y, int w, int h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1454,7 +1456,7 @@ namespace GAGCore
 			DrawableSurface::drawRect(x, y, w, h, color);
 	}
 	
-	void GraphicContext::drawRect(float x, float y, float w, float h, Color color)
+	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1482,7 +1484,7 @@ namespace GAGCore
 	}
 	
 	
-	void GraphicContext::drawFilledRect(int x, int y, int w, int h, Color color)
+	void GraphicContext::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1492,7 +1494,7 @@ namespace GAGCore
 			DrawableSurface::drawFilledRect(x, y, w, h, color);
 	}
 	
-	void GraphicContext::drawFilledRect(float x, float y, float w, float h, Color color)
+	void GraphicContext::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1522,7 +1524,7 @@ namespace GAGCore
 	}
 	
 	
-	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, Color color)
+	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1532,7 +1534,7 @@ namespace GAGCore
 			DrawableSurface::drawLine(x1, y1, x2, y2, color);
 	}
 	
-	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, Color color)
+	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1558,7 +1560,7 @@ namespace GAGCore
 	}
 	
 	
-	void GraphicContext::drawCircle(int x, int y, int radius, Color color)
+	void GraphicContext::drawCircle(int x, int y, int radius, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1568,7 +1570,7 @@ namespace GAGCore
 			DrawableSurface::drawCircle(x, y, radius, color);
 	}
 	
-	void GraphicContext::drawCircle(float x, float y, float radius, Color color)
+	void GraphicContext::drawCircle(float x, float y, float radius, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -1896,44 +1898,9 @@ namespace GAGCore
 		#endif
 		
 		// create surface
+		if (sdlsurface)
+			SDL_FreeSurface(sdlsurface);
 		sdlsurface = SDL_SetVideoMode(w, h, 32, sdlFlags);
-		_gc = this;
-		
-		// set _glFormat
-		if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
-		{
-			_glFormat.palette = NULL;
-			_glFormat.BitsPerPixel = 32;
-			_glFormat.BytesPerPixel = 4;
-			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-			_glFormat.Rmask = 0x000000ff;
-			_glFormat.Rshift = 0;
-			_glFormat.Gmask = 0x0000ff00;
-			_glFormat.Gshift = 8;
-			_glFormat.Bmask = 0x00ff0000;
-			_glFormat.Bshift = 16;
-			#else
-			_glFormat.Rmask = 0x00ff0000;
-			_glFormat.Rshift = 16;
-			_glFormat.Gmask = 0x0000ff00;
-			_glFormat.Gshift = 8;
-			_glFormat.Bmask = 0x000000ff;
-			_glFormat.Bshift = 0;
-			#endif
-			_glFormat.Amask = 0xff000000;
-			_glFormat.Ashift = 24;
-			_glFormat.Rloss = 0;
-			_glFormat.Gloss = 0;
-			_glFormat.Bloss = 0;
-			_glFormat.Aloss = 0;
-			_glFormat.colorkey = 0;
-			_glFormat.alpha = 255;
-			//_glFormat = *SDL_AllocFormat(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-		}
-		else
-		{
-			memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
-		}
 		
 		// check surface
 		if (!sdlsurface)
@@ -1944,6 +1911,44 @@ namespace GAGCore
 		}
 		else
 		{
+			_gc = this;
+			
+			// set _glFormat
+			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
+			{
+				_glFormat.palette = NULL;
+				_glFormat.BitsPerPixel = 32;
+				_glFormat.BytesPerPixel = 4;
+				#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+				_glFormat.Rmask = 0x000000ff;
+				_glFormat.Rshift = 0;
+				_glFormat.Gmask = 0x0000ff00;
+				_glFormat.Gshift = 8;
+				_glFormat.Bmask = 0x00ff0000;
+				_glFormat.Bshift = 16;
+				#else
+				_glFormat.Rmask = 0x00ff0000;
+				_glFormat.Rshift = 16;
+				_glFormat.Gmask = 0x0000ff00;
+				_glFormat.Gshift = 8;
+				_glFormat.Bmask = 0x000000ff;
+				_glFormat.Bshift = 0;
+				#endif
+				_glFormat.Amask = 0xff000000;
+				_glFormat.Ashift = 24;
+				_glFormat.Rloss = 0;
+				_glFormat.Gloss = 0;
+				_glFormat.Bloss = 0;
+				_glFormat.Aloss = 0;
+				_glFormat.colorkey = 0;
+				_glFormat.alpha = 255;
+				//_glFormat = *SDL_AllocFormat(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			}
+			else
+			{
+				memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
+			}
+			
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 				glState.checkExtensions();

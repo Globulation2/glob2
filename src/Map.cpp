@@ -34,6 +34,7 @@
 #include <map>
 #endif
 
+#define UPDATE_MAX(max,value) { Uint8 tmp = value; if (value>(max)) (max)=value; }
 
 // use deltaOne for first perpendicular direction
 static const int deltaOne[8][2]={
@@ -2871,7 +2872,7 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 	assert(globalContainer);
 	for (size_t i=0; i<size; i++)
 	{
-		Case c=cases[i];
+		Case& c=cases[i];
 		if ((c.forbidden|c.hiddenForbidden)&teamMask)
 			gradient[i]=0;
 		else if (c.ressource.type==NO_RES_TYPE)
@@ -2911,60 +2912,44 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[5];
-		side[0]=miniGrad[0+2*5];
-		side[1]=miniGrad[0+1*5];
-		side[2]=miniGrad[0+0*5];
-		side[3]=miniGrad[1+0*5];
-		side[4]=miniGrad[2+0*5];
-		for (int i=0; i<5; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[0+2*5]);
+		UPDATE_MAX(max,miniGrad[0+1*5]);
+		UPDATE_MAX(max,miniGrad[0+0*5]);
+		UPDATE_MAX(max,miniGrad[1+0*5]);
+		UPDATE_MAX(max,miniGrad[2+0*5]);
 	}
 	maxs[0]=(max<<8)|mxd;
 	max=mxd=miniGrad[3+1*5];
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[5];
-		side[0]=miniGrad[2+0*5];
-		side[1]=miniGrad[3+0*5];
-		side[2]=miniGrad[4+0*5];
-		side[3]=miniGrad[4+1*5];
-		side[4]=miniGrad[4+2*5];
-		for (int i=0; i<5; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[2+0*5]);
+		UPDATE_MAX(max,miniGrad[3+0*5]);
+		UPDATE_MAX(max,miniGrad[4+0*5]);
+		UPDATE_MAX(max,miniGrad[4+1*5]);
+		UPDATE_MAX(max,miniGrad[4+2*5]);
 	}
 	maxs[1]=(max<<8)|mxd;
 	max=mxd=miniGrad[3+3*5];
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[5];
-		side[0]=miniGrad[4+2*5];
-		side[1]=miniGrad[4+3*5];
-		side[2]=miniGrad[4+4*5];
-		side[3]=miniGrad[3+4*5];
-		side[4]=miniGrad[2+4*5];
-		for (int i=0; i<5; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[4+2*5]);
+		UPDATE_MAX(max,miniGrad[4+3*5]);
+		UPDATE_MAX(max,miniGrad[4+4*5]);
+		UPDATE_MAX(max,miniGrad[3+4*5]);
+		UPDATE_MAX(max,miniGrad[2+4*5]);
 	}
 	maxs[2]=(max<<8)|mxd;
 	max=mxd=miniGrad[1+3*5];
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[5];
-		side[0]=miniGrad[2+4*5];
-		side[1]=miniGrad[1+4*5];
-		side[2]=miniGrad[0+4*5];
-		side[3]=miniGrad[0+3*5];
-		side[4]=miniGrad[0+2*5];
-		for (int i=0; i<5; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[2+4*5]);
+		UPDATE_MAX(max,miniGrad[1+4*5]);
+		UPDATE_MAX(max,miniGrad[0+4*5]);
+		UPDATE_MAX(max,miniGrad[0+3*5]);
+		UPDATE_MAX(max,miniGrad[0+2*5]);
 	}
 	maxs[3]=(max<<8)|mxd;
 	
@@ -2973,39 +2958,27 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[3];
-		side[0]=miniGrad[1+0*5];
-		side[1]=miniGrad[2+0*5];
-		side[2]=miniGrad[3+0*5];
-		for (int i=0; i<3; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[1+0*5]);
+		UPDATE_MAX(max,miniGrad[2+0*5]);
+		UPDATE_MAX(max,miniGrad[3+0*5]);
 	}
 	maxs[4]=(max<<8)|mxd;
 	max=mxd=miniGrad[3+2*5];
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[3];
-		side[0]=miniGrad[4+1*5];
-		side[1]=miniGrad[4+2*5];
-		side[2]=miniGrad[4+3*5];
-		for (int i=0; i<3; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[4+1*5]);
+		UPDATE_MAX(max,miniGrad[4+2*5]);
+		UPDATE_MAX(max,miniGrad[4+3*5]);
 	}
 	maxs[5]=(max<<8)|mxd;
 	max=mxd=miniGrad[2+3*5];
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[3];
-		side[0]=miniGrad[1+4*5];
-		side[1]=miniGrad[2+4*5];
-		side[2]=miniGrad[3+4*5];
-		for (int i=0; i<3; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[1+4*5]);
+		UPDATE_MAX(max,miniGrad[2+4*5]);
+		UPDATE_MAX(max,miniGrad[3+4*5]);
 	}
 	maxs[6]=(max<<8)|mxd;
 	max=mxd=miniGrad[1+2*5];
@@ -3013,12 +2986,9 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	{
 		max=1;
 		Uint8 side[3];
-		side[0]=miniGrad[0+1*5];
-		side[1]=miniGrad[0+2*5];
-		side[2]=miniGrad[0+3*5];
-		for (int i=0; i<3; i++)
-			if (side[i]>max)
-				max=side[i];
+		UPDATE_MAX(max,miniGrad[0+1*5]);
+		UPDATE_MAX(max,miniGrad[0+2*5]);
+		UPDATE_MAX(max,miniGrad[0+3*5]);
 	}
 	maxs[7]=(max<<8)|mxd;
 	
@@ -3296,6 +3266,39 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 	}
 }
 
+/** Helper for updateLocalGradient, and others */
+int clip_0_31(int x) {return (x<0)? 0 : (x>31)? 31 : x;}
+
+/** Helper for updateLocalGradient */
+void fillGradientCircle(Uint8* gradient, int r) {
+	int r2=r*r;
+	for (int yi=-r; yi<=r; yi++)
+	{
+		int yi2=yi*yi;
+		int yyi=clip_0_31(15+yi);
+		for (int xi=-r; xi<=r; xi++)
+			if (yi2+(xi*xi)<r2)
+			{
+				int xxi=clip_0_31(15+xi);
+				gradient[xxi+(yyi<<5)]=255;
+			}
+	}
+}
+
+/** Helper for updateLocalGradient */
+void fillGradientRectangle(Uint8* gradient, int posW, int posH) {
+	for (int dy=0; dy<posH; dy++) {
+		int yyi=clip_0_31(15+dy);
+		for (int dx=0; dx<posW; dx++)
+		{
+			int xxi=clip_0_31(15+dx);
+			gradient[xxi+(yyi<<5)]=255;
+		}
+	}
+}
+
+void propagateLocalGradients(Uint8* gradient);
+
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
 	localBuildingGradientUpdate++;
@@ -3311,51 +3314,25 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
 	
-	Uint8 *gradient=building->localGradient[canSwim];
+	Uint8 *tgtGradient=building->localGradient[canSwim];
 
+	Uint8 gradient[1024];
+ 
+	// 1. INITIALIZATION of gradient[]:
+	// 1a. Set all values to 1 (meaning 'far away, but not inaccessable').
 	memset(gradient, 1, 1024);
+
+	// 1b. Set values at target building to 255 (meaning 'very close'/'at destination').
 	if (building->type->isVirtual)
 	{
 		assert(!building->type->zonableForbidden);
 		int r=building->unitStayRange;
-		int r2=r*r;
-		for (int yi=-r; yi<=r; yi++)
-		{
-			int yi2=yi*yi;
-			for (int xi=-r; xi<=r; xi++)
-				if (yi2+(xi*xi)<r2)
-				{
-					int xxi=15+xi;
-					int yyi=15+yi;
-					if (xxi<0)
-						xxi=0;
-					else if (xxi>31)
-						xxi=31;
-					if (yyi<0)
-						yyi=0;
-					else if (yyi>31)
-						xxi=31;
-					gradient[xxi+(yyi<<5)]=255;
-				}
-		}
+		fillGradientCircle(gradient, r);
 	}
 	else
-		for (int dy=0; dy<posH; dy++)
-			for (int dx=0; dx<posW; dx++)
-			{
-					int xxi=15+dx;
-					int yyi=15+dy;
-					if (xxi<0)
-						xxi=0;
-					else if (xxi>31)
-						xxi=31;
-					if (yyi<0)
-						yyi=0;
-					else if (yyi>31)
-						xxi=31;
-					gradient[xxi+(yyi<<5)]=255;
-				}
+		fillGradientRectangle(gradient, posW, posH);
 
+	// 1c. Set values at inaccessible areas to 0 (meaning, well, 'inaccessible').
 	// Here g=Global(map axis), l=Local(map axis)
 
 	for (int yl=0; yl<32; yl++)
@@ -3366,7 +3343,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		for (int xl=0; xl<32; xl++)
 		{
 			int xg=(xl+posX-15)&wMask;
-			Case c=cases[wyg+xg];
+			const Case& c=cases[wyg+xg];
 			int addrl=wyl+xl;
 			if (gradient[addrl]!=255)
 			{
@@ -3382,33 +3359,33 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		}
 	}
 	
+	// 1d. Set values at target building to 255 if this is not a building,
+	// but e.g. a flag (which has a circular area):
 	if (building->type->zonable[WORKER])
 	{
 		int r=building->unitStayRange;
-		int r2=r*r;
-		for (int yi=-r; yi<=r; yi++)
-		{
-			int yi2=yi*yi;
-			for (int xi=-r; xi<=r; xi++)
-			{
-				if (yi2+(xi*xi)<=r2)
-				{
-					int xxi=15+xi;
-					int yyi=15+yi;
-					if (xxi<0)
-						xxi=0;
-					else if (xxi>31)
-						xxi=31;
-					if (yyi<0)
-						yyi=0;
-					else if (yyi>31)
-						xxi=31;
-					gradient[xxi+(yyi<<5)]=255;
-				}
+		fillGradientCircle(gradient, r);
+	}
+	
+	// 2. NEED TO UPDATE? Check boundary conditions to see if they have changed.
+	// I commented this out, because the tgtGradient is not initialized
+	// in the first runs: leading to an unconditional jump
+	// todo: write a real fix
+
+/*
+	bool change = false;
+
+	for (int i=0; i<1024; i++) {
+		// The boundary conditions - do they match?
+		if (gradient[i]==0 || gradient[i]==255 || tgtGradient[i]==0 || tgtGradient[i]==255) {
+			if (gradient[i] != tgtGradient[i]) {
+				change = true; break;
 			}
 		}
 	}
-	
+	if (!change) return; // No need to update; boundary conditions are unchanged.
+*/
+	// 3. Check that the building is REACHABLE.
 	if (!building->type->isVirtual)
 	{
 		building->locked[canSwim]=true;
@@ -3457,8 +3434,15 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	else
 		building->locked[canSwim]=false;
 
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	// 4. PROPAGATION of gradient values.
+	propagateLocalGradients(gradient);
 
+	// 5. WRITEBACK (because of the 'any change'-computation).
+	memcpy(tgtGradient, gradient, 1024);
+}
+
+void propagateLocalGradients(Uint8* gradient) {
+	//In this algorithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	for (int depth=0; depth<2; depth++) // With a higher depth, we can have more complex obstacles.
 	{
 		for (int down=0; down<2; down++)
@@ -3497,44 +3481,18 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 							assert(y<32);
 
 							int wy=(y<<5);
-							int wyu, wyd;
-							if (y==0)
-								wyu=0;
-							else
-								wyu=((y-1)<<5);
-							if (y==31)
-								wyd=32*31;
-							else
-								wyd=((y+1)<<5);
 							Uint8 max=gradient[wy+x];
 							if (max && max!=255)
 							{
-								int xl, xr;
-								if (x==0)
-									xl=0;
-								else
-									xl=x-1;
-								if (x==31)
-									xr=31;
-								else
-									xr=x+1;
-
-								Uint8 side[8];
-								side[0]=gradient[wyu+xl];
-								side[1]=gradient[wyu+x ];
-								side[2]=gradient[wyu+xr];
-
-								side[3]=gradient[wy +xr];
-
-								side[4]=gradient[wyd+xr];
-								side[5]=gradient[wyd+x ];
-								side[6]=gradient[wyd+xl];
-
-								side[7]=gradient[wy +xl];
-
-								for (int i=0; i<8; i++)
-									if (side[i]>max)
-										max=side[i];
+								for (int dy=-32; dy<=32; dy+=32) {
+									int ypart = wy+dy;
+									if (ypart & (32*32)) continue; // Over- or underflow
+									for (int dx=-1; dx<=1; dx++) {
+										int xpart = x+dx;
+										if (xpart & 32) continue; // Over- or underflow
+										UPDATE_MAX(max,gradient[ypart+xpart]);
+									}
+								}
 								assert(max);
 								if (max==1)
 									gradient[wy+x]=1;
@@ -3652,7 +3610,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		for (int x=0; x<w; x++)
 		{
 			int wyx=wy+x;
-			Case c=cases[wyx];
+			Case& c=cases[wyx];
 			if (c.building==NOGBID)
 			{
 				if (c.ressource.type!=NO_RES_TYPE)
@@ -3737,6 +3695,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		globalBuildingGradientUpdateLocked++;
 		//printf("...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
 		//fprintf(logFile, "...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
+		delete[] listedAddr;
 		return;
 		doubleBreak:;
 	}
@@ -3785,7 +3744,7 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 		for (int xl=0; xl<32; xl++)
 		{
 			int xg=(xl+posX-15)&wMask;
-			Case c=cases[wyg+xg];
+			const Case& c=cases[wyg+xg];
 			int addrl=wyl+xl;
 			int dist2=(xl-15)*(xl-15)+dyl2;
 			if (dist2<=range2)
@@ -3886,22 +3845,28 @@ void Map::expandLocalGradient(Uint8 *gradient)
 								else
 									xr=x+1;
 
-								Uint8 side[8];
-								side[0]=gradient[wyu+xl];
-								side[1]=gradient[wyu+x ];
-								side[2]=gradient[wyu+xr];
+								Uint8 side;
+								
+								side=gradient[wyu+xl];
+								if (side > max) max=side;
+								side=gradient[wyu+x ];
+								if (side > max) max=side;
+								side=gradient[wyu+xr];
+								if (side > max) max=side;
 
-								side[3]=gradient[wy +xr];
+								side=gradient[wy +xr];
+								if (side > max) max=side;
 
-								side[4]=gradient[wyd+xr];
-								side[5]=gradient[wyd+x ];
-								side[6]=gradient[wyd+xl];
+								side=gradient[wyd+xr];
+								if (side > max) max=side;
+								side=gradient[wyd+x ];
+								if (side > max) max=side;
+								side=gradient[wyd+xl];
+								if (side > max) max=side;
 
-								side[7]=gradient[wy +xl];
+								side=gradient[wy +xl];
+								if (side > max) max=side;
 
-								for (int i=0; i<8; i++)
-									if (side[i]>max)
-										max=side[i];
 								assert(max);
 								if (max==1)
 									gradient[wy+x]=1;
@@ -3995,16 +3960,8 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 				{
 					int ddx, ddy;
 					Unit::dxdyfromDirection(d, &ddx, &ddy);
-					int lxddx=lx+ddx;
-					if (lxddx<0)
-						lxddx=0;
-					else if(lxddx>31)
-						lxddx=31;
-					int lyddy=ly+ddy;
-					if (lyddy<0)
-						lyddy=0;
-					else if(lyddy>31)
-						lyddy=31;
+					int lxddx=clip_0_31(lx+ddx);
+					int lyddy=clip_0_31(ly+ddy);
 					Uint8 g=gradient[lxddx+(lyddy<<5)];
 					if (g>1)
 					{
@@ -4038,16 +3995,8 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			{
 				int ddx, ddy;
 				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				int lxddx=lx+ddx;
-				if (lxddx<0)
-					lxddx=0;
-				else if(lxddx>31)
-					lxddx=31;
-				int lyddy=ly+ddy;
-				if (lyddy<0)
-					lyddy=0;
-				else if(lyddy>31)
-					lyddy=31;
+				int lxddx=clip_0_31(lx+ddx);
+				int lyddy=clip_0_31(ly+ddy);
 				Uint8 g=gradient[lxddx+(lyddy<<5)];
 				if (g>1)
 				{
@@ -4382,16 +4331,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			{
 				int ddx, ddy;
 				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				int lxddx=lx+ddx;
-				if (lxddx<0)
-					lxddx=0;
-				else if(lxddx>31)
-					lxddx=31;
-				int lyddy=ly+ddy;
-				if (lyddy<0)
-					lyddy=0;
-				else if(lyddy>31)
-					lyddy=31;
+				int lxddx=clip_0_31(lx+ddx);
+				int lyddy=clip_0_31(ly+ddy);
 				Uint8 g=gradient[lxddx+(lyddy<<5)];
 				if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
 					gradientUsable=true;
@@ -4444,16 +4385,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			{
 				int ddx, ddy;
 				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				int lxddx=lx+ddx;
-				if (lxddx<0)
-					lxddx=0;
-				else if(lxddx>31)
-					lxddx=31;
-				int lyddy=ly+ddy;
-				if (lyddy<0)
-					lyddy=0;
-				else if(lyddy>31)
-					lyddy=31;
+				int lxddx=clip_0_31(lx+ddx);
+				int lyddy=clip_0_31(ly+ddy);
 				Uint8 g=gradient[lxddx+(lyddy<<5)];
 				if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
 					gradientUsable=true;
@@ -4657,7 +4590,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 	assert(gradient);
 	for (size_t i = 0; i < size; i++)
 	{
-		Case c = cases[i];
+		const Case& c = cases[i];
 		if ((c.ressource.type != NO_RES_TYPE) || (c.building!=NOGBID) || (!canSwim && isWater(i)))
 		{
 			gradient[i] = 0;
@@ -4717,7 +4650,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 	// We set the obstacle and free places
 	for (size_t i=0; i<size; i++)
 	{
-		Case c=cases[i];
+		const Case& c=cases[i];
 		if (c.ressource.type!=NO_RES_TYPE)
 			testgradient[i] = 0;
 		else if (c.building!=NOGBID)
@@ -4782,7 +4715,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 
 	for (size_t i=0; i<size; i++)
 	{
-		Case c=cases[i];
+		const Case& c=cases[i];
 		if (c.ressource.type!=NO_RES_TYPE)
 			gradient[i] = 0;
 		else if (c.building!=NOGBID)
@@ -4837,7 +4770,7 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
 	{
-		Case c=cases[i];
+		const Case& c=cases[i];
 		if (c.forbidden & teamMask || c.hiddenForbidden & teamMask)
 			gradient[i] = 0;
 		else if (c.ressource.type != NO_RES_TYPE)

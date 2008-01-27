@@ -19,8 +19,8 @@
 #include "GameGUIMessageManager.h"
 #include "GlobalContainer.h"
 
-InGameMessage::InGameMessage(const std::string& text, Uint8 r, Uint8 g, Uint8 b, Uint8 a, int time)
- : timeLeft(time), text(text), r(r), g(g), b(b), a(a)
+InGameMessage::InGameMessage(const std::string& text, const GAGCore::Color& color, int time)
+ : timeLeft(time), text(text), color(color)
 {
 	lastTime = 0;
 }
@@ -44,7 +44,7 @@ void InGameMessage::draw(int x, int y)
 	}
 	lastTime = newTime;
 
-	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, r, g, b, a));
+	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, color));
 	globalContainer->gfx->drawString(x, y, globalContainer->standardFont, text.c_str());
 	globalContainer->standardFont->popStyle();
 }

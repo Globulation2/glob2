@@ -108,7 +108,7 @@ void BuildingSelectorWidget::draw()
 		imgid = bt->gameSpriteImage;
 	}
 		
-	buildingSprite->setBaseColor(me.game.teams[me.team]->colorR, me.game.teams[me.team]->colorG, me.game.teams[me.team]->colorB);
+	buildingSprite->setBaseColor(me.game.teams[me.team]->color);
 	globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 	// draw selection if needed
@@ -140,9 +140,9 @@ void TeamColorSelector::draw()
 		if(me.game.teams[n])
 		{
 			if(me.team==n)
-				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->colorR, me.game.teams[n]->colorG, me.game.teams[n]->colorB, 128));
+				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->color.r, me.game.teams[n]->color.g, me.game.teams[n]->color.b, 128));
 			else
-				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->colorR, me.game.teams[n]->colorG, me.game.teams[n]->colorB));
+				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, me.game.teams[n]->color);
 
 		}
 	}
@@ -269,7 +269,7 @@ void UnitSelector::draw()
 {
 	// draw units
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(me.game.teams[me.team]->colorR, me.game.teams[me.team]->colorG, me.game.teams[me.team]->colorB);
+	unitSprite->setBaseColor(me.game.teams[me.team]->color);
 	bool drawSelection=false;
 	if(unitType==WORKER)
 	{
@@ -418,7 +418,7 @@ void TeamInfo::draw()
 {
 	if(me.game.teams[teamNum])
 	{
-		globalContainer->gfx->drawFilledRect(area.x, area.y, 16, 16, Color(me.game.teams[teamNum]->colorR, me.game.teams[teamNum]->colorG, me.game.teams[teamNum]->colorB));
+		globalContainer->gfx->drawFilledRect(area.x, area.y, 16, 16, Color(me.game.teams[teamNum]->color));
 		globalContainer->gfx->drawString(area.x+20, area.y+4, globalContainer->littleFont, Toolkit::getStringTable()->getString(options[selectorPos].c_str()));
 	}
 }
@@ -523,7 +523,7 @@ void UnitPicture::draw()
 	}
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(unit->owner->colorR, unit->owner->colorG, unit->owner->colorB);
+	unitSprite->setBaseColor(unit->owner->color);
 	int decX = (32-unitSprite->getW(imgid))/2;
 	int decY = (32-unitSprite->getH(imgid))/2;
 	globalContainer->gfx->drawSprite(xpos+12+decX, ypos+7+decY, unitSprite, imgid);
@@ -726,7 +726,7 @@ void BuildingPicture::draw()
 	}
 	int dx = (56-miniSprite->getW(imgid))/2;
 	int dy = (46-miniSprite->getH(imgid))/2;
-	miniSprite->setBaseColor(selBuild->owner->colorR, selBuild->owner->colorG, selBuild->owner->colorB);
+	miniSprite->setBaseColor(selBuild->owner->color);
 	globalContainer->gfx->drawSprite(area.x+dx, area.y+dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 18);
 }
@@ -839,7 +839,7 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
- : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
+  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
 {
 	doQuit=false;
 
@@ -1259,6 +1259,7 @@ int MapEdit::run(void)
 		}
 			
 
+		handleMapScroll();
 		// redraw on scroll
 // 		bool doRedraw=false;
 		viewportX+=xSpeed;
@@ -1444,7 +1445,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
 		
 		// we draw the building
-		sprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+		sprite->setBaseColor(game.teams[team]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 // 		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
 	 	int spriteIntensity = 127;
@@ -1592,7 +1593,7 @@ void MapEdit::drawPlacingUnitOnMap()
 	}
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+	unitSprite->setBaseColor(game.teams[team]->color);
 
 	globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
 
@@ -1651,34 +1652,6 @@ int MapEdit::processEvent(SDL_Event& event)
 		else if(isDraggingNoRessourceGrowthArea)
 		{
 			performAction("no ressource growth area drag motion", relMouseX, relMouseY);
-		}
-		else
-		{
-			if(globalContainer->gfx->getW()-event.motion.x<15)
-			{
-				performAction("scroll right", relMouseX, relMouseY);
-			}
-			else if(event.motion.x<15)
-			{
-				performAction("scroll left", relMouseX, relMouseY);
-			}
-			else if(xSpeed!=0)
-			{
-				performAction("scroll horizontal stop", relMouseX, relMouseY);
-			}
-	
-			if(globalContainer->gfx->getH()-event.motion.y<15)
-			{
-				performAction("scroll down", relMouseX, relMouseY);
-			}
-			else if(event.motion.y<15)
-			{
-				performAction("scroll up", relMouseX, relMouseY);
-			}
-			else if(ySpeed!=0)
-			{
-				performAction("scroll vertical stop", relMouseX, relMouseY);
-			}
 		}
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
@@ -1874,35 +1847,6 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 		}
 		break;
 	}
-	switch(key.sym)
-	{
-		case SDLK_UP:
-			if(pressed)
-				performAction("scroll up");
-			else
-				performAction("scroll vertical stop");
-			break;
-		case SDLK_DOWN:
-			if(pressed)
-				performAction("scroll down");
-			else
-				performAction("scroll vertical stop");
-			break;
-		case SDLK_LEFT:
-			if(pressed)
-				performAction("scroll left");
-			else
-				performAction("scroll horizontal stop");
-			break;
-		case SDLK_RIGHT:
-			if(pressed)
-				performAction("scroll right");
-			else
-				performAction("scroll horizontal stop");
-			break;
-		default:
-		break;
-	}
 }
 
 
@@ -1916,31 +1860,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction(action.substr(0, pos));
 		performAction(action.substr(pos+1, action.size()-pos-1));
 	}
-	if (action=="scroll left")
-	{
-		xSpeed=-1;
-	}
-	else if(action=="scroll right")
-	{
-		xSpeed=1;
-	}
-	else if(action=="scroll horizontal stop")
-	{
-		xSpeed=0;
-	}
-	else if(action=="scroll up")
-	{
-		ySpeed=-1;
-	}
-	else if(action=="scroll down")
-	{
-		ySpeed=1;
-	}
-	else if(action=="scroll vertical stop")
-	{
-		ySpeed=0;
-	}
-	else if(action=="scroll drag start")
+	if(action=="scroll drag start")
 	{
 		isScrollDragging=true;
 	}
@@ -2946,7 +2866,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 {
 	if(showingMenuScreen)
 	{
-		menuScreen->translateAndProcessEvent(&event);
+			menuScreen->translateAndProcessEvent(&event);
 		switch (menuScreen->endValue)
 		{
 			case MapEditMenuScreen::LOAD_MAP:
@@ -3036,6 +2956,111 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close area name");
 			}
 		}
+	}
+}
+
+
+
+void MapEdit::handleMapScroll()
+{
+	xSpeed = 0;
+	ySpeed = 0;
+
+	SDL_PumpEvents();
+	Uint8 *keystate = SDL_GetKeyState(NULL);
+	SDLMod modState = SDL_GetModState();
+	int xMotion = 1;
+	int yMotion = 1;
+	/* We check that only Control is held to avoid accidentally
+		matching window manager bindings for switching windows
+		and/or desktops. */
+	if (!(modState & (KMOD_ALT|KMOD_SHIFT)))
+	{
+		/* It violates good abstraction principles that I
+			have to do the calculations in the next two
+			lines.  There should be methods that abstract
+			these computations. */
+		if ((modState & KMOD_CTRL))
+		{
+			/* We move by half screens if Control is held while
+				the arrow keys are held.  So we shift by 6
+				instead of 5.  (If we shifted by 5, it would be
+				good to subtract 1 so that there would be a small
+				overlap between what is viewable both before and
+				after the motion.) */
+			xMotion = ((globalContainer->gfx->getW()-128)>>6);
+			yMotion = ((globalContainer->gfx->getH())>>6);
+		}
+		else
+		{
+			/* We move the screen by one square at a time if CTRL key
+				is not being help */
+			xMotion = 1;
+			yMotion = 1;
+		}
+	}
+	else if (modState)
+	{
+		/* Probably some keys held down as part of window
+			manager operations. */
+		xMotion = 0;
+		yMotion = 0; 
+	}
+	// int oldViewportX = viewportX;
+	// int oldViewportY = viewportY;
+	if (keystate[SDLK_UP])
+		ySpeed = -yMotion;
+	if (keystate[SDLK_KP8])
+		ySpeed = -yMotion;
+	if (keystate[SDLK_DOWN])
+		ySpeed = yMotion;
+	if (keystate[SDLK_KP2])
+		ySpeed = yMotion;
+	if ((keystate[SDLK_LEFT]))
+		xSpeed = -xMotion;
+	if (keystate[SDLK_KP4])
+		xSpeed = -xMotion;
+	if ((keystate[SDLK_RIGHT]))
+		xSpeed = xMotion;
+	if (keystate[SDLK_KP6])
+		xSpeed = xMotion;
+	if (keystate[SDLK_KP7])
+	{
+		xSpeed = -xMotion;
+		ySpeed = -yMotion;
+	}
+	if (keystate[SDLK_KP9])
+	{
+		xSpeed = xMotion;
+		ySpeed = -yMotion;
+	}
+	if (keystate[SDLK_KP1])
+	{
+		xSpeed = -xMotion;
+		ySpeed = yMotion;
+	}
+	if (keystate[SDLK_KP3])
+	{
+		xSpeed = -xMotion;
+		ySpeed = yMotion;
+	}
+	
+	if(globalContainer->gfx->getW()-mouseX<15)
+	{
+		xSpeed = 1;
+	}
+	else if(mouseX<15)
+	{
+		xSpeed = -1;
+	}
+
+	if(globalContainer->gfx->getH()-mouseY<15)
+	{
+		ySpeed = 1;
+	}
+	else if(mouseY<15)
+	{
+		ySpeed = -1;
 	}
 }
 
