@@ -107,9 +107,12 @@ public:
 	///Updates the construction state when undergoing construction. If the ressources are full,
 	///construction has completed.
 	void updateBuildingSite(void);
+	///Fires all units.
+	void updateUnitsWorkingFreeAll(void);
 	///This function updates the units working at this building. If there are too many units, it
 	///fires some.
 	void updateUnitsWorking(void);
+	///Fires all units that are carrying ressources that are no more needed to the building.
 	void updateUnitsWorkingFreeAllThatBringUnwantedRessources(void);
 	///This function is called after important events in order to update the building
 	void update(void);

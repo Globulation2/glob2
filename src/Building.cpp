@@ -34,6 +34,9 @@
 #include "Utilities.h"
 #include "GameGUI.h"
 
+using namespace std;
+
+/*
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<2; i++)
@@ -43,8 +46,9 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	}
 	logFile = globalContainer->logFileManager->getFile("Building.log");
 	load(stream, types, owner, versionMinor);
+	verbose=true;
 }
-
+*/
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	logFile = globalContainer->logFileManager->getFile("Building.log");
@@ -841,11 +845,14 @@ void Building::updateConstructionState(void)
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
 				addForbiddenZoneToUpgradeArea();
 				if (verbose)
-					printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
+					cout << "bgid=" << gid << ", inserted in buildingsTryToBuildingSiteRoom\n";
 			}
 		}
 		else if (verbose)
-			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size());
+			cout << 
+			"bgid=" << gid << 
+			", Building wait for upgrade, uws=" << (unsigned long)unitsWorking.size() << 
+			", uis=" << (unsigned long)unitsInside.size() << endl;
 	}
 }
 
@@ -931,15 +938,16 @@ void Building::updateUnitsWorkingFreeAllThatBringUnwantedRessources(void)
 		}
 	}
 }
+void Building::updateUnitsWorkingFreeAll(void)
+{
+	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+		(*it)->standardRandomActivity();
+	unitsWorking.clear();
+}
 void Building::updateUnitsWorking(void)
 {
 	if (maxUnitWorking==0)
-	{
-		// This is only a special optimisation case:
-		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-			(*it)->standardRandomActivity();
-		unitsWorking.clear();
-	}
+		updateUnitsWorkingFreeAll();
 	else
 	{
 		updateUnitsWorkingFreeAllThatBringUnwantedRessources();
@@ -951,8 +959,7 @@ void Building::updateUnitsWorking(void)
 			int r=(*it)->carriedRessource;
 			int value=Score(*it, r);
 			if (verbose)
-				printf("%d carrying %d\n", *it, r);
-
+				cout << *it << " carrying " << r << endl;
 			sortableUnitList.push_back(boost::make_tuple(value, *it));
 		}
 		if (sortableUnitList.size() > 0)
@@ -969,18 +976,19 @@ void Building::updateUnitsWorking(void)
 				Unit * chosen= it->get<1>();
 				chosen->standardRandomActivity();
 				unitsWorking.remove(chosen);
-				if (verbose) printf("fired unit %d.\n", it->get<0>());
+				if (verbose)
+					cout << "fired unit " << it->get<0>() << endl;
 			}
 		}
 	}
 }
 void Building::printScoreUnitList(std::list<boost::tuple<int, Unit *> > ul)
 {
-	printf(" %d units in list\nScore\tUnit *\n", ul.size());
+	cout << ul.size() << " units in list\nScore\tUnit *\n";
 	for (std::list<boost::tuple<int, Unit *> >::iterator it = ul.begin();
 		it!=ul.end();
 		it++)
-		printf("%d\t%d\n", it->get<0>(), it->get<1>());
+		cout << it->get<0>() << "\t" << it->get<1>() << endl;
 	
 }
 void Building::update(void)
@@ -1104,14 +1112,14 @@ bool Building::tryToBuildingSiteRoom(void)
 					if (res>resMax)
 						res=resMax;
 					if (verbose)
-						printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
+						cout << "using " << res << " ressources[" << i << "] for fast constr (hp+=" << res*type->hpInc << ")\n";
 					hp+=res*type->hpInc;
 				}
 			}
 
 		// units
 		if (verbose)
-			printf("bgid=%d, uses maxUnitWorkingPreferred=%d\n", gid, maxUnitWorkingPreferred);
+			cout << "bgid=" << gid << ", uses maxUnitWorkingPreferred=" << maxUnitWorkingPreferred << endl;
 		maxUnitWorking=maxUnitWorkingPreferred;
 		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
@@ -1291,7 +1299,8 @@ score=
 	}
 	if(!canUnitWorkHere(u))
 	{
-		if (verbose) printf("b\n");
+		if (verbose)
+			cout << "b\n";
 		return INT_MIN;
 	}
 	Map *map=owner->map;
@@ -1304,21 +1313,21 @@ score=
 	if(!map->buildingAvailable(this, u->performance[SWIM], u->posX, u->posY, &distBuilding)) //also to fill distBuilding
 	{
 		if (verbose)
-			printf("c\n");
+			cout << "c\n";
 		return INT_MIN;
 	}
 	if (!rightRes &&
 		!map->ressourceAvailable(owner->teamNumber,resource,u->performance[SWIM],u->posX,u->posY,&distResource)) //to fill distResource
 	{
 		if (verbose)
-			printf("d\n");
+			cout << "d\n";
 		return INT_MIN;
 	}
 	if(   ( rightRes && (u->hungry - u->trigHungry) / u->race->hungryness < 2 *  distBuilding              )
 		||(!rightRes && (u->hungry - u->trigHungry) / u->race->hungryness < 2 * (distBuilding+distResource)))//unlikely to reach target before starvation
 	{
 		if (verbose)
-			printf("e\n");
+			cout << "e\n";
 		return INT_MIN;
 	}
 	int penaltyWalk           =
@@ -1328,8 +1337,16 @@ score=
 	int penaltyLoosingResource=wrongRes*1000;//TODO: "1000" should depend on the availability of the resource
 	int penaltyHarvest        =50*(6 - u->level[HARVEST]);//harvest can be 1..4 so penalty is 5..2
 	int penaltySwim           =(u->level[SWIM]>0?1000:0);//swimmer's penalty to keep them free for swimmer tasks
-	if (verbose) printf("rightRes %d wrongRes %d noRes %d\n", rightRes, wrongRes, noRes);
-	if (verbose) printf("penaltyWalk %d penaltyHarvest %d penaltyLoosingResource %d\n", penaltyWalk, penaltyHarvest, penaltyLoosingResource);
+	if (verbose)
+		cout << 
+		"rightRes " << rightRes << 
+		" wrongRes " << wrongRes << 
+		" noRes " << noRes << endl;
+	if (verbose)
+		cout << 
+		"penaltyWalk " << penaltyWalk << 
+		" penaltyHarvest " << penaltyHarvest << 
+		" penaltyLoosingResource " << penaltyLoosingResource << endl;
 	return INT_MAX-penaltyWalk-penaltyLoosingResource-penaltyHarvest-penaltySwim;
 	//std::cout << "d" << distBuilding << " dr" << distResource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << u->level[WALK] << " ha" << u->level[HARVEST] << " va" << value << std::endl << std::flush;
 }
@@ -1343,7 +1360,8 @@ void Building::subscribeToBringRessourcesStep()
 	//choose a resource we assign a glob to fetch this turn.
 	while ( neededRessource(thisTurnsResource) <= 0)
 		thisTurnsResource=(thisTurnsResource+1)%MAX_RESSOURCES;
-	if (verbose) printf("search resource %d\n", thisTurnsResource);
+	if (verbose)
+		cout << "search resource " << thisTurnsResource << endl;
 	std::list<boost::tuple<int, int> > sortableUnitList;
 	for(int n=0; n<1024; ++n)
 	{
