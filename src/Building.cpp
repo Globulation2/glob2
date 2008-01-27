@@ -36,7 +36,6 @@
 
 using namespace std;
 
-/*
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<2; i++)
@@ -48,15 +47,15 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	load(stream, types, owner, versionMinor);
 	verbose=true;
 }
-*/
+
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	logFile = globalContainer->logFileManager->getFile("Building.log");
-	
+
 	// identity
 	this->gid=gid;
 	owner=team;
-	
+
 	// type
 	this->typeNum=typeNum;
 	type=types->get(typeNum);
@@ -71,7 +70,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		constructionResultState=NEW_BUILDING;
 	else
 		constructionResultState=NO_CONSTRUCTION;
-	
+
 
 	// units
 	shortTypeNum = type->shortTypeNum;
@@ -527,7 +526,6 @@ int Building::neededRessource(int r)
 		return 0;
 }
 
-
 int Building::totalWishedRessource()
 {
 	int sum=0;
@@ -535,8 +533,6 @@ int Building::totalWishedRessource()
 		sum += wishedResources[ri];
 	return sum;
 }
-
-
 
 void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
@@ -923,7 +919,6 @@ void Building::updateBuildingSite(void)
 	}
 }
 
-
 void Building::updateUnitsWorkingFreeAllThatBringUnwantedRessources(void)
 {
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
@@ -938,12 +933,14 @@ void Building::updateUnitsWorkingFreeAllThatBringUnwantedRessources(void)
 		}
 	}
 }
+
 void Building::updateUnitsWorkingFreeAll(void)
 {
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 		(*it)->standardRandomActivity();
 	unitsWorking.clear();
 }
+
 void Building::updateUnitsWorking(void)
 {
 	if (maxUnitWorking==0)
@@ -982,6 +979,7 @@ void Building::updateUnitsWorking(void)
 		}
 	}
 }
+
 void Building::printScoreUnitList(std::list<boost::tuple<int, Unit *> > ul)
 {
 	cout << ul.size() << " units in list\nScore\tUnit *\n";
@@ -991,6 +989,7 @@ void Building::printScoreUnitList(std::list<boost::tuple<int, Unit *> > ul)
 		cout << it->get<0>() << "\t" << it->get<1>() << endl;
 	
 }
+
 void Building::update(void)
 {
 	if (buildingState==DEAD)
@@ -1180,8 +1179,6 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	}
 }
 
-
-
 void Building::removeForbiddenZoneFromUpgradeArea(void)
 {
 	int midPosX=posX-type->decLeft;
@@ -1208,8 +1205,6 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 		}
 	}
 }
-
-
 
 bool Building::isHardSpaceForBuildingSite(void)
 {
@@ -1247,7 +1242,6 @@ bool Building::fullInside(void)
 		return ((signed)unitsInside.size()>=maxUnitInside);
 }
 
-
 int Building::desiredNumberOfWorkers(void)
 {
 	//If its virtual, than this building is a flag and always gets
@@ -1270,12 +1264,12 @@ int Building::desiredNumberOfWorkers(void)
 	return std::min(user_num, max_considering_ressources);
 }
 
-
 void Building::step(void)
 {
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
 	// NOTE : Unit needs to update itself when it is in a building
 }
+
 int Building::Score(Unit * u, int resource)
 {
 /* To choose a good unit, we get a composition of things:
@@ -1912,23 +1906,18 @@ void Building::turretStep(Uint32 stepCounter)
 }
 
 
-
 void Building::clearingFlagStep()
 {
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 		for (int canSwim=0; canSwim<2; canSwim++)
 			if (localRessourcesCleanTime[canSwim]++>125) // Update every 5[s]
-			{
 				if (!owner->map->updateLocalRessources(this, canSwim))
 				{
 					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 						(*it)->standardRandomActivity();
 					unitsWorking.clear();
 				}
-			}
 }
-
-
 
 void Building::kill(void)
 {
@@ -2000,7 +1989,6 @@ void Building::kill(void)
 	owner->buildingsToBeDestroyed.push_front(this);
 }
 
-
 bool Building::canUnitWorkHere(Unit* unit)
 {
 	if(type->isVirtual)
@@ -2037,23 +2025,17 @@ bool Building::canUnitWorkHere(Unit* unit)
 
 }
 
-
-
 void Building::removeUnitFromWorking(Unit* unit)
 {
 	unitsWorking.remove(unit);
 	updateCallLists();
 }
 
-
-
 void Building::removeUnitFromInside(Unit* unit)
 {
 	unitsInside.remove(unit);
 	updateCallLists();
 }
-
-
 
 void Building::updateRessourcesPointer()
 {
@@ -2062,8 +2044,6 @@ void Building::updateRessourcesPointer()
 	else
 		ressources=owner->teamRessources;
 }
-
-
 
 void Building::addRessourceIntoBuilding(int ressourceType)
 {
@@ -2094,16 +2074,12 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 	update();
 }
 
-
-
 void Building::removeRessourceFromBuilding(int ressourceType)
 {
 	ressources[ressourceType]-=type->multiplierRessource[ressourceType];
 	ressources[ressourceType]= std::max(ressources[ressourceType], 0);
 	updateCallLists();
 }
-
-
 
 int Building::getMidX(void)
 {

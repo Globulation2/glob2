@@ -36,7 +36,6 @@ namespace GAGCore
 	class OutputStream;
 }
 
-
 class Unit;
 class Team;
 class BuildingType;
@@ -66,7 +65,9 @@ public:
 	};
 
 public:
+	///for loading saved games
 	Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
+	///for building new buildings
 	Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture);
 	virtual ~Building(void);
 	void freeGradients();
