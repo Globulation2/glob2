@@ -36,7 +36,6 @@ namespace GAGCore
 	class OutputStream;
 }
 
-
 class Unit;
 class Team;
 class BuildingType;
@@ -65,12 +64,17 @@ public:
 		REPAIR=3
 	};
 
+private:
+	///for common code of the constructors and load function
+	void init();
 public:
+	///for loading saved games
 	Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
+	///for building new buildings
 	Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture);
 	virtual ~Building(void);
 	void freeGradients();
-
+	
 	void load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	void loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
@@ -98,6 +102,7 @@ public:
 	
 	///This function updates the call lists that the Building is on. A call list is a list
 	///of buildings in Team that need units for work, or can have units "inside"
+	///remove building from callList if no workers are needed or else add it.
 	void updateCallLists(void);
 	///When a building is waiting for room, this will make sure that the building is in the 
 	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hardspace, etc if
@@ -107,9 +112,12 @@ public:
 	///Updates the construction state when undergoing construction. If the ressources are full,
 	///construction has completed.
 	void updateBuildingSite(void);
+	///Fires all units.
+	void updateUnitsWorkingFreeAll(void);
 	///This function updates the units working at this building. If there are too many units, it
 	///fires some.
 	void updateUnitsWorking(void);
+	///Fires all units that are carrying ressources that are no more needed to the building.
 	void updateUnitsWorkingFreeAllThatBringUnwantedRessources(void);
 	///This function is called after important events in order to update the building
 	void update(void);
@@ -231,7 +239,7 @@ public:
 
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
-	int verbose;
+	bool verbose;
 	std::list<Order *> orderQueue;
 	
 	static std::string getBuildingName(int type);

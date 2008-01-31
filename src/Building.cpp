@@ -34,25 +34,21 @@
 #include "Utilities.h"
 #include "GameGUI.h"
 
+using namespace std;
+
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
-	for (int i=0; i<2; i++)
-	{
-		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
-	}
-	logFile = globalContainer->logFileManager->getFile("Building.log");
+	init();
 	load(stream, types, owner, versionMinor);
 }
 
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
-	logFile = globalContainer->logFileManager->getFile("Building.log");
-	
+	init();
 	// identity
 	this->gid=gid;
 	owner=team;
-	
+
 	// type
 	this->typeNum=typeNum;
 	type=types->get(typeNum);
@@ -67,7 +63,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		constructionResultState=NEW_BUILDING;
 	else
 		constructionResultState=NO_CONSTRUCTION;
-	
+
 
 	// units
 	shortTypeNum = type->shortTypeNum;
@@ -138,8 +134,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	
 	for (int i=0; i<2; i++)
 	{
-		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
 		lastGlobalGradientUpdateStepCounter[i]=0;
@@ -148,12 +142,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		localRessourcesCleanTime[i]=0;
 		anyRessourceToClear[i]=0;
 	}
-	
-	verbose=true;
-	
-	lastShootStep = 0xFFFFFFFF;
-	lastShootSpeedX = 0;
-	lastShootSpeedY = 0;
 }
 
 Building::~Building()
@@ -287,7 +275,13 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		upgrade[i] = 0;
 	freeGradients();
 	stream->readLeaveSection();
-	
+}
+void Building::init()
+{
+	for (int i=0; i<2; i++)
+		globalGradient[i]=localRessources[i]=NULL;
+	logFile = globalContainer->logFileManager->getFile("Building.log");
+	verbose=false;
 	lastShootStep = 0xFFFFFFFF;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
@@ -523,7 +517,6 @@ int Building::neededRessource(int r)
 		return 0;
 }
 
-
 int Building::totalWishedRessource()
 {
 	int sum=0;
@@ -531,8 +524,6 @@ int Building::totalWishedRessource()
 		sum += wishedResources[ri];
 	return sum;
 }
-
-
 
 void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
@@ -841,11 +832,14 @@ void Building::updateConstructionState(void)
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
 				addForbiddenZoneToUpgradeArea();
 				if (verbose)
-					printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
+					cout << "bgid=" << gid << ", inserted in buildingsTryToBuildingSiteRoom\n";
 			}
 		}
 		else if (verbose)
-			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size());
+			cout << 
+			"bgid=" << gid << 
+			", Building wait for upgrade, uws=" << (unsigned long)unitsWorking.size() << 
+			", uis=" << (unsigned long)unitsInside.size() << endl;
 	}
 }
 
@@ -916,7 +910,6 @@ void Building::updateBuildingSite(void)
 	}
 }
 
-
 void Building::updateUnitsWorkingFreeAllThatBringUnwantedRessources(void)
 {
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
@@ -931,15 +924,18 @@ void Building::updateUnitsWorkingFreeAllThatBringUnwantedRessources(void)
 		}
 	}
 }
+
+void Building::updateUnitsWorkingFreeAll(void)
+{
+	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+		(*it)->standardRandomActivity();
+	unitsWorking.clear();
+}
+
 void Building::updateUnitsWorking(void)
 {
 	if (maxUnitWorking==0)
-	{
-		// This is only a special optimisation case:
-		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-			(*it)->standardRandomActivity();
-		unitsWorking.clear();
-	}
+		updateUnitsWorkingFreeAll();
 	else
 	{
 		updateUnitsWorkingFreeAllThatBringUnwantedRessources();
@@ -948,11 +944,14 @@ void Building::updateUnitsWorking(void)
 			it!=unitsWorking.end();
 			++it)
 		{
-			int r=(*it)->carriedRessource;
+			int r;
+			if((*it)->carriedRessource)
+				r=(*it)->carriedRessource;
+			else
+				assert(false);
 			int value=Score(*it, r);
 			if (verbose)
-				printf("%d carrying %d\n", *it, r);
-
+				cout << *it << " carrying " << r << endl;
 			sortableUnitList.push_back(boost::make_tuple(value, *it));
 		}
 		if (sortableUnitList.size() > 0)
@@ -969,20 +968,23 @@ void Building::updateUnitsWorking(void)
 				Unit * chosen= it->get<1>();
 				chosen->standardRandomActivity();
 				unitsWorking.remove(chosen);
-				if (verbose) printf("fired unit %d.\n", it->get<0>());
+				if (verbose)
+					cout << "fired unit " << it->get<0>() << endl;
 			}
 		}
 	}
 }
+
 void Building::printScoreUnitList(std::list<boost::tuple<int, Unit *> > ul)
 {
-	printf(" %d units in list\nScore\tUnit *\n", ul.size());
+	cout << ul.size() << " units in list\nScore\tUnit *\n";
 	for (std::list<boost::tuple<int, Unit *> >::iterator it = ul.begin();
 		it!=ul.end();
 		it++)
-		printf("%d\t%d\n", it->get<0>(), it->get<1>());
+		cout << it->get<0>() << "\t" << it->get<1>() << endl;
 	
 }
+
 void Building::update(void)
 {
 	if (buildingState==DEAD)
@@ -1104,14 +1106,14 @@ bool Building::tryToBuildingSiteRoom(void)
 					if (res>resMax)
 						res=resMax;
 					if (verbose)
-						printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
+						cout << "using " << res << " ressources[" << i << "] for fast constr (hp+=" << res*type->hpInc << ")\n";
 					hp+=res*type->hpInc;
 				}
 			}
 
 		// units
 		if (verbose)
-			printf("bgid=%d, uses maxUnitWorkingPreferred=%d\n", gid, maxUnitWorkingPreferred);
+			cout << "bgid=" << gid << ", uses maxUnitWorkingPreferred=" << maxUnitWorkingPreferred << endl;
 		maxUnitWorking=maxUnitWorkingPreferred;
 		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
@@ -1172,8 +1174,6 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	}
 }
 
-
-
 void Building::removeForbiddenZoneFromUpgradeArea(void)
 {
 	int midPosX=posX-type->decLeft;
@@ -1200,8 +1200,6 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 		}
 	}
 }
-
-
 
 bool Building::isHardSpaceForBuildingSite(void)
 {
@@ -1239,7 +1237,6 @@ bool Building::fullInside(void)
 		return ((signed)unitsInside.size()>=maxUnitInside);
 }
 
-
 int Building::desiredNumberOfWorkers(void)
 {
 	//If its virtual, than this building is a flag and always gets
@@ -1262,12 +1259,12 @@ int Building::desiredNumberOfWorkers(void)
 	return std::min(user_num, max_considering_ressources);
 }
 
-
 void Building::step(void)
 {
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
 	// NOTE : Unit needs to update itself when it is in a building
 }
+
 int Building::Score(Unit * u, int resource)
 {
 /* To choose a good unit, we get a composition of things:
@@ -1283,6 +1280,17 @@ score=
 	+sign(timeleft>>2 - (d+dr))*500
 	+100/harvest
 */
+	int r; //carriedressource
+	int noRes; //1 if unit has no ressource
+	int rightRes; //1 if unit is carrying the right ressource
+	int wrongRes; //1 if unit is not carrying the right but another ressource
+	int distBuilding; //distance to the building
+	int distResource; //distance to the ressource
+	Map * map;
+	int penaltyWalk; //value depending on the distance to walk and the walk speed
+	int penaltyLoosingResource;//value of not loosing the wrong ressource carried
+	int penaltyHarvest; //the faster the unit can harvest the better it is
+	int penaltySwim;//swimmers are shifted down in score so they are free for swimmer-only jobs. Maybe free slots in pools should be taken into account so all can learn to swim.
 	if(u==NULL
 	|| u->medical != Unit::MED_FREE
 	|| !u->performance[HARVEST])
@@ -1291,48 +1299,58 @@ score=
 	}
 	if(!canUnitWorkHere(u))
 	{
-		if (verbose) printf("b\n");
+		if (verbose)
+			cout << "b\n";
 		return INT_MIN;
 	}
-	Map *map=owner->map;
-	int r=u->carriedRessource;
-	int noRes   =(                 r <0 ?1:0);
-	int rightRes=(r == resource         ?1:0);
-	int wrongRes=(r != resource && r>=0 ?1:0);
-	int distBuilding;
-	int distResource;
+	map=owner->map;
+	r=u->carriedRessource;
+	noRes   =(                 r <0 ?1:0);
+	rightRes=(r == resource         ?1:0);
+	wrongRes=(r != resource && r>=0 ?1:0);
+	distBuilding;
+	distResource;
 	if(!map->buildingAvailable(this, u->performance[SWIM], u->posX, u->posY, &distBuilding)) //also to fill distBuilding
 	{
 		if (verbose)
-			printf("c\n");
+			cout << "c\n";
 		return INT_MIN;
 	}
 	if (!rightRes &&
 		!map->ressourceAvailable(owner->teamNumber,resource,u->performance[SWIM],u->posX,u->posY,&distResource)) //to fill distResource
 	{
 		if (verbose)
-			printf("d\n");
+			cout << "d\n";
 		return INT_MIN;
 	}
 	if(   ( rightRes && (u->hungry - u->trigHungry) / u->race->hungryness < 2 *  distBuilding              )
 		||(!rightRes && (u->hungry - u->trigHungry) / u->race->hungryness < 2 * (distBuilding+distResource)))//unlikely to reach target before starvation
 	{
 		if (verbose)
-			printf("e\n");
+			cout << "e\n";
 		return INT_MIN;
 	}
-	int penaltyWalk           =
+	penaltyWalk =
 		+ rightRes       * distBuilding
 		+(wrongRes+noRes)*(distBuilding+distResource);
-	penaltyWalk              *= 6 - u->level[WALK];
-	int penaltyLoosingResource=wrongRes*1000;//TODO: "1000" should depend on the availability of the resource
-	int penaltyHarvest        =50*(6 - u->level[HARVEST]);//harvest can be 1..4 so penalty is 5..2
-	int penaltySwim           =(u->level[SWIM]>0?1000:0);//swimmer's penalty to keep them free for swimmer tasks
-	if (verbose) printf("rightRes %d wrongRes %d noRes %d\n", rightRes, wrongRes, noRes);
-	if (verbose) printf("penaltyWalk %d penaltyHarvest %d penaltyLoosingResource %d\n", penaltyWalk, penaltyHarvest, penaltyLoosingResource);
+	penaltyWalk *= 6 - u->level[WALK];
+	penaltyLoosingResource = wrongRes*1000;//TODO: "1000" should depend on the availability of the resource
+	penaltyHarvest = 50*(6 - u->level[HARVEST]);//harvest can be 1..4 so penalty is 5..2
+	penaltySwim = (u->level[SWIM]>0?1000:0);//swimmer's penalty to keep them free for swimmer tasks
+	if (verbose)
+		cout << 
+		"rightRes " << rightRes << 
+		" wrongRes " << wrongRes << 
+		" noRes " << noRes << endl;
+	if (verbose)
+		cout << 
+		"penaltyWalk " << penaltyWalk << 
+		" penaltyHarvest " << penaltyHarvest << 
+		" penaltyLoosingResource " << penaltyLoosingResource << endl;
 	return INT_MAX-penaltyWalk-penaltyLoosingResource-penaltyHarvest-penaltySwim;
 	//std::cout << "d" << distBuilding << " dr" << distResource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << u->level[WALK] << " ha" << u->level[HARVEST] << " va" << value << std::endl << std::flush;
 }
+
 void Building::subscribeToBringRessourcesStep()
 {
 	int value=INT_MIN;
@@ -1343,7 +1361,8 @@ void Building::subscribeToBringRessourcesStep()
 	//choose a resource we assign a glob to fetch this turn.
 	while ( neededRessource(thisTurnsResource) <= 0)
 		thisTurnsResource=(thisTurnsResource+1)%MAX_RESSOURCES;
-	if (verbose) printf("search resource %d\n", thisTurnsResource);
+	if (verbose)
+		cout << "search resource " << thisTurnsResource << endl;
 	std::list<boost::tuple<int, int> > sortableUnitList;
 	for(int n=0; n<1024; ++n)
 	{
@@ -1359,10 +1378,11 @@ void Building::subscribeToBringRessourcesStep()
 	{
 		if (verbose)
 		{
-			printf(" %d units found\n", sortableUnitList.size());
+			cout << sortableUnitList.size() << " units found\n";
 			for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
 				it2!=sortableUnitList.end();
-				it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
+				it2++)
+				cout << "boost::tuple<" << it2->get<0>() << "," << it2->get<1>() << ">\n";
 		}
 		sortableUnitList.sort();
 		sortableUnitList.reverse();
@@ -1370,11 +1390,12 @@ void Building::subscribeToBringRessourcesStep()
 		Unit * chosen=owner->myUnits[it->get<1>()];
 		if (verbose)
 		{
-			printf(" %d units found\n", sortableUnitList.size());
+			cout << sortableUnitList.size() << " units found\n";
 			for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
 				it2!=sortableUnitList.end();
-				it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
-			printf(" unit %d choosen. (Unit %d in upper list)\n", chosen->gid, it->get<1>());
+				it2++)
+				cout << "boost::tuple<" << it2->get<0>() << "," << it2->get<1>() << ">\n";
+			cout << " unit " << chosen->gid << " choosen. (Unit " << it->get<1>() << " in upper list)\n";
 		}
 		chosen->destinationPurpose=thisTurnsResource;
 		fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", chosen->gid, chosen->destinationPurpose);
@@ -1591,7 +1612,7 @@ void Building::swarmStep(void)
 						percentUsed[i]=0;
 			}
 			else if (verbose)
-				printf("WARNING, no more UNIT ID free for team %d\n", owner->teamNumber);
+				cout << "WARNING, no more UNIT ID free for team " << owner->teamNumber << endl;
 		}
 	}
 }
@@ -1894,23 +1915,18 @@ void Building::turretStep(Uint32 stepCounter)
 }
 
 
-
 void Building::clearingFlagStep()
 {
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 		for (int canSwim=0; canSwim<2; canSwim++)
 			if (localRessourcesCleanTime[canSwim]++>125) // Update every 5[s]
-			{
 				if (!owner->map->updateLocalRessources(this, canSwim))
 				{
 					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 						(*it)->standardRandomActivity();
 					unitsWorking.clear();
 				}
-			}
 }
-
-
 
 void Building::kill(void)
 {
@@ -1982,7 +1998,6 @@ void Building::kill(void)
 	owner->buildingsToBeDestroyed.push_front(this);
 }
 
-
 bool Building::canUnitWorkHere(Unit* unit)
 {
 	if(type->isVirtual)
@@ -2019,23 +2034,17 @@ bool Building::canUnitWorkHere(Unit* unit)
 
 }
 
-
-
 void Building::removeUnitFromWorking(Unit* unit)
 {
 	unitsWorking.remove(unit);
 	updateCallLists();
 }
 
-
-
 void Building::removeUnitFromInside(Unit* unit)
 {
 	unitsInside.remove(unit);
 	updateCallLists();
 }
-
-
 
 void Building::updateRessourcesPointer()
 {
@@ -2044,8 +2053,6 @@ void Building::updateRessourcesPointer()
 	else
 		ressources=owner->teamRessources;
 }
-
-
 
 void Building::addRessourceIntoBuilding(int ressourceType)
 {
@@ -2076,16 +2083,12 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 	update();
 }
 
-
-
 void Building::removeRessourceFromBuilding(int ressourceType)
 {
 	ressources[ressourceType]-=type->multiplierRessource[ressourceType];
 	ressources[ressourceType]= std::max(ressources[ressourceType], 0);
 	updateCallLists();
 }
-
-
 
 int Building::getMidX(void)
 {

@@ -115,6 +115,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
+	anyPlayerWaited=false;//HACK: Leo: this is to calm down valgrind. I have no idea what this variable is about.
 }
 
 
