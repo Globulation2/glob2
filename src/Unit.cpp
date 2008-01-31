@@ -1050,6 +1050,8 @@ void Unit::handleDisplacement(void)
 				}
 				if (!loopMove && !exchangeReady)
 				{
+					if(attachedBuilding)
+						attachedBuilding->update();
 					//NOTE: if attachedBuilding has become NULL; it's beacause the building doesn't need me anymore.
 					if (!attachedBuilding)
 					{
@@ -1065,7 +1067,6 @@ void Unit::handleDisplacement(void)
 						///Find a ressource that the building wants and a location to get it from
 						///The location may be a market, or the harvesting the ressource from the
 						///map.
-						attachedBuilding->update();
 						int needs[MAX_NB_RESSOURCES];
 						attachedBuilding->wishedRessources(needs);
 						int teamNumber=owner->teamNumber;
