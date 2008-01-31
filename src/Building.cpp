@@ -945,7 +945,7 @@ void Building::updateUnitsWorking(void)
 			++it)
 		{
 			int r;
-			if((*it) && (*it)->carriedRessource)
+			if((*it)->carriedRessource)
 				r=(*it)->carriedRessource;
 			else
 				assert(false);
