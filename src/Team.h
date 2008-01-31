@@ -178,7 +178,7 @@ public:
 	///This stores the buildings that need units. They are sorted based on priority.
 	std::vector<Building*> buildingsNeedingUnits;
 
-	// thoses where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
+	// those where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
 	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
 	
 	// The list of building which have one specific ability.

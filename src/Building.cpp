@@ -38,20 +38,13 @@ using namespace std;
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
-	for (int i=0; i<2; i++)
-	{
-		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
-	}
-	logFile = globalContainer->logFileManager->getFile("Building.log");
+	init();
 	load(stream, types, owner, versionMinor);
-	verbose=true;
 }
 
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
-	logFile = globalContainer->logFileManager->getFile("Building.log");
-
+	init();
 	// identity
 	this->gid=gid;
 	owner=team;
@@ -141,8 +134,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	
 	for (int i=0; i<2; i++)
 	{
-		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
 		lastGlobalGradientUpdateStepCounter[i]=0;
@@ -151,12 +142,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		localRessourcesCleanTime[i]=0;
 		anyRessourceToClear[i]=0;
 	}
-	
-	verbose=true;
-	
-	lastShootStep = 0xFFFFFFFF;
-	lastShootSpeedX = 0;
-	lastShootSpeedY = 0;
 }
 
 Building::~Building()
@@ -290,7 +275,13 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		upgrade[i] = 0;
 	freeGradients();
 	stream->readLeaveSection();
-	
+}
+void Building::init()
+{
+	for (int i=0; i<2; i++)
+		globalGradient[i]=localRessources[i]=NULL;
+	logFile = globalContainer->logFileManager->getFile("Building.log");
+	verbose=false;
 	lastShootStep = 0xFFFFFFFF;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
@@ -953,7 +944,11 @@ void Building::updateUnitsWorking(void)
 			it!=unitsWorking.end();
 			++it)
 		{
-			int r=(*it)->carriedRessource;
+			int r;
+			if((*it) && (*it)->carriedRessource)
+				r=(*it)->carriedRessource;
+			else
+				assert(false);
 			int value=Score(*it, r);
 			if (verbose)
 				cout << *it << " carrying " << r << endl;
@@ -1285,6 +1280,17 @@ score=
 	+sign(timeleft>>2 - (d+dr))*500
 	+100/harvest
 */
+	int r; //carriedressource
+	int noRes; //1 if unit has no ressource
+	int rightRes; //1 if unit is carrying the right ressource
+	int wrongRes; //1 if unit is not carrying the right but another ressource
+	int distBuilding; //distance to the building
+	int distResource; //distance to the ressource
+	Map * map;
+	int penaltyWalk; //value depending on the distance to walk and the walk speed
+	int penaltyLoosingResource;//value of not loosing the wrong ressource carried
+	int penaltyHarvest; //the faster the unit can harvest the better it is
+	int penaltySwim;//swimmers are shifted down in score so they are free for swimmer-only jobs. Maybe free slots in pools should be taken into account so all can learn to swim.
 	if(u==NULL
 	|| u->medical != Unit::MED_FREE
 	|| !u->performance[HARVEST])
@@ -1297,13 +1303,13 @@ score=
 			cout << "b\n";
 		return INT_MIN;
 	}
-	Map *map=owner->map;
-	int r=u->carriedRessource;
-	int noRes   =(                 r <0 ?1:0);
-	int rightRes=(r == resource         ?1:0);
-	int wrongRes=(r != resource && r>=0 ?1:0);
-	int distBuilding;
-	int distResource;
+	map=owner->map;
+	r=u->carriedRessource;
+	noRes   =(                 r <0 ?1:0);
+	rightRes=(r == resource         ?1:0);
+	wrongRes=(r != resource && r>=0 ?1:0);
+	distBuilding;
+	distResource;
 	if(!map->buildingAvailable(this, u->performance[SWIM], u->posX, u->posY, &distBuilding)) //also to fill distBuilding
 	{
 		if (verbose)
@@ -1324,13 +1330,13 @@ score=
 			cout << "e\n";
 		return INT_MIN;
 	}
-	int penaltyWalk           =
+	penaltyWalk =
 		+ rightRes       * distBuilding
 		+(wrongRes+noRes)*(distBuilding+distResource);
-	penaltyWalk              *= 6 - u->level[WALK];
-	int penaltyLoosingResource=wrongRes*1000;//TODO: "1000" should depend on the availability of the resource
-	int penaltyHarvest        =50*(6 - u->level[HARVEST]);//harvest can be 1..4 so penalty is 5..2
-	int penaltySwim           =(u->level[SWIM]>0?1000:0);//swimmer's penalty to keep them free for swimmer tasks
+	penaltyWalk *= 6 - u->level[WALK];
+	penaltyLoosingResource = wrongRes*1000;//TODO: "1000" should depend on the availability of the resource
+	penaltyHarvest = 50*(6 - u->level[HARVEST]);//harvest can be 1..4 so penalty is 5..2
+	penaltySwim = (u->level[SWIM]>0?1000:0);//swimmer's penalty to keep them free for swimmer tasks
 	if (verbose)
 		cout << 
 		"rightRes " << rightRes << 
@@ -1344,6 +1350,7 @@ score=
 	return INT_MAX-penaltyWalk-penaltyLoosingResource-penaltyHarvest-penaltySwim;
 	//std::cout << "d" << distBuilding << " dr" << distResource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << u->level[WALK] << " ha" << u->level[HARVEST] << " va" << value << std::endl << std::flush;
 }
+
 void Building::subscribeToBringRessourcesStep()
 {
 	int value=INT_MIN;
@@ -1371,10 +1378,11 @@ void Building::subscribeToBringRessourcesStep()
 	{
 		if (verbose)
 		{
-			printf(" %d units found\n", sortableUnitList.size());
+			cout << sortableUnitList.size() << " units found\n";
 			for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
 				it2!=sortableUnitList.end();
-				it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
+				it2++)
+				cout << "boost::tuple<" << it2->get<0>() << "," << it2->get<1>() << ">\n";
 		}
 		sortableUnitList.sort();
 		sortableUnitList.reverse();
@@ -1382,11 +1390,12 @@ void Building::subscribeToBringRessourcesStep()
 		Unit * chosen=owner->myUnits[it->get<1>()];
 		if (verbose)
 		{
-			printf(" %d units found\n", sortableUnitList.size());
+			cout << sortableUnitList.size() << " units found\n";
 			for (std::list<boost::tuple<int, int> >::iterator it2 = sortableUnitList.begin();
 				it2!=sortableUnitList.end();
-				it2++) printf("boost::tuple<%d, %d>\n", it2->get<0>(), it2->get<1>());
-			printf(" unit %d choosen. (Unit %d in upper list)\n", chosen->gid, it->get<1>());
+				it2++)
+				cout << "boost::tuple<" << it2->get<0>() << "," << it2->get<1>() << ">\n";
+			cout << " unit " << chosen->gid << " choosen. (Unit " << it->get<1>() << " in upper list)\n";
 		}
 		chosen->destinationPurpose=thisTurnsResource;
 		fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", chosen->gid, chosen->destinationPurpose);
@@ -1603,7 +1612,7 @@ void Building::swarmStep(void)
 						percentUsed[i]=0;
 			}
 			else if (verbose)
-				printf("WARNING, no more UNIT ID free for team %d\n", owner->teamNumber);
+				cout << "WARNING, no more UNIT ID free for team " << owner->teamNumber << endl;
 		}
 	}
 }
