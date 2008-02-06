@@ -85,6 +85,8 @@ Game::~Game()
 		}
 	}
 	
+	overlayAlphas.resize(0);
+
 	clearGame();
 }
 
@@ -2364,9 +2366,9 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		int height = (bot - top) + 1;
 
 		overlayAlphas.resize(width * height);
-		for (int y=top-1; y<=bot; y++)
+		for (int y=0; y<height; y++)
 		{
-			for (int x=left-1; x<=right; x++)
+			for (int x=0; x<width; x++)
 			{
 				int rx=(x+viewportX)%map.getW();
 				int ry=(y+viewportY)%map.getH();
