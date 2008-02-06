@@ -166,42 +166,17 @@ const std::list<YOGPlayerInfo>& YOGGameServer::getPlayerList() const
 
 
 
-void YOGGameServer::propogateMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGPlayer> sender)
-{
-	shared_ptr<NetSendYOGMessage> nmessage(new NetSendYOGMessage(message));
-	if(message->getMessageType() == YOGNormalMessage)
-	{
-		for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
-		{
-			if(i->second != sender)
-			{
-				i->second->sendMessage(nmessage);
-			}
-		}
-	}
-	else if(message->getMessageType() == YOGGameMessage)
-	{
-		for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
-		{
-			if(i->second != sender && sender->getGameID() == i->second->getGameID())
-			{
-				i->second->sendMessage(nmessage);
-			}
-		}
-	}
-}
-
-
-
 void YOGGameServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
 	playerList.push_back(YOGPlayerInfo(username, id));
+	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
 }
 
 
 
 void YOGGameServer::playerHasLoggedOut(Uint16 playerID)
 {
+	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->removePlayer(getPlayer(playerID));
 	for(std::list<YOGPlayerInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
 	{
 		if(i->getPlayerID() == playerID)
@@ -210,6 +185,13 @@ void YOGGameServer::playerHasLoggedOut(Uint16 playerID)
 			break;
 		}
 	}
+}
+
+
+
+YOGChatChannelManager& YOGGameServer::getChatChannelManager()
+{
+	return chatChannelManager;
 }
 
 
@@ -243,8 +225,9 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 		else
 			break;
 	}
+	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
 	gameList.push_back(YOGGameInfo(name, newID));
-	games[newID] = shared_ptr<YOGGame>(new YOGGame(newID, *this));
+	games[newID] = shared_ptr<YOGGame>(new YOGGame(newID, chatChannel, *this));
 	return newID;
 }
 

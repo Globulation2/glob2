@@ -1194,6 +1194,14 @@ Uint16 NetAttemptJoinGame::getGameID() const
 
 NetGameJoinAccepted::NetGameJoinAccepted()
 {
+	chatChannel = 0;
+}
+	
+
+
+NetGameJoinAccepted::NetGameJoinAccepted(Uint32 chatChannel)
+	: chatChannel(chatChannel)
+{
 
 }
 
@@ -1209,6 +1217,7 @@ Uint8 NetGameJoinAccepted::getMessageType() const
 void NetGameJoinAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetGameJoinAccepted");
+	stream->writeUint32(chatChannel, "chatChannel");
 	stream->writeLeaveSection();
 }
 
@@ -1217,6 +1226,7 @@ void NetGameJoinAccepted::encodeData(GAGCore::OutputStream* stream) const
 void NetGameJoinAccepted::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetGameJoinAccepted");
+	chatChannel = stream->readUint32("chatChannel");
 	stream->readLeaveSection();
 }
 
@@ -1225,7 +1235,7 @@ void NetGameJoinAccepted::decodeData(GAGCore::InputStream* stream)
 std::string NetGameJoinAccepted::format() const
 {
 	std::ostringstream s;
-	s<<"NetGameJoinAccepted()";
+	s<<"NetGameJoinAccepted(chatChannel="<<chatChannel<<")";
 	return s.str();
 }
 
@@ -1235,10 +1245,21 @@ bool NetGameJoinAccepted::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetGameJoinAccepted))
 	{
-//		const NetGameJoinAccepted& r = dynamic_cast<const NetGameJoinAccepted&>(rhs);
+		const NetGameJoinAccepted& r = dynamic_cast<const NetGameJoinAccepted&>(rhs);
+		if(r.chatChannel != chatChannel)
+		{
+			return false;
+		}
 		return true;
 	}
 	return false;
+}
+
+
+
+Uint32 NetGameJoinAccepted::getChatChannel() const
+{
+	return chatChannel;
 }
 
 
@@ -1316,8 +1337,8 @@ YOGGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
 
 
 
-NetSendYOGMessage::NetSendYOGMessage(boost::shared_ptr<YOGMessage> message)
-	: message(message)
+NetSendYOGMessage::NetSendYOGMessage(Uint32 channel, boost::shared_ptr<YOGMessage> message)
+	: channel(channel), message(message)
 {
 
 }
@@ -1325,6 +1346,7 @@ NetSendYOGMessage::NetSendYOGMessage(boost::shared_ptr<YOGMessage> message)
 
 
 NetSendYOGMessage::NetSendYOGMessage()
+	: channel(0)
 {
 
 }
@@ -1341,6 +1363,7 @@ Uint8 NetSendYOGMessage::getMessageType() const
 void NetSendYOGMessage::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendYOGMessage");
+	stream->writeUint32(channel, "channel");
 	message->encodeData(stream);
 	stream->writeLeaveSection();
 }
@@ -1350,6 +1373,7 @@ void NetSendYOGMessage::encodeData(GAGCore::OutputStream* stream) const
 void NetSendYOGMessage::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendYOGMessage");
+	channel = stream->readUint32("channel");
 	message.reset(new YOGMessage);
 	message->decodeData(stream);
 	stream->readLeaveSection();
@@ -1360,7 +1384,7 @@ void NetSendYOGMessage::decodeData(GAGCore::InputStream* stream)
 std::string NetSendYOGMessage::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendYOGMessage()";
+	s<<"NetSendYOGMessage(channel="<<channel<<")";
 	return s.str();
 }
 
@@ -1371,7 +1395,9 @@ bool NetSendYOGMessage::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendYOGMessage))
 	{
 		const NetSendYOGMessage& r = dynamic_cast<const NetSendYOGMessage&>(rhs);
-		if(!message && !r.message)
+		if(channel != r.channel)
+			return false;
+		else if(!message && !r.message)
 			return true;
 		else if(!message && r.message)
 			return false;
@@ -1381,6 +1407,13 @@ bool NetSendYOGMessage::operator==(const NetMessage& rhs) const
 			return true;
 	}
 	return false;
+}
+
+
+
+Uint32 NetSendYOGMessage::getChannel() const
+{
+	return channel;
 }
 
 
@@ -1460,6 +1493,13 @@ const MapHeader& NetSendMapHeader::getMapHeader() const
 
 NetCreateGameAccepted::NetCreateGameAccepted()
 {
+	chatChannel = 0;
+}
+
+
+NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel)
+	: chatChannel(chatChannel)
+{
 
 }
 
@@ -1475,6 +1515,7 @@ Uint8 NetCreateGameAccepted::getMessageType() const
 void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetCreateGameAccepted");
+	stream->writeUint32(chatChannel, "chatChannel");
 	stream->writeLeaveSection();
 }
 
@@ -1483,6 +1524,7 @@ void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGameAccepted");
+	chatChannel = stream->readUint32("chatChannel");
 	stream->readLeaveSection();
 }
 
@@ -1491,7 +1533,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 std::string NetCreateGameAccepted::format() const
 {
 	std::ostringstream s;
-	s<<"NetCreateGameAccepted()";
+	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<")";
 	return s.str();
 }
 
@@ -1501,10 +1543,21 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetCreateGameAccepted))
 	{
-		//const NetCreateGameAccepted& r = dynamic_cast<const NetCreateGameAccepted&>(rhs);
+		const NetCreateGameAccepted& r = dynamic_cast<const NetCreateGameAccepted&>(rhs);
+		if(chatChannel != r.chatChannel)
+		{
+			return false;
+		}
 		return true;
 	}
 	return false;
+}
+
+
+
+Uint32 NetCreateGameAccepted::getChatChannel() const
+{
+	return chatChannel;
 }
 
 

@@ -19,42 +19,34 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NetTextMessageHandler_H
-#define __NetTextMessageHandler_H
+#ifndef __IRCTextMessageHandler_H
+#define __IRCTextMessageHandler_H
 
 #include "IRC.h"
-#include "YOGClient.h"
+#include "boost/shared_ptr.hpp"
 
-enum NetTextMessageType
-{
-	IRCTextMessage,
-	YOGTextMessage,
-	PreGameYOGTextMessage,
-	InternalTextMessage,
-	NoTextMessage,
-};
 
-///This class represents an object that can listen for text messages
-class NetTextMessageListener
+///This class represents an object that can listen for text messages from IRC
+class IRCTextMessageListener
 {
 public:
-	virtual ~NetTextMessageListener() {}
+	virtual ~IRCTextMessageListener() {}
 	///This function is meant to handle a text message
-	virtual void handleTextMessage(const std::string& message, NetTextMessageType type)=0;
+	virtual void handleIRCTextMessage(const std::string& message)=0;
 };
 
 
-///This system puts together and formats messages the two sources, YOG and IRC
-class NetTextMessageHandler
+///This system puts together and formats messages the two sources, YOG and IRC, for the lobby
+class IRCTextMessageHandler
 {
 public:
-	///Starts listening to the messages coming from client
-	NetTextMessageHandler(shared_ptr<YOGClient> client);
+	///Starts listening to the messages coming from IRC
+	IRCTextMessageHandler();
 	
-	~NetTextMessageHandler();
+	~IRCTextMessageHandler();
 
 	///Connects to the IRC server and begins taking messages from it
-	void startIRC();
+	void startIRC(const std::string& username);
 	
 	///Disconnect from IRC
 	void stopIRC();
@@ -63,10 +55,10 @@ public:
 	void update();
 
 	///Adds a listener to listen for text messages
-	void addTextMessageListener(NetTextMessageListener* listener);
+	void addTextMessageListener(IRCTextMessageListener* listener);
 
 	///Removes a listener
-	void removeTextMessageListener(NetTextMessageListener* listener);
+	void removeTextMessageListener(IRCTextMessageListener* listener);
 
 	///Returns the IRC server to send commands to it
 	boost::shared_ptr<IRC> getIRC();
@@ -75,11 +67,10 @@ public:
 	void addInternalMessage(const std::string& message);
 
 private:
-	void sendToAllListeners(const std::string& message, NetTextMessageType type);
+	void sendToAllListeners(const std::string& message);
 
-	boost::shared_ptr<YOGClient> client;
 	boost::shared_ptr<IRC> irc;
-	std::vector<NetTextMessageListener* > listeners;
+	std::vector<IRCTextMessageListener* > listeners;
 };
 
 

@@ -106,7 +106,7 @@ public:
 	void changeTeam(int playerNum, int teamNum);
 	
 	///Sends a message to other players in the game
-	void sendMessage(const std::string& message);
+//	void sendMessage(const std::string& message);
 	
 	///Returns the reason for being kicked
 	YOGKickReason getKickReason() const;
@@ -119,6 +119,12 @@ public:
 	
 	///Returns the player number of the local player
 	int getLocalPlayerNumber();
+
+	///Gets the username of the local player
+	std::string getUsername() const;
+
+	///Gets the chat channel for this game
+	Uint32 getChatChannel() const;
 	
 protected:
 	friend class YOGClient;
@@ -155,6 +161,7 @@ private:
 	bool wasReadyToStart;
 	bool sentReadyToStart;
 	std::list<MultiplayerGameEventListener*> listeners;
+	Uint32 chatChannel;
 };
 
 

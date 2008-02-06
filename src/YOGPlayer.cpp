@@ -94,7 +94,7 @@ void YOGPlayer::update()
 	else if(type==MNetSendYOGMessage)
 	{
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
-		server.propogateMessage(info->getMessage(), server.getPlayer(playerID));
+		server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
 	}
 	//This recieves an attempt to create a new game
 	else if(type==MNetCreateGame)
@@ -300,7 +300,7 @@ void YOGPlayer::handleCreateGame(const std::string& gameName)
 	{
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
-		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted);
+		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(game->getChatChannel()));
 		connection->sendMessage(message);
 		game->addPlayer(server.getPlayer(playerID));
 	}
@@ -318,10 +318,10 @@ void YOGPlayer::handleJoinGame(Uint16 ngameID)
 	YOGGameJoinRefusalReason reason = server.canJoinGame(ngameID);
 	if(reason == YOGJoinRefusalUnknown)
 	{	
-		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted);
-		connection->sendMessage(message);
 		gameID = ngameID;
 		game = server.getGame(gameID);
+		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(game->getChatChannel()));
+		connection->sendMessage(message);
 		game->addPlayer(server.getPlayer(playerID));
 		//gameListState = NeedToSendGameList;
 	}
