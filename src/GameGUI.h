@@ -177,7 +177,8 @@ private:
 	void drawTopScreenBar(void);
 	//! Draw the infos that are over the others, like the message, the waiting players, ...
 	void drawOverlayInfos(void);
-
+	//! Draw the particles (eye-candy)
+	void drawParticles(void);
 	//! Draw the panel
 	void drawPanel(void);
 	//! Draw the buttons associated to the panel
@@ -328,7 +329,7 @@ private:
 	InGameScrollableHistory* scrollableText;
 
 	/// Add a message to the list of messages
-	void addMessage(Uint8 r, Uint8 g, Uint8 b, const std::string &msgText);
+	void addMessage(const GAGCore::Color& color, const std::string &msgText);
 
 	// Message stuff
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
@@ -366,6 +367,30 @@ private:
 	
 	///This function flushes orders from the scrollWheel at the end of every frame
 	void flushScrollWheelOrders();
+	
+	//! A particle is cute and only for eye candy
+	struct Particle
+	{
+		float x, y; //!< position on screen in pixels
+		float vx, vy; //!< speed in pixels per tick
+		float ax, ay; //!< acceleration in pixels per tick
+		int age; //!< current age of the particle
+		int lifeSpan; //!< maximum age of the particle
+		
+		int startImg; //!< image of the particle at birth
+		int endImg; //!< image of the partile at death
+		Color color; //!< color (team) of this particle
+	};
+	
+	typedef std::set<Particle*> ParticleSet;
+	
+	//! All particles visible on screen
+	ParticleSet particles;
+	
+	//! Generate new particles if required
+	void generateNewParticles(std::set<Building*> *visibleBuildings);
+	//! Move all particles by a certain amount of pixels
+	void moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
 
 #endif

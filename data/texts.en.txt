@@ -97,9 +97,9 @@ break
 [build barracks level 0]
 Construct Barracks 1
 [build barracks level 1]
-Construct Barracks 1
+Construct Barracks 2
 [build barracks level 2]
-Construct Barracks 1
+Construct Barracks 3
 [build defencetower level 0]
 Construct Defence Tower 1
 [build defencetower level 1]
@@ -635,7 +635,7 @@ Prestige
 [print screen]
 print screen
 [Prune]
-Prune
+Plum
 [quit the editor]
 Quit the editor
 [quit the game]

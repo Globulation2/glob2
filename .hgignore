@@ -1,21 +1,10 @@
 syntax: glob
 
-*.Po
-*.map
-*.gif
-*.png
-*.txt
-*.ogg
-Makefile
-Makefile.*
 config.*
-configure
-*.ttf
-aclocal.m4
-output.?
-requests
-traces.?
-default.apspec
+options_cache.py
 libgag.a
 src/glob2
-stamp-h1
+.sconf_temp
+.sconsign.dblite
+src/*.o
+

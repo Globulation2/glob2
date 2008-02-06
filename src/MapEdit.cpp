@@ -108,7 +108,7 @@ void BuildingSelectorWidget::draw()
 		imgid = bt->gameSpriteImage;
 	}
 		
-	buildingSprite->setBaseColor(me.game.teams[me.team]->colorR, me.game.teams[me.team]->colorG, me.game.teams[me.team]->colorB);
+	buildingSprite->setBaseColor(me.game.teams[me.team]->color);
 	globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 	// draw selection if needed
@@ -140,9 +140,9 @@ void TeamColorSelector::draw()
 		if(me.game.teams[n])
 		{
 			if(me.team==n)
-				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->colorR, me.game.teams[n]->colorG, me.game.teams[n]->colorB, 128));
+				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->color.r, me.game.teams[n]->color.g, me.game.teams[n]->color.b, 128));
 			else
-				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->colorR, me.game.teams[n]->colorG, me.game.teams[n]->colorB));
+				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, me.game.teams[n]->color);
 
 		}
 	}
@@ -269,7 +269,7 @@ void UnitSelector::draw()
 {
 	// draw units
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(me.game.teams[me.team]->colorR, me.game.teams[me.team]->colorG, me.game.teams[me.team]->colorB);
+	unitSprite->setBaseColor(me.game.teams[me.team]->color);
 	bool drawSelection=false;
 	if(unitType==WORKER)
 	{
@@ -418,7 +418,7 @@ void TeamInfo::draw()
 {
 	if(me.game.teams[teamNum])
 	{
-		globalContainer->gfx->drawFilledRect(area.x, area.y, 16, 16, Color(me.game.teams[teamNum]->colorR, me.game.teams[teamNum]->colorG, me.game.teams[teamNum]->colorB));
+		globalContainer->gfx->drawFilledRect(area.x, area.y, 16, 16, Color(me.game.teams[teamNum]->color));
 		globalContainer->gfx->drawString(area.x+20, area.y+4, globalContainer->littleFont, Toolkit::getStringTable()->getString(options[selectorPos].c_str()));
 	}
 }
@@ -523,7 +523,7 @@ void UnitPicture::draw()
 	}
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(unit->owner->colorR, unit->owner->colorG, unit->owner->colorB);
+	unitSprite->setBaseColor(unit->owner->color);
 	int decX = (32-unitSprite->getW(imgid))/2;
 	int decY = (32-unitSprite->getH(imgid))/2;
 	globalContainer->gfx->drawSprite(xpos+12+decX, ypos+7+decY, unitSprite, imgid);
@@ -726,7 +726,7 @@ void BuildingPicture::draw()
 	}
 	int dx = (56-miniSprite->getW(imgid))/2;
 	int dy = (46-miniSprite->getH(imgid))/2;
-	miniSprite->setBaseColor(selBuild->owner->colorR, selBuild->owner->colorG, selBuild->owner->colorB);
+	miniSprite->setBaseColor(selBuild->owner->color);
 	globalContainer->gfx->drawSprite(area.x+dx, area.y+dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 18);
 }
@@ -839,7 +839,7 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
- : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
+  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
 {
 	doQuit=false;
 
@@ -1445,7 +1445,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
 		
 		// we draw the building
-		sprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+		sprite->setBaseColor(game.teams[team]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 // 		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
 	 	int spriteIntensity = 127;
@@ -1593,7 +1593,7 @@ void MapEdit::drawPlacingUnitOnMap()
 	}
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+	unitSprite->setBaseColor(game.teams[team]->color);
 
 	globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
 

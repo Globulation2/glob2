@@ -17,8 +17,8 @@ The simplest way to compile this package is:
      Running `scons' takes awhile.  While running, it prints some
      messages telling which source files it is compiling.
 
-  2. When compiled, type (probably as root) `./install' to install the
-     programs and any data files and documentation.
+  2. When compiled, type (probably as root) `scons install' to install
+     the programs and any data files and documentation.
 
   3. You can remove the program binaries and object files from the
      source code directory by typing `scons -c'.

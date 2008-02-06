@@ -128,7 +128,7 @@ bool NetEngine::matchCheckSums()
 			if(checksum == -1)
 				checksum = playerCheckSum;
 			else if(playerCheckSum != checksum)
-			{				
+			{
 				return false;
 			}
 		}

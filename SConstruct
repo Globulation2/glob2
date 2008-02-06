@@ -1,10 +1,11 @@
 def establish_options(env):
     opts = Options('options_cache.py')
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
-    opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "")
+    opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add(BoolOption("release", "Build for release", 0))
+    opts.Add(BoolOption("profile", 'Build with profiling on', 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
     opts.Add(BoolOption("osx", "Build for OSX", 0))
     Help(opts.GenerateHelpText(env))
@@ -66,9 +67,18 @@ def configure(env):
         else:
             print "Coulf not find libz or zlib1.dll"
             Exit(1)
-    if not conf.CheckLib('boost_thread') or not conf.CheckCXXHeader('boost/thread/thread.hpp'):
-        print "Could not find libboost_thread or boost/thread/thread.hpp"
+
+    boost_thread = ''
+    if conf.CheckLib('boost_thread') and conf.CheckCXXHeader('boost/thread/thread.hpp'):
+        boost_thread='boost_thread'
+    elif conf.CheckLib('boost_thread-mt') and conf.CheckCXXHeader('boost/thread/thread.hpp'):
+        boost_thread='boost_thread-mt'
+    else:
+        print "Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp"
         Exit(1)
+    env.Append(LIBS=[boost_thread])
+    
+
     if not conf.CheckCXXHeader('boost/shared_ptr.hpp'):
         print "Could not find boost/shared_ptr.hpp"
         Exit(1)
@@ -138,6 +148,10 @@ def main():
     env.Append(CPPPATH=['#libgag/include', '#'])
     if env['release']:
         env.Append(CXXFLAGS=' -O3')
+    if env['profile']:
+        env.Append(CXXFLAGS=' -pg')
+        env.Append(LINKFLAGS='-pg')
+        env.Append(CXXFLAGS=' -O3')
     if env['mingw'] or env['PLATFORM'] == 'win32':
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
@@ -149,7 +163,7 @@ def main():
         env.ParseConfig("sdl-config --libs")
     if env['osx']:
         env.Append(CXXFLAGS="-framework OpenGL")
-    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex', 'boost_thread'])
+    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"

@@ -358,7 +358,7 @@ namespace GAGCore
 		return cs;
 	}
 	
-	std::time_t FileManager::mtime(const char *filename)
+	time_t FileManager::mtime(const char *filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{

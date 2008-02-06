@@ -21,4 +21,5 @@ data/texts.sk.txt
 data/texts.ar.txt
 data/texts.eu.txt
 data/texts.br.txt
+data/texts.gr.txt
 data/texts.zh-tw.txt

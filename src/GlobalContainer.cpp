@@ -534,6 +534,7 @@ void GlobalContainer::load(void)
 		gamegui = Toolkit::getSprite("data/gfx/gamegui");
 		brush = Toolkit::getSprite("data/gfx/brush");
 		magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
+		particles = Toolkit::getSprite("data/gfx/particle");
 		
 		// use custom style
 		Style::style = new Glob2Style;

@@ -31,10 +31,10 @@ Graphics
 Andrew Sayers <globulation2 at pileofstuff dot org> (new grass and sand)
 Cyrille Dunant <cyrille dot dunant at epfl dot ch> (coloring new buildings)
 Emmanuel Eckard <emmanuel dot eckard at epfl dot ch> (drawing new buildings)
-Gabriel Walt <diz at ysagoon dot com> (GUI)
-Joey Marshall <JoeyMarshall at ml1 dot net> (additional drawing, coloring)
-Luc-Olivier de Charrière <NuageBleu at gmail dot com> (swarm, old terrains, buildings and units)
 Matthew Marshall <mmarshall at myrealbox dot com> (new units)
+Luc-Olivier de Charrière <NuageBleu at gmail dot com> (swarm, old terrains, buildings and units)
+Gabriel Walt <diz at ysagoon dot com> (mouse cursors)
+Joey Marshall <JoeyMarshall at ml1 dot net> (additional drawing, coloring)
 Stéphane Magnenat <stephane at magnenat dot net> (GUI, new water)
 
 
@@ -81,6 +81,7 @@ Stefan Kangas <stefan dot kangas at ungvanster dot se> (Swedish)
 Tobe Deprez <tobedeprez at scarlet dot be> (Dutch)
 Vakvarju <vakvarju at spektrum-3d dot hu> (Hungarian)
 White Raven <glob at wra dot visitors dot sk> (Slovensky)
+Anastasios Pingios <anastasios dot pingios at gmail dot com> (Greek)
 
 
 *
@@ -95,6 +96,7 @@ Game Packaging
 
 Alexandru Munteanu <io_alex_2002 at yahoo dot fr> (Win32 mingw32)
 Christian <chibar at fibertel dot com dot ar> (Win32 executable images)
+Ethan Tira-Thompson <ejt at andrew dot cmu dot edu> (Mac OS X)
 "Dave Vasilevsky" <djvasi at gmail dot com> (Mac OS X)
 Dejan Lekic <dejan at nu6 dot org> (Win32, Fedora)
 Jean-David Maillefer <jdmaillefer at bluewin dot ch> (Mac OS X)

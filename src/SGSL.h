@@ -83,6 +83,7 @@ struct Token
 		S_ISDEAD,
 		S_ALLY,
 		S_ENEMY,
+		S_ONLY,
 
 		// Constants
 		// Units
@@ -156,6 +157,7 @@ struct ErrorReport
 		ET_MISSING_ARGUMENT,
 		ET_INVALID_ALLIANCE_LEVEL,
 		ET_NOT_VALID_LANG_ID,
+		ET_INVALID_ONLY,
 		ET_UNKNOWN,
 		ET_NB_ET,
 	} type;
@@ -248,7 +250,7 @@ public:
 
 	void sendSpace() { recievedSpace=true; }
 private:
-	bool conditionTester(const Game *game, int pc, bool l);
+	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
 	bool testCondition(GameGUI *gui);
 	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
 	

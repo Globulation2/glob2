@@ -91,6 +91,7 @@ public:
 	Sprite *gamegui;
 	Sprite *brush;
 	Sprite *magiceffect;
+	Sprite *particles;
 	
 	UnitsSkins *unitsSkins;
 	

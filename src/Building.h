@@ -157,7 +157,7 @@ public:
 	/// This is a step for swarms. Swarms heal themselves and create new units
 	void swarmStep(void);
 	/// This function searches for enemies, computes the best target, and fires a bullet
-	void turretStep(void);
+	void turretStep(Uint32 stepCounter);
 	/// This step updates clearing flag gradients. When there are no more ressources remaining, units are to
 	/// be fired. When ressources grow back, units have to be rehired.=
 	void clearingFlagStep();
@@ -321,6 +321,11 @@ public:
 	Uint8 *localRessources[2];
 	int localRessourcesCleanTime[2]; // The time since the localRessources[x] has not been updated.
 	int anyRessourceToClear[2]; // Which localRessources[x] gradient has any ressource. {0: unknow, 1:true, 2:false}
+	
+	// shooting eye-candy data, not net synchronised
+	Uint32 lastShootStep;
+	Sint32 lastShootSpeedX;
+	Sint32 lastShootSpeedY;
 
 protected:
 	FILE *logFile;

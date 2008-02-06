@@ -75,7 +75,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		int dy=20*(i%8);
 		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, COLOR_BUTTONS+i);
 		for (int j=0; j<game->getMapHeader().getNumberOfTeams(); j++)
-			color[i]->addColor(game->getMapHeader().getBaseTeam(j).colorR, game->getMapHeader().getBaseTeam(j).colorG, game->getMapHeader().getBaseTeam(j).colorB);
+			color[i]->addColor(game->getMapHeader().getBaseTeam(j).color);
 		addWidget(color[i]);
 		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
@@ -220,7 +220,7 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 	{
 		color[i]->clearColors();
 		for (int j=0; j<mh.getNumberOfTeams(); j++)
-			color[i]->addColor(mh.getBaseTeam(j).colorR, mh.getBaseTeam(j).colorG, mh.getBaseTeam(j).colorB);
+			color[i]->addColor(mh.getBaseTeam(j).color);
 			
 		if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
 			color[i]->setClickable(false);

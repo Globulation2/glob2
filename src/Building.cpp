@@ -150,6 +150,10 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	}
 	
 	verbose=false;
+	
+	lastShootStep = 0xFFFFFFFF;
+	lastShootSpeedX = 0;
+	lastShootSpeedY = 0;
 }
 
 Building::~Building()
@@ -286,6 +290,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	
 	verbose = false;
 	stream->readLeaveSection();
+	
+	lastShootStep = 0xFFFFFFFF;
+	lastShootSpeedX = 0;
+	lastShootSpeedY = 0;
 }
 
 void Building::save(GAGCore::OutputStream *stream)
@@ -1718,7 +1726,7 @@ void Building::swarmStep(void)
 }
 
 
-void Building::turretStep(void)
+void Building::turretStep(Uint32 stepCounter)
 {
 	// create bullet from stones in stock
 	if (ressources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
@@ -2006,6 +2014,9 @@ void Building::turretStep(void)
 			s->bullets.push_front(b);
 			bullets--;
 			shootingCooldown = SHOOTING_COOLDOWN_MAX;
+			lastShootStep = stepCounter;
+			lastShootSpeedX = speedX;
+			lastShootSpeedY = speedY;
 		}
 	}
 

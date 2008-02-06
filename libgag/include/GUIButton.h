@@ -94,19 +94,8 @@ namespace GAGGUI
 	class ColorButton:public HighlightableWidget
 	{
 	protected:
-		class Color
-		{
-		public:
-			Color() { r=g=b=0; }
-			Color(int r, int g, int b) { this->r=r; this->g=g; this->b=b; }
-		public:
-			Sint32 r;
-			Sint32 g;
-			Sint32 b;
-		};
-	
 		Sint32 selColor;
-		std::vector<Color> v;
+		std::vector<GAGCore::Color> v;
 		bool isClickable;
 	
 	public:
@@ -120,7 +109,7 @@ namespace GAGGUI
 	
 		virtual void paint(void);
 		//! Add a color to the color list
-		virtual void addColor(int r, int g, int b) { v.push_back(Color(r, g, b)); }
+		virtual void addColor(const GAGCore::Color& color) { v.push_back(color); }
 		//! Clear the color list
 		virtual void clearColors(void) { v.clear(); }
 		//! Set the color selection to default

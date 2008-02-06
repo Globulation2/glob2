@@ -38,10 +38,6 @@ BaseTeam::BaseTeam()
 {
 	teamNumber=0;
 	numberOfPlayer=0;
-	colorR=0;
-	colorG=0;
-	colorB=0;
-	colorPAD=0;
 	playersMask=0;
 	type=T_AI;
 
@@ -58,10 +54,11 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	type = (TeamType)stream->readUint32("type");
 	teamNumber = stream->readSint32("teamNumber");
 	numberOfPlayer = stream->readSint32("numberOfPlayer");
-	stream->read(&colorR, 1, "colorR");
-	stream->read(&colorG, 1, "colorG");
-	stream->read(&colorB, 1, "colorB");
-	stream->read(&colorPAD, 1, "colorPAD");
+	stream->read(&color.r, 1, "colorR");
+	stream->read(&color.g, 1, "colorG");
+	stream->read(&color.b, 1, "colorB");
+	stream->read(&color.a, 1, "colorPAD");
+	color.a = Color::ALPHA_OPAQUE;
 	playersMask = stream->readUint32("playersMask");
 	stream->readLeaveSection();
 	if (!race.load(stream, versionMinor))
@@ -82,10 +79,10 @@ void BaseTeam::save(GAGCore::OutputStream *stream)
 	stream->writeUint32((Uint32)type, "type");
 	stream->writeSint32(teamNumber, "teamNumber");
 	stream->writeSint32(numberOfPlayer, "numberOfPlayer");
-	stream->write(&colorR, 1, "colorR");
-	stream->write(&colorG, 1, "colorG");
-	stream->write(&colorB, 1, "colorB");
-	stream->write(&colorPAD, 1, "colorPAD");
+	stream->write(&color.r, 1, "colorR");
+	stream->write(&color.g, 1, "colorG");
+	stream->write(&color.b, 1, "colorB");
+	stream->write(&color.a, 1, "colorPAD");
 	stream->writeUint32(playersMask, "playersMask");
 	stream->writeLeaveSection();
 	race.save(stream);
@@ -98,10 +95,10 @@ Uint8 *BaseTeam::getData()
 {
 	addSint32(data, teamNumber, 0);
 	addSint32(data, numberOfPlayer, 4);
-	addUint8(data, colorR, 8);
-	addUint8(data, colorG, 9);
-	addUint8(data, colorB, 10);
-	addUint8(data, colorPAD, 11);
+	addUint8(data, color.r, 8);
+	addUint8(data, color.g, 9);
+	addUint8(data, color.b, 10);
+	addUint8(data, color.a, 11);
 	addSint32(data, playersMask, 12);
 	// TODO : give race to the network here.
 
@@ -118,10 +115,10 @@ bool BaseTeam::setData(const Uint8 *data, int dataLength)
 
 	teamNumber=getSint32(data, 0);
 	numberOfPlayer=getSint32(data, 4);
-	colorR=getUint8(data, 8);
-	colorG=getUint8(data, 9);
-	colorB=getUint8(data, 10);
-	colorPAD=getUint8(data, 11);
+	color.r=getUint8(data, 8);
+	color.g=getUint8(data, 9);
+	color.b=getUint8(data, 10);
+	color.a=getUint8(data, 11);
 	playersMask=getSint32(data, 12);
 	// TODO : create the race from the network here.
 
@@ -231,7 +228,7 @@ void Team::setBaseTeam(const BaseTeam *initial)
 	race=initial->race;
 	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 
-	setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
+	setCorrectColor(initial->color);
 	setCorrectMasks();
 }
 
@@ -601,23 +598,16 @@ void Team::setCorrectMasks(void)
 
 
 
-void Team::setCorrectColor(Uint8 r, Uint8 g, Uint8 b)
+void Team::setCorrectColor(const GAGCore::Color& color)
 {
-	this->colorR=r;
-	this->colorG=g;
-	this->colorB=b;
+	this->color = color;
 }
-
-
-
 
 void Team::setCorrectColor(float value)
 {
 	float r, g, b;
 	Utilities::HSVtoRGB(&r, &g, &b, value, 0.8f, 0.9f);
-	this->colorR=(Uint8)(255.0f*r);
-	this->colorG=(Uint8)(255.0f*g);
-	this->colorB=(Uint8)(255.0f*b);
+	color = Color((Uint8)(255.0f*r), (Uint8)(255.0f*g), (Uint8)(255.0f*b));
 }
 
 
@@ -1135,7 +1125,7 @@ void Team::syncStep(void)
 		}
 
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
-		(*it)->turretStep();
+		(*it)->turretStep(game->stepCounter);
 
 	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
 		(*it)->clearingFlagStep();
