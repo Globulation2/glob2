@@ -121,6 +121,7 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 YOGScreen::~YOGScreen()
 {
 	ircChat->removeTextMessageListener(this);
+	ircChat->stopIRC();
 }
 
 
@@ -230,7 +231,7 @@ void YOGScreen::hostGame()
 		std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
 		game->createNewGame(name);
 		game->setMapHeader(cms.getMapHeader());
-		MultiplayerGameScreen mgs(game, client);
+		MultiplayerGameScreen mgs(game, client, ircChat);
 		int rc = mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)
@@ -259,7 +260,7 @@ void YOGScreen::joinGame()
 			}
 		}
 		game->joinGame(id);
-		MultiplayerGameScreen mgs(game, client);
+		MultiplayerGameScreen mgs(game, client, ircChat);
 		int rc = mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)

@@ -284,4 +284,37 @@ bool MGHostCancelledGameEvent::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGGameStarted::MGGameStarted()
+{
+}
+
+
+
+Uint8 MGGameStarted::getEventType() const
+{
+	return MGEGameStarted;
+}
+
+
+
+std::string MGGameStarted::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameStarted()";
+	return s.str();
+}
+
+
+
+bool MGGameStarted::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameStarted))
+	{
+		//const MGGameStarted& r = dynamic_cast<const MGGameStarted&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker
