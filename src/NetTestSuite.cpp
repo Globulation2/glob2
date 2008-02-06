@@ -186,7 +186,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetGameJoinAccepted>())
 		return 28;
 
-	shared_ptr<NetGameJoinAccepted> joinAccepted1(new NetGameJoinAccepted);
+	shared_ptr<NetGameJoinAccepted> joinAccepted1(new NetGameJoinAccepted(12));
 	if(!testSerialize(joinAccepted1))
 		return 29;
 		
@@ -206,7 +206,7 @@ int NetTestSuite::testNetMessages()
 	m->setSender("bob");
 	m->setMessage("hello alice");
 	m->setMessageType(YOGNormalMessage);
-	shared_ptr<NetSendYOGMessage> sendYOGMessage1(new NetSendYOGMessage(m));
+	shared_ptr<NetSendYOGMessage> sendYOGMessage1(new NetSendYOGMessage(7, m));
 	if(!testSerialize(sendYOGMessage1))
 		return 33;
 
@@ -314,7 +314,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetCreateGameAccepted>())
 		return 50;
 
-	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted);
+	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35));
 	if(!testSerialize(createGameAccepted1))
 		return 51;
 		

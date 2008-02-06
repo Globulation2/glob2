@@ -24,7 +24,8 @@
 #include "MultiplayerGame.h"
 #include "AI.h"
 #include "MapHeader.h"
-#include "NetTextMessageHandler.h"
+#include "YOGChatChannel.h"
+#include "YOGChatListener.h"
 #include "MultiplayerGameEventListener.h"
 
 
@@ -39,11 +40,11 @@ namespace GAGGUI
 
 ///This screen is the setup screen for a multiplayer game. It functions both for the host
 ///and the joined player. It uses the information it gets from the given MultiplayerGame.
-class MultiplayerGameScreen : public Glob2Screen, public NetTextMessageListener, public MultiplayerGameEventListener
+class MultiplayerGameScreen : public Glob2Screen, public YOGChatListener, public MultiplayerGameEventListener
 {
 public:
 	///The screen must be provided with the text message handler and the multiplayer game
-	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<NetTextMessageHandler> textMessage);
+	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client);
 	virtual ~MultiplayerGameScreen();
 
 	enum
@@ -73,7 +74,7 @@ private:
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 
-	void handleTextMessage(const std::string& message, NetTextMessageType type);
+	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
 
 	void handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event);
 
@@ -96,6 +97,6 @@ private:
 	Text *notReadyText;
 	Text *gameFullText;
 
-	boost::shared_ptr<NetTextMessageHandler> textMessage;
+	boost::shared_ptr<YOGChatChannel> gameChat;
 };
 #endif

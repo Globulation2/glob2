@@ -36,8 +36,8 @@
 
 #include "IRC.h"
 
-MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<NetTextMessageHandler> textMessage)
-	: game(game), textMessage(textMessage)
+MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client)
+	: game(game), gameChat(new YOGChatChannel(game->getChatChannel(), client, this))
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -98,20 +98,17 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	
 	updateJoinedPlayers();
 	
-	textMessage->addTextMessageListener(this);
 	game->addEventListener(this);
 }
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
 {
-	textMessage->removeTextMessageListener(this);
 	game->removeEventListener(this);
 }
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
 	game->update();
-	textMessage->update();
 }
 
 
@@ -145,21 +142,24 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		game->sendMessage(textInput->getText());
-		boost::shared_ptr<IRC> irc = textMessage->getIRC();
-		if(irc)
-		{
-			irc->sendCommand(textInput->getText());
-		}
+//		game->sendMessage(textInput->getText());
+//		boost::shared_ptr<IRC> irc = textMessage->getIRC();
+//		if(irc)
+//		{
+//			irc->sendCommand(textInput->getText());
+//		}
+		boost::shared_ptr<YOGMessage> message(new YOGMessage(textInput->getText(), game->getUsername(), YOGNormalMessage));
+		gameChat->sendMessage(message);
 		textInput->setText("");
+		
 	}
 }
 
 
 
-void MultiplayerGameScreen::handleTextMessage(const std::string& message, NetTextMessageType type)
+void MultiplayerGameScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
 {
-	chatWindow->addText(message);
+	chatWindow->addText(message->formatForReading());
 	chatWindow->addText("\n");
 	chatWindow->scrollToBottom();
 }

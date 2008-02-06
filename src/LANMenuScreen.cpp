@@ -80,8 +80,9 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 				std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(globalContainer->getUsername());
 				game->createNewGame(name);
 				game->setMapHeader(cms.getMapHeader());
-				boost::shared_ptr<NetTextMessageHandler> netMessage(new NetTextMessageHandler(client));
-				MultiplayerGameScreen mgs(game, netMessage);
+
+				///Fix this! While this is technically right, the chat channel should be given by the server
+				MultiplayerGameScreen mgs(game, client);
 				int rc = mgs.execute(globalContainer->gfx, 40);
 				client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 				if(rc == -1)

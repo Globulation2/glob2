@@ -32,7 +32,7 @@ class YOGGame
 {
 public:
 	///Constructs a new YOG game
-	YOGGame(Uint16 gameID, YOGGameServer& server);
+	YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server);
 
 	///Updates the game
 	void update();
@@ -79,12 +79,16 @@ public:
 	
 	///Starts the game
 	void startGame();
+
+	///Returns the chat channel for this game
+	Uint32 getChatChannel() const;
 private:
 	bool requested;
 	bool gameStarted;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	Uint16 gameID;
+	Uint32 chatChannel;
 	shared_ptr<YOGPlayer> host;
 	shared_ptr<YOGMapDistributor> distributor;
 	std::vector<shared_ptr<YOGPlayer> > players;
