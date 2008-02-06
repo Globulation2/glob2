@@ -27,7 +27,7 @@
 #include "YOGChatChannel.h"
 #include "YOGChatListener.h"
 #include "MultiplayerGameEventListener.h"
-
+#include "IRCTextMessageHandler.h"
 
 namespace GAGGUI
 {
@@ -40,11 +40,13 @@ namespace GAGGUI
 
 ///This screen is the setup screen for a multiplayer game. It functions both for the host
 ///and the joined player. It uses the information it gets from the given MultiplayerGame.
+///This doesn't continue dispaying irc, it merely keeps it up to date and turns it on/off
+///when starting and finishing games
 class MultiplayerGameScreen : public Glob2Screen, public YOGChatListener, public MultiplayerGameEventListener
 {
 public:
-	///The screen must be provided with the text message handler and the multiplayer game
-	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client);
+	///The screen must be provided with the client, the irc connection and the multiplayer game
+	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat = boost::shared_ptr<IRCTextMessageHandler>());
 	virtual ~MultiplayerGameScreen();
 
 	enum
@@ -98,5 +100,6 @@ private:
 	Text *gameFullText;
 
 	boost::shared_ptr<YOGChatChannel> gameChat;
+	boost::shared_ptr<IRCTextMessageHandler> ircChat;
 };
 #endif

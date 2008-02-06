@@ -462,14 +462,36 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 
 void MultiplayerGame::addPerson(Uint16 playerID)
 {
+	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
+	//Count number of players for each team
+	std::vector<int> numberOfPlayersPerTeam(32, 0);
+	for(int x=0; x<32; ++x)
+	{
+		BasePlayer& bp = gameHeader.getBasePlayer(x);
+		if(bp.type != BasePlayer::P_NONE)
+			numberOfPlayersPerTeam[bp.teamNumber] += 1;
+	}
+	//Chooes a team number that has the lowest number of players attached
+	int lowest_number = 10000;
+	int team_number = 0;
+	for(int x=0; x<32; ++x)
+	{
+		if(numberOfPlayersPerTeam[x] < lowest_number)
+		{
+			lowest_number = numberOfPlayersPerTeam[x];
+			team_number  = x;
+		}
+	}
+
+	//Add the player into the first spare slot
 	for(int x=0; x<32; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.type == BasePlayer::P_NONE)
 		{
-			bp = BasePlayer(x, client->findPlayerName(playerID).c_str(), x, BasePlayer::P_IP);
+			bp = BasePlayer(x, client->findPlayerName(playerID).c_str(), team_number, BasePlayer::P_IP);
 			bp.playerID = playerID;
-			if(playerID != client->getPlayerID())	
+			if(playerID != client->getPlayerID())
 				readyToStart[x] = false;
 			break;
 		}
@@ -483,16 +505,33 @@ void MultiplayerGame::addPerson(Uint16 playerID)
 
 void MultiplayerGame::removePerson(Uint16 playerID)
 {
+	//Remove the person. Any players that are after this player are moved backwards
+	int playerN=0;
 	for(int x=0; x<32; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.playerID == playerID)
 		{
+			playerN = x;
 			readyToStart[x] = true;
 			bp = BasePlayer();
 			break;
 		}
 	}
+	for(int x=playerN+1; x<32; ++x)
+	{
+		BasePlayer& bp = gameHeader.getBasePlayer(x);
+		if(bp.type != Player::P_NONE)
+		{
+			bp.number -= 1;
+			bp.numberMask = 1u>>bp.number;
+			gameHeader.getBasePlayer(x-1) = bp;
+			bp = BasePlayer();
+			readyToStart[x-1] = readyToStart[x];
+			readyToStart[x] = true;
+		}
+	}
+
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()-1);
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 	sendToListeners(event);	
@@ -509,6 +548,9 @@ void MultiplayerGame::startEngine()
 	// execute game
 	if (rc==Engine::EE_NO_ERROR)
 	{
+		shared_ptr<MGGameStarted> event(new MGGameStarted);
+		sendToListeners(event);
+
 		if (engine.run()==-1)
 		{
 			shared_ptr<MGGameExitEvent> event(new MGGameExitEvent);

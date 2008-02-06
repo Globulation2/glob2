@@ -24,7 +24,6 @@
 
 enum MultiplayerGameEventType
 {
-	MGEGameStarted,
 	MGEPlayerListChanged,
 	MGEReadyToStart,
 	MGENotReadyToStart,
@@ -33,6 +32,7 @@ enum MultiplayerGameEventType
 	MGEGameRefused,
 	MGEKickedByHost,
 	MGEHostCancelledGame,
+	MGEGameStarted,
 	//type_append_marker
 };
 
@@ -204,6 +204,26 @@ public:
 	MGHostCancelledGameEvent();
 
 	///Returns MGEHostCancelledGame
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameStarted
+class MGGameStarted : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameStarted event
+	MGGameStarted();
+
+	///Returns MGEGameStarted
 	Uint8 getEventType() const;
 
 	///Returns a formatted version of the event

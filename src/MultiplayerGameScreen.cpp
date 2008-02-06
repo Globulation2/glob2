@@ -36,8 +36,8 @@
 
 #include "IRC.h"
 
-MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client)
-	: game(game), gameChat(new YOGChatChannel(game->getChatChannel(), client, this))
+MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
+	: game(game), gameChat(new YOGChatChannel(game->getChatChannel(), client, this)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -109,6 +109,8 @@ MultiplayerGameScreen::~MultiplayerGameScreen()
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
 	game->update();
+	if(ircChat)
+		ircChat->update();
 }
 
 
@@ -186,13 +188,22 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 		startButton->visible=false;
 		notReadyText->visible=true;
 	}
+	else if(type == MGEGameStarted)
+	{
+		if(ircChat)
+			ircChat->stopIRC();
+	}
 	else if(type == MGEGameExit)
 	{
+		if(ircChat)
+			ircChat->startIRC(game->getUsername());
 		endExecute(-1);
 		game->leaveGame();
 	}
 	else if(type == MGEGameEndedNormally)
 	{
+		if(ircChat)
+			ircChat->startIRC(game->getUsername());
 		endExecute(StartedGame);
 		game->leaveGame();
 	}
