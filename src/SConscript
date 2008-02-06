@@ -21,6 +21,7 @@ NetListener.cpp            NetMessage.cpp            NetTestSuite.cpp           
 Order.cpp                  OverlayAreas.cpp          PerlinNoise.cpp                   Player.cpp
 Race.cpp                   Ressource.cpp             RessourcesTypes.cpp               ScriptEditorScreen.cpp
 Sector.cpp                 Settings.cpp              SettingsScreen.cpp                SGSL.cpp
+SimplexNoise.cpp
 SoundMixer.cpp             Team.cpp                  TeamStat.cpp                      UnitConsts.cpp
 Unit.cpp                   UnitEditorScreen.cpp      UnitSkin.cpp                      UnitsSkins.cpp
 UnitType.cpp               Utilities.cpp             VoiceRecorder.cpp                 YOGChatChannel.cpp

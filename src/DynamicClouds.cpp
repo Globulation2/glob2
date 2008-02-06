@@ -24,6 +24,9 @@
 #include "DynamicClouds.h"
 #include "GraphicContext.h"
 #include "GlobalContainer.h"
+#include "SimplexNoise.h"
+
+#define INT_ROUND_RSHIFT(x,places)  ( ((x)+(1<<((places)-1))) >> (places) )
 
 void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int w, const int h, const int time)
 {
@@ -43,20 +46,27 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 		vpX += (viewPortX-vpX%64+96)%64-32;
 		vpY += (viewPortY-vpY%64+96)%64-32;
 		
-		//int wGrid=w/granularity+1;
-		//int hGrid=h/granularity+1;
-		//std::valarray<unsigned char> alphaMap(wGrid*hGrid);
 		wGrid=w/granularity+1;
 		hGrid=h/granularity+1;
 		alphaMap.resize(wGrid*hGrid);
 		
+		int iCloudSize = (int)((1<<16) /cloudSize);
+		int iCloudStability = (int)((1<<16) /cloudStability);
+		int iOffsetX = (int)(((vpX<<5) + offsetX)*iCloudSize),
+		    iOffsetY = (int)(((vpY<<5) + offsetY)*iCloudSize);
+
+ 		int noiseMultiplier = (int)((1<<8) *rootOfMaxAlpha*1.8f);
 		for (int y=0; y<hGrid; y++)
-			for (int x=0; x<wGrid; x++)
-				alphaMap[wGrid*y+x]=(unsigned char)std::max((unsigned int)0,std::min((unsigned int)maxAlpha,
-						(unsigned int)pow((rootOfMaxAlpha*1.8f*(-.08f+pn.Noise(
-						(float)(x*granularity+(vpX<<5)+offsetX)/cloudSize,
-						(float)(y*granularity+(vpY<<5)+offsetY)/cloudSize,
-						(float)time/cloudStability))),2)));
+			for (int x=0; x<wGrid; x++) {
+				int nx = INT_ROUND_RSHIFT(x*granularity*iCloudSize + iOffsetX, 8);
+				int ny = INT_ROUND_RSHIFT(y*granularity*iCloudSize + iOffsetY, 8);
+				int nz = INT_ROUND_RSHIFT(time * iCloudStability, 8);
+				int noise = (SimplexNoise::getNoise3D(nx,ny,nz)) - 128;
+				int a = INT_ROUND_RSHIFT(noiseMultiplier * (-21+noise), 8);
+				int alpha = INT_ROUND_RSHIFT(a*a, 16);
+				if (alpha<0) alpha=0; if (alpha>maxAlpha) alpha=maxAlpha;
+				alphaMap[wGrid*y+x] = alpha;
+			}
 	}
 }
 
