@@ -21,8 +21,8 @@
 #include "YOGMapDistributor.h"
 #include "YOGGameServer.h"
 
-YOGGame::YOGGame(Uint16 gameID, YOGGameServer& server)
-	: gameID(gameID), server(server)
+YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
+	: gameID(gameID), chatChannel(chatChannel), server(server)
 {
 	requested=false;
 	gameStarted=false;
@@ -84,6 +84,8 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	players.push_back(player);
 	shared_ptr<NetPlayerJoinsGame> join(new NetPlayerJoinsGame(player->getPlayerID()));
 	host->sendMessage(join);
+	//Add the player to the chat channel for communication
+	server.getChatChannelManager().getChannel(chatChannel)->addPlayer(player);
 }
 
 
@@ -114,6 +116,9 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 			}
 		}
 	}
+
+	//Remove the player from the chat channel for communication
+	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);
 }
 
 
@@ -230,6 +235,13 @@ void YOGGame::startGame()
 	boost::shared_ptr<NetStartGame> message(new NetStartGame);
 	routeMessage(message, host);
 	server.getGameInfo(gameID).setGameState(YOGGameInfo::GameRunning);
+}
+
+
+
+Uint32 YOGGame::getChatChannel() const
+{
+	return chatChannel;
 }
 
 

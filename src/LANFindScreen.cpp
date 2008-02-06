@@ -113,8 +113,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			game->joinGame((*client->getGameList().begin()).getGameID());
 
-			boost::shared_ptr<NetTextMessageHandler> netMessage(new NetTextMessageHandler(client));
-			MultiplayerGameScreen mgs(game, netMessage);
+			MultiplayerGameScreen mgs(game, client);
 			int rc = mgs.execute(globalContainer->gfx, 40);
 			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 			if(rc == -1)

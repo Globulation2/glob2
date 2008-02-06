@@ -607,12 +607,15 @@ private:
 
 
 ///NetGameJoinAccepted means that a NetAttemptJoinGame was accepted and the player is now
-///joined in the game 
+///joined in the game. It comes with some information about the joined game
 class NetGameJoinAccepted : public NetMessage
 {
 public:
 	///Creates a NetGameJoinAccepted message
 	NetGameJoinAccepted();
+
+	///Creates a NetGameJoinAccepted message with the chat channel of the joined game
+	NetGameJoinAccepted(Uint32 chatChannel);
 
 	///Returns MNetGameJoinAccepted
 	Uint8 getMessageType() const;
@@ -629,6 +632,11 @@ public:
 
 	///Compares with another NetGameJoinAccepted
 	bool operator==(const NetMessage& rhs) const;
+
+	///Returns the chat channel of the joined game
+	Uint32 getChatChannel() const;
+private:
+	Uint32 chatChannel;
 };
 
 
@@ -674,7 +682,7 @@ class NetSendYOGMessage : public NetMessage
 {
 public:
 	///Creates a NetSendYOGMessage message
-	NetSendYOGMessage(boost::shared_ptr<YOGMessage> message);
+	NetSendYOGMessage(Uint32 channel, boost::shared_ptr<YOGMessage> message);
 
 	///Creates a NetSendYOGMessage message
 	NetSendYOGMessage();
@@ -694,10 +702,14 @@ public:
 
 	///Compares with another NetSendYOGMessage
 	bool operator==(const NetMessage& rhs) const;
+
+	///Returns the channel
+	Uint32 getChannel() const;
 	
 	///Returns the YOG message
 	boost::shared_ptr<YOGMessage> getMessage() const;
 private:
+	Uint32 channel;
 	boost::shared_ptr<YOGMessage> message;
 };
 
@@ -739,12 +751,15 @@ private:
 
 
 
-///NetCreateGameAccepted
+///Tells the player that their game creation was accepted, along with a bit of information about the newly created game
 class NetCreateGameAccepted : public NetMessage
 {
 public:
 	///Creates a NetCreateGameAccepted message
 	NetCreateGameAccepted();
+
+	///Creates a NetCreateGameAccepted message with the chat channel for the new game
+	NetCreateGameAccepted(Uint32 chatChannel);
 
 	///Returns MNetCreateGameAccepted
 	Uint8 getMessageType() const;
@@ -760,7 +775,13 @@ public:
 	std::string format() const;
 
 	///Compares with another NetCreateGameAccepted
-	bool operator==(const NetMessage& rhs) const;
+	bool operator==(const NetMessage& rhs) const;	
+
+	///Retrieves the chat channel for the new game
+	Uint32 getChatChannel() const;
+
+private:
+	Uint32 chatChannel;
 };
 
 

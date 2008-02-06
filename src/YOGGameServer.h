@@ -27,6 +27,7 @@
 #include "YOGGame.h"
 #include "YOGPasswordRegistry.h"
 #include "NetBroadcaster.h"
+#include "YOGChatChannelManager.h"
 
 #include <list>
 #include <map>
@@ -76,14 +77,14 @@ public:
 	///Returns the list of players the server currently has
 	const std::list<YOGPlayerInfo>& getPlayerList() const;
 
-	///This function propagates a YOGMessage to all the users on its destination
-	void propogateMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGPlayer> sender);
-
 	///Tells the server that a player has logged in with the given information,
 	void playerHasLoggedIn(const std::string& username, Uint16 id);
 
 	///Tells the server that the player has logged out and disconnected
 	void playerHasLoggedOut(Uint16 playerID);
+
+	///Returns the chat channel manager
+	YOGChatChannelManager& getChatChannelManager();
 
 	///Asks the server whether a new game can be created with the given information.
 	///Return YOGCreateRefusalUnknown if it can, or the refusal reason elsewise
@@ -129,6 +130,7 @@ private:
 	
 	boost::shared_ptr<NetBroadcaster> broadcaster;
 	bool isBroadcasting;
+	YOGChatChannelManager chatChannelManager;
 };
 
 #endif

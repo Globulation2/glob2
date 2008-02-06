@@ -76,7 +76,6 @@ void YOGGameInfo::setGameState(const YOGGameInfo::GameState& state)
 }
 
 
-
 void YOGGameInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGGameInfo");

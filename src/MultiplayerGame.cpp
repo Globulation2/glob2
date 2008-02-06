@@ -35,6 +35,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 		readyToStart[i] = true;
 	wasReadyToStart=false;
 	sentReadyToStart=false;
+	chatChannel=0;
 }
 
 
@@ -268,7 +269,7 @@ void MultiplayerGame::changeTeam(int playerNum, int teamNum)
 	updateGameHeader();
 }
 
-
+/*
 
 void MultiplayerGame::sendMessage(const std::string& message)
 {
@@ -279,7 +280,7 @@ void MultiplayerGame::sendMessage(const std::string& message)
 	client->sendMessage(tmessage);
 }
 
-
+*/
 
 YOGKickReason MultiplayerGame::getKickReason() const
 {
@@ -315,7 +316,8 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	//This recieves responces to creating a game
 	if(type==MNetCreateGameAccepted)
 	{
-		//shared_ptr<NetCreateGameAccepted> info = static_pointer_cast<NetCreateGameAccepted>(message);
+		shared_ptr<NetCreateGameAccepted> info = static_pointer_cast<NetCreateGameAccepted>(message);
+		chatChannel = info->getChatChannel();
 		gjcState = HostingGame;
 		updateGameHeader();
 	}
@@ -331,7 +333,8 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	//This recieves responces to joining a game
 	if(type==MNetGameJoinAccepted)
 	{
-		//shared_ptr<NetGameJoinAccepted> info = static_pointer_cast<NetGameJoinAccepted>(message);
+		shared_ptr<NetGameJoinAccepted> info = static_pointer_cast<NetGameJoinAccepted>(message);
+		chatChannel = info->getChatChannel();
 		gjcState = JoinedGame;
 	}
 	if(type==MNetGameJoinRefused)
@@ -553,3 +556,18 @@ int MultiplayerGame::getLocalPlayer()
 		}
 	}
 }
+
+
+
+std::string MultiplayerGame::getUsername() const
+{
+	return client->getUsername();
+}
+
+
+
+Uint32 MultiplayerGame::getChatChannel() const
+{
+	return chatChannel;
+}
+

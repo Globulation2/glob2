@@ -184,7 +184,14 @@ void YOGClient::update()
 		if(type==MNetSendYOGMessage)
 		{
 			shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
-			messages.push(yogmessage->getMessage());
+			if(chatChannels.find(yogmessage->getChannel()) != chatChannels.end())
+			{
+					chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+			}
+			else
+			{
+				std::cerr<<"Recieved YOGMessage on a channel without a local YOGChatChannel"<<std::endl;
+			}
 		}
 
 		if(type==MNetCreateGameAccepted)
@@ -300,8 +307,9 @@ void YOGClient::attemptLogin(const std::string& nusername, const std::string& pa
 }
 
 
-void YOGClient::attemptRegistration(const std::string& username, const std::string& password)
+void YOGClient::attemptRegistration(const std::string& nusername, const std::string& password)
 {
+	username = nusername;
 	shared_ptr<NetAttemptRegistration> message(new NetAttemptRegistration(username, password));
 	nc.sendMessage(message);
 	connectionState = WaitingForRegistrationReply;
@@ -366,28 +374,6 @@ void YOGClient::disconnect()
 
 
 
-void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> mmessage)
-{
-	messages.push(mmessage);
-
-	shared_ptr<NetSendYOGMessage> message(new NetSendYOGMessage(mmessage));
-	nc.sendMessage(message);
-}
-
-
-boost::shared_ptr<YOGMessage> YOGClient::getMessage()
-{
-	if(messages.size())
-	{
-		boost::shared_ptr<YOGMessage> m = messages.front();
-		messages.pop();
-		return m;
-	}
-	return boost::shared_ptr<YOGMessage>();
-}
-
-
-
 std::string YOGClient::getUsername() const
 {
 	return username;
@@ -420,6 +406,20 @@ boost::shared_ptr<MultiplayerGame> YOGClient::getMultiplayerGame()
 void YOGClient::sendNetMessage(boost::shared_ptr<NetMessage> message)
 {
     nc.sendMessage(message);
+}
+
+
+
+void YOGClient::addYOGChatChannel(YOGChatChannel* channel)
+{
+	chatChannels[channel->getChannelID()] = channel;
+}
+
+
+
+void YOGClient::removeYOGChatChannel(YOGChatChannel* channel)
+{
+	chatChannels.erase(channel->getChannelID());
 }
 
 

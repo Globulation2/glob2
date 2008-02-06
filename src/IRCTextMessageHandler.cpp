@@ -19,38 +19,38 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "NetTextMessageHandler.h"
+#include "IRCTextMessageHandler.h"
 
 #include <Toolkit.h>
 #include <StringTable.h>
+#include "YOGConsts.h"
 
 using namespace GAGCore;
 
-NetTextMessageHandler::NetTextMessageHandler(shared_ptr<YOGClient> client)
-	: client(client)
+IRCTextMessageHandler::IRCTextMessageHandler()
 {
 
 }
 
 
-NetTextMessageHandler::~NetTextMessageHandler()
+IRCTextMessageHandler::~IRCTextMessageHandler()
 {
 	if(irc)
 		irc->disconnect();
 }
 
 
-void NetTextMessageHandler::startIRC()
+void IRCTextMessageHandler::startIRC(const std::string& username)
 {
 	irc.reset(new IRC);
-	irc->connect(IRC_SERVER, 6667, client->getUsername());
+	irc->connect(IRC_SERVER, 6667, username);
 	irc->joinChannel(IRC_CHAN);
 	irc->setChatChannel(IRC_CHAN);
 }
 
 
 
-void NetTextMessageHandler::stopIRC()
+void IRCTextMessageHandler::stopIRC()
 {
 	if(irc)
 		irc->disconnect();
@@ -58,7 +58,7 @@ void NetTextMessageHandler::stopIRC()
 
 
 
-void NetTextMessageHandler::update()
+void IRCTextMessageHandler::update()
 {
 	if(irc)
 	{
@@ -71,7 +71,7 @@ void NetTextMessageHandler::update()
 			message+=irc->getChatMessageSource();
 			message+=">";
 			message+=irc->getChatMessage();
-			sendToAllListeners(message, IRCTextMessage);
+			sendToAllListeners(message);
 			irc->freeChatMessage();
 		}
 		
@@ -120,90 +120,48 @@ void NetTextMessageHandler::update()
 				message += " : ";
 				message += irc->getInfoMessageText();
 			}
-			sendToAllListeners(message, IRCTextMessage);
+			sendToAllListeners(message);
 			irc->freeInfoMessage();
 		}
 	
 	}
-
-	boost::shared_ptr<YOGMessage> message = client->getMessage();
-	while (message)
-	{
-		std::string smessage;
-		switch(message->getMessageType())
-		{
-			case YOGNormalMessage:
-				smessage+="<";
-				smessage+=message->getSender();
-				smessage+="> ";
-				smessage+=message->getMessage();
-			break;
-			case YOGPrivateMessage:
-				smessage+="<";
-				smessage+=Toolkit::getStringTable()->getString("[from:]");
-				smessage+=message->getSender();
-				smessage+="> ";
-				smessage+=message->getMessage();
-			break;
-			case YOGAdministratorMessage:
-				smessage+="[";
-				smessage+=message->getSender();
-				smessage+="] ";
-				smessage+=message->getMessage();
-			break;
-			case YOGGameMessage:
-				smessage+="<";
-				smessage+=message->getSender();
-				smessage+="> ";
-				smessage+=message->getMessage();
-			break;
-			default:
-				assert(false);
-			break;
-		}
-		if(message->getMessageType() == YOGGameMessage)
-			sendToAllListeners(smessage, PreGameYOGTextMessage);
-		else
-			sendToAllListeners(smessage, YOGTextMessage);
-		message = client->getMessage();
-	}
-
 }
 
 
 
-void NetTextMessageHandler::addTextMessageListener(NetTextMessageListener* listener)
+void IRCTextMessageHandler::addTextMessageListener(IRCTextMessageListener* listener)
 {
 	listeners.push_back(listener);
 }
 
 
 
-void NetTextMessageHandler::removeTextMessageListener(NetTextMessageListener* listener)
+void IRCTextMessageHandler::removeTextMessageListener(IRCTextMessageListener* listener)
 {
 	listeners.erase(std::find(listeners.begin(), listeners.end(), listener));
 }
 
 
 
-boost::shared_ptr<IRC> NetTextMessageHandler::getIRC()
+boost::shared_ptr<IRC> IRCTextMessageHandler::getIRC()
 {
 	return irc;
 }
 
 
 
-void NetTextMessageHandler::sendToAllListeners(const std::string& message, NetTextMessageType type)
+void IRCTextMessageHandler::addInternalMessage(const std::string& message)
+{
+	sendToAllListeners(message);
+}
+
+
+
+void IRCTextMessageHandler::sendToAllListeners(const std::string& message)
 {
 	for(unsigned i=0; i<listeners.size(); ++i)
 	{
-		listeners[i]->handleTextMessage(message, type);
+		listeners[i]->handleIRCTextMessage(message);
 	}
 }
 
-
-
-void NetTextMessageHandler::addInternalMessage(const std::string& message)
-{
-	sendToAllListeners(message, InternalTextMessage);
-}
