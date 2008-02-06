@@ -3306,6 +3306,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	//printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	assert(building->type);
+	bool wasDirty = building->dirtyLocalGradient[canSwim];
 	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
@@ -3379,9 +3380,14 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		// The boundary conditions - do they match?
 		if (gradient[i]==0 || gradient[i]==255 || tgtGradient[i]==0 || tgtGradient[i]==255) {
 			if (gradient[i] != tgtGradient[i]) {
-				change = true; break;
+				if (((gradient[i]+1)&0xFE)==0 ||  // Is either gradient or tgtGradient 0 or 255?
+				    ((tgtGradient[i]+1)&0xFE)==0)
+				{
+					change = true; break;
+				}
 			}
 		}
+		if (!change) return; // No need to update; boundary conditions are unchanged.
 	}
 	if (!change) return; // No need to update; boundary conditions are unchanged.
 */
@@ -3428,6 +3434,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		localBuildingGradientUpdateLocked++;
 		//fprintf(logFile, "...not updatedLocalGradient! building bgid=%d is locked!\n", building->gid);
 		//printf("...not updatedLocalGradient! building bgid=%d is locked!\n", building->gid);
+		memcpy(tgtGradient, gradient, 1024); // Don't leave gradient as-is (it might be dirty)
 		return;
 		doubleBreak:;
 	}
