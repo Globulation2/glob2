@@ -82,6 +82,9 @@ public:
 
 	///Returns the chat channel for this game
 	Uint32 getChatChannel() const;
+
+	///Returns whether the game is already running or not
+	bool hasGameStarted() const;
 private:
 	bool requested;
 	bool gameStarted;

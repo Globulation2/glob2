@@ -234,7 +234,8 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 
 YOGGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
 {
-	//not implemented
+	if(games[gameID]->hasGameStarted())
+		return YOGGameHasAlreadyStarted;
 	return YOGJoinRefusalUnknown;
 }
 

@@ -84,6 +84,8 @@ enum YOGGameJoinRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGJoinRefusalUnknown,
+	///This occurs when the game has started already
+	YOGGameHasAlreadyStarted,
 };
 
 ///This represents the reason why the player could not join a game.

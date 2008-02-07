@@ -36,6 +36,8 @@
 #include "ChooseMapScreen.h"
 #include "MultiplayerGameScreen.h"
 
+#include "YOGMessageBox.h"
+
 YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
 	: List(x, y, w, h, hAlign, vAlign, font)
 {
@@ -230,7 +232,9 @@ void YOGScreen::hostGame()
 		client->setMultiplayerGame(game);
 		std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
 		game->createNewGame(name);
+
 		game->setMapHeader(cms.getMapHeader());
+
 		MultiplayerGameScreen mgs(game, client, ircChat);
 		int rc = mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
@@ -269,6 +273,9 @@ void YOGScreen::joinGame()
 			ircChat->addInternalMessage("You where kicked from the game");
 		else if(rc == MultiplayerGameScreen::GameCancelled)
 			ircChat->addInternalMessage("The host cancelled the game");
+		else if(rc == MultiplayerGameScreen::GameRefused)
+			if(game->getGameJoinState() == YOGGameHasAlreadyStarted)
+				ircChat->addInternalMessage("The game has already started");
 	}
 }
 
