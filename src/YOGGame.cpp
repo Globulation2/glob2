@@ -245,3 +245,10 @@ Uint32 YOGGame::getChatChannel() const
 }
 
 
+
+bool YOGGame::hasGameStarted() const
+{
+	return gameStarted;
+}
+
+

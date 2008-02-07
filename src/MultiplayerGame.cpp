@@ -342,6 +342,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetGameJoinRefused> info = static_pointer_cast<NetGameJoinRefused>(message);
 		gjcState = NothingYet;
 		joinState = info->getRefusalReason();
+		
+		shared_ptr<MGGameRefusedEvent> event(new MGGameRefusedEvent);
+		sendToListeners(event);
 	}
 	if(type==MNetSendMapHeader)
 	{
