@@ -19,10 +19,10 @@
 #ifndef __NetEngine_h
 #define __NetEngine_h
 
-#include <map>
 #include "Order.h"
 #include <boost/shared_ptr.hpp>
 #include <vector>
+#include <queue>
 
 ///The purpose of this class is to sort Orders, and hand them out in
 ///the correct time slot. It serves partially to hide latency, Orders
@@ -69,16 +69,11 @@ public:
 	bool matchCheckSums();
 	
 private:
-	///This function produces the 16 bit hash for the stoarge of orders
-	Uint16 hash(int playerNumber, int step);
 
-	///This stores orders in an interesting fashion, hashing the playerNumber
-	///together with the targetStep
-	std::map<Uint16, boost::shared_ptr<Order> > orders;
+	///This stores the queues with the orders from each player
+	std::vector<std::queue<boost::shared_ptr<Order> > > orders;
 	int step;
 	int numberOfPlayers;
-	///Records the current step number of the recieved orders for each player
-	std::vector<int> stepNumber;
 };
 
 

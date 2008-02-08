@@ -24,7 +24,10 @@ using namespace GAGCore;
 MultiplayerGamePlayerManager::MultiplayerGamePlayerManager(boost::shared_ptr<YOGClient> client, GameHeader& gameHeader)
 	: client(client), gameHeader(gameHeader)
 {
-
+	for(int x=0; x<32; ++x)
+	{
+		readyToStart[x] = true;
+	}
 }
 
 void MultiplayerGamePlayerManager::addPerson(Uint16 playerID)
@@ -44,6 +47,7 @@ void MultiplayerGamePlayerManager::addPerson(Uint16 playerID)
 			break;
 		}
 	}
+	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() + 1);
 
 	sendPlayerInfoUpdate();
 }
@@ -65,6 +69,7 @@ void MultiplayerGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 			break;
 		}
 	}
+	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() + 1);
 	
 	sendPlayerInfoUpdate();
 }
@@ -82,6 +87,7 @@ void MultiplayerGamePlayerManager::removePerson(Uint16 playerID)
 			break;
 		}
 	}
+	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
 }
 
 
