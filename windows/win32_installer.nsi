@@ -2,29 +2,22 @@
 ;Settings
 ;------------------------------------
   Name "Globulation 2"
-  OutFile "glob2win32_alpha24.exe"
+  OutFile "globulation2_win32.exe"
   InstallDir $PROGRAMFILES\Globulation_2
-  ;------------------------------------
-  ;Setup registery key
-  ;------------------------------------
-    InstallDirRegKey HKCU "Software\Globulation_2" ""
-  ;------------------------------------
-  ;Variables
-  ;------------------------------------
-    Var MUI_TEMP
-    Var STARTMENU_FOLDER
-
+  InstallDirRegKey HKCU "Software\Globulation_2" ""
+  Var StartMenuFolder
+  Var STARTMENU_FOLDER
+  RequestExecutionLevel admin  ;Vista Setting
 
 ;------------------------------------
 ;Style
 ;------------------------------------
-  !include "MUI.nsh"
+  !include "MUI2.nsh"
   !define MUI_WELCOMEFINISHPAGE_BITMAP "side.bmp"
   !define MUI_UNWELCOMEFINISHPAGE_BITMAP "side.bmp"
   !define MUI_HEADERIMAGE
   !define MUI_HEADERIMAGE_BITMAP "header.bmp"
   !define MUI_ABORTWARNING
-
 
 ;------------------------------------
 ;Store the users Language Selection
@@ -33,60 +26,54 @@
   !define MUI_LANGDLL_REGISTRY_KEY "Software\Globulation_2" 
   !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
-
 ;------------------------------------
 ;Pages
 ;------------------------------------
-  !insertmacro MUI_PAGE_WELCOME
-  !insertmacro MUI_PAGE_LICENSE "..\COPYING"
-  !insertmacro MUI_PAGE_DIRECTORY
   ;------------------------------------
-  ;Store the users start menu name choice
+  ;Install Pages
   ;------------------------------------
+    !insertmacro MUI_PAGE_WELCOME
+    !insertmacro MUI_PAGE_LICENSE "..\COPYING"
+    !insertmacro MUI_PAGE_DIRECTORY
     !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
     !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Globulation_2" 
     !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-  !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
-  !insertmacro MUI_PAGE_INSTFILES
-  ;------------------------------------
-  ;Add checkbox to run game on exit
-  ;------------------------------------  
+    !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
+    !insertmacro MUI_PAGE_INSTFILES
     !define MUI_FINISHPAGE_RUN $INSTDIR\glob2.exe
-  !insertmacro MUI_PAGE_FINISH
-  !insertmacro MUI_UNPAGE_CONFIRM
-  !insertmacro MUI_UNPAGE_INSTFILES
-  !insertmacro MUI_UNPAGE_FINISH
-
+    !insertmacro MUI_PAGE_FINISH
+  ;------------------------------------
+  ;Uninstall Pages
+  ;------------------------------------
+    !insertmacro MUI_UNPAGE_CONFIRM
+    !insertmacro MUI_UNPAGE_INSTFILES
+    !insertmacro MUI_UNPAGE_FINISH
 
 ;------------------------------------
 ;Language Selection Dialog Choices
 ;------------------------------------
   !insertmacro MUI_LANGUAGE "English"
-
-
+  !insertmacro MUI_LANGUAGE "French"
+  !insertmacro MUI_LANGUAGE "German"
+  !insertmacro MUI_LANGUAGE "Spanish"
+  !insertmacro MUI_LANGUAGE "SpanishInternational"
+  !insertmacro MUI_LANGUAGE "Italian"
+  !insertmacro MUI_LANGUAGE "Dutch"
+  !insertmacro MUI_LANGUAGE "Danish"
+  !insertmacro MUI_LANGUAGE "Swedish"
+  !insertmacro MUI_LANGUAGE "Russian"
+  !insertmacro MUI_LANGUAGE "Portuguese"
+  !insertmacro MUI_LANGUAGE "PortugueseBR"
 ;------------------------------------
 ;Commands for the installer
 ;------------------------------------
   Section ""
   SectionIn RO
-  ;------------------------------------
-  ;Install Globulation 2 runtime
-  ;------------------------------------
-    SetOutPath $INSTDIR\data
-      File /r ..\data\*
-    SetOutPath $INSTDIR\campaigns
-      File /nonfatal ..\campaigns\*.txt
-      File /nonfatal ..\campaigns\*.map
-    SetOutPath $INSTDIR\maps
-      File /nonfatal ..\maps\*.map
-    SetOutPath $INSTDIR\scripts
-      File /nonfatal ..\scripts\*.sgsl
-    SetOutPath $INSTDIR
-      File ..\src\glob2.exe
-      File ..\*.dll
-      File glob2.ico
-      File ..\AUTHORS
-      File ..\COPYING
+  !include "install_list.nsh" ;List of files to install (generated from gen_inst_uninst_list.py)
+  File ..\AUTHORS
+  File ..\COPYING
+  File ..\src\glob2.exe
+  File glob2.ico
   ;------------------------------------
   ;Install shortcuts
   ;------------------------------------
@@ -105,90 +92,58 @@
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "DisplayIcon" "$INSTDIR\glob2.ico"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "NoModify" "1"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "NoRepair" "1"
-  ;------------------------------------
-  ;Create uninstaller file
-  ;------------------------------------
-    WriteUninstaller "glob2win32-uninst.exe"
+
+  WriteUninstaller "glob2win32-uninst.exe"
   SectionEnd
-
-
-;------------------------------------
-;Installer Functions
-;------------------------------------
-  Function .onInit
-  ;------------------------------------
-  ;Show already running installer
-  ;------------------------------------  
-    System::Call "kernel32::CreateMutexA(i 0, i 0, t '$(^Name)') i .r0 ?e"
-    Pop $0
-    StrCmp $0 0 launch
-    StrLen $0 "$(^Name)"
-    IntOp $0 $0 + 1
-    loop:
-    FindWindow $1 '#32770' '' 0 $1
-    IntCmp $1 0 +4
-    System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
-    StrCmp $2 "$(^Name)" 0 loop
-    System::Call "user32::SetForegroundWindow(i r1) i."
-    Abort
-    launch:
-  !insertmacro MUI_LANGDLL_DISPLAY
-  FunctionEnd
-
 
 ;------------------------------------
 ;Commands for the uninstaller
 ;------------------------------------
   Section "Uninstall"
-  ;------------------------------------
-  ;Delete Globulation 2 files and directories
-  ;------------------------------------
-    RMDir /r "$INSTDIR"
+  !include "uninstall_list.nsh" ;List of files to uninstall (generated from gen_inst_uninst_list.py)
+  Delete $INSTDIR\AUTHORS
+  Delete $INSTDIR\COPYING
+  Delete $INSTDIR\glob2.exe
+  Delete $INSTDIR\glob2.ico
+  Delete $INSTDIR\glob2win32-uninst.exe
+  Delete $INSTDIR\keyboard-gui.txt
+  Delete $INSTDIR\keyboard-mapedit.txt
+  Delete $INSTDIR\preferences.txt
+  Delete $INSTDIR\stderr.txt
+  Delete $INSTDIR\stdout.txt
+  Delete $INSTDIR\games\*.game
+  RMDir $INSTDIR\games
+  RMDir $INSTDIR\logs
+  RMDir $INSTDIR\videoshots
+  RMDir $INSTDIR
+  
   ;------------------------------------
   ;Delete shortcuts
   ;------------------------------------
-    !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
-    Delete "$SMPROGRAMS\$MUI_TEMP\*.*"
+    !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
+    Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
+    Delete "$SMPROGRAMS\$StartMenuFolder\Globulation 2.lnk"
+	RMDir "$SMPROGRAMS\$StartMenuFolder"
     Delete "$DESKTOP\Globulation 2.lnk"
-    ;------------------------------------
-    ;Delete empty start menu directories
-    ;------------------------------------
-      StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
-      startMenuDeleteLoop:
-      ClearErrors
-      RMDir $MUI_TEMP
-      GetFullPathName $MUI_TEMP "$MUI_TEMP\.."
-      IfErrors startMenuDeleteLoopDone
-      StrCmp $MUI_TEMP $SMPROGRAMS startMenuDeleteLoopDone startMenuDeleteLoop
-      startMenuDeleteLoopDone:
   ;------------------------------------
   ;Delete registery keys
   ;------------------------------------
     DeleteRegKey /ifempty HKCU "Software\Globulation_2"
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2"
+
   SectionEnd
 
-
+;------------------------------------
+;Installer Functions
+;------------------------------------
+  Function .onInit
+  !insertmacro MUI_LANGDLL_DISPLAY
+  FunctionEnd
+  
 ;------------------------------------
 ;Uninstaller Functions
 ;------------------------------------
   Function un.onInit
-  ;------------------------------------
-  ;Show already running uninstaller
-  ;------------------------------------  
-    System::Call "kernel32::CreateMutexA(i 0, i 0, t '$(^Name)') i .r0 ?e"
-    Pop $0
-    StrCmp $0 0 launch
-    StrLen $0 "$(^Name)"
-    IntOp $0 $0 + 1
-    loop:
-    FindWindow $1 '#32770' '' 0 $1
-    IntCmp $1 0 +4
-    System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
-    StrCmp $2 "$(^Name)" 0 loop
-    System::Call "user32::SetForegroundWindow(i r1) i."
-    Abort
-    launch:
   ;------------------------------------
   ;Make sure Globulation 2 isn't running
   ;------------------------------------  
