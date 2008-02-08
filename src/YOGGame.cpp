@@ -152,6 +152,13 @@ void YOGGame::setGameHeader(const GameHeader& nGameHeader)
 
 
 
+GameHeader& YOGGame::getGameHeader()
+{
+	return gameHeader;
+}
+
+
+
 void YOGGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender)
 {
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)

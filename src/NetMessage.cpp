@@ -127,6 +127,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetNotReadyToLaunch:
 		message.reset(new NetNotReadyToLaunch);
 		break;
+		case MNetSendGamePlayerInfo:
+		message.reset(new NetSendGamePlayerInfo);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -1695,6 +1698,92 @@ bool NetSendGameHeader::operator==(const NetMessage& rhs) const
 const GameHeader& NetSendGameHeader::getGameHeader() const
 {
 	return gameHeader;
+}
+
+
+
+
+NetSendGamePlayerInfo::NetSendGamePlayerInfo()
+{
+
+}
+
+
+
+
+NetSendGamePlayerInfo::NetSendGamePlayerInfo(GameHeader& header)
+{
+	for(int n=0; n<32; ++n)
+	{
+		players[n] = header.getBasePlayer(n);
+	}
+}
+
+
+
+Uint8 NetSendGamePlayerInfo::getMessageType() const
+{
+	return MNetSendGamePlayerInfo;
+}
+
+
+
+void NetSendGamePlayerInfo::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendGamePlayerInfo");
+	for(int n=0; n<32; ++n)
+	{
+		stream->writeEnterSection(n);
+		players[n].save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendGamePlayerInfo::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendGamePlayerInfo");
+	for(int n=0; n<32; ++n)
+	{
+		stream->readEnterSection(n);
+		//Load latest version, network garunteed to always be latest version
+		players[n].load(stream, VERSION_MINOR);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendGamePlayerInfo::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendGamePlayerInfo()";
+	return s.str();
+}
+
+
+
+bool NetSendGamePlayerInfo::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendGamePlayerInfo))
+	{
+		//const NetSendGamePlayerInfo& r = dynamic_cast<const NetSendGamePlayerInfo&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+void NetSendGamePlayerInfo::downloadToGameHeader(GameHeader& header)
+{
+	for(int n=0; n<32; ++n)
+	{
+		header.getBasePlayer(n) = players[n];
+	}
 }
 
 

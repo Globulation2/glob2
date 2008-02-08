@@ -25,14 +25,12 @@
 #include "StringTable.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
-	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown)
+	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(client, gameHeader)
 {
 	netEngine=NULL;
 	kickReason = YOGUnknownKickReason;
 	haveMapHeader = false;
 	haveGameHeader = false;
-	for(int i=0; i<32; ++i)
-		readyToStart[i] = true;
 	wasReadyToStart=false;
 	sentReadyToStart=false;
 	chatChannel=0;
@@ -198,13 +196,8 @@ bool MultiplayerGame::isGameReadyToStart()
 
 	if(gjcState == HostingGame)
 	{
-		for(int x=0; x<32; ++x)
-		{
-			if(readyToStart[x] == false)
-			{
-				return false;
-			}
-		}
+		if(!playerManager.isEveryoneReadyToGo())
+			return false;
 	}
 
 	if(assembler)
@@ -220,19 +213,7 @@ bool MultiplayerGame::isGameReadyToStart()
 
 void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 {
-	for(int x=0; x<32; ++x)
-	{
-		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.type == BasePlayer::P_NONE)
-		{
-			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(type)).arg(x+1);
-			bp = BasePlayer(x, name, x % mapHeader.getNumberOfTeams(), Player::playerTypeFromImplementitionID(type));
-			break;
-		}
-	}
-	
-
+	playerManager.addAIPlayer(type);
 	
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
 	
@@ -247,26 +228,22 @@ void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 void MultiplayerGame::kickPlayer(int playerNum)
 {
 	BasePlayer& bp = gameHeader.getBasePlayer(playerNum);
-	if(bp.type>=BasePlayer::P_AI)
-	{
-		bp.type = BasePlayer::P_NONE;
-		updateGameHeader();
-	}
-	else if(bp.type==BasePlayer::P_IP)
+	if(bp.type==BasePlayer::P_IP)
 	{
 		shared_ptr<NetKickPlayer> message(new NetKickPlayer(bp.playerID, YOGKickedByHost));
-		removePerson(bp.playerID);
 		client->sendNetMessage(message);
 	}
+
+	playerManager.removePlayer(playerNum);
+
+	updateGameHeader();
 }
 
 
 
 void MultiplayerGame::changeTeam(int playerNum, int teamNum)
 {
-	BasePlayer& bp = gameHeader.getBasePlayer(playerNum);
-	bp.teamNumber = teamNum;
-	updateGameHeader();
+	playerManager.changeTeamNumber(playerNum, teamNum);
 }
 
 /*
@@ -376,16 +353,29 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		
 		haveGameHeader = true;
 	}
+	if(type==MNetSendGamePlayerInfo)
+	{
+		shared_ptr<NetSendGamePlayerInfo> info = static_pointer_cast<NetSendGamePlayerInfo>(message);
+		info->downloadToGameHeader(gameHeader);
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
+	}
 	if(type==MNetPlayerJoinsGame)
 	{
 		shared_ptr<NetPlayerJoinsGame> info = static_pointer_cast<NetPlayerJoinsGame>(message);
-		addPerson(info->getPlayerID());
-		updateGameHeader();
+		playerManager.addPerson(info->getPlayerID());
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
 	}
 	if(type==MNetPlayerLeavesGame)
 	{
 		shared_ptr<NetPlayerLeavesGame> info = static_pointer_cast<NetPlayerLeavesGame>(message);
-		removePerson(info->getPlayerID());
+		playerManager.removePerson(info->getPlayerID());
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
 	}
 	if(type==MNetStartGame)
 	{
@@ -435,109 +425,14 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
 		Uint16 id = info->getPlayerID();
-		for(int x=0; x<32; ++x)
-		{
-			BasePlayer& bp = gameHeader.getBasePlayer(x);
-			if(bp.playerID == id)
-			{
-				readyToStart[x] = true;
-				break;
-			}
-		}
+		playerManager.setReadyToGo(id, true);
 	}
 	if(type==MNetNotReadyToLaunch)
 	{
 		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
 		Uint16 id = info->getPlayerID();
-		for(int x=0; x<32; ++x)
-		{
-			BasePlayer& bp = gameHeader.getBasePlayer(x);
-			if(bp.playerID == id)
-			{
-				readyToStart[x] = false;
-				break;
-			}
-		}
+		playerManager.setReadyToGo(id, false);
 	}
-}
-
-
-
-void MultiplayerGame::addPerson(Uint16 playerID)
-{
-	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
-	//Count number of players for each team
-	std::vector<int> numberOfPlayersPerTeam(32, 0);
-	for(int x=0; x<32; ++x)
-	{
-		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.type != BasePlayer::P_NONE)
-			numberOfPlayersPerTeam[bp.teamNumber] += 1;
-	}
-	//Chooes a team number that has the lowest number of players attached
-	int lowest_number = 10000;
-	int team_number = 0;
-	for(int x=0; x<32; ++x)
-	{
-		if(numberOfPlayersPerTeam[x] < lowest_number)
-		{
-			lowest_number = numberOfPlayersPerTeam[x];
-			team_number  = x;
-		}
-	}
-
-	//Add the player into the first spare slot
-	for(int x=0; x<32; ++x)
-	{
-		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.type == BasePlayer::P_NONE)
-		{
-			bp = BasePlayer(x, client->findPlayerName(playerID).c_str(), team_number, BasePlayer::P_IP);
-			bp.playerID = playerID;
-			if(playerID != client->getPlayerID())
-				readyToStart[x] = false;
-			break;
-		}
-	}
-	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
-	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-	sendToListeners(event);
-}
-
-
-
-void MultiplayerGame::removePerson(Uint16 playerID)
-{
-	//Remove the person. Any players that are after this player are moved backwards
-	int playerN=0;
-	for(int x=0; x<32; ++x)
-	{
-		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.playerID == playerID)
-		{
-			playerN = x;
-			readyToStart[x] = true;
-			bp = BasePlayer();
-			break;
-		}
-	}
-	for(int x=playerN+1; x<32; ++x)
-	{
-		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.type != Player::P_NONE)
-		{
-			bp.number -= 1;
-			bp.numberMask = 1u>>bp.number;
-			gameHeader.getBasePlayer(x-1) = bp;
-			bp = BasePlayer();
-			readyToStart[x-1] = readyToStart[x];
-			readyToStart[x] = true;
-		}
-	}
-
-	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()-1);
-	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-	sendToListeners(event);	
 }
 
 
