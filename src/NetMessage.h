@@ -30,6 +30,7 @@
 #include <boost/shared_ptr.hpp>
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "Player.h"
 
 
 using namespace boost;
@@ -69,6 +70,7 @@ enum NetMessageType
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
+	MNetSendGamePlayerInfo,
 	//type_append_marker
 };
 
@@ -852,6 +854,42 @@ public:
 	const GameHeader& getGameHeader() const;
 private:
 	GameHeader gameHeader;
+};
+
+
+
+
+///NetSendGamePlayerInfo. This sends the BasePlayer portion of GameHeader
+class NetSendGamePlayerInfo : public NetMessage
+{
+public:
+	///Creates a NetSendGamePlayerInfo message
+	NetSendGamePlayerInfo();
+
+	///Creates a NetSendGamePlayerInfo message. Must be handed an array of 32 BasePlayer
+	NetSendGamePlayerInfo(GameHeader& header);
+
+	///Returns MNetSendGamePlayerInfo
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendGamePlayerInfo message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendGamePlayerInfo
+	bool operator==(const NetMessage& rhs) const;
+
+	///Downloads all of the player info to this game header
+	void downloadToGameHeader(GameHeader& header);
+private:
+	BasePlayer players[32];
+
 };
 
 

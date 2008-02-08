@@ -119,3 +119,12 @@ BasePlayer& GameHeader::getBasePlayer(const int n)
 	assert(n<32 && n>=0);
 	return players[n];
 }
+
+
+
+const BasePlayer& GameHeader::getBasePlayer(const int n) const
+{
+	assert(n<32 && n>=0);
+	return players[n];
+}
+

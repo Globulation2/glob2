@@ -218,6 +218,10 @@ void YOGClient::update()
 		{
 			joinedGame->recieveMessage(message);
 		}
+		if(type==MNetSendGamePlayerInfo)
+		{
+			joinedGame->recieveMessage(message);
+		}
 		if(type==MNetPlayerJoinsGame)
 		{
 			joinedGame->recieveMessage(message);

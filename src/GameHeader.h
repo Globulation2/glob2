@@ -61,6 +61,9 @@ public:
 	
 	///Provides access to the base player. n must be between 0 and 31.
 	BasePlayer& getBasePlayer(const int n);
+	
+	///Provides access to the base player. n must be between 0 and 31.
+	const BasePlayer& getBasePlayer(const int n) const;
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;

@@ -164,6 +164,7 @@ protected:
     friend class MultiplayerGame;
     friend class MapAssembler;
 	friend class YOGChatChannel;
+	friend class MultiplayerGamePlayerManager;
     
     ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);

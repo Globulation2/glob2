@@ -24,6 +24,7 @@
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
+#include "MultiplayerGamePlayerManager.h"
 #include <list>
 
 ///This class represents a multi-player game, both in the game and while waiting for players
@@ -98,7 +99,7 @@ public:
 	
 	///This is intended to add an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
-	
+
 	///This kicks/removes a player from the game
 	void kickPlayer(int playerNum);
 	
@@ -128,12 +129,10 @@ public:
 	
 protected:
 	friend class YOGClient;
+	MultiplayerGamePlayerManager playerManager;
+
 	///This receives a message that is sent to the game
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
-	///Adds a person to the gameHeader
-	void addPerson(Uint16 playerID);
-	///Removes a person from the gameHeader
-	void removePerson(Uint16 playerID);
 	
 	///This will start the game
 	void startEngine();
@@ -157,7 +156,6 @@ private:
 	boost::shared_ptr<MapAssembler> assembler;
 	bool haveMapHeader;
 	bool haveGameHeader;
-	bool readyToStart[32];
 	bool wasReadyToStart;
 	bool sentReadyToStart;
 	std::list<MultiplayerGameEventListener*> listeners;

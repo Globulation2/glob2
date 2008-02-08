@@ -52,6 +52,9 @@ public:
 	///Sets the game header of the game
 	void setGameHeader(const GameHeader& gameHeader);
 
+	///Gets the game header of the game
+	GameHeader& getGameHeader();
+
 	///Routes the given message to all players except for the sender,
 	///unless sender is null
 	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender=shared_ptr<YOGPlayer>());
