@@ -88,9 +88,6 @@ public:
 	///Sets the assocciatted net engine to push recieved orders into
 	void setNetEngine(NetEngine* engine);
 	
-	///Sends the given Order across the network
-	void pushOrder(shared_ptr<Order> order, int playerNum);
-	
 	///Causes the game to be started on all clients.
 	void startGame();
 	
