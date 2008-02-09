@@ -20,28 +20,85 @@
 #include <iostream>
 
 
-NetEngine::NetEngine(int numberOfPlayers)
-	: numberOfPlayers(numberOfPlayers)
+NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<YOGClient> client)
+	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), client(client), networkOrderRate(networkOrderRate)
 {
 	step=0;
 	orders.resize(numberOfPlayers);
+	localOrderSendCountdown = 0;
 }
 
 
 
-void NetEngine::advanceStep()
+void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<YOGClient> nclient)
+{
+	networkOrderRate = nnetworkOrderRate;
+	client = nclient;
+}
+
+
+
+void NetEngine::advanceStep(Uint32 checksum)
+{
+	step+=1;
+	if(localOrderSendCountdown == 0)
+	{
+		boost::shared_ptr<Order> localOrder;
+
+		if(outgoing.empty())
+		{
+			localOrder = shared_ptr<Order>(new NullOrder);
+		}
+		else
+		{
+			localOrder = outgoing.front();
+			outgoing.pop();
+		}
+
+		localOrder->gameCheckSum = checksum;
+		if(client)
+		{
+			localOrder->sender = localPlayer;
+			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
+			client->sendNetMessage(message);
+		}
+		pushOrder(localOrder, localPlayer, false);
+		localOrderSendCountdown = networkOrderRate - 1;
+	}
+	else
+	{
+		localOrderSendCountdown -= 1;
+	}
+}
+
+
+
+void NetEngine::clearTopOrders()
 {
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
 		orders[p].pop();
 	}
-	step+=1;
 }
 
-void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber)
+
+
+void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI)
 {
+	assert(playerNumber>=0);
 	order->sender=playerNumber;
 	orders[playerNumber].push(order);
+
+	///The local player and network players all have padding arround their order
+	if(! isAI)
+	{
+		for(int i=0; i<(networkOrderRate - 1); ++i)
+		{
+			shared_ptr<Order> norder(new NullOrder);
+			norder->sender=playerNumber;
+			orders[playerNumber].push(norder);
+		}
+	}
 }
 
 
@@ -49,6 +106,16 @@ void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber)
 boost::shared_ptr<Order> NetEngine::retrieveOrder(int playerNumber)
 {
 	return orders[playerNumber].front();
+}
+
+
+
+void NetEngine::addLocalOrder(boost::shared_ptr<Order> order)
+{
+	if(order->getOrderType() != ORDER_NULL)
+	{
+		outgoing.push(order);
+	}
 }
 
 
@@ -78,7 +145,7 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 {
 	for(int s=0; s<latency; ++s)
 	{
-		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber);
+		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber, true);
 	}
 }
 
