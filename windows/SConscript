@@ -3,8 +3,8 @@ Import("PackTar")
     
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "glob2.ico")
+    PackTar(env["TARFILE"], "glob2_make_win32.sh")
     PackTar(env["TARFILE"], "header.bmp")
-    PackTar(env["TARFILE"], "NSIS.lnk")
     PackTar(env["TARFILE"], "side.bmp")
     PackTar(env["TARFILE"], "win32_installer.nsi")
     
