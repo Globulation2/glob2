@@ -960,6 +960,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	hSector=h>>4;
 	sizeSector=wSector*hSector;
 
+	if(sectors)
+		delete[] sectors;
 	sectors=new Sector[sizeSector];
 
 	arraysBuilt=true;

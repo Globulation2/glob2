@@ -202,7 +202,8 @@ public:
 	GameGUI *gui;
 	MapEdit *edit;
 	std::list<BuildProject> buildProjects;
-	///This is meant to avoid re-allocated the valarray for every frame
+	///Stores alpha values to be passed to the drawing system. kept here so it isn't re-allocated
+	///every frame
 	std::valarray<unsigned char> overlayAlphas;
 
 public:
