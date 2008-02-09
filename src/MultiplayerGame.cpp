@@ -169,15 +169,6 @@ void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
 
 
 
-void MultiplayerGame::pushOrder(shared_ptr<Order> order, int playerNum)
-{
-	order->sender = playerNum;
-	shared_ptr<NetSendOrder> message(new NetSendOrder(order));
-	client->sendNetMessage(message);
-}
-
-
-
 void MultiplayerGame::startGame()
 {
 	//make sure the game headers are synced!
@@ -393,9 +384,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			shared_ptr<Order> order = info->getOrder();
 			if(order->getOrderType() == ORDER_PLAYER_QUIT_GAME)
 				order->gameCheckSum = -1;
-			netEngine->pushOrder(order, order->sender);
-			for(int i=0; i<(gameHeader.getOrderRate() - 1); ++i)
-				netEngine->pushOrder(shared_ptr<Order>(new NullOrder), order->sender);
+			netEngine->pushOrder(order, order->sender, false);
 		}
 	}
 	if(type==MNetRequestMap)
@@ -442,7 +431,7 @@ void MultiplayerGame::startEngine()
 	Engine engine;
 	// host game and wait for players. This clever trick is meant to get a proper shared_ptr
 	// to (this), because shared_ptr's must be copied from the original
-	int rc=engine.initMultiplayer(client->getMultiplayerGame(), getLocalPlayer());
+	int rc=engine.initMultiplayer(client->getMultiplayerGame(), client, getLocalPlayer());
 	// execute game
 	if (rc==Engine::EE_NO_ERROR)
 	{

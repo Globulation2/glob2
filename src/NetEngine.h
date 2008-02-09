@@ -23,6 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include <queue>
+#include "YOGClient.h"
 
 ///The purpose of this class is to sort Orders, and hand them out in
 ///the correct time slot. It serves partially to hide latency, Orders
@@ -32,17 +33,26 @@
 class NetEngine
 {
 public:
-	//Constructs the NetEngine
-	NetEngine(int numberOfPlayers);
+	///Constructs the NetEngine
+	NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate = 1, boost::shared_ptr<YOGClient> client = boost::shared_ptr<YOGClient>());
 
-	///Advances the step, clearing Orders at the previous step
-	void advanceStep();
+	///Sets the network game info
+	void setNetworkInfo(int networkOrderRate, boost::shared_ptr<YOGClient> client);
 
-	//Pushes an order to the NetEngine
-	void pushOrder(boost::shared_ptr<Order> order, int playerNumber);
+	///Advances the step
+	void advanceStep(Uint32 checksum);
+
+	///Clears all the orders at the top of the queues
+	void clearTopOrders();
+
+	//Pushes an order to the NetEngine. AI's are special because they don't have padding arround orders
+	void pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI);
 	
 	///Retrieves the order for the given player for this turn
 	boost::shared_ptr<Order> retrieveOrder(int playerNumber);
+
+	///Adds a order from the local player, which will be queued and sent across the network when needed
+	void addLocalOrder(boost::shared_ptr<Order> order);
 	
 	///Tells whether the network is ready at the current tick. For
 	///the network to be ready, all Orders from all players must be
@@ -72,8 +82,16 @@ private:
 
 	///This stores the queues with the orders from each player
 	std::vector<std::queue<boost::shared_ptr<Order> > > orders;
+	///This queue stores all of the local orders that have to be sent out
+	///on their turn
+	std::queue<boost::shared_ptr<Order> > outgoing;
 	int step;
 	int numberOfPlayers;
+	///This count-downs steps until an order is sent across the network
+	int localOrderSendCountdown;
+	int localPlayer;
+	boost::shared_ptr<YOGClient> client;
+	int networkOrderRate;
 };
 
 

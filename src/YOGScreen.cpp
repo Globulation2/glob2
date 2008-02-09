@@ -36,8 +36,6 @@
 #include "ChooseMapScreen.h"
 #include "MultiplayerGameScreen.h"
 
-#include "YOGMessageBox.h"
-
 YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
 	: List(x, y, w, h, hAlign, vAlign, font)
 {

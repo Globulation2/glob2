@@ -103,6 +103,8 @@ def configure(env):
         gl_libraries.append("GL")
     elif conf.CheckLib('opengl32') and conf.CheckCHeader('GL/gl.h'):
         gl_libraries.append("opengl32")
+    elif env['osx']:
+    	print "Using Apple's OpenGL framework system"
     else:
         #Quick fix for OSX, ignore libraries not found
         if not env['osx']:
@@ -116,6 +118,8 @@ def configure(env):
         gl_libraries.append("GLU")
     elif conf.CheckLib('glu32') and conf.CheckCHeader('GL/glu.h'):
         gl_libraries.append("glu32")
+    elif env['osx']:
+    	print "Using Apple's OpenGL framework system"
     else:
         print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
         Exit(1)
@@ -162,7 +166,7 @@ def main():
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
     if env['osx']:
-        env.Append(CXXFLAGS="-framework OpenGL")
+        env.Append(CXXFLAGS=" -framework OpenGL ")
     env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
