@@ -117,6 +117,8 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
+
+	anyPlayerWaitedTimeFor = 0;
 }
 
 
@@ -1153,6 +1155,7 @@ void Game::syncStep(Sint32 localTeam)
 		Sint32 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&31]+=endTick-startTick;
 		stepCounter++;
+		anyPlayerWaitedTimeFor+=1;
 	}
 }
 
@@ -2533,7 +2536,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 void Game::setWaitingOnMask(Uint32 mask)
 {
+	Uint32 oldMask = maskAwayPlayer;
 	maskAwayPlayer = mask;
+
+	if(mask != 0)
+	{
+		if(oldMask == 0)
+			anyPlayerWaitedTimeFor = 0;
+		anyPlayerWaited = true;
+	}
+	else
+	{
+		anyPlayerWaited = false;
+	}
 }
 
 
