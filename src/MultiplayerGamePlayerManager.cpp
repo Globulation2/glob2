@@ -87,7 +87,6 @@ void MultiplayerGamePlayerManager::removePerson(Uint16 playerID)
 			break;
 		}
 	}
-	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
 }
 
 
@@ -109,6 +108,7 @@ void MultiplayerGamePlayerManager::removePlayer(int playerNumber)
 			readyToStart[x] = true;
 		}
 	}
+	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
 
 	sendPlayerInfoUpdate();
 }
