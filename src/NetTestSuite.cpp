@@ -506,10 +506,10 @@ int NetTestSuite::testListenerConnection()
 {
 	//Creates the NetListener at port 7486
 	NetListener nl;
-	nl.startListening(YOG_SERVER_PORT-1);
+	nl.startListening(YOG_SERVER_PORT+1);
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
-	nc_client.openConnection("127.0.0.1", YOG_SERVER_PORT-1);
+	nc_client.openConnection("127.0.0.1", YOG_SERVER_PORT+1);
 	//The server connection
 	NetConnection nc_server;
 	
