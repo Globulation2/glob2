@@ -70,13 +70,15 @@ enum YOGLoginState
 	///This means that the password was incorrect.
 	///(only for servers that require registration)
 	YOGPasswordIncorrect,
-	///This means that a user with the same username is already connected.
+	///This means that a user with the same username is already registered.
 	YOGUsernameAlreadyUsed,
 	///This means that no registered user with that username exists
 	///(only for servers that require registration)
 	YOGUserNotRegistered,
 	///This means that the clients version is too old, they must update
 	YOGClientVersionTooOld,
+	///This means that this username is already logged in
+	YOGAlreadyAuthenticated,
 };
 
 ///This represents the reason why the player could not join a game.

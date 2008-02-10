@@ -160,6 +160,10 @@ Kugler
 Kampagne redigator
 [campaign]
 Kampagne
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Kan ikke forbinde til spillet, spilparametrene stemmer ikke overens
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Liv point
 Kurere dine enheder
 [hospital]
 Hospital
+[Host has cancelled the game]
+
 [host]
 Opret et spil
 [hp]
@@ -1074,8 +1080,6 @@ YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn er allerede reg
 YOG-metaserveren har afbrudt forbindelsen fordi den indtastede adgangskode er forkert.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn har
-ingen adgangskode endny. Du vil muligvis registerere dit brugernavn
-med adgangskode. Aktiver derfor funktionen "Registere en ny YOG bruger med adgangs kode", før du prøver at forbinde. Du er nødt til at aktivere denne funktion, når du vil registerere.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 YOG-metaserveren har afbrudt forbindelsen, fordi en intern protokol fejl er opstået: du er endnu ikke forbundet mens du forsøger at logge ind. Rapporter venligst denne fejl.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1110,6 +1114,8 @@ Du er nu markeret som væk
 Du har tabt!
 [you have won]
 Du har vundet!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Dine %0 er under angreb
 [Your unit got converted to %0's team]

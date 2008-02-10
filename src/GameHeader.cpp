@@ -72,6 +72,30 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 }
 
 
+
+bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMinor)
+{
+	stream->readEnterSection("GameHeader");
+	gameLatency = stream->readSint32("gameLatency");
+	orderRate = stream->readUint8("orderRate");
+	numberOfPlayers = stream->readSint32("numberOfPlayers");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("GameHeader");
+	stream->writeSint32(gameLatency, "gameLatency");
+	stream->writeUint8(orderRate, "orderRate");
+	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
+	stream->writeLeaveSection();
+}
+
+
+
 Sint32 GameHeader::getNumberOfPlayers() const
 {
 	return numberOfPlayers;

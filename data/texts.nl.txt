@@ -160,6 +160,10 @@ Kogels
 Campagne bewerken
 [campaign]
 Campagne
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Kan niet deelnemen aan het spel: parmaters tussen beiden partijen verschillen.
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Gezondheid
 Geneest je eenheden
 [hospital]
 Ziekenhuis
+[Host has cancelled the game]
+
 [host]
 Start een server
 [hp]
@@ -1108,6 +1114,8 @@ Je status is "weg".
 Je hebt verloren!
 [you have won]
 Je hebt gewonnen!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Je %0 worden aangevallen
 [Your unit got converted to %0's team]

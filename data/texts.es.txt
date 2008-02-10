@@ -160,6 +160,10 @@ Municiones
 
 [campaign]
 Campaña
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 No puede unirse, parámetros de juego incongruentes
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Salud
 Sana tus Unidades
 [hospital]
 Hospital
+[Host has cancelled the game]
+
 [host]
 Administra un Juego
 [hp]
@@ -1108,6 +1114,8 @@ Tu estado es ausente.
 Has perdido!
 [you have won]
 Has ganado!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Tu %0 están bajo ataque
 [Your unit got converted to %0's team]

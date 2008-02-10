@@ -160,6 +160,10 @@ Proiettili
 
 [campaign]
 Campagna
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Non puoi unirti alla partita, i parametri della partita non corrispondono
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Guarisci
 Cura le unità
 [hospital]
 Ospedale
+[Host has cancelled the game]
+
 [host]
 Ospita una partita
 [hp]
@@ -1108,6 +1114,8 @@ Adesso sei segnato come assente.
 Hai perso
 [you have won]
 Hai vinto!!!!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Il tuo %0 sotto attacco
 [Your unit got converted to %0's team]

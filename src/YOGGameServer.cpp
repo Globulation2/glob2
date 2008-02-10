@@ -137,6 +137,16 @@ YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username,
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
+
+	///check if the player is already logged in
+	for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if(i->second->getPlayerName() == username)
+		{
+			return YOGAlreadyAuthenticated;
+		}
+	}
+
 	return registry.verifyLoginInformation(username, password);
 }
 

@@ -160,6 +160,10 @@ Lőszer
 
 [campaign]
 Hadjárat
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Egészség
 Egységek gyógyítása
 [hospital]
 Kórház
+[Host has cancelled the game]
+
 [host]
 Játék hostolása
 [hp]
@@ -1106,6 +1112,8 @@ Távollevőként vagy megjelölve.
 Elvesztetted a játékot!
 [you have won]
 Megnyerted a játékot!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Megtámadták a %0 -t
 [Your unit got converted to %0's team]

@@ -160,6 +160,10 @@ Mermiler
 
 [campaign]
 Senaryo
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Oyuna katilamadiniz: oyun parametreleri uyusmuyor
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Saglik
 Birimlerinizi iyilestirir
 [hospital]
 Hastane
+[Host has cancelled the game]
+
 [host]
 Oyun Sunucusu ol
 [hp]
@@ -1108,6 +1114,8 @@ Uzakta olarak isaretlisiniz.
 Kaybettiniz!
 [you have won]
 Kazandiniz!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 %0 'leriniz saldiri altinda
 [Your unit got converted to %0's team]

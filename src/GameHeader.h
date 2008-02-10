@@ -40,6 +40,12 @@ public:
 	///Saves game header information to the stream
 	void save(GAGCore::OutputStream *stream) const;
 
+	///This loads the game header information from the stream, excluding BasePlayer information
+	bool loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMinor);
+
+	///This saves all game header information to the stream, but excluding the BasePlayer information
+	void saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const;
+
 	///Returns the number of players in the game
 	Sint32 getNumberOfPlayers() const;
 	
