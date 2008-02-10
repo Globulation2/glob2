@@ -86,6 +86,8 @@ enum YOGGameJoinRefusalReason
 	YOGJoinRefusalUnknown,
 	///This occurs when the game has started already
 	YOGGameHasAlreadyStarted,
+	///This occurs when the game has the maximum number of players
+	YOGGameIsFull,
 };
 
 ///This represents the reason why the player could not join a game.

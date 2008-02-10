@@ -43,6 +43,8 @@ public:
 	void setReadyToGo(int playerID, bool isReady);
 	///Tells whether all players are ready to go
 	bool isEveryoneReadyToGo();
+	///Sets the number of teams
+	void setNumberOfTeams(int numberOfTeams);
 
 private:
 	///Chooses a team number that has the fewest attached players
@@ -54,6 +56,7 @@ private:
 	GameHeader& gameHeader;
 	bool readyToStart[32];
 	boost::shared_ptr<YOGClient> client;
+	int numberOfTeams;
 
 };
 
