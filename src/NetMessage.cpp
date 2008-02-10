@@ -1658,7 +1658,7 @@ Uint8 NetSendGameHeader::getMessageType() const
 void NetSendGameHeader::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendGameHeader");
-	gameHeader.save(stream);
+	gameHeader.saveWithoutPlayerInfo(stream);
 	stream->writeLeaveSection();
 }
 
@@ -1667,7 +1667,7 @@ void NetSendGameHeader::encodeData(GAGCore::OutputStream* stream) const
 void NetSendGameHeader::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendGameHeader");
-	gameHeader.load(stream, VERSION_MINOR);
+	gameHeader.loadWithoutPlayerInfo(stream, VERSION_MINOR);
 	stream->readLeaveSection();
 }
 

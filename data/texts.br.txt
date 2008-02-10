@@ -160,6 +160,10 @@ Balas
 Editor de campanha
 [campaign]
 Campanha
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Sem possibilidade de juntar-se ao jogo, parâmetros do jogo conflitantes
 [Can't join game, timeout]
@@ -424,6 +428,8 @@ home
 Cura as suas unidades
 [hospital]
 Hospital
+[Host has cancelled the game]
+
 [host]
 Hospedar um jogo
 [hp]
@@ -1108,6 +1114,8 @@ Você está marcado como distante.
 Você perdeu!
 [you have won]
 Você ganhou!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Seus %0 estão sendo atacados
 [Your unit got converted to %0's team]

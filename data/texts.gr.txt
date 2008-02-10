@@ -160,6 +160,10 @@ backspace
 Επεξεραστής Εκστραστείας
 [campaign]
 Εκστρατεία
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Δεν μπορείτε να συμμετέχετε στο παιχνίδι, κακός συνδιασμός παραμέτρων
 [Can't join game, timeout]
@@ -424,6 +428,8 @@ Ok
 Γιαίνει τις μονάδες
 [hospital]
 Νοσοκομείο
+[Host has cancelled the game]
+
 [host]
 Παροχή ενός παιχνιδιού
 [hp]
@@ -476,6 +482,8 @@ Hitpoint
 Kick
 [lan]
 LAN Game
+[language incomplete]
+
 [language-code]
 gr
 [language-tr]
@@ -1108,9 +1116,9 @@ Ysagoon Online Gaming
 Χάσατε!
 [you have won]
 Κερδίσατε!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Το %0 δέχετε επίθεση
 [Your unit got converted to %0's team]
 Η μονάδα σας άλλαξε σε %0 ομάδα
-
-

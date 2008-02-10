@@ -220,6 +220,15 @@ void YOGScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
 
 
 
+void YOGScreen::recieveInternalMessage(const std::string& message)
+{
+	chatWindow->addText(message);
+	chatWindow->addText("\n");
+	chatWindow->scrollToBottom();
+}
+
+
+
 void YOGScreen::hostGame()
 {
 	ChooseMapScreen cms("maps", "map", false);
@@ -239,7 +248,7 @@ void YOGScreen::hostGame()
 		if(rc == -1)
 			endExecute(-1);
 		else if(rc == MultiplayerGameScreen::GameRefused)
-			ircChat->addInternalMessage("Game was refused by server");
+			recieveInternalMessage("Game was refused by server");
 	}
 }
 
@@ -268,14 +277,14 @@ void YOGScreen::joinGame()
 		if(rc == -1)
 			endExecute(-1);
 		else if(rc == MultiplayerGameScreen::Kicked)
-			ircChat->addInternalMessage("You where kicked from the game");
+			recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
 		else if(rc == MultiplayerGameScreen::GameCancelled)
-			ircChat->addInternalMessage("The host cancelled the game");
+			recieveInternalMessage(Toolkit::getStringTable()->getString("[The host cancelled the game]"));
 		else if(rc == MultiplayerGameScreen::GameRefused)
 			if(game->getGameJoinState() == YOGGameHasAlreadyStarted)
-				ircChat->addInternalMessage("The game has already started");
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
 			else if(game->getGameJoinState() == YOGGameIsFull)
-				ircChat->addInternalMessage("The game is full");
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
 	}
 }
 

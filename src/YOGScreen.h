@@ -95,6 +95,8 @@ public:
 	void handleIRCTextMessage(const std::string& message);
 	///Handles text message events from the YOGChatChannel
 	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
+	///Handles an internal message
+	void recieveInternalMessage(const std::string& message);
 
 	///The end-codes of the screen
 	enum

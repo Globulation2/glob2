@@ -62,9 +62,6 @@ public:
 
 	///Returns the IRC server to send commands to it
 	boost::shared_ptr<IRC> getIRC();
-	
-	///Adds a new internal message
-	void addInternalMessage(const std::string& message);
 
 private:
 	void sendToAllListeners(const std::string& message);

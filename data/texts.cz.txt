@@ -160,6 +160,10 @@ Střelivo
 
 [campaign]
 Nová hra
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Zdravý
 Zdravý tvých jednotek
 [hospital]
 Nemocnice
+[Host has cancelled the game]
+
 [host]
 Hostuj hru
 [hp]
@@ -1106,6 +1112,8 @@ Jsi označen, že jsi pryč.
 Jsi ztracen...
 [you have won]
 Vyhrál jsi!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Tvoji %0 jsou pod útokem
 [Your unit got converted to %0's team]

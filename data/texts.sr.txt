@@ -160,6 +160,10 @@ AIWarrush
 
 [campaign]
 Кампања
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ AIWarrush
 Болница служи за лечење
 [hospital]
 Болница
+[Host has cancelled the game]
+
 [host]
 Рачунар
 [hp]
@@ -1106,6 +1112,8 @@ YOG мета-сервер је одбио везу јер корисничко �
 Изгубили сте игру.
 [you have won]
 Добили сте игру.
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Нападнута јединица: %0
 [Your unit got converted to %0's team]

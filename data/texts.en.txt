@@ -160,12 +160,10 @@ Bullets
 Campaign Editor
 [campaign]
 Campaign
-[Can't join game, missmatching game parameters]
-Can't join game, missmatching game parameters
-[Can't join game, timeout]
-Can't join game, timeout
-[Can't join game, wrong game version]
-Can't join game, wrong game version
+[Can't join game, game has started]
+Can't join game, game has started
+[Can't join game, game is full]
+Can't join game, game is full
 [cancel destroy]
 Cancel destroy
 [cancel repair]
@@ -424,6 +422,8 @@ home
 Heals your units
 [hospital]
 Hospital
+[Host has cancelled the game]
+Host has cancelled the game
 [host]
 Host a game
 [hp]
@@ -1110,6 +1110,8 @@ You are marked as away.
 You have lost!
 [you have won]
 You have won!
+[You where kicked from the game]
+You where kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
 [Your unit got converted to %0's team]

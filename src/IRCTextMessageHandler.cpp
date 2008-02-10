@@ -150,13 +150,6 @@ boost::shared_ptr<IRC> IRCTextMessageHandler::getIRC()
 
 
 
-void IRCTextMessageHandler::addInternalMessage(const std::string& message)
-{
-	sendToAllListeners(message);
-}
-
-
-
 void IRCTextMessageHandler::sendToAllListeners(const std::string& message)
 {
 	for(unsigned i=0; i<listeners.size(); ++i)

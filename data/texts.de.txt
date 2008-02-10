@@ -160,6 +160,10 @@ Kugeln
 
 [campaign]
 Feldzug
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Verbinden nicht möglich: Spielparameter fehlerhaft
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Gesundheit
 Heilt Ihre Einheiten
 [hospital]
 Hospital
+[Host has cancelled the game]
+
 [host]
 Spiel veranstalten
 [hp]
@@ -1108,6 +1114,8 @@ Sie sind als abwesend markiert.
 Sie haben verloren!
 [you have won]
 Sie haben gewonnen!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Eure %0 werden angegriffen
 [Your unit got converted to %0's team]

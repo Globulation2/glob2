@@ -160,6 +160,10 @@ Boulets
 Editeur de campagne
 [campaign]
 Campagne
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Ne peut pas joindre le jeu, paramètres de jeu incompatibles
 [Can't join game, timeout]
@@ -422,6 +426,8 @@ Maison
 Soigne vos unités 
 [hospital]
 Hôpital
+[Host has cancelled the game]
+
 [host]
 Héberger une partie
 [hp]
@@ -1108,6 +1114,8 @@ Vous êtes désormais considéré comme étant absent.
 Vous avez perdu!
 [you have won]
 Vous avez gagné!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Vos %0 sont attaquées
 [Your unit got converted to %0's team]
