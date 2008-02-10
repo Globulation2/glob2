@@ -1695,9 +1695,17 @@ bool NetSendGameHeader::operator==(const NetMessage& rhs) const
 
 	
 
-const GameHeader& NetSendGameHeader::getGameHeader() const
+void NetSendGameHeader::downloadToGameHeader(GameHeader& newGameHeader)
 {
-	return gameHeader;
+	//This is a special trick used to avoid having to manually copy over every
+	//variable
+	MemoryStreamBackend* backend = new MemoryStreamBackend;
+	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(backend);
+	gameHeader.saveWithoutPlayerInfo(ostream);
+
+	backend->seekFromStart(0);
+	GAGCore::BinaryInputStream* istream = new BinaryInputStream(backend);
+	newGameHeader.loadWithoutPlayerInfo(istream, VERSION_MINOR);
 }
 
 

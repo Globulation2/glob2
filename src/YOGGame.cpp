@@ -139,20 +139,6 @@ void YOGGame::setMapHeader(const MapHeader& nmapHeader)
 
 
 
-
-void YOGGame::setGameHeader(const GameHeader& nGameHeader)
-{
-	gameHeader = nGameHeader;
-	shared_ptr<NetSendGameHeader> message(new NetSendGameHeader(gameHeader));
-	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
-	{
-		if((*i) != host)
-			(*i)->sendMessage(message);
-	}
-}
-
-
-
 GameHeader& YOGGame::getGameHeader()
 {
 	return gameHeader;

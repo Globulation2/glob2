@@ -121,7 +121,8 @@ void YOGPlayer::update()
 	else if(type==MNetSendGameHeader)
 	{
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
-		game->setGameHeader(info->getGameHeader());
+		info->downloadToGameHeader(game->getGameHeader());
+		game->routeMessage(info, server.getPlayer(playerID));
 	}
 	//This recieves a message to set the game header
 	else if(type==MNetSendGamePlayerInfo)

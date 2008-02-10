@@ -49,9 +49,6 @@ public:
 	///Sets the map header of the game
 	void setMapHeader(const MapHeader& mapHeader);
 
-	///Sets the game header of the game
-	void setGameHeader(const GameHeader& gameHeader);
-
 	///Gets the game header of the game
 	GameHeader& getGameHeader();
 
