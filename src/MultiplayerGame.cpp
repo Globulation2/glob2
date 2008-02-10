@@ -336,7 +336,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetSendGameHeader)
 	{
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
-		gameHeader = info->getGameHeader();
+		info->downloadToGameHeader(gameHeader);
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);

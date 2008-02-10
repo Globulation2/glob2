@@ -703,6 +703,23 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		case ORDER_PLAYER_QUIT_GAME:
 		{
 			boost::shared_ptr<PlayerQuitsGameOrder> pqgo=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
+
+			bool found = false;
+			for(int i=0; i<32; ++i)
+			{
+				if(i!=pqgo->player && players[i])
+				{
+					if(i!=pqgo->player && players[i]->teamNumber == players[pqgo->player]->teamNumber)
+					{
+						found = true;
+					}
+				}
+			}
+			if(! found)
+			{
+				teams[players[pqgo->player]->teamNumber]->clearMap();
+			}
+
 			players[pqgo->player]->makeItAI(AI::NONE);
 			gameHeader.getBasePlayer(pqgo->player).makeItAI(AI::NONE);
 			fprintf(logFile, "ORDER_PLAYER_QUIT_GAME");

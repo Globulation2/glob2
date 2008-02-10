@@ -354,8 +354,8 @@ int Engine::run(void)
 				}
 			}
 			
-			if(gui.exitGlobCompletely)
-				break;
+//			if(gui.exitGlobCompletely)
+//				break;
 		}
 
 		cpuStats.format();

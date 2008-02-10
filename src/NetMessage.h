@@ -824,7 +824,8 @@ private:
 
 
 
-///NetSendGameHeader
+///NetSendGameHeader, sends the game header, but without any player information. Player information is sent in
+///NetSendGamePlayerInfo
 class NetSendGameHeader : public NetMessage
 {
 public:
@@ -850,8 +851,8 @@ public:
 	///Compares with another NetSendGameHeader
 	bool operator==(const NetMessage& rhs) const;
 	
-	///Returns the game header
-	const GameHeader& getGameHeader() const;
+	///Downloads information into the given game header
+	void downloadToGameHeader(GameHeader& header);
 private:
 	GameHeader gameHeader;
 };
