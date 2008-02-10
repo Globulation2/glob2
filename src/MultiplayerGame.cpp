@@ -192,6 +192,9 @@ bool MultiplayerGame::isGameReadyToStart()
 			return false;
 	}
 
+	if(gjcState == JoinedGame && (!haveMapHeader || !haveGameHeader))
+		return false;
+
 	if(assembler)
 	{
 		if(assembler->isTransferComplete())

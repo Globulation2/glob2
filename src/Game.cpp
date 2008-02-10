@@ -717,7 +717,9 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			}
 			if(! found)
 			{
+				teams[players[pqgo->player]->teamNumber]->clearLists();
 				teams[players[pqgo->player]->teamNumber]->clearMap();
+				teams[players[pqgo->player]->teamNumber]->clearMem();
 			}
 
 			players[pqgo->player]->makeItAI(AI::NONE);
