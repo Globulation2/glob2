@@ -4261,8 +4261,9 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 	setMultiLine(msgText, &messages);
 	globalContainer->standardFont->popStyle();
 
-	///Add each line as a seperate message to the message manager
-	for (unsigned i=0; i<messages.size(); i++)
+	///Add each line as a seperate message to the message manager.
+	///Must be done backwards to appear in the right order
+	for (int i=messages.size()-1; i>=0; i--)
 	{
 		messageManager.addMessage(InGameMessage(messages[i], color));
 	}
