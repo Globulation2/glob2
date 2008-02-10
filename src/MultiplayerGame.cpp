@@ -133,6 +133,7 @@ void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 	mapHeader = nmapHeader;
 	shared_ptr<NetSendMapHeader> message(new NetSendMapHeader(mapHeader));
 	client->sendNetMessage(message);
+	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 }
 
 
@@ -205,8 +206,6 @@ bool MultiplayerGame::isGameReadyToStart()
 void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 {
 	playerManager.addAIPlayer(type);
-	
-	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers()+1);
 	
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 	sendToListeners(event);

@@ -274,6 +274,8 @@ void YOGScreen::joinGame()
 		else if(rc == MultiplayerGameScreen::GameRefused)
 			if(game->getGameJoinState() == YOGGameHasAlreadyStarted)
 				ircChat->addInternalMessage("The game has already started");
+			else if(game->getGameJoinState() == YOGGameIsFull)
+				ircChat->addInternalMessage("The game is full");
 	}
 }
 

@@ -22,12 +22,13 @@
 using namespace GAGCore;
 
 MultiplayerGamePlayerManager::MultiplayerGamePlayerManager(boost::shared_ptr<YOGClient> client, GameHeader& gameHeader)
-	: client(client), gameHeader(gameHeader)
+	: client(client), gameHeader(gameHeader) 
 {
 	for(int x=0; x<32; ++x)
 	{
 		readyToStart[x] = true;
 	}
+	numberOfTeams = 0;
 }
 
 void MultiplayerGamePlayerManager::addPerson(Uint16 playerID)
@@ -56,22 +57,26 @@ void MultiplayerGamePlayerManager::addPerson(Uint16 playerID)
 
 void MultiplayerGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 {
-	int team_number = chooseTeamNumber();
-	for(int x=0; x<32; ++x)
+	//16 is current maximum
+	if(gameHeader.getNumberOfPlayers() < 16)
 	{
-		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.type == BasePlayer::P_NONE)
+		int team_number = chooseTeamNumber();
+		for(int x=0; x<32; ++x)
 		{
-			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(type)).arg(x+1);
-			bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementitionID(type));
-			readyToStart[x] = true;
-			break;
+			BasePlayer& bp = gameHeader.getBasePlayer(x);
+			if(bp.type == BasePlayer::P_NONE)
+			{
+				FormatableString name("%0 %1");
+				name.arg(AI::getAIText(type)).arg(x+1);
+				bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementitionID(type));
+				readyToStart[x] = true;
+				break;
+			}
 		}
+		gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() + 1);
+		
+		sendPlayerInfoUpdate();
 	}
-	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() + 1);
-	
-	sendPlayerInfoUpdate();
 }
 
 
@@ -125,33 +130,6 @@ void MultiplayerGamePlayerManager::changeTeamNumber(int playerNumber, int newTea
 
 
 
-int MultiplayerGamePlayerManager::chooseTeamNumber()
-{
-	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
-	//Count number of players for each team
-	std::vector<int> numberOfPlayersPerTeam(32, 0);
-	for(int x=0; x<32; ++x)
-	{
-		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.type != BasePlayer::P_NONE)
-			numberOfPlayersPerTeam[bp.teamNumber] += 1;
-	}
-	//Chooes a team number that has the lowest number of players attached
-	int lowest_number = 10000;
-	int team_number = 0;
-	for(int x=0; x<32; ++x)
-	{
-		if(numberOfPlayersPerTeam[x] < lowest_number)
-		{
-			lowest_number = numberOfPlayersPerTeam[x];
-			team_number  = x;
-		}
-	}
-	return team_number;
-}
-
-
-
 void MultiplayerGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 {
 	for(int x=0; x<32; ++x)
@@ -167,14 +145,6 @@ void MultiplayerGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 
 
 
-void MultiplayerGamePlayerManager::sendPlayerInfoUpdate()
-{
-	boost::shared_ptr<NetSendGamePlayerInfo> message(new NetSendGamePlayerInfo(gameHeader));
-	client->sendNetMessage(message);
-}
-
-
-
 bool MultiplayerGamePlayerManager::isEveryoneReadyToGo()
 {
 	for(int x=0; x<32; ++x)
@@ -185,6 +155,48 @@ bool MultiplayerGamePlayerManager::isEveryoneReadyToGo()
 		}
 	}
 	return true;
+}
+
+
+
+void MultiplayerGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
+{
+	numberOfTeams = nnumberOfTeams;
+}
+
+
+
+int MultiplayerGamePlayerManager::chooseTeamNumber()
+{
+	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
+	//Count number of players for each team
+	std::vector<int> numberOfPlayersPerTeam(32, 0);
+	for(int x=0; x<32; ++x)
+	{
+		BasePlayer& bp = gameHeader.getBasePlayer(x);
+		if(bp.type != BasePlayer::P_NONE)
+			numberOfPlayersPerTeam[bp.teamNumber] += 1;
+	}
+	//Chooes a team number that has the lowest number of players attached
+	int lowest_number = 10000;
+	int team_number = 0;
+	for(int x=0; x<numberOfTeams; ++x)
+	{
+		if(numberOfPlayersPerTeam[x] < lowest_number)
+		{
+			lowest_number = numberOfPlayersPerTeam[x];
+			team_number  = x;
+		}
+	}
+	return team_number;
+}
+
+
+
+void MultiplayerGamePlayerManager::sendPlayerInfoUpdate()
+{
+	boost::shared_ptr<NetSendGamePlayerInfo> message(new NetSendGamePlayerInfo(gameHeader));
+	client->sendNetMessage(message);
 }
 
 

@@ -236,6 +236,8 @@ YOGGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
 {
 	if(games[gameID]->hasGameStarted())
 		return YOGGameHasAlreadyStarted;
+	if(games[gameID]->getGameHeader().getNumberOfPlayers() == 16)
+		return YOGGameIsFull;
 	return YOGJoinRefusalUnknown;
 }
 
