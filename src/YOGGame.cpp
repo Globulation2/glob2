@@ -35,6 +35,26 @@ void YOGGame::update()
 	{
 		if(!(*i)->isConnected())
 		{
+			//if the game has started, send a PlayerQuitsGameOrder on the
+			//players behalf
+			int p = 0;
+			for(int j=0; j<gameHeader.getNumberOfPlayers(); ++j)
+			{
+				if(gameHeader.getBasePlayer(j).playerID == (*i)->getPlayerID())
+				{
+					p = j;
+					break;
+				}
+			}
+			boost::shared_ptr<Order> order(new PlayerQuitsGameOrder(p));
+			order->sender = p;
+			shared_ptr<NetSendOrder> message(new NetSendOrder(order));
+			for(std::vector<shared_ptr<YOGPlayer> >::iterator j = players.begin(); j!=players.end(); ++j)
+			{
+				if ((*j) != (*i))
+					(*j)->sendMessage(message);
+			}
+
 			size_t pos = i - players.begin();
 			removePlayer(*i);
 			i = players.begin() + pos;
@@ -78,7 +98,7 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 
 	if(!gameStarted)
 	{
-		if(player!=host || gameStarted)
+		if(player!=host)
 		{
 			shared_ptr<NetPlayerLeavesGame> message(new NetPlayerLeavesGame(player->getPlayerID()));
 			host->sendMessage(message);
@@ -97,29 +117,6 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 			}
 		}
 	}
-	else
-	{
-		//if the game has started, send a PlayerQuitsGameOrder on the
-		//players behalf
-		int p = 0;
-		for(int j=0; j<gameHeader.getNumberOfPlayers(); ++j)
-		{
-			if(gameHeader.getBasePlayer(j).playerID == player->getPlayerID())
-			{
-				p = j;
-				break;
-			}
-		}
-		boost::shared_ptr<Order> order(new PlayerQuitsGameOrder(p));
-		order->sender = p;
-		shared_ptr<NetSendOrder> message(new NetSendOrder(order));
-		for(std::vector<shared_ptr<YOGPlayer> >::iterator j = players.begin(); j!=players.end(); ++j)
-		{
-			if ((*j) != player)
-				(*j)->sendMessage(message);
-		}
-	}
-
 
 	//Remove the player from the chat channel for communication
 	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);

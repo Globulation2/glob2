@@ -177,17 +177,22 @@ Uint32 NetEngine::getWaitingOnMask()
 
 bool NetEngine::matchCheckSums()
 {
+	std::cout<<"matching"<<std::endl;
 	Uint32 checksum = -1;
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
-		Uint32 playerCheckSum = orders[p].front()->gameCheckSum;
-		if(playerCheckSum != -1)
+		if(!orders[p].empty())
 		{
-			if(checksum == -1)
-				checksum = playerCheckSum;
-			else if(playerCheckSum != checksum)
+			Uint32 playerCheckSum = orders[p].front()->gameCheckSum;
+			std::cout<<"player "<<p<<" "<<playerCheckSum<<std::endl;
+			if(playerCheckSum != -1)
 			{
-				return false;
+				if(checksum == -1)
+					checksum = playerCheckSum;
+				else if(playerCheckSum != checksum)
+				{
+					return false;
+				}
 			}
 		}
 	}
