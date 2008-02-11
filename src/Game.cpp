@@ -2362,16 +2362,17 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			overlayColor=Color(0, 0, 192);
 		if(overlays->getOverlayType() == OverlayArea::Fertility)
 			overlayColor=Color(0, 192, 128);
-		int width = (right - left) + 1;
-		int height = (bot - top) + 1;
+		///Both width and height have +2 to cover half-squares arround the edge of the viewport
+		int width = (right - left) + 2;
+		int height = (bot - top) + 2;
 
 		overlayAlphas.resize(width * height);
 		for (int y=0; y<height; y++)
 		{
 			for (int x=0; x<width; x++)
 			{
-				int rx=(x+viewportX)%map.getW();
-				int ry=(y+viewportY)%map.getH();
+				int rx=(x+viewportX-1)%map.getW();
+				int ry=(y+viewportY-1)%map.getH();
 				if(!edit && !map.isMapDiscovered(rx, ry, teams[localTeam]->me))
 					continue;
 				if(overlays->getValue(rx, ry))
@@ -2385,7 +2386,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		
 		///This is to correct OpenGL's blending not beeing offset correctly to line up with the map tiles
 		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, 16, 16, 32, 32, overlayColor);
+			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
 		else
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, 0, 0, 32, 32, overlayColor);
 	}
