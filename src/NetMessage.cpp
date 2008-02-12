@@ -94,12 +94,6 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSendGameHeader:
 		message.reset(new NetSendGameHeader);
 		break;
-		case MNetPlayerJoinsGame:
-		message.reset(new NetPlayerJoinsGame);
-		break;
-		case MNetPlayerLeavesGame:
-		message.reset(new NetPlayerLeavesGame);
-		break;
 		case MNetStartGame:
 		message.reset(new NetStartGame);
 		break;
@@ -129,6 +123,27 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		break;
 		case MNetSendGamePlayerInfo:
 		message.reset(new NetSendGamePlayerInfo);
+		break;
+		case MNetEveryoneReadyToLaunch:
+		message.reset(new NetEveryoneReadyToLaunch);
+		break;
+		case MNetNotEveryoneReadyToLaunch:
+		message.reset(new NetNotEveryoneReadyToLaunch);
+		break;
+		case MNetRequestAddAI:
+		message.reset(new NetRequestAddAI);
+		break;
+		case MNetRemoveAI:
+		message.reset(new NetRemoveAI);
+		break;
+		case MNetChangePlayersTeam:
+		message.reset(new NetChangePlayersTeam);
+		break;
+		case MNetRequestGameStart:
+		message.reset(new NetRequestGameStart);
+		break;
+		case MNetRefuseGameStart:
+		message.reset(new NetRefuseGameStart);
 		break;
 		///append_create_point
 	}
@@ -1719,12 +1734,9 @@ NetSendGamePlayerInfo::NetSendGamePlayerInfo()
 
 
 
-NetSendGamePlayerInfo::NetSendGamePlayerInfo(GameHeader& header)
+NetSendGamePlayerInfo::NetSendGamePlayerInfo(GameHeader& gameHeader)
+	:	gameHeader(gameHeader)
 {
-	for(int n=0; n<32; ++n)
-	{
-		players[n] = header.getBasePlayer(n);
-	}
 }
 
 
@@ -1739,12 +1751,7 @@ Uint8 NetSendGamePlayerInfo::getMessageType() const
 void NetSendGamePlayerInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendGamePlayerInfo");
-	for(int n=0; n<32; ++n)
-	{
-		stream->writeEnterSection(n);
-		players[n].save(stream);
-		stream->writeLeaveSection();
-	}
+	gameHeader.savePlayerInfo(stream);
 	stream->writeLeaveSection();
 }
 
@@ -1753,13 +1760,7 @@ void NetSendGamePlayerInfo::encodeData(GAGCore::OutputStream* stream) const
 void NetSendGamePlayerInfo::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendGamePlayerInfo");
-	for(int n=0; n<32; ++n)
-	{
-		stream->readEnterSection(n);
-		//Load latest version, network garunteed to always be latest version
-		players[n].load(stream, VERSION_MINOR);
-		stream->readLeaveSection();
-	}
+	gameHeader.loadPlayerInfo(stream, VERSION_MINOR);
 	stream->readLeaveSection();
 }
 
@@ -1788,152 +1789,17 @@ bool NetSendGamePlayerInfo::operator==(const NetMessage& rhs) const
 
 void NetSendGamePlayerInfo::downloadToGameHeader(GameHeader& header)
 {
-	for(int n=0; n<32; ++n)
-	{
-		header.getBasePlayer(n) = players[n];
-	}
+	//This is a special trick used to avoid having to manually copy over every
+	//variable
+	MemoryStreamBackend* backend = new MemoryStreamBackend;
+	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(backend);
+	gameHeader.savePlayerInfo(ostream);
+
+	backend->seekFromStart(0);
+	GAGCore::BinaryInputStream* istream = new BinaryInputStream(backend);
+	header.loadPlayerInfo(istream, VERSION_MINOR);
 }
 
-
-
-NetPlayerJoinsGame::NetPlayerJoinsGame()
-	: playerID(0)
-{
-
-}
-
-
-
-NetPlayerJoinsGame::NetPlayerJoinsGame(Uint16 playerID)
-	: playerID(playerID)
-{
-
-}
-
-
-
-Uint8 NetPlayerJoinsGame::getMessageType() const
-{
-	return MNetPlayerJoinsGame;
-}
-
-
-
-void NetPlayerJoinsGame::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetPlayerJoinsGame");
-	stream->writeUint16(playerID, "playerID");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetPlayerJoinsGame::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetPlayerJoinsGame");
-	playerID = stream->readUint16("playerID");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetPlayerJoinsGame::format() const
-{
-	std::ostringstream s;
-	s<<"NetPlayerJoinsGame()";
-	return s.str();
-}
-
-
-
-bool NetPlayerJoinsGame::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetPlayerJoinsGame))
-	{
-		const NetPlayerJoinsGame& r = dynamic_cast<const NetPlayerJoinsGame&>(rhs);
-		if(playerID == r.playerID)
-			return true;
-	}
-	return false;
-}
-
-
-
-Uint16 NetPlayerJoinsGame::getPlayerID() const
-{
-	return playerID;
-}
-
-
-
-NetPlayerLeavesGame::NetPlayerLeavesGame()
-	: playerID(0)
-{
-
-}
-
-
-
-NetPlayerLeavesGame::NetPlayerLeavesGame(Uint16 playerID)
-	: playerID(playerID)
-{
-
-}
-
-
-
-Uint8 NetPlayerLeavesGame::getMessageType() const
-{
-	return MNetPlayerLeavesGame;
-}
-
-
-
-void NetPlayerLeavesGame::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetPlayerLeavesGame");
-	stream->writeUint16(playerID, "playerID");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetPlayerLeavesGame::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetPlayerLeavesGame");
-	playerID = stream->readUint16("playerID");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetPlayerLeavesGame::format() const
-{
-	std::ostringstream s;
-	s<<"NetPlayerLeavesGame()";
-	return s.str();
-}
-
-
-
-bool NetPlayerLeavesGame::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetPlayerLeavesGame))
-	{
-		const NetPlayerLeavesGame& r = dynamic_cast<const NetPlayerLeavesGame&>(rhs);
-		if(playerID == r.playerID)
-			return true;
-	}
-	return false;
-}
-
-
-
-
-Uint16 NetPlayerLeavesGame::getPlayerID() const
-{
-	return playerID;
-}
 
 
 NetStartGame::NetStartGame()
@@ -2512,6 +2378,444 @@ bool NetNotReadyToLaunch::operator==(const NetMessage& rhs) const
 Uint16 NetNotReadyToLaunch::getPlayerID() const
 {
 	return playerID;
+}
+
+
+
+
+NetEveryoneReadyToLaunch::NetEveryoneReadyToLaunch()
+{
+
+}
+
+
+
+Uint8 NetEveryoneReadyToLaunch::getMessageType() const
+{
+	return MNetEveryoneReadyToLaunch;
+}
+
+
+
+void NetEveryoneReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetEveryoneReadyToLaunch");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetEveryoneReadyToLaunch::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetEveryoneReadyToLaunch");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetEveryoneReadyToLaunch::format() const
+{
+	std::ostringstream s;
+	s<<"NetEveryoneReadyToLaunch()";
+	return s.str();
+}
+
+
+
+bool NetEveryoneReadyToLaunch::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetEveryoneReadyToLaunch))
+	{
+		//const NetEveryoneReadyToLaunch& r = dynamic_cast<const NetEveryoneReadyToLaunch&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetNotEveryoneReadyToLaunch::NetNotEveryoneReadyToLaunch()
+{
+
+}
+
+
+
+Uint8 NetNotEveryoneReadyToLaunch::getMessageType() const
+{
+	return MNetNotEveryoneReadyToLaunch;
+}
+
+
+
+void NetNotEveryoneReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetNotEveryoneReadyToLaunch");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetNotEveryoneReadyToLaunch::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetNotEveryoneReadyToLaunch");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetNotEveryoneReadyToLaunch::format() const
+{
+	std::ostringstream s;
+	s<<"NetNotEveryoneReadyToLaunch()";
+	return s.str();
+}
+
+
+
+bool NetNotEveryoneReadyToLaunch::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetNotEveryoneReadyToLaunch))
+	{
+		//const NetNotEveryoneReadyToLaunch& r = dynamic_cast<const NetNotEveryoneReadyToLaunch&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetRequestAddAI::NetRequestAddAI()
+	: type(0)
+{
+
+}
+
+
+
+NetRequestAddAI::NetRequestAddAI(Uint8 type)
+	:type(type)
+{
+}
+
+
+
+Uint8 NetRequestAddAI::getMessageType() const
+{
+	return MNetRequestAddAI;
+}
+
+
+
+void NetRequestAddAI::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestAddAI");
+	stream->writeUint8(type, "type");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestAddAI::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestAddAI");
+	type = stream->readUint8("type");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestAddAI::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestAddAI("<<"type="<<type<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRequestAddAI::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestAddAI))
+	{
+		const NetRequestAddAI& r = dynamic_cast<const NetRequestAddAI&>(rhs);
+		if(r.type == type)
+			return true;
+	}
+	return false;
+}
+
+
+Uint8 NetRequestAddAI::getAIType() const
+{
+	return type;
+}
+
+
+
+
+NetRemoveAI::NetRemoveAI()
+	: playerNum(0)
+{
+
+}
+
+
+
+NetRemoveAI::NetRemoveAI(Uint8 playerNum)
+	:playerNum(playerNum)
+{
+}
+
+
+
+Uint8 NetRemoveAI::getMessageType() const
+{
+	return MNetRemoveAI;
+}
+
+
+
+void NetRemoveAI::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRemoveAI");
+	stream->writeUint8(playerNum, "playerNum");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRemoveAI::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRemoveAI");
+	playerNum = stream->readUint8("playerNum");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRemoveAI::format() const
+{
+	std::ostringstream s;
+	s<<"NetRemoveAI("<<"playerNum="<<playerNum<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRemoveAI::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRemoveAI))
+	{
+		const NetRemoveAI& r = dynamic_cast<const NetRemoveAI&>(rhs);
+		if(r.playerNum == playerNum)
+			return true;
+	}
+	return false;
+}
+
+
+Uint8 NetRemoveAI::getPlayerNumber() const
+{
+	return playerNum;
+}
+
+
+
+
+NetChangePlayersTeam::NetChangePlayersTeam()
+	: player(0), team(0)
+{
+
+}
+
+
+
+NetChangePlayersTeam::NetChangePlayersTeam(Uint8 player, Uint8 team)
+	:player(player), team(team)
+{
+}
+
+
+
+Uint8 NetChangePlayersTeam::getMessageType() const
+{
+	return MNetChangePlayersTeam;
+}
+
+
+
+void NetChangePlayersTeam::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetChangePlayersTeam");
+	stream->writeUint8(player, "player");
+	stream->writeUint8(team, "team");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetChangePlayersTeam::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetChangePlayersTeam");
+	player = stream->readUint8("player");
+	team = stream->readUint8("team");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetChangePlayersTeam::format() const
+{
+	std::ostringstream s;
+	s<<"NetChangePlayersTeam("<<"player="<<player<<"; "<<"team="<<team<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetChangePlayersTeam::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetChangePlayersTeam))
+	{
+		const NetChangePlayersTeam& r = dynamic_cast<const NetChangePlayersTeam&>(rhs);
+		if(r.player == player && r.team == team)
+			return true;
+	}
+	return false;
+}
+
+
+Uint8 NetChangePlayersTeam::getPlayer() const
+{
+	return player;
+}
+
+
+
+Uint8 NetChangePlayersTeam::getTeam() const
+{
+	return team;
+}
+
+
+
+
+NetRequestGameStart::NetRequestGameStart()
+{
+
+}
+
+
+
+Uint8 NetRequestGameStart::getMessageType() const
+{
+	return MNetRequestGameStart;
+}
+
+
+
+void NetRequestGameStart::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestGameStart");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestGameStart::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestGameStart");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestGameStart::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestGameStart()";
+	return s.str();
+}
+
+
+
+bool NetRequestGameStart::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestGameStart))
+	{
+		//const NetRequestGameStart& r = dynamic_cast<const NetRequestGameStart&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetRefuseGameStart::NetRefuseGameStart()
+	: refusalReason(YOGUnknownStartRefusalReason)
+{
+
+}
+
+
+
+NetRefuseGameStart::NetRefuseGameStart(YOGGameStartRefusalReason refusalReason)
+	:refusalReason(refusalReason)
+{
+}
+
+
+
+Uint8 NetRefuseGameStart::getMessageType() const
+{
+	return MNetRefuseGameStart;
+}
+
+
+
+void NetRefuseGameStart::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRefuseGameStart");
+	stream->writeUint8(refusalReason, "refusalReason");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRefuseGameStart::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRefuseGameStart");
+	refusalReason = static_cast<YOGGameStartRefusalReason>(stream->readUint8("refusalReason"));
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRefuseGameStart::format() const
+{
+	std::ostringstream s;
+	s<<"NetRefuseGameStart("<<"refusalReason="<<refusalReason<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRefuseGameStart::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRefuseGameStart))
+	{
+		const NetRefuseGameStart& r = dynamic_cast<const NetRefuseGameStart&>(rhs);
+		if(r.refusalReason == refusalReason)
+			return true;
+	}
+	return false;
+}
+
+
+YOGGameStartRefusalReason NetRefuseGameStart::getRefusalReason() const
+{
+	return refusalReason;
 }
 
 

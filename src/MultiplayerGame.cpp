@@ -25,7 +25,7 @@
 #include "StringTable.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
-	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(client, gameHeader)
+	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown)
 {
 	netEngine=NULL;
 	kickReason = YOGUnknownKickReason;
@@ -33,6 +33,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	haveGameHeader = false;
 	wasReadyToStart=false;
 	sentReadyToStart=false;
+	isEveryoneReadyToGo=false;
 	chatChannel=0;
 }
 
@@ -133,7 +134,6 @@ void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 	mapHeader = nmapHeader;
 	shared_ptr<NetSendMapHeader> message(new NetSendMapHeader(mapHeader));
 	client->sendNetMessage(message);
-	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 }
 
 
@@ -174,9 +174,8 @@ void MultiplayerGame::startGame()
 {
 	//make sure the game headers are synced!
 	updateGameHeader();
-	shared_ptr<NetStartGame> message(new NetStartGame);
+	shared_ptr<NetRequestGameStart> message(new NetRequestGameStart);
 	client->sendNetMessage(message);
-	startEngine();
 }
 
 
@@ -188,7 +187,7 @@ bool MultiplayerGame::isGameReadyToStart()
 
 	if(gjcState == HostingGame)
 	{
-		if(!playerManager.isEveryoneReadyToGo())
+		if(!isEveryoneReadyToGo)
 			return false;
 	}
 
@@ -208,12 +207,11 @@ bool MultiplayerGame::isGameReadyToStart()
 
 void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 {
-	playerManager.addAIPlayer(type);
-	
+	shared_ptr<NetRequestAddAI> message(new NetRequestAddAI((Uint8)type));
+	client->sendNetMessage(message);
+
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 	sendToListeners(event);
-	
-	updateGameHeader();
 }
 
 
@@ -226,8 +224,11 @@ void MultiplayerGame::kickPlayer(int playerNum)
 		shared_ptr<NetKickPlayer> message(new NetKickPlayer(bp.playerID, YOGKickedByHost));
 		client->sendNetMessage(message);
 	}
-
-	playerManager.removePlayer(playerNum);
+	if(bp.type>=BasePlayer::P_AI)
+	{
+		shared_ptr<NetRemoveAI> message(new NetRemoveAI(playerNum));
+		client->sendNetMessage(message);
+	}
 
 	updateGameHeader();
 }
@@ -236,7 +237,8 @@ void MultiplayerGame::kickPlayer(int playerNum)
 
 void MultiplayerGame::changeTeam(int playerNum, int teamNum)
 {
-	playerManager.changeTeamNumber(playerNum, teamNum);
+	shared_ptr<NetChangePlayersTeam> message(new NetChangePlayersTeam(playerNum, teamNum));
+	client->sendNetMessage(message);
 }
 
 /*
@@ -354,22 +356,6 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
 	}
-	if(type==MNetPlayerJoinsGame)
-	{
-		shared_ptr<NetPlayerJoinsGame> info = static_pointer_cast<NetPlayerJoinsGame>(message);
-		playerManager.addPerson(info->getPlayerID());
-		
-		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-		sendToListeners(event);
-	}
-	if(type==MNetPlayerLeavesGame)
-	{
-		shared_ptr<NetPlayerLeavesGame> info = static_pointer_cast<NetPlayerLeavesGame>(message);
-		playerManager.removePerson(info->getPlayerID());
-		
-		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-		sendToListeners(event);
-	}
 	if(type==MNetStartGame)
 	{
 		//shared_ptr<NetStartGame> info = static_pointer_cast<NetStartGame>(message);
@@ -412,17 +398,13 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			sendToListeners(event);
 		}
 	}
-	if(type==MNetReadyToLaunch)
+	if(type==MNetEveryoneReadyToLaunch)
 	{
-		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
-		Uint16 id = info->getPlayerID();
-		playerManager.setReadyToGo(id, true);
+		isEveryoneReadyToGo = true;
 	}
-	if(type==MNetNotReadyToLaunch)
+	if(type==MNetNotEveryoneReadyToLaunch)
 	{
-		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
-		Uint16 id = info->getPlayerID();
-		playerManager.setReadyToGo(id, false);
+		isEveryoneReadyToGo = false;
 	}
 }
 

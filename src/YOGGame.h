@@ -22,9 +22,11 @@
 #include "YOGPlayer.h"
 #include "MapHeader.h"
 #include <boost/shared_ptr.hpp>
+#include "YOGGamePlayerManager.h"
 
 class YOGMapDistributor;
 class YOGGameServer;
+class YOGGamePlayerManager;
 
 ///This handles a "game" from the server's point of view. This means that it handles
 ///routing between clients, holding the map and game data, etc..
@@ -40,8 +42,17 @@ public:
 	///Adds the player to the game
 	void addPlayer(shared_ptr<YOGPlayer> player);
 
+	///Adds an AI to the game
+	void addAIPlayer(AI::ImplementitionID type);
+
 	///Removes the player from the game
 	void removePlayer(shared_ptr<YOGPlayer> player);
+
+	///Removes the AI from the game
+	void removeAIPlayer(int playerNum);
+
+	///Sets the team of the player
+	void setTeam(int playerNum, int teamNum);
 
 	///Sets the host of the game
 	void setHost(shared_ptr<YOGPlayer> player);
@@ -62,8 +73,8 @@ public:
 	///Returns the map distributor
 	shared_ptr<YOGMapDistributor> getMapDistributor();
 	
-	///Sends a kick message to the player
-	void sendKickMessage(shared_ptr<NetKickPlayer> message);
+	///Kicks the player and sends a kick message to the player
+	void kickPlayer(shared_ptr<NetKickPlayer> message);
 	
 	///Returns whether there are no players left in the game
 	bool isEmpty() const;
@@ -72,10 +83,15 @@ public:
 	Uint16 getGameID() const;
 
 	///Sends that a player is ready to start
-	void sendReadyToStart(shared_ptr<NetReadyToLaunch> message);
+	void setReadyToStart(int playerID);
 
 	///Sends that a player is not ready to start
-	void sendNotReadyToStart(shared_ptr<NetNotReadyToLaunch> message);
+	void setNotReadyToStart(int playerID);
+
+	///Recieves a game start request, refuses to the host if not all the players are ready
+	///While the host is normally updated with this information, lag from the connection
+	///May cause the host to start the game just as another player has joined
+	void recieveGameStartRequest();
 	
 	///Starts the game
 	void startGame();
@@ -85,9 +101,14 @@ public:
 
 	///Returns whether the game is already running or not
 	bool hasGameStarted() const;
+
+	///Returns the hosts ID
+	Uint16 getHostPlayerID() const;
+
 private:
 	bool requested;
 	bool gameStarted;
+	bool oldReadyToLaunch;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	Uint16 gameID;
@@ -96,6 +117,7 @@ private:
 	shared_ptr<YOGMapDistributor> distributor;
 	std::vector<shared_ptr<YOGPlayer> > players;
 	YOGGameServer& server;
+	YOGGamePlayerManager playerManager;
 };
 
 

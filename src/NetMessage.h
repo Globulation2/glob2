@@ -42,27 +42,33 @@ enum NetMessageType
 	MNetAttemptJoinGame,
 	MNetAttemptLogin,
 	MNetAttemptRegistration,
+	MNetChangePlayersTeam,
 	MNetCreateGame,
 	MNetCreateGameAccepted,
 	MNetCreateGameRefused,
 	MNetDisconnect,
+	MNetEveryoneReadyToLaunch,
 	MNetGameJoinAccepted,
 	MNetGameJoinRefused,
 	MNetKickPlayer,
 	MNetLeaveGame,
 	MNetLoginSuccessful,
+	MNetNotEveryoneReadyToLaunch,
 	MNetNotReadyToLaunch,
-	MNetPlayerJoinsGame,
-	MNetPlayerLeavesGame,
 	MNetReadyToLaunch,
+	MNetRefuseGameStart,
 	MNetRefuseLogin,
 	MNetRefuseRegistration,
+	MNetRemoveAI,
+	MNetRequestAddAI,
+	MNetRequestGameStart,
 	MNetRequestMap,
 	MNetRequestNextChunk,
 	MNetSendClientInformation,
 	MNetSendFileChunk,
 	MNetSendFileInformation,
 	MNetSendGameHeader,
+	MNetSendGamePlayerInfo,
 	MNetSendMapHeader,
 	MNetSendOrder,
 	MNetSendServerInformation,
@@ -70,7 +76,6 @@ enum NetMessageType
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
-	MNetSendGamePlayerInfo,
 	//type_append_marker
 };
 
@@ -867,7 +872,7 @@ public:
 	///Creates a NetSendGamePlayerInfo message
 	NetSendGamePlayerInfo();
 
-	///Creates a NetSendGamePlayerInfo message. Must be handed an array of 32 BasePlayer
+	///Creates a NetSendGamePlayerInfo message.
 	NetSendGamePlayerInfo(GameHeader& header);
 
 	///Returns MNetSendGamePlayerInfo
@@ -889,78 +894,8 @@ public:
 	///Downloads all of the player info to this game header
 	void downloadToGameHeader(GameHeader& header);
 private:
-	BasePlayer players[32];
+	GameHeader gameHeader;
 
-};
-
-
-
-
-///NetPlayerJoinsGame
-class NetPlayerJoinsGame : public NetMessage
-{
-public:
-	///Creates a NetPlayerJoinsGame message
-	NetPlayerJoinsGame();
-
-	///Creates a NetPlayerJoinsGame message
-	NetPlayerJoinsGame(Uint16 playerID);
-
-	///Returns MNetPlayerJoinsGame
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetPlayerJoinsGame message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetPlayerJoinsGame
-	bool operator==(const NetMessage& rhs) const;
-	
-	///Returns the player ID
-	Uint16 getPlayerID() const;
-private:
-	Uint16 playerID;
-};
-
-
-
-
-///NetPlayerLeavesGame
-class NetPlayerLeavesGame : public NetMessage
-{
-public:
-	///Creates a NetPlayerLeavesGame message
-	NetPlayerLeavesGame();
-	
-	///Creates a NetPlayerLeavesGame message
-	NetPlayerLeavesGame(Uint16 playerID);
-
-	///Returns MNetPlayerLeavesGame
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetPlayerLeavesGame message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetPlayerLeavesGame
-	bool operator==(const NetMessage& rhs) const;
-	
-	///Returns the player ID
-	Uint16 getPlayerID() const;
-private:
-	Uint16 playerID;
 };
 
 
@@ -1254,6 +1189,235 @@ public:
 private:
 private:
 	Uint16 playerID;
+};
+
+
+
+
+///NetEveryoneReadyToLaunch
+class NetEveryoneReadyToLaunch : public NetMessage
+{
+public:
+	///Creates a NetEveryoneReadyToLaunch message
+	NetEveryoneReadyToLaunch();
+
+	///Returns MNetEveryoneReadyToLaunch
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetEveryoneReadyToLaunch message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetEveryoneReadyToLaunch
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetNotEveryoneReadyToLaunch
+class NetNotEveryoneReadyToLaunch : public NetMessage
+{
+public:
+	///Creates a NetNotEveryoneReadyToLaunch message
+	NetNotEveryoneReadyToLaunch();
+
+	///Returns MNetNotEveryoneReadyToLaunch
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetNotEveryoneReadyToLaunch message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetNotEveryoneReadyToLaunch
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRequestAddAI
+class NetRequestAddAI : public NetMessage
+{
+public:
+	///Creates a NetRequestAddAI message
+	NetRequestAddAI();
+
+	///Creates a NetRequestAddAI message
+	NetRequestAddAI(Uint8 type);
+
+	///Returns MNetRequestAddAI
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestAddAI message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestAddAI
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves type
+	Uint8 getAIType() const;
+private:
+private:
+	Uint8 type;
+};
+
+
+
+
+///NetRemoveAI
+class NetRemoveAI : public NetMessage
+{
+public:
+	///Creates a NetRemoveAI message
+	NetRemoveAI();
+
+	///Creates a NetRemoveAI message
+	NetRemoveAI(Uint8 playerNum);
+
+	///Returns MNetRemoveAI
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRemoveAI message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRemoveAI
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves playerNum
+	Uint8 getPlayerNumber() const;
+private:
+private:
+	Uint8 playerNum;
+};
+
+
+
+
+///NetChangePlayersTeam
+class NetChangePlayersTeam : public NetMessage
+{
+public:
+	///Creates a NetChangePlayersTeam message
+	NetChangePlayersTeam();
+
+	///Creates a NetChangePlayersTeam message
+	NetChangePlayersTeam(Uint8 player, Uint8 team);
+
+	///Returns MNetChangePlayersTeam
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetChangePlayersTeam message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetChangePlayersTeam
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves player
+	Uint8 getPlayer() const;
+
+	///Retrieves team
+	Uint8 getTeam() const;
+private:
+private:
+	Uint8 player;
+	Uint8 team;
+};
+
+
+
+
+///NetRequestGameStart
+class NetRequestGameStart : public NetMessage
+{
+public:
+	///Creates a NetRequestGameStart message
+	NetRequestGameStart();
+
+	///Returns MNetRequestGameStart
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestGameStart message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestGameStart
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRefuseGameStart
+class NetRefuseGameStart : public NetMessage
+{
+public:
+	///Creates a NetRefuseGameStart message
+	NetRefuseGameStart();
+
+	///Creates a NetRefuseGameStart message
+	NetRefuseGameStart(YOGGameStartRefusalReason refusalReason);
+
+	///Returns MNetRefuseGameStart
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRefuseGameStart message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRefuseGameStart
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves refusalReason
+	YOGGameStartRefusalReason getRefusalReason() const;
+private:
+private:
+	YOGGameStartRefusalReason refusalReason;
 };
 
 

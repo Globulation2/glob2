@@ -171,19 +171,43 @@ void YOGPlayer::update()
 	else if(type==MNetReadyToLaunch)
 	{
 		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
-		game->sendReadyToStart(info);
+		game->setReadyToStart(playerID);
 	}
 	//This recieves a not ready to launch message
 	else if(type==MNetNotReadyToLaunch)
 	{
 		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
-		game->sendNotReadyToStart(info);
+		game->setNotReadyToStart(playerID);
 	}
 	//This recieves a kick message
 	else if(type==MNetKickPlayer)
 	{
 		shared_ptr<NetKickPlayer> info = static_pointer_cast<NetKickPlayer>(message);
-		game->sendKickMessage(info);
+		game->kickPlayer(info);
+	}
+	//This recieves a request to add an AI player to the game
+	else if(type==MNetRequestAddAI)
+	{
+		shared_ptr<NetRequestAddAI> info = static_pointer_cast<NetRequestAddAI>(message);
+		game->addAIPlayer(static_cast<AI::ImplementitionID>(info->getAIType()));
+	}
+	//This recieves a request to add an AI player to the game
+	else if(type==MNetRemoveAI)
+	{
+		shared_ptr<NetRemoveAI> info = static_pointer_cast<NetRemoveAI>(message);
+		game->removeAIPlayer(info->getPlayerNumber());
+	}
+	//This recieves a request to change a players team in the game
+	else if(type==MNetChangePlayersTeam)
+	{
+		shared_ptr<NetChangePlayersTeam> info = static_pointer_cast<NetChangePlayersTeam>(message);
+		game->setTeam(info->getPlayer(), info->getTeam());
+	}
+	//This recieves a request to change a players team in the game
+	else if(type==MNetRequestGameStart)
+	{
+		shared_ptr<NetRequestGameStart> info = static_pointer_cast<NetRequestGameStart>(message);
+		game->recieveGameStartRequest();
 	}
 }
 

@@ -336,30 +336,6 @@ int NetTestSuite::testNetMessages()
 	if(!testSerialize(sendGameHeader1))
 		return 55;
 
-	//Test NetPlayerJoinsGame
-	if(!testInitial<NetPlayerJoinsGame>())
-		return 56;
-
-	shared_ptr<NetPlayerJoinsGame> playerJoinsGame1(new NetPlayerJoinsGame(1721));
-	if(!testSerialize(playerJoinsGame1))
-		return 57;
-
-	shared_ptr<NetPlayerJoinsGame> playerJoinsGame2(new NetPlayerJoinsGame(42));
-	if(!testSerialize(playerJoinsGame2))
-		return 58;
-
-	//Test NetPlayerLeavesGame
-	if(!testInitial<NetPlayerLeavesGame>())
-		return 59;
-
-	shared_ptr<NetPlayerLeavesGame> playerLeavesGame1(new NetPlayerLeavesGame(1721));
-	if(!testSerialize(playerLeavesGame1))
-		return 60;
-
-	shared_ptr<NetPlayerLeavesGame> playerLeavesGame2(new NetPlayerLeavesGame(42));
-	if(!testSerialize(playerLeavesGame2))
-		return 61;
-
 	//Test NetStartGame
 	if(!testInitial<NetStartGame>())
 		return 62;

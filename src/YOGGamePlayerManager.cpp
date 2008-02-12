@@ -16,13 +16,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "MultiplayerGamePlayerManager.h"
+#include "YOGGamePlayerManager.h"
 #include "FormatableString.h"
+#include "YOGGame.h"
 
 using namespace GAGCore;
 
-MultiplayerGamePlayerManager::MultiplayerGamePlayerManager(boost::shared_ptr<YOGClient> client, GameHeader& gameHeader)
-	: client(client), gameHeader(gameHeader) 
+YOGGamePlayerManager::YOGGamePlayerManager(YOGGame* game, GameHeader& gameHeader, YOGGameServer& server)
+	: game(game), gameHeader(gameHeader), server(server)
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -31,7 +32,7 @@ MultiplayerGamePlayerManager::MultiplayerGamePlayerManager(boost::shared_ptr<YOG
 	numberOfTeams = 0;
 }
 
-void MultiplayerGamePlayerManager::addPerson(Uint16 playerID)
+void YOGGamePlayerManager::addPerson(Uint16 playerID)
 {
 	int team_number = chooseTeamNumber();
 
@@ -41,9 +42,9 @@ void MultiplayerGamePlayerManager::addPerson(Uint16 playerID)
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.type == BasePlayer::P_NONE)
 		{
-			bp = BasePlayer(x, client->findPlayerName(playerID).c_str(), team_number, BasePlayer::P_IP);
+			bp = BasePlayer(x, server.getPlayer(playerID)->getPlayerName().c_str(), team_number, BasePlayer::P_IP);
 			bp.playerID = playerID;
-			if(playerID != client->getPlayerID())
+			if(playerID != game->getHostPlayerID())
 				readyToStart[x] = false;
 			break;
 		}
@@ -55,7 +56,7 @@ void MultiplayerGamePlayerManager::addPerson(Uint16 playerID)
 
 
 
-void MultiplayerGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
+void YOGGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 {
 	//16 is current maximum
 	if(gameHeader.getNumberOfPlayers() < 16)
@@ -81,7 +82,7 @@ void MultiplayerGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 
 
 
-void MultiplayerGamePlayerManager::removePerson(Uint16 playerID)
+void YOGGamePlayerManager::removePerson(Uint16 playerID)
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -96,7 +97,7 @@ void MultiplayerGamePlayerManager::removePerson(Uint16 playerID)
 
 
 
-void MultiplayerGamePlayerManager::removePlayer(int playerNumber)
+void YOGGamePlayerManager::removePlayer(int playerNumber)
 {
 	//Remove the player. Any players that are after this player are moved backwards
 	gameHeader.getBasePlayer(playerNumber) = BasePlayer();
@@ -120,7 +121,7 @@ void MultiplayerGamePlayerManager::removePlayer(int playerNumber)
 
 
 
-void MultiplayerGamePlayerManager::changeTeamNumber(int playerNumber, int newTeamNumber)
+void YOGGamePlayerManager::changeTeamNumber(int playerNumber, int newTeamNumber)
 {
 	//Changes the team
 	gameHeader.getBasePlayer(playerNumber).teamNumber = newTeamNumber;
@@ -130,7 +131,7 @@ void MultiplayerGamePlayerManager::changeTeamNumber(int playerNumber, int newTea
 
 
 
-void MultiplayerGamePlayerManager::setReadyToGo(int playerID, bool isReady)
+void YOGGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -145,7 +146,7 @@ void MultiplayerGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 
 
 
-bool MultiplayerGamePlayerManager::isEveryoneReadyToGo()
+bool YOGGamePlayerManager::isEveryoneReadyToGo()
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -159,14 +160,14 @@ bool MultiplayerGamePlayerManager::isEveryoneReadyToGo()
 
 
 
-void MultiplayerGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
+void YOGGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
 {
 	numberOfTeams = nnumberOfTeams;
 }
 
 
 
-int MultiplayerGamePlayerManager::chooseTeamNumber()
+int YOGGamePlayerManager::chooseTeamNumber()
 {
 	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
 	//Count number of players for each team
@@ -193,10 +194,10 @@ int MultiplayerGamePlayerManager::chooseTeamNumber()
 
 
 
-void MultiplayerGamePlayerManager::sendPlayerInfoUpdate()
+void YOGGamePlayerManager::sendPlayerInfoUpdate()
 {
 	boost::shared_ptr<NetSendGamePlayerInfo> message(new NetSendGamePlayerInfo(gameHeader));
-	client->sendNetMessage(message);
+	game->routeMessage(message);
 }
 
 

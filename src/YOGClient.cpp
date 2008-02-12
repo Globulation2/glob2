@@ -222,15 +222,6 @@ void YOGClient::update()
 		{
 			joinedGame->recieveMessage(message);
 		}
-		if(type==MNetPlayerJoinsGame)
-		{
-			joinedGame->recieveMessage(message);
-		}
-		if(type==MNetPlayerLeavesGame)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
 		if(type==MNetStartGame)
 		{
 			joinedGame->recieveMessage(message);
@@ -255,8 +246,14 @@ void YOGClient::update()
 		{
 			joinedGame->recieveMessage(message);
 		}
-
-
+		if(type==MNetEveryoneReadyToLaunch)
+		{
+			joinedGame->recieveMessage(message);
+		}
+		if(type==MNetNotEveryoneReadyToLaunch)
+		{
+			joinedGame->recieveMessage(message);
+		}
 		if(type==MNetSendFileInformation)
 		{
 			assembler->handleMessage(message);

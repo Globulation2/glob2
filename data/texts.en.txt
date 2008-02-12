@@ -16,6 +16,8 @@ fV: Show vision for Inn buildings (to steal units)
 mV: Show vision for Markets buildings (to exchange fruits)
 [abreaviation explanation V]
 V: Show vision for all buildings
+[The host has cancelled the game]
+The host has cancelled the game
 [Add AI]
 Add AI
 [add map]
