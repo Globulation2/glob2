@@ -24,7 +24,6 @@
 #include "NetListener.h"
 #include "YOGConsts.h"
 #include "YOGPlayer.h"
-#include "YOGGame.h"
 #include "YOGPasswordRegistry.h"
 #include "NetBroadcaster.h"
 #include "YOGChatChannelManager.h"

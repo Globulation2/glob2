@@ -19,6 +19,7 @@
 #include "YOGGameServer.h"
 #include "NetTestSuite.h"
 #include <algorithm>
+#include "YOGGame.h"
 
 YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)

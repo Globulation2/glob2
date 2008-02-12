@@ -16,19 +16,20 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef MultiplayerGamePlayerManager_h
-#define MultiplayerGamePlayerManager_h
+#ifndef YOGGamePlayerManager_h
+#define YOGGamePlayerManager_h
 
-#include "YOGClient.h"
 #include "GameHeader.h"
+#include "YOGGameServer.h"
+class YOGGame;
 
 ///This class handles the players and AI's that can join, be kicked out of, disconnect, leave
 ///and otherwise be mangled arround with in an online game during the setup stage
-class MultiplayerGamePlayerManager
+class YOGGamePlayerManager
 {
 public:
 	///Constructs the player manager
-	MultiplayerGamePlayerManager(boost::shared_ptr<YOGClient> client, GameHeader& gameHeader);
+	YOGGamePlayerManager(YOGGame* game, GameHeader& gameHeader, YOGGameServer& server);
 	///Adds a person to the gameHeader
 	void addPerson(Uint16 playerID);
 	///This is intended to add an AI to the game
@@ -55,8 +56,10 @@ private:
 	///Represents the basic player information in the game
 	GameHeader& gameHeader;
 	bool readyToStart[32];
-	boost::shared_ptr<YOGClient> client;
+	YOGGame* game;
 	int numberOfTeams;
+	bool previousReadyToLaunch;
+	YOGGameServer& server;
 
 };
 

@@ -22,6 +22,7 @@
 [Alga]
 [algae]
 [alliances]
+[The host has cancelled the game]
 [and]
 [any explorer]
 [are dying hungry]

@@ -24,7 +24,6 @@
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
-#include "MultiplayerGamePlayerManager.h"
 #include <list>
 
 ///This class represents a multi-player game, both in the game and while waiting for players
@@ -126,7 +125,6 @@ public:
 	
 protected:
 	friend class YOGClient;
-	MultiplayerGamePlayerManager playerManager;
 
 	///This receives a message that is sent to the game
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
@@ -157,6 +155,7 @@ private:
 	bool sentReadyToStart;
 	std::list<MultiplayerGameEventListener*> listeners;
 	Uint32 chatChannel;
+	bool isEveryoneReadyToGo;
 };
 
 

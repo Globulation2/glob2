@@ -22,10 +22,11 @@
 #include "YOGGameServer.h"
 
 YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
-	: gameID(gameID), chatChannel(chatChannel), server(server)
+	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(this, gameHeader, server)
 {
 	requested=false;
 	gameStarted=false;
+	oldReadyToLaunch=false;
 }
 
 
@@ -66,6 +67,18 @@ void YOGGame::update()
 	}
 	if(distributor)
 		distributor->update();
+	if(playerManager.isEveryoneReadyToGo() && !oldReadyToLaunch)
+	{
+		shared_ptr<NetEveryoneReadyToLaunch> readyToLaunch(new NetEveryoneReadyToLaunch);
+		host->sendMessage(readyToLaunch);
+		oldReadyToLaunch=true;
+	}
+	else if(!playerManager.isEveryoneReadyToGo() && oldReadyToLaunch)
+	{
+		shared_ptr<NetNotEveryoneReadyToLaunch> notReadyToLaunch(new NetNotEveryoneReadyToLaunch);
+		host->sendMessage(notReadyToLaunch);
+		oldReadyToLaunch=false;
+	}
 }
 
 void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
@@ -82,10 +95,16 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 		player->sendMessage(header2);
 	}
 	players.push_back(player);
-	shared_ptr<NetPlayerJoinsGame> join(new NetPlayerJoinsGame(player->getPlayerID()));
-	host->sendMessage(join);
 	//Add the player to the chat channel for communication
 	server.getChatChannelManager().getChannel(chatChannel)->addPlayer(player);
+	playerManager.addPerson(player->getPlayerID());
+}
+
+
+
+void YOGGame::addAIPlayer(AI::ImplementitionID type)
+{
+	playerManager.addAIPlayer(type);
 }
 
 
@@ -100,8 +119,7 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 	{
 		if(player!=host)
 		{
-			shared_ptr<NetPlayerLeavesGame> message(new NetPlayerLeavesGame(player->getPlayerID()));
-			host->sendMessage(message);
+			playerManager.removePerson(player->getPlayerID());
 		}
 		else
 		{
@@ -124,6 +142,20 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 
 
 
+void YOGGame::removeAIPlayer(int playerNum)
+{
+	playerManager.removePlayer(playerNum);
+}
+
+
+
+void YOGGame::setTeam(int playerNum, int teamNum)
+{
+	playerManager.changeTeamNumber(playerNum, teamNum);
+}
+
+
+
 void YOGGame::setHost(shared_ptr<YOGPlayer> player)
 {
 	host = player;
@@ -135,6 +167,7 @@ void YOGGame::setHost(shared_ptr<YOGPlayer> player)
 void YOGGame::setMapHeader(const MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
+	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 }
 
 
@@ -180,8 +213,9 @@ shared_ptr<YOGMapDistributor> YOGGame::getMapDistributor()
 
 
 
-void YOGGame::sendKickMessage(shared_ptr<NetKickPlayer> message)
+void YOGGame::kickPlayer(shared_ptr<NetKickPlayer> message)
 {
+	
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if((*i)->getPlayerID() == message->getPlayerID())
@@ -209,16 +243,32 @@ Uint16 YOGGame::getGameID() const
 
 
 
-void YOGGame::sendReadyToStart(shared_ptr<NetReadyToLaunch> message)
+void YOGGame::setReadyToStart(int playerID)
 {
-	host->sendMessage(message);
+	playerManager.setReadyToGo(playerID, true);
 }
 
 
 
-void YOGGame::sendNotReadyToStart(shared_ptr<NetNotReadyToLaunch> message)
+void YOGGame::setNotReadyToStart(int playerID)
 {
-	host->sendMessage(message);
+	playerManager.setReadyToGo(playerID, false);
+}
+
+
+
+void YOGGame::recieveGameStartRequest()
+{
+	if(playerManager.isEveryoneReadyToGo())
+	{
+		if(!gameStarted)
+			startGame();
+	}
+	else
+	{
+		boost::shared_ptr<NetRefuseGameStart> message(new NetRefuseGameStart(YOGNotAllPlayersReady));
+		host->sendMessage(message);
+	}
 }
 
 
@@ -227,7 +277,7 @@ void YOGGame::startGame()
 {
 	gameStarted=true;
 	boost::shared_ptr<NetStartGame> message(new NetStartGame);
-	routeMessage(message, host);
+	routeMessage(message);
 	server.getGameInfo(gameID).setGameState(YOGGameInfo::GameRunning);
 }
 
@@ -243,6 +293,13 @@ Uint32 YOGGame::getChatChannel() const
 bool YOGGame::hasGameStarted() const
 {
 	return gameStarted;
+}
+
+
+
+Uint16 YOGGame::getHostPlayerID() const
+{
+	return host->getPlayerID();
 }
 
 
