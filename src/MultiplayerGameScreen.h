@@ -56,6 +56,7 @@ public:
 		GameRefused,
 		Kicked,
 		GameCancelled,
+		ServerDisconnected,
 	};
 
 private:

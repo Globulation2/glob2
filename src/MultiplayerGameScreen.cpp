@@ -219,6 +219,10 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	{
 		endExecute(GameCancelled);
 	}
+	else if(type == MGEServerDisconnected)
+	{
+		endExecute(ServerDisconnected);
+	}
 }
 
 
