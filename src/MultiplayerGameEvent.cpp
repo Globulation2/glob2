@@ -317,4 +317,37 @@ bool MGGameStarted::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGServerDisconnected::MGServerDisconnected()
+{
+}
+
+
+
+Uint8 MGServerDisconnected::getEventType() const
+{
+	return MGEServerDisconnected;
+}
+
+
+
+std::string MGServerDisconnected::format() const
+{
+	std::ostringstream s;
+	s<<"MGServerDisconnected()";
+	return s.str();
+}
+
+
+
+bool MGServerDisconnected::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGServerDisconnected))
+	{
+		//const MGServerDisconnected& r = dynamic_cast<const MGServerDisconnected&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

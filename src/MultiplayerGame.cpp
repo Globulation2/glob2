@@ -50,6 +50,12 @@ MultiplayerGame::~MultiplayerGame()
 void MultiplayerGame::update()
 {
 	client->update();
+	if(!client->isConnected())
+	{
+		shared_ptr<MGServerDisconnected> event(new MGServerDisconnected);
+		sendToListeners(event);
+	}
+
 	if(assembler)
 		assembler->update();
 
