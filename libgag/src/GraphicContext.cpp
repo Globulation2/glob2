@@ -1693,41 +1693,34 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
-			
+			GLuint texture[1];
 			float fr = 255.0f*(float)color.r;
 			float fg = 255.0f*(float)color.g;
 			float fb = 255.0f*(float)color.b;
-			
 			glState.doBlend(1);
 			glState.doTexture(0);
-			for (int dy=0; dy < mapH-1; dy++)
-			{
-				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW; dx++)
+			float *** image=new float**[mapH];
+			for (int i=0; i<mapH; image[i++]=new float*[mapW])
+				for (int j=0; j<mapW;image[i][j++]=new float[4])
 				{
-					glBegin(GL_TRIANGLE_FAN);
-					//This interpolates to find the center color, then fans out to the four corners.
-					int midx = x + dx * cellW + cellW/2;
-					float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-					float mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-					glColor4f(fr, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-					glVertex2f(midx, midy);
-					//Touch each of the four corners
-					glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx]);
-					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
-
-					glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-					glColor4f(fr, fg, fb, map[mapW * dy + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
-
-					glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glEnd();
+					image[i][j][0]=color.r;
+					image[i][j][1]=color.g;
+					image[i][j][2]=color.b;
+					image[i][j][3]=map[mapW*j+i];
 				}
-			}
+			glGenTextures(1, &texture[0]);
+			glBindTexture(GL_TEXTURE_2D, texture[0]);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mapW, mapH, 0, GL_RGBA, GL_UNSIGNED_INT, image);
+			glBindTexture( GL_TEXTURE_2D, texture[0] );
+			glBegin(GL_QUADS);
+				glTexCoord2f( 1.0f, 1.0f ); glVertex3f( -1.0f,  1.0f, -1.0f );
+				glTexCoord2f( 1.0f, 0.0f ); glVertex3f( -1.0f,  1.0f,  1.0f );
+				glTexCoord2f( 0.0f, 0.0f ); glVertex3f(  1.0f,  1.0f,  1.0f );
+				glTexCoord2f( 0.0f, 1.0f ); glVertex3f(  1.0f,  1.0f, -1.0f );
+			glEnd( );
+			delete [] image;
 		}
 		else
 		#endif
@@ -1740,38 +1733,35 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
-			
+			GLuint texture[1];
 			glState.doBlend(1);
-			glState.doTexture(0);
-			for (int dy=0; dy < mapH/*-1*/; dy++)
+			glState.doTexture(1);
+			GLubyte *** image=new GLubyte**[mapH];
+			for (int i=0; i<mapH; i++)
 			{
-				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW; dx++)
+				image[i]=new GLubyte*[mapW];
+				for (int j=0; j<mapW;j++)
 				{
-
-					glBegin(GL_TRIANGLE_FAN);
-					//This interpolates to find the center color, then fans out to the four corners.
-					int midx = x + dx * cellW + cellW/2;
-					int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-					int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-					glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-					glVertex2f(midx, midy);
-					//Touch each of the four corners
-					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
-					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
-
-					glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
-
-					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glEnd();
+					image[i][j]=new GLubyte[4];
+					image[i][j][0]=color.r;
+					image[i][j][1]=color.g;
+					image[i][j][2]=color.b;
+					image[i][j][3]=map[mapW*j+i];
 				}
 			}
+			glGenTextures(1, &texture[0]);
+			glBindTexture(GL_TEXTURE_2D, texture[0]);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,mapW,mapH, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+			glBindTexture( GL_TEXTURE_2D, texture[0] );
+			glBegin(GL_QUADS);
+				glTexCoord2f( 1.0f, 1.0f ); glVertex2f(x           ,y);
+				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x           ,y+mapH*cellH);
+				glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+mapH*cellH);
+				glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+mapW*cellW,y);
+			glEnd( );
+			delete [] image;
 		}
 		else
 		#endif
