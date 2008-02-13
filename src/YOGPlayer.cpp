@@ -227,17 +227,22 @@ void YOGPlayer::update()
 	{
 		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
 		pings.push_back(SDL_GetTicks() - pingSendTime);
-		if(pings.size() > 5)
+		if(pings.size() > 10)
 			pings.erase(pings.begin());
 
 		pingValue = 0;
-		for(std::list<unsigned>::iterator i=pings.begin(); i!=pings.end(); ++i)
+		//Copy the ping values, sort them, remove the top two highest. If there are any anomolies, these are it
+		std::vector<unsigned> spings(pings.begin(), pings.end());
+		std::sort(spings.begin(), spings.end(), std::greater<unsigned>());
+		if(spings.size() > 2)
+			spings.erase(spings.begin());
+		if(spings.size() > 2)
+			spings.erase(spings.begin());
+		for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
 		{
 			pingValue += *i;
 		}
-		pingValue /= pings.size();
-
-		std::cout<<"pingValue="<<pingValue<<std::endl;
+		pingValue /= spings.size();
 
 		pingCountdown = 1250;
 	}
@@ -290,6 +295,13 @@ std::string YOGPlayer::getPlayerName()
 boost::shared_ptr<YOGGame> YOGPlayer::getGame()
 {
 	return game;
+}
+
+
+
+unsigned YOGPlayer::getAveragePing() const
+{
+	return pingValue;
 }
 
 

@@ -78,6 +78,7 @@ enum NetMessageType
 	MNetUpdatePlayerList,
 	MNetPing,
 	MNetPingReply,
+	MNetSetLatencyMode,
 	//type_append_marker
 };
 
@@ -1474,6 +1475,42 @@ public:
 
 	///Compares with another NetPingReply
 	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetSetLatencyMode
+class NetSetLatencyMode : public NetMessage
+{
+public:
+	///Creates a NetSetLatencyMode message
+	NetSetLatencyMode();
+
+	///Creates a NetSetLatencyMode message
+	NetSetLatencyMode(Uint8 latencyAdjustment);
+
+	///Returns MNetSetLatencyMode
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSetLatencyMode message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSetLatencyMode
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves latencyAdjustment
+	Uint8 getLatencyAdjustment() const;
+private:
+private:
+	Uint8 latencyAdjustment;
 };
 
 

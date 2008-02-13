@@ -61,6 +61,9 @@ public:
 
 	///Returns the game the player is connected to
 	boost::shared_ptr<YOGGame> getGame();
+
+	///Returns the players current average ping
+	unsigned getAveragePing() const;
 private:
 	///This enum represents the state machine of the initial connection
 	enum ConnectionState
