@@ -257,6 +257,10 @@ void YOGClient::update()
 		{
 			joinedGame->recieveMessage(message);
 		}
+		if(type==MNetSetLatencyMode)
+		{
+			joinedGame->recieveMessage(message);
+		}
 		if(type==MNetSendFileInformation)
 		{
 			assembler->handleMessage(message);

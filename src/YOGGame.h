@@ -105,10 +105,15 @@ public:
 	///Returns the hosts ID
 	Uint16 getHostPlayerID() const;
 
+	///This chooses a latency mode and sends it to all the players
+	void chooseLatencyMode();
+
 private:
 	bool requested;
 	bool gameStarted;
 	bool oldReadyToLaunch;
+	int latencyMode;
+	int latencyUpdateTimer;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	Uint16 gameID;

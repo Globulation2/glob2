@@ -151,6 +151,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetPingReply:
 		message.reset(new NetPingReply);
 		break;
+		case MNetSetLatencyMode:
+		message.reset(new NetSetLatencyMode);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -2926,6 +2929,75 @@ bool NetPingReply::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
+
+
+
+NetSetLatencyMode::NetSetLatencyMode()
+	: latencyAdjustment(0)
+{
+
+}
+
+
+
+NetSetLatencyMode::NetSetLatencyMode(Uint8 latencyAdjustment)
+	:latencyAdjustment(latencyAdjustment)
+{
+}
+
+
+
+Uint8 NetSetLatencyMode::getMessageType() const
+{
+	return MNetSetLatencyMode;
+}
+
+
+
+void NetSetLatencyMode::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSetLatencyMode");
+	stream->writeUint8(latencyAdjustment, "latencyAdjustment");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSetLatencyMode::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSetLatencyMode");
+	latencyAdjustment = stream->readUint8("latencyAdjustment");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSetLatencyMode::format() const
+{
+	std::ostringstream s;
+	s<<"NetSetLatencyMode("<<"latencyAdjustment="<<latencyAdjustment<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSetLatencyMode::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSetLatencyMode))
+	{
+		const NetSetLatencyMode& r = dynamic_cast<const NetSetLatencyMode&>(rhs);
+		if(r.latencyAdjustment == latencyAdjustment)
+			return true;
+	}
+	return false;
+}
+
+
+Uint8 NetSetLatencyMode::getLatencyAdjustment() const
+{
+	return latencyAdjustment;
+}
+
 
 
 //append_code_position

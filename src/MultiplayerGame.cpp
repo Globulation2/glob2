@@ -419,6 +419,11 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		isEveryoneReadyToGo = false;
 	}
+	if(type==MNetSetLatencyMode)
+	{
+		shared_ptr<NetSetLatencyMode> info = static_pointer_cast<NetSetLatencyMode>(message);
+		gameHeader.setGameLatency(info->getLatencyAdjustment());
+	}
 }
 
 

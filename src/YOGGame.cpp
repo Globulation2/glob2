@@ -27,11 +27,21 @@ YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
 	requested=false;
 	gameStarted=false;
 	oldReadyToLaunch=false;
+	latencyMode = 0;
+	latencyUpdateTimer = 1000;
 }
 
 
 void YOGGame::update()
 {
+	latencyUpdateTimer -= 1;
+	if(latencyUpdateTimer == 0)
+	{
+		chooseLatencyMode();
+		latencyUpdateTimer=1000;
+	}
+
+
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end();)
 	{
 		if(!(*i)->isConnected())
@@ -98,6 +108,7 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	//Add the player to the chat channel for communication
 	server.getChatChannelManager().getChannel(chatChannel)->addPlayer(player);
 	playerManager.addPerson(player->getPlayerID());
+	chooseLatencyMode();
 }
 
 
@@ -138,6 +149,8 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 
 	//Remove the player from the chat channel for communication
 	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);
+
+	chooseLatencyMode();
 }
 
 
@@ -301,5 +314,41 @@ Uint16 YOGGame::getHostPlayerID() const
 {
 	return host->getPlayerID();
 }
+
+
+
+void YOGGame::chooseLatencyMode()
+{
+	int highest = 0;
+	int second_highest = 0;
+	for(int i=0; i<players.size(); ++i)
+	{
+		if(players[i]->getAveragePing() > highest)
+		{
+			second_highest = highest;
+			highest = players[i]->getAveragePing();
+		}
+		else if(players[i]->getAveragePing() > second_highest)
+		{
+			second_highest = players[i]->getAveragePing();
+		}
+	}
+
+	int total_allocation = (highest * 12 + second_highest * 12) / 10;
+	int latency_adjustment = 0;
+	if(total_allocation < 320)
+		latency_adjustment = 8;
+	else if(total_allocation < 540)
+		latency_adjustment = 14;
+	else if(total_allocation < 800)
+		latency_adjustment = 20;
+
+	if(latency_adjustment != latencyMode)
+	{
+		boost::shared_ptr<NetSetLatencyMode> message(new NetSetLatencyMode(latency_adjustment));
+		routeMessage(message);
+	}
+}
+
 
 
