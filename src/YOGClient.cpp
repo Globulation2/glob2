@@ -269,6 +269,11 @@ void YOGClient::update()
 		{
 			assembler->handleMessage(message);
 		}
+		if(type == MNetPing)
+		{
+			shared_ptr<NetPingReply> event(new NetPingReply);
+			nc.sendMessage(event);
+		}
 	}
 }
 
