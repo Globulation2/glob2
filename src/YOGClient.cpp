@@ -212,15 +212,18 @@ void YOGClient::update()
 		}
 		if(type==MNetSendMapHeader)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendGameHeader)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendGamePlayerInfo)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetStartGame)
 		{

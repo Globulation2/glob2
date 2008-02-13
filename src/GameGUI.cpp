@@ -146,6 +146,7 @@ void GameGUI::init()
 	gamePaused=false;
 	hardPause=false;
 	exitGlobCompletely=false;
+	flushOutgoingAndExit=false;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
 	drawAccessibilityAids=false;
@@ -632,6 +633,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+					flushOutgoingAndExit=true;
 					return true;
 				}
 				break;
@@ -752,6 +754,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case InGameEndOfGameScreen::QUIT:
 				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit=true;
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
@@ -914,7 +917,6 @@ void GameGUI::processEvent(SDL_Event *event)
 				SDL_GetMouseState(&mx, &my);
 				toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
 			}
-	
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
@@ -935,6 +937,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		flushOutgoingAndExit=true;
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{

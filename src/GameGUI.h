@@ -135,6 +135,8 @@ public:
 	bool notmenu;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
+	//! true if the game needs to flush all outgoing orders and exit
+	bool flushOutgoingAndExit;
 	//! if this is not empty, then Engine should load the map with this filename.
 	std::string toLoadGameFileName;
 	//bool showExtendedInformation;

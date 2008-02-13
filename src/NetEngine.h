@@ -61,6 +61,9 @@ public:
 	
 	///Returns the current step number
 	int getStep();
+
+	///Sends all pending orders across the network without a checksum. This is used if the game has to end immediettly
+	void flushAllOrders();
 	
 	///Adds padding for the player for the given latency,
 	///this is used because with latency, there aren't any

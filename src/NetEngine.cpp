@@ -141,6 +141,29 @@ int NetEngine::getStep()
 
 
 
+void NetEngine::flushAllOrders()
+{
+	while(!outgoing.empty())
+	{
+		boost::shared_ptr<Order> localOrder;
+		localOrder = outgoing.front();
+		outgoing.pop();
+		localOrder->gameCheckSum = -1;
+
+		if(client)
+		{
+			localOrder->sender = localPlayer;
+			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
+			client->sendNetMessage(message);
+		}
+		pushOrder(localOrder, localPlayer, false);
+
+	}
+	localOrderSendCountdown = networkOrderRate - 1;
+}
+
+
+
 void NetEngine::prepareForLatency(int playerNumber, int latency)
 {
 	for(int s=0; s<latency; ++s)
