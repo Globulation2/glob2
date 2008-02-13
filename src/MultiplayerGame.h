@@ -69,9 +69,12 @@ public:
 
 	///Sets the map header
 	void setMapHeader(MapHeader& mapHeader);
-	
+
 	///Returns the map header
 	MapHeader& getMapHeader();
+	
+	///Tells whether the game is still connected to the server
+	bool isStillConnected() const;
 
 	///Returns the game header. It can be modified. After modifying it,
 	///one must call updateGameHeader(). At no point should any changes

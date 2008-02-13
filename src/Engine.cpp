@@ -247,6 +247,11 @@ int Engine::run(void)
 	
 			if (!gui.hardPause)
 			{
+				if(!multiplayer->isStillConnected())
+				{
+					gui.isRunning = false;
+				}
+
 				// But some jobs have to be executed synchronously:
 				if (networkReadyToExecute)
 				{
@@ -354,8 +359,19 @@ int Engine::run(void)
 				}
 			}
 			
-//			if(gui.exitGlobCompletely)
-//				break;
+			if(gui.flushOutgoingAndExit)
+			{
+				shared_ptr<Order> localOrder = gui.getOrder();
+				while(localOrder->getOrderType() != ORDER_NULL)
+				{
+					net->addLocalOrder(localOrder);
+					localOrder = gui.getOrder();
+				}
+
+				gui.isRunning=false;
+				net->flushAllOrders();
+				break;
+			}
 		}
 
 		cpuStats.format();

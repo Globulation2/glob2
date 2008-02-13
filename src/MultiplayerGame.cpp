@@ -151,6 +151,13 @@ MapHeader& MultiplayerGame::getMapHeader()
 
 
 
+bool MultiplayerGame::isStillConnected() const
+{
+	return client->isConnected();
+}
+
+
+
 GameHeader& MultiplayerGame::getGameHeader()
 {
 	return gameHeader;
