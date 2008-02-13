@@ -76,6 +76,8 @@ enum NetMessageType
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
+	MNetPing,
+	MNetPingReply,
 	//type_append_marker
 };
 
@@ -1418,6 +1420,60 @@ public:
 private:
 private:
 	YOGGameStartRefusalReason refusalReason;
+};
+
+
+
+
+///NetPing
+class NetPing : public NetMessage
+{
+public:
+	///Creates a NetPing message
+	NetPing();
+
+	///Returns MNetPing
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPing message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPing
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetPingReply
+class NetPingReply : public NetMessage
+{
+public:
+	///Creates a NetPingReply message
+	NetPingReply();
+
+	///Returns MNetPingReply
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPingReply message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPingReply
+	bool operator==(const NetMessage& rhs) const;
 };
 
 

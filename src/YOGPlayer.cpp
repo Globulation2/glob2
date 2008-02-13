@@ -29,6 +29,9 @@ YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameSer
 	loginState = YOGLoginUnknown;
 	gameID=0;
 	netVersion=0;
+	pingCountdown=1250;
+	pingValue=0;
+	pingSendTime=0;
 }
 
 
@@ -38,6 +41,16 @@ void YOGPlayer::update()
 	//Send outgoing messages
 	updateConnectionSates();
 	updateGamePlayerLists();
+
+	pingCountdown -= 1;
+	if(pingCountdown == 0)
+	{
+		shared_ptr<NetPing> message(new NetPing);
+		connection->sendMessage(message);
+		pingSendTime = SDL_GetTicks();
+	}
+
+
 
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = connection->getMessage();
@@ -208,6 +221,25 @@ void YOGPlayer::update()
 	{
 		shared_ptr<NetRequestGameStart> info = static_pointer_cast<NetRequestGameStart>(message);
 		game->recieveGameStartRequest();
+	}
+	//This recieves a ping reply
+	else if(type==MNetPingReply)
+	{
+		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
+		pings.push_back(SDL_GetTicks() - pingSendTime);
+		if(pings.size() > 5)
+			pings.erase(pings.begin());
+
+		pingValue = 0;
+		for(std::list<unsigned>::iterator i=pings.begin(); i!=pings.end(); ++i)
+		{
+			pingValue += *i;
+		}
+		pingValue /= pings.size();
+
+		std::cout<<"pingValue="<<pingValue<<std::endl;
+
+		pingCountdown = 1250;
 	}
 }
 

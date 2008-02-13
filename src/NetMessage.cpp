@@ -145,6 +145,12 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetRefuseGameStart:
 		message.reset(new NetRefuseGameStart);
 		break;
+		case MNetPing:
+		message.reset(new NetPing);
+		break;
+		case MNetPingReply:
+		message.reset(new NetPingReply);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -2818,6 +2824,108 @@ YOGGameStartRefusalReason NetRefuseGameStart::getRefusalReason() const
 	return refusalReason;
 }
 
+
+
+
+NetPing::NetPing()
+{
+
+}
+
+
+
+Uint8 NetPing::getMessageType() const
+{
+	return MNetPing;
+}
+
+
+
+void NetPing::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPing");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPing::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPing");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPing::format() const
+{
+	std::ostringstream s;
+	s<<"NetPing()";
+	return s.str();
+}
+
+
+
+bool NetPing::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPing))
+	{
+		//const NetPing& r = dynamic_cast<const NetPing&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetPingReply::NetPingReply()
+{
+
+}
+
+
+
+Uint8 NetPingReply::getMessageType() const
+{
+	return MNetPingReply;
+}
+
+
+
+void NetPingReply::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPingReply");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPingReply::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPingReply");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPingReply::format() const
+{
+	std::ostringstream s;
+	s<<"NetPingReply()";
+	return s.str();
+}
+
+
+
+bool NetPingReply::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPingReply))
+	{
+		//const NetPingReply& r = dynamic_cast<const NetPingReply&>(rhs);
+		return true;
+	}
+	return false;
+}
 
 
 //append_code_position

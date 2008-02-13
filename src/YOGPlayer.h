@@ -135,6 +135,16 @@ private:
 	Uint16 gameID;
 	///Links to the connected game
 	shared_ptr<YOGGame> game;
+
+	///Counts down between sending a ping
+	unsigned short pingCountdown;
+	///This tells the current average value of the pings
+	unsigned pingValue;
+	///This says the time when the ping was sent, 0 means not waiting on ping reply
+	unsigned pingSendTime;
+	///This holds the most recent 5 pings
+	std::list<unsigned> pings;
+	
 };
 
 
