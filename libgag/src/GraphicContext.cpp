@@ -1697,16 +1697,21 @@ namespace GAGCore
 			float fr = 255.0f*(float)color.r;
 			float fg = 255.0f*(float)color.g;
 			float fb = 255.0f*(float)color.b;
-			glState.doBlend(1);
-			glState.doTexture(0);
-			float *** image=new float**[mapH];
-			for (int i=0; i<mapH; image[i++]=new float*[mapW])
-				for (int j=0; j<mapW;image[i][j++]=new float[4])
+//			glState.doBlend(1);
+//			glState.doTexture(1);
+glEnable(GL_BLEND);
+glEnable(GL_TEXTURE_2D);
+/*		int* array = new int[value];
+		int (*ptr)[10] = new int[value][10];
+		int (*ptr)[10][15] = new int[value][10][15];*/
+			float image[mapW*mapH*4];
+			for (int i=0; i<mapH; i++)
+				for (int j=0; j<mapW;j++)
 				{
-					image[i][j][0]=color.r;
-					image[i][j][1]=color.g;
-					image[i][j][2]=color.b;
-					image[i][j][3]=map[mapW*j+i];
+					image[(i*mapW+j)*4+0]=color.r;
+					image[(i*mapW+j)*4+1]=color.g;
+					image[(i*mapW+j)*4+2]=color.b;
+					image[(i*mapW+j)*4+3]=map[mapW*j+i];
 				}
 			glGenTextures(1, &texture[0]);
 			glBindTexture(GL_TEXTURE_2D, texture[0]);
@@ -1715,12 +1720,12 @@ namespace GAGCore
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mapW, mapH, 0, GL_RGBA, GL_UNSIGNED_INT, image);
 			glBindTexture( GL_TEXTURE_2D, texture[0] );
 			glBegin(GL_QUADS);
-				glTexCoord2f( 1.0f, 1.0f ); glVertex3f( -1.0f,  1.0f, -1.0f );
-				glTexCoord2f( 1.0f, 0.0f ); glVertex3f( -1.0f,  1.0f,  1.0f );
-				glTexCoord2f( 0.0f, 0.0f ); glVertex3f(  1.0f,  1.0f,  1.0f );
-				glTexCoord2f( 0.0f, 1.0f ); glVertex3f(  1.0f,  1.0f, -1.0f );
+				glTexCoord2f( 0.0f, 0.0f ); glVertex2f(0         ,0);
+				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(0         ,mapH*cellH);
+				glTexCoord2f( 1.0f, 1.0f ); glVertex2f(mapW*cellW,mapH*cellH);
+				glTexCoord2f( 0.0f, 1.0f ); glVertex2f(mapW*cellW,0);
 			glEnd( );
-			delete [] image;
+			//delete [] image;
 		}
 		else
 		#endif
@@ -1734,9 +1739,23 @@ namespace GAGCore
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
 			GLuint texture[1];
-			glState.doBlend(1);
-			glState.doTexture(1);
-			GLubyte *** image=new GLubyte**[mapH];
+			//glState.resetCache();
+			//glState.doBlend(1);
+			//glState.doTexture(1);
+glEnable(GL_BLEND);
+glEnable(GL_TEXTURE_2D);
+			GLubyte image[64][64][4];
+			for (int i=0; i<64; i++)
+			{
+				for (int j=0; j<64;j++)
+				{
+					image[i][j][0]=color.r;
+					image[i][j][1]=color.g;
+					image[i][j][2]=color.b;
+					image[i][j][3]=map[mapW*j+i];
+				}
+			}
+/*			GLubyte *** image=new GLubyte**[mapH];
 			for (int i=0; i<mapH; i++)
 			{
 				image[i]=new GLubyte*[mapW];
@@ -1749,19 +1768,45 @@ namespace GAGCore
 					image[i][j][3]=map[mapW*j+i];
 				}
 			}
+1726 assert(mapW * mapH <= static_cast<int>(map.size()));
+1727
+1728 glState.doBlend(1);
+1729 glState.doTexture(0);
+1730 for (int dy=0; dy < mapH-1; dy++)
+1731 {
+1732 glBegin(GL_TRIANGLE_STRIP);
+1733 for (int dx=0; dx < mapW; dx++)
+1734 {
+1735 glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
+1736 glVertex2f(x + dx * cellW, y + dy * cellH);
+1737 glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
+1738 glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
+1739 }
+1740 glEnd();
+1741 }
+			GLubyte image[64][64][4];
+			for (int i=0; i<64; i++)
+			{
+				for (int j=0; j<64;j++)
+				{
+					image[i][j][0]=color.r;
+					image[i][j][1]=color.g;
+					image[i][j][2]=color.b;
+					image[i][j][3]=map[mapW*j+i];
+				}
+			}*/
 			glGenTextures(1, &texture[0]);
 			glBindTexture(GL_TEXTURE_2D, texture[0]);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,mapW,mapH, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+			glTexImage2D(GL_TEXTURE_2D, 0, 4,64,64/*mapW,mapH*/, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 			glBindTexture( GL_TEXTURE_2D, texture[0] );
 			glBegin(GL_QUADS);
-				glTexCoord2f( 1.0f, 1.0f ); glVertex2f(x           ,y);
-				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x           ,y+mapH*cellH);
-				glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+mapH*cellH);
-				glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+mapW*cellW,y);
+				glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
+				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+0         ,y+mapH*cellH);
+				glTexCoord2f( 1.0f, 1.0f ); glVertex2f(x+mapW*cellW,y+mapH*cellH);
+				glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+mapW*cellW,y+0);
 			glEnd( );
-			delete [] image;
 		}
 		else
 		#endif

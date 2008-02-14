@@ -32,7 +32,7 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 {
 	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 	{
-		//tribute to the torrodial world: the viewpot must never jump by more than 31.
+		//tribute to the torrodial world: the viewport must never jump by more than 31.
 		//if it does, we assume a jump in the opposite direction
 		static int vpX=0;
 		static int vpY=0;
