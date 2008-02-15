@@ -77,17 +77,20 @@ void YOGGame::update()
 	}
 	if(distributor)
 		distributor->update();
-	if(playerManager.isEveryoneReadyToGo() && !oldReadyToLaunch)
+	if(gameStarted == false)
 	{
-		shared_ptr<NetEveryoneReadyToLaunch> readyToLaunch(new NetEveryoneReadyToLaunch);
-		host->sendMessage(readyToLaunch);
-		oldReadyToLaunch=true;
-	}
-	else if(!playerManager.isEveryoneReadyToGo() && oldReadyToLaunch)
-	{
-		shared_ptr<NetNotEveryoneReadyToLaunch> notReadyToLaunch(new NetNotEveryoneReadyToLaunch);
-		host->sendMessage(notReadyToLaunch);
-		oldReadyToLaunch=false;
+		if(playerManager.isEveryoneReadyToGo() && !oldReadyToLaunch)
+		{
+			shared_ptr<NetEveryoneReadyToLaunch> readyToLaunch(new NetEveryoneReadyToLaunch);
+			host->sendMessage(readyToLaunch);
+			oldReadyToLaunch=true;
+		}
+		else if(!playerManager.isEveryoneReadyToGo() && oldReadyToLaunch)
+		{
+			shared_ptr<NetNotEveryoneReadyToLaunch> notReadyToLaunch(new NetNotEveryoneReadyToLaunch);
+			host->sendMessage(notReadyToLaunch);
+			oldReadyToLaunch=false;
+		}
 	}
 }
 
