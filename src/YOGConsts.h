@@ -25,8 +25,8 @@
 
 ///New YOG constants
 const Uint16 YOG_SERVER_PORT = 7487;
-//const std::string YOG_SERVER_IP = "yog.globulation2.org";
-const std::string YOG_SERVER_IP = "127.0.0.1";
+const std::string YOG_SERVER_IP = "yog.globulation2.org";
+//const std::string YOG_SERVER_IP = "127.0.0.1";
 
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"

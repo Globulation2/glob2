@@ -135,10 +135,13 @@ public:
 	
 	///Changes the Order that NetSendOrder holds. This will
 	///delete an Order that was already present.
-	void changeOrder(boost::shared_ptr<Order> newOrder);
+	void addOrder(boost::shared_ptr<Order> newOrder);
 	
-	///Returns the Order that NetSendOrder holds.
+	///Returns the Order that NetSendOrder holds
 	boost::shared_ptr<Order> getOrder();
+
+	///Changes the Order that NetSendOrder holds
+	void changeOrder(boost::shared_ptr<Order> newOrder);
 
 	///Returns MNetSendOrder
 	Uint8 getMessageType() const;
