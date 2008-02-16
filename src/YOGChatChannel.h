@@ -55,6 +55,9 @@ public:
 	///Returns the channel ID of this channel
 	Uint32 getChannelID() const;
 
+	///Sets the channel ID of this channel
+	void setChannelID(Uint32 channel);
+
 	///Sets the listener for this channel. Does not take ownership. Listener ignored if set to null.
 	void setListener(YOGChatListener* listener);
 
