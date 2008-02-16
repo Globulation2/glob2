@@ -160,6 +160,8 @@ Lőszer
 
 [campaign]
 Hadjárat
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ Játékok
 A kórház elkészült
 [the hospital is under attack]
 Megtámadták a kórházat
+[The host has cancelled the game]
+
 [the inn is finished]
 Az étkezde elkészült
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ Megsemmisítésre várva
 [waiting for %0]
 %0 -ra várva
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 megy

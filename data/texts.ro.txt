@@ -160,6 +160,8 @@ Gloanţe
 
 [campaign]
 Campanie
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ Jocuri
 Spitalul este terminat
 [the hospital is under attack]
 Spitalul este atacat
+[The host has cancelled the game]
+
 [the inn is finished]
 Popasul este terminat
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ Versiune
 [waiting for %0]
 Aşteaptă %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Merge

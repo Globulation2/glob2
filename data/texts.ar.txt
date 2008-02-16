@@ -160,6 +160,8 @@ Building short explanation (24 chars max)
 
 [campaign]
 الحملة
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ The game has not been finished
 انتهى بناء المستشفى
 [the hospital is under attack]
 المستشفى تحت الهجوم
+[The host has cancelled the game]
+
 [the inn is finished]
 انتهى بناء الكوخ
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ Start/Stop Upgrade
 [waiting for %0]
 انتظار %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 يمشى

@@ -160,6 +160,8 @@ AIWarrush
 
 [campaign]
 Кампања
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Болница је завршена
 [the hospital is under attack]
 Болница је нападнута
+[The host has cancelled the game]
+
 [the inn is finished]
 Кантина је завршена
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [waiting for %0]
 Чека се на %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Ходај

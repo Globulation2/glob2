@@ -160,6 +160,8 @@ Kugler
 Kampagne redigator
 [campaign]
 Kampagne
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ Spillet
 Hospitalet er færdigbygget
 [the hospital is under attack]
 Hospitalet er under angreb
+[The host has cancelled the game]
+
 [the inn is finished]
 Kroen er færdig gjordt
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ Vænter på konstruktion
 [waiting for %0]
 Vænter på %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Gå

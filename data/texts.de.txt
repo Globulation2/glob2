@@ -160,6 +160,8 @@ Kugeln
 
 [campaign]
 Feldzug
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ Spiele
 Das Hospital ist fertig
 [the hospital is under attack]
 Das Hospital wird angegriffen
+[The host has cancelled the game]
+
 [the inn is finished]
 Der Gasthof ist fertig
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ Warten auf Zerstörung
 [waiting for %0]
 Warten auf %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Gehen

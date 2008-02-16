@@ -245,10 +245,14 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 
 YOGGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
 {
+	if(games.find(gameID) == games.end())
+		return YOGGameDoesntExist;
 	if(games[gameID]->hasGameStarted())
 		return YOGGameHasAlreadyStarted;
 	if(games[gameID]->getGameHeader().getNumberOfPlayers() == 16)
 		return YOGGameIsFull;
+
+
 	return YOGJoinRefusalUnknown;
 }
 

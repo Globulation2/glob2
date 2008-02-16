@@ -285,6 +285,8 @@ void YOGScreen::joinGame()
 				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
 			else if(game->getGameJoinState() == YOGGameIsFull)
 				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
+			else if(game->getGameJoinState() == YOGGameDoesntExist)
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
 	}
 }
 

@@ -85,6 +85,7 @@ private:
 	void updateJoinedPlayers();
 
 	TextButton *startButton;
+	TextButton *cancelButton;
 	std::vector<TextButton *> addAI;
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];

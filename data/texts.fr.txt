@@ -160,6 +160,8 @@ Boulets
 Editeur de campagne
 [campaign]
 Campagne
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ Parties
 L'hôpital est terminé
 [the hospital is under attack]
 L'hôpital est attaqué
+[The host has cancelled the game]
+
 [the inn is finished]
 L'auberge est terminée
 [the inn is under attack]
@@ -1016,6 +1020,8 @@ En attente de destruction
 Attente de %0
 [waiting for key]
 Attend une touche
+[Waiting]
+
 [Walk]
 Marche
 [warflag explanation 2]
