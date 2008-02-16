@@ -299,15 +299,18 @@ void YOGClient::update()
 		}
 		if(type==MNetSendFileInformation)
 		{
-			assembler->handleMessage(message);
+			if(assembler)
+				assembler->handleMessage(message);
 		}
 		if(type==MNetRequestNextChunk)
 		{
-			assembler->handleMessage(message);
+			if(assembler)
+				assembler->handleMessage(message);
 		}
 		if(type==MNetSendFileChunk)
 		{
-			assembler->handleMessage(message);
+			if(assembler)
+				assembler->handleMessage(message);
 		}
 		if(type == MNetPing)
 		{
