@@ -502,3 +502,13 @@ Uint32 MultiplayerGame::getChatChannel() const
 	return chatChannel;
 }
 
+
+
+bool MultiplayerGame::isKicking(int playerID)
+{
+
+}
+
+
+
+

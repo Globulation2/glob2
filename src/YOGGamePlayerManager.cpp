@@ -108,6 +108,13 @@ void YOGGamePlayerManager::removePlayer(int playerNumber)
 		{
 			bp.number -= 1;
 			bp.numberMask = 1u>>bp.number;
+			if(bp.type >= Player::P_AI)
+			{
+				FormatableString name("%0 %1");
+				name.arg(AI::getAIText(bp.type)).arg(bp.number+1);
+				bp.name = name;
+			}
+
 			gameHeader.getBasePlayer(x-1) = bp;
 			bp = BasePlayer();
 			readyToStart[x-1] = readyToStart[x];

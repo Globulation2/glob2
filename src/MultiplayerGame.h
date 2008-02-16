@@ -125,6 +125,9 @@ public:
 
 	///Gets the chat channel for this game
 	Uint32 getChatChannel() const;
+
+	///Returns whether the particular player ID is being kicked
+	bool isKicking(int playerNumber);
 	
 protected:
 	friend class YOGClient;
