@@ -105,9 +105,11 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 		shared_ptr<NetSendMapHeader> header1(new NetSendMapHeader(mapHeader));
 		shared_ptr<NetSendGameHeader> header2(new NetSendGameHeader(gameHeader));
 		shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
+		boost::shared_ptr<NetSetLatencyMode> latency(new NetSetLatencyMode(latencyMode));
 		player->sendMessage(header1);
 		player->sendMessage(header2);
 		player->sendMessage(sendGamePlayerInfo);
+		player->sendMessage(latency);
 	}
 	players.push_back(player);
 	//Add the player to the chat channel for communication
