@@ -163,6 +163,8 @@ private:
 	std::list<MultiplayerGameEventListener*> listeners;
 	Uint32 chatChannel;
 	bool isEveryoneReadyToGo;
+
+	NetGamePlayerManager playerManager;
 };
 
 

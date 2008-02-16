@@ -25,7 +25,7 @@
 #include "StringTable.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
-	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown)
+	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
 {
 	netEngine=NULL;
 	kickReason = YOGUnknownKickReason;
