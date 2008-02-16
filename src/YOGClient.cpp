@@ -196,19 +196,23 @@ void YOGClient::update()
 
 		if(type==MNetCreateGameAccepted)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetCreateGameRefused)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetGameJoinAccepted)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetGameJoinRefused)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendMapHeader)
 		{
@@ -227,11 +231,13 @@ void YOGClient::update()
 		}
 		if(type==MNetStartGame)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetRefuseGameStart)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendOrder)
 		{
@@ -243,43 +249,53 @@ void YOGClient::update()
 		}
 		if(type==MNetRequestMap)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetKickPlayer)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetReadyToLaunch)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetEveryoneReadyToLaunch)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetNotEveryoneReadyToLaunch)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSetLatencyMode)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type == MNetPlayerJoinsGame)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type == MNetAddAI)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type == MNetRemoveAI)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type == MNetChangePlayersTeam)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendFileInformation)
 		{
