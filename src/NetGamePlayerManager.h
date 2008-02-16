@@ -16,22 +16,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGGamePlayerManager_h
-#define YOGGamePlayerManager_h
+#ifndef NetGamePlayerManager_h
+#define NetGamePlayerManager_h
 
 #include "GameHeader.h"
-#include "YOGGameServer.h"
 class YOGGame;
 
 ///This class handles the players and AI's that can join, be kicked out of, disconnect, leave
 ///and otherwise be mangled arround with in an online game during the setup stage
-class YOGGamePlayerManager
+class NetGamePlayerManager
 {
 public:
 	///Constructs the player manager
-	YOGGamePlayerManager(YOGGame* game, GameHeader& gameHeader, YOGGameServer& server);
+	NetGamePlayerManager(GameHeader& gameHeader);
 	///Adds a person to the gameHeader
-	void addPerson(Uint16 playerID);
+	void addPerson(Uint16 playerID, const std::string& name);
 	///This is intended to add an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
 	///Removes a person from the gameHeader
@@ -50,16 +49,12 @@ public:
 private:
 	///Chooses a team number that has the fewest attached players
 	int chooseTeamNumber();
-	///Sends an update with the new player information
-	void sendPlayerInfoUpdate();
 
 	///Represents the basic player information in the game
 	GameHeader& gameHeader;
 	bool readyToStart[32];
-	YOGGame* game;
 	int numberOfTeams;
 	bool previousReadyToLaunch;
-	YOGGameServer& server;
 
 };
 

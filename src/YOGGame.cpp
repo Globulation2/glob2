@@ -22,7 +22,7 @@
 #include "YOGGameServer.h"
 
 YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
-	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(this, gameHeader, server)
+	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(gameHeader)
 {
 	requested=false;
 	gameStarted=false;
@@ -110,7 +110,11 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	players.push_back(player);
 	//Add the player to the chat channel for communication
 	server.getChatChannelManager().getChannel(chatChannel)->addPlayer(player);
-	playerManager.addPerson(player->getPlayerID());
+	playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
+
+	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
+	host->sendMessage(sendGamePlayerInfo);
+
 	chooseLatencyMode();
 }
 
@@ -119,6 +123,9 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 void YOGGame::addAIPlayer(AI::ImplementitionID type)
 {
 	playerManager.addAIPlayer(type);
+
+	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
+	host->sendMessage(sendGamePlayerInfo);
 }
 
 
@@ -150,8 +157,11 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 		}
 	}
 
-	//Remove the player from the chat channel for communication
+	//Remove the player from the chat channel
 	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);
+
+	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
+	host->sendMessage(sendGamePlayerInfo);
 
 	chooseLatencyMode();
 }
@@ -161,6 +171,9 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 void YOGGame::removeAIPlayer(int playerNum)
 {
 	playerManager.removePlayer(playerNum);
+
+	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
+	host->sendMessage(sendGamePlayerInfo);
 }
 
 
@@ -346,7 +359,7 @@ void YOGGame::chooseLatencyMode()
 	else if(total_allocation < 800)
 		latency_adjustment = 20;
 
-	if(latency_adjustment != latencyMode)
+	if(latency_adjustment != latencyMode && !gameStarted)
 	{
 		boost::shared_ptr<NetSetLatencyMode> message(new NetSetLatencyMode(latency_adjustment));
 		routeMessage(message);
