@@ -224,6 +224,7 @@ void YOGScreen::recieveInternalMessage(const std::string& message)
 {
 	chatWindow->addText(message);
 	chatWindow->addText("\n");
+	chatWindow->addImage(-1);
 	chatWindow->scrollToBottom();
 }
 

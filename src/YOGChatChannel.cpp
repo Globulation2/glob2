@@ -75,6 +75,13 @@ Uint32 YOGChatChannel::getChannelID() const
 
 
 
+void YOGChatChannel::setChannelID(Uint32 channel)
+{
+	channelID = channel;	
+}
+
+
+
 void YOGChatChannel::setListener(YOGChatListener* nlistener)
 {
 	listener = nlistener;

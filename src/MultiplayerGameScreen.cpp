@@ -37,7 +37,7 @@
 #include "IRC.h"
 
 MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
-	: game(game), gameChat(new YOGChatChannel(game->getChatChannel(), client, this)), ircChat(ircChat)
+	: game(game), gameChat(new YOGChatChannel(-1, client, this)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -45,6 +45,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 		{
 			TextButton *button = new TextButton(20, 330-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", AI::getAIText(i).c_str(), ADD_AI+i);
+			button->visible = false;
 			addWidget(button);
 			addAI.push_back(button);
 		}
@@ -243,6 +244,14 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	else if(type == MGEGameHostJoinAccepted)
 	{
 		cancelButton->visible=true;
+		gameChat->setChannelID(game->getChatChannel());
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		{
+			for (size_t i=1; i<AI::SIZE; i++)
+			{
+				addAI[i-1]->visible=true;
+			}
+		}
 	}
 }
 
