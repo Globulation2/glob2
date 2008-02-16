@@ -247,7 +247,7 @@ int Engine::run(void)
 	
 			if (!gui.hardPause)
 			{
-				if(!multiplayer->isStillConnected())
+				if(multiplayer && !multiplayer->isStillConnected())
 				{
 					gui.isRunning = false;
 				}
