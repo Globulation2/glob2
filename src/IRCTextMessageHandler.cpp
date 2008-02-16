@@ -43,9 +43,9 @@ IRCTextMessageHandler::~IRCTextMessageHandler()
 void IRCTextMessageHandler::startIRC(const std::string& username)
 {
 	irc.reset(new IRC);
-	irc->connect(IRC_SERVER, 6667, username);
-	irc->joinChannel(IRC_CHAN);
-	irc->setChatChannel(IRC_CHAN);
+//	irc->connect(IRC_SERVER, 6667, username);
+//	irc->joinChannel(IRC_CHAN);
+//	irc->setChatChannel(IRC_CHAN);
 }
 
 

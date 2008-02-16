@@ -199,10 +199,10 @@ void YOGPlayer::update()
 		game->kickPlayer(info);
 	}
 	//This recieves a request to add an AI player to the game
-	else if(type==MNetRequestAddAI)
+	else if(type==MNetAddAI)
 	{
-		shared_ptr<NetRequestAddAI> info = static_pointer_cast<NetRequestAddAI>(message);
-		game->addAIPlayer(static_cast<AI::ImplementitionID>(info->getAIType()));
+		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
+		game->addAIPlayer(static_cast<AI::ImplementitionID>(info->getType()));
 	}
 	//This recieves a request to add an AI player to the game
 	else if(type==MNetRemoveAI)

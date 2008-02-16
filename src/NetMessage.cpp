@@ -130,9 +130,6 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetNotEveryoneReadyToLaunch:
 		message.reset(new NetNotEveryoneReadyToLaunch);
 		break;
-		case MNetRequestAddAI:
-		message.reset(new NetRequestAddAI);
-		break;
 		case MNetRemoveAI:
 		message.reset(new NetRemoveAI);
 		break;
@@ -153,6 +150,12 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		break;
 		case MNetSetLatencyMode:
 		message.reset(new NetSetLatencyMode);
+		break;
+		case MNetPlayerJoinsGame:
+		message.reset(new NetPlayerJoinsGame);
+		break;
+		case MNetAddAI:
+		message.reset(new NetAddAI);
 		break;
 		///append_create_point
 	}
@@ -2494,75 +2497,6 @@ bool NetNotEveryoneReadyToLaunch::operator==(const NetMessage& rhs) const
 
 
 
-NetRequestAddAI::NetRequestAddAI()
-	: type(0)
-{
-
-}
-
-
-
-NetRequestAddAI::NetRequestAddAI(Uint8 type)
-	:type(type)
-{
-}
-
-
-
-Uint8 NetRequestAddAI::getMessageType() const
-{
-	return MNetRequestAddAI;
-}
-
-
-
-void NetRequestAddAI::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetRequestAddAI");
-	stream->writeUint8(type, "type");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetRequestAddAI::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetRequestAddAI");
-	type = stream->readUint8("type");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetRequestAddAI::format() const
-{
-	std::ostringstream s;
-	s<<"NetRequestAddAI("<<"type="<<type<<"; "<<")";
-	return s.str();
-}
-
-
-
-bool NetRequestAddAI::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetRequestAddAI))
-	{
-		const NetRequestAddAI& r = dynamic_cast<const NetRequestAddAI&>(rhs);
-		if(r.type == type)
-			return true;
-	}
-	return false;
-}
-
-
-Uint8 NetRequestAddAI::getAIType() const
-{
-	return type;
-}
-
-
-
-
 NetRemoveAI::NetRemoveAI()
 	: playerNum(0)
 {
@@ -2996,6 +2930,153 @@ bool NetSetLatencyMode::operator==(const NetMessage& rhs) const
 Uint8 NetSetLatencyMode::getLatencyAdjustment() const
 {
 	return latencyAdjustment;
+}
+
+
+
+
+NetPlayerJoinsGame::NetPlayerJoinsGame()
+	: playerID(0), playerName("")
+{
+
+}
+
+
+
+NetPlayerJoinsGame::NetPlayerJoinsGame(Uint16 playerID, std::string playerName)
+	:playerID(playerID), playerName(playerName)
+{
+}
+
+
+
+Uint8 NetPlayerJoinsGame::getMessageType() const
+{
+	return MNetPlayerJoinsGame;
+}
+
+
+
+void NetPlayerJoinsGame::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPlayerJoinsGame");
+	stream->writeUint16(playerID, "playerID");
+	stream->writeText(playerName, "playerName");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPlayerJoinsGame::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPlayerJoinsGame");
+	playerID = stream->readUint16("playerID");
+	playerName = stream->readText("playerName");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPlayerJoinsGame::format() const
+{
+	std::ostringstream s;
+	s<<"NetPlayerJoinsGame("<<"playerID="<<playerID<<"; "<<"playerName="<<playerName<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetPlayerJoinsGame::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPlayerJoinsGame))
+	{
+		const NetPlayerJoinsGame& r = dynamic_cast<const NetPlayerJoinsGame&>(rhs);
+		if(r.playerID == playerID && r.playerName == playerName)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetPlayerJoinsGame::getPlayerID() const
+{
+	return playerID;
+}
+
+
+
+std::string NetPlayerJoinsGame::getPlayerName() const
+{
+	return playerName;
+}
+
+
+
+
+NetAddAI::NetAddAI()
+	: type(0)
+{
+
+}
+
+
+
+NetAddAI::NetAddAI(Uint8 type)
+	:type(type)
+{
+}
+
+
+
+Uint8 NetAddAI::getMessageType() const
+{
+	return MNetAddAI;
+}
+
+
+
+void NetAddAI::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetAddAI");
+	stream->writeUint8(type, "type");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetAddAI::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetAddAI");
+	type = stream->readUint8("type");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetAddAI::format() const
+{
+	std::ostringstream s;
+	s<<"NetAddAI("<<"type="<<type<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetAddAI::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetAddAI))
+	{
+		const NetAddAI& r = dynamic_cast<const NetAddAI&>(rhs);
+		if(r.type == type)
+			return true;
+	}
+	return false;
+}
+
+
+Uint8 NetAddAI::getType() const
+{
+	return type;
 }
 
 

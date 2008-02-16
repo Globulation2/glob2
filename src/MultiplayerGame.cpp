@@ -140,6 +140,8 @@ void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 	mapHeader = nmapHeader;
 	shared_ptr<NetSendMapHeader> message(new NetSendMapHeader(mapHeader));
 	client->sendNetMessage(message);
+
+	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 }
 
 
@@ -172,6 +174,14 @@ void MultiplayerGame::updateGameHeader()
 	
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 	sendToListeners(event);
+}
+
+
+
+void MultiplayerGame::updatePlayerChanges()
+{
+	shared_ptr<NetSendGamePlayerInfo> message(new NetSendGamePlayerInfo(gameHeader));
+	client->sendNetMessage(message);
 }
 
 
@@ -220,8 +230,10 @@ bool MultiplayerGame::isGameReadyToStart()
 
 void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
 {
-	shared_ptr<NetRequestAddAI> message(new NetRequestAddAI((Uint8)type));
+	shared_ptr<NetAddAI> message(new NetAddAI((Uint8)type));
 	client->sendNetMessage(message);
+
+	playerManager.addAIPlayer(type);
 
 	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 	sendToListeners(event);
@@ -243,13 +255,15 @@ void MultiplayerGame::kickPlayer(int playerNum)
 		client->sendNetMessage(message);
 	}
 
-	updateGameHeader();
+	playerManager.removePlayer(playerNum);
 }
 
 
 
 void MultiplayerGame::changeTeam(int playerNum, int teamNum)
 {
+	playerManager.changeTeamNumber(playerNum, teamNum);
+	
 	shared_ptr<NetChangePlayersTeam> message(new NetChangePlayersTeam(playerNum, teamNum));
 	client->sendNetMessage(message);
 }
@@ -336,6 +350,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
 		mapHeader = info->getMapHeader();
 
+		playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
@@ -374,6 +389,13 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		//shared_ptr<NetStartGame> info = static_pointer_cast<NetStartGame>(message);
 		startEngine();
 	}
+	if(type==MNetRefuseGameStart)
+	{
+		//shared_ptr<NetRefuseGameStart> info = static_pointer_cast<NetRefuseGameStart>(message);
+		
+		shared_ptr<MGGameStartRefused> event(new MGGameStartRefused);
+		sendToListeners(event);
+	}
 	if(type==MNetSendOrder)
 	{
 		//ignore orders for when there is no NetEngine, this occurs when the
@@ -397,18 +419,26 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetKickPlayer)
 	{
 		shared_ptr<NetKickPlayer> info = static_pointer_cast<NetKickPlayer>(message);
-		kickReason = info->getReason();
-		gjcState = NothingYet;
-		
-		if(kickReason == YOGKickedByHost)
+		//Check if we are the ones being kicked
+		if(info->getPlayerID() == client->getPlayerID())
 		{
-			shared_ptr<MGKickedByHostEvent> event(new MGKickedByHostEvent);
-			sendToListeners(event);
+			kickReason = info->getReason();
+			gjcState = NothingYet;
+			
+			if(kickReason == YOGKickedByHost)
+			{
+				shared_ptr<MGKickedByHostEvent> event(new MGKickedByHostEvent);
+				sendToListeners(event);
+			}
+			else if(kickReason == YOGHostDisconnect)
+			{
+				shared_ptr<MGHostCancelledGameEvent> event(new MGHostCancelledGameEvent);
+				sendToListeners(event);
+			}
 		}
-		else if(kickReason == YOGHostDisconnect)
+		else
 		{
-			shared_ptr<MGHostCancelledGameEvent> event(new MGHostCancelledGameEvent);
-			sendToListeners(event);
+			playerManager.removePerson(info->getPlayerID());
 		}
 	}
 	if(type==MNetEveryoneReadyToLaunch)
@@ -423,6 +453,38 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetSetLatencyMode> info = static_pointer_cast<NetSetLatencyMode>(message);
 		gameHeader.setGameLatency(info->getLatencyAdjustment());
+	}
+	if(type==MNetPlayerJoinsGame)
+	{
+		shared_ptr<NetPlayerJoinsGame> info = static_pointer_cast<NetPlayerJoinsGame>(message);
+		playerManager.addPerson(info->getPlayerID(), info->getPlayerName());
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
+	}
+	if(type==MNetAddAI)
+	{
+		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
+		playerManager.addAIPlayer(static_cast<AI::ImplementitionID>(info->getType()));
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
+	}
+	if(type==MNetRemoveAI)
+	{
+		shared_ptr<NetRemoveAI> info = static_pointer_cast<NetRemoveAI>(message);
+		playerManager.removePlayer(info->getPlayerNumber());
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
+	}
+	if(type==MNetChangePlayersTeam)
+	{
+		shared_ptr<NetChangePlayersTeam> info = static_pointer_cast<NetChangePlayersTeam>(message);
+		playerManager.changeTeamNumber(info->getPlayer(), info->getTeam());
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
 	}
 }
 
@@ -503,11 +565,6 @@ Uint32 MultiplayerGame::getChatChannel() const
 }
 
 
-
-bool MultiplayerGame::isKicking(int playerID)
-{
-
-}
 
 
 

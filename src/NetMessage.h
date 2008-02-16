@@ -39,6 +39,7 @@ using namespace boost;
 enum NetMessageType
 {
 	MNetAcceptRegistration,
+	MNetAddAI,
 	MNetAttemptJoinGame,
 	MNetAttemptLogin,
 	MNetAttemptRegistration,
@@ -55,12 +56,14 @@ enum NetMessageType
 	MNetLoginSuccessful,
 	MNetNotEveryoneReadyToLaunch,
 	MNetNotReadyToLaunch,
+	MNetPing,
+	MNetPingReply,
+	MNetPlayerJoinsGame,
 	MNetReadyToLaunch,
 	MNetRefuseGameStart,
 	MNetRefuseLogin,
 	MNetRefuseRegistration,
 	MNetRemoveAI,
-	MNetRequestAddAI,
 	MNetRequestGameStart,
 	MNetRequestMap,
 	MNetRequestNextChunk,
@@ -73,12 +76,10 @@ enum NetMessageType
 	MNetSendOrder,
 	MNetSendServerInformation,
 	MNetSendYOGMessage,
+	MNetSetLatencyMode,
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
-	MNetPing,
-	MNetPingReply,
-	MNetSetLatencyMode,
 	//type_append_marker
 };
 
@@ -1254,42 +1255,6 @@ public:
 
 
 
-///NetRequestAddAI
-class NetRequestAddAI : public NetMessage
-{
-public:
-	///Creates a NetRequestAddAI message
-	NetRequestAddAI();
-
-	///Creates a NetRequestAddAI message
-	NetRequestAddAI(Uint8 type);
-
-	///Returns MNetRequestAddAI
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetRequestAddAI message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetRequestAddAI
-	bool operator==(const NetMessage& rhs) const;
-
-	///Retrieves type
-	Uint8 getAIType() const;
-private:
-private:
-	Uint8 type;
-};
-
-
-
-
 ///NetRemoveAI
 class NetRemoveAI : public NetMessage
 {
@@ -1514,6 +1479,82 @@ public:
 private:
 private:
 	Uint8 latencyAdjustment;
+};
+
+
+
+
+///NetPlayerJoinsGame
+class NetPlayerJoinsGame : public NetMessage
+{
+public:
+	///Creates a NetPlayerJoinsGame message
+	NetPlayerJoinsGame();
+
+	///Creates a NetPlayerJoinsGame message
+	NetPlayerJoinsGame(Uint16 playerID, std::string playerName);
+
+	///Returns MNetPlayerJoinsGame
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPlayerJoinsGame message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPlayerJoinsGame
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves playerID
+	Uint16 getPlayerID() const;
+
+	///Retrieves playerName
+	std::string getPlayerName() const;
+private:
+private:
+	Uint16 playerID;
+	std::string playerName;
+};
+
+
+
+
+///NetAddAI
+class NetAddAI : public NetMessage
+{
+public:
+	///Creates a NetAddAI message
+	NetAddAI();
+
+	///Creates a NetAddAI message
+	NetAddAI(Uint8 type);
+
+	///Returns MNetAddAI
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetAddAI message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAddAI
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves type
+	Uint8 getType() const;
+private:
+private:
+	Uint8 type;
 };
 
 

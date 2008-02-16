@@ -1118,3 +1118,5 @@ You where kicked from the game
 Your %0 are under attack
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
+[Waiting]
+Waiting
