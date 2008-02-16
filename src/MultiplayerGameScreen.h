@@ -99,6 +99,7 @@ private:
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
 	Text *gameFullText;
+	Text *gameStartWaitingText;
 
 	boost::shared_ptr<YOGChatChannel> gameChat;
 	boost::shared_ptr<IRCTextMessageHandler> ircChat;

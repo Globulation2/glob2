@@ -350,4 +350,37 @@ bool MGServerDisconnected::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGGameStartRefused::MGGameStartRefused()
+{
+}
+
+
+
+Uint8 MGGameStartRefused::getEventType() const
+{
+	return MGEGameStartRefused;
+}
+
+
+
+std::string MGGameStartRefused::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameStartRefused()";
+	return s.str();
+}
+
+
+
+bool MGGameStartRefused::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameStartRefused))
+	{
+		//const MGGameStartRefused& r = dynamic_cast<const MGGameStartRefused&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

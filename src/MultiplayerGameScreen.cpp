@@ -51,21 +51,25 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	}
 	
 	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
+	startButton->visible=false;
+	addWidget(startButton);
+
+	gameStartWaitingText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
+	addWidget(gameStartWaitingText);
+	gameStartWaitingText->visible = false;
+
 
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 	else
 		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL));
 
-	startButton->visible=false;
-	addWidget(startButton);
 	notReadyText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
 	gameFullText=new Text(20, 335, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
 	gameFullText->visible=false;
 	addWidget(gameFullText);
-
 
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
@@ -122,6 +126,8 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		if (par1 == START)
 		{
 			//MultiplayerGame will send an event when the game is over
+			gameStartWaitingText->visible=true;
+			startButton->visible=false;
 			game->startGame();
 		}
 		else if (par1 == CANCEL)
@@ -222,6 +228,11 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	else if(type == MGEServerDisconnected)
 	{
 		endExecute(ServerDisconnected);
+	}
+	else if(type == MGEGameStartRefused)
+	{
+		gameStartWaitingText->visible=false;
+		startButton->visible=true;
 	}
 }
 

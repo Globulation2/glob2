@@ -229,6 +229,10 @@ void YOGClient::update()
 		{
 			joinedGame->recieveMessage(message);
 		}
+		if(type==MNetRefuseGameStart)
+		{
+			joinedGame->recieveMessage(message);
+		}
 		if(type==MNetSendOrder)
 		{
 			//ignore orders for when there is no joined game,
@@ -258,6 +262,22 @@ void YOGClient::update()
 			joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSetLatencyMode)
+		{
+			joinedGame->recieveMessage(message);
+		}
+		if(type == MNetPlayerJoinsGame)
+		{
+			joinedGame->recieveMessage(message);
+		}
+		if(type == MNetAddAI)
+		{
+			joinedGame->recieveMessage(message);
+		}
+		if(type == MNetRemoveAI)
+		{
+			joinedGame->recieveMessage(message);
+		}
+		if(type == MNetChangePlayersTeam)
 		{
 			joinedGame->recieveMessage(message);
 		}

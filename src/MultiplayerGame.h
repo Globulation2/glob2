@@ -85,6 +85,9 @@ public:
 	///Call this to send the the changes of the game header to the server
 	void updateGameHeader();
 	
+	///Call this to send the the player-changes to the server
+	void updatePlayerChanges();
+	
 	///Tells whether the list of players has changed since the last call to this function
 	bool hasPlayersChanged();
 	
@@ -126,9 +129,6 @@ public:
 
 	///Gets the chat channel for this game
 	Uint32 getChatChannel() const;
-
-	///Returns whether the particular player ID is being kicked
-	bool isKicking(int playerNumber);
 	
 protected:
 	friend class YOGClient;

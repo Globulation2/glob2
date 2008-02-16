@@ -104,15 +104,17 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	{
 		shared_ptr<NetSendMapHeader> header1(new NetSendMapHeader(mapHeader));
 		shared_ptr<NetSendGameHeader> header2(new NetSendGameHeader(gameHeader));
+		shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
 		player->sendMessage(header1);
 		player->sendMessage(header2);
+		player->sendMessage(sendGamePlayerInfo);
 	}
 	players.push_back(player);
 	//Add the player to the chat channel for communication
 	server.getChatChannelManager().getChannel(chatChannel)->addPlayer(player);
 	playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 
-	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
+	shared_ptr<NetPlayerJoinsGame> sendGamePlayerInfo(new NetPlayerJoinsGame(player->getPlayerID(), player->getPlayerName()));
 	routeMessage(sendGamePlayerInfo);
 
 	chooseLatencyMode();
@@ -124,8 +126,8 @@ void YOGGame::addAIPlayer(AI::ImplementitionID type)
 {
 	playerManager.addAIPlayer(type);
 
-	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-	routeMessage(sendGamePlayerInfo);
+	shared_ptr<NetAddAI> addAI(new NetAddAI(static_cast<Uint8>(type)));
+	routeMessage(addAI, host);
 }
 
 
@@ -172,8 +174,8 @@ void YOGGame::removeAIPlayer(int playerNum)
 {
 	playerManager.removePlayer(playerNum);
 
-	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-	routeMessage(sendGamePlayerInfo);
+	shared_ptr<NetRemoveAI> removeAI(new NetRemoveAI(playerNum));
+	routeMessage(removeAI, host);
 }
 
 
@@ -181,6 +183,9 @@ void YOGGame::removeAIPlayer(int playerNum)
 void YOGGame::setTeam(int playerNum, int teamNum)
 {
 	playerManager.changeTeamNumber(playerNum, teamNum);
+
+	shared_ptr<NetChangePlayersTeam> changeTeam(new NetChangePlayersTeam(playerNum, teamNum));
+	routeMessage(changeTeam, host);
 }
 
 
@@ -244,12 +249,11 @@ shared_ptr<YOGMapDistributor> YOGGame::getMapDistributor()
 
 void YOGGame::kickPlayer(shared_ptr<NetKickPlayer> message)
 {
-	
+	routeMessage(message, host);	
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if((*i)->getPlayerID() == message->getPlayerID())
 		{
-			(*i)->sendMessage(message);
 			removePlayer(*i);
 			break;
 		}
@@ -363,6 +367,7 @@ void YOGGame::chooseLatencyMode()
 	{
 		boost::shared_ptr<NetSetLatencyMode> message(new NetSetLatencyMode(latency_adjustment));
 		routeMessage(message);
+		latencyMode = latency_adjustment;
 	}
 }
 
