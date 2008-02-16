@@ -113,7 +113,7 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-	host->sendMessage(sendGamePlayerInfo);
+	routeMessage(sendGamePlayerInfo);
 
 	chooseLatencyMode();
 }
@@ -125,7 +125,7 @@ void YOGGame::addAIPlayer(AI::ImplementitionID type)
 	playerManager.addAIPlayer(type);
 
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-	host->sendMessage(sendGamePlayerInfo);
+	routeMessage(sendGamePlayerInfo);
 }
 
 
@@ -161,7 +161,7 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);
 
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-	host->sendMessage(sendGamePlayerInfo);
+	routeMessage(sendGamePlayerInfo);
 
 	chooseLatencyMode();
 }
@@ -173,7 +173,7 @@ void YOGGame::removeAIPlayer(int playerNum)
 	playerManager.removePlayer(playerNum);
 
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-	host->sendMessage(sendGamePlayerInfo);
+	routeMessage(sendGamePlayerInfo);
 }
 
 
