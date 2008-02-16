@@ -107,7 +107,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			if(bp.type >= Player::P_AI)
 			{
 				FormatableString name("%0 %1");
-				name.arg(AI::getAIText(bp.type)).arg(bp.number+1);
+				name.arg(AI::getAIText(bp.type - (int)Player::P_AI)).arg(bp.number+1);
 				bp.name = name;
 			}
 

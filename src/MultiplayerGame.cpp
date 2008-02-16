@@ -256,6 +256,9 @@ void MultiplayerGame::kickPlayer(int playerNum)
 	}
 
 	playerManager.removePlayer(playerNum);
+
+	shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+	sendToListeners(event);
 }
 
 
@@ -445,6 +448,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		else
 		{
 			playerManager.removePerson(info->getPlayerID());
+
+			shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+			sendToListeners(event);
 		}
 	}
 	if(type==MNetEveryoneReadyToLaunch)
