@@ -59,11 +59,14 @@ boost::posix_time::ptime YOGChatChannel::getMessageTime(Uint32 n) const
 
 void YOGChatChannel::sendMessage(boost::shared_ptr<YOGMessage> message)
 {
-	messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
-	boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channelID, message));
-	client->sendNetMessage(netmessage);
-	if(listener)
-		listener->recieveTextMessage(message);
+	if(channelID != -1)
+	{
+		messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
+		boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channelID, message));
+		client->sendNetMessage(netmessage);
+		if(listener)
+			listener->recieveTextMessage(message);
+	}
 }
 
 
@@ -77,7 +80,9 @@ Uint32 YOGChatChannel::getChannelID() const
 
 void YOGChatChannel::setChannelID(Uint32 channel)
 {
-	channelID = channel;	
+	client->removeYOGChatChannel(this);
+	channelID = channel;
+	client->addYOGChatChannel(this);
 }
 
 

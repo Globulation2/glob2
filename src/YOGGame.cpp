@@ -360,7 +360,7 @@ void YOGGame::chooseLatencyMode()
 		latency_adjustment = 8;
 	else if(total_allocation < 540)
 		latency_adjustment = 14;
-	else if(total_allocation < 800)
+	else
 		latency_adjustment = 20;
 
 	if(latency_adjustment != latencyMode && !gameStarted)
