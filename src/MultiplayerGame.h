@@ -25,6 +25,7 @@
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
 #include <list>
+#include "NetGamePlayerManager.h"
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient

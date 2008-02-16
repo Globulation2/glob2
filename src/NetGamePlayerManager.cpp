@@ -16,14 +16,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGGamePlayerManager.h"
+#include "NetGamePlayerManager.h"
 #include "FormatableString.h"
 #include "YOGGame.h"
 
 using namespace GAGCore;
 
-YOGGamePlayerManager::YOGGamePlayerManager(YOGGame* game, GameHeader& gameHeader, YOGGameServer& server)
-	: game(game), gameHeader(gameHeader), server(server)
+NetGamePlayerManager::NetGamePlayerManager(GameHeader& gameHeader)
+	: gameHeader(gameHeader)
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -32,7 +32,7 @@ YOGGamePlayerManager::YOGGamePlayerManager(YOGGame* game, GameHeader& gameHeader
 	numberOfTeams = 0;
 }
 
-void YOGGamePlayerManager::addPerson(Uint16 playerID)
+void NetGamePlayerManager::addPerson(Uint16 playerID, const std::string& name)
 {
 	int team_number = chooseTeamNumber();
 
@@ -42,21 +42,19 @@ void YOGGamePlayerManager::addPerson(Uint16 playerID)
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.type == BasePlayer::P_NONE)
 		{
-			bp = BasePlayer(x, server.getPlayer(playerID)->getPlayerName().c_str(), team_number, BasePlayer::P_IP);
+			bp = BasePlayer(x, name, team_number, BasePlayer::P_IP);
 			bp.playerID = playerID;
-			if(playerID != game->getHostPlayerID())
+			if(gameHeader.getNumberOfPlayers() != 0)
 				readyToStart[x] = false;
 			break;
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() + 1);
-
-	sendPlayerInfoUpdate();
 }
 
 
 
-void YOGGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
+void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 {
 	//16 is current maximum
 	if(gameHeader.getNumberOfPlayers() < 16)
@@ -75,14 +73,12 @@ void YOGGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 			}
 		}
 		gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() + 1);
-		
-		sendPlayerInfoUpdate();
 	}
 }
 
 
 
-void YOGGamePlayerManager::removePerson(Uint16 playerID)
+void NetGamePlayerManager::removePerson(Uint16 playerID)
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -97,7 +93,7 @@ void YOGGamePlayerManager::removePerson(Uint16 playerID)
 
 
 
-void YOGGamePlayerManager::removePlayer(int playerNumber)
+void NetGamePlayerManager::removePlayer(int playerNumber)
 {
 	//Remove the player. Any players that are after this player are moved backwards
 	gameHeader.getBasePlayer(playerNumber) = BasePlayer();
@@ -122,23 +118,19 @@ void YOGGamePlayerManager::removePlayer(int playerNumber)
 		}
 	}
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
-
-	sendPlayerInfoUpdate();
 }
 
 
 
-void YOGGamePlayerManager::changeTeamNumber(int playerNumber, int newTeamNumber)
+void NetGamePlayerManager::changeTeamNumber(int playerNumber, int newTeamNumber)
 {
 	//Changes the team
 	gameHeader.getBasePlayer(playerNumber).teamNumber = newTeamNumber;
-	
-	sendPlayerInfoUpdate();
 }
 
 
 
-void YOGGamePlayerManager::setReadyToGo(int playerID, bool isReady)
+void NetGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -153,7 +145,7 @@ void YOGGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 
 
 
-bool YOGGamePlayerManager::isEveryoneReadyToGo()
+bool NetGamePlayerManager::isEveryoneReadyToGo()
 {
 	for(int x=0; x<32; ++x)
 	{
@@ -167,14 +159,14 @@ bool YOGGamePlayerManager::isEveryoneReadyToGo()
 
 
 
-void YOGGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
+void NetGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
 {
 	numberOfTeams = nnumberOfTeams;
 }
 
 
 
-int YOGGamePlayerManager::chooseTeamNumber()
+int NetGamePlayerManager::chooseTeamNumber()
 {
 	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
 	//Count number of players for each team
@@ -197,14 +189,6 @@ int YOGGamePlayerManager::chooseTeamNumber()
 		}
 	}
 	return team_number;
-}
-
-
-
-void YOGGamePlayerManager::sendPlayerInfoUpdate()
-{
-	boost::shared_ptr<NetSendGamePlayerInfo> message(new NetSendGamePlayerInfo(gameHeader));
-	game->routeMessage(message);
 }
 
 

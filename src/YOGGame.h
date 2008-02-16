@@ -22,7 +22,7 @@
 #include "YOGPlayer.h"
 #include "MapHeader.h"
 #include <boost/shared_ptr.hpp>
-#include "YOGGamePlayerManager.h"
+#include "NetGamePlayerManager.h"
 
 class YOGMapDistributor;
 class YOGGameServer;
@@ -122,7 +122,7 @@ private:
 	shared_ptr<YOGMapDistributor> distributor;
 	std::vector<shared_ptr<YOGPlayer> > players;
 	YOGGameServer& server;
-	YOGGamePlayerManager playerManager;
+	NetGamePlayerManager playerManager;
 };
 
 
