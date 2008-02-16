@@ -160,6 +160,8 @@ Balak
 Kanpaina editorea
 [campaign]
 Kanpaina
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ Partidak
 Hospitala bukatuta dago
 [the hospital is under attack]
 Hospitala erasopean dago
+[The host has cancelled the game]
+
 [the inn is finished]
 Ostatua bukatuta dago
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ Suntsipenari itxaroten
 [waiting for %0]
 %0(r)i itxaroten
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Ibili

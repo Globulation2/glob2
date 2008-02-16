@@ -35,6 +35,7 @@ enum MultiplayerGameEventType
 	MGEGameStarted,
 	MGEServerDisconnected,
 	MGEGameStartRefused,
+	MGEGameHostJoinAccepted,
 	//type_append_marker
 };
 
@@ -266,6 +267,26 @@ public:
 	MGGameStartRefused();
 
 	///Returns MGEGameStartRefused
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameHostJoinAccepted
+class MGGameHostJoinAccepted : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameHostJoinAccepted event
+	MGGameHostJoinAccepted();
+
+	///Returns MGEGameHostJoinAccepted
 	Uint8 getEventType() const;
 
 	///Returns a formatted version of the event

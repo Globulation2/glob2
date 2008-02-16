@@ -160,6 +160,8 @@ AIWarrush
 戰役編輯器
 [campaign]
 戰役
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ V: 持鍵以傳送訊息
 醫院已完成
 [the hospital is under attack]
 醫院正遭受攻擊
+[The host has cancelled the game]
+
 [the inn is finished]
 客棧已完成
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ V: 持鍵以傳送訊息
 [waiting for %0]
 等待 %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 行走

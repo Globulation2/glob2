@@ -319,6 +319,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		chatChannel = info->getChatChannel();
 		gjcState = HostingGame;
 		updateGameHeader();
+		
+		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
+		sendToListeners(event);
 	}
 	if(type==MNetCreateGameRefused)
 	{
@@ -335,6 +338,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetGameJoinAccepted> info = static_pointer_cast<NetGameJoinAccepted>(message);
 		chatChannel = info->getChatChannel();
 		gjcState = JoinedGame;
+		
+		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
+		sendToListeners(event);
 	}
 	if(type==MNetGameJoinRefused)
 	{ 

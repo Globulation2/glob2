@@ -60,9 +60,15 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 
 
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
-		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	{
+		cancelButton = new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
+	}
 	else
-		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL));
+	{
+		cancelButton = new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL);
+	}
+	cancelButton->visible=false;
+	addWidget(cancelButton);
 
 	notReadyText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=true;
@@ -233,6 +239,10 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	{
 		gameStartWaitingText->visible=false;
 		startButton->visible=true;
+	}
+	else if(type == MGEGameHostJoinAccepted)
+	{
+		cancelButton->visible=true;
 	}
 }
 

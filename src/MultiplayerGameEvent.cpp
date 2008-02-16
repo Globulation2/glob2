@@ -383,4 +383,37 @@ bool MGGameStartRefused::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGGameHostJoinAccepted::MGGameHostJoinAccepted()
+{
+}
+
+
+
+Uint8 MGGameHostJoinAccepted::getEventType() const
+{
+	return MGEGameHostJoinAccepted;
+}
+
+
+
+std::string MGGameHostJoinAccepted::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameHostJoinAccepted()";
+	return s.str();
+}
+
+
+
+bool MGGameHostJoinAccepted::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameHostJoinAccepted))
+	{
+		//const MGGameHostJoinAccepted& r = dynamic_cast<const MGGameHostJoinAccepted&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

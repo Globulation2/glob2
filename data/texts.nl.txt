@@ -160,6 +160,8 @@ Kogels
 Campagne bewerken
 [campaign]
 Campagne
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
 
 [Can't join game, game is full]
@@ -916,6 +918,8 @@ Spellen
 Het ziekenhuis is voltooid
 [the hospital is under attack]
 Het ziekenhuis wordt aangevallen
+[The host has cancelled the game]
+
 [the inn is finished]
 De herberg is voltooid
 [the inn is under attack]
@@ -1015,6 +1019,8 @@ Wordt vernietigd
 [waiting for %0]
 Wachten op %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Lopen
