@@ -26,105 +26,73 @@
 #include "YOGConsts.h"
 
 using namespace GAGCore;
+using namespace boost;
 
 IRCTextMessageHandler::IRCTextMessageHandler()
+	: irc(incoming, incomingMutex)
 {
-
+	boost::thread thread(boost::ref(irc));
+	userListModified = false;
 }
 
 
 IRCTextMessageHandler::~IRCTextMessageHandler()
 {
-	if(irc)
-		irc->disconnect();
+	//Tell the thread to exit and wait until it does
+	boost::shared_ptr<ITExitThread> message1(new ITExitThread);
+	irc.sendMessage(message1);
+
+	while(!irc.hasThreadExited())
+	{
+
+	}
 }
 
 
 void IRCTextMessageHandler::startIRC(const std::string& username)
 {
-	irc.reset(new IRC);
-//	irc->connect(IRC_SERVER, 6667, username);
-//	irc->joinChannel(IRC_CHAN);
-//	irc->setChatChannel(IRC_CHAN);
+	boost::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, username, 6667));
+	boost::shared_ptr<ITJoinChannel> message2(new ITJoinChannel(IRC_CHAN));
+
+	irc.sendMessage(message1);
+	irc.sendMessage(message2);
 }
 
 
 
 void IRCTextMessageHandler::stopIRC()
 {
-	if(irc)
-		irc->disconnect();
+	boost::shared_ptr<ITDisconnect> message1(new ITDisconnect);
+	irc.sendMessage(message1);
 }
 
 
 
 void IRCTextMessageHandler::update()
 {
-	if(irc)
+	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	while(!incoming.empty())
 	{
-		irc->step();
-	
-		while (irc->isChatMessage())
+		boost::shared_ptr<IRCThreadMessage> message = incoming.front();
+		incoming.pop();
+		Uint8 type = message->getMessageType();
+		switch(type)
 		{
-			std::string message;
-			message+="<";
-			message+=irc->getChatMessageSource();
-			message+=">";
-			message+=irc->getChatMessage();
-			sendToAllListeners(message);
-			irc->freeChatMessage();
+			case ITMRecieveMessage:
+			{
+				boost::shared_ptr<ITRecieveMessage> info = static_pointer_cast<ITRecieveMessage>(message);
+				sendToAllListeners(info->getMessage());
+			}
+			break;
+			case ITMUserListModified:
+			{
+				boost::shared_ptr<ITUserListModified> info = static_pointer_cast<ITUserListModified>(message);
+				userListModified = true;
+				users = info->getUsers();
+			}
+			break;
 		}
-		
-		while (irc->isInfoMessage())
-		{
-			std::string message;
-			message += irc->getInfoMessageSource();
-			
-			switch (irc->getInfoMessageType())
-			{
-				case IRC::IRC_MSG_JOIN:
-				message += " has joined irc channel ";
-				break;
-				
-				case IRC::IRC_MSG_PART:
-				message += " has left irc channel ";
-				break;
-				
-				case IRC::IRC_MSG_QUIT:
-				message += " has quitted irc, reason";
-				break;
-				
-				case IRC::IRC_MSG_MODE:
-				message += " has set mode of ";
-				break;
-				
-				case IRC::IRC_MSG_NOTICE:
-				if (irc->getInfoMessageSource()[0])
-					message += " noticed ";
-				else
-					message += "Notice ";
-				break;
-				
-				default:
-				message += " has sent an unhandled IRC Info Message:";
-				break;
-			}
-			
-			if (irc->getInfoMessageDiffusion() != "")
-			{
-				message += irc->getInfoMessageDiffusion();
-			}
-			
-			if (irc->getInfoMessageText() != "")
-			{
-				message += " : ";
-				message += irc->getInfoMessageText();
-			}
-			sendToAllListeners(message);
-			irc->freeInfoMessage();
-		}
-	
-	}
+	}	
 }
 
 
@@ -143,9 +111,24 @@ void IRCTextMessageHandler::removeTextMessageListener(IRCTextMessageListener* li
 
 
 
-boost::shared_ptr<IRC> IRCTextMessageHandler::getIRC()
+void IRCTextMessageHandler::sendCommand(const std::string& command)
 {
-	return irc;
+	boost::shared_ptr<ITSendMessage> message1(new ITSendMessage(command));
+	irc.sendMessage(message1);
+}
+
+
+
+bool IRCTextMessageHandler::hasUserListBeenModified()
+{
+	return userListModified;
+}
+
+
+
+std::vector<std::string>& IRCTextMessageHandler::getUsers()
+{
+	return users;
 }
 
 

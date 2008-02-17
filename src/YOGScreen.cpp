@@ -159,8 +159,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		message->setMessageType(YOGNormalMessage);
 		lobbyChat->sendMessage(message);
 
-		boost::shared_ptr<IRC> irc = ircChat->getIRC();
-		irc->sendCommand(textInput->getText());
+		ircChat->sendCommand(textInput->getText());
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
@@ -174,7 +173,7 @@ void YOGScreen::onTimer(Uint32 tick)
 	ircChat->update();
 	client->update();
 
-	if(ircChat->getIRC()->isChannelUserBeenModified())
+	if(ircChat->hasUserListBeenModified())
 		updatePlayerList();
 }
 
@@ -308,7 +307,7 @@ void YOGScreen::updateGameList(void)
 void YOGScreen::updatePlayerList(void)
 {
 
-	boost::shared_ptr<IRC> irc = ircChat->getIRC();
+//	boost::shared_ptr<IRC> irc = ircChat->getIRC();
 	// update YOG one
 	playerList->clear();
 	for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
@@ -318,14 +317,11 @@ void YOGScreen::updatePlayerList(void)
 	}
 
 	// update irc entries, remove one already on YOG
-	if (irc->initChannelUserListing(IRC_CHAN))
+	for(int i=0; i<ircChat->getUsers().size(); ++i)
 	{
-		while (irc->isMoreChannelUser())
-		{
-			const std::string &user = irc->getNextChannelUser();
-			if (user.compare(0, 5, "[YOG]") != 0)
-				playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
-		}
+		const std::string &user = ircChat->getUsers()[i];
+		if (user.compare(0, 5, "[YOG]") != 0)
+			playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
 	}
 
 }
@@ -382,12 +378,12 @@ void YOGScreen::autoCompleteNick()
 			}
 		}
 
-		boost::shared_ptr<IRC> irc = ircChat->getIRC();
-		if(irc->initChannelUserListing(IRC_CHAN) && found == 0)
+
+		if(found == 0)
 		{
-			while (irc->isMoreChannelUser())
+			for(int i=0; i<ircChat->getUsers().size(); ++i)
 			{
-				const std::string &user = irc->getNextChannelUser();
+				const std::string &user = ircChat->getUsers()[i];
 				if( user.find(beginningOfNick) == 0 )
 				{
 					if (user.compare(0, 5, "[YOG]") != 0)

@@ -22,7 +22,7 @@
 #ifndef __IRCTextMessageHandler_H
 #define __IRCTextMessageHandler_H
 
-#include "IRC.h"
+#include "IRCThread.h"
 #include "boost/shared_ptr.hpp"
 
 
@@ -60,14 +60,27 @@ public:
 	///Removes a listener
 	void removeTextMessageListener(IRCTextMessageListener* listener);
 
-	///Returns the IRC server to send commands to it
-	boost::shared_ptr<IRC> getIRC();
+	///Sends a command to the IRC engine
+	void sendCommand(const std::string& command);
 
+	///Tells whether the user list has been modified
+	bool hasUserListBeenModified();
+
+	///Returns the user list
+	std::vector<std::string>& getUsers();
 private:
 	void sendToAllListeners(const std::string& message);
 
-	boost::shared_ptr<IRC> irc;
+	IRCThread irc;
 	std::vector<IRCTextMessageListener* > listeners;
+
+	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
+	boost::recursive_mutex incomingMutex;
+	std::vector<std::string> users;
+
+
+	bool userListModified;
+		
 };
 
 
