@@ -61,6 +61,9 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY)
 		int py = buildings[i].get<2>();
 
 		int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, true);
+		if(typeNum == -1)
+			typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
 
