@@ -1,35 +1,36 @@
 source_files = Split("""
-AICastor.cpp                      AI.cpp                       AIEcho.cpp                  AINicowar.cpp
-AINull.cpp                        AINumbi.cpp                  AIToubib.cpp                AIWarrush.cpp
-BitArray.cpp                      Brush.cpp                    Building.cpp                BuildingsTypes.cpp
-BuildingType.cpp                  Bullet.cpp                   Campaign.cpp                CampaignEditor.cpp
-CampaignMenuScreen.cpp            CampaignScreen.cpp           CampaignSelectorScreen.cpp  ChooseMapScreen.cpp
-CPUStatisticsManager.cpp          CreditScreen.cpp             CustomGameScreen.cpp        DynamicClouds.cpp
-EndGameScreen.cpp                 Engine.cpp                   EntityType.cpp              Fatal.cpp
-Game.cpp                          GameEvent.cpp                GameGUI.cpp                 GameGUIDefaultAssignManager.cpp
-GameGUIDialog.cpp                 GameGUIKeyActions.cpp        GameGUILoadSave.cpp         GameGUIMessageManager.cpp
-GameGUIToolManager.cpp            GameHeader.cpp               GameUtilities.cpp           Glob2.cpp
-Glob2Screen.cpp                   Glob2Style.cpp               GlobalContainer.cpp         GUIGlob2FileList.cpp
-GUIMapPreview.cpp                 HeightMapGenerator.cpp       IntBuildingType.cpp         IRC.cpp
-IRCTextMessageHandler.cpp         IRCThread.cpp                IRCThreadMessage.cpp        KeyboardManager.cpp
-LANFindScreen.cpp                 LANGameInformation.cpp       LANMenuScreen.cpp           LogFileManager.cpp
-MainMenuScreen.cpp                MapAssembler.cpp             Map.cpp                     MapEdit.cpp
-MapEditKeyActions.cpp             MapGenerationDescriptor.cpp  MapGenerator.cpp            MapHeader.cpp
-MarkManager.cpp                   Minimap.cpp                  MultiplayerGame.cpp         MultiplayerGameEvent.cpp
-MultiplayerGameEventListener.cpp  MultiplayerGameScreen.cpp    NetBroadcaster.cpp          NetBroadcastListener.cpp
-NetConnection.cpp                 NetEngine.cpp                NetGamePlayerManager.cpp    NetListener.cpp
-NetMessage.cpp                    NetTestSuite.cpp             NewMapScreen.cpp            Order.cpp
-OverlayAreas.cpp                  PerlinNoise.cpp              Player.cpp                  Race.cpp
-Ressource.cpp                     RessourcesTypes.cpp          ScriptEditorScreen.cpp      Sector.cpp
-Settings.cpp                      SettingsScreen.cpp           SGSL.cpp                    SimplexNoise.cpp
-SoundMixer.cpp                    Team.cpp                     TeamStat.cpp                UnitConsts.cpp
-Unit.cpp                          UnitEditorScreen.cpp         UnitSkin.cpp                UnitsSkins.cpp
-UnitType.cpp                      Utilities.cpp                VoiceRecorder.cpp           YOGChatChannel.cpp
-YOGChatChannelManager.cpp         YOGChatListener.cpp          YOGClient.cpp               
-YOGEvent.cpp                      YOGEventListener.cpp         YOGGame.cpp                 YOGGameInfo.cpp
-YOGGameServer.cpp                 YOGLoginScreen.cpp           YOGMapDistributor.cpp       YOGMessage.cpp
-YOGPasswordRegistry.cpp           YOGPlayer.cpp                YOGPlayerInfo.cpp           YOGScreen.cpp
-YOGServerChatChannel.cpp
+AICastor.cpp               AI.cpp                            AIEcho.cpp                   AINicowar.cpp
+AINull.cpp                 AINumbi.cpp                       AIToubib.cpp                 AIWarrush.cpp
+BitArray.cpp               Brush.cpp                         Building.cpp                 BuildingsTypes.cpp
+BuildingType.cpp           Bullet.cpp                        Campaign.cpp                 CampaignEditor.cpp
+CampaignMenuScreen.cpp     CampaignScreen.cpp                CampaignSelectorScreen.cpp   ChooseMapScreen.cpp
+CPUStatisticsManager.cpp   CreditScreen.cpp                  CustomGameScreen.cpp         DynamicClouds.cpp
+EndGameScreen.cpp          Engine.cpp                        EntityType.cpp               Fatal.cpp
+Game.cpp                   GameEvent.cpp                     GameGUI.cpp                  GameGUIDefaultAssignManager.cpp
+GameGUIDialog.cpp          GameGUIGhostBuildingManager.cpp   GameGUIKeyActions.cpp        GameGUILoadSave.cpp
+GameGUIMessageManager.cpp  GameGUIToolManager.cpp            GameHeader.cpp               GameUtilities.cpp
+Glob2.cpp                  Glob2Screen.cpp                   Glob2Style.cpp               GlobalContainer.cpp
+GUIGlob2FileList.cpp       GUIMapPreview.cpp                 HeightMapGenerator.cpp       IntBuildingType.cpp
+IRC.cpp                    IRCTextMessageHandler.cpp         IRCThread.cpp                IRCThreadMessage.cpp
+KeyboardManager.cpp        LANFindScreen.cpp                 LANGameInformation.cpp       LANMenuScreen.cpp
+LogFileManager.cpp         MainMenuScreen.cpp                MapAssembler.cpp             Map.cpp
+MapEdit.cpp                MapEditKeyActions.cpp             MapGenerationDescriptor.cpp  MapGenerator.cpp
+MapHeader.cpp              MarkManager.cpp                   Minimap.cpp                  MultiplayerGame.cpp
+MultiplayerGameEvent.cpp   MultiplayerGameEventListener.cpp  MultiplayerGameScreen.cpp    NetBroadcaster.cpp
+NetBroadcastListener.cpp   NetConnection.cpp                 NetEngine.cpp                NetGamePlayerManager.cpp
+NetListener.cpp            NetMessage.cpp                    NetTestSuite.cpp             NewMapScreen.cpp
+Order.cpp                  OverlayAreas.cpp                  PerlinNoise.cpp              Player.cpp
+Race.cpp                   Ressource.cpp                     RessourcesTypes.cpp          ScriptEditorScreen.cpp
+Sector.cpp                 Settings.cpp                      SettingsScreen.cpp           SGSL.cpp
+SimplexNoise.cpp           SoundMixer.cpp                    Team.cpp                     TeamStat.cpp
+UnitConsts.cpp             Unit.cpp                          UnitEditorScreen.cpp         UnitSkin.cpp
+UnitsSkins.cpp             UnitType.cpp                      Utilities.cpp                VoiceRecorder.cpp
+YOGChatChannel.cpp         YOGChatChannelManager.cpp         YOGChatListener.cpp          YOGClient.cpp
+                           YOGEvent.cpp                      YOGEventListener.cpp         YOGGame.cpp
+YOGGameInfo.cpp            YOGGameServer.cpp                 YOGLoginScreen.cpp           YOGMapDistributor.cpp
+YOGMessage.cpp             YOGPasswordRegistry.cpp           YOGPlayer.cpp                YOGPlayerInfo.cpp
+YOGScreen.cpp              YOGServerChatChannel.cpp
+
 
 """)
     

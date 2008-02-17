@@ -38,6 +38,7 @@
 #include "OverlayAreas.h"
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
+#include "GameGUIGhostBuildingManager.h"
 
 namespace GAGCore
 {
@@ -363,6 +364,8 @@ private:
 
 	GameGUIDefaultAssignManager defaultAssign;
 	
+	GameGUIGhostBuildingManager ghostManager;
+
 	///Because its possible to move the scrollwheel faster than the engine can handle it
 	///multiple scroll wheel events compound
 	int scrollWheelChanges;
