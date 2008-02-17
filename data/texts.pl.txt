@@ -160,6 +160,10 @@ Amunicja
 
 [campaign]
 Kampania
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
 [Can't join game, game doesn't exist]
 
 [Can't join game, game has started]
