@@ -58,17 +58,19 @@ void NetConnection::openConnection(const std::string& connectaddress, Uint16 por
 		{
 			std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
 		}
-		
-		//Open the connection
-		socket=SDLNet_TCP_Open(&address);
-		if(!socket)
-		{
-			std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
-		}
 		else
 		{
-			SDLNet_TCP_AddSocket(set, socket);
-			connected=true;
+			//Open the connection
+			socket=SDLNet_TCP_Open(&address);
+			if(!socket)
+			{
+				std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
+			}
+			else
+			{
+				SDLNet_TCP_AddSocket(set, socket);
+				connected=true;
+			}
 		}
 	}
 }
