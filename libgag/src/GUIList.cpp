@@ -78,6 +78,8 @@ namespace GAGGUI
 	
 	void List::onTimer(Uint32 tick)
 	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
 		unsigned count = (h-4) / textHeight;
 		switch (selectionState)
 		{
@@ -250,7 +252,7 @@ namespace GAGGUI
 		int elementsHeight = h - frameTopHeight - frameBottomHeight;
 		int count = elementsHeight / textHeight;
 		int elementLength;
-		
+
 		if (static_cast<int>(strings.size()) > count)
 		{
 			// recompute slider informations

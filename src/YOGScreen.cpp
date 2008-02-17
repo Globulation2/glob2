@@ -70,15 +70,18 @@ void YOGPlayerList::clear(void)
 void YOGPlayerList::drawItem(int x, int y, size_t element)
 {
 	assert(networkSprite);
-	int xShift = 20;
-	int spriteYShift = (textHeight-16) >> 1;
-	if (networks[element] == ALL_NETWORK)
-		xShift = 0;
-	else if (networks[element] == YOG_NETWORK)
-		parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 0);
-	else if (networks[element] == IRC_NETWORK)
-		parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 1);
-	parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
+	if(element < getCount())
+	{
+		int xShift = 20;
+		int spriteYShift = (textHeight-16) >> 1;
+		if (networks[element] == ALL_NETWORK)
+			xShift = 0;
+		else if (networks[element] == YOG_NETWORK)
+			parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 0);
+		else if (networks[element] == IRC_NETWORK)
+			parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 1);
+		parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
+	}
 }
 
 
