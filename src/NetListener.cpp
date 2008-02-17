@@ -49,14 +49,14 @@ void NetListener::startListening(Uint16 port)
 		if(SDLNet_ResolveHost(&address, NULL, port) == -1)
 		{
 			std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
-			assert(false);
+			listening=false;
 		}
 		
 		socket=SDLNet_TCP_Open(&address);
 		if(!socket)
 		{
 			std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
-			assert(false);
+			listening=false;
 		}
 		else
 		{

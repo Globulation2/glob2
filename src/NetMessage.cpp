@@ -1726,13 +1726,18 @@ void NetSendGameHeader::downloadToGameHeader(GameHeader& newGameHeader)
 {
 	//This is a special trick used to avoid having to manually copy over every
 	//variable
-	MemoryStreamBackend* backend = new MemoryStreamBackend;
-	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(backend);
+	MemoryStreamBackend* obackend = new MemoryStreamBackend;
+	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(obackend);
 	gameHeader.saveWithoutPlayerInfo(ostream);
 
-	backend->seekFromStart(0);
-	GAGCore::BinaryInputStream* istream = new BinaryInputStream(backend);
+
+	obackend->seekFromStart(0);
+	MemoryStreamBackend* ibackend = new MemoryStreamBackend(*obackend);
+	GAGCore::BinaryInputStream* istream = new BinaryInputStream(ibackend);
 	newGameHeader.loadWithoutPlayerInfo(istream, VERSION_MINOR);
+
+	delete ostream;
+	delete istream;
 }
 
 
@@ -1803,13 +1808,17 @@ void NetSendGamePlayerInfo::downloadToGameHeader(GameHeader& header)
 {
 	//This is a special trick used to avoid having to manually copy over every
 	//variable
-	MemoryStreamBackend* backend = new MemoryStreamBackend;
-	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(backend);
+	MemoryStreamBackend* obackend = new MemoryStreamBackend;
+	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(obackend);
 	gameHeader.savePlayerInfo(ostream);
 
-	backend->seekFromStart(0);
-	GAGCore::BinaryInputStream* istream = new BinaryInputStream(backend);
+	obackend->seekFromStart(0);
+	MemoryStreamBackend* ibackend = new MemoryStreamBackend(*obackend);
+	GAGCore::BinaryInputStream* istream = new BinaryInputStream(ibackend);
 	header.loadPlayerInfo(istream, VERSION_MINOR);
+
+	delete ostream;
+	delete istream;
 }
 
 

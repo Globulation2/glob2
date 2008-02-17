@@ -20,6 +20,7 @@
 #define __YOGPlayer_h
 
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include <list>
 #include "NetConnection.h"
 #include "YOGConsts.h"
@@ -137,7 +138,7 @@ private:
 	///Tells what game the player is currently a part of
 	Uint16 gameID;
 	///Links to the connected game
-	shared_ptr<YOGGame> game;
+	weak_ptr<YOGGame> game;
 
 	///Counts down between sending a ping
 	unsigned short pingCountdown;

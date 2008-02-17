@@ -166,6 +166,10 @@ Can't join game, game doesn't exist
 Can't join game, game has started
 [Can't join game, game is full]
 Can't join game, game is full
+[Can't host game, port %0 in use]
+Can't host game, port %0 in use
+[Can't connect, can't find host]
+Can't connect, can't find host
 [cancel destroy]
 Cancel destroy
 [cancel repair]

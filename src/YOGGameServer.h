@@ -50,7 +50,10 @@ class YOGGameServer
 public:
 	///Initiates the YOG Game Server and immeddiattely begins listening on the YOG port.
 	YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy);
-	
+
+	///If the attempt to bind to the local port failed, this will be false
+	bool isListening();
+
 	///This is the main update function. This must be called frequently (many times per
 	///second) in order to give fast responce times and low latency for the users.
 	void update();

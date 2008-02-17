@@ -29,6 +29,13 @@ YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolic
 
 
 
+bool YOGGameServer::isListening()
+{
+	return nl.isListening();
+}
+
+
+
 void YOGGameServer::update()
 {
 	//First attempt connections with new players
