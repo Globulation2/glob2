@@ -28,8 +28,8 @@
 using namespace GAGGUI;
 using namespace GAGCore;
 
-GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign)
-	: game(game), brush(brush), defaultAssign(defaultAssign)
+GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign, GameGUIGhostBuildingManager& ghostManager)
+	: game(game), brush(brush), defaultAssign(defaultAssign), ghostManager(ghostManager)
 {
 	hilightStrength = 0;
 	mode = NoTool;
@@ -261,6 +261,7 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		
 		if (isRoom)
 		{
+			ghostManager.addBuilding(building, mapX, mapY);
 			orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
 		}
 	}

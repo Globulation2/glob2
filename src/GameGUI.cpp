@@ -128,8 +128,9 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
-	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
+	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
+	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW),
+	  ghostManager(game)
 {
 }
 
@@ -3561,6 +3562,9 @@ void GameGUI::drawAll(int team)
 		generateNewParticles(&visibleBuildings);
 		drawParticles();
 	}
+
+	///Draw ghost buildings
+	ghostManager.drawAll(viewportX, viewportY);
 	
 	// if paused, tint the game area
 	if (gamePaused)
@@ -3716,6 +3720,14 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 		{
 			boost::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
 			gamePaused=pgo->pause;
+		}
+		break;
+		case ORDER_CREATE:
+		{
+			boost::shared_ptr<OrderCreate> pgo=static_pointer_cast<OrderCreate>(order);
+			if(pgo->teamNumber == localTeamNo)
+				ghostManager.removeBuilding(pgo->posX, pgo->posY);
+			game.executeOrder(order, localPlayer);
 		}
 		break;
 		default:
