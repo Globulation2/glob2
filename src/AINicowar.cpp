@@ -796,6 +796,8 @@ void NewNicowar::queue_barracks(Echo& echo)
 	if(war_preperation)
 	{
 		demand=strategy.war_preparation_phase_number_of_barracks;
+		///This only kicks in right at the start, so that it doesn't build barracks when it doesn't need to
+		demand = std::min(demand, echo.player->team->stats.getLatestStat()->isFree[WARRIOR] / 2);
 	}
 
 	if(demand > barracks_count)
@@ -818,7 +820,9 @@ void NewNicowar::queue_hospitals(Echo& echo)
 	const int hospital_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularHospital];
 	const int total_warrior = echo.player->team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
 
-	int demand=strategy.base_number_of_hospitals;
+	int demand=0;
+	if(echo.player->team->stats.getLatestStat()->needHeal > 0)
+		demand += strategy.base_number_of_hospitals;
 	if(war_preperation || war)
 	{
 		demand+=total_warrior/strategy.war_preperation_phase_warriors_per_hospital;
@@ -1338,7 +1342,8 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 			worker_ratio=strategy.non_growth_phase_swarm_worker_ratio;
 	}
 
-	int needed_explorers=strategy.base_number_of_explorers;
+	//Base needed explorers never exceed 1/10 of population
+	int needed_explorers=std::min(strategy.base_number_of_explorers, stat->totalUnit/10+1);
 	if(fruit_phase)
 		needed_explorers+=strategy.fruit_phase_extra_number_of_explorers;
 
@@ -1618,6 +1623,9 @@ void NewNicowar::attack_building(Echo& echo)
 	bo->add_constraint(new CenterOfBuilding(building));
 	unsigned int id=echo.add_building_order(bo);
 
+	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(2,id);
+	echo.add_management_order(mo_minimum);
+
 	ManagementOrder* mo_destroyed_1=new DestroyBuilding(id);
 	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(echo, building));
 	echo.add_management_order(mo_destroyed_1);
@@ -1853,6 +1861,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 			mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, building));
 			echo.add_management_order(mo_destroyed);
 
+
 			ManagementOrder* mo_completion=new ChangeFlagSize(3, id_flag);
 			echo.add_management_order(mo_completion);
 		}
@@ -1936,6 +1945,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
 		//Add the building order to the list of orders
 		unsigned int id_cherry=echo.add_building_order(bo_cherry);
+
 		ManagementOrder* mo_completion_cherry=new ChangeFlagSize(4, id_cherry);
 		echo.add_management_order(mo_completion_cherry);
 
@@ -1951,6 +1961,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		//You want to be ontop of the orange trees
 		bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
 		unsigned int id_orange=echo.add_building_order(bo_orange);
+
 		ManagementOrder* mo_completion_orange=new ChangeFlagSize(4, id_orange);
 		echo.add_management_order(mo_completion_orange);
 
@@ -1964,6 +1975,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
 		//Add the building order to the list of orders
 		unsigned int id_prune=echo.add_building_order(bo_prune);
+
 		ManagementOrder* mo_completion_prune=new ChangeFlagSize(4, id_prune);
 		echo.add_management_order(mo_completion_prune);
 
