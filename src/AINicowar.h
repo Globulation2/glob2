@@ -93,7 +93,7 @@ public:
 	int skilled_work_phase_number_of_schools;
 	///The number of barracks to be built during the war preperation phase
 	int war_preparation_phase_number_of_barracks;
-	///The base number of hospitals to build
+	///The base number of hospitals to build, these are only built when there is first demand
 	int base_number_of_hospitals;
 	///The number of warriors required to trigger another hospital
 	int war_preperation_phase_warriors_per_hospital;
