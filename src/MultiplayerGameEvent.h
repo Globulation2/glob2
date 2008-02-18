@@ -24,7 +24,6 @@
 
 enum MultiplayerGameEventType
 {
-	MGEGameStarted,
 	MGEPlayerListChanged,
 	MGEReadyToStart,
 	MGENotReadyToStart,
@@ -33,6 +32,10 @@ enum MultiplayerGameEventType
 	MGEGameRefused,
 	MGEKickedByHost,
 	MGEHostCancelledGame,
+	MGEGameStarted,
+	MGEServerDisconnected,
+	MGEGameStartRefused,
+	MGEGameHostJoinAccepted,
 	//type_append_marker
 };
 
@@ -204,6 +207,86 @@ public:
 	MGHostCancelledGameEvent();
 
 	///Returns MGEHostCancelledGame
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameStarted
+class MGGameStarted : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameStarted event
+	MGGameStarted();
+
+	///Returns MGEGameStarted
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGServerDisconnected
+class MGServerDisconnected : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGServerDisconnected event
+	MGServerDisconnected();
+
+	///Returns MGEServerDisconnected
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameStartRefused
+class MGGameStartRefused : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameStartRefused event
+	MGGameStartRefused();
+
+	///Returns MGEGameStartRefused
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameHostJoinAccepted
+class MGGameHostJoinAccepted : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameHostJoinAccepted event
+	MGGameHostJoinAccepted();
+
+	///Returns MGEGameHostJoinAccepted
 	Uint8 getEventType() const;
 
 	///Returns a formatted version of the event

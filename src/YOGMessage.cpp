@@ -18,6 +18,9 @@
 
 #include "YOGMessage.h"
 #include "SDL_net.h"
+#include "assert.h"
+#include "Toolkit.h"
+#include "StringTable.h"
 
 YOGMessage::YOGMessage()
 {
@@ -118,5 +121,45 @@ bool YOGMessage::operator!=(const YOGMessage& rhs) const
 	}
 	return false;
 }
+
+
+
+std::string YOGMessage::formatForReading() const
+{
+	std::string smessage;
+	switch(getMessageType())
+	{
+		case YOGNormalMessage:
+			smessage+="<";
+			smessage+=getSender();
+			smessage+="> ";
+			smessage+=getMessage();
+		break;
+		case YOGPrivateMessage:
+			smessage+="<";
+			smessage+=GAGCore::Toolkit::getStringTable()->getString("[from:]");
+			smessage+=getSender();
+			smessage+="> ";
+			smessage+=getMessage();
+		break;
+		case YOGAdministratorMessage:
+			smessage+="[";
+			smessage+=getSender();
+			smessage+="] ";
+			smessage+=getMessage();
+		break;
+		case YOGGameMessage:
+			smessage+="<";
+			smessage+=getSender();
+			smessage+="> ";
+			smessage+=getMessage();
+		break;
+		default:
+			assert(false);
+		break;
+	}
+	return smessage;
+}
+
 
 

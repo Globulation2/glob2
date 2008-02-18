@@ -65,7 +65,7 @@ public:
 	int initLoadGame();
 
 	/// Initiate a game with the given MultiplayerGame
-	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, int localPlayer);
+	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer);
 
 	///Tells whether a map matching mapHeader is located on this system
 	bool haveMap(const MapHeader& mapHeader);

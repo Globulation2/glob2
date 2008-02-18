@@ -58,17 +58,19 @@ void NetConnection::openConnection(const std::string& connectaddress, Uint16 por
 		{
 			std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
 		}
-		
-		//Open the connection
-		socket=SDLNet_TCP_Open(&address);
-		if(!socket)
-		{
-			std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
-		}
 		else
 		{
-			SDLNet_TCP_AddSocket(set, socket);
-			connected=true;
+			//Open the connection
+			socket=SDLNet_TCP_Open(&address);
+			if(!socket)
+			{
+				std::cout<<"NetConnection::openConnection: "<<SDLNet_GetError()<<std::endl;
+			}
+			else
+			{
+				SDLNet_TCP_AddSocket(set, socket);
+				connected=true;
+			}
 		}
 	}
 }
@@ -140,6 +142,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 					//Now interpret the message from the data, and add it to the queue
 					shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
 					recieved.push(message);
+
 					//std::cout<<"Recieved: "<<message->format()<<std::endl;
 					
 					delete bis;

@@ -62,6 +62,9 @@ public:
 	///Test for equality between two YOGMessage
 	bool operator==(const YOGMessage& rhs) const;
 	bool operator!=(const YOGMessage& rhs) const;
+
+	///Formats this YOG Message in a user friendly way
+	std::string formatForReading() const;
 private:
 	YOGMessageType messageType;
 	std::string message;

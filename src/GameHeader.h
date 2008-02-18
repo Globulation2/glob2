@@ -40,6 +40,18 @@ public:
 	///Saves game header information to the stream
 	void save(GAGCore::OutputStream *stream) const;
 
+	///This loads the game header information from the stream, excluding BasePlayer information
+	bool loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMinor);
+
+	///This saves all game header information to the stream, but excluding the BasePlayer information
+	void saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const;
+
+	///This loads only the player information from the game header from the stream
+	bool loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMinor);
+
+	///This saves only the player information from the game header from the stream
+	void savePlayerInfo(GAGCore::OutputStream *stream) const;
+
 	///Returns the number of players in the game
 	Sint32 getNumberOfPlayers() const;
 	
@@ -61,6 +73,9 @@ public:
 	
 	///Provides access to the base player. n must be between 0 and 31.
 	BasePlayer& getBasePlayer(const int n);
+	
+	///Provides access to the base player. n must be between 0 and 31.
+	const BasePlayer& getBasePlayer(const int n) const;
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;

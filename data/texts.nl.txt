@@ -160,6 +160,16 @@ Kogels
 Campagne bewerken
 [campaign]
 Campagne
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Kan niet deelnemen aan het spel: parmaters tussen beiden partijen verschillen.
 [Can't join game, timeout]
@@ -422,6 +432,8 @@ Gezondheid
 Geneest je eenheden
 [hospital]
 Ziekenhuis
+[Host has cancelled the game]
+
 [host]
 Start een server
 [hp]
@@ -910,6 +922,8 @@ Spellen
 Het ziekenhuis is voltooid
 [the hospital is under attack]
 Het ziekenhuis wordt aangevallen
+[The host has cancelled the game]
+
 [the inn is finished]
 De herberg is voltooid
 [the inn is under attack]
@@ -1010,6 +1024,8 @@ Wordt vernietigd
 Wachten op %0
 [waiting for key]
 
+[Waiting]
+
 [Walk]
 Lopen
 [warflag explanation 2]
@@ -1108,6 +1124,8 @@ Je status is "weg".
 Je hebt verloren!
 [you have won]
 Je hebt gewonnen!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Je %0 worden aangevallen
 [Your unit got converted to %0's team]

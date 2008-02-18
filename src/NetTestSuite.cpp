@@ -186,7 +186,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetGameJoinAccepted>())
 		return 28;
 
-	shared_ptr<NetGameJoinAccepted> joinAccepted1(new NetGameJoinAccepted);
+	shared_ptr<NetGameJoinAccepted> joinAccepted1(new NetGameJoinAccepted(12));
 	if(!testSerialize(joinAccepted1))
 		return 29;
 		
@@ -206,7 +206,7 @@ int NetTestSuite::testNetMessages()
 	m->setSender("bob");
 	m->setMessage("hello alice");
 	m->setMessageType(YOGNormalMessage);
-	shared_ptr<NetSendYOGMessage> sendYOGMessage1(new NetSendYOGMessage(m));
+	shared_ptr<NetSendYOGMessage> sendYOGMessage1(new NetSendYOGMessage(7, m));
 	if(!testSerialize(sendYOGMessage1))
 		return 33;
 
@@ -314,7 +314,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetCreateGameAccepted>())
 		return 50;
 
-	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted);
+	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35));
 	if(!testSerialize(createGameAccepted1))
 		return 51;
 		
@@ -335,30 +335,6 @@ int NetTestSuite::testNetMessages()
 	shared_ptr<NetSendGameHeader> sendGameHeader1(new NetSendGameHeader(gh));
 	if(!testSerialize(sendGameHeader1))
 		return 55;
-
-	//Test NetPlayerJoinsGame
-	if(!testInitial<NetPlayerJoinsGame>())
-		return 56;
-
-	shared_ptr<NetPlayerJoinsGame> playerJoinsGame1(new NetPlayerJoinsGame(1721));
-	if(!testSerialize(playerJoinsGame1))
-		return 57;
-
-	shared_ptr<NetPlayerJoinsGame> playerJoinsGame2(new NetPlayerJoinsGame(42));
-	if(!testSerialize(playerJoinsGame2))
-		return 58;
-
-	//Test NetPlayerLeavesGame
-	if(!testInitial<NetPlayerLeavesGame>())
-		return 59;
-
-	shared_ptr<NetPlayerLeavesGame> playerLeavesGame1(new NetPlayerLeavesGame(1721));
-	if(!testSerialize(playerLeavesGame1))
-		return 60;
-
-	shared_ptr<NetPlayerLeavesGame> playerLeavesGame2(new NetPlayerLeavesGame(42));
-	if(!testSerialize(playerLeavesGame2))
-		return 61;
 
 	//Test NetStartGame
 	if(!testInitial<NetStartGame>())
@@ -506,10 +482,10 @@ int NetTestSuite::testListenerConnection()
 {
 	//Creates the NetListener at port 7486
 	NetListener nl;
-	nl.startListening(YOG_SERVER_PORT-1);
+	nl.startListening(YOG_SERVER_PORT+1);
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
-	nc_client.openConnection("127.0.0.1", YOG_SERVER_PORT-1);
+	nc_client.openConnection("127.0.0.1", YOG_SERVER_PORT+1);
 	//The server connection
 	NetConnection nc_server;
 	

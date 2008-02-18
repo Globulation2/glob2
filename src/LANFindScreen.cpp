@@ -24,12 +24,15 @@
 #include "GlobalContainer.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
+#include <GUIMessageBox.h>
 #include <GUIList.h>
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include "MultiplayerGameScreen.h"
+
+using namespace GAGGUI;
 
 LANFindScreen::LANFindScreen()
 {
@@ -97,8 +100,11 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			shared_ptr<YOGClient> client(new YOGClient);
 			client->connect(serverName->getText());
-			if(client->getConnectionState() == YOGClient::NotConnected)
+			if(!client->isConnected())
+			{
+				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
 				return;
+			}
 			while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
 				client->update();
 			client->attemptLogin(playerName->getText());
@@ -111,10 +117,15 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			while (client->getGameList().size() == 0)
     			client->update();
 
+			if((*client->getGameList().begin()).getGameState()==YOGGameInfo::GameRunning)
+			{
+				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't join game, game has started]"), Toolkit::getStringTable()->getString("[ok]"));
+				return;
+			}
+
 			game->joinGame((*client->getGameList().begin()).getGameID());
 
-			boost::shared_ptr<NetTextMessageHandler> netMessage(new NetTextMessageHandler(client));
-			MultiplayerGameScreen mgs(game, netMessage);
+			MultiplayerGameScreen mgs(game, client);
 			int rc = mgs.execute(globalContainer->gfx, 40);
 			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 			if(rc == -1)

@@ -128,8 +128,9 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
-	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
+	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
+	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW),
+	  ghostManager(game)
 {
 }
 
@@ -146,6 +147,7 @@ void GameGUI::init()
 	gamePaused=false;
 	hardPause=false;
 	exitGlobCompletely=false;
+	flushOutgoingAndExit=false;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
 	drawAccessibilityAids=false;
@@ -632,6 +634,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+					flushOutgoingAndExit=true;
 					return true;
 				}
 				break;
@@ -752,6 +755,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case InGameEndOfGameScreen::QUIT:
 				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit=true;
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
@@ -914,7 +918,6 @@ void GameGUI::processEvent(SDL_Event *event)
 				SDL_GetMouseState(&mx, &my);
 				toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
 			}
-	
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
@@ -935,6 +938,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		flushOutgoingAndExit=true;
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{
@@ -1726,7 +1730,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				virtualIt!=localTeam->virtualBuildings.end(); ++virtualIt)
 			{
 				Building *b=*virtualIt;
-				if ((b->posX==mapX) && (b->posY==mapY))
+				if ((b->posXLocal==mapX) && (b->posYLocal==mapY))
 				{
 					setSelection(BUILDING_SELECTION, b);
 					selectionPushed=true;
@@ -3558,6 +3562,9 @@ void GameGUI::drawAll(int team)
 		generateNewParticles(&visibleBuildings);
 		drawParticles();
 	}
+
+	///Draw ghost buildings
+	ghostManager.drawAll(viewportX, viewportY);
 	
 	// if paused, tint the game area
 	if (gamePaused)
@@ -3713,6 +3720,14 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 		{
 			boost::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
 			gamePaused=pgo->pause;
+		}
+		break;
+		case ORDER_CREATE:
+		{
+			boost::shared_ptr<OrderCreate> pgo=static_pointer_cast<OrderCreate>(order);
+			if(pgo->teamNumber == localTeamNo)
+				ghostManager.removeBuilding(pgo->posX, pgo->posY);
+			game.executeOrder(order, localPlayer);
 		}
 		break;
 		default:
@@ -4261,8 +4276,9 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 	setMultiLine(msgText, &messages);
 	globalContainer->standardFont->popStyle();
 
-	///Add each line as a seperate message to the message manager
-	for (unsigned i=0; i<messages.size(); i++)
+	///Add each line as a seperate message to the message manager.
+	///Must be done backwards to appear in the right order
+	for (int i=messages.size()-1; i>=0; i--)
 	{
 		messageManager.addMessage(InGameMessage(messages[i], color));
 	}

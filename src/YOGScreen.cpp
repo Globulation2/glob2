@@ -70,15 +70,18 @@ void YOGPlayerList::clear(void)
 void YOGPlayerList::drawItem(int x, int y, size_t element)
 {
 	assert(networkSprite);
-	int xShift = 20;
-	int spriteYShift = (textHeight-16) >> 1;
-	if (networks[element] == ALL_NETWORK)
-		xShift = 0;
-	else if (networks[element] == YOG_NETWORK)
-		parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 0);
-	else if (networks[element] == IRC_NETWORK)
-		parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 1);
-	parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
+	if(element < getCount())
+	{
+		int xShift = 20;
+		int spriteYShift = (textHeight-16) >> 1;
+		if (networks[element] == ALL_NETWORK)
+			xShift = 0;
+		else if (networks[element] == YOG_NETWORK)
+			parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 0);
+		else if (networks[element] == IRC_NETWORK)
+			parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 1);
+		parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
+	}
 }
 
 
@@ -107,9 +110,11 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 	
-	netMessage.reset(new NetTextMessageHandler(client));
-	netMessage->addTextMessageListener(this);
-	netMessage->startIRC();
+	lobbyChat.reset(new YOGChatChannel(LOBBY_CHAT_CHANNEL, client, this));
+
+	ircChat.reset(new IRCTextMessageHandler);
+	ircChat->addTextMessageListener(this);
+	ircChat->startIRC(client->getUsername());
 	
 	client->setEventListener(this);
 }
@@ -118,7 +123,8 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 
 YOGScreen::~YOGScreen()
 {
-	netMessage->removeTextMessageListener(this);
+	ircChat->removeTextMessageListener(this);
+	ircChat->stopIRC();
 }
 
 
@@ -154,9 +160,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		message->setSender(client->getUsername());
 		message->setMessage(textInput->getText());
 		message->setMessageType(YOGNormalMessage);
-		client->sendMessage(message);
-		boost::shared_ptr<IRC> irc = netMessage->getIRC();
-		irc->sendCommand(textInput->getText());
+		lobbyChat->sendMessage(message);
+
+		ircChat->sendCommand(textInput->getText());
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
@@ -167,10 +173,10 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void YOGScreen::onTimer(Uint32 tick)
 {
-	netMessage->update();
+	ircChat->update();
 	client->update();
 
-	if(netMessage->getIRC()->isChannelUserBeenModified())
+	if(ircChat->hasUserListBeenModified())
 		updatePlayerList();
 }
 
@@ -196,18 +202,31 @@ void YOGScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 
 
 
-void YOGScreen::handleTextMessage(const std::string& message, NetTextMessageType type)
+void YOGScreen::handleIRCTextMessage(const std::string& message)
 {
 	chatWindow->addText(message);
-	if(type==IRCTextMessage)
-	{
-		chatWindow->addImage(1);
-	}
-	else if(type==YOGTextMessage || type==YOGTextMessage)
-	{
-		chatWindow->addImage(0);
-	}
+	chatWindow->addImage(1);
 	chatWindow->addText("\n");
+	chatWindow->scrollToBottom();
+}
+
+
+
+void YOGScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+{
+	chatWindow->addText(message->formatForReading());
+	chatWindow->addImage(0);
+	chatWindow->addText("\n");
+	chatWindow->scrollToBottom();
+}
+
+
+
+void YOGScreen::recieveInternalMessage(const std::string& message)
+{
+	chatWindow->addText(message);
+	chatWindow->addText("\n");
+	chatWindow->addImage(-1);
 	chatWindow->scrollToBottom();
 }
 
@@ -223,14 +242,16 @@ void YOGScreen::hostGame()
 		client->setMultiplayerGame(game);
 		std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
 		game->createNewGame(name);
+
 		game->setMapHeader(cms.getMapHeader());
-		MultiplayerGameScreen mgs(game, netMessage);
+
+		MultiplayerGameScreen mgs(game, client, ircChat);
 		int rc = mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)
 			endExecute(-1);
 		else if(rc == MultiplayerGameScreen::GameRefused)
-			netMessage->addInternalMessage("Game was refused by server");
+			recieveInternalMessage("Game was refused by server");
 	}
 }
 
@@ -253,15 +274,22 @@ void YOGScreen::joinGame()
 			}
 		}
 		game->joinGame(id);
-		MultiplayerGameScreen mgs(game, netMessage);
+		MultiplayerGameScreen mgs(game, client, ircChat);
 		int rc = mgs.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)
 			endExecute(-1);
 		else if(rc == MultiplayerGameScreen::Kicked)
-			netMessage->addInternalMessage("You where kicked from the game");
+			recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
 		else if(rc == MultiplayerGameScreen::GameCancelled)
-			netMessage->addInternalMessage("The host cancelled the game");
+			recieveInternalMessage(Toolkit::getStringTable()->getString("[The host cancelled the game]"));
+		else if(rc == MultiplayerGameScreen::GameRefused)
+			if(game->getGameJoinState() == YOGGameHasAlreadyStarted)
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
+			else if(game->getGameJoinState() == YOGGameIsFull)
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
+			else if(game->getGameJoinState() == YOGGameDoesntExist)
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
 	}
 }
 
@@ -281,7 +309,8 @@ void YOGScreen::updateGameList(void)
 
 void YOGScreen::updatePlayerList(void)
 {
-	boost::shared_ptr<IRC> irc = netMessage->getIRC();
+
+//	boost::shared_ptr<IRC> irc = ircChat->getIRC();
 	// update YOG one
 	playerList->clear();
 	for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerList().begin(); player!=client->getPlayerList().end(); ++player)
@@ -289,16 +318,15 @@ void YOGScreen::updatePlayerList(void)
 		std::string listEntry = player->getPlayerName();
 		playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
 	}
+
 	// update irc entries, remove one already on YOG
-	if (irc->initChannelUserListing(IRC_CHAN))
+	for(int i=0; i<ircChat->getUsers().size(); ++i)
 	{
-		while (irc->isMoreChannelUser())
-		{
-			const std::string &user = irc->getNextChannelUser();
-			if (user.compare(0, 5, "[YOG]") != 0)
-				playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
-		}
+		const std::string &user = ircChat->getUsers()[i];
+		if (user.compare(0, 5, "[YOG]") != 0)
+			playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
 	}
+
 }
 
 
@@ -353,12 +381,12 @@ void YOGScreen::autoCompleteNick()
 			}
 		}
 
-		boost::shared_ptr<IRC> irc = netMessage->getIRC();
-		if(irc->initChannelUserListing(IRC_CHAN) && found == 0)
+
+		if(found == 0)
 		{
-			while (irc->isMoreChannelUser())
+			for(int i=0; i<ircChat->getUsers().size(); ++i)
 			{
-				const std::string &user = irc->getNextChannelUser();
+				const std::string &user = ircChat->getUsers()[i];
 				if( user.find(beginningOfNick) == 0 )
 				{
 					if (user.compare(0, 5, "[YOG]") != 0)
@@ -370,6 +398,7 @@ void YOGScreen::autoCompleteNick()
 				}
 			}
 		}
+
 	}
 	
 	if( found == 1 )

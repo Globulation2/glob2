@@ -188,7 +188,7 @@ def main():
 		            f = env.Install(new_dir, s)
 		            env.Tar(target, f)
               
-    PackTar(env["TARFILE"], Split("AUTHORS COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct TODO"))
+    PackTar(env["TARFILE"], Split("AUTHORS COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     
     Export('env')
     Export('PackTar')
