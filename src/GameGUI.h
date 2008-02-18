@@ -38,6 +38,7 @@
 #include "OverlayAreas.h"
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
+#include "GameGUIGhostBuildingManager.h"
 
 namespace GAGCore
 {
@@ -135,6 +136,8 @@ public:
 	bool notmenu;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
+	//! true if the game needs to flush all outgoing orders and exit
+	bool flushOutgoingAndExit;
 	//! if this is not empty, then Engine should load the map with this filename.
 	std::string toLoadGameFileName;
 	//bool showExtendedInformation;
@@ -361,6 +364,8 @@ private:
 
 	GameGUIDefaultAssignManager defaultAssign;
 	
+	GameGUIGhostBuildingManager ghostManager;
+
 	///Because its possible to move the scrollwheel faster than the engine can handle it
 	///multiple scroll wheel events compound
 	int scrollWheelChanges;

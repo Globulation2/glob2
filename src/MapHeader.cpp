@@ -208,9 +208,7 @@ Uint32 MapHeader::checkSum() const
 
 bool MapHeader::operator!=(const MapHeader& rhs) const
 {
-	if(rhs.versionMajor != versionMajor ||
-		rhs.versionMinor != versionMinor ||
-		rhs.numberOfTeams != numberOfTeams ||
+	if( rhs.numberOfTeams != numberOfTeams ||
 		rhs.mapOffset != mapOffset ||
 		rhs.isSavedGame != isSavedGame ||
 		rhs.mapName != mapName)

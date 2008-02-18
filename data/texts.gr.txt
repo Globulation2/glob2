@@ -160,6 +160,16 @@ backspace
 Επεξεραστής Εκστραστείας
 [campaign]
 Εκστρατεία
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Δεν μπορείτε να συμμετέχετε στο παιχνίδι, κακός συνδιασμός παραμέτρων
 [Can't join game, timeout]
@@ -424,6 +434,8 @@ Ok
 Γιαίνει τις μονάδες
 [hospital]
 Νοσοκομείο
+[Host has cancelled the game]
+
 [host]
 Παροχή ενός παιχνιδιού
 [hp]
@@ -476,6 +488,8 @@ Hitpoint
 Kick
 [lan]
 LAN Game
+[language incomplete]
+
 [language-code]
 gr
 [language-tr]
@@ -910,6 +924,8 @@ tab
 Το νοσοκομείο ολοκληρώθηκε
 [the hospital is under attack]
 Το νοσοκομείο δέχετε επίθεση
+[The host has cancelled the game]
+
 [the inn is finished]
 Το πανδοχείο ολοκληρώθηκε
 [the inn is under attack]
@@ -1012,6 +1028,8 @@ Tutorial
 Αναμονή για %0
 [waiting for key]
 αναμονή για πλήκτρο...
+[Waiting]
+
 [Walk]
 Περπάτα
 [warflag explanation 2]
@@ -1108,9 +1126,9 @@ Ysagoon Online Gaming
 Χάσατε!
 [you have won]
 Κερδίσατε!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Το %0 δέχετε επίθεση
 [Your unit got converted to %0's team]
 Η μονάδα σας άλλαξε σε %0 ομάδα
-
-

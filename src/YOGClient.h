@@ -29,6 +29,9 @@
 #include "YOGEventListener.h"
 #include <list>
 #include "YOGGameServer.h"
+#include "YOGChatChannel.h"
+#include <map>
+
 
 class MultiplayerGame;
 class MapAssembler;
@@ -132,12 +135,6 @@ public:
 	///This will disconnect the client and server
 	void disconnect();
 
-	///Sends a message through YOG
-	void sendMessage(boost::shared_ptr<YOGMessage> message);
-
-	///Returns a new YOG message if there are any, and returns NULL otherwise
-	boost::shared_ptr<YOGMessage> getMessage();
-
 	///Returns the username for the player	
 	std::string getUsername() const;
 
@@ -166,9 +163,20 @@ public:
 protected:
     friend class MultiplayerGame;
     friend class MapAssembler;
+	friend class YOGChatChannel;
+	friend class MultiplayerGamePlayerManager;
+	friend class NetEngine;
     
-    ///Sends a message on behalf of the assocciatted MultiplayerGame
+    ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
+
+
+	///Adds a new YOGChatChannel to recieve chat events (done by YOGChatChannel itself)
+	void addYOGChatChannel(YOGChatChannel* channel);
+
+	///Removes the YOGChatChannel (done by YOGChatChannel itself)
+	void removeYOGChatChannel(YOGChatChannel* channel);
+
 private:
 	std::string username;
 	Uint16 playerID;
@@ -185,12 +193,12 @@ private:
 	
 	std::list<YOGGameInfo> games;
 	std::list<YOGPlayerInfo> players;
-	std::queue<boost::shared_ptr<YOGMessage> > messages;
+	std::map<Uint32, YOGChatChannel*> chatChannels;
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;
 	YOGEventListener* listener;
-	
+
 	boost::shared_ptr<YOGGameServer> server;
 
 };

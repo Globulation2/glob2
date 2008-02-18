@@ -160,6 +160,16 @@ Building short explanation (24 chars max)
 
 [campaign]
 الحملة
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Can't join game, missmatching game parameters
 [Can't join game, timeout]
@@ -422,6 +432,8 @@ has quit
 يشفى لكم الوحدات
 [hospital]
 مستشفى
+[Host has cancelled the game]
+
 [host]
 Host a game
 [hp]
@@ -910,6 +922,8 @@ The game has not been finished
 انتهى بناء المستشفى
 [the hospital is under attack]
 المستشفى تحت الهجوم
+[The host has cancelled the game]
+
 [the inn is finished]
 انتهى بناء الكوخ
 [the inn is under attack]
@@ -1010,6 +1024,8 @@ Start/Stop Upgrade
 انتظار %0
 [waiting for key]
 
+[Waiting]
+
 [Walk]
 يمشى
 [warflag explanation 2]
@@ -1108,6 +1124,8 @@ You are marked as away.
 لقد خسرت!
 [you have won]
 لقد فزت!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 %0 تحت الهجوم
 [Your unit got converted to %0's team]

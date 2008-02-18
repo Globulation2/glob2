@@ -38,7 +38,7 @@ public:
 	/// Loads map header information from the stream
 	bool load(GAGCore::InputStream *stream);
 	
-	/// Saves map header information to the stream
+	/// Saves map header information to the stream.
 	void save(GAGCore::OutputStream *stream);
 
 	/// Returns the version major
@@ -88,6 +88,7 @@ public:
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
 	
+	///Comparison does *not* count file version numbers
 	bool operator!=(const MapHeader& rhs) const;
 private:
 	/// Major map version. Changes only with structural modification

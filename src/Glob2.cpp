@@ -17,29 +17,30 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Glob2.h"
-#include "Header.h"
-#include "Game.h"
-#include "MainMenuScreen.h"
-#include "MapEdit.h"
-#include "Engine.h"
-#include "YOGLoginScreen.h"
-#include "YOGGameServer.h"
-#include "SettingsScreen.h"
-#include "NewMapScreen.h"
-#include "CreditScreen.h"
-#include "Utilities.h"
-#include "GlobalContainer.h"
-#include "CampaignSelectorScreen.h"
+
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
-#include "YOGClient.h"
-#include <StringTable.h>
+#include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
-
-#include "NetBroadcastListener.h"
+#include "CreditScreen.h"
+#include "Engine.h"
+#include "Game.h"
+#include "Glob2.h"
+#include "GlobalContainer.h"
+#include "GUIMessageBox.h"
+#include "Header.h"
 #include "LANFindScreen.h"
 #include "LANMenuScreen.h"
+#include "MainMenuScreen.h"
+#include "MapEdit.h"
+#include "NetBroadcastListener.h"
+#include "NewMapScreen.h"
+#include "SettingsScreen.h"
+#include <StringTable.h>
+#include "Utilities.h"
+#include "YOGClient.h"
+#include "YOGGameServer.h"
+#include "YOGLoginScreen.h"
 
 
 #include <Stream.h>

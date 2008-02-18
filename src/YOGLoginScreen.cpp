@@ -165,6 +165,10 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 		{
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]"));
 		}
+		else if(reason == YOGAlreadyAuthenticated)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]"));
+		}
 		client->disconnect();
 	}
 }

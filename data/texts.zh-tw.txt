@@ -160,6 +160,16 @@ AIWarrush
 戰役編輯器
 [campaign]
 戰役
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 無法加入遊戲，遊戲參數失對。
 [Can't join game, timeout]
@@ -422,6 +432,8 @@ AIWarrush
 治療你的單位
 [hospital]
 醫院
+[Host has cancelled the game]
+
 [host]
 開始一局新遊戲
 [hp]
@@ -910,6 +922,8 @@ V: 持鍵以傳送訊息
 醫院已完成
 [the hospital is under attack]
 醫院正遭受攻擊
+[The host has cancelled the game]
+
 [the inn is finished]
 客棧已完成
 [the inn is under attack]
@@ -1010,6 +1024,8 @@ V: 持鍵以傳送訊息
 等待 %0
 [waiting for key]
 
+[Waiting]
+
 [Walk]
 行走
 [warflag explanation 2]
@@ -1108,6 +1124,8 @@ YOG 通訊系統有兩種指令， "msg"和"away"輸入"/help <command>"以獲�
 你輸了!!
 [you have won]
 你贏了!!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 你的 %0 正遭受攻擊
 [Your unit got converted to %0's team]

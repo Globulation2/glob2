@@ -24,12 +24,15 @@
 #include "SDL_net.h"
 
 ///New YOG constants
-const Uint16 YOG_SERVER_PORT = 7486;
+const Uint16 YOG_SERVER_PORT = 7487;
 const std::string YOG_SERVER_IP = "yog.globulation2.org";
 //const std::string YOG_SERVER_IP = "127.0.0.1";
 
 #define IRC_CHAN "#glob2"
 #define IRC_SERVER "irc.globulation2.org"
+
+///This is the chat channel of the main lobby
+const Uint32 LOBBY_CHAT_CHANNEL=0;
 
 ///Policies for login
 enum YOGLoginPolicy
@@ -67,13 +70,15 @@ enum YOGLoginState
 	///This means that the password was incorrect.
 	///(only for servers that require registration)
 	YOGPasswordIncorrect,
-	///This means that a user with the same username is already connected.
+	///This means that a user with the same username is already registered.
 	YOGUsernameAlreadyUsed,
 	///This means that no registered user with that username exists
 	///(only for servers that require registration)
 	YOGUserNotRegistered,
 	///This means that the clients version is too old, they must update
 	YOGClientVersionTooOld,
+	///This means that this username is already logged in
+	YOGAlreadyAuthenticated,
 };
 
 ///This represents the reason why the player could not join a game.
@@ -81,6 +86,13 @@ enum YOGGameJoinRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGJoinRefusalUnknown,
+	///This occurs when the game has started already
+	YOGGameHasAlreadyStarted,
+	///This occurs when the game has the maximum number of players
+	YOGGameIsFull,
+	///This represents the game not existing, it may have been closed
+	///in the time that the message took to arrive at the server
+	YOGGameDoesntExist,
 };
 
 ///This represents the reason why the player could not join a game.
@@ -113,6 +125,16 @@ enum YOGKickReason
 	YOGKickedByHost,
 	///This represents an unknown reason
 	YOGUnknownKickReason,
+};
+
+///This is used to represent the various reasons the server may refuse to start
+///a game.
+enum YOGGameStartRefusalReason
+{
+	///This represents an unknown reason
+	YOGUnknownStartRefusalReason,
+	///This means the host has disconnected and all players must quit
+	YOGNotAllPlayersReady,
 };
 
 

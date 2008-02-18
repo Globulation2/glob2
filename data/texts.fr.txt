@@ -160,6 +160,16 @@ Boulets
 Editeur de campagne
 [campaign]
 Campagne
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Ne peut pas joindre le jeu, paramètres de jeu incompatibles
 [Can't join game, timeout]
@@ -422,6 +432,8 @@ Maison
 Soigne vos unités 
 [hospital]
 Hôpital
+[Host has cancelled the game]
+
 [host]
 Héberger une partie
 [hp]
@@ -910,6 +922,8 @@ Parties
 L'hôpital est terminé
 [the hospital is under attack]
 L'hôpital est attaqué
+[The host has cancelled the game]
+
 [the inn is finished]
 L'auberge est terminée
 [the inn is under attack]
@@ -1010,6 +1024,8 @@ En attente de destruction
 Attente de %0
 [waiting for key]
 Attend une touche
+[Waiting]
+
 [Walk]
 Marche
 [warflag explanation 2]
@@ -1108,6 +1124,8 @@ Vous êtes désormais considéré comme étant absent.
 Vous avez perdu!
 [you have won]
 Vous avez gagné!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Vos %0 sont attaquées
 [Your unit got converted to %0's team]

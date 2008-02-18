@@ -29,6 +29,9 @@ YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameSer
 	loginState = YOGLoginUnknown;
 	gameID=0;
 	netVersion=0;
+	pingCountdown=1250;
+	pingValue=0;
+	pingSendTime=0;
 }
 
 
@@ -38,6 +41,20 @@ void YOGPlayer::update()
 	//Send outgoing messages
 	updateConnectionSates();
 	updateGamePlayerLists();
+
+	pingCountdown -= 1;
+	if(pingCountdown == 0)
+	{
+		shared_ptr<NetPing> message(new NetPing);
+		connection->sendMessage(message);
+		pingSendTime = SDL_GetTicks();
+	}
+
+	boost::shared_ptr<YOGGame> ngame;
+	if(!game.expired())
+	{
+		ngame = boost::shared_ptr<YOGGame>(game);
+	}
 
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = connection->getMessage();
@@ -94,7 +111,10 @@ void YOGPlayer::update()
 	else if(type==MNetSendYOGMessage)
 	{
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
-		server.propogateMessage(info->getMessage(), server.getPlayer(playerID));
+		///This is a special override used to restart development server
+		if(info->getMessage()->getSender() == "genixpro" && info->getMessage()->getMessage()=="server_restart")
+			exit(0);
+		server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
 	}
 	//This recieves an attempt to create a new game
 	else if(type==MNetCreateGame)
@@ -112,67 +132,123 @@ void YOGPlayer::update()
 	else if(type==MNetSendMapHeader)
 	{
 		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
-		game->setMapHeader(info->getMapHeader());
+		ngame->setMapHeader(info->getMapHeader());
 	}
 	//This recieves a message to set the game header
 	else if(type==MNetSendGameHeader)
 	{
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
-		game->setGameHeader(info->getGameHeader());
+		info->downloadToGameHeader(ngame->getGameHeader());
+		ngame->routeMessage(info, server.getPlayer(playerID));
+	}
+	//This recieves a message to set the game header
+	else if(type==MNetSendGamePlayerInfo)
+	{
+		shared_ptr<NetSendGamePlayerInfo> info = static_pointer_cast<NetSendGamePlayerInfo>(message);
+		info->downloadToGameHeader(ngame->getGameHeader());
+		ngame->routeMessage(info, server.getPlayer(playerID));
 	}
 	//This recieves a message to set the game header
 	else if(type==MNetStartGame)
 	{
-		game->startGame();
+		ngame->startGame();
 	}
 	//This recieves routes an order
 	else if(type==MNetSendOrder)
 	{
 		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
-		game->routeOrder(info, server.getPlayer(playerID));
+		ngame->routeOrder(info, server.getPlayer(playerID));
 	}
 	//This recieves requests a map file
 	else if(type==MNetRequestMap)
 	{
-		game->getMapDistributor()->addMapRequestee(server.getPlayer(playerID));
+		ngame->getMapDistributor()->addMapRequestee(server.getPlayer(playerID));
 	}
 	//This recieves requests a map file
 	else if(type==MNetRequestNextChunk)
 	{
-		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+		ngame->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
 	}
 	//This recieves a file chunk
 	else if(type==MNetSendFileChunk)
 	{
-		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+		ngame->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
 	}
 	//This recieves a file information message
 	else if(type==MNetSendFileInformation)
 	{
-		game->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+		ngame->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
 	}
 	//This recieves a leave game message
 	else if(type==MNetLeaveGame)
 	{
-		game->removePlayer(server.getPlayer(playerID));
+		ngame->removePlayer(server.getPlayer(playerID));
 	}
 	//This recieves a ready to launch message
 	else if(type==MNetReadyToLaunch)
 	{
 		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
-		game->sendReadyToStart(info);
+		ngame->setReadyToStart(playerID);
 	}
 	//This recieves a not ready to launch message
 	else if(type==MNetNotReadyToLaunch)
 	{
 		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
-		game->sendNotReadyToStart(info);
+		ngame->setNotReadyToStart(playerID);
 	}
 	//This recieves a kick message
 	else if(type==MNetKickPlayer)
 	{
 		shared_ptr<NetKickPlayer> info = static_pointer_cast<NetKickPlayer>(message);
-		game->sendKickMessage(info);
+		ngame->kickPlayer(info);
+	}
+	//This recieves a request to add an AI player to the game
+	else if(type==MNetAddAI)
+	{
+		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
+		ngame->addAIPlayer(static_cast<AI::ImplementitionID>(info->getType()));
+	}
+	//This recieves a request to add an AI player to the game
+	else if(type==MNetRemoveAI)
+	{
+		shared_ptr<NetRemoveAI> info = static_pointer_cast<NetRemoveAI>(message);
+		ngame->removeAIPlayer(info->getPlayerNumber());
+	}
+	//This recieves a request to change a players team in the game
+	else if(type==MNetChangePlayersTeam)
+	{
+		shared_ptr<NetChangePlayersTeam> info = static_pointer_cast<NetChangePlayersTeam>(message);
+		ngame->setTeam(info->getPlayer(), info->getTeam());
+	}
+	//This recieves a request to change a players team in the game
+	else if(type==MNetRequestGameStart)
+	{
+		shared_ptr<NetRequestGameStart> info = static_pointer_cast<NetRequestGameStart>(message);
+		ngame->recieveGameStartRequest();
+	}
+	//This recieves a ping reply
+	else if(type==MNetPingReply)
+	{
+		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
+		pings.push_back(SDL_GetTicks() - pingSendTime);
+		if(pings.size() > 10)
+			pings.erase(pings.begin());
+
+		pingValue = 0;
+		//Copy the ping values, sort them, remove the top two highest. If there are any anomolies, these are it
+		std::vector<unsigned> spings(pings.begin(), pings.end());
+		std::sort(spings.begin(), spings.end(), std::greater<unsigned>());
+		if(spings.size() > 2)
+			spings.erase(spings.begin());
+		if(spings.size() > 2)
+			spings.erase(spings.begin());
+		for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
+		{
+			pingValue += *i;
+		}
+		pingValue /= spings.size();
+
+		pingCountdown = 1250;
 	}
 }
 
@@ -222,7 +298,14 @@ std::string YOGPlayer::getPlayerName()
 
 boost::shared_ptr<YOGGame> YOGPlayer::getGame()
 {
-	return game;
+	return boost::shared_ptr<YOGGame>(game);
+}
+
+
+
+unsigned YOGPlayer::getAveragePing() const
+{
+	return pingValue;
 }
 
 
@@ -300,9 +383,10 @@ void YOGPlayer::handleCreateGame(const std::string& gameName)
 	{
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
-		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted);
+		boost::shared_ptr<YOGGame> ngame(game);
+		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel()));
 		connection->sendMessage(message);
-		game->addPlayer(server.getPlayer(playerID));
+		ngame->addPlayer(server.getPlayer(playerID));
 	}
 	else
 	{
@@ -318,11 +402,12 @@ void YOGPlayer::handleJoinGame(Uint16 ngameID)
 	YOGGameJoinRefusalReason reason = server.canJoinGame(ngameID);
 	if(reason == YOGJoinRefusalUnknown)
 	{	
-		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted);
-		connection->sendMessage(message);
 		gameID = ngameID;
 		game = server.getGame(gameID);
-		game->addPlayer(server.getPlayer(playerID));
+		boost::shared_ptr<YOGGame> ngame(game);
+		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(ngame->getChatChannel()));
+		connection->sendMessage(message);
+		ngame->addPlayer(server.getPlayer(playerID));
 		//gameListState = NeedToSendGameList;
 	}
 	else
