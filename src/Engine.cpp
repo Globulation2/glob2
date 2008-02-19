@@ -436,8 +436,6 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// we create the net game
 	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
-	std::cout<<"initiated with gui.localPlayer="<<gui.localPlayer<<std::endl;
-
 	return EE_NO_ERROR;
 }
 

@@ -696,7 +696,7 @@ Building *Team::findNearestFood(Unit *unit)
 	
 	// first, we check for the best food an enemy can offer:
 	Sint32 bestEnemyHappyness = 0;
-	Sint32 maxDist = unit->hungry / unit->race->hungryness + unit->hp;
+	Sint32 maxDist = std::max(0, unit->hungry) / unit->race->hungryness + unit->hp;
 	Building *bestEnemyFood = NULL;
 	if (concurency)
 	{
@@ -802,6 +802,7 @@ Building *Team::findNearestFood(Unit *unit)
 			int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
 			if (dist >= bestDist)
 				continue;
+
 			if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
 				continue;
 			if (dist >= bestDist)
