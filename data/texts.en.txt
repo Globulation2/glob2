@@ -160,12 +160,16 @@ Bullets
 Campaign Editor
 [campaign]
 Campaign
-[Can't join game, missmatching game parameters]
-Can't join game, missmatching game parameters
-[Can't join game, timeout]
-Can't join game, timeout
-[Can't join game, wrong game version]
-Can't join game, wrong game version
+[Can't connect, can't find host]
+Can't connect, can't find host
+[Can't host game, port %0 in use]
+Can't host game, port %0 in use
+[Can't join game, game doesn't exist]
+Can't join game, game doesn't exist
+[Can't join game, game has started]
+Can't join game, game has started
+[Can't join game, game is full]
+Can't join game, game is full
 [cancel destroy]
 Cancel destroy
 [cancel repair]
@@ -382,6 +386,8 @@ Game full
 Game Shortcuts
 [game speed]
 Game speed
+[Games]
+Games
 [general settings]
 General Settings
 [go to event]
@@ -424,6 +430,8 @@ home
 Heals your units
 [hospital]
 Hospital
+[Host has cancelled the game]
+Host has cancelled the game
 [host]
 Host a game
 [hp]
@@ -912,6 +920,8 @@ Games
 The hospital is finished
 [the hospital is under attack]
 The hospital is under attack
+[The host has cancelled the game]
+The host has cancelled the game
 [the inn is finished]
 The Inn is finished
 [the inn is under attack]
@@ -1014,6 +1024,8 @@ Awaiting destruction
 Waiting for %0
 [waiting for key]
 waiting for key...
+[Waiting]
+Waiting
 [Walk]
 Walk
 [warflag explanation 2]
@@ -1110,6 +1122,8 @@ You are marked as away.
 You have lost!
 [you have won]
 You have won!
+[You where kicked from the game]
+You where kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
 [Your unit got converted to %0's team]

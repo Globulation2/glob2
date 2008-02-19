@@ -29,7 +29,7 @@
 #include <Stream.h>
 #include <BinaryStream.h>
 
-ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool recurse)
+ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool recurse, const char* alternateDirectory, const char* alternateExtension, const char* alternateRecurse)
 {
 	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
@@ -37,12 +37,24 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
 	
+	if(alternateDirectory)
+	{
+		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Games]"), SWITCHTYPE, 27);
+		addWidget(switchType);
+
+		alternateFileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", alternateDirectory, alternateExtension, alternateRecurse);
+		addWidget(alternateFileList);
+		alternateFileList->visible=false;
+	}
+
 	fileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", directory, extension, recurse);
 	addWidget(fileList);
 	
 	mapPreview = new MapPreview(640-20-26-128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(mapPreview);
 	
+	currentDirectoryMode=DisplayRegular;
+
 	deleteMap = NULL;
 	if (strcmp(directory, "maps") == 0)
 	{
@@ -81,7 +93,12 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 {
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		std::string mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
+		std::string mapFileName;
+		if(currentDirectoryMode == DisplayRegular)
+			mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
+		else
+			mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
+		
 		mapPreview->setMapThumbnail(mapFileName.c_str());
 		InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
 		if (stream->isEndOfStream())
@@ -131,6 +148,21 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				std::string mapFileName = fileList->listToFile(fileList->get().c_str());
 				Toolkit::getFileManager()->remove(mapFileName);
 				fileList->generateList();
+			}
+		}
+		else if (source == switchType)
+		{
+			if(currentDirectoryMode == DisplayRegular)
+			{
+				currentDirectoryMode = DisplayAlternate;
+				fileList->visible=false;
+				alternateFileList->visible=true;
+			}
+			else
+			{
+				currentDirectoryMode = DisplayRegular;
+				fileList->visible=true;
+				alternateFileList->visible=false;
 			}
 		}
 	}

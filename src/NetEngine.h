@@ -19,10 +19,11 @@
 #ifndef __NetEngine_h
 #define __NetEngine_h
 
-#include <map>
 #include "Order.h"
 #include <boost/shared_ptr.hpp>
 #include <vector>
+#include <queue>
+#include "YOGClient.h"
 
 ///The purpose of this class is to sort Orders, and hand them out in
 ///the correct time slot. It serves partially to hide latency, Orders
@@ -32,17 +33,26 @@
 class NetEngine
 {
 public:
-	//Constructs the NetEngine
-	NetEngine(int numberOfPlayers);
+	///Constructs the NetEngine
+	NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate = 1, boost::shared_ptr<YOGClient> client = boost::shared_ptr<YOGClient>());
 
-	///Advances the step, clearing Orders at the previous step
-	void advanceStep();
+	///Sets the network game info
+	void setNetworkInfo(int networkOrderRate, boost::shared_ptr<YOGClient> client);
 
-	//Pushes an order to the NetEngine
-	void pushOrder(boost::shared_ptr<Order> order, int playerNumber);
+	///Advances the step
+	void advanceStep(Uint32 checksum);
+
+	///Clears all the orders at the top of the queues
+	void clearTopOrders();
+
+	//Pushes an order to the NetEngine. AI's are special because they don't have padding arround orders
+	void pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI);
 	
 	///Retrieves the order for the given player for this turn
 	boost::shared_ptr<Order> retrieveOrder(int playerNumber);
+
+	///Adds a order from the local player, which will be queued and sent across the network when needed
+	void addLocalOrder(boost::shared_ptr<Order> order);
 	
 	///Tells whether the network is ready at the current tick. For
 	///the network to be ready, all Orders from all players must be
@@ -51,6 +61,9 @@ public:
 	
 	///Returns the current step number
 	int getStep();
+
+	///Sends all pending orders across the network without a checksum. This is used if the game has to end immediettly
+	void flushAllOrders();
 	
 	///Adds padding for the player for the given latency,
 	///this is used because with latency, there aren't any
@@ -69,16 +82,19 @@ public:
 	bool matchCheckSums();
 	
 private:
-	///This function produces the 16 bit hash for the stoarge of orders
-	Uint16 hash(int playerNumber, int step);
 
-	///This stores orders in an interesting fashion, hashing the playerNumber
-	///together with the targetStep
-	std::map<Uint16, boost::shared_ptr<Order> > orders;
+	///This stores the queues with the orders from each player
+	std::vector<std::queue<boost::shared_ptr<Order> > > orders;
+	///This queue stores all of the local orders that have to be sent out
+	///on their turn
+	std::queue<boost::shared_ptr<Order> > outgoing;
 	int step;
 	int numberOfPlayers;
-	///Records the current step number of the recieved orders for each player
-	std::vector<int> stepNumber;
+	///This count-downs steps until an order is sent across the network
+	int localOrderSendCountdown;
+	int localPlayer;
+	boost::shared_ptr<YOGClient> client;
+	int networkOrderRate;
 };
 
 

@@ -35,14 +35,14 @@ namespace GAGGUI
 class Glob2FileList;
 class MapPreview;
 
-//! This screen is the basic screen used to selected map and games
+//! This screen is the basic screen used to selected map and games, Can have an alternate directory if desired
 class ChooseMapScreen : public Glob2Screen
 {
 public:
 	/// Constructor. Directory is the source of the listed files.
 	/// extension is the file extension to show. If recurse is true,
 	/// subdirectoried are shown and can be opened.
-	ChooseMapScreen(const char *directory, const char *extension, bool recurse);
+	ChooseMapScreen(const char *directory, const char *extension, bool recurse, const char* alternateDirectory=NULL, const char* alternateExtension=NULL, const char* alternateRecurse=NULL);
 	//! Destructor
 	virtual ~ChooseMapScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
@@ -62,6 +62,8 @@ public:
 		CANCEL = 2,
 		//! Value returned if screen is for games and delete button has been pressed
 		DELETEGAME = 3,
+		//! Value returned if screen if the button to switch between games and maps has been pressed
+		SWITCHTYPE = 4,
 	};
 
 
@@ -77,6 +79,12 @@ protected:
 
 private:
 
+	enum DirectoryMode
+	{
+		DisplayRegular,
+		DisplayAlternate,
+	} currentDirectoryMode;
+
 	//! Title of the screen, depends on the directory given in parameter
 	Text *title;
 	//! The ok button
@@ -85,8 +93,12 @@ private:
 	Button *cancel;
 	//! the delete map button
 	Button *deleteMap;
+	//! the switch type button
+	Button *switchType;
 	//! The list of maps or games
 	Glob2FileList *fileList;
+	//! The alternate list of maps or games
+	Glob2FileList *alternateFileList;
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map

@@ -128,8 +128,9 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
-	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
+	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
+	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW),
+	  ghostManager(game)
 {
 }
 
@@ -146,6 +147,7 @@ void GameGUI::init()
 	gamePaused=false;
 	hardPause=false;
 	exitGlobCompletely=false;
+	flushOutgoingAndExit=false;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
 	drawAccessibilityAids=false;
@@ -632,6 +634,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+					flushOutgoingAndExit=true;
 					return true;
 				}
 				break;
@@ -752,6 +755,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case InGameEndOfGameScreen::QUIT:
 				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit=true;
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
@@ -914,7 +918,6 @@ void GameGUI::processEvent(SDL_Event *event)
 				SDL_GetMouseState(&mx, &my);
 				toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
 			}
-	
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
@@ -935,6 +938,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		flushOutgoingAndExit=true;
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{
@@ -1726,7 +1730,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				virtualIt!=localTeam->virtualBuildings.end(); ++virtualIt)
 			{
 				Building *b=*virtualIt;
-				if ((b->posX==mapX) && (b->posY==mapY))
+				if ((b->posXLocal==mapX) && (b->posYLocal==mapY))
 				{
 					setSelection(BUILDING_SELECTION, b);
 					selectionPushed=true;
@@ -3558,6 +3562,9 @@ void GameGUI::drawAll(int team)
 		generateNewParticles(&visibleBuildings);
 		drawParticles();
 	}
+
+	///Draw ghost buildings
+	ghostManager.drawAll(viewportX, viewportY);
 	
 	// if paused, tint the game area
 	if (gamePaused)
@@ -3715,6 +3722,14 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 			gamePaused=pgo->pause;
 		}
 		break;
+		case ORDER_CREATE:
+		{
+			boost::shared_ptr<OrderCreate> pgo=static_pointer_cast<OrderCreate>(order);
+			if(pgo->teamNumber == localTeamNo)
+				ghostManager.removeBuilding(pgo->posX, pgo->posY);
+			game.executeOrder(order, localPlayer);
+		}
+		break;
 		default:
 		{
 			game.executeOrder(order, localPlayer);
@@ -3722,7 +3737,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 	}
 }
 
-bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
 {
 	init();
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
@@ -3737,7 +3752,7 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 		}
 	}
 	
-	bool res = load(stream);
+	bool res = load(stream, ignoreGUIData);
 	delete stream;
 	if (!res)
 		return false;
@@ -3751,7 +3766,7 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	return true;
 }
 
-bool GameGUI::load(GAGCore::InputStream *stream)
+bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 {
 	init();
 
@@ -3767,29 +3782,44 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 	{
 		// load gui's specific infos
 		stream->readEnterSection("GameGUI");
-		
-		chatMask = stream->readUint32("chatMask");
 
-		localPlayer = stream->readSint32("localPlayer");
-		localTeamNo = stream->readSint32("localTeamNo");
-
-		viewportX = stream->readSint32("viewportX");
-		viewportY = stream->readSint32("viewportY");
-
-		hiddenGUIElements = stream->readUint32("hiddenGUIElements");
-		Uint32 buildingsChoiceMask = stream->readUint32("buildingsChoiceMask");
-		Uint32 flagsChoiceMask = stream->readUint32("flagsChoiceMask");
-		
-		// invert value if hidden
-		for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
+		///Load the data, but don't store it in local variables
+		if(ignoreGUIData)
 		{
-			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
-			buildingsChoiceState[i] = ((1<<id) & buildingsChoiceMask) != 0;
+			stream->readUint32("chatMask");
+			stream->readSint32("localPlayer");
+			stream->readSint32("localTeamNo");
+			stream->readSint32("viewportX");
+			stream->readSint32("viewportY");
+			stream->readUint32("hiddenGUIElements");
+			stream->readUint32("buildingsChoiceMask");
+			stream->readUint32("flagsChoiceMask");
 		}
-		for (unsigned i=0; i<flagsChoiceState.size(); ++i)
-		{
-			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
-			flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
+		else
+		{	
+			chatMask = stream->readUint32("chatMask");
+
+			localPlayer = stream->readSint32("localPlayer");
+			localTeamNo = stream->readSint32("localTeamNo");
+
+			viewportX = stream->readSint32("viewportX");
+			viewportY = stream->readSint32("viewportY");
+
+			hiddenGUIElements = stream->readUint32("hiddenGUIElements");
+			Uint32 buildingsChoiceMask = stream->readUint32("buildingsChoiceMask");
+			Uint32 flagsChoiceMask = stream->readUint32("flagsChoiceMask");
+			
+			// invert value if hidden
+			for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
+			{
+				int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
+				buildingsChoiceState[i] = ((1<<id) & buildingsChoiceMask) != 0;
+			}
+			for (unsigned i=0; i<flagsChoiceState.size(); ++i)
+			{
+				int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
+				flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
+			}
 		}
 		
 		stream->readLeaveSection();
@@ -4261,8 +4291,9 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 	setMultiLine(msgText, &messages);
 	globalContainer->standardFont->popStyle();
 
-	///Add each line as a seperate message to the message manager
-	for (unsigned i=0; i<messages.size(); i++)
+	///Add each line as a seperate message to the message manager.
+	///Must be done backwards to appear in the right order
+	for (int i=messages.size()-1; i>=0; i--)
 	{
 		messageManager.addMessage(InGameMessage(messages[i], color));
 	}

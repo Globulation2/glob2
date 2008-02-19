@@ -160,6 +160,16 @@ Amunicja
 
 [campaign]
 Kampania
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 
 [Can't join game, timeout]
@@ -380,6 +390,8 @@ Komplet graczy
 
 [game speed]
 Prędkość gry
+[Games]
+
 [general settings]
 
 [go to event]
@@ -422,6 +434,8 @@ jednostek
 Umożliwia leczenie
 [hospital]
 Szpital
+[Host has cancelled the game]
+
 [host]
 Host w grze
 [hp]
@@ -910,6 +924,8 @@ Gry
 Zbudowano szpital
 [the hospital is under attack]
 Szpital został zaatakowany
+[The host has cancelled the game]
+
 [the inn is finished]
 Zbudowano gospodę
 [the inn is under attack]
@@ -1010,6 +1026,8 @@ Oczekiwanie na zniszczenie
 Czeka na %0
 [waiting for key]
 
+[Waiting]
+
 [Walk]
 Chodzi
 [warflag explanation 2]
@@ -1106,6 +1124,8 @@ Jesteś oznaczony jako nieaktywny.
 Przegrałeś...
 [you have won]
 Wygrałeś !!!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Twój %0 jest atakowany
 [Your unit got converted to %0's team]

@@ -1702,15 +1702,31 @@ namespace GAGCore
 			glState.doTexture(0);
 			for (int dy=0; dy < mapH-1; dy++)
 			{
-				glBegin(GL_TRIANGLE_STRIP);
+				int midy = y + dy * cellH + cellH/2;
 				for (int dx=0; dx < mapW; dx++)
 				{
+					glBegin(GL_TRIANGLE_FAN);
+					//This interpolates to find the center color, then fans out to the four corners.
+					int midx = x + dx * cellW + cellW/2;
+					float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
+					float mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
+					glColor4f(fr, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
+					glVertex2f(midx, midy);
+					//Touch each of the four corners
 					glColor4f(fr, fg, fb, map[mapW * dy + dx]);
 					glVertex2f(x + dx * cellW, y + dy * cellH);
 					glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx]);
 					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
+
+					glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx + 1]);
+					glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
+					glColor4f(fr, fg, fb, map[mapW * dy + dx + 1]);
+					glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
+
+					glColor4f(fr, fg, fb, map[mapW * dy + dx]);
+					glVertex2f(x + dx * cellW, y + dy * cellH);
+					glEnd();
 				}
-				glEnd();
 			}
 		}
 		else
@@ -1727,17 +1743,34 @@ namespace GAGCore
 			
 			glState.doBlend(1);
 			glState.doTexture(0);
-			for (int dy=0; dy < mapH-1; dy++)
+			for (int dy=0; dy < mapH/*-1*/; dy++)
 			{
-				glBegin(GL_TRIANGLE_STRIP);
+				int midy = y + dy * cellH + cellH/2;
 				for (int dx=0; dx < mapW; dx++)
 				{
+
+					glBegin(GL_TRIANGLE_FAN);
+					//This interpolates to find the center color, then fans out to the four corners.
+					int midx = x + dx * cellW + cellW/2;
+					int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
+					int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
+					glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
+					glVertex2f(midx, midy);
+					//Touch each of the four corners
 					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
 					glVertex2f(x + dx * cellW, y + dy * cellH);
 					glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
 					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
+
+					glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx + 1]);
+					glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
+					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx + 1]);
+					glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
+
+					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
+					glVertex2f(x + dx * cellW, y + dy * cellH);
+					glEnd();
 				}
-				glEnd();
 			}
 		}
 		else

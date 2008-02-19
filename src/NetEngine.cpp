@@ -20,44 +20,102 @@
 #include <iostream>
 
 
-NetEngine::NetEngine(int numberOfPlayers)
-	: numberOfPlayers(numberOfPlayers)
+NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<YOGClient> client)
+	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), client(client), networkOrderRate(networkOrderRate)
 {
 	step=0;
-	stepNumber.resize(numberOfPlayers);
+	orders.resize(numberOfPlayers);
+	localOrderSendCountdown = 0;
 }
 
 
 
-void NetEngine::advanceStep()
+void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<YOGClient> nclient)
+{
+	networkOrderRate = nnetworkOrderRate;
+	client = nclient;
+}
+
+
+
+void NetEngine::advanceStep(Uint32 checksum)
+{
+	step+=1;
+	if(localOrderSendCountdown == 0)
+	{
+		boost::shared_ptr<Order> localOrder;
+
+		if(outgoing.empty())
+		{
+			localOrder = shared_ptr<Order>(new NullOrder);
+		}
+		else
+		{
+			localOrder = outgoing.front();
+			outgoing.pop();
+		}
+
+		localOrder->gameCheckSum = checksum;
+		if(client)
+		{
+			localOrder->sender = localPlayer;
+			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
+			client->sendNetMessage(message);
+		}
+		pushOrder(localOrder, localPlayer, false);
+		localOrderSendCountdown = networkOrderRate - 1;
+	}
+	else
+	{
+		localOrderSendCountdown -= 1;
+	}
+}
+
+
+
+void NetEngine::clearTopOrders()
 {
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
-		orders.erase(hash(p, step));
+		orders[p].pop();
 	}
-	step+=1;
 }
 
-void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber)
+
+
+void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI)
 {
-	int targetStep = stepNumber[playerNumber];
-	stepNumber[playerNumber] += 1;
+	assert(playerNumber>=0);
 	order->sender=playerNumber;
-	orders[hash(playerNumber, targetStep)] = order;
+	orders[playerNumber].push(order);
+
+	///The local player and network players all have padding arround their order
+	if(! isAI)
+	{
+		for(int i=0; i<(networkOrderRate - 1); ++i)
+		{
+			shared_ptr<Order> norder(new NullOrder);
+			norder->sender=playerNumber;
+			orders[playerNumber].push(norder);
+		}
+	}
 }
 
 
 
 boost::shared_ptr<Order> NetEngine::retrieveOrder(int playerNumber)
 {
-	return orders[hash(playerNumber, step)];
+	return orders[playerNumber].front();
 }
 
 
 
-Uint16 NetEngine::hash(int playerNumber, int step)
+void NetEngine::addLocalOrder(boost::shared_ptr<Order> order)
 {
-	return Uint16(playerNumber) | (Uint16(step%2048)<<5);
+	if(order->getOrderType() != ORDER_NULL)
+	{
+		outgoing.push(order);
+	}
 }
 
 
@@ -66,7 +124,7 @@ bool NetEngine::allOrdersRecieved()
 {
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
-		if(orders.find(hash(p, step)) == orders.end())
+		if(orders[p].empty())
 		{
 			return false;
 		}
@@ -83,11 +141,34 @@ int NetEngine::getStep()
 
 
 
+void NetEngine::flushAllOrders()
+{
+	while(!outgoing.empty())
+	{
+		boost::shared_ptr<Order> localOrder;
+		localOrder = outgoing.front();
+		outgoing.pop();
+		localOrder->gameCheckSum = -1;
+
+		if(client)
+		{
+			localOrder->sender = localPlayer;
+			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
+			client->sendNetMessage(message);
+		}
+		pushOrder(localOrder, localPlayer, false);
+
+	}
+	localOrderSendCountdown = networkOrderRate - 1;
+}
+
+
+
 void NetEngine::prepareForLatency(int playerNumber, int latency)
 {
 	for(int s=0; s<latency; ++s)
 	{
-		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber);
+		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber, true);
 	}
 }
 
@@ -95,7 +176,7 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 
 bool NetEngine::orderRecieved(int playerNumber)
 {
-	if(orders.find(hash(playerNumber, step)) == orders.end())
+	if(orders[playerNumber].empty())
 		return false;
 	return true;
 }
@@ -107,7 +188,7 @@ Uint32 NetEngine::getWaitingOnMask()
 	Uint32 mask = 0x0;
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
-		if(orders.find(hash(p, step)) == orders.end())
+		if(orders[p].empty())
 		{
 			mask |= (1<<p);
 		}
@@ -122,14 +203,17 @@ bool NetEngine::matchCheckSums()
 	Uint32 checksum = -1;
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
-		Uint32 playerCheckSum = orders.find(hash(p, step))->second->gameCheckSum;
-		if(playerCheckSum != -1)
+		if(!orders[p].empty())
 		{
-			if(checksum == -1)
-				checksum = playerCheckSum;
-			else if(playerCheckSum != checksum)
+			Uint32 playerCheckSum = orders[p].front()->gameCheckSum;
+			if(playerCheckSum != -1)
 			{
-				return false;
+				if(checksum == -1)
+					checksum = playerCheckSum;
+				else if(playerCheckSum != checksum)
+				{
+					return false;
+				}
 			}
 		}
 	}

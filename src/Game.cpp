@@ -117,6 +117,8 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
+
+	anyPlayerWaitedTimeFor = 0;
 }
 
 
@@ -181,8 +183,6 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
-		if(players[i])
-			delete players[i];
 		players[i]=new Player();
 		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;
@@ -701,6 +701,23 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		case ORDER_PLAYER_QUIT_GAME:
 		{
 			boost::shared_ptr<PlayerQuitsGameOrder> pqgo=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
+
+			bool found = false;
+			for(int i=0; i<32; ++i)
+			{
+				if(i!=pqgo->player && players[i])
+				{
+					if(i!=pqgo->player && players[i]->teamNumber == players[pqgo->player]->teamNumber)
+					{
+						found = true;
+					}
+				}
+			}
+			if(! found)
+			{
+				teams[players[pqgo->player]->teamNumber]->isAlive = false;
+			}
+
 			players[pqgo->player]->makeItAI(AI::NONE);
 			gameHeader.getBasePlayer(pqgo->player).makeItAI(AI::NONE);
 			fprintf(logFile, "ORDER_PLAYER_QUIT_GAME");
@@ -1071,7 +1088,7 @@ void Game::wonSyncStep(void)
 			bool isOtherAlive=false;
 			for (int j=0; j<mapHeader.getNumberOfTeams(); j++)
 			{
-				if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
+				if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) && ((teams[j]->me) & (teams[i]->allies)) )) && (teams[j]->isAlive))
 					isOtherAlive=true;
 			}
 			teams[i]->hasWon |= !isOtherAlive;
@@ -1153,6 +1170,7 @@ void Game::syncStep(Sint32 localTeam)
 		Sint32 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&31]+=endTick-startTick;
 		stepCounter++;
+		anyPlayerWaitedTimeFor+=1;
 	}
 }
 
@@ -2362,16 +2380,17 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			overlayColor=Color(0, 0, 192);
 		if(overlays->getOverlayType() == OverlayArea::Fertility)
 			overlayColor=Color(0, 192, 128);
-		int width = (right - left) + 1;
-		int height = (bot - top) + 1;
+		///Both width and height have +2 to cover half-squares arround the edge of the viewport
+		int width = (right - left) + 2;
+		int height = (bot - top) + 2;
 
 		overlayAlphas.resize(width * height);
 		for (int y=0; y<height; y++)
 		{
 			for (int x=0; x<width; x++)
 			{
-				int rx=(x+viewportX)%map.getW();
-				int ry=(y+viewportY)%map.getH();
+				int rx=(x+viewportX-1)%map.getW();
+				int ry=(y+viewportY-1)%map.getH();
 				if(!edit && !map.isMapDiscovered(rx, ry, teams[localTeam]->me))
 					continue;
 				if(overlays->getValue(rx, ry))
@@ -2385,7 +2404,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		
 		///This is to correct OpenGL's blending not beeing offset correctly to line up with the map tiles
 		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, 16, 16, 32, 32, overlayColor);
+			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
 		else
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, 0, 0, 32, 32, overlayColor);
 	}
@@ -2533,7 +2552,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 void Game::setWaitingOnMask(Uint32 mask)
 {
+	Uint32 oldMask = maskAwayPlayer;
 	maskAwayPlayer = mask;
+
+	if(mask != 0)
+	{
+		if(oldMask == 0)
+			anyPlayerWaitedTimeFor = 0;
+		anyPlayerWaited = true;
+	}
+	else
+	{
+		anyPlayerWaited = false;
+	}
 }
 
 

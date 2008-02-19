@@ -160,6 +160,16 @@ Balak
 Kanpaina editorea
 [campaign]
 Kanpaina
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Ezin da partidarekin bat egin, parametroak ez datoz bat
 [Can't join game, timeout]
@@ -380,6 +390,8 @@ Partida osorik
 Partida teklak
 [game speed]
 Partida abiadura
+[Games]
+
 [general settings]
 Ezarpen orokorrak
 [go to event]
@@ -422,6 +434,8 @@ Osasuna
 Unitateak sendatzeko
 [hospital]
 Hospitala
+[Host has cancelled the game]
+
 [host]
 Partida bat ostatatu
 [hp]
@@ -910,6 +924,8 @@ Partidak
 Hospitala bukatuta dago
 [the hospital is under attack]
 Hospitala erasopean dago
+[The host has cancelled the game]
+
 [the inn is finished]
 Ostatua bukatuta dago
 [the inn is under attack]
@@ -1010,6 +1026,8 @@ Suntsipenari itxaroten
 %0(r)i itxaroten
 [waiting for key]
 
+[Waiting]
+
 [Walk]
 Ibili
 [warflag explanation 2]
@@ -1108,6 +1126,8 @@ Kanpoan egotearen marka duzu.
 Galdu duzu!
 [you have won]
 Irabazi duzu!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Zure %0ak erasopean daude
 [Your unit got converted to %0's team]

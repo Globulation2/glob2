@@ -24,9 +24,10 @@
 #include "MultiplayerGame.h"
 #include "AI.h"
 #include "MapHeader.h"
-#include "NetTextMessageHandler.h"
+#include "YOGChatChannel.h"
+#include "YOGChatListener.h"
 #include "MultiplayerGameEventListener.h"
-
+#include "IRCTextMessageHandler.h"
 
 namespace GAGGUI
 {
@@ -39,11 +40,13 @@ namespace GAGGUI
 
 ///This screen is the setup screen for a multiplayer game. It functions both for the host
 ///and the joined player. It uses the information it gets from the given MultiplayerGame.
-class MultiplayerGameScreen : public Glob2Screen, public NetTextMessageListener, public MultiplayerGameEventListener
+///This doesn't continue dispaying irc, it merely keeps it up to date and turns it on/off
+///when starting and finishing games
+class MultiplayerGameScreen : public Glob2Screen, public YOGChatListener, public MultiplayerGameEventListener
 {
 public:
-	///The screen must be provided with the text message handler and the multiplayer game
-	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<NetTextMessageHandler> textMessage);
+	///The screen must be provided with the client, the irc connection and the multiplayer game
+	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat = boost::shared_ptr<IRCTextMessageHandler>());
 	virtual ~MultiplayerGameScreen();
 
 	enum
@@ -53,6 +56,7 @@ public:
 		GameRefused,
 		Kicked,
 		GameCancelled,
+		ServerDisconnected,
 	};
 
 private:
@@ -73,7 +77,7 @@ private:
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 
-	void handleTextMessage(const std::string& message, NetTextMessageType type);
+	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
 
 	void handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event);
 
@@ -81,6 +85,7 @@ private:
 	void updateJoinedPlayers();
 
 	TextButton *startButton;
+	TextButton *cancelButton;
 	std::vector<TextButton *> addAI;
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
@@ -95,7 +100,9 @@ private:
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
 	Text *gameFullText;
+	Text *gameStartWaitingText;
 
-	boost::shared_ptr<NetTextMessageHandler> textMessage;
+	boost::shared_ptr<YOGChatChannel> gameChat;
+	boost::shared_ptr<IRCTextMessageHandler> ircChat;
 };
 #endif
