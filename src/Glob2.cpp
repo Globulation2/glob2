@@ -437,7 +437,7 @@ int Glob2::run(int argc, char *argv[])
 				}
 				else if (rc==HowNewMapScreen::LOADMAP)
 				{
-					ChooseMapScreen chooseMapScreen("maps", "map", false);
+					ChooseMapScreen chooseMapScreen("maps", "map", false, "games", "game", false);
 					int rc=chooseMapScreen.execute(globalContainer->gfx, 40);
 					if (rc==ChooseMapScreen::OK)
 					{

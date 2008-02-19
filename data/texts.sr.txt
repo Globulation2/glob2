@@ -390,6 +390,8 @@ AIWarrush
 
 [game speed]
 Брзина игре
+[Games]
+
 [general settings]
 
 [go to event]

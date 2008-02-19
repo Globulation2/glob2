@@ -390,6 +390,8 @@ Oyun dolu
 
 [game speed]
 Oyun hizi
+[Games]
+
 [general settings]
 
 [go to event]

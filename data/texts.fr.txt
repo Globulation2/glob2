@@ -390,6 +390,8 @@ Jeu complet
 Raccourcis du jeu
 [game speed]
 Vitesse du jeu
+[Games]
+
 [general settings]
 Réglages généraux
 [go to event]

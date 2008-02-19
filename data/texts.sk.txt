@@ -390,6 +390,8 @@ Plné
 
 [game speed]
 Rýchlosť hry
+[Games]
+
 [general settings]
 Základ
 [go to event]

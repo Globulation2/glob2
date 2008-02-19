@@ -390,6 +390,8 @@ Komplet graczy
 
 [game speed]
 Prędkość gry
+[Games]
+
 [general settings]
 
 [go to event]

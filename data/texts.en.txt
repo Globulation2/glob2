@@ -386,6 +386,8 @@ Game full
 Game Shortcuts
 [game speed]
 Game speed
+[Games]
+Games
 [general settings]
 General Settings
 [go to event]

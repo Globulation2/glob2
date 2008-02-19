@@ -390,6 +390,8 @@ Partida Completa
 
 [game speed]
 velocitat del joc
+[Games]
+
 [general settings]
 
 [go to event]

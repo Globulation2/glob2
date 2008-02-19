@@ -192,6 +192,7 @@
 [game full]
 [game shortcuts]
 [game speed]
+[Games]
 [general settings]
 [go to event]
 [go to home]

@@ -508,6 +508,7 @@ void MultiplayerGame::startEngine()
 	Engine engine;
 	// host game and wait for players. This clever trick is meant to get a proper shared_ptr
 	// to (this), because shared_ptr's must be copied from the original
+	std::cout<<"starting with player "<<getLocalPlayer()<<std::endl;
 	int rc=engine.initMultiplayer(client->getMultiplayerGame(), client, getLocalPlayer());
 	// execute game
 	if (rc==Engine::EE_NO_ERROR)
