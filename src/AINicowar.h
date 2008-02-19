@@ -169,10 +169,10 @@ public:
 	int upgrading_phase_1_units_assigned;
 	///The number of units to assign to an upgrade for upgrading phase level 2
 	int upgrading_phase_2_units_assigned;
-	///The number of buildings to upgrade at once for upgrading phase 1
-	int upgrading_phase_1_num_upgrades_at_once;
-	///The number of buildings to upgrade at once for upgrading phase 2
-	int upgrading_phase_2_num_upgrades_at_once;
+	///The number of level 1 or higher units needed to count for upgrading one more building
+	int upgrading_phase_1_num_units;
+	///The number of level 1 or higher units needed to count for upgrading one more building
+	int upgrading_phase_2_num_units;
 	///The number of units to assign to a war flag attacking an enemy building
 	int war_phase_war_flag_units_assigned;
 	///The number of flags to attack with at any one time

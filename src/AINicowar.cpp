@@ -107,8 +107,8 @@ void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgrading_phase_2_tower_chance, "upgrading_phase_2_tower_chance");
 	configBlock->load(upgrading_phase_1_units_assigned, "upgrading_phase_1_units_assigned");
 	configBlock->load(upgrading_phase_2_units_assigned, "upgrading_phase_2_units_assigned");
-	configBlock->load(upgrading_phase_1_num_upgrades_at_once, "upgrading_phase_1_num_upgrades_at_once");
-	configBlock->load(upgrading_phase_2_num_upgrades_at_once, "upgrading_phase_2_num_upgrades_at_once");
+	configBlock->load(upgrading_phase_1_num_units, "upgrading_phase_1_num_units");
+	configBlock->load(upgrading_phase_2_num_units, "upgrading_phase_2_num_units");
 	configBlock->load(war_phase_war_flag_units_assigned, "war_phase_war_flag_units_assigned");
 	configBlock->load(war_phase_num_attack_flags, "war_phase_num_attack_flags");
 	
@@ -137,9 +137,10 @@ NicowarStrategyLoader::NicowarStrategyLoader()
 	
 NicowarStrategy NicowarStrategyLoader::chooseRandomStrategy()
 {
-	int chosen = syncRand() % entries.size();
-	entries[chosen]->setStrategyName(entriesToName[chosen]);
-	return *entries[chosen];
+//	int chosen = syncRand() % entries.size();
+//	entries[chosen]->setStrategyName(entriesToName[chosen]);
+//	return *entries[chosen];
+	return getParticularStrategy("default");
 }
 
 
@@ -484,9 +485,9 @@ void NewNicowar::check_phases(Echo& echo)
 	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools.add_condition(new NotUnderConstruction);
 	const int school_counts=schools.count_buildings();
-	const int trained_count=echo.get_team_stats().upgradeState[BUILD][1];
+	const int trained_count=stat->upgradeState[BUILD][1] + stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
 
-	if(stat->totalUnit>=strategy.upgrading_phase_1_unit_min && school_counts>strategy.upgrading_phase_1_school_min && trained_count>strategy.upgrading_phase_1_trained_worker_min)
+	if(stat->totalUnit>=strategy.upgrading_phase_1_unit_min && school_counts>=strategy.upgrading_phase_1_school_min && trained_count>strategy.upgrading_phase_1_trained_worker_min)
 	{
 		upgrading_phase_1=true;
 	}
@@ -508,9 +509,9 @@ void NewNicowar::check_phases(Echo& echo)
 	schools_3.add_condition(new NotUnderConstruction);
 	schools_3.add_condition(new BuildingLevel(3));
 	const int school_counts_2=schools_2.count_buildings() + schools_3.count_buildings();
-	const int trained_count_2=echo.get_team_stats().upgradeState[BUILD][2];
+	const int trained_count_2=echo.get_team_stats().upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
 
-	if(stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
+	if(stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>=strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
 	{
 		upgrading_phase_2=true;
 	}
@@ -586,10 +587,11 @@ void NewNicowar::check_phases(Echo& echo)
 	
 	///Qualifications for the no worker phase:
 	///1) More than strategy.no_workers_phase_free_worker_minimum_percen % workers free
-	///2) Atleast one worker (because of devision by 0)
+	///2) No needed jobs
+	///3) Atleast one worker (because of devision by 0)
 	if(stat->numberUnitPerType[WORKER] > 0)
 	{
-		const int workers_free = stat->isFree[WORKER] * 100 / stat->numberUnitPerType[WORKER];
+		const int workers_free = (stat->isFree[WORKER]  -  stat->totalNeeded) * 100 / stat->numberUnitPerType[WORKER];
 		if(workers_free > strategy.no_workers_phase_free_worker_minimum_percent)
 		{
 			no_workers_phase=true;
@@ -604,7 +606,7 @@ void NewNicowar::check_phases(Echo& echo)
 		no_workers_phase=false;
 	}
 	
-	///Qualifications for the can swim phase:
+	///Qualifications for the can swim phacose:
 	///1) Atleast one worker that can swim
 	int total_can_swim=0;
 	for(int i=0; i<4; ++i)
@@ -622,13 +624,13 @@ void NewNicowar::check_phases(Echo& echo)
 
 void NewNicowar::queue_buildings(Echo& echo)
 {
-	queue_inns(echo);
-	queue_swarms(echo);
 	queue_racetracks(echo);
 	queue_swimmingpools(echo);
 	queue_schools(echo);
 	queue_barracks(echo);
 	queue_hospitals(echo);
+	queue_inns(echo);
+	queue_swarms(echo);
 }
 
 
@@ -661,6 +663,7 @@ void NewNicowar::queue_inns(Echo& echo)
 		  number1*strategy.level_1_inn_units_can_feed
 		+ number2*strategy.level_2_inn_units_can_feed
 		+ number3*strategy.level_3_inn_units_can_feed;
+
 	///(by default), A level 1 Inn can handle 8 units, a level 2 can handle 12 and a level 3 can handle 16
 	if((total_workers+total_explorers+total_warriors)>=score)
 	{
@@ -981,7 +984,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_wheat;
 	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
 	//You want to be close to wheat
-	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
+	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 6));
 
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
@@ -1308,11 +1311,6 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 
 
 	to_assign=strategy.base_swarm_units_assigned;
-	///Assign double workers to swarms during the growth phase and the war_preperation phase
-	if(growth_phase || war_preperation)
-	{
-		to_assign*=2;
-	}
 
 	///Double units when ressource level is low
 	if(total_ressource_level <= (strategy.base_swarm_low_wheat_trigger_ammount * 25))
@@ -1503,11 +1501,16 @@ int NewNicowar::choose_building_for_upgrade(Echo& echo, int type, int level)
 
 void NewNicowar::upgrade_buildings(Echo& echo)
 {
+	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	int can_upgrade_level1 = stat->upgradeState[BUILD][1] + stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+	int can_upgrade_level2 = stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+
 	int num_to_upgrade_level1=0;
 	int num_to_upgrade_level2=0;
 	if(upgrading_phase_1)
 	{
-		num_to_upgrade_level1=strategy.upgrading_phase_1_num_upgrades_at_once;
+		//rounded up
+		num_to_upgrade_level1=(can_upgrade_level1 + strategy.upgrading_phase_1_num_units/2) / (strategy.upgrading_phase_1_num_units);
 	}
 	else
 	{
@@ -1516,7 +1519,8 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 
 	if(upgrading_phase_2)
 	{
-		num_to_upgrade_level2=strategy.upgrading_phase_2_num_upgrades_at_once;
+		//rounded up
+		num_to_upgrade_level2=(can_upgrade_level2 + strategy.upgrading_phase_2_num_units/2) / (strategy.upgrading_phase_2_num_units);
 	}
 	else
 	{
@@ -1649,8 +1653,7 @@ void NewNicowar::control_attacks(Echo& echo)
 		{
 			number_attacks=strategy.war_phase_num_attack_flags;
 		}
-		
-	
+
 		if(attack_flags.size() < number_attacks)
 		{
 			attack_building(echo);
@@ -1683,11 +1686,13 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 
 	if(target==-1 || !echo.player->game->teams[target]->isAlive)
 	{
-		std::vector<int> available_targets;		
+		std::vector<int> available_reachable_targets;
+		std::vector<int> available_targets;
 		for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 		{
 			if(echo.player->game->teams[*i]->isAlive)
 			{
+				available_targets.push_back(*i);
 				enemy_building_iterator ebi(echo, *i, -1, -1, indeterminate);
 				/* Make sure we know of at least one
 				   building that we can directly attack
@@ -1701,16 +1706,18 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 					Building* b=echo.player->game->teams[*i]->myBuildings[Building::GIDtoID(*ebi)];
 					if(gradient.get_height(b->posX, b->posY) != -2)
 					{
-						available_targets.push_back(*i);
+						available_reachable_targets.push_back(*i);
 						break;
 					}
 				}
 			}
 		}
-		if(available_targets.size()==0)
-			target=-1;
-		else
+		if(available_reachable_targets.size()!=0)
+			target=available_reachable_targets[syncRand() % available_reachable_targets.size()];
+		else if(available_targets.size()!=0)
 			target=available_targets[syncRand() % available_targets.size()];
+		else
+			target=-1;
 	}
 }
 

@@ -1785,7 +1785,10 @@ void BuildingRegister::tick()
 	{
 		//Ignore this, its not supposed to be there
 		if( !(i->second.get<4>()))
+		{
+			i++;
 			continue;
+		}
 
 		//When get<3>() is -1, it means that the building order hasen't been sent to the glob2 engine yet.
 		//This is used when the building is registered, but awaiting conditions to be satisfied.
@@ -1827,7 +1830,10 @@ void BuildingRegister::tick()
 	{
 		///Ignore this, its not supposed to be there
 		if(! i->second.get<5>())
+		{
+			i++;
 			continue;
+		}
 
 		if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
 		{
