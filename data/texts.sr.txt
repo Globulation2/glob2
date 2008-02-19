@@ -160,6 +160,16 @@ AIWarrush
 
 [campaign]
 Кампања
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 
 [Can't join game, timeout]
@@ -380,6 +390,8 @@ AIWarrush
 
 [game speed]
 Брзина игре
+[Games]
+
 [general settings]
 
 [go to event]
@@ -422,6 +434,8 @@ AIWarrush
 Болница служи за лечење
 [hospital]
 Болница
+[Host has cancelled the game]
+
 [host]
 Рачунар
 [hp]
@@ -910,6 +924,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Болница је завршена
 [the hospital is under attack]
 Болница је нападнута
+[The host has cancelled the game]
+
 [the inn is finished]
 Кантина је завршена
 [the inn is under attack]
@@ -1010,6 +1026,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Чека се на %0
 [waiting for key]
 
+[Waiting]
+
 [Walk]
 Ходај
 [warflag explanation 2]
@@ -1106,6 +1124,8 @@ YOG мета-сервер је одбио везу јер корисничко �
 Изгубили сте игру.
 [you have won]
 Добили сте игру.
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Нападнута јединица: %0
 [Your unit got converted to %0's team]

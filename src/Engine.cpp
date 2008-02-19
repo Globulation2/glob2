@@ -149,12 +149,12 @@ int Engine::initLoadGame()
 
 
 
-int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, int localPlayer)
+int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer)
 {
 	gui.localPlayer = localPlayer;
 	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
 	multiplayer = multiplayerGame;
-	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader());
+	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
 	multiplayer->setNetEngine(net);
 
 	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
@@ -164,6 +164,8 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 			net->prepareForLatency(p, multiplayerGame->getGameHeader().getGameLatency());
 		}
 	}
+
+	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client);
 
 	return Engine::EE_NO_ERROR;
 }
@@ -214,9 +216,6 @@ int Engine::run(void)
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
 
-		///This is neccessarry so that the game check sum is computed at the right
-		///frame, required for reducing the number of Orders sent over the network
-		std::queue<boost::shared_ptr<Order> > localOrdersQueue;
 		unsigned int skipOrders = 0;
 
 		while (gui.isRunning)
@@ -248,6 +247,11 @@ int Engine::run(void)
 	
 			if (!gui.hardPause)
 			{
+				if(multiplayer && !multiplayer->isStillConnected())
+				{
+					gui.isRunning = false;
+				}
+
 				// But some jobs have to be executed synchronously:
 				if (networkReadyToExecute)
 				{
@@ -255,29 +259,7 @@ int Engine::run(void)
 					
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
-					
-					//we ignore null orders that aren't required for this order frame
-					if(localOrder->getOrderType() != ORDER_NULL || localOrdersQueue.empty())
-					{
-						localOrdersQueue.push(localOrder);
-					}
-				
-					if(skipOrders > 0)
-					{
-						net->pushOrder(boost::shared_ptr<Order>(new NullOrder), gui.localPlayer);
-						skipOrders -= 1;
-					}
-					else
-					{
-						boost::shared_ptr<Order> localOrder = localOrdersQueue.front();
-						localOrdersQueue.pop();
-						Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
-						localOrder->gameCheckSum = checksum;
-						if(multiplayer)
-							multiplayer->pushOrder(localOrder, gui.localPlayer);
-						net->pushOrder(localOrder, gui.localPlayer);
-						skipOrders += gui.game.gameHeader.getOrderRate() - 1;
-					}
+					net->addLocalOrder(localOrder);
 				}
 				
 				// we get and push ai orders, if they are needed for this frame
@@ -286,7 +268,7 @@ int Engine::run(void)
 					if (gui.game.players[i]->ai && !net->orderRecieved(i))
 					{
 						shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
-						net->pushOrder(order, i);
+						net->pushOrder(order, i, true);
 					}
 				}
 				
@@ -295,6 +277,12 @@ int Engine::run(void)
 				if(multiplayer)
 					multiplayer->update();
 				
+				if(networkReadyToExecute)
+				{
+					Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
+					net->advanceStep(checksum);
+				}
+
 				// We proceed network:
 				networkReadyToExecute=net->allOrdersRecieved();
 
@@ -304,7 +292,7 @@ int Engine::run(void)
 					if(!net->matchCheckSums())
 					{	
 						std::cout<<"Game desychronized."<<std::endl;
-						gui.game.dumpAllData("glob2.world-desynchronization.dump.txt");
+						gui.game.dumpAllData("glob2.world-desynchronization.dump2.txt");
 						assert(false);
 					}
 					else
@@ -315,7 +303,7 @@ int Engine::run(void)
 							shared_ptr<Order> order=net->retrieveOrder(i);
 							gui.executeOrder(order);
 						}
-						net->advanceStep();
+						net->clearTopOrders();
 					}
 				}
 
@@ -371,8 +359,19 @@ int Engine::run(void)
 				}
 			}
 			
-			if(gui.exitGlobCompletely)
+			if(gui.flushOutgoingAndExit)
+			{
+				shared_ptr<Order> localOrder = gui.getOrder();
+				while(localOrder->getOrderType() != ORDER_NULL)
+				{
+					net->addLocalOrder(localOrder);
+					localOrder = gui.getOrder();
+				}
+
+				gui.isRunning=false;
+				net->flushAllOrders();
 				break;
+			}
 		}
 
 		cpuStats.format();
@@ -414,9 +413,9 @@ int Engine::run(void)
 
 
 
-int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader)
+int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader))
+	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData))
 		return EE_CANT_LOAD_MAP;
 
 	// if this has campaign text information, show a screen for it.
@@ -435,7 +434,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	finalAdjustements();
 
 	// we create the net game
-	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers());
+	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
 	return EE_NO_ERROR;
 }

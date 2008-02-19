@@ -284,4 +284,136 @@ bool MGHostCancelledGameEvent::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGGameStarted::MGGameStarted()
+{
+}
+
+
+
+Uint8 MGGameStarted::getEventType() const
+{
+	return MGEGameStarted;
+}
+
+
+
+std::string MGGameStarted::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameStarted()";
+	return s.str();
+}
+
+
+
+bool MGGameStarted::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameStarted))
+	{
+		//const MGGameStarted& r = dynamic_cast<const MGGameStarted&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+MGServerDisconnected::MGServerDisconnected()
+{
+}
+
+
+
+Uint8 MGServerDisconnected::getEventType() const
+{
+	return MGEServerDisconnected;
+}
+
+
+
+std::string MGServerDisconnected::format() const
+{
+	std::ostringstream s;
+	s<<"MGServerDisconnected()";
+	return s.str();
+}
+
+
+
+bool MGServerDisconnected::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGServerDisconnected))
+	{
+		//const MGServerDisconnected& r = dynamic_cast<const MGServerDisconnected&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+MGGameStartRefused::MGGameStartRefused()
+{
+}
+
+
+
+Uint8 MGGameStartRefused::getEventType() const
+{
+	return MGEGameStartRefused;
+}
+
+
+
+std::string MGGameStartRefused::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameStartRefused()";
+	return s.str();
+}
+
+
+
+bool MGGameStartRefused::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameStartRefused))
+	{
+		//const MGGameStartRefused& r = dynamic_cast<const MGGameStartRefused&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+MGGameHostJoinAccepted::MGGameHostJoinAccepted()
+{
+}
+
+
+
+Uint8 MGGameHostJoinAccepted::getEventType() const
+{
+	return MGEGameHostJoinAccepted;
+}
+
+
+
+std::string MGGameHostJoinAccepted::format() const
+{
+	std::ostringstream s;
+	s<<"MGGameHostJoinAccepted()";
+	return s.str();
+}
+
+
+
+bool MGGameHostJoinAccepted::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGGameHostJoinAccepted))
+	{
+		//const MGGameHostJoinAccepted& r = dynamic_cast<const MGGameHostJoinAccepted&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

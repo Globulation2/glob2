@@ -28,8 +28,10 @@
 #include <GraphicContext.h>
 #include "Glob2Screen.h"
 #include "YOGClient.h"
-#include "NetTextMessageHandler.h"
+#include "IRCTextMessageHandler.h"
 #include "YOGEventListener.h"
+#include "YOGChatChannel.h"
+#include "YOGChatListener.h"
 
 namespace GAGGUI
 {
@@ -75,7 +77,7 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGScreen : public Glob2Screen, public YOGEventListener, public NetTextMessageListener
+class YOGScreen : public Glob2Screen, public YOGEventListener, public YOGChatListener, public IRCTextMessageListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
@@ -89,8 +91,13 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	///Responds to YOG events
 	void handleYOGEvent(boost::shared_ptr<YOGEvent> event);
-	///Handle text message events
-	void handleTextMessage(const std::string& message, NetTextMessageType type);
+	///Handle text message events from IRCTextMessageHandler
+	void handleIRCTextMessage(const std::string& message);
+	///Handles text message events from the YOGChatChannel
+	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
+	///Handles an internal message
+	void recieveInternalMessage(const std::string& message);
+
 	///The end-codes of the screen
 	enum
 	{
@@ -131,7 +138,8 @@ private:
 	TextButton *joinButton;
 
 	boost::shared_ptr<YOGClient> client;
-	boost::shared_ptr<NetTextMessageHandler> netMessage;
+	boost::shared_ptr<YOGChatChannel> lobbyChat;
+	boost::shared_ptr<IRCTextMessageHandler> ircChat;
 
 };
 

@@ -160,6 +160,16 @@ Kulor
 Kampanj Editor
 [campaign]
 Kampanj
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Kan inte ansluta till spel, omatchande spelparametrar
 [Can't join game, timeout]
@@ -380,6 +390,8 @@ Spelet är fullt
 Spelgenvägar
 [game speed]
 Spelhastighet
+[Games]
+
 [general settings]
 Allmänt
 [go to event]
@@ -422,6 +434,8 @@ Hälsa
 Helar dina enheter
 [hospital]
 Sjukhus
+[Host has cancelled the game]
+
 [host]
 Var värd för ett spel
 [hp]
@@ -910,6 +924,8 @@ Spel
 Sjukhuset är färdigt
 [the hospital is under attack]
 Sjukstugan är under attack
+[The host has cancelled the game]
+
 [the inn is finished]
 Värdshuset är färdigt
 [the inn is under attack]
@@ -1010,6 +1026,8 @@ Avvaktar destruktion
 Väntar på %0
 [waiting for key]
 
+[Waiting]
+
 [Walk]
 Gå
 [warflag explanation 2]
@@ -1108,6 +1126,8 @@ Du är markerad som borta.
 Du har förlorat!
 [you have won]
 Du har vunnit!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Din %0 är under attack
 [Your unit got converted to %0's team]
