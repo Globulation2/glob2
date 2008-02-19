@@ -390,6 +390,8 @@ ok
 
 [game speed]
 Скорость игры
+[Games]
+
 [general settings]
 
 [go to event]

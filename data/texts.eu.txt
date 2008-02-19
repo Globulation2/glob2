@@ -390,6 +390,8 @@ Partida osorik
 Partida teklak
 [game speed]
 Partida abiadura
+[Games]
+
 [general settings]
 Ezarpen orokorrak
 [go to event]

@@ -390,6 +390,8 @@ Joc complet
 
 [game speed]
 Viteza jocului
+[Games]
+
 [general settings]
 
 [go to event]

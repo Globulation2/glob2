@@ -390,6 +390,8 @@ Igra je polna
 
 [game speed]
 Hitrost igre
+[Games]
+
 [general settings]
 
 [go to event]

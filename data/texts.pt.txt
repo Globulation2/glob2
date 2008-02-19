@@ -390,6 +390,8 @@ Partida alotada
 
 [game speed]
 Velocidade de jogo
+[Games]
+
 [general settings]
 
 [go to event]

@@ -390,6 +390,8 @@ AIWarrush
 遊戲快捷鍵
 [game speed]
 遊戲速度
+[Games]
+
 [general settings]
 基本設定
 [go to event]

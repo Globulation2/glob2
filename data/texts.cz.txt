@@ -390,6 +390,8 @@ Plně obsazená hra
 
 [game speed]
 Rychlost hry
+[Games]
+
 [general settings]
 
 [go to event]

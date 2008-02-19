@@ -390,6 +390,8 @@ Partita al completo
 Scorciatoie da tastiera
 [game speed]
 Velocità di gioco
+[Games]
+
 [general settings]
 Impostazioni generali
 [go to event]

@@ -390,6 +390,8 @@ Spiel komplett
 
 [game speed]
 Spielgeschwindigkeit
+[Games]
+
 [general settings]
 Allgemein
 [go to event]

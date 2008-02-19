@@ -3737,7 +3737,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 	}
 }
 
-bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
 {
 	init();
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
@@ -3752,7 +3752,7 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 		}
 	}
 	
-	bool res = load(stream);
+	bool res = load(stream, ignoreGUIData);
 	delete stream;
 	if (!res)
 		return false;
@@ -3766,7 +3766,7 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	return true;
 }
 
-bool GameGUI::load(GAGCore::InputStream *stream)
+bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 {
 	init();
 
@@ -3782,29 +3782,44 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 	{
 		// load gui's specific infos
 		stream->readEnterSection("GameGUI");
-		
-		chatMask = stream->readUint32("chatMask");
 
-		localPlayer = stream->readSint32("localPlayer");
-		localTeamNo = stream->readSint32("localTeamNo");
-
-		viewportX = stream->readSint32("viewportX");
-		viewportY = stream->readSint32("viewportY");
-
-		hiddenGUIElements = stream->readUint32("hiddenGUIElements");
-		Uint32 buildingsChoiceMask = stream->readUint32("buildingsChoiceMask");
-		Uint32 flagsChoiceMask = stream->readUint32("flagsChoiceMask");
-		
-		// invert value if hidden
-		for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
+		///Load the data, but don't store it in local variables
+		if(ignoreGUIData)
 		{
-			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
-			buildingsChoiceState[i] = ((1<<id) & buildingsChoiceMask) != 0;
+			stream->readUint32("chatMask");
+			stream->readSint32("localPlayer");
+			stream->readSint32("localTeamNo");
+			stream->readSint32("viewportX");
+			stream->readSint32("viewportY");
+			stream->readUint32("hiddenGUIElements");
+			stream->readUint32("buildingsChoiceMask");
+			stream->readUint32("flagsChoiceMask");
 		}
-		for (unsigned i=0; i<flagsChoiceState.size(); ++i)
-		{
-			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
-			flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
+		else
+		{	
+			chatMask = stream->readUint32("chatMask");
+
+			localPlayer = stream->readSint32("localPlayer");
+			localTeamNo = stream->readSint32("localTeamNo");
+
+			viewportX = stream->readSint32("viewportX");
+			viewportY = stream->readSint32("viewportY");
+
+			hiddenGUIElements = stream->readUint32("hiddenGUIElements");
+			Uint32 buildingsChoiceMask = stream->readUint32("buildingsChoiceMask");
+			Uint32 flagsChoiceMask = stream->readUint32("flagsChoiceMask");
+			
+			// invert value if hidden
+			for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
+			{
+				int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
+				buildingsChoiceState[i] = ((1<<id) & buildingsChoiceMask) != 0;
+			}
+			for (unsigned i=0; i<flagsChoiceState.size(); ++i)
+			{
+				int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
+				flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
+			}
 		}
 		
 		stream->readLeaveSection();

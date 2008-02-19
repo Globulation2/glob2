@@ -392,6 +392,8 @@ Jogo cheio
 Atalhos do jogo
 [game speed]
 Velocidade do jogo
+[Games]
+
 [general settings]
 Ajustes gerais
 [go to event]

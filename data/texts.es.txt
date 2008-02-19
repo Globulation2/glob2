@@ -390,6 +390,8 @@ Juego Lleno
 
 [game speed]
 Velocidad del Juego
+[Games]
+
 [general settings]
 
 [go to event]
