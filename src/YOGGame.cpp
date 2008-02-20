@@ -167,6 +167,9 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
 	routeMessage(sendGamePlayerInfo);
 
+	if(distributor)
+		distributor->removeMapRequestee(player);
+
 	chooseLatencyMode();
 }
 
