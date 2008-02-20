@@ -30,8 +30,14 @@ YOGMapDistributor::YOGMapDistributor(boost::shared_ptr<YOGGame> game, boost::sha
 
 void YOGMapDistributor::update()
 {
-	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end();)
 	{
+		if(!i->get<0>()->isConnected())
+		{
+			i = players.erase(i);
+			continue;
+		}
+
 		if(i->get<2>() == 0 && fileInfo)
 		{
 			i->get<0>()->sendMessage(fileInfo);
@@ -43,6 +49,7 @@ void YOGMapDistributor::update()
 			i->get<2>() = 2;
 			i->get<1>() += 1;
 		}
+		++i;
 	}
 }
 
@@ -57,6 +64,20 @@ void YOGMapDistributor::addMapRequestee(boost::shared_ptr<YOGPlayer> player)
 		sentRequest=true;
 	}
 	players.push_back(boost::make_tuple(player, 0, 0));
+}
+
+
+
+void YOGMapDistributor::removeMapRequestee(boost::shared_ptr<YOGPlayer> player)
+{
+	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if(i->get<0>() == player)
+		{
+			players.erase(i);
+			return;
+		}
+	}
 }
 
 
