@@ -130,6 +130,8 @@ public:
 	///Gets the chat channel for this game
 	Uint32 getChatChannel() const;
 	
+	///Returns the percentage finished for the downloaded
+	Uint8 percentageDownloadFinished();
 protected:
 	friend class YOGClient;
 
@@ -163,6 +165,7 @@ private:
 	std::list<MultiplayerGameEventListener*> listeners;
 	Uint32 chatChannel;
 	bool isEveryoneReadyToGo;
+	Uint8 previousPercentage;
 
 	NetGamePlayerManager playerManager;
 };

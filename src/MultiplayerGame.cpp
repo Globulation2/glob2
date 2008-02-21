@@ -35,6 +35,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	sentReadyToStart=false;
 	isEveryoneReadyToGo=false;
 	chatChannel=0;
+	previousPercentage = 255;
 }
 
 
@@ -80,6 +81,14 @@ void MultiplayerGame::update()
 			client->sendNetMessage(message);
 		}
 		wasReadyToStart=false;
+	}
+
+	if(gjcState == JoinedGame && assembler && assembler->getPercentage() != previousPercentage)
+	{
+		previousPercentage = assembler->getPercentage();
+		
+		shared_ptr<MGDownloadPercentUpdate> event(new MGDownloadPercentUpdate(assembler->getPercentage()));
+		sendToListeners(event);
 	}
 }
 
@@ -219,7 +228,7 @@ bool MultiplayerGame::isGameReadyToStart()
 
 	if(assembler)
 	{
-		if(assembler->isTransferComplete())
+		if(assembler->getPercentage() == 100)
 			return true;
 		return false;
 	}
@@ -576,6 +585,12 @@ Uint32 MultiplayerGame::getChatChannel() const
 	return chatChannel;
 }
 
+
+
+Uint8 MultiplayerGame::percentageDownloadFinished()
+{
+	return assembler->getPercentage();
+}
 
 
 
