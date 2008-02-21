@@ -4071,7 +4071,7 @@ int BuildingSearch::count_buildings()
 	int count=0;
 	for(Construction::BuildingRegister::found_iterator i=echo.get_building_register().begin(); i!=echo.get_building_register().end(); ++i)
 	{
-		if(passes_conditions(i->first))
+		if(i->second.get<5>() && passes_conditions(i->first))
 		{
 			count++;
 		}
