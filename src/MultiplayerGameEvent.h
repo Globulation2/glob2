@@ -36,6 +36,7 @@ enum MultiplayerGameEventType
 	MGEServerDisconnected,
 	MGEGameStartRefused,
 	MGEGameHostJoinAccepted,
+	MGEDownloadPercentUpdate,
 	//type_append_marker
 };
 
@@ -294,6 +295,31 @@ public:
 	
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGDownloadPercentUpdate
+class MGDownloadPercentUpdate : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGDownloadPercentUpdate event
+	MGDownloadPercentUpdate(Uint8 percent);
+
+	///Returns MGEDownloadPercentUpdate
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+
+	///Retrieves percent
+	Uint8 getPercentFinished() const;
+private:
+	Uint8 percent;
 };
 
 

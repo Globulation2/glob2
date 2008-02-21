@@ -90,7 +90,7 @@ private:
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
-	Text *startTimer;
+	Text *percentDownloaded;
 
 	TextInput *textInput;
 	TextArea *chatWindow;

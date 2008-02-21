@@ -20,6 +20,8 @@ V: Show vision for all buildings
 Add AI
 [add map]
 Add map
+[downloaded %0]
+downloaded %0
 [add shortcut]
 Add Shortcut
 [AI]

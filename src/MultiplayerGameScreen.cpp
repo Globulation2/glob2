@@ -99,8 +99,8 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(20, 360, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
-	addWidget(startTimer);
+	percentDownloaded=new Text(20, 360, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
+	addWidget(percentDownloaded);
 
 	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
@@ -251,6 +251,19 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 			{
 				addAI[i-1]->visible=true;
 			}
+		}
+	}
+	else if(type == MGEDownloadPercentUpdate)
+	{
+		shared_ptr<MGDownloadPercentUpdate> info = static_pointer_cast<MGDownloadPercentUpdate>(event);
+		if(info->getPercentFinished() != 100)
+		{
+			percentDownloaded->setText(FormatableString(Toolkit::getStringTable()->getString("[downloaded %0]")).arg((int)info->getPercentFinished()));
+			percentDownloaded->visible=true;
+		}
+		else
+		{
+			percentDownloaded->visible=false;
 		}
 	}
 }
