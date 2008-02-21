@@ -102,6 +102,8 @@ int Engine::initCustom(void)
 	int ret = initGame(customGameScreen.getMapHeader(), customGameScreen.getGameHeader());
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
+	else if(ret == -1)
+		return -1;
 
 	// set the correct alliance
 	gui.game.setAIAlliance();
@@ -130,6 +132,8 @@ int Engine::initCustom(const std::string &gameName)
 	int ret = initGame(mapHeader, gameHeader, false);
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
+	else if(ret == -1)
+		return -1;
 
 	// set the correct alliance
 	gui.game.setAIAlliance();
@@ -143,6 +147,8 @@ int Engine::initLoadGame()
 	int lgs = loadGameScreen.execute(globalContainer->gfx, 40);
 	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
+	else if(lgs == -1)
+		return -1;
 
 	return initCustom(loadGameScreen.getMapHeader().getFileName());
 }
@@ -425,6 +431,8 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		int retVal = campaignScreen.execute(globalContainer->gfx, 40);
 		if (retVal)
 			return EE_CANCEL;
+		else if(retVal == -1)
+			return -1;
 	}
 	
 	// We remove uncontrolled stuff from map
