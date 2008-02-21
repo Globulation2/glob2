@@ -401,15 +401,21 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::LOAD_GAME:
 			{
 				Engine engine;
-				if (engine.initLoadGame() == Engine::EE_NO_ERROR)
+				int rc_e = engine.initLoadGame();
+				if (rc_e == Engine::EE_NO_ERROR)
 					isRunning = (engine.run() != -1);
+				else if(rc_e == -1)
+					isRunning = false;
 			}
 			break;
 			case MainMenuScreen::CUSTOM:
 			{
 				Engine engine;
-				if (engine.initCustom() ==  Engine::EE_NO_ERROR)
+				int rc_e = engine.initCustom();
+				if (rc_e ==  Engine::EE_NO_ERROR)
 					isRunning = (engine.run() != -1);
+				else if(rc_e == -1)
+					isRunning = false;
 			}
 			break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:
@@ -420,8 +426,8 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::MULTIPLAYERS_LAN:
 			{
 				LANMenuScreen lanms;
-				int rc = lanms.execute(globalContainer->gfx, 40);
-				if(rc == -1)
+				int rc_lms = lanms.execute(globalContainer->gfx, 40);
+				if(rc_lms == -1)
 					isRunning=false;
 			}
 			break;
@@ -491,7 +497,9 @@ int Glob2::run(int argc, char *argv[])
 				else if (rc==HowNewMapScreen::NEWCAMPAIGN)
 				{
 					CampaignEditor ce("");
-					ce.execute(globalContainer->gfx, 40);
+					int rc=ce.execute(globalContainer->gfx, 40);
+					if(rc == -1)
+						isRunning=false;
 
 				}
 				else if (rc==HowNewMapScreen::LOADCAMPAIGN)
@@ -501,10 +509,18 @@ int Glob2::run(int argc, char *argv[])
 					if(rc_css==CampaignSelectorScreen::OK)
 					{
 						CampaignEditor ce(css.getCampaignName());
-						ce.execute(globalContainer->gfx, 40);
+						int rc_ce=ce.execute(globalContainer->gfx, 40);
+						if(rc_ce == -1)
+						{
+							isRunning=false;
+						}
 					}
 					else if(rc_css==CampaignSelectorScreen::CANCEL)
 					{
+					}
+					else if(rc_css == -1)
+					{
+						isRunning=false;
 					}
 				}
 				else if (rc==HowNewMapScreen::CANCEL)

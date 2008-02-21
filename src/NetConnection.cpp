@@ -24,6 +24,11 @@
 
 using namespace GAGCore;
 
+
+	
+//Uint32 NetConnection::lastTime = 0;
+//Uint32 NetConnection::amount = 0;
+
 NetConnection::NetConnection(const std::string& address, Uint16 port)
 {
 	connected = false;
@@ -135,6 +140,18 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 				}
 				if(connected)
 				{
+				/*
+					amount += length;
+					if(amount >= 1024)
+					{
+						Uint32 newTime = SDL_GetTicks();
+						std::cout<<"bandwidth usage: " << float(amount * 1000) / float(newTime - lastTime) <<std::endl;
+						lastTime = newTime;
+						amount = 0;
+					}
+				*/
+				
+				
 					MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
 					msb->seekFromStart(0);
 					BinaryInputStream* bis = new BinaryInputStream(msb);
@@ -199,6 +216,18 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 			std::cout<<"NetConnection::sendMessage: "<<SDLNet_GetError()<<std::endl;
 			closeConnection();
 		}
+		
+		/*
+		amount += length;
+		if(amount >= 1024)
+		{
+			Uint32 newTime = SDL_GetTicks();
+			std::cout<<"bandwidth usage: " << float(amount * 1000) / float(newTime - lastTime) <<std::endl;
+			lastTime = newTime;
+			amount = 0;
+		}
+		*/
+		
 		delete bos;
 		delete[] newData;
 	}
