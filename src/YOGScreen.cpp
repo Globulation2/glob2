@@ -297,12 +297,16 @@ void YOGScreen::joinGame()
 
 void YOGScreen::updateGameList(void)
 {
+	int i = gameList->getSelectionIndex();
 	gameList->clear();
 	for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
 	{
 		if(game->getGameState() == YOGGameInfo::GameOpen)
 			gameList->addText(game->getGameName());
 	}
+	gameList->setSelectionIndex(i);
+
+	updateGameInfo();
 }
 
 
@@ -333,20 +337,28 @@ void YOGScreen::updatePlayerList(void)
 
 void YOGScreen::updateGameInfo()
 {
-/*
-	if (gameList->getSelectionIndex())
+	if (gameList->getSelectionIndex() != -1)
 	{
-		YOGGameInfo info=*std::advance(client->getGameList().begin(), gameList->getSelectionIndex());
+		std::list<YOGGameInfo>::iterator i=client->getGameList().begin();
+		std::advance(i, gameList->getSelectionIndex());
+		YOGGameInfo info=*i;
+
+		gameInfo->setText("");
 		std::string s;
-		s += info.getGameName();
-		gameInfo->setText(s.c_str());
+		s += info.getGameName() + "\n";
+		gameInfo->addText(s.c_str());
+		s = FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(info.getMapName()) + "\n";
+		gameInfo->addText(s.c_str());
+		s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0]")).arg((int)info.getPlayersJoined()) + "\n";
+		gameInfo->addText(s.c_str());
+		s = FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg((int)info.getNumberOfTeams()) + "\n";
+		gameInfo->addText(s.c_str());
 		gameInfo->addChar('\n');
 	}
 	else
 	{
 		gameInfo->setText("");
 	}
-*/
 }
 
 

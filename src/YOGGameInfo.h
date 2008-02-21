@@ -60,6 +60,24 @@ public:
 	///Sets the game state
 	void setGameState(const GameState& state);
 
+	///Sets the number of players joined
+	void setPlayersJoined(Uint8 playersJoined);
+	
+	///Returns the name of the game
+	Uint8 getPlayersJoined() const;
+
+	///Sets the number of players joined
+	void setMapName(const std::string& mapName);
+	
+	///Returns the name of the game
+	std::string getMapName() const;
+
+	///Sets the number of teams
+	void setNumberOfTeams(Uint8 numberOfTeams);
+	
+	///Returns the name of the game
+	Uint8 getNumberOfTeams() const;
+
 	///Encodes this YOGGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
@@ -74,6 +92,9 @@ private:
 	Uint16 gameID;
 	std::string gameName;
 	GameState gameState;
+	Uint8 playersJoined;
+	std::string mapName;
+	Uint8 numberOfTeams;
 };
 
 #endif
