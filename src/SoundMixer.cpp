@@ -295,7 +295,13 @@ SoundMixer::SoundMixer(unsigned volume, bool mute)
 	speexDecoderState = NULL;
 	
 	initInterpolationTable();
-	
+		
+	if (mute)
+	{
+		this->volume = 0;
+	}
+	openAudio();
+/*
 	if (mute)
 	{
 		soundEnabled = false;
@@ -306,6 +312,7 @@ SoundMixer::SoundMixer(unsigned volume, bool mute)
 	{
 		openAudio();
 	}
+*/
 }
 
 SoundMixer::~SoundMixer()
