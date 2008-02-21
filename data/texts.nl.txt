@@ -390,6 +390,8 @@ Spel is vol
 Spel toetsen
 [game speed]
 Speelsnelheid
+[Games]
+
 [general settings]
 Algemeen
 [go to event]

@@ -390,6 +390,8 @@ A játék megtelt
 
 [game speed]
 A játék sebessége
+[Games]
+
 [general settings]
 
 [go to event]

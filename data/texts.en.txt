@@ -20,6 +20,8 @@ V: Show vision for all buildings
 Add AI
 [add map]
 Add map
+[downloaded %0]
+downloaded %0
 [add shortcut]
 Add Shortcut
 [AI]
@@ -386,6 +388,8 @@ Game full
 Game Shortcuts
 [game speed]
 Game speed
+[Games]
+Games
 [general settings]
 General Settings
 [go to event]

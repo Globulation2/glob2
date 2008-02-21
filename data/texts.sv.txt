@@ -390,6 +390,8 @@ Spelet är fullt
 Spelgenvägar
 [game speed]
 Spelhastighet
+[Games]
+
 [general settings]
 Allmänt
 [go to event]

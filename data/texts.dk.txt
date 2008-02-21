@@ -390,6 +390,8 @@ Spillet er fyldt op.
 Gem genveje
 [game speed]
 Spilhastighed
+[Games]
+
 [general settings]
 Generelt
 [go to event]

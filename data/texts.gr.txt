@@ -392,6 +392,8 @@ Ok
 Συντομεύσεις παιχνιδιού
 [game speed]
 Ταχύτητα παιχνιδιού
+[Games]
+
 [general settings]
 Γενικές Ρυθμίσεις
 [go to event]

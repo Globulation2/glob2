@@ -505,6 +505,8 @@ public:
 private:
 	///If this is set, the map editor will exit as soon as it finishes drawing and proccessing events
 	bool doQuit;
+	///If this is set, the map editor will do a full quit, from glob2 entirely
+	bool doFullQuit;
 
 	///This draws the map and various on-map elements
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);

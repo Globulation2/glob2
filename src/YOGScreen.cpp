@@ -234,7 +234,7 @@ void YOGScreen::recieveInternalMessage(const std::string& message)
 
 void YOGScreen::hostGame()
 {
-	ChooseMapScreen cms("maps", "map", false);
+	ChooseMapScreen cms("maps", "map", false, "games", "game", false);
 	int rc = cms.execute(globalContainer->gfx, 40);
 	if(rc == ChooseMapScreen::OK)
 	{

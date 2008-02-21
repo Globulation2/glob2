@@ -154,7 +154,7 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 	gui.localPlayer = localPlayer;
 	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
 	multiplayer = multiplayerGame;
-	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader());
+	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
 	multiplayer->setNetEngine(net);
 
 	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
@@ -413,9 +413,9 @@ int Engine::run(void)
 
 
 
-int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader)
+int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader))
+	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData))
 		return EE_CANT_LOAD_MAP;
 
 	// if this has campaign text information, show a screen for it.

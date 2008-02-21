@@ -22,6 +22,7 @@
 #include "YOGClient.h"
 #include "Stream.h"
 #include "BinaryStream.h"
+#include "StreamBackend.h"
 
 ///This class holds the responsibility of sending and recieving maps over the network.
 class MapAssembler
@@ -39,11 +40,11 @@ public:
 	///This starts recieving a map with the given map name
 	void startRecievingFile(std::string mapname);
 	
-	///This tells whether the file transfer, going or recieving, is done
-	bool isTransferComplete();
-	
 	///This recieves a message from YOG
 	void handleMessage(boost::shared_ptr<NetMessage> message);
+
+	///This tells the percentage the transfer has from completing, 100% is there was no transfer and/or its complete
+	Uint8 getPercentage();
 private:
 	void sendNextChunk();
 	void requestNextChunk();
@@ -59,6 +60,7 @@ private:
 	Uint32 size;
 	Uint32 finished;
 	boost::shared_ptr<YOGClient> client;
+	GAGCore::MemoryStreamBackend* obackend;
 	boost::shared_ptr<GAGCore::BinaryOutputStream> ostream;
 	boost::shared_ptr<GAGCore::BinaryInputStream> istream;
 	std::string filename;
