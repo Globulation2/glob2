@@ -117,6 +117,12 @@ public:
 
 	///This will return the list of players on the server
 	const std::list<YOGPlayerInfo>& getPlayerList() const;
+	
+	///This will return the list of games on hosted on the server.
+	std::list<YOGGameInfo>& getGameList();
+
+	///This will return the list of players on the server
+	std::list<YOGPlayerInfo>& getPlayerList();
 
 	///This will find the name of the player with the given ID
 	std::string findPlayerName(Uint16 playerID);

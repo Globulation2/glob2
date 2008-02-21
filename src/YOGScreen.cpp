@@ -333,12 +333,16 @@ void YOGScreen::updatePlayerList(void)
 
 void YOGScreen::updateGameInfo()
 {
-/*
 	if (gameList->getSelectionIndex())
 	{
-		YOGGameInfo info=*std::advance(client->getGameList().begin(), gameList->getSelectionIndex());
+		std::list<YOGGameInfo>::iterator i=client->getGameList().begin();
+		std::advance(i, gameList->getSelectionIndex());
+		YOGGameInfo info=*i;
 		std::string s;
-		s += info.getGameName();
+		s += info.getGameName() + "\n";
+		s += FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(info.getMapName()) + "\n";
+		s += FormatableString(Toolkit::getStringTable()->getString("[number of players: %0]")).arg(info.getPlayersJoined()) + "\n";
+		s += FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg(info.getNumberOfTeams()) + "\n";
 		gameInfo->setText(s.c_str());
 		gameInfo->addChar('\n');
 	}
@@ -346,7 +350,6 @@ void YOGScreen::updateGameInfo()
 	{
 		gameInfo->setText("");
 	}
-*/
 }
 
 

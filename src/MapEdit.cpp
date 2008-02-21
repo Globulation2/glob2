@@ -1740,13 +1740,13 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 	SDLMod modState = SDL_GetModState();
 
 //These overrides are for specific operating systems
-//#	ifdef USE_OSX
-	if(key.sym == SDLK_q && modState & KMOD_ALT)
+#	ifdef USE_OSX
+	if(key.sym == SDLK_q && modState & KMOD_META)
 	{
 		doQuit=true;
 		doFullQuit=true;
 	}
-//#	endif
+#	endif
 #	ifdef USE_WIN32
 	else if(key.sym == SDLK_F4 && modState & KMOD_ALT)
 	{

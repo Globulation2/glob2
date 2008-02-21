@@ -486,6 +486,7 @@ namespace GAGGUI
 						{
 							run=false;
 							returnCode=-1;
+							break;
 						}
 #						endif
 #						ifdef USE_WIN32
@@ -493,6 +494,7 @@ namespace GAGGUI
 						{
 							run=false;
 							returnCode=-1;
+							break;
 						}
 #						endif
 						dispatchEvents(&event);

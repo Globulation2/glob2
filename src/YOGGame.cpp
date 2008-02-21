@@ -120,6 +120,8 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	routeMessage(sendGamePlayerInfo);
 
 	chooseLatencyMode();
+
+	server.getGameInfo(gameID).setPlayersJoined(players.size());
 }
 
 
@@ -171,6 +173,8 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 		distributor->removeMapRequestee(player);
 
 	chooseLatencyMode();
+
+	server.getGameInfo(gameID).setPlayersJoined(players.size());
 }
 
 
@@ -207,6 +211,8 @@ void YOGGame::setMapHeader(const MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
+	server.getGameInfo(gameID).setMapName(mapHeader.getMapName());
+	server.getGameInfo(gameID).setNumberOfTeams(mapHeader.getNumberOfTeams());
 }
 
 
