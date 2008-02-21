@@ -323,9 +323,17 @@ int Glob2::run(int argc, char *argv[])
 						if(rc_cms==CampaignMenuScreen::EXIT)
 						{
 						}
+						else if(rc_cms == -1)
+						{
+							isRunning = false;
+						}
 					}
 					else if(rc_css==CampaignSelectorScreen::CANCEL)
 					{
+					}
+					else if(rc_css == -1)
+					{
+						isRunning = false;
 					}
 				}
 				else if(rccs==CampaignChoiceScreen::LOADCAMPAIGN)
@@ -339,10 +347,22 @@ int Glob2::run(int argc, char *argv[])
 						if(rc_cms==CampaignMenuScreen::EXIT)
 						{
 						}
+						else if(rc_cms == -1)
+						{
+							isRunning = false;
+						}
 					}
 					else if(rc_css==CampaignSelectorScreen::CANCEL)
 					{
 					}
+					else if(rc_css == -1)
+					{
+						isRunning = false;
+					}
+				}
+				else if(rccs == -1)
+				{
+					isRunning = false;
 				}
 			}
 			break;
@@ -356,6 +376,10 @@ int Glob2::run(int argc, char *argv[])
 					if(rc_cms==CampaignMenuScreen::EXIT)
 					{
 					}
+					else if(rc_cms == -1)
+					{
+						isRunning = false;
+					}
 				}
 				else
 				{
@@ -363,6 +387,10 @@ int Glob2::run(int argc, char *argv[])
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
 					if(rc_cms==CampaignMenuScreen::EXIT)
 					{
+					}
+					else if(rc_cms == -1)
+					{
+						isRunning = false;
 					}
 				}
 				//Engine engine;
@@ -400,7 +428,9 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::GAME_SETUP:
 			{
 				SettingsScreen settingsScreen;
-				settingsScreen.execute(globalContainer->gfx, 40);
+				int rc_ss = settingsScreen.execute(globalContainer->gfx, 40);
+				if( rc_ss == -1)
+					isRunning=false;
 			}
 			break;
 			case MainMenuScreen::EDITOR:
@@ -413,7 +443,8 @@ int Glob2::run(int argc, char *argv[])
 					while (retryNewMapScreen)
 					{
 						NewMapScreen newMapScreen;
-						if (newMapScreen.execute(globalContainer->gfx, 40)==NewMapScreen::OK)
+						int rc_nms = newMapScreen.execute(globalContainer->gfx, 40);
+						if (rc_nms==NewMapScreen::OK)
 						{
 							MapEdit mapEdit;
 							//mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
@@ -431,8 +462,15 @@ int Glob2::run(int argc, char *argv[])
 								retryNewMapScreen=true;
 							}
 						}
-						else
+						else if(rc_nms == -1)
+						{
+							isRunning = false;
 							retryNewMapScreen=false;
+						}
+						else
+						{
+							retryNewMapScreen=false;
+						}
 					}
 				}
 				else if (rc==HowNewMapScreen::LOADMAP)
@@ -472,6 +510,10 @@ int Glob2::run(int argc, char *argv[])
 				else if (rc==HowNewMapScreen::CANCEL)
 				{
 					// Let's sing.
+				}
+				else if (rc==-1)
+				{
+					isRunning=false;
 				}
 				else
 					assert(false);
