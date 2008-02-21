@@ -253,6 +253,8 @@ void YOGScreen::hostGame()
 		else if(rc == MultiplayerGameScreen::GameRefused)
 			recieveInternalMessage("Game was refused by server");
 	}
+	else if(rc == -1)
+		endExecute(-1);
 }
 
 

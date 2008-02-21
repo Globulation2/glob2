@@ -70,6 +70,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 				if(!server->isListening())
 				{
 					MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, FormatableString(Toolkit::getStringTable()->getString("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT).c_str(), Toolkit::getStringTable()->getString("[ok]"));
+					endExecute(QuitMenu);
 				}
 				else
 				{
@@ -94,9 +95,14 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 					client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 					if(rc == -1)
 						endExecute(-1);
+					else
+						endExecute(HostedGame);
 				}
 			}
-			endExecute(HostedGame);
+			else if(rc == -1)
+			{
+				endExecute(-1);
+			}
 		}
 		else if(par1 == QUIT)
 		{
