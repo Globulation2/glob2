@@ -1609,10 +1609,24 @@ void MapEdit::drawPlacingUnitOnMap()
 int MapEdit::processEvent(SDL_Event& event)
 {
 	int returnCode=0;
+	SDLMod modState = SDL_GetModState();
 	if (event.type==SDL_QUIT)
 	{
 		returnCode=-1;
 	}
+#	ifdef USE_OSX
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+	{
+		returnCode=-1;
+	}
+#	endif
+#	ifdef USE_WIN32
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+	{
+		returnCode=-1;
+	}
+#	endif
+	
 	else if(showingMenuScreen || showingLoad || showingSave || showingScriptEditor || isShowingAreaName)
 	{
 		delegateMenu(event);
@@ -1737,24 +1751,6 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 		game.map.loadTransitional();
 		return;
 	}
-	SDLMod modState = SDL_GetModState();
-
-//These overrides are for specific operating systems
-#	ifdef USE_OSX
-	if(key.sym == SDLK_q && modState & KMOD_META)
-	{
-		doQuit=true;
-		doFullQuit=true;
-	}
-#	endif
-#	ifdef USE_WIN32
-	if(key.sym == SDLK_F4 && modState & KMOD_ALT)
-	{
-		doQuit=true;
-		doFullQuit=true;
-	}
-#	endif
-
 
 	Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
 	switch(action_t)

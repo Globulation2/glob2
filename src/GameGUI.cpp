@@ -330,6 +330,8 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
         int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
+	
+	SDLMod modState = SDL_GetModState();
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type==SDL_MOUSEMOTION)
@@ -377,6 +379,20 @@ void GameGUI::step(void)
 			mouseMotionEvent=event;
 			wasMouseMotion=true;
 		}
+#		ifdef USE_OSX
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+		{
+			isRunning=false;
+			exitGlobCompletely=true;
+		}
+#		endif
+#		ifdef USE_WIN32
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+		{
+			isRunning=false;
+			exitGlobCompletely=true;
+		}
+#		endif
 		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
 		{
 			lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
@@ -1034,28 +1050,12 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 	else
 		modifier=-1;
 
-	SDLMod modState = SDL_GetModState();
 	if (typingInputScreen == NULL)
 	{
 		if(key.sym == SDLK_SPACE && pressed && swallowSpaceKey)
 		{
 			setIsSpaceSet(true);
 		}
-//These overrides are for specific operating systems
-#		ifdef USE_OSX
-		else if(key.sym == SDLK_q && modState & KMOD_META)
-		{
-			exitGlobCompletely=true;
-			orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
-		}
-#		endif
-#		ifdef USE_WIN32
-		else if(key.sym == SDLK_F4 && modState & KMOD_ALT)
-		{
-			exitGlobCompletely=true;
-			orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
-		}
-#		endif
 		else
 		{	
 			Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
