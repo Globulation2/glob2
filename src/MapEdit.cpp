@@ -1748,7 +1748,7 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 	}
 #	endif
 #	ifdef USE_WIN32
-	else if(key.sym == SDLK_F4 && modState & KMOD_ALT)
+	if(key.sym == SDLK_F4 && modState & KMOD_ALT)
 	{
 		doQuit=true;
 		doFullQuit=true;
