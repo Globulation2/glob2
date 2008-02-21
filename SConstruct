@@ -46,6 +46,11 @@ def configure(env):
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
     configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "\""+env["VERSION"]+"\"")
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
+    if isDarwinPlatform:
+        configfile.add("USE_OSX", "Set when this build is OSX")
+    if isWindowsPlatform:
+        configfile.add("USE_WIN32", "Set when this build is Win32")
+
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
     #Simple checks for required libraries
     if not conf.CheckLib('SDL'):

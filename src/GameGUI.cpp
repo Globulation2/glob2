@@ -51,6 +51,8 @@
 #include "VoiceRecorder.h"
 #include "GameGUIKeyActions.h"
 
+#include "config.h"
+
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>
 #else
@@ -1032,12 +1034,28 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 	else
 		modifier=-1;
 
+	SDLMod modState = SDL_GetModState();
 	if (typingInputScreen == NULL)
 	{
 		if(key.sym == SDLK_SPACE && pressed && swallowSpaceKey)
 		{
 			setIsSpaceSet(true);
 		}
+//These overrides are for specific operating systems
+#		ifdef USE_OSX
+		else if(key.sym == SDLK_q && modState & KMOD_META)
+		{
+			exitGlobCompletely=true;
+			orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		}
+#		endif
+#		ifdef USE_WIN32
+		else if(key.sym == SDLK_F4 && modState & KMOD_ALT)
+		{
+			exitGlobCompletely=true;
+			orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		}
+#		endif
 		else
 		{	
 			Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
