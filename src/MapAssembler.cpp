@@ -19,6 +19,7 @@
 #include "MapAssembler.h"
 #include "Toolkit.h"
 #include "FileManager.h"
+#include "StreamBackend.h"
 
 using namespace boost;
 using namespace GAGCore;
@@ -26,6 +27,7 @@ using namespace GAGCore;
 MapAssembler::MapAssembler(boost::shared_ptr<YOGClient> client)
 	: client(client)
 {
+	obackend = NULL;
 	mode = NoTransfer;
 	size = 0;
 	finished=0;
@@ -58,18 +60,10 @@ void MapAssembler::startSendingFile(std::string mapname)
 void MapAssembler::startRecievingFile(std::string mapname)
 {
 	filename=mapname;
-	ostream.reset(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz")));
+	obackend = new MemoryStreamBackend;
+	ostream.reset(new BinaryOutputStream(obackend));
 	mode=RecivingFile;
 	finished=0;
-}
-
-
-
-bool MapAssembler::isTransferComplete()
-{
-	if(mode == NoTransfer)
-		return true;
-	return false;
 }
 
 
@@ -103,11 +97,27 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 		else
 		{
 			mode=NoTransfer;
+			//Write from the buffer, obackend, to the file
+			BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+"2.gz"));
+			fstream->write(obackend->getBuffer(), obackend->getPosition(), "file");
+			//unzip file
+			Toolkit::getFileManager()->gunzip(filename+"2.gz", filename+"2");
+			delete fstream;
 			ostream.reset();
-			Toolkit::getFileManager()->gunzip(filename+".gz", filename);
 		}
 	}
 }
+
+
+
+Uint8 MapAssembler::getPercentage()
+{
+	if(size == 0)
+		return 100;
+
+	return (finished * 100) / size;
+}
+
 
 
 void MapAssembler::sendNextChunk()

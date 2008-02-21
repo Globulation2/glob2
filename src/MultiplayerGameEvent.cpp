@@ -416,4 +416,46 @@ bool MGGameHostJoinAccepted::operator==(const MultiplayerGameEvent& rhs) const
 }
 
 
+MGDownloadPercentUpdate::MGDownloadPercentUpdate(Uint8 percent)
+	: percent(percent)
+{
+}
+
+
+
+Uint8 MGDownloadPercentUpdate::getEventType() const
+{
+	return MGEDownloadPercentUpdate;
+}
+
+
+
+std::string MGDownloadPercentUpdate::format() const
+{
+	std::ostringstream s;
+	s<<"MGDownloadPercentUpdate("<<"percent="<<percent<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool MGDownloadPercentUpdate::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGDownloadPercentUpdate))
+	{
+		const MGDownloadPercentUpdate& r = dynamic_cast<const MGDownloadPercentUpdate&>(rhs);
+		if(r.percent == percent)
+			return true;
+	}
+	return false;
+}
+
+
+Uint8 MGDownloadPercentUpdate::getPercentFinished() const
+{
+	return percent;
+}
+
+
+
 //code_append_marker

@@ -477,6 +477,30 @@ namespace GAGGUI
 						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 					}
 					break;
+					case SDL_KEYDOWN:
+					{
+						SDLMod modState = SDL_GetModState();
+						//Manual integration of cmd+q and alt f4
+#						ifdef USE_OSX
+						if(event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+						{
+							run=false;
+							returnCode=-1;
+							break;
+						}
+#						endif
+#						ifdef USE_WIN32
+						if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+						{
+							run=false;
+							returnCode=-1;
+							break;
+						}
+#						endif
+						dispatchEvents(&event);
+					}
+					break;
+
 					default:
 					{
 						dispatchEvents(&event);

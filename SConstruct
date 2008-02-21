@@ -1,3 +1,13 @@
+EnsureSConsVersion(0, 96, 92)
+import sys
+import os
+import glob
+
+isWindowsPlatform = sys.platform=='win32'
+isLinuxPlatform = sys.platform=='linux2'
+isDarwinPlatform = sys.platform=='darwin'
+
+
 def establish_options(env):
     opts = Options('options_cache.py')
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
@@ -36,6 +46,11 @@ def configure(env):
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
     configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "\""+env["VERSION"]+"\"")
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
+    if isDarwinPlatform:
+        configfile.add("USE_OSX", "Set when this build is OSX")
+    if isWindowsPlatform:
+        configfile.add("USE_WIN32", "Set when this build is Win32")
+
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
     #Simple checks for required libraries
     if not conf.CheckLib('SDL'):
@@ -103,14 +118,12 @@ def configure(env):
         gl_libraries.append("GL")
     elif conf.CheckLib('opengl32') and conf.CheckCHeader('GL/gl.h'):
         gl_libraries.append("opengl32")
-    elif env['osx']:
+    elif isDarwinPlatform:
     	print "Using Apple's OpenGL framework system"
     else:
-        #Quick fix for OSX, ignore libraries not found
-        if not env['osx']:
-            print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
-            Exit(1)
-    
+        print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
+        Exit(1)
+
     #Do checks for GLU, which is different on every system
     if conf.CheckLib('GLU') and conf.CheckCHeader("GL/glu.h"):
         gl_libraries.append("GLU")
@@ -118,7 +131,7 @@ def configure(env):
         gl_libraries.append("GLU")
     elif conf.CheckLib('glu32') and conf.CheckCHeader('GL/glu.h'):
         gl_libraries.append("glu32")
-    elif env['osx']:
+    elif isDarwinPlatform:
     	print "Using Apple's OpenGL framework system"
     else:
         print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
@@ -133,9 +146,7 @@ def configure(env):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
     conf.Finish() 
-    
-    
-    
+
 def main():
     env = Environment()
     try:
@@ -145,7 +156,7 @@ def main():
     env["VERSION"] = "0.9.2"
     establish_options(env)
     #Add the paths to important mingw libraries
-    if env['mingw'] or env['PLATFORM'] == 'win32':
+    if env['mingw'] or isWindowsPlatform:
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     configure(env)
@@ -156,7 +167,7 @@ def main():
         env.Append(CXXFLAGS=' -pg')
         env.Append(LINKFLAGS='-pg')
         env.Append(CXXFLAGS=' -O3')
-    if env['mingw'] or env['PLATFORM'] == 'win32':
+    if env['mingw'] or isWindowsPlatform:
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
         env.Append(LIBS=['wsock32'])
@@ -165,7 +176,7 @@ def main():
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
-    if env['osx']:
+    if isDarwinPlatform:
         env.Append(CXXFLAGS=" -framework OpenGL ")
     env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     

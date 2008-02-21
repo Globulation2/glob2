@@ -389,6 +389,20 @@ const std::list<YOGPlayerInfo>& YOGClient::getPlayerList() const
 
 
 
+std::list<YOGGameInfo>& YOGClient::getGameList()
+{
+	return games;
+}
+
+
+
+std::list<YOGPlayerInfo>& YOGClient::getPlayerList()
+{
+	return players;
+}
+
+
+
 std::string YOGClient::findPlayerName(Uint16 playerID)
 {
 	for(std::list<YOGPlayerInfo>::iterator i = players.begin(); i != players.end(); ++i)

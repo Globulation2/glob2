@@ -36,6 +36,9 @@ public:
 	///Add the given player as one requesting the map
 	void addMapRequestee(boost::shared_ptr<YOGPlayer> player);
 	
+	///Removes the given player from requesting the map
+	void removeMapRequestee(boost::shared_ptr<YOGPlayer> player);
+
 	///Handles the provided message
 	void handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGPlayer> player);
 private:

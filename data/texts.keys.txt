@@ -19,6 +19,7 @@
 [AIReachToInfinity]
 [AIToubib]
 [AIWarrush]
+[downloaded %0]
 [Alga]
 [algae]
 [alliances]

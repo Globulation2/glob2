@@ -842,6 +842,7 @@ MapEdit::MapEdit()
   : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
 {
 	doQuit=false;
+	doFullQuit=false;
 
 	// default value;
 	viewportX=0;
@@ -1325,6 +1326,8 @@ int MapEdit::run(void)
 		}
 		if(doQuit)
 			isRunning=false;
+		if(doFullQuit)
+			returnCode = -1;
 	}
 
 	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
@@ -1734,6 +1737,24 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 		game.map.loadTransitional();
 		return;
 	}
+	SDLMod modState = SDL_GetModState();
+
+//These overrides are for specific operating systems
+#	ifdef USE_OSX
+	if(key.sym == SDLK_q && modState & KMOD_META)
+	{
+		doQuit=true;
+		doFullQuit=true;
+	}
+#	endif
+#	ifdef USE_WIN32
+	if(key.sym == SDLK_F4 && modState & KMOD_ALT)
+	{
+		doQuit=true;
+		doFullQuit=true;
+	}
+#	endif
+
 
 	Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
 	switch(action_t)

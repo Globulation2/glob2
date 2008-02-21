@@ -120,6 +120,8 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 	routeMessage(sendGamePlayerInfo);
 
 	chooseLatencyMode();
+
+	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
 }
 
 
@@ -130,6 +132,8 @@ void YOGGame::addAIPlayer(AI::ImplementitionID type)
 
 	shared_ptr<NetAddAI> addAI(new NetAddAI(static_cast<Uint8>(type)));
 	routeMessage(addAI, host);
+
+	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
 }
 
 
@@ -167,7 +171,12 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
 	routeMessage(sendGamePlayerInfo);
 
+	if(distributor)
+		distributor->removeMapRequestee(player);
+
 	chooseLatencyMode();
+
+	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
 }
 
 
@@ -178,6 +187,8 @@ void YOGGame::removeAIPlayer(int playerNum)
 
 	shared_ptr<NetRemoveAI> removeAI(new NetRemoveAI(playerNum));
 	routeMessage(removeAI, host);
+
+	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
 }
 
 
@@ -204,6 +215,8 @@ void YOGGame::setMapHeader(const MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
+	server.getGameInfo(gameID).setMapName(mapHeader.getMapName());
+	server.getGameInfo(gameID).setNumberOfTeams(mapHeader.getNumberOfTeams());
 }
 
 

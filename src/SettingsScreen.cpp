@@ -271,6 +271,9 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			Toolkit::getStringTable()->setLang(globalContainer->settings.defaultLanguage);
 
+			///Send the old volume to the mixer
+			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+
 			endExecute(par1);
 		}
 		else if (par1==GENERALSETTINGS)	
