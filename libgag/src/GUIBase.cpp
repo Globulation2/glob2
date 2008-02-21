@@ -489,7 +489,7 @@ namespace GAGGUI
 						}
 #						endif
 #						ifdef USE_WIN32
-						if(event.key.keysym..sym == SDLK_F4 && modState & KMOD_ALT)
+						if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
 						{
 							run=false;
 							returnCode=-1;
