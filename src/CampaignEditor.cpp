@@ -84,9 +84,17 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 				{
 
 				}
+				else if(rcmee == -1)
+				{
+					endExecute(-1);
+				}
 			}
 			else if(rcms==ChooseMapScreen::CANCEL)
 			{
+			}
+			else if(rcms==-1)
+			{
+				endExecute(-1);
 			}
 		}
 		else if (source == editMap)
