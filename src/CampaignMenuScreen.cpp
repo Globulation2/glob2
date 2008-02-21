@@ -56,8 +56,15 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 			if (availableMissions->getSelectionIndex() >= 0)
 			{
 				Engine engine;
-				if (engine.initCampaign(getMissionName(), campaign, availableMissions->get()) == Engine::EE_NO_ERROR)
+				int rc_e = engine.initCampaign(getMissionName(), campaign, availableMissions->get());
+				if (rc_e == Engine::EE_NO_ERROR)
+				{
 					engine.run();
+				}
+				else if(rc_e == -1)
+				{
+					endExecute(-1);
+				}
 				availableMissions->clear();
 				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
