@@ -68,12 +68,15 @@ public:
 	{
 		NEWCAMPAIGN,
 		LOADCAMPAIGN,
+		CANCEL,
 	};
 private:
-	/// The ok button
+	/// The new campaign button
 	Button *newCampaign;
-	/// The cancel button
+	/// The load campaign button
 	Button *loadCampaign;
+	/// The cancel button
+	Button *cancel;
 };
 
 

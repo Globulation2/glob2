@@ -723,7 +723,7 @@ scroll lock
 [scroll wheel enabled]
 Scroll Wheel Enabled
 [seeking a job]
-looking for a job
+seeking a job
 [seeking]
 seeking
 [select barracks building]
