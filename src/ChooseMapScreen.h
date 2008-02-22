@@ -28,6 +28,7 @@
 namespace GAGGUI
 {
 	class Button;
+	class TextButton;
 	class Text;
 	class Number;
 	class OnOffButton;
@@ -94,7 +95,7 @@ private:
 	//! the delete map button
 	Button *deleteMap;
 	//! the switch type button
-	Button *switchType;
+	TextButton *switchType;
 	//! The list of maps or games
 	Glob2FileList *fileList;
 	//! The alternate list of maps or games

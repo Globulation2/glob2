@@ -360,6 +360,10 @@ int Glob2::run(int argc, char *argv[])
 						isRunning = false;
 					}
 				}
+				else if(rccs == CampaignChoiceScreen::CANCEL)
+				{
+				
+				}
 				else if(rccs == -1)
 				{
 					isRunning = false;
@@ -384,6 +388,7 @@ int Glob2::run(int argc, char *argv[])
 				else
 				{
 					CampaignMenuScreen cms("campaigns/Tutorial_Campaign.txt");
+					cms.setNewCampaign();
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
 					if(rc_cms==CampaignMenuScreen::EXIT)
 					{

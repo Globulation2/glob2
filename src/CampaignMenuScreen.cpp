@@ -115,6 +115,8 @@ CampaignChoiceScreen::CampaignChoiceScreen()
 	addWidget(newCampaign);
 	loadCampaign = new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOADCAMPAIGN, 13);
 	addWidget(loadCampaign);
+	cancel = new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27);
+	addWidget(cancel);
 }
 
 
@@ -128,6 +130,10 @@ void CampaignChoiceScreen::onAction(Widget *source, Action action, int par1, int
 			endExecute(par1);
 		}
 		else if((par1==NEWCAMPAIGN))
+		{
+			endExecute(par1);
+		}
+		else if((par1==CANCEL))
 		{
 			endExecute(par1);
 		}
