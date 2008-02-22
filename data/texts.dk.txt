@@ -298,6 +298,8 @@ Bægere ikke på noget
 
 [download finished]
 Nedhentning færdig
+[downloaded %0]
+
 [downloaded at]
 Hentet fra
 [edit map]
@@ -568,7 +570,7 @@ Slå lyd fra
 Netværk begrænsning
 [new campaign]
 Ny Kampagne
-[new]
+[new map]
 Ny
 [nick taken]
 Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.

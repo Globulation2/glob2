@@ -298,6 +298,8 @@ Nič nenesie
 
 [download finished]
 Stiahnuté
+[downloaded %0]
+
 [downloaded at]
 Stiahnutých 
 [edit map]
@@ -568,7 +570,7 @@ Stlmiť
 Latencia siete
 [new campaign]
 
-[new]
+[new map]
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG

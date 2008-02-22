@@ -298,6 +298,8 @@ Ez darama ezer
 
 [download finished]
 Deskarga bukatuta
+[downloaded %0]
+
 [downloaded at]
 Hemen deskargatua:
 [edit map]
@@ -568,7 +570,7 @@ Isilik
 Sare latentzia
 [new campaign]
 Kanpaina berria
-[new]
+[new map]
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu

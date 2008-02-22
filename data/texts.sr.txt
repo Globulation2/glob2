@@ -298,6 +298,8 @@ AIWarrush
 
 [download finished]
 Преузимање је готово
+[downloaded %0]
+
 [downloaded at]
 Преузето са
 [edit map]
@@ -568,7 +570,7 @@ sr
 Мрежно кашњење
 [new campaign]
 
-[new]
+[new map]
 Нова
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG

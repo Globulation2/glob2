@@ -298,6 +298,8 @@ Bär ingenting
 
 [download finished]
 Nedladdning slutförd
+[downloaded %0]
+
 [downloaded at]
 Nedladdat till 
 [edit map]
@@ -568,7 +570,7 @@ tyst
 Nätverksfördröjning
 [new campaign]
 Ny Kampanj
-[new]
+[new map]
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG

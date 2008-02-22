@@ -195,23 +195,21 @@ SettingsScreen::SettingsScreen()
 	}
 
 	//shortcuts part
-	game_shortcuts=new TextButton( 20, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
+	game_shortcuts=new TextButton( 100, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
 	game_shortcuts->visible=false;
 
-	editor_shortcuts=new TextButton( 230, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
+	editor_shortcuts=new TextButton( 230, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
 	editor_shortcuts->visible=false;
-
-	restore_default_shortcuts = new TextButton(20, 355, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
-	restore_default_shortcuts->visible=false;
 
 	shortcut_list = new List(20, 110, 325, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	action_list = new List(365, 110 , 265, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
 	key_2_active = new OnOffButton(170, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
 	select_key_2 = new KeySelector(200, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
-	add_shortcut = new TextButton(20, 305, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
-	remove_shortcut = new TextButton(330, 305, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
-	
+	add_shortcut = new TextButton(20, 305, 158, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
+	remove_shortcut = new TextButton(188, 305, 157, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
+	restore_default_shortcuts = new TextButton(365, 305, 265, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
+
 	
 	game_shortcuts->visible = false;
 	editor_shortcuts->visible = false;
@@ -223,10 +221,10 @@ SettingsScreen::SettingsScreen()
 	select_key_2->visible = false;
 	add_shortcut->visible = false;
 	remove_shortcut->visible = false;
-	
+	restore_default_shortcuts->visible=false;
+		
 	addWidget(game_shortcuts);
 	addWidget(editor_shortcuts);
-	addWidget(restore_default_shortcuts);
 	addWidget(shortcut_list);
 	addWidget(action_list);
 	addWidget(select_key_1);
@@ -234,6 +232,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(select_key_2);
 	addWidget(add_shortcut);
 	addWidget(remove_shortcut);
+	addWidget(restore_default_shortcuts);
 
 	currentMode = GameGUIShortcuts;
 

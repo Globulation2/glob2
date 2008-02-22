@@ -298,6 +298,8 @@ AIWarrush
 
 [download finished]
 下載完成
+[downloaded %0]
+
 [downloaded at]
 以下載在
 [edit map]
@@ -568,7 +570,7 @@ Air dmg.
 連線潛在因素
 [new campaign]
 新戰役
-[new]
+[new map]
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談

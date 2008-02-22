@@ -298,6 +298,8 @@ Nic nenesu
 
 [download finished]
 Stáhnuto
+[downloaded %0]
+
 [downloaded at]
 Stahuji
 [edit map]
@@ -568,7 +570,7 @@ Hlasitost (hudba)
 Network latency
 [new campaign]
 
-[new]
+[new map]
 Nová
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG

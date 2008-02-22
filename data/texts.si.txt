@@ -298,6 +298,8 @@ Ne nosi ničesar
 
 [download finished]
 Nalaganje končano
+[downloaded %0]
+
 [downloaded at]
 naloženo iz
 [edit map]
@@ -568,7 +570,7 @@ Glasnost glasbe
 Pretočnost mreže
 [new campaign]
 
-[new]
+[new map]
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u

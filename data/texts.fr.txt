@@ -298,6 +298,8 @@ Ne transporte rien
 Bas
 [download finished]
 Téléchargement terminé
+[downloaded %0]
+
 [downloaded at]
 Téléchargé à 
 [edit map]
@@ -568,7 +570,7 @@ muet
 Latence du réseau
 [new campaign]
 Nouvelle campagne
-[new]
+[new map]
 Nouveau
 [nick taken]
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG

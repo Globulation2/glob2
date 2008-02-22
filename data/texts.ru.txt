@@ -298,6 +298,8 @@ ok
 
 [download finished]
 Скачивание закончено
+[downloaded %0]
+
 [downloaded at]
 Скачано с
 [edit map]
@@ -568,7 +570,7 @@ Login
 Латентность сети
 [new campaign]
 
-[new]
+[new map]
 Новая
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG

@@ -298,6 +298,8 @@ Nu transportă nimic
 
 [download finished]
 Descărcare terminată
+[downloaded %0]
+
 [downloaded at]
 Descărcat la
 [edit map]
@@ -568,7 +570,7 @@ Volum  (muzică)
 Latenţa reţelei
 [new campaign]
 
-[new]
+[new map]
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG

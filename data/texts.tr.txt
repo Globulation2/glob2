@@ -298,6 +298,8 @@ Hicbirsey tasimiyor
 
 [download finished]
 Indirme tamamlandi
+[downloaded %0]
+
 [downloaded at]
 Suradan indirildi: 
 [edit map]
@@ -568,7 +570,7 @@ sessiz
 Ag gecikmesi
 [new campaign]
 
-[new]
+[new map]
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
