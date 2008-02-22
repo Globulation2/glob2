@@ -298,6 +298,8 @@ Non trasporta nulla
 
 [download finished]
 Download completato
+[downloaded %0]
+
 [downloaded at]
 Scaricato da
 [edit map]
@@ -568,7 +570,7 @@ Nessun Audio
 Latenza della rete
 [new campaign]
 
-[new]
+[new map]
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG

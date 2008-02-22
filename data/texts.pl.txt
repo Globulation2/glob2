@@ -298,6 +298,8 @@ Nic nie transportuje
 
 [download finished]
 Pobieranie zakończone
+[downloaded %0]
+
 [downloaded at]
 Ściągniete z
 [edit map]
@@ -568,7 +570,7 @@ Głośność (muzyka)
 Opóźnienie sieci
 [new campaign]
 
-[new]
+[new map]
 Nowa
 [nick taken]
 Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.

@@ -298,6 +298,8 @@ No Portando Nada
 
 [download finished]
 Carga Finalizada
+[downloaded %0]
+
 [downloaded at]
 Cargado en
 [edit map]
@@ -568,7 +570,7 @@ Mudo
 Letargo de Red
 [new campaign]
 
-[new]
+[new map]
 Nuevo
 [nick taken]
 Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en freenode, solamente  podrás hablar a través de YOG

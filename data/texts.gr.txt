@@ -300,6 +300,8 @@ Crater Lakes
 κάτω
 [download finished]
 Το Download ολοκληρώθηκε
+[downloaded %0]
+
 [downloaded at]
 Κατέβηκε στο 
 [edit map]
@@ -570,7 +572,7 @@ Anastasios M. Pingios
 Καθυστέρηση δικτύου
 [new campaign]
 Νέα Εκστρατεία
-[new]
+[new map]
 Νέα
 [nick taken]
 Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG

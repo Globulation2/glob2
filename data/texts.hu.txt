@@ -298,6 +298,8 @@ Nem szállít semmit
 
 [download finished]
 A letöltés befejeződött
+[downloaded %0]
+
 [downloaded at]
 Letöltés
 [edit map]
@@ -568,7 +570,7 @@ Hangerősség (zene)
 Hálózati várakozási idő
 [new campaign]
 
-[new]
+[new map]
 Új
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG

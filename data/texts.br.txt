@@ -300,6 +300,8 @@ Está carregando nada
 baixo
 [download finished]
 Download terminado
+[downloaded %0]
+
 [downloaded at]
 Baixado a 
 [edit map]
@@ -570,7 +572,7 @@ mudo
 Latência da rede
 [new campaign]
 Nova campanha
-[new]
+[new map]
 Novo
 [nick taken]
 Lamentamos mas o nome que você escolheu já existe na freenode, você poderá falar somente pelo YOG

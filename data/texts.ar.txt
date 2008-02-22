@@ -298,6 +298,8 @@ Disconnect
 
 [download finished]
 Download finished
+[downloaded %0]
+
 [downloaded at]
 Downloaded at 
 [edit map]
@@ -568,7 +570,7 @@ Minimum Flag Level
 Network latency
 [new campaign]
 
-[new]
+[new map]
 جديد
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG

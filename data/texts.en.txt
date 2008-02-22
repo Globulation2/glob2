@@ -20,8 +20,6 @@ V: Show vision for all buildings
 Add AI
 [add map]
 Add map
-[downloaded %0]
-downloaded %0
 [add shortcut]
 Add Shortcut
 [AI]
@@ -296,6 +294,8 @@ Not carrying anything
 down
 [download finished]
 Download finished
+[downloaded %0]
+downloaded %0
 [downloaded at]
 Downloaded at 
 [edit map]
@@ -516,6 +516,8 @@ Load game
 Load Map
 [load]
 Load
+[load]
+Load Map
 [loading glob2]
 Loading Globulation 2
 [login]
@@ -566,8 +568,8 @@ mute
 Network latency
 [new campaign]
 New Campaign
-[new]
-New
+[new map]
+New Map
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [no key]
@@ -729,7 +731,7 @@ seeking
 [select barracks building]
 Select Barracks
 [select clearingflag]
-Select clearingflag
+Select Clearing Flag
 [select construct barracks]
 Select Construct Barracks
 [select construct defencetower]
@@ -751,7 +753,7 @@ Select Construct Swarm
 [select construct swimmingpool]
 Select Construct Swimmingpool
 [select explorationflag]
-Select explorationflag
+Select Exploration Flag
 [select hospital building]
 Select Hospital
 [select inn building]
@@ -773,17 +775,17 @@ Select Place War Flag
 [select racetrack building]
 Select Racetrack
 [select school building]
-Select Schoo
+Select School
 [select swarm building]
 Select Swarm
 [select swimmingpool building]
 Select Swimmingpool
 [select tower building]
-Select Tower
+Select Defence Tower
 [select wall building]
 Select Wall
 [select warflag]
-Select warflag
+Select War Flag
 [session request sent]
 Session request sent ...
 [settings]

@@ -298,6 +298,8 @@ No Transporta res
 
 [download finished]
 Descarga finalitzada
+[downloaded %0]
+
 [downloaded at]
 Baixat al
 [edit map]
@@ -568,7 +570,7 @@ Silenci
 llatència
 [new campaign]
 
-[new]
+[new map]
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG

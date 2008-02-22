@@ -298,6 +298,8 @@ Não transporta nada
 
 [download finished]
 Baixada terminada
+[downloaded %0]
+
 [downloaded at]
 Baixado ao
 [edit map]
@@ -568,7 +570,7 @@ silêncio
 Latência
 [new campaign]
 
-[new]
+[new map]
 Novo
 [nick taken]
 Infelizmente o apelido que elegeu já está tomado em freenode. Só poderá falar através de YOG
