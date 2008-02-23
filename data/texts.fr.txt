@@ -588,6 +588,8 @@ Non
 Non connecté
 [not ready]
 pas prêt
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 joueurs présents.
 [number of teams: %0]

@@ -156,50 +156,73 @@ SettingsScreen::SettingsScreen()
 	int first_group_current_column_x=20;
 	int first_group_widest_element=0;
 	
-	int second_group_row=0;
+	int second_group_row=1;
+	int second_group_first_row_x=170;
 	int second_group_current_column_x=170;
 	int second_group_widest_element=0;
+	
+	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
+	{
+		for(int l=0; l<6; ++l)
+		{
+			unitRatios[t][l]=NULL;
+			unitRatioTexts[t][l]=NULL;
+		}
+	}
+	
+	///First group are completed buildings, Inn, Swarm and Defence tower
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
 		std::string name=IntBuildingType::typeFromShortNumber(t);
-		for(int l=0; l<6; ++l)
+		for(int l=0; l<3; ++l)
 		{
-			//Even numbers represent under-construction, whereas odd numbers represent completed buildings
-			int& row = (l % 2 == 1 ? first_group_row : second_group_row);
-			int& current_column_x = (l % 2 == 1 ? first_group_current_column_x : second_group_current_column_x);
-			int& widest_element = (l % 2 == 1 ? first_group_widest_element : second_group_widest_element);
-		
-			if(globalContainer->buildingsTypes.getByType(name, l/2, (l+1)%2) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l]>0)
+			if(globalContainer->buildingsTypes.getByType(name, l, false) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l*2+1]>0)
 			{
-				unitRatios[t][l] = new Number(current_column_x, 117+40*row, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
-				addNumbersFor(0, 20, unitRatios[t][l]);
-				unitRatios[t][l]->setNth(globalContainer->settings.defaultUnitsAssigned[t][l]);
-				unitRatios[t][l]->visible=false;
-				addWidget(unitRatios[t][l]);
-
-				widest_element = std::max(widest_element, unitRatios[t][l]->getWidth());
-
-				std::string keyname="[";
-				if((l+1)%2)
-					keyname+="build ";
-				keyname+=name + " level " + boost::lexical_cast<std::string>(l/2) + "]";
-				unitRatioTexts[t][l]=new Text(current_column_x, 100+40*row, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
-				addWidget(unitRatioTexts[t][l]);
-				unitRatioTexts[t][l]->visible=false;
-
-				widest_element = std::max(widest_element, unitRatioTexts[t][l]->getWidth());
-
-				row+=1;
-				if(row==8)
+				int size = addDefaultUnitAssignmentWidget(t, l*2+1, first_group_current_column_x, 100 + 40*first_group_row);
+				first_group_widest_element = std::max(first_group_widest_element, size);
+				
+				first_group_row += 1;
+				if(first_group_row == 8)
 				{
-					row=0;
-					current_column_x+= widest_element+10;
+					first_group_row = 0;
+					first_group_current_column_x += first_group_widest_element;
+					first_group_widest_element = 0;
 				}
 			}
-			else
+		}	
+	}
+	
+	///Second group, at the top is Swarm, Wall, Market, the rest follow horizontally
+	for(int l=0; l<3; ++l)
+	{
+		for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
+		{
+			std::string name=IntBuildingType::typeFromShortNumber(t);
+			//Even numbers represent under-construction, whereas odd numbers represent completed buildings		
+			if(globalContainer->buildingsTypes.getByType(name, l, true) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l*2]>0)
 			{
-				unitRatios[t][l]=NULL;
-				unitRatioTexts[t][l]=NULL;
+				int this_row = second_group_row;
+				int this_x = second_group_current_column_x;
+				if(t == IntBuildingType::SWARM_BUILDING || t == IntBuildingType::STONE_WALL || t == IntBuildingType::MARKET_BUILDING)
+				{
+					this_row = 0;
+					this_x = second_group_first_row_x;
+					second_group_first_row_x += 180;
+				}
+				else
+				{
+					second_group_row += 1;
+				}
+				
+				int size = addDefaultUnitAssignmentWidget(t, l*2, this_x, 100 + 40*this_row);
+				second_group_widest_element = std::max(second_group_widest_element, size);
+				
+				if(second_group_row == 8)
+				{
+					second_group_row = 1;
+					second_group_current_column_x += 180;
+					second_group_widest_element = 0;
+				}
 			}
 		}
 	}
@@ -685,6 +708,29 @@ std::string SettingsScreen::actDisplayModeToString(void)
 	else
 		oss << " SDL";
 	return oss.str();
+}
+
+
+
+int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, int y)
+{	
+	std::string name=IntBuildingType::typeFromShortNumber(type);
+
+	unitRatios[type][level] = new Number(x, y+20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	addNumbersFor(0, 20, unitRatios[type][level]);
+	unitRatios[type][level]->setNth(globalContainer->settings.defaultUnitsAssigned[type][level]);
+	unitRatios[type][level]->visible=false;
+	addWidget(unitRatios[type][level]);
+
+	std::string keyname="[";
+	if((level+1)%2)
+		keyname+="build ";
+	keyname+=name + " level " + boost::lexical_cast<std::string>(level/2) + "]";
+	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
+	addWidget(unitRatioTexts[type][level]);
+	unitRatioTexts[type][level]->visible=false;
+
+	return std::max(unitRatioTexts[type][level]->getWidth(), unitRatios[type][level]->getWidth());
 }
 
 

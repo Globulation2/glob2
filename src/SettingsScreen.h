@@ -118,6 +118,9 @@ private:
 	KeyboardManager guiKeyboardManager;
 public:
 	ShortcutMode currentMode;
+	///Quick code that adds in a default unit assignment widget pair at the specific position, and returns the width.
+	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y);
+	
 	///Update shortcut_list, if n is not -1, just update that specific entry
 	void updateShortcutList(int n=-1);
 	///Update the action_list

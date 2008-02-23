@@ -29,6 +29,7 @@ YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
 	oldReadyToLaunch=false;
 	latencyMode = 0;
 	latencyUpdateTimer = 1000;
+	aiNum = 0;
 }
 
 
@@ -121,7 +122,7 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 
 	chooseLatencyMode();
 
-	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
+	server.getGameInfo(gameID).setPlayersJoined(players.size());
 }
 
 
@@ -133,7 +134,8 @@ void YOGGame::addAIPlayer(AI::ImplementitionID type)
 	shared_ptr<NetAddAI> addAI(new NetAddAI(static_cast<Uint8>(type)));
 	routeMessage(addAI, host);
 
-	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
+	aiNum+=1;
+	server.getGameInfo(gameID).setAIJoined(aiNum);
 }
 
 
@@ -176,7 +178,7 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 
 	chooseLatencyMode();
 
-	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
+	server.getGameInfo(gameID).setPlayersJoined(players.size());
 }
 
 
@@ -188,7 +190,8 @@ void YOGGame::removeAIPlayer(int playerNum)
 	shared_ptr<NetRemoveAI> removeAI(new NetRemoveAI(playerNum));
 	routeMessage(removeAI, host);
 
-	server.getGameInfo(gameID).setPlayersJoined(gameHeader.getNumberOfPlayers());
+	aiNum-=1;
+	server.getGameInfo(gameID).setAIJoined(aiNum);
 }
 
 

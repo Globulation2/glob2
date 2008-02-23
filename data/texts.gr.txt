@@ -590,6 +590,8 @@ Anastasios M. Pingios
 Μη συνδεδεμένος
 [not ready]
 Μη έτοιμος
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 παίκτες είναι παρώντες.
 [number of teams: %0]

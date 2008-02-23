@@ -588,6 +588,8 @@ Login
 Не соединён
 [not ready]
 не готов
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 игроков в игре
 [number of teams: %0]

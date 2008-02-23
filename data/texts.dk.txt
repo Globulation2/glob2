@@ -588,6 +588,8 @@ Nej
 Ikke forbundet
 [not ready]
 ikke klar
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 antal spillere er tilgængelig
 [number of teams: %0]

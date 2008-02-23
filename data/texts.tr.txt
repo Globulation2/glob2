@@ -588,6 +588,8 @@ Hayir
 Bagli degil
 [not ready]
 hazir degil
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 oyuncu var.
 [number of teams: %0]

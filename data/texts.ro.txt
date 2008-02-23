@@ -588,6 +588,8 @@ Nu
 Neconectat
 [not ready]
 nu-i gata
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 jucători prezenţi.
 [number of teams: %0]

@@ -588,6 +588,8 @@ Nem
 Nincs kapcsolat
 [not ready]
 nincs készen
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 játékos van jelen.
 [number of teams: %0]

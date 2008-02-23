@@ -588,6 +588,8 @@ No Growth Areas
 Not connected
 [not ready]
 غير جاهز
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 players are present.
 [number of teams: %0]

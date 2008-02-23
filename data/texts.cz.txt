@@ -588,6 +588,8 @@ Ne
 Nepřipojen
 [not ready]
 nepřipraven
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 hráčů se připojilo.
 [number of teams: %0]

@@ -60,16 +60,22 @@ public:
 	///Sets the game state
 	void setGameState(const GameState& state);
 
-	///Sets the number of players joined
+	///Sets the number of human players joined
 	void setPlayersJoined(Uint8 playersJoined);
 	
-	///Returns the name of the game
+	///Returns the number of human players joined
 	Uint8 getPlayersJoined() const;
 
-	///Sets the number of players joined
+	///Sets the number of AI players joined
+	void setAIJoined(Uint8 aiJoined);
+	
+	///Returns the number of AI players joined
+	Uint8 getAIJoined() const;
+
+	///Sets the name of the map
 	void setMapName(const std::string& mapName);
 	
-	///Returns the name of the game
+	///Returns the name of the map
 	std::string getMapName() const;
 
 	///Sets the number of teams
@@ -93,6 +99,7 @@ private:
 	std::string gameName;
 	GameState gameState;
 	Uint8 playersJoined;
+	Uint8 aiJoined;
 	std::string mapName;
 	Uint8 numberOfTeams;
 };

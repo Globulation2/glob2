@@ -588,6 +588,8 @@ No
 No conectat
 [not ready]
 sense preparar
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 nombre de jugadors
 [number of teams: %0]

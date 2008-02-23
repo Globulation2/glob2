@@ -588,6 +588,8 @@ Nej
 Ej ansluten
 [not ready]
 inte redo
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 spelare är närvarande.
 [number of teams: %0]

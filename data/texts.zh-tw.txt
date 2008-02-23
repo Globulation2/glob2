@@ -588,6 +588,8 @@ Air dmg.
 沒有連線
 [not ready]
 還沒準備好
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 玩家再線.
 [number of teams: %0]
