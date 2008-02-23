@@ -273,7 +273,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	mute = new OnOffButton(19, 50, 20, 20, ALIGN_LEFT, ALIGN_TOP, globalContainer->settings.mute, MUTE);
 	addWidget(mute);	
 
-	Text *musicVolText=new Text(10, 80, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
+	musicVolText=new Text(10, 80, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
 	
 	musicVol=new Selector(19, 110, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
@@ -309,6 +309,7 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		globalContainer->settings.mute = mute->getState();
 		musicVol->visible = ! globalContainer->settings.mute;
+		musicVolText->visible = ! globalContainer->settings.mute;
 		globalContainer->mix->setVolume(musicVol->getValue(), mute->getState());
 	}
 }
