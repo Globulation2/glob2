@@ -1995,7 +1995,7 @@ Uint32 NetSendFileInformation::getFileSize() const
 
 NetSendFileChunk::NetSendFileChunk()
 {
-	std::fill(data, data+1024, 0);
+	std::fill(data, data+15360, 0);
 	size=0;
 }
 
@@ -2005,7 +2005,7 @@ NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> strea
 {
 	size=0;
 	int pos=0;
-	while(!stream->isEndOfStream() && size < 1024)
+	while(!stream->isEndOfStream() && size < 15360)
 	{
 		stream->read(data+pos, 1, NULL);
 		//For some reason the last byte is an overread, so it should be ignored
@@ -2060,7 +2060,7 @@ bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendFileChunk))
 	{
 		const NetSendFileChunk& r = dynamic_cast<const NetSendFileChunk&>(rhs);
-		for(int i=0; i<1024; ++i)
+		for(int i=0; i<15360; ++i)
 		{
 			if(data[i] != r.data[i])
 				return false;
