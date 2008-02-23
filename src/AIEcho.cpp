@@ -1786,7 +1786,9 @@ void BuildingRegister::tick()
 		//Ignore this, its not supposed to be there
 		if( !(i->second.get<4>()))
 		{
-			i++;
+			pending_iterator current=i;
+			++i;
+			pending_buildings.erase(current);
 			continue;
 		}
 
@@ -1831,7 +1833,9 @@ void BuildingRegister::tick()
 		///Ignore this, its not supposed to be there
 		if(! i->second.get<5>())
 		{
-			i++;
+			found_iterator current=i;
+			++i;
+			found_buildings.erase(current);
 			continue;
 		}
 
@@ -4032,9 +4036,7 @@ void building_search_iterator::set_to_next()
 	}
 	else
 		position++;
-	for(; position!=search->echo.get_building_register().end() &&
-	      !search->passes_conditions(position->first);
-             position++)
+	for(; position!=search->echo.get_building_register().end() && (!position->second.get<5>() || !search->passes_conditions(position->first)); position++)
 	{
 	}
 	if(position==search->echo.get_building_register().end())
@@ -4477,7 +4479,7 @@ void Echo::update_ressource_trackers()
 			ressource_trackers.erase(current);
 			continue;
 		}
-		else
+		else if(br.is_building_found(i->first))
 		{
 			if(i->second.get<1>())
 				i->second.get<0>()->tick();
