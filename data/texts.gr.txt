@@ -230,6 +230,10 @@ Checksum εστάλει ...
 Σύνδεση με όλους τους παίκτες
 [connecting to]
 Σύνδεση στο
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Συνέχεια
 [Corn]
@@ -998,6 +1002,8 @@ Tutorial
 Ομαδοποίηση πεδίου
 [Unit editor]
 Επεξεργαστής μονάδας
+[unit settings explanation]
+
 [unit settings]
 Ρυθμίσεις Μονάδας
 [Unit type]

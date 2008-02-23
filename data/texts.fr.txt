@@ -230,6 +230,10 @@ Connecté au serveur
 En train de se connecter avec les joueurs
 [connecting to]
 Connection à
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuer à jouer
 [Corn]
@@ -994,6 +998,8 @@ Annuler
 Terrain uniforme
 [Unit editor]
 Éditeur d'unité
+[unit settings explanation]
+
 [unit settings]
 Réglages de l'unité
 [Unit type]

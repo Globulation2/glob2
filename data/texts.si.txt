@@ -230,6 +230,10 @@ Poveži se na server
 Povezujem se z vsemi igralci
 [connecting to]
 Povezujem na
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Nadaljuj z igranjem
 [Corn]
@@ -993,6 +997,8 @@ Nenadzirane
 [uniform terrain]
 Obleči teren?
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

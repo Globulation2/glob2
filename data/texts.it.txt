@@ -230,6 +230,10 @@ Connesso al server
 Mi sto connettendo agli altri giocatori
 [connecting to]
 Mi sto connettendo a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continua a giocare
 [Corn]
@@ -994,6 +998,8 @@ Incontrollato
 Terreno uniforme
 [Unit editor]
 Editor di unità
+[unit settings explanation]
+
 [unit settings]
 Impostazioni unità
 [Unit type]

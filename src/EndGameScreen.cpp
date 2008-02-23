@@ -304,17 +304,20 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	for (int i=0; i<gui->game.mapHeader.getNumberOfTeams(); i++)
 	{
 		Team *t=gui->game.teams[i];
-		int endIndex=t->stats.endOfGameStats.size()-1;
-
-		struct TeamEntry entry;
-		entry.name=t->getFirstPlayerName();
-		entry.teamNum=i;
-		entry.color=t->color;
-		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+		if(t->numberOfPlayer)
 		{
-			entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+			int endIndex=t->stats.endOfGameStats.size()-1;
+
+			struct TeamEntry entry;
+			entry.name=t->getFirstPlayerName();
+			entry.teamNum=i;
+			entry.color=t->color;
+			for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+			{
+				entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+			}
+			teams.push_back(entry);
 		}
-		teams.push_back(entry);	
 	}
 
 	// add widgets
@@ -334,7 +337,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 
 void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	if ((action==BUTTON_PRESSED) || (action==BUTTON_SHORTCUT))
 	{
 		///This is a change in the graph type
 		if (par1<6)

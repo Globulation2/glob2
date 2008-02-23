@@ -230,6 +230,10 @@ Conectado ao servidor
 Conectándo-se a todos os jogadores
 [connecting to]
 Conectando-se a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuar jogando
 [Corn]
@@ -993,6 +997,8 @@ Não controlado
 [uniform terrain]
 Terreno uniforme
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

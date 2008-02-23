@@ -230,6 +230,10 @@ Szerverhez történő csatlakozás sikeres
 Csatlakozás a játékosokhoz
 [connecting to]
 Kapcsolódás
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Játék folytatása
 [Corn]
@@ -993,6 +997,8 @@ Független
 [uniform terrain]
 Egységes térkép
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

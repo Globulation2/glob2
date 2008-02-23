@@ -151,17 +151,27 @@ SettingsScreen::SettingsScreen()
 	addWidget(musicVolText);
 	setVisibilityFromAudioSettings();
 	
-	int row=0;
-	int current_column_x=20;
-	int widest_element=0;
+	
+	int first_group_row=0;
+	int first_group_current_column_x=20;
+	int first_group_widest_element=0;
+	
+	int second_group_row=0;
+	int second_group_current_column_x=170;
+	int second_group_widest_element=0;
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
 		std::string name=IntBuildingType::typeFromShortNumber(t);
 		for(int l=0; l<6; ++l)
 		{
+			//Even numbers represent under-construction, whereas odd numbers represent completed buildings
+			int& row = (l % 2 == 1 ? first_group_row : second_group_row);
+			int& current_column_x = (l % 2 == 1 ? first_group_current_column_x : second_group_current_column_x);
+			int& widest_element = (l % 2 == 1 ? first_group_widest_element : second_group_widest_element);
+		
 			if(globalContainer->buildingsTypes.getByType(name, l/2, (l+1)%2) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l]>0)
 			{
-				unitRatios[t][l] = new Number(current_column_x, 70+45*row, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+				unitRatios[t][l] = new Number(current_column_x, 117+40*row, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 				addNumbersFor(0, 20, unitRatios[t][l]);
 				unitRatios[t][l]->setNth(globalContainer->settings.defaultUnitsAssigned[t][l]);
 				unitRatios[t][l]->visible=false;
@@ -173,7 +183,7 @@ SettingsScreen::SettingsScreen()
 				if((l+1)%2)
 					keyname+="build ";
 				keyname+=name + " level " + boost::lexical_cast<std::string>(l/2) + "]";
-				unitRatioTexts[t][l]=new Text(current_column_x, 50+45*row, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
+				unitRatioTexts[t][l]=new Text(current_column_x, 100+40*row, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
 				addWidget(unitRatioTexts[t][l]);
 				unitRatioTexts[t][l]->visible=false;
 
@@ -193,6 +203,19 @@ SettingsScreen::SettingsScreen()
 			}
 		}
 	}
+	
+	unitSettingsExplanation = new Text( 100, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[unit settings explanation]"));
+	unitSettingsHeading1 = new Text( 160, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[construction and upgrades]"));
+	unitSettingsHeading2 = new Text( 10, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[constructed buildings]"));
+
+
+	unitSettingsExplanation->visible = false;
+	unitSettingsHeading1->visible = false;
+	unitSettingsHeading2->visible = false;
+
+	addWidget(unitSettingsExplanation);
+	addWidget(unitSettingsHeading1);
+	addWidget(unitSettingsHeading2);
 
 	//shortcuts part
 	game_shortcuts=new TextButton( 100, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
@@ -302,6 +325,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			scrollwheel->visible=true;
 			scrollwheelText->visible=true;
 			
+			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
 				for(int l=0; l<6; ++l)
@@ -313,6 +337,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 					}
 				}
 			}
+			
+			
+			unitSettingsExplanation->visible=false;
+			unitSettingsHeading1->visible=false;
+			unitSettingsHeading2->visible=false;
 
 			game_shortcuts->visible=false;
 			editor_shortcuts->visible=false;
@@ -354,7 +383,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			rememberUnitText->visible=false;
 			scrollwheel->visible=false;
 			scrollwheelText->visible=false;
-
+			
+			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
 				for(int l=0; l<6; ++l)
@@ -366,6 +396,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 					}
 				}
 			}
+			
+			unitSettingsExplanation->visible=true;
+			unitSettingsHeading1->visible=true;
+			unitSettingsHeading2->visible=true;
 	
 			game_shortcuts->visible=false;
 			editor_shortcuts->visible=false;
@@ -406,6 +440,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			scrollwheel->visible=false;
 			scrollwheelText->visible=false;
 			
+			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
 				for(int l=0; l<6; ++l)
@@ -417,6 +452,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 					}
 				}
 			}
+			
+			
+			unitSettingsExplanation->visible=false;
+			unitSettingsHeading1->visible=false;
+			unitSettingsHeading2->visible=false;
 	
 			game_shortcuts->visible=true;
 			editor_shortcuts->visible=true;

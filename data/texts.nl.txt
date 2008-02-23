@@ -230,6 +230,10 @@ Verbonden met server
 Verbinden met alle spelers
 [connecting to]
 Verbinden met
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Speel verder
 [Corn]
@@ -994,6 +998,8 @@ Onbestuurd
 Effen terrein
 [Unit editor]
 Eenheid bewerken
+[unit settings explanation]
+
 [unit settings]
 Gebouwen
 [Unit type]

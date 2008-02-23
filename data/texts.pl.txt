@@ -230,6 +230,10 @@ Połączono z serwerem
 Łączenie z resztą graczy
 [connecting to]
 Połącz z
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Kontynuuj grę
 [Corn]
@@ -993,6 +997,8 @@ Niekontrolowany
 [uniform terrain]
 Rodzaj terenu
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

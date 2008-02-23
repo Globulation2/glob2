@@ -230,6 +230,10 @@ Ansluten till server
 Ansluter till alla spelar
 [connecting to]
 Ansluter till
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Fortsätt spela
 [Corn]
@@ -994,6 +998,8 @@ Okontrollerad
 Enhetlig terräng
 [Unit editor]
 Enhetseditor
+[unit settings explanation]
+
 [unit settings]
 Enheter
 [Unit type]

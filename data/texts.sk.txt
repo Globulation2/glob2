@@ -230,6 +230,10 @@ Pripojené k serveru
 Pripája sa k hráčom
 [connecting to]
 Pripája sa ku
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Pokračovať
 [Corn]
@@ -994,6 +998,8 @@ Neobsadené
 Jednotný povrch
 [Unit editor]
 Editor jedotiek
+[unit settings explanation]
+
 [unit settings]
 Jednotky
 [Unit type]

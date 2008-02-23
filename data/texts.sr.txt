@@ -230,6 +230,10 @@ AIWarrush
 Прикључење са свим играчима
 [connecting to]
 Повезивање са: 
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Настави игру
 [Corn]
@@ -993,6 +997,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [uniform terrain]
 Једнообразно земљиште
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

@@ -740,6 +740,10 @@ void Unit::handleMedical(void)
 				ownExchangeBuilding=NULL;
 			}
 			
+			
+			
+			owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
+			
 			activity=ACT_RANDOM;
 			validTarget=false;
 			

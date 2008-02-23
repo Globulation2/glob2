@@ -230,6 +230,10 @@ Conectat la servăr
 Conectare cu jucătorii in curs
 [connecting to]
 Conectare la
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuă jocul
 [Corn]
@@ -993,6 +997,8 @@ Necontrolat
 [uniform terrain]
 Teren uniform
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 
