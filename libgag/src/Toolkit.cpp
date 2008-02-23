@@ -46,9 +46,9 @@ namespace GAGCore
 			assert(false);
 	}
 	
-	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags)
+	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags, const char *title, const char *icon)
 	{
-		gc = new GraphicContext(w, h, flags);
+		gc = new GraphicContext(w, h, flags, title, icon);
 		return gc;
 	}
 	

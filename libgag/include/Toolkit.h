@@ -42,11 +42,11 @@ namespace GAGCore
 		//! Initialize gag, must be called before any call to GAG
 		static void init(const char *gameName);
 		//! Initialize the graphic part
-		static GraphicContext *initGraphic(int w, int h, unsigned int flags);
-	
+		static GraphicContext *initGraphic(int w, int h, unsigned int flags, const char *title = NULL, const char *icon = NULL);
+		
 		//! Close gag, must be called after any call to GAG
 		static void close(void);
-	
+		
 		static Sprite *getSprite(const char *name);
 		static Sprite *getSprite(const std::string &name);
 		static void releaseSprite(const char *name);
