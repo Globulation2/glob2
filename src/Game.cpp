@@ -1274,6 +1274,9 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 
 	UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
 
+	x = (x + map.getW()) % map.getW();
+	y = (y + map.getH()) % map.getH();
+
 	bool fly=ut->performance[FLY];
 	bool free;
 	if (fly)

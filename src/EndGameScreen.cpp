@@ -386,11 +386,11 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 		std::stringstream str;
 		if(i>0 && teams[i].endVal[type] == teams[i-1].endVal[type])
 		{
-			str<<prev_num<<") "<<teams[i].name.c_str()<<std::endl;
+			str<<"#"<<prev_num<<": "<<teams[i].name.c_str()<<std::endl;
 		}
 		else
 		{
-			str<<i+1<<") "<<teams[i].name.c_str()<<std::endl;
+			str<<"#"<<i+1<<": "<<teams[i].name.c_str()<<std::endl;
 			prev_num=i+1;
 		}
 	
