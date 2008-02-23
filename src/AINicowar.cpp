@@ -137,10 +137,9 @@ NicowarStrategyLoader::NicowarStrategyLoader()
 	
 NicowarStrategy NicowarStrategyLoader::chooseRandomStrategy()
 {
-//	int chosen = syncRand() % entries.size();
-//	entries[chosen]->setStrategyName(entriesToName[chosen]);
-//	return *entries[chosen];
-	return getParticularStrategy("default");
+	int chosen = syncRand() % entries.size();
+	entries[chosen]->setStrategyName(entriesToName[chosen]);
+	return *entries[chosen];
 }
 
 
