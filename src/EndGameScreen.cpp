@@ -145,7 +145,10 @@ void EndGameStat::paint(void)
 			for (team=0; team < game->mapHeader.getNumberOfTeams(); team++)
 			{
 				if(!isTeamEnabled[team])
+				{
+					//std::cout<<"team disabled "<<team<<std::endl;
 					continue;
+				}
 				const Color& color = game->teams[team]->color;
 
 				int previous_y = h - int(double(h) * getValue(0, team, type) / double(maxValue));
@@ -295,46 +298,51 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	
 	// add players name
 	Text *text;
-	int inc = (gui->game.mapHeader.getNumberOfTeams() < 16) ? 20 : 10;
+	int inc = (gui->game.mapHeader.getNumberOfTeams() <= 16) ? 20 : 10;
 
 	// set teams entries for later sort
 	for (int i=0; i<gui->game.mapHeader.getNumberOfTeams(); i++)
 	{
 		Team *t=gui->game.teams[i];
-		int endIndex=t->stats.endOfGameStats.size()-1;
-
-		struct TeamEntry entry;
-		entry.name=t->getFirstPlayerName();
-		entry.teamNum=i;
-		entry.color=t->color;
-		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+		if(t->numberOfPlayer)
 		{
-			entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+			int endIndex=t->stats.endOfGameStats.size()-1;
+
+			struct TeamEntry entry;
+			entry.name=t->getFirstPlayerName();
+			entry.teamNum=i;
+			entry.color=t->color;
+			for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+			{
+				entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+			}
+			teams.push_back(entry);
 		}
-		teams.push_back(entry);	
 	}
 
-	// sort
-	MoreScore moreScore;
-	moreScore.type=EndOfGameStat::TYPE_UNITS;
-	std::sort(teams.begin(), teams.end(), moreScore);
-	
 	// add widgets
 	for (unsigned i=0; i<teams.size(); i++)
 	{
-		OnOffButton* enabled_button = new OnOffButton(10, 80+(i*inc), inc, inc, ALIGN_RIGHT, ALIGN_TOP, true, 6+teams[i].teamNum);
+		OnOffButton* enabled_button = new OnOffButton(10, 80+(i*inc), inc, inc, ALIGN_RIGHT, ALIGN_TOP, true, 6+i);
 		team_enabled_buttons.push_back(enabled_button);
 		addWidget(enabled_button);
-		text=new Text(10+inc, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", teams[i].name.c_str(), 140);
-		text->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
+		
+		text=new Text(10+inc, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", "", 140);
 		names.push_back(text);
 		addWidget(text);
 	}
+	
+	sortAndSet(EndOfGameStat::TYPE_UNITS);
 }
 
 void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
+		if(par1==38)
+			endExecute(par1);
+	}
+	if ((action==BUTTON_PRESSED) || (action==BUTTON_SHORTCUT))
 	{
 		///This is a change in the graph type
 		if (par1<6)
@@ -354,30 +362,6 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 				graphLabel->setText(Toolkit::getStringTable()->getString("[Attack]"));
 			else if(type==EndOfGameStat::TYPE_DEFENSE)
 				graphLabel->setText(Toolkit::getStringTable()->getString("[Defense]"));
-
-			// Resort the names on the side of the graph based on their respective scores
-			MoreScore moreScore;
-			moreScore.type=type;
-			std::sort(teams.begin(), teams.end(), moreScore);
-
-			int prev_num=1;
-			for (unsigned i=0; i<teams.size(); i++)
-			{
-				std::stringstream str;
-				if(i>0 && teams[i].endVal[type] == teams[i-1].endVal[type])
-				{
-					str<<prev_num<<") "<<teams[i].name.c_str()<<std::endl;
-				}
-				else
-				{
-					str<<i+1<<") "<<teams[i].name.c_str()<<std::endl;
-					prev_num=i+1;
-				}
-			
-				names[i]->setText(str.str().c_str());
-				names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
-				team_enabled_buttons[i]->returnCode=6+i;
-			}
 		}
 		///One of the buttons beside the team names where selected
 		else if(par1 >= 6 && par1 < static_cast<int>(6+teams.size()))
@@ -385,20 +369,33 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 			int n=par1-6;
 			statWidget->setEnabledState(teams[n].teamNum, team_enabled_buttons[n]->getState());
 		}
-		else
-			endExecute(par1);
 	}
 }
 
 
 void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 {
+	// Resort the names on the side of the graph based on their respective scores
 	MoreScore moreScore;
 	moreScore.type=type;
 	std::sort(teams.begin(), teams.end(), moreScore);
-	for (unsigned i=0; i<names.size(); i++)
+
+	int prev_num=1;
+	for (unsigned i=0; i<teams.size(); i++)
 	{
+		std::stringstream str;
+		if(i>0 && teams[i].endVal[type] == teams[i-1].endVal[type])
+		{
+			str<<prev_num<<") "<<teams[i].name.c_str()<<std::endl;
+		}
+		else
+		{
+			str<<i+1<<") "<<teams[i].name.c_str()<<std::endl;
+			prev_num=i+1;
+		}
+	
+		names[i]->setText(str.str().c_str());
 		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
-		names[i]->setText(teams[i].name.c_str());
+		team_enabled_buttons[i]->returnCode=6+i;
 	}
 }

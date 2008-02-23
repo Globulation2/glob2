@@ -213,7 +213,7 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
-		const int speed=20;
+		const int speed=40;
 		bool networkReadyToExecute = true;
 		
 		cpuStats.reset(speed);
@@ -429,7 +429,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	{
 		CampaignScreen campaignScreen(gui.game.campaignText);
 		int retVal = campaignScreen.execute(globalContainer->gfx, 40);
-		if (retVal)
+		if (retVal == 1)
 			return EE_CANCEL;
 		else if(retVal == -1)
 			return -1;

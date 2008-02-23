@@ -230,6 +230,10 @@ Pripojené k serveru
 Pripája sa k hráčom
 [connecting to]
 Pripája sa ku
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Pokračovať
 [Corn]
@@ -298,6 +302,8 @@ Nič nenesie
 
 [download finished]
 Stiahnuté
+[downloaded %0]
+
 [downloaded at]
 Stiahnutých 
 [edit map]
@@ -562,13 +568,15 @@ Najnižšia potrebná úroveň:
 
 [Music volume]
 Hlasitosť (hudba)
+[Mute]
+
 [mute]
 Stlmiť
 [network latency]
 Latencia siete
 [new campaign]
 
-[new]
+[new map]
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
@@ -582,6 +590,8 @@ Nie
 Nepripojené
 [not ready]
 nepripravený
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 Počet hráčov: %0
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Neobsadené
 Jednotný povrch
 [Unit editor]
 Editor jedotiek
+[unit settings explanation]
+
 [unit settings]
 Jednotky
 [Unit type]

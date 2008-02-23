@@ -39,7 +39,7 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	
 	if(alternateDirectory)
 	{
-		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Games]"), SWITCHTYPE, 27);
+		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[the games]"), SWITCHTYPE, 27);
 		addWidget(switchType);
 
 		alternateFileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", alternateDirectory, alternateExtension, alternateRecurse);
@@ -157,12 +157,14 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				currentDirectoryMode = DisplayAlternate;
 				fileList->visible=false;
 				alternateFileList->visible=true;
+				switchType->setText(Toolkit::getStringTable()->getString("[the maps]"));
 			}
 			else
 			{
 				currentDirectoryMode = DisplayRegular;
 				fileList->visible=true;
 				alternateFileList->visible=false;
+				switchType->setText(Toolkit::getStringTable()->getString("[the games]"));
 			}
 		}
 	}

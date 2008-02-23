@@ -230,6 +230,10 @@ ok
 Соединение со всеми игроками
 [connecting to]
 Подключение к
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Продолжить игру
 [Corn]
@@ -298,6 +302,8 @@ ok
 
 [download finished]
 Скачивание закончено
+[downloaded %0]
+
 [downloaded at]
 Скачано с
 [edit map]
@@ -562,13 +568,15 @@ Login
 
 [Music volume]
 Громкость (музыки)
+[Mute]
+
 [mute]
 Без звука
 [network latency]
 Латентность сети
 [new campaign]
 
-[new]
+[new map]
 Новая
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
@@ -582,6 +590,8 @@ Login
 Не соединён
 [not ready]
 не готов
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 игроков в игре
 [number of teams: %0]
@@ -992,6 +1002,8 @@ V: Зажать для речевой связи
 Одинаковый ландшафт
 [Unit editor]
 Редактор юнитов
+[unit settings explanation]
+
 [unit settings]
 
 [Unit type]

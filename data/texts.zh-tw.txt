@@ -230,6 +230,10 @@ AIWarrush
 正連線至所有玩家
 [connecting to]
 連線至
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 繼續遊戲
 [Corn]
@@ -298,6 +302,8 @@ AIWarrush
 
 [download finished]
 下載完成
+[downloaded %0]
+
 [downloaded at]
 以下載在
 [edit map]
@@ -562,13 +568,15 @@ Air dmg.
 旗幟最小等級
 [Music volume]
 音量 (音樂)
+[Mute]
+
 [mute]
 沉默
 [network latency]
 連線潛在因素
 [new campaign]
 新戰役
-[new]
+[new map]
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
@@ -582,6 +590,8 @@ Air dmg.
 沒有連線
 [not ready]
 還沒準備好
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 玩家再線.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ V: 持鍵以傳送訊息
 平整地形
 [Unit editor]
 單位編輯器
+[unit settings explanation]
+
 [unit settings]
 單位設定
 [Unit type]

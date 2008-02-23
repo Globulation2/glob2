@@ -230,6 +230,10 @@ Sunucuya baglanildi
 Tum oyunculara baglaniliyor
 [connecting to]
 Suraya baglaniyor:
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Oyuna devam et
 [Corn]
@@ -298,6 +302,8 @@ Hicbirsey tasimiyor
 
 [download finished]
 Indirme tamamlandi
+[downloaded %0]
+
 [downloaded at]
 Suradan indirildi: 
 [edit map]
@@ -562,13 +568,15 @@ Gerekli en dusuk seviye:
 
 [Music volume]
 Ses ayari (muzik)
+[Mute]
+
 [mute]
 sessiz
 [network latency]
 Ag gecikmesi
 [new campaign]
 
-[new]
+[new map]
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
@@ -582,6 +590,8 @@ Hayir
 Bagli degil
 [not ready]
 hazir degil
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 oyuncu var.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Kontrolsuz
 Tekbicimli saha
 [Unit editor]
 Birim editoru
+[unit settings explanation]
+
 [unit settings]
 
 [Unit type]
