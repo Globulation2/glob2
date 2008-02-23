@@ -93,7 +93,7 @@ public:
 	int skilled_work_phase_number_of_schools;
 	///The number of barracks to be built during the war preperation phase
 	int war_preparation_phase_number_of_barracks;
-	///The base number of hospitals to build
+	///The base number of hospitals to build, these are only built when there is first demand
 	int base_number_of_hospitals;
 	///The number of warriors required to trigger another hospital
 	int war_preperation_phase_warriors_per_hospital;
@@ -169,10 +169,10 @@ public:
 	int upgrading_phase_1_units_assigned;
 	///The number of units to assign to an upgrade for upgrading phase level 2
 	int upgrading_phase_2_units_assigned;
-	///The number of buildings to upgrade at once for upgrading phase 1
-	int upgrading_phase_1_num_upgrades_at_once;
-	///The number of buildings to upgrade at once for upgrading phase 2
-	int upgrading_phase_2_num_upgrades_at_once;
+	///The number of level 1 or higher units needed to count for upgrading one more building
+	int upgrading_phase_1_num_units;
+	///The number of level 1 or higher units needed to count for upgrading one more building
+	int upgrading_phase_2_num_units;
 	///The number of units to assign to a war flag attacking an enemy building
 	int war_phase_war_flag_units_assigned;
 	///The number of flags to attack with at any one time

@@ -75,7 +75,9 @@ void TeamStat::reset()
 	needNothing=0;
 	for(int i=0; i<NB_ABILITY; ++i)
 		for(int j=0; j<4; ++j)
+		{
 			upgradeState[i][j]=0;
+		}
 	for(int k=0; k<NB_UNIT_TYPE; ++k)
 	{
 		for(int i=0; i<NB_ABILITY; ++i)

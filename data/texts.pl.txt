@@ -230,6 +230,10 @@ Połączono z serwerem
 Łączenie z resztą graczy
 [connecting to]
 Połącz z
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Kontynuuj grę
 [Corn]
@@ -298,6 +302,8 @@ Nic nie transportuje
 
 [download finished]
 Pobieranie zakończone
+[downloaded %0]
+
 [downloaded at]
 Ściągniete z
 [edit map]
@@ -562,13 +568,15 @@ Min wymagany poziom:
 
 [Music volume]
 Głośność (muzyka)
+[Mute]
+
 [mute]
 
 [network latency]
 Opóźnienie sieci
 [new campaign]
 
-[new]
+[new map]
 Nowa
 [nick taken]
 Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
@@ -582,6 +590,8 @@ Nie
 Nie połączony
 [not ready]
 nie gotowy
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 graczy dołączyło do gry.
 [number of teams: %0]
@@ -991,6 +1001,8 @@ Niekontrolowany
 [uniform terrain]
 Rodzaj terenu
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

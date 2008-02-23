@@ -230,6 +230,10 @@ Verbonden met server
 Verbinden met alle spelers
 [connecting to]
 Verbinden met
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Speel verder
 [Corn]
@@ -298,6 +302,8 @@ Draagt niets
 
 [download finished]
 Klaar met downloaden
+[downloaded %0]
+
 [downloaded at]
 Downloaden op
 [edit map]
@@ -562,13 +568,15 @@ Minimaal vereist niveau:
 Minimaal vereist niveau:
 [Music volume]
 Volume (muziek)
+[Mute]
+
 [mute]
 geluid uit
 [network latency]
 Verbindingskwaliteit
 [new campaign]
 Nieuwe campagne
-[new]
+[new map]
 Nieuw
 [nick taken]
 Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode. Je kan alleen maar praten via YOG
@@ -582,6 +590,8 @@ Nee
 Niet verbonden
 [not ready]
 Niet klaar
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 Er zijn %0 spelers aanwezig.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Onbestuurd
 Effen terrein
 [Unit editor]
 Eenheid bewerken
+[unit settings explanation]
+
 [unit settings]
 Gebouwen
 [Unit type]

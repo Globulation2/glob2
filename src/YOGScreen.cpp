@@ -351,7 +351,7 @@ void YOGScreen::updateGameInfo()
 		gameInfo->addText(s.c_str());
 		s = FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(info.getMapName()) + "\n";
 		gameInfo->addText(s.c_str());
-		s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0]")).arg((int)info.getPlayersJoined()) + "\n";
+		s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0 (%1 AI)]")).arg((int)info.getPlayersJoined() + (int)info.getAIJoined()).arg((int)info.getAIJoined()) + "\n";
 		gameInfo->addText(s.c_str());
 		s = FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg((int)info.getNumberOfTeams()) + "\n";
 		gameInfo->addText(s.c_str());

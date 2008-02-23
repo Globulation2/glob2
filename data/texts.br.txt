@@ -230,6 +230,10 @@ Conectado ao servidor
 Conectando a todos jogadores
 [connecting to]
 Conectando a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuar jogando
 [Corn]
@@ -300,6 +304,8 @@ Está carregando nada
 baixo
 [download finished]
 Download terminado
+[downloaded %0]
+
 [downloaded at]
 Baixado a 
 [edit map]
@@ -564,13 +570,15 @@ Nível mínimo requerido:
 Minimum Flag Level
 [Music volume]
 Volume (música)
+[Mute]
+
 [mute]
 mudo
 [network latency]
 Latência da rede
 [new campaign]
 Nova campanha
-[new]
+[new map]
 Novo
 [nick taken]
 Lamentamos mas o nome que você escolheu já existe na freenode, você poderá falar somente pelo YOG
@@ -584,6 +592,8 @@ Não
 Não conectado
 [not ready]
 não pronto
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 jogadores estão presentes.
 [number of teams: %0]
@@ -994,6 +1004,8 @@ desfaz
 Terreno uniforme
 [Unit editor]
 Editor de unidades
+[unit settings explanation]
+
 [unit settings]
 Ajustes de unidade
 [Unit type]

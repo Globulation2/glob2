@@ -110,7 +110,7 @@ void ScrollingText::internalInit(void)
 	assert(fontPtr);
 	int x, y, w, h;	
 	getScreenPos(&x, &y, &w, &h);
-	offset = -h;
+	offset = -h + 25;
 	
 	// Measures all the length of all the lines of the file (usefull for centering)
 	for (size_t i = 0; i < text.size(); i++)

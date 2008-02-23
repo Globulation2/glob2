@@ -230,6 +230,10 @@ Conectat la servăr
 Conectare cu jucătorii in curs
 [connecting to]
 Conectare la
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuă jocul
 [Corn]
@@ -298,6 +302,8 @@ Nu transportă nimic
 
 [download finished]
 Descărcare terminată
+[downloaded %0]
+
 [downloaded at]
 Descărcat la
 [edit map]
@@ -562,13 +568,15 @@ Nivel minim necesar:
 
 [Music volume]
 Volum  (muzică)
+[Mute]
+
 [mute]
 
 [network latency]
 Latenţa reţelei
 [new campaign]
 
-[new]
+[new map]
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
@@ -582,6 +590,8 @@ Nu
 Neconectat
 [not ready]
 nu-i gata
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 jucători prezenţi.
 [number of teams: %0]
@@ -991,6 +1001,8 @@ Necontrolat
 [uniform terrain]
 Teren uniform
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

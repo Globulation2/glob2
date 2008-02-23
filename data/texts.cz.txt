@@ -230,6 +230,10 @@ Server připojen
 Připojuji se ke všem hráčům
 [connecting to]
 Připojuji se k
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Pokračovat ve hře
 [Corn]
@@ -298,6 +302,8 @@ Nic nenesu
 
 [download finished]
 Stáhnuto
+[downloaded %0]
+
 [downloaded at]
 Stahuji
 [edit map]
@@ -562,13 +568,15 @@ Min. úroveň bojovníků:
 
 [Music volume]
 Hlasitost (hudba)
+[Mute]
+
 [mute]
 
 [network latency]
 Network latency
 [new campaign]
 
-[new]
+[new map]
 Nová
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
@@ -582,6 +590,8 @@ Ne
 Nepřipojen
 [not ready]
 nepřipraven
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 hráčů se připojilo.
 [number of teams: %0]
@@ -991,6 +1001,8 @@ Neovládaný
 [uniform terrain]
 Jednotná krajina
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

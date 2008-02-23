@@ -95,6 +95,8 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	validTarget = false;
 	magicActionTimeout = 0;
 
+	underAttackTimer = 0;
+
 	// trigger parameters
 	hp=0;
 
@@ -125,6 +127,8 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	destinationPurprose=-1;
 	caryedRessource=-1;
 	jobTimer = 0;
+
+
 	
 	// gui
 	levelUpAnimation = 0;
@@ -171,6 +175,13 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	targetY = (Sint32)stream->readSint32("targetY");
 	validTarget = (bool)stream->readSint32("validTarget");
 	magicActionTimeout = stream->readSint32("magicActionTimeout");
+
+	// under attack timer
+	if(versionMinor >= 61)
+		underAttackTimer = stream->readUint8("underAttackTimer");
+	else
+		underAttackTimer = 0;
+
 
 	// trigger parameters
 	hp = stream->readSint32("hp");
@@ -249,6 +260,9 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(targetY, "targetY");
 	stream->writeSint32(validTarget, "validTarget");
 	stream->writeSint32(magicActionTimeout, "magicActionTimeout");
+
+	// attack timer
+	stream->writeUint8(underAttackTimer, "underAttackTimer");
 
 	// trigger parameters
 	stream->writeSint32(hp, "hp");
@@ -447,6 +461,8 @@ void Unit::syncStep(void)
 				degats=1;
 			enemy->hp-=degats;
 			
+			enemy->underAttackTimer = 256/speed + 1;
+
 			boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 			enemy->owner->pushGameEvent(event);
 
@@ -465,6 +481,8 @@ void Unit::syncStep(void)
 					degats=1;
 				enemy->hp-=degats;
 			
+				enemy->underAttackTimer = 256/speed + 1;
+
 				boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
 				enemy->owner->pushGameEvent(event);
 
@@ -474,6 +492,9 @@ void Unit::syncStep(void)
 			}
 		}
 	}
+
+	if(underAttackTimer > 0)
+		underAttackTimer -= 1;
 	
 //#define BURST_UNIT_MODE
 #ifdef BURST_UNIT_MODE
@@ -739,6 +760,10 @@ void Unit::handleMedical(void)
 				targetBuilding=NULL;
 				ownExchangeBuilding=NULL;
 			}
+			
+			
+			
+			owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
 			
 			activity=ACT_RANDOM;
 			validTarget=false;

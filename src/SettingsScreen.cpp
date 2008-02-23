@@ -151,67 +151,111 @@ SettingsScreen::SettingsScreen()
 	addWidget(musicVolText);
 	setVisibilityFromAudioSettings();
 	
-	int row=0;
-	int current_column_x=20;
-	int widest_element=0;
+	
+	int first_group_row=0;
+	int first_group_current_column_x=20;
+	int first_group_widest_element=0;
+	
+	int second_group_row=1;
+	int second_group_first_row_x=170;
+	int second_group_current_column_x=170;
+	int second_group_widest_element=0;
+	
+	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
+	{
+		for(int l=0; l<6; ++l)
+		{
+			unitRatios[t][l]=NULL;
+			unitRatioTexts[t][l]=NULL;
+		}
+	}
+	
+	///First group are completed buildings, Inn, Swarm and Defence tower
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
 		std::string name=IntBuildingType::typeFromShortNumber(t);
-		for(int l=0; l<6; ++l)
+		for(int l=0; l<3; ++l)
 		{
-			if(globalContainer->buildingsTypes.getByType(name, l/2, (l+1)%2) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l]>0)
+			if(globalContainer->buildingsTypes.getByType(name, l, false) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l*2+1]>0)
 			{
-				unitRatios[t][l] = new Number(current_column_x, 70+45*row, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
-				addNumbersFor(0, 20, unitRatios[t][l]);
-				unitRatios[t][l]->setNth(globalContainer->settings.defaultUnitsAssigned[t][l]);
-				unitRatios[t][l]->visible=false;
-				addWidget(unitRatios[t][l]);
-
-				widest_element = std::max(widest_element, unitRatios[t][l]->getWidth());
-
-				std::string keyname="[";
-				if((l+1)%2)
-					keyname+="build ";
-				keyname+=name + " level " + boost::lexical_cast<std::string>(l/2) + "]";
-				unitRatioTexts[t][l]=new Text(current_column_x, 50+45*row, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
-				addWidget(unitRatioTexts[t][l]);
-				unitRatioTexts[t][l]->visible=false;
-
-				widest_element = std::max(widest_element, unitRatioTexts[t][l]->getWidth());
-
-				row+=1;
-				if(row==8)
+				int size = addDefaultUnitAssignmentWidget(t, l*2+1, first_group_current_column_x, 100 + 40*first_group_row);
+				first_group_widest_element = std::max(first_group_widest_element, size);
+				
+				first_group_row += 1;
+				if(first_group_row == 8)
 				{
-					row=0;
-					current_column_x+= widest_element+10;
+					first_group_row = 0;
+					first_group_current_column_x += first_group_widest_element;
+					first_group_widest_element = 0;
 				}
 			}
-			else
+		}	
+	}
+	
+	///Second group, at the top is Swarm, Wall, Market, the rest follow horizontally
+	for(int l=0; l<3; ++l)
+	{
+		for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
+		{
+			std::string name=IntBuildingType::typeFromShortNumber(t);
+			//Even numbers represent under-construction, whereas odd numbers represent completed buildings		
+			if(globalContainer->buildingsTypes.getByType(name, l, true) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l*2]>0)
 			{
-				unitRatios[t][l]=NULL;
-				unitRatioTexts[t][l]=NULL;
+				int this_row = second_group_row;
+				int this_x = second_group_current_column_x;
+				if(t == IntBuildingType::SWARM_BUILDING || t == IntBuildingType::STONE_WALL || t == IntBuildingType::MARKET_BUILDING)
+				{
+					this_row = 0;
+					this_x = second_group_first_row_x;
+					second_group_first_row_x += 180;
+				}
+				else
+				{
+					second_group_row += 1;
+				}
+				
+				int size = addDefaultUnitAssignmentWidget(t, l*2, this_x, 100 + 40*this_row);
+				second_group_widest_element = std::max(second_group_widest_element, size);
+				
+				if(second_group_row == 8)
+				{
+					second_group_row = 1;
+					second_group_current_column_x += 180;
+					second_group_widest_element = 0;
+				}
 			}
 		}
 	}
+	
+	unitSettingsExplanation = new Text( 100, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[unit settings explanation]"));
+	unitSettingsHeading1 = new Text( 160, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[construction and upgrades]"));
+	unitSettingsHeading2 = new Text( 10, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[constructed buildings]"));
+
+
+	unitSettingsExplanation->visible = false;
+	unitSettingsHeading1->visible = false;
+	unitSettingsHeading2->visible = false;
+
+	addWidget(unitSettingsExplanation);
+	addWidget(unitSettingsHeading1);
+	addWidget(unitSettingsHeading2);
 
 	//shortcuts part
-	game_shortcuts=new TextButton( 20, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
+	game_shortcuts=new TextButton( 100, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
 	game_shortcuts->visible=false;
 
-	editor_shortcuts=new TextButton( 230, 60, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
+	editor_shortcuts=new TextButton( 230, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
 	editor_shortcuts->visible=false;
-
-	restore_default_shortcuts = new TextButton(20, 355, 610, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
-	restore_default_shortcuts->visible=false;
 
 	shortcut_list = new List(20, 110, 325, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	action_list = new List(365, 110 , 265, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
 	key_2_active = new OnOffButton(170, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
 	select_key_2 = new KeySelector(200, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
-	add_shortcut = new TextButton(20, 305, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
-	remove_shortcut = new TextButton(330, 305, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
-	
+	add_shortcut = new TextButton(20, 305, 158, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
+	remove_shortcut = new TextButton(188, 305, 157, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
+	restore_default_shortcuts = new TextButton(365, 305, 265, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
+
 	
 	game_shortcuts->visible = false;
 	editor_shortcuts->visible = false;
@@ -223,10 +267,10 @@ SettingsScreen::SettingsScreen()
 	select_key_2->visible = false;
 	add_shortcut->visible = false;
 	remove_shortcut->visible = false;
-	
+	restore_default_shortcuts->visible=false;
+		
 	addWidget(game_shortcuts);
 	addWidget(editor_shortcuts);
-	addWidget(restore_default_shortcuts);
 	addWidget(shortcut_list);
 	addWidget(action_list);
 	addWidget(select_key_1);
@@ -234,6 +278,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(select_key_2);
 	addWidget(add_shortcut);
 	addWidget(remove_shortcut);
+	addWidget(restore_default_shortcuts);
 
 	currentMode = GameGUIShortcuts;
 
@@ -303,6 +348,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			scrollwheel->visible=true;
 			scrollwheelText->visible=true;
 			
+			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
 				for(int l=0; l<6; ++l)
@@ -314,6 +360,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 					}
 				}
 			}
+			
+			
+			unitSettingsExplanation->visible=false;
+			unitSettingsHeading1->visible=false;
+			unitSettingsHeading2->visible=false;
 
 			game_shortcuts->visible=false;
 			editor_shortcuts->visible=false;
@@ -355,7 +406,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			rememberUnitText->visible=false;
 			scrollwheel->visible=false;
 			scrollwheelText->visible=false;
-
+			
+			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
 				for(int l=0; l<6; ++l)
@@ -367,6 +419,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 					}
 				}
 			}
+			
+			unitSettingsExplanation->visible=true;
+			unitSettingsHeading1->visible=true;
+			unitSettingsHeading2->visible=true;
 	
 			game_shortcuts->visible=false;
 			editor_shortcuts->visible=false;
@@ -407,6 +463,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			scrollwheel->visible=false;
 			scrollwheelText->visible=false;
 			
+			
 			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 			{
 				for(int l=0; l<6; ++l)
@@ -418,6 +475,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 					}
 				}
 			}
+			
+			
+			unitSettingsExplanation->visible=false;
+			unitSettingsHeading1->visible=false;
+			unitSettingsHeading2->visible=false;
 	
 			game_shortcuts->visible=true;
 			editor_shortcuts->visible=true;
@@ -646,6 +708,29 @@ std::string SettingsScreen::actDisplayModeToString(void)
 	else
 		oss << " SDL";
 	return oss.str();
+}
+
+
+
+int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, int y)
+{	
+	std::string name=IntBuildingType::typeFromShortNumber(type);
+
+	unitRatios[type][level] = new Number(x, y+20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	addNumbersFor(0, 20, unitRatios[type][level]);
+	unitRatios[type][level]->setNth(globalContainer->settings.defaultUnitsAssigned[type][level]);
+	unitRatios[type][level]->visible=false;
+	addWidget(unitRatios[type][level]);
+
+	std::string keyname="[";
+	if((level+1)%2)
+		keyname+="build ";
+	keyname+=name + " level " + boost::lexical_cast<std::string>(level/2) + "]";
+	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
+	addWidget(unitRatioTexts[type][level]);
+	unitRatioTexts[type][level]->visible=false;
+
+	return std::max(unitRatioTexts[type][level]->getWidth(), unitRatios[type][level]->getWidth());
 }
 
 

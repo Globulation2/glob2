@@ -230,6 +230,10 @@ AIWarrush
 Прикључење са свим играчима
 [connecting to]
 Повезивање са: 
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Настави игру
 [Corn]
@@ -298,6 +302,8 @@ AIWarrush
 
 [download finished]
 Преузимање је готово
+[downloaded %0]
+
 [downloaded at]
 Преузето са
 [edit map]
@@ -562,13 +568,15 @@ sr
 
 [Music volume]
 Јачина (музика)
+[Mute]
+
 [mute]
 
 [network latency]
 Мрежно кашњење
 [new campaign]
 
-[new]
+[new map]
 Нова
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
@@ -582,6 +590,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Није прикључен
 [not ready]
 није спреман
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 Број присутних играча: %0.
 [number of teams: %0]
@@ -991,6 +1001,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [uniform terrain]
 Једнообразно земљиште
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 
