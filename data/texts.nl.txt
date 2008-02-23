@@ -588,6 +588,8 @@ Nee
 Niet verbonden
 [not ready]
 Niet klaar
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 Er zijn %0 spelers aanwezig.
 [number of teams: %0]

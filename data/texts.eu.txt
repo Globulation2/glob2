@@ -588,6 +588,8 @@ Ez
 Konektatu gabe
 [not ready]
 itxaron...
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 jokalari daude bertan.
 [number of teams: %0]

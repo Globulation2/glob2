@@ -292,7 +292,7 @@
 [No]
 [not connected]
 [not ready]
-[number of players: %0]
+[number of players: %0 (%1 AI)]
 [number of teams: %0]
 [number of teams]
 [numlock]

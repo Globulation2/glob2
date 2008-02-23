@@ -588,6 +588,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Није прикључен
 [not ready]
 није спреман
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 Број присутних играча: %0.
 [number of teams: %0]

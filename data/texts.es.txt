@@ -588,6 +588,8 @@ No
 Desconectado
 [not ready]
 No Listo
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 de los Jugadores están Presentest.
 [number of teams: %0]

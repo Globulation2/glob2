@@ -586,10 +586,10 @@ No
 Not connected
 [not ready]
 not ready
-[number of players: %0]
-%0 players are present.
+[number of players: %0 (%1 AI)]
+%0 players (%1 AI)
 [number of teams: %0]
-%0 teams.
+%0 teams
 [number of teams]
 number of teams
 [numlock]

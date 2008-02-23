@@ -588,6 +588,8 @@ Nie
 Nie połączony
 [not ready]
 nie gotowy
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 graczy dołączyło do gry.
 [number of teams: %0]

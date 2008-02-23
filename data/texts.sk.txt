@@ -588,6 +588,8 @@ Nie
 Nepripojené
 [not ready]
 nepripravený
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 Počet hráčov: %0
 [number of teams: %0]
