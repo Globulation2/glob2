@@ -230,6 +230,10 @@ Connesso al server
 Mi sto connettendo agli altri giocatori
 [connecting to]
 Mi sto connettendo a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continua a giocare
 [Corn]
@@ -298,6 +302,8 @@ Non trasporta nulla
 
 [download finished]
 Download completato
+[downloaded %0]
+
 [downloaded at]
 Scaricato da
 [edit map]
@@ -562,13 +568,15 @@ Livello min.richiesto:
 Livello minimo per la bandiera
 [Music volume]
 Volume (musica)
+[Mute]
+
 [mute]
 Nessun Audio
 [network latency]
 Latenza della rete
 [new campaign]
 
-[new]
+[new map]
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
@@ -582,6 +590,8 @@ No
 non connesso
 [not ready]
 non pronto
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 numero di giocatori.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Incontrollato
 Terreno uniforme
 [Unit editor]
 Editor di unità
+[unit settings explanation]
+
 [unit settings]
 Impostazioni unità
 [Unit type]

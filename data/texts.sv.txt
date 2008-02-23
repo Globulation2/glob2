@@ -230,6 +230,10 @@ Ansluten till server
 Ansluter till alla spelar
 [connecting to]
 Ansluter till
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Fortsätt spela
 [Corn]
@@ -298,6 +302,8 @@ Bär ingenting
 
 [download finished]
 Nedladdning slutförd
+[downloaded %0]
+
 [downloaded at]
 Nedladdat till 
 [edit map]
@@ -562,13 +568,15 @@ Lägsta tillåtna nivå:
 Lägsta flaggnivå
 [Music volume]
 Volym (musik)
+[Mute]
+
 [mute]
 tyst
 [network latency]
 Nätverksfördröjning
 [new campaign]
 Ny Kampanj
-[new]
+[new map]
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
@@ -582,6 +590,8 @@ Nej
 Ej ansluten
 [not ready]
 inte redo
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 spelare är närvarande.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Okontrollerad
 Enhetlig terräng
 [Unit editor]
 Enhetseditor
+[unit settings explanation]
+
 [unit settings]
 Enheter
 [Unit type]

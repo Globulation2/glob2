@@ -230,6 +230,10 @@ Connected to server
 Connecting to all players
 [connecting to]
 Connecting to
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 تابع اللعب
 [Corn]
@@ -298,6 +302,8 @@ Disconnect
 
 [download finished]
 Download finished
+[downloaded %0]
+
 [downloaded at]
 Downloaded at 
 [edit map]
@@ -562,13 +568,15 @@ medium
 Minimum Flag Level
 [Music volume]
 صوت (الموسيقى)
+[Mute]
+
 [mute]
 كتم الصوت
 [network latency]
 Network latency
 [new campaign]
 
-[new]
+[new map]
 جديد
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
@@ -582,6 +590,8 @@ No Growth Areas
 Not connected
 [not ready]
 غير جاهز
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 players are present.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Unassigned
 Uniform terrain
 [Unit editor]
 محرر الوحده
+[unit settings explanation]
+
 [unit settings]
 اعدادت الوحده
 [Unit type]

@@ -82,13 +82,19 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	this->filenameToNameFunc = filenameToNameFunc;
 	this->nameToFilenameFunc = nameToFilenameFunc;
 
-	fileList=new FuncFileList(10, 40, 280, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", directory, extension, true, filenameToNameFunc, nameToFilenameFunc);
+	if(isLoad)
+		fileList=new FuncFileList(10, 40, 280, 175, ALIGN_LEFT, ALIGN_LEFT, "standard", directory, extension, true, filenameToNameFunc, nameToFilenameFunc);
+	else
+		fileList=new FuncFileList(10, 40, 280, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", directory, extension, true, filenameToNameFunc, nameToFilenameFunc);
 	addWidget(fileList);
 
 	if (!defaultFileName)
 		defaultFileName="";
 	fileNameEntry=new TextInput(10, 190, 280, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", defaultFileName, true);
 	addWidget(fileNameEntry);
+	
+	if(isLoad)
+		fileNameEntry->visible=false;
 
 	addWidget(new TextButton(10, 225, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
 	addWidget(new TextButton(155, 225, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));

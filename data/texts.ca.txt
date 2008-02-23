@@ -230,6 +230,10 @@ Conectat al servidor
 Conectant a tots els jugadors
 [connecting to]
 Conectant a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuar jugant
 [Corn]
@@ -298,6 +302,8 @@ No Transporta res
 
 [download finished]
 Descarga finalitzada
+[downloaded %0]
+
 [downloaded at]
 Baixat al
 [edit map]
@@ -562,13 +568,15 @@ Nivell Minim Requerit
 
 [Music volume]
 Volum (música)
+[Mute]
+
 [mute]
 Silenci
 [network latency]
 llatència
 [new campaign]
 
-[new]
+[new map]
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
@@ -582,6 +590,8 @@ No
 No conectat
 [not ready]
 sense preparar
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 nombre de jugadors
 [number of teams: %0]
@@ -991,6 +1001,8 @@ No Controlat
 [uniform terrain]
 Terreny uniforme
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

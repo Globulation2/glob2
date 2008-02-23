@@ -230,6 +230,10 @@ Szerverhez történő csatlakozás sikeres
 Csatlakozás a játékosokhoz
 [connecting to]
 Kapcsolódás
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Játék folytatása
 [Corn]
@@ -298,6 +302,8 @@ Nem szállít semmit
 
 [download finished]
 A letöltés befejeződött
+[downloaded %0]
+
 [downloaded at]
 Letöltés
 [edit map]
@@ -562,13 +568,15 @@ Minimális szükséges szint:
 
 [Music volume]
 Hangerősség (zene)
+[Mute]
+
 [mute]
 
 [network latency]
 Hálózati várakozási idő
 [new campaign]
 
-[new]
+[new map]
 Új
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
@@ -582,6 +590,8 @@ Nem
 Nincs kapcsolat
 [not ready]
 nincs készen
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 játékos van jelen.
 [number of teams: %0]
@@ -991,6 +1001,8 @@ Független
 [uniform terrain]
 Egységes térkép
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

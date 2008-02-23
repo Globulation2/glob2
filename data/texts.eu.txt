@@ -230,6 +230,10 @@ Zerbitzarira konektatuta
 Jokalari guztietara konektatzen
 [connecting to]
 Hona konektatzen:
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Jolasten jarraitu
 [Corn]
@@ -298,6 +302,8 @@ Ez darama ezer
 
 [download finished]
 Deskarga bukatuta
+[downloaded %0]
+
 [downloaded at]
 Hemen deskargatua:
 [edit map]
@@ -562,13 +568,15 @@ Gutxienezko maila:
 Banderaren gutxienezko maila
 [Music volume]
 Bolumena (musika)
+[Mute]
+
 [mute]
 Isilik
 [network latency]
 Sare latentzia
 [new campaign]
 Kanpaina berria
-[new]
+[new map]
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
@@ -582,6 +590,8 @@ Ez
 Konektatu gabe
 [not ready]
 itxaron...
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 jokalari daude bertan.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Kontrolez kanpo
 Lurzoru uniformea
 [Unit editor]
 Unitate editorea
+[unit settings explanation]
+
 [unit settings]
 Unitate ezarpenak
 [Unit type]

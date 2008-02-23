@@ -230,6 +230,10 @@ Forbundet til server
 Forbinder til alle spillere
 [connecting to]
 Forbinder til
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Fortsæt spillet
 [Corn]
@@ -298,6 +302,8 @@ Bægere ikke på noget
 
 [download finished]
 Nedhentning færdig
+[downloaded %0]
+
 [downloaded at]
 Hentet fra
 [edit map]
@@ -562,13 +568,15 @@ Minimum krævede niveau:
 Minimum Flag niveau
 [Music volume]
 Lydstyrke (musik)
+[Mute]
+
 [mute]
 Slå lyd fra
 [network latency]
 Netværk begrænsning
 [new campaign]
 Ny Kampagne
-[new]
+[new map]
 Ny
 [nick taken]
 Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
@@ -582,6 +590,8 @@ Nej
 Ikke forbundet
 [not ready]
 ikke klar
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 antal spillere er tilgængelig
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Ukontrolleret
 Uniform terraing
 [Unit editor]
 Rediger Enhed
+[unit settings explanation]
+
 [unit settings]
 Enheder
 [Unit type]

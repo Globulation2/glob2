@@ -230,6 +230,10 @@ Mit dem Server verbunden
 Verbinden mit allen Spielern
 [connecting to]
 Verbinden mit
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Weiterspielen
 [Corn]
@@ -298,6 +302,8 @@ Transportiert nichts
 
 [download finished]
 Herunterladen abgeschlossen
+[downloaded %0]
+
 [downloaded at]
 Heruntergeladen zu
 [edit map]
@@ -562,13 +568,15 @@ Mindestlevel:
 
 [Music volume]
 Volumen (Musik)
+[Mute]
+
 [mute]
 mute
 [network latency]
 Netzlatenz
 [new campaign]
 
-[new]
+[new map]
 Neu
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
@@ -582,6 +590,8 @@ Nein
 Nicht verbunden
 [not ready]
 nicht bereit
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 Spieler spielen mit.
 [number of teams: %0]
@@ -992,6 +1002,8 @@ Unkontrolliert
 Einheitliche Landschaft
 [Unit editor]
 Einheiteneditor
+[unit settings explanation]
+
 [unit settings]
 Einheiten
 [Unit type]

@@ -267,10 +267,20 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 :OverlayScreen(globalContainer->gfx, 320, 300)
 {
-	musicVol=new Selector(19, 50, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
-	addWidget(musicVol);
-	Text *musicVolText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
+	Text *audioMuteText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Mute]"), 200);
+	addWidget(audioMuteText);
+
+	mute = new OnOffButton(19, 50, 20, 20, ALIGN_LEFT, ALIGN_TOP, globalContainer->settings.mute, MUTE);
+	addWidget(mute);	
+
+	Text *musicVolText=new Text(10, 80, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
+	
+	musicVol=new Selector(19, 110, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
+	addWidget(musicVol);
+
+	if(globalContainer->settings.mute)
+		musicVol->visible=false;
 
 	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();
@@ -293,6 +303,12 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->mix->setVolume(musicVol->getValue(), globalContainer->settings.mute);
+		globalContainer->mix->setVolume(musicVol->getValue(), mute->getState());
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		globalContainer->settings.mute = mute->getState();
+		musicVol->visible = ! globalContainer->settings.mute;
+		globalContainer->mix->setVolume(musicVol->getValue(), mute->getState());
 	}
 }

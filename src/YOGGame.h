@@ -123,6 +123,7 @@ private:
 	std::vector<shared_ptr<YOGPlayer> > players;
 	YOGGameServer& server;
 	NetGamePlayerManager playerManager;
+	Uint8 aiNum;
 };
 
 

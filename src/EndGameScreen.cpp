@@ -298,23 +298,26 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	
 	// add players name
 	Text *text;
-	int inc = (gui->game.mapHeader.getNumberOfTeams() < 16) ? 20 : 10;
+	int inc = (gui->game.mapHeader.getNumberOfTeams() <= 16) ? 20 : 10;
 
 	// set teams entries for later sort
 	for (int i=0; i<gui->game.mapHeader.getNumberOfTeams(); i++)
 	{
 		Team *t=gui->game.teams[i];
-		int endIndex=t->stats.endOfGameStats.size()-1;
-
-		struct TeamEntry entry;
-		entry.name=t->getFirstPlayerName();
-		entry.teamNum=i;
-		entry.color=t->color;
-		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+		if(t->numberOfPlayer)
 		{
-			entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+			int endIndex=t->stats.endOfGameStats.size()-1;
+
+			struct TeamEntry entry;
+			entry.name=t->getFirstPlayerName();
+			entry.teamNum=i;
+			entry.color=t->color;
+			for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+			{
+				entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+			}
+			teams.push_back(entry);
 		}
-		teams.push_back(entry);	
 	}
 
 	// add widgets
@@ -335,6 +338,11 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
+		if(par1==38)
+			endExecute(par1);
+	}
+	if ((action==BUTTON_PRESSED) || (action==BUTTON_SHORTCUT))
 	{
 		///This is a change in the graph type
 		if (par1<6)
@@ -361,8 +369,6 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 			int n=par1-6;
 			statWidget->setEnabledState(teams[n].teamNum, team_enabled_buttons[n]->getState());
 		}
-		else
-			endExecute(par1);
 	}
 }
 

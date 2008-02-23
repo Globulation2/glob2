@@ -25,13 +25,14 @@ YOGGameInfo::YOGGameInfo()
 	gameID=0;
 	gameState = GameOpen;
 	playersJoined = 0;
+	aiJoined = 0;
 	numberOfTeams = 0;
 }
 
 
 
 YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID)
-	: gameID(gameID), gameName(gameName), gameState(GameOpen)
+	: gameID(gameID), gameName(gameName), gameState(GameOpen), aiJoined(0)
 {
 }
 
@@ -93,6 +94,20 @@ Uint8 YOGGameInfo::getPlayersJoined() const
 
 
 
+void YOGGameInfo::setAIJoined(Uint8 naiJoined)
+{
+	aiJoined = naiJoined;
+}
+	
+
+
+Uint8 YOGGameInfo::getAIJoined() const
+{
+	return aiJoined;
+}
+
+
+
 void YOGGameInfo::setMapName(const std::string& nmapName)
 {
 	mapName = nmapName;
@@ -128,6 +143,7 @@ void YOGGameInfo::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeText(gameName, "gameName");
 	stream->writeUint8(static_cast<Uint8>(gameState), "gameState");
 	stream->writeUint8(playersJoined, "playersJoined");
+	stream->writeUint8(aiJoined, "aiJoined");
 	stream->writeText(mapName, "mapName");
 	stream->writeUint8(numberOfTeams, "numberOfTeams");
 	stream->writeLeaveSection();
@@ -142,6 +158,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	gameName=stream->readText("gameName");
 	gameState=static_cast<GameState>(stream->readUint8("gameState"));
 	playersJoined=stream->readUint8("playersJoined");
+	aiJoined=stream->readUint8("aiJoined");
 	mapName=stream->readText("mapName");
 	numberOfTeams=stream->readUint8("numberOfTeams");
 	stream->readLeaveSection();
@@ -151,7 +168,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	
 bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 {
-	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState && playersJoined == rhs.playersJoined && mapName == rhs.mapName)
+	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState && playersJoined == rhs.playersJoined && aiJoined == rhs.aiJoined && mapName == rhs.mapName)
 	{
 		return true;
 	}
@@ -166,7 +183,7 @@ bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 	
 bool YOGGameInfo::operator!=(const YOGGameInfo& rhs) const
 {
-	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState || playersJoined != rhs.playersJoined || mapName != rhs.mapName)
+	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState || playersJoined != rhs.playersJoined || aiJoined != rhs.aiJoined || mapName != rhs.mapName)
 	{
 		return true;
 	}

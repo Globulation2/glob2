@@ -272,6 +272,10 @@ public:
 	Sint32 posX, posY; // (Uint16)
 	Sint32 posXLocal, posYLocal;
 
+	// Timer counts down 5 frames after last attacked
+	Uint8 underAttackTimer;
+
+
 	// Flag usefull :
 	Sint32 unitStayRange; // (Uint8)
 	Sint32 unitStayRangeLocal;

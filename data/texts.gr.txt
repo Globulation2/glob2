@@ -230,6 +230,10 @@ Checksum εστάλει ...
 Σύνδεση με όλους τους παίκτες
 [connecting to]
 Σύνδεση στο
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Συνέχεια
 [Corn]
@@ -300,6 +304,8 @@ Crater Lakes
 κάτω
 [download finished]
 Το Download ολοκληρώθηκε
+[downloaded %0]
+
 [downloaded at]
 Κατέβηκε στο 
 [edit map]
@@ -564,13 +570,15 @@ Anastasios M. Pingios
 Ελάχιστο Flag Επίπεδο
 [Music volume]
 Ένταση (μουσική)
+[Mute]
+
 [mute]
 σίγαση
 [network latency]
 Καθυστέρηση δικτύου
 [new campaign]
 Νέα Εκστρατεία
-[new]
+[new map]
 Νέα
 [nick taken]
 Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
@@ -584,6 +592,8 @@ Anastasios M. Pingios
 Μη συνδεδεμένος
 [not ready]
 Μη έτοιμος
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 παίκτες είναι παρώντες.
 [number of teams: %0]
@@ -996,6 +1006,8 @@ Tutorial
 Ομαδοποίηση πεδίου
 [Unit editor]
 Επεξεργαστής μονάδας
+[unit settings explanation]
+
 [unit settings]
 Ρυθμίσεις Μονάδας
 [Unit type]

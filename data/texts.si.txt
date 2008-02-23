@@ -230,6 +230,10 @@ Poveži se na server
 Povezujem se z vsemi igralci
 [connecting to]
 Povezujem na
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Nadaljuj z igranjem
 [Corn]
@@ -298,6 +302,8 @@ Ne nosi ničesar
 
 [download finished]
 Nalaganje končano
+[downloaded %0]
+
 [downloaded at]
 naloženo iz
 [edit map]
@@ -562,13 +568,15 @@ Najnižja zahtevana stopnja
 
 [Music volume]
 Glasnost glasbe
+[Mute]
+
 [mute]
 
 [network latency]
 Pretočnost mreže
 [new campaign]
 
-[new]
+[new map]
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
@@ -582,6 +590,8 @@ Ne
 Nisi povezan
 [not ready]
 ni pripravljen
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 players are present.
 [number of teams: %0]
@@ -991,6 +1001,8 @@ Nenadzirane
 [uniform terrain]
 Obleči teren?
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 
