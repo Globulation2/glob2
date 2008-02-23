@@ -750,7 +750,7 @@ bool Game::isHumanAllAllied(void)
 }
 
 void Game::setAIAlliance(void)
-{/*
+{
 	if (isHumanAllAllied())
 	{
 		if (verbose)
@@ -776,7 +776,7 @@ void Game::setAIAlliance(void)
 				teams[i]->enemies = ~teams[i]->allies;
 			}
 	}
-	else*/
+	else
 	{
 		if (verbose)
 			printf("Game : AIs are now in ffa mode\n");
