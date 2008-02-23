@@ -32,7 +32,7 @@ YOGGameInfo::YOGGameInfo()
 
 
 YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID)
-	: gameID(gameID), gameName(gameName), gameState(GameOpen)
+	: gameID(gameID), gameName(gameName), gameState(GameOpen), aiJoined(0)
 {
 }
 
@@ -168,7 +168,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	
 bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 {
-	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState && playersJoined == rhs.playersJoined && mapName == rhs.mapName)
+	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState && playersJoined == rhs.playersJoined && aiJoined == rhs.aiJoined && mapName == rhs.mapName)
 	{
 		return true;
 	}
@@ -183,7 +183,7 @@ bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 	
 bool YOGGameInfo::operator!=(const YOGGameInfo& rhs) const
 {
-	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState || playersJoined != rhs.playersJoined || mapName != rhs.mapName)
+	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState || playersJoined != rhs.playersJoined || aiJoined != rhs.aiJoined || mapName != rhs.mapName)
 	{
 		return true;
 	}
