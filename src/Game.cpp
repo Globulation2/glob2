@@ -768,6 +768,7 @@ void Game::setAIAlliance(void)
 			printf("AI mask : %x\n", aiMask);
 				
 		// ally them together
+		
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			if (teams[i]->type == BaseTeam::T_AI)
 			{
@@ -1273,6 +1274,9 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	assert(team<mapHeader.getNumberOfTeams());
 
 	UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
+
+	x = (x + map.getW()) % map.getW();
+	y = (y + map.getH()) % map.getH();
 
 	bool fly=ut->performance[FLY];
 	bool free;

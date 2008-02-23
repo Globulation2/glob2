@@ -1031,7 +1031,7 @@ public:
 	Uint32 getChunkSize() const;
 private:
 	Uint32 size;
-	Uint8 data[1024];
+	Uint8 data[4096];
 };
 
 
