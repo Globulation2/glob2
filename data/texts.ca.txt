@@ -230,6 +230,10 @@ Conectat al servidor
 Conectant a tots els jugadors
 [connecting to]
 Conectant a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuar jugant
 [Corn]
@@ -993,6 +997,8 @@ No Controlat
 [uniform terrain]
 Terreny uniforme
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

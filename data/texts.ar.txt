@@ -230,6 +230,10 @@ Connected to server
 Connecting to all players
 [connecting to]
 Connecting to
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 تابع اللعب
 [Corn]
@@ -994,6 +998,8 @@ Unassigned
 Uniform terrain
 [Unit editor]
 محرر الوحده
+[unit settings explanation]
+
 [unit settings]
 اعدادت الوحده
 [Unit type]

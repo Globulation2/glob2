@@ -230,6 +230,10 @@ Server připojen
 Připojuji se ke všem hráčům
 [connecting to]
 Připojuji se k
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Pokračovat ve hře
 [Corn]
@@ -993,6 +997,8 @@ Neovládaný
 [uniform terrain]
 Jednotná krajina
 [Unit editor]
+
+[unit settings explanation]
 
 [unit settings]
 

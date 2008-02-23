@@ -95,7 +95,11 @@ private:
 	List* action_list;
 	TextButton* add_shortcut;
 	TextButton* remove_shortcut;
-
+	
+	Text* unitSettingsExplanation;
+	Text* unitSettingsHeading1;
+	Text* unitSettingsHeading2;
+	
 	bool gfxAltered;
 	
 	//! If GL is enabled, hide useless options

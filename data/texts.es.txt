@@ -230,6 +230,10 @@ Conectado al Servidor
 Conectando a Todos los Jugadores
 [connecting to]
 Conectando a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuar jugando
 [Corn]
@@ -994,6 +998,8 @@ Independiente
 Terreno Uniforme
 [Unit editor]
 Editor de unidad
+[unit settings explanation]
+
 [unit settings]
 
 [Unit type]

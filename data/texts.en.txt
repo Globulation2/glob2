@@ -224,6 +224,10 @@ Connected to server
 Connecting to all players
 [connecting to]
 Connecting to
+[constructed buildings]
+Constructed Buildings
+[construction and upgrades]
+Construction and Upgrades
 [Continue playing]
 Continue playing
 [Corn]
@@ -994,6 +998,8 @@ undo
 Uniform terrain
 [Unit editor]
 Unit editor
+[unit settings explanation]
+The default number of units assigned
 [unit settings]
 Unit Settings
 [Unit type]

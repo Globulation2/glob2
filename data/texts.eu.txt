@@ -230,6 +230,10 @@ Zerbitzarira konektatuta
 Jokalari guztietara konektatzen
 [connecting to]
 Hona konektatzen:
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Jolasten jarraitu
 [Corn]
@@ -994,6 +998,8 @@ Kontrolez kanpo
 Lurzoru uniformea
 [Unit editor]
 Unitate editorea
+[unit settings explanation]
+
 [unit settings]
 Unitate ezarpenak
 [Unit type]

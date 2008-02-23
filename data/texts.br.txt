@@ -230,6 +230,10 @@ Conectado ao servidor
 Conectando a todos jogadores
 [connecting to]
 Conectando a
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuar jogando
 [Corn]
@@ -996,6 +1000,8 @@ desfaz
 Terreno uniforme
 [Unit editor]
 Editor de unidades
+[unit settings explanation]
+
 [unit settings]
 Ajustes de unidade
 [Unit type]

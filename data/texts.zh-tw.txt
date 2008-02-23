@@ -230,6 +230,10 @@ AIWarrush
 正連線至所有玩家
 [connecting to]
 連線至
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 繼續遊戲
 [Corn]
@@ -994,6 +998,8 @@ V: 持鍵以傳送訊息
 平整地形
 [Unit editor]
 單位編輯器
+[unit settings explanation]
+
 [unit settings]
 單位設定
 [Unit type]

@@ -230,6 +230,10 @@ Forbundet til server
 Forbinder til alle spillere
 [connecting to]
 Forbinder til
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Fortsæt spillet
 [Corn]
@@ -994,6 +998,8 @@ Ukontrolleret
 Uniform terraing
 [Unit editor]
 Rediger Enhed
+[unit settings explanation]
+
 [unit settings]
 Enheder
 [Unit type]

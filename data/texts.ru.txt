@@ -230,6 +230,10 @@ ok
 Соединение со всеми игроками
 [connecting to]
 Подключение к
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Продолжить игру
 [Corn]
@@ -994,6 +998,8 @@ V: Зажать для речевой связи
 Одинаковый ландшафт
 [Unit editor]
 Редактор юнитов
+[unit settings explanation]
+
 [unit settings]
 
 [Unit type]

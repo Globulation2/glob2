@@ -230,6 +230,10 @@ Sunucuya baglanildi
 Tum oyunculara baglaniliyor
 [connecting to]
 Suraya baglaniyor:
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Oyuna devam et
 [Corn]
@@ -994,6 +998,8 @@ Kontrolsuz
 Tekbicimli saha
 [Unit editor]
 Birim editoru
+[unit settings explanation]
+
 [unit settings]
 
 [Unit type]

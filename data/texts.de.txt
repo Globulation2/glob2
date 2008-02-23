@@ -230,6 +230,10 @@ Mit dem Server verbunden
 Verbinden mit allen Spielern
 [connecting to]
 Verbinden mit
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Weiterspielen
 [Corn]
@@ -994,6 +998,8 @@ Unkontrolliert
 Einheitliche Landschaft
 [Unit editor]
 Einheiteneditor
+[unit settings explanation]
+
 [unit settings]
 Einheiten
 [Unit type]
