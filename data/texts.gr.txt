@@ -570,6 +570,8 @@ Anastasios M. Pingios
 Ελάχιστο Flag Επίπεδο
 [Music volume]
 Ένταση (μουσική)
+[Mute]
+
 [mute]
 σίγαση
 [network latency]

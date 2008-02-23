@@ -282,6 +282,7 @@
 [Min required level:]
 [Minimum Level To Flag]
 [Music volume]
+[Mute]
 [mute]
 [network latency]
 [new campaign]

@@ -568,6 +568,8 @@ Login
 
 [Music volume]
 Громкость (музыки)
+[Mute]
+
 [mute]
 Без звука
 [network latency]

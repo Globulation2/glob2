@@ -105,11 +105,12 @@ public:
 	enum
 	{
 		OK = 0,
+		MUTE = 1,
 	};
 
 public:
 	Selector *musicVol;
-
+	OnOffButton* mute;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	virtual ~InGameOptionScreen() { }

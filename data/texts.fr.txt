@@ -568,6 +568,8 @@ Niveau minimum requis:
 Niveau minimum au drapeau
 [Music volume]
 Volume (musique)
+[Mute]
+
 [mute]
 muet
 [network latency]

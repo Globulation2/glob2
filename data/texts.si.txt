@@ -568,6 +568,8 @@ Najnižja zahtevana stopnja
 
 [Music volume]
 Glasnost glasbe
+[Mute]
+
 [mute]
 
 [network latency]

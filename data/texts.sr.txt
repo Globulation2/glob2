@@ -568,6 +568,8 @@ sr
 
 [Music volume]
 Јачина (музика)
+[Mute]
+
 [mute]
 
 [network latency]

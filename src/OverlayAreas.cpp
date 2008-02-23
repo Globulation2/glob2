@@ -72,6 +72,8 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 					spreadPoint(b->posX, b->posY, power, b->type->shootingRange*2, overlay, overlaymax);
 				}
 			}
+
+
 		}
 	}
 	else if(type == Fertility)
@@ -143,7 +145,7 @@ bool OverlayArea::isFertilityBeingCalculated()
 void OverlayArea::increasePoint(int x, int y, int distance, std::vector<Uint16>& field, Uint16& max)
 {
 	//Update the map
-	for(int n=0; n<8; ++n)
+	for(int n=0; n<distance; ++n)
 	{
 		for(int px=0; px<(n*2+1); ++px)
 		{

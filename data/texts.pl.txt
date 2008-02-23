@@ -568,6 +568,8 @@ Min wymagany poziom:
 
 [Music volume]
 Głośność (muzyka)
+[Mute]
+
 [mute]
 
 [network latency]

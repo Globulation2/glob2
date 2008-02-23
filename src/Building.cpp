@@ -85,6 +85,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	posXLocal=posX;
 	posYLocal=posY;
 
+	underAttackTimer = 0;
+
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
 	unitStayRangeLocal=unitStayRange;
@@ -202,6 +204,9 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	posXLocal = posX;
 	posYLocal = posY;
 
+	if(versionMinor>=61)
+		underAttackTimer = stream->readUint8("underAttackTimer");
+
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
 	unitStayRangeLocal = unitStayRange;
@@ -311,6 +316,8 @@ void Building::save(GAGCore::OutputStream *stream)
 	// position
 	stream->writeSint32(posX, "posX");
 	stream->writeSint32(posY, "posY");
+
+	stream->writeUint8(underAttackTimer, "underAttackTimer");
 
 	// Flag specific
 	stream->writeUint32(unitStayRange, "unitStayRange");
@@ -1284,6 +1291,9 @@ int Building::desiredNumberOfWorkers(void)
 void Building::step(void)
 {
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
+	if(underAttackTimer > 0)
+		underAttackTimer-=1;
+
 	// NOTE : Unit needs to update itself when it is in a building
 }
 

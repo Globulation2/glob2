@@ -568,6 +568,8 @@ Livello min.richiesto:
 Livello minimo per la bandiera
 [Music volume]
 Volume (musica)
+[Mute]
+
 [mute]
 Nessun Audio
 [network latency]

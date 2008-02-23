@@ -568,6 +568,8 @@ Mindestlevel:
 
 [Music volume]
 Volumen (Musik)
+[Mute]
+
 [mute]
 mute
 [network latency]

@@ -568,6 +568,8 @@ Nivell Minim Requerit
 
 [Music volume]
 Volum (música)
+[Mute]
+
 [mute]
 Silenci
 [network latency]

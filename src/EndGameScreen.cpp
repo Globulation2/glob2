@@ -298,7 +298,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	
 	// add players name
 	Text *text;
-	int inc = (gui->game.mapHeader.getNumberOfTeams() < 16) ? 20 : 10;
+	int inc = (gui->game.mapHeader.getNumberOfTeams() <= 16) ? 20 : 10;
 
 	// set teams entries for later sort
 	for (int i=0; i<gui->game.mapHeader.getNumberOfTeams(); i++)
@@ -337,6 +337,11 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 
 void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
+		if(par1==38)
+			endExecute(par1);
+	}
 	if ((action==BUTTON_PRESSED) || (action==BUTTON_SHORTCUT))
 	{
 		///This is a change in the graph type
@@ -364,8 +369,6 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 			int n=par1-6;
 			statWidget->setEnabledState(teams[n].teamNum, team_enabled_buttons[n]->getState());
 		}
-		else
-			endExecute(par1);
 	}
 }
 

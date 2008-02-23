@@ -568,6 +568,8 @@ Minimum krævede niveau:
 Minimum Flag niveau
 [Music volume]
 Lydstyrke (musik)
+[Mute]
+
 [mute]
 Slå lyd fra
 [network latency]

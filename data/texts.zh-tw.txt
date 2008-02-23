@@ -568,6 +568,8 @@ Air dmg.
 旗幟最小等級
 [Music volume]
 音量 (音樂)
+[Mute]
+
 [mute]
 沉默
 [network latency]

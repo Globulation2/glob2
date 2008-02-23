@@ -568,6 +568,8 @@ Nivel minim necesar:
 
 [Music volume]
 Volum  (muzică)
+[Mute]
+
 [mute]
 
 [network latency]

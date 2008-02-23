@@ -570,6 +570,8 @@ Nível mínimo requerido:
 Minimum Flag Level
 [Music volume]
 Volume (música)
+[Mute]
+
 [mute]
 mudo
 [network latency]

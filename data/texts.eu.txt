@@ -568,6 +568,8 @@ Gutxienezko maila:
 Banderaren gutxienezko maila
 [Music volume]
 Bolumena (musika)
+[Mute]
+
 [mute]
 Isilik
 [network latency]

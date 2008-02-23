@@ -568,6 +568,8 @@ Gerekli en dusuk seviye:
 
 [Music volume]
 Ses ayari (muzik)
+[Mute]
+
 [mute]
 sessiz
 [network latency]

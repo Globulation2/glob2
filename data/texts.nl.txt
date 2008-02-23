@@ -568,6 +568,8 @@ Minimaal vereist niveau:
 Minimaal vereist niveau:
 [Music volume]
 Volume (muziek)
+[Mute]
+
 [mute]
 geluid uit
 [network latency]

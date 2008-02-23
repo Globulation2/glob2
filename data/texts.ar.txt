@@ -568,6 +568,8 @@ medium
 Minimum Flag Level
 [Music volume]
 صوت (الموسيقى)
+[Mute]
+
 [mute]
 كتم الصوت
 [network latency]

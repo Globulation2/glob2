@@ -568,6 +568,8 @@ Minimális szükséges szint:
 
 [Music volume]
 Hangerősség (zene)
+[Mute]
+
 [mute]
 
 [network latency]

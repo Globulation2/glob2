@@ -568,6 +568,8 @@ Najnižšia potrebná úroveň:
 
 [Music volume]
 Hlasitosť (hudba)
+[Mute]
+
 [mute]
 Stlmiť
 [network latency]

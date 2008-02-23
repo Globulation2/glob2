@@ -568,6 +568,8 @@ Min. úroveň bojovníků:
 
 [Music volume]
 Hlasitost (hudba)
+[Mute]
+
 [mute]
 
 [network latency]

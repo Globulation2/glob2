@@ -566,6 +566,8 @@ Minimum required level:
 Minimum Flag Level
 [Music volume]
 Volume (music)
+[Mute]
+Mute
 [mute]
 mute
 [network latency]

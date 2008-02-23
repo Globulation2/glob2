@@ -568,6 +568,8 @@ Lägsta tillåtna nivå:
 Lägsta flaggnivå
 [Music volume]
 Volym (musik)
+[Mute]
+
 [mute]
 tyst
 [network latency]
