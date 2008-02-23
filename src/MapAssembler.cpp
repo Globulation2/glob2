@@ -98,12 +98,13 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 		{
 			mode=NoTransfer;
 			//Write from the buffer, obackend, to the file
-			BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+"2.gz"));
-			fstream->write(obackend->getBuffer(), obackend->getPosition(), "file");
-			//unzip file
-			Toolkit::getFileManager()->gunzip(filename+"2.gz", filename+"2");
+			BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz"));
+			ostream->seekFromEnd(0);
+			fstream->write(obackend->getBuffer(), ostream->getPosition(), "");
 			delete fstream;
 			ostream.reset();
+			//unzip file
+			Toolkit::getFileManager()->gunzip(filename+".gz", filename);
 		}
 	}
 }

@@ -26,6 +26,7 @@ namespace GAGGUI
 {
 	class OnOffButton;
 	class Selector;
+	class Text;
 }
 class GameGUI;
 
@@ -111,6 +112,7 @@ public:
 public:
 	Selector *musicVol;
 	OnOffButton* mute;
+	Text *musicVolText;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	virtual ~InGameOptionScreen() { }

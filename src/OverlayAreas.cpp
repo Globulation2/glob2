@@ -31,6 +31,12 @@ OverlayArea::OverlayArea()
 }
 
 
+OverlayArea::~OverlayArea()
+{
+
+}
+
+
 void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 {
 	type = ntype;
