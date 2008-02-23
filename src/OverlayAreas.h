@@ -42,6 +42,8 @@ public:
 	///Construct the overlay area
 	OverlayArea();
 	
+	~OverlayArea();
+	
 	///Compute the overlay area
 	void compute(Game& game, OverlayType type, int localteam);
 
