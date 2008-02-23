@@ -100,11 +100,11 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 			//Write from the buffer, obackend, to the file
 			BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz"));
 			ostream->seekFromEnd(0);
-			fstream->write(obackend->getBuffer(), ostream->getPosition(), "file");
-			//unzip file
-			Toolkit::getFileManager()->gunzip(filename+".gz", filename);
+			fstream->write(obackend->getBuffer(), ostream->getPosition(), "");
 			delete fstream;
 			ostream.reset();
+			//unzip file
+			Toolkit::getFileManager()->gunzip(filename+".gz", filename);
 		}
 	}
 }

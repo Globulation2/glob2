@@ -95,7 +95,8 @@ bool IRC::disconnect(void)
 
 void IRC::forceDisconnect(void)
 {
-	sendString("QUIT :Globulation2");
+	//TODO: fix me
+	//sendString("QUIT :Globulation2");
 
 	if (socket)
 	{
