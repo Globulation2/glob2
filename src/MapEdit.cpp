@@ -1357,13 +1357,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(mouseX, mouseY, (terrainType>TerrainSelector::Water ? 0 : 1), viewportX, viewportY);
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
@@ -1380,10 +1380,10 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		}
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 		}
 		if(selectionMode==ChangeNoRessourceGrowthAreas)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 	}
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());

@@ -61,16 +61,16 @@ void BrushTool::handleClick(int x, int y)
 		}
 }
 
-void BrushTool::drawBrush(int x, int y, bool onlines)
+void BrushTool::drawBrush(int x, int y, int viewportX, int viewportY, bool onlines)
 {
-/* We use 2/3 intensity to indicate removing areas.  This was
-	formerly 78% intensity, which was bright enough that it was hard
-	to notice any difference, so the brightness has been lowered. */
-int i = ((mode == MODE_ADD) ? 255 : 170);
-drawBrush(x, y, Color(i,i,i), onlines);
+	/* We use 2/3 intensity to indicate removing areas.  This was
+		formerly 78% intensity, which was bright enough that it was hard
+		to notice any difference, so the brightness has been lowered. */
+	int i = ((mode == MODE_ADD) ? 255 : 170);
+	drawBrush(x, y, Color(i,i,i), viewportX, viewportY, onlines);
 }
 
-void BrushTool::drawBrush(int x, int y, GAGCore::Color c, bool onlines)
+void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, bool onlines)
 {
 	/* It violates good abstraction practices that Brush.cpp knows
 		this much about the visual layout of the GUI. */
@@ -89,7 +89,7 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, bool onlines)
 		for (int cy = 0; cy < h; cy++)
 		{
 			// TODO: the brush is wrong, but without lookuping viewport in game gui, there is no way to know this
-			if (getBrushValue(figure, cx, cy, 0, 0))
+			if (getBrushValue(figure, cx, cy, viewportX + (x / cell_size), viewportY + (y / cell_size)))
 			{
 				globalContainer->gfx->drawRect(x + (cell_size * cx) + inset, y + (cell_size * cy) + inset, cell_size - inset, cell_size - inset, c);
 			}

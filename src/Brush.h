@@ -59,8 +59,8 @@ public:
 	void defaultSelection(void) { mode = MODE_ADD; }
 
 	//! Draw the actual brush (not the brush tool)
-	void drawBrush(int x, int y, bool onlines=false);
-	void drawBrush(int x, int y, GAGCore::Color c, bool onlines=false);
+	void drawBrush(int x, int y, int viewportX, int viewportY, bool onlines=false);
+	void drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, bool onlines=false);
 	//! Return the mode of the brush
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
 	//! Set the mode of the brush
