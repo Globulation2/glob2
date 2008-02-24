@@ -101,7 +101,6 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		int batX = (((mapX-viewportX)&(game.map.wMask)) * 32);
 		int batY = (((mapY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
 		
-			
 		// Draw the building
 		sprite->setBaseColor(game.teams[localteam]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
@@ -211,7 +210,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				c = Color(167,137,0);
 			}
 		}
-		brush.drawBrush(mouseX, mouseY, c);
+		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY);
 	}
 }
 
