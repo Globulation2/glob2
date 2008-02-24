@@ -1,311 +1,12 @@
+#include "parser.h"
+#include "types.h"
 #include "debug.h"
-#include "lexer.h"
-#include "tree.h"
 #include "code.h"
-#include "memory.h"
 #include "interpreter.h"
-#include <cassert>
-#include <memory>
-#include <vector>
-#include <string>
 #include <iostream>
 #include <fstream>
-#include <iterator>
-#include <algorithm>
-#include <functional>
-#include <ext/functional>
-#include <utility>
-#include <stack>
 
 using namespace std;
-
-struct Parser: Lexer
-{
-	Parser(const char* src, Heap* heap):
-		Lexer(src),
-		heap(heap)
-	{}
-	
-	BlockNode* parse()
-	{
-		return statements(Position());
-	}
-	
-	BlockNode* statements(const Position& position)
-	{
-		newlines();
-		auto_ptr<BlockNode> block(new BlockNode(position));
-		
-		while (true)
-		{
-			switch (tokenType())
-			{
-			case END:
-			case RBRACE:
-				return block.release();
-			default:
-				block->statements.push_back(statement());
-				newlines();
-			}
-		}
-	}
-	
-	Node* statement()
-	{
-		switch (tokenType())
-		{
-		case VAL:
-			{
-				Position position = token.position;
-				next();
-				string name = identifier();
-				accept(ASSIGN);
-				newlines();
-				return new ValNode(position, name, expression());
-			}
-		case DEF:
-			{
-				Position position = token.position;
-				next();
-				string name = identifier();
-				ExpressionNode* body;
-				switch (tokenType())
-				{
-				case LPAR:
-					{
-						Position position = token.position;
-						auto_ptr<PatternNode> arg(pattern());
-						accept(ASSIGN);
-						newlines();
-						body = expression();
-						body = new FunNode(position, arg.release(), body);
-					}
-					break;
-				case ASSIGN:
-					next();
-					newlines();
-					body = expression();
-					break;
-				default:
-					assert(false);
-				}
-				return new DefNode(position, name, body);
-			}
-		default:
-			return expression();
-		}
-	}
-	
-	PatternNode* pattern()
-	{
-		Position position = token.position;
-		switch (tokenType())
-		{
-		case LPAR:
-			next();
-			if (tokenType() == RPAR)
-			{
-				return new NilPatternNode(position);
-			}
-			else
-			{
-				auto_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
-				tuple->members.push_back(pattern());
-				while (tokenType() == COMMA)
-				{
-					next();
-					tuple->members.push_back(pattern());
-				}
-				accept(RPAR);
-				if (tuple->members.size() > 1)
-					return tuple.release();
-				else
-				{
-					PatternNode* pattern = tuple->members.back();
-					tuple->members.pop_back();
-					return pattern;
-				}
-			}
-		case ID:
-			{
-				string name = identifier();
-				return new ValPatternNode(position, name);
-			}
-		case DEF:
-			{
-				next();
-				string name = identifier();
-				return new DefPatternNode(position, name);
-			}
-		case WILDCARD:
-			next();
-			return new IgnorePatternNode(position);
-		default:
-			assert(false);
-		}
-	}
-	
-	ExpressionNode* expression()
-	{
-		auto_ptr<ExpressionNode> node(simple());
-		while (true)
-		{
-			switch (tokenType())
-			{
-			case ID:
-				{
-					Position position = token.position;
-					node.reset(selectAndApply(position, node, identifier()));
-				}
-				break;
-			case LPAR:
-			case LBRACE:
-			case DOT:
-				{
-					Position position = token.position;
-					node.reset(selectAndApply(position, node, "apply"));
-				}
-				break;
-			default:
-				return node.release();
-			}
-		}
-	}
-	
-	ApplyNode* selectAndApply(const Position& position, auto_ptr<ExpressionNode> receiver, const string& method)
-	{
-		ExpressionNode* argument = simple();
-		return new ApplyNode(position, new SelectNode(position, receiver.release(), method), argument);
-	}
-	
-	ExpressionNode* expressions()
-	{
-		Position position = token.position;
-		next();
-		newlines();
-		auto_ptr<ArrayNode> tuple(new ArrayNode(position));
-		while (true)
-		{
-			switch (tokenType())
-			{
-			case ID:
-			case NUM:
-			case LPAR:
-			case LBRACE:
-			case DOT:
-				tuple->elements.push_back(expression());
-				newlines();
-				break;
-			
-			case COMMA:
-				next();
-				newlines();
-				break;
-			
-			case RPAR:
-				{
-					Position position = token.position;
-					next();
-					switch (tuple->elements.size())
-					{
-					case 0:
-						return new ConstNode(position, &nil);
-					case 1:
-						{
-							ExpressionNode* element = tuple->elements[0];
-							tuple->elements.clear();
-							return element;
-						}
-					default:
-						return tuple.release();
-					}
-				}
-			default:
-				assert(false);
-			}
-		}
-	}
-	
-	ExpressionNode* simple()
-	{
-		switch (tokenType())
-		{
-		case ID:
-			{
-				return new DefLookupNode(token.position, identifier());
-			}
-		case NUM:
-			{
-				Position position = token.position;
-				string str = token.string();
-				next();
-				int value = atoi(str.c_str());
-				return new ConstNode(position, new Integer(heap, value));
-			}
-		case LPAR:
-			{
-				return expressions();
-			}
-		case LBRACE:
-			{
-				Position position = token.position;
-				next();
-				auto_ptr<ExpressionNode> block(statements(position));
-				accept(RBRACE);
-				return block.release();
-			}
-		case DOT:
-			{
-				Position position = token.position;
-				next();
-				return new ConstNode(position, &nil);
-			}
-		default:
-			assert(false);
-		}
-	}
-	
-	void newlines()
-	{
-		while (tokenType() == NL)
-		{
-			next();
-		}
-	}
-	
-	string identifier()
-	{
-		if (tokenType() == ID)
-		{
-			string id = token.string();
-			next();
-			return id;
-		}
-		else
-		{
-			cout << token.position.line << ":" << token.position.column << ": ";
-			cout << "expecting " << getType(ID)->desc << ", found " << token.type->desc << "\n";
-			assert(false);
-		}
-	}
-	
-	void accept(TokenType type)
-	{
-		if (tokenType() == type)
-		{
-			next();
-		}
-		else
-		{
-			cout << token.position.line << ":" << token.position.column << ": ";
-			cout << "expecting " << getType(type)->desc << ", found " << token.type->desc << "\n";
-			assert(false);
-		}
-	}
-	
-	Heap* heap;
-};
-
 
 void dumpCode(ScopePrototype* scope, FileDebugInfo* debug, ostream& stream)
 {
@@ -329,7 +30,6 @@ void dumpCode(Heap* heap, FileDebugInfo* debug, ostream& stream)
 			dumpCode(scope, debug, stream);
 	}
 }
-
 
 int main(int argc, char** argv)
 {
@@ -367,7 +67,19 @@ int main(int argc, char** argv)
 	ProgramDebugInfo debug;
 	
 	Parser parser(source.c_str(), &heap);
-	Node* node = parser.parse();
+	Node* node;
+	try
+	{
+		node = parser.parse();
+	}
+	catch(Parser::Exception& e)
+	{
+		cout << "Parser error @" << e.token.position.line << ":" << e.token.position.column << ":" << endl;
+		cout << "Found: " << e.token.type->desc << endl;
+		cout << "Expected: " << e.what() << endl;
+		return -1;
+	}
+
 	node->dump(cout);
 	node->generate(root, debug.get(file), &heap);
 	delete node;

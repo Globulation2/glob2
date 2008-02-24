@@ -11,8 +11,10 @@ struct Token::Type::Regexp
 
 Token::Type::Regexp::Regexp(const char* pattern, int cflags)
 {
+#ifdef NDEBUG
+	regcomp(&regex, pattern, cflags);
+#else
 	int result = regcomp(&regex, pattern, cflags);
-#ifndef NDEBUG
 	if (result != 0)
 	{
 		size_t length = regerror(result, &regex, 0, 0);
