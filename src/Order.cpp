@@ -598,13 +598,13 @@ OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc)
+OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
 {
 	assert(acc);
 	_data = NULL;
 	
 	BrushAccumulator::AreaDimensions dim;
-	acc->getBitmap(&mask, &dim);
+	acc->getBitmap(&mask, &dim, map);
 	this->teamNumber = teamNumber;
 	this->type = type;
 	centerX = dim.centerX;

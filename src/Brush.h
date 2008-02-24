@@ -74,12 +74,16 @@ public:
 	static int getBrushWidth(unsigned figure);
 	//! Return the full height of a brush
 	static int getBrushHeight(unsigned figure);
-	//! Return the half width minus 1 of a brush (its "ray" in x)
-	static int getBrushDimX(unsigned figure);
-	//! Return the half height minus 1 of a brush (its "ray" in y)
-	static int getBrushDimY(unsigned figure);
-	//! Return the value of a pixel of a given brush
-	static bool getBrushValue(unsigned figure, int x, int y);
+	//! Return the left extend of the brush (not counting its center cell)
+	static int getBrushDimXMinus(unsigned figure);
+	//! Return the right extend of the brush (not counting its center cell)
+	static int getBrushDimXPlus(unsigned figure);
+	//! Return the bottom extend of the brush (not counting its center cell)
+	static int getBrushDimYMinus(unsigned figure);
+	//! Return the top extend of the brush (not counting its center cell)
+	static int getBrushDimYPlus(unsigned figure);
+	//! Return the value of a pixel of a given brush, also pass the x and y coordinates for alignment
+	static bool getBrushValue(unsigned figure, int x, int y, int centerX, int centerY);
 };
 
 namespace Utilities
@@ -102,8 +106,6 @@ public:
 		AreaDimensions() { minX = minY = maxX = maxY = centerX = centerY = 0; }
 	};
 	
-	// FIXME : handle wrap !!!!!!!!!!
-	
 protected:
 	//! The list of brush applications
 	std::vector<BrushApplication> applications;
@@ -112,11 +114,11 @@ protected:
 	
 public:
 	//! Apply this brush to the brush application vector and extend dim as required
-	void applyBrush(const Map *map, const BrushApplication &brush);
+	void applyBrush(const BrushApplication &brush, const Map* map);
 	//! Clear the vector of brush applications
 	void clear(void) { applications.clear(); }
 	//! Return a bitmap which is the result of the fusion of all accumulated brush applications
-	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim);
+	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim, const Map *map);
 	//! Return the area surface
 	unsigned getAreaSurface(void);
 	//! Return the number of brush applied
