@@ -3562,20 +3562,20 @@ void AddArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(echo.player->map, BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0));
+		acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
 	}
 	if(acc.getApplicationCount()>0)
 	{
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 		}
 	}
@@ -3650,20 +3650,20 @@ void RemoveArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(echo.player->map, BrushApplication(i->x, i->y, 0));
+		acc.applyBrush(BrushApplication(i->x, i->y, 0), echo.player->map);
 	}
 	if(acc.getApplicationCount()>0)
 	{
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 		}
 	}
