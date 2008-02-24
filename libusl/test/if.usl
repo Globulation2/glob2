@@ -1,32 +1,29 @@
-val true = {
-	def select (ifTrue, _) = ifTrue
-	def not = false
-	def and (that) = that
-	def or (_) = this
-	def xor (that) = that select (false, true)
-	this
-}
+true := (
+	select := fun (ifTrue, _) => ifTrue
+	not := false
+	and := fun that => that
+	or  := fun _ => true
+	xor := fun that => that select (false, true)
+)
 
-val false = {
-	def select (_, ifFalse) = ifFalse
-	def not = true
-	def and (_) = this
-	def or (that) = that
-	def xor (that) = that select (true, false)
-	this
-}
+false := (
+	select := fun (_, ifFalse) => ifFalse
+	not := true
+	and := fun _ => false
+	or  := fun that => that
+	xor := fun that => that select (true, false)
+)
 
-def iff(cond) = {
-	def apply (def ifTrue) = cond select (ifTrue, ())
-	this
-}
-
-def if(cond) = {
-	def apply (def ifTrue) = {
-		def else (def ifFalse) = cond select (ifTrue, ifFalse)
+if := fun cond => {
+	ifTrue := fun trueVal => {
+		else := fun _ => trueVal
 		this
 	}
-	this
+	ifFalse := fun _ => {
+		else := fun falseVal => falseVal
+		this
+	}
+	cond select (ifTrue, ifFalse)
 }
 
-if (false) { iff (true) { 1 } } else ( 2 )
+if (true) { 1 } else { 2 }

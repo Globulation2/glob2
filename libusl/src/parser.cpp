@@ -1,0 +1,309 @@
+#include "parser.h"
+#include "types.h"
+#include <stdexcept>
+
+using namespace std;
+
+BlockNode* Parser::parse()
+{
+	auto_ptr<ExecutionBlock> block(new ExecutionBlock(Position()));
+	statements(block.get());
+	return block.release();
+}
+
+void Parser::statements(BlockNode* block)
+{
+	newlines();
+	while (true)
+	{
+		switch (tokenType())
+		{
+		case END:
+		case RBRACE:
+		case RPAR:
+			return;
+		case COMMA:
+			next();
+			break;
+		default:
+			block->elements.push_back(statement());
+			newlines();
+		}
+	}
+}
+
+Node* Parser::statement()
+{
+	Position position = token.position;
+	switch (tokenType())
+	{
+	case VAL:
+		return declaration(DecNode::VAL);
+	case DEF:
+		return declaration(DecNode::DEF);
+	case ID:
+		{
+			string name = identifier();
+			switch (tokenType())
+			{
+			case COLON:
+			case COLONEQ:
+				return declaration(position, DecNode::AUTO, name);
+			default:
+				return expression(position, name);
+			}
+		}
+	default:
+		return expression();
+	}
+}
+
+DecNode* Parser::declaration(DecNode::Type type) {
+	next();
+	return declaration(token.position, type, identifier());
+}
+
+DecNode* Parser::declaration(const Position& position, DecNode::Type type, const std::string& name) {
+	switch (tokenType()) {
+	case COLON:
+		next();
+		// TODO: type
+		accept(EQUALS);
+		break;
+	case COLONEQ:
+		next();
+		break;
+	default:
+		throw Exception(token, "Expecting " + getType(COLON)->desc);
+	}
+	newlines();
+	return new DecNode(position, type, name, expression());
+}
+
+PatternNode* Parser::pattern()
+{
+	Position position = token.position;
+	switch (tokenType())
+	{
+	case LPAR:
+		next();
+		if (tokenType() == RPAR)
+		{
+			return new NilPatternNode(position);
+		}
+		else
+		{
+			auto_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
+			tuple->members.push_back(pattern());
+			while (tokenType() == COMMA)
+			{
+				next();
+				tuple->members.push_back(pattern());
+			}
+			accept(RPAR);
+			if (tuple->members.size() > 1)
+				return tuple.release();
+			else
+			{
+				PatternNode* pattern = tuple->members.back();
+				tuple->members.pop_back();
+				return pattern;
+			}
+		}
+	case ID:
+		{
+			string name = identifier();
+			return new ValPatternNode(position, name);
+		}
+	case DEF:
+		{
+			next();
+			string name = identifier();
+			return new DefPatternNode(position, name);
+		}
+	case WILDCARD:
+		next();
+		return new IgnorePatternNode(position);
+	default:
+		throw Exception(token, "Expecting a pattern");
+	}
+}
+
+Node* Parser::expression()
+{
+	return expression(simple());
+}
+
+Node* Parser::expression(const Position& position, const string& id)
+{
+	return expression(new DefLookupNode(position, id));
+}
+
+Node* Parser::expression(Node* first)
+{
+	auto_ptr<Node> node(first);
+	while (true)
+	{
+		switch (tokenType())
+		{
+		case ID:
+			node.reset(selectAndApply(token.position, node, identifier()));
+			break;
+		case LPAR:
+		case LBRACE:
+		case DOT:
+			node.reset(selectAndApply(token.position, node, "apply"));
+			break;
+		default:
+			return node.release();
+		}
+	}
+}
+
+ApplyNode* Parser::selectAndApply(const Position& position, auto_ptr<Node> receiver, const string& method)
+{
+	Node* argument = simple();
+	return new ApplyNode(position, new SelectNode(position, receiver.release(), method), argument);
+}
+/*
+Node* Parser::expressions()
+{
+	Position position = token.position;
+	next();
+	newlines();
+	auto_ptr<ArrayNode> tuple(new ArrayNode(position));
+	while (true)
+	{
+		switch (tokenType())
+		{
+		case ID:
+		case NUM:
+		case LPAR:
+		case LBRACE:
+		case DOT:
+			tuple->elements.push_back(expression());
+			newlines();
+			break;
+		
+		case COMMA:
+			next();
+			newlines();
+			break;
+		
+		case RPAR:
+			{
+				Position position = token.position;
+				next();
+				switch (tuple->elements.size())
+				{
+				case 0:
+					return new ConstNode(position, &nil);
+				case 1:
+					{
+						Node* element = tuple->elements[0];
+						tuple->elements.clear();
+						return element;
+					}
+				default:
+					return tuple.release();
+				}
+			}
+		default:
+			throw Exception(token, "Expecting " + getType(COMMA)->desc + ", " + getType(RPAR)->desc + " or an expression");
+		}
+	}
+}
+*/
+Node* Parser::simple()
+{
+	Position position = token.position;
+	switch (tokenType())
+	{
+	case ID:
+		{
+			return new DefLookupNode(position, identifier());
+		}
+	case NUM:
+		{
+			string str = token.string();
+			next();
+			int value = atoi(str.c_str());
+			return new ConstNode(position, new Integer(heap, value));
+		}
+	case LPAR:
+		{
+			next();
+			auto_ptr<RecordBlock> block(new RecordBlock(position));
+			statements(block.get());
+			accept(RPAR);
+			RecordBlock* record = block.get();
+			switch(record->elements.size()) {
+			case 0:
+				return new ConstNode(position, &nil);
+			case 1:
+				{
+					Node* element = dynamic_cast<Node*>(record->elements.front());
+					if (element != 0)
+					{
+						record->elements.clear();
+						return element;
+					}
+				}
+			}
+			return block.release();
+		}
+	case LBRACE:
+		{
+			next();
+			auto_ptr<ExecutionBlock> block(new ExecutionBlock(position));
+			statements(block.get());
+			accept(RBRACE);
+			return block.release();
+		}
+	case FUN:
+		{
+			next();
+			auto_ptr<PatternNode> arg(pattern());
+			accept(ARROW);
+			Node* body = expression();
+			return new FunNode(position, arg.release(), body);
+		}
+	default:
+		throw Exception(token, "Expecting an expression");
+	}
+}
+
+void Parser::newlines()
+{
+	while (tokenType() == NL)
+	{
+		next();
+	}
+}
+
+string Parser::identifier()
+{
+	if (tokenType() == ID)
+	{
+		string id = token.string();
+		next();
+		return id;
+	}
+	else
+	{
+		throw Exception(token, "Expecting " + getType(ID)->desc);
+	}
+}
+
+void Parser::accept(TokenType type)
+{
+	if (tokenType() == type)
+	{
+		next();
+	}
+	else
+	{
+		throw Exception(token, "Expecting " + getType(type)->desc);
+	}
+}
+

@@ -1,5 +1,6 @@
 #include "code.h"
 #include "interpreter.h"
+#include "tree.h"
 
 ScopePrototype* thisMember(Prototype* outer)
 {
@@ -9,7 +10,34 @@ ScopePrototype* thisMember(Prototype* outer)
 	thunk->body.push_back(new ReturnCode());
 	return thunk;
 }
+/*
+struct ScopeGet: NativeMethod
+{
+	ScopeGet(Prototype* outer):
+		NativeMethod(outer, "Scope::get", new ValPatternNode(Position(), "index"))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Scope* scope = dynamic_cast<Scope*>(receiver);
+		Integer* index = dynamic_cast<Integer*>(argument);
+		
+		assert(scope);
+		assert(index);
+		
+		assert(index->value >= 0);
+		assert(size_t(index->value) < scope->locals.size());
+		// TODO get a thunk
+		
+		return scope->locals[index->value];
+	}
+};
 
+ScopePrototype* getMember(Prototype* outer)
+{
+	return nativeMethodMember(new ScopeGet(outer));
+}
+*/
 ScopePrototype* nativeMethodMember(Method* method)
 {
 	ScopePrototype* thunk = new ScopePrototype(0, method->outer); // TODO: GC
@@ -76,12 +104,12 @@ void EvalCode::execute(Thread* thread)
 	
 	// get the function
 	Thunk* thunk = dynamic_cast<Thunk*>(stack.back());
-	stack.pop_back();
-	
 	assert(thunk != 0);
+	stack.pop_back();
 	
 	// create a new scope
 	Scope* scope = new Scope(thread->heap, thunk->method, thunk->receiver);
+	scope->locals.resize(thunk->method->locals.size());
 	
 	// push a new frame
 	frames.push_back(scope);
@@ -109,9 +137,6 @@ void SelectCode::execute(Thread* thread)
 	
 	// put the thunk on the stack
 	stack.push_back(thunk);
-	
-	// evaluate the thunk
-	EvalCode::execute(thread);
 }
 
 void SelectCode::dumpSpecific(std::ostream &stream) const
@@ -137,15 +162,25 @@ void ApplyCode::execute(Thread* thread)
 }
 
 
+ValCode::ValCode(size_t index):
+	index(index)
+{}
+
 void ValCode::execute(Thread* thread)
 {
 	assert(thread->frames.size() > 0);
 	assert(thread->frames.back().stack.size() > 0);
+	assert(thread->frames.back().scope->locals.size() > index);
 	
 	Thread::Frame& frame = thread->frames.back();
 	Thread::Frame::Stack& stack = frame.stack;
-	frame.scope->locals.push_back(stack.back());
+	frame.scope->locals[index] = stack.back();
 	stack.pop_back();
+}
+
+void ValCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " " << index;
 }
 
 
@@ -188,26 +223,6 @@ void ReturnCode::execute(Thread* thread)
 	Value* value = thread->frames.back().stack.back();
 	thread->frames.pop_back();
 	thread->frames.back().stack.push_back(value);
-}
-
-
-ArrayCode::ArrayCode(size_t size):
-	size(size)
-{}
-
-void ArrayCode::execute(Thread* thread)
-{
-	Array* array = new Array(thread->heap);
-	Thread::Frame::Stack &stack = thread->frames.back().stack;
-	Thread::Frame::Stack::const_iterator stackEnd = stack.end();
-	std::copy(stackEnd - size, stackEnd, std::back_inserter(array->values));
-	stack.resize(stack.size() - size);
-	stack.push_back(array);
-}
-
-void ArrayCode::dumpSpecific(std::ostream &stream) const
-{
-	stream << " " << size;
 }
 
 

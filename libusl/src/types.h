@@ -95,10 +95,8 @@ struct ScopePrototype: Prototype
 	Locals locals;
 	Body body;
 	
-	ScopePrototype(Heap* heap, Prototype* outer):
-		Prototype(heap),
-		outer(outer)
-	{}
+	ScopePrototype(Heap* heap, Prototype* outer);
+	virtual ~ScopePrototype();
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
@@ -127,8 +125,6 @@ struct Scope: Value
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
-		using namespace std;
-		using namespace __gnu_cxx;
 		for(Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
 		{
 			const Value* local = *it;
@@ -157,8 +153,8 @@ struct Method: ScopePrototype
 
 struct NativeMethod: Method
 {
-	NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument);
 	std::string name;
+	NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument);
 	virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
 };
 
@@ -212,35 +208,6 @@ struct Integer: Value
 	{}
 	
 	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
-};
-
-
-struct Array: Value
-{
-	struct ArrayPrototype: Prototype
-	{
-		ArrayPrototype();
-	};
-	static ArrayPrototype arrayPrototype;
-	
-	typedef std::vector<Value*> Values;
-	
-	Values values;
-	
-	Array(Heap* heap):
-		Value(heap, &arrayPrototype)
-	{ }
-	
-	virtual void dumpSpecific(std::ostream& stream) const
-	{
-		stream << values.size() << " values";
-	}
-	
-	virtual void propagateMarkForGC()
-	{
-		using namespace std;
-		for_each(values.begin(), values.end(), mem_fun(&Value::markForGC));
-	}
 };
 
 #endif // ndef TYPES_H
