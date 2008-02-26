@@ -25,6 +25,7 @@ YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolic
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
 {
 	nl.startListening(YOG_SERVER_PORT);
+	new_connection.reset(new NetConnection);
 }
 
 
@@ -39,12 +40,11 @@ bool YOGGameServer::isListening()
 void YOGGameServer::update()
 {
 	//First attempt connections with new players
-	shared_ptr<NetConnection> nc(new NetConnection);
-	while(nl.attemptConnection(*nc))
+	while(nl.attemptConnection(*new_connection))
 	{
 		Uint16 id = chooseNewPlayerID();
-		players[id]=shared_ptr<YOGPlayer>(new YOGPlayer(nc, id, *this));
-		nc.reset(new NetConnection);
+		players[id]=shared_ptr<YOGPlayer>(new YOGPlayer(new_connection, id, *this));
+		new_connection.reset(new NetConnection);
 	}
 
 	//Call update to all of the players

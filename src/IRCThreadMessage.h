@@ -46,7 +46,7 @@ public:
 	///Returns a formatted version of the event
 	virtual std::string format() const = 0;
 	
-	///Compares two MultiplayerGameEvent
+	///Compares two IRCThreadMessageType
 	virtual bool operator==(const IRCThreadMessage& rhs) const = 0;
 };
 

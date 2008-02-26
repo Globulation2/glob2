@@ -16,42 +16,54 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef IRCThread_h
-#define IRCThread_h
+#ifndef NetConnectionThread_h
+#define NetConnectionThread_h
 
-#include "IRCThreadMessage.h"
-#include "IRC.h"
+#include "NetConnectionThreadMessage.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <queue>
 
 ///IRC thread manages IRC
-class IRCThread
+class NetConnectionThread
 {
 public:
-	IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
+	NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
 	
-	///Runs the IRC thread
+	~NetConnectionThread();
+	
+	///Runs the net thread
 	void operator()();
 
-	///Sends this IRC thread a message
-	void sendMessage(boost::shared_ptr<IRCThreadMessage> message);
+	///Sends this net thread a message
+	void sendMessage(boost::shared_ptr<NetConnectionThreadMessage> message);
 
 	///This returns whether the thread has exited
 	bool hasThreadExited();
-private:
-	///Sends this IRC message back to the main thread
-	void sendToMainThread(boost::shared_ptr<IRCThreadMessage> message);
 
-	IRC irc;
-	std::string channel;
+	///Returns true if this object is connected
+	bool isConnected();
+private:
+
+	///Closes the connection
+	void closeConnection();
+
+	///Sends this net message back to the main thread
+	void sendToMainThread(boost::shared_ptr<NetConnectionThreadMessage> message);
+	IPaddress address;
+	TCPsocket socket;
+	SDLNet_SocketSet set;
+	bool connected;
 	
-	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
-	std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing;
+	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
+	std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing;
 	boost::recursive_mutex incomingMutex;
 	boost::recursive_mutex& outgoingMutex;
 	bool hasExited;
+	//static Uint32 lastTime;
+	//static Uint32 amount;
 };
+
 
 #endif

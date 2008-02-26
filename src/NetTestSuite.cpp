@@ -486,6 +486,8 @@ int NetTestSuite::testListenerConnection()
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
 	nc_client.openConnection("127.0.0.1", YOG_SERVER_PORT+1);
+	//Give it time to proccess the request
+	SDL_Delay(40);
 	//The server connection
 	NetConnection nc_server;
 	
@@ -508,6 +510,9 @@ int NetTestSuite::testListenerConnection()
 	//Attempts to transmit a NetSendOrder over the connection
 	shared_ptr<NetLoginSuccessful> netSendLogin1(new NetLoginSuccessful);
 	nc_client.sendMessage(netSendLogin1);
+	//Allow time for the request to be proccessed
+	SDL_Delay(40);
+	
 	//Recieves the message on the other end
 	shared_ptr<NetMessage> netSendLogin2 = nc_server.getMessage();
 	if(!netSendLogin2)

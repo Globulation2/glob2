@@ -66,8 +66,17 @@ bool YOGClient::isConnected()
 
 
 
+bool YOGClient::isConnecting()
+{
+	return nc.isConnecting();
+}
+
+
+
 void YOGClient::update()
 {
+	nc.update();
+
 	if(server)
 		server->update();
 

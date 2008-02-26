@@ -55,6 +55,9 @@ public:
 	///Returns whether the client is still connected
 	bool isConnected();
 
+	///Returns whether the client is still connected
+	bool isConnecting();
+
 	///Updates the client. This parses and interprets any incoming messages.
 	void update();
 	
