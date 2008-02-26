@@ -90,6 +90,12 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 			client->connect(YOG_SERVER_IP);
 			client->setEventListener(this);
+			while(client->isConnecting())
+			{
+				client->update();
+				SDL_Delay(10);
+			}
+			
 			if(!client->isConnected())
 			{
 				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));

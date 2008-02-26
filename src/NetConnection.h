@@ -21,6 +21,7 @@
 
 #include "SDL_net.h"
 #include "NetMessage.h"
+#include "NetConnectionThread.h"
 #include <queue>
 #include <boost/shared_ptr.hpp>
 
@@ -50,7 +51,13 @@ public:
 
 	///Returns true if this object is connected
 	bool isConnected();
+	
+	///Returns whether this object is in the proccess of connecting
+	bool isConnecting();
 
+	///Updates messages from the thread
+	void update();
+	
 	///Pops the top-most message in the queue of recieved messages.
 	///When there are no messages, it will poll SDL for more packets.
 	///The caller assumes ownership of the NetMessage.
@@ -64,15 +71,15 @@ protected:
 	///This function attempts a connection using the provided TCP server socket.
 	///One can use isConnected to test for success.
 	void attemptConnection(TCPsocket& serverSocket);
-
+	
 private:
-	IPaddress address;
-	TCPsocket socket;
-	SDLNet_SocketSet set;
-	bool connected;
+	NetConnectionThread connect;
+	
+	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
+	boost::recursive_mutex incomingMutex;
 	std::queue<shared_ptr<NetMessage> > recieved;
-	//static Uint32 lastTime;
-	//static Uint32 amount;
+	
+	bool connecting;
 };
 
 
