@@ -46,6 +46,7 @@ public:
 protected:
 	unsigned figure;
 	Mode mode;
+	bool addRemoveEnabled;
 	
 public:
 	BrushTool();
@@ -80,6 +81,9 @@ public:
 	static int getBrushDimY(unsigned figure);
 	//! Return the value of a pixel of a given brush
 	static bool getBrushValue(unsigned figure, int x, int y);
+	
+	//! This enables or disables the ability to select add / remove. Used by the map editor because logically you can't "remove" Terrain and such.
+	void setAddRemoveEnabledState(bool value);
 };
 
 namespace Utilities
