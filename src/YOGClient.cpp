@@ -526,3 +526,10 @@ void YOGClient::attachGameServer(boost::shared_ptr<YOGGameServer> nserver)
 }
 
 
+
+void  YOGClient::setP2PConnection(boost::shared_ptr<P2PConnection> connection)
+{
+	p2pconnection = connection;
+}
+
+

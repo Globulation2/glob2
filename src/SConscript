@@ -20,6 +20,7 @@ MultiplayerGameEvent.cpp   MultiplayerGameEventListener.cpp  MultiplayerGameScre
 NetBroadcastListener.cpp   NetConnection.cpp                 NetConnectionThread.cpp      NetConnectionThreadMessage.cpp
 NetEngine.cpp              NetGamePlayerManager.cpp          NetListener.cpp              NetMessage.cpp
 NetTestSuite.cpp           NewMapScreen.cpp                  Order.cpp                    OverlayAreas.cpp
+P2PConnection.cpp          P2PInformation.cpp                P2PManager.cpp               P2PPlayerInformation.cpp
 PerlinNoise.cpp            Player.cpp                        Race.cpp                     Ressource.cpp
 RessourcesTypes.cpp        ScriptEditorScreen.cpp            Sector.cpp                   Settings.cpp
 SettingsScreen.cpp         SGSL.cpp                          SimplexNoise.cpp             SoundMixer.cpp
