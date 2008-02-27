@@ -194,38 +194,4 @@ bool YOGPlayerListUpdatedEvent::operator==(const YOGEvent& rhs) const
 	return false;
 }
 
-
-YOGGameListUpdatedEvent::YOGGameListUpdatedEvent()
-{
-}
-
-
-
-Uint8 YOGGameListUpdatedEvent::getEventType() const
-{
-	return YEGameListUpdated;
-}
-
-
-
-std::string YOGGameListUpdatedEvent::format() const
-{
-	std::ostringstream s;
-	s<<"YOGGameListUpdatedEvent()";
-	return s.str();
-}
-
-
-
-bool YOGGameListUpdatedEvent::operator==(const YOGEvent& rhs) const
-{
-	if(typeid(rhs)==typeid(YOGGameListUpdatedEvent))
-	{
-		//const YOGGameListUpdatedEvent& r = dynamic_cast<const YOGGameListUpdatedEvent&>(rhs);
-		return true;
-	}
-	return false;
-}
-
-
 //code_append_marker
