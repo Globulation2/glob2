@@ -115,16 +115,16 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 			client->setMultiplayerGame(game);
 
-			while (client->getYOGGameListManager()->getGameList().size() == 0)
+			while (client->getGameListManager()->getGameList().size() == 0)
     			client->update();
 
-			if((*client->getYOGGameListManager()->getGameList().begin()).getGameState()==YOGGameInfo::GameRunning)
+			if((*client->getGameListManager()->getGameList().begin()).getGameState()==YOGGameInfo::GameRunning)
 			{
 				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't join game, game has started]"), Toolkit::getStringTable()->getString("[ok]"));
 				return;
 			}
 
-			game->joinGame((*client->getYOGGameListManager()->getGameList().begin()).getGameID());
+			game->joinGame((*client->getGameListManager()->getGameList().begin()).getGameID());
 
 			MultiplayerGameScreen mgs(game, client);
 			int rc = mgs.execute(globalContainer->gfx, 40);

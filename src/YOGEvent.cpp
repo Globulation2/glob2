@@ -160,38 +160,4 @@ YOGLoginState YOGLoginRefusedEvent::getReason() const
 	return reason;
 }
 
-
-
-YOGPlayerListUpdatedEvent::YOGPlayerListUpdatedEvent()
-{
-}
-
-
-
-Uint8 YOGPlayerListUpdatedEvent::getEventType() const
-{
-	return YEPlayerListUpdated;
-}
-
-
-
-std::string YOGPlayerListUpdatedEvent::format() const
-{
-	std::ostringstream s;
-	s<<"YOGPlayerListUpdatedEvent()";
-	return s.str();
-}
-
-
-
-bool YOGPlayerListUpdatedEvent::operator==(const YOGEvent& rhs) const
-{
-	if(typeid(rhs)==typeid(YOGPlayerListUpdatedEvent))
-	{
-		//const YOGPlayerListUpdatedEvent& r = dynamic_cast<const YOGPlayerListUpdatedEvent&>(rhs);
-		return true;
-	}
-	return false;
-}
-
 //code_append_marker
