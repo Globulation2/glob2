@@ -990,6 +990,14 @@ Spustiť nahrávanie zvuku
 Dosiahnutá úroveň prestíže
 [Total]
 Spolu
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Kurz
 [unassigned]

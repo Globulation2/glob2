@@ -27,6 +27,8 @@
 #include "GUITextInput.h"
 #include "Campaign.h"
 
+class MapPreview;
+
 ///This is the main campaign screen
 class CampaignMenuScreen : public Glob2Screen
 {
@@ -55,6 +57,9 @@ private:
 
 	/// The list of missions that are currently unlocked
 	List* availableMissions;
+	
+	//! The widget that will show a preview of the selection map
+	MapPreview *mapPreview;
 
 };
 

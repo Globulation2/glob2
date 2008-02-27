@@ -68,8 +68,6 @@ public:
 	bool load(const std::string& fileName);
 	///Save the campaign
 	void save(bool isGameSave=false);
-
-
 	///Gets the number of maps in this campaign
 	size_t getMapCount() const;
 	///Returns the name of the map n
