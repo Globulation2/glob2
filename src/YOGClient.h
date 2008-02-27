@@ -35,6 +35,7 @@
 
 class MultiplayerGame;
 class MapAssembler;
+class P2PConnection;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -169,16 +170,19 @@ public:
 	///This attaches a game server to this client, for client-hosted games (such as LAN)
 	void attachGameServer(boost::shared_ptr<YOGGameServer> server);
 
+	///This attaches a P2PConnection to this client
+	void setP2PConnection(boost::shared_ptr<P2PConnection> connection);
+
 protected:
     friend class MultiplayerGame;
     friend class MapAssembler;
+    friend class P2PConnection;
 	friend class YOGChatChannel;
 	friend class MultiplayerGamePlayerManager;
 	friend class NetEngine;
     
     ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
-
 
 	///Adds a new YOGChatChannel to recieve chat events (done by YOGChatChannel itself)
 	void addYOGChatChannel(YOGChatChannel* channel);
@@ -206,6 +210,7 @@ private:
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;
+	boost::shared_ptr<P2PConnection> p2pconnection;
 	YOGEventListener* listener;
 
 	boost::shared_ptr<YOGGameServer> server;
