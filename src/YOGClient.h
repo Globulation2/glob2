@@ -117,17 +117,6 @@ public:
 	///gotten a reply.
 	YOGLoginState getLoginState() const;
 
-	///This will send for a manual update of the game list,
-	void requestGameListUpdate();
-	
-	///This will send for a manual update of the player list,
-	void requestPlayerListUpdate();
-
-	///Returns true if the list of games has been changed since the last call to
-	///this function. Defaults to false, untill the the game list is first initiated
-	///from the server
-	bool hasGameListChanged();
-
 	///This will disconnect the client and server
 	void disconnect();
 

@@ -381,20 +381,6 @@ YOGLoginState YOGClient::getLoginState() const
 
 
 
-void YOGClient::requestGameListUpdate()
-{
-	//unimplemented
-}
-
-
-
-void YOGClient::requestPlayerListUpdate()
-{
-	//unimplemented
-}
-
-
-
 void YOGClient::disconnect()
 {
 	shared_ptr<NetDisconnect> message(new NetDisconnect);
