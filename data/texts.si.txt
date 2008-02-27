@@ -990,6 +990,14 @@ za:
 Najvišji dosežen ugled
 [Total]
 Skupaj
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Predavanje
 [unassigned]

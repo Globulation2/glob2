@@ -990,6 +990,14 @@ Start volkal optagelse
 Total prestige opnået
 [Total]
 Total
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Lær at spille
 [unassigned]

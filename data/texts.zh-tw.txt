@@ -990,6 +990,14 @@ V: 持鍵以傳送訊息
 聲望總計達到
 [Total]
 總共
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 教學指導
 [unassigned]

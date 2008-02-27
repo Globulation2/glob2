@@ -990,6 +990,14 @@ V: Зажать для речевой связи
 Общий достигнутый престиж
 [Total]
 Всего
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Самоучитель
 [unassigned]

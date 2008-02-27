@@ -990,6 +990,14 @@ Spraak opname
 Totaal verworven roem
 [Total]
 Totaal
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Oefenspel
 [unassigned]

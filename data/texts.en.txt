@@ -988,6 +988,14 @@ Toggle Recording Voice
 Total prestige reached
 [Total]
 Total
+[tutorial text 1]
+Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of usefull knowledge here!
+[tutorial text 2]
+Now that you have mastered the basics, its time to get used to other buildings such as Racetracks, Pools, and Schools., -1") : error, no such key.
+[tutorial text 3]
+You have done well to get this far. Now lets move onto Warriors, Training Camps, and Upgrades.
+[tutorial text 4]
+You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forwarded into Custom Games and eventually play online against some of Globulation 2's finest players.
 [tutorial]
 Tutorial
 [unassigned]

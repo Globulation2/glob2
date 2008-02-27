@@ -990,6 +990,14 @@ Basculer la transmission de la voix
 Le prestige total a été atteint
 [Total]
 Total
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Didacticiel
 [unassigned]

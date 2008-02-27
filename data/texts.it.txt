@@ -990,6 +990,14 @@ Inizia Registrazione Vocale
 Totale prestigio raggiunto
 [Total]
 Totale
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Esercitazione
 [unassigned]

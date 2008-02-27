@@ -990,6 +990,14 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Укупан постигнут престиж
 [Total]
 Укупно
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Уџбеник
 [unassigned]

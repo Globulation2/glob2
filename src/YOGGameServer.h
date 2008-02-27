@@ -129,7 +129,6 @@ private:
 	YOGGamePolicy gamePolicy;
 	
 	YOGPasswordRegistry registry;
-	//First attempt connections with new players
 	boost::shared_ptr<NetConnection> new_connection;
 	
 	boost::shared_ptr<NetBroadcaster> broadcaster;
