@@ -35,6 +35,7 @@
 
 #include "ChooseMapScreen.h"
 #include "MultiplayerGameScreen.h"
+#include "YOGGameListManager.h"
 
 YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
 	: List(x, y, w, h, hAlign, vAlign, font)
@@ -117,6 +118,8 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	ircChat->startIRC(client->getUsername());
 	
 	client->setEventListener(this);
+	
+	client->getYOGGameListManager()->addListener(this);
 }
 
 
@@ -125,6 +128,8 @@ YOGScreen::~YOGScreen()
 {
 	ircChat->removeTextMessageListener(this);
 	ircChat->stopIRC();
+	
+	client->getYOGGameListManager()->removeListener(this);
 }
 
 
@@ -194,10 +199,6 @@ void YOGScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 	{
 		updatePlayerList();
 	}
-	else if(type == YEGameListUpdated)
-	{
-		updateGameList();
-	}
 }
 
 
@@ -228,6 +229,13 @@ void YOGScreen::recieveInternalMessage(const std::string& message)
 	chatWindow->addText("\n");
 	chatWindow->addImage(-1);
 	chatWindow->scrollToBottom();
+}
+
+
+
+void YOGScreen::gameListUpdated()
+{
+	updateGameList();
 }
 
 
@@ -267,7 +275,7 @@ void YOGScreen::joinGame()
 		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 		client->setMultiplayerGame(game);
 		Uint16 id = 0;
-		for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
+		for (std::list<YOGGameInfo>::const_iterator game=client->getYOGGameListManager()->getGameList().begin(); game!=client->getYOGGameListManager()->getGameList().end(); ++game)
 		{
 			if(gameList->get() == game->getGameName())
 			{
@@ -301,7 +309,7 @@ void YOGScreen::updateGameList(void)
 {
 	int i = gameList->getSelectionIndex();
 	gameList->clear();
-	for (std::list<YOGGameInfo>::const_iterator game=client->getGameList().begin(); game!=client->getGameList().end(); ++game)
+	for (std::list<YOGGameInfo>::const_iterator game=client->getYOGGameListManager()->getGameList().begin(); game!=client->getYOGGameListManager()->getGameList().end(); ++game)
 	{
 		if(game->getGameState() == YOGGameInfo::GameOpen)
 			gameList->addText(game->getGameName());
@@ -341,7 +349,7 @@ void YOGScreen::updateGameInfo()
 {
 	if (gameList->getSelectionIndex() != -1)
 	{
-		std::list<YOGGameInfo>::iterator i=client->getGameList().begin();
+		std::list<YOGGameInfo>::iterator i=client->getYOGGameListManager()->getGameList().begin();
 		std::advance(i, gameList->getSelectionIndex());
 		YOGGameInfo info=*i;
 

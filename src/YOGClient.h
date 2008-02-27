@@ -36,6 +36,7 @@
 class MultiplayerGame;
 class MapAssembler;
 class P2PConnection;
+class YOGGameListManager;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -115,15 +116,9 @@ public:
 	///attempts at a login (or registration), this returns the state of the most recent attempt that has
 	///gotten a reply.
 	YOGLoginState getLoginState() const;
-	
-	///This will return the list of games on hosted on the server.
-	const std::list<YOGGameInfo>& getGameList() const;
 
 	///This will return the list of players on the server
 	const std::list<YOGPlayerInfo>& getPlayerList() const;
-	
-	///This will return the list of games on hosted on the server.
-	std::list<YOGGameInfo>& getGameList();
 
 	///This will return the list of players on the server
 	std::list<YOGPlayerInfo>& getPlayerList();
@@ -173,6 +168,12 @@ public:
 	///This attaches a P2PConnection to this client
 	void setP2PConnection(boost::shared_ptr<P2PConnection> connection);
 
+	///This attaches a YOGGameListManager to this client
+	void setYOGGameListManager(boost::shared_ptr<YOGGameListManager> gameListManager);
+
+	///This retrieves the YOGGameListManager of this client
+	boost::shared_ptr<YOGGameListManager> getYOGGameListManager();
+
 protected:
     friend class MultiplayerGame;
     friend class MapAssembler;
@@ -180,6 +181,7 @@ protected:
 	friend class YOGChatChannel;
 	friend class MultiplayerGamePlayerManager;
 	friend class NetEngine;
+	friend class YOGGameListManager;
     
     ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
@@ -204,13 +206,13 @@ private:
 	YOGGamePolicy gamePolicy;
 	YOGLoginState loginState;
 	
-	std::list<YOGGameInfo> games;
 	std::list<YOGPlayerInfo> players;
 	std::map<Uint32, YOGChatChannel*> chatChannels;
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;
 	boost::shared_ptr<P2PConnection> p2pconnection;
+	boost::shared_ptr<YOGGameListManager> gameListManager;
 	YOGEventListener* listener;
 
 	boost::shared_ptr<YOGGameServer> server;

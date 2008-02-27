@@ -20,10 +20,12 @@
 #include <iostream>
 #include "MultiplayerGame.h"
 #include "MapAssembler.h"
+#include "YOGGameListManager.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
 	connect(server);
+	
 }
 
 
@@ -44,6 +46,9 @@ void YOGClient::initialize()
 	playerID=0;
 	listener=NULL;
 	wasConnected=false;
+	
+	//By default, the client creates its own game list manager
+	gameListManager.reset(new YOGGameListManager(this));
 }
 
 
@@ -170,13 +175,8 @@ void YOGClient::update()
 		///This recieves a game list update message
 		if(type==MNetUpdateGameList)
 		{
-			shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);
-			info->applyDifferences(games);
-			if(listener)
-			{
-				shared_ptr<YOGGameListUpdatedEvent> event(new YOGGameListUpdatedEvent);
-				listener->handleYOGEvent(event);
-			}
+			if(gameListManager)
+				gameListManager->recieveMessage(message);
 		}
 		///This recieves a player list update message
 		if(type==MNetUpdatePlayerList)
@@ -195,7 +195,7 @@ void YOGClient::update()
 			shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
 			if(chatChannels.find(yogmessage->getChannel()) != chatChannels.end())
 			{
-					chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+				chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
 			}
 			else
 			{
@@ -384,23 +384,9 @@ YOGLoginState YOGClient::getLoginState() const
 
 
 
-const std::list<YOGGameInfo>& YOGClient::getGameList() const
-{
-	return games;
-}
-
-
-
 const std::list<YOGPlayerInfo>& YOGClient::getPlayerList() const
 {
 	return players;
-}
-
-
-
-std::list<YOGGameInfo>& YOGClient::getGameList()
-{
-	return games;
 }
 
 
@@ -531,5 +517,20 @@ void  YOGClient::setP2PConnection(boost::shared_ptr<P2PConnection> connection)
 {
 	p2pconnection = connection;
 }
+
+
+
+void YOGClient::setYOGGameListManager(boost::shared_ptr<YOGGameListManager> ngameListManager)
+{
+	gameListManager = ngameListManager;
+}
+
+
+
+boost::shared_ptr<YOGGameListManager> YOGClient::getYOGGameListManager()
+{
+	return gameListManager;
+}
+
 
 
