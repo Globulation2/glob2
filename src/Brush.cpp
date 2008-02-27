@@ -25,16 +25,20 @@
 
 BrushTool::BrushTool()
 {
+	addRemoveEnabled=true;
 	figure = 0;
 	mode = MODE_NONE;
 }
 
 void BrushTool::draw(int x, int y)
 {
-	globalContainer->gfx->drawSprite(x+16, y, globalContainer->brush, 0);
-	globalContainer->gfx->drawSprite(x+64+16, y, globalContainer->brush, 1);
-	if (mode)
-		globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*64+16, y, globalContainer->gamegui, 22);
+	if(addRemoveEnabled)
+	{
+		globalContainer->gfx->drawSprite(x+16, y, globalContainer->brush, 0);
+		globalContainer->gfx->drawSprite(x+64+16, y, globalContainer->brush, 1);
+		if (mode)
+			globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*64+16, y, globalContainer->gamegui, 22);
+	}
 	for (unsigned i=0; i<8; i++)
 	{
 		int decX = (i%4)*32;
@@ -52,7 +56,8 @@ void BrushTool::handleClick(int x, int y)
 	if (y>0)
 		if (y<36)
 		{
-			mode = static_cast<Mode>((x/64)+1);
+			if(addRemoveEnabled)
+				mode = static_cast<Mode>((x/64)+1);
 		}
 		else if (y<36+64)
 		{
@@ -183,6 +188,15 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y)
 	
 	return (brushes[figure][y*getBrushWidth(figure)+x] != 0);
 }
+
+
+
+void BrushTool::setAddRemoveEnabledState(bool value)
+{
+	addRemoveEnabled=value;
+}
+
+
 
 void BrushAccumulator::applyBrush(const Map *map, const BrushApplication &brush)
 {

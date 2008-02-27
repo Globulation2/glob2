@@ -2090,6 +2090,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select clearing zone")
 	{
@@ -2098,6 +2099,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select guard zone")
 	{
@@ -2106,6 +2108,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="handle zone click")
 	{
@@ -2136,24 +2139,27 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		terrainType=TerrainSelector::Grass;
 		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select sand")
 	{
 		performAction("unselect");
 		terrainType=TerrainSelector::Sand;
 		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select water")
 	{
 		performAction("unselect");
 		terrainType=TerrainSelector::Water;
 		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select wheat")
 	{
@@ -2162,6 +2168,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select trees")
 	{
@@ -2170,6 +2177,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select stone")
 	{
@@ -2178,6 +2186,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select algae")
 	{
@@ -2186,6 +2195,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select papyrus")
 	{
@@ -2194,6 +2204,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select cherry tree")
 	{
@@ -2202,6 +2213,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select orange tree")
 	{
@@ -2210,6 +2222,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select prune tree")
 	{
@@ -2218,14 +2231,16 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select delete objects")
 	{
 		performAction("unselect");
 		selectionMode=RemoveObject;
 		deleteButton->setSelected();
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select no ressources growth")
 	{
@@ -2234,6 +2249,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		noRessourceGrowthButton->setSelected();
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="handle terrain click")
 	{
@@ -2282,6 +2298,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		areasButton->setSelected();
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="area drag start")
 	{
@@ -3386,15 +3403,6 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
 	if (brush.getType() == BrushTool::MODE_ADD)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
-				{
-					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
-				}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
