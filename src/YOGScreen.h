@@ -33,6 +33,7 @@
 #include "YOGChatChannel.h"
 #include "YOGChatListener.h"
 #include "YOGGameListListener.h"
+#include "YOGPlayerListListener.h"
 
 namespace GAGGUI
 {
@@ -78,7 +79,7 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGScreen : public Glob2Screen, public YOGEventListener, public YOGChatListener, public IRCTextMessageListener, public YOGGameListListener
+class YOGScreen : public Glob2Screen, public YOGEventListener, public YOGChatListener, public IRCTextMessageListener, public YOGGameListListener, public YOGPlayerListListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
@@ -100,6 +101,8 @@ public:
 	void recieveInternalMessage(const std::string& message);
 	///Handles when the game list has been updated from YOGGameListManager
 	void gameListUpdated();
+	///Handles when the game list has been updated from YOGPlayerListManager
+	void playerListUpdated();
 
 
 	///The end-codes of the screen

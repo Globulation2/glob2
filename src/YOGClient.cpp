@@ -21,6 +21,7 @@
 #include "MultiplayerGame.h"
 #include "MapAssembler.h"
 #include "YOGGameListManager.h"
+#include "YOGPlayerListManager.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
@@ -47,8 +48,9 @@ void YOGClient::initialize()
 	listener=NULL;
 	wasConnected=false;
 	
-	//By default, the client creates its own game list manager
+	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGGameListManager(this));
+	playerListManager.reset(new YOGPlayerListManager(this));
 }
 
 
@@ -181,13 +183,8 @@ void YOGClient::update()
 		///This recieves a player list update message
 		if(type==MNetUpdatePlayerList)
 		{
-			shared_ptr<NetUpdatePlayerList> info = static_pointer_cast<NetUpdatePlayerList>(message);
-			info->applyDifferences(players);
-			if(listener)
-			{
-				shared_ptr<YOGPlayerListUpdatedEvent> event(new YOGPlayerListUpdatedEvent);
-				listener->handleYOGEvent(event);
-			}
+			if(playerListManager)
+				playerListManager->recieveMessage(message);
 		}
 		///This recieves a YOGMessage list update message
 		if(type==MNetSendYOGMessage)
@@ -384,32 +381,6 @@ YOGLoginState YOGClient::getLoginState() const
 
 
 
-const std::list<YOGPlayerInfo>& YOGClient::getPlayerList() const
-{
-	return players;
-}
-
-
-
-std::list<YOGPlayerInfo>& YOGClient::getPlayerList()
-{
-	return players;
-}
-
-
-
-std::string YOGClient::findPlayerName(Uint16 playerID)
-{
-	for(std::list<YOGPlayerInfo>::iterator i = players.begin(); i != players.end(); ++i)
-	{
-		if(i->getPlayerID() == playerID)
-			return i->getPlayerName();
-	}
-	return "";
-}
-
-
-
 void YOGClient::requestGameListUpdate()
 {
 	//unimplemented
@@ -520,16 +491,30 @@ void  YOGClient::setP2PConnection(boost::shared_ptr<P2PConnection> connection)
 
 
 
-void YOGClient::setYOGGameListManager(boost::shared_ptr<YOGGameListManager> ngameListManager)
+void YOGClient::setGameListManager(boost::shared_ptr<YOGGameListManager> ngameListManager)
 {
 	gameListManager = ngameListManager;
 }
 
 
 
-boost::shared_ptr<YOGGameListManager> YOGClient::getYOGGameListManager()
+boost::shared_ptr<YOGGameListManager> YOGClient::getGameListManager()
 {
 	return gameListManager;
+}
+
+
+
+void YOGClient::setPlayerListManager(boost::shared_ptr<YOGPlayerListManager> nplayerListManager)
+{
+	playerListManager = nplayerListManager;
+}
+
+
+
+boost::shared_ptr<YOGPlayerListManager> YOGClient::getPlayerListManager()
+{
+	return playerListManager;
 }
 
 

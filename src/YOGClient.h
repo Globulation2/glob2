@@ -32,11 +32,11 @@
 #include "YOGChatChannel.h"
 #include <map>
 
-
 class MultiplayerGame;
 class MapAssembler;
 class P2PConnection;
 class YOGGameListManager;
+class YOGPlayerListManager;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -117,15 +117,6 @@ public:
 	///gotten a reply.
 	YOGLoginState getLoginState() const;
 
-	///This will return the list of players on the server
-	const std::list<YOGPlayerInfo>& getPlayerList() const;
-
-	///This will return the list of players on the server
-	std::list<YOGPlayerInfo>& getPlayerList();
-
-	///This will find the name of the player with the given ID
-	std::string findPlayerName(Uint16 playerID);
-
 	///This will send for a manual update of the game list,
 	void requestGameListUpdate();
 	
@@ -169,10 +160,16 @@ public:
 	void setP2PConnection(boost::shared_ptr<P2PConnection> connection);
 
 	///This attaches a YOGGameListManager to this client
-	void setYOGGameListManager(boost::shared_ptr<YOGGameListManager> gameListManager);
+	void setGameListManager(boost::shared_ptr<YOGGameListManager> gameListManager);
 
 	///This retrieves the YOGGameListManager of this client
-	boost::shared_ptr<YOGGameListManager> getYOGGameListManager();
+	boost::shared_ptr<YOGGameListManager> getGameListManager();
+
+	///This attaches a YOGPlayerListManager to this client
+	void setPlayerListManager(boost::shared_ptr<YOGPlayerListManager> playerListManager);
+
+	///This retrieves the YOGGameListManager of this client
+	boost::shared_ptr<YOGPlayerListManager> getPlayerListManager();
 
 protected:
     friend class MultiplayerGame;
@@ -206,13 +203,13 @@ private:
 	YOGGamePolicy gamePolicy;
 	YOGLoginState loginState;
 	
-	std::list<YOGPlayerInfo> players;
 	std::map<Uint32, YOGChatChannel*> chatChannels;
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;
 	boost::shared_ptr<P2PConnection> p2pconnection;
 	boost::shared_ptr<YOGGameListManager> gameListManager;
+	boost::shared_ptr<YOGPlayerListManager> playerListManager;
 	YOGEventListener* listener;
 
 	boost::shared_ptr<YOGGameServer> server;
