@@ -114,7 +114,7 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 	
-	lobbyChat.reset(new YOGChatChannel(LOBBY_CHAT_CHANNEL, client));
+	lobbyChat.reset(new YOGClientChatChannel(LOBBY_CHAT_CHANNEL, client));
 
 	ircChat.reset(new IRCTextMessageHandler);
 	ircChat->addTextMessageListener(this);
@@ -194,7 +194,7 @@ void YOGScreen::onTimer(Uint32 tick)
 
 
 
-void YOGScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
+void YOGScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
 {
 	//std::cout<<"YOGScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
@@ -304,11 +304,11 @@ void YOGScreen::joinGame()
 		else if(rc == MultiplayerGameScreen::GameCancelled)
 			recieveInternalMessage(Toolkit::getStringTable()->getString("[The host cancelled the game]"));
 		else if(rc == MultiplayerGameScreen::GameRefused)
-			if(game->getGameJoinState() == YOGGameHasAlreadyStarted)
+			if(game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
 				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
-			else if(game->getGameJoinState() == YOGGameIsFull)
+			else if(game->getGameJoinState() == YOGServerGameIsFull)
 				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
-			else if(game->getGameJoinState() == YOGGameDoesntExist)
+			else if(game->getGameJoinState() == YOGServerGameDoesntExist)
 				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
 	}
 }

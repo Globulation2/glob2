@@ -19,7 +19,7 @@
 #include "YOGPlayer.h"
 #include "YOGGameServer.h"
 #include "YOGMapDistributor.h"
-#include "YOGGame.h"
+#include "YOGServerGame.h"
 
 YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameServer& server)
  : connection(connection), server(server), playerID(id)
@@ -51,10 +51,10 @@ void YOGPlayer::update()
 		pingSendTime = SDL_GetTicks();
 	}
 
-	boost::shared_ptr<YOGGame> ngame;
+	boost::shared_ptr<YOGServerGame> ngame;
 	if(!game.expired())
 	{
-		ngame = boost::shared_ptr<YOGGame>(game);
+		ngame = boost::shared_ptr<YOGServerGame>(game);
 	}
 
 	//Parse incoming messages.
@@ -297,9 +297,9 @@ std::string YOGPlayer::getPlayerName()
 
 
 
-boost::shared_ptr<YOGGame> YOGPlayer::getGame()
+boost::shared_ptr<YOGServerGame> YOGPlayer::getGame()
 {
-	return boost::shared_ptr<YOGGame>(game);
+	return boost::shared_ptr<YOGServerGame>(game);
 }
 
 
@@ -379,12 +379,12 @@ void YOGPlayer::updateGamePlayerLists()
 
 void YOGPlayer::handleCreateGame(const std::string& gameName)
 {
-	YOGGameCreateRefusalReason reason = server.canCreateNewGame(gameName);
+	YOGServerGameCreateRefusalReason reason = server.canCreateNewGame(gameName);
 	if(reason == YOGCreateRefusalUnknown)
 	{
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGGame> ngame(game);
+		boost::shared_ptr<YOGServerGame> ngame(game);
 		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));
@@ -400,12 +400,12 @@ void YOGPlayer::handleCreateGame(const std::string& gameName)
 
 void YOGPlayer::handleJoinGame(Uint16 ngameID)
 {
-	YOGGameJoinRefusalReason reason = server.canJoinGame(ngameID);
+	YOGServerGameJoinRefusalReason reason = server.canJoinGame(ngameID);
 	if(reason == YOGJoinRefusalUnknown)
 	{	
 		gameID = ngameID;
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGGame> ngame(game);
+		boost::shared_ptr<YOGServerGame> ngame(game);
 		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(ngame->getChatChannel()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));

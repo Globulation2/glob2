@@ -82,21 +82,21 @@ enum YOGLoginState
 };
 
 ///This represents the reason why the player could not join a game.
-enum YOGGameJoinRefusalReason
+enum YOGServerGameJoinRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGJoinRefusalUnknown,
 	///This occurs when the game has started already
-	YOGGameHasAlreadyStarted,
+	YOGServerGameHasAlreadyStarted,
 	///This occurs when the game has the maximum number of players
-	YOGGameIsFull,
+	YOGServerGameIsFull,
 	///This represents the game not existing, it may have been closed
 	///in the time that the message took to arrive at the server
-	YOGGameDoesntExist,
+	YOGServerGameDoesntExist,
 };
 
 ///This represents the reason why the player could not join a game.
-enum YOGGameCreateRefusalReason
+enum YOGServerGameCreateRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGCreateRefusalUnknown,
@@ -112,7 +112,7 @@ enum YOGMessageType
 	///This means an administrator message sent by YOG
 	YOGAdministratorMessage,
 	///This is a message sent only to members of the same game
-	YOGGameMessage,
+	YOGServerGameMessage,
 };
 
 ///This is used to represent the various reasons a player may be
@@ -129,7 +129,7 @@ enum YOGKickReason
 
 ///This is used to represent the various reasons the server may refuse to start
 ///a game.
-enum YOGGameStartRefusalReason
+enum YOGServerGameStartRefusalReason
 {
 	///This represents an unknown reason
 	YOGUnknownStartRefusalReason,

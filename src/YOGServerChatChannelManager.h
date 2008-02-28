@@ -17,21 +17,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGChatChannelManager_h
-#define YOGChatChannelManager_h
+#ifndef YOGServerChatChannelManager_h
+#define YOGServerChatChannelManager_h
 
 #include "YOGServerChatChannel.h"
 #include <map>
 
 ///This does serverside management of YOG chat channels
-class YOGChatChannelManager
+class YOGServerChatChannelManager
 {
 public:
-	///Creates the YOGChatChannelManager
-	YOGChatChannelManager();
+	///Creates the YOGServerChatChannelManager
+	YOGServerChatChannelManager();
 
-	///Destroys the YOGChatChannelManager
-	~YOGChatChannelManager();
+	///Destroys the YOGServerChatChannelManager
+	~YOGServerChatChannelManager();
 
 	///This updates the chat channel manager. Removes all chat channels that have no players, except for the lobby
 	void update();

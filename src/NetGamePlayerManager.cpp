@@ -18,7 +18,7 @@
 
 #include "NetGamePlayerManager.h"
 #include "FormatableString.h"
-#include "YOGGame.h"
+#include "YOGServerGame.h"
 
 using namespace GAGCore;
 

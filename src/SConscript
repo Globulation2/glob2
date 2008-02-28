@@ -26,9 +26,9 @@ RessourcesTypes.cpp        ScriptEditorScreen.cpp            Sector.cpp         
 SettingsScreen.cpp         SGSL.cpp                          SimplexNoise.cpp             SoundMixer.cpp
 Team.cpp                   TeamStat.cpp                      UnitConsts.cpp               Unit.cpp
 UnitEditorScreen.cpp       UnitSkin.cpp                      UnitsSkins.cpp               UnitType.cpp
-Utilities.cpp              VoiceRecorder.cpp                 YOGChatChannel.cpp           YOGChatChannelManager.cpp
-YOGChatListener.cpp        YOGClient.cpp                                                  YOGEvent.cpp
-YOGEventListener.cpp       YOGGame.cpp                       YOGGameInfo.cpp              YOGGameListListener.cpp
+Utilities.cpp              VoiceRecorder.cpp                 YOGClientChatChannel.cpp     YOGServerChatChannelManager.cpp
+YOGClientChatListener.cpp        YOGClient.cpp                                                  YOGClientEvent.cpp
+YOGClientEventListener.cpp       YOGServerGame.cpp                       YOGGameInfo.cpp              YOGGameListListener.cpp
 YOGGameListManager.cpp     YOGGameServer.cpp                 YOGLoginScreen.cpp           YOGMapDistributor.cpp
 YOGMessage.cpp             YOGPasswordRegistry.cpp           YOGPlayer.cpp                YOGPlayerInfo.cpp
 YOGPlayerListListener.cpp  YOGPlayerListManager.cpp          YOGScreen.cpp                YOGServerChatChannel.cpp

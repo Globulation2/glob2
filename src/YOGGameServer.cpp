@@ -19,7 +19,7 @@
 #include "YOGGameServer.h"
 #include "NetTestSuite.h"
 #include <algorithm>
-#include "YOGGame.h"
+#include "YOGServerGame.h"
 
 YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
@@ -54,7 +54,7 @@ void YOGGameServer::update()
 	}
 	
 	//Call update to all of the games
-	for(std::map<Uint16, shared_ptr<YOGGame> >::iterator i=games.begin(); i!=games.end(); ++i)
+	for(std::map<Uint16, shared_ptr<YOGServerGame> >::iterator i=games.begin(); i!=games.end(); ++i)
 	{
 		i->second->update();
 	}
@@ -75,12 +75,12 @@ void YOGGameServer::update()
 		}
 	}
 	//Remove old games
-	for(std::map<Uint16, shared_ptr<YOGGame> >::iterator i=games.begin(); i!=games.end();)
+	for(std::map<Uint16, shared_ptr<YOGServerGame> >::iterator i=games.begin(); i!=games.end();)
 	{
 		if(i->second->isEmpty())
 		{
 			removeGameInfo(i->second->getGameID());
-			std::map<Uint16, shared_ptr<YOGGame> >::iterator to_erase=i;
+			std::map<Uint16, shared_ptr<YOGServerGame> >::iterator to_erase=i;
 			i++;
 			games.erase(to_erase);
 		}
@@ -207,14 +207,14 @@ void YOGGameServer::playerHasLoggedOut(Uint16 playerID)
 
 
 
-YOGChatChannelManager& YOGGameServer::getChatChannelManager()
+YOGServerChatChannelManager& YOGGameServer::getChatChannelManager()
 {
 	return chatChannelManager;
 }
 
 
 
-YOGGameCreateRefusalReason YOGGameServer::canCreateNewGame(const std::string& game)
+YOGServerGameCreateRefusalReason YOGGameServer::canCreateNewGame(const std::string& game)
 {
 	//not implemented
 	return YOGCreateRefusalUnknown;
@@ -245,19 +245,19 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
 	gameList.push_back(YOGGameInfo(name, newID));
-	games[newID] = shared_ptr<YOGGame>(new YOGGame(newID, chatChannel, *this));
+	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, *this));
 	return newID;
 }
 
 
-YOGGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
+YOGServerGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
 {
 	if(games.find(gameID) == games.end())
-		return YOGGameDoesntExist;
+		return YOGServerGameDoesntExist;
 	if(games[gameID]->hasGameStarted())
-		return YOGGameHasAlreadyStarted;
+		return YOGServerGameHasAlreadyStarted;
 	if(games[gameID]->getGameHeader().getNumberOfPlayers() == 16)
-		return YOGGameIsFull;
+		return YOGServerGameIsFull;
 
 
 	return YOGJoinRefusalUnknown;
@@ -265,7 +265,7 @@ YOGGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
 
 
 
-shared_ptr<YOGGame> YOGGameServer::getGame(Uint16 gameID)
+shared_ptr<YOGServerGame> YOGGameServer::getGame(Uint16 gameID)
 {
 	return games[gameID];
 }

@@ -130,7 +130,7 @@ MultiplayerGame::GameJoinCreationState MultiplayerGame::getGameJoinCreationState
 
 
 
-YOGGameCreateRefusalReason MultiplayerGame::getGameCreationState()
+YOGServerGameCreateRefusalReason MultiplayerGame::getGameCreationState()
 {
 	return creationState;
 }
@@ -138,7 +138,7 @@ YOGGameCreateRefusalReason MultiplayerGame::getGameCreationState()
 
 
 
-YOGGameJoinRefusalReason MultiplayerGame::getGameJoinState()
+YOGServerGameJoinRefusalReason MultiplayerGame::getGameJoinState()
 {
 	return joinState;
 }
@@ -288,7 +288,7 @@ void MultiplayerGame::sendMessage(const std::string& message)
 	boost::shared_ptr<YOGMessage> tmessage(new YOGMessage);
 	tmessage->setSender(client->getUsername());
 	tmessage->setMessage(message);
-	tmessage->setMessageType(YOGGameMessage);
+	tmessage->setMessageType(YOGServerGameMessage);
 	client->sendMessage(tmessage);
 }
 

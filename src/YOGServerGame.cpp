@@ -16,13 +16,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGGame.h"
+#include "YOGServerGame.h"
 #include <algorithm>
 #include "YOGMapDistributor.h"
 #include "YOGGameServer.h"
 #include "NetMessage.h"
 
-YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
+YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
 	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(gameHeader)
 {
 	requested=false;
@@ -34,7 +34,7 @@ YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
 }
 
 
-void YOGGame::update()
+void YOGServerGame::update()
 {
 	latencyUpdateTimer -= 1;
 	if(latencyUpdateTimer == 0)
@@ -96,7 +96,7 @@ void YOGGame::update()
 	}
 }
 
-void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
+void YOGServerGame::addPlayer(shared_ptr<YOGPlayer> player)
 {
 	if(players.size()==0)
 	{
@@ -128,7 +128,7 @@ void YOGGame::addPlayer(shared_ptr<YOGPlayer> player)
 
 
 
-void YOGGame::addAIPlayer(AI::ImplementitionID type)
+void YOGServerGame::addAIPlayer(AI::ImplementitionID type)
 {
 	playerManager.addAIPlayer(type);
 
@@ -141,7 +141,7 @@ void YOGGame::addAIPlayer(AI::ImplementitionID type)
 
 
 
-void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
+void YOGServerGame::removePlayer(shared_ptr<YOGPlayer> player)
 {
 	std::vector<shared_ptr<YOGPlayer> >::iterator i = std::find(players.begin(), players.end(), player);
 	if(i!=players.end())
@@ -184,7 +184,7 @@ void YOGGame::removePlayer(shared_ptr<YOGPlayer> player)
 
 
 
-void YOGGame::removeAIPlayer(int playerNum)
+void YOGServerGame::removeAIPlayer(int playerNum)
 {
 	playerManager.removePlayer(playerNum);
 
@@ -197,7 +197,7 @@ void YOGGame::removeAIPlayer(int playerNum)
 
 
 
-void YOGGame::setTeam(int playerNum, int teamNum)
+void YOGServerGame::setTeam(int playerNum, int teamNum)
 {
 	playerManager.changeTeamNumber(playerNum, teamNum);
 
@@ -207,7 +207,7 @@ void YOGGame::setTeam(int playerNum, int teamNum)
 
 
 
-void YOGGame::setHost(shared_ptr<YOGPlayer> player)
+void YOGServerGame::setHost(shared_ptr<YOGPlayer> player)
 {
 	host = player;
 }
@@ -215,7 +215,7 @@ void YOGGame::setHost(shared_ptr<YOGPlayer> player)
 
 
 
-void YOGGame::setMapHeader(const MapHeader& nmapHeader)
+void YOGServerGame::setMapHeader(const MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
@@ -225,14 +225,14 @@ void YOGGame::setMapHeader(const MapHeader& nmapHeader)
 
 
 
-GameHeader& YOGGame::getGameHeader()
+GameHeader& YOGServerGame::getGameHeader()
 {
 	return gameHeader;
 }
 
 
 
-void YOGGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender)
+void YOGServerGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender)
 {
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
@@ -243,7 +243,7 @@ void YOGGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer>
 
 
 
-void YOGGame::routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGPlayer> sender)
+void YOGServerGame::routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGPlayer> sender)
 {
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
@@ -254,7 +254,7 @@ void YOGGame::routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGPlayer> s
 
 
 
-shared_ptr<YOGMapDistributor> YOGGame::getMapDistributor()
+shared_ptr<YOGMapDistributor> YOGServerGame::getMapDistributor()
 {
 	if(!distributor)
 	{
@@ -266,7 +266,7 @@ shared_ptr<YOGMapDistributor> YOGGame::getMapDistributor()
 
 
 
-void YOGGame::kickPlayer(shared_ptr<NetKickPlayer> message)
+void YOGServerGame::kickPlayer(shared_ptr<NetKickPlayer> message)
 {
 	routeMessage(message, host);	
 	for(std::vector<shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
@@ -281,35 +281,35 @@ void YOGGame::kickPlayer(shared_ptr<NetKickPlayer> message)
 
 
 
-bool YOGGame::isEmpty() const
+bool YOGServerGame::isEmpty() const
 {
 	return players.empty();
 }
 
 
 
-Uint16 YOGGame::getGameID() const
+Uint16 YOGServerGame::getGameID() const
 {
 	return gameID;
 }
 
 
 
-void YOGGame::setReadyToStart(int playerID)
+void YOGServerGame::setReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, true);
 }
 
 
 
-void YOGGame::setNotReadyToStart(int playerID)
+void YOGServerGame::setNotReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, false);
 }
 
 
 
-void YOGGame::recieveGameStartRequest()
+void YOGServerGame::recieveGameStartRequest()
 {
 	if(playerManager.isEveryoneReadyToGo())
 	{
@@ -325,7 +325,7 @@ void YOGGame::recieveGameStartRequest()
 
 
 
-void YOGGame::startGame()
+void YOGServerGame::startGame()
 {
 	gameStarted=true;
 	boost::shared_ptr<NetStartGame> message(new NetStartGame);
@@ -335,28 +335,28 @@ void YOGGame::startGame()
 
 
 
-Uint32 YOGGame::getChatChannel() const
+Uint32 YOGServerGame::getChatChannel() const
 {
 	return chatChannel;
 }
 
 
 
-bool YOGGame::hasGameStarted() const
+bool YOGServerGame::hasGameStarted() const
 {
 	return gameStarted;
 }
 
 
 
-Uint16 YOGGame::getHostPlayerID() const
+Uint16 YOGServerGame::getHostPlayerID() const
 {
 	return host->getPlayerID();
 }
 
 
 
-void YOGGame::chooseLatencyMode()
+void YOGServerGame::chooseLatencyMode()
 {
 	int highest = 0;
 	int second_highest = 0;

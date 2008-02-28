@@ -16,7 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGEvent.h"
+#include "YOGClientEvent.h"
 #include <typeinfo>
 #include <sstream>
 
@@ -43,7 +43,7 @@ std::string YOGConnectedEvent::format() const
 
 
 
-bool YOGConnectedEvent::operator==(const YOGEvent& rhs) const
+bool YOGConnectedEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGConnectedEvent))
 	{
@@ -76,7 +76,7 @@ std::string YOGConnectionLostEvent::format() const
 
 
 
-bool YOGConnectionLostEvent::operator==(const YOGEvent& rhs) const
+bool YOGConnectionLostEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGConnectionLostEvent))
 	{
@@ -109,7 +109,7 @@ std::string YOGLoginAcceptedEvent::format() const
 
 
 
-bool YOGLoginAcceptedEvent::operator==(const YOGEvent& rhs) const
+bool YOGLoginAcceptedEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGLoginAcceptedEvent))
 	{
@@ -143,7 +143,7 @@ std::string YOGLoginRefusedEvent::format() const
 
 
 
-bool YOGLoginRefusedEvent::operator==(const YOGEvent& rhs) const
+bool YOGLoginRefusedEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGLoginRefusedEvent))
 	{

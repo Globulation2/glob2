@@ -16,21 +16,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGEventListener_h
-#define __YOGEventListener_h
+#ifndef __YOGClientEventListener_h
+#define __YOGClientEventListener_h
 
-#include "YOGEvent.h"
+#include "YOGClientEvent.h"
 #include "boost/shared_ptr.hpp"
 
 /// This is a mix-in class. Classes that want to respond to YOG
 /// events derive from this class
-class YOGEventListener
+class YOGClientEventListener
 {
 public:
-	virtual ~YOGEventListener() {}
+	virtual ~YOGClientEventListener() {}
 
 	///This responds to a YOG event
-	virtual void handleYOGEvent(boost::shared_ptr<YOGEvent> event) = 0;
+	virtual void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event) = 0;
 };
 
 

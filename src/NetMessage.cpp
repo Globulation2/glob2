@@ -1301,7 +1301,7 @@ NetGameJoinRefused::NetGameJoinRefused()
 
 
 
-NetGameJoinRefused::NetGameJoinRefused(YOGGameJoinRefusalReason reason)
+NetGameJoinRefused::NetGameJoinRefused(YOGServerGameJoinRefusalReason reason)
 	: reason(reason)
 {
 
@@ -1328,7 +1328,7 @@ void NetGameJoinRefused::encodeData(GAGCore::OutputStream* stream) const
 void NetGameJoinRefused::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetGameJoinRefused");
-	reason=static_cast<YOGGameJoinRefusalReason>(stream->readUint8("reason"));
+	reason=static_cast<YOGServerGameJoinRefusalReason>(stream->readUint8("reason"));
 	stream->readLeaveSection();
 }
 
@@ -1360,7 +1360,7 @@ bool NetGameJoinRefused::operator==(const NetMessage& rhs) const
 
 
 
-YOGGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
+YOGServerGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
 {
 	return reason;
 }
@@ -1599,7 +1599,7 @@ NetCreateGameRefused::NetCreateGameRefused()
 
 
 
-NetCreateGameRefused::NetCreateGameRefused(YOGGameCreateRefusalReason reason)
+NetCreateGameRefused::NetCreateGameRefused(YOGServerGameCreateRefusalReason reason)
 	: reason(reason)
 {
 
@@ -1626,7 +1626,7 @@ void NetCreateGameRefused::encodeData(GAGCore::OutputStream* stream) const
 void NetCreateGameRefused::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGameRefused");
-	reason = static_cast<YOGGameCreateRefusalReason>(stream->readUint8("reason"));
+	reason = static_cast<YOGServerGameCreateRefusalReason>(stream->readUint8("reason"));
 	stream->readLeaveSection();
 }
 
@@ -1653,7 +1653,7 @@ bool NetCreateGameRefused::operator==(const NetMessage& rhs) const
 }
 
 
-YOGGameCreateRefusalReason NetCreateGameRefused::getRefusalReason() const
+YOGServerGameCreateRefusalReason NetCreateGameRefused::getRefusalReason() const
 {
 	return reason;
 }
@@ -2712,7 +2712,7 @@ NetRefuseGameStart::NetRefuseGameStart()
 
 
 
-NetRefuseGameStart::NetRefuseGameStart(YOGGameStartRefusalReason refusalReason)
+NetRefuseGameStart::NetRefuseGameStart(YOGServerGameStartRefusalReason refusalReason)
 	:refusalReason(refusalReason)
 {
 }
@@ -2738,7 +2738,7 @@ void NetRefuseGameStart::encodeData(GAGCore::OutputStream* stream) const
 void NetRefuseGameStart::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRefuseGameStart");
-	refusalReason = static_cast<YOGGameStartRefusalReason>(stream->readUint8("refusalReason"));
+	refusalReason = static_cast<YOGServerGameStartRefusalReason>(stream->readUint8("refusalReason"));
 	stream->readLeaveSection();
 }
 
@@ -2765,7 +2765,7 @@ bool NetRefuseGameStart::operator==(const NetMessage& rhs) const
 }
 
 
-YOGGameStartRefusalReason NetRefuseGameStart::getRefusalReason() const
+YOGServerGameStartRefusalReason NetRefuseGameStart::getRefusalReason() const
 {
 	return refusalReason;
 }

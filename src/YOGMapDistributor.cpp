@@ -18,13 +18,13 @@
 
 #include "YOGMapDistributor.h"
 
-#include "YOGGame.h"
+#include "YOGServerGame.h"
 #include "YOGPlayer.h"
 #include "NetMessage.h"
 
 using namespace boost;
 
-YOGMapDistributor::YOGMapDistributor(boost::shared_ptr<YOGGame> game, boost::shared_ptr<YOGPlayer> host)
+YOGMapDistributor::YOGMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host)
 	: sentRequest(false), game(game), host(host)
 {
 

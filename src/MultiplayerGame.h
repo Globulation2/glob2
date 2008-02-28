@@ -63,10 +63,10 @@ public:
 	GameJoinCreationState getGameJoinCreationState() const;
 	
 	///Returns the reason the creation of a game was refused
-	YOGGameCreateRefusalReason getGameCreationState();
+	YOGServerGameCreateRefusalReason getGameCreationState();
 
 	///Returns the reason the joining of a game was refused
-	YOGGameJoinRefusalReason getGameJoinState();
+	YOGServerGameJoinRefusalReason getGameJoinState();
 
 	///Sets the map header
 	void setMapHeader(MapHeader& mapHeader);
@@ -151,8 +151,8 @@ protected:
 private:
 	boost::shared_ptr<YOGClient> client;
 	GameJoinCreationState gjcState;
-	YOGGameCreateRefusalReason creationState;
-	YOGGameJoinRefusalReason joinState;
+	YOGServerGameCreateRefusalReason creationState;
+	YOGServerGameJoinRefusalReason joinState;
 	YOGKickReason kickReason;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
