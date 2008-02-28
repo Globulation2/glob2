@@ -17,10 +17,10 @@
 */
 
 #include "YOGDaemon.h"
-#include "YOGGameServer.h"
+#include "YOGServer.h"
 
 int main(int argc, char** argv)
 {
-	YOGGameServer server;
+	YOGServer server;
 	server.run();
 }

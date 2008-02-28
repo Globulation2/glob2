@@ -16,7 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGMapDistributor.h"
+#include "YOGServerMapDistributor.h"
 
 #include "YOGServerGame.h"
 #include "YOGPlayer.h"
@@ -24,7 +24,7 @@
 
 using namespace boost;
 
-YOGMapDistributor::YOGMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host)
+YOGServerMapDistributor::YOGServerMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host)
 	: sentRequest(false), game(game), host(host)
 {
 
@@ -32,7 +32,7 @@ YOGMapDistributor::YOGMapDistributor(boost::shared_ptr<YOGServerGame> game, boos
 
 
 
-void YOGMapDistributor::update()
+void YOGServerMapDistributor::update()
 {
 	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end();)
 	{
@@ -59,7 +59,7 @@ void YOGMapDistributor::update()
 
 
 
-void YOGMapDistributor::addMapRequestee(boost::shared_ptr<YOGPlayer> player)
+void YOGServerMapDistributor::addMapRequestee(boost::shared_ptr<YOGPlayer> player)
 {
 	if(!sentRequest)
 	{
@@ -72,7 +72,7 @@ void YOGMapDistributor::addMapRequestee(boost::shared_ptr<YOGPlayer> player)
 
 
 
-void YOGMapDistributor::removeMapRequestee(boost::shared_ptr<YOGPlayer> player)
+void YOGServerMapDistributor::removeMapRequestee(boost::shared_ptr<YOGPlayer> player)
 {
 	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
@@ -86,7 +86,7 @@ void YOGMapDistributor::removeMapRequestee(boost::shared_ptr<YOGPlayer> player)
 
 
 	
-void YOGMapDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGPlayer> player)
+void YOGServerMapDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGPlayer> player)
 {
 	///This ignores certain messages that must come from the host
 	Uint8 messageType = message->getMessageType();

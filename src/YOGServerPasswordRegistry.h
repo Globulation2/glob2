@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGPasswordRegistry_h
-#define __YOGPasswordRegistry_h
+#ifndef __YOGServerPasswordRegistry_h
+#define __YOGServerPasswordRegistry_h
 
 #include "YOGConsts.h"
 #include <map>
@@ -25,11 +25,11 @@
 
 ///This classes purpose is to store and validate usernames and passwords
 ///for the server
-class YOGPasswordRegistry
+class YOGServerPasswordRegistry
 {
 public:
 	///Constructs the password registry by loading from the passwords file
-	YOGPasswordRegistry();
+	YOGServerPasswordRegistry();
 
 	///Verifies that the information is correct
 	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password); 

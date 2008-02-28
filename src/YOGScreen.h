@@ -32,7 +32,7 @@
 #include "YOGClientEventListener.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientChatListener.h"
-#include "YOGGameListListener.h"
+#include "YOGClientGameListListener.h"
 #include "YOGPlayerListListener.h"
 
 namespace GAGGUI
@@ -79,7 +79,7 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGScreen : public Glob2Screen, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGGameListListener, public YOGPlayerListListener
+class YOGScreen : public Glob2Screen, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGClientGameListListener, public YOGPlayerListListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
@@ -99,7 +99,7 @@ public:
 	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
 	///Handles an internal message
 	void recieveInternalMessage(const std::string& message);
-	///Handles when the game list has been updated from YOGGameListManager
+	///Handles when the game list has been updated from YOGClientGameListManager
 	void gameListUpdated();
 	///Handles when the game list has been updated from YOGPlayerListManager
 	void playerListUpdated();

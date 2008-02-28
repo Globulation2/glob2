@@ -17,11 +17,11 @@
 */
 
 #include "YOGPlayer.h"
-#include "YOGGameServer.h"
-#include "YOGMapDistributor.h"
+#include "YOGServer.h"
+#include "YOGServerMapDistributor.h"
 #include "YOGServerGame.h"
 
-YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameServer& server)
+YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
 {
 	connectionState = WaitingForClientInformation;

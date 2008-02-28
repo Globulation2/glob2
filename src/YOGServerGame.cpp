@@ -18,11 +18,11 @@
 
 #include "YOGServerGame.h"
 #include <algorithm>
-#include "YOGMapDistributor.h"
-#include "YOGGameServer.h"
+#include "YOGServerMapDistributor.h"
+#include "YOGServer.h"
 #include "NetMessage.h"
 
-YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
+YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server)
 	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(gameHeader)
 {
 	requested=false;
@@ -254,12 +254,12 @@ void YOGServerGame::routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGPla
 
 
 
-shared_ptr<YOGMapDistributor> YOGServerGame::getMapDistributor()
+shared_ptr<YOGServerMapDistributor> YOGServerGame::getMapDistributor()
 {
 	if(!distributor)
 	{
 		//clever trick to get a shared_ptr to this
-		distributor.reset(new YOGMapDistributor(host->getGame(), host));
+		distributor.reset(new YOGServerMapDistributor(host->getGame(), host));
 	}
 	return distributor;
 }

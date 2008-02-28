@@ -24,8 +24,8 @@
 #include <boost/shared_ptr.hpp>
 #include "NetGamePlayerManager.h"
 
-class YOGMapDistributor;
-class YOGGameServer;
+class YOGServerMapDistributor;
+class YOGServer;
 class YOGServerGamePlayerManager;
 class NetSendOrder;
 class NetKickPlayer;
@@ -36,7 +36,7 @@ class YOGServerGame
 {
 public:
 	///Constructs a new YOG game
-	YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server);
+	YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server);
 
 	///Updates the game
 	void update();
@@ -73,7 +73,7 @@ public:
 	void routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGPlayer> sender=shared_ptr<YOGPlayer>());
 	
 	///Returns the map distributor
-	shared_ptr<YOGMapDistributor> getMapDistributor();
+	shared_ptr<YOGServerMapDistributor> getMapDistributor();
 	
 	///Kicks the player and sends a kick message to the player
 	void kickPlayer(shared_ptr<NetKickPlayer> message);
@@ -121,9 +121,9 @@ private:
 	Uint16 gameID;
 	Uint32 chatChannel;
 	shared_ptr<YOGPlayer> host;
-	shared_ptr<YOGMapDistributor> distributor;
+	shared_ptr<YOGServerMapDistributor> distributor;
 	std::vector<shared_ptr<YOGPlayer> > players;
-	YOGGameServer& server;
+	YOGServer& server;
 	NetGamePlayerManager playerManager;
 	Uint8 aiNum;
 };

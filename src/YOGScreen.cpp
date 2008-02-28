@@ -35,7 +35,7 @@
 
 #include "ChooseMapScreen.h"
 #include "MultiplayerGameScreen.h"
-#include "YOGGameListManager.h"
+#include "YOGClientGameListManager.h"
 #include "YOGPlayerListManager.h"
 
 #include "YOGMessage.h"

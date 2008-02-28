@@ -16,23 +16,23 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGGameListManager_h
-#define YOGGameListManager_h
+#ifndef YOGClientGameListManager_h
+#define YOGClientGameListManager_h
 
 #include "boost/shared_ptr.hpp"
 #include <list>
-#include "YOGGameListListener.h"
+#include "YOGClientGameListListener.h"
 #include "YOGGameInfo.h"
 
 class NetMessage;
 class YOGClient;
 
 ///This class manages the list of available games on the client end
-class YOGGameListManager
+class YOGClientGameListManager
 {
 public:
 	///Constructs the yog game list manager with a link to the YOGClient
-	YOGGameListManager(YOGClient* client);
+	YOGClientGameListManager(YOGClient* client);
 
 	///Recieves an incoming message
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
@@ -44,17 +44,17 @@ public:
 	std::list<YOGGameInfo>& getGameList();
 
 	///This will add a listener for events saying the game list has been updated
-	void addListener(YOGGameListListener* listener);
+	void addListener(YOGClientGameListListener* listener);
 	
 	///This will remove a listener
-	void removeListener(YOGGameListListener* listener);
+	void removeListener(YOGClientGameListListener* listener);
 
 private:
 	///This will send the event that the game list has been updated to all the listeners
 	void sendToListeners();
 
 	std::list<YOGGameInfo> games;
-	std::list<YOGGameListListener*> listeners;
+	std::list<YOGClientGameListListener*> listeners;
 	YOGClient* client;
 };
 

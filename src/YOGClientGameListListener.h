@@ -16,11 +16,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGGameListListener_h
-#define YOGGameListListener_h
+#ifndef YOGClientGameListListener_h
+#define YOGClientGameListListener_h
 
 ///This class repre
-class YOGGameListListener
+class YOGClientGameListListener
 {
 public:
 	///This is called when the game list is updated

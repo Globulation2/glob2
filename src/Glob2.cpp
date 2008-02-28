@@ -39,7 +39,7 @@
 #include <StringTable.h>
 #include "Utilities.h"
 #include "YOGClient.h"
-#include "YOGGameServer.h"
+#include "YOGServer.h"
 #include "YOGLoginScreen.h"
 
 
@@ -284,7 +284,7 @@ int Glob2::run(int argc, char *argv[])
 	
 	if (globalContainer->hostServer)
 	{
-		YOGGameServer server(YOGRequirePassword, YOGMultipleGames);
+		YOGServer server(YOGRequirePassword, YOGMultipleGames);
 		int rc = server.run();
 		return rc;	
 	}

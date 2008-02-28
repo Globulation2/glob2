@@ -28,9 +28,9 @@ Team.cpp                   TeamStat.cpp                      UnitConsts.cpp     
 UnitEditorScreen.cpp       UnitSkin.cpp                      UnitsSkins.cpp               UnitType.cpp
 Utilities.cpp              VoiceRecorder.cpp                 YOGClientChatChannel.cpp     YOGServerChatChannelManager.cpp
 YOGClientChatListener.cpp        YOGClient.cpp                                                  YOGClientEvent.cpp
-YOGClientEventListener.cpp       YOGServerGame.cpp                       YOGGameInfo.cpp              YOGGameListListener.cpp
-YOGGameListManager.cpp     YOGGameServer.cpp                 YOGLoginScreen.cpp           YOGMapDistributor.cpp
-YOGMessage.cpp             YOGPasswordRegistry.cpp           YOGPlayer.cpp                YOGPlayerInfo.cpp
+YOGClientEventListener.cpp       YOGServerGame.cpp                       YOGGameInfo.cpp              YOGClientGameListListener.cpp
+YOGClientGameListManager.cpp     YOGServer.cpp                 YOGLoginScreen.cpp           YOGServerMapDistributor.cpp
+YOGMessage.cpp             YOGServerPasswordRegistry.cpp           YOGPlayer.cpp                YOGPlayerInfo.cpp
 YOGPlayerListListener.cpp  YOGPlayerListManager.cpp          YOGScreen.cpp                YOGServerChatChannel.cpp
 
 """)

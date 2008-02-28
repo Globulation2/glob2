@@ -20,9 +20,9 @@
 #include <iostream>
 #include "MultiplayerGame.h"
 #include "MapAssembler.h"
-#include "YOGGameListManager.h"
+#include "YOGClientGameListManager.h"
 #include "YOGPlayerListManager.h"
-#include "YOGGameServer.h"
+#include "YOGServer.h"
 #include "YOGClientChatChannel.h"
 #include "YOGMessage.h"
 #include "NetMessage.h"
@@ -53,7 +53,7 @@ void YOGClient::initialize()
 	wasConnecting=false;
 	
 	//By default, the client creates its own game list manager and player list manager
-	gameListManager.reset(new YOGGameListManager(this));
+	gameListManager.reset(new YOGClientGameListManager(this));
 	playerListManager.reset(new YOGPlayerListManager(this));
 }
 
@@ -480,14 +480,14 @@ void YOGClient::removeEventListener(YOGClientEventListener* listener)
 
 
 
-void YOGClient::attachGameServer(boost::shared_ptr<YOGGameServer> nserver)
+void YOGClient::attachGameServer(boost::shared_ptr<YOGServer> nserver)
 {
 	server = nserver;
 }
 
 	
 
-boost::shared_ptr<YOGGameServer> YOGClient::getGameServer()
+boost::shared_ptr<YOGServer> YOGClient::getGameServer()
 {
 	return server;
 }
@@ -508,14 +508,14 @@ boost::shared_ptr<P2PConnection> YOGClient::getP2PConnection()
 
 
 
-void YOGClient::setGameListManager(boost::shared_ptr<YOGGameListManager> ngameListManager)
+void YOGClient::setGameListManager(boost::shared_ptr<YOGClientGameListManager> ngameListManager)
 {
 	gameListManager = ngameListManager;
 }
 
 
 
-boost::shared_ptr<YOGGameListManager> YOGClient::getGameListManager()
+boost::shared_ptr<YOGClientGameListManager> YOGClient::getGameListManager()
 {
 	return gameListManager;
 }
