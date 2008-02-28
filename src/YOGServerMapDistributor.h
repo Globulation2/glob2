@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGMapDistributor_h
-#define __YOGMapDistributor_h
+#ifndef __YOGServerMapDistributor_h
+#define __YOGServerMapDistributor_h
 
 #include "boost/tuple/tuple.hpp"
 #include "boost/shared_ptr.hpp"
@@ -30,13 +30,13 @@ class YOGPlayer;
 class NetMessage;
 
 ///This class has the responsibility of sharing a map between players in a YOG game.
-class YOGMapDistributor
+class YOGServerMapDistributor
 {
 public:
-	///Constructs a YOGMapDistributor with the given game and host
-	YOGMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host);
+	///Constructs a YOGServerMapDistributor with the given game and host
+	YOGServerMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host);
 
-	///Updates the YOGMapDistributor
+	///Updates the YOGServerMapDistributor
 	void update();
 
 	///Add the given player as one requesting the map

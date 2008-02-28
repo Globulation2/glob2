@@ -16,7 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGPasswordRegistry.h"
+#include "YOGServerPasswordRegistry.h"
 #include "Stream.h"
 #include "BinaryStream.h"
 #include "Toolkit.h"
@@ -27,14 +27,14 @@
 
 using namespace GAGCore;
 
-YOGPasswordRegistry::YOGPasswordRegistry()
+YOGServerPasswordRegistry::YOGServerPasswordRegistry()
 {
 	readPasswords();
 }
 
 
 
-YOGLoginState YOGPasswordRegistry::verifyLoginInformation(const std::string& username, const std::string& password)
+YOGLoginState YOGServerPasswordRegistry::verifyLoginInformation(const std::string& username, const std::string& password)
 {
 	if(passwords[username] == transform(username, password))
 		return YOGLoginSuccessful;
@@ -45,7 +45,7 @@ YOGLoginState YOGPasswordRegistry::verifyLoginInformation(const std::string& use
 
 
 
-YOGLoginState YOGPasswordRegistry::registerInformation(const std::string& username, const std::string& password)
+YOGLoginState YOGServerPasswordRegistry::registerInformation(const std::string& username, const std::string& password)
 {
 	if(passwords[username] != "")
 		return YOGUsernameAlreadyUsed;
@@ -55,7 +55,7 @@ YOGLoginState YOGPasswordRegistry::registerInformation(const std::string& userna
 }
 
 
-void YOGPasswordRegistry::flushPasswords()
+void YOGServerPasswordRegistry::flushPasswords()
 {
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("registry"));
 	stream->writeUint32(passwords.size(), "size");
@@ -69,7 +69,7 @@ void YOGPasswordRegistry::flushPasswords()
 
 
 
-void YOGPasswordRegistry::readPasswords()
+void YOGServerPasswordRegistry::readPasswords()
 {
 	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("registry"));
 	if(stream->isEndOfStream())
@@ -86,7 +86,7 @@ void YOGPasswordRegistry::readPasswords()
 
 
 
-std::string YOGPasswordRegistry::transform(const std::string& username, const std::string& password)
+std::string YOGServerPasswordRegistry::transform(const std::string& username, const std::string& password)
 {
 	///Create the to-be hashed string, this can really be any whacky combination but really
 	///where just trying to reach a minimum length

@@ -16,15 +16,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGGameServer_h
-#define __YOGGameServer_h
+#ifndef __YOGServer_h
+#define __YOGServer_h
 
 #include "NetMessage.h"
 #include "NetConnection.h"
 #include "NetListener.h"
 #include "YOGConsts.h"
 #include "YOGPlayer.h"
-#include "YOGPasswordRegistry.h"
+#include "YOGServerPasswordRegistry.h"
 #include "NetBroadcaster.h"
 #include "YOGServerChatChannelManager.h"
 
@@ -45,11 +45,11 @@ using namespace boost;
 ///games). It can maintain a list of games and the users that are in them (for the project
 ///server), or it can have one game, and all connected users are part of it (client hosted
 ///games). In this manner, the same YOG server is re-used for multiple purposes.
-class YOGGameServer
+class YOGServer
 {
 public:
 	///Initiates the YOG Game Server and immeddiattely begins listening on the YOG port.
-	YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy);
+	YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy);
 
 	///If the attempt to bind to the local port failed, this will be false
 	bool isListening();
@@ -128,7 +128,7 @@ private:
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 	
-	YOGPasswordRegistry registry;
+	YOGServerPasswordRegistry registry;
 	boost::shared_ptr<NetConnection> new_connection;
 	
 	boost::shared_ptr<NetBroadcaster> broadcaster;

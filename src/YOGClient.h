@@ -29,9 +29,9 @@
 class MultiplayerGame;
 class MapAssembler;
 class P2PConnection;
-class YOGGameListManager;
+class YOGClientGameListManager;
 class YOGPlayerListManager;
-class YOGGameServer;
+class YOGServer;
 class YOGClientChatChannel;
 
 ///This represents the players YOG client, connecting to the YOG server.
@@ -135,10 +135,10 @@ public:
 	boost::shared_ptr<MapAssembler> getMapAssembler();
 
 	///This attaches a game server to this client, for client-hosted games (such as LAN)
-	void attachGameServer(boost::shared_ptr<YOGGameServer> server);
+	void attachGameServer(boost::shared_ptr<YOGServer> server);
 
 	///This retrieves the attached game server
-	boost::shared_ptr<YOGGameServer> getGameServer();
+	boost::shared_ptr<YOGServer> getGameServer();
 
 	///This attaches a P2PConnection to this client
 	void setP2PConnection(boost::shared_ptr<P2PConnection> connection);
@@ -146,16 +146,16 @@ public:
 	///This retrieves the attached P2P connection
 	boost::shared_ptr<P2PConnection> getP2PConnection();
 
-	///This attaches a YOGGameListManager to this client
-	void setGameListManager(boost::shared_ptr<YOGGameListManager> gameListManager);
+	///This attaches a YOGClientGameListManager to this client
+	void setGameListManager(boost::shared_ptr<YOGClientGameListManager> gameListManager);
 
-	///This retrieves the YOGGameListManager of this client
-	boost::shared_ptr<YOGGameListManager> getGameListManager();
+	///This retrieves the YOGClientGameListManager of this client
+	boost::shared_ptr<YOGClientGameListManager> getGameListManager();
 
 	///This attaches a YOGPlayerListManager to this client
 	void setPlayerListManager(boost::shared_ptr<YOGPlayerListManager> playerListManager);
 
-	///This retrieves the YOGGameListManager of this client
+	///This retrieves the YOGClientGameListManager of this client
 	boost::shared_ptr<YOGPlayerListManager> getPlayerListManager();
 
 	///This adds an event listener
@@ -171,7 +171,7 @@ protected:
 	friend class YOGClientChatChannel;
 	friend class MultiplayerGamePlayerManager;
 	friend class NetEngine;
-	friend class YOGGameListManager;
+	friend class YOGClientGameListManager;
     
     ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGClientChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
@@ -205,9 +205,9 @@ private:
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	boost::shared_ptr<MapAssembler> assembler;
 	boost::shared_ptr<P2PConnection> p2pconnection;
-	boost::shared_ptr<YOGGameListManager> gameListManager;
+	boost::shared_ptr<YOGClientGameListManager> gameListManager;
 	boost::shared_ptr<YOGPlayerListManager> playerListManager;
-	boost::shared_ptr<YOGGameServer> server;
+	boost::shared_ptr<YOGServer> server;
 	std::list<YOGClientEventListener*> listeners;
 
 

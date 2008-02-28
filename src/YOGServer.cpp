@@ -16,12 +16,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGGameServer.h"
+#include "YOGServer.h"
 #include "NetTestSuite.h"
 #include <algorithm>
 #include "YOGServerGame.h"
 
-YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
+YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
 {
 	nl.startListening(YOG_SERVER_PORT);
@@ -30,14 +30,14 @@ YOGGameServer::YOGGameServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolic
 
 
 
-bool YOGGameServer::isListening()
+bool YOGServer::isListening()
 {
 	return nl.isListening();
 }
 
 
 
-void YOGGameServer::update()
+void YOGServer::update()
 {
 	//First attempt connections with new players
 	while(nl.attemptConnection(*new_connection))
@@ -102,7 +102,7 @@ void YOGGameServer::update()
 
 
 
-int YOGGameServer::run()
+int YOGServer::run()
 {
 	NetTestSuite tests;
 	bool cont = tests.runAllTests();
@@ -125,21 +125,21 @@ int YOGGameServer::run()
 
 
 
-YOGLoginPolicy YOGGameServer::getLoginPolicy() const
+YOGLoginPolicy YOGServer::getLoginPolicy() const
 {
 	return loginPolicy;
 }
 
 
 
-YOGGamePolicy YOGGameServer::getGamePolicy() const
+YOGGamePolicy YOGServer::getGamePolicy() const
 {
 	return gamePolicy;
 }
 
 
 
-YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version)
+YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version)
 {
 	if(version < NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
@@ -160,7 +160,7 @@ YOGLoginState YOGGameServer::verifyLoginInformation(const std::string& username,
 
 
 
-YOGLoginState YOGGameServer::registerInformation(const std::string& username, const std::string& password, Uint16 version)
+YOGLoginState YOGServer::registerInformation(const std::string& username, const std::string& password, Uint16 version)
 {
 	if(version < NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
@@ -171,20 +171,20 @@ YOGLoginState YOGGameServer::registerInformation(const std::string& username, co
 
 
 
-const std::list<YOGGameInfo>& YOGGameServer::getGameList() const
+const std::list<YOGGameInfo>& YOGServer::getGameList() const
 {
 	return gameList;
 }
 
 	
-const std::list<YOGPlayerInfo>& YOGGameServer::getPlayerList() const
+const std::list<YOGPlayerInfo>& YOGServer::getPlayerList() const
 {
 	return playerList;
 }
 
 
 
-void YOGGameServer::playerHasLoggedIn(const std::string& username, Uint16 id)
+void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
 	playerList.push_back(YOGPlayerInfo(username, id));
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
@@ -192,7 +192,7 @@ void YOGGameServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 
 
 
-void YOGGameServer::playerHasLoggedOut(Uint16 playerID)
+void YOGServer::playerHasLoggedOut(Uint16 playerID)
 {
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->removePlayer(getPlayer(playerID));
 	for(std::list<YOGPlayerInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
@@ -207,14 +207,14 @@ void YOGGameServer::playerHasLoggedOut(Uint16 playerID)
 
 
 
-YOGServerChatChannelManager& YOGGameServer::getChatChannelManager()
+YOGServerChatChannelManager& YOGServer::getChatChannelManager()
 {
 	return chatChannelManager;
 }
 
 
 
-YOGServerGameCreateRefusalReason YOGGameServer::canCreateNewGame(const std::string& game)
+YOGServerGameCreateRefusalReason YOGServer::canCreateNewGame(const std::string& game)
 {
 	//not implemented
 	return YOGCreateRefusalUnknown;
@@ -223,7 +223,7 @@ YOGServerGameCreateRefusalReason YOGGameServer::canCreateNewGame(const std::stri
 
 
 
-Uint16 YOGGameServer::createNewGame(const std::string& name)
+Uint16 YOGServer::createNewGame(const std::string& name)
 {
 	//choose the new game ID
 	Uint16 newID=1;
@@ -250,7 +250,7 @@ Uint16 YOGGameServer::createNewGame(const std::string& name)
 }
 
 
-YOGServerGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
+YOGServerGameJoinRefusalReason YOGServer::canJoinGame(Uint16 gameID)
 {
 	if(games.find(gameID) == games.end())
 		return YOGServerGameDoesntExist;
@@ -265,21 +265,21 @@ YOGServerGameJoinRefusalReason YOGGameServer::canJoinGame(Uint16 gameID)
 
 
 
-shared_ptr<YOGServerGame> YOGGameServer::getGame(Uint16 gameID)
+shared_ptr<YOGServerGame> YOGServer::getGame(Uint16 gameID)
 {
 	return games[gameID];
 }
 
 
 
-shared_ptr<YOGPlayer> YOGGameServer::getPlayer(Uint16 playerID)
+shared_ptr<YOGPlayer> YOGServer::getPlayer(Uint16 playerID)
 {
 	return players[playerID];
 }
 
 
 
-void YOGGameServer::enableLANBroadcasting()
+void YOGServer::enableLANBroadcasting()
 {
 	if(gameList.size())
 	{
@@ -292,7 +292,7 @@ void YOGGameServer::enableLANBroadcasting()
 
 
 	
-void YOGGameServer::disableLANBroadcasting()
+void YOGServer::disableLANBroadcasting()
 {
 	broadcaster.reset();
 	isBroadcasting = false;
@@ -300,7 +300,7 @@ void YOGGameServer::disableLANBroadcasting()
 
 
 
-YOGGameInfo& YOGGameServer::getGameInfo(Uint16 gameID)
+YOGGameInfo& YOGServer::getGameInfo(Uint16 gameID)
 {
 	for(std::list<YOGGameInfo>::iterator i=gameList.begin(); i!=gameList.end(); ++i)
 	{
@@ -313,7 +313,7 @@ YOGGameInfo& YOGGameServer::getGameInfo(Uint16 gameID)
 
 
 
-Uint16 YOGGameServer::chooseNewPlayerID()
+Uint16 YOGServer::chooseNewPlayerID()
 {
 	//choose the new player ID.
 	Uint16 newID=1;
@@ -332,7 +332,7 @@ Uint16 YOGGameServer::chooseNewPlayerID()
 
 
 
-void YOGGameServer::removeGameInfo(Uint16 gameID)
+void YOGServer::removeGameInfo(Uint16 gameID)
 {
 	for(std::list<YOGGameInfo>::iterator i=gameList.begin(); i!=gameList.end(); ++i)
 	{

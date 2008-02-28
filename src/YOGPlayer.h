@@ -29,7 +29,7 @@
 
 using namespace boost;
 
-class YOGGameServer;
+class YOGServer;
 class YOGServerGame;
 
 ///This represents a connected user on the YOG server.
@@ -37,7 +37,7 @@ class YOGPlayer
 {
 public:
 	///Establishes a YOGPlayer on the given connection.
-	YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameServer& server);
+	YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server);
 
 	///Updates the YOGPlayer. This deals with all incoming messages.
 	void update();
@@ -110,7 +110,7 @@ private:
 	PlayerListState playerListState;
 
 	shared_ptr<NetConnection> connection;
-	YOGGameServer& server;
+	YOGServer& server;
 	Uint16 netVersion;
 	YOGLoginState loginState;
 

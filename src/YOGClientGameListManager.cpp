@@ -16,11 +16,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGGameListManager.h"
+#include "YOGClientGameListManager.h"
 
 #include "NetMessage.h"
 
-YOGGameListManager::YOGGameListManager(YOGClient* client)
+YOGClientGameListManager::YOGClientGameListManager(YOGClient* client)
 	: client(client)
 {
 	
@@ -28,7 +28,7 @@ YOGGameListManager::YOGGameListManager(YOGClient* client)
 
 
 
-void YOGGameListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientGameListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	
@@ -43,37 +43,37 @@ void YOGGameListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
 
 
 
-const std::list<YOGGameInfo>& YOGGameListManager::getGameList() const
+const std::list<YOGGameInfo>& YOGClientGameListManager::getGameList() const
 {
 	return games;
 }
 
 
 
-std::list<YOGGameInfo>& YOGGameListManager::getGameList()
+std::list<YOGGameInfo>& YOGClientGameListManager::getGameList()
 {
 	return games;
 }
 
 
 
-void YOGGameListManager::addListener(YOGGameListListener* listener)
+void YOGClientGameListManager::addListener(YOGClientGameListListener* listener)
 {
 	listeners.push_back(listener);
 }
 
 
 
-void YOGGameListManager::removeListener(YOGGameListListener* listener)
+void YOGClientGameListManager::removeListener(YOGClientGameListListener* listener)
 {
 	listeners.remove(listener);
 }
 
 
 
-void YOGGameListManager::sendToListeners()
+void YOGClientGameListManager::sendToListeners()
 {
-	for(std::list<YOGGameListListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	for(std::list<YOGClientGameListListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
 		(*i)->gameListUpdated();
 	}

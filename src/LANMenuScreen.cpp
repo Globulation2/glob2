@@ -31,7 +31,7 @@
 #include "MultiplayerGameScreen.h"
 #include <StringTable.h>
 #include <Toolkit.h>
-#include "YOGGameServer.h"
+#include "YOGServer.h"
 
 LANMenuScreen::LANMenuScreen()
 {
@@ -67,7 +67,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if(rc == ChooseMapScreen::OK)
 			{
 				shared_ptr<YOGClient> client(new YOGClient);
-				shared_ptr<YOGGameServer> server(new YOGGameServer(YOGAnonymousLogin, YOGSingleGame));
+				shared_ptr<YOGServer> server(new YOGServer(YOGAnonymousLogin, YOGSingleGame));
 				if(!server->isListening())
 				{
 					MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, FormatableString(Toolkit::getStringTable()->getString("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT).c_str(), Toolkit::getStringTable()->getString("[ok]"));

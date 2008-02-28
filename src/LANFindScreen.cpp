@@ -31,7 +31,7 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include "MultiplayerGameScreen.h"
-#include "YOGGameListManager.h"
+#include "YOGClientGameListManager.h"
 
 using namespace GAGGUI;
 
