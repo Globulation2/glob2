@@ -661,7 +661,7 @@ class NetGameJoinRefused : public NetMessage
 {
 public:
 	///Creates a NetGameJoinRefused message
-	NetGameJoinRefused(YOGGameJoinRefusalReason reason);
+	NetGameJoinRefused(YOGServerGameJoinRefusalReason reason);
 
 	///Creates a NetGameJoinRefused message
 	NetGameJoinRefused();
@@ -683,9 +683,9 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 	
 	///Returns the reason why the player could not join the game.
-	YOGGameJoinRefusalReason getRefusalReason() const;
+	YOGServerGameJoinRefusalReason getRefusalReason() const;
 private:
-	YOGGameJoinRefusalReason reason;
+	YOGServerGameJoinRefusalReason reason;
 };
 
 
@@ -809,7 +809,7 @@ public:
 	NetCreateGameRefused();
 
 	///Creates a NetCreateGameRefused message
-	NetCreateGameRefused(YOGGameCreateRefusalReason reason);
+	NetCreateGameRefused(YOGServerGameCreateRefusalReason reason);
 
 	///Returns MNetCreateGameRefused
 	Uint8 getMessageType() const;
@@ -828,9 +828,9 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 	
 	///Returns the reason why the player could not join the game.
-	YOGGameCreateRefusalReason getRefusalReason() const;
+	YOGServerGameCreateRefusalReason getRefusalReason() const;
 private:
-	YOGGameCreateRefusalReason reason;
+	YOGServerGameCreateRefusalReason reason;
 };
 
 
@@ -1366,7 +1366,7 @@ public:
 	NetRefuseGameStart();
 
 	///Creates a NetRefuseGameStart message
-	NetRefuseGameStart(YOGGameStartRefusalReason refusalReason);
+	NetRefuseGameStart(YOGServerGameStartRefusalReason refusalReason);
 
 	///Returns MNetRefuseGameStart
 	Uint8 getMessageType() const;
@@ -1385,10 +1385,10 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 
 	///Retrieves refusalReason
-	YOGGameStartRefusalReason getRefusalReason() const;
+	YOGServerGameStartRefusalReason getRefusalReason() const;
 private:
 private:
-	YOGGameStartRefusalReason refusalReason;
+	YOGServerGameStartRefusalReason refusalReason;
 };
 
 

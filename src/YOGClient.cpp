@@ -23,7 +23,7 @@
 #include "YOGGameListManager.h"
 #include "YOGPlayerListManager.h"
 #include "YOGGameServer.h"
-#include "YOGChatChannel.h"
+#include "YOGClientChatChannel.h"
 #include "YOGMessage.h"
 #include "NetMessage.h"
 
@@ -195,7 +195,7 @@ void YOGClient::update()
 			}
 			else
 			{
-				std::cerr<<"Recieved YOGMessage on a channel without a local YOGChatChannel"<<std::endl;
+				std::cerr<<"Recieved YOGMessage on a channel without a local YOGClientChatChannel"<<std::endl;
 			}
 		}
 
@@ -427,26 +427,26 @@ void YOGClient::sendNetMessage(boost::shared_ptr<NetMessage> message)
 
 
 
-void YOGClient::addYOGChatChannel(YOGChatChannel* channel)
+void YOGClient::addYOGClientChatChannel(YOGClientChatChannel* channel)
 {
 	chatChannels[channel->getChannelID()] = channel;
 }
 
 
 
-void YOGClient::removeYOGChatChannel(YOGChatChannel* channel)
+void YOGClient::removeYOGClientChatChannel(YOGClientChatChannel* channel)
 {
 	chatChannels.erase(channel->getChannelID());
 }
 
 
 
-void YOGClient::sendToListeners(boost::shared_ptr<YOGEvent> event)
+void YOGClient::sendToListeners(boost::shared_ptr<YOGClientEvent> event)
 {
-	for(std::list<YOGEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	for(std::list<YOGClientEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
 		std::cout<<"sending event "<<std::endl;
-		(*i)->handleYOGEvent(event);
+		(*i)->handleYOGClientEvent(event);
 	}
 }
 
@@ -466,14 +466,14 @@ boost::shared_ptr<MapAssembler> YOGClient::getMapAssembler()
 
 
 
-void YOGClient::addEventListener(YOGEventListener* listener)
+void YOGClient::addEventListener(YOGClientEventListener* listener)
 {
 	listeners.push_back(listener);
 }
 
 
 
-void YOGClient::removeEventListener(YOGEventListener* listener)
+void YOGClient::removeEventListener(YOGClientEventListener* listener)
 {
 	listeners.remove(listener);
 }

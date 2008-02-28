@@ -16,49 +16,49 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGChatChannel.h"
+#include "YOGClientChatChannel.h"
 #include "YOGClient.h"
 #include "YOGMessage.h"
-#include "YOGChatListener.h"
+#include "YOGClientChatListener.h"
 #include "NetMessage.h"
 
-YOGChatChannel::YOGChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client)
+YOGClientChatChannel::YOGClientChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client)
 	: channelID(channelID), client(client)
 {
-	client->addYOGChatChannel(this);
+	client->addYOGClientChatChannel(this);
 }
 
 
 
-YOGChatChannel::~YOGChatChannel()
+YOGClientChatChannel::~YOGClientChatChannel()
 {
-	client->removeYOGChatChannel(this);
+	client->removeYOGClientChatChannel(this);
 }
 
 
 
-Uint32 YOGChatChannel::getHistorySize() const
+Uint32 YOGClientChatChannel::getHistorySize() const
 {
 	return messageHistory.size();
 }
 
 
 
-const boost::shared_ptr<YOGMessage> YOGChatChannel::getMessage(Uint32 n) const
+const boost::shared_ptr<YOGMessage> YOGClientChatChannel::getMessage(Uint32 n) const
 {
 	return messageHistory[n].get<0>();
 }
 
 
 
-boost::posix_time::ptime YOGChatChannel::getMessageTime(Uint32 n) const
+boost::posix_time::ptime YOGClientChatChannel::getMessageTime(Uint32 n) const
 {
 	return messageHistory[n].get<1>();
 }
 
 
 
-void YOGChatChannel::sendMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClientChatChannel::sendMessage(boost::shared_ptr<YOGMessage> message)
 {
 	if(channelID != -1)
 	{
@@ -71,37 +71,37 @@ void YOGChatChannel::sendMessage(boost::shared_ptr<YOGMessage> message)
 
 
 
-Uint32 YOGChatChannel::getChannelID() const
+Uint32 YOGClientChatChannel::getChannelID() const
 {
 	return channelID;
 }
 
 
 
-void YOGChatChannel::setChannelID(Uint32 channel)
+void YOGClientChatChannel::setChannelID(Uint32 channel)
 {
-	client->removeYOGChatChannel(this);
+	client->removeYOGClientChatChannel(this);
 	channelID = channel;
-	client->addYOGChatChannel(this);
+	client->addYOGClientChatChannel(this);
 }
 
 
 
-void YOGChatChannel::addListener(YOGChatListener* listener)
+void YOGClientChatChannel::addListener(YOGClientChatListener* listener)
 {
 	listeners.push_back(listener);
 }
 
 
 
-void YOGChatChannel::removeListener(YOGChatListener* listener)
+void YOGClientChatChannel::removeListener(YOGClientChatListener* listener)
 {
 	listeners.remove(listener);
 }
 
 
 
-void YOGChatChannel::recieveMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClientChatChannel::recieveMessage(boost::shared_ptr<YOGMessage> message)
 {
 	messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
 	sendToListeners(message);
@@ -109,9 +109,9 @@ void YOGChatChannel::recieveMessage(boost::shared_ptr<YOGMessage> message)
 
 
 
-void YOGChatChannel::sendToListeners(boost::shared_ptr<YOGMessage> message)
+void YOGClientChatChannel::sendToListeners(boost::shared_ptr<YOGMessage> message)
 {
-	for(std::list<YOGChatListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	for(std::list<YOGClientChatListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
 		(*i)->recieveTextMessage(message);
 	}

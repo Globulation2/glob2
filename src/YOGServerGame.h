@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGGame_h
-#define __YOGGame_h
+#ifndef __YOGServerGame_h
+#define __YOGServerGame_h
 
 #include "YOGPlayer.h"
 #include "MapHeader.h"
@@ -26,17 +26,17 @@
 
 class YOGMapDistributor;
 class YOGGameServer;
-class YOGGamePlayerManager;
+class YOGServerGamePlayerManager;
 class NetSendOrder;
 class NetKickPlayer;
 
 ///This handles a "game" from the server's point of view. This means that it handles
 ///routing between clients, holding the map and game data, etc..
-class YOGGame
+class YOGServerGame
 {
 public:
 	///Constructs a new YOG game
-	YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server);
+	YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server);
 
 	///Updates the game
 	void update();

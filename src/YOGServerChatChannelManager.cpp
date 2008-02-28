@@ -17,12 +17,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGChatChannelManager.h"
+#include "YOGServerChatChannelManager.h"
 #include "YOGConsts.h"
 #include "NetMessage.h"
 
 
-YOGChatChannelManager::YOGChatChannelManager()
+YOGServerChatChannelManager::YOGServerChatChannelManager()
 {
 	currentChannelID = LOBBY_CHAT_CHANNEL+1;
 
@@ -32,14 +32,14 @@ YOGChatChannelManager::YOGChatChannelManager()
 
 
 
-YOGChatChannelManager::~YOGChatChannelManager()
+YOGServerChatChannelManager::~YOGServerChatChannelManager()
 {
 
 }
 
 
 
-void YOGChatChannelManager::update()
+void YOGServerChatChannelManager::update()
 {
 	for(std::map<Uint32, boost::shared_ptr<YOGServerChatChannel> >::iterator i = channels.begin(); i!=channels.end();)
 	{
@@ -59,7 +59,7 @@ void YOGChatChannelManager::update()
 
 
 
-Uint32 YOGChatChannelManager::createNewChatChannel()
+Uint32 YOGServerChatChannelManager::createNewChatChannel()
 {
 	//This finds an unused channel ID
 	while(channels.find(currentChannelID) != channels.end())
@@ -78,14 +78,14 @@ Uint32 YOGChatChannelManager::createNewChatChannel()
 
 
 
-Uint32 YOGChatChannelManager::getLobbyChannel()
+Uint32 YOGServerChatChannelManager::getLobbyChannel()
 {
 	return LOBBY_CHAT_CHANNEL;
 }
 
 
 
-boost::shared_ptr<YOGServerChatChannel> YOGChatChannelManager::getChannel(Uint32 channel)
+boost::shared_ptr<YOGServerChatChannel> YOGServerChatChannelManager::getChannel(Uint32 channel)
 {
 	return channels[channel];
 }

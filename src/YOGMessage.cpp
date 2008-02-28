@@ -148,7 +148,7 @@ std::string YOGMessage::formatForReading() const
 			smessage+="] ";
 			smessage+=getMessage();
 		break;
-		case YOGGameMessage:
+		case YOGServerGameMessage:
 			smessage+="<";
 			smessage+=getSender();
 			smessage+="> ";

@@ -25,7 +25,7 @@
 
 class NetSendFileInformation;
 class NetSendFileChunk;
-class YOGGame;
+class YOGServerGame;
 class YOGPlayer;
 class NetMessage;
 
@@ -34,7 +34,7 @@ class YOGMapDistributor
 {
 public:
 	///Constructs a YOGMapDistributor with the given game and host
-	YOGMapDistributor(boost::shared_ptr<YOGGame> game, boost::shared_ptr<YOGPlayer> host);
+	YOGMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host);
 
 	///Updates the YOGMapDistributor
 	void update();
@@ -49,7 +49,7 @@ public:
 	void handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGPlayer> player);
 private:
 	bool sentRequest;
-	boost::shared_ptr<YOGGame> game;
+	boost::shared_ptr<YOGServerGame> game;
 	boost::shared_ptr<YOGPlayer> host;
 	boost::shared_ptr<NetSendFileInformation> fileInfo;
 	std::vector<boost::shared_ptr<NetSendFileChunk> > chunks;

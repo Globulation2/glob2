@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGChatChannel_h
-#define __YOGChatChannel_h
+#ifndef __YOGClientChatChannel_h
+#define __YOGClientChatChannel_h
 
 #include <vector>
 #include <list>
@@ -27,19 +27,19 @@
 
 class YOGClient;
 class YOGMessage;
-class YOGChatListener;
+class YOGClientChatListener;
 
 ///This represents on the client end a single channel of chat, including its history.
 ///Channels are used in the lobby, in private conversations and in the pre-game setup
-class YOGChatChannel
+class YOGClientChatChannel
 {
 public:
-	///Creates a new YOGChatChannel, with its channel id and then YOGClient to listen from
+	///Creates a new YOGClientChatChannel, with its channel id and then YOGClient to listen from
 	///Adds itself to the YOGClient to listen for chat events
-	YOGChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client);
+	YOGClientChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client);
 
-	///Destroys the YOGChatChannel
-	~YOGChatChannel();
+	///Destroys the YOGClientChatChannel
+	~YOGClientChatChannel();
 
 	///Retrieves the size of the history
 	Uint32 getHistorySize() const;
@@ -60,10 +60,10 @@ public:
 	void setChannelID(Uint32 channel);
 
 	///Adds the listener for this channel. Does not take ownership.
-	void addListener(YOGChatListener* listener);
+	void addListener(YOGClientChatListener* listener);
 	
 	///Removes the listener from this channel
-	void removeListener(YOGChatListener* listener);
+	void removeListener(YOGClientChatListener* listener);
 
 protected:
 	friend class YOGClient;
@@ -78,7 +78,7 @@ private:
 	boost::shared_ptr<YOGClient> client;
 	Uint32 channelID;
 	std::vector<boost::tuple<boost::shared_ptr<YOGMessage>, boost::posix_time::ptime> > messageHistory;
-	std::list<YOGChatListener*> listeners;
+	std::list<YOGClientChatListener*> listeners;
 };
 
 

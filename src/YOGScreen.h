@@ -29,9 +29,9 @@
 #include "Glob2Screen.h"
 #include "YOGClient.h"
 #include "IRCTextMessageHandler.h"
-#include "YOGEventListener.h"
-#include "YOGChatChannel.h"
-#include "YOGChatListener.h"
+#include "YOGClientEventListener.h"
+#include "YOGClientChatChannel.h"
+#include "YOGClientChatListener.h"
 #include "YOGGameListListener.h"
 #include "YOGPlayerListListener.h"
 
@@ -79,7 +79,7 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGScreen : public Glob2Screen, public YOGEventListener, public YOGChatListener, public IRCTextMessageListener, public YOGGameListListener, public YOGPlayerListListener
+class YOGScreen : public Glob2Screen, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGGameListListener, public YOGPlayerListListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
@@ -92,10 +92,10 @@ public:
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
 	///Responds to YOG events
-	void handleYOGEvent(boost::shared_ptr<YOGEvent> event);
+	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
 	///Handle text message events from IRCTextMessageHandler
 	void handleIRCTextMessage(const std::string& message);
-	///Handles text message events from the YOGChatChannel
+	///Handles text message events from the YOGClientChatChannel
 	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
 	///Handles an internal message
 	void recieveInternalMessage(const std::string& message);
@@ -145,7 +145,7 @@ private:
 	TextButton *joinButton;
 
 	boost::shared_ptr<YOGClient> client;
-	boost::shared_ptr<YOGChatChannel> lobbyChat;
+	boost::shared_ptr<YOGClientChatChannel> lobbyChat;
 	boost::shared_ptr<IRCTextMessageHandler> ircChat;
 
 };

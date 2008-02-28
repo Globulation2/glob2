@@ -30,7 +30,7 @@
 using namespace boost;
 
 class YOGGameServer;
-class YOGGame;
+class YOGServerGame;
 
 ///This represents a connected user on the YOG server.
 class YOGPlayer
@@ -63,7 +63,7 @@ public:
 	std::string getPlayerName();
 
 	///Returns the game the player is connected to
-	boost::shared_ptr<YOGGame> getGame();
+	boost::shared_ptr<YOGServerGame> getGame();
 
 	///Returns the players current average ping
 	unsigned getAveragePing() const;
@@ -140,7 +140,7 @@ private:
 	///Tells what game the player is currently a part of
 	Uint16 gameID;
 	///Links to the connected game
-	weak_ptr<YOGGame> game;
+	weak_ptr<YOGServerGame> game;
 
 	///Counts down between sending a ping
 	unsigned short pingCountdown;

@@ -20,7 +20,7 @@
 #define NetGamePlayerManager_h
 
 #include "GameHeader.h"
-class YOGGame;
+class YOGServerGame;
 
 ///This class handles the players and AI's that can join, be kicked out of, disconnect, leave
 ///and otherwise be mangled arround with in an online game during the setup stage

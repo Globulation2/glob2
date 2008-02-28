@@ -26,7 +26,7 @@
 #include "YOGPlayer.h"
 #include "YOGPasswordRegistry.h"
 #include "NetBroadcaster.h"
-#include "YOGChatChannelManager.h"
+#include "YOGServerChatChannelManager.h"
 
 #include <list>
 #include <map>
@@ -86,11 +86,11 @@ public:
 	void playerHasLoggedOut(Uint16 playerID);
 
 	///Returns the chat channel manager
-	YOGChatChannelManager& getChatChannelManager();
+	YOGServerChatChannelManager& getChatChannelManager();
 
 	///Asks the server whether a new game can be created with the given information.
 	///Return YOGCreateRefusalUnknown if it can, or the refusal reason elsewise
-	YOGGameCreateRefusalReason canCreateNewGame(const std::string& game);
+	YOGServerGameCreateRefusalReason canCreateNewGame(const std::string& game);
 
 	///Tells the server to create a new game with the given game information,
 	///and returns the new id. The id will always be greater than 0
@@ -98,10 +98,10 @@ public:
 
 	///Asks the server whether a player can join the provided game with the information.
 	///Return YOGJoinRefusalUnknown if it can, or the failure reason elsewise
-	YOGGameJoinRefusalReason canJoinGame(Uint16 gameID);
+	YOGServerGameJoinRefusalReason canJoinGame(Uint16 gameID);
 	
 	///Returns the game assocciatted with the given ID
-	shared_ptr<YOGGame> getGame(Uint16 gameID);
+	shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
 	///Returns the player assocciatted with the given ID
 	shared_ptr<YOGPlayer> getPlayer(Uint16 playerID);
@@ -122,7 +122,7 @@ private:
 
 	NetListener nl;
 	std::map<Uint16, shared_ptr<YOGPlayer> > players;
-	std::map<Uint16, shared_ptr<YOGGame> > games;
+	std::map<Uint16, shared_ptr<YOGServerGame> > games;
 	std::list<YOGGameInfo> gameList;
 	std::list<YOGPlayerInfo> playerList;
 	YOGLoginPolicy loginPolicy;
@@ -133,7 +133,7 @@ private:
 	
 	boost::shared_ptr<NetBroadcaster> broadcaster;
 	bool isBroadcasting;
-	YOGChatChannelManager chatChannelManager;
+	YOGServerChatChannelManager chatChannelManager;
 };
 
 #endif

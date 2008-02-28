@@ -16,14 +16,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGEvent_h
-#define __YOGEvent_h
+#ifndef __YOGClientEvent_h
+#define __YOGClientEvent_h
 
 #include <string>
 #include "SDL_net.h"
 #include "YOGConsts.h"
 
-enum YOGEventType
+enum YOGClientEventType
 {
 	YEConnected,
 	YEConnectionLost,
@@ -35,10 +35,10 @@ enum YOGEventType
 
 ///This represents an event recieved from  YOGClient
 ///These are merely data classes, and not much more
-class YOGEvent
+class YOGClientEvent
 {
 public:
-	virtual ~YOGEvent() {}
+	virtual ~YOGClientEvent() {}
 
 	///Returns the event type
 	virtual Uint8 getEventType() const = 0;
@@ -46,15 +46,15 @@ public:
 	///Returns a formatted version of the event
 	virtual std::string format() const = 0;
 	
-	///Compares two YOGEvent
-	virtual bool operator==(const YOGEvent& rhs) const = 0;
+	///Compares two YOGClientEvent
+	virtual bool operator==(const YOGClientEvent& rhs) const = 0;
 };
 
 
 
 
 ///YOGConnectedEvent
-class YOGConnectedEvent : public YOGEvent
+class YOGConnectedEvent : public YOGClientEvent
 {
 public:
 	///Creates a YOGConnectedEvent event
@@ -66,15 +66,15 @@ public:
 	///Returns a formatted version of the event
 	std::string format() const;
 	
-	///Compares two YOGEvent
-	bool operator==(const YOGEvent& rhs) const;
+	///Compares two YOGClientEvent
+	bool operator==(const YOGClientEvent& rhs) const;
 };
 
 
 
 
 ///YOGConnectionLostEvent
-class YOGConnectionLostEvent : public YOGEvent
+class YOGConnectionLostEvent : public YOGClientEvent
 {
 public:
 	///Creates a YOGConnectionLostEvent event
@@ -86,15 +86,15 @@ public:
 	///Returns a formatted version of the event
 	std::string format() const;
 	
-	///Compares two YOGEvent
-	bool operator==(const YOGEvent& rhs) const;
+	///Compares two YOGClientEvent
+	bool operator==(const YOGClientEvent& rhs) const;
 };
 
 
 
 
 ///YOGLoginAcceptedEvent
-class YOGLoginAcceptedEvent : public YOGEvent
+class YOGLoginAcceptedEvent : public YOGClientEvent
 {
 public:
 	///Creates a YOGLoginAcceptedEvent event
@@ -106,15 +106,15 @@ public:
 	///Returns a formatted version of the event
 	std::string format() const;
 	
-	///Compares two YOGEvent
-	bool operator==(const YOGEvent& rhs) const;
+	///Compares two YOGClientEvent
+	bool operator==(const YOGClientEvent& rhs) const;
 };
 
 
 
 
 ///YOGLoginRefusedEvent
-class YOGLoginRefusedEvent : public YOGEvent
+class YOGLoginRefusedEvent : public YOGClientEvent
 {
 public:
 	///Creates a YOGLoginRefusedEvent event
@@ -126,8 +126,8 @@ public:
 	///Returns a formatted version of the event
 	std::string format() const;
 	
-	///Compares two YOGEvent
-	bool operator==(const YOGEvent& rhs) const;
+	///Compares two YOGClientEvent
+	bool operator==(const YOGClientEvent& rhs) const;
 
 	///Retrieves reason
 	YOGLoginState getReason() const;

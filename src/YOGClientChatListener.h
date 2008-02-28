@@ -16,5 +16,20 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGChatListener.h"
 
+#ifndef __YOGClientChatListener_h
+#define __YOGClientChatListener_h
+
+#include "boost/shared_ptr.hpp"
+
+class YOGMessage;
+
+///This class is a mix-in class for objects that want to listen for recieved texts
+class YOGClientChatListener
+{
+public:
+	///Recieves a text message
+	virtual void recieveTextMessage(boost::shared_ptr<YOGMessage> message)=0;
+};
+
+#endif
