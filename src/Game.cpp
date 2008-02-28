@@ -2410,7 +2410,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
 		else
-			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
+			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -32, -32, 32, 32, overlayColor);
 	}
 }
 
