@@ -20,6 +20,7 @@
 #include <algorithm>
 #include "YOGMapDistributor.h"
 #include "YOGGameServer.h"
+#include "NetMessage.h"
 
 YOGGame::YOGGame(Uint16 gameID, Uint32 chatChannel, YOGGameServer& server)
 	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(gameHeader)

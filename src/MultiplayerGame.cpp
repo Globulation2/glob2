@@ -23,6 +23,7 @@
 #include "FormatableString.h"
 #include "Toolkit.h"
 #include "StringTable.h"
+#include "NetMessage.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)

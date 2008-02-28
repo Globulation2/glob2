@@ -18,6 +18,7 @@
 
 #include "NetEngine.h"
 #include <iostream>
+#include "NetMessage.h"
 
 
 NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<YOGClient> client)

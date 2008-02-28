@@ -21,6 +21,7 @@
 #define YOGChatChannelManager_h
 
 #include "YOGServerChatChannel.h"
+#include <map>
 
 ///This does serverside management of YOG chat channels
 class YOGChatChannelManager

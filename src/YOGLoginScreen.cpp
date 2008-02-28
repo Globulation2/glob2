@@ -68,11 +68,12 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	animation->visible=false;
 	addWidget(animation);
 	
-	client->setEventListener(this);
+	client->addEventListener(this);
 }
 
 YOGLoginScreen::~YOGLoginScreen()
 {
+	client->removeEventListener(this);
 	Toolkit::releaseSprite("data/gfx/rotatingEarth");
 	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 }
@@ -89,7 +90,6 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 			client->connect(YOG_SERVER_IP);
-			client->setEventListener(this);
 			while(client->isConnecting())
 			{
 				client->update();
@@ -142,7 +142,6 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 		animation->visible=false;
 		YOGScreen screen(client);
 		int rc = screen.execute(globalContainer->gfx, 40);
-		client->setEventListener(this);
 		if(rc == YOGScreen::ConnectionLost)
 			endExecute(ConnectionLost);
 		else if(rc == -1)

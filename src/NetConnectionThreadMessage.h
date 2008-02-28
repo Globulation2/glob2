@@ -23,7 +23,8 @@
 #include "SDL_net.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include "NetMessage.h"
+
+class NetMessage;
 
 enum NetConnectionThreadMessageType
 {

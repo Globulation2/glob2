@@ -20,7 +20,6 @@
 #define __NetConnection_h
 
 #include "SDL_net.h"
-#include "NetMessage.h"
 #include "NetConnectionThread.h"
 #include <queue>
 #include <boost/shared_ptr.hpp>
@@ -28,6 +27,7 @@
 using namespace boost;
 
 class NetListener;
+class NetMessage;
 
 ///NetConnection represents a low level wrapper arround SDL.
 ///It queues Message(s) it recieves from the connection.

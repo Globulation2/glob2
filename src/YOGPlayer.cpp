@@ -19,6 +19,7 @@
 #include "YOGPlayer.h"
 #include "YOGGameServer.h"
 #include "YOGMapDistributor.h"
+#include "YOGGame.h"
 
 YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGGameServer& server)
  : connection(connection), server(server), playerID(id)

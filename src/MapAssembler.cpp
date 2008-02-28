@@ -20,6 +20,7 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include "StreamBackend.h"
+#include "NetMessage.h"
 
 using namespace boost;
 using namespace GAGCore;

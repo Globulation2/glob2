@@ -19,9 +19,15 @@
 #ifndef __YOGMapDistributor_h
 #define __YOGMapDistributor_h
 
-#include "YOGGame.h"
-#include "YOGPlayer.h"
 #include "boost/tuple/tuple.hpp"
+#include "boost/shared_ptr.hpp"
+#include <vector>
+
+class NetSendFileInformation;
+class NetSendFileChunk;
+class YOGGame;
+class YOGPlayer;
+class NetMessage;
 
 ///This class has the responsibility of sharing a map between players in a YOG game.
 class YOGMapDistributor

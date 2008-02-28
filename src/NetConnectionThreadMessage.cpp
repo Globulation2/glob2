@@ -19,6 +19,7 @@
 #include "NetConnectionThreadMessage.h"
 #include <sstream>
 #include <typeinfo>
+#include "NetMessage.h"
 
 
 NTConnect::NTConnect(std::string server, Uint16 port)

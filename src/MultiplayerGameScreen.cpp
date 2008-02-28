@@ -35,9 +35,10 @@
 #include <StringTable.h>
 
 #include "IRC.h"
+#include "YOGMessage.h"
 
 MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
-	: game(game), gameChat(new YOGChatChannel(-1, client, this)), ircChat(ircChat)
+	: game(game), gameChat(new YOGChatChannel(-1, client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -110,11 +111,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	updateJoinedPlayers();
 	
 	game->addEventListener(this);
+	gameChat->addListener(this);
 }
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
 {
 	game->removeEventListener(this);
+	gameChat->removeListener(this);
 }
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)

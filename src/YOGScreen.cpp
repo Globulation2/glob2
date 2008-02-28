@@ -38,6 +38,8 @@
 #include "YOGGameListManager.h"
 #include "YOGPlayerListManager.h"
 
+#include "YOGMessage.h"
+
 YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
 	: List(x, y, w, h, hAlign, vAlign, font)
 {
@@ -112,16 +114,16 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 	
-	lobbyChat.reset(new YOGChatChannel(LOBBY_CHAT_CHANNEL, client, this));
+	lobbyChat.reset(new YOGChatChannel(LOBBY_CHAT_CHANNEL, client));
 
 	ircChat.reset(new IRCTextMessageHandler);
 	ircChat->addTextMessageListener(this);
 	ircChat->startIRC(client->getUsername());
 	
-	client->setEventListener(this);
-	
+	client->addEventListener(this);
 	client->getGameListManager()->addListener(this);
 	client->getPlayerListManager()->addListener(this);
+	lobbyChat->addListener(this);
 }
 
 
@@ -131,6 +133,8 @@ YOGScreen::~YOGScreen()
 	ircChat->removeTextMessageListener(this);
 	ircChat->stopIRC();
 	
+	lobbyChat->removeListener(this);
+	client->removeEventListener(this);
 	client->getGameListManager()->removeListener(this);
 	client->getPlayerListManager()->removeListener(this);
 }

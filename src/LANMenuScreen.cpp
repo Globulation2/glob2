@@ -19,18 +19,19 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "LANMenuScreen.h"
-#include "GlobalContainer.h"
-#include <GUIButton.h>
-#include <GUIText.h>
-#include <GraphicContext.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include "LANFindScreen.h"
-#include "MultiplayerGameScreen.h"
 #include "ChooseMapScreen.h"
 #include "FormatableString.h"
+#include "GlobalContainer.h"
+#include <GraphicContext.h>
+#include <GUIButton.h>
 #include "GUIMessageBox.h"
+#include <GUIText.h>
+#include "LANFindScreen.h"
+#include "LANMenuScreen.h"
+#include "MultiplayerGameScreen.h"
+#include <StringTable.h>
+#include <Toolkit.h>
+#include "YOGGameServer.h"
 
 LANMenuScreen::LANMenuScreen()
 {

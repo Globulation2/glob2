@@ -27,6 +27,8 @@
 class YOGMapDistributor;
 class YOGGameServer;
 class YOGGamePlayerManager;
+class NetSendOrder;
+class NetKickPlayer;
 
 ///This handles a "game" from the server's point of view. This means that it handles
 ///routing between clients, holding the map and game data, etc..

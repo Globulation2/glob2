@@ -20,9 +20,10 @@
 #include "YOGClient.h"
 #include "YOGMessage.h"
 #include "YOGChatListener.h"
+#include "NetMessage.h"
 
-YOGChatChannel::YOGChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client, YOGChatListener* listener)
-	: channelID(channelID), client(client), listener(listener)
+YOGChatChannel::YOGChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client)
+	: channelID(channelID), client(client)
 {
 	client->addYOGChatChannel(this);
 }
@@ -64,8 +65,7 @@ void YOGChatChannel::sendMessage(boost::shared_ptr<YOGMessage> message)
 		messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
 		boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channelID, message));
 		client->sendNetMessage(netmessage);
-		if(listener)
-			listener->recieveTextMessage(message);
+		sendToListeners(message);
 	}
 }
 
@@ -87,9 +87,16 @@ void YOGChatChannel::setChannelID(Uint32 channel)
 
 
 
-void YOGChatChannel::setListener(YOGChatListener* nlistener)
+void YOGChatChannel::addListener(YOGChatListener* listener)
 {
-	listener = nlistener;
+	listeners.push_back(listener);
+}
+
+
+
+void YOGChatChannel::removeListener(YOGChatListener* listener)
+{
+	listeners.remove(listener);
 }
 
 
@@ -97,8 +104,17 @@ void YOGChatChannel::setListener(YOGChatListener* nlistener)
 void YOGChatChannel::recieveMessage(boost::shared_ptr<YOGMessage> message)
 {
 	messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
-	if(listener)
-		listener->recieveTextMessage(message);
+	sendToListeners(message);
+}
+
+
+
+void YOGChatChannel::sendToListeners(boost::shared_ptr<YOGMessage> message)
+{
+	for(std::list<YOGChatListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	{
+		(*i)->recieveTextMessage(message);
+	}
 }
 
 

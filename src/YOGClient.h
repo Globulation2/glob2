@@ -19,17 +19,11 @@
 #ifndef __YOGClient_h
 #define __YOGClient_h
 
-#include "NetMessage.h"
 #include "NetConnection.h"
 #include "NetListener.h"
 #include "YOGConsts.h"
-#include "YOGGameInfo.h"
-#include "YOGPlayerInfo.h"
-#include "YOGMessage.h"
 #include "YOGEventListener.h"
 #include <list>
-#include "YOGGameServer.h"
-#include "YOGChatChannel.h"
 #include <map>
 
 class MultiplayerGame;
@@ -37,6 +31,8 @@ class MapAssembler;
 class P2PConnection;
 class YOGGameListManager;
 class YOGPlayerListManager;
+class YOGGameServer;
+class YOGChatChannel;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -138,15 +134,17 @@ public:
 	///Returns the map assembler for this connection
 	boost::shared_ptr<MapAssembler> getMapAssembler();
 
-	///This sets the event listener, which will recieve all subsequent events.
-	///Does not take ownership of the object
-	void setEventListener(YOGEventListener* listener);
-
 	///This attaches a game server to this client, for client-hosted games (such as LAN)
 	void attachGameServer(boost::shared_ptr<YOGGameServer> server);
 
+	///This retrieves the attached game server
+	boost::shared_ptr<YOGGameServer> getGameServer();
+
 	///This attaches a P2PConnection to this client
 	void setP2PConnection(boost::shared_ptr<P2PConnection> connection);
+	
+	///This retrieves the attached P2P connection
+	boost::shared_ptr<P2PConnection> getP2PConnection();
 
 	///This attaches a YOGGameListManager to this client
 	void setGameListManager(boost::shared_ptr<YOGGameListManager> gameListManager);
@@ -159,6 +157,12 @@ public:
 
 	///This retrieves the YOGGameListManager of this client
 	boost::shared_ptr<YOGPlayerListManager> getPlayerListManager();
+
+	///This adds an event listener
+	void addEventListener(YOGEventListener* listener);
+
+	///This removes an event listenr
+	void removeEventListener(YOGEventListener* listener);
 
 protected:
     friend class MultiplayerGame;
@@ -178,11 +182,15 @@ protected:
 	///Removes the YOGChatChannel (done by YOGChatChannel itself)
 	void removeYOGChatChannel(YOGChatChannel* channel);
 
+	///This sends an event to all the listeners
+	void sendToListeners(boost::shared_ptr<YOGEvent> event);
+
 private:
 	std::string username;
 	Uint16 playerID;
 
 	bool wasConnected;
+	bool wasConnecting;
 
 	NetConnection nc;
 
@@ -199,9 +207,9 @@ private:
 	boost::shared_ptr<P2PConnection> p2pconnection;
 	boost::shared_ptr<YOGGameListManager> gameListManager;
 	boost::shared_ptr<YOGPlayerListManager> playerListManager;
-	YOGEventListener* listener;
-
 	boost::shared_ptr<YOGGameServer> server;
+	std::list<YOGEventListener*> listeners;
+
 
 };
 

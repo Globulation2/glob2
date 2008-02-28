@@ -18,6 +18,10 @@
 */
 
 #include "YOGServerChatChannel.h"
+#include "YOGPlayer.h"
+#include "YOGMessage.h"
+#include "NetMessage.h"
+
 
 YOGServerChatChannel::YOGServerChatChannel(Uint32 channel)
 :	channel(channel)
