@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGPlayer_h
-#define __YOGPlayer_h
+#ifndef __YOGServerPlayer_h
+#define __YOGServerPlayer_h
 
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
@@ -33,16 +33,16 @@ class YOGServer;
 class YOGServerGame;
 
 ///This represents a connected user on the YOG server.
-class YOGPlayer
+class YOGServerPlayer
 {
 public:
-	///Establishes a YOGPlayer on the given connection.
-	YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server);
+	///Establishes a YOGServerPlayer on the given connection.
+	YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server);
 
-	///Updates the YOGPlayer. This deals with all incoming messages.
+	///Updates the YOGServerPlayer. This deals with all incoming messages.
 	void update();
 
-	///Returns true if this YOGPlayer is still connected
+	///Returns true if this YOGServerPlayer is still connected
 	bool isConnected();
 
 	///Sends a message to the player. Caution should be taken

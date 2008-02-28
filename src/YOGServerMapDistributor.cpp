@@ -19,12 +19,12 @@
 #include "YOGServerMapDistributor.h"
 
 #include "YOGServerGame.h"
-#include "YOGPlayer.h"
+#include "YOGServerPlayer.h"
 #include "NetMessage.h"
 
 using namespace boost;
 
-YOGServerMapDistributor::YOGServerMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host)
+YOGServerMapDistributor::YOGServerMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGServerPlayer> host)
 	: sentRequest(false), game(game), host(host)
 {
 
@@ -34,7 +34,7 @@ YOGServerMapDistributor::YOGServerMapDistributor(boost::shared_ptr<YOGServerGame
 
 void YOGServerMapDistributor::update()
 {
-	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end();)
+	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> >::iterator i = players.begin(); i!=players.end();)
 	{
 		if(!i->get<0>()->isConnected())
 		{
@@ -59,7 +59,7 @@ void YOGServerMapDistributor::update()
 
 
 
-void YOGServerMapDistributor::addMapRequestee(boost::shared_ptr<YOGPlayer> player)
+void YOGServerMapDistributor::addMapRequestee(boost::shared_ptr<YOGServerPlayer> player)
 {
 	if(!sentRequest)
 	{
@@ -72,9 +72,9 @@ void YOGServerMapDistributor::addMapRequestee(boost::shared_ptr<YOGPlayer> playe
 
 
 
-void YOGServerMapDistributor::removeMapRequestee(boost::shared_ptr<YOGPlayer> player)
+void YOGServerMapDistributor::removeMapRequestee(boost::shared_ptr<YOGServerPlayer> player)
 {
-	for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(i->get<0>() == player)
 		{
@@ -86,7 +86,7 @@ void YOGServerMapDistributor::removeMapRequestee(boost::shared_ptr<YOGPlayer> pl
 
 
 	
-void YOGServerMapDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGPlayer> player)
+void YOGServerMapDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player)
 {
 	///This ignores certain messages that must come from the host
 	Uint8 messageType = message->getMessageType();
@@ -104,7 +104,7 @@ void YOGServerMapDistributor::handleMessage(boost::shared_ptr<NetMessage> messag
 	}
 	else if(messageType == MNetRequestNextChunk)
 	{
-		for(std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+		for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 		{
 			if(i->get<0>() == player)
 			{

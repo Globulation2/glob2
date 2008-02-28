@@ -20,7 +20,7 @@
 */
 
 #include "MultiplayerGameScreen.h"
-#include "YOGScreen.h"
+#include "YOGClientLobbyScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "NetConsts.h"

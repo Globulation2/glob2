@@ -43,12 +43,12 @@ void YOGServer::update()
 	while(nl.attemptConnection(*new_connection))
 	{
 		Uint16 id = chooseNewPlayerID();
-		players[id]=shared_ptr<YOGPlayer>(new YOGPlayer(new_connection, id, *this));
+		players[id]=shared_ptr<YOGServerPlayer>(new YOGServerPlayer(new_connection, id, *this));
 		new_connection.reset(new NetConnection);
 	}
 
 	//Call update to all of the players
-	for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 	{
 		i->second->update();
 	}
@@ -60,12 +60,12 @@ void YOGServer::update()
 	}
 
 	//Remove all of the players that have disconnected.
-	for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i=players.begin(); i!=players.end();)
+	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end();)
 	{
 		if(!i->second->isConnected())
 		{
 			playerHasLoggedOut(i->second->getPlayerID());
-			std::map<Uint16, shared_ptr<YOGPlayer> >::iterator to_erase=i;
+			std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator to_erase=i;
 			i++;
 			players.erase(to_erase);
 		}
@@ -147,7 +147,7 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 		return YOGLoginSuccessful;
 
 	///check if the player is already logged in
-	for(std::map<Uint16, shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(i->second->getPlayerName() == username)
 		{
@@ -272,7 +272,7 @@ shared_ptr<YOGServerGame> YOGServer::getGame(Uint16 gameID)
 
 
 
-shared_ptr<YOGPlayer> YOGServer::getPlayer(Uint16 playerID)
+shared_ptr<YOGServerPlayer> YOGServer::getPlayer(Uint16 playerID)
 {
 	return players[playerID];
 }

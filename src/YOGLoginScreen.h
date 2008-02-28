@@ -24,7 +24,7 @@
 
 #include "Glob2Screen.h"
 #include "YOGClient.h"
-#include "YOGScreen.h"
+#include "YOGClientLobbyScreen.h"
 
 namespace GAGGUI
 {

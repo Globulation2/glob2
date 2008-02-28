@@ -16,23 +16,23 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGPlayerListManager_h
-#define YOGPlayerListManager_h
+#ifndef YOGClientPlayerListManager_h
+#define YOGClientPlayerListManager_h
 
 #include "boost/shared_ptr.hpp"
 #include <list>
-#include "YOGPlayerListListener.h"
+#include "YOGClientPlayerListListener.h"
 #include "YOGPlayerInfo.h"
 
 class NetMessage;
 class YOGClient;
 
 ///This class manages the list of available players on the client end
-class YOGPlayerListManager
+class YOGClientPlayerListManager
 {
 public:
 	///Constructs the yog player list manager with a link to the YOGClient
-	YOGPlayerListManager(YOGClient* client);
+	YOGClientPlayerListManager(YOGClient* client);
 
 	///Recieves an incoming message
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
@@ -44,10 +44,10 @@ public:
 	std::list<YOGPlayerInfo>& getPlayerList();
 
 	///This will add a listener for events saying the player list has been updated
-	void addListener(YOGPlayerListListener* listener);
+	void addListener(YOGClientPlayerListListener* listener);
 	
 	///This will remove a listener
-	void removeListener(YOGPlayerListListener* listener);
+	void removeListener(YOGClientPlayerListListener* listener);
 
 	///This will find the name of the player with the given ID
 	std::string findPlayerName(Uint16 playerID);
@@ -56,7 +56,7 @@ private:
 	void sendToListeners();
 
 	std::list<YOGPlayerInfo> players;
-	std::list<YOGPlayerListListener*> listeners;
+	std::list<YOGClientPlayerListListener*> listeners;
 	YOGClient* client;
 };
 

@@ -26,7 +26,7 @@
 class NetSendFileInformation;
 class NetSendFileChunk;
 class YOGServerGame;
-class YOGPlayer;
+class YOGServerPlayer;
 class NetMessage;
 
 ///This class has the responsibility of sharing a map between players in a YOG game.
@@ -34,26 +34,26 @@ class YOGServerMapDistributor
 {
 public:
 	///Constructs a YOGServerMapDistributor with the given game and host
-	YOGServerMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGPlayer> host);
+	YOGServerMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGServerPlayer> host);
 
 	///Updates the YOGServerMapDistributor
 	void update();
 
 	///Add the given player as one requesting the map
-	void addMapRequestee(boost::shared_ptr<YOGPlayer> player);
+	void addMapRequestee(boost::shared_ptr<YOGServerPlayer> player);
 	
 	///Removes the given player from requesting the map
-	void removeMapRequestee(boost::shared_ptr<YOGPlayer> player);
+	void removeMapRequestee(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Handles the provided message
-	void handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGPlayer> player);
+	void handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player);
 private:
 	bool sentRequest;
 	boost::shared_ptr<YOGServerGame> game;
-	boost::shared_ptr<YOGPlayer> host;
+	boost::shared_ptr<YOGServerPlayer> host;
 	boost::shared_ptr<NetSendFileInformation> fileInfo;
 	std::vector<boost::shared_ptr<NetSendFileChunk> > chunks;
-	std::vector<boost::tuple<boost::shared_ptr<YOGPlayer>, int, int> > players;
+	std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> > players;
 
 };
 

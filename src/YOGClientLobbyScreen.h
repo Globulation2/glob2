@@ -33,7 +33,7 @@
 #include "YOGClientChatChannel.h"
 #include "YOGClientChatListener.h"
 #include "YOGClientGameListListener.h"
-#include "YOGPlayerListListener.h"
+#include "YOGClientPlayerListListener.h"
 
 namespace GAGGUI
 {
@@ -44,15 +44,15 @@ namespace GAGGUI
 
 /// A widget that maintains the list of players, and draws an icon based
 /// on whether that player is from YOG or from IRC
-class YOGPlayerList : public List
+class YOGClientPlayerList : public List
 {
 public:
 
 	/// Constructor
-	YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font);
+	YOGClientPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font);
 
 	/// Destructor, release sprites
-	virtual ~YOGPlayerList();
+	virtual ~YOGClientPlayerList();
 	
 	/// Represents the type of network a player can be in
 	enum NetworkType
@@ -79,13 +79,13 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGScreen : public Glob2Screen, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGClientGameListListener, public YOGPlayerListListener
+class YOGClientLobbyScreen : public Glob2Screen, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGClientGameListListener, public YOGClientPlayerListListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
-	YOGScreen(boost::shared_ptr<YOGClient> client);
+	YOGClientLobbyScreen(boost::shared_ptr<YOGClient> client);
 
-	virtual ~YOGScreen();
+	virtual ~YOGClientLobbyScreen();
 	
 	///Responds to timer events
 	virtual void onTimer(Uint32 tick);
@@ -101,7 +101,7 @@ public:
 	void recieveInternalMessage(const std::string& message);
 	///Handles when the game list has been updated from YOGClientGameListManager
 	void gameListUpdated();
-	///Handles when the game list has been updated from YOGPlayerListManager
+	///Handles when the game list has been updated from YOGClientPlayerListManager
 	void playerListUpdated();
 
 
@@ -138,7 +138,7 @@ private:
 
 	List *gameList;
 	TextArea *gameInfo;
-	YOGPlayerList *playerList;
+	YOGClientPlayerList *playerList;
 	TextInput *textInput;
 	TextArea *chatWindow;
 	

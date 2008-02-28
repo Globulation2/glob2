@@ -21,7 +21,7 @@
 #include "MultiplayerGame.h"
 #include "MapAssembler.h"
 #include "YOGClientGameListManager.h"
-#include "YOGPlayerListManager.h"
+#include "YOGClientPlayerListManager.h"
 #include "YOGServer.h"
 #include "YOGClientChatChannel.h"
 #include "YOGMessage.h"
@@ -54,7 +54,7 @@ void YOGClient::initialize()
 	
 	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGClientGameListManager(this));
-	playerListManager.reset(new YOGPlayerListManager(this));
+	playerListManager.reset(new YOGClientPlayerListManager(this));
 }
 
 
@@ -522,14 +522,14 @@ boost::shared_ptr<YOGClientGameListManager> YOGClient::getGameListManager()
 
 
 
-void YOGClient::setPlayerListManager(boost::shared_ptr<YOGPlayerListManager> nplayerListManager)
+void YOGClient::setPlayerListManager(boost::shared_ptr<YOGClientPlayerListManager> nplayerListManager)
 {
 	playerListManager = nplayerListManager;
 }
 
 
 
-boost::shared_ptr<YOGPlayerListManager> YOGClient::getPlayerListManager()
+boost::shared_ptr<YOGClientPlayerListManager> YOGClient::getPlayerListManager()
 {
 	return playerListManager;
 }

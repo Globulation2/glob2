@@ -16,10 +16,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGPlayerListListener_h
-#define YOGPlayerListListener_h
+#ifndef YOGClientPlayerListListener_h
+#define YOGClientPlayerListListener_h
 
-class YOGPlayerListListener
+class YOGClientPlayerListListener
 {
 public:
 	virtual void playerListUpdated() = 0;

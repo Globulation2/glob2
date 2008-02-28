@@ -31,7 +31,7 @@
 
 #include "GlobalContainer.h"
 #include "Settings.h"
-#include "YOGScreen.h"
+#include "YOGClientLobbyScreen.h"
 #include "YOGLoginScreen.h"
 
 YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
@@ -140,9 +140,9 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 	{
 		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
-		YOGScreen screen(client);
+		YOGClientLobbyScreen screen(client);
 		int rc = screen.execute(globalContainer->gfx, 40);
-		if(rc == YOGScreen::ConnectionLost)
+		if(rc == YOGClientLobbyScreen::ConnectionLost)
 			endExecute(ConnectionLost);
 		else if(rc == -1)
 			endExecute(-1);

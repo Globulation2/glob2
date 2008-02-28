@@ -30,7 +30,7 @@ class MultiplayerGame;
 class MapAssembler;
 class P2PConnection;
 class YOGClientGameListManager;
-class YOGPlayerListManager;
+class YOGClientPlayerListManager;
 class YOGServer;
 class YOGClientChatChannel;
 
@@ -152,11 +152,11 @@ public:
 	///This retrieves the YOGClientGameListManager of this client
 	boost::shared_ptr<YOGClientGameListManager> getGameListManager();
 
-	///This attaches a YOGPlayerListManager to this client
-	void setPlayerListManager(boost::shared_ptr<YOGPlayerListManager> playerListManager);
+	///This attaches a YOGClientPlayerListManager to this client
+	void setPlayerListManager(boost::shared_ptr<YOGClientPlayerListManager> playerListManager);
 
 	///This retrieves the YOGClientGameListManager of this client
-	boost::shared_ptr<YOGPlayerListManager> getPlayerListManager();
+	boost::shared_ptr<YOGClientPlayerListManager> getPlayerListManager();
 
 	///This adds an event listener
 	void addEventListener(YOGClientEventListener* listener);
@@ -206,7 +206,7 @@ private:
 	boost::shared_ptr<MapAssembler> assembler;
 	boost::shared_ptr<P2PConnection> p2pconnection;
 	boost::shared_ptr<YOGClientGameListManager> gameListManager;
-	boost::shared_ptr<YOGPlayerListManager> playerListManager;
+	boost::shared_ptr<YOGClientPlayerListManager> playerListManager;
 	boost::shared_ptr<YOGServer> server;
 	std::list<YOGClientEventListener*> listeners;
 

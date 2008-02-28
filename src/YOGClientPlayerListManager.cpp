@@ -16,10 +16,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGPlayerListManager.h"
+#include "YOGClientPlayerListManager.h"
 #include "NetMessage.h"
 
-YOGPlayerListManager::YOGPlayerListManager(YOGClient* client)
+YOGClientPlayerListManager::YOGClientPlayerListManager(YOGClient* client)
 	: client(client)
 {
 
@@ -27,7 +27,7 @@ YOGPlayerListManager::YOGPlayerListManager(YOGClient* client)
 
 
 
-void YOGPlayerListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientPlayerListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type==MNetUpdatePlayerList)
@@ -40,35 +40,35 @@ void YOGPlayerListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
 
 
 	
-const std::list<YOGPlayerInfo>& YOGPlayerListManager::getPlayerList() const
+const std::list<YOGPlayerInfo>& YOGClientPlayerListManager::getPlayerList() const
 {
 	return players;
 }
 
 
 	
-std::list<YOGPlayerInfo>& YOGPlayerListManager::getPlayerList()
+std::list<YOGPlayerInfo>& YOGClientPlayerListManager::getPlayerList()
 {
 	return players;
 }
 
 
 
-void YOGPlayerListManager::addListener(YOGPlayerListListener* listener)
+void YOGClientPlayerListManager::addListener(YOGClientPlayerListListener* listener)
 {
 	listeners.push_back(listener);
 }
 
 
 	
-void YOGPlayerListManager::removeListener(YOGPlayerListListener* listener)
+void YOGClientPlayerListManager::removeListener(YOGClientPlayerListListener* listener)
 {
 	listeners.remove(listener);
 }
 
 
 
-std::string YOGPlayerListManager::findPlayerName(Uint16 playerID)
+std::string YOGClientPlayerListManager::findPlayerName(Uint16 playerID)
 {
 	for(std::list<YOGPlayerInfo>::iterator i = players.begin(); i != players.end(); ++i)
 	{
@@ -80,9 +80,9 @@ std::string YOGPlayerListManager::findPlayerName(Uint16 playerID)
 
 
 
-void YOGPlayerListManager::sendToListeners()
+void YOGClientPlayerListManager::sendToListeners()
 {
-	for(std::list<YOGPlayerListListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
+	for(std::list<YOGClientPlayerListListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
 	{
 		(*i)->playerListUpdated();
 	}
