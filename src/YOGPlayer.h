@@ -24,6 +24,8 @@
 #include <list>
 #include "NetConnection.h"
 #include "YOGConsts.h"
+#include "YOGGameInfo.h"
+#include "YOGPlayerInfo.h"
 
 using namespace boost;
 

@@ -22,6 +22,10 @@
 #include "MapAssembler.h"
 #include "YOGGameListManager.h"
 #include "YOGPlayerListManager.h"
+#include "YOGGameServer.h"
+#include "YOGChatChannel.h"
+#include "YOGMessage.h"
+#include "NetMessage.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
@@ -45,8 +49,8 @@ void YOGClient::initialize()
 	gamePolicy = YOGUnknownGamePolicy;
 	loginState = YOGLoginUnknown;
 	playerID=0;
-	listener=NULL;
 	wasConnected=false;
+	wasConnecting=false;
 	
 	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGGameListManager(this));
@@ -60,8 +64,7 @@ void YOGClient::connect(const std::string& server)
 	initialize();
 	nc.openConnection(server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
-	if(nc.isConnected())
-		wasConnected=true;
+	wasConnecting=true;
 }
 
 
@@ -87,13 +90,24 @@ void YOGClient::update()
 	if(server)
 		server->update();
 
+	if(!nc.isConnecting() && wasConnecting)
+	{
+		if(nc.isConnected())
+		{
+			wasConnected = true;
+			wasConnecting = false;
+		}
+		else
+		{
+			wasConnected = false;
+			wasConnecting = false;
+		}
+	}
+
 	if(!nc.isConnected() && wasConnected)
 	{
-		if(listener)
-		{
-			shared_ptr<YOGConnectionLostEvent> event(new YOGConnectionLostEvent);
-			listener->handleYOGEvent(event);
-		}
+		shared_ptr<YOGConnectionLostEvent> event(new YOGConnectionLostEvent);
+		sendToListeners(event);
 		wasConnected=false;
 	}
 
@@ -119,11 +133,8 @@ void YOGClient::update()
 			loginPolicy = info->getLoginPolicy();
 			gamePolicy = info->getGamePolicy();
 			playerID = info->getPlayerID();
-			if(listener)
-			{
-				shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
+			sendToListeners(event);
 			connectionState = WaitingForLoginInformation;
 		}
 		//This recieves a login acceptance message
@@ -132,11 +143,8 @@ void YOGClient::update()
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
-			if(listener)
-			{
-				shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
+			sendToListeners(event);
 		}
 		//This recieves a login refusal message
 		if(type==MNetRefuseLogin)
@@ -144,11 +152,8 @@ void YOGClient::update()
 			shared_ptr<NetRefuseLogin> info = static_pointer_cast<NetRefuseLogin>(message);
 			connectionState = WaitingForLoginInformation;
 			loginState = info->getRefusalReason();
-			if(listener)
-			{
-				shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+			sendToListeners(event);
 		}
 		//This recieves a registration acceptance message
 		if(type==MNetAcceptRegistration)
@@ -156,11 +161,8 @@ void YOGClient::update()
 			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
-			if(listener)
-			{
-				shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
+			sendToListeners(event);
 		}
 		//This recieves a regisration refusal message
 		if(type==MNetRefuseRegistration)
@@ -168,11 +170,8 @@ void YOGClient::update()
 			shared_ptr<NetRefuseRegistration> info = static_pointer_cast<NetRefuseRegistration>(message);
 			connectionState = WaitingForLoginInformation;
 			loginState = info->getRefusalReason();
-			if(listener)
-			{
-				shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+			sendToListeners(event);
 		}
 		///This recieves a game list update message
 		if(type==MNetUpdateGameList)
@@ -442,6 +441,17 @@ void YOGClient::removeYOGChatChannel(YOGChatChannel* channel)
 
 
 
+void YOGClient::sendToListeners(boost::shared_ptr<YOGEvent> event)
+{
+	for(std::list<YOGEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	{
+		std::cout<<"sending event "<<std::endl;
+		(*i)->handleYOGEvent(event);
+	}
+}
+
+
+
 void YOGClient::setMapAssembler(boost::shared_ptr<MapAssembler> nassembler)
 {
 	assembler=nassembler;
@@ -456,9 +466,16 @@ boost::shared_ptr<MapAssembler> YOGClient::getMapAssembler()
 
 
 
-void YOGClient::setEventListener(YOGEventListener* nlistener)
+void YOGClient::addEventListener(YOGEventListener* listener)
 {
-	listener=nlistener;
+	listeners.push_back(listener);
+}
+
+
+
+void YOGClient::removeEventListener(YOGEventListener* listener)
+{
+	listeners.remove(listener);
 }
 
 
@@ -468,11 +485,25 @@ void YOGClient::attachGameServer(boost::shared_ptr<YOGGameServer> nserver)
 	server = nserver;
 }
 
+	
+
+boost::shared_ptr<YOGGameServer> YOGClient::getGameServer()
+{
+	return server;
+}
+
 
 
 void  YOGClient::setP2PConnection(boost::shared_ptr<P2PConnection> connection)
 {
 	p2pconnection = connection;
+}
+
+
+
+boost::shared_ptr<P2PConnection> YOGClient::getP2PConnection()
+{
+	return p2pconnection;
 }
 
 

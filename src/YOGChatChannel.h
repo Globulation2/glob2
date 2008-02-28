@@ -20,6 +20,7 @@
 #define __YOGChatChannel_h
 
 #include <vector>
+#include <list>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/tuple/tuple.hpp"
 #include "SDL_net.h"
@@ -35,7 +36,7 @@ class YOGChatChannel
 public:
 	///Creates a new YOGChatChannel, with its channel id and then YOGClient to listen from
 	///Adds itself to the YOGClient to listen for chat events
-	YOGChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client, YOGChatListener* listener=NULL);
+	YOGChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client);
 
 	///Destroys the YOGChatChannel
 	~YOGChatChannel();
@@ -58,8 +59,11 @@ public:
 	///Sets the channel ID of this channel
 	void setChannelID(Uint32 channel);
 
-	///Sets the listener for this channel. Does not take ownership. Listener ignored if set to null.
-	void setListener(YOGChatListener* listener);
+	///Adds the listener for this channel. Does not take ownership.
+	void addListener(YOGChatListener* listener);
+	
+	///Removes the listener from this channel
+	void removeListener(YOGChatListener* listener);
 
 protected:
 	friend class YOGClient;
@@ -67,11 +71,14 @@ protected:
 	///Recieves a message from the network (called by YOGClient)
 	void recieveMessage(boost::shared_ptr<YOGMessage> message);
 
+	///This sends the message to all listeners
+	void sendToListeners(boost::shared_ptr<YOGMessage> message);
+
 private:
 	boost::shared_ptr<YOGClient> client;
 	Uint32 channelID;
 	std::vector<boost::tuple<boost::shared_ptr<YOGMessage>, boost::posix_time::ptime> > messageHistory;
-	YOGChatListener* listener;
+	std::list<YOGChatListener*> listeners;
 };
 
 

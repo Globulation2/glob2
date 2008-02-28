@@ -19,6 +19,7 @@
 
 #include "YOGChatChannelManager.h"
 #include "YOGConsts.h"
+#include "NetMessage.h"
 
 
 YOGChatChannelManager::YOGChatChannelManager()

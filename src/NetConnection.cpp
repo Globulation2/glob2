@@ -21,6 +21,7 @@
 #include <iostream>
 #include "StreamBackend.h"
 #include "BinaryStream.h"
+#include "NetMessage.h"
 
 using namespace GAGCore;
 

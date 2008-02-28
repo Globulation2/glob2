@@ -21,8 +21,12 @@
 #ifndef YOGServerChatChannel_h
 #define YOGServerChatChannel_h
 
-#include "YOGPlayer.h"
 #include <list>
+#include "SDL_net.h"
+#include <boost/shared_ptr.hpp>
+
+class YOGMessage;
+class YOGPlayer;
 
 ///This represents a chat channel server-side
 class YOGServerChatChannel
