@@ -36,7 +36,7 @@
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "Utilities.h"
-#include "YOGScreen.h"
+#include "YOGClientLobbyScreen.h"
 #include "SoundMixer.h"
 #include "CampaignScreen.h"
 

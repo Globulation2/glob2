@@ -19,7 +19,7 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "YOGScreen.h"
+#include "YOGClientLobbyScreen.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
 
@@ -36,11 +36,11 @@
 #include "ChooseMapScreen.h"
 #include "MultiplayerGameScreen.h"
 #include "YOGClientGameListManager.h"
-#include "YOGPlayerListManager.h"
+#include "YOGClientPlayerListManager.h"
 
 #include "YOGMessage.h"
 
-YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
+YOGClientPlayerList::YOGClientPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
 	: List(x, y, w, h, hAlign, vAlign, font)
 {
 	networkSprite = Toolkit::getSprite("data/gui/yog");
@@ -48,14 +48,14 @@ YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 
 
 
-YOGPlayerList::~YOGPlayerList()
+YOGClientPlayerList::~YOGClientPlayerList()
 {
 	Toolkit::releaseSprite("data/gui/yog");
 }
 
 
 
-void YOGPlayerList::addPlayer(const std::string &nick, NetworkType network)
+void YOGClientPlayerList::addPlayer(const std::string &nick, NetworkType network)
 {
 	addText(nick);
 	networks.push_back(network);
@@ -63,7 +63,7 @@ void YOGPlayerList::addPlayer(const std::string &nick, NetworkType network)
 
 
 
-void YOGPlayerList::clear(void)
+void YOGClientPlayerList::clear(void)
 {
 	List::clear();
 	networks.clear();
@@ -71,7 +71,7 @@ void YOGPlayerList::clear(void)
 
 
 
-void YOGPlayerList::drawItem(int x, int y, size_t element)
+void YOGClientPlayerList::drawItem(int x, int y, size_t element)
 {
 	assert(networkSprite);
 	if(element < getCount())
@@ -90,7 +90,7 @@ void YOGPlayerList::drawItem(int x, int y, size_t element)
 
 
 
-YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
+YOGClientLobbyScreen::YOGClientLobbyScreen(boost::shared_ptr<YOGClient> client)
 	: client(client)
 {
 
@@ -106,7 +106,7 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 	joinButton=new TextButton(20, 155, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[join]"), JOIN);
 	addWidget(joinButton);
 
-	playerList=new YOGPlayerList(20, 210, 180, 120, ALIGN_RIGHT, ALIGN_FILL, "standard");
+	playerList=new YOGClientPlayerList(20, 210, 180, 120, ALIGN_RIGHT, ALIGN_FILL, "standard");
 	addWidget(playerList);
 
 	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard", true, "", "data/gui/yog");
@@ -128,7 +128,7 @@ YOGScreen::YOGScreen(boost::shared_ptr<YOGClient> client)
 
 
 
-YOGScreen::~YOGScreen()
+YOGClientLobbyScreen::~YOGClientLobbyScreen()
 {
 	ircChat->removeTextMessageListener(this);
 	ircChat->stopIRC();
@@ -140,7 +140,7 @@ YOGScreen::~YOGScreen()
 }
 
 
-void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
+void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
@@ -183,7 +183,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 }
 
-void YOGScreen::onTimer(Uint32 tick)
+void YOGClientLobbyScreen::onTimer(Uint32 tick)
 {
 	ircChat->update();
 	client->update();
@@ -194,9 +194,9 @@ void YOGScreen::onTimer(Uint32 tick)
 
 
 
-void YOGScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
+void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
 {
-	//std::cout<<"YOGScreen: recieved event "<<event->format()<<std::endl;
+	//std::cout<<"YOGClientLobbyScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnectionLost)
 	{
@@ -206,7 +206,7 @@ void YOGScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
 
 
 
-void YOGScreen::handleIRCTextMessage(const std::string& message)
+void YOGClientLobbyScreen::handleIRCTextMessage(const std::string& message)
 {
 	chatWindow->addText(message);
 	chatWindow->addImage(1);
@@ -216,7 +216,7 @@ void YOGScreen::handleIRCTextMessage(const std::string& message)
 
 
 
-void YOGScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClientLobbyScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addImage(0);
@@ -226,7 +226,7 @@ void YOGScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
 
 
 
-void YOGScreen::recieveInternalMessage(const std::string& message)
+void YOGClientLobbyScreen::recieveInternalMessage(const std::string& message)
 {
 	chatWindow->addText(message);
 	chatWindow->addText("\n");
@@ -236,21 +236,21 @@ void YOGScreen::recieveInternalMessage(const std::string& message)
 
 
 
-void YOGScreen::gameListUpdated()
+void YOGClientLobbyScreen::gameListUpdated()
 {
 	updateGameList();
 }
 
 
 
-void YOGScreen::playerListUpdated()
+void YOGClientLobbyScreen::playerListUpdated()
 {
 	updatePlayerList();
 }
 
 
 
-void YOGScreen::hostGame()
+void YOGClientLobbyScreen::hostGame()
 {
 	ChooseMapScreen cms("maps", "map", false, "games", "game", false);
 	int rc = cms.execute(globalContainer->gfx, 40);
@@ -278,7 +278,7 @@ void YOGScreen::hostGame()
 
 
 
-void YOGScreen::joinGame()
+void YOGClientLobbyScreen::joinGame()
 {
 	if(gameList->getSelectionIndex() != -1)
 	{
@@ -315,7 +315,7 @@ void YOGScreen::joinGame()
 
 
 
-void YOGScreen::updateGameList(void)
+void YOGClientLobbyScreen::updateGameList(void)
 {
 	int i = gameList->getSelectionIndex();
 	gameList->clear();
@@ -331,7 +331,7 @@ void YOGScreen::updateGameList(void)
 
 
 
-void YOGScreen::updatePlayerList(void)
+void YOGClientLobbyScreen::updatePlayerList(void)
 {
 
 //	boost::shared_ptr<IRC> irc = ircChat->getIRC();
@@ -340,7 +340,7 @@ void YOGScreen::updatePlayerList(void)
 	for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
 	{
 		std::string listEntry = player->getPlayerName();
-		playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
+		playerList->addPlayer(listEntry, YOGClientPlayerList::YOG_NETWORK);
 	}
 
 	// update irc entries, remove one already on YOG
@@ -348,14 +348,14 @@ void YOGScreen::updatePlayerList(void)
 	{
 		const std::string &user = ircChat->getUsers()[i];
 		if (user.compare(0, 5, "[YOG]") != 0)
-			playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
+			playerList->addPlayer(user, YOGClientPlayerList::IRC_NETWORK);
 	}
 
 }
 
 
 
-void YOGScreen::updateGameInfo()
+void YOGClientLobbyScreen::updateGameInfo()
 {
 	if (gameList->getSelectionIndex() != -1)
 	{
@@ -383,7 +383,7 @@ void YOGScreen::updateGameInfo()
 
 
 
-void YOGScreen::autoCompleteNick()
+void YOGClientLobbyScreen::autoCompleteNick()
 {
 	std::string message = textInput->getText();
 	int msglen = message.length()-1;

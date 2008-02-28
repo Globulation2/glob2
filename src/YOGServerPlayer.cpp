@@ -16,12 +16,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGPlayer.h"
+#include "YOGServerPlayer.h"
 #include "YOGServer.h"
 #include "YOGServerMapDistributor.h"
 #include "YOGServerGame.h"
 
-YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
+YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
 {
 	connectionState = WaitingForClientInformation;
@@ -37,7 +37,7 @@ YOGPlayer::YOGPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer&
 
 
 
-void YOGPlayer::update()
+void YOGServerPlayer::update()
 {
 	//Send outgoing messages
 	updateConnectionSates();
@@ -255,63 +255,63 @@ void YOGPlayer::update()
 
 
 
-bool YOGPlayer::isConnected()
+bool YOGServerPlayer::isConnected()
 {
 	return connection->isConnected();
 }
 
 
 
-void YOGPlayer::sendMessage(shared_ptr<NetMessage> message)
+void YOGServerPlayer::sendMessage(shared_ptr<NetMessage> message)
 {
 	connection->sendMessage(message);
 }
 
 
 
-void YOGPlayer::setPlayerID(Uint16 id)
+void YOGServerPlayer::setPlayerID(Uint16 id)
 {
 	playerID=id;
 }
 
 
 
-Uint16 YOGPlayer::getPlayerID()
+Uint16 YOGServerPlayer::getPlayerID()
 {
 	return playerID;
 }
 
 
 
-Uint16 YOGPlayer::getGameID()
+Uint16 YOGServerPlayer::getGameID()
 {
 	return gameID;
 }
 
 
 
-std::string YOGPlayer::getPlayerName()
+std::string YOGServerPlayer::getPlayerName()
 {
 	return playerName;
 }
 
 
 
-boost::shared_ptr<YOGServerGame> YOGPlayer::getGame()
+boost::shared_ptr<YOGServerGame> YOGServerPlayer::getGame()
 {
 	return boost::shared_ptr<YOGServerGame>(game);
 }
 
 
 
-unsigned YOGPlayer::getAveragePing() const
+unsigned YOGServerPlayer::getAveragePing() const
 {
 	return pingValue;
 }
 
 
 
-void YOGPlayer::updateConnectionSates()
+void YOGServerPlayer::updateConnectionSates()
 {
 	//Send the server information
 	if(connectionState==NeedToSendServerInformation)
@@ -350,7 +350,7 @@ void YOGPlayer::updateConnectionSates()
 	}
 }
 
-void YOGPlayer::updateGamePlayerLists()
+void YOGServerPlayer::updateGamePlayerLists()
 {
 	//Send an updated game list to the user
 	if(gameListState==UpdatingGameList)
@@ -377,7 +377,7 @@ void YOGPlayer::updateGamePlayerLists()
 }
 
 
-void YOGPlayer::handleCreateGame(const std::string& gameName)
+void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 {
 	YOGServerGameCreateRefusalReason reason = server.canCreateNewGame(gameName);
 	if(reason == YOGCreateRefusalUnknown)
@@ -398,7 +398,7 @@ void YOGPlayer::handleCreateGame(const std::string& gameName)
 
 
 
-void YOGPlayer::handleJoinGame(Uint16 ngameID)
+void YOGServerPlayer::handleJoinGame(Uint16 ngameID)
 {
 	YOGServerGameJoinRefusalReason reason = server.canJoinGame(ngameID);
 	if(reason == YOGJoinRefusalUnknown)

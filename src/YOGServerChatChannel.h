@@ -26,7 +26,7 @@
 #include <boost/shared_ptr.hpp>
 
 class YOGMessage;
-class YOGPlayer;
+class YOGServerPlayer;
 
 ///This represents a chat channel server-side
 class YOGServerChatChannel
@@ -36,19 +36,19 @@ public:
 	YOGServerChatChannel(Uint32 channel);
 
 	///Adds a player to this chat channel
-	void addPlayer(boost::shared_ptr<YOGPlayer> player);
+	void addPlayer(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Removes a player from this chat channel
-	void removePlayer(boost::shared_ptr<YOGPlayer> player);
+	void removePlayer(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Routes a YOG message to all players in this channel, except for sender
-	void routeMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGPlayer> sender);
+	void routeMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGServerPlayer> sender);
 
 	///Returns the number of players in this chat channel
 	size_t getNumberOfPlayers() const;
 private:
 	Uint32 channel;
-	std::list<boost::shared_ptr<YOGPlayer> > players;
+	std::list<boost::shared_ptr<YOGServerPlayer> > players;
 };
 
 #endif

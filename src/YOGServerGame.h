@@ -19,7 +19,7 @@
 #ifndef __YOGServerGame_h
 #define __YOGServerGame_h
 
-#include "YOGPlayer.h"
+#include "YOGServerPlayer.h"
 #include "MapHeader.h"
 #include <boost/shared_ptr.hpp>
 #include "NetGamePlayerManager.h"
@@ -42,13 +42,13 @@ public:
 	void update();
 
 	///Adds the player to the game
-	void addPlayer(shared_ptr<YOGPlayer> player);
+	void addPlayer(shared_ptr<YOGServerPlayer> player);
 
 	///Adds an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
 
 	///Removes the player from the game
-	void removePlayer(shared_ptr<YOGPlayer> player);
+	void removePlayer(shared_ptr<YOGServerPlayer> player);
 
 	///Removes the AI from the game
 	void removeAIPlayer(int playerNum);
@@ -57,7 +57,7 @@ public:
 	void setTeam(int playerNum, int teamNum);
 
 	///Sets the host of the game
-	void setHost(shared_ptr<YOGPlayer> player);
+	void setHost(shared_ptr<YOGServerPlayer> player);
 
 	///Sets the map header of the game
 	void setMapHeader(const MapHeader& mapHeader);
@@ -67,10 +67,10 @@ public:
 
 	///Routes the given message to all players except for the sender,
 	///unless sender is null
-	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGPlayer> sender=shared_ptr<YOGPlayer>());
+	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGServerPlayer> sender=shared_ptr<YOGServerPlayer>());
 	
 	///Routes the given order to all players except the sender. Sender can be null
-	void routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGPlayer> sender=shared_ptr<YOGPlayer>());
+	void routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGServerPlayer> sender=shared_ptr<YOGServerPlayer>());
 	
 	///Returns the map distributor
 	shared_ptr<YOGServerMapDistributor> getMapDistributor();
@@ -120,9 +120,9 @@ private:
 	GameHeader gameHeader;
 	Uint16 gameID;
 	Uint32 chatChannel;
-	shared_ptr<YOGPlayer> host;
+	shared_ptr<YOGServerPlayer> host;
 	shared_ptr<YOGServerMapDistributor> distributor;
-	std::vector<shared_ptr<YOGPlayer> > players;
+	std::vector<shared_ptr<YOGServerPlayer> > players;
 	YOGServer& server;
 	NetGamePlayerManager playerManager;
 	Uint8 aiNum;

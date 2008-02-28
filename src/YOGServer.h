@@ -23,7 +23,7 @@
 #include "NetConnection.h"
 #include "NetListener.h"
 #include "YOGConsts.h"
-#include "YOGPlayer.h"
+#include "YOGServerPlayer.h"
 #include "YOGServerPasswordRegistry.h"
 #include "NetBroadcaster.h"
 #include "YOGServerChatChannelManager.h"
@@ -104,7 +104,7 @@ public:
 	shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
 	///Returns the player assocciatted with the given ID
-	shared_ptr<YOGPlayer> getPlayer(Uint16 playerID);
+	shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
 	
 	///This starts LAN broadcasting of the first game, if it exists
 	void enableLANBroadcasting();
@@ -121,7 +121,7 @@ private:
 	void removeGameInfo(Uint16 gameID);
 
 	NetListener nl;
-	std::map<Uint16, shared_ptr<YOGPlayer> > players;
+	std::map<Uint16, shared_ptr<YOGServerPlayer> > players;
 	std::map<Uint16, shared_ptr<YOGServerGame> > games;
 	std::list<YOGGameInfo> gameList;
 	std::list<YOGPlayerInfo> playerList;
