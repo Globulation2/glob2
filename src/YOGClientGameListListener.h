@@ -19,7 +19,7 @@
 #ifndef YOGClientGameListListener_h
 #define YOGClientGameListListener_h
 
-///This class repre
+///This class represents a listener for game list changes
 class YOGClientGameListListener
 {
 public:

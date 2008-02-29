@@ -31,6 +31,7 @@ using namespace boost;
 
 class YOGServer;
 class YOGServerGame;
+class NetMessage;
 
 ///This represents a connected user on the YOG server.
 class YOGServerPlayer

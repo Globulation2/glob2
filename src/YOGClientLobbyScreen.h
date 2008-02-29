@@ -23,14 +23,10 @@
 #define __YOGSCREEN_H
 
 #include <vector>
-#include "IRC.h"
 #include <GUIList.h>
-#include <GraphicContext.h>
 #include "Glob2Screen.h"
-#include "YOGClient.h"
 #include "IRCTextMessageHandler.h"
 #include "YOGClientEventListener.h"
-#include "YOGClientChatChannel.h"
 #include "YOGClientChatListener.h"
 #include "YOGClientGameListListener.h"
 #include "YOGClientPlayerListListener.h"
@@ -41,6 +37,9 @@ namespace GAGGUI
 	class TextArea;
 	class TextButton;
 }
+
+class YOGClient;
+class YOGClientChatChannel;
 
 /// A widget that maintains the list of players, and draws an icon based
 /// on whether that player is from YOG or from IRC

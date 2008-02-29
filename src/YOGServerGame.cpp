@@ -16,11 +16,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGServerGame.h"
 #include <algorithm>
-#include "YOGServerMapDistributor.h"
-#include "YOGServer.h"
 #include "NetMessage.h"
+#include "YOGServerChatChannel.h"
+#include "YOGServerGame.h"
+#include "YOGServer.h"
+#include "YOGServerMapDistributor.h"
+#include "YOGServerPlayer.h"
 
 YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server)
 	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(gameHeader)

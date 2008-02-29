@@ -19,18 +19,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <GUIText.h>
-#include <GUITextInput.h>
-#include <GUITextArea.h>
-#include <GUIButton.h>
-#include <GUIText.h>
-#include <GUIAnimation.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <GraphicContext.h>
 
 #include "GlobalContainer.h"
+#include <GraphicContext.h>
+#include <GUIAnimation.h>
+#include <GUIButton.h>
+#include <GUITextArea.h>
+#include <GUIText.h>
+#include <GUIText.h>
+#include <GUITextInput.h>
 #include "Settings.h"
+#include <StringTable.h>
+#include <Toolkit.h>
+#include "YOGClientEvent.h"
+#include "YOGClient.h"
+#include "YOGClientLobbyScreen.h"
 #include "YOGClientLobbyScreen.h"
 #include "YOGLoginScreen.h"
 

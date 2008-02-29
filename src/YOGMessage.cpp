@@ -16,11 +16,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGMessage.h"
-#include "SDL_net.h"
 #include "assert.h"
-#include "Toolkit.h"
+#include "SDL_net.h"
+#include "Stream.h"
 #include "StringTable.h"
+#include "Toolkit.h"
+#include "YOGMessage.h"
 
 YOGMessage::YOGMessage()
 {

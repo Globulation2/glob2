@@ -19,12 +19,13 @@
 #ifndef IRCThread_h
 #define IRCThread_h
 
-#include "IRCThreadMessage.h"
 #include "IRC.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <queue>
+
+class IRCThreadMessage;
 
 ///IRC thread manages IRC
 class IRCThread

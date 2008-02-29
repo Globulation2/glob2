@@ -23,8 +23,7 @@
 #define __YOGLoginScreen_h
 
 #include "Glob2Screen.h"
-#include "YOGClient.h"
-#include "YOGClientLobbyScreen.h"
+#include "YOGClientEventListener.h"
 
 namespace GAGGUI
 {
@@ -34,6 +33,8 @@ namespace GAGGUI
 	class TextArea;
 	class Animation;
 }
+
+class YOGClient;
 
 ///This handles with connecting the user to YOG and logging them in.
 ///This assumes the client has not yet connected with YOG

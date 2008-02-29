@@ -19,8 +19,9 @@
 #ifndef __YOGClientEventListener_h
 #define __YOGClientEventListener_h
 
-#include "YOGClientEvent.h"
 #include "boost/shared_ptr.hpp"
+
+class YOGClientEvent;
 
 /// This is a mix-in class. Classes that want to respond to YOG
 /// events derive from this class

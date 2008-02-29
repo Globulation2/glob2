@@ -17,27 +17,27 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <string.h>
-#include <stdio.h>
-#include "YOGClientLobbyScreen.h"
+#include "ChooseMapScreen.h"
 #include "Engine.h"
-#include "GlobalContainer.h"
-
 #include <FormatableString.h>
+#include "GlobalContainer.h"
+#include <GraphicContext.h>
+#include <GUIButton.h>
+#include <GUIList.h>
+#include <GUITextArea.h>
 #include <GUIText.h>
 #include <GUITextInput.h>
-#include <GUITextArea.h>
-#include <GUIList.h>
-#include <GUIButton.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <GraphicContext.h>
-
-#include "ChooseMapScreen.h"
 #include "MultiplayerGameScreen.h"
+#include <stdio.h>
+#include <string.h>
+#include <StringTable.h>
+#include <Toolkit.h>
+#include "YOGClientChatChannel.h"
 #include "YOGClientGameListManager.h"
+#include "YOGClient.h"
+#include "YOGClientEvent.h"
+#include "YOGClientLobbyScreen.h"
 #include "YOGClientPlayerListManager.h"
-
 #include "YOGMessage.h"
 
 YOGClientPlayerList::YOGClientPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
