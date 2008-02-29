@@ -20,7 +20,13 @@
 #define __YOGGameInfo_h
 
 #include <string>
-#include "Stream.h"
+#include "SDL_net.h"
+
+namespace GAGCore
+{
+	class OutputStream;
+	class InputStream;
+}
 
 ///This class summarizes hosted game information on the YOG server.
 ///It does not include information about the game itself, just how

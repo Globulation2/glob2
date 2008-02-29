@@ -20,8 +20,11 @@
 #ifndef YOGServerChatChannelManager_h
 #define YOGServerChatChannelManager_h
 
-#include "YOGServerChatChannel.h"
 #include <map>
+#include "SDL_net.h"
+#include "boost/shared_ptr.hpp"
+
+class YOGServerChatChannel;
 
 ///This does serverside management of YOG chat channels
 class YOGServerChatChannelManager

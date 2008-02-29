@@ -16,10 +16,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGServer.h"
-#include "NetTestSuite.h"
 #include <algorithm>
+#include "NetBroadcaster.h"
+#include "NetConnection.h"
+#include "NetMessage.h"
+#include "NetTestSuite.h"
+#include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"
+#include "YOGServer.h"
+#include "YOGServerPlayer.h"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)

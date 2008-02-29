@@ -18,6 +18,7 @@
 
 #include "YOGPlayerInfo.h"
 #include "SDL_net.h"
+#include "Stream.h"
 
 
 YOGPlayerInfo::YOGPlayerInfo()

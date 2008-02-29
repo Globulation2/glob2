@@ -16,11 +16,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "MapAssembler.h"
-#include "Toolkit.h"
+#include "BinaryStream.h"
 #include "FileManager.h"
-#include "StreamBackend.h"
+#include "MapAssembler.h"
 #include "NetMessage.h"
+#include "StreamBackend.h"
+#include "StreamBackend.h"
+#include "Stream.h"
+#include "Toolkit.h"
+#include "YOGClient.h"
 
 using namespace boost;
 using namespace GAGCore;

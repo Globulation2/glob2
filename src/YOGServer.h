@@ -19,20 +19,22 @@
 #ifndef __YOGServer_h
 #define __YOGServer_h
 
-#include "NetMessage.h"
-#include "NetConnection.h"
-#include "NetListener.h"
-#include "YOGConsts.h"
-#include "YOGServerPlayer.h"
-#include "YOGServerPasswordRegistry.h"
-#include "NetBroadcaster.h"
-#include "YOGServerChatChannelManager.h"
-
+#include <boost/shared_ptr.hpp>
 #include <list>
 #include <map>
-#include <boost/shared_ptr.hpp>
+#include "NetListener.h"
+#include "YOGConsts.h"
+#include "YOGGameInfo.h"
+#include "YOGPlayerInfo.h"
+#include "YOGServerChatChannelManager.h"
+#include "YOGServerPasswordRegistry.h"
 
-using namespace boost;
+
+class NetBroadcaster;
+class NetConnection;
+class YOGPlayer;
+class YOGPlayerInfo;
+class YOGServerPlayer;
 
 ///This class encapsulates the YOG server. The YOG server is the games online server.
 ///There is one YOG server hosted by one of the project members. As well, each client
@@ -101,10 +103,10 @@ public:
 	YOGServerGameJoinRefusalReason canJoinGame(Uint16 gameID);
 	
 	///Returns the game assocciatted with the given ID
-	shared_ptr<YOGServerGame> getGame(Uint16 gameID);
+	boost::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
 	///Returns the player assocciatted with the given ID
-	shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
+	boost::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
 	
 	///This starts LAN broadcasting of the first game, if it exists
 	void enableLANBroadcasting();
@@ -121,18 +123,19 @@ private:
 	void removeGameInfo(Uint16 gameID);
 
 	NetListener nl;
-	std::map<Uint16, shared_ptr<YOGServerPlayer> > players;
-	std::map<Uint16, shared_ptr<YOGServerGame> > games;
-	std::list<YOGGameInfo> gameList;
-	std::list<YOGPlayerInfo> playerList;
-	YOGLoginPolicy loginPolicy;
-	YOGGamePolicy gamePolicy;
-	
-	YOGServerPasswordRegistry registry;
+	boost::shared_ptr<NetBroadcaster> broadcaster;
 	boost::shared_ptr<NetConnection> new_connection;
 	
-	boost::shared_ptr<NetBroadcaster> broadcaster;
+	std::map<Uint16, boost::shared_ptr<YOGServerPlayer> > players;
+	std::map<Uint16, boost::shared_ptr<YOGServerGame> > games;
+	std::list<YOGGameInfo> gameList;
+	std::list<YOGPlayerInfo> playerList;
+	
+	YOGLoginPolicy loginPolicy;
+	YOGGamePolicy gamePolicy;
 	bool isBroadcasting;
+	
+	YOGServerPasswordRegistry registry;
 	YOGServerChatChannelManager chatChannelManager;
 };
 

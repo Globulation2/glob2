@@ -18,6 +18,7 @@
 */
 
 #include "YOGServerChatChannelManager.h"
+#include "YOGServerChatChannel.h"
 #include "YOGConsts.h"
 #include "NetMessage.h"
 

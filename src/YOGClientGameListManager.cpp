@@ -19,6 +19,7 @@
 #include "YOGClientGameListManager.h"
 
 #include "NetMessage.h"
+#include "YOGClientGameListListener.h"
 
 YOGClientGameListManager::YOGClientGameListManager(YOGClient* client)
 	: client(client)

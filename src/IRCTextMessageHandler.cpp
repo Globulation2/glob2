@@ -20,9 +20,9 @@
 */
 
 #include "IRCTextMessageHandler.h"
-
-#include <Toolkit.h>
+#include "IRCThreadMessage.h"
 #include <StringTable.h>
+#include <Toolkit.h>
 #include "YOGConsts.h"
 
 using namespace GAGCore;

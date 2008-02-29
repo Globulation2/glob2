@@ -19,10 +19,19 @@
 #ifndef __MapAssembler_h
 #define __MapAssembler_h
 
-#include "YOGClient.h"
-#include "Stream.h"
-#include "BinaryStream.h"
-#include "StreamBackend.h"
+#include "boost/shared_ptr.hpp"
+#include "SDL_net.h"
+#include <string>
+
+class YOGClient;
+class NetMessage;
+
+namespace GAGCore
+{
+	class MemoryStreamBackend;
+	class BinaryOutputStream;
+	class BinaryInputStream;
+}
 
 ///This class holds the responsibility of sending and recieving maps over the network.
 class MapAssembler

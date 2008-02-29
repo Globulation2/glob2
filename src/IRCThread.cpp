@@ -17,6 +17,7 @@
 */
 
 #include "IRCThread.h"
+#include "IRCThreadMessage.h"
 #include <iostream>
 
 using namespace boost;

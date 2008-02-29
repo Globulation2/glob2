@@ -21,11 +21,11 @@
 
 #include "boost/shared_ptr.hpp"
 #include <list>
-#include "YOGClientPlayerListListener.h"
 #include "YOGPlayerInfo.h"
 
 class NetMessage;
 class YOGClient;
+class YOGClientPlayerListListener;
 
 ///This class manages the list of available players on the client end
 class YOGClientPlayerListManager

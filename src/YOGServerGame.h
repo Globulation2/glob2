@@ -19,16 +19,17 @@
 #ifndef __YOGServerGame_h
 #define __YOGServerGame_h
 
-#include "YOGServerPlayer.h"
 #include "MapHeader.h"
 #include <boost/shared_ptr.hpp>
 #include "NetGamePlayerManager.h"
 
-class YOGServerMapDistributor;
+class NetKickPlayer;
+class NetSendOrder;
 class YOGServer;
 class YOGServerGamePlayerManager;
-class NetSendOrder;
-class NetKickPlayer;
+class YOGServerMapDistributor;
+class YOGServerPlayer;
+class NetMessage;
 
 ///This handles a "game" from the server's point of view. This means that it handles
 ///routing between clients, holding the map and game data, etc..
@@ -42,13 +43,13 @@ public:
 	void update();
 
 	///Adds the player to the game
-	void addPlayer(shared_ptr<YOGServerPlayer> player);
+	void addPlayer(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Adds an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
 
 	///Removes the player from the game
-	void removePlayer(shared_ptr<YOGServerPlayer> player);
+	void removePlayer(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Removes the AI from the game
 	void removeAIPlayer(int playerNum);
@@ -57,7 +58,7 @@ public:
 	void setTeam(int playerNum, int teamNum);
 
 	///Sets the host of the game
-	void setHost(shared_ptr<YOGServerPlayer> player);
+	void setHost(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Sets the map header of the game
 	void setMapHeader(const MapHeader& mapHeader);
@@ -67,16 +68,16 @@ public:
 
 	///Routes the given message to all players except for the sender,
 	///unless sender is null
-	void routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGServerPlayer> sender=shared_ptr<YOGServerPlayer>());
+	void routeMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
 	
 	///Routes the given order to all players except the sender. Sender can be null
-	void routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGServerPlayer> sender=shared_ptr<YOGServerPlayer>());
+	void routeOrder(boost::shared_ptr<NetSendOrder> order, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
 	
 	///Returns the map distributor
-	shared_ptr<YOGServerMapDistributor> getMapDistributor();
+	boost::shared_ptr<YOGServerMapDistributor> getMapDistributor();
 	
 	///Kicks the player and sends a kick message to the player
-	void kickPlayer(shared_ptr<NetKickPlayer> message);
+	void kickPlayer(boost::shared_ptr<NetKickPlayer> message);
 	
 	///Returns whether there are no players left in the game
 	bool isEmpty() const;
@@ -120,9 +121,9 @@ private:
 	GameHeader gameHeader;
 	Uint16 gameID;
 	Uint32 chatChannel;
-	shared_ptr<YOGServerPlayer> host;
-	shared_ptr<YOGServerMapDistributor> distributor;
-	std::vector<shared_ptr<YOGServerPlayer> > players;
+	boost::shared_ptr<YOGServerPlayer> host;
+	boost::shared_ptr<YOGServerMapDistributor> distributor;
+	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
 	YOGServer& server;
 	NetGamePlayerManager playerManager;
 	Uint8 aiNum;

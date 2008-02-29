@@ -16,10 +16,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGServerPlayer.h"
+#include "NetMessage.h"
+#include "YOGServerChatChannel.h"
+#include "YOGServerGame.h"
 #include "YOGServer.h"
 #include "YOGServerMapDistributor.h"
-#include "YOGServerGame.h"
+#include "YOGServerPlayer.h"
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)

@@ -20,9 +20,7 @@
 #define __YOGClient_h
 
 #include "NetConnection.h"
-#include "NetListener.h"
 #include "YOGConsts.h"
-#include "YOGClientEventListener.h"
 #include <list>
 #include <map>
 
@@ -33,6 +31,8 @@ class YOGClientGameListManager;
 class YOGClientPlayerListManager;
 class YOGServer;
 class YOGClientChatChannel;
+class YOGClientEventListener;
+class YOGClientEvent;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient

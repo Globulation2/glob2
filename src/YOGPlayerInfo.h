@@ -20,7 +20,14 @@
 #define __YOGPlayerInfo_h
 
 #include <string>
-#include "Stream.h"
+#include "SDL_net.h"
+
+namespace GAGCore
+{
+	class OutputStream;
+	class InputStream;
+}
+
 
 ///This class contains information related to a player connected to YOG
 class YOGPlayerInfo

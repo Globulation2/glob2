@@ -16,16 +16,18 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGClient.h"
 #include <iostream>
-#include "MultiplayerGame.h"
 #include "MapAssembler.h"
-#include "YOGClientGameListManager.h"
-#include "YOGClientPlayerListManager.h"
-#include "YOGServer.h"
-#include "YOGClientChatChannel.h"
-#include "YOGMessage.h"
+#include "MultiplayerGame.h"
 #include "NetMessage.h"
+#include "YOGClientChatChannel.h"
+#include "YOGClientEventListener.h"
+#include "YOGClientEvent.h"
+#include "YOGClientGameListManager.h"
+#include "YOGClient.h"
+#include "YOGClientPlayerListManager.h"
+#include "YOGMessage.h"
+#include "YOGServer.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
