@@ -1,22 +1,22 @@
 /*
-  Copyright (C) 2007 Bradley Arsenault
+Copyright (C) 2007 Bradley Arsenault
 
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "GameGUIToolManager.h"
@@ -101,7 +101,6 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		int batX = (((mapX-viewportX)&(game.map.wMask)) * 32);
 		int batY = (((mapY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
 		
-			
 		// Draw the building
 		sprite->setBaseColor(game.teams[localteam]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
@@ -163,20 +162,20 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 	else if(mode == PlaceZone)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-        /* Instead of using a dimmer intensity to indicate
-            removing of areas, this should rather use dashed
-            lines.  (The intensities used below are 2/3 as
-            bright for the case of removing areas.) */
-        /* This reasoning should be abstracted out and reused
-            in MapEdit.cpp to choose a color for those cases
-            where areas are being drawn. */
+		/* Instead of using a dimmer intensity to indicate
+			removing of areas, this should rather use dashed
+			lines.  (The intensities used below are 2/3 as
+			bright for the case of removing areas.) */
+		/* This reasoning should be abstracted out and reused
+			in MapEdit.cpp to choose a color for those cases
+			where areas are being drawn. */
 		unsigned mode = brush.getType();
- 		Color c = Color(0,0,0);
-        /* The following colors have been chosen to match the
-            colors in the .png files for the animations of
-            areas as of 2007-04-29.  If those .png files are
-            updated with different colors, then the following
-            code should change accordingly. */
+		Color c = Color(0,0,0);
+		/* The following colors have been chosen to match the
+			colors in the .png files for the animations of
+			areas as of 2007-04-29.  If those .png files are
+			updated with different colors, then the following
+			code should change accordingly. */
 		if (zoneType == Forbidden)
 		{
 			if (mode == BrushTool::MODE_ADD)
@@ -190,28 +189,28 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		}
 		else if (zoneType == Guard)
 		{
-            if (mode == BrushTool::MODE_ADD)
+			if (mode == BrushTool::MODE_ADD)
 			{
 				c = Color(27,0,255);
 			}
-            else
+			else
 			{
-            	c = Color(18,0,170);
+				c = Color(18,0,170);
 			}
 		}
-        else if (zoneType == Clearing)
+		else if (zoneType == Clearing)
 		{
-            if (mode == BrushTool::MODE_ADD)
+			if (mode == BrushTool::MODE_ADD)
 			{
-            /* some of the clearing area images use (252,207,0) instead */
-	            c = Color(251,206,0);
+			/* some of the clearing area images use (252,207,0) instead */
+				c = Color(251,206,0);
 			}
-            else
+			else
 			{
 				c = Color(167,137,0);
 			}
 		}
-		brush.drawBrush(mouseX, mouseY, c);
+		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY);
 	}
 }
 
@@ -291,7 +290,7 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 			}
 			unsigned mode = brush.getType();
 			if (((mode == BrushTool::MODE_ADD) && isAlreadyOn)
-			   || ((mode == BrushTool::MODE_DEL) && !isAlreadyOn))
+			|| ((mode == BrushTool::MODE_DEL) && !isAlreadyOn))
 			{
 				flushBrushOrders(localteam);
 				brush.setType((mode == BrushTool::MODE_ADD) ? BrushTool::MODE_DEL : BrushTool::MODE_ADD); 
@@ -342,11 +341,11 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -356,7 +355,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					if (zoneType == Forbidden)
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
@@ -374,7 +373,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					if (zoneType == Forbidden)
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
@@ -386,7 +385,6 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 			}
 		}
 	}
-	
 	
 	// if we have an area over 32x32, which mean over 128 bytes, send it
 	if (brushAccumulator.getAreaSurface() > 32*32)
@@ -403,15 +401,15 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 	{
 		if (zoneType == Forbidden)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator)));
+			orders.push(boost::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Guard)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator)));
+			orders.push(boost::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Clearing)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator)));
+			orders.push(boost::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else
 			assert(false);

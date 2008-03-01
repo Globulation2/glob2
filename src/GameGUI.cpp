@@ -21,7 +21,6 @@
 #include <stdarg.h>
 #include <math.h>
 
-
 #include <sstream>
 #include <iostream>
 #include <algorithm>
@@ -287,13 +286,13 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
-        /* We used to use SDL_GetMouseState, like the following
-           commented-out code, but that was buggy and prevented
-           dragging from correctly going through intermediate cells.
-           It is vital to use the mouse position and button status as
-           it was at the time in the middle of the event stream, not
-           as it is now.  So instead we make sure the correct data is
-           passed to us as a parameter. */
+	/* We used to use SDL_GetMouseState, like the following
+		commented-out code, but that was buggy and prevented
+		dragging from correctly going through intermediate cells.
+		It is vital to use the mouse position and button status as
+		it was at the time in the middle of the event stream, not
+		as it is now.  So instead we make sure the correct data is
+		passed to us as a parameter. */
 	// int mx, my;
 	// Uint8 button = SDL_GetMouseState(&mx, &my);
         // fprintf (stderr, "enter dragStep: button: %d, mx: %d, selectionMode: %d\n", button, mx, selectionMode);
@@ -328,7 +327,7 @@ void GameGUI::step(void)
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
-        int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
+	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
 	
 	SDLMod modState = SDL_GetModState();
@@ -2292,9 +2291,9 @@ void GameGUI::drawPanelButtons(int pos)
 	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
 	{
 		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 1);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 29);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 0);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 28);
 	}
 
 	if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))

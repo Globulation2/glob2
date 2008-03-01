@@ -326,7 +326,7 @@ namespace GAGCore
 		
 	public:
 		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
-		GraphicContext(int w, int h, Uint32 flags);
+		GraphicContext(int w, int h, Uint32 flags, const char *title = NULL, const char *icon = NULL);
 		//! Destructor
 		virtual ~GraphicContext(void);
 		

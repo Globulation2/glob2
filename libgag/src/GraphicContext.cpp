@@ -1857,7 +1857,7 @@ namespace GAGCore
 		return false;
 	}
 	
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags)
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const char *title, const char *icon)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -1883,7 +1883,11 @@ namespace GAGCore
 		
 		TTF_Init();
 		
+		if (title && icon)
+			SDL_WM_SetCaption(title, icon);
+		
 		setRes(w, h, flags);
+		
 	}
 	
 	GraphicContext::~GraphicContext(void)
