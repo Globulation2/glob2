@@ -21,6 +21,6 @@
 
 int main(int argc, char** argv)
 {
-	YOGServer server;
+	YOGServer server(YOGRequirePassword, YOGMultipleGames);;
 	server.run();
 }

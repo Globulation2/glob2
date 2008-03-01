@@ -49,6 +49,7 @@
 #include "SoundMixer.h"
 #include "VoiceRecorder.h"
 #include "GameGUIKeyActions.h"
+#include "Player.h"
 
 #include "config.h"
 

@@ -27,6 +27,7 @@
 #include <GUISelector.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include "Player.h"
 
 
 //! Main menu screen

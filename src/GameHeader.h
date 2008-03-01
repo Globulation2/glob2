@@ -19,7 +19,7 @@
 #ifndef __GAMEHEADER_H
 #define __GAMEHEADER_H
 
-#include "Player.h"
+#include "BasePlayer.h"
 #include "Stream.h"
 
 ///This is the game header. It is dynamic, and can change from game to game, even
