@@ -1357,13 +1357,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(mouseX, mouseY, (terrainType>TerrainSelector::Water ? 0 : 1), viewportX, viewportY);
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
@@ -1380,10 +1380,10 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		}
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 		}
 		if(selectionMode==ChangeNoRessourceGrowthAreas)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 	}
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
@@ -3186,10 +3186,10 @@ void MapEdit::handleBrushClick(int mx, int my)
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3197,7 +3197,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -3222,7 +3222,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -3264,10 +3264,10 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3275,7 +3275,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					if (terrainType == TerrainSelector::Grass)
 					{
@@ -3341,7 +3341,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					if (terrainType == TerrainSelector::Sand || terrainType == TerrainSelector::Water)
 					{
@@ -3395,10 +3395,10 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3406,7 +3406,7 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
 				}
@@ -3425,10 +3425,10 @@ void MapEdit::handleAreaClick(int mx, int my)
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3436,7 +3436,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					game.map.setPoint(areaNumber->getIndex(), x, y);
 				}
@@ -3445,7 +3445,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					game.map.unsetPoint(areaNumber->getIndex(), x, y);
 				}
@@ -3463,10 +3463,10 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3474,7 +3474,7 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					game.map.getCase(x, y).canRessourcesGrow=false;
 				}
@@ -3483,7 +3483,7 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
 				{
 					game.map.getCase(x, y).canRessourcesGrow=true;
 				}
