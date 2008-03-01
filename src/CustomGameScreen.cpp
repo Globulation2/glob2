@@ -29,6 +29,7 @@
 #include <StringTable.h>
 #include <Stream.h>
 #include <FormatableString.h>
+#include "Player.h"
 
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)

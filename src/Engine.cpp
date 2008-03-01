@@ -39,6 +39,7 @@
 #include "YOGClientLobbyScreen.h"
 #include "SoundMixer.h"
 #include "CampaignScreen.h"
+#include "Player.h"
 
 #include <iostream>
 

@@ -36,46 +36,14 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "BaseTeam.h"
+
 class Building;
 class BuildingsTypes;
 class Map;
 class Unit;
 
-class BaseTeam
-{
-public:
-	enum TeamType
-	{
-		T_HUMAN,
-		T_AI,
-		// Note : T_AI + n is AI type n
-	};
 
-	BaseTeam();
-	virtual ~BaseTeam(void) { }
-
-	TeamType type;
-	Sint32 teamNumber; // index of the current team in the game::teams[] array.
-	Sint32 numberOfPlayer; // number of controling players
-	GAGCore::Color color;
-	Uint32 playersMask;
-	Race race;
-	
-public:
-	bool disableRecursiveDestruction;
-	
-private:
-	Uint8 data[16];
-
-public:
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	void save(GAGCore::OutputStream *stream);
-
-	Uint8 *getData();
-	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength();
-	Uint32 checkSum();
-};
 
 class Game;
 
