@@ -1703,7 +1703,7 @@ namespace GAGCore
 			for (int dy=0; dy < mapH-1; dy++)
 			{
 				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW; dx++)
+				for (int dx=0; dx < mapW-1; dx++)
 				{
 					glBegin(GL_TRIANGLE_FAN);
 					//This interpolates to find the center color, then fans out to the four corners.
@@ -1743,10 +1743,10 @@ namespace GAGCore
 			
 			glState.doBlend(1);
 			glState.doTexture(0);
-			for (int dy=0; dy < mapH/*-1*/; dy++)
+			for (int dy=0; dy < mapH-1; dy++)
 			{
 				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW; dx++)
+				for (int dx=0; dx < mapW-1; dx++)
 				{
 
 					glBegin(GL_TRIANGLE_FAN);
