@@ -1684,23 +1684,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		if ((unit->performance[HARVEST]) && (unit->caryedRessource>=0))
 			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->caryedRessource);
 	}
-	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
-		if (unit->validTarget)
-		/*TODO: remove this comment when we see the new code works
-			if (unit->displacement==Unit::DIS_GOING_TO_FLAG
-			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
-			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING
-			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND && unit->movement==Unit::MOV_GOING_DXDY))*/
-		{
-			int lsx, lsy, ldx, ldy;
-			lsx=px+16;
-			lsy=py+16;
-			map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, screenW, screenH);
-			if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-				globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
-			else
-				globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250, 128);
-		}
+
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{
 		std::ostringstream oss;
@@ -2415,6 +2399,51 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 }
 
 
+
+inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
+	mouseUnit=NULL;//??
+	for(int i=0; i<1024; ++i)
+	{
+		Unit *unit=teams[localTeam]->myUnits[i];
+		if (unit)
+		{
+			drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit);
+		}
+	}
+}
+
+
+
+inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit)
+{
+	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
+	{
+		if (unit->validTarget)
+		/*TODO: remove this comment when we see the new code works
+			if (unit->displacement==Unit::DIS_GOING_TO_FLAG
+			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
+			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING
+			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND && unit->movement==Unit::MOV_GOING_DXDY))*/
+		{
+			//if((unit->posY >= top-1 && unit->posY <= bot && unit->posX >= left-1 && unit->posX <= right) || (unit->targetY >= top-1 && unit->targetY <= bot && unit->targetX >= left-1 && unit->targetX <= right))
+			{
+				int lsx, lsy, ldx, ldy;
+				map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, sw, sh);
+				map.mapCaseToDisplayableVector(unit->posX, unit->posY, &lsx, &lsy, viewportX, viewportY, sw, sh);
+				lsx+=16;
+				lsy+=16;
+				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+					globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
+				else
+					globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250, 128);
+			}
+		}
+	}
+}
+
+
+
 float Game::interpolateValues(float a, float b, float x)
 {
 	float ft = 3.141592653f * x;
@@ -2454,6 +2483,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	
 	// draw cloud overlay if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
