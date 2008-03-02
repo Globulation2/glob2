@@ -2420,19 +2420,23 @@ inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw
 	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
 	{
 		if (unit->validTarget)
-		/*TODO: remove this comment when we see the new code works
-			if (unit->displacement==Unit::DIS_GOING_TO_FLAG
-			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
-			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING
-			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND && unit->movement==Unit::MOV_GOING_DXDY))*/
 		{
-			//if((unit->posY >= top-1 && unit->posY <= bot && unit->posX >= left-1 && unit->posX <= right) || (unit->targetY >= top-1 && unit->targetY <= bot && unit->targetX >= left-1 && unit->targetX <= right))
+			if(isOnScreen(left,top,right,bot,viewportX,viewportY,unit->posX,unit->posY) || isOnScreen(left,top,right,bot,viewportX,viewportY,unit->targetX,unit->targetY))
 			{
+				int px, py;
+				map.mapCaseToDisplayableVector(unit->posX, unit->posY, &px, &py, viewportX, viewportY, sw, sh);
+				int deltaLeft=255-unit->delta;
+				if (unit->action<BUILD)
+				{
+					px-=(unit->dx*deltaLeft)>>3;
+					py-=(unit->dy*deltaLeft)>>3;
+				}
+			
+			
 				int lsx, lsy, ldx, ldy;
 				map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, sw, sh);
-				map.mapCaseToDisplayableVector(unit->posX, unit->posY, &lsx, &lsy, viewportX, viewportY, sw, sh);
-				lsx+=16;
-				lsy+=16;
+				lsx=px+16;
+				lsy=py+16;
 				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 					globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
 				else
@@ -2450,6 +2454,27 @@ float Game::interpolateValues(float a, float b, float x)
 	float f = (1.0f - std::cos(ft)) * 0.5f;
 	return  a*(1.0-f) + b*f;
 }
+
+
+
+inline bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y)
+{
+
+	left += viewportX;
+	right += viewportX;
+	top += viewportY;
+	bot += viewportY;
+	
+	if((x >= left-1 && x <= right) || (x+map.getW() >= left-1 && x+map.getW() <= right))
+	{
+		if((y >= top-1 && y <= bot) || (y+map.getH() >= top-1 && y+map.getH() <= bot))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 	
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)

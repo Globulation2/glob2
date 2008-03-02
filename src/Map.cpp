@@ -2003,9 +2003,9 @@ void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewp
 {
 	int x = (mx - viewportX) & wMask;
 	int y = (my - viewportY) & hMask;
-	if (x > (w/2 + screenW/2))
+	if (x > (w/2))
 		x-=w;
-	if (y > (h/2 + screenH/2))
+	if (y > (h/2))
 		y-=h;
 	*px=x<<5;
 	*py=y<<5;
