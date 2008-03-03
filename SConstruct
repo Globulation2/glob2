@@ -65,13 +65,13 @@ def configure(env):
     if not conf.CheckLib('SDL_net'):
         print "Could not find libSDL_net"
         Exit(1)
-    if not conf.CheckLib('speex') or not conf.CheckCHeader('speex/speex.h'):
+    if not conf.CheckLib('speex') or not conf.CheckCXXHeader('speex/speex.h'):
         print "Could not find libspeex or could not find 'speex/speex.h'"
         Exit(1)
     if not conf.CheckLib('vorbisfile'):
         print "Could not find libvorbisfile to link against"
         Exit(1)
-    if not conf.CheckCHeader('zlib.h'):
+    if not conf.CheckCXXHeader('zlib.h'):
         print "Could not find zlib.h"
         Exit(1)
     else:
@@ -112,11 +112,11 @@ def configure(env):
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
-    if conf.CheckLib('GL') and conf.CheckCHeader('GL/gl.h'):
+    if conf.CheckLib('GL') and conf.CheckCXXHeader('GL/gl.h'):
         gl_libraries.append("GL")
-    elif conf.CheckLib('GL') and conf.CheckCHeader('OpenGL/gl.h'):
+    elif conf.CheckLib('GL') and conf.CheckCXXHeader('OpenGL/gl.h'):
         gl_libraries.append("GL")
-    elif conf.CheckLib('opengl32') and conf.CheckCHeader('GL/gl.h'):
+    elif conf.CheckLib('opengl32') and conf.CheckCXXHeader('GL/gl.h'):
         gl_libraries.append("opengl32")
     elif isDarwinPlatform:
     	print "Using Apple's OpenGL framework system"
@@ -125,11 +125,11 @@ def configure(env):
         Exit(1)
 
     #Do checks for GLU, which is different on every system
-    if conf.CheckLib('GLU') and conf.CheckCHeader("GL/glu.h"):
+    if conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h"):
         gl_libraries.append("GLU")
-    elif conf.CheckLib('GLU') and conf.CheckCHeader("OpenGL/glu.h"):
+    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("OpenGL/glu.h"):
         gl_libraries.append("GLU")
-    elif conf.CheckLib('glu32') and conf.CheckCHeader('GL/glu.h'):
+    elif conf.CheckLib('glu32') and conf.CheckCXXHeader('GL/glu.h'):
         gl_libraries.append("glu32")
     elif isDarwinPlatform:
     	print "Using Apple's OpenGL framework system"
@@ -142,7 +142,7 @@ def configure(env):
         env.Append(LIBS=gl_libraries)
     
     #Do checks for fribidi
-    if conf.CheckLib('fribidi') and conf.CheckCHeader('fribidi/fribidi.h'):
+    if conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
     conf.Finish() 
