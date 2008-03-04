@@ -60,7 +60,6 @@ struct Case
 	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	///The difference between forbidden zone and hidden forbidden zone is that hidden forbidden zone
 	///is put there by the game engine and is not draw to the screen.
-	Uint32 hiddenForbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	Uint32 guardArea; // This is a mask, one bit by team, 1=guard area, 0=normal
 	Uint32 clearArea; // This is a mask, one bit by team, 1=clear area, 0=normal
 
@@ -318,7 +317,7 @@ public:
 	//Returns the combined forbidden and hidden foribidden masks
 	Uint32 getForbidden(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden | cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden;
+		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden;
 	}
 	
 	Uint8 getExplored(int x, int y, int team)
@@ -349,19 +348,9 @@ public:
 	void removeForbidden(int x, int y, Uint32 teamNum)
 	{
 		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
-		c.hiddenForbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
-	}
-	
-	void addHiddenForbidden(int x, int y, Uint32 teamNum)
-	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden |= Team::teamNumberToMask(teamNum);
+		c.forbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
 	}
 
-	void removeHiddenForbidden(int x, int y, Uint32 teamNum)
-	{
-		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
-		c.hiddenForbidden ^= c.hiddenForbidden &  Team::teamNumberToMask(teamNum);
-	}
 	
 	bool isWater(int x, int y)
 	{
