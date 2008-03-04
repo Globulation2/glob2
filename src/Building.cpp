@@ -1188,13 +1188,6 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
-	for(int nx=0; nx<newWidth; ++nx)
-	{
-		for(int ny=0; ny<newHeight; ++ny)
-		{
-			owner->map->addHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
-		}
-	}
 }
 
 
@@ -1217,13 +1210,6 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
-	for(int nx=0; nx<newWidth; ++nx)
-	{
-		for(int ny=0; ny<newHeight; ++ny)
-		{
-			owner->map->removeHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
-		}
-	}
 }
 
 

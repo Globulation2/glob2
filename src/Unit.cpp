@@ -761,10 +761,6 @@ void Unit::handleMedical(void)
 				ownExchangeBuilding=NULL;
 			}
 			
-			
-			
-			owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
-			
 			activity=ACT_RANDOM;
 			validTarget=false;
 			
@@ -1933,10 +1929,6 @@ void Unit::handleAction(void)
 			assert(!performance[FLY]);
 			owner->map->setGroundUnit(posX, posY, NOGUID);
 			gotoGroundTarget();
-			if(dx==0 && dy==0)
-				owner->map->addHiddenForbidden(posX, posY, owner->teamNumber);
-			else
-				owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
 			selectPreferedGroundMovement();
@@ -1971,11 +1963,6 @@ void Unit::handleAction(void)
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 			
 			directionFromDxDy();
-			
-			if(dx==0 && dy==0)
-				owner->map->addHiddenForbidden(posX, posY, owner->teamNumber);
-			else
-				owner->map->removeHiddenForbidden(posX, posY, owner->teamNumber);
 				
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
