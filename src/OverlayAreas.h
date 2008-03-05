@@ -56,14 +56,6 @@ public:
 	///Returns the last computed overlay type
 	OverlayType getOverlayType();
 	
-	///Computes the fertility overlay
-	void computeFertility(Game& game, int localteam);
-	
-	///This forces the recomputation of the fertility map
-	void forceFertilityRecompute();
-	
-	///Returns whether the fertility is being calculated
-	bool isFertilityBeingCalculated();
 protected:
 	OverlayType type;
 	OverlayType lasttype;
@@ -72,46 +64,8 @@ protected:
 	std::vector<Uint16> overlay;
 	Uint16 overlaymax;
 	
-	///Fertility only needs to be computed once
-	std::vector<Uint16> fertility;
-	Uint16 fertilitymax;
-	int fertilityComputed;
-	
 	void increasePoint(int x, int y, int distance, std::vector<Uint16>& field, Uint16& max);
 	void spreadPoint(int x, int y, int value, int distance, std::vector<Uint16>& field, Uint16& msx);
-};
-
-
-///This functor calculates the fertility in a thread safe manner
-class FertilityCalculator
-{
-public:
-	///Constructs the functor
-	FertilityCalculator(std::vector<Uint16>& fertility, Uint16& fertilityMax, Game& game, int localteam, int width, int height, int& fertilityComputed);
-
-	///Computes the fertility
-	void operator()();
-
-private:
-	class position
-	{
-	public:
-		position(int x, int y) : x(x), y(y) {}
-		int x;
-		int y;
-	};
-
-	void computeRessourcesGradient();
-	int get_pos(int x, int y) { return x*height+y; }
-
-	std::vector<Uint16>& fertility;
-	std::vector<Uint16> gradient;
-	Uint16& fertilitymax;
-	Game& game;
-	int localteam;
-	int width;
-	int height;
-	int& fertilityComputed;
 };
 
 #endif

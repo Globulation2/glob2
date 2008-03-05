@@ -65,6 +65,8 @@ struct Case
 
 	Uint16 scriptAreas; // This is also a mask. A single bit represents an area #n, on or off for the square
 	Uint8 canRessourcesGrow; // This is a boolean, it represents whether ressources are allowed to grow into this location.
+	
+	Uint16 fertility; // This is a value that represents the fertility of this square, the chance that wheat will grow on it
 };
 
 
@@ -700,6 +702,9 @@ public:
 	Utilities::BitArray localGuardAreaMap;
 	//! true = clear area
 	Utilities::BitArray localClearAreaMap;
+	
+	///This is the maximum fertility of any point on the map
+	Uint16 fertilityMaximum;
 	
 public:
 	// Used to go to ressources

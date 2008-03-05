@@ -209,6 +209,8 @@ Map::Map()
 	std::fill(incRessourceLog, incRessourceLog + 16, 0);
 
 	areaNames.resize(9);
+	
+	fertilityMaximum = 0;
 }
 
 Map::~Map(void)
@@ -942,6 +944,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initCase.clearArea = 0;
 	initCase.scriptAreas = 0;
 	initCase.canRessourcesGrow = 1;
+	initCase.fertility = 0;
 	
 	for (size_t i=0; i<size; i++)
 		cases[i]=initCase;
@@ -1072,6 +1075,8 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		cases[i].clearArea = stream->readUint32("clearArea");
 		cases[i].scriptAreas = stream->readUint16("scriptAreas");
 		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
+		if(versionMinor >= 63)
+			cases[i].fertility = stream->readUint16("fertility");
 
 		stream->readLeaveSection();
 	}
@@ -1210,6 +1215,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(cases[i].clearArea, "clearArea");
 		stream->writeUint16(cases[i].scriptAreas, "scriptAreas");
 		stream->writeUint8(cases[i].canRessourcesGrow, "canRessourcesGrow");
+		stream->writeUint16(cases[i].fertility, "fertility");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();

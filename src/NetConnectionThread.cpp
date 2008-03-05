@@ -184,6 +184,9 @@ void NetConnectionThread::operator()()
 					boost::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
 					sendToMainThread(error);
 					perror("SDLNet_CheckSockets");
+					if(connected)
+						closeConnection();
+					break;
 				}
 				else if(numReady)
 				{
