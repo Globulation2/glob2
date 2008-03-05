@@ -52,7 +52,7 @@ void GameGUIGhostBuildingManager::removeBuilding(int x, int y)
 
 
 
-void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY)
+void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int localTeam)
 {
 	for(int i=0; i<buildings.size(); ++i)
 	{
@@ -66,6 +66,7 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY)
 
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
+		sprite->setBaseColor(game.teams[localTeam]->color);
 
 		//Find position to draw
 		int batW = (bt->width) * 32;

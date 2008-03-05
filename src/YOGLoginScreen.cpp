@@ -71,6 +71,8 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	animation->visible=false;
 	addWidget(animation);
 	
+	wasConnecting = false;
+	
 	client->addEventListener(this);
 }
 
@@ -91,18 +93,13 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==LOGIN)
 		{
+			//Update the gui
+			animation->show();
+			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 			client->connect(YOG_SERVER_IP);
-			while(client->isConnecting())
-			{
-				client->update();
-				SDL_Delay(10);
-			}
 			
-			if(!client->isConnected())
-			{
-				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
-			}
+			wasConnecting = true;
 		}
 	}
 	if (action==TEXT_ACTIVATED)
@@ -116,6 +113,15 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void YOGLoginScreen::onTimer(Uint32 tick)
 {
+	if(wasConnecting && !client->isConnecting())
+	{
+		if(!client->isConnected())
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
+		}
+		wasConnecting = false;
+	}
+
 	client->update();
 }
 
@@ -192,10 +198,6 @@ void YOGLoginScreen::attemptLogin()
 		globalContainer->settings.username=login->getText();
 		globalContainer->settings.save();
 	}
-	//Update the gui
-	animation->show();
-	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 	//Attempt the login
 	client->attemptLogin(login->getText(), password->getText());
 }
@@ -211,10 +213,6 @@ void YOGLoginScreen::attemptRegistration()
 		globalContainer->settings.username=login->getText();
 		globalContainer->settings.save();
 	}
-	//Update the gui
-	animation->show();
-	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 	//Attempt the registration
 	client->attemptRegistration(login->getText(), password->getText());
 }
