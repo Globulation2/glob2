@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 62
+#define VERSION_MINOR 63
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -77,6 +77,7 @@
 // version 60 updated the saving for Nicowar for the new changes
 // version 61 added an under attack countdown to buildings and units
 // version 62 removed hidden forbidden
+// version 62 added fertility to map
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above

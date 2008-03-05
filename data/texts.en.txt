@@ -22,6 +22,8 @@ Add AI
 Add map
 [add shortcut]
 Add Shortcut
+[Computing Fertility]
+Computing Fertility
 [AI]
 AI
 [ai]

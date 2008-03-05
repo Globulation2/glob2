@@ -52,6 +52,7 @@
 #include "DynamicClouds.h"
 
 #include "TextStream.h"
+#include "FertilityCalculatorDialog.h"
 
 #define BULLET_IMGID 0
 
@@ -930,6 +931,15 @@ bool Game::load(GAGCore::InputStream *stream)
 	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
 
 	stream->readLeaveSection();
+	
+	///versions less than 63 did not have fertility computed with the map, but computed it live.
+	///compute it now
+	if(mapHeader.getVersionMinor() < 63)
+	{
+		FertilityCalculatorDialog dialog(globalContainer->gfx, map);
+		dialog.execute();
+	}
+	
 	return true;
 }
 
@@ -1834,10 +1844,11 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 	if (false)
 	{
 		assert(teams[0]);
-		Building *b=teams[0]->myBuildings[5];
+		Building *b=teams[0]->myBuildings[0];
 		if (b)
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
+				{
 					if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
 					{
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
@@ -1852,6 +1863,7 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
 					}
+				}
 	}
 	
 	// We draw debug area:
@@ -2377,8 +2389,8 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		{
 			for (int x=0; x<width; x++)
 			{
-				int rx=(x+viewportX-1)%map.getW();
-				int ry=(y+viewportY-1)%map.getH();
+				int rx=(x+viewportX-1+map.getW())%map.getW();
+				int ry=(y+viewportY-1+map.getH())%map.getH();
 				if(!edit && !map.isMapDiscovered(rx, ry, teams[localTeam]->me))
 					continue;
 				if(overlays->getValue(rx, ry))

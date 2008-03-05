@@ -35,6 +35,7 @@
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
+#include "FertilityCalculatorDialog.h"
 
 
 
@@ -832,8 +833,8 @@ void Checkbox::draw()
 
 void Checkbox::handleClick(int relMouseX, int relMouseY)
 {
-	MapEditorWidget::handleClick(relMouseX, relMouseY);
 	isActivated = !isActivated;
+	MapEditorWidget::handleClick(relMouseX, relMouseY);
 }
 
 
@@ -1202,6 +1203,9 @@ bool MapEdit::load(const char *filename)
 
 bool MapEdit::save(const char *filename, const char *name)
 {
+	FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
+	dialog.execute();
+
 	assert(filename);
 	assert(name);
 
@@ -1275,11 +1279,6 @@ int MapEdit::run(void)
 				performAction("zone drag motion");
 			else if(isDraggingTerrain)
 				performAction("terrain drag motion");
-		}
-		
-		if(isFertilityOn)
-		{
-			overlay.compute(game, OverlayArea::Fertility, team);
 		}
 		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
@@ -2886,7 +2885,13 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	}
 	else if(action=="compute fertility")
 	{
-		overlay.forceFertilityRecompute();
+		//Only compute when its x'ed in, not otherwise
+		if(isFertilityOn)
+		{
+			FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
+			dialog.execute();
+			overlay.compute(game, OverlayArea::Fertility, team);
+		}
 	}
 	else if(action=="quit editor")
 	{
