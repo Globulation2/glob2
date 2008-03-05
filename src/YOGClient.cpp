@@ -447,7 +447,6 @@ void YOGClient::sendToListeners(boost::shared_ptr<YOGClientEvent> event)
 {
 	for(std::list<YOGClientEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
-		std::cout<<"sending event "<<std::endl;
 		(*i)->handleYOGClientEvent(event);
 	}
 }

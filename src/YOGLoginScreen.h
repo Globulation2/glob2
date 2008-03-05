@@ -85,6 +85,8 @@ private:
 	TextArea *statusText;
 	Animation *animation;
 	
+	bool wasConnecting;
+	
 	boost::shared_ptr<YOGClient> client;
 };
 

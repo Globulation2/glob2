@@ -41,7 +41,7 @@ public:
 	void removeBuilding(int x, int y);
 
 	///Draws to the map
-	void drawAll(int viewportX, int viewportY);
+	void drawAll(int viewportX, int viewportY, int localTeamNo);
 private:
 	Game& game;
 	std::vector<boost::tuple<std::string, int, int> > buildings;

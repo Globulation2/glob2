@@ -3576,7 +3576,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	///Draw ghost buildings
-	ghostManager.drawAll(viewportX, viewportY);
+	ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 	
 	// if paused, tint the game area
 	if (gamePaused)
