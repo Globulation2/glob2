@@ -359,21 +359,24 @@ void YOGClientLobbyScreen::updateGameInfo()
 {
 	if (gameList->getSelectionIndex() != -1)
 	{
-		std::list<YOGGameInfo>::iterator i=client->getGameListManager()->getGameList().begin();
-		std::advance(i, gameList->getSelectionIndex());
-		YOGGameInfo info=*i;
-
-		gameInfo->setText("");
-		std::string s;
-		s += info.getGameName() + "\n";
-		gameInfo->addText(s.c_str());
-		s = FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(info.getMapName()) + "\n";
-		gameInfo->addText(s.c_str());
-		s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0 (%1 AI)]")).arg((int)info.getPlayersJoined() + (int)info.getAIJoined()).arg((int)info.getAIJoined()) + "\n";
-		gameInfo->addText(s.c_str());
-		s = FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg((int)info.getNumberOfTeams()) + "\n";
-		gameInfo->addText(s.c_str());
-		gameInfo->addChar('\n');
+		Uint16 id = 0;
+		for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
+		{
+			if(gameList->get() == game->getGameName())
+			{
+				gameInfo->setText("");
+				std::string s;
+				s += game->getGameName() + "\n";
+				gameInfo->addText(s.c_str());
+				s = FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(game->getMapName()) + "\n";
+				gameInfo->addText(s.c_str());
+				s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0 (%1 AI)]")).arg((int)game->getPlayersJoined() + (int)game->getAIJoined()).arg((int)game->getAIJoined()) + "\n";
+				gameInfo->addText(s.c_str());
+				s = FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg((int)game->getNumberOfTeams()) + "\n";
+				gameInfo->addText(s.c_str());
+				gameInfo->addChar('\n');
+			}
+		}
 	}
 	else
 	{
