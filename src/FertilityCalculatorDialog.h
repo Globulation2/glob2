@@ -27,6 +27,10 @@ namespace GAGGUI
 {
 	class Text;
 }
+namespace GAGCore
+{
+	class DrawableSurface;
+}
 
 ///This dialog shows progress of the fertility computation
 class FertilityCalculatorDialog:public GAGGUI::OverlayScreen
@@ -38,10 +42,10 @@ public:
 	
 	///This screen is modal, this executes it
 	void execute();
-	
-	///This proccesses an incoming event from the fertility calculator thread
-	void proccessIncoming();
 private:
+	///This proccesses an incoming event from the fertility calculator thread
+	void proccessIncoming(GAGCore::DrawableSurface *background);
+	
 	Map& map;
 	GAGCore::GraphicContext *parentCtx;
 	

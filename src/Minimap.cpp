@@ -185,6 +185,13 @@ void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 
 
 
+void Minimap::resetMinimapDrawing()
+{
+	update_row = -1;
+}
+	
+
+
 void Minimap::computeMinimapPositioning()
 {
 	if (noX) return;
