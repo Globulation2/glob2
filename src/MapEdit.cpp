@@ -1862,6 +1862,11 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 				performAction("close menu screen");
 		}
 		break;
+		case MapEditKeyActions::SelectDeleteTool:
+		{
+			performAction("switch to terrain view&select delete objects");
+		}
+		break;
 	}
 }
 

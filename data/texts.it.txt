@@ -220,6 +220,8 @@ Chiuso
 Compila lo script
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Connesso
 [connected to all players]
@@ -761,6 +763,8 @@ Seleziona bandiera di raccolta
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 Seleziona bandiera di esplorazione

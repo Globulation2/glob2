@@ -220,6 +220,8 @@ Cerrado
 Compilar Script
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Connectar
 [connected to all players]
@@ -761,6 +763,8 @@ Búsqueda
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

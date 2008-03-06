@@ -220,6 +220,8 @@ Kapali
 Script derle
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Baglan
 [connected to all players]
@@ -761,6 +763,8 @@ ariyor
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

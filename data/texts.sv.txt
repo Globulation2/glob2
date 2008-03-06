@@ -220,6 +220,8 @@ Stängd
 Kompilera skript
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Anslut
 [connected to all players]
@@ -761,6 +763,8 @@ Välj Röjningsflagga
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 Välj Utforskningsflagga

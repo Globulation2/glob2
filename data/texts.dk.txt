@@ -220,6 +220,8 @@ Lukket
 Kompilere skript
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Forbinder
 [connected to all players]
@@ -761,6 +763,8 @@ Vælg Rydnings Flag
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 Vælg Udforsknings Flag

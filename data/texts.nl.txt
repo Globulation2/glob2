@@ -220,6 +220,8 @@ Gesloten
 Compileer script
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Verbinden
 [connected to all players]
@@ -761,6 +763,8 @@ Selecteer Grondstoffenvlag
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 Selecteer Verkenningsvlag

@@ -220,6 +220,8 @@ AIWarrush
 Преведи скрипт
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Прикључи се
 [connected to all players]
@@ -761,6 +763,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

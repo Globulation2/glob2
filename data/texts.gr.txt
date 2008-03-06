@@ -220,6 +220,8 @@ Checksum εστάλει ...
 Μεταγλώττιση script
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Σύνδεση
 [connected to all players]
@@ -764,6 +766,8 @@ Scroll Wheel Ενεργοποιημένο
 Επιλογή Κατασκευή Σμήνους
 [select construct swimmingpool]
 Επιλογή Κατασκευή Πισίνας
+[select delete tool]
+
 [select explorationflag]
 Επιλογή explorationflag
 [select hospital building]

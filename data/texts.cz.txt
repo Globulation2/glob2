@@ -220,6 +220,8 @@ Uzavřeno
 Sestavit skript
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Připojit
 [connected to all players]
@@ -761,6 +763,8 @@ Hledá
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

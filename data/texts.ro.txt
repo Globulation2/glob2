@@ -220,6 +220,8 @@ Steag de defrişare
 Compilează scriptul
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Conectează
 [connected to all players]
@@ -761,6 +763,8 @@ caută
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

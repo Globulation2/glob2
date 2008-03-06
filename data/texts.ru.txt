@@ -220,6 +220,8 @@ ok
 Компилировать скрипт
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Подключиться
 [connected to all players]
@@ -761,6 +763,8 @@ Ok
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 
