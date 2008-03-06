@@ -57,7 +57,7 @@ starving_recovery_phase_unfed_per_new_inn 6
 upgrading_phase_1_barracks_chance 15
 upgrading_phase_1_hospital_chance 5
 upgrading_phase_1_inn_chance 10
-upgrading_phase_1_num_units 12
+upgrading_phase_1_num_units 14
 upgrading_phase_1_racetrack_chance 8
 upgrading_phase_1_school_chance 5
 upgrading_phase_1_school_min 1
@@ -69,7 +69,7 @@ upgrading_phase_1_units_assigned 8
 upgrading_phase_2_barracks_chance 20
 upgrading_phase_2_hospital_chance 5
 upgrading_phase_2_inn_chance 6
-upgrading_phase_2_num_units 12
+upgrading_phase_2_num_units 14
 upgrading_phase_2_racetrack_chance 8
 upgrading_phase_2_school_chance 5
 upgrading_phase_2_school_min 1

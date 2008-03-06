@@ -709,8 +709,8 @@ namespace AIEcho
 			void set_upgrading(unsigned int id);
 			void tick();
 
-			typedef std::map<int, boost::tuple<int, int, int, int, bool> >::iterator pending_iterator;
-			typedef std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool, bool> >::iterator found_iterator;
+			typedef std::map<int, boost::tuple<int, int, int, int> >::iterator pending_iterator;
+			typedef std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> >::iterator found_iterator;
 
 			found_iterator begin() { return found_buildings.begin(); }
 			found_iterator end() { return found_buildings.end(); }
@@ -718,8 +718,8 @@ namespace AIEcho
 			///that pending_buildings[id] may create a new object, and the system can't tell the difference between it and something
 			///real. So bassically, the last variable is set to true when the object is supposed to be there, false is
 			///the default value if its accidentilly created.
-			std::map<int, boost::tuple<int, int, int, int, bool> > pending_buildings;
-			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool, bool> > found_buildings;
+			std::map<int, boost::tuple<int, int, int, int> > pending_buildings;
+			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
 			unsigned int building_id;
 			Player* player;
 			Echo& echo;

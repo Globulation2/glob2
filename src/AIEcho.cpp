@@ -1645,7 +1645,7 @@ void BuildingRegister::initiate()
 		Building* b=player->team->myBuildings[i];
 		if(b!=NULL)
 		{
-			found_buildings[building_id++]=boost::make_tuple(b->posX, b->posY, b->type->shortTypeNum, b->gid, false, true);
+			found_buildings[building_id++]=boost::make_tuple(b->posX, b->posY, b->type->shortTypeNum, b->gid, false);
 		}
 	}
 }
@@ -1654,7 +1654,7 @@ void BuildingRegister::initiate()
 
 unsigned int BuildingRegister::register_building()
 {
-	pending_buildings[building_id]=boost::make_tuple(-1, -1, -1, -1, true);
+	pending_buildings[building_id]=boost::make_tuple(-1, -1, -1, -1);
 	return building_id++;
 }
 
@@ -1662,7 +1662,7 @@ unsigned int BuildingRegister::register_building()
 
 void BuildingRegister::issue_order(int id, int x, int y, int building_type)
 {
-	pending_buildings[id]=boost::make_tuple(x, y, building_type, 0, true);
+	pending_buildings[id]=boost::make_tuple(x, y, building_type, 0);
 }
 
 
@@ -1688,7 +1688,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 y=stream->readSint32("ypos");
 		Uint32 type=stream->readSint32("building_type");
 		Uint32 ticks=stream->readSint32("ticks_since_registered");
-		pending_buildings[id]=boost::make_tuple(x, y, type, ticks, true);
+		pending_buildings[id]=boost::make_tuple(x, y, type, ticks);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1711,7 +1711,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 			t=true;
 		else
 			t=indeterminate;
-		found_buildings[id]=boost::make_tuple(xpos, ypos, building_type, gid, t, true);
+		found_buildings[id]=boost::make_tuple(xpos, ypos, building_type, gid, t);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1783,15 +1783,6 @@ void BuildingRegister::tick()
 {
 	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end();)
 	{
-		//Ignore this, its not supposed to be there
-		if( !(i->second.get<4>()))
-		{
-			pending_iterator current=i;
-			++i;
-			pending_buildings.erase(current);
-			continue;
-		}
-
 		//When get<3>() is -1, it means that the building order hasen't been sent to the glob2 engine yet.
 		//This is used when the building is registered, but awaiting conditions to be satisfied.
 		if(i->second.get<3>()!=-1)
@@ -1819,7 +1810,7 @@ void BuildingRegister::tick()
 				{
 					echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), gbid);
 				}
-				found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false, true);
+				found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false);
 				pending_iterator current=i;
 				++i;
 				pending_buildings.erase(current);
@@ -1830,15 +1821,6 @@ void BuildingRegister::tick()
 	}
 	for(found_iterator i = found_buildings.begin(); i!=found_buildings.end();)
 	{
-		///Ignore this, its not supposed to be there
-		if(! i->second.get<5>())
-		{
-			found_iterator current=i;
-			++i;
-			found_buildings.erase(current);
-			continue;
-		}
-
 		if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
 		{
 			if(echo.get_flag_map().get_flag(i->second.get<0>(), i->second.get<1>())==NOGBID)
@@ -1905,7 +1887,7 @@ void BuildingRegister::tick()
 
 bool BuildingRegister::is_building_pending(unsigned int id)
 {
-	if(pending_buildings.find(id)!=pending_buildings.end() && pending_buildings[id].get<4>())
+	if(pending_buildings.find(id)!=pending_buildings.end())
 	{
 		return true;
 	}
@@ -1916,7 +1898,7 @@ bool BuildingRegister::is_building_pending(unsigned int id)
 
 bool BuildingRegister::is_building_found(unsigned int id)
 {
-	if(found_buildings.find(id)!=found_buildings.end() && found_buildings[id].get<5>())
+	if(found_buildings.find(id)!=found_buildings.end())
 	{
 		return true;
 	}
@@ -1928,6 +1910,11 @@ bool BuildingRegister::is_building_found(unsigned int id)
 
 bool BuildingRegister::is_building_upgrading(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return false;
+	}
+	
 	tribool v=found_buildings[id].get<4>();
 	if(v)
 		return true;
@@ -1940,6 +1927,10 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 
 Building* BuildingRegister::get_building(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return NULL;
+	}
 	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())];
 }
 
@@ -1947,6 +1938,10 @@ Building* BuildingRegister::get_building(unsigned int id)
 
 BuildingType* BuildingRegister::get_building_type(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return NULL;
+	}
 	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())]->type;
 }
 
@@ -1954,6 +1949,10 @@ BuildingType* BuildingRegister::get_building_type(unsigned int id)
 
 int BuildingRegister::get_type(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return found_buildings[id].get<2>();
 }
 
@@ -1961,6 +1960,10 @@ int BuildingRegister::get_type(unsigned int id)
 
 int BuildingRegister::get_level(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return get_building(id)->type->level+1;
 }
 
@@ -1968,6 +1971,10 @@ int BuildingRegister::get_level(unsigned int id)
 
 int BuildingRegister::get_assigned(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return get_building(id)->maxUnitWorking;
 }
 
@@ -4036,7 +4043,7 @@ void building_search_iterator::set_to_next()
 	}
 	else
 		position++;
-	for(; position!=search->echo.get_building_register().end() && (!position->second.get<5>() || !search->passes_conditions(position->first)); position++)
+	for(; position!=search->echo.get_building_register().end() && !search->passes_conditions(position->first); position++)
 	{
 	}
 	if(position==search->echo.get_building_register().end())
@@ -4073,7 +4080,7 @@ int BuildingSearch::count_buildings()
 	int count=0;
 	for(Construction::BuildingRegister::found_iterator i=echo.get_building_register().begin(); i!=echo.get_building_register().end(); ++i)
 	{
-		if(i->second.get<5>() && passes_conditions(i->first))
+		if(passes_conditions(i->first))
 		{
 			count++;
 		}
