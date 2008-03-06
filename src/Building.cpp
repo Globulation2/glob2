@@ -206,6 +206,8 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	if(versionMinor>=61)
 		underAttackTimer = stream->readUint8("underAttackTimer");
+	else
+		underAttackTimer = 0;
 
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");

@@ -1245,7 +1245,7 @@ int MapEdit::run(void)
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMenu();
-	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getW(), true, true);
+	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), true, true);
 	drawMiniMap();
 
 	bool isRunning=true;
