@@ -1813,7 +1813,9 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 
 inline void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	mouseUnit=NULL;//??
+	//Reset the mouse unit to NULL, as this time arround there may not be a unit
+	//under the mouse pointer
+	mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -2421,7 +2423,6 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 
 inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	mouseUnit=NULL;//??
 	for(int i=0; i<1024; ++i)
 	{
 		Unit *unit=teams[localTeam]->myUnits[i];

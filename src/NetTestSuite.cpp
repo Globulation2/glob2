@@ -69,94 +69,83 @@ template<typename t> bool NetTestSuite::testInitial()
 
 int NetTestSuite::testNetMessages()
 {
-	///Test NetSendOrder
-	if(!testInitial<NetSendOrder>())
+	int n = testNetSendOrder();
+	if(n != 0)
+	{
+		std::cout<<"testNetSendOrder() test # "<<n<<" failed."<<std::endl;
 		return 1;
-
-	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
-	netSendOrder1->changeOrder(boost::shared_ptr<Order>(new OrderDelete(1)));
-	if(!testSerialize(netSendOrder1))
+	}
+	
+	n = testNetSendClientInformation();
+	if(n != 0)
+	{
+		std::cout<<"testNetSendClientInformation() test # "<<n<<" failed."<<std::endl;
 		return 2;
+	}
 
-	///Test NetSendClientInformation
-	if(!testInitial<NetSendClientInformation>())
+	
+	n = testNetSendServerInformation();
+	if(n != 0)
+	{
+		std::cout<<"testNetSendServerInformation() test # "<<n<<" failed."<<std::endl;
 		return 3;
+	}
 
-	shared_ptr<NetSendClientInformation> clientInfo1(new NetSendClientInformation);
-	if(!testSerialize(clientInfo1))
+	
+	n = testNetAttemptLogin();
+	if(n != 0)
+	{
+		std::cout<<"testNetAttemptLogin() test # "<<n<<" failed."<<std::endl;
 		return 4;
-		
-	///Test NetSendServerInformation
-	if(!testInitial<NetSendServerInformation>())
+	}
+
+	
+	n = testNetLoginSuccessful();
+	if(n != 0)
+	{
+		std::cout<<"testNetLoginSuccessful() test # "<<n<<" failed."<<std::endl;
 		return 5;
+	}
+
 	
-	shared_ptr<NetSendServerInformation> serverInfo1(new NetSendServerInformation(YOGRequirePassword, YOGSingleGame, 17));
-	if(!testSerialize(serverInfo1))
+	n = testNetRefuseLogin();
+	if(n != 0)
+	{
+		std::cout<<"testNetRefuseLogin() test # "<<n<<" failed."<<std::endl;
 		return 6;
+	}
+
 	
-	///Test NetAttemptLogin
-	if(!testInitial<NetAttemptLogin>())
+	n = testNetDisconnect();
+	if(n != 0)
+	{
+		std::cout<<"testNetDisconnect() test # "<<n<<" failed."<<std::endl;
 		return 7;
+	}
+
 	
-	shared_ptr<NetAttemptLogin> attemptLogin1(new NetAttemptLogin("joe", "bob"));
-	if(!testSerialize(attemptLogin1))
+	n = testNetAttemptRegistration();
+	if(n != 0)
+	{
+		std::cout<<"testNetAttemptRegistration() test # "<<n<<" failed."<<std::endl;
 		return 8;
+	}
+
 	
-	shared_ptr<NetAttemptLogin> attemptLogin2(new NetAttemptLogin("joe bob", ""));
-	if(!testSerialize(attemptLogin2))
+	n = testNetAcceptRegistration();
+	if(n != 0)
+	{
+		std::cout<<"testNetAcceptRegistration() test # "<<n<<" failed."<<std::endl;
 		return 9;
+	}
+
 	
-	///Test NetLoginSuccessful
-	if(!testInitial<NetLoginSuccessful>())
+	n = testNetRefuseRegistration();
+	if(n != 0)
+	{
+		std::cout<<"testNetRefuseRegistration() test # "<<n<<" failed."<<std::endl;
 		return 10;
-		
-	shared_ptr<NetLoginSuccessful> loginSuccess1(new NetLoginSuccessful);
-	if(!testSerialize(loginSuccess1))
-		return 11;
-
-	//Test NetRefuseLogin
-	if(!testInitial<NetRefuseLogin>())
-		return 12;
-
-	shared_ptr<NetRefuseLogin> refuseLogin1(new NetRefuseLogin(YOGPasswordIncorrect));
-	if(!testSerialize(refuseLogin1))
-		return 13;	
-
-	///Test NetDisconnect
-	if(!testInitial<NetDisconnect>())
-		return 14;
-		
-	shared_ptr<NetDisconnect> disconnect1(new NetDisconnect);
-	if(!testSerialize(disconnect1))
-		return 15;
-		
-	///Test NetAttemptRegistration
-	if(!testInitial<NetAttemptRegistration>())
-		return 16;
-	
-	shared_ptr<NetAttemptRegistration> registration1(new NetAttemptRegistration("joe", "bob"));
-	if(!testSerialize(registration1))
-		return 17;
-	
-	shared_ptr<NetAttemptRegistration> registration2(new NetAttemptRegistration("joe bob", ""));
-	if(!testSerialize(registration2))
-		return 18;
-		
-	///Test NetAcceptRegistration
-	if(!testInitial<NetAcceptRegistration>())
-		return 19;
-		
-	shared_ptr<NetAcceptRegistration> acceptRegistration1(new NetAcceptRegistration);
-	if(!testSerialize(acceptRegistration1))
-		return 20;
-
-	//Test NetRefuseRegistration
-	if(!testInitial<NetRefuseRegistration>())
-		return 21;
-
-	shared_ptr<NetRefuseRegistration> refuseRegistration1(new NetRefuseRegistration(YOGPasswordIncorrect));
-	if(!testSerialize(refuseRegistration1))
-		return 22;
+	}
 		
 	//Test NetCreateGame
 	if(!testInitial<NetCreateGame>())
@@ -402,6 +391,162 @@ int NetTestSuite::testNetMessages()
 
 
 
+int NetTestSuite::testNetSendOrder()
+{
+	///Test NetSendOrder
+	if(!testInitial<NetSendOrder>())
+		return 1;
+
+	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
+	netSendOrder1->changeOrder(boost::shared_ptr<Order>(new OrderDelete(1)));
+	if(!testSerialize(netSendOrder1))
+		return 2;
+	
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetSendClientInformation()
+{
+	///Test NetSendClientInformation
+	if(!testInitial<NetSendClientInformation>())
+		return 1;
+
+	shared_ptr<NetSendClientInformation> clientInfo1(new NetSendClientInformation);
+	if(!testSerialize(clientInfo1))
+		return 2;
+		
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetSendServerInformation()
+{
+	///Test NetSendServerInformation
+	if(!testInitial<NetSendServerInformation>())
+		return 1;
+	
+	shared_ptr<NetSendServerInformation> serverInfo1(new NetSendServerInformation(YOGRequirePassword, YOGSingleGame, 17));
+	if(!testSerialize(serverInfo1))
+		return 2;
+	
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetAttemptLogin()
+{	
+	///Test NetAttemptLogin
+	if(!testInitial<NetAttemptLogin>())
+		return 1;
+	
+	shared_ptr<NetAttemptLogin> attemptLogin1(new NetAttemptLogin("joe", "bob"));
+	if(!testSerialize(attemptLogin1))
+		return 2;
+	
+	shared_ptr<NetAttemptLogin> attemptLogin2(new NetAttemptLogin("joe bob", ""));
+	if(!testSerialize(attemptLogin2))
+		return 3;
+	
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetLoginSuccessful()
+{	
+	///Test NetLoginSuccessful
+	if(!testInitial<NetLoginSuccessful>())
+		return 1;
+		
+	shared_ptr<NetLoginSuccessful> loginSuccess1(new NetLoginSuccessful);
+	if(!testSerialize(loginSuccess1))
+		return 2;
+	
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetRefuseLogin()
+{	
+	//Test NetRefuseLogin
+	if(!testInitial<NetRefuseLogin>())
+		return 1;
+
+	shared_ptr<NetRefuseLogin> refuseLogin1(new NetRefuseLogin(YOGPasswordIncorrect));
+	if(!testSerialize(refuseLogin1))
+		return 2;
+	
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetDisconnect()
+{	
+	///Test NetDisconnect
+	if(!testInitial<NetDisconnect>())
+		return 1;
+		
+	shared_ptr<NetDisconnect> disconnect1(new NetDisconnect);
+	if(!testSerialize(disconnect1))
+		return 2;
+	
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetAttemptRegistration()
+{	
+	///Test NetAttemptRegistration
+	if(!testInitial<NetAttemptRegistration>())
+		return 1;
+	
+	shared_ptr<NetAttemptRegistration> registration1(new NetAttemptRegistration("joe", "bob"));
+	if(!testSerialize(registration1))
+		return 2;
+	
+	shared_ptr<NetAttemptRegistration> registration2(new NetAttemptRegistration("joe bob", ""));
+	if(!testSerialize(registration2))
+		return 3;
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetAcceptRegistration()
+{	
+	///Test NetAcceptRegistration
+	if(!testInitial<NetAcceptRegistration>())
+		return 1;
+		
+	shared_ptr<NetAcceptRegistration> acceptRegistration1(new NetAcceptRegistration);
+	if(!testSerialize(acceptRegistration1))
+		return 2;
+	return 0;
+}
+
+
+
+int NetTestSuite::testNetRefuseRegistration()
+{	
+	//Test NetRefuseRegistration
+	if(!testInitial<NetRefuseRegistration>())
+		return 1;
+
+	shared_ptr<NetRefuseRegistration> refuseRegistration1(new NetRefuseRegistration(YOGPasswordIncorrect));
+	if(!testSerialize(refuseRegistration1))
+		return 2;
+	return 0;
+}
+
+
+
 int NetTestSuite::testYOGGameInfo()
 {
 	shared_ptr<YOGGameInfo> ygi(new YOGGameInfo);
@@ -533,6 +678,7 @@ bool NetTestSuite::runAllTests()
 {
 	std::cout<<"Running tests: "<<std::endl;
 	bool failed = false;
+	
 	int failNumber = testNetMessages();
 	if(failNumber == 0)
 	{
