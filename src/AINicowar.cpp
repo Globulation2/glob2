@@ -324,6 +324,7 @@ void NewNicowar::tick(Echo& echo)
 	timer++;
 	if(timer==1)
 	{
+		selectStrategy();
 		check_phases(echo);
 		initialize(echo);
 	}
@@ -427,8 +428,6 @@ void NewNicowar::selectStrategy()
 
 void NewNicowar::initialize(Echo& echo)
 {
-	selectStrategy();
-
 	BuildingSearch bs(echo);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{	

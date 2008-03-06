@@ -97,8 +97,8 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 			animation->show();
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
-			client->connect(YOG_SERVER_IP);
 			
+			client->connect(YOG_SERVER_IP);
 			wasConnecting = true;
 		}
 	}
@@ -118,6 +118,7 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 		if(!client->isConnected())
 		{
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
+			animation->visible=false;
 		}
 		wasConnecting = false;
 	}

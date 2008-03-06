@@ -708,7 +708,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			{
 				if(i!=pqgo->player && players[i])
 				{
-					if(i!=pqgo->player && players[i]->teamNumber == players[pqgo->player]->teamNumber)
+					if(players[i]->teamNumber == players[pqgo->player]->teamNumber)
 					{
 						found = true;
 					}
