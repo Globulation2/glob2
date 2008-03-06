@@ -220,6 +220,8 @@ Clearing flag
 ترجمة اﻷسكربت
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Connect
 [connected to all players]
@@ -761,6 +763,8 @@ Select Clearing Flag
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 Select Exploration Flag

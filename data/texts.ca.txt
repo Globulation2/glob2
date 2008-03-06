@@ -220,6 +220,8 @@ Tancat
 Compilar el script
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Conectat
 [connected to all players]
@@ -761,6 +763,8 @@ Buscant
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

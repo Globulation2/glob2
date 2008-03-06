@@ -220,6 +220,8 @@ Fechado
 Compilar script
 [compose]
 Compôr
+[Computing Fertility]
+
 [connect]
 Conectar
 [connected to all players]
@@ -764,6 +766,8 @@ Selecionar construção de Muro de Pedra
 Selecionar construção de Núcleo de Repr.
 [select construct swimmingpool]
 Selecioner construção de Piscina
+[select delete tool]
+
 [select explorationflag]
 Selecionar Bandeira de exploração
 [select hospital building]

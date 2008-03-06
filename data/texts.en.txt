@@ -22,8 +22,6 @@ Add AI
 Add map
 [add shortcut]
 Add Shortcut
-[Computing Fertility]
-Computing Fertility
 [AI]
 AI
 [ai]
@@ -216,6 +214,8 @@ Closed
 Compile script
 [compose]
 
+[Computing Fertility]
+Computing Fertility
 [connect]
 Connect
 [connected to all players]
@@ -760,6 +760,8 @@ Select Construct Stone Wall
 Select Construct Swarm
 [select construct swimmingpool]
 Select Construct Swimmingpool
+[select delete tool]
+Select Delete Tool
 [select explorationflag]
 Select Exploration Flag
 [select hospital building]

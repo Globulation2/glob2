@@ -220,6 +220,8 @@ Zárva
 Szkript fordítása
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Kapcsolódás
 [connected to all players]
@@ -761,6 +763,8 @@ keresés
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

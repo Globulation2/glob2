@@ -1099,8 +1099,15 @@ void Game::wonSyncStep(void)
 			bool isOtherAlive=false;
 			for (int j=0; j<mapHeader.getNumberOfTeams(); j++)
 			{
-				if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) && ((teams[j]->me) & (teams[i]->allies)) )) && (teams[j]->isAlive))
-					isOtherAlive=true;
+				if(j!=i)
+				{
+					Uint32 playerToMeAllyMask = teams[i]->me & teams[j]->allies;
+					Uint32 meToPlayerAllyMask = teams[j]->me & teams[i]->allies;
+					if((playerToMeAllyMask==0 || meToPlayerAllyMask==0) && teams[j]->isAlive)
+					{
+						isOtherAlive=true;
+					}
+				}
 			}
 			teams[i]->hasWon |= !isOtherAlive;
 			isGameEnded |= teams[i]->hasWon;

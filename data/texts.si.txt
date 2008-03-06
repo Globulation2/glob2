@@ -220,6 +220,8 @@ Zaprto
 Zgradi skripto
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Vspostavi povezavo
 [connected to all players]
@@ -761,6 +763,8 @@ Iščem
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 

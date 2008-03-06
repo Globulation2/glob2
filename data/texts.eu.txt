@@ -220,6 +220,8 @@ Itxita
 Konpilatu script-a
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Konektatu
 [connected to all players]
@@ -761,6 +763,8 @@ Garbiketa bandera aukeratu
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 Miatze bandera aukeratu

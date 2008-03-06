@@ -220,6 +220,8 @@ AIWarrush
 收集語法
 [compose]
 
+[Computing Fertility]
+
 [connect]
 連線
 [connected to all players]
@@ -761,6 +763,8 @@ Air dmg.
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 選擇探索旗幟
