@@ -56,6 +56,9 @@ public:
 	///Returns the last computed overlay type
 	OverlayType getOverlayType();
 	
+	///Forces recomputing the overlay next round
+	void forceRecompute();
+	
 protected:
 	OverlayType type;
 	OverlayType lasttype;

@@ -1195,6 +1195,8 @@ bool MapEdit::load(const char *filename)
 			teamInfo12->setSelectionPos(game.teams[11]->type);
 
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
+		
+		minimap.resetMinimapDrawing();
 		return true;
 	}
 }
@@ -2895,6 +2897,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		{
 			FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
 			dialog.execute();
+			overlay.forceRecompute();
 			overlay.compute(game, OverlayArea::Fertility, team);
 		}
 	}

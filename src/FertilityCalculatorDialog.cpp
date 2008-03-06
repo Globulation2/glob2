@@ -87,8 +87,8 @@ void FertilityCalculatorDialog::execute()
 			}
 
 			translateAndProcessEvent(&event);
-			proccessIncoming();
 		}
+		proccessIncoming(background);
 		dispatchPaint();
 		parentCtx->drawSurface((int)0, (int)0, background);
 		parentCtx->drawSurface(decX, decY, getSurface());
@@ -100,7 +100,7 @@ void FertilityCalculatorDialog::execute()
 
 
 
-void FertilityCalculatorDialog::proccessIncoming()
+void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 {
 	//First parse incoming thread messages
 	boost::recursive_mutex::scoped_lock lock(incomingMutex);
