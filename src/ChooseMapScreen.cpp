@@ -112,16 +112,10 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			validMapSelected = mapHeader.load(stream);
 			if (validMapSelected)
 			{
-				validMapSelected = gameHeader.load(stream, mapHeader.getVersionMinor());
-				if (validMapSelected)
-				{
-					updateMapInformation();
+				updateMapInformation();
 
-					time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
-					mapDate->setText(ctime(&mtime));
-				}
-				else
-					std::cerr << "ChooseMapScreen::onAction : invalid game header for map " << mapFileName << std::endl;
+				time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+				mapDate->setText(ctime(&mtime));
 			}
 			else
 				std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
