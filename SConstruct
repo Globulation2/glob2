@@ -2,6 +2,10 @@ EnsureSConsVersion(0, 96, 92)
 import sys
 import os
 import glob
+sys.path.append( os.path.abspath("scons") )
+import bundle
+import dmg
+import nsis
 
 isWindowsPlatform = sys.platform=='win32'
 isLinuxPlatform = sys.platform=='linux2'
@@ -12,7 +16,10 @@ def establish_options(env):
     opts = Options('options_cache.py')
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
-    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
+    if isDarwinPlatform:
+    	opts.Add(PathOption("INSTALLDIR", "Installation Directory", "/Applications"))
+    else
+	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("profile", 'Build with profiling on', 0))
@@ -40,7 +47,10 @@ def configure(env):
     configfile = Configuration()
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
-    configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["INSTALLDIR"] + "\"")
+    if isDarwinPlatform:
+    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["INSTALLDIR"] + "../Resources/\"")
+    else
+    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["INSTALLDIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
@@ -200,7 +210,24 @@ def main():
 		            env.Tar(target, f)
               
     PackTar(env["TARFILE"], Split("AUTHORS COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
-    
+    #packaging for apple
+    if isDarwinPlatform and env['dist']:
+		bundle.generate(env)
+		dmg.generate(env)
+		env.Replace( 
+			BUNDLE_NAME='Glob2', 
+			BUNDLE_BINARIES=['src/glob2'],
+			BUNDLE_RESOURCEDIRS=['data','maps', 'campaigns'],
+			BUNDLE_PLIST='darwin/Info.plist',
+			BUNDLE_ICON='darwin/Glob2.icns' )
+		bundle.createBundle(os.getcwd(), os.getcwd(), env)
+		dmg.create_dmg("Glob2-%s"%env['VERSION'],"%s.app"%env['BUNDLE_NAME'],env)
+		 
+		#TODO mac_bundle should be dependency of Dmg:	
+		arch = os.popen("uname -p").read().strip()
+#		mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
+#		env.Alias('package', mac_packages)
+
     Export('env')
     Export('PackTar')
     SConscript("campaigns/SConscript")
