@@ -1724,7 +1724,6 @@ bool Game::generateMap(MapGenerationDescriptor &descriptor)
 {
 	if (verbose)
 		printf("Generating map, please wait ....\n");
-	descriptor.synchronizeNow();
 	map.setSize(descriptor.wDec, descriptor.hDec);
 	map.setGame(this);
 	switch (descriptor.methode)

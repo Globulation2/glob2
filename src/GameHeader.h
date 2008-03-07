@@ -76,6 +76,12 @@ public:
 	
 	///Provides access to the base player. n must be between 0 and 31.
 	const BasePlayer& getBasePlayer(const int n) const;
+	
+	///Returns the random generator seed thats being used
+	Uint32 getRandomSeed() const;
+	
+	///Sets the random generator seed to be used
+	void setRandomSeed(Uint32 seed);
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;
@@ -89,6 +95,9 @@ private:
 
 	///Represents the basic player information in the game
 	BasePlayer players[32];
+	
+	///Represents the random seed used for the game
+	Uint32 seed;
 };
 
 

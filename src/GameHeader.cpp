@@ -18,6 +18,8 @@
 
 #include "GameHeader.h"
 
+#include <ctime>
+
 GameHeader::GameHeader()
 {
 	reset();
@@ -30,6 +32,10 @@ void GameHeader::reset()
 	numberOfPlayers = 0;
 	gameLatency = 0;
 	orderRate = 1;
+	//Seed is random by default
+	seed = std::time(NULL);
+	//If needed, seed can be fixed, default value, 5489
+	//seed = 5489;
 }
 
 
@@ -48,6 +54,8 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection(i);
 	}
 	stream->readLeaveSection();
+	if(versionMinor >= 64)
+		seed = stream->readUint32("seed");
 	stream->readLeaveSection();
 	return true;
 }
@@ -68,6 +76,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	stream->writeUint32(seed, "seed");
 	stream->writeLeaveSection();
 }
 
@@ -78,6 +87,8 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
+	if(versionMinor >= 64)
+		seed = stream->readUint32("seed");
 	stream->readLeaveSection();
 	return true;
 }
@@ -89,6 +100,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("GameHeader");
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
+	stream->writeUint32(seed, "seed");
 	stream->writeLeaveSection();
 }
 
@@ -183,5 +195,18 @@ const BasePlayer& GameHeader::getBasePlayer(const int n) const
 {
 	assert(n<32 && n>=0);
 	return players[n];
+}
+
+
+
+Uint32 GameHeader::getRandomSeed() const
+{
+	return seed;
+}
+
+
+void GameHeader::setRandomSeed(Uint32 nseed)
+{
+	seed = nseed;
 }
 

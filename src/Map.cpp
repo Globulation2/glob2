@@ -2880,7 +2880,9 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 	for (size_t i=0; i<size; i++)
 	{
 		Case& c=cases[i];
-		if (c.ressource.type==NO_RES_TYPE)
+		if (c.forbidden & teamMask)
+			gradient[i]=0;
+		else if (c.ressource.type==NO_RES_TYPE)
 		{
 			if (c.building!=NOGBID)
 				gradient[i]=0;
