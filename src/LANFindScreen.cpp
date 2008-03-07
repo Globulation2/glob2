@@ -101,6 +101,12 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			shared_ptr<YOGClient> client(new YOGClient);
 			client->connect(serverName->getText());
+			while(client->isConnecting())
+			{
+				client->update();
+				SDL_Delay(50);
+			}
+			
 			if(!client->isConnected())
 			{
 				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));

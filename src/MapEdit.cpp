@@ -1197,6 +1197,10 @@ bool MapEdit::load(const char *filename)
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
 		
 		minimap.resetMinimapDrawing();
+		
+		game.map.computeLocalForbidden(team);
+		game.map.computeLocalClearArea(team);
+		game.map.computeLocalGuardArea(team);
 		return true;
 	}
 }

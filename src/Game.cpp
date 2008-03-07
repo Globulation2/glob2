@@ -107,8 +107,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	}
 	clearGame();
 	
-	setSyncRandSeed();
-	fprintf(logFile, "setSyncRandSeed(%d, %d, %d)\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	
 	mouseX=0;
 	mouseY=0;
@@ -189,6 +187,8 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;
 		teams[players[i]->teamNumber]->playersMask|=(1<<i);
 	}
+
+	setSyncRandSeed(newGameHeader.getRandomSeed());
 
 	anyPlayerWaited=false;
 }
@@ -841,18 +841,33 @@ bool Game::load(GAGCore::InputStream *stream)
 		return false;
 	}
 
-	///Load the step counter and random seeds	
+	///Load the step counter
 	stepCounter = stream->readUint32("stepCounter");
-	setSyncRandSeedA(stream->readUint32("SyncRandSeedA"));
-	setSyncRandSeedB(stream->readUint32("SyncRandSeedB"));
-	setSyncRandSeedC(stream->readUint32("SyncRandSeedC"));
-
-	stream->read(signature, 4, "signatureAfterSyncRand");
-	if (memcmp(signature,"GaSy", 4)!=0)
+	
+	if(versionMinor < 64)
 	{
-		fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
-		stream->readLeaveSection();
-		return false;
+		///Load random seeds, these are no longer used
+		stream->readUint32("SyncRandSeedA");
+		stream->readUint32("SyncRandSeedB");
+		stream->readUint32("SyncRandSeedC");
+
+		stream->read(signature, 4, "signatureAfterSyncRand");
+		if (memcmp(signature,"GaSy", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
+			stream->readLeaveSection();
+			return false;
+		}
+	}
+	else
+	{
+		stream->read(signature, 4, "signatureBeforeTeams");
+		if (memcmp(signature,"GaBt", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch before Game::load teams \n");
+			stream->readLeaveSection();
+			return false;
+		}
 	}
 
 	///Load teams
@@ -971,10 +986,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	///Save basic informations
 	stream->write("GaBe", 4, "signatureStart");
 	stream->writeUint32(stepCounter, "stepCounter");
-	stream->writeUint32(getSyncRandSeedA(), "SyncRandSeedA");
-	stream->writeUint32(getSyncRandSeedB(), "SyncRandSeedB");
-	stream->writeUint32(getSyncRandSeedC(), "SyncRandSeedC");
-	stream->write("GaSy", 4, "signatureAfterSyncRand");
+	stream->write("GaBt", 4, "signatureBeforeTeams");
 
 	///Save teams
 	stream->writeEnterSection("teams");
@@ -2713,23 +2725,13 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	cs^=mapCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]
-	
-	cs=(cs<<31)|(cs>>1);
-
-	Uint32 syncRandCs=0;
-	syncRandCs^=getSyncRandSeedA();
-	syncRandCs^=getSyncRandSeedB();
-	syncRandCs^=getSyncRandSeedC();
-	cs^=syncRandCs;
-	if (checkSumsVector)
-		checkSumsVector->push_back(syncRandCs);// [4+t*20+p*2]
 
 	cs=(cs<<31)|(cs>>1);
 	
 	Uint32 scriptCs=script.checkSum();
 	cs^=scriptCs;
 	if (checkSumsVector)
-		checkSumsVector->push_back(scriptCs);// [5+t*20+p*2]
+		checkSumsVector->push_back(scriptCs);// [4+t*20+p*2]
 	
 	return cs;
 }

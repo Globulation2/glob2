@@ -33,16 +33,16 @@
 #define vsnprintf _vsnprintf
 #endif
 
+
+//Mersenne twister implementation
+boost::mt19937 randomGenerator;
+
 int distSquare(int x1, int y1, int x2, int y2)
 {
 	int dx=x2-x1;
 	int dy=y2-y1;
 	return (dx*dx+dy*dy);
 }
-
-Uint32 randa=0x8FD2B1A1;
-Uint32 randb=0XF7F513DE;
-Uint32 randc=0x13DA757F;
 
 void testRand()
 {
@@ -61,44 +61,18 @@ void testRand()
 
 void setSyncRandSeed()
 {
-	randa=0x8FD2B1A1;
-	randb=0XF7F513DE;
-	randc=0x13DA757F;
+	///Sets the default seed
+	randomGenerator.seed();
 	//printf("ini rand=(%d, %d, %d).\n", randa, randb, randc);
 }
-void setSyncRandSeedA(Uint32 seed)
+void setSyncRandSeed(Uint32 seed)
 {
-	randa=seed;
-}
-void setSyncRandSeedB(Uint32 seed)
-{
-	randb=seed;
-}
-void setSyncRandSeedC(Uint32 seed)
-{
-	randc=seed;
-	//printf("set rand=(%d, %d, %d).\n", randa, randb, randc);
+	randomGenerator.seed(seed);
 }
 
-void setRandomSyncRandSeed(void)
+void setRandomSyncRandSeed()
 {
-	srand(time(NULL));
-	randa=(rand()<<16)|(rand()&0x0000FFFF);
-	randb=(rand()<<16)|(rand()&0x0000FFFF);
-	randc=(rand()<<16)|(rand()&0x0000FFFF);}
-
-Uint32 getSyncRandSeedA(void)
-{
-	return randa;
-}
-Uint32 getSyncRandSeedB(void)
-{
-	return randb;
-}
-Uint32 getSyncRandSeedC(void)
-{
-	//printf("get rand=(%d, %d, %d).\n", randa, randb, randc);
-	return randc;
+	randomGenerator.seed(time(NULL));
 }
 
 namespace Utilities
