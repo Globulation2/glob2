@@ -1,0 +1,49 @@
+Globulation 2
+
+http://www.globulation2.org/
+
+
+This game is still in heavy development, so consider that:
+- the graphics are not definitive,
+- there is a bit of debug output,
+- it's slow in some parts (like overlays),
+- and it crashes sometimes.
+
+If you get a crash, submit a bug report with the last lines of the output as
+well as the log files (in ~/.glob2/logs) as attachments (preferably all
+in a .tar.gz or .tar.bz2 file to save bandwidth).
+Please use Savannah (http://savannah.gnu.org/projects/glob2) for bug reports.
+
+If you got the source from mercurial, read README.hg first.
+
+
+GNU and UNIX
+------------
+
+First, run 'scons' to build all targets.
+Then, run 'scons install' to install them.
+Finally, run 'glob2' to start and play the game.
+You can read the INSTALL file for more information about these steps.
+
+
+Microsoft Windows
+-----------------
+
+To build the program, refer to the Mingw Compilation guide available at
+http://globulation2.org/wiki/Mingw_compilation
+
+
+Other
+-----------------
+
+For other operating systems (such as Mac OSX), check the wiki, forums, or bug
+tracker for any records of other attempted compilations (and if successful, the
+steps to compile yourself).
+
+
+
+
+Have fun,
+
+The Globulation 2 Team
+http://www.globulation2.org/

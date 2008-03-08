@@ -1,0 +1,90 @@
+/*
+  Copyright (C) 2007 Bradley Arsenault
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+*default
+
+base_number_of_construction_sites 2
+base_number_of_explorers 3
+base_number_of_hospitals 1
+base_swarm_explorer_ratio 1
+base_swarm_hungry_reduce_trigger_percent 12
+base_swarm_low_wheat_trigger_ammount 10
+base_swarm_units_assigned 3
+fruit_phase_extra_number_of_explorers 9
+fruit_phase_unit_min 40
+growth_phase_maximum_swarms 4
+growth_phase_swarm_worker_ratio 4
+growth_phase_unit_max 60
+growth_phase_units_per_swarm 10
+level_1_inn_low_wheat_trigger_ammount 5
+level_1_inn_units_assigned_low_wheat 2
+level_1_inn_units_assigned_normal_wheat 1
+level_1_inn_units_can_feed 11
+level_2_inn_low_wheat_trigger_ammount 8
+level_2_inn_units_assigned_low_wheat 5
+level_2_inn_units_assigned_normal_wheat 3
+level_2_inn_units_can_feed 15
+level_3_inn_low_wheat_trigger_ammount 17
+level_3_inn_units_assigned_low_wheat 7
+level_3_inn_units_assigned_normal_wheat 5
+level_3_inn_units_can_feed 20
+minimum_warrior_level_for_trained 1
+non_growth_phase_swarm_worker_ratio 2
+non_growth_phase_units_per_swarm 50
+no_workers_phase_free_worker_minimum_percent 10
+skilled_work_phase_number_of_racetracks 1
+skilled_work_phase_number_of_schools 2
+skilled_work_phase_number_of_swimmingpools 1
+skilled_work_phase_unit_min 20
+starvation_recovery_phase_starving_no_inn_min_percent 8
+starving_recovery_phase_number_of_extra_construction_sites 2
+starving_recovery_phase_unfed_per_new_inn 6
+upgrading_phase_1_barracks_chance 15
+upgrading_phase_1_hospital_chance 5
+upgrading_phase_1_inn_chance 10
+upgrading_phase_1_num_units 14
+upgrading_phase_1_racetrack_chance 8
+upgrading_phase_1_school_chance 5
+upgrading_phase_1_school_min 1
+upgrading_phase_1_swimmingpool_chance 8
+upgrading_phase_1_tower_chance 0
+upgrading_phase_1_trained_worker_min 5
+upgrading_phase_1_unit_min 30
+upgrading_phase_1_units_assigned 8
+upgrading_phase_2_barracks_chance 20
+upgrading_phase_2_hospital_chance 5
+upgrading_phase_2_inn_chance 6
+upgrading_phase_2_num_units 14
+upgrading_phase_2_racetrack_chance 8
+upgrading_phase_2_school_chance 5
+upgrading_phase_2_school_min 1
+upgrading_phase_2_swimmingpool_chance 8
+upgrading_phase_2_tower_chance 0
+upgrading_phase_2_trained_worker_min 5
+upgrading_phase_2_unit_min 50
+upgrading_phase_2_units_assigned 6
+war_phase_num_attack_flags 2
+war_phase_trained_warrior_min 20
+war_phase_war_flag_units_assigned 15
+war_preparation_phase_number_of_barracks 2
+war_preperation_phase_barracks_max 2
+war_preperation_phase_trained_warrior_max 60
+war_preperation_phase_unit_min 30
+war_preperation_phase_warriors_per_hospital 10
+war_preperation_swarm_warrior_ratio 1
+

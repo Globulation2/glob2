@@ -1,0 +1,100 @@
+This documents describes the features of YOG which allow players behind NAT and firewalls systems to play. As the author of YOG I know it to be unclear. Read this before the YOG code to have a chance to understand it. Comments are welcome at nuage@ysagoon.com
+
+***Things to know:
+
+everybody use UDP/IP and TCP/IP
+everybody use ethernet
+IPA = internet protocol adress (sometimes with, and sometimes without the port)
+LAN = Local Area Network
+
+
+*** Understanding how a NAT works (Network Adress Translation)
+
+Some time ago, we had one IPA per computer. But as you know, we ran out of IPA, and we are using some tricks to have muliple computer conneted to the internet with only one IPA. Basicaly the trick is to use the port to distinguish the differents computers, exactly as you can have multiple executables accessing internet on the same computer. Let's take the example of someone who has 3 computers connected in his LAN, and who is paying one ineternet connection with only one IPA provided. To allow all computers on the LAN to access internet, he will need to have a NAT system. Here is the scheme of this typical use:
+ 
++----------+   dedicated line              one external IPA   +-----+   ethenet
+|-internet-| <----------------> provider <------------------> | NAT | <---------> computer 0 with one internal IPA
++----------+                               (A)DSL             |     |   ethenet
+                                                              |     | <---------> computer 1 with one internal IPA
+                                                              |     |   ethenet
+                                                              |     | <---------> computer 2 with one internal IPA
+                                                              +-----+
+
+To explain how the NAT works, we'll give one typical use-case. Let's say that the extrnal IPA is 190.190.190.190 (fake case), and the internals IPA are 192.168.1.0,  192.168.1.1, and  192.168.1.2 (typical case). Let's say that yog1.ysagoon.com is at 128.128.128.128 (fake case).
+
+The computer 0 open glob2 and connect to YOG. Glob2 create a YogSocket binded to a port, for instance the port 4000. The first packet is sent to yog1.ysagoon.com at port 7468 (real static port).
+1) When on the LAN, the header of the packet namely has:
+    source      = 192.168.1.0:4000        (computer 0 IPA + regular yog port)
+    destination = 128.128.128.128:7268    (yog1 + static port)
+2) The NAT see the packet and open a "gate", look for a new free port (9000 for instance), and remember the following:
+    inside:  source      = 192.168.1.0:4000        (computer 0 + regular port)
+             destination = 128.128.128.128:7268    (yog1 + static port)
+    outside: source      = 190.190.190.190:9000    (external IPA + NAT port 1)
+             destination = 128.128.128.128:7268    (yog1 + static port)
+3) The NAT modiffy the header of the packet, and when it's on the other side, and on the internet, until it reach yog, the header of the packer namely has:
+    source      = 190.190.190.190:9000   (external IPA + NAT port 1)
+    destination = 128.128.128.128:7268   (yog1 + static port)
+4) Yog will reply to this packet. Here Yog don't know that computer 0 is behind a NAT system, and can ignore it tough. He will simply send a packet back. When sent, the packet has namely in the header:
+    source      = 128.128.128.128:7268    (yog1 + static port)
+    destination = 190.190.190.190:9000    (external IPA + NAT port 1)
+5) The NAT system will receive the packet. It will look in his "gate" list an entry where "packet->destination == gate->outside->source". If it found none, the packet is droped. If he found one, the header is modiffied and forwarded to the LAN. In this use case, he'll find the "gate".
+6) Inside the LAN, the header of the packet namely has:
+    source      = 128.128.128.128:7268    (yog1 + static port)
+    destination = 192.168.1.0:4000        (computer 0 IPA + regular yog port)
+7) The computer 0 can receive the packet back, and the connection will continue the same way.
+
+I hope you understood. The important thing is when it's about "client to server", the NAT system is just perfect and invisible to both programmer and user.
+
+
+*** The basic feature of YOG.
+
+The basic feature of Yog is to list the IPA of the people who are hosting a glob2 game. For instance if we continue the above use-case, Yog will tell to the world that "190.190.190.190:9000" is hosting a glob2 game. What is important is that the computer 0 is not able to know this IPA alone.
+
+
+With only this feature, and if there is only one glob2 player behind one NAT system, then this would be enough to play glob2 games over Yog. This would not work with firewalls, or if two players (or more) want to play Yog game behind the same NAT.
+
+
+*** What is the problem if we are two players behind the same NAT ?
+
+To explain this we'll continue the above use-case. The player 0 on the computer 0 will host a game. The player 1 on computer 1 will try to join the game. This is a bit complex as glob2 open a port to communicate with Yog and another to host a game and communicate with other players. This was choosed for security reasons.
+1) Computer 0 open a HostSocket binded to a port, for insatance 5000. He send a packet with this socket to Yog. This packet is saying "this socket is hosting a game". Before the NAT the header of the packet namely has:
+    source      = 192.168.1.0:5000        (computer 0 IPA + regular host port)
+    destination = 128.128.128.128:7268    (yog1 + static port)
+2) The NAT make a new "gate", and the header of the packet namely has:
+    source      = 190.190.190.190:9001   (external IPA + NAT port 2)
+    destination = 128.128.128.128:7268   (yog1 + static port)
+3) Yog receive this packet and add a game to the list. The new entry then namely has:
+    gameHostIp  = 190.190.190.190:9001   (external IPA + NAT port 2)
+   Here anyone in the internet can join the game with no problem, except player 1.
+4) Player 1 click on "join game". Yog send him the address "190.190.190.190:9001", and he try to send a packet saying "I want to join your game" to this IPA. Glob2 creates a joiningSocket and bind him to a port, for instance 6000. When sent, the header of this packet namely has:
+    source      = 192.168.1.1:6000       (computer 1 IPA + regular join port)
+    destination = 190.190.190.190:9001   (external IPA + NAT port 2)
+5) The NAT system receive the "I want to join" packet. The problem of this packet is that the desination is an external IPA, but it's received in the internal side of the NAT. Well, if the NAT where perfect, it could lookup in the "gate" list, and know it has to be resent in the LAN. I have seen some linux box do it. But most of the boxed NAT you can buy don't do it. Sorry, but I don't know exacly what they do here. I expect they simply worward it to the internet provider, which take it as an "illogical packet" and then drop it. It's illogical because it's sent to himself. Anyway, the fact is that it's droped.
+
+
+*** How glob2 allow two players beind the same NAT to play together.
+
+This code is solved by the client (YOG.h YOG.cpp), not the metaserver. We'll continue our use-case to explain how it works. The player 1 has really sent the packet exactly as described above. But he has done one thing more. Let's say that the player 0 has logged into Yog with the username "player0". The metaserver yog don't only list the external IPA of the game host, but also his yog username. The client 1 will use this username to findout if the game host is behind the same NAT.
+
+This system rely on the fact that the computer 0 and the computer 1 are on the same LAN and the same IP 255.255.255.255 broadcasting subnet.
+
+1) The client 1 broadcast to all the subnet one packet saying "Are you playing glob2 with the username"+"player0".
+2) This packet is not forwarded behind the LAN.
+3) The computer 0 recrive it, and reply "yes I am".
+4) The computer 1 receive the packet back, and can read the IPA in the header of the packet, which is 192.168.1.0:5000 Then glob2 replace (overwrite) the IPA of the gamehost:
+    old game host = 190.190.190.190:9001   (external IPA + NAT port 2)
+    new game host = 192.168.1.0:5000       (computer 0 IPA + regular host port)
+5) the connetion process can continue:
+6) The computer 1 send a "I want to join your game" to 192.168.1.0:5000
+7) The computer 0 receive it, and reply to 192.168.1.1:6000 because it's written in the header of the packet.
+8) the two connection process and game will work.
+
+*** How glob2 allow tree players (and more) beind the same NAT to play together.
+
+There are some more tricks when a 3rd player "player3", which is not on the same LAN, want to join the game. The problem is that the game host has a list of the IPA joining the game. Here they are:
+[0] 127.0.0.1 (localhost) "player0"
+[1] 192.168.1.1 (LAN IPA) "player1"
+When they player3 want to join the game, he can connect to the game host without problem by using the Yog game host list informations. Here it's 190.190.190.190:9001. To send something to the player0, he just guess it's the host and use 190.190.190.190.9001. But to send somethin to the player1, it's harder. If the player3 send something to 192.168.1.1, it will not be recived by the player1 because they are not on the same LAN. Then the player3 has to ask the yog metaserver the external port of the joining socket of the player 1. This is how it works.
+
+
+*** To be continued... about firewalls and others

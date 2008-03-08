@@ -1,0 +1,1158 @@
+[%0 has been deconnected of the game]
+%0 انقطع اتصالهم.
+[%0 has left the game]
+%0 تركو اللعبه.
+[%0's game]
+
+[%0's team unit got converted to your team]
+%0's team unit got converted to your team
+[abreaviation explanation A]
+A: Allies
+[abreaviation explanation C]
+C: Send chat messages to
+[abreaviation explanation fV]
+Vf: Show vision for Inn buildings (to steal units)
+[abreaviation explanation mV]
+mV: Show vision for Markets buildings (to exchange fruits)
+[abreaviation explanation V]
+V: Show vision for all buildings
+[Add AI]
+Add AI
+[add map]
+
+[add shortcut]
+
+[AI]
+AI
+[ai]
+AI
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AIReachToInfinity]
+ReachToInfinity
+[AIToubib]
+AIToubib
+[AIWarrush]
+AIWarrush
+[Alga]
+طحلب
+[algae]
+algae
+[alliances]
+التحالفات
+[and]
+و
+[any explorer]
+any explorer
+[are dying hungry]
+يموت من الجوع
+[are hungry]
+جائع
+[are ok]
+جيد
+[are wonded]
+مجروح
+[armor]
+الدرع
+[assigned]
+Assigned
+[At. speed]
+Att. speed
+[At. strength]
+Att. str.
+[attack speed]
+سرعة الهجوم
+[Attack]
+الهجوم
+[audio]
+الصوت
+[auto save]
+حفظ تلقائى
+[available lan games]
+Available local games
+[awaiting players]
+انتظار لاعبون
+[away:]
+بعيدا:
+[backspace]
+
+[bad error in connection system]
+Bad error in connection system
+[barracks explanation 2]
+يرفع مستوى المحاربين
+[barracks explanation]
+يحسن القتال
+[barracks]
+ثكنه
+[beach size]
+حجم الشاطىء
+[break]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
+[Build]
+يبنى
+[Building name]
+اسم المبنى
+[Building short explanation 2]
+Building short explanation 2 (24 chars max)
+[Building short explanation]
+Building short explanation (24 chars max)
+[building site]
+موقع اﻷنشاء
+[Buildings]
+المباني
+[Bullets]
+الرصاص
+[campaign editor]
+
+[campaign]
+الحملة
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
+[Can't join game, missmatching game parameters]
+Can't join game, missmatching game parameters
+[Can't join game, timeout]
+Can't join game, timeout
+[Can't join game, wrong game version]
+Can't join game, wrong game version
+[cancel destroy]
+الغاء تدمر
+[cancel repair]
+الغاء الاصلاح
+[cancel upgrade]
+الغاء ترقية
+[Cancel]
+الغاء
+[caps lock]
+
+[carry]
+يحمل:
+[Change Area Name]
+Change Area Name
+[checksum sent]
+Checksum sent ...
+[Cherry]
+الكرز
+[choose campaign]
+اختيار الحملة
+[choose game]
+اختر لعبه
+[choose map]
+اختر خريطه
+[clear area]
+Clearing area
+[clear]
+
+[Clearing:]
+تبادل:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Clears resources
+[clearingflag]
+Clearing flag
+[close]
+غلق
+[closed]
+اغلق
+[compile]
+ترجمة اﻷسكربت
+[compose]
+
+[Computing Fertility]
+
+[connect]
+Connect
+[connected to all players]
+Connected to all players
+[connected to server]
+Connected to server
+[connecting to all players]
+Connecting to all players
+[connecting to]
+Connecting to
+[constructed buildings]
+
+[construction and upgrades]
+
+[Continue playing]
+تابع اللعب
+[Corn]
+الذرة
+[crater density]
+crater count
+[crater lakes terrain]
+Crater Lakes
+[create game]
+انشاء لعبه
+[create map]
+Create map
+[credits]
+Credits
+[current speed]
+السرعه الحاليه
+[custom game]
+Custom game
+[customcur]
+Custom cursor
+[damage]
+التدمير
+[Damaged Map]
+Damaged Map
+[dblbuff]
+Double buffering
+[decrease units working]
+
+[default terrain]
+Default terrain
+[defencetower explanation 2]
+units or buildings
+[defencetower explanation]
+هجمات العدو القريب
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
+برج الدفاع
+[Defense Map]
+Defense Map
+[Defense]
+الدفاع
+[Delete game]
+Delete the selected game
+[delete]
+محو كائن
+[desert]
+الصحراء
+[destroy building]
+دمر المبنى المختار
+[destroy]
+تدمير
+[Disconnect]
+Disconnect
+[display]
+عرض
+[do nothing]
+
+[don't carry anything]
+لايحمل شىء
+[down]
+
+[download finished]
+Download finished
+[downloaded %0]
+
+[downloaded at]
+Downloaded at 
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+Editor Shortcuts
+[editor]
+المحرر
+[end]
+
+[Enter your nickname :]
+ادخل اسمك المستعار :
+[Enter your password :]
+ادخل كلمة المرور :
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+يجذب المستكشفون
+[explorationflag]
+علم استكشاف
+[Explorer Ratio]
+Explorer Ratio
+[Explorer]
+المستكشف
+[explorers]
+المستكشفون
+[extra islands]
+جزيره خاليه
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[food left]
+ترك الطعام
+[food]
+الطعام
+[forbidden area]
+منطقة محظوره
+[Free]
+موافق
+[free]
+حر
+[free]
+حر
+[from:]
+من:
+[fruit]
+الفاكهة
+[fullscreen]
+ملء الشاشه
+[game full]
+Game full
+[game shortcuts]
+Game Shortcuts
+[game speed]
+Game speed
+[Games]
+
+[general settings]
+اعدادات عامه
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Go back to main menu
+[grass]
+حشائش
+[ground attack]
+ground attack
+[guard area]
+حارس المنطقة
+[GUIMapPreview text 0]
+اختر من فضلك
+[GUIMapPreview text 1]
+a map
+[handmade map]
+Handmade map
+[Happyness]
+السعاده
+[hard pause]
+
+[Harvest]
+يحصد
+[has joined]
+has joined
+[has quit]
+has quit
+[heal]
+الصحه
+[help]
+
+[home]
+
+[hospital explanation 2]
+ 
+[hospital explanation]
+يشفى لكم الوحدات
+[hospital]
+مستشفى
+[Host has cancelled the game]
+
+[host]
+Host a game
+[hp]
+HP
+[hp]
+Hitpoint
+[human]
+الأنسان
+[hungry]
+جائع
+[hungryness]
+الجوع
+[hwaccel]
+Hardware acceleration
+[In way]
+فى الطريق
+[increase units working]
+
+[inn explanation 2]
+ 
+[inn explanation]
+اغذيه االوحدات
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+كوخ
+[insert]
+
+[inside]
+بالداخل
+[islands size]
+حجم الجزيره
+[islands terrain]
+جزر
+[iterate selection]
+
+[jobs]
+jobs
+[join a game]
+Join a game
+[join]
+Join
+[keyboard settings]
+Keyboard Settings
+[kick]
+
+[lan]
+LAN Game
+[language incomplete]
+العربيه - incomplete
+[language-code]
+ar
+[language-tr]
+اللغة 
+[language]
+العربيه
+[large]
+large
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+المستوى
+[levels]
+المستويات
+[load campaign]
+
+[load game]
+تحميل اللعبه
+[load map]
+تحميل الخريطه
+[load]
+تحميل
+[loading glob2]
+تحميل جلوب 2
+[login]
+اتصال
+[Lost : %0 has more prestige than you]
+Lost: %0 has more prestige than you
+[Lost : your colony is dead]
+Lost: your colony is dead
+[lowquality]
+Low quality
+[Magic At. Air]
+Air dmg.
+[Magic At. Ground]
+Ground dmg.
+[Map name: %0]
+Map name: %0.
+[map name]
+
+[map size x]
+Map width
+[map size y]
+Map height
+[mapGenerationDescriptor Methodes]
+Methodes of random generated maps
+[maps available]
+
+[mark map]
+Mark Map For Allies
+[market explanation 2]
+الفواكه مع الآخري
+[market explanation]
+يسمح بتبادل
+[market]
+السوق
+[medium]
+medium
+[menu]
+
+[Min required level:]
+المستوى الادنى المطلوب:
+[Minimum Level To Flag]
+Minimum Flag Level
+[Music volume]
+صوت (الموسيقى)
+[Mute]
+
+[mute]
+كتم الصوت
+[network latency]
+Network latency
+[new campaign]
+
+[new map]
+جديد
+[nick taken]
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no key]
+
+[no ressources growth areas]
+No Growth Areas
+[No]
+لا
+[not connected]
+Not connected
+[not ready]
+غير جاهز
+[number of players: %0 (%1 AI)]
+
+[number of players: %0]
+%0 players are present.
+[number of teams: %0]
+%0 teams.
+[number of teams]
+number of teams
+[numlock]
+
+[of which]
+هنالك
+[ok]
+موافق
+[old islands terrain]
+old random islands
+[old random terrain]
+old random terrain
+[On the spot]
+هنا
+[one player]
+A player has joined.
+[open chat box]
+
+[open load menu]
+Open Load Menu
+[open save menu]
+Open Save Menu
+[open script editor]
+فتح محرر الكتابة
+[open]
+افتح
+[options]
+خيارات
+[Orange]
+البرتقال
+[page down]
+
+[page up]
+
+[Papyrus]
+ورق البردى
+[pause game]
+Pause Game
+[pause]
+
+[Paused]
+Paused
+[percent]
+  percent
+[player name]
+اسم الاعب
+[player]
+لاعب
+[please wait]
+Please wait
+[power]
+
+[presence request sent]
+Presence request sent ...
+[press space]
+Press space to continue.
+[Prestige]
+سمعه
+[print screen]
+
+[Prune]
+Prune
+[quit the editor]
+الخروج من المحرر
+[quit the game]
+خروج من اللعبه
+[quit]
+خروج
+[racetrack explanation 2]
+يسرع لكم الوحدات
+[racetrack explanation]
+يحسن المشي
+[racetrack]
+مضمار السباق
+[random terrain]
+Random terrain
+[range]
+المدى
+[ratios]
+Proportions
+[Register a new YOG user with password]
+Register a new YOG user with a password. (insecure)
+[remember unit]
+Remember Unit
+[Remember YOG password localy]
+Remember the password locally. (insecure)
+[remove map]
+
+[remove shortcut]
+
+[repair building]
+Start/Stop Repair
+[repair]
+تصليح
+[repeat area]
+
+[ressources]
+موارد
+[restore default shortcuts]
+Restore Default Keyboard Shortcuts
+[return to editor]
+عودة الى المحرر
+[return to game]
+العودة الى اللعبة
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+عرض النهر
+[river terrain]
+النهر
+[sand]
+رمل
+[save before quit?]
+Do you want to save before quitting?
+[save game]
+حفظ اللعبه
+[save map]
+حفظ الخريطه
+[Save]
+حفظ
+[school explanation 2]
+يرفع مستوى العمال
+[school explanation]
+يحسن بناء
+[school]
+المدرسه
+[Script Areas]
+Script Areas
+[scroll lock]
+
+[scroll wheel enabled]
+
+[seeking a job]
+يبحث عن العمل
+[seeking]
+بحث
+[select barracks building]
+Select Barracks
+[select clearingflag]
+Select Clearing Flag
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select delete tool]
+
+[select explorationflag]
+Select Exploration Flag
+[select hospital building]
+Select Hospital
+[select inn building]
+Select Inn
+[select market building]
+Select Market
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+Select Racetrack
+[select school building]
+Select Schoo
+[select swarm building]
+Select Swarm
+[select swimmingpool building]
+Select Swimmingpool
+[select tower building]
+Select Tower
+[select wall building]
+Select Wall
+[select warflag]
+Select War Flag
+[session request sent]
+Session request sent ...
+[settings]
+اعدادات
+[shortcut explanation enter]
+Enter: send a chat message
+[shortcut explanation v]
+V: hold to speak
+[show main menu]
+
+[skin]
+Display
+[small]
+صغير
+[smoothing]
+صقل
+[space]
+
+[speed]
+السرعه
+[start mission]
+
+[start new campaign]
+
+[Start]
+ابدأ
+[STARTING GAME ...]
+بدأ اللعبه ... 
+[Starving Map]
+Starving Map
+[starving]
+تجويع
+[stat]
+احصاءات
+[state]
+state
+[Statistics]
+احصائيات
+[Still (i)]
+ما زال 
+[still (w)]
+ما زال
+[still one unit working]
+وحدة واحدة لا تزال تعم
+[Still one]
+ما زال واحد
+[Stone]
+حجارة
+[stone]
+الأحجار
+[stonewall explanation 2]
+عنصر
+[stonewall explanation]
+الدفاع السلبي
+[stonewall]
+Stone wall
+[svr hostname]
+Server hostname
+[swamp terrain]
+المستنقع
+[swarm explanation 2]
+ 
+[swarm explanation]
+انشاء وحدات جديدة
+[swarm level 0]
+
+[swarm]
+حشد
+[Swim]
+يسبح
+[swimmingpool explanation 2]
+يسرع لكم الوحدات
+[swimmingpool explanation]
+يحسن السباحه
+[swimmingpool]
+المسبح
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+Switch To Building view
+[switch to flag view]
+Switch to Flags view
+[switch to removing areas]
+
+[switch to teams view]
+Switch to Team view
+[switch to terrain view]
+Switch to Terrain view
+[sys req]
+
+[tab]
+
+[teams]
+ فريق
+[the barracks is finished]
+انتهى بناء معسكر التدريب
+[the barracks is under attack]
+معسكر التدريب تحت الهجوم
+[the building is finished]
+انتهى بناء المبنى
+[the building is under attack]
+المبنى تحت الهجوم
+[the clearingflag is finished]
+?? Clearing flag finished ??
+[the clearingflag is under attack]
+?? Clearing flag under attack ??
+[the defencetower is finished]
+انتهى بناء برج الدفاع
+[the defencetower is under attack]
+الدفاعت تحت الهجوم
+[the explorationflag is finished]
+?? Exploration flag finished ??
+[the explorationflag is under attack]
+?? Exploration flag under attack ??
+[The game has not been finished]
+The game has not been finished
+[the games]
+اﻷلعاب
+[the hospital is finished]
+انتهى بناء المستشفى
+[the hospital is under attack]
+المستشفى تحت الهجوم
+[The host has cancelled the game]
+
+[the inn is finished]
+انتهى بناء الكوخ
+[the inn is under attack]
+الكوخ تحت الهجوم
+[the maps]
+الخرائط
+[the market is finished]
+انتهى بناء السوق
+[the market is under attack]
+السوق تحت الهجوم
+[The player %0 has joined YOG]
+%0 has joined YOG.
+[The player %0 has left YOG]
+%0 has left YOG.
+[the racetrack is finished]
+انتهى بناء مضمار السباق
+[the racetrack is under attack]
+مضمار السباق تحت الهجوم
+[the school is finished]
+انتهى بناء المدرسه
+[the school is under attack]
+المدرسه تحت الهجوم
+[the stonewall is finished]
+انتهى بناء قطاع الحائط
+[the stonewall is under attack]
+الاعداء على مشارف المدينه
+[the swarm is finished]
+انتهى بناء الحشد
+[the swarm is under attack]
+الحشد تحت الهجوم
+[the swimmingpool is finished]
+انتهى بناء المسبح
+[the swimmingpool is under attack]
+المسبح تحت الهجوم
+[the warflag is finished]
+?? War flag finished ??
+[the warflag is under attack]
+?? War flag under attack ??
+[to:]
+الى:
+[toggle draw accessibility aids]
+Toggle Draw Accessibility Aids
+[toggle draw information]
+Toggle Draw Information
+[toggle draw unit paths]
+Toggle Draw Unit Paths
+[toggle menu screen]
+
+[toggle recording voice]
+Initiate Voice Recording
+[Total prestige reached]
+بلغ من هيبة
+[Total]
+المحصله
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
+[tutorial]
+تعليم
+[unassigned]
+Unassigned
+[Uncontrolled]
+خارج السيطره
+[undo]
+
+[uniform terrain]
+Uniform terrain
+[Unit editor]
+محرر الوحده
+[unit settings explanation]
+
+[unit settings]
+اعدادت الوحده
+[Unit type]
+نوع الوحدة
+[units type]
+نوع الوحدة
+[units working]
+وحدات العمل
+[Units]
+الوحدات
+[unlocked by]
+
+[Unnamed Area]
+{Unnamed Area}
+[up]
+
+[update list]
+Update list
+[upgrade building]
+Start/Stop Upgrade
+[upgrade]
+ترقية
+[username]
+اسم المستخدم
+[Version]
+اﻷصداره
+[view history]
+
+[wait destroy]
+تنتظر التدمير
+[waiting for %0]
+انتظار %0
+[waiting for key]
+
+[Waiting]
+
+[Walk]
+يمشى
+[warflag explanation 2]
+ 
+[warflag explanation]
+يجذب المحاربون
+[warflag]
+علم الحرب
+[Warning, you need to reboot the game for changes to take effect]
+Warning, you need to restart the game for changes to take effect
+[Warrior Ratio]
+Warrior Ratio
+[Warrior]
+المحارب
+[warriors]
+المحاربون
+[was AI]
+was AI
+[was]
+was
+[water]
+Water
+[Wheat]
+
+[wheat]
+الذره
+[Won : you defeated your opponents]
+Won: you defeated your opponents
+[Won : you have the most prestige]
+Won: you have the biggest prestige
+[Won : your ally %0 has the most prestige]
+Won: your ally %0 has the biggest prestige
+[Wood]
+خشب
+[wood]
+الخشب
+[Worker Ratio]
+Worker Ratio
+[Worker]
+عامل
+[workers]
+العمال
+[workers]
+العمال
+[working]
+يعمل
+[wounded]
+مجروح
+[Yes]
+نعم
+[YESTS_BAD]
+Internal consistency error while connecting.
+[YESTS_CONNECTING]
+Establishing the connection to the YOG metaserver...
+[YESTS_CONNECTION_LOST]
+The connection to YOG has been lost.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+The YOG metaserver has refused connection because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+The YOG metaserver has refused connection because the supplied password was incorrect.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+The YOG metaserver has refused the connection because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+The YOG metaserver has refused connection because your globulation2 client is obsolete.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+The YOG metaserver has refused the connection without explanation!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CREATED]
+The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_DECONNECTING]
+Disconnecting from the YOG metaserver...
+[YESTS_UNABLE_TO_CONNECT]
+Unable to connect. Apparently the YOG metaserver is down.
+[YESTS_YOG_KILLED]
+An administrator has just stopped the YOG metaserver.
+[yog-chat]
+#yog-en
+[yog]
+Ysagoon Online Gaming
+[YOG_HELP]
+The YOG messaging system has two commands, "msg" and "away". Type "/help <command>" to learn more about one of them.
+[YOG_HELP_AWAY]
+The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explanation message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
+[YOG_HELP_MSG]
+The "/msg <name> <message>" command sends a private message.  For instance, "/msg John Hi John, how are you?".  Alias "/m".
+[You are no more marked as away]
+You are no longer marked as away.
+[You are now marked as away]
+You are marked as away.
+[you have lost]
+لقد خسرت!
+[you have won]
+لقد فزت!
+[You where kicked from the game]
+
+[Your %0 are under attack]
+%0 تحت الهجوم
+[Your unit got converted to %0's team]
+Your unit got converted to %0's team

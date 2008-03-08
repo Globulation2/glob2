@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Globulation 2
+Comment=An innovative new strategy game
+Exec=glob2
+Icon=glob2-icon-48x48
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Categories=Application;Game;StrategyGame;
+GenericName[en_US]=

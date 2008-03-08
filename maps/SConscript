@@ -1,0 +1,15 @@
+import os
+    
+Import("env")
+Import("PackTar")
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    any=False
+    for file in os.listdir("."):
+        if file.find(".map") != -1:
+            any=True
+            PackTar(env["TARFILE"], file)
+            env.Install(env["INSTALLDIR"]+"/glob2/maps", file)
+    if any:
+        env.Alias("install", env["INSTALLDIR"]+"/glob2/maps")
+    PackTar(env["TARFILE"], "SConscript")

@@ -1,0 +1,242 @@
+<!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+
+<!-- Process this file with docbook-to-man to generate an nroff manual
+     page: `docbook-to-man manpage.sgml > manpage.1'.  You may view
+     the manual page with: `docbook-to-man manpage.sgml | nroff -man |
+     less'.  A typical entry in a Makefile or Makefile.am is:
+
+manpage.1: manpage.sgml
+	docbook-to-man $< > $@
+
+    
+	The docbook-to-man binary is found in the docbook-to-man package.
+	Please remember that if you create the nroff version in one of the
+	debian/rules file targets (such as build), you will need to include
+	docbook-to-man in your Build-Depends control field.
+
+  -->
+
+  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
+  <!ENTITY dhfirstname "<firstname>Vincent</firstname>">
+  <!ENTITY dhsurname   "<surname>Deffontaines</surname>">
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate      "<date>october 20, 2003</date>">
+  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+       allowed: see man(7), man(1). -->
+  <!ENTITY dhsection   "<manvolnum>6</manvolnum>">
+  <!ENTITY dhemail     "<email>vincent@gryzor.com</email>">
+  <!ENTITY dhusername  "Vincent Deffontaines">
+  <!ENTITY dhucpackage "<refentrytitle>GLOB2</refentrytitle>">
+  <!ENTITY dhpackage   "glob2">
+
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <address>
+      &dhemail;
+    </address>
+    <author>
+      &dhfirstname;
+      &dhsurname;
+    </author>
+    <copyright>
+      <year>2003</year>
+      <holder>&dhusername;</holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    &dhucpackage;
+
+    &dhsection;
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+
+    <refpurpose>Real Time Strategy Game</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+
+      <arg><option>-h </option></arg>
+      <arg><option>-f </option></arg>
+      <arg><option>-F </option></arg>
+      <arg><option>-r </option></arg>
+      <arg><option>-R </option></arg>
+      <arg><option>-s<replaceable>640x480</replaceable></option></arg>
+      <arg><option>-a </option></arg>
+      <arg><option>-A </option></arg>
+      <arg><option>-b </option></arg>
+      <arg><option>-B </option></arg>
+      <arg><option>-l </option></arg>
+      <arg><option>-h </option></arg>
+      <arg><option>-t <replaceable>[01]</replaceable></option></arg>
+      <arg><option>-d <replaceable>/home/foo/bar</replaceable></option></arg>
+      <arg><option>-u <replaceable>jack</replaceable></option></arg>
+      <arg><option>-host <replaceable>MapName</replaceable></option></arg>
+
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+    <para>This manual page documents briefly the
+      <command>&dhpackage;</command> command.</para>
+
+    <para>This manual page was written for the &debian; distribution
+      because the original program does not have a manual page.</para>
+
+    <para><command>&dhpackage;</command> is a Real Time Strategy game, which can be compared
+    with Warcraft and also Sim games family. The primary aim of the game is to kill your opponents,
+    just like in warcraft-like games, and the whole control is processed through buildings, not
+    units, as in Sims games family.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option>
+        </term>
+        <listitem>
+          <para>Show summary of options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-f</option>
+        </term>
+        <listitem>
+          <para>Set Full screen.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-F</option>
+        </term>
+        <listitem>
+          <para>Unset Full screen.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-r</option>
+        </term>
+        <listitem>
+          <para>Set resizable window.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-R</option>
+        </term>
+        <listitem>
+          <para>Unset resizable window.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-s<replaceable>640x480</replaceable></option>
+        </term>
+        <listitem>
+          <para>Set specified resolution.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-a</option>
+        </term>
+        <listitem>
+          <para>Set hardware accelerated gfx.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-A</option>
+        </term>
+        <listitem>
+          <para>Unset hardware accelerated gfx.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-b</option>
+        </term>
+        <listitem>
+          <para>Enable double buffering.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-B</option>
+        </term>
+        <listitem>
+          <para>Disable double buffering (useful on OS X with fullscreen).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-l</option>
+        </term>
+        <listitem>
+          <para>low speed graphics : disable some transparency effects</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-t <replaceable>0/1</replaceable></option>
+        </term>
+        <listitem>
+          <para>type of gfx renderer : 0 = SDL, 1 = OpenGL</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-d <replaceable>directory</replaceable></option>
+        </term>
+        <listitem>
+          <para>Add a directory to the directory search list.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-u <replaceable>username</replaceable></option>
+        </term>
+        <listitem>
+          <para>Specify a username.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-host <replaceable>MapName</replaceable></option>
+        </term>
+        <listitem>
+          <para>Run Globulation 2 as a game host text-only server.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+
+    <para>This manual page was written by &dhusername; &dhemail; for
+      the &debian; system (but may be used by others).  Permission is
+      granted to copy, distribute and/or modify this document under
+      the terms of the &gnu; Free Documentation
+      License, Version 1.1 as published by the Free
+      Software Foundation; with no Invariant Sections, no Front-Cover
+      Texts and no Back-Cover Texts.</para>
+
+  </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->
+
+

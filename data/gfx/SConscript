@@ -1,0 +1,15 @@
+import os
+    
+Import("env")
+Import("PackTar")
+    
+#speed increase, much time waisted doing MD5's on the pictures
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".png") != -1:
+            PackTar(env["TARFILE"], file)
+            env.Install(env["INSTALLDIR"]+"/glob2/data/gfx", file)
+    
+    PackTar(env["TARFILE"], "SConscript")
+    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/gfx")
+SConscript("cursor/SConscript")

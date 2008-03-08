@@ -1,0 +1,153 @@
+//
+// Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de Charriere
+//  for any question or comment contact us at <stephane at magnenat dot net>
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+
+*default
+
+type null
+
+gameSprite ERROR_NO_GAME_SPRITE_DEFINED
+gameSpriteImage 0
+gameSpriteCount 1
+miniSprite ERROR_NO_MINI_SPRITE_DEFINED
+miniSpriteImage 0
+
+hueImage 0
+flagImage 49
+miniImage 0
+crossConnectMultiImage 0
+
+upgradeStopWalk 0
+upgradeStopSwim 0
+upgradeStopFly 0
+upgradeWalk 0
+upgradeSwim 0
+upgradeFly 0
+upgradeBuild 0
+upgradeHarvest 0
+upgradeAttackSpeed 0
+upgradeAttackStrength 0
+upgradeMagicAttackAir 0
+upgradeMagicAttackGround 0
+upgradeMagicCreateWood 0
+upgradeMagicCreateCorn 0
+upgradeMagicCreateAlga 0
+upgradeArmor 0
+upgradeHP 0
+
+upgradeTimeStopWalk 0
+upgradeTimeStopSwim 0
+upgradeTimeStopFly 0
+upgradeTimeWalk 0
+upgradeTimeSwim 0
+upgradeTimeFly 0
+upgradeTimeBuild 0
+upgradeTimeHarvest 0
+upgradeTimeAttackSpeed 0
+upgradeTimeAttackStrength 0
+upgradeTimeMagicAttackAir 0
+upgradeTimeMagicAttackGround 0
+upgradeTimeMagicCreateWood 0
+upgradeTimeMagicCreateCorn 0
+upgradeTimeMagicCreateAlga 0
+upgradeTimeArmor 0
+upgradeTimeHP 0
+
+upgradeInParallel 0
+
+foodable 0
+fillable 0
+
+zonableWorker 0
+zonableExplorer 0
+zonableWarrior 0
+zonableForbidden 0
+
+canFeedUnit 0
+timeToFeedUnit 0
+canHealUnit 0
+timeToHealUnit 0
+insideSpeed 4
+canExchange 0
+useTeamRessources 0
+
+width 0
+height 0
+decLeft 0
+decTop 0
+isVirtual 0
+isCloacked 0
+shootingRange 0
+shootDamage 0
+shootSpeed 0
+shootRythme 0
+maxBullets 0
+multiplierStoneToBullets 0
+
+unitProductionTime 0
+ressourceForOneUnit 0
+
+maxWood 0
+maxCorn 0
+maxPapyrus 0
+maxStone 0
+maxAlgue 0
+maxFruit0 0
+maxFruit1 0
+maxFruit2 0
+maxFruit3 0
+maxFruit4 0
+maxFruit5 0
+maxFruit6 0
+maxFruit7 0
+maxFruit8 0
+maxFruit9 0
+
+multiplierWood 1
+multiplierCorn 1
+multiplierPapyrus 1
+multiplierStone 1
+multiplierAlgue 1
+multiplierFruit0 10
+multiplierFruit1 10
+multiplierFruit2 10
+multiplierFruit3 10
+multiplierFruit4 10
+multiplierFruit5 10
+multiplierFruit6 10
+multiplierFruit7 10
+multiplierFruit8 10
+multiplierFruit9 10
+
+maxUnitInside 0
+maxUnitWorking 0
+
+hpInit 0
+hpMax 0
+hpInc 0
+armor 0
+level 0
+shortTypeNum 0
+isBuildingSite 0
+
+defaultUnitStayRange 0
+
+viewingRange 1
+regenerationSpeed 0
+
+prestige 0

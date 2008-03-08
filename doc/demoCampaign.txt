@@ -1,0 +1,121 @@
+campaignName = "Joey Campaign";
+playerName = "";
+maps
+{
+	mapNum = 7;
+	0
+	{
+		CampaignMap
+		{
+			mapName = "Joey mission 1";
+			mapFileName = "campaigns/Joey_mission_1.map";
+			isLocked = 0;
+			unlockedBy
+			{
+				size = 0;
+			}
+		}
+	}
+	1
+	{
+		CampaignMap
+		{
+			mapName = "Joey mission 2";
+			mapFileName = "campaigns/Joey_mission_2.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Joey mission 1";
+				}
+			}
+		}
+	}
+	2
+	{
+		CampaignMap
+		{
+			mapName = "Joey mission 3";
+			mapFileName = "campaigns/Joey_mission_3.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Joey mission 2";
+				}
+			}
+		}
+	}
+	3
+	{
+		CampaignMap
+		{
+			mapName = "Joey mission 4";
+			mapFileName = "campaigns/Joey_mission_4.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Joey mission 3";
+				}
+			}
+		}
+	}
+	4
+	{
+		CampaignMap
+		{
+			mapName = "Joey mission 5";
+			mapFileName = "campaigns/Joey_mission_5.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Joey mission 4";
+				}
+			}
+		}
+	}
+	5
+	{
+		CampaignMap
+		{
+			mapName = "Joey mission 6";
+			mapFileName = "campaigns/Joey_mission_6.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Joey mission 5";
+				}
+			}
+		}
+	}
+	6
+	{
+		CampaignMap
+		{
+			mapName = "Joey mission 7";
+			mapFileName = "campaigns/Joey_mission_7.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Joey mission 6";
+				}
+			}
+		}
+	}
+}

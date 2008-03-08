@@ -1,0 +1,184 @@
+\input texinfo	@c -*-texinfo-*-
+
+@c %**start of header
+@setfilename Glob2 English Manual
+@settitle Glob2 English Manual
+@afourpaper
+@documentencoding ISO-8859-1
+@c %**end of header
+
+@copying
+This manual is for the @uref{http://ysagoon.com/glob2, Globulation 2 game}.
+
+Copyright @copyright{} 2002 St@'ephane Magnenat
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with the Front-Cover texts being ``Globulation 2 English Manual,''
+and with the Back-Cover Texts as in (a) below.  A copy of the
+license is included in the section entitled ``GNU Free Documentation
+License.''
+
+(a) The FSF's Back-Cover Text is: ``You have freedom to copy and modify
+this manual, like Globulation 2 itself.  If you likes Globulation 2, please
+consider publisizing it, reporting bug, contributing to code, graphics, 
+musicm translations and so on. Additionally, you can send postcards to
+Globulation 2 developpers.''
+@end quotation
+@end copying
+
+@titlepage
+@title Globulation 2
+@subtitle English Manual
+@author St@'ephane Magnenat
+
+@c The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+
+@uref{http://ysagoon.com/glob2, Published by the Globulation 2 project}
+@end titlepage
+
+@c Output the table of contents at the beginning.
+@contents
+
+@ifnottex
+@node Top
+@top Globulation 2 English Manual
+
+@insertcopying
+
+The manual is divided into the following sections, to give you
+a quick access to what you are searching for.
+@end ifnottex
+
+@menu
+* Installation::  How to install Globulation 2
+* Quick introduction::    A quick introduction to Globulation 2 for new players.
+@c * SGSL reference::   The reference for the SGSL scripting language.
+* Contributing::     Details informations on how to contribute to Globulation 2.
+@c * Index::            Complete index.
+@end menu
+
+@node Installation
+@chapter Installation
+
+Read the README and the INSTALL files in Globulation 2 distribution.
+
+@node Quick introduction
+@chapter Quick introduction
+
+Upon installed, launch glob2 : @code{glob2}
+
+Then click on Tutorial in the main menu and follow the tutorial. It will teach you everything you need to begin to play with Globulation 2.
+
+@node Contributing
+@chapter Contributing
+
+The following sections will strongly help you if you are (or wanna be) a Globulation 2 contributor.
+
+@menu
+* Becoming a contributor::  The (easy) process to follow to become a Globulation 2 contributor.
+* Coding guidelines::  Guidelines you have to follow if you want your code to be incorporated info Globulation 2.
+* SGSL reference::  A detailed reference on SGSL syntax and keywords.
+@end menu
+
+@node Becoming a contributor
+@section Becoming a contributor
+
+If you are interested in graphics/sounds/musics/web design/map design you only need to have a working Globulation 2.
+@xref{Installation, installation}.
+
+If you are interested in documentation, you have to additionally install the texinfo package from @uref{http://www.gnu.org/software/texinfo/, the Texinfo homepage}.
+
+If you are interested in code, you need to be able to rebuild everything from CVS. So you need several packages:
+@itemize
+@item gcc 2.95·X
+@item g++ 2.95.X
+@item gmake
+@item automake
+@item autoconf
+@item m4
+@item libsdl1.2
+@item libsdl-image1.2
+@item libsdl-net1.2
+@end itemize
+
+Follow the instructions given in the README and INSTALL files in Globulation 2 distribution.
+
+@node Coding guidelines
+@section Coding guidelines
+
+All the code in Globulation 2 tree should follow thoses guidelines.
+If you wanna contribute, first read thoses guidelines and be sure to have fully understood them.
+Thanks.
+
+@enumerate
+
+@item
+Globulation 2 is coded in C++.
+However, usage of the standard C library is permitted when justified for the simplicity (use of FILE * pointer in the virtual filesystem).
+
+@item
+Indent like this :
+@example
+class Integer
+@{
+    int i;
+
+    void setVal(int val);
+    int getVal(void) @{ return i; @}
+@};
+
+void Integer::setVal(int val)
+@{
+    this->i = val;
+@}
+
+int main(int argc, char *argv[])
+@{
+    Integer a;
+    a.setVal(3);
+    printf("%d\n", a.getVal());
+@}
+@end example
+Always put @{ and @} on a single line, excepted when @{ and @} are on the same line.
+
+Always indent with tabs. Tabs should be 4 char width.
+
+Alternatively, you can use the following @emph{astyle} command :
+@code{astyle -c -t -S -b}
+
+@item
+When coding a for-like loop, put a space between arguments :
+@example
+for (int i=0; i<10; i++)
+@end example
+
+@item
+@emph{.h} stands for header, so put header in them. Implementation should always be placed in @emph{.cpp} files, excepted :
+@itemize
+@item When there is only a return (like @code{ int getValue(void) @{ return i; @} }).
+@item When speed is critical (isUnit(...) in Map.h for instance)
+@end itemize
+
+@item
+Do only put the @emph{minimum} include in header files. Glob2 already takes minuts to compile. Don't let him take @emph{days}.
+
+@end enumerate
+
+@node SGSL reference
+@section SGSL reference
+
+bla bla bla SGSL
+
+@c @node Index
+@c @unnumbered Index
+
+@c @printindex cp
+
+@bye
+

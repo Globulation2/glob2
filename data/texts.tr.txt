@@ -1,0 +1,1158 @@
+[%0 has been deconnected of the game]
+%0 koptu.
+[%0 has left the game]
+%0 oyundan cikti.
+[%0's game]
+
+[%0's team unit got converted to your team]
+%0'nin bir birimi sizin tarafiniza gecti
+[abreaviation explanation A]
+A: Muttefikler
+[abreaviation explanation C]
+C: Suna sohbet mesajlari gonder:
+[abreaviation explanation fV]
+fV: Otel binalarini goster (birimleri calmak icin)
+[abreaviation explanation mV]
+mV: Market binalarini goster (mal takasi icin)
+[abreaviation explanation V]
+V: Butun binalari goster
+[Add AI]
+AI Ekle
+[add map]
+
+[add shortcut]
+
+[AI]
+AI
+[ai]
+AI
+[AICastor]
+AICastor
+[AINicowar]
+Nicowar
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AIReachToInfinity]
+ReachToInfinity
+[AIToubib]
+AIToubib
+[AIWarrush]
+AIWarrush
+[Alga]
+Suyosunu
+[algae]
+yosun
+[alliances]
+Ittifaklar
+[and]
+ve
+[any explorer]
+herhangi/tum kasif(ler)
+[are dying hungry]
+cok ac
+[are hungry]
+ac
+[are ok]
+tamam
+[are wonded]
+yarali
+[armor]
+Zirh
+[assigned]
+
+[At. speed]
+Att. hiz
+[At. strength]
+Att. guc
+[attack speed]
+Saldiri hizi
+[Attack]
+Saldiri
+[audio]
+Ses
+[auto save]
+Otomatik kaydet
+[available lan games]
+Uygun yerel oyunlar
+[awaiting players]
+Oyuncular bekleniyor
+[away:]
+uzakta:
+[backspace]
+
+[bad error in connection system]
+Baglanti sisteminde kotu bir hata
+[barracks explanation 2]
+savascilarinizin seviyesi
+[barracks explanation]
+Savasmayi gelistirir
+[barracks]
+Kisla
+[beach size]
+sahil boyutu
+[break]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
+[Build]
+Insaa et
+[Building name]
+Yapi adi
+[Building short explanation 2]
+Binanin kisa tanimi 2 (en fazla 24 harf)
+[Building short explanation]
+Binanin kisa tanimi (en fazla 24 harf)
+[building site]
+insaa alani
+[Buildings]
+Binalar
+[Bullets]
+Mermiler
+[campaign editor]
+
+[campaign]
+Senaryo
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
+[Can't join game, missmatching game parameters]
+Oyuna katilamadiniz: oyun parametreleri uyusmuyor
+[Can't join game, timeout]
+Oyuna katilamadiniz: zamanasimi
+[Can't join game, wrong game version]
+Oyuna katilamadiniz: yanlis oyun versiyonu
+[cancel destroy]
+Yikimi iptal et
+[cancel repair]
+Onarmayi iptal et
+[cancel upgrade]
+Gelistirmeyi iptal et
+[Cancel]
+Vazgec
+[caps lock]
+
+[carry]
+Tasiyor:
+[Change Area Name]
+
+[checksum sent]
+Sonkontrol gonderildi ...
+[Cherry]
+Kiraz
+[choose campaign]
+Bir senaryo secin
+[choose game]
+Oyun sec
+[choose map]
+Harita sec
+[clear area]
+Temizlik bolgesi
+[clear]
+
+[Clearing:]
+Aciklik:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Kaynaklari temizler
+[clearingflag]
+Temizlik bayragi
+[close]
+Kapat
+[closed]
+Kapali
+[compile]
+Script derle
+[compose]
+
+[Computing Fertility]
+
+[connect]
+Baglan
+[connected to all players]
+Tum oyunculara baglanildi
+[connected to server]
+Sunucuya baglanildi
+[connecting to all players]
+Tum oyunculara baglaniliyor
+[connecting to]
+Suraya baglaniyor:
+[constructed buildings]
+
+[construction and upgrades]
+
+[Continue playing]
+Oyuna devam et
+[Corn]
+Bugday
+[crater density]
+krater yogunlugu
+[crater lakes terrain]
+Krater Golleri
+[create game]
+Yeni oyun
+[create map]
+Yeni harita
+[credits]
+Hakkinda
+[current speed]
+Mevcut hiz
+[custom game]
+Ozel oyun
+[customcur]
+Ozel imlec
+[damage]
+Hasar
+[Damaged Map]
+
+[dblbuff]
+Cift tampon
+[decrease units working]
+
+[default terrain]
+Varsayilan arazi
+[defencetower explanation 2]
+birimler yada binalar
+[defencetower explanation]
+Yakindaki dusmana saldirir
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
+Savunma Kulesi
+[Defense Map]
+
+[Defense]
+Savunma
+[Delete game]
+Secili oyunu sil
+[delete]
+
+[desert]
+col
+[destroy building]
+
+[destroy]
+Yik
+[Disconnect]
+Baglantiyi kes
+[display]
+Gorunum
+[do nothing]
+
+[don't carry anything]
+Hicbirsey tasimiyor
+[down]
+
+[download finished]
+Indirme tamamlandi
+[downloaded %0]
+
+[downloaded at]
+Suradan indirildi: 
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
+[editor]
+Editor
+[end]
+
+[Enter your nickname :]
+Takma adinizi girin:
+[Enter your password :]
+Sifrenizi girin:
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+Kasifleri ceker
+[explorationflag]
+Kesif bayragi
+[Explorer Ratio]
+
+[Explorer]
+Kasif
+[explorers]
+kasifler
+[extra islands]
+bos adalar
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[food left]
+Kalan besin
+[food]
+Besin
+[forbidden area]
+Yasak bolge
+[Free]
+Tamam
+[free]
+serbest
+[free]
+tanesi bosta
+[from:]
+surdan:
+[fruit]
+
+[fullscreen]
+Tam ekran
+[game full]
+Oyun dolu
+[game shortcuts]
+
+[game speed]
+Oyun hizi
+[Games]
+
+[general settings]
+
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Ama menuye don
+[grass]
+Cimen
+[ground attack]
+yer saldirisi
+[guard area]
+Nobet bolgesi
+[GUIMapPreview text 0]
+Lutfen secin
+[GUIMapPreview text 1]
+bir harita
+[handmade map]
+Elyapimi harita
+[Happyness]
+Mutluluk
+[hard pause]
+
+[Harvest]
+Hasat et
+[has joined]
+katildi
+[has quit]
+cikti
+[heal]
+Saglik
+[help]
+
+[home]
+
+[hospital explanation 2]
+ 
+[hospital explanation]
+Birimlerinizi iyilestirir
+[hospital]
+Hastane
+[Host has cancelled the game]
+
+[host]
+Oyun Sunucusu ol
+[hp]
+CAN
+[hp]
+Can
+[human]
+
+[hungry]
+ac
+[hungryness]
+Aclik
+[hwaccel]
+Donanim hizlandirma
+[In way]
+Yolda
+[increase units working]
+
+[inn explanation 2]
+ 
+[inn explanation]
+Birimlerinizi besler
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Otel
+[insert]
+
+[inside]
+Icerde
+[islands size]
+ada boyutu
+[islands terrain]
+Adalar
+[iterate selection]
+
+[jobs]
+
+[join a game]
+Oyuna katil
+[join]
+Katil
+[keyboard settings]
+
+[kick]
+
+[lan]
+Agda Oyna
+[language incomplete]
+Turkce - Incomplete
+[language-code]
+tr
+[language-tr]
+Dil
+[language]
+Turkce
+[large]
+buyuk
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+Seviye
+[levels]
+Seviyeler
+[load campaign]
+
+[load game]
+Oyun yukle
+[load map]
+
+[load]
+Yukle
+[loading glob2]
+Globulation 2 Yukleniyor
+[login]
+Giris
+[Lost : %0 has more prestige than you]
+Yenilgi: %0 'nin prestiji sizinkinden daha fazla
+[Lost : your colony is dead]
+Yenilgi: koloniniz oldu
+[lowquality]
+Dusuk kalite
+[Magic At. Air]
+Hava hasari
+[Magic At. Ground]
+Yer hasari
+[Map name: %0]
+Harita adi: %0.
+[map name]
+
+[map size x]
+Harita genisligi
+[map size y]
+Harita yuksekligi
+[mapGenerationDescriptor Methodes]
+Rastgele olusturulmus haritalarin metodlari
+[maps available]
+
+[mark map]
+
+[market explanation 2]
+baskalariyla alisveris yapar
+[market explanation]
+Sunun takasina izin verir:
+[market]
+Market
+[medium]
+orta
+[menu]
+
+[Min required level:]
+Gerekli en dusuk seviye:
+[Minimum Level To Flag]
+
+[Music volume]
+Ses ayari (muzik)
+[Mute]
+
+[mute]
+sessiz
+[network latency]
+Ag gecikmesi
+[new campaign]
+
+[new map]
+Yeni
+[nick taken]
+Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
+[no key]
+
+[no ressources growth areas]
+
+[No]
+Hayir
+[not connected]
+Bagli degil
+[not ready]
+hazir degil
+[number of players: %0 (%1 AI)]
+
+[number of players: %0]
+%0 oyuncu var.
+[number of teams: %0]
+%0 takim var.
+[number of teams]
+takim sayisi
+[numlock]
+
+[of which]
+ayrintilar:
+[ok]
+Tamam
+[old islands terrain]
+eski karisik adalar
+[old random terrain]
+eski karisik arazi
+[On the spot]
+Burada
+[one player]
+Bir oyuncu katildi.
+[open chat box]
+
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
+[open]
+Ac
+[options]
+Secenekler
+[Orange]
+Portakal
+[page down]
+
+[page up]
+
+[Papyrus]
+Papirus
+[pause game]
+
+[pause]
+
+[Paused]
+Duraklatildi
+[percent]
+  yuzde
+[player name]
+Oyuncu adi
+[player]
+Oyuncu
+[please wait]
+Lutfen bekleyin
+[power]
+
+[presence request sent]
+Hazir olma istegi yollandi ...
+[press space]
+Devam etmek icin bosluk tusuna basin.
+[Prestige]
+Prestij
+[print screen]
+
+[Prune]
+Cir
+[quit the editor]
+
+[quit the game]
+Oyundan cik
+[quit]
+Kapat
+[racetrack explanation 2]
+Birimlerinizin hizi
+[racetrack explanation]
+Yurumeyi gelistirir
+[racetrack]
+Kosuyolu
+[random terrain]
+Karisik saha
+[range]
+Menzil
+[ratios]
+Oranlar
+[Register a new YOG user with password]
+Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
+[remember unit]
+
+[Remember YOG password localy]
+Parolayi yerel olarak animsa. (guvenli degil)
+[remove map]
+
+[remove shortcut]
+
+[repair building]
+
+[repair]
+Onar
+[repeat area]
+
+[ressources]
+Kaynaklar
+[restore default shortcuts]
+
+[return to editor]
+
+[return to game]
+Oyuna don
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+nehir genisligi
+[river terrain]
+Nehir
+[sand]
+Kum
+[save before quit?]
+Cikmadan once kaydetmek istiyor musunuz?
+[save game]
+Oyun kaydet
+[save map]
+
+[Save]
+Kaydet
+[school explanation 2]
+iscilerinizin seviyesi
+[school explanation]
+Binayi gelistirir
+[school]
+Akademi
+[Script Areas]
+
+[scroll lock]
+
+[scroll wheel enabled]
+
+[seeking a job]
+tanesi is ariyor
+[seeking]
+ariyor
+[select barracks building]
+
+[select clearingflag]
+
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select delete tool]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
+[session request sent]
+Oturum istegi yollandi ...
+[settings]
+Ayarlar
+[shortcut explanation enter]
+Enter: bir sohbet mesaji gonder
+[shortcut explanation v]
+V: konusmak icin basili tut
+[show main menu]
+
+[skin]
+Gorunum
+[small]
+kucuk
+[smoothing]
+Duzeltme
+[space]
+
+[speed]
+Hiz
+[start mission]
+
+[start new campaign]
+
+[Start]
+Basla
+[STARTING GAME ...]
+Oyun basliyor... 
+[Starving Map]
+
+[starving]
+cok ac
+[stat]
+Istatistikler
+[state]
+durum
+[Statistics]
+Istatistikler
+[Still (i)]
+Hala 
+[still (w)]
+Hala
+[still one unit working]
+Bir unite hala calisiyor
+[Still one]
+Hala bir
+[Stone]
+Tas
+[stone]
+tas
+[stonewall explanation 2]
+bilesen
+[stonewall explanation]
+Pasif savunma
+[stonewall]
+Tas duvar
+[svr hostname]
+Sunucu adi
+[swamp terrain]
+Bataklik
+[swarm explanation 2]
+ 
+[swarm explanation]
+Yeni birimler olusturur
+[swarm level 0]
+
+[swarm]
+Yuva
+[Swim]
+Yuz
+[swimmingpool explanation 2]
+Birimlerinizin hizi
+[swimmingpool explanation]
+Yuzmeyi iyilestirir
+[swimmingpool]
+Yuzme havuzu
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+
+[switch to flag view]
+
+[switch to removing areas]
+
+[switch to teams view]
+
+[switch to terrain view]
+
+[sys req]
+
+[tab]
+
+[teams]
+ takimlar
+[the barracks is finished]
+Egitim kampi tamamlandi
+[the barracks is under attack]
+Egitim kampi saldiri altinda
+[the building is finished]
+Bina tamamlandi
+[the building is under attack]
+Bina saldiri altinda
+[the clearingflag is finished]
+?? Temizlik bayragi tamamlandi ??
+[the clearingflag is under attack]
+?? Temizlik bayragi saldiri altinda ??
+[the defencetower is finished]
+Savunma kulesi tamamlandi
+[the defencetower is under attack]
+Savunmaniz saldiri altinda
+[the explorationflag is finished]
+?? Kesif bayragi tamamlandi ??
+[the explorationflag is under attack]
+?? Kesif bayragi saldiri altinda ??
+[The game has not been finished]
+Oyun tamamlanmadi
+[the games]
+Oyunlar
+[the hospital is finished]
+Hastane tamamlandi
+[the hospital is under attack]
+Hastane saldiri altinda
+[The host has cancelled the game]
+
+[the inn is finished]
+Otel tamamlandi
+[the inn is under attack]
+Otel saldiri altinda
+[the maps]
+Haritalar
+[the market is finished]
+Market tamamlandi
+[the market is under attack]
+Market saldiri altinda
+[The player %0 has joined YOG]
+%0 YOG'a baglandi.
+[The player %0 has left YOG]
+%0 YOG'dan ayrildi.
+[the racetrack is finished]
+Kosuyolu tamamlandi
+[the racetrack is under attack]
+Kosuyolu saldiri altinda
+[the school is finished]
+Akademi tamamlandi
+[the school is under attack]
+Akademi saldiri altinda
+[the stonewall is finished]
+Bir duvar bolumu tamamlandi
+[the stonewall is under attack]
+Dusman duvarlarinizi zorluyor
+[the swarm is finished]
+Yuva tamamlandi
+[the swarm is under attack]
+Yuva saldiri altinda
+[the swimmingpool is finished]
+Yuzme havuzu tamamlandi
+[the swimmingpool is under attack]
+Yuzme havuzu saldiri altinda
+[the warflag is finished]
+?? Savas bayragi tamamlandi ??
+[the warflag is under attack]
+?? Savas bayragi saldiri altinda ??
+[to:]
+suraya:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
+[toggle menu screen]
+
+[toggle recording voice]
+
+[Total prestige reached]
+Kazanilan toplam prestij
+[Total]
+Toplam
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
+[tutorial]
+Egitim
+[unassigned]
+
+[Uncontrolled]
+Kontrolsuz
+[undo]
+
+[uniform terrain]
+Tekbicimli saha
+[Unit editor]
+Birim editoru
+[unit settings explanation]
+
+[unit settings]
+
+[Unit type]
+Birim tipi
+[units type]
+birim tipi
+[units working]
+ calisan birimler
+[Units]
+Birimler
+[unlocked by]
+
+[Unnamed Area]
+
+[up]
+
+[update list]
+Listeyi guncelle
+[upgrade building]
+
+[upgrade]
+Gelistir
+[username]
+Kullanici adi
+[Version]
+Versiyon
+[view history]
+
+[wait destroy]
+Yikilmayi bekliyor
+[waiting for %0]
+bekleniyor: %0
+[waiting for key]
+
+[Waiting]
+
+[Walk]
+Yuru
+[warflag explanation 2]
+ 
+[warflag explanation]
+Savascilari ceker
+[warflag]
+Savas bayragi
+[Warning, you need to reboot the game for changes to take effect]
+Uyari, degisikliklerin etkili olabilmesi icin oyunu yeniden baslatmalisiniz
+[Warrior Ratio]
+
+[Warrior]
+Savasci
+[warriors]
+savascilar
+[was AI]
+AI idi
+[was]
+idi
+[water]
+Su
+[Wheat]
+
+[wheat]
+bugday
+[Won : you defeated your opponents]
+Zafer: Rakiplerinizi yendiniz
+[Won : you have the most prestige]
+Zafer: En buyuk prestij sizinki
+[Won : your ally %0 has the most prestige]
+Zafer: Muttefikiniz %0 en buyuk prestije sahip
+[Wood]
+Odun
+[wood]
+odun
+[Worker Ratio]
+
+[Worker]
+Isci
+[workers]
+isciler
+[workers]
+isciler
+[working]
+Calisiyor
+[wounded]
+yarali
+[Yes]
+Evet
+[YESTS_BAD]
+Baglantida ic tutarlilik hatasi.
+[YESTS_CONNECTING]
+YOG onsunucusu ile baglanti kuruluyor...
+[YESTS_CONNECTION_LOST]
+YOG'la olan baglanti koptu.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Bir protokol hatasi olustu:  Zaten baglisiniz.  45 saniye icinde tekrar deneyiniz.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi zaten kayitli.  Eger bu kullanici adi sizinse, "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini pasiflestirin.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Girdiginiz sifre yanlis.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adinin henuz bir parolasi yok. Muhtemelen kullanici adinizi bu parola ile kaydetmek istiyorsunuz. O halde, baglanmadan once "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini aktiflestirin. Bu secenegi yalnizca bir kez aktiflestirmeniz yeterli olacaktir.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Bir ic protokol hatasi olustu: Onaylandigi halde baglantiniz kurulamadi. Lutfen bu bug'i bildiriniz.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
+[YESTS_CREATED]
+Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
+[YESTS_DECONNECTING]
+YOG onsunucusu ile olan baglanti kesiliyor...
+[YESTS_UNABLE_TO_CONNECT]
+Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
+[YESTS_YOG_KILLED]
+Bir yonetici YOG onsunucusunu durdurdu.
+[yog-chat]
+#yog-tr
+[yog]
+Ysagoon Online Gaming
+[YOG_HELP]
+YOG mesajlasma sisteminde iki komut bulunmaktadir: "msg" ve "away". Bunlardan biri hakkinda daha fazla bilgi edinmek icin "/help <komut>" yaziniz.
+[YOG_HELP_AWAY]
+"/away (<mesaj>)" komutu diger YOG kullanicilarinin sizin gecici olarak uzakta oldugunuzu anlamalarini saglar.  Buraya kisa bir aciklama mesaji ekleyebilirsiniz.  Ornek: "/away Ogle yemegindeyim ve saat 2'de donmus olurum". Kisaltma: "/a"
+[YOG_HELP_MSG]
+"/msg <ad> <mesaj>" komutu bir ozel mesaj gonderir.  Ornek: "/msg ahmet Merhaba ahmet, nasil gidiyor?".  Kisaltma: "/m".
+[You are no more marked as away]
+Artik uzakta olarak isaretli degilsiniz.
+[You are now marked as away]
+Uzakta olarak isaretlisiniz.
+[you have lost]
+Kaybettiniz!
+[you have won]
+Kazandiniz!
+[You where kicked from the game]
+
+[Your %0 are under attack]
+%0 'leriniz saldiri altinda
+[Your unit got converted to %0's team]
+Bir biriminiz %0 'nin tarafina gecti

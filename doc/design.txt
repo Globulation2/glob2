@@ -1,0 +1,11 @@
+Globulation 2
+=============
+
+3 castes :
+- exploratrices (aerien)
+- ouvriere/constructrices (terrestre)
+- guerrieres (terrestre)
+
+deplacement par drapeaux
+click sur batiment pour choix du nombre d'unites associees
+

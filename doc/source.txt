@@ -1,0 +1,14 @@
+Source of files not created by us :
+
+Font :
+sans.ttf : /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf from ubuntu ttf-dejavu package (http://dejavu.sourceforge.net)
+
+Emoticon for alliance :
+kopete http://kopete.kde.org/
+
+Phone icon for vocie chat :
+KDE crystal SVG
+
+Rotating Earth :
+http://www.kde-look.org/content/show.php?content=2140
+http://www.kde-look.org/usermanager/search.php?username=Amibug&PHPSESSID=3782d930be9c13d06e22580720b3ff86

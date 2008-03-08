@@ -1,0 +1,10 @@
+syntax: glob
+
+config.*
+options_cache.py
+libgag.a
+src/glob2
+.sconf_temp
+.sconsign.dblite
+src/*.o
+

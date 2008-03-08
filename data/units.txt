@@ -1,0 +1,256 @@
+//
+// Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de Charriere
+//  for any question or comment contact us at <stephane at magnenat dot net>
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+
+hungryness = 700;
+
+baseWorker
+{
+	startImageStopWalk = 64;
+	startImageStopSwim = 128;
+	startImageStopFly = 0;
+	
+	startImageWalk = 64;
+	startImageSwim = 128;
+	startImageFly = 0;
+	startImageBuild = 192;
+	startImageHarvest = 192;
+	startImageAttack = 0;
+	
+	
+	stopWalkSpeed = 8;
+	stopSwimSpeed = 8;
+	stopFlySpeed = 0;
+	
+	flySpeed = 0;
+	
+	attackSpeed = 0;
+	attackForce = 0;
+	
+	magicAttackAir = 0;
+	magicAttackGround = 0;
+	magicCreateWood = 0;
+	magicCreateCorn = 0;
+	magicCreateAlga = 0;
+	magicActionCooldown = 0;
+	
+	armor = 0;
+	hpMax = 200;
+	
+	hungryness = 350;
+	harvestDamage = 10;
+	armorReductionPerHappyness = 0;
+	
+	experiencePerLevel = 0;
+}
+
+worker
+{
+	0 : baseWorker
+	{
+		walkSpeed = 16;
+		swimSpeed = 0;
+		
+		buildSpeed = 8;
+		harvestSpeed = 8;
+	}
+	1 : baseWorker
+	{
+		walkSpeed = 24;
+		swimSpeed = 10;
+		
+		buildSpeed = 12;
+		harvestSpeed = 9;
+	}
+	2 : baseWorker
+	{
+		walkSpeed = 32;
+		swimSpeed = 25;
+		
+		buildSpeed = 16;
+		harvestSpeed = 10;
+	}
+	3 : baseWorker
+	{
+		walkSpeed = 40;
+		swimSpeed = 40;
+		
+		buildSpeed = 20;
+		harvestSpeed = 11;
+	}
+}
+
+baseExplorer
+{
+	startImageStopWalk = 0;
+	startImageStopSwim = 0;
+	startImageStopFly = 0;
+	
+	startImageWalk = 0;
+	startImageSwim = 0;
+	startImageFly = 0;
+	startImageBuild = 0;
+	startImageHarvest = 0;
+	startImageAttack = 0;
+	
+	
+	stopWalkSpeed = 8;
+	stopSwimSpeed = 8;
+	stopFlySpeed = 0;
+	
+	walkSpeed = 0;
+	swimSpeed = 0;
+	flySpeed = 28;
+	
+	buildSpeed = 0;
+	harvestSpeed = 0;
+	
+	attackSpeed = 0;
+	attackForce = 0;
+	
+	armor = 0;
+	hpMax = 50;
+	
+	hungryness = 350;
+	harvestDamage = 0;
+	armorReductionPerHappyness = 1;
+	
+	experiencePerLevel = 50;
+}
+
+explorer
+{
+	0 : baseExplorer
+	{
+		magicAttackAir = 8;
+		magicAttackGround = 0;
+		magicCreateWood = 0;
+		magicCreateCorn = 0;
+		magicCreateAlga = 0;
+		
+		magicActionCooldown = 3;
+	}
+	// this level can only be set in editor
+	1 : baseExplorer
+	{
+		magicAttackAir = 8;
+		magicAttackGround = 0;
+		magicCreateWood = 4;
+		magicCreateCorn = 4;
+		magicCreateAlga = 4;
+		
+		magicActionCooldown = 3;
+	}
+	// this level can only be set in editor
+	2 : baseExplorer
+	{
+		magicAttackAir = 8;
+		magicAttackGround = 0;
+		magicCreateWood = 3;
+		magicCreateCorn = 3;
+		magicCreateAlga = 3;
+		
+		magicActionCooldown = 3;
+	}
+	3 : baseExplorer
+	{
+		magicAttackAir = 8;
+		magicAttackGround = 25;
+		magicCreateWood = 2;
+		magicCreateCorn = 2;
+		magicCreateAlga = 2;
+		
+		magicActionCooldown = 3;
+	}
+}
+
+baseWarrior
+{
+	startImageStopWalk = 256;
+	startImageStopSwim = 320;
+	startImageStopFly = 0;
+	
+	startImageWalk = 256;
+	startImageSwim = 320;
+	startImageFly = 0;
+	startImageBuild = 0;
+	startImageHarvest = 0;
+	startImageAttack = 384;
+	
+	stopWalkSpeed = 8;
+	stopSwimSpeed = 8;
+	stopFlySpeed = 0;
+	
+	flySpeed = 0;
+	
+	buildSpeed = 0;
+	harvestSpeed = 0;
+	
+	magicAttackAir = 0;
+	magicAttackGround = 0;
+	magicCreateWood = 0;
+	magicCreateCorn = 0;
+	magicCreateAlga = 0;
+	magicActionCooldown = 0;
+	
+	armor = 10;
+	hpMax = 250;
+	
+	hungryness = 350;
+	harvestDamage = 0;
+	armorReductionPerHappyness = 10;
+	
+	experiencePerLevel = 20;
+}
+
+warrior
+{
+	0 : baseWarrior
+	{
+		walkSpeed = 16;
+		swimSpeed = 0;
+		
+		attackSpeed = 11;
+		attackForce = 8;
+	}
+	1 : baseWarrior
+	{
+		walkSpeed = 24;
+		swimSpeed = 10;
+		
+		attackSpeed = 18;
+		attackForce = 16;
+	}
+	2 : baseWarrior
+	{
+		walkSpeed = 32;
+		swimSpeed = 20;
+		
+		attackSpeed = 25;
+		attackForce = 24;
+	}
+	3 : baseWarrior
+	{
+		walkSpeed = 40;
+		swimSpeed = 30;
+		
+		attackSpeed = 32;
+		attackForce = 32;
+	}
+}
+

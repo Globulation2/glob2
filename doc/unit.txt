@@ -1,0 +1,28 @@
+How unit and race creation works in Globulation 2
+=================================================
+
+(c) 2001 Luc-Olivier de Charriere and Stephane Magnenat
+
+Properties
+----------
+
+Each Unit in the game has a type, this type specify its characteristics. Each team has differents types because the race (the ensemble of types) can be customized.
+So we have the following types :
+
+- EntityType : Generic class for loading constant from a text file.
+- UnitType : A type for units for a team (ex: the explorer of Luc, the warrior of Stephane)
+- Race : the collection of all unittypes for a team (here 3 unittypes : explorer, worker & warrior)
+
+
+How they act
+------------
+
+If a unit is behond a critical ceiling :
+	- eating
+	- healing
+If a unit is free :
+	- harvesting food
+	- upgrade itself
+	- harvesting for construction
+	- upgrading buildings
+	- meeting (flag)
