@@ -1077,6 +1077,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
 		if(versionMinor >= 63)
 			cases[i].fertility = stream->readUint16("fertility");
+		fertilityMaximum = std::max(fertilityMaximum, cases[i].fertility);
 
 		stream->readLeaveSection();
 	}

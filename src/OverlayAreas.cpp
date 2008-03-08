@@ -84,7 +84,6 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	}
 	else if(type == Fertility && lasttype != Fertility)
 	{
-		std::cout<<"game.map.getW() = "<<game.map.getW()<<std::endl;
 		for(int x=0; x<game.map.getW(); ++x)
 		{
 			for(int y=0; y<game.map.getH(); ++y)
