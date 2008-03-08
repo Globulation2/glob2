@@ -1845,6 +1845,11 @@ namespace GAGCore
 				int nh = (*modes)->h;
 				modes++;
 				
+				if(nw < 800 || nh<600)
+				{
+					continue;
+				}
+				
 				if ( ((minW == 0) || (nw >= minW))
 					&& ((minH == 0) || (nh >= minH)))
 				{
