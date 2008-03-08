@@ -1364,7 +1364,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		if(selectionMode==PlaceZone)
 			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, (terrainType>TerrainSelector::Water ? 0 : 1), viewportX, viewportY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, (terrainType>TerrainSelector::Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
