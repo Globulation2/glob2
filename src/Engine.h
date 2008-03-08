@@ -67,6 +67,9 @@ public:
 	/// Initiate a game with the given MultiplayerGame
 	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer);
 
+	//! This function creates a game with a random map and random AI for every team
+	void createRandomGame();
+	
 	///Tells whether a map matching mapHeader is located on this system
 	bool haveMap(const MapHeader& mapHeader);
 
@@ -111,6 +114,12 @@ private:
 
 	///This will load the game header of the game with the given filename
 	GameHeader loadGameHeader(const std::string &filename);
+
+	///This function will choose a random map from the available maps
+	MapHeader chooseRandomMap();
+	
+	///This function prepares a random set of AI's in a GameHeader, first player is always human + ai team
+	GameHeader createRandomGame(int numberOfTeams);
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;

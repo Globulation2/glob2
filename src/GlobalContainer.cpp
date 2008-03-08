@@ -78,6 +78,8 @@ GlobalContainer::GlobalContainer(void)
 	hostServerUserName[0] = 0;
 	hostServerPassWord[0] = 0;
 	
+	runTestGames=false;
+	
 	gfx = NULL;
 	mix = NULL;
 	terrain = NULL;
@@ -168,6 +170,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			runNoX=true;
 			hostServer=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-test-games")==0)
+		{
+			runTestGames=true;
+			runNoX=true;	
 			continue;
 		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
@@ -319,6 +327,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-daemon\t runs the YOG server\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
+			printf("-test-games\tCreates random games with AI and tests them");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);
