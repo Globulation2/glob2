@@ -131,7 +131,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
-	  minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW),
+	  minimap(globalContainer->runNoX, (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128), 0, 128, 14, Minimap::HideFOW),
 	  ghostManager(game)
 {
 }

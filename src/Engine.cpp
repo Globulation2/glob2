@@ -179,6 +179,22 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 
 
 
+void Engine::createRandomGame()
+{
+	MapHeader map = chooseRandomMap();
+	GameHeader game = createRandomGame(map.getNumberOfTeams());
+	
+	gui.localPlayer=0;
+	gui.localTeamNo=0;
+	
+	int ret = initGame(map, game);
+
+	// set the correct alliance
+	gui.game.setAIFFA();
+}
+
+
+
 bool Engine::haveMap(const MapHeader& mapHeader)
 {
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
@@ -389,7 +405,7 @@ int Engine::run(void)
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"
 
-	
+		
 		doRunOnceAgain=false;
 		
 		if (gui.toLoadGameFileName[0])
@@ -412,7 +428,6 @@ int Engine::run(void)
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, 40);
-		
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
 	}
@@ -560,6 +575,56 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 	delete stream;
 	return gameHeader;
 
+}
+
+
+
+MapHeader Engine::chooseRandomMap()
+{
+	std::vector<std::string> maps;
+
+	std::string fullDir = "maps";
+
+	// we add the other files
+	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
+	{
+		const char* fileName;
+		while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
+		{
+			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
+			maps.push_back(fullFileName);
+		}
+	}
+	
+	int number = syncRand() % maps.size();
+	
+	return loadMapHeader(maps[number]);
+}
+
+
+
+GameHeader Engine::createRandomGame(int numberOfTeams)
+{
+	GameHeader gameHeader;
+	int count = 0;
+	for (int i=0; i<numberOfTeams+1; i++)
+	{
+		int teamColor=(i % numberOfTeams);
+		if (i==0)
+		{
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+		}
+		else
+		{
+			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
+			FormatableString name("%0 %1");
+			name.arg(AI::getAIText(iid)).arg(i-1);
+			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+		}
+		count+=1;
+	}
+	gameHeader.setNumberOfPlayers(count);
+	return gameHeader;
 }
 
 

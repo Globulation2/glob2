@@ -127,132 +127,22 @@ int Glob2::runNoX()
 	return 0;
 }
 
-int Glob2::runHostServer()
+
+
+int Glob2::runTestGames()
 {
-/*
-	if (verbose)
-		std::cout << "Glob2::runHostServer():connecting to YOG as %s" << globalContainer->getUsername() << std::endl;
-	yog->enableConnection(globalContainer->hostServerUserName, globalContainer->hostServerPassWord, false);
-	
-	while(yog->yogGlobalState==YOG::YGS_CONNECTING)
+	globalContainer->runNoXCountSteps=90000;
+	globalContainer->runNoX=true;
+	while(true)
 	{
-		yog->step();
-		SDL_Delay(40);
+		Engine engine;
+		engine.createRandomGame();
+		engine.run();
 	}
-	if (yog->yogGlobalState<YOG::YGS_CONNECTED)
-	{
-		printf("Glob2::failed to connect to YOG!.\n");
-		return 1;
-	}
-	
-	SessionInfo sessionInfo;
-	
-	char *mapName=globalContainer->hostServerMapName;
-	
-	if (verbose)
-		printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
-	if (stream->isEndOfStream())
-	{
-		std::cerr << "Glob2::runHostServer() : error, can't open map " << mapName << std::endl;
-		delete stream;
-		return 1;
-	}
-	else
-	{
-		bool validSessionInfo = sessionInfo.load(stream);
-		delete stream;
-		if (!validSessionInfo)
-		{
-			printf("Glob2::runHostServer():Warning, Error during map load.\n");
-			return 1;
-		}
-	}
-
-	printf("Glob2::runHostServer():sharing the game...\n");
-	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
-	// TODO : let the user choose the name of the shared game
-	yog->shareGame(sessionInfo.getMapNameC());
-	
-	Uint32 frameStartTime;
-	Sint32 frameWaitTime;
-	Sint32 stepLength=50;
-	
-	bool running=true;
-	char s[32];
-	while (running)
-	{
-		// get first timer
-		frameStartTime=SDL_GetTicks();
-		
-		multiplayersHost->onTimer(frameStartTime, NULL);
-		
-		fd_set rfds;
-		struct timeval tv;
-		int retval;
-		
-		// Watch stdin (fd 0) to see when it has input.
-		FD_ZERO(&rfds);
-		FD_SET(0, &rfds);
-		// Wait up to one second.
-		tv.tv_sec = 0;
-		tv.tv_usec = 0;
-		
-		retval = select(1, &rfds, NULL, NULL, &tv);
-		// Don't rely on the value of tv now!
-		
-		if (retval)
-		{
-			fgets(s, 32, stdin);
-			size_t l=strlen(s);
-			if ((l>1)&&(s[l-1]=='\n'))
-				s[l-1]=0;
-			
-			if (strncmp(s, "start", 5)==0)
-			{
-				multiplayersHost->startGame();
-			}
-			else if ((strncmp(s, "quit", 4)==0) || (strncmp(s, "exit", 4)==0) || (strncmp(s, "bye", 4)==0))
-			{
-				multiplayersHost->stopHosting();
-				running=false;
-			}
-			else
-				printf("Glob2::runHostServer():not understood (%s).\n", s);
-		}
-		
-		if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
-		{
-			printf("Glob2::runHostServer():state high enough.\n");
-			running=false;
-		}
-
-		frameWaitTime=SDL_GetTicks()-frameStartTime;
-		frameWaitTime=stepLength-frameWaitTime;
-		if (frameWaitTime>0)
-			SDL_Delay(frameWaitTime);
-	}
-
-	yog->unshareGame();
-
-	delete multiplayersHost;
-
-	if (verbose)
-		printf("Glob2::runHostServer(): disconnecting YOG.\n");
-
-	yog->deconnect();
-	while(yog->yogGlobalState==YOG::YGS_DECONNECTING)
-	{
-		yog->step();
-		SDL_Delay(50);
-	}
-
-	if (verbose)
-		printf("Glob2::runHostServer():end.\n");
-
 	return 0;
-	*/
 }
+
+
 
 int Glob2::run(int argc, char *argv[])
 {
@@ -287,6 +177,14 @@ int Glob2::run(int argc, char *argv[])
 		YOGServer server(YOGRequirePassword, YOGMultipleGames);
 		int rc = server.run();
 		return rc;	
+	}
+	
+	
+	if (globalContainer->runTestGames)
+	{
+		int ret=runTestGames();
+		delete globalContainer;
+		return ret;
 	}
 	
 	
