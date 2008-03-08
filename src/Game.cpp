@@ -794,6 +794,23 @@ void Game::setAIAlliance(void)
 	}
 }
 
+
+
+void Game::setAIFFA(void)
+{
+	// free for all on AI side
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+	{
+		if (teams[i]->type == BaseTeam::T_AI)
+		{
+			teams[i]->allies = teams[i]->me;
+			teams[i]->enemies = ~teams[i]->allies;
+		}
+	}
+}
+
+
+
 bool Game::load(GAGCore::InputStream *stream)
 {
 	assert(stream);

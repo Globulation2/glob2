@@ -32,7 +32,8 @@ public:
 	void drawYOGSplashScreen();
 	void mutiplayerYOG();
 	int runNoX();
-	int runHostServer(); //! run a text-only host server, without any graphical window.
+	///Runs random games non stop until the game crashes
+	int runTestGames();
 	int run(int argc, char *argv[]);
 };
 
