@@ -630,7 +630,7 @@ int NetTestSuite::testListenerConnection()
 	nl.startListening(7485);
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
-	nc_client.openConnection("127.0.0.1", YOG_SERVER_PORT+1);
+	nc_client.openConnection("127.0.0.1", 7485);
 	//Give it time to proccess the request
 	SDL_Delay(40);
 	//The server connection
