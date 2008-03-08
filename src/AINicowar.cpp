@@ -1664,11 +1664,14 @@ void NewNicowar::control_attacks(Echo& echo)
 	
 	for(int i=0; i<attack_flags.size(); ++i)
 	{
-		Building* b = echo.get_building_register().get_building(attack_flags[i]);
-		if(b && (num_pool && b->locked[true]) || (num_pool==0 && b->locked[false]))
+		if(echo.get_building_register().is_building_found(attack_flags[i]))
 		{
-			ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
-			echo.add_management_order(mo_destroy);
+			Building* b = echo.get_building_register().get_building(attack_flags[i]);
+			if(b && (num_pool && b->locked[true]) || (num_pool==0 && b->locked[false]))
+			{
+				ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
+				echo.add_management_order(mo_destroy);
+			}
 		}
 	}
 }
