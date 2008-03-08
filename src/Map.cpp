@@ -3002,10 +3002,11 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	
 	int centerg=miniGrad[2+2*5];
 	centerg=(centerg<<8)|centerg;
-	int maxg=centerg;
+	int maxg=0;
 	int maxd=8;
 	bool good=false;
 	if (strict)
+	{
 		for (int d=0; d<8; d++)
 		{
 			int g=maxs[d];
@@ -3017,7 +3018,9 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 				maxd=d;
 			}
 		}
+	}
 	else
+	{
 		for (int d=0; d<8; d++)
 		{
 			int g=maxs[d];
@@ -3029,6 +3032,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 				maxd=d;
 			}
 		}
+	}
 	
 	if (verbose)
 	{
