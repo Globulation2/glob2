@@ -115,7 +115,7 @@ void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 			{
 					boost::shared_ptr<FCTUpdateCompletionPercent> info = static_pointer_cast<FCTUpdateCompletionPercent>(message);
 					std::stringstream s;
-					s<<std::setprecision(2)<<(info->getPercent() * 100.0)<<"%"<<std::endl;
+					s<<std::setprecision(3)<<(info->getPercent() * 100.0)<<"%"<<std::endl;
 					percentDone->setText(s.str());
 			}
 			break;

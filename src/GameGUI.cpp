@@ -816,6 +816,16 @@ void GameGUI::processEvent(SDL_Event *event)
 	if (event->type == SDL_KEYDOWN)
 		handleKeyDump(event->key);
 	
+	
+	if (event->type==SDL_MOUSEBUTTONUP)
+	{
+		int button=event->button.button;
+		if (button==SDL_BUTTON_MIDDLE)
+		{
+			panPushed=false;
+		}
+	}
+	
 	// if there is a menu he get events first
 	if (inGameMenu)
 	{

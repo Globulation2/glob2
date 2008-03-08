@@ -44,8 +44,8 @@ Settings::Settings()
 	username=newUsername;
 
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
-	screenWidth = 640;
-	screenHeight = 480;
+	screenWidth = 800;
+	screenHeight = 600;
 	optionFlags = 0;
 	defaultLanguage = 0;
 	musicVolume = 255;
