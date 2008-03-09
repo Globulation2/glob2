@@ -2,7 +2,8 @@ import os
 
 def create_dmg( target, source, env) :
 	volume = str(target[0]).replace('.dmg', '')
-
+#really need to rewrite this later to use the variables and not be hardcoded
+	os.system( "rm Glob2-0.9.3.dmg" )
 	os.system( "rm -rf DMG" )
 	os.system( "mkdir DMG" )
 	os.system( "cp -r %s DMG"%source )

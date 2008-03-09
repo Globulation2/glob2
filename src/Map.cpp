@@ -100,6 +100,9 @@ Map::Map()
 		{
 			forbiddenGradient[t][s] = NULL;
 			guardAreasGradient[t][s] = NULL;
+			clearAreasGradient[t][s] = NULL;
+			guardGradientUpdated[t][s] = false;
+			clearGradientUpdated[t][s] = false;
 		}
 	for (int t = 0; t < 32; t++)
 		exploredArea[t] = NULL;
@@ -265,6 +268,12 @@ void Map::clear()
 					assert(guardAreasGradient[t][s]);
 					delete[] guardAreasGradient[t][s];
 					guardAreasGradient[t][s] = NULL;
+					assert(clearAreasGradient[t][s]);
+					delete[] clearAreasGradient[t][s];
+					clearAreasGradient[t][s] = NULL;
+					
+					guardGradientUpdated[t][s] = false;
+					clearGradientUpdated[t][s] = false;
 				}
 		
 		for (int t=0; t<32; t++)
@@ -305,6 +314,7 @@ void Map::clear()
 			{
 				assert(forbiddenGradient[t][s] == NULL);
 				assert(guardAreasGradient[t][s] == NULL);
+				assert(clearAreasGradient[t][s] == NULL);
 			}
 		for (int t=0; t<32; t++)
 			assert(exploredArea[t] == NULL);
@@ -1117,9 +1127,17 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 				assert(forbiddenGradient[t][s] == NULL);
 				forbiddenGradient[t][s] = new Uint8[size];
 				updateForbiddenGradient(t, s);
+				
 				assert(guardAreasGradient[t][s] == NULL);
 				guardAreasGradient[t][s] = new Uint8[size];
 				updateGuardAreasGradient(t, s);
+			
+				assert(clearAreasGradient[t][s] == NULL);
+				clearAreasGradient[t][s] = new Uint8[size];
+				updateClearAreasGradient(t, s);
+				
+				guardGradientUpdated[t][s] = false;
+				clearGradientUpdated[t][s] = false;
 			}
 		for (int t=0; t<header.getNumberOfTeams(); t++)
 		{
@@ -1277,6 +1295,9 @@ void Map::addTeam(void)
 		assert(guardAreasGradient[t][s] == NULL);
 		guardAreasGradient[t][s] = new Uint8[size];
 		updateGuardAreasGradient(t, s);
+		assert(clearAreasGradient[t][s] == NULL);
+		clearAreasGradient[t][s] = new Uint8[size];
+		updateClearAreasGradient(t, s);
 	}
 	
 	assert(exploredArea[t] == NULL);
@@ -1317,6 +1338,9 @@ void Map::removeTeam(void)
 		assert(guardAreasGradient[t][s] != NULL);
 		delete[] guardAreasGradient[t][s];
 		guardAreasGradient[t][s]=NULL;
+		assert(clearAreasGradient[t][s] != NULL);
+		delete[] clearAreasGradient[t][s];
+		clearAreasGradient[t][s]=NULL;
 	}
 
 	
@@ -1415,9 +1439,33 @@ void Map::syncStep(Uint32 stepCounter)
 						return;
 					}
 		for (int t=0; t<numberOfTeam; t++)
+			for(int s=0; s<2; s++)
+				if(!guardGradientUpdated[t][s])
+				{
+					updateGuardAreasGradient(t, (bool)s);
+					guardGradientUpdated[t][s]=true;
+					return;
+				}
+		for (int t=0; t<numberOfTeam; t++)
+			for(int s=0; s<2; s++)
+				if(!clearGradientUpdated[t][s])
+				{
+					updateClearAreasGradient(t, (bool)s);
+					clearGradientUpdated[t][s]=true;
+					return;
+				}
+				
+
+		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
 					gradientUpdated[t][r][s]=false;
+		for (int t=0; t<numberOfTeam; t++)
+			for(int s=0; s<2; s++)
+			{
+				guardGradientUpdated[t][s]=false;
+				clearGradientUpdated[t][s]=false;
+			}
 	}
 }
 
@@ -2846,6 +2894,11 @@ template<typename Tint> void Map::updateGlobalGradient(
 			break;
 			
 			case GT_GUARD_AREA:
+				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+				// fastest one here
+			break;
+			
+			case GT_CLEAR_AREA:
 				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 				// fastest one here
 			break;
@@ -4583,6 +4636,44 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	return found;
 }
 
+
+
+bool Map::pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+{
+	Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
+	Uint8 max = gradient[x + (y<<wDec)];
+	if (max == 255)
+		return false; // we already are in an area.
+	if (max < 2)
+		return false; // any existing area are too far away.
+	bool found = false;
+	
+	// we look around us, searching for a usable position with a bigger gradient value 
+	for (int di=0; di<8; di++)
+	{
+		int ddx = deltaOne[di][0];
+		int ddy = deltaOne[di][1];
+		int xg = (x+ddx) & wMask;
+		int yg = (y+ddy) & hMask;
+		Uint8 g = gradient[xg+(yg<<wDec)];
+		if (g>max && isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
+		{
+			max = g;
+			*dx = ddx;
+			*dy = ddy;
+			found = true;
+		}
+	}
+	
+	// we are in a blocked situation, so we have to regenerate the forbidden gradient
+	if (!found)
+		updateClearAreasGradient(teamNumber, canSwim);
+	
+	return found;
+}
+
+
+
 void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 {
 	if (size <= 65536)
@@ -4823,6 +4914,62 @@ void Map::updateGuardAreasGradient()
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateGuardAreasGradient(i);
 }
+
+void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
+{
+	if (size <= 65536)
+		updateClearAreasGradient<Uint16>(teamNumber, canSwim);
+	else
+		updateClearAreasGradient<Uint32>(teamNumber, canSwim);
+}
+
+template<typename Tint> void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
+{
+	Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
+	assert(gradient);
+	Tint *listedAddr = new Tint[size];
+	size_t listCountWrite = 0;
+	
+	// We set the obstacle and free places
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	for (size_t i=0; i<size; i++)
+	{
+		const Case& c=cases[i];
+		
+		if(c.clearArea & teamMask && c.ressource.type != NO_RES_TYPE)
+		{
+			gradient[i] = 255;
+			listedAddr[listCountWrite++] = i;
+		}
+		else if (c.forbidden & teamMask)
+			gradient[i] = 0;
+		else if (c.ressource.type != NO_RES_TYPE)
+			gradient[i] = 0;
+		else if (c.building != NOGBID)
+			gradient[i] = 0;
+		else if (!canSwim && isWater(i))
+			gradient[i] = 0;
+		else
+			gradient[i] = 1;
+	}
+	
+	// Then we propagate the gradient
+	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_CLEAR_AREA, canSwim);
+	delete[] listedAddr;
+}
+
+void Map::updateClearAreasGradient(int teamNumber)
+{
+	for (int i=0; i<2; i++)
+		updateClearAreasGradient(teamNumber, i);
+}
+
+void Map::updateClearAreasGradient()
+{
+	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
+		updateClearAreasGradient(i);
+}
+
 
 void Map::initExploredArea(int teamNumber)
 {
