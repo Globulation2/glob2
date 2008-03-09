@@ -315,7 +315,7 @@ int Engine::run(void)
 					if(!net->matchCheckSums())
 					{	
 						std::cout<<"Game desychronized."<<std::endl;
-						gui.game.dumpAllData("glob2.world-desynchronization.dump2.txt");
+						gui.game.dumpAllData("glob2.world-desynchronization.dump.txt");
 						assert(false);
 					}
 					else
