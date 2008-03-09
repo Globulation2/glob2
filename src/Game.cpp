@@ -501,6 +501,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				assert(false);
 			map.updateForbiddenGradient(oaa->teamNumber);
 			map.updateGuardAreasGradient(oaa->teamNumber);
+			map.updateClearAreasGradient(oaa->teamNumber);
 		}
 		break;
 		case ORDER_ALTERATE_GUARD_AREA:
@@ -594,6 +595,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			}
 			else
 				assert(false);
+			map.updateClearAreasGradient(oaa->teamNumber);
 		}
 		break;
 		case ORDER_MODIFY_SWARM:

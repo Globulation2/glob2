@@ -523,7 +523,8 @@ public:
 		GT_BUILDING = 2,
 		GT_FORBIDDEN = 3,
 		GT_GUARD_AREA = 4,
-		GT_SIZE = 5
+		GT_CLEAR_AREA=5,
+		GT_SIZE = 6
 	};
 	
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
@@ -576,6 +577,8 @@ public:
 	bool pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
 	//! Find the best direction toward gaurd area, return true if one has been found, false otherwise
 	bool pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	//! Find the best direction toward clearing area, return true if one has been found, false otherwise
+	bool pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
 	template<typename Tint> void updateForbiddenGradient(int teamNumber, bool canSwim);
@@ -586,6 +589,11 @@ public:
 	template<typename Tint> void updateGuardAreasGradient(int teamNumber, bool canSwim);
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
+	//! Update the clear area gradient
+	void updateClearAreasGradient(int teamNumber, bool canSwim);
+	template<typename Tint> void updateClearAreasGradient(int teamNumber, bool canSwim);
+	void updateClearAreasGradient(int teamNumber);
+	void updateClearAreasGradient();
 	
 	void initExploredArea(int teamNumber);
 	void makeDiscoveredAreasExplored(int teamNumber);
@@ -717,9 +725,13 @@ public:
 	//[int team][bool unitCanSwim]
 	Uint8 *forbiddenGradient[32][2];
 	
-	// Used to attrack idle warriors into guard areas
+	// Used to attract idle warriors into guard areas
 	//[int team][bool unitCanSwim]
 	Uint8 *guardAreasGradient[32][2];
+	
+	// Used to attract idle workers into clearing
+	// areas that aren't clear
+	Uint8 *clearAreasGradient[32][2];
 	
 	// Used to guide explorers
 	//[int team]
@@ -729,6 +741,11 @@ public:
 protected:
 	//Used for scheduling computation time.
 	bool gradientUpdated[32][MAX_NB_RESSOURCES][2];
+	//Used for scheduling computation time on the guard area gradients
+	bool guardGradientUpdated[32][2];
+	//Used for scheduling computation time on the clear area gradients
+	bool clearGradientUpdated[32][2];
+	
 	Uint8 *undermap;
 	Uint8 **listedAddr;
 	size_t size;

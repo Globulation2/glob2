@@ -17,17 +17,16 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-    	opts.Add(PathOption("INSTALLDIR", "Installation Directory", "/Applications"))
+    	opts.Add(PathOption("INSTALLDIR", "Installation Directory", "./"))
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add(BoolOption("release", "Build for release", 0))
-    opts.Add(BoolOption("profile", 'Build with profiling on', 0))
+    opts.Add(BoolOption("profile", "Build with profiling on", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
-    opts.Add(BoolOption("osx", "Build for OSX", 0))
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
-    opts.Save('options_cache.py', env)
+    opts.Save("options_cache.py", env)
     
     
 class Configuration:
@@ -63,91 +62,94 @@ def configure(env):
 
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
     #Simple checks for required libraries
-    if not conf.CheckLib('SDL'):
+    if not conf.CheckLib("SDL"):
         print "Could not find libSDL"
         Exit(1)
-    if not conf.CheckLib('SDL_ttf'):
+    if not conf.CheckLib("SDL_ttf"):
         print "Could not find libSDL_ttf"
         Exit(1)
-    if not conf.CheckLib('SDL_image'):
+    if not conf.CheckLib("SDL_image"):
         print "Could not find libSDL_image"
         Exit(1)
-    if not conf.CheckLib('SDL_net'):
+    if not conf.CheckLib("SDL_net"):
         print "Could not find libSDL_net"
         Exit(1)
-    if not conf.CheckLib('speex') or not conf.CheckCXXHeader('speex/speex.h'):
+    if not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h"):
         print "Could not find libspeex or could not find 'speex/speex.h'"
         Exit(1)
-    if not conf.CheckLib('vorbisfile'):
-        print "Could not find libvorbisfile to link against"
+    if not conf.CheckLib("vorbisfile"):
+        print "Could not find libvorbisfile"
         Exit(1)
-    if not conf.CheckCXXHeader('zlib.h'):
+    if not conf.CheckCXXHeader("zlib.h"):
         print "Could not find zlib.h"
         Exit(1)
     else:
-        if conf.CheckLib('z'):
+        if conf.CheckLib("z"):
             env.Append(LIBS="z")
-        elif conf.CheckLib('zlib1'):
+        elif conf.CheckLib("zlib1"):
             env.Append(LIBS="zlib1")
         else:
-            print "Coulf not find libz or zlib1.dll"
+            print "Could not find libz or zlib1.dll"
             Exit(1)
 
     boost_thread = ''
-    if conf.CheckLib('boost_thread') and conf.CheckCXXHeader('boost/thread/thread.hpp'):
-        boost_thread='boost_thread'
-    elif conf.CheckLib('boost_thread-mt') and conf.CheckCXXHeader('boost/thread/thread.hpp'):
-        boost_thread='boost_thread-mt'
+    if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
+        boost_thread="boost_thread"
+    elif conf.CheckLib("boost_thread-mt") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
+        boost_thread="boost_thread-mt"
     else:
         print "Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp"
         Exit(1)
     env.Append(LIBS=[boost_thread])
     
 
-    if not conf.CheckCXXHeader('boost/shared_ptr.hpp'):
+    if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
         print "Could not find boost/shared_ptr.hpp"
         Exit(1)
-    if not conf.CheckCXXHeader('boost/tuple/tuple.hpp'):
+    if not conf.CheckCXXHeader("boost/tuple/tuple.hpp"):
         print "Could not find boost/tuple/tuple.hpp"
         Exit(1)
-    if not conf.CheckCXXHeader('boost/tuple/tuple_comparison.hpp'):
+    if not conf.CheckCXXHeader("boost/tuple/tuple_comparison.hpp"):
         print "Could not find boost/tuple/tuple_comparison.hpp"
         Exit(1)
-    if not conf.CheckCXXHeader('boost/logic/tribool.hpp'):
+    if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
         print "Could not find boost/logic/tribool.hpp"
         Exit(1)
-    if not conf.CheckCXXHeader('boost/lexical_cast.hpp'):
+    if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
         print "Could not find boost/lexical_cast.hpp"
         Exit(1)
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
-    if conf.CheckLib('GL') and conf.CheckCXXHeader('GL/gl.h'):
+    if isDarwinPlatform:
+    	print "Using Apple's OpenGL framework"
+    	env.Append(FRAMEWORKS="OpenGL")
+    elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
         gl_libraries.append("GL")
-    elif conf.CheckLib('GL') and conf.CheckCXXHeader('OpenGL/gl.h'):
+    elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h"):
         gl_libraries.append("GL")
-    elif conf.CheckLib('opengl32') and conf.CheckCXXHeader('GL/gl.h'):
+    elif conf.CheckLib("opengl32") and conf.CheckCXXHeader("GL/gl.h"):
         gl_libraries.append("opengl32")
-    elif isDarwinPlatform:
-    	print "Using Apple's OpenGL framework system"
+
     else:
         print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
         Exit(1)
 
     #Do checks for GLU, which is different on every system
-    if conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h"):
+    if isDarwinPlatform:
+    	print "Using Apple's GLUT framework"
+    	env.Append(FRAMEWORKS="GLUT")
+    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h"):
         gl_libraries.append("GLU")
     elif conf.CheckLib('GLU') and conf.CheckCXXHeader("OpenGL/glu.h"):
         gl_libraries.append("GLU")
     elif conf.CheckLib('glu32') and conf.CheckCXXHeader('GL/glu.h'):
         gl_libraries.append("glu32")
-    elif isDarwinPlatform:
-    	print "Using Apple's OpenGL framework system"
     else:
         print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
         Exit(1)
     
-    if gl_libraries:
+    if gl_libraries or isDarwinPlatform:
         configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
         env.Append(LIBS=gl_libraries)
     
@@ -186,8 +188,6 @@ def main():
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
-    if isDarwinPlatform:
-        env.Append(CXXFLAGS=" -framework OpenGL ")
     env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
@@ -211,22 +211,22 @@ def main():
               
     PackTar(env["TARFILE"], Split("AUTHORS COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
-    if isDarwinPlatform and env['dist']:
+    if isDarwinPlatform and env["release"]:
 		bundle.generate(env)
 		dmg.generate(env)
 		env.Replace( 
-			BUNDLE_NAME='Glob2', 
-			BUNDLE_BINARIES=['src/glob2'],
-			BUNDLE_RESOURCEDIRS=['data','maps', 'campaigns'],
-			BUNDLE_PLIST='darwin/Info.plist',
-			BUNDLE_ICON='darwin/Glob2.icns' )
+			BUNDLE_NAME="Glob2", 
+			BUNDLE_BINARIES=["src/glob2"],
+			BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
+			BUNDLE_PLIST="darwin/Info.plist",
+			BUNDLE_ICON="darwin/Glob2.icns" )
 		bundle.createBundle(os.getcwd(), os.getcwd(), env)
-		dmg.create_dmg("Glob2-%s"%env['VERSION'],"%s.app"%env['BUNDLE_NAME'],env)
+		dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
 		 
 		#TODO mac_bundle should be dependency of Dmg:	
 		arch = os.popen("uname -p").read().strip()
 #		mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
-#		env.Alias('package', mac_packages)
+#		env.Alias("package", mac_packages)
 
     Export('env')
     Export('PackTar')

@@ -368,10 +368,10 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 		buildings_under_construction-=1;
 		buildings_under_construction_per_type[placement_num]-=1;
 	}
-	if(message.substr(0,21) == "update clearing zone ")
+	if(message.substr(0,22) == "update clearing zone1 ")
 	{
 		MapInfo mi(echo);
-		int id=boost::lexical_cast<int>(message.substr(21, message.size()-1));
+		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
 		Building* b = echo.get_building_register().get_building(id);		
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
@@ -385,6 +385,25 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 					mo_clearing->add_location(b->posX+nx, b->posY+ny);
 					mo_remove_clearing->add_location(b->posX+nx, b->posY+ny);
 				}
+			}
+		}
+		echo.add_management_order(mo_clearing);
+		echo.add_management_order(mo_remove_clearing);
+	}
+	if(message.substr(0,22) == "update clearing zone2 ")
+	{
+		MapInfo mi(echo);
+		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
+		Building* b = echo.get_building_register().get_building(id);		
+		AddArea* mo_clearing=new AddArea(ClearingArea);
+		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
+		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
+		for(int nx=-1; nx<b->type->width+1; ++nx)
+		{
+			for(int ny=-1; ny<b->type->height+1; ++ny)
+			{
+				mo_clearing->add_location(b->posX+nx, b->posY+ny);
+				mo_remove_clearing->add_location(b->posX+nx, b->posY+ny);
 			}
 		}
 		echo.add_management_order(mo_clearing);
@@ -900,10 +919,18 @@ void NewNicowar::order_buildings(Echo& echo)
 		                             new ParticularBuilding(new NotUnderConstruction, id),
 		                             new BuildingDestroyed(id)));
 		echo.add_management_order(mo_completion_message);
-		
-		ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone "+boost::lexical_cast<std::string>(int(id)));
-		mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
-		echo.add_management_order(mo_construction_completion_message);
+		if(b == RegularInn || b==RegularSwarm)
+		{		
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone1 "+boost::lexical_cast<std::string>(int(id)));
+			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_construction_completion_message);
+		}
+		else
+		{
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone2 "+boost::lexical_cast<std::string>(int(id)));
+			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_construction_completion_message);
+		}
 	}
 }
 
