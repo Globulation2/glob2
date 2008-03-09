@@ -137,7 +137,7 @@ def configure(env):
 
     #Do checks for GLU, which is different on every system
     if isDarwinPlatform:
-    	print "Using Apple's GLUT framework\"
+    	print "Using Apple's GLUT framework"
     	env.Append(FRAMEWORKS="GLUT")
     elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h"):
         gl_libraries.append("GLU")

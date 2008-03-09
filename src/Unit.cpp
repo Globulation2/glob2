@@ -1767,6 +1767,14 @@ void Unit::handleMovement(void)
 				}
 				movement=MOV_GOING_DXDY;
 			}
+			else if(owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+			{
+				//Find clearing ressource
+				directionFromDxDy();
+				movement = MOV_GOING_DXDY;
+				owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
+				validTarget=true;
+			}
 			else
 				movement=MOV_RANDOM_GROUND;
 		}
