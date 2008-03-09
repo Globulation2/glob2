@@ -427,56 +427,54 @@ bool Story::testCondition(GameGUI *gui)
 						break;
 					}
 				}
-						//There isn't a map script area with the same name, try the old map scripts
-						if(areaN==-1)
-						{
-
-
-				AreaMap::const_iterator fi;
-				if ((fi = mapscript->areas.find(areaName)) != mapscript->areas.end())
+				//There isn't a map script area with the same name, try the old map scripts
+				if(areaN==-1)
 				{
-					int number = globulesAmount;
-					int maxTest = number * 3;
-
-					while ((number>0) && (maxTest>0))
+					AreaMap::const_iterator fi;
+					if ((fi = mapscript->areas.find(areaName)) != mapscript->areas.end())
 					{
-						int x = fi->second.x;
-						int y = fi->second.y;
-						int r = fi->second.r;
-						int dx=(syncRand()%(2*r))+1;
-						int dy=(syncRand()%(2*r))+1;
-						dx-=r;
-						dy-=r;
+						int number = globulesAmount;
+						int maxTest = number * 3;
 
-						if (dx*dx+dy*dy<r*r)
+						while ((number>0) && (maxTest>0))
 						{
-							if (game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
-							{
-								number --;
-							}
-						}
+							int x = fi->second.x;
+							int y = fi->second.y;
+							int r = fi->second.r;
+							int dx=(syncRand()%(2*r))+1;
+							int dy=(syncRand()%(2*r))+1;
+							dx-=r;
+							dy-=r;
 
-						maxTest--;
-					}
-				}
-											for(int x=0; x<game->map.getW() && !foundUnit; ++x)
+							if (dx*dx+dy*dy<r*r)
 							{
-								for(int y=0; y<game->map.getH() && !foundUnit; ++y)
+								if (game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
 								{
-									if(game->map.isPointSet(areaN, x, y))
-									{
-										Uint16 gid=game->map.getGroundUnit(x, y);
-										if (gid!=NOGUID)
-										{
-											int team=Unit::GIDtoTeam(gid);
-											if ((1<<team) & teamsToTestMask)
-											{
-												foundUnit = true;
-											}
-										}
-									}
+									number --;
 								}
 							}
+
+							maxTest--;
+						}
+					}
+				}
+				else
+				{
+					int number = globulesAmount;
+					for(int x=0; x<game->map.getW() && number; ++x)
+					{
+						for(int y=0; y<game->map.getH() && number; ++y)
+						{
+							if(game->map.isPointSet(areaN, x, y))
+							{
+								if (game->addUnit(x, y, team, type, level, 0, 0, 0))
+								{
+									number --;
+								}
+							}
+						}
+					}
+				}
 				return true;
 			}
 
@@ -1311,7 +1309,20 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (areas.find(donnees->getToken()->msg) == areas.end())
+					
+					std::string areaName=donnees->getToken()->msg;
+					int areaN=-1;
+					//Check if there is a script area in the map with the same name
+					for(int n=0; n<9; ++n)
+					{
+						if(game->map.getAreaName(n)==areaName)
+						{
+							areaN=n;
+							break;
+						}
+					}
+					
+					if (areaN == -1 && areas.find(areaName) == areas.end())
 					{
 						er.type=ErrorReport::ET_UNDEFINED_AREA_NAME;
 						break;
