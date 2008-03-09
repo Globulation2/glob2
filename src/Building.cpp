@@ -2088,6 +2088,7 @@ void Building::kill(void)
 		owner->dirtyGlobalGradient();
 		owner->map->updateForbiddenGradient(owner->teamNumber);
 		owner->map->updateGuardAreasGradient(owner->teamNumber);
+		owner->map->updateClearAreasGradient(owner->teamNumber);
 		if (type->isBuildingSite && type->level==0)
 		{
 			bool good=false;
