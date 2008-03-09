@@ -970,8 +970,18 @@ bool Game::load(GAGCore::InputStream *stream)
 	///compute it now
 	if(mapHeader.getVersionMinor() < 63)
 	{
-		FertilityCalculatorDialog dialog(globalContainer->gfx, map);
-		dialog.execute();
+	    if(globalContainer->runNoX)
+	    {
+    	    std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
+    	    boost::recursive_mutex incomingMutex;
+    	    FertilityCalculatorThread calculator(map, incoming, incomingMutex);
+    	    calculator();
+	    }
+	    else
+	    {
+    		FertilityCalculatorDialog dialog(globalContainer->gfx, map);
+	    	dialog.execute();
+	    }
 	}
 	
 	return true;
