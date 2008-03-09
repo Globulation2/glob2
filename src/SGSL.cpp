@@ -416,6 +416,21 @@ bool Story::testCondition(GameGUI *gui)
 				int type = line[++lineSelector].type - Token::S_WORKER;
 				int level = line[++lineSelector].value;
 				int team = line[++lineSelector].value;
+				
+				int areaN=-1;
+				//First, check if there is a script area in the map with the same name
+				for(int n=0; n<9; ++n)
+				{
+					if(game->map.getAreaName(n)==areaName)
+					{
+						areaN=n;
+						break;
+					}
+				}
+						//There isn't a map script area with the same name, try the old map scripts
+						if(areaN==-1)
+						{
+
 
 				AreaMap::const_iterator fi;
 				if ((fi = mapscript->areas.find(areaName)) != mapscript->areas.end())
@@ -444,6 +459,24 @@ bool Story::testCondition(GameGUI *gui)
 						maxTest--;
 					}
 				}
+											for(int x=0; x<game->map.getW() && !foundUnit; ++x)
+							{
+								for(int y=0; y<game->map.getH() && !foundUnit; ++y)
+								{
+									if(game->map.isPointSet(areaN, x, y))
+									{
+										Uint16 gid=game->map.getGroundUnit(x, y);
+										if (gid!=NOGUID)
+										{
+											int team=Unit::GIDtoTeam(gid);
+											if ((1<<team) & teamsToTestMask)
+											{
+												foundUnit = true;
+											}
+										}
+									}
+								}
+							}
 				return true;
 			}
 
