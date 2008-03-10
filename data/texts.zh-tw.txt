@@ -80,6 +80,8 @@ AIWarrush
 正等待的玩家
 [away:]
 離至:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

@@ -80,6 +80,8 @@ ok
 Ожидание игроков
 [away:]
 отсутствует:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

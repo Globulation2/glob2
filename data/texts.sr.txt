@@ -80,6 +80,8 @@ AIWarrush
 Чекам играче
 [away:]
 одсутан:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

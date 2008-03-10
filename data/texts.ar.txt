@@ -80,6 +80,8 @@ Available local games
 انتظار لاعبون
 [away:]
 بعيدا:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

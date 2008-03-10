@@ -39,6 +39,7 @@
 [available lan games]
 [awaiting players]
 [away:]
+[Back]
 [backspace]
 [bad error in connection system]
 [barracks explanation 2]

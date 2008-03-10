@@ -80,6 +80,8 @@ Elérhető hálózati játékok
 Játékosokra várva
 [away:]
 távol van:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

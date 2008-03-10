@@ -80,6 +80,8 @@ jocs LAN disponibles
 Esperant als jugadors
 [away:]
 ausent:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

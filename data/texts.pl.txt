@@ -80,6 +80,8 @@ Dostępne gry sieciowe
 Oczekuj graczy
 [away:]
 zajęty:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

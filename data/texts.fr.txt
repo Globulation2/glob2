@@ -80,6 +80,8 @@ Parties locales disponibles
 En attente des joueurs
 [away:]
 absent:
+[Back]
+
 [backspace]
 retour arrière
 [bad error in connection system]

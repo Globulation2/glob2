@@ -80,6 +80,8 @@ Partida lokal eskuragarriak
 Jokalarien zai
 [away:]
 kanpoan:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

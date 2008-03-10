@@ -80,6 +80,8 @@ Dostupné lokálne hry
 Čaká sa na hráčov
 [away:]
 preč:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
