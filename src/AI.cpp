@@ -213,5 +213,9 @@ std::string AI::getAIText(int id)
 	{
 		return Toolkit::getStringTable()->getString("[AINicowar]");
 	}
+	else if(id == TOUBIB)
+	{
+		return Toolkit::getStringTable()->getString("[AIToubib]");
+	}
 	return "";
 }
