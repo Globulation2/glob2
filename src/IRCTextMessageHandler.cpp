@@ -51,7 +51,12 @@ IRCTextMessageHandler::~IRCTextMessageHandler()
 
 void IRCTextMessageHandler::startIRC(const std::string& username)
 {
-	boost::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, username, 6667));
+	std::string nusername = username;
+	while(nusername.find(" ") != std::string::npos)
+	{
+		nusername.replace(nusername.find(" "), 1, "_");
+	}
+	boost::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, nusername, 6667));
 	boost::shared_ptr<ITJoinChannel> message2(new ITJoinChannel(IRC_CHAN));
 
 	irc.sendMessage(message1);
