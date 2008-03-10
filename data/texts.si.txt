@@ -80,6 +80,8 @@ Razpoložljive omrežne igre
 Čakam igralce
 [away:]
 odsoden:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

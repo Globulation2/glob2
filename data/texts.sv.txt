@@ -80,6 +80,8 @@ Tillgängliga lokala spel
 Väntar på spelare
 [away:]
 borta:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

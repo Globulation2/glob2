@@ -20,9 +20,11 @@
 
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
+#include "CampaignMainMenu.h"
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
 #include "CreditScreen.h"
+#include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Game.h"
 #include "Glob2.h"
@@ -39,8 +41,8 @@
 #include <StringTable.h>
 #include "Utilities.h"
 #include "YOGClient.h"
-#include "YOGServer.h"
 #include "YOGLoginScreen.h"
+#include "YOGServer.h"
 
 
 #include <Stream.h>
@@ -159,19 +161,6 @@ int Glob2::run(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
-/*
-	yog=new YOG();
-	
-	// TODO : this structure is ugly, do we have to keep hostServer ?
-	if (globalContainer->hostServer)
-	{
-		int ret=runHostServer();
-		delete yog;
-		delete globalContainer;
-		return ret;
-	}
-	*/
-	
 	if (globalContainer->hostServer)
 	{
 		YOGServer server(YOGRequirePassword, YOGMultipleGames);
@@ -207,62 +196,9 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::CAMPAIGN:
 			{
-				CampaignChoiceScreen ccs;
+				CampaignMainMenu ccs;
 				int rccs=ccs.execute(globalContainer->gfx, 40);
-				if(rccs==CampaignChoiceScreen::NEWCAMPAIGN)
-				{
-					CampaignSelectorScreen css;
-					int rc_css=css.execute(globalContainer->gfx, 40);
-					if(rc_css==CampaignSelectorScreen::OK)
-					{
-						CampaignMenuScreen cms(css.getCampaignName());
-						cms.setNewCampaign();
-						int rc_cms=cms.execute(globalContainer->gfx, 40);
-						if(rc_cms==CampaignMenuScreen::EXIT)
-						{
-						}
-						else if(rc_cms == -1)
-						{
-							isRunning = false;
-						}
-					}
-					else if(rc_css==CampaignSelectorScreen::CANCEL)
-					{
-					}
-					else if(rc_css == -1)
-					{
-						isRunning = false;
-					}
-				}
-				else if(rccs==CampaignChoiceScreen::LOADCAMPAIGN)
-				{
-					CampaignSelectorScreen css(true);
-					int rc_css=css.execute(globalContainer->gfx, 40);
-					if(rc_css==CampaignSelectorScreen::OK)
-					{
-						CampaignMenuScreen cms(css.getCampaignName());
-						int rc_cms=cms.execute(globalContainer->gfx, 40);
-						if(rc_cms==CampaignMenuScreen::EXIT)
-						{
-						}
-						else if(rc_cms == -1)
-						{
-							isRunning = false;
-						}
-					}
-					else if(rc_css==CampaignSelectorScreen::CANCEL)
-					{
-					}
-					else if(rc_css == -1)
-					{
-						isRunning = false;
-					}
-				}
-				else if(rccs == CampaignChoiceScreen::CANCEL)
-				{
-				
-				}
-				else if(rccs == -1)
+				if(rccs == -1)
 				{
 					isRunning = false;
 				}
@@ -344,99 +280,12 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::EDITOR:
 			{
-				HowNewMapScreen howNewMapScreen;
-				int rc=howNewMapScreen.execute(globalContainer->gfx, 40);
-				if (rc==HowNewMapScreen::NEWMAP)
-				{
-					bool retryNewMapScreen=true;
-					while (retryNewMapScreen)
-					{
-						NewMapScreen newMapScreen;
-						int rc_nms = newMapScreen.execute(globalContainer->gfx, 40);
-						if (rc_nms==NewMapScreen::OK)
-						{
-							MapEdit mapEdit;
-							//mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
-							setRandomSyncRandSeed();
-							if (mapEdit.game.generateMap(newMapScreen.descriptor))
-							{
-								mapEdit.mapHasBeenModiffied(); // make all map as modified by default
-								if (mapEdit.run()==-1)
-									isRunning=false;
-								retryNewMapScreen=false;
-							}
-							else
-							{
-								//TODO: popup a widow to explain that the generateMap() has failed.
-								retryNewMapScreen=true;
-							}
-						}
-						else if(rc_nms == -1)
-						{
-							isRunning = false;
-							retryNewMapScreen=false;
-						}
-						else
-						{
-							retryNewMapScreen=false;
-						}
-					}
-				}
-				else if (rc==HowNewMapScreen::LOADMAP)
-				{
-					ChooseMapScreen chooseMapScreen("maps", "map", false, "games", "game", false);
-					int rc=chooseMapScreen.execute(globalContainer->gfx, 40);
-					if (rc==ChooseMapScreen::OK)
-					{
-						MapEdit mapEdit;
-						std::string filename = chooseMapScreen.getMapHeader().getFileName();
-						mapEdit.load(filename.c_str());
-						if (mapEdit.run()==-1)
-							isRunning=false;
-					}
-					else if (rc==-1)
-						isRunning=false;
-				}
-				else if (rc==HowNewMapScreen::NEWCAMPAIGN)
-				{
-					CampaignEditor ce("");
-					int rc=ce.execute(globalContainer->gfx, 40);
-					if(rc == -1)
-						isRunning=false;
-
-				}
-				else if (rc==HowNewMapScreen::LOADCAMPAIGN)
-				{
-					CampaignSelectorScreen css;
-					int rc_css=css.execute(globalContainer->gfx, 40);
-					if(rc_css==CampaignSelectorScreen::OK)
-					{
-						CampaignEditor ce(css.getCampaignName());
-						int rc_ce=ce.execute(globalContainer->gfx, 40);
-						if(rc_ce == -1)
-						{
-							isRunning=false;
-						}
-					}
-					else if(rc_css==CampaignSelectorScreen::CANCEL)
-					{
-					}
-					else if(rc_css == -1)
-					{
-						isRunning=false;
-					}
-				}
-				else if (rc==HowNewMapScreen::CANCEL)
-				{
-					// Let's sing.
-				}
-				else if (rc==-1)
+				EditorMainMenu editorMainMenu;
+				int rc=editorMainMenu.execute(globalContainer->gfx, 40);
+				if (rc==-1)
 				{
 					isRunning=false;
 				}
-				else
-					assert(false);
-
 			}
 			break;
 			case MainMenuScreen::CREDITS:

@@ -80,6 +80,8 @@ Juegos Locales Disponibles
 Esperando jugadores
 [away:]
 fuera:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

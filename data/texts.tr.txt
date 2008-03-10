@@ -80,6 +80,8 @@ Uygun yerel oyunlar
 Oyuncular bekleniyor
 [away:]
 uzakta:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

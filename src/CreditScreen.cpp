@@ -187,7 +187,7 @@ void ScrollingText::onTimer(Uint32 tick)
 
 CreditScreen::CreditScreen()
 {
-	addWidget(new TextButton(20, 20, 100,  40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 0, 27));
+	addWidget(new TextButton(20, 20, 100,  40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Back]"), 0, 27));
 	
 	addWidget(new ScrollingText(0, 0 , 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", "AUTHORS"));
 }

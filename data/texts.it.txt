@@ -80,6 +80,8 @@ iochi LAN diponibili
 In attesa di altri giocatori
 [away:]
 assente:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

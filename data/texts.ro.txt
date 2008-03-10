@@ -80,6 +80,8 @@ Jocuri locale disponibile
 În asteptare de jucători
 [away:]
 absent:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

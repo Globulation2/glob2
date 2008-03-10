@@ -80,6 +80,8 @@ Partidas LAN disponíveis
 Esperando jogadores
 [away:]
 ausente:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
