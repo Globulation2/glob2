@@ -1757,6 +1757,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
 
+	MapInfo mi(echo);
+
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyRessource);
@@ -1765,7 +1767,9 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
 		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
-		if(gradient.get_height(b->posX, b->posY) == -2)
+		int bx = (b->posX + mi.get_width()) % mi.get_width();
+		int by = (b->posY + mi.get_height()) % mi.get_height(); 
+		if(gradient.get_height(bx, by) == -2)
 			buildings_to_attack.push_back(*ebi);
 	}
 
@@ -1776,8 +1780,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX;
-	const int by=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY;
+	const int bx=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
+	const int by=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
 
 	AIEcho::Gradients::GradientInfo gi_pathfind;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
@@ -1785,7 +1789,6 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	Gradient& gradient_pathfind=echo.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible
-	MapInfo mi(echo);
 	int closest_x=0;
 	int closest_y=0;
 	int closest_distance=10000;
@@ -1826,6 +1829,9 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		int dy=(ypos+1+h) % h;
 		int uy=(ypos-1+h) % h;
 		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+2;
+
+		if(lowest_entity == 0)
+			break;
 
 		//Test diagnols first, then the horizontals and verticals.
 		if(gradient_pathfind.get_height(lx, uy) < lowest_entity && gradient_pathfind.get_height(lx, uy)>=0)
