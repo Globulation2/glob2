@@ -80,6 +80,8 @@ Available local games
 Awaiting players
 [away:]
 away:
+[Back]
+Back
 [backspace]
 backspace
 [bad error in connection system]

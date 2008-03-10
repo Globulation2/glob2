@@ -80,6 +80,8 @@ algae
 Αναμένοντας παίκτες
 [away:]
 εκτός:
+[Back]
+
 [backspace]
 backspace
 [bad error in connection system]

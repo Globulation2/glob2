@@ -80,6 +80,8 @@ Lokal verfügbare Spiele
 Warten auf Spieler
 [away:]
 weg:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

@@ -80,6 +80,8 @@ Tilgængelige lokale spil
 Venter på spillere
 [away:]
 er væk:
+[Back]
+
 [backspace]
 
 [bad error in connection system]

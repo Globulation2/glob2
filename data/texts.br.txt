@@ -80,6 +80,8 @@ Jogos em lan disponíveis
 Esperando jogadores
 [away:]
 distante:
+[Back]
+
 [backspace]
 backspace
 [bad error in connection system]
