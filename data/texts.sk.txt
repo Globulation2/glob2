@@ -160,6 +160,8 @@ Budovy
 Nábojov:
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Kampaň
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Zem
 [Map name: %0]
 Názov mapy: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Šírka mapy

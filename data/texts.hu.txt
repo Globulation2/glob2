@@ -160,6 +160,8 @@ Az épület rövid leírása  (max. 24 karater)
 Lőszer
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Hadjárat
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Alacsony képminőség
 [Map name: %0]
 A térkép neve: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Térkép szélessége

@@ -160,6 +160,8 @@ AIWarrush
 彈藥
 [campaign editor]
 戰役編輯器
+[campaign text]
+
 [campaign]
 戰役
 [Can't connect, can't find host]
@@ -546,6 +548,8 @@ Air dmg.
 地圖名稱: %0。
 [map name]
 名稱
+[map script]
+
 [map size x]
 地圖寬度
 [map size y]

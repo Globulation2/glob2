@@ -160,6 +160,8 @@ Building short explanation (24 chars max)
 الرصاص
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 الحملة
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Ground dmg.
 [Map name: %0]
 Map name: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Map width
