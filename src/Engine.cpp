@@ -182,7 +182,14 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 void Engine::createRandomGame()
 {
 	MapHeader map = chooseRandomMap();
+	
+	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
+	
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
+	for (int p=0; p<game.getNumberOfPlayers(); p++)
+	{
+		std::cout<<"    Player: "<<game.getBasePlayer(p).name<<" for team "<<game.getBasePlayer(p).teamNumber<<std::endl;
+	}
 	
 	gui.localPlayer=0;
 	gui.localTeamNo=0;
