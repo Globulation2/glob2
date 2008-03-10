@@ -160,6 +160,8 @@ Eraikuntzak
 Balak
 [campaign editor]
 Kanpaina editorea
+[campaign text]
+
 [campaign]
 Kanpaina
 [Can't connect, can't find host]
@@ -546,6 +548,8 @@ Kaltea lurrean
 Mapa izena: %0.
 [map name]
 Izena
+[map script]
+
 [map size x]
 Maparen zabalera
 [map size y]

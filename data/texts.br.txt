@@ -160,6 +160,8 @@ Construções
 Balas
 [campaign editor]
 Editor de campanha
+[campaign text]
+
 [campaign]
 Campanha
 [Can't connect, can't find host]
@@ -548,6 +550,8 @@ Dano terrestre
 Nome do mapa: %0.
 [map name]
 Nome
+[map script]
+
 [map size x]
 Largura do mapa
 [map size y]

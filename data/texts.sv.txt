@@ -160,6 +160,8 @@ Byggnader
 Kulor
 [campaign editor]
 Kampanj Editor
+[campaign text]
+
 [campaign]
 Kampanj
 [Can't connect, can't find host]
@@ -546,6 +548,8 @@ Markskada
 Kartnamn: %0.
 [map name]
 Namn
+[map script]
+
 [map size x]
 Kartbredd
 [map size y]

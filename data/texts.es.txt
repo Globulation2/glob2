@@ -160,6 +160,8 @@ Construcciones
 Municiones
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Campaña
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Daño Terrestre
 [Map name: %0]
 Nombre del Mapa: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Ancho del Mapa
