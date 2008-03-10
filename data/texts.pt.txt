@@ -80,6 +80,8 @@ Partidas LAN disponíveis
 Esperando jogadores
 [away:]
 ausente:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Prédios
 [Bullets]
 Balas
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Campanha
@@ -543,6 +547,8 @@ At. terrestre
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Largura do mapa

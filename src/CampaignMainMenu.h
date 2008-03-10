@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2006 Bradley Arsenault
+  Copyright (C) 2006-2008 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,51 +16,31 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef CAMPAIGN_MENU_SCREEN_H
-#define CAMPAIGN_MENU_SCREEN_H
+#ifndef CampaignMainMenu_h
+#define CampaignMainMenu_h
 
-#include "Campaign.h"
 #include "Glob2Screen.h"
 #include "GUIButton.h"
-#include "GUIList.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
 
-class MapPreview;
-
-///This is the main campaign screen
-class CampaignMenuScreen : public Glob2Screen
+///This is the screen that provides the player with the choice of loading a campaign or starting a new one
+class CampaignMainMenu : public Glob2Screen
 {
 public:
-	CampaignMenuScreen(const std::string& name);
+	CampaignMainMenu();
 	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getMissionName();
-	void setNewCampaign();
 	enum
 	{
-		EXIT,
-		START,
+		NEWCAMPAIGN,
+		LOADCAMPAIGN,
+		CANCEL,
 	};
 private:
-	Campaign campaign;
-
-	/// Title of the screen
-	Text* title;
-	/// The exit to menuscreen button
-	Button* exit;
-	/// The "start mission" buttion
-	Button* startMission;
-
-	/// The box where the players name is put
-	TextInput* playerName;
-
-	/// The list of missions that are currently unlocked
-	List* availableMissions;
-	
-	//! The widget that will show a preview of the selection map
-	MapPreview *mapPreview;
-
+	/// The new campaign button
+	Button *newCampaign;
+	/// The load campaign button
+	Button *loadCampaign;
+	/// The cancel button
+	Button *cancel;
 };
-
 
 #endif

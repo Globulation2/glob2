@@ -80,6 +80,8 @@ Beschikbare LAN spellen
 Wacht op spelers
 [away:]
 weg:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -158,6 +160,8 @@ Gebouwen
 Kogels
 [campaign editor]
 Campagne bewerken
+[campaign text]
+
 [campaign]
 Campagne
 [Can't connect, can't find host]
@@ -544,6 +548,8 @@ Grondschade
 Naam speelveld: %0.
 [map name]
 Naam
+[map script]
+
 [map size x]
 Breedte van speelveld
 [map size y]

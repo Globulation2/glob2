@@ -80,6 +80,8 @@ Parties locales disponibles
 En attente des joueurs
 [away:]
 absent:
+[Back]
+
 [backspace]
 retour arrière
 [bad error in connection system]
@@ -158,6 +160,8 @@ Bâtiments
 Boulets
 [campaign editor]
 Editeur de campagne
+[campaign text]
+
 [campaign]
 Campagne
 [Can't connect, can't find host]
@@ -544,6 +548,8 @@ Dmg. sol
 Carte: %0.
 [map name]
 Nom de la carte
+[map script]
+
 [map size x]
 Largeur de la carte
 [map size y]

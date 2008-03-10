@@ -80,6 +80,8 @@ Elérhető hálózati játékok
 Játékosokra várva
 [away:]
 távol van:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Az épület rövid leírása  (max. 24 karater)
 [Bullets]
 Lőszer
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Hadjárat
@@ -543,6 +547,8 @@ Alacsony képminőség
 [Map name: %0]
 A térkép neve: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Térkép szélessége

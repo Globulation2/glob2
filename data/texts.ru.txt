@@ -80,6 +80,8 @@ ok
 Ожидание игроков
 [away:]
 отсутствует:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ ok
 [Bullets]
 Боеприпасы
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Кампания
@@ -543,6 +547,8 @@ Login
 [Map name: %0]
 Название карты: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Ширина карты

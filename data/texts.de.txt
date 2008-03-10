@@ -80,6 +80,8 @@ Lokal verfügbare Spiele
 Warten auf Spieler
 [away:]
 weg:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Gebäude
 [Bullets]
 Kugeln
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Feldzug
@@ -543,6 +547,8 @@ Kampfstärke/Boden
 [Map name: %0]
 Karte: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Breite der Karte

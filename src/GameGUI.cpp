@@ -3031,116 +3031,119 @@ void GameGUI::drawBuildingInfos(void)
 		}
 
 		// repair and upgrade
-		if (selBuild->constructionResultState==Building::REPAIR)
-		{
-			if (buildingType->isBuildingSite)
-				assert(buildingType->nextLevel!=-1);
-			drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel repair]");
-		}
-		else if (selBuild->constructionResultState==Building::UPGRADE)
-		{
-			assert(buildingType->nextLevel!=-1);
-			if (buildingType->isBuildingSite)
-				assert(buildingType->prevLevel!=-1);
-			drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel upgrade]");
-		}
-		else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
-		{
-			if (selBuild->hp<buildingType->hpMax)
+		if(selBuild->owner == localTeam)
+		{ 
+			if (selBuild->constructionResultState==Building::REPAIR)
 			{
-				// repair
-				if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
-				{
-					drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[repair]");
-					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
-						&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
-						{
-							globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
-							int ressources[BASIC_COUNT];
-							selBuild->getRessourceCountToRepair(ressources);
-							drawCosts(ressources, globalContainer->littleFont);
-							globalContainer->littleFont->popStyle();
-						}
-				}
+				if (buildingType->isBuildingSite)
+					assert(buildingType->nextLevel!=-1);
+				drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel repair]");
 			}
-			else if (buildingType->nextLevel!=-1)
+			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
-				// upgrade
-				if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
+				assert(buildingType->nextLevel!=-1);
+				if (buildingType->isBuildingSite)
+					assert(buildingType->prevLevel!=-1);
+				drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel upgrade]");
+			}
+			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
+			{
+				if (selBuild->hp<buildingType->hpMax)
 				{
-					drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[upgrade]");
-					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
-						&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
-						{
-							globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
-
-							// We draw the ressources cost.
-							int typeNum=buildingType->nextLevel;
-							BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-							drawCosts(bt->maxRessource, globalContainer->littleFont);
-
-							// We draw the new abilities:
-							int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
-
-							bt=globalContainer->buildingsTypes.get(bt->nextLevel);
-
-							if (bt->hpMax)
-								drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE, bt->hpMax);
-							if (bt->maxUnitInside)
-								drawValueAlignedRight(blueYpos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, bt->maxUnitInside);
-							blueYpos += YOFFSET_ICON+YOFFSET_B_SEP;
-
-							if (buildingType->maxUnitWorking)
-								blueYpos += YOFFSET_BAR+YOFFSET_B_SEP;
-
-							if (bt->armor)
+					// repair
+					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
+					{
+						drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[repair]");
+						if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
+							&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 							{
-								if (!buildingType->armor)
-									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
-								drawValueAlignedRight(blueYpos-1, bt->armor);
-								blueYpos+=YOFFSET_TEXT_LINE;
+								globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
+								int ressources[BASIC_COUNT];
+								selBuild->getRessourceCountToRepair(ressources);
+								drawCosts(ressources, globalContainer->littleFont);
+								globalContainer->littleFont->popStyle();
 							}
-							if (buildingType->maxUnitInside)
-								blueYpos += YOFFSET_INFOS;
-							if (bt->shootDamage)
+					}
+				}
+				else if (buildingType->nextLevel!=-1)
+				{
+					// upgrade
+					if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
+					{
+						drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[upgrade]");
+						if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
+							&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 							{
-								drawValueAlignedRight(blueYpos+1, bt->shootDamage);
-								drawValueAlignedRight(blueYpos+12, bt->shootingRange);
-								blueYpos += YOFFSET_TOWER;
-							}
-							blueYpos += unitInsideBarYDec;
-							blueYpos += YOFFSET_B_SEP;
+								globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
 
-							unsigned j = 0;
-							for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
-							{
-								if (buildingType->maxRessource[i])
+								// We draw the ressources cost.
+								int typeNum=buildingType->nextLevel;
+								BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+								drawCosts(bt->maxRessource, globalContainer->littleFont);
+
+								// We draw the new abilities:
+								int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
+
+								bt=globalContainer->buildingsTypes.get(bt->nextLevel);
+
+								if (bt->hpMax)
+									drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE, bt->hpMax);
+								if (bt->maxUnitInside)
+									drawValueAlignedRight(blueYpos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, bt->maxUnitInside);
+								blueYpos += YOFFSET_ICON+YOFFSET_B_SEP;
+
+								if (buildingType->maxUnitWorking)
+									blueYpos += YOFFSET_BAR+YOFFSET_B_SEP;
+
+								if (bt->armor)
 								{
-									drawValueAlignedRight(blueYpos+(j*11), bt->maxRessource[i]);
+									if (!buildingType->armor)
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
+									drawValueAlignedRight(blueYpos-1, bt->armor);
+									blueYpos+=YOFFSET_TEXT_LINE;
+								}
+								if (buildingType->maxUnitInside)
+									blueYpos += YOFFSET_INFOS;
+								if (bt->shootDamage)
+								{
+									drawValueAlignedRight(blueYpos+1, bt->shootDamage);
+									drawValueAlignedRight(blueYpos+12, bt->shootingRange);
+									blueYpos += YOFFSET_TOWER;
+								}
+								blueYpos += unitInsideBarYDec;
+								blueYpos += YOFFSET_B_SEP;
+
+								unsigned j = 0;
+								for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+								{
+									if (buildingType->maxRessource[i])
+									{
+										drawValueAlignedRight(blueYpos+(j*11), bt->maxRessource[i]);
+										j++;
+									}
+								}
+								
+								if (bt->maxBullets)
+								{
+									drawValueAlignedRight(blueYpos+(j*11), bt->maxBullets);
 									j++;
 								}
-							}
-							
-							if (bt->maxBullets)
-							{
-								drawValueAlignedRight(blueYpos+(j*11), bt->maxBullets);
-								j++;
-							}
 
-							globalContainer->littleFont->popStyle();
-						}
+								globalContainer->littleFont->popStyle();
+							}
+					}
 				}
 			}
-		}
 
-		// building destruction
-		if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-		{
-			drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[cancel destroy]");
-		}
-		else if (selBuild->buildingState==Building::ALIVE)
-		{
-			drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[destroy]");
+			// building destruction
+			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+			{
+				drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[cancel destroy]");
+			}
+			else if (selBuild->buildingState==Building::ALIVE)
+			{
+				drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[destroy]");
+			}
 		}
 	}
 }

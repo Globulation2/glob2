@@ -80,6 +80,8 @@ Razpoložljive omrežne igre
 Čakam igralce
 [away:]
 odsoden:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Stavbe
 [Bullets]
 Naboji
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Kampanja
@@ -543,6 +547,8 @@ Nizka kakovost
 [Map name: %0]
 Ime mape: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Širina mape

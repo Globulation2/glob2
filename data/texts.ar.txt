@@ -80,6 +80,8 @@ Available local games
 انتظار لاعبون
 [away:]
 بعيدا:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Building short explanation (24 chars max)
 [Bullets]
 الرصاص
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 الحملة
@@ -543,6 +547,8 @@ Ground dmg.
 [Map name: %0]
 Map name: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Map width

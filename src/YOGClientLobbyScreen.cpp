@@ -168,14 +168,17 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		boost::shared_ptr<YOGMessage> message(new YOGMessage);
-		message->setSender(client->getUsername());
-		message->setMessage(textInput->getText());
-		message->setMessageType(YOGNormalMessage);
-		lobbyChat->sendMessage(message);
+		if(textInput->getText() != "")
+		{
+			boost::shared_ptr<YOGMessage> message(new YOGMessage);
+			message->setSender(client->getUsername());
+			message->setMessage(textInput->getText());
+			message->setMessageType(YOGNormalMessage);
+			lobbyChat->sendMessage(message);
 
-		ircChat->sendCommand(textInput->getText());
-		textInput->setText("");
+			ircChat->sendCommand(textInput->getText());
+			textInput->setText("");
+		}
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{

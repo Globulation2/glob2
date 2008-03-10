@@ -80,6 +80,8 @@ Jocuri locale disponibile
 În asteptare de jucători
 [away:]
 absent:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Clădiri
 [Bullets]
 Gloanţe
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Campanie
@@ -543,6 +547,8 @@ Calitate scăzută
 [Map name: %0]
 Hartă: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Lărgimea hărţii

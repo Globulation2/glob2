@@ -80,6 +80,8 @@ Dostupné lokálne hry
 Čaká sa na hráčov
 [away:]
 preč:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Budovy
 [Bullets]
 Nábojov:
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Kampaň
@@ -543,6 +547,8 @@ Zem
 [Map name: %0]
 Názov mapy: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Šírka mapy

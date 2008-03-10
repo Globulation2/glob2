@@ -80,6 +80,8 @@ AIWarrush
 Чекам играче
 [away:]
 одсутан:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ AIWarrush
 [Bullets]
 Муниција
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Кампања
@@ -543,6 +547,8 @@ sr
 [Map name: %0]
 Име мапе: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Ширина мапе

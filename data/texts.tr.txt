@@ -80,6 +80,8 @@ Uygun yerel oyunlar
 Oyuncular bekleniyor
 [away:]
 uzakta:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Binalar
 [Bullets]
 Mermiler
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Senaryo
@@ -543,6 +547,8 @@ Yer hasari
 [Map name: %0]
 Harita adi: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Harita genisligi

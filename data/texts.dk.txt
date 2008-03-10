@@ -80,6 +80,8 @@ Tilgængelige lokale spil
 Venter på spillere
 [away:]
 er væk:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -158,6 +160,8 @@ Bygninger
 Kugler
 [campaign editor]
 Kampagne redigator
+[campaign text]
+
 [campaign]
 Kampagne
 [Can't connect, can't find host]
@@ -544,6 +548,8 @@ Jord skade.
 Kort navn: %0.
 [map name]
 Navn
+[map script]
+
 [map size x]
 Kort bredte
 [map size y]

@@ -80,6 +80,8 @@ Dostupné místní hry
 Čeká se na hráče
 [away:]
 pryč:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Budovy
 [Bullets]
 Střelivo
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Nová hra
@@ -543,6 +547,8 @@ Nízká kvalita
 [Map name: %0]
 Jméno mapy: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Šířka mapy

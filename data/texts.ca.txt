@@ -80,6 +80,8 @@ jocs LAN disponibles
 Esperant als jugadors
 [away:]
 ausent:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Edificis
 [Bullets]
 Bales
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Campanya
@@ -543,6 +547,8 @@ dany terrestre
 [Map name: %0]
 Nom del mapa: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Amplada del mapa

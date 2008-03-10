@@ -80,6 +80,8 @@ Juegos Locales Disponibles
 Esperando jugadores
 [away:]
 fuera:
+[Back]
+
 [backspace]
 
 [bad error in connection system]
@@ -157,6 +159,8 @@ Construcciones
 [Bullets]
 Municiones
 [campaign editor]
+
+[campaign text]
 
 [campaign]
 Campaña
@@ -543,6 +547,8 @@ Daño Terrestre
 [Map name: %0]
 Nombre del Mapa: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Ancho del Mapa

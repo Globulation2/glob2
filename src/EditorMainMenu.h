@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2008 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -17,56 +19,41 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NEWMAPSCREEN_H
-#define __NEWMAPSCREEN_H
+#ifndef EditorMainMenu_h
+#define EditorMainMenu_h
 
 #include "Glob2Screen.h"
-#include "MapGenerationDescriptor.h"
 
 namespace GAGGUI
 {
-	class Number;
-	class Text;
-	class Ratio;
-	class List;
 }
 
-//! This screen allows to choose the size of the map and the default background
-class NewMapScreen : public Glob2Screen
+//! This screen allows to choose how to make a new map
+class EditorMainMenu : public Glob2Screen
 {
 public:
 	enum
 	{
-		OK = 1,
-		CANCEL = 2
+		NEWMAP = 1,
+		LOADMAP = 2,
+		CANCEL = 3,
+		NEWCAMPAIGN = 4,
+		LOADCAMPAIGN = 5,
 	};
-public:
-	MapGenerationDescriptor descriptor;
-
-private:
-	Number *mapSizeX, *mapSizeY;
-	List *methodes, *terrains;
-	Ratio *waterRatio, *sandRatio, *grassRatio, *desertRatio;
-	Ratio *wheatRatio, *woodRatio, *stoneRatio, *algaeRatio, *craterDensity;
-	Ratio *riverDiameter, *fruitRatio;
-	Number *smooth, *extraIslands;
-	Number *nbTeams;
-	Ratio *oldIslandSize;
-	Number *oldBeach;
-	Number *nbWorkers;
-	Number *logRepeatAreaTimes;
-	Text *numberOfTeamText, *numberOfWorkerText, *craterDensityText, *extraIslandsText;
-	Text *ratioText, *waterText, *sandText, *grassText, *desertText, *wheatText, *woodText, *stoneText, *algaeText, *fruitText, *smoothingText, *riverDiameterText, *areaTimesText;
-	Text *oldIslandSizeText, *oldBeachSizeText;
-	
 
 public:
 	//! Constructor
-	NewMapScreen();
+	EditorMainMenu();
 	//! Destructor
-	virtual ~NewMapScreen() { };
+	virtual ~EditorMainMenu() { }
 	//! Action handler
 	void onAction(Widget *source, Action action, int par1, int par2);
 };
+
+
+
+
+
+
 
 #endif

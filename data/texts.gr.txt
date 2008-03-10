@@ -80,6 +80,8 @@ algae
 Αναμένοντας παίκτες
 [away:]
 εκτός:
+[Back]
+
 [backspace]
 backspace
 [bad error in connection system]
@@ -158,6 +160,8 @@ backspace
 Σφαίρες
 [campaign editor]
 Επεξεραστής Εκστραστείας
+[campaign text]
+
 [campaign]
 Εκστρατεία
 [Can't connect, can't find host]
@@ -546,6 +550,8 @@ Anastasios M. Pingios
 Όνομα χάρτη: %0.
 [map name]
 Όνομα
+[map script]
+
 [map size x]
 Πλάτος χάρτη
 [map size y]
