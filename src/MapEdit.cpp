@@ -1270,7 +1270,8 @@ int MapEdit::run(void)
 		}
 			
 
-		handleMapScroll();
+		if(!menuScreen && !loadSaveScreen && !scriptEditor)
+			handleMapScroll();
 		// redraw on scroll
 // 		bool doRedraw=false;
 		viewportX+=xSpeed;
