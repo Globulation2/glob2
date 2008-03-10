@@ -160,6 +160,8 @@ ok
 Боеприпасы
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Кампания
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Login
 [Map name: %0]
 Название карты: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Ширина карты

@@ -160,6 +160,8 @@ Costruzioni
 Proiettili
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Campagna
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Danno a terra
 [Map name: %0]
 Nome della mappa: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Grandezza x della mappa

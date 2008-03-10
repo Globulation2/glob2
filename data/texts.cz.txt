@@ -160,6 +160,8 @@ Budovy
 Střelivo
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Nová hra
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Nízká kvalita
 [Map name: %0]
 Jméno mapy: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Šířka mapy

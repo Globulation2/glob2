@@ -160,6 +160,8 @@ Edificis
 Bales
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Campanya
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ dany terrestre
 [Map name: %0]
 Nom del mapa: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Amplada del mapa

@@ -160,6 +160,8 @@ Buildings
 Bullets
 [campaign editor]
 Campaign Editor
+[campaign text]
+Campaign Text
 [campaign]
 Campaign
 [Can't connect, can't find host]
@@ -524,8 +526,6 @@ Load game
 Load Map
 [load]
 Load
-[load]
-Load Map
 [loading glob2]
 Loading Globulation 2
 [login]
@@ -544,6 +544,8 @@ Ground dmg.
 Map name: %0.
 [map name]
 Name
+[map script]
+Map Script
 [map size x]
 Map width
 [map size y]

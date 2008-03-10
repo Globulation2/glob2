@@ -160,6 +160,8 @@ Binalar
 Mermiler
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Senaryo
 [Can't connect, can't find host]
@@ -545,6 +547,8 @@ Yer hasari
 [Map name: %0]
 Harita adi: %0.
 [map name]
+
+[map script]
 
 [map size x]
 Harita genisligi
