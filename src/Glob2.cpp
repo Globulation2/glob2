@@ -133,6 +133,7 @@ int Glob2::runNoX()
 
 int Glob2::runTestGames()
 {
+	setRandomSyncRandSeed();
 	globalContainer->runNoXCountSteps=90000;
 	globalContainer->runNoX=true;
 	while(true)
