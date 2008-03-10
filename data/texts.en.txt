@@ -1119,7 +1119,7 @@ The YOG metaserver has refused connection because this username has no password 
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 The YOG metaserver has refused the connection because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-The YOG metaserver has refused connection because your globulation2 client is obsolete.
+The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
