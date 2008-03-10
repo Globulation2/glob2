@@ -64,7 +64,7 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	addWidget(rememberYogPassword);
 	addWidget(rememberYogPasswordText);
 	
-	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, Toolkit::getStringTable()->getString("[YESTS_CREATED]"));
 	addWidget(statusText);
 	
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
@@ -170,7 +170,7 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 		}
 		else if(reason == YOGUsernameAlreadyUsed)
 		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]"));
 		}
 		else if(reason == YOGUserNotRegistered)
 		{
@@ -182,7 +182,11 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 		}
 		else if(reason == YOGAlreadyAuthenticated)
 		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]"));
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
+		}
+		else if(reason == YOGLoginUnknown)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]"));
 		}
 		client->disconnect();
 	}
