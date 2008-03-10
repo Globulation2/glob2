@@ -3452,6 +3452,7 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			std::vector<std::string> lines;
 			setMultiLine(game.script.textShown, &lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-128-64+16, lines.size()*20+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
@@ -3461,6 +3462,7 @@ void GameGUI::drawOverlayInfos(void)
 		
 		if (swallowSpaceKey)
 		{
+			globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-128-64+16, 20, 0,0,0,128);
 			globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
 			yinc += 20;
 		}
@@ -4273,10 +4275,13 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 	
 	std::string lastWord;
 	std::string lastLine;
+	std::string ninput=input;
+	if(ninput[ninput.length()-1] != ' ')
+		ninput += " ";
 	
-	while (pos<input.length())
+	while (pos<ninput.length())
 	{
-		if (input[pos] == ' ')
+		if (ninput[pos] == ' ')
 		{
 			int actLineLength = globalContainer->standardFont->getStringWidth(lastLine.c_str());
 			int actWordLength = globalContainer->standardFont->getStringWidth(lastWord.c_str());
@@ -4297,7 +4302,7 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 		}
 		else
 		{
-			lastWord += input[pos];
+			lastWord += ninput[pos];
 		}
 		pos++;
 	}
