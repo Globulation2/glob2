@@ -92,6 +92,9 @@ private:
 	///Flushes an order for the current brush accumulator
 	void flushBrushOrders(int localteam);
 
+	int firstPlacementX;
+	int firstPlacementY;
+
 	Game& game;
 	BrushTool& brush;
 	GameGUIDefaultAssignManager& defaultAssign;
