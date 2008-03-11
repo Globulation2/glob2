@@ -118,6 +118,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 		ticksGameSum[i]=0;
 
 	anyPlayerWaitedTimeFor = 0;
+	maskAwayPlayer = 0;
 }
 
 
