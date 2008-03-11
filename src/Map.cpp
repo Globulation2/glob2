@@ -4936,8 +4936,7 @@ template<typename Tint> void Map::updateClearAreasGradient(int teamNumber, bool 
 	{
 		const Case& c=cases[i];
 		
-		//if(c.clearArea & teamMask && (c.ressource.type == WOOD || c.ressource.type == CORN || c.ressource.type == PAPYRUS || c.ressource.type == ALGA))
-		if(c.clearArea & teamMask && c.ressource.type != NO_RES_TYPE)
+		if(c.clearArea & teamMask && (c.ressource.type == WOOD || c.ressource.type == CORN || c.ressource.type == PAPYRUS || c.ressource.type == ALGA))
 		{
 			gradient[i] = 255;
 			listedAddr[listCountWrite++] = i;
