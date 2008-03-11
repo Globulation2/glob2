@@ -763,6 +763,10 @@ private:
 	int lastPlacementX;
 	///This is the last placement of terrain, zones, or else, so that the game doesn't use allot of cpu by small mouse movements
 	int lastPlacementY;
+	///This is the first placement of terrain, zones or else
+	int firstPlacementX;
+	///This is the first placement of terrain, zones, or else
+	int firstPlacementY;
 
 	///Tells whether the menu screen is being drawn right now
 	bool showingMenuScreen;
