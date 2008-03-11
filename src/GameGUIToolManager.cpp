@@ -34,6 +34,8 @@ GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefa
 	hilightStrength = 0;
 	mode = NoTool;
 	zoneType = Forbidden;
+	firstPlacementX=-1;
+	firstPlacementY=-1;
 }
 
 
@@ -210,7 +212,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				c = Color(167,137,0);
 			}
 		}
-		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY);
+		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY, firstPlacementX, firstPlacementY);
 	}
 }
 
@@ -272,6 +274,14 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
 		int fig = brush.getFigure();
+		
+		if(firstPlacementX == -1)
+		{
+			firstPlacementX=mapX;
+			firstPlacementY=mapY;
+			brushAccumulator.firstX=mapX;
+			brushAccumulator.firstY=mapY;
+		}
 
 		if((brush.getBrushHeight(fig) == 1) && (brush.getBrushWidth(fig) == 1))
 		{
@@ -307,6 +317,8 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 	if(mode == PlaceZone)
 	{
 		flushBrushOrders(localteam);
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 }
 
@@ -355,7 +367,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (zoneType == Forbidden)
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
@@ -373,7 +385,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (zoneType == Forbidden)
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
