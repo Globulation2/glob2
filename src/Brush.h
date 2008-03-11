@@ -47,7 +47,6 @@ protected:
 	unsigned figure;
 	Mode mode;
 	bool addRemoveEnabled;
-	
 public:
 	BrushTool();
 	//! Draw the brush tool and its actual state at a given coordinate 
@@ -60,8 +59,8 @@ public:
 	void defaultSelection(void) { mode = MODE_ADD; }
 
 	//! Draw the actual brush (not the brush tool)
-	void drawBrush(int x, int y, int viewportX, int viewportY, bool onlines=false);
-	void drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, bool onlines=false);
+	void drawBrush(int x, int y, int viewportX, int viewportY, int originalX=-1, int originalY=-1, bool onlines=false);
+	void drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, int originalX=-1, int originalY=-1, bool onlines=false);
 	//! Return the mode of the brush
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
 	//! Set the mode of the brush
@@ -87,7 +86,7 @@ public:
 	//! Return the top extend of the brush (not counting its center cell)
 	static int getBrushDimYPlus(unsigned figure);
 	//! Return the value of a pixel of a given brush, also pass the x and y coordinates for alignment
-	static bool getBrushValue(unsigned figure, int x, int y, int centerX, int centerY);
+	static bool getBrushValue(unsigned figure, int x, int y, int centerX, int centerY, int originalX=0, int originalY=0);
 };
 
 namespace Utilities
@@ -101,6 +100,8 @@ class Map;
 class BrushAccumulator
 {
 public:
+	BrushAccumulator();
+
 	//! Dimension of the resulting bitmap
 	struct AreaDimensions
 	{
@@ -110,6 +111,8 @@ public:
 		AreaDimensions() { minX = minY = maxX = maxY = centerX = centerY = 0; }
 	};
 	
+	int firstX;
+	int firstY;
 protected:
 	//! The list of brush applications
 	std::vector<BrushApplication> applications;
