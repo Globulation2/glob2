@@ -66,16 +66,18 @@ void BrushTool::handleClick(int x, int y)
 		}
 }
 
-void BrushTool::drawBrush(int x, int y, int viewportX, int viewportY, bool onlines)
+
+
+void BrushTool::drawBrush(int x, int y, int viewportX, int viewportY, int originalX, int originalY, bool onlines)
 {
 	/* We use 2/3 intensity to indicate removing areas.  This was
 		formerly 78% intensity, which was bright enough that it was hard
 		to notice any difference, so the brightness has been lowered. */
 	int i = ((mode == MODE_ADD) ? 255 : 170);
-	drawBrush(x, y, Color(i,i,i), viewportX, viewportY, onlines);
+	drawBrush(x, y, Color(i,i,i), viewportX, viewportY, originalX, originalY, onlines);
 }
 
-void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, bool onlines)
+void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, int originalX, int originalY, bool onlines)
 {
 	/* It violates good abstraction practices that Brush.cpp knows
 		this much about the visual layout of the GUI. */
@@ -89,12 +91,22 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 	x -= ((cell_size * getBrushDimXMinus(figure)) + (cell_size / 2));
 	y -= ((cell_size * getBrushDimYMinus(figure)) + (cell_size / 2));
 	const int inset = 2;
+
+	if(originalX == -1)
+		originalX = viewportX + (x / cell_size);
+	else if(onlines)
+		originalX+=1;
+	if(originalY == -1)
+		originalY = viewportY + (y / cell_size);
+	else if(onlines)
+		originalY+=1;
+	
 	for (int cx = 0; cx < w; cx++)
 	{
 		for (int cy = 0; cy < h; cy++)
 		{
 			// TODO: the brush is wrong, but without lookuping viewport in game gui, there is no way to know this
-			if (getBrushValue(figure, cx, cy, viewportX + (x / cell_size), viewportY + (y / cell_size)))
+			if (getBrushValue(figure, cx, cy, viewportX + (x / cell_size), viewportY + (y / cell_size), originalX, originalY))
 			{
 				globalContainer->gfx->drawRect(x + (cell_size * cx) + inset, y + (cell_size * cy) + inset, cell_size - inset, cell_size - inset, c);
 			}
@@ -196,7 +208,7 @@ int BrushTool::getBrushDimY(unsigned figure)
 }*/
 
 
-bool BrushTool::getBrushValue(unsigned figure, int x, int y, int centerX, int centerY)
+bool BrushTool::getBrushValue(unsigned figure, int x, int y, int centerX, int centerY, int originalX, int originalY)
 {
 	int brush0[] = { 	1 };
 	int brush1[] = { 	0, 1, 0,
@@ -246,9 +258,9 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y, int centerX, int ce
 	if ((figure == 4) || (figure == 5))
 	{
 		// do alignment on specific brush (4 and 5)
-		if (centerX % 2 != 0)
+		if (centerX % 2 == originalX%2)
 			x++;
-		if (centerY % 2 != 0)
+		if (centerY % 2 == originalY%2)
 			y++;
 	}
 	
@@ -261,6 +273,11 @@ void BrushTool::setAddRemoveEnabledState(bool value)
 }
 
 
+BrushAccumulator::BrushAccumulator()
+{
+	firstX=0;
+	firstY=0;
+}
 
 void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 {
@@ -340,7 +357,7 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 					int arrayY = py - dim->minY - BrushTool::getBrushDimYMinus(applications[i].figure) + y;
 					
 					size_t arrayPos = static_cast<size_t>(arrayY * arrayW + arrayX);
-					if (BrushTool::getBrushValue(applications[i].figure, x, y, applications[i].x, applications[i].y))
+					if (BrushTool::getBrushValue(applications[i].figure, x, y, applications[i].x, applications[i].y, firstX, firstY))
 						array->set(arrayPos, true);
 				}
 			}

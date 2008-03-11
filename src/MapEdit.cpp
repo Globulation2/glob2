@@ -1110,6 +1110,8 @@ MapEdit::MapEdit()
 
 	lastPlacementX=-1;
 	lastPlacementY=-1;
+	firstPlacementX=-1;
+	firstPlacementY=-1;
 
 	showingMenuScreen=false;
 	menuScreen = NULL;
@@ -1364,13 +1366,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY, (terrainType>TerrainSelector::Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
@@ -1387,10 +1389,10 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		}
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 		}
 		if(selectionMode==ChangeNoRessourceGrowthAreas)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 	}
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
@@ -2145,6 +2147,8 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingZone=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="select grass")
 	{
@@ -2283,6 +2287,8 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingTerrain=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="delete drag start")
 	{
@@ -2298,6 +2304,8 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingDelete=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="update script area number")
 	{
@@ -2326,6 +2334,8 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingArea=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="no ressource growth area drag start")
 	{
@@ -2341,6 +2351,8 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingNoRessourceGrowthArea=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="add team")
 	{
@@ -3204,6 +3216,13 @@ void MapEdit::handleBrushClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
+	
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -3216,7 +3235,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -3241,7 +3260,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -3282,6 +3301,12 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx+(terrainType>TerrainSelector::Water ? 0 : 16), my+(terrainType>TerrainSelector::Water ? 0 : 16), &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -3294,7 +3319,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (terrainType == TerrainSelector::Grass)
 					{
@@ -3360,7 +3385,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (terrainType == TerrainSelector::Sand || terrainType == TerrainSelector::Water)
 					{
@@ -3413,6 +3438,12 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -3425,7 +3456,7 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
 				}
@@ -3443,6 +3474,12 @@ void MapEdit::handleAreaClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -3455,7 +3492,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.setPoint(areaNumber->getIndex(), x, y);
 				}
@@ -3464,7 +3501,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.unsetPoint(areaNumber->getIndex(), x, y);
 				}
@@ -3481,6 +3518,12 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -3493,7 +3536,7 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.getCase(x, y).canRessourcesGrow=false;
 				}
@@ -3502,7 +3545,7 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.getCase(x, y).canRessourcesGrow=true;
 				}

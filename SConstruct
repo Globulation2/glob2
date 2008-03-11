@@ -118,6 +118,9 @@ def configure(env):
     if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
         print "Could not find boost/lexical_cast.hpp"
         Exit(1)
+    if not conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
+        print "Could not find boost/date_time/posix_time/posix_time.hpp"
+        Exit(1)
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
