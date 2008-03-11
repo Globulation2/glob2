@@ -50,7 +50,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 		for (int i=0; i<1024; i++)
 		{
 			Unit *u=game.teams[localteam]->myUnits[i];
-			if (u)
+			if (u && u->activity != Unit::ACT_UPGRADING)
 			{
 				if (type == Starving && u->isUnitHungry() && u->hp < u->performance[HP])
 				{
@@ -75,7 +75,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 				if(b->type->shootDamage > 0)
 				{
 					int power = (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
-					spreadPoint(b->posX, b->posY, power, b->type->shootingRange*2, overlay, overlaymax);
+					spreadPoint(b->posX, b->posY, power, b->type->shootingRange, overlay, overlaymax);
 				}
 			}
 
@@ -129,16 +129,18 @@ void OverlayArea::forceRecompute()
 void OverlayArea::increasePoint(int x, int y, int distance, std::vector<Uint16>& field, Uint16& max)
 {
 	//Update the map
-	for(int n=0; n<distance; ++n)
+	for(int px=0; px<(distance*2+1); ++px)
 	{
-		for(int px=0; px<(n*2+1); ++px)
+		for(int py=0; py<(distance*2+1); ++py)
 		{
-			for(int py=0; py<(n*2+1); ++py)
+			int relx = (px-distance);
+			int rely = (py-distance);
+			if(relx*relx + rely*rely < distance*distance)
 			{
-				int posx=(x - n + px + width) % width;
-				int posy=(y - n + py + height) % height;
+				int posx=(x - distance + px + width) % width;
+				int posy=(y - distance + py + height) % height;
 
-				field[posx * height + posy]+=1;
+				field[posx * height + posy]+=distance - (relx*relx + rely*rely) / distance;
 				max=std::max(max, field[posx * height + posy]);
 			}
 		}
@@ -149,16 +151,20 @@ void OverlayArea::increasePoint(int x, int y, int distance, std::vector<Uint16>&
 
 void OverlayArea::spreadPoint(int x, int y, int value, int distance, std::vector<Uint16>& field, Uint16& max)
 {
-	for (int px=x-distance; px<(x+distance); px++)
+	for (int px=x-distance-1; px<(x+distance+1); px++)
 	{
-		for (int py=y-distance; py<(y+distance); py++)
+		for (int py=y-distance-1; py<(y+distance+1); py++)
 		{
-				int dist=std::max(std::abs(px-x), std::abs(py-y));
+			int relx = (px-x);
+			int rely = (py-y);
+			if((relx*relx + rely*rely) <= (distance*distance))
+			{
 				int targetX=(px + width) % width;
 				int targetY=(py + height) % height;
 
-				field[targetX * height + targetY]+=(value/distance)*(distance-dist);
+				field[targetX * height + targetY]+=distance - (relx*relx + rely*rely) / distance;
 				max=std::max(max, field[targetX * height + targetY] );
+			}
 		}
 	}
 }
