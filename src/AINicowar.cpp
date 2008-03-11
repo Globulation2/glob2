@@ -886,6 +886,7 @@ void NewNicowar::order_buildings(Echo& echo)
 			mo_completion_message->add_condition(new EitherCondition(
 			                             new ParticularBuilding(new NotUnderConstruction, id),
 			                             new BuildingDestroyed(id)));
+			echo.add_management_order(mo_completion_message);
 		}
 		if(b==RegularSwarm)
 		{
