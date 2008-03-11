@@ -569,12 +569,13 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			Unit *u=*it;
 			assert(u);
 			int d=u->displacement;
-			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING))
+			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING)&&(d!=Unit::DIS_EXITING_BUILDING))
 			{
 				u->standardRandomActivity();
 				unitsToRemove.push_front(u);
 			}
 		}
+		
 		for (std::list<Unit *>::iterator it=unitsToRemove.begin(); it!=unitsToRemove.end(); ++it)
 		{
 			Unit *u=*it;
