@@ -2013,7 +2013,7 @@ void Map::setRessource(int x, int y, int type, int l)
 
 bool Map::isRessourceAllowed(int x, int y, int type)
 {
-	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) != NOGUID) && (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
+	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
 }
 
 bool Map::isPointSet(int n, int x, int y)

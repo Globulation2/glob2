@@ -997,6 +997,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	///will need to be overwritten with the mapOffset known
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
+	mapHeader.setIsSavedGame(!fileIsAMap);
 	
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
