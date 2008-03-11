@@ -1116,6 +1116,7 @@ MapEdit::MapEdit()
 	showingLoad=false;
 	showingSave=false;
 	showingScriptEditor=false;
+	scriptEditor=false;
 
 	terrainType=TerrainSelector::NoTerrain;
 
@@ -1270,7 +1271,7 @@ int MapEdit::run(void)
 		}
 			
 
-		if(!menuScreen && !loadSaveScreen && !scriptEditor)
+		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor)
 			handleMapScroll();
 		// redraw on scroll
 // 		bool doRedraw=false;
@@ -3303,14 +3304,14 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					}
 					else if (terrainType == TerrainSelector::Sand)
 					{
-						game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
 						game.map.setNoRessource(x, y, 3);
 						game.map.setUMatPos(x, y, SAND, 1);
 					}
 					else if (terrainType == TerrainSelector::Water)
 					{
-						game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
-						game.map.setNoRessource(x, y, 3);
+						game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 5);
 						game.map.setUMatPos(x, y, WATER, 1);
 					}
 					else if (terrainType == TerrainSelector::Wheat)

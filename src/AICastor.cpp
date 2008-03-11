@@ -359,6 +359,12 @@ AICastor::~AICastor()
 	
 	if (ressourcesCluster!=NULL)
 		delete[] ressourcesCluster;
+
+	for(std::list<Project *>::iterator i=projects.begin(); i!=projects.end(); ++i)
+	{
+		delete *i;
+	}
+
 }
 
 bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
