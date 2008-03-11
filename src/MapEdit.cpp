@@ -1988,7 +1988,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 
 		if (game.checkRoomForBuilding(tempX, tempY, bt, &x, &y, team, false))
 		{
-			game.addBuilding(x, y, typeNum, team);
+			game.addBuilding(x, y, typeNum, team, 0, 0);
 			if (selectionName=="swarm")
 			{
 				if (game.teams[team]->startPosSet<3)
