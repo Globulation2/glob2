@@ -870,8 +870,6 @@ void Building::updateBuildingSite(void)
 		for(int i=0; i<MAX_RESSOURCES; i++)
 			ressources[i]-=type->maxRessource[i];
 
-		if(constructionResultState!=NEW_BUILDING)
-			removeForbiddenZoneFromUpgradeArea();
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;
 		type=globalContainer->buildingsTypes.get(type->nextLevel);
@@ -1082,6 +1080,8 @@ bool Building::tryToBuildingSiteRoom(void)
 	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 	if (isRoom)
 	{
+		removeForbiddenZoneFromUpgradeArea();
+	
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
@@ -1191,6 +1191,17 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
+	
+	for(int x=newPosX; x<(newPosX+newWidth); ++x)
+	{
+		for(int y=newPosY; y<(newPosY+newHeight); ++y)
+		{
+			owner->map->addForbidden(x, y, owner->teamNumber);
+		}
+	}
+	if(owner == owner->game->gui->getLocalTeam())
+		owner->map->computeLocalForbidden(owner->teamNumber);
+	owner->map->updateForbiddenGradient(owner->teamNumber);
 }
 
 
@@ -1202,9 +1213,9 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 
 	int targetLevelTypeNum=-1;
 	if (constructionResultState==UPGRADE)
-		targetLevelTypeNum=type->level;
+		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->level;
+		targetLevelTypeNum=type->prevLevel;
 	else
 		assert(false);
 
@@ -1213,6 +1224,17 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
+	
+	for(int x=newPosX; x<(newPosX+newWidth); ++x)
+	{
+		for(int y=newPosY; y<(newPosY+newHeight); ++y)
+		{
+			owner->map->removeForbidden(x, y, owner->teamNumber);
+		}
+	}
+	if(owner == owner->game->gui->getLocalTeam())
+		owner->map->computeLocalForbidden(owner->teamNumber);
+	owner->map->updateForbiddenGradient(owner->teamNumber);
 }
 
 
