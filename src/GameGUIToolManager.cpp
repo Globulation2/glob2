@@ -236,34 +236,38 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 {
 	if(mode == PlaceBuilding)
 	{
-		// we get the type of building
-		// try to get the building site, if it doesn't exists, get the finished building (for flags)
-		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
-		if (typeNum==-1)
+		// Count down whether a building site can be placed
+		if (game.teams[localteam]->noMoreBuildingSitesCountdown==0)
 		{
-			typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
-			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
-		}
-		assert (typeNum!=-1);
+			// we get the type of building
+			// try to get the building site, if it doesn't exists, get the finished building (for flags)
+			Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
+			if (typeNum==-1)
+			{
+				typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+				assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
+			}
+			assert (typeNum!=-1);
 
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
-		int mapX, mapY;
-		int tempX, tempY;
-		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		if (bt->isVirtual)
-			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
-		else
-			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-		
-		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
-		
-		if (isRoom)
-		{
-			ghostManager.addBuilding(building, mapX, mapY);
-			orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
+			int mapX, mapY;
+			int tempX, tempY;
+			bool isRoom;
+			game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+			if (bt->isVirtual)
+				isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
+			else
+				isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+			
+			int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+			int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
+			
+			if (isRoom)
+			{
+				ghostManager.addBuilding(building, mapX, mapY);
+				orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
+			}
 		}
 	}
 	if(mode == PlaceZone)
