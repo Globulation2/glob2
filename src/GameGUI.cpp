@@ -3051,7 +3051,7 @@ void GameGUI::drawBuildingInfos(void)
 				if (selBuild->hp<buildingType->hpMax)
 				{
 					// repair
-					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
+					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && localTeam->maxBuildLevel()>=buildingType->level)
 					{
 						drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[repair]");
 						if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
@@ -3859,8 +3859,6 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 
 void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 {
-	game.mapHeader.setIsSavedGame(true);
-
 	// Game is can't be no more automatically generated
 	game.save(stream, false, name);
 	
