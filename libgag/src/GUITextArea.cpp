@@ -666,7 +666,21 @@ namespace GAGGUI
 				
 				default:
 				{
-					lastWord += text[pos];
+					int actLineLength = getStringWidth(lastLine);
+					int actWordLength = getStringWidth(lastWord);
+					int actCharLength = getStringWidth(std::string(1,text[pos]).c_str());
+					if (actWordLength+actLineLength+actCharLength > length)
+					{
+						lastLine += lastWord;
+						if (sprite && frames.size() > line)
+						{
+							lines_frames.push_back(frames[line]);
+						}
+						lines.push_back(pos-1);
+						lastWord.clear();
+						lastLine.clear();
+					}
+					lastWord += text[pos];					
 				}
 			}
 			pos++;
