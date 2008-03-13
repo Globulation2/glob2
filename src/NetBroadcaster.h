@@ -39,6 +39,7 @@ public:
 private:
 	LANGameInformation info;
 	UDPsocket socket;
+	UDPsocket localsocket;
 	Uint32 lastTime;
 	Uint32 timer;
 };
