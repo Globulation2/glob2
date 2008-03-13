@@ -1774,7 +1774,7 @@ void Unit::handleMovement(void)
 				}
 				movement=MOV_GOING_DXDY;
 			}
-			else if(performance[HARVEST] && owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+			else if(performance[HARVEST] && (255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY))<((hungry-trigHungry) / race->hungryness) && owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
 			{
 				//Find clearing ressource
 				directionFromDxDy();
