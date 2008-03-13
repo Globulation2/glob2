@@ -639,8 +639,6 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		// when the building upgrade" was already canceled.
 		return;
 	}
-	
-	removeForbiddenZoneFromUpgradeArea();
 
 	constructionResultState=NO_CONSTRUCTION;
 	
@@ -699,6 +697,8 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		totalRatio++;
 		percentUsed[i]=0;
 	}
+	
+	removeForbiddenZoneFromUpgradeArea();
 
 	setMapDiscovered();
 }
