@@ -3431,18 +3431,54 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	memset(gradient, 1, 1024);
 
 	// 1b. Set values at target building to 255 (meaning 'very close'/'at destination').
-	if (building->type->isVirtual)
+	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
 		assert(!building->type->zonableForbidden);
 		int r=building->unitStayRange;
-		fillGradientCircle(gradient, r);
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			int yyi=clip_0_31(15+yi);
+			for (int xi=-r; xi<=r; xi++)
+			{
+				if (yi2+(xi*xi)<r2)
+				{
+					int xxi=clip_0_31(15+xi);
+					gradient[xxi+(yyi<<5)]=255;
+				}
+			}
+		}
+	}
+	else if (building->type->isVirtual && building->type->zonable[WORKER])
+	{
+		assert(!building->type->zonableForbidden);
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			int yyi=clip_0_31(15+yi);
+			for (int xi=-r; xi<=r; xi++)
+			{
+				if (yi2+(xi*xi)<=r2)
+				{
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					if(cases[addr].ressource.type != NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
+					{
+						int xxi=clip_0_31(15+xi);
+						gradient[xxi+(yyi<<5)]=255;
+					}
+				}
+			}
+		}
 	}
 	else
 		fillGradientRectangle(gradient, posW, posH);
 
 	// 1c. Set values at inaccessible areas to 0 (meaning, well, 'inaccessible').
 	// Here g=Global(map axis), l=Local(map axis)
-
+	
 	for (int yl=0; yl<32; yl++)
 	{
 		int wyl=(yl<<5);
@@ -3465,14 +3501,6 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					gradient[addrl]=0;
 			}
 		}
-	}
-	
-	// 1d. Set values at target building to 255 if this is not a building,
-	// but e.g. a flag (which has a circular area):
-	if (building->type->zonable[WORKER])
-	{
-		int r=building->unitStayRange;
-		fillGradientCircle(gradient, r);
 	}
 	
 	// 2. NEED TO UPDATE? Check boundary conditions to see if they have changed.
@@ -3699,6 +3727,8 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite = 0;
 
+	bool isClearingFlag=false;
+
 	memset(gradient, 1, size);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
@@ -3717,6 +3747,27 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				}
 		}
 	}
+	else if (building->type->isVirtual && building->type->zonable[WORKER])
+	{
+		assert(!building->type->zonableForbidden);
+		isClearingFlag=true;
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			for (int xi=-r; xi<=r; xi++)
+				if (yi2+(xi*xi)<=r2)
+				{
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					if(cases[addr].ressource.type!=NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
+					{
+						gradient[addr] = 255;
+						listedAddr[listCountWrite++] = addr;
+					}
+				}
+		}
+	}
 
 	for (int y=0; y<h; y++)
 	{
@@ -3727,7 +3778,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			Case& c=cases[wyx];
 			if (c.building==NOGBID)
 			{
-				if (c.ressource.type!=NO_RES_TYPE)
+				if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
 					gradient[wyx] = 0;
 				else if (c.forbidden&teamMask)
 					gradient[wyx] = 0;
@@ -3744,25 +3795,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				else
 					gradient[wyx] = 0;
 			}
-		}
-	}
-	
-	if (building->type->zonable[WORKER])
-	{
-		assert(!building->type->zonableForbidden);
-		int r=building->unitStayRange;
-		int r2=r*r;
-		for (int yi=-r; yi<=r; yi++)
-		{
-			int yi2=(yi*yi);
-			for (int xi=-r; xi<=r; xi++)
-				if (yi2+(xi*xi)<=r2)
-				{
-					// TODO: check if this is really the ressource we are meant to remove
-					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
-					gradient[addr] = 255;
-					listedAddr[listCountWrite++] = addr;
-				}
 		}
 	}
 	
