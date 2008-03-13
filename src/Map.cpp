@@ -4687,20 +4687,9 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	bool found = false;
 	
 	// we look around us, searching for a usable position with a bigger gradient value 
-	for (int di=0; di<8; di++)
+	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
 	{
-		int ddx = deltaOne[di][0];
-		int ddy = deltaOne[di][1];
-		int xg = (x+ddx) & wMask;
-		int yg = (y+ddy) & hMask;
-		Uint8 g = gradient[xg+(yg<<wDec)];
-		if (g>max && isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
-		{
-			max = g;
-			*dx = ddx;
-			*dy = ddy;
-			found = true;
-		}
+		found = true;
 	}
 	
 	// we are in a blocked situation, so we have to regenerate the forbidden gradient
@@ -4723,20 +4712,9 @@ bool Map::pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	bool found = false;
 	
 	// we look around us, searching for a usable position with a bigger gradient value 
-	for (int di=0; di<8; di++)
+	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
 	{
-		int ddx = deltaOne[di][0];
-		int ddy = deltaOne[di][1];
-		int xg = (x+ddx) & wMask;
-		int yg = (y+ddy) & hMask;
-		Uint8 g = gradient[xg+(yg<<wDec)];
-		if (g>max && isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
-		{
-			max = g;
-			*dx = ddx;
-			*dy = ddy;
-			found = true;
-		}
+		found = true;
 	}
 	
 	// we are in a blocked situation, so we have to regenerate the forbidden gradient
