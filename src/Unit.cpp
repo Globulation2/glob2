@@ -127,8 +127,9 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	destinationPurprose=-1;
 	caryedRessource=-1;
 	jobTimer = 0;
-
-
+	
+	previousClearingAreaX=-1;
+	previousClearingAreaY=-1;
 	
 	// gui
 	levelUpAnimation = 0;
@@ -215,6 +216,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	caryedRessource = stream->readSint32("caryedRessource");
 
 	jobTimer = stream->readSint32("jobTimer");
+	
+	previousClearingAreaX=-1;
+	previousClearingAreaY=-1;
 
 	// gui
 	levelUpAnimation = 0;
@@ -769,7 +773,12 @@ void Unit::handleMedical(void)
 				owner->map->setAirUnit(posX, posY, NOGUID);
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
-				
+			
+			if(previousClearingAreaX!=-1)
+			{
+				owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
+			}
+			
 			// generate death animation
 			if (!globalContainer->runNoX)
 				owner->map->getSector(posX, posY)->deathAnimations.push_back(new UnitDeathAnimation(posX, posY, owner));
@@ -1386,6 +1395,9 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 
 void Unit::handleMovement(void)
 {
+	// This variable says whether the unit is going to a clearing area
+	bool isDoingClearingArea = false;
+	
 	// clearArea code, override behaviour locally
 	if (typeNum == WORKER &&
 		medical == MED_FREE &&
@@ -1774,13 +1786,38 @@ void Unit::handleMovement(void)
 				}
 				movement=MOV_GOING_DXDY;
 			}
-			else if(performance[HARVEST] && (255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY))<((hungry-trigHungry) / race->hungryness) && owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+			else if(performance[HARVEST])
 			{
-				//Find clearing ressource
-				directionFromDxDy();
-				movement = MOV_GOING_DXDY;
-				owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
-				validTarget=true;
+				int distance = 255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
+				if(distance < ((hungry-trigHungry) / race->hungryness) && distance > 1)
+				{
+					int tempTargetX, tempTargetY;
+					bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
+					if(path && !owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber) || (tempTargetX == previousClearingAreaX && tempTargetY == previousClearingAreaY))
+					{
+						isDoingClearingArea = true;
+						if(previousClearingAreaX != -1)
+						{
+							owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
+						}
+						dx=0;
+						dy=0;
+						owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
+
+						targetX = tempTargetX;
+						targetY = tempTargetY;
+						previousClearingAreaX = tempTargetX;
+						previousClearingAreaY = tempTargetY;
+						
+						//Find clearing ressource
+						directionFromDxDy();
+						movement = MOV_GOING_DXDY;
+						owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber);
+						validTarget=true;
+					}
+				}
+				else
+					movement=MOV_RANDOM_GROUND;
 			}
 			else
 				movement=MOV_RANDOM_GROUND;
@@ -1896,6 +1933,13 @@ void Unit::handleMovement(void)
 			assert (false);
 		}
 		break;
+	}
+	
+	if(!isDoingClearingArea && previousClearingAreaX!=-1)
+	{
+		owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
+		previousClearingAreaX = -1;
+		previousClearingAreaY = -1;
 	}
 }
 
