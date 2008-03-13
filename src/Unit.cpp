@@ -1815,6 +1815,8 @@ void Unit::handleMovement(void)
 						owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber);
 						validTarget=true;
 					}
+					else
+						movement=MOV_RANDOM_GROUND;
 				}
 				else
 					movement=MOV_RANDOM_GROUND;
