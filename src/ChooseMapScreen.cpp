@@ -93,34 +93,48 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 {
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		std::string mapFileName;
-		if(currentDirectoryMode == DisplayRegular)
-			mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
-		else
-			mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
-		
-		mapPreview->setMapThumbnail(mapFileName.c_str());
-		InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
-		if (stream->isEndOfStream())
+		if(fileList->getSelectionIndex() != -1)
 		{
-			std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
-		}
-		else
-		{
-			if (verbose)
-				std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
-			validMapSelected = mapHeader.load(stream);
-			if (validMapSelected)
-			{
-				updateMapInformation();
+			std::string mapFileName;
+			if(currentDirectoryMode == DisplayRegular)
+				mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
+			else
+				mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
+			
+			mapPreview->setMapThumbnail(mapFileName.c_str());
 
-				time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
-				mapDate->setText(ctime(&mtime));
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
 			}
 			else
-				std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = mapHeader.load(stream);
+				if (validMapSelected)
+				{
+					updateMapInformation();
+
+					time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+					mapDate->setText(ctime(&mtime));
+				}
+				else
+					std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
+			}
+			delete stream;
 		}
-		delete stream;
+		else 
+		{
+			mapDate->setText("");
+			mapVersion->setText("");
+			mapInfo->setText("");
+			mapSize->setText("");
+			mapName->setText("");
+			mapPreview->setMapThumbnail(NULL);
+			validMapSelected = false;
+		}
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
@@ -139,9 +153,13 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			// if a valid file is selected, delete it
 			if (fileList->getSelectionIndex() >= 0)
 			{
+				size_t i = fileList->getSelectionIndex();
 				std::string mapFileName = fileList->listToFile(fileList->get().c_str());
 				Toolkit::getFileManager()->remove(mapFileName);
 				fileList->generateList();
+				
+				fileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
+				fileList->selectionChanged();
 			}
 		}
 		else if (source == switchType)

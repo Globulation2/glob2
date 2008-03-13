@@ -96,33 +96,41 @@ namespace GAGGUI
 	
 	void FileList::selectionChanged()
 	{
-		std::string selName = this->strings[this->nth];
-		std::string::iterator last = selName.end();
-		last--;
-		// this will only work if only the directories have a trailing DIR_SEPARATOR
-		if (*last == DIR_SEPARATOR)
+		if(this->nth != -1)
 		{
-			selName.erase(last);
-			// parent directory, unstack a folder
-			if (selName == "..")
+			std::string selName = this->strings[this->nth];
+			std::string::iterator last = selName.end();
+			last--;
+			// this will only work if only the directories have a trailing DIR_SEPARATOR
+			if (*last == DIR_SEPARATOR)
 			{
-				std::string::size_type lastDirSep = this->current.find_last_of(DIR_SEPARATOR);
-				if (lastDirSep == std::string::npos)
-					lastDirSep = 0;
-				this->current.erase(lastDirSep, this->current.length());
+				selName.erase(last);
+				// parent directory, unstack a folder
+				if (selName == "..")
+				{
+					std::string::size_type lastDirSep = this->current.find_last_of(DIR_SEPARATOR);
+					if (lastDirSep == std::string::npos)
+						lastDirSep = 0;
+					this->current.erase(lastDirSep, this->current.length());
+				}
+				// child directory, stack selection
+				else
+				{
+					if (! current.empty())
+						this->current += DIR_SEPARATOR;
+					this->current += selName;
+				}
+				this->generateList();
+				this->nth = -1;
 			}
-			// child directory, stack selection
 			else
-			{
-				if (! current.empty())
-					this->current += DIR_SEPARATOR;
-				this->current += selName;
-			}
-			this->generateList();
-			this->nth = -1;
+				this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
 		}
 		else
+		{
+			this->current = "";
 			this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
+		}
 	}
 	
 	std::string FileList::fileToList(const char* fileName) const
