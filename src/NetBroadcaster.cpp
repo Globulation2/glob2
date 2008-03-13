@@ -34,11 +34,21 @@ NetBroadcaster::NetBroadcaster(LANGameInformation& info)
 		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
 		exit(2);
 	}
+	localsocket=SDLNet_UDP_Open(0);
+	if(!localsocket)
+	{
+		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+		exit(2);
+	}
 	IPaddress address;
-	//SDLNet_ResolveHost(&address, "127.0.0.1", LAN_BROADCAST_PORT);
 	address.host = INADDR_BROADCAST;
 	address.port = LAN_BROADCAST_PORT;
 	SDLNet_UDP_Bind(socket, 0, &address);
+	
+	IPaddress localaddress;
+	SDLNet_ResolveHost(&localaddress, "127.0.0.1", LAN_BROADCAST_PORT);
+	SDLNet_UDP_Bind(localsocket, 0, &localaddress);
+	
 	lastTime = SDL_GetTicks();
 }
 
@@ -48,6 +58,9 @@ NetBroadcaster::~NetBroadcaster()
 {
 	SDLNet_UDP_Unbind(socket, 0);
 	SDLNet_UDP_Close(socket);
+	
+	SDLNet_UDP_Unbind(localsocket, 0);
+	SDLNet_UDP_Close(localsocket);
 }
 
 
@@ -81,6 +94,13 @@ void NetBroadcaster::update()
 		{
 			printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
 		}
+		
+		result = SDLNet_UDP_Send(localsocket, 0, packet);
+		if(!result)
+		{
+			printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
+		}
+		
 
 		delete bos;
 		SDLNet_FreePacket(packet);
