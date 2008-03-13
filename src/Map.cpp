@@ -302,6 +302,10 @@ void Map::clear()
 		delete[] astarpoints;
 		astarpoints=NULL;
 
+		assert(clearingAreaClaims);
+		delete[] clearingAreaClaims;
+		clearingAreaClaims=NULL;
+
 		arraysBuilt=false;
 	}
 	else
@@ -984,6 +988,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	astarpoints=new AStarAlgorithmPoint[w*h];
 
+	clearingAreaClaims = new Uint32[w*h];
+
 	arraysBuilt=true;
 	
 	#ifdef check_disorderable_gradient_error_probability
@@ -1061,6 +1067,9 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	cases = new Case[size];
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
+	astarpoints=new AStarAlgorithmPoint[size];
+	clearingAreaClaims = new Uint32[size];
+	memset(clearingAreaClaims, 0, size*sizeof(Uint32));
 	
 	#ifdef check_disorderable_gradient_error_probability
 	for (int i = 0; i < GT_SIZE; i++)
@@ -1162,8 +1171,6 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
-	
-	astarpoints=new AStarAlgorithmPoint[w*h];
 	
 	arraysBuilt = true;
 	
@@ -1887,6 +1894,30 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 
 	return false;
 }
+
+
+
+void Map::setClearingAreaClaimed(int x, int y, int teamNumber)
+{
+	clearingAreaClaims[(y << wDec) + x] |= 1u<<teamNumber;
+}
+
+
+
+void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
+{
+	Uint32 &mask = clearingAreaClaims[(y << wDec) + x];
+	mask ^= mask & (1u<<teamNumber);
+}
+
+
+
+bool Map::isClearingAreaClaimed(int x, int y, int teamNumber)
+{
+	return clearingAreaClaims[(y << wDec) + x] & (1u<<teamNumber);
+}
+
+
 
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
