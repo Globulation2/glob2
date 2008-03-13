@@ -1204,6 +1204,7 @@ bool MapEdit::load(const char *filename)
 		game.map.computeLocalForbidden(team);
 		game.map.computeLocalClearArea(team);
 		game.map.computeLocalGuardArea(team);
+		
 		return true;
 	}
 }
@@ -1271,8 +1272,7 @@ int MapEdit::run(void)
 		{
  			returnCode=(processEvent(event) == -1) ? -1 : returnCode;
 		}
-			
-
+		
 		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor)
 			handleMapScroll();
 		// redraw on scroll
@@ -1990,7 +1990,10 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 
 		if (game.checkRoomForBuilding(tempX, tempY, bt, &x, &y, team, false))
 		{
-			game.addBuilding(x, y, typeNum, team, 0, 0);
+			if(selectionName=="swarm" || selectionName=="inn" || selectionName=="defencetower" || selectionName=="market")
+				game.addBuilding(x, y, typeNum, team, 1, 0);
+			else
+				game.addBuilding(x, y, typeNum, team, 0, 0);
 			if (selectionName=="swarm")
 			{
 				if (game.teams[team]->startPosSet<3)
