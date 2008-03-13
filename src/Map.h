@@ -541,6 +541,13 @@ public:
 		return gradient[((y&hMask)<<wDec)+(x&wMask)];
 	}
 	
+	Uint8 getClearingGradient(int teamNumber, bool canSwim, int x, int y)
+	{
+		Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
+		assert(gradient);
+		return gradient[((y&hMask)<<wDec)+(x&wMask)];
+	}
+	
 	void updateGlobalGradientSlow(Uint8 *gradient);
 	template<typename Tint> void updateGlobalGradientSlow(Uint8 *gradient);
 	
