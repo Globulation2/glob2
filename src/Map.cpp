@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <valarray>
 #include <Stream.h>
+#include <queue>
 
 
 #if defined( LOG_GRADIENT_LINE_GRADIENT )
@@ -87,6 +88,7 @@ Map::Map()
 	fogOfWar=NULL;
 	fogOfWarA=NULL;
 	fogOfWarB=NULL;
+	astarpoints = NULL;
 	cases=NULL;
 	for (int t=0; t<32; t++)
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
@@ -295,6 +297,10 @@ void Map::clear()
 		assert(listedAddr);
 		delete[] listedAddr;
 		listedAddr=NULL;
+		
+		assert(astarpoints);
+		delete[] astarpoints;
+		astarpoints=NULL;
 
 		arraysBuilt=false;
 	}
@@ -976,6 +982,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 		delete[] sectors;
 	sectors=new Sector[sizeSector];
 
+	astarpoints=new AStarAlgorithmPoint[w*h];
+
 	arraysBuilt=true;
 	
 	#ifdef check_disorderable_gradient_error_probability
@@ -1154,6 +1162,9 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
+	
+	astarpoints=new AStarAlgorithmPoint[w*h];
+	
 	arraysBuilt = true;
 	
 	stream->readEnterSection("sectors");
@@ -4969,6 +4980,114 @@ void Map::updateClearAreasGradient()
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateClearAreasGradient(i);
 }
+
+bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength)
+{
+	//This implements a fairly standard A* algorithm, except that each node does not store the location
+	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
+	//Instead, each node holds the direction that you left from the initial node that lead to it, so you
+	//can't trace backwards to find the path, but you can instantly find the direction you need to go from
+	//the initial node, a small optimization since we don't need the whole path
+	targetX = (targetX + w) & wMask;
+	targetY = (targetY + h) & hMask;
+	
+	AStarComparator compare(astarpoints);
+	
+	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
+	std::priority_queue<int, std::vector<int>, AStarComparator> openList(compare);
+	openList.push((x << hDec) + y);
+	astarpoints[(x << hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
+	
+	//These are all the examined points, so that these positions on astarponts
+	//Can be reset later. Why not reset or re-allocate the whole thing every
+	//call? Its slow! Use reserve to avoid doing this multiple times
+	astarExaminedPoints.reserve(maximumLength*2 + 6);
+	astarExaminedPoints.push_back((x << hDec) + y);
+	
+	while(!openList.empty())
+	{
+		///Get the smallest from the heap
+		int position = openList.top();
+		openList.pop();
+
+		AStarAlgorithmPoint& pos = astarpoints[position];
+		pos.isClosed = true;
+				
+		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumLength))
+		{
+			break;
+		}
+		
+		for(int lx=-1; lx<=1; ++lx)
+		{
+			for(int ly=-1; ly<=1; ++ly)
+			{
+				int nx = (pos.x + lx + w) & wMask;
+				int ny = (pos.y + ly + h) & hMask;
+				int n = (nx << hDec) + ny;
+				AStarAlgorithmPoint& npos = astarpoints[n];
+				if(npos.isClosed)
+				{
+					continue;
+				}
+				else
+				{
+					int moveCost = pos.moveCost + 1;
+					int totalCost = moveCost +  warpDistMax(targetX, targetY, nx, ny);
+					
+					//If this cell hasn't been examined at all yet
+					if(npos.x == -1)
+					{
+						if(isFreeForGroundUnit(nx, ny, canSwim, teamMask) || (nx == targetX && ny == targetY))
+						{
+							//If the parent cell is the starting cell, add in the starting direction
+							if(pos.dx == 0 && pos.dy == 0)
+							{
+								npos = AStarAlgorithmPoint(nx, ny, lx, ly, moveCost, totalCost, false);
+								openList.push(n);
+							}
+							//Else, the direction is the same as the parents node
+							else
+							{
+								npos = AStarAlgorithmPoint(nx, ny, pos.dx, pos.dy, moveCost, totalCost, false);
+								openList.push(n);
+							}
+							astarExaminedPoints.push_back(n);
+						}
+					}
+					//Check if we can improve this cells value by taking this route
+					else if(npos.moveCost > moveCost)
+					{
+						npos.moveCost = moveCost;
+						npos.totalCost = totalCost;
+						npos.dx = pos.dx;
+						npos.dy = pos.dy;
+					}
+				}
+			}
+		}
+	}
+	
+	AStarAlgorithmPoint final = astarpoints[(targetX << hDec) + targetY];
+
+	//Clear all of the examined points for the next call to this algorithm
+	for(int i=0; i<astarExaminedPoints.size(); ++i)
+	{
+		astarpoints[astarExaminedPoints[i]] = AStarAlgorithmPoint();
+	}
+	
+	astarExaminedPoints.clear();
+
+	//It was never examined, thus there is no paths
+	if(final.x == -1)
+		return false;
+	
+	//Input direction of the final square to the unit
+	*dx = final.dx;
+	*dy = final.dy;
+	return true;
+}
+
 
 
 void Map::initExploredArea(int teamNumber)

@@ -595,6 +595,9 @@ public:
 	void updateClearAreasGradient(int teamNumber);
 	void updateClearAreasGradient();
 	
+	///Implements A* algorithm for point to point pathfinding. Does not cache path, designed to be fast
+	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength);
+	
 	void initExploredArea(int teamNumber);
 	void makeDiscoveredAreasExplored(int teamNumber);
 	void updateExploredArea(int teamNumber);
@@ -754,6 +757,44 @@ protected:
 	Sint32 wSector, hSector;
 	int sizeSector;
 	
+	
+	///This is a single point in the array used for A* algorithm
+	struct AStarAlgorithmPoint
+	{
+		AStarAlgorithmPoint() : x(-1), y(-1), dx(-1), dy(-1), moveCost(-1), totalCost(-1), isClosed(false) { }
+		AStarAlgorithmPoint(Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Uint16 moveCost, Uint16 totalCost, bool isClosed) : x(x), y(y), dx(dx), dy(dy), moveCost(moveCost), totalCost(totalCost), isClosed(isClosed) {}
+		//Pos x
+		Sint16 x;
+		//Pos y
+		Sint16 y;
+		//The direction from the starting point that leads to this path
+		Sint16 dx;
+		//The direction from the starting point that leads to this path
+		Sint16 dy;
+		//Cost to get to square x
+		Uint16 moveCost;
+		//Cost to get to square x + estimate to get to the end
+		Uint16 totalCost;
+		//Whether this cell has been examined
+		bool isClosed;
+	};
+	
+	///This is a function-object that compares two points based on their total score in the A* algorithm
+	struct AStarComparator
+	{
+		AStarComparator(const AStarAlgorithmPoint* points) : points(points) {}
+		bool operator()(int lhs, int rhs)
+		{
+			if(points[lhs].totalCost > points[rhs].totalCost)
+				return true;
+			return false;
+		}
+		const AStarAlgorithmPoint* points;
+	};
+	
+	//This array is kept and re-used for every point-to-point pathfind call
+	AStarAlgorithmPoint* astarpoints;
+	std::vector<int> astarExaminedPoints;
 
 public:
 	Uint32 checkSum(bool heavy);
