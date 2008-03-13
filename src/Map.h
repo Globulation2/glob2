@@ -452,6 +452,13 @@ public:
 	//! Return true if unit has contact with enemy. If true, put contact direction in dx, dy
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
+	//! Sets this particular clearing area location as claimed
+	void setClearingAreaClaimed(int x, int y, int teamNumber);
+	//! Sets this particular clearing area location as unclaimed
+	void setClearingAreaUnclaimed(int x, int y, int teamNumber);
+	//! Returns true if this particular clearing area position is claimed for this unit
+	bool isClearingAreaClaimed(int x, int y, int teamNumber);
+
 	//! Return GID
 	Uint16 getGroundUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].groundUnit; }
 	Uint16 getAirUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].airUnit; }
@@ -747,6 +754,11 @@ public:
 	//[int team]
 	// 0=unexplored, 255=just explored
 	Uint8 *exploredArea[32];
+	
+	/// This shows how many "claims" there are on a particular ressource square
+	/// This is so that not all 150 free units go after one piece of wood
+	/// Each square is a mask for the teams that this square has been claimed for
+	Uint32 *clearingAreaClaims;
 	
 protected:
 	//Used for scheduling computation time.
