@@ -2353,7 +2353,7 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 		*cdx=SIGN(ldx);
 		*cdy=0;
 	}
-	else if ((100 * abs(ldy)) > (241 * abs(ldx)))
+	else if ((100 * abs(ldy)) >= (241 * abs(ldx)))
 	{
 		*cdx=0;
 		*cdy=SIGN(ldy);
