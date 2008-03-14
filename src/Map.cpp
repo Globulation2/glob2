@@ -124,6 +124,8 @@ Map::Map()
 	hSector=0;
 	sizeSector=0;
 	
+	immobileUnits=NULL;
+	
 	//Gradients stats:
 	for (int t=0; t<16; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
@@ -305,6 +307,10 @@ void Map::clear()
 		assert(clearingAreaClaims);
 		delete[] clearingAreaClaims;
 		clearingAreaClaims=NULL;
+		
+		assert(immobileUnits);
+		delete[] immobileUnits;
+		immobileUnits=NULL;
 
 		arraysBuilt=false;
 	}
@@ -990,6 +996,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	clearingAreaClaims = new Uint32[w*h];
 
+	immobileUnits = new Uint8[w*h];
+
 	arraysBuilt=true;
 	
 	#ifdef check_disorderable_gradient_error_probability
@@ -1070,6 +1078,8 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	astarpoints=new AStarAlgorithmPoint[size];
 	clearingAreaClaims = new Uint32[size];
 	memset(clearingAreaClaims, 0, size*sizeof(Uint32));
+	immobileUnits = new Uint8[size];
+	memset(immobileUnits, 255, size*sizeof(Uint8));
 	
 	#ifdef check_disorderable_gradient_error_probability
 	for (int i = 0; i < GT_SIZE; i++)
@@ -1899,14 +1909,14 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 
 void Map::setClearingAreaClaimed(int x, int y, int teamNumber)
 {
-	clearingAreaClaims[(y << wDec) + x] |= 1u<<teamNumber;
+	clearingAreaClaims[(normalizeY(y) << wDec) + normalizeX(x)] |= 1u<<teamNumber;
 }
 
 
 
 void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
 {
-	Uint32 &mask = clearingAreaClaims[(y << wDec) + x];
+	Uint32 &mask = clearingAreaClaims[(normalizeY(y) << wDec) + normalizeX(x)];
 	mask ^= mask & (1u<<teamNumber);
 }
 
@@ -1914,7 +1924,33 @@ void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
 
 bool Map::isClearingAreaClaimed(int x, int y, int teamNumber)
 {
-	return clearingAreaClaims[(y << wDec) + x] & (1u<<teamNumber);
+	return clearingAreaClaims[(normalizeY(y) << wDec) + normalizeX(x)] & (1u<<teamNumber);
+}
+
+
+
+void Map::markImmobileUnit(int x, int y, int teamNumber)
+{
+	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] = teamNumber;
+}
+
+
+void Map::clearImmobileUnit(int x, int y)
+{
+	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] = 255;
+}
+
+
+bool Map::isImmobileUnit(int x, int y)
+{
+	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] != 255;
+}
+
+
+
+Uint8 Map::getImmobileUnit(int x, int y)
+{
+	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)];
 }
 
 
@@ -2978,6 +3014,8 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 		Case& c=cases[i];
 		if (c.forbidden & teamMask)
 			gradient[i]=0;
+		else if(immobileUnits[i] != 255)
+			gradient[i]=0;
 		else if (c.ressource.type==NO_RES_TYPE)
 		{
 			if (c.building!=NOGBID)
@@ -3497,6 +3535,8 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					gradient[addrl]=0;
 				else if (c.forbidden&teamMask)
 					gradient[addrl]=0;
+				else if(immobileUnits[wyg+xg] != 255)
+					gradient[addrl]=0;
 				else if (!canSwim && isWater(xg, yg))
 					gradient[addrl]=0;
 			}
@@ -3782,6 +3822,8 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 					gradient[wyx] = 0;
 				else if (c.forbidden&teamMask)
 					gradient[wyx] = 0;
+				else if(immobileUnits[wyx] != 255)
+					gradient[wyx] = 0;
 				else if (!canSwim && isWater(x, y))
 					gradient[wyx] = 0;
 			}
@@ -3909,6 +3951,8 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 				else if (c.building!=NOGBID)
 					gradient[addrl]=0;
 				else if (c.forbidden&teamMask)
+					gradient[addrl]=0;
+				else if(immobileUnits[wyg+xg] != 255)
 					gradient[addrl]=0;
 				else if (!canSwim && isWater(xg, yg))
 					gradient[addrl]=0;
@@ -4819,6 +4863,8 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			testgradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			testgradient[i] = 0;
+		else if(immobileUnits[i] != 255)
+			testgradient[i]=0;
 		else if (c.forbidden&teamMask)
 		{
 			testgradient[i]= 1;  // Later: check if we can set it to 254.
@@ -4884,6 +4930,8 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			gradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
+		else if(immobileUnits[i] != 255)
+			gradient[i]=0;
 		else if (c.forbidden&teamMask)
 			gradient[i]= 1;
 		else
@@ -4935,6 +4983,8 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 		const Case& c=cases[i];
 		if (c.forbidden & teamMask)
 			gradient[i] = 0;
+		else if(immobileUnits[i] != 255)
+			gradient[i]=0;
 		else if (c.ressource.type != NO_RES_TYPE)
 			gradient[i] = 0;
 		else if (c.building != NOGBID)
@@ -4995,6 +5045,8 @@ template<typename Tint> void Map::updateClearAreasGradient(int teamNumber, bool 
 		}
 		else if (c.forbidden & teamMask)
 			gradient[i] = 0;
+		else if(immobileUnits[i] != 255)
+			gradient[i]=0;
 		else if (c.ressource.type != NO_RES_TYPE)
 			gradient[i] = 0;
 		else if (c.building != NOGBID)
