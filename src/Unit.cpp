@@ -1396,7 +1396,13 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 void Unit::handleMovement(void)
 {
 	// This variable says whether the unit is going to a clearing area
-	bool isDoingClearingArea = false;
+	if(previousClearingAreaX != -1)
+	{
+		owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
+		previousClearingAreaX = -1;
+		previousClearingAreaY = -1;
+	}
+	
 	
 	// clearArea code, override behaviour locally
 	if (typeNum == WORKER &&
@@ -1426,6 +1432,9 @@ void Unit::handleMovement(void)
 						|| (mapCase.ressource.type == PAPYRUS)
 						|| (mapCase.ressource.type == ALGA)))
 				{
+					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber);
+					previousClearingAreaX = (posX+tdx)  & map->wMask;
+					previousClearingAreaY = (posY+tdy)  & map->hMask;
 					dx = tdx;
 					dy = tdy;
 					movement = MOV_HARVESTING;
@@ -1793,13 +1802,8 @@ void Unit::handleMovement(void)
 				{
 					int tempTargetX, tempTargetY;
 					bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
-					if(path && !owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber) || (tempTargetX == previousClearingAreaX && tempTargetY == previousClearingAreaY))
+					if(path && !owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber))
 					{
-						isDoingClearingArea = true;
-						if(previousClearingAreaX != -1)
-						{
-							owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
-						}
 						dx=0;
 						dy=0;
 						owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
@@ -1935,13 +1939,6 @@ void Unit::handleMovement(void)
 			assert (false);
 		}
 		break;
-	}
-	
-	if(!isDoingClearingArea && previousClearingAreaX!=-1)
-	{
-		owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
-		previousClearingAreaX = -1;
-		previousClearingAreaY = -1;
 	}
 }
 
