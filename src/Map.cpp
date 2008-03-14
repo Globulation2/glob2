@@ -3529,11 +3529,11 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			int addrl=wyl+xl;
 			if (gradient[addrl]!=255)
 			{
-				if (c.ressource.type!=NO_RES_TYPE)
+				if (c.forbidden&teamMask)
+					gradient[addrl]=0;
+				else if (c.ressource.type!=NO_RES_TYPE)
 					gradient[addrl]=0;
 				else if (c.building!=NOGBID && c.building!=bgid)
-					gradient[addrl]=0;
-				else if (c.forbidden&teamMask)
 					gradient[addrl]=0;
 				else if(immobileUnits[wyg+xg] != 255)
 					gradient[addrl]=0;
@@ -3818,9 +3818,9 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			Case& c=cases[wyx];
 			if (c.building==NOGBID)
 			{
-				if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
+				if (c.forbidden&teamMask)
 					gradient[wyx] = 0;
-				else if (c.forbidden&teamMask)
+				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
 					gradient[wyx] = 0;
 				else if(immobileUnits[wyx] != 255)
 					gradient[wyx] = 0;
@@ -3937,7 +3937,9 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 			int dist2=(xl-15)*(xl-15)+dyl2;
 			if (dist2<=range2)
 			{
-				if (c.ressource.type!=NO_RES_TYPE)
+				if (c.forbidden&teamMask)
+					gradient[addrl]=0;
+				else if (c.ressource.type!=NO_RES_TYPE)
 				{
 					Sint8 t=c.ressource.type;
 					if (t<BASIC_COUNT && clearingRessources[t])
@@ -3949,8 +3951,6 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 						gradient[addrl]=0;
 				}
 				else if (c.building!=NOGBID)
-					gradient[addrl]=0;
-				else if (c.forbidden&teamMask)
 					gradient[addrl]=0;
 				else if(immobileUnits[wyg+xg] != 255)
 					gradient[addrl]=0;
@@ -5037,14 +5037,13 @@ template<typename Tint> void Map::updateClearAreasGradient(int teamNumber, bool 
 	for (size_t i=0; i<size; i++)
 	{
 		const Case& c=cases[i];
-		
-		if(c.clearArea & teamMask && (c.ressource.type == WOOD || c.ressource.type == CORN || c.ressource.type == PAPYRUS || c.ressource.type == ALGA))
+		if (c.forbidden & teamMask)
+			gradient[i] = 0;
+		else if(c.clearArea & teamMask && (c.ressource.type == WOOD || c.ressource.type == CORN || c.ressource.type == PAPYRUS || c.ressource.type == ALGA))
 		{
 			gradient[i] = 255;
 			listedAddr[listCountWrite++] = i;
 		}
-		else if (c.forbidden & teamMask)
-			gradient[i] = 0;
 		else if(immobileUnits[i] != 255)
 			gradient[i]=0;
 		else if (c.ressource.type != NO_RES_TYPE)

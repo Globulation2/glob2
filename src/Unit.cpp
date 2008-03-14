@@ -1431,7 +1431,8 @@ void Unit::handleMovement(void)
 					&& ((mapCase.ressource.type == WOOD)
 						|| (mapCase.ressource.type == CORN)
 						|| (mapCase.ressource.type == PAPYRUS)
-						|| (mapCase.ressource.type == ALGA)))
+						|| (mapCase.ressource.type == ALGA))
+						&& !(mapCase.forbidden & owner->me))
 				{
 					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber);
 					previousClearingAreaX = (posX+tdx)  & map->wMask;
@@ -1752,7 +1753,7 @@ void Unit::handleMovement(void)
 				{
 					int x=posX+tdx;
 					int y=posY+tdy;
-					if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRessourceTakeable(x, y, attachedBuilding->clearingRessources))
+					if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRessourceTakeable(x, y, attachedBuilding->clearingRessources) && !(owner->map->isForbidden(x, y, owner->me)))
 					{
 						dx=tdx;
 						dy=tdy;
