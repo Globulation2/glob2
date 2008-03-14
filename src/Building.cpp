@@ -1580,7 +1580,7 @@ void Building::subscribeForFlagingStep()
 				for(int n=0; n<1024; ++n)
 				{
 					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || unit->movement == Unit::MOV_ATTACKING_TARGET)
 						continue;
 			  	 	if(!canUnitWorkHere(unit))
 			  		  	continue;
