@@ -232,7 +232,7 @@ int Engine::run(void)
 	if (globalContainer->runNoX)
 	{
 		printf("nox::game started\n");
-		noxStartTick = SDL_GetTicks();
+		automaticGameStartTick = SDL_GetTicks();
 	}
 	
 	while (doRunOnceAgain)
@@ -251,28 +251,28 @@ int Engine::run(void)
 		while (gui.isRunning)
 		{
 			// We always allow the user to use the gui:
-			if (globalContainer->runNoX)
+			if (globalContainer->automaticEndingGame)
 			{
 				if (!gui.getLocalTeam()->isAlive)
 				{
 					printf("nox::gui.localTeam is dead\n");
 					gui.isRunning = false;
-					noxEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks();
 				}
 				else if (gui.getLocalTeam()->hasWon)
 				{
 					printf("nox::gui.localTeam has won\n");
 					gui.isRunning = false;
-					noxEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks();
 				}
 				else if (gui.game.totalPrestigeReached)
 				{
 					printf("nox::gui.game.totalPrestigeReached\n");
 					gui.isRunning = false;
-					noxEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks();
 				}
 			}
-			else
+			if(!globalContainer->runNoX)
 				gui.step();
 	
 			if (!gui.hardPause)
@@ -342,16 +342,16 @@ int Engine::run(void)
 					gui.game.syncStep(gui.localTeamNo);
 			}
 
-			if (globalContainer->runNoX)
+			if (globalContainer->automaticEndingGame)
 			{
-				if ((int)gui.game.stepCounter == globalContainer->runNoXCountSteps)
+				if ((int)gui.game.stepCounter == globalContainer->automaticEndingSteps)
 				{
 					gui.isRunning = false;
-					noxEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks();
 					printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
 				}
 			}
-			else
+			if(!globalContainer->runNoX)
 			{
 				// we draw
 				gui.drawAll(gui.localTeamNo);
@@ -424,8 +424,10 @@ int Engine::run(void)
 		}
 	}
 	
-	if (globalContainer->runNoX)
+	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
+	{
 		return -1;
+	}
 	else
 	{
 		// Restart menu music
