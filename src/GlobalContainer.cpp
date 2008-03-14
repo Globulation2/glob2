@@ -79,6 +79,8 @@ GlobalContainer::GlobalContainer(void)
 	hostServerPassWord[0] = 0;
 	
 	runTestGames=false;
+	automaticEndingGame=false;
+	automaticEndingSteps=-1;
 	
 	gfx = NULL;
 	mix = NULL;
@@ -150,7 +152,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			{
 				runNoXGameName = argv[i + 1];
 				runNoX = true;
-				good &= (sscanf(argv[i + 2], "%d", &runNoXCountSteps) == 1);
+				automaticEndingGame = true;
+				good &= (sscanf(argv[i + 2], "%d", &automaticEndingSteps) == 1);
 				good &= (sscanf(argv[i + 3], "%d", &runNoXCountRuns) == 1);
 				i += 3;
 			}
@@ -175,7 +178,14 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		if (strcmp(argv[i], "-test-games")==0)
 		{
 			runTestGames=true;
-			runNoX=true;	
+			automaticEndingGame = true;
+			continue;
+		}
+		if (strcmp(argv[i], "-test-games-nox")==0)
+		{
+			runTestGames=true;
+			automaticEndingGame = true;
+			runNoX=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
@@ -328,6 +338,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them");
+			printf("-test-games-nox\tCreates random games with AI and tests them, without gui");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);

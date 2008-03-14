@@ -130,7 +130,7 @@ private:
 
 	CPUStatisticsManager cpuStats;
 
-	Sint32 noxStartTick, noxEndTick;
+	Sint32 automaticGameStartTick, automaticGameEndTick;
 
 	FILE *logFile;
 
