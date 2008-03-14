@@ -3468,6 +3468,10 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	// 1a. Set all values to 1 (meaning 'far away, but not inaccessable').
 	memset(gradient, 1, 1024);
 
+	bool isWarFlag=false;
+	if(building->type->isVirtual && building->type->zonable[WARRIOR])
+		isWarFlag=true;
+
 	// 1b. Set values at target building to 255 (meaning 'very close'/'at destination').
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
@@ -3533,7 +3537,8 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					gradient[addrl]=0;
 				else if (c.ressource.type!=NO_RES_TYPE)
 					gradient[addrl]=0;
-				else if (c.building!=NOGBID && c.building!=bgid)
+				//Warflags don't consider enemy buildings an obstacle
+				else if (c.building!=NOGBID && c.building!=bgid && !(isWarFlag && (1<<Building::GIDtoTeam(c.building))  & (building->owner->enemies)))
 					gradient[addrl]=0;
 				else if(immobileUnits[wyg+xg] != 255)
 					gradient[addrl]=0;
@@ -3768,6 +3773,11 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	size_t listCountWrite = 0;
 
 	bool isClearingFlag=false;
+	bool isWarFlag=false;
+	if (building->type->isVirtual && building->type->zonable[WARRIOR])
+		isWarFlag=true;
+	
+	
 
 	memset(gradient, 1, size);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
@@ -3834,8 +3844,11 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 					gradient[wyx] = 255;
 					listedAddr[listCountWrite++] = wyx;
 				}
-				else
+				//Warflags don't consider enemy buildings an obstacle
+				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 					gradient[wyx] = 0;
+				else
+					gradient[wyx] = 1;
 			}
 		}
 	}
