@@ -778,6 +778,7 @@ void Unit::handleMedical(void)
 			{
 				owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
 			}
+			owner->map->clearImmobileUnit(posX, posY);
 			
 			// generate death animation
 			if (!globalContainer->runNoX)
@@ -1944,6 +1945,7 @@ void Unit::handleMovement(void)
 
 void Unit::handleAction(void)
 {
+	owner->map->clearImmobileUnit(posX, posY);
 	switch (movement)
 	{
 		case MOV_RANDOM_GROUND:
@@ -1990,6 +1992,10 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
+
+			if(dx == 0 && dy == 0)
+				owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+			
 			selectPreferedGroundMovement();
 			speed=performance[action];
 			assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
@@ -2025,6 +2031,9 @@ void Unit::handleAction(void)
 				
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
+			
+			if(dx == 0 && dy == 0)
+				owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 			
 			selectPreferedMovement();
 			speed=performance[action];
@@ -2084,6 +2093,7 @@ void Unit::handleAction(void)
 		
 		case MOV_FILLING:
 		{
+			owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 			directionFromDxDy();
 			action=BUILD;
 			speed=performance[action];
@@ -2092,6 +2102,7 @@ void Unit::handleAction(void)
 
 		case MOV_ATTACKING_TARGET:
 		{
+			owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 			directionFromDxDy();
 			action=ATTACK_SPEED;
 			speed=performance[action];
@@ -2099,7 +2110,8 @@ void Unit::handleAction(void)
 		}
 		
 		case MOV_HARVESTING:
-		{
+		{	
+			owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 			directionFromDxDy();
 			action=HARVEST;
 			speed=performance[action];
