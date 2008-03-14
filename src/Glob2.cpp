@@ -118,7 +118,7 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runNoX()
 {
-	printf("nox::running %d times %d steps:\n", globalContainer->runNoXCountRuns, globalContainer->runNoXCountSteps);
+	printf("nox::running %d times %d steps:\n", globalContainer->runNoXCountRuns, globalContainer->automaticEndingSteps);
 	for (int runNoXCount = 0; runNoXCount < globalContainer->runNoXCountRuns; runNoXCount++)
 	{
 		Engine engine;
@@ -134,8 +134,7 @@ int Glob2::runNoX()
 int Glob2::runTestGames()
 {
 	setRandomSyncRandSeed();
-	globalContainer->runNoXCountSteps=90000;
-	globalContainer->runNoX=true;
+	globalContainer->automaticEndingSteps=90000;
 	while(true)
 	{
 		Engine engine;

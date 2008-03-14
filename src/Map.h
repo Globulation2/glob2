@@ -135,17 +135,13 @@ public:
 	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
 	int normalizeX(int x)
 	{
-		if(x<0)
-			return (x%w) + w;
-		return x%w;
+		return (x + w) & wMask;
 	}
 	
 	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
 	int normalizeY(int y)
 	{
-		if(y<0)
-			return (y%h) + h;
-		return y%h;
+		return (y + h) & hMask;
 	}
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
@@ -459,6 +455,15 @@ public:
 	//! Returns true if this particular clearing area position is claimed for this unit
 	bool isClearingAreaClaimed(int x, int y, int teamNumber);
 
+	//! Marks a particular square as containing an immobile unit
+	void markImmobileUnit(int x, int y, int teamNumber);
+	//! Clears a particular square of having an immobile unit
+	void clearImmobileUnit(int x, int y);
+	//! Returns true if theres an immobile unit on the square
+	bool isImmobileUnit(int x, int y);
+	//! Returns the team number of the immobile unit on the given square, 255 for none
+	Uint8 getImmobileUnit(int x, int y);
+
 	//! Return GID
 	Uint16 getGroundUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].groundUnit; }
 	Uint16 getAirUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].airUnit; }
@@ -759,6 +764,11 @@ public:
 	/// This is so that not all 150 free units go after one piece of wood
 	/// Each square is a mask for the teams that this square has been claimed for
 	Uint32 *clearingAreaClaims;
+	
+	/// These are integers that tell whether an immobile unit is standing on the
+	/// square, and if so, what team number it is. In terms of the engine, these
+	/// are treated like forbidden areas
+	Uint8 *immobileUnits;
 	
 protected:
 	//Used for scheduling computation time.
