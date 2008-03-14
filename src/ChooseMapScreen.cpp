@@ -93,7 +93,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 {
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		if(fileList->getSelectionIndex() != -1)
+		if((currentDirectoryMode == DisplayRegular && fileList->getSelectionIndex() != -1) || (currentDirectoryMode == DisplayAlternate && alternateFileList->getSelectionIndex() != -1))
 		{
 			std::string mapFileName;
 			if(currentDirectoryMode == DisplayRegular)
@@ -170,6 +170,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				fileList->visible=false;
 				alternateFileList->visible=true;
 				switchType->setText(Toolkit::getStringTable()->getString("[the maps]"));
+				alternateFileList->selectionChanged();
 			}
 			else
 			{
@@ -177,6 +178,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				fileList->visible=true;
 				alternateFileList->visible=false;
 				switchType->setText(Toolkit::getStringTable()->getString("[the games]"));
+				fileList->selectionChanged();
 			}
 		}
 	}
