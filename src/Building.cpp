@@ -1179,12 +1179,7 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	int midPosY=posY-type->decTop;
 
 	int targetLevelTypeNum=-1;
-	if (constructionResultState==UPGRADE)
-		targetLevelTypeNum=type->nextLevel;
-	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->prevLevel;
-	else
-		assert(false);
+	targetLevelTypeNum=type->nextLevel;
 
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+targetBt->decLeft;
@@ -1212,12 +1207,7 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 	int midPosY=posY-type->decTop;
 
 	int targetLevelTypeNum=-1;
-	if (constructionResultState==UPGRADE)
-		targetLevelTypeNum=type->nextLevel;
-	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->prevLevel;
-	else
-		assert(false);
+	targetLevelTypeNum=type->nextLevel;
 
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+targetBt->decLeft;
