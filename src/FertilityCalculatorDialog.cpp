@@ -96,6 +96,8 @@ void FertilityCalculatorDialog::execute()
 		Sint32 newTime = SDL_GetTicks();
 		SDL_Delay(std::max(40 - newTime + time, 0));
 	}
+	
+	delete background;
 }
 
 
