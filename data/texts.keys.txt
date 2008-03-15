@@ -1,4 +1,67 @@
-[%0 has been deconnected of the game]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [%0 has left the game]
 [%0's game]
 [%0's team unit got converted to your team]
@@ -7,7 +70,6 @@
 [abreaviation explanation fV]
 [abreaviation explanation mV]
 [abreaviation explanation V]
-[Add AI]
 [add map]
 [add shortcut]
 [AI]
@@ -32,7 +94,6 @@
 [assigned]
 [At. speed]
 [At. strength]
-[attack speed]
 [Attack]
 [audio]
 [auto save]
@@ -41,7 +102,6 @@
 [away:]
 [Back]
 [backspace]
-[bad error in connection system]
 [barracks explanation 2]
 [barracks explanation]
 [barracks]
@@ -72,9 +132,6 @@
 [build swimmingpool level 1]
 [build swimmingpool level 2]
 [Build]
-[Building name]
-[Building short explanation 2]
-[Building short explanation]
 [building site]
 [Buildings]
 [Bullets]
@@ -93,26 +150,20 @@
 [caps lock]
 [carry]
 [Change Area Name]
-[checksum sent]
 [Cherry]
 [choose campaign]
 [choose game]
 [choose map]
 [clear area]
-[clear]
 [Clearing:]
 [clearingflag explanation 2]
 [clearingflag explanation]
 [clearingflag]
-[close]
 [closed]
 [compile]
 [compose]
 [Computing Fertility]
 [connect]
-[connected to all players]
-[connected to server]
-[connecting to all players]
 [connecting to]
 [constructed buildings]
 [construction and upgrades]
@@ -128,9 +179,7 @@
 [customcur]
 [damage]
 [Damaged Map]
-[dblbuff]
 [decrease units working]
-[default terrain]
 [defencetower explanation 2]
 [defencetower explanation]
 [defencetower level 0]
@@ -145,14 +194,11 @@
 [desert]
 [destroy building]
 [destroy]
-[Disconnect]
 [display]
 [do nothing]
 [don't carry anything]
 [down]
-[download finished]
 [downloaded %0]
-[downloaded at]
 [edit map]
 [editing map]
 [editor shortcuts]
@@ -186,7 +232,6 @@
 [f8]
 [f9]
 [Fertility Map]
-[food left]
 [food]
 [forbidden area]
 [Free]
@@ -197,8 +242,6 @@
 [fullscreen]
 [game full]
 [game shortcuts]
-[game speed]
-[Games]
 [general settings]
 [go to event]
 [go to home]
@@ -212,22 +255,16 @@
 [Happyness]
 [hard pause]
 [Harvest]
-[has joined]
-[has quit]
-[heal]
-[help]
 [home]
 [hospital explanation 2]
 [hospital explanation]
 [hospital]
-[Host has cancelled the game]
 [host]
 [hp]
 [hp]
 [human]
 [hungry]
 [hungryness]
-[hwaccel]
 [In way]
 [increase units working]
 [inn explanation 2]
@@ -251,7 +288,6 @@
 [language-code]
 [language-tr]
 [language]
-[large]
 [Leave Game]
 [left meta]
 [left super]
@@ -262,7 +298,6 @@
 [load game]
 [load map]
 [load]
-[loading glob2]
 [login]
 [Lost : %0 has more prestige than you]
 [Lost : your colony is dead]
@@ -274,27 +309,22 @@
 [map script]
 [map size x]
 [map size y]
-[mapGenerationDescriptor Methodes]
 [maps available]
 [mark map]
 [market explanation 2]
 [market explanation]
 [market]
-[medium]
-[menu]
 [Min required level:]
 [Minimum Level To Flag]
 [Music volume]
 [Mute]
 [mute]
-[network latency]
 [new campaign]
 [new map]
 [nick taken]
 [no key]
 [no ressources growth areas]
 [No]
-[not connected]
 [not ready]
 [number of players: %0 (%1 AI)]
 [number of teams: %0]
@@ -305,7 +335,6 @@
 [old islands terrain]
 [old random terrain]
 [On the spot]
-[one player]
 [open chat box]
 [open load menu]
 [open save menu]
@@ -319,12 +348,9 @@
 [pause game]
 [pause]
 [Paused]
-[percent]
 [player name]
-[player]
 [please wait]
 [power]
-[presence request sent]
 [press space]
 [Prestige]
 [print screen]
@@ -335,7 +361,6 @@
 [racetrack explanation 2]
 [racetrack explanation]
 [racetrack]
-[random terrain]
 [range]
 [ratios]
 [Register a new YOG user with password]
@@ -346,7 +371,6 @@
 [repair building]
 [repair]
 [repeat area]
-[ressources]
 [restore default shortcuts]
 [return to editor]
 [return to game]
@@ -399,24 +423,18 @@
 [select tower building]
 [select wall building]
 [select warflag]
-[session request sent]
 [settings]
 [shortcut explanation enter]
 [shortcut explanation v]
 [show main menu]
 [skin]
-[small]
 [smoothing]
 [space]
-[speed]
 [start mission]
 [start new campaign]
 [Start]
-[STARTING GAME ...]
 [Starving Map]
 [starving]
-[stat]
-[state]
 [Statistics]
 [Still (i)]
 [still (w)]
@@ -501,27 +519,22 @@
 [tutorial text 3]
 [tutorial text 4]
 [tutorial]
-[unassigned]
 [Uncontrolled]
 [undo]
 [uniform terrain]
 [Unit editor]
 [unit settings explanation]
 [unit settings]
-[Unit type]
-[units type]
 [units working]
 [Units]
 [unlocked by]
 [Unnamed Area]
 [up]
-[update list]
 [upgrade building]
 [upgrade]
 [username]
 [Version]
 [view history]
-[wait destroy]
 [waiting for %0]
 [waiting for key]
 [Waiting]
@@ -533,8 +546,6 @@
 [Warrior Ratio]
 [Warrior]
 [warriors]
-[was AI]
-[was]
 [water]
 [Wheat]
 [Won : you defeated your opponents]
@@ -549,28 +560,17 @@
 [working]
 [wounded]
 [Yes]
-[YESTS_BAD]
 [YESTS_CONNECTING]
 [YESTS_CONNECTION_LOST]
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 [YESTS_CREATED]
-[YESTS_DECONNECTING]
 [YESTS_UNABLE_TO_CONNECT]
-[YESTS_YOG_KILLED]
-[yog-chat]
 [yog]
-[YOG_HELP]
-[YOG_HELP_AWAY]
-[YOG_HELP_MSG]
-[You are no more marked as away]
-[You are now marked as away]
 [you have lost]
 [you have won]
 [You where kicked from the game]
