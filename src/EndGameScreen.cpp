@@ -71,8 +71,6 @@ void EndGameStat::paint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	
-	// draw background
-	parent->getSurface()->drawRect(x, y, w, h, Style::style->frameColor);
 	
 	if(game->teams[0]->stats.endOfGameStats.size()==0)
 		return;
@@ -86,55 +84,68 @@ void EndGameStat::paint(void)
 	///You can't draw anything if the game ended so quickly that there wheren't two recorded values to draw a line between
 	if(game->teams[0]->stats.endOfGameStats.size() >= 2)
 	{
-		//Calculate the maximum width of the numbers so they can be lined up
+		//Calculate the number of digits used by the max value when rounded up to the nearest 10
 		int num=10;
 		maxValue+=num-(maxValue%num);
 		std::stringstream maxstr;
 		maxstr<<maxValue<<std::endl;
 		int max_digit_count=maxstr.str().size();
+		
+		//Compute the maximum width used by the right-scale
 		int max_width=-1;
-		double line_seperate=double(h)/double(num);
-		double value_seperate=double(maxValue)/double(h);
 		for(int n=0; n<num; ++n)
 		{
-			int pos=int(double(n)*line_seperate+0.5);
-			int value=maxValue-int(double(pos)*value_seperate+0.5);
-			std::stringstream str;
-			str<<value<<std::endl;
-			int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
+			int value=maxValue - (maxValue*n)/num;
+			std::string valueText = getRightScaleText(value, max_digit_count-1);
+			int width=globalContainer->littleFont->getStringWidth(valueText.c_str());
 			max_width=std::max(width, max_width);
 		}
+		
+		//Compute the maximum height used by the time-scale
+		int time_period=(game->teams[0]->stats.endOfGameStats.size()*512)/25;
+		int max_height = 0;
+		for(int n=1; n<16; ++n)
+		{
+			int time = (time_period * n) / 15;
+			std::string timeText = getTimeText(time);
+			int height=globalContainer->littleFont->getStringHeight(timeText.c_str());
+			max_height = std::max(height, max_height);
+		}
+		
+		///Effective width and height
+		int e_width = w - max_width - 8;
+		int e_height = h - max_height - 8;
 
 		//Draw horizontal lines to given the scale of the graphs values.
+		double line_seperate=double(e_height)/double(num);
 		for(int n=0; n<num; ++n)
 		{
 			int pos=int(double(n)*line_seperate+0.5);
-			int value=maxValue-int(double(pos)*value_seperate+0.5);
+			int value=maxValue - (maxValue*n)/num;
 			if(n!=0)
-				parent->getSurface()->drawHorzLine(x+w-5, y+pos, 10, 255, 255, 255);
-			std::stringstream str;
-			str<<std::setw(max_digit_count-1)<<std::setfill('0')<<value<<std::endl;
-			int height=globalContainer->littleFont->getStringHeight(str.str().c_str());
-			parent->getSurface()->drawString(x+w-max_width-8, y+pos-height/2, globalContainer->littleFont, str.str().c_str());
+				parent->getSurface()->drawHorzLine(x+e_width-5, y+pos, 10, 255, 255, 255);
+			std::string valueText = getRightScaleText(value, max_digit_count-1);
+			int height=globalContainer->littleFont->getStringHeight(valueText.c_str());
+			parent->getSurface()->drawString(x+e_width+8, y+pos-height/2, globalContainer->littleFont, valueText.c_str());
 		}
 
 		///Draw vertical lines to give the timescale
-		double time_line_seperate=double(w)/double(15);
-		int time_period=(game->teams[0]->stats.endOfGameStats.size()*512/250)*10;
-		double time_value_seperate=double(time_period)/double(15);
+		double time_line_seperate=double(e_width)/double(15);
 		for(int n=1; n<16; ++n)
 		{
-			if(n!=16)
-				parent->getSurface()->drawVertLine(int(double(x)+time_line_seperate*double(n)+0.5), y+h-5, 10, 255, 255, 255);
-			std::stringstream str;
-			int min=int(double(n)*time_value_seperate+0.5)/60;
-			int sec=int(double(n)*time_value_seperate+0.5)%60;
-			str<<min<<":"<<std::setw(2)<<std::setfill('0')<<sec<<std::endl;
-			int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
-			parent->getSurface()->drawString(int(double(x)+time_line_seperate*double(n)+0.5)-width/2, y+h-30, globalContainer->littleFont, str.str().c_str());
+			int pos = int(double(x)+time_line_seperate*double(n)+0.5);
+			int time = (time_period * n) / 15;
+			if(n!=15)
+				parent->getSurface()->drawVertLine(pos, y+e_height-5, 10, 255, 255, 255);
+			std::string timeText = getTimeText(time);
+			int width=globalContainer->littleFont->getStringWidth(timeText.c_str());
+			parent->getSurface()->drawString(pos-width/2, y+e_height+8, globalContainer->littleFont, timeText);
 		}
 
-		int closest_position = 1681;
+		// draw background
+		parent->getSurface()->drawRect(x, y, e_width, e_height, Style::style->frameColor);
+
+		int closest_position = 1601;
 		int circle_position_value=-1;
 		int circle_position_x=-1;
 		int circle_position_y=-1;
@@ -151,12 +162,12 @@ void EndGameStat::paint(void)
 				}
 				const Color& color = game->teams[team]->color;
 
-				int previous_y = h - int(double(h) * getValue(0, team, type) / double(maxValue));
+				int previous_y = e_height - int(double(e_height) * getValue(0, team, type) / double(maxValue));
 				
-				for(int px=0; px<(w-2); ++px)
+				for(int px=0; px<(e_width-2); ++px)
 				{
-					double value = getValue(double(px) / double(w-2), team, type);
-					int ny = h - int(double(h) * value / double(maxValue));
+					double value = getValue(double(px) / double(e_width-2), team, type);
+					int ny = e_height - int(double(e_height) * value / double(maxValue));
 					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, color);
 					previous_y = ny;
 					int dist = (mouse_y-ny)*(mouse_y-ny) + (mouse_x-px-1)*(mouse_x-px-1);
@@ -177,6 +188,11 @@ void EndGameStat::paint(void)
 			str<<circle_position_value;
 			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
 		}
+	}
+	else
+	{
+		// draw background
+		parent->getSurface()->drawRect(x, y, w, h, Style::style->frameColor);
 	}
 }
 
@@ -213,6 +229,26 @@ double EndGameStat::getValue(double position, int team, int type)
 */
 }
 	
+
+
+std::string EndGameStat::getTimeText(int seconds)
+{
+	int min=int(seconds)/60;
+	int sec=int(seconds)%60;
+	std::stringstream str;
+	str<<min<<":"<<std::setw(2)<<std::setfill('0')<<sec<<std::endl;
+	return str.str();
+}
+
+
+
+std::string EndGameStat::getRightScaleText(int value, int digits)
+{
+	std::stringstream str;
+	str<<std::setw(digits)<<std::setfill('0')<<value<<std::endl;
+	return str.str();
+}
+
 
 
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)
