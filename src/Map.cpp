@@ -3484,7 +3484,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			int yyi=clip_0_31(15+yi);
 			for (int xi=-r; xi<=r; xi++)
 			{
-				if (yi2+(xi*xi)<r2)
+				if (yi2+(xi*xi)<=r2)
 				{
 					int xxi=clip_0_31(15+xi);
 					gradient[xxi+(yyi<<5)]=255;
@@ -3776,8 +3776,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	bool isWarFlag=false;
 	if (building->type->isVirtual && building->type->zonable[WARRIOR])
 		isWarFlag=true;
-	
-	
 
 	memset(gradient, 1, size);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
@@ -3789,7 +3787,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		{
 			int yi2=(yi*yi);
 			for (int xi=-r; xi<=r; xi++)
-				if (yi2+(xi*xi)<r2)
+				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
 					gradient[addr] = 255;
@@ -3847,7 +3845,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				//Warflags don't consider enemy buildings an obstacle
 				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 					gradient[wyx] = 0;
-				else
+				else if(gradient[wyx]!=255)
 					gradient[wyx] = 1;
 			}
 		}
@@ -5000,7 +4998,7 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 			gradient[i]=0;
 		else if (c.ressource.type != NO_RES_TYPE)
 			gradient[i] = 0;
-		else if (c.building != NOGBID)
+		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & (game->teams[teamNumber]->allies))
 			gradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
