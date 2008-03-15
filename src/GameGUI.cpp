@@ -1005,6 +1005,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		return;
 	int typeNum = building->typeNum + 1; //determines type of updated building
 	int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+	int repairUnitWorking = defaultAssign.getDefaultAssignedUnits(building->typeNum - 1);
 	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
 	if ((building->hp < buildingType->hpMax) && repair)
 	{
@@ -1012,7 +1013,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((building->type->regenerationSpeed == 0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, 1, 1)));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, building->maxUnitWorkingLocal)));
 	}
 	else if (upgrade)
 	{
