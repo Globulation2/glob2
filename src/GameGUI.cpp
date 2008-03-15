@@ -463,46 +463,26 @@ void GameGUI::step(void)
 		orderQueue.push_back(orderVoiceData);
 	}
 	
+	// Check if the text being displayed has changed, and if it has, add it to the history box
+	if(game.script.isTextShown && game.script.textShown != previousSGSLText)
+	{
+		//Split into one per line
+		std::vector<std::string> messages;
+		setMultiLine(game.script.textShown, &messages, "    ");
+
+		///Add each line as a seperate message to the message manager.
+		///Must be done backwards to appear in the right order
+		for (int i=messages.size()-1; i>=0; i--)
+		{
+			messageManager.addMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
+		}
+		
+		previousSGSLText = game.script.textShown;
+	}
+	
 	// music step
 	musicStep();
-	
-	// do a yog step
-//	yog->step();
 
-/*
-	// display yog chat messages
-	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
-		if (!m->gameGuiPainted)
-		{
-			switch(m->messageType)//set the text color
-			{
-				case YCMT_MESSAGE:
-					//We don't want YOG messages to appear while in the game.
-					//addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);
-				break;
-				case YCMT_PRIVATE_MESSAGE:
-					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(m->userName).arg(m->text));
-				break;
-				case YCMT_ADMIN_MESSAGE:
-					addMessage(138, 99, 255, FormatableString("<%0> %1").arg(m->userName).arg(m->text));
-				break;
-				case YCMT_PRIVATE_RECEIPT:
-					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(m->userName).arg(m->text));
-				break;
-				case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
-					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[away:]")).arg(m->userName).arg(m->text));
-				break;
-				case YCMT_EVENT_MESSAGE:
-					addMessage(99, 143, 255, m->text);
-				break;
-				default:
-					printf("m->messageType=%d\n", m->messageType);
-					assert(false);
-				break;
-			}
-			m->gameGuiPainted=true;
-		}
-*/
 	boost::shared_ptr<Order> order = toolManager.getOrder();
 	while(order)
 	{
@@ -3458,13 +3438,14 @@ void GameGUI::drawOverlayInfos(void)
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
 				yinc += 20;
 			}
-		}
 		
-		if (swallowSpaceKey)
-		{
-			globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-128-64+16, 20, 0,0,0,128);
-			globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
-			yinc += 20;
+			if (swallowSpaceKey)
+			{
+				globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-128-64+16, 20, 0,0,0,128);
+				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
+				yinc += 20;
+			}
+			yinc += 8;
 		}
 
 		// show script counter
@@ -3553,8 +3534,8 @@ void GameGUI::drawInGameTextInput(void)
 
 void GameGUI::drawInGameScrollableText(void)
 {
-	scrollableText->decX=10;
-	scrollableText->decY=32;
+	scrollableText->decX=28;
+	scrollableText->decY=30;
 	scrollableText->dispatchPaint();
 	globalContainer->gfx->drawSurface(scrollableText->decX, scrollableText->decY, scrollableText->getSurface());
 }
@@ -4267,7 +4248,7 @@ void GameGUI::setCampaignGame(Campaign& campaign, const std::string& missionName
 
 
 
-void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output)
+void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent)
 {
 	unsigned pos = 0;
 	int length = globalContainer->gfx->getW()-128-64;
@@ -4295,7 +4276,7 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 			else
 			{
 				output->push_back(lastLine);
-				lastLine = lastWord;
+				lastLine = indent+lastWord;
 				lastWord.clear();
 			}
 		}
