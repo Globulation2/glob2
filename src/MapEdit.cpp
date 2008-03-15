@@ -845,6 +845,7 @@ MapEdit::MapEdit()
 {
 	doQuit=false;
 	doFullQuit=false;
+	doQuitAfterLoadSave=false;
 
 	// default value;
 	viewportX=0;
@@ -1338,6 +1339,10 @@ int MapEdit::run(void)
 		{
 			isRunning=false;
 		}
+		if(doQuitAfterLoadSave && !showingSave)
+		{
+			isRunning=false;
+		}
 		if(doQuit)
 		{
 			if(hasMapBeenModified)
@@ -1345,8 +1350,9 @@ int MapEdit::run(void)
 				int ret = GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_THREEBUTTONS, Toolkit::getStringTable()->getString("[save before quit?]"), Toolkit::getStringTable()->getString("[Yes]"), Toolkit::getStringTable()->getString("[No]"), Toolkit::getStringTable()->getString("[Cancel]"));
 				if(ret == 0)
 				{
-					save(game.mapHeader.getFileName().c_str(), game.mapHeader.getMapName().c_str());
-					isRunning=false;
+					doQuit=false;
+					doQuitAfterLoadSave=true;
+					performAction("open save screen");
 				}
 				else if(ret == 1)
 				{
