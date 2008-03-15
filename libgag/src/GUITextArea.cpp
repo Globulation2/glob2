@@ -629,14 +629,36 @@ namespace GAGGUI
 					}
 					else
 					{
-						if (sprite && frames.size() > line)
+						if(actWordLength+spaceLength >= length)
 						{
-							lines_frames.push_back(frames[line]);
+							for(int c=0; c<lastWord.size(); ++c)
+							{
+								lastLine += lastWord[c];
+								int actLineLength = getStringWidth(lastLine);
+								if (actLineLength >= length)
+								{
+									if (sprite && frames.size() > line)
+									{	
+										lines_frames.push_back(frames[line]);
+									}	
+									lines.push_back(pos-lastWord.size()+c);
+									lastLine.clear();
+									show_image.push_back(false);
+								}
+							}
+							lastWord.clear();
 						}
-						lines.push_back(pos-lastWord.size());
-						show_image.push_back(false);
-						lastLine = lastWord;
-						lastWord.clear();
+						else
+						{
+							if (sprite && frames.size() > line)
+							{
+								lines_frames.push_back(frames[line]);
+							}
+							lines.push_back(pos-lastWord.size());
+							show_image.push_back(false);
+							lastLine = lastWord;
+							lastWord.clear();
+						}
 					}
 				}
 				break;
@@ -648,11 +670,34 @@ namespace GAGGUI
 					int actWordLength = getStringWidth(lastWord);
 					if (actWordLength+actLineLength+spaceLength >= length)
 					{
-						if (sprite && frames.size() > line)
-						{	
-							lines_frames.push_back(frames[line]);
-						}	
-						lines.push_back(pos-lastWord.size());
+						if(actWordLength+spaceLength >= length)
+						{
+							for(int c=0; c<lastWord.size(); ++c)
+							{
+								lastLine += lastWord[c];
+								int actLineLength = getStringWidth(lastLine);
+								if (actLineLength >= length)
+								{
+									if (sprite && frames.size() > line)
+									{	
+										lines_frames.push_back(frames[line]);
+									}	
+									lines.push_back(pos-lastWord.size()+c);
+									lastLine.clear();
+									show_image.push_back(false);
+								}
+							}
+						}
+						else
+						{
+							if (sprite && frames.size() > line)
+							{	
+								lines_frames.push_back(frames[line]);
+							}	
+							lines.push_back(pos-lastWord.size());
+							lastLine.clear();
+							show_image.push_back(false);
+						}
 					}
 					if (sprite && frames.size() > line)
 					{
@@ -668,22 +713,7 @@ namespace GAGGUI
 				
 				default:
 				{
-					int actLineLength = getStringWidth(lastLine);
-					int actWordLength = getStringWidth(lastWord);
-					int actCharLength = getStringWidth(std::string(1,text[pos]).c_str());
-					if (actWordLength+actLineLength+actCharLength > length)
-					{
-						lastLine += lastWord;
-						if (sprite && frames.size() > line)
-						{
-							lines_frames.push_back(frames[line]);
-						}
-						lines.push_back(pos-1);
-						lastWord.clear();
-						lastLine.clear();
-						show_image.push_back(false);
-					}
-					lastWord += text[pos];					
+					lastWord += text[pos];
 				}
 			}
 			pos++;
