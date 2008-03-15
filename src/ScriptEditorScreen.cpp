@@ -174,6 +174,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 	SDL_Event event;
 	while(loadSaveScreen->endValue<0)
 	{
+		int time = SDL_GetTicks();
 		while (SDL_PollEvent(&event))
 		{
 			loadSaveScreen->translateAndProcessEvent(&event);
@@ -183,6 +184,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
+		int ntime = SDL_GetTicks();
+		SDL_Delay(std::max(0, 40 - ntime + time));
 	}
 
 	if (loadSaveScreen->endValue==0)
