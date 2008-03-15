@@ -2121,8 +2121,8 @@ void Map::setAreaName(int n, std::string name)
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
 {
-	int x = (mx - viewportX) & wMask;
-	int y = (my - viewportY) & hMask;
+	int x = (mx - viewportX + w) & wMask;
+	int y = (my - viewportY + h) & hMask;
 	if (x > (w - 16))
 		x-=w;
 	if (y > (h - 16))
@@ -2133,11 +2133,11 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 
 void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH)
 {
-	int x = (mx - viewportX) & wMask;
-	int y = (my - viewportY) & hMask;
-	if (x > (w/2))
+	int x = (mx - viewportX + w) & wMask;
+	int y = (my - viewportY + h) & hMask;
+	if (x > (w/2 + (screenW/64)))
 		x-=w;
-	if (y > (h/2))
+	if (y > (h/2 + (screenH/64)))
 		y-=h;
 	*px=x<<5;
 	*py=y<<5;
