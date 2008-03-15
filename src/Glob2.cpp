@@ -207,7 +207,7 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::TUTORIAL:
 			{
 				Campaign campaign;
-				if(campaign.load("games/tutorial.txt"))
+				if(campaign.load("games/Tutorial_Campaign.txt"))
 				{
 					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
