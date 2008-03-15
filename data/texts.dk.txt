@@ -1,5 +1,5 @@
-[%0 has been deconnected of the game]
-%0 er blevet afkoblet
+
+
 [%0 has left the game]
 %0 har forladt spillet
 [%0's game]
@@ -16,8 +16,6 @@ Vf : Vis alle dine kroer (til at stjæle enheder)
 mV : vis alle markeder (til at udveksle frugt)
 [abreaviation explanation V]
 V : Vis alle dine bygninger
-[Add AI]
-Tilføj AI
 [add map]
 Tilføj kort
 [add shortcut]
@@ -66,8 +64,6 @@ Tildelt
 Angrebshastighed
 [At. strength]
 Angrebsstyrke
-[attack speed]
-Angrebshastighed
 [Attack]
 Angrib
 [audio]
@@ -84,8 +80,6 @@ er væk:
 
 [backspace]
 
-[bad error in connection system]
-Fejl i forbindelsessystemet
 [barracks explanation 2]
 Af dine krigere
 [barracks explanation]
@@ -146,12 +140,6 @@ Byg Svømmepøl 2
 Byg Svømmepøl 3
 [Build]
 Byg
-[Building name]
-Bygningsnavn
-[Building short explanation 2]
-Bygning kort forklaring 2 (max 24 tegn)
-[Building short explanation]
-Bygning kort forklaring (max 24 tegn)
 [building site]
 bygningssted
 [Buildings]
@@ -194,8 +182,6 @@ Afbryd
 Bærer på:
 [Change Area Name]
 Ændr områdenavn
-[checksum sent]
-Kontrolværdi sendt ...
 [Cherry]
 Kirsebær
 [choose campaign]
@@ -206,8 +192,6 @@ Vælg et spil
 Vælg et kort
 [clear area]
 Ophæv areal
-[clear]
-
 [Clearing:]
 Rydning:
 [clearingflag explanation 2]
@@ -216,8 +200,6 @@ Rydning:
 Fjern ressourcer
 [clearingflag]
 Rydningsflag
-[close]
-Luk
 [closed]
 Lukket
 [compile]
@@ -228,12 +210,6 @@ Kompilere skript
 
 [connect]
 Forbinder
-[connected to all players]
-Forbundet til alle spillere
-[connected to server]
-Forbundet til server
-[connecting to all players]
-Forbinder til alle spillere
 [connecting to]
 Forbinder til
 [constructed buildings]
@@ -264,12 +240,8 @@ Tilfældigt spil
 Skade
 [Damaged Map]
 Skade-kort
-[dblbuff]
-Dobbelt buffering
 [decrease units working]
 
-[default terrain]
-Standart terring
 [defencetower explanation 2]
 enheder eller bygninger
 [defencetower explanation]
@@ -296,8 +268,6 @@ Slet
 Destruer valgte bygning
 [destroy]
 Destruktion
-[Disconnect]
-Afbrudt
 [display]
 Opløsning
 [do nothing]
@@ -306,12 +276,8 @@ Opløsning
 Bægere ikke på noget
 [down]
 
-[download finished]
-Nedhentning færdig
 [downloaded %0]
 
-[downloaded at]
-Hentet fra
 [edit map]
 Rediger kort
 [editing map]
@@ -378,8 +344,6 @@ Tom ø
 
 [Fertility Map]
 
-[food left]
-Mad tilbage
 [food]
 Mad
 [forbidden area]
@@ -400,10 +364,6 @@ Fuld skærm tilstand
 Spillet er fyldt op.
 [game shortcuts]
 Gem genveje
-[game speed]
-Spilhastighed
-[Games]
-
 [general settings]
 Generelt
 [go to event]
@@ -430,14 +390,6 @@ Antal lykkelige
 
 [Harvest]
 Høst
-[has joined]
-er kommet
-[has quit]
-er gået
-[heal]
-Liv point
-[help]
-
 [home]
 
 [hospital explanation 2]
@@ -446,8 +398,6 @@ Liv point
 Kurere dine enheder
 [hospital]
 Hospital
-[Host has cancelled the game]
-
 [host]
 Opret et spil
 [hp]
@@ -460,8 +410,6 @@ menneskelig
 Sulten
 [hungryness]
 Sulthed
-[hwaccel]
-Hardware acceleration
 [In way]
 Er på vej
 [increase units working]
@@ -508,8 +456,6 @@ dk
 Sprog
 [language]
 Dansk
-[large]
-stort
 [Leave Game]
 
 [left meta]
@@ -530,8 +476,6 @@ Hent spil
 Hent bane
 [load]
 hent
-[loading glob2]
-Indlæser Globulation 2
 [login]
 Log ind
 [Lost : %0 has more prestige than you]
@@ -554,8 +498,6 @@ Navn
 Kort bredte
 [map size y]
 Kort højde
-[mapGenerationDescriptor Methodes]
-Metoder af tilfældig genereret kort
 [maps available]
 Tilgængelige kort
 [mark map]
@@ -566,10 +508,6 @@ Frugt med andre
 Tillader at bytte frugt
 [market]
 Market
-[medium]
-mellem
-[menu]
-
 [Min required level:]
 Minimum krævede niveau:
 [Minimum Level To Flag]
@@ -580,8 +518,6 @@ Lydstyrke (musik)
 
 [mute]
 Slå lyd fra
-[network latency]
-Netværk begrænsning
 [new campaign]
 Ny Kampagne
 [new map]
@@ -594,8 +530,6 @@ Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil
 Ingen vækstområde
 [No]
 Nej
-[not connected]
-Ikke forbundet
 [not ready]
 ikke klar
 [number of players: %0 (%1 AI)]
@@ -618,8 +552,6 @@ Gamle ø terræn
 Gamle tilfældige terræn
 [On the spot]
 Her
-[one player]
-En spiller er kommet til.
 [open chat box]
 
 [open load menu]
@@ -646,18 +578,12 @@ Pause spillet
 
 [Paused]
 Pause
-[percent]
-  procent
 [player name]
 Spillernavn
-[player]
-Spiller
 [please wait]
 Vent venligst
 [power]
 
-[presence request sent]
-Til stede forspørgsel sendt ...
 [press space]
 Tryk på mellemrum for at fortsætte
 [Prestige]
@@ -678,8 +604,6 @@ Niveau af dine enheder
 Forbedre gåhastighed
 [racetrack]
 Træningsbane
-[random terrain]
-Tilfælig terraing
 [range]
 Afstand
 [ratios]
@@ -700,8 +624,6 @@ Start/Stop Reparation
 Reparere
 [repeat area]
 antal gange det samme landskab
-[ressources]
-Resourcer
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
@@ -806,8 +728,6 @@ Vælg Tårn
 Vælg væg
 [select warflag]
 Vælg Krigs Flag
-[session request sent]
-Session forspørgelse sendt ...
 [settings]
 Indstillinger
 [shortcut explanation enter]
@@ -818,30 +738,20 @@ tast v : hold v nede for at snakke
 
 [skin]
 Opløsning
-[small]
-lille
 [smoothing]
 Udglatning
 [space]
 
-[speed]
-hastighed
 [start mission]
 Start Mission
 [start new campaign]
 Start Ny Kampagne
 [Start]
 Start
-[STARTING GAME ...]
-Starter Spillet...
 [Starving Map]
 Sult-kort
 [starving]
 dør af sult
-[stat]
-Statistikker
-[state]
-tilstand
 [Statistics]
 Statistikker
 [Still (i)]
@@ -1010,8 +920,6 @@ Total
 
 [tutorial]
 Lær at spille
-[unassigned]
-Ikke tildelt
 [Uncontrolled]
 Ukontrolleret
 [undo]
@@ -1024,10 +932,6 @@ Rediger Enhed
 
 [unit settings]
 Enheder
-[Unit type]
-enhed type
-[units type]
-Enhed type
 [units working]
 Enheder der arbejder
 [Units]
@@ -1038,8 +942,6 @@ Låst op af
 {Unavngivet område}
 [up]
 
-[update list]
-opdatere liste
 [upgrade building]
 Start/Stop Opgradering
 [upgrade]
@@ -1050,8 +952,6 @@ Brugernavn
 Version
 [view history]
 
-[wait destroy]
-Vænter på konstruktion
 [waiting for %0]
 Vænter på %0
 [waiting for key]
@@ -1074,10 +974,6 @@ Kriger Ratio
 Krigere
 [warriors]
 krigere
-[was AI]
-var AI
-[was]
-var
 [water]
 Vand
 [Wheat]
@@ -1108,22 +1004,16 @@ Arbejde
 skadet
 [Yes]
 Ja
-[YESTS_BAD]
-intern konsistens fejl imens forbindelsen blev oprettet.
 [YESTS_CONNECTING]
 Establere forbindelsen til YOG-metaserveren...
 [YESTS_CONNECTION_LOST]
 Forbindelsen til YOG er blevet afbrudt.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG-metaserveren har afbrudt forbindelsen fordi der er sket en protokol fejl:  du er allerede logget ind.  Prøv igen om 45 sekunder.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn er allerede registeret. Hvis dette brugernavn er dit, deaktivere funktionen "Registerer en ny YOG bruger med adgangskode".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG-metaserveren har afbrudt forbindelsen fordi den indtastede adgangskode er forkert.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn har
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG-metaserveren har afbrudt forbindelsen, fordi en intern protokol fejl er opstået: du er endnu ikke forbundet mens du forsøger at logge ind. Rapporter venligst denne fejl.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG-metaserveren har afbrudt forbindelsen, fordi din Globulation2-klient er forældet.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1132,26 +1022,10 @@ YOG-metaserveren har afbrudt forbindelsen uden en forklaring!
 YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i brug af en anden.
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
-[YESTS_DECONNECTING]
-Afbryder forbindelsen til YOG-metaserveren...
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
-[YESTS_YOG_KILLED]
-En administrator har stoppet YOG-metaserveren.
-[yog-chat]
-#yog-da
 [yog]
 Ysagoon Online Gaming
-[YOG_HELP]
-YOG-meddelsessystemet har to komandoer, "msg" og "away". Tast "/help <komando<" for at lære mere om en af disse.
-[YOG_HELP_AWAY]
-"/away (<besked>)" kommando tillander dig at gøre andre YOG brugere opmærksom på at du er midlertidig væk. Du må tilføje en kort forklarende besked. For eksempel "/away Jeg spiser en hamburger og jeg vil være tilbage klokken 1". Kortform: "/a"
-[YOG_HELP_MSG]
-"/msg <navn> <besked> kommando sender en privat besked. for eksempel, "/msg John Hej John, hvordan har du det?". Kortform: "/m".
-[You are no more marked as away]
-Du er ikke længere markeret som væk.
-[You are now marked as away]
-Du er nu markeret som væk
 [you have lost]
 Du har tabt!
 [you have won]

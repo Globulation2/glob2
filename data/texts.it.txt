@@ -1,5 +1,5 @@
-[%0 has been deconnected of the game]
-%0 si è disconnesso dal gioco.
+
+
 [%0 has left the game]
 %0 ha lasciato il gioco.
 [%0's game]
@@ -16,8 +16,6 @@ fV: Mostra visuale per le Mense (per rubare unità)
 mV: Mostra visuale per Mercati (per scambiare frutta)
 [abreaviation explanation V]
 V: Mostra visuale per tutte le costruzioni
-[Add AI]
-Aggiungi un IA
 [add map]
 
 [add shortcut]
@@ -66,8 +64,6 @@ Assegnato
 Velocità Att.
 [At. strength]
 Resistenza Att.
-[attack speed]
-Velocità d'attacco
 [Attack]
 Attacco
 [audio]
@@ -84,8 +80,6 @@ assente:
 
 [backspace]
 
-[bad error in connection system]
-Brutto errore nel sistema di connessione
 [barracks explanation 2]
 nemiche nelle vicinanze
 [barracks explanation]
@@ -146,12 +140,6 @@ Grandezza della spiaggia
 
 [Build]
 Costruire
-[Building name]
-Nome della costruzione
-[Building short explanation 2]
-
-[Building short explanation]
-
 [building site]
 Struttura in costruzione
 [Buildings]
@@ -194,8 +182,6 @@ Annulla
 Trasporta :
 [Change Area Name]
 Cambia il nome dell'area
-[checksum sent]
-Richiesta di checksum inviata ...
 [Cherry]
 Ciliegie
 [choose campaign]
@@ -206,8 +192,6 @@ Seleziona una partita
 Seleziona una mappa
 [clear area]
 Area di raccolta
-[clear]
-
 [Clearing:]
 Raccolta:
 [clearingflag explanation 2]
@@ -216,8 +200,6 @@ risorse
 Fa raccogliere le
 [clearingflag]
 Bandiera di raccolta
-[close]
-Chiudi
 [closed]
 Chiuso
 [compile]
@@ -228,12 +210,6 @@ Compila lo script
 
 [connect]
 Connesso
-[connected to all players]
-Connesso a tutti i giocatori
-[connected to server]
-Connesso al server
-[connecting to all players]
-Mi sto connettendo agli altri giocatori
 [connecting to]
 Mi sto connettendo a
 [constructed buildings]
@@ -264,12 +240,8 @@ Personalizza cursore
 Danno
 [Damaged Map]
 Mappa danneggiati
-[dblbuff]
-Double-buffering
 [decrease units working]
 
-[default terrain]
-Terreno predefinito
 [defencetower explanation 2]
 attacco dei guerrieri
 [defencetower explanation]
@@ -296,8 +268,6 @@ deserto
 Distruggi la costruzione selezionata
 [destroy]
 Distruggi
-[Disconnect]
-Disconnettiti
 [display]
 Visualizza
 [do nothing]
@@ -306,12 +276,8 @@ Visualizza
 Non trasporta nulla
 [down]
 
-[download finished]
-Download completato
 [downloaded %0]
 
-[downloaded at]
-Scaricato da
 [edit map]
 
 [editing map]
@@ -378,8 +344,6 @@ isole vuote
 
 [Fertility Map]
 
-[food left]
-Cibo rimasto
 [food]
 Cibo
 [forbidden area]
@@ -400,10 +364,6 @@ Schermo intero
 Partita al completo
 [game shortcuts]
 Scorciatoie da tastiera
-[game speed]
-Velocità di gioco
-[Games]
-
 [general settings]
 Impostazioni generali
 [go to event]
@@ -430,14 +390,6 @@ Soddisfazione
 
 [Harvest]
 Raccogliere
-[has joined]
-è entrato
-[has quit]
-se ne è andato
-[heal]
-Guarisci
-[help]
-
 [home]
 
 [hospital explanation 2]
@@ -446,8 +398,6 @@ Guarisci
 Cura le unità
 [hospital]
 Ospedale
-[Host has cancelled the game]
-
 [host]
 Ospita una partita
 [hp]
@@ -460,8 +410,6 @@ umano
 Fame
 [hungryness]
 Fame
-[hwaccel]
-Accelerazione Hardware
 [In way]
 Sulla strada
 [increase units working]
@@ -508,8 +456,6 @@ it
 Lingua
 [language]
 Italiano
-[large]
-largo
 [Leave Game]
 
 [left meta]
@@ -530,8 +476,6 @@ Carica partita
 Carica Mappa
 [load]
 Carica
-[loading glob2]
-Sto caricando Globulation 2
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -554,8 +498,6 @@ Nome della mappa: %0.
 Grandezza x della mappa
 [map size y]
 Grandezza y della mappa
-[mapGenerationDescriptor Methodes]
-Metodi di generazione casuale della mappa
 [maps available]
 
 [mark map]
@@ -566,10 +508,6 @@ frutta con gli altri
 Permette lo scambio di
 [market]
 Mercato
-[medium]
-medio
-[menu]
-
 [Min required level:]
 Livello min.richiesto:
 [Minimum Level To Flag]
@@ -580,8 +518,6 @@ Volume (musica)
 
 [mute]
 Nessun Audio
-[network latency]
-Latenza della rete
 [new campaign]
 
 [new map]
@@ -594,8 +530,6 @@ Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai
 Area che non sviluppa risorse
 [No]
 No
-[not connected]
-non connesso
 [not ready]
 non pronto
 [number of players: %0 (%1 AI)]
@@ -618,8 +552,6 @@ Vecchie isole casuali
 Vecchio terreno casuale
 [On the spot]
 Sul posto
-[one player]
-Giocatore singolo.
 [open chat box]
 
 [open load menu]
@@ -646,18 +578,12 @@ Pausa
 
 [Paused]
 Pausa
-[percent]
-  percento
 [player name]
 Nome del giocatore
-[player]
-Giocatore
 [please wait]
 Aspetta un momento
 [power]
 
-[presence request sent]
-Richiesta di presenza inviata ...
 [press space]
 Premi spazio per continuare.
 [Prestige]
@@ -678,8 +604,6 @@ terreno delle unità
 Migliora la velocità su 
 [racetrack]
 Circuito
-[random terrain]
-Terreno a caso
 [range]
 Raggio
 [ratios]
@@ -700,8 +624,6 @@ Inizia/Ferma Riparazione
 Ripara
 [repeat area]
 
-[ressources]
-Risorse
 [restore default shortcuts]
 Ripristina le scorciatoie da tastiera originali
 [return to editor]
@@ -806,8 +728,6 @@ Seleziona Torre di difesa
 Seleziona Muro di Pietra
 [select warflag]
 Seleziona bandiera di attacco
-[session request sent]
-Richiesta di sessione inviata ...
 [settings]
 Impostazioni
 [shortcut explanation enter]
@@ -818,30 +738,20 @@ V: hold to speak ???
 
 [skin]
 Mostra
-[small]
-piccolo
 [smoothing]
 Spianatura
 [space]
 
-[speed]
-Velocità
 [start mission]
 
 [start new campaign]
 
 [Start]
 Start
-[STARTING GAME ...]
-Inizio gioco...
 [Starving Map]
 Mappa Fame
 [starving]
 Troppa fame
-[stat]
-Statistiche
-[state]
-stato
 [Statistics]
 Statistiche
 [Still (i)]
@@ -1010,8 +920,6 @@ Totale
 
 [tutorial]
 Esercitazione
-[unassigned]
-Non assegnato
 [Uncontrolled]
 Incontrollato
 [undo]
@@ -1024,10 +932,6 @@ Editor di unità
 
 [unit settings]
 Impostazioni unità
-[Unit type]
-Tipo di unità
-[units type]
-Tipo di unità
 [units working]
  unità al lavoro
 [Units]
@@ -1038,8 +942,6 @@ Unità
 {Area senza nome}
 [up]
 
-[update list]
-Aggiorna la lista
 [upgrade building]
 Inizia/Ferma Miglioramento
 [upgrade]
@@ -1050,8 +952,6 @@ Username
 Versione
 [view history]
 
-[wait destroy]
-Posticipa la distruzione
 [waiting for %0]
 Aspettando %0
 [waiting for key]
@@ -1074,10 +974,6 @@ Percent.Guerrieri
 Guerriero
 [warriors]
 guerrieri
-[was AI]
-era una IA
-[was]
-era
 [water]
 Acqua
 [Wheat]
@@ -1108,22 +1004,16 @@ Al lavoro
 Ferito
 [Yes]
 Sì
-[YESTS_BAD]
-Errore interno di connessione.
 [YESTS_CONNECTING]
 Mi sto connettendo al metaserver YOG...
 [YESTS_CONNECTION_LOST]
 La connessione a YOG è stata persa.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel protocollo: sei già autenticato. Riprova tra 45 secondi.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Il metaserver YOG ha respinto la connessione questo username è già stato registrato con una password. Se tu hai registrato questo utente, disattiva l'opzione "Registra un nuovo utente YOG con una password" qui sotto.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-Il metaserver YOG ha respinto la connessione perchè è avvenuto un errore nel protocollo interno: non sei connesso durante l'autenticazione. Per favore, segnala questo bug.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Il metaserver YOG ha rifiutato la connessione perchè la versione di Globulation2 che hai installato è troppo vecchia
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1132,26 +1022,10 @@ Il metaserver YOG ha respinto la connessione senza spiegazione!
 Il metaserver YOG ha rifiutato la tua connessione perchè il tuo username è già in uso da qualcun altro.
 [YESTS_CREATED]
 Il sistema di connessione è in attesa del metaserver YOG per la connessione.
-[YESTS_DECONNECTING]
-Disconnessione dal metaserver YOG in corso...
 [YESTS_UNABLE_TO_CONNECT]
 Non mi riesco a connettere, apparentemente il master server YOG è offline.
-[YESTS_YOG_KILLED]
-Un amministratore ha appena fermato il metaserver YOG.
-[yog-chat]
-#yog-it
 [yog]
 Gioca on-line a Ysagoon
-[YOG_HELP]
-Il sistema di messaggistica YOG ha due comandi: "msg" e "away". Scrivi "/help <comando>" per saperne di più.
-[YOG_HELP_AWAY]
-Il comando "/away [<messaggio>]" permette agli altri utenti YOG di sapere che temporaneamente ti sei assentato. Puoi aggiungere un breve messaggio di spiegazione. Per esempio "/away Sto mangiando un hamburger e torno alle 13.". Alias "/a"
-[YOG_HELP_MSG]
-Il comando "/msg <nome> <messaggio>" permette di spedire un messaggio solo ad una persona specifica. Per esempio: "/msg john hi john, how are you?". Alias "/m"
-[You are no more marked as away]
-Non sei più segnato come assente.
-[You are now marked as away]
-Adesso sei segnato come assente.
 [you have lost]
 Hai perso
 [you have won]
