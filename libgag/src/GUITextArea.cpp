@@ -492,18 +492,16 @@ namespace GAGGUI
 			{
 				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
 				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
-				
-				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
+				if (sprite && show_image[i + areaPos] && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
 				{
-					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);	
+					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);
 				}
 			}
 			else
 			{
 				const std::string &substr = text.substr(lines[i+areaPos]);
 				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
-				
-				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
+				if (sprite && show_image[i + areaPos] && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
 				{
 					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);	
 				}
@@ -606,6 +604,8 @@ namespace GAGGUI
 		
 		lines.clear();
 		lines.push_back(0);
+		show_image.clear();
+		show_image.push_back(true);
 		lines_frames.clear();
 		std::string lastWord;
 		std::string lastLine;
@@ -634,6 +634,7 @@ namespace GAGGUI
 							lines_frames.push_back(frames[line]);
 						}
 						lines.push_back(pos-lastWord.size());
+						show_image.push_back(false);
 						lastLine = lastWord;
 						lastWord.clear();
 					}
@@ -661,6 +662,7 @@ namespace GAGGUI
 					lines.push_back(pos+1);
 					lastWord.clear();
 					lastLine.clear();
+					show_image.push_back(true);
 				}
 				break;
 				
@@ -679,6 +681,7 @@ namespace GAGGUI
 						lines.push_back(pos-1);
 						lastWord.clear();
 						lastLine.clear();
+						show_image.push_back(false);
 					}
 					lastWord += text[pos];					
 				}
