@@ -37,7 +37,6 @@
 #include <iterator>
 #include <set>
 
-
 namespace AIEcho
 {
 	class position;
