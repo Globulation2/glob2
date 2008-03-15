@@ -626,6 +626,9 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	}
 	else if (buildingState==WAITING_FOR_CONSTRUCTION_ROOM)
 	{
+		if(constructionResultState == UPGRADE)
+			removeForbiddenZoneFromUpgradeArea();
+			
 		owner->buildingsTryToBuildingSiteRoom.remove(this);
 		buildingState=ALIVE;
 	}
@@ -697,8 +700,6 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		totalRatio++;
 		percentUsed[i]=0;
 	}
-	
-	removeForbiddenZoneFromUpgradeArea();
 
 	setMapDiscovered();
 }
@@ -850,7 +851,8 @@ void Building::updateConstructionState(void)
 			{
 				buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
-				addForbiddenZoneToUpgradeArea();
+				if(constructionResultState == UPGRADE)
+					addForbiddenZoneToUpgradeArea();
 				if (verbose)
 					printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
 			}
@@ -1080,8 +1082,9 @@ bool Building::tryToBuildingSiteRoom(void)
 	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 	if (isRoom)
 	{
-		removeForbiddenZoneFromUpgradeArea();
-	
+		if(constructionResultState == UPGRADE)
+			removeForbiddenZoneFromUpgradeArea();
+		
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
