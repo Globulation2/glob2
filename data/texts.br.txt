@@ -1,5 +1,5 @@
-[%0 has been deconnected of the game]
-%0 desconectou.
+
+
 [%0 has left the game]
 %0 saiu do jogo.
 [%0's game]
@@ -16,8 +16,6 @@ fV: Mostrar visão de Tavernas (para roubar unidades)
 mV: Mostrar visão de Mercados (para trocar frutas)
 [abreaviation explanation V]
 V: Mostrar visão de todas as construções
-[Add AI]
-Ad. IA
 [add map]
 Adicionar mapa
 [add shortcut]
@@ -66,8 +64,6 @@ Designado
 Vel. de ataque
 [At. strength]
 Força de ataque
-[attack speed]
-Velocidade de ataque
 [Attack]
 Ataque
 [audio]
@@ -84,8 +80,6 @@ distante:
 
 [backspace]
 backspace
-[bad error in connection system]
-Erro no sistema de conexão
 [barracks explanation 2]
 melhore seus guerreiros
 [barracks explanation]
@@ -146,12 +140,6 @@ Construir Piscina 2
 Construir Piscina 3
 [Build]
 Contruir
-[Building name]
-Nome da construção
-[Building short explanation 2]
-Curta explicação sobre construções 2
-[Building short explanation]
-Curta explicação sobre construções (24 chars max)
 [building site]
 Construindo...
 [Buildings]
@@ -194,8 +182,6 @@ Caps lock
 Carregando:
 [Change Area Name]
 Trocar nome de área
-[checksum sent]
-Checksum enviado ...
 [Cherry]
 Cereja
 [choose campaign]
@@ -206,8 +192,6 @@ Escolha um jogo
 Escolha um mapa
 [clear area]
 Área de Limpeza
-[clear]
-Limpo
 [Clearing:]
 Limpando:
 [clearingflag explanation 2]
@@ -216,8 +200,6 @@ Limpando:
 Limpa os recursos
 [clearingflag]
 Clearing flag
-[close]
-Fechar
 [closed]
 Fechado
 [compile]
@@ -228,12 +210,6 @@ Compôr
 
 [connect]
 Conectar
-[connected to all players]
-Conectado com todos jogadores
-[connected to server]
-Conectado ao servidor
-[connecting to all players]
-Conectando a todos jogadores
 [connecting to]
 Conectando a
 [constructed buildings]
@@ -264,12 +240,8 @@ Cursor customizado
 Dano
 [Damaged Map]
 Mapa de dano
-[dblbuff]
-Buffer duplo
 [decrease units working]
 Diminuir unidades trabalhando
-[default terrain]
-Terreno padrão
 [defencetower explanation 2]
 unidades ou construções
 [defencetower explanation]
@@ -298,8 +270,6 @@ deserto
 Destruir construção selecionada
 [destroy]
 Destruir
-[Disconnect]
-Desconectar
 [display]
 Vídeo
 [do nothing]
@@ -308,12 +278,8 @@ faz nada
 Está carregando nada
 [down]
 baixo
-[download finished]
-Download terminado
 [downloaded %0]
 
-[downloaded at]
-Baixado a 
 [edit map]
 Editar mapa
 [editing map]
@@ -380,8 +346,6 @@ f8
 f9
 [Fertility Map]
 Mapa de Fertilidade
-[food left]
-Comida sobrando
 [food]
 Comida
 [forbidden area]
@@ -402,10 +366,6 @@ Tela cheia
 Jogo cheio
 [game shortcuts]
 Atalhos do jogo
-[game speed]
-Velocidade do jogo
-[Games]
-
 [general settings]
 Ajustes gerais
 [go to event]
@@ -432,14 +392,6 @@ Felicidade
 Hard Pause
 [Harvest]
 Coletar
-[has joined]
-juntou-se
-[has quit]
-saiu
-[heal]
-Saúde
-[help]
-ajuda
 [home]
 home
 [hospital explanation 2]
@@ -448,8 +400,6 @@ home
 Cura as suas unidades
 [hospital]
 Hospital
-[Host has cancelled the game]
-
 [host]
 Hospedar um jogo
 [hp]
@@ -462,8 +412,6 @@ humano
 fome
 [hungryness]
 com fome
-[hwaccel]
-Aceleração por hardware
 [In way]
 À caminho
 [increase units working]
@@ -510,8 +458,6 @@ br
 Linguagem
 [language]
 Português do Brasil
-[large]
-grande
 [Leave Game]
 Deixar o jogo
 [left meta]
@@ -532,8 +478,6 @@ Carregar jogo
 Carregar mapa
 [load]
 Carrregar
-[loading glob2]
-Carregando Globulation 2
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -556,8 +500,6 @@ Nome
 Largura do mapa
 [map size y]
 Altura do mapa
-[mapGenerationDescriptor Methodes]
-Métodos de mapa gerados aleatoriamente
 [maps available]
 Mapas disponíveis
 [mark map]
@@ -568,10 +510,6 @@ frutas com os outros
 Possibilita a troca de
 [market]
 Mercado
-[medium]
-médio
-[menu]
-menu
 [Min required level:]
 Nível mínimo requerido:
 [Minimum Level To Flag]
@@ -582,8 +520,6 @@ Volume (música)
 
 [mute]
 mudo
-[network latency]
-Latência da rede
 [new campaign]
 Nova campanha
 [new map]
@@ -596,8 +532,6 @@ sem tecla ainda
 Nenhuma área de crescimento
 [No]
 Não
-[not connected]
-Não conectado
 [not ready]
 não pronto
 [number of players: %0 (%1 AI)]
@@ -620,8 +554,6 @@ velhas ilhas aleatórias
 velho terreno aleatório
 [On the spot]
 Aqui
-[one player]
-Um jogador conectou
 [open chat box]
 Abrir janela de chat
 [open load menu]
@@ -648,18 +580,12 @@ Congelar jogo
 Pause
 [Paused]
 Pausado
-[percent]
-porcento
 [player name]
 Nome do jogador
-[player]
-Jogador
 [please wait]
 Por favor espere
 [power]
 liga
-[presence request sent]
-Requisição de presença enviado...
 [press space]
 Aperte barra de espaço para continuar
 [Prestige]
@@ -680,8 +606,6 @@ acelere suas unidades
 Melhora o caminhar
 [racetrack]
 Pista de corrida
-[random terrain]
-Terreno aleatório
 [range]
 Alcance
 [ratios]
@@ -702,8 +626,6 @@ Começar/Parar Repair
 Reparo
 [repeat area]
 vezes a mesma paisagem
-[ressources]
-Recursos
 [restore default shortcuts]
 Restaurar atalhos de teclado padrões
 [return to editor]
@@ -808,8 +730,6 @@ Selecionar Torre
 Selecionar Parede
 [select warflag]
 Selecionar Bandeira de guerra
-[session request sent]
-Pedido de sessão enviado...
 [settings]
 Ajustes
 [shortcut explanation enter]
@@ -820,30 +740,20 @@ V: pressione para falar
 Mostrar menu principal
 [skin]
 Exposição
-[small]
-pequeno
 [smoothing]
 Alisar
 [space]
 barra de espaço
-[speed]
-Velocidade
 [start mission]
 Começar missão
 [start new campaign]
 Começar nova campanha
 [Start]
 Começar
-[STARTING GAME ...]
-Começando jogo... 
 [Starving Map]
 Mapa de fome
 [starving]
 muita fome
-[stat]
-Estatísticas
-[state]
-estado
 [Statistics]
 Estatísticas
 [Still (i)]
@@ -1012,8 +922,6 @@ Total
 
 [tutorial]
 Tutorial
-[unassigned]
-Não designado
 [Uncontrolled]
 Não controlado
 [undo]
@@ -1026,10 +934,6 @@ Editor de unidades
 
 [unit settings]
 Ajustes de unidade
-[Unit type]
-Unidade tipo
-[units type]
-unidades tipo
 [units working]
 unidades trabalhando
 [Units]
@@ -1040,8 +944,6 @@ Destravado por
 {Unnamed Area}
 [up]
 cima
-[update list]
-Lista de updates
 [upgrade building]
 Começar/Parar Upgrade
 [upgrade]
@@ -1052,8 +954,6 @@ Nome de usuário
 Versão
 [view history]
 Ver histórico de mensagens
-[wait destroy]
-Esperando destruição
 [waiting for %0]
 Esperando por %0
 [waiting for key]
@@ -1076,10 +976,6 @@ Proporção de guerreiros
 Guerreiro
 [warriors]
 guerreiros
-[was AI]
-era IA
-[was]
-era
 [water]
 Água
 [Wheat]
@@ -1108,22 +1004,16 @@ Trabalhando
 machucada
 [Yes]
 Sim
-[YESTS_BAD]
-Erro de consistência interna enquanto conectava.
 [YESTS_CONNECTING]
 Estabelecendo conexão com o metaservidor YOG...er...
 [YESTS_CONNECTION_LOST]
 A conexão com o YOG foi perdida.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-O metaservidor YOG recusou a conexão por causa de um erro interno de protocolo: você está autenticado. Tente novamente em 45 segundos.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário já foi registrado. Se este nome de usuário é seu, desative a opção "Registrar um novo usuário YOG com uma senha".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 O metaservidor YOG recusou a sua conexão porque a senha estava incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário não tem senha ainda. Provavelmente você quer registrar o seu nome de usuário com esta senha. Logo, ative a opção "Registrar um novo usuário YOG com uma senha" antes de conectar. Você precisa ativar esta opção somente uma vez.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-O metaservidor YOG recusou a conexão por causa de um erro interno de protocolo: você não estava conectado enquanto estava sendo autenticado. Por favor reporte este bug.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 O metaservidor YOG recusou a sua conexão porque o cliente globulation2 está obsoleto.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1132,26 +1022,10 @@ O metaservidor YOG recusou a conexão sem explicação alguma!
 O metaservidor YOG recusou a sua conexão porque este nome de usuário está sendo usado por outro.
 [YESTS_CREATED]
 O sistema de conexão está pronto para contatar o metaservidor YOG para conexão.
-[YESTS_DECONNECTING]
-Desconectando do metaservidor YOG...r...
 [YESTS_UNABLE_TO_CONNECT]
 Não é possível conectar. Aparentemente o metaservidor YOG está desligado.
-[YESTS_YOG_KILLED]
-Um administrador acabou de paralisar o metaservidor YOG.
-[yog-chat]
-#yog-en
 [yog]
 Ysagoon Online Gaming
-[YOG_HELP]
-O sistema de mensagens YOG tem dois comandos, "msg" e "away". Digite "/help <comando>" para aprender mais sobre um deles.
-[YOG_HELP_AWAY]
-O comando "/away (mensagem)" possibilita deixar os outros usuários do YOG saber que você está temporariamente distante. Você pode adicionar uma pequena mensagem de explicação. Por exemplo, "/away Estou comendo um hamburger e volto às 13 hs". Abrv. "/a".
-[YOG_HELP_MSG]
-O comando "/msg <nome> <mensagem>" manda uma mensagem privada. Por exemplo, "/msg John Oi John, como está?". Abrev. "/m".
-[You are no more marked as away]
-Você não está mais marcado como distante.
-[You are now marked as away]
-Você está marcado como distante.
 [you have lost]
 Você perdeu!
 [you have won]

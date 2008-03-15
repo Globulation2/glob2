@@ -1,5 +1,5 @@
-[%0 has been deconnected of the game]
-%0 je prekinil povezavo
+
+
 [%0 has left the game]
 %0 je zapustil igro.
 [%0's game]
@@ -16,8 +16,6 @@ Spreobrnil si enoto druge ekipe %0
 
 [abreaviation explanation V]
 
-[Add AI]
-Dodaj UI
 [add map]
 
 [add shortcut]
@@ -66,8 +64,6 @@ so ranjeni
 Hit. napada
 [At. strength]
 Moč napada
-[attack speed]
-Hitrost napada
 [Attack]
 Napad
 [audio]
@@ -84,8 +80,6 @@ odsoden:
 
 [backspace]
 
-[bad error in connection system]
-Napaka v povezovalnem sistemu
 [barracks explanation 2]
 tvojih vojakov
 [barracks explanation]
@@ -146,12 +140,6 @@ velikost obal
 
 [Build]
 Zgradi
-[Building name]
-Ime zgradbe
-[Building short explanation 2]
-Kratka obrazložitev stavbe II (največ 24 znakov)
-[Building short explanation]
-Kratka obrazložitev stavbe (največ 24 znakov)
 [building site]
 gradbišče
 [Buildings]
@@ -194,8 +182,6 @@ Prekliči
 Nosi :
 [Change Area Name]
 
-[checksum sent]
-Checksum poslan ...
 [Cherry]
 Češnja
 [choose campaign]
@@ -206,8 +192,6 @@ Izberi igro
 Izberi mapo
 [clear area]
 
-[clear]
-
 [Clearing:]
 Brisanje:
 [clearingflag explanation 2]
@@ -216,8 +200,6 @@ Brisanje:
 Razkreije surovine
 [clearingflag]
 Odstiralna zastava
-[close]
-Zapri
 [closed]
 Zaprto
 [compile]
@@ -228,12 +210,6 @@ Zgradi skripto
 
 [connect]
 Vspostavi povezavo
-[connected to all players]
-Povezan z vsemz igralcei
-[connected to server]
-Poveži se na server
-[connecting to all players]
-Povezujem se z vsemi igralci
 [connecting to]
 Povezujem na
 [constructed buildings]
@@ -264,12 +240,8 @@ Naključni kazalec
 Škoda
 [Damaged Map]
 
-[dblbuff]
-Dvojni začasni pomnilnik
 [decrease units working]
 
-[default terrain]
-Default terrain
 [defencetower explanation 2]
 tako enote kot stavbe
 [defencetower explanation]
@@ -296,8 +268,6 @@ Obramba
 
 [destroy]
 Uniči
-[Disconnect]
-Prekini povezavo
 [display]
 Prikaz
 [do nothing]
@@ -306,12 +276,8 @@ Prikaz
 Ne nosi ničesar
 [down]
 
-[download finished]
-Nalaganje končano
 [downloaded %0]
 
-[downloaded at]
-naloženo iz
 [edit map]
 
 [editing map]
@@ -378,8 +344,6 @@ raziskovalci
 
 [Fertility Map]
 
-[food left]
-Hreane ostalo
 [food]
 Hrana
 [forbidden area]
@@ -399,10 +363,6 @@ Celotni zaslon
 [game full]
 Igra je polna
 [game shortcuts]
-
-[game speed]
-Hitrost igre
-[Games]
 
 [general settings]
 
@@ -430,14 +390,6 @@ Zadovoljstvo
 
 [Harvest]
 Poberi
-[has joined]
-se je vkljičil
-[has quit]
-je odšel
-[heal]
-Zdravje
-[help]
-
 [home]
 
 [hospital explanation 2]
@@ -446,8 +398,6 @@ Zdravje
 Zdravi tvoje enote
 [hospital]
 Bolnišnica
-[Host has cancelled the game]
-
 [host]
 Gostuj igro
 [hp]
@@ -460,8 +410,6 @@ Zdravje
 lačen
 [hungryness]
 
-[hwaccel]
-Strojno pospeševanje
 [In way]
 Na poti
 [increase units working]
@@ -508,8 +456,6 @@ si
 Jezik
 [language]
 Slovenščina
-[large]
-velika
 [Leave Game]
 
 [left meta]
@@ -530,8 +476,6 @@ Naloži igro
 
 [load]
 Naloži
-[loading glob2]
-Nalagam Globulation 2
 [login]
 Prijava
 [Lost : %0 has more prestige than you]
@@ -554,8 +498,6 @@ Ime mape: %0.
 Širina mape
 [map size y]
 Višina mape
-[mapGenerationDescriptor Methodes]
-Načini naključne izdelave mape
 [maps available]
 
 [mark map]
@@ -566,10 +508,6 @@ Načini naključne izdelave mape
 Omogoča menjavo blaga
 [market]
 Tržnica
-[medium]
-srednja
-[menu]
-
 [Min required level:]
 Najnižja zahtevana stopnja
 [Minimum Level To Flag]
@@ -580,8 +518,6 @@ Glasnost glasbe
 
 [mute]
 
-[network latency]
-Pretočnost mreže
 [new campaign]
 
 [new map]
@@ -594,8 +530,6 @@ Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril
 
 [No]
 Ne
-[not connected]
-Nisi povezan
 [not ready]
 ni pripravljen
 [number of players: %0 (%1 AI)]
@@ -618,8 +552,6 @@ Potrdi
 
 [On the spot]
 Tukaj
-[one player]
-Igralec se je vključil.
 [open chat box]
 
 [open load menu]
@@ -646,18 +578,12 @@ Papirus
 
 [Paused]
 Ustavljeno
-[percent]
-  %
 [player name]
 Ime igralca
-[player]
-Igralec
 [please wait]
 Prosim počakaj
 [power]
 
-[presence request sent]
-Zahteva za prisotnost poslana ...
 [press space]
 
 [Prestige]
@@ -678,8 +604,6 @@ tvojih enot
 Izboljša hitrost hoje
 [racetrack]
 Tekaška steza
-[random terrain]
-Naklučni teren
 [range]
 Domet
 [ratios]
@@ -700,8 +624,6 @@ Zapomni si YOG geslo lokalno. (Ni varno)
 Popravi
 [repeat area]
 
-[ressources]
-Viri
 [restore default shortcuts]
 
 [return to editor]
@@ -806,8 +728,6 @@ Iščem
 
 [select warflag]
 
-[session request sent]
-Zahteva za sejo ...
 [settings]
 Nastavitve
 [shortcut explanation enter]
@@ -818,30 +738,20 @@ Nastavitve
 
 [skin]
 
-[small]
-majhna
 [smoothing]
 Glajenje
 [space]
 
-[speed]
-Hitrost
 [start mission]
 
 [start new campaign]
 
 [Start]
 Začni
-[STARTING GAME ...]
-Zaganjanjam igro ...
 [Starving Map]
 
 [starving]
 lačen
-[stat]
-Statistika
-[state]
-stanje?
 [Statistics]
 Statistika
 [Still (i)]
@@ -1010,8 +920,6 @@ Skupaj
 
 [tutorial]
 Predavanje
-[unassigned]
-
 [Uncontrolled]
 Nenadzirane
 [undo]
@@ -1024,10 +932,6 @@ Obleči teren?
 
 [unit settings]
 
-[Unit type]
-Vrsta enote
-[units type]
-Vrsta enot
 [units working]
  enot dela
 [Units]
@@ -1038,8 +942,6 @@ Enote
 
 [up]
 
-[update list]
-Osveži seznam
 [upgrade building]
 
 [upgrade]
@@ -1050,8 +952,6 @@ Uporabniško ime
 Različica
 [view history]
 
-[wait destroy]
-Počakaj z uničenjem 
 [waiting for %0]
 Čakam %0
 [waiting for key]
@@ -1074,10 +974,6 @@ Pozor, da bi nastavitve stopile v veljavo moraš ponovno zagnati igro
 Vojak
 [warriors]
 vojaki
-[was AI]
-je bil UI
-[was]
-je bil
 [water]
 Voda
 [Wheat]
@@ -1106,22 +1002,16 @@ Izdelujem
 ranjen
 [Yes]
 Da
-[YESTS_BAD]
-Internal consistency error while connecting.
 [YESTS_CONNECTING]
 Vspostavljam povezavo na YOG metastrežnikom...
 [YESTS_CONNECTION_LOST]
 Povezava z YOG metastrežnikom je bila izgubljena.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metastrežnik je zavrnil povezavo, ker se je pojavila napaka v protokolu. Poskusi ponovno v 45 sekundah.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 YOG metastrežnik je zavrnil povezavo, ker je bilo tvoje uporabniško ime že registrirano. Če je to uporabniško ime tvoje, potem onemogoči možnost "Registriraj novega YOG uporabnika s tem geslom".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metastrežnik je zavrnil povezavo, ker je vpisano geslo napačno.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metastrežnik je zavrnil povezavo ker tvoje uporabniško ime nima določenega gesla. Gotovo hočeš registrirati to uporabniško ime zato poskusi aktivirati možnost "Registriraj novega YOG uporabnika s tem geslom". To možnost moraš aktivirati le enkrat.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-Yog metastrežnik je zavrnil povezavo zaradi problemov z notranjim protokolom: Nisi še proklopljen med potrjevanjem. Prosim prijavi tega hrošča. Hvala
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1130,26 +1020,10 @@ Yog metastrežnik je brezobrazložitve zavrnil povezavo!
 YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
-[YESTS_DECONNECTING]
-Prekinjam povezavo z YOG metastrežnikom...
 [YESTS_UNABLE_TO_CONNECT]
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
-[YESTS_YOG_KILLED]
-Administrator je ustavil navidezni metastrežnik.
-[yog-chat]
-#yog-en
 [yog]
 Ysagoon medmrežno igranje
-[YOG_HELP]
-YOG sporočilni sistem ima dva ukaza: "msg" in "away". Vtipkaj: "/help <command>", da izveš več o njiju.
-[YOG_HELP_AWAY]
-Ukaz "/away (<message>)" ti omogoči da druge YOG uporabnike obvestiš, da si trenutno odsoten. Zraven lahko dodaš še kratko sporočila.  Npr. "/away Jem žgance in tenstan krompir nazaj bom ob enih". Namesto "/away" lahko tudi "/a"
-[YOG_HELP_MSG]
-Ukaz "/msg <name> <message>" pošlje privatno sporočilo.  Npr., "/msg Janez Živjo Janez, kako si?".  Namesto "/msg"lahko tudi "/m".
-[You are no more marked as away]
-Nisi več označen kot Odsoten.
-[You are now marked as away]
-Označen si kot Odsoten.
 [you have lost]
 Izgubil si!
 [you have won]
