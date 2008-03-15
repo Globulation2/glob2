@@ -40,6 +40,7 @@
 #include "SoundMixer.h"
 #include "CampaignScreen.h"
 #include "Player.h"
+#include "AIEcho.h"
 
 #include <iostream>
 
