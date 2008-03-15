@@ -1,4 +1,5 @@
-changes={"[new]" : "[new map]"}
+changes={}
+
 
 def translation_check(filename, keys):
     print "Examining %s" % (filename)

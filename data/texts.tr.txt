@@ -1,5 +1,5 @@
-[%0 has been deconnected of the game]
-%0 koptu.
+
+
 [%0 has left the game]
 %0 oyundan cikti.
 [%0's game]
@@ -16,8 +16,6 @@ fV: Otel binalarini goster (birimleri calmak icin)
 mV: Market binalarini goster (mal takasi icin)
 [abreaviation explanation V]
 V: Butun binalari goster
-[Add AI]
-AI Ekle
 [add map]
 
 [add shortcut]
@@ -66,8 +64,6 @@ Zirh
 Att. hiz
 [At. strength]
 Att. guc
-[attack speed]
-Saldiri hizi
 [Attack]
 Saldiri
 [audio]
@@ -84,8 +80,6 @@ uzakta:
 
 [backspace]
 
-[bad error in connection system]
-Baglanti sisteminde kotu bir hata
 [barracks explanation 2]
 savascilarinizin seviyesi
 [barracks explanation]
@@ -146,12 +140,6 @@ sahil boyutu
 
 [Build]
 Insaa et
-[Building name]
-Yapi adi
-[Building short explanation 2]
-Binanin kisa tanimi 2 (en fazla 24 harf)
-[Building short explanation]
-Binanin kisa tanimi (en fazla 24 harf)
 [building site]
 insaa alani
 [Buildings]
@@ -194,8 +182,6 @@ Vazgec
 Tasiyor:
 [Change Area Name]
 
-[checksum sent]
-Sonkontrol gonderildi ...
 [Cherry]
 Kiraz
 [choose campaign]
@@ -206,8 +192,6 @@ Oyun sec
 Harita sec
 [clear area]
 Temizlik bolgesi
-[clear]
-
 [Clearing:]
 Aciklik:
 [clearingflag explanation 2]
@@ -216,8 +200,6 @@ Aciklik:
 Kaynaklari temizler
 [clearingflag]
 Temizlik bayragi
-[close]
-Kapat
 [closed]
 Kapali
 [compile]
@@ -228,12 +210,6 @@ Script derle
 
 [connect]
 Baglan
-[connected to all players]
-Tum oyunculara baglanildi
-[connected to server]
-Sunucuya baglanildi
-[connecting to all players]
-Tum oyunculara baglaniliyor
 [connecting to]
 Suraya baglaniyor:
 [constructed buildings]
@@ -264,12 +240,8 @@ Ozel imlec
 Hasar
 [Damaged Map]
 
-[dblbuff]
-Cift tampon
 [decrease units working]
 
-[default terrain]
-Varsayilan arazi
 [defencetower explanation 2]
 birimler yada binalar
 [defencetower explanation]
@@ -296,8 +268,6 @@ col
 
 [destroy]
 Yik
-[Disconnect]
-Baglantiyi kes
 [display]
 Gorunum
 [do nothing]
@@ -306,12 +276,8 @@ Gorunum
 Hicbirsey tasimiyor
 [down]
 
-[download finished]
-Indirme tamamlandi
 [downloaded %0]
 
-[downloaded at]
-Suradan indirildi: 
 [edit map]
 
 [editing map]
@@ -378,8 +344,6 @@ bos adalar
 
 [Fertility Map]
 
-[food left]
-Kalan besin
 [food]
 Besin
 [forbidden area]
@@ -399,10 +363,6 @@ Tam ekran
 [game full]
 Oyun dolu
 [game shortcuts]
-
-[game speed]
-Oyun hizi
-[Games]
 
 [general settings]
 
@@ -430,14 +390,6 @@ Mutluluk
 
 [Harvest]
 Hasat et
-[has joined]
-katildi
-[has quit]
-cikti
-[heal]
-Saglik
-[help]
-
 [home]
 
 [hospital explanation 2]
@@ -446,8 +398,6 @@ Saglik
 Birimlerinizi iyilestirir
 [hospital]
 Hastane
-[Host has cancelled the game]
-
 [host]
 Oyun Sunucusu ol
 [hp]
@@ -460,8 +410,6 @@ Can
 ac
 [hungryness]
 Aclik
-[hwaccel]
-Donanim hizlandirma
 [In way]
 Yolda
 [increase units working]
@@ -508,8 +456,6 @@ tr
 Dil
 [language]
 Turkce
-[large]
-buyuk
 [Leave Game]
 
 [left meta]
@@ -530,8 +476,6 @@ Oyun yukle
 
 [load]
 Yukle
-[loading glob2]
-Globulation 2 Yukleniyor
 [login]
 Giris
 [Lost : %0 has more prestige than you]
@@ -554,8 +498,6 @@ Harita adi: %0.
 Harita genisligi
 [map size y]
 Harita yuksekligi
-[mapGenerationDescriptor Methodes]
-Rastgele olusturulmus haritalarin metodlari
 [maps available]
 
 [mark map]
@@ -566,10 +508,6 @@ baskalariyla alisveris yapar
 Sunun takasina izin verir:
 [market]
 Market
-[medium]
-orta
-[menu]
-
 [Min required level:]
 Gerekli en dusuk seviye:
 [Minimum Level To Flag]
@@ -580,8 +518,6 @@ Ses ayari (muzik)
 
 [mute]
 sessiz
-[network latency]
-Ag gecikmesi
 [new campaign]
 
 [new map]
@@ -594,8 +530,6 @@ Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabi
 
 [No]
 Hayir
-[not connected]
-Bagli degil
 [not ready]
 hazir degil
 [number of players: %0 (%1 AI)]
@@ -618,8 +552,6 @@ eski karisik adalar
 eski karisik arazi
 [On the spot]
 Burada
-[one player]
-Bir oyuncu katildi.
 [open chat box]
 
 [open load menu]
@@ -646,18 +578,12 @@ Papirus
 
 [Paused]
 Duraklatildi
-[percent]
-  yuzde
 [player name]
 Oyuncu adi
-[player]
-Oyuncu
 [please wait]
 Lutfen bekleyin
 [power]
 
-[presence request sent]
-Hazir olma istegi yollandi ...
 [press space]
 Devam etmek icin bosluk tusuna basin.
 [Prestige]
@@ -678,8 +604,6 @@ Birimlerinizin hizi
 Yurumeyi gelistirir
 [racetrack]
 Kosuyolu
-[random terrain]
-Karisik saha
 [range]
 Menzil
 [ratios]
@@ -700,8 +624,6 @@ Parolayi yerel olarak animsa. (guvenli degil)
 Onar
 [repeat area]
 
-[ressources]
-Kaynaklar
 [restore default shortcuts]
 
 [return to editor]
@@ -806,8 +728,6 @@ ariyor
 
 [select warflag]
 
-[session request sent]
-Oturum istegi yollandi ...
 [settings]
 Ayarlar
 [shortcut explanation enter]
@@ -818,30 +738,20 @@ V: konusmak icin basili tut
 
 [skin]
 Gorunum
-[small]
-kucuk
 [smoothing]
 Duzeltme
 [space]
 
-[speed]
-Hiz
 [start mission]
 
 [start new campaign]
 
 [Start]
 Basla
-[STARTING GAME ...]
-Oyun basliyor... 
 [Starving Map]
 
 [starving]
 cok ac
-[stat]
-Istatistikler
-[state]
-durum
 [Statistics]
 Istatistikler
 [Still (i)]
@@ -1010,8 +920,6 @@ Toplam
 
 [tutorial]
 Egitim
-[unassigned]
-
 [Uncontrolled]
 Kontrolsuz
 [undo]
@@ -1024,10 +932,6 @@ Birim editoru
 
 [unit settings]
 
-[Unit type]
-Birim tipi
-[units type]
-birim tipi
 [units working]
  calisan birimler
 [Units]
@@ -1038,8 +942,6 @@ Birimler
 
 [up]
 
-[update list]
-Listeyi guncelle
 [upgrade building]
 
 [upgrade]
@@ -1050,8 +952,6 @@ Kullanici adi
 Versiyon
 [view history]
 
-[wait destroy]
-Yikilmayi bekliyor
 [waiting for %0]
 bekleniyor: %0
 [waiting for key]
@@ -1074,10 +974,6 @@ Uyari, degisikliklerin etkili olabilmesi icin oyunu yeniden baslatmalisiniz
 Savasci
 [warriors]
 savascilar
-[was AI]
-AI idi
-[was]
-idi
 [water]
 Su
 [Wheat]
@@ -1108,22 +1004,16 @@ Calisiyor
 yarali
 [Yes]
 Evet
-[YESTS_BAD]
-Baglantida ic tutarlilik hatasi.
 [YESTS_CONNECTING]
 YOG onsunucusu ile baglanti kuruluyor...
 [YESTS_CONNECTION_LOST]
 YOG'la olan baglanti koptu.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Bir protokol hatasi olustu:  Zaten baglisiniz.  45 saniye icinde tekrar deneyiniz.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi zaten kayitli.  Eger bu kullanici adi sizinse, "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini pasiflestirin.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Girdiginiz sifre yanlis.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adinin henuz bir parolasi yok. Muhtemelen kullanici adinizi bu parola ile kaydetmek istiyorsunuz. O halde, baglanmadan once "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini aktiflestirin. Bu secenegi yalnizca bir kez aktiflestirmeniz yeterli olacaktir.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Bir ic protokol hatasi olustu: Onaylandigi halde baglantiniz kurulamadi. Lutfen bu bug'i bildiriniz.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1132,26 +1022,10 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
-[YESTS_DECONNECTING]
-YOG onsunucusu ile olan baglanti kesiliyor...
 [YESTS_UNABLE_TO_CONNECT]
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
-[YESTS_YOG_KILLED]
-Bir yonetici YOG onsunucusunu durdurdu.
-[yog-chat]
-#yog-tr
 [yog]
 Ysagoon Online Gaming
-[YOG_HELP]
-YOG mesajlasma sisteminde iki komut bulunmaktadir: "msg" ve "away". Bunlardan biri hakkinda daha fazla bilgi edinmek icin "/help <komut>" yaziniz.
-[YOG_HELP_AWAY]
-"/away (<mesaj>)" komutu diger YOG kullanicilarinin sizin gecici olarak uzakta oldugunuzu anlamalarini saglar.  Buraya kisa bir aciklama mesaji ekleyebilirsiniz.  Ornek: "/away Ogle yemegindeyim ve saat 2'de donmus olurum". Kisaltma: "/a"
-[YOG_HELP_MSG]
-"/msg <ad> <mesaj>" komutu bir ozel mesaj gonderir.  Ornek: "/msg ahmet Merhaba ahmet, nasil gidiyor?".  Kisaltma: "/m".
-[You are no more marked as away]
-Artik uzakta olarak isaretli degilsiniz.
-[You are now marked as away]
-Uzakta olarak isaretlisiniz.
 [you have lost]
 Kaybettiniz!
 [you have won]

@@ -1,5 +1,5 @@
-[%0 has been deconnected of the game]
-%0 kapcsolata megszakadt.
+
+
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0's game]
@@ -16,8 +16,6 @@ Elfogtad az ellenség egységét %0
 
 [abreaviation explanation V]
 
-[Add AI]
-MI-t hozzáad
 [add map]
 
 [add shortcut]
@@ -66,8 +64,6 @@ Páncél
 Támadási sebesség
 [At. strength]
 Támadási erő
-[attack speed]
-Támadási sebesség
 [Attack]
 Támadás
 [audio]
@@ -84,8 +80,6 @@ távol van:
 
 [backspace]
 
-[bad error in connection system]
-Végzetes hiba a kapcsolódási rendszerben
 [barracks explanation 2]
 fejlesztése
 [barracks explanation]
@@ -146,12 +140,6 @@ a partok méretei
 
 [Build]
 Épít
-[Building name]
-Az épület elnevezése
-[Building short explanation 2]
-Épületek rövid megnevezése 2 (max. 24 karakter)
-[Building short explanation]
-Az épület rövid leírása  (max. 24 karater)
 [building site]
 építési terület
 [Buildings]
@@ -194,8 +182,6 @@ Mégsem
 Szállít :
 [Change Area Name]
 
-[checksum sent]
-Ellenőrzőösszeg elküldve ...
 [Cherry]
 Cseresznye
 [choose campaign]
@@ -206,8 +192,6 @@ Válassz egy játékot
 Válassz egy térképet
 [clear area]
 
-[clear]
-
 [Clearing:]
 Tisztítás: 
 [clearingflag explanation 2]
@@ -216,8 +200,6 @@ Tisztítás:
 Erőforrások feltárása
 [clearingflag]
 Tisztítás zászló
-[close]
-Bezár
 [closed]
 Zárva
 [compile]
@@ -228,12 +210,6 @@ Szkript fordítása
 
 [connect]
 Kapcsolódás
-[connected to all players]
-Csatlakozott a játékosokhoz
-[connected to server]
-Szerverhez történő csatlakozás sikeres
-[connecting to all players]
-Csatlakozás a játékosokhoz
 [connecting to]
 Kapcsolódás
 [constructed buildings]
@@ -264,12 +240,8 @@ Szabadjáték
 Kár
 [Damaged Map]
 
-[dblbuff]
-Dupla pufferelés
 [decrease units working]
 
-[default terrain]
-Alapértelmezett terep
 [defencetower explanation 2]
 ellenséges egységeket
 [defencetower explanation]
@@ -296,8 +268,6 @@ Védelem
 
 [destroy]
 Megsemmisít
-[Disconnect]
-Kapcsolat megszakítása
 [display]
 Kijelző
 [do nothing]
@@ -306,12 +276,8 @@ Kijelző
 Nem szállít semmit
 [down]
 
-[download finished]
-A letöltés befejeződött
 [downloaded %0]
 
-[downloaded at]
-Letöltés
 [edit map]
 
 [editing map]
@@ -378,8 +344,6 @@ felderítők
 
 [Fertility Map]
 
-[food left]
-Maradék élelmiszer
 [food]
 Élelmiszer
 [forbidden area]
@@ -399,10 +363,6 @@ Teljes képernyő
 [game full]
 A játék megtelt
 [game shortcuts]
-
-[game speed]
-A játék sebessége
-[Games]
 
 [general settings]
 
@@ -430,14 +390,6 @@ Boldogság
 
 [Harvest]
 Betakarít
-[has joined]
-csatlakozott
-[has quit]
-kilépett
-[heal]
-Egészség
-[help]
-
 [home]
 
 [hospital explanation 2]
@@ -446,8 +398,6 @@ Egészség
 Egységek gyógyítása
 [hospital]
 Kórház
-[Host has cancelled the game]
-
 [host]
 Játék hostolása
 [hp]
@@ -460,8 +410,6 @@ Játék hostolása
 éhes
 [hungryness]
 
-[hwaccel]
-Hardveres gyorsítás
 [In way]
 Úton van
 [increase units working]
@@ -508,8 +456,6 @@ hu
 Nyelv
 [language]
 Magyar
-[large]
-nagy
 [Leave Game]
 
 [left meta]
@@ -530,8 +476,6 @@ Játék betöltése
 
 [load]
 Betölt
-[loading glob2]
-A Globulation 2 betöltése
 [login]
 Bejelentkezés
 [Lost : %0 has more prestige than you]
@@ -554,8 +498,6 @@ A térkép neve: %0.
 Térkép szélessége
 [map size y]
 Térkép hosszúsága
-[mapGenerationDescriptor Methodes]
-Véletlenszerű térkép előállítási eljárások
 [maps available]
 
 [mark map]
@@ -566,10 +508,6 @@ gyümölcs árucserét
 Lehetővé teszi az
 [market]
 Piac
-[medium]
-közepes
-[menu]
-
 [Min required level:]
 Minimális szükséges szint:
 [Minimum Level To Flag]
@@ -580,8 +518,6 @@ Hangerősség (zene)
 
 [mute]
 
-[network latency]
-Hálózati várakozási idő
 [new campaign]
 
 [new map]
@@ -594,8 +530,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [No]
 Nem
-[not connected]
-Nincs kapcsolat
 [not ready]
 nincs készen
 [number of players: %0 (%1 AI)]
@@ -618,8 +552,6 @@ Rendben
 
 [On the spot]
 Helyszínen van
-[one player]
-Egy játékos van jelen.
 [open chat box]
 
 [open load menu]
@@ -646,18 +578,12 @@ Papírusz
 
 [Paused]
 Szünet
-[percent]
-  százalék
 [player name]
 A játékos neve
-[player]
-Játékos
 [please wait]
 Kérem várjon
 [power]
 
-[presence request sent]
-Kapcsolódási kérelem elküldve ...
 [press space]
 
 [Prestige]
@@ -678,8 +604,6 @@ fejlesztése
 Haladási sebesség
 [racetrack]
 Versenypálya
-[random terrain]
-Véletlenszerű térkép
 [range]
 Hatótávolság
 [ratios]
@@ -700,8 +624,6 @@ A jleszót helyileg tárolja. (nem biztonságos)
 Megjavítani
 [repeat area]
 
-[ressources]
-Erőforrások
 [restore default shortcuts]
 
 [return to editor]
@@ -806,8 +728,6 @@ keresés
 
 [select warflag]
 
-[session request sent]
-Csatlakozási kérelem elküldve ...
 [settings]
 Beállítások
 [shortcut explanation enter]
@@ -818,30 +738,20 @@ Beállítások
 
 [skin]
 
-[small]
-kicsi
 [smoothing]
 Simítás
 [space]
 
-[speed]
-Sebesség
 [start mission]
 
 [start new campaign]
 
 [Start]
 Kezdés
-[STARTING GAME ...]
-Indul a játék...
 [Starving Map]
 
 [starving]
 éhezik
-[stat]
-Statisztika
-[state]
-állapot
 [Statistics]
 Statisztika
 [Still (i)]
@@ -1010,8 +920,6 @@ Elérted a legmagasabb presztízs szintet
 
 [tutorial]
 Gyakorlás
-[unassigned]
-
 [Uncontrolled]
 Független
 [undo]
@@ -1024,10 +932,6 @@ Egységes térkép
 
 [unit settings]
 
-[Unit type]
-Egység típus
-[units type]
-Egység típus
 [units working]
  az egységek dolgoznak
 [Units]
@@ -1038,8 +942,6 @@ Egységek
 
 [up]
 
-[update list]
-Naprakésszé tétel
 [upgrade building]
 
 [upgrade]
@@ -1050,8 +952,6 @@ Felhasználónév
 Verzió
 [view history]
 
-[wait destroy]
-Megsemmisítésre várva
 [waiting for %0]
 %0 -ra várva
 [waiting for key]
@@ -1074,10 +974,6 @@ Hadizászló
 Harcos
 [warriors]
 harcosok
-[was AI]
-korábbi MI
-[was]
-volt
 [water]
 Víz
 [Wheat]
@@ -1106,22 +1002,16 @@ Dolgozik
 sebesült
 [Yes]
 Igen
-[YESTS_BAD]
-Belső összefüggési hiba a kapcsolódás alatt.
 [YESTS_CONNECTING]
 A kapcsolat felvétele a YOG metaszerverrel.
 [YESTS_CONNECTION_LOST]
 A kapcsolat a YOG metaszerverrel megszakadt.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-A YOG metaszerver visszautasította a kapcsolatot egy protokollhiba miatt: már be vagy jelentkezve. Próbálkozz újra 45 másodperc múlva.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-A YOG metaszerver visszautasította a kapcsolatot egy belső protokollhiba miatt: azonosítás alatt még nem történt meg a kapcsolódás. A felmerült hibáról küldj értesítést a fejlesztőknek.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1130,26 +1020,10 @@ A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
 A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
 [YESTS_CREATED]
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
-[YESTS_DECONNECTING]
-Lecsatlakozás a YOG metaszerverről...
 [YESTS_UNABLE_TO_CONNECT]
 A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
-[YESTS_YOG_KILLED]
-Egy adminisztrátor leállította a YOG metaszervert.
-[yog-chat]
-#yog-hu
 [yog]
 Ysagoon Online Játék
-[YOG_HELP]
-A YOG üzenettovábbító rendszer két parancsot ismer: "msg" és "away". A "/help <parancs>" beütésével lehet használatukkal kapcsolatban további információkat kapni.
-[YOG_HELP_AWAY]
-A "/away (<üzenet>)" parancs segítségével lehet a többi YOG felhasználóval közölni, hogy jelenleg nem tartózkodsz a gép közelében. Ezen kívül lehetőség van egy kis magyarázó üzenet hozzáadására is. Például a "/away Elugrottam meginni egy sört". Alias "/a"
-[YOG_HELP_MSG]
-A "/msg <név> <üzenet>" paranccsal üzenetet küldhetsz. Például "/msg Jani Hello Jani hogy vagy?". Alias "/m"
-[You are no more marked as away]
-Már nem vagy távollevőként megjelölve.
-[You are now marked as away]
-Távollevőként vagy megjelölve.
 [you have lost]
 Elvesztetted a játékot!
 [you have won]
