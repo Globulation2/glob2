@@ -44,6 +44,7 @@ namespace GAGGUI
 		size_t areaPos;
 		unsigned int charHeight;
 		std::vector <size_t> lines;
+		std::vector <bool> show_image;
 		std::vector <int> lines_frames;
 		std::vector <int> frames;
 		std::string text;
