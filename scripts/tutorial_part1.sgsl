@@ -7,6 +7,7 @@
 # Translation to spanish Igor Támara <igor@tamarapatino.org> (and revised by Hernan Quishpe)
 # English version revised by Hernan Quishpe
 # Translated to Dutch by Raoul Verveer
+# Translated to Russian by Igor Murzov
 
 GuiDisable(AllianceScreen)
 GuiDisable(FlagTab)
