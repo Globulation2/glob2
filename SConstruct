@@ -168,6 +168,11 @@ def main():
         env.Clone()
     except AttributeError:
         env.Clone = env.Copy
+    
+    if not env['CC']:
+        print "No compiler found in PATH. Please install gcc or another compiler."
+        Exit(1)
+	
     env["VERSION"] = "0.9.3"
     establish_options(env)
     #Add the paths to important mingw libraries
@@ -177,11 +182,13 @@ def main():
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     if env['release']:
-        env.Append(CXXFLAGS=' -O3')
+        env.Append(CXXFLAGS=' -O2')
+        env.Append(LINKFLAGS=' -O2')
     if env['profile']:
         env.Append(CXXFLAGS=' -pg')
         env.Append(LINKFLAGS='-pg')
-        env.Append(CXXFLAGS=' -O3')
+        env.Append(CXXFLAGS=' -O2')
+        env.Append(LINKFLAGS='-O2')
     if env['mingw'] or isWindowsPlatform:
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
