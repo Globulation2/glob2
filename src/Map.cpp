@@ -3845,7 +3845,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				//Warflags don't consider enemy buildings an obstacle
 				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 					gradient[wyx] = 0;
-				else
+				else if(gradient[wyx]!=255)
 					gradient[wyx] = 1;
 			}
 		}
