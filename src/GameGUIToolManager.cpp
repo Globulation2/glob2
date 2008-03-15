@@ -287,29 +287,6 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 			brushAccumulator.firstY=mapY;
 		}
 
-		if((brush.getBrushHeight(fig) == 1) && (brush.getBrushWidth(fig) == 1))
-		{
-			int isAlreadyOn = false;
-			if(zoneType == Forbidden && game.map.isForbiddenLocal(mapX, mapY))
-			{
-				isAlreadyOn = true;
-			}
-			else if(zoneType == Guard && game.map.isGuardAreaLocal(mapX, mapY))
-			{
-				isAlreadyOn = true;
-			}
-			else if(zoneType == Clearing && game.map.isClearAreaLocal(mapX, mapY))
-			{
-				isAlreadyOn = true;
-			}
-			unsigned mode = brush.getType();
-			if (((mode == BrushTool::MODE_ADD) && isAlreadyOn)
-			|| ((mode == BrushTool::MODE_DEL) && !isAlreadyOn))
-			{
-				flushBrushOrders(localteam);
-				brush.setType((mode == BrushTool::MODE_ADD) ? BrushTool::MODE_DEL : BrushTool::MODE_ADD); 
-			}
-		}
 		handleZonePlacement(mouseX, mouseY, localteam, viewportX, viewportY);
 	}
 }

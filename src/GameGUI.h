@@ -272,6 +272,8 @@ private:
 
 	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" (ignore) it
 	bool swallowSpaceKey;
+	//! Set to the SGSL display text of the previous frame. This is so the system knows when the text changes.
+	std::string previousSGSLText;
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
@@ -340,7 +342,7 @@ private:
 	int eventGoTypeIterator; //!< iterator to iter on ctrl + space press
 	
 	//! Transform a text to multi line according to screen width
-	void setMultiLine(const std::string &input, std::vector<std::string> *output);
+	void setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent="");
 	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
