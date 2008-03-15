@@ -3,13 +3,13 @@
 [%0 has left the game]
 %0 покинул игру.
 [%0's game]
-
+игра %0'а
 [%0's team unit got converted to your team]
-Вражеский юнит %0 переметнулся к Вам.
+Юнит из команды %0 перешёл в вашу команду.
 [abreaviation explanation A]
 A: Союзники
 [abreaviation explanation C]
-C: Послать сообщения в чате следующему пользователю:
+C: Послать сообщения в чате пользователю
 [abreaviation explanation fV]
 fV: Показ поля зрения для здания "Кабак" (переманивание юнитов)
 [abreaviation explanation mV]
@@ -19,9 +19,9 @@ V: Показ поля зрения для всех зданий
 [Add AI]
 Добавить AI
 [add map]
-
+Доб. карту
 [add shortcut]
-
+Доб. гор. клавишу
 [AI]
 AI
 [ai]
@@ -29,13 +29,13 @@ AI
 [AICastor]
 AICastor
 [AINicowar]
-Nicowar (unstable)
+Nicowar
 [AINone]
 AINone
 [AINumbi]
 AINumbi
 [AIReachToInfinity]
-
+ReachToInfinity
 [AIToubib]
 AIToubib
 [AIWarrush]
@@ -51,7 +51,7 @@ AIWarrush
 [any explorer]
 любой разведчик
 [are dying hungry]
-умирают от голода
+истощены
 [are hungry]
 голодны
 [are ok]
@@ -61,9 +61,9 @@ ok
 [armor]
 Броня
 [assigned]
-
+Назначен
 [At. speed]
-Скорость атаки
+Скор. атаки
 [At. strength]
 Сила атаки
 [attack speed]
@@ -83,7 +83,7 @@ ok
 [Back]
 
 [backspace]
-
+backspace
 [bad error in connection system]
 Критическая ошибка в системе соединения
 [barracks explanation 2]
@@ -91,59 +91,59 @@ ok
 [barracks explanation]
 Улучшает боевые
 [barracks]
-Тренировочный лагерь
+Казармы
 [beach size]
-Размер пляжей
+размер пляжей
 [break]
-
+break
 [build barracks level 0]
-
+Построить Казармы 1
 [build barracks level 1]
-
+Построить Казармы 2
 [build barracks level 2]
-
+Построить Казармы 3
 [build defencetower level 0]
-
+Построить Защитную башню 1
 [build defencetower level 1]
-
+Построить Защитную башню 2
 [build defencetower level 2]
-
+Построить Защитную башню 3
 [build hospital level 0]
-
+Построить Госпиталь 1
 [build hospital level 1]
-
+Построить Госпиталь 2
 [build hospital level 2]
-
+Построить Госпиталь 3
 [build inn level 0]
-
+Построить Кабак 1
 [build inn level 1]
-
+Построить Кабак 2
 [build inn level 2]
-
+Построить Кабак 3
 [build market level 0]
-
+Построить Рынок
 [build racetrack level 0]
-
+Построить Стадион 1
 [build racetrack level 1]
-
+Построить Стадион 2
 [build racetrack level 2]
-
+Построить Стадион 3
 [build school level 0]
-
+Построить Школу 1
 [build school level 1]
-
+Построить Школу 2
 [build school level 2]
-
+Построить Школу 3
 [build stonewall level 0]
-
+Построить каменную стену
 [build swarm level 0]
-
+Построить Рой
 [build swimmingpool level 0]
-
+Построить Бассейн 1
 [build swimmingpool level 1]
-
+Построить Бассейн 2
 [build swimmingpool level 2]
-
+Построить Бассейн 3
 [Build]
 Строит
 [Building name]
@@ -159,27 +159,21 @@ ok
 [Bullets]
 Боеприпасы
 [campaign editor]
-
+Редактор Кампаний
 [campaign text]
 
 [campaign]
 Кампания
 [Can't connect, can't find host]
-
+Невозможно подключиться: хост не найден
 [Can't host game, port %0 in use]
-
+Невозможно создать игру, порт %0 занят
 [Can't join game, game doesn't exist]
-
+Невозможно присоединиться к игре: игра не существует
 [Can't join game, game has started]
-
+Невозможно присоединиться к игре: игра уже началась
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-Невозможно присоединиться к игре: не совпадают параметры игры
-[Can't join game, timeout]
-Невозможно присоединиться к игре: тайм-аут
-[Can't join game, wrong game version]
-Невозможно присоединиться к игре: неправильная версия игры
+Невозможно присоединиться к игре: игра уже заполнена
 [cancel destroy]
 Отмена уничтожения
 [cancel repair]
@@ -189,11 +183,11 @@ ok
 [Cancel]
 Отмена
 [caps lock]
-
+caps lock
 [carry]
-Несёт :
+Несёт:
 [Change Area Name]
-
+Сменить имя области
 [checksum sent]
 Послана контрольная сумма ...
 [Cherry]
@@ -207,11 +201,11 @@ ok
 [clear area]
 Зона очистки
 [clear]
-
+очистить
 [Clearing:]
 Очистка:
 [clearingflag explanation 2]
-
+ 
 [clearingflag explanation]
 Очистка ресурсов
 [clearingflag]
@@ -221,11 +215,11 @@ ok
 [closed]
 Закрыто
 [compile]
-Компилировать скрипт
+Компил. скрипт
 [compose]
 
 [Computing Fertility]
-
+Вычисление плодородия
 [connect]
 Подключиться
 [connected to all players]
@@ -237,9 +231,9 @@ ok
 [connecting to]
 Подключение к
 [constructed buildings]
-
+Построенные здания
 [construction and upgrades]
-
+Постройка и улучшения
 [Continue playing]
 Продолжить игру
 [Corn]
@@ -249,7 +243,7 @@ ok
 [crater lakes terrain]
 Кратерные озера
 [create game]
-Новая игра
+Создать игру
 [create map]
 Создать карту
 [credits]
@@ -263,37 +257,39 @@ ok
 [damage]
 Повреждения
 [Damaged Map]
-
+Карта повреждений
 [dblbuff]
 Двойная буферизация
 [decrease units working]
-
+Уменьшить количество работающих
 [default terrain]
 Ландшафт по умолчанию
 [defencetower explanation 2]
 строения и юниты
 [defencetower explanation]
-Атакует вражеские
+Атакует близких врагов
 [defencetower level 0]
-
+Защитная башня 1
 [defencetower level 1]
-
+Защитная башня 2
 [defencetower level 2]
-
+Защитная башня 3
 [defencetower]
 Оборонительная башня
 [Defense Map]
-
+Карта обороны
 [Defense]
 Оборона
 [Delete game]
-Удаление выбранной игры
+Удалить выбранную игру
 [delete]
-
+delete
+[delete]
+Удалить
 [desert]
 пустыня
 [destroy building]
-
+Уничтожить выбранное здание
 [destroy]
 Уничтожить
 [Disconnect]
@@ -301,37 +297,37 @@ ok
 [display]
 Экран
 [do nothing]
-
+Ничего не делать
 [don't carry anything]
 Ничего не несёт
 [down]
-
+down
 [download finished]
 Скачивание закончено
 [downloaded %0]
-
+%0 скачано
 [downloaded at]
 Скачано с
 [edit map]
-
+Ред. карту
 [editing map]
-
+Редактирование карты
 [editor shortcuts]
-
+Редактор
 [editor]
 Редактор
 [end]
-
+end
 [Enter your nickname :]
-Введите Ваше прозвище :
+Введите Ваш ник:
 [Enter your password :]
-Введите Ваш пароль :
+Введите Ваш пароль:
 [enter]
-
+enter
 [equals]
-
+равно
 [escape]
-
+escape
 [explorationflag explanation 2]
  
 [explorationflag explanation]
@@ -339,45 +335,45 @@ ok
 [explorationflag]
 Флаг разведки
 [Explorer Ratio]
-
+Коэф. разведчиков
 [Explorer]
 Разведчик
 [explorers]
-Разведчики
+разведчиков
 [extra islands]
 пустые острова
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
-
+Карта плодородия
 [food left]
 Осталось еды
 [food]
@@ -385,33 +381,33 @@ ok
 [forbidden area]
 Запретная зона
 [Free]
-Свободных
+Ok
 [free]
-свободные
+свободны
 [free]
-свободные
+свободны
 [from:]
 от:
 [fruit]
-
+фрукт
 [fullscreen]
 Полный экран
 [game full]
 Игра заполнена
 [game shortcuts]
-
+Игра
 [game speed]
 Скорость игры
 [Games]
-
+Игры
 [general settings]
-
+Общие
 [go to event]
-
+Перейти к событию
 [go to home]
-
+Перейти к "дому"
 [goto main menu]
-Вернуться в главное меню
+В главное меню
 [grass]
 Трава
 [ground attack]
@@ -427,7 +423,7 @@ ok
 [Happyness]
 Счастье
 [hard pause]
-
+"Полная" пауза
 [Harvest]
 Собирает
 [has joined]
@@ -439,25 +435,25 @@ ok
 [help]
 
 [home]
-
+home
 [hospital explanation 2]
-
+ 
 [hospital explanation]
 Лечение юнитов
 [hospital]
-Больница
+Госпиталь
 [Host has cancelled the game]
-
+Хост отменил игру
 [host]
 Стать хостом игры
 [hp]
-Здоровье
+Зд.
 [hp]
 Здоровье
 [human]
-
+человек
 [hungry]
-Голодных
+голодны
 [hungryness]
 Голод
 [hwaccel]
@@ -465,43 +461,43 @@ ok
 [In way]
 В пути
 [increase units working]
-
+Увеличить количество рабочих
 [inn explanation 2]
-
+ 
 [inn explanation]
-Еда для юнитов
+Кормит юнитов
 [inn level 0]
-
+Кабак 1
 [inn level 1]
-
+Кабак 2
 [inn level 2]
-
+Кабак 3
 [inn]
 Кабак
 [insert]
-
+insert
 [inside]
 Внутри
 [islands size]
-Размер островов
+размер острова
 [islands terrain]
 Острова
 [iterate selection]
-
+Перейти к следующему
 [jobs]
-
+заданий
 [join a game]
 Присоединиться к игре
 [join]
 Присоединиться
 [keyboard settings]
-
+Клавиатура
 [kick]
-
+Выкинуть
 [lan]
 Сетевая игра
 [language incomplete]
-Русский - Incomplete
+Русский - неполный
 [language-code]
 ru
 [language-tr]
@@ -511,29 +507,31 @@ ru
 [large]
 большая
 [Leave Game]
-
+Покинуть игру
 [left meta]
-
+left meta
 [left super]
-
+left windows key
 [left]
-
+left
 [level]
 Уровень
 [levels]
 Уровни
 [load campaign]
-
+Загрузить кампанию
 [load game]
 Загрузить игру
 [load map]
-
+Загрузить карту
 [load]
 Загрузить
+[load]
+Загрузить карту
 [loading glob2]
 Загружается Globulation 2
 [login]
-Login
+Вход
 [Lost : %0 has more prestige than you]
 Поражение: У %0 больший престиж, чем у Вас.
 [Lost : your colony is dead]
@@ -541,13 +539,13 @@ Login
 [lowquality]
 Низкое качество
 [Magic At. Air]
-Сила удара (воздух)
+Урон (воздух)
 [Magic At. Ground]
-Сила удара (земля)
+Урон (земля)
 [Map name: %0]
 Название карты: %0.
 [map name]
-
+Название
 [map script]
 
 [map size x]
@@ -557,9 +555,9 @@ Login
 [mapGenerationDescriptor Methodes]
 Способы случайной генерации карт
 [maps available]
-
+Доступные Карты
 [mark map]
-
+Пометить карту для союзников
 [market explanation 2]
 фруктами с другими
 [market explanation]
@@ -569,29 +567,29 @@ Login
 [medium]
 средняя
 [menu]
-
+menu
 [Min required level:]
-Минимальный необходимый уровень:
+Мин. необходимый уровень:
 [Minimum Level To Flag]
-
+Минимальный уровень флага
 [Music volume]
-Громкость (музыки)
+Громкость музыки
 [Mute]
-
-[mute]
 Без звука
+[mute]
+без звука
 [network latency]
 Латентность сети
 [new campaign]
-
+Новая кампания
 [new map]
-Новая
+Новая карта
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
 [no key]
-
+пока нет клавиши
 [no ressources growth areas]
-
+Нет зон роста
 [No]
 Нет
 [not connected]
@@ -599,15 +597,13 @@ Login
 [not ready]
 не готов
 [number of players: %0 (%1 AI)]
-
-[number of players: %0]
-%0 игроков в игре
+%0 игроков (%1 AI)
 [number of teams: %0]
 %0 команд
 [number of teams]
 число команд
 [numlock]
-
+numlock
 [of which]
 из которых
 [ok]
@@ -621,29 +617,29 @@ Ok
 [one player]
 Подключился игрок.
 [open chat box]
-
+Открыть чат
 [open load menu]
-
+Открыть меню загрузки
 [open save menu]
-
+Открыть меню сохранения
 [open script editor]
-
+Открыть редактор скриптов
 [open]
-Открыть
+открыто
 [options]
 Настройки
 [Orange]
 Апельсины
 [page down]
-
+page down
 [page up]
-
+page up
 [Papyrus]
 Папирус
 [pause game]
-
+Пауза
 [pause]
-
+pause
 [Paused]
 Пауза
 [percent]
@@ -663,11 +659,11 @@ Ok
 [Prestige]
 Престиж
 [print screen]
-
+print screen
 [Prune]
 Сливы
 [quit the editor]
-
+Выйти из редактора
 [quit the game]
 Выйти из игры
 [quit]
@@ -687,35 +683,35 @@ Ok
 [Register a new YOG user with password]
 Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
 [remember unit]
-
+Запомнить юнит
 [Remember YOG password localy]
 Запомнить пароль локально. (небезопасно)
 [remove map]
-
+Удал. карту
 [remove shortcut]
-
+Удал. гор. клавишу
 [repair building]
-
+Начать/Остановить Починку
 [repair]
 Починка
 [repeat area]
-
+количество повторений ландшафта
 [ressources]
 Ресурсы
 [restore default shortcuts]
-
+Восстановить значения по умолчанию
 [return to editor]
-
+Вернуться в редактор
 [return to game]
 Вернуться в игру
 [return]
-
+enter
 [right meta]
-
+right meta
 [right super]
-
+right windows key
 [right]
-
+right
 [river diameter]
 ширина реки
 [river terrain]
@@ -727,7 +723,7 @@ Ok
 [save game]
 Сохранить игру
 [save map]
-
+Сохранить карту
 [Save]
 Сохранение
 [school explanation 2]
@@ -737,75 +733,75 @@ Ok
 [school]
 Школа
 [Script Areas]
-
+Зоны скрипта
 [scroll lock]
-
+scroll lock
 [scroll wheel enabled]
-
+Включить колесо прокрутки
 [seeking a job]
 ищет работу
 [seeking]
-ищущих
+ищет
 [select barracks building]
-
+Выбор казарм
 [select clearingflag]
-
+Выбор флага очистки
 [select construct barracks]
-
+Выбор постройки Казарм
 [select construct defencetower]
-
+Выбор постройки Защитной Башни
 [select construct hospital]
-
+Выбор постройки Госпиталя
 [select construct inn]
-
+Выбор постройки Кабака
 [select construct market]
-
+Выбор постройки Рынка
 [select construct racetrack]
-
+Выбор постройки Стадиона
 [select construct school]
-
+Выбор постройки Школы
 [select construct stonewall]
-
+Выбор постройки Каменной Стены
 [select construct swarm]
-
+Выбор постройки Роя
 [select construct swimmingpool]
-
+Выбор постройки Бассейна
 [select delete tool]
-
+Выбор инструмента "удалить"
 [select explorationflag]
-
+Выбор флага разведки
 [select hospital building]
-
+Выбор Госпиталя
 [select inn building]
-
+Выбор Кабака
 [select market building]
-
+Выбор Рынка
 [select place clearing area]
-
+Выбор размещения зоны очистки
 [select place clearingflag]
-
+Выбор размещения флага очистки
 [select place explorationflag]
-
+Выбор размещения флага разведки
 [select place forbidden area]
-
+Выбор размещения запретной зоны
 [select place guard area]
-
+Выбор размещения охранной зоны
 [select place warflag]
-
+Выбор размещения флага войны
 [select racetrack building]
-
+Выбор Стадиона
 [select school building]
-
+Выбор Школы
 [select swarm building]
-
+Выбор Роя
 [select swimmingpool building]
-
+Выбор Бассейна
 [select tower building]
-
+Выбор Башни
 [select wall building]
-
+Выбор Стены
 [select warflag]
-
+Выбор флага войны
 [session request sent]
 Послан запрос сессии ...
 [settings]
@@ -813,9 +809,9 @@ Ok
 [shortcut explanation enter]
 Enter: Отправить сообщение в чате
 [shortcut explanation v]
-V: Зажать для речевой связи
+V: зажать для речевой связи
 [show main menu]
-
+Показать главное меню
 [skin]
 Отображение
 [small]
@@ -823,21 +819,21 @@ V: Зажать для речевой связи
 [smoothing]
 Сглаживание
 [space]
-
+space
 [speed]
 Скорость
 [start mission]
-
+Начать миссию
 [start new campaign]
-
+Новая кампания
 [Start]
 Старт
 [STARTING GAME ...]
 Начало игры...
 [Starving Map]
-
+Карта истощенных
 [starving]
-Умирающих от голода
+истощены
 [stat]
 Статистика
 [state]
@@ -867,11 +863,11 @@ V: Зажать для речевой связи
 [swamp terrain]
 Болото
 [swarm explanation 2]
-
+ 
 [swarm explanation]
 Создаёт новые юниты
 [swarm level 0]
-
+Рой
 [swarm]
 Рой
 [Swim]
@@ -883,43 +879,43 @@ V: Зажать для речевой связи
 [swimmingpool]
 Бассейн
 [switch to adding areas]
-
+Переключиться на добавление областей
 [switch to area brush 1]
-
+Переключится на Кисть 1
 [switch to area brush 2]
-
+Переключится на Кисть 2
 [switch to area brush 3]
-
+Переключится на Кисть 3
 [switch to area brush 4]
-
+Переключится на Кисть 4
 [switch to area brush 5]
-
+Переключится на Кисть 5
 [switch to area brush 6]
-
+Переключится на Кисть 6
 [switch to area brush 7]
-
+Переключится на Кисть 7
 [switch to area brush 8]
-
+Переключится на Кисть 8
 [switch to building view]
-
+Показать меню зданий
 [switch to flag view]
-
+Показать меню флаги
 [switch to removing areas]
-
+Показать меню удаление областей
 [switch to teams view]
-
+Показать меню команд
 [switch to terrain view]
-
+Показать меню ландшафта
 [sys req]
-
+sys req
 [tab]
-
+tab
 [teams]
  команды
 [the barracks is finished]
-Тренировочный лагерь построен
+Казармы построены
 [the barracks is under attack]
-Тренировочный лагерь атакован
+Казармы атакованы
 [the building is finished]
 Здание построено
 [the building is under attack]
@@ -941,11 +937,11 @@ V: Зажать для речевой связи
 [the games]
 Игры
 [the hospital is finished]
-Больница построена
+Госпиталь построен
 [the hospital is under attack]
-Больница атакована
+Госпиталь атакован
 [The host has cancelled the game]
-
+Хост отменил игру
 [the inn is finished]
 Кабак построен.
 [the inn is under attack]
@@ -987,61 +983,63 @@ V: Зажать для речевой связи
 [to:]
 к:
 [toggle draw accessibility aids]
-
+Включить подсказки
 [toggle draw information]
-
+Показать информацию
 [toggle draw unit paths]
-
+Показать пути движения юнитов
 [toggle menu screen]
-
+Показать меню
 [toggle recording voice]
-
+Записать голос
+[toggle recording voice]
+Начать запись голоса
 [Total prestige reached]
 Общий достигнутый престиж
 [Total]
 Всего
 [tutorial text 1]
-
+Добро пожаловать в обучающее руководство Globulation 2! В этом руководстве будет описано всё от постройки Кабаков, зон разведки до уничтожения противников. Нет таких знаний, которые бы не охватывало данное руководство!
 [tutorial text 2]
-
+Теперь, когда Вы освоили основы, настало время познакомится с остальными постройками такими как Стадион, Бассейн и Школа.
 [tutorial text 3]
-
+Вы хорошо постарались, чтобы дойти так далеко. Сейчас давайте перейдем к Воинам, Казармам и улучшениям.
 [tutorial text 4]
-
+Вы почти закончили. Остались только флаги и атака. То есть Вы узнаете всё необходимое, чтобы отважиться сыграть в Одиночную игру и со временем сыграть on-line против одного из лучших игроков в Globulation 2.
 [tutorial]
-Самоучитель
+Обучение
 [unassigned]
-
+Неназначеный
 [Uncontrolled]
 Неконтролируемый
 [undo]
-
+отменить действие
 [uniform terrain]
 Одинаковый ландшафт
 [Unit editor]
 Редактор юнитов
 [unit settings explanation]
-
+Количество назначеных юнитов по умолчанию
 [unit settings]
-
+Юниты
 [Unit type]
 Тип юнита
 [units type]
-Тип юнитов
+тип юнитов
 [units working]
  юнитов работает
 [Units]
 Юниты
 [unlocked by]
-
+Открываетс после
 [Unnamed Area]
-
+{Без имени}
 [up]
-
+up
 [update list]
 Обновить список
 [upgrade building]
-
+Начать/Остановить улучшение
 [upgrade]
 Улучшение
 [username]
@@ -1049,15 +1047,15 @@ V: Зажать для речевой связи
 [Version]
 Версия
 [view history]
-
+Просмотр истории
 [wait destroy]
 Ожидает уничтожения
 [waiting for %0]
 Ожидание %0
 [waiting for key]
-
+ожидание клавиши...
 [Waiting]
-
+Ожидание
 [Walk]
 Идёт
 [warflag explanation 2]
@@ -1069,11 +1067,11 @@ V: Зажать для речевой связи
 [Warning, you need to reboot the game for changes to take effect]
 Предупреждение: необходимо перезапустить игру, чтобы изменения вступили в силу.
 [Warrior Ratio]
-
+Коэф. воинов
 [Warrior]
 Воин
 [warriors]
-Воины
+воинов
 [was AI]
 был AI
 [was]
@@ -1081,9 +1079,7 @@ V: Зажать для речевой связи
 [water]
 Вода
 [Wheat]
-
-[wheat]
-зерно
+Зерно
 [Won : you defeated your opponents]
 Победа: Вы победили всех соперников.
 [Won : you have the most prestige]
@@ -1095,13 +1091,13 @@ V: Зажать для речевой связи
 [wood]
 дерево
 [Worker Ratio]
-
+Коэф. рабочих
 [Worker]
 Рабочий
 [workers]
 Рабочие
 [workers]
-Рабочие
+рабочих
 [working]
 Работает
 [wounded]
@@ -1157,8 +1153,8 @@ Ysagoon-игра в Интернете
 [you have won]
 Вы победили!
 [You where kicked from the game]
-
+Вас выкинули из игры
 [Your %0 are under attack]
 %0 под ударом
 [Your unit got converted to %0's team]
-Ваш юнит переметнулся к врагу %0
+Ваш юнит перешёл к врагу %0

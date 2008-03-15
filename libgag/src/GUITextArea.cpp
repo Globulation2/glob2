@@ -492,18 +492,16 @@ namespace GAGGUI
 			{
 				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
 				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
-				
-				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
+				if (sprite && show_image[i + areaPos] && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
 				{
-					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);	
+					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);
 				}
 			}
 			else
 			{
 				const std::string &substr = text.substr(lines[i+areaPos]);
 				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
-				
-				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
+				if (sprite && show_image[i + areaPos] && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
 				{
 					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);	
 				}
@@ -606,6 +604,8 @@ namespace GAGGUI
 		
 		lines.clear();
 		lines.push_back(0);
+		show_image.clear();
+		show_image.push_back(true);
 		lines_frames.clear();
 		std::string lastWord;
 		std::string lastLine;
@@ -629,13 +629,36 @@ namespace GAGGUI
 					}
 					else
 					{
-						if (sprite && frames.size() > line)
+						if(actWordLength+spaceLength >= length)
 						{
-							lines_frames.push_back(frames[line]);
+							for(int c=0; c<lastWord.size(); ++c)
+							{
+								lastLine += lastWord[c];
+								int actLineLength = getStringWidth(lastLine);
+								if (actLineLength >= length)
+								{
+									if (sprite && frames.size() > line)
+									{	
+										lines_frames.push_back(frames[line]);
+									}	
+									lines.push_back(pos-lastWord.size()+c);
+									lastLine.clear();
+									show_image.push_back(false);
+								}
+							}
+							lastWord.clear();
 						}
-						lines.push_back(pos-lastWord.size());
-						lastLine = lastWord;
-						lastWord.clear();
+						else
+						{
+							if (sprite && frames.size() > line)
+							{
+								lines_frames.push_back(frames[line]);
+							}
+							lines.push_back(pos-lastWord.size());
+							show_image.push_back(false);
+							lastLine = lastWord;
+							lastWord.clear();
+						}
 					}
 				}
 				break;
@@ -647,11 +670,34 @@ namespace GAGGUI
 					int actWordLength = getStringWidth(lastWord);
 					if (actWordLength+actLineLength+spaceLength >= length)
 					{
-						if (sprite && frames.size() > line)
-						{	
-							lines_frames.push_back(frames[line]);
-						}	
-						lines.push_back(pos-lastWord.size());
+						if(actWordLength+spaceLength >= length)
+						{
+							for(int c=0; c<lastWord.size(); ++c)
+							{
+								lastLine += lastWord[c];
+								int actLineLength = getStringWidth(lastLine);
+								if (actLineLength >= length)
+								{
+									if (sprite && frames.size() > line)
+									{	
+										lines_frames.push_back(frames[line]);
+									}	
+									lines.push_back(pos-lastWord.size()+c);
+									lastLine.clear();
+									show_image.push_back(false);
+								}
+							}
+						}
+						else
+						{
+							if (sprite && frames.size() > line)
+							{	
+								lines_frames.push_back(frames[line]);
+							}	
+							lines.push_back(pos-lastWord.size());
+							lastLine.clear();
+							show_image.push_back(false);
+						}
 					}
 					if (sprite && frames.size() > line)
 					{
@@ -661,26 +707,13 @@ namespace GAGGUI
 					lines.push_back(pos+1);
 					lastWord.clear();
 					lastLine.clear();
+					show_image.push_back(true);
 				}
 				break;
 				
 				default:
 				{
-					int actLineLength = getStringWidth(lastLine);
-					int actWordLength = getStringWidth(lastWord);
-					int actCharLength = getStringWidth(std::string(1,text[pos]).c_str());
-					if (actWordLength+actLineLength+actCharLength > length)
-					{
-						lastLine += lastWord;
-						if (sprite && frames.size() > line)
-						{
-							lines_frames.push_back(frames[line]);
-						}
-						lines.push_back(pos-1);
-						lastWord.clear();
-						lastLine.clear();
-					}
-					lastWord += text[pos];					
+					lastWord += text[pos];
 				}
 			}
 			pos++;

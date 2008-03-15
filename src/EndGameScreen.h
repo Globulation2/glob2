@@ -50,6 +50,12 @@ protected:
 	//! Returns the value at the given point, by interpolating
 	double getValue(double position, int team, int type);
 
+	//! Returns the text for a particular time from seconds
+	std::string getTimeText(int seconds);
+	
+	//! Returns the text for the right-scale
+	std::string getRightScaleText(int value, int digits);
+
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing
