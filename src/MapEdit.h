@@ -535,7 +535,7 @@ private:
 	void drawBuildingSelectionOnMap();
 
 	///This proccesses an event from the SDL
-	int processEvent(SDL_Event& event);
+	void processEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
 	void handleKeyPressed(SDL_keysym key, bool pressed);
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large

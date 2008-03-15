@@ -36,6 +36,7 @@
 #include "UnitType.h"
 #include "Utilities.h"
 #include "FertilityCalculatorDialog.h"
+#include "GUIMessageBox.h"
 
 
 
@@ -1003,7 +1004,7 @@ MapEdit::MapEdit()
 
 	unitInfoTitle = new UnitInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-128, 173, 128, 16), "unit editor", "unit editor title", "", NULL);
 	unitPicture = new UnitPicture(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 203, 40, 40), "unit editor", "unit editor picture", "", NULL);
-	unitHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "unit editor", "unit editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
+	unitHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "unit editor", "unit editor hp label", "update unit", "[hp]", NULL, static_cast<Sint32*>(NULL));
 	unitHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 112, 16), "unit editor", "unit editor hp scroll box", "", NULL, static_cast<Sint32*>(NULL));
 	unitWalkLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 284, 128, 16), "unit editor", "unit editor walk level label", "", "[Walk]", NULL, 3);
 	unitWalkLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 300, 112, 16), "unit editor", "unit editor walk level scroll box", "update unit walk level", NULL, 3);
@@ -1041,9 +1042,9 @@ MapEdit::MapEdit()
 	buildingInfoTitle = new BuildingInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 173, 128, 16), "building editor", "building editor info title", "", NULL);
 	buildingPicture = new BuildingPicture(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 203, 56, 46), "building editor", "building editor picture", "", NULL);
 	buildingHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
-	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor hp scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor hp scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingFoodQuantityLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor food label", "", "[Wheat]", NULL, static_cast<Sint32*>(NULL));
-	buildingFoodQuantityScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor food scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingFoodQuantityScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor food scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingAssignedLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor assigned label", "", "[assigned]", NULL, 20);
 	buildingAssignedScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor assigned scroll box", "", NULL, 20);
 	buildingWorkerRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor worker ratio label", "", "[Worker Ratio]", NULL, 16);
@@ -1053,19 +1054,19 @@ MapEdit::MapEdit()
 	buildingWarriorRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor warrior ratio label", "", "[Warrior Ratio]", NULL, 16);
 	buildingWarriorRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor warrior ratio scroll box", "", NULL, 20);
 	buildingCherryLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor cherry label", "", "[Cherry]", NULL, static_cast<Sint32*>(NULL));
-	buildingCherryScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor cherry scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingCherryScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor cherry scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingOrangeLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor orange label", "", "[Orange]", NULL, static_cast<Sint32*>(NULL));
-	buildingOrangeScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor orange scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingOrangeScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor orange scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingPruneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor prune label", "", "[Prune]", NULL, static_cast<Sint32*>(NULL));
-	buildingPruneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor prune scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingPruneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor prune scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingStoneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor stone label", "", "[Stone]", NULL, static_cast<Sint32*>(NULL));
-	buildingStoneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor stone scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingStoneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor stone scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingBulletsLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor bullets label", "", "[Bullets]", NULL, static_cast<Sint32*>(NULL));
-	buildingBulletsScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor bullets scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingBulletsScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor bullets scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingMinimumLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor minimum level to flag label", "", "[Minimum Level To Flag]", NULL, 3);
-	buildingMinimumLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor minimum level to flag scroll box", "", NULL, 3);
+	buildingMinimumLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor minimum level to flag scroll box", "update building", NULL, 3);
 	buildingRadiusLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor range label", "", "[range]", NULL, static_cast<Sint32*>(NULL));
-	buildingRadiusScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor range scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingRadiusScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor range scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	addWidget(buildingInfoTitle);
 	addWidget(buildingPicture);
 	addWidget(buildingHPLabel);
@@ -1204,9 +1205,11 @@ bool MapEdit::load(const char *filename)
 		game.map.computeLocalForbidden(team);
 		game.map.computeLocalClearArea(team);
 		game.map.computeLocalGuardArea(team);
-		
+	
+		hasMapBeenModified = false;
 		return true;
 	}
+	return false;
 }
 
 
@@ -1218,6 +1221,8 @@ bool MapEdit::save(const char *filename, const char *name)
 
 	assert(filename);
 	assert(name);
+
+	hasMapBeenModified = false;
 
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
 	if (stream->isEndOfStream())
@@ -1270,7 +1275,7 @@ int MapEdit::run(void)
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
- 			returnCode=(processEvent(event) == -1) ? -1 : returnCode;
+ 			processEvent(event);
 		}
 		
 		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor)
@@ -1334,9 +1339,33 @@ int MapEdit::run(void)
 			isRunning=false;
 		}
 		if(doQuit)
-			isRunning=false;
+		{
+			if(hasMapBeenModified)
+			{
+				int ret = GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_THREEBUTTONS, Toolkit::getStringTable()->getString("[save before quit?]"), Toolkit::getStringTable()->getString("[Yes]"), Toolkit::getStringTable()->getString("[No]"), Toolkit::getStringTable()->getString("[Cancel]"));
+				if(ret == 0)
+				{
+					save(game.mapHeader.getFileName().c_str(), game.mapHeader.getMapName().c_str());
+					isRunning=false;
+				}
+				else if(ret == 1)
+				{
+					isRunning=false;
+				}
+				else
+				{
+					doQuit=false;
+				}
+			}
+			else
+			{
+				isRunning=false;
+			}
+		}
 		if(doFullQuit)
+		{
 			returnCode = -1;
+		}
 	}
 
 	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
@@ -1615,31 +1644,30 @@ void MapEdit::drawPlacingUnitOnMap()
 		globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
 }
 
-int MapEdit::processEvent(SDL_Event& event)
+void MapEdit::processEvent(SDL_Event& event)
 {
-	int returnCode=0;
 	SDLMod modState = SDL_GetModState();
 	if (event.type==SDL_QUIT)
 	{
-		returnCode=-1;
+		doFullQuit=true;
 	}
 #	ifdef USE_OSX
 	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
 	{
-		returnCode=-1;
+		doFullQuit=true;
 	}
 #	endif
 #	ifdef USE_WIN32
 	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
 	{
-		returnCode=-1;
+		doFullQuit=true;
 	}
 #	endif
 	
 	else if(showingMenuScreen || showingLoad || showingSave || showingScriptEditor || isShowingAreaName)
 	{
 		delegateMenu(event);
-		return 0;
+		return;
 	}
 	else if(event.type==SDL_MOUSEMOTION)
 	{
@@ -1747,7 +1775,6 @@ int MapEdit::processEvent(SDL_Event& event)
 	{
 		handleKeyPressed(event.key.keysym, false);
 	}
-	return returnCode;
 }
 
 
@@ -2077,6 +2104,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("scroll vertical stop");
 		scriptEditor=new ScriptEditorScreen(&game.script, &game);
 		showingScriptEditor=true;
+		hasMapBeenModified=true;
 	}
 	else if(action=="close script editor")
 	{
@@ -2140,10 +2168,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		isDraggingZone=true;
 		handleBrushClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="zone drag motion")
 	{
 		handleBrushClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="zone drag end")
 	{
@@ -2280,10 +2310,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		isDraggingTerrain=true;
 		handleTerrainClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="terrain drag motion")
 	{
 		handleTerrainClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="terrain drag end")
 	{
@@ -2297,10 +2329,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		isDraggingDelete=true;
 		handleDeleteClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="delete drag motion")
 	{
 		handleDeleteClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="delete drag end")
 	{
@@ -2313,6 +2347,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	else if(action=="update script area number")
 	{
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
+		hasMapBeenModified = true;
 	}
 	else if(action=="select change areas")
 	{
@@ -2327,10 +2362,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		isDraggingArea=true;
 		handleAreaClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="area drag motion")
 	{
 		handleAreaClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="area drag end")
 	{
@@ -2344,10 +2381,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		isDraggingNoRessourceGrowthArea=true;
 		handleNoRessourceGrowthClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag motion")
 	{
 		handleNoRessourceGrowthClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag end")
 	{
@@ -2361,6 +2400,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		if(game.mapHeader.getNumberOfTeams() < 12)
 			game.addTeam();
+		hasMapBeenModified = true;
 	}
 	else if(action=="remove team")
 	{
@@ -2370,6 +2410,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				team-=1;
 			game.removeTeam();
 		}
+		hasMapBeenModified = true;
 	}
 	else if(action.substr(0, 17)=="change team info ")
 	{
@@ -2407,6 +2448,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			game.teams[number-1]->type=BaseTeam::T_HUMAN;
 		if(selectionPos==1)
 			game.teams[number-1]->type=BaseTeam::T_AI;
+		hasMapBeenModified = true;
 	}
 	else if(action=="select active team")
 	{
@@ -2478,6 +2520,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				game.teams[team]->startPosSet=1;
 			}
 			game.regenerateDiscoveryMap();
+			hasMapBeenModified = true;
 		}
 	}
 	else if(action=="select map unit")
@@ -2562,42 +2605,53 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[WALK]);
 		u->performance[WALK] = ut->performance[WALK];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit swim level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[SWIM]);
 		u->performance[SWIM] = ut->performance[SWIM];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit harvest level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[HARVEST]);
 		u->performance[HARVEST] = ut->performance[HARVEST];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit build level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[BUILD]);
 		u->performance[BUILD] = ut->performance[BUILD];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit attack speed level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[ATTACK_SPEED]);
 		u->performance[ATTACK_SPEED] = ut->performance[ATTACK_SPEED];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit attack strength level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[ATTACK_STRENGTH]);
 		u->performance[ATTACK_STRENGTH] = ut->performance[ATTACK_STRENGTH];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit magic ground attack level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[MAGIC_ATTACK_GROUND]);
 		u->performance[MAGIC_ATTACK_GROUND] = ut->performance[MAGIC_ATTACK_GROUND];
+		hasMapBeenModified = true;
+	}
+	else if(action=="update unit")
+	{
+		hasMapBeenModified = true;
 	}
 	else if(action=="select map building")
 	{
@@ -2910,6 +2964,10 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				ypos+=32;
 			}
 		}
+	}
+	else if(action=="update building")
+	{
+		hasMapBeenModified = true;
 	}
 	else if(action=="compute fertility")
 	{
