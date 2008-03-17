@@ -304,6 +304,11 @@ void YOGClient::update()
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
 		}
+		if(type == MNetSendReteamingInformation)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
 		if(type==MNetSendFileInformation)
 		{
 			if(assembler)
