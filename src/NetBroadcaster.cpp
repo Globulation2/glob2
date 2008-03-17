@@ -28,6 +28,81 @@ using namespace GAGCore;
 NetBroadcaster::NetBroadcaster(LANGameInformation& info)
 	: info(info), timer(10)
 {
+	enableBroadcasting();
+}
+
+
+	
+NetBroadcaster::~NetBroadcaster()
+{
+	disableBroadcasting();
+}
+
+
+	
+void NetBroadcaster::broadcast(LANGameInformation& ainfo)
+{
+	info = ainfo;
+}
+
+
+	
+void NetBroadcaster::update()
+{
+	if(socket)
+	{
+		Uint32 time = SDL_GetTicks();
+		if((time - lastTime) >= 500 )
+		{
+			MemoryStreamBackend* msb = new MemoryStreamBackend;
+			BinaryOutputStream* bos = new BinaryOutputStream(msb);
+			info.encodeData(bos);
+			
+			msb->seekFromEnd(0);
+			Uint32 length = msb->getPosition();
+			msb->seekFromStart(0);
+
+			UDPpacket* packet = SDLNet_AllocPacket(length+2);
+			packet->len = length+2;
+			SDLNet_Write16(length, packet->data);
+			msb->read(packet->data+2, length);
+			int result = SDLNet_UDP_Send(socket, 0, packet);
+			if(!result)
+			{
+				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
+			}
+			
+			result = SDLNet_UDP_Send(localsocket, 0, packet);
+			if(!result)
+			{
+				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
+			}
+			
+
+			delete bos;
+			SDLNet_FreePacket(packet);
+			
+			lastTime = lastTime + 500;
+			timer -= 1;
+		}
+	}
+}
+
+
+
+void NetBroadcaster::disableBroadcasting()
+{
+	SDLNet_UDP_Unbind(socket, 0);
+	SDLNet_UDP_Close(socket);
+	
+	SDLNet_UDP_Unbind(localsocket, 0);
+	SDLNet_UDP_Close(localsocket);
+}
+
+
+
+void NetBroadcaster::enableBroadcasting()
+{
 	socket=SDLNet_UDP_Open(0);
 	if(!socket)
 	{
@@ -53,59 +128,3 @@ NetBroadcaster::NetBroadcaster(LANGameInformation& info)
 }
 
 
-	
-NetBroadcaster::~NetBroadcaster()
-{
-	SDLNet_UDP_Unbind(socket, 0);
-	SDLNet_UDP_Close(socket);
-	
-	SDLNet_UDP_Unbind(localsocket, 0);
-	SDLNet_UDP_Close(localsocket);
-}
-
-
-	
-void NetBroadcaster::broadcast(LANGameInformation& ainfo)
-{
-	info = ainfo;
-}
-
-
-	
-void NetBroadcaster::update()
-{
-	Uint32 time = SDL_GetTicks();
-	if((time - lastTime) >= 500 )
-	{
-		MemoryStreamBackend* msb = new MemoryStreamBackend;
-		BinaryOutputStream* bos = new BinaryOutputStream(msb);
-		info.encodeData(bos);
-		
-		msb->seekFromEnd(0);
-		Uint32 length = msb->getPosition();
-		msb->seekFromStart(0);
-
-		UDPpacket* packet = SDLNet_AllocPacket(length+2);
-		packet->len = length+2;
-		SDLNet_Write16(length, packet->data);
-		msb->read(packet->data+2, length);
-		int result = SDLNet_UDP_Send(socket, 0, packet);
-		if(!result)
-		{
-			printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
-		}
-		
-		result = SDLNet_UDP_Send(localsocket, 0, packet);
-		if(!result)
-		{
-			printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
-		}
-		
-
-		delete bos;
-		SDLNet_FreePacket(packet);
-		
-		lastTime = lastTime + 500;
-		timer -= 1;
-	}
-}
