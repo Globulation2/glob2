@@ -445,6 +445,53 @@ int Engine::run(void)
 
 
 
+MapHeader Engine::loadMapHeader(const std::string &filename)
+{
+	MapHeader mapHeader;
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Engine::loadMapHeader : error, can't open file " << filename  << std::endl;
+	}
+	else
+	{
+		if (verbose)
+			std::cout << "Engine::loadMapHeader : loading map " << filename << std::endl;
+		bool validMapSelected = mapHeader.load(stream);
+		if (!validMapSelected)
+			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
+	}
+	delete stream;
+	return mapHeader;
+}
+
+
+
+GameHeader Engine::loadGameHeader(const std::string &filename)
+{
+	MapHeader mapHeader;
+	GameHeader gameHeader;
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Engine::loadGameHeader : error, can't open file " << filename  << std::endl;
+	}
+	else
+	{
+		if (verbose)
+			std::cout << "Engine::loadGameHeader : loading map " << filename << std::endl;
+		mapHeader.load(stream);
+		bool validMapSelected = gameHeader.load(stream, mapHeader.getVersionMinor());
+		if (!validMapSelected)
+			std::cerr << "Engine::loadGameHeader : invalid game header for map " << filename << std::endl;
+	}
+	delete stream;
+	return gameHeader;
+
+}
+
+
+
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
 {
 	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData))
@@ -538,53 +585,6 @@ bool Engine::loadGame(const std::string &filename)
 	if (verbose)
 		std::cout << "Engine::loadGame(\"" << filename << "\") : game successfully loaded." << std::endl;
 	return true;
-}
-
-
-
-MapHeader Engine::loadMapHeader(const std::string &filename)
-{
-	MapHeader mapHeader;
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
-	if (stream->isEndOfStream())
-	{
-		std::cerr << "Engine::loadMapHeader : error, can't open file " << filename  << std::endl;
-	}
-	else
-	{
-		if (verbose)
-			std::cout << "Engine::loadMapHeader : loading map " << filename << std::endl;
-		bool validMapSelected = mapHeader.load(stream);
-		if (!validMapSelected)
-			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
-	}
-	delete stream;
-	return mapHeader;
-}
-
-
-
-GameHeader Engine::loadGameHeader(const std::string &filename)
-{
-	MapHeader mapHeader;
-	GameHeader gameHeader;
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
-	if (stream->isEndOfStream())
-	{
-		std::cerr << "Engine::loadGameHeader : error, can't open file " << filename  << std::endl;
-	}
-	else
-	{
-		if (verbose)
-			std::cout << "Engine::loadGameHeader : loading map " << filename << std::endl;
-		mapHeader.load(stream);
-		bool validMapSelected = gameHeader.load(stream, mapHeader.getVersionMinor());
-		if (!validMapSelected)
-			std::cerr << "Engine::loadGameHeader : invalid game header for map " << filename << std::endl;
-	}
-	delete stream;
-	return gameHeader;
-
 }
 
 

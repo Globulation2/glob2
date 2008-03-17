@@ -123,6 +123,7 @@ void NetConnection::update()
 				boost::shared_ptr<NTRecievedMessage> info = static_pointer_cast<NTRecievedMessage>(message);
 				recieved.push(info->getMessage());
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
+				//std::cout<<"Recieved: "<<info->getMessage()->format()<<std::endl;
 			}
 			break;
 		}
@@ -153,6 +154,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 	
 void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
+	//std::cout<<"Sending: "<<message->format()<<std::endl;
 	boost::shared_ptr<NTSendMessage> close(new NTSendMessage(message));
 	connect.sendMessage(close);
 }

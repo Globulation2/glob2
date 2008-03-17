@@ -148,10 +148,16 @@ YOGServerGameJoinRefusalReason MultiplayerGame::getGameJoinState()
 void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
-	shared_ptr<NetSendMapHeader> message(new NetSendMapHeader(mapHeader));
+		
+	NetReteamingInformation info = constructReteamingInformation(mapHeader.getFileName());
+	shared_ptr<NetSendReteamingInformation> message(new NetSendReteamingInformation(info));
 	client->sendNetMessage(message);
+	
+	shared_ptr<NetSendMapHeader> message2(new NetSendMapHeader(mapHeader));
+	client->sendNetMessage(message2);
 
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
+	playerManager.setReteamingInformation(info);
 }
 
 
@@ -374,6 +380,8 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
 
+		std::cout<<mapHeader.getMapName()<<std::endl;
+
 		Engine engine;
 		if(!engine.haveMap(mapHeader))
 		{
@@ -475,6 +483,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetSetLatencyMode> info = static_pointer_cast<NetSetLatencyMode>(message);
 		gameHeader.setGameLatency(info->getLatencyAdjustment());
+		//std::cout<<"info->getLatencyAdjustment()="<<(int)(info->getLatencyAdjustment())<<std::endl;
 	}
 	if(type==MNetPlayerJoinsGame)
 	{
@@ -507,6 +516,11 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
+	}
+	if(type==MNetSendReteamingInformation)
+	{
+		shared_ptr<NetSendReteamingInformation> info = static_pointer_cast<NetSendReteamingInformation>(message);
+		playerManager.setReteamingInformation(info->getReteamingInfo());
 	}
 }
 
@@ -557,6 +571,22 @@ void MultiplayerGame::sendToListeners(boost::shared_ptr<MultiplayerGameEvent> ev
 	{
 		(*i)->handleMultiplayerGameEvent(event);
 	}
+}
+
+
+
+NetReteamingInformation MultiplayerGame::constructReteamingInformation(const std::string& file)
+{
+	NetReteamingInformation info;
+	GameHeader game = Engine::loadGameHeader(file);
+	for(int i=0; i<32; ++i)
+	{
+		if(game.getBasePlayer(i).type == Player::P_IP)
+		{
+			info.setPlayerToTeam(game.getBasePlayer(i).name, game.getBasePlayer(i).teamNumber);
+		}
+	}
+	return info;
 }
 
 

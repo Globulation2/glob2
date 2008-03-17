@@ -88,6 +88,12 @@ public:
 		//! no suitable player found in the map
 		EE_CANT_FIND_PLAYER=4
 	};
+
+	///This will load the map header of the game with the given filename
+	static MapHeader loadMapHeader(const std::string &filename);
+
+	///This will load the game header of the game with the given filename
+	static GameHeader loadGameHeader(const std::string &filename);
 	
 private:
 	/// Initiates a game, provided the map and game header. This initiates the net
@@ -108,12 +114,6 @@ private:
 	bool loadGame(const std::string &filename);
 	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
 	void finalAdjustements(void);
-
-	///This will load the map header of the game with the given filename
-	MapHeader loadMapHeader(const std::string &filename);
-
-	///This will load the game header of the game with the given filename
-	GameHeader loadGameHeader(const std::string &filename);
 
 	///This function will choose a random map from the available maps
 	MapHeader chooseRandomMap();
