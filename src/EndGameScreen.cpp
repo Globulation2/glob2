@@ -303,6 +303,10 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 			titleText = strText;
 		}
 	}
+	else if(gui->getLocalTeam()->hasWon)
+	{
+		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
+	}
 	else if (!gui->getLocalTeam()->isAlive)
 	{
 		titleText=Toolkit::getStringTable()->getString("[Lost : your colony is dead]");
@@ -310,10 +314,6 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	else if (!gui->game.isGameEnded)
 	{
 		titleText=Toolkit::getStringTable()->getString("[The game has not been finished]");
-	}
-	else
-	{
-		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
 	}
 	
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText.c_str()));

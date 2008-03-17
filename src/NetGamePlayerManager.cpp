@@ -127,6 +127,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			readyToStart[x] = true;
 		}
 	}
+	readyToStart[playerNumber] = true;
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
 }
 

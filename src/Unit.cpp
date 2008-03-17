@@ -496,6 +496,13 @@ void Unit::syncStep(void)
 			}
 		}
 	}
+	
+	//We give globs 32 ticks to wait for a job before moving onto
+	//another activity like upgrading
+	if (medical==MED_FREE && activity==ACT_RANDOM)
+	{
+		jobTimer++;
+	}
 
 	if(underAttackTimer > 0)
 		underAttackTimer -= 1;
@@ -816,7 +823,6 @@ void Unit::handleActivity(void)
 		{
 			// nothing to do:
 			//Wait for 32 ticks before doing something else, to allow buildings time to hire units
-			jobTimer++;
 			if(jobTimer>32)
 			{
 				// We look for an upgrade
@@ -1799,8 +1805,9 @@ void Unit::handleMovement(void)
 			}
 			else if(performance[HARVEST])
 			{
+				///Value of 254 means nothing found
 				int distance = 255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
-				if(distance < ((hungry-trigHungry) / race->hungryness) && distance > 1)
+				if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254)
 				{
 					int tempTargetX, tempTargetY;
 					bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
