@@ -244,6 +244,7 @@ public:
 	Sint32 maxUnitWorking;  // (Uint16)
 	Sint32 maxUnitWorkingFuture;
 	Sint32 maxUnitWorkingPreferred;
+	Sint32 maxUnitWorkingPrevious;
 	///This is a constantly updated number that indicates the buildings desired number of units,
 	///say for example that the building is full, it needs no units, so this is 0
 	Sint32 desiredMaxUnitWorking;
