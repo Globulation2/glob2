@@ -157,6 +157,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetAddAI:
 		message.reset(new NetAddAI);
 		break;
+		case MNetSendReteamingInformation:
+		message.reset(new NetSendReteamingInformation);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -3086,6 +3089,74 @@ bool NetAddAI::operator==(const NetMessage& rhs) const
 Uint8 NetAddAI::getType() const
 {
 	return type;
+}
+
+
+
+
+NetSendReteamingInformation::NetSendReteamingInformation()
+{
+
+}
+
+
+
+NetSendReteamingInformation::NetSendReteamingInformation(NetReteamingInformation reteamingInfo)
+	:reteamingInfo(reteamingInfo)
+{
+}
+
+
+
+Uint8 NetSendReteamingInformation::getMessageType() const
+{
+	return MNetSendReteamingInformation;
+}
+
+
+
+void NetSendReteamingInformation::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendReteamingInformation");
+	reteamingInfo.encodeData(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendReteamingInformation::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendReteamingInformation");
+	reteamingInfo.decodeData(stream);
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendReteamingInformation::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendReteamingInformation()";
+	return s.str();
+}
+
+
+
+bool NetSendReteamingInformation::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendReteamingInformation))
+	{
+		const NetSendReteamingInformation& r = dynamic_cast<const NetSendReteamingInformation&>(rhs);
+		if(r.reteamingInfo == reteamingInfo)
+			return true;
+	}
+	return false;
+}
+
+
+NetReteamingInformation NetSendReteamingInformation::getReteamingInfo() const
+{
+	return reteamingInfo;
 }
 
 

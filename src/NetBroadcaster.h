@@ -36,6 +36,12 @@ public:
 	
 	///Updates the broadcaster
 	void update();
+	
+	///Disables broadcasting
+	void disableBroadcasting();
+	
+	///Enables broadcasting
+	void enableBroadcasting();
 private:
 	LANGameInformation info;
 	UDPsocket socket;
