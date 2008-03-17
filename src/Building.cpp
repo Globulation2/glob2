@@ -426,6 +426,10 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	
 	// units
 	stream->writeSint32(maxUnitInside, "maxUnitInside");
+	//TODO: std::list::size() is O(n). We should investigate
+	//if our intense use of this has an impact on overall performance.
+	//steph and nuage suggested to store and update size in a variable
+	//what is faster but also more error prone.
 	stream->writeUint32(unitsWorking.size(), "nbWorking");
 	fprintf(logFile, " nbWorking=%zd\n", unitsWorking.size());
 	i = 0;
