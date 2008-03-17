@@ -74,13 +74,13 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 {
 	// fill the slots
 	int i;
+	int xBase=0;
+	int yBase=0;
+	int n=0;
 	for (i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		int otherTeam = gameGUI->game.players[i]->teamNumber;
+		unsigned otherTeam = gameGUI->game.players[i]->teamNumber;
 		unsigned otherTeamMask = 1 << otherTeam;
-
-		int xBase = (i>>3)*300;
-		int yBase = (i&0x7)*25;
 
 		std::string pname;
 		if (gameGUI->game.players[i]->type>=Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
@@ -94,10 +94,10 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 			pname += ")";
 		}
 
-		Text *text = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
+		texts[i] = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
 		Team *team = gameGUI->game.players[i]->team;
-		text->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
-		addWidget(text);
+		texts[i]->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
+		addWidget(texts[i]);
 		
 		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);
 		addWidget(alliance[i]);
@@ -114,9 +114,30 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
 		chat[i]=new OnOffButton(268+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
 		addWidget(chat[i]);
+		
+		if(otherTeam == gameGUI->localTeamNo)
+		{
+			texts[i]->visible=false;
+			alliance[i]->visible=false;
+			normalVision[i]->visible=false;
+			foodVision[i]->visible=false;
+			marketVision[i]->visible=false;
+			chat[i]->visible=false;
+		}
+		else
+		{
+			yBase += 25;
+			if(n==7)
+			{
+				xBase += 300;
+				yBase = 0;
+			}
+			n+=1;
+		}
 	}
 	for (;i<16;i++)
 	{
+		texts[i] = NULL;
 		alliance[i] = NULL;
 		normalVision[i] = NULL;
 		foodVision[i] = NULL;
