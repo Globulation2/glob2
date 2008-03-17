@@ -20,6 +20,7 @@
 #define NetGamePlayerManager_h
 
 #include "GameHeader.h"
+#include "NetReteamingInformation.h"
 class YOGServerGame;
 
 ///This class handles the players and AI's that can join, be kicked out of, disconnect, leave
@@ -45,7 +46,10 @@ public:
 	bool isEveryoneReadyToGo();
 	///Sets the number of teams
 	void setNumberOfTeams(int numberOfTeams);
-
+	///Sets the reteaming information. Reteaming is when you reload a YOG save
+	///game in YOG, and if the same players join, they are automatically set to
+	///the team they where in the save game
+	void setReteamingInformation(const NetReteamingInformation& information);
 private:
 	///Chooses a team number that has the fewest attached players
 	int chooseTeamNumber();
@@ -55,7 +59,7 @@ private:
 	bool readyToStart[32];
 	int numberOfTeams;
 	bool previousReadyToLaunch;
-
+	NetReteamingInformation reteamInfo;
 };
 
 #endif

@@ -30,6 +30,8 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& serve
 	requested=false;
 	gameStarted=false;
 	oldReadyToLaunch=false;
+	recievedMapHeader=false;
+	hasAddedHost=false;
 	latencyMode = 0;
 	latencyUpdateTimer = 1000;
 	aiNum = 0;
@@ -110,15 +112,18 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 		shared_ptr<NetSendGameHeader> header2(new NetSendGameHeader(gameHeader));
 		shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
 		boost::shared_ptr<NetSetLatencyMode> latency(new NetSetLatencyMode(latencyMode));
+		shared_ptr<NetSendReteamingInformation> reteaming(new NetSendReteamingInformation(reteamingInfo));
+		player->sendMessage(reteaming);
 		player->sendMessage(header1);
 		player->sendMessage(header2);
 		player->sendMessage(sendGamePlayerInfo);
 		player->sendMessage(latency);
+		///If its the host, we don't add them until we've recieved the NetReteamingInformation
+		playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 	}
 	players.push_back(player);
 	//Add the player to the chat channel for communication
 	server.getChatChannelManager().getChannel(chatChannel)->addPlayer(player);
-	playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 
 	shared_ptr<NetPlayerJoinsGame> sendGamePlayerInfo(new NetPlayerJoinsGame(player->getPlayerID(), player->getPlayerName()));
 	routeMessage(sendGamePlayerInfo);
@@ -223,6 +228,21 @@ void YOGServerGame::setMapHeader(const MapHeader& nmapHeader)
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 	server.getGameInfo(gameID).setMapName(mapHeader.getMapName());
 	server.getGameInfo(gameID).setNumberOfTeams(mapHeader.getNumberOfTeams());
+	recievedMapHeader=true;
+}
+
+
+
+void YOGServerGame::setReteamingInfo(const NetReteamingInformation& nreteamingInfo)
+{
+	reteamingInfo=nreteamingInfo;
+	playerManager.setReteamingInformation(reteamingInfo);
+	
+	if(!hasAddedHost)
+	{
+		hasAddedHost=true;
+		playerManager.addPerson(host->getPlayerID(), host->getPlayerName());
+	}
 }
 
 

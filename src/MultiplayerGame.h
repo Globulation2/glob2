@@ -26,6 +26,7 @@
 #include "MultiplayerGameEventListener.h"
 #include <list>
 #include "NetGamePlayerManager.h"
+#include "NetReteamingInformation.h"
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
@@ -146,6 +147,9 @@ protected:
 	
 	///Sends the event to all listeners
 	void sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event);
+	
+	///Puts together reteaming information from the game header in the file
+	NetReteamingInformation constructReteamingInformation(const std::string& file);
 	
 	int getLocalPlayer();
 private:

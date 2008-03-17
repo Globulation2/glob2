@@ -21,6 +21,8 @@
 
 #include "StreamBackend.h"
 #include "BinaryStream.h"
+#include "NetReteamingInformation.h"
+
 
 using namespace GAGCore;
 
@@ -623,6 +625,31 @@ int NetTestSuite::testYOGPlayerInfo()
 
 
 
+int NetTestSuite::testNetReteamingInformation()
+{
+	shared_ptr<NetReteamingInformation> info(new NetReteamingInformation);
+	//Test the intial state
+	if(!testInitial<NetReteamingInformation>())
+		return 1;
+	
+	//Test adding a few players
+	info->setPlayerToTeam("Bob", 3);
+	if(!testSerialize(info))
+		return 2;
+
+	info->setPlayerToTeam("Joe", 1);
+	if(!testSerialize(info))
+		return 3;
+
+	info->setPlayerToTeam("Hawaii", 2);
+	if(!testSerialize(info))
+		return 4;
+		
+	return 0;
+}
+
+
+
 int NetTestSuite::testListenerConnection()
 {
 	//Creates the NetListener at port 7485
@@ -732,6 +759,17 @@ bool NetTestSuite::runAllTests()
 	{
 		failed = true;
 		std::cout<<"YOGPlayerInfo test #"<<failNumber<<" failed."<<std::endl;
+	}	
+
+	failNumber = testNetReteamingInformation();
+	if(failNumber == 0)
+	{
+		std::cout<<"NetReteamingInformation tests passed."<<std::endl;
+	}
+	else
+	{
+		failed = true;
+		std::cout<<"NetReteamingInformation test #"<<failNumber<<" failed."<<std::endl;
 	}
 
 	return !failed;
