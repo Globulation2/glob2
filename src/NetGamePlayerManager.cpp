@@ -35,7 +35,16 @@ NetGamePlayerManager::NetGamePlayerManager(GameHeader& gameHeader)
 
 void NetGamePlayerManager::addPerson(Uint16 playerID, const std::string& name)
 {
-	int team_number = chooseTeamNumber();
+	int team_number;
+	if(reteamInfo.doesPlayerHaveTeam(name))
+	{
+		team_number = reteamInfo.getPlayersTeam(name);
+	}
+	else
+	{
+		team_number = chooseTeamNumber();
+	}
+
 
 	//Add the player into the first spare slot
 	for(int x=0; x<32; ++x)
@@ -163,6 +172,13 @@ bool NetGamePlayerManager::isEveryoneReadyToGo()
 void NetGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
 {
 	numberOfTeams = nnumberOfTeams;
+}
+
+
+
+void NetGamePlayerManager::setReteamingInformation(const NetReteamingInformation& information)
+{
+	reteamInfo = information;
 }
 
 

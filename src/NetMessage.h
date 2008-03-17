@@ -31,6 +31,7 @@
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "Player.h"
+#include "NetReteamingInformation.h"
 
 
 using namespace boost;
@@ -83,6 +84,7 @@ enum NetMessageType
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
+	MNetSendReteamingInformation,
 	//type_append_marker
 };
 
@@ -1558,6 +1560,42 @@ public:
 private:
 private:
 	Uint8 type;
+};
+
+
+
+
+///NetSendReteamingInformation
+class NetSendReteamingInformation : public NetMessage
+{
+public:
+	///Creates a NetSendReteamingInformation message
+	NetSendReteamingInformation();
+
+	///Creates a NetSendReteamingInformation message
+	NetSendReteamingInformation(NetReteamingInformation reteamingInfo);
+
+	///Returns MNetSendReteamingInformation
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendReteamingInformation message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendReteamingInformation
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves reteamingInfo
+	NetReteamingInformation getReteamingInfo() const;
+private:
+private:
+	NetReteamingInformation reteamingInfo;
 };
 
 

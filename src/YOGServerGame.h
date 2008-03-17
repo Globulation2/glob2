@@ -22,6 +22,7 @@
 #include "MapHeader.h"
 #include <boost/shared_ptr.hpp>
 #include "NetGamePlayerManager.h"
+#include "NetReteamingInformation.h"
 
 class NetKickPlayer;
 class NetSendOrder;
@@ -62,6 +63,9 @@ public:
 
 	///Sets the map header of the game
 	void setMapHeader(const MapHeader& mapHeader);
+
+	///Sets the reteaming information of the game
+	void setReteamingInfo(const NetReteamingInformation& reteamingInfo);
 
 	///Gets the game header of the game
 	GameHeader& getGameHeader();
@@ -112,6 +116,8 @@ public:
 	void chooseLatencyMode();
 
 private:
+	bool recievedMapHeader;
+	bool hasAddedHost;
 	bool requested;
 	bool gameStarted;
 	bool oldReadyToLaunch;
@@ -127,6 +133,7 @@ private:
 	YOGServer& server;
 	NetGamePlayerManager playerManager;
 	Uint8 aiNum;
+	NetReteamingInformation reteamingInfo;
 };
 
 

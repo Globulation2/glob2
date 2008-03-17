@@ -125,6 +125,12 @@ void YOGServerPlayer::update()
 		shared_ptr<NetCreateGame> info = static_pointer_cast<NetCreateGame>(message);
 		handleCreateGame(info->getGameName());
 	}
+	//This recieves a message to set the map header
+	else if(type==MNetSendMapHeader)
+	{
+		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
+		ngame->setMapHeader(info->getMapHeader());
+	}
 	//This recieves an attempt to join a game
 	else if(type==MNetAttemptJoinGame)
 	{
@@ -132,10 +138,16 @@ void YOGServerPlayer::update()
 		handleJoinGame(info->getGameID());
 	}
 	//This recieves a message to set the map header
-	else if(type==MNetSendMapHeader)
+	else if(type==MNetSendReteamingInformation)
 	{
-		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
-		ngame->setMapHeader(info->getMapHeader());
+		shared_ptr<NetSendReteamingInformation> info = static_pointer_cast<NetSendReteamingInformation>(message);
+		ngame->setReteamingInfo(info->getReteamingInfo());
+	}
+	//This recieves a request to change a players team in the game
+	else if(type==MNetRequestGameStart)
+	{
+		shared_ptr<NetRequestGameStart> info = static_pointer_cast<NetRequestGameStart>(message);
+		ngame->recieveGameStartRequest();
 	}
 	//This recieves a message to set the game header
 	else if(type==MNetSendGameHeader)
