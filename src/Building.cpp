@@ -76,6 +76,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = maxUnitWorking;
 	maxUnitWorkingFuture = unitWorkingFuture;
+	maxUnitWorkingPrevious = 0;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
 
@@ -399,6 +400,10 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
+	if(versionMinor>=65)
+		maxUnitWorkingPrevious = stream->readSint32("maxUnitWorkingPrevious");
+	else
+		maxUnitWorkingPrevious = maxUnitWorkingPreferred;
 	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 	
@@ -445,6 +450,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeSint32(subscriptionWorkingTimer, "subscriptionWorkingTimer");
 	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
+	stream->writeSint32(maxUnitWorkingPrevious, "maxUnitWorkingPrevious");
 	
 	stream->writeUint32(unitsInside.size(), "nbInside");
 	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
@@ -587,6 +593,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			unitsInside.remove(u);
 		}
 		
+		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
@@ -670,12 +677,9 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
-	
-	if (type->maxUnitWorking)
-		maxUnitWorking=maxUnitWorkingPreferred;
-	else
-		maxUnitWorking=0;
-	maxUnitWorkingLocal=unitWorking; //maxUnitWorking;
+
+	maxUnitWorking=maxUnitWorkingPrevious;
+	maxUnitWorkingLocal=maxUnitWorking; //maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
@@ -713,6 +717,7 @@ void Building::launchDelete(void)
 	if (buildingState==ALIVE)
 	{
 		buildingState=WAITING_FOR_DESTRUCTION;
+		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
 		maxUnitWorkingLocal=0;
 		maxUnitInside=0;
@@ -726,10 +731,7 @@ void Building::launchDelete(void)
 void Building::cancelDelete(void)
 {
 	buildingState=ALIVE;
-	if (type->maxUnitWorking)
-		maxUnitWorking=maxUnitWorkingPreferred;
-	else
-		maxUnitWorking=0;
+	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
