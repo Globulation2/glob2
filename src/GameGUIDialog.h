@@ -78,6 +78,7 @@ public:
 	};
 
 public:
+	Text *texts[16];
 	OnOffButton *alliance[16];
 	OnOffButton *normalVision[16];
 	OnOffButton *foodVision[16];
