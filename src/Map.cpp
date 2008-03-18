@@ -113,6 +113,8 @@ Map::Map()
 	sectors=NULL;
 	listedAddr=NULL;
 	
+	for (int t = 0; t < 32; t++)
+		clearingAreaClaims[t] = NULL;
 	w=0;
 	h=0;
 	size=0;
@@ -304,9 +306,15 @@ void Map::clear()
 		delete[] astarpoints;
 		astarpoints=NULL;
 
-		assert(clearingAreaClaims);
-		delete[] clearingAreaClaims;
-		clearingAreaClaims=NULL;
+		for (int t=0; t<32; t++)
+		{
+			if (clearingAreaClaims[t])
+			{
+				assert(clearingAreaClaims[t]);
+				delete[] clearingAreaClaims[t];
+				clearingAreaClaims[t]=NULL;
+			}
+		}
 		
 		assert(immobileUnits);
 		delete[] immobileUnits;
@@ -334,6 +342,8 @@ void Map::clear()
 			}
 		for (int t=0; t<32; t++)
 			assert(exploredArea[t] == NULL);
+		for (int t=0; t<32; t++)
+			assert(clearingAreaClaims[t] == NULL);
 		
 		assert(undermap==NULL);
 		assert(sectors==NULL);
@@ -994,7 +1004,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	astarpoints=new AStarAlgorithmPoint[w*h];
 
-	clearingAreaClaims = new Uint32[w*h];
 
 	immobileUnits = new Uint8[w*h];
 
@@ -1076,8 +1085,6 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	astarpoints=new AStarAlgorithmPoint[size];
-	clearingAreaClaims = new Uint32[size];
-	memset(clearingAreaClaims, 0, size*sizeof(Uint32));
 	immobileUnits = new Uint8[size];
 	memset(immobileUnits, 255, size*sizeof(Uint8));
 	
@@ -1171,7 +1178,10 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 			assert(exploredArea[t] == NULL);
 			exploredArea[t] = new Uint8[size];
 			initExploredArea(t);
-                        makeDiscoveredAreasExplored(t);
+			makeDiscoveredAreasExplored(t);
+			
+			clearingAreaClaims[t] = new Uint16[size];
+			memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
 		}
 	}
 
@@ -1331,6 +1341,10 @@ void Map::addTeam(void)
 	assert(exploredArea[t] == NULL);
 	exploredArea[t] = new Uint8[size];
 	initExploredArea(t);
+	
+	assert(clearingAreaClaims[t] == NULL);
+	clearingAreaClaims[t] = new Uint16[size];
+	memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
 }
 
 void Map::removeTeam(void)
@@ -1375,6 +1389,10 @@ void Map::removeTeam(void)
 	assert(exploredArea[t] != NULL);
 	delete[] exploredArea[t];
 	exploredArea[t]=NULL;
+	
+	assert(clearingAreaClaims[t] != NULL);
+	delete[] clearingAreaClaims[t];
+	clearingAreaClaims[t]=NULL;
 }
 
 // TODO: completely recreate:
@@ -1907,24 +1925,23 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 
 
 
-void Map::setClearingAreaClaimed(int x, int y, int teamNumber)
+void Map::setClearingAreaClaimed(int x, int y, int teamNumber, int gid)
 {
-	clearingAreaClaims[(normalizeY(y) << wDec) + normalizeX(x)] |= 1u<<teamNumber;
+	clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)] = gid;
 }
 
 
 
 void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
 {
-	Uint32 &mask = clearingAreaClaims[(normalizeY(y) << wDec) + normalizeX(x)];
-	mask ^= mask & (1u<<teamNumber);
+	clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)]=NOGUID;
 }
 
 
 
-bool Map::isClearingAreaClaimed(int x, int y, int teamNumber)
+int Map::isClearingAreaClaimed(int x, int y, int teamNumber)
 {
-	return clearingAreaClaims[(normalizeY(y) << wDec) + normalizeX(x)] & (1u<<teamNumber);
+	return clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)];
 }
 
 
