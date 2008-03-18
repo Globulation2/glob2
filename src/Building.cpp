@@ -1293,7 +1293,7 @@ int Building::desiredNumberOfWorkers(void)
 			neededRessourcesSum += neededRessources;
 	}
 	int user_num = maxUnitWorking;
-	int max_considering_ressources = 2 * neededRessourcesSum;
+	int max_considering_ressources = (4 * neededRessourcesSum) / 3;
 	return std::min(user_num, max_considering_ressources);
 }
 
