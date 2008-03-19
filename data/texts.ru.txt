@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 покинул игру.
 [%0's game]
@@ -44,6 +42,8 @@ AIWarrush
 водоросли
 [alliances]
 Союзы
+[alt %0]
+
 [and]
 и
 [any explorer]
@@ -212,6 +212,8 @@ caps lock
 Постройка и улучшения
 [Continue playing]
 Продолжить игру
+[control %0]
+
 [Corn]
 Зерно
 [crater density]
@@ -506,6 +508,8 @@ left
 Позволяет меняться
 [market]
 Рынок
+[meta %0]
+
 [Min required level:]
 Мин. необходимый уровень:
 [Minimum Level To Flag]
@@ -546,8 +550,12 @@ Ok
 старые случайные острова
 [old random terrain]
 старый случайный ландшафт
+[on press]
+
 [On the spot]
 На месте
+[on unpress]
+
 [open chat box]
 Открыть чат
 [open load menu]
@@ -726,6 +734,8 @@ scroll lock
 Выбор флага войны
 [settings]
 Настройки
+[shift %0]
+
 [shortcut explanation enter]
 Enter: Отправить сообщение в чате
 [shortcut explanation v]

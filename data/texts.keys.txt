@@ -1,67 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 [%0 has left the game]
 [%0's game]
 [%0's team unit got converted to your team]
@@ -84,6 +20,7 @@
 [Alga]
 [algae]
 [alliances]
+[alt %0]
 [and]
 [any explorer]
 [are dying hungry]
@@ -168,6 +105,7 @@
 [constructed buildings]
 [construction and upgrades]
 [Continue playing]
+[control %0]
 [Corn]
 [crater density]
 [crater lakes terrain]
@@ -314,6 +252,7 @@
 [market explanation 2]
 [market explanation]
 [market]
+[meta %0]
 [Min required level:]
 [Minimum Level To Flag]
 [Music volume]
@@ -334,7 +273,9 @@
 [ok]
 [old islands terrain]
 [old random terrain]
+[on press]
 [On the spot]
+[on unpress]
 [open chat box]
 [open load menu]
 [open save menu]
@@ -424,6 +365,7 @@
 [select wall building]
 [select warflag]
 [settings]
+[shift %0]
 [shortcut explanation enter]
 [shortcut explanation v]
 [show main menu]

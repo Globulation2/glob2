@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 ha lasciato il gioco.
 [%0's game]
@@ -44,6 +42,8 @@ Alghe
 alghe
 [alliances]
 Alleanze
+[alt %0]
+
 [and]
 e
 [any explorer]
@@ -218,6 +218,8 @@ Mi sto connettendo a
 
 [Continue playing]
 Continua a giocare
+[control %0]
+
 [Corn]
 Frumento
 [crater density]
@@ -508,6 +510,8 @@ frutta con gli altri
 Permette lo scambio di
 [market]
 Mercato
+[meta %0]
+
 [Min required level:]
 Livello min.richiesto:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ok
 Vecchie isole casuali
 [old random terrain]
 Vecchio terreno casuale
+[on press]
+
 [On the spot]
 Sul posto
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ Seleziona Muro di Pietra
 Seleziona bandiera di attacco
 [settings]
 Impostazioni
+[shift %0]
+
 [shortcut explanation enter]
 Invio: invia un messaggio di chat
 [shortcut explanation v]

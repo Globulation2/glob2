@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0's game]
@@ -44,6 +42,8 @@ Alga
 
 [alliances]
 Szövetségek
+[alt %0]
+
 [and]
 és
 [any explorer]
@@ -218,6 +218,8 @@ Kapcsolódás
 
 [Continue playing]
 Játék folytatása
+[control %0]
+
 [Corn]
 Búza
 [crater density]
@@ -508,6 +510,8 @@ gyümölcs árucserét
 Lehetővé teszi az
 [market]
 Piac
+[meta %0]
+
 [Min required level:]
 Minimális szükséges szint:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Rendben
 
 [old random terrain]
 
+[on press]
+
 [On the spot]
 Helyszínen van
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ keresés
 
 [settings]
 Beállítások
+[shift %0]
+
 [shortcut explanation enter]
 
 [shortcut explanation v]
