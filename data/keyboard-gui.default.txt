@@ -16,6 +16,8 @@
 <t>=toggle draw unit paths
 <u>=upgrade building
 <v>=toggle recording voice
+<unpress><v>=toggle recording voice
+<shift><v>=toggle recording voice
 <[-]>=decrease units working
 <[+]>=increase units working
 <home>=go to home

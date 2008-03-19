@@ -1042,7 +1042,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			setIsSpaceSet(true);
 		}
 		else
-		{	
+		{
 			Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
 			switch(action_t)
 			{

@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 har forladt spillet
 [%0's game]
@@ -44,6 +42,8 @@ Alger
 alger
 [alliances]
 Alliancer
+[alt %0]
+
 [and]
 og
 [any explorer]
@@ -218,6 +218,8 @@ Forbinder til
 
 [Continue playing]
 Fortsæt spillet
+[control %0]
+
 [Corn]
 Korn
 [crater density]
@@ -508,6 +510,8 @@ Frugt med andre
 Tillader at bytte frugt
 [market]
 Market
+[meta %0]
+
 [Min required level:]
 Minimum krævede niveau:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ok
 Gamle ø terræn
 [old random terrain]
 Gamle tilfældige terræn
+[on press]
+
 [On the spot]
 Her
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ Vælg væg
 Vælg Krigs Flag
 [settings]
 Indstillinger
+[shift %0]
+
 [shortcut explanation enter]
 tast enter : send en besked
 [shortcut explanation v]

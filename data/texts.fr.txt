@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 a quitté la partie.
 [%0's game]
@@ -44,6 +42,8 @@ Algue
 Algues
 [alliances]
 Alliances
+[alt %0]
+
 [and]
 et
 [any explorer]
@@ -218,6 +218,8 @@ Connection à
 
 [Continue playing]
 Continuer à jouer
+[control %0]
+
 [Corn]
 Blé
 [crater density]
@@ -508,6 +510,8 @@ fruits avec les autres
 Permet d'échanger des ressources
 [market]
 Marché
+[meta %0]
+
 [Min required level:]
 Niveau minimum requis:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Accepter
 Ancien terrain d'île
 [old random terrain]
 Ancien terrain aléatoire
+[on press]
+
 [On the spot]
 Sur place
+[on unpress]
+
 [open chat box]
 Ouvrir boîte de discussion
 [open load menu]
@@ -730,6 +738,8 @@ recherche
 
 [settings]
 Paramètres
+[shift %0]
+
 [shortcut explanation enter]
 touche enter : envoyer un message
 [shortcut explanation v]

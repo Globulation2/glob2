@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 heeft het spel verlaten
 [%0's game]
@@ -44,6 +42,8 @@ Zeewier
 Zeewier
 [alliances]
 Allianties
+[alt %0]
+
 [and]
 en
 [any explorer]
@@ -218,6 +218,8 @@ Verbinden met
 
 [Continue playing]
 Speel verder
+[control %0]
+
 [Corn]
 Graan
 [crater density]
@@ -508,6 +510,8 @@ met anderen
 Verhandel fruit
 [market]
 Markt
+[meta %0]
+
 [Min required level:]
 Minimaal vereist niveau:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ok
 Oude eilanden
 [old random terrain]
 Oud willekeurig terrein
+[on press]
+
 [On the spot]
 Hier
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ Selecteer Muur
 Selecteer Oorlogsvlag
 [settings]
 Instellingen
+[shift %0]
+
 [shortcut explanation enter]
 Enter-toets: stuur een bericht
 [shortcut explanation v]

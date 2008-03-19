@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0's game]
@@ -44,6 +42,8 @@ Algen
 Algen
 [alliances]
 Allianzen
+[alt %0]
+
 [and]
 und
 [any explorer]
@@ -218,6 +218,8 @@ Verbinden mit
 
 [Continue playing]
 Weiterspielen
+[control %0]
+
 [Corn]
 Weizen
 [crater density]
@@ -508,6 +510,8 @@ Früchten
 Erlaubt den Handel mit
 [market]
 Markt
+[meta %0]
+
 [Min required level:]
 Mindestlevel:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ok
 alte Inselzufallskarte
 [old random terrain]
 alte Zufallskarte
+[on press]
+
 [On the spot]
 Vor Ort
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ suchen
 
 [settings]
 Einstellungen
+[shift %0]
+
 [shortcut explanation enter]
 Enter: Chatnachricht senden
 [shortcut explanation v]
