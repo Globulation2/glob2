@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0(e)k partida utzi du.
 [%0's game]
@@ -44,6 +42,8 @@ Algak
 algak
 [alliances]
 Aliantzak
+[alt %0]
+
 [and]
 eta
 [any explorer]
@@ -218,6 +218,8 @@ Hona konektatzen:
 
 [Continue playing]
 Jolasten jarraitu
+[control %0]
+
 [Corn]
 Garia
 [crater density]
@@ -508,6 +510,8 @@ fruta
 Trukea baimentzen du: 
 [market]
 Merkatua
+[meta %0]
+
 [Min required level:]
 Gutxienezko maila:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ados
 ausazko irla lurzoru zaharra
 [old random terrain]
 ausazko lurzoru zaharra
+[on press]
+
 [On the spot]
 Bertan
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ Harrizko orma aukeratu
 Gerra bandera aukeratu
 [settings]
 Ezarpenak
+[shift %0]
+
 [shortcut explanation enter]
 Enter: Txat mezua bidali
 [shortcut explanation v]

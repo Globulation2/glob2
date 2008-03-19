@@ -35,6 +35,7 @@ namespace GAGGUI
 	class TextInput;
 	class TextButton;
 	class OnOffButton;
+	class MultiTextButton;
 	class Text;
 	class Selector;
 	class Number;
@@ -60,6 +61,7 @@ public:
 		GAMESHORTCUTS=13,
 		EDITORSHORTCUTS=14,
 		SECONDKEY=15,
+		PRESSEDSELECTOR=15,
 		ADDSHORTCUT=16,
 		REMOVESHORTCUT=17,
 		SCROLLWHEEL=18,
@@ -92,6 +94,7 @@ private:
 	KeySelector* select_key_1;
 	OnOffButton *key_2_active;
 	KeySelector* select_key_2;
+	MultiTextButton* pressedUnpressedSelector;
 	List* action_list;
 	TextButton* add_shortcut;
 	TextButton* remove_shortcut;

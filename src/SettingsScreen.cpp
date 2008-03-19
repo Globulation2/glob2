@@ -249,12 +249,17 @@ SettingsScreen::SettingsScreen()
 
 	shortcut_list = new List(20, 110, 325, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	action_list = new List(365, 110 , 265, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
-	key_2_active = new OnOffButton(170, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
-	select_key_2 = new KeySelector(200, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
+	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 100, 25);
+	key_2_active = new OnOffButton(125, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
+	select_key_2 = new KeySelector(155, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 100, 25);
+	pressedUnpressedSelector = new MultiTextButton(260, 275, 80, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", PRESSEDSELECTOR);
 	add_shortcut = new TextButton(20, 305, 158, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
 	remove_shortcut = new TextButton(188, 305, 157, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
 	restore_default_shortcuts = new TextButton(365, 305, 265, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
+
+	pressedUnpressedSelector->clearTexts();
+	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
+	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
 
 	
 	game_shortcuts->visible = false;
@@ -265,6 +270,7 @@ SettingsScreen::SettingsScreen()
 	select_key_1->visible = false;
 	key_2_active->visible = false;
 	select_key_2->visible = false;
+	pressedUnpressedSelector->visible = false;
 	add_shortcut->visible = false;
 	remove_shortcut->visible = false;
 	restore_default_shortcuts->visible=false;
@@ -276,6 +282,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(select_key_1);
 	addWidget(key_2_active);
 	addWidget(select_key_2);
+	addWidget(pressedUnpressedSelector);
 	addWidget(add_shortcut);
 	addWidget(remove_shortcut);
 	addWidget(restore_default_shortcuts);
@@ -371,6 +378,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			select_key_1->visible=false;
 			key_2_active->visible=false;
 			select_key_2->visible=false;
+			pressedUnpressedSelector->visible=false;
 			shortcut_list->visible=false;
 			action_list->visible=false;
 			add_shortcut->visible=false;
@@ -429,6 +437,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			select_key_1->visible=false;
 			key_2_active->visible=false;
 			select_key_2->visible=false;
+			pressedUnpressedSelector->visible=false;
 			shortcut_list->visible=false;
 			action_list->visible=false;
 			add_shortcut->visible=false;
@@ -486,6 +495,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			select_key_1->visible=true;
 			key_2_active->visible=true;
 			select_key_2->visible=true;
+			pressedUnpressedSelector->visible=true;
 			shortcut_list->visible=true;
 			action_list->visible=true;
 			add_shortcut->visible=true;
@@ -525,6 +535,9 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 				shortcut_list->setSelectionIndex(0);
 			updateActionList();
 			updateShortcutInfoFromSelection();
+		}
+		else if(par1==PRESSEDSELECTOR)
+		{
 		}
 		else if(par1==ADDSHORTCUT)
 		{
@@ -825,6 +838,11 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 			select_key_2->visible=true;
 		}
 
+		if(i->getKeyPress(0).getPressed())
+			pressedUnpressedSelector->setIndex(0);
+		else
+			pressedUnpressedSelector->setIndex(1);
+
 		action_list->setSelectionIndex(i->getAction());
 		action_list->centerOnItem(action_list->getSelectionIndex());
 	}
@@ -848,9 +866,13 @@ void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
 		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
 		std::advance(i, selection_n);
 		KeyboardShortcut new_shortcut;
-		new_shortcut.addKeyPress(select_key_1->getKey());
+		
+		KeyPress first = KeyPress(select_key_1->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
+		KeyPress second = KeyPress(select_key_2->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
+		
+		new_shortcut.addKeyPress(first);
 		if(key_2_active->getState())
-			new_shortcut.addKeyPress(select_key_2->getKey());
+			new_shortcut.addKeyPress(second);
 		new_shortcut.setAction(action_list->getSelectionIndex());
 		(*i) = new_shortcut;
 		updateShortcutList(selection_n);

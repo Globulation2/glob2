@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 odišiel z hry.
 [%0's game]
@@ -44,6 +42,8 @@ Riasy
 riesy
 [alliances]
 Aliancie
+[alt %0]
+
 [and]
 a
 [any explorer]
@@ -218,6 +218,8 @@ Pripája sa ku
 
 [Continue playing]
 Pokračovať
+[control %0]
+
 [Corn]
 Pšenica
 [crater density]
@@ -508,6 +510,8 @@ s ostatnými hráčmi
 Umožnňuje výmenu ovocia
 [market]
 Trhovisko
+[meta %0]
+
 [Min required level:]
 Najnižšia potrebná úroveň:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ok
 staré náhodné ostrovy
 [old random terrain]
 starý náhodný terén
+[on press]
+
 [On the spot]
 Tu
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ hľadajú
 
 [settings]
 Nastavenia
+[shift %0]
+
 [shortcut explanation enter]
 Enter: Pošli správu
 [shortcut explanation v]
