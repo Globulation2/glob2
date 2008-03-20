@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 opuścił grę.
 [%0's game]
@@ -44,6 +42,8 @@ Algi
 
 [alliances]
 Sojusze
+[alt %0]
+
 [and]
 i
 [any explorer]
@@ -218,6 +218,8 @@ Połącz z
 
 [Continue playing]
 Kontynuuj grę
+[control %0]
+
 [Corn]
 Zboże
 [crater density]
@@ -508,6 +510,8 @@ owoców z innymi
 Umożliwia wymianę
 [market]
 Bazar
+[meta %0]
+
 [Min required level:]
 Min wymagany poziom:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ok
 
 [old random terrain]
 
+[on press]
+
 [On the spot]
 Na miejscu
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ szukających
 
 [settings]
 Ustawienia
+[shift %0]
+
 [shortcut explanation enter]
 
 [shortcut explanation v]

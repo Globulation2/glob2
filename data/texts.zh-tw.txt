@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 已離開遊戲
 [%0's game]
@@ -44,6 +42,8 @@ AIWarrush
 海藻
 [alliances]
 聯盟
+[alt %0]
+
 [and]
 而且
 [any explorer]
@@ -218,6 +218,8 @@ AIWarrush
 
 [Continue playing]
 繼續遊戲
+[control %0]
+
 [Corn]
 小麥
 [crater density]
@@ -508,6 +510,8 @@ Air dmg.
 允許交易的資源
 [market]
 市場
+[meta %0]
+
 [Min required level:]
 最小等級需求:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Air dmg.
 古老隨機島嶼
 [old random terrain]
 古老隨機地形
+[on press]
+
 [On the spot]
 在這裡
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ Air dmg.
 選擇攻擊旗幟
 [settings]
 設定
+[shift %0]
+
 [shortcut explanation enter]
 Enter: 傳送訊息
 [shortcut explanation v]
