@@ -330,7 +330,6 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
-	
 	SDLMod modState = SDL_GetModState();
 	while (SDL_PollEvent(&event))
 	{
@@ -3460,17 +3459,36 @@ void GameGUI::drawOverlayInfos(void)
 		
 		if(!scrollableText)
 			messageManager.drawAllMessages(32, ymesg);
-
-		// display map mark
-		globalContainer->gfx->setClipRect();
-		markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-128+14, 14, 100, viewportX, viewportY, game);
-
 	}
+
+	// display map mark
+	globalContainer->gfx->setClipRect();
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-128+14, 14, 100, viewportX, viewportY, game);
 
 	// Draw icon if trasmitting
 	if (globalContainer->voiceRecorder->recordingNow)
 		globalContainer->gfx->drawSprite(5, globalContainer->gfx->getH()-50, globalContainer->gamegui, 24);
-	
+
+	// Draw which players are transmitting voice
+	int xinc = 42;
+	for(int p=0; p<32; ++p)
+	{
+		if(globalContainer->mix->isPlayerTransmittingVoice(p))
+		{
+			if(xinc==42)
+			{
+				globalContainer->gfx->drawSprite(42, globalContainer->gfx->getH()-55, globalContainer->gamegui, 30);
+				xinc += 47;
+			}
+			int height = globalContainer->standardFont->getStringHeight(game.players[p]->name.c_str());
+			
+			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, game.teams[game.players[p]->teamNumber]->color));
+			globalContainer->gfx->drawString(xinc, globalContainer->gfx->getH()-35-height/2, globalContainer->standardFont, game.players[p]->name);
+			xinc += globalContainer->standardFont->getStringWidth(game.players[p]->name.c_str()) + 5;
+			globalContainer->standardFont->popStyle();
+		}
+	}
+
 	// Draw the bar contining number of units, CPU load, etc...
 	drawTopScreenBar();
 }
