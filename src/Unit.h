@@ -256,6 +256,7 @@ public:
 	// These store the previous clearing area target cordinates
 	Uint32 previousClearingAreaX;
 	Uint32 previousClearingAreaY;
+	Uint32 previousClearingAreaDistance;
 	
 public:
 	// optimisation cached values
