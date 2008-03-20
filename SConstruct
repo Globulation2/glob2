@@ -21,6 +21,7 @@ def establish_options(env):
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
+    opts.Add(BoolOption("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share"))
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("profile", "Build with profiling on", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
@@ -47,9 +48,9 @@ def configure(env):
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
     if isDarwinPlatform:
-    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["INSTALLDIR"] + "../Resources/\"")
+    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
     else:
-    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["INSTALLDIR"] + "\"")
+    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
