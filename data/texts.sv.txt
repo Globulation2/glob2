@@ -1,5 +1,3 @@
-
-
 [%0 has left the game]
 %0 har lämnat spelet.
 [%0's game]
@@ -44,6 +42,8 @@ Alger
 alger
 [alliances]
 Allianser
+[alt %0]
+
 [and]
 och
 [any explorer]
@@ -218,6 +218,8 @@ Ansluter till
 
 [Continue playing]
 Fortsätt spela
+[control %0]
+
 [Corn]
 Vete
 [crater density]
@@ -508,6 +510,8 @@ frukt med andra
 Tillåter utbyte av 
 [market]
 Marknad
+[meta %0]
+
 [Min required level:]
 Lägsta tillåtna nivå:
 [Minimum Level To Flag]
@@ -550,8 +554,12 @@ Ok
 Gamla slumpmässiga öar
 [old random terrain]
 Gammal slumpmässig terräng
+[on press]
+
 [On the spot]
 Här
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -730,6 +738,8 @@ Välj Stenmur
 Välj Krigsflagga
 [settings]
 Inställningar
+[shift %0]
+
 [shortcut explanation enter]
 Enter: skicka ett chattmeddelande
 [shortcut explanation v]

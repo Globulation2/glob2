@@ -449,11 +449,11 @@ public:
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
 	//! Sets this particular clearing area location as claimed
-	void setClearingAreaClaimed(int x, int y, int teamNumber);
+	void setClearingAreaClaimed(int x, int y, int teamNumber, int gid);
 	//! Sets this particular clearing area location as unclaimed
 	void setClearingAreaUnclaimed(int x, int y, int teamNumber);
-	//! Returns true if this particular clearing area position is claimed for this unit
-	bool isClearingAreaClaimed(int x, int y, int teamNumber);
+	//! Returns the gid if this clearing area is claimed, NOGUID otherwise
+	int isClearingAreaClaimed(int x, int y, int teamNumber);
 
 	//! Marks a particular square as containing an immobile unit
 	void markImmobileUnit(int x, int y, int teamNumber);
@@ -762,8 +762,8 @@ public:
 	
 	/// This shows how many "claims" there are on a particular ressource square
 	/// This is so that not all 150 free units go after one piece of wood
-	/// Each square is a mask for the teams that this square has been claimed for
-	Uint32 *clearingAreaClaims;
+	/// Each square is the gid of the claiming unit
+	Uint16 *clearingAreaClaims[32];
 	
 	/// These are integers that tell whether an immobile unit is standing on the
 	/// square, and if so, what team number it is. In terms of the engine, these

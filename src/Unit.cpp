@@ -130,6 +130,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	
 	previousClearingAreaX=-1;
 	previousClearingAreaY=-1;
+	previousClearingAreaDistance=0;
 	
 	// gui
 	levelUpAnimation = 0;
@@ -1440,7 +1441,7 @@ void Unit::handleMovement(void)
 						|| (mapCase.ressource.type == ALGA))
 						&& !(mapCase.forbidden & owner->me))
 				{
-					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber);
+					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber, gid);
 					previousClearingAreaX = (posX+tdx)  & map->wMask;
 					previousClearingAreaY = (posY+tdy)  & map->hMask;
 					dx = tdx;
@@ -1811,7 +1812,14 @@ void Unit::handleMovement(void)
 				{
 					int tempTargetX, tempTargetY;
 					bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
-					if(path && !owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber))
+					int guid = owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber);
+					int other_distance = INT_MAX;
+					if(guid != NOGUID)
+					{
+						Unit* unit = owner->myUnits[GIDtoID(guid)];
+						other_distance = unit->previousClearingAreaDistance;
+					}
+					if(path && distance < other_distance)
 					{
 						dx=0;
 						dy=0;
@@ -1821,11 +1829,20 @@ void Unit::handleMovement(void)
 						targetY = tempTargetY;
 						previousClearingAreaX = tempTargetX;
 						previousClearingAreaY = tempTargetY;
+						previousClearingAreaDistance = distance;
+						
+						if(guid != NOGUID)
+						{
+							Unit* unit = owner->myUnits[GIDtoID(guid)];
+							unit->previousClearingAreaX=-1;
+							unit->previousClearingAreaY=-1;
+							unit->previousClearingAreaDistance=-1;
+						}
 						
 						//Find clearing ressource
 						directionFromDxDy();
 						movement = MOV_GOING_DXDY;
-						owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber);
+						owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber, gid);
 						validTarget=true;
 					}
 					else
