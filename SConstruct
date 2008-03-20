@@ -21,7 +21,7 @@ def establish_options(env):
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
-    opts.Add(BoolOption("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share"))
+    opts.Add(PathOption("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share"))
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("profile", "Build with profiling on", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
