@@ -350,6 +350,15 @@ private:
 	///It will also cause Nicowar to dig itself out in certain situtation
 	///Returns true if there are buildings that it can dig out, false otherwise
 	bool dig_out_enemy(AIEcho::Echo& echo);
+	///This will disable all current enemy attack flags
+	void disable_attacks(AIEcho::Echo& echo);
+	///This will re-enable all current enemy attack flags
+	void enable_attacks(AIEcho::Echo& echo);
+
+	///This function calculates the positions of defense flags
+	void compute_defense_flag_positioning(AIEcho::Echo& echo);
+	///This function adds the specific value to the counts arround the given pos, used in computeDefenseFlagPositioning
+	void modify_points(Uint8* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations);
 
 	///This integer stores the currently targetted enemy
 	int target;
@@ -357,6 +366,8 @@ private:
 	bool is_digging_out;
 	///This vector stores the ID's for all current war flags
 	std::vector<int> attack_flags;
+	///This vector stores the ID's for all current defense flags
+	std::vector<int> defense_flags;
 
 	///This function updates the restricted areas for farming
 	void update_farming(AIEcho::Echo& echo);
