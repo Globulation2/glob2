@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 65
+#define VERSION_MINOR 66
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -80,6 +80,7 @@
 // version 63 added fertility to map
 // version 64 removed syncRandSeedA/B/C and replaced with Boost.Random, seed stored in GameHeader and automatically seeded
 // version 65 added maxUnitWorkingPrevious to Building to recover previous assigned unit count when cancelling construction or delete
+// version 66 added new defense code to nicowar
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above
