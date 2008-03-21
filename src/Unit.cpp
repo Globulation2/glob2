@@ -1808,7 +1808,7 @@ void Unit::handleMovement(void)
 			{
 				///Value of 254 means nothing found
 				int distance = 255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
-				if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254)
+				if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254 && medical == MED_FREE)
 				{
 					int tempTargetX, tempTargetY;
 					bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
