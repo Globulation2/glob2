@@ -25,6 +25,7 @@ base_swarm_explorer_ratio 1
 base_swarm_hungry_reduce_trigger_percent 12
 base_swarm_low_wheat_trigger_ammount 10
 base_swarm_units_assigned 3
+defense_explorer_population_percent 12
 fruit_phase_extra_number_of_explorers 9
 fruit_phase_unit_min 40
 growth_phase_maximum_swarms 4
