@@ -47,6 +47,10 @@ minimum_warrior_level_for_trained 1
 non_growth_phase_swarm_worker_ratio 2
 non_growth_phase_units_per_swarm 50
 no_workers_phase_free_worker_minimum_percent 10
+offense_explorer_flag_assigned 10
+offense_explorer_flag_number 2
+offense_explorer_minimum 20
+offense_explorer_number 40
 skilled_work_phase_number_of_racetracks 1
 skilled_work_phase_number_of_schools 2
 skilled_work_phase_number_of_swimmingpools 1
