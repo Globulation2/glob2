@@ -137,6 +137,16 @@ public:
 	int base_swarm_explorer_ratio;
 	///The warrior ratio during the war preperation phase
 	int war_preperation_swarm_warrior_ratio;
+	///The percentage of total population that should be dedicated to defense explorers, when they are created
+	int defense_explorer_population_percent;
+	///The number of explorers to produce for attacks
+	int offense_explorer_number;
+	///The minimum number of trained explorers before it will start attacking with them
+	int offense_explorer_minimum;
+	///The number of explorer attack flags to do at once
+	int offense_explorer_flag_number;
+	///The number of explorers per explorer attack flag
+	int offense_explorer_flag_assigned;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an inn
 	int upgrading_phase_1_inn_chance;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an hospital
@@ -260,6 +270,12 @@ private:
 	bool no_workers_phase;
 	///During this phase, the colonies workers are "able to swim"
 	bool can_swim;
+	///During this phase, Nicowar tries to construct many explorers, in case its attacked by enemy explorers
+	bool defend_explorers;
+	///During this phase, Nicowar tries to construct many explorers so that it can launch an attack with them
+	bool explorer_attack_preperation_phase;
+	///During this phase, Nicowar will activily attack its oppenents with explorers
+	bool explorer_attack_phase;
 
 
 	///This function decides how many buildings need to be constructed (and with what properties
@@ -357,6 +373,19 @@ private:
 	bool is_digging_out;
 	///This vector stores the ID's for all current war flags
 	std::vector<int> attack_flags;
+	
+	
+	///This function calculates the positions of defense flags
+	void compute_defense_flag_positioning(AIEcho::Echo& echo);
+	///This function adds the specific value to the counts arround the given pos, used in compute_defense_flag_positioning
+	void modify_points(Uint8* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations);
+	///This vector stores the ID's for all current defense flags
+	std::vector<int> defense_flags;
+
+	///This function calculates the positions of explorer flags for explorer flag attacks
+	void compute_explorer_flag_attack_positioning(AIEcho::Echo& echo);
+	///This vector stores the list of explorer attack flags
+	std::vector<int> explorer_attack_flags;
 
 	///This function updates the restricted areas for farming
 	void update_farming(AIEcho::Echo& echo);
