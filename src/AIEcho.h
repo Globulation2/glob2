@@ -1102,6 +1102,7 @@ namespace AIEcho
 			MChangeAlliances,
 			MUpgradeRepair,
 			MSendMessage,
+			MChangeFlagPosition,
 		};
 
 
@@ -1296,6 +1297,24 @@ namespace AIEcho
 			void save(GAGCore::OutputStream *stream);
 		private:
 			int minimum_level;
+			int building_id;
+		};
+
+		///This changes a flags position
+		class ChangeFlagPosition : public ManagementOrder
+		{
+		public:
+			ChangeFlagPosition() : x(0), y(0), building_id(0) {}
+			explicit ChangeFlagPosition(int x, int y, int building_id); 
+		protected:
+			void modify(Echo& echo);
+			boost::logic::tribool wait(Echo& echo);
+			ManagementOrderType get_type();
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
+		private:
+			int x;
+			int y;
 			int building_id;
 		};
 
