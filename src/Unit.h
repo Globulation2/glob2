@@ -217,7 +217,7 @@ public:
 	bool validTarget;
 	Sint32 magicActionTimeout;
 
-	// Timer counts down 5 frames after last attacked
+	// Timer counts down after last attacked
 	Uint8 underAttackTimer;
 
 	// trigger parameters
