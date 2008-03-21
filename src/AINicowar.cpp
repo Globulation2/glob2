@@ -268,6 +268,17 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 				stream->readLeaveSection();
 			}
 			stream->readLeaveSection();
+			
+			stream->readEnterSection("explorer_attack_flags");
+			size = stream->readUint16("size");
+			for(size_t n = 0; n<size; ++n)
+			{
+				stream->readEnterSection(n);
+				int flag = stream->readUint32("flag");
+				explorer_attack_flags.push_back(flag);
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
 		}
 
 		exploration_on_fruit=stream->readUint8("exploration_on_fruit");
@@ -336,12 +347,12 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeLeaveSection();
 
-	stream->writeEnterSection("defense_flags");
-	stream->writeUint16(defense_flags.size(), "size");
-	for(n = 0; n<defense_flags.size(); ++n)
+	stream->writeEnterSection("explorer_attack_flags");
+	stream->writeUint16(explorer_attack_flags.size(), "size");
+	for(n = 0; n<explorer_attack_flags.size(); ++n)
 	{
 		stream->writeEnterSection(n);
-		stream->writeUint32(defense_flags[n], "flag");
+		stream->writeUint32(explorer_attack_flags[n], "flag");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -378,8 +389,7 @@ void NewNicowar::tick(Echo& echo)
 	}
 	if(timer%100 == 67)
 	{
-		//control_attacks(echo);
-		choose_enemy_target(echo);
+		control_attacks(echo);
 	}
 	if(timer%100 == 84)
 	{
