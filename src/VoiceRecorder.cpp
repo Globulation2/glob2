@@ -35,6 +35,7 @@
 	// Windows audio input include
 	#undef AUDIO_RECORDER_OSS
 	#define STOP_RECORDING_TIMEOUT 3000
+	#include <windows.h>
 #endif
 
 #ifdef __APPLE__
