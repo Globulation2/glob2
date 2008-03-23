@@ -1,49 +1,51 @@
+[%0 has been deconnected of the game]
+Die Verbindung zu %0 wurde getrennt.
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0's game]
-
+Spiel von %0
 [%0's team unit got converted to your team]
-Sie haben eine Einheit von einem %0-Team übernommen.
+Sie haben eine Einheit von Spieler %0 übernommen.
 [abreaviation explanation A]
 A: Verbündete
 [abreaviation explanation C]
 C: Chatnachrichten senden
 [abreaviation explanation fV]
-fV: Teile die Sicht für Gasthöfe (um Einheiten zu stehlen)
+fV: Teile die Sicht für Gasthöfe (um Einheiten zu bekehren)
 [abreaviation explanation mV]
-mV: Teile die Sicht für Märkte (um Früchte zu handeln)
+mV: Teile die Sicht für Märkte (um Waren zu handeln)
 [abreaviation explanation V]
 V: Teile die Sicht für alle Gebäude
+[Add AI]
+KI hinzufügen
 [add map]
-
+Karte hinzufügen
 [add shortcut]
-
+Shortcut hinzufügen
 [AI]
 KI
 [ai]
 KI
 [AICastor]
-AICastor
+Castor
 [AINicowar]
 Nicowar
 [AINone]
-AINone
+KINone
 [AINumbi]
-AINumbi
+Numbi
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib]
-AIToubib
+Toubib
 [AIWarrush]
-AIWarrush
+Warrush
 [Alga]
 Algen
 [algae]
 Algen
 [alliances]
 Allianzen
-[alt %0]
-
 [and]
 und
 [any explorer]
@@ -59,11 +61,13 @@ sind verletzt
 [armor]
 Rüstung
 [assigned]
-
+zugewiesen
 [At. speed]
 Geschwindigkeit
 [At. strength]
 Stärke
+[attack speed]
+Angriffsgeschw.
 [Attack]
 Angriff
 [audio]
@@ -76,10 +80,10 @@ Lokal verfügbare Spiele
 Warten auf Spieler
 [away:]
 weg:
-[Back]
-
 [backspace]
-
+Backspace
+[bad error in connection system]
+Fataler Fehler im Verbindungssystem
 [barracks explanation 2]
 kraft Ihrer Einheiten
 [barracks explanation]
@@ -140,6 +144,12 @@ Strandbreite
 
 [Build]
 Bauen
+[Building name]
+Gebäudename
+[Building short explanation 2]
+2. Kurzbeschreibung des Gebäudes (max. 24 Zeichen)
+[Building short explanation]
+Kurzbeschreibung des Gebäudes (max. 24 Zeichen)
 [building site]
 Baustelle
 [Buildings]
@@ -148,20 +158,8 @@ Gebäude
 Kugeln
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Feldzug
-[Can't connect, can't find host]
-
-[Can't host game, port %0 in use]
-
-[Can't join game, game doesn't exist]
-
-[Can't join game, game has started]
-
-[Can't join game, game is full]
-
 [Can't join game, missmatching game parameters]
 Verbinden nicht möglich: Spielparameter fehlerhaft
 [Can't join game, timeout]
@@ -182,6 +180,8 @@ Abbrechen
 Transportiert:
 [Change Area Name]
 
+[checksum sent]
+Prüfsumme gesendet ...
 [Cherry]
 Kirschen
 [choose campaign]
@@ -192,6 +192,8 @@ Spiel auswählen
 Karte auswählen
 [clear area]
 Rodungszone
+[clear]
+
 [Clearing:]
 Rodung:
 [clearingflag explanation 2]
@@ -200,26 +202,26 @@ Rodung:
 Rodet Ressourcen
 [clearingflag]
 Rodungsflagge
+[close]
+Schließen
 [closed]
 Geschlossen
 [compile]
 Skript kompilieren
 [compose]
 
-[Computing Fertility]
-
 [connect]
 Verbinden
+[connected to all players]
+Verbunden mit allen Spielern
+[connected to server]
+Mit dem Server verbunden
+[connecting to all players]
+Verbinden mit allen Spielern
 [connecting to]
 Verbinden mit
-[constructed buildings]
-
-[construction and upgrades]
-
 [Continue playing]
 Weiterspielen
-[control %0]
-
 [Corn]
 Weizen
 [crater density]
@@ -242,8 +244,12 @@ Eigener Mauszeiger
 Schaden
 [Damaged Map]
 
+[dblbuff]
+Double-buffering
 [decrease units working]
 
+[default terrain]
+Vorgabeterrain
 [defencetower explanation 2]
 bäude und Einheiten an
 [defencetower explanation]
@@ -270,6 +276,8 @@ Wüste
 Zerstörung einleiten/beenden
 [destroy]
 Zerstören
+[Disconnect]
+Trennen
 [display]
 Anzeige
 [do nothing]
@@ -278,8 +286,10 @@ Anzeige
 Transportiert nichts
 [down]
 
-[downloaded %0]
-
+[download finished]
+Herunterladen abgeschlossen
+[downloaded at]
+Heruntergeladen zu
 [edit map]
 
 [editing map]
@@ -346,6 +356,8 @@ leere Inseln
 
 [Fertility Map]
 
+[food left]
+Nahrung
 [food]
 Nahrung
 [forbidden area]
@@ -366,6 +378,8 @@ Vollbild
 Spiel komplett
 [game shortcuts]
 
+[game speed]
+Spielgeschwindigkeit
 [general settings]
 Allgemein
 [go to event]
@@ -392,6 +406,14 @@ Zufriedenheit
 
 [Harvest]
 Ernten
+[has joined]
+ist verbunden
+[has quit]
+ist gegangen
+[heal]
+Gesundheit
+[help]
+
 [home]
 
 [hospital explanation 2]
@@ -412,6 +434,8 @@ Lebenspunkt
 hungrig
 [hungryness]
 Hunger
+[hwaccel]
+Hardwarebeschleunigung
 [In way]
 Unterwegs
 [increase units working]
@@ -458,6 +482,8 @@ de
 Sprache
 [language]
 Deutsch
+[large]
+groß
 [Leave Game]
 
 [left meta]
@@ -478,6 +504,8 @@ Spiel laden
 
 [load]
 Laden
+[loading glob2]
+Globulation 2 wird geladen
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -494,12 +522,12 @@ Kampfstärke/Boden
 Karte: %0.
 [map name]
 
-[map script]
-
 [map size x]
 Breite der Karte
 [map size y]
 Höhe der Karte
+[mapGenerationDescriptor Methodes]
+Generierungsmethoden für Zufallskarten
 [maps available]
 
 [mark map]
@@ -510,7 +538,9 @@ Früchten
 Erlaubt den Handel mit
 [market]
 Markt
-[meta %0]
+[medium]
+mittel
+[menu]
 
 [Min required level:]
 Mindestlevel:
@@ -518,13 +548,13 @@ Mindestlevel:
 
 [Music volume]
 Volumen (Musik)
-[Mute]
-
 [mute]
 mute
+[network latency]
+Netzlatenz
 [new campaign]
 
-[new map]
+[new]
 Neu
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
@@ -534,10 +564,10 @@ Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatte
 
 [No]
 Nein
+[not connected]
+Nicht verbunden
 [not ready]
 nicht bereit
-[number of players: %0 (%1 AI)]
-
 [number of players: %0]
 %0 Spieler spielen mit.
 [number of teams: %0]
@@ -554,12 +584,10 @@ Ok
 alte Inselzufallskarte
 [old random terrain]
 alte Zufallskarte
-[on press]
-
 [On the spot]
 Vor Ort
-[on unpress]
-
+[one player]
+Ein Spieler spielt mit.
 [open chat box]
 
 [open load menu]
@@ -586,12 +614,18 @@ Pause
 
 [Paused]
 Pause
+[percent]
+  Prozent
 [player name]
 Spielername
+[player]
+Spieler
 [please wait]
 Bitte warten
 [power]
 
+[presence request sent]
+Präsenzanfrage gesendet ...
 [press space]
 Leertaste drücken, um fortzufahren.
 [Prestige]
@@ -612,6 +646,8 @@ digkeit Ihrer Einheiten
 Erhöht die Gehgeschwin-
 [racetrack]
 Rennbahn
+[random terrain]
+Zufallslandschaft
 [range]
 Reichweite
 [ratios]
@@ -632,6 +668,8 @@ Reparatur einleiten/beenden
 Reparieren
 [repeat area]
 mal die selbe Landschaft
+[ressources]
+Ressourcen
 [restore default shortcuts]
 
 [return to editor]
@@ -700,8 +738,6 @@ suchen
 
 [select construct swimmingpool]
 
-[select delete tool]
-
 [select explorationflag]
 
 [select hospital building]
@@ -736,10 +772,10 @@ suchen
 
 [select warflag]
 
+[session request sent]
+Sitzungsanfrage gesendet ...
 [settings]
 Einstellungen
-[shift %0]
-
 [shortcut explanation enter]
 Enter: Chatnachricht senden
 [shortcut explanation v]
@@ -748,20 +784,30 @@ V: gedrückt halten, um zu sprechen
 
 [skin]
 Anzeige
+[small]
+klein
 [smoothing]
 Glättung
 [space]
 
+[speed]
+Geschwindigkeit
 [start mission]
 
 [start new campaign]
 
 [Start]
 Start
+[STARTING GAME ...]
+Spielbeginn...
 [Starving Map]
 
 [starving]
 verhungern
+[stat]
+Statistiken
+[state]
+Zustand
 [Statistics]
 Statistiken
 [Still (i)]
@@ -864,8 +910,6 @@ Spiele
 Das Hospital ist fertig
 [the hospital is under attack]
 Das Hospital wird angegriffen
-[The host has cancelled the game]
-
 [the inn is finished]
 Der Gasthof ist fertig
 [the inn is under attack]
@@ -920,16 +964,10 @@ Mikrofon einschalten
 Höchstmögliches Prestige erreicht
 [Total]
 Gesamt
-[tutorial text 1]
-
-[tutorial text 2]
-
-[tutorial text 3]
-
-[tutorial text 4]
-
 [tutorial]
 Übungsmission
+[unassigned]
+Keine Funktion
 [Uncontrolled]
 Unkontrolliert
 [undo]
@@ -938,10 +976,12 @@ Unkontrolliert
 Einheitliche Landschaft
 [Unit editor]
 Einheiteneditor
-[unit settings explanation]
-
 [unit settings]
 Einheiten
+[Unit type]
+Typ der Einheit
+[units type]
+Einheitentyp
 [units working]
 Einheiten arbeiten
 [Units]
@@ -952,6 +992,8 @@ Einheiten
 
 [up]
 
+[update list]
+Aktualisieren
 [upgrade building]
 Aufwerten einleiten/beenden
 [upgrade]
@@ -962,11 +1004,11 @@ Benutzername
 Version
 [view history]
 
+[wait destroy]
+Warten auf Zerstörung
 [waiting for %0]
 Warten auf %0
 [waiting for key]
-
-[Waiting]
 
 [Walk]
 Gehen
@@ -984,6 +1026,10 @@ Achtung: Sie müssen das Spiel neu starten, damit die Änderungen wirksam werden
 Krieger
 [warriors]
 Krieger
+[was AI]
+vorher KI
+[was]
+vorher
 [water]
 Wasser
 [Wheat]
@@ -1014,16 +1060,22 @@ An der Arbeit
 verletzt
 [Yes]
 Ja
+[YESTS_BAD]
+Interner Konsistenzfehler beim Verbinden.
 [YESTS_CONNECTING]
 Verbindungsaufbau zum YOG-Metaserver...
 [YESTS_CONNECTION_LOST]
 Die Verbindung zu YOG wurde unterbrochen.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+Der YOG Metaserver hat die Verbindung abgewiesen da ein Protokolfehler aufgetreten ist: Sind schon angemeldet. Versuchen sie es in 45 Sekunden erneut.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon registriert wurde. Wenn es ihr Benutzername ist deaktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Passwort falsch ist.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch nicht registriert ist. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+Der YOG Metaserver hat die Verbindung abgewiesen da ein interner Protokolfehler aufgetreten ist: Sie sind während der Anmeldung nicht verbunden. Bitten melden sie diesen Fehler.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation 2 zu alt ist.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1032,16 +1084,30 @@ Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Spitzname schon von jemand anderem benutzt wird.
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
+[YESTS_DECONNECTING]
+Beende Verbindung zum YOG Metaserver...
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
+[YESTS_YOG_KILLED]
+Ein Administrator hat gerade den YOG-Metaserver abgeschaltet.
+[yog-chat]
+#yog-de
 [yog]
 Ysagoon Onlinespiel
+[YOG_HELP]
+Das YOG-Nachrichtensystem kennt zwei Befehle, "msg" und "away". Mehr Informationon bekommen Sie, indem Sie "/help <Befehl>" eingeben.
+[YOG_HELP_AWAY]
+Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, z.B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a".
+[YOG_HELP_MSG]
+"/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine bestimmte Person zu senden. z.B. "/msg Bianca Hallo, wie schlägst du dich ?". Alias "/m".
+[You are no more marked as away]
+Sie sind wieder da.
+[You are now marked as away]
+Sie sind als abwesend markiert.
 [you have lost]
 Sie haben verloren!
 [you have won]
 Sie haben gewonnen!
-[You where kicked from the game]
-
 [Your %0 are under attack]
 Eure %0 werden angegriffen
 [Your unit got converted to %0's team]
