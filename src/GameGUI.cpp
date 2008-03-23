@@ -3477,6 +3477,7 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			if(xinc==42)
 			{
+				globalContainer->gamegui->setBaseColor(game.teams[game.players[p]->teamNumber]->color);
 				globalContainer->gfx->drawSprite(42, globalContainer->gfx->getH()-55, globalContainer->gamegui, 30);
 				xinc += 47;
 			}
