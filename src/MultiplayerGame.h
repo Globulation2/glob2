@@ -25,6 +25,8 @@
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
 #include <list>
+#include "NetGamePlayerManager.h"
+#include "NetReteamingInformation.h"
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
@@ -62,16 +64,19 @@ public:
 	GameJoinCreationState getGameJoinCreationState() const;
 	
 	///Returns the reason the creation of a game was refused
-	YOGGameCreateRefusalReason getGameCreationState();
+	YOGServerGameCreateRefusalReason getGameCreationState();
 
 	///Returns the reason the joining of a game was refused
-	YOGGameJoinRefusalReason getGameJoinState();
+	YOGServerGameJoinRefusalReason getGameJoinState();
 
 	///Sets the map header
 	void setMapHeader(MapHeader& mapHeader);
-	
+
 	///Returns the map header
 	MapHeader& getMapHeader();
+	
+	///Tells whether the game is still connected to the server
+	bool isStillConnected() const;
 
 	///Returns the game header. It can be modified. After modifying it,
 	///one must call updateGameHeader(). At no point should any changes
@@ -81,14 +86,14 @@ public:
 	///Call this to send the the changes of the game header to the server
 	void updateGameHeader();
 	
+	///Call this to send the the player-changes to the server
+	void updatePlayerChanges();
+	
 	///Tells whether the list of players has changed since the last call to this function
 	bool hasPlayersChanged();
 	
 	///Sets the assocciatted net engine to push recieved orders into
 	void setNetEngine(NetEngine* engine);
-	
-	///Sends the given Order across the network
-	void pushOrder(shared_ptr<Order> order, int playerNum);
 	
 	///Causes the game to be started on all clients.
 	void startGame();
@@ -98,7 +103,7 @@ public:
 	
 	///This is intended to add an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
-	
+
 	///This kicks/removes a player from the game
 	void kickPlayer(int playerNum);
 	
@@ -106,7 +111,7 @@ public:
 	void changeTeam(int playerNum, int teamNum);
 	
 	///Sends a message to other players in the game
-	void sendMessage(const std::string& message);
+//	void sendMessage(const std::string& message);
 	
 	///Returns the reason for being kicked
 	YOGKickReason getKickReason() const;
@@ -119,15 +124,20 @@ public:
 	
 	///Returns the player number of the local player
 	int getLocalPlayerNumber();
+
+	///Gets the username of the local player
+	std::string getUsername() const;
+
+	///Gets the chat channel for this game
+	Uint32 getChatChannel() const;
 	
+	///Returns the percentage finished for the downloaded
+	Uint8 percentageDownloadFinished();
 protected:
 	friend class YOGClient;
+
 	///This receives a message that is sent to the game
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
-	///Adds a person to the gameHeader
-	void addPerson(Uint16 playerID);
-	///Removes a person from the gameHeader
-	void removePerson(Uint16 playerID);
 	
 	///This will start the game
 	void startEngine();
@@ -138,12 +148,15 @@ protected:
 	///Sends the event to all listeners
 	void sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event);
 	
+	///Puts together reteaming information from the game header in the file
+	NetReteamingInformation constructReteamingInformation(const std::string& file);
+	
 	int getLocalPlayer();
 private:
 	boost::shared_ptr<YOGClient> client;
 	GameJoinCreationState gjcState;
-	YOGGameCreateRefusalReason creationState;
-	YOGGameJoinRefusalReason joinState;
+	YOGServerGameCreateRefusalReason creationState;
+	YOGServerGameJoinRefusalReason joinState;
 	YOGKickReason kickReason;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
@@ -151,10 +164,14 @@ private:
 	boost::shared_ptr<MapAssembler> assembler;
 	bool haveMapHeader;
 	bool haveGameHeader;
-	bool readyToStart[32];
 	bool wasReadyToStart;
 	bool sentReadyToStart;
 	std::list<MultiplayerGameEventListener*> listeners;
+	Uint32 chatChannel;
+	bool isEveryoneReadyToGo;
+	Uint8 previousPercentage;
+
+	NetGamePlayerManager playerManager;
 };
 
 

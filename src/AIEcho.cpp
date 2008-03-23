@@ -30,6 +30,7 @@
 #include "Order.h"
 #include <iterator>
 #include "Utilities.h"
+#include "boost/tuple/tuple_io.hpp"
 #include "Brush.h"
 
 using namespace AIEcho;
@@ -1886,14 +1887,22 @@ void BuildingRegister::tick()
 
 bool BuildingRegister::is_building_pending(unsigned int id)
 {
-	return pending_buildings.find(id)!=pending_buildings.end();
+	if(pending_buildings.find(id)!=pending_buildings.end())
+	{
+		return true;
+	}
+	return false;
 }
 
 
 
 bool BuildingRegister::is_building_found(unsigned int id)
 {
-	return found_buildings.find(id)!=found_buildings.end();
+	if(found_buildings.find(id)!=found_buildings.end())
+	{
+		return true;
+	}
+	return false;
 }
 
 
@@ -1901,6 +1910,11 @@ bool BuildingRegister::is_building_found(unsigned int id)
 
 bool BuildingRegister::is_building_upgrading(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return false;
+	}
+	
 	tribool v=found_buildings[id].get<4>();
 	if(v)
 		return true;
@@ -1913,6 +1927,10 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 
 Building* BuildingRegister::get_building(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return NULL;
+	}
 	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())];
 }
 
@@ -1920,6 +1938,10 @@ Building* BuildingRegister::get_building(unsigned int id)
 
 BuildingType* BuildingRegister::get_building_type(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return NULL;
+	}
 	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())]->type;
 }
 
@@ -1927,6 +1949,10 @@ BuildingType* BuildingRegister::get_building_type(unsigned int id)
 
 int BuildingRegister::get_type(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return found_buildings[id].get<2>();
 }
 
@@ -1934,6 +1960,10 @@ int BuildingRegister::get_type(unsigned int id)
 
 int BuildingRegister::get_level(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return get_building(id)->type->level+1;
 }
 
@@ -1941,6 +1971,10 @@ int BuildingRegister::get_level(unsigned int id)
 
 int BuildingRegister::get_assigned(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return get_building(id)->maxUnitWorking;
 }
 
@@ -3429,11 +3463,17 @@ void ChangeFlagSize::modify(Echo& echo)
 boost::logic::tribool ChangeFlagSize::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
+	{
 		return true;
+	}
 	else if(echo.get_building_register().is_building_pending(building_id))
+	{
 		return false;
+	}
 	else
+	{
 		return indeterminate;
+	}
 }
 
 
@@ -3529,20 +3569,20 @@ void AddArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(echo.player->map, BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0));
+		acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
 	}
 	if(acc.getApplicationCount()>0)
 	{
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 		}
 	}
@@ -3617,20 +3657,20 @@ void RemoveArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(echo.player->map, BrushApplication(i->x, i->y, 0));
+		acc.applyBrush(BrushApplication(i->x, i->y, 0), echo.player->map);
 	}
 	if(acc.getApplicationCount()>0)
 	{
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 		}
 	}
@@ -4003,9 +4043,7 @@ void building_search_iterator::set_to_next()
 	}
 	else
 		position++;
-	for(; position!=search->echo.get_building_register().end() &&
-	      !search->passes_conditions(position->first);
-             position++)
+	for(; position!=search->echo.get_building_register().end() && !search->passes_conditions(position->first); position++)
 	{
 	}
 	if(position==search->echo.get_building_register().end())
@@ -4151,7 +4189,7 @@ int SearchTools::is_flag(Echo& echo, int x, int y)
 		{
 			if(b->posX==x && b->posY==y)
 			{
-				if(b->type->shortTypeNum > IntBuildingType::DEFENSE_BUILDING && b->type->shortTypeNum < IntBuildingType::STONE_WALL)
+				if(b->type->shortTypeNum > (int)(IntBuildingType::DEFENSE_BUILDING) && b->type->shortTypeNum < (int)(IntBuildingType::STONE_WALL))
 				{
 					return b->gid;
 				}
@@ -4448,7 +4486,7 @@ void Echo::update_ressource_trackers()
 			ressource_trackers.erase(current);
 			continue;
 		}
-		else
+		else if(br.is_building_found(i->first))
 		{
 			if(i->second.get<1>())
 				i->second.get<0>()->tick();
@@ -4562,7 +4600,7 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 		stream->readEnterSection(ordersIndex);
 		size_t size=stream->readUint32("size");
 		Uint8* buffer = new Uint8[size+1];
-		stream->read(buffer, size, "data");
+		stream->read(buffer, size+1, "data");
 		orders.push_back(Order::getOrder(buffer, size+1));
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
@@ -4670,7 +4708,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("EchoAI");
 
 	signature_write(stream);
-
+		
 	stream->writeEnterSection("orders");
 	stream->writeUint32((Uint32)orders.size(), "size");
 	Uint32 ordersIndex = 0;
@@ -4839,7 +4877,6 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 		orders.erase(orders.begin());
 		return order;
 	}
-
 	if(update_gm)
 		gm->update();
 	br.tick();

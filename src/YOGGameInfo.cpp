@@ -17,19 +17,22 @@
 */
 
 #include "YOGGameInfo.h"
-#include "SDL_net.h"
 #include <iostream>
+#include "Stream.h"
 
 YOGGameInfo::YOGGameInfo()
 {
 	gameID=0;
 	gameState = GameOpen;
+	playersJoined = 0;
+	aiJoined = 0;
+	numberOfTeams = 0;
 }
 
 
 
 YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID)
-	: gameID(gameID), gameName(gameName), gameState(GameOpen)
+	: gameID(gameID), gameName(gameName), gameState(GameOpen), aiJoined(0)
 {
 }
 
@@ -77,12 +80,72 @@ void YOGGameInfo::setGameState(const YOGGameInfo::GameState& state)
 
 
 
+void YOGGameInfo::setPlayersJoined(Uint8 nplayersJoined)
+{
+	playersJoined = nplayersJoined;
+}
+
+
+
+Uint8 YOGGameInfo::getPlayersJoined() const
+{
+	return playersJoined;
+}
+
+
+
+void YOGGameInfo::setAIJoined(Uint8 naiJoined)
+{
+	aiJoined = naiJoined;
+}
+	
+
+
+Uint8 YOGGameInfo::getAIJoined() const
+{
+	return aiJoined;
+}
+
+
+
+void YOGGameInfo::setMapName(const std::string& nmapName)
+{
+	mapName = nmapName;
+}
+
+
+
+std::string YOGGameInfo::getMapName() const
+{
+	return mapName;
+}
+
+
+
+void YOGGameInfo::setNumberOfTeams(Uint8 nnumberOfTeams)
+{
+	numberOfTeams = nnumberOfTeams;
+}
+
+
+
+Uint8 YOGGameInfo::getNumberOfTeams() const
+{
+	return numberOfTeams;
+}
+
+
+
 void YOGGameInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGGameInfo");
 	stream->writeUint16(gameID, "gameID");
 	stream->writeText(gameName, "gameName");
 	stream->writeUint8(static_cast<Uint8>(gameState), "gameState");
+	stream->writeUint8(playersJoined, "playersJoined");
+	stream->writeUint8(aiJoined, "aiJoined");
+	stream->writeText(mapName, "mapName");
+	stream->writeUint8(numberOfTeams, "numberOfTeams");
 	stream->writeLeaveSection();
 }
 
@@ -94,6 +157,10 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	gameID=stream->readUint16("gameID");
 	gameName=stream->readText("gameName");
 	gameState=static_cast<GameState>(stream->readUint8("gameState"));
+	playersJoined=stream->readUint8("playersJoined");
+	aiJoined=stream->readUint8("aiJoined");
+	mapName=stream->readText("mapName");
+	numberOfTeams=stream->readUint8("numberOfTeams");
 	stream->readLeaveSection();
 }
 
@@ -101,7 +168,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	
 bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 {
-	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState)
+	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState && playersJoined == rhs.playersJoined && aiJoined == rhs.aiJoined && mapName == rhs.mapName)
 	{
 		return true;
 	}
@@ -116,7 +183,7 @@ bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 	
 bool YOGGameInfo::operator!=(const YOGGameInfo& rhs) const
 {
-	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState)
+	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState || playersJoined != rhs.playersJoined || aiJoined != rhs.aiJoined || mapName != rhs.mapName)
 	{
 		return true;
 	}

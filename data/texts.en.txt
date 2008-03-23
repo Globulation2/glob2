@@ -1,5 +1,3 @@
-[%0 has been deconnected of the game]
-%0 has been disconnected.
 [%0 has left the game]
 %0 has quit the game.
 [%0's game]
@@ -16,8 +14,6 @@ fV: Show vision for Inn buildings (to steal units)
 mV: Show vision for Markets buildings (to exchange fruits)
 [abreaviation explanation V]
 V: Show vision for all buildings
-[Add AI]
-Add AI
 [add map]
 Add map
 [add shortcut]
@@ -46,6 +42,8 @@ Algae
 algae
 [alliances]
 Alliances
+[alt %0]
+alt-%0
 [and]
 and
 [any explorer]
@@ -66,8 +64,6 @@ Assigned
 Att. speed
 [At. strength]
 Att. str.
-[attack speed]
-Attack speed
 [Attack]
 Attack
 [audio]
@@ -80,10 +76,10 @@ Available local games
 Awaiting players
 [away:]
 away:
+[Back]
+Back
 [backspace]
 backspace
-[bad error in connection system]
-Bad error in connection system
 [barracks explanation 2]
 level of your warriors
 [barracks explanation]
@@ -144,12 +140,6 @@ Construct Swimmingpool 2
 Construct Swimmingpool 3
 [Build]
 Build
-[Building name]
-Building name
-[Building short explanation 2]
-Building short explanation 2 (24 chars max)
-[Building short explanation]
-Building short explanation (24 chars max)
 [building site]
 construction site
 [Buildings]
@@ -158,14 +148,20 @@ Buildings
 Bullets
 [campaign editor]
 Campaign Editor
+[campaign text]
+Campaign Text
 [campaign]
 Campaign
-[Can't join game, missmatching game parameters]
-Can't join game, missmatching game parameters
-[Can't join game, timeout]
-Can't join game, timeout
-[Can't join game, wrong game version]
-Can't join game, wrong game version
+[Can't connect, can't find host]
+Can't connect, can't find host
+[Can't host game, port %0 in use]
+Can't host game, port %0 in use
+[Can't join game, game doesn't exist]
+Can't join game, game doesn't exist
+[Can't join game, game has started]
+Can't join game, game has started
+[Can't join game, game is full]
+Can't join game, game is full
 [cancel destroy]
 Cancel destroy
 [cancel repair]
@@ -180,8 +176,6 @@ caps lock
 Carrying:
 [Change Area Name]
 Change Area Name
-[checksum sent]
-Checksum sent ...
 [Cherry]
 Cherry
 [choose campaign]
@@ -192,8 +186,6 @@ Choose a game
 Choose a map
 [clear area]
 Clearing area
-[clear]
-clear
 [Clearing:]
 Clearing:
 [clearingflag explanation 2]
@@ -202,26 +194,26 @@ Clearing:
 Clears resources
 [clearingflag]
 Clearing Flag
-[close]
-Close
 [closed]
 Closed
 [compile]
 Compile script
 [compose]
 
+[Computing Fertility]
+Computing Fertility
 [connect]
 Connect
-[connected to all players]
-Connected to all players
-[connected to server]
-Connected to server
-[connecting to all players]
-Connecting to all players
 [connecting to]
 Connecting to
+[constructed buildings]
+Constructed Buildings
+[construction and upgrades]
+Construction and Upgrades
 [Continue playing]
 Continue playing
+[control %0]
+control-%0
 [Corn]
 Wheat
 [crater density]
@@ -244,12 +236,8 @@ Custom cursor
 Damage
 [Damaged Map]
 Damaged Map
-[dblbuff]
-Double buffering
 [decrease units working]
 Decrease Units Working
-[default terrain]
-Default terrain
 [defencetower explanation 2]
 units or buildings
 [defencetower explanation]
@@ -278,8 +266,6 @@ desert
 Destroy Selected Building
 [destroy]
 Destroy
-[Disconnect]
-Disconnect
 [display]
 Display
 [do nothing]
@@ -288,10 +274,8 @@ Do Nothings
 Not carrying anything
 [down]
 down
-[download finished]
-Download finished
-[downloaded at]
-Downloaded at 
+[downloaded %0]
+downloaded %0
 [edit map]
 Edit Map
 [editing map]
@@ -358,8 +342,6 @@ f8
 f9
 [Fertility Map]
 Fertility Map
-[food left]
-Food left
 [food]
 Food
 [forbidden area]
@@ -380,8 +362,6 @@ Fullscreen
 Game full
 [game shortcuts]
 Game Shortcuts
-[game speed]
-Game speed
 [general settings]
 General Settings
 [go to event]
@@ -408,14 +388,6 @@ Happiness
 Hard Pause
 [Harvest]
 Harvest
-[has joined]
-has joined
-[has quit]
-has quit
-[heal]
-Health
-[help]
-help
 [home]
 home
 [hospital explanation 2]
@@ -436,8 +408,6 @@ human
 hungry
 [hungryness]
 Hungryness
-[hwaccel]
-Hardware acceleration
 [In way]
 On the way
 [increase units working]
@@ -484,8 +454,6 @@ en
 Language
 [language]
 English
-[large]
-large
 [Leave Game]
 Leave Game
 [left meta]
@@ -506,8 +474,6 @@ Load game
 Load Map
 [load]
 Load
-[loading glob2]
-Loading Globulation 2
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -524,12 +490,12 @@ Ground dmg.
 Map name: %0.
 [map name]
 Name
+[map script]
+Map Script
 [map size x]
 Map width
 [map size y]
 Map height
-[mapGenerationDescriptor Methodes]
-Methodes of random generated maps
 [maps available]
 Maps Available
 [mark map]
@@ -540,24 +506,22 @@ fruits with others
 Allows the exchange of
 [market]
 Market
-[medium]
-medium
-[menu]
-menu
+[meta %0]
+meta-%0
 [Min required level:]
 Minimum required level:
 [Minimum Level To Flag]
 Minimum Flag Level
 [Music volume]
 Volume (music)
+[Mute]
+Mute
 [mute]
 mute
-[network latency]
-Network latency
 [new campaign]
 New Campaign
-[new]
-New
+[new map]
+New Map
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [no key]
@@ -566,14 +530,12 @@ no key yet
 No Growth Areas
 [No]
 No
-[not connected]
-Not connected
 [not ready]
 not ready
-[number of players: %0]
-%0 players are present.
+[number of players: %0 (%1 AI)]
+%0 players (%1 AI)
 [number of teams: %0]
-%0 teams.
+%0 teams
 [number of teams]
 number of teams
 [numlock]
@@ -586,10 +548,12 @@ Ok
 old random islands
 [old random terrain]
 old random terrain
+[on press]
+On Press
 [On the spot]
 Here
-[one player]
-A player has joined.
+[on unpress]
+On Unpress
 [open chat box]
 Open Chat Box
 [open load menu]
@@ -616,18 +580,12 @@ Pause Game
 pause
 [Paused]
 Paused
-[percent]
-  percent
 [player name]
 Player name
-[player]
-Player
 [please wait]
 Please wait
 [power]
 power
-[presence request sent]
-Presence request sent ...
 [press space]
 Press space to continue.
 [Prestige]
@@ -648,8 +606,6 @@ speed of your units
 Improves the walking
 [racetrack]
 Racetrack
-[random terrain]
-Random terrain
 [range]
 Range
 [ratios]
@@ -670,8 +626,6 @@ Start/Stop Repair
 Repair
 [repeat area]
 times the same landscape
-[ressources]
-Resources
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
@@ -713,13 +667,13 @@ scroll lock
 [scroll wheel enabled]
 Scroll Wheel Enabled
 [seeking a job]
-looking for a job
+seeking a job
 [seeking]
 seeking
 [select barracks building]
 Select Barracks
 [select clearingflag]
-Select clearingflag
+Select Clearing Flag
 [select construct barracks]
 Select Construct Barracks
 [select construct defencetower]
@@ -740,8 +694,10 @@ Select Construct Stone Wall
 Select Construct Swarm
 [select construct swimmingpool]
 Select Construct Swimmingpool
+[select delete tool]
+Select Delete Tool
 [select explorationflag]
-Select explorationflag
+Select Exploration Flag
 [select hospital building]
 Select Hospital
 [select inn building]
@@ -763,21 +719,21 @@ Select Place War Flag
 [select racetrack building]
 Select Racetrack
 [select school building]
-Select Schoo
+Select School
 [select swarm building]
 Select Swarm
 [select swimmingpool building]
 Select Swimmingpool
 [select tower building]
-Select Tower
+Select Defence Tower
 [select wall building]
 Select Wall
 [select warflag]
-Select warflag
-[session request sent]
-Session request sent ...
+Select War Flag
 [settings]
 Settings
+[shift %0]
+shift-%0
 [shortcut explanation enter]
 Enter: send a chat message
 [shortcut explanation v]
@@ -786,30 +742,20 @@ V: hold to speak
 Show Main Menu
 [skin]
 Display
-[small]
-small
 [smoothing]
 Smoothing
 [space]
 space
-[speed]
-Speed
 [start mission]
 Start Mission
 [start new campaign]
 Start New Campaign
 [Start]
 Start
-[STARTING GAME ...]
-Starting game... 
 [Starving Map]
 Starving Map
 [starving]
 starving
-[stat]
-Statistics
-[state]
-state
 [Statistics]
 Statistics
 [Still (i)]
@@ -912,6 +858,8 @@ Games
 The hospital is finished
 [the hospital is under attack]
 The hospital is under attack
+[The host has cancelled the game]
+The host has cancelled the game
 [the inn is finished]
 The Inn is finished
 [the inn is under attack]
@@ -968,10 +916,16 @@ Toggle Recording Voice
 Total prestige reached
 [Total]
 Total
+[tutorial text 1]
+Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of usefull knowledge here!
+[tutorial text 2]
+Now that you have mastered the basics, its time to get used to other buildings such as Racetracks, Pools, and Schools.
+[tutorial text 3]
+You have done well to get this far. Now lets move onto Warriors, Training Camps, and Upgrades.
+[tutorial text 4]
+You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forwarded into Custom Games and eventually play online against some of Globulation 2's finest players.
 [tutorial]
 Tutorial
-[unassigned]
-Unassigned
 [Uncontrolled]
 Uncontrolled
 [undo]
@@ -980,12 +934,10 @@ undo
 Uniform terrain
 [Unit editor]
 Unit editor
+[unit settings explanation]
+The default number of units assigned
 [unit settings]
 Unit Settings
-[Unit type]
-Unit type
-[units type]
-unit type
 [units working]
  units working
 [Units]
@@ -996,8 +948,6 @@ Unlocked By
 {Unnamed Area}
 [up]
 up
-[update list]
-Update list
 [upgrade building]
 Start/Stop Upgrade
 [upgrade]
@@ -1008,12 +958,12 @@ Username
 Version
 [view history]
 View History
-[wait destroy]
-Awaiting destruction
 [waiting for %0]
 Waiting for %0
 [waiting for key]
 waiting for key...
+[Waiting]
+Waiting
 [Walk]
 Walk
 [warflag explanation 2]
@@ -1030,10 +980,6 @@ Warrior Ratio
 Warrior
 [warriors]
 warriors
-[was AI]
-was AI
-[was]
-was
 [water]
 Water
 [Wheat]
@@ -1062,54 +1008,34 @@ Working
 wounded
 [Yes]
 Yes
-[YESTS_BAD]
-Internal consistency error while connecting.
 [YESTS_CONNECTING]
 Establishing the connection to the YOG metaserver...
 [YESTS_CONNECTION_LOST]
 The connection to YOG has been lost.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-The YOG metaserver has refused connection because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 The YOG metaserver has refused connection because the supplied password was incorrect.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-The YOG metaserver has refused the connection because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-The YOG metaserver has refused connection because your globulation2 client is obsolete.
+The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
-[YESTS_DECONNECTING]
-Disconnecting from the YOG metaserver...
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
-[YESTS_YOG_KILLED]
-An administrator has just stopped the YOG metaserver.
-[yog-chat]
-#yog-en
 [yog]
 Ysagoon Online Gaming
-[YOG_HELP]
-The YOG messaging system has two commands, "msg" and "away". Type "/help <command>" to learn more about one of them.
-[YOG_HELP_AWAY]
-The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explanation message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
-[YOG_HELP_MSG]
-The "/msg <name> <message>" command sends a private message.  For instance, "/msg John Hi John, how are you?".  Alias "/m".
-[You are no more marked as away]
-You are no longer marked as away.
-[You are now marked as away]
-You are marked as away.
 [you have lost]
 You have lost!
 [you have won]
 You have won!
+[You where kicked from the game]
+You where kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
 [Your unit got converted to %0's team]

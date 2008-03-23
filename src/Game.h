@@ -181,12 +181,18 @@ private:
 	inline void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	inline void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	inline void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
 	static float interpolateValues(float a, float b, float x);
+	inline bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 	
 	//! ally or disally AI following human alliances
-	void setAIAlliance(void);
+	void setAIAlliance(void);	
+	
+	//! Sets the AI for free for all
+	void setAIFFA(void);
 	
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.
@@ -217,6 +223,7 @@ public:
 	int prestigeToReach;
 	bool totalPrestigeReached;
 	bool isGameEnded;
+	
 	
 	Team *getTeamWithMostPrestige(void);
 	

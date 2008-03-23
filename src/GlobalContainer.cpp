@@ -78,6 +78,10 @@ GlobalContainer::GlobalContainer(void)
 	hostServerUserName[0] = 0;
 	hostServerPassWord[0] = 0;
 	
+	runTestGames=false;
+	automaticEndingGame=false;
+	automaticEndingSteps=-1;
+	
 	gfx = NULL;
 	mix = NULL;
 	terrain = NULL;
@@ -148,7 +152,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			{
 				runNoXGameName = argv[i + 1];
 				runNoX = true;
-				good &= (sscanf(argv[i + 2], "%d", &runNoXCountSteps) == 1);
+				automaticEndingGame = true;
+				good &= (sscanf(argv[i + 2], "%d", &automaticEndingSteps) == 1);
 				good &= (sscanf(argv[i + 3], "%d", &runNoXCountRuns) == 1);
 				i += 3;
 			}
@@ -168,6 +173,19 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			runNoX=true;
 			hostServer=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-test-games")==0)
+		{
+			runTestGames=true;
+			automaticEndingGame = true;
+			continue;
+		}
+		if (strcmp(argv[i], "-test-games-nox")==0)
+		{
+			runTestGames=true;
+			automaticEndingGame = true;
+			runNoX=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
@@ -319,6 +337,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-daemon\t runs the YOG server\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
+			printf("-test-games\tCreates random games with AI and tests them");
+			printf("-test-games-nox\tCreates random games with AI and tests them, without gui");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);
@@ -449,10 +469,9 @@ void GlobalContainer::load(void)
 	if (!runNoX)
 	{
 		// create graphic context
-		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags);
+		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
 		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
-		gfx->setCaption("Globulation 2", "glob 2");
 	}
 	
 	if (!runNoX)

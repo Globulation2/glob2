@@ -86,9 +86,9 @@ InGameScrollableHistory* GameGUIMessageManager::createScrollableHistoryScreen()
 
 
 InGameScrollableHistory::InGameScrollableHistory(GraphicContext *context, const std::list<InGameMessage>& messageHistory)
-: OverlayScreen(context, (globalContainer->gfx->getW()-152), 100), history(messageHistory)
+: OverlayScreen(context, (globalContainer->gfx->getW()-172), 100), history(messageHistory)
 {
-	messageList=new List(0, 0, (globalContainer->gfx->getW()-152), 100, 0, 0, "standard");
+	messageList=new List(0, 0, (globalContainer->gfx->getW()-172), 100, 0, 0, "standard");
 	addWidget(messageList);
 	updateList();
 	dispatchInit();

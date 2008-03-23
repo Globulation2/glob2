@@ -1,4 +1,5 @@
-changes={"[%0 incomplete]" : "[language incomplete]"}
+changes={}
+
 
 def translation_check(filename, keys):
     print "Examining %s" % (filename)
@@ -43,6 +44,7 @@ def translation_check(filename, keys):
         
         
 
+import sys
 
 def main():
     translations=open("texts.list.txt")
@@ -59,9 +61,10 @@ def main():
         keyf.write(key[1] + "\n")
     keyf.close()
     for t in translations:
-        nt = t.replace("data/", "").replace("\n", "")
-        if nt != "texts.keys.txt":
-            translation_check(nt, keys) 
+    	nt = t.replace("data/", "").replace("\n", "")
+        if len(sys.argv)==1 or sys.argv[1]==nt:
+            if nt != "texts.keys.txt":
+                translation_check(nt, keys) 
     #translation_check("texts.en.txt", keys)
 
 main()

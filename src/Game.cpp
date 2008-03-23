@@ -52,6 +52,7 @@
 #include "DynamicClouds.h"
 
 #include "TextStream.h"
+#include "FertilityCalculatorDialog.h"
 
 #define BULLET_IMGID 0
 
@@ -106,8 +107,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	}
 	clearGame();
 	
-	setSyncRandSeed();
-	fprintf(logFile, "setSyncRandSeed(%d, %d, %d)\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	
 	mouseX=0;
 	mouseY=0;
@@ -117,6 +116,9 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	
 	for (int i=0; i<32; i++)
 		ticksGameSum[i]=0;
+
+	anyPlayerWaitedTimeFor = 0;
+	maskAwayPlayer = 0;
 }
 
 
@@ -181,13 +183,13 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
-		if(players[i])
-			delete players[i];
 		players[i]=new Player();
 		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;
 		teams[players[i]->teamNumber]->playersMask|=(1<<i);
 	}
+
+	setSyncRandSeed(newGameHeader.getRandomSeed());
 
 	anyPlayerWaited=false;
 }
@@ -500,6 +502,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				assert(false);
 			map.updateForbiddenGradient(oaa->teamNumber);
 			map.updateGuardAreasGradient(oaa->teamNumber);
+			map.updateClearAreasGradient(oaa->teamNumber);
 		}
 		break;
 		case ORDER_ALTERATE_GUARD_AREA:
@@ -593,6 +596,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			}
 			else
 				assert(false);
+			map.updateClearAreasGradient(oaa->teamNumber);
 		}
 		break;
 		case ORDER_MODIFY_SWARM:
@@ -701,6 +705,23 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		case ORDER_PLAYER_QUIT_GAME:
 		{
 			boost::shared_ptr<PlayerQuitsGameOrder> pqgo=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
+
+			bool found = false;
+			for(int i=0; i<32; ++i)
+			{
+				if(i!=pqgo->player && players[i])
+				{
+					if(players[i]->teamNumber == players[pqgo->player]->teamNumber)
+					{
+						found = true;
+					}
+				}
+			}
+			if(! found)
+			{
+				teams[players[pqgo->player]->teamNumber]->isAlive = false;
+			}
+
 			players[pqgo->player]->makeItAI(AI::NONE);
 			gameHeader.getBasePlayer(pqgo->player).makeItAI(AI::NONE);
 			fprintf(logFile, "ORDER_PLAYER_QUIT_GAME");
@@ -751,6 +772,7 @@ void Game::setAIAlliance(void)
 			printf("AI mask : %x\n", aiMask);
 				
 		// ally them together
+		
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			if (teams[i]->type == BaseTeam::T_AI)
 			{
@@ -774,6 +796,23 @@ void Game::setAIAlliance(void)
 		}
 	}
 }
+
+
+
+void Game::setAIFFA(void)
+{
+	// free for all on AI side
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+	{
+		if (teams[i]->type == BaseTeam::T_AI)
+		{
+			teams[i]->allies = teams[i]->me;
+			teams[i]->enemies = ~teams[i]->allies;
+		}
+	}
+}
+
+
 
 bool Game::load(GAGCore::InputStream *stream)
 {
@@ -822,18 +861,33 @@ bool Game::load(GAGCore::InputStream *stream)
 		return false;
 	}
 
-	///Load the step counter and random seeds	
+	///Load the step counter
 	stepCounter = stream->readUint32("stepCounter");
-	setSyncRandSeedA(stream->readUint32("SyncRandSeedA"));
-	setSyncRandSeedB(stream->readUint32("SyncRandSeedB"));
-	setSyncRandSeedC(stream->readUint32("SyncRandSeedC"));
-
-	stream->read(signature, 4, "signatureAfterSyncRand");
-	if (memcmp(signature,"GaSy", 4)!=0)
+	
+	if(versionMinor < 64)
 	{
-		fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
-		stream->readLeaveSection();
-		return false;
+		///Load random seeds, these are no longer used
+		stream->readUint32("SyncRandSeedA");
+		stream->readUint32("SyncRandSeedB");
+		stream->readUint32("SyncRandSeedC");
+
+		stream->read(signature, 4, "signatureAfterSyncRand");
+		if (memcmp(signature,"GaSy", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
+			stream->readLeaveSection();
+			return false;
+		}
+	}
+	else
+	{
+		stream->read(signature, 4, "signatureBeforeTeams");
+		if (memcmp(signature,"GaBt", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch before Game::load teams \n");
+			stream->readLeaveSection();
+			return false;
+		}
 	}
 
 	///Load teams
@@ -912,6 +966,25 @@ bool Game::load(GAGCore::InputStream *stream)
 	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
 
 	stream->readLeaveSection();
+	
+	///versions less than 63 did not have fertility computed with the map, but computed it live.
+	///compute it now
+	if(mapHeader.getVersionMinor() < 63)
+	{
+	    if(globalContainer->runNoX)
+	    {
+    	    std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
+    	    boost::recursive_mutex incomingMutex;
+    	    FertilityCalculatorThread calculator(map, incoming, incomingMutex);
+    	    calculator();
+	    }
+	    else
+	    {
+    		FertilityCalculatorDialog dialog(globalContainer->gfx, map);
+	    	dialog.execute();
+	    }
+	}
+	
 	return true;
 }
 
@@ -924,6 +997,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	///will need to be overwritten with the mapOffset known
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
+	mapHeader.setIsSavedGame(!fileIsAMap);
 	
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
@@ -943,10 +1017,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	///Save basic informations
 	stream->write("GaBe", 4, "signatureStart");
 	stream->writeUint32(stepCounter, "stepCounter");
-	stream->writeUint32(getSyncRandSeedA(), "SyncRandSeedA");
-	stream->writeUint32(getSyncRandSeedB(), "SyncRandSeedB");
-	stream->writeUint32(getSyncRandSeedC(), "SyncRandSeedC");
-	stream->write("GaSy", 4, "signatureAfterSyncRand");
+	stream->write("GaBt", 4, "signatureBeforeTeams");
 
 	///Save teams
 	stream->writeEnterSection("teams");
@@ -1071,8 +1142,15 @@ void Game::wonSyncStep(void)
 			bool isOtherAlive=false;
 			for (int j=0; j<mapHeader.getNumberOfTeams(); j++)
 			{
-				if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
-					isOtherAlive=true;
+				if(j!=i)
+				{
+					Uint32 playerToMeAllyMask = teams[i]->me & teams[j]->allies;
+					Uint32 meToPlayerAllyMask = teams[j]->me & teams[i]->allies;
+					if((playerToMeAllyMask==0 || meToPlayerAllyMask==0) && teams[j]->isAlive)
+					{
+						isOtherAlive=true;
+					}
+				}
 			}
 			teams[i]->hasWon |= !isOtherAlive;
 			isGameEnded |= teams[i]->hasWon;
@@ -1153,6 +1231,7 @@ void Game::syncStep(Sint32 localTeam)
 		Sint32 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&31]+=endTick-startTick;
 		stepCounter++;
+		anyPlayerWaitedTimeFor+=1;
 	}
 }
 
@@ -1255,6 +1334,9 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	assert(team<mapHeader.getNumberOfTeams());
 
 	UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
+
+	x = (x + map.getW()) % map.getW();
+	y = (y + map.getH()) % map.getH();
 
 	bool fly=ut->performance[FLY];
 	bool free;
@@ -1662,23 +1744,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		if ((unit->performance[HARVEST]) && (unit->caryedRessource>=0))
 			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->caryedRessource);
 	}
-	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
-		if (unit->validTarget)
-		/*TODO: remove this comment when we see the new code works
-			if (unit->displacement==Unit::DIS_GOING_TO_FLAG
-			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
-			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING
-			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND && unit->movement==Unit::MOV_GOING_DXDY))*/
-		{
-			int lsx, lsy, ldx, ldy;
-			lsx=px+16;
-			lsy=py+16;
-			map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, screenW, screenH);
-			if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-				globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
-			else
-				globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250, 128);
-		}
+
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{
 		std::ostringstream oss;
@@ -1790,7 +1856,9 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 
 inline void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	mouseUnit=NULL;//??
+	//Reset the mouse unit to NULL, as this time arround there may not be a unit
+	//under the mouse pointer
+	mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -1808,7 +1876,7 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 			{
 				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->wheatCareMap[0][(x+viewportX)+(y+viewportY)*map.w]);
 				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->notGrassMap[(x+viewportX)+(y+viewportY)*map.w]);
-//				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getExplored(x+viewportX, y+viewportY, 0));
+//				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.guardAreasGradient[0][1][(x+viewportX)+(y+viewportY)*map.w]);
 //				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((Nicowar::AINicowar*)players[3]->ai->aiImplementation)->getGradientManager().getGradient(Nicowar::Gradient::VillageCenter, Nicowar::Gradient::Resource).getHeight(x+viewportX, y+viewportY));
 				//((AICastor *)players[0].ai->aiImplementation)->wheatCareMap
 			}
@@ -1828,10 +1896,11 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 	if (false)
 	{
 		assert(teams[0]);
-		Building *b=teams[0]->myBuildings[5];
+		Building *b=teams[0]->myBuildings[0];
 		if (b)
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
+				{
 					if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
 					{
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
@@ -1846,6 +1915,7 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
 					}
+				}
 	}
 	
 	// We draw debug area:
@@ -2371,8 +2441,8 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		{
 			for (int x=0; x<width; x++)
 			{
-				int rx=(x+viewportX-1)%map.getW();
-				int ry=(y+viewportY-1)%map.getH();
+				int rx=(x+viewportX-1+map.getW())%map.getW();
+				int ry=(y+viewportY-1+map.getH())%map.getH();
 				if(!edit && !map.isMapDiscovered(rx, ry, teams[localTeam]->me))
 					continue;
 				if(overlays->getValue(rx, ry))
@@ -2388,9 +2458,57 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
 		else
-			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, 0, 0, 32, 32, overlayColor);
+			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -32, -32, 32, 32, overlayColor);
 	}
 }
+
+
+
+inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
+	for(int i=0; i<1024; ++i)
+	{
+		Unit *unit=teams[localTeam]->myUnits[i];
+		if (unit)
+		{
+			drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit);
+		}
+	}
+}
+
+
+
+inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit)
+{
+	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
+	{
+		if (unit->validTarget)
+		{
+			if(isOnScreen(left,top,right,bot,viewportX,viewportY,unit->posX,unit->posY) || isOnScreen(left,top,right,bot,viewportX,viewportY,unit->targetX,unit->targetY))
+			{
+				int px, py;
+				map.mapCaseToDisplayableVector(unit->posX, unit->posY, &px, &py, viewportX, viewportY, sw, sh);
+				int deltaLeft=255-unit->delta;
+				if (unit->action<BUILD)
+				{
+					px-=(unit->dx*deltaLeft)>>3;
+					py-=(unit->dy*deltaLeft)>>3;
+				}
+			
+			
+				int lsx, lsy, ldx, ldy;
+				map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, sw, sh);
+				lsx=px+16;
+				lsy=py+16;
+				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+					globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
+				else
+					globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250, 128);
+			}
+		}
+	}
+}
+
 
 
 float Game::interpolateValues(float a, float b, float x)
@@ -2399,6 +2517,27 @@ float Game::interpolateValues(float a, float b, float x)
 	float f = (1.0f - std::cos(ft)) * 0.5f;
 	return  a*(1.0-f) + b*f;
 }
+
+
+
+inline bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y)
+{
+
+	left += viewportX;
+	right += viewportX;
+	top += viewportY;
+	bot += viewportY;
+	
+	if((x >= left-1 && x <= right) || (x+map.getW() >= left-1 && x+map.getW() <= right))
+	{
+		if((y >= top-1 && y <= bot) || (y+map.getH() >= top-1 && y+map.getH() <= bot))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 	
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
@@ -2432,6 +2571,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	
 	// draw cloud overlay if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
@@ -2534,7 +2674,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 void Game::setWaitingOnMask(Uint32 mask)
 {
+	Uint32 oldMask = maskAwayPlayer;
 	maskAwayPlayer = mask;
+
+	if(mask != 0)
+	{
+		if(oldMask == 0)
+			anyPlayerWaitedTimeFor = 0;
+		anyPlayerWaited = true;
+	}
+	else
+	{
+		anyPlayerWaited = false;
+	}
 }
 
 
@@ -2604,23 +2756,13 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	cs^=mapCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]
-	
-	cs=(cs<<31)|(cs>>1);
-
-	Uint32 syncRandCs=0;
-	syncRandCs^=getSyncRandSeedA();
-	syncRandCs^=getSyncRandSeedB();
-	syncRandCs^=getSyncRandSeedC();
-	cs^=syncRandCs;
-	if (checkSumsVector)
-		checkSumsVector->push_back(syncRandCs);// [4+t*20+p*2]
 
 	cs=(cs<<31)|(cs>>1);
 	
 	Uint32 scriptCs=script.checkSum();
 	cs^=scriptCs;
 	if (checkSumsVector)
-		checkSumsVector->push_back(scriptCs);// [5+t*20+p*2]
+		checkSumsVector->push_back(scriptCs);// [4+t*20+p*2]
 	
 	return cs;
 }

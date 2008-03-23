@@ -60,9 +60,9 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	saveButton = new TextButton(480, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE);
 	addWidget(saveButton);
 	
-	addWidget(new TextButton(10, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", "Script", TAB_SCRIPT));
-	addWidget(new TextButton(230, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", "Campaign text", TAB_CAMPAIGN_TEXT));
-	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", "Script");
+	addWidget(new TextButton(10, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map script]"), TAB_SCRIPT));
+	addWidget(new TextButton(130, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[campaign text]"), TAB_CAMPAIGN_TEXT));
+	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[map script]"));
 	addWidget(mode);
 	
 	// important, widgets must be initialised by hand as we use custom event loop
@@ -131,7 +131,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			compileButton->visible = true;
 			loadButton->visible = true;
 			saveButton->visible = true;
-			mode->setText("Script");
+			mode->setText(Toolkit::getStringTable()->getString("[map script]"));
 		}
 		else if (par1 == TAB_CAMPAIGN_TEXT)
 		{
@@ -140,7 +140,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			compileButton->visible = false;
 			loadButton->visible = true;
 			saveButton->visible = true;
-			mode->setText("Campaign text");
+			mode->setText(Toolkit::getStringTable()->getString("[campaign text]"));
 		}
 	}
 }
@@ -174,6 +174,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 	SDL_Event event;
 	while(loadSaveScreen->endValue<0)
 	{
+		int time = SDL_GetTicks();
 		while (SDL_PollEvent(&event))
 		{
 			loadSaveScreen->translateAndProcessEvent(&event);
@@ -183,6 +184,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
+		int ntime = SDL_GetTicks();
+		SDL_Delay(std::max(0, 40 - ntime + time));
 	}
 
 	if (loadSaveScreen->endValue==0)

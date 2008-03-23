@@ -1880,6 +1880,11 @@ glEnable(GL_TEXTURE_2D);
 				int nh = (*modes)->h;
 				modes++;
 				
+				if(nw < 800 || nh<600)
+				{
+					continue;
+				}
+				
 				if ( ((minW == 0) || (nw >= minW))
 					&& ((minH == 0) || (nh >= minH)))
 				{
@@ -1892,7 +1897,7 @@ glEnable(GL_TEXTURE_2D);
 		return false;
 	}
 	
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags)
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const char *title, const char *icon)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -1918,7 +1923,11 @@ glEnable(GL_TEXTURE_2D);
 		
 		TTF_Init();
 		
+		if (title && icon)
+			SDL_WM_SetCaption(title, icon);
+		
 		setRes(w, h, flags);
+		
 	}
 	
 	GraphicContext::~GraphicContext(void)

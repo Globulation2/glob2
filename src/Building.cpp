@@ -76,6 +76,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = maxUnitWorking;
 	maxUnitWorkingFuture = unitWorkingFuture;
+	maxUnitWorkingPrevious = 0;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
 
@@ -84,6 +85,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	posY=y;
 	posXLocal=posX;
 	posYLocal=posY;
+
+	underAttackTimer = 0;
 
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
@@ -202,6 +205,11 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	posXLocal = posX;
 	posYLocal = posY;
 
+	if(versionMinor>=61)
+		underAttackTimer = stream->readUint8("underAttackTimer");
+	else
+		underAttackTimer = 0;
+
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
 	unitStayRangeLocal = unitStayRange;
@@ -312,6 +320,8 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(posX, "posX");
 	stream->writeSint32(posY, "posY");
 
+	stream->writeUint8(underAttackTimer, "underAttackTimer");
+
 	// Flag specific
 	stream->writeUint32(unitStayRange, "unitStayRange");
 	for(int i=0; i<BASIC_COUNT; i++)
@@ -390,6 +400,10 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
+	if(versionMinor>=65)
+		maxUnitWorkingPrevious = stream->readSint32("maxUnitWorkingPrevious");
+	else
+		maxUnitWorkingPrevious = maxUnitWorkingPreferred;
 	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 	
@@ -417,6 +431,10 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	
 	// units
 	stream->writeSint32(maxUnitInside, "maxUnitInside");
+	//TODO: std::list::size() is O(n). We should investigate
+	//if our intense use of this has an impact on overall performance.
+	//steph and nuage suggested to store and update size in a variable
+	//what is faster but also more error prone.
 	stream->writeUint32(unitsWorking.size(), "nbWorking");
 	fprintf(logFile, " nbWorking=%zd\n", unitsWorking.size());
 	i = 0;
@@ -432,6 +450,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeSint32(subscriptionWorkingTimer, "subscriptionWorkingTimer");
 	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
+	stream->writeSint32(maxUnitWorkingPrevious, "maxUnitWorkingPrevious");
 	
 	stream->writeUint32(unitsInside.size(), "nbInside");
 	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
@@ -560,12 +579,13 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			Unit *u=*it;
 			assert(u);
 			int d=u->displacement;
-			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING))
+			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING)&&(d!=Unit::DIS_EXITING_BUILDING))
 			{
 				u->standardRandomActivity();
 				unitsToRemove.push_front(u);
 			}
 		}
+		
 		for (std::list<Unit *>::iterator it=unitsToRemove.begin(); it!=unitsToRemove.end(); ++it)
 		{
 			Unit *u=*it;
@@ -573,6 +593,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			unitsInside.remove(u);
 		}
 		
+		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
@@ -616,6 +637,9 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	}
 	else if (buildingState==WAITING_FOR_CONSTRUCTION_ROOM)
 	{
+		if(constructionResultState == UPGRADE)
+			removeForbiddenZoneFromUpgradeArea();
+			
 		owner->buildingsTryToBuildingSiteRoom.remove(this);
 		buildingState=ALIVE;
 	}
@@ -629,8 +653,6 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		// when the building upgrade" was already canceled.
 		return;
 	}
-	
-	removeForbiddenZoneFromUpgradeArea();
 
 	constructionResultState=NO_CONSTRUCTION;
 	
@@ -655,12 +677,9 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
-	
-	if (type->maxUnitWorking)
-		maxUnitWorking=maxUnitWorkingPreferred;
-	else
-		maxUnitWorking=0;
-	maxUnitWorkingLocal=unitWorking; //maxUnitWorking;
+
+	maxUnitWorking=maxUnitWorkingPrevious;
+	maxUnitWorkingLocal=maxUnitWorking; //maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
@@ -698,6 +717,7 @@ void Building::launchDelete(void)
 	if (buildingState==ALIVE)
 	{
 		buildingState=WAITING_FOR_DESTRUCTION;
+		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
 		maxUnitWorkingLocal=0;
 		maxUnitInside=0;
@@ -711,10 +731,7 @@ void Building::launchDelete(void)
 void Building::cancelDelete(void)
 {
 	buildingState=ALIVE;
-	if (type->maxUnitWorking)
-		maxUnitWorking=maxUnitWorkingPreferred;
-	else
-		maxUnitWorking=0;
+	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
@@ -840,7 +857,8 @@ void Building::updateConstructionState(void)
 			{
 				buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
-				addForbiddenZoneToUpgradeArea();
+				if(constructionResultState == UPGRADE)
+					addForbiddenZoneToUpgradeArea();
 				if (verbose)
 					printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
 			}
@@ -860,8 +878,6 @@ void Building::updateBuildingSite(void)
 		for(int i=0; i<MAX_RESSOURCES; i++)
 			ressources[i]-=type->maxRessource[i];
 
-		if(constructionResultState!=NEW_BUILDING)
-			removeForbiddenZoneFromUpgradeArea();
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;
 		type=globalContainer->buildingsTypes.get(type->nextLevel);
@@ -1072,6 +1088,9 @@ bool Building::tryToBuildingSiteRoom(void)
 	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 	if (isRoom)
 	{
+		if(constructionResultState == UPGRADE)
+			removeForbiddenZoneFromUpgradeArea();
+		
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
@@ -1169,25 +1188,24 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	int midPosY=posY-type->decTop;
 
 	int targetLevelTypeNum=-1;
-	if (constructionResultState==UPGRADE)
-		targetLevelTypeNum=type->nextLevel;
-	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->prevLevel;
-	else
-		assert(false);
+	targetLevelTypeNum=type->nextLevel;
 
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
-	for(int nx=0; nx<newWidth; ++nx)
+	
+	for(int x=newPosX; x<(newPosX+newWidth); ++x)
 	{
-		for(int ny=0; ny<newHeight; ++ny)
+		for(int y=newPosY; y<(newPosY+newHeight); ++y)
 		{
-			owner->map->addHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
+			owner->map->addForbidden(x, y, owner->teamNumber);
 		}
 	}
+	if(owner == owner->game->gui->getLocalTeam())
+		owner->map->computeLocalForbidden(owner->teamNumber);
+	owner->map->updateForbiddenGradient(owner->teamNumber);
 }
 
 
@@ -1198,25 +1216,24 @@ void Building::removeForbiddenZoneFromUpgradeArea(void)
 	int midPosY=posY-type->decTop;
 
 	int targetLevelTypeNum=-1;
-	if (constructionResultState==UPGRADE)
-		targetLevelTypeNum=type->level;
-	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->level;
-	else
-		assert(false);
+	targetLevelTypeNum=type->nextLevel;
 
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
-	for(int nx=0; nx<newWidth; ++nx)
+	
+	for(int x=newPosX; x<(newPosX+newWidth); ++x)
 	{
-		for(int ny=0; ny<newHeight; ++ny)
+		for(int y=newPosY; y<(newPosY+newHeight); ++y)
 		{
-			owner->map->removeHiddenForbidden(owner->map->normalizeX(newPosX+nx), owner->map->normalizeY(newPosY+ny), owner->teamNumber); 
+			owner->map->removeForbidden(x, y, owner->teamNumber);
 		}
 	}
+	if(owner == owner->game->gui->getLocalTeam())
+		owner->map->computeLocalForbidden(owner->teamNumber);
+	owner->map->updateForbiddenGradient(owner->teamNumber);
 }
 
 
@@ -1276,7 +1293,7 @@ int Building::desiredNumberOfWorkers(void)
 			neededRessourcesSum += neededRessources;
 	}
 	int user_num = maxUnitWorking;
-	int max_considering_ressources = 2 * neededRessourcesSum;
+	int max_considering_ressources = (4 * neededRessourcesSum) / 3;
 	return std::min(user_num, max_considering_ressources);
 }
 
@@ -1284,6 +1301,9 @@ int Building::desiredNumberOfWorkers(void)
 void Building::step(void)
 {
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
+	if(underAttackTimer > 0)
+		underAttackTimer-=1;
+
 	// NOTE : Unit needs to update itself when it is in a building
 }
 
@@ -1569,7 +1589,7 @@ void Building::subscribeForFlagingStep()
 				for(int n=0; n<1024; ++n)
 				{
 					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || unit->movement == Unit::MOV_ATTACKING_TARGET)
 						continue;
 			  	 	if(!canUnitWorkHere(unit))
 			  		  	continue;
@@ -2090,6 +2110,7 @@ void Building::kill(void)
 		owner->dirtyGlobalGradient();
 		owner->map->updateForbiddenGradient(owner->teamNumber);
 		owner->map->updateGuardAreasGradient(owner->teamNumber);
+		owner->map->updateClearAreasGradient(owner->teamNumber);
 		if (type->isBuildingSite && type->level==0)
 		{
 			bool good=false;

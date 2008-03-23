@@ -35,6 +35,8 @@
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
+#include "FertilityCalculatorDialog.h"
+#include "GUIMessageBox.h"
 
 
 
@@ -832,8 +834,8 @@ void Checkbox::draw()
 
 void Checkbox::handleClick(int relMouseX, int relMouseY)
 {
-	MapEditorWidget::handleClick(relMouseX, relMouseY);
 	isActivated = !isActivated;
+	MapEditorWidget::handleClick(relMouseX, relMouseY);
 }
 
 
@@ -842,6 +844,8 @@ MapEdit::MapEdit()
   : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
 {
 	doQuit=false;
+	doFullQuit=false;
+	doQuitAfterLoadSave=false;
 
 	// default value;
 	viewportX=0;
@@ -1001,7 +1005,7 @@ MapEdit::MapEdit()
 
 	unitInfoTitle = new UnitInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-128, 173, 128, 16), "unit editor", "unit editor title", "", NULL);
 	unitPicture = new UnitPicture(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 203, 40, 40), "unit editor", "unit editor picture", "", NULL);
-	unitHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "unit editor", "unit editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
+	unitHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "unit editor", "unit editor hp label", "update unit", "[hp]", NULL, static_cast<Sint32*>(NULL));
 	unitHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 112, 16), "unit editor", "unit editor hp scroll box", "", NULL, static_cast<Sint32*>(NULL));
 	unitWalkLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 284, 128, 16), "unit editor", "unit editor walk level label", "", "[Walk]", NULL, 3);
 	unitWalkLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 300, 112, 16), "unit editor", "unit editor walk level scroll box", "update unit walk level", NULL, 3);
@@ -1039,9 +1043,9 @@ MapEdit::MapEdit()
 	buildingInfoTitle = new BuildingInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 173, 128, 16), "building editor", "building editor info title", "", NULL);
 	buildingPicture = new BuildingPicture(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 203, 56, 46), "building editor", "building editor picture", "", NULL);
 	buildingHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
-	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor hp scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor hp scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingFoodQuantityLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor food label", "", "[Wheat]", NULL, static_cast<Sint32*>(NULL));
-	buildingFoodQuantityScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor food scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingFoodQuantityScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor food scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingAssignedLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor assigned label", "", "[assigned]", NULL, 20);
 	buildingAssignedScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor assigned scroll box", "", NULL, 20);
 	buildingWorkerRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor worker ratio label", "", "[Worker Ratio]", NULL, 16);
@@ -1051,19 +1055,19 @@ MapEdit::MapEdit()
 	buildingWarriorRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor warrior ratio label", "", "[Warrior Ratio]", NULL, 16);
 	buildingWarriorRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor warrior ratio scroll box", "", NULL, 20);
 	buildingCherryLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor cherry label", "", "[Cherry]", NULL, static_cast<Sint32*>(NULL));
-	buildingCherryScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor cherry scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingCherryScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor cherry scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingOrangeLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor orange label", "", "[Orange]", NULL, static_cast<Sint32*>(NULL));
-	buildingOrangeScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor orange scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingOrangeScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor orange scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingPruneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor prune label", "", "[Prune]", NULL, static_cast<Sint32*>(NULL));
-	buildingPruneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor prune scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingPruneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor prune scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingStoneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor stone label", "", "[Stone]", NULL, static_cast<Sint32*>(NULL));
-	buildingStoneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor stone scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingStoneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor stone scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingBulletsLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor bullets label", "", "[Bullets]", NULL, static_cast<Sint32*>(NULL));
-	buildingBulletsScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor bullets scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingBulletsScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor bullets scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	buildingMinimumLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor minimum level to flag label", "", "[Minimum Level To Flag]", NULL, 3);
-	buildingMinimumLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor minimum level to flag scroll box", "", NULL, 3);
+	buildingMinimumLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor minimum level to flag scroll box", "update building", NULL, 3);
 	buildingRadiusLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor range label", "", "[range]", NULL, static_cast<Sint32*>(NULL));
-	buildingRadiusScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor range scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	buildingRadiusScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor range scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	addWidget(buildingInfoTitle);
 	addWidget(buildingPicture);
 	addWidget(buildingHPLabel);
@@ -1108,12 +1112,15 @@ MapEdit::MapEdit()
 
 	lastPlacementX=-1;
 	lastPlacementY=-1;
+	firstPlacementX=-1;
+	firstPlacementY=-1;
 
 	showingMenuScreen=false;
 	menuScreen = NULL;
 	showingLoad=false;
 	showingSave=false;
 	showingScriptEditor=false;
+	scriptEditor=false;
 
 	terrainType=TerrainSelector::NoTerrain;
 
@@ -1193,16 +1200,30 @@ bool MapEdit::load(const char *filename)
 			teamInfo12->setSelectionPos(game.teams[11]->type);
 
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
+		
+		minimap.resetMinimapDrawing();
+		
+		game.map.computeLocalForbidden(team);
+		game.map.computeLocalClearArea(team);
+		game.map.computeLocalGuardArea(team);
+	
+		hasMapBeenModified = false;
 		return true;
 	}
+	return false;
 }
 
 
 
 bool MapEdit::save(const char *filename, const char *name)
 {
+	FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
+	dialog.execute();
+
 	assert(filename);
 	assert(name);
+
+	hasMapBeenModified = false;
 
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
 	if (stream->isEndOfStream())
@@ -1240,7 +1261,7 @@ int MapEdit::run(void)
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMenu();
-	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getW(), true, true);
+	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), true, true);
 	drawMiniMap();
 
 	bool isRunning=true;
@@ -1255,11 +1276,11 @@ int MapEdit::run(void)
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
- 			returnCode=(processEvent(event) == -1) ? -1 : returnCode;
+ 			processEvent(event);
 		}
-			
-
-		handleMapScroll();
+		
+		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor)
+			handleMapScroll();
 		// redraw on scroll
 // 		bool doRedraw=false;
 		viewportX+=xSpeed;
@@ -1274,11 +1295,6 @@ int MapEdit::run(void)
 				performAction("zone drag motion");
 			else if(isDraggingTerrain)
 				performAction("terrain drag motion");
-		}
-		
-		if(isFertilityOn)
-		{
-			overlay.compute(game, OverlayArea::Fertility, team);
 		}
 		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
@@ -1323,8 +1339,39 @@ int MapEdit::run(void)
 		{
 			isRunning=false;
 		}
-		if(doQuit)
+		if(doQuitAfterLoadSave && !showingSave)
+		{
 			isRunning=false;
+		}
+		if(doQuit)
+		{
+			if(hasMapBeenModified)
+			{
+				int ret = GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_THREEBUTTONS, Toolkit::getStringTable()->getString("[save before quit?]"), Toolkit::getStringTable()->getString("[Yes]"), Toolkit::getStringTable()->getString("[No]"), Toolkit::getStringTable()->getString("[Cancel]"));
+				if(ret == 0)
+				{
+					doQuit=false;
+					doQuitAfterLoadSave=true;
+					performAction("open save screen");
+				}
+				else if(ret == 1)
+				{
+					isRunning=false;
+				}
+				else
+				{
+					doQuit=false;
+				}
+			}
+			else
+			{
+				isRunning=false;
+			}
+		}
+		if(doFullQuit)
+		{
+			returnCode = -1;
+		}
 	}
 
 	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
@@ -1354,13 +1401,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY, (terrainType>TerrainSelector::Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
@@ -1377,10 +1424,10 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		}
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 		}
 		if(selectionMode==ChangeNoRessourceGrowthAreas)
-			brush.drawBrush(mouseX, mouseY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 	}
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
@@ -1603,17 +1650,30 @@ void MapEdit::drawPlacingUnitOnMap()
 		globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
 }
 
-int MapEdit::processEvent(SDL_Event& event)
+void MapEdit::processEvent(SDL_Event& event)
 {
-	int returnCode=0;
+	SDLMod modState = SDL_GetModState();
 	if (event.type==SDL_QUIT)
 	{
-		returnCode=-1;
+		doFullQuit=true;
 	}
+#	ifdef USE_OSX
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+	{
+		doFullQuit=true;
+	}
+#	endif
+#	ifdef USE_WIN32
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+	{
+		doFullQuit=true;
+	}
+#	endif
+	
 	else if(showingMenuScreen || showingLoad || showingSave || showingScriptEditor || isShowingAreaName)
 	{
 		delegateMenu(event);
-		return 0;
+		return;
 	}
 	else if(event.type==SDL_MOUSEMOTION)
 	{
@@ -1721,7 +1781,6 @@ int MapEdit::processEvent(SDL_Event& event)
 	{
 		handleKeyPressed(event.key.keysym, false);
 	}
-	return returnCode;
 }
 
 
@@ -1846,6 +1905,11 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 				performAction("close menu screen");
 		}
 		break;
+		case MapEditKeyActions::SelectDeleteTool:
+		{
+			performAction("switch to terrain view&select delete objects");
+		}
+		break;
 	}
 }
 
@@ -1959,7 +2023,10 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 
 		if (game.checkRoomForBuilding(tempX, tempY, bt, &x, &y, team, false))
 		{
-			game.addBuilding(x, y, typeNum, team);
+			if(selectionName=="swarm" || selectionName=="inn" || selectionName=="defencetower" || selectionName=="market")
+				game.addBuilding(x, y, typeNum, team, 1, 0);
+			else
+				game.addBuilding(x, y, typeNum, team, 0, 0);
 			if (selectionName=="swarm")
 			{
 				if (game.teams[team]->startPosSet<3)
@@ -2043,6 +2110,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("scroll vertical stop");
 		scriptEditor=new ScriptEditorScreen(&game.script, &game);
 		showingScriptEditor=true;
+		hasMapBeenModified=true;
 	}
 	else if(action=="close script editor")
 	{
@@ -2073,6 +2141,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select clearing zone")
 	{
@@ -2081,6 +2150,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select guard zone")
 	{
@@ -2089,6 +2159,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceZone;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="handle zone click")
 	{
@@ -2103,40 +2174,47 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		isDraggingZone=true;
 		handleBrushClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="zone drag motion")
 	{
 		handleBrushClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="zone drag end")
 	{
 		isDraggingZone=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="select grass")
 	{
 		performAction("unselect");
 		terrainType=TerrainSelector::Grass;
 		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select sand")
 	{
 		performAction("unselect");
 		terrainType=TerrainSelector::Sand;
 		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select water")
 	{
 		performAction("unselect");
 		terrainType=TerrainSelector::Water;
 		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select wheat")
 	{
@@ -2145,6 +2223,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select trees")
 	{
@@ -2153,6 +2232,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select stone")
 	{
@@ -2161,6 +2241,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select algae")
 	{
@@ -2169,6 +2250,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select papyrus")
 	{
@@ -2177,6 +2259,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select cherry tree")
 	{
@@ -2185,6 +2268,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select orange tree")
 	{
@@ -2193,6 +2277,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select prune tree")
 	{
@@ -2201,14 +2286,16 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		selectionMode=PlaceTerrain;
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="select delete objects")
 	{
 		performAction("unselect");
 		selectionMode=RemoveObject;
 		deleteButton->setSelected();
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
+		
+		brush.defaultSelection();
+		brush.setAddRemoveEnabledState(false);
 	}
 	else if(action=="select no ressources growth")
 	{
@@ -2217,6 +2304,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		noRessourceGrowthButton->setSelected();
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="handle terrain click")
 	{
@@ -2228,35 +2316,44 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	{
 		isDraggingTerrain=true;
 		handleTerrainClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="terrain drag motion")
 	{
 		handleTerrainClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="terrain drag end")
 	{
 		isDraggingTerrain=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="delete drag start")
 	{
 		isDraggingDelete=true;
 		handleDeleteClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="delete drag motion")
 	{
 		handleDeleteClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="delete drag end")
 	{
 		isDraggingDelete=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="update script area number")
 	{
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
+		hasMapBeenModified = true;
 	}
 	else if(action=="select change areas")
 	{
@@ -2265,41 +2362,51 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		areasButton->setSelected();
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
+		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="area drag start")
 	{
 		isDraggingArea=true;
 		handleAreaClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="area drag motion")
 	{
 		handleAreaClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="area drag end")
 	{
 		isDraggingArea=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="no ressource growth area drag start")
 	{
 		isDraggingNoRessourceGrowthArea=true;
 		handleNoRessourceGrowthClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag motion")
 	{
 		handleNoRessourceGrowthClick(mouseX, mouseY);
+		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag end")
 	{
 		isDraggingNoRessourceGrowthArea=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
+		firstPlacementX=-1;
+		firstPlacementY=-1;
 	}
 	else if(action=="add team")
 	{
 		if(game.mapHeader.getNumberOfTeams() < 12)
 			game.addTeam();
+		hasMapBeenModified = true;
 	}
 	else if(action=="remove team")
 	{
@@ -2309,6 +2416,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				team-=1;
 			game.removeTeam();
 		}
+		hasMapBeenModified = true;
 	}
 	else if(action.substr(0, 17)=="change team info ")
 	{
@@ -2346,6 +2454,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			game.teams[number-1]->type=BaseTeam::T_HUMAN;
 		if(selectionPos==1)
 			game.teams[number-1]->type=BaseTeam::T_AI;
+		hasMapBeenModified = true;
 	}
 	else if(action=="select active team")
 	{
@@ -2417,6 +2526,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 				game.teams[team]->startPosSet=1;
 			}
 			game.regenerateDiscoveryMap();
+			hasMapBeenModified = true;
 		}
 	}
 	else if(action=="select map unit")
@@ -2501,42 +2611,53 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[WALK]);
 		u->performance[WALK] = ut->performance[WALK];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit swim level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[SWIM]);
 		u->performance[SWIM] = ut->performance[SWIM];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit harvest level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[HARVEST]);
 		u->performance[HARVEST] = ut->performance[HARVEST];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit build level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[BUILD]);
 		u->performance[BUILD] = ut->performance[BUILD];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit attack speed level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[ATTACK_SPEED]);
 		u->performance[ATTACK_SPEED] = ut->performance[ATTACK_SPEED];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit attack strength level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[ATTACK_STRENGTH]);
 		u->performance[ATTACK_STRENGTH] = ut->performance[ATTACK_STRENGTH];
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit magic ground attack level")
 	{
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[MAGIC_ATTACK_GROUND]);
 		u->performance[MAGIC_ATTACK_GROUND] = ut->performance[MAGIC_ATTACK_GROUND];
+		hasMapBeenModified = true;
+	}
+	else if(action=="update unit")
+	{
+		hasMapBeenModified = true;
 	}
 	else if(action=="select map building")
 	{
@@ -2850,9 +2971,20 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			}
 		}
 	}
+	else if(action=="update building")
+	{
+		hasMapBeenModified = true;
+	}
 	else if(action=="compute fertility")
 	{
-		overlay.forceFertilityRecompute();
+		//Only compute when its x'ed in, not otherwise
+		if(isFertilityOn)
+		{
+			FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
+			dialog.execute();
+			overlay.forceRecompute();
+			overlay.compute(game, OverlayArea::Fertility, team);
+		}
 	}
 	else if(action=="quit editor")
 	{
@@ -3151,11 +3283,18 @@ void MapEdit::handleBrushClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
+	
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3163,7 +3302,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -3188,7 +3327,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -3229,11 +3368,17 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx+(terrainType>TerrainSelector::Water ? 0 : 16), my+(terrainType>TerrainSelector::Water ? 0 : 16), &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3241,7 +3386,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (terrainType == TerrainSelector::Grass)
 					{
@@ -3251,14 +3396,14 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					}
 					else if (terrainType == TerrainSelector::Sand)
 					{
-						game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
 						game.map.setNoRessource(x, y, 3);
 						game.map.setUMatPos(x, y, SAND, 1);
 					}
 					else if (terrainType == TerrainSelector::Water)
 					{
-						game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
-						game.map.setNoRessource(x, y, 3);
+						game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 5);
 						game.map.setUMatPos(x, y, WATER, 1);
 					}
 					else if (terrainType == TerrainSelector::Wheat)
@@ -3307,7 +3452,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (terrainType == TerrainSelector::Sand || terrainType == TerrainSelector::Water)
 					{
@@ -3360,11 +3505,17 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3372,16 +3523,7 @@ void MapEdit::handleDeleteClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
-				{
-					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
-				}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
 				}
@@ -3399,11 +3541,17 @@ void MapEdit::handleAreaClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3411,7 +3559,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.setPoint(areaNumber->getIndex(), x, y);
 				}
@@ -3420,7 +3568,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.unsetPoint(areaNumber->getIndex(), x, y);
 				}
@@ -3437,11 +3585,17 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
+		
+	if(lastPlacementX == -1)
+	{
+		firstPlacementX=mapX;
+		firstPlacementY=mapY;
+	}
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimX(fig);
-	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
+	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
 	// we update local values
@@ -3449,7 +3603,7 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.getCase(x, y).canRessourcesGrow=false;
 				}
@@ -3458,7 +3612,7 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					game.map.getCase(x, y).canRessourcesGrow=true;
 				}

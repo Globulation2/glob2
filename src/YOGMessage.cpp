@@ -16,8 +16,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGMessage.h"
+#include "assert.h"
 #include "SDL_net.h"
+#include "Stream.h"
+#include "StringTable.h"
+#include "Toolkit.h"
+#include "YOGMessage.h"
 
 YOGMessage::YOGMessage()
 {
@@ -118,5 +122,45 @@ bool YOGMessage::operator!=(const YOGMessage& rhs) const
 	}
 	return false;
 }
+
+
+
+std::string YOGMessage::formatForReading() const
+{
+	std::string smessage;
+	switch(getMessageType())
+	{
+		case YOGNormalMessage:
+			smessage+="<";
+			smessage+=getSender();
+			smessage+="> ";
+			smessage+=getMessage();
+		break;
+		case YOGPrivateMessage:
+			smessage+="<";
+			smessage+=GAGCore::Toolkit::getStringTable()->getString("[from:]");
+			smessage+=getSender();
+			smessage+="> ";
+			smessage+=getMessage();
+		break;
+		case YOGAdministratorMessage:
+			smessage+="[";
+			smessage+=getSender();
+			smessage+="] ";
+			smessage+=getMessage();
+		break;
+		case YOGServerGameMessage:
+			smessage+="<";
+			smessage+=getSender();
+			smessage+="> ";
+			smessage+=getMessage();
+		break;
+		default:
+			assert(false);
+		break;
+	}
+	return smessage;
+}
+
 
 

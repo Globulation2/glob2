@@ -8,6 +8,12 @@
 # English version revised by Hernan Quishpe
 # Translated to Dutch by Raoul Verveer
 
+#Note! The English version of the following has changed since the German, French, Spanish, and Dutch versions where translated
+#show("Now we have to select a pattern. There are several to choose from. My personal recommendation is to choose the large, square one, but don't let me stop you from choosing the circular one if you like it.")
+#changed to:
+#show("Now we have to select a pattern. There are several to choose from. My personal recommendation is to choose the large, square one.")
+
+
 GuiDisable(AllianceScreen)
 GuiDisable(FlagTab)
 GuiDisable(TextStatTab)
@@ -79,7 +85,7 @@ show("Para ubicar bien la defensa, necesitaremos establecer un área de defensa.
 show("Om de verdediging op te zetten, moeten we een gebied selecteren waarin verdedigd wordt. Als je op hetzelfde tabblad klikt dat we gebruikte voor de verkenningsvlag, zie je dat er drie soorten 'zones' beschikbaar zijn. We hebben nu de blauwe zone nodig, dus klik daar maar op. Vlak onder de zones zijn twee opties: één met een pijl omhoog en één met een pijl omlaag. We willen de pijl omlaag, omdat we nu een zone willen plaatsten. Een zone verwijderen gaat dus met de pijl omhoog.",nl)
 space
 
-show("Now we have to select a pattern. There are several to choose from. My personal recommendation is to choose the large, square one, but don't let me stop you from choosing the circular one if you like it.")
+show("Now we have to select a pattern. There are several to choose from. My personal recommendation is to choose the large, square one.")
 show("Nous devons maintenant sélectionner un modèle. Il en existe plusieurs, je vous conseille le grand carré, mais vous pouvez choisir le cercle s'il vous fait envie.", fr)
 show("Nun musst du eine Struktur wählen. Es gibt einige zur Auswahl. Meine Empfehlung wäre das große, rechteckige, aber das soll dich nicht davon abhalten das kreisförmige Muster zu wählen, wenn du das möchtest.",de)
 show("Ahora tenemos que seleccionar un patrón.  Hay varios para escoger. Mi recomendación especial es escoger el largo y cuadrado, pero no te detendré si vas a escoger el circular o el que te guste.",es)

@@ -16,9 +16,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "MapAssembler.h"
-#include "Toolkit.h"
+#include "BinaryStream.h"
 #include "FileManager.h"
+#include "MapAssembler.h"
+#include "NetMessage.h"
+#include "StreamBackend.h"
+#include "StreamBackend.h"
+#include "Stream.h"
+#include "Toolkit.h"
+#include "YOGClient.h"
 
 using namespace boost;
 using namespace GAGCore;
@@ -26,6 +32,7 @@ using namespace GAGCore;
 MapAssembler::MapAssembler(boost::shared_ptr<YOGClient> client)
 	: client(client)
 {
+	obackend = NULL;
 	mode = NoTransfer;
 	size = 0;
 	finished=0;
@@ -58,18 +65,10 @@ void MapAssembler::startSendingFile(std::string mapname)
 void MapAssembler::startRecievingFile(std::string mapname)
 {
 	filename=mapname;
-	ostream.reset(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz")));
+	obackend = new MemoryStreamBackend;
+	ostream.reset(new BinaryOutputStream(obackend));
 	mode=RecivingFile;
 	finished=0;
-}
-
-
-
-bool MapAssembler::isTransferComplete()
-{
-	if(mode == NoTransfer)
-		return true;
-	return false;
 }
 
 
@@ -103,11 +102,28 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 		else
 		{
 			mode=NoTransfer;
+			//Write from the buffer, obackend, to the file
+			BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz"));
+			ostream->seekFromEnd(0);
+			fstream->write(obackend->getBuffer(), ostream->getPosition(), "");
+			delete fstream;
 			ostream.reset();
+			//unzip file
 			Toolkit::getFileManager()->gunzip(filename+".gz", filename);
 		}
 	}
 }
+
+
+
+Uint8 MapAssembler::getPercentage()
+{
+	if(size == 0)
+		return 100;
+
+	return (finished * 100) / size;
+}
+
 
 
 void MapAssembler::sendNextChunk()

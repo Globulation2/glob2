@@ -23,6 +23,7 @@
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
+#include <algorithm>
 
 using namespace GAGCore;
 
@@ -108,16 +109,37 @@ namespace GAGGUI
 		SDL_Event event;
 		while(mbs->endValue<0)
 		{
+			Sint32 time = SDL_GetTicks();
 			while (SDL_PollEvent(&event))
 			{
 				if (event.type==SDL_QUIT)
 					break;
+				//Manual integration of cmd+q and alt f4
+				if(event.type == SDL_KEYDOWN)
+				{
+					SDLMod modState = SDL_GetModState();
+#					ifdef USE_OSX
+					if(event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+					{
+						break;
+					}
+#					endif
+#					ifdef USE_WIN32
+					if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+					{
+						break;
+					}
+#					endif
+				}
+
 				mbs->translateAndProcessEvent(&event);
 			}
 			mbs->dispatchPaint();
 			parentCtx->drawSurface((int)0, (int)0, background);
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
 			parentCtx->nextFrame();
+			Sint32 newTime = SDL_GetTicks();
+			SDL_Delay(std::max(40 - newTime + time, 0));
 		}
 	
 		int retVal;

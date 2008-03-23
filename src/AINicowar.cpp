@@ -107,8 +107,8 @@ void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgrading_phase_2_tower_chance, "upgrading_phase_2_tower_chance");
 	configBlock->load(upgrading_phase_1_units_assigned, "upgrading_phase_1_units_assigned");
 	configBlock->load(upgrading_phase_2_units_assigned, "upgrading_phase_2_units_assigned");
-	configBlock->load(upgrading_phase_1_num_upgrades_at_once, "upgrading_phase_1_num_upgrades_at_once");
-	configBlock->load(upgrading_phase_2_num_upgrades_at_once, "upgrading_phase_2_num_upgrades_at_once");
+	configBlock->load(upgrading_phase_1_num_units, "upgrading_phase_1_num_units");
+	configBlock->load(upgrading_phase_2_num_units, "upgrading_phase_2_num_units");
 	configBlock->load(war_phase_war_flag_units_assigned, "war_phase_war_flag_units_assigned");
 	configBlock->load(war_phase_num_attack_flags, "war_phase_num_attack_flags");
 	
@@ -324,6 +324,7 @@ void NewNicowar::tick(Echo& echo)
 	timer++;
 	if(timer==1)
 	{
+		selectStrategy();
 		check_phases(echo);
 		initialize(echo);
 	}
@@ -367,10 +368,10 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 		buildings_under_construction-=1;
 		buildings_under_construction_per_type[placement_num]-=1;
 	}
-	if(message.substr(0,21) == "update clearing zone ")
+	if(message.substr(0,22) == "update clearing zone1 ")
 	{
 		MapInfo mi(echo);
-		int id=boost::lexical_cast<int>(message.substr(21, message.size()-1));
+		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
 		Building* b = echo.get_building_register().get_building(id);		
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
@@ -384,6 +385,25 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 					mo_clearing->add_location(b->posX+nx, b->posY+ny);
 					mo_remove_clearing->add_location(b->posX+nx, b->posY+ny);
 				}
+			}
+		}
+		echo.add_management_order(mo_clearing);
+		echo.add_management_order(mo_remove_clearing);
+	}
+	if(message.substr(0,22) == "update clearing zone2 ")
+	{
+		MapInfo mi(echo);
+		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
+		Building* b = echo.get_building_register().get_building(id);		
+		AddArea* mo_clearing=new AddArea(ClearingArea);
+		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
+		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
+		for(int nx=-1; nx<b->type->width+1; ++nx)
+		{
+			for(int ny=-1; ny<b->type->height+1; ++ny)
+			{
+				mo_clearing->add_location(b->posX+nx, b->posY+ny);
+				mo_remove_clearing->add_location(b->posX+nx, b->posY+ny);
 			}
 		}
 		echo.add_management_order(mo_clearing);
@@ -427,8 +447,6 @@ void NewNicowar::selectStrategy()
 
 void NewNicowar::initialize(Echo& echo)
 {
-	selectStrategy();
-
 	BuildingSearch bs(echo);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{	
@@ -484,9 +502,9 @@ void NewNicowar::check_phases(Echo& echo)
 	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools.add_condition(new NotUnderConstruction);
 	const int school_counts=schools.count_buildings();
-	const int trained_count=echo.get_team_stats().upgradeState[BUILD][1];
+	const int trained_count=stat->upgradeState[BUILD][1] + stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
 
-	if(stat->totalUnit>=strategy.upgrading_phase_1_unit_min && school_counts>strategy.upgrading_phase_1_school_min && trained_count>strategy.upgrading_phase_1_trained_worker_min)
+	if(stat->totalUnit>=strategy.upgrading_phase_1_unit_min && school_counts>=strategy.upgrading_phase_1_school_min && trained_count>strategy.upgrading_phase_1_trained_worker_min)
 	{
 		upgrading_phase_1=true;
 	}
@@ -508,9 +526,9 @@ void NewNicowar::check_phases(Echo& echo)
 	schools_3.add_condition(new NotUnderConstruction);
 	schools_3.add_condition(new BuildingLevel(3));
 	const int school_counts_2=schools_2.count_buildings() + schools_3.count_buildings();
-	const int trained_count_2=echo.get_team_stats().upgradeState[BUILD][2];
+	const int trained_count_2=echo.get_team_stats().upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
 
-	if(stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
+	if(stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>=strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
 	{
 		upgrading_phase_2=true;
 	}
@@ -586,10 +604,11 @@ void NewNicowar::check_phases(Echo& echo)
 	
 	///Qualifications for the no worker phase:
 	///1) More than strategy.no_workers_phase_free_worker_minimum_percen % workers free
-	///2) Atleast one worker (because of devision by 0)
+	///2) No needed jobs
+	///3) Atleast one worker (because of devision by 0)
 	if(stat->numberUnitPerType[WORKER] > 0)
 	{
-		const int workers_free = stat->isFree[WORKER] * 100 / stat->numberUnitPerType[WORKER];
+		const int workers_free = (stat->isFree[WORKER]  -  stat->totalNeeded) * 100 / stat->numberUnitPerType[WORKER];
 		if(workers_free > strategy.no_workers_phase_free_worker_minimum_percent)
 		{
 			no_workers_phase=true;
@@ -604,7 +623,7 @@ void NewNicowar::check_phases(Echo& echo)
 		no_workers_phase=false;
 	}
 	
-	///Qualifications for the can swim phase:
+	///Qualifications for the can swim phacose:
 	///1) Atleast one worker that can swim
 	int total_can_swim=0;
 	for(int i=0; i<4; ++i)
@@ -622,13 +641,13 @@ void NewNicowar::check_phases(Echo& echo)
 
 void NewNicowar::queue_buildings(Echo& echo)
 {
-	queue_inns(echo);
-	queue_swarms(echo);
 	queue_racetracks(echo);
 	queue_swimmingpools(echo);
 	queue_schools(echo);
 	queue_barracks(echo);
 	queue_hospitals(echo);
+	queue_inns(echo);
+	queue_swarms(echo);
 }
 
 
@@ -661,6 +680,7 @@ void NewNicowar::queue_inns(Echo& echo)
 		  number1*strategy.level_1_inn_units_can_feed
 		+ number2*strategy.level_2_inn_units_can_feed
 		+ number3*strategy.level_3_inn_units_can_feed;
+
 	///(by default), A level 1 Inn can handle 8 units, a level 2 can handle 12 and a level 3 can handle 16
 	if((total_workers+total_explorers+total_warriors)>=score)
 	{
@@ -796,6 +816,8 @@ void NewNicowar::queue_barracks(Echo& echo)
 	if(war_preperation)
 	{
 		demand=strategy.war_preparation_phase_number_of_barracks;
+		///This only kicks in right at the start, so that it doesn't build barracks when it doesn't need to
+		demand = std::min(demand, echo.player->team->stats.getLatestStat()->isFree[WARRIOR] / 2);
 	}
 
 	if(demand > barracks_count)
@@ -818,7 +840,9 @@ void NewNicowar::queue_hospitals(Echo& echo)
 	const int hospital_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularHospital];
 	const int total_warrior = echo.player->team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
 
-	int demand=strategy.base_number_of_hospitals;
+	int demand=0;
+	if(echo.player->team->stats.getLatestStat()->needHeal > 0)
+		demand += strategy.base_number_of_hospitals;
 	if(war_preperation || war)
 	{
 		demand+=total_warrior/strategy.war_preperation_phase_warriors_per_hospital;
@@ -862,6 +886,7 @@ void NewNicowar::order_buildings(Echo& echo)
 			mo_completion_message->add_condition(new EitherCondition(
 			                             new ParticularBuilding(new NotUnderConstruction, id),
 			                             new BuildingDestroyed(id)));
+			echo.add_management_order(mo_completion_message);
 		}
 		if(b==RegularSwarm)
 		{
@@ -895,10 +920,18 @@ void NewNicowar::order_buildings(Echo& echo)
 		                             new ParticularBuilding(new NotUnderConstruction, id),
 		                             new BuildingDestroyed(id)));
 		echo.add_management_order(mo_completion_message);
-		
-		ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone "+boost::lexical_cast<std::string>(int(id)));
-		mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
-		echo.add_management_order(mo_construction_completion_message);
+		if(b == RegularInn || b==RegularSwarm)
+		{		
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone1 "+boost::lexical_cast<std::string>(int(id)));
+			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_construction_completion_message);
+		}
+		else
+		{
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone2 "+boost::lexical_cast<std::string>(int(id)));
+			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_construction_completion_message);
+		}
 	}
 }
 
@@ -977,7 +1010,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_wheat;
 	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
 	//You want to be close to wheat
-	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
+	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 6));
 
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
@@ -1304,11 +1337,6 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 
 
 	to_assign=strategy.base_swarm_units_assigned;
-	///Assign double workers to swarms during the growth phase and the war_preperation phase
-	if(growth_phase || war_preperation)
-	{
-		to_assign*=2;
-	}
 
 	///Double units when ressource level is low
 	if(total_ressource_level <= (strategy.base_swarm_low_wheat_trigger_ammount * 25))
@@ -1338,7 +1366,8 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 			worker_ratio=strategy.non_growth_phase_swarm_worker_ratio;
 	}
 
-	int needed_explorers=strategy.base_number_of_explorers;
+	//Base needed explorers never exceed 1/10 of population
+	int needed_explorers=std::min(strategy.base_number_of_explorers, stat->totalUnit/10+1);
 	if(fruit_phase)
 		needed_explorers+=strategy.fruit_phase_extra_number_of_explorers;
 
@@ -1498,11 +1527,16 @@ int NewNicowar::choose_building_for_upgrade(Echo& echo, int type, int level)
 
 void NewNicowar::upgrade_buildings(Echo& echo)
 {
+	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	int can_upgrade_level1 = stat->upgradeState[BUILD][1] + stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+	int can_upgrade_level2 = stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+
 	int num_to_upgrade_level1=0;
 	int num_to_upgrade_level2=0;
 	if(upgrading_phase_1)
 	{
-		num_to_upgrade_level1=strategy.upgrading_phase_1_num_upgrades_at_once;
+		//rounded up
+		num_to_upgrade_level1=(can_upgrade_level1 + strategy.upgrading_phase_1_num_units/2) / (strategy.upgrading_phase_1_num_units);
 	}
 	else
 	{
@@ -1511,7 +1545,8 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 
 	if(upgrading_phase_2)
 	{
-		num_to_upgrade_level2=strategy.upgrading_phase_2_num_upgrades_at_once;
+		//rounded up
+		num_to_upgrade_level2=(can_upgrade_level2 + strategy.upgrading_phase_2_num_units/2) / (strategy.upgrading_phase_2_num_units);
 	}
 	else
 	{
@@ -1618,6 +1653,9 @@ void NewNicowar::attack_building(Echo& echo)
 	bo->add_constraint(new CenterOfBuilding(building));
 	unsigned int id=echo.add_building_order(bo);
 
+	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(2,id);
+	echo.add_management_order(mo_minimum);
+
 	ManagementOrder* mo_destroyed_1=new DestroyBuilding(id);
 	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(echo, building));
 	echo.add_management_order(mo_destroyed_1);
@@ -1641,8 +1679,7 @@ void NewNicowar::control_attacks(Echo& echo)
 		{
 			number_attacks=strategy.war_phase_num_attack_flags;
 		}
-		
-	
+
 		if(attack_flags.size() < number_attacks)
 		{
 			attack_building(echo);
@@ -1655,11 +1692,14 @@ void NewNicowar::control_attacks(Echo& echo)
 	
 	for(int i=0; i<attack_flags.size(); ++i)
 	{
-		Building* b = echo.get_building_register().get_building(attack_flags[i]);
-		if((num_pool && b->locked[true]) || (num_pool==0 && b->locked[false]))
+		if(echo.get_building_register().is_building_found(attack_flags[i]))
 		{
-			ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
-			echo.add_management_order(mo_destroy);
+			Building* b = echo.get_building_register().get_building(attack_flags[i]);
+			if(b && (num_pool && b->locked[true]) || (num_pool==0 && b->locked[false]))
+			{
+				ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
+				echo.add_management_order(mo_destroy);
+			}
 		}
 	}
 }
@@ -1675,11 +1715,13 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 
 	if(target==-1 || !echo.player->game->teams[target]->isAlive)
 	{
-		std::vector<int> available_targets;		
+		std::vector<int> available_reachable_targets;
+		std::vector<int> available_targets;
 		for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 		{
 			if(echo.player->game->teams[*i]->isAlive)
 			{
+				available_targets.push_back(*i);
 				enemy_building_iterator ebi(echo, *i, -1, -1, indeterminate);
 				/* Make sure we know of at least one
 				   building that we can directly attack
@@ -1693,16 +1735,18 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 					Building* b=echo.player->game->teams[*i]->myBuildings[Building::GIDtoID(*ebi)];
 					if(gradient.get_height(b->posX, b->posY) != -2)
 					{
-						available_targets.push_back(*i);
+						available_reachable_targets.push_back(*i);
 						break;
 					}
 				}
 			}
 		}
-		if(available_targets.size()==0)
-			target=-1;
-		else
+		if(available_reachable_targets.size()!=0)
+			target=available_reachable_targets[syncRand() % available_reachable_targets.size()];
+		else if(available_targets.size()!=0)
 			target=available_targets[syncRand() % available_targets.size()];
+		else
+			target=-1;
 	}
 }
 
@@ -1714,6 +1758,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
 
+	MapInfo mi(echo);
+
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyRessource);
@@ -1722,7 +1768,9 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
 		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
-		if(gradient.get_height(b->posX, b->posY) == -2)
+		int bx = (b->posX + mi.get_width()) % mi.get_width();
+		int by = (b->posY + mi.get_height()) % mi.get_height(); 
+		if(gradient.get_height(bx, by) == -2)
 			buildings_to_attack.push_back(*ebi);
 	}
 
@@ -1733,8 +1781,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX;
-	const int by=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY;
+	const int bx=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
+	const int by=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
 
 	AIEcho::Gradients::GradientInfo gi_pathfind;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
@@ -1742,7 +1790,6 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	Gradient& gradient_pathfind=echo.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible
-	MapInfo mi(echo);
 	int closest_x=0;
 	int closest_y=0;
 	int closest_distance=10000;
@@ -1783,6 +1830,9 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		int dy=(ypos+1+h) % h;
 		int uy=(ypos-1+h) % h;
 		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+2;
+
+		if(lowest_entity == 0)
+			break;
 
 		//Test diagnols first, then the horizontals and verticals.
 		if(gradient_pathfind.get_height(lx, uy) < lowest_entity && gradient_pathfind.get_height(lx, uy)>=0)
@@ -1852,6 +1902,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 			ManagementOrder* mo_destroyed=new DestroyBuilding(id_flag);
 			mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, building));
 			echo.add_management_order(mo_destroyed);
+
 
 			ManagementOrder* mo_completion=new ChangeFlagSize(3, id_flag);
 			echo.add_management_order(mo_completion);
@@ -1936,6 +1987,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
 		//Add the building order to the list of orders
 		unsigned int id_cherry=echo.add_building_order(bo_cherry);
+
 		ManagementOrder* mo_completion_cherry=new ChangeFlagSize(4, id_cherry);
 		echo.add_management_order(mo_completion_cherry);
 
@@ -1951,6 +2003,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		//You want to be ontop of the orange trees
 		bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
 		unsigned int id_orange=echo.add_building_order(bo_orange);
+
 		ManagementOrder* mo_completion_orange=new ChangeFlagSize(4, id_orange);
 		echo.add_management_order(mo_completion_orange);
 
@@ -1964,6 +2017,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
 		//Add the building order to the list of orders
 		unsigned int id_prune=echo.add_building_order(bo_prune);
+
 		ManagementOrder* mo_completion_prune=new ChangeFlagSize(4, id_prune);
 		echo.add_management_order(mo_completion_prune);
 

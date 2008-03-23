@@ -24,7 +24,6 @@
 
 enum MultiplayerGameEventType
 {
-	MGEGameStarted,
 	MGEPlayerListChanged,
 	MGEReadyToStart,
 	MGENotReadyToStart,
@@ -33,6 +32,11 @@ enum MultiplayerGameEventType
 	MGEGameRefused,
 	MGEKickedByHost,
 	MGEHostCancelledGame,
+	MGEGameStarted,
+	MGEServerDisconnected,
+	MGEGameStartRefused,
+	MGEGameHostJoinAccepted,
+	MGEDownloadPercentUpdate,
 	//type_append_marker
 };
 
@@ -211,6 +215,111 @@ public:
 	
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameStarted
+class MGGameStarted : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameStarted event
+	MGGameStarted();
+
+	///Returns MGEGameStarted
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGServerDisconnected
+class MGServerDisconnected : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGServerDisconnected event
+	MGServerDisconnected();
+
+	///Returns MGEServerDisconnected
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameStartRefused
+class MGGameStartRefused : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameStartRefused event
+	MGGameStartRefused();
+
+	///Returns MGEGameStartRefused
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGGameHostJoinAccepted
+class MGGameHostJoinAccepted : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGGameHostJoinAccepted event
+	MGGameHostJoinAccepted();
+
+	///Returns MGEGameHostJoinAccepted
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+};
+
+
+
+
+///MGDownloadPercentUpdate
+class MGDownloadPercentUpdate : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGDownloadPercentUpdate event
+	MGDownloadPercentUpdate(Uint8 percent);
+
+	///Returns MGEDownloadPercentUpdate
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+
+	///Retrieves percent
+	Uint8 getPercentFinished() const;
+private:
+	Uint8 percent;
 };
 
 

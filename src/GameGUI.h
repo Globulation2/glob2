@@ -38,6 +38,7 @@
 #include "OverlayAreas.h"
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
+#include "GameGUIGhostBuildingManager.h"
 
 namespace GAGCore
 {
@@ -92,9 +93,9 @@ public:
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false);
 	//!
-	bool load(GAGCore::InputStream *stream);
+	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const char *name);
 
 	void processEvent(SDL_Event *event);
@@ -135,6 +136,8 @@ public:
 	bool notmenu;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
+	//! true if the game needs to flush all outgoing orders and exit
+	bool flushOutgoingAndExit;
 	//! if this is not empty, then Engine should load the map with this filename.
 	std::string toLoadGameFileName;
 	//bool showExtendedInformation;
@@ -269,6 +272,8 @@ private:
 
 	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" (ignore) it
 	bool swallowSpaceKey;
+	//! Set to the SGSL display text of the previous frame. This is so the system knows when the text changes.
+	std::string previousSGSLText;
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
@@ -337,7 +342,7 @@ private:
 	int eventGoTypeIterator; //!< iterator to iter on ctrl + space press
 	
 	//! Transform a text to multi line according to screen width
-	void setMultiLine(const std::string &input, std::vector<std::string> *output);
+	void setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent="");
 	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
@@ -361,6 +366,8 @@ private:
 
 	GameGUIDefaultAssignManager defaultAssign;
 	
+	GameGUIGhostBuildingManager ghostManager;
+
 	///Because its possible to move the scrollwheel faster than the engine can handle it
 	///multiple scroll wheel events compound
 	int scrollWheelChanges;

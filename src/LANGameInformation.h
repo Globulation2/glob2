@@ -22,6 +22,12 @@
 #include "YOGGameInfo.h"
 #include "SDL_net.h"
 
+namespace GAGCore
+{
+	class OutputStream;
+	class InputStream;
+}
+
 ///This class represents the information for a LAN game
 class LANGameInformation
 {

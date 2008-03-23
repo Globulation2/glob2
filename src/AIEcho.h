@@ -37,7 +37,6 @@
 #include <iterator>
 #include <set>
 
-
 namespace AIEcho
 {
 	class position;
@@ -714,6 +713,10 @@ namespace AIEcho
 
 			found_iterator begin() { return found_buildings.begin(); }
 			found_iterator end() { return found_buildings.end(); }
+			///The last variables in both of these is simply a "this exists" variable. Its used to combat the fact
+			///that pending_buildings[id] may create a new object, and the system can't tell the difference between it and something
+			///real. So bassically, the last variable is set to true when the object is supposed to be there, false is
+			///the default value if its accidentilly created.
 			std::map<int, boost::tuple<int, int, int, int> > pending_buildings;
 			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
 			unsigned int building_id;

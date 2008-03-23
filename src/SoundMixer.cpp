@@ -181,8 +181,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			int t1 = track1[i];
 			int intI = interpolationTable[i];
 			int val = (intI*t1+((INTERPOLATION_RANGE-intI)*t0))>>INTERPOLATION_BITS;
-			val = (val * vol)>>8;
 			mixer->handleVoiceInsertion(&val);
+			val = (val * vol)>>8;
 			mix[i] = val;
 		}
 
@@ -221,8 +221,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 				for (unsigned i=0; i<nsamples; i++)
 				{
 					int t = mix[i];
-					t = (t * vol) >> 8;
 					mixer->handleVoiceInsertion(&t);
+					t = (t * vol) >> 8;
 					mix[i] = t;
 				}
 		}
@@ -232,8 +232,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			{
 				int t = mix[i];
 				t = (interpolationTable[i]*t) >> INTERPOLATION_BITS;
-				t = (t * vol) >> 8;
 				mixer->handleVoiceInsertion(&t);
+				t = (t * vol) >> 8;
 				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_NORMAL;
@@ -245,8 +245,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 				int t = mix[i];
 				int intI = interpolationTable[i];
 				t = ((INTERPOLATION_RANGE-intI)*t) >> INTERPOLATION_BITS;
-				t = (t * vol) >> 8;
 				mixer->handleVoiceInsertion(&t);
+				t = (t * vol) >> 8;
 				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_STOPPED;
@@ -295,7 +295,13 @@ SoundMixer::SoundMixer(unsigned volume, bool mute)
 	speexDecoderState = NULL;
 	
 	initInterpolationTable();
-	
+		
+	if (mute)
+	{
+		this->volume = 0;
+	}
+	openAudio();
+/*
 	if (mute)
 	{
 		soundEnabled = false;
@@ -306,6 +312,7 @@ SoundMixer::SoundMixer(unsigned volume, bool mute)
 	{
 		openAudio();
 	}
+*/
 }
 
 SoundMixer::~SoundMixer()
@@ -399,6 +406,21 @@ void SoundMixer::stopMusic(void)
 {
 	mode = MODE_STOP;
 }
+
+
+
+bool SoundMixer::isPlayerTransmittingVoice(int player)
+{
+	SDL_LockAudio();
+	if(voices.find(player) != voices.end())
+	{
+		SDL_UnlockAudio();
+		return true;
+	}
+	SDL_UnlockAudio();
+	return false;
+}
+
 
 void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 {

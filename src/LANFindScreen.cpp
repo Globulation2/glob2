@@ -24,12 +24,16 @@
 #include "GlobalContainer.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
+#include <GUIMessageBox.h>
 #include <GUIList.h>
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include "MultiplayerGameScreen.h"
+#include "YOGClientGameListManager.h"
+
+using namespace GAGGUI;
 
 LANFindScreen::LANFindScreen()
 {
@@ -97,8 +101,17 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			shared_ptr<YOGClient> client(new YOGClient);
 			client->connect(serverName->getText());
-			if(client->getConnectionState() == YOGClient::NotConnected)
+			while(client->isConnecting())
+			{
+				client->update();
+				SDL_Delay(50);
+			}
+			
+			if(!client->isConnected())
+			{
+				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
 				return;
+			}
 			while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
 				client->update();
 			client->attemptLogin(playerName->getText());
@@ -108,14 +121,21 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 			client->setMultiplayerGame(game);
 
-			while (client->getGameList().size() == 0)
+			while (client->getGameListManager()->getGameList().size() == 0)
     			client->update();
 
-			game->joinGame((*client->getGameList().begin()).getGameID());
+			if((*client->getGameListManager()->getGameList().begin()).getGameState()==YOGGameInfo::GameRunning)
+			{
+				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't join game, game has started]"), Toolkit::getStringTable()->getString("[ok]"));
+				return;
+			}
 
-			boost::shared_ptr<NetTextMessageHandler> netMessage(new NetTextMessageHandler(client));
-			MultiplayerGameScreen mgs(game, netMessage);
+			game->joinGame((*client->getGameListManager()->getGameList().begin()).getGameID());
+
+			MultiplayerGameScreen mgs(game, client);
+			listener.disableListening();
 			int rc = mgs.execute(globalContainer->gfx, 40);
+			listener.enableListening();
 			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 			if(rc == -1)
 				endExecute(-1);

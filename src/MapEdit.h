@@ -505,6 +505,10 @@ public:
 private:
 	///If this is set, the map editor will exit as soon as it finishes drawing and proccessing events
 	bool doQuit;
+	///If this is set, the map editor will do a full quit, from glob2 entirely
+	bool doFullQuit;
+	///Tells whether the game should quit after the load/save menu closes
+	bool doQuitAfterLoadSave;
 
 	///This draws the map and various on-map elements
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);
@@ -533,7 +537,7 @@ private:
 	void drawBuildingSelectionOnMap();
 
 	///This proccesses an event from the SDL
-	int processEvent(SDL_Event& event);
+	void processEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
 	void handleKeyPressed(SDL_keysym key, bool pressed);
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large
@@ -761,6 +765,10 @@ private:
 	int lastPlacementX;
 	///This is the last placement of terrain, zones, or else, so that the game doesn't use allot of cpu by small mouse movements
 	int lastPlacementY;
+	///This is the first placement of terrain, zones or else
+	int firstPlacementX;
+	///This is the first placement of terrain, zones, or else
+	int firstPlacementY;
 
 	///Tells whether the menu screen is being drawn right now
 	bool showingMenuScreen;

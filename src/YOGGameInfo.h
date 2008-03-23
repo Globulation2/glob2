@@ -20,7 +20,13 @@
 #define __YOGGameInfo_h
 
 #include <string>
-#include "Stream.h"
+#include "SDL_net.h"
+
+namespace GAGCore
+{
+	class OutputStream;
+	class InputStream;
+}
 
 ///This class summarizes hosted game information on the YOG server.
 ///It does not include information about the game itself, just how
@@ -60,6 +66,30 @@ public:
 	///Sets the game state
 	void setGameState(const GameState& state);
 
+	///Sets the number of human players joined
+	void setPlayersJoined(Uint8 playersJoined);
+	
+	///Returns the number of human players joined
+	Uint8 getPlayersJoined() const;
+
+	///Sets the number of AI players joined
+	void setAIJoined(Uint8 aiJoined);
+	
+	///Returns the number of AI players joined
+	Uint8 getAIJoined() const;
+
+	///Sets the name of the map
+	void setMapName(const std::string& mapName);
+	
+	///Returns the name of the map
+	std::string getMapName() const;
+
+	///Sets the number of teams
+	void setNumberOfTeams(Uint8 numberOfTeams);
+	
+	///Returns the name of the game
+	Uint8 getNumberOfTeams() const;
+
 	///Encodes this YOGGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
@@ -74,6 +104,10 @@ private:
 	Uint16 gameID;
 	std::string gameName;
 	GameState gameState;
+	Uint8 playersJoined;
+	Uint8 aiJoined;
+	std::string mapName;
+	Uint8 numberOfTeams;
 };
 
 #endif

@@ -104,7 +104,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	else
 	{
 		///Render four rows at a time
-		const int rows_to_render = mini_h/25;
+		const int rows_to_render = std::max(1, mini_h/25);
 		
 		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
 		update_row += rows_to_render;
@@ -183,6 +183,13 @@ void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 	y = mini_y + (int)((float)(ypos) * (float)(mini_h) / (float)(game->map.getH())) % (mini_h);
 }
 
+
+
+void Minimap::resetMinimapDrawing()
+{
+	update_row = -1;
+}
+	
 
 
 void Minimap::computeMinimapPositioning()
@@ -336,7 +343,8 @@ void Minimap::computeColors(int row, int localTeam)
 					
 					// get weight to add
 					int pcolAddValue;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))						pcolAddValue=5;
+					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))
+						pcolAddValue=5;
 					else
 						pcolAddValue=3;
 

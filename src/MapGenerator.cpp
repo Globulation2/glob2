@@ -786,6 +786,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	HeightMap hm(wHeightMap,hHeightMap);
 	/// 1 to avoid division by zero, 
 	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
+	unsigned int sectionIslandCount=(descriptor.nbTeams+descriptor.extraIslands)/pow(2,power2Divider);
 	switch (descriptor.methode)
 	{
 		case MapGenerationDescriptor::eSWAMP:
@@ -807,7 +808,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
 		case MapGenerationDescriptor::eISLANDS:
-			hm.makeIslands(descriptor.nbTeams+descriptor.extraIslands, smoothingFactor);
+			hm.makeIslands(sectionIslandCount, smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
@@ -1724,7 +1725,6 @@ bool Game::generateMap(MapGenerationDescriptor &descriptor)
 {
 	if (verbose)
 		printf("Generating map, please wait ....\n");
-	descriptor.synchronizeNow();
 	map.setSize(descriptor.wDec, descriptor.hDec);
 	map.setGame(this);
 	switch (descriptor.methode)

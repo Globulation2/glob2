@@ -37,7 +37,7 @@ CampaignScreen::CampaignScreen(const std::string &text)
 	addWidget(new TextButton(20, 20, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Cancel]"), 1, 27));
 	
 	
-	addWidget(new TextArea(20, 20, 20, 80, ALIGN_FILL, ALIGN_FILL, "standard", true, text.c_str()));
+	addWidget(new TextArea(20, 20, 20, 80, ALIGN_FILL, ALIGN_FILL, "standard", true, Toolkit::getStringTable()->getString(text.c_str())));
 }
 
 void CampaignScreen::onAction(Widget *source, Action action, int par1, int par2)

@@ -49,6 +49,36 @@ public:
 	///that the classes decode back to exactly what they where
 	///encoded to.
 	int testNetMessages();
+	
+	///Tests NetSendOrder
+	int testNetSendOrder();
+
+	///Tests NetSendClientInformation
+	int testNetSendClientInformation();
+
+	///Tests NetSendServerInformation
+	int testNetSendServerInformation();
+
+	///Tests NetAttemptLogin
+	int testNetAttemptLogin();
+
+	///Tests NetLoginSuccessful
+	int testNetLoginSuccessful();
+
+	///Tests NetRefuseLogin
+	int testNetRefuseLogin();
+
+	///Tests NetDisconnect
+	int testNetDisconnect();
+
+	///Tests NetAttemptRegistration
+	int testNetAttemptRegistration();
+
+	///Tests NetAcceptRegistration
+	int testNetAcceptRegistration();
+
+	///Tests NetRefuseRegistration
+	int testNetRefuseRegistration();
 
 	///Tests the YOGGameInfo class and its serialization
 	int testYOGGameInfo();
@@ -58,6 +88,9 @@ public:
 
 	///Tests the YOGPlayerInfo class and its serialization
 	int testYOGPlayerInfo();
+	
+	///Tests the NetReteamingInformation class and its serialization
+	int testNetReteamingInformation();
 
 	///This tests NetListener and NetConnection in tandem.
 	int testListenerConnection();

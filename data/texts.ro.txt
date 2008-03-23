@@ -1,5 +1,3 @@
-[%0 has been deconnected of the game]
-%0 a fost deconectat din joc.
 [%0 has left the game]
 %0 a părăsit jocul.
 [%0's game]
@@ -16,8 +14,6 @@ O unitate %0 a trecut de partea voastră
 
 [abreaviation explanation V]
 
-[Add AI]
-Adăugaţi IA
 [add map]
 
 [add shortcut]
@@ -46,6 +42,8 @@ Alge
 
 [alliances]
 Alianţe
+[alt %0]
+
 [and]
 şi
 [any explorer]
@@ -66,8 +64,6 @@ Armură
 Viteza at.
 [At. strength]
 Forţa at.
-[attack speed]
-Viteză de atac
 [Attack]
 Atacă
 [audio]
@@ -80,10 +76,10 @@ Jocuri locale disponibile
 În asteptare de jucători
 [away:]
 absent:
+[Back]
+
 [backspace]
 
-[bad error in connection system]
-Eroare greşită în sistemul de conexie
 [barracks explanation 2]
 nivelul de luptă
 [barracks explanation]
@@ -144,12 +140,6 @@ mărimea plajei
 
 [Build]
 Construieşte
-[Building name]
-Numele clădirii
-[Building short explanation 2]
-Scurtă explicaţie 2 a clădirii (maxim 24 caractere)
-[Building short explanation]
-Scurtă prezentare a clădirii (maxim 24 caractere)
 [building site]
 şantier
 [Buildings]
@@ -158,8 +148,20 @@ Clădiri
 Gloanţe
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Campanie
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 
 [Can't join game, timeout]
@@ -180,8 +182,6 @@ Anulează
 Transportă :
 [Change Area Name]
 
-[checksum sent]
-Sumă de control trimisă ...
 [Cherry]
 Cireaşă
 [choose campaign]
@@ -192,8 +192,6 @@ Alegeţi un joc
 Alegeţi o hartă
 [clear area]
 
-[clear]
-
 [Clearing:]
 Defrişare de:
 [clearingflag explanation 2]
@@ -202,26 +200,26 @@ Defrişare de:
 Îndepărtează resursele
 [clearingflag]
 Steag de defrişare
-[close]
-Închide
 [closed]
 Închis
 [compile]
 Compilează scriptul
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Conectează
-[connected to all players]
-Conectat cu ceilalti jucători
-[connected to server]
-Conectat la servăr
-[connecting to all players]
-Conectare cu jucătorii in curs
 [connecting to]
 Conectare la
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Continuă jocul
+[control %0]
+
 [Corn]
 Grâu
 [crater density]
@@ -244,12 +242,8 @@ Joc liber
 Lovire
 [Damaged Map]
 
-[dblbuff]
-Tampon dublu
 [decrease units working]
 
-[default terrain]
-Teren din oficiu
 [defencetower explanation 2]
 din vecinătate
 [defencetower explanation]
@@ -276,8 +270,6 @@ Apărare
 
 [destroy]
 Distruge
-[Disconnect]
-Deconectează
 [display]
 Afişaj
 [do nothing]
@@ -286,10 +278,8 @@ Afişaj
 Nu transportă nimic
 [down]
 
-[download finished]
-Descărcare terminată
-[downloaded at]
-Descărcat la
+[downloaded %0]
+
 [edit map]
 
 [editing map]
@@ -356,8 +346,6 @@ exploratori
 
 [Fertility Map]
 
-[food left]
-Mâncare rămasă
 [food]
 Mâncare
 [forbidden area]
@@ -378,8 +366,6 @@ Ecran întreg
 Joc complet
 [game shortcuts]
 
-[game speed]
-Viteza jocului
 [general settings]
 
 [go to event]
@@ -406,14 +392,6 @@ Bucurie
 
 [Harvest]
 Recoltează
-[has joined]
-s-a alăturat
-[has quit]
-a ieşit
-[heal]
-Sănătate
-[help]
-
 [home]
 
 [hospital explanation 2]
@@ -434,8 +412,6 @@ Viata
 foame
 [hungryness]
 
-[hwaccel]
-Acceleratie materială
 [In way]
 Pe drum
 [increase units working]
@@ -482,8 +458,6 @@ ro
 Limba
 [language]
 Româneste
-[large]
-mare
 [Leave Game]
 
 [left meta]
@@ -504,8 +478,6 @@ Nivele
 
 [load]
 Încarcă
-[loading glob2]
-Globulation 2 se încarcă
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -522,12 +494,12 @@ Calitate scăzută
 Hartă: %0.
 [map name]
 
+[map script]
+
 [map size x]
 Lărgimea hărţii
 [map size y]
 Înălţimea hărţii
-[mapGenerationDescriptor Methodes]
-Metode de generare de hărţi aleatoare
 [maps available]
 
 [mark map]
@@ -538,9 +510,7 @@ cu ceilalţi
 Permite schimbul de fructe
 [market]
 Piată
-[medium]
-medie
-[menu]
+[meta %0]
 
 [Min required level:]
 Nivel minim necesar:
@@ -548,13 +518,13 @@ Nivel minim necesar:
 
 [Music volume]
 Volum  (muzică)
+[Mute]
+
 [mute]
 
-[network latency]
-Latenţa reţelei
 [new campaign]
 
-[new]
+[new map]
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
@@ -564,10 +534,10 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [No]
 Nu
-[not connected]
-Neconectat
 [not ready]
 nu-i gata
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 %0 jucători prezenţi.
 [number of teams: %0]
@@ -584,10 +554,12 @@ Acceptă
 
 [old random terrain]
 
+[on press]
+
 [On the spot]
 Aici
-[one player]
-Un jucător prezent.
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -614,18 +586,12 @@ Papirus
 
 [Paused]
 Pauză
-[percent]
-  la sută
 [player name]
 Numele jucătorului
-[player]
-Jucător
 [please wait]
 Vă rugăm aşteptaţi
 [power]
 
-[presence request sent]
-Cerere pentru prezentă trimisă ...
 [press space]
 
 [Prestige]
@@ -646,8 +612,6 @@ Iesi
 Ameliorează viteza de mers
 [racetrack]
 Pistă raliu
-[random terrain]
-Teren aleatoriu
 [range]
 Întindere
 [ratios]
@@ -668,8 +632,6 @@ Memorează parola local. (nesecurizat)
 Repară
 [repeat area]
 
-[ressources]
-Resurse
 [restore default shortcuts]
 
 [return to editor]
@@ -738,6 +700,8 @@ caută
 
 [select construct swimmingpool]
 
+[select delete tool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -772,10 +736,10 @@ caută
 
 [select warflag]
 
-[session request sent]
-Cerere pentru sesiune trimisă ...
 [settings]
 Setări
+[shift %0]
+
 [shortcut explanation enter]
 
 [shortcut explanation v]
@@ -784,30 +748,20 @@ Setări
 
 [skin]
 
-[small]
-mică
 [smoothing]
 Lisaj
 [space]
 
-[speed]
-Viteză
 [start mission]
 
 [start new campaign]
 
 [Start]
 Porneşte
-[STARTING GAME ...]
-Începe jocul...
 [Starving Map]
 
 [starving]
 foarte foame
-[stat]
-Statistici
-[state]
-stadiu
 [Statistics]
 Statistici
 [Still (i)]
@@ -910,6 +864,8 @@ Jocuri
 Spitalul este terminat
 [the hospital is under attack]
 Spitalul este atacat
+[The host has cancelled the game]
+
 [the inn is finished]
 Popasul este terminat
 [the inn is under attack]
@@ -964,10 +920,16 @@ către:
 Prestigiul total a fost atins
 [Total]
 Total
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Tutorial
-[unassigned]
-
 [Uncontrolled]
 Necontrolat
 [undo]
@@ -976,12 +938,10 @@ Necontrolat
 Teren uniform
 [Unit editor]
 
+[unit settings explanation]
+
 [unit settings]
 
-[Unit type]
-Tipul unitătii
-[units type]
-tipul unităţii
 [units working]
  unităţi lucrează
 [Units]
@@ -992,8 +952,6 @@ Unităţi
 
 [up]
 
-[update list]
-Pune la zii lista
 [upgrade building]
 
 [upgrade]
@@ -1004,11 +962,11 @@ Numele utilizatorului
 Versiune
 [view history]
 
-[wait destroy]
-În aşteptarea distrugerii
 [waiting for %0]
 Aşteaptă %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Merge
@@ -1026,10 +984,6 @@ Atenţie, trebuie să reporniţi jocul pentru ca schimbările sa aibă efect
 Luptător
 [warriors]
 luptători
-[was AI]
-înainte AI
-[was]
-înainte
 [water]
 Apă
 [Wheat]
@@ -1058,22 +1012,16 @@ Lucrează
 rănite
 [Yes]
 Da
-[YESTS_BAD]
-Eroare de coerenţă internă in timpul conectării.
 [YESTS_CONNECTING]
 Stabilirea conexiunii cu metaservărul YOG...
 [YESTS_CONNECTION_LOST]
 Conexiunea la YOG s-a pierdut.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-Metaserverul YOG a refuzat sa vă conectaţi dintr-o eroare de protocol: sunteţi deja autentificat. Încercaţi din nou în 45 de secunde.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că qcest nume de utilizator a fost deja inregistrat cu o parolă. Daca sunteţi cel ce l-aţi înregistrat, dezactivati opţiunea "Înregistraţi utilizatorul YOG cu parola" de langă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că parola este falsă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că acest utilizator nu are înca o parola in baza de date.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-Metaserverul YOG a refuzat sa vă conectaţi dintr-o eroare de protocol: nu sunteti conectat in faza de autentificare. Vă rog să raportaţi această eroare.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulation2 pe care o folosiţi este prea veche pentru a se putea comunica corect.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1082,30 +1030,16 @@ Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de utilizator este deja utilizat de către o altă persoană.
 [YESTS_CREATED]
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
-[YESTS_DECONNECTING]
-Deconexiune de la metaservărul YOG...
 [YESTS_UNABLE_TO_CONNECT]
 Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
-[YESTS_YOG_KILLED]
-Un administrator tocmai a oprit metaserverul YOG.
-[yog-chat]
-#yog-ro
 [yog]
 Jocul în retea prin Ysagoon
-[YOG_HELP]
-Sistemul de mesaje YOG dispune de două comenzi, "msg" şi "away". Tastaţi "/help <comandă>" pentru a afla mai mult.
-[YOG_HELP_AWAY]
-Comanda "/away (<mesaj>)" vă permite să indicaţi la ceilalţi utilizatori de YOG că sunteti momentan absent. aveţi în plus posiblitatea de a pune un mic mesaj cu explicaţii. De exemplu "/away Mănânc o brânză şi revin la 13h14". Alias "/a".
-[YOG_HELP_MSG]
-Comanda "/msg <nume> <mesaj>" vă permite să trimiteţi un mesaj la o singură persoană. Exemplu "/msg untip42 Salut, cum mai mege jocul ?". Alias "/m".
-[You are no more marked as away]
-Sunteţi din nou considerat ca fiind prezent.
-[You are now marked as away]
-Sunteţi de acum marcat ca fiind absent.
 [you have lost]
 Aţi pierdut!
 [you have won]
 Aţi câştigat!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 %0 voastre sunt atacate
 [Your unit got converted to %0's team]

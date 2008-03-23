@@ -19,7 +19,7 @@
 #ifndef __GAMEHEADER_H
 #define __GAMEHEADER_H
 
-#include "Player.h"
+#include "BasePlayer.h"
 #include "Stream.h"
 
 ///This is the game header. It is dynamic, and can change from game to game, even
@@ -39,6 +39,18 @@ public:
 	
 	///Saves game header information to the stream
 	void save(GAGCore::OutputStream *stream) const;
+
+	///This loads the game header information from the stream, excluding BasePlayer information
+	bool loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMinor);
+
+	///This saves all game header information to the stream, but excluding the BasePlayer information
+	void saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const;
+
+	///This loads only the player information from the game header from the stream
+	bool loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMinor);
+
+	///This saves only the player information from the game header from the stream
+	void savePlayerInfo(GAGCore::OutputStream *stream) const;
 
 	///Returns the number of players in the game
 	Sint32 getNumberOfPlayers() const;
@@ -61,6 +73,15 @@ public:
 	
 	///Provides access to the base player. n must be between 0 and 31.
 	BasePlayer& getBasePlayer(const int n);
+	
+	///Provides access to the base player. n must be between 0 and 31.
+	const BasePlayer& getBasePlayer(const int n) const;
+	
+	///Returns the random generator seed thats being used
+	Uint32 getRandomSeed() const;
+	
+	///Sets the random generator seed to be used
+	void setRandomSeed(Uint32 seed);
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;
@@ -74,6 +95,9 @@ private:
 
 	///Represents the basic player information in the game
 	BasePlayer players[32];
+	
+	///Represents the random seed used for the game
+	Uint32 seed;
 };
 
 

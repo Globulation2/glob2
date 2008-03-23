@@ -19,13 +19,14 @@
 #ifndef CAMPAIGN_MENU_SCREEN_H
 #define CAMPAIGN_MENU_SCREEN_H
 
-#include "Glob2Screen.h"
 #include "Campaign.h"
-#include "GUIText.h"
+#include "Glob2Screen.h"
 #include "GUIButton.h"
 #include "GUIList.h"
+#include "GUIText.h"
 #include "GUITextInput.h"
-#include "Campaign.h"
+
+class MapPreview;
 
 ///This is the main campaign screen
 class CampaignMenuScreen : public Glob2Screen
@@ -55,25 +56,10 @@ private:
 
 	/// The list of missions that are currently unlocked
 	List* availableMissions;
+	
+	//! The widget that will show a preview of the selection map
+	MapPreview *mapPreview;
 
-};
-
-///This is the screen that provides the player with the choice of loading a campaign or starting a new one
-class CampaignChoiceScreen : public Glob2Screen
-{
-public:
-	CampaignChoiceScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
-	enum
-	{
-		NEWCAMPAIGN,
-		LOADCAMPAIGN,
-	};
-private:
-	/// The ok button
-	Button *newCampaign;
-	/// The cancel button
-	Button *loadCampaign;
 };
 
 

@@ -20,8 +20,13 @@
 #define __YOGMessage_h
 
 #include <string>
-#include "Stream.h"
 #include "YOGConsts.h"
+
+namespace GAGCore
+{
+	class OutputStream;
+	class InputStream;
+}
 
 ///This class generically represents a message sent in YOG. This kind of message
 ///can be for any purpose, including administrator messages, private messages,
@@ -62,6 +67,9 @@ public:
 	///Test for equality between two YOGMessage
 	bool operator==(const YOGMessage& rhs) const;
 	bool operator!=(const YOGMessage& rhs) const;
+
+	///Formats this YOG Message in a user friendly way
+	std::string formatForReading() const;
 private:
 	YOGMessageType messageType;
 	std::string message;

@@ -16,14 +16,23 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGClient.h"
 #include <iostream>
-#include "MultiplayerGame.h"
 #include "MapAssembler.h"
+#include "MultiplayerGame.h"
+#include "NetMessage.h"
+#include "YOGClientChatChannel.h"
+#include "YOGClientEventListener.h"
+#include "YOGClientEvent.h"
+#include "YOGClientGameListManager.h"
+#include "YOGClient.h"
+#include "YOGClientPlayerListManager.h"
+#include "YOGMessage.h"
+#include "YOGServer.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
 	connect(server);
+	
 }
 
 
@@ -42,8 +51,12 @@ void YOGClient::initialize()
 	gamePolicy = YOGUnknownGamePolicy;
 	loginState = YOGLoginUnknown;
 	playerID=0;
-	listener=NULL;
 	wasConnected=false;
+	wasConnecting=false;
+	
+	//By default, the client creates its own game list manager and player list manager
+	gameListManager.reset(new YOGClientGameListManager(this));
+	playerListManager.reset(new YOGClientPlayerListManager(this));
 }
 
 
@@ -53,8 +66,7 @@ void YOGClient::connect(const std::string& server)
 	initialize();
 	nc.openConnection(server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
-	if(nc.isConnected())
-		wasConnected=true;
+	wasConnecting=true;
 }
 
 
@@ -66,18 +78,38 @@ bool YOGClient::isConnected()
 
 
 
+bool YOGClient::isConnecting()
+{
+	return nc.isConnecting();
+}
+
+
+
 void YOGClient::update()
 {
+	nc.update();
+
 	if(server)
 		server->update();
 
+	if(!nc.isConnecting() && wasConnecting)
+	{
+		if(nc.isConnected())
+		{
+			wasConnected = true;
+			wasConnecting = false;
+		}
+		else
+		{
+			wasConnected = false;
+			wasConnecting = false;
+		}
+	}
+
 	if(!nc.isConnected() && wasConnected)
 	{
-		if(listener)
-		{
-			shared_ptr<YOGConnectionLostEvent> event(new YOGConnectionLostEvent);
-			listener->handleYOGEvent(event);
-		}
+		shared_ptr<YOGConnectionLostEvent> event(new YOGConnectionLostEvent);
+		sendToListeners(event);
 		wasConnected=false;
 	}
 
@@ -103,11 +135,8 @@ void YOGClient::update()
 			loginPolicy = info->getLoginPolicy();
 			gamePolicy = info->getGamePolicy();
 			playerID = info->getPlayerID();
-			if(listener)
-			{
-				shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
+			sendToListeners(event);
 			connectionState = WaitingForLoginInformation;
 		}
 		//This recieves a login acceptance message
@@ -116,11 +145,8 @@ void YOGClient::update()
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
-			if(listener)
-			{
-				shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
+			sendToListeners(event);
 		}
 		//This recieves a login refusal message
 		if(type==MNetRefuseLogin)
@@ -128,11 +154,8 @@ void YOGClient::update()
 			shared_ptr<NetRefuseLogin> info = static_pointer_cast<NetRefuseLogin>(message);
 			connectionState = WaitingForLoginInformation;
 			loginState = info->getRefusalReason();
-			if(listener)
-			{
-				shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+			sendToListeners(event);
 		}
 		//This recieves a registration acceptance message
 		if(type==MNetAcceptRegistration)
@@ -140,11 +163,8 @@ void YOGClient::update()
 			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
-			if(listener)
-			{
-				shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
+			sendToListeners(event);
 		}
 		//This recieves a regisration refusal message
 		if(type==MNetRefuseRegistration)
@@ -152,77 +172,79 @@ void YOGClient::update()
 			shared_ptr<NetRefuseRegistration> info = static_pointer_cast<NetRefuseRegistration>(message);
 			connectionState = WaitingForLoginInformation;
 			loginState = info->getRefusalReason();
-			if(listener)
-			{
-				shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
-				listener->handleYOGEvent(event);
-			}
+			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+			sendToListeners(event);
 		}
 		///This recieves a game list update message
 		if(type==MNetUpdateGameList)
 		{
-			shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);
-			info->applyDifferences(games);
-			if(listener)
-			{
-				shared_ptr<YOGGameListUpdatedEvent> event(new YOGGameListUpdatedEvent);
-				listener->handleYOGEvent(event);
-			}
+			if(gameListManager)
+				gameListManager->recieveMessage(message);
 		}
 		///This recieves a player list update message
 		if(type==MNetUpdatePlayerList)
 		{
-			shared_ptr<NetUpdatePlayerList> info = static_pointer_cast<NetUpdatePlayerList>(message);
-			info->applyDifferences(players);
-			if(listener)
-			{
-				shared_ptr<YOGPlayerListUpdatedEvent> event(new YOGPlayerListUpdatedEvent);
-				listener->handleYOGEvent(event);
-			}
+			if(playerListManager)
+				playerListManager->recieveMessage(message);
 		}
 		///This recieves a YOGMessage list update message
 		if(type==MNetSendYOGMessage)
 		{
 			shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
-			messages.push(yogmessage->getMessage());
+			if(chatChannels.find(yogmessage->getChannel()) != chatChannels.end())
+			{
+				chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+			}
+			else
+			{
+				std::cerr<<"Recieved YOGMessage on a channel without a local YOGClientChatChannel"<<std::endl;
+			}
 		}
 
 		if(type==MNetCreateGameAccepted)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetCreateGameRefused)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetGameJoinAccepted)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetGameJoinRefused)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendMapHeader)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendGameHeader)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
-		if(type==MNetPlayerJoinsGame)
-		{
-			joinedGame->recieveMessage(message);
-		}
-		if(type==MNetPlayerLeavesGame)
+		if(type==MNetSendGamePlayerInfo)
 		{
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetStartGame)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type==MNetRefuseGameStart)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetSendOrder)
 		{
@@ -234,29 +256,78 @@ void YOGClient::update()
 		}
 		if(type==MNetRequestMap)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetKickPlayer)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
 		if(type==MNetReadyToLaunch)
 		{
-			joinedGame->recieveMessage(message);
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
 		}
-
-
+		if(type==MNetEveryoneReadyToLaunch)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type==MNetNotEveryoneReadyToLaunch)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type==MNetSetLatencyMode)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type == MNetPlayerJoinsGame)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type == MNetAddAI)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type == MNetRemoveAI)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type == MNetChangePlayersTeam)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
+		if(type == MNetSendReteamingInformation)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
 		if(type==MNetSendFileInformation)
 		{
-			assembler->handleMessage(message);
+			if(assembler)
+				assembler->handleMessage(message);
 		}
 		if(type==MNetRequestNextChunk)
 		{
-			assembler->handleMessage(message);
+			if(assembler)
+				assembler->handleMessage(message);
 		}
 		if(type==MNetSendFileChunk)
 		{
-			assembler->handleMessage(message);
+			if(assembler)
+				assembler->handleMessage(message);
+		}
+		if(type == MNetPing)
+		{
+			shared_ptr<NetPingReply> event(new NetPingReply);
+			nc.sendMessage(event);
 		}
 	}
 }
@@ -300,8 +371,9 @@ void YOGClient::attemptLogin(const std::string& nusername, const std::string& pa
 }
 
 
-void YOGClient::attemptRegistration(const std::string& username, const std::string& password)
+void YOGClient::attemptRegistration(const std::string& nusername, const std::string& password)
 {
+	username = nusername;
 	shared_ptr<NetAttemptRegistration> message(new NetAttemptRegistration(username, password));
 	nc.sendMessage(message);
 	connectionState = WaitingForRegistrationReply;
@@ -315,46 +387,6 @@ YOGLoginState YOGClient::getLoginState() const
 
 
 
-const std::list<YOGGameInfo>& YOGClient::getGameList() const
-{
-	return games;
-}
-
-
-
-const std::list<YOGPlayerInfo>& YOGClient::getPlayerList() const
-{
-	return players;
-}
-
-
-
-std::string YOGClient::findPlayerName(Uint16 playerID)
-{
-	for(std::list<YOGPlayerInfo>::iterator i = players.begin(); i != players.end(); ++i)
-	{
-		if(i->getPlayerID() == playerID)
-			return i->getPlayerName();
-	}
-	return "";
-}
-
-
-
-void YOGClient::requestGameListUpdate()
-{
-	//unimplemented
-}
-
-
-
-void YOGClient::requestPlayerListUpdate()
-{
-	//unimplemented
-}
-
-
-
 void YOGClient::disconnect()
 {
 	shared_ptr<NetDisconnect> message(new NetDisconnect);
@@ -362,28 +394,6 @@ void YOGClient::disconnect()
 	nc.closeConnection();
 	connectionState = NotConnected;
 	wasConnected=false;
-}
-
-
-
-void YOGClient::sendMessage(boost::shared_ptr<YOGMessage> mmessage)
-{
-	messages.push(mmessage);
-
-	shared_ptr<NetSendYOGMessage> message(new NetSendYOGMessage(mmessage));
-	nc.sendMessage(message);
-}
-
-
-boost::shared_ptr<YOGMessage> YOGClient::getMessage()
-{
-	if(messages.size())
-	{
-		boost::shared_ptr<YOGMessage> m = messages.front();
-		messages.pop();
-		return m;
-	}
-	return boost::shared_ptr<YOGMessage>();
 }
 
 
@@ -424,6 +434,30 @@ void YOGClient::sendNetMessage(boost::shared_ptr<NetMessage> message)
 
 
 
+void YOGClient::addYOGClientChatChannel(YOGClientChatChannel* channel)
+{
+	chatChannels[channel->getChannelID()] = channel;
+}
+
+
+
+void YOGClient::removeYOGClientChatChannel(YOGClientChatChannel* channel)
+{
+	chatChannels.erase(channel->getChannelID());
+}
+
+
+
+void YOGClient::sendToListeners(boost::shared_ptr<YOGClientEvent> event)
+{
+	for(std::list<YOGClientEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	{
+		(*i)->handleYOGClientEvent(event);
+	}
+}
+
+
+
 void YOGClient::setMapAssembler(boost::shared_ptr<MapAssembler> nassembler)
 {
 	assembler=nassembler;
@@ -438,16 +472,73 @@ boost::shared_ptr<MapAssembler> YOGClient::getMapAssembler()
 
 
 
-void YOGClient::setEventListener(YOGEventListener* nlistener)
+void YOGClient::addEventListener(YOGClientEventListener* listener)
 {
-	listener=nlistener;
+	listeners.push_back(listener);
 }
 
 
 
-void YOGClient::attachGameServer(boost::shared_ptr<YOGGameServer> nserver)
+void YOGClient::removeEventListener(YOGClientEventListener* listener)
+{
+	listeners.remove(listener);
+}
+
+
+
+void YOGClient::attachGameServer(boost::shared_ptr<YOGServer> nserver)
 {
 	server = nserver;
 }
+
+	
+
+boost::shared_ptr<YOGServer> YOGClient::getGameServer()
+{
+	return server;
+}
+
+
+
+void  YOGClient::setP2PConnection(boost::shared_ptr<P2PConnection> connection)
+{
+	p2pconnection = connection;
+}
+
+
+
+boost::shared_ptr<P2PConnection> YOGClient::getP2PConnection()
+{
+	return p2pconnection;
+}
+
+
+
+void YOGClient::setGameListManager(boost::shared_ptr<YOGClientGameListManager> ngameListManager)
+{
+	gameListManager = ngameListManager;
+}
+
+
+
+boost::shared_ptr<YOGClientGameListManager> YOGClient::getGameListManager()
+{
+	return gameListManager;
+}
+
+
+
+void YOGClient::setPlayerListManager(boost::shared_ptr<YOGClientPlayerListManager> nplayerListManager)
+{
+	playerListManager = nplayerListManager;
+}
+
+
+
+boost::shared_ptr<YOGClientPlayerListManager> YOGClient::getPlayerListManager()
+{
+	return playerListManager;
+}
+
 
 

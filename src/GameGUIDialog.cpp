@@ -27,6 +27,7 @@
 #include <GUISelector.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include "Player.h"
 
 
 //! Main menu screen
@@ -73,13 +74,13 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 {
 	// fill the slots
 	int i;
+	int xBase=0;
+	int yBase=0;
+	int n=0;
 	for (i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		int otherTeam = gameGUI->game.players[i]->teamNumber;
+		unsigned otherTeam = gameGUI->game.players[i]->teamNumber;
 		unsigned otherTeamMask = 1 << otherTeam;
-
-		int xBase = (i>>3)*300;
-		int yBase = (i&0x7)*25;
 
 		std::string pname;
 		if (gameGUI->game.players[i]->type>=Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
@@ -93,10 +94,10 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 			pname += ")";
 		}
 
-		Text *text = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
+		texts[i] = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
 		Team *team = gameGUI->game.players[i]->team;
-		text->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
-		addWidget(text);
+		texts[i]->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
+		addWidget(texts[i]);
 		
 		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);
 		addWidget(alliance[i]);
@@ -113,9 +114,30 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
 		chat[i]=new OnOffButton(268+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
 		addWidget(chat[i]);
+		
+		if(otherTeam == gameGUI->localTeamNo)
+		{
+			texts[i]->visible=false;
+			alliance[i]->visible=false;
+			normalVision[i]->visible=false;
+			foodVision[i]->visible=false;
+			marketVision[i]->visible=false;
+			chat[i]->visible=false;
+		}
+		else
+		{
+			yBase += 25;
+			if(n==7)
+			{
+				xBase += 300;
+				yBase = 0;
+			}
+			n+=1;
+		}
 	}
 	for (;i<16;i++)
 	{
+		texts[i] = NULL;
 		alliance[i] = NULL;
 		normalVision[i] = NULL;
 		foodVision[i] = NULL;
@@ -267,10 +289,23 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 :OverlayScreen(globalContainer->gfx, 320, 300)
 {
-	musicVol=new Selector(19, 50, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
-	addWidget(musicVol);
-	Text *musicVolText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
+	Text *audioMuteText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Mute]"), 200);
+	addWidget(audioMuteText);
+
+	mute = new OnOffButton(19, 50, 20, 20, ALIGN_LEFT, ALIGN_TOP, globalContainer->settings.mute, MUTE);
+	addWidget(mute);	
+
+	musicVolText=new Text(10, 80, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
+	
+	musicVol=new Selector(19, 110, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
+	addWidget(musicVol);
+
+	if(globalContainer->settings.mute)
+	{
+		musicVol->visible=false;
+		musicVolText->visible=false;
+	}
 
 	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();
@@ -293,6 +328,13 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->mix->setVolume(musicVol->getValue(), globalContainer->settings.mute);
+		globalContainer->mix->setVolume(musicVol->getValue(), mute->getState());
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		globalContainer->settings.mute = mute->getState();
+		musicVol->visible = ! globalContainer->settings.mute;
+		musicVolText->visible = ! globalContainer->settings.mute;
+		globalContainer->mix->setVolume(musicVol->getValue(), mute->getState());
 	}
 }

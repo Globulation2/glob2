@@ -26,6 +26,7 @@
 #include "boost/shared_ptr.hpp"
 #include "Brush.h"
 #include "GameGUIDefaultAssignManager.h"
+#include "GameGUIGhostBuildingManager.h"
 #include <string>
 #include <queue>
 
@@ -34,7 +35,7 @@ class GameGUIToolManager
 {
 public:
 	///Constructs a tool manager
-	GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign);
+	GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign, GameGUIGhostBuildingManager& ghostManager);
 	
 	///List of tool modes
 	enum ToolMode
@@ -91,9 +92,13 @@ private:
 	///Flushes an order for the current brush accumulator
 	void flushBrushOrders(int localteam);
 
+	int firstPlacementX;
+	int firstPlacementY;
+
 	Game& game;
 	BrushTool& brush;
 	GameGUIDefaultAssignManager& defaultAssign;
+	GameGUIGhostBuildingManager& ghostManager;
 	BrushAccumulator brushAccumulator;
 	///Tool mode
 	ToolMode mode;

@@ -110,7 +110,7 @@ void ScrollingText::internalInit(void)
 	assert(fontPtr);
 	int x, y, w, h;	
 	getScreenPos(&x, &y, &w, &h);
-	offset = -h;
+	offset = -h + 25;
 	
 	// Measures all the length of all the lines of the file (usefull for centering)
 	for (size_t i = 0; i < text.size(); i++)
@@ -187,7 +187,7 @@ void ScrollingText::onTimer(Uint32 tick)
 
 CreditScreen::CreditScreen()
 {
-	addWidget(new TextButton(20, 20, 100,  40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 0, 27));
+	addWidget(new TextButton(20, 20, 100,  40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Back]"), 0, 27));
 	
 	addWidget(new ScrollingText(0, 0 , 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", "AUTHORS"));
 }

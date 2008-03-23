@@ -35,6 +35,8 @@
 #include "BitArray.h"
 #include <boost/shared_ptr.hpp>
 
+class Map;
+
 //! An Order represents a synchronized event in the game
 class Order
 {
@@ -314,7 +316,7 @@ class OrderAlterateArea:public OrderModify
 {
 public:
 	OrderAlterateArea(const Uint8 *data, int dataLength);
-	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc);
+	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	virtual ~OrderAlterateArea(void);
 	
 	Uint8 *getData(void);
@@ -339,7 +341,7 @@ class OrderAlterateForbidden:public OrderAlterateArea
 {
 public:
 	OrderAlterateForbidden(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
-	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc) : OrderAlterateArea(teamNumber, type, acc) { }
+	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
 };
@@ -348,7 +350,7 @@ class OrderAlterateGuardArea:public OrderAlterateArea
 {
 public:
 	OrderAlterateGuardArea(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
-	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc) : OrderAlterateArea(teamNumber, type, acc) { }
+	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_GUARD_AREA; }
 };
@@ -357,7 +359,7 @@ class OrderAlterateClearArea:public OrderAlterateArea
 {
 public:
 	OrderAlterateClearArea(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
-	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc) : OrderAlterateArea(teamNumber, type, acc) { }
+	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_CLEAR_AREA; }
 };

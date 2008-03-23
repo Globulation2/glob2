@@ -20,7 +20,7 @@
 */
 
 #include "MultiplayerGameScreen.h"
-#include "YOGScreen.h"
+#include "YOGClientLobbyScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "NetConsts.h"
@@ -35,9 +35,10 @@
 #include <StringTable.h>
 
 #include "IRC.h"
+#include "YOGMessage.h"
 
-MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<NetTextMessageHandler> textMessage)
-	: game(game), textMessage(textMessage)
+MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
+	: game(game), gameChat(new YOGClientChatChannel(-1, client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -45,27 +46,38 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 		{
 			TextButton *button = new TextButton(20, 330-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", AI::getAIText(i).c_str(), ADD_AI+i);
+			button->visible = false;
 			addWidget(button);
 			addAI.push_back(button);
 		}
 	}
 	
 	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
-
-	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
-		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
-	else
-		addWidget(new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL));
-
 	startButton->visible=false;
 	addWidget(startButton);
+
+	gameStartWaitingText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
+	addWidget(gameStartWaitingText);
+	gameStartWaitingText->visible = false;
+
+
+	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
+	{
+		cancelButton = new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
+	}
+	else
+	{
+		cancelButton = new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL);
+	}
+	cancelButton->visible=false;
+	addWidget(cancelButton);
+
 	notReadyText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
 	gameFullText=new Text(20, 335, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
 	gameFullText->visible=false;
 	addWidget(gameFullText);
-
 
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
@@ -88,8 +100,8 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(20, 360, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
-	addWidget(startTimer);
+	percentDownloaded=new Text(20, 360, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
+	addWidget(percentDownloaded);
 
 	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
@@ -98,20 +110,21 @@ MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> 
 	
 	updateJoinedPlayers();
 	
-	textMessage->addTextMessageListener(this);
 	game->addEventListener(this);
+	gameChat->addListener(this);
 }
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
 {
-	textMessage->removeTextMessageListener(this);
 	game->removeEventListener(this);
+	gameChat->removeListener(this);
 }
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
 	game->update();
-	textMessage->update();
+	if(ircChat)
+		ircChat->update();
 }
 
 
@@ -123,6 +136,8 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		if (par1 == START)
 		{
 			//MultiplayerGame will send an event when the game is over
+			gameStartWaitingText->visible=true;
+			startButton->visible=false;
 			game->startGame();
 		}
 		else if (par1 == CANCEL)
@@ -145,21 +160,20 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		game->sendMessage(textInput->getText());
-		boost::shared_ptr<IRC> irc = textMessage->getIRC();
-		if(irc)
+		if(textInput->getText() != "")
 		{
-			irc->sendCommand(textInput->getText());
+			boost::shared_ptr<YOGMessage> message(new YOGMessage(textInput->getText(), game->getUsername(), YOGNormalMessage));
+			gameChat->sendMessage(message);
+			textInput->setText("");
 		}
-		textInput->setText("");
 	}
 }
 
 
 
-void MultiplayerGameScreen::handleTextMessage(const std::string& message, NetTextMessageType type)
+void MultiplayerGameScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
 {
-	chatWindow->addText(message);
+	chatWindow->addText(message->formatForReading());
 	chatWindow->addText("\n");
 	chatWindow->scrollToBottom();
 }
@@ -186,13 +200,22 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 		startButton->visible=false;
 		notReadyText->visible=true;
 	}
+	else if(type == MGEGameStarted)
+	{
+		if(ircChat)
+			ircChat->stopIRC();
+	}
 	else if(type == MGEGameExit)
 	{
+		if(ircChat)
+			ircChat->startIRC(game->getUsername());
 		endExecute(-1);
 		game->leaveGame();
 	}
 	else if(type == MGEGameEndedNormally)
 	{
+		if(ircChat)
+			ircChat->startIRC(game->getUsername());
 		endExecute(StartedGame);
 		game->leaveGame();
 	}
@@ -207,6 +230,40 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	else if(type == MGEHostCancelledGame)
 	{
 		endExecute(GameCancelled);
+	}
+	else if(type == MGEServerDisconnected)
+	{
+		endExecute(ServerDisconnected);
+	}
+	else if(type == MGEGameStartRefused)
+	{
+		gameStartWaitingText->visible=false;
+		startButton->visible=true;
+	}
+	else if(type == MGEGameHostJoinAccepted)
+	{
+		cancelButton->visible=true;
+		gameChat->setChannelID(game->getChatChannel());
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		{
+			for (size_t i=1; i<AI::SIZE; i++)
+			{
+				addAI[i-1]->visible=true;
+			}
+		}
+	}
+	else if(type == MGEDownloadPercentUpdate)
+	{
+		shared_ptr<MGDownloadPercentUpdate> info = static_pointer_cast<MGDownloadPercentUpdate>(event);
+		if(info->getPercentFinished() != 100)
+		{
+			percentDownloaded->setText(FormatableString(Toolkit::getStringTable()->getString("[downloaded %0]")).arg((int)info->getPercentFinished()));
+			percentDownloaded->visible=true;
+		}
+		else
+		{
+			percentDownloaded->visible=false;
+		}
 	}
 }
 

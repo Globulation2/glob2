@@ -23,8 +23,7 @@
 #define __YOGLoginScreen_h
 
 #include "Glob2Screen.h"
-#include "YOGClient.h"
-#include "YOGScreen.h"
+#include "YOGClientEventListener.h"
 
 namespace GAGGUI
 {
@@ -35,9 +34,11 @@ namespace GAGGUI
 	class Animation;
 }
 
+class YOGClient;
+
 ///This handles with connecting the user to YOG and logging them in.
 ///This assumes the client has not yet connected with YOG
-class YOGLoginScreen : public Glob2Screen, public YOGEventListener
+class YOGLoginScreen : public Glob2Screen, public YOGClientEventListener
 {
 public:
 	///Construct with the given YOG client.
@@ -71,7 +72,7 @@ private:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	
 	///Responds to YOG events
-	void handleYOGEvent(boost::shared_ptr<YOGEvent> event);
+	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
 
 	///Attempt a login with the entered information
 	void attemptLogin();
@@ -83,6 +84,8 @@ private:
 	Text *newYogPasswordText, *rememberYogPasswordText;
 	TextArea *statusText;
 	Animation *animation;
+	
+	bool wasConnecting;
 	
 	boost::shared_ptr<YOGClient> client;
 };

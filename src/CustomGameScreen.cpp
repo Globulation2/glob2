@@ -29,6 +29,7 @@
 #include <StringTable.h>
 #include <Stream.h>
 #include <FormatableString.h>
+#include "Player.h"
 
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)
@@ -178,14 +179,14 @@ void CustomGameScreen::updatePlayers()
 			int teamColor=getSelectedColor(i);
 			if (i==0)
 			{
-				gameHeader.getBasePlayer(i) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+				gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
 			}
 			else
 			{
 				AI::ImplementitionID iid=getAiImplementation(i);
 				FormatableString name("%0 %1");
 				name.arg(AI::getAIText(iid)).arg(i-1);
-				gameHeader.getBasePlayer(i) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 			}
 			count+=1;
 		}

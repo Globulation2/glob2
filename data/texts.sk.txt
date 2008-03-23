@@ -1,5 +1,3 @@
-[%0 has been deconnected of the game]
-%0 bol odpojený.
 [%0 has left the game]
 %0 odišiel z hry.
 [%0's game]
@@ -16,8 +14,6 @@ fV: Ukáž jedálne (na kradnutie jedotiek)
 mV: Ukáž Trhoviská (na výmenu ovocia)
 [abreaviation explanation V]
 V: Ukáž, čo vidia budovy
-[Add AI]
-Pridaj UI
 [add map]
 
 [add shortcut]
@@ -46,6 +42,8 @@ Riasy
 riesy
 [alliances]
 Aliancie
+[alt %0]
+
 [and]
 a
 [any explorer]
@@ -66,8 +64,6 @@ Pancier
 Rýchl. út.
 [At. strength]
 Sila út.
-[attack speed]
-Rýchlosť útoku
 [Attack]
 Útok
 [audio]
@@ -80,10 +76,10 @@ Dostupné lokálne hry
 Čaká sa na hráčov
 [away:]
 preč:
+[Back]
+
 [backspace]
 
-[bad error in connection system]
-Chyba v systéme pripojenia
 [barracks explanation 2]
 tvojich Bojovníkov
 [barracks explanation]
@@ -144,12 +140,6 @@ veľkosť pláže
 
 [Build]
 Stavanie
-[Building name]
-Názov budovy
-[Building short explanation 2]
-Krátky popis budovy 2 (max 24 znakov)
-[Building short explanation]
-Krátky popis budovy (max 24 znakov)
 [building site]
 stavenisko
 [Buildings]
@@ -158,8 +148,20 @@ Budovy
 Nábojov:
 [campaign editor]
 
+[campaign text]
+
 [campaign]
 Kampaň
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
 [Can't join game, missmatching game parameters]
 Nemožno vstúpiť do hry - rozdielne parametre
 [Can't join game, timeout]
@@ -180,8 +182,6 @@ Zrušiť
 Nesie:
 [Change Area Name]
 
-[checksum sent]
-Poslaný kontrolný súčet ...
 [Cherry]
 Čerešňa
 [choose campaign]
@@ -192,8 +192,6 @@ Vyber si hru
 Vyber si mapu
 [clear area]
 Čistenie
-[clear]
-
 [Clearing:]
 Čistenie:
 [clearingflag explanation 2]
@@ -202,26 +200,26 @@ Vyber si mapu
 Čistí suroviny
 [clearingflag]
 Vlajka čistenia
-[close]
-Zavrieť
 [closed]
 Uzavreté
 [compile]
 Kopilovať skript
 [compose]
 
+[Computing Fertility]
+
 [connect]
 Pripojiť
-[connected to all players]
-Pripojené ku všetkým hráčom
-[connected to server]
-Pripojené k serveru
-[connecting to all players]
-Pripája sa k hráčom
 [connecting to]
 Pripája sa ku
+[constructed buildings]
+
+[construction and upgrades]
+
 [Continue playing]
 Pokračovať
+[control %0]
+
 [Corn]
 Pšenica
 [crater density]
@@ -244,12 +242,8 @@ Voliteľná hra
 Poškodenie
 [Damaged Map]
 
-[dblbuff]
-Double Buffering
 [decrease units working]
 
-[default terrain]
-Základný povrch
 [defencetower explanation 2]
 a budovy nepriateľa
 [defencetower explanation]
@@ -276,8 +270,6 @@ púšť
 Zničiť vybranú budovu
 [destroy]
 Zničiť
-[Disconnect]
-Odpojiť
 [display]
 Zobrazenie
 [do nothing]
@@ -286,10 +278,8 @@ Zobrazenie
 Nič nenesie
 [down]
 
-[download finished]
-Stiahnuté
-[downloaded at]
-Stiahnutých 
+[downloaded %0]
+
 [edit map]
 
 [editing map]
@@ -356,8 +346,6 @@ prázdne ostrovy
 
 [Fertility Map]
 
-[food left]
-Jedla
 [food]
 Jedlo
 [forbidden area]
@@ -378,8 +366,6 @@ Celá obrazovka
 Plné
 [game shortcuts]
 
-[game speed]
-Rýchlosť hry
 [general settings]
 Základ
 [go to event]
@@ -406,14 +392,6 @@ Ručná mapa
 
 [Harvest]
 Ťažba
-[has joined]
-sa pridal
-[has quit]
-odišiel
-[heal]
-Zdravie
-[help]
-
 [home]
 
 [hospital explanation 2]
@@ -434,8 +412,6 @@ Zdravie
 hladní
 [hungryness]
 Hlad
-[hwaccel]
-Hardvérová akcelerácia
 [In way]
 Na ceste
 [increase units working]
@@ -482,8 +458,6 @@ sk
 Jazyk
 [language]
 Slovensky
-[large]
-veľká
 [Leave Game]
 
 [left meta]
@@ -504,8 +478,6 @@ Nahrať hru
 
 [load]
 Nahrať
-[loading glob2]
-Nahráva sa Globulation 2
 [login]
 Prihlásenie
 [Lost : %0 has more prestige than you]
@@ -522,12 +494,12 @@ Zem
 Názov mapy: %0.
 [map name]
 
+[map script]
+
 [map size x]
 Šírka mapy
 [map size y]
 Výška mapy
-[mapGenerationDescriptor Methodes]
-Metódy náhodného generovania máp
 [maps available]
 
 [mark map]
@@ -538,9 +510,7 @@ s ostatnými hráčmi
 Umožnňuje výmenu ovocia
 [market]
 Trhovisko
-[medium]
-stredná
-[menu]
+[meta %0]
 
 [Min required level:]
 Najnižšia potrebná úroveň:
@@ -548,13 +518,13 @@ Najnižšia potrebná úroveň:
 
 [Music volume]
 Hlasitosť (hudba)
+[Mute]
+
 [mute]
 Stlmiť
-[network latency]
-Latencia siete
 [new campaign]
 
-[new]
+[new map]
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
@@ -564,10 +534,10 @@ Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož použí
 
 [No]
 Nie
-[not connected]
-Nepripojené
 [not ready]
 nepripravený
+[number of players: %0 (%1 AI)]
+
 [number of players: %0]
 Počet hráčov: %0
 [number of teams: %0]
@@ -584,10 +554,12 @@ Ok
 staré náhodné ostrovy
 [old random terrain]
 starý náhodný terén
+[on press]
+
 [On the spot]
 Tu
-[one player]
-Pripojil sa hráč.
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -614,18 +586,12 @@ Pozastaviť hru
 
 [Paused]
 Zastavené
-[percent]
-  percent
 [player name]
 Meno hráča
-[player]
-Hráč
 [please wait]
 Čakaj, prosím
 [power]
 
-[presence request sent]
-Poslaná požiadavka na prítomnosť ...
 [press space]
 Pre pokračovanie stlač medzeru
 [Prestige]
@@ -646,8 +612,6 @@ Koniec
 Zvyšuje rýchlosť kráčania
 [racetrack]
 Bežecká dráha
-[random terrain]
-Náhodný povrch
 [range]
 Dosah
 [ratios]
@@ -668,8 +632,6 @@ Spust./zast. opravu
 Opraviť
 [repeat area]
 
-[ressources]
-Suroviny
 [restore default shortcuts]
 Pôvodné nastavenia klávesnice
 [return to editor]
@@ -738,6 +700,8 @@ hľadajú
 
 [select construct swimmingpool]
 
+[select delete tool]
+
 [select explorationflag]
 
 [select hospital building]
@@ -772,10 +736,10 @@ hľadajú
 
 [select warflag]
 
-[session request sent]
-Poslaná požiadavka na sedenie ...
 [settings]
 Nastavenia
+[shift %0]
+
 [shortcut explanation enter]
 Enter: Pošli správu
 [shortcut explanation v]
@@ -784,30 +748,20 @@ V: Drž a rozprávaj
 
 [skin]
 Povrch
-[small]
-malá
 [smoothing]
 Vyhľadenie
 [space]
 
-[speed]
-Rýchlosť
 [start mission]
 
 [start new campaign]
 
 [Start]
 Štart
-[STARTING GAME ...]
-Začína hra... 
 [Starving Map]
 
 [starving]
 trpia
-[stat]
-Štatistiky
-[state]
-stav
 [Statistics]
 Štatistiky
 [Still (i)]
@@ -910,6 +864,8 @@ Hry
 Nemocnica dokončená
 [the hospital is under attack]
 Útočia ti na Nemocnicu
+[The host has cancelled the game]
+
 [the inn is finished]
 Jedáleň dokončená
 [the inn is under attack]
@@ -964,10 +920,16 @@ Spustiť nahrávanie zvuku
 Dosiahnutá úroveň prestíže
 [Total]
 Spolu
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Kurz
-[unassigned]
-Nepriradené
 [Uncontrolled]
 Neobsadené
 [undo]
@@ -976,12 +938,10 @@ Neobsadené
 Jednotný povrch
 [Unit editor]
 Editor jedotiek
+[unit settings explanation]
+
 [unit settings]
 Jednotky
-[Unit type]
-Typ jednotky
-[units type]
-typ jednotky
 [units working]
  jednotiek pracuje
 [Units]
@@ -992,8 +952,6 @@ Jednotky
 
 [up]
 
-[update list]
-Aktualizovať
 [upgrade building]
 Spust./zast. zdokonaľovanie
 [upgrade]
@@ -1004,11 +962,11 @@ Meno hráča
 Verzia
 [view history]
 
-[wait destroy]
-Čakajúce na zničenie
 [waiting for %0]
 Čaká sa na %0
 [waiting for key]
+
+[Waiting]
 
 [Walk]
 Kráčanie
@@ -1026,10 +984,6 @@ Pozor, aby sa prejavili zmeny, je potrebné hru reštartovať!
 Bojovník
 [warriors]
 bojovníci
-[was AI]
-bol UI
-[was]
-bol
 [water]
 Voda
 [Wheat]
@@ -1060,22 +1014,16 @@ Precuje
 zranení
 [Yes]
 Áno
-[YESTS_BAD]
-Chyba vnútornej konzistenice.
 [YESTS_CONNECTING]
 Pripája sa ku YOG metaserveru...
 [YESTS_CONNECTION_LOST]
 Spojenie s YOG stratené.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metaserver odmietol spojenie, pretože nastala chyba protokolu: Už si autentifikovaný. Počkaj 45 sekúnd a skús znovu.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 YOG metaserver odmietol spojenie, pretože toto meno a heslo sú už zaregistrované. Ak je toto meno tvoje, deaktivuj možnosť "Zaregistrovať nové YOG meno s heslom".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metaserver odmietol spojenie, pretože bolo zadané zlé heslo.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver odmietol spojenie, pretože toto meno ešte nemá nastavené heslo. Najprv je potrebné meno a heslo zaregistrovať. Preto aktivuj možnosť  "Zaregistrovať nové YOG meno s heslom" a až potom sa pokús pripojiť. Toto je potrebné swpraviť len raz.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG metaserver odmietol spojenie, pretože nastala chyba protokolu: Ešte nie si pripojený a už sa autentifikuješ. Prosím, ohláste túto chybu.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver odmietol spojenie, pretože je tvoj Globulation 2 klient zastaralý.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1084,30 +1032,16 @@ YOG metaserver odmietol spojenie bez vysvetlenia!
 YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
 [YESTS_CREATED]
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
-[YESTS_DECONNECTING]
-Odpája sa od YOG metaservera...
 [YESTS_UNABLE_TO_CONNECT]
 Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
-[YESTS_YOG_KILLED]
-Administrátor práve zastavil YOG metaserver.
-[yog-chat]
-#yog-en
 [yog]
 Ysagoon Online Gaming
-[YOG_HELP]
-YOG systém správ má dva príkazy - "msg" a "away". Ak o nich chceš vedieť viac, napíš "/help <príkaz>".
-[YOG_HELP_AWAY]
-Príkaz "/away (<správa>)" umožňuje ostatným užívateľom YOG vedieť, že si dočasne preč od PC. Môžše napísať krátke vysvetlenie.  Napríklad "/away Obedujem. Vrátim sa o jednej.". Alias "/a"
-[YOG_HELP_MSG]
-Príkaz "/msg <meno> <správa>" umožňuje poslať súkromnú správu konkrétnemu užívateľovi. Napríklad "/msg Jano Čau, ako žiješ?".  Alias "/m".
-[You are no more marked as away]
-Vrátil si sa ku klávesnici.
-[You are now marked as away]
-Si preč od klávesnice.
 [you have lost]
 Prehral(a) si!
 [you have won]
 Vyhral(a) si!
+[You where kicked from the game]
+
 [Your %0 are under attack]
 Tvoji %0 čelia útoku
 [Your unit got converted to %0's team]

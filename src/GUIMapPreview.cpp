@@ -75,14 +75,14 @@ const char *MapPreview::getMethode(void)
 
 void MapPreview::setMapThumbnail(const char *mapName)
 {
-	if (mapName == NULL)
-		return;
-		
 	if (mapThumbnail)
 	{
 		delete mapThumbnail;
 		mapThumbnail = NULL;
 	}
+	
+	if (mapName == NULL)
+		return;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
 	//InputStream *stream = new BinaryInputStream(new CompressedInputStreamBackendFilter(Toolkit::getFileManager()->openInputStreamBackend(mapName)));

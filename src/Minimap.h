@@ -62,6 +62,9 @@ public:
 	
 	///This converts the given map cordinates to the closest on-screen cordinate
 	void convertToScreen(int nx, int ny, int& x, int& y);
+	
+	///This resest the minimap drawing
+	void resetMinimapDrawing();
 private:
 	///Computes the minimap positioning
 	void computeMinimapPositioning();

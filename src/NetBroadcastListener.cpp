@@ -28,7 +28,7 @@ using namespace GAGCore;
 
 NetBroadcastListener::NetBroadcastListener()
 {
-	socket = SDLNet_UDP_Open(LAN_BROADCAST_PORT);
+	enableListening();
 	lastTime = SDL_GetTicks();
 }
 
@@ -36,64 +36,67 @@ NetBroadcastListener::NetBroadcastListener()
 
 NetBroadcastListener::~NetBroadcastListener()
 {
-	SDLNet_UDP_Close(socket);
+	disableListening();
 }
 
 
 
 void NetBroadcastListener::update()
 {
-	UDPpacket* packet = SDLNet_AllocPacket(1024);
-	int result = SDLNet_UDP_Recv(socket, packet);
-	while(result == 1)
+	if(socket)
 	{
-		Uint16 length = SDLNet_Read16(packet->data);
-		MemoryStreamBackend* msb = new MemoryStreamBackend(packet->data+2, length);
-		msb->seekFromStart(0);
-		BinaryInputStream* bis = new BinaryInputStream(msb);
-
-		LANGameInformation info;
-		info.decodeData(bis);
-		
-		bool found = false;
-		for(int i=0; i<addresses.size(); ++i)
+		UDPpacket* packet = SDLNet_AllocPacket(1024);
+		int result = SDLNet_UDP_Recv(socket, packet);
+		while(result == 1)
 		{
-			if(addresses[i].host == packet->address.host)
+			Uint16 length = SDLNet_Read16(packet->data);
+			MemoryStreamBackend* msb = new MemoryStreamBackend(packet->data+2, length);
+			msb->seekFromStart(0);
+			BinaryInputStream* bis = new BinaryInputStream(msb);
+
+			LANGameInformation info;
+			info.decodeData(bis);
+			
+			bool found = false;
+			for(int i=0; i<addresses.size(); ++i)
 			{
-				games[i] = info;
-				timeouts[i] = 1500;
-				found = true;
-				break;
+				if(addresses[i].host == packet->address.host)
+				{
+					games[i] = info;
+					timeouts[i] = 1500;
+					found = true;
+					break;
+				}
+			}
+
+			if(!found)
+			{
+				games.push_back(info);
+				timeouts.push_back(1500);
+				addresses.push_back(packet->address);
+			}
+			
+			delete bis;
+			result = SDLNet_UDP_Recv(socket, packet);
+		}
+		
+		int time = SDL_GetTicks() - lastTime;
+		for(int i=0; i<timeouts.size();)
+		{
+			timeouts[i] -= time;
+			if(timeouts[i] <= 0)
+			{
+				timeouts.erase(timeouts.begin() + i);
+				games.erase(games.begin() + i);
+				addresses.erase(addresses.begin() + i);
+			}
+			else
+			{
+				++i;
 			}
 		}
-
-		if(!found)
-		{
-			games.push_back(info);
-			timeouts.push_back(1500);
-			addresses.push_back(packet->address);
-		}
-		
-		delete bis;
-		result = SDLNet_UDP_Recv(socket, packet);
+		lastTime = SDL_GetTicks();
 	}
-	
-	int time = SDL_GetTicks() - lastTime;
-	for(int i=0; i<timeouts.size();)
-	{
-		timeouts[i] -= time;
-		if(timeouts[i] <= 0)
-		{
-			timeouts.erase(timeouts.begin() + i);
-			games.erase(games.begin() + i);
-			addresses.erase(addresses.begin() + i);
-		}
-		else
-		{
-			++i;
-		}
-	}
-	lastTime = SDL_GetTicks();
 }
 
 
@@ -114,4 +117,20 @@ std::string NetBroadcastListener::getIPAddress(size_t num)
 	s<<int(address[3]);
 	return s.str();
 }
+
+
+
+void NetBroadcastListener::enableListening()
+{
+	socket = SDLNet_UDP_Open(LAN_BROADCAST_PORT);
+}
+
+
+
+void NetBroadcastListener::disableListening()
+{
+	SDLNet_UDP_Close(socket);
+}
+
+
 

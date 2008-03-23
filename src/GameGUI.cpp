@@ -21,7 +21,6 @@
 #include <stdarg.h>
 #include <math.h>
 
-
 #include <sstream>
 #include <iostream>
 #include <algorithm>
@@ -50,6 +49,9 @@
 #include "SoundMixer.h"
 #include "VoiceRecorder.h"
 #include "GameGUIKeyActions.h"
+#include "Player.h"
+
+#include "config.h"
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>
@@ -128,8 +130,9 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign),
-	  minimap(globalContainer->runNoX, globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::HideFOW)
+	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
+	  minimap(globalContainer->runNoX, (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-128), 0, 128, 14, Minimap::HideFOW),
+	  ghostManager(game)
 {
 }
 
@@ -146,6 +149,7 @@ void GameGUI::init()
 	gamePaused=false;
 	hardPause=false;
 	exitGlobCompletely=false;
+	flushOutgoingAndExit=false;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
 	drawAccessibilityAids=false;
@@ -283,13 +287,13 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
-        /* We used to use SDL_GetMouseState, like the following
-           commented-out code, but that was buggy and prevented
-           dragging from correctly going through intermediate cells.
-           It is vital to use the mouse position and button status as
-           it was at the time in the middle of the event stream, not
-           as it is now.  So instead we make sure the correct data is
-           passed to us as a parameter. */
+	/* We used to use SDL_GetMouseState, like the following
+		commented-out code, but that was buggy and prevented
+		dragging from correctly going through intermediate cells.
+		It is vital to use the mouse position and button status as
+		it was at the time in the middle of the event stream, not
+		as it is now.  So instead we make sure the correct data is
+		passed to us as a parameter. */
 	// int mx, my;
 	// Uint8 button = SDL_GetMouseState(&mx, &my);
         // fprintf (stderr, "enter dragStep: button: %d, mx: %d, selectionMode: %d\n", button, mx, selectionMode);
@@ -324,8 +328,9 @@ void GameGUI::step(void)
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
-        int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
+	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
+	SDLMod modState = SDL_GetModState();
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type==SDL_MOUSEMOTION)
@@ -373,6 +378,20 @@ void GameGUI::step(void)
 			mouseMotionEvent=event;
 			wasMouseMotion=true;
 		}
+#		ifdef USE_OSX
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+		{
+			isRunning=false;
+			exitGlobCompletely=true;
+		}
+#		endif
+#		ifdef USE_WIN32
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+		{
+			isRunning=false;
+			exitGlobCompletely=true;
+		}
+#		endif
 		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
 		{
 			lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
@@ -443,57 +462,31 @@ void GameGUI::step(void)
 		orderQueue.push_back(orderVoiceData);
 	}
 	
+	// Check if the text being displayed has changed, and if it has, add it to the history box
+	if(game.script.isTextShown && game.script.textShown != previousSGSLText)
+	{
+		//Split into one per line
+		std::vector<std::string> messages;
+		setMultiLine(game.script.textShown, &messages, "    ");
+
+		///Add each line as a seperate message to the message manager.
+		///Must be done backwards to appear in the right order
+		for (int i=messages.size()-1; i>=0; i--)
+		{
+			messageManager.addMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
+		}
+		
+		previousSGSLText = game.script.textShown;
+	}
+	
 	// music step
 	musicStep();
-	
-	// do a yog step
-//	yog->step();
 
-/*
-	// display yog chat messages
-	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
-		if (!m->gameGuiPainted)
-		{
-			switch(m->messageType)//set the text color
-			{
-				case YCMT_MESSAGE:
-					//We don't want YOG messages to appear while in the game.
-					//addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);
-				break;
-				case YCMT_PRIVATE_MESSAGE:
-					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(m->userName).arg(m->text));
-				break;
-				case YCMT_ADMIN_MESSAGE:
-					addMessage(138, 99, 255, FormatableString("<%0> %1").arg(m->userName).arg(m->text));
-				break;
-				case YCMT_PRIVATE_RECEIPT:
-					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(m->userName).arg(m->text));
-				break;
-				case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
-					addMessage(99, 255, 242, FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[away:]")).arg(m->userName).arg(m->text));
-				break;
-				case YCMT_EVENT_MESSAGE:
-					addMessage(99, 143, 255, m->text);
-				break;
-				default:
-					printf("m->messageType=%d\n", m->messageType);
-					assert(false);
-				break;
-			}
-			m->gameGuiPainted=true;
-		}
-*/
 	boost::shared_ptr<Order> order = toolManager.getOrder();
 	while(order)
 	{
 		orderQueue.push_back(order);
 		order = toolManager.getOrder();
-	}
-
-
-	if(game.stepCounter == 60)
-	{
-		overlay.computeFertility(game, localTeamNo);
 	}
 
 	if(game.stepCounter % 25 == 1)
@@ -632,6 +625,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+					flushOutgoingAndExit=true;
 					return true;
 				}
 				break;
@@ -719,7 +713,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
-    					defualtGameSaveName=locationName;
+    					defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen)->getName();
 						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
 						if (stream->isEndOfStream())
 						{
@@ -752,6 +746,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case InGameEndOfGameScreen::QUIT:
 				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit=true;
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
@@ -799,6 +794,16 @@ void GameGUI::processEvent(SDL_Event *event)
 	// the dump (debug) keys are always handled
 	if (event->type == SDL_KEYDOWN)
 		handleKeyDump(event->key);
+	
+	
+	if (event->type==SDL_MOUSEBUTTONUP)
+	{
+		int button=event->button.button;
+		if (button==SDL_BUTTON_MIDDLE)
+		{
+			panPushed=false;
+		}
+	}
 	
 	// if there is a menu he get events first
 	if (inGameMenu)
@@ -914,7 +919,6 @@ void GameGUI::processEvent(SDL_Event *event)
 				SDL_GetMouseState(&mx, &my);
 				toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
 			}
-	
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
@@ -935,6 +939,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+		flushOutgoingAndExit=true;
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{
@@ -999,6 +1004,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		return;
 	int typeNum = building->typeNum + 1; //determines type of updated building
 	int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+	int repairUnitWorking = defaultAssign.getDefaultAssignedUnits(building->typeNum - 1);
 	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
 	if ((building->hp < buildingType->hpMax) && repair)
 	{
@@ -1006,7 +1012,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((building->type->regenerationSpeed == 0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, 1, 1)));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, building->maxUnitWorkingLocal)));
 	}
 	else if (upgrade)
 	{
@@ -1035,7 +1041,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 			setIsSpaceSet(true);
 		}
 		else
-		{	
+		{
 			Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
 			switch(action_t)
 			{
@@ -1726,7 +1732,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				virtualIt!=localTeam->virtualBuildings.end(); ++virtualIt)
 			{
 				Building *b=*virtualIt;
-				if ((b->posX==mapX) && (b->posY==mapY))
+				if ((b->posXLocal==mapX) && (b->posYLocal==mapY))
 				{
 					setSelection(BUILDING_SELECTION, b);
 					selectionPushed=true;
@@ -2270,9 +2276,9 @@ void GameGUI::drawPanelButtons(int pos)
 	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
 	{
 		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 1);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 29);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 0);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 28);
 	}
 
 	if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
@@ -3005,116 +3011,119 @@ void GameGUI::drawBuildingInfos(void)
 		}
 
 		// repair and upgrade
-		if (selBuild->constructionResultState==Building::REPAIR)
-		{
-			if (buildingType->isBuildingSite)
-				assert(buildingType->nextLevel!=-1);
-			drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel repair]");
-		}
-		else if (selBuild->constructionResultState==Building::UPGRADE)
-		{
-			assert(buildingType->nextLevel!=-1);
-			if (buildingType->isBuildingSite)
-				assert(buildingType->prevLevel!=-1);
-			drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel upgrade]");
-		}
-		else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
-		{
-			if (selBuild->hp<buildingType->hpMax)
+		if(selBuild->owner == localTeam)
+		{ 
+			if (selBuild->constructionResultState==Building::REPAIR)
 			{
-				// repair
-				if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
-				{
-					drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[repair]");
-					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
-						&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
-						{
-							globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
-							int ressources[BASIC_COUNT];
-							selBuild->getRessourceCountToRepair(ressources);
-							drawCosts(ressources, globalContainer->littleFont);
-							globalContainer->littleFont->popStyle();
-						}
-				}
+				if (buildingType->isBuildingSite)
+					assert(buildingType->nextLevel!=-1);
+				drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel repair]");
 			}
-			else if (buildingType->nextLevel!=-1)
+			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
-				// upgrade
-				if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
+				assert(buildingType->nextLevel!=-1);
+				if (buildingType->isBuildingSite)
+					assert(buildingType->prevLevel!=-1);
+				drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel upgrade]");
+			}
+			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
+			{
+				if (selBuild->hp<buildingType->hpMax)
 				{
-					drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[upgrade]");
-					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
-						&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
-						{
-							globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
-
-							// We draw the ressources cost.
-							int typeNum=buildingType->nextLevel;
-							BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-							drawCosts(bt->maxRessource, globalContainer->littleFont);
-
-							// We draw the new abilities:
-							int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
-
-							bt=globalContainer->buildingsTypes.get(bt->nextLevel);
-
-							if (bt->hpMax)
-								drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE, bt->hpMax);
-							if (bt->maxUnitInside)
-								drawValueAlignedRight(blueYpos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, bt->maxUnitInside);
-							blueYpos += YOFFSET_ICON+YOFFSET_B_SEP;
-
-							if (buildingType->maxUnitWorking)
-								blueYpos += YOFFSET_BAR+YOFFSET_B_SEP;
-
-							if (bt->armor)
+					// repair
+					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && localTeam->maxBuildLevel()>=buildingType->level)
+					{
+						drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[repair]");
+						if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
+							&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 							{
-								if (!buildingType->armor)
-									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
-								drawValueAlignedRight(blueYpos-1, bt->armor);
-								blueYpos+=YOFFSET_TEXT_LINE;
+								globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
+								int ressources[BASIC_COUNT];
+								selBuild->getRessourceCountToRepair(ressources);
+								drawCosts(ressources, globalContainer->littleFont);
+								globalContainer->littleFont->popStyle();
 							}
-							if (buildingType->maxUnitInside)
-								blueYpos += YOFFSET_INFOS;
-							if (bt->shootDamage)
+					}
+				}
+				else if (buildingType->nextLevel!=-1)
+				{
+					// upgrade
+					if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
+					{
+						drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[upgrade]");
+						if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
+							&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 							{
-								drawValueAlignedRight(blueYpos+1, bt->shootDamage);
-								drawValueAlignedRight(blueYpos+12, bt->shootingRange);
-								blueYpos += YOFFSET_TOWER;
-							}
-							blueYpos += unitInsideBarYDec;
-							blueYpos += YOFFSET_B_SEP;
+								globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
 
-							unsigned j = 0;
-							for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
-							{
-								if (buildingType->maxRessource[i])
+								// We draw the ressources cost.
+								int typeNum=buildingType->nextLevel;
+								BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+								drawCosts(bt->maxRessource, globalContainer->littleFont);
+
+								// We draw the new abilities:
+								int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
+
+								bt=globalContainer->buildingsTypes.get(bt->nextLevel);
+
+								if (bt->hpMax)
+									drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE, bt->hpMax);
+								if (bt->maxUnitInside)
+									drawValueAlignedRight(blueYpos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, bt->maxUnitInside);
+								blueYpos += YOFFSET_ICON+YOFFSET_B_SEP;
+
+								if (buildingType->maxUnitWorking)
+									blueYpos += YOFFSET_BAR+YOFFSET_B_SEP;
+
+								if (bt->armor)
 								{
-									drawValueAlignedRight(blueYpos+(j*11), bt->maxRessource[i]);
+									if (!buildingType->armor)
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
+									drawValueAlignedRight(blueYpos-1, bt->armor);
+									blueYpos+=YOFFSET_TEXT_LINE;
+								}
+								if (buildingType->maxUnitInside)
+									blueYpos += YOFFSET_INFOS;
+								if (bt->shootDamage)
+								{
+									drawValueAlignedRight(blueYpos+1, bt->shootDamage);
+									drawValueAlignedRight(blueYpos+12, bt->shootingRange);
+									blueYpos += YOFFSET_TOWER;
+								}
+								blueYpos += unitInsideBarYDec;
+								blueYpos += YOFFSET_B_SEP;
+
+								unsigned j = 0;
+								for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+								{
+									if (buildingType->maxRessource[i])
+									{
+										drawValueAlignedRight(blueYpos+(j*11), bt->maxRessource[i]);
+										j++;
+									}
+								}
+								
+								if (bt->maxBullets)
+								{
+									drawValueAlignedRight(blueYpos+(j*11), bt->maxBullets);
 									j++;
 								}
-							}
-							
-							if (bt->maxBullets)
-							{
-								drawValueAlignedRight(blueYpos+(j*11), bt->maxBullets);
-								j++;
-							}
 
-							globalContainer->littleFont->popStyle();
-						}
+								globalContainer->littleFont->popStyle();
+							}
+					}
 				}
 			}
-		}
 
-		// building destruction
-		if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-		{
-			drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[cancel destroy]");
-		}
-		else if (selBuild->buildingState==Building::ALIVE)
-		{
-			drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[destroy]");
+			// building destruction
+			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+			{
+				drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[cancel destroy]");
+			}
+			else if (selBuild->buildingState==Building::ALIVE)
+			{
+				drawRedButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-24, "[destroy]");
+			}
 		}
 	}
 }
@@ -3423,17 +3432,20 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			std::vector<std::string> lines;
 			setMultiLine(game.script.textShown, &lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-128-64+16, lines.size()*20+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
 				yinc += 20;
 			}
-		}
 		
-		if (swallowSpaceKey)
-		{
-			globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
-			yinc += 20;
+			if (swallowSpaceKey)
+			{
+				globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-128-64+16, 20, 0,0,0,128);
+				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
+				yinc += 20;
+			}
+			yinc += 8;
 		}
 
 		// show script counter
@@ -3447,17 +3459,37 @@ void GameGUI::drawOverlayInfos(void)
 		
 		if(!scrollableText)
 			messageManager.drawAllMessages(32, ymesg);
-
-		// display map mark
-		globalContainer->gfx->setClipRect();
-		markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-128+14, 14, 100, viewportX, viewportY, game);
-
 	}
+
+	// display map mark
+	globalContainer->gfx->setClipRect();
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-128+14, 14, 100, viewportX, viewportY, game);
 
 	// Draw icon if trasmitting
 	if (globalContainer->voiceRecorder->recordingNow)
 		globalContainer->gfx->drawSprite(5, globalContainer->gfx->getH()-50, globalContainer->gamegui, 24);
-	
+
+	// Draw which players are transmitting voice
+	int xinc = 42;
+	for(int p=0; p<32; ++p)
+	{
+		if(globalContainer->mix->isPlayerTransmittingVoice(p))
+		{
+			if(xinc==42)
+			{
+				globalContainer->gamegui->setBaseColor(game.teams[game.players[p]->teamNumber]->color);
+				globalContainer->gfx->drawSprite(42, globalContainer->gfx->getH()-55, globalContainer->gamegui, 30);
+				xinc += 47;
+			}
+			int height = globalContainer->standardFont->getStringHeight(game.players[p]->name.c_str());
+			
+			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, game.teams[game.players[p]->teamNumber]->color));
+			globalContainer->gfx->drawString(xinc, globalContainer->gfx->getH()-35-height/2, globalContainer->standardFont, game.players[p]->name);
+			xinc += globalContainer->standardFont->getStringWidth(game.players[p]->name.c_str()) + 5;
+			globalContainer->standardFont->popStyle();
+		}
+	}
+
 	// Draw the bar contining number of units, CPU load, etc...
 	drawTopScreenBar();
 }
@@ -3522,8 +3554,8 @@ void GameGUI::drawInGameTextInput(void)
 
 void GameGUI::drawInGameScrollableText(void)
 {
-	scrollableText->decX=10;
-	scrollableText->decY=32;
+	scrollableText->decX=28;
+	scrollableText->decY=30;
 	scrollableText->dispatchPaint();
 	globalContainer->gfx->drawSurface(scrollableText->decX, scrollableText->decY, scrollableText->getSurface());
 }
@@ -3558,6 +3590,9 @@ void GameGUI::drawAll(int team)
 		generateNewParticles(&visibleBuildings);
 		drawParticles();
 	}
+
+	///Draw ghost buildings
+	ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 	
 	// if paused, tint the game area
 	if (gamePaused)
@@ -3715,6 +3750,14 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 			gamePaused=pgo->pause;
 		}
 		break;
+		case ORDER_CREATE:
+		{
+			boost::shared_ptr<OrderCreate> pgo=static_pointer_cast<OrderCreate>(order);
+			if(pgo->teamNumber == localTeamNo)
+				ghostManager.removeBuilding(pgo->posX, pgo->posY);
+			game.executeOrder(order, localPlayer);
+		}
+		break;
 		default:
 		{
 			game.executeOrder(order, localPlayer);
@@ -3722,14 +3765,15 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 	}
 }
 
-bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
 {
 	init();
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
+		delete stream;
 		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
-		if(!stream)
+		if(stream->isEndOfStream())
 		{
 			std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << " or " << mapHeader.getFileName(true) << std::endl;
 			delete stream;
@@ -3737,7 +3781,7 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 		}
 	}
 	
-	bool res = load(stream);
+	bool res = load(stream, ignoreGUIData);
 	delete stream;
 	if (!res)
 		return false;
@@ -3751,7 +3795,7 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	return true;
 }
 
-bool GameGUI::load(GAGCore::InputStream *stream)
+bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 {
 	init();
 
@@ -3767,29 +3811,44 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 	{
 		// load gui's specific infos
 		stream->readEnterSection("GameGUI");
-		
-		chatMask = stream->readUint32("chatMask");
 
-		localPlayer = stream->readSint32("localPlayer");
-		localTeamNo = stream->readSint32("localTeamNo");
-
-		viewportX = stream->readSint32("viewportX");
-		viewportY = stream->readSint32("viewportY");
-
-		hiddenGUIElements = stream->readUint32("hiddenGUIElements");
-		Uint32 buildingsChoiceMask = stream->readUint32("buildingsChoiceMask");
-		Uint32 flagsChoiceMask = stream->readUint32("flagsChoiceMask");
-		
-		// invert value if hidden
-		for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
+		///Load the data, but don't store it in local variables
+		if(ignoreGUIData)
 		{
-			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
-			buildingsChoiceState[i] = ((1<<id) & buildingsChoiceMask) != 0;
+			stream->readUint32("chatMask");
+			stream->readSint32("localPlayer");
+			stream->readSint32("localTeamNo");
+			stream->readSint32("viewportX");
+			stream->readSint32("viewportY");
+			stream->readUint32("hiddenGUIElements");
+			stream->readUint32("buildingsChoiceMask");
+			stream->readUint32("flagsChoiceMask");
 		}
-		for (unsigned i=0; i<flagsChoiceState.size(); ++i)
-		{
-			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
-			flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
+		else
+		{	
+			chatMask = stream->readUint32("chatMask");
+
+			localPlayer = stream->readSint32("localPlayer");
+			localTeamNo = stream->readSint32("localTeamNo");
+
+			viewportX = stream->readSint32("viewportX");
+			viewportY = stream->readSint32("viewportY");
+
+			hiddenGUIElements = stream->readUint32("hiddenGUIElements");
+			Uint32 buildingsChoiceMask = stream->readUint32("buildingsChoiceMask");
+			Uint32 flagsChoiceMask = stream->readUint32("flagsChoiceMask");
+			
+			// invert value if hidden
+			for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
+			{
+				int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
+				buildingsChoiceState[i] = ((1<<id) & buildingsChoiceMask) != 0;
+			}
+			for (unsigned i=0; i<flagsChoiceState.size(); ++i)
+			{
+				int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
+				flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
+			}
 		}
 		
 		stream->readLeaveSection();
@@ -3802,8 +3861,6 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 
 void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 {
-	game.mapHeader.setIsSavedGame(true);
-
 	// Game is can't be no more automatically generated
 	game.save(stream, false, name);
 	
@@ -4211,17 +4268,20 @@ void GameGUI::setCampaignGame(Campaign& campaign, const std::string& missionName
 
 
 
-void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output)
+void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent)
 {
 	unsigned pos = 0;
 	int length = globalContainer->gfx->getW()-128-64;
 	
 	std::string lastWord;
 	std::string lastLine;
+	std::string ninput=input;
+	if(ninput[ninput.length()-1] != ' ')
+		ninput += " ";
 	
-	while (pos<input.length())
+	while (pos<ninput.length())
 	{
-		if (input[pos] == ' ')
+		if (ninput[pos] == ' ')
 		{
 			int actLineLength = globalContainer->standardFont->getStringWidth(lastLine.c_str());
 			int actWordLength = globalContainer->standardFont->getStringWidth(lastWord.c_str());
@@ -4236,13 +4296,13 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 			else
 			{
 				output->push_back(lastLine);
-				lastLine = lastWord;
+				lastLine = indent+lastWord;
 				lastWord.clear();
 			}
 		}
 		else
 		{
-			lastWord += input[pos];
+			lastWord += ninput[pos];
 		}
 		pos++;
 	}
@@ -4261,8 +4321,9 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 	setMultiLine(msgText, &messages);
 	globalContainer->standardFont->popStyle();
 
-	///Add each line as a seperate message to the message manager
-	for (unsigned i=0; i<messages.size(); i++)
+	///Add each line as a seperate message to the message manager.
+	///Must be done backwards to appear in the right order
+	for (int i=messages.size()-1; i>=0; i--)
 	{
 		messageManager.addMessage(InGameMessage(messages[i], color));
 	}

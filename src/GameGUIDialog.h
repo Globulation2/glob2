@@ -26,6 +26,7 @@ namespace GAGGUI
 {
 	class OnOffButton;
 	class Selector;
+	class Text;
 }
 class GameGUI;
 
@@ -77,6 +78,7 @@ public:
 	};
 
 public:
+	Text *texts[16];
 	OnOffButton *alliance[16];
 	OnOffButton *normalVision[16];
 	OnOffButton *foodVision[16];
@@ -105,11 +107,13 @@ public:
 	enum
 	{
 		OK = 0,
+		MUTE = 1,
 	};
 
 public:
 	Selector *musicVol;
-
+	OnOffButton* mute;
+	Text *musicVolText;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	virtual ~InGameOptionScreen() { }
