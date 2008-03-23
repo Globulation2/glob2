@@ -63,9 +63,7 @@
 int record(void *pointer)
 {
 	VoiceRecorder *voiceRecorder = static_cast<VoiceRecorder *>(pointer);
-	// bytes buffer for read
-	short buffer[SPEEX_FRAME_SIZE];
-	size_t toReadLength = 2*SPEEX_FRAME_SIZE;
+	
 	// bits buffer for compressed datas
 	SpeexBits bits;
 	speex_bits_init(&bits);
@@ -81,18 +79,84 @@ int record(void *pointer)
 				goto abortRecordThread;
 		}
 		
-		// open sound device, plateforme dependant
+		// Win32
 		#ifdef WIN32
-		fprintf(stderr, "VoiceRecorder::record : no audio input support for Win32 yet. Voice chat will be disabled. Contributions welcome\n");
-		// TODO : windows code
-		break; // while no code, break
+		// Create members
+		HWAVEIN waveIn = 0;
+		HANDLE event = CreateEvent(NULL, FALSE, FALSE, NULL);
+		unsigned bufferCount = 2;
+		signed short buffersData[bufferCount][SPEEX_FRAME_SIZE];
+		WAVEHDR buffers[bufferCount];
+		unsigned bufferPos = 0;
+		
+		// Setup parameters
+		WAVEFORMATEX waveFormat;
+		waveFormat.wFormatTag = WAVE_FORMAT_PCM;
+		waveFormat.nChannels = 1;
+		waveFormat.nSamplesPerSec = 8000;
+		waveFormat.wBitsPerSample = 16;
+		waveFormat.nBlockAlign = (waveFormat.nChannels * waveFormat.wBitsPerSample) / 8;
+		waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
+		waveFormat.cbSize = 0;
+		
+		// Get the number of Digital Audio In devices in this computer
+		unsigned long devCount = waveInGetNumDevs();
+		if (!devCount)
+		{
+			std::cout << "No Win32 Input device found\n";
+			break;
+		}
+		for (unsigned long i = 0; i < devCount; i++)
+		{
+			WAVEINCAPS wic;
+			if (!waveInGetDevCaps(i, &wic, sizeof(WAVEINCAPS)))
+				std::cerr << "Win32 Input device " << i << " : " << (const char *)wic.szPname << "\n";
+		}
+		// TODO: let the user choose it, for now, always take the first one
+		unsigned sourceId = 0;
+		
+		// Open device
+		MMRESULT openResult = waveInOpen(&waveIn, sourceId, &waveFormat, (DWORD)event, 0, CALLBACK_EVENT);
+		if (openResult != MMSYSERR_NOERROR)
+			break;
+		
+		// Prepare and add buffer
+		bool addBufferError = false;
+		for (unsigned i = 0; i < bufferCount; i++)
+		{
+			buffers[i].dwBufferLength = SPEEX_FRAME_SIZE * sizeof(signed short);
+			buffers[i].lpData = (char *)buffersData[i];
+			buffers[i].dwFlags = 0;
+			if (waveInPrepareHeader(waveIn, &buffers[i], sizeof(WAVEHDR)) != MMSYSERR_NOERROR)
+			{
+				addBufferError = true;
+				break;
+			}
+			if (waveInAddBuffer(waveIn, &buffers[i], sizeof(WAVEHDR)) != MMSYSERR_NOERROR)
+			{
+				addBufferError = true;
+				break;
+			}
+		}
+		
+		// Start acquisition if no error, otherwise berak
+		if (addBufferError || (waveInStart(waveIn) != MMSYSERR_NOERROR))
+			break;
 		#endif
+		
 		#ifdef __APPLE__
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for Mac yet. Voice chat will be disabled. Contributions welcome\n");
 		// TODO : Mac OS X code
 		break; // while no code, break
 		#endif
+		
+		
+		// open sound device, plateforme dependant
 		#ifdef AUDIO_RECORDER_OSS
+		// bytes buffer for read
+		short buffer[SPEEX_FRAME_SIZE];
+		size_t toReadLength = 2*SPEEX_FRAME_SIZE;
+	
 		// OSS, Open Sound System
 		int dsp;
 		int rate = 8000;
@@ -125,23 +189,35 @@ int record(void *pointer)
 		
 		while (voiceRecorder->recordingNow || (voiceRecorder->stopRecordingTimeout > 0))
 		{
+			float floatBuffer[SPEEX_FRAME_SIZE];
+			
 			// read
 			#ifdef WIN32
-			// TODO : windows code
+			// Wait for buffer ready
+			WaitForSingleObject(event, INFINITE);
+			
+			// transforms samples to float
+			for (size_t i = 0; i < SPEEX_FRAME_SIZE; i++)
+				floatBuffer[i] = buffersData[bufferPos][i];
+			
+			 // Put back buffer
+			waveInAddBuffer(waveIn, &buffers[bufferPos], sizeof(WAVEHDR));
+			bufferPos = (bufferPos + 1) % bufferCount;
 			#endif
+			
 			#ifdef __APPLE__
 			// TODO : Mac OS X code
 			#endif
+			
 			#ifdef AUDIO_RECORDER_OSS
+			// read
 			Utilities::read(dsp, buffer, toReadLength);
 			totalRead += toReadLength;
 			voiceRecorder->stopRecordingTimeout -= toReadLength;
-			#endif
-			
 			// transforms samples to float
-			float floatBuffer[SPEEX_FRAME_SIZE];
 			for (size_t i=0; i<SPEEX_FRAME_SIZE; i++)
-         		floatBuffer[i] = buffer[i];
+				floatBuffer[i] = buffer[i];
+			#endif
 			
 			// encode
 			speex_encode(voiceRecorder->speexEncoderState, floatBuffer, &bits);
@@ -183,6 +259,18 @@ int record(void *pointer)
 		
 		// close sound device, plateforme dependant
 		#ifdef WIN32
+		if (waveIn != 0)
+		{
+			// Stop acquisition
+			waveInReset(waveIn);
+			// Destroy buffers
+			for (unsigned i = 0; i < bufferCount; i++)
+				waveInUnprepareHeader(waveIn, &buffers[i], sizeof(WAVEHDR));
+			
+			// Close device
+			waveInClose(waveIn);
+		}
+		CloseHandle(event);
 		// TODO : windows code
 		#endif
 		#ifdef __APPLE__
