@@ -453,7 +453,7 @@ Kick
 [lan]
 LAN Game
 [language incomplete]
-
+Ελληνικά - Incomplete
 [language-code]
 gr
 [language-tr]
