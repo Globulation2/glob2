@@ -81,6 +81,12 @@ def configure(env):
     if not conf.CheckLib("vorbisfile"):
         print "Could not find libvorbisfile"
         Exit(1)
+    if not conf.CheckLib("vorbis"):
+        print "Could not find libvorbis"
+        Exit(1)
+    if not conf.CheckLib("ogg"):
+        print "Could not find libogg"
+        Exit(1)
     if not conf.CheckCXXHeader("zlib.h"):
         print "Could not find zlib.h"
         Exit(1)
