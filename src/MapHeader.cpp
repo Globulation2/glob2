@@ -34,6 +34,7 @@ void MapHeader::reset()
 	mapName = "";
 	mapOffset = 0;
 	isSavedGame=false;
+	checksum = 0;
 }
 
 
@@ -58,6 +59,8 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
 	isSavedGame = stream->readUint8("isSavedGame");
+	if(versionMinor>=67)
+		checksum = stream->readUint32("checksum");
 	stream->readEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -84,6 +87,7 @@ void MapHeader::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
 	stream->writeUint32(mapOffset, "mapOffset");
 	stream->writeUint8(isSavedGame, "isSavedGame");
+	stream->writeUint32(checksum, "checksum");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -194,6 +198,21 @@ void MapHeader::setIsSavedGame(bool newIsSavedGame)
 }
 
 
+
+void MapHeader::setGameChecksum(Uint32 nchecksum)
+{
+	checksum = nchecksum;
+}
+
+
+
+Uint32 MapHeader::getGameChecksum()
+{
+	return checksum;
+}
+
+
+
 Uint32 MapHeader::checkSum() const
 {
 	Sint32 cs = 0;
@@ -211,7 +230,8 @@ bool MapHeader::operator!=(const MapHeader& rhs) const
 	if( rhs.numberOfTeams != numberOfTeams ||
 		rhs.mapOffset != mapOffset ||
 		rhs.isSavedGame != isSavedGame ||
-		rhs.mapName != mapName)
+		rhs.mapName != mapName ||
+		rhs.checksum != checksum)
 		return true;
 	return false;
 }
