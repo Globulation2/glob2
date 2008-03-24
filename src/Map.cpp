@@ -35,7 +35,7 @@
 #include <map>
 #endif
 
-#define UPDATE_MAX(max,value) { Uint8 tmp = value; if (value>(max)) (max)=value; }
+#define UPDATE_MAX(max,value) { if (value>(max)) (max)=value; }
 
 // use deltaOne for first perpendicular direction
 static const int deltaOne[8][2]={
@@ -1967,7 +1967,7 @@ bool Map::isImmobileUnit(int x, int y)
 
 Uint8 Map::getImmobileUnit(int x, int y)
 {
-	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)];
+	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)];
 }
 
 
@@ -3143,7 +3143,6 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[3];
 		UPDATE_MAX(max,miniGrad[0+1*5]);
 		UPDATE_MAX(max,miniGrad[0+2*5]);
 		UPDATE_MAX(max,miniGrad[0+3*5]);
@@ -3468,7 +3467,6 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	//printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	assert(building->type);
-	bool wasDirty = building->dirtyLocalGradient[canSwim];
 	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
@@ -3486,8 +3484,11 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	memset(gradient, 1, 1024);
 
 	bool isWarFlag=false;
+	bool isClearingFlag=false;
 	if(building->type->isVirtual && building->type->zonable[WARRIOR])
 		isWarFlag=true;
+	if(building->type->isVirtual && building->type->zonable[WORKER])
+		isClearingFlag=true;
 
 	// 1b. Set values at target building to 255 (meaning 'very close'/'at destination').
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
@@ -3547,20 +3548,30 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		{
 			int xg=(xl+posX-15)&wMask;
 			const Case& c=cases[wyg+xg];
-			int addrl=wyl+xl;
-			if (gradient[addrl]!=255)
+			int wyx=wyl+xl;
+			
+			if (c.building==NOGBID)
 			{
 				if (c.forbidden&teamMask)
-					gradient[addrl]=0;
-				else if (c.ressource.type!=NO_RES_TYPE)
-					gradient[addrl]=0;
-				//Warflags don't consider enemy buildings an obstacle
-				else if (c.building!=NOGBID && c.building!=bgid && !(isWarFlag && (1<<Building::GIDtoTeam(c.building))  & (building->owner->enemies)))
-					gradient[addrl]=0;
-				else if(immobileUnits[wyg+xg] != 255)
-					gradient[addrl]=0;
+					gradient[wyx] = 0;
+				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
+					gradient[wyx] = 0;
+				else if(immobileUnits[wyx] != 255)
+					gradient[wyx] = 0;
 				else if (!canSwim && isWater(xg, yg))
-					gradient[addrl]=0;
+					gradient[wyx] = 0;
+			}
+			else
+			{
+				if (c.building==bgid)
+				{
+					gradient[wyx] = 255;
+				}
+				//Warflags don't consider enemy buildings an obstacle
+				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
+					gradient[wyx] = 0;
+				else if(gradient[wyx]!=255)
+					gradient[wyx] = 1;
 			}
 		}
 	}
@@ -3795,44 +3806,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		isWarFlag=true;
 
 	memset(gradient, 1, size);
-	if (building->type->isVirtual && !building->type->zonable[WORKER])
-	{
-		assert(!building->type->zonableForbidden);
-		int r=building->unitStayRange;
-		int r2=r*r;
-		for (int yi=-r; yi<=r; yi++)
-		{
-			int yi2=(yi*yi);
-			for (int xi=-r; xi<=r; xi++)
-				if (yi2+(xi*xi)<=r2)
-				{
-					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
-					gradient[addr] = 255;
-					listedAddr[listCountWrite++] = addr;
-				}
-		}
-	}
-	else if (building->type->isVirtual && building->type->zonable[WORKER])
-	{
-		assert(!building->type->zonableForbidden);
-		isClearingFlag=true;
-		int r=building->unitStayRange;
-		int r2=r*r;
-		for (int yi=-r; yi<=r; yi++)
-		{
-			int yi2=(yi*yi);
-			for (int xi=-r; xi<=r; xi++)
-				if (yi2+(xi*xi)<=r2)
-				{
-					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
-					if(cases[addr].ressource.type!=NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
-					{
-						gradient[addr] = 255;
-						listedAddr[listCountWrite++] = addr;
-					}
-				}
-		}
-	}
 
 	for (int y=0; y<h; y++)
 	{
@@ -3865,6 +3838,51 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				else if(gradient[wyx]!=255)
 					gradient[wyx] = 1;
 			}
+		}
+	}
+	
+	if (building->type->isVirtual && !building->type->zonable[WORKER])
+	{
+		assert(!building->type->zonableForbidden);
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			for (int xi=-r; xi<=r; xi++)
+				if (yi2+(xi*xi)<=r2)
+				{
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					if(gradient[addr] == 1)
+					{
+						gradient[addr] = 255;
+						listedAddr[listCountWrite++] = addr;
+					}
+				}
+		}
+	}
+	else if (building->type->isVirtual && building->type->zonable[WORKER])
+	{
+		assert(!building->type->zonableForbidden);
+		isClearingFlag=true;
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			for (int xi=-r; xi<=r; xi++)
+				if (yi2+(xi*xi)<=r2)
+				{
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					if(cases[addr].ressource.type!=NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
+					{
+						if(gradient[addr] == 1)
+						{
+							gradient[addr] = 255;
+							listedAddr[listCountWrite++] = addr;
+						}
+					}
+				}
 		}
 	}
 	
@@ -4174,6 +4192,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 				return true;
 			}
 			else
+			{
 				for (int d=0; d<8; d++)
 				{
 					int ddx, ddy;
@@ -4188,6 +4207,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 						return true;
 					}
 				}
+			}
 		}
 		
 		updateLocalGradient(building, canSwim);
@@ -4209,6 +4229,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			return true;
 		}
 		else
+		{
 			for (int d=0; d<8; d++)
 			{
 				int ddx, ddy;
@@ -4223,7 +4244,9 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 					return true;
 				}
 			}
+		}
 		buildingAvailableCountCloseFailureEnd++;
+		return false;
 	}
 	else
 		buildingAvailableCountIsFar++;
@@ -5191,7 +5214,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	AStarAlgorithmPoint final = astarpoints[(targetX << hDec) + targetY];
 
 	//Clear all of the examined points for the next call to this algorithm
-	for(int i=0; i<astarExaminedPoints.size(); ++i)
+	for(unsigned i=0; i<astarExaminedPoints.size(); ++i)
 	{
 		astarpoints[astarExaminedPoints[i]] = AStarAlgorithmPoint();
 	}
