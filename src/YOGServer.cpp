@@ -103,6 +103,8 @@ void YOGServer::update()
 		info.getGameInformation() = *gameList.begin();
 		broadcaster.reset(new NetBroadcaster(info));
 	}
+	
+	playerInfos.update();
 }
 
 
@@ -193,6 +195,7 @@ void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
 	playerList.push_back(YOGPlayerSessionInfo(username, id));
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
+	playerInfos.insureStoredInfoExists(username);
 }
 
 
@@ -329,6 +332,14 @@ YOGServerAdministrator& YOGServer::getAdministrator()
 {
 	return administrator;
 }
+
+
+
+YOGServerPlayerStoredInfoManager& YOGServer::getPlayerStoredInfoManager()
+{
+	return playerInfos;
+}
+
 
 
 Uint16 YOGServer::chooseNewPlayerID()
