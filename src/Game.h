@@ -186,7 +186,7 @@ private:
 	static float interpolateValues(float a, float b, float x);
 	inline bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
 	
 	//! ally or disally AI following human alliances
 	void setAIAlliance(void);	
