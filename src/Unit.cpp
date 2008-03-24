@@ -1817,7 +1817,8 @@ void Unit::handleMovement(void)
 					if(guid != NOGUID)
 					{
 						Unit* unit = owner->myUnits[GIDtoID(guid)];
-						other_distance = unit->previousClearingAreaDistance;
+						if(unit)
+							other_distance = unit->previousClearingAreaDistance;
 					}
 					if(path && distance < other_distance)
 					{
@@ -1834,9 +1835,12 @@ void Unit::handleMovement(void)
 						if(guid != NOGUID)
 						{
 							Unit* unit = owner->myUnits[GIDtoID(guid)];
-							unit->previousClearingAreaX=-1;
-							unit->previousClearingAreaY=-1;
-							unit->previousClearingAreaDistance=-1;
+							if(unit)
+							{
+								unit->previousClearingAreaX=-1;
+								unit->previousClearingAreaY=-1;
+								unit->previousClearingAreaDistance=-1;
+							}
 						}
 						
 						//Find clearing ressource

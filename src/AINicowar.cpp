@@ -2137,7 +2137,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 				}
 			}
 		}
-		enemyUnits.push_back(enemy_count);
+		enemyUnits.push_back(std::min(20, enemy_count));
 	}
 
 	//Take all existing defense flags, and move them to the nearest new flag position
