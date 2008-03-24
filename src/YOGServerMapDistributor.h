@@ -53,7 +53,7 @@ private:
 	boost::shared_ptr<YOGServerPlayer> host;
 	boost::shared_ptr<NetSendFileInformation> fileInfo;
 	std::vector<boost::shared_ptr<NetSendFileChunk> > chunks;
-	std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> > players;
+	std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, unsigned, int> > players;
 
 };
 

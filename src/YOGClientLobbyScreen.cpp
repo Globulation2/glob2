@@ -347,7 +347,7 @@ void YOGClientLobbyScreen::updatePlayerList(void)
 	}
 
 	// update irc entries, remove one already on YOG
-	for(int i=0; i<ircChat->getUsers().size(); ++i)
+	for(unsigned i=0; i<ircChat->getUsers().size(); ++i)
 	{
 		const std::string &user = ircChat->getUsers()[i];
 		if (user.compare(0, 5, "[YOG]") != 0)
@@ -362,7 +362,6 @@ void YOGClientLobbyScreen::updateGameInfo()
 {
 	if (gameList->getSelectionIndex() != -1)
 	{
-		Uint16 id = 0;
 		for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
 		{
 			if(gameList->get() == game->getGameName())
@@ -422,7 +421,7 @@ void YOGClientLobbyScreen::autoCompleteNick()
 
 		if(found == 0)
 		{
-			for(int i=0; i<ircChat->getUsers().size(); ++i)
+			for(unsigned i=0; i<ircChat->getUsers().size(); ++i)
 			{
 				const std::string &user = ircChat->getUsers()[i];
 				if( user.find(beginningOfNick) == 0 )

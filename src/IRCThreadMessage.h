@@ -40,6 +40,8 @@ enum IRCThreadMessageType
 class IRCThreadMessage
 {
 public:
+	virtual ~IRCThreadMessage() {}
+
 	///Returns the event type
 	virtual Uint8 getMessageType() const = 0;
 	

@@ -277,7 +277,6 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		//incorrect areas can be adjusted easily
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
-		int fig = brush.getFigure();
 		
 		if(firstPlacementX == -1)
 		{
