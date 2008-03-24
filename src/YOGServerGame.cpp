@@ -380,9 +380,9 @@ Uint16 YOGServerGame::getHostPlayerID() const
 
 void YOGServerGame::chooseLatencyMode()
 {
-	int highest = 0;
-	int second_highest = 0;
-	for(int i=0; i<players.size(); ++i)
+	unsigned highest = 0;
+	unsigned second_highest = 0;
+	for(unsigned i=0; i<players.size(); ++i)
 	{
 		if(players[i]->getAveragePing() > highest)
 		{

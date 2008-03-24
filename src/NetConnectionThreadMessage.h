@@ -45,6 +45,9 @@ enum NetConnectionThreadMessageType
 class NetConnectionThreadMessage
 {
 public:
+	///Destructor
+	virtual ~NetConnectionThreadMessage() {}
+
 	///Returns the event type
 	virtual Uint8 getMessageType() const = 0;
 	

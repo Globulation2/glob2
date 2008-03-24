@@ -32,10 +32,9 @@ Utilities.cpp                     VoiceRecorder.cpp              YOGClientChatCh
 YOGClient.cpp                     YOGClientEvent.cpp             YOGClientEventListener.cpp            YOGClientGameListListener.cpp
 YOGClientGameListManager.cpp      YOGClientLobbyScreen.cpp       YOGClientPlayerListListener.cpp       YOGClientPlayerListManager.cpp
                                   YOGGameInfo.cpp                YOGLoginScreen.cpp                    YOGMessage.cpp
-YOGPlayerInfo.cpp                 YOGServerChatChannel.cpp       YOGServerChatChannelManager.cpp       YOGServer.cpp
-YOGServerGame.cpp                 YOGServerMapDistributor.cpp    YOGServerPasswordRegistry.cpp         YOGServerPlayer.cpp
-
-
+YOGPlayerSessionInfo.cpp                 YOGServerAdministrator.cpp     YOGServerAdministratorList.cpp        YOGServerChatChannel.cpp
+YOGServerChatChannelManager.cpp   YOGServer.cpp                  YOGServerGame.cpp                     YOGServerMapDistributor.cpp
+YOGServerPasswordRegistry.cpp     YOGServerPlayer.cpp
 """)
     
     

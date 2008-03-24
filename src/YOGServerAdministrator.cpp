@@ -16,21 +16,20 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "P2PConnection.h"
-#include "YOGClient.h"
-#include "NetMessage.h"
+#include "YOGServerAdministrator.h"
 
 
-P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
-	: client(client)
+YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
+	: server(server)
 {
+
 }
+	
 
-
-
-void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
+bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message)
 {
-	//Uint8 type = message->getMessageType();
-	boost::shared_ptr<YOGClient> nclient(client);
-}
+	if(message=="server_restart")
+		exit(0);
 
+	return false;
+}

@@ -195,7 +195,7 @@ void Engine::createRandomGame()
 	gui.localPlayer=0;
 	gui.localTeamNo=0;
 	
-	int ret = initGame(map, game);
+	initGame(map, game);
 
 	// set the correct alliance
 	gui.game.setAIFFA();
@@ -236,6 +236,11 @@ int Engine::run(void)
 		automaticGameStartTick = SDL_GetTicks();
 	}
 	
+	if(!globalContainer->runNoX)
+	{
+		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
+	}
+	
 	while (doRunOnceAgain)
 	{
 		const int speed=40;
@@ -246,8 +251,6 @@ int Engine::run(void)
 		Sint32 needToBeTime = 0;
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
-
-		unsigned int skipOrders = 0;
 
 		while (gui.isRunning)
 		{
@@ -427,6 +430,8 @@ int Engine::run(void)
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
 	{
+		if(!globalContainer->runNoX)
+			globalContainer->gfx->cursorManager.setDefaultColor();
 		return -1;
 	}
 	else
@@ -438,6 +443,10 @@ int Engine::run(void)
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, 40);
+		
+		// Return to default color
+		globalContainer->gfx->cursorManager.setDefaultColor();
+		
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
 	}

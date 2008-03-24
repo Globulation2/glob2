@@ -25,7 +25,7 @@
 #include "NetConnection.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
-#include "YOGPlayerInfo.h"
+#include "YOGPlayerSessionInfo.h"
 
 using namespace boost;
 
@@ -132,8 +132,8 @@ private:
 	std::list<YOGGameInfo> playersGames;
 	///Stores a copy of the players that the player knows about.
 	///This is a synchronized list of what the client has
-	std::list<YOGPlayerInfo> playersPlayerList;
-	///The playerID, used to identify the assocciatted YOGPlayerInfo
+	std::list<YOGPlayerSessionInfo> playersPlayerList;
+	///The playerID, used to identify the assocciatted YOGPlayerSessionInfo
 	Uint16 playerID;
 	///the name of the player after logging in
 	std::string playerName;

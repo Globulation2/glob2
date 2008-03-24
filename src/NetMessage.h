@@ -23,7 +23,7 @@
 #include "Stream.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
-#include "YOGPlayerInfo.h"
+#include "YOGPlayerSessionInfo.h"
 #include "YOGMessage.h"
 #include <string>
 #include <vector>
@@ -524,7 +524,7 @@ public:
 	NetUpdatePlayerList();
 
 	///This computes the differences between the two lists of players. These can be of any container,
-	///so long as they store YOGPlayerInfo
+	///so long as they store YOGPlayerSessionInfo
 	template<typename container> void updateDifferences(const container& original, const container& updated);
 
 	///Returns MNetUpdatePlayerList
@@ -548,7 +548,7 @@ public:
 
 private:
 	std::vector<Uint16> removedPlayers;
-	std::vector<YOGPlayerInfo> updatedPlayers;
+	std::vector<YOGPlayerSessionInfo> updatedPlayers;
 };
 
 
@@ -1760,7 +1760,7 @@ template<typename container> void NetUpdatePlayerList::applyDifferences(containe
 	}
 	
 	//Change and/or add the players that are updated
-	for(std::vector<YOGPlayerInfo>::const_iterator i=updatedPlayers.begin(); i!=updatedPlayers.end(); ++i)
+	for(std::vector<YOGPlayerSessionInfo>::const_iterator i=updatedPlayers.begin(); i!=updatedPlayers.end(); ++i)
 	{
 		bool found=false;
 		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)

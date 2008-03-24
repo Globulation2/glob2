@@ -1773,7 +1773,7 @@ void NewNicowar::control_attacks(Echo& echo)
 
 	if(target!=-1)
 	{
-		int number_attacks=0;
+		unsigned number_attacks=0;
 		if(war)
 		{
 			number_attacks=strategy.war_phase_num_attack_flags;
@@ -1792,9 +1792,11 @@ void NewNicowar::control_attacks(Echo& echo)
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyRessource);
+	if(num_pool == 0)
+		gi_building.add_obstacle(new Entities::Water);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 	
-	for(int i=0; i<attack_flags.size(); ++i)
+	for(unsigned i=0; i<attack_flags.size(); ++i)
 	{
 		if(echo.get_building_register().is_building_found(attack_flags[i]))
 		{
@@ -2181,8 +2183,6 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 			
 			if(min_dist>0)
 			{
-				Building* b = echo.get_building_register().get_building(id_flag);
-				
 				ManagementOrder* mo_move=new ChangeFlagPosition(min_pos_x, min_pos_y, id_flag);
 				echo.add_management_order(mo_move);
 			}
@@ -2203,7 +2203,6 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	{
 		if(echo.get_building_register().is_building_found(*i))
 		{
-			Building* b = echo.get_building_register().get_building(*i);
 			ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
 			echo.add_management_order(mo_destroyed);
 		}
@@ -2401,7 +2400,6 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 		{
 			total_attacks-=1;
 			int id_flag = existing_explorer_attack_flags[min_flag];
-			Building* b = echo.get_building_register().get_building(id_flag);
 
 			existing_explorer_attack_flags.erase(existing_explorer_attack_flags.begin() + min_flag);
 			groups.erase(groups.begin() + min_pos);
@@ -2424,7 +2422,6 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 	{
 		if(echo.get_building_register().is_building_found(*i))
 		{
-			Building* b = echo.get_building_register().get_building(*i);
 			ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
 			echo.add_management_order(mo_destroyed);
 		}

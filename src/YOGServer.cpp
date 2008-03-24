@@ -27,7 +27,7 @@
 #include "YOGServerPlayer.h"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -182,7 +182,7 @@ const std::list<YOGGameInfo>& YOGServer::getGameList() const
 }
 
 	
-const std::list<YOGPlayerInfo>& YOGServer::getPlayerList() const
+const std::list<YOGPlayerSessionInfo>& YOGServer::getPlayerList() const
 {
 	return playerList;
 }
@@ -191,7 +191,7 @@ const std::list<YOGPlayerInfo>& YOGServer::getPlayerList() const
 
 void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
-	playerList.push_back(YOGPlayerInfo(username, id));
+	playerList.push_back(YOGPlayerSessionInfo(username, id));
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
 }
 
@@ -200,7 +200,7 @@ void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 void YOGServer::playerHasLoggedOut(Uint16 playerID)
 {
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->removePlayer(getPlayer(playerID));
-	for(std::list<YOGPlayerInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
+	for(std::list<YOGPlayerSessionInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
 	{
 		if(i->getPlayerID() == playerID)
 		{
@@ -316,6 +316,19 @@ YOGGameInfo& YOGServer::getGameInfo(Uint16 gameID)
 	}
 }
 
+
+
+YOGServerAdministratorList& YOGServer::getAdministratorList()
+{
+	return adminList;
+}
+
+
+
+YOGServerAdministrator& YOGServer::getAdministrator()
+{
+	return administrator;
+}
 
 
 Uint16 YOGServer::chooseNewPlayerID()

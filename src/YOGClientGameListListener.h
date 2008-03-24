@@ -23,6 +23,8 @@
 class YOGClientGameListListener
 {
 public:
+	virtual ~YOGClientGameListListener() {}
+
 	///This is called when the game list is updated
 	virtual void gameListUpdated() = 0;
 };

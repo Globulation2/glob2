@@ -1597,7 +1597,7 @@ void Building::subscribeForFlagingStep()
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist;
-					if (map->buildingAvailable(this, unit->performance[SWIM]>0, unit->posX, unit->posY, &dist) && (dist<timeLeft))
+					if (map->buildingAvailable(this, (unit->performance[SWIM]>0 ? true : false), unit->posX, unit->posY, &dist) && (dist<timeLeft))
 					{
 						int value=dist-2*timeLeft-2*hp;
 						//We want to maximize the attack level, use higher level soldeirs first

@@ -16,21 +16,31 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "P2PConnection.h"
-#include "YOGClient.h"
-#include "NetMessage.h"
+#include "YOGServerAdministratorList.h"
 
+#include "Stream.h"
+#include "Toolkit.h"
+#include "FileManager.h"
+#include <iostream>
 
-P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
-	: client(client)
+using namespace GAGCore;
+
+YOGServerAdministratorList::YOGServerAdministratorList()
 {
+	InputLineStream* stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend("admins.txt"));
+	while(!stream->isEndOfStream())
+	{
+		std::string name = stream->readLine();
+		admins.insert(name);
+	}
+	delete stream;
 }
 
 
-
-void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
+	
+bool YOGServerAdministratorList::isAdministrator(const std::string& playerName)
 {
-	//Uint8 type = message->getMessageType();
-	boost::shared_ptr<YOGClient> nclient(client);
+	if(admins.find(playerName) != admins.end())
+		return true;
+	return false;
 }
-

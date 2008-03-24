@@ -25,15 +25,17 @@
 #include "NetListener.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
-#include "YOGPlayerInfo.h"
+#include "YOGPlayerSessionInfo.h"
 #include "YOGServerChatChannelManager.h"
 #include "YOGServerPasswordRegistry.h"
+#include "YOGServerAdministrator.h"
+#include "YOGServerAdministratorList.h"
 
 
 class NetBroadcaster;
 class NetConnection;
 class YOGPlayer;
-class YOGPlayerInfo;
+class YOGPlayerSessionInfo;
 class YOGServerPlayer;
 class YOGServerGame;
 
@@ -80,7 +82,7 @@ public:
 	const std::list<YOGGameInfo>& getGameList() const;
 	
 	///Returns the list of players the server currently has
-	const std::list<YOGPlayerInfo>& getPlayerList() const;
+	const std::list<YOGPlayerSessionInfo>& getPlayerList() const;
 
 	///Tells the server that a player has logged in with the given information,
 	void playerHasLoggedIn(const std::string& username, Uint16 id);
@@ -117,6 +119,12 @@ public:
 
 	///Returns the YOGGameInfo for modification
 	YOGGameInfo& getGameInfo(Uint16 gameID);
+	
+	///Returns the YOGServerAdministratorList
+	YOGServerAdministratorList& getAdministratorList();
+	
+	///Returns the YOGServerAdministrator
+	YOGServerAdministrator& getAdministrator();
 private:
 	Uint16 chooseNewPlayerID();
 
@@ -130,7 +138,7 @@ private:
 	std::map<Uint16, boost::shared_ptr<YOGServerPlayer> > players;
 	std::map<Uint16, boost::shared_ptr<YOGServerGame> > games;
 	std::list<YOGGameInfo> gameList;
-	std::list<YOGPlayerInfo> playerList;
+	std::list<YOGPlayerSessionInfo> playerList;
 	
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
@@ -138,6 +146,9 @@ private:
 	
 	YOGServerPasswordRegistry registry;
 	YOGServerChatChannelManager chatChannelManager;
+	YOGServerAdministrator administrator;
+	YOGServerAdministratorList adminList;
+	
 };
 
 #endif

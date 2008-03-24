@@ -21,7 +21,7 @@
 
 #include "boost/shared_ptr.hpp"
 #include <list>
-#include "YOGPlayerInfo.h"
+#include "YOGPlayerSessionInfo.h"
 
 class NetMessage;
 class YOGClient;
@@ -38,10 +38,10 @@ public:
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
 	
 	///This will return the list of players on hosted on the server.
-	const std::list<YOGPlayerInfo>& getPlayerList() const;
+	const std::list<YOGPlayerSessionInfo>& getPlayerList() const;
 	
 	///This will return the list of players on hosted on the server.
-	std::list<YOGPlayerInfo>& getPlayerList();
+	std::list<YOGPlayerSessionInfo>& getPlayerList();
 
 	///This will add a listener for events saying the player list has been updated
 	void addListener(YOGClientPlayerListListener* listener);
@@ -55,7 +55,7 @@ private:
 	///This will send the event that the player list has been updated to all the listeners
 	void sendToListeners();
 
-	std::list<YOGPlayerInfo> players;
+	std::list<YOGPlayerSessionInfo> players;
 	std::list<YOGClientPlayerListListener*> listeners;
 	YOGClient* client;
 };
