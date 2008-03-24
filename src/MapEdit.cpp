@@ -1295,6 +1295,12 @@ int MapEdit::run(void)
 				performAction("zone drag motion");
 			else if(isDraggingTerrain)
 				performAction("terrain drag motion");
+			else if(isDraggingDelete)
+				performAction("delete drag motion");
+			else if(isDraggingArea)
+				performAction("area drag motion");
+			else if(isDraggingNoRessourceGrowthArea)
+				performAction("no ressource growth area drag motion");
 		}
 		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
