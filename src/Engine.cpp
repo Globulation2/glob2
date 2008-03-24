@@ -236,6 +236,11 @@ int Engine::run(void)
 		automaticGameStartTick = SDL_GetTicks();
 	}
 	
+	if(!globalContainer->runNoX)
+	{
+		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
+	}
+	
 	while (doRunOnceAgain)
 	{
 		const int speed=40;
@@ -425,6 +430,8 @@ int Engine::run(void)
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
 	{
+		if(!globalContainer->runNoX)
+			globalContainer->gfx->cursorManager.setDefaultColor();
 		return -1;
 	}
 	else
@@ -436,6 +443,10 @@ int Engine::run(void)
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, 40);
+		
+		// Return to default color
+		globalContainer->gfx->cursorManager.setDefaultColor();
+		
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
 	}
