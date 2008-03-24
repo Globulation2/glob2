@@ -27,7 +27,7 @@
 #include "YOGServerPlayer.h"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -316,6 +316,19 @@ YOGGameInfo& YOGServer::getGameInfo(Uint16 gameID)
 	}
 }
 
+
+
+YOGServerAdministratorList& YOGServer::getAdministratorList()
+{
+	return adminList;
+}
+
+
+
+YOGServerAdministrator& YOGServer::getAdministrator()
+{
+	return administrator;
+}
 
 
 Uint16 YOGServer::chooseNewPlayerID()

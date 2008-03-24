@@ -115,8 +115,8 @@ void YOGServerPlayer::update()
 	{
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
 		///This is a special override used to restart development server
-		if(info->getMessage()->getSender() == "genixpro" && info->getMessage()->getMessage()=="server_restart")
-			exit(0);
+		if(server.getAdministratorList().isAdministrator(info->getMessage()->getSender()))
+			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage());
 		server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
 	}
 	//This recieves an attempt to create a new game
