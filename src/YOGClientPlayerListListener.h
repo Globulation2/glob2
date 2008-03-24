@@ -22,6 +22,8 @@
 class YOGClientPlayerListListener
 {
 public:
+	virtual ~YOGClientPlayerListListener() {}
+
 	virtual void playerListUpdated() = 0;
 };
 

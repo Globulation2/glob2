@@ -37,7 +37,7 @@ void GameGUIGhostBuildingManager::addBuilding(const std::string& type, int x, in
 
 void GameGUIGhostBuildingManager::removeBuilding(int x, int y)
 {
-	for(int i=0; i<buildings.size();)
+	for(unsigned i=0; i<buildings.size();)
 	{
 		if(buildings[i].get<1>() == x && buildings[i].get<2>() == y)
 		{
@@ -54,7 +54,7 @@ void GameGUIGhostBuildingManager::removeBuilding(int x, int y)
 
 void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int localTeam)
 {
-	for(int i=0; i<buildings.size(); ++i)
+	for(unsigned i=0; i<buildings.size(); ++i)
 	{
 		std::string building = buildings[i].get<0>();
 		int px = buildings[i].get<1>();
@@ -71,7 +71,7 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int loca
 		//Find position to draw
 		int batW = (bt->width) * 32;
 		int batH = sprite->getH(bt->gameSpriteImage);
-		int batX = (((px-viewportX)&(game.map.wMask)) * 32);
+		int batX = (((px-viewportX)&(game.map.wMask)) * 32)-(batW-(bt->width * 32));
 		int batY = (((py-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
 
 		//Draw

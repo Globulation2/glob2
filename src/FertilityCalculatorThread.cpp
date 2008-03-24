@@ -22,7 +22,7 @@
 #include "FertilityCalculatorThreadMessage.h"
 
 FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
-	: map(map), outgoing(outgoing), outgoingMutex(outgoingMutex)
+	: outgoing(outgoing), outgoingMutex(outgoingMutex), map(map)
 {
 }
 

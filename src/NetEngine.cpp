@@ -207,9 +207,9 @@ bool NetEngine::matchCheckSums()
 		if(!orders[p].empty())
 		{
 			Uint32 playerCheckSum = orders[p].front()->gameCheckSum;
-			if(playerCheckSum != -1)
+			if(playerCheckSum != static_cast<Uint32>(-1))
 			{
-				if(checksum == -1)
+				if(checksum == static_cast<Uint32>(-1))
 					checksum = playerCheckSum;
 				else if(playerCheckSum != checksum)
 				{
