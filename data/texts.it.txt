@@ -1,27 +1,27 @@
 [%0 has left the game]
-%0 ha lasciato il gioco.
+%0 ha lasciato la partita.
 [%0's game]
-
+Partita di %0
 [%0's team unit got converted to your team]
-Un %0 sqadra ha convertito la tua unità
+Una unità della squadra di %0 è stata convertita alla tua squadra
 [abreaviation explanation A]
 A: Alleati
 [abreaviation explanation C]
 C: Invia messaggi di chat
 [abreaviation explanation fV]
-fV: Mostra visuale per le Mense (per rubare unità)
+fV: Mostra visuale delle Mense (per rubare unità)
 [abreaviation explanation mV]
-mV: Mostra visuale per Mercati (per scambiare frutta)
+mV: Mostra visuale dei Mercati (per scambiare frutta)
 [abreaviation explanation V]
-V: Mostra visuale per tutte le costruzioni
+V: Mostra visuale di tutte le costruzioni
 [add map]
-
+aggiungi mappa
 [add shortcut]
-
+aggiungi scorciatoia da tastiera
 [AI]
 IA
 [ai]
-IA
+ia
 [AICastor]
 IACastor
 [AINicowar]
@@ -43,7 +43,7 @@ alghe
 [alliances]
 Alleanze
 [alt %0]
-
+alt-%0
 [and]
 e
 [any explorer]
@@ -63,7 +63,7 @@ Assegnato
 [At. speed]
 Velocità Att.
 [At. strength]
-Resistenza Att.
+Potenza Att.
 [Attack]
 Attacco
 [audio]
@@ -71,15 +71,15 @@ Audio
 [auto save]
 Salvataggio automatico
 [available lan games]
-iochi LAN diponibili
+Partite LAN diponibili
 [awaiting players]
 In attesa di altri giocatori
 [away:]
 assente:
 [Back]
-
+Indietro
 [backspace]
-
+BACKSPACE
 [barracks explanation 2]
 nemiche nelle vicinanze
 [barracks explanation]
@@ -89,57 +89,57 @@ Caserma
 [beach size]
 Grandezza della spiaggia
 [break]
-
+pausa
 [build barracks level 0]
-
+Costruisci caserma liv. 0
 [build barracks level 1]
-
+Costruisci caserma liv. 1
 [build barracks level 2]
-
+Costruisci caserma liv. 2
 [build defencetower level 0]
-
+Costruisci torre di difesa liv. 0
 [build defencetower level 1]
-
+Costruisci torre di difesa liv. 1
 [build defencetower level 2]
-
+Costruisci torre di difesa liv. 2
 [build hospital level 0]
-
+Costruisci ospedale liv. 0
 [build hospital level 1]
-
+Costruisci ospedale liv. 1
 [build hospital level 2]
-
+Costruisci ospedale liv. 2
 [build inn level 0]
-
+Costruisci mensa liv. 0
 [build inn level 1]
-
+Costruisci mensa liv. 1
 [build inn level 2]
-
+Costruisci mensa liv. 2
 [build market level 0]
-
+Costruisci mercato
 [build racetrack level 0]
-
+Costruisci circuito liv. 0
 [build racetrack level 1]
-
+Costruisci circuito liv. 1
 [build racetrack level 2]
-
+Costruisci circuito liv. 2
 [build school level 0]
-
+Costruisci scuola liv. 0
 [build school level 1]
-
+Costruisci scuola liv. 1
 [build school level 2]
-
+Costruisci scuola liv. 2
 [build stonewall level 0]
-
+Costruisci muro di pietra
 [build swarm level 0]
-
+Costruisci Magazzino
 [build swimmingpool level 0]
-
+Costruisci piscina liv. 0
 [build swimmingpool level 1]
-
+Costruisci piscina liv. 1
 [build swimmingpool level 2]
-
+Costruisci piscina liv. 2
 [Build]
-Costruire
+Costruisci
 [building site]
 Struttura in costruzione
 [Buildings]
@@ -147,27 +147,27 @@ Costruzioni
 [Bullets]
 Proiettili
 [campaign editor]
-
+Editore di campagne
 [campaign text]
-
+testo della campagna
 [campaign]
 Campagna
 [Can't connect, can't find host]
-
+impossibile connettersi, non si riesce a trovare l'host
 [Can't host game, port %0 in use]
-
+impossibile ospitare partita, la porta %0 è in uso
 [Can't join game, game doesn't exist]
-
+impossibile partecipare alla partita, la partita non esiste
 [Can't join game, game has started]
-
+impossibile partecipare alla partita, la partita è iniziata
 [Can't join game, game is full]
-
+impossibile partecipare alla partita, la partita è piena
 [Can't join game, missmatching game parameters]
-Non puoi unirti alla partita, i parametri della partita non corrispondono
+impossibile partecipare alla partita, i parametri della partita non corrispondono
 [Can't join game, timeout]
-Non puoi unirti alla partita, timeout
+impossibile partecipare alla partita, timeout
 [Can't join game, wrong game version]
-Non puoi unirti alla partita, versione del gioco errata
+impossibile partecipare alla partita, versione del gioco errata
 [cancel destroy]
 Annulla la distruzione
 [cancel repair]
@@ -177,7 +177,7 @@ Annulla i miglioramenti
 [Cancel]
 Annulla
 [caps lock]
-
+BLOC MAIUSC
 [carry]
 Trasporta :
 [Change Area Name]
@@ -205,29 +205,29 @@ Chiuso
 [compile]
 Compila lo script
 [compose]
-
+componi
 [Computing Fertility]
-
+Calcolando la fertilità
 [connect]
 Connesso
 [connecting to]
 Mi sto connettendo a
 [constructed buildings]
-
+edifici costruiti
 [construction and upgrades]
-
+costruzione e miglioramenti
 [Continue playing]
 Continua a giocare
 [control %0]
-
+control-%0
 [Corn]
 Frumento
 [crater density]
 conto crateri
 [crater lakes terrain]
-Lago vulcanico ???
+Lago vulcanico
 [create game]
-Crea il gioco
+Crea partita
 [create map]
 Crea una mappa
 [credits]
@@ -235,7 +235,7 @@ Credits
 [current speed]
 Velocità attuale
 [custom game]
-Gioco personalizzato
+Partita personalizzata
 [customcur]
 Personalizza cursore
 [damage]
@@ -243,17 +243,17 @@ Danno
 [Damaged Map]
 Mappa danneggiati
 [decrease units working]
-
+Diminuisci unità lavorative
 [defencetower explanation 2]
 attacco dei guerrieri
 [defencetower explanation]
 Attacca unità e costruzioni
 [defencetower level 0]
-
+Torre di difesa liv. 0
 [defencetower level 1]
-
+Torre di difesa liv. 1
 [defencetower level 2]
-
+Torre di difesa liv. 2
 [defencetower]
 Torre di difesa
 [Defense Map]
@@ -273,33 +273,33 @@ Distruggi
 [display]
 Visualizza
 [do nothing]
-
+nullafacenti
 [don't carry anything]
 Non trasporta nulla
 [down]
-
+giù
 [downloaded %0]
-
+Scaricato %0
 [edit map]
-
+Modifica mappa
 [editing map]
-
+Modificando mappa
 [editor shortcuts]
 Editor delle scorciatoie da tastiera
 [editor]
 Editor
 [end]
-
+fine
 [Enter your nickname :]
 Inserisci il tuo soprannome :
 [Enter your password :]
 Inserisci la tua password :
 [enter]
-
+Invio
 [equals]
-
+Uguale
 [escape]
-
+esc
 [explorationflag explanation 2]
 esploratori
 [explorationflag explanation]
@@ -315,13 +315,13 @@ esploratori
 [extra islands]
 isole vuote
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
 
 [f15]
@@ -345,7 +345,7 @@ isole vuote
 [f9]
 
 [Fertility Map]
-
+Mappa della fertilità
 [food]
 Cibo
 [forbidden area]
@@ -369,9 +369,9 @@ Scorciatoie da tastiera
 [general settings]
 Impostazioni generali
 [go to event]
-
+Vai a evento
 [go to home]
-
+vai alla home
 [goto main menu]
 Torna al menu principale
 [grass]
@@ -389,11 +389,11 @@ Gestisci mappa
 [Happyness]
 Soddisfazione
 [hard pause]
-
+Pausa forte
 [Harvest]
 Raccogliere
 [home]
-
+home
 [hospital explanation 2]
 
 [hospital explanation]
@@ -409,45 +409,45 @@ Punti vita
 [human]
 umano
 [hungry]
-Fame
+Affamato
 [hungryness]
 Fame
 [In way]
 Sulla strada
 [increase units working]
-
+aumenta unità lavorative
 [inn explanation 2]
 
 [inn explanation]
 Approvvigiona le unità
 [inn level 0]
-
+Mensa liv. 0
 [inn level 1]
-
+Mensa liv. 1
 [inn level 2]
-
+Mensa liv. 2
 [inn]
 Mensa
 [insert]
-
+INS
 [inside]
-Interno
+Dentro
 [islands size]
 Grandezza delle isole
 [islands terrain]
 Terreno a isole
 [iterate selection]
-
+Passa alla prossima selezione
 [jobs]
 lavori
 [join a game]
-Unisciti ad una partita
+Partecipa ad una partita
 [join]
-Unisci
+Partecipa
 [keyboard settings]
 Impostazioni tastiera
 [kick]
-
+Espelli
 [lan]
 Gioca in rete (LAN)
 [language incomplete]
@@ -459,19 +459,19 @@ Lingua
 [language]
 Italiano
 [Leave Game]
-
+Lascia partita
 [left meta]
-
+meta sinistra
 [left super]
-
+Super sinistra
 [left]
-
+sinistra
 [level]
 Livello
 [levels]
 Livelli
 [load campaign]
-
+Carica campagna
 [load game]
 Carica partita
 [load map]
@@ -481,7 +481,7 @@ Carica
 [login]
 Login
 [Lost : %0 has more prestige than you]
-Hai perso: %0 ha pi prestigio di te
+Hai perso: %0 ha più prestigio di te
 [Lost : your colony is dead]
 Hai perso: la tua colonia è morta.
 [lowquality]
@@ -493,15 +493,15 @@ Danno a terra
 [Map name: %0]
 Nome della mappa: %0.
 [map name]
-
+Nome
 [map script]
-
+Script della mappa
 [map size x]
 Grandezza x della mappa
 [map size y]
 Grandezza y della mappa
 [maps available]
-
+Mappe disponibili
 [mark map]
 Segna la mappa per gli Alleati
 [market explanation 2]
@@ -511,7 +511,7 @@ Permette lo scambio di
 [market]
 Mercato
 [meta %0]
-
+meta-%0
 [Min required level:]
 Livello min.richiesto:
 [Minimum Level To Flag]
@@ -519,17 +519,17 @@ Livello minimo per la bandiera
 [Music volume]
 Volume (musica)
 [Mute]
-
+Muto
 [mute]
-Nessun Audio
+Muto
 [new campaign]
-
+nuova campagna
 [new map]
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
 [no key]
-
+nessun tasto
 [no ressources growth areas]
 Area che non sviluppa risorse
 [No]
@@ -537,7 +537,7 @@ No
 [not ready]
 non pronto
 [number of players: %0 (%1 AI)]
-
+numero di giocatori: %0 (%1 IA)
 [number of players: %0]
 %0 numero di giocatori.
 [number of teams: %0]
@@ -545,7 +545,7 @@ non pronto
 [number of teams]
 Numero di squadre
 [numlock]
-
+BLOC NUM
 [of which]
 dei quali
 [ok]
@@ -555,19 +555,19 @@ Vecchie isole casuali
 [old random terrain]
 Vecchio terreno casuale
 [on press]
-
+Quando schiacci
 [On the spot]
 Sul posto
 [on unpress]
-
+Quando lasci il tasto
 [open chat box]
-
+apri chat
 [open load menu]
-Apri Menù Carica
+Apri Carica Menù
 [open save menu]
-Apri Menù Salva
+Apri Salva Menù
 [open script editor]
-Apri lo Script Editor
+Apri l'Editor di Script
 [open]
 Apri
 [options]
@@ -575,15 +575,15 @@ Opzioni
 [Orange]
 Arance
 [page down]
-
+PAG giù
 [page up]
-
+PAG su
 [Papyrus]
 Papiro
 [pause game]
 Pausa
 [pause]
-
+pausa
 [Paused]
 Pausa
 [player name]
@@ -591,13 +591,13 @@ Nome del giocatore
 [please wait]
 Aspetta un momento
 [power]
-
+potenza
 [press space]
 Premi spazio per continuare.
 [Prestige]
 Prestigio
 [print screen]
-
+stamp
 [Prune]
 Prugne
 [quit the editor]
@@ -623,15 +623,15 @@ Ricorda Unità
 [Remember YOG password localy]
 Ricordati la password localmente. (non sicuro)
 [remove map]
-
+rimuovi mappa
 [remove shortcut]
-
+rimuovi scorciatoia
 [repair building]
 Inizia/Ferma Riparazione
 [repair]
 Ripara
 [repeat area]
-
+volte lo stesso terreno
 [restore default shortcuts]
 Ripristina le scorciatoie da tastiera originali
 [return to editor]
@@ -639,13 +639,13 @@ Ritorna all'editor
 [return to game]
 Ritorna al gioco
 [return]
-
+ritorna
 [right meta]
-
+Meta destra
 [right super]
-
+super destra
 [right]
-
+destra
 [river diameter]
 Diametro del fiume
 [river terrain]
@@ -661,7 +661,7 @@ Salva Mappa
 [Save]
 Salva
 [school explanation 2]
-costruire degli operai
+costruzione degli operai
 [school explanation]
 Migliora il livello di
 [school]
@@ -669,9 +669,9 @@ Scuola
 [Script Areas]
 Script per aree
 [scroll lock]
-
+blocco scorrimento
 [scroll wheel enabled]
-
+rotella di scorrimento abilitata
 [seeking a job]
 cercano lavoro
 [seeking]
@@ -681,27 +681,27 @@ Seleziona Caserma
 [select clearingflag]
 Seleziona bandiera di raccolta
 [select construct barracks]
-
+seleziona costruisci caserma
 [select construct defencetower]
-
+seleziona costruisci torre di difesa
 [select construct hospital]
-
+seleziona costruisci ospedale
 [select construct inn]
-
+seleziona costruisci mensa
 [select construct market]
-
+seleziona costruisci mercato
 [select construct racetrack]
-
+seleziona costruisci circuito
 [select construct school]
-
+seleziona costruisci scuola
 [select construct stonewall]
-
+seleziona costruisci muro di pietra
 [select construct swarm]
-
+seleziona costruisci magazzino
 [select construct swimmingpool]
-
+seleziona costruisci piscina
 [select delete tool]
-
+seleziona strumento di eliminazione
 [select explorationflag]
 Seleziona bandiera di esplorazione
 [select hospital building]
@@ -711,17 +711,17 @@ Seleziona Mensa
 [select market building]
 Seleziona Mercato
 [select place clearing area]
-
+Seleziona posiziona area da pulire
 [select place clearingflag]
-
+Seleziona posiziona bandiera pulitrice
 [select place explorationflag]
-
+Seleziona posiziona bandiera esplorazione
 [select place forbidden area]
-
+Seleziona posiziona area vietata
 [select place guard area]
-
+Seleziona posiziona area pattuglia
 [select place warflag]
-
+Seleziona posiziona bandiera di guerra
 [select racetrack building]
 Seleziona Circuito
 [select school building]
@@ -739,23 +739,23 @@ Seleziona bandiera di attacco
 [settings]
 Impostazioni
 [shift %0]
-
+MAIUSC-%0
 [shortcut explanation enter]
 Invio: invia un messaggio di chat
 [shortcut explanation v]
 V: hold to speak ???
 [show main menu]
-
+mostra menù principale
 [skin]
 Mostra
 [smoothing]
 Spianatura
 [space]
-
+Spazio
 [start mission]
-
+Inizia missione
 [start new campaign]
-
+Inizia nuova campagna
 [Start]
 Start
 [Starving Map]
@@ -791,7 +791,7 @@ Palude
 [swarm explanation]
 Crea nuove unità
 [swarm level 0]
-
+Magazzino
 [swarm]
 Magazzino
 [Swim]
@@ -803,37 +803,37 @@ Migliora la velocità in
 [swimmingpool]
 Piscina
 [switch to adding areas]
-
+Passa a aggiungere aree
 [switch to area brush 1]
-
+Passa a brush area 1
 [switch to area brush 2]
-
+Passa a brush area 2
 [switch to area brush 3]
-
+Passa a brush area 3
 [switch to area brush 4]
-
+Passa a brush area 4
 [switch to area brush 5]
-
+Passa a brush area 5
 [switch to area brush 6]
-
+Passa a brush area 6
 [switch to area brush 7]
-
+Passa a brush area 7
 [switch to area brush 8]
-
+Passa a brush area 8
 [switch to building view]
 Passa alla Visualizzazione Costruzioni
 [switch to flag view]
 Passa alla Visualizzazione Flag
 [switch to removing areas]
-
+Passa alla Rimossione Aree
 [switch to teams view]
 Passa alla Visualizzazione Squadre
 [switch to terrain view]
 Passa alla Visualizzazione Terreno
 [sys req]
-
+requisiti sistema
 [tab]
-
+TAB
 [teams]
  squadre
 [the barracks is finished]
@@ -865,7 +865,7 @@ L'ospedale è stato completato
 [the hospital is under attack]
 L'ospedale è sotto attacco
 [The host has cancelled the game]
-
+L'host ha annullato la partita
 [the inn is finished]
 La mensa è stata completata
 [the inn is under attack]
@@ -913,7 +913,7 @@ Toggle Draw Information ???
 [toggle draw unit paths]
 Toggle Draw Unit Paths ???
 [toggle menu screen]
-
+Apri menu
 [toggle recording voice]
 Inizia Registrazione Vocale
 [Total prestige reached]
@@ -921,53 +921,53 @@ Totale prestigio raggiunto
 [Total]
 Totale
 [tutorial text 1]
-
+Benvenuti al tutorial iniziale di Globulation 2! Questo tutorial coprirà ogni aspetto del gioco, dal costruire mense, zone di esplorazione e distruggere i nemici! Qui non mancano certo informazioni utili!
 [tutorial text 2]
-
+Ora che hai le basi, è ora di abituarsi a nuove costruzioni, quali Circuiti, Piscine e Scuole.
 [tutorial text 3]
-
+Sei stato molto bravo ad arrivare così avanti. Ora passiamo a Guerrieri, Caserme e Miglioramenti.
 [tutorial text 4]
-
+Abbiamo quasi finito. Mancano solo bandiere e attacco. Poi saprai abbastanza per proseguire alle Partite Personalizzate e eventualmente anche giocare online, contro i migliori giocatori di Globulation 2.
 [tutorial]
 Esercitazione
 [Uncontrolled]
 Incontrollato
 [undo]
-
+annulla
 [uniform terrain]
 Terreno uniforme
 [Unit editor]
 Editor di unità
 [unit settings explanation]
-
+Il numero default di unità assegnate
 [unit settings]
 Impostazioni unità
 [units working]
- unità al lavoro
+Unità al lavoro
 [Units]
 Unità
 [unlocked by]
-
+Sbloccato da
 [Unnamed Area]
 {Area senza nome}
 [up]
-
+su
 [upgrade building]
 Inizia/Ferma Miglioramento
 [upgrade]
 Migliora
 [username]
-Username
+Nome giocatore
 [Version]
 Versione
 [view history]
-
+Vedi storia
 [waiting for %0]
 Aspettando %0
 [waiting for key]
-
+Aspettando tasto...
 [Waiting]
-
+Aspettando
 [Walk]
 Camminare
 [warflag explanation 2]
@@ -987,7 +987,7 @@ guerrieri
 [water]
 Acqua
 [Wheat]
-
+frumento
 [wheat]
 frumento
 [Won : you defeated your opponents]
@@ -1021,7 +1021,7 @@ La connessione a YOG è stata persa.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Il metaserver YOG ha respinto la connessione questo username è già stato registrato con una password. Se tu hai registrato questo utente, disattiva l'opzione "Registra un nuovo utente YOG con una password" qui sotto.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-
+Il metaserver YOG ha rifiutato la connessione perchè la password è errata
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1041,8 +1041,8 @@ Hai perso
 [you have won]
 Hai vinto!!!!
 [You where kicked from the game]
-
+Sei stato espulso dalla partita
 [Your %0 are under attack]
-Il tuo %0 sotto attacco
+Il tuo %0 è sotto attacco
 [Your unit got converted to %0's team]
-La tua unità è stata convertita in %0 squadra
+La tua unità è stata convertita alla squadra di %0
