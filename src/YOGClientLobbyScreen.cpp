@@ -340,7 +340,7 @@ void YOGClientLobbyScreen::updatePlayerList(void)
 //	boost::shared_ptr<IRC> irc = ircChat->getIRC();
 	// update YOG one
 	playerList->clear();
-	for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
+	for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
 	{
 		std::string listEntry = player->getPlayerName();
 		playerList->addPlayer(listEntry, YOGClientPlayerList::YOG_NETWORK);
@@ -407,7 +407,7 @@ void YOGClientLobbyScreen::autoCompleteNick()
 
 	if( beginningOfNick.compare("") != 0 )
 	{
-		for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
+		for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
 		{
 			const std::string &user = (std::string)player->getPlayerName();
 			if( user.find(beginningOfNick) == 0 )

@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGPlayerInfo_h
-#define __YOGPlayerInfo_h
+#ifndef __YOGPlayerSessionInfo_h
+#define __YOGPlayerSessionInfo_h
 
 #include <string>
 #include "SDL_net.h"
@@ -30,14 +30,14 @@ namespace GAGCore
 
 
 ///This class contains information related to a player connected to YOG
-class YOGPlayerInfo
+class YOGPlayerSessionInfo
 {
 public:
-	///Construct an empty YOGPlayerInfo
-	YOGPlayerInfo();
+	///Construct an empty YOGPlayerSessionInfo
+	YOGPlayerSessionInfo();
 
-	///Construct a YOGPlayerInfo
-	YOGPlayerInfo(const std::string& playerName, Uint16 id);
+	///Construct a YOGPlayerSessionInfo
+	YOGPlayerSessionInfo(const std::string& playerName, Uint16 id);
 
 	///Sets the name of the player
 	void setPlayerName(const std::string& playerName);
@@ -51,15 +51,15 @@ public:
 	///Returns the unique player ID
 	Uint16 getPlayerID() const;
 
-	///Encodes this YOGPlayerInfo into a bit stream
+	///Encodes this YOGPlayerSessionInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
-	///Decodes this YOGPlayerInfo from a bit stream
+	///Decodes this YOGPlayerSessionInfo from a bit stream
 	void decodeData(GAGCore::InputStream* stream);
 	
-	///Test for equality between two YOGPlayerInfo
-	bool operator==(const YOGPlayerInfo& rhs) const;
-	bool operator!=(const YOGPlayerInfo& rhs) const;
+	///Test for equality between two YOGPlayerSessionInfo
+	bool operator==(const YOGPlayerSessionInfo& rhs) const;
+	bool operator!=(const YOGPlayerSessionInfo& rhs) const;
 private:
 	Uint16 playerID;
 	std::string playerName;

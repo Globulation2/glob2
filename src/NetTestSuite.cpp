@@ -247,12 +247,12 @@ int NetTestSuite::testNetMessages()
 		return 40;
 	
 	//Test NetUpdatePlayerList
-	YOGPlayerInfo pi1("bob", 12);
-	YOGPlayerInfo pi2("jill", 17);
-	YOGPlayerInfo pi3("farce", 35);
-	YOGPlayerInfo pi4("globulation2 is kick ass", 92);
-	std::vector<YOGPlayerInfo> lpi1;
-	std::vector<YOGPlayerInfo> lpi2;
+	YOGPlayerSessionInfo pi1("bob", 12);
+	YOGPlayerSessionInfo pi2("jill", 17);
+	YOGPlayerSessionInfo pi3("farce", 35);
+	YOGPlayerSessionInfo pi4("globulation2 is kick ass", 92);
+	std::vector<YOGPlayerSessionInfo> lpi1;
+	std::vector<YOGPlayerSessionInfo> lpi2;
 	
 	
 	//Test initial
@@ -603,11 +603,11 @@ int NetTestSuite::testYOGMessage()
 
 
 
-int NetTestSuite::testYOGPlayerInfo()
+int NetTestSuite::testYOGPlayerSessionInfo()
 {
-	shared_ptr<YOGPlayerInfo> ypi(new YOGPlayerInfo);
+	shared_ptr<YOGPlayerSessionInfo> ypi(new YOGPlayerSessionInfo);
 	//Test the initial state
-	if(!testInitial<YOGPlayerInfo>())
+	if(!testInitial<YOGPlayerSessionInfo>())
 		return 1;
 	
 	///Test the game name encoding	
@@ -750,15 +750,15 @@ bool NetTestSuite::runAllTests()
 		std::cout<<"YOGMessage test #"<<failNumber<<" failed."<<std::endl;
 	}	
 
-	failNumber = testYOGPlayerInfo();
+	failNumber = testYOGPlayerSessionInfo();
 	if(failNumber == 0)
 	{
-		std::cout<<"YOGPlayerInfo tests passed."<<std::endl;
+		std::cout<<"YOGPlayerSessionInfo tests passed."<<std::endl;
 	}
 	else
 	{
 		failed = true;
-		std::cout<<"YOGPlayerInfo test #"<<failNumber<<" failed."<<std::endl;
+		std::cout<<"YOGPlayerSessionInfo test #"<<failNumber<<" failed."<<std::endl;
 	}	
 
 	failNumber = testNetReteamingInformation();
