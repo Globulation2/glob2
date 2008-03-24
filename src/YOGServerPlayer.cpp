@@ -117,7 +117,9 @@ void YOGServerPlayer::update()
 		///This is a special override used to restart development server
 		if(server.getAdministratorList().isAdministrator(info->getMessage()->getSender()))
 			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage());
-		server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
+		///Check if this player is muted, ignore otherwise
+		if(!server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isMuted())
+			server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
 	}
 	//This recieves an attempt to create a new game
 	else if(type==MNetCreateGame)
