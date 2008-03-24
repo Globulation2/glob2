@@ -18,6 +18,7 @@
 
 #include "YOGServerAdministrator.h"
 
+#include "YOGServer.h"
 
 YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 	: server(server)
@@ -30,6 +31,21 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 {
 	if(message=="server_restart")
 		exit(0);
+		
+	if(message.substr(0, 12) == "mute_player ")
+	{
+		std::string name = message.substr(12, message.size());
+		if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
+			server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setMuted();
+	}
+		
+	if(message.substr(0, 14) == "unmute_player ")
+	{
+		std::string name = message.substr(14, message.size());
+		if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
+			server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setUnmuted();
+	}
+
 
 	return false;
 }

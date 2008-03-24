@@ -30,6 +30,7 @@
 #include "YOGServerPasswordRegistry.h"
 #include "YOGServerAdministrator.h"
 #include "YOGServerAdministratorList.h"
+#include "YOGServerPlayerStoredInfoManager.h"
 
 
 class NetBroadcaster;
@@ -125,6 +126,9 @@ public:
 	
 	///Returns the YOGServerAdministrator
 	YOGServerAdministrator& getAdministrator();
+	
+	///Returns the YOGServerPlayerStoredInfoManager
+	YOGServerPlayerStoredInfoManager& getPlayerStoredInfoManager();
 private:
 	Uint16 chooseNewPlayerID();
 
@@ -148,7 +152,7 @@ private:
 	YOGServerChatChannelManager chatChannelManager;
 	YOGServerAdministrator administrator;
 	YOGServerAdministratorList adminList;
-	
+	YOGServerPlayerStoredInfoManager playerInfos;
 };
 
 #endif
