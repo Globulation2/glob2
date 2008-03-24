@@ -85,6 +85,12 @@ public:
 	/// Sets whether or no this header represents a saved game
 	void setIsSavedGame(bool isSavedGame);
 
+	/// Sets the complete game checksum
+	void setGameChecksum(Uint32 checksum);
+	
+	/// Returns the complete game checksum
+	Uint32 getGameChecksum();
+
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
 	
@@ -102,12 +108,15 @@ private:
 	/// the complete file.
 	Uint32 mapOffset;
 	
-	///The teams in the map. BaseTeam is used to allow access to information like team numbers and
-	///team colors without loading the entire game.
+	/// The teams in the map. BaseTeam is used to allow access to information like team numbers and
+	/// team colors without loading the entire game.
 	BaseTeam teams[32];
 	
-	///If this is true, this map header represents a saved game, rather than a new map
+	/// If this is true, this map header represents a saved game, rather than a new map
 	bool isSavedGame;
+	
+	/// Set to the complete games checksum
+	Uint32 checksum;
 
 	std::string mapName;
 };

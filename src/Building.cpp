@@ -2530,8 +2530,12 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [0]
 		
-
 	cs^=buildingState;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [1]
+	cs=(cs<<31)|(cs>>1);
+		
+	cs^=constructionResultState;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [1]
 	cs=(cs<<31)|(cs>>1);
@@ -2540,54 +2544,70 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [2]
 	
+	cs^=maxUnitWorkingFuture;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [4]
+	
 	cs^=maxUnitWorkingPreferred;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [3]
+		checkSumsVector->push_back(cs);// [5]
+	
+	cs^=maxUnitWorkingPrevious;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [6]
+	
+	cs^=desiredMaxUnitWorking;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [7]
 		
 	cs^=unitsWorking.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [4]
-
-	cs^=maxUnitInside;
-	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [5]
-
-	cs^=unitsInside.size();
-	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [6]
-	cs=(cs<<31)|(cs>>1);
-
-	cs^=posX;
-	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [7]
-	
-	cs^=posY;
-	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [8]
-	cs=(cs<<31)|(cs>>1);
 
-	cs^=unitStayRange;
+	cs^=subscriptionWorkingTimer;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [9]
-
-	for (int i=0; i<MAX_RESSOURCES; i++)
-		cs^=localRessource[i];
+	
+	cs^=unitsInside.size();
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [10]
 	cs=(cs<<31)|(cs>>1);
 
-	cs^=hp;
+	cs^=clearingFlagUpdateTimer;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [11]
 
-	cs^=productionTimeout;
+	cs^=posX;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [12]
+	
+	cs^=posY;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [13]
+	cs=(cs<<31)|(cs>>1);
+
+	cs^=unitStayRange;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [14]
+
+	for (int i=0; i<MAX_RESSOURCES; i++)
+		cs^=localRessource[i];
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [15]
+	cs=(cs<<31)|(cs>>1);
+
+	cs^=hp;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [16]
+
+	cs^=productionTimeout;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [17]
 		
 
 	cs^=totalRatio;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [13]
+		checkSumsVector->push_back(cs);// [18]
 	
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -2597,30 +2617,30 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [14]
+		checkSumsVector->push_back(cs);// [19]
 
 	cs^=shootingStep;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [15]
+		checkSumsVector->push_back(cs);// [20]
 
 
 	cs^=shootingCooldown;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [16]
+		checkSumsVector->push_back(cs);// [21]
 	
 		
 	cs^=bullets;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [17]
+		checkSumsVector->push_back(cs);// [22]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=seenByMask;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [18]
+		checkSumsVector->push_back(cs);// [23]
 	
 	cs^=gid;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [19]
+		checkSumsVector->push_back(cs);// [24]
 	
 	return cs;
 }
