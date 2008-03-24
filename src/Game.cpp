@@ -998,6 +998,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
+	mapHeader.setGameChecksum(checkSum(NULL, NULL, NULL, true));
 	
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
@@ -2708,7 +2709,7 @@ void Game::dumpAllData(const std::string& file)
 
 
 
-Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
+Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy)
 {
 	Uint32 cs=0;
 
@@ -2745,13 +2746,14 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	
 	cs=(cs<<31)|(cs>>1);
 	
-	bool heavy=false;
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	{
 		if (players[i]->type==BasePlayer::P_IP)
 		{
 			heavy=true;
 			break;
 		}
+	}
 	Uint32 mapCs=map.checkSum(heavy);
 	cs^=mapCs;
 	if (checkSumsVector)
