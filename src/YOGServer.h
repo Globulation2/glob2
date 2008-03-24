@@ -28,6 +28,8 @@
 #include "YOGPlayerInfo.h"
 #include "YOGServerChatChannelManager.h"
 #include "YOGServerPasswordRegistry.h"
+#include "YOGServerAdministrator.h"
+#include "YOGServerAdministratorList.h"
 
 
 class NetBroadcaster;
@@ -117,6 +119,12 @@ public:
 
 	///Returns the YOGGameInfo for modification
 	YOGGameInfo& getGameInfo(Uint16 gameID);
+	
+	///Returns the YOGServerAdministratorList
+	YOGServerAdministratorList& getAdministratorList();
+	
+	///Returns the YOGServerAdministrator
+	YOGServerAdministrator& getAdministrator();
 private:
 	Uint16 chooseNewPlayerID();
 
@@ -138,6 +146,9 @@ private:
 	
 	YOGServerPasswordRegistry registry;
 	YOGServerChatChannelManager chatChannelManager;
+	YOGServerAdministrator administrator;
+	YOGServerAdministratorList adminList;
+	
 };
 
 #endif
