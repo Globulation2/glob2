@@ -186,7 +186,7 @@ public:
 	///The number of units to assign to a war flag attacking an enemy building
 	int war_phase_war_flag_units_assigned;
 	///The number of flags to attack with at any one time
-	int war_phase_num_attack_flags;
+	unsigned war_phase_num_attack_flags;
 private:
 	///The name of the strategy.
 	std::string name;

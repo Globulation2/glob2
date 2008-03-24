@@ -195,7 +195,7 @@ void Engine::createRandomGame()
 	gui.localPlayer=0;
 	gui.localTeamNo=0;
 	
-	int ret = initGame(map, game);
+	initGame(map, game);
 
 	// set the correct alliance
 	gui.game.setAIFFA();
@@ -246,8 +246,6 @@ int Engine::run(void)
 		Sint32 needToBeTime = 0;
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
-
-		unsigned int skipOrders = 0;
 
 		while (gui.isRunning)
 		{

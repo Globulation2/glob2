@@ -30,7 +30,7 @@ P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
 
 void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
 {
-	Uint8 type = message->getMessageType();
+	//Uint8 type = message->getMessageType();
 	boost::shared_ptr<YOGClient> nclient(client);
 }
 

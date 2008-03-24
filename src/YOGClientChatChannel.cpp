@@ -23,7 +23,7 @@
 #include "NetMessage.h"
 
 YOGClientChatChannel::YOGClientChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client)
-	: channelID(channelID), client(client)
+	: client(client), channelID(channelID)
 {
 	client->addYOGClientChatChannel(this);
 }
@@ -60,7 +60,7 @@ boost::posix_time::ptime YOGClientChatChannel::getMessageTime(Uint32 n) const
 
 void YOGClientChatChannel::sendMessage(boost::shared_ptr<YOGMessage> message)
 {
-	if(channelID != -1)
+	if(channelID != static_cast<Uint32>(-1))
 	{
 		messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
 		boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channelID, message));
