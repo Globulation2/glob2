@@ -254,7 +254,6 @@ public:
 	Sint32 subscriptionWorkingTimer;
 	Sint32 maxUnitInside;
 	std::list<Unit *> unitsInside;
-	Sint32 clearingFlagUpdateTimer;
 	
 	// optimisation and consistency
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
