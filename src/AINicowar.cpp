@@ -1059,7 +1059,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
-	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
 	///Add constraints for all enemy teams to keep distance
 	AIEcho::Gradients::GradientInfo gi_enemy;
@@ -2055,7 +2055,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	memset(unitGID, NOGUID, sizeof(Uint16) * w * h);
 	std::list<int> locations;
 	
-	//For every building or unit thats under attack, increment in the squares surrounding it.
+	//For every unit thats under attack, increment in the squares surrounding it.
 	//Use the 'locations' list to keep track of non-zero squares
 	for(int i=0; i<1024; ++i)
 	{
@@ -2307,6 +2307,8 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 			int group_size = 0;
 		
 			std::queue<Unit*> proccess;
+			std::queue<int> xposs;
+			std::queue<int> yposs;
 			for(int i=0; i<1024; ++i)
 			{
 				if(units[i])
@@ -2314,6 +2316,8 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 					group_x += units[i]->posX;
 					group_y += units[i]->posY;
 					proccess.push(units[i]);
+					xposs.push(units[i]->posX);
+					yposs.push(units[i]->posY);
 					units[i] = NULL;
 					group_size+=1;
 					break;
@@ -2326,7 +2330,11 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 			while(!proccess.empty())
 			{
 				Unit* top = proccess.front();
+				int ix = xposs.front();
+				int iy = yposs.front();
 				proccess.pop();
+				xposs.pop();
+				yposs.pop();
 				for(int dx = -4; dx<=4; ++dx)
 				{
 					int nx = (top->posX + dx + w) % w;
@@ -2341,9 +2349,11 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 								int id = Unit::GIDtoID(guid);
 								if(units[id])
 								{
-									group_x += units[id]->posX;
-									group_y += units[id]->posY;
+									group_x += ix + dx;
+									group_y += iy + dy;
 									proccess.push(units[id]);
+									xposs.push(ix + dx);
+									yposs.push(iy + dy);
 									units[id] = NULL;
 									group_size+=1;
 								}
