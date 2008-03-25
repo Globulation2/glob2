@@ -33,18 +33,16 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& serve
 	recievedMapHeader=false;
 	hasAddedHost=false;
 	latencyMode = 0;
-	latencyUpdateTimer = 1000;
+	latencyUpdateTimer = SDL_GetTicks();
 	aiNum = 0;
 }
 
 
 void YOGServerGame::update()
 {
-	latencyUpdateTimer -= 1;
-	if(latencyUpdateTimer == 0)
+	if((SDL_GetTicks() - latencyUpdateTimer) > 4000)
 	{
 		chooseLatencyMode();
-		latencyUpdateTimer=1000;
 	}
 
 
@@ -349,6 +347,7 @@ void YOGServerGame::recieveGameStartRequest()
 
 void YOGServerGame::startGame()
 {
+	chooseLatencyMode();
 	gameStarted=true;
 	boost::shared_ptr<NetStartGame> message(new NetStartGame);
 	routeMessage(message);
@@ -380,37 +379,29 @@ Uint16 YOGServerGame::getHostPlayerID() const
 
 void YOGServerGame::chooseLatencyMode()
 {
+	latencyUpdateTimer=SDL_GetTicks();
+	
 	unsigned highest = 0;
 	unsigned second_highest = 0;
 	for(unsigned i=0; i<players.size(); ++i)
 	{
-		if(players[i]->getAveragePing() > highest)
+		unsigned p = players[i]->getAveragePing();
+		if(p > highest)
 		{
 			second_highest = highest;
-			highest = players[i]->getAveragePing();
+			highest = p;
 		}
-		else if(players[i]->getAveragePing() > second_highest)
+		else if(p > second_highest)
 		{
-			second_highest = players[i]->getAveragePing();
+			second_highest = p;
 		}
 	}
 
-	int total_allocation = (highest * 12 + second_highest * 12) / 10;
-	int latency_adjustment = 0;
-	if(total_allocation < 320)
-		latency_adjustment = 8;
-	else if(total_allocation < 540)
-		latency_adjustment = 14;
-	else if(total_allocation < 800)
-		latency_adjustment = 20;
-	else if(total_allocation < 1000)
-		latency_adjustment = 25;
-	else if(total_allocation < 1200)
-		latency_adjustment = 30;
-	else if(total_allocation < 1500)
-		latency_adjustment = 38;
-	else
-		latency_adjustment = 50;
+	//Add 5% to both pings. The given pings are such that 99.7% of all pings will
+	//be under those amounts, provided pings are normally distributed, which they
+	//usually are
+	int total_allocation = (highest * 105 + second_highest * 105) / 100;
+	int latency_adjustment = (total_allocation+39) / 40;
 
 	if(latency_adjustment != latencyMode && !gameStarted)
 	{
