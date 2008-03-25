@@ -347,6 +347,16 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeLeaveSection();
 
+	stream->writeEnterSection("defense_flags");
+	stream->writeUint16(defense_flags.size(), "size");
+	for(n = 0; n<defense_flags.size(); ++n)
+	{
+		stream->writeEnterSection(n);
+		stream->writeUint32(defense_flags[n], "flag");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
 	stream->writeEnterSection("explorer_attack_flags");
 	stream->writeUint16(explorer_attack_flags.size(), "size");
 	for(n = 0; n<explorer_attack_flags.size(); ++n)
