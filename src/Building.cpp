@@ -1300,7 +1300,7 @@ int Building::desiredNumberOfWorkers(void)
 
 void Building::step(void)
 {
-	desiredMaxUnitWorking = desiredNumberOfWorkers();
+	updateCallLists();
 	if(underAttackTimer > 0)
 		underAttackTimer-=1;
 
