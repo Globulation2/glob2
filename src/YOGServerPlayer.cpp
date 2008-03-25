@@ -32,8 +32,7 @@ YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id
 	loginState = YOGLoginUnknown;
 	gameID=0;
 	netVersion=0;
-	pingCountdown=1250;
-	pingValue=0;
+	pingCountdown=SDL_GetTicks();
 	pingSendTime=0;
 }
 
@@ -45,12 +44,12 @@ void YOGServerPlayer::update()
 	updateConnectionSates();
 	updateGamePlayerLists();
 
-	pingCountdown -= 1;
-	if(pingCountdown == 0)
+	if(SDL_GetTicks() - pingCountdown > 5000 && pingCountdown != 0)
 	{
 		shared_ptr<NetPing> message(new NetPing);
 		connection->sendMessage(message);
 		pingSendTime = SDL_GetTicks();
+		pingCountdown = 0;
 	}
 
 	boost::shared_ptr<YOGServerGame> ngame;
@@ -248,24 +247,10 @@ void YOGServerPlayer::update()
 	{
 		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
 		pings.push_back(SDL_GetTicks() - pingSendTime);
-		if(pings.size() > 10)
+		if(pings.size() > 16)
 			pings.erase(pings.begin());
 
-		pingValue = 0;
-		//Copy the ping values, sort them, remove the top two highest. If there are any anomolies, these are it
-		std::vector<unsigned> spings(pings.begin(), pings.end());
-		std::sort(spings.begin(), spings.end(), std::greater<unsigned>());
-		if(spings.size() > 2)
-			spings.erase(spings.begin());
-		if(spings.size() > 2)
-			spings.erase(spings.begin());
-		for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
-		{
-			pingValue += *i;
-		}
-		pingValue /= spings.size();
-
-		pingCountdown = 1250;
+		pingCountdown = SDL_GetTicks();
 	}
 }
 
@@ -322,7 +307,46 @@ boost::shared_ptr<YOGServerGame> YOGServerPlayer::getGame()
 
 unsigned YOGServerPlayer::getAveragePing() const
 {
-	return pingValue;
+	if(pings.size() == 1)
+	{
+		return *pings.begin();
+	}
+	else if(pings.size() == 0)
+	{
+		return 0;
+	}
+
+
+	//Copy the ping values, sort them, remove two highest and two lowest
+	std::vector<unsigned> spings(pings.begin(), pings.end());
+	std::sort(spings.begin(), spings.end(), std::greater<unsigned>());
+	if(spings.size() > 2)
+		spings.erase(spings.begin());
+	if(spings.size() > 2)
+		spings.erase(spings.end()-1);
+	if(spings.size() > 2)
+		spings.erase(spings.begin());
+	if(spings.size() > 2)
+		spings.erase(spings.end()-1);
+	
+	//Compute mean
+	unsigned mean = 0;
+	for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
+	{
+		mean += *i;
+	}
+	mean /= spings.size();
+	
+	//Compute standard deviations
+	float deviation = 0;
+	for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
+	{
+		deviation += float((*i - mean) * (*i - mean));
+	}
+	deviation = std::sqrt(deviation / spings.size());
+
+	//At two standard deviations, 99.7% of all data will be less
+	return mean + int(deviation*2);
 }
 
 

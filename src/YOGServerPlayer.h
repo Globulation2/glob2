@@ -66,7 +66,9 @@ public:
 	///Returns the game the player is connected to
 	boost::shared_ptr<YOGServerGame> getGame();
 
-	///Returns the players current average ping
+	///Returns the players ping such that, statistically, 99.7% of all pings from this client
+	///would be under this amount, so long as pings are normally distributed, which I've
+	///found that they are
 	unsigned getAveragePing() const;
 private:
 	///This enum represents the state machine of the initial connection
@@ -144,9 +146,7 @@ private:
 	weak_ptr<YOGServerGame> game;
 
 	///Counts down between sending a ping
-	unsigned short pingCountdown;
-	///This tells the current average value of the pings
-	unsigned pingValue;
+	Uint32 pingCountdown;
 	///This says the time when the ping was sent, 0 means not waiting on ping reply
 	unsigned pingSendTime;
 	///This holds the most recent 5 pings
