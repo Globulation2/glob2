@@ -2537,12 +2537,12 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		
 	cs^=constructionResultState;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [1]
+		checkSumsVector->push_back(cs);// [2]
 	cs=(cs<<31)|(cs>>1);
 	
 	cs^=maxUnitWorking;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [2]
+		checkSumsVector->push_back(cs);// [3]
 	
 	cs^=maxUnitWorkingFuture;
 	if (checkSumsVector)
@@ -2554,28 +2554,24 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	
 	cs^=maxUnitWorkingPrevious;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [6]
+		checkSumsVector->push_back(cs);// [7]
 	
 	cs^=desiredMaxUnitWorking;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [7]
+		checkSumsVector->push_back(cs);// [8]
 		
 	cs^=unitsWorking.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [8]
+		checkSumsVector->push_back(cs);// [9]
 
 	cs^=subscriptionWorkingTimer;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [9]
+		checkSumsVector->push_back(cs);// [10]
 	
 	cs^=unitsInside.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [10]
-	cs=(cs<<31)|(cs>>1);
-
-	cs^=clearingFlagUpdateTimer;
-	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [11]
+	cs=(cs<<31)|(cs>>1);
 
 	cs^=posX;
 	if (checkSumsVector)
