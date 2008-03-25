@@ -64,7 +64,7 @@ upgrading_phase_1_hospital_chance 5
 upgrading_phase_1_inn_chance 10
 upgrading_phase_1_num_units 16
 upgrading_phase_1_racetrack_chance 8
-upgrading_phase_1_school_chance 5
+upgrading_phase_1_school_chance 10
 upgrading_phase_1_school_min 1
 upgrading_phase_1_swimmingpool_chance 8
 upgrading_phase_1_tower_chance 0
