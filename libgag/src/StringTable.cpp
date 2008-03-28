@@ -229,6 +229,11 @@ namespace GAGCore
 			}
 		}
 		
+		for(unsigned i=0; i<translations.size(); ++i)
+		{
+			languageCodes[getStringInLang("[language-code]", i)] = i;
+		}
+		
 		return true;
 	}
 	
