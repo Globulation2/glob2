@@ -187,7 +187,6 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;
 		teams[players[i]->teamNumber]->playersMask|=(1<<i);
-		std::cout<<"Adding a "<<gameHeader.getBasePlayer(i).type<<std::endl;
 	}
 
 	setSyncRandSeed(newGameHeader.getRandomSeed());
