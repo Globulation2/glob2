@@ -40,6 +40,7 @@ namespace GAGCore
 		void setLang(int l) { actLang = l; }
 		void setDefaultLang(int l) { defaultLang = l; }
 		int getLang(void) { return actLang; }
+		int getLangCode(const std::string& lang) { return languageCodes[lang]; }
 		bool isLangComplete(int l) { return !incomplete[l]; }
 		int getNumberOfLanguage(void) { return languageCount; }
 		bool loadIncompleteList(const char *filename);
@@ -52,6 +53,7 @@ namespace GAGCore
 	private:
 		std::vector<OneStringToken *> strings;
 		std::map<std::string, size_t> stringAccess;
+		std::map<std::string, int> languageCodes;
 		int actLang;
 		int defaultLang;
 		int languageCount;

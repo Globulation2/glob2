@@ -412,6 +412,7 @@ int Engine::run(void)
 
 		delete net;
 		net=NULL;
+		multiplayer.reset();
 		
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"

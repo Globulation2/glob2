@@ -34,7 +34,7 @@ public:
 	int screenHeight;
 	Uint32 screenFlags;
 	Uint32 optionFlags;
-	Uint32 defaultLanguage;
+	std::string language;
 	Uint32 musicVolume;
 	int mute;
 	bool rememberUnit;

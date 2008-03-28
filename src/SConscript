@@ -41,7 +41,7 @@ UnitsSkins.cpp                   UnitType.cpp                          Utilities
 VoiceRecorder.cpp                YOGClientChatChannel.cpp              YOGClientChatListener.cpp
 YOGClient.cpp                    YOGClientEvent.cpp                    YOGClientEventListener.cpp
 YOGClientGameListListener.cpp    YOGClientGameListManager.cpp          YOGClientLobbyScreen.cpp
-YOGClientPlayerListListener.cpp  YOGClientPlayerListManager.cpp        
+YOGClientPlayerListListener.cpp  YOGClientPlayerListManager.cpp        YOGConsts.cpp
 YOGGameInfo.cpp                  YOGLoginScreen.cpp                    YOGMessage.cpp
 YOGPlayerSessionInfo.cpp         YOGPlayerStoredInfo.cpp               YOGServerAdministrator.cpp
 YOGServerAdministratorList.cpp   YOGServerChatChannel.cpp              YOGServerChatChannelManager.cpp
