@@ -187,6 +187,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;
 		teams[players[i]->teamNumber]->playersMask|=(1<<i);
+		std::cout<<"Adding a "<<gameHeader.getBasePlayer(i).type<<std::endl;
 	}
 
 	setSyncRandSeed(newGameHeader.getRandomSeed());
@@ -1262,6 +1263,8 @@ void Game::addTeam(int pos)
 		prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
 		
 		map.addTeam();
+		
+		script.addTeam();
 	}
 	else
 		assert(false);
@@ -1287,6 +1290,7 @@ void Game::removeTeam(int pos)
 			teams[i]->setCorrectColor(((float)i*360.0f)/(float)mapHeader.getNumberOfTeams());
 
 		map.removeTeam();
+		script.removeTeam(pos);
 		teams[pos]=NULL;
 	}
 }

@@ -2055,3 +2055,20 @@ bool Mapscript::hasTeamLost(unsigned teamNumber)
 		return hasLost.at(teamNumber);
 	return false;
 }
+
+
+
+void Mapscript::addTeam()
+{
+	hasWon.push_back(false);
+	hasLost.push_back(false);
+}
+
+
+
+void Mapscript::removeTeam(int n)
+{
+	hasWon.erase(hasWon.begin()+n);
+	hasLost.erase(hasLost.begin()+n);
+}
+
