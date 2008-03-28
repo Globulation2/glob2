@@ -4897,7 +4897,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	{
 		gm.reset(new GradientManager(player->map));
 		update_gm=true;
-		for(int x=0; x<32; ++x)
+		for(int x=0; x<player->team->game->gameHeader.getNumberOfPlayers(); ++x)
 		{
 			if(player->team->game->players[x]!=NULL)
 			{

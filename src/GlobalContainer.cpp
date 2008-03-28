@@ -449,6 +449,7 @@ void GlobalContainer::destroyProgressBar(void)
 
 void GlobalContainer::load(void)
 {
+
 	// load texts
 	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
 	{
@@ -464,7 +465,8 @@ void GlobalContainer::load(void)
 		exit(-1);
 	}
 	
-	Toolkit::getStringTable()->setLang(settings.defaultLanguage);
+	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
+		
 
 	if (!runNoX)
 	{

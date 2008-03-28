@@ -24,8 +24,8 @@
 #include "SDL_net.h"
 
 ///New YOG constants
-const Uint16 YOG_SERVER_PORT = 7488;
-const std::string YOG_SERVER_IP = "yog.globulation2.org";
+extern const Uint16 YOG_SERVER_PORT;
+extern const std::string YOG_SERVER_IP;
 //const std::string YOG_SERVER_IP = "127.0.0.1";
 
 #define IRC_CHAN "#glob2"
