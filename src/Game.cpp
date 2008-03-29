@@ -2791,20 +2791,18 @@ Team *Game::getTeamWithMostPrestige(void)
 
 std::string glob2FilenameToName(const std::string& filename)
 {
-	GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename.c_str()));
-	if (stream->isEndOfStream())
-	{
-		delete stream;
-	}
+	std::string mapName;
+	if(filename.find(".game")!=std::string::npos)
+		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
 	else
+		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+	size_t pos = mapName.find("_");
+	while(pos != std::string::npos)
 	{
-		MapHeader tempHeader;
-		bool res = tempHeader.load(stream);
-		delete stream;
-		if (res)
-			return tempHeader.getMapName();
+		mapName.replace(pos, 1, " ");
+		pos = mapName.find("_");
 	}
-	return "";
+	return mapName;
 }
 
 template<typename It, typename T>
