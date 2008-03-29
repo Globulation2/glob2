@@ -948,9 +948,8 @@ bool Game::load(GAGCore::InputStream *stream)
 		teams[i]->update();
 	}
 	
-	///Check teams integrity
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		teams[i]->integrity();
+	// Check integrity of loaded game
+	integrity();
 	
 	// Now load the map script
 	if (!script.load(stream, this))
@@ -986,6 +985,38 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 	
 	return true;
+}
+
+void Game::integrity(void)
+{
+	///Check teams integrity
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+		teams[i]->integrity();
+	
+	///Check that all ID do point to existing objects
+	for (int y=0; y<map.getH(); y++)
+		for (int x=0; x<map.getW(); x++)
+		{
+			Case& c = map.getCase(x, y);
+			if (c.building != NOGBID)
+			{
+				int tid = Building::GIDtoTeam(c.building);
+				assert(teams[tid]);
+				assert(teams[tid]->myBuildings[Building::GIDtoID(c.building)]);
+			}
+			if (c.groundUnit != NOGUID)
+			{
+				int tid = Unit::GIDtoTeam(c.groundUnit);
+				assert(teams[tid]);
+				assert(teams[tid]->myUnits[Unit::GIDtoID(c.groundUnit)]);
+			}
+			if (c.airUnit != NOGUID)
+			{
+				int tid = Unit::GIDtoTeam(c.airUnit);
+				assert(teams[tid]);
+				assert(teams[tid]->myUnits[Unit::GIDtoID(c.airUnit)]);
+			}
+		}
 }
 
 void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name)
