@@ -220,6 +220,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	
 	previousClearingAreaX=-1;
 	previousClearingAreaY=-1;
+	previousClearingAreaDistance=0;
 
 	// gui
 	levelUpAnimation = 0;
