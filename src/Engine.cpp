@@ -472,6 +472,21 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
 	}
 	delete stream;
+	
+	//Map name is the filename without underscores or .map, it has to be updated in case the map file itself was renamed
+	std::string mapName;
+	if(mapHeader.getIsSavedGame())
+		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
+	else
+		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+	size_t pos = mapName.find("_");
+	while(pos != std::string::npos)
+	{
+		mapName.replace(pos, 1, " ");
+		pos = mapName.find("_");
+	}
+	mapHeader.setMapName(mapName);
+	
 	return mapHeader;
 }
 
