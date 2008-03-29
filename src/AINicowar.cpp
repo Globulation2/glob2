@@ -2240,9 +2240,9 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		echo.add_management_order(mo_destroyed);
 	}
 	
-	delete counts;
-	delete unitGID;
-	delete buildingGID;
+	delete[] counts;
+	delete[] unitGID;
+	delete[] buildingGID;
 }
 
 
