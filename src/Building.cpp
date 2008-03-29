@@ -1328,6 +1328,7 @@ void Building::subscribeToBringRessourcesStep()
 
 		score_to_max=(rightRes*100/d+noRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeleft>>2 - (d+dr))*500+100/harvest
 		*/
+		/*
 		for(int n=0; n<1024; ++n)
 		{
 			Unit* unit=owner->myUnits[n];
@@ -1387,7 +1388,9 @@ void Building::subscribeToBringRessourcesStep()
 				choosen=unit;
 			}
 		}
-/*
+*/
+		int maxLevel = -1;
+		int minValue = INT_MAX;
 		//First: we look only for units with a needed resource:
 		for(int n=0; n<1024; ++n)
 		{
@@ -1517,7 +1520,6 @@ void Building::subscribeToBringRessourcesStep()
 				}
 			}
 		}
-*/
 		if (choosen)
 		{
 			if (verbose)
