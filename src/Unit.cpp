@@ -220,6 +220,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	
 	previousClearingAreaX=-1;
 	previousClearingAreaY=-1;
+	previousClearingAreaDistance=0;
 
 	// gui
 	levelUpAnimation = 0;
@@ -1808,7 +1809,7 @@ void Unit::handleMovement(void)
 			{
 				///Value of 254 means nothing found
 				int distance = 255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
-				if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254)
+				if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254 && medical == MED_FREE)
 				{
 					int tempTargetX, tempTargetY;
 					bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
@@ -1817,7 +1818,8 @@ void Unit::handleMovement(void)
 					if(guid != NOGUID)
 					{
 						Unit* unit = owner->myUnits[GIDtoID(guid)];
-						other_distance = unit->previousClearingAreaDistance;
+						if(unit)
+							other_distance = unit->previousClearingAreaDistance;
 					}
 					if(path && distance < other_distance)
 					{
@@ -1834,9 +1836,12 @@ void Unit::handleMovement(void)
 						if(guid != NOGUID)
 						{
 							Unit* unit = owner->myUnits[GIDtoID(guid)];
-							unit->previousClearingAreaX=-1;
-							unit->previousClearingAreaY=-1;
-							unit->previousClearingAreaDistance=-1;
+							if(unit)
+							{
+								unit->previousClearingAreaX=-1;
+								unit->previousClearingAreaY=-1;
+								unit->previousClearingAreaDistance=-1;
+							}
 						}
 						
 						//Find clearing ressource

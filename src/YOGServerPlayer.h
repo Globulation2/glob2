@@ -25,7 +25,7 @@
 #include "NetConnection.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
-#include "YOGPlayerInfo.h"
+#include "YOGPlayerSessionInfo.h"
 
 using namespace boost;
 
@@ -66,7 +66,9 @@ public:
 	///Returns the game the player is connected to
 	boost::shared_ptr<YOGServerGame> getGame();
 
-	///Returns the players current average ping
+	///Returns the players ping such that, statistically, 99.7% of all pings from this client
+	///would be under this amount, so long as pings are normally distributed, which I've
+	///found that they are
 	unsigned getAveragePing() const;
 private:
 	///This enum represents the state machine of the initial connection
@@ -132,8 +134,8 @@ private:
 	std::list<YOGGameInfo> playersGames;
 	///Stores a copy of the players that the player knows about.
 	///This is a synchronized list of what the client has
-	std::list<YOGPlayerInfo> playersPlayerList;
-	///The playerID, used to identify the assocciatted YOGPlayerInfo
+	std::list<YOGPlayerSessionInfo> playersPlayerList;
+	///The playerID, used to identify the assocciatted YOGPlayerSessionInfo
 	Uint16 playerID;
 	///the name of the player after logging in
 	std::string playerName;
@@ -144,9 +146,7 @@ private:
 	weak_ptr<YOGServerGame> game;
 
 	///Counts down between sending a ping
-	unsigned short pingCountdown;
-	///This tells the current average value of the pings
-	unsigned pingValue;
+	Uint32 pingCountdown;
 	///This says the time when the ping was sent, 0 means not waiting on ping reply
 	unsigned pingSendTime;
 	///This holds the most recent 5 pings

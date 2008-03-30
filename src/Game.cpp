@@ -1029,6 +1029,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
+	mapHeader.setGameChecksum(checkSum(NULL, NULL, NULL, true));
 	
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
@@ -1292,6 +1293,8 @@ void Game::addTeam(int pos)
 		prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
 		
 		map.addTeam();
+		
+		script.addTeam();
 	}
 	else
 		assert(false);
@@ -1317,6 +1320,7 @@ void Game::removeTeam(int pos)
 			teams[i]->setCorrectColor(((float)i*360.0f)/(float)mapHeader.getNumberOfTeams());
 
 		map.removeTeam();
+		script.removeTeam(pos);
 		teams[pos]=NULL;
 	}
 }
@@ -2739,7 +2743,7 @@ void Game::dumpAllData(const std::string& file)
 
 
 
-Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
+Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy)
 {
 	Uint32 cs=0;
 
@@ -2776,13 +2780,14 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	
 	cs=(cs<<31)|(cs>>1);
 	
-	bool heavy=false;
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	{
 		if (players[i]->type==BasePlayer::P_IP)
 		{
 			heavy=true;
 			break;
 		}
+	}
 	Uint32 mapCs=map.checkSum(heavy);
 	cs^=mapCs;
 	if (checkSumsVector)
@@ -2817,20 +2822,18 @@ Team *Game::getTeamWithMostPrestige(void)
 
 std::string glob2FilenameToName(const std::string& filename)
 {
-	GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename.c_str()));
-	if (stream->isEndOfStream())
-	{
-		delete stream;
-	}
+	std::string mapName;
+	if(filename.find(".game")!=std::string::npos)
+		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
 	else
+		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+	size_t pos = mapName.find("_");
+	while(pos != std::string::npos)
 	{
-		MapHeader tempHeader;
-		bool res = tempHeader.load(stream);
-		delete stream;
-		if (res)
-			return tempHeader.getMapName();
+		mapName.replace(pos, 1, " ");
+		pos = mapName.find("_");
 	}
-	return "";
+	return mapName;
 }
 
 template<typename It, typename T>

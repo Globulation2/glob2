@@ -290,6 +290,12 @@ public:
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
 	int getMainTimer(void) { return mainTimer; }
+	
+	/// Adds a team
+	void addTeam();
+	
+	/// Removes the team
+	void removeTeam(int n);
 
 	void reset(void);
 	bool isTextShown;

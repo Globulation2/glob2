@@ -195,7 +195,7 @@ void Engine::createRandomGame()
 	gui.localPlayer=0;
 	gui.localTeamNo=0;
 	
-	int ret = initGame(map, game);
+	initGame(map, game);
 
 	// set the correct alliance
 	gui.game.setAIFFA();
@@ -236,6 +236,11 @@ int Engine::run(void)
 		automaticGameStartTick = SDL_GetTicks();
 	}
 	
+	if(!globalContainer->runNoX)
+	{
+		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
+	}
+	
 	while (doRunOnceAgain)
 	{
 		const int speed=40;
@@ -246,8 +251,6 @@ int Engine::run(void)
 		Sint32 needToBeTime = 0;
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
-
-		unsigned int skipOrders = 0;
 
 		while (gui.isRunning)
 		{
@@ -409,6 +412,7 @@ int Engine::run(void)
 
 		delete net;
 		net=NULL;
+		multiplayer.reset();
 		
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"
@@ -427,6 +431,8 @@ int Engine::run(void)
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
 	{
+		if(!globalContainer->runNoX)
+			globalContainer->gfx->cursorManager.setDefaultColor();
 		return -1;
 	}
 	else
@@ -438,6 +444,10 @@ int Engine::run(void)
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, 40);
+		
+		// Return to default color
+		globalContainer->gfx->cursorManager.setDefaultColor();
+		
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
 	}
@@ -462,6 +472,21 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
 	}
 	delete stream;
+	
+	//Map name is the filename without underscores or .map, it has to be updated in case the map file itself was renamed
+	std::string mapName;
+	if(mapHeader.getIsSavedGame())
+		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
+	else
+		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+	size_t pos = mapName.find("_");
+	while(pos != std::string::npos)
+	{
+		mapName.replace(pos, 1, " ");
+		pos = mapName.find("_");
+	}
+	mapHeader.setMapName(mapName);
+	
 	return mapHeader;
 }
 

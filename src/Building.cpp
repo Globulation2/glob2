@@ -1300,7 +1300,7 @@ int Building::desiredNumberOfWorkers(void)
 
 void Building::step(void)
 {
-	desiredMaxUnitWorking = desiredNumberOfWorkers();
+	updateCallLists();
 	if(underAttackTimer > 0)
 		underAttackTimer-=1;
 
@@ -1328,6 +1328,7 @@ void Building::subscribeToBringRessourcesStep()
 
 		score_to_max=(rightRes*100/d+noRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeleft>>2 - (d+dr))*500+100/harvest
 		*/
+		/*
 		for(int n=0; n<1024; ++n)
 		{
 			Unit* unit=owner->myUnits[n];
@@ -1387,7 +1388,9 @@ void Building::subscribeToBringRessourcesStep()
 				choosen=unit;
 			}
 		}
-/*
+*/
+		int maxLevel = -1;
+		int minValue = INT_MAX;
 		//First: we look only for units with a needed resource:
 		for(int n=0; n<1024; ++n)
 		{
@@ -1517,7 +1520,6 @@ void Building::subscribeToBringRessourcesStep()
 				}
 			}
 		}
-*/
 		if (choosen)
 		{
 			if (verbose)
@@ -1597,7 +1599,7 @@ void Building::subscribeForFlagingStep()
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist;
-					if (map->buildingAvailable(this, unit->performance[SWIM]>0, unit->posX, unit->posY, &dist) && (dist<timeLeft))
+					if (map->buildingAvailable(this, (unit->performance[SWIM]>0 ? true : false), unit->posX, unit->posY, &dist) && (dist<timeLeft))
 					{
 						int value=dist-2*timeLeft-2*hp;
 						//We want to maximize the attack level, use higher level soldeirs first
@@ -2530,64 +2532,80 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [0]
 		
-
 	cs^=buildingState;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [1]
 	cs=(cs<<31)|(cs>>1);
+		
+	cs^=constructionResultState;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [2]
+	cs=(cs<<31)|(cs>>1);
 	
 	cs^=maxUnitWorking;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [2]
+		checkSumsVector->push_back(cs);// [3]
+	
+	cs^=maxUnitWorkingFuture;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [4]
 	
 	cs^=maxUnitWorkingPreferred;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [3]
+		checkSumsVector->push_back(cs);// [5]
+	
+	cs^=maxUnitWorkingPrevious;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [7]
+	
+	cs^=desiredMaxUnitWorking;
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [8]
 		
 	cs^=unitsWorking.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [4]
+		checkSumsVector->push_back(cs);// [9]
 
-	cs^=maxUnitInside;
+	cs^=subscriptionWorkingTimer;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [5]
-
+		checkSumsVector->push_back(cs);// [10]
+	
 	cs^=unitsInside.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [6]
+		checkSumsVector->push_back(cs);// [11]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=posX;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [7]
+		checkSumsVector->push_back(cs);// [12]
 	
 	cs^=posY;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [8]
+		checkSumsVector->push_back(cs);// [13]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=unitStayRange;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [9]
+		checkSumsVector->push_back(cs);// [14]
 
 	for (int i=0; i<MAX_RESSOURCES; i++)
 		cs^=localRessource[i];
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [10]
+		checkSumsVector->push_back(cs);// [15]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=hp;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [11]
+		checkSumsVector->push_back(cs);// [16]
 
 	cs^=productionTimeout;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [12]
+		checkSumsVector->push_back(cs);// [17]
 		
 
 	cs^=totalRatio;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [13]
+		checkSumsVector->push_back(cs);// [18]
 	
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -2597,30 +2615,30 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [14]
+		checkSumsVector->push_back(cs);// [19]
 
 	cs^=shootingStep;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [15]
+		checkSumsVector->push_back(cs);// [20]
 
 
 	cs^=shootingCooldown;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [16]
+		checkSumsVector->push_back(cs);// [21]
 	
 		
 	cs^=bullets;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [17]
+		checkSumsVector->push_back(cs);// [22]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=seenByMask;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [18]
+		checkSumsVector->push_back(cs);// [23]
 	
 	cs^=gid;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [19]
+		checkSumsVector->push_back(cs);// [24]
 	
 	return cs;
 }

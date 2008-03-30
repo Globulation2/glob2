@@ -47,7 +47,7 @@ Settings::Settings()
 	screenWidth = 800;
 	screenHeight = 600;
 	optionFlags = 0;
-	defaultLanguage = 0;
+	language = "en";
 	musicVolume = 255;
 	mute = 0;
 	rememberUnit = 1;
@@ -98,12 +98,12 @@ Settings::Settings()
 	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
 	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
 
-	cloudPatchSize=1;//the bigger the faster the uglier
+	cloudPatchSize=16;//the bigger the faster the uglier
 	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
 	cloudMaxSpeed=3;
 	cloudWindStability=3550;//how much will the wind change
 	cloudStability=1300;//how much will the clouds change shape
-	cloudSize=30;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
+	cloudSize=300;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
 	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
 }
 
@@ -154,8 +154,8 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
-		READ_PARSED_INT(defaultLanguage);
-		READ_PARSED_INT(musicVolume);		
+		READ_PARSED_STRING(language);
+		READ_PARSED_INT(musicVolume);
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
@@ -198,7 +198,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
-		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
+		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
