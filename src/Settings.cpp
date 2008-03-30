@@ -146,7 +146,6 @@ void Settings::load(const char *filename)
 			if (token)
 				parsed[varname] = token;
 		}
-		
 
 		// read values
 		READ_PARSED_STRING(username);
