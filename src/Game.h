@@ -172,6 +172,7 @@ public:
 
 private:
 	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2);
+	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Color c, int barWidth=2);
 	inline void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	inline void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);

@@ -1594,8 +1594,6 @@ Unit* Game::getUnit(int guid)
 	return teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
 }
 
-
-
 void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
 {
 	assert(maxLength>=0);
@@ -1656,6 +1654,11 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	}
 	else
 		assert(false);
+}
+
+void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Color c, int barWidth)
+{
+	drawPointBar(x,y,orientation,maxLength,actLength,c.r,c.g,c.b,barWidth);
 }
 
 void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions)
@@ -2648,12 +2651,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			if (type->hpMax)
 			{
 				float hpRatio=(float)building->hp/(float)type->hpMax;
+				Color cHP;
 				if (hpRatio>0.6)
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
+					cHP=Color(78,197,78);
 				else if (hpRatio>0.3)
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
+					cHP=Color(255,255,0);
 				else
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+					cHP=Color(255,0,0);
+				drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), cHP);
 			}
 
 			// units
