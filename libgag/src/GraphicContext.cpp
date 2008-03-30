@@ -1697,11 +1697,11 @@ namespace GAGCore
 			float fg = 255.0f*(float)color.g;
 			float fb = 255.0f*(float)color.b;
 			GLuint texture[1];
-			GLboolean old_blend;
+			GLboolean old_blend;                //var to store blend state
+			glGetBooleanv(GL_BLEND,&old_blend); //store blend state
+			glEnable(GL_BLEND);                 //enable blend
 			GLboolean old_texture_2d;
-			glGetBooleanv(GL_BLEND,&old_blend);
 			glGetBooleanv(GL_TEXTURE_2D,&old_texture_2d);
-			glEnable(GL_BLEND);
 			glEnable(GL_TEXTURE_2D);
 			GLfloat image[mapW*mapH];
 			for (int i=0; i<mapH; i++)
