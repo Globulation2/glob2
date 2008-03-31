@@ -170,7 +170,7 @@ explorer
 	3 : baseExplorer
 	{
 		magicAttackAir = 8;
-		magicAttackGround = 25;
+		magicAttackGround = 10;
 		magicCreateWood = 2;
 		magicCreateCorn = 2;
 		magicCreateAlga = 2;
