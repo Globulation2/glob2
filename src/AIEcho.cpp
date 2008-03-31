@@ -4491,7 +4491,9 @@ void Echo::update_management_orders()
 		if(passes)
 		{
 			(*i)->modify(*this);
-			i=management_orders.erase(i);
+			size_t pos = i - management_orders.begin();
+			management_orders.erase(i);
+			i = management_orders.begin() + pos;
 			continue;
 		}
 		else if(!passes)
@@ -4499,7 +4501,9 @@ void Echo::update_management_orders()
 		}
 		else
 		{
-			i=management_orders.erase(i);
+			size_t pos = i - management_orders.begin();
+			management_orders.erase(i);
+			i = management_orders.begin() + pos;
 			continue;
 		}
 		++i;

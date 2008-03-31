@@ -18,6 +18,7 @@
 
 #include "MapHeader.h"
 #include "Game.h"
+#include <algorithm>
 
 MapHeader::MapHeader()
 {
@@ -34,7 +35,7 @@ void MapHeader::reset()
 	mapName = "";
 	mapOffset = 0;
 	isSavedGame=false;
-	checksum = 0;
+	resetGameSHA1();
 }
 
 
@@ -59,8 +60,14 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
 	isSavedGame = stream->readUint8("isSavedGame");
-	if(versionMinor>=67)
-		checksum = stream->readUint32("checksum");
+	if(versionMinor==67)
+		stream->readUint32("checksum");
+	
+	if(versionMinor>=68)
+	{
+		stream->read(SHA1, 20, "SHA1");
+	}
+	
 	stream->readEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -87,7 +94,7 @@ void MapHeader::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
 	stream->writeUint32(mapOffset, "mapOffset");
 	stream->writeUint8(isSavedGame, "isSavedGame");
-	stream->writeUint32(checksum, "checksum");
+	stream->write(SHA1, 20, "SHA1");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -199,16 +206,25 @@ void MapHeader::setIsSavedGame(bool newIsSavedGame)
 
 
 
-void MapHeader::setGameChecksum(Uint32 nchecksum)
+void MapHeader::setGameSHA1(Uint8 SHA1sum[20])
 {
-	checksum = nchecksum;
+	for(int i=0; i<20; ++i)
+		SHA1[i] = SHA1sum[i];
 }
 
 
 
-Uint32 MapHeader::getGameChecksum()
+Uint8* MapHeader::getGameSHA1()
 {
-	return checksum;
+	return SHA1;
+}
+
+
+
+void MapHeader::resetGameSHA1()
+{
+	for(int i=0; i<20; ++i)
+		SHA1[i] = 0;
 }
 
 
@@ -231,7 +247,7 @@ bool MapHeader::operator!=(const MapHeader& rhs) const
 		rhs.mapOffset != mapOffset ||
 		rhs.isSavedGame != isSavedGame ||
 		rhs.mapName != mapName ||
-		rhs.checksum != checksum)
+		!std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;
 }

@@ -305,7 +305,7 @@ void YOGClientLobbyScreen::joinGame()
 		else if(rc == MultiplayerGameScreen::Kicked)
 			recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
 		else if(rc == MultiplayerGameScreen::GameCancelled)
-			recieveInternalMessage(Toolkit::getStringTable()->getString("[The host cancelled the game]"));
+			recieveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
 		else if(rc == MultiplayerGameScreen::GameRefused)
 			if(game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
 				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));

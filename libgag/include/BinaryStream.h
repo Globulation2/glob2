@@ -22,6 +22,7 @@
 
 #include <Stream.h>
 #include <StreamBackend.h>
+#include "../../gnupg/sha1.h"
 
 namespace GAGCore
 {
@@ -29,12 +30,13 @@ namespace GAGCore
 	{
 	protected:
 		StreamBackend *backend;
-		
+		SHA1_CTX sha1Context;
+		bool doingSHA1;
 	public:
-		BinaryOutputStream(StreamBackend *backend) { this->backend = backend; }
+		BinaryOutputStream(StreamBackend *backend) { this->backend = backend; doingSHA1 = false;}
 		virtual ~BinaryOutputStream() { delete backend; }
 	
-		virtual void write(const void *data, const size_t size, const char *name) { backend->write(data, size); }
+		virtual void write(const void *data, const size_t size, const char *name);
 	
 		virtual void writeEndianIndependant(const void *v, const size_t size, const char *name);
 	
@@ -53,6 +55,9 @@ namespace GAGCore
 		virtual void writeEnterSection(const char *name) { }
 		virtual void writeEnterSection(unsigned id) { }
 		virtual void writeLeaveSection(size_t count = 1) { }
+		
+		void enableSHA1();
+		void finishSHA1(Uint8 sha1[20]);
 		
 		virtual bool canSeek(void) { return true; }
 		virtual void seekFromStart(int displacement) { backend->seekFromStart(displacement); }
