@@ -140,6 +140,8 @@ AIWarrush
 
 [Build]
 Гради
+[Building Settings]
+
 [building site]
 Градилиште
 [Buildings]
@@ -345,6 +347,8 @@ AIWarrush
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Храна

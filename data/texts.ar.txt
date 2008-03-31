@@ -140,6 +140,8 @@ Available local games
 
 [Build]
 يبنى
+[Building Settings]
+
 [building site]
 موقع اﻷنشاء
 [Buildings]
@@ -345,6 +347,8 @@ Explorer Ratio
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 الطعام

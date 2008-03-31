@@ -140,6 +140,8 @@ strandstorlek
 
 [Build]
 Bygga
+[Building Settings]
+
 [building site]
 byggarbetsplats
 [Buildings]
@@ -345,6 +347,8 @@ tomma öar
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Mat

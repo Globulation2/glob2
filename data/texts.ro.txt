@@ -140,6 +140,8 @@ mărimea plajei
 
 [Build]
 Construieşte
+[Building Settings]
+
 [building site]
 şantier
 [Buildings]
@@ -345,6 +347,8 @@ exploratori
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Mâncare

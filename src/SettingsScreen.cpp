@@ -620,10 +620,31 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
 			customcurText->setText(Toolkit::getStringTable()->getString("[customcur]"));
 
+
+			rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
+			scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
+
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 			audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));
 			
 			rebootWarning->setText(Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+			
+			unitSettingsExplanation->setText(Toolkit::getStringTable()->getString("[unit settings explanation]"));
+			unitSettingsHeading1->setText(Toolkit::getStringTable()->getString("[construction and upgrades]"));
+			unitSettingsHeading2->setText(Toolkit::getStringTable()->getString("[constructed buildings]"));
+			buildings->setText(Toolkit::getStringTable()->getString("[Building Settings]"));
+			flags->setText(Toolkit::getStringTable()->getString("[Flag Settings]"));
+			setLanguageTextsForDefaultAssignmentWidgets();
+			
+			game_shortcuts->setText(Toolkit::getStringTable()->getString("[game shortcuts]"));
+			editor_shortcuts->setText(Toolkit::getStringTable()->getString("[editor shortcuts]"));
+			restore_default_shortcuts->setText(Toolkit::getStringTable()->getString("[restore default shortcuts]"));
+			add_shortcut->setText(Toolkit::getStringTable()->getString("[add shortcut]"));
+			remove_shortcut->setText(Toolkit::getStringTable()->getString("[remove shortcut]"));
+			
+			pressedUnpressedSelector->clearTexts();
+			pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
+			pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
 		}
 		else if (source==modeList)
 		{
@@ -760,14 +781,28 @@ std::string SettingsScreen::actDisplayModeToString(void)
 
 
 int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag)
-{	
-	std::string name=IntBuildingType::typeFromShortNumber(type);
-
+{
 	unitRatios[type][level] = new Number(x, y+20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	addNumbersFor(0, 20, unitRatios[type][level]);
 	unitRatios[type][level]->setNth(globalContainer->settings.defaultUnitsAssigned[type][level]);
 	unitRatios[type][level]->visible=false;
 	addWidget(unitRatios[type][level]);
+
+	std::string text=getDefaultUnitAssignmentText(type, level, flag);
+	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
+	
+	addWidget(unitRatioTexts[type][level]);
+	unitRatioTexts[type][level]->visible=false;
+	unitRatioGroupNumbers[type][level] = group;
+
+	return std::max(unitRatioTexts[type][level]->getWidth(), unitRatios[type][level]->getWidth());
+}
+
+
+
+std::string SettingsScreen::getDefaultUnitAssignmentText(int type, int level, bool flag)
+{
+	std::string name=IntBuildingType::typeFromShortNumber(type);
 
 	std::string keyname="[";
 	if(flag)
@@ -780,12 +815,26 @@ int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, i
 			keyname+="build ";
 		keyname+=name + " level " + boost::lexical_cast<std::string>(level/2) + "]";
 	}
-	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
-	addWidget(unitRatioTexts[type][level]);
-	unitRatioTexts[type][level]->visible=false;
-	unitRatioGroupNumbers[type][level] = group;
+	return Toolkit::getStringTable()->getString(keyname.c_str());
+}
 
-	return std::max(unitRatioTexts[type][level]->getWidth(), unitRatios[type][level]->getWidth());
+
+
+void SettingsScreen::setLanguageTextsForDefaultAssignmentWidgets()
+{
+	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
+	{
+		bool flag = false;
+		if(t == IntBuildingType::EXPLORATION_FLAG || t == IntBuildingType::WAR_FLAG || t == IntBuildingType::CLEARING_FLAG)
+			flag = true;
+		for(int l=0; l<6; ++l)
+		{
+			if(unitRatioTexts[t][l])
+			{
+				unitRatioTexts[t][l]->setText(getDefaultUnitAssignmentText(t, l, flag));
+			}
+		}
+	}
 }
 
 

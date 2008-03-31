@@ -140,6 +140,8 @@ Costruisci piscina liv. 1
 Costruisci piscina liv. 2
 [Build]
 Costruisci
+[Building Settings]
+Impost. Costruzioni
 [building site]
 Struttura in costruzione
 [Buildings]
@@ -162,12 +164,6 @@ impossibile partecipare alla partita, la partita non esiste
 impossibile partecipare alla partita, la partita è iniziata
 [Can't join game, game is full]
 impossibile partecipare alla partita, la partita è piena
-[Can't join game, missmatching game parameters]
-impossibile partecipare alla partita, i parametri della partita non corrispondono
-[Can't join game, timeout]
-impossibile partecipare alla partita, timeout
-[Can't join game, wrong game version]
-impossibile partecipare alla partita, versione del gioco errata
 [cancel destroy]
 Annulla la distruzione
 [cancel repair]
@@ -323,29 +319,31 @@ f12
 [f13]
 f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 Mappa della fertilità
+[Flag Settings]
+Impost. Bandiere
 [food]
 Cibo
 [forbidden area]
@@ -395,7 +393,7 @@ Raccogliere
 [home]
 home
 [hospital explanation 2]
-
+ 
 [hospital explanation]
 Cura le unità
 [hospital]
@@ -417,7 +415,7 @@ Sulla strada
 [increase units working]
 aumenta unità lavorative
 [inn explanation 2]
-
+ 
 [inn explanation]
 Approvvigiona le unità
 [inn level 0]
@@ -538,8 +536,6 @@ No
 non pronto
 [number of players: %0 (%1 AI)]
 numero di giocatori: %0 (%1 IA)
-[number of players: %0]
-%0 numero di giocatori.
 [number of teams: %0]
 %0 numero di sqadre.
 [number of teams]
@@ -787,7 +783,7 @@ Nome del server
 [swamp terrain]
 Palude
 [swarm explanation 2]
-
+ 
 [swarm explanation]
 Crea nuove unità
 [swarm level 0]
@@ -971,7 +967,7 @@ Aspettando
 [Walk]
 Camminare
 [warflag explanation 2]
-
+ 
 [warflag explanation]
 Richiama i guerrieri
 [warflag]
@@ -987,8 +983,6 @@ guerrieri
 [water]
 Acqua
 [Wheat]
-frumento
-[wheat]
 frumento
 [Won : you defeated your opponents]
 Hai vinto: hai battuto i tuoi avversari

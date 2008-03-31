@@ -140,6 +140,8 @@ Tamanho da praia
 
 [Build]
 Construir
+[Building Settings]
+
 [building site]
 Sítio de constr.
 [Buildings]
@@ -345,6 +347,8 @@ exploradores
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Comida
