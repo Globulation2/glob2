@@ -1,41 +1,41 @@
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0's game]
-
+Spiel von %0
 [%0's team unit got converted to your team]
-Sie haben eine Einheit von einem %0-Team übernommen.
+Sie haben eine Einheit von Spieler %0 übernommen.
 [abreaviation explanation A]
 A: Verbündete
 [abreaviation explanation C]
 C: Chatnachrichten senden
 [abreaviation explanation fV]
-fV: Teile die Sicht für Gasthöfe (um Einheiten zu stehlen)
+fV: Teile die Sicht für Gasthöfe (um Einheiten zu bekehren)
 [abreaviation explanation mV]
-mV: Teile die Sicht für Märkte (um Früchte zu handeln)
+mV: Teile die Sicht für Märkte (um Waren zu handeln)
 [abreaviation explanation V]
 V: Teile die Sicht für alle Gebäude
 [add map]
-
+Karte hinzufügen
 [add shortcut]
-
+Shortcut hinzufügen
 [AI]
 KI
 [ai]
 KI
 [AICastor]
-AICastor
+Castor
 [AINicowar]
 Nicowar
 [AINone]
-AINone
+KINone
 [AINumbi]
-AINumbi
+Numbi
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib]
-AIToubib
+Toubib
 [AIWarrush]
-AIWarrush
+Warrush
 [Alga]
 Algen
 [algae]
@@ -59,7 +59,7 @@ sind verletzt
 [armor]
 Rüstung
 [assigned]
-
+zugewiesen
 [At. speed]
 Geschwindigkeit
 [At. strength]
@@ -79,7 +79,7 @@ weg:
 [Back]
 
 [backspace]
-
+Backspace
 [barracks explanation 2]
 kraft Ihrer Einheiten
 [barracks explanation]
@@ -164,12 +164,6 @@ Feldzug
 
 [Can't join game, game is full]
 
-[Can't join game, missmatching game parameters]
-Verbinden nicht möglich: Spielparameter fehlerhaft
-[Can't join game, timeout]
-Verbinden nicht möglich: Timeout
-[Can't join game, wrong game version]
-Verbinden nicht möglich: falsche Spielversion
 [cancel destroy]
 Zerstörung abbrechen
 [cancel repair]
@@ -529,7 +523,7 @@ mute
 [new campaign]
 
 [new map]
-Neu
+
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
 [no key]
@@ -542,8 +536,6 @@ Nein
 nicht bereit
 [number of players: %0 (%1 AI)]
 
-[number of players: %0]
-%0 Spieler spielen mit.
 [number of teams: %0]
 %0 Mannschaften.
 [number of teams]
@@ -992,8 +984,6 @@ Krieger
 Wasser
 [Wheat]
 
-[wheat]
-Weizen
 [Won : you defeated your opponents]
 Gewonnen: Sie haben Ihre Feinde besiegt
 [Won : you have the most prestige]
