@@ -30,6 +30,13 @@
 
 namespace GAGCore
 {
+	void BinaryOutputStream::write(const void *data, const size_t size, const char *name)
+	{
+		if(doingSHA1)
+			SHA1Update(&sha1Context, (const Uint8*)data, size);
+		backend->write(data, size);
+	}
+	
 	void BinaryOutputStream::writeEndianIndependant(const void *v, const size_t size, const char *name)
 	{
 		if (size==2)
@@ -47,6 +54,8 @@ namespace GAGCore
 		}
 		else
 			assert(false);
+		if(doingSHA1)
+			SHA1Update(&sha1Context, (const Uint8*)v, size);
 		backend->write(v, size);
 	}
 	
@@ -54,6 +63,19 @@ namespace GAGCore
 	{
 		writeUint32(v.size(), NULL);
 		write(v.c_str(), v.size(), NULL); 
+	}
+	
+	void BinaryOutputStream::enableSHA1()
+	{
+		doingSHA1=true;
+		SHA1Init(&sha1Context);
+	}
+	
+	
+	void BinaryOutputStream::finishSHA1(Uint8 sha1[20])
+	{
+		doingSHA1=false;
+		SHA1Final(sha1, &sha1Context);
 	}
 	
 	void BinaryInputStream::readEndianIndependant(void *v, size_t size, const char *name)

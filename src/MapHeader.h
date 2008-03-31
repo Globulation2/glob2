@@ -86,10 +86,13 @@ public:
 	void setIsSavedGame(bool isSavedGame);
 
 	/// Sets the complete game checksum
-	void setGameChecksum(Uint32 checksum);
+	void setGameSHA1(Uint8 SHA1sum[20]);
 	
 	/// Returns the complete game checksum
-	Uint32 getGameChecksum();
+	Uint8* getGameSHA1();
+	
+	/// Returns the complete game checksum
+	void resetGameSHA1();
 
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
@@ -115,8 +118,8 @@ private:
 	/// If this is true, this map header represents a saved game, rather than a new map
 	bool isSavedGame;
 	
-	/// Set to the complete games checksum
-	Uint32 checksum;
+	/// Set to the complete files SHA1
+	Uint8 SHA1[20];
 
 	std::string mapName;
 };
