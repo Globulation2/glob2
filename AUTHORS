@@ -24,7 +24,6 @@ Kevin Clement <donkjunk at softhome dot net> (improved settings menu & bugfixes)
 Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (Perlin-noise based map generation)
 Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
 Martin Voelkle <marv at chaoides dot org> (GUI, bugfixes and more)
-L. Peter Deutsch <> (MD5 implementation)
 
 *
 Graphics
@@ -76,6 +75,7 @@ Michal Turek <bastard dot user dot from dot hell at seznam dot cz> (Czech)
 Muhammet Kara <> (Turkish)
 Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (Romanian)
 Osoitz Elkorobarrutia <oelkoro at gmail dot com> (Basque)
+piglet (Italian)
 Przemyslaw Kaminski <daemon42 at gazeta dot pl> (Polish)
 Raoul Verveer <lazy-r at zonnet dot nl> (Nederlands)
 samaritan <> (Serbian)
@@ -84,7 +84,6 @@ Stefan Kangas <stefan dot kangas at ungvanster dot se> (Swedish)
 Tobe Deprez <tobedeprez at scarlet dot be> (Dutch)
 Vakvarju <vakvarju at spektrum-3d dot hu> (Hungarian)
 White Raven <glob at wra dot visitors dot sk> (Slovensky)
-piglet (Italian)
 
 *
 Maps and campaign
