@@ -509,7 +509,7 @@ void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 {
 	 // we balance the system with Units working on it:
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		needs[ri] = (2 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri]);
+		needs[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurprose >= 0)
 		{
@@ -522,7 +522,7 @@ void Building::computeWishedRessources()
 {
 	 // we balance the system with Units working on it:
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		wishedResources[ri] = (2 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri]);
+		wishedResources[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurprose >= 0)
 		{
