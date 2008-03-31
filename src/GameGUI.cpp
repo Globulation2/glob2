@@ -3851,6 +3851,8 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 			}
 		}
 		
+		if(game.mapHeader.getVersionMinor() >= 69)
+			defaultAssign.load(stream, game.mapHeader.getVersionMinor());
 		stream->readLeaveSection();
 	}
 	
@@ -3892,6 +3894,7 @@ void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 	}
 	stream->writeUint32(buildingsChoiceMask, "buildingsChoiceMask");
 	stream->writeUint32(flagsChoiceMask, "flagsChoiceMask");
+	defaultAssign.save(stream);
 	stream->writeLeaveSection();
 }
 
