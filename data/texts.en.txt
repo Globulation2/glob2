@@ -26,6 +26,10 @@ AI
 AICastor
 [AINicowar]
 Nicowar
+[Flag Settings]
+Flag Settings
+[Building Settings]
+Building Settings
 [AINone]
 AINone
 [AINumbi]
@@ -129,7 +133,7 @@ Construct School 2
 [build school level 2]
 Construct School 3
 [build stonewall level 0]
-Construct stonewall
+Construct Stone Wall
 [build swarm level 0]
 Construct Swarm
 [build swimmingpool level 0]

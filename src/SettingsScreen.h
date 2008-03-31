@@ -65,6 +65,8 @@ public:
 		ADDSHORTCUT=16,
 		REMOVESHORTCUT=17,
 		SCROLLWHEEL=18,
+		BUILDINGSETTINGS=19,
+		FLAGSETTINGS=20,
 	};
 private:
 	Settings old_settings;
@@ -73,11 +75,13 @@ private:
 	TextInput *userName;
 	
 	TextButton *ok, *cancel, *generalsettings, *unitsettings, *keyboardsettings;
+	TextButton *buildings, *flags;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
 	Selector *musicVol;
 	OnOffButton *audioMute, *rememberUnitButton;
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
+	int unitRatioGroupNumbers[IntBuildingType::NB_BUILDING][6];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *rememberUnitText, *scrollwheelText;
@@ -122,7 +126,10 @@ private:
 public:
 	ShortcutMode currentMode;
 	///Quick code that adds in a default unit assignment widget pair at the specific position, and returns the width.
-	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y);
+	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag=false);
+	///Activates the given group number for default assignment widgets
+	void activateDefaultAssignedGroupNumber(int group);
+	
 	
 	///Update shortcut_list, if n is not -1, just update that specific entry
 	void updateShortcutList(int n=-1);
