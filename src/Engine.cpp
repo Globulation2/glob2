@@ -257,13 +257,13 @@ int Engine::run(void)
 			// We always allow the user to use the gui:
 			if (globalContainer->automaticEndingGame)
 			{
-				if (!gui.getLocalTeam()->isAlive)
+				if (!gui.getLocalTeam()->isAlive && !globalContainer->automaticGameGlobalEndConditions)
 				{
 					printf("nox::gui.localTeam is dead\n");
 					gui.isRunning = false;
 					automaticGameEndTick = SDL_GetTicks();
 				}
-				else if (gui.getLocalTeam()->hasWon)
+				else if (gui.getLocalTeam()->hasWon && !globalContainer->automaticGameGlobalEndConditions)
 				{
 					printf("nox::gui.localTeam has won\n");
 					gui.isRunning = false;
@@ -272,6 +272,12 @@ int Engine::run(void)
 				else if (gui.game.totalPrestigeReached)
 				{
 					printf("nox::gui.game.totalPrestigeReached\n");
+					gui.isRunning = false;
+					automaticGameEndTick = SDL_GetTicks();
+				}
+				else if (gui.game.isGameEnded)
+				{
+					printf("nox::gui.game.isGameEnded\n");
 					gui.isRunning = false;
 					automaticGameEndTick = SDL_GetTicks();
 				}
@@ -408,6 +414,14 @@ int Engine::run(void)
 			}
 		}
 
+		if(globalContainer->automaticEndingGame)
+		{
+			int time = (automaticGameEndTick - startTime);
+			int seconds = ((automaticGameEndTick - startTime)/25) % 60;
+			int minutes = ((automaticGameEndTick - startTime)/25) / 60;
+			std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<seconds<<" seconds, "<<minutes<<" minutes"<<std::endl;
+		}
+
 		cpuStats.format();
 
 		delete net;
@@ -431,6 +445,7 @@ int Engine::run(void)
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
 	{
+
 		if(!globalContainer->runNoX)
 			globalContainer->gfx->cursorManager.setDefaultColor();
 		return -1;
