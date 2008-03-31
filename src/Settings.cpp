@@ -63,9 +63,9 @@ Settings::Settings()
 			defaultUnitsAssigned[n][t] = 0;
 		}
 	}
-	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][0] = 20;
-	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][0] = 1;
+	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][1] = 20;
+	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][1] = 1;
 	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0] = 7;
 	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1] = 4;
 	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0] = 3;
