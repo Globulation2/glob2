@@ -37,6 +37,8 @@ public:
 	///Registers a user with the given information
 	YOGLoginState registerInformation(const std::string& username, const std::string& password); 
 
+	///This resets a players password
+	void resetPlayersPassword(const std::string& username);
 	
 private:
 	///Writes the passwords and usernames to a text file
