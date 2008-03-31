@@ -178,6 +178,8 @@
 [from:]
 [fruit]
 [fullscreen]
+[Flag Settings]
+[Building Settings]
 [game full]
 [game shortcuts]
 [general settings]
