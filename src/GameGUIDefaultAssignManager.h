@@ -23,6 +23,14 @@
 #define GameGUIDefaultAssignManager_h
 
 #include <map>
+#include "SDL.h"
+
+namespace GAGCore
+{
+	class OutputStream;
+	class InputStream;
+};
+
 
 ///This class manages the default number of units to be assigned when constructing a new buildings
 class GameGUIDefaultAssignManager
@@ -37,6 +45,12 @@ public:
 	
 	///Sets the default assigned units for a given building typenum
 	void setDefaultAssignedUnits(int typenum, int value);
+
+	////Saves the default assign information
+	void save(GAGCore::OutputStream* stream) const;
+
+	///Loads the default assign information
+	void load(GAGCore::InputStream* stream, Sint32 versionMinor);
 	
 private:
 	std::map<int, int> unitCount;
