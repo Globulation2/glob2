@@ -992,13 +992,17 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 {
 	assert(stream);
 	stream->writeEnterSection("Game");
+	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	{
+		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->enableSHA1();
+	}
     
 	///Save the two headers, record the position in the file because mapHeader will
 	///will need to be overwritten with the mapOffset known
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
-	mapHeader.setGameChecksum(checkSum(NULL, NULL, NULL, true));
+	mapHeader.resetGameSHA1();
 	
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
@@ -1054,7 +1058,16 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	
 	///Save the campaign text
 	stream->writeText(campaignText, "campaignText");
-	
+
+	Uint8 sha1[20];
+	for(int i=0; i<20; ++i)
+		sha1[i]=0;
+	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	{
+		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->finishSHA1(sha1);
+	}
+	mapHeader.setGameSHA1(sha1);
+
 	///Overwrite the MapHeader. This is done after the map
 	///offset has been set.
 	if (stream->canSeek())

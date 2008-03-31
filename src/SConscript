@@ -49,8 +49,7 @@ YOGServer.cpp                    YOGServerGame.cpp                     YOGServer
 YOGServerPasswordRegistry.cpp    YOGServerPlayer.cpp                   YOGServerPlayerStoredInfoManager.cpp
 
 """)
-    
-    
+
 Import('env')
 local = env.Clone()
 if env["mingw"] or env['PLATFORM'] == 'win32':
