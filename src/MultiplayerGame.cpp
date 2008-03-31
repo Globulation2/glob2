@@ -380,8 +380,6 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
 
-		std::cout<<mapHeader.getMapName()<<std::endl;
-
 		Engine engine;
 		if(!engine.haveMap(mapHeader))
 		{
