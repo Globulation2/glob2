@@ -140,6 +140,8 @@ Wielkość plaż
 
 [Build]
 Buduje
+[Building Settings]
+
 [building site]
 plac budowy
 [Buildings]
@@ -345,6 +347,8 @@ Odkrywcy
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Jedzenie

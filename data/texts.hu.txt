@@ -140,6 +140,8 @@ a partok méretei
 
 [Build]
 Épít
+[Building Settings]
+
 [building site]
 építési terület
 [Buildings]
@@ -345,6 +347,8 @@ felderítők
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Élelmiszer

@@ -140,6 +140,8 @@ break
 Построить Бассейн 3
 [Build]
 Строит
+[Building Settings]
+
 [building site]
 стройка
 [Buildings]
@@ -342,6 +344,8 @@ f8
 f9
 [Fertility Map]
 Карта плодородия
+[Flag Settings]
+
 [food]
 Еда
 [forbidden area]

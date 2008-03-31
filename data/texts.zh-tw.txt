@@ -140,6 +140,8 @@ AIWarrush
 建造游泳池 3
 [Build]
 建造
+[Building Settings]
+
 [building site]
 建築地點
 [Buildings]
@@ -345,6 +347,8 @@ AIWarrush
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 食物
