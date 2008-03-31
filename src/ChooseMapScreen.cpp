@@ -29,6 +29,8 @@
 #include <Stream.h>
 #include <BinaryStream.h>
 
+#include "Game.h"
+
 ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool recurse, const char* alternateDirectory, const char* alternateExtension, const char* alternateRecurse)
 {
 	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
@@ -113,6 +115,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				if (verbose)
 					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 				validMapSelected = mapHeader.load(stream);
+				mapHeader.setMapName(glob2FilenameToName(mapFileName));
 				if (validMapSelected)
 				{
 					updateMapInformation();
