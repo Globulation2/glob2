@@ -140,6 +140,8 @@ casser
 
 [Build]
 Construit
+[Building Settings]
+
 [building site]
 chantier
 [Buildings]
@@ -346,6 +348,8 @@ F8
 F9
 [Fertility Map]
 Carte de fertilité
+[Flag Settings]
+
 [food]
 Nourriture
 [forbidden area]

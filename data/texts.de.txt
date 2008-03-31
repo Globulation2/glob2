@@ -140,6 +140,8 @@ Strandbreite
 
 [Build]
 Bauen
+[Building Settings]
+
 [building site]
 Baustelle
 [Buildings]
@@ -345,6 +347,8 @@ leere Inseln
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Nahrung

@@ -26,10 +26,6 @@ AI
 AICastor
 [AINicowar]
 Nicowar
-[Flag Settings]
-Flag Settings
-[Building Settings]
-Building Settings
 [AINone]
 AINone
 [AINumbi]
@@ -144,6 +140,8 @@ Construct Swimmingpool 2
 Construct Swimmingpool 3
 [Build]
 Build
+[Building Settings]
+Building Settings
 [building site]
 construction site
 [Buildings]
@@ -203,7 +201,7 @@ Closed
 [compile]
 Compile script
 [compose]
-
+compose
 [Computing Fertility]
 Computing Fertility
 [connect]
@@ -346,6 +344,8 @@ f8
 f9
 [Fertility Map]
 Fertility Map
+[Flag Settings]
+Flag Settings
 [food]
 Food
 [forbidden area]

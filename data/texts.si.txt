@@ -140,6 +140,8 @@ velikost obal
 
 [Build]
 Zgradi
+[Building Settings]
+
 [building site]
 gradbišče
 [Buildings]
@@ -345,6 +347,8 @@ raziskovalci
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Hrana

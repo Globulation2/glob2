@@ -140,6 +140,8 @@ Tamany de la platja
 
 [Build]
 Construir
+[Building Settings]
+
 [building site]
 Construint
 [Buildings]
@@ -345,6 +347,8 @@ illes buides
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Menjar

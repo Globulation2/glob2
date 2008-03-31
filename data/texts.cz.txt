@@ -140,6 +140,8 @@ Velikost pláží
 
 [Build]
 Stavba
+[Building Settings]
+
 [building site]
 staveniště
 [Buildings]
@@ -345,6 +347,8 @@ průzkumníci
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Potrava

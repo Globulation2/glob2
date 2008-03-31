@@ -140,6 +140,8 @@ Bouw Zwembad 1
 Bouw Zwembad 2
 [Build]
 Bouwen
+[Building Settings]
+
 [building site]
 bouwplaats
 [Buildings]
@@ -345,6 +347,8 @@ Lege eilanden
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Voedsel
