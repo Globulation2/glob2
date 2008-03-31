@@ -140,6 +140,8 @@ backspace
 Κατασκευή Πισίνας 3
 [Build]
 Κτίσμα
+[Building Settings]
+
 [building site]
 τόπος κατασκευής
 [Buildings]
@@ -348,6 +350,8 @@ f8
 f9
 [Fertility Map]
 Χάρτης Γονιμότητας
+[Flag Settings]
+
 [food]
 Τροφή
 [forbidden area]

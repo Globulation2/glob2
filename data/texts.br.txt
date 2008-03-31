@@ -140,6 +140,8 @@ Construir Piscina 2
 Construir Piscina 3
 [Build]
 Contruir
+[Building Settings]
+
 [building site]
 Construindo...
 [Buildings]
@@ -348,6 +350,8 @@ f8
 f9
 [Fertility Map]
 Mapa de Fertilidade
+[Flag Settings]
+
 [food]
 Comida
 [forbidden area]

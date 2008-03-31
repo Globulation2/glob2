@@ -129,7 +129,10 @@ public:
 	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag=false);
 	///Activates the given group number for default assignment widgets
 	void activateDefaultAssignedGroupNumber(int group);
-	
+	///Returns the default unit assignment text
+	std::string getDefaultUnitAssignmentText(int type, int level, bool flag);
+	///Sets the texts for all default unit assignment widgets
+	void setLanguageTextsForDefaultAssignmentWidgets();
 	
 	///Update shortcut_list, if n is not -1, just update that specific entry
 	void updateShortcutList(int n=-1);

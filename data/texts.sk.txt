@@ -140,6 +140,8 @@ veľkosť pláže
 
 [Build]
 Stavanie
+[Building Settings]
+
 [building site]
 stavenisko
 [Buildings]
@@ -345,6 +347,8 @@ prázdne ostrovy
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Jedlo

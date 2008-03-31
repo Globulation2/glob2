@@ -140,6 +140,8 @@ Byg Svømmepøl 2
 Byg Svømmepøl 3
 [Build]
 Byg
+[Building Settings]
+
 [building site]
 bygningssted
 [Buildings]
@@ -345,6 +347,8 @@ Tom ø
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Mad

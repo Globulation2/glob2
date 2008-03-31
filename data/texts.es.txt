@@ -140,6 +140,8 @@ Tamaño de la Playa
 
 [Build]
 Edificar
+[Building Settings]
+
 [building site]
 Sitio de Construcción
 [Buildings]
@@ -345,6 +347,8 @@ islas desiertas
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Alimento

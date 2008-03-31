@@ -140,6 +140,8 @@ hondar tamaina
 
 [Build]
 Eraiki
+[Building Settings]
+
 [building site]
 eraikitzen
 [Buildings]
@@ -345,6 +347,8 @@ irla hutsak
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Janaria

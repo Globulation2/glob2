@@ -140,6 +140,8 @@ sahil boyutu
 
 [Build]
 Insaa et
+[Building Settings]
+
 [building site]
 insaa alani
 [Buildings]
@@ -345,6 +347,8 @@ bos adalar
 [f9]
 
 [Fertility Map]
+
+[Flag Settings]
 
 [food]
 Besin
