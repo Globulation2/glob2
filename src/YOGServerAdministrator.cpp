@@ -45,7 +45,12 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 		if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 			server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setUnmuted();
 	}
-
+		
+	if(message.substr(0, 15) == "reset_password ")
+	{
+		std::string name = message.substr(15, message.size());
+		server->getServerPasswordRegistry().resetPlayersPassword(name);
+	}
 
 	return false;
 }
