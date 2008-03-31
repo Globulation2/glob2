@@ -55,6 +55,15 @@ YOGLoginState YOGServerPasswordRegistry::registerInformation(const std::string& 
 }
 
 
+
+void YOGServerPasswordRegistry::resetPlayersPassword(const std::string& username)
+{
+	passwords[username] = "";
+	flushPasswords();
+}
+
+
+
 void YOGServerPasswordRegistry::flushPasswords()
 {
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("registry"));
