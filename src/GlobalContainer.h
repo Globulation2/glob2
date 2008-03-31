@@ -110,6 +110,7 @@ public:
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;
 	int automaticEndingSteps;
+	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
 	
 	bool runTestGames; //! runs test games
 	
