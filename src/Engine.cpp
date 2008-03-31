@@ -485,7 +485,7 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 		mapName.replace(pos, 1, " ");
 		pos = mapName.find("_");
 	}
-	mapHeader.setMapName(mapName);
+	mapHeader.setMapName(glob2FilenameToName(filename));
 	
 	return mapHeader;
 }

@@ -163,8 +163,8 @@ namespace GAGGUI
 	
 	void Number::setNth(int nth)
 	{
-		assert((nth>0)&&(nth<(int)numbers.size()));
-		if ((nth>0)&&(nth<(int)numbers.size()))
+		assert((nth>=0)&&(nth<(int)numbers.size()));
+		if ((nth>=0)&&(nth<(int)numbers.size()))
 			this->nth=nth;
 	}
 	
