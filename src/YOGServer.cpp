@@ -342,6 +342,13 @@ YOGServerPlayerStoredInfoManager& YOGServer::getPlayerStoredInfoManager()
 
 
 
+YOGServerPasswordRegistry& YOGServer::getServerPasswordRegistry()
+{
+	return registry;
+}
+
+
+
 Uint16 YOGServer::chooseNewPlayerID()
 {
 	//choose the new player ID.

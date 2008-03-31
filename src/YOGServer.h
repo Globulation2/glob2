@@ -129,6 +129,9 @@ public:
 	
 	///Returns the YOGServerPlayerStoredInfoManager
 	YOGServerPlayerStoredInfoManager& getPlayerStoredInfoManager();
+	
+	///Returns the YOGServerPasswordRegistry
+	YOGServerPasswordRegistry& getServerPasswordRegistry();
 private:
 	Uint16 chooseNewPlayerID();
 
