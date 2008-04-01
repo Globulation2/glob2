@@ -480,6 +480,8 @@ Níveis
 Carregar partida
 [load map]
 
+[load script]
+
 [load]
 Carregar
 [login]
@@ -661,6 +663,8 @@ Guardar antes de sair?
 [save game]
 Salvar partida
 [save map]
+
+[save script]
 
 [Save]
 Guardar

@@ -480,6 +480,8 @@ Slovensky
 Nahrať hru
 [load map]
 
+[load script]
+
 [load]
 Nahrať
 [login]
@@ -661,6 +663,8 @@ Chceš pred ukončením uložiť zmeny?
 [save game]
 Uložiť hru
 [save map]
+
+[save script]
 
 [Save]
 Uložiť

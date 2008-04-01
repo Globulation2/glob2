@@ -480,6 +480,8 @@ Seviyeler
 Oyun yukle
 [load map]
 
+[load script]
+
 [load]
 Yukle
 [login]
@@ -661,6 +663,8 @@ Cikmadan once kaydetmek istiyor musunuz?
 [save game]
 Oyun kaydet
 [save map]
+
+[save script]
 
 [Save]
 Kaydet

@@ -480,6 +480,8 @@ ar
 تحميل اللعبه
 [load map]
 تحميل الخريطه
+[load script]
+
 [load]
 تحميل
 [login]
@@ -662,6 +664,8 @@ Do you want to save before quitting?
 حفظ اللعبه
 [save map]
 حفظ الخريطه
+[save script]
+
 [Save]
 حفظ
 [school explanation 2]

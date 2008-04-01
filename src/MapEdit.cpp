@@ -2086,7 +2086,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", true, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=new LoadSaveScreen("maps", "map", true, false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 		showingLoad=true;
 	}
 	else if(action=="close load screen")
@@ -2100,7 +2100,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=new LoadSaveScreen("maps", "map", false, false, game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 		showingSave=true;
 	}
 	else if(action=="close save screen")
