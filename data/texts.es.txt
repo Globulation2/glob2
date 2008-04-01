@@ -480,6 +480,8 @@ Niveles
 Cargar Juego
 [load map]
 
+[load script]
+
 [load]
 Cargar
 [login]
@@ -661,6 +663,8 @@ Arena
 [save game]
 Guardar Juego
 [save map]
+
+[save script]
 
 [Save]
 Guardar

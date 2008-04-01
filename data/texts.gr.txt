@@ -482,6 +482,8 @@ Anastasios M. Pingios
 Φόρτωση παιχνιδιού
 [load map]
 Φόρτωση χάρτη
+[load script]
+
 [load]
 Φόρτωση
 [login]
@@ -664,6 +666,8 @@ enter
 Αποθήκευση παιχνιδιού
 [save map]
 Αποθήκευση χάρτη
+[save script]
+
 [Save]
 Αποθήκευση
 [school explanation 2]
