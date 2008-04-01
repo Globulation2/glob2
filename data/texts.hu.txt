@@ -480,6 +480,8 @@ Szintek
 Játék betöltése
 [load map]
 
+[load script]
+
 [load]
 Betölt
 [login]
@@ -661,6 +663,8 @@ El kívánod a játékot menteni kilépés előtt?
 [save game]
 Játék elmentése
 [save map]
+
+[save script]
 
 [Save]
 Mentés

@@ -480,6 +480,8 @@ Kargatu kanpaina
 Kargatu partida
 [load map]
 Kargatu mapa
+[load script]
+
 [load]
 Kargatu
 [login]
@@ -662,6 +664,8 @@ Partida gorde irten aurretik?
 Gorde partida
 [save map]
 Gorde mapa
+[save script]
+
 [Save]
 Gorde
 [school explanation 2]

@@ -480,6 +480,8 @@ sr
 Учитај игру
 [load map]
 
+[load script]
+
 [load]
 Учитај
 [login]
@@ -661,6 +663,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [save game]
 Сними игру
 [save map]
+
+[save script]
 
 [Save]
 Сними

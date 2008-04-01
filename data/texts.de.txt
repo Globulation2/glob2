@@ -474,6 +474,8 @@ Stufen
 Spiel laden
 [load map]
 
+[load script]
+
 [load]
 Laden
 [login]
@@ -653,6 +655,8 @@ Möchten Sie vor dem Beenden abspeichern?
 [save game]
 Spiel speichern
 [save map]
+
+[save script]
 
 [Save]
 Speichern
