@@ -404,6 +404,8 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		maxUnitWorkingPrevious = stream->readSint32("maxUnitWorkingPrevious");
 	else
 		maxUnitWorkingPrevious = maxUnitWorkingPreferred;
+	if(versionMinor>=70)
+		maxUnitWorkingFuture = stream->readSint32("maxUnitWorkingFuture");
 	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 	
@@ -451,6 +453,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	stream->writeSint32(maxUnitWorkingPrevious, "maxUnitWorkingPrevious");
+	stream->writeSint32(maxUnitWorkingFuture, "maxUnitWorkingFuture");
 	
 	stream->writeUint32(unitsInside.size(), "nbInside");
 	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
