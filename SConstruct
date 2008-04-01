@@ -199,7 +199,7 @@ def main():
     if env['mingw'] or isWindowsPlatform:
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
-        env.Append(LIBS=['wsock32'])
+        env.Append(LIBS=['wsock32', 'winmm'])
         env.ParseConfig("sh sdl-config --cflags")
         env.ParseConfig("sh sdl-config --libs")
     else:
