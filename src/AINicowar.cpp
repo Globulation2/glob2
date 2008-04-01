@@ -2257,18 +2257,18 @@ void NewNicowar::modify_points(Uint8* counts, int w, int h, int x, int y, int di
 			int ny = (y + py + h)%h;
 			if(px * px + py * py <= dist * dist)
 			{
-				int d = (dist-std::max(std::abs(px), std::abs(py)));
+				Uint8 d = (dist-std::max(std::abs(px), std::abs(py)));
 				if(d != 0)
 				{
 					if(value>0)
 					{
 						if(counts[nx * h + ny] == 0)
 							locations.push_back(nx * h + ny);
-						counts[nx * h + ny] += d;
+						counts[nx * h + ny] += std::min((Uint8)(255u-counts[nx * h + ny]), d);
 					}
 					else if(value<0)
 					{
-						counts[nx * h + ny] -= d;
+						counts[nx * h + ny] -= std::min(counts[nx * h + ny], d);
 						if(counts[nx * h + ny] == 0)
 							locations.remove(nx * h + ny);
 					}
