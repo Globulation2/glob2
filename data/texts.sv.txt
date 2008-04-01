@@ -480,6 +480,8 @@ Ladda Kampanj
 Ladda spel
 [load map]
 Ladda Karta
+[load script]
+
 [load]
 Ladda
 [login]
@@ -662,6 +664,8 @@ Vill du spara innan du avslutar?
 Spara spel
 [save map]
 Spara Karta
+[save script]
+
 [Save]
 Spara
 [school explanation 2]

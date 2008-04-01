@@ -476,6 +476,8 @@ Load Campaign
 Load game
 [load map]
 Load Map
+[load script]
+Load Script
 [load]
 Load
 [login]
@@ -656,6 +658,8 @@ Do you want to save before quitting?
 Save game
 [save map]
 Save Map
+[save script]
+Save Script
 [Save]
 Save
 [school explanation 2]
