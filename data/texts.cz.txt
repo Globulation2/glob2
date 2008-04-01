@@ -480,6 +480,8 @@ Jazyk
 Nahrát hru
 [load map]
 
+[load script]
+
 [load]
 Nahrát
 [login]
@@ -661,6 +663,8 @@ Chceš uložit před odchodem ?
 [save game]
 Uložit hru
 [save map]
+
+[save script]
 
 [Save]
 Uložit

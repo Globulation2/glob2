@@ -482,6 +482,8 @@ Carregar campanha
 Carregar jogo
 [load map]
 Carregar mapa
+[load script]
+
 [load]
 Carrregar
 [login]
@@ -664,6 +666,8 @@ Você quer gravar antes de sair?
 Gravar Jogo
 [save map]
 Gravar mapa
+[save script]
+
 [Save]
 Gravar
 [school explanation 2]

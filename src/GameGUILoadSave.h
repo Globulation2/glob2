@@ -56,7 +56,7 @@ private:
 
 public:
 	//! Constructor : directory and extension must be given without the / and the .
-	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL,
+	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, bool isScript=false, const char *defaultFileName=NULL,
 		std::string (*filenameToNameFunc)(const std::string& filename)=NULL,
 		std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension)=NULL);
 	virtual ~LoadSaveScreen();

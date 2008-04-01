@@ -480,6 +480,8 @@ Nivele
 Încarcă joc
 [load map]
 
+[load script]
+
 [load]
 Încarcă
 [login]
@@ -661,6 +663,8 @@ Vreţi să salvaţi înainte de a ieşi?
 [save game]
 Salvează joc
 [save map]
+
+[save script]
 
 [Save]
 Salvează

@@ -96,6 +96,7 @@ GlobalContainer::GlobalContainer(void)
 	littleFont = NULL;
 	
 	voiceRecorder = NULL;
+	automaticGameGlobalEndConditions=false;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -179,6 +180,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			runTestGames=true;
 			automaticEndingGame = true;
+			automaticGameGlobalEndConditions=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-test-games-nox")==0)
@@ -186,6 +188,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			runTestGames=true;
 			automaticEndingGame = true;
 			runNoX=true;
+			automaticGameGlobalEndConditions=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)

@@ -474,6 +474,8 @@ Carica campagna
 Carica partita
 [load map]
 Carica Mappa
+[load script]
+
 [load]
 Carica
 [login]
@@ -654,6 +656,8 @@ Voui salvare prima di uscire?
 Salva partita
 [save map]
 Salva Mappa
+[save script]
+
 [Save]
 Salva
 [school explanation 2]
