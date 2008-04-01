@@ -480,6 +480,8 @@ Charger la campagne
 Charger jeu
 [load map]
 Charger la carte
+[load script]
+
 [load]
 Charger
 [login]
@@ -662,6 +664,8 @@ Voulez-vous sauver avant de quitter ?
 Sauvegarder jeu
 [save map]
 Sauvegarder la carte
+[save script]
+
 [Save]
 Sauvegarder
 [school explanation 2]

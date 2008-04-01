@@ -138,8 +138,8 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			scriptEditor->visible = false;
 			campaignTextEditor->visible = true;
 			compileButton->visible = false;
-			loadButton->visible = true;
-			saveButton->visible = true;
+			loadButton->visible = false;
+			saveButton->visible = false;
 			mode->setText(Toolkit::getStringTable()->getString("[campaign text]"));
 		}
 	}
@@ -162,7 +162,7 @@ std::string filenameToName(const std::string& fullfilename)
 void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 {
 	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, game->mapHeader.getMapName().c_str(), filenameToName, glob2NameToFilename);
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, true, game->mapHeader.getMapName().c_str(), filenameToName, glob2NameToFilename);
 	loadSaveScreen->dispatchPaint();
 
 	// save screen

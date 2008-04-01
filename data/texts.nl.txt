@@ -480,6 +480,8 @@ Campagne laden
 Laden
 [load map]
 Speelveld laden
+[load script]
+
 [load]
 Laden
 [login]
@@ -662,6 +664,8 @@ Wil je spel opslaan voordat je aflsuiten?
 Opslaan
 [save map]
 Speelveld opslaan
+[save script]
+
 [Save]
 Opslaan
 [school explanation 2]

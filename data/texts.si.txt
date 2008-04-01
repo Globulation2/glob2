@@ -480,6 +480,8 @@ Stopnje
 Naloži igro
 [load map]
 
+[load script]
+
 [load]
 Naloži
 [login]
@@ -661,6 +663,8 @@ Pesek
 [save game]
 Shrani igro
 [save map]
+
+[save script]
 
 [Save]
 Shrani

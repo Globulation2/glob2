@@ -480,6 +480,8 @@ Nivells
 Cargar partida
 [load map]
 
+[load script]
+
 [load]
 Carregar
 [login]
@@ -661,6 +663,8 @@ Vols desar abans de sortir?
 [save game]
 Desar partida
 [save map]
+
+[save script]
 
 [Save]
 Desar

@@ -476,6 +476,8 @@ left
 Загрузить игру
 [load map]
 Загрузить карту
+[load script]
+
 [load]
 Загрузить
 [load]
@@ -658,6 +660,8 @@ right
 Сохранить игру
 [save map]
 Сохранить карту
+[save script]
+
 [Save]
 Сохранение
 [school explanation 2]
