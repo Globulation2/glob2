@@ -416,9 +416,9 @@ int Engine::run(void)
 
 		if(globalContainer->automaticEndingGame)
 		{
-			int time = (automaticGameEndTick - startTime);
-			int seconds = ((automaticGameEndTick - startTime)/1000) % 60;
-			int minutes = ((automaticGameEndTick - startTime)/1000) / 60;
+			int time = gui.game.stepCounter;
+			int seconds = (time / 25) % 60;
+			int minutes = (time / 25) / 60;
 			std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<seconds<<" seconds, "<<minutes<<" minutes"<<std::endl;
 		}
 
