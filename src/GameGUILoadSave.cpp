@@ -63,7 +63,7 @@ private:
 
 //! Load/Save screen
 
-LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName,
+LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, bool isScript, const char *defaultFileName,
 	std::string (*filenameToNameFunc)(const std::string& filename),
 	std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension))
 :OverlayScreen(globalContainer->gfx, 300, 275)
@@ -100,9 +100,15 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	addWidget(new TextButton(155, 225, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
 	if (isLoad)
-		addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]")));
+		if(isScript)
+			addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load script]")));
+		else
+			addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]")));
 	else
-		addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]")));
+		if(isScript)
+			addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save script]")));
+		else
+			addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]")));
 
 	generateFileName();
 	dispatchInit();
