@@ -223,6 +223,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 				for (unsigned i=0; i<nsamples; i++)
 				{
 					int t = mix[i];
+					t = (t * musicvol) >> 8;
 					mixer->handleVoiceInsertion(&t, voicevol);
 					mix[i] = t;
 				}
