@@ -378,7 +378,7 @@ private:
 	///This function calculates the positions of defense flags
 	void compute_defense_flag_positioning(AIEcho::Echo& echo);
 	///This function adds the specific value to the counts arround the given pos, used in compute_defense_flag_positioning
-	void modify_points(Uint8* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations);
+	void modify_points(Uint16* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations);
 	///This vector stores the ID's for all current defense flags
 	std::vector<int> defense_flags;
 
