@@ -48,7 +48,8 @@ Settings::Settings()
 	screenHeight = 600;
 	optionFlags = 0;
 	language = "en";
-	musicVolume = 255;
+	musicVolume = 190;
+	voiceVolume = 190;
 	mute = 0;
 	rememberUnit = 1;
 	tempUnit = 1;
@@ -157,6 +158,7 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_STRING(language);
 		READ_PARSED_INT(musicVolume);
+		READ_PARSED_INT(voiceVolume);
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
@@ -201,6 +203,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
+		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
