@@ -2057,10 +2057,10 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	const int w = mi.get_width();
 	const int h = mi.get_height();
 	
-	Uint8* counts = new Uint8[w * h];
+	Uint16* counts = new Uint16[w * h];
 	Uint16* buildingGID = new Uint16[w * h];
 	Uint16* unitGID = new Uint16[w * h];
-	memset(counts, 0, w * h);
+	memset(counts, 0, sizeof(Uint16) * w * h);
 	memset(buildingGID, NOGBID, sizeof(Uint16) * w * h);
 	memset(unitGID, NOGUID, sizeof(Uint16) * w * h);
 	std::list<int> locations;
@@ -2247,7 +2247,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 
 
 
-void NewNicowar::modify_points(Uint8* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations)
+void NewNicowar::modify_points(Uint16* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations)
 {
 	for(int px = -dist; px <= dist; ++px)
 	{
@@ -2264,11 +2264,11 @@ void NewNicowar::modify_points(Uint8* counts, int w, int h, int x, int y, int di
 					{
 						if(counts[nx * h + ny] == 0)
 							locations.push_back(nx * h + ny);
-						counts[nx * h + ny] += std::min((Uint8)(255u-counts[nx * h + ny]), d);
+						counts[nx * h + ny] += d;
 					}
 					else if(value<0)
 					{
-						counts[nx * h + ny] -= std::min(counts[nx * h + ny], d);
+						counts[nx * h + ny] -= d;
 						if(counts[nx * h + ny] == 0)
 							locations.remove(nx * h + ny);
 					}
