@@ -1891,7 +1891,12 @@ namespace GAGCore
 		if (title && icon)
 			SDL_WM_SetCaption(title, icon);
 		
-		setRes(w, h, flags);
+		///If setting the given resolution fails, default to 800x600
+		if(!setRes(w, h, flags))
+		{
+			fprintf(stderr, "Toolkit : Can't set screen resolution, resetting to default of 800x600\n");
+			setRes(800,600,flags);
+		}
 		
 	}
 	
