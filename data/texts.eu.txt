@@ -970,6 +970,8 @@ Erabiltzaile izena
 Bertsioa
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 %0(r)i itxaroten
 [waiting for key]

@@ -297,13 +297,20 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 
 	musicVolText=new Text(10, 80, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
+
+	voiceVolText=new Text(10, 130, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Voice volume]"));
+	addWidget(voiceVolText);
 	
 	musicVol=new Selector(19, 110, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
 	addWidget(musicVol);
+	
+	voiceVol=new Selector(19, 160, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.voiceVolume, 256, true);
+	addWidget(voiceVol);
 
 	if(globalContainer->settings.mute)
 	{
 		musicVol->visible=false;
+		voiceVol->visible=false;
 		musicVolText->visible=false;
 	}
 
@@ -328,13 +335,15 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->mix->setVolume(musicVol->getValue(), mute->getState());
+		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
 		globalContainer->settings.mute = mute->getState();
 		musicVol->visible = ! globalContainer->settings.mute;
+		voiceVol->visible = ! globalContainer->settings.mute;
 		musicVolText->visible = ! globalContainer->settings.mute;
-		globalContainer->mix->setVolume(musicVol->getValue(), mute->getState());
+		voiceVolText->visible = ! globalContainer->settings.mute;
+		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
 }

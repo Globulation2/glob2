@@ -970,6 +970,8 @@ Gebruikersnaam
 Versie
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Wachten op %0
 [waiting for key]

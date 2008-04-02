@@ -141,14 +141,18 @@ SettingsScreen::SettingsScreen()
 	// Audio part
 	audio=new Text(230, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[audio]"), 300);
 	addWidget(audio);
-	audioMute=new OnOffButton(230, 360, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.mute, MUTE);
+	audioMute=new OnOffButton(230, 365, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.mute, MUTE);
 	addWidget(audioMute);
-	audioMuteText=new Text(260, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
+	audioMuteText=new Text(260, 365, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
 	addWidget(audioMuteText);
-	musicVol=new Selector(320, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256, true);
+	musicVol=new Selector(320, 350, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256, true);
 	addWidget(musicVol);
+	voiceVol=new Selector(320, 385, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.voiceVolume, 256, true);
+	addWidget(voiceVol);
 	musicVolText=new Text(320, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
 	addWidget(musicVolText);
+	voiceVolText=new Text(320, 365, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Voice volume]"), 300);
+	addWidget(voiceVolText);
 	setVisibilityFromAudioSettings();
 	
 	
@@ -351,7 +355,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(globalContainer->settings.language));
 
 			///Send the old volume to the mixer
-			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
 
 			endExecute(par1);
 		}
@@ -377,6 +381,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audioMute->visible=true;
 			musicVol->visible=true;
 			musicVolText->visible=true;
+			voiceVol->visible=true;
+			voiceVolText->visible=true;
 			rememberUnitButton->visible=true;
 			rememberUnitText->visible=true;
 			scrollwheel->visible=true;
@@ -439,6 +445,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audioMute->visible=false;
 			musicVol->visible=false;
 			musicVolText->visible=false;
+			voiceVol->visible=false;
+			voiceVolText->visible=false;
 			rememberUnitButton->visible=false;
 			rememberUnitText->visible=false;
 			scrollwheel->visible=false;
@@ -487,6 +495,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audioMute->visible=false;
 			musicVol->visible=false;
 			musicVolText->visible=false;
+			voiceVol->visible=false;
+			voiceVolText->visible=false;
 			rememberUnitButton->visible=false;
 			rememberUnitText->visible=false;
 			scrollwheel->visible=false;
@@ -666,7 +676,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==VALUE_CHANGED)
 	{
 		globalContainer->settings.musicVolume = musicVol->getValue();
-		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+		globalContainer->settings.voiceVolume = voiceVol->getValue();
+		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
@@ -723,7 +734,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==audioMute)
 		{
 			globalContainer->settings.mute = audioMute->getState();
-			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
 			setVisibilityFromAudioSettings();
 		}
 		else if (source==key_2_active)
@@ -756,6 +767,8 @@ void SettingsScreen::setVisibilityFromAudioSettings(void)
 {
 	musicVol->visible = !globalContainer->settings.mute;
 	musicVolText->visible = !globalContainer->settings.mute;
+	voiceVol->visible = !globalContainer->settings.mute;
+	voiceVolText->visible = !globalContainer->settings.mute;
 }
 
 void SettingsScreen::updateGfxCtx(void)

@@ -970,6 +970,8 @@ Start/Stop Upgrade
 اﻷصداره
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 انتظار %0
 [waiting for key]

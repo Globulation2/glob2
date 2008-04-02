@@ -970,6 +970,8 @@ V: 持鍵以傳送訊息
 版本
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 等待 %0
 [waiting for key]

@@ -970,6 +970,8 @@ Nom d' usuari
 Versió
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Esperant a %0
 [waiting for key]

@@ -78,13 +78,14 @@ private:
 	TextButton *buildings, *flags;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
 	Selector *musicVol;
+	Selector *voiceVol;
 	OnOffButton *audioMute, *rememberUnitButton;
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
 	int unitRatioGroupNumbers[IntBuildingType::NB_BUILDING][6];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *rememberUnitText, *scrollwheelText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
