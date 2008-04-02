@@ -970,6 +970,8 @@ Meno hráča
 Verzia
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Čaká sa na %0
 [waiting for key]

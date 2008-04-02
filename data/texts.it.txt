@@ -962,6 +962,8 @@ Nome giocatore
 Versione
 [view history]
 Vedi storia
+[Voice volume]
+
 [waiting for %0]
 Aspettando %0
 [waiting for key]

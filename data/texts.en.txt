@@ -966,6 +966,8 @@ Username
 Version
 [view history]
 View History
+[Voice volume]
+Volume (voice)
 [waiting for %0]
 Waiting for %0
 [waiting for key]
