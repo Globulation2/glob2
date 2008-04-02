@@ -970,6 +970,8 @@ Numele utilizatorului
 Versiune
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Aşteaptă %0
 [waiting for key]

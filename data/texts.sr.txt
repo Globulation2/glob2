@@ -970,6 +970,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Верзија
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Чека се на %0
 [waiting for key]

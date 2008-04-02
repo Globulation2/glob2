@@ -50,7 +50,8 @@ public:
 	int actTrack, nextTrack;
 	bool earlyChange;
 	bool soundEnabled;
-	unsigned volume;
+	unsigned musicVolume;
+	unsigned voiceVolume;
 	
 	//! Voice for one player
 	struct PlayerVoice
@@ -69,13 +70,13 @@ public:
 	void *speexDecoderState;
 	
 	//! if voice data is available, insert it to output
-	inline void handleVoiceInsertion(int *outputSample);
+	inline void handleVoiceInsertion(int *outputSample, int voicevol);
 	
 protected:
 	void openAudio(void);
 
 public:
-	SoundMixer(unsigned volume = 255, bool mute = false);
+	SoundMixer(unsigned musicvol = 255, unsigned voicevol = 255, bool mute = false);
 
 	~SoundMixer();
 
@@ -83,7 +84,7 @@ public:
 
 	void setNextTrack(unsigned i, bool earlyChange=false);
 
-	void setVolume(unsigned volume, bool mute);
+	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
 	
 	void stopMusic(void);
 	

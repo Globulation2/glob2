@@ -968,6 +968,8 @@ up
 Версия
 [view history]
 Просмотр истории
+[Voice volume]
+
 [waiting for %0]
 Ожидание %0
 [waiting for key]
