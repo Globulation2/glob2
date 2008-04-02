@@ -484,7 +484,7 @@ void GlobalContainer::load(void)
 		initProgressBar();
 		
 		// create mixer
-		mix = new SoundMixer(settings.musicVolume, settings.mute);
+		mix = new SoundMixer(settings.musicVolume, settings.voiceVolume, settings.mute);
 		mix->loadTrack("data/zik/intro.ogg");
 		mix->loadTrack("data/zik/menu.ogg");
 		mix->loadTrack("data/zik/a1.ogg");

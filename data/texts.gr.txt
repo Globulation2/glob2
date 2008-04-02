@@ -974,6 +974,8 @@ Tutorial
 Έκδοση
 [view history]
 Εμφάνιση Ιστορικού
+[Voice volume]
+
 [waiting for %0]
 Αναμονή για %0
 [waiting for key]

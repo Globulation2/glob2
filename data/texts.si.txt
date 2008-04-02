@@ -970,6 +970,8 @@ Uporabniško ime
 Različica
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Čakam %0
 [waiting for key]

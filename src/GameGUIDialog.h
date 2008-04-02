@@ -112,8 +112,10 @@ public:
 
 public:
 	Selector *musicVol;
+	Selector *voiceVol;
 	OnOffButton* mute;
 	Text *musicVolText;
+	Text *voiceVolText;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	virtual ~InGameOptionScreen() { }

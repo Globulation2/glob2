@@ -970,6 +970,8 @@ Felhasználónév
 Verzió
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 %0 -ra várva
 [waiting for key]

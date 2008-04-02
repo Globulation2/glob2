@@ -970,6 +970,8 @@ Nom d'utilisateur
 Version
 [view history]
 Voir l'historique
+[Voice volume]
+
 [waiting for %0]
 Attente de %0
 [waiting for key]
