@@ -970,6 +970,8 @@ Användarnamn
 Version
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Väntar på %0
 [waiting for key]

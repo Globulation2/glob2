@@ -970,6 +970,8 @@ Jméno uživatele
 Verze
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Čeká se na %0
 [waiting for key]

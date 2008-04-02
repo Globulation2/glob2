@@ -36,6 +36,7 @@ public:
 	Uint32 optionFlags;
 	std::string language;
 	Uint32 musicVolume;
+	Uint32 voiceVolume;
 	int mute;
 	bool rememberUnit;
 	bool scrollWheelEnabled;

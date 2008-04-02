@@ -972,6 +972,8 @@ Nome de usuário
 Versão
 [view history]
 Ver histórico de mensagens
+[Voice volume]
+
 [waiting for %0]
 Esperando por %0
 [waiting for key]

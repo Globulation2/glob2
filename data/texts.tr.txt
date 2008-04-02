@@ -970,6 +970,8 @@ Kullanici adi
 Versiyon
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 bekleniyor: %0
 [waiting for key]

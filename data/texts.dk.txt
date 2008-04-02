@@ -970,6 +970,8 @@ Brugernavn
 Version
 [view history]
 
+[Voice volume]
+
 [waiting for %0]
 Vænter på %0
 [waiting for key]
