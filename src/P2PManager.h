@@ -19,6 +19,13 @@
 #ifndef P2PManager_h
 #define P2PManager_h
 
+#include "boost/shared_ptr.hpp"
+#include "P2PInformation.h"
+#include <vector>
+
+class YOGServerPlayer;
+class NetMessage;
+
 ///This class represents the P2P manager, which acts as a third party to manage a group of P2P connections.
 ///This class operates server-side
 class P2PManager
@@ -27,6 +34,20 @@ public:
 	///Constructs a P2PManager
 	P2PManager();
 
+	///Adds a player to this P2P group
+	void addPlayer(boost::shared_ptr<YOGServerPlayer> player);
+	
+	///Removes a player from this P2P group
+	void removePlayer(boost::shared_ptr<YOGServerPlayer> player);
+	
+	///Updates this client
+	void update();
+private:
+	///Sends a message to all the players
+	void sendNetMessage(boost::shared_ptr<NetMessage> message);
+
+	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
+	P2PInformation group;
 };
 
 

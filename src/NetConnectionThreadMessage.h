@@ -119,7 +119,7 @@ class NTConnected : public NetConnectionThreadMessage
 {
 public:
 	///Creates a NTConnected event
-	NTConnected();
+	NTConnected(const std::string& ip);
 
 	///Returns NTMConnected
 	Uint8 getMessageType() const;
@@ -129,6 +129,11 @@ public:
 	
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
+	
+	///Returns the ip address of the connection
+	const std::string& getIPAddress();
+private:
+	std::string ip;
 };
 
 

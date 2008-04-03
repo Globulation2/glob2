@@ -21,7 +21,7 @@
 #include "NetMessage.h"
 
 
-P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
+P2PConnection::P2PConnection(YOGClient* client)
 	: client(client)
 {
 }
@@ -30,7 +30,11 @@ P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
 
 void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
 {
-	//Uint8 type = message->getMessageType();
-	boost::shared_ptr<YOGClient> nclient(client);
+	Uint8 type = message->getMessageType();
+	if(type == MNetSendP2PInformation)
+	{
+		shared_ptr<NetSendP2PInformation> info = static_pointer_cast<NetSendP2PInformation>(message);
+		group = info->getGroupInfo();
+	}
 }
 
