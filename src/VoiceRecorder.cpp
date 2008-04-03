@@ -204,6 +204,8 @@ int record(void *pointer)
 			 // Put back buffer
 			waveInAddBuffer(waveIn, &buffers[bufferPos], sizeof(WAVEHDR));
 			bufferPos = (bufferPos + 1) % bufferCount;
+			voiceRecorder->stopRecordingTimeout -= SPEEX_FRAME_SIZE;
+			totalRead += SPEEX_FRAME_SIZE;
 			#endif
 			
 			#ifdef __APPLE__
