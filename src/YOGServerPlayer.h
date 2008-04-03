@@ -63,6 +63,9 @@ public:
 	///Returns the name of the player, or blank if they haven't logged in
 	std::string getPlayerName();
 
+	///Returns the ip address of the player
+	std::string getPlayerIP();
+
 	///Returns the game the player is connected to
 	boost::shared_ptr<YOGServerGame> getGame();
 

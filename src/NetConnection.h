@@ -65,6 +65,9 @@ public:
 	
 	///Sends a message across the connection.
 	void sendMessage(shared_ptr<NetMessage> message);
+	
+	///Returns the IP address
+	const std::string& getIPAddress() const;
 protected:
 	friend class NetListener;
 
@@ -79,6 +82,7 @@ private:
 	boost::recursive_mutex incomingMutex;
 	std::queue<shared_ptr<NetMessage> > recieved;
 	
+	std::string address;
 	bool connecting;
 };
 

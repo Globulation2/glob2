@@ -23,6 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
+#include "P2PManager.h"
 
 class NetKickPlayer;
 class NetSendOrder;
@@ -116,24 +117,25 @@ public:
 	void chooseLatencyMode();
 
 private:
-	bool recievedMapHeader;
-	bool hasAddedHost;
-	bool requested;
 	bool gameStarted;
+	bool hasAddedHost;
 	bool oldReadyToLaunch;
+	bool recievedMapHeader;
+	bool requested;
+	boost::shared_ptr<YOGServerMapDistributor> distributor;
+	boost::shared_ptr<YOGServerPlayer> host;
+	GameHeader gameHeader;
 	int latencyMode;
 	int latencyUpdateTimer;
 	MapHeader mapHeader;
-	GameHeader gameHeader;
+	NetGamePlayerManager playerManager;
+	NetReteamingInformation reteamingInfo;
+	P2PManager p2p;
+	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
 	Uint16 gameID;
 	Uint32 chatChannel;
-	boost::shared_ptr<YOGServerPlayer> host;
-	boost::shared_ptr<YOGServerMapDistributor> distributor;
-	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
-	YOGServer& server;
-	NetGamePlayerManager playerManager;
 	Uint8 aiNum;
-	NetReteamingInformation reteamingInfo;
+	YOGServer& server;
 };
 
 
