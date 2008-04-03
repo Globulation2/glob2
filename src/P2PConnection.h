@@ -21,7 +21,7 @@
 
 #include "P2PInformation.h"
 #include "P2PPlayerInformation.h"
-#include "boost/weak_ptr.hpp"
+#include "boost/shared_ptr.hpp"
 
 class YOGClient;
 class NetMessage;
@@ -31,13 +31,14 @@ class P2PConnection
 {
 public:
 	///Creates the P2P connection. P2P connections go through the YOGClient in order to communicate with the P2P manager
-	P2PConnection(boost::weak_ptr<YOGClient> client);
+	P2PConnection(YOGClient* client);
 
 	///Recieves an incoming message from the P2P manager
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
 
 private:
-	boost::weak_ptr<YOGClient> client;
+	YOGClient* client;
+	P2PInformation group;
 };
 
 #endif

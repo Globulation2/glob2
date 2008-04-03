@@ -20,6 +20,7 @@
 #include "MapAssembler.h"
 #include "MultiplayerGame.h"
 #include "NetMessage.h"
+#include "P2PConnection.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientEventListener.h"
 #include "YOGClientEvent.h"
@@ -328,6 +329,13 @@ void YOGClient::update()
 		{
 			shared_ptr<NetPingReply> event(new NetPingReply);
 			nc.sendMessage(event);
+		}
+		if(type == MNetSendP2PInformation)
+		{
+			if(!p2pconnection)
+				p2pconnection = boost::shared_ptr<P2PConnection>(new P2PConnection(this));
+			if(p2pconnection)
+				p2pconnection->recieveMessage(message);
 		}
 	}
 }
