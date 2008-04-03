@@ -22,6 +22,7 @@
 #include "YOGServer.h"
 #include "YOGServerMapDistributor.h"
 #include "YOGServerPlayer.h"
+#include "P2PManager.h"
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
@@ -172,8 +173,11 @@ void YOGServerPlayer::update()
 	//This recieves routes an order
 	else if(type==MNetSendOrder)
 	{
-		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
-		ngame->routeOrder(info, server.getPlayer(playerID));
+		if(p2p)
+		{
+			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
+			p2p->recieveMessage(info, server.getPlayer(playerID));
+		}
 	}
 	//This recieves requests a map file
 	else if(type==MNetRequestMap)
@@ -354,6 +358,20 @@ unsigned YOGServerPlayer::getAveragePing() const
 
 	//At two standard deviations, 99.7% of all data will be less
 	return mean + int(deviation*2);
+}
+
+
+
+void YOGServerPlayer::setP2PManager(P2PManager* manager)
+{
+	p2p = manager;
+}
+
+
+
+P2PManager* YOGServerPlayer::getP2PManager()
+{
+	return p2p;
 }
 
 

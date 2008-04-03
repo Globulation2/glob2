@@ -268,17 +268,6 @@ void YOGServerGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGS
 
 
 
-void YOGServerGame::routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGServerPlayer> sender)
-{
-	for(std::vector<shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
-	{
-		if((*i) != sender)
-			(*i)->sendMessage(order);
-	}
-}
-
-
-
 shared_ptr<YOGServerMapDistributor> YOGServerGame::getMapDistributor()
 {
 	if(!distributor)
