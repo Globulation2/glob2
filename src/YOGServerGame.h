@@ -75,9 +75,6 @@ public:
 	///unless sender is null
 	void routeMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
 	
-	///Routes the given order to all players except the sender. Sender can be null
-	void routeOrder(boost::shared_ptr<NetSendOrder> order, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
-	
 	///Returns the map distributor
 	boost::shared_ptr<YOGServerMapDistributor> getMapDistributor();
 	

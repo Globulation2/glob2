@@ -42,9 +42,12 @@ public:
 	
 	///Updates this client
 	void update();
+	
+	///This recieves a message from a player. The player must be in this p2p group
+	void recieveMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player);
 private:
-	///Sends a message to all the players
-	void sendNetMessage(boost::shared_ptr<NetMessage> message);
+	///Sends a message to all the players except player
+	void sendNetMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player = boost::shared_ptr<YOGServerPlayer>());
 
 	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
 	P2PInformation group;
