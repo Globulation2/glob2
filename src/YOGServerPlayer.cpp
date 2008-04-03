@@ -298,6 +298,13 @@ std::string YOGServerPlayer::getPlayerName()
 
 
 
+std::string YOGServerPlayer::getPlayerIP()
+{
+	return connection->getIPAddress();
+}
+
+
+
 boost::shared_ptr<YOGServerGame> YOGServerPlayer::getGame()
 {
 	return boost::shared_ptr<YOGServerGame>(game);
