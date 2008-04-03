@@ -36,6 +36,8 @@ void P2PManager::addPlayer(boost::shared_ptr<YOGServerPlayer> player)
 	
 	boost::shared_ptr<NetSendP2PInformation> message(new NetSendP2PInformation(group));
 	sendNetMessage(message);
+	
+	player->setP2PManager(this);
 }
 
 
@@ -45,6 +47,11 @@ void P2PManager::removePlayer(boost::shared_ptr<YOGServerPlayer> player)
 	int pos = std::find(players.begin(), players.end(), player) - players.begin();
 	players.erase(players.begin() + pos);
 	group.removeP2PPlayer(pos);
+	
+	boost::shared_ptr<NetSendP2PInformation> message(new NetSendP2PInformation(group));
+	sendNetMessage(message);
+	
+	player->setP2PManager(NULL);
 }
 
 
@@ -64,11 +71,23 @@ void P2PManager::update()
 
 
 
-void P2PManager::sendNetMessage(boost::shared_ptr<NetMessage> message)
+void P2PManager::recieveMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player)
+{
+	Uint8 type = message->getMessageType();
+	if(type == MNetSendOrder)
+	{
+		sendNetMessage(message, player);
+	}
+}
+
+
+
+void P2PManager::sendNetMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player)
 {
 	for(std::vector<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
-		(*i)->sendMessage(message);
+		if(*i != player)
+			(*i)->sendMessage(message);
 	}
 }
 

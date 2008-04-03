@@ -21,7 +21,7 @@
 #include "NetMessage.h"
 
 
-NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<YOGClient> client)
+NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<P2PConnection> client)
 	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), client(client), networkOrderRate(networkOrderRate)
 {
 	step=0;
@@ -31,7 +31,7 @@ NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate,
 
 
 
-void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<YOGClient> nclient)
+void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<P2PConnection> nclient)
 {
 	networkOrderRate = nnetworkOrderRate;
 	client = nclient;
@@ -61,7 +61,7 @@ void NetEngine::advanceStep(Uint32 checksum)
 		{
 			localOrder->sender = localPlayer;
 			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
-			client->sendNetMessage(message);
+			client->sendMessage(message);
 		}
 		pushOrder(localOrder, localPlayer, false);
 		localOrderSendCountdown = networkOrderRate - 1;
@@ -155,7 +155,7 @@ void NetEngine::flushAllOrders()
 		{
 			localOrder->sender = localPlayer;
 			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
-			client->sendNetMessage(message);
+			client->sendMessage(message);
 		}
 		pushOrder(localOrder, localPlayer, false);
 

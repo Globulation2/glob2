@@ -36,6 +36,9 @@ public:
 	///Recieves an incoming message from the P2P manager
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
 
+	///Sends a message up the p2p connection
+	void sendMessage(boost::shared_ptr<NetMessage> message);
+
 private:
 	YOGClient* client;
 	P2PInformation group;

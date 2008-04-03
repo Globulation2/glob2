@@ -38,3 +38,12 @@ void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
 	}
 }
 
+
+
+void P2PConnection::sendMessage(boost::shared_ptr<NetMessage> message)
+{
+	//For now, just send it up the chute
+	client->sendNetMessage(message);
+}
+
+
