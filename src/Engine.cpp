@@ -187,6 +187,7 @@ void Engine::createRandomGame()
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
 	
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
+	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
 	{
 		std::cout<<"    Player: "<<game.getBasePlayer(p).name<<" for team "<<game.getBasePlayer(p).teamNumber<<std::endl;
