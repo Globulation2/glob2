@@ -79,8 +79,8 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	int n=0;
 	for (i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		unsigned otherTeam = gameGUI->game.players[i]->teamNumber;
-		unsigned otherTeamMask = 1 << otherTeam;
+		int otherTeam = gameGUI->game.players[i]->teamNumber;
+		Uint32 otherTeamMask = 1 << otherTeam;
 
 		std::string pname;
 		if (gameGUI->game.players[i]->type>=Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)

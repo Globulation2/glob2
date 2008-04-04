@@ -27,7 +27,7 @@
 Order::Order(void)
 {
 	sender=-1;
-	gameCheckSum=-1;
+	gameCheckSum=static_cast<unsigned int>(-1);
 }
 
 boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength)

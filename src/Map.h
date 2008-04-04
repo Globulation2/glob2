@@ -790,7 +790,7 @@ protected:
 	///This is a single point in the array used for A* algorithm
 	struct AStarAlgorithmPoint
 	{
-		AStarAlgorithmPoint() : x(-1), y(-1), dx(-1), dy(-1), moveCost(-1), totalCost(-1), isClosed(false) { }
+		AStarAlgorithmPoint() : x(-1), y(-1), dx(-1), dy(-1), moveCost(static_cast<Uint16>(-1)), totalCost(static_cast<Uint16>(-1)), isClosed(false) { }
 		AStarAlgorithmPoint(Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Uint16 moveCost, Uint16 totalCost, bool isClosed) : x(x), y(y), dx(dx), dy(dy), moveCost(moveCost), totalCost(totalCost), isClosed(isClosed) {}
 		//Pos x
 		Sint16 x;
