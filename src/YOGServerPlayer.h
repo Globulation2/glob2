@@ -80,6 +80,9 @@ public:
 	
 	///This returns the p2p manager for this player
 	P2PManager* getP2PManager();
+	
+	///This returns the port for the p2p connection client end on this player
+	int getP2PPort();
 private:
 	///This enum represents the state machine of the initial connection
 	enum ConnectionState
@@ -149,7 +152,9 @@ private:
 	Uint16 playerID;
 	///the name of the player after logging in
 	std::string playerName;
-
+	///This is the local p2p port that the player is using for incoming p2p connections
+	int port;	
+	
 	///Tells what game the player is currently a part of
 	Uint16 gameID;
 	///Links to the connected game

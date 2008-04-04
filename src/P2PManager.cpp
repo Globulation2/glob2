@@ -32,6 +32,8 @@ void P2PManager::addPlayer(boost::shared_ptr<YOGServerPlayer> player)
 	players.push_back(player);
 	P2PPlayerInformation info;
 	info.setIPAddress(player->getPlayerIP());
+	info.setPort(player->getP2PPort());
+	info.setPlayerID(player->getPlayerID());
 	group.addP2PPlayer(info);
 	
 	boost::shared_ptr<NetSendP2PInformation> message(new NetSendP2PInformation(group));

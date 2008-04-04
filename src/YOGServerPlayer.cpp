@@ -35,6 +35,7 @@ YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id
 	netVersion=0;
 	pingCountdown=SDL_GetTicks();
 	pingSendTime=0;
+	port = 0;
 }
 
 
@@ -256,6 +257,12 @@ void YOGServerPlayer::update()
 
 		pingCountdown = SDL_GetTicks();
 	}
+	//This recieves a ping reply
+	else if(type==MNetSetPlayerLocalPort)
+	{
+		shared_ptr<NetSetPlayerLocalPort> info = static_pointer_cast<NetSetPlayerLocalPort>(message);
+		port = info->getPort();
+	}
 }
 
 
@@ -373,6 +380,14 @@ P2PManager* YOGServerPlayer::getP2PManager()
 {
 	return p2p;
 }
+
+
+
+int YOGServerPlayer::getP2PPort()
+{
+	return port;
+}
+
 
 
 
