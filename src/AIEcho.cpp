@@ -4482,7 +4482,7 @@ void Echo::add_management_order(Management::ManagementOrder* mo)
 	assert(mo);
 	for(std::vector<boost::shared_ptr<Management::ManagementOrder> >::iterator i=management_orders.begin(); i!=management_orders.end();)
 	{
-		assert(*i != mo);
+		assert(i->get() != mo);
 	}
 	management_orders.push_back(boost::shared_ptr<Management::ManagementOrder>(mo));
 }
