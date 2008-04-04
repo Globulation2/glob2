@@ -786,7 +786,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	HeightMap hm(wHeightMap,hHeightMap);
 	/// 1 to avoid division by zero, 
 	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
-	unsigned int sectionIslandCount=(descriptor.nbTeams+descriptor.extraIslands)/pow(2,power2Divider);
+	unsigned int sectionIslandCount=static_cast<unsigned int>((descriptor.nbTeams+descriptor.extraIslands)/pow(2,power2Divider));
 	switch (descriptor.methode)
 	{
 		case MapGenerationDescriptor::eSWAMP:
