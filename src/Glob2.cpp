@@ -133,10 +133,12 @@ int Glob2::runNoX()
 
 int Glob2::runTestGames()
 {
-	setRandomSyncRandSeed();
 	globalContainer->automaticEndingSteps=90000;
 	while(true)
 	{
+		long t = time(NULL);
+		setSyncRandSeed(t);
+		std::cout<<"Random Seed initial: "<<t<<std::endl;
 		Engine engine;
 		engine.createRandomGame();
 		engine.run();
