@@ -128,8 +128,8 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	caryedRessource=-1;
 	jobTimer = 0;
 	
-	previousClearingAreaX=-1;
-	previousClearingAreaY=-1;
+	previousClearingAreaX=static_cast<unsigned int>(-1);
+	previousClearingAreaY=static_cast<unsigned int>(-1);
 	previousClearingAreaDistance=0;
 	
 	// gui
@@ -218,8 +218,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	jobTimer = stream->readSint32("jobTimer");
 	
-	previousClearingAreaX=-1;
-	previousClearingAreaY=-1;
+	previousClearingAreaX=static_cast<unsigned int>(-1);
+	previousClearingAreaY=static_cast<unsigned int>(-1);
 	previousClearingAreaDistance=0;
 
 	// gui
@@ -1405,11 +1405,11 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 void Unit::handleMovement(void)
 {
 	// This variable says whether the unit is going to a clearing area
-	if(previousClearingAreaX != -1)
+	if(previousClearingAreaX != static_cast<unsigned int>(-1))
 	{
 		owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
-		previousClearingAreaX = -1;
-		previousClearingAreaY = -1;
+		previousClearingAreaX = static_cast<unsigned int>(-1);
+		previousClearingAreaY = static_cast<unsigned int>(-1);
 	}
 	
 	
@@ -1838,9 +1838,9 @@ void Unit::handleMovement(void)
 							Unit* unit = owner->myUnits[GIDtoID(guid)];
 							if(unit)
 							{
-								unit->previousClearingAreaX=-1;
-								unit->previousClearingAreaY=-1;
-								unit->previousClearingAreaDistance=-1;
+								unit->previousClearingAreaX=static_cast<unsigned int>(-1);
+								unit->previousClearingAreaY=static_cast<unsigned int>(-1);
+								unit->previousClearingAreaDistance=static_cast<unsigned int>(-1);
 							}
 						}
 						
