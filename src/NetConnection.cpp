@@ -30,11 +30,11 @@ using namespace GAGCore;
 //Uint32 NetConnection::lastTime = 0;
 //Uint32 NetConnection::amount = 0;
 
-NetConnection::NetConnection(const std::string& address, Uint16 port)
+NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 	: connect(incoming, incomingMutex)
 {
 	boost::thread thread(boost::ref(connect));
-	openConnection(address, port);
+	openConnection(naddress, port);
 	connecting=false;
 }
 
@@ -59,6 +59,7 @@ NetConnection::~NetConnection()
 	
 void NetConnection::openConnection(const std::string& connectaddress, Uint16 port)
 {
+	address = connectaddress;
 	connecting=true;
 	boost::shared_ptr<NTConnect> toconnect(new NTConnect(connectaddress, port));
 	connect.sendMessage(toconnect);
@@ -108,6 +109,7 @@ void NetConnection::update()
 			case NTMConnected:
 			{
 				boost::shared_ptr<NTConnected> info = static_pointer_cast<NTConnected>(message);
+				address = info->getIPAddress();
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				connecting=false;
 			}
@@ -160,7 +162,14 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 }
 
 
-	
+
+const std::string& NetConnection::getIPAddress() const
+{
+	return address;
+}
+
+
+
 void NetConnection::attemptConnection(TCPsocket& serverSocket)
 {
 	boost::shared_ptr<NTAttemptConnection> close(new NTAttemptConnection(serverSocket));
