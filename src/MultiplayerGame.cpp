@@ -43,6 +43,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 
 MultiplayerGame::~MultiplayerGame()
 {
+	client->getP2PConnection()->reset();
 	if(assembler)
 		client->setMapAssembler(boost::shared_ptr<MapAssembler>());
 }
