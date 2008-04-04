@@ -22,6 +22,8 @@
 #include "P2PInformation.h"
 #include "P2PPlayerInformation.h"
 #include "boost/shared_ptr.hpp"
+#include "NetListener.h"
+#include <vector>
 
 class YOGClient;
 class NetMessage;
@@ -38,10 +40,38 @@ public:
 
 	///Sends a message up the p2p connection
 	void sendMessage(boost::shared_ptr<NetMessage> message);
+	
+	///Returns the port this p2p connection is listening for connections on. If this failed to open a port
+	///for listening, the port returned is 0
+	int getPort();
+
+	///This resets the p2p connection
+	void reset();
+	
+	///This updates the p2p connection, call this regularly
+	void update();
 
 private:
+	///This function updates the P2PInformation
+	void updateP2PInformation(const P2PInformation& newGroup);
+
 	YOGClient* client;
 	P2PInformation group;
+	NetListener listener;
+	int localPort;
+	std::vector<boost::shared_ptr<NetConnection> > outgoing;
+	enum OutgoingConnectionState
+	{
+		ReadyToTry,
+		Attempting,
+		Connected,
+		Local
+	};
+	std::vector<OutgoingConnectionState > outgoingStates;
+	
+	
+	std::vector<boost::shared_ptr<NetConnection> > incoming;
+	boost::shared_ptr<NetConnection> localIncoming;
 };
 
 #endif
