@@ -21,6 +21,10 @@
 #define __NET_CONSTS_H
 
 const unsigned int LAN_BROADCAST_PORT = 7486;
+///This is the first port the system will try, and it will go incrementally up from there
+const unsigned int P2P_CONNECTION_PORT_FIRST = 7485;
+const unsigned int P2P_CONNECTION_PORT_LAST = 20001;
+
 
 enum OrderTypes
 {
