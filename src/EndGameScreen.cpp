@@ -273,7 +273,16 @@ void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry&, bool>
 {
 	EndOfGameStat::Type type;
-	bool operator()(const TeamEntry& t1, const TeamEntry& t2) { return t1.endVal[type] > t2.endVal[type]; }
+	bool operator()(const TeamEntry& t1, const TeamEntry& t2)
+	{
+		if(t1.endVal[type] == t2.endVal[type])
+		{
+			if(t1.teamNum == t2.teamNum)
+				return t1.name > t2.name;
+			return t1.teamNum > t2.teamNum;
+		}
+		return t1.endVal[type] > t2.endVal[type];
+	}
 };
 
 
@@ -337,23 +346,18 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	int inc = (gui->game.mapHeader.getNumberOfTeams() <= 16) ? 20 : 10;
 
 	// set teams entries for later sort
-	for (int i=0; i<gui->game.mapHeader.getNumberOfTeams(); i++)
+	for (int i=0; i<gui->game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		Team *t=gui->game.teams[i];
-		if(t->numberOfPlayer)
+		struct TeamEntry entry;
+		entry.name=gui->game.gameHeader.getBasePlayer(i).name;
+		entry.teamNum=gui->game.gameHeader.getBasePlayer(i).teamNumber;
+		entry.color=gui->game.teams[entry.teamNum]->color;
+		int endIndex=gui->game.teams[entry.teamNum]->stats.endOfGameStats.size()-1;
+		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
 		{
-			int endIndex=t->stats.endOfGameStats.size()-1;
-
-			struct TeamEntry entry;
-			entry.name=t->getFirstPlayerName();
-			entry.teamNum=i;
-			entry.color=t->color;
-			for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
-			{
-				entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
-			}
-			teams.push_back(entry);
+			entry.endVal[j]=gui->game.teams[entry.teamNum]->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
 		}
+		teams.push_back(entry);
 	}
 
 	// add widgets
@@ -362,6 +366,15 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		OnOffButton* enabled_button = new OnOffButton(10, 80+(i*inc), inc, inc, ALIGN_RIGHT, ALIGN_TOP, true, 6+i);
 		team_enabled_buttons.push_back(enabled_button);
 		addWidget(enabled_button);
+		
+		if((i>0 && teams[i-1].teamNum != teams[i].teamNum) || i==0)
+		{
+			team_enabled_buttons[i]->visible=true;
+		}
+		else
+		{
+			team_enabled_buttons[i]->visible=false;
+		}
 		
 		text=new Text(10+inc, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", "", 140);
 		names.push_back(text);
@@ -404,6 +417,13 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			int n=par1-6;
 			statWidget->setEnabledState(teams[n].teamNum, team_enabled_buttons[n]->getState());
+			for (unsigned i=0; i<teams.size(); i++)
+			{
+				if(teams[i].teamNum == teams[n].teamNum)
+				{
+					team_enabled_buttons[i]->setState(team_enabled_buttons[n]->getState());
+				}
+			}
 		}
 	}
 }
@@ -415,23 +435,38 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	MoreScore moreScore;
 	moreScore.type=type;
 	std::sort(teams.begin(), teams.end(), moreScore);
-
+	
 	int prev_num=1;
 	for (unsigned i=0; i<teams.size(); i++)
 	{
 		std::stringstream str;
-		if(i>0 && teams[i].endVal[type] == teams[i-1].endVal[type])
+		if(i>0 && teams[i].teamNum == teams[i-1].teamNum)
 		{
-			str<<"#"<<prev_num<<": "<<teams[i].name.c_str()<<std::endl;
+			str<<"    "<<teams[i].name;
+		}
+		else if(i>0 && teams[i].endVal[type] == teams[i-1].endVal[type])
+		{
+			str<<"#"<<prev_num<<": "<<teams[i].name;
 		}
 		else
 		{
-			str<<"#"<<i+1<<": "<<teams[i].name.c_str()<<std::endl;
+			str<<"#"<<i+1<<": "<<teams[i].name;
 			prev_num=i+1;
 		}
 	
 		names[i]->setText(str.str().c_str());
 		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
-		team_enabled_buttons[i]->returnCode=6+i;
+		if(team_enabled_buttons[i])
+			team_enabled_buttons[i]->returnCode=6+i;
+		
+		
+		if((i>0 && teams[i-1].teamNum != teams[i].teamNum) || i==0)
+		{
+			team_enabled_buttons[i]->visible=true;
+		}
+		else
+		{
+			team_enabled_buttons[i]->visible=false;
+		}
 	}
 }
