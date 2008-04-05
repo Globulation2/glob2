@@ -24,11 +24,14 @@
 #include "boost/shared_ptr.hpp"
 #include "NetListener.h"
 #include <vector>
+#include <list>
 
 class YOGClient;
 class NetMessage;
+class P2PConnectionListener;
+class P2PConnectionEvent;
 
-///A P2P connection
+///A P2P connection. This is a modeless p2p connection system
 class P2PConnection
 {
 public:
@@ -51,27 +54,47 @@ public:
 	///This updates the p2p connection, call this regularly
 	void update();
 
+	///This puts the P2P connection into a stasis mode where it will no longer try to create outgoing connections, and will
+	///stop listening for incoming ones. Phase 2 described above.
+	void stopConnections();
+	
+	///This adds an event listener for this P2P connection
+	void addEventListener(P2PConnectionListener* listener);
+	
+	///This removes an event listener from this connection
+	void removeEventListener(P2PConnectionListener* listener);
+
 private:
 	///This function updates the P2PInformation
 	void updateP2PInformation(const P2PInformation& newGroup);
+
+	///This sends this event to all listeners
+	void sendEventToListeners(boost::shared_ptr<P2PConnectionEvent> event);
+
+	///Constructs a net message event and sends it to listeners
+	void sendNetMessageToListeners(boost::shared_ptr<NetMessage> message);
 
 	YOGClient* client;
 	P2PInformation group;
 	NetListener listener;
 	int localPort;
+	bool isConnecting;
 	std::vector<boost::shared_ptr<NetConnection> > outgoing;
 	enum OutgoingConnectionState
 	{
 		ReadyToTry,
 		Attempting,
 		Connected,
-		Local
+		Local,
+		Failed,
 	};
 	std::vector<OutgoingConnectionState > outgoingStates;
 	
 	
 	std::vector<boost::shared_ptr<NetConnection> > incoming;
 	boost::shared_ptr<NetConnection> localIncoming;
+	
+	std::list<P2PConnectionListener*> listeners;
 };
 
 #endif
