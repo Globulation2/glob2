@@ -67,31 +67,31 @@ def configure(env):
     #Simple checks for required libraries
     if not conf.CheckLib("SDL"):
         print "Could not find libSDL"
-        missing.Append("SDL")
+        missing.append("SDL")
     if not conf.CheckLib("SDL_ttf"):
         print "Could not find libSDL_ttf"
-        missing.Append("SDL_ttf")
+        missing.append("SDL_ttf")
     if not conf.CheckLib("SDL_image"):
         print "Could not find libSDL_image"
-        missing.Append("SDL_image")
+        missing.append("SDL_image")
     if not conf.CheckLib("SDL_net"):
         print "Could not find libSDL_net"
-        missing.Append("SDL_net")
+        missing.append("SDL_net")
     if not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h"):
         print "Could not find libspeex or could not find 'speex/speex.h'"
-        missing.Append("speex")
+        missing.append("speex")
     if not conf.CheckLib("vorbisfile"):
         print "Could not find libvorbisfile"
-        missing.Append("vorbisfile")
+        missing.append("vorbisfile")
     if not conf.CheckLib("vorbis"):
         print "Could not find libvorbis"
-        missing.Append("vorbis")
+        missing.append("vorbis")
     if not conf.CheckLib("ogg"):
         print "Could not find libogg"
-        missing.Append("ogg")
+        missing.append("ogg")
     if not conf.CheckCXXHeader("zlib.h"):
         print "Could not find zlib.h"
-        missing.Append("zlib")
+        missing.append("zlib")
     else:
         if conf.CheckLib("z"):
             env.Append(LIBS="z")
@@ -99,7 +99,7 @@ def configure(env):
             env.Append(LIBS="zlib1")
         else:
             print "Could not find libz or zlib1.dll"
-            missing.Append("zlib")
+            missing.append("zlib")
 
     boost_thread = ''
     if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
@@ -108,28 +108,28 @@ def configure(env):
         boost_thread="boost_thread-mt"
     else:
         print "Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp"
-        missing.Append("libboost_thread")
+        missing.append("libboost_thread")
     env.Append(LIBS=[boost_thread])
     
 
     if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
         print "Could not find boost/shared_ptr.hpp"
-        missing.Append("boost/shared_ptr.hpp")
+        missing.append("boost/shared_ptr.hpp")
     if not conf.CheckCXXHeader("boost/tuple/tuple.hpp"):
         print "Could not find boost/tuple/tuple.hpp"
-        missing.Append("boost/tuple/tuple.hpp")
+        missing.append("boost/tuple/tuple.hpp")
     if not conf.CheckCXXHeader("boost/tuple/tuple_comparison.hpp"):
         print "Could not find boost/tuple/tuple_comparison.hpp"
-        missing.Append("boost/tuple/tuple_comparison.hpp")
+        missing.append("boost/tuple/tuple_comparison.hpp")
     if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
         print "Could not find boost/logic/tribool.hpp"
-        missing.Append("boost/logic/tribool.hpp")
+        missing.append("boost/logic/tribool.hpp")
     if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
         print "Could not find boost/lexical_cast.hpp"
-        missing.Append("boost/lexical_cast.hpp")
+        missing.append("boost/lexical_cast.hpp")
     if not conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
         print "Could not find boost/date_time/posix_time/posix_time.hpp"
-        missing.Append("boost/date_time/posix_time/posix_time.hpp")
+        missing.append("boost/date_time/posix_time/posix_time.hpp")
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
@@ -145,7 +145,7 @@ def configure(env):
 
     else:
         print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
-        missing.Append("OpenGL")
+        missing.append("OpenGL")
 
     #Do checks for GLU, which is different on every system
     if isDarwinPlatform:
@@ -159,7 +159,7 @@ def configure(env):
         gl_libraries.append("glu32")
     else:
         print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
-        missing.Append("GLU")
+        missing.append("GLU")
     
     if gl_libraries or isDarwinPlatform:
         configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
