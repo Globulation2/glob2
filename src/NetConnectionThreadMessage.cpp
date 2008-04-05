@@ -113,7 +113,8 @@ std::string NTCouldNotConnect::getError() const
 
 
 
-NTConnected::NTConnected()
+NTConnected::NTConnected(const std::string& ip)
+	: ip(ip)
 {
 }
 
@@ -129,8 +130,15 @@ Uint8 NTConnected::getMessageType() const
 std::string NTConnected::format() const
 {
 	std::ostringstream s;
-	s<<"NTConnected()";
+	s<<"NTConnected(ip="<<ip<<";)";
 	return s.str();
+}
+
+
+
+const std::string& NTConnected::getIPAddress()
+{
+	return ip;
 }
 
 
