@@ -54,51 +54,11 @@ Settings::Settings()
 	rememberUnit = 1;
 	tempUnit = 1;
 	tempUnitFuture = 1;
-
-	scrollWheelEnabled=true;
+	version = 0;
 	
-	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
-	{
-		for(int t=0; t<6; ++t)
-		{
-			defaultUnitsAssigned[n][t] = 0;
-		}
-	}
-	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][1] = 10;
-	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][1] = 5;
-	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0] = 7;
-	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1] = 4;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3] = 3;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4] = 15;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5] = 8;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2] = 4;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4] = 6;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2] = 7;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4] = 12;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4] = 12;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2] = 6;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4] = 9;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0] = 5;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2] = 10;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4] = 20;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3] = 2;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4] = 8;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
-	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
-	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
-
+	scrollWheelEnabled=true;
+	resetDefaultUnitsAssigned();
+	
 	cloudPatchSize=16;//the bigger the faster the uglier
 	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
 	cloudMaxSpeed=3;
@@ -180,8 +140,15 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(cloudStability);
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
+		
+		READ_PARSED_INT(version);
 	}
 	delete stream;
+	
+	if(version < SETTINGS_VERSION)
+	{
+		resetDefaultUnitsAssigned();
+	}
 }
 
 void Settings::save(const char *filename)
@@ -224,6 +191,54 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
+		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
 	delete stream;
 }
+
+
+void Settings::resetDefaultUnitsAssigned()
+{
+	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+	{
+		for(int t=0; t<6; ++t)
+		{
+			defaultUnitsAssigned[n][t] = 0;
+		}
+	}
+	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][1] = 10;
+	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][1] = 5;
+	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0] = 7;
+	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1] = 4;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3] = 3;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4] = 15;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5] = 8;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0] = 2;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2] = 4;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4] = 6;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2] = 7;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4] = 12;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0] = 2;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4] = 12;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2] = 6;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4] = 9;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0] = 5;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2] = 10;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4] = 20;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3] = 2;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4] = 8;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
+	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
+	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
+}
+

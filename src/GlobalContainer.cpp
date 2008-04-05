@@ -30,6 +30,7 @@
 #include "GlobalContainer.h"
 #include "Header.h"
 #include "IntBuildingType.h"
+#include "KeyboardManager.h"
 #include "LogFileManager.h"
 #include "MapEditKeyActions.h"
 #include "NonANSICStdWrapper.h"
@@ -510,6 +511,17 @@ void GlobalContainer::load(void)
 	// initiate keyboard actions
 	GameGUIKeyActions::init();
 	MapEditKeyActions::init();
+	
+	if(settings.version < 1)
+	{
+		KeyboardManager game(GameGUIShortcuts);
+		game.loadDefaultShortcuts();
+		game.saveKeyboardLayout();
+
+		KeyboardManager edit(MapEditShortcuts);
+		edit.loadDefaultShortcuts();
+		edit.saveKeyboardLayout();
+	}
 	
 	if (!runNoX)
 	{

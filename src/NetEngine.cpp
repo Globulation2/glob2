@@ -149,7 +149,7 @@ void NetEngine::flushAllOrders()
 		boost::shared_ptr<Order> localOrder;
 		localOrder = outgoing.front();
 		outgoing.pop();
-		localOrder->gameCheckSum = -1;
+		localOrder->gameCheckSum = static_cast<unsigned int>(-1);
 
 		if(client)
 		{
@@ -201,15 +201,15 @@ Uint32 NetEngine::getWaitingOnMask()
 
 bool NetEngine::matchCheckSums()
 {
-	Uint32 checksum = -1;
+	Uint32 checksum = static_cast<unsigned int>(-1);
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
 		if(!orders[p].empty())
 		{
 			Uint32 playerCheckSum = orders[p].front()->gameCheckSum;
-			if(playerCheckSum != static_cast<Uint32>(-1))
+			if(playerCheckSum != static_cast<unsigned int>(-1))
 			{
-				if(checksum == static_cast<Uint32>(-1))
+				if(checksum == static_cast<unsigned int>(-1))
 					checksum = playerCheckSum;
 				else if(playerCheckSum != checksum)
 				{

@@ -141,7 +141,7 @@ break
 [Build]
 Строит
 [Building Settings]
-
+Здания
 [building site]
 стройка
 [Buildings]
@@ -345,7 +345,7 @@ f9
 [Fertility Map]
 Карта плодородия
 [Flag Settings]
-
+Флаги
 [food]
 Еда
 [forbidden area]
@@ -477,7 +477,7 @@ left
 [load map]
 Загрузить карту
 [load script]
-
+Загр. скрипт
 [load]
 Загрузить
 [load]
@@ -661,7 +661,7 @@ right
 [save map]
 Сохранить карту
 [save script]
-
+Сохр. cкрипт
 [Save]
 Сохранение
 [school explanation 2]

@@ -61,35 +61,37 @@ def configure(env):
     if isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
 
+    missing=[]
+
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
     #Simple checks for required libraries
     if not conf.CheckLib("SDL"):
         print "Could not find libSDL"
-        Exit(1)
+        missing.append("SDL")
     if not conf.CheckLib("SDL_ttf"):
         print "Could not find libSDL_ttf"
-        Exit(1)
+        missing.append("SDL_ttf")
     if not conf.CheckLib("SDL_image"):
         print "Could not find libSDL_image"
-        Exit(1)
+        missing.append("SDL_image")
     if not conf.CheckLib("SDL_net"):
         print "Could not find libSDL_net"
-        Exit(1)
+        missing.append("SDL_net")
     if not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h"):
         print "Could not find libspeex or could not find 'speex/speex.h'"
-        Exit(1)
+        missing.append("speex")
     if not conf.CheckLib("vorbisfile"):
         print "Could not find libvorbisfile"
-        Exit(1)
+        missing.append("vorbisfile")
     if not conf.CheckLib("vorbis"):
         print "Could not find libvorbis"
-        Exit(1)
+        missing.append("vorbis")
     if not conf.CheckLib("ogg"):
         print "Could not find libogg"
-        Exit(1)
+        missing.append("ogg")
     if not conf.CheckCXXHeader("zlib.h"):
         print "Could not find zlib.h"
-        Exit(1)
+        missing.append("zlib")
     else:
         if conf.CheckLib("z"):
             env.Append(LIBS="z")
@@ -97,7 +99,7 @@ def configure(env):
             env.Append(LIBS="zlib1")
         else:
             print "Could not find libz or zlib1.dll"
-            Exit(1)
+            missing.append("zlib")
 
     boost_thread = ''
     if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
@@ -106,28 +108,28 @@ def configure(env):
         boost_thread="boost_thread-mt"
     else:
         print "Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp"
-        Exit(1)
+        missing.append("libboost_thread")
     env.Append(LIBS=[boost_thread])
     
 
     if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
         print "Could not find boost/shared_ptr.hpp"
-        Exit(1)
+        missing.append("boost/shared_ptr.hpp")
     if not conf.CheckCXXHeader("boost/tuple/tuple.hpp"):
         print "Could not find boost/tuple/tuple.hpp"
-        Exit(1)
+        missing.append("boost/tuple/tuple.hpp")
     if not conf.CheckCXXHeader("boost/tuple/tuple_comparison.hpp"):
         print "Could not find boost/tuple/tuple_comparison.hpp"
-        Exit(1)
+        missing.append("boost/tuple/tuple_comparison.hpp")
     if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
         print "Could not find boost/logic/tribool.hpp"
-        Exit(1)
+        missing.append("boost/logic/tribool.hpp")
     if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
         print "Could not find boost/lexical_cast.hpp"
-        Exit(1)
+        missing.append("boost/lexical_cast.hpp")
     if not conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
         print "Could not find boost/date_time/posix_time/posix_time.hpp"
-        Exit(1)
+        missing.append("boost/date_time/posix_time/posix_time.hpp")
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
@@ -143,7 +145,7 @@ def configure(env):
 
     else:
         print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
-        Exit(1)
+        missing.append("OpenGL")
 
     #Do checks for GLU, which is different on every system
     if isDarwinPlatform:
@@ -157,7 +159,7 @@ def configure(env):
         gl_libraries.append("glu32")
     else:
         print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
-        Exit(1)
+        missing.append("GLU")
     
     if gl_libraries or isDarwinPlatform:
         configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
@@ -167,7 +169,13 @@ def configure(env):
     if conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
-    conf.Finish() 
+        
+    if missing:
+        for t in missing:
+            print "Missing %s" % t
+        Exit(1)
+   		
+    conf.Finish()
 
 def main():
     env = Environment()

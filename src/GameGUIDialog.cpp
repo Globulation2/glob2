@@ -79,8 +79,8 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	int n=0;
 	for (i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		unsigned otherTeam = gameGUI->game.players[i]->teamNumber;
-		unsigned otherTeamMask = 1 << otherTeam;
+		int otherTeam = gameGUI->game.players[i]->teamNumber;
+		Uint32 otherTeamMask = 1 << otherTeam;
 
 		std::string pname;
 		if (gameGUI->game.players[i]->type>=Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
@@ -344,6 +344,15 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 }
 
+
+
+InGameOptionScreen::~InGameOptionScreen()
+{
+	globalContainer->settings.save();
+}
+
+
+
 void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
@@ -352,6 +361,8 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action==VALUE_CHANGED)
 	{
+		globalContainer->settings.musicVolume = musicVol->getValue();
+		globalContainer->settings.voiceVolume = voiceVol->getValue();
 		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
 	else if (action==BUTTON_STATE_CHANGED)

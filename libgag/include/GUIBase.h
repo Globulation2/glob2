@@ -233,6 +233,9 @@ namespace GAGGUI
 		
 		//! Returns width of widget
 		Sint32 getWidth() const { return w; }
+		
+		//! Sets the screen position
+		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
 	
 	protected:
 		//! Compute the actual position from the layout informations
