@@ -36,6 +36,7 @@ YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id
 	pingCountdown=SDL_GetTicks();
 	pingSendTime=0;
 	port = 0;
+	p2p=NULL;
 }
 
 
