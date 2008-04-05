@@ -3720,7 +3720,7 @@ void RemoveArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(BrushApplication(i->x, i->y, 0), echo.player->map);
+		acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
 	}
 	if(acc.getApplicationCount()>0)
 	{
@@ -4479,11 +4479,6 @@ unsigned int Echo::add_building_order(Construction::BuildingOrder* bo)
 
 void Echo::add_management_order(Management::ManagementOrder* mo)
 {
-	assert(mo);
-	for(std::vector<boost::shared_ptr<Management::ManagementOrder> >::iterator i=management_orders.begin(); i!=management_orders.end(); ++i)
-	{
-		assert(i->get() != mo);
-	}
 	management_orders.push_back(boost::shared_ptr<Management::ManagementOrder>(mo));
 }
 
@@ -4495,9 +4490,9 @@ void Echo::update_management_orders()
 		boost::logic::tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
 		{
-			(*i)->modify(*this);
 			size_t pos = i - management_orders.begin();
-			management_orders.erase(i);
+			(*i)->modify(*this);
+			management_orders.erase(management_orders.begin() + pos);
 			i = management_orders.begin() + pos;
 			continue;
 		}
