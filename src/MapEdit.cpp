@@ -409,7 +409,7 @@ void MinusIcon::draw()
 
 
 TeamInfo::TeamInfo(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int teamNum, std::vector<std::string>& options)
-	: MapEditorWidget(me, area, group, name, action), teamNum(teamNum), selectorPos(0), options(options)
+	: MapEditorWidget(me, area, group, name, action), teamNum(teamNum), selectorPos(1), options(options)
 {
 
 }
@@ -869,9 +869,9 @@ MapEdit::MapEdit()
 
 	panelMode=AddBuildings;
 	buildingView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128, 128, 32, 32), "any", "building view icon", "switch to building view", 0, AddBuildings);
-	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-96, 128, 32, 32), "any", "flag view icon", "switch to flag view", 0, AddFlagsAndZones);
-	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-64, 128, 32, 32), "any", "terrain view icon", "switch to terrain view", 0, Terrain);
-	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-32, 128, 32, 32), "any", "teams view icon", "switch to teams view", 0, Teams);
+	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-96, 128, 32, 32), "any", "flag view icon", "switch to flag view", 28, AddFlagsAndZones);
+	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-64, 128, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
+	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-32, 128, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
 	menuIcon = new MenuIcon(*this, widgetRectangle(globalContainer->gfx->getW()-160, 0, 32, 32), "any", "menu icon", "open menu screen");
 	addWidget(buildingView);
 	addWidget(flagsView);

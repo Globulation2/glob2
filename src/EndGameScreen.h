@@ -70,17 +70,17 @@ protected:
 
 struct TeamEntry
 {
-	std::string name;
 	int teamNum;
 	int endVal[EndOfGameStat::TYPE_NB_STATS];
 	GAGCore::Color color;
+	std::string name;
 };
 
 class EndGameScreen : public Glob2Screen
 {
 protected:
+	std::vector<Text*> names;
 	std::vector<TeamEntry> teams;
-	std::vector<Text *> names;
 	std::vector<OnOffButton *> team_enabled_buttons;
 	EndGameStat *statWidget;
 	Text* graphLabel;
