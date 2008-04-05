@@ -24,6 +24,7 @@
 #include "Toolkit.h"
 #include "StringTable.h"
 #include "NetMessage.h"
+#include "P2PConnectionEvent.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
@@ -37,12 +38,14 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	isEveryoneReadyToGo=false;
 	chatChannel=0;
 	previousPercentage = 255;
+	client->getP2PConnection()->addEventListener(this);
 }
 
 
 
 MultiplayerGame::~MultiplayerGame()
 {
+	client->getP2PConnection()->removeEventListener(this);
 	client->getP2PConnection()->reset();
 	if(assembler)
 		client->setMapAssembler(boost::shared_ptr<MapAssembler>());
@@ -527,6 +530,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 
 void MultiplayerGame::startEngine()
 {
+	client->getP2PConnection()->stopConnections();
 	Engine engine;
 	// host game and wait for players. This clever trick is meant to get a proper shared_ptr
 	// to (this), because shared_ptr's must be copied from the original
@@ -624,6 +628,16 @@ Uint8 MultiplayerGame::percentageDownloadFinished()
 }
 
 
+
+void MultiplayerGame::recieveP2PEvent(boost::shared_ptr<P2PConnectionEvent> event)
+{
+	Uint8 type = event->getEventType();
+	if(type == P2PERecievedMessage)
+	{
+		boost::shared_ptr<P2PRecievedMessage> info = static_pointer_cast<P2PRecievedMessage>(event);
+		recieveMessage(info->getMessage());
+	}
+}
 
 
 
