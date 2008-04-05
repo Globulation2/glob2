@@ -122,7 +122,7 @@ public:
 	Text *voiceVolText;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
-	virtual ~InGameOptionScreen() { }
+	~InGameOptionScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
 
