@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "GlobalContainer.h"
 #include "GUIBase.h"
 #include "FormatableString.h"
+#include "GameGUI.h"
 
 
 using namespace GAGGUI;
@@ -66,7 +67,10 @@ void GameGUIToolManager::activateZoneTool()
 void GameGUIToolManager::deactivateTool()
 {
 	if(mode == PlaceZone)
+	{
+		flushBrushOrders(game.gui->localTeamNo);
 		brush.unselect();
+	}
 }
 
 

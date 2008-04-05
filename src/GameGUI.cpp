@@ -4003,11 +4003,17 @@ void GameGUI::drawXPProgressBar(int x, int y, int act, int max)
 void GameGUI::cleanOldSelection(void)
 {
 	if (selectionMode==BUILDING_SELECTION)
+	{
 		game.selectedBuilding=NULL;
+	}
 	else if (selectionMode==UNIT_SELECTION)
+	{
 		game.selectedUnit=NULL;
+	}
 	else if (selectionMode==BRUSH_SELECTION)
+	{
 		toolManager.deactivateTool();
+	}
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
