@@ -501,7 +501,7 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 							{
 								for(int y = 0; y < bt->height; y++)
 								{
-									guard_add_acc.applyBrush(BrushApplication(b->posX+x,b->posY+y,6), map);
+									guard_add_acc.applyBrush(BrushApplication((b->posX+x) % map->getW(), (b->posY+y) & map->getH(),6), map);
 								}
 							}
 						}

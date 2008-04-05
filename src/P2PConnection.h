@@ -21,7 +21,9 @@
 
 #include "P2PInformation.h"
 #include "P2PPlayerInformation.h"
-#include "boost/weak_ptr.hpp"
+#include "boost/shared_ptr.hpp"
+#include "NetListener.h"
+#include <vector>
 
 class YOGClient;
 class NetMessage;
@@ -31,13 +33,45 @@ class P2PConnection
 {
 public:
 	///Creates the P2P connection. P2P connections go through the YOGClient in order to communicate with the P2P manager
-	P2PConnection(boost::weak_ptr<YOGClient> client);
+	P2PConnection(YOGClient* client);
 
 	///Recieves an incoming message from the P2P manager
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
 
+	///Sends a message up the p2p connection
+	void sendMessage(boost::shared_ptr<NetMessage> message);
+	
+	///Returns the port this p2p connection is listening for connections on. If this failed to open a port
+	///for listening, the port returned is 0
+	int getPort();
+
+	///This resets the p2p connection
+	void reset();
+	
+	///This updates the p2p connection, call this regularly
+	void update();
+
 private:
-	boost::weak_ptr<YOGClient> client;
+	///This function updates the P2PInformation
+	void updateP2PInformation(const P2PInformation& newGroup);
+
+	YOGClient* client;
+	P2PInformation group;
+	NetListener listener;
+	int localPort;
+	std::vector<boost::shared_ptr<NetConnection> > outgoing;
+	enum OutgoingConnectionState
+	{
+		ReadyToTry,
+		Attempting,
+		Connected,
+		Local
+	};
+	std::vector<OutgoingConnectionState > outgoingStates;
+	
+	
+	std::vector<boost::shared_ptr<NetConnection> > incoming;
+	boost::shared_ptr<NetConnection> localIncoming;
 };
 
 #endif
