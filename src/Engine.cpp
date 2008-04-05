@@ -173,7 +173,7 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 		}
 	}
 
-	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client);
+	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client->getP2PConnection());
 
 	return Engine::EE_NO_ERROR;
 }

@@ -25,7 +25,7 @@
 #include "YOGServerPlayer.h"
 
 YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server)
-	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(gameHeader)
+	: playerManager(gameHeader), gameID(gameID), chatChannel(chatChannel), server(server)
 {
 	requested=false;
 	gameStarted=false;
@@ -96,6 +96,7 @@ void YOGServerGame::update()
 			oldReadyToLaunch=false;
 		}
 	}
+	p2p.update();
 }
 
 void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
@@ -125,6 +126,8 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 
 	shared_ptr<NetPlayerJoinsGame> sendGamePlayerInfo(new NetPlayerJoinsGame(player->getPlayerID(), player->getPlayerName()));
 	routeMessage(sendGamePlayerInfo);
+
+	p2p.addPlayer(player);
 
 	chooseLatencyMode();
 
@@ -172,6 +175,8 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 			}
 		}
 	}
+
+	p2p.removePlayer(player);
 
 	//Remove the player from the chat channel
 	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);
@@ -258,17 +263,6 @@ void YOGServerGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGS
 	{
 		if((*i) != sender)
 			(*i)->sendMessage(message);
-	}
-}
-
-
-
-void YOGServerGame::routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGServerPlayer> sender)
-{
-	for(std::vector<shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
-	{
-		if((*i) != sender)
-			(*i)->sendMessage(order);
 	}
 }
 
