@@ -344,6 +344,15 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 }
 
+
+
+InGameOptionScreen::~InGameOptionScreen()
+{
+	globalContainer->settings.save();
+}
+
+
+
 void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
@@ -352,6 +361,8 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action==VALUE_CHANGED)
 	{
+		globalContainer->settings.musicVolume = musicVol->getValue();
+		globalContainer->settings.voiceVolume = voiceVol->getValue();
 		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
 	else if (action==BUTTON_STATE_CHANGED)
