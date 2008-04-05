@@ -19,19 +19,20 @@
 #ifndef __NetMessage_h
 #define __NetMessage_h
 
+#include <boost/shared_ptr.hpp>
+#include "GameHeader.h"
+#include "MapHeader.h"
+#include "NetReteamingInformation.h"
 #include "Order.h"
+#include "P2PInformation.h"
+#include "Player.h"
 #include "Stream.h"
-#include "YOGConsts.h"
-#include "YOGGameInfo.h"
-#include "YOGPlayerSessionInfo.h"
-#include "YOGMessage.h"
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
-#include "MapHeader.h"
-#include "GameHeader.h"
-#include "Player.h"
-#include "NetReteamingInformation.h"
+#include "YOGConsts.h"
+#include "YOGGameInfo.h"
+#include "YOGMessage.h"
+#include "YOGPlayerSessionInfo.h"
 
 
 using namespace boost;
@@ -85,6 +86,8 @@ enum NetMessageType
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
 	MNetSendReteamingInformation,
+	MNetSendP2PInformation,
+	MNetSetPlayerLocalPort,
 	//type_append_marker
 };
 
@@ -1596,6 +1599,78 @@ public:
 private:
 private:
 	NetReteamingInformation reteamingInfo;
+};
+
+
+
+
+///NetSendP2PInformation
+class NetSendP2PInformation : public NetMessage
+{
+public:
+	///Creates a NetSendP2PInformation message
+	NetSendP2PInformation();
+
+	///Creates a NetSendP2PInformation message
+	NetSendP2PInformation(P2PInformation group);
+
+	///Returns MNetSendP2PInformation
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendP2PInformation message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendP2PInformation
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves group
+	P2PInformation getGroupInfo() const;
+private:
+private:
+	P2PInformation group;
+};
+
+
+
+
+///NetSetPlayerLocalPort
+class NetSetPlayerLocalPort : public NetMessage
+{
+public:
+	///Creates a NetSetPlayerLocalPort message
+	NetSetPlayerLocalPort();
+
+	///Creates a NetSetPlayerLocalPort message
+	NetSetPlayerLocalPort(Uint16 port);
+
+	///Returns MNetSetPlayerLocalPort
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSetPlayerLocalPort message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSetPlayerLocalPort
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves port
+	Uint16 getPort() const;
+private:
+private:
+	Uint16 port;
 };
 
 
