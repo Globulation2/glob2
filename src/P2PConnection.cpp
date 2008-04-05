@@ -20,6 +20,9 @@
 #include "YOGClient.h"
 #include "NetMessage.h"
 
+#include "P2PConnectionListener.h"
+#include "P2PConnectionEvent.h"
+#include "P2PConnection.h"
 
 P2PConnection::P2PConnection(YOGClient* client)
 	: client(client)
@@ -35,6 +38,8 @@ P2PConnection::P2PConnection(YOGClient* client)
 	else
 		localPort = toTryPort;
 	localIncoming = boost::shared_ptr<NetConnection>(new NetConnection);
+	isConnecting=true;
+	std::cout<<"attempting "<<localPort<<std::endl;
 }
 
 
@@ -47,14 +52,33 @@ void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetSendP2PInformation> info = static_pointer_cast<NetSendP2PInformation>(message);
 		updateP2PInformation(info->getGroupInfo());
 	}
+	else
+	{
+		sendNetMessageToListeners(message);
+	}
 }
 
 
 
 void P2PConnection::sendMessage(boost::shared_ptr<NetMessage> message)
 {
-	//For now, just send it up the chute
-	client->sendNetMessage(message);
+	//if(isConnecting)
+	{
+		client->sendNetMessage(message);
+	}
+	/*
+	else
+	{
+		for(int i=0; i<outgoing.size(); ++i)
+		{
+			if(outgoing[i]->isConnected())
+			{
+				std::cout<<"sending"<<std::endl;
+				outgoing[i]->sendMessage(message);
+			}
+		}
+	}
+	*/
 }
 
 
@@ -76,45 +100,57 @@ void P2PConnection::update()
 {
 	for(int i=0; i<outgoing.size(); ++i)
 	{
-		outgoing[i]->update();
+		if(outgoingStates[i]!=Failed)
+			outgoing[i]->update();
 	}
 
-	for(int i=0; i<outgoing.size(); ++i)
+	if(isConnecting)
 	{
-		if(outgoingStates[i] == ReadyToTry)
+		for(int i=0; i<outgoing.size(); ++i)
 		{
-			std::string ip = group.getPlayerInformation(i).getIPAddress();
-			int port = group.getPlayerInformation(i).getPort();
-			outgoing[i]->openConnection(ip, port);
-			outgoingStates[i] = Attempting;
-		}
-		else if(outgoingStates[i] == Attempting)
-		{
-			if(!outgoing[i]->isConnecting())
+			if(outgoingStates[i] == ReadyToTry)
 			{
-				if(outgoing[i]->isConnected())
+				std::string ip = group.getPlayerInformation(i).getIPAddress();
+				int port = group.getPlayerInformation(i).getPort();
+				outgoing[i]->openConnection(ip, port);
+				outgoingStates[i] = Attempting;
+				std::cout<<"Attempting"<<std::endl;
+			}
+			else if(outgoingStates[i] == Attempting)
+			{
+				if(!outgoing[i]->isConnecting())
 				{
-					outgoingStates[i] = Connected;
-				}
-				else
-				{
-					outgoingStates[i] = ReadyToTry;
+					if(outgoing[i]->isConnected())
+					{
+						outgoingStates[i] = Connected;
+						std::cout<<"Connected"<<std::endl;
+					}
+					else
+					{
+						outgoingStates[i] = ReadyToTry;
+						std::cout<<"Failed"<<std::endl;
+					}
 				}
 			}
-		}
-		else if(outgoingStates[i] == Connected)
-		{
-			if(!outgoing[i]->isConnected())
+			else if(outgoingStates[i] == Connected)
 			{
-				outgoingStates[i] = ReadyToTry;
+				if(!outgoing[i]->isConnected())
+				{
+					outgoingStates[i] = ReadyToTry;
+					std::cout<<"Lost"<<std::endl;
+				}
 			}
 		}
 	}
 	
-	while(listener.attemptConnection(*localIncoming))
+	if(isConnecting)
 	{
-		incoming.push_back(localIncoming);
-		localIncoming.reset(new NetConnection);
+		while(listener.attemptConnection(*localIncoming))
+		{
+			incoming.push_back(localIncoming);
+			localIncoming.reset(new NetConnection);
+			std::cout<<"recieved"<<std::endl;
+		}
 	}
 	
 	
@@ -134,6 +170,65 @@ void P2PConnection::update()
 	{
 		incoming[i]->update();
 	}
+	
+	/*
+	for(int i=0; i<outgoing.size(); ++i)
+	{
+		if(outgoingStates[i]==Connected)
+		{
+			while(true)
+			{
+				shared_ptr<NetMessage> message = outgoing[i]->getMessage();
+				if(!message)
+					break;
+				sendNetMessageToListeners(message);
+			}
+		}
+	}
+	for(int i=0; i<incoming.size(); ++i)
+	{
+		std::cout<<"atempting to recieve"<<std::endl;
+		while(true)
+		{
+			shared_ptr<NetMessage> message = incoming[i]->getMessage();
+			if(!message)
+				break;
+			sendNetMessageToListeners(message);
+		}
+	}
+	*/
+}
+
+
+
+void P2PConnection::stopConnections()
+{
+	//Update one last time
+	update();
+	isConnecting=false;
+	for(int i=0; i<outgoing.size(); ++i)
+	{
+		if(outgoingStates[i]==Attempting)
+		{
+			outgoing[i]->closeConnection();
+			outgoingStates[i]=Failed;
+		}
+	}
+	listener.stopListening();
+}
+
+	
+
+void P2PConnection::addEventListener(P2PConnectionListener* listener)
+{
+	listeners.push_back(listener);
+}
+
+
+
+void P2PConnection::removeEventListener(P2PConnectionListener* listener)
+{
+	listeners.remove(listener);
 }
 
 
@@ -178,4 +273,23 @@ void P2PConnection::updateP2PInformation(const P2PInformation& newGroup)
 	}
 	group = newGroup;
 }
+
+
+
+void P2PConnection::sendEventToListeners(boost::shared_ptr<P2PConnectionEvent> event)
+{
+	for(std::list<P2PConnectionListener*>::iterator i=listeners.begin(); i!=listeners.end(); ++i)
+	{
+		(*i)->recieveP2PEvent(event);
+	}
+}
+
+
+
+void P2PConnection::sendNetMessageToListeners(boost::shared_ptr<NetMessage> message)
+{
+	boost::shared_ptr<P2PRecievedMessage> event(new P2PRecievedMessage(message));
+	sendEventToListeners(event);
+}
+
 
