@@ -28,6 +28,11 @@
 class Settings
 {
 public:
+	Settings();
+	void load(const char *filename="preferences.txt");
+	void save(const char *filename="preferences.txt");
+
+public:
 	std::string username;
 	std::string password;
 	int screenWidth;
@@ -38,6 +43,7 @@ public:
 	Uint32 musicVolume;
 	Uint32 voiceVolume;
 	int mute;
+	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 	
@@ -56,10 +62,10 @@ public:
 	int tempUnit;
 	int tempUnitFuture;
 
-public:
-	void load(const char *filename="preferences.txt");
-	void save(const char *filename="preferences.txt");
-	Settings();
+	void resetDefaultUnitsAssigned();
 };
+
+//Version 1 - Resets default units assigned and keyboard shortcuts
+#define SETTINGS_VERSION 1
 
 #endif
