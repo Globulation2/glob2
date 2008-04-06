@@ -35,7 +35,7 @@ void GameHeader::reset()
 	//Seed is random by default
 	seed = std::time(NULL);
 	//If needed, seed can be fixed, default value, 5489
-	seed = 5489;
+	//seed = 5489;
 }
 
 
