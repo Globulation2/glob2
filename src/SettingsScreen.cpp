@@ -668,7 +668,11 @@ void SettingsScreen::activateDefaultAssignedGroupNumber(int group)
 
 void SettingsScreen::onGroupActivated(int group_n)
 {
-	if(group_n == unitGroup)
+	if(group_n == generalGroup)
+	{
+		setVisibilityFromAudioSettings();
+	}
+	else if(group_n == unitGroup)
 	{
 		activateDefaultAssignedGroupNumber(1);
 	}
