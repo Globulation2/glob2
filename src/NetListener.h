@@ -54,6 +54,7 @@ public:
 	bool attemptConnection(NetConnection& connection);
 
 private:
+	static const bool verbose=false;
 	TCPsocket socket;
 	bool listening;
 };
