@@ -40,7 +40,8 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 		std::string name = message.substr(13, message.size());
 		if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 		{
-			server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setMuted();
+			boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(10);
+			server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setMuted(unmute_time);
 			sendTextMessage("Player muted: "+name, player);
 		}
 		else
@@ -71,7 +72,7 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 	{
 		sendTextMessage("The current list of YOG Administrative Commands are: ", player);
 		sendTextMessage(".server_restart    Hard resets the server", player);
-		sendTextMessage(".mute_player <playername>    Mutes a player ", player);
+		sendTextMessage(".mute_player <playername>    Mutes a player for 10 minutes ", player);
 		sendTextMessage(".unmute_player <playername>    Unmutes a player", player);
 		sendTextMessage(".reset_password <playername>    Resets the password for a player", player);
 		sendTextMessage(".help    Shows this help message", player);

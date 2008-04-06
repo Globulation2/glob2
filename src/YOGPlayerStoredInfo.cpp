@@ -19,32 +19,36 @@
 #include "YOGPlayerStoredInfo.h"
 
 #include "Stream.h"
-
+#include <sstream>
 
 YOGPlayerStoredInfo::YOGPlayerStoredInfo()
 {
-	muted = false;
 }
 
 
 
-void YOGPlayerStoredInfo::setMuted()
+void YOGPlayerStoredInfo::setMuted(boost::posix_time::ptime nunmute_time)
 {
-	muted = true;
+	unmute_time = nunmute_time;
 }
 
 
 
 void YOGPlayerStoredInfo::setUnmuted()
 {
-	muted = false;
+	unmute_time = boost::posix_time::ptime();
 }
 
 
 
 bool YOGPlayerStoredInfo::isMuted()
 {
-	return muted;
+	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
+	if(unmute_time == boost::posix_time::ptime() || unmute_time < current_time)
+	{
+		return false;
+	}
+	return true;
 }
 
 
@@ -52,7 +56,9 @@ bool YOGPlayerStoredInfo::isMuted()
 void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGPlayerStoredInfo");
-	stream->writeUint8(muted, "muted");
+	std::stringstream time;
+	time<<unmute_time;
+	stream->writeText(time.str(), "unmute_time");
 	stream->writeLeaveSection();
 }
 
@@ -61,7 +67,10 @@ void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("YOGPlayerStoredInfo");
-	muted = stream->readUint8("muted");
+	std::string b = stream->readText("unmute_time");
+	std::stringstream time;
+	time<<b;
+	time>>unmute_time;
 	stream->readLeaveSection();
 }
 
@@ -69,7 +78,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream)
 
 bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 {
-	if(muted == rhs.muted)
+	if(unmute_time == rhs.unmute_time)
 		return true;
 	return false;
 }
@@ -78,7 +87,7 @@ bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 
 bool YOGPlayerStoredInfo::operator!=(const YOGPlayerStoredInfo& rhs) const
 {
-	if(muted != rhs.muted)
+	if(unmute_time != rhs.unmute_time)
 		return true;
 	return false;
 }
