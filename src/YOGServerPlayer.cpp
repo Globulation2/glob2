@@ -22,6 +22,7 @@
 #include "YOGServer.h"
 #include "YOGServerMapDistributor.h"
 #include "YOGServerPlayer.h"
+#include "P2PManager.h"
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
@@ -34,6 +35,8 @@ YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id
 	netVersion=0;
 	pingCountdown=SDL_GetTicks();
 	pingSendTime=0;
+	port = 0;
+	p2p=NULL;
 }
 
 
@@ -172,8 +175,11 @@ void YOGServerPlayer::update()
 	//This recieves routes an order
 	else if(type==MNetSendOrder)
 	{
-		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
-		ngame->routeOrder(info, server.getPlayer(playerID));
+		if(p2p)
+		{
+			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
+			p2p->recieveMessage(info, server.getPlayer(playerID));
+		}
 	}
 	//This recieves requests a map file
 	else if(type==MNetRequestMap)
@@ -252,6 +258,12 @@ void YOGServerPlayer::update()
 
 		pingCountdown = SDL_GetTicks();
 	}
+	//This recieves a ping reply
+	else if(type==MNetSetPlayerLocalPort)
+	{
+		shared_ptr<NetSetPlayerLocalPort> info = static_pointer_cast<NetSetPlayerLocalPort>(message);
+		port = info->getPort();
+	}
 }
 
 
@@ -294,6 +306,13 @@ Uint16 YOGServerPlayer::getGameID()
 std::string YOGServerPlayer::getPlayerName()
 {
 	return playerName;
+}
+
+
+
+std::string YOGServerPlayer::getPlayerIP()
+{
+	return connection->getIPAddress();
 }
 
 
@@ -348,6 +367,28 @@ unsigned YOGServerPlayer::getAveragePing() const
 	//At two standard deviations, 99.7% of all data will be less
 	return mean + int(deviation*2);
 }
+
+
+
+void YOGServerPlayer::setP2PManager(P2PManager* manager)
+{
+	p2p = manager;
+}
+
+
+
+P2PManager* YOGServerPlayer::getP2PManager()
+{
+	return p2p;
+}
+
+
+
+int YOGServerPlayer::getP2PPort()
+{
+	return port;
+}
+
 
 
 
