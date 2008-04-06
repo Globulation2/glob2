@@ -20,6 +20,7 @@
 #include "MapAssembler.h"
 #include "MultiplayerGame.h"
 #include "NetMessage.h"
+#include "P2PConnection.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientEventListener.h"
 #include "YOGClientEvent.h"
@@ -31,8 +32,8 @@
 
 YOGClient::YOGClient(const std::string& server)
 {
+	initialize();
 	connect(server);
-	
 }
 
 
@@ -57,6 +58,7 @@ void YOGClient::initialize()
 	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGClientGameListManager(this));
 	playerListManager.reset(new YOGClientPlayerListManager(this));
+	p2pconnection = boost::shared_ptr<P2PConnection>(new P2PConnection(this));
 }
 
 
@@ -92,6 +94,8 @@ void YOGClient::update()
 	if(server)
 		server->update();
 
+	p2pconnection->update();
+	
 	if(!nc.isConnecting() && wasConnecting)
 	{
 		if(nc.isConnected())
@@ -147,6 +151,11 @@ void YOGClient::update()
 			loginState = YOGLoginSuccessful;
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
+			
+			//Set the local p2p port
+			int port = p2pconnection->getPort();
+			shared_ptr<NetSetPlayerLocalPort> message(new NetSetPlayerLocalPort(port));
+			sendNetMessage(message);
 		}
 		//This recieves a login refusal message
 		if(type==MNetRefuseLogin)
@@ -328,6 +337,11 @@ void YOGClient::update()
 		{
 			shared_ptr<NetPingReply> event(new NetPingReply);
 			nc.sendMessage(event);
+		}
+		if(type == MNetSendP2PInformation)
+		{
+			if(p2pconnection)
+				p2pconnection->recieveMessage(message);
 		}
 	}
 }
