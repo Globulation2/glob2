@@ -19,6 +19,8 @@
 #ifndef YOGPlayerStoredInfo_h
 #define YOGPlayerStoredInfo_h
 
+#include "boost/date_time/posix_time/posix_time.hpp"
+
 namespace GAGCore
 {
 	class OutputStream;
@@ -32,8 +34,8 @@ public:
 	///Constructs a default YOGPlayerStoredInfo
 	YOGPlayerStoredInfo();
 	
-	///Sets this player to be muted
-	void setMuted();
+	///Sets this player to be muted until the given time
+	void setMuted(boost::posix_time::ptime unmute_time);
 	
 	///Sets this player to be unmuted
 	void setUnmuted();
@@ -51,7 +53,8 @@ public:
 	bool operator==(const YOGPlayerStoredInfo& rhs) const;
 	bool operator!=(const YOGPlayerStoredInfo& rhs) const;
 private:
-	bool muted;
+	boost::posix_time::ptime unmute_time;
+	
 };
 
 #endif
