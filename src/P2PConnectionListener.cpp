@@ -1,6 +1,5 @@
 /*
-  Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  Copyright (C) 2008 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -17,38 +16,6 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GLOB2_SCREEN_H
-#define __GLOB2_SCREEN_H
+#include "P2PConnectionListener.h"
 
-#include <GUIBase.h>
-#include <GUITabScreen.h>
-
-using namespace GAGCore;
-using namespace GAGGUI;
-
-class Glob2Screen : public Screen
-{
-public:
-	Glob2Screen();
-	virtual ~Glob2Screen();
-	virtual void paint(void);
-	
-private:
-	unsigned getNextTerrain(void);
-	int randomSeed;
-};
-
-class Glob2TabScreen : public TabScreen
-{
-public:
-	Glob2TabScreen();
-	virtual ~Glob2TabScreen();
-	virtual void paint(void);
-	
-private:
-	unsigned getNextTerrain(void);
-	int randomSeed;
-};
-
-#endif
 

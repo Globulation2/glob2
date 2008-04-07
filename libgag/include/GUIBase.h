@@ -154,6 +154,7 @@ namespace GAGGUI
 		virtual bool isOnWidget(int x, int y) = 0;
 	protected:
 		friend class Screen;
+		friend class Panel;
 		Screen *parent;
 		/*! Called when an SDL_MOUSEMOTION event occurs.
 		 * As timertick, this is a template method,
