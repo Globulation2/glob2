@@ -458,7 +458,7 @@ void GameGUI::step(void)
 	boost::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
-		orderVoiceData->recepientsMask = chatMask;
+		orderVoiceData->recepientsMask = chatMask ^ (chatMask & (1<<localPlayer));
 		orderQueue.push_back(orderVoiceData);
 	}
 	
