@@ -138,6 +138,10 @@ private:
 	///Removes the GameInfo with the given ID
 	void removeGameInfo(Uint16 gameID);
 
+	///This represents the next time when the message will be broad casted that a game is organized
+	int organizedGameBroadcastTime;
+	static const bool organizedGameTimeEnabled = false;
+
 	NetListener nl;
 	boost::shared_ptr<NetBroadcaster> broadcaster;
 	boost::shared_ptr<NetConnection> new_connection;
