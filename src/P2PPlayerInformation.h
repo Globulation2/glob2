@@ -35,6 +35,18 @@ public:
 	///Sets the IP address of the p2p player
 	void setIPAddress(const std::string& ipAddress);
 
+	///Returns the port of the p2p player
+	int getPort() const;
+	
+	///Sets the port of the p2p player
+	void setPort(int port);
+
+	///Returns the yog playerID of the p2p player
+	int getPlayerID() const;
+	
+	///Sets the port of the p2p player
+	void setPlayerID(int port);
+
 	///Encodes this PPlayerInformation into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
@@ -46,6 +58,8 @@ public:
 	bool operator!=(const P2PPlayerInformation& rhs) const;
 private:
 	std::string ipAddress;
+	int port;
+	int playerID;
 };
 
 

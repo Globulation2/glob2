@@ -41,7 +41,7 @@ namespace GAGGUI
 	class Number;
 }
 
-class SettingsScreen : public Glob2Screen
+class SettingsScreen : public Glob2TabScreen
 {
 public:
 	enum
@@ -125,6 +125,10 @@ private:
 	///Holds the keyboard layout for the game gui
 	KeyboardManager guiKeyboardManager;
 public:
+	int generalGroup;
+	int unitGroup;
+	int keyboardGroup;
+
 	ShortcutMode currentMode;
 	///Quick code that adds in a default unit assignment widget pair at the specific position, and returns the width.
 	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag=false);
@@ -134,6 +138,9 @@ public:
 	std::string getDefaultUnitAssignmentText(int type, int level, bool flag);
 	///Sets the texts for all default unit assignment widgets
 	void setLanguageTextsForDefaultAssignmentWidgets();
+	
+	
+	virtual void onGroupActivated(int group_n);
 	
 	///Update shortcut_list, if n is not -1, just update that specific entry
 	void updateShortcutList(int n=-1);
