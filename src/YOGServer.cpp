@@ -25,12 +25,14 @@
 #include "YOGServerGame.h"
 #include "YOGServer.h"
 #include "YOGServerPlayer.h"
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
+	organizedGameBroadcastTime=0;
 }
 
 
@@ -105,6 +107,22 @@ void YOGServer::update()
 	}
 	
 	playerInfos.update();
+	
+	int t = SDL_GetTicks();
+	if(t > organizedGameBroadcastTime)
+	{
+		organizedGameBroadcastTime = t + 30000;
+		boost::posix_time::time_duration organized_game_time = boost::posix_time::second_clock::local_time().time_of_day();
+		organized_game_time = boost::posix_time::seconds(organized_game_time.total_seconds() % 7200);
+		std::stringstream s;
+		s << "An organized game will occur in "<<boost::lexical_cast<std::string>(organized_game_time.hours())<<" hours and "<<boost::lexical_cast<std::string>(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
+		boost::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
+		boost::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
+		for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+		{
+			i->second->sendMessage(send);
+		}
+	}
 }
 
 

@@ -36,6 +36,8 @@
 	#undef AUDIO_RECORDER_OSS
 	#define STOP_RECORDING_TIMEOUT 3000
 	#include <windows.h>
+	///Voice recording on windows temporarily disables
+	#undef WIN32
 #endif
 
 #ifdef __APPLE__
