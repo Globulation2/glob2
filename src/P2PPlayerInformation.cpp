@@ -21,7 +21,7 @@
 
 P2PPlayerInformation::P2PPlayerInformation()
 {
-
+	port = 0;
 }
 
 
@@ -40,10 +40,40 @@ void P2PPlayerInformation::setIPAddress(const std::string& nipAddress)
 
 
 
+int P2PPlayerInformation::getPort() const
+{
+	return port;
+}
+
+
+
+void P2PPlayerInformation::setPort(int nport)
+{
+	port = nport;
+}
+
+
+
+int P2PPlayerInformation::getPlayerID() const
+{
+	return playerID;
+}
+
+
+
+void P2PPlayerInformation::setPlayerID(int nplayerID)
+{
+	playerID = nplayerID;
+}
+
+
+
 void P2PPlayerInformation::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("P2PPlayerInformation");
 	stream->writeText(ipAddress, "ipAddress");
+	stream->writeUint16(port, "port");
+	stream->writeUint16(playerID, "playerID");
 	stream->writeLeaveSection();
 }
 
@@ -53,6 +83,8 @@ void P2PPlayerInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("P2PPlayerInformation");
 	ipAddress = stream->readText("ipAddress");
+	port = stream->readUint16("port");
+	playerID = stream->readUint16("playerID");
 	stream->readLeaveSection();
 }
 
@@ -60,7 +92,7 @@ void P2PPlayerInformation::decodeData(GAGCore::InputStream* stream)
 	
 bool P2PPlayerInformation::operator==(const P2PPlayerInformation& rhs) const
 {
-	if(ipAddress == rhs.ipAddress)
+	if(ipAddress == rhs.ipAddress && port == rhs.port && playerID == rhs.playerID)
 		return true;
 	return false;
 }
@@ -69,7 +101,7 @@ bool P2PPlayerInformation::operator==(const P2PPlayerInformation& rhs) const
 
 bool P2PPlayerInformation::operator!=(const P2PPlayerInformation& rhs) const
 {
-	if(ipAddress != rhs.ipAddress)
+	if(ipAddress != rhs.ipAddress || port != rhs.port || playerID != rhs.playerID)
 		return true;
 	return false;
 }
