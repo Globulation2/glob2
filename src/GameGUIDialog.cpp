@@ -329,6 +329,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 		musicVol->visible=false;
 		voiceVol->visible=false;
 		musicVolText->visible=false;
+		voiceVolText->visible=false;
 	}
 
 	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
