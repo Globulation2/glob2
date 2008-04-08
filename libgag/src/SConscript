@@ -6,7 +6,7 @@ GUINumber.cpp       GUIRatio.cpp          GUISelector.cpp   GUIStyle.cpp
 GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  KeyPress.cpp
 Sprite.cpp          StreamBackend.cpp     Stream.cpp        StreamFilter.cpp
 StringTable.cpp     SupportFunctions.cpp  TextStream.cpp    Toolkit.cpp
-TrueTypeFont.cpp    win32_dirent.cpp GUITabScreen.cpp GUIPanel.cpp""")
+TrueTypeFont.cpp    win32_dirent.cpp GUITabScreen.cpp GUITabScreenWindow.cpp""")
     
     
     

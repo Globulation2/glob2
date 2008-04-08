@@ -37,8 +37,8 @@
 #include "IRC.h"
 #include "YOGMessage.h"
 
-MultiplayerGameScreen::MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
-	: game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
+MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
+	: TabScreenWindow(parent, "game"), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -122,6 +122,7 @@ MultiplayerGameScreen::~MultiplayerGameScreen()
 
 void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
+	TabScreenWindow::onTimer(tick);
 	game->update();
 	if(ircChat)
 		ircChat->update();
@@ -131,6 +132,7 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 
 void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	TabScreenWindow::onAction(source, action, par1, par2);
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1 == START)

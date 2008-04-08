@@ -91,8 +91,9 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 					game->setMapHeader(cms.getMapHeader());
 
 					///Fix this! While this is technically right, the chat channel should be given by the server
-					MultiplayerGameScreen mgs(game, client);
-					int rc = mgs.execute(globalContainer->gfx, 40);
+					Glob2TabScreen screen;
+					MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client);
+					int rc = screen.execute(globalContainer->gfx, 40);
 					client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 					if(rc == -1)
 						endExecute(-1);
