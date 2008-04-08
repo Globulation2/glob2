@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include "GUIButton.h"
+#include "GUITabScreenWindow.h"
 
 namespace GAGGUI
 {
@@ -38,6 +39,19 @@ namespace GAGGUI
 			std::vector<Widget*>::iterator i = std::find(groups[group_n].begin(), groups[group_n].end(), widget);
 			if(i!=groups[group_n].end())
 				groups[group_n].erase(i);
+		}
+		
+		void TabScreen::setTabScreenWindowToGroup(TabScreenWindow* window, int group_n)
+		{
+			windows[group_n] = window;
+		}
+		
+		void TabScreen::removeTabScreenWindowFromGroup(TabScreenWindow* window, int group_n)
+		{
+			if(windows.find(group_n) != windows.end())
+			{
+				windows.erase(windows.find(group_n));
+			}
 		}
 		
 		void TabScreen::activateGroup(int group_n)
@@ -64,9 +78,26 @@ namespace GAGGUI
 		
 		int TabScreen::addGroup(const std::string& title)
 		{
-			int group_n = groupButtons.size();
-			groupButtons.push_back(new TextButton(10 + 210 * group_n, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", title.c_str(), 0));
+			int group_n=0;
+			while(groupButtons.find(group_n) != groupButtons.end())
+			{
+				group_n+=1;
+			}
+			
+			groupButtons[group_n] = new TextButton(10 + 210 * group_n, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", title.c_str(), 0);
 			addWidget(groupButtons[group_n]);
+			if(groupButtons.size() == 1)
+			{
+				groupButtons[0]->visible=false;
+			}
+			else
+			{
+				for(int i=0; i<groupButtons.size(); ++i)
+				{
+					groupButtons[i]->visible=true;
+				}
+			}
+			
 			return group_n;
 		}
 
@@ -79,13 +110,29 @@ namespace GAGGUI
 			}
 			groups.erase(groups.find(group_n));
 			
+			if(windows.find(group_n) != windows.end())
+				windows.erase(windows.find(group_n));
+			
 			removeWidget(groupButtons[group_n]);
 			delete groupButtons[group_n];
-			groupButtons.erase(groupButtons.begin() + group_n);
+			groupButtons.erase(groupButtons.find(group_n));
+			
+			if(groupButtons.size() == 1)
+			{
+				groupButtons[0]->visible=false;
+			}
+			else
+			{
+				for(int i=0; i<groupButtons.size(); ++i)
+				{
+					groupButtons[i]->visible=true;
+				}
+			}
 		}
 		
 		void TabScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
+			bool found=false;
 			if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 			{
 				for(int i=0; i<groupButtons.size(); ++i)
@@ -93,7 +140,47 @@ namespace GAGGUI
 					if(source == groupButtons[i])
 					{
 						activateGroup(i);
+						found = true;
+						break;
 					}
+				}
+			}
+			if(!found)
+			{
+				for(std::map<int, std::vector<Widget*> >::iterator i = groups.begin(); i!=groups.end(); ++i)
+				{
+					std::vector<Widget*>::iterator j = std::find(i->second.begin(), i->second.end(), source);
+					if(j!=i->second.end())
+					{
+						if(windows.find(i->first) != windows.end())
+						{
+							windows[i->first]->onAction(source, action, par1, par2);
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		void TabScreen::onTimer(Uint32 tick)
+		{
+			for(std::map<int, TabScreenWindow*>::iterator i = windows.begin(); i!=windows.end();)
+			{
+				if(!i->second->isStillExecuting())
+				{
+					std::map<int, TabScreenWindow*>::iterator ni = i++;
+					int rc = ni->second->getReturnCode();
+					delete ni->second;
+					
+					if(windows.size() == 0)
+					{
+						endExecute(rc);
+					}
+				}
+				else
+				{
+					i->second->onTimer(tick);
+					i++;
 				}
 			}
 		}
