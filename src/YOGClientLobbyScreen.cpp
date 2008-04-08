@@ -266,8 +266,9 @@ void YOGClientLobbyScreen::hostGame()
 
 		game->setMapHeader(cms.getMapHeader());
 
-		MultiplayerGameScreen mgs(game, client, ircChat);
-		int rc = mgs.execute(globalContainer->gfx, 40);
+		Glob2TabScreen screen;
+		MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client, ircChat);
+		int rc = screen.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)
 			endExecute(-1);
@@ -297,8 +298,9 @@ void YOGClientLobbyScreen::joinGame()
 			}
 		}
 		game->joinGame(id);
-		MultiplayerGameScreen mgs(game, client, ircChat);
-		int rc = mgs.execute(globalContainer->gfx, 40);
+		Glob2TabScreen screen;
+		MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client, ircChat);
+		int rc = screen.execute(globalContainer->gfx, 40);
 		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 		if(rc == -1)
 			endExecute(-1);

@@ -20,6 +20,7 @@
 #include "StreamBackend.h"
 #include "BinaryStream.h"
 #include "NetMessage.h"
+#include "boost/lexical_cast.hpp"
 
 using namespace GAGCore;
 
@@ -79,7 +80,7 @@ void NetConnectionThread::operator()()
 								{
 									SDLNet_TCP_AddSocket(set, socket);
 									connected=true;
-									boost::shared_ptr<NTConnected> connected(new NTConnected);
+									boost::shared_ptr<NTConnected> connected(new NTConnected(info->getServer()));
 									sendToMainThread(connected);
 								}
 							}
@@ -155,7 +156,11 @@ void NetConnectionThread::operator()()
 								connected=true;
 								address = *SDLNet_TCP_GetPeerAddress(socket);
 								SDLNet_TCP_AddSocket(set, socket);
-								boost::shared_ptr<NTConnected> connected(new NTConnected);
+								std::string ip = boost::lexical_cast<std::string>((address.host >> 0 ) & 0xff) + "." +
+								                 boost::lexical_cast<std::string>((address.host >> 8 ) & 0xff) + "." +
+								                 boost::lexical_cast<std::string>((address.host >> 16) & 0xff) + "." +
+								                 boost::lexical_cast<std::string>((address.host >> 24) & 0xff);
+								boost::shared_ptr<NTConnected> connected(new NTConnected(ip));
 								sendToMainThread(connected);
 							}
 						}

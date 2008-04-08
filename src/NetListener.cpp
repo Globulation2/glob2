@@ -48,14 +48,16 @@ void NetListener::startListening(Uint16 port)
 		IPaddress address;
 		if(SDLNet_ResolveHost(&address, NULL, port) == -1)
 		{
-			std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
+			if(verbose)
+				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
 			listening=false;
 		}
 		
 		socket=SDLNet_TCP_Open(&address);
 		if(!socket)
 		{
-			std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
+			if(verbose)
+				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
 			listening=false;
 		}
 		else
