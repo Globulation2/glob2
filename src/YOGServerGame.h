@@ -24,6 +24,7 @@
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
 #include "P2PManager.h"
+#include "YOGGameResults.h"
 
 class NetKickPlayer;
 class NetSendOrder;
@@ -133,6 +134,7 @@ private:
 	Uint32 chatChannel;
 	Uint8 aiNum;
 	YOGServer& server;
+	YOGGameResults gameResults;
 };
 
 
