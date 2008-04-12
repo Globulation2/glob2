@@ -132,6 +132,7 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 	chooseLatencyMode();
 
 	server.getGameInfo(gameID).setPlayersJoined(players.size());
+	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -145,6 +146,7 @@ void YOGServerGame::addAIPlayer(AI::ImplementitionID type)
 
 	aiNum+=1;
 	server.getGameInfo(gameID).setAIJoined(aiNum);
+	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -190,6 +192,7 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 	chooseLatencyMode();
 
 	server.getGameInfo(gameID).setPlayersJoined(players.size());
+	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -203,6 +206,7 @@ void YOGServerGame::removeAIPlayer(int playerNum)
 
 	aiNum-=1;
 	server.getGameInfo(gameID).setAIJoined(aiNum);
+	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -392,8 +396,7 @@ void YOGServerGame::chooseLatencyMode()
 	}
 
 	//Add 5% to both pings. The given pings are such that 99.7% of all pings will
-	//be under those amounts, provided pings are normally distributed, which they
-	//usually are
+	//be under those amounts, provided pings are normally distributed
 	int total_allocation = (highest * 105 + second_highest * 105) / 100;
 	int latency_adjustment = (total_allocation+39) / 40;
 
