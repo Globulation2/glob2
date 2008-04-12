@@ -152,6 +152,8 @@
 [explorationflag explanation]
 [explorationflag]
 [Explorer Ratio]
+[Game]
+[Lobby]
 [Explorer]
 [explorers]
 [extra islands]

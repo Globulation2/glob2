@@ -85,6 +85,9 @@ private:
 
 	///This function will update the list of joined players
 	void updateJoinedPlayers();
+	void updateVisibleButtons();
+	
+	virtual void onActivated();
 
 	TextButton *startButton;
 	TextButton *cancelButton;
@@ -101,7 +104,6 @@ private:
 
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
-	Text *gameFullText;
 	Text *gameStartWaitingText;
 
 	boost::shared_ptr<YOGClientChatChannel> gameChat;
