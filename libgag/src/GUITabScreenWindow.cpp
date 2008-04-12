@@ -27,6 +27,7 @@ namespace GAGGUI
 	TabScreenWindow::TabScreenWindow(TabScreen* parent, const std::string& tabName)
 		: parent(parent), tabNumber(0), returnCode(0), isExecuting(true)
 	{
+		activated=false;
 		tabNumber = parent->addGroup(tabName);
 		parent->setTabScreenWindowToGroup(this, tabNumber);
 	}
@@ -67,10 +68,35 @@ namespace GAGGUI
 		return isExecuting;
 	}
 	
+	void TabScreenWindow::internalInit()
+	{
+		parent->internalInit(tabNumber);
+	}
+	
+	int TabScreenWindow::getTabNumber()
+	{
+		return tabNumber;
+	}
+	
+	bool TabScreenWindow::isActivated()
+	{
+		return activated;
+	}
+	
+	void TabScreenWindow::onActivated()
+	{
+		
+	}
+	
 	void TabScreenWindow::endExecute(int nreturnCode)
 	{
 		isExecuting = false;
 		returnCode = nreturnCode;
+	}
+	
+	void TabScreenWindow::setActivated(bool nactivated)
+	{
+		activated=nactivated;
 	}
 };
 
