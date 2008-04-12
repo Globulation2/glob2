@@ -39,7 +39,6 @@ P2PConnection::P2PConnection(YOGClient* client)
 		localPort = toTryPort;
 	localIncoming = boost::shared_ptr<NetConnection>(new NetConnection);
 	isConnecting=true;
-	std::cout<<"attempting "<<localPort<<std::endl;
 }
 
 
@@ -114,7 +113,6 @@ void P2PConnection::update()
 				int port = group.getPlayerInformation(i).getPort();
 				outgoing[i]->openConnection(ip, port);
 				outgoingStates[i] = Attempting;
-				std::cout<<"Attempting"<<std::endl;
 			}
 			else if(outgoingStates[i] == Attempting)
 			{
@@ -123,12 +121,10 @@ void P2PConnection::update()
 					if(outgoing[i]->isConnected())
 					{
 						outgoingStates[i] = Connected;
-						std::cout<<"Connected"<<std::endl;
 					}
 					else
 					{
 						outgoingStates[i] = ReadyToTry;
-						std::cout<<"Failed"<<std::endl;
 					}
 				}
 			}
@@ -137,7 +133,6 @@ void P2PConnection::update()
 				if(!outgoing[i]->isConnected())
 				{
 					outgoingStates[i] = ReadyToTry;
-					std::cout<<"Lost"<<std::endl;
 				}
 			}
 		}
@@ -149,7 +144,6 @@ void P2PConnection::update()
 		{
 			incoming.push_back(localIncoming);
 			localIncoming.reset(new NetConnection);
-			std::cout<<"recieved"<<std::endl;
 		}
 	}
 	

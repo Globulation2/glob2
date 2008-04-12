@@ -18,6 +18,10 @@ V: Show vision for all buildings
 Add map
 [add shortcut]
 Add Shortcut
+[Game]
+Game
+[Lobby]
+Lobby
 [AI]
 AI
 [ai]

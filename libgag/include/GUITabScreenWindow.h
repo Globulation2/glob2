@@ -58,16 +58,33 @@ namespace GAGGUI
 		
 		///True if this TabScreenWindow is still executing, false otherwise
 		bool isStillExecuting();
+		
+		///Calls internal init on all sub codes
+		void internalInit();
+		
+		///Returns the tab number
+		int getTabNumber();
+		
+		///Returns true if this window is activated
+		bool isActivated();
+		
+		virtual void onActivated();
 	protected:
 		friend class TabScreen;
 	
 		///Ends the execution of the TabScreenWindow with the given end value
 		void endExecute(int returnCode);
-	private:
+		
+		///Sets whether this window is acticated or not
+		void setActivated(bool activated);
+		
+		///This is the parent of this tab screen window
 		TabScreen* parent;
+	private:
 		int tabNumber;
 		int returnCode;
 		bool isExecuting;
+		bool activated;
 	};
 };
 
