@@ -141,6 +141,9 @@ public:
 	///Returns true if the MultiplayerGame is waiting for a reply from the server
 	///to start the game
 	bool isGameStarting();
+	
+	///This sets the game result for the local player
+	void setGameResult(YOGGameResult result);
 protected:
 	friend class YOGClient;
 

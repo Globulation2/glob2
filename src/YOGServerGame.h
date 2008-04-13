@@ -113,6 +113,9 @@ public:
 
 	///This chooses a latency mode and sends it to all the players
 	void chooseLatencyMode();
+	
+	///This sets a players game result
+	void setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result);
 
 private:
 	bool gameStarted;
