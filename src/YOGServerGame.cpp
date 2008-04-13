@@ -177,6 +177,10 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 			}
 		}
 	}
+	else
+	{
+		setPlayerGameResult(player, YOGGameResultConnectionLost);
+	};
 
 	p2p.removePlayer(player);
 
@@ -408,5 +412,20 @@ void YOGServerGame::chooseLatencyMode()
 	}
 }
 
+
+void YOGServerGame::setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result)
+{
+	for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
+	{
+		if(gameHeader.getBasePlayer(i).playerID == sender->getPlayerID())
+		{
+			if(gameResults.getGameResultState(i) == YOGGameResultUnknown)
+			{
+				std::cout<<"player "<<i<<" result is "<<result<<std::endl;
+				gameResults.setGameResultState(i, result);
+			}
+		}
+	}
+}
 
 

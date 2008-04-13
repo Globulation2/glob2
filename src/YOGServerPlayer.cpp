@@ -264,6 +264,12 @@ void YOGServerPlayer::update()
 		shared_ptr<NetSetPlayerLocalPort> info = static_pointer_cast<NetSetPlayerLocalPort>(message);
 		port = info->getPort();
 	}
+	//This recieves a ping reply
+	else if(type==MNetSendGameResult)
+	{
+		shared_ptr<NetSendGameResult> info = static_pointer_cast<NetSendGameResult>(message);
+		ngame->setPlayerGameResult(server.getPlayer(playerID), info->getGameResult()); 
+	}
 }
 
 
