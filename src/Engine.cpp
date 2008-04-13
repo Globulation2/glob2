@@ -424,6 +424,38 @@ int Engine::run(void)
 		}
 
 		cpuStats.format();
+		
+		if(multiplayer)
+		{
+			if (gui.game.totalPrestigeReached)
+			{
+				Team *t=gui.game.getTeamWithMostPrestige();
+				assert(t);
+				if (t==gui.getLocalTeam())
+				{
+					multiplayer->setGameResult(YOGGameResultWonGame);
+				}
+				else
+				{
+					if ((t->allies) & (gui.getLocalTeam()->me))
+						multiplayer->setGameResult(YOGGameResultWonGame);
+					else
+						multiplayer->setGameResult(YOGGameResultLostGame);
+				}
+			}
+			else if(gui.getLocalTeam()->hasWon)
+			{
+				multiplayer->setGameResult(YOGGameResultWonGame);
+			}
+			else if (!gui.getLocalTeam()->isAlive)
+			{
+				multiplayer->setGameResult(YOGGameResultLostGame);
+			}
+			else if (!gui.game.isGameEnded)
+			{
+				multiplayer->setGameResult(YOGGameResultQuitGame);
+			}
+		}
 
 		delete net;
 		net=NULL;

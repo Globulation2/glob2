@@ -30,7 +30,7 @@ YOGGameResults::YOGGameResults()
 
 void YOGGameResults::setNumberOfPlayers(int number)
 {
-	results.resize(number);
+	results.resize(number, YOGGameResultUnknown);
 	names.resize(number);
 }
 

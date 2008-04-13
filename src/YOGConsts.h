@@ -149,6 +149,8 @@ enum YOGGameResult
 	YOGGameResultQuitGame,
 	///This reprsents when the player in question lost connection
 	YOGGameResultConnectionLost,
+	///This represents when the game result is unknown
+	YOGGameResultUnknown,
 };
 
 #endif 

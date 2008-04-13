@@ -166,6 +166,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSetPlayerLocalPort:
 		message.reset(new NetSetPlayerLocalPort);
 		break;
+		case MNetSendGameResult:
+		message.reset(new NetSendGameResult);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -3300,6 +3303,75 @@ bool NetSetPlayerLocalPort::operator==(const NetMessage& rhs) const
 Uint16 NetSetPlayerLocalPort::getPort() const
 {
 	return port;
+}
+
+
+
+
+NetSendGameResult::NetSendGameResult()
+	: result(YOGGameResultUnknown)
+{
+
+}
+
+
+
+NetSendGameResult::NetSendGameResult(YOGGameResult result)
+	:result(result)
+{
+}
+
+
+
+Uint8 NetSendGameResult::getMessageType() const
+{
+	return MNetSendGameResult;
+}
+
+
+
+void NetSendGameResult::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendGameResult");
+	stream->writeUint8(static_cast<Uint8>(result), "result");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendGameResult::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendGameResult");
+	result = static_cast<YOGGameResult>(stream->readUint8("result"));
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendGameResult::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendGameResult("<<"result="<<result<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSendGameResult::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendGameResult))
+	{
+		const NetSendGameResult& r = dynamic_cast<const NetSendGameResult&>(rhs);
+		if(r.result == result)
+			return true;
+	}
+	return false;
+}
+
+
+YOGGameResult NetSendGameResult::getGameResult() const
+{
+	return result;
 }
 
 

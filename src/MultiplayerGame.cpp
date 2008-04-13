@@ -644,10 +644,18 @@ void MultiplayerGame::recieveP2PEvent(boost::shared_ptr<P2PConnectionEvent> even
 }
 
 
+
 bool MultiplayerGame::isGameStarting()
 {
 	return isStarting;
 }
 
+
+
+void MultiplayerGame::setGameResult(YOGGameResult result)
+{
+	shared_ptr<NetSendGameResult> message(new NetSendGameResult(result));
+	client->sendNetMessage(message);
+}
 
 
