@@ -23,6 +23,7 @@
 
 YOGPlayerStoredInfo::YOGPlayerStoredInfo()
 {
+	banned=false;
 }
 
 
@@ -53,24 +54,47 @@ bool YOGPlayerStoredInfo::isMuted()
 
 
 
+void YOGPlayerStoredInfo::setBanned()
+{
+	banned = true;
+}
+
+
+
+void YOGPlayerStoredInfo::setUnbanned()
+{
+	banned = false;
+}
+
+
+
+bool YOGPlayerStoredInfo::isBanned()
+{
+	return banned;
+}
+
+
+
 void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGPlayerStoredInfo");
 	std::stringstream time;
 	time<<unmute_time;
 	stream->writeText(time.str(), "unmute_time");
+	stream->writeUint8(banned, "banned");
 	stream->writeLeaveSection();
 }
 
 
 
-void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream)
+void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream, Uint32 dataVersionMinor)
 {
 	stream->readEnterSection("YOGPlayerStoredInfo");
 	std::string b = stream->readText("unmute_time");
 	std::stringstream time;
 	time<<b;
 	time>>unmute_time;
+	banned=stream->readUint8("banned");
 	stream->readLeaveSection();
 }
 
@@ -78,7 +102,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream)
 
 bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 {
-	if(unmute_time == rhs.unmute_time)
+	if(unmute_time == rhs.unmute_time && banned == rhs.banned)
 		return true;
 	return false;
 }
@@ -87,7 +111,7 @@ bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 
 bool YOGPlayerStoredInfo::operator!=(const YOGPlayerStoredInfo& rhs) const
 {
-	if(unmute_time != rhs.unmute_time)
+	if(unmute_time != rhs.unmute_time && banned == rhs.banned)
 		return true;
 	return false;
 }

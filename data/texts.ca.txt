@@ -370,6 +370,8 @@ Pantalla Completa
 Partida Completa
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Cargar partida
 
 [load]
 Carregar
+[Lobby]
+
 [login]
 Conectar
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ No es pot conectar al metaservidor YOG, el teu client Globulation2 està obsolet
 El servidor YOG ha rebutjat la conexió inexplicablement.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 No es pot conectar al metaservidor YOG. Nom d'usuari en ús
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 El sistema de conexió està llest per contactar amb el metaservidor YOG
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Has guanyat
 El teu %0  està sent atacat
 [Your unit got converted to %0's team]
 Una unitat teva s'ha convertit a l'equip de %0
+[Your username was banned]
+

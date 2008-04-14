@@ -372,6 +372,8 @@ Ok
 Πλήρης παιχνίδι
 [game shortcuts]
 Συντομεύσεις παιχνιδιού
+[Game]
+
 [general settings]
 Γενικές Ρυθμίσεις
 [go to event]
@@ -486,6 +488,8 @@ Anastasios M. Pingios
 
 [load]
 Φόρτωση
+[Lobby]
+
 [login]
 Σύνδεση
 [Lost : %0 has more prestige than you]
@@ -1042,6 +1046,8 @@ Tutorial
 Ο YOG metaserver αρνήθηκε την σύνδεση χωρίς εξήγηση!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη είναι ήδη σε χρήση από κάποιον άλλον.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1058,3 +1064,5 @@ Ysagoon Online Gaming
 Το %0 δέχετε επίθεση
 [Your unit got converted to %0's team]
 Η μονάδα σας άλλαξε σε %0 ομάδα
+[Your username was banned]
+

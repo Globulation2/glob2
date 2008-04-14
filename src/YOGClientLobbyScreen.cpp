@@ -23,6 +23,7 @@
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <GUIButton.h>
+#include "GUIMessageBox.h"
 #include <GUIList.h>
 #include <GUITextArea.h>
 #include <GUIText.h>
@@ -237,6 +238,10 @@ void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent
 	if(type == YEConnectionLost)
 	{
 		endExecute(ConnectionLost);
+	}
+	else if(type == YEPlayerBanned)
+	{
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[Ok]"));
 	}
 }
 

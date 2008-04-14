@@ -372,6 +372,8 @@ Tela cheia
 Jogo cheio
 [game shortcuts]
 Atalhos do jogo
+[Game]
+
 [general settings]
 Ajustes gerais
 [go to event]
@@ -486,6 +488,8 @@ Carregar mapa
 
 [load]
 Carrregar
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ O metaservidor YOG recusou a sua conexão porque o cliente globulation2 está ob
 O metaservidor YOG recusou a conexão sem explicação alguma!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário está sendo usado por outro.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 O sistema de conexão está pronto para contatar o metaservidor YOG para conexão.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Você ganhou!
 Seus %0 estão sendo atacados
 [Your unit got converted to %0's team]
 Sua unidade foi convertido para o time do %0
+[Your username was banned]
+

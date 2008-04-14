@@ -160,4 +160,37 @@ YOGLoginState YOGLoginRefusedEvent::getReason() const
 	return reason;
 }
 
+YOGPlayerBannedEvent::YOGPlayerBannedEvent()
+{
+}
+
+
+
+Uint8 YOGPlayerBannedEvent::getEventType() const
+{
+	return YEPlayerBanned;
+}
+
+
+
+std::string YOGPlayerBannedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGPlayerBannedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGPlayerBannedEvent::operator==(const YOGClientEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGPlayerBannedEvent))
+	{
+		//const YOGPlayerBannedEvent& r = dynamic_cast<const YOGPlayerBannedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

@@ -173,6 +173,15 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
+	
+	///check if the player is banned
+	if(playerInfos.doesStoredInfoExist(username))
+	{
+		if(playerInfos.getPlayerStoredInfo(username).isBanned())
+		{
+			return YOGUsernameBanned;
+		}
+	}
 
 	///check if the player is already logged in
 	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
@@ -304,6 +313,20 @@ shared_ptr<YOGServerGame> YOGServer::getGame(Uint16 gameID)
 shared_ptr<YOGServerPlayer> YOGServer::getPlayer(Uint16 playerID)
 {
 	return players[playerID];
+}
+
+
+
+boost::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
+{
+	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if(i->second->getPlayerName() == name)
+		{
+			return i->second;
+		}
+	}
+	return boost::shared_ptr<YOGServerPlayer>();
 }
 
 

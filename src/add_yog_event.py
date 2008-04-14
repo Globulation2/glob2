@@ -1,12 +1,14 @@
 from add_stuff_base import *
 
-backup("YOGEvent.h")
-backup("YOGEvent.cpp")
+backup("YOGClientEvent.h")
+backup("YOGClientEvent.cpp")
 
 print "Name? "
 name = raw_input()
 tname = "YE"+name.replace("YOG", "").replace("Event", "")
+
 variables = assemble_variables(False, False)
+vn = len(variables)
 
 constructor=assemble_constructor_define(variables)
 
@@ -26,7 +28,7 @@ get_function_defines = assemble_get_function_definitions(variables)
 
 hcode = """
 ///mname
-class mname : public YOGEvent
+class mname : public YOGClientEvent
 {
 public:
 	///Creates a mname event
@@ -39,7 +41,7 @@ public:
 	std::string format() const;
 	
 	///Compares two YOGEvent
-	bool operator==(const YOGEvent& rhs) const;
+	bool operator==(const YOGClientEvent& rhs) const;
 """
 hcode+=declare_functions
 hcode+=declare_variables
@@ -69,7 +71,7 @@ std::string mname::format() const
 
 
 
-bool mname::operator==(const YOGEvent& rhs) const
+bool mname::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(mname))
 	{
@@ -85,17 +87,17 @@ scode += get_function_defines
 
 
 
-lines = readLines("YOGEvent.h")
+lines = readLines("YOGClientEvent.h")
 i = findMarker(lines,"type_append_marker")
 lines.insert(i, "	%s,\n" % tname)
 
 
 i = findMarker(lines,"event_append_marker")
 lines.insert(i, hcode.replace("mname", name).replace("tname", tname))
-writeLines("YOGEvent.h", lines)
+writeLines("YOGClientEvent.h", lines)
 
-lines = readLines("YOGEvent.cpp")
+lines = readLines("YOGClientEvent.cpp")
 i = findMarker(lines, "code_append_marker")
 lines.insert(i, scode.replace("mname", name).replace("tname", tname))
-writeLines("YOGEvent.cpp", lines)
+writeLines("YOGClientEvent.cpp", lines)
 

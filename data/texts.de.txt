@@ -364,6 +364,8 @@ Vollbild
 Spiel komplett
 [game shortcuts]
 
+[Game]
+
 [general settings]
 Allgemein
 [go to event]
@@ -478,6 +480,8 @@ Spiel laden
 
 [load]
 Laden
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1030,6 +1034,8 @@ Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulatio
 Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Spitzname schon von jemand anderem benutzt wird.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1046,3 +1052,5 @@ Sie haben gewonnen!
 Eure %0 werden angegriffen
 [Your unit got converted to %0's team]
 Eine Ihrer Einheiten wurde von einem %0-Team übernommen.
+[Your username was banned]
+

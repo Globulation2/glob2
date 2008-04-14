@@ -92,7 +92,8 @@ void YOGServerPlayer::update()
 		{
 			connectionState = NeedToSendLoginRefusal;
 		}	
-	}	//This recieves a login attempt
+	}
+	//This recieves a login attempt
 	else if(type==MNetAttemptRegistration)
 	{
 		shared_ptr<NetAttemptRegistration> info = static_pointer_cast<NetAttemptRegistration>(message);
@@ -395,6 +396,12 @@ int YOGServerPlayer::getP2PPort()
 	return port;
 }
 
+
+
+void YOGServerPlayer::closeConnection()
+{
+	connection->closeConnection();
+}
 
 
 

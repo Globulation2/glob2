@@ -21,9 +21,11 @@
 
 #include <string>
 #include "boost/shared_ptr.hpp"
+#include <vector>
 
 class YOGServer;
 class YOGServerPlayer;
+class YOGServerAdministratorCommand;
 
 ///This governs the system of administrative commands to the YOG server
 class YOGServerAdministrator
@@ -32,16 +34,22 @@ public:
 	///Constructs the administration engine
 	YOGServerAdministrator(YOGServer* server);
 	
+	///Destroys the administration engine
+	~YOGServerAdministrator();
+	
 	///Interprets whether the given message is an administrative command,
 	///and if so, executes it. If it was, returns true, otherwise, returns
 	///false
 	bool executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player);
-
-private:
+	
 	///This sends a message to the player from the administrator engine
 	void sendTextMessage(const std::string& message, boost::shared_ptr<YOGServerPlayer> player);
 
+private:
+
 	YOGServer* server;
+	
+	std::vector<YOGServerAdministratorCommand*> commands;
 };
 
 #endif
