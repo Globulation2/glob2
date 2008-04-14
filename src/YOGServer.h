@@ -111,6 +111,9 @@ public:
 
 	///Returns the player assocciatted with the given ID
 	boost::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
+
+	///Returns the player assocciatted with the given name
+	boost::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
 	
 	///This starts LAN broadcasting of the first game, if it exists
 	void enableLANBroadcasting();

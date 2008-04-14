@@ -17,6 +17,7 @@
 */
 
 #include "YOGServerAdministrator.h"
+#include "YOGServerAdministratorCommands.h"
 #include "YOGServer.h"
 #include "YOGServerPlayer.h"
 #include "YOGMessage.h"
@@ -25,59 +26,93 @@
 YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 	: server(server)
 {
-
+	commands.push_back(new YOGServerRestart);
+	commands.push_back(new YOGMutePlayer);
+	commands.push_back(new YOGUnmutePlayer);
+	commands.push_back(new YOGResetPassword);
+	commands.push_back(new YOGBanPlayer);
+	commands.push_back(new YOGUnbanPlayer);
+	commands.push_back(new YOGShowBannedPlayers);
 }
+
+
+
+YOGServerAdministrator::~YOGServerAdministrator()
+{
+	for(int i=0; i<commands.size(); ++i)
+	{
+		delete commands[i];
+	}
+}
+
 	
 
 bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player)
 {
-	if(message.substr(0, 15)==".server_restart")
+	std::vector<std::string> tokens;
+	std::string token;
+	bool isQuotes=false;
+	for(int i=0; i<message.size(); ++i)
 	{
-		exit(0);
-	}	
-	else if(message.substr(0, 13) == ".mute_player ")
-	{
-		std::string name = message.substr(13, message.size());
-		if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
+		if(message[i]==' ' && !isQuotes)
 		{
-			boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(10);
-			server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setMuted(unmute_time);
-			sendTextMessage("Player muted: "+name, player);
+			if(!token.empty())
+			{
+				tokens.push_back(token);
+				token.clear();
+			}
+		}
+		else if(message[i]=='"' && isQuotes)
+		{
+			isQuotes=false;
+		}
+		else if(message[i]=='"' && !isQuotes)
+		{
+			isQuotes=true;
 		}
 		else
 		{
-			sendTextMessage("Could not find player: "+name, player);
+			token+=message[i];
 		}
 	}
-	else if(message.substr(0, 15) == ".unmute_player ")
+	if(!token.empty())
 	{
-		std::string name = message.substr(15, message.size());
-		if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
-		{
-			server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setUnmuted();
-			sendTextMessage("Player unmuted: "+name, player);
-		}
-		else
-		{	
-			sendTextMessage("Could not find player: "+name, player);
-		}
+		tokens.push_back(token);
+		token.clear();
 	}
-	else if(message.substr(0, 16) == ".reset_password ")
+	
+	if(tokens.size() == 0)
 	{
-		std::string name = message.substr(16, message.size());
-		server->getServerPasswordRegistry().resetPlayersPassword(name);
-		sendTextMessage("Players password reset: "+name, player);
-	}
-	else if(message.substr(0, 5) == ".help")
-	{
-		sendTextMessage("The current list of YOG Administrative Commands are: ", player);
-		sendTextMessage(".server_restart    Hard resets the server", player);
-		sendTextMessage(".mute_player <playername>    Mutes a player for 10 minutes ", player);
-		sendTextMessage(".unmute_player <playername>    Unmutes a player", player);
-		sendTextMessage(".reset_password <playername>    Resets the password for a player", player);
-		sendTextMessage(".help    Shows this help message", player);
+		return false;
 	}
 
+
+	if(tokens[0] == ".help")
+	{
+		sendTextMessage("The current list of YOG Administrative Commands are: ", player);
+		for(int i=0; i<commands.size(); ++i)
+		{
+			sendTextMessage(commands[i]->getHelpMessage(), player);
+		}
+		sendTextMessage(".help    Shows this help message", player);
+	}
+	else
+	{
+		for(int i=0; i<commands.size(); ++i)
+		{
+			if(tokens[0] == commands[i]->getCommandName())
+			{
+				if(!commands[i]->doesMatch(tokens))
+				{
+					sendTextMessage(commands[i]->getHelpMessage(), player);
+				}
+				else
+				{
+					commands[i]->execute(server, this, tokens, player);
+				}
+			}
+		}
+	}
 	return false;
 }
 

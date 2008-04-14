@@ -370,6 +370,8 @@ Volledig Scherm
 Spel is vol
 [game shortcuts]
 Spel toetsen
+[Game]
+
 [general settings]
 Algemeen
 [go to event]
@@ -484,6 +486,8 @@ Speelveld laden
 
 [load]
 Laden
+[Lobby]
+
 [login]
 Aanmelden
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ De verbinding met de YOG is geweigerd omdat uw globulation2 client te oud is.
 De verbinding met de YOG server is zonder duidelijke verklaring geweigerd!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al bestaat.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door een vinkje te zetten voor "Registreer nieuwe gebruiker met wachtwoord".
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Je hebt gewonnen!
 Je %0 worden aangevallen
 [Your unit got converted to %0's team]
 Een eenheid van jou is overgelopen naar %0's team
+[Your username was banned]
+

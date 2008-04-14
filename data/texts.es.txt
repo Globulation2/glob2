@@ -370,6 +370,8 @@ Pantalla completa
 Juego Lleno
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Cargar Juego
 
 [load]
 Cargar
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ YOG metaserver ha rechazado  la conección porque tu cliente globulation 2 es ob
 YOG metaserver ha rechazado la conección sin explicación!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG ha rechazado  la conección porque tu nombre de usuario ya ha sido utilizado por alguien más.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 La Conección del Sistema  está lista para contactar al YOG metaserver para la conección.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Has ganado!
 Tu %0 están bajo ataque
 [Your unit got converted to %0's team]
 Tu unidad fué convertida a %0 del equipo
+[Your username was banned]
+

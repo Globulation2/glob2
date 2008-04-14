@@ -370,6 +370,8 @@ Teljes képernyő
 A játék megtelt
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Játék betöltése
 
 [load]
 Betölt
+[Lobby]
+
 [login]
 Bejelentkezés
 [Lost : %0 has more prestige than you]
@@ -1038,6 +1042,8 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verzió
 A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,3 +1060,5 @@ Megnyerted a játékot!
 Megtámadták a %0 -t
 [Your unit got converted to %0's team]
 Az egységedet az ellenség elfogta %0
+[Your username was banned]
+

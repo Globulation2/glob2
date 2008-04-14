@@ -18,10 +18,6 @@ V: Show vision for all buildings
 Add map
 [add shortcut]
 Add Shortcut
-[Game]
-Game
-[Lobby]
-Lobby
 [AI]
 AI
 [ai]
@@ -370,6 +366,8 @@ Fullscreen
 Game full
 [game shortcuts]
 Game Shortcuts
+[Game]
+Game
 [general settings]
 General Settings
 [go to event]
@@ -484,6 +482,8 @@ Load Map
 Load Script
 [load]
 Load
+[Lobby]
+Lobby
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1038,6 +1038,8 @@ The YOG metaserver has refused connection because your Globulation 2 client is o
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+The YOG metaserver had refused the connection because this username is banned. Please contact the administrators.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,3 +1056,5 @@ You where kicked from the game
 Your %0 are under attack
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
+[Your username was banned]
+Your username was banned. Please contact the administrators to have this changed.

@@ -370,6 +370,8 @@ Celá obrazovka
 Plné
 [game shortcuts]
 
+[Game]
+
 [general settings]
 Základ
 [go to event]
@@ -484,6 +486,8 @@ Nahrať hru
 
 [load]
 Nahrať
+[Lobby]
+
 [login]
 Prihlásenie
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ YOG metaserver odmietol spojenie, pretože je tvoj Globulation 2 klient zastaral
 YOG metaserver odmietol spojenie bez vysvetlenia!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Vyhral(a) si!
 Tvoji %0 čelia útoku
 [Your unit got converted to %0's team]
 Tvoja jednotka konvertovala k tímu %0
+[Your username was banned]
+

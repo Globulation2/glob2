@@ -370,6 +370,8 @@ Plein écran
 Jeu complet
 [game shortcuts]
 Raccourcis du jeu
+[Game]
+
 [general settings]
 Réglages généraux
 [go to event]
@@ -484,6 +486,8 @@ Charger la carte
 
 [load]
 Charger
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ Le metaserveur YOG a refusé la connexion car votre version de globulation2 est 
 Le metaserveur YOG a refusé la connexion pour une raison inconnue!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connexion car votre nom d'utilisateur est déjà utilisé par une autre personne.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Le système de connexion est prêt à contacter le metaserveur YOG pour se connecter.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Vous avez gagné!
 Vos %0 sont attaquées
 [Your unit got converted to %0's team]
 Votre unité est passée à l'équipe %0
+[Your username was banned]
+
