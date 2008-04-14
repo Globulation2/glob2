@@ -370,6 +370,8 @@ AIWarrush
 遊戲已滿
 [game shortcuts]
 遊戲快捷鍵
+[Game]
+
 [general settings]
 基本設定
 [go to event]
@@ -484,6 +486,8 @@ zh-tw
 
 [load]
 載入
+[Lobby]
+
 [login]
 登入
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
 YOG meta伺服器拒絕連線而沒有任何解釋!!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG meta伺服器拒絕連線因為你的用戶名已被使用。
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Ysagoon 線上遊戲
 你的 %0 正遭受攻擊
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
+[Your username was banned]
+

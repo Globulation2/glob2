@@ -370,6 +370,8 @@ Ecran întreg
 Joc complet
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Nivele
 
 [load]
 Încarcă
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1038,6 +1042,8 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulat
 Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de utilizator este deja utilizat de către o altă persoană.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,3 +1060,5 @@ Aţi câştigat!
 %0 voastre sunt atacate
 [Your unit got converted to %0's team]
 Unitatea voastră a trecut de partea %0
+[Your username was banned]
+

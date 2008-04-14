@@ -41,11 +41,6 @@ Player::Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMino
 :BasePlayer()
 {
 	bool success=load(stream, teams, versionMinor);
-	if (success)
-	{
-		fprintf(logFile, "!success\n");
-		fflush(logFile);
-	}
 	assert(success);
 }
 
@@ -128,7 +123,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 	if (memcmp(signature,"PLYb",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
-		fprintf(logFile, "Player::load: Signature missmatch at begin of Player\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -146,7 +140,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 	if (!success)
 	{
 		fprintf(stderr, "Player::load: Error during BasePlayer load\n");
-		fprintf(logFile, "Player::load: Error during BasePlayer load\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -161,7 +154,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 		if (!ai->load(stream, versionMinor))
 		{
 			fprintf(stderr, "Player::load: Error during AI load\n");
-			fprintf(logFile, "Player::load: Error during AI load\n");
 			stream->readLeaveSection();
 			return false;
 		}
@@ -176,7 +168,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 	if (memcmp(signature,"PLYe",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
-		fprintf(logFile, "Player::load: Signature missmatch at end of Player\n");
 		stream->readLeaveSection();
 		return false;
 	}

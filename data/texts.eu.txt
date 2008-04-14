@@ -370,6 +370,8 @@ Pantaila osoa
 Partida osorik
 [game shortcuts]
 Partida teklak
+[Game]
+
 [general settings]
 Ezarpen orokorrak
 [go to event]
@@ -484,6 +486,8 @@ Kargatu mapa
 
 [load]
 Kargatu
+[Lobby]
+
 [login]
 Saioa hasi
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ YOG metazerbitzariak estekatzea ukatu du zure globulation2 bezeroa zaharregia de
 YOG metazerbitzariak estekatzea ukatu du inolako azalpenik eman gabe!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek duelako.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Irabazi duzu!
 Zure %0ak erasopean daude
 [Your unit got converted to %0's team]
 Zure unitatea %0(r)en taldera pasatu da
+[Your username was banned]
+

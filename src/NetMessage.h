@@ -89,6 +89,7 @@ enum NetMessageType
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
+	MNetPlayerIsBanned,
 	//type_append_marker
 };
 
@@ -1708,6 +1709,33 @@ public:
 private:
 private:
 	YOGGameResult result;
+};
+
+
+
+
+///NetPlayerIsBanned this bassically tells the client that their username was banned by the administrators
+class NetPlayerIsBanned : public NetMessage
+{
+public:
+	///Creates a NetPlayerIsBanned message
+	NetPlayerIsBanned();
+
+	///Returns MNetPlayerIsBanned
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPlayerIsBanned message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPlayerIsBanned
+	bool operator==(const NetMessage& rhs) const;
 };
 
 

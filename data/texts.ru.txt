@@ -366,6 +366,8 @@ Ok
 Игра заполнена
 [game shortcuts]
 Игра
+[Game]
+
 [general settings]
 Общие
 [go to event]
@@ -482,6 +484,8 @@ left
 Загрузить
 [load]
 Загрузить карту
+[Lobby]
+
 [login]
 Вход
 [Lost : %0 has more prestige than you]
@@ -1036,6 +1040,8 @@ up
 Метасервер YOG отказал в соединении без объяснения причин!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Система соединения готова обратиться к метасерверу YOG за подключением.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1052,3 +1058,5 @@ Ysagoon-игра в Интернете
 %0 под ударом
 [Your unit got converted to %0's team]
 Ваш юнит перешёл к врагу %0
+[Your username was banned]
+

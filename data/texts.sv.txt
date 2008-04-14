@@ -370,6 +370,8 @@ Fullskärm
 Spelet är fullt
 [game shortcuts]
 Spelgenvägar
+[Game]
+
 [general settings]
 Allmänt
 [go to event]
@@ -484,6 +486,8 @@ Ladda Karta
 
 [load]
 Ladda
+[Lobby]
+
 [login]
 Logga in
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gamm
 YOG metaserver vägrar anslutning utan att lämna förklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Du har vunnit!
 Din %0 är under attack
 [Your unit got converted to %0's team]
 Din enhet blev omvänd till %0s lag
+[Your username was banned]
+

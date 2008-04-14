@@ -79,6 +79,8 @@ enum YOGLoginState
 	YOGClientVersionTooOld,
 	///This means that this username is already logged in
 	YOGAlreadyAuthenticated,
+	///This means that this username is banned
+	YOGUsernameBanned,
 };
 
 ///This represents the reason why the player could not join a game.

@@ -370,6 +370,8 @@ Tela completa
 Partida alotada
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Carregar partida
 
 [load]
 Carregar
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1038,6 +1042,8 @@ O metaservidor YOG tem rejeitado a conexão porque o cliente globulation2 é obs
 O metaservidor YOG tem rejeitado a conexão sem dar uma explicação.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 O metaservidor YOG tem rejeitado a conexão porque o nome de usuário está em uso.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 O sistema de conexão está pronto para contactar-se com o metaservidor YOG.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,3 +1060,5 @@ Jogo em linha com Ysagoon
 Seus %0 estão sendo atacados
 [Your unit got converted to %0's team]
 Uma unidade tem se passado ao bando de %0
+[Your username was banned]
+

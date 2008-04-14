@@ -370,6 +370,8 @@ Celotni zaslon
 Igra je polna
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Naloži igro
 
 [load]
 Naloži
+[Lobby]
+
 [login]
 Prijava
 [Lost : %0 has more prestige than you]
@@ -1038,6 +1042,8 @@ YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
 Yog metastrežnik je brezobrazložitve zavrnil povezavo!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,3 +1060,5 @@ Zmagal si!
 Tvoji %0 so napadeni
 [Your unit got converted to %0's team]
 Tvoje enote so bile spreobrnjene %0
+[Your username was banned]
+

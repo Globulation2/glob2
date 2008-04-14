@@ -370,6 +370,8 @@ Explorer Ratio
 Game full
 [game shortcuts]
 Game Shortcuts
+[Game]
+
 [general settings]
 اعدادات عامه
 [go to event]
@@ -484,6 +486,8 @@ ar
 
 [load]
 تحميل
+[Lobby]
+
 [login]
 اتصال
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ The YOG metaserver has refused connection because your globulation2 client is ob
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Ysagoon Online Gaming
 %0 تحت الهجوم
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
+[Your username was banned]
+

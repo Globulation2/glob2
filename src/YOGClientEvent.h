@@ -29,6 +29,7 @@ enum YOGClientEventType
 	YEConnectionLost,
 	YELoginAccepted,
 	YELoginRefused,
+	YEPlayerBanned,
 	//type_append_marker
 };
 
@@ -133,6 +134,26 @@ public:
 	YOGLoginState getReason() const;
 private:
 	YOGLoginState reason;
+};
+
+
+
+
+///YOGPlayerBannedEvent
+class YOGPlayerBannedEvent : public YOGClientEvent
+{
+public:
+	///Creates a YOGPlayerBannedEvent event
+	YOGPlayerBannedEvent();
+
+	///Returns YEPlayerBanned
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGClientEvent& rhs) const;
 };
 
 

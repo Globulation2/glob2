@@ -97,4 +97,8 @@
 // version 26 changed heavy updates to YOG in general
 // version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
 
+///This must be updated if changes to YOGPlayerStoredInfo, or YOGServerPasswordRegistry occur
+#define NET_DATA_VERSION 1
+// version 1 Created NET_DATA_VERSION
+
 #endif

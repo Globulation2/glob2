@@ -169,6 +169,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSendGameResult:
 		message.reset(new NetSendGameResult);
 		break;
+		case MNetPlayerIsBanned:
+		message.reset(new NetPlayerIsBanned);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -3374,6 +3377,57 @@ YOGGameResult NetSendGameResult::getGameResult() const
 	return result;
 }
 
+
+
+
+NetPlayerIsBanned::NetPlayerIsBanned()
+{
+
+}
+
+
+
+Uint8 NetPlayerIsBanned::getMessageType() const
+{
+	return MNetPlayerIsBanned;
+}
+
+
+
+void NetPlayerIsBanned::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPlayerIsBanned");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPlayerIsBanned::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPlayerIsBanned");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPlayerIsBanned::format() const
+{
+	std::ostringstream s;
+	s<<"NetPlayerIsBanned()";
+	return s.str();
+}
+
+
+
+bool NetPlayerIsBanned::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPlayerIsBanned))
+	{
+		//const NetPlayerIsBanned& r = dynamic_cast<const NetPlayerIsBanned&>(rhs);
+		return true;
+	}
+	return false;
+}
 
 
 //append_code_position

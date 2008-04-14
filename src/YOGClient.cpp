@@ -117,232 +117,234 @@ void YOGClient::update()
 		wasConnected=false;
 	}
 
-	if(nc.isConnected())
+	//If we need to send client information, send it
+	if(connectionState == NeedToSendClientInformation)
 	{
-		//If we need to send client information, send it
-		if(connectionState == NeedToSendClientInformation)
-		{
-			shared_ptr<NetSendClientInformation> message(new NetSendClientInformation);
-			nc.sendMessage(message);
-			connectionState = WaitingForServerInformation;
-		}
+		shared_ptr<NetSendClientInformation> message(new NetSendClientInformation);
+		nc.sendMessage(message);
+		connectionState = WaitingForServerInformation;
+	}
 
-		//Parse incoming messages and generate events
-		shared_ptr<NetMessage> message = nc.getMessage();
-		if(!message)
-			return;
-		Uint8 type = message->getMessageType();
-		//This recieves the server information
-		if(type==MNetSendServerInformation)
+	//Parse incoming messages and generate events
+	shared_ptr<NetMessage> message = nc.getMessage();
+	if(!message)
+		return;
+	Uint8 type = message->getMessageType();
+	//This recieves the server information
+	if(type==MNetSendServerInformation)
+	{
+		shared_ptr<NetSendServerInformation> info = static_pointer_cast<NetSendServerInformation>(message);
+		loginPolicy = info->getLoginPolicy();
+		gamePolicy = info->getGamePolicy();
+		playerID = info->getPlayerID();
+		shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
+		sendToListeners(event);
+		connectionState = WaitingForLoginInformation;
+	}
+	//This recieves a login acceptance message
+	if(type==MNetLoginSuccessful)
+	{
+		shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
+		connectionState = ClientOnStandby;
+		loginState = YOGLoginSuccessful;
+		shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
+		sendToListeners(event);
+		
+		//Set the local p2p port
+		int port = p2pconnection->getPort();
+		shared_ptr<NetSetPlayerLocalPort> message(new NetSetPlayerLocalPort(port));
+		sendNetMessage(message);
+	}
+	//This recieves a login refusal message
+	if(type==MNetRefuseLogin)
+	{
+		shared_ptr<NetRefuseLogin> info = static_pointer_cast<NetRefuseLogin>(message);
+		connectionState = WaitingForLoginInformation;
+		loginState = info->getRefusalReason();
+		shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+		sendToListeners(event);
+	}
+	//This recieves a registration acceptance message
+	if(type==MNetAcceptRegistration)
+	{
+		shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
+		connectionState = ClientOnStandby;
+		loginState = YOGLoginSuccessful;
+		shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
+		sendToListeners(event);
+	}
+	//This recieves a regisration refusal message
+	if(type==MNetRefuseRegistration)
+	{
+		shared_ptr<NetRefuseRegistration> info = static_pointer_cast<NetRefuseRegistration>(message);
+		connectionState = WaitingForLoginInformation;
+		loginState = info->getRefusalReason();
+		shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+		sendToListeners(event);
+	}
+	///This recieves a game list update message
+	if(type==MNetUpdateGameList)
+	{
+		if(gameListManager)
+			gameListManager->recieveMessage(message);
+	}
+	///This recieves a player list update message
+	if(type==MNetUpdatePlayerList)
+	{
+		if(playerListManager)
+			playerListManager->recieveMessage(message);
+	}
+	///This recieves a YOGMessage list update message
+	if(type==MNetSendYOGMessage)
+	{
+		shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
+		if(chatChannels.find(yogmessage->getChannel()) != chatChannels.end())
 		{
-			shared_ptr<NetSendServerInformation> info = static_pointer_cast<NetSendServerInformation>(message);
-			loginPolicy = info->getLoginPolicy();
-			gamePolicy = info->getGamePolicy();
-			playerID = info->getPlayerID();
-			shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
-			sendToListeners(event);
-			connectionState = WaitingForLoginInformation;
+			chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
 		}
-		//This recieves a login acceptance message
-		if(type==MNetLoginSuccessful)
+		else
 		{
-			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
-			connectionState = ClientOnStandby;
-			loginState = YOGLoginSuccessful;
-			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
-			sendToListeners(event);
-			
-			//Set the local p2p port
-			int port = p2pconnection->getPort();
-			shared_ptr<NetSetPlayerLocalPort> message(new NetSetPlayerLocalPort(port));
-			sendNetMessage(message);
+			std::cerr<<"Recieved YOGMessage on a channel without a local YOGClientChatChannel"<<std::endl;
 		}
-		//This recieves a login refusal message
-		if(type==MNetRefuseLogin)
-		{
-			shared_ptr<NetRefuseLogin> info = static_pointer_cast<NetRefuseLogin>(message);
-			connectionState = WaitingForLoginInformation;
-			loginState = info->getRefusalReason();
-			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
-			sendToListeners(event);
-		}
-		//This recieves a registration acceptance message
-		if(type==MNetAcceptRegistration)
-		{
-			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
-			connectionState = ClientOnStandby;
-			loginState = YOGLoginSuccessful;
-			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
-			sendToListeners(event);
-		}
-		//This recieves a regisration refusal message
-		if(type==MNetRefuseRegistration)
-		{
-			shared_ptr<NetRefuseRegistration> info = static_pointer_cast<NetRefuseRegistration>(message);
-			connectionState = WaitingForLoginInformation;
-			loginState = info->getRefusalReason();
-			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
-			sendToListeners(event);
-		}
-		///This recieves a game list update message
-		if(type==MNetUpdateGameList)
-		{
-			if(gameListManager)
-				gameListManager->recieveMessage(message);
-		}
-		///This recieves a player list update message
-		if(type==MNetUpdatePlayerList)
-		{
-			if(playerListManager)
-				playerListManager->recieveMessage(message);
-		}
-		///This recieves a YOGMessage list update message
-		if(type==MNetSendYOGMessage)
-		{
-			shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
-			if(chatChannels.find(yogmessage->getChannel()) != chatChannels.end())
-			{
-				chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
-			}
-			else
-			{
-				std::cerr<<"Recieved YOGMessage on a channel without a local YOGClientChatChannel"<<std::endl;
-			}
-		}
+	}
 
-		if(type==MNetCreateGameAccepted)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetCreateGameRefused)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetGameJoinAccepted)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetGameJoinRefused)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetSendMapHeader)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetSendGameHeader)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetSendGamePlayerInfo)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetStartGame)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetRefuseGameStart)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetSendOrder)
-		{
-			//ignore orders for when there is no joined game,
-			//say, the leftover orders in transit after a player
-			//quits a game
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetRequestMap)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetKickPlayer)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetReadyToLaunch)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetEveryoneReadyToLaunch)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetNotEveryoneReadyToLaunch)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetSetLatencyMode)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type == MNetPlayerJoinsGame)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type == MNetAddAI)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type == MNetRemoveAI)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type == MNetChangePlayersTeam)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type == MNetSendReteamingInformation)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetSendFileInformation)
-		{
-			if(assembler)
-				assembler->handleMessage(message);
-		}
-		if(type==MNetRequestNextChunk)
-		{
-			if(assembler)
-				assembler->handleMessage(message);
-		}
-		if(type==MNetSendFileChunk)
-		{
-			if(assembler)
-				assembler->handleMessage(message);
-		}
-		if(type == MNetPing)
-		{
-			shared_ptr<NetPingReply> event(new NetPingReply);
-			nc.sendMessage(event);
-		}
-		if(type == MNetSendP2PInformation)
-		{
-			if(p2pconnection)
-				p2pconnection->recieveMessage(message);
-		}
+	if(type==MNetCreateGameAccepted)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetCreateGameRefused)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetGameJoinAccepted)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetGameJoinRefused)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendMapHeader)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendGameHeader)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendGamePlayerInfo)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetStartGame)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetRefuseGameStart)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendOrder)
+	{
+		//ignore orders for when there is no joined game,
+		//say, the leftover orders in transit after a player
+		//quits a game
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetRequestMap)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetKickPlayer)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetReadyToLaunch)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetEveryoneReadyToLaunch)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetNotEveryoneReadyToLaunch)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSetLatencyMode)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type == MNetPlayerJoinsGame)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type == MNetAddAI)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type == MNetRemoveAI)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type == MNetChangePlayersTeam)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type == MNetSendReteamingInformation)
+	{
+		if(joinedGame)
+			joinedGame->recieveMessage(message);
+	}
+	if(type==MNetSendFileInformation)
+	{
+		if(assembler)
+			assembler->handleMessage(message);
+	}
+	if(type==MNetRequestNextChunk)
+	{
+		if(assembler)
+			assembler->handleMessage(message);
+	}
+	if(type==MNetSendFileChunk)
+	{
+		if(assembler)
+			assembler->handleMessage(message);
+	}
+	if(type == MNetPing)
+	{
+		shared_ptr<NetPingReply> event(new NetPingReply);
+		nc.sendMessage(event);
+	}
+	if(type == MNetSendP2PInformation)
+	{
+		if(p2pconnection)
+			p2pconnection->recieveMessage(message);
+	}
+	if(type == MNetPlayerIsBanned)
+	{
+		shared_ptr<YOGPlayerBannedEvent> event(new YOGPlayerBannedEvent);
+		sendToListeners(event);
 	}
 }
 

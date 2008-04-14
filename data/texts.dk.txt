@@ -370,6 +370,8 @@ Fuld sk√¶rm tilstand
 Spillet er fyldt op.
 [game shortcuts]
 Gem genveje
+[Game]
+
 [general settings]
 Generelt
 [go to event]
@@ -484,6 +486,8 @@ Hent bane
 
 [load]
 hent
+[Lobby]
+
 [login]
 Log ind
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ YOG-metaserveren har afbrudt forbindelsen, fordi din Globulation2-klient er for√
 YOG-metaserveren har afbrudt forbindelsen uden en forklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i brug af en anden.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Du har vundet!
 Dine %0 er under angreb
 [Your unit got converted to %0's team]
 En af dine enheder blev konverteret til et %0 hold
+[Your username was banned]
+

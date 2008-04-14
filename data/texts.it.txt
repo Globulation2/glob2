@@ -364,6 +364,8 @@ Schermo intero
 Partita al completo
 [game shortcuts]
 Scorciatoie da tastiera
+[Game]
+
 [general settings]
 Impostazioni generali
 [go to event]
@@ -478,6 +480,8 @@ Carica Mappa
 
 [load]
 Carica
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1030,6 +1034,8 @@ Il metaserver YOG ha rifiutato la connessione perchè la versione di Globulation
 Il metaserver YOG ha respinto la connessione senza spiegazione!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Il metaserver YOG ha rifiutato la tua connessione perchè il tuo username è già in uso da qualcun altro.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Il sistema di connessione è in attesa del metaserver YOG per la connessione.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1046,3 +1052,5 @@ Sei stato espulso dalla partita
 Il tuo %0 è sotto attacco
 [Your unit got converted to %0's team]
 La tua unità è stata convertita alla squadra di %0
+[Your username was banned]
+

@@ -370,6 +370,8 @@ Tam ekran
 Oyun dolu
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Oyun yukle
 
 [load]
 Yukle
+[Lobby]
+
 [login]
 Giris
 [Lost : %0 has more prestige than you]
@@ -1040,6 +1044,8 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
 YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1056,3 +1062,5 @@ Kazandiniz!
 %0 'leriniz saldiri altinda
 [Your unit got converted to %0's team]
 Bir biriminiz %0 'nin tarafina gecti
+[Your username was banned]
+

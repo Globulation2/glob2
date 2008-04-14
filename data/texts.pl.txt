@@ -370,6 +370,8 @@ PeĹny ekran
 Komplet graczy
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Załaduj grę
 
 [load]
 Ładuj
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -1038,6 +1042,8 @@ Metaserwer YOG odmówił połączenia, ponieważ Twoja wersja Globulation 2 jest
 Metaserwer YOG odmĂłwiĹ poĹÄczenia bez dalszego wyjaĹnienia.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Metaserwer YOG odmówił połączenia, ponieważ twój login jest już zajęty przez kogoś innego.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 System jest gotowy do połączenia z metaserwerem YOG.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,3 +1060,5 @@ Wygrałeś !!!
 Twój %0 jest atakowany
 [Your unit got converted to %0's team]
 Twoja jednostka została przeciągnięta na stronę wroga %0
+[Your username was banned]
+

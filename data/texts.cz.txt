@@ -370,6 +370,8 @@ Fullscreen
 Plně obsazená hra
 [game shortcuts]
 
+[Game]
+
 [general settings]
 
 [go to event]
@@ -484,6 +486,8 @@ Nahrát hru
 
 [load]
 Nahrát
+[Lobby]
+
 [login]
 Přihlásit
 [Lost : %0 has more prestige than you]
@@ -1038,6 +1042,8 @@ YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globula
 YOG metaserver odmítnul spojení bez udání důvodu.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Systém připojení je připraven na kontakt s YOG metaserverem.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,3 +1060,5 @@ Vyhrál jsi!
 Tvoji %0 jsou pod útokem
 [Your unit got converted to %0's team]
 Tva jednotka změnila víru v jiného hráče %0
+[Your username was banned]
+
