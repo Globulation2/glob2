@@ -87,9 +87,6 @@ public:
 
 public:
 	bool disableRecursiveDestruction;
-	
-public:
-	FILE *logFile;
 };
 
 #endif
