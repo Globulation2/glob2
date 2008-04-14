@@ -1,4 +1,6 @@
 /*
+  Copyright (C) 2008 Bradley Arsenault
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -17,44 +19,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __TYPES_H
-#define __TYPES_H
+#include "AI.h"
 
-#ifndef DX9_BACKEND
-#include <SDL_net.h>
-#endif
-
-#ifdef DX9_BACKEND
-
-#include <windows.h>
-
-// Some typedefs replacing the SDL stuff
-typedef unsigned char Uint8;
-typedef unsigned short Uint16;
-typedef unsigned int Uint32;
-typedef unsigned __int64 Uint64;
-typedef char Sint8;
-typedef short Sint16;
-typedef int Sint32;
-typedef __int64 Sint64;
-
-#define SDL_SwapBE32 htonl
-#define SDL_SwapBE16 htons
-
-struct SDL_RWops { };
-struct IPaddress { };
-struct UDPsocket { };
-
-struct SDL_Rect		// TODO: Well, guess what :-)
+namespace AINames
 {
-	int x,y,w,h;
-};
-
-struct SDL_Event { };
-#endif
-
-namespace GAGCore
-{
+	std::string getAIText(int id);
 }
-
-#endif
