@@ -7,13 +7,25 @@ GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  KeyPress.cpp
 Sprite.cpp          StreamBackend.cpp     Stream.cpp        StreamFilter.cpp
 StringTable.cpp     SupportFunctions.cpp  TextStream.cpp    Toolkit.cpp
 TrueTypeFont.cpp    win32_dirent.cpp GUITabScreen.cpp GUITabScreenWindow.cpp""")
-    
-    
+
+libgag_just_server = Split("""
+
+BinaryStream.cpp     Stream.cpp     FileManager.cpp   FormatableString.cpp
+TextStream.cpp      StreamFilter.cpp   StreamBackend.cpp StringTable.cpp  Toolkit.cpp
+""")
+
     
 Import("env")
-l = env.StaticLibrary("gag", libgag_sources)
-Default(l)
-    
+l1 = env.StaticLibrary("gag", libgag_sources)
+
+l2 = env.StaticLibrary("gag_server", libgag_just_server)
+
+
+if not env['server']:
+    Default(l1)
+else:
+    Default(l2)
+
     
 Import("env")
 Import("PackTar")

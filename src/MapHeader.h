@@ -124,4 +124,10 @@ private:
 	std::string mapName;
 };
 
+
+//! extract the user-visible name from a glob2 map filename, return empty string if filename is an invalid glob2 map
+std::string glob2FilenameToName(const std::string& filename);
+//! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
+std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
+
 #endif
