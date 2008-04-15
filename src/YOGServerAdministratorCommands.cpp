@@ -318,7 +318,7 @@ void YOGBanIP::execute(YOGServer* server, YOGServerAdministrator* admin, const s
 	boost::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
 	if(nplayer)
 	{
-		boost::posix_time::ptime unban_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(1);
+		boost::posix_time::ptime unban_time = boost::posix_time::second_clock::local_time() + boost::posix_time::hours(24);
 		server->getServerBannedIPListManager().addBannedIP(nplayer->getPlayerIP(), unban_time);
 		boost::shared_ptr<NetIPIsBanned> send(new NetIPIsBanned);
 		nplayer->sendMessage(send);
@@ -328,6 +328,85 @@ void YOGBanIP::execute(YOGServer* server, YOGServerAdministrator* admin, const s
 	else
 	{
 		admin->sendTextMessage("Player not logged in to ban: "+name, player);
+	}
+}
+
+
+
+std::string YOGAddAdministrator::getHelpMessage()
+{
+	return ".add_administrator <playername>    Sets the player as an administrator";
+}
+
+
+
+std::string YOGAddAdministrator::getCommandName()
+{
+	return ".add_administrator";
+}
+
+
+
+bool YOGAddAdministrator::doesMatch(const std::vector<std::string>& tokens)
+{
+	if(tokens.size() != 2)
+		return false;
+	return true;
+}
+
+
+
+void YOGAddAdministrator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+{
+	std::string name = tokens[1];
+	
+	if(server->getAdministratorList().isAdministrator(name))
+	{
+		admin->sendTextMessage("Player "+name+" is already an admin.", player);
+	}
+	else
+	{
+		server->getAdministratorList().addAdministrator(name);
+		admin->sendTextMessage("Player "+name+" is now an admin.", player);
+	}
+}
+
+
+
+std::string YOGRemoveAdministrator::getHelpMessage()
+{
+	return ".remove_administrator <playername>    Removes administrator status from the player";
+}
+
+
+
+std::string YOGRemoveAdministrator::getCommandName()
+{
+	return ".remove_administrator";
+}
+
+
+
+bool YOGRemoveAdministrator::doesMatch(const std::vector<std::string>& tokens)
+{
+	if(tokens.size() != 2)
+		return false;
+	return true;
+}
+
+
+
+void YOGRemoveAdministrator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+{
+	std::string name = tokens[1];
+	if(server->getAdministratorList().isAdministrator(name))
+	{
+		admin->sendTextMessage("Player "+name+" is no longer an admin.", player);
+		server->getAdministratorList().removeAdministrator(name);
+	}
+	else
+	{
+		admin->sendTextMessage("Player "+name+" is not an admin.", player);
 	}
 }
 
