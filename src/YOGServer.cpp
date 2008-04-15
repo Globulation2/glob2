@@ -86,6 +86,7 @@ void YOGServer::update()
 	{
 		if(i->second->isEmpty())
 		{
+			i->second->sendGameResultsToGameLog();
 			removeGameInfo(i->second->getGameID());
 			std::map<Uint16, shared_ptr<YOGServerGame> >::iterator to_erase=i;
 			i++;
@@ -108,6 +109,7 @@ void YOGServer::update()
 	
 	playerInfos.update();
 	bannedIPs.update();
+	gameLog.update();
 	
 	int t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
@@ -406,6 +408,13 @@ YOGServerPasswordRegistry& YOGServer::getServerPasswordRegistry()
 YOGServerBannedIPListManager& YOGServer::getServerBannedIPListManager()
 {
 	return bannedIPs;
+}
+
+
+
+YOGServerGameLog& YOGServer::getGameLog()
+{
+	return gameLog;
 }
 
 
