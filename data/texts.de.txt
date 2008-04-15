@@ -1028,6 +1028,8 @@ Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon re
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Passwort falsch ist.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch nicht registriert ist. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation 2 zu alt ist.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1050,6 +1052,8 @@ Sie haben gewonnen!
 
 [Your %0 are under attack]
 Eure %0 werden angegriffen
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Eine Ihrer Einheiten wurde von einem %0-Team übernommen.
 [Your username was banned]

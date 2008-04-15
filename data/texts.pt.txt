@@ -1036,6 +1036,8 @@ O metaservidor YOG tem rejeitado a conexão porque este usuário já tem sido re
 O metaservidor YOG tem rejeitado a conexão porque a contrasenha fornecida é incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 O metaservidor YOG tem rejeitado a conexão porque  usuário aínda não tem uma contrasenha. Active por uma vez a opção "Registrar um novo usuário de YOG com contrasenha".
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 O metaservidor YOG tem rejeitado a conexão porque o cliente globulation2 é obsoleto.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1058,6 +1060,8 @@ Jogo em linha com Ysagoon
 
 [Your %0 are under attack]
 Seus %0 estão sendo atacados
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Uma unidade tem se passado ao bando de %0
 [Your username was banned]

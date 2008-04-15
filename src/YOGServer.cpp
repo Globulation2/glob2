@@ -107,6 +107,7 @@ void YOGServer::update()
 	}
 	
 	playerInfos.update();
+	bannedIPs.update();
 	
 	int t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
@@ -167,7 +168,7 @@ YOGGamePolicy YOGServer::getGamePolicy() const
 
 
 
-YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version)
+YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version)
 {
 	if(version < NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
@@ -181,6 +182,10 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 		{
 			return YOGUsernameBanned;
 		}
+	}
+	if(bannedIPs.isIPBanned(ip))
+	{
+		return YOGIPAddressBanned;
 	}
 
 	///check if the player is already logged in
@@ -197,12 +202,17 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 
 
 
-YOGLoginState YOGServer::registerInformation(const std::string& username, const std::string& password, Uint16 version)
+YOGLoginState YOGServer::registerInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version)
 {
 	if(version < NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
+	
+	if(bannedIPs.isIPBanned(ip))
+	{
+		return YOGIPAddressBanned;
+	}
 	return registry.registerInformation(username, password);
 }
 
@@ -389,6 +399,13 @@ YOGServerPlayerStoredInfoManager& YOGServer::getPlayerStoredInfoManager()
 YOGServerPasswordRegistry& YOGServer::getServerPasswordRegistry()
 {
 	return registry;
+}
+
+
+
+YOGServerBannedIPListManager& YOGServer::getServerBannedIPListManager()
+{
+	return bannedIPs;
 }
 
 

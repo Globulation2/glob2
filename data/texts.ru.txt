@@ -1034,6 +1034,8 @@ up
 Метасервер YOG отказал в соединении, потому что вы указали неверный пароль.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Метасервер YOG отказал в соединении, потому что данному имени пользователя ещё не соответствует пароль. Вероятно, Вы хотите зарегистрировать это имя с этим паролем. Поэтому, активируйте опцию "Зарегистрировать нового пользователя YOG с паролем" перед тем, как соединяться. Вам придётся сделать это только один раз.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Метасервер YOG отказал в соединении, потому что Ваша версия Globulation 2 устарела. Пожалуйста, возьмите последнюю версию с www.globulation2.org чтобы сыграть online.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1056,6 +1058,8 @@ Ysagoon-игра в Интернете
 Вас выкинули из игры
 [Your %0 are under attack]
 %0 под ударом
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Ваш юнит перешёл к врагу %0
 [Your username was banned]

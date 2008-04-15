@@ -1038,6 +1038,8 @@ YOG metaserver vägrar anslutning därför att användarnamnet redan är registr
 YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt lösenord.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver vägrar anslutning därför att det här användarnamnet inte har ett lösenord. Du vill förmodligen registrera ditt användarnamn med det här lösenordet. Aktivera därför inställningen "Registrera en ny YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den inställningen en gång.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Du har vunnit!
 
 [Your %0 are under attack]
 Din %0 är under attack
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Din enhet blev omvänd till %0s lag
 [Your username was banned]

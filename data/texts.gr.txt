@@ -1040,6 +1040,8 @@ Tutorial
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ο κωδικός που δώσατε ήταν λάνθασμενος.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη δεν έχει ακόμα κωδικό. Πιθανόν θέλετε να καταχωρήσετε αυτό το όνομα χρήστη με αυτό τον κωδικό. Γι' αυτό, ενεργοποιήστε την επιλογή "Καταχώρηση νέου YOG χρήστη με κωδικό" πριν συνδεθείτε. Θα πρέπει να ενεργοποιήσετε αυτή την επιλογή μόνο μία φορά.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το globulation2 client σας είναι παλιό.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1062,6 +1064,8 @@ Ysagoon Online Gaming
 
 [Your %0 are under attack]
 Το %0 δέχετε επίθεση
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Η μονάδα σας άλλαξε σε %0 ομάδα
 [Your username was banned]

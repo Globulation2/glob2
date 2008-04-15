@@ -1038,6 +1038,8 @@ The YOG metaserver has refused connection because this username has already been
 The YOG metaserver has refused connection because the supplied password was incorrect.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG metaserver has refused connection because your globulation2 client is obsolete.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Ysagoon Online Gaming
 
 [Your %0 are under attack]
 %0 تحت الهجوم
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
 [Your username was banned]

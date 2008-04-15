@@ -79,7 +79,7 @@ void YOGServerPlayer::update()
 		shared_ptr<NetAttemptLogin> info = static_pointer_cast<NetAttemptLogin>(message);
 		std::string username = info->getUsername();
 		std::string password = info->getPassword();
-		loginState = server.verifyLoginInformation(username, password, netVersion);
+		loginState = server.verifyLoginInformation(username, password, getPlayerIP(), netVersion);
 		if(loginState == YOGLoginSuccessful)
 		{
 			server.playerHasLoggedIn(username, playerID);
@@ -99,7 +99,7 @@ void YOGServerPlayer::update()
 		shared_ptr<NetAttemptRegistration> info = static_pointer_cast<NetAttemptRegistration>(message);
 		std::string username = info->getUsername();
 		std::string password = info->getPassword();
-		loginState = server.registerInformation(username, password, netVersion);
+		loginState = server.registerInformation(username, password, getPlayerIP(), netVersion);
 		if(loginState == YOGLoginSuccessful)
 		{
 			server.playerHasLoggedIn(username, playerID);

@@ -1038,6 +1038,8 @@ YOG metaserver odmietol spojenie, pretože toto meno a heslo sú už zaregistrov
 YOG metaserver odmietol spojenie, pretože bolo zadané zlé heslo.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver odmietol spojenie, pretože toto meno ešte nemá nastavené heslo. Najprv je potrebné meno a heslo zaregistrovať. Preto aktivuj možnosť  "Zaregistrovať nové YOG meno s heslom" a až potom sa pokús pripojiť. Toto je potrebné swpraviť len raz.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver odmietol spojenie, pretože je tvoj Globulation 2 klient zastaralý.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Vyhral(a) si!
 
 [Your %0 are under attack]
 Tvoji %0 čelia útoku
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Tvoja jednotka konvertovala k tímu %0
 [Your username was banned]

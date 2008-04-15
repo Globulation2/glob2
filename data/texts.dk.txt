@@ -1038,6 +1038,8 @@ YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn er allerede reg
 YOG-metaserveren har afbrudt forbindelsen fordi den indtastede adgangskode er forkert.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn har
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG-metaserveren har afbrudt forbindelsen, fordi din Globulation2-klient er forældet.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Du har vundet!
 
 [Your %0 are under attack]
 Dine %0 er under angreb
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 En af dine enheder blev konverteret til et %0 hold
 [Your username was banned]

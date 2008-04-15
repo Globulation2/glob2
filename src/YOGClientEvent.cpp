@@ -193,4 +193,37 @@ bool YOGPlayerBannedEvent::operator==(const YOGClientEvent& rhs) const
 }
 
 
+YOGIPBannedEvent::YOGIPBannedEvent()
+{
+}
+
+
+
+Uint8 YOGIPBannedEvent::getEventType() const
+{
+	return YEIPBanned;
+}
+
+
+
+std::string YOGIPBannedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGIPBannedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGIPBannedEvent::operator==(const YOGClientEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGIPBannedEvent))
+	{
+		//const YOGIPBannedEvent& r = dynamic_cast<const YOGIPBannedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

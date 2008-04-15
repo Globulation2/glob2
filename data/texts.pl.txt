@@ -1036,6 +1036,8 @@ Połączenie z YOG zostało utracone.
 Metaserwer YOG odmówił połączenia z powodu błędnego hasła.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserwer YOG odmówił połączenia, ponieważ Twoja wersja Globulation 2 jest zbyt stara, by mógł się z nią komunikować.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1058,6 +1060,8 @@ Wygrałeś !!!
 
 [Your %0 are under attack]
 Twój %0 jest atakowany
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Twoja jednostka została przeciągnięta na stronę wroga %0
 [Your username was banned]
