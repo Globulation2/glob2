@@ -32,6 +32,7 @@
 #include "YOGServerAdministrator.h"
 #include "YOGServerAdministratorList.h"
 #include "YOGServerPlayerStoredInfoManager.h"
+#include "YOGServerGameLog.h"
 
 
 class NetBroadcaster;
@@ -139,7 +140,11 @@ public:
 	
 	///Returns the YOGServerBannedIPListManager
 	YOGServerBannedIPListManager& getServerBannedIPListManager();
+	
+	///Returns the YOGServerGameLog
+	YOGServerGameLog& getGameLog();
 private:
+	///This looks for a free player id to assign to the player
 	Uint16 chooseNewPlayerID();
 
 	///Removes the GameInfo with the given ID
@@ -168,6 +173,7 @@ private:
 	YOGServerAdministratorList adminList;
 	YOGServerPlayerStoredInfoManager playerInfos;
 	YOGServerBannedIPListManager bannedIPs;
+	YOGServerGameLog gameLog;
 };
 
 #endif

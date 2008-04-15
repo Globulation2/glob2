@@ -132,7 +132,6 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 	chooseLatencyMode();
 
 	server.getGameInfo(gameID).setPlayersJoined(players.size());
-	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -146,7 +145,6 @@ void YOGServerGame::addAIPlayer(AI::ImplementitionID type)
 
 	aiNum+=1;
 	server.getGameInfo(gameID).setAIJoined(aiNum);
-	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -180,7 +178,7 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 	else
 	{
 		setPlayerGameResult(player, YOGGameResultConnectionLost);
-	};
+	}
 
 	p2p.removePlayer(player);
 
@@ -196,7 +194,6 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 	chooseLatencyMode();
 
 	server.getGameInfo(gameID).setPlayersJoined(players.size());
-	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -210,7 +207,6 @@ void YOGServerGame::removeAIPlayer(int playerNum)
 
 	aiNum-=1;
 	server.getGameInfo(gameID).setAIJoined(aiNum);
-	gameResults.setNumberOfPlayers(aiNum + players.size());
 }
 
 
@@ -415,17 +411,19 @@ void YOGServerGame::chooseLatencyMode()
 
 void YOGServerGame::setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result)
 {
-	for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
+	if(gameResults.getGameResultState(sender->getPlayerName()) == YOGGameResultUnknown)
 	{
-		if(gameHeader.getBasePlayer(i).playerID == sender->getPlayerID())
-		{
-			if(gameResults.getGameResultState(i) == YOGGameResultUnknown)
-			{
-				std::cout<<"player "<<i<<" result is "<<result<<std::endl;
-				gameResults.setGameResultState(i, result);
-			}
-		}
+		gameResults.setGameResultState(sender->getPlayerName(), result);
 	}
 }
 
+
+
+void YOGServerGame::sendGameResultsToGameLog()
+{
+	if(gameStarted)
+	{
+		server.getGameLog().addGameResults(gameResults);
+	}
+}
 
