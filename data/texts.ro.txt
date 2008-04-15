@@ -1036,6 +1036,8 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că qcest nume de utiliza
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că parola este falsă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că acest utilizator nu are înca o parola in baza de date.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulation2 pe care o folosiţi este prea veche pentru a se putea comunica corect.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1058,6 +1060,8 @@ Aţi câştigat!
 
 [Your %0 are under attack]
 %0 voastre sunt atacate
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Unitatea voastră a trecut de partea %0
 [Your username was banned]

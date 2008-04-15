@@ -241,7 +241,11 @@ void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent
 	}
 	else if(type == YEPlayerBanned)
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[Ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[ok]"));
+	}
+	else if(type == YEIPBanned)
+	{
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your IP address was temporarily banned]"), Toolkit::getStringTable()->getString("[ok]"));
 	}
 }
 

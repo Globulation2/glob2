@@ -1038,6 +1038,8 @@ YOG metazerbitzariak estekatzea ukatu du erabiltzaile izen hau jada hartuta dago
 YOG metazerbitzariak estekatzea ukatu du zure pasahitza gaizki dagoelako.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metazerbitzariak estekatzea ukatu du zerabiltzaile izen honek ez duelako pasahitzik oraindik. Ziur aski izena eman nahi duzu. Kasu hortan, markatu "YOG erabiltzaile gisa izena eman pasahitza barne" konektatu aurretik. Aukera hau behin bakarrik markatu beharko duzu.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metazerbitzariak estekatzea ukatu du zure globulation2 bezeroa zaharregia delako.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Irabazi duzu!
 
 [Your %0 are under attack]
 Zure %0ak erasopean daude
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Zure unitatea %0(r)en taldera pasatu da
 [Your username was banned]

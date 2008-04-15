@@ -1032,6 +1032,8 @@ The YOG metaserver has refused connection because this username has already been
 The YOG metaserver has refused connection because the supplied password was incorrect.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+The YOG metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1039,7 +1041,7 @@ The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-The YOG metaserver had refused the connection because this username is banned. Please contact the administrators.
+The YOG metaserver has refused the connection because this username is banned. Please contact the administrators.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,6 +1056,8 @@ You have won!
 You where kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
+[Your IP address was temporarily banned]
+Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
 [Your username was banned]

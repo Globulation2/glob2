@@ -30,6 +30,7 @@ enum YOGClientEventType
 	YELoginAccepted,
 	YELoginRefused,
 	YEPlayerBanned,
+	YEIPBanned,
 	//type_append_marker
 };
 
@@ -147,6 +148,26 @@ public:
 	YOGPlayerBannedEvent();
 
 	///Returns YEPlayerBanned
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two YOGEvent
+	bool operator==(const YOGClientEvent& rhs) const;
+};
+
+
+
+
+///YOGIPBannedEvent
+class YOGIPBannedEvent : public YOGClientEvent
+{
+public:
+	///Creates a YOGIPBannedEvent event
+	YOGIPBannedEvent();
+
+	///Returns YEIPBanned
 	Uint8 getEventType() const;
 
 	///Returns a formatted version of the event
