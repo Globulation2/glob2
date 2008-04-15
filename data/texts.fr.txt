@@ -1038,6 +1038,8 @@ Le metaserveur YOG a refusé la connexion car ce nom d'utilisateur a déjà ét�
 Le metaserveur YOG a refusé la connexion car le mot de passe est faux.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Le metaserveur YOG a refusé la connexion car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregistrer votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connexion car votre version de globulation2 est trop ancienne pour communiquer avec.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Vous avez gagné!
 
 [Your %0 are under attack]
 Vos %0 sont attaquées
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Votre unité est passée à l'équipe %0
 [Your username was banned]

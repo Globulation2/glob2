@@ -33,6 +33,7 @@ YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 	commands.push_back(new YOGBanPlayer);
 	commands.push_back(new YOGUnbanPlayer);
 	commands.push_back(new YOGShowBannedPlayers);
+	commands.push_back(new YOGBanIP);
 }
 
 

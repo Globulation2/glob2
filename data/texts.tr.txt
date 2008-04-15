@@ -1038,6 +1038,8 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi zaten kayitli.  Eg
 YOG onsunucusu baglantiyi reddetti. Gerekce: Girdiginiz sifre yanlis.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adinin henuz bir parolasi yok. Muhtemelen kullanici adinizi bu parola ile kaydetmek istiyorsunuz. O halde, baglanmadan once "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini aktiflestirin. Bu secenegi yalnizca bir kez aktiflestirmeniz yeterli olacaktir.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Kazandiniz!
 
 [Your %0 are under attack]
 %0 'leriniz saldiri altinda
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Bir biriminiz %0 'nin tarafina gecti
 [Your username was banned]

@@ -90,6 +90,7 @@ enum NetMessageType
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
 	MNetPlayerIsBanned,
+	MNetIPIsBanned,
 	//type_append_marker
 };
 
@@ -1735,6 +1736,33 @@ public:
 	std::string format() const;
 
 	///Compares with another NetPlayerIsBanned
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetIPIsBanned
+class NetIPIsBanned : public NetMessage
+{
+public:
+	///Creates a NetIPIsBanned message
+	NetIPIsBanned();
+
+	///Returns MNetIPIsBanned
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetIPIsBanned message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetIPIsBanned
 	bool operator==(const NetMessage& rhs) const;
 };
 

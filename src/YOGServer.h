@@ -26,6 +26,7 @@
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
 #include "YOGPlayerSessionInfo.h"
+#include "YOGServerBannedIPListManager.h"
 #include "YOGServerChatChannelManager.h"
 #include "YOGServerPasswordRegistry.h"
 #include "YOGServerAdministrator.h"
@@ -74,10 +75,10 @@ public:
 	YOGGamePolicy getGamePolicy() const;
 
 	///Returns whether the users password is correct.
-	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version);
+	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
 	
 	///This reigsters a new user
-	YOGLoginState registerInformation(const std::string& username, const std::string& password, Uint16 version);
+	YOGLoginState registerInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
 
 	///Returns the list of games the server currently has
 	const std::list<YOGGameInfo>& getGameList() const;
@@ -135,6 +136,9 @@ public:
 	
 	///Returns the YOGServerPasswordRegistry
 	YOGServerPasswordRegistry& getServerPasswordRegistry();
+	
+	///Returns the YOGServerBannedIPListManager
+	YOGServerBannedIPListManager& getServerBannedIPListManager();
 private:
 	Uint16 chooseNewPlayerID();
 
@@ -163,6 +167,7 @@ private:
 	YOGServerAdministrator administrator;
 	YOGServerAdministratorList adminList;
 	YOGServerPlayerStoredInfoManager playerInfos;
+	YOGServerBannedIPListManager bannedIPs;
 };
 
 #endif

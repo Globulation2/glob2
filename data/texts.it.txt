@@ -1028,6 +1028,8 @@ Il metaserver YOG ha respinto la connessione questo username è già stato regis
 Il metaserver YOG ha rifiutato la connessione perchè la password è errata
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Il metaserver YOG ha rifiutato la connessione perchè la versione di Globulation2 che hai installato è troppo vecchia
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1050,6 +1052,8 @@ Hai vinto!!!!
 Sei stato espulso dalla partita
 [Your %0 are under attack]
 Il tuo %0 è sotto attacco
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 La tua unità è stata convertita alla squadra di %0
 [Your username was banned]

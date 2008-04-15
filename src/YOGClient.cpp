@@ -346,6 +346,11 @@ void YOGClient::update()
 		shared_ptr<YOGPlayerBannedEvent> event(new YOGPlayerBannedEvent);
 		sendToListeners(event);
 	}
+	if(type == MNetIPIsBanned)
+	{
+		shared_ptr<YOGIPBannedEvent> event(new YOGIPBannedEvent);
+		sendToListeners(event);
+	}
 }
 
 

@@ -1038,6 +1038,8 @@ Nom d'usuari ja registrat. Proba amb un altre
 No es pot conectar al metaservidor YOG. Contrassenya Incorrecta
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 El metaservidor YOG ha rebutjat la conexió per que  usuari no te contrasenya encara, activa l' opció: Registrar un nou usuari YOG amb contrasenya
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 No es pot conectar al metaservidor YOG, el teu client Globulation2 està obsolet
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Has guanyat
 
 [Your %0 are under attack]
 El teu %0  està sent atacat
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Una unitat teva s'ha convertit a l'equip de %0
 [Your username was banned]

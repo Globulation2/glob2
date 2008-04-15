@@ -1038,6 +1038,8 @@ YOG metaserver ha rechazado la conección porque este nombre de usuario ya ha si
 YOG metaserver ha rechazado la conección porque la contraseña es incorrecta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver ha rechazado la conección porque este nombre de usuario aún no tiene una contraseña. Probablemente deseas registrar tu nombre de Usuario con esta Contraseña. Por lo Tanto, Activa la Opción "Registrar a un Nuevo Usuario YOG con Contraseña"( "Register a new YOG user with password") Antes de Conectarse. Necesitarás Activar Está Opción Solamente una Vez.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver ha rechazado  la conección porque tu cliente globulation 2 es obsoleto.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Has ganado!
 
 [Your %0 are under attack]
 Tu %0 están bajo ataque
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Tu unidad fué convertida a %0 del equipo
 [Your username was banned]

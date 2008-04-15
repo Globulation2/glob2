@@ -1038,6 +1038,8 @@ De verbinding met de YOG server is geweigerd omdat deze gebruikersnaam al eerder
 De verbinding met de YOG server is geweigerd omdat uw wachtwoord onjuist is.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 De verbinding met de YOG server is geweigerd omdat er nog geen wachtwoord is ingesteld voor deze gebruikersnaam. Waarschijnlijk wil je je gebruikersnaam eerst registreren. Om dit te doen kun je een vinkje zetten voor "Registreer nieuwe YOG gebruiker met wachtwoord" alvorens je een verbinding maakt. Je hoeft dit slechts één keer te doen.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 De verbinding met de YOG is geweigerd omdat uw globulation2 client te oud is.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Je hebt gewonnen!
 
 [Your %0 are under attack]
 Je %0 worden aangevallen
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Een eenheid van jou is overgelopen naar %0's team
 [Your username was banned]

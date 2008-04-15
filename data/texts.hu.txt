@@ -1036,6 +1036,8 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév 
 A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1058,6 +1060,8 @@ Megnyerted a játékot!
 
 [Your %0 are under attack]
 Megtámadták a %0 -t
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Az egységedet az ellenség elfogta %0
 [Your username was banned]

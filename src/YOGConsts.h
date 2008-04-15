@@ -81,6 +81,8 @@ enum YOGLoginState
 	YOGAlreadyAuthenticated,
 	///This means that this username is banned
 	YOGUsernameBanned,
+	///This means that this ip address is temporarily banned
+	YOGIPAddressBanned,
 };
 
 ///This represents the reason why the player could not join a game.

@@ -1038,6 +1038,8 @@ O metaservidor YOG recusou a sua conexão porque este nome de usuário já foi r
 O metaservidor YOG recusou a sua conexão porque a senha estava incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário não tem senha ainda. Provavelmente você quer registrar o seu nome de usuário com esta senha. Logo, ative a opção "Registrar um novo usuário YOG com uma senha" antes de conectar. Você precisa ativar esta opção somente uma vez.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 O metaservidor YOG recusou a sua conexão porque o cliente globulation2 está obsoleto.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Você ganhou!
 
 [Your %0 are under attack]
 Seus %0 estão sendo atacados
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Sua unidade foi convertido para o time do %0
 [Your username was banned]

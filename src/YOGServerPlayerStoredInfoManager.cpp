@@ -39,7 +39,11 @@ void YOGServerPlayerStoredInfoManager::update()
 {
 	if(saveCountdown == 0)
 	{
-		savePlayerInfos();
+		if(modified)
+		{
+			savePlayerInfos();
+			modified=false;
+		}
 		saveCountdown = 300;
 	}
 	else

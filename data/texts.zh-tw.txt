@@ -1038,6 +1038,8 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。請重新選擇
 YOG meta伺服器拒絕連線因為你的密碼錯誤。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG meta伺服器拒絕連線因為你沒有密碼。請選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1060,6 +1062,8 @@ Ysagoon 線上遊戲
 
 [Your %0 are under attack]
 你的 %0 正遭受攻擊
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
 [Your username was banned]
