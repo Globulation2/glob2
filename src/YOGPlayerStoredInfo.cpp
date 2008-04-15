@@ -24,6 +24,7 @@
 YOGPlayerStoredInfo::YOGPlayerStoredInfo()
 {
 	banned=false;
+	moderator=false;
 }
 
 
@@ -75,6 +76,20 @@ bool YOGPlayerStoredInfo::isBanned()
 
 
 
+void YOGPlayerStoredInfo::setModerator(bool isModerator)
+{
+	moderator=isModerator;
+}
+
+
+
+bool YOGPlayerStoredInfo::isModerator()
+{
+	return moderator;
+}
+
+
+
 void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGPlayerStoredInfo");
@@ -82,6 +97,7 @@ void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 	time<<unmute_time;
 	stream->writeText(time.str(), "unmute_time");
 	stream->writeUint8(banned, "banned");
+	stream->writeUint8(moderator, "moderator");
 	stream->writeLeaveSection();
 }
 
@@ -95,6 +111,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream, Uint32 dataVe
 	time<<b;
 	time>>unmute_time;
 	banned=stream->readUint8("banned");
+	moderator=stream->readUint8("moderator");
 	stream->readLeaveSection();
 }
 

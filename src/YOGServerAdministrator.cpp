@@ -36,6 +36,8 @@ YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 	commands.push_back(new YOGBanIP);
 	commands.push_back(new YOGAddAdministrator);
 	commands.push_back(new YOGRemoveAdministrator);
+	commands.push_back(new YOGAddModerator);
+	commands.push_back(new YOGRemoveModerator);
 }
 
 
@@ -50,7 +52,7 @@ YOGServerAdministrator::~YOGServerAdministrator()
 
 	
 
-bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player)
+bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player, bool moderator)
 {
 	std::vector<std::string> tokens;
 	std::string token;
@@ -92,10 +94,16 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 
 	if(tokens[0] == ".help")
 	{
-		sendTextMessage("The current list of YOG Administrative Commands are: ", player);
+		if(moderator)
+			sendTextMessage("The current list of YOG Administrative Commands available for moderators are: ", player);
+		else
+			sendTextMessage("The current list of YOG Administrative Commands are: ", player);
 		for(int i=0; i<commands.size(); ++i)
 		{
-			sendTextMessage(commands[i]->getHelpMessage(), player);
+			if(!moderator || commands[i]->allowedForModerator())
+			{
+				sendTextMessage(commands[i]->getHelpMessage(), player);
+			}
 		}
 		sendTextMessage(".help    Shows this help message", player);
 	}
@@ -103,15 +111,18 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 	{
 		for(int i=0; i<commands.size(); ++i)
 		{
-			if(tokens[0] == commands[i]->getCommandName())
+			if(!moderator || commands[i]->allowedForModerator())
 			{
-				if(!commands[i]->doesMatch(tokens))
+				if(tokens[0] == commands[i]->getCommandName())
 				{
-					sendTextMessage(commands[i]->getHelpMessage(), player);
-				}
-				else
-				{
-					commands[i]->execute(server, this, tokens, player);
+					if(!commands[i]->doesMatch(tokens))
+					{
+						sendTextMessage(commands[i]->getHelpMessage(), player);
+					}
+					else
+					{
+						commands[i]->execute(server, this, tokens, player);
+					}
 				}
 			}
 		}
