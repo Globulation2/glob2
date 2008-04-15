@@ -117,9 +117,14 @@ void YOGServerPlayer::update()
 	else if(type==MNetSendYOGMessage)
 	{
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
-		///This is a special override used to restart development server
+		///This is sends a command to the administrator engine
 		if(server.getAdministratorList().isAdministrator(info->getMessage()->getSender()))
-			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID));
+			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID), false);
+		///If this player is a moderator, also execute a command, however, moderators can only execute a limtied number of commands
+		else if(server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isModerator())
+			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID), true);
+			
+		
 		///Check if this player is muted, ignore otherwise
 		if(!server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isMuted())
 			server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));

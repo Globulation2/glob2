@@ -42,6 +42,13 @@ bool YOGServerRestart::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
+	
+
+
+bool YOGServerRestart::allowedForModerator()
+{
+	return false;
+}
 
 
 
@@ -70,6 +77,13 @@ bool YOGMutePlayer::doesMatch(const std::vector<std::string>& tokens)
 {
 	if(tokens.size() != 2)
 		return false;
+	return true;
+}
+	
+
+
+bool YOGMutePlayer::allowedForModerator()
+{
 	return true;
 }
 
@@ -112,6 +126,13 @@ bool YOGUnmutePlayer::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
+	
+
+
+bool YOGUnmutePlayer::allowedForModerator()
+{
+	return true;
+}
 
 
 
@@ -151,6 +172,13 @@ bool YOGResetPassword::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
+	
+
+
+bool YOGResetPassword::allowedForModerator()
+{
+	return false;
+}
 
 
 
@@ -182,6 +210,13 @@ bool YOGBanPlayer::doesMatch(const std::vector<std::string>& tokens)
 	if(tokens.size() != 2)
 		return false;
 	return true;
+}
+	
+
+
+bool YOGBanPlayer::allowedForModerator()
+{
+	return false;
 }
 
 
@@ -229,6 +264,13 @@ bool YOGUnbanPlayer::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
+	
+
+
+bool YOGUnbanPlayer::allowedForModerator()
+{
+	return false;
+}
 
 
 
@@ -268,6 +310,13 @@ bool YOGShowBannedPlayers::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
+	
+
+
+bool YOGShowBannedPlayers::allowedForModerator()
+{
+	return false;
+}
 
 
 
@@ -291,7 +340,7 @@ void YOGShowBannedPlayers::execute(YOGServer* server, YOGServerAdministrator* ad
 
 std::string YOGBanIP::getHelpMessage()
 {
-	return ".ban_ip <playername>    Bans the IP address of the given player for 24 hours";
+	return ".ban_ip <playername>    Bans the players IP address for 24 hours";
 }
 
 
@@ -308,6 +357,13 @@ bool YOGBanIP::doesMatch(const std::vector<std::string>& tokens)
 	if(tokens.size() != 2)
 		return false;
 	return true;
+}
+	
+
+
+bool YOGBanIP::allowedForModerator()
+{
+	return false;
 }
 
 
@@ -353,6 +409,13 @@ bool YOGAddAdministrator::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
+	
+
+
+bool YOGAddAdministrator::allowedForModerator()
+{
+	return false;
+}
 
 
 
@@ -393,6 +456,13 @@ bool YOGRemoveAdministrator::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
+	
+
+
+bool YOGRemoveAdministrator::allowedForModerator()
+{
+	return false;
+}
 
 
 
@@ -407,6 +477,98 @@ void YOGRemoveAdministrator::execute(YOGServer* server, YOGServerAdministrator* 
 	else
 	{
 		admin->sendTextMessage("Player "+name+" is not an admin.", player);
+	}
+}
+
+
+
+std::string YOGAddModerator::getHelpMessage()
+{
+	return ".add_moderator <playername>    Adds moderator status to a player";
+}
+
+
+
+std::string YOGAddModerator::getCommandName()
+{
+	return ".add_moderator";
+}
+
+
+
+bool YOGAddModerator::doesMatch(const std::vector<std::string>& tokens)
+{
+	if(tokens.size() != 2)
+		return false;
+	return true;
+}
+	
+
+
+bool YOGAddModerator::allowedForModerator()
+{
+	return false;
+}
+
+
+
+void YOGAddModerator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+{
+	std::string name = tokens[1];
+	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
+	{
+		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setModerator(true);
+		admin->sendTextMessage("Player made moderator: "+name, player);
+	}
+	else
+	{
+		admin->sendTextMessage("Could not find player: "+name, player);
+	}
+}
+
+
+
+std::string YOGRemoveModerator::getHelpMessage()
+{
+	return ".remove_moderator <playername>    Removes moderator status from a player";
+}
+
+
+
+std::string YOGRemoveModerator::getCommandName()
+{
+	return ".remove_moderator";
+}
+
+
+
+bool YOGRemoveModerator::doesMatch(const std::vector<std::string>& tokens)
+{
+	if(tokens.size() != 2)
+		return false;
+	return true;
+}
+	
+
+
+bool YOGRemoveModerator::allowedForModerator()
+{
+	return false;
+}
+
+
+
+void YOGRemoveModerator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+{
+	std::string name = tokens[1];
+	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
+	{
+		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setModerator(false);
+		admin->sendTextMessage("Player "+name+" had moderator status removed", player);
+	}
+	else
+	{
+		admin->sendTextMessage("Could not find player: "+name, player);
 	}
 }
 
