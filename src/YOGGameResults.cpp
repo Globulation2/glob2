@@ -28,64 +28,51 @@ YOGGameResults::YOGGameResults()
 }
 
 
-void YOGGameResults::setNumberOfPlayers(int number)
+void YOGGameResults::setGameResultState(const std::string& player, YOGGameResult result)
 {
-	results.resize(number, YOGGameResultUnknown);
-	names.resize(number);
+	results[player] = result;
 }
 
 
-void YOGGameResults::setGameResultState(int player, YOGGameResult result)
+YOGGameResult YOGGameResults::getGameResultState(const std::string& player)
 {
-	results[player] = result;	
+	if(results.find(player)!=results.end())
+	{
+		return results[player];
+	}
+	return YOGGameResultUnknown;
 }
 
-
-YOGGameResult YOGGameResults::getGameResultState(int player)
-{
-	return results[player];
-}
-
-
-void YOGGameResults::setPlayerName(int player, const std::string& name)
-{
-	names[player] = name;
-}
-
-	
-std::string YOGGameResults::getPlayerName(int player)
-{
-	return names[player];
-}
 
 
 void YOGGameResults::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGGameResults");
 	stream->writeUint32(results.size(), "size");
-	for(int i=0; i<results.size(); ++i)
+	Uint32 n = 0;
+	for(std::map<std::string, YOGGameResult>::const_iterator i=results.begin(); i!=results.end(); ++i)
 	{
-		stream->writeEnterSection(i);
-		stream->writeUint8(static_cast<Uint8>(results[i]), "result");
-		stream->writeText(names[i], "name");
+		stream->writeEnterSection(n);
+		stream->writeText(i->first, "name");
+		stream->writeUint8(i->second, "result");
 		stream->writeLeaveSection();
+		n+=1;
 	}
 	stream->writeLeaveSection();
 }
 
 
 
-void YOGGameResults::decodeData(GAGCore::InputStream* stream)
+void YOGGameResults::decodeData(GAGCore::InputStream* stream, Uint32 netDataVersion)
 {
 	stream->readEnterSection("YOGGameResults");
 	Uint32 size = stream->readUint32("size");
-	results.resize(size);
-	names.resize(size);
 	for(int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
-		results[i] = static_cast<YOGGameResult>(stream->readUint8("result"));
-		names[i] = stream->readText("name");
+		std::string name = stream->readText("name");
+		YOGGameResult result = static_cast<YOGGameResult>(stream->readUint8("result"));
+		results[name] = result;
 		stream->readLeaveSection();
 	}
 
@@ -96,7 +83,7 @@ void YOGGameResults::decodeData(GAGCore::InputStream* stream)
 
 bool YOGGameResults::operator==(const YOGGameResults& rhs) const
 {
-	if(results == rhs.results && names == rhs.names)
+	if(results == rhs.results)
 	{
 		return true;
 	}
@@ -111,7 +98,7 @@ bool YOGGameResults::operator==(const YOGGameResults& rhs) const
 	
 bool YOGGameResults::operator!=(const YOGGameResults& rhs) const
 {
-	if(results != rhs.results || names != rhs.names)
+	if(results != rhs.results)
 	{
 		return true;
 	}

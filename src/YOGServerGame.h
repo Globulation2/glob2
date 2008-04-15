@@ -117,6 +117,8 @@ public:
 	///This sets a players game result
 	void setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result);
 
+	///This sends the games results to the game log, if this game actually went through
+	void sendGameResultsToGameLog();
 private:
 	bool gameStarted;
 	bool hasAddedHost;

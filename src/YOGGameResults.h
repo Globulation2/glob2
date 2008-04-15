@@ -21,7 +21,7 @@
 #define YOGGameResults_h
 
 #include "YOGConsts.h"
-#include <vector>
+#include <map>
 
 namespace GAGCore
 {
@@ -36,33 +36,23 @@ public:
 	///Constructs a default yog game results
 	YOGGameResults();
 
-	///Sets the number of players for this game result
-	void setNumberOfPlayers(int number);
-
 	///Sets the game result state for a particular player
-	void setGameResultState(int player, YOGGameResult result);
+	void setGameResultState(const std::string& player, YOGGameResult result);
 
 	///Gets the game result state for a particular player
-	YOGGameResult getGameResultState(int player);
-	
-	///Sets the player name for a particular player number
-	void setPlayerName(int player, const std::string& name);
-	
-	///Returns the player name for a particular player number
-	std::string getPlayerName(int player);
-	
+	YOGGameResult getGameResultState(const std::string& player);
+
 	///Encodes this YOGGameResults into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
 	///Decodes this YOGGameResults from a bit stream
-	void decodeData(GAGCore::InputStream* stream);
+	void decodeData(GAGCore::InputStream* stream, Uint32 netDataVersion);
 	
 	///Test for equality between two YOGGameResults
 	bool operator==(const YOGGameResults& rhs) const;
 	bool operator!=(const YOGGameResults& rhs) const;
 private:
-	std::vector<YOGGameResult> results;
-	std::vector<std::string> names;
+	std::map<std::string, YOGGameResult> results;
 };
 
 #endif
