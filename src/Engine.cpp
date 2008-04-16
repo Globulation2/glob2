@@ -107,9 +107,6 @@ int Engine::initCustom(void)
 	else if(ret == -1)
 		return -1;
 
-	// set the correct alliance
-	gui.game.setAIAlliance();
-
 	return EE_NO_ERROR;
 }
 
@@ -136,9 +133,6 @@ int Engine::initCustom(const std::string &gameName)
 		return EE_CANT_LOAD_MAP;
 	else if(ret == -1)
 		return -1;
-
-	// set the correct alliance
-	gui.game.setAIAlliance();
 
 	return EE_NO_ERROR;
 }
@@ -197,9 +191,6 @@ void Engine::createRandomGame()
 	gui.localTeamNo=0;
 	
 	initGame(map, game);
-
-	// set the correct alliance
-	gui.game.setAIFFA();
 }
 
 
@@ -704,6 +695,7 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 			name.arg(AI::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}
+		gameHeader.setAllyTeamNumber(teamColor, teamColor);
 		count+=1;
 	}
 	gameHeader.setNumberOfPlayers(count);
@@ -719,4 +711,5 @@ void Engine::finalAdjustements(void)
 	{
 		gui.adjustInitialViewport();
 	}
+	gui.game.setAlliances();
 }

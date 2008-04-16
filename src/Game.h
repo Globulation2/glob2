@@ -160,9 +160,6 @@ private:
 	///Clears existing game information, deleting the teams and players, in preperation of a new game.
 	void clearGame();
 
-	//! return true if all human are allied together, flase otherwise
-	bool isHumanAllAllied(void);
-
 public:
 	bool anyPlayerWaited;
 	int anyPlayerWaitedTimeFor;
@@ -191,11 +188,8 @@ private:
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
 	
-	//! ally or disally AI following human alliances
-	void setAIAlliance(void);	
-	
-	//! Sets the AI for free for all
-	void setAIFFA(void);
+	/// Sets the alliances from the GameHeader alliance teams
+	void setAlliances(void);
 	
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.

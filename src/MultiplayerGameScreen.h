@@ -66,10 +66,12 @@ private:
 	{
 		START = 1,
 		CANCEL = 2,
-		STARTED=11,
+		STARTED=3,
+		OTHEROPTIONS=4,
 		
 		COLOR_BUTTONS=32,
 		CLOSE_BUTTONS=64,
+		
 		
 		ADD_AI = 100
 	};
@@ -96,6 +98,7 @@ private:
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
 	Text *percentDownloaded;
+	TextButton *otherOptions;
 
 	TextInput *textInput;
 	TextArea *chatWindow;

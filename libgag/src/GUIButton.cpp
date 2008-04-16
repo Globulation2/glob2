@@ -143,6 +143,7 @@ namespace GAGGUI
 		this->vAlignFlag=vAlign;
 	
 		this->state=startState;
+		isClickable=true;
 	}
 	
 	OnOffButton::OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont)
@@ -156,13 +157,14 @@ namespace GAGGUI
 		this->vAlignFlag=vAlign;
 	
 		this->state=startState;
+		isClickable=true;
 	}
 	
 	void OnOffButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		if (isOnWidget(event->button.x, event->button.y) &&
-			(event->button.button == SDL_BUTTON_LEFT))
+			(event->button.button == SDL_BUTTON_LEFT) && isClickable)
 		{
 			state=!state;
 			parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
@@ -173,7 +175,7 @@ namespace GAGGUI
 	void OnOffButton::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
-		if (isOnWidget(event->button.x, event->button.y))
+		if (isOnWidget(event->button.x, event->button.y) && isClickable)
 				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
 	
