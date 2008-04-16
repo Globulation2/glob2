@@ -36,6 +36,7 @@
 
 #include "IRC.h"
 #include "YOGMessage.h"
+#include "CustomGameOtherOptions.h"
 
 MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
 	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
@@ -60,6 +61,10 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	addWidget(gameStartWaitingText);
 	gameStartWaitingText->visible = false;
 
+	otherOptions = new TextButton(20, 230, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Other Options]"), OTHEROPTIONS);
+	addWidget(otherOptions);
+	otherOptions->visible=false;
+	
 
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 	{
@@ -150,6 +155,12 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		else if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 		{
 			game->kickPlayer(par1 - CLOSE_BUTTONS);
+		}
+		else if(par1 == OTHEROPTIONS)
+		{
+			CustomGameOtherOptions settings(game->getGameHeader(), game->getMapHeader());
+			int rc = settings.execute(globalContainer->gfx, 40);
+			game->updateGameHeader();
 		}
 	}
 	else if (action==BUTTON_STATE_CHANGED)
@@ -301,11 +312,13 @@ void MultiplayerGameScreen::updateVisibleButtons()
 	{
 		gameStartWaitingText->visible=isActivated();
 		startButton->visible=false;
+		otherOptions->visible=false;
 	}
 	else
 	{
 		gameStartWaitingText->visible=false;
 		startButton->visible=isActivated();
+		otherOptions->visible=isActivated();
 	}
 	
 	if(game->isGameReadyToStart())
@@ -313,17 +326,27 @@ void MultiplayerGameScreen::updateVisibleButtons()
 		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
 		{
 			if(game->isGameStarting())
+			{
 				startButton->visible=false;
+				otherOptions->visible=true;
+			}
 			else
+			{
 				startButton->visible=isActivated();
+				otherOptions->visible=isActivated();
+			}
 		}
 		else
+		{
 			startButton->visible=false;
+			otherOptions->visible=false;
+		}
 		notReadyText->visible=false;
 	}
 	else
 	{
 		startButton->visible=false;
+		otherOptions->visible=false;
 		notReadyText->visible=isActivated();
 	}
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::JoinedGame)

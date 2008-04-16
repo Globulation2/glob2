@@ -75,9 +75,10 @@ namespace GAGGUI
 	protected:
 		bool state;
 	
+		bool isClickable;
 	public:
-		OnOffButton() { state=false; returnCode=0; }
-		OnOffButton(const std::string &tooltip, const std::string &tooltipFont) :HighlightableWidget(tooltip, tooltipFont) { state=false; returnCode=0; }
+		OnOffButton() { state=false; returnCode=0; isClickable=true; }
+		OnOffButton(const std::string &tooltip, const std::string &tooltipFont) :HighlightableWidget(tooltip, tooltipFont) { state=false; returnCode=0; isClickable=true; }
 		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode);
 		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont);
 		virtual ~OnOffButton() { }
@@ -85,6 +86,8 @@ namespace GAGGUI
 		virtual void paint(void);
 		virtual bool getState(void) { return state; }
 		virtual void setState(bool newState);
+		//! Makes it so that nothing occurs on click
+		virtual void setClickable(bool enabled) { isClickable = enabled; }
 	protected:
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLMouseButtonUp(SDL_Event *event);

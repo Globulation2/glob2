@@ -698,7 +698,6 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			teams[team]->sharedVisionExchange=sao->visionExchangeMask;
 			teams[team]->sharedVisionFood=sao->visionFoodMask;
 			teams[team]->sharedVisionOther=sao->visionOtherMask;
-			setAIAlliance();
 			fprintf(logFile, "ORDER_SET_ALLIANCE");
 		}
 		break;
@@ -730,84 +729,26 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	}
 }
 
-bool Game::isHumanAllAllied(void)
-{
-	Uint32 nonAIMask=0;
-	
-	// AIMask now have the mask of everything which isn't AI
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-	{
-		nonAIMask |= ((teams[i]->type != BaseTeam::T_AI) ? 1 : 0) << i;
-		//printf("team %d is AI is %d\n", i, teams[i]->type == BaseTeam::T_AI);
-	}
 
-	// if there is any non-AI player with which we aren't allied, return false
-	// or if there is any player allied to AI
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		if (teams[i]->type != BaseTeam::T_AI)
+
+void Game::setAlliances(void)
+{
+	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		int allyTeam = gameHeader.getAllyTeamNumber(i);
+		teams[i]->allies = 0;
+		teams[i]->enemies = 0;
+		for(int j=0; j<mapHeader.getNumberOfTeams(); ++j)
 		{
-			if (teams[i]->allies != nonAIMask)
-				return false;
-		}
-	
-	return true;
-}
-
-void Game::setAIAlliance(void)
-{
-	if (isHumanAllAllied())
-	{
-		if (verbose)
-			printf("Game : AIs are now allied vs human\n");
-		
-		// all human are allied, ally AI
-		Uint32 aiMask = 0;
-		
-		// find all AI
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-			if (teams[i]->type == BaseTeam::T_AI)
-				aiMask |= (1<<i);
-		
-		if (verbose)
-			printf("AI mask : %x\n", aiMask);
-				
-		// ally them together
-		
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-			if (teams[i]->type == BaseTeam::T_AI)
+			int otherAllyTeam = gameHeader.getAllyTeamNumber(j);
+			if(allyTeam == otherAllyTeam)
 			{
-				teams[i]->allies = aiMask;
-				teams[i]->enemies = ~teams[i]->allies;
+				teams[i]->allies |= teams[j]->me;
 			}
-	}
-	else
-	{
-		if (verbose)
-			printf("Game : AIs are now in ffa mode\n");
-		
-		// free for all on AI side
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		{
-			if (teams[i]->type == BaseTeam::T_AI)
+			else
 			{
-				teams[i]->allies = teams[i]->me;
-				teams[i]->enemies = ~teams[i]->allies;
+				teams[i]->enemies |= teams[j]->me;
 			}
-		}
-	}
-}
-
-
-
-void Game::setAIFFA(void)
-{
-	// free for all on AI side
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-	{
-		if (teams[i]->type == BaseTeam::T_AI)
-		{
-			teams[i]->allies = teams[i]->me;
-			teams[i]->enemies = ~teams[i]->allies;
 		}
 	}
 }
