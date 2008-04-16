@@ -116,9 +116,9 @@ void YOGServer::update()
 	{
 		if(t > organizedGameBroadcastTime)
 		{
-			organizedGameBroadcastTime = t + 30000;
+			organizedGameBroadcastTime = t + 60000;
 			boost::posix_time::time_duration organized_game_time = boost::posix_time::second_clock::local_time().time_of_day();
-			organized_game_time = boost::posix_time::seconds(organized_game_time.total_seconds() % 7200);
+			organized_game_time = boost::posix_time::seconds(7200 - organized_game_time.total_seconds() % 7200);
 			std::stringstream s;
 			s << "An organized game will occur in "<<boost::lexical_cast<std::string>(organized_game_time.hours())<<" hours and "<<boost::lexical_cast<std::string>(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
 			boost::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
