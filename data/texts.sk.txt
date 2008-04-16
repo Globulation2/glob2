@@ -584,6 +584,8 @@ otvorené
 Nastavenia
 [Orange]
 Pomaranč
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Bazén
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  tímy

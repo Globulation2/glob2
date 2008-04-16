@@ -584,6 +584,8 @@ Air dmg.
 選項
 [Orange]
 柳橙
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ V: 持鍵以傳送訊息
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
 團隊

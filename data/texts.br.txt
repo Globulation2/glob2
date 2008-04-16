@@ -586,6 +586,8 @@ Abrir
 Opções
 [Orange]
 Laranja
+[Other Options]
+
 [page down]
 page down
 [page up]
@@ -848,6 +850,8 @@ Mudar para visão de terrenos
 sys req
 [tab]
 tab
+[Teams Fixed]
+
 [teams]
 times
 [the barracks is finished]

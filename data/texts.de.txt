@@ -576,6 +576,8 @@ offen
 Einstellungen
 [Orange]
 Orangen
+[Other Options]
+
 [page down]
 
 [page up]
@@ -837,6 +839,8 @@ Schwimmbecken
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  Mannschaften

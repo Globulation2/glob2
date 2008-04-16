@@ -584,6 +584,8 @@ Otevřít
 Nastavení
 [Orange]
 Pomarenče
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Koupaliště
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  hráčů

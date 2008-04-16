@@ -584,6 +584,8 @@ Abierto
 Opciones
 [Orange]
 Naranja
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Alberca de natación
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
 Equipos
