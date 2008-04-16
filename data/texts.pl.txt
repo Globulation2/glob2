@@ -584,6 +584,8 @@ Otwarty
 Opcje
 [Orange]
 Pomarańcze
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Pływalnia
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  zespoły

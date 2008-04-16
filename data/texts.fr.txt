@@ -584,6 +584,8 @@ ouvert
 Options
 [Orange]
 Orange
+[Other Options]
+
 [page down]
 Page suivante
 [page up]
@@ -846,6 +848,8 @@ Changer vers la vue du terrain
 Sys Req
 [tab]
 Tab
+[Teams Fixed]
+
 [teams]
  équipes
 [the barracks is finished]

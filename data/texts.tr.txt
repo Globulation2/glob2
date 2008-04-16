@@ -584,6 +584,8 @@ Ac
 Secenekler
 [Orange]
 Portakal
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Yuzme havuzu
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  takimlar

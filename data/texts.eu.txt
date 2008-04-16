@@ -584,6 +584,8 @@ ireki
 Aukerak
 [Orange]
 Laranja
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Lurzoru ikuspegira aldatu
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  talde

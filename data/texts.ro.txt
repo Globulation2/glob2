@@ -584,6 +584,8 @@ deschis
 Opţiuni
 [Orange]
 Portocală
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Piscină
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  echipe

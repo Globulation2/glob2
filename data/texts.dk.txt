@@ -584,6 +584,8 @@ Her
 Indstillinger
 [Orange]
 Appelsin
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Skift til terring visning
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  hold
