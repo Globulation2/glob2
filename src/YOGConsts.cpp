@@ -20,6 +20,6 @@
 #include "YOGConsts.h"
 
 const Uint16 YOG_SERVER_PORT = 7488;
-//const std::string YOG_SERVER_IP = "yog.globulation2.org";
-const std::string YOG_SERVER_IP = "127.0.0.1";
+const std::string YOG_SERVER_IP = "yog.globulation2.org";
+//const std::string YOG_SERVER_IP = "127.0.0.1";
 
