@@ -584,6 +584,8 @@ Open Save Menu
 خيارات
 [Orange]
 البرتقال
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Switch to Terrain view
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  فريق

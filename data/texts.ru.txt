@@ -580,6 +580,8 @@ Ok
 Настройки
 [Orange]
 Апельсины
+[Other Options]
+
 [page down]
 page down
 [page up]
@@ -842,6 +844,8 @@ space
 sys req
 [tab]
 tab
+[Teams Fixed]
+
 [teams]
  команды
 [the barracks is finished]

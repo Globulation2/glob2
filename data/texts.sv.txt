@@ -584,6 +584,8 @@ Här
 Alternativ
 [Orange]
 Apelsin
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Byt till Terrängvy
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  lag

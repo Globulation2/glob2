@@ -584,6 +584,8 @@ Obrir
 Opcions
 [Orange]
 Taronja
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Piscina
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  Equips

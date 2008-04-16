@@ -584,6 +584,8 @@ nyitva
 Opciók
 [Orange]
 Narancs
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ fejlesztése
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  csapatok

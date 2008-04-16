@@ -584,6 +584,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Избори
 [Orange]
 Наранџе
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  екипа

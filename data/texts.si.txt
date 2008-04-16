@@ -584,6 +584,8 @@ odpri
 Možnosti
 [Orange]
 Pomaranča
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Bazen
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  ekipe

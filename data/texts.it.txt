@@ -576,6 +576,8 @@ Apri
 Opzioni
 [Orange]
 Arance
+[Other Options]
+
 [page down]
 PAG giù
 [page up]
@@ -838,6 +840,8 @@ Passa alla Visualizzazione Terreno
 requisiti sistema
 [tab]
 TAB
+[Teams Fixed]
+
 [teams]
  squadre
 [the barracks is finished]

@@ -554,10 +554,6 @@ numlock
 there are
 [ok]
 Ok
-[Other Options]
-Other Options
-[Teams Fixed]
-Teams Fixed
 [old islands terrain]
 old random islands
 [old random terrain]
@@ -582,6 +578,8 @@ open
 Options
 [Orange]
 Orange
+[Other Options]
+Other Options
 [page down]
 page down
 [page up]
@@ -844,6 +842,8 @@ Switch to Terrain view
 sys req
 [tab]
 tab
+[Teams Fixed]
+Teams Fixed
 [teams]
  teams
 [the barracks is finished]

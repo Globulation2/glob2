@@ -584,6 +584,8 @@ Open
 Opties
 [Orange]
 Sinaasappelen
+[Other Options]
+
 [page down]
 
 [page up]
@@ -845,6 +847,8 @@ Schakel naar terrein scherm
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  teams

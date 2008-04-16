@@ -586,6 +586,8 @@ Ok
 Επιλογές
 [Orange]
 Πορτοκαλι
+[Other Options]
+
 [page down]
 page down
 [page up]
@@ -848,6 +850,8 @@ V: κρατήστε για να μιλίσετε
 sys req
 [tab]
 tab
+[Teams Fixed]
+
 [teams]
  ομάδες
 [the barracks is finished]
