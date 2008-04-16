@@ -77,6 +77,18 @@ public:
 	///Provides access to the base player. n must be between 0 and 31.
 	const BasePlayer& getBasePlayer(const int n) const;
 	
+	///Returns the ally-team number for the given team for pre-game alliances
+	Uint8 getAllyTeamNumber(int teamNumber);
+	
+	///Sets the ally-team number for the given team
+	void setAllyTeamNumber(int teamNumber, Uint8 allyTeam);
+	
+	///Returns whether allying and de-allying are allowed mid-game
+	bool areAllyTeamsFixed();
+	
+	///Sets whether ally-teams are fixed during the game
+	void setAllyTeamsFixed(bool fixed);
+	
 	///Returns the random generator seed thats being used
 	Uint32 getRandomSeed() const;
 	
@@ -95,6 +107,12 @@ private:
 
 	///Represents the basic player information in the game
 	BasePlayer players[32];
+	
+	///Represents the ally team numbers
+	Uint8 allyTeamNumbers[32];
+	
+	///Represents whether the ally-teams are fixed for the whole game, so no allying/unallying can take place
+	bool allyTeamsFixed;
 	
 	///Represents the random seed used for the game
 	Uint32 seed;

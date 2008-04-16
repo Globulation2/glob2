@@ -554,6 +554,10 @@ numlock
 there are
 [ok]
 Ok
+[Other Options]
+Other Options
+[Teams Fixed]
+Teams Fixed
 [old islands terrain]
 old random islands
 [old random terrain]
