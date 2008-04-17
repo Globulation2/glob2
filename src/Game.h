@@ -87,10 +87,10 @@ public:
 	/// including initiating the Players
 	void setGameHeader(const GameHeader& gameHeader);
 	
-	///Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
+	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	void executeOrder(boost::shared_ptr<Order> order, int localPlayer);
 
-	///Makes a step for building projects that are waiting for the areas to clear of units.
+	/// Makes a step for building projects that are waiting for the areas to clear of units.
 	void buildProjectSyncStep(Sint32 localTeam);
 
 	/// Check and update winning conditions
@@ -98,6 +98,9 @@ public:
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
+	
+	/// Updates total prestige stats
+	void prestigeSyncStep();
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
 	/// internal proccessing.
@@ -223,6 +226,7 @@ public:
 	
 	
 	Team *getTeamWithMostPrestige(void);
+	bool isPrestigeWinCondition(void);
 	
 public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);

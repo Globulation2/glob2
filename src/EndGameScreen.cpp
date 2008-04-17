@@ -291,7 +291,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// title & graph
 	std::string titleText;
 	
-	if (gui->game.totalPrestigeReached)
+	if (gui->game.totalPrestigeReached && gui->game.isPrestigeWinCondition())
 	{
 		Team *t=gui->game.getTeamWithMostPrestige();
 		assert(t);
@@ -316,7 +316,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	{
 		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
 	}
-	else if (!gui->getLocalTeam()->isAlive)
+	else if (gui->getLocalTeam()->hasLost)
 	{
 		titleText=Toolkit::getStringTable()->getString("[Lost : your colony is dead]");
 	}

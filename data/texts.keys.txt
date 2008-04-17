@@ -510,6 +510,7 @@
 [workers]
 [working]
 [wounded]
+[Prestige Win Enabled]
 [Yes]
 [YESTS_CONNECTING]
 [YESTS_CONNECTION_LOST]
