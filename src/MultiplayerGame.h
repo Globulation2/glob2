@@ -137,6 +137,13 @@ public:
 	
 	///Recieves a message from the p2p event
 	void recieveP2PEvent(boost::shared_ptr<P2PConnectionEvent> event);
+	
+	///Returns true if the MultiplayerGame is waiting for a reply from the server
+	///to start the game
+	bool isGameStarting();
+	
+	///This sets the game result for the local player
+	void setGameResult(YOGGameResult result);
 protected:
 	friend class YOGClient;
 
@@ -173,6 +180,7 @@ private:
 	std::list<MultiplayerGameEventListener*> listeners;
 	Uint32 chatChannel;
 	bool isEveryoneReadyToGo;
+	bool isStarting;
 	Uint8 previousPercentage;
 
 	NetGamePlayerManager playerManager;

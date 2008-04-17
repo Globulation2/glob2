@@ -166,6 +166,15 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSetPlayerLocalPort:
 		message.reset(new NetSetPlayerLocalPort);
 		break;
+		case MNetSendGameResult:
+		message.reset(new NetSendGameResult);
+		break;
+		case MNetPlayerIsBanned:
+		message.reset(new NetPlayerIsBanned);
+		break;
+		case MNetIPIsBanned:
+		message.reset(new NetIPIsBanned);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -3302,6 +3311,177 @@ Uint16 NetSetPlayerLocalPort::getPort() const
 	return port;
 }
 
+
+
+
+NetSendGameResult::NetSendGameResult()
+	: result(YOGGameResultUnknown)
+{
+
+}
+
+
+
+NetSendGameResult::NetSendGameResult(YOGGameResult result)
+	:result(result)
+{
+}
+
+
+
+Uint8 NetSendGameResult::getMessageType() const
+{
+	return MNetSendGameResult;
+}
+
+
+
+void NetSendGameResult::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendGameResult");
+	stream->writeUint8(static_cast<Uint8>(result), "result");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendGameResult::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendGameResult");
+	result = static_cast<YOGGameResult>(stream->readUint8("result"));
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendGameResult::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendGameResult("<<"result="<<result<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSendGameResult::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendGameResult))
+	{
+		const NetSendGameResult& r = dynamic_cast<const NetSendGameResult&>(rhs);
+		if(r.result == result)
+			return true;
+	}
+	return false;
+}
+
+
+YOGGameResult NetSendGameResult::getGameResult() const
+{
+	return result;
+}
+
+
+
+
+NetPlayerIsBanned::NetPlayerIsBanned()
+{
+
+}
+
+
+
+Uint8 NetPlayerIsBanned::getMessageType() const
+{
+	return MNetPlayerIsBanned;
+}
+
+
+
+void NetPlayerIsBanned::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPlayerIsBanned");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPlayerIsBanned::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPlayerIsBanned");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPlayerIsBanned::format() const
+{
+	std::ostringstream s;
+	s<<"NetPlayerIsBanned()";
+	return s.str();
+}
+
+
+
+bool NetPlayerIsBanned::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPlayerIsBanned))
+	{
+		//const NetPlayerIsBanned& r = dynamic_cast<const NetPlayerIsBanned&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetIPIsBanned::NetIPIsBanned()
+{
+
+}
+
+
+
+Uint8 NetIPIsBanned::getMessageType() const
+{
+	return MNetIPIsBanned;
+}
+
+
+
+void NetIPIsBanned::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetIPIsBanned");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetIPIsBanned::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetIPIsBanned");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetIPIsBanned::format() const
+{
+	std::ostringstream s;
+	s<<"NetIPIsBanned()";
+	return s.str();
+}
+
+
+
+bool NetIPIsBanned::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetIPIsBanned))
+	{
+		//const NetIPIsBanned& r = dynamic_cast<const NetIPIsBanned&>(rhs);
+		return true;
+	}
+	return false;
+}
 
 
 //append_code_position

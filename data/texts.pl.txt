@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 opuścił grę.
 [%0's game]
@@ -140,7 +142,7 @@ Wielkość plaż
 
 [Build]
 Buduje
-[Building Settings]
+[Building Defaults]
 
 [building site]
 plac budowy
@@ -214,9 +216,7 @@ Kompiluj skrypt
 Łączę
 [connecting to]
 Połącz z
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Kontynuuj grę
@@ -348,7 +348,7 @@ Odkrywcy
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Jedzenie
@@ -369,6 +369,8 @@ PeĹny ekran
 [game full]
 Komplet graczy
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ Załaduj grę
 
 [load]
 Ładuj
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Wysokość mapy
 owoców z innymi
 [market explanation]
 Umożliwia wymianę
+[market level 0]
+
 [market]
 Bazar
 [meta %0]
@@ -580,6 +586,8 @@ Otwarty
 Opcje
 [Orange]
 Pomarańcze
+[Other Options]
+
 [page down]
 
 [page up]
@@ -599,6 +607,8 @@ Proszę czekaj
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestiż
@@ -842,6 +852,8 @@ Pływalnia
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  zespoły
 [the barracks is finished]
@@ -962,6 +974,8 @@ Jednostki
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Rozbudowa
 [username]
@@ -1032,12 +1046,16 @@ Połączenie z YOG zostało utracone.
 Metaserwer YOG odmówił połączenia z powodu błędnego hasła.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserwer YOG odmówił połączenia, ponieważ Twoja wersja Globulation 2 jest zbyt stara, by mógł się z nią komunikować.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Metaserwer YOG odmĂłwiĹ poĹÄczenia bez dalszego wyjaĹnienia.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Metaserwer YOG odmówił połączenia, ponieważ twój login jest już zajęty przez kogoś innego.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 System jest gotowy do połączenia z metaserwerem YOG.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1052,5 +1070,9 @@ Wygrałeś !!!
 
 [Your %0 are under attack]
 Twój %0 jest atakowany
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Twoja jednostka została przeciągnięta na stronę wroga %0
+[Your username was banned]
+

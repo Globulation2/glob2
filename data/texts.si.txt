@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 je zapustil igro.
 [%0's game]
@@ -140,7 +142,7 @@ velikost obal
 
 [Build]
 Zgradi
-[Building Settings]
+[Building Defaults]
 
 [building site]
 gradbišče
@@ -214,9 +216,7 @@ Zgradi skripto
 Vspostavi povezavo
 [connecting to]
 Povezujem na
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Nadaljuj z igranjem
@@ -348,7 +348,7 @@ raziskovalci
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Hrana
@@ -369,6 +369,8 @@ Celotni zaslon
 [game full]
 Igra je polna
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ Naloži igro
 
 [load]
 Naloži
+[Lobby]
+
 [login]
 Prijava
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Višina mape
 
 [market explanation]
 Omogoča menjavo blaga
+[market level 0]
+
 [market]
 Tržnica
 [meta %0]
@@ -580,6 +586,8 @@ odpri
 Možnosti
 [Orange]
 Pomaranča
+[Other Options]
+
 [page down]
 
 [page up]
@@ -599,6 +607,8 @@ Prosim počakaj
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Ugled
@@ -842,6 +852,8 @@ Bazen
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  ekipe
 [the barracks is finished]
@@ -962,6 +974,8 @@ Enote
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Nadgradi
 [username]
@@ -1032,12 +1046,16 @@ YOG metastrežnik je zavrnil povezavo, ker je bilo tvoje uporabniško ime že re
 YOG metastrežnik je zavrnil povezavo, ker je vpisano geslo napačno.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metastrežnik je zavrnil povezavo ker tvoje uporabniško ime nima določenega gesla. Gotovo hočeš registrirati to uporabniško ime zato poskusi aktivirati možnost "Registriraj novega YOG uporabnika s tem geslom". To možnost moraš aktivirati le enkrat.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Yog metastrežnik je brezobrazložitve zavrnil povezavo!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1052,5 +1070,9 @@ Zmagal si!
 
 [Your %0 are under attack]
 Tvoji %0 so napadeni
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Tvoje enote so bile spreobrnjene %0
+[Your username was banned]
+

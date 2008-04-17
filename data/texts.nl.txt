@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 heeft het spel verlaten
 [%0's game]
@@ -140,7 +142,7 @@ Bouw Zwembad 1
 Bouw Zwembad 2
 [Build]
 Bouwen
-[Building Settings]
+[Building Defaults]
 
 [building site]
 bouwplaats
@@ -214,9 +216,7 @@ Compileer script
 Verbinden
 [connecting to]
 Verbinden met
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Speel verder
@@ -348,7 +348,7 @@ Lege eilanden
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Voedsel
@@ -370,6 +370,8 @@ Volledig Scherm
 Spel is vol
 [game shortcuts]
 Spel toetsen
+[Game]
+
 [general settings]
 Algemeen
 [go to event]
@@ -484,6 +486,8 @@ Speelveld laden
 
 [load]
 Laden
+[Lobby]
+
 [login]
 Aanmelden
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Markeer speelveld voor bondgenoten
 met anderen
 [market explanation]
 Verhandel fruit
+[market level 0]
+
 [market]
 Markt
 [meta %0]
@@ -580,6 +586,8 @@ Open
 Opties
 [Orange]
 Sinaasappelen
+[Other Options]
+
 [page down]
 
 [page up]
@@ -600,6 +608,8 @@ Even geduld alsjeblieft
 
 [press space]
 Druk op spatie om verder te gaan
+[Prestige Win Enabled]
+
 [Prestige]
 Roem
 [print screen]
@@ -842,6 +852,8 @@ Schakel naar terrein scherm
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  teams
 [the barracks is finished]
@@ -962,6 +974,8 @@ Beschikbaar door
 
 [upgrade building]
 Start/Stop verbeteren
+[Upgrade Defaults]
+
 [upgrade]
 Verbeter
 [username]
@@ -1034,12 +1048,16 @@ De verbinding met de YOG server is geweigerd omdat deze gebruikersnaam al eerder
 De verbinding met de YOG server is geweigerd omdat uw wachtwoord onjuist is.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 De verbinding met de YOG server is geweigerd omdat er nog geen wachtwoord is ingesteld voor deze gebruikersnaam. Waarschijnlijk wil je je gebruikersnaam eerst registreren. Om dit te doen kun je een vinkje zetten voor "Registreer nieuwe YOG gebruiker met wachtwoord" alvorens je een verbinding maakt. Je hoeft dit slechts één keer te doen.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 De verbinding met de YOG is geweigerd omdat uw globulation2 client te oud is.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 De verbinding met de YOG server is zonder duidelijke verklaring geweigerd!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al bestaat.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door een vinkje te zetten voor "Registreer nieuwe gebruiker met wachtwoord".
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Je hebt gewonnen!
 
 [Your %0 are under attack]
 Je %0 worden aangevallen
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Een eenheid van jou is overgelopen naar %0's team
+[Your username was banned]
+

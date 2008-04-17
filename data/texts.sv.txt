@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 har lämnat spelet.
 [%0's game]
@@ -140,7 +142,7 @@ strandstorlek
 
 [Build]
 Bygga
-[Building Settings]
+[Building Defaults]
 
 [building site]
 byggarbetsplats
@@ -214,9 +216,7 @@ Kompilera skript
 Anslut
 [connecting to]
 Ansluter till
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Fortsätt spela
@@ -348,7 +348,7 @@ tomma öar
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Mat
@@ -370,6 +370,8 @@ Fullskärm
 Spelet är fullt
 [game shortcuts]
 Spelgenvägar
+[Game]
+
 [general settings]
 Allmänt
 [go to event]
@@ -484,6 +486,8 @@ Ladda Karta
 
 [load]
 Ladda
+[Lobby]
+
 [login]
 Logga in
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Markera Karta För Allierade
 frukt med andra
 [market explanation]
 Tillåter utbyte av 
+[market level 0]
+
 [market]
 Marknad
 [meta %0]
@@ -580,6 +586,8 @@ Här
 Alternativ
 [Orange]
 Apelsin
+[Other Options]
+
 [page down]
 
 [page up]
@@ -600,6 +608,8 @@ Var god vänta
 
 [press space]
 Tryck mellanslag för att forsätta.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
 [print screen]
@@ -842,6 +852,8 @@ Byt till Terrängvy
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  lag
 [the barracks is finished]
@@ -962,6 +974,8 @@ Upplåst Av
 
 [upgrade building]
 Starta/Stoppa Uppgradering
+[Upgrade Defaults]
+
 [upgrade]
 Uppgradera
 [username]
@@ -1034,12 +1048,16 @@ YOG metaserver vägrar anslutning därför att användarnamnet redan är registr
 YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt lösenord.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver vägrar anslutning därför att det här användarnamnet inte har ett lösenord. Du vill förmodligen registrera ditt användarnamn med det här lösenordet. Aktivera därför inställningen "Registrera en ny YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den inställningen en gång.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver vägrar anslutning utan att lämna förklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Du har vunnit!
 
 [Your %0 are under attack]
 Din %0 är under attack
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Din enhet blev omvänd till %0s lag
+[Your username was banned]
+

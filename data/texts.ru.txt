@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 покинул игру.
 [%0's game]
@@ -140,8 +142,8 @@ break
 Построить Бассейн 3
 [Build]
 Строит
-[Building Settings]
-Здания
+[Building Defaults]
+
 [building site]
 стройка
 [Buildings]
@@ -208,10 +210,8 @@ caps lock
 Подключиться
 [connecting to]
 Подключение к
-[constructed buildings]
-Построенные здания
-[construction and upgrades]
-Постройка и улучшения
+[Construction Site Defaults]
+
 [Continue playing]
 Продолжить игру
 [control %0]
@@ -344,8 +344,8 @@ f8
 f9
 [Fertility Map]
 Карта плодородия
-[Flag Settings]
-Флаги
+[Flag Defaults]
+
 [food]
 Еда
 [forbidden area]
@@ -366,6 +366,8 @@ Ok
 Игра заполнена
 [game shortcuts]
 Игра
+[Game]
+
 [general settings]
 Общие
 [go to event]
@@ -482,6 +484,8 @@ left
 Загрузить
 [load]
 Загрузить карту
+[Lobby]
+
 [login]
 Вход
 [Lost : %0 has more prestige than you]
@@ -512,6 +516,8 @@ left
 фруктами с другими
 [market explanation]
 Позволяет меняться
+[market level 0]
+
 [market]
 Рынок
 [meta %0]
@@ -576,6 +582,8 @@ Ok
 Настройки
 [Orange]
 Апельсины
+[Other Options]
+
 [page down]
 page down
 [page up]
@@ -596,6 +604,8 @@ pause
 power
 [press space]
 Нажмите пробел для продолжения
+[Prestige Win Enabled]
+
 [Prestige]
 Престиж
 [print screen]
@@ -838,6 +848,8 @@ space
 sys req
 [tab]
 tab
+[Teams Fixed]
+
 [teams]
  команды
 [the barracks is finished]
@@ -960,6 +972,8 @@ tab
 up
 [upgrade building]
 Начать/Остановить улучшение
+[Upgrade Defaults]
+
 [upgrade]
 Улучшение
 [username]
@@ -1030,12 +1044,16 @@ up
 Метасервер YOG отказал в соединении, потому что вы указали неверный пароль.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Метасервер YOG отказал в соединении, потому что данному имени пользователя ещё не соответствует пароль. Вероятно, Вы хотите зарегистрировать это имя с этим паролем. Поэтому, активируйте опцию "Зарегистрировать нового пользователя YOG с паролем" перед тем, как соединяться. Вам придётся сделать это только один раз.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Метасервер YOG отказал в соединении, потому что Ваша версия Globulation 2 устарела. Пожалуйста, возьмите последнюю версию с www.globulation2.org чтобы сыграть online.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Метасервер YOG отказал в соединении без объяснения причин!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Система соединения готова обратиться к метасерверу YOG за подключением.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1050,5 +1068,9 @@ Ysagoon-игра в Интернете
 Вас выкинули из игры
 [Your %0 are under attack]
 %0 под ударом
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Ваш юнит перешёл к врагу %0
+[Your username was banned]
+

@@ -66,7 +66,9 @@ public:
 		REMOVESHORTCUT=17,
 		SCROLLWHEEL=18,
 		BUILDINGSETTINGS=19,
-		FLAGSETTINGS=20,
+		CONSTRUCTIONSITES=20,
+		UPGRADES=21,
+		FLAGSETTINGS=22,
 	};
 private:
 	Settings old_settings;
@@ -75,7 +77,7 @@ private:
 	TextInput *userName;
 	
 	TextButton *ok, *cancel, *generalsettings, *unitsettings, *keyboardsettings;
-	TextButton *buildings, *flags;
+	TextButton *buildings, *flags, *constructionsites, *upgrades;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
 	Selector *musicVol;
 	Selector *voiceVol;
@@ -105,8 +107,6 @@ private:
 	TextButton* remove_shortcut;
 	
 	Text* unitSettingsExplanation;
-	Text* unitSettingsHeading1;
-	Text* unitSettingsHeading2;
 	
 	bool gfxAltered;
 	

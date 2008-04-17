@@ -26,11 +26,13 @@
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
 #include "YOGPlayerSessionInfo.h"
+#include "YOGServerBannedIPListManager.h"
 #include "YOGServerChatChannelManager.h"
 #include "YOGServerPasswordRegistry.h"
 #include "YOGServerAdministrator.h"
 #include "YOGServerAdministratorList.h"
 #include "YOGServerPlayerStoredInfoManager.h"
+#include "YOGServerGameLog.h"
 
 
 class NetBroadcaster;
@@ -74,10 +76,10 @@ public:
 	YOGGamePolicy getGamePolicy() const;
 
 	///Returns whether the users password is correct.
-	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version);
+	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
 	
 	///This reigsters a new user
-	YOGLoginState registerInformation(const std::string& username, const std::string& password, Uint16 version);
+	YOGLoginState registerInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
 
 	///Returns the list of games the server currently has
 	const std::list<YOGGameInfo>& getGameList() const;
@@ -111,6 +113,9 @@ public:
 
 	///Returns the player assocciatted with the given ID
 	boost::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
+
+	///Returns the player assocciatted with the given name
+	boost::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
 	
 	///This starts LAN broadcasting of the first game, if it exists
 	void enableLANBroadcasting();
@@ -132,7 +137,14 @@ public:
 	
 	///Returns the YOGServerPasswordRegistry
 	YOGServerPasswordRegistry& getServerPasswordRegistry();
+	
+	///Returns the YOGServerBannedIPListManager
+	YOGServerBannedIPListManager& getServerBannedIPListManager();
+	
+	///Returns the YOGServerGameLog
+	YOGServerGameLog& getGameLog();
 private:
+	///This looks for a free player id to assign to the player
 	Uint16 chooseNewPlayerID();
 
 	///Removes the GameInfo with the given ID
@@ -160,6 +172,8 @@ private:
 	YOGServerAdministrator administrator;
 	YOGServerAdministratorList adminList;
 	YOGServerPlayerStoredInfoManager playerInfos;
+	YOGServerBannedIPListManager bannedIPs;
+	YOGServerGameLog gameLog;
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "SDL_net.h"
+#include <list>
 
 ///This class stores and records YOGPlayerStoredInfo for the server
 class YOGServerPlayerStoredInfoManager
@@ -43,6 +44,9 @@ public:
 	
 	///Returns the player info
 	YOGPlayerStoredInfo& getPlayerStoredInfo(const std::string& username);
+
+	///Returns a list of the banned players
+	std::list<std::string> getBannedPlayers();
 
 	///This stores the player infos in a file
 	void savePlayerInfos();

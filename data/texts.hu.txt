@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0's game]
@@ -140,7 +142,7 @@ a partok méretei
 
 [Build]
 Épít
-[Building Settings]
+[Building Defaults]
 
 [building site]
 építési terület
@@ -214,9 +216,7 @@ Szkript fordítása
 Kapcsolódás
 [connecting to]
 Kapcsolódás
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Játék folytatása
@@ -348,7 +348,7 @@ felderítők
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Élelmiszer
@@ -369,6 +369,8 @@ Teljes képernyő
 [game full]
 A játék megtelt
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ Játék betöltése
 
 [load]
 Betölt
+[Lobby]
+
 [login]
 Bejelentkezés
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Térkép hosszúsága
 gyümölcs árucserét
 [market explanation]
 Lehetővé teszi az
+[market level 0]
+
 [market]
 Piac
 [meta %0]
@@ -580,6 +586,8 @@ nyitva
 Opciók
 [Orange]
 Narancs
+[Other Options]
+
 [page down]
 
 [page up]
@@ -599,6 +607,8 @@ Kérem várjon
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Presztízs
@@ -842,6 +852,8 @@ fejlesztése
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  csapatok
 [the barracks is finished]
@@ -962,6 +974,8 @@ Egységek
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Fejleszteni
 [username]
@@ -1032,12 +1046,16 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév 
 A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1052,5 +1070,9 @@ Megnyerted a játékot!
 
 [Your %0 are under attack]
 Megtámadták a %0 -t
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Az egységedet az ellenség elfogta %0
+[Your username was banned]
+

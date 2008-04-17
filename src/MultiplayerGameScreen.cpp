@@ -36,48 +36,50 @@
 
 #include "IRC.h"
 #include "YOGMessage.h"
+#include "CustomGameOtherOptions.h"
 
 MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
-	: TabScreenWindow(parent, "game"), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
+	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
 	{
 		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 		{
-			TextButton *button = new TextButton(20, 330-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", AI::getAIText(i).c_str(), ADD_AI+i);
+			TextButton *button = new TextButton(20, 400-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", AI::getAIText(i).c_str(), ADD_AI+i);
 			button->visible = false;
 			addWidget(button);
 			addAI.push_back(button);
 		}
 	}
 	
-	startButton=new TextButton(20, 385, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
+	startButton=new TextButton(20, 455, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
 	startButton->visible=false;
 	addWidget(startButton);
 
-	gameStartWaitingText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
+	gameStartWaitingText=new Text(20, 455, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
 	addWidget(gameStartWaitingText);
 	gameStartWaitingText->visible = false;
 
+	otherOptions = new TextButton(20, 230, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Other Options]"), OTHEROPTIONS);
+	addWidget(otherOptions);
+	otherOptions->visible=false;
+	
 
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 	{
-		cancelButton = new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
+		cancelButton = new TextButton(20, 505, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
 	}
 	else
 	{
-		cancelButton = new TextButton(20, 435, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL);
+		cancelButton = new TextButton(20, 505, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL);
 	}
 	cancelButton->visible=false;
 	addWidget(cancelButton);
 
-	notReadyText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
-	notReadyText->visible=true;
+	notReadyText=new Text(20, 455, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
+	notReadyText->visible=isActivated();
 	addWidget(notReadyText);
-	gameFullText=new Text(20, 335, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
-	gameFullText->visible=false;
-	addWidget(gameFullText);
 
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
@@ -85,13 +87,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	{
 		int dx=320*(i/8);
 		int dy=20*(i%8);
-		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, COLOR_BUTTONS+i);
+		color[i]=new ColorButton(22+dx, 112+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, COLOR_BUTTONS+i);
 		for (int j=0; j<game->getMapHeader().getNumberOfTeams(); j++)
 			color[i]->addColor(game->getMapHeader().getBaseTeam(j).color);
 		addWidget(color[i]);
-		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
+		text[i]=new Text(42+dx, 110+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
-		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[kick]"), CLOSE_BUTTONS+i);
+		kickButton[i]=new TextButton(220+dx, 112+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[kick]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 
 		wasSlotUsed[i]=false;
@@ -100,12 +102,12 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	percentDownloaded=new Text(20, 360, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
+	percentDownloaded=new Text(20, 430, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
 	addWidget(percentDownloaded);
 
-	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
+	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
+	textInput=new TextInput(20, 90, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 	
 	updateJoinedPlayers();
@@ -138,8 +140,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		if (par1 == START)
 		{
 			//MultiplayerGame will send an event when the game is over
-			gameStartWaitingText->visible=true;
-			startButton->visible=false;
+			updateVisibleButtons();
 			game->startGame();
 		}
 		else if (par1 == CANCEL)
@@ -154,6 +155,12 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		else if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 		{
 			game->kickPlayer(par1 - CLOSE_BUTTONS);
+		}
+		else if(par1 == OTHEROPTIONS)
+		{
+			CustomGameOtherOptions settings(game->getGameHeader(), game->getMapHeader());
+			int rc = settings.execute(globalContainer->gfx, 40);
+			game->updateGameHeader();
 		}
 	}
 	else if (action==BUTTON_STATE_CHANGED)
@@ -191,16 +198,11 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	}
 	else if(type == MGEReadyToStart)
 	{
-		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
-			startButton->visible=true;
-		else
-			startButton->visible=false;
-		notReadyText->visible=false;
+		updateVisibleButtons();
 	}
 	else if(type == MGENotReadyToStart)
 	{
-		startButton->visible=false;
-		notReadyText->visible=true;
+		updateVisibleButtons();
 	}
 	else if(type == MGEGameStarted)
 	{
@@ -239,20 +241,11 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	}
 	else if(type == MGEGameStartRefused)
 	{
-		gameStartWaitingText->visible=false;
-		startButton->visible=true;
+		updateVisibleButtons();
 	}
 	else if(type == MGEGameHostJoinAccepted)
 	{
-		cancelButton->visible=true;
-		gameChat->setChannelID(game->getChatChannel());
-		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
-		{
-			for (size_t i=1; i<AI::SIZE; i++)
-			{
-				addAI[i-1]->visible=true;
-			}
-		}
+		updateVisibleButtons();
 	}
 	else if(type == MGEDownloadPercentUpdate)
 	{
@@ -260,12 +253,8 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 		if(info->getPercentFinished() != 100)
 		{
 			percentDownloaded->setText(FormatableString(Toolkit::getStringTable()->getString("[downloaded %0]")).arg((int)info->getPercentFinished()));
-			percentDownloaded->visible=true;
 		}
-		else
-		{
-			percentDownloaded->visible=false;
-		}
+		updateVisibleButtons();
 	}
 }
 
@@ -292,17 +281,17 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 		
 		if(bp.type != BasePlayer::P_NONE)
 		{
-			text[i]->visible=true;
+			text[i]->visible=isActivated();
 			text[i]->setText(bp.name);
-			color[i]->visible=true;
+			color[i]->visible=isActivated();
 			if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame && bp.number != game->getLocalPlayerNumber())
-				kickButton[i]->visible=true;
+				kickButton[i]->visible=isActivated();
 			else
 				kickButton[i]->visible=false;
 		}
 		else if(i < mh.getNumberOfTeams())
 		{
-			text[i]->visible=true;
+			text[i]->visible=isActivated();
 			text[i]->setText(Toolkit::getStringTable()->getString("[open]"));
 			color[i]->visible=false;
 			kickButton[i]->visible=false;
@@ -316,4 +305,88 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 	}
 }
 
+
+void MultiplayerGameScreen::updateVisibleButtons()
+{
+	if(game->isGameStarting())
+	{
+		gameStartWaitingText->visible=isActivated();
+		startButton->visible=false;
+		otherOptions->visible=false;
+	}
+	else
+	{
+		gameStartWaitingText->visible=false;
+		startButton->visible=isActivated();
+		otherOptions->visible=isActivated();
+	}
+	
+	if(game->isGameReadyToStart())
+	{
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		{
+			if(game->isGameStarting())
+			{
+				startButton->visible=false;
+				otherOptions->visible=true;
+			}
+			else
+			{
+				startButton->visible=isActivated();
+				otherOptions->visible=isActivated();
+			}
+		}
+		else
+		{
+			startButton->visible=false;
+			otherOptions->visible=false;
+		}
+		notReadyText->visible=false;
+	}
+	else
+	{
+		startButton->visible=false;
+		otherOptions->visible=false;
+		notReadyText->visible=isActivated();
+	}
+	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::JoinedGame)
+	{
+		cancelButton->visible=isActivated();
+		gameChat->setChannelID(game->getChatChannel());
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		{
+			for (size_t i=1; i<AI::SIZE; i++)
+			{
+				addAI[i-1]->visible=isActivated();
+			}
+		}
+	}
+	else
+	{	
+		cancelButton->visible=false;
+		gameChat->setChannelID(game->getChatChannel());
+		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		{
+			for (size_t i=1; i<AI::SIZE; i++)
+			{
+				addAI[i-1]->visible=false;
+			}
+		}
+	}
+	if(game->percentageDownloadFinished() != 100)
+	{
+		percentDownloaded->visible=isActivated();
+	}
+	else
+	{
+		percentDownloaded->visible=false;
+	}
+}
+
+
+void MultiplayerGameScreen::onActivated()
+{
+	updateJoinedPlayers();
+	updateVisibleButtons();
+}
 

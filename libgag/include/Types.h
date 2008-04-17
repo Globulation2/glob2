@@ -21,7 +21,7 @@
 #define __TYPES_H
 
 #ifndef DX9_BACKEND
-#include <SDL.h>
+#include <SDL_net.h>
 #endif
 
 #ifdef DX9_BACKEND

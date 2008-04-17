@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 ha lasciato la partita.
 [%0's game]
@@ -140,8 +142,8 @@ Costruisci piscina liv. 1
 Costruisci piscina liv. 2
 [Build]
 Costruisci
-[Building Settings]
-Impost. Costruzioni
+[Building Defaults]
+
 [building site]
 Struttura in costruzione
 [Buildings]
@@ -208,10 +210,8 @@ Calcolando la fertilità
 Connesso
 [connecting to]
 Mi sto connettendo a
-[constructed buildings]
-edifici costruiti
-[construction and upgrades]
-costruzione e miglioramenti
+[Construction Site Defaults]
+
 [Continue playing]
 Continua a giocare
 [control %0]
@@ -342,8 +342,8 @@ f8
 f9
 [Fertility Map]
 Mappa della fertilità
-[Flag Settings]
-Impost. Bandiere
+[Flag Defaults]
+
 [food]
 Cibo
 [forbidden area]
@@ -364,6 +364,8 @@ Schermo intero
 Partita al completo
 [game shortcuts]
 Scorciatoie da tastiera
+[Game]
+
 [general settings]
 Impostazioni generali
 [go to event]
@@ -478,6 +480,8 @@ Carica Mappa
 
 [load]
 Carica
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -508,6 +512,8 @@ Segna la mappa per gli Alleati
 frutta con gli altri
 [market explanation]
 Permette lo scambio di
+[market level 0]
+
 [market]
 Mercato
 [meta %0]
@@ -572,6 +578,8 @@ Apri
 Opzioni
 [Orange]
 Arance
+[Other Options]
+
 [page down]
 PAG giù
 [page up]
@@ -592,6 +600,8 @@ Aspetta un momento
 potenza
 [press space]
 Premi spazio per continuare.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestigio
 [print screen]
@@ -834,6 +844,8 @@ Passa alla Visualizzazione Terreno
 requisiti sistema
 [tab]
 TAB
+[Teams Fixed]
+
 [teams]
  squadre
 [the barracks is finished]
@@ -954,6 +966,8 @@ Sbloccato da
 su
 [upgrade building]
 Inizia/Ferma Miglioramento
+[Upgrade Defaults]
+
 [upgrade]
 Migliora
 [username]
@@ -1024,12 +1038,16 @@ Il metaserver YOG ha respinto la connessione questo username è già stato regis
 Il metaserver YOG ha rifiutato la connessione perchè la password è errata
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Il metaserver YOG ha rifiutato la connessione perchè la versione di Globulation2 che hai installato è troppo vecchia
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Il metaserver YOG ha respinto la connessione senza spiegazione!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Il metaserver YOG ha rifiutato la tua connessione perchè il tuo username è già in uso da qualcun altro.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Il sistema di connessione è in attesa del metaserver YOG per la connessione.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1044,5 +1062,9 @@ Hai vinto!!!!
 Sei stato espulso dalla partita
 [Your %0 are under attack]
 Il tuo %0 è sotto attacco
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 La tua unità è stata convertita alla squadra di %0
+[Your username was banned]
+

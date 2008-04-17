@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 已離開遊戲
 [%0's game]
@@ -140,7 +142,7 @@ AIWarrush
 建造游泳池 3
 [Build]
 建造
-[Building Settings]
+[Building Defaults]
 
 [building site]
 建築地點
@@ -214,9 +216,7 @@ AIWarrush
 連線
 [connecting to]
 連線至
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 繼續遊戲
@@ -348,7 +348,7 @@ AIWarrush
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 食物
@@ -370,6 +370,8 @@ AIWarrush
 遊戲已滿
 [game shortcuts]
 遊戲快捷鍵
+[Game]
+
 [general settings]
 基本設定
 [go to event]
@@ -484,6 +486,8 @@ zh-tw
 
 [load]
 載入
+[Lobby]
+
 [login]
 登入
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Air dmg.
 和他人交易水果
 [market explanation]
 允許交易的資源
+[market level 0]
+
 [market]
 市場
 [meta %0]
@@ -580,6 +586,8 @@ Air dmg.
 選項
 [Orange]
 柳橙
+[Other Options]
+
 [page down]
 
 [page up]
@@ -600,6 +608,8 @@ Air dmg.
 
 [press space]
 按下空白鍵以繼續
+[Prestige Win Enabled]
+
 [Prestige]
 聲望
 [print screen]
@@ -842,6 +852,8 @@ V: 持鍵以傳送訊息
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
 團隊
 [the barracks is finished]
@@ -962,6 +974,8 @@ V: 持鍵以傳送訊息
 
 [upgrade building]
 開始/停止 升級
+[Upgrade Defaults]
+
 [upgrade]
 升級
 [username]
@@ -1034,12 +1048,16 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。請重新選擇
 YOG meta伺服器拒絕連線因為你的密碼錯誤。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG meta伺服器拒絕連線因為你沒有密碼。請選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG meta伺服器拒絕連線而沒有任何解釋!!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG meta伺服器拒絕連線因為你的用戶名已被使用。
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Ysagoon 線上遊戲
 
 [Your %0 are under attack]
 你的 %0 正遭受攻擊
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
+[Your username was banned]
+

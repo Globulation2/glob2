@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 saiu do jogo.
 [%0's game]
@@ -140,7 +142,7 @@ Construir Piscina 2
 Construir Piscina 3
 [Build]
 Contruir
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Construindo...
@@ -214,9 +216,7 @@ Compôr
 Conectar
 [connecting to]
 Conectando a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jogando
@@ -350,7 +350,7 @@ f8
 f9
 [Fertility Map]
 Mapa de Fertilidade
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Comida
@@ -372,6 +372,8 @@ Tela cheia
 Jogo cheio
 [game shortcuts]
 Atalhos do jogo
+[Game]
+
 [general settings]
 Ajustes gerais
 [go to event]
@@ -486,6 +488,8 @@ Carregar mapa
 
 [load]
 Carrregar
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -516,6 +520,8 @@ Marcar mapa para aliados
 frutas com os outros
 [market explanation]
 Possibilita a troca de
+[market level 0]
+
 [market]
 Mercado
 [meta %0]
@@ -582,6 +588,8 @@ Abrir
 Opções
 [Orange]
 Laranja
+[Other Options]
+
 [page down]
 page down
 [page up]
@@ -602,6 +610,8 @@ Por favor espere
 liga
 [press space]
 Aperte barra de espaço para continuar
+[Prestige Win Enabled]
+
 [Prestige]
 Prestígio
 [print screen]
@@ -844,6 +854,8 @@ Mudar para visão de terrenos
 sys req
 [tab]
 tab
+[Teams Fixed]
+
 [teams]
 times
 [the barracks is finished]
@@ -964,6 +976,8 @@ Destravado por
 cima
 [upgrade building]
 Começar/Parar Upgrade
+[Upgrade Defaults]
+
 [upgrade]
 Upgrade
 [username]
@@ -1034,12 +1048,16 @@ O metaservidor YOG recusou a sua conexão porque este nome de usuário já foi r
 O metaservidor YOG recusou a sua conexão porque a senha estava incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário não tem senha ainda. Provavelmente você quer registrar o seu nome de usuário com esta senha. Logo, ative a opção "Registrar um novo usuário YOG com uma senha" antes de conectar. Você precisa ativar esta opção somente uma vez.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 O metaservidor YOG recusou a sua conexão porque o cliente globulation2 está obsoleto.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 O metaservidor YOG recusou a conexão sem explicação alguma!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário está sendo usado por outro.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 O sistema de conexão está pronto para contatar o metaservidor YOG para conexão.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Você ganhou!
 
 [Your %0 are under attack]
 Seus %0 estão sendo atacados
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Sua unidade foi convertido para o time do %0
+[Your username was banned]
+

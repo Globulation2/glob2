@@ -652,12 +652,12 @@ int NetTestSuite::testNetReteamingInformation()
 
 int NetTestSuite::testListenerConnection()
 {
-	//Creates the NetListener at port 7485
+	//Creates the NetListener at port 7480
 	NetListener nl;
-	nl.startListening(7485);
+	nl.startListening(7480);
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
-	nc_client.openConnection("127.0.0.1", 7485);
+	nc_client.openConnection("127.0.0.1", 7480);
 	//Give it time to proccess the request
 	SDL_Delay(40);
 	//The server connection

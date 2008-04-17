@@ -102,6 +102,11 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);
 		addWidget(alliance[i]);
 		
+		if(gameGUI->game.gameHeader.areAllyTeamsFixed())
+		{
+			alliance[i]->setClickable(false);
+		}
+		
 		normalVision[i]=new OnOffButton(196+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0, NORMAL_VISION+i);
 		addWidget(normalVision[i]);
 		
