@@ -169,28 +169,28 @@ void Game::setMapHeader(const MapHeader& newMapHeader)
 
 void Game::setGameHeader(const GameHeader& newGameHeader)
 {
-	// set the base players
-	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
-		delete players[i];
-
-	gameHeader = newGameHeader;
-
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		teams[i]->playersMask=0;
 		teams[i]->numberOfPlayer=0;
 	}
 
-	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	for (int i=0; i<newGameHeader.getNumberOfPlayers(); i++)
 	{
-		players[i]=new Player();
-		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
+		//Don't change AI's
+		if(gameHeader.getBasePlayer(i).type < BasePlayer::P_AI)
+		{
+			delete players[i];
+			players[i]=new Player();
+			players[i]->setBasePlayer(&newGameHeader.getBasePlayer(i), teams);
+		}
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;
 		teams[players[i]->teamNumber]->playersMask|=(1<<i);
 	}
 
 	setSyncRandSeed(newGameHeader.getRandomSeed());
 
+	gameHeader = newGameHeader;
 	anyPlayerWaited=false;
 }
 
