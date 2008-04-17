@@ -143,7 +143,7 @@ void Game::clearGame()
 		}
 	}
 
-	///Clears prestige	
+	///Clears prestige
 	totalPrestige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
@@ -1116,62 +1116,46 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-	// prestige of 0 results in infinite prestige
-	if (prestigeToReach > 0)
+	std::list<boost::shared_ptr<WinningCondition> >& conditions = gameHeader.getWinningConditions();
+	bool areAllDecided=true;
+	//We do this twice, because some win conditions depend on other win conditions
+	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
-		totalPrestige=0;
-		isGameEnded=false;
-		int greatestPrestige=0;
-		
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		{
-			bool isOtherAlive=false;
-			for (int j=0; j<mapHeader.getNumberOfTeams(); j++)
-			{
-				if(j!=i)
-				{
-					Uint32 playerToMeAllyMask = teams[i]->me & teams[j]->allies;
-					Uint32 meToPlayerAllyMask = teams[j]->me & teams[i]->allies;
-					if((playerToMeAllyMask==0 || meToPlayerAllyMask==0) && teams[j]->isAlive)
-					{
-						isOtherAlive=true;
-					}
-				}
-			}
-			teams[i]->hasWon |= !isOtherAlive;
-			isGameEnded |= teams[i]->hasWon;
-			totalPrestige += teams[i]->prestige;
-			if (greatestPrestige < teams[i]->prestige) greatestPrestige = teams[i]->prestige;
-		}
-	
-		if (totalPrestige >= prestigeToReach)
-		{
-			totalPrestigeReached=true;
-			isGameEnded=true;
-	
-			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-				teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
-		}
+		teams[i]->checkWinConditions();
 	}
+	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		teams[i]->checkWinConditions();
+		if(teams[i]->winCondition == WCUnknown)
+			areAllDecided=false;
+	}
+	isGameEnded = areAllDecided;
+	
 }
 
 void Game::scriptSyncStep()
 {
 	// do a script step
 	script.syncStep(gui);
+}
 
-	// alter win/loose conditions
+
+
+void Game::prestigeSyncStep()
+{
+	totalPrestige=0;
+	totalPrestigeReached=false;
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		if (teams[i]->isAlive)
-		{
-			if (script.hasTeamWon(i))
-				teams[i]->hasWon=true;
-			if (script.hasTeamLost(i))
-				teams[i]->isAlive=false;
-		}
+		totalPrestige += teams[i]->prestige;
+	}
+	if(totalPrestige >= prestigeToReach)
+	{
+		totalPrestigeReached=true;
 	}
 }
+
+
 
 void Game::syncStep(Sint32 localTeam)
 {
@@ -1207,9 +1191,10 @@ void Game::syncStep(Sint32 localTeam)
 
 		if ((stepCounter&15)==1)
 			buildProjectSyncStep(localTeam);
-		
+
 		if ((stepCounter&31)==0)
 		{
+			prestigeSyncStep();
 			scriptSyncStep();
 			wonSyncStep();
 		}
@@ -2772,5 +2757,16 @@ Team *Game::getTeamWithMostPrestige(void)
 		}
 	}
 	return maxPrestigeTeam;
+}
+
+bool Game::isPrestigeWinCondition(void)
+{
+	std::list<boost::shared_ptr<WinningCondition> >& conditions = gameHeader.getWinningConditions();
+	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
+	{
+		if((*i)->getType() == WCPrestige)
+			return true;	
+	}
+	return false;
 }
 

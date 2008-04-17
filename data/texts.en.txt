@@ -538,6 +538,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 no key yet
 [no ressources growth areas]
 No Growth Areas
+[Prestige Win Enabled]
+Prestige Win Enabled
 [No]
 No
 [not ready]
