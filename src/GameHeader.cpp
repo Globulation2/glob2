@@ -42,6 +42,7 @@ void GameHeader::reset()
 		allyTeamNumbers[i] = i+1;
 	}
 	allyTeamsFixed=true;
+	winningConditions = WinningCondition::getDefaultWinningConditions();
 }
 
 
@@ -69,6 +70,17 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
+		
+		stream->readEnterSection("winningConditions");
+		winningConditions.clear();
+		Uint32 size = stream->readUint32("size");
+		for(int i=0; i<size; ++i)
+		{
+			stream->readEnterSection(i);
+			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
 	}
 	if(versionMinor >= 64)
 		seed = stream->readUint32("seed");
@@ -99,6 +111,17 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");
+	stream->writeEnterSection("winningConditions");
+	stream->writeUint32(winningConditions.size(), "size");
+	int n=0;
+	for(std::list<boost::shared_ptr<WinningCondition> >::const_iterator i=winningConditions.begin(); i!=winningConditions.end(); ++i)
+	{
+		stream->writeEnterSection(n);
+		(*i)->encodeData(stream);
+		stream->writeLeaveSection();
+		n+=1;
+	}
+	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
 	stream->writeLeaveSection();
 }
@@ -119,6 +142,17 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
+		
+		stream->readEnterSection("winningConditions");
+		winningConditions.clear();
+		Uint32 size = stream->readUint32("size");
+		for(int i=0; i<size; ++i)
+		{
+			stream->readEnterSection(i);
+			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
 	}
 	if(versionMinor >= 64)
 		seed = stream->readUint32("seed");
@@ -140,6 +174,17 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");
+	stream->writeEnterSection("winningConditions");
+	stream->writeUint32(winningConditions.size(), "size");
+	int n=0;
+	for(std::list<boost::shared_ptr<WinningCondition> >::const_iterator i=winningConditions.begin(); i!=winningConditions.end(); ++i)
+	{
+		stream->writeEnterSection(n);
+		(*i)->encodeData(stream);
+		stream->writeLeaveSection();
+		n+=1;
+	}
+	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
 	stream->writeLeaveSection();
 }
@@ -267,6 +312,13 @@ void GameHeader::setAllyTeamsFixed(bool fixed)
 
 
 
+std::list<boost::shared_ptr<WinningCondition> >& GameHeader::getWinningConditions()
+{
+	return winningConditions;
+}
+
+
+
 Uint32 GameHeader::getRandomSeed() const
 {
 	return seed;
@@ -277,4 +329,5 @@ void GameHeader::setRandomSeed(Uint32 nseed)
 {
 	seed = nseed;
 }
+
 

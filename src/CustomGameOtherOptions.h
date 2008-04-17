@@ -62,6 +62,7 @@ private:
 		OK,
 		CANCEL,
 		TEAMSFIXED,
+		PRESTIGEWINENABLED,
 	};
 	
 	///"Other Options" Title
@@ -82,6 +83,16 @@ private:
 	OnOffButton *teamsFixed;
 	///Text for above button
 	Text* teamsFixedText;
+	
+	///Enables a win via prestige
+	OnOffButton* prestigeWinEnabled;
+	///Text for above button
+	Text* prestigeWinEnabledText;
+	
+	///This updates the winning conditions in the game header
+	void updateGameHeaderWinningConditions();
+	///This updates the screens winning conditions from the game header
+	void updateScreenWinningConditions();
 	
 	
 	MapHeader& mapHeader;

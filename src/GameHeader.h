@@ -21,6 +21,8 @@
 
 #include "BasePlayer.h"
 #include "Stream.h"
+#include <list>
+#include "WinningConditions.h"
 
 ///This is the game header. It is dynamic, and can change from game to game, even
 ///if the map doesn't. It holds all configurable information for a game, from team
@@ -89,6 +91,10 @@ public:
 	///Sets whether ally-teams are fixed during the game
 	void setAllyTeamsFixed(bool fixed);
 	
+	///Returns the list of winning conditions. This list can be modified. Mind, though, the pecking order of winning conditions.
+	///Ones first on the list are considered first.
+	std::list<boost::shared_ptr<WinningCondition> >& getWinningConditions();
+	
 	///Returns the random generator seed thats being used
 	Uint32 getRandomSeed() const;
 	
@@ -114,6 +120,9 @@ private:
 	///Represents whether the ally-teams are fixed for the whole game, so no allying/unallying can take place
 	bool allyTeamsFixed;
 	
+	///Represents the winning conditions of the game.
+	std::list<boost::shared_ptr<WinningCondition> > winningConditions;
+
 	///Represents the random seed used for the game
 	Uint32 seed;
 };
