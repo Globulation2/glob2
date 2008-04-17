@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 a părăsit jocul.
 [%0's game]
@@ -140,7 +142,7 @@ mărimea plajei
 
 [Build]
 Construieşte
-[Building Settings]
+[Building Defaults]
 
 [building site]
 şantier
@@ -214,9 +216,7 @@ Compilează scriptul
 Conectează
 [connecting to]
 Conectare la
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuă jocul
@@ -348,7 +348,7 @@ exploratori
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Mâncare
@@ -369,6 +369,8 @@ Ecran întreg
 [game full]
 Joc complet
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ Nivele
 
 [load]
 Încarcă
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Lărgimea hărţii
 cu ceilalţi
 [market explanation]
 Permite schimbul de fructe
+[market level 0]
+
 [market]
 Piată
 [meta %0]
@@ -580,6 +586,8 @@ deschis
 Opţiuni
 [Orange]
 Portocală
+[Other Options]
+
 [page down]
 
 [page up]
@@ -599,6 +607,8 @@ Vă rugăm aşteptaţi
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestigiu
@@ -842,6 +852,8 @@ Piscină
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  echipe
 [the barracks is finished]
@@ -962,6 +974,8 @@ Unităţi
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Ameliorează
 [username]
@@ -1032,12 +1046,16 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că qcest nume de utiliza
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că parola este falsă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că acest utilizator nu are înca o parola in baza de date.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulation2 pe care o folosiţi este prea veche pentru a se putea comunica corect.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de utilizator este deja utilizat de către o altă persoană.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1052,5 +1070,9 @@ Aţi câştigat!
 
 [Your %0 are under attack]
 %0 voastre sunt atacate
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Unitatea voastră a trecut de partea %0
+[Your username was banned]
+

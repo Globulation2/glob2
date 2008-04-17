@@ -21,6 +21,8 @@
 
 #include "BasePlayer.h"
 #include "Stream.h"
+#include <list>
+#include "WinningConditions.h"
 
 ///This is the game header. It is dynamic, and can change from game to game, even
 ///if the map doesn't. It holds all configurable information for a game, from team
@@ -77,6 +79,22 @@ public:
 	///Provides access to the base player. n must be between 0 and 31.
 	const BasePlayer& getBasePlayer(const int n) const;
 	
+	///Returns the ally-team number for the given team for pre-game alliances
+	Uint8 getAllyTeamNumber(int teamNumber);
+	
+	///Sets the ally-team number for the given team
+	void setAllyTeamNumber(int teamNumber, Uint8 allyTeam);
+	
+	///Returns whether allying and de-allying are allowed mid-game
+	bool areAllyTeamsFixed();
+	
+	///Sets whether ally-teams are fixed during the game
+	void setAllyTeamsFixed(bool fixed);
+	
+	///Returns the list of winning conditions. This list can be modified. Mind, though, the pecking order of winning conditions.
+	///Ones first on the list are considered first.
+	std::list<boost::shared_ptr<WinningCondition> >& getWinningConditions();
+	
 	///Returns the random generator seed thats being used
 	Uint32 getRandomSeed() const;
 	
@@ -96,6 +114,15 @@ private:
 	///Represents the basic player information in the game
 	BasePlayer players[32];
 	
+	///Represents the ally team numbers
+	Uint8 allyTeamNumbers[32];
+	
+	///Represents whether the ally-teams are fixed for the whole game, so no allying/unallying can take place
+	bool allyTeamsFixed;
+	
+	///Represents the winning conditions of the game.
+	std::list<boost::shared_ptr<WinningCondition> > winningConditions;
+
 	///Represents the random seed used for the game
 	Uint32 seed;
 };

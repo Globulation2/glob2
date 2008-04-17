@@ -23,6 +23,7 @@
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <GUIButton.h>
+#include "GUIMessageBox.h"
 #include <GUIList.h>
 #include <GUITextArea.h>
 #include <GUIText.h>
@@ -90,28 +91,29 @@ void YOGClientPlayerList::drawItem(int x, int y, size_t element)
 
 
 
-YOGClientLobbyScreen::YOGClientLobbyScreen(boost::shared_ptr<YOGClient> client)
-	: client(client)
+YOGClientLobbyScreen::YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client)
+	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Lobby]")), client(client)
 {
-
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[yog]")));
 
-	addWidget(new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[create game]"), CREATE_GAME));
+	hostButton = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[create game]"), CREATE_GAME);
+	addWidget(hostButton);
+	
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), CANCEL, 27));
 
-	gameList=new List(20, 50, 220, 140, ALIGN_FILL, ALIGN_TOP, "standard");
+	gameList=new List(20, 120, 220, 140, ALIGN_FILL, ALIGN_TOP, "standard");
 	addWidget(gameList);
-	gameInfo=new TextArea(20, 50, 180, 95, ALIGN_RIGHT, ALIGN_TOP, "standard");
+	gameInfo=new TextArea(20, 120, 180, 95, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	addWidget(gameInfo);
-	joinButton=new TextButton(20, 155, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[join]"), JOIN);
+	joinButton=new TextButton(20, 225, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[join]"), JOIN);
 	addWidget(joinButton);
 
-	playerList=new YOGClientPlayerList(20, 210, 180, 120, ALIGN_RIGHT, ALIGN_FILL, "standard");
+	playerList=new YOGClientPlayerList(20, 280, 180, 135, ALIGN_RIGHT, ALIGN_FILL, "standard");
 	addWidget(playerList);
 
-	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard", true, "", "data/gui/yog");
+	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard", true, "", "data/gui/yog");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
+	textInput=new TextInput(20, 90, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 	
 	lobbyChat.reset(new YOGClientChatChannel(LOBBY_CHAT_CHANNEL, client));
@@ -124,6 +126,8 @@ YOGClientLobbyScreen::YOGClientLobbyScreen(boost::shared_ptr<YOGClient> client)
 	client->getGameListManager()->addListener(this);
 	client->getPlayerListManager()->addListener(this);
 	lobbyChat->addListener(this);
+	
+	gameScreen=-1;
 }
 
 
@@ -142,6 +146,7 @@ YOGClientLobbyScreen::~YOGClientLobbyScreen()
 
 void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	TabScreenWindow::onAction(source, action, par1, par2);
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==CANCEL)
@@ -188,6 +193,35 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 
 void YOGClientLobbyScreen::onTimer(Uint32 tick)
 {
+	if(gameScreen != -1)
+	{
+		int rc = parent->getReturnCode(gameScreen);
+		if(rc!=-1)
+		{
+			boost::shared_ptr<MultiplayerGame> game(client->getMultiplayerGame());
+			if(rc == MultiplayerGameScreen::Kicked)
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
+			else if(rc == MultiplayerGameScreen::GameCancelled)
+				recieveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
+			else if(rc == MultiplayerGameScreen::GameRefused)
+			{
+				if(game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
+					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
+				else if(game->getGameJoinState() == YOGServerGameIsFull)
+					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
+				else if(game->getGameJoinState() == YOGServerGameDoesntExist)
+					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
+				else if(game->getGameCreationState() == YOGCreateRefusalUnknown)
+					recieveInternalMessage("Game was refused by server");
+			}
+			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+			gameScreen=-1;
+			updateButtonVisibility();
+		}
+	}
+
+	TabScreenWindow::onTimer(tick);
+
 	ircChat->update();
 	client->update();
 
@@ -204,6 +238,14 @@ void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent
 	if(type == YEConnectionLost)
 	{
 		endExecute(ConnectionLost);
+	}
+	else if(type == YEPlayerBanned)
+	{
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[ok]"));
+	}
+	else if(type == YEIPBanned)
+	{
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your IP address was temporarily banned]"), Toolkit::getStringTable()->getString("[ok]"));
 	}
 }
 
@@ -265,15 +307,10 @@ void YOGClientLobbyScreen::hostGame()
 		game->createNewGame(name);
 
 		game->setMapHeader(cms.getMapHeader());
-
-		Glob2TabScreen screen;
-		MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client, ircChat);
-		int rc = screen.execute(globalContainer->gfx, 40);
-		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
-		if(rc == -1)
-			endExecute(-1);
-		else if(rc == MultiplayerGameScreen::GameRefused)
-			recieveInternalMessage("Game was refused by server");
+		MultiplayerGameScreen* mgs = new MultiplayerGameScreen(parent, game, client, ircChat);
+		gameScreen = mgs->getTabNumber();
+		updateButtonVisibility();
+		parent->activateGroup(gameScreen);
 	}
 	else if(rc == -1)
 		endExecute(-1);
@@ -298,23 +335,11 @@ void YOGClientLobbyScreen::joinGame()
 			}
 		}
 		game->joinGame(id);
-		Glob2TabScreen screen;
-		MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client, ircChat);
-		int rc = screen.execute(globalContainer->gfx, 40);
-		client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
-		if(rc == -1)
-			endExecute(-1);
-		else if(rc == MultiplayerGameScreen::Kicked)
-			recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
-		else if(rc == MultiplayerGameScreen::GameCancelled)
-			recieveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
-		else if(rc == MultiplayerGameScreen::GameRefused)
-			if(game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
-				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
-			else if(game->getGameJoinState() == YOGServerGameIsFull)
-				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
-			else if(game->getGameJoinState() == YOGServerGameDoesntExist)
-				recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
+		MultiplayerGameScreen* mgs = new MultiplayerGameScreen(parent, game, client, ircChat);
+		gameScreen = mgs->getTabNumber();
+		updateButtonVisibility();
+		parent->activateGroup(gameScreen);
+
 	}
 }
 
@@ -449,3 +474,23 @@ void YOGClientLobbyScreen::autoCompleteNick()
 	}
 }
 
+
+void YOGClientLobbyScreen::updateButtonVisibility()
+{
+	if(gameScreen != -1)
+	{
+		joinButton->visible=false;
+		hostButton->visible=false;
+	}
+	else
+	{
+		joinButton->visible=true;
+		hostButton->visible=true;
+	}
+}
+
+
+void YOGClientLobbyScreen::onActivated()
+{
+	updateButtonVisibility();
+}

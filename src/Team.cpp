@@ -87,6 +87,8 @@ void Team::init(void)
 
 	isAlive=true;
 	hasWon=false;
+	hasLost=false;
+	winCondition = WCUnknown;
 	prestige=0;
 	unitConversionLost = 0;
 	unitConversionGained = 0;
@@ -1255,3 +1257,34 @@ std::string Team::getFirstPlayerName(void) const
 	}
 	return Toolkit::getStringTable()->getString("[Uncontrolled]");
 }
+
+
+
+void Team::checkWinConditions()
+{
+	std::list<boost::shared_ptr<WinningCondition> >& conditions = game->gameHeader.getWinningConditions();
+	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
+	{
+		if((*i)->hasTeamWon(teamNumber, game))
+		{
+			hasWon=true;
+			hasLost=false;
+			winCondition = (*i)->getType();
+			break;
+		}
+		else if((*i)->hasTeamLost(teamNumber, game))
+		{
+			hasWon=false;
+			hasLost=true;
+			winCondition = (*i)->getType();
+			break;
+		}
+		else
+		{
+			hasWon=false;
+			hasLost=false;
+			winCondition = WCUnknown;
+		}
+	}
+}
+

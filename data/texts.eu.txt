@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0(e)k partida utzi du.
 [%0's game]
@@ -140,7 +142,7 @@ hondar tamaina
 
 [Build]
 Eraiki
-[Building Settings]
+[Building Defaults]
 
 [building site]
 eraikitzen
@@ -214,9 +216,7 @@ Konpilatu script-a
 Konektatu
 [connecting to]
 Hona konektatzen:
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Jolasten jarraitu
@@ -348,7 +348,7 @@ irla hutsak
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Janaria
@@ -370,6 +370,8 @@ Pantaila osoa
 Partida osorik
 [game shortcuts]
 Partida teklak
+[Game]
+
 [general settings]
 Ezarpen orokorrak
 [go to event]
@@ -484,6 +486,8 @@ Kargatu mapa
 
 [load]
 Kargatu
+[Lobby]
+
 [login]
 Saioa hasi
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Markatu mapa aliatuentzat
 fruta
 [market explanation]
 Trukea baimentzen du: 
+[market level 0]
+
 [market]
 Merkatua
 [meta %0]
@@ -580,6 +586,8 @@ ireki
 Aukerak
 [Orange]
 Laranja
+[Other Options]
+
 [page down]
 
 [page up]
@@ -600,6 +608,8 @@ Mesedez itxaron
 
 [press space]
 Zanpatu espazio barra jarraitzeko
+[Prestige Win Enabled]
+
 [Prestige]
 Izen ona
 [print screen]
@@ -842,6 +852,8 @@ Lurzoru ikuspegira aldatu
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  talde
 [the barracks is finished]
@@ -962,6 +974,8 @@ Desblokeatzailea:
 
 [upgrade building]
 Eguneraketa hasi/gelditu
+[Upgrade Defaults]
+
 [upgrade]
 Eguneratu
 [username]
@@ -1034,12 +1048,16 @@ YOG metazerbitzariak estekatzea ukatu du erabiltzaile izen hau jada hartuta dago
 YOG metazerbitzariak estekatzea ukatu du zure pasahitza gaizki dagoelako.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metazerbitzariak estekatzea ukatu du zerabiltzaile izen honek ez duelako pasahitzik oraindik. Ziur aski izena eman nahi duzu. Kasu hortan, markatu "YOG erabiltzaile gisa izena eman pasahitza barne" konektatu aurretik. Aukera hau behin bakarrik markatu beharko duzu.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metazerbitzariak estekatzea ukatu du zure globulation2 bezeroa zaharregia delako.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metazerbitzariak estekatzea ukatu du inolako azalpenik eman gabe!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek duelako.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Irabazi duzu!
 
 [Your %0 are under attack]
 Zure %0ak erasopean daude
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Zure unitatea %0(r)en taldera pasatu da
+[Your username was banned]
+

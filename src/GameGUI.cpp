@@ -3640,8 +3640,8 @@ void GameGUI::checkWonConditions(void)
 {
 	if (hasEndOfGameDialogBeenShown)
 		return;
-		
-	if (game.totalPrestigeReached)
+	
+	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
 	{
 		if (inGameMenu==IGM_NONE)
 		{
@@ -3651,7 +3651,7 @@ void GameGUI::checkWonConditions(void)
 			miniMapPushed=false;
 		}
 	}
-	else if (localTeam->isAlive==false)
+	else if (localTeam->hasLost==true)
 	{
 		if (inGameMenu==IGM_NONE)
 		{

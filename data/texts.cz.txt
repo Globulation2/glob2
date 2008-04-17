@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 opustil hru.
 [%0's game]
@@ -140,7 +142,7 @@ Velikost pláží
 
 [Build]
 Stavba
-[Building Settings]
+[Building Defaults]
 
 [building site]
 staveniště
@@ -214,9 +216,7 @@ Sestavit skript
 Připojit
 [connecting to]
 Připojuji se k
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Pokračovat ve hře
@@ -348,7 +348,7 @@ průzkumníci
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Potrava
@@ -369,6 +369,8 @@ Fullscreen
 [game full]
 Plně obsazená hra
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ Nahrát hru
 
 [load]
 Nahrát
+[Lobby]
+
 [login]
 Přihlásit
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Výška mapy
 
 [market explanation]
 Povolení vyměnit ovoce
+[market level 0]
+
 [market]
 Tržiště
 [meta %0]
@@ -580,6 +586,8 @@ Otevřít
 Nastavení
 [Orange]
 Pomarenče
+[Other Options]
+
 [page down]
 
 [page up]
@@ -599,6 +607,8 @@ Jméno
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestiž
@@ -842,6 +852,8 @@ Koupaliště
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  hráčů
 [the barracks is finished]
@@ -962,6 +974,8 @@ Jednotky
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Vylepšit
 [username]
@@ -1032,12 +1046,16 @@ YOG metaserver odmítnul spojení, protože tato přezdívka je už zaregistovan
 YOG metaserver odmítnul spojení, protože heslo nebylo zadáno správně.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver odmítnul spojení, protože tato přezdívka ještě nemá přidělené heslo. Pro registraci přezdívky s tímto heslem zaškrtni políčko "Registrace nového YOG uživatele s heslem" před připojením. Budeš potřebovat zaškrtnout toto políčko pouze jednou.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globulation2.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver odmítnul spojení bez udání důvodu.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Systém připojení je připraven na kontakt s YOG metaserverem.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1052,5 +1070,9 @@ Vyhrál jsi!
 
 [Your %0 are under attack]
 Tvoji %0 jsou pod útokem
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Tva jednotka změnila víru v jiného hráče %0
+[Your username was banned]
+

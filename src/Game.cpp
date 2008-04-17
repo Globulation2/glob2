@@ -143,7 +143,7 @@ void Game::clearGame()
 		}
 	}
 
-	///Clears prestige	
+	///Clears prestige
 	totalPrestige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
@@ -169,28 +169,28 @@ void Game::setMapHeader(const MapHeader& newMapHeader)
 
 void Game::setGameHeader(const GameHeader& newGameHeader)
 {
-	// set the base players
-	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
-		delete players[i];
-
-	gameHeader = newGameHeader;
-
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		teams[i]->playersMask=0;
 		teams[i]->numberOfPlayer=0;
 	}
 
-	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	for (int i=0; i<newGameHeader.getNumberOfPlayers(); i++)
 	{
-		players[i]=new Player();
-		players[i]->setBasePlayer(&gameHeader.getBasePlayer(i), teams);
+		//Don't change AI's
+		if(gameHeader.getBasePlayer(i).type < BasePlayer::P_AI)
+		{
+			delete players[i];
+			players[i]=new Player();
+			players[i]->setBasePlayer(&newGameHeader.getBasePlayer(i), teams);
+		}
 		teams[players[i]->teamNumber]->numberOfPlayer+=1;
 		teams[players[i]->teamNumber]->playersMask|=(1<<i);
 	}
 
 	setSyncRandSeed(newGameHeader.getRandomSeed());
 
+	gameHeader = newGameHeader;
 	anyPlayerWaited=false;
 }
 
@@ -698,7 +698,6 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			teams[team]->sharedVisionExchange=sao->visionExchangeMask;
 			teams[team]->sharedVisionFood=sao->visionFoodMask;
 			teams[team]->sharedVisionOther=sao->visionOtherMask;
-			setAIAlliance();
 			fprintf(logFile, "ORDER_SET_ALLIANCE");
 		}
 		break;
@@ -730,84 +729,26 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	}
 }
 
-bool Game::isHumanAllAllied(void)
-{
-	Uint32 nonAIMask=0;
-	
-	// AIMask now have the mask of everything which isn't AI
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-	{
-		nonAIMask |= ((teams[i]->type != BaseTeam::T_AI) ? 1 : 0) << i;
-		//printf("team %d is AI is %d\n", i, teams[i]->type == BaseTeam::T_AI);
-	}
 
-	// if there is any non-AI player with which we aren't allied, return false
-	// or if there is any player allied to AI
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		if (teams[i]->type != BaseTeam::T_AI)
+
+void Game::setAlliances(void)
+{
+	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		int allyTeam = gameHeader.getAllyTeamNumber(i);
+		teams[i]->allies = 0;
+		teams[i]->enemies = 0;
+		for(int j=0; j<mapHeader.getNumberOfTeams(); ++j)
 		{
-			if (teams[i]->allies != nonAIMask)
-				return false;
-		}
-	
-	return true;
-}
-
-void Game::setAIAlliance(void)
-{
-	if (isHumanAllAllied())
-	{
-		if (verbose)
-			printf("Game : AIs are now allied vs human\n");
-		
-		// all human are allied, ally AI
-		Uint32 aiMask = 0;
-		
-		// find all AI
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-			if (teams[i]->type == BaseTeam::T_AI)
-				aiMask |= (1<<i);
-		
-		if (verbose)
-			printf("AI mask : %x\n", aiMask);
-				
-		// ally them together
-		
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-			if (teams[i]->type == BaseTeam::T_AI)
+			int otherAllyTeam = gameHeader.getAllyTeamNumber(j);
+			if(allyTeam == otherAllyTeam)
 			{
-				teams[i]->allies = aiMask;
-				teams[i]->enemies = ~teams[i]->allies;
+				teams[i]->allies |= teams[j]->me;
 			}
-	}
-	else
-	{
-		if (verbose)
-			printf("Game : AIs are now in ffa mode\n");
-		
-		// free for all on AI side
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		{
-			if (teams[i]->type == BaseTeam::T_AI)
+			else
 			{
-				teams[i]->allies = teams[i]->me;
-				teams[i]->enemies = ~teams[i]->allies;
+				teams[i]->enemies |= teams[j]->me;
 			}
-		}
-	}
-}
-
-
-
-void Game::setAIFFA(void)
-{
-	// free for all on AI side
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-	{
-		if (teams[i]->type == BaseTeam::T_AI)
-		{
-			teams[i]->allies = teams[i]->me;
-			teams[i]->enemies = ~teams[i]->allies;
 		}
 	}
 }
@@ -1175,62 +1116,46 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-	// prestige of 0 results in infinite prestige
-	if (prestigeToReach > 0)
+	std::list<boost::shared_ptr<WinningCondition> >& conditions = gameHeader.getWinningConditions();
+	bool areAllDecided=true;
+	//We do this twice, because some win conditions depend on other win conditions
+	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
-		totalPrestige=0;
-		isGameEnded=false;
-		int greatestPrestige=0;
-		
-		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		{
-			bool isOtherAlive=false;
-			for (int j=0; j<mapHeader.getNumberOfTeams(); j++)
-			{
-				if(j!=i)
-				{
-					Uint32 playerToMeAllyMask = teams[i]->me & teams[j]->allies;
-					Uint32 meToPlayerAllyMask = teams[j]->me & teams[i]->allies;
-					if((playerToMeAllyMask==0 || meToPlayerAllyMask==0) && teams[j]->isAlive)
-					{
-						isOtherAlive=true;
-					}
-				}
-			}
-			teams[i]->hasWon |= !isOtherAlive;
-			isGameEnded |= teams[i]->hasWon;
-			totalPrestige += teams[i]->prestige;
-			if (greatestPrestige < teams[i]->prestige) greatestPrestige = teams[i]->prestige;
-		}
-	
-		if (totalPrestige >= prestigeToReach)
-		{
-			totalPrestigeReached=true;
-			isGameEnded=true;
-	
-			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-				teams[i]->hasWon = teams[i]->prestige == greatestPrestige;
-		}
+		teams[i]->checkWinConditions();
 	}
+	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		teams[i]->checkWinConditions();
+		if(teams[i]->winCondition == WCUnknown)
+			areAllDecided=false;
+	}
+	isGameEnded = areAllDecided;
+	
 }
 
 void Game::scriptSyncStep()
 {
 	// do a script step
 	script.syncStep(gui);
+}
 
-	// alter win/loose conditions
+
+
+void Game::prestigeSyncStep()
+{
+	totalPrestige=0;
+	totalPrestigeReached=false;
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		if (teams[i]->isAlive)
-		{
-			if (script.hasTeamWon(i))
-				teams[i]->hasWon=true;
-			if (script.hasTeamLost(i))
-				teams[i]->isAlive=false;
-		}
+		totalPrestige += teams[i]->prestige;
+	}
+	if(totalPrestige >= prestigeToReach)
+	{
+		totalPrestigeReached=true;
 	}
 }
+
+
 
 void Game::syncStep(Sint32 localTeam)
 {
@@ -1266,9 +1191,10 @@ void Game::syncStep(Sint32 localTeam)
 
 		if ((stepCounter&15)==1)
 			buildProjectSyncStep(localTeam);
-		
+
 		if ((stepCounter&31)==0)
 		{
+			prestigeSyncStep();
 			scriptSyncStep();
 			wonSyncStep();
 		}
@@ -2833,45 +2759,14 @@ Team *Game::getTeamWithMostPrestige(void)
 	return maxPrestigeTeam;
 }
 
-std::string glob2FilenameToName(const std::string& filename)
+bool Game::isPrestigeWinCondition(void)
 {
-	std::string mapName;
-	if(filename.find(".game")!=std::string::npos)
-		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
-	else
-		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
-	size_t pos = mapName.find("_");
-	while(pos != std::string::npos)
+	std::list<boost::shared_ptr<WinningCondition> >& conditions = gameHeader.getWinningConditions();
+	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
 	{
-		mapName.replace(pos, 1, " ");
-		pos = mapName.find("_");
+		if((*i)->getType() == WCPrestige)
+			return true;	
 	}
-	return mapName;
+	return false;
 }
 
-template<typename It, typename T>
-class contains: std::unary_function<T, bool>
-{
-public:
-	contains(const It from, const It to) : from(from), to(to) {}
-	bool operator()(T d) { return (std::find(from, to, d) != to); }
-private:
-	const It from;
-	const It to;
-};
-
-std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension)
-{
-	const char* pattern = " \t";
-	const char* endPattern = strchr(pattern, '\0');
-	std::string fileName = name;
-	std::replace_if(fileName.begin(), fileName.end(), contains<const char*, char>(pattern, endPattern), '_');
-	std::string fullFileName = dir;
-	fullFileName += DIR_SEPARATOR + fileName;
-	if (extension != "" && extension != "\0")
-	{
-		fullFileName += '.';
-		fullFileName += extension;
-	}
-	return fullFileName;
-}

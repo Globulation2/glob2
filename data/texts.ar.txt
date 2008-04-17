@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 تركو اللعبه.
 [%0's game]
@@ -140,7 +142,7 @@ Available local games
 
 [Build]
 يبنى
-[Building Settings]
+[Building Defaults]
 
 [building site]
 موقع اﻷنشاء
@@ -214,9 +216,7 @@ Clearing flag
 Connect
 [connecting to]
 Connecting to
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 تابع اللعب
@@ -348,7 +348,7 @@ Explorer Ratio
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 الطعام
@@ -370,6 +370,8 @@ Explorer Ratio
 Game full
 [game shortcuts]
 Game Shortcuts
+[Game]
+
 [general settings]
 اعدادات عامه
 [go to event]
@@ -484,6 +486,8 @@ ar
 
 [load]
 تحميل
+[Lobby]
+
 [login]
 اتصال
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Mark Map For Allies
 الفواكه مع الآخري
 [market explanation]
 يسمح بتبادل
+[market level 0]
+
 [market]
 السوق
 [meta %0]
@@ -580,6 +586,8 @@ Open Save Menu
 خيارات
 [Orange]
 البرتقال
+[Other Options]
+
 [page down]
 
 [page up]
@@ -600,6 +608,8 @@ Please wait
 
 [press space]
 Press space to continue.
+[Prestige Win Enabled]
+
 [Prestige]
 سمعه
 [print screen]
@@ -842,6 +852,8 @@ Switch to Terrain view
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  فريق
 [the barracks is finished]
@@ -962,6 +974,8 @@ Uniform terrain
 
 [upgrade building]
 Start/Stop Upgrade
+[Upgrade Defaults]
+
 [upgrade]
 ترقية
 [username]
@@ -1034,12 +1048,16 @@ The YOG metaserver has refused connection because this username has already been
 The YOG metaserver has refused connection because the supplied password was incorrect.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG metaserver has refused connection because your globulation2 client is obsolete.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Ysagoon Online Gaming
 
 [Your %0 are under attack]
 %0 تحت الهجوم
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
+[Your username was banned]
+

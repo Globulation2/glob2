@@ -150,7 +150,9 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 	{
 		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
-		YOGClientLobbyScreen screen(client);
+		
+		Glob2TabScreen screen;
+		YOGClientLobbyScreen lobby(&screen, client);
 		int rc = screen.execute(globalContainer->gfx, 40);
 		if(rc == YOGClientLobbyScreen::ConnectionLost)
 			endExecute(ConnectionLost);
@@ -183,6 +185,14 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 		else if(reason == YOGAlreadyAuthenticated)
 		{
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
+		}
+		else if(reason == YOGUsernameBanned)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]"));
+		}
+		else if(reason == YOGIPAddressBanned)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]"));
 		}
 		else if(reason == YOGLoginUnknown)
 		{

@@ -175,6 +175,10 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 			}
 		}
 	}
+	else
+	{
+		setPlayerGameResult(player, YOGGameResultConnectionLost);
+	}
 
 	p2p.removePlayer(player);
 
@@ -392,8 +396,7 @@ void YOGServerGame::chooseLatencyMode()
 	}
 
 	//Add 5% to both pings. The given pings are such that 99.7% of all pings will
-	//be under those amounts, provided pings are normally distributed, which they
-	//usually are
+	//be under those amounts, provided pings are normally distributed
 	int total_allocation = (highest * 105 + second_highest * 105) / 100;
 	int latency_adjustment = (total_allocation+39) / 40;
 
@@ -406,4 +409,21 @@ void YOGServerGame::chooseLatencyMode()
 }
 
 
+void YOGServerGame::setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result)
+{
+	if(gameResults.getGameResultState(sender->getPlayerName()) == YOGGameResultUnknown)
+	{
+		gameResults.setGameResultState(sender->getPlayerName(), result);
+	}
+}
+
+
+
+void YOGServerGame::sendGameResultsToGameLog()
+{
+	if(gameStarted)
+	{
+		server.getGameLog().addGameResults(gameResults);
+	}
+}
 

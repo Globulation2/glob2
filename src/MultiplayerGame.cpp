@@ -36,6 +36,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	wasReadyToStart=false;
 	sentReadyToStart=false;
 	isEveryoneReadyToGo=false;
+	isStarting=false;
 	chatChannel=0;
 	previousPercentage = 255;
 	client->getP2PConnection()->addEventListener(this);
@@ -215,6 +216,7 @@ void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
 
 void MultiplayerGame::startGame()
 {
+	isStarting=true;
 	//make sure the game headers are synced!
 	updateGameHeader();
 	shared_ptr<NetRequestGameStart> message(new NetRequestGameStart);
@@ -421,7 +423,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetRefuseGameStart)
 	{
 		//shared_ptr<NetRefuseGameStart> info = static_pointer_cast<NetRefuseGameStart>(message);
-		
+		isStarting=false;
 		shared_ptr<MGGameStartRefused> event(new MGGameStartRefused);
 		sendToListeners(event);
 	}
@@ -624,6 +626,8 @@ Uint32 MultiplayerGame::getChatChannel() const
 
 Uint8 MultiplayerGame::percentageDownloadFinished()
 {
+	if(!assembler)
+		return 100;
 	return assembler->getPercentage();
 }
 
@@ -639,5 +643,19 @@ void MultiplayerGame::recieveP2PEvent(boost::shared_ptr<P2PConnectionEvent> even
 	}
 }
 
+
+
+bool MultiplayerGame::isGameStarting()
+{
+	return isStarting;
+}
+
+
+
+void MultiplayerGame::setGameResult(YOGGameResult result)
+{
+	shared_ptr<NetSendGameResult> message(new NetSendGameResult(result));
+	client->sendNetMessage(message);
+}
 
 
