@@ -21,6 +21,7 @@
 #include "YOGServer.h"
 #include "NetMessage.h"
 #include "YOGServerPlayer.h"
+#include "boost/lexical_cast.hpp"
 
 std::string YOGServerRestart::getHelpMessage()
 {
@@ -61,7 +62,7 @@ void YOGServerRestart::execute(YOGServer* server, YOGServerAdministrator* admin,
 
 std::string YOGMutePlayer::getHelpMessage()
 {
-	return ".mute_player <playername>    Mutes a player for 10 minutes";
+	return ".mute_player <playername> <time>    Mutes a player for the given number of minutes. Default 10 if not included.";
 }
 
 
@@ -75,9 +76,22 @@ std::string YOGMutePlayer::getCommandName()
 
 bool YOGMutePlayer::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	if(tokens.size() == 2)
+		return true;
+	
+	if(tokens.size() == 3)
+	{
+		try
+		{
+			boost::lexical_cast<int>(tokens[2]);
+		}
+		catch(boost::bad_lexical_cast& error)
+		{
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 	
 
@@ -92,9 +106,12 @@ bool YOGMutePlayer::allowedForModerator()
 void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
+	int time = 10;
+	if(tokens.size() == 3)
+		time = boost::lexical_cast<int>(tokens[2]);
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(10);
+		boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(time);
 		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setMuted(unmute_time);
 		admin->sendTextMessage("Player muted: "+name, player);
 	}
