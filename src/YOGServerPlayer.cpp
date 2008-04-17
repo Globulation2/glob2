@@ -79,7 +79,7 @@ void YOGServerPlayer::update()
 		shared_ptr<NetAttemptLogin> info = static_pointer_cast<NetAttemptLogin>(message);
 		std::string username = info->getUsername();
 		std::string password = info->getPassword();
-		loginState = server.verifyLoginInformation(username, password, netVersion);
+		loginState = server.verifyLoginInformation(username, password, getPlayerIP(), netVersion);
 		if(loginState == YOGLoginSuccessful)
 		{
 			server.playerHasLoggedIn(username, playerID);
@@ -92,13 +92,14 @@ void YOGServerPlayer::update()
 		{
 			connectionState = NeedToSendLoginRefusal;
 		}	
-	}	//This recieves a login attempt
+	}
+	//This recieves a login attempt
 	else if(type==MNetAttemptRegistration)
 	{
 		shared_ptr<NetAttemptRegistration> info = static_pointer_cast<NetAttemptRegistration>(message);
 		std::string username = info->getUsername();
 		std::string password = info->getPassword();
-		loginState = server.registerInformation(username, password, netVersion);
+		loginState = server.registerInformation(username, password, getPlayerIP(), netVersion);
 		if(loginState == YOGLoginSuccessful)
 		{
 			server.playerHasLoggedIn(username, playerID);
@@ -116,9 +117,14 @@ void YOGServerPlayer::update()
 	else if(type==MNetSendYOGMessage)
 	{
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
-		///This is a special override used to restart development server
+		///This is sends a command to the administrator engine
 		if(server.getAdministratorList().isAdministrator(info->getMessage()->getSender()))
-			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID));
+			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID), false);
+		///If this player is a moderator, also execute a command, however, moderators can only execute a limtied number of commands
+		else if(server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isModerator())
+			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID), true);
+			
+		
 		///Check if this player is muted, ignore otherwise
 		if(!server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isMuted())
 			server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
@@ -264,6 +270,12 @@ void YOGServerPlayer::update()
 		shared_ptr<NetSetPlayerLocalPort> info = static_pointer_cast<NetSetPlayerLocalPort>(message);
 		port = info->getPort();
 	}
+	//This recieves a ping reply
+	else if(type==MNetSendGameResult)
+	{
+		shared_ptr<NetSendGameResult> info = static_pointer_cast<NetSendGameResult>(message);
+		ngame->setPlayerGameResult(server.getPlayer(playerID), info->getGameResult()); 
+	}
 }
 
 
@@ -389,6 +401,12 @@ int YOGServerPlayer::getP2PPort()
 	return port;
 }
 
+
+
+void YOGServerPlayer::closeConnection()
+{
+	connection->closeConnection();
+}
 
 
 

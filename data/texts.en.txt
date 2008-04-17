@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 has quit the game.
 [%0's game]
@@ -140,8 +142,8 @@ Construct Swimmingpool 2
 Construct Swimmingpool 3
 [Build]
 Build
-[Building Settings]
-Building Settings
+[Building Defaults]
+Building Defaults
 [building site]
 construction site
 [Buildings]
@@ -208,10 +210,8 @@ Computing Fertility
 Connect
 [connecting to]
 Connecting to
-[constructed buildings]
-Constructed Buildings
-[construction and upgrades]
-Construction and Upgrades
+[Construction Site Defaults]
+Construction Site Defaults
 [Continue playing]
 Continue playing
 [control %0]
@@ -271,7 +271,7 @@ Destroy
 [display]
 Display
 [do nothing]
-Do Nothings
+Do Nothing
 [don't carry anything]
 Not carrying anything
 [down]
@@ -344,8 +344,8 @@ f8
 f9
 [Fertility Map]
 Fertility Map
-[Flag Settings]
-Flag Settings
+[Flag Defaults]
+Flag Defaults
 [food]
 Food
 [forbidden area]
@@ -366,6 +366,8 @@ Fullscreen
 Game full
 [game shortcuts]
 Game Shortcuts
+[Game]
+Game
 [general settings]
 General Settings
 [go to event]
@@ -480,6 +482,8 @@ Load Map
 Load Script
 [load]
 Load
+[Lobby]
+Lobby
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -510,6 +514,8 @@ Mark Map For Allies
 fruits with others
 [market explanation]
 Allows the exchange of
+[market level 0]
+Market
 [market]
 Market
 [meta %0]
@@ -574,6 +580,8 @@ open
 Options
 [Orange]
 Orange
+[Other Options]
+Other Options
 [page down]
 page down
 [page up]
@@ -594,6 +602,8 @@ Please wait
 power
 [press space]
 Press space to continue.
+[Prestige Win Enabled]
+Prestige Win Enabled
 [Prestige]
 Prestige
 [print screen]
@@ -836,6 +846,8 @@ Switch to Terrain view
 sys req
 [tab]
 tab
+[Teams Fixed]
+Teams Fixed
 [teams]
  teams
 [the barracks is finished]
@@ -958,6 +970,8 @@ Unlocked By
 up
 [upgrade building]
 Start/Stop Upgrade
+[Upgrade Defaults]
+Upgrade Defaults
 [upgrade]
 Upgrade
 [username]
@@ -1028,12 +1042,16 @@ The YOG metaserver has refused connection because this username has already been
 The YOG metaserver has refused connection because the supplied password was incorrect.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+The YOG metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+The YOG metaserver has refused the connection because this username is banned. Please contact the administrators.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1048,5 +1066,9 @@ You have won!
 You where kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
+[Your IP address was temporarily banned]
+Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
+[Your username was banned]
+Your username was banned. Please contact the administrators to have this changed.

@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 ha marxat
 [%0's game]
@@ -140,7 +142,7 @@ Tamany de la platja
 
 [Build]
 Construir
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Construint
@@ -214,9 +216,7 @@ Compilar el script
 Conectat
 [connecting to]
 Conectant a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jugant
@@ -348,7 +348,7 @@ illes buides
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Menjar
@@ -369,6 +369,8 @@ Pantalla Completa
 [game full]
 Partida Completa
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ Cargar partida
 
 [load]
 Carregar
+[Lobby]
+
 [login]
 Conectar
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Altura del mapa
 fruits amb altres
 [market explanation]
 Per intercambiar fruita amb
+[market level 0]
+
 [market]
 Mercat
 [meta %0]
@@ -580,6 +586,8 @@ Obrir
 Opcions
 [Orange]
 Taronja
+[Other Options]
+
 [page down]
 
 [page up]
@@ -599,6 +607,8 @@ Esperi un moment
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestigi
@@ -842,6 +852,8 @@ Piscina
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  Equips
 [the barracks is finished]
@@ -962,6 +974,8 @@ Unitats
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Millorar
 [username]
@@ -1034,12 +1048,16 @@ Nom d'usuari ja registrat. Proba amb un altre
 No es pot conectar al metaservidor YOG. Contrassenya Incorrecta
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 El metaservidor YOG ha rebutjat la conexió per que  usuari no te contrasenya encara, activa l' opció: Registrar un nou usuari YOG amb contrasenya
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 No es pot conectar al metaservidor YOG, el teu client Globulation2 està obsolet
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 El servidor YOG ha rebutjat la conexió inexplicablement.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 No es pot conectar al metaservidor YOG. Nom d'usuari en ús
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 El sistema de conexió està llest per contactar amb el metaservidor YOG
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Has guanyat
 
 [Your %0 are under attack]
 El teu %0  està sent atacat
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Una unitat teva s'ha convertit a l'equip de %0
+[Your username was banned]
+

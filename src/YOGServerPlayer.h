@@ -83,6 +83,9 @@ public:
 	
 	///This returns the port for the p2p connection client end on this player
 	int getP2PPort();
+	
+	///Tells this YOGServerPlayer to close connection
+	void closeConnection();
 private:
 	///This enum represents the state machine of the initial connection
 	enum ConnectionState

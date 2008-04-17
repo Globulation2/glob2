@@ -87,10 +87,10 @@ public:
 	/// including initiating the Players
 	void setGameHeader(const GameHeader& gameHeader);
 	
-	///Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
+	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	void executeOrder(boost::shared_ptr<Order> order, int localPlayer);
 
-	///Makes a step for building projects that are waiting for the areas to clear of units.
+	/// Makes a step for building projects that are waiting for the areas to clear of units.
 	void buildProjectSyncStep(Sint32 localTeam);
 
 	/// Check and update winning conditions
@@ -98,6 +98,9 @@ public:
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
+	
+	/// Updates total prestige stats
+	void prestigeSyncStep();
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
 	/// internal proccessing.
@@ -160,9 +163,6 @@ private:
 	///Clears existing game information, deleting the teams and players, in preperation of a new game.
 	void clearGame();
 
-	//! return true if all human are allied together, flase otherwise
-	bool isHumanAllAllied(void);
-
 public:
 	bool anyPlayerWaited;
 	int anyPlayerWaitedTimeFor;
@@ -191,11 +191,8 @@ private:
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
 	
-	//! ally or disally AI following human alliances
-	void setAIAlliance(void);	
-	
-	//! Sets the AI for free for all
-	void setAIFFA(void);
+	/// Sets the alliances from the GameHeader alliance teams
+	void setAlliances(void);
 	
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.
@@ -229,6 +226,7 @@ public:
 	
 	
 	Team *getTeamWithMostPrestige(void);
+	bool isPrestigeWinCondition(void);
 	
 public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
@@ -239,11 +237,5 @@ protected:
 	FILE *logFile;
 	int ticksGameSum[32];
 };
-
-//! extract the user-visible name from a glob2 map filename, return empty string if filename is an invalid glob2 map
-std::string glob2FilenameToName(const std::string& filename);
-//! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
-std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
-
 
 #endif

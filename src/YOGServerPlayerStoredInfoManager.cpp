@@ -22,6 +22,7 @@
 #include "BinaryStream.h"
 #include "Toolkit.h"
 #include "FileManager.h"
+#include "Version.h"
 
 using namespace GAGCore;
 
@@ -38,7 +39,11 @@ void YOGServerPlayerStoredInfoManager::update()
 {
 	if(saveCountdown == 0)
 	{
-		savePlayerInfos();
+		if(modified)
+		{
+			savePlayerInfos();
+			modified=false;
+		}
 		saveCountdown = 300;
 	}
 	else
@@ -79,9 +84,23 @@ YOGPlayerStoredInfo& YOGServerPlayerStoredInfoManager::getPlayerStoredInfo(const
 
 
 
+std::list<std::string> YOGServerPlayerStoredInfoManager::getBannedPlayers()
+{
+	std::list<std::string> players;
+	for(std::map<std::string, YOGPlayerStoredInfo>::iterator i = playerInfos.begin(); i!=playerInfos.end(); ++i)
+	{
+		if(i->second.isBanned())
+			players.push_back(i->first);
+	}
+	return players;
+}
+
+
+
 void YOGServerPlayerStoredInfoManager::savePlayerInfos()
 {
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("playerinfo"));
+	stream->writeUint32(NET_DATA_VERSION, "version");
 	stream->writeUint32(playerInfos.size(), "size");
 	for(std::map<std::string, YOGPlayerStoredInfo>::iterator i = playerInfos.begin(); i!=playerInfos.end(); ++i)
 	{
@@ -98,12 +117,13 @@ void YOGServerPlayerStoredInfoManager::loadPlayerInfos()
 	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("playerinfo"));
 	if(!stream->isEndOfStream())
 	{
+		Uint32 dataVersionMinor = stream->readUint32("version");
 		Uint32 size = stream->readUint32("size");
 		for(unsigned i=0; i<size; ++i)
 		{
 			std::string name = stream->readText("username");
 			YOGPlayerStoredInfo info;
-			info.decodeData(stream);
+			info.decodeData(stream, dataVersionMinor);
 			playerInfos.insert(std::make_pair(name, info));
 		}
 	}

@@ -24,6 +24,7 @@
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
 #include "P2PManager.h"
+#include "YOGGameResults.h"
 
 class NetKickPlayer;
 class NetSendOrder;
@@ -112,7 +113,12 @@ public:
 
 	///This chooses a latency mode and sends it to all the players
 	void chooseLatencyMode();
+	
+	///This sets a players game result
+	void setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result);
 
+	///This sends the games results to the game log, if this game actually went through
+	void sendGameResultsToGameLog();
 private:
 	bool gameStarted;
 	bool hasAddedHost;
@@ -133,6 +139,7 @@ private:
 	Uint32 chatChannel;
 	Uint8 aiNum;
 	YOGServer& server;
+	YOGGameResults gameResults;
 };
 
 

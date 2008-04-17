@@ -24,22 +24,27 @@
 
 #include <vector>
 #include <GUIList.h>
-#include "Glob2Screen.h"
 #include "IRCTextMessageHandler.h"
 #include "YOGClientEventListener.h"
 #include "YOGClientChatListener.h"
 #include "YOGClientGameListListener.h"
 #include "YOGClientPlayerListListener.h"
+#include "GUITabScreenWindow.h"
 
 namespace GAGGUI
 {
 	class TextInput;
 	class TextArea;
 	class TextButton;
+	class TabScreen;
+	class Widget;
 }
 
 class YOGClient;
 class YOGClientChatChannel;
+class MultiplayerGameScreen;
+
+using namespace GAGGUI;
 
 /// A widget that maintains the list of players, and draws an icon based
 /// on whether that player is from YOG or from IRC
@@ -78,11 +83,11 @@ private:
 };
 
 ///This is the main YOG screen
-class YOGClientLobbyScreen : public Glob2Screen, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGClientGameListListener, public YOGClientPlayerListListener
+class YOGClientLobbyScreen : public TabScreenWindow, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGClientGameListListener, public YOGClientPlayerListListener
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
-	YOGClientLobbyScreen(boost::shared_ptr<YOGClient> client);
+	YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
 
 	virtual ~YOGClientLobbyScreen();
 	
@@ -134,6 +139,11 @@ private:
 	void updateGameInfo();
 	///This will try to match and auto-complete a half-entered nick name
 	void autoCompleteNick();
+	///This wsill update the visibility of the host and join buttons depnding on whether the player
+	///is currently in a game or not
+	void updateButtonVisibility();
+	///Called when this tab is activated
+	void onActivated();
 
 	List *gameList;
 	TextArea *gameInfo;
@@ -142,10 +152,13 @@ private:
 	TextArea *chatWindow;
 	
 	TextButton *joinButton;
+	TextButton *hostButton;
 
 	boost::shared_ptr<YOGClient> client;
 	boost::shared_ptr<YOGClientChatChannel> lobbyChat;
 	boost::shared_ptr<IRCTextMessageHandler> ircChat;
+	
+	int gameScreen;
 
 };
 

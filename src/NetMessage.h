@@ -78,16 +78,19 @@ enum NetMessageType
 	MNetSendFileInformation,
 	MNetSendGameHeader,
 	MNetSendGamePlayerInfo,
+	MNetSendGameResult,
 	MNetSendMapHeader,
 	MNetSendOrder,
+	MNetSendP2PInformation,
+	MNetSendReteamingInformation,
 	MNetSendYOGMessage,
 	MNetSetLatencyMode,
+	MNetSetPlayerLocalPort,
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
-	MNetSendReteamingInformation,
-	MNetSendP2PInformation,
-	MNetSetPlayerLocalPort,
+	MNetPlayerIsBanned,
+	MNetIPIsBanned,
 	//type_append_marker
 };
 
@@ -1671,6 +1674,96 @@ public:
 private:
 private:
 	Uint16 port;
+};
+
+
+
+
+///NetSendGameResult
+class NetSendGameResult : public NetMessage
+{
+public:
+	///Creates a NetSendGameResult message
+	NetSendGameResult();
+
+	///Creates a NetSendGameResult message
+	NetSendGameResult(YOGGameResult result);
+
+	///Returns MNetSendGameResult
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendGameResult message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendGameResult
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves result
+	YOGGameResult getGameResult() const;
+private:
+private:
+	YOGGameResult result;
+};
+
+
+
+
+///NetPlayerIsBanned this bassically tells the client that their username was banned by the administrators
+class NetPlayerIsBanned : public NetMessage
+{
+public:
+	///Creates a NetPlayerIsBanned message
+	NetPlayerIsBanned();
+
+	///Returns MNetPlayerIsBanned
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPlayerIsBanned message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPlayerIsBanned
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetIPIsBanned
+class NetIPIsBanned : public NetMessage
+{
+public:
+	///Creates a NetIPIsBanned message
+	NetIPIsBanned();
+
+	///Returns MNetIPIsBanned
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetIPIsBanned message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetIPIsBanned
+	bool operator==(const NetMessage& rhs) const;
 };
 
 

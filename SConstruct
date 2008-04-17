@@ -25,6 +25,7 @@ def establish_options(env):
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("profile", "Build with profiling on", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
+    opts.Add(BoolOption("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save("options_cache.py", env)
@@ -60,33 +61,38 @@ def configure(env):
         configfile.add("USE_OSX", "Set when this build is OSX")
     if isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
+        
+    server_only=False
+    if env['server']:
+        env.Append(CPPDEFINES=["YOG_SERVER_ONLY"])
+        server_only=True
 
     missing=[]
 
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
     #Simple checks for required libraries
-    if not conf.CheckLib("SDL"):
+    if not conf.CheckLib("SDL") and not server_only:
         print "Could not find libSDL"
         missing.append("SDL")
-    if not conf.CheckLib("SDL_ttf"):
+    if not conf.CheckLib("SDL_ttf") and not server_only:
         print "Could not find libSDL_ttf"
         missing.append("SDL_ttf")
-    if not conf.CheckLib("SDL_image"):
+    if not conf.CheckLib("SDL_image") and not server_only:
         print "Could not find libSDL_image"
         missing.append("SDL_image")
-    if not conf.CheckLib("SDL_net"):
+    if not conf.CheckLib("SDL_net") and not server_only:
         print "Could not find libSDL_net"
         missing.append("SDL_net")
-    if not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h"):
+    if not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h") and not server_only:
         print "Could not find libspeex or could not find 'speex/speex.h'"
         missing.append("speex")
-    if not conf.CheckLib("vorbisfile"):
+    if not conf.CheckLib("vorbisfile") and not server_only:
         print "Could not find libvorbisfile"
         missing.append("vorbisfile")
-    if not conf.CheckLib("vorbis"):
+    if not conf.CheckLib("vorbis") and not server_only:
         print "Could not find libvorbis"
         missing.append("vorbis")
-    if not conf.CheckLib("ogg"):
+    if not conf.CheckLib("ogg") and not server_only:
         print "Could not find libogg"
         missing.append("ogg")
     if not conf.CheckCXXHeader("zlib.h"):
@@ -133,31 +139,30 @@ def configure(env):
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
-    if isDarwinPlatform:
+    if isDarwinPlatform and not server_only:
     	print "Using Apple's OpenGL framework"
     	env.Append(FRAMEWORKS="OpenGL")
-    elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
+    elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h") and not server_only:
         gl_libraries.append("GL")
-    elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h"):
+    elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h") and not server_only:
         gl_libraries.append("GL")
-    elif conf.CheckLib("opengl32") and conf.CheckCXXHeader("GL/gl.h"):
+    elif conf.CheckLib("opengl32") and conf.CheckCXXHeader("GL/gl.h") and not server_only:
         gl_libraries.append("opengl32")
-
-    else:
+    elif not server_only:
         print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
         missing.append("OpenGL")
 
     #Do checks for GLU, which is different on every system
-    if isDarwinPlatform:
+    if isDarwinPlatform and not server_only:
     	print "Using Apple's GLUT framework"
     	env.Append(FRAMEWORKS="GLUT")
-    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h"):
+    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h") and not server_only:
         gl_libraries.append("GLU")
-    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("OpenGL/glu.h"):
+    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("OpenGL/glu.h") and not server_only:
         gl_libraries.append("GLU")
-    elif conf.CheckLib('glu32') and conf.CheckCXXHeader('GL/glu.h'):
+    elif conf.CheckLib('glu32') and conf.CheckCXXHeader('GL/glu.h') and not server_only:
         gl_libraries.append("glu32")
-    else:
+    elif not server_only:
         print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
         missing.append("GLU")
     

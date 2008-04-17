@@ -37,6 +37,8 @@ namespace GAGGUI
 	class TabScreen : public Screen
 	{
 	public:
+		TabScreen();
+	
 		///This adds a widget to a particular group. This calls add widget automatically
 		void addWidgetToGroup(Widget* widget, int group_n);
 		
@@ -69,10 +71,25 @@ namespace GAGGUI
 		///remove it if it isn't executing, and the whole thing will close if there are no more TabScreenWindows.
 		///The return code is the same as the one for the most recently closed window
 		virtual void onTimer(Uint32 tick);
+		
+		///Returns the code that the specific tab screen group number ended with, and -1 if that groups
+		///tab screen is still executing
+		int getReturnCode(int group_n);
 	private:
+		friend class TabScreenWindow;
+	
+		///Calls internal init on all sub widgets
+		void internalInit(int group_n);
+		
+		///Re-orders all panel buttons
+		void repositionPanelButtons();
+	
 		std::map<int, std::vector<Widget*> > groups;
 		std::map<int, TabScreenWindow*> windows;
 		std::map<int, Widget*> groupButtons;
+		std::map<int, int> returnCodes;
+		int activated;
+		int returnCode;
 	};
 };
 

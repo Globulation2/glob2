@@ -37,6 +37,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "BaseTeam.h"
+#include "WinningConditions.h"
 
 class Building;
 class BuildingsTypes;
@@ -120,7 +121,7 @@ public:
 	//! Return the maximum build level (need at least 1 unit of this level)
 	int maxBuildLevel(void);
 
-	// Pathfinding related methods:
+	//! Pathfinding related methods:
 	void computeForbiddenArea();
 	void dirtyGlobalGradient();
 	void dirtyWarFlagGradient();
@@ -130,6 +131,9 @@ public:
 	
 	//! Return the name of the first player in the team
 	std::string getFirstPlayerName(void) const;
+	
+	//!  This checks all of the win conditions and updates hasWon, hasLost and winCondition
+	void checkWinConditions();
 	
 private:
 	void init(void);
@@ -200,9 +204,15 @@ public:
 	//! This is the time left you can't build for. time in ticks.
 	int noMoreBuildingSitesCountdown;
 	static const int noMoreBuildingSitesCountdownMax=200; // We set 5s as default
+	//! Represents if this team is alive or not
 	bool isAlive;
-	//! called by game, set to true if all others team has lost or if script has forced
+	//! Set to true if this team has won
 	bool hasWon;
+	//! Set to true if this team has lost
+	bool hasLost;
+	///This is the winningCondition that caused thist team to win/lose
+	WinningConditionType winCondition;
+	
 	//! the stat for this team. It is computed every step, so it is always updated.
 	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
 	TeamStats stats;

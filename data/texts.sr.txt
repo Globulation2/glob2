@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 напусти игру.
 [%0's game]
@@ -140,7 +142,7 @@ AIWarrush
 
 [Build]
 Гради
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Градилиште
@@ -214,9 +216,7 @@ AIWarrush
 Прикључи се
 [connecting to]
 Повезивање са: 
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Настави игру
@@ -348,7 +348,7 @@ AIWarrush
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Храна
@@ -369,6 +369,8 @@ AIWarrush
 [game full]
 Потпуна игра
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ sr
 
 [load]
 Учитај
+[Lobby]
+
 [login]
 Пријава
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ sr
 
 [market explanation]
 Пијаца служи за
+[market level 0]
+
 [market]
 Пијаца
 [meta %0]
@@ -580,6 +586,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Избори
 [Orange]
 Наранџе
+[Other Options]
+
 [page down]
 
 [page up]
@@ -599,6 +607,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Престиж
@@ -842,6 +852,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  екипа
 [the barracks is finished]
@@ -962,6 +974,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Догради
 [username]
@@ -1032,12 +1046,16 @@ YOG мета-сервер је одбио везу јер је ово корис
 YOG мета-сервер је одбио везу јер лозинка коју сте уписали није исправна.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG мета-сервер је одбио везу јер ваше корисничко име нема одређену лозинку. Морате регистровати ваше име и изабрати лозинку.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG мета-сервер је прекинуо везу јер је ваше издање Глобулације2 престаро.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG мета-сервер је одбио везу али није назначио разлог.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG мета-сервер је одбио везу јер корисничко име које сте изабрали неко већ користи.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Подсистем за повезивање је спреман за контакт са YOG метасервером.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1052,5 +1070,9 @@ YOG мета-сервер је одбио везу јер корисничко �
 
 [Your %0 are under attack]
 Нападнута јединица: %0
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Ваша јединица је пребегла %0
+[Your username was banned]
+

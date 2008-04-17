@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 oyundan cikti.
 [%0's game]
@@ -140,7 +142,7 @@ sahil boyutu
 
 [Build]
 Insaa et
-[Building Settings]
+[Building Defaults]
 
 [building site]
 insaa alani
@@ -214,9 +216,7 @@ Script derle
 Baglan
 [connecting to]
 Suraya baglaniyor:
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Oyuna devam et
@@ -348,7 +348,7 @@ bos adalar
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Besin
@@ -369,6 +369,8 @@ Tam ekran
 [game full]
 Oyun dolu
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -484,6 +486,8 @@ Oyun yukle
 
 [load]
 Yukle
+[Lobby]
+
 [login]
 Giris
 [Lost : %0 has more prestige than you]
@@ -514,6 +518,8 @@ Harita yuksekligi
 baskalariyla alisveris yapar
 [market explanation]
 Sunun takasina izin verir:
+[market level 0]
+
 [market]
 Market
 [meta %0]
@@ -580,6 +586,8 @@ Ac
 Secenekler
 [Orange]
 Portakal
+[Other Options]
+
 [page down]
 
 [page up]
@@ -600,6 +608,8 @@ Lutfen bekleyin
 
 [press space]
 Devam etmek icin bosluk tusuna basin.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestij
 [print screen]
@@ -842,6 +852,8 @@ Yuzme havuzu
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  takimlar
 [the barracks is finished]
@@ -962,6 +974,8 @@ Birimler
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Gelistir
 [username]
@@ -1034,12 +1048,16 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi zaten kayitli.  Eg
 YOG onsunucusu baglantiyi reddetti. Gerekce: Girdiginiz sifre yanlis.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adinin henuz bir parolasi yok. Muhtemelen kullanici adinizi bu parola ile kaydetmek istiyorsunuz. O halde, baglanmadan once "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini aktiflestirin. Bu secenegi yalnizca bir kez aktiflestirmeniz yeterli olacaktir.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1054,5 +1072,9 @@ Kazandiniz!
 
 [Your %0 are under attack]
 %0 'leriniz saldiri altinda
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Bir biriminiz %0 'nin tarafina gecti
+[Your username was banned]
+

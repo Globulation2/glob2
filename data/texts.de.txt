@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0's game]
@@ -140,7 +142,7 @@ Strandbreite
 
 [Build]
 Bauen
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Baustelle
@@ -208,9 +210,7 @@ Skript kompilieren
 Verbinden
 [connecting to]
 Verbinden mit
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Weiterspielen
@@ -342,7 +342,7 @@ leere Inseln
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Nahrung
@@ -363,6 +363,8 @@ Vollbild
 [game full]
 Spiel komplett
 [game shortcuts]
+
+[Game]
 
 [general settings]
 Allgemein
@@ -478,6 +480,8 @@ Spiel laden
 
 [load]
 Laden
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -508,6 +512,8 @@ Karte markieren
 Früchten
 [market explanation]
 Erlaubt den Handel mit
+[market level 0]
+
 [market]
 Markt
 [meta %0]
@@ -572,6 +578,8 @@ offen
 Einstellungen
 [Orange]
 Orangen
+[Other Options]
+
 [page down]
 
 [page up]
@@ -592,6 +600,8 @@ Bitte warten
 
 [press space]
 Leertaste drücken, um fortzufahren.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
 [print screen]
@@ -834,6 +844,8 @@ Schwimmbecken
 
 [tab]
 
+[Teams Fixed]
+
 [teams]
  Mannschaften
 [the barracks is finished]
@@ -954,6 +966,8 @@ Einheiten
 
 [upgrade building]
 Aufwerten einleiten/beenden
+[Upgrade Defaults]
+
 [upgrade]
 Verbessern
 [username]
@@ -1024,12 +1038,16 @@ Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon re
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Passwort falsch ist.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch nicht registriert ist. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation 2 zu alt ist.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Spitzname schon von jemand anderem benutzt wird.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1044,5 +1062,9 @@ Sie haben gewonnen!
 
 [Your %0 are under attack]
 Eure %0 werden angegriffen
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Eine Ihrer Einheiten wurde von einem %0-Team übernommen.
+[Your username was banned]
+

@@ -598,6 +598,7 @@ OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
+#ifndef YOG_SERVER_ONLY
 OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
 {
 	assert(acc);
@@ -616,6 +617,7 @@ OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumula
 	assert(maxX-minX <= 512);
 	assert(maxY-minY <= 512);
 }
+#endif
 
 OrderAlterateArea::~OrderAlterateArea(void)
 {

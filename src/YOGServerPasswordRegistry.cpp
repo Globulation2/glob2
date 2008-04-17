@@ -22,6 +22,7 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include "../gnupg/sha1.c"
+#include "Version.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -67,6 +68,7 @@ void YOGServerPasswordRegistry::resetPlayersPassword(const std::string& username
 void YOGServerPasswordRegistry::flushPasswords()
 {
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("registry"));
+	stream->writeUint32(NET_DATA_VERSION, "version");
 	stream->writeUint32(passwords.size(), "size");
 	for(std::map<std::string, std::string>::iterator i = passwords.begin(); i!=passwords.end(); ++i)
 	{
@@ -83,6 +85,7 @@ void YOGServerPasswordRegistry::readPasswords()
 	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("registry"));
 	if(stream->isEndOfStream())
 		return;
+	Uint32 dataVersionMinor = stream->readUint32("version");
 	Uint32 size = stream->readUint32("size");
 	for(unsigned i=0; i<size; ++i)
 	{
