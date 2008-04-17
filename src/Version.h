@@ -85,7 +85,7 @@
 // version 68 changed checksum in map header to md5
 // version 69 started saving GameGUIDefaultAssignManager
 // version 70 added maxUnitWorkingFuture to be saved in Building
-// version 71 added pre-game alliances in the form of ally-team numbers in GameHeader
+// version 71 added pre-game alliances in the form of ally-team numbers in GameHeader, and added system for winning conditions
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above

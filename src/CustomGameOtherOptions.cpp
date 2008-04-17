@@ -71,6 +71,14 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 	
 	teamsFixedText = new Text(325, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Teams Fixed]"));
 	addWidget(teamsFixedText);
+	
+	//These are for winning conditions
+	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", PRESTIGEWINENABLED);
+	addWidget(prestigeWinEnabled);
+	prestigeWinEnabledText = new Text(325, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Prestige Win Enabled]"));
+	addWidget(prestigeWinEnabledText);
+	updateScreenWinningConditions();
+	
 }
 
 
@@ -126,6 +134,55 @@ void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, i
 		else if(par1 == TEAMSFIXED)
 		{
 			gameHeader.setAllyTeamsFixed(teamsFixed->getState());
+		}
+		else if(par1 == PRESTIGEWINENABLED)
+		{
+			updateGameHeaderWinningConditions();
+		}
+	}
+}
+
+
+
+void CustomGameOtherOptions::updateGameHeaderWinningConditions()
+{
+	std::list<boost::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
+	winningConditions = WinningCondition::getDefaultWinningConditions();
+	
+	//Update the prestige condition
+	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
+	{
+		if((*i)->getType() == WCPrestige)
+		{
+			//If we need to remove it, do so
+			if(!prestigeWinEnabled->getState())
+			{
+				winningConditions.erase(i);
+				break;
+			}
+			//Otherwise update it
+			else
+			{
+				break;
+			}
+		}
+	}
+}
+
+
+
+void CustomGameOtherOptions::updateScreenWinningConditions()
+{
+	std::list<boost::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
+	
+	//Update the prestige condition
+	prestigeWinEnabled->setState(false);
+	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
+	{
+		if((*i)->getType() == WCPrestige)
+		{
+			prestigeWinEnabled->setState(true);
+			break;
 		}
 	}
 }
