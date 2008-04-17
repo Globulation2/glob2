@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 покинул игру.
 [%0's game]
@@ -140,8 +142,8 @@ break
 Построить Бассейн 3
 [Build]
 Строит
-[Building Settings]
-Здания
+[Building Defaults]
+
 [building site]
 стройка
 [Buildings]
@@ -208,10 +210,8 @@ caps lock
 Подключиться
 [connecting to]
 Подключение к
-[constructed buildings]
-Построенные здания
-[construction and upgrades]
-Постройка и улучшения
+[Construction Site Defaults]
+
 [Continue playing]
 Продолжить игру
 [control %0]
@@ -344,8 +344,8 @@ f8
 f9
 [Fertility Map]
 Карта плодородия
-[Flag Settings]
-Флаги
+[Flag Defaults]
+
 [food]
 Еда
 [forbidden area]
@@ -516,6 +516,8 @@ left
 фруктами с другими
 [market explanation]
 Позволяет меняться
+[market level 0]
+
 [market]
 Рынок
 [meta %0]
@@ -602,6 +604,8 @@ pause
 power
 [press space]
 Нажмите пробел для продолжения
+[Prestige Win Enabled]
+
 [Prestige]
 Престиж
 [print screen]
@@ -968,6 +972,8 @@ tab
 up
 [upgrade building]
 Начать/Остановить улучшение
+[Upgrade Defaults]
+
 [upgrade]
 Улучшение
 [username]

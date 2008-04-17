@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 ha Abandonado el Juego.
 [%0's game]
@@ -140,7 +142,7 @@ Tamaño de la Playa
 
 [Build]
 Edificar
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Sitio de Construcción
@@ -214,9 +216,7 @@ Compilar Script
 Connectar
 [connecting to]
 Conectando a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jugando
@@ -348,7 +348,7 @@ islas desiertas
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Alimento
@@ -518,6 +518,8 @@ Largo del Mapa
 Frutas con otros
 [market explanation]
 Permite el Intercambio de
+[market level 0]
+
 [market]
 Mercado
 [meta %0]
@@ -606,6 +608,8 @@ Espere por favor
 
 [press space]
 Presiona la barra espaciadora (space) para continuar
+[Prestige Win Enabled]
+
 [Prestige]
 Prestigio
 [print screen]
@@ -969,6 +973,8 @@ Unidades
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Remodelar

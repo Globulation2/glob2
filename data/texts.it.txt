@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 ha lasciato la partita.
 [%0's game]
@@ -140,8 +142,8 @@ Costruisci piscina liv. 1
 Costruisci piscina liv. 2
 [Build]
 Costruisci
-[Building Settings]
-Impost. Costruzioni
+[Building Defaults]
+
 [building site]
 Struttura in costruzione
 [Buildings]
@@ -208,10 +210,8 @@ Calcolando la fertilità
 Connesso
 [connecting to]
 Mi sto connettendo a
-[constructed buildings]
-edifici costruiti
-[construction and upgrades]
-costruzione e miglioramenti
+[Construction Site Defaults]
+
 [Continue playing]
 Continua a giocare
 [control %0]
@@ -342,8 +342,8 @@ f8
 f9
 [Fertility Map]
 Mappa della fertilità
-[Flag Settings]
-Impost. Bandiere
+[Flag Defaults]
+
 [food]
 Cibo
 [forbidden area]
@@ -512,6 +512,8 @@ Segna la mappa per gli Alleati
 frutta con gli altri
 [market explanation]
 Permette lo scambio di
+[market level 0]
+
 [market]
 Mercato
 [meta %0]
@@ -598,6 +600,8 @@ Aspetta un momento
 potenza
 [press space]
 Premi spazio per continuare.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestigio
 [print screen]
@@ -962,6 +966,8 @@ Sbloccato da
 su
 [upgrade building]
 Inizia/Ferma Miglioramento
+[Upgrade Defaults]
+
 [upgrade]
 Migliora
 [username]

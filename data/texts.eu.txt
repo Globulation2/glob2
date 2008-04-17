@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0(e)k partida utzi du.
 [%0's game]
@@ -140,7 +142,7 @@ hondar tamaina
 
 [Build]
 Eraiki
-[Building Settings]
+[Building Defaults]
 
 [building site]
 eraikitzen
@@ -214,9 +216,7 @@ Konpilatu script-a
 Konektatu
 [connecting to]
 Hona konektatzen:
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Jolasten jarraitu
@@ -348,7 +348,7 @@ irla hutsak
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Janaria
@@ -518,6 +518,8 @@ Markatu mapa aliatuentzat
 fruta
 [market explanation]
 Trukea baimentzen du: 
+[market level 0]
+
 [market]
 Merkatua
 [meta %0]
@@ -606,6 +608,8 @@ Mesedez itxaron
 
 [press space]
 Zanpatu espazio barra jarraitzeko
+[Prestige Win Enabled]
+
 [Prestige]
 Izen ona
 [print screen]
@@ -970,6 +974,8 @@ Desblokeatzailea:
 
 [upgrade building]
 Eguneraketa hasi/gelditu
+[Upgrade Defaults]
+
 [upgrade]
 Eguneratu
 [username]

@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 har forladt spillet
 [%0's game]
@@ -140,7 +142,7 @@ Byg Svømmepøl 2
 Byg Svømmepøl 3
 [Build]
 Byg
-[Building Settings]
+[Building Defaults]
 
 [building site]
 bygningssted
@@ -214,9 +216,7 @@ Kompilere skript
 Forbinder
 [connecting to]
 Forbinder til
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Fortsæt spillet
@@ -348,7 +348,7 @@ Tom ø
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Mad
@@ -518,6 +518,8 @@ Marker kort for allierede
 Frugt med andre
 [market explanation]
 Tillader at bytte frugt
+[market level 0]
+
 [market]
 Market
 [meta %0]
@@ -606,6 +608,8 @@ Vent venligst
 
 [press space]
 Tryk på mellemrum for at fortsætte
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
 [print screen]
@@ -970,6 +974,8 @@ Låst op af
 
 [upgrade building]
 Start/Stop Opgradering
+[Upgrade Defaults]
+
 [upgrade]
 Opgradere
 [username]

@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 a quitté la partie.
 [%0's game]
@@ -140,7 +142,7 @@ casser
 
 [Build]
 Construit
-[Building Settings]
+[Building Defaults]
 
 [building site]
 chantier
@@ -214,9 +216,7 @@ Compiler le script
 Connecter
 [connecting to]
 Connection à
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuer à jouer
@@ -348,7 +348,7 @@ F8
 F9
 [Fertility Map]
 Carte de fertilité
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Nourriture
@@ -518,6 +518,8 @@ Marquer la carte
 fruits avec les autres
 [market explanation]
 Permet d'échanger des ressources
+[market level 0]
+
 [market]
 Marché
 [meta %0]
@@ -606,6 +608,8 @@ Attendre SVP
 Puissance
 [press space]
 Appuyer sur espace pour continuer.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
 [print screen]
@@ -970,6 +974,8 @@ Zone sans nom
 Haut
 [upgrade building]
 Améliorer le bâtiment
+[Upgrade Defaults]
+
 [upgrade]
 Améliorer
 [username]

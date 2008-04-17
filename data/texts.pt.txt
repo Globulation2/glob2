@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 foi embora do jogo
 [%0's game]
@@ -140,7 +142,7 @@ Tamanho da praia
 
 [Build]
 Construir
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Sítio de constr.
@@ -214,9 +216,7 @@ Compilar script
 Conectar
 [connecting to]
 Conectando-se a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jogando
@@ -348,7 +348,7 @@ exploradores
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Comida
@@ -518,6 +518,8 @@ Altura do mapa
 frutas com outros
 [market explanation]
 Permite intercâmbio de
+[market level 0]
+
 [market]
 Mercado
 [meta %0]
@@ -606,6 +608,8 @@ Espere por favor
 
 [press space]
 Pressione espaço para continuar.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestigio
 [print screen]
@@ -969,6 +973,8 @@ Unidades
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Melhorar

@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 oyundan cikti.
 [%0's game]
@@ -140,7 +142,7 @@ sahil boyutu
 
 [Build]
 Insaa et
-[Building Settings]
+[Building Defaults]
 
 [building site]
 insaa alani
@@ -214,9 +216,7 @@ Script derle
 Baglan
 [connecting to]
 Suraya baglaniyor:
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Oyuna devam et
@@ -348,7 +348,7 @@ bos adalar
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Besin
@@ -518,6 +518,8 @@ Harita yuksekligi
 baskalariyla alisveris yapar
 [market explanation]
 Sunun takasina izin verir:
+[market level 0]
+
 [market]
 Market
 [meta %0]
@@ -606,6 +608,8 @@ Lutfen bekleyin
 
 [press space]
 Devam etmek icin bosluk tusuna basin.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestij
 [print screen]
@@ -969,6 +973,8 @@ Birimler
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Gelistir
