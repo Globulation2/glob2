@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0's game]
@@ -140,7 +142,7 @@ Strandbreite
 
 [Build]
 Bauen
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Baustelle
@@ -208,9 +210,7 @@ Skript kompilieren
 Verbinden
 [connecting to]
 Verbinden mit
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Weiterspielen
@@ -342,7 +342,7 @@ leere Inseln
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Nahrung
@@ -512,6 +512,8 @@ Karte markieren
 Früchten
 [market explanation]
 Erlaubt den Handel mit
+[market level 0]
+
 [market]
 Markt
 [meta %0]
@@ -598,6 +600,8 @@ Bitte warten
 
 [press space]
 Leertaste drücken, um fortzufahren.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
 [print screen]
@@ -962,6 +966,8 @@ Einheiten
 
 [upgrade building]
 Aufwerten einleiten/beenden
+[Upgrade Defaults]
+
 [upgrade]
 Verbessern
 [username]

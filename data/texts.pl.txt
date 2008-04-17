@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 opuścił grę.
 [%0's game]
@@ -140,7 +142,7 @@ Wielkość plaż
 
 [Build]
 Buduje
-[Building Settings]
+[Building Defaults]
 
 [building site]
 plac budowy
@@ -214,9 +216,7 @@ Kompiluj skrypt
 Łączę
 [connecting to]
 Połącz z
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Kontynuuj grę
@@ -348,7 +348,7 @@ Odkrywcy
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Jedzenie
@@ -518,6 +518,8 @@ Wysokość mapy
 owoców z innymi
 [market explanation]
 Umożliwia wymianę
+[market level 0]
+
 [market]
 Bazar
 [meta %0]
@@ -605,6 +607,8 @@ Proszę czekaj
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestiż
@@ -969,6 +973,8 @@ Jednostki
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Rozbudowa

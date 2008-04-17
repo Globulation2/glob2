@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 heeft het spel verlaten
 [%0's game]
@@ -140,7 +142,7 @@ Bouw Zwembad 1
 Bouw Zwembad 2
 [Build]
 Bouwen
-[Building Settings]
+[Building Defaults]
 
 [building site]
 bouwplaats
@@ -214,9 +216,7 @@ Compileer script
 Verbinden
 [connecting to]
 Verbinden met
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Speel verder
@@ -348,7 +348,7 @@ Lege eilanden
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Voedsel
@@ -518,6 +518,8 @@ Markeer speelveld voor bondgenoten
 met anderen
 [market explanation]
 Verhandel fruit
+[market level 0]
+
 [market]
 Markt
 [meta %0]
@@ -606,6 +608,8 @@ Even geduld alsjeblieft
 
 [press space]
 Druk op spatie om verder te gaan
+[Prestige Win Enabled]
+
 [Prestige]
 Roem
 [print screen]
@@ -970,6 +974,8 @@ Beschikbaar door
 
 [upgrade building]
 Start/Stop verbeteren
+[Upgrade Defaults]
+
 [upgrade]
 Verbeter
 [username]

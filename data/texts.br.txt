@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 saiu do jogo.
 [%0's game]
@@ -140,7 +142,7 @@ Construir Piscina 2
 Construir Piscina 3
 [Build]
 Contruir
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Construindo...
@@ -214,9 +216,7 @@ Compôr
 Conectar
 [connecting to]
 Conectando a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jogando
@@ -350,7 +350,7 @@ f8
 f9
 [Fertility Map]
 Mapa de Fertilidade
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Comida
@@ -520,6 +520,8 @@ Marcar mapa para aliados
 frutas com os outros
 [market explanation]
 Possibilita a troca de
+[market level 0]
+
 [market]
 Mercado
 [meta %0]
@@ -608,6 +610,8 @@ Por favor espere
 liga
 [press space]
 Aperte barra de espaço para continuar
+[Prestige Win Enabled]
+
 [Prestige]
 Prestígio
 [print screen]
@@ -972,6 +976,8 @@ Destravado por
 cima
 [upgrade building]
 Começar/Parar Upgrade
+[Upgrade Defaults]
+
 [upgrade]
 Upgrade
 [username]

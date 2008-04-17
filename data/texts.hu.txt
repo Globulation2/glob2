@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0's game]
@@ -140,7 +142,7 @@ a partok méretei
 
 [Build]
 Épít
-[Building Settings]
+[Building Defaults]
 
 [building site]
 építési terület
@@ -214,9 +216,7 @@ Szkript fordítása
 Kapcsolódás
 [connecting to]
 Kapcsolódás
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Játék folytatása
@@ -348,7 +348,7 @@ felderítők
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Élelmiszer
@@ -518,6 +518,8 @@ Térkép hosszúsága
 gyümölcs árucserét
 [market explanation]
 Lehetővé teszi az
+[market level 0]
+
 [market]
 Piac
 [meta %0]
@@ -605,6 +607,8 @@ Kérem várjon
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Presztízs
@@ -969,6 +973,8 @@ Egységek
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Fejleszteni

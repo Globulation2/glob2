@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 ha marxat
 [%0's game]
@@ -140,7 +142,7 @@ Tamany de la platja
 
 [Build]
 Construir
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Construint
@@ -214,9 +216,7 @@ Compilar el script
 Conectat
 [connecting to]
 Conectant a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jugant
@@ -348,7 +348,7 @@ illes buides
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Menjar
@@ -518,6 +518,8 @@ Altura del mapa
 fruits amb altres
 [market explanation]
 Per intercambiar fruita amb
+[market level 0]
+
 [market]
 Mercat
 [meta %0]
@@ -605,6 +607,8 @@ Esperi un moment
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestigi
@@ -969,6 +973,8 @@ Unitats
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Millorar

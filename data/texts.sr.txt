@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 напусти игру.
 [%0's game]
@@ -140,7 +142,7 @@ AIWarrush
 
 [Build]
 Гради
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Градилиште
@@ -214,9 +216,7 @@ AIWarrush
 Прикључи се
 [connecting to]
 Повезивање са: 
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Настави игру
@@ -348,7 +348,7 @@ AIWarrush
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Храна
@@ -518,6 +518,8 @@ sr
 
 [market explanation]
 Пијаца служи за
+[market level 0]
+
 [market]
 Пијаца
 [meta %0]
@@ -605,6 +607,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Престиж
@@ -969,6 +973,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Догради

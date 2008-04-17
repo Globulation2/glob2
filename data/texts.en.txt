@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 has quit the game.
 [%0's game]
@@ -140,8 +142,8 @@ Construct Swimmingpool 2
 Construct Swimmingpool 3
 [Build]
 Build
-[Building Settings]
-Building Settings
+[Building Defaults]
+Building Defaults
 [building site]
 construction site
 [Buildings]
@@ -208,10 +210,8 @@ Computing Fertility
 Connect
 [connecting to]
 Connecting to
-[constructed buildings]
-Constructed Buildings
-[construction and upgrades]
-Construction and Upgrades
+[Construction Site Defaults]
+Construction Site Defaults
 [Continue playing]
 Continue playing
 [control %0]
@@ -271,7 +271,7 @@ Destroy
 [display]
 Display
 [do nothing]
-Do Nothings
+Do Nothing
 [don't carry anything]
 Not carrying anything
 [down]
@@ -344,8 +344,8 @@ f8
 f9
 [Fertility Map]
 Fertility Map
-[Flag Settings]
-Flag Settings
+[Flag Defaults]
+Flag Defaults
 [food]
 Food
 [forbidden area]
@@ -514,6 +514,8 @@ Mark Map For Allies
 fruits with others
 [market explanation]
 Allows the exchange of
+[market level 0]
+Market
 [market]
 Market
 [meta %0]
@@ -538,8 +540,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 no key yet
 [no ressources growth areas]
 No Growth Areas
-[Prestige Win Enabled]
-Prestige Win Enabled
 [No]
 No
 [not ready]
@@ -602,6 +602,8 @@ Please wait
 power
 [press space]
 Press space to continue.
+[Prestige Win Enabled]
+Prestige Win Enabled
 [Prestige]
 Prestige
 [print screen]
@@ -968,6 +970,8 @@ Unlocked By
 up
 [upgrade building]
 Start/Stop Upgrade
+[Upgrade Defaults]
+Upgrade Defaults
 [upgrade]
 Upgrade
 [username]

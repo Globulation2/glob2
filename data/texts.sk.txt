@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 odišiel z hry.
 [%0's game]
@@ -140,7 +142,7 @@ veľkosť pláže
 
 [Build]
 Stavanie
-[Building Settings]
+[Building Defaults]
 
 [building site]
 stavenisko
@@ -214,9 +216,7 @@ Kopilovať skript
 Pripojiť
 [connecting to]
 Pripája sa ku
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Pokračovať
@@ -348,7 +348,7 @@ prázdne ostrovy
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Jedlo
@@ -518,6 +518,8 @@ Označiť mapu
 s ostatnými hráčmi
 [market explanation]
 Umožnňuje výmenu ovocia
+[market level 0]
+
 [market]
 Trhovisko
 [meta %0]
@@ -606,6 +608,8 @@ Meno hráča
 
 [press space]
 Pre pokračovanie stlač medzeru
+[Prestige Win Enabled]
+
 [Prestige]
 Prestíž
 [print screen]
@@ -970,6 +974,8 @@ Jednotky
 
 [upgrade building]
 Spust./zast. zdokonaľovanie
+[Upgrade Defaults]
+
 [upgrade]
 Zdokonaliť
 [username]
