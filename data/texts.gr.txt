@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 έχει τερματίσει το παιχνίδι.
 [%0's game]
@@ -140,7 +142,7 @@ backspace
 Κατασκευή Πισίνας 3
 [Build]
 Κτίσμα
-[Building Settings]
+[Building Defaults]
 
 [building site]
 τόπος κατασκευής
@@ -214,9 +216,7 @@ caps lock
 Σύνδεση
 [connecting to]
 Σύνδεση στο
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Συνέχεια
@@ -350,7 +350,7 @@ f8
 f9
 [Fertility Map]
 Χάρτης Γονιμότητας
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Τροφή
@@ -520,6 +520,8 @@ Anastasios M. Pingios
 φρούτα με άλλους
 [market explanation]
 Επιτρέπει την ανταλλαγή
+[market level 0]
+
 [market]
 Αγορά
 [meta %0]
@@ -608,6 +610,8 @@ page up
 ενέργεια
 [press space]
 Πατήστε space για να συνεχίσετε.
+[Prestige Win Enabled]
+
 [Prestige]
 Κύρος
 [print screen]
@@ -974,6 +978,8 @@ Tutorial
 πάνω
 [upgrade building]
 Εκκίνηση/Παύση Αναβάθμισης
+[Upgrade Defaults]
+
 [upgrade]
 Αναβάθμιση
 [username]

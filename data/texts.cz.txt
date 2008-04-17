@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 opustil hru.
 [%0's game]
@@ -140,7 +142,7 @@ Velikost pláží
 
 [Build]
 Stavba
-[Building Settings]
+[Building Defaults]
 
 [building site]
 staveniště
@@ -214,9 +216,7 @@ Sestavit skript
 Připojit
 [connecting to]
 Připojuji se k
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Pokračovat ve hře
@@ -348,7 +348,7 @@ průzkumníci
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Potrava
@@ -518,6 +518,8 @@ Výška mapy
 
 [market explanation]
 Povolení vyměnit ovoce
+[market level 0]
+
 [market]
 Tržiště
 [meta %0]
@@ -605,6 +607,8 @@ Jméno
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestiž
@@ -969,6 +973,8 @@ Jednotky
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Vylepšit

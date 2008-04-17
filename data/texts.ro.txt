@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 a părăsit jocul.
 [%0's game]
@@ -140,7 +142,7 @@ mărimea plajei
 
 [Build]
 Construieşte
-[Building Settings]
+[Building Defaults]
 
 [building site]
 şantier
@@ -214,9 +216,7 @@ Compilează scriptul
 Conectează
 [connecting to]
 Conectare la
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuă jocul
@@ -348,7 +348,7 @@ exploratori
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Mâncare
@@ -518,6 +518,8 @@ Lărgimea hărţii
 cu ceilalţi
 [market explanation]
 Permite schimbul de fructe
+[market level 0]
+
 [market]
 Piată
 [meta %0]
@@ -605,6 +607,8 @@ Vă rugăm aşteptaţi
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Prestigiu
@@ -969,6 +973,8 @@ Unităţi
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Ameliorează

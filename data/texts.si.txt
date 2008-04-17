@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 je zapustil igro.
 [%0's game]
@@ -140,7 +142,7 @@ velikost obal
 
 [Build]
 Zgradi
-[Building Settings]
+[Building Defaults]
 
 [building site]
 gradbišče
@@ -214,9 +216,7 @@ Zgradi skripto
 Vspostavi povezavo
 [connecting to]
 Povezujem na
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Nadaljuj z igranjem
@@ -348,7 +348,7 @@ raziskovalci
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Hrana
@@ -518,6 +518,8 @@ Višina mape
 
 [market explanation]
 Omogoča menjavo blaga
+[market level 0]
+
 [market]
 Tržnica
 [meta %0]
@@ -605,6 +607,8 @@ Prosim počakaj
 [power]
 
 [press space]
+
+[Prestige Win Enabled]
 
 [Prestige]
 Ugled
@@ -969,6 +973,8 @@ Enote
 [up]
 
 [upgrade building]
+
+[Upgrade Defaults]
 
 [upgrade]
 Nadgradi

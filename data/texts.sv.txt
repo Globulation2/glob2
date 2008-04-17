@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 har lämnat spelet.
 [%0's game]
@@ -140,7 +142,7 @@ strandstorlek
 
 [Build]
 Bygga
-[Building Settings]
+[Building Defaults]
 
 [building site]
 byggarbetsplats
@@ -214,9 +216,7 @@ Kompilera skript
 Anslut
 [connecting to]
 Ansluter till
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Fortsätt spela
@@ -348,7 +348,7 @@ tomma öar
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Mat
@@ -518,6 +518,8 @@ Markera Karta För Allierade
 frukt med andra
 [market explanation]
 Tillåter utbyte av 
+[market level 0]
+
 [market]
 Marknad
 [meta %0]
@@ -606,6 +608,8 @@ Var god vänta
 
 [press space]
 Tryck mellanslag för att forsätta.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
 [print screen]
@@ -970,6 +974,8 @@ Upplåst Av
 
 [upgrade building]
 Starta/Stoppa Uppgradering
+[Upgrade Defaults]
+
 [upgrade]
 Uppgradera
 [username]

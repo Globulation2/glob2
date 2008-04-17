@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 تركو اللعبه.
 [%0's game]
@@ -140,7 +142,7 @@ Available local games
 
 [Build]
 يبنى
-[Building Settings]
+[Building Defaults]
 
 [building site]
 موقع اﻷنشاء
@@ -214,9 +216,7 @@ Clearing flag
 Connect
 [connecting to]
 Connecting to
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 تابع اللعب
@@ -348,7 +348,7 @@ Explorer Ratio
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 الطعام
@@ -518,6 +518,8 @@ Mark Map For Allies
 الفواكه مع الآخري
 [market explanation]
 يسمح بتبادل
+[market level 0]
+
 [market]
 السوق
 [meta %0]
@@ -606,6 +608,8 @@ Please wait
 
 [press space]
 Press space to continue.
+[Prestige Win Enabled]
+
 [Prestige]
 سمعه
 [print screen]
@@ -970,6 +974,8 @@ Uniform terrain
 
 [upgrade building]
 Start/Stop Upgrade
+[Upgrade Defaults]
+
 [upgrade]
 ترقية
 [username]

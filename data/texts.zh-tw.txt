@@ -1,3 +1,5 @@
+
+
 [%0 has left the game]
 %0 已離開遊戲
 [%0's game]
@@ -140,7 +142,7 @@ AIWarrush
 建造游泳池 3
 [Build]
 建造
-[Building Settings]
+[Building Defaults]
 
 [building site]
 建築地點
@@ -214,9 +216,7 @@ AIWarrush
 連線
 [connecting to]
 連線至
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 繼續遊戲
@@ -348,7 +348,7 @@ AIWarrush
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 食物
@@ -518,6 +518,8 @@ Air dmg.
 和他人交易水果
 [market explanation]
 允許交易的資源
+[market level 0]
+
 [market]
 市場
 [meta %0]
@@ -606,6 +608,8 @@ Air dmg.
 
 [press space]
 按下空白鍵以繼續
+[Prestige Win Enabled]
+
 [Prestige]
 聲望
 [print screen]
@@ -970,6 +974,8 @@ V: 持鍵以傳送訊息
 
 [upgrade building]
 開始/停止 升級
+[Upgrade Defaults]
+
 [upgrade]
 升級
 [username]
