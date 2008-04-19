@@ -38,6 +38,7 @@
 #include "boost/lexical_cast.hpp"
 #include "GameGUIKeyActions.h"
 #include "MapEditKeyActions.h"
+#include "FormatableString.h"
 
 SettingsScreen::SettingsScreen()
  : mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
@@ -227,7 +228,7 @@ SettingsScreen::SettingsScreen()
 				group_widest_element = std::max(group_widest_element, size);
 				
 				group_row += 1;
-				if(group_row == 6)
+				if(group_row == 7)
 				{
 					group_row = 0;
 					group_current_column_x += group_widest_element + 10;
@@ -620,20 +621,27 @@ int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, i
 
 std::string SettingsScreen::getDefaultUnitAssignmentText(int type, int level, bool flag)
 {
-	std::string name=IntBuildingType::typeFromShortNumber(type);
+	std::string name="[" + IntBuildingType::typeFromShortNumber(type) + "]";
+	std::string tname = Toolkit::getStringTable()->getString(name.c_str());
 
-	std::string keyname="[";
+	std::string value;
 	if(flag)
 	{
-		keyname+=name + "]";
+		value = tname;
+	}
+	else if(level%2 == 0)
+	{
+		value = FormatableString(Toolkit::getStringTable()->getString("[build %0 level %1]")).arg(tname).arg(level/2 + 1);
+	}
+	else if(level == 1 && globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(type), level+1, false) == NULL)
+	{
+		value = tname;
 	}
 	else
 	{
-		if((level+1)%2)
-			keyname+="build ";
-		keyname+=name + " level " + boost::lexical_cast<std::string>(level/2) + "]";
+		value = FormatableString(Toolkit::getStringTable()->getString("[%0 level %1]")).arg(tname).arg(level/2+1);
 	}
-	return Toolkit::getStringTable()->getString(keyname.c_str());
+	return value;
 }
 
 
@@ -904,3 +912,4 @@ int SettingsScreen::menu(void)
 {
 	return SettingsScreen().execute(globalContainer->gfx, 30);
 }
+	std::string value;

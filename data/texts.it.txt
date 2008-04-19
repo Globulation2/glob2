@@ -1,7 +1,7 @@
-
-
 [%0 has left the game]
 %0 ha lasciato la partita.
+[%0 level %1]
+
 [%0's game]
 Partita di %0
 [%0's team unit got converted to your team]
@@ -92,6 +92,8 @@ Caserma
 Grandezza della spiaggia
 [break]
 pausa
+[build %0 level %1]
+
 [build barracks level 0]
 Costruisci caserma liv. 0
 [build barracks level 1]
