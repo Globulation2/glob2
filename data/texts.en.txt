@@ -1,7 +1,7 @@
-
-
 [%0 has left the game]
 %0 has quit the game.
+[%0 level %1]
+%0 Level %1
 [%0's game]
 %0's Game
 [%0's team unit got converted to your team]
@@ -92,54 +92,8 @@ Barracks
 beach size
 [break]
 break
-[build barracks level 0]
-Construct Barracks 1
-[build barracks level 1]
-Construct Barracks 2
-[build barracks level 2]
-Construct Barracks 3
-[build defencetower level 0]
-Construct Defence Tower 1
-[build defencetower level 1]
-Construct Defence Tower 2
-[build defencetower level 2]
-Construct Defence Tower 3
-[build hospital level 0]
-Construct Hospital 1
-[build hospital level 1]
-Construct Hospital 2
-[build hospital level 2]
-Construct Hospital 3
-[build inn level 0]
-Construct Inn 1
-[build inn level 1]
-Construct Inn 2
-[build inn level 2]
-Constuct Inn 3
-[build market level 0]
-Construct Market
-[build racetrack level 0]
-Construct Racetrack 1
-[build racetrack level 1]
-Construct Racetrack 2
-[build racetrack level 2]
-Construct Racetrack 3
-[build school level 0]
-Construct School 1
-[build school level 1]
-Construct School 2
-[build school level 2]
-Construct School 3
-[build stonewall level 0]
-Construct Stone Wall
-[build swarm level 0]
-Construct Swarm
-[build swimmingpool level 0]
-Construct Swimmingpool 1
-[build swimmingpool level 1]
-Construct Swimmingpool 2
-[build swimmingpool level 2]
-Construct Swimmingpool 3
+[build %0 level %1]
+Construct %0 Level %1
 [Build]
 Build
 [Building Defaults]
@@ -244,12 +198,6 @@ Decrease Units Working
 units or buildings
 [defencetower explanation]
 Attacks nearby enemy
-[defencetower level 0]
-Defence Tower 1
-[defencetower level 1]
-Defence Tower 2
-[defencetower level 2]
-Defence Tower 3
 [defencetower]
 Defense Tower
 [Defense Map]
@@ -422,12 +370,6 @@ Increase Units Working
  
 [inn explanation]
 Foods your units
-[inn level 0]
-Inn 1
-[inn level 1]
-Inn 2
-[inn level 2]
-Inn 3
 [inn]
 Inn
 [insert]
@@ -514,8 +456,6 @@ Mark Map For Allies
 fruits with others
 [market explanation]
 Allows the exchange of
-[market level 0]
-Market
 [market]
 Market
 [meta %0]
@@ -802,8 +742,6 @@ Swamp
  
 [swarm explanation]
 Creates new units
-[swarm level 0]
-Swarm
 [swarm]
 Swarm
 [Swim]
