@@ -1,7 +1,7 @@
-
-
 [%0 has left the game]
 %0 saiu do jogo.
+[%0 level %1]
+
 [%0's game]
 jogo do %0
 [%0's team unit got converted to your team]
@@ -92,6 +92,8 @@ Barracks
 Tamanho da praia
 [break]
 break
+[build %0 level %1]
+
 [build barracks level 0]
 Construir Barracks 1
 [build barracks level 1]

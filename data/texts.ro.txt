@@ -1,7 +1,7 @@
-
-
 [%0 has left the game]
 %0 a părăsit jocul.
+[%0 level %1]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -91,6 +91,8 @@ Câmp de-antrenament
 [beach size]
 mărimea plajei
 [break]
+
+[build %0 level %1]
 
 [build barracks level 0]
 

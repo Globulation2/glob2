@@ -1,7 +1,7 @@
-
-
 [%0 has left the game]
 %0 hat das Spiel verlassen.
+[%0 level %1]
+
 [%0's game]
 Spiel von %0
 [%0's team unit got converted to your team]
@@ -91,6 +91,8 @@ Trainingslager
 [beach size]
 Strandbreite
 [break]
+
+[build %0 level %1]
 
 [build barracks level 0]
 

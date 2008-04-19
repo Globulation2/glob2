@@ -1,7 +1,7 @@
-
-
 [%0 has left the game]
 %0 έχει τερματίσει το παιχνίδι.
+[%0 level %1]
+
 [%0's game]
 %0 του Παιχνιδιού
 [%0's team unit got converted to your team]
@@ -92,6 +92,8 @@ backspace
 μέγεθως παραλίας
 [break]
 διακοπή
+[build %0 level %1]
+
 [build barracks level 0]
 Κατασκευή Στρατώνων 1
 [build barracks level 1]
