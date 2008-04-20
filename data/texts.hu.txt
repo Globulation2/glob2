@@ -502,6 +502,8 @@ Alacsony képminőség
 
 [Magic At. Ground]
 
+[Map Discovered]
+
 [Map name: %0]
 A térkép neve: %0.
 [map name]

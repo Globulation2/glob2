@@ -502,6 +502,8 @@ Låg kvalitet
 Luftskada
 [Magic At. Ground]
 Markskada
+[Map Discovered]
+
 [Map name: %0]
 Kartnamn: %0.
 [map name]

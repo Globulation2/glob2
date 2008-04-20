@@ -502,6 +502,8 @@ sr
 
 [Magic At. Ground]
 
+[Map Discovered]
+
 [Map name: %0]
 Име мапе: %0.
 [map name]

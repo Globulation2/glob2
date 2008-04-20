@@ -502,6 +502,8 @@ zh-tw
 Air dmg.
 [Magic At. Ground]
 地面攻擊
+[Map Discovered]
+
 [Map name: %0]
 地圖名稱: %0。
 [map name]

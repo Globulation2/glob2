@@ -502,6 +502,8 @@ Dusuk kalite
 Hava hasari
 [Magic At. Ground]
 Yer hasari
+[Map Discovered]
+
 [Map name: %0]
 Harita adi: %0.
 [map name]

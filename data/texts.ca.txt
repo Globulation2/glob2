@@ -502,6 +502,8 @@ Qualitat Baixa
 dany aeri
 [Magic At. Ground]
 dany terrestre
+[Map Discovered]
+
 [Map name: %0]
 Nom del mapa: %0.
 [map name]

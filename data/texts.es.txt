@@ -502,6 +502,8 @@ Baja Calidad
 Daño Aéreo
 [Magic At. Ground]
 Daño Terrestre
+[Map Discovered]
+
 [Map name: %0]
 Nombre del Mapa: %0.
 [map name]

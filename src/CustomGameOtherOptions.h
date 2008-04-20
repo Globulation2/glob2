@@ -63,6 +63,7 @@ private:
 		CANCEL,
 		TEAMSFIXED,
 		PRESTIGEWINENABLED,
+		MAPDISCOVERED,
 	};
 	
 	///"Other Options" Title
@@ -88,6 +89,11 @@ private:
 	OnOffButton* prestigeWinEnabled;
 	///Text for above button
 	Text* prestigeWinEnabledText;
+
+	///Button to set the map being already discovered
+	OnOffButton *mapDiscovered;
+	///Text for above button
+	Text* mapDiscoveredText;
 	
 	///This updates the winning conditions in the game header
 	void updateGameHeaderWinningConditions();
