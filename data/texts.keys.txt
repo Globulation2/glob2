@@ -218,6 +218,7 @@
 [lowquality]
 [Magic At. Air]
 [Magic At. Ground]
+[Map Discovered]
 [Map name: %0]
 [map name]
 [map script]

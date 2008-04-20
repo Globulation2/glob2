@@ -502,6 +502,8 @@ Nizka kakovost
 
 [Magic At. Ground]
 
+[Map Discovered]
+
 [Map name: %0]
 Ime mape: %0.
 [map name]

@@ -190,6 +190,9 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 
 	setSyncRandSeed(newGameHeader.getRandomSeed());
 
+	if(newGameHeader.isMapDiscovered())
+		map.setMapDiscovered();
+
 	gameHeader = newGameHeader;
 	anyPlayerWaited=false;
 }

@@ -504,6 +504,8 @@ Qualidade baixa
 Dano aéreo
 [Magic At. Ground]
 Dano terrestre
+[Map Discovered]
+
 [Map name: %0]
 Nome do mapa: %0.
 [map name]

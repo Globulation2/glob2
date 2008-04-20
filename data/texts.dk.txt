@@ -502,6 +502,8 @@ Lav kvalitet
 Luft skade.
 [Magic At. Ground]
 Jord skade.
+[Map Discovered]
+
 [Map name: %0]
 Kort navn: %0.
 [map name]

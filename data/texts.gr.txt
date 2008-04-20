@@ -504,6 +504,8 @@ Anastasios M. Pingios
 Εναέρια dmg.
 [Magic At. Ground]
 Επίγεια dmg.
+[Map Discovered]
+
 [Map name: %0]
 Όνομα χάρτη: %0.
 [map name]

@@ -502,6 +502,8 @@ Low quality
 Air dmg.
 [Magic At. Ground]
 Ground dmg.
+[Map Discovered]
+
 [Map name: %0]
 Map name: %0.
 [map name]

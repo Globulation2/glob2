@@ -502,6 +502,8 @@ Znížená kvalita
 Vzduch
 [Magic At. Ground]
 Zem
+[Map Discovered]
+
 [Map name: %0]
 Názov mapy: %0.
 [map name]

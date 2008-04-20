@@ -502,6 +502,8 @@ Basse qualité
 Dmg. air
 [Magic At. Ground]
 Dmg. sol
+[Map Discovered]
+
 [Map name: %0]
 Carte: %0.
 [map name]

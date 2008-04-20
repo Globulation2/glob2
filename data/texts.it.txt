@@ -496,6 +496,8 @@ Bassa qualità
 Danno aereo
 [Magic At. Ground]
 Danno a terra
+[Map Discovered]
+
 [Map name: %0]
 Nome della mappa: %0.
 [map name]
