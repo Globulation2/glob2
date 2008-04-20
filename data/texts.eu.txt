@@ -502,6 +502,8 @@ Kalitate baxua
 Kaltea airean
 [Magic At. Ground]
 Kaltea lurrean
+[Map Discovered]
+
 [Map name: %0]
 Mapa izena: %0.
 [map name]

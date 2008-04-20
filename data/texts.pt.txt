@@ -502,6 +502,8 @@ Calidade baixa
 At. aéreo
 [Magic At. Ground]
 At. terrestre
+[Map Discovered]
+
 [Map name: %0]
 Nome do mapa: %0.
 [map name]

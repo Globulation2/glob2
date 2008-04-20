@@ -29,6 +29,7 @@ GameHeader::GameHeader()
 
 void GameHeader::reset()
 {
+	//These are the default game options
 	numberOfPlayers = 0;
 	gameLatency = 0;
 	orderRate = 1;
@@ -43,6 +44,7 @@ void GameHeader::reset()
 	}
 	allyTeamsFixed=true;
 	winningConditions = WinningCondition::getDefaultWinningConditions();
+	mapDiscovered=false;
 }
 
 
@@ -84,6 +86,8 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	}
 	if(versionMinor >= 64)
 		seed = stream->readUint32("seed");
+	if(versionMinor >=  72)
+		mapDiscovered = stream->readUint8("mapDiscovered");
 	stream->readLeaveSection();
 	return true;
 }
@@ -123,6 +127,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	}
 	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
+	stream->writeUint8(mapDiscovered, "mapDiscovered");
 	stream->writeLeaveSection();
 }
 
@@ -156,6 +161,8 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	}
 	if(versionMinor >= 64)
 		seed = stream->readUint32("seed");
+	if(versionMinor >=  72)
+		mapDiscovered = stream->readUint8("mapDiscovered");
 	stream->readLeaveSection();
 	return true;
 }
@@ -186,6 +193,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	}
 	stream->writeLeaveSection();
 	stream->writeUint32(seed, "seed");
+	stream->writeUint8(mapDiscovered, "mapDiscovered");
 	stream->writeLeaveSection();
 }
 
@@ -331,3 +339,15 @@ void GameHeader::setRandomSeed(Uint32 nseed)
 }
 
 
+
+bool GameHeader::isMapDiscovered() const
+{
+	return mapDiscovered;
+}
+
+
+
+void GameHeader::setMapDiscovered(bool discovered)
+{
+	mapDiscovered=discovered;
+}

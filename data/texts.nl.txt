@@ -502,6 +502,8 @@ Lage kwaliteit
 Luchtschade
 [Magic At. Ground]
 Grondschade
+[Map Discovered]
+
 [Map name: %0]
 Naam speelveld: %0.
 [map name]

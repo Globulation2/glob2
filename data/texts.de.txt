@@ -496,6 +496,8 @@ Niedrige Qualität
 Kampfstärke/Luft
 [Magic At. Ground]
 Kampfstärke/Boden
+[Map Discovered]
+
 [Map name: %0]
 Karte: %0.
 [map name]

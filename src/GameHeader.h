@@ -100,6 +100,12 @@ public:
 	
 	///Sets the random generator seed to be used
 	void setRandomSeed(Uint32 seed);
+	
+	///Returns whether the map is discovered at game start
+	bool isMapDiscovered() const;
+	
+	///Sets whether the map is discovered at game start
+	void setMapDiscovered(bool discovered);
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;
@@ -125,6 +131,9 @@ private:
 
 	///Represents the random seed used for the game
 	Uint32 seed;
+	
+	///Represents whether fog of war is enabled or disabled
+	bool mapDiscovered;
 };
 
 

@@ -502,6 +502,8 @@ Nízká kvalita
 
 [Magic At. Ground]
 
+[Map Discovered]
+
 [Map name: %0]
 Jméno mapy: %0.
 [map name]

@@ -502,6 +502,8 @@ Calitate scăzută
 
 [Magic At. Ground]
 
+[Map Discovered]
+
 [Map name: %0]
 Hartă: %0.
 [map name]

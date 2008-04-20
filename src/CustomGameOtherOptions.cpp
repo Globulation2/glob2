@@ -66,19 +66,24 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 		addWidget(allyTeamNumbers[i]);
 	}
 	
-	teamsFixed = new OnOffButton(300, 60, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", TEAMSFIXED);
+	teamsFixed = new OnOffButton(300, 60, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.areAllyTeamsFixed(), TEAMSFIXED);
 	addWidget(teamsFixed);
 	
 	teamsFixedText = new Text(325, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Teams Fixed]"));
 	addWidget(teamsFixedText);
 	
 	//These are for winning conditions
-	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", PRESTIGEWINENABLED);
+	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, PRESTIGEWINENABLED);
 	addWidget(prestigeWinEnabled);
 	prestigeWinEnabledText = new Text(325, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Prestige Win Enabled]"));
 	addWidget(prestigeWinEnabledText);
 	updateScreenWinningConditions();
 	
+	//Map discovered.
+	mapDiscovered = new OnOffButton(300, 120, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.isMapDiscovered(), MAPDISCOVERED);
+	addWidget(mapDiscovered);
+	mapDiscoveredText = new Text(325, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Map Discovered]"));
+	addWidget(mapDiscoveredText);
 }
 
 
@@ -138,6 +143,10 @@ void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, i
 		else if(par1 == PRESTIGEWINENABLED)
 		{
 			updateGameHeaderWinningConditions();
+		}
+		else if(par1 == MAPDISCOVERED)
+		{
+			gameHeader.setMapDiscovered(mapDiscovered->getState());
 		}
 	}
 }

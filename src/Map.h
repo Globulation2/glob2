@@ -214,6 +214,12 @@ public:
 	{
 		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
 	}
+	
+	//! Sets all map for all teams to discovered state
+	void setMapDiscovered(void)
+	{
+		memset(mapDiscovered, ~0u, w*h*sizeof(Uint32));
+	}
 
 	//! Returs true if map is currently discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's units and buildings we are allowed to see.
