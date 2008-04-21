@@ -16,21 +16,36 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef P2PConnectionListener_h
-#define P2PConnectionListener_h
+#ifndef YOGServerGameRouter_h
+#define YOGServerGameRouter_h
 
+#include <vector>
 #include "boost/shared_ptr.hpp"
 
-class P2PConnectionEvent;
+class YOGServerRouterPlayer;
+class NetMessage;
 
-///This class listens for incoming messages on a p2p connection
-class P2PConnectionListener
+///This class acts is the router for games, it routes messages between all connected players
+class YOGServerGameRouter
 {
 public:
-	///Accepts an incoming Net Message from a p2p connection
-	virtual void recieveP2PEvent(boost::shared_ptr<P2PConnectionEvent> event) = 0;
+	///Constructs a YOGServerGameRouter
+	YOGServerGameRouter(); 
+
+	///Adds a player to this router group
+	void addPlayer(boost::shared_ptr<YOGServerRouterPlayer> player);
+	
+	///Updates this game
+	void update();
+	
+	///Returns true if this game is empty
+	bool isEmpty();
+	
+	///Removes a net message to all players
+	void routeMessage(boost::shared_ptr<NetMessage> message, YOGServerRouterPlayer* sender);
+private:
+	std::vector<boost::shared_ptr<YOGServerRouterPlayer> > players;
 };
 
+
 #endif
-
-

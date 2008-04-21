@@ -24,7 +24,6 @@
 #include "MapHeader.h"
 #include "NetReteamingInformation.h"
 #include "Order.h"
-#include "P2PInformation.h"
 #include "Player.h"
 #include "Stream.h"
 #include <string>
@@ -63,13 +62,16 @@ enum NetMessageType
 	MNetEveryoneReadyToLaunch,
 	MNetGameJoinAccepted,
 	MNetGameJoinRefused,
+	MNetIPIsBanned,
 	MNetKickPlayer,
 	MNetLeaveGame,
 	MNetNotEveryoneReadyToLaunch,
 	MNetNotReadyToLaunch,
+	MNetPlayerIsBanned,
 	MNetPlayerJoinsGame,
 	MNetReadyToLaunch,
 	MNetRefuseGameStart,
+	MNetRegisterRouter,
 	MNetRemoveAI,
 	MNetRequestGameStart,
 	MNetRequestMap,
@@ -81,16 +83,14 @@ enum NetMessageType
 	MNetSendGameResult,
 	MNetSendMapHeader,
 	MNetSendOrder,
-	MNetSendP2PInformation,
 	MNetSendReteamingInformation,
 	MNetSendYOGMessage,
 	MNetSetLatencyMode,
-	MNetSetPlayerLocalPort,
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
-	MNetPlayerIsBanned,
-	MNetIPIsBanned,
+	MNetAcknowledgeRouter,
+	MNetSetGameInRouter,
 	//type_append_marker
 };
 
@@ -784,7 +784,7 @@ public:
 	NetCreateGameAccepted();
 
 	///Creates a NetCreateGameAccepted message with the chat channel for the new game
-	NetCreateGameAccepted(Uint32 chatChannel);
+	NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID);
 
 	///Returns MNetCreateGameAccepted
 	Uint8 getMessageType() const;
@@ -805,8 +805,11 @@ public:
 	///Retrieves the chat channel for the new game
 	Uint32 getChatChannel() const;
 
+	///Retrives the game id for the new game
+	Uint16 getGameID() const;
 private:
 	Uint32 chatChannel;
+	Uint16 gameID;
 };
 
 
@@ -1607,78 +1610,6 @@ private:
 
 
 
-///NetSendP2PInformation
-class NetSendP2PInformation : public NetMessage
-{
-public:
-	///Creates a NetSendP2PInformation message
-	NetSendP2PInformation();
-
-	///Creates a NetSendP2PInformation message
-	NetSendP2PInformation(P2PInformation group);
-
-	///Returns MNetSendP2PInformation
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetSendP2PInformation message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetSendP2PInformation
-	bool operator==(const NetMessage& rhs) const;
-
-	///Retrieves group
-	P2PInformation getGroupInfo() const;
-private:
-private:
-	P2PInformation group;
-};
-
-
-
-
-///NetSetPlayerLocalPort
-class NetSetPlayerLocalPort : public NetMessage
-{
-public:
-	///Creates a NetSetPlayerLocalPort message
-	NetSetPlayerLocalPort();
-
-	///Creates a NetSetPlayerLocalPort message
-	NetSetPlayerLocalPort(Uint16 port);
-
-	///Returns MNetSetPlayerLocalPort
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetSetPlayerLocalPort message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetSetPlayerLocalPort
-	bool operator==(const NetMessage& rhs) const;
-
-	///Retrieves port
-	Uint16 getPort() const;
-private:
-private:
-	Uint16 port;
-};
-
-
-
-
 ///NetSendGameResult
 class NetSendGameResult : public NetMessage
 {
@@ -1764,6 +1695,96 @@ public:
 
 	///Compares with another NetIPIsBanned
 	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRegisterRouter
+class NetRegisterRouter : public NetMessage
+{
+public:
+	///Creates a NetRegisterRouter message
+	NetRegisterRouter();
+
+	///Returns MNetRegisterRouter
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRegisterRouter message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRegisterRouter
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetAcknowledgeRouter
+class NetAcknowledgeRouter : public NetMessage
+{
+public:
+	///Creates a NetAcknowledgeRouter message
+	NetAcknowledgeRouter();
+
+	///Returns MNetAcknowledgeRouter
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetAcknowledgeRouter message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAcknowledgeRouter
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetSetGameInRouter
+class NetSetGameInRouter : public NetMessage
+{
+public:
+	///Creates a NetSetGameInRouter message
+	NetSetGameInRouter();
+
+	///Creates a NetSetGameInRouter message
+	NetSetGameInRouter(Uint16 gameID);
+
+	///Returns MNetSetGameInRouter
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSetGameInRouter message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSetGameInRouter
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves gameID
+	Uint16 getGameID() const;
+private:
+private:
+	Uint16 gameID;
 };
 
 

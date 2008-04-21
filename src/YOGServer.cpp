@@ -28,7 +28,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), routerManager(*this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -110,6 +110,8 @@ void YOGServer::update()
 	playerInfos.update();
 	bannedIPs.update();
 	gameLog.update();
+	routerManager.update();
+//	router.update();
 	
 	int t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
@@ -151,6 +153,7 @@ int YOGServer::run()
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
 	}
+	std::cout<<nl.isListening()<<std::endl;
 	return 0;
 }
 
@@ -294,7 +297,8 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 			break;
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
-	gameList.push_back(YOGGameInfo(name, newID));
+	std::string router = routerManager.chooseYOGRouter()->getIPAddress();
+	gameList.push_back(YOGGameInfo(name, newID, router));
 	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, *this));
 	return newID;
 }
@@ -408,6 +412,13 @@ YOGServerPasswordRegistry& YOGServer::getServerPasswordRegistry()
 YOGServerBannedIPListManager& YOGServer::getServerBannedIPListManager()
 {
 	return bannedIPs;
+}
+
+
+
+YOGServerRouterManager& YOGServer::getRouterManager()
+{
+	return routerManager;
 }
 
 

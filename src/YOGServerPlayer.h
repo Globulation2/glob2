@@ -75,12 +75,6 @@ public:
 	///found that they are
 	unsigned getAveragePing() const;
 	
-	///This sets the p2p manager for this player
-	void setP2PManager(P2PManager* manager);
-	
-	///This returns the p2p manager for this player
-	P2PManager* getP2PManager();
-	
 	///This returns the port for the p2p connection client end on this player
 	int getP2PPort();
 	
@@ -162,8 +156,6 @@ private:
 	Uint16 gameID;
 	///Links to the connected game
 	weak_ptr<YOGServerGame> game;
-	///Links to the connected p2p manager
-	P2PManager* p2p;
 
 	///Counts down between sending a ping
 	Uint32 pingCountdown;

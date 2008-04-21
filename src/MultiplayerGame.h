@@ -24,14 +24,13 @@
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
-#include "P2PConnectionListener.h"
 #include <list>
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
-class MultiplayerGame : public P2PConnectionListener
+class MultiplayerGame
 {
 public:
 	///Creates a game instance and links it with the provided YOGClient
@@ -135,9 +134,6 @@ public:
 	///Returns the percentage finished for the downloaded
 	Uint8 percentageDownloadFinished();
 	
-	///Recieves a message from the p2p event
-	void recieveP2PEvent(boost::shared_ptr<P2PConnectionEvent> event);
-	
 	///Returns true if the MultiplayerGame is waiting for a reply from the server
 	///to start the game
 	bool isGameStarting();
@@ -182,6 +178,8 @@ private:
 	bool isEveryoneReadyToGo;
 	bool isStarting;
 	Uint8 previousPercentage;
+	Uint16 gameID;
+	bool wasConnectingToRouter;
 
 	NetGamePlayerManager playerManager;
 };

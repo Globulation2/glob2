@@ -26,13 +26,15 @@
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
 #include "YOGPlayerSessionInfo.h"
-#include "YOGServerBannedIPListManager.h"
-#include "YOGServerChatChannelManager.h"
-#include "YOGServerPasswordRegistry.h"
 #include "YOGServerAdministrator.h"
 #include "YOGServerAdministratorList.h"
-#include "YOGServerPlayerStoredInfoManager.h"
+#include "YOGServerBannedIPListManager.h"
+#include "YOGServerChatChannelManager.h"
 #include "YOGServerGameLog.h"
+#include "YOGServerPasswordRegistry.h"
+#include "YOGServerPlayerStoredInfoManager.h"
+#include "YOGServerRouter.h"
+#include "YOGServerRouterManager.h"
 
 
 class NetBroadcaster;
@@ -143,6 +145,9 @@ public:
 	
 	///Returns the YOGServerGameLog
 	YOGServerGameLog& getGameLog();
+	
+	///Returns the YOGServerRouterManager
+	YOGServerRouterManager& getRouterManager();
 private:
 	///This looks for a free player id to assign to the player
 	Uint16 chooseNewPlayerID();
@@ -174,6 +179,8 @@ private:
 	YOGServerPlayerStoredInfoManager playerInfos;
 	YOGServerBannedIPListManager bannedIPs;
 	YOGServerGameLog gameLog;
+	YOGServerRouterManager routerManager;
+	//YOGServerRouter router;
 };
 
 #endif

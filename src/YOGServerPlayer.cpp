@@ -22,7 +22,6 @@
 #include "YOGServer.h"
 #include "YOGServerMapDistributor.h"
 #include "YOGServerPlayer.h"
-#include "P2PManager.h"
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
@@ -36,7 +35,6 @@ YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id
 	pingCountdown=SDL_GetTicks();
 	pingSendTime=0;
 	port = 0;
-	p2p=NULL;
 }
 
 
@@ -178,15 +176,6 @@ void YOGServerPlayer::update()
 	{
 		ngame->startGame();
 	}
-	//This recieves routes an order
-	else if(type==MNetSendOrder)
-	{
-		if(p2p)
-		{
-			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
-			p2p->recieveMessage(info, server.getPlayer(playerID));
-		}
-	}
 	//This recieves requests a map file
 	else if(type==MNetRequestMap)
 	{
@@ -263,12 +252,6 @@ void YOGServerPlayer::update()
 			pings.erase(pings.begin());
 
 		pingCountdown = SDL_GetTicks();
-	}
-	//This recieves a ping reply
-	else if(type==MNetSetPlayerLocalPort)
-	{
-		shared_ptr<NetSetPlayerLocalPort> info = static_pointer_cast<NetSetPlayerLocalPort>(message);
-		port = info->getPort();
 	}
 	//This recieves a ping reply
 	else if(type==MNetSendGameResult)
@@ -382,20 +365,6 @@ unsigned YOGServerPlayer::getAveragePing() const
 
 
 
-void YOGServerPlayer::setP2PManager(P2PManager* manager)
-{
-	p2p = manager;
-}
-
-
-
-P2PManager* YOGServerPlayer::getP2PManager()
-{
-	return p2p;
-}
-
-
-
 int YOGServerPlayer::getP2PPort()
 {
 	return port;
@@ -484,7 +453,8 @@ void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
 		boost::shared_ptr<YOGServerGame> ngame(game);
-		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel()));
+		updateGamePlayerLists();
+		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));
 	}
