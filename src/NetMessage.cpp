@@ -160,12 +160,6 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSendReteamingInformation:
 		message.reset(new NetSendReteamingInformation);
 		break;
-		case MNetSendP2PInformation:
-		message.reset(new NetSendP2PInformation);
-		break;
-		case MNetSetPlayerLocalPort:
-		message.reset(new NetSetPlayerLocalPort);
-		break;
 		case MNetSendGameResult:
 		message.reset(new NetSendGameResult);
 		break;
@@ -174,6 +168,15 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		break;
 		case MNetIPIsBanned:
 		message.reset(new NetIPIsBanned);
+		break;
+		case MNetRegisterRouter:
+		message.reset(new NetRegisterRouter);
+		break;
+		case MNetAcknowledgeRouter:
+		message.reset(new NetAcknowledgeRouter);
+		break;
+		case MNetSetGameInRouter:
+		message.reset(new NetSetGameInRouter);
 		break;
 		///append_create_point
 	}
@@ -1545,8 +1548,8 @@ NetCreateGameAccepted::NetCreateGameAccepted()
 }
 
 
-NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel)
-	: chatChannel(chatChannel)
+NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID)
+	: chatChannel(chatChannel), gameID(gameID)
 {
 
 }
@@ -1564,6 +1567,7 @@ void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetCreateGameAccepted");
 	stream->writeUint32(chatChannel, "chatChannel");
+	stream->writeUint16(gameID, "gameID");
 	stream->writeLeaveSection();
 }
 
@@ -1573,6 +1577,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGameAccepted");
 	chatChannel = stream->readUint32("chatChannel");
+	gameID = stream->readUint16("gameID");
 	stream->readLeaveSection();
 }
 
@@ -1581,7 +1586,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 std::string NetCreateGameAccepted::format() const
 {
 	std::ostringstream s;
-	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<")";
+	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<",gameID="<<gameID<<")";
 	return s.str();
 }
 
@@ -1592,7 +1597,7 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetCreateGameAccepted))
 	{
 		const NetCreateGameAccepted& r = dynamic_cast<const NetCreateGameAccepted&>(rhs);
-		if(chatChannel != r.chatChannel)
+		if(chatChannel != r.chatChannel || gameID != r.gameID)
 		{
 			return false;
 		}
@@ -1606,6 +1611,13 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 Uint32 NetCreateGameAccepted::getChatChannel() const
 {
 	return chatChannel;
+}
+
+
+
+Uint16 NetCreateGameAccepted::getGameID() const
+{
+	return gameID;
 }
 
 
@@ -3177,143 +3189,6 @@ NetReteamingInformation NetSendReteamingInformation::getReteamingInfo() const
 
 
 
-NetSendP2PInformation::NetSendP2PInformation()
-{
-
-}
-
-
-
-NetSendP2PInformation::NetSendP2PInformation(P2PInformation group)
-	: group(group)
-{
-}
-
-
-
-Uint8 NetSendP2PInformation::getMessageType() const
-{
-	return MNetSendP2PInformation;
-}
-
-
-
-void NetSendP2PInformation::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetSendP2PInformation");
-	group.encodeData(stream);
-	stream->writeLeaveSection();
-}
-
-
-
-void NetSendP2PInformation::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetSendP2PInformation");
-	group.decodeData(stream);
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetSendP2PInformation::format() const
-{
-	std::ostringstream s;
-	s<<"NetSendP2PInformation()";
-	return s.str();
-}
-
-
-
-bool NetSendP2PInformation::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetSendP2PInformation))
-	{
-		const NetSendP2PInformation& r = dynamic_cast<const NetSendP2PInformation&>(rhs);
-		if(r.group == group)
-			return true;
-	}
-	return false;
-}
-
-
-P2PInformation NetSendP2PInformation::getGroupInfo() const
-{
-	return group;
-}
-
-
-
-
-NetSetPlayerLocalPort::NetSetPlayerLocalPort()
-	: port(0)
-{
-
-}
-
-
-
-NetSetPlayerLocalPort::NetSetPlayerLocalPort(Uint16 port)
-	:port(port)
-{
-}
-
-
-
-Uint8 NetSetPlayerLocalPort::getMessageType() const
-{
-	return MNetSetPlayerLocalPort;
-}
-
-
-
-void NetSetPlayerLocalPort::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetSetPlayerLocalPort");
-	stream->writeUint16(port, "port");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetSetPlayerLocalPort::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetSetPlayerLocalPort");
-	port = stream->readUint16("port");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetSetPlayerLocalPort::format() const
-{
-	std::ostringstream s;
-	s<<"NetSetPlayerLocalPort("<<"port="<<port<<"; "<<")";
-	return s.str();
-}
-
-
-
-bool NetSetPlayerLocalPort::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetSetPlayerLocalPort))
-	{
-		const NetSetPlayerLocalPort& r = dynamic_cast<const NetSetPlayerLocalPort&>(rhs);
-		if(r.port == port)
-			return true;
-	}
-	return false;
-}
-
-
-Uint16 NetSetPlayerLocalPort::getPort() const
-{
-	return port;
-}
-
-
-
-
 NetSendGameResult::NetSendGameResult()
 	: result(YOGGameResultUnknown)
 {
@@ -3482,6 +3357,177 @@ bool NetIPIsBanned::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
+
+
+
+NetRegisterRouter::NetRegisterRouter()
+{
+
+}
+
+
+
+Uint8 NetRegisterRouter::getMessageType() const
+{
+	return MNetRegisterRouter;
+}
+
+
+
+void NetRegisterRouter::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRegisterRouter");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRegisterRouter::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRegisterRouter");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRegisterRouter::format() const
+{
+	std::ostringstream s;
+	s<<"NetRegisterRouter()";
+	return s.str();
+}
+
+
+
+bool NetRegisterRouter::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRegisterRouter))
+	{
+		//const NetRegisterRouter& r = dynamic_cast<const NetRegisterRouter&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetAcknowledgeRouter::NetAcknowledgeRouter()
+{
+
+}
+
+
+
+Uint8 NetAcknowledgeRouter::getMessageType() const
+{
+	return MNetAcknowledgeRouter;
+}
+
+
+
+void NetAcknowledgeRouter::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetAcknowledgeRouter");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetAcknowledgeRouter::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetAcknowledgeRouter");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetAcknowledgeRouter::format() const
+{
+	std::ostringstream s;
+	s<<"NetAcknowledgeRouter()";
+	return s.str();
+}
+
+
+
+bool NetAcknowledgeRouter::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetAcknowledgeRouter))
+	{
+		//const NetAcknowledgeRouter& r = dynamic_cast<const NetAcknowledgeRouter&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetSetGameInRouter::NetSetGameInRouter()
+	: gameID(0)
+{
+
+}
+
+
+
+NetSetGameInRouter::NetSetGameInRouter(Uint16 gameID)
+	:gameID(gameID)
+{
+}
+
+
+
+Uint8 NetSetGameInRouter::getMessageType() const
+{
+	return MNetSetGameInRouter;
+}
+
+
+
+void NetSetGameInRouter::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSetGameInRouter");
+	stream->writeUint16(gameID, "gameID");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSetGameInRouter::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSetGameInRouter");
+	gameID = stream->readUint16("gameID");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSetGameInRouter::format() const
+{
+	std::ostringstream s;
+	s<<"NetSetGameInRouter("<<"gameID="<<gameID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSetGameInRouter::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSetGameInRouter))
+	{
+		const NetSetGameInRouter& r = dynamic_cast<const NetSetGameInRouter&>(rhs);
+		if(r.gameID == gameID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetSetGameInRouter::getGameID() const
+{
+	return gameID;
+}
+
 
 
 //append_code_position

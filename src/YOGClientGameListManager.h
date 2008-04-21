@@ -42,6 +42,9 @@ public:
 	
 	///This will return the list of games on hosted on the server.
 	std::list<YOGGameInfo>& getGameList();
+	
+	///Returns the game info with the given game id
+	YOGGameInfo getGameInfo(Uint16 gameID);
 
 	///This will add a listener for events saying the game list has been updated
 	void addListener(YOGClientGameListListener* listener);

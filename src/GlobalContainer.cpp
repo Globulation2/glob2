@@ -75,6 +75,7 @@ GlobalContainer::GlobalContainer(void)
 	runNoX = false;
 	
 	hostServer = false;
+	hostRouter = false;
 	hostServerMapName[0] = 0;
 	hostServerUserName[0] = 0;
 	hostServerPassWord[0] = 0;
@@ -175,6 +176,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			runNoX=true;
 			hostServer=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-router")==0)
+		{
+			runNoX=true;
+			hostRouter=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-test-games")==0)
