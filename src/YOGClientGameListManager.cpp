@@ -58,6 +58,20 @@ std::list<YOGGameInfo>& YOGClientGameListManager::getGameList()
 
 
 
+YOGGameInfo YOGClientGameListManager::getGameInfo(Uint16 gameID)
+{
+	for(std::list<YOGGameInfo>::iterator i=games.begin(); i!=games.end(); ++i)
+	{
+		if(i->getGameID() == gameID)
+		{
+			return *i;
+		}
+	}
+	return YOGGameInfo();
+}
+
+
+
 void YOGClientGameListManager::addListener(YOGClientGameListListener* listener)
 {
 	listeners.push_back(listener);

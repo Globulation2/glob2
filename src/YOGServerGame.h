@@ -23,7 +23,6 @@
 #include <boost/shared_ptr.hpp>
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
-#include "P2PManager.h"
 #include "YOGGameResults.h"
 
 class NetKickPlayer;
@@ -133,7 +132,6 @@ private:
 	MapHeader mapHeader;
 	NetGamePlayerManager playerManager;
 	NetReteamingInformation reteamingInfo;
-	P2PManager p2p;
 	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
 	Uint16 gameID;
 	Uint32 chatChannel;

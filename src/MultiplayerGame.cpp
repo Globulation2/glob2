@@ -24,7 +24,7 @@
 #include "Toolkit.h"
 #include "StringTable.h"
 #include "NetMessage.h"
-#include "P2PConnectionEvent.h"
+#include "YOGClientGameListManager.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
@@ -39,15 +39,14 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	isStarting=false;
 	chatChannel=0;
 	previousPercentage = 255;
-	client->getP2PConnection()->addEventListener(this);
+	gameID=0;
+	wasConnectingToRouter=false;
 }
 
 
 
 MultiplayerGame::~MultiplayerGame()
 {
-	client->getP2PConnection()->removeEventListener(this);
-	client->getP2PConnection()->reset();
 	if(assembler)
 		client->setMapAssembler(boost::shared_ptr<MapAssembler>());
 }
@@ -66,6 +65,14 @@ void MultiplayerGame::update()
 	if(assembler)
 		assembler->update();
 
+	if(client->getGameConnection() && !client->getGameConnection()->isConnecting() && wasConnectingToRouter)
+	{
+		shared_ptr<NetSetGameInRouter> message(new NetSetGameInRouter(gameID));
+		client->getGameConnection()->sendMessage(message);
+		wasConnectingToRouter=false;
+	}
+	
+	
 	if(isGameReadyToStart() && !wasReadyToStart)
 	{
 		shared_ptr<MGReadyToStartEvent> event(new MGReadyToStartEvent);
@@ -111,8 +118,9 @@ void MultiplayerGame::createNewGame(const std::string& name)
 
 
 
-void MultiplayerGame::joinGame(Uint16 gameID)
+void MultiplayerGame::joinGame(Uint16 ngameID)
 {
+	gameID=ngameID;
 	shared_ptr<NetAttemptJoinGame> message(new NetAttemptJoinGame(gameID));
 	client->sendNetMessage(message);
 	gjcState=WaitingForJoinReply;
@@ -239,6 +247,9 @@ bool MultiplayerGame::isGameReadyToStart()
 	if(gjcState == JoinedGame && (!haveMapHeader || !haveGameHeader))
 		return false;
 
+	if(!client->getGameConnection() || !client->getGameConnection()->isConnected())
+		return false;
+
 	if(assembler)
 	{
 		if(assembler->getPercentage() == 100)
@@ -344,6 +355,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		chatChannel = info->getChatChannel();
 		gjcState = HostingGame;
 		updateGameHeader();
+		gameID=info->getGameID();
+		client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(client->getGameListManager()->getGameInfo(info->getGameID()).getRouterIP(), YOG_ROUTER_PORT)));
+		wasConnectingToRouter=true;
 		
 		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
 		sendToListeners(event);
@@ -363,7 +377,9 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetGameJoinAccepted> info = static_pointer_cast<NetGameJoinAccepted>(message);
 		chatChannel = info->getChatChannel();
 		gjcState = JoinedGame;
-		
+		client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(client->getGameListManager()->getGameInfo(gameID).getRouterIP(), YOG_ROUTER_PORT)));
+		wasConnectingToRouter=true;
+
 		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
 		sendToListeners(event);
 	}
@@ -532,7 +548,6 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 
 void MultiplayerGame::startEngine()
 {
-	client->getP2PConnection()->stopConnections();
 	Engine engine;
 	// host game and wait for players. This clever trick is meant to get a proper shared_ptr
 	// to (this), because shared_ptr's must be copied from the original
@@ -629,18 +644,6 @@ Uint8 MultiplayerGame::percentageDownloadFinished()
 	if(!assembler)
 		return 100;
 	return assembler->getPercentage();
-}
-
-
-
-void MultiplayerGame::recieveP2PEvent(boost::shared_ptr<P2PConnectionEvent> event)
-{
-	Uint8 type = event->getEventType();
-	if(type == P2PERecievedMessage)
-	{
-		boost::shared_ptr<P2PRecievedMessage> info = static_pointer_cast<P2PRecievedMessage>(event);
-		recieveMessage(info->getMessage());
-	}
 }
 
 

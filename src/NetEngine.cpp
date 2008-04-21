@@ -21,8 +21,8 @@
 #include "NetMessage.h"
 
 
-NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<P2PConnection> client)
-	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), client(client), networkOrderRate(networkOrderRate)
+NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<NetConnection> router)
+	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), router(router), networkOrderRate(networkOrderRate)
 {
 	step=0;
 	orders.resize(numberOfPlayers);
@@ -31,10 +31,10 @@ NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate,
 
 
 
-void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<P2PConnection> nclient)
+void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<NetConnection> nrouter)
 {
 	networkOrderRate = nnetworkOrderRate;
-	client = nclient;
+	router = nrouter;
 }
 
 
@@ -57,11 +57,11 @@ void NetEngine::advanceStep(Uint32 checksum)
 		}
 
 		localOrder->gameCheckSum = checksum;
-		if(client)
+		if(router)
 		{
 			localOrder->sender = localPlayer;
 			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
-			client->sendMessage(message);
+			router->sendMessage(message);
 		}
 		pushOrder(localOrder, localPlayer, false);
 		localOrderSendCountdown = networkOrderRate - 1;
@@ -151,11 +151,11 @@ void NetEngine::flushAllOrders()
 		outgoing.pop();
 		localOrder->gameCheckSum = static_cast<unsigned int>(-1);
 
-		if(client)
+		if(router)
 		{
 			localOrder->sender = localPlayer;
 			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
-			client->sendMessage(message);
+			router->sendMessage(message);
 		}
 		pushOrder(localOrder, localPlayer, false);
 

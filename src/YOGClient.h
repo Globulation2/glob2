@@ -164,6 +164,12 @@ public:
 	///This removes an event listenr
 	void removeEventListener(YOGClientEventListener* listener);
 
+	///This attaches a NetConnection to this client
+	void setGameConnection(boost::shared_ptr<NetConnection> gameConnection);
+
+	///This retrieves the NetConnection of this client
+	boost::shared_ptr<NetConnection> getGameConnection();
+
 protected:
     friend class MultiplayerGame;
     friend class MapAssembler;
@@ -207,6 +213,7 @@ private:
 	boost::shared_ptr<P2PConnection> p2pconnection;
 	boost::shared_ptr<YOGClientGameListManager> gameListManager;
 	boost::shared_ptr<YOGClientPlayerListManager> playerListManager;
+	boost::shared_ptr<NetConnection> gameConnection;
 	boost::shared_ptr<YOGServer> server;
 	std::list<YOGClientEventListener*> listeners;
 

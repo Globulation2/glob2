@@ -31,8 +31,8 @@ YOGGameInfo::YOGGameInfo()
 
 
 
-YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID)
-	: gameID(gameID), gameName(gameName), gameState(GameOpen), aiJoined(0)
+YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID, const std::string& ip)
+	: gameID(gameID), gameName(gameName), gameState(GameOpen), aiJoined(0), ip(ip)
 {
 }
 
@@ -136,6 +136,20 @@ Uint8 YOGGameInfo::getNumberOfTeams() const
 
 
 
+void YOGGameInfo::setRouterIP(const std::string& nip)
+{
+	ip = nip;
+}
+
+
+
+std::string YOGGameInfo::getRouterIP() const
+{
+	return ip;
+}
+
+
+
 void YOGGameInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGGameInfo");
@@ -146,6 +160,7 @@ void YOGGameInfo::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeUint8(aiJoined, "aiJoined");
 	stream->writeText(mapName, "mapName");
 	stream->writeUint8(numberOfTeams, "numberOfTeams");
+	stream->writeText(ip, "ip");
 	stream->writeLeaveSection();
 }
 
@@ -161,6 +176,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	aiJoined=stream->readUint8("aiJoined");
 	mapName=stream->readText("mapName");
 	numberOfTeams=stream->readUint8("numberOfTeams");
+	ip = stream->readText("ip");
 	stream->readLeaveSection();
 }
 
@@ -168,7 +184,7 @@ void YOGGameInfo::decodeData(GAGCore::InputStream* stream)
 	
 bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 {
-	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState && playersJoined == rhs.playersJoined && aiJoined == rhs.aiJoined && mapName == rhs.mapName)
+	if(gameName == rhs.gameName && gameID == rhs.gameID && gameState == rhs.gameState && playersJoined == rhs.playersJoined && aiJoined == rhs.aiJoined && mapName == rhs.mapName && ip == rhs.ip)
 	{
 		return true;
 	}
@@ -183,7 +199,7 @@ bool YOGGameInfo::operator==(const YOGGameInfo& rhs) const
 	
 bool YOGGameInfo::operator!=(const YOGGameInfo& rhs) const
 {
-	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState || playersJoined != rhs.playersJoined || aiJoined != rhs.aiJoined || mapName != rhs.mapName)
+	if(gameName != rhs.gameName || gameID != rhs.gameID || gameState!=rhs.gameState || playersJoined != rhs.playersJoined || aiJoined != rhs.aiJoined || mapName != rhs.mapName || ip != rhs.ip)
 	{
 		return true;
 	}

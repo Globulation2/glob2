@@ -23,7 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include <queue>
-#include "P2PConnection.h"
+#include "NetConnection.h"
 
 ///The purpose of this class is to sort Orders, and hand them out in
 ///the correct time slot. It serves partially to hide latency, Orders
@@ -34,10 +34,10 @@ class NetEngine
 {
 public:
 	///Constructs the NetEngine
-	NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate = 1, boost::shared_ptr<P2PConnection> client = boost::shared_ptr<P2PConnection>());
+	NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate = 1, boost::shared_ptr<NetConnection> router = boost::shared_ptr<NetConnection>());
 
 	///Sets the network game info
-	void setNetworkInfo(int networkOrderRate, boost::shared_ptr<P2PConnection> client);
+	void setNetworkInfo(int networkOrderRate, boost::shared_ptr<NetConnection> client);
 
 	///Advances the step
 	void advanceStep(Uint32 checksum);
@@ -93,7 +93,7 @@ private:
 	///This count-downs steps until an order is sent across the network
 	int localOrderSendCountdown;
 	int localPlayer;
-	boost::shared_ptr<P2PConnection> client;
+	boost::shared_ptr<NetConnection> router;
 	int networkOrderRate;
 };
 

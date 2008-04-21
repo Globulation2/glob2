@@ -115,6 +115,7 @@ public:
 	bool runTestGames; //! runs test games
 	
 	bool hostServer;
+	bool hostRouter;
 	char hostServerMapName[32];
 	char hostServerUserName[32];
 	char hostServerPassWord[32];

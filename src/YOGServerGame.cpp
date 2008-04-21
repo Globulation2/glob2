@@ -96,7 +96,6 @@ void YOGServerGame::update()
 			oldReadyToLaunch=false;
 		}
 	}
-	p2p.update();
 }
 
 void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
@@ -126,8 +125,6 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 
 	shared_ptr<NetPlayerJoinsGame> sendGamePlayerInfo(new NetPlayerJoinsGame(player->getPlayerID(), player->getPlayerName()));
 	routeMessage(sendGamePlayerInfo);
-
-	p2p.addPlayer(player);
 
 	chooseLatencyMode();
 
@@ -179,8 +176,6 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 	{
 		setPlayerGameResult(player, YOGGameResultConnectionLost);
 	}
-
-	p2p.removePlayer(player);
 
 	//Remove the player from the chat channel
 	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);
