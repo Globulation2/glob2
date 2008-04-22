@@ -20,6 +20,8 @@ V: Mostrar todos os prédios
 
 [add shortcut]
 
+[Add]
+
 [AI]
 IA
 [ai]
@@ -90,6 +92,8 @@ Melhora o nível de luta
 Quartel
 [beach size]
 Tamanho da praia
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Aqui
 
 [open]
 aberto
+[Options]
+
 [options]
 Opções
 [Orange]
@@ -645,6 +651,8 @@ Lembrar a contrasenha localmente. (inseguro)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 

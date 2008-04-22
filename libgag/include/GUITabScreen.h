@@ -37,7 +37,7 @@ namespace GAGGUI
 	class TabScreen : public Screen
 	{
 	public:
-		TabScreen();
+		TabScreen(bool fullScreen);
 	
 		///This adds a widget to a particular group. This calls add widget automatically
 		void addWidgetToGroup(Widget* widget, int group_n);
@@ -75,6 +75,9 @@ namespace GAGGUI
 		///Returns the code that the specific tab screen group number ended with, and -1 if that groups
 		///tab screen is still executing
 		int getReturnCode(int group_n);
+		
+		///This causes the entire tab screen to end
+		void completeEndExecute(int return_code);
 	private:
 		friend class TabScreenWindow;
 	
@@ -90,6 +93,7 @@ namespace GAGGUI
 		std::map<int, int> returnCodes;
 		int activated;
 		int returnCode;
+		bool fullScreen;
 	};
 };
 

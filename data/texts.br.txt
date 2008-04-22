@@ -20,6 +20,8 @@ V: Mostrar visão de todas as construções
 Adicionar mapa
 [add shortcut]
 Adicionar atalho
+[Add]
+
 [AI]
 IA
 [ai]
@@ -90,6 +92,8 @@ Melhora a capacidade de luta
 Barracks
 [beach size]
 Tamanho da praia
+[Blocked Players]
+
 [break]
 break
 [build %0 level %1]
@@ -588,6 +592,8 @@ Abrir Menu de Gravação
 Abrir editor de script
 [open]
 Abrir
+[Options]
+
 [options]
 Opções
 [Orange]
@@ -648,6 +654,8 @@ Lembrar a senha localmente. (inseguro)
 Remover mapa
 [remove shortcut]
 Remover atalho
+[Remove]
+
 [repair building]
 Começar/Parar Repair
 [repair]

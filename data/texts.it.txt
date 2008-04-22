@@ -20,6 +20,8 @@ V: Mostra visuale di tutte le costruzioni
 aggiungi mappa
 [add shortcut]
 aggiungi scorciatoia da tastiera
+[Add]
+
 [AI]
 IA
 [ai]
@@ -90,6 +92,8 @@ Migliora il livello di
 Caserma
 [beach size]
 Grandezza della spiaggia
+[Blocked Players]
+
 [break]
 pausa
 [build %0 level %1]
@@ -578,6 +582,8 @@ Apri Salva Menù
 Apri l'Editor di Script
 [open]
 Apri
+[Options]
+
 [options]
 Opzioni
 [Orange]
@@ -638,6 +644,8 @@ Ricordati la password localmente. (non sicuro)
 rimuovi mappa
 [remove shortcut]
 rimuovi scorciatoia
+[Remove]
+
 [repair building]
 Inizia/Ferma Riparazione
 [repair]

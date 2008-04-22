@@ -41,7 +41,7 @@
 #include "FormatableString.h"
 
 SettingsScreen::SettingsScreen()
- : mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
+ : Glob2TabScreen(false), mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
 {
 	old_settings=globalContainer->settings;
 	

@@ -36,6 +36,7 @@
 #include "YOGClientLobbyScreen.h"
 #include "YOGClientLobbyScreen.h"
 #include "YOGLoginScreen.h"
+#include "YOGClientOptionsScreen.h"
 
 YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	: client(client)
@@ -151,8 +152,9 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
 		
-		Glob2TabScreen screen;
+		Glob2TabScreen screen(true);
 		YOGClientLobbyScreen lobby(&screen, client);
+		YOGClientOptionsScreen options(&screen, client);
 		int rc = screen.execute(globalContainer->gfx, 40);
 		if(rc == YOGClientLobbyScreen::ConnectionLost)
 			endExecute(ConnectionLost);

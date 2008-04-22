@@ -20,6 +20,8 @@ V: Butun binalari goster
 
 [add shortcut]
 
+[Add]
+
 [AI]
 AI
 [ai]
@@ -90,6 +92,8 @@ Savasmayi gelistirir
 Kisla
 [beach size]
 sahil boyutu
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Burada
 
 [open]
 Ac
+[Options]
+
 [options]
 Secenekler
 [Orange]
@@ -645,6 +651,8 @@ Parolayi yerel olarak animsa. (guvenli degil)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 

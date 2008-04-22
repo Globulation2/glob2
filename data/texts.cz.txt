@@ -20,6 +20,8 @@ Cizí tým změnil víru v Tebe %0
 
 [add shortcut]
 
+[Add]
+
 [AI]
 Počítač
 [ai]
@@ -90,6 +92,8 @@ Zlepši bojeschopnost
 Cvičiště
 [beach size]
 Velikost pláží
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Na místě
 
 [open]
 Otevřít
+[Options]
+
 [options]
 Nastavení
 [Orange]
@@ -645,6 +651,8 @@ Zapamatovat si heslo lokálně? (nejisté)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 

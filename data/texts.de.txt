@@ -20,6 +20,8 @@ V: Teile die Sicht für alle Gebäude
 Karte hinzufügen
 [add shortcut]
 Shortcut hinzufügen
+[Add]
+
 [AI]
 KI
 [ai]
@@ -90,6 +92,8 @@ Verbessert die Kampf-
 Trainingslager
 [beach size]
 Strandbreite
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -578,6 +582,8 @@ Vor Ort
 
 [open]
 offen
+[Options]
+
 [options]
 Einstellungen
 [Orange]
@@ -637,6 +643,8 @@ Passwort lokal speichern. (unsicher)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 Reparatur einleiten/beenden
