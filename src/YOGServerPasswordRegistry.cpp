@@ -68,7 +68,7 @@ void YOGServerPasswordRegistry::resetPlayersPassword(const std::string& username
 void YOGServerPasswordRegistry::flushPasswords()
 {
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("registry"));
-	stream->writeUint32(NET_DATA_VERSION, "version");
+	stream->writeUint32(VERSION_MINOR, "version");
 	stream->writeUint32(passwords.size(), "size");
 	for(std::map<std::string, std::string>::iterator i = passwords.begin(); i!=passwords.end(); ++i)
 	{

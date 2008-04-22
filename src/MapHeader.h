@@ -99,6 +99,7 @@ public:
 	
 	///Comparison does *not* count file version numbers
 	bool operator!=(const MapHeader& rhs) const;
+	bool operator==(const MapHeader& rhs) const;
 private:
 	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;

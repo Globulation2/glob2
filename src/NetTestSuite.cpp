@@ -202,10 +202,10 @@ int NetTestSuite::testNetMessages()
 		return 33;
 
 	//Test NetUpdateGameList
-	YOGGameInfo gi1("bobs game", 12, "193.124.124.5");
-	YOGGameInfo gi2("jills game", 17, "193.124.124.5");
-	YOGGameInfo gi3("farces game", 35, "193.124.124.5");
-	YOGGameInfo gi4("globulation2 is kick ass", 92, "193.124.124.5");
+	YOGGameInfo gi1("bobs game", 12);
+	YOGGameInfo gi2("jills game", 17);
+	YOGGameInfo gi3("farces game", 35);
+	YOGGameInfo gi4("globulation2 is kick ass", 92);
 	std::vector<YOGGameInfo> lgi1;
 	std::vector<YOGGameInfo> lgi2;
 
@@ -305,7 +305,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetCreateGameAccepted>())
 		return 50;
 
-	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35, 72));
+	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35, 72, "127.0.0.1"));
 	if(!testSerialize(createGameAccepted1))
 		return 51;
 		

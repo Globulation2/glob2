@@ -39,7 +39,7 @@ public:
 	YOGGameInfo();
 
 	///Construct a YOGGameInfo
-	YOGGameInfo(const std::string& gameName, Uint16 gameID, const std::string& ip);
+	YOGGameInfo(const std::string& gameName, Uint16 gameID);
 
 	///Sets the name of the game
 	void setGameName(const std::string& gameName);
@@ -89,12 +89,6 @@ public:
 	
 	///Returns the name of the game
 	Uint8 getNumberOfTeams() const;
-	
-	///Sets the IP address game router
-	void setRouterIP(const std::string& ip);
-	
-	///Returns the ip address of the game router
-	std::string getRouterIP() const;
 
 	///Encodes this YOGGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -114,7 +108,6 @@ private:
 	Uint8 aiJoined;
 	std::string mapName;
 	Uint8 numberOfTeams;
-	std::string ip;
 };
 
 #endif
