@@ -39,7 +39,7 @@ class YOGServerGame
 {
 public:
 	///Constructs a new YOG game
-	YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server);
+	YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::string& routerIP, YOGServer& server);
 
 	///Updates the game
 	void update();
@@ -118,6 +118,9 @@ public:
 
 	///This sends the games results to the game log, if this game actually went through
 	void sendGameResultsToGameLog();
+	
+	///Returns the router ip address for this game
+	const std::string getRouterIP() const;
 private:
 	bool gameStarted;
 	bool hasAddedHost;
@@ -136,6 +139,7 @@ private:
 	Uint16 gameID;
 	Uint32 chatChannel;
 	Uint8 aiNum;
+	std::string routerIP;
 	YOGServer& server;
 	YOGGameResults gameResults;
 };

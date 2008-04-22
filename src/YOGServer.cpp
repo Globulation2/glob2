@@ -298,8 +298,8 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
 	std::string router = routerManager.chooseYOGRouter()->getIPAddress();
-	gameList.push_back(YOGGameInfo(name, newID, router));
-	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, *this));
+	gameList.push_back(YOGGameInfo(name, newID));
+	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, router, *this));
 	return newID;
 }
 

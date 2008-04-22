@@ -356,7 +356,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		gjcState = HostingGame;
 		updateGameHeader();
 		gameID=info->getGameID();
-		client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(client->getGameListManager()->getGameInfo(info->getGameID()).getRouterIP(), YOG_ROUTER_PORT)));
+		client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(info->getGameRouterIP(), YOG_ROUTER_PORT)));
 		wasConnectingToRouter=true;
 		
 		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
@@ -377,7 +377,6 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetGameJoinAccepted> info = static_pointer_cast<NetGameJoinAccepted>(message);
 		chatChannel = info->getChatChannel();
 		gjcState = JoinedGame;
-		client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(client->getGameListManager()->getGameInfo(gameID).getRouterIP(), YOG_ROUTER_PORT)));
 		wasConnectingToRouter=true;
 
 		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
@@ -391,27 +390,6 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		
 		shared_ptr<MGGameRefusedEvent> event(new MGGameRefusedEvent);
 		sendToListeners(event);
-	}
-	if(type==MNetSendMapHeader)
-	{
-		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
-		mapHeader = info->getMapHeader();
-
-		playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
-
-		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-		sendToListeners(event);
-
-		Engine engine;
-		if(!engine.haveMap(mapHeader))
-		{
-			shared_ptr<NetRequestMap> message(new NetRequestMap);
-			client->sendNetMessage(message);
-			assembler.reset(new MapAssembler(client));
-			assembler->startRecievingFile(mapHeader.getFileName());
-			client->setMapAssembler(assembler);
-		}
-		haveMapHeader = true;
 	}
 	if(type==MNetSendGameHeader)
 	{
@@ -430,6 +408,41 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
+	}
+	if(type==MNetSendAfterJoinGameInformation)
+	{
+		shared_ptr<NetSendAfterJoinGameInformation> info = static_pointer_cast<NetSendAfterJoinGameInformation>(message);
+		const YOGAfterJoinGameInformation& i = info->getAfterJoinGameInformation();
+		///Set game header
+		gameHeader = i.getGameHeader();
+		
+		///Set map header
+		mapHeader = i.getMapHeader();
+		playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
+		Engine engine;
+		if(!engine.haveMap(mapHeader))
+		{
+			shared_ptr<NetRequestMap> message(new NetRequestMap);
+			client->sendNetMessage(message);
+			assembler.reset(new MapAssembler(client));
+			assembler->startRecievingFile(mapHeader.getFileName());
+			client->setMapAssembler(assembler);
+		}
+		
+		///Set reteam info
+		playerManager.setReteamingInformation(i.getReteamingInformation());
+		
+		///Set latency
+		gameHeader.setGameLatency(i.getLatencyAdjustment());
+		
+		///Connect to router ip
+		client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(i.getGameRouterIP(), YOG_ROUTER_PORT)));
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
+		
+		haveGameHeader = true;
+		haveMapHeader = true;
 	}
 	if(type==MNetStartGame)
 	{

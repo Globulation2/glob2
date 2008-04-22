@@ -32,6 +32,7 @@
 #include "YOGGameInfo.h"
 #include "YOGMessage.h"
 #include "YOGPlayerSessionInfo.h"
+#include "YOGAfterJoinGameInformation.h"
 
 
 using namespace boost;
@@ -53,6 +54,7 @@ enum NetMessageType
 	MNetSendServerInformation,
 	
 	//These are all glob2 version dependent and can be kept in any order	
+	MNetAcknowledgeRouter,
 	MNetAddAI,
 	MNetAttemptJoinGame,
 	MNetChangePlayersTeam,
@@ -76,6 +78,7 @@ enum NetMessageType
 	MNetRequestGameStart,
 	MNetRequestMap,
 	MNetRequestNextChunk,
+	MNetSendAfterJoinGameInformation,
 	MNetSendFileChunk,
 	MNetSendFileInformation,
 	MNetSendGameHeader,
@@ -85,12 +88,11 @@ enum NetMessageType
 	MNetSendOrder,
 	MNetSendReteamingInformation,
 	MNetSendYOGMessage,
+	MNetSetGameInRouter,
 	MNetSetLatencyMode,
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
-	MNetAcknowledgeRouter,
-	MNetSetGameInRouter,
 	//type_append_marker
 };
 
@@ -784,7 +786,7 @@ public:
 	NetCreateGameAccepted();
 
 	///Creates a NetCreateGameAccepted message with the chat channel for the new game
-	NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID);
+	NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP);
 
 	///Returns MNetCreateGameAccepted
 	Uint8 getMessageType() const;
@@ -805,11 +807,15 @@ public:
 	///Retrieves the chat channel for the new game
 	Uint32 getChatChannel() const;
 
-	///Retrives the game id for the new game
+	///Retrivees the game id for the new game
 	Uint16 getGameID() const;
+	
+	///Retrieves the game-router ip address
+	const std::string getGameRouterIP() const;
 private:
 	Uint32 chatChannel;
 	Uint16 gameID;
+	std::string routerIP;
 };
 
 
@@ -1785,6 +1791,42 @@ public:
 private:
 private:
 	Uint16 gameID;
+};
+
+
+
+
+///NetSendAfterJoinGameInformation
+class NetSendAfterJoinGameInformation : public NetMessage
+{
+public:
+	///Creates a NetSendAfterJoinGameInformation message
+	NetSendAfterJoinGameInformation();
+
+	///Creates a NetSendAfterJoinGameInformation message
+	NetSendAfterJoinGameInformation(YOGAfterJoinGameInformation info);
+
+	///Returns MNetSendAfterJoinGameInformation
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendAfterJoinGameInformation message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendAfterJoinGameInformation
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves info
+	YOGAfterJoinGameInformation getAfterJoinGameInformation() const;
+private:
+private:
+	YOGAfterJoinGameInformation info;
 };
 
 

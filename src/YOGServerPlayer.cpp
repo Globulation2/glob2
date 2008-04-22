@@ -454,7 +454,8 @@ void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 		game = server.getGame(gameID);
 		boost::shared_ptr<YOGServerGame> ngame(game);
 		updateGamePlayerLists();
-		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID));
+		std::string ip = boost::shared_ptr<YOGServerGame>(game)->getRouterIP();
+		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID, ip));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));
 	}
