@@ -41,7 +41,7 @@ private:
 class Glob2TabScreen : public TabScreen
 {
 public:
-	Glob2TabScreen();
+	Glob2TabScreen(bool fullScreen);
 	virtual ~Glob2TabScreen();
 	virtual void paint(void);
 	

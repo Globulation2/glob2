@@ -20,6 +20,8 @@ O unitate %0 a trecut de partea voastră
 
 [add shortcut]
 
+[Add]
+
 [AI]
 IA
 [ai]
@@ -90,6 +92,8 @@ Vă ameliorează
 Câmp de-antrenament
 [beach size]
 mărimea plajei
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Aici
 
 [open]
 deschis
+[Options]
+
 [options]
 Opţiuni
 [Orange]
@@ -645,6 +651,8 @@ Memorează parola local. (nesecurizat)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 

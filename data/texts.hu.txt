@@ -20,6 +20,8 @@ Elfogtad az ellenség egységét %0
 
 [add shortcut]
 
+[Add]
+
 [AI]
 MI
 [ai]
@@ -90,6 +92,8 @@ Támadóképesség
 Laktanya
 [beach size]
 a partok méretei
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Helyszínen van
 
 [open]
 nyitva
+[Options]
+
 [options]
 Opciók
 [Orange]
@@ -645,6 +651,8 @@ A jleszót helyileg tárolja. (nem biztonságos)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 

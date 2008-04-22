@@ -20,6 +20,8 @@ V: 顯示所有建築物
 新增地圖
 [add shortcut]
 
+[Add]
+
 [AI]
 AI
 [ai]
@@ -90,6 +92,8 @@ AIWarrush
 兵營
 [beach size]
 海灘大小
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Air dmg.
 開啟語法編輯器
 [open]
 開啟
+[Options]
+
 [options]
 選項
 [Orange]
@@ -645,6 +651,8 @@ Air dmg.
 [remove map]
 移除地圖
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 開始/停止 修復

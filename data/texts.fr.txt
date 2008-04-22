@@ -20,6 +20,8 @@ V : Montrer tous les batiments
 Ajouter carte
 [add shortcut]
 Ajouter raccourcis
+[Add]
+
 [AI]
 IA
 [ai]
@@ -90,6 +92,8 @@ Améliore le niveau d'attaque
 Camp d'entraînement
 [beach size]
 taille de la plage
+[Blocked Players]
+
 [break]
 casser
 [build %0 level %1]
@@ -586,6 +590,8 @@ Ouvrir menu de sauvegarde
 Ouvrir éditeur de script
 [open]
 ouvert
+[Options]
+
 [options]
 Options
 [Orange]
@@ -646,6 +652,8 @@ Mémoriser le mot de passe localement. (non sécurisé)
 Enlever la carte
 [remove shortcut]
 Enlever le raccourcis
+[Remove]
+
 [repair building]
 Réparer la bâtiment
 [repair]

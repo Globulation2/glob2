@@ -20,6 +20,7 @@
 #include "MapAssembler.h"
 #include "MultiplayerGame.h"
 #include "NetMessage.h"
+#include "YOGClientBlockedList.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientEventListener.h"
 #include "YOGClientEvent.h"
@@ -57,6 +58,7 @@ void YOGClient::initialize()
 	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGClientGameListManager(this));
 	playerListManager.reset(new YOGClientPlayerListManager(this));
+	blocked.reset(new YOGClientBlockedList);
 }
 
 
@@ -194,7 +196,10 @@ void YOGClient::update()
 			shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
 			if(chatChannels.find(yogmessage->getChannel()) != chatChannels.end())
 			{
-				chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+				if(!blocked->isPlayerBlocked(yogmessage->getMessage()->getSender()))
+				{
+					chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+				}
 			}
 			else
 			{
@@ -527,6 +532,14 @@ boost::shared_ptr<NetConnection> YOGClient::getGameConnection()
 {
 	return gameConnection;
 }
+
+
+
+boost::shared_ptr<YOGClientBlockedList> YOGClient::getBlockedList()
+{
+	return blocked;
+}
+
 
 
 void YOGClient::attachGameServer(boost::shared_ptr<YOGServer> nserver)

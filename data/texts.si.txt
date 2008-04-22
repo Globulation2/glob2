@@ -20,6 +20,8 @@ Spreobrnil si enoto druge ekipe %0
 
 [add shortcut]
 
+[Add]
+
 [AI]
 UI
 [ai]
@@ -90,6 +92,8 @@ Izboljša stopnjo bojevenja
 Vojašnica
 [beach size]
 velikost obal
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Tukaj
 
 [open]
 odpri
+[Options]
+
 [options]
 Možnosti
 [Orange]
@@ -645,6 +651,8 @@ Zapomni si YOG geslo lokalno. (Ni varno)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 
