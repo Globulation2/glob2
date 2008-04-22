@@ -1064,6 +1064,18 @@ Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Spitzname schon von jem
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Onlinespiel
 [you have lost]

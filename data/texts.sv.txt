@@ -1074,6 +1074,18 @@ YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
 [YESTS_UNABLE_TO_CONNECT]
 Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Spel
 [you have lost]

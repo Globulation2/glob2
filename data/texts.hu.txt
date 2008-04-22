@@ -1072,6 +1072,18 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevede
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
 [YESTS_UNABLE_TO_CONNECT]
 A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Játék
 [you have lost]

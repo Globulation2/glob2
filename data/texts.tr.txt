@@ -1074,6 +1074,18 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
 [YESTS_UNABLE_TO_CONNECT]
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]

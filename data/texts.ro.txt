@@ -1072,6 +1072,18 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de util
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
 [YESTS_UNABLE_TO_CONNECT]
 Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Jocul în retea prin Ysagoon
 [you have lost]

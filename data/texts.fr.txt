@@ -1074,6 +1074,18 @@ Le metaserveur YOG a refusé la connexion car votre nom d'utilisateur est déjà
 Le système de connexion est prêt à contacter le metaserveur YOG pour se connecter.
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Jeu en ligne (Ysagoon)
 [you have lost]

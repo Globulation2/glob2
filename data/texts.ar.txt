@@ -1074,6 +1074,18 @@ The YOG metaserver has refused the connection because your username is already u
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]

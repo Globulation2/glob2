@@ -81,6 +81,19 @@ std::string YOGClientPlayerListManager::findPlayerName(Uint16 playerID)
 
 
 
+bool YOGClientPlayerListManager::doesPlayerExist(const std::string& name)
+{
+	for(std::list<YOGPlayerSessionInfo>::iterator i = players.begin(); i != players.end(); ++i)
+	{
+		if(i->getPlayerName() == name)
+			return true;
+	}
+	return false;
+}
+
+
+
+
 void YOGClientPlayerListManager::sendToListeners()
 {
 	for(std::list<YOGClientPlayerListListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)

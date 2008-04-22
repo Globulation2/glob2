@@ -1074,6 +1074,18 @@ YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
 [YESTS_UNABLE_TO_CONNECT]
 Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]
