@@ -20,6 +20,8 @@ V: Показ поля зрения для всех зданий
 Доб. карту
 [add shortcut]
 Доб. гор. клавишу
+[Add]
+
 [AI]
 AI
 [ai]
@@ -90,6 +92,8 @@ backspace
 Казармы
 [beach size]
 размер пляжей
+[Blocked Players]
+
 [break]
 break
 [build %0 level %1]
@@ -582,6 +586,8 @@ Ok
 Открыть редактор скриптов
 [open]
 открыто
+[Options]
+
 [options]
 Настройки
 [Orange]
@@ -642,6 +648,8 @@ print screen
 Удал. карту
 [remove shortcut]
 Удал. гор. клавишу
+[Remove]
+
 [repair building]
 Начать/Остановить Починку
 [repair]

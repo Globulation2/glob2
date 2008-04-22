@@ -20,6 +20,8 @@ V : Mostra la visio de totes les construccions
 
 [add shortcut]
 
+[Add]
+
 [AI]
 IA
 [ai]
@@ -90,6 +92,8 @@ Per augmentar el poder d' atac
 Cuartell
 [beach size]
 Tamany de la platja
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Aqui
 
 [open]
 Obrir
+[Options]
+
 [options]
 Opcions
 [Orange]
@@ -645,6 +651,8 @@ Recordar la contrasenya (insegur)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 

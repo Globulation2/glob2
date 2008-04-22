@@ -152,6 +152,7 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 		if (par1==CANCEL)
 		{
 			endExecute(CANCEL);
+			parent->completeEndExecute(CANCEL);
 		}
 		else if (par1==CREATE_GAME)
 		{

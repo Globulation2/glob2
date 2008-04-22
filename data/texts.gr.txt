@@ -20,6 +20,8 @@ V: Εμφάνιση όρασης για όλα τα κτίρια
 Προσθήκη χάρτη
 [add shortcut]
 Προσθήκη Συντόμευσης
+[Add]
+
 [AI]
 AI
 [ai]
@@ -90,6 +92,8 @@ backspace
 Στρατώνες
 [beach size]
 μέγεθως παραλίας
+[Blocked Players]
+
 [break]
 διακοπή
 [build %0 level %1]
@@ -588,6 +592,8 @@ Ok
 Άνοιγμα Επεξεργαστή Script
 [open]
 άνοιγμα
+[Options]
+
 [options]
 Επιλογές
 [Orange]
@@ -648,6 +654,8 @@ print screen
 Αφαίρεση Χάρτη
 [remove shortcut]
 Αφαίρεση Συντόμευσης
+[Remove]
+
 [repair building]
 Εκκίνηση/Παύση Επιδιόρθωσης
 [repair]

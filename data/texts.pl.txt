@@ -20,6 +20,8 @@ Jednostka wroga %0 została przeciągnięta na Twoją stronę
 
 [add shortcut]
 
+[Add]
+
 [AI]
 SI
 [ai]
@@ -90,6 +92,8 @@ Umożliwia trening
 Baraki
 [beach size]
 Wielkość plaż
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Na miejscu
 
 [open]
 Otwarty
+[Options]
+
 [options]
 Opcje
 [Orange]
@@ -645,6 +651,8 @@ Zapamiętaj hasło lokalnie
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 

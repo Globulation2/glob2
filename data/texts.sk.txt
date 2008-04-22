@@ -20,6 +20,8 @@ V: Ukáž, čo vidia budovy
 
 [add shortcut]
 
+[Add]
+
 [AI]
 UI
 [ai]
@@ -90,6 +92,8 @@ Učí lepšie bojovať
 Kasárne
 [beach size]
 veľkosť pláže
+[Blocked Players]
+
 [break]
 
 [build %0 level %1]
@@ -586,6 +590,8 @@ Tu
 
 [open]
 otvorené
+[Options]
+
 [options]
 Nastavenia
 [Orange]
@@ -645,6 +651,8 @@ Zapamätať si heslo. (nezabezpečené)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 Spust./zast. opravu

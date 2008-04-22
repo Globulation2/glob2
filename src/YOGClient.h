@@ -33,6 +33,7 @@ class YOGServer;
 class YOGClientChatChannel;
 class YOGClientEventListener;
 class YOGClientEvent;
+class YOGClientBlockedList;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -164,11 +165,14 @@ public:
 	///This removes an event listenr
 	void removeEventListener(YOGClientEventListener* listener);
 
-	///This attaches a NetConnection to this client
+	///This attaches a NetConnection to this client for the game-router connection
 	void setGameConnection(boost::shared_ptr<NetConnection> gameConnection);
 
-	///This retrieves the NetConnection of this client
+	///This retrieves the NetConnection of this clients game-router connection
 	boost::shared_ptr<NetConnection> getGameConnection();
+
+	///This retrieves the YOGClientBlockedList of this client
+	boost::shared_ptr<YOGClientBlockedList> getBlockedList();
 
 protected:
     friend class MultiplayerGame;
@@ -214,6 +218,7 @@ private:
 	boost::shared_ptr<YOGClientGameListManager> gameListManager;
 	boost::shared_ptr<YOGClientPlayerListManager> playerListManager;
 	boost::shared_ptr<NetConnection> gameConnection;
+	boost::shared_ptr<YOGClientBlockedList> blocked;
 	boost::shared_ptr<YOGServer> server;
 	std::list<YOGClientEventListener*> listeners;
 
