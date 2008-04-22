@@ -23,9 +23,10 @@
 #include "YOGServer.h"
 #include "YOGServerMapDistributor.h"
 #include "YOGServerPlayer.h"
+#include "YOGAfterJoinGameInformation.h"
 
-YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server)
-	: playerManager(gameHeader), gameID(gameID), chatChannel(chatChannel), server(server)
+YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::string& routerIP, YOGServer& server)
+	: playerManager(gameHeader), gameID(gameID), chatChannel(chatChannel), routerIP(routerIP), server(server)
 {
 	requested=false;
 	gameStarted=false;
@@ -106,16 +107,14 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 	}
 	else
 	{
-		shared_ptr<NetSendMapHeader> header1(new NetSendMapHeader(mapHeader));
-		shared_ptr<NetSendGameHeader> header2(new NetSendGameHeader(gameHeader));
-		shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-		boost::shared_ptr<NetSetLatencyMode> latency(new NetSetLatencyMode(latencyMode));
-		shared_ptr<NetSendReteamingInformation> reteaming(new NetSendReteamingInformation(reteamingInfo));
-		player->sendMessage(reteaming);
-		player->sendMessage(header1);
-		player->sendMessage(header2);
-		player->sendMessage(sendGamePlayerInfo);
-		player->sendMessage(latency);
+		YOGAfterJoinGameInformation info;
+		info.setMapHeader(mapHeader);
+		info.setGameHeader(gameHeader);
+		info.setLatencyAdjustment(latencyMode);
+		info.setReteamingInformation(reteamingInfo);
+		info.setGameRouterIP(routerIP);
+		shared_ptr<NetSendAfterJoinGameInformation> afterjoin(new NetSendAfterJoinGameInformation(info));
+		player->sendMessage(afterjoin);
 		///If its the host, we don't add them until we've recieved the NetReteamingInformation
 		playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 	}
@@ -393,7 +392,7 @@ void YOGServerGame::chooseLatencyMode()
 	//Add 5% to both pings. The given pings are such that 99.7% of all pings will
 	//be under those amounts, provided pings are normally distributed
 	int total_allocation = (highest * 105 + second_highest * 105) / 100;
-	int latency_adjustment = (total_allocation+39) / 40;
+	int latency_adjustment = std::min(255, (total_allocation+39) / 40);
 
 	if(latency_adjustment != latencyMode && !gameStarted)
 	{
@@ -420,5 +419,11 @@ void YOGServerGame::sendGameResultsToGameLog()
 	{
 		server.getGameLog().addGameResults(gameResults);
 	}
+}
+
+
+const std::string YOGServerGame::getRouterIP() const
+{
+	return routerIP;
 }
 

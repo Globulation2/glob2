@@ -178,6 +178,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSetGameInRouter:
 		message.reset(new NetSetGameInRouter);
 		break;
+		case MNetSendAfterJoinGameInformation:
+		message.reset(new NetSendAfterJoinGameInformation);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -1545,11 +1548,13 @@ const MapHeader& NetSendMapHeader::getMapHeader() const
 NetCreateGameAccepted::NetCreateGameAccepted()
 {
 	chatChannel = 0;
+	gameID = 0;
+	routerIP = "";
 }
 
 
-NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID)
-	: chatChannel(chatChannel), gameID(gameID)
+NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP)
+	: chatChannel(chatChannel), gameID(gameID), routerIP(routerIP)
 {
 
 }
@@ -1568,6 +1573,7 @@ void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("NetCreateGameAccepted");
 	stream->writeUint32(chatChannel, "chatChannel");
 	stream->writeUint16(gameID, "gameID");
+	stream->writeText(routerIP, "routerIP");
 	stream->writeLeaveSection();
 }
 
@@ -1578,6 +1584,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("NetCreateGameAccepted");
 	chatChannel = stream->readUint32("chatChannel");
 	gameID = stream->readUint16("gameID");
+	routerIP = stream->readText("routerIP");
 	stream->readLeaveSection();
 }
 
@@ -1586,7 +1593,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 std::string NetCreateGameAccepted::format() const
 {
 	std::ostringstream s;
-	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<",gameID="<<gameID<<")";
+	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<",gameID="<<gameID<<",routerIP="<<routerIP<<")";
 	return s.str();
 }
 
@@ -1597,7 +1604,7 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetCreateGameAccepted))
 	{
 		const NetCreateGameAccepted& r = dynamic_cast<const NetCreateGameAccepted&>(rhs);
-		if(chatChannel != r.chatChannel || gameID != r.gameID)
+		if(chatChannel != r.chatChannel || gameID != r.gameID || routerIP != r.routerIP)
 		{
 			return false;
 		}
@@ -1618,6 +1625,13 @@ Uint32 NetCreateGameAccepted::getChatChannel() const
 Uint16 NetCreateGameAccepted::getGameID() const
 {
 	return gameID;
+}
+
+
+
+const std::string NetCreateGameAccepted::getGameRouterIP() const
+{
+	return routerIP;
 }
 
 
@@ -3526,6 +3540,75 @@ bool NetSetGameInRouter::operator==(const NetMessage& rhs) const
 Uint16 NetSetGameInRouter::getGameID() const
 {
 	return gameID;
+}
+
+
+
+
+NetSendAfterJoinGameInformation::NetSendAfterJoinGameInformation()
+	: info()
+{
+
+}
+
+
+
+NetSendAfterJoinGameInformation::NetSendAfterJoinGameInformation(YOGAfterJoinGameInformation info)
+	:info(info)
+{
+}
+
+
+
+Uint8 NetSendAfterJoinGameInformation::getMessageType() const
+{
+	return MNetSendAfterJoinGameInformation;
+}
+
+
+
+void NetSendAfterJoinGameInformation::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendAfterJoinGameInformation");
+	info.encodeData(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendAfterJoinGameInformation::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendAfterJoinGameInformation");
+	info.decodeData(stream);
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendAfterJoinGameInformation::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendAfterJoinGameInformation("<<"="<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSendAfterJoinGameInformation::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendAfterJoinGameInformation))
+	{
+		const NetSendAfterJoinGameInformation& r = dynamic_cast<const NetSendAfterJoinGameInformation&>(rhs);
+		if(r.info == info)
+			return true;
+	}
+	return false;
+}
+
+
+YOGAfterJoinGameInformation NetSendAfterJoinGameInformation::getAfterJoinGameInformation() const
+{
+	return info;
 }
 
 

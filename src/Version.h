@@ -20,7 +20,7 @@
 #ifndef __VERSION_H
 #define __VERSION_H
 
-// This is the version of map and savegame format.
+// This is the version of map and savegame format, and all of the recorded datas on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 72
@@ -98,9 +98,5 @@
 // version 25 changed YOGGameInfo to include game state information so that running games aren't shown
 // version 26 changed heavy updates to YOG in general
 // version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
-
-///This must be updated if changes to YOGPlayerStoredInfo, or YOGServerPasswordRegistry occur
-#define NET_DATA_VERSION 1
-// version 1 Created NET_DATA_VERSION
 
 #endif

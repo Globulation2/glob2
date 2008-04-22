@@ -255,6 +255,18 @@ bool MapHeader::operator!=(const MapHeader& rhs) const
 
 
 
+bool MapHeader::operator==(const MapHeader& rhs) const
+{
+	if( rhs.numberOfTeams == numberOfTeams &&
+		rhs.mapOffset == mapOffset &&
+		rhs.isSavedGame == isSavedGame &&
+		rhs.mapName == mapName &&
+		std::equal(SHA1, SHA1+20, rhs.SHA1)==0)
+		return true;
+	return false;
+}
+
+
 std::string glob2FilenameToName(const std::string& filename)
 {
 	std::string mapName;

@@ -93,7 +93,7 @@ bool YOGServerBannedIPListManager::isIPBanned(const std::string& bannedIP)
 void YOGServerBannedIPListManager::saveBannedIPList()
 {
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("bannedips"));
-	stream->writeUint32(NET_DATA_VERSION, "version");
+	stream->writeUint32(VERSION_MINOR, "version");
 	stream->writeUint32(bannedIPs.size(), "size");
 	for(std::map<std::string, boost::posix_time::ptime>::iterator i = bannedIPs.begin(); i!=bannedIPs.end(); ++i)
 	{
