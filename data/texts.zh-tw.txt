@@ -1074,6 +1074,18 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。
 連線系統已準備連接YOG meta伺服器。
 [YESTS_UNABLE_TO_CONNECT]
 無法連接。 YOG meta伺服器已關閉。
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon 線上遊戲
 [you have lost]

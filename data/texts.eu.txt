@@ -1074,6 +1074,18 @@ YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek due
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
 [YESTS_UNABLE_TO_CONNECT]
 Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]

@@ -1074,6 +1074,18 @@ O metaservidor YOG recusou a sua conexão porque este nome de usuário está sen
 O sistema de conexão está pronto para contatar o metaservidor YOG para conexão.
 [YESTS_UNABLE_TO_CONNECT]
 Não é possível conectar. Aparentemente o metaservidor YOG está desligado.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]

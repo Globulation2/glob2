@@ -1072,6 +1072,18 @@ Metaserwer YOG odmówił połączenia, ponieważ twój login jest już zajęty p
 System jest gotowy do połączenia z metaserwerem YOG.
 [YESTS_UNABLE_TO_CONNECT]
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon-Gra w Internecie
 [you have lost]

@@ -1072,6 +1072,18 @@ YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
 [YESTS_UNABLE_TO_CONNECT]
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon medmrežno igranje
 [you have lost]

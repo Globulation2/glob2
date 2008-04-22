@@ -180,7 +180,7 @@ private:
 	YOGServerBannedIPListManager bannedIPs;
 	YOGServerGameLog gameLog;
 	YOGServerRouterManager routerManager;
-	//YOGServerRouter router;
+	YOGServerRouter router;
 };
 
 #endif

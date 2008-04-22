@@ -51,6 +51,9 @@ public:
 
 	///This will find the name of the player with the given ID
 	std::string findPlayerName(Uint16 playerID);
+	
+	///Returns true if a player with the given name exists
+	bool doesPlayerExist(const std::string& name);
 private:
 	///This will send the event that the player list has been updated to all the listeners
 	void sendToListeners();

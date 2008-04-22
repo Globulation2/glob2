@@ -1004,6 +1004,18 @@ The YOG metaserver has refused the connection because this username is banned. P
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
+[yog block command help]
+/block <playername>    Blocks a player, you will no longer see his text
+[yog block command player %0 already blocked]
+Player %0 already blocked
+[yog block command player %0 blocked]
+Player %0 blocked
+[yog block command player %0 not found]
+Player %0 not found
+[yog command header]
+The current list of YOG Client Commands are:
+[yog help command help]
+/help    Shows this help message
 [yog]
 Ysagoon Online Gaming
 [you have lost]

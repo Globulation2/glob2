@@ -1072,6 +1072,18 @@ O metaservidor YOG tem rejeitado a conexão porque o nome de usuário está em u
 O sistema de conexão está pronto para contactar-se com o metaservidor YOG.
 [YESTS_UNABLE_TO_CONNECT]
 Imposível conectar-se. Parece que o metaservidor YOG está caido.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Jogo em linha com Ysagoon
 [you have lost]

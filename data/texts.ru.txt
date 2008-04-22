@@ -1070,6 +1070,18 @@ up
 Система соединения готова обратиться к метасерверу YOG за подключением.
 [YESTS_UNABLE_TO_CONNECT]
 Невозможно соединиться. Очевидно, метасервер YOG не работает.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon-игра в Интернете
 [you have lost]

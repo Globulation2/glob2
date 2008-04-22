@@ -1076,6 +1076,18 @@ Tutorial
 Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
 [YESTS_UNABLE_TO_CONNECT]
 Αδύνατη η σύνδεση. Προφανώς ο YOG metaserver δεν λειτουργεί.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]
