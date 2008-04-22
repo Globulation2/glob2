@@ -1074,6 +1074,18 @@ De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al bestaat.
 Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door een vinkje te zetten voor "Registreer nieuwe gebruiker met wachtwoord".
 [YESTS_UNABLE_TO_CONNECT]
 Kan geen verbinding maken. Waarschijnlijk werkt de YOG server niet.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]

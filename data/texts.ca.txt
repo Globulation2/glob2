@@ -1074,6 +1074,18 @@ No es pot conectar al metaservidor YOG. Nom d'usuari en ús
 El sistema de conexió està llest per contactar amb el metaservidor YOG
 [YESTS_UNABLE_TO_CONNECT]
 Imposible conectar. Metaservidor YOG esta caigut
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Joc en linea amb Ysagoon
 [you have lost]

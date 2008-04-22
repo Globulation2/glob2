@@ -111,7 +111,7 @@ void YOGServer::update()
 	bannedIPs.update();
 	gameLog.update();
 	routerManager.update();
-//	router.update();
+	router.update();
 	
 	int t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
@@ -297,9 +297,9 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 			break;
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
-	std::string router = routerManager.chooseYOGRouter()->getIPAddress();
+	std::string routerip = routerManager.chooseYOGRouter()->getIPAddress();
 	gameList.push_back(YOGGameInfo(name, newID));
-	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, router, *this));
+	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, routerip, *this));
 	return newID;
 }
 

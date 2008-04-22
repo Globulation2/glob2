@@ -1074,6 +1074,18 @@ YOG ha rechazado  la conección porque tu nombre de usuario ya ha sido utilizado
 La Conección del Sistema  está lista para contactar al YOG metaserver para la conección.
 [YESTS_UNABLE_TO_CONNECT]
 Incapaz de Conectar. Aparentemente el  YOG Metaserver Está Caído.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Juegos en línea(online)
 [you have lost]

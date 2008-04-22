@@ -21,6 +21,7 @@
 #include "MultiplayerGame.h"
 #include "NetMessage.h"
 #include "YOGClientBlockedList.h"
+#include "YOGClientCommandManager.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientEventListener.h"
 #include "YOGClientEvent.h"
@@ -59,6 +60,7 @@ void YOGClient::initialize()
 	gameListManager.reset(new YOGClientGameListManager(this));
 	playerListManager.reset(new YOGClientPlayerListManager(this));
 	blocked.reset(new YOGClientBlockedList);
+	commands.reset(new YOGClientCommandManager(this));
 }
 
 
@@ -543,6 +545,13 @@ boost::shared_ptr<NetConnection> YOGClient::getGameConnection()
 boost::shared_ptr<YOGClientBlockedList> YOGClient::getBlockedList()
 {
 	return blocked;
+}
+
+
+
+boost::shared_ptr<YOGClientCommandManager> YOGClient::getCommandManager()
+{
+	return commands;
 }
 
 

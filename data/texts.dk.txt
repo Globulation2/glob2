@@ -1074,6 +1074,18 @@ YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i br
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]

@@ -23,8 +23,8 @@
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <GUIButton.h>
-#include "GUIMessageBox.h"
 #include <GUIList.h>
+#include "GUIMessageBox.h"
 #include <GUITextArea.h>
 #include <GUIText.h>
 #include <GUITextInput.h>
@@ -34,9 +34,10 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include "YOGClientChatChannel.h"
+#include "YOGClientCommandManager.h"
+#include "YOGClientEvent.h"
 #include "YOGClientGameListManager.h"
 #include "YOGClient.h"
-#include "YOGClientEvent.h"
 #include "YOGClientLobbyScreen.h"
 #include "YOGClientPlayerListManager.h"
 #include "YOGMessage.h"
@@ -176,14 +177,24 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 	{
 		if(textInput->getText() != "")
 		{
-			boost::shared_ptr<YOGMessage> message(new YOGMessage);
-			message->setSender(client->getUsername());
-			message->setMessage(textInput->getText());
-			message->setMessageType(YOGNormalMessage);
-			lobbyChat->sendMessage(message);
+			//First test if its a client command like /block
+			std::string result = client->getCommandManager()->executeClientCommand(textInput->getText());
+			if(!result.empty())
+			{
+				recieveInternalMessage(result);
+				textInput->setText("");
+			}
+			else
+			{
+				boost::shared_ptr<YOGMessage> message(new YOGMessage);
+				message->setSender(client->getUsername());
+				message->setMessage(textInput->getText());
+				message->setMessageType(YOGNormalMessage);
+				lobbyChat->sendMessage(message);
 
-			ircChat->sendCommand(textInput->getText());
-			textInput->setText("");
+				ircChat->sendCommand(textInput->getText());
+				textInput->setText("");
+			}
 		}
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
@@ -277,6 +288,9 @@ void YOGClientLobbyScreen::recieveInternalMessage(const std::string& message)
 	chatWindow->addText(message);
 	chatWindow->addText("\n");
 	chatWindow->addImage(-1);
+	for(int c=0; c<message.size(); ++c)
+		if(message[c] == '\n')
+			chatWindow->addImage(-1);
 	chatWindow->scrollToBottom();
 }
 

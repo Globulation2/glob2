@@ -1064,6 +1064,18 @@ Il metaserver YOG ha rifiutato la tua connessione perchè il tuo username è gi�
 Il sistema di connessione è in attesa del metaserver YOG per la connessione.
 [YESTS_UNABLE_TO_CONNECT]
 Non mi riesco a connettere, apparentemente il master server YOG è offline.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Gioca on-line a Ysagoon
 [you have lost]
