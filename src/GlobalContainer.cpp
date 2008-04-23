@@ -76,6 +76,7 @@ GlobalContainer::GlobalContainer(void)
 	
 	hostServer = false;
 	hostRouter = false;
+	adminRouter = false;
 	hostServerMapName[0] = 0;
 	hostServerUserName[0] = 0;
 	hostServerPassWord[0] = 0;
@@ -182,6 +183,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			runNoX=true;
 			hostRouter=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-admin-router")==0)
+		{
+			runNoX=true;
+			adminRouter=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-test-games")==0)
@@ -350,6 +357,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them");
 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui");
+			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);

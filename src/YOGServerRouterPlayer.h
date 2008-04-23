@@ -22,6 +22,7 @@
 
 #include "boost/shared_ptr.hpp"
 #include "boost/weak_ptr.hpp"
+#include "YOGServerRouterAdministrator.h"
 
 class NetConnection;
 class NetMessage;
@@ -52,6 +53,7 @@ private:
 	boost::shared_ptr<YOGServerGameRouter> game;
 	YOGServerRouter* router;
 	boost::weak_ptr<YOGServerRouterPlayer> pointer;
+	bool isAdmin;
 };
 
 #endif
