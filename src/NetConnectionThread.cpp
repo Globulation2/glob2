@@ -101,8 +101,8 @@ void NetConnectionThread::operator()()
 						boost::shared_ptr<NTSendMessage> info = static_pointer_cast<NTSendMessage>(message);
 						if(connected)
 						{
-							//std::cout<<"Sending: "<<message->format()<<std::endl;
 							boost::shared_ptr<NetMessage> message = info->getMessage();
+							//std::cout<<"Sending: "<<message->format()<<std::endl;
 							MemoryStreamBackend* msb = new MemoryStreamBackend;
 							BinaryOutputStream* bos = new BinaryOutputStream(msb);
 							bos->writeUint8(message->getMessageType(), "messageType");
@@ -179,9 +179,10 @@ void NetConnectionThread::operator()()
 				}
 			}
 			
-			while (true)
+			while (connected)
 			{
-				int numReady = SDLNet_CheckSockets(set, 0);	
+				SDL_Delay(50);
+				int numReady = SDLNet_CheckSockets(set, 0);
 				//This checks if there are any active sockets.
 				//SDLNet_CheckSockets is used because it is non-blocking
 				if(numReady==-1)
@@ -232,6 +233,7 @@ void NetConnectionThread::operator()()
 								amount = 0;
 							}
 						*/
+										
 							MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
 							msb->seekFromStart(0);
 							BinaryInputStream* bis = new BinaryInputStream(msb);

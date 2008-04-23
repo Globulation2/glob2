@@ -25,9 +25,8 @@
 
 
 YOGServerRouterPlayer::YOGServerRouterPlayer(boost::shared_ptr<NetConnection> connection, YOGServerRouter* router)
-	: connection(connection), router(router)
+	: connection(connection), router(router), isAdmin(false)
 {
-	
 }
 
 
@@ -51,23 +50,50 @@ void YOGServerRouterPlayer::update()
 	connection->update();
 	//Parse incoming messages
 	shared_ptr<NetMessage> message = connection->getMessage();
-	if(!message)
-		return;
-	Uint8 type = message->getMessageType();
-	//This recieves the client information
-	if(type==MNetSendOrder)
+	while(message)
 	{
-		shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
-		if(game)
+		Uint8 type = message->getMessageType();
+		//This recieves the client information
+		if(type==MNetSendOrder)
 		{
-			game->routeMessage(message, this);
+			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
+			if(game)
+			{
+				game->routeMessage(message, this);
+			}
 		}
-	}
-	if(type==MNetSetGameInRouter)
-	{
-		shared_ptr<NetSetGameInRouter> info = static_pointer_cast<NetSetGameInRouter>(message);
-		game = router->getGame(info->getGameID());
-		game->addPlayer(boost::shared_ptr<YOGServerRouterPlayer>(pointer));
+		else if(type==MNetSetGameInRouter)
+		{
+			shared_ptr<NetSetGameInRouter> info = static_pointer_cast<NetSetGameInRouter>(message);
+			game = router->getGame(info->getGameID());
+			game->addPlayer(boost::shared_ptr<YOGServerRouterPlayer>(pointer));
+		}
+		else if(type==MNetRouterAdministratorLogin)
+		{
+			shared_ptr<NetRouterAdministratorLogin> info = static_pointer_cast<NetRouterAdministratorLogin>(message);
+			std::string password = info->getPassword();
+			if(router->isAdministratorPasswordCorrect(password))
+			{
+				isAdmin=true;
+				boost::shared_ptr<NetRouterAdministratorLoginAccepted> m = boost::shared_ptr<NetRouterAdministratorLoginAccepted>(new NetRouterAdministratorLoginAccepted);
+				sendNetMessage(m);
+			}
+			else
+			{
+				boost::shared_ptr<NetRouterAdministratorLoginRefused> m = boost::shared_ptr<NetRouterAdministratorLoginRefused>(new NetRouterAdministratorLoginRefused(YOGRouterLoginWrongPassword));
+				sendNetMessage(m);
+			}
+		}
+		else if(type==MNetRouterAdministratorSendCommand)
+		{
+			shared_ptr<NetRouterAdministratorSendCommand> info = static_pointer_cast<NetRouterAdministratorSendCommand>(message);
+			std::string command = info->getCommand();
+			if(isAdmin)
+			{
+				router->getAdministrator().executeAdministrativeCommand(command, this);
+			}
+		}
+		message = connection->getMessage();
 	}
 }
 

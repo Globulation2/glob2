@@ -24,6 +24,7 @@
 #include <vector>
 #include <map>
 #include "NetListener.h"
+#include "YOGServerRouterAdministrator.h"
 
 class NetConnection;
 class YOGServerGameRouter;
@@ -46,6 +47,12 @@ public:
 
 	///Returns the game id
 	boost::shared_ptr<YOGServerGameRouter> getGame(Uint16 gameID);
+	
+	///Returns true if the password given is correct for the administrator for this server
+	bool isAdministratorPasswordCorrect(const std::string& password);
+
+	///Returns the router administrator
+	YOGServerRouterAdministrator& getAdministrator();
 
 private:
 	NetListener nl;
@@ -53,6 +60,7 @@ private:
 	boost::shared_ptr<NetConnection> yog_connection;
 	std::map<Uint16, boost::shared_ptr<YOGServerGameRouter> > games;
 	std::vector<boost::shared_ptr<YOGServerRouterPlayer> > players;
+	YOGServerRouterAdministrator admin;
 };
 
 #endif

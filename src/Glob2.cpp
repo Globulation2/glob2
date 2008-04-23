@@ -44,6 +44,7 @@
 #include "YOGLoginScreen.h"
 #include "YOGServer.h"
 #include "YOGServerRouter.h"
+#include "YOGClientRouterAdministrator.h"
 
 
 #include <Stream.h>
@@ -177,7 +178,11 @@ int Glob2::run(int argc, char *argv[])
 		int rc = router.run();
 		return rc;	
 	}
-	
+	if(globalContainer->adminRouter)
+	{
+		YOGClientRouterAdministrator admin;
+		return admin.execute();
+	}
 	
 	if (globalContainer->runTestGames)
 	{

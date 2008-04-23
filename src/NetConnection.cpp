@@ -34,8 +34,8 @@ NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 	: connect(incoming, incomingMutex)
 {
 	boost::thread thread(boost::ref(connect));
-	openConnection(naddress, port);
 	connecting=false;
+	openConnection(naddress, port);
 }
 
 

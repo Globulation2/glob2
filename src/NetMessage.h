@@ -78,6 +78,11 @@ enum NetMessageType
 	MNetRequestGameStart,
 	MNetRequestMap,
 	MNetRequestNextChunk,
+	MNetRouterAdministratorLogin,
+	MNetRouterAdministratorLoginAccepted,
+	MNetRouterAdministratorLoginRefused,
+	MNetRouterAdministratorSendCommand,
+	MNetRouterAdministratorSendText,
 	MNetSendAfterJoinGameInformation,
 	MNetSendFileChunk,
 	MNetSendFileInformation,
@@ -1827,6 +1832,177 @@ public:
 private:
 private:
 	YOGAfterJoinGameInformation info;
+};
+
+
+
+
+///NetRouterAdministratorLogin
+class NetRouterAdministratorLogin : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorLogin message
+	NetRouterAdministratorLogin();
+
+	///Creates a NetRouterAdministratorLogin message
+	NetRouterAdministratorLogin(std::string password);
+
+	///Returns MNetRouterAdministratorLogin
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorLogin message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorLogin
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves password
+	std::string getPassword() const;
+private:
+private:
+	std::string password;
+};
+
+
+
+
+///NetRouterAdministratorSendCommand
+class NetRouterAdministratorSendCommand : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorSendCommand message
+	NetRouterAdministratorSendCommand();
+
+	///Creates a NetRouterAdministratorSendCommand message
+	NetRouterAdministratorSendCommand(std::string command);
+
+	///Returns MNetRouterAdministratorSendCommand
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorSendCommand message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorSendCommand
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves command
+	std::string getCommand() const;
+private:
+private:
+	std::string command;
+};
+
+
+
+
+///NetRouterAdministratorSendText
+class NetRouterAdministratorSendText : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorSendText message
+	NetRouterAdministratorSendText();
+
+	///Creates a NetRouterAdministratorSendText message
+	NetRouterAdministratorSendText(std::string text);
+
+	///Returns MNetRouterAdministratorSendText
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorSendText message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorSendText
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves text
+	std::string getText() const;
+private:
+private:
+	std::string text;
+};
+
+
+
+
+///NetRouterAdministratorLoginAccepted
+class NetRouterAdministratorLoginAccepted : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorLoginAccepted message
+	NetRouterAdministratorLoginAccepted();
+
+	///Returns MNetRouterAdministratorLoginAccepted
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorLoginAccepted message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorLoginAccepted
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRouterAdministratorLoginRefused
+class NetRouterAdministratorLoginRefused : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorLoginRefused message
+	NetRouterAdministratorLoginRefused();
+
+	///Creates a NetRouterAdministratorLoginRefused message
+	NetRouterAdministratorLoginRefused(YOGRouterAdministratorLoginRefusalReason reason);
+
+	///Returns MNetRouterAdministratorLoginRefused
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorLoginRefused message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorLoginRefused
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves reason
+	YOGRouterAdministratorLoginRefusalReason getReason() const;
+private:
+private:
+	YOGRouterAdministratorLoginRefusalReason reason;
 };
 
 
