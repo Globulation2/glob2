@@ -159,4 +159,12 @@ enum YOGGameResult
 	YOGGameResultUnknown,
 };
 
+enum YOGRouterAdministratorLoginRefusalReason
+{
+	///This means the wrong password for the YOG router was given
+	YOGRouterLoginWrongPassword,
+	///This represents an unknown reason
+	YOGRouterLoginUnknown,
+};
+
 #endif 

@@ -116,6 +116,7 @@ public:
 	
 	bool hostServer;
 	bool hostRouter;
+	bool adminRouter;
 	char hostServerMapName[32];
 	char hostServerUserName[32];
 	char hostServerPassWord[32];

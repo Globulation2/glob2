@@ -16,18 +16,22 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "FileManager.h"
 #include <iostream>
 #include "NetConnection.h"
 #include "NetMessage.h"
+#include "Stream.h"
+#include "Toolkit.h"
 #include "YOGConsts.h"
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouter.h"
 #include "YOGServerRouterPlayer.h"
 
 using namespace boost;
+using namespace GAGCore;
 
 YOGServerRouter::YOGServerRouter()
-	: nl(YOG_ROUTER_PORT)
+	: nl(YOG_ROUTER_PORT), admin(this)
 {
 	new_connection.reset(new NetConnection);
 	yog_connection.reset(new NetConnection(YOG_SERVER_IP, YOG_SERVER_ROUTER_PORT));
@@ -135,4 +139,23 @@ boost::shared_ptr<YOGServerGameRouter> YOGServerRouter::getGame(Uint16 gameID)
 	return games[gameID];
 }
 
+
+bool YOGServerRouter::isAdministratorPasswordCorrect(const std::string& password)
+{
+	InputLineStream* stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend("routerpassword.txt"));
+	if(!stream->isEndOfStream())
+	{
+		std::string pass = stream->readLine();
+		if(pass == password)
+			return true;
+	}
+	delete stream;
+	return false;
+}
+
+
+YOGServerRouterAdministrator& YOGServerRouter::getAdministrator()
+{
+	return admin;
+}
 
