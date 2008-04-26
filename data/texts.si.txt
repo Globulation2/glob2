@@ -286,6 +286,8 @@ Prikaz
 Ne nosi ničesar
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Enote
 
 [upgrade]
 Nadgradi
+[upload map]
+
 [username]
 Uporabniško ime
 [Version]

@@ -29,7 +29,7 @@ class NetKickPlayer;
 class NetSendOrder;
 class YOGServer;
 class YOGServerGamePlayerManager;
-class YOGServerMapDistributor;
+class YOGServerFileDistributor;
 class YOGServerPlayer;
 class NetMessage;
 
@@ -75,9 +75,6 @@ public:
 	///unless sender is null
 	void routeMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
 	
-	///Returns the map distributor
-	boost::shared_ptr<YOGServerMapDistributor> getMapDistributor();
-	
 	///Kicks the player and sends a kick message to the player
 	void kickPlayer(boost::shared_ptr<NetKickPlayer> message);
 	
@@ -121,17 +118,20 @@ public:
 	
 	///Returns the router ip address for this game
 	const std::string getRouterIP() const;
+	
+	///Returns the file transfer id for the map of this game
+	Uint16 getFileID() const;
 private:
 	bool gameStarted;
 	bool hasAddedHost;
 	bool oldReadyToLaunch;
 	bool recievedMapHeader;
 	bool requested;
-	boost::shared_ptr<YOGServerMapDistributor> distributor;
 	boost::shared_ptr<YOGServerPlayer> host;
 	GameHeader gameHeader;
 	int latencyMode;
 	int latencyUpdateTimer;
+	Uint32 mapFile;
 	MapHeader mapHeader;
 	NetGamePlayerManager playerManager;
 	NetReteamingInformation reteamingInfo;

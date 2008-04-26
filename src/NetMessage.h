@@ -30,6 +30,7 @@
 #include <vector>
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
+#include "YOGDownloadableMapInfo.h"
 #include "YOGMessage.h"
 #include "YOGPlayerSessionInfo.h"
 #include "YOGAfterJoinGameInformation.h"
@@ -76,8 +77,7 @@ enum NetMessageType
 	MNetRegisterRouter,
 	MNetRemoveAI,
 	MNetRequestGameStart,
-	MNetRequestMap,
-	MNetRequestNextChunk,
+	MNetRequestFile,
 	MNetRouterAdministratorLogin,
 	MNetRouterAdministratorLoginAccepted,
 	MNetRouterAdministratorLoginRefused,
@@ -98,6 +98,8 @@ enum NetMessageType
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
+	MNetDownloadableMapInfos,
+	MNetRequestDownloadableMapList,
 	//type_append_marker
 };
 
@@ -791,7 +793,7 @@ public:
 	NetCreateGameAccepted();
 
 	///Creates a NetCreateGameAccepted message with the chat channel for the new game
-	NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP);
+	NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP, Uint16 fileID);
 
 	///Returns MNetCreateGameAccepted
 	Uint8 getMessageType() const;
@@ -817,10 +819,14 @@ public:
 	
 	///Retrieves the game-router ip address
 	const std::string getGameRouterIP() const;
+
+	///Retrieves the fileID for this games map
+	Uint16 getFileID() const;
 private:
 	Uint32 chatChannel;
 	Uint16 gameID;
 	std::string routerIP;
+	Uint16 fileID;
 };
 
 
@@ -960,14 +966,17 @@ public:
 
 
 
-///NetRequestMap
-class NetRequestMap : public NetMessage
+///NetRequestFile
+class NetRequestFile : public NetMessage
 {
 public:
-	///Creates a NetRequestMap message
-	NetRequestMap();
+	///Creates a NetRequestFile message
+	NetRequestFile();
+	
+	///Creates a NetRequestFile message for the given fileID
+	NetRequestFile(Uint16 fileID);
 
-	///Returns MNetRequestMap
+	///Returns MNetRequestFile
 	Uint8 getMessageType() const;
 
 	///Encodes the data
@@ -976,12 +985,17 @@ public:
 	///Decodes the data
 	void decodeData(GAGCore::InputStream* stream);
 
-	///Formats the NetRequestMap message with a small amount
+	///Formats the NetRequestFile message with a small amount
 	///of information.
 	std::string format() const;
 
-	///Compares with another NetRequestMap
+	///Compares with another NetRequestFile
 	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the fileID of the file being requested
+	Uint16 getFileID();
+private:
+	Uint16 fileID;
 };
 
 
@@ -994,8 +1008,8 @@ public:
 	///Creates a NetSendFileInformation message
 	NetSendFileInformation();
 
-	///Creates a NetSendFileInformation message with the given file size
-	NetSendFileInformation(Uint32 filesize);
+	///Creates a NetSendFileInformation message with the given file size for the given fileID
+	NetSendFileInformation(Uint32 filesize, Uint16 fileID);
 
 	///Returns MNetSendFileInformation
 	Uint8 getMessageType() const;
@@ -1015,8 +1029,12 @@ public:
 	
 	///Returns the file size
 	Uint32 getFileSize() const;
+	
+	///Returns the file size
+	Uint16 getFileID() const;
 private:
 	Uint32 size;
+	Uint16 fileID;
 };
 
 
@@ -1031,7 +1049,7 @@ public:
 
 	///Creates a NetSendFileChunk message to read off of the given stream,
 	///either untill the stream ends or the chunk size limit is reached
-	NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream);
+	NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID);
 
 	///Returns MNetSendFileChunk
 	Uint8 getMessageType() const;
@@ -1054,36 +1072,13 @@ public:
 	
 	///Returns the chunk size
 	Uint32 getChunkSize() const;
+	
+	///Returns the fileID
+	Uint16 getFileID() const;
 private:
 	Uint32 size;
 	Uint8 data[4096];
-};
-
-
-
-
-///NetRequestNextChunk
-class NetRequestNextChunk : public NetMessage
-{
-public:
-	///Creates a NetRequestNextChunk message
-	NetRequestNextChunk();
-
-	///Returns MNetRequestNextChunk
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetRequestNextChunk message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetRequestNextChunk
-	bool operator==(const NetMessage& rhs) const;
+	Uint16 fileID;
 };
 
 
@@ -2003,6 +1998,69 @@ public:
 private:
 private:
 	YOGRouterAdministratorLoginRefusalReason reason;
+};
+
+
+
+
+///NetDownloadableMapInfos
+class NetDownloadableMapInfos : public NetMessage
+{
+public:
+	///Creates a NetDownloadableMapInfos message
+	NetDownloadableMapInfos();
+
+	///Creates a NetDownloadableMapInfos message
+	NetDownloadableMapInfos(std::vector<YOGDownloadableMapInfo> maps);
+
+	///Returns MNetDownloadableMapInfos
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetDownloadableMapInfos message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetDownloadableMapInfos
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves maps
+	std::vector<YOGDownloadableMapInfo> getMaps() const;
+private:
+private:
+	std::vector<YOGDownloadableMapInfo> maps;
+};
+
+
+
+
+///NetRequestDownloadableMapList
+class NetRequestDownloadableMapList : public NetMessage
+{
+public:
+	///Creates a NetRequestDownloadableMapList message
+	NetRequestDownloadableMapList();
+
+	///Returns MNetRequestDownloadableMapList
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestDownloadableMapList message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestDownloadableMapList
+	bool operator==(const NetMessage& rhs) const;
 };
 
 

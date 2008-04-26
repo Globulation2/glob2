@@ -16,10 +16,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MapAssembler_h
-#define __MapAssembler_h
+#ifndef __YOGClientFileAssembler_h
+#define __YOGClientFileAssembler_h
 
-#include "boost/shared_ptr.hpp"
+#include "boost/date_time/posix_time/posix_time.hpp"
+#include "boost/weak_ptr.hpp"
 #include "SDL_net.h"
 #include <string>
 
@@ -34,11 +35,11 @@ namespace GAGCore
 }
 
 ///This class holds the responsibility of sending and recieving maps over the network.
-class MapAssembler
+class YOGClientFileAssembler
 {
 public:
-	///Contructs a MapAssembler connected to the given client
-	MapAssembler(boost::shared_ptr<YOGClient> client);
+	///Contructs a YOGClientFileAssembler connected to the given client, and the given fileID
+	YOGClientFileAssembler(boost::weak_ptr<YOGClient> client, Uint16 fileID);
 	
 	///Updates the map assembler
 	void update();
@@ -56,7 +57,6 @@ public:
 	Uint8 getPercentage();
 private:
 	void sendNextChunk();
-	void requestNextChunk();
 
 	enum TransferMode
 	{
@@ -68,11 +68,13 @@ private:
 	TransferMode mode;
 	Uint32 size;
 	Uint32 finished;
-	boost::shared_ptr<YOGClient> client;
+	boost::weak_ptr<YOGClient> client;
 	GAGCore::MemoryStreamBackend* obackend;
 	boost::shared_ptr<GAGCore::BinaryOutputStream> ostream;
 	boost::shared_ptr<GAGCore::BinaryInputStream> istream;
 	std::string filename;
+	Uint16 fileID;
+	boost::posix_time::ptime sendTime;
 };
 
 

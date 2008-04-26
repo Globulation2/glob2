@@ -101,6 +101,20 @@ const std::string& YOGAfterJoinGameInformation::getGameRouterIP() const
 
 
 
+void YOGAfterJoinGameInformation::setMapFileID(Uint16 nfileID)
+{
+	fileID = nfileID;
+}
+	
+
+
+Uint16 YOGAfterJoinGameInformation::getMapFileID() const
+{
+	return fileID;
+}
+
+
+
 void YOGAfterJoinGameInformation::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGAfterJoinGameInformation");
@@ -109,6 +123,7 @@ void YOGAfterJoinGameInformation::encodeData(GAGCore::OutputStream* stream) cons
 	reteam.encodeData(stream);
 	stream->writeUint8(latency, "latency");
 	stream->writeText(routerIP, "routerIP");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -122,6 +137,7 @@ void YOGAfterJoinGameInformation::decodeData(GAGCore::InputStream* stream)
 	reteam.decodeData(stream);
 	latency = stream->readUint8("latency");
 	routerIP = stream->readText("routerIP");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 

@@ -286,6 +286,8 @@ Rozlišení
 Nic nenesu
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Jednotky
 
 [upgrade]
 Vylepšit
+[upload map]
+
 [username]
 Jméno uživatele
 [Version]

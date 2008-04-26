@@ -18,51 +18,60 @@
 
 #include "BinaryStream.h"
 #include "FileManager.h"
-#include "MapAssembler.h"
 #include "NetMessage.h"
-#include "StreamBackend.h"
 #include "StreamBackend.h"
 #include "Stream.h"
 #include "Toolkit.h"
+#include "YOGClientFileAssembler.h"
 #include "YOGClient.h"
 
 using namespace boost;
 using namespace GAGCore;
 
-MapAssembler::MapAssembler(boost::shared_ptr<YOGClient> client)
-	: client(client)
+YOGClientFileAssembler::YOGClientFileAssembler(boost::weak_ptr<YOGClient> client, Uint16 fileID)
+	: client(client), fileID(fileID)
 {
 	obackend = NULL;
 	mode = NoTransfer;
 	size = 0;
 	finished=0;
+	sendTime = boost::posix_time::second_clock::local_time();
 }
 
 
 
-void MapAssembler::update()
+void YOGClientFileAssembler::update()
 {
-	
+	if(mode == SendingFile && finished < size)
+	{
+		boost::posix_time::ptime current = boost::posix_time::second_clock::local_time();
+		if(sendTime < current)
+		{
+			sendNextChunk();
+			sendTime = current+boost::posix_time::microseconds(100);
+		}
+	}
 }
 
 
 
-void MapAssembler::startSendingFile(std::string mapname)
+void YOGClientFileAssembler::startSendingFile(std::string mapname)
 {
+	boost::shared_ptr<YOGClient> nclient(client);
 	Toolkit::getFileManager()->gzip(mapname, mapname+".gz");
 	finished=0;
 	istream.reset(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname+".gz")));
 	istream->seekFromEnd(0);
 	size=istream->getPosition();
 	istream->seekFromStart(0);
-	shared_ptr<NetSendFileInformation> message(new NetSendFileInformation(size));
-	client->sendNetMessage(message);
+	shared_ptr<NetSendFileInformation> message(new NetSendFileInformation(size, fileID));
+	nclient->sendNetMessage(message);
 	mode=SendingFile;
 }
 
 
 
-void MapAssembler::startRecievingFile(std::string mapname)
+void YOGClientFileAssembler::startRecievingFile(std::string mapname)
 {
 	filename=mapname;
 	obackend = new MemoryStreamBackend;
@@ -73,22 +82,13 @@ void MapAssembler::startRecievingFile(std::string mapname)
 
 
 
-void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientFileAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type == MNetSendFileInformation)
 	{
 		shared_ptr<NetSendFileInformation> info = static_pointer_cast<NetSendFileInformation>(message);
 		size = info->getFileSize();
-		requestNextChunk();
-	}
-	if(type == MNetRequestNextChunk)
-	{
-		//shared_ptr<NetRequestNextChunk> info = static_pointer_cast<NetRequestNextChunk>(message);
-		if(finished < size)
-			sendNextChunk();
-		else
-			mode=NoTransfer;
 	}
 	if(type == MNetSendFileChunk)
 	{
@@ -97,9 +97,7 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 		const Uint8* buffer = info->getBuffer();
 		ostream->write(buffer, bsize, "");
 		finished+=bsize;
-		if(finished<size)
-			requestNextChunk();
-		else
+		if(finished>=size)
 		{
 			mode=NoTransfer;
 			//Write from the buffer, obackend, to the file
@@ -116,7 +114,7 @@ void MapAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
 
 
 
-Uint8 MapAssembler::getPercentage()
+Uint8 YOGClientFileAssembler::getPercentage()
 {
 	if(size == 0)
 		return 100;
@@ -126,18 +124,11 @@ Uint8 MapAssembler::getPercentage()
 
 
 
-void MapAssembler::sendNextChunk()
+void YOGClientFileAssembler::sendNextChunk()
 {
-	shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream));
+	boost::shared_ptr<YOGClient> nclient(client);
+	shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream, fileID));
 	finished += message->getChunkSize();
-	client->sendNetMessage(message);
-}
-
-
-
-void MapAssembler::requestNextChunk()
-{
-	shared_ptr<NetRequestNextChunk> message(new NetRequestNextChunk);
-	client->sendNetMessage(message);
+	nclient->sendNetMessage(message);
 }
 

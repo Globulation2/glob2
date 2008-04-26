@@ -280,6 +280,8 @@ nullafacenti
 Non trasporta nulla
 [down]
 giù
+[Download Maps]
+
 [downloaded %0]
 Scaricato %0
 [edit map]
@@ -982,6 +984,8 @@ Inizia/Ferma Miglioramento
 
 [upgrade]
 Migliora
+[upload map]
+
 [username]
 Nome giocatore
 [Version]

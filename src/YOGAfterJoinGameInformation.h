@@ -68,6 +68,12 @@ public:
 	
 	///Returns the ip address of the game router for this game
 	const std::string& getGameRouterIP() const;
+	
+	///Sets the fileID for the games map, so that players can download it if needed
+	void setMapFileID(Uint16 fileID);
+	
+	///Returns the fileID for the games map, so that players can download it if needed
+	Uint16 getMapFileID() const;
 
 	///Encodes this YOGAfterJoinGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -84,6 +90,7 @@ private:
 	NetReteamingInformation reteam;
 	Uint8 latency;
 	std::string routerIP;
+	Uint32 fileID;
 };
 
 #endif

@@ -17,7 +17,7 @@
 */
 
 #include <iostream>
-#include "MapAssembler.h"
+#include "YOGClientFileAssembler.h"
 #include "MultiplayerGame.h"
 #include "NetMessage.h"
 #include "YOGClientBlockedList.h"
@@ -267,7 +267,7 @@ void YOGClient::update()
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
 		}
-		if(type==MNetRequestMap)
+		if(type==MNetRequestFile)
 		{
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
@@ -324,18 +324,15 @@ void YOGClient::update()
 		}
 		if(type==MNetSendFileInformation)
 		{
-			if(assembler)
-				assembler->handleMessage(message);
-		}
-		if(type==MNetRequestNextChunk)
-		{
-			if(assembler)
-				assembler->handleMessage(message);
+			shared_ptr<NetSendFileInformation> info = static_pointer_cast<NetSendFileInformation>(message);
+			if(assembler[info->getFileID()])
+				assembler[info->getFileID()]->handleMessage(message);
 		}
 		if(type==MNetSendFileChunk)
 		{
-			if(assembler)
-				assembler->handleMessage(message);
+			shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
+			if(assembler[info->getFileID()])
+				assembler[info->getFileID()]->handleMessage(message);
 		}
 		if(type == MNetPing)
 		{
@@ -370,6 +367,20 @@ void YOGClient::update()
 					joinedGame->recieveMessage(message);
 			}
 			message = gameConnection->getMessage();
+		}
+	}
+	for(std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> >::iterator i = assembler.begin(); i!=assembler.end();)
+	{
+		if(i->second)
+		{
+			i->second->update();
+			++i;
+		}
+		else
+		{
+			std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> >::iterator to_erase = i;
+			i++;
+			assembler.erase(to_erase);
 		}
 	}
 }
@@ -500,16 +511,16 @@ void YOGClient::sendToListeners(boost::shared_ptr<YOGClientEvent> event)
 
 
 
-void YOGClient::setMapAssembler(boost::shared_ptr<MapAssembler> nassembler)
+void YOGClient::setYOGClientFileAssembler(Uint16 fileID, boost::shared_ptr<YOGClientFileAssembler> nassembler)
 {
-	assembler=nassembler;
+	assembler[fileID]=nassembler;
 }
 
 
 
-boost::shared_ptr<MapAssembler> YOGClient::getMapAssembler()
+boost::shared_ptr<YOGClientFileAssembler> YOGClient::getYOGClientFileAssembler(Uint16 fileID)
 {
-	return assembler;
+	return assembler[fileID];
 }
 
 
