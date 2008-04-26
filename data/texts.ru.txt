@@ -282,6 +282,8 @@ delete
 Ничего не несёт
 [down]
 down
+[Download Maps]
+
 [downloaded %0]
 %0 скачано
 [edit map]
@@ -988,6 +990,8 @@ up
 
 [upgrade]
 Улучшение
+[upload map]
+
 [username]
 Имя пользователя
 [Version]

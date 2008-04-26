@@ -97,17 +97,14 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetStartGame:
 		message.reset(new NetStartGame);
 		break;
-		case MNetRequestMap:
-		message.reset(new NetRequestMap);
+		case MNetRequestFile:
+		message.reset(new NetRequestFile);
 		break;
 		case MNetSendFileInformation:
 		message.reset(new NetSendFileInformation);
 		break;
 		case MNetSendFileChunk:
 		message.reset(new NetSendFileChunk);
-		break;
-		case MNetRequestNextChunk:
-		message.reset(new NetRequestNextChunk);
 		break;
 		case MNetKickPlayer:
 		message.reset(new NetKickPlayer);
@@ -195,6 +192,12 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		break;
 		case MNetRouterAdministratorLoginRefused:
 		message.reset(new NetRouterAdministratorLoginRefused);
+		break;
+		case MNetDownloadableMapInfos:
+		message.reset(new NetDownloadableMapInfos);
+		break;
+		case MNetRequestDownloadableMapList:
+		message.reset(new NetRequestDownloadableMapList);
 		break;
 		///append_create_point
 	}
@@ -1565,11 +1568,12 @@ NetCreateGameAccepted::NetCreateGameAccepted()
 	chatChannel = 0;
 	gameID = 0;
 	routerIP = "";
+	fileID = 0;
 }
 
 
-NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP)
-	: chatChannel(chatChannel), gameID(gameID), routerIP(routerIP)
+NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP, Uint16 fileID)
+	: chatChannel(chatChannel), gameID(gameID), routerIP(routerIP), fileID(fileID)
 {
 
 }
@@ -1589,6 +1593,7 @@ void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeUint32(chatChannel, "chatChannel");
 	stream->writeUint16(gameID, "gameID");
 	stream->writeText(routerIP, "routerIP");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -1600,6 +1605,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 	chatChannel = stream->readUint32("chatChannel");
 	gameID = stream->readUint16("gameID");
 	routerIP = stream->readText("routerIP");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
@@ -1608,7 +1614,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 std::string NetCreateGameAccepted::format() const
 {
 	std::ostringstream s;
-	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<",gameID="<<gameID<<",routerIP="<<routerIP<<")";
+	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<",gameID="<<gameID<<",routerIP="<<routerIP<<",fileID="<<fileID<<")";
 	return s.str();
 }
 
@@ -1619,7 +1625,7 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetCreateGameAccepted))
 	{
 		const NetCreateGameAccepted& r = dynamic_cast<const NetCreateGameAccepted&>(rhs);
-		if(chatChannel != r.chatChannel || gameID != r.gameID || routerIP != r.routerIP)
+		if(chatChannel != r.chatChannel || gameID != r.gameID || routerIP != r.routerIP || fileID != r.fileID)
 		{
 			return false;
 		}
@@ -1647,6 +1653,13 @@ Uint16 NetCreateGameAccepted::getGameID() const
 const std::string NetCreateGameAccepted::getGameRouterIP() const
 {
 	return routerIP;
+}
+
+
+
+Uint16 NetCreateGameAccepted::getFileID() const
+{
+	return fileID;
 }
 
 
@@ -1933,66 +1946,85 @@ bool NetStartGame::operator==(const NetMessage& rhs) const
 
 
 
-NetRequestMap::NetRequestMap()
+NetRequestFile::NetRequestFile()
+	: fileID(0)
 {
 
 }
 
 
 
-Uint8 NetRequestMap::getMessageType() const
+NetRequestFile::NetRequestFile(Uint16 fileID)
+	: fileID(fileID)
 {
-	return MNetRequestMap;
+
 }
 
 
 
-void NetRequestMap::encodeData(GAGCore::OutputStream* stream) const
+Uint8 NetRequestFile::getMessageType() const
 {
-	stream->writeEnterSection("NetRequestMap");
+	return MNetRequestFile;
+}
+
+
+
+void NetRequestFile::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestFile");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
 
 
-void NetRequestMap::decodeData(GAGCore::InputStream* stream)
+void NetRequestFile::decodeData(GAGCore::InputStream* stream)
 {
-	stream->readEnterSection("NetRequestMap");
+	stream->readEnterSection("NetRequestFile");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
 
 
-std::string NetRequestMap::format() const
+std::string NetRequestFile::format() const
 {
 	std::ostringstream s;
-	s<<"NetRequestMap()";
+	s<<"NetRequestFile(fileID="<<fileID<<")";
 	return s.str();
 }
 
 
 
-bool NetRequestMap::operator==(const NetMessage& rhs) const
+bool NetRequestFile::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetRequestMap))
+	if(typeid(rhs)==typeid(NetRequestFile))
 	{
-		//const NetRequestMap& r = dynamic_cast<const NetRequestMap&>(rhs);
-		return true;
+		const NetRequestFile& r = dynamic_cast<const NetRequestFile&>(rhs);
+		if(fileID == r.fileID)
+			return true;
 	}
 	return false;
 }
 
 
 
+Uint16 NetRequestFile::getFileID()
+{
+	return fileID;
+}
+
+
+
 NetSendFileInformation::NetSendFileInformation()
-	: size(0)
+	: size(0), fileID(0)
 {
 
 }
 
 
-NetSendFileInformation::NetSendFileInformation(Uint32 filesize)
-	: size(filesize)
+NetSendFileInformation::NetSendFileInformation(Uint32 filesize, Uint16 fileID)
+	: size(filesize), fileID(fileID)
 {
 }
 
@@ -2009,6 +2041,7 @@ void NetSendFileInformation::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendFileInformation");
 	stream->writeUint32(size, "size");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -2018,6 +2051,7 @@ void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileInformation");
 	size = stream->readUint32("size");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
@@ -2026,7 +2060,7 @@ void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
 std::string NetSendFileInformation::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendFileInformation(size="<<size<<")";
+	s<<"NetSendFileInformation(size="<<size<<",fileID="<<fileID<<")";
 	return s.str();
 }
 
@@ -2037,7 +2071,7 @@ bool NetSendFileInformation::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendFileInformation))
 	{
 		const NetSendFileInformation& r = dynamic_cast<const NetSendFileInformation&>(rhs);
-		if(r.size == size)
+		if(r.size == size && r.fileID == fileID)
 			return true;
 	}
 	return false;
@@ -2052,15 +2086,24 @@ Uint32 NetSendFileInformation::getFileSize() const
 
 
 
-NetSendFileChunk::NetSendFileChunk()
+Uint16 NetSendFileInformation::getFileID() const
 {
-	std::fill(data, data+4096, 0);
-	size=0;
+	return fileID;
 }
 
 
 
-NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream)
+NetSendFileChunk::NetSendFileChunk()
+{
+	std::fill(data, data+4096, 0);
+	size=0;
+	fileID=0;
+}
+
+
+
+NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID)
+	: fileID(fileID)
 {
 	size=0;
 	int pos=0;
@@ -2090,6 +2133,7 @@ void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("NetSendFileChunk");
 	stream->writeUint32(size, "size");
 	stream->write(data, size, "data");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -2100,6 +2144,7 @@ void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("NetSendFileChunk");
 	size = stream->readUint32("size");
 	stream->read(data, size, "data");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
@@ -2108,7 +2153,7 @@ void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 std::string NetSendFileChunk::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendFileChunk(size="<<size<<")";
+	s<<"NetSendFileChunk(size="<<size<<",fileID="<<fileID<<")";
 	return s.str();
 }
 
@@ -2124,6 +2169,8 @@ bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 			if(data[i] != r.data[i])
 				return false;
 		}
+		if(fileID != r.fileID)
+			return false;
 		return true;
 	}
 	return false;
@@ -2145,53 +2192,9 @@ Uint32 NetSendFileChunk::getChunkSize() const
 
 
 
-NetRequestNextChunk::NetRequestNextChunk()
+Uint16 NetSendFileChunk::getFileID() const
 {
-
-}
-
-
-
-Uint8 NetRequestNextChunk::getMessageType() const
-{
-	return MNetRequestNextChunk;
-}
-
-
-
-void NetRequestNextChunk::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetRequestNextChunk");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetRequestNextChunk::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetRequestNextChunk");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetRequestNextChunk::format() const
-{
-	std::ostringstream s;
-	s<<"NetRequestNextChunk()";
-	return s.str();
-}
-
-
-
-bool NetRequestNextChunk::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetRequestNextChunk))
-	{
-		//const NetRequestNextChunk& r = dynamic_cast<const NetRequestNextChunk&>(rhs);
-		return true;
-	}
-	return false;
+	return fileID;
 }
 
 
@@ -2977,7 +2980,7 @@ void NetSetLatencyMode::decodeData(GAGCore::InputStream* stream)
 std::string NetSetLatencyMode::format() const
 {
 	std::ostringstream s;
-	s<<"NetSetLatencyMode("<<"latencyAdjustment="<<latencyAdjustment<<"; "<<")";
+	s<<"NetSetLatencyMode("<<"latencyAdjustment="<<static_cast<int>(latencyAdjustment)<<"; "<<")";
 	return s.str();
 }
 
@@ -3953,6 +3956,143 @@ YOGRouterAdministratorLoginRefusalReason NetRouterAdministratorLoginRefused::get
 	return reason;
 }
 
+
+
+
+NetDownloadableMapInfos::NetDownloadableMapInfos()
+	: maps()
+{
+
+}
+
+
+
+NetDownloadableMapInfos::NetDownloadableMapInfos(std::vector<YOGDownloadableMapInfo> maps)
+	:maps(maps)
+{
+}
+
+
+
+Uint8 NetDownloadableMapInfos::getMessageType() const
+{
+	return MNetDownloadableMapInfos;
+}
+
+
+
+void NetDownloadableMapInfos::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetDownloadableMapInfos");
+	stream->writeEnterSection("maps");
+	stream->writeUint32(maps.size(), "size");
+	for(int i=0; i<maps.size(); ++i)
+	{
+		stream->writeEnterSection(i);
+		maps[i].encodeData(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+
+
+void NetDownloadableMapInfos::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetDownloadableMapInfos");
+	stream->readEnterSection("maps");
+	Uint32 size = stream->readUint32("maps");
+	maps.resize(size);
+	for(int i=0; i<size; ++i)
+	{
+		stream->readEnterSection(i);
+		maps[i].decodeData(stream, VERSION_MINOR);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetDownloadableMapInfos::format() const
+{
+	std::ostringstream s;
+	s<<"NetDownloadableMapInfos(maps.size()="<<maps.size()<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetDownloadableMapInfos::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetDownloadableMapInfos))
+	{
+		const NetDownloadableMapInfos& r = dynamic_cast<const NetDownloadableMapInfos&>(rhs);
+		if(r.maps == maps)
+			return true;
+	}
+	return false;
+}
+
+
+std::vector<YOGDownloadableMapInfo> NetDownloadableMapInfos::getMaps() const
+{
+	return maps;
+}
+
+
+
+
+NetRequestDownloadableMapList::NetRequestDownloadableMapList()
+{
+
+}
+
+
+
+Uint8 NetRequestDownloadableMapList::getMessageType() const
+{
+	return MNetRequestDownloadableMapList;
+}
+
+
+
+void NetRequestDownloadableMapList::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestDownloadableMapList");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestDownloadableMapList::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestDownloadableMapList");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestDownloadableMapList::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestDownloadableMapList()";
+	return s.str();
+}
+
+
+
+bool NetRequestDownloadableMapList::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestDownloadableMapList))
+	{
+		//const NetRequestDownloadableMapList& r = dynamic_cast<const NetRequestDownloadableMapList&>(rhs);
+		return true;
+	}
+	return false;
+}
 
 
 //append_code_position

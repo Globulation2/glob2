@@ -16,13 +16,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGClientOptionsScreen_h
-#define YOGClientOptionsScreen_h
+#ifndef YOGClientMapDownloadScreen_h
+#define YOGClientMapDownloadScreen_h
 
-#include <vector>
 #include "GUITabScreenWindow.h"
 #include "boost/shared_ptr.hpp"
-
 
 namespace GAGGUI
 {
@@ -31,52 +29,46 @@ namespace GAGGUI
 	class TextButton;
 	class TabScreen;
 	class Widget;
-	class List;
 }
 
 class YOGClient;
+class MapPreview;
 
 using namespace GAGGUI;
 
-/// A widget that maintains the list of players, and draws an icon based
-/// on whether that player is from YOG or from IRC
-class YOGClientOptionsScreen : public TabScreenWindow
+///This is the main YOG screen
+class YOGClientMapDownloadScreen : public TabScreenWindow
 {
 public:
-
-	/// Constructor
-	YOGClientOptionsScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
-
-	///Called when this tab is activated
-	void onActivated();
+	YOGClientMapDownloadScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
+	///Responds to timer events
+	virtual void onTimer(Uint32 tick);
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
+	///Called when this tab is activated
+	void onActivated();
 	
 	enum
 	{
-		QUIT
+		QUIT,
+		ADDMAP,
 	};
+	
 private:
-	enum
-	{
-		REMOVEBLOCKEDPLAYER,
-		ADDBLOCKEDPLAYER,
-	};
-
-	///Updates the list of blocked player
-	void updateBlockedPlayerList();
-	///Adds a blocked player from the text box
-	void updateBlockedPlayerAdd();
-	///Removes a blocked player from the text move
-	void updateBlockedPlayerRemove();
+	///This requests the list of maps from the server
+	void requestMaps();
 
 	boost::shared_ptr<YOGClient> client;
+	List* mapList;
+	//! The widget that will show a preview of the selection map
+	MapPreview *mapPreview;
+	//! The textual informations about the selected map
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
+	//! This is the button for adding a map
+	TextButton* addMap;
 	
-	List* blockedPlayers;
-	Text* blockedPlayersText;
-	TextButton* removeBlockedPlayer;
-	TextInput* addBlockedPlayerText;
-	TextButton* addBlockedPlayer;
+	//! True when the selected map is valid
+	bool validMapSelected;
 };
 
 #endif

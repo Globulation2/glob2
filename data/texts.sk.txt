@@ -286,6 +286,8 @@ Zobrazenie
 Nič nenesie
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Spust./zast. zdokonaľovanie
 
 [upgrade]
 Zdokonaliť
+[upload map]
+
 [username]
 Meno hráča
 [Version]

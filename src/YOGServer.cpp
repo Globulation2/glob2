@@ -112,6 +112,7 @@ void YOGServer::update()
 	gameLog.update();
 	routerManager.update();
 	router.update();
+	fileDistributionManager.update();
 	
 	int t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
@@ -419,6 +420,20 @@ YOGServerBannedIPListManager& YOGServer::getServerBannedIPListManager()
 YOGServerRouterManager& YOGServer::getRouterManager()
 {
 	return routerManager;
+}
+
+
+
+YOGServerMapDatabank& YOGServer::getMapDatabank()
+{
+	return maps;
+}
+
+
+
+YOGServerFileDistributationManager& YOGServer::getFileDistributionManager()
+{
+	return fileDistributionManager;
 }
 
 

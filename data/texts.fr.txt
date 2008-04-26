@@ -286,6 +286,8 @@ Ne fait rien
 Ne transporte rien
 [down]
 Bas
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Améliorer le bâtiment
 
 [upgrade]
 Améliorer
+[upload map]
+
 [username]
 Nom d'utilisateur
 [Version]

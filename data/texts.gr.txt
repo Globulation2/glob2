@@ -288,6 +288,8 @@ Crater Lakes
 Δεν μεταφέρει τίποτα
 [down]
 κάτω
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -994,6 +996,8 @@ Tutorial
 
 [upgrade]
 Αναβάθμιση
+[upload map]
+
 [username]
 Όνομα Χρήστη
 [Version]

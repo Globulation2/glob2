@@ -168,7 +168,6 @@ private:
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	NetEngine* netEngine;
-	boost::shared_ptr<MapAssembler> assembler;
 	bool haveMapHeader;
 	bool haveGameHeader;
 	bool wasReadyToStart;
@@ -179,6 +178,7 @@ private:
 	bool isStarting;
 	Uint8 previousPercentage;
 	Uint16 gameID;
+	Uint16 fileID;
 	bool wasConnectingToRouter;
 
 	NetGamePlayerManager playerManager;

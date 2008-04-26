@@ -286,6 +286,8 @@ Tela
 Não transporta nada
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Unidades
 
 [upgrade]
 Melhorar
+[upload map]
+
 [username]
 Nome de usuário
 [Version]

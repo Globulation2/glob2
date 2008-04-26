@@ -286,6 +286,8 @@ Opløsning
 Bægere ikke på noget
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Start/Stop Opgradering
 
 [upgrade]
 Opgradere
+[upload map]
+
 [username]
 Brugernavn
 [Version]

@@ -286,6 +286,8 @@ Pantaila
 Ez darama ezer
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Eguneraketa hasi/gelditu
 
 [upgrade]
 Eguneratu
+[upload map]
+
 [username]
 Erabiltzaile izena
 [Version]
