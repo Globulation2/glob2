@@ -286,6 +286,8 @@ Gorunum
 Hicbirsey tasimiyor
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Birimler
 
 [upgrade]
 Gelistir
+[upload map]
+
 [username]
 Kullanici adi
 [Version]

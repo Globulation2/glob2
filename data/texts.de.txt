@@ -280,6 +280,8 @@ Anzeige
 Transportiert nichts
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -982,6 +984,8 @@ Aufwerten einleiten/beenden
 
 [upgrade]
 Verbessern
+[upload map]
+
 [username]
 Benutzername
 [Version]

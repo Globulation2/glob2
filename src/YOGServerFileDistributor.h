@@ -16,11 +16,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGServerMapDistributor_h
-#define __YOGServerMapDistributor_h
+#ifndef __YOGServerFileDistributor_h
+#define __YOGServerFileDistributor_h
 
-#include "boost/tuple/tuple.hpp"
+#include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/shared_ptr.hpp"
+#include "boost/tuple/tuple.hpp"
+#include "SDL_net.h"
 #include <vector>
 
 class NetSendFileInformation;
@@ -29,17 +31,23 @@ class YOGServerGame;
 class YOGServerPlayer;
 class NetMessage;
 
-///This class has the responsibility of sharing a map between players in a YOG game.
-class YOGServerMapDistributor
+///This class assumes the responsibility of sending, transfering, and recieving files to and from clients
+class YOGServerFileDistributor
 {
 public:
-	///Constructs a YOGServerMapDistributor with the given game and host
-	YOGServerMapDistributor(boost::shared_ptr<YOGServerGame> game, boost::shared_ptr<YOGServerPlayer> host);
+	///Constructs a YOGServerFileDistributor
+	YOGServerFileDistributor(Uint16 fileID);
 
-	///Updates the YOGServerMapDistributor
+	///Sets this file distributor to load the given file locally
+	void loadFromLocally(const std::string& file);
+	
+	///Tells this file distributor to load from the given player
+	void loadFromPlayer(boost::shared_ptr<YOGServerPlayer> player);
+
+	///Updates the YOGServerFileDistributor
 	void update();
 
-	///Add the given player as one requesting the map
+	///Add the given player as one requesting the file
 	void addMapRequestee(boost::shared_ptr<YOGServerPlayer> player);
 	
 	///Removes the given player from requesting the map
@@ -48,12 +56,20 @@ public:
 	///Handles the provided message
 	void handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player);
 private:
-	bool sentRequest;
-	boost::shared_ptr<YOGServerGame> game;
-	boost::shared_ptr<YOGServerPlayer> host;
+	///Loads from the file
+	void loadDataFromFile();
+	///Requests the file from the player
+	void requestDataFromPlayer();
+	///Makes sure that the map has been requested, either from file or player
+	void garunteeDataRequested();
+
+	Uint16 fileID;
+	bool startedLoading;
+	std::string fileName;
+	boost::shared_ptr<YOGServerPlayer> player;
 	boost::shared_ptr<NetSendFileInformation> fileInfo;
 	std::vector<boost::shared_ptr<NetSendFileChunk> > chunks;
-	std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, unsigned, int> > players;
+	std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> > players;
 
 };
 

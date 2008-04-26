@@ -19,7 +19,7 @@
 #include "MultiplayerGame.h"
 #include <iostream>
 #include "Engine.h"
-#include "MapAssembler.h"
+#include "YOGClientFileAssembler.h"
 #include "FormatableString.h"
 #include "Toolkit.h"
 #include "StringTable.h"
@@ -40,6 +40,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	chatChannel=0;
 	previousPercentage = 255;
 	gameID=0;
+	fileID=0;
 	wasConnectingToRouter=false;
 }
 
@@ -47,8 +48,6 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 
 MultiplayerGame::~MultiplayerGame()
 {
-	if(assembler)
-		client->setMapAssembler(boost::shared_ptr<MapAssembler>());
 }
 
 
@@ -61,9 +60,6 @@ void MultiplayerGame::update()
 		shared_ptr<MGServerDisconnected> event(new MGServerDisconnected);
 		sendToListeners(event);
 	}
-
-	if(assembler)
-		assembler->update();
 
 	if(client->getGameConnection() && !client->getGameConnection()->isConnecting() && wasConnectingToRouter)
 	{
@@ -96,11 +92,11 @@ void MultiplayerGame::update()
 		wasReadyToStart=false;
 	}
 
-	if(gjcState == JoinedGame && assembler && assembler->getPercentage() != previousPercentage)
+	if(gjcState == JoinedGame && client->getYOGClientFileAssembler(fileID) && client->getYOGClientFileAssembler(fileID)->getPercentage() != previousPercentage)
 	{
-		previousPercentage = assembler->getPercentage();
+		previousPercentage = client->getYOGClientFileAssembler(fileID)->getPercentage();
 		
-		shared_ptr<MGDownloadPercentUpdate> event(new MGDownloadPercentUpdate(assembler->getPercentage()));
+		shared_ptr<MGDownloadPercentUpdate> event(new MGDownloadPercentUpdate(client->getYOGClientFileAssembler(fileID)->getPercentage()));
 		sendToListeners(event);
 	}
 }
@@ -250,12 +246,13 @@ bool MultiplayerGame::isGameReadyToStart()
 	if(!client->getGameConnection() || !client->getGameConnection()->isConnected())
 		return false;
 
-	if(assembler)
+	if(client->getYOGClientFileAssembler(fileID))
 	{
-		if(assembler->getPercentage() == 100)
+		if(client->getYOGClientFileAssembler(fileID)->getPercentage() == 100)
 			return true;
 		return false;
 	}
+	
 	return true;
 }
 
@@ -356,6 +353,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		gjcState = HostingGame;
 		updateGameHeader();
 		gameID=info->getGameID();
+		fileID = info->getFileID();
 		client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(info->getGameRouterIP(), YOG_ROUTER_PORT)));
 		wasConnectingToRouter=true;
 		
@@ -416,17 +414,20 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		///Set game header
 		gameHeader = i.getGameHeader();
 		
+		///Set file id
+		fileID = i.getMapFileID();
+		
 		///Set map header
 		mapHeader = i.getMapHeader();
 		playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 		Engine engine;
 		if(!engine.haveMap(mapHeader))
 		{
-			shared_ptr<NetRequestMap> message(new NetRequestMap);
+			shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 			client->sendNetMessage(message);
-			assembler.reset(new MapAssembler(client));
+			boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 			assembler->startRecievingFile(mapHeader.getFileName());
-			client->setMapAssembler(assembler);
+			client->setYOGClientFileAssembler(fileID, assembler);
 		}
 		
 		///Set reteam info
@@ -470,11 +471,11 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			netEngine->pushOrder(order, order->sender, false);
 		}
 	}
-	if(type==MNetRequestMap)
+	if(type==MNetRequestFile)
 	{
-		assembler.reset(new MapAssembler(client));
+		boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 		assembler->startSendingFile(mapHeader.getFileName());
-		client->setMapAssembler(assembler);
+		client->setYOGClientFileAssembler(fileID,assembler);
 	}
 	if(type==MNetKickPlayer)
 	{
@@ -654,9 +655,9 @@ Uint32 MultiplayerGame::getChatChannel() const
 
 Uint8 MultiplayerGame::percentageDownloadFinished()
 {
-	if(!assembler)
+	if(!client->getYOGClientFileAssembler(fileID))
 		return 100;
-	return assembler->getPercentage();
+	return client->getYOGClientFileAssembler(fileID)->getPercentage();
 }
 
 

@@ -35,6 +35,8 @@
 #include "YOGServerPlayerStoredInfoManager.h"
 #include "YOGServerRouter.h"
 #include "YOGServerRouterManager.h"
+#include "YOGServerMapDatabank.h"
+#include "YOGServerFileDistributationManager.h"
 
 
 class NetBroadcaster;
@@ -148,6 +150,12 @@ public:
 	
 	///Returns the YOGServerRouterManager
 	YOGServerRouterManager& getRouterManager();
+	
+	///Returns the YOGServerMapDatabank
+	YOGServerMapDatabank& getMapDatabank();
+	
+	///Returns the YOGServerFileDistributationManager
+	YOGServerFileDistributationManager& getFileDistributionManager();
 private:
 	///This looks for a free player id to assign to the player
 	Uint16 chooseNewPlayerID();
@@ -181,6 +189,8 @@ private:
 	YOGServerGameLog gameLog;
 	YOGServerRouterManager routerManager;
 	YOGServerRouter router;
+	YOGServerMapDatabank maps;
+	YOGServerFileDistributationManager fileDistributionManager;
 };
 
 #endif

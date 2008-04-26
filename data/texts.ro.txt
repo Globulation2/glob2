@@ -286,6 +286,8 @@ Afişaj
 Nu transportă nimic
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Unităţi
 
 [upgrade]
 Ameliorează
+[upload map]
+
 [username]
 Numele utilizatorului
 [Version]

@@ -305,7 +305,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetCreateGameAccepted>())
 		return 50;
 
-	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35, 72, "127.0.0.1"));
+	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35, 72, "127.0.0.1", 27));
 	if(!testSerialize(createGameAccepted1))
 		return 51;
 		
@@ -335,11 +335,11 @@ int NetTestSuite::testNetMessages()
 	if(!testSerialize(startGame1))
 		return 63;
 
-	//Test NetRequestMap
-	if(!testInitial<NetRequestMap>())
+	//Test NetRequestFile
+	if(!testInitial<NetRequestFile>())
 		return 64;
 
-	shared_ptr<NetRequestMap> requestMap1(new NetRequestMap);
+	shared_ptr<NetRequestFile> requestMap1(new NetRequestFile);
 	if(!testSerialize(requestMap1))
 		return 65;
 
@@ -347,21 +347,13 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetSendFileInformation>())
 		return 66;
 
-	shared_ptr<NetSendFileInformation> sendFileInformation1(new NetSendFileInformation(14194));
+	shared_ptr<NetSendFileInformation> sendFileInformation1(new NetSendFileInformation(14194, 10));
 	if(!testSerialize(sendFileInformation1))
 		return 67;
 		
 	//Test NetSendFileChunk
 	if(!testInitial<NetSendFileChunk>())
 		return 68;
-		
-	//Test NetRequestNextChunk
-	if(!testInitial<NetRequestNextChunk>())
-		return 69;
-
-	shared_ptr<NetRequestNextChunk> requestChunk1(new NetRequestNextChunk);
-	if(!testSerialize(requestChunk1))
-		return 70;
 		
 	//Test NetKickPlayer
 	if(!testInitial<NetKickPlayer>())

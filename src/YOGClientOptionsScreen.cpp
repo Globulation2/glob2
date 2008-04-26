@@ -17,14 +17,15 @@
 */
 
 #include <algorithm>
+#include <GUIButton.h>
 #include <GUIList.h>
+#include "GUITabScreen.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
-#include <GUIButton.h>
 #include "StringTable.h"
 #include "Toolkit.h"
-#include "YOGClient.h"
 #include "YOGClientBlockedList.h"
+#include "YOGClient.h"
 #include "YOGClientOptionsScreen.h"
 
 using namespace GAGCore;
@@ -38,7 +39,8 @@ YOGClientOptionsScreen::YOGClientOptionsScreen(TabScreen* parent, boost::shared_
 	removeBlockedPlayer = new TextButton(230, 200, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Remove]"), REMOVEBLOCKEDPLAYER);
 	addBlockedPlayerText = new TextInput(230, 250, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 	addBlockedPlayer = new TextButton(230, 285, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Add]"), ADDBLOCKEDPLAYER);
-	
+	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
+
 	
 	addWidget(blockedPlayers);
 	addWidget(blockedPlayersText);
@@ -58,8 +60,14 @@ void YOGClientOptionsScreen::onActivated()
 
 void YOGClientOptionsScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	TabScreenWindow::onAction(source, action, par1, par2);
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
+		if (par1==QUIT)
+		{
+			endExecute(QUIT);
+			parent->completeEndExecute(QUIT);
+		}
 		if(par1 == REMOVEBLOCKEDPLAYER)
 		{
 			updateBlockedPlayerRemove();

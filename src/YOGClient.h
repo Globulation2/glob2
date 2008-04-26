@@ -25,7 +25,7 @@
 #include <map>
 
 class MultiplayerGame;
-class MapAssembler;
+class YOGClientFileAssembler;
 class P2PConnection;
 class YOGClientGameListManager;
 class YOGClientPlayerListManager;
@@ -130,11 +130,11 @@ public:
 	///Returns the assocciatted MultiplayerGame
 	boost::shared_ptr<MultiplayerGame> getMultiplayerGame();
 
-	///Sets the map assembler for this connection
-	void setMapAssembler(boost::shared_ptr<MapAssembler> assembler);
+	///Sets a file assembler for the given id
+	void setYOGClientFileAssembler(Uint16 fileID, boost::shared_ptr<YOGClientFileAssembler> assembler);
 	
 	///Returns the map assembler for this connection
-	boost::shared_ptr<MapAssembler> getMapAssembler();
+	boost::shared_ptr<YOGClientFileAssembler> getYOGClientFileAssembler(Uint16 fileID);
 
 	///This attaches a game server to this client, for client-hosted games (such as LAN)
 	void attachGameServer(boost::shared_ptr<YOGServer> server);
@@ -180,12 +180,13 @@ public:
 
 protected:
     friend class MultiplayerGame;
-    friend class MapAssembler;
+    friend class YOGClientFileAssembler;
     friend class P2PConnection;
 	friend class YOGClientChatChannel;
 	friend class MultiplayerGamePlayerManager;
 	friend class NetEngine;
 	friend class YOGClientGameListManager;
+	friend class YOGClientMapDownloadScreen;
     
     ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGClientChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
@@ -217,7 +218,7 @@ private:
 	std::map<Uint32, YOGClientChatChannel*> chatChannels;
 	
 	boost::shared_ptr<MultiplayerGame> joinedGame;
-	boost::shared_ptr<MapAssembler> assembler;
+	std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> > assembler;
 	boost::shared_ptr<P2PConnection> p2pconnection;
 	boost::shared_ptr<YOGClientGameListManager> gameListManager;
 	boost::shared_ptr<YOGClientPlayerListManager> playerListManager;

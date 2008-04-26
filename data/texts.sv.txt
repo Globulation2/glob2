@@ -286,6 +286,8 @@ Bildskärm
 Bär ingenting
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Starta/Stoppa Uppgradering
 
 [upgrade]
 Uppgradera
+[upload map]
+
 [username]
 Användarnamn
 [Version]

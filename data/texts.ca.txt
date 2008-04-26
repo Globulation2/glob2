@@ -286,6 +286,8 @@ Visualitzador
 No Transporta res
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Unitats
 
 [upgrade]
 Millorar
+[upload map]
+
 [username]
 Nom d' usuari
 [Version]

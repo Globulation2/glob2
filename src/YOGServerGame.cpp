@@ -21,7 +21,7 @@
 #include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"
 #include "YOGServer.h"
-#include "YOGServerMapDistributor.h"
+#include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
 #include "YOGAfterJoinGameInformation.h"
 
@@ -36,6 +36,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 	latencyMode = 0;
 	latencyUpdateTimer = SDL_GetTicks();
 	aiNum = 0;
+	mapFile = server.getFileDistributionManager().allocateFileDistributor();
 }
 
 
@@ -80,8 +81,6 @@ void YOGServerGame::update()
 			i++;
 		}
 	}
-	if(distributor)
-		distributor->update();
 	if(gameStarted == false)
 	{
 		if(playerManager.isEveryoneReadyToGo() && !oldReadyToLaunch)
@@ -113,6 +112,7 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 		info.setLatencyAdjustment(latencyMode);
 		info.setReteamingInformation(reteamingInfo);
 		info.setGameRouterIP(routerIP);
+		info.setMapFileID(mapFile);
 		shared_ptr<NetSendAfterJoinGameInformation> afterjoin(new NetSendAfterJoinGameInformation(info));
 		player->sendMessage(afterjoin);
 		///If its the host, we don't add them until we've recieved the NetReteamingInformation
@@ -182,8 +182,7 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
 	routeMessage(sendGamePlayerInfo);
 
-	if(distributor)
-		distributor->removeMapRequestee(player);
+	server.getFileDistributionManager().getDistributor(mapFile)->removeMapRequestee(player);
 
 	chooseLatencyMode();
 
@@ -230,6 +229,7 @@ void YOGServerGame::setMapHeader(const MapHeader& nmapHeader)
 	server.getGameInfo(gameID).setMapName(mapHeader.getMapName());
 	server.getGameInfo(gameID).setNumberOfTeams(mapHeader.getNumberOfTeams());
 	recievedMapHeader=true;
+	server.getFileDistributionManager().getDistributor(mapFile)->loadFromPlayer(host);
 }
 
 
@@ -262,18 +262,6 @@ void YOGServerGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGS
 		if((*i) != sender)
 			(*i)->sendMessage(message);
 	}
-}
-
-
-
-shared_ptr<YOGServerMapDistributor> YOGServerGame::getMapDistributor()
-{
-	if(!distributor)
-	{
-		//clever trick to get a shared_ptr to this
-		distributor.reset(new YOGServerMapDistributor(host->getGame(), host));
-	}
-	return distributor;
 }
 
 
@@ -426,4 +414,11 @@ const std::string YOGServerGame::getRouterIP() const
 {
 	return routerIP;
 }
+
+
+Uint16 YOGServerGame::getFileID() const
+{
+	return mapFile;
+}
+
 

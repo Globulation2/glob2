@@ -286,6 +286,8 @@ Delete the selected game
 لايحمل شىء
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Start/Stop Upgrade
 
 [upgrade]
 ترقية
+[upload map]
+
 [username]
 اسم المستخدم
 [Version]

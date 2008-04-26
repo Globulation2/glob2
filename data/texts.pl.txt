@@ -286,6 +286,8 @@ Wyświetlanie
 Nic nie transportuje
 [down]
 
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -990,6 +992,8 @@ Jednostki
 
 [upgrade]
 Rozbudowa
+[upload map]
+
 [username]
 Nazwa użytkownika
 [Version]

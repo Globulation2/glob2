@@ -288,6 +288,8 @@ faz nada
 Está carregando nada
 [down]
 baixo
+[Download Maps]
+
 [downloaded %0]
 
 [edit map]
@@ -992,6 +994,8 @@ Começar/Parar Upgrade
 
 [upgrade]
 Upgrade
+[upload map]
+
 [username]
 Nome de usuário
 [Version]

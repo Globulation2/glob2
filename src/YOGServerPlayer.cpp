@@ -20,7 +20,7 @@
 #include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"
 #include "YOGServer.h"
-#include "YOGServerMapDistributor.h"
+#include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
@@ -177,24 +177,31 @@ void YOGServerPlayer::update()
 		ngame->startGame();
 	}
 	//This recieves requests a map file
-	else if(type==MNetRequestMap)
+	else if(type==MNetRequestFile)
 	{
-		ngame->getMapDistributor()->addMapRequestee(server.getPlayer(playerID));
-	}
-	//This recieves requests a map file
-	else if(type==MNetRequestNextChunk)
-	{
-		ngame->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+		shared_ptr<NetRequestFile> info = static_pointer_cast<NetRequestFile>(message);
+		if(server.getFileDistributionManager().getDistributor(info->getFileID()))
+		{
+			server.getFileDistributionManager().getDistributor(info->getFileID())->addMapRequestee(server.getPlayer(playerID));
+		}
 	}
 	//This recieves a file chunk
 	else if(type==MNetSendFileChunk)
 	{
-		ngame->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+		shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
+		if(server.getFileDistributionManager().getDistributor(info->getFileID()))
+		{
+			server.getFileDistributionManager().getDistributor(info->getFileID())->handleMessage(message, server.getPlayer(playerID));
+		}
 	}
 	//This recieves a file information message
 	else if(type==MNetSendFileInformation)
 	{
-		ngame->getMapDistributor()->handleMessage(message, server.getPlayer(playerID));
+		shared_ptr<NetSendFileInformation> info = static_pointer_cast<NetSendFileInformation>(message);
+		if(server.getFileDistributionManager().getDistributor(info->getFileID()))
+		{
+			server.getFileDistributionManager().getDistributor(info->getFileID())->handleMessage(message, server.getPlayer(playerID));
+		}
 	}
 	//This recieves a leave game message
 	else if(type==MNetLeaveGame)
@@ -258,6 +265,12 @@ void YOGServerPlayer::update()
 	{
 		shared_ptr<NetSendGameResult> info = static_pointer_cast<NetSendGameResult>(message);
 		ngame->setPlayerGameResult(server.getPlayer(playerID), info->getGameResult()); 
+	}
+	//This recieves a ping reply
+	else if(type==MNetRequestDownloadableMapList)
+	{
+		shared_ptr<NetRequestDownloadableMapList> info = static_pointer_cast<NetRequestDownloadableMapList>(message);
+		server.getMapDatabank().sendMapListToPlayer(server.getPlayer(playerID));
 	}
 }
 
@@ -455,7 +468,7 @@ void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 		boost::shared_ptr<YOGServerGame> ngame(game);
 		updateGamePlayerLists();
 		std::string ip = boost::shared_ptr<YOGServerGame>(game)->getRouterIP();
-		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID, ip));
+		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID, ip, ngame->getFileID()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));
 	}

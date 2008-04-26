@@ -228,6 +228,8 @@ Do Nothing
 Not carrying anything
 [down]
 down
+[Download Maps]
+Download Maps
 [downloaded %0]
 downloaded %0
 [edit map]
@@ -922,6 +924,8 @@ Start/Stop Upgrade
 Upgrade Defaults
 [upgrade]
 Upgrade
+[upload map]
+Upload Map
 [username]
 Username
 [Version]
