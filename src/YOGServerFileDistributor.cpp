@@ -29,7 +29,7 @@ using namespace boost;
 using namespace GAGCore;
 
 YOGServerFileDistributor::YOGServerFileDistributor(Uint16 fileID)
-	: startedLoading(false), fileID(fileID)
+	: startedLoading(false), fileID(fileID), downloadFromPlayerCanceled(false)
 {
 
 }
@@ -46,6 +46,43 @@ void YOGServerFileDistributor::loadFromLocally(const std::string& file)
 void YOGServerFileDistributor::loadFromPlayer(boost::shared_ptr<YOGServerPlayer> nplayer)
 {
 	player = nplayer;
+}
+
+
+
+void YOGServerFileDistributor::saveToFile(const std::string& file)
+{
+	boost::shared_ptr<BinaryOutputStream> stream(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(file+".gz")));
+	for(int i=0; i<chunks.size(); ++i)
+	{
+		stream->write(chunks[i]->getBuffer(), chunks[i]->getChunkSize(), "");
+	}
+	stream.reset();
+	//unzip file
+	Toolkit::getFileManager()->gunzip(file+".gz", file);
+}
+
+
+
+bool YOGServerFileDistributor::areAllChunksLoaded()
+{
+	if(!fileInfo)
+		return false;
+	Uint32 total = 0;
+	for(int i=0; i<chunks.size(); ++i)
+	{
+		total += chunks[i]->getChunkSize();
+	}
+	if(total == fileInfo->getFileSize())
+		return true;
+	return false;
+}
+
+
+
+bool YOGServerFileDistributor::wasUploadingCanceled()
+{
+	return downloadFromPlayerCanceled;
 }
 
 
@@ -102,7 +139,7 @@ void YOGServerFileDistributor::removeMapRequestee(boost::shared_ptr<YOGServerPla
 
 void YOGServerFileDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> nplayer)
 {
-	///This ignores certain messages that must come from the host
+	///This ignores certain messages that must come from the person uploading the map
 	Uint8 messageType = message->getMessageType();
 	if(messageType == MNetSendFileInformation && nplayer == player)
 	{
@@ -111,6 +148,12 @@ void YOGServerFileDistributor::handleMessage(boost::shared_ptr<NetMessage> messa
 	else if(messageType == MNetSendFileChunk && nplayer == player)
 	{
 		chunks.push_back(static_pointer_cast<NetSendFileChunk>(message));
+	}
+	else if(messageType == MNetCancelSendingFile && nplayer == player)
+	{
+		chunks.clear();
+		fileInfo.reset();
+		downloadFromPlayerCanceled = true;
 	}
 }
 

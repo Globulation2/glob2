@@ -272,6 +272,41 @@ void YOGServerPlayer::update()
 		shared_ptr<NetRequestDownloadableMapList> info = static_pointer_cast<NetRequestDownloadableMapList>(message);
 		server.getMapDatabank().sendMapListToPlayer(server.getPlayer(playerID));
 	}
+	//This recieves
+	else if(type==MNetRequestMapUpload)
+	{
+		shared_ptr<NetRequestMapUpload> info = static_pointer_cast<NetRequestMapUpload>(message);
+		YOGMapUploadRefusalReason reason = server.getMapDatabank().canRecieveFromPlayer(info->getMapInfo());
+		if(reason == YOGMapUploadReasonUnknown)
+		{
+			Uint16 fileID =  server.getMapDatabank().recieveMapFromPlayer(info->getMapInfo(), server.getPlayer(playerID));
+			boost::shared_ptr<NetAcceptMapUpload> info = boost::shared_ptr<NetAcceptMapUpload>(new NetAcceptMapUpload(fileID));
+			sendMessage(info);
+		}
+		else
+		{
+			boost::shared_ptr<NetRefuseMapUpload> info = boost::shared_ptr<NetRefuseMapUpload>(new NetRefuseMapUpload(reason));
+			sendMessage(info);
+		}
+	}
+	//This recieves a cancel to a file upload
+	else if(type==MNetCancelSendingFile)
+	{
+		shared_ptr<NetCancelSendingFile> info = static_pointer_cast<NetCancelSendingFile>(message);
+		if(server.getFileDistributionManager().getDistributor(info->getFileID()))
+		{
+			server.getFileDistributionManager().getDistributor(info->getFileID())->handleMessage(info, server.getPlayer(playerID));
+		}
+	}
+	//This recieves a cancel to a file download
+	else if(type==MNetCancelRecievingFile)
+	{
+		shared_ptr<NetCancelRecievingFile> info = static_pointer_cast<NetCancelRecievingFile>(message);
+		if(server.getFileDistributionManager().getDistributor(info->getFileID()))
+		{
+			server.getFileDistributionManager().getDistributor(info->getFileID())->removeMapRequestee(server.getPlayer(playerID));
+		}
+	}
 }
 
 

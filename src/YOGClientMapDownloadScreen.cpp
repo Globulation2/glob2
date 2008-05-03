@@ -16,20 +16,25 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "ChooseMapScreen.h"
 #include <FormatableString.h>
+#include "GlobalContainer.h"
 #include <GUIButton.h>
 #include <GUIList.h>
+#include "GUIMapPreview.h"
 #include "GUIMessageBox.h"
 #include "GUITabScreen.h"
 #include <GUITextArea.h>
-#include "YOGClient.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
-#include "GUIMapPreview.h"
 #include "NetMessage.h"
 #include "StringTable.h"
 #include "Toolkit.h"
+#include "YOGClient.h"
 #include "YOGClientMapDownloadScreen.h"
+#include "YOGClientMapUploadScreen.h"
+#include "YOGClientDownloadableMapList.h"
+#include "YOGClientDownloadingMapScreen.h"
 
 using namespace GAGCore;
 
@@ -39,31 +44,46 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Download Maps]")));
 
 
-	mapList = new List(10, 120, 220, 135, ALIGN_LEFT, ALIGN_FILL, "standard");
+	mapList = new List(20, 120, 220, 135, ALIGN_LEFT, ALIGN_FILL, "standard");
 	addWidget(mapList);
 	mapPreview = new MapPreview(72, 130, ALIGN_RIGHT, ALIGN_TOP);
 	addWidget(mapPreview);
-	mapName=new Text(72, 268+25, ALIGN_RIGHT, ALIGN_TOP, "standard", "1", 180);
+	mapName=new Text(72, 268+25, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapName);
-	mapInfo=new Text(72, 268+50, ALIGN_RIGHT, ALIGN_TOP, "standard", "2", 180);
+	mapInfo=new Text(72, 268+50, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(72, 268+75, ALIGN_RIGHT, ALIGN_TOP, "standard", "3", 180);
+	mapVersion=new Text(72, 268+75, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapVersion);
-	mapSize=new Text(72, 268+100, ALIGN_RIGHT, ALIGN_TOP, "standard", "4", 180);
+	mapSize=new Text(72, 268+100, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapSize);
-	mapDate=new Text(72, 268+125, ALIGN_RIGHT, ALIGN_TOP, "standard", "5", 180);
-	addWidget(mapDate);
+	mapAuthor=new Text(72, 268+125, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
+	addWidget(mapAuthor);
 	addMap = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[upload map]"), ADDMAP);
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	addWidget(addMap);
+	refresh = new TextButton(20, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[refresh map list]"), REFRESHMAPLIST);
+	addWidget(refresh);
+	downloadMap = new TextButton(20, 15, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Download Map]"), DOWNLOADMAP);
+	addWidget(downloadMap);
+	
+	loadingMapList = new Text(280, 200, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[loading map list]"));
+	addWidget(loadingMapList);
+	
 	validMapSelected=false;
+	client->getDownloadableMapList()->addListener(this);
+	mapValid=false;
+	mapsRequested=false;
 }
 
 
+YOGClientMapDownloadScreen::~YOGClientMapDownloadScreen()
+{
+	client->getDownloadableMapList()->removeListener(this);
+}
 
 void YOGClientMapDownloadScreen::onTimer(Uint32 tick)
 {
-	
+	updateVisibility();
 }
 
 
@@ -78,6 +98,47 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 			endExecute(QUIT);
 			parent->completeEndExecute(QUIT);
 		}
+		else if(par1==ADDMAP)
+		{
+			ChooseMapScreen cms("maps", "map", false);
+			int rc = cms.execute(globalContainer->gfx, 40);
+			if(rc == -1)
+			{
+				endExecute(-1);
+				parent->completeEndExecute(-1);
+			}
+			else if(rc == ChooseMapScreen::OK)
+			{
+				YOGClientMapUploadScreen upload(client, cms.getMapHeader().getFileName());
+				upload.execute(globalContainer->gfx, 40);
+				requestMaps();
+			}
+		}
+		else if (par1==REFRESHMAPLIST)
+		{
+			requestMaps();
+		}
+		else if (par1==DOWNLOADMAP)
+		{
+			if(mapValid)
+			{
+				YOGClientDownloadingMapScreen screen(client, client->getDownloadableMapList()->getMap(mapList->get()));
+				int rc = screen.execute(globalContainer->gfx, 40);
+				if(rc == -1)
+				{
+					endExecute(-1);
+					parent->completeEndExecute(-1);
+				}
+				else if(rc == YOGClientDownloadingMapScreen::FINISHED)
+				{
+				
+				}
+			}
+		}
+	}
+	if(action == LIST_ELEMENT_SELECTED)
+	{
+		updateMapInfo();
 	}
 }
 
@@ -85,7 +146,23 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 
 void YOGClientMapDownloadScreen::onActivated()
 {
-	requestMaps();
+	if(!mapsRequested)
+	{
+		requestMaps();
+	}
+	updateVisibility();
+}
+
+
+
+void YOGClientMapDownloadScreen::mapListUpdated()
+{
+	mapList->clear();
+	std::vector<YOGDownloadableMapInfo>& maps = client->getDownloadableMapList()->getDownloadableMapList();
+	for(int i=0; i<maps.size(); ++i)
+	{
+		mapList->addText(maps[i].getMapHeader().getMapName());
+	}
 }
 
 
@@ -93,9 +170,59 @@ void YOGClientMapDownloadScreen::onActivated()
 void YOGClientMapDownloadScreen::requestMaps()
 {
 	mapList->clear();
-	boost::shared_ptr<NetRequestDownloadableMapList> request(new NetRequestDownloadableMapList);
-	client->sendNetMessage(request);
+	mapList->setSelectionIndex(-1);
+	updateMapInfo();
+	
+	client->getDownloadableMapList()->requestMapListUpdate();
+	mapsRequested=true;
 }
 
 
+
+void YOGClientMapDownloadScreen::updateMapInfo()
+{
+	if(mapList->getSelectionIndex() != -1)
+		mapValid=true;
+	else
+		mapValid=false;
+
+	if(mapValid)
+	{
+		YOGDownloadableMapInfo info = client->getDownloadableMapList()->getMap(mapList->get());
+		const MapHeader& mapHeader = info.getMapHeader();
+		// update map name & info
+		mapName->setText(mapHeader.getMapName());
+		std::string textTemp;
+		textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+		mapInfo->setText(textTemp);
+		textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
+		mapVersion->setText(textTemp);
+		textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+		mapSize->setText(textTemp);
+		mapAuthor->setText(info.getAuthorName());
+	}
+	else
+	{
+		mapAuthor->setText("");
+		mapVersion->setText("");
+		mapInfo->setText("");
+		mapSize->setText("");
+		mapName->setText("");
+		mapPreview->setMapThumbnail(NULL);
+	}
+}
+
+
+
+void YOGClientMapDownloadScreen::updateVisibility()
+{
+	if(client->getDownloadableMapList()->waitingForListFromServer())
+	{
+		loadingMapList->visible=true;
+	}
+	else
+	{
+		loadingMapList->visible=false;
+	}
+}
 

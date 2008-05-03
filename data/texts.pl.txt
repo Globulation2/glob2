@@ -2,6 +2,8 @@
 %0 opuścił grę.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -286,9 +288,13 @@ Wyświetlanie
 Nic nie transportuje
 [down]
 
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -494,6 +500,8 @@ Załaduj grę
 
 [load]
 Ładuj
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -510,6 +518,8 @@ Niska jakość
 
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Nazwa mapy: %0.
 [map name]
@@ -520,6 +530,16 @@ Nazwa mapy: %0.
 Szerokość mapy
 [map size y]
 Wysokość mapy
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 
 [mark map]
@@ -644,6 +664,8 @@ Tor wyścigowy
 Zasięg
 [ratios]
 Proporcje
+[refresh map list]
+
 [Register a new YOG user with password]
 Zarejestruj nowego użytkownika z hasłem
 [remember unit]
@@ -992,6 +1014,8 @@ Jednostki
 
 [upgrade]
 Rozbudowa
+[Upload Map]
+
 [upload map]
 
 [username]

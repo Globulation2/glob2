@@ -2,6 +2,8 @@
 %0 a quitté la partie.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 jeu de %0
 [%0's team unit got converted to your team]
@@ -286,9 +288,13 @@ Ne fait rien
 Ne transporte rien
 [down]
 Bas
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 Editer la carte
@@ -494,6 +500,8 @@ Charger la carte
 
 [load]
 Charger
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -510,6 +518,8 @@ Dmg. air
 Dmg. sol
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Carte: %0.
 [map name]
@@ -520,6 +530,16 @@ Nom de la carte
 Largeur de la carte
 [map size y]
 Hauteur de la carte
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Carte disponible
 [mark map]
@@ -644,6 +664,8 @@ Piste de course
 Portée
 [ratios]
 Proportions
+[refresh map list]
+
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 [remember unit]
@@ -992,6 +1014,8 @@ Améliorer le bâtiment
 
 [upgrade]
 Améliorer
+[Upload Map]
+
 [upload map]
 
 [username]

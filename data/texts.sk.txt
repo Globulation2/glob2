@@ -2,6 +2,8 @@
 %0 odišiel z hry.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -286,9 +288,13 @@ Zobrazenie
 Nič nenesie
 [down]
 
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -494,6 +500,8 @@ Nahrať hru
 
 [load]
 Nahrať
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -510,6 +518,8 @@ Vzduch
 Zem
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Názov mapy: %0.
 [map name]
@@ -520,6 +530,16 @@ Názov mapy: %0.
 Šírka mapy
 [map size y]
 Výška mapy
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 
 [mark map]
@@ -644,6 +664,8 @@ Bežecká dráha
 Dosah
 [ratios]
 Proporcie
+[refresh map list]
+
 [Register a new YOG user with password]
 Zaregistrovať nové YOG meno s heslom. (nezabezpečené)
 [remember unit]
@@ -992,6 +1014,8 @@ Spust./zast. zdokonaľovanie
 
 [upgrade]
 Zdokonaliť
+[Upload Map]
+
 [upload map]
 
 [username]

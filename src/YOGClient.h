@@ -35,6 +35,9 @@ class YOGClientEventListener;
 class YOGClientEvent;
 class YOGClientBlockedList;
 class YOGClientCommandManager;
+class YOGClientMapUploader;
+class YOGClientDownloadableMapList;
+class YOGClientMapDownloader;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -178,6 +181,21 @@ public:
 	///This retrieves the YOGClientCommandManager of this client
 	boost::shared_ptr<YOGClientCommandManager> getCommandManager();
 
+	///This retrieves the YOGClientMapUploader of this client
+	YOGClientMapUploader* getMapUploader();
+
+	///This sets the YOGClientMapUploader of this client
+	void setMapUploader(YOGClientMapUploader* uploader);
+
+	///This returns the YOGClientDownloadableMapList
+	boost::shared_ptr<YOGClientDownloadableMapList> getDownloadableMapList();
+
+	///This sets the YOGClientMapDownloader of this client
+	void setMapDownloader(YOGClientMapDownloader* downloader);
+	
+	///This returns the YOGClientMapDownloader of this client
+	YOGClientMapDownloader* getMapDownloader();
+
 protected:
     friend class MultiplayerGame;
     friend class YOGClientFileAssembler;
@@ -186,7 +204,10 @@ protected:
 	friend class MultiplayerGamePlayerManager;
 	friend class NetEngine;
 	friend class YOGClientGameListManager;
+	friend class YOGClientMapUploader;
 	friend class YOGClientMapDownloadScreen;
+	friend class YOGClientDownloadableMapList;
+	friend class YOGClientMapDownloader;
     
     ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGClientChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
@@ -225,6 +246,9 @@ private:
 	boost::shared_ptr<NetConnection> gameConnection;
 	boost::shared_ptr<YOGClientBlockedList> blocked;
 	boost::shared_ptr<YOGClientCommandManager> commands;
+	boost::shared_ptr<YOGClientDownloadableMapList> downloadableMapList;
+	YOGClientMapUploader* uploader;
+	YOGClientMapDownloader* downloader;
 	boost::shared_ptr<YOGServer> server;
 	std::list<YOGClientEventListener*> listeners;
 

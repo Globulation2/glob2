@@ -17,16 +17,18 @@
 */
 
 #include <iostream>
-#include "YOGClientFileAssembler.h"
 #include "MultiplayerGame.h"
 #include "NetMessage.h"
 #include "YOGClientBlockedList.h"
-#include "YOGClientCommandManager.h"
 #include "YOGClientChatChannel.h"
-#include "YOGClientEventListener.h"
+#include "YOGClientCommandManager.h"
+#include "YOGClientDownloadableMapList.h"
 #include "YOGClientEvent.h"
+#include "YOGClientEventListener.h"
+#include "YOGClientFileAssembler.h"
 #include "YOGClientGameListManager.h"
 #include "YOGClient.h"
+#include "YOGClientMapUploader.h"
 #include "YOGClientPlayerListManager.h"
 #include "YOGMessage.h"
 #include "YOGServer.h"
@@ -61,6 +63,9 @@ void YOGClient::initialize()
 	playerListManager.reset(new YOGClientPlayerListManager(this));
 	blocked.reset(new YOGClientBlockedList);
 	commands.reset(new YOGClientCommandManager(this));
+	downloadableMapList.reset(new YOGClientDownloadableMapList(this));
+	uploader = NULL;
+	downloader = NULL;
 }
 
 
@@ -349,6 +354,20 @@ void YOGClient::update()
 			shared_ptr<YOGIPBannedEvent> event(new YOGIPBannedEvent);
 			sendToListeners(event);
 		}
+		if(type == MNetAcceptMapUpload)
+		{
+			if(uploader)
+				uploader->recieveMessage(message);
+		}
+		if(type == MNetRefuseMapUpload)
+		{
+			if(uploader)
+				uploader->recieveMessage(message);
+		}
+		if(type == MNetDownloadableMapInfos)
+		{
+			downloadableMapList->recieveMessage(message);
+		}
 		message = nc.getMessage();
 	}
 
@@ -563,6 +582,41 @@ boost::shared_ptr<YOGClientBlockedList> YOGClient::getBlockedList()
 boost::shared_ptr<YOGClientCommandManager> YOGClient::getCommandManager()
 {
 	return commands;
+}
+
+
+
+YOGClientMapUploader* YOGClient::getMapUploader()
+{
+	return uploader;
+}
+
+
+
+void YOGClient::setMapUploader(YOGClientMapUploader* nuploader)
+{
+	uploader = nuploader;
+}
+
+
+
+boost::shared_ptr<YOGClientDownloadableMapList> YOGClient::getDownloadableMapList()
+{
+	return downloadableMapList;
+}
+
+
+
+void YOGClient::setMapDownloader(YOGClientMapDownloader* ndownloader)
+{
+	downloader = ndownloader;
+}
+
+
+	
+YOGClientMapDownloader* YOGClient::getMapDownloader()
+{
+	return downloader;
 }
 
 

@@ -92,24 +92,55 @@ void YOGClientFileAssembler::handleMessage(boost::shared_ptr<NetMessage> message
 	}
 	if(type == MNetSendFileChunk)
 	{
-		shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
-		Uint32 bsize = info->getChunkSize();
-		const Uint8* buffer = info->getBuffer();
-		ostream->write(buffer, bsize, "");
-		finished+=bsize;
-		if(finished>=size)
+		if(mode == RecivingFile)
 		{
-			mode=NoTransfer;
-			//Write from the buffer, obackend, to the file
-			BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz"));
-			ostream->seekFromEnd(0);
-			fstream->write(obackend->getBuffer(), ostream->getPosition(), "");
-			delete fstream;
-			ostream.reset();
-			//unzip file
-			Toolkit::getFileManager()->gunzip(filename+".gz", filename);
+			shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
+			Uint32 bsize = info->getChunkSize();
+			const Uint8* buffer = info->getBuffer();
+			ostream->write(buffer, bsize, "");
+			finished+=bsize;
+			if(finished>=size)
+			{
+				mode=NoTransfer;
+				//Write from the buffer, obackend, to the file
+				BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz"));
+				ostream->seekFromEnd(0);
+				fstream->write(obackend->getBuffer(), ostream->getPosition(), "");
+				delete fstream;
+				ostream.reset();
+				//unzip file
+				Toolkit::getFileManager()->gunzip(filename+".gz", filename);
+			}
 		}
 	}
+}
+
+
+
+void YOGClientFileAssembler::cancelSendingFile()
+{
+	boost::shared_ptr<YOGClient> nclient(client);
+	shared_ptr<NetCancelSendingFile> message(new NetCancelSendingFile(fileID));
+	nclient->sendNetMessage(message);
+	size = 0;
+	finished = 0;
+	mode = NoTransfer;
+	ostream.reset();
+	istream.reset();
+}
+
+
+
+void YOGClientFileAssembler::cancelRecievingFile()
+{
+	boost::shared_ptr<YOGClient> nclient(client);
+	shared_ptr<NetCancelRecievingFile> message(new NetCancelRecievingFile(fileID));
+	nclient->sendNetMessage(message);
+	size = 0;
+	finished = 0;
+	mode = NoTransfer;
+	ostream.reset();
+	istream.reset();
 }
 
 
@@ -120,6 +151,15 @@ Uint8 YOGClientFileAssembler::getPercentage()
 		return 100;
 
 	return (finished * 100) / size;
+}
+
+
+
+bool YOGClientFileAssembler::fileInformationRecieved()
+{
+	if(size == 0)
+		return false;
+	return true;
 }
 
 

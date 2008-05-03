@@ -44,6 +44,30 @@ public:
 	
 	///Returns the map header
 	const MapHeader& getMapHeader() const;
+	
+	///This sets the rating total.
+	void setRatingTotal(Uint32 total);
+	
+	///This returns the rating total.
+	Uint32 getRatingTotal() const;
+	
+	///This sets the number of ratings
+	void setNumberOfRatings(Uint32 numberOfRatings);
+	
+	///This returns the number of ratings
+	Uint32 getNumberOfRatings() const;
+	
+	///This sets the author name
+	void setAuthorName(const std::string& authorname);
+	
+	///This returns the author name
+	std::string getAuthorName() const;
+	
+	///This is the fileID this downloadable map can be obtained from
+	Uint16 getFileID() const;
+	
+	///This sets the fileID that this downloadable map is obtained from
+	void setFileID(Uint16 fileID);
 
 	///Encodes this YOGGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -51,11 +75,15 @@ public:
 	///Decodes this YOGGameInfo from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
 	
-	///Test for equality between two YOGGameInfo
+	///Test for equality between two YOGDownloadableMapInfo
 	bool operator==(const YOGDownloadableMapInfo& rhs) const;
 	bool operator!=(const YOGDownloadableMapInfo& rhs) const;
 private:
 	mutable MapHeader mapHeader;
+	Uint32 total;
+	Uint32 numberOfRatings;
+	std::string author;
+	Uint16 fileID;
 };
 
 #endif

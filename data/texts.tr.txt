@@ -2,6 +2,8 @@
 %0 oyundan cikti.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -286,9 +288,13 @@ Gorunum
 Hicbirsey tasimiyor
 [down]
 
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -494,6 +500,8 @@ Oyun yukle
 
 [load]
 Yukle
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -510,6 +518,8 @@ Hava hasari
 Yer hasari
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Harita adi: %0.
 [map name]
@@ -520,6 +530,16 @@ Harita adi: %0.
 Harita genisligi
 [map size y]
 Harita yuksekligi
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 
 [mark map]
@@ -644,6 +664,8 @@ Kosuyolu
 Menzil
 [ratios]
 Oranlar
+[refresh map list]
+
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
 [remember unit]
@@ -992,6 +1014,8 @@ Birimler
 
 [upgrade]
 Gelistir
+[Upload Map]
+
 [upload map]
 
 [username]

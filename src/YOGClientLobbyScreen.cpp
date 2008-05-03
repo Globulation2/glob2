@@ -249,7 +249,8 @@ void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent
 	Uint8 type = event->getEventType();
 	if(type == YEConnectionLost)
 	{
-		endExecute(ConnectionLost);
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"), Toolkit::getStringTable()->getString("[ok]"));
+		parent->completeEndExecute(ConnectionLost);
 	}
 	else if(type == YEPlayerBanned)
 	{
