@@ -21,6 +21,7 @@
 
 #include "BaseTeam.h"
 #include "Marshaling.h"
+#include "Race.h"
 
 using namespace GAGCore;
 
@@ -50,12 +51,12 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->read(&color.a, 1, "colorPAD");
 	color.a = Color::ALPHA_OPAQUE;
 	playersMask = stream->readUint32("playersMask");
+	if(versionMinor < 73)
+	{
+		Race race;
+		race.load(stream, versionMinor);
+	}
 	stream->readLeaveSection();
-	if (!race.load(stream, versionMinor))
-		return false;
-	// TODO : overwrite only when it is a certain type, but require carefull thinking. For now, overwrite
-	// if (type == T_HUMAN)
-	race.load();
 	return true;
 }
 
@@ -75,7 +76,6 @@ void BaseTeam::save(GAGCore::OutputStream *stream)
 	stream->write(&color.a, 1, "colorPAD");
 	stream->writeUint32(playersMask, "playersMask");
 	stream->writeLeaveSection();
-	race.save(stream);
 }
 
 

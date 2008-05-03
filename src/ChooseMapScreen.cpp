@@ -135,7 +135,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			mapInfo->setText("");
 			mapSize->setText("");
 			mapName->setText("");
-			mapPreview->setMapThumbnail(NULL);
+			mapPreview->setMapThumbnail("");
 			validMapSelected = false;
 		}
 	}

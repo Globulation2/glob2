@@ -747,6 +747,7 @@ void Game::setAlliances(void)
 			if(allyTeam == otherAllyTeam)
 			{
 				teams[i]->allies |= teams[j]->me;
+				teams[i]->sharedVisionOther |= teams[j]->me;
 			}
 			else
 			{
