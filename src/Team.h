@@ -200,6 +200,8 @@ private:
 	
 	
 public:
+	///This is the teams race, which defines its properties
+	Race race;
 	//! If you try to build buildings in the ennemy territory, you will be prevented to build any new buildings for a given time.
 	//! This is the time left you can't build for. time in ticks.
 	int noMoreBuildingSitesCountdown;

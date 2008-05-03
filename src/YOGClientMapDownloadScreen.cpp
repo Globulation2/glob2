@@ -208,7 +208,7 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		mapInfo->setText("");
 		mapSize->setText("");
 		mapName->setText("");
-		mapPreview->setMapThumbnail(NULL);
+		mapPreview->setMapThumbnail("");
 	}
 }
 

@@ -19,45 +19,42 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef BaseTeam_h
-#define BaseTeam_h
+#ifndef MapThumbnail_h
+#define MapThumbnail_h
 
-#include "Stream.h"
-#include "GUIBase.h"
+#include <string>
 
-class BaseTeam
+namespace GAGCore
+{
+	class DrawableSurface;
+};
+
+///This class encapsulates everything about map thumbnails, which are shown when choosing a map before you start a game
+class MapThumbnail
 {
 public:
-	enum TeamType
-	{
-		T_HUMAN,
-		T_AI,
-		// Note : T_AI + n is AI type n
-	};
-
-	BaseTeam();
-	virtual ~BaseTeam(void) { }
-
-	TeamType type;
-	Sint32 teamNumber; // index of the current team in the game::teams[] array.
-	Sint32 numberOfPlayer; // number of controling players
-	GAGCore::Color color;
-	Uint32 playersMask;
+	///Constructs a thumbnail
+	MapThumbnail();
 	
-public:
-	bool disableRecursiveDestruction;
+	///Deletes a thumbnail
+	~MapThumbnail();
 	
+	///Loads the thumbnail from the map with the given map name
+	void loadFromMap(const std::string& map);
+
+	///Returns a surface representing the thumbnail. Returns NULL when theres no thumbnail loaded
+	GAGCore::DrawableSurface *getThumbnailSurface();
+	
+	///Returns the map width
+	int getMapWidth();
+	
+	///Returns the map height
+	int getMapHeight();
+
 private:
-	Uint8 data[16];
-
-public:
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	void save(GAGCore::OutputStream *stream);
-
-	Uint8 *getData();
-	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength();
-	Uint32 checkSum();
+	GAGCore::DrawableSurface *mapThumbnail;
+	int lastW;
+	int lastH;
 };
 
 #endif
