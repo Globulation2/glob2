@@ -109,7 +109,6 @@ void Team::setBaseTeam(const BaseTeam *initial)
 	teamNumber=initial->teamNumber;
 	numberOfPlayer=initial->numberOfPlayer;
 	playersMask=initial->playersMask;
-	race=initial->race;
 	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 
 	setCorrectColor(initial->color);
@@ -241,6 +240,19 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		return false;
 	}
 	stats.step(this, true);
+	
+	if(versionMinor >= 73)
+	{
+		if(!race.load(stream, versionMinor))
+		{
+			stream->readLeaveSection();
+			return false;
+		}
+	}
+	else
+	{
+		race.load();
+	}
 
 	isAlive = true;
 
@@ -340,6 +352,7 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 
 	stats.save(stream);
+	race.save(stream);
 
 	stream->writeLeaveSection();
 }
