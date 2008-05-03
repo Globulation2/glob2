@@ -100,6 +100,11 @@ enum NetMessageType
 	MNetUpdatePlayerList,
 	MNetDownloadableMapInfos,
 	MNetRequestDownloadableMapList,
+	MNetRequestMapUpload,
+	MNetAcceptMapUpload,
+	MNetRefuseMapUpload,
+	MNetCancelSendingFile,
+	MNetCancelRecievingFile,
 	//type_append_marker
 };
 
@@ -2061,6 +2066,186 @@ public:
 
 	///Compares with another NetRequestDownloadableMapList
 	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRequestMapUpload
+class NetRequestMapUpload : public NetMessage
+{
+public:
+	///Creates a NetRequestMapUpload message
+	NetRequestMapUpload();
+
+	///Creates a NetRequestMapUpload message
+	NetRequestMapUpload(YOGDownloadableMapInfo mapInfo);
+
+	///Returns MNetRequestMapUpload
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestMapUpload message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestMapUpload
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapInfo
+	YOGDownloadableMapInfo getMapInfo() const;
+private:
+private:
+	YOGDownloadableMapInfo mapInfo;
+};
+
+
+
+
+///NetAcceptMapUpload
+class NetAcceptMapUpload : public NetMessage
+{
+public:
+	///Creates a NetAcceptMapUpload message
+	NetAcceptMapUpload();
+
+	///Creates a NetAcceptMapUpload message
+	NetAcceptMapUpload(Uint16 fileID);
+
+	///Returns MNetAcceptMapUpload
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetAcceptMapUpload message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAcceptMapUpload
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves fileID
+	Uint16 getFileID() const;
+private:
+private:
+	Uint16 fileID;
+};
+
+
+
+
+///NetRefuseMapUpload
+class NetRefuseMapUpload : public NetMessage
+{
+public:
+	///Creates a NetRefuseMapUpload message
+	NetRefuseMapUpload();
+
+	///Creates a NetRefuseMapUpload message
+	NetRefuseMapUpload(YOGMapUploadRefusalReason reason);
+
+	///Returns MNetRefuseMapUpload
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRefuseMapUpload message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRefuseMapUpload
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves reason
+	YOGMapUploadRefusalReason getReason() const;
+private:
+private:
+	YOGMapUploadRefusalReason reason;
+};
+
+
+
+
+///NetCancelSendingFile
+class NetCancelSendingFile : public NetMessage
+{
+public:
+	///Creates a NetCancelSendingFile message
+	NetCancelSendingFile();
+
+	///Creates a NetCancelSendingFile message
+	NetCancelSendingFile(Uint16 fileID);
+
+	///Returns MNetCancelSendingFile
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetCancelSendingFile message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetCancelSendingFile
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves fileID
+	Uint16 getFileID() const;
+private:
+private:
+	Uint16 fileID;
+};
+
+
+
+
+///NetCancelRecievingFile
+class NetCancelRecievingFile : public NetMessage
+{
+public:
+	///Creates a NetCancelRecievingFile message
+	NetCancelRecievingFile();
+
+	///Creates a NetCancelRecievingFile message
+	NetCancelRecievingFile(Uint16 fileID);
+
+	///Returns MNetCancelRecievingFile
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetCancelRecievingFile message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetCancelRecievingFile
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves fileID
+	Uint16 getFileID() const;
+private:
+private:
+	Uint16 fileID;
 };
 
 

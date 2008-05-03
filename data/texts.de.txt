@@ -2,6 +2,8 @@
 %0 hat das Spiel verlassen.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 Spiel von %0
 [%0's team unit got converted to your team]
@@ -280,9 +282,13 @@ Anzeige
 Transportiert nichts
 [down]
 
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -488,6 +494,8 @@ Spiel laden
 
 [load]
 Laden
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -504,6 +512,8 @@ Kampfstärke/Luft
 Kampfstärke/Boden
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Karte: %0.
 [map name]
@@ -514,6 +524,16 @@ Karte: %0.
 Breite der Karte
 [map size y]
 Höhe der Karte
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 
 [mark map]
@@ -636,6 +656,8 @@ Rennbahn
 Reichweite
 [ratios]
 Verhältnis
+[refresh map list]
+
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [remember unit]
@@ -984,6 +1006,8 @@ Aufwerten einleiten/beenden
 
 [upgrade]
 Verbessern
+[Upload Map]
+
 [upload map]
 
 [username]

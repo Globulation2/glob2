@@ -22,26 +22,43 @@
 #include "YOGDownloadableMapInfo.h"
 #include "YOGServerPlayer.h"
 #include <vector>
+#include "boost/tuple/tuple.hpp"
+
+class YOGServer;
 
 ///This stores maps that users can download on the server end
 class YOGServerMapDatabank
 {
 public:
 	///Constructs the class, loading the databank
-	YOGServerMapDatabank();
+	YOGServerMapDatabank(YOGServer* server);
 
 	///Adds a map to the database
 	void addMap(const YOGDownloadableMapInfo& map);
+
+	///Returns whether the given map can be obtained from the player, returns YOGMapUploadReasonUnknown
+	///if it it can be recieved
+	YOGMapUploadRefusalReason canRecieveFromPlayer(const YOGDownloadableMapInfo& map);
+
+	///Starts recieving a map from the given player, and returns the file ID for the transfer
+	Uint16 recieveMapFromPlayer(const YOGDownloadableMapInfo& map, boost::shared_ptr<YOGServerPlayer> player);
 	
 	///Sends the list of maps to the given player
 	void sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer> player);
+	
+	///This updates the map databank
+	void update();
 private:
 	///This does a full load of the map databank
 	void load();
 	///This does a full save of the map databank
 	void save();
 	
+	YOGServer* server;
+	
 	std::vector<YOGDownloadableMapInfo> maps;
+	///List of maps currently being uploaded
+	std::vector<boost::tuple<YOGDownloadableMapInfo, int> > uploadingMaps;
 };
 
 #endif

@@ -2,6 +2,8 @@
 %0 已離開遊戲
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -286,9 +288,13 @@ AIWarrush
 沒有在搬運任何東西
 [down]
 
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 編輯地圖
@@ -494,6 +500,8 @@ zh-tw
 
 [load]
 載入
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -510,6 +518,8 @@ Air dmg.
 地面攻擊
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 地圖名稱: %0。
 [map name]
@@ -520,6 +530,16 @@ Air dmg.
 地圖寬度
 [map size y]
 地圖高度
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 可用的地圖
 [mark map]
@@ -644,6 +664,8 @@ Air dmg.
 射程
 [ratios]
 比例
+[refresh map list]
+
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
 [remember unit]
@@ -992,6 +1014,8 @@ V: 持鍵以傳送訊息
 
 [upgrade]
 升級
+[Upload Map]
+
 [upload map]
 
 [username]

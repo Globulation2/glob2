@@ -2,6 +2,8 @@
 %0 تركو اللعبه.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -286,9 +288,13 @@ Delete the selected game
 لايحمل شىء
 [down]
 
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -494,6 +500,8 @@ ar
 
 [load]
 تحميل
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -510,6 +518,8 @@ Air dmg.
 Ground dmg.
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Map name: %0.
 [map name]
@@ -520,6 +530,16 @@ Map name: %0.
 Map width
 [map size y]
 Map height
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 
 [mark map]
@@ -644,6 +664,8 @@ Prune
 المدى
 [ratios]
 Proportions
+[refresh map list]
+
 [Register a new YOG user with password]
 Register a new YOG user with a password. (insecure)
 [remember unit]
@@ -992,6 +1014,8 @@ Start/Stop Upgrade
 
 [upgrade]
 ترقية
+[Upload Map]
+
 [upload map]
 
 [username]

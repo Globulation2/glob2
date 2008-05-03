@@ -21,6 +21,7 @@
 
 #include "GUITabScreenWindow.h"
 #include "boost/shared_ptr.hpp"
+#include "YOGClientDownloadableMapListener.h"
 
 namespace GAGGUI
 {
@@ -37,10 +38,11 @@ class MapPreview;
 using namespace GAGGUI;
 
 ///This is the main YOG screen
-class YOGClientMapDownloadScreen : public TabScreenWindow
+class YOGClientMapDownloadScreen : public TabScreenWindow, public YOGClientDownloadableMapListener
 {
 public:
 	YOGClientMapDownloadScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
+	~YOGClientMapDownloadScreen();
 	///Responds to timer events
 	virtual void onTimer(Uint32 tick);
 	///Responds to widget events
@@ -52,20 +54,38 @@ public:
 	{
 		QUIT,
 		ADDMAP,
+		REFRESHMAPLIST,
+		DOWNLOADMAP,
 	};
+	
+	///Updates the list of maps
+	void mapListUpdated();
 	
 private:
 	///This requests the list of maps from the server
 	void requestMaps();
+	///This updates the map info
+	void updateMapInfo();
+	///Thjis updates the visibilily
+	void updateVisibility();
 
 	boost::shared_ptr<YOGClient> client;
 	List* mapList;
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapAuthor, *varPrestigeText;
 	//! This is the button for adding a map
 	TextButton* addMap;
+	//! this button requests an update to the list
+	TextButton* refresh;
+	//! this button requests a map to be downloaded
+	TextButton* downloadMap;
+	//! A piece of text showing "loading map list"
+	Text* loadingMapList;
+	
+	bool mapValid;
+	bool mapsRequested;
 	
 	//! True when the selected map is valid
 	bool validMapSelected;

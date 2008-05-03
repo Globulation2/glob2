@@ -22,7 +22,9 @@
 
 YOGDownloadableMapInfo::YOGDownloadableMapInfo()
 {
-
+	total = 0;
+	numberOfRatings = 0;
+	fileID = 0;
 }
 
 
@@ -30,7 +32,9 @@ YOGDownloadableMapInfo::YOGDownloadableMapInfo()
 YOGDownloadableMapInfo::YOGDownloadableMapInfo(MapHeader& header)
 	: mapHeader(header)
 {
-
+	total = 0;
+	numberOfRatings = 0;
+	fileID = 0;
 }
 
 
@@ -49,10 +53,70 @@ const MapHeader& YOGDownloadableMapInfo::getMapHeader() const
 
 
 
+void YOGDownloadableMapInfo::setRatingTotal(Uint32 ntotal)
+{
+	total=ntotal;
+}
+
+
+
+Uint32 YOGDownloadableMapInfo::getRatingTotal() const
+{
+	return total;
+}
+
+
+
+void YOGDownloadableMapInfo::setNumberOfRatings(Uint32 nnumberOfRatings)
+{
+	numberOfRatings = nnumberOfRatings;
+}
+
+
+
+Uint32 YOGDownloadableMapInfo::getNumberOfRatings() const
+{
+	return numberOfRatings;
+}
+
+
+
+void YOGDownloadableMapInfo::setAuthorName(const std::string& authorname)
+{
+	author = authorname;
+}
+
+
+
+std::string YOGDownloadableMapInfo::getAuthorName() const
+{
+	return author;
+}
+
+
+
+Uint16 YOGDownloadableMapInfo::getFileID() const
+{
+	return fileID;
+}
+
+
+
+void YOGDownloadableMapInfo::setFileID(Uint16 nfileID)
+{
+	fileID = nfileID;
+}
+
+
+
 void YOGDownloadableMapInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGDownloadableMapInfo");
 	mapHeader.save(stream);
+	stream->writeUint32(total, "total");
+	stream->writeUint32(numberOfRatings, "numberOfRatings");
+	stream->writeText(author, "author");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -62,6 +126,10 @@ void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 ver
 {
 	stream->readEnterSection("YOGDownloadableMapInfo");
 	mapHeader.load(stream);
+	total = stream->readUint32("total");
+	numberOfRatings = stream->readUint32("numberOfRatings");
+	author = stream->readText("author");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
@@ -69,7 +137,7 @@ void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 ver
 
 bool YOGDownloadableMapInfo::operator==(const YOGDownloadableMapInfo& rhs) const
 {
-	if(mapHeader == rhs.mapHeader)
+	if(mapHeader == rhs.mapHeader && total == rhs.total && numberOfRatings == rhs.numberOfRatings && author == rhs.author && fileID == rhs.fileID)
 		return true;
 	return false;
 }
@@ -77,7 +145,7 @@ bool YOGDownloadableMapInfo::operator==(const YOGDownloadableMapInfo& rhs) const
 
 bool YOGDownloadableMapInfo::operator!=(const YOGDownloadableMapInfo& rhs) const
 {
-	if(mapHeader != rhs.mapHeader)
+	if(mapHeader != rhs.mapHeader || total != rhs.total || numberOfRatings != rhs.numberOfRatings || author != rhs.author || fileID != rhs.fileID)
 		return true;
 	return false;
 }

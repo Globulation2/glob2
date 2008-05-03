@@ -2,6 +2,8 @@
 %0 έχει τερματίσει το παιχνίδι.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 %0 του Παιχνιδιού
 [%0's team unit got converted to your team]
@@ -288,9 +290,13 @@ Crater Lakes
 Δεν μεταφέρει τίποτα
 [down]
 κάτω
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 Επεξεργασία Χάρτη
@@ -496,6 +502,8 @@ Anastasios M. Pingios
 
 [load]
 Φόρτωση
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -512,6 +520,8 @@ Anastasios M. Pingios
 Επίγεια dmg.
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Όνομα χάρτη: %0.
 [map name]
@@ -522,6 +532,16 @@ Anastasios M. Pingios
 Πλάτος χάρτη
 [map size y]
 Μήκος χάρτη
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Διαθέσιμοι Χάρτες
 [mark map]
@@ -646,6 +666,8 @@ print screen
 Εύρος
 [ratios]
 Αναλογίες
+[refresh map list]
+
 [Register a new YOG user with password]
 Καταχωρήστε ένα νέο YOG χρήστη με κωδικό. (μη ασφαλές)
 [remember unit]
@@ -996,6 +1018,8 @@ Tutorial
 
 [upgrade]
 Αναβάθμιση
+[Upload Map]
+
 [upload map]
 
 [username]

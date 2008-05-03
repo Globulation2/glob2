@@ -2,6 +2,8 @@
 %0 ha lasciato la partita.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 Partita di %0
 [%0's team unit got converted to your team]
@@ -280,10 +282,14 @@ nullafacenti
 Non trasporta nulla
 [down]
 giù
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
 Scaricato %0
+[downloading map]
+
 [edit map]
 Modifica mappa
 [editing map]
@@ -488,6 +494,8 @@ Carica Mappa
 
 [load]
 Carica
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -504,6 +512,8 @@ Danno aereo
 Danno a terra
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Nome della mappa: %0.
 [map name]
@@ -514,6 +524,16 @@ Script della mappa
 Grandezza x della mappa
 [map size y]
 Grandezza y della mappa
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Mappe disponibili
 [mark map]
@@ -636,6 +656,8 @@ Circuito
 Raggio
 [ratios]
 Razioni
+[refresh map list]
+
 [Register a new YOG user with password]
 Registra un nuovo utente YOG con una passord. (non sicuro)
 [remember unit]
@@ -984,6 +1006,8 @@ Inizia/Ferma Miglioramento
 
 [upgrade]
 Migliora
+[Upload Map]
+
 [upload map]
 
 [username]

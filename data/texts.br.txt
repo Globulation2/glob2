@@ -2,6 +2,8 @@
 %0 saiu do jogo.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 jogo do %0
 [%0's team unit got converted to your team]
@@ -288,9 +290,13 @@ faz nada
 Está carregando nada
 [down]
 baixo
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 Editar mapa
@@ -496,6 +502,8 @@ Carregar mapa
 
 [load]
 Carrregar
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -512,6 +520,8 @@ Dano aéreo
 Dano terrestre
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
@@ -522,6 +532,16 @@ Nome
 Largura do mapa
 [map size y]
 Altura do mapa
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Mapas disponíveis
 [mark map]
@@ -646,6 +666,8 @@ Pista de corrida
 Alcance
 [ratios]
 Proporções
+[refresh map list]
+
 [Register a new YOG user with password]
 Registrar um novo usuário YOG com uma senha. (inseguro)
 [remember unit]
@@ -994,6 +1016,8 @@ Começar/Parar Upgrade
 
 [upgrade]
 Upgrade
+[Upload Map]
+
 [upload map]
 
 [username]
