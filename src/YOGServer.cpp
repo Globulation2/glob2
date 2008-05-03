@@ -28,7 +28,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), routerManager(*this)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), routerManager(*this), maps(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -112,6 +112,7 @@ void YOGServer::update()
 	gameLog.update();
 	routerManager.update();
 	router.update();
+	maps.update();
 	fileDistributionManager.update();
 	
 	int t = SDL_GetTicks();

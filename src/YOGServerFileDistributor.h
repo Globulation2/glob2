@@ -43,6 +43,16 @@ public:
 	
 	///Tells this file distributor to load from the given player
 	void loadFromPlayer(boost::shared_ptr<YOGServerPlayer> player);
+	
+	///This tells the file distributor to save all data in the file the given filename locally
+	void saveToFile(const std::string& file);
+
+	///This returns true if all of the chunks for the map are loaded, including the file
+	///information chunk, false otherwise
+	bool areAllChunksLoaded();
+	
+	///This returns true if the uploading from a player was canceled
+	bool wasUploadingCanceled();
 
 	///Updates the YOGServerFileDistributor
 	void update();
@@ -65,6 +75,7 @@ private:
 
 	Uint16 fileID;
 	bool startedLoading;
+	bool downloadFromPlayerCanceled;
 	std::string fileName;
 	boost::shared_ptr<YOGServerPlayer> player;
 	boost::shared_ptr<NetSendFileInformation> fileInfo;

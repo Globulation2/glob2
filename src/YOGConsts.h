@@ -167,4 +167,12 @@ enum YOGRouterAdministratorLoginRefusalReason
 	YOGRouterLoginUnknown,
 };
 
+enum YOGMapUploadRefusalReason
+{
+	///This means a map with the same name already exists
+	YOGMapUploadReasonMapNameAlreadyExists,
+	///This represent an unknown reas
+	YOGMapUploadReasonUnknown,
+};
+
 #endif 

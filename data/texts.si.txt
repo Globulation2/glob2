@@ -2,6 +2,8 @@
 %0 je zapustil igro.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -286,9 +288,13 @@ Prikaz
 Ne nosi ničesar
 [down]
 
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -494,6 +500,8 @@ Naloži igro
 
 [load]
 Naloži
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -510,6 +518,8 @@ Nizka kakovost
 
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Ime mape: %0.
 [map name]
@@ -520,6 +530,16 @@ Ime mape: %0.
 Širina mape
 [map size y]
 Višina mape
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 
 [mark map]
@@ -644,6 +664,8 @@ Tekaška steza
 Domet
 [ratios]
 Razmerja
+[refresh map list]
+
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
 [remember unit]
@@ -992,6 +1014,8 @@ Enote
 
 [upgrade]
 Nadgradi
+[Upload Map]
+
 [upload map]
 
 [username]

@@ -2,6 +2,8 @@
 %0 покинул игру.
 [%0 level %1]
 
+[%0% Uploaded]
+
 [%0's game]
 игра %0'а
 [%0's team unit got converted to your team]
@@ -282,10 +284,14 @@ delete
 Ничего не несёт
 [down]
 down
+[Download Map]
+
 [Download Maps]
 
 [downloaded %0]
 %0 скачано
+[downloading map]
+
 [edit map]
 Ред. карту
 [editing map]
@@ -492,6 +498,8 @@ left
 Загрузить
 [load]
 Загрузить карту
+[loading map list]
+
 [Lobby]
 
 [login]
@@ -508,6 +516,8 @@ left
 Урон (земля)
 [Map Discovered]
 
+[Map fownload failure: lost connection]
+
 [Map name: %0]
 Название карты: %0.
 [map name]
@@ -518,6 +528,16 @@ left
 Ширина карты
 [map size y]
 Высота карты
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Доступные Карты
 [mark map]
@@ -640,6 +660,8 @@ print screen
 Расстояние
 [ratios]
 Пропорции
+[refresh map list]
+
 [Register a new YOG user with password]
 Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
 [remember unit]
@@ -990,6 +1012,8 @@ up
 
 [upgrade]
 Улучшение
+[Upload Map]
+
 [upload map]
 
 [username]
