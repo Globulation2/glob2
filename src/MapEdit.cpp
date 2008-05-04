@@ -1989,6 +1989,11 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		deleteButton->setUnselected();
 		areasButton->setUnselected();
 		noRessourceGrowthButton->setUnselected();
+		isDraggingZone=false;
+		isDraggingTerrain=false;
+		isDraggingDelete=false;
+		isDraggingArea=false;
+		isDraggingNoRessourceGrowthArea=false;
 		if(panelMode==UnitEditor)
 			performAction("switch to building view");
 	}

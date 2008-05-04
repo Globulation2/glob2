@@ -39,13 +39,16 @@ public:
 	bool load(GAGCore::InputStream *stream);
 	
 	/// Saves map header information to the stream.
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream) const;
 
 	/// Returns the version major
 	Sint32 getVersionMajor() const;
 	
 	/// Returns the version minor
 	Sint32 getVersionMinor() const;
+	
+	// This update the version major and minor
+	void updateVersionNumbers();
 	
 	/// Returns the number of teams
 	Sint32 getNumberOfTeams() const;

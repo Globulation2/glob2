@@ -105,13 +105,13 @@ void YOGClientOptionsScreen::updateBlockedPlayerList()
 void YOGClientOptionsScreen::updateBlockedPlayerAdd()
 {
 	std::string name = addBlockedPlayerText->getText();
-	if(!name.empty())
+	if(!name.empty() && !client->getBlockedList()->isPlayerBlocked(name))
 	{
 		client->getBlockedList()->addBlockedPlayer(name);
 		blockedPlayers->addText(name);
-		addBlockedPlayerText->setText("");
 		client->getBlockedList()->save();
 	}
+	addBlockedPlayerText->setText("");
 }
 
 

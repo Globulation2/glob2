@@ -83,11 +83,8 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 
 
 	
-void MapHeader::save(GAGCore::OutputStream *stream)
+void MapHeader::save(GAGCore::OutputStream *stream) const
 {
-	///Update version major and minor
-	versionMajor = VERSION_MAJOR;
-	versionMinor = VERSION_MINOR;
 	stream->writeEnterSection("MapHeader");
 	stream->writeText(mapName, "mapName");
 	stream->writeSint32(versionMajor, "versionMajor");
@@ -119,6 +116,15 @@ Sint32 MapHeader::getVersionMajor() const
 Sint32 MapHeader::getVersionMinor() const
 {
 	return versionMinor;
+}
+
+
+
+void MapHeader::updateVersionNumbers()
+{
+	///Update version major and minor
+	versionMajor = VERSION_MAJOR;
+	versionMinor = VERSION_MINOR;
 }
 
 

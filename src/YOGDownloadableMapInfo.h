@@ -79,7 +79,7 @@ public:
 	bool operator==(const YOGDownloadableMapInfo& rhs) const;
 	bool operator!=(const YOGDownloadableMapInfo& rhs) const;
 private:
-	mutable MapHeader mapHeader;
+	MapHeader mapHeader;
 	Uint32 total;
 	Uint32 numberOfRatings;
 	std::string author;
