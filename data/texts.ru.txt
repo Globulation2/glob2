@@ -574,6 +574,8 @@ meta-%0
 Нет зон роста
 [No]
 Нет
+[Not Enough Ratings]
+
 [not ready]
 не готов
 [number of players: %0 (%1 AI)]
@@ -658,6 +660,8 @@ print screen
 Стадион
 [range]
 Расстояние
+[Rated %0]
+
 [ratios]
 Пропорции
 [refresh map list]

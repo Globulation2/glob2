@@ -279,6 +279,7 @@ void YOGServerPlayer::update()
 		YOGMapUploadRefusalReason reason = server.getMapDatabank().canRecieveFromPlayer(info->getMapInfo());
 		if(reason == YOGMapUploadReasonUnknown)
 		{
+			std::cout<<"info->getMapInfo().getAuthorName() = "<<info->getMapInfo().getAuthorName()<<std::endl;
 			Uint16 fileID =  server.getMapDatabank().recieveMapFromPlayer(info->getMapInfo(), server.getPlayer(playerID));
 			boost::shared_ptr<NetAcceptMapUpload> info = boost::shared_ptr<NetAcceptMapUpload>(new NetAcceptMapUpload(fileID));
 			sendMessage(info);
@@ -312,6 +313,12 @@ void YOGServerPlayer::update()
 	{
 		shared_ptr<NetRequestMapThumbnail> info = static_pointer_cast<NetRequestMapThumbnail>(message);
 		server.getMapDatabank().sendMapThumbnailToPlayer(info->getMapName(), server.getPlayer(playerID));
+	}
+	//This recieves a map rating
+	else if(type==MNetSubmitRatingOnMap)
+	{
+		shared_ptr<NetSubmitRatingOnMap> info = static_pointer_cast<NetSubmitRatingOnMap>(message);
+		server.getMapDatabank().submitRating(info->getMapName(), info->getRating());
 	}
 }
 

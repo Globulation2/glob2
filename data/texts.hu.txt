@@ -576,6 +576,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [No]
 Nem
+[Not Enough Ratings]
+
 [not ready]
 nincs készen
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Haladási sebesség
 Versenypálya
 [range]
 Hatótávolság
+[Rated %0]
+
 [ratios]
 Arányok
 [refresh map list]

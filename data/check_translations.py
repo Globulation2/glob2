@@ -1,4 +1,4 @@
-changes={}
+changes={"" : ""}
 
 
 def translation_check(filename, keys):

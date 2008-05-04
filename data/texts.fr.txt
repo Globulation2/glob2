@@ -576,6 +576,8 @@ Aucune touche
 Aucune zone de croissance de resources
 [No]
 Non
+[Not Enough Ratings]
+
 [not ready]
 pas prêt
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Améliore la vitesse de marche
 Piste de course
 [range]
 Portée
+[Rated %0]
+
 [ratios]
 Proportions
 [refresh map list]
