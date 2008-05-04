@@ -33,6 +33,7 @@ YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
 	organizedGameBroadcastTime=0;
+	maps.load();
 }
 
 

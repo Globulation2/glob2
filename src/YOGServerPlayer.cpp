@@ -307,6 +307,12 @@ void YOGServerPlayer::update()
 			server.getFileDistributionManager().getDistributor(info->getFileID())->removeMapRequestee(server.getPlayer(playerID));
 		}
 	}
+	//This recieves a cancel to a file download
+	else if(type==MNetRequestMapThumbnail)
+	{
+		shared_ptr<NetRequestMapThumbnail> info = static_pointer_cast<NetRequestMapThumbnail>(message);
+		server.getMapDatabank().sendMapThumbnailToPlayer(info->getMapName(), server.getPlayer(playerID));
+	}
 }
 
 

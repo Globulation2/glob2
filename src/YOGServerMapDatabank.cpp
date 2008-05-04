@@ -29,7 +29,6 @@ using namespace GAGCore;
 YOGServerMapDatabank::YOGServerMapDatabank(YOGServer* server)
 	: server(server)
 {
-	load();
 }
 
 
@@ -81,6 +80,22 @@ void YOGServerMapDatabank::sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer
 
 
 
+void YOGServerMapDatabank::sendMapThumbnailToPlayer(const std::string& mapName, boost::shared_ptr<YOGServerPlayer> player)
+{
+	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
+	{
+		if(i->getMapHeader().getMapName() == mapName)
+		{
+			MapThumbnail thumbnail = loadThumbnail(mapName, i->getMapHeader().getFileName());
+			boost::shared_ptr<NetSendMapThumbnail> infos(new NetSendMapThumbnail(mapName, thumbnail));
+			player->sendMessage(infos);
+			return;
+		}
+	}
+}
+
+
+
 void YOGServerMapDatabank::update()
 {
 	for(std::vector<boost::tuple<YOGDownloadableMapInfo, int> >::iterator i=uploadingMaps.begin(); i!=uploadingMaps.end();)
@@ -90,7 +105,6 @@ void YOGServerMapDatabank::update()
 			server->getFileDistributionManager().getDistributor(i->get<1>())->saveToFile(i->get<0>().getMapHeader().getFileName());
 			server->getFileDistributionManager().removeDistributor(i->get<1>());
 			addMap(i->get<0>());
-			std::cout<<"map: "<<i->get<0>().getMapHeader().getMapName()<<std::endl;
 			Uint32 n = i - uploadingMaps.begin();
 			uploadingMaps.erase(i);
 			i = uploadingMaps.begin() + n;
@@ -107,6 +121,37 @@ void YOGServerMapDatabank::update()
 			++i;
 		}
 	}
+}
+
+
+
+std::string YOGServerMapDatabank::getThumbtackFile(const std::string& mapName)
+{
+	return glob2NameToFilename("thumbnails", mapName, "thumbnail");
+}
+
+
+
+MapThumbnail YOGServerMapDatabank::loadThumbnail(const std::string& mapName, const std::string& fileName)
+{
+	MapThumbnail thumbnail;
+	InputStream* istream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(getThumbtackFile(mapName)));
+	if(!istream->isEndOfStream())
+	{
+		Uint32 versionMinor = istream->readUint32("versionMinor");
+		thumbnail.decodeData(istream, versionMinor);
+		delete istream;
+	}
+	else
+	{
+		delete istream;
+		thumbnail.loadFromMap(fileName);
+		OutputStream* ostream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(getThumbtackFile(mapName)));
+		ostream->writeUint32(VERSION_MINOR, "versionMinor");
+		thumbnail.encodeData(ostream);
+		delete ostream;
+	}
+	return thumbnail;
 }
 
 

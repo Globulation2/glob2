@@ -51,14 +51,19 @@ public:
 	virtual void paint(void);
 	//! Reload thumbnail for a new map
 	virtual void setMapThumbnail(const std::string& mapName);
+	//! Load from a given thumbnail
+	virtual void setMapThumbnail(MapThumbnail thumbnail);
 	//! Returns last map width
 	int getLastWidth(void) { return thumbnail.getMapWidth(); }
 	//! Returns last map height
 	int getLastHeight(void) { return thumbnail.getMapHeight(); }
 	const char *getMethode(void);
+	//! Returns true if the thumbnail is laoded, false otherwise
+	bool isThumbnailLoaded();
 	
 protected:
 	MapThumbnail thumbnail;
+	DrawableSurface* surface;
 };
 
 #endif
