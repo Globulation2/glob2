@@ -108,6 +108,7 @@ enum NetMessageType
 	MNetCancelRecievingFile,
 	MNetRequestMapThumbnail,
 	MNetSendMapThumbnail,
+	MNetSubmitRatingOnMap,
 	//type_append_marker
 };
 
@@ -2325,6 +2326,46 @@ private:
 private:
 	std::string mapName;
 	MapThumbnail thumbnail;
+};
+
+
+
+
+///NetSubmitRatingOnMap
+class NetSubmitRatingOnMap : public NetMessage
+{
+public:
+	///Creates a NetSubmitRatingOnMap message
+	NetSubmitRatingOnMap();
+
+	///Creates a NetSubmitRatingOnMap message
+	NetSubmitRatingOnMap(std::string mapName, Uint8 rating);
+
+	///Returns MNetSubmitRatingOnMap
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSubmitRatingOnMap message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSubmitRatingOnMap
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapName
+	std::string getMapName() const;
+
+	///Retrieves rating
+	Uint8 getRating() const;
+private:
+private:
+	std::string mapName;
+	Uint8 rating;
 };
 
 

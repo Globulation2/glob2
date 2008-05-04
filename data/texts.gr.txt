@@ -578,6 +578,8 @@ Anastasios M. Pingios
 Καμία Περιοχή Ανάπτυξης
 [No]
 Όχι
+[Not Enough Ratings]
+
 [not ready]
 Μη έτοιμος
 [number of players: %0 (%1 AI)]
@@ -664,6 +666,8 @@ print screen
 Ιππόδρομος
 [range]
 Εύρος
+[Rated %0]
+
 [ratios]
 Αναλογίες
 [refresh map list]

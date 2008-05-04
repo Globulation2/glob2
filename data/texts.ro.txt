@@ -576,6 +576,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [No]
 Nu
+[Not Enough Ratings]
+
 [not ready]
 nu-i gata
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Ameliorează viteza de mers
 Pistă raliu
 [range]
 Întindere
+[Rated %0]
+
 [ratios]
 Proportii
 [refresh map list]

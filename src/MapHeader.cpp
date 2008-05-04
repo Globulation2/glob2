@@ -87,8 +87,8 @@ void MapHeader::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("MapHeader");
 	stream->writeText(mapName, "mapName");
-	stream->writeSint32(versionMajor, "versionMajor");
-	stream->writeSint32(versionMinor, "versionMinor");
+	stream->writeSint32(VERSION_MAJOR, "versionMajor");
+	stream->writeSint32(VERSION_MINOR, "versionMinor");
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
 	stream->writeUint32(mapOffset, "mapOffset");
 	stream->writeUint8(isSavedGame, "isSavedGame");
@@ -116,15 +116,6 @@ Sint32 MapHeader::getVersionMajor() const
 Sint32 MapHeader::getVersionMinor() const
 {
 	return versionMinor;
-}
-
-
-
-void MapHeader::updateVersionNumbers()
-{
-	///Update version major and minor
-	versionMajor = VERSION_MAJOR;
-	versionMinor = VERSION_MINOR;
 }
 
 

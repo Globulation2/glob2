@@ -576,6 +576,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [No]
 Ne
+[Not Enough Ratings]
+
 [not ready]
 nepřipraven
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Zlepši chůzi
 Závodní dráha
 [range]
 Rozsah
+[Rated %0]
+
 [ratios]
 Poměry
 [refresh map list]

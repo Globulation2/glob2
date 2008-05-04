@@ -220,6 +220,9 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSendMapThumbnail:
 		message.reset(new NetSendMapThumbnail);
 		break;
+		case MNetSubmitRatingOnMap:
+		message.reset(new NetSubmitRatingOnMap);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -4604,6 +4607,84 @@ std::string NetSendMapThumbnail::getMapName() const
 MapThumbnail NetSendMapThumbnail::getThumbnail() const
 {
 	return thumbnail;
+}
+
+
+
+
+NetSubmitRatingOnMap::NetSubmitRatingOnMap()
+	: mapName(""), rating(0)
+{
+
+}
+
+
+
+NetSubmitRatingOnMap::NetSubmitRatingOnMap(std::string mapName, Uint8 rating)
+	:mapName(mapName), rating(rating)
+{
+}
+
+
+
+Uint8 NetSubmitRatingOnMap::getMessageType() const
+{
+	return MNetSubmitRatingOnMap;
+}
+
+
+
+void NetSubmitRatingOnMap::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSubmitRatingOnMap");
+	stream->writeText(mapName, "mapName");
+	stream->writeUint8(rating, "rating");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSubmitRatingOnMap::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSubmitRatingOnMap");
+	mapName = stream->readText("mapName");
+	rating = stream->readUint8("rating");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSubmitRatingOnMap::format() const
+{
+	std::ostringstream s;
+	s<<"NetSubmitRatingOnMap("<<"mapName="<<mapName<<"; "<<"rating="<<rating<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSubmitRatingOnMap::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSubmitRatingOnMap))
+	{
+		const NetSubmitRatingOnMap& r = dynamic_cast<const NetSubmitRatingOnMap&>(rhs);
+		if(r.mapName == mapName && r.rating == rating)
+			return true;
+	}
+	return false;
+}
+
+
+std::string NetSubmitRatingOnMap::getMapName() const
+{
+	return mapName;
+}
+
+
+
+Uint8 NetSubmitRatingOnMap::getRating() const
+{
+	return rating;
 }
 
 

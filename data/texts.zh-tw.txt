@@ -576,6 +576,8 @@ Air dmg.
 非成長區域
 [No]
 否
+[Not Enough Ratings]
+
 [not ready]
 還沒準備好
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Air dmg.
 跑道
 [range]
 射程
+[Rated %0]
+
 [ratios]
 比例
 [refresh map list]

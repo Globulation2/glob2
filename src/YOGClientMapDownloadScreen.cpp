@@ -52,12 +52,12 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	addWidget(mapName);
 	mapInfo=new Text(72, 268+50, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(72, 268+75, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
-	addWidget(mapVersion);
-	mapSize=new Text(72, 268+100, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
+	mapSize=new Text(72, 268+75, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapSize);
-	mapAuthor=new Text(72, 268+125, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
+	mapAuthor=new Text(72, 268+100, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapAuthor);
+	mapRating = new Text(72, 268 + 125, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
+	addWidget(mapRating);
 	addMap = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[upload map]"), ADDMAP);
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	addWidget(addMap);
@@ -68,6 +68,7 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	
 	loadingMapList = new Text(280, 200, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[loading map list]"));
 	addWidget(loadingMapList);
+	
 	
 	validMapSelected=false;
 	client->getDownloadableMapList()->addListener(this);
@@ -202,11 +203,18 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		std::string textTemp;
 		textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 		mapInfo->setText(textTemp);
-		textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
-		mapVersion->setText(textTemp);
 		textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
 		mapSize->setText(textTemp);
 		mapAuthor->setText(info.getAuthorName());
+		if(info.getNumberOfRatings() > 5)
+		{
+			textTemp = FormatableString(Toolkit::getStringTable()->getString("[Rated %0]")).arg(info.getRatingTotal() / info.getNumberOfRatings());
+		}
+		else
+		{
+			textTemp = FormatableString(Toolkit::getStringTable()->getString("[Not Enough Ratings]"));
+		}
+		mapRating->setText(textTemp);
 		if(!client->getDownloadableMapList()->getMapThumbnail(mapList->get()).isLoaded())
 		{
 			client->getDownloadableMapList()->requestThumbnail(mapList->get());
@@ -215,10 +223,10 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 	else
 	{
 		mapAuthor->setText("");
-		mapVersion->setText("");
 		mapInfo->setText("");
 		mapSize->setText("");
 		mapName->setText("");
+		mapRating->setText("");
 	}
 }
 

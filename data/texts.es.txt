@@ -576,6 +576,8 @@ Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en freenode, s
 
 [No]
 No
+[Not Enough Ratings]
+
 [not ready]
 No Listo
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Mejora la Marcha
 Circuito de Carreras
 [range]
 Rango
+[Rated %0]
+
 [ratios]
 Proporciones
 [refresh map list]

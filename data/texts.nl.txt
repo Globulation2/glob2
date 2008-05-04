@@ -576,6 +576,8 @@ Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode
 niet-groeigebieden
 [No]
 Nee
+[Not Enough Ratings]
+
 [not ready]
 Niet klaar
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Leert je eenheden
 Racebaan
 [range]
 Bereik
+[Rated %0]
+
 [ratios]
 Afmetingen
 [refresh map list]

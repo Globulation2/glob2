@@ -576,6 +576,8 @@ Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer
 Inga Odlingsområden
 [No]
 Nej
+[Not Enough Ratings]
+
 [not ready]
 inte redo
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ hos dina enheter
 Löparbana
 [range]
 Räckvidd
+[Rated %0]
+
 [ratios]
 Proportioner
 [refresh map list]

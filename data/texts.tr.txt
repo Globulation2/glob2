@@ -576,6 +576,8 @@ Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabi
 
 [No]
 Hayir
+[Not Enough Ratings]
+
 [not ready]
 hazir degil
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Yurumeyi gelistirir
 Kosuyolu
 [range]
 Menzil
+[Rated %0]
+
 [ratios]
 Oranlar
 [refresh map list]

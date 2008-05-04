@@ -578,6 +578,8 @@ sem tecla ainda
 Nenhuma área de crescimento
 [No]
 Não
+[Not Enough Ratings]
+
 [not ready]
 não pronto
 [number of players: %0 (%1 AI)]
@@ -664,6 +666,8 @@ Melhora o caminhar
 Pista de corrida
 [range]
 Alcance
+[Rated %0]
+
 [ratios]
 Proporções
 [refresh map list]

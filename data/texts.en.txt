@@ -512,6 +512,8 @@ no key yet
 No Growth Areas
 [No]
 No
+[Not Enough Ratings]
+Not Enough Ratings
 [not ready]
 not ready
 [number of players: %0 (%1 AI)]
@@ -596,6 +598,8 @@ Improves the walking
 Racetrack
 [range]
 Range
+[Rated %0]
+Rated %0
 [ratios]
 Proportions
 [refresh map list]

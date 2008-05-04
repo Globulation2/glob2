@@ -50,6 +50,9 @@ public:
 	///Sends a map thumbnail to the given player
 	void sendMapThumbnailToPlayer(const std::string& mapName, boost::shared_ptr<YOGServerPlayer> player);
 	
+	///Submits a rating for a given player.
+	void submitRating(const std::string& mapName, Uint8 rating);
+	
 	///This updates the map databank
 	void update();
 private:

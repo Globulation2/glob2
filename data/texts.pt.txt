@@ -576,6 +576,8 @@ Infelizmente o apelido que elegeu já está tomado em freenode. Só poderá fala
 
 [No]
 Não
+[Not Enough Ratings]
+
 [not ready]
 não pronto
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Melhora a velocidade de
 Pista de carreiras
 [range]
 Rango
+[Rated %0]
+
 [ratios]
 Proporções
 [refresh map list]

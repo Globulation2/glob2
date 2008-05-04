@@ -66,7 +66,7 @@ private:
 	MapPreview* preview;
 	boost::shared_ptr<YOGClient> client;
 	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *varPrestigeText;
+	Text *mapName, *mapInfo, *mapSize, *varPrestigeText;
 	Text *authorName;
 	Text* downloadStatus;
 	YOGClientMapDownloader downloader;

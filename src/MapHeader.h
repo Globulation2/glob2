@@ -47,9 +47,6 @@ public:
 	/// Returns the version minor
 	Sint32 getVersionMinor() const;
 	
-	// This update the version major and minor
-	void updateVersionNumbers();
-	
 	/// Returns the number of teams
 	Sint32 getNumberOfTeams() const;
 
