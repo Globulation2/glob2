@@ -570,6 +570,8 @@ nessun tasto
 Area che non sviluppa risorse
 [No]
 No
+[Not Enough Ratings]
+
 [not ready]
 non pronto
 [number of players: %0 (%1 AI)]
@@ -654,6 +656,8 @@ Migliora la velocità su
 Circuito
 [range]
 Raggio
+[Rated %0]
+
 [ratios]
 Razioni
 [refresh map list]

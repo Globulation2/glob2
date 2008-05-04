@@ -576,6 +576,8 @@ Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil
 Ingen vækstområde
 [No]
 Nej
+[Not Enough Ratings]
+
 [not ready]
 ikke klar
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Forbedre gåhastighed
 Træningsbane
 [range]
 Afstand
+[Rated %0]
+
 [ratios]
 Proportioner
 [refresh map list]

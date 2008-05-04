@@ -576,6 +576,8 @@ Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
 
 [No]
 Nie
+[Not Enough Ratings]
+
 [not ready]
 nie gotowy
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Zwiększa szybkość
 Tor wyścigowy
 [range]
 Zasięg
+[Rated %0]
+
 [ratios]
 Proporcje
 [refresh map list]

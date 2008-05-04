@@ -576,6 +576,8 @@ Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril
 
 [No]
 Ne
+[Not Enough Ratings]
+
 [not ready]
 ni pripravljen
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Izboljša hitrost hoje
 Tekaška steza
 [range]
 Domet
+[Rated %0]
+
 [ratios]
 Razmerja
 [refresh map list]

@@ -576,6 +576,8 @@ Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bi
 Ez dago hazkunde zonalderik
 [No]
 Ez
+[Not Enough Ratings]
+
 [not ready]
 itxaron...
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Ibilera hobetzeko
 Zirkuitoa
 [range]
 Hedadura
+[Rated %0]
+
 [ratios]
 Proportzioak
 [refresh map list]

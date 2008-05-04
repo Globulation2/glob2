@@ -576,6 +576,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 No Growth Areas
 [No]
 لا
+[Not Enough Ratings]
+
 [not ready]
 غير جاهز
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Prune
 مضمار السباق
 [range]
 المدى
+[Rated %0]
+
 [ratios]
 Proportions
 [refresh map list]

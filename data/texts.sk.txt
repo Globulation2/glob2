@@ -576,6 +576,8 @@ Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož použí
 
 [No]
 Nie
+[Not Enough Ratings]
+
 [not ready]
 nepripravený
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Zvyšuje rýchlosť kráčania
 Bežecká dráha
 [range]
 Dosah
+[Rated %0]
+
 [ratios]
 Proporcie
 [refresh map list]

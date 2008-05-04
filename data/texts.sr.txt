@@ -576,6 +576,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [No]
 Не
+[Not Enough Ratings]
+
 [not ready]
 није спреман
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Стадион
 [range]
 Домет
+[Rated %0]
+
 [ratios]
 Односи
 [refresh map list]

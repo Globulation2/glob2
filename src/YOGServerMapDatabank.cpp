@@ -96,6 +96,26 @@ void YOGServerMapDatabank::sendMapThumbnailToPlayer(const std::string& mapName, 
 
 
 
+void YOGServerMapDatabank::submitRating(const std::string& mapName, Uint8 rating)
+{
+	///Don't accept ratings above 10
+	if(rating > 10)
+		return;
+
+	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
+	{
+		if(i->getMapHeader().getMapName() == mapName)
+		{
+			int r = i->getRatingTotal() + rating;
+			int n  = i->getNumberOfRatings() + 1;
+			i->setRatingTotal(r);
+			i->setNumberOfRatings(n);
+		}
+	}
+}
+
+
+
 void YOGServerMapDatabank::update()
 {
 	for(std::vector<boost::tuple<YOGDownloadableMapInfo, int> >::iterator i=uploadingMaps.begin(); i!=uploadingMaps.end();)

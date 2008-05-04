@@ -576,6 +576,8 @@ Ho sentim molt però el teu nick ja està agafat en altre banda, només pots par
 
 [No]
 No
+[Not Enough Ratings]
+
 [not ready]
 sense preparar
 [number of players: %0 (%1 AI)]
@@ -662,6 +664,8 @@ Per augmentar la velocitat dels
 Poliesportiu
 [range]
 Rang
+[Rated %0]
+
 [ratios]
 Proporció
 [refresh map list]

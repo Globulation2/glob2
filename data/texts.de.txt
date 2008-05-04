@@ -570,6 +570,8 @@ Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatte
 
 [No]
 Nein
+[Not Enough Ratings]
+
 [not ready]
 nicht bereit
 [number of players: %0 (%1 AI)]
@@ -654,6 +656,8 @@ Erhöht die Gehgeschwin-
 Rennbahn
 [range]
 Reichweite
+[Rated %0]
+
 [ratios]
 Verhältnis
 [refresh map list]
