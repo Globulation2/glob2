@@ -85,7 +85,7 @@ public:
 	bool operator==(const YOGAfterJoinGameInformation& rhs) const;
 	bool operator!=(const YOGAfterJoinGameInformation& rhs) const;
 private:
-	mutable MapHeader map;
+	MapHeader map;
 	GameHeader game;
 	NetReteamingInformation reteam;
 	Uint8 latency;

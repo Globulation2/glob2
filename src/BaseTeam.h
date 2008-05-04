@@ -52,7 +52,7 @@ private:
 
 public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream) const;
 
 	Uint8 *getData();
 	bool setData(const Uint8 *data, int dataLength);

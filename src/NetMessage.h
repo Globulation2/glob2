@@ -787,7 +787,7 @@ public:
 	///Returns the map header
 	const MapHeader& getMapHeader() const;
 private:
-	mutable MapHeader mapHeader;
+	MapHeader mapHeader;
 };
 
 

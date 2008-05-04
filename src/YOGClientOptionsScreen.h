@@ -54,14 +54,11 @@ public:
 	
 	enum
 	{
-		QUIT
-	};
-private:
-	enum
-	{
+		QUIT,
 		REMOVEBLOCKEDPLAYER,
 		ADDBLOCKEDPLAYER,
 	};
+private:
 
 	///Updates the list of blocked player
 	void updateBlockedPlayerList();
