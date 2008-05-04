@@ -63,7 +63,7 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 
 
 
-void BaseTeam::save(GAGCore::OutputStream *stream)
+void BaseTeam::save(GAGCore::OutputStream *stream) const
 {
 	// saving baseteam
 	stream->writeEnterSection("BaseTeam");

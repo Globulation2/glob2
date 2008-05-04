@@ -116,9 +116,9 @@ namespace GAGGUI
 			returnCode+=1;
 			
 			if(fullScreen)
-				groupButtons[group_n] = new TextButton(0, 0, 200, 40, ALIGN_LEFT, ALIGN_TOP, "menu", title.c_str(), 0);
+				groupButtons[group_n] = new TextButton(0, 0, 180, 40, ALIGN_LEFT, ALIGN_TOP, "menu", title.c_str(), 0);
 			else
-				groupButtons[group_n] = new TextButton(0, 0, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", title.c_str(), 0);
+				groupButtons[group_n] = new TextButton(0, 0, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", title.c_str(), 0);
 			addWidget(groupButtons[group_n]);
 			groupButtons[group_n]->internalInit();
 			if(groupButtons.size() == 1)
@@ -209,8 +209,11 @@ namespace GAGGUI
 		void TabScreen::onTimer(Uint32 tick)
 		{
 			int last = -1;
+			int first = -1;
 			for(std::map<int, TabScreenWindow*>::iterator i = windows.begin(); i!=windows.end();)
 			{
+				if(first == -1)
+					first = i->first;
 				if(!i->second->isStillExecuting())
 				{
 					std::map<int, TabScreenWindow*>::iterator ni = i;
@@ -225,9 +228,9 @@ namespace GAGGUI
 					}
 					else if(n == activated)
 					{
-						if(last!=-1)
+						if(first!=-1)
 						{
-							activateGroup(last);
+							activateGroup(first);
 						}
 					}
 				}
@@ -266,9 +269,9 @@ namespace GAGGUI
 			for(std::map<int, Widget*>::iterator i=groupButtons.begin(); i!=groupButtons.end(); ++i)
 			{
 				if(fullScreen)
-					static_cast<TextButton*>(i->second)->setScreenPosition(10 + 210 * x, 70);
+					static_cast<TextButton*>(i->second)->setScreenPosition(10 + 190 * x, 70);
 				else
-					static_cast<TextButton*>(i->second)->setScreenPosition(10 + 210 * x, 10);
+					static_cast<TextButton*>(i->second)->setScreenPosition(10 + 190 * x, 10);
 				x++;
 			}
 		}

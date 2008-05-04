@@ -168,7 +168,7 @@ void YOGClientMapDownloadScreen::mapListUpdated()
 
 void YOGClientMapDownloadScreen::mapThumbnailsUpdated()
 {
-	updateMapPreview();
+	updateMapInfo();
 }
 
 
@@ -192,6 +192,7 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 	else
 		mapValid=false;
 
+	updateMapPreview();
 	if(mapValid)
 	{
 		YOGDownloadableMapInfo info = client->getDownloadableMapList()->getMap(mapList->get());
@@ -219,7 +220,6 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		mapSize->setText("");
 		mapName->setText("");
 	}
-	updateMapPreview();
 }
 
 
