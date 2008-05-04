@@ -214,6 +214,12 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetCancelRecievingFile:
 		message.reset(new NetCancelRecievingFile);
 		break;
+		case MNetRequestMapThumbnail:
+		message.reset(new NetRequestMapThumbnail);
+		break;
+		case MNetSendMapThumbnail:
+		message.reset(new NetSendMapThumbnail);
+		break;
 		///append_create_point
 	}
 	message->decodeData(stream);
@@ -4451,6 +4457,153 @@ bool NetCancelRecievingFile::operator==(const NetMessage& rhs) const
 Uint16 NetCancelRecievingFile::getFileID() const
 {
 	return fileID;
+}
+
+
+
+
+NetRequestMapThumbnail::NetRequestMapThumbnail()
+	: mapName("")
+{
+
+}
+
+
+
+NetRequestMapThumbnail::NetRequestMapThumbnail(std::string mapName)
+	:mapName(mapName)
+{
+}
+
+
+
+Uint8 NetRequestMapThumbnail::getMessageType() const
+{
+	return MNetRequestMapThumbnail;
+}
+
+
+
+void NetRequestMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestMapThumbnail");
+	stream->writeText(mapName, "mapName");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestMapThumbnail::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestMapThumbnail");
+	mapName = stream->readText("mapName");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestMapThumbnail::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestMapThumbnail("<<"mapName="<<mapName<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRequestMapThumbnail::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestMapThumbnail))
+	{
+		const NetRequestMapThumbnail& r = dynamic_cast<const NetRequestMapThumbnail&>(rhs);
+		if(r.mapName == mapName)
+			return true;
+	}
+	return false;
+}
+
+
+std::string NetRequestMapThumbnail::getMapName() const
+{
+	return mapName;
+}
+
+
+
+
+NetSendMapThumbnail::NetSendMapThumbnail()
+	: mapName(""), thumbnail()
+{
+
+}
+
+
+
+NetSendMapThumbnail::NetSendMapThumbnail(std::string mapName, MapThumbnail thumbnail)
+	:mapName(mapName), thumbnail(thumbnail)
+{
+}
+
+
+
+Uint8 NetSendMapThumbnail::getMessageType() const
+{
+	return MNetSendMapThumbnail;
+}
+
+
+
+void NetSendMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendMapThumbnail");
+	stream->writeText(mapName, "mapName");
+	thumbnail.encodeData(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendMapThumbnail::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendMapThumbnail");
+	mapName = stream->readText("mapName");
+	thumbnail.decodeData(stream, VERSION_MINOR);
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendMapThumbnail::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendMapThumbnail("<<"mapName="<<mapName<<"; "<<"="<<""<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSendMapThumbnail::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendMapThumbnail))
+	{
+		const NetSendMapThumbnail& r = dynamic_cast<const NetSendMapThumbnail&>(rhs);
+		if(r.mapName == mapName)
+			return true;
+	}
+	return false;
+}
+
+
+std::string NetSendMapThumbnail::getMapName() const
+{
+	return mapName;
+}
+
+
+
+MapThumbnail NetSendMapThumbnail::getThumbnail() const
+{
+	return thumbnail;
 }
 
 

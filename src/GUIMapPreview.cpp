@@ -39,6 +39,7 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
 	this->vAlignFlag = vAlign;
 	this->w = 128;
 	this->h = 128;
+	surface = NULL;
 }
 
 MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string &tooltip, const std::string &tooltipFont)
@@ -50,7 +51,7 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::st
 	this->vAlignFlag = vAlign;
 	this->w = 128;
 	this->h = 128;
-
+	surface = NULL;
 }
 
 
@@ -68,10 +69,40 @@ const char *MapPreview::getMethode(void)
 
 
 
+bool MapPreview::isThumbnailLoaded()
+{
+	return thumbnail.isLoaded();
+}
+
+
 void MapPreview::setMapThumbnail(const std::string& mapName)
 {
-	thumbnail.loadFromMap(mapName);
+	MapThumbnail n;
+	n.loadFromMap(mapName);
+	setMapThumbnail(n);
 }
+
+
+
+void MapPreview::setMapThumbnail(MapThumbnail nthumbnail)
+{
+	thumbnail = nthumbnail;
+	if(surface)
+	{
+		delete surface;
+	}
+	if(thumbnail.isLoaded())
+	{
+		surface = new DrawableSurface(128, 128);
+		thumbnail.loadIntoSurface(surface);
+	}
+	else
+	{
+		surface = NULL;
+	}
+}
+
+
 
 void MapPreview::paint(void)
 {
@@ -86,9 +117,9 @@ void MapPreview::paint(void)
 	if (vAlignFlag == ALIGN_FILL)
 		y += (h-128)>>1;
 	
-	if (thumbnail.getThumbnailSurface())
+	if (surface)
 	{
-		parent->getSurface()->drawSurface(x, y, thumbnail.getThumbnailSurface());
+		parent->getSurface()->drawSurface(x, y, surface);
 	}
 	else
 	{

@@ -22,6 +22,7 @@
 #include <boost/shared_ptr.hpp>
 #include "GameHeader.h"
 #include "MapHeader.h"
+#include "MapThumbnail.h"
 #include "NetReteamingInformation.h"
 #include "Order.h"
 #include "Player.h"
@@ -105,6 +106,8 @@ enum NetMessageType
 	MNetRefuseMapUpload,
 	MNetCancelSendingFile,
 	MNetCancelRecievingFile,
+	MNetRequestMapThumbnail,
+	MNetSendMapThumbnail,
 	//type_append_marker
 };
 
@@ -2246,6 +2249,82 @@ public:
 private:
 private:
 	Uint16 fileID;
+};
+
+
+
+
+///NetRequestMapThumbnail
+class NetRequestMapThumbnail : public NetMessage
+{
+public:
+	///Creates a NetRequestMapThumbnail message
+	NetRequestMapThumbnail();
+
+	///Creates a NetRequestMapThumbnail message
+	NetRequestMapThumbnail(std::string mapName);
+
+	///Returns MNetRequestMapThumbnail
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestMapThumbnail message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestMapThumbnail
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapName
+	std::string getMapName() const;
+private:
+private:
+	std::string mapName;
+};
+
+
+
+
+///NetSendMapThumbnail
+class NetSendMapThumbnail : public NetMessage
+{
+public:
+	///Creates a NetSendMapThumbnail message
+	NetSendMapThumbnail();
+
+	///Creates a NetSendMapThumbnail message
+	NetSendMapThumbnail(std::string mapName, MapThumbnail thumbnail);
+
+	///Returns MNetSendMapThumbnail
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendMapThumbnail message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendMapThumbnail
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapName
+	std::string getMapName() const;
+
+	///Retrieves thumbnail
+	MapThumbnail getThumbnail() const;
+private:
+private:
+	std::string mapName;
+	MapThumbnail thumbnail;
 };
 
 

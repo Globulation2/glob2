@@ -28,38 +28,26 @@
 #include "Stream.h"
 #include "Toolkit.h"
 #include "Utilities.h"
+#include "zlib.h"
 
 using namespace GAGCore;
 
 MapThumbnail::MapThumbnail()
 {
-	mapThumbnail=NULL;
 	lastW = 0;
 	lastH = 0;
+	loaded = false;
 }
-
-
-
-MapThumbnail::~MapThumbnail()
-{
-	if(mapThumbnail)
-		delete mapThumbnail;
-}
-
 
 void MapThumbnail::loadFromMap(const std::string& map)
 {
-	if (mapThumbnail)
+	if (map.empty())
 	{
-		delete mapThumbnail;
-		mapThumbnail = NULL;
-		lastW = 0;
-		lastH = 0;
+		loaded = false;
+		return;
 	}
 	
-	
-	if (map.empty())
-		return;
+	loaded = true;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(map));
 	//InputStream *stream = new BinaryInputStream(new CompressedInputStreamBackendFilter(Toolkit::getFileManager()->openInputStreamBackend(mapName)));
@@ -94,10 +82,6 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		// set values
 		lastW = map.getW();
 		lastH = map.getH();
-		
-		// create thumbnail
-		mapThumbnail = new DrawableSurface(128, 128);
-		mapThumbnail->drawFilledRect(0, 0, 128, 128, 0, 0, 0);
 
 		// TODO : put this thumbnail code in a function
 		int H[3]= { 0, 90, 0 };
@@ -123,6 +107,11 @@ void MapThumbnail::loadFromMap(const std::string& map)
 
 		dMx=(float)mMax/128.0f;
 		dMy=(float)mMax/128.0f;
+		
+		for(int i=0; i<(128*128*3); ++i)
+		{
+			buffer[i]=0;
+		}
 
 		for (dy=0; dy<szY; dy++)
 		{
@@ -162,7 +151,9 @@ void MapThumbnail::loadFromMap(const std::string& map)
 				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
 				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 
-				mapThumbnail->drawPixel(dx+decX, dy+decY, r, g, b);
+				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 0] = r;
+				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 1] = g;
+				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 2] = b;
 			}
 		}
 	}
@@ -170,10 +161,56 @@ void MapThumbnail::loadFromMap(const std::string& map)
 
 
 
-DrawableSurface *MapThumbnail::getThumbnailSurface()
+void MapThumbnail::encodeData(GAGCore::OutputStream* stream) const
 {
-	return mapThumbnail;
+	stream->writeEnterSection("MapThumbnail");
+	stream->writeSint16(lastW, "lastW");
+	stream->writeSint16(lastH, "lastH");
+	//Compress with zlib
+	//According to zlib documentation, the out buffer must be 0.1% larger than in buffer + 12 bytes
+	unsigned long compressedLength = (128 * 128 * 3 * 1001) / 1000 + 13;
+	Uint8* compressed = new Uint8[compressedLength];
+	compress2(compressed, &compressedLength, buffer, 128 * 128 * 3, 9);
+	stream->writeUint32(compressedLength, "compressedLength");
+	stream->write(compressed, compressedLength, "compressed");
+	stream->writeLeaveSection();
+	delete[] compressed;
 }
+
+
+
+void MapThumbnail::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
+{
+	stream->readEnterSection("MapThumbnail");
+	lastW = stream->readSint16("lastW");
+	lastH = stream->readSint16("lastH");
+	Uint32 compressedLength = stream->readUint32("compressedLength");
+	Uint8* compressed = new Uint8[compressedLength];
+	stream->read(compressed, compressedLength, "compressed");
+	//uncompress with zlib
+	unsigned long uncompLen = 128 * 128 * 3;
+	uncompress(buffer, &uncompLen, compressed, compressedLength);
+	stream->readLeaveSection();
+	delete[] compressed;
+	loaded=true;
+}
+
+
+
+void MapThumbnail::loadIntoSurface(GAGCore::DrawableSurface *surface)
+{
+	for(int x=0; x<surface->getW(); ++x)
+	{
+		for(int y=0; y<surface->getH(); ++y)
+		{
+			int r = buffer[x * 128 * 3 + y * 3 + 0];
+			int g = buffer[x * 128 * 3 + y * 3 + 1];
+			int b = buffer[x * 128 * 3 + y * 3 + 2];
+			surface->drawPixel(x, y, Color(r, g, b));
+		}
+	}
+}
+
 
 
 int MapThumbnail::getMapWidth()
@@ -181,8 +218,17 @@ int MapThumbnail::getMapWidth()
 	return lastW;
 }
 
+
+
 int MapThumbnail::getMapHeight()
 {
 	return lastH;
+}
+
+
+
+bool MapThumbnail::isLoaded()
+{
+	return loaded;
 }
 

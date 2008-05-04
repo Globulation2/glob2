@@ -35,6 +35,7 @@
 #include "YOGClientBlockedList.h"
 #include "YOGClient.h"
 #include "YOGClientDownloadingMapScreen.h"
+#include "YOGClientDownloadableMapList.h"
 
 using namespace GAGCore;
 
@@ -113,6 +114,18 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 	else if(downloader.getDownloadingState() == YOGClientMapDownloader::Finished)
 	{
 		endExecute(FINISHED);
+	}
+	
+	if(!preview->isThumbnailLoaded())
+	{
+		MapThumbnail& thumbnail = client->getDownloadableMapList()->getMapThumbnail(info.getMapHeader().getMapName());
+		if(thumbnail.isLoaded())
+		{
+			preview->setMapThumbnail(thumbnail);
+			std::string textTemp;
+			textTemp = FormatableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
+			mapSize->setText(textTemp);
+		}
 	}
 }
 

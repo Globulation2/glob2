@@ -39,6 +39,8 @@ bool YOGClientDownloadableMapList::waitingForListFromServer()
 
 void YOGClientDownloadableMapList::requestMapListUpdate()
 {
+	maps.clear();
+	thumbnails.clear();
 	boost::shared_ptr<NetRequestDownloadableMapList> request(new NetRequestDownloadableMapList);
 	client->sendNetMessage(request);
 	waitingForList=true;
@@ -53,8 +55,21 @@ void YOGClientDownloadableMapList::recieveMessage(boost::shared_ptr<NetMessage> 
 	{
 		boost::shared_ptr<NetDownloadableMapInfos> info = static_pointer_cast<NetDownloadableMapInfos>(message);
 		maps = info->getMaps();
+		thumbnails.resize(maps.size());
 		sendUpdateToListeners();
 		waitingForList=false;
+	}
+	if(type == MNetSendMapThumbnail)
+	{
+		boost::shared_ptr<NetSendMapThumbnail> info = static_pointer_cast<NetSendMapThumbnail>(message);
+		for(int i=0; i<maps.size(); ++i)
+		{
+			if(maps[i].getMapHeader().getMapName() == info->getMapName())
+			{
+				thumbnails[i] = info->getThumbnail();
+			}
+		}
+		sendThumbnailToListeners();
 	}
 }
 
@@ -80,6 +95,27 @@ YOGDownloadableMapInfo YOGClientDownloadableMapList::getMap(const std::string& n
 
 
 
+void YOGClientDownloadableMapList::requestThumbnail(const std::string& name)
+{
+	boost::shared_ptr<NetRequestMapThumbnail> request(new NetRequestMapThumbnail(name));
+	client->sendNetMessage(request);
+}
+
+
+
+MapThumbnail& YOGClientDownloadableMapList::getMapThumbnail(const std::string& name)
+{
+	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
+	{
+		if(i->getMapHeader().getMapName() == name)
+		{
+			return thumbnails[i - maps.begin()];
+		}
+	}
+}
+
+
+
 void YOGClientDownloadableMapList::addListener(YOGClientDownloadableMapListener* listener)
 {
 	listeners.push_back(listener);
@@ -99,6 +135,15 @@ void YOGClientDownloadableMapList::sendUpdateToListeners()
 	for(std::list<YOGClientDownloadableMapListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
 		(*i)->mapListUpdated();
+	}
+}
+
+
+void YOGClientDownloadableMapList::sendThumbnailToListeners()
+{
+	for(std::list<YOGClientDownloadableMapListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
+	{
+		(*i)->mapThumbnailsUpdated();
 	}
 }
 

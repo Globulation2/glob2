@@ -64,6 +64,7 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("campaigns");
+	fileManager->addWriteSubdir("thumbnails");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");

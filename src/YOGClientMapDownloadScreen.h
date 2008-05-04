@@ -60,14 +60,18 @@ public:
 	
 	///Updates the list of maps
 	void mapListUpdated();
+	///Updates the list of maps
+	void mapThumbnailsUpdated();
 	
 private:
 	///This requests the list of maps from the server
 	void requestMaps();
 	///This updates the map info
 	void updateMapInfo();
-	///Thjis updates the visibilily
+	///This updates the visibilily
 	void updateVisibility();
+	///This updates the map preview
+	void updateMapPreview();
 
 	boost::shared_ptr<YOGClient> client;
 	List* mapList;
