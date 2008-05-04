@@ -166,6 +166,12 @@ void YOGClientMapDownloadScreen::mapListUpdated()
 }
 
 
+void YOGClientMapDownloadScreen::mapThumbnailsUpdated()
+{
+	updateMapPreview();
+}
+
+
 
 void YOGClientMapDownloadScreen::requestMaps()
 {
@@ -200,6 +206,10 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
 		mapSize->setText(textTemp);
 		mapAuthor->setText(info.getAuthorName());
+		if(!client->getDownloadableMapList()->getMapThumbnail(mapList->get()).isLoaded())
+		{
+			client->getDownloadableMapList()->requestThumbnail(mapList->get());
+		}
 	}
 	else
 	{
@@ -208,8 +218,8 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		mapInfo->setText("");
 		mapSize->setText("");
 		mapName->setText("");
-		mapPreview->setMapThumbnail("");
 	}
+	updateMapPreview();
 }
 
 
@@ -223,6 +233,29 @@ void YOGClientMapDownloadScreen::updateVisibility()
 	else
 	{
 		loadingMapList->visible=false;
+	}
+}
+
+
+
+void YOGClientMapDownloadScreen::updateMapPreview()
+{
+	if(mapValid)
+	{
+		MapThumbnail& thumbnail = client->getDownloadableMapList()->getMapThumbnail(mapList->get());
+		if(thumbnail.isLoaded())
+		{
+			mapPreview->setMapThumbnail(thumbnail);
+		}
+		else
+		{
+			mapPreview->setMapThumbnail("");
+		}
+	}
+	else
+	{
+	
+		mapPreview->setMapThumbnail("");
 	}
 }
 

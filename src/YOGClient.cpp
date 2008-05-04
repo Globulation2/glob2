@@ -368,6 +368,10 @@ void YOGClient::update()
 		{
 			downloadableMapList->recieveMessage(message);
 		}
+		if(type == MNetSendMapThumbnail)
+		{
+			downloadableMapList->recieveMessage(message);
+		}
 		message = nc.getMessage();
 	}
 

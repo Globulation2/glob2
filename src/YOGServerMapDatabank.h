@@ -19,10 +19,11 @@
 #ifndef YOGServerMapDatabank_h
 #define YOGServerMapDatabank_h
 
+#include "boost/tuple/tuple.hpp"
+#include "MapThumbnail.h"
+#include <vector>
 #include "YOGDownloadableMapInfo.h"
 #include "YOGServerPlayer.h"
-#include <vector>
-#include "boost/tuple/tuple.hpp"
 
 class YOGServer;
 
@@ -46,9 +47,18 @@ public:
 	///Sends the list of maps to the given player
 	void sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer> player);
 	
+	///Sends a map thumbnail to the given player
+	void sendMapThumbnailToPlayer(const std::string& mapName, boost::shared_ptr<YOGServerPlayer> player);
+	
 	///This updates the map databank
 	void update();
 private:
+	friend class YOGServer;
+	///Returns the file that the compressed thumbnail information would be stored in
+	std::string getThumbtackFile(const std::string& mapName);
+	///This loads the thumbnail, either from a file or generating it on the fly
+	MapThumbnail loadThumbnail(const std::string& mapName, const std::string& fileName);
+
 	///This does a full load of the map databank
 	void load();
 	///This does a full save of the map databank

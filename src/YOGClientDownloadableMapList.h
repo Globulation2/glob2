@@ -24,6 +24,7 @@
 #include <vector>
 #include <list>
 #include "YOGClientDownloadableMapListener.h"
+#include "MapThumbnail.h"
 
 class YOGClient;
 class NetMessage;
@@ -50,6 +51,12 @@ public:
 	///Returns a YOGDownloadableMapInfo assocciatted with a given name
 	YOGDownloadableMapInfo getMap(const std::string& name);
 	
+	///Requests a thumbnail for the given map name
+	void requestThumbnail(const std::string& name);
+	
+	///Retrieves the thumbnail for the given map name
+	MapThumbnail& getMapThumbnail(const std::string& name);
+	
 	///Adds a listener to recieve events when the map list updated
 	void addListener(YOGClientDownloadableMapListener* listener);
 	
@@ -58,8 +65,11 @@ public:
 private:
 	///Sends a map list update to the listeners
 	void sendUpdateToListeners();
+	///Sends a map thumbnail update to the listeners
+	void sendThumbnailToListeners();
 
 	std::vector<YOGDownloadableMapInfo> maps;
+	std::vector<MapThumbnail> thumbnails;
 	YOGClient* client;
 	std::list<YOGClientDownloadableMapListener*> listeners;
 	bool waitingForList;
