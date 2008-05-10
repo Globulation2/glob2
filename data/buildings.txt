@@ -89,8 +89,8 @@ decLeft -1
 decTop -1
 maxWood 3
 hpInit 1
-hpMax 100
-hpInc 34
+hpMax 200
+hpInc 67
 level 0
 shortTypeNum 1
 maxUnitWorking 1
@@ -120,8 +120,8 @@ maxFruit0 40
 maxFruit1 40
 maxFruit2 40
 maxUnitInside 4
-hpInit 100
-hpMax 100
+hpInit 200
+hpMax 200
 level 0
 shortTypeNum 1
 maxUnitWorking 1
@@ -143,9 +143,9 @@ height 2
 decLeft -1
 decTop -1
 maxWood 8
-hpInit 100
-hpMax 250
-hpInc 19
+hpInit 200
+hpMax 500
+hpInc 38
 level 1
 shortTypeNum 1
 maxUnitWorking 1
@@ -175,9 +175,9 @@ maxFruit0 80
 maxFruit1 80
 maxFruit2 80
 maxUnitInside 7
-hpInit 250
-hpMax 250
-armor 5
+hpInit 500
+hpMax 500
+armor 8
 level 1
 shortTypeNum 1
 maxUnitWorking 1
@@ -200,10 +200,10 @@ decLeft -1
 decTop -1
 maxWood 7
 maxStone 5
-hpInit 250
-hpMax 350
-hpInc 11
-armor 5
+hpInit 500
+hpMax 700
+hpInc 17
+armor 8
 level 2
 shortTypeNum 1
 maxUnitWorking 1
@@ -232,9 +232,9 @@ maxFruit0 200
 maxFruit1 200
 maxFruit2 200
 maxUnitInside 17
-hpInit 350
-hpMax 350
-armor 10
+hpInit 700
+hpMax 700
+armor 15
 level 2
 shortTypeNum 1
 maxUnitWorking 1
@@ -257,8 +257,8 @@ decLeft -1
 decTop -1
 maxWood 3
 hpInit 1
-hpMax 130
-hpInc 43
+hpMax 260
+hpInc 87
 level 0
 shortTypeNum 2
 maxUnitWorking 1
@@ -276,16 +276,16 @@ miniSprite data/gfx/minihosp0b
 miniSpriteImage 0
 
 canHealUnit 1
-timeToHealUnit 12
+timeToHealUnit 10
 
 width 2
 height 2
 decLeft -1
 decTop -1
 maxUnitInside 2
-hpInit 130
-hpMax 130
-armor 5
+hpInit 260
+hpMax 260
+armor 8
 level 0
 shortTypeNum 2
 
@@ -306,9 +306,9 @@ height 2
 decLeft -1
 decTop -1
 maxWood 8
-hpInit 130
-hpMax 250
-hpInc 15
+hpInit 260
+hpMax 500
+hpInc 30
 level 1
 shortTypeNum 2
 maxUnitWorking 1
@@ -325,16 +325,16 @@ miniSprite data/gfx/minihosp1b
 miniSpriteImage 0
 
 canHealUnit 1
-timeToHealUnit 7
+timeToHealUnit 6
 
 width 2
 height 2
 decLeft -1
 decTop -1
 maxUnitInside 5
-hpInit 250
-hpMax 250
-armor 5
+hpInit 500
+hpMax 500
+armor 8
 level 1
 shortTypeNum 2
 
@@ -356,10 +356,10 @@ decLeft -1
 decTop -1
 maxWood 3
 maxStone 5
-hpInit 250
-hpMax 350
-hpInc 13
-armor 5
+hpInit 500
+hpMax 700
+hpInc 25
+armor 8
 level 2
 shortTypeNum 2
 maxUnitWorking 1
@@ -376,16 +376,16 @@ miniSprite data/gfx/minihosp2b
 miniSpriteImage 0
 
 canHealUnit 1
-timeToHealUnit 3
+timeToHealUnit 2
 
 width 2
 height 2
 decLeft -1
 decTop -1
 maxUnitInside 7
-hpInit 350
-hpMax 350
-armor 10
+hpInit 700
+hpMax 700
+armor 15
 level 2
 shortTypeNum 2
 
@@ -401,15 +401,15 @@ miniSpriteImage 0
 
 fillable 1
 
-width 6
-height 6
+width 4
+height 4
 decLeft -3
 decTop -3
 maxWood 6
 maxStone 1
 hpInit 1
-hpMax 270
-hpInc 39
+hpMax 675
+hpInc 97
 armor 0
 level 0
 shortTypeNum 3
@@ -430,14 +430,14 @@ miniSpriteImage 0
 upgradeWalk 1
 upgradeTimeWalk 7
 
-width 6
-height 6
+width 4
+height 4
 decLeft -3
 decTop -3
 maxUnitInside 4
-hpInit 270
-hpMax 270
-armor 5
+hpInit 675
+hpMax 675
+armor 8
 level 0
 shortTypeNum 3
 
@@ -453,16 +453,16 @@ miniSpriteImage 5
 
 fillable 1
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxWood 10
 maxStone 5
-hpInit 270
-hpMax 400
-hpInc 9
-armor 5
+hpInit 675
+hpMax 1000
+hpInc 22
+armor 8
 level 1
 shortTypeNum 3
 maxUnitWorking 1
@@ -482,14 +482,14 @@ miniSpriteImage 0
 upgradeWalk 1
 upgradeTimeWalk 7
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxUnitInside 7
-hpInit 400
-hpMax 400
-armor 9
+hpInit 1000
+hpMax 1000
+armor 14
 level 1
 shortTypeNum 3
 
@@ -505,16 +505,16 @@ miniSpriteImage 5
 
 fillable 1
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxWood 15
 maxStone 5
-hpInit 400
-hpMax 600
-hpInc 10
-armor 9
+hpInit 1000
+hpMax 1500
+hpInc 25
+armor 14
 level 2
 shortTypeNum 3
 maxUnitWorking 1
@@ -533,14 +533,14 @@ miniSpriteImage 0
 upgradeWalk 1
 upgradeTimeWalk 8
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxUnitInside 9
-hpInit 600
-hpMax 600
-armor 13
+hpInit 1500
+hpMax 1500
+armor 20
 level 2
 shortTypeNum 3
 
@@ -556,14 +556,14 @@ miniSpriteImage 0
 
 fillable 1
 
-width 6
-height 6
+width 4
+height 4
 decLeft -3
 decTop -3
 maxWood 8
 hpInit 1
-hpMax 300
-hpInc 38
+hpMax 675
+hpInc 97
 armor 0
 level 0
 shortTypeNum 4
@@ -584,14 +584,14 @@ miniSpriteImage 0
 upgradeSwim 1
 upgradeTimeSwim 7
 
-width 6
-height 6
+width 4
+height 4
 decLeft -3
 decTop -3
 maxUnitInside 3
-hpInit 300
-hpMax 300
-armor 4
+hpInit 675
+hpMax 675
+armor 6
 level 0
 shortTypeNum 4
 
@@ -607,16 +607,16 @@ miniSpriteImage 5
 
 fillable 1
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxCorn 6
 maxWood 12
-hpInit 300
-hpMax 400
-hpInc 6
-armor 4
+hpInit 675
+hpMax 1000
+hpInc 19
+armor 6
 level 1
 shortTypeNum 4
 maxUnitWorking 1
@@ -635,14 +635,14 @@ miniSpriteImage 0
 upgradeSwim 1
 upgradeTimeSwim 7
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxUnitInside 7
-hpInit 400
-hpMax 400
-armor 8
+hpInit 1000
+hpMax 1000
+armor 12
 level 1
 shortTypeNum 4
 
@@ -658,18 +658,18 @@ miniSpriteImage 5
 
 fillable 1
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxCorn 4
 maxWood 8
 maxStone 6
 maxAlgue 8
-hpInit 400
-hpMax 600
-hpInc 8
-armor 8
+hpInit 1000
+hpMax 1500
+hpInc 20
+armor 12
 level 2
 shortTypeNum 4
 maxUnitWorking 1
@@ -688,14 +688,14 @@ miniSpriteImage 0
 upgradeSwim 1
 upgradeTimeSwim 8
 
-width 8
-height 8
+width 6
+height 6
 decLeft -4
 decTop -4
 maxUnitInside 11
-hpInit 600
-hpMax 600
-armor 14
+hpInit 1500
+hpMax 1500
+armor 21
 level 2
 shortTypeNum 4
 
@@ -717,8 +717,8 @@ decLeft -2
 decTop -2
 maxWood 7
 hpInit 1
-hpMax 220
-hpInc 32
+hpMax 440
+hpInc 63
 armor 0
 level 0
 shortTypeNum 5
@@ -746,9 +746,9 @@ height 4
 decLeft -2
 decTop -2
 maxUnitInside 2
-hpInit 220
-hpMax 220
-armor 4
+hpInit 440
+hpMax 440
+armor 6
 level 0
 shortTypeNum 5
 
@@ -770,10 +770,10 @@ decLeft -2
 decTop -2
 maxStone 10
 maxWood 3
-hpInit 220
-hpMax 400
-hpInc 14
-armor 4
+hpInit 440
+hpMax 800
+hpInc 28
+armor 6
 level 1
 shortTypeNum 5
 maxUnitWorking 1
@@ -800,9 +800,9 @@ height 4
 decLeft -2
 decTop -2
 maxUnitInside 4
-hpInit 400
-hpMax 400
-armor 9
+hpInit 800
+hpMax 800
+armor 14
 level 1
 shortTypeNum 5
 
@@ -824,10 +824,10 @@ decLeft -2
 decTop -2
 maxWood 10
 maxStone 10
-hpInit 400
-hpMax 650
-hpInc 13
-armor 9
+hpInit 800
+hpMax 1300
+hpInc 25
+armor 14
 level 2
 shortTypeNum 5
 maxUnitWorking 1
@@ -854,9 +854,9 @@ height 4
 decLeft -2
 decTop -2
 maxUnitInside 5
-hpInit 650
-hpMax 650
-armor 15
+hpInit 1300
+hpMax 1300
+armor 22
 level 2
 shortTypeNum 5
 
@@ -879,8 +879,8 @@ decTop -1
 maxWood 7
 maxAlgue 2
 hpInit 1
-hpMax 180
-hpInc 20
+hpMax 360
+hpInc 40
 armor 0
 level 0
 shortTypeNum 6
@@ -909,9 +909,9 @@ height 2
 decLeft -1
 decTop -1
 maxUnitInside 4
-hpInit 180
-hpMax 180
-armor 0
+hpInit 360
+hpMax 360
+armor 3
 level 0
 shortTypeNum 6
 
@@ -934,10 +934,10 @@ decTop -1
 maxStone 5
 maxWood 5
 maxAlgue 12
-hpInit 180
-hpMax 260
-hpInc 4
-armor 0
+hpInit 360
+hpMax 520
+hpInc 8
+armor 3
 level 1
 shortTypeNum 6
 maxUnitWorking 1
@@ -965,9 +965,9 @@ height 2
 decLeft -1
 decTop -1
 maxUnitInside 7
-hpInit 260
-hpMax 260
-armor 5
+hpInit 520
+hpMax 520
+armor 8
 level 1
 shortTypeNum 6
 
@@ -991,10 +991,10 @@ maxCorn 4
 maxWood 7
 maxStone 12
 maxAlgue 10
-hpInit 260
-hpMax 350
-hpInc 3
-armor 5
+hpInit 520
+hpMax 700
+hpInc 6
+armor 8
 level 2
 shortTypeNum 6
 maxUnitWorking 1
@@ -1023,9 +1023,9 @@ height 2
 decLeft -1
 decTop -1
 maxUnitInside 9
-hpInit 350
-hpMax 350
-armor 17
+hpInit 700
+hpMax 700
+armor 25
 level 2
 shortTypeNum 6
 prestige 50
@@ -1048,8 +1048,8 @@ decLeft -1
 decTop -1
 maxWood 6
 hpInit 1
-hpMax 240
-hpInc 40
+hpMax 480
+hpInc 80
 armor 0
 level 0
 shortTypeNum 7
@@ -1081,9 +1081,9 @@ width 2
 height 2
 decLeft -1
 decTop -1
-hpInit 240
-hpMax 240
-armor 9
+hpInit 480
+hpMax 480
+armor 14
 level 0
 shortTypeNum 7
 
@@ -1107,10 +1107,10 @@ decLeft -1
 decTop -1
 maxWood 10
 maxStone 14
-hpInit 240
-hpMax 720
-hpInc 20
-armor 9
+hpInit 480
+hpMax 1440
+hpInc 40
+armor 14
 level 1
 shortTypeNum 7
 maxUnitWorking 1
@@ -1133,7 +1133,7 @@ fillable 1
 maxStone 4
 maxUnitWorking 1
 
-shootingRange 6
+shootingRange 7
 shootDamage 40
 shootSpeed 5700
 shootRythme 1800
@@ -1144,9 +1144,9 @@ width 2
 height 2
 decLeft -1
 decTop -1
-hpInit 720
-hpMax 720
-armor 13
+hpInit 1440
+hpMax 1440
+armor 20
 level 1
 shortTypeNum 7
 
@@ -1171,10 +1171,10 @@ decTop -1
 maxWood 8
 maxStone 14
 maxAlgue 2
-hpInit 720
-hpMax 960
-hpInc 10
-armor 13
+hpInit 1440
+hpMax 2000
+hpInc 24
+armor 20
 level 2
 shortTypeNum 7
 maxUnitWorking 1
@@ -1196,7 +1196,7 @@ fillable 1
 maxStone 4
 maxUnitWorking 1
 
-shootingRange 7
+shootingRange 9
 shootDamage 50
 shootSpeed 7000
 shootRythme 1900
@@ -1207,9 +1207,9 @@ width 2
 height 2
 decLeft -1
 decTop -1
-hpInit 960
-hpMax 960
-armor 19
+hpInit 2000
+hpMax 2000
+armor 25
 level 2
 shortTypeNum 7
 
@@ -1313,8 +1313,8 @@ height 1
 decLeft 0
 decTop 0
 hpInit 1
-hpMax 60
-hpInc 60
+hpMax 180
+hpInc 180
 level 0
 shortTypeNum 11
 maxUnitWorking 1
@@ -1336,11 +1336,11 @@ width 1
 height 1
 decLeft 0
 decTop 0
-hpInit 60
-hpMax 60
+hpInit 180
+hpMax 180
 level 0
 shortTypeNum 11
-armor 11
+armor 18
 
 
 *market0c
@@ -1359,8 +1359,8 @@ decTop -1
 maxWood 4
 maxStone 4
 hpInit 1
-hpMax 200
-hpInc 25
+hpMax 400
+hpInc 50
 level 0
 shortTypeNum 12
 maxUnitWorking 1
@@ -1381,11 +1381,11 @@ width 3
 height 3
 decLeft -1
 decTop -1
-hpInit 200
-hpMax 200
+hpInit 400
+hpMax 400
 level 0
 shortTypeNum 12
-armor 4
+armor 6
 fillable 1
 canExchange 1
 useTeamRessources 1
