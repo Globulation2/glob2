@@ -225,15 +225,15 @@ warrior
 		walkSpeed = 16;
 		swimSpeed = 0;
 		
-		attackSpeed = 14;
-		attackForce = 12;
+		attackSpeed = 12;
+		attackForce = 13;
 	}
 	1 : baseWarrior
 	{
 		walkSpeed = 21;
 		swimSpeed = 8;
 		
-		attackSpeed = 17;
+		attackSpeed = 16;
 		attackForce = 14;
 	}
 	2 : baseWarrior
@@ -241,16 +241,16 @@ warrior
 		walkSpeed = 26;
 		swimSpeed = 16;
 		
-		attackSpeed = 20;
-		attackForce = 16;
+		attackSpeed = 22;
+		attackForce = 15;
 	}
 	3 : baseWarrior
 	{
 		walkSpeed = 30;
 		swimSpeed = 24;
 		
-		attackSpeed = 24;
-		attackForce = 18;
+		attackSpeed = 28;
+		attackForce = 16;
 	}
 }
 
