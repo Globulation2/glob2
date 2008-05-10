@@ -32,7 +32,7 @@ using namespace GAGCore;
 Settings::Settings()
 {
 	// set default values in settings or load them
-	char *newUsername;
+	const char *newUsername;
 
 #	ifdef WIN32
 		newUsername=getenv("USERNAME");
