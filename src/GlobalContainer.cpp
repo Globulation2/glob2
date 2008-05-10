@@ -123,6 +123,9 @@ GlobalContainer::~GlobalContainer(void)
 	if (voiceRecorder)
 		delete voiceRecorder;
 	
+	// delete title image
+	delete title;
+	
 	// release ressources
 	Toolkit::close();
 	
@@ -441,35 +444,33 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	}
 }
 
-struct ProgressBar
+void GlobalContainer::updateLoadProgressScreen(int value)
 {
-	DrawableSurface *s;
-} progress;
-
-void GlobalContainer::updateLoadProgressBar(int value)
-{
-	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
-	gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);
+	unsigned randomSeed = 1;
+	unsigned columnCount = gfx->getW() / 32;
+	unsigned limit = (value * columnCount) / 100;
+	for (int y = 0; y < gfx->getH(); y += 32)
+		for (int x = 0; x < gfx->getW(); x += 32)
+		{
+			randomSeed = randomSeed * 69069;
+			unsigned index;
+			if (x/32 < limit)
+				index = ((randomSeed >> 16) & 0xF);
+			else if (x/32 == limit)
+				index = ((randomSeed >> 16) & 0x7) + 64;
+			else
+				index = ((randomSeed >> 16) & 0xF) + 128;
+			gfx->drawSprite(x, y, terrain, index);
+		}
+	//gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
+	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title);
+	//gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);
 	gfx->nextFrame();
 }
 
-void GlobalContainer::initProgressBar(void)
-{
-	progress.s = new DrawableSurface("data/gfx/IntroMN.png");
-	gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
-	progress.s->drawRect((progress.s->getW()-402)>>1, (progress.s->getH()>>1)+10+180, 402, 22, 180, 180, 180);
-	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
-	gfx->nextFrame();
-}
-
-void GlobalContainer::destroyProgressBar(void)
-{
-	delete progress.s;
-}
 
 void GlobalContainer::load(void)
 {
-
 	// load texts
 	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
 	{
@@ -494,11 +495,11 @@ void GlobalContainer::load(void)
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
 		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
-	}
-	
-	if (!runNoX)
-	{
-		initProgressBar();
+		
+		// load data required for drawing progress screen
+		title = new DrawableSurface("data/gfx/title.png");
+		terrain = Toolkit::getSprite("data/gfx/terrain");
+		updateLoadProgressScreen(0);
 		
 		// create mixer
 		mix = new SoundMixer(settings.musicVolume, settings.voiceVolume, settings.mute);
@@ -513,12 +514,18 @@ void GlobalContainer::load(void)
 		// create voice recorder
 		voiceRecorder = new VoiceRecorder();
 		
-		updateLoadProgressBar(10);
+		updateLoadProgressScreen(15);
 	}
 	
 	// load buildings types
 	buildingsTypes.load();
 	IntBuildingType::init();
+	
+	if (!runNoX)
+	{
+		updateLoadProgressScreen(35);
+	}
+	
 	// load default unit types
 	Race::loadDefault();
 	// load ressources types
@@ -528,7 +535,7 @@ void GlobalContainer::load(void)
 	GameGUIKeyActions::init();
 	MapEditKeyActions::init();
 	
-	if(settings.version < 1)
+	if (settings.version < 1)
 	{
 		KeyboardManager game(GameGUIShortcuts);
 		game.loadDefaultShortcuts();
@@ -541,7 +548,7 @@ void GlobalContainer::load(void)
 	
 	if (!runNoX)
 	{
-		updateLoadProgressBar(35);
+		updateLoadProgressScreen(40);
 		
 		// load fonts
 		Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
@@ -554,9 +561,9 @@ void GlobalContainer::load(void)
 		littleFont = Toolkit::getFont("little");
 		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 
-		updateLoadProgressBar(45);
+		updateLoadProgressScreen(50);
 		// load terrain data
-		terrain = Toolkit::getSprite("data/gfx/terrain");
+		//terrain = Toolkit::getSprite("data/gfx/terrain"); // terrain is already loaded as it is required to display progress screen
 		terrainWater = Toolkit::getSprite("data/gfx/water");
 		terrainCloud = Toolkit::getSprite("data/gfx/cloud");
 		
@@ -566,7 +573,7 @@ void GlobalContainer::load(void)
 		// load shader for unvisible terrain
 		terrainShader = Toolkit::getSprite("data/gfx/shade");
 		
-		updateLoadProgressBar(65);
+		updateLoadProgressScreen(60);
 		// load ressources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
@@ -575,12 +582,12 @@ void GlobalContainer::load(void)
 		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 		deathAnimation = Toolkit::getSprite("data/gfx/death"); 
 
-		updateLoadProgressBar(70);
+		updateLoadProgressScreen(70);
 		// load units
 		units = Toolkit::getSprite("data/gfx/unit");
 		unitsSkins = new UnitsSkins();
 
-		updateLoadProgressBar(90);
+		updateLoadProgressScreen(90);
 		// load graphics for gui
 		unitmini = Toolkit::getSprite("data/gfx/unitmini");
 		gamegui = Toolkit::getSprite("data/gfx/gamegui");
@@ -591,8 +598,7 @@ void GlobalContainer::load(void)
 		// use custom style
 		Style::style = new Glob2Style;
 
-		updateLoadProgressBar(100);
-		destroyProgressBar();
+		updateLoadProgressScreen(100);
 	}
 };
 
