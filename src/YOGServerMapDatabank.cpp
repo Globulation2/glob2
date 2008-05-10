@@ -29,6 +29,7 @@ using namespace GAGCore;
 YOGServerMapDatabank::YOGServerMapDatabank(YOGServer* server)
 	: server(server)
 {
+	currentMapID = 0;
 }
 
 
@@ -39,7 +40,9 @@ void YOGServerMapDatabank::addMap(const YOGDownloadableMapInfo& map)
 	server->getFileDistributionManager().getDistributor(fileID)->loadFromLocally(map.getMapHeader().getFileName());
 	YOGDownloadableMapInfo nmap(map);
 	nmap.setFileID(fileID);
+	nmap.setMapID(currentMapID);
 	maps.push_back(nmap);
+	currentMapID+=1;
 	save();
 }
 
@@ -80,14 +83,14 @@ void YOGServerMapDatabank::sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer
 
 
 
-void YOGServerMapDatabank::sendMapThumbnailToPlayer(const std::string& mapName, boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerMapDatabank::sendMapThumbnailToPlayer(Uint16 mapID, boost::shared_ptr<YOGServerPlayer> player)
 {
 	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
 	{
-		if(i->getMapHeader().getMapName() == mapName)
+		if(i->getMapID() == mapID)
 		{
-			MapThumbnail thumbnail = loadThumbnail(mapName, i->getMapHeader().getFileName());
-			boost::shared_ptr<NetSendMapThumbnail> infos(new NetSendMapThumbnail(mapName, thumbnail));
+			MapThumbnail thumbnail = loadThumbnail(i->getMapHeader().getMapName(), i->getMapHeader().getFileName());
+			boost::shared_ptr<NetSendMapThumbnail> infos(new NetSendMapThumbnail(mapID, thumbnail));
 			player->sendMessage(infos);
 			return;
 		}
@@ -96,7 +99,7 @@ void YOGServerMapDatabank::sendMapThumbnailToPlayer(const std::string& mapName, 
 
 
 
-void YOGServerMapDatabank::submitRating(const std::string& mapName, Uint8 rating)
+void YOGServerMapDatabank::submitRating(Uint16 mapID, Uint8 rating)
 {
 	///Don't accept ratings above 10
 	if(rating > 10)
@@ -104,7 +107,7 @@ void YOGServerMapDatabank::submitRating(const std::string& mapName, Uint8 rating
 
 	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
 	{
-		if(i->getMapHeader().getMapName() == mapName)
+		if(i->getMapID() == mapID)
 		{
 			int r = i->getRatingTotal() + rating;
 			int n  = i->getNumberOfRatings() + 1;
@@ -182,6 +185,7 @@ void YOGServerMapDatabank::load()
 	if(!stream->isEndOfStream())
 	{
 		Uint32 versionMinor = stream->readUint32("version");
+		currentMapID = stream->readUint16("currentMapID");
 		stream->readEnterSection("maps");
 		Uint32 size = stream->readUint32("size");
 		for(unsigned i=0; i<size; ++i)
@@ -205,6 +209,7 @@ void YOGServerMapDatabank::save()
 {
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("mapdatabank"));
 	stream->writeUint32(VERSION_MINOR, "version");
+	stream->writeUint16(currentMapID, "currentMapID");
 	stream->writeEnterSection("maps");
 	stream->writeUint32(maps.size(), "size");
 	for(int i=0; i<maps.size(); ++i)
