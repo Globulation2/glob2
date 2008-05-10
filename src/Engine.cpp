@@ -197,7 +197,6 @@ void Engine::createRandomGame()
 
 bool Engine::haveMap(const MapHeader& mapHeader)
 {
-	return false;
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
