@@ -28,7 +28,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), routerManager(*this), maps(this)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), routerManager(*this), maps(this), scoreCalculator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -436,6 +436,13 @@ YOGServerMapDatabank& YOGServer::getMapDatabank()
 YOGServerFileDistributationManager& YOGServer::getFileDistributionManager()
 {
 	return fileDistributionManager;
+}
+
+
+
+YOGServerPlayerScoreCalculator& YOGServer::getPlayerScoreCalculator()
+{
+	return scoreCalculator;
 }
 
 
