@@ -4,10 +4,10 @@ GraphicContext.cpp  GUIAnimation.cpp      GUIBase.cpp       GUIButton.cpp
 GUIFileList.cpp     GUIKeySelector.cpp    GUIList.cpp       GUIMessageBox.cpp
 GUINumber.cpp       GUIRatio.cpp          GUISelector.cpp   GUIStyle.cpp
 GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  GUIImage.cpp
-KeyPress.cpp        Sprite.cpp          StreamBackend.cpp     Stream.cpp
-StreamFilter.cpp    StringTable.cpp     SupportFunctions.cpp  TextStream.cpp
-Toolkit.cpp         TrueTypeFont.cpp    win32_dirent.cpp GUITabScreen.cpp
-GUITabScreenWindow.cpp
+GUIProgressBar.cpp  KeyPress.cpp          Sprite.cpp        StreamBackend.cpp
+Stream.cpp          StreamFilter.cpp      StringTable.cpp   SupportFunctions.cpp
+TextStream.cpp      Toolkit.cpp         TrueTypeFont.cpp    win32_dirent.cpp
+GUITabScreen.cpp    GUITabScreenWindow.cpp
 """)
 
 libgag_just_server = Split("""

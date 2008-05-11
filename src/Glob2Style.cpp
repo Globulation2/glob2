@@ -196,7 +196,8 @@ int Glob2Style::getStyleMetric(StyleMetrics metric)
 		case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return sprite->getW(20);
 		case STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH: return sprite->getH(20);
 		case STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH: return sprite->getH(22);
-		default: return 0;
+		// TODO case STYLE_METRIC_PROGRESS_BAR_HEIGHT: return 22; 
+		default: return Style::getStyleMetric(metric);
 	}
 }
 
