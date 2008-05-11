@@ -66,6 +66,8 @@ MainMenuScreen::MainMenuScreen()
 	
 	Image *title = new Image(0, 18, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->title);
 	addWidget(title);
+	
+	addWidget(new ProgressBar(0, 0, 300, ALIGN_LEFT, ALIGN_BOTTOM, 100, 30, "standard"));
 }
 
 MainMenuScreen::~MainMenuScreen()
