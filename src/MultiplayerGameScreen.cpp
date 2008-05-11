@@ -394,4 +394,4 @@ void MultiplayerGameScreen::onActivated()
 	updateVisibleButtons();
 }
 
-		otherOptions->visible=false;
+// TODO: from nct: this was lying at the end of the file, preventing compilation:		otherOptions->visible=false;
