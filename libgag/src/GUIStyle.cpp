@@ -86,6 +86,18 @@ namespace GAGGUI
 		target->drawRect(x+1, y+22+blockPos, 17, blockLength, Style::style->highlightColor);
 	}
 	
+	void Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range)
+	{
+		int h = getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
+		drawFrame(target, x, y, w, h, Color::ALPHA_OPAQUE);
+		x += getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH);
+		y += getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT);
+		w -= getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH) + getStyleMetric(STYLE_METRIC_FRAME_RIGHT_WIDTH);
+		h -= getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT) + getStyleMetric(STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
+		int len = (value*w)/range;
+		target->drawFilledRect(x, y, len, h, listSelectedElementColor);
+	}
+	
 	int Style::getStyleMetric(StyleMetrics metric)
 	{
 		switch (metric)
@@ -97,6 +109,7 @@ namespace GAGGUI
 			case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return 22;
 			case STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH: return 22;
 			case STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH: return 22;
+			case STYLE_METRIC_PROGRESS_BAR_HEIGHT:return 22;
 			default: return 0;
 		}
 	}
