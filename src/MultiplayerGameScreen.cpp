@@ -394,4 +394,3 @@ void MultiplayerGameScreen::onActivated()
 	updateVisibleButtons();
 }
 
-		otherOptions->visible=false;
