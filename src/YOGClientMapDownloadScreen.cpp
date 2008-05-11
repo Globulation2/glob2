@@ -23,6 +23,7 @@
 #include <GUIList.h>
 #include "GUIMapPreview.h"
 #include "GUIMessageBox.h"
+#include "GUINumber.h"
 #include "GUITabScreen.h"
 #include <GUITextArea.h>
 #include <GUIText.h>
@@ -35,6 +36,7 @@
 #include "YOGClientMapUploadScreen.h"
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClientDownloadingMapScreen.h"
+#include "YOGClientRatedMapList.h"
 
 using namespace GAGCore;
 
@@ -69,6 +71,20 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	loadingMapList = new Text(280, 200, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[loading map list]"));
 	addWidget(loadingMapList);
 	
+	submitRating = new TextButton(250, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[submit rating]"), SUBMITRATING);
+	addWidget(submitRating);
+	rating = new Number(250, 35, 220, 20, ALIGN_LEFT, ALIGN_BOTTOM, 10, "standard");
+	for(int i=1; i<=10; ++i)
+	{
+		rating->add(i);
+	}
+	addWidget(rating);
+	mapRatedAlready = new Text(250, 65, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[map rated]"));
+	addWidget(mapRatedAlready);
+	submitRating->visible=false;
+	rating->visible=false;
+	mapRatedAlready->visible=false;
+
 	
 	validMapSelected=false;
 	client->getDownloadableMapList()->addListener(this);
@@ -135,6 +151,11 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 				
 				}
 			}
+		}
+		else if (par1==SUBMITRATING)
+		{
+			client->getDownloadableMapList()->submitRating(mapList->get(), rating->get());
+			client->getRatedMapList()->addRatedMap(mapList->get());
 		}
 	}
 	if(action == LIST_ELEMENT_SELECTED)
@@ -236,11 +257,32 @@ void YOGClientMapDownloadScreen::updateVisibility()
 {
 	if(client->getDownloadableMapList()->waitingForListFromServer())
 	{
-		loadingMapList->visible=true;
+		loadingMapList->visible=isActivated();
 	}
 	else
 	{
 		loadingMapList->visible=false;
+	}
+	if(mapValid)
+	{
+		if(client->getRatedMapList()->isMapRated(mapList->get()))
+		{
+			submitRating->visible=false;
+			rating->visible=false;
+			mapRatedAlready->visible=isActivated();
+		}
+		else
+		{
+			submitRating->visible=isActivated();
+			rating->visible=isActivated();
+			mapRatedAlready->visible=false;
+		}
+	}
+	else
+	{
+		submitRating->visible=false;
+		rating->visible=false;
+		mapRatedAlready->visible=false;
 	}
 }
 
