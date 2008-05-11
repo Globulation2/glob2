@@ -35,7 +35,8 @@ namespace GAGGUI
 			STYLE_METRIC_FRAME_BOTTOM_HEIGHT,
 			STYLE_METRIC_LIST_SCROLLBAR_WIDTH,
 			STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH,
-			STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH
+			STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH,
+			STYLE_METRIC_PROGRESS_BAR_HEIGHT
 		};
 		
 		GAGCore::Color textColor; //!< color of text
@@ -54,6 +55,7 @@ namespace GAGGUI
 		virtual void drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 		virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 		virtual void drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength);
+		virtual void drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range);
 		
 		virtual int getStyleMetric(StyleMetrics metric);
 	};

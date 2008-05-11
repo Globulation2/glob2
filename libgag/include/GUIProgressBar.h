@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2008 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
@@ -17,30 +17,33 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GLOB2_STYLE_H
-#define __GLOB2_STYLE_H
+#ifndef __GUIPROGRESS_BAR_H
+#define __GUIPROGRESS_BAR_H
 
-#include <GUIStyle.h>
+#include "GUIBase.h"
+#include "GraphicContext.h"
 
-using namespace GAGCore;
-using namespace GAGGUI;
-
-class Glob2Style : public Style
+namespace GAGGUI
 {
-public:
-	Glob2Style();
-	~Glob2Style();
-
-protected:
-	virtual void drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
-	virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
-	virtual void drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength);
-	virtual void drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range);
-	
-	virtual int getStyleMetric(StyleMetrics metric);
-	
-protected:
-	Sprite *sprite;
-};
+	//! This widget displays a progress bar
+	class ProgressBar: public RectangularWidget
+	{
+	protected:
+		int value; //!< current value, between 0 and range
+		int range; //!< value should be between 0 and range
+		std::string font; //!< the name of the used font
+		
+		GAGCore::Font *fontPtr; //!< pointer to font, this is a cache
+		
+	public:
+		ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range = 100, int value = 0, const char* font = 0);
+		virtual ~ProgressBar() { }
+		
+		void setValue(int value) { this->value = value; }
+		
+		virtual void internalInit(void);
+		virtual void paint(void);
+	};
+}
 
 #endif
