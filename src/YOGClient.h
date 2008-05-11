@@ -38,6 +38,7 @@ class YOGClientCommandManager;
 class YOGClientMapUploader;
 class YOGClientDownloadableMapList;
 class YOGClientMapDownloader;
+class YOGClientRatedMapList;
 
 ///This represents the players YOG client, connecting to the YOG server.
 class YOGClient
@@ -190,6 +191,9 @@ public:
 	///This returns the YOGClientDownloadableMapList
 	boost::shared_ptr<YOGClientDownloadableMapList> getDownloadableMapList();
 
+	///This returns the YOGClientRatedMapList
+	boost::shared_ptr<YOGClientRatedMapList> getRatedMapList();
+
 	///This sets the YOGClientMapDownloader of this client
 	void setMapDownloader(YOGClientMapDownloader* downloader);
 	
@@ -247,6 +251,7 @@ private:
 	boost::shared_ptr<YOGClientBlockedList> blocked;
 	boost::shared_ptr<YOGClientCommandManager> commands;
 	boost::shared_ptr<YOGClientDownloadableMapList> downloadableMapList;
+	boost::shared_ptr<YOGClientRatedMapList> ratedMapList;
 	YOGClientMapUploader* uploader;
 	YOGClientMapDownloader* downloader;
 	boost::shared_ptr<YOGServer> server;
