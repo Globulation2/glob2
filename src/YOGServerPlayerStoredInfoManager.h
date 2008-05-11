@@ -47,7 +47,7 @@ public:
 
 	///Returns a list of the banned players
 	std::list<std::string> getBannedPlayers();
-
+	
 	///This stores the player infos in a file
 	void savePlayerInfos();
 

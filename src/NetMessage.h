@@ -2263,7 +2263,7 @@ public:
 	NetRequestMapThumbnail();
 
 	///Creates a NetRequestMapThumbnail message
-	NetRequestMapThumbnail(std::string mapName);
+	NetRequestMapThumbnail(Uint16 mapID);
 
 	///Returns MNetRequestMapThumbnail
 	Uint8 getMessageType() const;
@@ -2281,11 +2281,11 @@ public:
 	///Compares with another NetRequestMapThumbnail
 	bool operator==(const NetMessage& rhs) const;
 
-	///Retrieves mapName
-	std::string getMapName() const;
+	///Retrieves mapID
+	Uint16 getMapID() const;
 private:
 private:
-	std::string mapName;
+	Uint16 mapID;
 };
 
 
@@ -2299,7 +2299,7 @@ public:
 	NetSendMapThumbnail();
 
 	///Creates a NetSendMapThumbnail message
-	NetSendMapThumbnail(std::string mapName, MapThumbnail thumbnail);
+	NetSendMapThumbnail(Uint16 mapID, MapThumbnail thumbnail);
 
 	///Returns MNetSendMapThumbnail
 	Uint8 getMessageType() const;
@@ -2317,14 +2317,14 @@ public:
 	///Compares with another NetSendMapThumbnail
 	bool operator==(const NetMessage& rhs) const;
 
-	///Retrieves mapName
-	std::string getMapName() const;
+	///Retrieves mapID
+	Uint16 getMapID() const;
 
 	///Retrieves thumbnail
 	MapThumbnail getThumbnail() const;
 private:
 private:
-	std::string mapName;
+	Uint16 mapID;
 	MapThumbnail thumbnail;
 };
 
@@ -2339,7 +2339,7 @@ public:
 	NetSubmitRatingOnMap();
 
 	///Creates a NetSubmitRatingOnMap message
-	NetSubmitRatingOnMap(std::string mapName, Uint8 rating);
+	NetSubmitRatingOnMap(Uint16 mapID, Uint8 rating);
 
 	///Returns MNetSubmitRatingOnMap
 	Uint8 getMessageType() const;
@@ -2358,13 +2358,13 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 
 	///Retrieves mapName
-	std::string getMapName() const;
+	Uint16 getMapID() const;
 
 	///Retrieves rating
 	Uint8 getRating() const;
 private:
 private:
-	std::string mapName;
+	Uint16 mapID;
 	Uint8 rating;
 };
 

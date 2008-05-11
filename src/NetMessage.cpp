@@ -4466,15 +4466,15 @@ Uint16 NetCancelRecievingFile::getFileID() const
 
 
 NetRequestMapThumbnail::NetRequestMapThumbnail()
-	: mapName("")
+	: mapID(0)
 {
 
 }
 
 
 
-NetRequestMapThumbnail::NetRequestMapThumbnail(std::string mapName)
-	:mapName(mapName)
+NetRequestMapThumbnail::NetRequestMapThumbnail(Uint16 mapID)
+	: mapID(mapID)
 {
 }
 
@@ -4490,7 +4490,7 @@ Uint8 NetRequestMapThumbnail::getMessageType() const
 void NetRequestMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetRequestMapThumbnail");
-	stream->writeText(mapName, "mapName");
+	stream->writeUint16(mapID, "mapID");
 	stream->writeLeaveSection();
 }
 
@@ -4499,7 +4499,7 @@ void NetRequestMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
 void NetRequestMapThumbnail::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRequestMapThumbnail");
-	mapName = stream->readText("mapName");
+	mapID = stream->readUint16("mapID");
 	stream->readLeaveSection();
 }
 
@@ -4508,7 +4508,7 @@ void NetRequestMapThumbnail::decodeData(GAGCore::InputStream* stream)
 std::string NetRequestMapThumbnail::format() const
 {
 	std::ostringstream s;
-	s<<"NetRequestMapThumbnail("<<"mapName="<<mapName<<"; "<<")";
+	s<<"NetRequestMapThumbnail("<<"mapID="<<mapID<<"; "<<")";
 	return s.str();
 }
 
@@ -4519,31 +4519,31 @@ bool NetRequestMapThumbnail::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetRequestMapThumbnail))
 	{
 		const NetRequestMapThumbnail& r = dynamic_cast<const NetRequestMapThumbnail&>(rhs);
-		if(r.mapName == mapName)
+		if(r.mapID == mapID)
 			return true;
 	}
 	return false;
 }
 
 
-std::string NetRequestMapThumbnail::getMapName() const
+Uint16 NetRequestMapThumbnail::getMapID() const
 {
-	return mapName;
+	return mapID;
 }
 
 
 
 
 NetSendMapThumbnail::NetSendMapThumbnail()
-	: mapName(""), thumbnail()
+	: mapID(0), thumbnail()
 {
 
 }
 
 
 
-NetSendMapThumbnail::NetSendMapThumbnail(std::string mapName, MapThumbnail thumbnail)
-	:mapName(mapName), thumbnail(thumbnail)
+NetSendMapThumbnail::NetSendMapThumbnail(Uint16 mapID, MapThumbnail thumbnail)
+	:mapID(mapID), thumbnail(thumbnail)
 {
 }
 
@@ -4559,7 +4559,7 @@ Uint8 NetSendMapThumbnail::getMessageType() const
 void NetSendMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendMapThumbnail");
-	stream->writeText(mapName, "mapName");
+	stream->writeUint16(mapID, "mapID");
 	thumbnail.encodeData(stream);
 	stream->writeLeaveSection();
 }
@@ -4569,7 +4569,7 @@ void NetSendMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
 void NetSendMapThumbnail::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendMapThumbnail");
-	mapName = stream->readText("mapName");
+	mapID = stream->readUint16("mapID");
 	thumbnail.decodeData(stream, VERSION_MINOR);
 	stream->readLeaveSection();
 }
@@ -4579,7 +4579,7 @@ void NetSendMapThumbnail::decodeData(GAGCore::InputStream* stream)
 std::string NetSendMapThumbnail::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendMapThumbnail("<<"mapName="<<mapName<<"; "<<"="<<""<<"; "<<")";
+	s<<"NetSendMapThumbnail("<<"mapID="<<mapID<<"; "<<"="<<""<<"; "<<")";
 	return s.str();
 }
 
@@ -4590,16 +4590,16 @@ bool NetSendMapThumbnail::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendMapThumbnail))
 	{
 		const NetSendMapThumbnail& r = dynamic_cast<const NetSendMapThumbnail&>(rhs);
-		if(r.mapName == mapName)
+		if(r.mapID == mapID)
 			return true;
 	}
 	return false;
 }
 
 
-std::string NetSendMapThumbnail::getMapName() const
+Uint16 NetSendMapThumbnail::getMapID() const
 {
-	return mapName;
+	return mapID;
 }
 
 
@@ -4613,15 +4613,15 @@ MapThumbnail NetSendMapThumbnail::getThumbnail() const
 
 
 NetSubmitRatingOnMap::NetSubmitRatingOnMap()
-	: mapName(""), rating(0)
+	: mapID(0), rating(0)
 {
 
 }
 
 
 
-NetSubmitRatingOnMap::NetSubmitRatingOnMap(std::string mapName, Uint8 rating)
-	:mapName(mapName), rating(rating)
+NetSubmitRatingOnMap::NetSubmitRatingOnMap(Uint16 mapID, Uint8 rating)
+	:mapID(mapID), rating(rating)
 {
 }
 
@@ -4637,7 +4637,7 @@ Uint8 NetSubmitRatingOnMap::getMessageType() const
 void NetSubmitRatingOnMap::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSubmitRatingOnMap");
-	stream->writeText(mapName, "mapName");
+	stream->writeUint16(mapID, "mapID");
 	stream->writeUint8(rating, "rating");
 	stream->writeLeaveSection();
 }
@@ -4647,7 +4647,7 @@ void NetSubmitRatingOnMap::encodeData(GAGCore::OutputStream* stream) const
 void NetSubmitRatingOnMap::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSubmitRatingOnMap");
-	mapName = stream->readText("mapName");
+	mapID = stream->readUint16("mapID");
 	rating = stream->readUint8("rating");
 	stream->readLeaveSection();
 }
@@ -4657,7 +4657,7 @@ void NetSubmitRatingOnMap::decodeData(GAGCore::InputStream* stream)
 std::string NetSubmitRatingOnMap::format() const
 {
 	std::ostringstream s;
-	s<<"NetSubmitRatingOnMap("<<"mapName="<<mapName<<"; "<<"rating="<<rating<<"; "<<")";
+	s<<"NetSubmitRatingOnMap("<<"mapID="<<mapID<<"; "<<"rating="<<rating<<"; "<<")";
 	return s.str();
 }
 
@@ -4668,16 +4668,16 @@ bool NetSubmitRatingOnMap::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSubmitRatingOnMap))
 	{
 		const NetSubmitRatingOnMap& r = dynamic_cast<const NetSubmitRatingOnMap&>(rhs);
-		if(r.mapName == mapName && r.rating == rating)
+		if(r.mapID == mapID && r.rating == rating)
 			return true;
 	}
 	return false;
 }
 
 
-std::string NetSubmitRatingOnMap::getMapName() const
+Uint16 NetSubmitRatingOnMap::getMapID() const
 {
-	return mapName;
+	return mapID;
 }
 
 
