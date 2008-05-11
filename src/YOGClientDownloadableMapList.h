@@ -57,6 +57,9 @@ public:
 	///Retrieves the thumbnail for the given map name
 	MapThumbnail& getMapThumbnail(const std::string& name);
 	
+	///Sends a rating about a map
+	void submitRating(const std::string& map, Uint8 rating);
+	
 	///Adds a listener to recieve events when the map list updated
 	void addListener(YOGClientDownloadableMapListener* listener);
 	

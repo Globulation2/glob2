@@ -30,6 +30,7 @@
 #include "YOGClient.h"
 #include "YOGClientMapUploader.h"
 #include "YOGClientPlayerListManager.h"
+#include "YOGClientRatedMapList.h"
 #include "YOGMessage.h"
 #include "YOGServer.h"
 
@@ -155,6 +156,7 @@ void YOGClient::update()
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
+			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
@@ -173,6 +175,7 @@ void YOGClient::update()
 			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
+			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
@@ -607,6 +610,13 @@ void YOGClient::setMapUploader(YOGClientMapUploader* nuploader)
 boost::shared_ptr<YOGClientDownloadableMapList> YOGClient::getDownloadableMapList()
 {
 	return downloadableMapList;
+}
+
+
+
+boost::shared_ptr<YOGClientRatedMapList> YOGClient::getRatedMapList()
+{
+	return ratedMapList;
 }
 
 

@@ -22,8 +22,12 @@ V: Show vision for all buildings
 Add map
 [add shortcut]
 Add Shortcut
+[submit rating]
+Submit Rating
 [Add]
 Add
+[map rated]
+Map Rated
 [AI]
 AI
 [ai]

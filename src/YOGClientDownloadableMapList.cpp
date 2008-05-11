@@ -122,6 +122,22 @@ MapThumbnail& YOGClientDownloadableMapList::getMapThumbnail(const std::string& n
 
 
 
+void YOGClientDownloadableMapList::submitRating(const std::string& name, Uint8 rating)
+{
+	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
+	{
+		if(i->getMapHeader().getMapName() == name)
+		{
+			boost::shared_ptr<NetSubmitRatingOnMap> request(new NetSubmitRatingOnMap(i->getMapID(), rating));
+			client->sendNetMessage(request);
+			i->setNumberOfRatings(i->getNumberOfRatings() + 1);
+			i->setRatingTotal(i->getRatingTotal() + rating);
+		}
+	}
+}
+
+
+
 void YOGClientDownloadableMapList::addListener(YOGClientDownloadableMapListener* listener)
 {
 	listeners.push_back(listener);

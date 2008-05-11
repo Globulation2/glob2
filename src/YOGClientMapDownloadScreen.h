@@ -30,6 +30,7 @@ namespace GAGGUI
 	class TextButton;
 	class TabScreen;
 	class Widget;
+	class Number;
 }
 
 class YOGClient;
@@ -56,6 +57,7 @@ public:
 		ADDMAP,
 		REFRESHMAPLIST,
 		DOWNLOADMAP,
+		SUBMITRATING,
 	};
 	
 	///Updates the list of maps
@@ -87,6 +89,12 @@ private:
 	TextButton* downloadMap;
 	//! A piece of text showing "loading map list"
 	Text* loadingMapList;
+	//! A button used to submit a rating
+	TextButton* submitRating;
+	//! A number box used to select a rating to give
+	Number* rating;
+	//! A text displayed when you select a map you have already rated
+	Text* mapRatedAlready;
 	
 	bool mapValid;
 	bool mapsRequested;
@@ -96,3 +104,4 @@ private:
 };
 
 #endif
+

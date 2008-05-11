@@ -500,8 +500,8 @@ void YOGClientLobbyScreen::updateButtonVisibility()
 	}
 	else
 	{
-		joinButton->visible=true;
-		hostButton->visible=true;
+		joinButton->visible=isActivated();
+		hostButton->visible=isActivated();
 	}
 }
 
