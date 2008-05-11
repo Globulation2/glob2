@@ -21,6 +21,7 @@
 #include <GUIProgressBar.h>
 #include <stdarg.h>
 #include <SupportFunctions.h>
+#include <FormatableString.h>
 #include <assert.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
@@ -30,7 +31,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	ProgressBar::ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range, int value)
+	ProgressBar::ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range, int value, const char* font)
 	{
 		this->x = x;
 		this->y = y;
@@ -41,6 +42,19 @@ namespace GAGGUI
 		
 		this->value = value;
 		this->range = range;
+		
+		fontPtr = 0;
+		if (font)
+			this->font = font;
+	}
+	
+	void ProgressBar::internalInit(void)
+	{
+		if (font.length())
+		{
+			fontPtr = Toolkit::getFont(font.c_str());
+			assert(fontPtr);
+		}
 	}
 	
 	void ProgressBar::paint(void)
@@ -58,5 +72,12 @@ namespace GAGGUI
 			hDec=0;
 	
 		Style::style->drawProgressBar(parent->getSurface(), x, y+hDec, w, value, range);
+		if (fontPtr)
+		{
+			FormatableString text = FormatableString("%0 %1").arg((value*100)/range).arg("%");
+			int textW = fontPtr->getStringWidth(text.c_str());
+			int textH = fontPtr->getStringHeight(text.c_str());
+			parent->getSurface()->drawString(x + ((w-textW) >> 1), y + ((h-textH) >> 1), fontPtr, text);
+		}
 	}
 }

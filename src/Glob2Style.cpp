@@ -185,6 +185,30 @@ void Glob2Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, i
 	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
 }
 
+void Glob2Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range)
+{
+	int h = getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
+	drawFrame(target, x, y, w, h, Color::ALPHA_OPAQUE);
+	x += getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH);
+	y += getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT);
+	w -= getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH) + getStyleMetric(STYLE_METRIC_FRAME_RIGHT_WIDTH);
+	h -= getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT) + getStyleMetric(STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
+	
+	int len = (value*w)/range;
+	
+	target->drawFilledRect(x, y, w, h, Color(168, 150, 90));
+	
+	// save cliprect
+	int ocrX, ocrY, ocrW, ocrH;
+	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
+	target->setClipRect(x, y, len, h);
+	for (int i = 0; i < len; i += sprite->getW(24))
+		target->drawSprite(x + i, y, sprite, 24);
+	
+	// reset cliprect
+	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
+}
+
 int Glob2Style::getStyleMetric(StyleMetrics metric)
 {
 	switch (metric)
@@ -196,7 +220,7 @@ int Glob2Style::getStyleMetric(StyleMetrics metric)
 		case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return sprite->getW(20);
 		case STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH: return sprite->getH(20);
 		case STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH: return sprite->getH(22);
-		// TODO case STYLE_METRIC_PROGRESS_BAR_HEIGHT: return 22; 
+		case STYLE_METRIC_PROGRESS_BAR_HEIGHT: return sprite->getH(24) + getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT) + getStyleMetric(STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
 		default: return Style::getStyleMetric(metric);
 	}
 }
