@@ -25,6 +25,7 @@ YOGDownloadableMapInfo::YOGDownloadableMapInfo()
 	total = 0;
 	numberOfRatings = 0;
 	fileID = 0;
+	mapID = 0;
 }
 
 
@@ -35,6 +36,7 @@ YOGDownloadableMapInfo::YOGDownloadableMapInfo(MapHeader& header)
 	total = 0;
 	numberOfRatings = 0;
 	fileID = 0;
+	mapID = 0;
 }
 
 
@@ -109,6 +111,20 @@ void YOGDownloadableMapInfo::setFileID(Uint16 nfileID)
 
 
 
+Uint16 YOGDownloadableMapInfo::getMapID() const
+{
+	return mapID;
+}
+	
+
+
+void YOGDownloadableMapInfo::setMapID(Uint16 nmapID)
+{
+	mapID = nmapID;
+}
+
+
+
 void YOGDownloadableMapInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGDownloadableMapInfo");
@@ -117,6 +133,7 @@ void YOGDownloadableMapInfo::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeUint32(numberOfRatings, "numberOfRatings");
 	stream->writeText(author, "author");
 	stream->writeUint16(fileID, "fileID");
+	stream->writeUint16(mapID, "mapID");
 	stream->writeLeaveSection();
 }
 
@@ -130,6 +147,7 @@ void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 ver
 	numberOfRatings = stream->readUint32("numberOfRatings");
 	author = stream->readText("author");
 	fileID = stream->readUint16("fileID");
+	mapID = stream->readUint16("mapID");
 	stream->readLeaveSection();
 }
 
@@ -137,7 +155,7 @@ void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 ver
 
 bool YOGDownloadableMapInfo::operator==(const YOGDownloadableMapInfo& rhs) const
 {
-	if(mapHeader == rhs.mapHeader && total == rhs.total && numberOfRatings == rhs.numberOfRatings && author == rhs.author && fileID == rhs.fileID)
+	if(mapHeader == rhs.mapHeader && total == rhs.total && numberOfRatings == rhs.numberOfRatings && author == rhs.author && fileID == rhs.fileID && mapID == rhs.mapID)
 		return true;
 	return false;
 }
@@ -145,7 +163,7 @@ bool YOGDownloadableMapInfo::operator==(const YOGDownloadableMapInfo& rhs) const
 
 bool YOGDownloadableMapInfo::operator!=(const YOGDownloadableMapInfo& rhs) const
 {
-	if(mapHeader != rhs.mapHeader || total != rhs.total || numberOfRatings != rhs.numberOfRatings || author != rhs.author || fileID != rhs.fileID)
+	if(mapHeader != rhs.mapHeader || total != rhs.total || numberOfRatings != rhs.numberOfRatings || author != rhs.author || fileID != rhs.fileID || mapID != rhs.mapID)
 		return true;
 	return false;
 }

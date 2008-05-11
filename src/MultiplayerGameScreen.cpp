@@ -339,16 +339,20 @@ void MultiplayerGameScreen::updateVisibleButtons()
 		else
 		{
 			startButton->visible=false;
-			otherOptions->visible=false;
 		}
 		notReadyText->visible=false;
 	}
 	else
 	{
 		startButton->visible=false;
-		otherOptions->visible=false;
 		notReadyText->visible=isActivated();
 	}
+	
+	if(game->getGameJoinCreationState() != MultiplayerGame::HostingGame)
+	{
+		otherOptions->visible=false;
+	}
+	
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::JoinedGame)
 	{
 		cancelButton->visible=isActivated();
@@ -390,3 +394,4 @@ void MultiplayerGameScreen::onActivated()
 	updateVisibleButtons();
 }
 
+		otherOptions->visible=false;
