@@ -36,6 +36,7 @@
 #include "YOGServerRouter.h"
 #include "YOGServerRouterManager.h"
 #include "YOGServerMapDatabank.h"
+#include "YOGServerPlayerScoreCalculator.h"
 #include "YOGServerFileDistributationManager.h"
 
 
@@ -156,6 +157,9 @@ public:
 	
 	///Returns the YOGServerFileDistributationManager
 	YOGServerFileDistributationManager& getFileDistributionManager();
+	
+	///Returns the YOGServerPlayerScoreCalculator
+	YOGServerPlayerScoreCalculator& getPlayerScoreCalculator();
 private:
 	///This looks for a free player id to assign to the player
 	Uint16 chooseNewPlayerID();
@@ -191,6 +195,7 @@ private:
 	YOGServerRouter router;
 	YOGServerMapDatabank maps;
 	YOGServerFileDistributationManager fileDistributionManager;
+	YOGServerPlayerScoreCalculator scoreCalculator;
 };
 
 #endif

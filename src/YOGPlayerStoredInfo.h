@@ -58,6 +58,12 @@ public:
 	
 	///Returns whether this player is a moderator
 	bool isModerator();
+	
+	///Sets this players rating
+	void setPlayerRating(int rating);
+	
+	///Gets this players rating
+	int getPlayerRating() const;
 
 	///Encodes this YOGPlayerStoredInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -72,6 +78,7 @@ private:
 	boost::posix_time::ptime unmute_time;
 	bool banned;
 	bool moderator;
+	int rating;
 };
 
 #endif
