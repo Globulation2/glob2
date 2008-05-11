@@ -25,6 +25,8 @@ YOGPlayerStoredInfo::YOGPlayerStoredInfo()
 {
 	banned=false;
 	moderator=false;
+	///The default rating is 1000
+	rating = 1000;
 }
 
 
@@ -90,6 +92,20 @@ bool YOGPlayerStoredInfo::isModerator()
 
 
 
+void YOGPlayerStoredInfo::setPlayerRating(int nrating)
+{
+	rating = nrating;
+}
+
+
+
+int YOGPlayerStoredInfo::getPlayerRating() const
+{
+	return rating;
+}
+
+
+
 void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGPlayerStoredInfo");
@@ -98,6 +114,7 @@ void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeText(time.str(), "unmute_time");
 	stream->writeUint8(banned, "banned");
 	stream->writeUint8(moderator, "moderator");
+	stream->writeUint32(rating, "rating");
 	stream->writeLeaveSection();
 }
 
@@ -112,6 +129,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream, Uint32 dataVe
 	time>>unmute_time;
 	banned=stream->readUint8("banned");
 	moderator=stream->readUint8("moderator");
+	rating=stream->readUint32("rating");
 	stream->readLeaveSection();
 }
 
@@ -119,7 +137,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream, Uint32 dataVe
 
 bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 {
-	if(unmute_time == rhs.unmute_time && banned == rhs.banned)
+	if(unmute_time == rhs.unmute_time && banned == rhs.banned && rating == rhs.rating)
 		return true;
 	return false;
 }
@@ -128,7 +146,7 @@ bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 
 bool YOGPlayerStoredInfo::operator!=(const YOGPlayerStoredInfo& rhs) const
 {
-	if(unmute_time != rhs.unmute_time && banned == rhs.banned)
+	if(unmute_time != rhs.unmute_time && banned == rhs.banned && rating == rhs.rating)
 		return true;
 	return false;
 }

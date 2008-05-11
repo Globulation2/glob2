@@ -406,6 +406,7 @@ void YOGServerGame::sendGameResultsToGameLog()
 	if(gameStarted)
 	{
 		server.getGameLog().addGameResults(gameResults);
+		server.getPlayerScoreCalculator().proccessResults(gameResults, gameHeader);
 	}
 }
 
