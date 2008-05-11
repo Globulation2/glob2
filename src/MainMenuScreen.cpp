@@ -26,6 +26,7 @@
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIImage.h>
+#include <GUIProgressBar.h>
 using namespace GAGGUI;
 #include <Toolkit.h>
 #include <StringTable.h>
