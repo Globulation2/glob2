@@ -24,6 +24,8 @@ Add map
 Add Shortcut
 [submit rating]
 Submit Rating
+[player rating %0]
+Player Rating: %0
 [Add]
 Add
 [map rated]

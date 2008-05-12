@@ -54,6 +54,9 @@ public:
 	
 	///Returns true if a player with the given name exists
 	bool doesPlayerExist(const std::string& name);
+	
+	///Returns the session info of a given player
+	YOGPlayerSessionInfo& getPlayerInfo(const std::string& name);
 private:
 	///This will send the event that the player list has been updated to all the listeners
 	void sendToListeners();

@@ -19,6 +19,7 @@
 #include "YOGPlayerSessionInfo.h"
 #include "SDL_net.h"
 #include "Stream.h"
+#include "Version.h"
 
 
 YOGPlayerSessionInfo::YOGPlayerSessionInfo()
@@ -64,11 +65,26 @@ Uint16 YOGPlayerSessionInfo::getPlayerID() const
 
 
 
+const YOGPlayerStoredInfo& YOGPlayerSessionInfo::getPlayerStoredInfo() const
+{
+	return stored;
+}
+
+
+
+void YOGPlayerSessionInfo::setPlayerStoredInfo(const YOGPlayerStoredInfo& info)
+{
+	stored = info;
+}
+
+
+
 void YOGPlayerSessionInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGPlayerSessionInfo");
 	stream->writeUint16(playerID, "playerID");
 	stream->writeText(playerName, "playerName");
+	stored.encodeData(stream);
 	stream->writeLeaveSection();
 }
 
@@ -79,6 +95,7 @@ void YOGPlayerSessionInfo::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("YOGPlayerSessionInfo");
 	playerID=stream->readUint16("playerID");
 	playerName=stream->readText("playerName");
+	stored.decodeData(stream, VERSION_MINOR);
 	stream->readLeaveSection();
 }
 
@@ -86,7 +103,7 @@ void YOGPlayerSessionInfo::decodeData(GAGCore::InputStream* stream)
 	
 bool YOGPlayerSessionInfo::operator==(const YOGPlayerSessionInfo& rhs) const
 {
-	if(playerName == rhs.playerName)
+	if(playerName == rhs.playerName && playerID == rhs.playerID && stored == rhs.stored)
 	{
 		return true;
 	}
@@ -101,7 +118,7 @@ bool YOGPlayerSessionInfo::operator==(const YOGPlayerSessionInfo& rhs) const
 	
 bool YOGPlayerSessionInfo::operator!=(const YOGPlayerSessionInfo& rhs) const
 {
-	if(playerName != rhs.playerName)
+	if(playerName != rhs.playerName || playerID != rhs.playerID || stored != rhs.stored)
 	{
 		return true;
 	}
