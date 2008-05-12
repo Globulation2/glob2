@@ -28,7 +28,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), routerManager(*this), maps(this), scoreCalculator(this)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), maps(this), scoreCalculator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -239,11 +239,27 @@ const std::list<YOGPlayerSessionInfo>& YOGServer::getPlayerList() const
 
 
 
+void YOGServer::setPlayerStoredInfo(const std::string& name, const YOGPlayerStoredInfo& info)
+{
+	for(std::list<YOGPlayerSessionInfo>::iterator i = playerList.begin(); i!=playerList.end(); ++i)
+	{
+		if(i->getPlayerName() == name)
+		{
+			i->setPlayerStoredInfo(info);
+			break;
+		}
+	}
+}
+
+
+
 void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
-	playerList.push_back(YOGPlayerSessionInfo(username, id));
-	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
 	playerInfos.insureStoredInfoExists(username);
+	YOGPlayerSessionInfo info(username, id);
+	info.setPlayerStoredInfo(playerInfos.getPlayerStoredInfo(username));
+	playerList.push_back(info);
+	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
 }
 
 

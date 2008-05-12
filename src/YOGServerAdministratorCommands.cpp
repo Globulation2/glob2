@@ -112,7 +112,9 @@ void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, co
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
 		boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(time);
-		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setMuted(unmute_time);
+		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
+		i.setMuted(unmute_time);
+		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		admin->sendTextMessage("Player muted: "+name, player);
 	}
 	else
@@ -158,7 +160,9 @@ void YOGUnmutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, 
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setUnmuted();
+		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
+		i.setUnmuted();
+		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		admin->sendTextMessage("Player unmuted: "+name, player);
 	}
 	else
@@ -243,7 +247,9 @@ void YOGBanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, con
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setBanned();
+		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
+		i.setBanned();
+		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		boost::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
 		if(nplayer)
 		{
@@ -296,7 +302,9 @@ void YOGUnbanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, c
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setUnbanned();
+		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
+		i.setUnbanned();
+		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		admin->sendTextMessage("Player unbanned: "+name, player);
 	}
 	else
@@ -534,7 +542,9 @@ void YOGAddModerator::execute(YOGServer* server, YOGServerAdministrator* admin, 
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setModerator(true);
+		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
+		i.setModerator(true);
+		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		admin->sendTextMessage("Player made moderator: "+name, player);
 	}
 	else
@@ -580,7 +590,9 @@ void YOGRemoveModerator::execute(YOGServer* server, YOGServerAdministrator* admi
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		server->getPlayerStoredInfoManager().getPlayerStoredInfo(name).setModerator(false);
+		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
+		i.setModerator(false);
+		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		admin->sendTextMessage("Player "+name+" had moderator status removed", player);
 	}
 	else

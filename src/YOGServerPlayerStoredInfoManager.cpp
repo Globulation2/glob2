@@ -23,10 +23,12 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include "Version.h"
+#include "YOGServer.h"
 
 using namespace GAGCore;
 
-YOGServerPlayerStoredInfoManager::YOGServerPlayerStoredInfoManager()
+YOGServerPlayerStoredInfoManager::YOGServerPlayerStoredInfoManager(YOGServer* server)
+	: server(server)
 {
 	loadPlayerInfos();
 	saveCountdown=300;
@@ -76,10 +78,18 @@ bool YOGServerPlayerStoredInfoManager::doesStoredInfoExist(const std::string& us
 
 
 
-YOGPlayerStoredInfo& YOGServerPlayerStoredInfoManager::getPlayerStoredInfo(const std::string& username)
+const YOGPlayerStoredInfo& YOGServerPlayerStoredInfoManager::getPlayerStoredInfo(const std::string& username)
+{
+	return playerInfos[username];
+}
+
+
+
+void YOGServerPlayerStoredInfoManager::setPlayerStoredInfo(const std::string& username, const YOGPlayerStoredInfo& info)
 {
 	modified=true;
-	return playerInfos[username];
+	playerInfos[username] = info;
+	server->setPlayerStoredInfo(username, info);
 }
 
 

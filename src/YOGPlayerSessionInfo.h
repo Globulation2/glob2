@@ -21,6 +21,7 @@
 
 #include <string>
 #include "SDL_net.h"
+#include "YOGPlayerStoredInfo.h"
 
 namespace GAGCore
 {
@@ -50,6 +51,12 @@ public:
 	
 	///Returns the unique player ID
 	Uint16 getPlayerID() const;
+	
+	///Returns the players stored info
+	const YOGPlayerStoredInfo& getPlayerStoredInfo() const;
+	
+	///Sets the player stored info
+	void setPlayerStoredInfo(const YOGPlayerStoredInfo& info);
 
 	///Encodes this YOGPlayerSessionInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -63,6 +70,7 @@ public:
 private:
 	Uint16 playerID;
 	std::string playerName;
+	YOGPlayerStoredInfo stored;
 };
 
 #endif
