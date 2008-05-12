@@ -135,8 +135,8 @@ private:
 	void updateGameList();
 	///This updates the list of players
 	void updatePlayerList();
-	///This updates the text box that has information about the selected game
-	void updateGameInfo();
+	///This updates the text box with information about the selected game
+	void updateBoxInfo();
 	///This will try to match and auto-complete a half-entered nick name
 	void autoCompleteNick();
 	///This wsill update the visibility of the host and join buttons depnding on whether the player

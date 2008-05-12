@@ -91,6 +91,9 @@ public:
 	
 	///Returns the list of players the server currently has
 	const std::list<YOGPlayerSessionInfo>& getPlayerList() const;
+	
+	///Sets the player stored info for a particular player
+	void setPlayerStoredInfo(const std::string& name, const YOGPlayerStoredInfo& info);
 
 	///Tells the server that a player has logged in with the given information,
 	void playerHasLoggedIn(const std::string& username, Uint16 id);

@@ -199,7 +199,15 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		updateGameInfo();
+		if(source == gameList)
+		{
+			playerList->setSelectionIndex(-1);
+		}
+		else if(source == playerList)
+		{
+			gameList->setSelectionIndex(-1);
+		}
+		updateBoxInfo();
 	}
 }
 
@@ -372,7 +380,7 @@ void YOGClientLobbyScreen::updateGameList(void)
 	}
 	gameList->setSelectionIndex(i);
 
-	updateGameInfo();
+	updateBoxInfo();
 }
 
 
@@ -401,7 +409,7 @@ void YOGClientLobbyScreen::updatePlayerList(void)
 
 
 
-void YOGClientLobbyScreen::updateGameInfo()
+void YOGClientLobbyScreen::updateBoxInfo()
 {
 	if (gameList->getSelectionIndex() != -1)
 	{
@@ -421,6 +429,23 @@ void YOGClientLobbyScreen::updateGameInfo()
 				gameInfo->addText(s.c_str());
 				gameInfo->addChar('\n');
 			}
+		}
+	}
+	else if(playerList->getSelectionIndex() != -1)
+	{
+		if(client->getPlayerListManager()->doesPlayerExist(playerList->get()))
+		{
+			gameInfo->setText("");
+			std::string s;
+			s += client->getPlayerListManager()->getPlayerInfo(playerList->get()).getPlayerName() + "\n";
+			gameInfo->addText(s.c_str());
+			int r = client->getPlayerListManager()->getPlayerInfo(playerList->get()).getPlayerStoredInfo().getPlayerRating();
+			s = FormatableString(Toolkit::getStringTable()->getString("[player rating %0]")).arg(r) + "\n";
+			gameInfo->addText(s.c_str());
+		}
+		else
+		{
+			gameInfo->setText("");
 		}
 	}
 	else

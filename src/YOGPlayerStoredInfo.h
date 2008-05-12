@@ -42,7 +42,7 @@ public:
 	void setUnmuted();
 	
 	///Returns true if this player is muted, false otherwise
-	bool isMuted();
+	bool isMuted() const;
 
 	///Sets this player to be banned
 	void setBanned();
@@ -51,13 +51,13 @@ public:
 	void setUnbanned();
 	
 	///Returns true if this player is banned, false otherwise
-	bool isBanned();
+	bool isBanned() const;
 	
 	///Sets whether this player is a moderator or not
 	void setModerator(bool isModerator);
 	
 	///Returns whether this player is a moderator
-	bool isModerator();
+	bool isModerator() const;
 	
 	///Sets this players rating
 	void setPlayerRating(int rating);

@@ -39,14 +39,14 @@ void YOGServerPlayerScoreCalculator::proccessResults(YOGGameResults& results, Ga
 			int t1 = header.getBasePlayer(i).teamNumber;
 			int ally_total = 0;
 			int enemy_total = 0;
-			YOGPlayerStoredInfo& info = server->getPlayerStoredInfoManager().getPlayerStoredInfo(header.getBasePlayer(i).name);
+			YOGPlayerStoredInfo info = server->getPlayerStoredInfoManager().getPlayerStoredInfo(header.getBasePlayer(i).name);
 			int your_rating = info.getPlayerRating();
 			for(int j=0; j<header.getNumberOfPlayers(); ++j)
 			{
 				if(header.getBasePlayer(j).type == BasePlayer::P_IP)
 				{
 					int t2 = header.getBasePlayer(j).teamNumber;
-					YOGPlayerStoredInfo& info2 = server->getPlayerStoredInfoManager().getPlayerStoredInfo(header.getBasePlayer(j).name);
+					const YOGPlayerStoredInfo& info2 = server->getPlayerStoredInfoManager().getPlayerStoredInfo(header.getBasePlayer(j).name);
 					if(header.getAllyTeamNumber(t1) == header.getAllyTeamNumber(t2))
 					{
 						ally_total += info2.getPlayerRating();
@@ -72,6 +72,7 @@ void YOGServerPlayerScoreCalculator::proccessResults(YOGGameResults& results, Ga
 				info.setPlayerRating(int(double(your_rating) + change * (0.0 - expected)));			{
 				//std::cout<<"old: "<<your_rating<<" new: "<<int(double(your_rating) + change * (0.0 - expected))<<std::endl;
 			}
+			server->getPlayerStoredInfoManager().setPlayerStoredInfo(header.getBasePlayer(i).name, info);
 		}
 	}
 }

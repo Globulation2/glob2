@@ -24,6 +24,7 @@
 [algae]
 [alliances]
 [map rated]
+[player rating %0]
 [alt %0]
 [and]
 [any explorer]

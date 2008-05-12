@@ -45,7 +45,7 @@ void YOGPlayerStoredInfo::setUnmuted()
 
 
 
-bool YOGPlayerStoredInfo::isMuted()
+bool YOGPlayerStoredInfo::isMuted() const
 {
 	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
 	if(unmute_time == boost::posix_time::ptime() || unmute_time < current_time)
@@ -71,7 +71,7 @@ void YOGPlayerStoredInfo::setUnbanned()
 
 
 
-bool YOGPlayerStoredInfo::isBanned()
+bool YOGPlayerStoredInfo::isBanned() const
 {
 	return banned;
 }
@@ -85,7 +85,7 @@ void YOGPlayerStoredInfo::setModerator(bool isModerator)
 
 
 
-bool YOGPlayerStoredInfo::isModerator()
+bool YOGPlayerStoredInfo::isModerator() const
 {
 	return moderator;
 }
