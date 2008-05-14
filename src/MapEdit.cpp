@@ -1378,6 +1378,11 @@ int MapEdit::run(void)
 		{
 			returnCode = -1;
 		}
+		if(!isRunning)
+		{
+				SDL_Event event;
+			while (SDL_PollEvent(&event));
+		}
 	}
 
 	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);

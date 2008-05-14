@@ -25,7 +25,8 @@
 
 using namespace GAGCore;
 
-YOGClientBlockedList::YOGClientBlockedList()
+YOGClientBlockedList::YOGClientBlockedList(const std::string& username)
+	: username(username)
 {
 	load();
 }
@@ -34,7 +35,7 @@ YOGClientBlockedList::YOGClientBlockedList()
 
 void YOGClientBlockedList::load()
 {
-	StreamBackend* backend = Toolkit::getFileManager()->openInputStreamBackend("blocked.txt");
+	StreamBackend* backend = Toolkit::getFileManager()->openInputStreamBackend("blocked-"+username+".txt");
 	if(!backend->isEndOfStream())
 	{
 		InputStream* stream = new TextInputStream(backend);
@@ -61,7 +62,7 @@ void YOGClientBlockedList::load()
 	
 void YOGClientBlockedList::save()
 {
-	OutputStream* stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("blocked.txt"));
+	OutputStream* stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("blocked-"+username+".txt"));
 	stream->writeUint32(VERSION_MINOR, "version");
 	Uint32 n = 0;
 	stream->writeEnterSection("blockedPlayers");
