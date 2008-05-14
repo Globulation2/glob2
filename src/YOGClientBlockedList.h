@@ -26,7 +26,7 @@
 class YOGClientBlockedList
 {
 public:
-	YOGClientBlockedList();
+	YOGClientBlockedList(const std::string& username);
 	
 	///Loads from the blocked list text file
 	void load();
@@ -47,6 +47,7 @@ public:
 	const std::set<std::string>& getBlockedPlayers() const;
 private:
 	std::set<std::string> blockedPlayers;
+	std::string username;
 };
 
 

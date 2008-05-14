@@ -62,7 +62,6 @@ void YOGClient::initialize()
 	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGClientGameListManager(this));
 	playerListManager.reset(new YOGClientPlayerListManager(this));
-	blocked.reset(new YOGClientBlockedList);
 	commands.reset(new YOGClientCommandManager(this));
 	downloadableMapList.reset(new YOGClientDownloadableMapList(this));
 	uploader = NULL;
@@ -157,6 +156,7 @@ void YOGClient::update()
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
 			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
+			blocked = boost::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
@@ -176,6 +176,7 @@ void YOGClient::update()
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
 			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
+			blocked = boost::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
