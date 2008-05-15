@@ -253,6 +253,8 @@ public:
 	///The subscribeToBringRessourcesStep and subscribeForFlagingStep operate every 32 ticks
 	Sint32 subscriptionWorkingTimer;
 	Sint32 maxUnitInside;
+	///This counts the number of units that failed the requirements for the building, but where free
+	Uint32 unitsFailingRequirements;
 	std::list<Unit *> unitsInside;
 	
 	// optimisation and consistency

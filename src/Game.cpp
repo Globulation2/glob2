@@ -1539,7 +1539,7 @@ Unit* Game::getUnit(int guid)
 
 
 
-void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
+void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth)
 {
 	assert(maxLength>=0);
 	assert(maxLength<65536);
@@ -1559,14 +1559,18 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 			int i;
 			for (i=0; i<actLength; i++)
 				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
+			for (; i<secondActLength+actLength; i++)
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r2, g2, b2);
 			for (; i<maxLength; i++)
 				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3);
 		}
 		else
 		{
 			int i;
-			for (i=0; i<maxLength-actLength; i++)
+			for (i=0; i<maxLength-secondActLength-actLength; i++)
 				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3);
+			for (; i<maxLength-actLength; i++)
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r2, g2, b2);
 			for (; i<maxLength; i++)
 				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
 		}
@@ -1585,14 +1589,18 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 			int i;
 			for (i=0; i<actLength; i++)
 				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
+			for (; i<secondActLength+actLength; i++)
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r2, g2, b2);
 			for (; i<maxLength; i++)
 				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3);
 		}
 		else
 		{
 			int i;
-			for (i=0; i<maxLength-actLength; i++)
+			for (i=0; i<maxLength-secondActLength-actLength; i++)
 				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3);
+			for (; i<maxLength-actLength; i++)
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r2, g2, b2);
 			for (; i<maxLength; i++)
 				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
 		}
@@ -2109,7 +2117,7 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 			if (building->maxUnitInside>0)
 				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
 			if (building->maxUnitWorking>0)
-				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), building->unitsFailingRequirements, 255, 255, 255, 255, 64, 0);
 
 			// food (for inns)
 			if ((type->canFeedUnit) || (type->unitProductionTime))
