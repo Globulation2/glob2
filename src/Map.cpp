@@ -1433,6 +1433,11 @@ void Map::growRessources(void)
 				else if (r.type == CORN)
 					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
 
+				// Growth rate of corn is 1/3
+				if(r.type == CORN && expand)
+					if(syncRand() % 3 != 0)
+						expand = false;
+
 				if (expand)
 				{
 					if (r.amount<=(syncRand()&7))
