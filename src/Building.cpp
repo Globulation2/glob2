@@ -157,6 +157,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	lastShootStep = 0xFFFFFFFF;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
+	unitsFailingRequirements=0;
 }
 
 Building::~Building()
@@ -409,6 +410,9 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 	
+	if(versionMinor>=74)
+		unitsFailingRequirements = stream->readSint32("unitsFailingRequirements");
+	
 	unsigned nbInside = stream->readUint32("nbInside");
 	fprintf(logFile, " nbInside=%d\n", nbInside);
 	unitsInside.clear();
@@ -454,6 +458,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	stream->writeSint32(maxUnitWorkingPrevious, "maxUnitWorkingPrevious");
 	stream->writeSint32(maxUnitWorkingFuture, "maxUnitWorkingFuture");
+	stream->writeSint32(unitsFailingRequirements, "unitsFailingRequirements");
 	
 	stream->writeUint32(unitsInside.size(), "nbInside");
 	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
@@ -1313,14 +1318,17 @@ void Building::step(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
+	unitsFailingRequirements=0;
 	if (buildingState==DEAD)
 		return;
 	if (verbose)
 		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
+	
 	if (((Sint32)unitsWorking.size()<desiredMaxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
 	{
 		Unit *choosen=NULL;
 		Map *map=owner->map;
+		unitsFailingRequirements=0;
 		/* To choose a good unit, we get a composition of things:
 		1-the closest the unit is, the better it is.
 		2-the less the unit is hungry, the better it is.
@@ -1400,8 +1408,14 @@ void Building::subscribeToBringRessourcesStep()
 			Unit* unit=owner->myUnits[n];
 			if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || !unit->performance[HARVEST])
 				continue;
+			//Each of the these three loops calls this function for every unit.
+			//For unitsFailingRequirements, we only want to count these units once
+			//So only in the first loop
 			if(!canUnitWorkHere(unit))
+			{
+				unitsFailingRequirements+=1;
 				continue;
+			}
 
 			int r=unit->caryedRessource;
 			int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
@@ -1420,6 +1434,11 @@ void Building::subscribeToBringRessourcesStep()
 						maxLevel=level;
 						choosen=unit;
 					}
+				}
+				//We don't count fruit as failing requirements
+				else if(r < HAPPYNESS_BASE)
+				{
+					unitsFailingRequirements+=1;
 				}
 			}
 		}
@@ -1445,12 +1464,12 @@ void Building::subscribeToBringRessourcesStep()
 					bool canSwim=unit->performance[SWIM];
 					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 					int distUnitBuilding;
-					if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+					for (int r=0; r<MAX_RESSOURCES; r++)
 					{
-						for (int r=0; r<MAX_RESSOURCES; r++)
+						int need=neededRessource(r);
+						if (need>0)
 						{
-							int need=neededRessource(r);
-							if (need>0)
+							if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 							{
 								int distUnitRessource;
 								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
@@ -1468,6 +1487,15 @@ void Building::subscribeToBringRessourcesStep()
 											printf(" guid=%5d, distUnitRessource=%d, distUnitBuilding=%d, need=%d, value=%d\n", choosen->gid, distUnitRessource, distUnitBuilding, need, value);
 									}
 								}
+								//We don't count fruit as failing requirements
+								else if(r < HAPPYNESS_BASE)
+								{
+									unitsFailingRequirements+=1;
+								}
+							}
+							else if(r < HAPPYNESS_BASE)
+							{
+								unitsFailingRequirements+=1;
 							}
 						}
 					}
@@ -1489,19 +1517,19 @@ void Building::subscribeToBringRessourcesStep()
 				if(!canUnitWorkHere(unit))
 					continue;
 
-				if (unit->caryedRessource>=0)
+				if (unit->caryedRessource>=0 && !neededRessource(unit->caryedRessource))
 				{
 					int x=unit->posX;
 					int y=unit->posY;
 					bool canSwim=unit->performance[SWIM];
 					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 					int distUnitBuilding;
-					if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+					for (int r=0; r<MAX_RESSOURCES; r++)
 					{
-						for (int r=0; r<MAX_RESSOURCES; r++)
+						int need=neededRessource(r);
+						if (need>0)
 						{
-							int need=neededRessource(r);
-							if (need>0)
+							if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 							{
 								int distUnitRessource;
 								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
@@ -1517,6 +1545,15 @@ void Building::subscribeToBringRessourcesStep()
 										choosen=unit;
 									}
 								}
+								//We don't count fruit as failing requirements
+								else if(r < HAPPYNESS_BASE)
+								{
+									unitsFailingRequirements+=1;
+								}
+							}
+							else if(r < HAPPYNESS_BASE)
+							{
+								unitsFailingRequirements+=1;
 							}
 						}
 					}
@@ -1531,6 +1568,8 @@ void Building::subscribeToBringRessourcesStep()
 			choosen->subscriptionSuccess(this, false);
 		}
 	}
+	
+	unitsFailingRequirements = std::min(desiredMaxUnitWorking - unitsWorking.size(), unitsFailingRequirements);
 	
 	updateCallLists();
 
