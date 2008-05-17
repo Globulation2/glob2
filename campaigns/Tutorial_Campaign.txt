@@ -1,5 +1,6 @@
 campaignName = "Tutorial Campaign";
 playerName = "";
+versionMinor = 74;
 maps
 {
 	mapNum = 4;

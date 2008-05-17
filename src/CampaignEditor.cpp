@@ -162,6 +162,8 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	mapsAvailableLabel = new Text(230, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[maps available]"));
 	nameEditor=new TextInput(420, 105, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", entry.getMapName());
 	nameEditorLabel = new Text(405, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map name]"));
+	descriptionEditor = new TextArea(420, 165, 180, 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, entry.getDescription().c_str());
+	descriptionEditorLabel = new Text(405, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map description]"));
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL);
 	addToUnlocked = new TextButton(170, 150, 50, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "<", ADDTOUNLOCKED);
@@ -191,6 +193,8 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	addWidget(removeFromUnlocked);
 	addWidget(nameEditor);
 	addWidget(nameEditorLabel);
+	addWidget(descriptionEditor);
+	addWidget(descriptionEditorLabel);
 	addWidget(ok);
 	addWidget(cancel);
 }
@@ -213,6 +217,7 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 				}
 			}
 			entry.setMapName(nameEditor->getText());
+			entry.setDescription(descriptionEditor->getText());
 			entry.getUnlockedByMaps().clear();
 			for(unsigned n=0; n<mapsUnlockedBy->getCount(); ++n)
 			{

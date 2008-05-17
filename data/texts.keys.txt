@@ -17,6 +17,7 @@
 [AINicowar]
 [AINone]
 [AINumbi]
+[map description]
 [AIReachToInfinity]
 [AIToubib]
 [AIWarrush]
