@@ -20,6 +20,8 @@ mV: Show vision for Markets buildings (to exchange fruits)
 V: Show vision for all buildings
 [add map]
 Add map
+[map description]
+Description
 [add shortcut]
 Add Shortcut
 [submit rating]

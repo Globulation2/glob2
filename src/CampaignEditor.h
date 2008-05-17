@@ -25,6 +25,7 @@
 #include "GUIButton.h"
 #include "GUIList.h"
 #include "GUITextInput.h"
+#include "GUITextArea.h"
 
 class CampaignEditor : public Glob2Screen
 {
@@ -100,6 +101,10 @@ private:
 	TextInput* nameEditor;
 	/// The label for nameEditor
 	Text *nameEditorLabel;
+	/// The text editor for the description
+	TextArea *descriptionEditor;
+	/// The label for the descriptionEditor
+	Text *descriptionEditorLabel;
 };
 
 #endif
