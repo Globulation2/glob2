@@ -45,6 +45,10 @@ public:
 	void unlockMap();
 	///Returns true if the map is unlocked
 	bool isUnlocked();
+	///Returns the description of this map in the campaign
+	const std::string& getDescription() const;
+	///Sets the description of this map in the campaign
+	void setDescription(const std::string& description);
 
 	///Gets the vector holding the list of unlocked by maps
 	std::vector<std::string>& getUnlockedByMaps();
@@ -54,6 +58,7 @@ private:
 	std::string mapFileName;
 	bool isLocked;
 	std::vector<std::string> unlockedBy;
+	std::string description;
 };
 
 

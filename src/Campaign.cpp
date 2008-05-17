@@ -92,6 +92,20 @@ bool CampaignMapEntry::isUnlocked()
 
 
 
+const std::string& CampaignMapEntry::getDescription() const
+{
+	return description;
+}
+
+
+
+void CampaignMapEntry::setDescription(const std::string& ndescription)
+{
+	description=ndescription;
+}
+
+
+
 std::vector<std::string>& CampaignMapEntry::getUnlockedByMaps()
 {
 	return unlockedBy;
@@ -115,6 +129,10 @@ bool CampaignMapEntry::load(InputStream* stream, Uint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if(versionMinor>=75)
+	{
+		description = stream->readText("description");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -136,6 +154,7 @@ void CampaignMapEntry::save(OutputStream* stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	stream->writeText(description, "description");
 	stream->writeLeaveSection();
 }
 
@@ -161,6 +180,7 @@ bool Campaign::load(const std::string& fileName)
 	else
 	{
 		TextInputStream* stream = new TextInputStream(backend);
+		Uint32 versionMinor = stream->readUint32("versionMinor");
 		name = stream->readText("campaignName");
 		playerName = stream->readText("playerName");
 		stream->readEnterSection("maps");
@@ -169,7 +189,7 @@ bool Campaign::load(const std::string& fileName)
 		for(Uint32 n=0; n<size; ++n)
 		{
 			stream->readEnterSection(n);
-			maps[n].load(stream, VERSION_MINOR);
+			maps[n].load(stream, versionMinor);
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
@@ -188,6 +208,7 @@ void Campaign::save(bool isGameSave)
 	else
 		filename = glob2NameToFilename("games", name.c_str(), "txt");
 	TextOutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+	stream->writeUint32(VERSION_MINOR, "versionMinor");
 	stream->writeText(name, "campaignName");
 	stream->writeText(playerName, "playerName");
 	stream->writeEnterSection("maps");

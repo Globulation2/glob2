@@ -45,6 +45,9 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 	
 	mapPreview = new MapPreview(330, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(mapPreview);
+	
+	description = new TextArea(10, 260, 620, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true);
+	addWidget(description);
 }
 
 void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -93,6 +96,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		std::string mapFileName = campaign.getMap(availableMissions->getSelectionIndex()).getMapFileName();
 		mapPreview->setMapThumbnail(mapFileName.c_str());
+		description->setText(campaign.getMap(availableMissions->getSelectionIndex()).getDescription().c_str());
 	}
 }
 
