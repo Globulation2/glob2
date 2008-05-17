@@ -33,7 +33,6 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<2; i++)
@@ -1568,8 +1567,9 @@ void Building::subscribeToBringRessourcesStep()
 			choosen->subscriptionSuccess(this, false);
 		}
 	}
-	
-	unitsFailingRequirements = std::min(desiredMaxUnitWorking - unitsWorking.size(), unitsFailingRequirements);
+	Uint32 tmpUnitsNeeded = (Uint32)(desiredMaxUnitWorking - unitsWorking.size());
+	assert(tmpUnitsNeeded >= 0);
+	unitsFailingRequirements = std::min(tmpUnitsNeeded, unitsFailingRequirements);
 	
 	updateCallLists();
 
