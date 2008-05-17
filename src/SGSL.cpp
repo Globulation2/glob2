@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat, Luc-Olivier de Charrière
+  Copyright (C) 2001-2008 Stephane Magnenat, Luc-Olivier de Charrière
   and Martin S. Nyffenegger
   for any question or comment contact us at <stephane at magnenat dot net>, <NuageBleu at gmail dot com>
   or barock@ysagoon.com
@@ -40,11 +40,13 @@
 #include "Unit.h"
 #include "Utilities.h"
 
+
 Token::TokenSymbolLookupTable Token::table[] =
 {
 	{ INT, "int" },
 	{ STRING, "string" },
 	{ LANG, "lang" },
+	{ FUNC_CALL, "function call" },
 
 	{ S_PAROPEN, "("},
 	{ S_PARCLOSE, ")"},
@@ -248,6 +250,18 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 	}
 }
 
+void Story::toto()
+{
+	std::cout << "toto func : ";
+	std::cout << Token::getNameByType(line[++lineSelector].type) << " ";
+	std::cout << line[++lineSelector].value << "\n";
+}
+
+static const FunctionArgumentDescription totoDescription[] = {
+	{ Token::S_WIN, Token::S_LOOSE },
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
 
 //main step-by-step machine
 bool Story::testCondition(GameGUI *gui)
@@ -260,6 +274,14 @@ bool Story::testCondition(GameGUI *gui)
 			case (Token::S_STORY):
 			{
 				return false;
+			}
+			
+			case (Token::FUNC_CALL):
+			{
+				Functions::const_iterator fIt = mapscript->functions.find(line[lineSelector].msg);
+				assert(fIt != mapscript->functions.end());
+				(this->*(fIt->second.second))();
+				return true;
 			}
 			
 			case (Token::S_SHOW):
@@ -768,6 +790,7 @@ const char *ErrorReport::getErrorString(void)
 		"Invalid alliance level. Level must be between 0 and 3",
 		"Not a valid language identifier",
 		"Summing of a specific level is only valid for buildings",
+		"The type of the argument to the function is wrong",
 		"Unknown error"
 	};
 	assert(type >= 0);
@@ -782,7 +805,8 @@ Aquisition::~Aquisition(void)
 
 }
 
-Aquisition::Aquisition(void)
+Aquisition::Aquisition(const Functions& functions) :
+	functions(functions)
 {
 	token.type=Token::NIL;
 	actLine=0;
@@ -917,6 +941,15 @@ void Aquisition::nextToken()
 		}
 		else
 		{
+			// is it a function call ?
+			Functions::const_iterator fIt = functions.find(word);
+			if (fIt != functions.end())
+			{
+				token.type = Token::FUNC_CALL;
+				token.msg = word;
+				return;
+			}
+			
 			// is it a language ?
 			for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 			{
@@ -950,7 +983,8 @@ bool FileAquisition::open(const char *filename)
 }
 
 
-StringAquisition::StringAquisition()
+StringAquisition::StringAquisition(const Functions& functions) :
+	Aquisition(functions)
 {
 	buffer=NULL;
 	pos=0;
@@ -998,7 +1032,7 @@ int StringAquisition::ungetChar(char c)
 
 Mapscript::Mapscript()
 {
-	reset();
+	functions["toto"] = std::make_pair(totoDescription, &Story::toto);
 }
 
 Mapscript::~Mapscript(void)
@@ -1191,7 +1225,7 @@ Sint32 Mapscript::checkSum()
 
 ErrorReport Mapscript::compileScript(Game *game, const char *script)
 {
-	StringAquisition aquisition;
+	StringAquisition aquisition(functions);
 	aquisition.open(script);
 	return parseScript(&aquisition, game);
 }
@@ -1203,7 +1237,7 @@ ErrorReport Mapscript::compileScript(Game *game)
 
 ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 {
-	FileAquisition aquisition;
+	FileAquisition aquisition(functions);
 	if (aquisition.open(filename))
 		return parseScript(&aquisition, game);
 	else
@@ -1229,7 +1263,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type != Token::S_PAROPEN) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_PAROPEN; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1240,7 +1274,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type != Token::S_PARCLOSE) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_PARCLOSE; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1251,7 +1285,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type != Token::S_SEMICOL) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_SEMICOL; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1261,7 +1295,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type == Token::S_PARCLOSE || donnees->getToken()->type == Token::S_SEMICOL) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_ARGUMENT; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1294,6 +1328,44 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 			// Grammar check
 			switch (donnees->getToken()->type)
 			{
+				// function call
+				case (Token::FUNC_CALL):
+				{
+					thisone.line.push_back(*donnees->getToken());
+					
+					Functions::const_iterator fIt = functions.find(donnees->getToken()->msg);
+					assert(fIt != functions.end());
+					const FunctionArgumentDescription *argument = fIt->second.first;
+					
+					CHECK_PAROPEN;
+					NEXT_TOKEN; 
+					
+					while (true)
+					{
+						CHECK_ARGUMENT;
+						
+						int argumentTokenType = donnees->getToken()->type;
+						if ((argumentTokenType < argument->argRangeFirst) || (argumentTokenType > argument->argRangeLast))
+						{
+							er.type=ErrorReport::ET_WRONG_FUNCTION_ARGUMENT;
+							return er;
+						}
+						
+						thisone.line.push_back(*donnees->getToken());
+						
+						argument++;
+						if (argument->argRangeFirst<0)
+							break;
+						
+						CHECK_SEMICOL;
+						NEXT_TOKEN;
+					}
+					
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
+				}
+				break;
+				
 				// summonUnits(flag_name , globules_amount , globule_type , globule_level , team_int)
 				case (Token::S_SUMMONUNITS):
 				{
