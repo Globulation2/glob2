@@ -262,6 +262,7 @@
 [new map]
 [nick taken]
 [no key]
+[No Objectives]
 [no ressources growth areas]
 [No]
 [Not Enough Ratings]

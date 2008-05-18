@@ -592,6 +592,8 @@ meta-%0
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
 [no key]
 пока нет клавиши
+[No Objectives]
+
 [no ressources growth areas]
 Нет зон роста
 [No]

@@ -594,6 +594,8 @@ Nová
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 
 [No]

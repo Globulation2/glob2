@@ -594,6 +594,8 @@ Minimum Flag Level
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 No Growth Areas
 [No]

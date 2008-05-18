@@ -594,6 +594,8 @@ Air dmg.
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 非成長區域
 [No]
