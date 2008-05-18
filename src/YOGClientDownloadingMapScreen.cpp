@@ -29,6 +29,7 @@
 #include "GUITabScreen.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
+#include <GUIProgressBar.h>
 #include "MapHeader.h"
 #include "StringTable.h"
 #include "Toolkit.h"
@@ -56,7 +57,8 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(boost::shared_ptr<Y
 	authorName=new Text(173, 60+90,  ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(authorName);
 	
-	downloadStatus=new Text(248, 60+300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "", 180);
+	downloadStatus=new ProgressBar(20, 300, 600, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
+	downloadStatus->visible = false;
 	addWidget(downloadStatus);
 	
 	// update map name & info
@@ -100,12 +102,14 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 		endExecute(CONNECTIONLOST);
 	}
 	
+	downloadStatus->visible = false;
 	if(downloader.getDownloadingState() == YOGClientMapDownloader::DownloadingMap)
 	{
+		downloadStatus->visible = true;
 		int p = downloader.getPercentUploaded();
 		if( p == 100)
 			p = 0;
-		downloadStatus->setText(FormatableString(Toolkit::getStringTable()->getString("[downloaded %0]")).arg(p));
+		downloadStatus->setValue(p);
 	}
 	else if(downloader.getDownloadingState() == YOGClientMapDownloader::Finished)
 	{
