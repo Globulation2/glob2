@@ -1,0 +1,28 @@
+Understanding unit allocation
+
+nuage, 18 01 2005
+
+A) The unit start the process. When an unit is free (not hungry, and
+not too much damaged), it will look for all buildings needing workpower.
+Some priority are involved:
+1st) finished food buildings (Inns) needing food
+2nd) unit will try to find a place to upgrade itself
+3rd) clearing flags
+4rd) buildings to build, swarms to fill, towers to fill
+5th) if not totaly healed, find a healing place.
+This is a strict priority list.  An unit will only try to find something
+in a lower priority if there is nothing to do in the higher one.
+In the same priority level, the best building is choosen. This choice
+is well tuned, and involve exacts distance to the building, all
+distance to ressources, and the possibly already carried ressource.
+
+B) When the building is choosed, the unit "subscribe" to the building.
+Any amount of unit can subscribe to the same building. For instance,
+if you have an map with 100 free units, and there is only one job, then
+they will all subscribe.
+
+C) After a given amount of time (this amount of time is the question),
+the building will make up a choice. It will choose along all subscribed
+unit the most suitable one(s), and free the others.
+If there is not enough units to fill all requested units, it will
+continue requesting for new units.

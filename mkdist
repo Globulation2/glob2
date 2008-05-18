@@ -1,0 +1,31 @@
+#!/bin/sh
+
+#
+# USE THIS SCRIPT FOR DISTRIBUTIONS
+#
+# While the script calls "scons dist", two other things have to happen
+# before it. Use this script, "./mkdist" instead of running "scons dist"
+# to make a distribution for public release.
+#
+
+echo " ----------------------------------------------------"
+echo "  Making distribution file"
+echo " ----------------------------------------------------"
+echo ""
+scons -c    #must clean to have an accurate report on next step
+echo ""
+echo " ----------------------------------------------------"
+echo "  Cleared existing compiled files"
+echo " ----------------------------------------------------"
+echo ""
+scons       #must build to make sure the distribution isn't buggy, essential!
+echo ""
+echo " ----------------------------------------------------"
+echo "  Built distribution"
+echo " ----------------------------------------------------"
+echo ""
+scons dist  #finally, if cleaned and still compiles, make the distribution, and only then
+echo ""
+echo " ----------------------------------------------------"
+echo "  Distribution file made"
+echo " ----------------------------------------------------"

@@ -1,0 +1,1396 @@
+//
+// Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de Charriere
+//  for any question or comment contact us at <stephane at magnenat dot net>
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+
+*swarm0c
+
+type swarm
+
+gameSprite data/gfx/swarm0c
+gameSpriteImage 0
+miniSprite data/gfx/miniswarm0c
+miniSpriteImage 0
+hueImage 1
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxCorn 35
+hpInit 1
+hpMax 700
+hpInc 20
+level 0
+shortTypeNum 0
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*swarm0
+
+type swarm
+
+gameSprite data/gfx/swarm0b
+gameSpriteImage 0
+miniSprite data/gfx/miniswarm0b
+miniSpriteImage 0
+hueImage 1
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+unitProductionTime 150
+ressourceForOneUnit 5
+maxCorn 20
+hpInit 700
+hpMax 700
+level 0
+shortTypeNum 0
+maxUnitWorking 1
+
+viewingRange 4
+regenerationSpeed 3
+
+
+*inn0c
+
+type inn
+
+gameSprite data/gfx/inn0c
+gameSpriteImage 0
+miniSprite data/gfx/miniinn0c
+miniSpriteImage 0
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 3
+hpInit 1
+hpMax 200
+hpInc 67
+level 0
+shortTypeNum 1
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*inn0
+
+type inn
+
+gameSprite data/gfx/inn0b
+gameSpriteImage 0
+gameSpriteCount 2
+miniSprite data/gfx/miniinn0b
+miniSpriteImage 0
+
+foodable 1
+canFeedUnit 1
+timeToFeedUnit 8
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxCorn 10
+maxFruit0 40
+maxFruit1 40
+maxFruit2 40
+maxUnitInside 4
+hpInit 200
+hpMax 200
+level 0
+shortTypeNum 1
+maxUnitWorking 1
+
+
+*inn1c
+
+type inn
+
+gameSprite data/gfx/inn1c
+gameSpriteImage 0
+miniSprite data/gfx/miniinn1c
+miniSpriteImage 0
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 8
+hpInit 200
+hpMax 500
+hpInc 38
+level 1
+shortTypeNum 1
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*inn1
+
+type inn
+
+gameSprite data/gfx/inn1b
+gameSpriteImage 0
+gameSpriteCount 2
+miniSprite data/gfx/miniinn1b
+miniSpriteImage 0
+
+foodable 1
+canFeedUnit 1
+timeToFeedUnit 5
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxCorn 30
+maxFruit0 80
+maxFruit1 80
+maxFruit2 80
+maxUnitInside 7
+hpInit 500
+hpMax 500
+armor 8
+level 1
+shortTypeNum 1
+maxUnitWorking 1
+
+
+*inn2c
+
+type inn
+
+gameSprite data/gfx/inn2c
+gameSpriteImage 0
+miniSprite data/gfx/miniinn2c
+miniSpriteImage 0
+
+fillable 1
+
+width 3
+height 3
+decLeft -1
+decTop -1
+maxWood 7
+maxStone 5
+hpInit 500
+hpMax 700
+hpInc 17
+armor 8
+level 2
+shortTypeNum 1
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*inn2
+
+type inn
+
+gameSprite data/gfx/inn2b
+gameSpriteImage 0
+miniSprite data/gfx/miniinn2b
+miniSpriteImage 0
+
+foodable 1
+canFeedUnit 1
+timeToFeedUnit 3
+
+width 3
+height 3
+decLeft -1
+decTop -1
+maxCorn 50
+maxFruit0 200
+maxFruit1 200
+maxFruit2 200
+maxUnitInside 17
+hpInit 700
+hpMax 700
+armor 15
+level 2
+shortTypeNum 1
+maxUnitWorking 1
+
+
+*hospital0c
+
+type hospital
+
+gameSprite data/gfx/hosp0c
+gameSpriteImage 0
+miniSprite data/gfx/minihosp0c
+miniSpriteImage 0
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 3
+hpInit 1
+hpMax 260
+hpInc 87
+level 0
+shortTypeNum 2
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*hospital0
+
+type hospital
+
+gameSprite data/gfx/hosp0b
+gameSpriteImage 0
+gameSpriteCount 2
+miniSprite data/gfx/minihosp0b
+miniSpriteImage 0
+
+canHealUnit 1
+timeToHealUnit 10
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 2
+hpInit 260
+hpMax 260
+armor 8
+level 0
+shortTypeNum 2
+
+
+*hospital1c
+
+type hospital
+
+gameSprite data/gfx/hosp1c
+gameSpriteImage 0
+miniSprite data/gfx/minihosp1c
+miniSpriteImage 0
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 8
+hpInit 260
+hpMax 500
+hpInc 30
+level 1
+shortTypeNum 2
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*hospital1
+
+type hospital
+
+gameSprite data/gfx/hosp1b
+gameSpriteImage 0
+miniSprite data/gfx/minihosp1b
+miniSpriteImage 0
+
+canHealUnit 1
+timeToHealUnit 6
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 5
+hpInit 500
+hpMax 500
+armor 8
+level 1
+shortTypeNum 2
+
+
+*hospital2c
+
+type hospital
+
+gameSprite data/gfx/hosp2c
+gameSpriteImage 0
+miniSprite data/gfx/minihosp2c
+miniSpriteImage 0
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 3
+maxStone 5
+hpInit 500
+hpMax 700
+hpInc 25
+armor 8
+level 2
+shortTypeNum 2
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*hospital2
+
+type hospital
+
+gameSprite data/gfx/hosp2b
+gameSpriteImage 0
+miniSprite data/gfx/minihosp2b
+miniSpriteImage 0
+
+canHealUnit 1
+timeToHealUnit 2
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 7
+hpInit 700
+hpMax 700
+armor 15
+level 2
+shortTypeNum 2
+
+
+*racetrack0c
+
+type racetrack
+
+gameSprite data/gfx/racetrack0c
+gameSpriteImage 0
+miniSprite data/gfx/miniracetrack0c
+miniSpriteImage 0
+
+fillable 1
+
+width 4
+height 4
+decLeft -3
+decTop -3
+maxWood 6
+maxStone 1
+hpInit 1
+hpMax 675
+hpInc 97
+armor 0
+level 0
+shortTypeNum 3
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*racetrack0
+
+type racetrack
+
+gameSprite data/gfx/racetrack0b
+gameSpriteImage 0
+gameSpriteCount 3
+miniSprite data/gfx/miniracetrack0b
+miniSpriteImage 0
+
+upgradeWalk 1
+upgradeTimeWalk 7
+
+width 4
+height 4
+decLeft -3
+decTop -3
+maxUnitInside 2
+hpInit 675
+hpMax 675
+armor 8
+level 0
+shortTypeNum 3
+
+
+*racetrack1c
+
+type racetrack
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 5
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 5
+
+fillable 1
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxWood 10
+maxStone 5
+hpInit 675
+hpMax 1000
+hpInc 22
+armor 8
+level 1
+shortTypeNum 3
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*racetrack1
+
+type racetrack
+
+gameSprite data/gfx/racetrack1b
+gameSpriteImage 0
+gameSpriteCount 3
+miniSprite data/gfx/miniracetrack1b
+miniSpriteImage 0
+
+upgradeWalk 1
+upgradeTimeWalk 7
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxUnitInside 4
+hpInit 1000
+hpMax 1000
+armor 14
+level 1
+shortTypeNum 3
+
+
+*racetrack2c
+
+type racetrack
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 5
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 5
+
+fillable 1
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxWood 15
+maxStone 5
+hpInit 1000
+hpMax 1500
+hpInc 25
+armor 14
+level 2
+shortTypeNum 3
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*racetrack2
+
+type racetrack
+
+gameSprite data/gfx/racetrack2b
+gameSpriteImage 0
+miniSprite data/gfx/miniracetrack2b
+miniSpriteImage 0
+
+upgradeWalk 1
+upgradeTimeWalk 8
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxUnitInside 6
+hpInit 1500
+hpMax 1500
+armor 20
+level 2
+shortTypeNum 3
+
+
+*swimmingpool0c
+
+type swimmingpool
+
+gameSprite data/gfx/pool0c
+gameSpriteImage 0
+miniSprite data/gfx/minipool0c
+miniSpriteImage 0
+
+fillable 1
+
+width 4
+height 4
+decLeft -3
+decTop -3
+maxWood 8
+hpInit 1
+hpMax 675
+hpInc 97
+armor 0
+level 0
+shortTypeNum 4
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*swimmingpool0
+
+type swimmingpool
+
+gameSprite data/gfx/pool0b
+gameSpriteImage 0
+gameSpriteCount 2
+miniSprite data/gfx/minipool0b
+miniSpriteImage 0
+
+upgradeSwim 1
+upgradeTimeSwim 7
+
+width 4
+height 4
+decLeft -3
+decTop -3
+maxUnitInside 2
+hpInit 675
+hpMax 675
+armor 6
+level 0
+shortTypeNum 4
+
+
+*swimmingpool1c
+
+type swimmingpool
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 5
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 5
+
+fillable 1
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxCorn 6
+maxWood 12
+hpInit 675
+hpMax 1000
+hpInc 19
+armor 6
+level 1
+shortTypeNum 4
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*swimmingpool1
+
+type swimmingpool
+
+gameSprite data/gfx/pool1b
+gameSpriteImage 0
+miniSprite data/gfx/minipool1b
+miniSpriteImage 0
+
+upgradeSwim 1
+upgradeTimeSwim 7
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxUnitInside 4
+hpInit 1000
+hpMax 1000
+armor 12
+level 1
+shortTypeNum 4
+
+
+*swimmingpool2c
+
+type swimmingpool
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 5
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 5
+
+fillable 1
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxCorn 4
+maxWood 8
+maxStone 6
+maxAlgue 8
+hpInit 1000
+hpMax 1500
+hpInc 20
+armor 12
+level 2
+shortTypeNum 4
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*swimmingpool2
+
+type swimmingpool
+
+gameSprite data/gfx/pool2b
+gameSpriteImage 0
+miniSprite data/gfx/minipool2b
+miniSpriteImage 0
+
+upgradeSwim 1
+upgradeTimeSwim 8
+
+width 6
+height 6
+decLeft -4
+decTop -4
+maxUnitInside 6
+hpInit 1500
+hpMax 1500
+armor 21
+level 2
+shortTypeNum 4
+
+
+*barracks0c
+
+type barracks
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 3
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 3
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxWood 7
+hpInit 1
+hpMax 440
+hpInc 63
+armor 0
+level 0
+shortTypeNum 5
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*barracks0
+
+type barracks
+
+gameSprite data/gfx/barracks0b
+gameSpriteImage 0
+miniSprite data/gfx/minibarracks0b
+miniSpriteImage 0
+
+upgradeAttackStrength 1
+upgradeTimeAttackStrength 7
+upgradeAttackSpeed 1
+upgradeTimeAttackSpeed 7
+upgradeInParallel 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxUnitInside 2
+hpInit 440
+hpMax 440
+armor 6
+level 0
+shortTypeNum 5
+
+
+*barracks1c
+
+type barracks
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 3
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 3
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxStone 10
+maxWood 3
+hpInit 440
+hpMax 800
+hpInc 28
+armor 6
+level 1
+shortTypeNum 5
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*barracks1
+
+type barracks
+
+gameSprite data/gfx/barracks1b
+gameSpriteImage 0
+miniSprite data/gfx/minibarracks1b
+miniSpriteImage 0
+
+upgradeAttackStrength 1
+upgradeTimeAttackStrength 10
+upgradeAttackSpeed 1
+upgradeTimeAttackSpeed 10
+upgradeInParallel 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxUnitInside 4
+hpInit 800
+hpMax 800
+armor 14
+level 1
+shortTypeNum 5
+
+
+*barracks2c
+
+type barracks
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 3
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 3
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxWood 10
+maxStone 10
+hpInit 800
+hpMax 1300
+hpInc 25
+armor 14
+level 2
+shortTypeNum 5
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*barracks2
+
+type barracks
+
+gameSprite data/gfx/barracks2b
+gameSpriteImage 0
+miniSprite data/gfx/minibarracks2b
+miniSpriteImage 0
+
+upgradeAttackStrength 1
+upgradeTimeAttackStrength 14
+upgradeAttackSpeed 1
+upgradeTimeAttackSpeed 14
+upgradeInParallel 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxUnitInside 5
+hpInit 1300
+hpMax 1300
+armor 22
+level 2
+shortTypeNum 5
+
+
+*school0c
+
+type school
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 1
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 1
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 7
+maxAlgue 2
+hpInit 1
+hpMax 360
+hpInc 40
+armor 0
+level 0
+shortTypeNum 6
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*school0
+
+type school
+
+gameSprite data/gfx/school0b
+gameSpriteImage 0
+gameSpriteCount 2
+miniSprite data/gfx/minischool0b
+miniSpriteImage 0
+
+upgradeBuild 1
+upgradeTimeBuild 7
+upgradeHarvest 1
+upgradeTimeHarvest 7
+upgradeInParallel 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 4
+hpInit 360
+hpMax 360
+armor 3
+level 0
+shortTypeNum 6
+
+
+*school1c
+
+type school
+
+gameSprite data/gfx/school1c
+gameSpriteImage 0
+miniSprite data/gfx/minischool1c
+miniSpriteImage 0
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxStone 5
+maxWood 5
+maxAlgue 12
+hpInit 360
+hpMax 520
+hpInc 8
+armor 3
+level 1
+shortTypeNum 6
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*school1
+
+type school
+
+gameSprite data/gfx/school1b
+gameSpriteImage 0
+gameSpriteCount 3
+miniSprite data/gfx/minischool1b
+miniSpriteImage 0
+
+upgradeBuild 1
+upgradeTimeBuild 19
+upgradeHarvest 1
+upgradeTimeHarvest 19
+upgradeInParallel 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 7
+hpInit 520
+hpMax 520
+armor 8
+level 1
+shortTypeNum 6
+
+
+*school2c
+
+type school
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 1
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 1
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxCorn 4
+maxWood 7
+maxStone 12
+maxAlgue 10
+hpInit 520
+hpMax 700
+hpInc 6
+armor 8
+level 2
+shortTypeNum 6
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*school2
+
+type school
+
+gameSprite data/gfx/school2b
+gameSpriteImage 0
+miniSprite data/gfx/minischool2b
+miniSpriteImage 0
+
+upgradeBuild 1
+upgradeTimeBuild 14
+upgradeHarvest 1
+upgradeTimeHarvest 14
+upgradeMagicAttackGround 1
+upgradeTimeMagicAttackGround 14
+upgradeInParallel 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 9
+hpInit 700
+hpMax 700
+armor 25
+level 2
+shortTypeNum 6
+prestige 50
+
+
+*defencetower0c
+
+type defencetower
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 1
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 1
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 6
+hpInit 1
+hpMax 480
+hpInc 80
+armor 0
+level 0
+shortTypeNum 7
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*defencetower0
+
+type defencetower
+
+gameSprite data/gfx/defencetower0b
+gameSpriteImage 0
+miniSprite data/gfx/minidefencetower0b
+miniSpriteImage 0
+
+fillable 1
+maxStone 4
+maxUnitWorking 1
+
+shootingRange 5
+shootDamage 30
+shootSpeed 5000
+shootRythme 1700
+maxBullets 12
+multiplierStoneToBullets 3
+
+width 2
+height 2
+decLeft -1
+decTop -1
+hpInit 480
+hpMax 480
+armor 14
+level 0
+shortTypeNum 7
+
+viewingRange 6
+
+
+*defencetower1c
+
+type defencetower
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 1
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 1
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 10
+maxStone 14
+hpInit 480
+hpMax 1440
+hpInc 40
+armor 14
+level 1
+shortTypeNum 7
+maxUnitWorking 1
+isBuildingSite 1
+
+viewingRange 5
+
+
+*defencetower1
+
+type defencetower
+
+gameSprite data/gfx/defencetower1b
+gameSpriteImage 0
+gameSpriteCount 3
+miniSprite data/gfx/minidefencetower1b
+miniSpriteImage 0
+
+fillable 1
+maxStone 4
+maxUnitWorking 1
+
+shootingRange 7
+shootDamage 40
+shootSpeed 5700
+shootRythme 1800
+maxBullets 16
+multiplierStoneToBullets 4
+
+width 2
+height 2
+decLeft -1
+decTop -1
+hpInit 1440
+hpMax 1440
+armor 20
+level 1
+shortTypeNum 7
+
+viewingRange 7
+
+
+*defencetower2c
+
+type defencetower
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 1
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 1
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 8
+maxStone 14
+maxAlgue 2
+hpInit 1440
+hpMax 2000
+hpInc 24
+armor 20
+level 2
+shortTypeNum 7
+maxUnitWorking 1
+isBuildingSite 1
+
+viewingRange 6
+
+
+*defencetower2
+
+type defencetower
+
+gameSprite data/gfx/defencetower2b
+gameSpriteImage 0
+miniSprite data/gfx/minidefencetower2b
+miniSpriteImage 0
+
+fillable 1
+maxStone 4
+maxUnitWorking 1
+
+shootingRange 9
+shootDamage 50
+shootSpeed 7000
+shootRythme 1900
+maxBullets 20
+multiplierStoneToBullets 7
+
+width 2
+height 2
+decLeft -1
+decTop -1
+hpInit 2000
+hpMax 2000
+armor 25
+level 2
+shortTypeNum 7
+
+viewingRange 8
+
+
+*explorationflag0
+
+type explorationflag
+
+gameSprite data/gfx/explorationflag
+gameSpriteImage 0
+hueImage 1
+miniSpriteImage -1
+
+zonableExplorer 1
+
+width 1
+height  1
+decLeft 0
+decTop  0
+isVirtual 1
+isCloacked 1
+
+maxUnitWorking 1
+
+shortTypeNum 8
+
+defaultUnitStayRange 10
+maxUnitStayRange 20
+
+
+*warflag0
+
+type warflag
+
+gameSprite data/gfx/warflag
+gameSpriteImage 0
+hueImage 1
+miniSpriteImage -1
+
+zonableWarrior 1
+
+width 1
+height 1
+decLeft 0
+decTop 0
+isVirtual 1
+isCloacked  1
+
+maxUnitWorking 1
+
+shortTypeNum 9
+
+defaultUnitStayRange 4
+maxUnitStayRange 8
+
+
+*clearingflag0
+
+type clearingflag
+
+gameSprite data/gfx/clearingflag
+gameSpriteImage 0
+hueImage 1
+miniSpriteImage -1
+
+zonableWorker 1
+
+width 1
+height 1
+decLeft 0
+decTop 0
+isVirtual 1
+isCloacked  1
+
+maxUnitWorking 1
+
+shortTypeNum 10
+
+defaultUnitStayRange 3
+maxUnitStayRange 14
+
+
+*stonewall0c
+
+type stonewall
+
+gameSprite data/gfx/wallc
+gameSpriteImage 0
+miniSpriteImage -1
+hueImage 1;
+miniSpriteImage -1
+
+fillable 1
+maxWood 0
+maxStone 1
+
+width 1
+height 1
+decLeft 0
+decTop 0
+hpInit 1
+hpMax 180
+hpInc 180
+level 0
+shortTypeNum 11
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*stonewall0
+
+type stonewall
+
+gameSprite data/gfx/wall
+gameSpriteImage 0
+miniSpriteImage 23
+crossConnectMultiImage 1
+hueImage 1;
+miniSpriteImage -1
+
+width 1
+height 1
+decLeft 0
+decTop 0
+hpInit 180
+hpMax 180
+level 0
+shortTypeNum 11
+armor 18
+
+
+*market0c
+
+type market
+
+gameSprite data/gfx/buildingsite
+gameSpriteImage 2
+miniSprite data/gfx/minibuildingsite
+miniSpriteImage 2
+
+width 3
+height 3
+decLeft -1
+decTop -1
+maxWood 4
+maxStone 4
+hpInit 1
+hpMax 400
+hpInc 50
+level 0
+shortTypeNum 12
+maxUnitWorking 1
+isBuildingSite 1
+fillable 1
+
+
+*market0
+
+type market
+
+gameSprite data/gfx/market0b
+gameSpriteImage 0
+miniSprite data/gfx/minimarket0b
+miniSpriteImage 0
+
+width 3
+height 3
+decLeft -1
+decTop -1
+hpInit 400
+hpMax 400
+level 0
+shortTypeNum 12
+armor 6
+fillable 1
+canExchange 1
+useTeamRessources 1
+maxFruit0 200
+maxFruit1 200
+maxFruit2 200
+maxUnitWorking 1
+

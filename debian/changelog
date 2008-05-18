@@ -1,0 +1,315 @@
+glob2 (beta2) unstable; urgency=low
+
+  * Beta2
+
+ -- Stéphane Magnenat <stephane at magnenat dot net>  Sat, 23 Feb 2008 11:03:00 +0100
+
+glob2 (alpha23) unstable; urgency=low
+
+  * Alpha23
+
+ -- Stéphane Magnenat <stephane at magnenat dot net>  Tue, 17 Apr 2007 22:55:06 +0200
+
+glob2 (alpha22) unstable; urgency=low
+
+  * Alpha22
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Wed,  4 Apr 2007 17:21:54 +0200
+
+glob2 (alpha21) unstable; urgency=low
+
+  * Alpha21
+
+ -- Stéphane Magnenat <stephane at magnenat dot net>  Sun,  6 Aug 2006 14:44:24 +0200
+
+glob2 (alpha20) unstable; urgency=low
+
+  * Alpha 20 
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Fri,  4 Aug 2006 14:36:19 -0400
+
+glob2 (alpha19) unstable; urgency=low
+
+  * Alpha19
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 12 Mar 2006 17:26:02 +0100
+
+glob2 (alpha18) unstable; urgency=low
+
+  * Alpha18
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 29 Jan 2006 19:38:55 +0100
+
+glob2 (alpha17) unstable; urgency=low
+
+  * Alpha17
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 11 Dec 2005 15:52:34 +0100
+
+glob2 (alpha16) unstable; urgency=low
+
+  * Alpha16
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 20 Nov 2005 11:03:01 +0100
+
+glob2 (alpha15) unstable; urgency=low
+
+  * Alpha15
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Mon, 16 May 2005 13:34:09 +0200
+
+glob2 (alpha14) unstable; urgency=low
+
+  * Alpha14
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 24 Apr 2005 17:52:58 +0200
+
+glob2 (alpha13) unstable; urgency=low
+
+  * Alpha13
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sat, 16 Apr 2005 17:42:44 +0200
+
+glob2 (alpha12) unstable; urgency=low
+
+  * Alpha12
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 13 Feb 2005 13:01:59 +0100
+
+glob2 (alpha11) unstable; urgency=low
+
+  * Alpha11
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 16 Jan 2005 00:08:12 +0100
+
+glob2 (alpha10) unstable; urgency=low
+
+  * Alpha10, working version
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Wed, 29 Dec 2004 12:20:37 +0100
+
+glob2 (alpha10pre) unstable; urgency=low
+
+  * Alpha10, preversion
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 24 Oct 2004 19:15:00 +0200
+
+glob2 (alpha9) unstable; urgency=low
+
+  * Alpha9
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Fri,  8 Oct 2004 18:28:02 +0200
+
+glob2 (alpha8) unstable; urgency=low
+
+  * Alpha8
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 12 Sep 2004 21:10:04 +0200
+
+glob2 (alpha7) unstable; urgency=low
+
+  * Alpha7
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sun,  8 Aug 2004 22:00:39 +0200
+
+glob2 (alpha6) unstable; urgency=low
+
+  * Alpha6
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Wed,  9 Jun 2004 21:29:08 +0200
+
+glob2 (alpha5-post) unstable; urgency=low
+
+  * Post Alpha5 CVS
+  * Lib GLU deps changed
+
+ -- Stephane Magnenat <stephane at magnenat dot net>  Sat, 29 May 2004 12:25:00 +0200
+
+glob2 (alpha3) unstable; urgency=low
+
+  * Alpha 3
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Fri, 20 Feb 2004 11:24:21 +0100
+
+glob2 (alpha0) unstable; urgency=low
+
+  * Alpha version
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Fri,  6 Feb 2004 12:22:09 +0100
+
+glob2cvs (20040119-1) unstable; urgency=low
+
+  * CVS Jan 19th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 19 Jan 2004 12:33:22 +0100
+
+glob2cvs (20040105-1) unstable; urgency=low
+
+  * CVS Jan 5th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon,  5 Jan 2004 22:44:10 +0100
+
+glob2cvs (20031225-1) unstable; urgency=low
+
+  * CVS Dec 25th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 25 Dec 2003 21:29:48 +0100
+
+glob2cvs (20031224-1) unstable; urgency=low
+
+  * CVS Dec 24th (merry christmas) 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 25 Dec 2003 01:58:48 +0100
+
+glob2cvs (20031127-1) unstable; urgency=low
+
+  * CVS Nov 27th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 27 Nov 2003 15:31:16 +0100
+
+glob2cvs (20031121-1) unstable; urgency=low
+
+  * CVS Nov 21st
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sat, 22 Nov 2003 00:38:45 +0100
+
+glob2cvs (20031116-3) unstable; urgency=low
+
+  * CVS Nov 16th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sun, 16 Nov 2003 14:14:16 +0100
+
+glob2cvs (20031112-1) unstable; urgency=low
+
+  * CVS Nov 12th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Wed, 12 Nov 2003 11:08:31 +0100
+
+glob2cvs (20031111-1) unstable; urgency=low
+
+  * CVS Nov 11th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 11 Nov 2003 12:11:54 +0100
+
+glob2cvs (20031110-1) unstable; urgency=low
+
+  * CVS Nov 10th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 10 Nov 2003 18:19:29 +0100
+
+glob2cvs (20031103-1) unstable; urgency=low
+
+  * CVS Nov 3rd
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue,  4 Nov 2003 01:40:57 +0100
+
+glob2cvs (20031101-1) unstable; urgency=low
+
+  * CVS Nov 1st 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sat,  1 Nov 2003 15:07:10 +0100
+
+glob2cvs (20031027-1) unstable; urgency=low
+
+  * CVS Oct 27th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 27 Oct 2003 10:25:45 +0100
+
+glob2cvs (20031023-1) unstable; urgency=low
+
+  * CVS Oct 23rd
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 23 Oct 2003 18:02:16 +0200
+
+glob2cvs (20031022-1) unstable; urgency=low
+
+  * CVS Oct 22nd
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 23 Oct 2003 01:16:34 +0200
+
+glob2cvs (20031019-1) unstable; urgency=low
+
+  * CVS Oct 19th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sun, 19 Oct 2003 12:46:20 +0200
+
+glob2cvs (20031010-1) unstable; urgency=low
+
+  * CVS Oct 10th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sat, 11 Oct 2003 00:43:03 +0200
+
+glob2cvs (20031009-1) unstable; urgency=low
+
+  * CVS Oct 9th. 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu,  9 Oct 2003 12:28:33 +0200
+
+glob2cvs (20030715-1) unstable; urgency=low
+
+  * CVS July 15th. 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 15 Jul 2003 09:53:02 +0200
+
+glob2cvs (20030703-1) unstable; urgency=low
+
+  * CVS Jul 3rd.
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu,  3 Jul 2003 09:45:10 +0200
+
+glob2cvs (20030624-2) unstable; urgency=low
+
+  * Fixed a menu bug (in rules file)
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 24 Jun 2003 13:48:55 +0200
+
+glob2cvs (20030624-1) unstable; urgency=low
+
+  * CVS June 24th ; tiny fixes in the debian structure.
+    binaries now in /usr/games (was /usr/bin)
+  
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 24 Jun 2003 12:10:02 +0200
+
+glob2cvs (20030602-1) unstable; urgency=low
+
+  * CVS June 2nd
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon,  2 Jun 2003 10:15:43 +0200
+
+glob2cvs (20030526-1) unstable; urgency=low
+
+  * CVS May 26th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 26 May 2003 11:14:21 +0200
+
+glob2cvs (20030519-1) unstable; urgency=low
+
+  * CVS May 19th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 19 May 2003 10:14:21 +0200
+
+glob2cvs (20030512-1) unstable; urgency=low
+
+  * CVS May 12th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 12 May 2003 09:15:11 +0200
+
+glob2cvs (20030505-1) unstable; urgency=low
+
+  * CVS May 5th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon,  5 May 2003 11:44:35 +0200
+
+glob2cvs (20030429-2) unstable; urgency=low
+
+  * A stupid version error existed on the dependencies on gfx and maps packages. 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 29 Apr 2003 15:08:30 +0200
+
+glob2cvs (20030429-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 29 Apr 2003 14:59:24 +0200
+

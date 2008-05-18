@@ -1,0 +1,76 @@
+Comparable := interface (
+	def < : _ => Boolean := abstract
+	def ==(that) : _ => Boolean := ((this >= that) && (that >= this))
+	def >=(that) : _ => Boolean := !(this < that)
+	def >(that) : _ => Boolean := that < this
+	def <=(that) : _ => Boolean := !(this > that)
+	def <?(that) := if (this < that) this else that
+	def >?(that) := if (this > that) this else that
+)
+
+Iterator := interface (
+	self := this
+	
+	get := abstract
+	next : Iterator := abstract
+	end : Boolean := abstract
+	
+	def zip(that: Iterator) with Iterator := (
+		get := (self.get, that.get)
+		next := self.next zip that.next
+		end := self.end || that.end
+	)
+)
+
+RandomAccessIterator := Iterator with (
+	advance := abstract : Integer => RandomAccessIterator
+)
+
+Container := interface (
+	self := this
+	
+	elements := abstract : Iterator
+	size := abstract
+	isEmpty := abstract
+	
+	def zip(that : Container) := Container with (
+		elements := self.begin zip that.begin
+		size := self.size <? that.size
+		isEmpty := self.isEmpty || that.isEmpty
+	)
+	
+	def foreach(function) := {
+		def foreach(it) := {
+			if (! it.end) {
+				function(it.get)
+				foreach(it.next)
+			}
+		}
+		foreach(elements)
+	}
+	
+	def forall(predicate : _ => Boolean) : Boolean {
+		def forall(it) := {
+			if (! it.end) {
+				if (predicate(it.get)) {
+					forall(it.next)
+				} else {
+					false
+				}
+			} else {
+				true
+			}
+		}
+		forall(elements)
+	}
+)
+
+ForwardContainer := Container with Comparable with (
+	def <(that) : _ => Boolean := {
+		((this zip that) forall fun (a, b) => a < b) && (this.size < that.size)
+	}
+	def ==(that) : Boolean := {
+		(this.size == that.size) && ((this zip that) forall fun (a, b) => a == b)
+	}
+)
+

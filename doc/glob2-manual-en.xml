@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+	"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<book id="glob2-manual" lang="en">
+
+<bookinfo>
+
+<title>Glob2 English Manual</title>
+
+<authorgroup>
+	<author>
+		<firstname>Stéphane</firstname>
+		<surname>Magnenat</surname>
+	</author>
+</authorgroup>
+
+<date>30/12/2002</date>
+<releaseinfo>0.0.1</releaseinfo>
+
+<abstract>
+	<para>
+	This manual is for the <ulink url="http://ysagoon.com/glob2"><application>Globulation</application> 2</ulink> game.
+	</para>
+</abstract>
+
+<keywordset>
+	<keyword>Glob 2</keyword>
+	<keyword>Globulation</keyword>
+	<keyword>manual</keyword>
+	<keyword>game</keyword>
+	<keyword>free software</keyword>
+</keywordset>
+
+</bookinfo>
+
+
+
+<!-- Licensing chapter -->
+
+
+<chapter id="licensing" >
+<title>This manual licensing</title>
+
+<para>
+This manual is for the <ulink url="http://ysagoon.com/glob2"><application>Globulation</application> 2</ulink> game.
+</para>
+
+<para>
+Copyright © 2002 Stéphane Magnenat
+</para>
+
+<para>
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with the Front-Cover texts being "Globulation 2 English Manual,"
+and with the Back-Cover Texts as in (a) below.  A copy of the
+license is included in the section entitled "GNU Free Documentation
+License."
+</para>
+
+<para>
+(a) The FSF's Back-Cover Text is: "You have freedom to copy and modify
+this manual, like Globulation 2 itself.  If you likes Globulation 2, please
+consider publisizing it, reporting bug, contributing to code, graphics,
+musicm translations and so on. Additionally, you can send postcards to
+Globulation 2 developpers."
+</para>
+
+</chapter>
+
+
+
+<!-- Installation chapter -->
+
+
+<chapter id="installation">
+<title>Installation</title>
+
+<procedure>
+<title>Installing <application>Globulation</application> 2 from CVS</title>
+
+<step performance="required">
+<para>Download the CVS (modulename = glob2) as explained 
+	<ulink url="http://savannah.nongnu.org/cvs/?group=glob2">here</ulink></para>
+</step>
+
+<step performance="required">
+<para>Download the graphic archive as explained <ulink url="http://ysagoon.com/glob2">here</ulink></para>
+</step>
+
+<step performance="required">
+<para>Uncompress the graphic archive in the glob2/data directory</para>
+<substeps>
+<step><para><command>cd glob2/data</command></para></step>
+<step><para>
+<cmdsynopsis><command>tar xvzf</command><arg><replaceable>path_to_downloaded_archive</replaceable></arg></cmdsynopsis>
+</para></step>
+</substeps>
+</step>
+
+<step performance="required">
+<para>Go back In the glob2 directory, and generate configure :</para>
+<substeps>
+<step><para><command>cd ..</command></para></step>
+<step performance="optional">
+<para>If you have SDL not installed in the aclocal PATH (on Mac OS X for instance), do the following : 
+<command>aclocal -I /usr/local/share/aclocal</command>, where
+/usr/local/share/aclocal is where SDL aclocal's macros are installed.</para>
+</step>
+<step performance="optional"><para>If SDL aclocal's macro are installed at a standard place,
+just run :<command>aclocal</command></para></step>
+<step><para><command>autoheader</command></para></step>
+<step><para><command>automake --add-missing &amp;&amp; autoconf</command></para></step>
+</substeps>
+</step>
+
+<step performance="required">
+<para>Then, you need to configure Glob2, run <command>./configure</command>.
+If you want to install Glob2 in a special place, run 
+<cmdsynopsis><command>./configure --prefix=</command><arg><replaceable>place to install glob2</replaceable></arg></cmdsynopsis>
+instead of just ./configure.</para>
+</step>
+
+<step performance="required">
+<para>Then you have to compile Glob2, simply run <command>make</command></para>
+</step>
+
+<step performance="optional">
+<para>If you want to install Glob2 system wide, do <command>make install</command>.
+Otherwise, you can launch Glob2 by typing <command>src/glob2</command></para>
+</step>
+
+</procedure>
+
+<para>
+If you take Glob2 from the distribution .tar.gz, you can untar the distribution, and then skip to step 5.
+</para>
+
+<para>
+Read the README and the INSTALL files in <application>Globulation</application> 2 distribution for additional informations.
+</para>
+
+</chapter>
+
+<!-- Quick introduction chapter -->
+
+<chapter id="quick-introduction">
+<title>Quick introduction</title>
+
+<para>
+Upon installed, launch glob2 : <command moreinfo="none">glob2</command>
+</para>
+
+<para>
+Then click on Tutorial in the main menu and follow the tutorial.
+It will teach you everything you need to begin to play with <application>Globulation</application> 2.
+</para>
+
+</chapter>
+
+
+  
+<!-- Contributing chapter -->
+
+
+<chapter id="contributing">
+<title>Contributing</title>
+
+<para>The following sections will strongly help you if you are (or wanna be) a <application>Globulation</application> 2 contributor.</para>
+
+
+<!-- Contributing chapter, becoming a contributor section -->
+
+<sect1 id="becoming-a-contributor">
+<title>Becoming a contributor</title>
+
+<para>
+If you are interested in graphics/sounds/musics/web design/map design you only need to have a working <application>Globulation</application> 2.
+<link linkend="installation">installation</link>.
+</para>
+
+<para>
+If you are interested in documentation, you have to additionally install the texinfo package from http://www.gnu.org/software/texinfo/the Texinfo homepage.
+</para>
+
+<para>
+If you are interested in code, you need to be able to rebuild everything from CVS. So you need several packages:
+</para>
+
+<itemizedlist>
+<listitem><para>gcc 2.95.X or gcc > 3.3.X</para></listitem>
+<listitem><para>g++ 2.95.X or g++ > 3.3.X</para></listitem>
+<listitem><para>gmake</para></listitem>
+<listitem><para>automake</para></listitem>
+<listitem><para>autoconf</para></listitem>
+<listitem><para>m4</para></listitem>
+<listitem><para>libsdl1.2</para></listitem>
+<listitem><para>libsdl-image1.2</para></listitem>
+<listitem><para>libsdl-net1.2</para></listitem>
+</itemizedlist>
+
+<para>
+Follow the instructions given in the README and INSTALL files in <application>Globulation</application> 2 distribution.
+</para>
+</sect1>
+
+
+<!-- Contributing chapter, coding guidelines section -->
+
+<sect1 id="coding-guidelines">
+<title>Coding guidelines</title>
+
+<para>
+All the code in <application>Globulation</application> 2 tree should follow thoses guidelines.
+If you wanna contribute, first read thoses guidelines and be sure to have fully understood them.
+Thanks.
+</para>
+
+<orderedlist numeration="arabic">
+
+<listitem>
+<para>
+<application>Globulation</application> 2 is coded in C++.
+However, usage of the standard C library is permitted when justified for the simplicity (use of FILE * pointer in the virtual filesystem).
+</para>
+</listitem>
+
+<listitem>
+
+<example>
+<title>Indentation example</title>
+<programlisting>
+class Integer
+{
+    int i;
+
+    void setVal(int val);
+    int getVal(void) { return i; }
+};
+
+void Integer::setVal(int val)
+{
+    this-&gt;i = val;
+}
+
+int main(int argc, char *argv[])
+{
+    Integer a;
+    a.setVal(3);
+    printf("%d\n", a.getVal());
+}
+</programlisting>
+</example>
+
+<para>
+Always put { and } on a single line, excepted when { and } are on the same line.
+</para>
+
+<para>
+Always indent with tabs. Tabs should be 4 char width.
+</para>
+
+<para>
+Alternatively, you can use the following <emphasis>astyle</emphasis> command :
+<command moreinfo="none">astyle -c -t -S -b</command>
+</para>
+
+</listitem>
+
+<listitem>
+
+<para>
+When coding a for-like loop, put a space between arguments :
+<screen>
+for (int i=0; i&lt;10; i++)
+</screen>
+</para>
+
+</listitem>
+
+<listitem>
+
+<para>
+<emphasis>.h</emphasis> stands for header, so put header in them.
+Implementation should always be placed in <emphasis>.cpp</emphasis> files, excepted :
+</para>
+
+<itemizedlist>
+<listitem>
+
+<para>
+When there is only a return (like <command moreinfo="none"> int getValue(void) { return i; } </command>).
+</para>
+</listitem>
+<listitem>
+<para>
+When speed is critical (isUnit(...) in Map.h for instance)
+</para>
+
+</listitem>
+</itemizedlist>
+
+</listitem>
+
+<listitem>
+
+<para>
+Do only put the <emphasis>minimum</emphasis> include in header files.
+Glob2 already takes minuts to compile. Don't let him take <emphasis>days</emphasis>.
+</para>
+
+</listitem>
+
+</orderedlist>
+
+</sect1>
+
+
+<!-- Contributing chapter, sgsl reference section -->
+
+<sect1 id="sgsl-reference">
+<title>SGSL reference</title>
+
+<sect2 id="introduction">
+<title>Introduction</title>
+<para>
+SGSL is a little scripting language for <application>Globulation</application> 2. SGSL is simple and has a very
+easy syntax. A SGSL script is nothing else than a list of line which are executed
+sequencially. The power of SGSL is it's ability to execute several script at the
+same time. So there can be, for instance, two differents way to win the game, and
+both will be valid. This is known as multi-threading-scripting (MTS).
+</para>
+</sect2>
+
+<sect2 id="keywords">
+<title>Keywords</title>
+
+<variablelist>
+
+<varlistentry>
+<term>
+<funcsynopsis>
+<funcprototype>
+<funcdef><function>show</function></funcdef>
+<paramdef><parameter>"text"</parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+</term>
+<listitem>
+<para>
+Display the text <parameter>text</parameter> until <function >hide</function >
+is called or <function >show</function > is called again.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<funcsynopsis>
+<funcprototype>
+<funcdef><function>hide</function></funcdef><paramdef></paramdef>
+</funcprototype>
+</funcsynopsis>
+</term>
+<listitem>
+<para>
+Hide the text displayed by <function>show</function>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>
+<funcsynopsis>
+<funcprototype>
+<funcdef><function>wait</function></funcdef>
+<paramdef><parameter>condition</parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+</term>
+<listitem>
+<para>
+Stop the execution of the thread until <parameter>condition</parameter> is true.
+<parameter>condition</parameter> is re-evaluated at each script tick.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect2>
+
+<sect2 id="conditions">
+<title>Conditions</title>
+<para>The conditions are :</para>
+</sect2>
+
+</sect1>
+
+</chapter>
+
+
+<!-- Contributing chapter -->
+
+
+<chapter id="faq">
+<title>F.A.Q.</title>
+
+<qandaset>
+
+<qandaentry>
+<question>
+<para>What is <application>Globulation</application> 2 ?</para>
+</question>
+
+<answer>
+<para><application>Globulation</application> 2 is a real-time strategic game which focus on middle-term goal
+and reduces micro-managment.</para>
+</answer>
+</qandaentry>
+
+<qandaentry>
+<question>
+<para>On which plateforme does <application>Globulation</application> 2 run ?</para>
+</question>
+
+<answer>
+<para>
+<application>Globulation</application> 2 has successfully run on Win32 (win 95, 98, NT, 2000, XP), GNU/Linux, Mac OS X, Solaris.
+It should also run on other Unix.</para>
+</answer>
+</qandaentry>
+
+</qandaset> 
+
+</chapter>
+
+
+</book>

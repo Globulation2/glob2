@@ -1,0 +1,71 @@
+campaignName = "Tutorial Campaign";
+playerName = "";
+versionMinor = 74;
+maps
+{
+	mapNum = 4;
+	0
+	{
+		CampaignMap
+		{
+			mapName = "Introduction and Basics";
+			mapFileName = "campaigns/tutorial-part1.map";
+			isLocked = 0;
+			unlockedBy
+			{
+				size = 0;
+			}
+		}
+	}
+	1
+	{
+		CampaignMap
+		{
+			mapName = "More building and Schools";
+			mapFileName = "campaigns/tutorial-part2.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Introduction and Basics";
+				}
+			}
+		}
+	}
+	2
+	{
+		CampaignMap
+		{
+			mapName = "Warriors, Training Camps, and Upgrades";
+			mapFileName = "campaigns/tutorial-part3.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "More building and Schools";
+				}
+			}
+		}
+	}
+	3
+	{
+		CampaignMap
+		{
+			mapName = "Flags and Completion";
+			mapFileName = "campaigns/tutorial-part4.map";
+			isLocked = 1;
+			unlockedBy
+			{
+				size = 1;
+				0
+				{
+					unlockedBy = "Warriors, Training Camps, and Upgrades";
+				}
+			}
+		}
+	}
+}

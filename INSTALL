@@ -1,0 +1,56 @@
+=======================================
+Globulation 2 Installation Instructions
+=======================================
+
+
+Basic Installation
+==================
+
+The simplest way to compile this package is:
+
+  1. `cd' to the directory containing the package's source code and type
+     `scons' to build the package for your system.  If you're
+     using `csh' on an old version of System V, you might need to type
+     `sh scons' instead to prevent `csh' from trying to execute
+     `scons' itself.
+
+     Running `scons' takes awhile.  While running, it prints some
+     messages telling which source files it is compiling.
+
+  2. When compiled, type (probably as root) `scons install' to install
+     the programs and any data files and documentation.
+
+  3. You can remove the program binaries and object files from the
+     source code directory by typing `scons -c'.
+
+
+Compilers and Options
+=====================
+
+   Some systems require unusual options for compilation or linking that
+the `scons' script does not know about.  Run `scons --help'
+for details on some of the pertinent environment variables.
+
+   You can give `scons' initial values for configuration parameters
+by setting variables in the command line or in the environment.  Here
+is an example:
+
+     scons CXXFLAGS=" -g -pg" INSTALLDIR="/usr/local/share/games"
+
+Installation Names
+==================
+
+   By default, `scons install' will install the package's files in
+`/usr/local/bin' and `/usr/local/share'.  You can specify installation
+paths other than `/usr/local/*' by giving `scons' the options `INSTALLDIR'
+and `BINDIR'. If you wanted to install into your home directory for example
+(if you dont have permissions for root installtion), you would run:
+
+     scons BINDIR="/home/user/glob2/bin" INSTALLDIR="/home/user/glob2/share"
+
+Specifying the System Type
+==========================
+
+   `scons' will work on must Unix/Linux systems. However, to compile on windows,
+the flag `mingw=true' must be called. More information on compiling on Windows can
+be found at http://globulation2.org/wiki/Mingw_compilation

@@ -1,0 +1,1174 @@
+[%0 has left the game]
+%0 je zapustil igro.
+[%0 level %1]
+
+[%0% Uploaded]
+
+[%0's game]
+
+[%0's team unit got converted to your team]
+Spreobrnil si enoto druge ekipe %0
+[abreaviation explanation A]
+
+[abreaviation explanation C]
+
+[abreaviation explanation fV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation V]
+
+[add map]
+
+[add shortcut]
+
+[Add]
+
+[AI Descriptions]
+
+[AI]
+UI
+[ai]
+UI 
+[AICastor-Description]
+
+[AICastor]
+AICastor
+[AINicowar-Description]
+
+[AINicowar]
+Nicowar
+[AINone-Description]
+
+[AINone]
+AINone
+[AINumbi-Description]
+
+[AINumbi]
+AINumbi
+[AIReachToInfinity-Description]
+
+[AIReachToInfinity]
+ReachToInfinity
+[AIToubib-Description]
+
+[AIToubib]
+AIToubib
+[AIWarrush-Description]
+
+[AIWarrush]
+AIWarrush
+[Alga]
+Alga
+[algae]
+
+[alliances]
+Zavezništva
+[alt %0]
+
+[and]
+in
+[any explorer]
+
+[are dying hungry]
+umirajo od lakote
+[are hungry]
+so lačni
+[are ok]
+so vredu
+[are wonded]
+so ranjeni
+[armor]
+Ščit
+[assigned]
+
+[At. speed]
+Hit. napada
+[At. strength]
+Moč napada
+[Attack]
+Napad
+[audio]
+Zvok
+[auto save]
+Samodejno shrani
+[available lan games]
+Razpoložljive omrežne igre
+[awaiting players]
+Čakam igralce
+[away:]
+odsoden:
+[Back]
+
+[backspace]
+
+[barracks explanation 2]
+tvojih vojakov
+[barracks explanation]
+Izboljša stopnjo bojevenja
+[barracks]
+Vojašnica
+[beach size]
+velikost obal
+[Blocked Players]
+
+[break]
+
+[build %0 level %1]
+
+[build barracks level 0]
+
+[build barracks level 1]
+
+[build barracks level 2]
+
+[build defencetower level 0]
+
+[build defencetower level 1]
+
+[build defencetower level 2]
+
+[build hospital level 0]
+
+[build hospital level 1]
+
+[build hospital level 2]
+
+[build inn level 0]
+
+[build inn level 1]
+
+[build inn level 2]
+
+[build market level 0]
+
+[build racetrack level 0]
+
+[build racetrack level 1]
+
+[build racetrack level 2]
+
+[build school level 0]
+
+[build school level 1]
+
+[build school level 2]
+
+[build stonewall level 0]
+
+[build swarm level 0]
+
+[build swimmingpool level 0]
+
+[build swimmingpool level 1]
+
+[build swimmingpool level 2]
+
+[Build]
+Zgradi
+[Building Defaults]
+
+[building site]
+gradbišče
+[Buildings]
+Stavbe
+[Bullets]
+Naboji
+[campaign editor]
+
+[campaign]
+Kampanja
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't join game, game doesn't exist]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
+[Can't join game, missmatching game parameters]
+
+[Can't join game, timeout]
+
+[Can't join game, wrong game version]
+
+[cancel destroy]
+Prekliči uničenje
+[cancel repair]
+Prekliči popravilo
+[cancel upgrade]
+Prekliči nadgradnjo
+[Cancel]
+Prekliči
+[caps lock]
+
+[carry]
+Nosi :
+[Change Area Name]
+
+[Cherry]
+Češnja
+[choose campaign]
+Izberi kampanjo
+[choose game]
+Izberi igro
+[choose map]
+Izberi mapo
+[clear area]
+
+[Clearing:]
+Brisanje:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Razkreije surovine
+[clearingflag]
+Odstiralna zastava
+[closed]
+Zaprto
+[compile]
+Zgradi skripto
+[compose]
+
+[Computing Fertility]
+
+[connect]
+Vspostavi povezavo
+[connecting to]
+Povezujem na
+[Construction Site Defaults]
+
+[Continue playing]
+Nadaljuj z igranjem
+[control %0]
+
+[Corn]
+Pšenica
+[crater density]
+
+[crater lakes terrain]
+
+[create game]
+Ustvari igro
+[create map]
+Ustvari mapo
+[credits]
+Zasluge
+[current speed]
+Trenutna hitrost
+[custom game]
+Naključna igra
+[customcur]
+Naključni kazalec
+[damage]
+Škoda
+[Damaged Map]
+
+[decrease units working]
+
+[Defeat Your Oppenents]
+
+[defencetower explanation 2]
+tako enote kot stavbe
+[defencetower explanation]
+Napada bližnje sovražnike
+[defencetower level 0]
+
+[defencetower level 1]
+
+[defencetower level 2]
+
+[defencetower]
+Obrambni Stolp
+[Defense Map]
+
+[Defense]
+Obramba
+[Delete game]
+
+[delete]
+
+[desert]
+
+[destroy building]
+
+[destroy]
+Uniči
+[display]
+Prikaz
+[do nothing]
+
+[don't carry anything]
+Ne nosi ničesar
+[down]
+
+[Download Map]
+
+[Download Maps]
+
+[downloaded %0]
+
+[downloading map]
+
+[edit map]
+
+[editing map]
+
+[editor shortcuts]
+
+[editor]
+Urejevalnik
+[end]
+
+[Enter your nickname :]
+Vnesi svoj vzdevek :
+[Enter your password :]
+Vnesi svoje geslo :
+[enter]
+
+[equals]
+
+[escape]
+
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+Prevlači raziskovalce
+[explorationflag]
+Raziskovalna zastava
+[Explorer Ratio]
+
+[Explorer]
+Raziskovalec
+[explorers]
+raziskovalci
+[extra islands]
+
+[f10]
+
+[f11]
+
+[f12]
+
+[f13]
+
+[f14]
+
+[f15]
+
+[f1]
+
+[f2]
+
+[f3]
+
+[f4]
+
+[f5]
+
+[f6]
+
+[f7]
+
+[f8]
+
+[f9]
+
+[Fertility Map]
+
+[Flag Defaults]
+
+[food]
+Hrana
+[forbidden area]
+Prepovedano področje
+[Free]
+Prost/ih
+[free]
+prost/ih
+[free]
+prost/ih
+[from:]
+od:
+[fruit]
+
+[fullscreen]
+Celotni zaslon
+[game full]
+Igra je polna
+[game shortcuts]
+
+[Game]
+
+[general settings]
+
+[go to event]
+
+[go to home]
+
+[goto main menu]
+Nazaj v glavni menu
+[grass]
+Trava
+[ground attack]
+
+[guard area]
+Nadzorovano področje
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 1]
+
+[handmade map]
+Ročno izdelana mapa
+[Happyness]
+Zadovoljstvo
+[hard pause]
+
+[Harvest]
+Poberi
+[home]
+
+[hospital explanation 2]
+ 
+[hospital explanation]
+Zdravi tvoje enote
+[hospital]
+Bolnišnica
+[host]
+Gostuj igro
+[hp]
+Zd
+[hp]
+Zdravje
+[human]
+
+[hungry]
+lačen
+[hungryness]
+
+[In way]
+Na poti
+[increase units working]
+
+[inn explanation 2]
+ 
+[inn explanation]
+Nahranjuje tvoje enote
+[inn level 0]
+
+[inn level 1]
+
+[inn level 2]
+
+[inn]
+Restavracija
+[insert]
+
+[inside]
+Znotraj
+[islands size]
+velikost otokov
+[islands terrain]
+Otoki
+[iterate selection]
+
+[jobs]
+
+[join a game]
+Vključi se v igro
+[join]
+Vključi se
+[keyboard settings]
+
+[kick]
+
+[lan]
+LAN Igra
+[language incomplete]
+Slovenščina - Incomplete
+[language-code]
+si
+[language-tr]
+Jezik
+[language]
+Slovenščina
+[Leave Game]
+
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+Stopnja
+[levels]
+Stopnje
+[load campaign]
+
+[load game]
+Naloži igro
+[load map]
+
+[load script]
+
+[load]
+Naloži
+[loading map list]
+
+[Lobby]
+
+[login]
+Prijava
+[Lost : %0 has more prestige than you]
+Izgubil si : %0 ima več ugleda kot ti
+[Lost : your colony is dead]
+Poražen si : tvoja kolonija je premagana
+[lowquality]
+Nizka kakovost
+[Magic At. Air]
+
+[Magic At. Ground]
+
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
+[Map fownload failure: lost connection]
+
+[Map name: %0]
+Ime mape: %0.
+[map name]
+
+[map rated]
+
+[map script]
+
+[map size x]
+Širina mape
+[map size y]
+Višina mape
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
+[maps available]
+
+[mark map]
+
+[market explanation 2]
+
+[market explanation]
+Omogoča menjavo blaga
+[market level 0]
+
+[market]
+Tržnica
+[meta %0]
+
+[Min required level:]
+Najnižja zahtevana stopnja
+[Minimum Level To Flag]
+
+[Music volume]
+Glasnost glasbe
+[Mute]
+
+[mute]
+
+[new campaign]
+
+[new map]
+Nova
+[nick taken]
+Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
+[no key]
+
+[No Objectives]
+
+[no ressources growth areas]
+
+[No]
+Ne
+[Not Enough Ratings]
+
+[not ready]
+ni pripravljen
+[number of players: %0 (%1 AI)]
+
+[number of players: %0]
+%0 players are present.
+[number of teams: %0]
+%0 ekip.
+[number of teams]
+Število ekip
+[numlock]
+
+[objectives]
+
+[of which]
+od katerih
+[ok]
+Potrdi
+[old islands terrain]
+
+[old random terrain]
+
+[on press]
+
+[On the spot]
+Tukaj
+[on unpress]
+
+[open chat box]
+
+[open load menu]
+
+[open save menu]
+
+[open script editor]
+
+[open]
+odpri
+[Options]
+
+[options]
+Možnosti
+[Orange]
+Pomaranča
+[Other Options]
+
+[page down]
+
+[page up]
+
+[Papyrus]
+Papirus
+[pause game]
+
+[pause]
+
+[Paused]
+Ustavljeno
+[player name]
+Ime igralca
+[player rating %0]
+
+[please wait]
+Prosim počakaj
+[power]
+
+[press space]
+
+[Prestige Win Enabled]
+
+[Prestige]
+Ugled
+[Primary Objectives]
+
+[print screen]
+
+[Prune]
+Slive
+[quit the editor]
+
+[quit the game]
+Izhod iz igre
+[quit]
+Izhod
+[racetrack explanation 2]
+tvojih enot
+[racetrack explanation]
+Izboljša hitrost hoje
+[racetrack]
+Tekaška steza
+[range]
+Domet
+[Rated %0]
+
+[ratios]
+Razmerja
+[refresh map list]
+
+[Register a new YOG user with password]
+Prijavi novega YOG uporabnika z geslom. (Ni varno!)
+[remember unit]
+
+[Remember YOG password localy]
+Zapomni si YOG geslo lokalno. (Ni varno)
+[remove map]
+
+[remove shortcut]
+
+[Remove]
+
+[repair building]
+
+[repair]
+Popravi
+[repeat area]
+
+[restore default shortcuts]
+
+[return to editor]
+
+[return to game]
+Vrnitev v igro
+[return]
+
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+
+[river terrain]
+
+[sand]
+Pesek
+[save before quit?]
+Želiš shraniti preden odideš?
+[save game]
+Shrani igro
+[save map]
+
+[save script]
+
+[Save]
+Shrani
+[school explanation 2]
+tvojih delavcev
+[school explanation]
+Izboljša stopnjo grajenja
+[school]
+Šola
+[Script Areas]
+
+[scroll lock]
+
+[scroll wheel enabled]
+
+[Secondary Objectives]
+
+[seeking a job]
+iščejo službo
+[seeking]
+Iščem
+[select barracks building]
+
+[select clearingflag]
+
+[select construct barracks]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct inn]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct school]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swimmingpool]
+
+[select delete tool]
+
+[select explorationflag]
+
+[select hospital building]
+
+[select inn building]
+
+[select market building]
+
+[select place clearing area]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place forbidden area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select racetrack building]
+
+[select school building]
+
+[select swarm building]
+
+[select swimmingpool building]
+
+[select tower building]
+
+[select wall building]
+
+[select warflag]
+
+[settings]
+Nastavitve
+[shift %0]
+
+[shortcut explanation enter]
+
+[shortcut explanation v]
+
+[show main menu]
+
+[skin]
+
+[smoothing]
+Glajenje
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
+[space]
+
+[start mission]
+
+[start new campaign]
+
+[Start]
+Začni
+[Starving Map]
+
+[starving]
+lačen
+[Statistics]
+Statistika
+[Still (i)]
+Še vedno 
+[still (w)]
+Še vedno
+[still one unit working]
+Ena enota še vedno dela
+[Still one]
+Ena ostaja
+[Stone]
+Kamenje
+[stone]
+
+[stonewall explanation 2]
+ 
+[stonewall explanation]
+Pasiven obrambni sistem
+[stonewall]
+Kamniti zid
+[submit rating]
+
+[svr hostname]
+Strežnikovo ime
+[swamp terrain]
+
+[swarm explanation 2]
+ 
+[swarm explanation]
+Ustvarja nove enote
+[swarm level 0]
+
+[swarm]
+Porodnišnica
+[Swim]
+Plavaj
+[swimmingpool explanation 2]
+sposobnosti tvojih enot
+[swimmingpool explanation]
+Izboljša plavalne
+[swimmingpool]
+Bazen
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 2]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 5]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 8]
+
+[switch to building view]
+
+[switch to flag view]
+
+[switch to removing areas]
+
+[switch to teams view]
+
+[switch to terrain view]
+
+[sys req]
+
+[tab]
+
+[Teams Fixed]
+
+[teams]
+ ekipe
+[the barracks is finished]
+Vojašnica je zgrajena
+[the barracks is under attack]
+Vojašnica je napadena
+[the building is finished]
+Stavba je zgrajena
+[the building is under attack]
+Stavba je napadena
+[the clearingflag is finished]
+Odstiralna zastava je zgrajena
+[the clearingflag is under attack]
+Odstiralna zastava je napadena
+[the defencetower is finished]
+Obrambni stolp je zgrajen
+[the defencetower is under attack]
+Obrambna je napadena
+[the explorationflag is finished]
+Raziskovalna zastava je zgrajena
+[the explorationflag is under attack]
+Raziskovalna zastava je napadena
+[The game has not been finished]
+Igra ni bila zaključena
+[the games]
+Igre
+[the hospital is finished]
+Bolnišnica je zgrajena
+[the hospital is under attack]
+Bolnišnica je zgrajena
+[The host has cancelled the game]
+
+[the inn is finished]
+Gostilna je zgrajena
+[the inn is under attack]
+Gostilna je napadena
+[the maps]
+Mape
+[the market is finished]
+Tržnica je zgrajena
+[the market is under attack]
+Tržnica je napadena
+[The player %0 has joined YOG]
+%0 se je vkljičil na YOG metastrežnik.
+[The player %0 has left YOG]
+%0 je zapustil YOG metastrežnik.
+[the racetrack is finished]
+Tekaška steza je zgrajena
+[the racetrack is under attack]
+Tekaška steza je napadena 
+[the school is finished]
+Šola je zgrajena
+[the school is under attack]
+Šola je napadena
+[the stonewall is finished]
+Kamniti zid je zgrajen
+[the stonewall is under attack]
+Sovražnik je pred vrati
+[the swarm is finished]
+Porodnišnica je zgrajena
+[the swarm is under attack]
+Porodnišnica je napadena
+[the swimmingpool is finished]
+Bazen je zgrajen
+[the swimmingpool is under attack]
+Bazen je napaden
+[the warflag is finished]
+Vojaška zastava je zgrajena
+[the warflag is under attack]
+Vojaška zastava je napadena
+[to:]
+za:
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw unit paths]
+
+[toggle menu screen]
+
+[toggle recording voice]
+
+[Total prestige reached]
+Najvišji dosežen ugled
+[Total]
+Skupaj
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
+[tutorial]
+Predavanje
+[Uncontrolled]
+Nenadzirane
+[undo]
+
+[uniform terrain]
+Obleči teren?
+[Unit editor]
+
+[unit settings explanation]
+
+[unit settings]
+
+[units working]
+ enot dela
+[Units]
+Enote
+[unlocked by]
+
+[Unnamed Area]
+
+[up]
+
+[upgrade building]
+
+[Upgrade Defaults]
+
+[upgrade]
+Nadgradi
+[Upload Map]
+
+[upload map]
+
+[username]
+Uporabniško ime
+[Version]
+Različica
+[view history]
+
+[Voice volume]
+
+[waiting for %0]
+Čakam %0
+[waiting for key]
+
+[Waiting]
+
+[Walk]
+Hodi
+[warflag explanation 2]
+ 
+[warflag explanation]
+Privlači vojake
+[warflag]
+Vojaška zastava
+[Warning, you need to reboot the game for changes to take effect]
+Pozor, da bi nastavitve stopile v veljavo moraš ponovno zagnati igro
+[Warrior Ratio]
+
+[Warrior]
+Vojak
+[warriors]
+vojaki
+[water]
+Voda
+[Wheat]
+
+[Won : you defeated your opponents]
+Zmagal si : premagal si vse nasprotnike
+[Won : you have the most prestige]
+Zmagal si : imaš najvišji ugled
+[Won : your ally %0 has the most prestige]
+Zmagal si : tvoj zaveznik %0 ima najvišji ugled
+[Wood]
+Les
+[wood]
+
+[Worker Ratio]
+
+[Worker]
+Delavec
+[workers]
+Delavci
+[workers]
+delavci
+[working]
+Izdelujem
+[wounded]
+ranjen
+[Yes]
+Da
+[YESTS_CONNECTING]
+Vspostavljam povezavo na YOG metastrežnikom...
+[YESTS_CONNECTION_LOST]
+Povezava z YOG metastrežnikom je bila izgubljena.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG metastrežnik je zavrnil povezavo, ker je bilo tvoje uporabniško ime že registrirano. Če je to uporabniško ime tvoje, potem onemogoči možnost "Registriraj novega YOG uporabnika s tem geslom".
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+YOG metastrežnik je zavrnil povezavo, ker je vpisano geslo napačno.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+YOG metastrežnik je zavrnil povezavo ker tvoje uporabniško ime nima določenega gesla. Gotovo hočeš registrirati to uporabniško ime zato poskusi aktivirati možnost "Registriraj novega YOG uporabnika s tem geslom". To možnost moraš aktivirati le enkrat.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Yog metastrežnik je brezobrazložitve zavrnil povezavo!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CREATED]
+Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
+[YESTS_UNABLE_TO_CONNECT]
+Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog help command help]
+
+[yog]
+Ysagoon medmrežno igranje
+[you have lost]
+Izgubil si!
+[you have won]
+Zmagal si!
+[You where kicked from the game]
+
+[Your %0 are under attack]
+Tvoji %0 so napadeni
+[Your IP address was temporarily banned]
+
+[Your unit got converted to %0's team]
+Tvoje enote so bile spreobrnjene %0
+[Your username was banned]
+

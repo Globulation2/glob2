@@ -1,0 +1,95 @@
+source_files = Split("""
+AICastor.cpp                            AI.cpp                                AIDescriptionScreen.cpp                   AIEcho.cpp
+AINames.cpp                             AINicowar.cpp                         AINull.cpp                                AINumbi.cpp
+AIToubib.cpp                            AIWarrush.cpp                         BasePlayer.cpp                            BaseTeam.cpp
+BitArray.cpp                            Brush.cpp                             Building.cpp                              BuildingsTypes.cpp
+BuildingType.cpp                        Bullet.cpp                            Campaign.cpp                              CampaignEditor.cpp
+CampaignMainMenu.cpp                    CampaignMenuScreen.cpp                CampaignSelectorScreen.cpp                ChooseMapScreen.cpp
+CPUStatisticsManager.cpp                CreditScreen.cpp                      CustomGameOtherOptions.cpp                CustomGameScreen.cpp
+DynamicClouds.cpp                       EditorMainMenu.cpp                    EndGameScreen.cpp                         Engine.cpp
+EntityType.cpp                          Fatal.cpp                             FertilityCalculatorDialog.cpp             FertilityCalculatorThread.cpp
+FertilityCalculatorThreadMessage.cpp    Game.cpp                              GameEvent.cpp                             GameGUI.cpp
+GameGUIDefaultAssignManager.cpp         GameGUIDialog.cpp                     GameGUIGhostBuildingManager.cpp           GameGUIKeyActions.cpp
+GameGUILoadSave.cpp                     GameGUIMessageManager.cpp             GameGUIToolManager.cpp                    GameHeader.cpp
+GameObjectives.cpp                      GameUtilities.cpp                     Glob2.cpp                                 Glob2Screen.cpp
+Glob2Style.cpp                          GlobalContainer.cpp                   GUIGlob2FileList.cpp                      GUIMapPreview.cpp
+HeightMapGenerator.cpp                  IntBuildingType.cpp                   IRC.cpp                                   IRCTextMessageHandler.cpp
+IRCThread.cpp                           IRCThreadMessage.cpp                  KeyboardManager.cpp                       LANFindScreen.cpp
+LANGameInformation.cpp                  LANMenuScreen.cpp                     LogFileManager.cpp                        MainMenuScreen.cpp
+Map.cpp                                 MapEdit.cpp                           MapEditKeyActions.cpp                     MapGenerationDescriptor.cpp
+MapGenerator.cpp                        MapHeader.cpp                         MapThumbnail.cpp                          MarkManager.cpp
+Minimap.cpp                             MultiplayerGame.cpp                   MultiplayerGameEvent.cpp                  MultiplayerGameEventListener.cpp
+MultiplayerGameScreen.cpp               NetBroadcaster.cpp                    NetBroadcastListener.cpp                  NetConnection.cpp
+NetConnectionThread.cpp                 NetConnectionThreadMessage.cpp        NetEngine.cpp                             NetGamePlayerManager.cpp
+NetListener.cpp                         NetMessage.cpp                        NetReteamingInformation.cpp               NetTestSuite.cpp
+NewMapScreen.cpp                        Order.cpp                             OverlayAreas.cpp                          PerlinNoise.cpp
+Player.cpp                              Race.cpp                              Ressource.cpp                             RessourcesTypes.cpp
+ScriptEditorScreen.cpp                  Sector.cpp                            Settings.cpp                              SettingsScreen.cpp
+SGSL.cpp                                SimplexNoise.cpp                      SoundMixer.cpp                            Team.cpp
+TeamStat.cpp                            UnitConsts.cpp                        Unit.cpp                                  UnitEditorScreen.cpp
+UnitSkin.cpp                            UnitsSkins.cpp                        UnitType.cpp                              Utilities.cpp
+VoiceRecorder.cpp                       WinningConditions.cpp                 YOGAfterJoinGameInformation.cpp           YOGClientBlockedList.cpp
+YOGClientChatChannel.cpp                YOGClientChatListener.cpp             YOGClientCommandManager.cpp               YOGClientCommands.cpp
+YOGClient.cpp                           YOGClientDownloadableMapList.cpp      YOGClientDownloadableMapListener.cpp      YOGClientDownloadingMapScreen.cpp
+YOGClientEvent.cpp                      YOGClientEventListener.cpp            YOGClientFileAssembler.cpp                YOGClientGameListListener.cpp
+YOGClientGameListManager.cpp            YOGClientLobbyScreen.cpp              YOGClientMapDownloader.cpp                YOGClientMapDownloadScreen.cpp
+YOGClientMapUploader.cpp                YOGClientMapUploadScreen.cpp          YOGClientOptionsScreen.cpp                YOGClientPlayerListListener.cpp
+YOGClientPlayerListManager.cpp          YOGClientRatedMapList.cpp             YOGClientRouterAdministrator.cpp          YOGConsts.cpp
+                                        YOGDownloadableMapInfo.cpp            YOGGameInfo.cpp                           YOGGameResults.cpp
+YOGLoginScreen.cpp                      YOGMessage.cpp                        YOGPlayerPrivateInfo.cpp                  YOGPlayerSessionInfo.cpp
+YOGPlayerStoredInfo.cpp                 YOGServerAdministratorCommands.cpp    YOGServerAdministrator.cpp                YOGServerAdministratorList.cpp
+YOGServerBannedIPListManager.cpp        YOGServerChatChannel.cpp              YOGServerChatChannelManager.cpp           YOGServer.cpp
+YOGServerFileDistributationManager.cpp  YOGServerFileDistributor.cpp          YOGServerGame.cpp                         YOGServerGameLog.cpp
+YOGServerGameRouter.cpp                 YOGServerMapDatabank.cpp              YOGServerPasswordRegistry.cpp             YOGServerPlayer.cpp
+YOGServerPlayerScoreCalculator.cpp      YOGServerPlayerStoredInfoManager.cpp  YOGServerRouterAdministratorCommands.cpp  YOGServerRouterAdministrator.cpp
+YOGServerRouter.cpp                     YOGServerRouterManager.cpp            YOGServerRouterPlayer.cpp
+
+
+""")
+
+server_source_files = Split("""
+AINames.cpp                     BasePlayer.cpp                   BaseTeam.cpp                BitArray.cpp
+            GameHeader.cpp                   LANGameInformation.cpp      LogFileManager.cpp
+MapHeader.cpp                   NetBroadcaster.cpp               NetConnection.cpp           NetConnectionThread.cpp
+NetConnectionThreadMessage.cpp  NetGamePlayerManager.cpp         NetListener.cpp             NetMessage.cpp
+NetReteamingInformation.cpp     NetTestSuite.cpp                 Order.cpp                   P2PConnectionEvent.cpp
+P2PConnectionListener.cpp       P2PInformation.cpp               P2PManager.cpp              P2PPlayerInformation.cpp
+Race.cpp                        UnitType.cpp                     Utilities.cpp               YOGConsts.cpp
+YOGDaemon.cpp                   YOGGameInfo.cpp                  YOGGameResults.cpp          YOGMessage.cpp
+YOGPlayerSessionInfo.cpp        YOGPlayerStoredInfo.cpp          YOGServerAdministrator.cpp  YOGServerAdministratorList.cpp
+YOGServerChatChannel.cpp        YOGServerChatChannelManager.cpp  YOGServer.cpp               YOGServerGame.cpp
+YOGServerMapDistributor.cpp     YOGServerPasswordRegistry.cpp    YOGServerPlayer.cpp         YOGServerPlayerStoredInfoManager.cpp
+
+""")
+
+Import('env')
+local = env.Clone()
+if env["mingw"] or env['PLATFORM'] == 'win32':
+    source_files.extend(["C:/msys/1.0/local/lib/libvorbisfile.a", "C:/msys/1.0/local/lib/libvorbis.a", "C:/msys/1.0/local/lib/libogg.a"])
+#Add libgag, not as a library, but as an object
+source_files.append("#libgag//src/libgag.a")
+p1 = local.Program("glob2", source_files)
+
+#Add libgag, not as a library, but as an object
+server_source_files.append("#libgag//src/libgag_server.a")
+p2 = local.Program("glob2-server", server_source_files)
+
+if not env['server']:
+    local.Default(p1)
+else:
+    local.Default(p2)
+
+Import('env')
+Import("PackTar")
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    env.Install(env["BINDIR"], "glob2")
+    env.Alias("install", env["BINDIR"])
+    
+    import os
+    for file in os.listdir("."):
+        if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
+            PackTar(env["TARFILE"], file)
+    
+    PackTar(env["TARFILE"], "SConscript")
+

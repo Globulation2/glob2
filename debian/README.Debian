@@ -1,0 +1,6 @@
+glob2 for Debian
+----------------
+
+Use gcc-3.x if you want to compile this package yourself, not gcc-2.95
+
+ -- Stephane Magnenat <nct@ysagoon.com>

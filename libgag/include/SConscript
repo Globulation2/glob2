@@ -1,0 +1,11 @@
+import os
+    
+Import("env")
+Import("PackTar")
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".h") != -1:
+            PackTar(env["TARFILE"], file)
+    
+    PackTar(env["TARFILE"], "SConscript")

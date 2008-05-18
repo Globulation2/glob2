@@ -1,0 +1,1104 @@
+[%0 has left the game]
+%0 has quit the game.
+[%0 level %1]
+%0 Level %1
+[%0% Uploaded]
+%0% Uploaded
+[%0's game]
+%0's Game
+[%0's team unit got converted to your team]
+%0's team unit got converted to your team
+[abreaviation explanation A]
+A: Allies
+[abreaviation explanation C]
+C: Send chat messages to
+[abreaviation explanation fV]
+fV: Show vision for Inn buildings (to steal units)
+[abreaviation explanation mV]
+mV: Show vision for Markets buildings (to exchange fruits)
+[abreaviation explanation V]
+V: Show vision for all buildings
+[add map]
+Add map
+[add shortcut]
+Add Shortcut
+[Add]
+Add
+[AI Descriptions]
+AI Descriptions
+[AI]
+AI
+[ai]
+AI
+[AICastor-Description]
+Castor plays a conservative game and does very well on maps with few ressources. Medium Difficulty.
+[AICastor]
+Castor
+[AINicowar-Description]
+Nicowar plays aggressivly, grows large fast and throws huge armies at its opponents. Hard Difficulty.
+[AINicowar]
+Nicowar
+[AINone-Description]
+None - Doesn't do anything.
+[AINone]
+None
+[AINumbi-Description]
+Numbi - Expands lightly, and swiftly. Easy Difficulty.
+[AINumbi]
+Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity - Does not attack, but builds monstrous bases and aggressivly converts units. Easy Difficulty.
+[AIReachToInfinity]
+ReachToInfinity
+[AIToubib-Description]
+Toubib
+[AIToubib]
+Toubib
+[AIWarrush-Description]
+Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
+[AIWarrush]
+Warrush
+[Alga]
+Algae
+[algae]
+algae
+[alliances]
+Alliances
+[alt %0]
+alt-%0
+[and]
+and
+[any explorer]
+any explorer
+[are dying hungry]
+starving
+[are hungry]
+hungry
+[are ok]
+ok
+[are wonded]
+wounded
+[armor]
+Armour
+[assigned]
+Assigned
+[At. speed]
+Att. speed
+[At. strength]
+Att. str.
+[Attack]
+Attack
+[audio]
+Audio
+[auto save]
+Auto save
+[available lan games]
+Available local games
+[awaiting players]
+Awaiting players
+[away:]
+away:
+[Back]
+Back
+[backspace]
+backspace
+[barracks explanation 2]
+level of your warriors
+[barracks explanation]
+Improves the fighting
+[barracks]
+Barracks
+[beach size]
+beach size
+[Blocked Players]
+Blocked Players
+[break]
+break
+[build %0 level %1]
+Construct %0 Level %1
+[Build]
+Build
+[Building Defaults]
+Building Defaults
+[building site]
+construction site
+[Buildings]
+Buildings
+[Bullets]
+Bullets
+[campaign editor]
+Campaign Editor
+[campaign]
+Campaign
+[Can't connect, can't find host]
+Can't connect, can't find host
+[Can't host game, port %0 in use]
+Can't host game, port %0 in use
+[Can't join game, game doesn't exist]
+Can't join game, game doesn't exist
+[Can't join game, game has started]
+Can't join game, game has started
+[Can't join game, game is full]
+Can't join game, game is full
+[cancel destroy]
+Cancel destroy
+[cancel repair]
+Cancel repair
+[cancel upgrade]
+Cancel upgrade
+[Cancel]
+Cancel
+[caps lock]
+caps lock
+[carry]
+Carrying:
+[Change Area Name]
+Change Area Name
+[Cherry]
+Cherry
+[choose campaign]
+Choose a campaign
+[choose game]
+Choose a game
+[choose map]
+Choose a map
+[clear area]
+Clearing area
+[Clearing:]
+Clearing:
+[clearingflag explanation 2]
+ 
+[clearingflag explanation]
+Clears resources
+[clearingflag]
+Clearing Flag
+[closed]
+Closed
+[compile]
+Compile script
+[compose]
+compose
+[Computing Fertility]
+Computing Fertility
+[connect]
+Connect
+[connecting to]
+Connecting to
+[Construction Site Defaults]
+Construction Site Defaults
+[Continue playing]
+Continue playing
+[control %0]
+control-%0
+[Corn]
+Wheat
+[crater density]
+crater count
+[crater lakes terrain]
+Crater Lakes
+[create game]
+Create game
+[create map]
+Create map
+[credits]
+Credits
+[current speed]
+Current speed
+[custom game]
+Custom game
+[customcur]
+Custom cursor
+[damage]
+Damage
+[Damaged Map]
+Damaged Map
+[decrease units working]
+Decrease Units Working
+[Defeat Your Oppenents]
+Defeat Your Oppenents
+[defencetower explanation 2]
+units or buildings
+[defencetower explanation]
+Attacks nearby enemy
+[defencetower]
+Defense Tower
+[Defense Map]
+Defense Map
+[Defense]
+Defense
+[Delete game]
+Delete the selected game
+[delete]
+Delete
+[delete]
+delete
+[desert]
+desert
+[destroy building]
+Destroy Selected Building
+[destroy]
+Destroy
+[display]
+Display
+[do nothing]
+Do Nothing
+[don't carry anything]
+Not carrying anything
+[down]
+down
+[Download Map]
+Download Map
+[Download Maps]
+Download Maps
+[downloaded %0]
+downloaded %0
+[downloading map]
+Downloading Map
+[edit map]
+Edit Map
+[editing map]
+Editing Map
+[editor shortcuts]
+Editor Shortcuts
+[editor]
+Editor
+[end]
+end
+[Enter your nickname :]
+Enter your nickname:
+[Enter your password :]
+Enter your password:
+[enter]
+enter
+[equals]
+equals
+[escape]
+escape
+[explorationflag explanation 2]
+ 
+[explorationflag explanation]
+Attracts explorers
+[explorationflag]
+Exploration Flag
+[Explorer Ratio]
+Explorer Ratio
+[Explorer]
+Explorer
+[explorers]
+explorers
+[extra islands]
+empty islands
+[f10]
+f10
+[f11]
+f11
+[f12]
+f12
+[f13]
+f13
+[f14]
+f14
+[f15]
+f15
+[f1]
+f1
+[f2]
+f2
+[f3]
+f3
+[f4]
+f4
+[f5]
+f5
+[f6]
+f6
+[f7]
+f7
+[f8]
+f8
+[f9]
+f9
+[Fertility Map]
+Fertility Map
+[Flag Defaults]
+Flag Defaults
+[food]
+Food
+[forbidden area]
+Forbidden area
+[Free]
+Ok
+[free]
+free
+[free]
+free
+[from:]
+from:
+[fruit]
+fruit
+[fullscreen]
+Fullscreen
+[game full]
+Game full
+[game shortcuts]
+Game Shortcuts
+[Game]
+Game
+[general settings]
+General Settings
+[go to event]
+Go To Event
+[go to home]
+Go To Home
+[goto main menu]
+Go back to main menu
+[grass]
+Grass
+[ground attack]
+ground attack
+[guard area]
+Guard area
+[GUIMapPreview text 0]
+Please choose
+[GUIMapPreview text 1]
+a map
+[handmade map]
+Handmade map
+[Happyness]
+Happiness
+[hard pause]
+Hard Pause
+[Harvest]
+Harvest
+[home]
+home
+[hospital explanation 2]
+ 
+[hospital explanation]
+Heals your units
+[hospital]
+Hospital
+[host]
+Host a game
+[hp]
+HP
+[hp]
+Hitpoint
+[human]
+human
+[hungry]
+hungry
+[hungryness]
+Hungryness
+[In way]
+On the way
+[increase units working]
+Increase Units Working
+[inn explanation 2]
+ 
+[inn explanation]
+Foods your units
+[inn]
+Inn
+[insert]
+insert
+[inside]
+Inside
+[islands size]
+island size
+[islands terrain]
+Islands
+[iterate selection]
+Iterate to Next Selection
+[jobs]
+jobs
+[join a game]
+Join a game
+[join]
+Join
+[keyboard settings]
+Keyboard Settings
+[kick]
+Kick
+[lan]
+LAN Game
+[language incomplete]
+English - Incomplete
+[language-code]
+en
+[language-tr]
+Language
+[language]
+English
+[Leave Game]
+Leave Game
+[left meta]
+left meta
+[left super]
+left windows key
+[left]
+left
+[level]
+Level
+[levels]
+Levels
+[load campaign]
+Load Campaign
+[load game]
+Load game
+[load map]
+Load Map
+[load script]
+Load Script
+[load]
+Load
+[loading map list]
+Loading Map List...
+[Lobby]
+Lobby
+[login]
+Login
+[Lost : %0 has more prestige than you]
+Lost: %0 has more prestige than you
+[Lost : your colony is dead]
+Lost: your colony is dead
+[lowquality]
+Low quality
+[Magic At. Air]
+Air dmg.
+[Magic At. Ground]
+Ground dmg.
+[map description]
+Description
+[Map Discovered]
+Map Discovered
+[Map download failure: lost connection]
+Map Download Failed: Connection to YOG lost
+[Map name: %0]
+Map name: %0.
+[map name]
+Name
+[map rated]
+Map Rated
+[map script]
+Map Script
+[map size x]
+Map width
+[map size y]
+Map height
+[Map upload failure: connection lost]
+Map upload failed: Connection to YOG lost
+[Map upload failure: map name in use]
+Map upload failed. Map name is in use.
+[Map upload failure: unknown reason]
+Map upload failed. Unknown reason.
+[Map Upload: Author Name]
+Author Name
+[Map Upload: Waiting for reply]
+Waiting for reply
+[maps available]
+Maps Available
+[mark map]
+Mark Map For Allies
+[market explanation 2]
+fruits with others
+[market explanation]
+Allows the exchange of
+[market]
+Market
+[meta %0]
+meta-%0
+[Min required level:]
+Minimum required level:
+[Minimum Level To Flag]
+Minimum Flag Level
+[Music volume]
+Volume (music)
+[Mute]
+Mute
+[mute]
+mute
+[new campaign]
+New Campaign
+[new map]
+New Map
+[nick taken]
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no key]
+no key yet
+[No Objectives]
+No Objectives
+[no ressources growth areas]
+No Growth Areas
+[No]
+No
+[Not Enough Ratings]
+Not Enough Ratings
+[not ready]
+not ready
+[number of players: %0 (%1 AI)]
+%0 players (%1 AI)
+[number of teams: %0]
+%0 teams
+[number of teams]
+number of teams
+[numlock]
+numlock
+[objectives]
+Objectives
+[of which]
+there are
+[ok]
+Ok
+[old islands terrain]
+old random islands
+[old random terrain]
+old random terrain
+[on press]
+On Press
+[On the spot]
+Here
+[on unpress]
+On Unpress
+[open chat box]
+Open Chat Box
+[open load menu]
+Open Load Menu
+[open save menu]
+Open Save Menu
+[open script editor]
+Open Script Editor
+[open]
+open
+[Options]
+Options
+[options]
+Options
+[Orange]
+Orange
+[Other Options]
+Other Options
+[page down]
+page down
+[page up]
+page up
+[Papyrus]
+Papyrus
+[pause game]
+Pause Game
+[pause]
+pause
+[Paused]
+Paused
+[player name]
+Player name
+[player rating %0]
+Player Rating: %0
+[please wait]
+Please wait
+[power]
+power
+[press space]
+Press space to continue.
+[Prestige Win Enabled]
+Prestige Win Enabled
+[Prestige]
+Prestige
+[Primary Objectives]
+Primary
+[print screen]
+print screen
+[Prune]
+Plum
+[quit the editor]
+Quit the editor
+[quit the game]
+Quit the game
+[quit]
+Quit
+[racetrack explanation 2]
+speed of your units
+[racetrack explanation]
+Improves the walking
+[racetrack]
+Racetrack
+[range]
+Range
+[Rated %0]
+Rated %0
+[ratios]
+Proportions
+[refresh map list]
+Refresh Map List
+[Register a new YOG user with password]
+Register a new YOG user with a password. (insecure)
+[remember unit]
+Remember Unit
+[Remember YOG password localy]
+Remember the password locally. (insecure)
+[remove map]
+Remove Map
+[remove shortcut]
+Remove Shortcut
+[Remove]
+Remove
+[repair building]
+Start/Stop Repair
+[repair]
+Repair
+[repeat area]
+times the same landscape
+[restore default shortcuts]
+Restore Default Keyboard Shortcuts
+[return to editor]
+Return to the editor
+[return to game]
+Return to game
+[return]
+enter
+[right meta]
+right meta
+[right super]
+right windows key
+[right]
+right
+[river diameter]
+width of river
+[river terrain]
+River
+[sand]
+Sand
+[save before quit?]
+Do you want to save before quitting?
+[save game]
+Save game
+[save map]
+Save Map
+[save script]
+Save Script
+[Save]
+Save
+[school explanation 2]
+level of your workers
+[school explanation]
+Improves the building
+[school]
+School
+[Script Areas]
+Script Areas
+[scroll lock]
+scroll lock
+[scroll wheel enabled]
+Scroll Wheel Enabled
+[Secondary Objectives]
+Secondary
+[seeking a job]
+seeking a job
+[seeking]
+seeking
+[select barracks building]
+Select Barracks
+[select clearingflag]
+Select Clearing Flag
+[select construct barracks]
+Select Construct Barracks
+[select construct defencetower]
+Select Construct Defense Tower
+[select construct hospital]
+Select Construct Hospital
+[select construct inn]
+Select Construct Inn
+[select construct market]
+Select Construct Market
+[select construct racetrack]
+Select Construct Racetrack
+[select construct school]
+Select Construct School
+[select construct stonewall]
+Select Construct Stone Wall
+[select construct swarm]
+Select Construct Swarm
+[select construct swimmingpool]
+Select Construct Swimmingpool
+[select delete tool]
+Select Delete Tool
+[select explorationflag]
+Select Exploration Flag
+[select hospital building]
+Select Hospital
+[select inn building]
+Select Inn
+[select market building]
+Select Market
+[select place clearing area]
+Select Place Clearing Area
+[select place clearingflag]
+Select Place Clearing Flag
+[select place explorationflag]
+Select Place Exploration Flag
+[select place forbidden area]
+Select Place Forbidden Area
+[select place guard area]
+Select Place Guard Area
+[select place warflag]
+Select Place War Flag
+[select racetrack building]
+Select Racetrack
+[select school building]
+Select School
+[select swarm building]
+Select Swarm
+[select swimmingpool building]
+Select Swimmingpool
+[select tower building]
+Select Defence Tower
+[select wall building]
+Select Wall
+[select warflag]
+Select War Flag
+[settings]
+Settings
+[shift %0]
+shift-%0
+[shortcut explanation enter]
+Enter: send a chat message
+[shortcut explanation v]
+V: hold to speak
+[show main menu]
+Show Main Menu
+[skin]
+Display
+[smoothing]
+Smoothing
+[sort by name]
+Name
+[sort by size]
+Size
+[Sort By]
+Sort By
+[space]
+space
+[start mission]
+Start Mission
+[start new campaign]
+Start New Campaign
+[Start]
+Start
+[Starving Map]
+Starving Map
+[starving]
+starving
+[Statistics]
+Statistics
+[Still (i)]
+Still 
+[still (w)]
+Still
+[still one unit working]
+One unit still working
+[Still one]
+Still one
+[Stone]
+Stone
+[stone]
+stone
+[stonewall explanation 2]
+element
+[stonewall explanation]
+Passive defense
+[stonewall]
+Stone Wall
+[submit rating]
+Submit Rating
+[svr hostname]
+Server hostname
+[swamp terrain]
+Swamp
+[swarm explanation 2]
+ 
+[swarm explanation]
+Creates new units
+[swarm]
+Swarm
+[Swim]
+Swim
+[swimmingpool explanation 2]
+speed of your units
+[swimmingpool explanation]
+Improves the swimming
+[swimmingpool]
+Swimming pool
+[switch to adding areas]
+Switch To Adding Areas
+[switch to area brush 1]
+Switch To Area Brush 1
+[switch to area brush 2]
+Switch To Area Brush 2
+[switch to area brush 3]
+Switch To Area Brush 3
+[switch to area brush 4]
+Switch To Area Brush 4
+[switch to area brush 5]
+Switch To Area Brush 5
+[switch to area brush 6]
+Switch To Area Brush 6
+[switch to area brush 7]
+Switch To Area Brush 7
+[switch to area brush 8]
+Switch To Area Brush 8
+[switch to building view]
+Switch To Building view
+[switch to flag view]
+Switch to Flags view
+[switch to removing areas]
+Switch To Removing Areas
+[switch to teams view]
+Switch to Team view
+[switch to terrain view]
+Switch to Terrain view
+[sys req]
+sys req
+[tab]
+tab
+[Teams Fixed]
+Teams Fixed
+[teams]
+ teams
+[the barracks is finished]
+The training camp is finished
+[the barracks is under attack]
+The training camp is under attack
+[the building is finished]
+The building is finished
+[the building is under attack]
+The building is under attack
+[the clearingflag is finished]
+?? clearingflag finished ??
+[the clearingflag is under attack]
+?? clearingflag under attack ??
+[the defencetower is finished]
+The defense tower is finished
+[the defencetower is under attack]
+Your defenses are under attack
+[the explorationflag is finished]
+?? explorationflag finished ??
+[the explorationflag is under attack]
+?? explorationflag under attack ??
+[The game has not been finished]
+The game has not been finished
+[the games]
+Games
+[the hospital is finished]
+The hospital is finished
+[the hospital is under attack]
+The hospital is under attack
+[The host has cancelled the game]
+The host has cancelled the game
+[the inn is finished]
+The Inn is finished
+[the inn is under attack]
+The Inn is under attack
+[the maps]
+Maps
+[the market is finished]
+The market is finished
+[the market is under attack]
+The market is under attack
+[The player %0 has joined YOG]
+%0 has joined YOG.
+[The player %0 has left YOG]
+%0 has left YOG.
+[the racetrack is finished]
+The racetrack is finished
+[the racetrack is under attack]
+The racetrack is under attack
+[the school is finished]
+The school is finished
+[the school is under attack]
+The school is under attack
+[the stonewall is finished]
+A wall section is finished
+[the stonewall is under attack]
+The enemy is at your walls
+[the swarm is finished]
+The swarm is finished
+[the swarm is under attack]
+The swarm is under attack
+[the swimmingpool is finished]
+The swimming pool is finished
+[the swimmingpool is under attack]
+The swimming pool is under attack
+[the warflag is finished]
+?? warflag finished ??
+[the warflag is under attack]
+?? warflag under attack ??
+[to:]
+to:
+[toggle draw accessibility aids]
+Toggle Draw Accessibility Aids
+[toggle draw information]
+Toggle Draw Information
+[toggle draw unit paths]
+Toggle Draw Unit Paths
+[toggle menu screen]
+Toggle Menu Screen
+[toggle recording voice]
+Initiate Voice Recording
+[toggle recording voice]
+Toggle Recording Voice
+[Total prestige reached]
+Total prestige reached
+[Total]
+Total
+[tutorial text 1]
+Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of usefull knowledge here!
+[tutorial text 2]
+Now that you have mastered the basics, its time to get used to other buildings such as Racetracks, Pools, and Schools.
+[tutorial text 3]
+You have done well to get this far. Now lets move onto Warriors, Training Camps, and Upgrades.
+[tutorial text 4]
+You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forwarded into Custom Games and eventually play online against some of Globulation 2's finest players.
+[tutorial]
+Tutorial
+[Uncontrolled]
+Uncontrolled
+[undo]
+undo
+[uniform terrain]
+Uniform terrain
+[Unit editor]
+Unit editor
+[unit settings explanation]
+The default number of units assigned
+[unit settings]
+Unit Settings
+[units working]
+ units working
+[Units]
+Units
+[unlocked by]
+Unlocked By
+[Unnamed Area]
+{Unnamed Area}
+[up]
+up
+[upgrade building]
+Start/Stop Upgrade
+[Upgrade Defaults]
+Upgrade Defaults
+[upgrade]
+Upgrade
+[Upload Map]
+Upload Map
+[upload map]
+Upload Map
+[username]
+Username
+[Version]
+Version
+[view history]
+View History
+[Voice volume]
+Volume (voice)
+[waiting for %0]
+Waiting for %0
+[waiting for key]
+waiting for key...
+[Waiting]
+Waiting
+[Walk]
+Walk
+[warflag explanation 2]
+ 
+[warflag explanation]
+Attracts warriors
+[warflag]
+War Flag
+[Warning, you need to reboot the game for changes to take effect]
+Warning, you need to restart the game for changes to take effect
+[Warrior Ratio]
+Warrior Ratio
+[Warrior]
+Warrior
+[warriors]
+warriors
+[water]
+Water
+[Wheat]
+Wheat
+[Won : you defeated your opponents]
+Won: you defeated your opponents
+[Won : you have the most prestige]
+Won: you have the biggest prestige
+[Won : your ally %0 has the most prestige]
+Won: your ally %0 has the biggest prestige
+[Wood]
+Wood
+[wood]
+wood
+[Worker Ratio]
+Worker Ratio
+[Worker]
+Worker
+[workers]
+Workers
+[workers]
+workers
+[working]
+Working
+[wounded]
+wounded
+[Yes]
+Yes
+[YESTS_CONNECTING]
+Establishing the connection to the YOG metaserver...
+[YESTS_CONNECTION_LOST]
+The connection to YOG has been lost.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+The YOG metaserver has refused connection because the supplied password was incorrect.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+The YOG metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+The YOG metaserver has refused the connection without explanation!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+The YOG metaserver has refused the connection because this username is banned. Please contact the administrators.
+[YESTS_CREATED]
+The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_UNABLE_TO_CONNECT]
+Unable to connect. Apparently the YOG metaserver is down.
+[yog block command help]
+/block <playername>    Blocks a player, you will no longer see his text
+[yog block command player %0 already blocked]
+Player %0 already blocked
+[yog block command player %0 blocked]
+Player %0 blocked
+[yog block command player %0 not found]
+Player %0 not found
+[yog command header]
+The current list of YOG Client Commands are:
+[yog help command help]
+/help    Shows this help message
+[yog]
+Ysagoon Online Gaming
+[you have lost]
+You have lost!
+[you have won]
+You have won!
+[You where kicked from the game]
+You where kicked from the game
+[Your %0 are under attack]
+Your %0 are under attack
+[Your IP address was temporarily banned]
+Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
+[Your unit got converted to %0's team]
+Your unit got converted to %0's team
+[Your username was banned]
+Your username was banned. Please contact the administrators to have this changed.

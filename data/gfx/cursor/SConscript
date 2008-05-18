@@ -1,0 +1,13 @@
+import os
+    
+Import("env")
+Import("PackTar")
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".png") != -1:
+            PackTar(env["TARFILE"], file)
+            env.Install(env["INSTALLDIR"]+"/glob2/data/gfx/cursor", file)
+    
+    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/gfx/cursor")
+    PackTar(env["TARFILE"], "SConscript")

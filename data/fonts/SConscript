@@ -1,0 +1,8 @@
+Import("env")
+Import("PackTar")
+    
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    PackTar(env["TARFILE"], "sans.ttf")
+    env.Install(env["INSTALLDIR"]+"/glob2/data/fonts", "sans.ttf")
+    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/fonts")
+    PackTar(env["TARFILE"], "SConscript")

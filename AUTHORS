@@ -1,0 +1,137 @@
+*
+Game design, initial programming
+
+Luc-Olivier de Charrière <NuageBleu at gmail dot com>
+Stéphane Magnenat <stephane at magnenat dot net>
+
+*
+Maintainer
+
+Bradley Arsenault <genixpro at gmail dot com> (As of August 2006)
+Stéphane Magnenat <stephane at magnenat dot net> (Until August 2006)
+
+*
+Further programming
+
+Ahmad Sayed <ahmadsayed83 at yahoo dot com> (bidi text support)
+Andrew Sayers <globulation2 at pileofstuff dot org> (Miscellaneous bugfixes)
+Bradley Arsenault <genixpro at gmail dot com> (AI's, Map Editor, new YOG, bugfixes)
+Emmanuel Eckard <emmanuel dot eckard at epfl dot ch> (CreditScreen JJ)
+Hein-Pieter van Braam <hp at syntomax dot com> (IRC patch, debugging)
+Joe LeBlanc <jdlspeedy@yahoo dot com> (YOG & IRC fixes and improvements)
+Kai Antweiler <> (gradient algorithms, bugfixes, ...)
+Kevin Clement <donkjunk at softhome dot net> (improved settings menu & bugfixes)
+Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (Perlin-noise based map generation)
+Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
+Martin Voelkle <marv at chaoides dot org> (GUI, bugfixes and more)
+
+*
+Graphics
+
+Andrew Sayers <globulation2 at pileofstuff dot org> (new grass and sand)
+Cyrille Dunant <cyrille dot dunant at epfl dot ch> (coloring new buildings)
+Emmanuel Eckard <emmanuel dot eckard at epfl dot ch> (drawing new buildings)
+Matthew Marshall <mmarshall at myrealbox dot com> (new units)
+Luc-Olivier de Charrière <NuageBleu at gmail dot com> (swarm, old terrains, buildings and units)
+Gabriel Walt <diz at ysagoon dot com> (mouse cursors)
+Joey Marshall <JoeyMarshall at ml1 dot net> (additional drawing, coloring)
+Stéphane Magnenat <stephane at magnenat dot net> (GUI, new water)
+
+
+*
+Music
+
+Jacques-Paul Grivaz <>
+
+
+*
+Translations
+
+Adam Olausson <gobbladox at hotmail dot com> (Swedish)
+Anastasios Pingios <anastasios dot pingios at gmail dot com> (Greek)
+Anonymous <> (Spanish)
+Áttila Leães Rodrigues <attila.leaes at gmail dot com> (Português do Brasil)
+christooss <christooss at gmail dot com> (Slovene)
+Daniel Nilsson <vq at telia dot com> (Swedish)
+David Barnett <davidbarnett at letu dot edu> (English)
+David Morán <> (Spanish)
+Denis Lianda <lianda at nm dot ru> (Russian)
+Elías Díaz Molins <gekko04 at gmail dot com> (Catalain - Català)
+Erik Blomqvist <> (Swedish)
+Erik Lai <katostelo at gmail dot com> (Chinese(T))
+Federico Massi <federicomassi at tim dot it> (Italian)
+Fernando J. Rodríguez <groucho at lugmen dot org dot ar> (Portuguese, Spanish)
+Heine Laursen <maillist at gozar dot dynu dot com> (Danish)
+Igor Murzov <igor at gplsoft dot org> (Russian)
+Igor TAmara <igor at tamarapatino dot org> (Spanish)
+Julia Schmitt <zwarntje at gmail dot com> (Deutsch)
+Łukasz Demianiuk <ldemianiuk at gmail dot com> (Polish)
+Manuel Soukup <linuxuser-sky at gmx dot de> (Deutsch)
+Martin Hinrichs <Mail at martinhinrichs dot net> (Deutsch)
+Martin Nyffenegger <barock at ysagoon dot com> (Deutsch)
+Matic Ahacic <christooss at gmail dot com> (Slovene)
+Matthias Warkus <mawarkus at gnome dot org> (Deutsch)
+Michal Turek <bastard dot user dot from dot hell at seznam dot cz> (Czech)
+Muhammet Kara <> (Turkish)
+Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (Romanian)
+Osoitz Elkorobarrutia <oelkoro at gmail dot com> (Basque)
+piglet (Italian)
+Przemyslaw Kaminski <daemon42 at gazeta dot pl> (Polish)
+Raoul Verveer <lazy-r at zonnet dot nl> (Nederlands)
+samaritan <> (Serbian)
+Sébastien Le Ray <Beuss at fr dot st> (French)
+Stefan Kangas <stefan dot kangas at ungvanster dot se> (Swedish)
+Tobe Deprez <tobedeprez at scarlet dot be> (Dutch)
+Vakvarju <vakvarju at spektrum-3d dot hu> (Hungarian)
+White Raven <glob at wra dot visitors dot sk> (Slovensky)
+
+*
+Maps and campaign
+
+Bradley Arsenault <genixpro at gmail dot com> (new tutorial)
+Joey Marshall <JoeyMarshall at ml1 dot net> (Joey campaign)
+
+
+*
+Game Packaging
+
+Alexandru Munteanu <io_alex_2002 at yahoo dot fr> (Win32 mingw32)
+Christian <chibar at fibertel dot com dot ar> (Win32 executable images)
+Ethan Tira-Thompson <ejt at andrew dot cmu dot edu> (Mac OS X)
+"Dave Vasilevsky" <djvasi at gmail dot com> (Mac OS X)
+Dejan Lekic <dejan at nu6 dot org> (Win32, Fedora)
+Jean-David Maillefer <jdmaillefer at bluewin dot ch> (Mac OS X)
+Jens Reimann <ctron at dentrassi dot de> (Fedora)
+Kieran <kieran776 at hotmail dot com> (source package, Win32 runtime/executable, Mandriva RPM/Source RPM)
+Martin Nyffenegger <barock at ysagoon dot com> (Mac OS X)
+Ruben Zilibowitz <rzilibowitz at yahoo dot com dot au> (Mac OS X)
+Sebastian Gerlach <minas at calodox dot org> (Win32 VS)
+Thierry Thomas <thierry at freebsd dot org> (FreeBSD)
+Vincent Deffontaines <vincent at gryzor dot com> (Debian)
+
+*
+Internet, documentation and community
+
+Dejan Lekic <dejan at nu6 dot org> (#globulation2)
+Drazak <dark dot drazak at gmail dot com> (hosting)
+Gabriel Walt <disney at ysagoon dot com> (hosting, old CMS, wiki, forum)
+Ghislain Leveque <court-jus at court-jus dot net>
+Kieran <kieran776 at hotmail dot com> (wiki, savannah, sourceforge, freshmeat)
+Kyle Lutze <kyle at randomvoids dot com> (hosting, phpbb/mediawiki integration)
+Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (wiki)
+Loki Azgorodin <> (#glob2)
+Louis Gagnon <globulation2 dot org at louisgagnon dot com> (wiki)
+Luc-Olivier de Charrière <NuageBleu at gmail dot com> (yog metaserver)
+Martin Voelkle <martin dot voelkle at epfl dot ch> (wiki)
+Munteanu Alexandru <io_alex_2002[nospam]yahoo dot fr> (phpbb/mediawiki integration)
+Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (wiki)
+Stéphane Magnenat <stephane at magnenat dot net> (server, wiki, savannah, forum, mercurial)
+
+
+*
+Usability review
+
+Ellen Reitmayr <>
+*
+*
+*

@@ -1,0 +1,266 @@
+# glob2's tutorial, (c) 2003-2007 Ghislain "Court-Jus" Leveque and Stéphane Magnenat and Bradley Arsenault and Kieran P
+# This map is released under the GNU GPL, see COPYING for more infos
+
+# Tutorial, scénario 1
+# Désactivation de tout ce qui est inutile au tutorial
+# Tutorial translated into german by Manuel Soukup (and corrected by Julia Schmitt)
+# Translation to spanish Igor Támara <igor@tamarapatino.org> (and revised by Hernan Quishpe)
+# English version revised by Hernan Quishpe
+# Translated to Dutch by Raoul Verveer
+# Translated to Russian by Igor Murzov
+
+#Note! The English version of the following has changed since the German, French, Spanish, Dutch and Russian versions where translated
+#show("Welcome to the Globulation 2 tutorial! This tutorial is long and in depth, so you may have to pull out lots of time to complete it. If at any time you feel as if you don't have enough time to complete the tutorial, click the menu icon, which is the small icon on the upper-left hand corner of the mini-map (which is on the upper-right hand corner of the screen), and click save. You can load your game from the main menu by clicking load again. Use the space bar to continue with messages. Some messages may disappear entirely after you hit space. This is normal.")
+#changed to:
+#show("Welcome to the Globulation 2 tutorial! This tutorial is long and in depth, so you may have to pull out lots of time to complete it. If at any time you feel as if you don't have enough time to complete the tutorial, click the menu icon, which is the small icon on the upper-left hand corner of the mini-map (which is on the upper-right hand corner of the screen), and click save. You can load your game from the main menu by clicking load again. Use the space bar to continue with messages. Some messages may disappear entirely after you hit space. This is normal. Use 'h' to look at messages after they have disappeared.")
+
+GuiDisable(AllianceScreen)
+GuiDisable(FlagTab)
+GuiDisable(TextStatTab)
+GuiDisable(GfxStatTab)
+GuiDisable(RaceTrack)
+GuiDisable(School)
+GuiDisable(Pool)
+GuiDisable(Camp)
+GuiDisable(Tower)
+GuiDisable(Swarm)
+GuiDisable(Market)
+GuiDisable(Wall)
+GUIDisable(Hospital)
+
+show("Welcome to the Globulation 2 tutorial! This tutorial is long and in depth, so you may have to pull out lots of time to complete it. If at any time you feel as if you don't have enough time to complete the tutorial, click the menu icon, which is the small icon on the upper-left hand corner of the mini-map (which is on the upper-right hand corner of the screen), and click save. You can load your game from the main menu by clicking load again. Use the space bar to continue with messages. Some messages may disappear entirely after you hit space. This is normal. Use 'h' to look at messages after they have disappeared.")
+show("Bienvenue dans le didacticiel de Globulation 2 ! Ce tutorial est long et détaillé, vous pouvez donc mettre quelques temps avant de le terminer. À tout moment, si vous pouvez sauvegarder votre progression pour reprendre plus tard en cliquant sur l'icone menu, qui se trouve dans coin supérieur gauche de la mini-carte (qui se trouve dans le coin supérieur droit de l'écran), puis sur sauver. Vous pouvez charger votre partie depuis le menu principale en cliquant sur charger. Utilisez la barre espace pour passer au message suivant. Certains messages peuvent disparaitre complètement une fois que vous avez appuyé sur espace, c'est normal.",fr)
+show("Willkommen bei der Einführung in Globulation 2! Diese Einführung ist lang und sehr tiefgründig, deshalb musst du wahrscheinlich viel Zeit investieren, um diesen Unterrichtskurs zuende zu spielen. Wenn du irgendwann das Gefühl hast, nicht genug Zeit zu haben, um diese Einführung zu beenden, klicke auf das kleine Menü-Icon, welches neben der oberen linken Ecke der Minikarte platziert ist (rechte obere Ecke des Bildschirms), und klicke auf 'Speichern'. Du kannst dein gespeichertes Spiel über das Hauptmenü laden, indem du auf 'Laden' klickst. Benutze die Leertaste um mit der Anleitung fortzufahren. Einige Nachrichten verschwinden ganz, wenn du die Leertaste drückst, das ist aber ganz normal.",de)
+show("Bienvenid@s al tutorial de Globulation 2!  Este tutorial es amplio y profundo, posiblemente requerirás bastante tiempo para completarlo. Si en algún momento sientes que no tienes tiempo suficiente para completarlo, usa el ícono de menu, que está ubicado en la esquina superior izquierda del minimapa(que está en la parte superior derecha de la pantalla), y usa salvar. Puedes cargar tu juego desde el menú principal con cargar.  Usa la barra espaciadora para ir a los mensajes siguientes.  Algunos mensajes pueden desaparecer por completo cuando usas la barra, eso es normal.",es)
+show("Welkom bij het Globulation 2 oefenspel! Dit oefenspel duurt lang en gaat diep op het spel in. Je hebt dus veel tijd nodig om het te volbrengen. Als je even geen tijd hebt om te spelen, klik dan op het menu pictogram (het kleine pictogram links naast de minikaart -de minikaart bevindt zich rechtsboven in het scherm.) en klik op opslaan. Je kunt je spel weer laden door in het hoofdmenu op 'Laden' te klikken. Gebruik telkens de spatiebalk om nieuwe berichten te lezen. Sommige berichten komen niet meer terug nadat je op spatie hebt gedrukt, maar dat is normaal.",nl)
+show("Добро пожаловать в обучающее руководство Globulation 2! Это руководство длинное и объемное, так что Вам может понадобиться много времени, чтобы его пройти до конца. Если в какой-то момент Вы почувствуете, что Вам нехватает времени, чтобы закончить обучение, щелкните по иконке меню в левом верхнем углу мини-карты (которая находится в правом верхнем углу экрана) и нажмите Сохранить. Вы можете загрузить игру из главного меню. Используйте пробел для перехода к следующему сообщению. Некоторые сообщения могут полностью пропасть после нажатия пробела. Это нормально. Используйте клавишу 'h' для просмотра уже исчезнувших сообщений.",ru)
+space
+
+show("Let's first have a look at what's going on. You have a Swarm and a worker...")
+show("Pour commencer, nous allons observer ce qui se passe. Vous avez une ruche et une ouvrière...",fr)
+show("Lass uns zuerst einen Blick auf das werfen, was gerade passiert. Du hast einen Stock und eine Einheit: einen Arbeiter...",de)
+show("Primero que todo, explicaremos lo que estás viendo. Una colmena y un obrero",es)
+show("Laten we eerst eens kijken wat hier gebeurt. Je hebt een Zwerm en een werker...",nl)
+show("Давайте для начала взглянем на то что происходит. У Вас есть Рой и рабочий...",ru)
+space
+
+show("Your worker harvests wheat and brings it to the Swarm. The Swarm is a building that constructs new units, so it is very important when playing a game.")
+show("Votre ouvrière va commencer à récolter du blé et à l'ammener dans la ruche. Celle-ci permet de produire de nouvelles unités, il s'agit donc d'un bâtiment très important dans le jeu.",fr)
+show("Dein Arbeiter sammelt Weizen und bringt ihn zum Stock. Der Stock ist ein Gebäude, dass neue Einheiten konstruiert, deshalb ist er sehr wichtig im Spiel.",de)
+show("Tu obrero recolecta maíz y lo trae a la colmena. La colmena es un edificio que genera nuevas unidades, por lo tanto es muy importante durante el juego.",es)
+show("Je werker verzamelt graan en brengt het naar de Zwerm. De Zwerm is een gebouw dat nieuwe eenheden produceert. Dit is dus een heel belangrijk onderdeel in het spel.",nl)
+show("Ваш рабочий собирает зерно и носит его в Рой. Рой это здание создающее новые юниты, поэтому оно очень важное в игре.",ru)
+space
+
+show("Now click on your globule (the mobile unit) with your left mouse button.")
+show("Cliquez maintenant sur votre globule (l'unité qui bouge) avec le bouton gauche de votre souris.",fr)
+show("Jetzt klicke auf den Arbeiter (die sich bewegende Einheit) mit deiner linken Maustaste.",de)
+show("Selecciona tu glóbulo(la unidad móvil) con el botón izquierdo del ratón, click.",es)
+show("Klik met de linker muisknop op je globule (de bewegende eenheid).",nl)
+show("Теперь щелкните по вашей глобуле (подвижный юнит) левой кнопкой мыши.",ru)
+space
+
+show("Look on the right side of the screen. It now shows information about that globule. As you can see, its food level is decreasing with time. This means that the globule is getting more and more hungry. The blue bar under the globule reflects its decreasing level of nutrition.")
+show("Observez la partie droite de l'écran. Elle présente maintenant des informations sur le globule. Vous pouvez voir son niveau de nutrition diminuer petit à petit ce qui signifie qu'il a de plus en plus fin. Ces informations sont reprise par la barre bleue sous le globule.",fr)
+show("Schaue auf die rechte Seite deines Bildschirms. Diese zeigt dir nun Informationen über den Arbeiter. Wie du sehen kannst, verringert sich sein Nahrungssvorrat mit der Zeit, das bedeutet, dass er mehr und mehr Hunger bekommt. Der blaue Balken unter dem Arbeiter zeigt seinen abnehmenden Vorrat an Nahrung an.",de)
+show("Mira hacia la derecha en la pantalla. Se muestra información acerca del glóbulo.  El nivel de comida decrece con el tiempo, esto significa que el glóbulo cada vez tiene más hambre. La barra azul bajo el glóbulo refleja su decreciente nivel de alimento",es)
+show("Kijk nu aan de rechterkant van het scherm. Daar kun je informatie aflezen over deze globule. Zoals je kunt zien, gaat het voedselniveau omlaag naar mate de tijd verstrekt. Dat betekent dat de globule steeds meer honger krijgt. De blauwe balk onder de globule geeft het voedselniveau weer.",nl)
+show("Посмотрите на правую часть экрана. Там сейчас показана информация о глобуле. Как Вы видите, её пищевой уровень со временем падает. Это означает, что глобула становится всё более голодной. Синяя полоса под глобулой отражает её падающий уровень питания.",ru)
+space
+
+show("Your globule needs an Inn to be able to eat. Unselect your globule by clicking the right mouse button.")
+show("Votre globule a besoin d'une auberge pour se nourrir. Désélectionnez votre globule en cliquant sur le bouton droit de votre souris.",fr)
+show("Deine Arbeiter brauchen einen Gasthof um essen zu können. Deselektiere deinen Arbeiter indem du die rechte Maustaste drückst.",de)
+show("Tu glóbulo necesita una taberna dónde alimentarse. Deselecciona tu glóbulo oprimiendo el botón derecho del ratón",es)
+show("De globule heeft een Herberg nodig om te kunnen eten. Deselecteer je globule door te klikken met je rechter muisknop.",nl)
+show("Вашей глобуле нужен Кабак, чтобы она могла поесть. Снимите выделение с вашей глобулы щелчком правой кнопки мыши",ru)
+space
+
+show("Now construct an Inn. To do that, click on the first icon under the mini-map (right now there is only one, but as we will see later, there can be several), then on the Inn icon. Now place your Inn near a wheat field. The wheat may be hard to see, but if you follow the path that your globule took when it was harvesting, you will find one. When you're done placing the Inn, exit construction mode by clicking the right mouse button.")
+show("Construisez maintenant une auberge. Pour cela, cliquez sur la première icone sous la mini-carte (pour l'instant, il n'y en a qu'une, mais il peut y en avoir plusieurs, comme nous le verrons plus loin), puis sur l'icone de l'auberge. Placez maintenant votre auberge près d'un champ de blé. Le blé peut etre difficile à voir, mais si vous suivez le chemin qu'a pris votre globule lorsqu'il récoltait, vous en trouverez. Lorsque vous avez positionné votre auberge, sortez du mode construction en cliquant sur le bouton droit de la souris.",fr)
+show("Baue jetzt einen Gasthof. Um dies zu tun klicke auf das erste Icon unter der Minikarte (zur Zeit befindet sich dort nur eines, aber wir werden später sehen, dass es durchaus mehrere sind), dann auf das Gasthof-Icon. Jetzt platziere deinen Gasthof in der Nähe eines Weizenfeldes. Der Weizen ist möglicherweise schwer zu sehen, aber wenn du deinem Arbeiter folgst, der Weizen einsammelt, wirst du eines finden. Wenn du es gefunden hast platziere den Gasthof und verlasse den Bau-Modus mit einem rechten Mausklick.",de)
+show("Ahora, construye una taberna.  Para lograrlo, haz clic en el primer botón debajo del mini-mapa (en este momento debe haber uno solamente, pero como veremos más adelante, puede haber muchos), ahora en el ícono taberna.  Coloca tu taberna cerca a un campo de maíz. El maíz puede ser difícil de ver, pero si sigues el camino que tu glóbulo siguió cuando estaba recolectando, encontrarás uno.  Cuando hayas colocado la taberna, sal del modo construcción con el botón derecho del ratón.",es)
+show("Bouw nu een Herberg. Om dit te doen, klik je op het eerste pictogram onder de minikaart (er is er nu maar één, maar zoals je later zult ontdekken, kunnen dat er meer zijn). Vervolgens klik je op het Herberg pictogram. Plaats je Herberg vlakbij een graanveld. Het is nu misschien moeilijk om een graanveld te zien, maar als je het pad volgt dat je globule heeft afgelegd toen hij graan aan het verzamelen was, dan vind je er wel één. Als je de Herberg hebt geplaatst, verlaat dan de bouwmodus door middel van een klik met de rechter muisknop.",nl)
+show("Теперь постройте Кабак. Чтобы сделать это, щелкните по первой иконке под мини-картой (сейчас там только одна иконка, но как мы увидим позже, их там может быть несколько), затем по иконке Кабака. Теперь разместите Ваш Кабак возле поля с зерном. Зерно, возможно, сложно разглядеть, но если Вы проследуете по пути, по которому ходила Ваша глобула когда она собирала зерно, вы его найдете. Когда Вы закончите с размещением Кабака, выйдите из режима постройки с помощью щелчка правой кнопкой мыши",ru)
+wait(Inn(0,0) > 0)
+hide
+
+show("Good...")
+show("Bien...",fr)
+show("Gut...",de)
+show("Bien...",es)
+show("Goed...",nl)
+show("Замечательно...",ru)
+space
+
+show("Your building site has been placed. You probably saw a second worker appear out of the Swarm, the second worker will work at the Inn. The Inn needs wood to be constructed, so the worker will head over to the nearest forest and harvest some wood to help put the building together. It is just a matter of time before the building will be finished..")
+show("Votre site de construction a été placé. Une seconde ouvrière est probablement sorti de la ruche, elle travaillera à l'auberge. Pour la construire, elle va avoir besoin de bois qu'elle récoltera dans la foret la plus proche. Ce n'est qu'une question de temps avant que votre bâtiment ne soit terminé.",fr)
+show("Eine neue Baustelle wurde erstellt. Vielleicht hast du den zweiten Arbeiter gesehen, der aus dem Stock kam - der zweite Arbeiter wird am Gasthof arbeiten. Der Gasthof benötigt Holz um errichtet zu werden. Deshalb wird der Arbeiter zum nächstgelegenen Wald gehen um Holz zu sammeln und das Gebäude zu errichten. Es ist nur eine Frage der Zeit bis es fertig ist ...",de)
+show("Has elegido el sitio en el cual estará la taberna.  Probablemente viste un segundo trabajador aparecer de la colmena, el segundo trabajará en la taberna.  La taberna necesita madera para construirse.  Así que el trabajador irá al bosque más cercano para traer madera a la construcción.   Espera un rato a que la construcción esté lista..",es)
+show("De bouwplaats is gecreëerd. Je hebt wellicht een tweede werker uit de Zwerm zien verschijnen, die aan Herberg gaat werken. Om de Herberg te bouwen is hout nodig. Je werker gaat naar het dichtsbijzijnde bos en verzamelt hout om de Herberg te kunnen bouwen. Het is slechts een kwestie van tijd voordat het gebouw af is.",nl)
+show("Ваше место стройки было выбрано. Вы вероятно видели, что второй рабочий появился из Роя, второй рабочий будет работать на Кабак. Чтобы построить Кабак нужно дерево, поэтому рабочий поспешит к ближайшему лесу и соберёт немного дерева, чтобы помочь собрать здание. Завершение постройки это всего лишь дело времени..",ru)
+space
+hide
+wait(Inn(0,1) > 0)
+
+show("Now that the Inn is finished, a free worker will begin harvesting wheat for it in the same manner that the Swarm's worker does.")
+show("Maintenant que l'auberge est terminée, une ouvrière libre va l'alimenter avec du blé, comme celle qui travaille à la ruche.",fr)
+show("Nun, da der Gasthof fertig ist, wird ein freier Arbeiter anfangen Weizen für denselbigen zu sammeln, in der selben Weise wie es auch die Arbeiter für den Stock tun.",de)
+show("Una vez que la taberna esté lista, un trabajador que esté libre comenzará a recolectar maíz para esta, de la misma forma que el trabajador de la colmena lo hace.",es)
+show("Nu de Herberg af is, begint een vrije werker graan te vezamelen op dezelfde manier als de andere werker dat voor de Zwerm doet.",nl)
+show("Теперь, когда Кабак построен, свободный рабочий начнёт собирать для него зерно также как это делал рабочий работающий на Рой.",ru)
+space
+
+show("Looking at the Inn, you'll see a yellow bar that is rising as the globule harvests more wheat. As you may have guessed, this bar represents how much wheat is in the Inn.")
+show("En regardant l'auberge de plus près, vous constaterez qu'elle dispose d'une barre jaune, qui croit au fur et à mesure que le globule récolte du blé. Comme vous l'avez peut-etre deviné, il s'agit de la réserve de blé de l'auberge.",fr)
+show("Schau auf den Gasthof, du siehst einen gelben Balken, der wächst, wenn der Arbeiter Weizen bei ihm abläd. Wie du richtig vermutest, repräsentiert dieser Balken die Menge an Weizen im Gasthof.",de)
+show("Cerca a la taberna verás una barra amarilla, que crece a medida que el glóbulo recolecta maíz.  Como lo debes haber deducido, esta barra representa cuanto maíz hay en la taberna.",es)
+show("Als je naar de Herberg kijkt, zie je een gele balk die groter wordt als de globule meer graan verzamelt. Zoals je waarschijnlijk al hebt kunnen raden, geeft de gele balk aan hoeveel graan zich in de Herberg bevindt.",nl)
+show("Взглянув на Кабак вы увидите желтую полосу, которая растёт когда глобула собирает больше зерна. Как вы могли догадаться, эта полоса отражает сколько зерна сейчас в Кабаке.",ru)
+space
+
+show("Now, let's have a look at the task system.")
+show("À présent, attardons-nous un peu sur le système de taches.",fr)
+show("Lass uns jetzt das Task-System anschauen",de)
+show("Ahora veamos el sistema de tareas",es)
+show("Nu, laten we eens naar het takensysteem kijken.",nl)
+show("Сейчас давайте взглянем на систему заданий.",ru)
+space
+
+show("For now, you have one unit bringing food to the Swarm and the second one to the Inn. One of the two units may be inside the Inn eating right now. This is ok.")
+show("Pour l'instant, vous avez une ouvrière qui amène du blé à la ruche et l'autre à l'auberge. L'une des deux peut se trouver à l'intérieur de l'auberge pour l'instant, elle mange. Tout va bien.",fr)
+show("Fürs Erste hast du einen Arbeiter, der Essen zum Stock bringt und einen zweiten, der Essen zum Gasthof befördert. Einer der zwei befindet sich vielleicht im Gasthof um zu essen. Das ist OK.",de)
+show("En este momento tienes una unidad trayendo comida a la colmena y una segunda a la taberna. Una de las dos puede estar dentro de la taberna,en este momento, comiendo. Lo cuál está bien.",es)
+show("Momenteel heb je een eenheid die graan naar de Zwerm brengt en een andere naar de Herberg. Eén van de twee eenheden kan op dit moment in de Herberg zitten om te eten. Hier iets niets mis mee.",nl)
+show("В данный момент у вас один юнит носит еду в Рой, а второй в Кабак. Один из двух юнитов сейчас возможно ест в Кабаке. Это нормально.",ru)
+space
+
+show("Click on the Swarm. If you look to the right hand side again, you'll notice a bar at the top, labeled 'Working'. This bar tells how many units you want to be assigned to the Swarm.")
+show("Cliquez sur la ruche. Si vous regardez à nouveau la partie droite de l'écran, vous remarquerez qu'une nouvelle barre intitulée 'Activité' est apparue en haut. Elle indique le nombre d'ouvrière que vous souhaitez affecter à la Ruche.",fr)
+show("Klicke auf den Stock. Wenn du nun auf die rechte Seitenleiste schaust, wird dir eine Leiste mit dem Namen 'An der Arbeit' auffallen. Diese Leiste zeigt dir, wie viele Arbeiter dem Stock zugeteilt sind.",de)
+show("Selecciona la colmena. Si miras hacia la derecha de nuevo, verás que hay una barra en la parte superior titulada 'Trabajando'. Esta barra dice cuántas unidades deseas tener asignadas a la colmena.",es)
+show("Klik op de Zwerm. Als je nu weer aan de rechterkant van het scherm kijkt, zie je een een balk met de naam 'Werkend'. Deze balk geeft weer hoeveel eenheden er zijn toegewezen aan de Zwerm.",nl)
+show("Щелкните по Рою. Если вы снова взгляните направо, вы заметите наверху полоску помеченную как 'Работает'. Эта полоска показывает сколько юнитов вы хотите назначить в Рой.",ru)
+space
+
+show("You will notice that on either side of the bar, there are two arrows. You can use the arrows to either increase or decrease the number of notches on the bar, and thus the number of units assigned to the building. Decrease the number of units assigned to the Swarm to 0, and then do the same thing for the Inn.")
+show("Vous remarquerez que de chaque coté de la barre se trouvent deux fl_che. Vous pouvez les utiliser pour augmenter ou diminuer le nombre d'unités assignées au bâtiment. Placez le nombre d'unités affectées à la Ruche à 0 et faites demêmepour l'auberge.", fr)
+show("Du wirst bemerkt haben, dass bei den Leistenenden zwei Pfeile angebracht sind. Du kannst die Pfeile benutzen um den blauen Balken zwischen ihnen zu vergößern oder zu verkleinern, was wiederum die Zahl der zugeteilten Arbeiter zum Gebäude erhöht oder verringert. Vermindere die 'An der Arbeit'-Zahl am Stock auf 0 und mache dann das Gleiche beim Gasthof.",de)
+show("Verás que a cada lado de la barra hay una flecha. Puedes usarlas para aumentar o disminuir la cantidad de cuadros en la misma, que es la cantidad de unidades asignadas a la edificación.  Disminuye a 0 la cantidad de unidades asignadas a la colmena , y haz lo mismo para la taberna. ",es)
+show("Aan beide kanten van de balk zitten knopjes. Je kan die knopjes gebruiken om de balk groter of kleiner te maken en zodoende bepalen hoeveel eenheden er aan het gebouw zijn toegewezen. Zet het aantal eenheden dat is toegewezen aan de Zwerm op nul, waarna je hetzelfde doet voor de Herberg.",nl)
+show("Заметьте, что на каждой стороне полосы есть стрелки. Вы можете использовать стрелки, чтобы увеличить или уменьшить количество делений на полоске и тем самым количество юнитов назначенных в здание. Уменьшите количество юнитов назначенных в Рой до нуля, и затем проделайте тоже самое для Кабака.",ru)
+space
+
+show("Now all your workers are idle. They continue to eat, however, so be carefull not to let your Inn run out of food!")
+show("Maintenant, vos deux ouvrières sont inactives. Toutefois, elles continuent à manger, soyez donc attentif à ce qu'elles ne vident pas l'auberge !",fr)
+show("Nun haben alle deine Arbeiter nichts zu tun und sind faul. Leider essen sie immer noch weiter, also lass deinem Gasthof die Nahrung nicht ausgehen!",de)
+show("En este momento todos los trabajadores están desocupados.  Continúan comiendo, así que ten cuidado de no quedarte sin comida!",es)
+show("Nu zijn al je werkers vrij. Ze hebben echter nog steeds voedsel nodig, dus let er op dat de Herberg niet zonder graan komt te zitten!",nl)
+show("Теперь все ваши рабочие простаивают. Однако, они продолжают есть, так что будьте осторожны и не дайте вашему Кабаку остаться без еды!",ru)
+space
+
+show("If one of your globules can't find an Inn to eat at, maybe because all of the Inns are empty, its health will decrease, so you will have to build a hospital to heal it.")
+show("Si un de vos globules ne peut pas trouver d'auberge dans laquelle manger, par exemple si elles sont toutes vides, sa santé va se dégrader, vous devrez donc construire un hopital pour la soigner.",fr)
+show("Wenn eine deiner Einheiten (Arbeiter, Entdecker oder Krieger) keinen Gasthof findet, um zu essen, weil vielleicht alle keine Nahrung mehr enthalten, wird ihre Gesundheit abnehmen. Deshalb müssen wir ein Krankenhaus bauen, um sie heilen zu können.",de)
+show("Si uno de tus glóbulos no puede encontrar una taberna en donde comer, puede ser porque todas las tabernas están vacías, su salud desmejorará y tendrás que construir un hospital para curarle.",es)
+show("Als één van je globules geen Herberg kan vinden om te eten, omdat er bijvoorbeeld geen voedsel is, zal zijn gezondheid afnemen. Je hebt dan een Ziekenhuis nodig om hem te genezen.",nl)
+show("Если какая-то из ваших глобул не сможет найти Кабак, в котором можно поесть, возможно потому что все Кабаки пусты, её здоровье будет уменьшаться. Так что придётся построить Госпиталь, чтобы вылечить её.",ru)
+space
+
+GuiEnable(Hospital)
+show("Using the same method that you did for the Inn, construct a Hospital. Unlike the Inn, however, your Hospital doesn't need to be near wheat, so try to place it near wood instead, or even in a more central place, such as near your Swarm.")
+show("En utilisant lamêmeméthode que pour l'auberge, construisez un hopital. Cependant, votre hopital n'a pas besoin d'etre près de blé. Aussi, essayez plutot de la placer près d'un bois, oumêmeà un emplacement plus central, à coté de votre Ruche par exemple",fr)
+show("Benutze die selbe Methode wie beim Gasthof um ein Hospital zu bauen. Im Gegensatz zum Gasthof muss dein Krankenhaus nicht in der Nähe von Weizen stehen, deshalb versuche es in die Nähe von Holz zu bauen. Oder gleich an einen zentralen Platz neben deinen Stock.",de)
+show("Construye un hospital de la misma forma como hiciste la taberna. A diferencia de la taberna, el hospital no necesita estar cerca al maíz.  Así que intenta colocarlo cerca a la madera, o mejor, en un lugar más central, por ejemplo, cerca a tu colmena.",es)
+show("Bouw nu een Ziekenhuis volgens dezelfde methode die je hebt gebruikt voor de Herberg. In tegenstelling tot de Herberg heeft het ziekenhuis geen graan nodig. Bouw daarom je Ziekenhuis in de buurt van hout of op een meer centrale plek, in de buurt van je Zwerm.",nl)
+show("Используя тот же метод, что и для Кабака, постройте Госпиталь. В отличие от Кабака, Госпиталь нет необходимости располагать возле зерна, поэтому постарайтесь разместить его вместо этого возле дерева, или даже в более центральном месте, например, возле Роя.",ru)
+wait(Hospital(0,0) > 0)
+
+show("Good. Click on the newly built foundation for a hospital, and assign two units to work on it. The hospital will be constructed very quickly now with that increased number of units.")
+show("Bien. Cliquez maintenant sur les fondations qui ont été posées pour l'hopital et assignez-y deux ouvrières. L'hopital devrait etre construit très rapidement maintenant grace à cette main d'oeuvre abondante.",fr)
+show("Gut so. Klicke auf die Baustelle und teile ihr zwei Arbeiter zu. Das Hospital wird nun logischerweise schneller als mit nur einem zugeteilten Arbeiter gebaut werden, da gleich zwei Arbeiter die nötigen Ressourcen heranschaffen.",de)
+show("Bien. Elije el hospital que comenzaste a construir y asígnale dos unidades para que trabajen en él.  El hospital se construirá mucho más rápido debido a que varios están colaborando.",es)
+show("Goed zo. Klik op de zojuist gecreëerde bouwplaats voor het Ziekenhuis en wijs er twee eenheden aan toe. Het Ziekenhuis zal nu sneller gebouwd worden, omdat er meer eenheden aan werken.",nl)
+show("Превосходно. Щелкните на свежепостроенную основу для Госпиталя, и назначьте двух юнитов, чтобы они работали над ним. Теперь Госпиталь будет построен очень быстро с таким увеличенным числом юнитов.",ru)
+space
+hide
+wait(Hospital(0,1) > 0)
+
+show("Good. Now, if your globules get hurt for some reason, they will be able to heal themselves.")
+show("Bien. Désormais, si l'un de vos globules venait à etre blessé pour une raison quelconque, ils seront en mesure de se soigner.",fr)
+show("Super. Wenn deine Einheiten jetzt irgendwie verletzt werden, sind sie in der Lage sich selbst zu heilen.",de)
+show("Lo hiciste.  Ahora si tus glóbulos se hacen daño por algún motivo, tendrán oportunidad de curarse así mismos.",es)
+show("Mooi. Als je globules nu om één of andere reden gewond raken, kunnen ze zichzelf genezen.",nl)
+show("Отлично. Теперь если ваши глобулы по какой-либо причине будут ранены, они смогут вылечиться.",ru)
+space
+
+show("Now, you may have noticed that most of the area around your base is black. This is because it is undiscovered zone. When your workers walk into the undiscovered zone, that zone becomes discovered, and you can see what's in it. Unfortunately, it is quite difficult to control workers in such a manner as to have them explore the undiscovered zone. Fortunately, there is a unit made just for this! It is called the explorer.")
+show("Vous avez sans doute remarqué que  l'espace autour de votre base est noir, car il n'a pas été exploré. Lorsque vos ouvrières se déplacent au sein d'une zone non explorée, elle est découverte et vous pouvez voir ce qui s'y trouve. Malheureusement, il est assez difficile de controler les ouvrières de façon à ce qu'il explorent des zones inconnues. Heureusement, il existe une unité dédiée à cette tache appelée exploratrice", fr)
+show("Inzwischen wirst du bemerkt haben, dass die meiste Landschaft um die Basis schwarz ist. Dies ist so, weil diese Zonen unentdecktes Land sind. Wenn deine Arbeiter in die Zone laufen wird sie entdeckt und du kannst sehen, was darin ist. Unglücklicherweise ist es schwer Arbeiter so zu kontrollieren, dass sie unentdecktes Land erkunden. Glücklicherweise wurde gerade dafür eine Einheit kreiert! Sie heißt 'Entdecker'.",de)
+show("Puedes notar que alrededor de tu base, la mayor parte está negra.  Esto se debe a que es una zona inexplorada.  Cuando tus trabajadores caminan hacia una zona inexplorada, esa zona se va descubriendo y puedes ver qué hay ahí.  Desafortunadamente es muy difícil controlar los trabajadores para que exploren las zonas por descubrir.  Afortunadamente hay una unidad hecha exactamente para esto! Se llama el explorador.",es)
+show("Je zal wellicht al gemerk hebben dat het overgrote deel van het gebied rondom je basis zwart is. Dat komt omdat dat gebied nog niet ontdekt is. Zodra één van je werkers zich in dat gebied begeeft, wordt het ontdekt en kun je zien wat zich er bevindt. Helaas is het lastig om je werkers zodanig te beïnvloeden dat ze zich naar nog niet ontdekt gebied begeven. Gelukkig bestaat er een eenheid die geknipt is voor deze taak! En die eenheid heet de verkenner.",nl)
+show("Вы возможно заметили, что большая часть пространства вокруг Вашей базы чёрная. Это неисследованная зона. Когда ваши рабочие входят в эту неисследованную зону, она становится исследованной, и вы можете видеть что на ней. К сожалению, довольно сложно управлять рабочими так, чтобы они открывали неисследованную зону. К счастью, есть юнит созданный специально для этого! Он называется разведчик.",ru)
+space
+
+show("Click on your Swarm now. Look about half way down the menu, and you will notice three bars, labeled worker, explorer, and warrior. You will also notice that the worker bar has one small notch in it. If we want to make an explorer, we have to increase a notch on the explorer bar.")
+show("Cliquez maintenant sur votre ruche.  Regardez au milieu du menu, vous remarquerez trois barres étiquetées ouvrière, exploratrice et guerrière. Vous remarquerez également que la barre ouvrière dispose d'une graduiation pleine. Si nous voulons créer une exploratrice, nous devons remplir une graduation sur la barre des exploratrices.", fr)
+show("Klicke jetzt auf deinen Stock und schaue in die Mitte des Menüs. Dort wirst du 3 Balken sehen: 'Arbeiter', 'Entdecker' und 'Krieger'. Auch wird dir nicht entgangen sein, dass der Arbeiter-Balken 'eins' groß ist. Wenn du einen Entdecker erschaffen willst, musst du den Entdecker-Balken um eins von 0 auf 1 erhöhen.",de)
+show("Elije tu colmena. Mira hacia la mitad del menú y encontrarás tres barras con los títulos trabajador, explorador y guerrero.  Verás también que la del trabajador tiene un cuadro pequeño.  Si queremos invocar un explorador, incrementaremos en uno la barra de explorador.",es)
+show("Klik nu op de Zwerm. Kijk ongeveer halverwege het menu en je zult drie balken zien genaamd 'Werker', 'Verkenner' en 'Soldaat'. De werker balk heeft een grootte van één. Als we ook verkenners willen maken, moeten we de verkenner balk één stap vergroten. Ga je gang...",nl)
+show("Щелкните по Рою. Посмотрите, приблизительно в середине под меню находятся три полосы, обозначеные 'Рабочий', 'Разведчик' и 'Воин'. Вы заметите, что полоса 'Рабочий' имеет только одно маленько деление. Если мы хотим создать разведчика, необходимо увеличить количество делений на полосе 'Разведчик'.",ru)
+space
+
+show("You now have one notch for workers and one notch for explorers. This means that the Swarm will create explorers and workers half and half, one worker and then one explorer. But this is not what we want! We would like to get one explorer immediatly, rather than waiting, so decrease one notch for workers, and explorers will be the only type of unit that is created.")
+show("Vous avez maintenant une graduation pleine pour les ouvrière et une pour les exploratrice. Cela signifie que la ruche créera des exploratrices et des ouvrières à part égales : une ouvrière, puis une exploratrice. Mais ce n'est pas ce que nous voulons ! Nous voudrions une exploratrice tout de suite plutot que d'attendre. Diminuez donc la production d'ouvrière afin que les exploratrices soient le seul type d'unités créé.", fr)
+show("Nun hast du ein Stück blauen Balken für Arbeiter und eins für Entdecker. Das bedeutet, dass der Stock im Wechsel einen Arbeiter und einen Entdecker produziert. Aber das ist ja nicht das, was du willst, du willst nur einen Entdecker und das schnell. Deshalb reduziere den Arbeiter-Balken auf 0. Nun werden nur noch Entdecker erschaffen.",de)
+show("Ahora tienes una unidad para trabajadores y otra para exploradores.  Esto significa que la colmena creará sendos exploradores y trabajadores, uno a uno.  Pero no es lo que queremos! Queremos que el explorador salga inmediatamente en lugar de esperar. Disminuye los trabajadores y así solamente se crearán exploradores.",es)
+show("Je hebt nu de balken van zowel werker als verkenner op stap één staan. Dit betekent dat de Zwerm één om één werkers en verkenners maakt, Eerst een werker, dan een verkenner. Maar dat willen we niet! We willen direct een verkenner maken. In plaats van te wachten verminder je de werker balk naar nul, zodat er alleen nog maar verkenners worden gemaakt.",nl)
+show("Сейчас у вас одно деление для рабочих и одно для разведчиков. Это означает, что Рой будет создавать разведчиков и рабочих поровну, одного рабочего и затем одного разведчика. Но это не то чего мы хотим! Мы хотели бы получить одного разведчика немедленно и не ждать, поэтому уберите одно деление у рабочих, и разведчики будут единственным типом создаваемых юнитов.",ru)
+space
+
+show("Now, increase the number of units assigned to the Swarm back up to 1.")
+show("À présent, remettez le nombre d'unités affectées à la ruche à 1", fr)
+show("Erhöhe jetzt die 'An der Arbeit'-Zahl des Stocks wieder auf 1.",de)
+show("Ahora incrementa el número de unidades trabajadoras en 1.",es)
+show("Vergroot het aantal werkers dat aan de Zwerm is toegewezen weer naar één.",nl)
+show("Теперь увеличьте количество юнитов работающих на Рой снова до 1.",ru)
+space
+
+show("Just remember, that if the inn has no units assigned to it, it will gradually become empty! So assign one unit to the inn as well.")
+show("Souvenez-vous que si aucune unité n'est affectée à l'auberge, elle se videra petit à petit ! Affectez donc une unité à l'auberge également.", fr)
+show("Erinnere dich, dass dem Gasthof kein Arbeiter zugewiesen worden ist, und die Nahrung zur Neige geht. Weise also auch dem Gasthof einen Arbeiter zu, der an ihm arbeitet.",de)
+show("Así que recuerda, si las tabernas no tienen unidades asignadas, se vaciará finalmente! Así que asígnale una unidad a la taberna también.",es)
+show("Onthoud dat als er geen eenheden aan de Herberg zijn toegewezen, deze langzaam maar zeker leeg raakt! Dus wijs ook een eenheid toe aan de Herberg.",nl)
+show("Вспомните, если в Кабак не назначены юниты, то он постепенно опустеет! Так что назначьте один юнит также и в Кабак.",ru)
+space
+
+show("Good. Just wait, that explorer will come...")
+show("Bien. Attendons, l'exploratrice va sortir...", fr)
+show("Sehr gut. Warte, bis der Entdecker fertig ist...",de)
+show("Bien. Espera mientras aparece el explorador...",es)
+show("Goed. Nu maar wachten op de verkenner...",nl)
+show("Хорошо. Подождём пока появится разведчик...",ru)
+space
+hide
+wait(Explorer(0) > 0)
+
+show("Wow! The explorer is flying! You will notice that the explorer begins circling your base, quickly revealing more of the area to you. Click back on the Swarm, and wait until another explorer is created. Having two explorers may be useful.")
+show("Ohla ! L'exploratrice vole ! Vous remarquerez qu'elle commence à décrire des cercles autour de votre base, vous en apprenant plus sur votre environnement. Recliquez sur la ruche et attendez qu'une seconde exploratrice soit créée, disposer de deux exploratrices peut se révéler utile.", fr)
+show("Wow! Der Entdecker fliegt! Wie du sehen kannst, kreist er um deine Basis. Klicke auf den Stock und warte, bis ein zweiter Entdecker geschaffen ist. Es könnte nützlich sein, zwei Entdecker zu besitzen.",de)
+show("Guau! El explorador vuela! Verás que el explorador comienza a volar en círculos sobre tu base, revelándote más porciones.  Selecciona la colmena de nuevo y espera hasta que otro explorador se cree, contar con dos puede ser útil.",es)
+show("Wauw! De verkenner vliegt! De verkenner begint nu om je basis te cirkelen om meer van het gebied zichtbaar te maken. Klik weer op de Zwerm en wacht tot er nog een verkenner is gemaakt. Het kan soms handig zijn om twee verkenners te hebben.",nl)
+show("Офигеть! Разведчик летает! Вы увидите, что разведчик начинает кружить вокруг вашей базы, быстро открывая для вас всё больше территории. Щелкните снова по Рою и подождите пока не появится ещё один разведчик. Иметь двух разведчиков может быть полезно.",ru)
+space
+hide
+wait(Explorer(0) > 1)
+
+show("Good. Now set the explorer production back a notch and worker production ahead a notch. You can do this in the same way you did before. Click on the Swarm, and then click on the up/down arrows on the worker and explorer bar respectivly.")
+show("Bien. Diminuez maintenant la production d'exploratrices et augmentez celle des ouvrières. Vous pouvez le faire comme tout à l'heure, en cliquant sur la Ruche puis en utilisant les flèches des barres ouvrières et exploratrices", fr)
+show("Gut. Nun setze die Entdeckerproduktion um eins zurück und die Arbeiterproduktion um eins nach oben. Das machst du wie bereits erklärt: Klicke auf den Stock und dann auf die jeweiligen Leistenenden von Entdecker und Arbeiter.",de)
+show("Bien. Elimina la producción de exploradores y aumenta en uno la producción de trabajadores. Lo haces de la misma forma en que lo hiciste antes, selecciona la colmena y después selecciona las flechas en las barras de explorador y trabajador, respectivamente.",es)
+show("Mooi. Zet nu de productie van verkenners een stap omlaag en die van werkers weer een stap omhoog. Je doet dit op dezelfde manier als voorheen: klik op de zwerm en vervolgens op de knoppen links en rechts bij de juiste balken.",nl)
+show("Отлично. Теперь чуть-чуть уменьшите производство разведчиков и чуть-чуть увеличьте производство рабочих. Вы можете сделать это также как вы делали это раньше. Кликните на Рой и затем щелкните по стрелкам вверх/вниз на полосе для рабочих и разведчиков соответственно.",ru)
+space
+
+win(0)
+
