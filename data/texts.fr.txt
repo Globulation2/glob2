@@ -160,8 +160,6 @@ Bâtiments
 Boulets
 [campaign editor]
 Editeur de campagne
-[campaign text]
-
 [campaign]
 Campagne
 [Can't connect, can't find host]
@@ -254,6 +252,8 @@ Dommages
 Carte endomagée
 [decrease units working]
 Diminuer le nombre d'unité travaillant
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 avoisinantes
 [defencetower explanation]
@@ -516,6 +516,8 @@ Basse qualité
 Dmg. air
 [Magic At. Ground]
 Dmg. sol
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -524,6 +526,8 @@ Dmg. sol
 Carte: %0.
 [map name]
 Nom de la carte
+[map rated]
+
 [map script]
 
 [map size x]
@@ -590,6 +594,8 @@ pas prêt
 nombre d'équipes
 [numlock]
 Verouillage du pavé numérique
+[objectives]
+
 [of which]
 dont
 [ok]
@@ -636,6 +642,8 @@ Pause
 Pause
 [player name]
 Nom du joueur
+[player rating %0]
+
 [please wait]
 Attendre SVP
 [power]
@@ -646,6 +654,8 @@ Appuyer sur espace pour continuer.
 
 [Prestige]
 Prestige
+[Primary Objectives]
+
 [print screen]
 Impriment l'écran
 [Prune]
@@ -730,6 +740,8 @@ Zones du script
 Verouillage de défilement
 [scroll wheel enabled]
 Roulette de la souris activée
+[Secondary Objectives]
+
 [seeking a job]
 cherchent du travail
 [seeking]
@@ -840,6 +852,8 @@ Pierre
 Elément passif de défense
 [stonewall]
 Mur de pierre
+[submit rating]
+
 [svr hostname]
 Nom du serveur hôte
 [swamp terrain]

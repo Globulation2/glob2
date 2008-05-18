@@ -160,8 +160,6 @@ Gebäude
 Kugeln
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Feldzug
 [Can't connect, can't find host]
@@ -247,6 +245,8 @@ Schaden
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 bäude und Einheiten an
@@ -510,6 +510,8 @@ Niedrige Qualität
 Kampfstärke/Luft
 [Magic At. Ground]
 Kampfstärke/Boden
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -517,6 +519,8 @@ Kampfstärke/Boden
 [Map name: %0]
 Karte: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -582,6 +586,8 @@ nicht bereit
 Mannschaften
 [numlock]
 
+[objectives]
+
 [of which]
 davon
 [ok]
@@ -628,6 +634,8 @@ Pause
 Pause
 [player name]
 Spielername
+[player rating %0]
+
 [please wait]
 Bitte warten
 [power]
@@ -638,6 +646,8 @@ Leertaste drücken, um fortzufahren.
 
 [Prestige]
 Prestige
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -721,6 +731,8 @@ Schule
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 suchen Arbeit
@@ -832,6 +844,8 @@ gebäude
 Passives Verteidigungs-
 [stonewall]
 Steinmauer
+[submit rating]
+
 [svr hostname]
 Server-Hostname
 [swamp terrain]

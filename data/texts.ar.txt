@@ -160,8 +160,6 @@ Available local games
 الرصاص
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 الحملة
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Custom cursor
 [Damaged Map]
 Damaged Map
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 units or buildings
@@ -516,6 +516,8 @@ Low quality
 Air dmg.
 [Magic At. Ground]
 Ground dmg.
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Ground dmg.
 [Map name: %0]
 Map name: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ No Growth Areas
 number of teams
 [numlock]
 
+[objectives]
+
 [of which]
 هنالك
 [ok]
@@ -636,6 +642,8 @@ Pause Game
 Paused
 [player name]
 اسم الاعب
+[player rating %0]
+
 [please wait]
 Please wait
 [power]
@@ -646,6 +654,8 @@ Press space to continue.
 
 [Prestige]
 سمعه
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Script Areas
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 يبحث عن العمل
@@ -840,6 +852,8 @@ Starving Map
 الدفاع السلبي
 [stonewall]
 Stone wall
+[submit rating]
+
 [svr hostname]
 Server hostname
 [swamp terrain]

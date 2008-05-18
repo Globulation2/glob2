@@ -262,8 +262,14 @@ void Story::toto(GameGUI* gui)
 void Story::objectiveHidden(GameGUI* gui)
 {
 	int n = line[++lineSelector].value;
-	if(gui->game.objectives.getNumberOfObjectives() > n)
-		gui->game.objectives.setObjectiveHidden(n);
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getScriptNumber(i) == n)
+		{
+			gui->game.objectives.setObjectiveHidden(i);
+			break;
+		}
+	}
 }
 
 
@@ -271,8 +277,14 @@ void Story::objectiveHidden(GameGUI* gui)
 void Story::objectiveVisible(GameGUI* gui)
 {
 	int n = line[++lineSelector].value;
-	if(gui->game.objectives.getNumberOfObjectives() > n)
-		gui->game.objectives.setObjectiveVisible(n);
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getScriptNumber(i) == n)
+		{
+			gui->game.objectives.setObjectiveVisible(i);
+			break;
+		}
+	}
 }
 
 
@@ -280,8 +292,14 @@ void Story::objectiveVisible(GameGUI* gui)
 void Story::objectiveComplete(GameGUI* gui)
 {
 	int n = line[++lineSelector].value;
-	if(gui->game.objectives.getNumberOfObjectives() > n)
-		gui->game.objectives.setObjectiveComplete(n);
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getScriptNumber(i) == n)
+		{
+			gui->game.objectives.setObjectiveComplete(i);
+			break;
+		}
+	}
 }
 
 

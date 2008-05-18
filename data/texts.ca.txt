@@ -160,8 +160,6 @@ Edificis
 Bales
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Campanya
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ mal
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 
@@ -516,6 +516,8 @@ Qualitat Baixa
 dany aeri
 [Magic At. Ground]
 dany terrestre
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ dany terrestre
 [Map name: %0]
 Nom del mapa: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ sense preparar
 Nombre d' equips
 [numlock]
 
+[objectives]
+
 [of which]
 dels quals
 [ok]
@@ -636,6 +642,8 @@ Papir
 Pausat
 [player name]
 Nom del jugador
+[player rating %0]
+
 [please wait]
 Esperi un moment
 [power]
@@ -646,6 +654,8 @@ Esperi un moment
 
 [Prestige]
 Prestigi
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Escola
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 buscant feina
@@ -840,6 +852,8 @@ element
 Bloqueja els globuls enemics
 [stonewall]
 Mur de pedra
+[submit rating]
+
 [svr hostname]
 Nom del servidor
 [swamp terrain]

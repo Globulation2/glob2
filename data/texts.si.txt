@@ -160,8 +160,6 @@ Stavbe
 Naboji
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Kampanja
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Naključni kazalec
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 tako enote kot stavbe
@@ -516,6 +516,8 @@ Nizka kakovost
 
 [Magic At. Ground]
 
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Nizka kakovost
 [Map name: %0]
 Ime mape: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ ni pripravljen
 Število ekip
 [numlock]
 
+[objectives]
+
 [of which]
 od katerih
 [ok]
@@ -636,6 +642,8 @@ Papirus
 Ustavljeno
 [player name]
 Ime igralca
+[player rating %0]
+
 [please wait]
 Prosim počakaj
 [power]
@@ -646,6 +654,8 @@ Prosim počakaj
 
 [Prestige]
 Ugled
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Izboljša stopnjo grajenja
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 iščejo službo
@@ -840,6 +852,8 @@ Kamenje
 Pasiven obrambni sistem
 [stonewall]
 Kamniti zid
+[submit rating]
+
 [svr hostname]
 Strežnikovo ime
 [swamp terrain]

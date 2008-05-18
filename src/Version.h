@@ -89,7 +89,7 @@
 // version 72 added pre-game option for map-discovery
 // version 73 moved the race variable from BaseTeam down to team to shrink the size of MapHeader
 // version 74 added unitsFailingRequirements to Building
-// version 75 added several things to Campaign
+// version 75 added description to Campaign, GameObjectives to Game, and removed campaignText from Game
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above

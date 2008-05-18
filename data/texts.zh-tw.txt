@@ -160,8 +160,6 @@ AIWarrush
 彈藥
 [campaign editor]
 戰役編輯器
-[campaign text]
-
 [campaign]
 戰役
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ AIWarrush
 [Damaged Map]
 傷患地圖
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 單位或建築物
@@ -516,6 +516,8 @@ zh-tw
 Air dmg.
 [Magic At. Ground]
 地面攻擊
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -524,6 +526,8 @@ Air dmg.
 地圖名稱: %0。
 [map name]
 名稱
+[map rated]
+
 [map script]
 
 [map size x]
@@ -590,6 +594,8 @@ Air dmg.
 隊伍數量
 [numlock]
 
+[objectives]
+
 [of which]
 他們是
 [ok]
@@ -636,6 +642,8 @@ Air dmg.
 暫停
 [player name]
 玩家名稱
+[player rating %0]
+
 [please wait]
 請稍等
 [power]
@@ -646,6 +654,8 @@ Air dmg.
 
 [Prestige]
 聲望
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Air dmg.
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 正在找尋工作
@@ -840,6 +852,8 @@ V: 持鍵以傳送訊息
 消極防禦
 [stonewall]
 石牆
+[submit rating]
+
 [svr hostname]
 伺服器主機名稱
 [swamp terrain]

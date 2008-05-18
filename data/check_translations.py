@@ -1,4 +1,4 @@
-changes={"" : ""}
+changes={"[campaign text]" : ""}
 
 
 def translation_check(filename, keys):
@@ -39,8 +39,9 @@ def translation_check(filename, keys):
             
     f=open(filename, "w")
     for t in new_texts:
-        f.write(t[1]+"\n")
-        f.write(t[2]+"\n")
+        if t[1] != "":
+            f.write(t[1]+"\n")
+            f.write(t[2]+"\n")
         
         
 
