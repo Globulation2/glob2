@@ -588,6 +588,8 @@ Nuovo
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
 [no key]
 nessun tasto
+[No Objectives]
+
 [no ressources growth areas]
 Area che non sviluppa risorse
 [No]

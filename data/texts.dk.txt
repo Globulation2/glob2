@@ -594,6 +594,8 @@ Ny
 Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 Ingen vækstområde
 [No]

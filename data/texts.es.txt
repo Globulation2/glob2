@@ -594,6 +594,8 @@ Nuevo
 Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en freenode, solamente  podrás hablar a través de YOG
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 
 [No]
