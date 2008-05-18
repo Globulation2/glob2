@@ -162,7 +162,7 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	mapsAvailableLabel = new Text(230, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[maps available]"));
 	nameEditor=new TextInput(420, 105, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", entry.getMapName());
 	nameEditorLabel = new Text(405, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map name]"));
-	descriptionEditor = new TextInput(420, 165, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, entry.getDescription().c_str());
+	descriptionEditor = new TextInput(420, 165, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", entry.getDescription().c_str());
 	descriptionEditorLabel = new Text(405, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map description]"));
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL);
