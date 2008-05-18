@@ -33,6 +33,7 @@ namespace GAGGUI
 	class TabScreen;
 	class Widget;
 	class List;
+	class ProgressBar;
 }
 
 class YOGClient;
@@ -70,7 +71,8 @@ private:
 	MapPreview* preview;
 	boost::shared_ptr<YOGClient> client;
 	YOGClientMapUploader uploader;
-	Text* uploadStatus;
+	Text* uploadStatusText;
+	ProgressBar* uploadStatus;
 	//! The textual informations about the selected map
 	Text *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
 	TextInput* mapName;
