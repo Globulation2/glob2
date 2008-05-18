@@ -267,6 +267,7 @@ def main():
     SConscript("libgag/SConscript")
     SConscript("libusl/SConscript")
     SConscript("maps/SConscript")
+    SConscript("natsort/SConscript")
     SConscript("scripts/SConscript")
     SConscript("scons/SConscript")
     SConscript("src/SConscript")

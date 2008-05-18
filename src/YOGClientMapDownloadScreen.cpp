@@ -31,6 +31,7 @@
 #include "NetMessage.h"
 #include "StringTable.h"
 #include "Toolkit.h"
+#include "TextSort.h"
 #include "YOGClient.h"
 #include "YOGClientMapDownloadScreen.h"
 #include "YOGClientMapUploadScreen.h"
@@ -78,6 +79,7 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	{
 		rating->add(i);
 	}
+	rating->setNth(4);
 	addWidget(rating);
 	mapRatedAlready = new Text(250, 65, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[map rated]"));
 	addWidget(mapRatedAlready);
@@ -240,7 +242,7 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		std::string textTemp;
 		textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 		mapInfo->setText(textTemp);
-		textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+		textTemp = FormatableString("%0 x %1").arg(info.getWidth()).arg(info.getHeight());
 		mapSize->setText(textTemp);
 		mapAuthor->setText(info.getAuthorName());
 		if(info.getNumberOfRatings() > 5)
@@ -339,7 +341,7 @@ bool MapListSorter::operator()(const YOGDownloadableMapInfo& lhs, const YOGDownl
 {
 	if(sortMethod == Name)
 	{
-		return lhs.getMapHeader().getMapName() < rhs.getMapHeader().getMapName();
+		return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
 	}
 	else if(sortMethod == Size)
 	{
@@ -353,7 +355,7 @@ bool MapListSorter::operator()(const YOGDownloadableMapInfo& lhs, const YOGDownl
 		{
 			if(lw == rw)
 			{
-				return lhs.getMapHeader().getMapName() < rhs.getMapHeader().getMapName();
+				return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
 			}
 			else
 			{

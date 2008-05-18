@@ -24,6 +24,7 @@ Kevin Clement <donkjunk at softhome dot net> (improved settings menu & bugfixes)
 Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (Perlin-noise based map generation)
 Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
 Martin Voelkle <marv at chaoides dot org> (GUI, bugfixes and more)
+Martin Pool <mbp sourcefrog net> (natsort)
 
 *
 Graphics
