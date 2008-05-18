@@ -27,6 +27,7 @@
 #include "GUITabScreen.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
+#include <GUIProgressBar.h>
 #include "MapHeader.h"
 #include "StringTable.h"
 #include "Toolkit.h"
@@ -60,8 +61,12 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> 
 	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.username, false, 255);
 	addWidget(authorName);
 	
-	uploadStatus=new Text(248, 60+300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "", 180);
+	//uploadStatus=new Text(248, 60+300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "", 180);
+	uploadStatus = new ProgressBar(20, 300, 600, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
+	uploadStatus->visible = false;
 	addWidget(uploadStatus);
+	uploadStatusText = new Text(0, 300, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", ""); 
+	addWidget(uploadStatusText);
 	
 	// update map name & info
 	preview->setMapThumbnail(mapFile.c_str());
@@ -122,6 +127,7 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		endExecute(CONNECTIONLOST);
 	}
 	
+	uploadStatus->visible = false;
 	if(isUploading)
 	{
 		if(uploader.getUploadingState() == YOGClientMapUploader::Nothing)
@@ -138,7 +144,7 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::WaitingForUploadReply)
 		{
-			uploadStatus->setText(FormatableString(Toolkit::getStringTable()->getString("[Map Upload: Waiting for reply]")));
+			uploadStatusText->setText(FormatableString(Toolkit::getStringTable()->getString("[Map Upload: Waiting for reply]")));
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::Finished)
 		{
@@ -146,7 +152,10 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		}
 		else
 		{
-			uploadStatus->setText(FormatableString(Toolkit::getStringTable()->getString("[%0% Uploaded]")).arg(uploader.getPercentUploaded()));
+			uploadStatus->visible = true;
+			uploadStatus->setValue(uploader.getPercentUploaded());
+			uploadStatusText->setText("");
+			//uploadStatus->setText(FormatableString(Toolkit::getStringTable()->getString("[%0% Uploaded]")).arg(uploader.getPercentUploaded()));
 		}
 	}
 }
