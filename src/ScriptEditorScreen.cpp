@@ -33,6 +33,7 @@ using namespace GAGCore;
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUIButton.h>
+#include <GUITextInput.h>
 using namespace GAGGUI;
 
 #include <algorithm>
@@ -62,8 +63,25 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	
 	addWidget(new TextButton(10, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map script]"), TAB_SCRIPT));
 	addWidget(new TextButton(130, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[campaign text]"), TAB_CAMPAIGN_TEXT));
+	addWidget(new TextButton(250, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[objectives]"), TAB_OBJECTIVES));
 	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[map script]"));
 	addWidget(mode);
+	
+	for(int i=0; i<8; ++i)
+	{
+		objectives[i] = new TextInput(10, 38 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		if(i < game->objectives.getNumberOfObjectives())
+		{
+			objectives[i] = new TextInput(10, 38 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", game->objectives.getGameObjectiveText(i));
+		}
+		else
+		{
+			objectives[i] = new TextInput(10, 38 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		
+		}
+		objectives[i]->visible=false;
+		addWidget(objectives[i]);
+	}
 	
 	// important, widgets must be initialised by hand as we use custom event loop
 	dispatchInit();
@@ -101,6 +119,27 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 				endValue=par1;
 			}
 			game->campaignText = campaignTextEditor->getText();
+			
+			int n=0;
+			for(int i=0; i<8; ++i)
+			{
+				if(objectives[i]->getText() != "")
+				{
+					if(n >= game->objectives.getNumberOfObjectives())
+					{
+						game->objectives.addNewObjective(objectives[i]->getText(), false, false);
+					}
+					else
+					{
+						game->objectives.setGameObjectiveText(i, objectives[i]->getText());
+					}
+					n+=1;
+				}
+			}
+			while(game->objectives.getNumberOfObjectives() > n)
+			{
+				game->objectives.removeObjective(game->objectives.getNumberOfObjectives()-1);
+			}
 		}
 		else if (par1 == CANCEL)
 		{
@@ -127,20 +166,67 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		else if (par1 == TAB_SCRIPT)
 		{
 			scriptEditor->visible = true;
-			campaignTextEditor->visible = false;
 			compileButton->visible = true;
 			loadButton->visible = true;
 			saveButton->visible = true;
+			
+			campaignTextEditor->visible = false;
+
+			for(int i=0; i<8; ++i)
+			{
+				objectives[i]->visible = false;
+			}
+			
 			mode->setText(Toolkit::getStringTable()->getString("[map script]"));
 		}
 		else if (par1 == TAB_CAMPAIGN_TEXT)
 		{
 			scriptEditor->visible = false;
-			campaignTextEditor->visible = true;
 			compileButton->visible = false;
 			loadButton->visible = false;
 			saveButton->visible = false;
+			
+			campaignTextEditor->visible = true;
+
+			for(int i=0; i<8; ++i)
+			{
+				objectives[i]->visible = false;
+			}
+			
 			mode->setText(Toolkit::getStringTable()->getString("[campaign text]"));
+		}
+		else if (par1 == TAB_OBJECTIVES)
+		{
+			scriptEditor->visible = false;
+			compileButton->visible = false;
+			loadButton->visible = false;
+			saveButton->visible = false;
+			
+			campaignTextEditor->visible = false;
+
+			for(int i=0; i<8; ++i)
+			{
+				objectives[i]->visible = true;
+			}
+			
+			mode->setText(Toolkit::getStringTable()->getString("[objectives]"));
+		}
+	}
+	else if(action == TEXT_ACTIVATED)
+	{
+		bool found = false;
+		for(int i=0; i<8; ++i)
+		{
+			if(source == objectives[i])
+				found = true;
+		}
+		if(found)
+		{
+			for(int i=0; i<8; ++i)
+			{
+				if(source != objectives[i])
+					objectives[i]->deactivate();
+			}
 		}
 	}
 }

@@ -42,8 +42,9 @@ public:
 		SAVE_GAME = 1,
 		OPTIONS = 2,
 		ALLIANCES = 3,
-		RETURN_GAME = 4,
-		QUIT_GAME = 5
+		OBJECTIVES = 4,
+		RETURN_GAME = 5,
+		QUIT_GAME = 6
 	};
 public:
 	InGameMainScreen(bool showAlliance);
@@ -123,6 +124,19 @@ public:
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	~InGameOptionScreen();
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+};
+
+class InGameObjectivesScreen:public OverlayScreen
+{
+public:
+	enum
+	{
+		OK = 1,
+	};
+public:
+	InGameObjectivesScreen(GameGUI* gui);
+	virtual ~InGameObjectivesScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
 

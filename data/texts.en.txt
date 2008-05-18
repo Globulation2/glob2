@@ -24,6 +24,8 @@ Add map
 Description
 [add shortcut]
 Add Shortcut
+[objectives]
+Objectives
 [submit rating]
 Submit Rating
 [player rating %0]
@@ -52,6 +54,8 @@ Toubib
 Warrush
 [Alga]
 Algae
+[Defeat Your Oppenents]
+Defeat Your Oppenents
 [algae]
 algae
 [alliances]

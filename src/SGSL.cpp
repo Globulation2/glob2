@@ -250,18 +250,64 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 	}
 }
 
-void Story::toto()
+void Story::toto(GameGUI* gui)
 {
 	std::cout << "toto func : ";
 	std::cout << Token::getNameByType(line[++lineSelector].type) << " ";
 	std::cout << line[++lineSelector].value << "\n";
 }
 
+
+
+void Story::objectiveHidden(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	if(gui->game.objectives.getNumberOfObjectives() > n)
+		gui->game.objectives.setObjectiveHidden(n);
+}
+
+
+
+void Story::objectiveVisible(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	if(gui->game.objectives.getNumberOfObjectives() > n)
+		gui->game.objectives.setObjectiveVisible(n);
+}
+
+
+
+void Story::objectiveComplete(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	if(gui->game.objectives.getNumberOfObjectives() > n)
+		gui->game.objectives.setObjectiveComplete(n);
+}
+
+
 static const FunctionArgumentDescription totoDescription[] = {
 	{ Token::S_WIN, Token::S_LOOSE },
 	{ Token::INT, Token::INT },
 	{ -1, -1}
 };
+
+static const FunctionArgumentDescription objectiveCompleteDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription objectiveHiddenDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+
+static const FunctionArgumentDescription objectiveVisibleDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+
 
 //main step-by-step machine
 bool Story::testCondition(GameGUI *gui)
@@ -280,7 +326,7 @@ bool Story::testCondition(GameGUI *gui)
 			{
 				Functions::const_iterator fIt = mapscript->functions.find(line[lineSelector].msg);
 				assert(fIt != mapscript->functions.end());
-				(this->*(fIt->second.second))();
+				(this->*(fIt->second.second))(gui);
 				return true;
 			}
 			
@@ -1033,6 +1079,9 @@ int StringAquisition::ungetChar(char c)
 Mapscript::Mapscript()
 {
 	functions["toto"] = std::make_pair(totoDescription, &Story::toto);
+	functions["objectiveHidden"] = std::make_pair(objectiveHiddenDescription, &Story::objectiveHidden);
+	functions["objectiveVisible"] = std::make_pair(objectiveVisibleDescription, &Story::objectiveVisible);
+	functions["objectiveComplete"] = std::make_pair(objectiveCompleteDescription, &Story::objectiveComplete);
 }
 
 Mapscript::~Mapscript(void)

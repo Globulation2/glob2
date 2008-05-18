@@ -909,6 +909,11 @@ bool Game::load(GAGCore::InputStream *stream)
 	// default prestige calculation
 	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
 
+	if(mapHeader.getVersionMinor() >= 75)
+	{
+		objectives.decodeData(stream, mapHeader.getVersionMinor());
+	}
+	
 	stream->readLeaveSection();
 	
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
@@ -1034,6 +1039,9 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	
 	///Save the campaign text
 	stream->writeText(campaignText, "campaignText");
+
+	///Save game objectives
+	objectives.encodeData(stream);
 
 	Uint8 sha1[20];
 	for(int i=0; i<20; ++i)
