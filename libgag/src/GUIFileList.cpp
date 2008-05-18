@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <iostream>
 #include <Toolkit.h>
+#include "TextSort.h"
 
 using namespace GAGCore;
 
@@ -177,7 +178,7 @@ namespace GAGGUI
 		{
 			bool xIsNotDir = (x[x.length()-1] != DIR_SEPARATOR);
 			bool yIsNotDir = (y[y.length()-1] != DIR_SEPARATOR);
-			return ((xIsNotDir == yIsNotDir)?(x<y):xIsNotDir<yIsNotDir);
+			return ((xIsNotDir == yIsNotDir)?(naturalStringSort(x,y)):xIsNotDir<yIsNotDir);
 		}
 	};
 	
