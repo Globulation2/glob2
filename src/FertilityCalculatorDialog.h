@@ -26,6 +26,7 @@ class Map;
 namespace GAGGUI
 {
 	class Text;
+	class ProgressBar;
 }
 namespace GAGCore
 {
@@ -50,6 +51,7 @@ private:
 	GAGCore::GraphicContext *parentCtx;
 	
 	GAGGUI::Text* percentDone;
+	GAGGUI::ProgressBar* progress;
 	
 	FertilityCalculatorThread thread;
 	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;

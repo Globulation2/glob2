@@ -16,16 +16,16 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+
 #include "FertilityCalculatorDialog.h"
-#include "Toolkit.h"
-#include "StringTable.h"
-
-#include "Map.h"
-#include "GUIText.h"
 #include "FertilityCalculatorThreadMessage.h"
-
-#include <sstream>
+#include "GUIProgressBar.h"
+#include "GUIText.h"
 #include <iomanip>
+#include "Map.h"
+#include <sstream>
+#include "StringTable.h"
+#include "Toolkit.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
@@ -36,7 +36,9 @@ FertilityCalculatorDialog::FertilityCalculatorDialog(GraphicContext *parentCtx, 
 {
 		addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Computing Fertility]")));
 		percentDone = new Text(0, 40, ALIGN_FILL, ALIGN_LEFT, "menu");
+		progress = new ProgressBar(0, 70, 0, ALIGN_FILL, ALIGN_TOP, 1000);
 		addWidget(percentDone);
+		addWidget(progress);
 		dispatchInit();
 }
 
@@ -119,6 +121,7 @@ void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 					std::stringstream s;
 					s<<std::setprecision(3)<<(info->getPercent() * 100.0)<<"%"<<std::endl;
 					percentDone->setText(s.str());
+					progress->setValue((int)(info->getPercent()*1000.0));
 			}
 			break;
 			case FCTMFertilityCompleted:
