@@ -38,7 +38,6 @@
 #include "Utilities.h"
 #include "YOGClientLobbyScreen.h"
 #include "SoundMixer.h"
-#include "CampaignScreen.h"
 #include "Player.h"
 #include "AIEcho.h"
 
@@ -560,17 +559,6 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 {
 	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData))
 		return EE_CANT_LOAD_MAP;
-
-	// if this has campaign text information, show a screen for it.
-	if (gui.game.campaignText.length() > 0)
-	{
-		CampaignScreen campaignScreen(gui.game.campaignText);
-		int retVal = campaignScreen.execute(globalContainer->gfx, 40);
-		if (retVal == 1)
-			return EE_CANCEL;
-		else if(retVal == -1)
-			return -1;
-	}
 	
 	// We remove uncontrolled stuff from map
 	gui.game.clearingUncontrolledTeams();

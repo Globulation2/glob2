@@ -160,8 +160,6 @@ Clădiri
 Gloanţe
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Campanie
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Lovire
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 din vecinătate
@@ -516,6 +516,8 @@ Calitate scăzută
 
 [Magic At. Ground]
 
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Calitate scăzută
 [Map name: %0]
 Hartă: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ nu-i gata
 numărul echipelor
 [numlock]
 
+[objectives]
+
 [of which]
 dintre care
 [ok]
@@ -636,6 +642,8 @@ Papirus
 Pauză
 [player name]
 Numele jucătorului
+[player rating %0]
+
 [please wait]
 Vă rugăm aşteptaţi
 [power]
@@ -646,6 +654,8 @@ Vă rugăm aşteptaţi
 
 [Prestige]
 Prestigiu
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Vă ameliorează
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 caută de lucru
@@ -840,6 +852,8 @@ Piatră
 Element pasiv de apărare
 [stonewall]
 Zid de piatră
+[submit rating]
+
 [svr hostname]
 Numele servărului gazdă
 [swamp terrain]

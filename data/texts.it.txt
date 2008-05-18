@@ -160,8 +160,6 @@ Costruzioni
 Proiettili
 [campaign editor]
 Editore di campagne
-[campaign text]
-testo della campagna
 [campaign]
 Campagna
 [Can't connect, can't find host]
@@ -248,6 +246,8 @@ Danno
 Mappa danneggiati
 [decrease units working]
 Diminuisci unità lavorative
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 attacco dei guerrieri
 [defencetower explanation]
@@ -510,6 +510,8 @@ Bassa qualità
 Danno aereo
 [Magic At. Ground]
 Danno a terra
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -518,6 +520,8 @@ Danno a terra
 Nome della mappa: %0.
 [map name]
 Nome
+[map rated]
+
 [map script]
 Script della mappa
 [map size x]
@@ -582,6 +586,8 @@ numero di giocatori: %0 (%1 IA)
 Numero di squadre
 [numlock]
 BLOC NUM
+[objectives]
+
 [of which]
 dei quali
 [ok]
@@ -628,6 +634,8 @@ pausa
 Pausa
 [player name]
 Nome del giocatore
+[player rating %0]
+
 [please wait]
 Aspetta un momento
 [power]
@@ -638,6 +646,8 @@ Premi spazio per continuare.
 
 [Prestige]
 Prestigio
+[Primary Objectives]
+
 [print screen]
 stamp
 [Prune]
@@ -722,6 +732,8 @@ Script per aree
 blocco scorrimento
 [scroll wheel enabled]
 rotella di scorrimento abilitata
+[Secondary Objectives]
+
 [seeking a job]
 cercano lavoro
 [seeking]
@@ -832,6 +844,8 @@ passiva
 Elemento di difesa
 [stonewall]
 Muro di pietra
+[submit rating]
+
 [svr hostname]
 Nome del server
 [swamp terrain]

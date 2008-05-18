@@ -160,8 +160,6 @@ Bygninger
 Kugler
 [campaign editor]
 Kampagne redigator
-[campaign text]
-
 [campaign]
 Kampagne
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Skade
 [Damaged Map]
 Skade-kort
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 enheder eller bygninger
@@ -516,6 +516,8 @@ Lav kvalitet
 Luft skade.
 [Magic At. Ground]
 Jord skade.
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -524,6 +526,8 @@ Jord skade.
 Kort navn: %0.
 [map name]
 Navn
+[map rated]
+
 [map script]
 
 [map size x]
@@ -590,6 +594,8 @@ ikke klar
 antal af hold
 [numlock]
 
+[objectives]
+
 [of which]
 hvilke af
 [ok]
@@ -636,6 +642,8 @@ Pause spillet
 Pause
 [player name]
 Spillernavn
+[player rating %0]
+
 [please wait]
 Vent venligst
 [power]
@@ -646,6 +654,8 @@ Tryk på mellemrum for at fortsætte
 
 [Prestige]
 Prestige
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Script Områder
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 leder efter et job
@@ -840,6 +852,8 @@ element
 Passivt forsvarselement
 [stonewall]
 Stenvæg
+[submit rating]
+
 [svr hostname]
 Serverens maskinnavn
 [swamp terrain]

@@ -160,8 +160,6 @@ Budowle
 Amunicja
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Kampania
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Uszkodzenia
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 jednostki i budynki
@@ -516,6 +516,8 @@ Niska jakość
 
 [Magic At. Ground]
 
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Niska jakość
 [Map name: %0]
 Nazwa mapy: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ nie gotowy
 Ilość drużyn
 [numlock]
 
+[objectives]
+
 [of which]
 z czego
 [ok]
@@ -636,6 +642,8 @@ Papyrus
 Pauza
 [player name]
 Nazwa Gracza
+[player rating %0]
+
 [please wait]
 Proszę czekaj
 [power]
@@ -646,6 +654,8 @@ Proszę czekaj
 
 [Prestige]
 Prestiż
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Szkoła
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 szuka pracy
@@ -840,6 +852,8 @@ obronny
 Pasywny element
 [stonewall]
 Mur kamienny
+[submit rating]
+
 [svr hostname]
 Nazwa hosta
 [swamp terrain]

@@ -386,24 +386,52 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 
 
 InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui)
-:OverlayScreen(globalContainer->gfx, 320, 300)
+:OverlayScreen(globalContainer->gfx, 320, 340)
 {
+	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[objectives]")));
+	addWidget(new Text(10, 40, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Primary Objectives]")));
+	
 	int n=0;
 	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
 	{
-		if(gui->game.objectives.isObjectiveVisible(i))
+		if(gui->game.objectives.isObjectiveVisible(i) && gui->game.objectives.getObjectiveType(i) == GameObjectives::Primary)
 		{
-			addWidget(new Text(40, 50 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString(gui->game.objectives.getGameObjectiveText(i).c_str())));
-			OnOffButton* b = new OnOffButton(10, 50 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
+			addWidget(new Text(50, 70 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString(gui->game.objectives.getGameObjectiveText(i).c_str())));
+			OnOffButton* b = new OnOffButton(20, 70 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
 			b->setClickable(false);
 			addWidget(b);
 			n+=1;
 		}
 	}
 	
+	bool isSecondary = false;
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getObjectiveType(i) == GameObjectives::Secondary)
+		{
+			isSecondary = true;
+			break;
+		}
+	}
+	
+	if(isSecondary)
+	{
+		addWidget(new Text(10, 70 + 30*n, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Secondary Objectives]")));
+		for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+		{
+			if(gui->game.objectives.isObjectiveVisible(i) && gui->game.objectives.getObjectiveType(i) == GameObjectives::Secondary)
+			{
+				addWidget(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString(gui->game.objectives.getGameObjectiveText(i).c_str())));
+				OnOffButton* b = new OnOffButton(20, 100 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
+				b->setClickable(false);
+				addWidget(b);
+				n+=1;
+			}
+		}
+	}
+	
 	// add ok button
-	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[objectives]")));
+	addWidget(new TextButton(0, 290, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();
 }
 

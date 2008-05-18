@@ -160,8 +160,6 @@ Prédios
 Balas
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Campanha
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Danho
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 inimigos na cercania
@@ -516,6 +516,8 @@ Calidade baixa
 At. aéreo
 [Magic At. Ground]
 At. terrestre
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ At. terrestre
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ não pronto
 Número de bandos
 [numlock]
 
+[objectives]
+
 [of which]
 dos quais há
 [ok]
@@ -636,6 +642,8 @@ Papiro
 Pausa
 [player name]
 Nome do jogador
+[player rating %0]
+
 [please wait]
 Espere por favor
 [power]
@@ -646,6 +654,8 @@ Pressione espaço para continuar.
 
 [Prestige]
 Prestigio
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Escola
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 procurando trabalho
@@ -840,6 +852,8 @@ passivo
 Elemento de defesa
 [stonewall]
 Muro de pedra
+[submit rating]
+
 [svr hostname]
 Nome do servidor
 [swamp terrain]

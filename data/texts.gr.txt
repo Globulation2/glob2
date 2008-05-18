@@ -160,8 +160,6 @@ backspace
 Σφαίρες
 [campaign editor]
 Επεξεραστής Εκστραστείας
-[campaign text]
-
 [campaign]
 Εκστρατεία
 [Can't connect, can't find host]
@@ -254,6 +252,8 @@ Crater Lakes
 Κατεστραμένος Χάρτης
 [decrease units working]
 Μείωση Εργαζόμενων Μονάδων
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 μονάδες ή κτίρια
 [defencetower explanation]
@@ -518,6 +518,8 @@ Anastasios M. Pingios
 Εναέρια dmg.
 [Magic At. Ground]
 Επίγεια dmg.
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -526,6 +528,8 @@ Anastasios M. Pingios
 Όνομα χάρτη: %0.
 [map name]
 Όνομα
+[map rated]
+
 [map script]
 
 [map size x]
@@ -592,6 +596,8 @@ Anastasios M. Pingios
 αριθμός των ομάδων
 [numlock]
 numlock
+[objectives]
+
 [of which]
 υπάρχουν
 [ok]
@@ -638,6 +644,8 @@ page up
 Σταματημένο
 [player name]
 Όνομα παίκτη
+[player rating %0]
+
 [please wait]
 Παρακαλώ περιμένετε
 [power]
@@ -648,6 +656,8 @@ page up
 
 [Prestige]
 Κύρος
+[Primary Objectives]
+
 [print screen]
 print screen
 [Prune]
@@ -732,6 +742,8 @@ enter
 scroll lock
 [scroll wheel enabled]
 Scroll Wheel Ενεργοποιημένο
+[Secondary Objectives]
+
 [seeking a job]
 ψάχνοντας για εργασία
 [seeking]
@@ -842,6 +854,8 @@ V: κρατήστε για να μιλίσετε
 Παθητική άμυνα
 [stonewall]
 Πέτρινο Τείχος
+[submit rating]
+
 [svr hostname]
 Όνομα εξυπηρετητή
 [swamp terrain]

@@ -36,11 +36,17 @@ class GameObjectives
 {
 public:
 	GameObjectives();
+	
+	enum GameObjectiveType
+	{
+		Primary,
+		Secondary,
+	};
 
 	///This gets the number of objectives there are
 	int getNumberOfObjectives();
 	///This adds a new objective
-	void addNewObjective(const std::string& objective, bool hidden, bool complete);
+	void addNewObjective(const std::string& objective, bool hidden, bool complete, GameObjectiveType type, int scriptNumber);
 	///This removes the given objective
 	void removeObjective(int n);
 
@@ -63,6 +69,16 @@ public:
 	void setObjectiveIncomplete(int n);
 	///This returns true if the given objective is complete
 	bool isObjectiveComplete(int n);
+	
+	///This sets the given objective type
+	void setObjectiveType(int n, GameObjectiveType type);
+	///This returns the given objective type
+	GameObjectiveType getObjectiveType(int n);
+	
+	///This sets the script number, which is how scripts will reference the given object
+	void setScriptNumber(int n, int scriptNumber);
+	///This returns the script number, which is how scripts will reference the given object
+	int getScriptNumber(int n);
 
 	///Encodes this GameObjectives into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -72,6 +88,8 @@ private:
 	std::vector<std::string> texts;
 	std::vector<bool> hidden;
 	std::vector<bool> completed;
+	std::vector<GameObjectiveType> types;
+	std::vector<int> scriptNumbers;
 };
 
 #endif

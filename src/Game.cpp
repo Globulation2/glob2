@@ -904,7 +904,8 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 	
 	///Load the campaign text for the game.
-	campaignText = stream->readText("campaignText");
+	if(versionMinor < 75)
+		stream->readText("campaignText");
 	
 	// default prestige calculation
 	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
@@ -1036,9 +1037,6 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 
 	///Save the map script state
 	script.save(stream, this);
-	
-	///Save the campaign text
-	stream->writeText(campaignText, "campaignText");
 
 	///Save game objectives
 	objectives.encodeData(stream);
