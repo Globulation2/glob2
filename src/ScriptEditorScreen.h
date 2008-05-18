@@ -26,6 +26,7 @@ namespace GAGGUI
 	class TextArea;
 	class Text;
 	class TextButton;
+	class TextInput;
 }
 using namespace GAGGUI;
 class Game;
@@ -42,7 +43,8 @@ public:
 		LOAD,
 		SAVE,
 		TAB_SCRIPT = 10,
-		TAB_CAMPAIGN_TEXT
+		TAB_CAMPAIGN_TEXT, 
+		TAB_OBJECTIVES,
 	};
 	
 protected:
@@ -55,6 +57,7 @@ protected:
 	TextButton *compileButton;
 	TextButton *loadButton;
 	TextButton *saveButton;
+	TextInput *objectives[16];
 	
 protected:
 	bool testCompile(void);
