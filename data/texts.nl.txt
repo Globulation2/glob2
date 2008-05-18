@@ -24,22 +24,38 @@ Toevoegen
 
 [Add]
 
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 Castor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 Geen AI
+[AINumbi-Description]
+
 [AINumbi]
 Numbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 Toubib
+[AIWarrush-Description]
+
 [AIWarrush]
 Warrush
 [Alga]
@@ -520,6 +536,8 @@ Grondschade
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -820,6 +838,12 @@ V-toets: ingedrukt houden om te spreken
 Uiterlijk
 [smoothing]
 Egalisering
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]

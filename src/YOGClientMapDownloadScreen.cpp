@@ -84,7 +84,15 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	submitRating->visible=false;
 	rating->visible=false;
 	mapRatedAlready->visible=false;
-
+	
+	sortMethodLabel = new Text(250, 120, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Sort By]"));
+	addWidget(sortMethodLabel);
+	sortMethod = new MultiTextButton(250, 140, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "", SORTMETHOD);
+	addWidget(sortMethod);
+	sortMethod->clearTexts();
+	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by name]"));
+	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by size]"));
+	sortMethod->setIndex(0);
 	
 	validMapSelected=false;
 	client->getDownloadableMapList()->addListener(this);
@@ -157,6 +165,10 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 			client->getDownloadableMapList()->submitRating(mapList->get(), rating->get());
 			client->getRatedMapList()->addRatedMap(mapList->get());
 		}
+		else if (par1==SORTMETHOD)
+		{
+			mapListUpdated();
+		}
 	}
 	if(action == LIST_ELEMENT_SELECTED)
 	{
@@ -179,12 +191,16 @@ void YOGClientMapDownloadScreen::onActivated()
 
 void YOGClientMapDownloadScreen::mapListUpdated()
 {
+	int n = mapList->getSelectionIndex();
 	mapList->clear();
-	std::vector<YOGDownloadableMapInfo>& maps = client->getDownloadableMapList()->getDownloadableMapList();
+	std::vector<YOGDownloadableMapInfo> maps = client->getDownloadableMapList()->getDownloadableMapList();
+	std::sort(maps.begin(), maps.end(), MapListSorter(static_cast<MapListSorter::SortMethod>(sortMethod->getIndex())));
 	for(int i=0; i<maps.size(); ++i)
 	{
 		mapList->addText(maps[i].getMapHeader().getMapName());
 	}
+	mapList->setSelectionIndex(std::min((int)(maps.size())-1, n));
+	updateMapInfo();
 }
 
 
@@ -309,3 +325,44 @@ void YOGClientMapDownloadScreen::updateMapPreview()
 	}
 }
 
+
+
+MapListSorter::MapListSorter(SortMethod sortMethod)
+	: sortMethod(sortMethod)
+{
+
+}
+
+
+
+bool MapListSorter::operator()(const YOGDownloadableMapInfo& lhs, const YOGDownloadableMapInfo& rhs)
+{
+	if(sortMethod == Name)
+	{
+		return lhs.getMapHeader().getMapName() < rhs.getMapHeader().getMapName();
+	}
+	else if(sortMethod == Size)
+	{
+		int lw = lhs.getWidth();
+		int lh = lhs.getHeight();
+		int rw = rhs.getWidth();
+		int rh = rhs.getHeight();
+		
+		
+		if((lw * lh) == (rw * rh))
+		{
+			if(lw == rw)
+			{
+				return lhs.getMapHeader().getMapName() < rhs.getMapHeader().getMapName();
+			}
+			else
+			{
+				return lw > rw;
+			}
+		}
+		else
+		{
+			return (lw*lh) > (rw * rh);
+		}
+	}
+}

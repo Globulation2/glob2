@@ -24,22 +24,38 @@ V : Mostra la visio de totes les construccions
 
 [Add]
 
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 IA
+[AICastor-Description]
+
 [AICastor]
 IACastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 IANone
+[AINumbi-Description]
+
 [AINumbi]
 IANumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -520,6 +536,8 @@ dany terrestre
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -820,6 +838,12 @@ key v : Presiona per parlar
 
 [smoothing]
 Pla
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]

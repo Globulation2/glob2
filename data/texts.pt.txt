@@ -24,22 +24,38 @@ V: Mostrar todos os prédios
 
 [Add]
 
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 IA
+[AICastor-Description]
+
 [AICastor]
 IACastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 IANone
+[AINumbi-Description]
+
 [AINumbi]
 IANumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
+
+[AIToubib-Description]
 
 [AIToubib]
 IAToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 IAWarrush
 [Alga]
@@ -520,6 +536,8 @@ At. terrestre
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -820,6 +838,12 @@ V: Pedir a palavra
 
 [smoothing]
 Alisado
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]

@@ -24,22 +24,38 @@ O unitate %0 a trecut de partea voastră
 
 [Add]
 
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 IA
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar (unstable)
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -520,6 +536,8 @@ Calitate scăzută
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -820,6 +838,12 @@ Setări
 
 [smoothing]
 Lisaj
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]

@@ -768,6 +768,12 @@ Show Main Menu
 Display
 [smoothing]
 Smoothing
+[sort by name]
+Name
+[sort by size]
+Size
+[Sort By]
+Sort By
 [space]
 space
 [start mission]

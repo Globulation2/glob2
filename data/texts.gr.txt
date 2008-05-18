@@ -24,22 +24,38 @@ V: Εμφάνιση όρασης για όλα τα κτίρια
 Προσθήκη Συντόμευσης
 [Add]
 
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ΦτάσεΣτοΆπειρο
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -522,6 +538,8 @@ Anastasios M. Pingios
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -822,6 +840,12 @@ V: κρατήστε για να μιλίσετε
 Εμφάνιση
 [smoothing]
 Πιο ομαλό
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 κενό
 [start mission]

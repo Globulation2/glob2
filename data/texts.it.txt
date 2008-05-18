@@ -24,22 +24,38 @@ aggiungi mappa
 aggiungi scorciatoia da tastiera
 [Add]
 
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 ia
+[AICastor-Description]
+
 [AICastor]
 IACastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 NienteIA
+[AINumbi-Description]
+
 [AINumbi]
 IANumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 IAToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 IAWarrush
 [Alga]
@@ -514,6 +530,8 @@ Danno a terra
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -812,6 +830,12 @@ mostra menù principale
 Mostra
 [smoothing]
 Spianatura
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 Spazio
 [start mission]

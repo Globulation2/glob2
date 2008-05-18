@@ -24,22 +24,38 @@ V: Ukáž, čo vidia budovy
 
 [Add]
 
+[AI Descriptions]
+
 [AI]
 UI
 [ai]
 UI
+[AICastor-Description]
+
 [AICastor]
 UICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 UINone
+[AINumbi-Description]
+
 [AINumbi]
 UINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 UIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 UIWarrush
 [Alga]
@@ -520,6 +536,8 @@ Zem
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -820,6 +838,12 @@ V: Drž a rozprávaj
 Povrch
 [smoothing]
 Vyhľadenie
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
