@@ -1,8 +1,5 @@
 /*
-  Copyright (C) 2008 Bradley Arsenault
-
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  Copyright (C) 2008 Bradley Arenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,10 +16,38 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "AI.h"
+#ifndef AIDescriptionScreen_h
+#define AIDescriptionScreen_h
 
-namespace AINames
+#include "Glob2Screen.h"
+
+namespace GAGGUI
 {
-	std::string getAIText(int id);
-	std::string getAIDescription(int id);
-}
+	class TextButton;
+	class TextArea;
+	class List;
+	class Text;
+};
+
+///This screen shows descriptions for the various types of AI
+class AIDescriptionScreen : public Glob2Screen
+{
+public:
+	///This shows descriptions for the various types of AI
+	AIDescriptionScreen();
+	
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+
+	enum
+	{
+		OK,
+	};	
+
+private:
+	TextButton* ok;
+	TextArea *description;
+	List *ailist;
+	Text *title;
+};
+
+#endif

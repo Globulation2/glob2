@@ -59,4 +59,37 @@ namespace AINames
 		}
 		return "";
 	}
+	
+	std::string getAIDescription(int id)
+	{
+		if(id == AI::NONE)
+		{
+			return Toolkit::getStringTable()->getString("[AINone-Description]");
+		}
+		else if(id == AI::NUMBI)
+		{
+			return Toolkit::getStringTable()->getString("[AINumbi-Description]");
+		}
+		else if(id == AI::CASTOR)
+		{
+			return Toolkit::getStringTable()->getString("[AICastor-Description]");
+		}
+		else if(id == AI::WARRUSH)
+		{
+			return Toolkit::getStringTable()->getString("[AIWarrush-Description]");
+		}
+		else if(id == AI::REACHTOINFINITY)
+		{
+			return Toolkit::getStringTable()->getString("[AIReachToInfinity-Description]");
+		}
+		else if(id == AI::NICOWAR)
+		{
+			return Toolkit::getStringTable()->getString("[AINicowar-Description]");
+		}
+		else if(id == AI::TOUBIB)
+		{
+			return Toolkit::getStringTable()->getString("[AIToubib-Description]");
+		}
+		return "";
+	}
 }

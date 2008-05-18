@@ -1,4 +1,4 @@
-changes={"[campaign text]" : ""}
+changes={"" : ""}
 
 
 def translation_check(filename, keys):
