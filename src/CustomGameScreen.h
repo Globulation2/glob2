@@ -37,7 +37,7 @@ namespace GAGGUI
 class Glob2FileList;
 class MapPreview;
 
-const int NumberOfPlayerSelectors=14;
+const int NumberOfPlayerSelectors=12;
 
 //! This screen is used to setup a custom game. AI can be set. Map choosing functionnalities are inherited from ChooseMapScreen
 class CustomGameScreen : public ChooseMapScreen
@@ -73,6 +73,8 @@ private:
 	MultiTextButton *aiSelector[NumberOfPlayerSelectors];
 	//! Text button that links to the custom game other settings screen
 	TextButton* otherOptions;
+	//! Text button that links to the ai descriptions
+	TextButton* aiDescriptions;
 
 };
 

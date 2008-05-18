@@ -31,6 +31,7 @@
 #include <FormatableString.h>
 #include "Player.h"
 #include "CustomGameOtherOptions.h"
+#include "AIDescriptionScreen.h"
 
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)
@@ -65,6 +66,9 @@ CustomGameScreen::CustomGameScreen() :
 	}
 	otherOptions = new TextButton(230, 420, 170, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Other Options]"), 0);
 	addWidget(otherOptions);
+	aiDescriptions = new TextButton(230, 370, 170, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI Descriptions]"), 0);
+	addWidget(aiDescriptions);
+	
 	otherOptions->visible=false;
 }
 
@@ -155,6 +159,15 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 		{
 			CustomGameOtherOptions settings(gameHeader, mapHeader);
 			int rc = settings.execute(globalContainer->gfx, 40);
+			if(rc == -1)
+				endExecute(-1);
+		}
+		if(source == aiDescriptions)
+		{
+			AIDescriptionScreen descriptions;
+			int rc = descriptions.execute(globalContainer->gfx, 40);
+			if(rc == -1)
+				endExecute(-1);
 		}
 	}
 }
