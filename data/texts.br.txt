@@ -24,22 +24,38 @@ Adicionar mapa
 Adicionar atalho
 [Add]
 
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 IA
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -522,6 +538,8 @@ Dano terrestre
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -822,6 +840,12 @@ Mostrar menu principal
 Exposição
 [smoothing]
 Alisar
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 barra de espaço
 [start mission]

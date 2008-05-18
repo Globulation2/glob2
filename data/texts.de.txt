@@ -24,22 +24,38 @@ Karte hinzufügen
 Shortcut hinzufügen
 [Add]
 
+[AI Descriptions]
+
 [AI]
 KI
 [ai]
 KI
+[AICastor-Description]
+
 [AICastor]
 Castor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 KINone
+[AINumbi-Description]
+
 [AINumbi]
 Numbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 Toubib
+[AIWarrush-Description]
+
 [AIWarrush]
 Warrush
 [Alga]
@@ -514,6 +530,8 @@ Kampfstärke/Boden
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -812,6 +830,12 @@ V: gedrückt halten, um zu sprechen
 Anzeige
 [smoothing]
 Glättung
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
