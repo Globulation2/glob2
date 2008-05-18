@@ -24,22 +24,38 @@ V: Показ поля зрения для всех зданий
 Доб. гор. клавишу
 [Add]
 
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -518,6 +534,8 @@ left
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -816,6 +834,12 @@ V: зажать для речевой связи
 Отображение
 [smoothing]
 Сглаживание
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 space
 [start mission]

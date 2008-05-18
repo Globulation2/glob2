@@ -74,6 +74,15 @@ public:
 	
 	///This sets the mapID that this downloadable map is obtained from
 	void setMapID(Uint16 mapID);
+	
+	///This returns the width of the map
+	Uint16 getWidth() const;
+	
+	///This returns the height of the map
+	Uint16 getHeight() const;
+	
+	///This sets the dimensions of the map
+	void setDimensions(Uint16 width, Uint16 height);
 
 	///Encodes this YOGGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -91,6 +100,8 @@ private:
 	std::string author;
 	Uint16 fileID;
 	Uint16 mapID;
+	Uint16 width;
+	Uint16 height;
 };
 
 #endif

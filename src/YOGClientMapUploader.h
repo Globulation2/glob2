@@ -37,7 +37,7 @@ public:
 	~YOGClientMapUploader();
 
 	///Starts uploading the given map, with the given name, with the given author name
-	void startUploading(const std::string& mapFile, const std::string& newMapName, const std::string& authorName);
+	void startUploading(const std::string& mapFile, const std::string& newMapName, const std::string& authorName, int w, int h);
 	
 	///If this uploader is uploading a map, this will cancel the upload
 	void cancelUpload();

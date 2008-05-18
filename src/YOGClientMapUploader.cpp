@@ -41,7 +41,7 @@ YOGClientMapUploader::~YOGClientMapUploader()
 
 
 
-void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std::string& newMapName, const std::string& authorName)
+void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std::string& newMapName, const std::string& authorName, int w, int h)
 {
 	mapFile = nmapFile;
 	Engine engine;
@@ -50,6 +50,7 @@ void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std
 	header.setMapName(newMapName);
 	info.setMapHeader(header);
 	info.setAuthorName(authorName);
+	info.setDimensions(w, h);
 	boost::shared_ptr<NetRequestMapUpload> message(new NetRequestMapUpload(info));
 	client->sendNetMessage(message);
 	state = WaitingForUploadReply;

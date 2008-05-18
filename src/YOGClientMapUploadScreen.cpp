@@ -96,7 +96,7 @@ void YOGClientMapUploadScreen::onAction(Widget *source, Action action, int par1,
 		{
 			if(!isUploading)
 			{
-				uploader.startUploading(mapFile.c_str(), mapName->getText(), authorName->getText());
+				uploader.startUploading(mapFile.c_str(), mapName->getText(), authorName->getText(), preview->getLastWidth(), preview->getLastHeight());
 				isUploading=true;
 			}
 		}

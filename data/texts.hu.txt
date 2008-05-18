@@ -24,22 +24,38 @@ Elfogtad az ellenség egységét %0
 
 [Add]
 
+[AI Descriptions]
+
 [AI]
 MI
 [ai]
 MI
+[AICastor-Description]
+
 [AICastor]
 MICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 MINone
+[AINumbi-Description]
+
 [AINumbi]
 MINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 MIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 MIWarrush
 [Alga]
@@ -520,6 +536,8 @@ Alacsony képminőség
 
 [Map Discovered]
 
+[Map download failure: lost connection]
+
 [Map fownload failure: lost connection]
 
 [Map name: %0]
@@ -820,6 +838,12 @@ Beállítások
 
 [smoothing]
 Simítás
+[sort by name]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]

@@ -31,10 +31,12 @@ namespace GAGGUI
 	class TabScreen;
 	class Widget;
 	class Number;
+	class MultiTextButton;
 }
 
 class YOGClient;
 class MapPreview;
+class YOGDownloadableMapInfo;
 
 using namespace GAGGUI;
 
@@ -58,6 +60,7 @@ public:
 		REFRESHMAPLIST,
 		DOWNLOADMAP,
 		SUBMITRATING,
+		SORTMETHOD,
 	};
 	
 	///Updates the list of maps
@@ -74,6 +77,7 @@ private:
 	void updateVisibility();
 	///This updates the map preview
 	void updateMapPreview();
+
 
 	boost::shared_ptr<YOGClient> client;
 	List* mapList;
@@ -95,12 +99,35 @@ private:
 	Number* rating;
 	//! A text displayed when you select a map you have already rated
 	Text* mapRatedAlready;
+	//! A label for the various kinds of sorting
+	Text* sortMethodLabel;
+	//! Allows the map list to be sorted in different ways
+	MultiTextButton* sortMethod;
 	
 	bool mapValid;
 	bool mapsRequested;
 	
 	//! True when the selected map is valid
 	bool validMapSelected;
+};
+
+///This class will sort a list of YOGDownloadableMapInfo
+class MapListSorter
+{
+public:
+	enum SortMethod
+	{
+		Name,
+		Size,
+	};
+	
+	///Creates the sorting functor with the given sort method
+	MapListSorter(SortMethod sortmethod);
+	
+	///Compares two downloadable map info
+	bool operator()(const YOGDownloadableMapInfo& lhs, const YOGDownloadableMapInfo& rhs);
+private:
+	SortMethod sortMethod;
 };
 
 #endif
