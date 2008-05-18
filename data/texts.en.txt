@@ -24,22 +24,38 @@ Add map
 Add Shortcut
 [Add]
 Add
+[AI Descriptions]
+AI Descriptions
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+Castor plays a conservative game and does very well on maps with few ressources. Medium Difficulty.
 [AICastor]
 Castor
+[AINicowar-Description]
+Nicowar plays aggressivly, grows large fast and throws huge armies at its opponents. Hard Difficulty.
 [AINicowar]
 Nicowar
+[AINone-Description]
+None - Doesn't do anything.
 [AINone]
 None
+[AINumbi-Description]
+Numbi - Expands lightly, and swiftly. Easy Difficulty.
 [AINumbi]
 Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity - Does not attack, but builds monstrous bases and aggressivly converts units. Easy Difficulty.
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+Toubib
 [AIToubib]
 Toubib
+[AIWarrush-Description]
+Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
 Warrush
 [Alga]
@@ -458,8 +474,6 @@ Description
 Map Discovered
 [Map download failure: lost connection]
 Map Download Failed: Connection to YOG lost
-[Map fownload failure: lost connection]
-
 [Map name: %0]
 Map name: %0.
 [map name]
