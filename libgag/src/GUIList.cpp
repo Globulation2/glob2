@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
+#include "TextSort.h"
 
 using namespace GAGCore;
 
@@ -328,7 +329,7 @@ namespace GAGGUI
 	
 	void List::sort(void)
 	{
-		std::sort(strings.begin(), strings.end());
+		std::sort(strings.begin(), strings.end(), GAGCore::naturalStringSort);
 	}
 	
 	void List::removeText(size_t pos)
