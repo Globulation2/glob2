@@ -20,20 +20,10 @@ mV: Show vision for Markets buildings (to exchange fruits)
 V: Show vision for all buildings
 [add map]
 Add map
-[map description]
-Description
 [add shortcut]
 Add Shortcut
-[objectives]
-Objectives
-[submit rating]
-Submit Rating
-[player rating %0]
-Player Rating: %0
 [Add]
 Add
-[map rated]
-Map Rated
 [AI]
 AI
 [ai]
@@ -54,8 +44,6 @@ Toubib
 Warrush
 [Alga]
 Algae
-[Defeat Your Oppenents]
-Defeat Your Oppenents
 [algae]
 algae
 [alliances]
@@ -124,8 +112,6 @@ Buildings
 Bullets
 [campaign editor]
 Campaign Editor
-[campaign text]
-Campaign Text
 [campaign]
 Campaign
 [Can't connect, can't find host]
@@ -212,6 +198,8 @@ Damage
 Damaged Map
 [decrease units working]
 Decrease Units Working
+[Defeat Your Oppenents]
+Defeat Your Oppenents
 [defencetower explanation 2]
 units or buildings
 [defencetower explanation]
@@ -464,6 +452,8 @@ Low quality
 Air dmg.
 [Magic At. Ground]
 Ground dmg.
+[map description]
+Description
 [Map Discovered]
 Map Discovered
 [Map download failure: lost connection]
@@ -474,6 +464,8 @@ Map Download Failed: Connection to YOG lost
 Map name: %0.
 [map name]
 Name
+[map rated]
+Map Rated
 [map script]
 Map Script
 [map size x]
@@ -536,6 +528,8 @@ not ready
 number of teams
 [numlock]
 numlock
+[objectives]
+Objectives
 [of which]
 there are
 [ok]
@@ -582,6 +576,8 @@ pause
 Paused
 [player name]
 Player name
+[player rating %0]
+Player Rating: %0
 [please wait]
 Please wait
 [power]
@@ -592,6 +588,8 @@ Press space to continue.
 Prestige Win Enabled
 [Prestige]
 Prestige
+[Primary Objectives]
+Primary
 [print screen]
 print screen
 [Prune]
@@ -676,6 +674,8 @@ Script Areas
 scroll lock
 [scroll wheel enabled]
 Scroll Wheel Enabled
+[Secondary Objectives]
+Secondary
 [seeking a job]
 seeking a job
 [seeking]
@@ -786,6 +786,8 @@ element
 Passive defense
 [stonewall]
 Stone Wall
+[submit rating]
+Submit Rating
 [svr hostname]
 Server hostname
 [swamp terrain]

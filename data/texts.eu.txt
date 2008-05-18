@@ -160,8 +160,6 @@ Eraikuntzak
 Balak
 [campaign editor]
 Kanpaina editorea
-[campaign text]
-
 [campaign]
 Kanpaina
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Kaltea
 [Damaged Map]
 Kalte mapa
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 unitateak edo eraikuntzak
@@ -516,6 +516,8 @@ Kalitate baxua
 Kaltea airean
 [Magic At. Ground]
 Kaltea lurrean
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -524,6 +526,8 @@ Kaltea lurrean
 Mapa izena: %0.
 [map name]
 Izena
+[map rated]
+
 [map script]
 
 [map size x]
@@ -590,6 +594,8 @@ itxaron...
 talde kopurua
 [numlock]
 
+[objectives]
+
 [of which]
 hauetatik
 [ok]
@@ -636,6 +642,8 @@ Gelditu partida
 Geldituta
 [player name]
 Jokalari izena
+[player rating %0]
+
 [please wait]
 Mesedez itxaron
 [power]
@@ -646,6 +654,8 @@ Zanpatu espazio barra jarraitzeko
 
 [Prestige]
 Izen ona
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Script Zonaldeak
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 lan bila
@@ -840,6 +852,8 @@ elementua
 Defentsa pasiboa
 [stonewall]
 Harrizko orma
+[submit rating]
+
 [svr hostname]
 Zerbitzari izena
 [swamp terrain]

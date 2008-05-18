@@ -102,7 +102,7 @@ private:
 	/// The label for nameEditor
 	Text *nameEditorLabel;
 	/// The text editor for the description
-	TextArea *descriptionEditor;
+	TextInput *descriptionEditor;
 	/// The label for the descriptionEditor
 	Text *descriptionEditorLabel;
 };

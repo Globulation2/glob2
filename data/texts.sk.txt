@@ -160,8 +160,6 @@ Budovy
 Nábojov:
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Kampaň
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Poškodenie
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 a budovy nepriateľa
@@ -516,6 +516,8 @@ Znížená kvalita
 Vzduch
 [Magic At. Ground]
 Zem
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Zem
 [Map name: %0]
 Názov mapy: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ Tímov: %0
 počet tímov
 [numlock]
 
+[objectives]
+
 [of which]
 z nich
 [ok]
@@ -636,6 +642,8 @@ Pozastaviť hru
 Zastavené
 [player name]
 Meno hráča
+[player rating %0]
+
 [please wait]
 Čakaj, prosím
 [power]
@@ -646,6 +654,8 @@ Pre pokračovanie stlač medzeru
 
 [Prestige]
 Prestíž
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Učí lepšie stavať
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 hľadajú prácu
@@ -840,6 +852,8 @@ kamene
 Pasívna obrana
 [stonewall]
 Hradba
+[submit rating]
+
 [svr hostname]
 Názov servera
 [swamp terrain]

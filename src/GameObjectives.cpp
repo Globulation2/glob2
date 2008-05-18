@@ -19,12 +19,16 @@
 #include "GameObjectives.h"
 #include "Stream.h"
 
+#include <iostream>
+
 
 GameObjectives::GameObjectives()
 {
 	texts.push_back("[Defeat Your Oppenents]");
 	hidden.push_back(false);
 	completed.push_back(false);
+	types.push_back(Primary);
+	scriptNumbers.push_back(1);
 }
 
 
@@ -36,11 +40,13 @@ int GameObjectives::getNumberOfObjectives()
 
 
 
-void GameObjectives::addNewObjective(const std::string& objective, bool ishidden, bool complete)
+void GameObjectives::addNewObjective(const std::string& objective, bool ishidden, bool complete, GameObjectiveType type, int scriptNumber)
 {
 	texts.push_back(objective);
 	hidden.push_back(ishidden);
 	completed.push_back(complete);
+	types.push_back(type);
+	scriptNumbers.push_back(scriptNumber);
 }
 
 
@@ -50,6 +56,8 @@ void GameObjectives::removeObjective(int n)
 	texts.erase(texts.begin() + n);
 	hidden.erase(hidden.begin() + n);
 	completed.erase(completed.begin() + n);
+	types.erase(types.begin() + n);
+	scriptNumbers.erase(scriptNumbers.begin() + n);
 }
 
 
@@ -111,6 +119,34 @@ bool GameObjectives::isObjectiveComplete(int n)
 
 
 
+void GameObjectives::setObjectiveType(int n, GameObjectiveType type)
+{
+	types[n] = type;
+}
+
+
+
+GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
+{
+	return types[n];
+}
+
+
+
+void GameObjectives::setScriptNumber(int n, int scriptNumber)
+{
+	scriptNumbers[n] = scriptNumber;
+}
+
+
+
+int GameObjectives::getScriptNumber(int n)
+{
+	return scriptNumbers[n];
+}
+
+
+
 void GameObjectives::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("GameObjectives");
@@ -121,6 +157,8 @@ void GameObjectives::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeText(texts[i], "text");
 		stream->writeUint8(hidden[i], "hidden");
 		stream->writeUint8(completed[i], "completed");
+		stream->writeUint8(types[i], "type");
+		stream->writeUint8(scriptNumbers[i], "scriptNumber");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -133,6 +171,8 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 	texts.clear();
 	hidden.clear();
 	completed.clear();
+	types.clear();
+	scriptNumbers.clear();
 	stream->readEnterSection("GameObjectives");
 	Uint32 size = stream->readUint32("size");
 	for(int i=0; i<size; ++i)
@@ -141,6 +181,8 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 		texts.push_back(stream->readText("text"));
 		hidden.push_back(stream->readUint8("hidden"));
 		completed.push_back(stream->readUint8("completed"));
+		types.push_back(static_cast<GameObjectiveType>(stream->readUint8("type")));
+		scriptNumbers.push_back(stream->readUint8("scriptNumber"));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

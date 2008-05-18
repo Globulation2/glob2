@@ -160,8 +160,6 @@ Byggnader
 Kulor
 [campaign editor]
 Kampanj Editor
-[campaign text]
-
 [campaign]
 Kampanj
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Skada
 [Damaged Map]
 Skadekarta
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 enheter eller byggnader
@@ -516,6 +516,8 @@ Låg kvalitet
 Luftskada
 [Magic At. Ground]
 Markskada
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -524,6 +526,8 @@ Markskada
 Kartnamn: %0.
 [map name]
 Namn
+[map rated]
+
 [map script]
 
 [map size x]
@@ -590,6 +594,8 @@ inte redo
 antal lag
 [numlock]
 
+[objectives]
+
 [of which]
 av vilka
 [ok]
@@ -636,6 +642,8 @@ Pausa Spel
 Pausat
 [player name]
 Spelarnamn
+[player rating %0]
+
 [please wait]
 Var god vänta
 [power]
@@ -646,6 +654,8 @@ Tryck mellanslag för att forsätta.
 
 [Prestige]
 Prestige
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Skript Områden
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 söker efter arbete
@@ -840,6 +852,8 @@ sten
 Passivt försvarselement
 [stonewall]
 Stenmur
+[submit rating]
+
 [svr hostname]
 Server värdnamn
 [swamp terrain]

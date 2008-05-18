@@ -43,13 +43,13 @@ public:
 		LOAD,
 		SAVE,
 		TAB_SCRIPT = 10,
-		TAB_CAMPAIGN_TEXT, 
-		TAB_OBJECTIVES,
+		TAB_OBJECTIVES = 11,
+		TAB_PRIMARY = 12,
+		TAB_SECONDARY = 13,
 	};
 	
 protected:
 	TextArea *scriptEditor;
-	TextArea *campaignTextEditor;
 	Text *compilationResult;
 	Mapscript *mapScript;
 	Game *game;
@@ -57,7 +57,12 @@ protected:
 	TextButton *compileButton;
 	TextButton *loadButton;
 	TextButton *saveButton;
-	TextInput *objectives[16];
+	TextButton* primary;
+	TextButton* secondary;
+	TextInput *primaryObjectives[8];
+	TextInput *secondaryObjectives[8];
+	Text *primaryObjectiveLabels[8];
+	Text *secondaryObjectiveLabels[8];
 	
 protected:
 	bool testCompile(void);

@@ -37,6 +37,7 @@ using namespace GAGCore;
 using namespace GAGGUI;
 
 #include <algorithm>
+#include "boost/lexical_cast.hpp"
 
 
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
@@ -46,9 +47,6 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	this->game=game;
 	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
 	addWidget(scriptEditor);
-	campaignTextEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->campaignText.c_str());
-	campaignTextEditor->visible = false;
-	addWidget(campaignTextEditor);
 	
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(compilationResult);
@@ -62,29 +60,52 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(saveButton);
 	
 	addWidget(new TextButton(10, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map script]"), TAB_SCRIPT));
-	addWidget(new TextButton(130, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[campaign text]"), TAB_CAMPAIGN_TEXT));
-	addWidget(new TextButton(250, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[objectives]"), TAB_OBJECTIVES));
+	addWidget(new TextButton(130, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[objectives]"), TAB_OBJECTIVES));
+
+	primary = new TextButton(30, 40, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Primary Objectives]"), TAB_PRIMARY);
+	secondary = new TextButton(150, 40, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Secondary Objectives]"), TAB_SECONDARY);
+	addWidget(primary);
+	addWidget(secondary);
+	secondary->visible=false;
+	primary->visible=false;
+	
 	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[map script]"));
 	addWidget(mode);
 	
 	for(int i=0; i<8; ++i)
 	{
-		objectives[i] = new TextInput(10, 38 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
-		if(i < game->objectives.getNumberOfObjectives())
-		{
-			objectives[i] = new TextInput(10, 38 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", game->objectives.getGameObjectiveText(i));
-		}
-		else
-		{
-			objectives[i] = new TextInput(10, 38 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		primaryObjectives[i] = new TextInput(30, 68 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		primaryObjectives[i]->visible=false;
+		addWidget(primaryObjectives[i]);
 		
-		}
-		objectives[i]->visible=false;
-		addWidget(objectives[i]);
+		primaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
+		primaryObjectiveLabels[i]->visible=false;
+		addWidget(primaryObjectiveLabels[i]);
+		
+		
+		secondaryObjectives[i] = new TextInput(30, 68 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		secondaryObjectives[i]->visible=false;
+		addWidget(secondaryObjectives[i]);
+		
+		secondaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+9));
+		secondaryObjectiveLabels[i]->visible=false;
+		addWidget(secondaryObjectiveLabels[i]);
 	}
 	
 	// important, widgets must be initialised by hand as we use custom event loop
 	dispatchInit();
+
+	for(int i = 0; i<game->objectives.getNumberOfObjectives(); ++i)
+	{
+		if(game->objectives.getObjectiveType(i) == GameObjectives::Primary)
+		{
+			primaryObjectives[game->objectives.getScriptNumber(i)-1]->setText(game->objectives.getGameObjectiveText(i));
+		}
+		else
+		{
+			secondaryObjectives[game->objectives.getScriptNumber(i)-9]->setText(game->objectives.getGameObjectiveText(i));
+		}
+	}
 }
 
 bool ScriptEditorScreen::testCompile(void)
@@ -118,20 +139,38 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 				mapScript->sourceCode = scriptEditor->getText();
 				endValue=par1;
 			}
-			game->campaignText = campaignTextEditor->getText();
 			
 			int n=0;
 			for(int i=0; i<8; ++i)
 			{
-				if(objectives[i]->getText() != "")
+				if(primaryObjectives[i]->getText() != "")
 				{
 					if(n >= game->objectives.getNumberOfObjectives())
 					{
-						game->objectives.addNewObjective(objectives[i]->getText(), false, false);
+						game->objectives.addNewObjective(primaryObjectives[i]->getText(), false, false, GameObjectives::Primary, i+1);
 					}
 					else
 					{
-						game->objectives.setGameObjectiveText(i, objectives[i]->getText());
+						game->objectives.setGameObjectiveText(n, primaryObjectives[i]->getText());
+						game->objectives.setObjectiveType(n, GameObjectives::Primary);
+						game->objectives.setScriptNumber(n, i+1);
+					}
+					n+=1;
+				}
+			}
+			for(int i=0; i<8; ++i)
+			{
+				if(secondaryObjectives[i]->getText() != "")
+				{
+					if(n >= game->objectives.getNumberOfObjectives())
+					{
+						game->objectives.addNewObjective(secondaryObjectives[i]->getText(), false, false, GameObjectives::Secondary, i+9);
+					}
+					else
+					{
+						game->objectives.setGameObjectiveText(n, secondaryObjectives[i]->getText());
+						game->objectives.setObjectiveType(n, GameObjectives::Secondary);
+						game->objectives.setScriptNumber(n, i+9);
 					}
 					n+=1;
 				}
@@ -151,17 +190,11 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == LOAD)
 		{
-			if (scriptEditor->visible)
-				loadSave(true, "scripts", "sgsl");
-			else if (campaignTextEditor->visible)
-				loadSave(true, "campaigns", "txt");
+			loadSave(true, "scripts", "sgsl");
 		}
 		else if (par1 == SAVE)
 		{
-			if (scriptEditor->visible)
-				loadSave(false, "scripts", "sgsl");
-			else if (campaignTextEditor->visible)
-				loadSave(false, "campaigns", "txt");
+			loadSave(false, "scripts", "sgsl");
 		}
 		else if (par1 == TAB_SCRIPT)
 		{
@@ -169,31 +202,18 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			compileButton->visible = true;
 			loadButton->visible = true;
 			saveButton->visible = true;
-			
-			campaignTextEditor->visible = false;
 
+			primary->visible = false;
+			secondary->visible = false;
 			for(int i=0; i<8; ++i)
 			{
-				objectives[i]->visible = false;
+				primaryObjectives[i]->visible = false;
+				secondaryObjectives[i]->visible = false;
+				primaryObjectiveLabels[i]->visible = false;
+				secondaryObjectiveLabels[i]->visible = false;
 			}
 			
 			mode->setText(Toolkit::getStringTable()->getString("[map script]"));
-		}
-		else if (par1 == TAB_CAMPAIGN_TEXT)
-		{
-			scriptEditor->visible = false;
-			compileButton->visible = false;
-			loadButton->visible = false;
-			saveButton->visible = false;
-			
-			campaignTextEditor->visible = true;
-
-			for(int i=0; i<8; ++i)
-			{
-				objectives[i]->visible = false;
-			}
-			
-			mode->setText(Toolkit::getStringTable()->getString("[campaign text]"));
 		}
 		else if (par1 == TAB_OBJECTIVES)
 		{
@@ -201,15 +221,38 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			compileButton->visible = false;
 			loadButton->visible = false;
 			saveButton->visible = false;
-			
-			campaignTextEditor->visible = false;
 
+			primary->visible = true;
+			secondary->visible = true;
 			for(int i=0; i<8; ++i)
 			{
-				objectives[i]->visible = true;
+				primaryObjectives[i]->visible = true;
+				secondaryObjectives[i]->visible = false;
+				primaryObjectiveLabels[i]->visible = true;
+				secondaryObjectiveLabels[i]->visible = false;
 			}
 			
 			mode->setText(Toolkit::getStringTable()->getString("[objectives]"));
+		}
+		else if (par1 == TAB_PRIMARY)
+		{
+			for(int i=0; i<8; ++i)
+			{
+				primaryObjectives[i]->visible = true;
+				secondaryObjectives[i]->visible = false;
+				primaryObjectiveLabels[i]->visible = true;
+				secondaryObjectiveLabels[i]->visible = false;
+			}
+		}
+		else if (par1 == TAB_SECONDARY)
+		{
+			for(int i=0; i<8; ++i)
+			{
+				primaryObjectives[i]->visible = false;
+				secondaryObjectives[i]->visible = true;
+				primaryObjectiveLabels[i]->visible = false;
+				secondaryObjectiveLabels[i]->visible = true;
+			}
 		}
 	}
 	else if(action == TEXT_ACTIVATED)
@@ -217,15 +260,21 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		bool found = false;
 		for(int i=0; i<8; ++i)
 		{
-			if(source == objectives[i])
+			if(source == primaryObjectives[i] || source == secondaryObjectives[i])
 				found = true;
 		}
 		if(found)
 		{
 			for(int i=0; i<8; ++i)
 			{
-				if(source != objectives[i])
-					objectives[i]->deactivate();
+				if(source != primaryObjectives[i])
+				{
+					primaryObjectives[i]->deactivate();
+				}
+				if(source != secondaryObjectives[i])
+				{
+					secondaryObjectives[i]->deactivate();
+				}
 			}
 		}
 	}
@@ -295,27 +344,6 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				}
 			}
 		}
-		else if (campaignTextEditor->visible)
-		{
-			if (isLoad)
-			{
-				if (!campaignTextEditor->load(loadSaveScreen->getFileName()))
-				{
-					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(FormatableString("Loading campaign text from %0 failed").arg(loadSaveScreen->getName()).c_str());
-				}
-			}
-			else
-			{
-				if (!campaignTextEditor->save(loadSaveScreen->getFileName()))
-				{
-					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(FormatableString("Saving campaign text to %0 failed").arg(loadSaveScreen->getName()).c_str());
-				}
-			}
-		}
-		else
-			assert(false);
 	}
 
 	// clean up

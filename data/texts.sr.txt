@@ -160,8 +160,6 @@ AIWarrush
 Муниција
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Кампања
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ AIWarrush
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 
@@ -516,6 +516,8 @@ sr
 
 [Magic At. Ground]
 
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ sr
 [Map name: %0]
 Име мапе: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Број тимова
 [numlock]
 
+[objectives]
+
 [of which]
 од чега
 [ok]
@@ -636,6 +642,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Пауза
 [player name]
 Име играча
+[player rating %0]
+
 [please wait]
 Молим сачекајте
 [power]
@@ -646,6 +654,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [Prestige]
 Престиж
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 траже посао
@@ -840,6 +852,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Камени зид служи за...
 [stonewall]
 Камени зид
+[submit rating]
+
 [svr hostname]
 Име сервера
 [swamp terrain]

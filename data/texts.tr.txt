@@ -160,8 +160,6 @@ Binalar
 Mermiler
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Senaryo
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Hasar
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 birimler yada binalar
@@ -516,6 +516,8 @@ Dusuk kalite
 Hava hasari
 [Magic At. Ground]
 Yer hasari
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Yer hasari
 [Map name: %0]
 Harita adi: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ hazir degil
 takim sayisi
 [numlock]
 
+[objectives]
+
 [of which]
 ayrintilar:
 [ok]
@@ -636,6 +642,8 @@ Papirus
 Duraklatildi
 [player name]
 Oyuncu adi
+[player rating %0]
+
 [please wait]
 Lutfen bekleyin
 [power]
@@ -646,6 +654,8 @@ Devam etmek icin bosluk tusuna basin.
 
 [Prestige]
 Prestij
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Akademi
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 tanesi is ariyor
@@ -840,6 +852,8 @@ bilesen
 Pasif savunma
 [stonewall]
 Tas duvar
+[submit rating]
+
 [svr hostname]
 Sunucu adi
 [swamp terrain]

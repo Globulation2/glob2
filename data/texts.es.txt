@@ -160,8 +160,6 @@ Construcciones
 Municiones
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Campaña
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Daño
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 Unidades o Edificios
@@ -516,6 +516,8 @@ Baja Calidad
 Daño Aéreo
 [Magic At. Ground]
 Daño Terrestre
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Daño Terrestre
 [Map name: %0]
 Nombre del Mapa: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ No Listo
 Número de Equipos
 [numlock]
 
+[objectives]
+
 [of which]
 existen
 [ok]
@@ -636,6 +642,8 @@ Papiro
 Detenido
 [player name]
 Nombre del jugador
+[player rating %0]
+
 [please wait]
 Espere por favor
 [power]
@@ -646,6 +654,8 @@ Presiona la barra espaciadora (space) para continuar
 
 [Prestige]
 Prestigio
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Escuela
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 Buscando Trabajo
@@ -840,6 +852,8 @@ Elemento
 Defensa Pasiva
 [stonewall]
 Muralla
+[submit rating]
+
 [svr hostname]
 Nombre del Servidor Alojador
 [swamp terrain]

@@ -160,8 +160,6 @@ Gebouwen
 Kogels
 [campaign editor]
 Campagne bewerken
-[campaign text]
-
 [campaign]
 Campagne
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Schade
 [Damaged Map]
 Beschadigd
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 die in de buurt komen
@@ -516,6 +516,8 @@ Lage kwaliteit
 Luchtschade
 [Magic At. Ground]
 Grondschade
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -524,6 +526,8 @@ Grondschade
 Naam speelveld: %0.
 [map name]
 Naam
+[map rated]
+
 [map script]
 
 [map size x]
@@ -590,6 +594,8 @@ Er zijn %0 spelers aanwezig.
 Aantal teams
 [numlock]
 
+[objectives]
+
 [of which]
 waarvan
 [ok]
@@ -636,6 +642,8 @@ Pauzeer het spel
 Pauze
 [player name]
 Naam speler
+[player rating %0]
+
 [please wait]
 Even geduld alsjeblieft
 [power]
@@ -646,6 +654,8 @@ Druk op spatie om verder te gaan
 
 [Prestige]
 Roem
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Scriptgebieden
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 werkzoekend
@@ -840,6 +852,8 @@ element
 Passief verdedigings-
 [stonewall]
 Muur
+[submit rating]
+
 [svr hostname]
 Servernaam
 [swamp terrain]

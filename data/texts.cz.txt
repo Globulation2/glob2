@@ -160,8 +160,6 @@ Budovy
 Střelivo
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Nová hra
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Poškození
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 
@@ -516,6 +516,8 @@ Nízká kvalita
 
 [Magic At. Ground]
 
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Nízká kvalita
 [Map name: %0]
 Jméno mapy: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ nepřipraven
 Počet hráčů
 [numlock]
 
+[objectives]
+
 [of which]
 z toho
 [ok]
@@ -636,6 +642,8 @@ Papyrus
 Pauza
 [player name]
 Jméno
+[player rating %0]
+
 [please wait]
 Čekej prosím
 [power]
@@ -646,6 +654,8 @@ Jméno
 
 [Prestige]
 Prestiž
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Zlepši uroveň stavitelství
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 hledá práci
@@ -840,6 +852,8 @@ Kamení
 Pasivní ochraná část
 [stonewall]
 Kamenná hradba
+[submit rating]
+
 [svr hostname]
 Server hostname
 [swamp terrain]

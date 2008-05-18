@@ -211,7 +211,6 @@ public:
 	Player *players[32];
 	Map map;
 	Mapscript script;
-	std::string campaignText;
 	GameObjectives objectives;
 	GameGUI *gui;
 	MapEdit *edit;

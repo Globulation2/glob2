@@ -160,8 +160,6 @@ a partok méretei
 Lőszer
 [campaign editor]
 
-[campaign text]
-
 [campaign]
 Hadjárat
 [Can't connect, can't find host]
@@ -253,6 +251,8 @@ Kár
 [Damaged Map]
 
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 ellenséges egységeket
@@ -516,6 +516,8 @@ Alacsony képminőség
 
 [Magic At. Ground]
 
+[map description]
+
 [Map Discovered]
 
 [Map fownload failure: lost connection]
@@ -523,6 +525,8 @@ Alacsony képminőség
 [Map name: %0]
 A térkép neve: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -590,6 +594,8 @@ nincs készen
 Csapatok száma
 [numlock]
 
+[objectives]
+
 [of which]
 amelyik
 [ok]
@@ -636,6 +642,8 @@ Papírusz
 Szünet
 [player name]
 A játékos neve
+[player rating %0]
+
 [please wait]
 Kérem várjon
 [power]
@@ -646,6 +654,8 @@ Kérem várjon
 
 [Prestige]
 Presztízs
+[Primary Objectives]
+
 [print screen]
 
 [Prune]
@@ -729,6 +739,8 @@ Iskola
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 munkát keres
@@ -840,6 +852,8 @@ Kő
 Passzív védelmi elem
 [stonewall]
 Kőfal
+[submit rating]
+
 [svr hostname]
 A játékszerver neve
 [swamp terrain]
