@@ -594,6 +594,8 @@ Nouveau
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
 [no key]
 Aucune touche
+[No Objectives]
+
 [no ressources growth areas]
 Aucune zone de croissance de resources
 [No]

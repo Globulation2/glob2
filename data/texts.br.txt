@@ -596,6 +596,8 @@ Novo
 Lamentamos mas o nome que você escolheu já existe na freenode, você poderá falar somente pelo YOG
 [no key]
 sem tecla ainda
+[No Objectives]
+
 [no ressources growth areas]
 Nenhuma área de crescimento
 [No]

@@ -594,6 +594,8 @@ Nowa
 Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 
 [No]

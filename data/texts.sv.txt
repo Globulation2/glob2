@@ -594,6 +594,8 @@ Ny
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 Inga Odlingsområden
 [No]

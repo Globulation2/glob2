@@ -594,6 +594,8 @@ Yeni
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
 [no key]
 
+[No Objectives]
+
 [no ressources growth areas]
 
 [No]

@@ -596,6 +596,8 @@ Anastasios M. Pingios
 Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
 [no key]
 κανένα κλειδί ακόμα
+[No Objectives]
+
 [no ressources growth areas]
 Καμία Περιοχή Ανάπτυξης
 [No]

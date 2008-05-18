@@ -403,6 +403,11 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui)
 			n+=1;
 		}
 	}
+	if(n == 0)
+	{
+		addWidget(new Text(50, 70 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Objectives]")));
+		n+=1;
+	}
 	
 	bool isSecondary = false;
 	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
