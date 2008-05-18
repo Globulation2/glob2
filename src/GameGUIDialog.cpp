@@ -32,15 +32,16 @@
 
 //! Main menu screen
 InGameMainScreen::InGameMainScreen(bool showAlliance)
-:OverlayScreen(globalContainer->gfx, 320, 310)
+:OverlayScreen(globalContainer->gfx, 320, 360)
 {
 	addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
 	addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
 	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[options]"), OPTIONS));
 	if (showAlliance)
 		addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[alliances]"), ALLIANCES));
-	addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
-	addWidget(new TextButton(0, 260, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
+	addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[objectives]"), OBJECTIVES));
+	addWidget(new TextButton(0, 260, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
+	addWidget(new TextButton(0, 310, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
 	dispatchInit();
 }
 
@@ -338,7 +339,6 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	}
 
 	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	dispatchInit();
 	
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
@@ -348,6 +348,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 		oss << " SDL";
 		
 	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
+	dispatchInit();
 }
 
 
@@ -381,3 +382,38 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
 }
+
+
+
+InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui)
+:OverlayScreen(globalContainer->gfx, 320, 300)
+{
+	int n=0;
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.isObjectiveVisible(i))
+		{
+			addWidget(new Text(40, 50 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString(gui->game.objectives.getGameObjectiveText(i).c_str())));
+			OnOffButton* b = new OnOffButton(10, 50 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
+			b->setClickable(false);
+			addWidget(b);
+			n+=1;
+		}
+	}
+	
+	// add ok button
+	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[objectives]")));
+	dispatchInit();
+}
+
+
+
+void InGameObjectivesScreen::onAction(Widget *source, Action action, int par1, int par2)
+{
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
+		endValue=par1;
+	}
+}
+

@@ -145,9 +145,12 @@ struct Token
 // generic functions
 
 class Story;
+class Mapscript;
+class GameGUI;
+class Game;
 
 //! The implementation of a generic function
-typedef void (Story::*FunctionImplementation)(void);
+typedef void (Story::*FunctionImplementation)(GameGUI*);
 
 //! The description of one function argument
 struct FunctionArgumentDescription
@@ -249,10 +252,6 @@ private:
 	int pos;
 };
 
-class Mapscript;
-class GameGUI;
-class Game;
-
 // Independant story line
 class Story
 {
@@ -276,7 +275,12 @@ public:
 private:
 	friend class Mapscript;
 	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
-	void toto();
+	void toto(GameGUI* gui);
+	void objectiveHidden(GameGUI* gui);
+	void objectiveVisible(GameGUI* gui);
+	void objectiveComplete(GameGUI* gui);
+	
+	
 	bool testCondition(GameGUI *gui);
 	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
 	

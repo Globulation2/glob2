@@ -28,6 +28,7 @@
 #include <valarray>
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "GameObjectives.h"
 
 namespace GAGCore
 {
@@ -211,6 +212,7 @@ public:
 	Map map;
 	Mapscript script;
 	std::string campaignText;
+	GameObjectives objectives;
 	GameGUI *gui;
 	MapEdit *edit;
 	std::list<BuildProject> buildProjects;

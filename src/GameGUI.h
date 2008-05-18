@@ -320,6 +320,7 @@ private:
 		IGM_SAVE,
 		IGM_OPTION,
 		IGM_ALLIANCE,
+		IGM_OBJECTIVES,
 		IGM_END_OF_GAME
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;

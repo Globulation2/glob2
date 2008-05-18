@@ -603,6 +603,15 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					return true;
 				}
 				break;
+				case InGameMainScreen::OBJECTIVES:
+				{
+					delete gameMenuScreen;
+					gameMenuScreen=NULL;
+					inGameMenu=IGM_OBJECTIVES;
+					gameMenuScreen = new InGameObjectivesScreen(this);
+					return true;
+				}
+				break;
 				case InGameMainScreen::OPTIONS:
 				{
 					delete gameMenuScreen;
@@ -686,6 +695,21 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		case IGM_OPTION:
 		{
 			if (gameMenuScreen->endValue == InGameOptionScreen::OK)
+			{
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				gameMenuScreen=NULL;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		case IGM_OBJECTIVES:
+		{
+			if (gameMenuScreen->endValue == InGameObjectivesScreen::OK)
 			{
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
