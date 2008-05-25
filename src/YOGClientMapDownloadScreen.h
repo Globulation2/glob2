@@ -119,6 +119,7 @@ public:
 	{
 		Name,
 		Size,
+		Rating,
 	};
 	
 	///Creates the sorting functor with the given sort method

@@ -842,6 +842,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Умекшавање
 [sort by name]
 
+[sort by rating]
+
 [sort by size]
 
 [Sort By]

@@ -838,6 +838,8 @@ V: зажать для речевой связи
 Сглаживание
 [sort by name]
 
+[sort by rating]
+
 [sort by size]
 
 [Sort By]

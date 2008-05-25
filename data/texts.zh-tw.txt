@@ -842,6 +842,8 @@ V: 持鍵以傳送訊息
 平整度
 [sort by name]
 
+[sort by rating]
+
 [sort by size]
 
 [Sort By]
