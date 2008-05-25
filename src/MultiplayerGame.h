@@ -101,6 +101,9 @@ public:
 	///This says whether the game is ready to start
 	bool isGameReadyToStart();
 	
+	///This updates the local players ready state
+	void updateReadyState();
+	
 	///This is intended to add an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
 
@@ -140,6 +143,9 @@ public:
 	
 	///This sets the game result for the local player
 	void setGameResult(YOGGameResult result);
+	
+	///Retursn true if the given player is ready to start
+	bool isReadyToStart(int playerID);
 protected:
 	friend class YOGClient;
 
@@ -174,7 +180,6 @@ private:
 	bool sentReadyToStart;
 	std::list<MultiplayerGameEventListener*> listeners;
 	Uint32 chatChannel;
-	bool isEveryoneReadyToGo;
 	bool isStarting;
 	Uint8 previousPercentage;
 	Uint16 gameID;

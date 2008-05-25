@@ -121,12 +121,6 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSendGamePlayerInfo:
 		message.reset(new NetSendGamePlayerInfo);
 		break;
-		case MNetEveryoneReadyToLaunch:
-		message.reset(new NetEveryoneReadyToLaunch);
-		break;
-		case MNetNotEveryoneReadyToLaunch:
-		message.reset(new NetNotEveryoneReadyToLaunch);
-		break;
 		case MNetRemoveAI:
 		message.reset(new NetRemoveAI);
 		break;
@@ -2485,109 +2479,6 @@ bool NetNotReadyToLaunch::operator==(const NetMessage& rhs) const
 Uint16 NetNotReadyToLaunch::getPlayerID() const
 {
 	return playerID;
-}
-
-
-
-
-NetEveryoneReadyToLaunch::NetEveryoneReadyToLaunch()
-{
-
-}
-
-
-
-Uint8 NetEveryoneReadyToLaunch::getMessageType() const
-{
-	return MNetEveryoneReadyToLaunch;
-}
-
-
-
-void NetEveryoneReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetEveryoneReadyToLaunch");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetEveryoneReadyToLaunch::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetEveryoneReadyToLaunch");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetEveryoneReadyToLaunch::format() const
-{
-	std::ostringstream s;
-	s<<"NetEveryoneReadyToLaunch()";
-	return s.str();
-}
-
-
-
-bool NetEveryoneReadyToLaunch::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetEveryoneReadyToLaunch))
-	{
-		//const NetEveryoneReadyToLaunch& r = dynamic_cast<const NetEveryoneReadyToLaunch&>(rhs);
-		return true;
-	}
-	return false;
-}
-
-
-
-NetNotEveryoneReadyToLaunch::NetNotEveryoneReadyToLaunch()
-{
-
-}
-
-
-
-Uint8 NetNotEveryoneReadyToLaunch::getMessageType() const
-{
-	return MNetNotEveryoneReadyToLaunch;
-}
-
-
-
-void NetNotEveryoneReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetNotEveryoneReadyToLaunch");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetNotEveryoneReadyToLaunch::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetNotEveryoneReadyToLaunch");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetNotEveryoneReadyToLaunch::format() const
-{
-	std::ostringstream s;
-	s<<"NetNotEveryoneReadyToLaunch()";
-	return s.str();
-}
-
-
-
-bool NetNotEveryoneReadyToLaunch::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetNotEveryoneReadyToLaunch))
-	{
-		//const NetNotEveryoneReadyToLaunch& r = dynamic_cast<const NetNotEveryoneReadyToLaunch&>(rhs);
-		return true;
-	}
-	return false;
 }
 
 

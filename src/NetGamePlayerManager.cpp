@@ -171,6 +171,20 @@ bool NetGamePlayerManager::isEveryoneReadyToGo()
 
 
 
+bool NetGamePlayerManager::isReadyToGo(int playerID)
+{
+	for(int x=0; x<32; ++x)
+	{
+		BasePlayer& bp = gameHeader.getBasePlayer(x);
+		if(bp.playerID == playerID)
+		{
+			return readyToStart[x];
+		}
+	}
+}
+
+
+
 void NetGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
 {
 	numberOfTeams = nnumberOfTeams;
