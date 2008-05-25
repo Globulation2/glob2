@@ -37,7 +37,7 @@ namespace GAGGUI
 	class TabScreen : public Screen
 	{
 	public:
-		TabScreen(bool fullScreen);
+		TabScreen(bool fullScreen, bool longerButtons=false);
 	
 		///This adds a widget to a particular group. This calls add widget automatically
 		void addWidgetToGroup(Widget* widget, int group_n);
@@ -94,6 +94,7 @@ namespace GAGGUI
 		int activated;
 		int returnCode;
 		bool fullScreen;
+		bool longerButtons;
 	};
 };
 
