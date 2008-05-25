@@ -84,7 +84,7 @@ private:
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapSize, *mapAuthor, *mapRating;
+	Text *mapName, *mapInfo, *mapSize, *mapAuthor, *mapRating, *mapDownloadSize;
 	//! This is the button for adding a map
 	TextButton* addMap;
 	//! this button requests an update to the list

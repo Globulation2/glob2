@@ -61,6 +61,8 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	addWidget(mapAuthor);
 	mapRating = new Text(72, 268 + 125, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapRating);
+	mapDownloadSize = new Text(72, 268 + 150, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
+	addWidget(mapDownloadSize);
 	addMap = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[upload map]"), ADDMAP);
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	addWidget(addMap);
@@ -258,6 +260,8 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		{
 			client->getDownloadableMapList()->requestThumbnail(mapList->get());
 		}
+		textTemp = FormatableString("%0 kb").arg((info.getSize()+512)/1024);
+		mapDownloadSize->setText(textTemp);
 	}
 	else
 	{
@@ -266,6 +270,7 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		mapSize->setText("");
 		mapName->setText("");
 		mapRating->setText("");
+		mapDownloadSize->setText("");
 	}
 }
 

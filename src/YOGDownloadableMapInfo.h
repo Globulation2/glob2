@@ -83,6 +83,12 @@ public:
 	
 	///This sets the dimensions of the map
 	void setDimensions(Uint16 width, Uint16 height);
+	
+	///This returns the size of the map compressed in bytes
+	void setSize(int bytes);
+	
+	///This returns the size of the map compressed in bytes
+	int getSize() const;
 
 	///Encodes this YOGGameInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -102,6 +108,7 @@ private:
 	Uint16 mapID;
 	Uint16 width;
 	Uint16 height;
+	Uint32 size;
 };
 
 #endif

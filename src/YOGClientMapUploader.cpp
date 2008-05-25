@@ -23,6 +23,11 @@
 #include "YOGClientMapUploader.h"
 #include "YOGConsts.h"
 
+#include "Toolkit.h"
+#include "FileManager.h"
+#include "Stream.h"
+#include "BinaryStream.h"
+
 
 YOGClientMapUploader::YOGClientMapUploader(boost::shared_ptr<YOGClient> client)
 	: client(client), state(Nothing)
@@ -51,6 +56,7 @@ void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std
 	info.setMapHeader(header);
 	info.setAuthorName(authorName);
 	info.setDimensions(w, h);
+	info.setSize(getCompressedSize(nmapFile));
 	boost::shared_ptr<NetRequestMapUpload> message(new NetRequestMapUpload(info));
 	client->sendNetMessage(message);
 	state = WaitingForUploadReply;
@@ -122,4 +128,16 @@ int YOGClientMapUploader::getPercentUploaded()
 	return client->getYOGClientFileAssembler(fileID)->getPercentage();
 }
 
+
+
+int YOGClientMapUploader::getCompressedSize(const std::string& mapname)
+{
+	Toolkit::getFileManager()->gzip(mapname, mapname+".gz");
+	BinaryInputStream* istream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname+".gz"));
+	istream->seekFromEnd(0);
+	int size=istream->getPosition();
+	istream->seekFromStart(0);
+	delete istream;
+	return size;
+}
 
