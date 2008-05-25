@@ -772,6 +772,8 @@ Display
 Smoothing
 [sort by name]
 Name
+[sort by rating]
+Rating
 [sort by size]
 Size
 [Sort By]

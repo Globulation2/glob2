@@ -96,6 +96,7 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	sortMethod->clearTexts();
 	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by name]"));
 	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by size]"));
+	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by rating]"));
 	sortMethod->setIndex(0);
 	
 	validMapSelected=false;
@@ -370,6 +371,30 @@ bool MapListSorter::operator()(const YOGDownloadableMapInfo& lhs, const YOGDownl
 		else
 		{
 			return (lw*lh) > (rw * rh);
+		}
+	}
+	else if(sortMethod == Rating)
+	{
+		int lt = lhs.getRatingTotal();
+		int ln = lhs.getNumberOfRatings();
+		int rt = rhs.getRatingTotal();
+		int rn = rhs.getNumberOfRatings();
+		
+		
+		if(lt > 5 && rt > 5)
+		{
+			if(lt/ln == rt/rn)
+			{
+				return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
+			}
+			else
+			{
+				return lt/ln > rt/rn;
+			}
+		}
+		else
+		{
+			return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
 		}
 	}
 }
