@@ -458,4 +458,46 @@ Uint8 MGDownloadPercentUpdate::getPercentFinished() const
 
 
 
+MGPlayerReadyStatusChanged::MGPlayerReadyStatusChanged(Uint16 playerID)
+	: playerID(playerID)
+{
+}
+
+
+
+Uint8 MGPlayerReadyStatusChanged::getEventType() const
+{
+	return MGEPlayerReadyStatusChanged;
+}
+
+
+
+std::string MGPlayerReadyStatusChanged::format() const
+{
+	std::ostringstream s;
+	s<<"MGPlayerReadyStatusChanged("<<"playerID="<<playerID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool MGPlayerReadyStatusChanged::operator==(const MultiplayerGameEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(MGPlayerReadyStatusChanged))
+	{
+		const MGPlayerReadyStatusChanged& r = dynamic_cast<const MGPlayerReadyStatusChanged&>(rhs);
+		if(r.playerID == playerID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 MGPlayerReadyStatusChanged::getPlayerID() const
+{
+	return playerID;
+}
+
+
+
 //code_append_marker
