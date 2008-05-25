@@ -104,6 +104,7 @@ namespace GAGCore
 		std::valarray<char> buffer(len+1);
 		read(&buffer[0], len, NULL);
 		buffer[len] = 0;
+		assert(len < 1024*1024);
 		return std::string(&buffer[0]);
 	}
 }
