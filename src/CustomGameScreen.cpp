@@ -157,7 +157,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	{
 		if(source == otherOptions)
 		{
-			CustomGameOtherOptions settings(gameHeader, mapHeader);
+			CustomGameOtherOptions settings(gameHeader, mapHeader, false);
 			int rc = settings.execute(globalContainer->gfx, 40);
 			if(rc == -1)
 				endExecute(-1);

@@ -61,7 +61,11 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	addWidget(gameStartWaitingText);
 	gameStartWaitingText->visible = false;
 
-	otherOptions = new TextButton(20, 230, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Other Options]"), OTHEROPTIONS);
+
+	bool isHost = true;
+	if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
+		isHost = false;
+	otherOptions = new TextButton(20, (isHost ? 225 : 455), 180, 40, ALIGN_RIGHT, ALIGN_TOP, (isHost ? "standard" : "menu"), Toolkit::getStringTable()->getString("[Other Options]"), OTHEROPTIONS);
 	addWidget(otherOptions);
 	otherOptions->visible=false;
 	
@@ -158,7 +162,10 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		}
 		else if(par1 == OTHEROPTIONS)
 		{
-			CustomGameOtherOptions settings(game->getGameHeader(), game->getMapHeader());
+			bool readOnly = true;
+			if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+				readOnly = false;
+			CustomGameOtherOptions settings(game->getGameHeader(), game->getMapHeader(), readOnly);
 			int rc = settings.execute(globalContainer->gfx, 40);
 			game->updateGameHeader();
 		}
@@ -356,12 +363,10 @@ void MultiplayerGameScreen::updateVisibleButtons()
 			if(game->isGameStarting())
 			{
 				startButton->visible=false;
-				otherOptions->visible=true;
 			}
 			else
 			{
 				startButton->visible=isActivated();
-				otherOptions->visible=isActivated();
 			}
 		}
 		else
@@ -374,11 +379,6 @@ void MultiplayerGameScreen::updateVisibleButtons()
 	{
 		startButton->visible=false;
 		notReadyText->visible=isActivated();
-	}
-	
-	if(game->getGameJoinCreationState() != MultiplayerGame::HostingGame)
-	{
-		otherOptions->visible=false;
 	}
 	
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::JoinedGame)

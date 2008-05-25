@@ -43,7 +43,7 @@ class CustomGameOtherOptions : public Glob2Screen
 
 public:
 	/// Constructor, edits the given game header and map header
-	CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader);
+	CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly);
 	/// Destructor
 	virtual ~CustomGameOtherOptions();
 	///Recieves an action from a widget

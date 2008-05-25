@@ -38,6 +38,7 @@ namespace GAGGUI
 		this->vAlignFlag = vAlign;
 	
 		this->unicodeShortcut=unicodeShortcut;
+		this->isClickable = true;
 	}
 
 	Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode,
@@ -52,6 +53,7 @@ namespace GAGGUI
 		this->vAlignFlag = vAlign;
 	
 		this->unicodeShortcut=unicodeShortcut;
+		this->isClickable = true;
 	}
 	
 	void Button::onSDLKeyDown(SDL_Event *event)
@@ -68,7 +70,8 @@ namespace GAGGUI
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		if (isOnWidget(event->button.x, event->button.y) &&
-				  (event->button.button == SDL_BUTTON_LEFT))
+				  (event->button.button == SDL_BUTTON_LEFT)
+				  && isClickable)
 		parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 	}
 	
@@ -76,7 +79,8 @@ namespace GAGGUI
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
 		if (isOnWidget(event->button.x, event->button.y) &&
-				(event->button.button == SDL_BUTTON_LEFT))
+				(event->button.button == SDL_BUTTON_LEFT)
+				  && isClickable)
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
 	
@@ -287,7 +291,7 @@ namespace GAGGUI
 	void MultiTextButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
-		if (isOnWidget(event->button.x, event->button.y) && texts.size())
+		if (isOnWidget(event->button.x, event->button.y) && texts.size() && isClickable)
 		{
 			if (event->button.button == SDL_BUTTON_LEFT)
 			{
@@ -317,7 +321,7 @@ namespace GAGGUI
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
 		if (isOnWidget(event->button.x, event->button.y) &&
-			(event->button.button == SDL_BUTTON_LEFT))
+			(event->button.button == SDL_BUTTON_LEFT) && isClickable)
 		{
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 		}
