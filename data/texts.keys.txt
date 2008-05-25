@@ -385,6 +385,7 @@
 [skin]
 [smoothing]
 [sort by name]
+[sort by rating]
 [sort by size]
 [Sort By]
 [space]
