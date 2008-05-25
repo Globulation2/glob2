@@ -20,14 +20,14 @@
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
-#include "SoundMixer.h"
-#include <GUIButton.h>
-#include <GUIText.h>
 #include <GUIAnimation.h>
+#include <GUIButton.h>
 #include <GUISelector.h>
-#include <Toolkit.h>
-#include <StringTable.h>
+#include <GUIText.h>
 #include "Player.h"
+#include "SoundMixer.h"
+#include <StringTable.h>
+#include <Toolkit.h>
 
 
 //! Main menu screen
@@ -150,6 +150,13 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		foodVision[i] = NULL;
 		marketVision[i] = NULL;
 		chat[i] = NULL;
+	}
+
+	if(gameGUI->game.gameHeader.areAllyTeamsFixed())
+	{
+		//Although this is the animation widget, we are just using it to display a still frame
+		addWidget(new Animation(172, 40+yBase, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
+		addWidget(new Animation(196, 40+yBase, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
 	}
 
 	// add static text and images
