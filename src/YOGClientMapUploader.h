@@ -63,6 +63,9 @@ public:
 	
 	///Returns the percent uploaded
 	int getPercentUploaded();
+	
+	///Returns the size of a file compressed
+	int getCompressedSize(const std::string& mapName);
 private:
 	UploadingState state;
 	boost::shared_ptr<YOGClient> client;

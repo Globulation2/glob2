@@ -28,6 +28,7 @@ YOGDownloadableMapInfo::YOGDownloadableMapInfo()
 	mapID = 0;
 	width = 0;
 	height = 0;
+	size = 0;
 }
 
 
@@ -41,6 +42,7 @@ YOGDownloadableMapInfo::YOGDownloadableMapInfo(MapHeader& header)
 	mapID = 0;
 	width = 0;
 	height = 0;
+	size = 0;
 }
 
 
@@ -151,6 +153,20 @@ void YOGDownloadableMapInfo::setDimensions(Uint16 nwidth, Uint16 nheight)
 
 
 
+void YOGDownloadableMapInfo::setSize(int bytes)
+{
+	size = bytes;
+}
+
+
+
+int YOGDownloadableMapInfo::getSize() const
+{
+	return size;
+}
+
+
+
 void YOGDownloadableMapInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGDownloadableMapInfo");
@@ -162,6 +178,7 @@ void YOGDownloadableMapInfo::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeUint16(mapID, "mapID");
 	stream->writeUint16(width, "width");
 	stream->writeUint16(height, "height");
+	stream->writeUint32(size, "size");
 	stream->writeLeaveSection();
 }
 
@@ -178,6 +195,7 @@ void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 ver
 	mapID = stream->readUint16("mapID");
 	width = stream->readUint16("width");
 	height = stream->readUint16("height");
+	size = stream->readUint32("size");
 	stream->readLeaveSection();
 }
 
@@ -185,7 +203,7 @@ void YOGDownloadableMapInfo::decodeData(GAGCore::InputStream* stream, Uint32 ver
 
 bool YOGDownloadableMapInfo::operator==(const YOGDownloadableMapInfo& rhs) const
 {
-	if(mapHeader == rhs.mapHeader && total == rhs.total && numberOfRatings == rhs.numberOfRatings && author == rhs.author && fileID == rhs.fileID && mapID == rhs.mapID && rhs.width == width && rhs.height == height)
+	if(mapHeader == rhs.mapHeader && total == rhs.total && numberOfRatings == rhs.numberOfRatings && author == rhs.author && fileID == rhs.fileID && mapID == rhs.mapID && rhs.width == width && rhs.height == height && rhs.size == size)
 		return true;
 	return false;
 }
@@ -193,7 +211,7 @@ bool YOGDownloadableMapInfo::operator==(const YOGDownloadableMapInfo& rhs) const
 
 bool YOGDownloadableMapInfo::operator!=(const YOGDownloadableMapInfo& rhs) const
 {
-	if(mapHeader != rhs.mapHeader || total != rhs.total || numberOfRatings != rhs.numberOfRatings || author != rhs.author || fileID != rhs.fileID || mapID != rhs.mapID || rhs.width != width || rhs.height != height)
+	if(mapHeader != rhs.mapHeader || total != rhs.total || numberOfRatings != rhs.numberOfRatings || author != rhs.author || fileID != rhs.fileID || mapID != rhs.mapID || rhs.width != width || rhs.height != height || rhs.size != size)
 		return true;
 	return false;
 }
