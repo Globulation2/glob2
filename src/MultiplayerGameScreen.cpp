@@ -53,19 +53,23 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		}
 	}
 	
+	bool isHost = true;
+	if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
+		isHost = false;
+	
 	startButton=new TextButton(20, 455, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
 	startButton->visible=false;
 	addWidget(startButton);
 
-	gameStartWaitingText=new Text(20, 455, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
+	gameStartWaitingText=new Text(20, (isHost ? 455 : 425), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
 	addWidget(gameStartWaitingText);
 	gameStartWaitingText->visible = false;
 
+	notReadyText=new Text(20, (isHost ? 455 : 425), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
+	notReadyText->visible=isActivated();
+	addWidget(notReadyText);
 
-	bool isHost = true;
-	if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
-		isHost = false;
-	otherOptions = new TextButton(20, (isHost ? 225 : 455), 180, 40, ALIGN_RIGHT, ALIGN_TOP, (isHost ? "standard" : "menu"), Toolkit::getStringTable()->getString("[Other Options]"), OTHEROPTIONS);
+	otherOptions = new TextButton(20, (isHost ? 425 : 475), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Other Options]"), OTHEROPTIONS);
 	addWidget(otherOptions);
 	otherOptions->visible=false;
 	
@@ -80,10 +84,6 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	}
 	cancelButton->visible=false;
 	addWidget(cancelButton);
-
-	notReadyText=new Text(20, 455, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
-	notReadyText->visible=isActivated();
-	addWidget(notReadyText);
 
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
