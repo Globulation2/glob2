@@ -1,13 +1,13 @@
 Source: glob2
 Section: games
 Priority: optional
-Maintainer: Vincent Deffontaines <vincent@gryzor.com>
-Build-Depends: debhelper (>> 4.0.0),libsdl1.2-dev (>=1.2.0),libsdl-image1.2-dev(>=1.2.0),libsdl-net1.2-dev(>=1.2.0),libvorbis-dev,libspeex-dev,libglu1-xorg-dev|libglu-dev,libboost-dev,libsdl-ttf2.0-dev,libfribidi-dev
+Maintainer: Stephane Magnenat <stephane at magnenat dot net>
+Build-Depends: debhelper (>> 4.0.0),libsdl1.2-dev (>=1.2.0),libsdl-image1.2-dev(>=1.2.0),libsdl-net1.2-dev(>=1.2.0),libvorbis-dev,libspeex-dev,libglu1-xorg-dev|libglu-dev,libboost-dev,libsdl-ttf2.0-dev,libfribidi-dev,scons,libboost-date-time-dev,libboost-thread-dev,libboost-dev,libfribidi-dev
 Standards-Version: 3.5.8
 
 Package: glob2
 Architecture: any
-Depends: ${shlibs:Depends},libsdl-image1.2(>=1.2.0),libsdl-net1.2(>=1.2.0),libsdl1.2-all | libsdl1.2-esd | libsdl1.2-oss | libsdl1.2-arts | libsdl1.2debian-esd | libsdl1.2debian-oss | libsdl1.2debian-arts | libsdl1.2debian-alsa, xlibmesa3-glu(>=4.0) | libglu1, libvorbis0a, libspeex1,libsdl-ttf2.0-0,libfribidi0
+Depends: ${shlibs:Depends}
 Conflicts: glob2cvs
 Description: Glob2 is a state of the art Real Time Strategy (RTS) game.
  Globulation in a whole is an on-going project to create an innovative high 
