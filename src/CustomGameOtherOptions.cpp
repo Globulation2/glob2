@@ -25,14 +25,17 @@
 #include <GUINumber.h>
 #include <sstream>
 
-CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader)
+CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
 	:	gameHeader(gameHeader), oldGameHeader(gameHeader), mapHeader(mapHeader)
 {
-	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
+	ok = new TextButton(440, (readOnly ? 420 : 360), 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
 	
-	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
-	addWidget(cancel);
+	if(!readOnly)
+	{
+		cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
+		addWidget(cancel);
+	}
 	
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Other Options]"));
 	addWidget(title);
@@ -61,6 +64,11 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 		color[i]->addColor(mapHeader.getBaseTeam(gameHeader.getBasePlayer(i).teamNumber).color);
 		color[i]->setSelectedColor(0);
 		
+		if(readOnly)
+		{
+			allyTeamNumbers[i]->setClickable(false);
+		}
+		
 		addWidget(playerNames[i]);
 		addWidget(color[i]);
 		addWidget(allyTeamNumbers[i]);
@@ -68,9 +76,10 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 	
 	teamsFixed = new OnOffButton(300, 60, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.areAllyTeamsFixed(), TEAMSFIXED);
 	addWidget(teamsFixed);
-	
 	teamsFixedText = new Text(325, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Teams Fixed]"));
 	addWidget(teamsFixedText);
+	if(readOnly)
+		teamsFixed->setClickable(false);
 	
 	//These are for winning conditions
 	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, PRESTIGEWINENABLED);
@@ -78,12 +87,16 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 	prestigeWinEnabledText = new Text(325, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Prestige Win Enabled]"));
 	addWidget(prestigeWinEnabledText);
 	updateScreenWinningConditions();
+	if(readOnly)
+		prestigeWinEnabled->setClickable(false);
 	
 	//Map discovered.
 	mapDiscovered = new OnOffButton(300, 120, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.isMapDiscovered(), MAPDISCOVERED);
 	addWidget(mapDiscovered);
 	mapDiscoveredText = new Text(325, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Map Discovered]"));
 	addWidget(mapDiscoveredText);
+	if(readOnly)
+		mapDiscovered->setClickable(false);
 }
 
 
