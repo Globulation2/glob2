@@ -61,8 +61,8 @@ unsigned Glob2Screen::getNextTerrain(void)
 
 
 
-Glob2TabScreen::Glob2TabScreen(bool fullScreen)
-	: TabScreen(fullScreen)
+Glob2TabScreen::Glob2TabScreen(bool fullScreen, bool longerButtons)
+	: TabScreen(fullScreen, longerButtons)
 {
 }
 
