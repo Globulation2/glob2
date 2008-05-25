@@ -63,13 +63,11 @@ enum NetMessageType
 	MNetCreateGame,
 	MNetCreateGameAccepted,
 	MNetCreateGameRefused,
-	MNetEveryoneReadyToLaunch,
 	MNetGameJoinAccepted,
 	MNetGameJoinRefused,
 	MNetIPIsBanned,
 	MNetKickPlayer,
 	MNetLeaveGame,
-	MNetNotEveryoneReadyToLaunch,
 	MNetNotReadyToLaunch,
 	MNetPlayerIsBanned,
 	MNetPlayerJoinsGame,
@@ -1225,60 +1223,6 @@ public:
 private:
 private:
 	Uint16 playerID;
-};
-
-
-
-
-///NetEveryoneReadyToLaunch
-class NetEveryoneReadyToLaunch : public NetMessage
-{
-public:
-	///Creates a NetEveryoneReadyToLaunch message
-	NetEveryoneReadyToLaunch();
-
-	///Returns MNetEveryoneReadyToLaunch
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetEveryoneReadyToLaunch message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetEveryoneReadyToLaunch
-	bool operator==(const NetMessage& rhs) const;
-};
-
-
-
-
-///NetNotEveryoneReadyToLaunch
-class NetNotEveryoneReadyToLaunch : public NetMessage
-{
-public:
-	///Creates a NetNotEveryoneReadyToLaunch message
-	NetNotEveryoneReadyToLaunch();
-
-	///Returns MNetNotEveryoneReadyToLaunch
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetNotEveryoneReadyToLaunch message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetNotEveryoneReadyToLaunch
-	bool operator==(const NetMessage& rhs) const;
 };
 
 

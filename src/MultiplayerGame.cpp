@@ -35,7 +35,6 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	haveGameHeader = false;
 	wasReadyToStart=false;
 	sentReadyToStart=false;
-	isEveryoneReadyToGo=false;
 	isStarting=false;
 	chatChannel=0;
 	previousPercentage = 255;
@@ -69,10 +68,13 @@ void MultiplayerGame::update()
 	}
 	
 	
+	updateReadyState();
 	if(isGameReadyToStart() && !wasReadyToStart)
 	{
 		shared_ptr<MGReadyToStartEvent> event(new MGReadyToStartEvent);
 		sendToListeners(event);
+		shared_ptr<MGPlayerReadyStatusChanged> event2(new MGPlayerReadyStatusChanged(client->getPlayerID()));
+		sendToListeners(event2);
 		if(gjcState == JoinedGame)
 		{
 			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
@@ -84,6 +86,8 @@ void MultiplayerGame::update()
 	{
 		shared_ptr<MGNotReadyToStartEvent> event(new MGNotReadyToStartEvent);
 		sendToListeners(event);
+		shared_ptr<MGPlayerReadyStatusChanged> event2(new MGPlayerReadyStatusChanged(client->getPlayerID()));
+		sendToListeners(event2);
 		if(gjcState == JoinedGame)
 		{
 			shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
@@ -233,27 +237,38 @@ bool MultiplayerGame::isGameReadyToStart()
 {
 	if(gjcState == WaitingForCreateReply || gjcState == WaitingForJoinReply)
 		return false;
-
+	
 	if(gjcState == HostingGame)
 	{
-		if(!isEveryoneReadyToGo)
+		if(!playerManager.isEveryoneReadyToGo())
 			return false;
 	}
 
-	if(gjcState == JoinedGame && (!haveMapHeader || !haveGameHeader))
-		return false;
-
-	if(!client->getGameConnection() || !client->getGameConnection()->isConnected())
-		return false;
-
-	if(client->getYOGClientFileAssembler(fileID))
+	if(!playerManager.isReadyToGo(client->getPlayerID()))
 	{
-		if(client->getYOGClientFileAssembler(fileID)->getPercentage() == 100)
-			return true;
 		return false;
 	}
 	
 	return true;
+}
+
+
+
+void MultiplayerGame::updateReadyState()
+{
+	bool ready=true;
+	if(!client->getGameConnection() || !client->getGameConnection()->isConnected())
+		ready = false;
+
+	if(gjcState == JoinedGame && (!haveMapHeader || !haveGameHeader))
+		ready = false;
+		
+	if(client->getYOGClientFileAssembler(fileID))
+	{
+		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != 100)
+			ready = false;
+	}
+	playerManager.setReadyToGo(client->getPlayerID(), ready);
 }
 
 
@@ -505,13 +520,19 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			sendToListeners(event);
 		}
 	}
-	if(type==MNetEveryoneReadyToLaunch)
+	if(type==MNetReadyToLaunch)
 	{
-		isEveryoneReadyToGo = true;
+		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
+		playerManager.setReadyToGo(info->getPlayerID(), true);
+		shared_ptr<MGPlayerReadyStatusChanged> event(new MGPlayerReadyStatusChanged(info->getPlayerID()));
+		sendToListeners(event);
 	}
-	if(type==MNetNotEveryoneReadyToLaunch)
+	if(type==MNetNotReadyToLaunch)
 	{
-		isEveryoneReadyToGo = false;
+		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
+		playerManager.setReadyToGo(info->getPlayerID(), false);
+		shared_ptr<MGPlayerReadyStatusChanged> event(new MGPlayerReadyStatusChanged(info->getPlayerID()));
+		sendToListeners(event);
 	}
 	if(type==MNetSetLatencyMode)
 	{
@@ -675,4 +696,10 @@ void MultiplayerGame::setGameResult(YOGGameResult result)
 	client->sendNetMessage(message);
 }
 
+
+
+bool MultiplayerGame::isReadyToStart(int playerID)
+{
+	return playerManager.isReadyToGo(playerID);
+}
 

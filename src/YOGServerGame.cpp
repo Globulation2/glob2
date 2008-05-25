@@ -81,21 +81,6 @@ void YOGServerGame::update()
 			i++;
 		}
 	}
-	if(gameStarted == false)
-	{
-		if(playerManager.isEveryoneReadyToGo() && !oldReadyToLaunch)
-		{
-			shared_ptr<NetEveryoneReadyToLaunch> readyToLaunch(new NetEveryoneReadyToLaunch);
-			host->sendMessage(readyToLaunch);
-			oldReadyToLaunch=true;
-		}
-		else if(!playerManager.isEveryoneReadyToGo() && oldReadyToLaunch)
-		{
-			shared_ptr<NetNotEveryoneReadyToLaunch> notReadyToLaunch(new NetNotEveryoneReadyToLaunch);
-			host->sendMessage(notReadyToLaunch);
-			oldReadyToLaunch=false;
-		}
-	}
 }
 
 void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
@@ -298,6 +283,12 @@ Uint16 YOGServerGame::getGameID() const
 void YOGServerGame::setReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, true);
+	boost::shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(playerID));
+	for(std::vector<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if((*i)->getPlayerID() != playerID)
+			(*i)->sendMessage(message);
+	}
 }
 
 
@@ -305,6 +296,12 @@ void YOGServerGame::setReadyToStart(int playerID)
 void YOGServerGame::setNotReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, false);
+	boost::shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(playerID));
+	for(std::vector<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if((*i)->getPlayerID() != playerID)
+			(*i)->sendMessage(message);
+	}
 }
 
 

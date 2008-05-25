@@ -44,6 +44,8 @@ public:
 	void setReadyToGo(int playerID, bool isReady);
 	///Tells whether all players are ready to go
 	bool isEveryoneReadyToGo();
+	///Returns true if a particular player is ready to go
+	bool isReadyToGo(int playerID);
 	///Sets the number of teams
 	void setNumberOfTeams(int numberOfTeams);
 	///Sets the reteaming information. Reteaming is when you reload a YOG save

@@ -256,6 +256,26 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 		}
 		updateVisibleButtons();
 	}
+	else if(type == MGEPlayerReadyStatusChanged)
+	{
+		shared_ptr<MGPlayerReadyStatusChanged> info = static_pointer_cast<MGPlayerReadyStatusChanged>(event);
+		GameHeader& gh = game->getGameHeader();
+		for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+		{
+			BasePlayer& bp = gh.getBasePlayer(i);
+			if(bp.playerID == info->getPlayerID())
+			{
+				if(!game->isReadyToStart(bp.playerID))
+				{
+					text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Color(255,64,64)));
+				}
+				else
+				{
+					text[i]->setStyle(Font::Style());
+				}
+			}
+		}
+	}
 }
 
 
@@ -288,6 +308,14 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 				kickButton[i]->visible=isActivated();
 			else
 				kickButton[i]->visible=false;
+			if(!game->isReadyToStart(bp.playerID))
+			{
+				text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Color(255,64,64)));
+			}
+			else
+			{
+				text[i]->setStyle(Font::Style());
+			}
 		}
 		else if(i < mh.getNumberOfTeams())
 		{
