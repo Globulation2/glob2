@@ -1523,12 +1523,12 @@ void Building::subscribeToBringRessourcesStep()
 					bool canSwim=unit->performance[SWIM];
 					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 					int distUnitBuilding;
-					for (int r=0; r<MAX_RESSOURCES; r++)
+					if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 					{
-						int need=neededRessource(r);
-						if (need>0)
+						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
-							if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+							int need=neededRessource(r);
+							if (need>0)
 							{
 								int distUnitRessource;
 								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
@@ -1550,9 +1550,18 @@ void Building::subscribeToBringRessourcesStep()
 									unitsFailingRequirements+=1;
 								}
 							}
-							else if(r < HAPPYNESS_BASE)
+						}
+					}
+					else
+					{	
+						///Ignore if only resource needed is fruit
+						for (int r=0; r<HAPPYNESS_BASE; r++)
+						{
+							int need=neededRessource(r);
+							if (need>0)
 							{
 								unitsFailingRequirements+=1;
+								break;
 							}
 						}
 					}
@@ -1665,7 +1674,7 @@ void Building::subscribeForFlagingStep()
 			  	 	if(!canUnitWorkHere(unit))
 			  		  	continue;
 
-					int timeLeft=unit->hungry/unit->race->hungryness;
+					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist;
 					bool canSwim=unit->performance[SWIM];
