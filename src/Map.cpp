@@ -3811,7 +3811,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		isWarFlag=true;
 	
 	memset(gradient, 1, size);
-	
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
 		assert(!building->type->zonableForbidden);
