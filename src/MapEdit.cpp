@@ -1378,6 +1378,11 @@ int MapEdit::run(void)
 		{
 			returnCode = -1;
 		}
+		if(!isRunning)
+		{
+				SDL_Event event;
+			while (SDL_PollEvent(&event));
+		}
 	}
 
 	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
@@ -1989,6 +1994,11 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		deleteButton->setUnselected();
 		areasButton->setUnselected();
 		noRessourceGrowthButton->setUnselected();
+		isDraggingZone=false;
+		isDraggingTerrain=false;
+		isDraggingDelete=false;
+		isDraggingArea=false;
+		isDraggingNoRessourceGrowthArea=false;
 		if(panelMode==UnitEditor)
 			performAction("switch to building view");
 	}
