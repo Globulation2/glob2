@@ -447,7 +447,7 @@ void GameGUI::step(void)
 	while(gevent)
 	{
 		Color c = gevent->formatColor();
-		addMessage(c, gevent->formatMessage());
+		addMessage(c, gevent->formatMessage(), false);
 		eventGoPosX = gevent->getX();
 		eventGoPosY = gevent->getY();
 		eventGoType = gevent->getEventType();
@@ -473,7 +473,7 @@ void GameGUI::step(void)
 		///Must be done backwards to appear in the right order
 		for (int i=messages.size()-1; i>=0; i--)
 		{
-			messageManager.addMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
+			messageManager.addChatMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
 		}
 		
 		previousSGSLText = game.script.textShown;
@@ -3481,8 +3481,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		ymesg += yinc+2;
 		
-		if(!scrollableText)
-			messageManager.drawAllMessages(32, ymesg);
+		messageManager.drawAllGameMessages(32, ymesg);
 	}
 
 	// display map mark
@@ -3513,6 +3512,9 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->standardFont->popStyle();
 		}
 	}
+	
+	if(!scrollableText)
+		messageManager.drawAllChatMessages(32, globalContainer->gfx->getH() - 165);
 
 	// Draw the bar contining number of units, CPU load, etc...
 	drawTopScreenBar();
@@ -3579,7 +3581,7 @@ void GameGUI::drawInGameTextInput(void)
 void GameGUI::drawInGameScrollableText(void)
 {
 	scrollableText->decX=28;
-	scrollableText->decY=30;
+	scrollableText->decY=globalContainer->gfx->getH() - 165;
 	scrollableText->dispatchPaint();
 	globalContainer->gfx->drawSurface(scrollableText->decX, scrollableText->decY, scrollableText->getSurface());
 }
@@ -3714,12 +3716,12 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
 				if (mo->recepientsMask &(1<<localPlayer))
-					addMessage(Color(230, 230, 230), FormatableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()));
+					addMessage(Color(230, 230, 230), FormatableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()), true);
 			}
 			else if (messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
 				if (mo->recepientsMask &(1<<localPlayer))
-					addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()));
+					addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()), true);
 				else if (sp==localPlayer)
 				{
 					Uint32 rm=mo->recepientsMask;
@@ -3727,7 +3729,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 					for (k=0; k<32; k++)
 						if (rm==1)
 						{
-							addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()));
+							addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
 							break;
 						}
 						else
@@ -3754,7 +3756,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 			int qp=order->sender;
 			if (qp==localPlayer)
 				isRunning=false;
-			addMessage(Color(200, 200, 200), FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name));
+			addMessage(Color(200, 200, 200), FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name), true);
 			game.executeOrder(order, localPlayer);
 		}
 		break;
@@ -4346,7 +4348,7 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 		output->push_back(lastLine);
 }
 
-void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText)
+void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat)
 {	
 	//Split into one per line
 	std::vector<std::string> messages;
@@ -4358,7 +4360,10 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 	///Must be done backwards to appear in the right order
 	for (int i=messages.size()-1; i>=0; i--)
 	{
-		messageManager.addMessage(InGameMessage(messages[i], color));
+		if(!chat)
+			messageManager.addGameMessage(InGameMessage(messages[i], color));
+		else
+			messageManager.addChatMessage(InGameMessage(messages[i], color, 16000));
 	}
 }
 

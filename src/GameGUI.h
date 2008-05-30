@@ -335,7 +335,7 @@ private:
 	InGameScrollableHistory* scrollableText;
 
 	/// Add a message to the list of messages
-	void addMessage(const GAGCore::Color& color, const std::string &msgText);
+	void addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat);
 
 	// Message stuff
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
