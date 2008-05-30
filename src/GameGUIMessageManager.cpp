@@ -58,16 +58,37 @@ GameGUIMessageManager::GameGUIMessageManager()
 
 
 	
-void GameGUIMessageManager::addMessage(const InGameMessage& message)
+void GameGUIMessageManager::addGameMessage(const InGameMessage& message)
 {
-	history.push_front(message);
+	historyGame.push_front(message);
+}
+
+
+	
+void GameGUIMessageManager::addChatMessage(const InGameMessage& message)
+{
+	historyChat.push_front(message);
 }
 
 
 
-void GameGUIMessageManager::drawAllMessages(int x, int y)
+void GameGUIMessageManager::drawAllGameMessages(int x, int y)
 {
-	for (std::list <InGameMessage>::iterator i=history.begin(); i!=history.end(); ++i)
+	for (std::list <InGameMessage>::iterator i=historyGame.begin(); i!=historyGame.end(); ++i)
+	{
+		if(i->timeLeft != 0)
+		{
+			i->draw(x, y);
+			y += 20;
+		}
+	}
+}
+
+
+
+void GameGUIMessageManager::drawAllChatMessages(int x, int y)
+{
+	for (std::list <InGameMessage>::iterator i=historyChat.begin(); i!=historyChat.end(); ++i)
 	{
 		if(i->timeLeft != 0)
 		{
@@ -81,7 +102,7 @@ void GameGUIMessageManager::drawAllMessages(int x, int y)
 
 InGameScrollableHistory* GameGUIMessageManager::createScrollableHistoryScreen()
 {
-	return new InGameScrollableHistory(globalContainer->gfx, history);
+	return new InGameScrollableHistory(globalContainer->gfx, historyChat);
 }
 
 
