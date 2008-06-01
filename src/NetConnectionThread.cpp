@@ -140,29 +140,19 @@ void NetConnectionThread::operator()()
 						}
 					}
 					break;
-					case NTMAttemptConnection:
+					case NTMAcceptConnection:
 					{
-						boost::shared_ptr<NTAttemptConnection> info = static_pointer_cast<NTAttemptConnection>(message);
+						boost::shared_ptr<NTAcceptConnection> info = static_pointer_cast<NTAcceptConnection>(message);
 						if(!connected)
 						{
-							socket=SDLNet_TCP_Accept(info->getSocket());
-							if(!socket)
-							{
-								boost::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
-								sendToMainThread(error);
-							}
-							else
-							{
-								connected=true;
-								address = *SDLNet_TCP_GetPeerAddress(socket);
-								SDLNet_TCP_AddSocket(set, socket);
-								std::string ip = boost::lexical_cast<std::string>((address.host >> 0 ) & 0xff) + "." +
-								                 boost::lexical_cast<std::string>((address.host >> 8 ) & 0xff) + "." +
-								                 boost::lexical_cast<std::string>((address.host >> 16) & 0xff) + "." +
-								                 boost::lexical_cast<std::string>((address.host >> 24) & 0xff);
-								boost::shared_ptr<NTConnected> connected(new NTConnected(ip));
-								sendToMainThread(connected);
-							}
+							connected=true;
+							socket=info->getSocket();
+							address = *SDLNet_TCP_GetPeerAddress(socket);
+							SDLNet_TCP_AddSocket(set, socket);
+							std::string ip = boost::lexical_cast<std::string>((address.host >> 0 ) & 0xff) + "." +
+							                 boost::lexical_cast<std::string>((address.host >> 8 ) & 0xff) + "." +
+							                 boost::lexical_cast<std::string>((address.host >> 16) & 0xff) + "." +
+							                 boost::lexical_cast<std::string>((address.host >> 24) & 0xff);
 						}
 					}
 					break;

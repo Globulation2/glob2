@@ -35,7 +35,7 @@ enum NetConnectionThreadMessageType
 	NTMLostConnection,
 	NTMRecievedMessage,
 	NTMSendMessage,
-	NTMAttemptConnection,
+	NTMAcceptConnection,
 	NTMExitThread,
 	//type_append_marker
 };
@@ -234,14 +234,14 @@ private:
 
 
 
-///NTAttemptConnection
-class NTAttemptConnection : public NetConnectionThreadMessage
+///NTAcceptConnection
+class NTAcceptConnection : public NetConnectionThreadMessage
 {
 public:
-	///Creates a NTAttemptConnection event
-	NTAttemptConnection(TCPsocket& socket);
+	///Creates a NTAcceptConnection event
+	NTAcceptConnection(TCPsocket& socket);
 
-	///Returns NTMAttemptConnection
+	///Returns NTMAcceptConnection
 	Uint8 getMessageType() const;
 
 	///Returns a formatted version of the event
@@ -251,9 +251,9 @@ public:
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
 	///Retrieves socket
-	TCPsocket& getSocket() const;
+	TCPsocket getSocket() const;
 private:
-	TCPsocket& socket;
+	TCPsocket socket;
 };
 
 
