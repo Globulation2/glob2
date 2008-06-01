@@ -73,7 +73,7 @@ protected:
 
 	///This function attempts a connection using the provided TCP server socket.
 	///One can use isConnected to test for success.
-	void attemptConnection(TCPsocket& serverSocket);
+	bool attemptConnection(TCPsocket& serverSocket);
 	
 private:
 	NetConnectionThread connect;

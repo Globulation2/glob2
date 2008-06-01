@@ -1,4 +1,4 @@
-/*
+ /*
   Copyright (C) 2007 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
@@ -170,9 +170,17 @@ const std::string& NetConnection::getIPAddress() const
 
 
 
-void NetConnection::attemptConnection(TCPsocket& serverSocket)
+bool NetConnection::attemptConnection(TCPsocket& serverSocket)
 {
-	boost::shared_ptr<NTAttemptConnection> close(new NTAttemptConnection(serverSocket));
-	connect.sendMessage(close);
-	connecting=true;
+	TCPsocket socket=NULL;
+	socket=SDLNet_TCP_Accept(serverSocket);
+	if(socket)
+	{
+		boost::shared_ptr<NTAcceptConnection> accept(new NTAcceptConnection(socket));
+		connect.sendMessage(accept);
+		while(connect.isConnected() == false)
+			SDL_Delay(5);
+		return true;
+	}
+	return false;
 }

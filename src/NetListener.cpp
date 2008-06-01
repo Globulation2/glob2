@@ -91,21 +91,8 @@ bool NetListener::attemptConnection(NetConnection& connection)
 {
 	if(listening)
 	{
-		connection.attemptConnection(socket);
-		while(connection.isConnecting())
-		{
-			connection.update();
-			SDL_Delay(10);
-		}
-		
-		if(connection.isConnected())
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		bool accepted = connection.attemptConnection(socket);
+		return accepted;
 	}
 	else
 	{
