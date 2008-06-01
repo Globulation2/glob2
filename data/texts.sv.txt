@@ -1144,6 +1144,8 @@ YOG metaserver vägrar anslutning utan att lämna förklaring!
 YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
 [YESTS_UNABLE_TO_CONNECT]

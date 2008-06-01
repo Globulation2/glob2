@@ -1134,6 +1134,8 @@ Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Spitzname schon von jemand anderem benutzt wird.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 [YESTS_UNABLE_TO_CONNECT]

@@ -1140,6 +1140,8 @@ up
 Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Система соединения готова обратиться к метасерверу YOG за подключением.
 [YESTS_UNABLE_TO_CONNECT]
