@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "GUIBase.h"
 #include "FormatableString.h"
 #include "GameGUI.h"
+#include <cmath>
 
 
 using namespace GAGGUI;
@@ -45,6 +46,8 @@ void GameGUIToolManager::activateBuildingTool(const std::string& nbuilding)
 {
 	mode = PlaceBuilding;
 	building = nbuilding;
+	firstPlacementX = -1;
+	firstPlacementY = -1;
 }
 
 
@@ -86,86 +89,41 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		
 		// Translate the mouse position to a building position, and check if there is room
 		// on the map
-		int building_x, building_y;
 		int mapX, mapY;
-		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &building_x, &building_y, viewportX, viewportY);
-		if (bt->isVirtual)
-			isRoom = game.checkRoomForBuilding(building_x, building_y, bt, &mapX, &mapY, localteam);
-		else
-			isRoom = game.checkHardRoomForBuilding(building_x, building_y, bt, &mapX, &mapY);
+		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 		
-		if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
-			isRoom = false;
-			
-		// Increase/Decrease hilight strength, given whether there is room or not
-		if (isRoom)
-			hilightStrength = std::min(hilightStrength + 0.1f, 1.0f);
-		else
-			hilightStrength = std::max(hilightStrength - 0.1f, 0.0f);
-			
-		// we get the screen dimensions of the building
-		int batW = (bt->width) * 32;
-		int batH = sprite->getH(bt->gameSpriteImage);
-		int batX = (((mapX-viewportX)&(game.map.wMask)) * 32);
-		int batY = (((mapY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
-		
-		// Draw the building
-		sprite->setBaseColor(game.teams[localteam]->color);
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
-
-		if (!bt->isVirtual)
+		if(building!="stonewall" || firstPlacementX==-1)
 		{
-			// Count down whether a building site can be placed
-			if (game.teams[localteam]->noMoreBuildingSitesCountdown>0)
+			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
+		}
+		///This allows the drag-placing of walls
+		else
+		{
+			int startx = std::min(mapX, firstPlacementX);
+			int endx = std::max(mapX, firstPlacementX);
+			int dirx = 1;
+			if(endx > (startx + game.map.getW()/2))
+				dirx = -1;
+			for(int x=startx; x!=endx; x+=dirx)
 			{
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
-				
-				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
-				globalContainer->littleFont->popStyle();
+				if(x<0)
+					x+=game.map.getW();
+				drawBuildingAt(x, firstPlacementY, localteam, viewportX, viewportY);
 			}
-			else
+			drawBuildingAt(endx, firstPlacementY, localteam, viewportX, viewportY);
+			
+			int starty = std::min(mapY, firstPlacementY);
+			int endy = std::max(mapY, firstPlacementY);
+			int diry = 1;
+			if(endy > (starty + game.map.getH()/2))
+				diry = -1;
+			for(int y=starty; y!=endy; y+=diry)
 			{
-				// Draw the square arround the building, denoting its size when upgraded
-				if (isRoom)
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
-				else
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				
-				// We look for its maximum extension size
-				// we find last's level type num:
-				BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
-				int lastTypeNum=typeNum;
-				int max=0;
-				while (lastbt->nextLevel>=0)
-				{
-					lastTypeNum=lastbt->nextLevel;
-					lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
-					if (max++>200)
-					{
-						printf("GameGUI: Error: nextLevel architecture is broken.\n");
-						assert(false);
-						break;
-					}
-				}
-					
-				int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
-				bool isExtendedRoom = game.checkHardRoomForBuilding(building_x, building_y, lastbt, &exMapX, &exMapY);
-				int exBatX=((exMapX-viewportX)&(game.map.wMask)) * 32;
-				int exBatY=((exMapY-viewportY)&(game.map.hMask)) * 32;
-				int exBatW=(lastbt->width) * 32;
-				int exBatH=(lastbt->height) * 32;
-
-				if (isRoom && isExtendedRoom)
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
-				else
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 0, 0, 127);
+				if(y<0)
+					y+=game.map.getH();
+				drawBuildingAt(mapX, y, localteam, viewportX, viewportY);
 			}
+			drawBuildingAt(mapX, endy, localteam, viewportX, viewportY);
 		}
 	}
 	else if(mode == PlaceZone)
@@ -242,44 +200,22 @@ GameGUIToolManager::ZoneType GameGUIToolManager::getZoneType() const
 void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
 {
 	if(mode == PlaceBuilding)
-	{
-		// Count down whether a building site can be placed
-		if (game.teams[localteam]->noMoreBuildingSitesCountdown==0)
+	{		
+		// we get the type of building
+		// try to get the building site, if it doesn't exists, get the finished building (for flags)
+		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
+		if (typeNum==-1)
 		{
-			// we get the type of building
-			// try to get the building site, if it doesn't exists, get the finished building (for flags)
-			Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
-			if (typeNum==-1)
-			{
-				typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
-				assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
-			}
-			assert (typeNum!=-1);
-
-			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-
-			int mapX, mapY;
-			int tempX, tempY;
-			bool isRoom;
-			game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-			if (bt->isVirtual)
-				isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
-			else
-				isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-				
-		
-			if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
-				isRoom = false;
-			
-			int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-			int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
-			
-			if (isRoom)
-			{
-				ghostManager.addBuilding(building, mapX, mapY);
-				orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
-			}
+			typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
 		}
+		assert (typeNum!=-1);
+
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		int tempX, tempY;
+		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+		firstPlacementX=tempX;
+		firstPlacementY=tempY;
 	}
 	if(mode == PlaceZone)
 	{
@@ -308,9 +244,61 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 	if(mode == PlaceZone)
 	{
 		flushBrushOrders(localteam);
-		firstPlacementX=-1;
-		firstPlacementY=-1;
 	}
+	if(mode == PlaceBuilding)
+	{		
+		// we get the type of building
+		// try to get the building site, if it doesn't exists, get the finished building (for flags)
+		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
+		if (typeNum==-1)
+		{
+			typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
+		}
+		assert (typeNum!=-1);
+
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		
+		int mapX, mapY;
+		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
+		placeBuildingAt(mapX, mapY, localteam);
+
+		if(building!="stonewall" || firstPlacementX==-1)
+		{
+			placeBuildingAt(mapX, mapY, localteam);
+		}
+		///This allows the drag-placing of walls
+		else
+		{
+			int startx = std::min(mapX, firstPlacementX);
+			int endx = std::max(mapX, firstPlacementX);
+			int dirx = 1;
+			if(endx > (startx + game.map.getW()/2))
+				dirx = -1;
+			for(int x=startx; x!=endx; x+=dirx)
+			{
+				if(x<0)
+					x+=game.map.getW();
+				placeBuildingAt(x, firstPlacementY, localteam);
+			}
+			placeBuildingAt(endx, firstPlacementY, localteam);
+			
+			int starty = std::min(mapY, firstPlacementY);
+			int endy = std::max(mapY, firstPlacementY);
+			int diry = 1;
+			if(endy > (starty + game.map.getH()/2))
+				diry = -1;
+			for(int y=starty; y!=endy; y+=diry)
+			{
+				if(y<0)
+					y+=game.map.getH();
+				placeBuildingAt(mapX, y, localteam);
+			}
+			placeBuildingAt(mapX, endy, localteam);
+		}
+	}
+	firstPlacementX=-1;
+	firstPlacementY=-1;
 }
 
 
@@ -419,3 +407,136 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 		brushAccumulator.clear();
 	}
 }
+
+
+
+void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
+{
+	// Count down whether a building site can be placed
+	if (game.teams[localteam]->noMoreBuildingSitesCountdown==0)
+	{
+		// we get the type of building
+		// try to get the building site, if it doesn't exists, get the finished building (for flags)
+		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
+		if (typeNum==-1)
+		{
+			typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
+		}
+		assert (typeNum!=-1);
+
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+
+		int tempX = mapX, tempY = mapY;
+		bool isRoom;
+		if (bt->isVirtual)
+			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
+		else
+			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+			
+	
+		if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
+			isRoom = false;
+		
+		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
+		
+		if (isRoom)
+		{
+			ghostManager.addBuilding(building, mapX, mapY);
+			orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
+		}
+	}
+}
+
+
+
+void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int viewportX, int viewportY)
+{
+	// Get the type and sprite
+	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+	Sprite *sprite = bt->gameSpritePtr;
+		
+	int tempX = mapX, tempY = mapY;
+	bool isRoom;
+	if (bt->isVirtual)
+		isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
+	else
+		isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+			
+	
+	if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
+		isRoom = false;
+	
+	// Increase/Decrease hilight strength, given whether there is room or not
+	if (isRoom)
+		hilightStrength = std::min(hilightStrength + 0.1f, 1.0f);
+	else
+		hilightStrength = std::max(hilightStrength - 0.1f, 0.0f);
+		
+	// we get the screen dimensions of the building
+	int batW = (bt->width) * 32;
+	int batH = sprite->getH(bt->gameSpriteImage);
+	int batX = (((mapX-viewportX)&(game.map.wMask)) * 32);
+	int batY = (((mapY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
+	
+	// Draw the building
+	sprite->setBaseColor(game.teams[localteam]->color);
+	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
+	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
+	globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
+
+	if (!bt->isVirtual)
+	{
+		// Count down whether a building site can be placed
+		if (game.teams[localteam]->noMoreBuildingSitesCountdown>0)
+		{
+			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+			globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
+			globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
+			
+			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
+			globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
+			globalContainer->littleFont->popStyle();
+		}
+		else
+		{
+			// Draw the square arround the building, denoting its size when upgraded
+			if (isRoom)
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+			else
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+			
+			// We look for its maximum extension size
+			// we find last's level type num:
+			BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
+			int lastTypeNum=typeNum;
+			int max=0;
+			while (lastbt->nextLevel>=0)
+			{
+				lastTypeNum=lastbt->nextLevel;
+				lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
+				if (max++>200)
+				{
+					printf("GameGUI: Error: nextLevel architecture is broken.\n");
+					assert(false);
+					break;
+				}
+			}
+				
+			int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
+			bool isExtendedRoom = game.checkHardRoomForBuilding(mapX-lastbt->decLeft, mapY-lastbt->decTop, lastbt, &exMapX, &exMapY);
+			int exBatX=((exMapX-viewportX)&(game.map.wMask)) * 32;
+			int exBatY=((exMapY-viewportY)&(game.map.hMask)) * 32;
+			int exBatW=(lastbt->width) * 32;
+			int exBatH=(lastbt->height) * 32;
+
+			if (isRoom && isExtendedRoom)
+				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
+			else
+				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 0, 0, 127);
+		}
+	}
+}
+
