@@ -675,7 +675,10 @@ int NetTestSuite::testListenerConnection()
 	shared_ptr<NetLoginSuccessful> netSendLogin1(new NetLoginSuccessful);
 	nc_client.sendMessage(netSendLogin1);
 	//Allow time for the request to be proccessed
-	SDL_Delay(40);
+	SDL_Delay(100);
+	
+	nc_client.update();
+	nc_server.update();
 	
 	//Recieves the message on the other end
 	shared_ptr<NetMessage> netSendLogin2 = nc_server.getMessage();

@@ -1144,6 +1144,8 @@ O metaservidor YOG recusou a conexão sem explicação alguma!
 O metaservidor YOG recusou a sua conexão porque este nome de usuário está sendo usado por outro.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 O sistema de conexão está pronto para contatar o metaservidor YOG para conexão.
 [YESTS_UNABLE_TO_CONNECT]

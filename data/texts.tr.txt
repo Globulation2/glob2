@@ -1144,6 +1144,8 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
 [YESTS_UNABLE_TO_CONNECT]

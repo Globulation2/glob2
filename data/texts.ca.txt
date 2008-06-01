@@ -1144,6 +1144,8 @@ El servidor YOG ha rebutjat la conexió inexplicablement.
 No es pot conectar al metaservidor YOG. Nom d'usuari en ús
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 El sistema de conexió està llest per contactar amb el metaservidor YOG
 [YESTS_UNABLE_TO_CONNECT]

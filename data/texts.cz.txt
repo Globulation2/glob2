@@ -1142,6 +1142,8 @@ YOG metaserver odmítnul spojení bez udání důvodu.
 YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Systém připojení je připraven na kontakt s YOG metaserverem.
 [YESTS_UNABLE_TO_CONNECT]

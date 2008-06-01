@@ -1144,6 +1144,8 @@ YOG metazerbitzariak estekatzea ukatu du inolako azalpenik eman gabe!
 YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek duelako.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
 [YESTS_UNABLE_TO_CONNECT]

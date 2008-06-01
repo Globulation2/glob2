@@ -1144,6 +1144,8 @@ De verbinding met de YOG server is zonder duidelijke verklaring geweigerd!
 De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al bestaat.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door een vinkje te zetten voor "Registreer nieuwe gebruiker met wachtwoord".
 [YESTS_UNABLE_TO_CONNECT]

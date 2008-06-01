@@ -85,6 +85,8 @@ enum YOGLoginState
 	YOGUsernameBanned,
 	///This means that this ip address is temporarily banned
 	YOGIPAddressBanned,
+	///This means that the username provided contains either spaces or special characters and is not allowed, !@#$%^&*()+-=[]{}:";'<>\|
+	YOGNameInvalidSpecialCharacters,
 };
 
 ///This represents the reason why the player could not join a game.
