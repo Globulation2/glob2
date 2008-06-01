@@ -803,10 +803,21 @@ void GameGUI::processEvent(SDL_Event *event)
 		
 		if (typingInputScreen->endValue==0)
 		{
+			//Interpret message
 			std::string message = typingInputScreen->getText();
+			Uint32 nchatMask = chatMask;
+			if(message[0] == '/')
+			{
+				if(message[1] == 'a' && message[2] == ' ')
+				{
+					nchatMask = localTeam->allies;
+					message = message.substr(2);
+				}
+			}
+			
 			if (!message.empty())
 			{
-				orderQueue.push_back(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
+				orderQueue.push_back(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 				typingInputScreen->setText("");
 			}
 			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
