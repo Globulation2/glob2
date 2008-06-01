@@ -1144,6 +1144,8 @@ YOG metaserver odmietol spojenie bez vysvetlenia!
 YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
 [YESTS_UNABLE_TO_CONNECT]

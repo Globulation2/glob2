@@ -1142,6 +1142,8 @@ Metaserwer YOG odmĂłwiĹ poĹÄczenia bez dalszego wyjaĹnienia.
 Metaserwer YOG odmówił połączenia, ponieważ twój login jest już zajęty przez kogoś innego.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 System jest gotowy do połączenia z metaserwerem YOG.
 [YESTS_UNABLE_TO_CONNECT]

@@ -26,11 +26,14 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include <iostream>
+
 using namespace GAGCore;
 
 YOGServerPasswordRegistry::YOGServerPasswordRegistry()
 {
 	readPasswords();
+	invalidChars="!@#$%^&*()-+={}[]:\";'>?./<,|\\ \n\t\r";
 }
 
 
@@ -50,6 +53,12 @@ YOGLoginState YOGServerPasswordRegistry::registerInformation(const std::string& 
 {
 	if(passwords[username] != "")
 		return YOGUsernameAlreadyUsed;
+	
+	for(int i=0; i<invalidChars.size(); ++i)
+		if(username.find(invalidChars[i]) != std::string::npos)
+			return YOGNameInvalidSpecialCharacters;
+	
+		
 	passwords[username] = transform(username, password);
 	flushPasswords();
 	return YOGLoginSuccessful;

@@ -1142,6 +1142,8 @@ Yog metastrežnik je brezobrazložitve zavrnil povezavo!
 YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
 [YESTS_UNABLE_TO_CONNECT]

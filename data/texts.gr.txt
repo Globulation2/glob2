@@ -1146,6 +1146,8 @@ Tutorial
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη είναι ήδη σε χρήση από κάποιον άλλον.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
 [YESTS_UNABLE_TO_CONNECT]

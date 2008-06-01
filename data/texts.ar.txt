@@ -1144,6 +1144,8 @@ The YOG metaserver has refused the connection without explanation!
 The YOG metaserver has refused the connection because your username is already used by someone else.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_UNABLE_TO_CONNECT]
