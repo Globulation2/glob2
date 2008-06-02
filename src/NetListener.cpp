@@ -41,12 +41,12 @@ NetListener::~NetListener()
 
 
 
-void NetListener::startListening(Uint16 port)
+void NetListener::startListening(Uint16 nport)
 {
 	if(!listening)
 	{
 		IPaddress address;
-		if(SDLNet_ResolveHost(&address, NULL, port) == -1)
+		if(SDLNet_ResolveHost(&address, NULL, nport) == -1)
 		{
 			if(verbose)
 				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
@@ -63,6 +63,7 @@ void NetListener::startListening(Uint16 port)
 		else
 		{
 			listening=true;
+			port = nport;
 		}
 	}
 	
