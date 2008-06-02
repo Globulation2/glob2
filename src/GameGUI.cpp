@@ -808,10 +808,24 @@ void GameGUI::processEvent(SDL_Event *event)
 			Uint32 nchatMask = chatMask;
 			if(message[0] == '/')
 			{
-				if(message[1] == 'a' && message[2] == ' ')
+				std::string name;
+				for(int i=1; message[i]!=' '; ++i)
+					name += message[i];
+				message = message.substr(message.find(' ')+1);
+				if(name=="a")
 				{
 					nchatMask = localTeam->allies;
-					message = message.substr(2);
+				}
+				else
+				{
+					for(int i=0; i<game.gameHeader.getNumberOfPlayers(); ++i)
+					{
+						if(name == game.gameHeader.getBasePlayer(i).name)
+						{
+							nchatMask = game.gameHeader.getBasePlayer(i).teamNumberMask | localTeam->me;
+							break;
+						}
+					}
 				}
 			}
 			

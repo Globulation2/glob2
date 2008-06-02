@@ -176,6 +176,11 @@ bool NetConnection::attemptConnection(TCPsocket& serverSocket)
 	socket=SDLNet_TCP_Accept(serverSocket);
 	if(socket)
 	{
+		IPaddress ip = *SDLNet_TCP_GetPeerAddress(socket);
+		address = boost::lexical_cast<std::string>((ip.host >> 0 ) & 0xff) + "." +
+		                 boost::lexical_cast<std::string>((ip.host >> 8 ) & 0xff) + "." +
+		                 boost::lexical_cast<std::string>((ip.host >> 16) & 0xff) + "." +
+		                 boost::lexical_cast<std::string>((ip.host >> 24) & 0xff);
 		boost::shared_ptr<NTAcceptConnection> accept(new NTAcceptConnection(socket));
 		connect.sendMessage(accept);
 		while(connect.isConnected() == false)

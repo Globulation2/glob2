@@ -149,10 +149,6 @@ void NetConnectionThread::operator()()
 							socket=info->getSocket();
 							address = *SDLNet_TCP_GetPeerAddress(socket);
 							SDLNet_TCP_AddSocket(set, socket);
-							std::string ip = boost::lexical_cast<std::string>((address.host >> 0 ) & 0xff) + "." +
-							                 boost::lexical_cast<std::string>((address.host >> 8 ) & 0xff) + "." +
-							                 boost::lexical_cast<std::string>((address.host >> 16) & 0xff) + "." +
-							                 boost::lexical_cast<std::string>((address.host >> 24) & 0xff);
 						}
 					}
 					break;
