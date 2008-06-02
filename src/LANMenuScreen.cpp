@@ -99,6 +99,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 						endExecute(-1);
 					else
 						endExecute(HostedGame);
+					delete mgs;
 				}
 			}
 			else if(rc == -1)
