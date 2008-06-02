@@ -698,6 +698,8 @@ Zasięg
 
 [ratios]
 Proporcje
+[ready?]
+
 [refresh map list]
 
 [Register a new YOG user with password]

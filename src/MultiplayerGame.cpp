@@ -41,6 +41,7 @@ MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	gameID=0;
 	fileID=0;
 	wasConnectingToRouter=false;
+	humanReady=false;
 }
 
 
@@ -69,7 +70,7 @@ void MultiplayerGame::update()
 	
 	
 	updateReadyState();
-	if(isGameReadyToStart() && !wasReadyToStart)
+	if(playerManager.isReadyToGo(client->getPlayerID()) && !wasReadyToStart)
 	{
 		shared_ptr<MGReadyToStartEvent> event(new MGReadyToStartEvent);
 		sendToListeners(event);
@@ -79,7 +80,7 @@ void MultiplayerGame::update()
 		client->sendNetMessage(message);
 		wasReadyToStart=true;
 	}
-	else if (!isGameReadyToStart() && wasReadyToStart)
+	else if (!playerManager.isReadyToGo(client->getPlayerID()) && wasReadyToStart)
 	{
 		shared_ptr<MGNotReadyToStartEvent> event(new MGNotReadyToStartEvent);
 		sendToListeners(event);
@@ -262,6 +263,9 @@ void MultiplayerGame::updateReadyState()
 		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != 100)
 			ready = false;
 	}
+	
+	if(gjcState == JoinedGame && !humanReady)
+		ready = false;
 		
 	playerManager.setReadyToGo(client->getPlayerID(), ready);
 }
@@ -697,4 +701,11 @@ bool MultiplayerGame::isReadyToStart(int playerID)
 {
 	return playerManager.isReadyToGo(playerID);
 }
+
+
+void MultiplayerGame::setHumanReady(bool isReady)
+{
+	humanReady=isReady;
+}
+
 

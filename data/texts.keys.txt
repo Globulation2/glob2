@@ -313,6 +313,7 @@
 [range]
 [Rated %0]
 [ratios]
+[ready?]
 [refresh map list]
 [Register a new YOG user with password]
 [remember unit]
