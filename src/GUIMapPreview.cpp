@@ -58,6 +58,8 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::st
 
 MapPreview::~MapPreview()
 {
+	if(surface)
+		delete surface;
 }
 
 
