@@ -1162,6 +1162,8 @@ Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

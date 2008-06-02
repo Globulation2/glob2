@@ -1160,6 +1160,8 @@ A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhe
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

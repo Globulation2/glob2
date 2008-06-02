@@ -1160,6 +1160,8 @@ Imposível conectar-se. Parece que o metaservidor YOG está caido.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

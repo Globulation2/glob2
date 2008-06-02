@@ -1158,6 +1158,8 @@ up
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

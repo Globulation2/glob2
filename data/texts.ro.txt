@@ -1160,6 +1160,8 @@ Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

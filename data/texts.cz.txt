@@ -1160,6 +1160,8 @@ Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]
