@@ -73,6 +73,7 @@ void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, in
 InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 :OverlayScreen(globalContainer->gfx, (gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo)<=8) ? 320 : 600, 395)
 {
+
 	// fill the slots
 	int i;
 	int xBase=0;
@@ -100,16 +101,17 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		texts[i]->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
 		addWidget(texts[i]);
 		
+	
 		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);
 		addWidget(alliance[i]);
-		
+	
 		normalVision[i]=new OnOffButton(196+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0, NORMAL_VISION+i);
 		addWidget(normalVision[i]);
 		
 		if(gameGUI->game.gameHeader.areAllyTeamsFixed())
 		{
-			alliance[i]->setClickable(false);
-			normalVision[i]->setClickable(false);
+			alliance[i]->visible=false;
+			normalVision[i]->visible=false;
 		}
 		
 		foodVision[i]=new OnOffButton(220+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionFood & otherTeamMask) != 0, FOOD_VISION+i);
@@ -124,9 +126,9 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		
 		if(otherTeam == gameGUI->localTeamNo)
 		{
-			texts[i]->visible=false;
 			alliance[i]->visible=false;
 			normalVision[i]->visible=false;
+			texts[i]->visible=false;
 			foodVision[i]->visible=false;
 			marketVision[i]->visible=false;
 			chat[i]->visible=false;
@@ -151,12 +153,21 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		marketVision[i] = NULL;
 		chat[i] = NULL;
 	}
-
+	
+	//Put locks if needed
 	if(gameGUI->game.gameHeader.areAllyTeamsFixed())
 	{
+	
+		int np = gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo);
 		//Although this is the animation widget, we are just using it to display a still frame
-		addWidget(new Animation(172, 40+yBase, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
-		addWidget(new Animation(196, 40+yBase, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
+		addWidget(new Animation(172, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
+		addWidget(new Animation(196, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
+		
+		if(np>8)
+		{
+			addWidget(new Animation(172, 40 + std::min(4, (np-8)/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
+			addWidget(new Animation(196, 40 + std::min(4, (np-8)/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
+		}
 	}
 
 	// add static text and images
