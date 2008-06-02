@@ -75,11 +75,8 @@ void MultiplayerGame::update()
 		sendToListeners(event);
 		shared_ptr<MGPlayerReadyStatusChanged> event2(new MGPlayerReadyStatusChanged(client->getPlayerID()));
 		sendToListeners(event2);
-		if(gjcState == JoinedGame)
-		{
-			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
-			client->sendNetMessage(message);
-		}
+		shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
+		client->sendNetMessage(message);
 		wasReadyToStart=true;
 	}
 	else if (!isGameReadyToStart() && wasReadyToStart)
@@ -88,11 +85,8 @@ void MultiplayerGame::update()
 		sendToListeners(event);
 		shared_ptr<MGPlayerReadyStatusChanged> event2(new MGPlayerReadyStatusChanged(client->getPlayerID()));
 		sendToListeners(event2);
-		if(gjcState == JoinedGame)
-		{
-			shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
-			client->sendNetMessage(message);
-		}
+		shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
+		client->sendNetMessage(message);
 		wasReadyToStart=false;
 	}
 
@@ -268,6 +262,7 @@ void MultiplayerGame::updateReadyState()
 		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != 100)
 			ready = false;
 	}
+		
 	playerManager.setReadyToGo(client->getPlayerID(), ready);
 }
 

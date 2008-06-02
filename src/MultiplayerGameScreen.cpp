@@ -328,6 +328,7 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 		{
 			text[i]->visible=isActivated();
 			text[i]->setText(Toolkit::getStringTable()->getString("[open]"));
+			text[i]->setStyle(Font::Style());
 			color[i]->visible=false;
 			kickButton[i]->visible=false;
 		}
