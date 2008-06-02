@@ -543,6 +543,7 @@
 [yog block command player %0 blocked]
 [yog block command player %0 not found]
 [yog command header]
+[yog command unknown]
 [yog help command help]
 [yog]
 [you have lost]

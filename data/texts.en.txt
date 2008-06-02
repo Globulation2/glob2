@@ -1090,6 +1090,8 @@ Player %0 blocked
 Player %0 not found
 [yog command header]
 The current list of YOG Client Commands are:
+[yog command unknown]
+Unknown Command.
 [yog help command help]
 /help    Shows this help message
 [yog]
