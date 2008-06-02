@@ -1160,6 +1160,8 @@ Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

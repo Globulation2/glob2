@@ -110,6 +110,10 @@ std::string YOGClientCommandManager::executeClientCommand(const std::string& mes
 			}
 		}
 	}
+	if(tokens[0][0]=='/')
+	{
+		text += Toolkit::getStringTable()->getString("[yog command unknown]");
+	}
 	return text;
 }
 

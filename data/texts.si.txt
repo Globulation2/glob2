@@ -1160,6 +1160,8 @@ Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

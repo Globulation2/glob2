@@ -1152,6 +1152,8 @@ Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]

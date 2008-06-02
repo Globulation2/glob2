@@ -1152,6 +1152,8 @@ Non mi riesco a connettere, apparentemente il master server YOG è offline.
 
 [yog command header]
 
+[yog command unknown]
+
 [yog help command help]
 
 [yog]
