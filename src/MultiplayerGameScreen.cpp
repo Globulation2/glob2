@@ -61,11 +61,11 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	startButton->visible=false;
 	addWidget(startButton);
 
-	gameStartWaitingText=new Text(20, (isHost ? 455 : 425), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
+	gameStartWaitingText=new Text(20, (isHost ? 455 : 395), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Waiting]"), 180, 30);
 	addWidget(gameStartWaitingText);
 	gameStartWaitingText->visible = false;
 
-	notReadyText=new Text(20, (isHost ? 455 : 425), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
+	notReadyText=new Text(20, (isHost ? 455 : 395), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=isActivated();
 	addWidget(notReadyText);
 
@@ -73,6 +73,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	addWidget(otherOptions);
 	otherOptions->visible=false;
 	
+	if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
+	{
+		isReadyText = new Text(50, 440, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[ready?]"));
+		isReady = new OnOffButton(20, 445, 20, 20, ALIGN_RIGHT, ALIGN_TOP, false, READY);
+		addWidget(isReadyText);
+		addWidget(isReady);
+	}
 
 	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
 	{
@@ -172,7 +179,10 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
-		game->changeTeam(par1 - COLOR_BUTTONS, par2);
+		if(par1 == READY)
+			game->setHumanReady(isReady->getState());
+		else if(par1 > COLOR_BUTTONS)
+			game->changeTeam(par1 - COLOR_BUTTONS, par2);
 	}
 	else if (action==TEXT_VALIDATED)
 	{

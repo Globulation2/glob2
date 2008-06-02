@@ -146,6 +146,9 @@ public:
 	
 	///Retursn true if the given player is ready to start
 	bool isReadyToStart(int playerID);
+	
+	///Sets whether the player (as in the actual person) is ready, usually by clicking a check box
+	void setHumanReady(bool isReady);
 protected:
 	friend class YOGClient;
 
@@ -178,6 +181,7 @@ private:
 	bool haveGameHeader;
 	bool wasReadyToStart;
 	bool sentReadyToStart;
+	bool humanReady;
 	std::list<MultiplayerGameEventListener*> listeners;
 	Uint32 chatChannel;
 	bool isStarting;

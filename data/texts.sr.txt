@@ -698,6 +698,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [ratios]
 Односи
+[ready?]
+
 [refresh map list]
 
 [Register a new YOG user with password]

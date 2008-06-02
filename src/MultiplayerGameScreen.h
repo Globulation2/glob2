@@ -36,6 +36,7 @@ namespace GAGGUI
 	class TextInput;
 	class TextButton;
 	class ColorButton;
+	class OnOffButton;
 }
 
 using namespace GAGGUI;
@@ -68,6 +69,7 @@ private:
 		CANCEL = 2,
 		STARTED=3,
 		OTHEROPTIONS=4,
+		READY=5,
 		
 		COLOR_BUTTONS=32,
 		CLOSE_BUTTONS=64,
@@ -102,6 +104,9 @@ private:
 
 	TextInput *textInput;
 	TextArea *chatWindow;
+	
+	OnOffButton *isReady;
+	Text *isReadyText;
 
 	boost::shared_ptr<MultiplayerGame> game;
 

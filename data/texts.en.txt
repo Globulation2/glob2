@@ -628,6 +628,8 @@ Range
 Rated %0
 [ratios]
 Proportions
+[ready?]
+ready?
 [refresh map list]
 Refresh Map List
 [Register a new YOG user with password]

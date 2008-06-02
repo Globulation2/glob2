@@ -291,6 +291,11 @@ void YOGClient::update()
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
 		}
+		if(type==MNetNotReadyToLaunch)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
 		if(type==MNetSetLatencyMode)
 		{
 			if(joinedGame)
