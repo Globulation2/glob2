@@ -106,9 +106,9 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				dirx = -1;
 			for(int x=startx; x!=endx; x+=dirx)
 			{
-				if(x<0)
-					x+=game.map.getW();
 				drawBuildingAt(x, firstPlacementY, localteam, viewportX, viewportY);
+				if(x==0 && dirx==-1)
+					x+=game.map.getW();
 			}
 			drawBuildingAt(endx, firstPlacementY, localteam, viewportX, viewportY);
 			
@@ -119,9 +119,9 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				diry = -1;
 			for(int y=starty; y!=endy; y+=diry)
 			{
-				if(y<0)
-					y+=game.map.getH();
 				drawBuildingAt(mapX, y, localteam, viewportX, viewportY);
+				if(y==0 && diry==-1)
+					y+=game.map.getH();
 			}
 			drawBuildingAt(mapX, endy, localteam, viewportX, viewportY);
 		}
