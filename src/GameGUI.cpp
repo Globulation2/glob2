@@ -1874,7 +1874,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if (putMark)
 		{
 			int markx, marky;
-			minimapMouseToPos(mx, my, &markx, &marky, false);
+			minimapMouseToPos(globalContainer->gfx->getW() - 128 + mx, my, &markx, &marky, false);
 			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
