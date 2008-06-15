@@ -953,20 +953,18 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
-			if ((selectionMode==BUILDING_SELECTION) && selectionPushed && selection.building->type->isVirtual)
+			if (event->button.x < globalContainer->gfx->getW()-128)
 			{
-				// update flag
-				int mx, my;
-				SDL_GetMouseState(&mx, &my);
-				if (mx<globalContainer->gfx->getW()-128)
-					moveFlag(mx, my, true);
-			}
-			// We send the order
-			else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
-			{
-				int mx, my;
-				SDL_GetMouseState(&mx, &my);
-				toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
+				if ((selectionMode==BUILDING_SELECTION) && selectionPushed && selection.building->type->isVirtual)
+				{
+					// update flag
+					moveFlag(event->button.x, event->button.y, true);
+				}
+				// We send the order
+				else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
+				{
+					toolManager.handleMouseUp(event->button.x, event->button.y, localTeamNo, viewportX, viewportY);
+				}
 			}
 			miniMapPushed=false;
 			selectionPushed=false;
@@ -1876,7 +1874,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if (putMark)
 		{
 			int markx, marky;
-			minimapMouseToPos(mx, my, &markx, &marky, false);
+			minimapMouseToPos(globalContainer->gfx->getW() - 128 + mx, my, &markx, &marky, false);
 			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
