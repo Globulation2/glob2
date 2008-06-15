@@ -461,12 +461,12 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	int tempX = mapX, tempY = mapY;
 	bool isRoom;
 	if (bt->isVirtual)
-		isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
+		isRoom=game.checkRoomForBuilding(mapX, mapY, bt, &tempX, &tempY, localteam);
 	else
-		isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+		isRoom=game.checkHardRoomForBuilding(mapX, mapY, bt, &tempX, &tempY);
 			
 	
-	if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
+	if(ghostManager.isGhostBuilding(tempX, tempY, bt->width, bt->height))
 		isRoom = false;
 	
 	// Increase/Decrease hilight strength, given whether there is room or not
@@ -478,8 +478,8 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	// we get the screen dimensions of the building
 	int batW = (bt->width) * 32;
 	int batH = sprite->getH(bt->gameSpriteImage);
-	int batX = (((mapX-viewportX)&(game.map.wMask)) * 32);
-	int batY = (((mapY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
+	int batX = (((tempX-viewportX)&(game.map.wMask)) * 32);
+	int batY = (((tempY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
 	
 	// Draw the building
 	sprite->setBaseColor(game.teams[localteam]->color);
@@ -526,7 +526,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 			}
 				
 			int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
-			bool isExtendedRoom = game.checkHardRoomForBuilding(mapX-lastbt->decLeft, mapY-lastbt->decTop, lastbt, &exMapX, &exMapY);
+			bool isExtendedRoom = game.checkHardRoomForBuilding(mapX, mapY, lastbt, &exMapX, &exMapY);
 			int exBatX=((exMapX-viewportX)&(game.map.wMask)) * 32;
 			int exBatY=((exMapY-viewportY)&(game.map.hMask)) * 32;
 			int exBatW=(lastbt->width) * 32;
