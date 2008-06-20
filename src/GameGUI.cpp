@@ -953,6 +953,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
+			int button=event->button.button;
 			if ((button==SDL_BUTTON_LEFT) && (event->button.x < globalContainer->gfx->getW()-128))
 			{
 				if ((selectionMode==BUILDING_SELECTION) && selectionPushed && selection.building->type->isVirtual)
