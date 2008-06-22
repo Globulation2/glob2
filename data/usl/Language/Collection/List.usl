@@ -1,17 +1,16 @@
-import Language.FlowControl.if as if
-
-// An immutable, single linked list.
-// Stephane Magnenat <stephane at magnenat dot net> - 2008
-// Martin Voelkle <martin voelkle@gmail com> - 2008
-
-// the interface
+\*
+ An immutable, single linked list.
+ Stephane Magnenat <stephane at magnenat dot net> - 2008
+ Martin Voelkle <martin voelkle@gmail com> - 2008
+\*
+\# the interface
 List := interface (
 	def isEmpty := abstract
 
-	// Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
+	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
 	def prepend(x) := Cons(x, this)
 	
-	// Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
+	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := {
 		if (isEmpty)
 			Cons(x, Nil)
@@ -19,7 +18,7 @@ List := interface (
 			Cons(this.head, this.tail append x)
 	}
 	
-	// Returns a list resulting from the concatenation of list x at the end of this list
+	\# Returns a list resulting from the concatenation of list x at the end of this list
 	def concat (x:List) := {
 		if (isEmpty)
 			x
@@ -28,7 +27,7 @@ List := interface (
 	}
 
 	def map(function) := {
-		if (this.isEmpty)
+		if (isEmpty)
 			Nil
 		else
 			Cons(function(this.head), this.tail map function)
@@ -46,7 +45,7 @@ List := interface (
 			(this.head == x) || (this.tail contains x)
 	}
 
-	// Returns a list containing the elements of this list in the reverse order
+	\# Returns a list containing the elements of this list in the reverse order
 	def reverse := {
 		def reverse(source, result) := {
 			if (source.isEmpty)
@@ -60,12 +59,12 @@ List := interface (
 	def zip(that) := abstract
 )
 
-// the empty list
+\# the empty list
 Nil := List with (
 	def isEmpty := True
 )
 
-// a non-empty list
+\# a non-empty list
 Cons := List with fun (head, tail) => (
 	def isEmpty := False
 )
@@ -80,6 +79,6 @@ def list(elements: Array) := {
 	build(elements.size - 1, Nil)
 }
 
-// we should be able to write:
+\# we should be able to write:
 val a := list [1, 2, 3, 4]
 
