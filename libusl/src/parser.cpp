@@ -19,8 +19,9 @@ void Parser::statements(BlockNode* block)
 		switch (tokenType())
 		{
 		case END:
-		case RBRACE:
 		case RPAR:
+		case RBRACE:
+		case RBRACK:
 			return;
 		case COMMA:
 			next();
@@ -64,6 +65,14 @@ DecNode* Parser::declaration(DecNode::Type type) {
 }
 
 DecNode* Parser::declaration(const Position& position, DecNode::Type type, const std::string& name) {
+	auto_ptr<PatternNode> arg;
+	switch (tokenType()) {
+	case COLON:
+	case COLONEQ:
+		break;
+	default:
+		arg.reset(pattern());
+	}
 	switch (tokenType()) {
 	case COLON:
 		next();
@@ -77,7 +86,10 @@ DecNode* Parser::declaration(const Position& position, DecNode::Type type, const
 		throw Exception(token, "Expecting " + getType(COLON)->desc);
 	}
 	newlines();
-	return new DecNode(position, type, name, expression());
+	Node* expr = expression();
+	if (arg.get())
+		expr = new FunNode(position, arg.release(), expr);
+	return new DecNode(position, type, name, expr);
 }
 
 PatternNode* Parser::pattern()
@@ -113,6 +125,11 @@ PatternNode* Parser::pattern()
 	case ID:
 		{
 			string name = identifier();
+			if (tokenType() == COLON)
+			{
+				next();
+				expression(); // TODO: do something with the type
+			}
 			return new ValPatternNode(position, name);
 		}
 	case DEF:
@@ -147,11 +164,19 @@ Node* Parser::expression(Node* first)
 		switch (tokenType())
 		{
 		case ID:
+		case PREFIX:
 			node.reset(selectAndApply(token.position, node, identifier()));
 			break;
+		case DOT:
+		{
+			next();
+			const string& selected = identifier();
+			node.reset(new SelectNode(token.position, node.release(), selected));
+			break;
+		}
 		case LPAR:
 		case LBRACE:
-		case DOT:
+		case LBRACK:
 			node.reset(selectAndApply(token.position, node, "apply"));
 			break;
 		default:
@@ -219,6 +244,11 @@ Node* Parser::simple()
 	Position position = token.position;
 	switch (tokenType())
 	{
+	case PREFIX:
+		{
+			const string& op = identifier();
+			return new SelectNode(token.position, simple(), op);
+		}
 	case ID:
 		{
 			return new DefLookupNode(position, identifier());
@@ -260,6 +290,14 @@ Node* Parser::simple()
 			accept(RBRACE);
 			return block.release();
 		}
+	case LBRACK:
+		{
+			next();
+			auto_ptr<RecordBlock> block(new RecordBlock(position));
+			statements(block.get());
+			accept(RBRACK);
+			return block.release();
+		}
 	case FUN:
 		{
 			next();
@@ -283,14 +321,16 @@ void Parser::newlines()
 
 string Parser::identifier()
 {
-	if (tokenType() == ID)
+	switch (tokenType())
+	{
+	case ID:
+	case PREFIX:
 	{
 		string id = token.string();
 		next();
 		return id;
 	}
-	else
-	{
+	default:
 		throw Exception(token, "Expecting " + getType(ID)->desc);
 	}
 }
