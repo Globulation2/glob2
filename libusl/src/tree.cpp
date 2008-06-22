@@ -1,7 +1,7 @@
 #include "tree.h"
 #include "code.h"
 #include "debug.h"
-#include <memory>
+#include "error.h"
 #include <sstream>
 
 using namespace std;
@@ -300,7 +300,14 @@ void DefLookupNode::generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* 
 		Node::generate(scope, debug, new ParentCode());
 		
 		prototype = s->outer;
-		assert(prototype != 0); // TODO: throw a method not found exception
+		
+		if (prototype == 0)
+		{
+			ostringstream message;
+			message << "Program error @" << position.line << ":" << position.column << ":" << endl;
+			message << "Declaration not found: " << name << endl;
+			throw Exception(position, message.str());
+		}
 	}
 	
 	Node::generate(scope, debug, new DefRefCode(method));

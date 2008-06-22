@@ -63,6 +63,9 @@ public:
 		return (TokenType) token.type->id;
 	}
 	
+protected:
+	void fail(const std::string& expected) const __attribute__((noreturn));
+	
 private:
 	Token _next();
 	
