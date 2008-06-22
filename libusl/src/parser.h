@@ -3,7 +3,6 @@
 
 #include "lexer.h"
 #include "tree.h"
-#include <stdexcept>
 
 struct Heap;
 
@@ -15,12 +14,6 @@ struct Parser: Lexer
 	{}
 	
 	BlockNode* parse();
-
-	struct Exception: std::runtime_error
-	{
-		Exception(const Token& token, const std::string& message): std::runtime_error(message), token(token) {}
-		const Token& token;
-	};
 
 private:
 	void statements(BlockNode* block);

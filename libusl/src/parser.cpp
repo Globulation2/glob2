@@ -1,6 +1,6 @@
 #include "parser.h"
 #include "types.h"
-#include <stdexcept>
+#include "error.h"
 
 using namespace std;
 
@@ -83,7 +83,7 @@ DecNode* Parser::declaration(const Position& position, DecNode::Type type, const
 		next();
 		break;
 	default:
-		throw Exception(token, "Expecting " + getType(COLON)->desc);
+		fail(getType(COLON)->desc);
 	}
 	newlines();
 	Node* expr = expression();
@@ -142,7 +142,7 @@ PatternNode* Parser::pattern()
 		next();
 		return new IgnorePatternNode(position);
 	default:
-		throw Exception(token, "Expecting a pattern");
+		fail("a pattern");
 	}
 }
 
@@ -190,55 +190,7 @@ ApplyNode* Parser::selectAndApply(const Position& position, auto_ptr<Node> recei
 	Node* argument = simple();
 	return new ApplyNode(position, new SelectNode(position, receiver.release(), method), argument);
 }
-/*
-Node* Parser::expressions()
-{
-	Position position = token.position;
-	next();
-	newlines();
-	auto_ptr<ArrayNode> tuple(new ArrayNode(position));
-	while (true)
-	{
-		switch (tokenType())
-		{
-		case ID:
-		case NUM:
-		case LPAR:
-		case LBRACE:
-		case DOT:
-			tuple->elements.push_back(expression());
-			newlines();
-			break;
-		
-		case COMMA:
-			next();
-			newlines();
-			break;
-		
-		case RPAR:
-			{
-				Position position = token.position;
-				next();
-				switch (tuple->elements.size())
-				{
-				case 0:
-					return new ConstNode(position, &nil);
-				case 1:
-					{
-						Node* element = tuple->elements[0];
-						tuple->elements.clear();
-						return element;
-					}
-				default:
-					return tuple.release();
-				}
-			}
-		default:
-			throw Exception(token, "Expecting " + getType(COMMA)->desc + ", " + getType(RPAR)->desc + " or an expression");
-		}
-	}
-}
-*/
+
 Node* Parser::simple()
 {
 	Position position = token.position;
@@ -307,7 +259,7 @@ Node* Parser::simple()
 			return new FunNode(position, arg.release(), body);
 		}
 	default:
-		throw Exception(token, "Expecting an expression");
+		fail("an expression");
 	}
 }
 
@@ -331,7 +283,7 @@ string Parser::identifier()
 		return id;
 	}
 	default:
-		throw Exception(token, "Expecting " + getType(ID)->desc);
+		fail(getType(ID)->desc);
 	}
 }
 
@@ -343,7 +295,7 @@ void Parser::accept(TokenType type)
 	}
 	else
 	{
-		throw Exception(token, "Expecting " + getType(type)->desc);
+		fail(getType(type)->desc);
 	}
 }
 

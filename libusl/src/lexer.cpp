@@ -1,6 +1,10 @@
 #include "lexer.h"
+#include "error.h"
 
 #include <cassert>
+#include <sstream>
+
+using namespace std;
 
 const Token::Type Lexer::tokenTypes[] =
 {
@@ -40,4 +44,13 @@ Token Lexer::_next()
 		assert(false); // TODO
 	}
 	return token;
+}
+
+void Lexer::fail(const string& expected) const
+{
+	ostringstream message;
+	message << "Syntax error @" << token.position.line << ":" << token.position.column << ":" << endl;
+	message << "Found: " << token.type->desc << endl;
+	message << "Expected: " << expected << endl;
+	throw Exception(token.position, message.str());
 }

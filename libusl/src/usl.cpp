@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "code.h"
 #include "interpreter.h"
+#include "error.h"
 #include <iostream>
 #include <fstream>
 
@@ -71,17 +72,14 @@ int main(int argc, char** argv)
 	try
 	{
 		node = parser.parse();
+		node->dump(cout);
+		node->generate(root, debug.get(file), &heap);
 	}
-	catch(Parser::Exception& e)
+	catch(Exception& e)
 	{
-		cout << "Parser error @" << e.token.position.line << ":" << e.token.position.column << ":" << endl;
-		cout << "Found: " << e.token.type->desc << endl;
-		cout << "Expected: " << e.what() << endl;
+		cout << e.what() << endl;
 		return -1;
 	}
-
-	node->dump(cout);
-	node->generate(root, debug.get(file), &heap);
 	delete node;
 	
 	cout << '\n';
