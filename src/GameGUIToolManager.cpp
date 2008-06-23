@@ -99,31 +99,62 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		///This allows the drag-placing of walls
 		else
 		{
-			int startx = std::min(mapX, firstPlacementX);
-			int endx = std::max(mapX, firstPlacementX);
-			int dirx = 1;
-			if(endx > (startx + game.map.getW()/2))
-				dirx = -1;
-			for(int x=startx; x!=endx; x+=dirx)
-			{
-				drawBuildingAt(x, firstPlacementY, localteam, viewportX, viewportY);
-				if(x==0 && dirx==-1)
-					x+=game.map.getW();
-			}
-			drawBuildingAt(endx, firstPlacementY, localteam, viewportX, viewportY);
+			int startx = firstPlacementX;
+			int endx = mapX;
+			int starty = firstPlacementY;
+			int endy = mapY;
 			
-			int starty = std::min(mapY, firstPlacementY);
-			int endy = std::max(mapY, firstPlacementY);
-			int diry = 1;
-			if(endy > (starty + game.map.getH()/2))
-				diry = -1;
-			for(int y=starty; y!=endy; y+=diry)
+			int dirx = (endx > startx ? 1 : -1);
+			int distx = std::abs(endx - startx);
+			if(distx > game.map.getW()/2)
 			{
-				drawBuildingAt(mapX, y, localteam, viewportX, viewportY);
-				if(y==0 && diry==-1)
-					y+=game.map.getH();
+				dirx = -dirx;
+				distx = game.map.getW() -  distx;
 			}
-			drawBuildingAt(mapX, endy, localteam, viewportX, viewportY);
+					
+			int diry = (endy > starty ? 1 : -1);
+			int disty = std::abs(endy - starty);
+			if(disty > game.map.getH()/2)
+			{
+				diry = -diry;
+				disty = game.map.getH() -  disty;
+			}
+					
+			if(distx > disty)
+			{
+				int px = 0;
+				int py = 0;
+				int y = starty;
+				for(int x=startx; x!=endx; x+=dirx)
+				{
+					px+=1;
+					drawBuildingAt(x, y, localteam, viewportX, viewportY);
+					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
+					{
+						y += diry;
+						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+						py+=1;
+					}
+				}
+			}
+			else
+			{
+				int px = 0;
+				int py = 0;
+				int x = startx;
+				for(int y=starty; y!=endy; y+=diry)
+				{
+					py+=1;
+					drawBuildingAt(x, y, localteam, viewportX, viewportY);
+					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
+					{
+						x += dirx;
+						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+						px+=1;
+					}
+				}
+			}
+			drawBuildingAt(endx, endy, localteam, viewportX, viewportY);
 		}
 	}
 	else if(mode == PlaceZone)
@@ -270,31 +301,62 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		///This allows the drag-placing of walls
 		else
 		{
-			int startx = std::min(mapX, firstPlacementX);
-			int endx = std::max(mapX, firstPlacementX);
-			int dirx = 1;
-			if(endx > (startx + game.map.getW()/2))
-				dirx = -1;
-			for(int x=startx; x!=endx; x+=dirx)
-			{
-				if(x<0)
-					x+=game.map.getW();
-				placeBuildingAt(x, firstPlacementY, localteam);
-			}
-			placeBuildingAt(endx, firstPlacementY, localteam);
+			int startx = firstPlacementX;
+			int endx = mapX;
+			int starty = firstPlacementY;
+			int endy = mapY;
 			
-			int starty = std::min(mapY, firstPlacementY);
-			int endy = std::max(mapY, firstPlacementY);
-			int diry = 1;
-			if(endy > (starty + game.map.getH()/2))
-				diry = -1;
-			for(int y=starty; y!=endy; y+=diry)
+			int dirx = (endx > startx ? 1 : -1);
+			int distx = std::abs(endx - startx);
+			if(distx > game.map.getW()/2)
 			{
-				if(y<0)
-					y+=game.map.getH();
-				placeBuildingAt(mapX, y, localteam);
+				dirx = -dirx;
+				distx = game.map.getW() -  distx;
 			}
-			placeBuildingAt(mapX, endy, localteam);
+					
+			int diry = (endy > starty ? 1 : -1);
+			int disty = std::abs(endy - starty);
+			if(disty > game.map.getH()/2)
+			{
+				diry = -diry;
+				disty = game.map.getH() -  disty;
+			}
+					
+			if(distx > disty)
+			{
+				int px = 0;
+				int py = 0;
+				int y = starty;
+				for(int x=startx; x!=endx; x+=dirx)
+				{
+					px+=1;
+					placeBuildingAt(x, y, localteam);
+					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
+					{
+						y += diry;
+						placeBuildingAt(x, y, localteam);
+						py+=1;
+					}
+				}
+			}
+			else
+			{
+				int px = 0;
+				int py = 0;
+				int x = startx;
+				for(int y=starty; y!=endy; y+=diry)
+				{
+					py+=1;
+					placeBuildingAt(x, y, localteam);
+					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
+					{
+						x += dirx;
+						placeBuildingAt(x, y, localteam);
+						px+=1;
+					}
+				}
+			}
+//			placeBuildingAt(endx, endy, localteam);
 		}
 	}
 	firstPlacementX=-1;
