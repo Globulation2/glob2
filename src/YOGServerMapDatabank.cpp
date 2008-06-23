@@ -48,6 +48,36 @@ void YOGServerMapDatabank::addMap(const YOGDownloadableMapInfo& map)
 
 
 
+void YOGServerMapDatabank::removeMap(const std::string& map)
+{
+	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
+	{
+		if(i->getMapHeader().getMapName() == map)
+		{
+			server->getFileDistributionManager().removeDistributor(i->getFileID());
+			maps.erase(i);
+			save();
+			return;
+		}
+	}
+}
+
+
+
+bool YOGServerMapDatabank::doesMapExist(const std::string& map)
+{
+	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
+	{
+		if(i->getMapHeader().getMapName() == map)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
 YOGMapUploadRefusalReason YOGServerMapDatabank::canRecieveFromPlayer(const YOGDownloadableMapInfo& map)
 {
 	for(std::vector<boost::tuple<YOGDownloadableMapInfo, int> >::iterator i = uploadingMaps.begin(); i!=uploadingMaps.end(); ++i)

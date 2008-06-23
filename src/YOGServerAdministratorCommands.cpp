@@ -601,3 +601,49 @@ void YOGRemoveModerator::execute(YOGServer* server, YOGServerAdministrator* admi
 	}
 }
 
+
+
+std::string YOGRemoveMap::getHelpMessage()
+{
+	return ".remove_map <mapname>    Removes a map from the server respitory";
+}
+
+
+
+std::string YOGRemoveMap::getCommandName()
+{
+	return ".remove_map";
+}
+
+
+
+bool YOGRemoveMap::doesMatch(const std::vector<std::string>& tokens)
+{
+	if(tokens.size() != 2)
+		return false;
+	return true;
+}
+	
+
+
+bool YOGRemoveMap::allowedForModerator()
+{
+	return false;
+}
+
+
+
+void YOGRemoveMap::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+{
+	std::string name = tokens[1];
+	if(server->getMapDatabank().doesMapExist(name))
+	{
+		server->getMapDatabank().removeMap(name);
+		admin->sendTextMessage("Map "+name+" has been removed", player);
+	}
+	else
+	{
+		admin->sendTextMessage("Could not find map: "+name, player);
+	}
+}
+
