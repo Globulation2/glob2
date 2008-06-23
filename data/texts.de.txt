@@ -1,5 +1,9 @@
 [%0 has left the game]
 %0 hat das Spiel verlassen.
+[%0 level %1]
+%0 Level %1
+[%0% Uploaded]
+%0% hochgeladen
 [%0's game]
 Spiel von %0
 [%0's team unit got converted to your team]
@@ -18,6 +22,8 @@ V: Teile die Sicht für alle Gebäude
 Karte hinzufügen
 [add shortcut]
 Shortcut hinzufügen
+[Add]
+Hinzufügen
 [AI]
 KI
 [ai]
@@ -43,7 +49,7 @@ Algen
 [alliances]
 Allianzen
 [alt %0]
-
+ALT-%0
 [and]
 und
 [any explorer]
@@ -88,8 +94,12 @@ Verbessert die Kampf-
 Trainingslager
 [beach size]
 Strandbreite
+[Blocked Players]
+
 [break]
 
+[build %0 level %1]
+Baue %0 Level %1
 [build barracks level 0]
 
 [build barracks level 1]
@@ -140,7 +150,7 @@ Strandbreite
 
 [Build]
 Bauen
-[Building Settings]
+[Building Defaults]
 
 [building site]
 Baustelle
@@ -157,7 +167,7 @@ Feldzug
 [Can't connect, can't find host]
 
 [Can't host game, port %0 in use]
-
+Kann Spiel nicht hosten! Port %0 belegt.
 [Can't join game, game doesn't exist]
 
 [Can't join game, game has started]
@@ -208,14 +218,12 @@ Skript kompilieren
 Verbinden
 [connecting to]
 Verbinden mit
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Weiterspielen
 [control %0]
-
+STRG-%0
 [Corn]
 Weizen
 [crater density]
@@ -274,7 +282,13 @@ Anzeige
 Transportiert nichts
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+%0 heruntergeladen
+[downloading map]
 
 [edit map]
 
@@ -342,7 +356,7 @@ leere Inseln
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
 
 [food]
 Nahrung
@@ -363,6 +377,8 @@ Vollbild
 [game full]
 Spiel komplett
 [game shortcuts]
+
+[Game]
 
 [general settings]
 Allgemein
@@ -478,20 +494,28 @@ Spiel laden
 
 [load]
 Laden
+[loading map list]
+
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
-Verloren: %0 hat mehr Prestige als Sie
+Verloren: %0 hat mehr Prestige als Du
 [Lost : your colony is dead]
-Verloren: Ihre Kolonie ist tot
+Verloren: Deine Kolonie ist tot
 [lowquality]
 Niedrige Qualität
 [Magic At. Air]
 Kampfstärke/Luft
 [Magic At. Ground]
 Kampfstärke/Boden
+[Map Discovered]
+
+[Map fownload failure: lost connection]
+
 [Map name: %0]
-Karte: %0.
+Karte: %0
 [map name]
 
 [map script]
@@ -500,6 +524,16 @@ Karte: %0.
 Breite der Karte
 [map size y]
 Höhe der Karte
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 
 [mark map]
@@ -508,10 +542,12 @@ Karte markieren
 Früchten
 [market explanation]
 Erlaubt den Handel mit
+[market level 0]
+
 [market]
 Markt
 [meta %0]
-
+ALT-%0
 [Min required level:]
 Mindestlevel:
 [Minimum Level To Flag]
@@ -537,7 +573,7 @@ Nein
 [not ready]
 nicht bereit
 [number of players: %0 (%1 AI)]
-
+%0 (%1 AI) Spieler.
 [number of teams: %0]
 %0 Mannschaften.
 [number of teams]
@@ -568,10 +604,14 @@ Vor Ort
 
 [open]
 offen
+[Options]
+
 [options]
 Einstellungen
 [Orange]
 Orangen
+[Other Options]
+
 [page down]
 
 [page up]
@@ -592,6 +632,8 @@ Bitte warten
 
 [press space]
 Leertaste drücken, um fortzufahren.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
 [print screen]
@@ -614,6 +656,8 @@ Rennbahn
 Reichweite
 [ratios]
 Verhältnis
+[refresh map list]
+
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [remember unit]
@@ -623,6 +667,8 @@ Passwort lokal speichern. (unsicher)
 [remove map]
 
 [remove shortcut]
+
+[Remove]
 
 [repair building]
 Reparatur einleiten/beenden
@@ -739,7 +785,7 @@ suchen
 [settings]
 Einstellungen
 [shift %0]
-
+SHIFT-%0
 [shortcut explanation enter]
 Enter: Chatnachricht senden
 [shortcut explanation v]
@@ -833,6 +879,8 @@ Schwimmbecken
 [sys req]
 
 [tab]
+
+[Teams Fixed]
 
 [teams]
  Mannschaften
@@ -954,8 +1002,14 @@ Einheiten
 
 [upgrade building]
 Aufwerten einleiten/beenden
+[Upgrade Defaults]
+
 [upgrade]
 Verbessern
+[Upload Map]
+
+[upload map]
+
 [username]
 Benutzername
 [Version]
@@ -1024,16 +1078,32 @@ Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon re
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Passwort falsch ist.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch nicht registriert ist. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation 2 zu alt ist.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Spitzname schon von jemand anderem benutzt wird.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+%0 wird bereits blockiert.
+[yog block command player %0 blocked]
+%0 wird blockiert.
+[yog block command player %0 not found]
+Spieler %0 unbekannt.
+[yog command header]
+
+[yog help command help]
+
 [yog]
 Ysagoon Onlinespiel
 [you have lost]
@@ -1044,5 +1114,9 @@ Sie haben gewonnen!
 
 [Your %0 are under attack]
 Eure %0 werden angegriffen
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Eine Ihrer Einheiten wurde von einem %0-Team übernommen.
+[Your username was banned]
+
