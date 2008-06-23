@@ -125,16 +125,17 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				int px = 0;
 				int py = 0;
 				int y = starty;
-				for(int x=startx; x!=endx; x+=dirx)
+				for(int x=startx; x!=endx;)
 				{
 					px+=1;
 					drawBuildingAt(x, y, localteam, viewportX, viewportY);
 					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 					{
-						y += diry;
+						y=game.map.normalizeY(y+diry);
 						drawBuildingAt(x, y, localteam, viewportX, viewportY);
 						py+=1;
 					}
+					x=game.map.normalizeX(x+dirx);
 				}
 			}
 			else
@@ -142,16 +143,17 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				int px = 0;
 				int py = 0;
 				int x = startx;
-				for(int y=starty; y!=endy; y+=diry)
+				for(int y=starty; y!=endy;)
 				{
 					py+=1;
 					drawBuildingAt(x, y, localteam, viewportX, viewportY);
 					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 					{
-						x += dirx;
+						x=game.map.normalizeX(x+dirx);
 						drawBuildingAt(x, y, localteam, viewportX, viewportY);
 						px+=1;
 					}
+					y=game.map.normalizeY(y+diry);
 				}
 			}
 			drawBuildingAt(endx, endy, localteam, viewportX, viewportY);
@@ -327,16 +329,17 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 				int px = 0;
 				int py = 0;
 				int y = starty;
-				for(int x=startx; x!=endx; x+=dirx)
+				for(int x=startx; x!=endx;)
 				{
 					px+=1;
 					placeBuildingAt(x, y, localteam);
 					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 					{
-						y += diry;
+						y=game.map.normalizeY(y+diry);
 						placeBuildingAt(x, y, localteam);
 						py+=1;
 					}
+					x=game.map.normalizeY(x+dirx);
 				}
 			}
 			else
@@ -344,19 +347,19 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 				int px = 0;
 				int py = 0;
 				int x = startx;
-				for(int y=starty; y!=endy; y+=diry)
+				for(int y=starty; y!=endy;)
 				{
 					py+=1;
 					placeBuildingAt(x, y, localteam);
 					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 					{
-						x += dirx;
+						x=game.map.normalizeY(x+dirx);
 						placeBuildingAt(x, y, localteam);
 						px+=1;
 					}
+					y=game.map.normalizeY(y+diry);
 				}
 			}
-//			placeBuildingAt(endx, endy, localteam);
 		}
 	}
 	firstPlacementX=-1;
