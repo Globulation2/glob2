@@ -36,6 +36,12 @@ public:
 
 	///Adds a map to the database
 	void addMap(const YOGDownloadableMapInfo& map);
+	
+	///Removes a map from the database
+	void removeMap(const std::string& map);
+	
+	///Returns true if there is a map by this map name
+	bool doesMapExist(const std::string& map);
 
 	///Returns whether the given map can be obtained from the player, returns YOGMapUploadReasonUnknown
 	///if it it can be recieved

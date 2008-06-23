@@ -313,4 +313,26 @@ public:
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
+
+
+///This removes a moderator
+class YOGRemoveMap : public YOGServerAdministratorCommand
+{
+public:
+	///Returns this YOGServerAdministratorCommand help message
+	std::string getHelpMessage();
+	
+	///Returns the command name for this YOGServerAdministratorCommand
+	std::string getCommandName();
+	
+	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
+	bool doesMatch(const std::vector<std::string>& tokens);
+	
+	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
+	bool allowedForModerator();
+	
+	///Executes the code for the administrator command
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+};
+
 #endif
