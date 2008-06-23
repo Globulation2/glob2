@@ -38,6 +38,7 @@ YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 	commands.push_back(new YOGRemoveAdministrator);
 	commands.push_back(new YOGAddModerator);
 	commands.push_back(new YOGRemoveModerator);
+	commands.push_back(new YOGRemoveMap);
 }
 
 
