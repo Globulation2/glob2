@@ -179,7 +179,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 				{
 					if(n >= game->objectives.getNumberOfObjectives())
 					{
-						game->objectives.addNewObjective(primaryObjectives[i]->getText(), false, false, GameObjectives::Primary, i+1);
+						game->objectives.addNewObjective(primaryObjectives[i]->getText(), false, false, false, GameObjectives::Primary, i+1);
 					}
 					else
 					{
@@ -196,7 +196,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 				{
 					if(n >= game->objectives.getNumberOfObjectives())
 					{
-						game->objectives.addNewObjective(secondaryObjectives[i]->getText(), false, false, GameObjectives::Secondary, i+9);
+						game->objectives.addNewObjective(secondaryObjectives[i]->getText(), false, false, false, GameObjectives::Secondary, i+9);
 					}
 					else
 					{

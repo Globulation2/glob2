@@ -27,6 +27,7 @@ using namespace GAGGUI;
 namespace GAGGUI
 {
 	class OnOffButton;
+	class TriButton;
 	class Selector;
 	class Text;
 }

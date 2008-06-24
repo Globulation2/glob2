@@ -445,7 +445,12 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 			if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
 				text = Toolkit::getStringTable()->getString(text.c_str());
 			objectivesWidgets.push_back(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
-			OnOffButton* b = new OnOffButton(20, 100 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
+			Uint8 state = 0;
+			if(gui->game.objectives.isObjectiveComplete(i))
+				state = 1;
+			else if(gui->game.objectives.isObjectiveFailed(i))
+				state = 2;
+			TriButton* b = new TriButton(20, 100 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, state, i);
 			b->setClickable(false);
 			objectivesWidgets.push_back(b);
 			n+=1;
@@ -478,7 +483,12 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 				if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
 					text = Toolkit::getStringTable()->getString(text.c_str());
 				objectivesWidgets.push_back(new Text(50, 130 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
-				OnOffButton* b = new OnOffButton(20, 130 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
+				Uint8 state = 0;
+				if(gui->game.objectives.isObjectiveComplete(i))
+					state = 1;
+				else if(gui->game.objectives.isObjectiveFailed(i))
+					state = 2;
+				TriButton* b = new TriButton(20, 130 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, state, i);
 				b->setClickable(false);
 				objectivesWidgets.push_back(b);
 				n+=1;
