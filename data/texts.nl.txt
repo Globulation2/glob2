@@ -114,6 +114,8 @@ Strand grootte
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Tevreden
 
 [Harvest]
 Verzamelen
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Nieuwe campagne
 Nieuw
 [nick taken]
 Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode. Je kan alleen maar praten via YOG
+[No Hints]
+
 [no key]
 
 [No Objectives]

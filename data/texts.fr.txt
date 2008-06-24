@@ -114,6 +114,8 @@ taille de la plage
 
 [break]
 casser
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Satisfaction
 Pause dur
 [Harvest]
 Récolte
+[hints]
+
 [home]
 Maison
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Nouvelle campagne
 Nouveau
 [nick taken]
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
+[No Hints]
+
 [no key]
 Aucune touche
 [No Objectives]

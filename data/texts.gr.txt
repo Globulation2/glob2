@@ -114,6 +114,8 @@ backspace
 
 [break]
 διακοπή
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -430,6 +432,8 @@ Ok
 Σκληρή Παύση
 [Harvest]
 Συγκομιδή
+[hints]
+
 [home]
 σπίτι
 [hospital explanation 2]
@@ -594,6 +598,8 @@ Anastasios M. Pingios
 Νέα
 [nick taken]
 Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
+[No Hints]
+
 [no key]
 κανένα κλειδί ακόμα
 [No Objectives]

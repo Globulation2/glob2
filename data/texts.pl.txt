@@ -114,6 +114,8 @@ Wielkość plaż
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Satysfakcja
 
 [Harvest]
 Zbiera
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Głośność (muzyka)
 Nowa
 [nick taken]
 Niestety, twoje imię zostało już wybrane, możesz tylko rozmawiać przez YOG.
+[No Hints]
+
 [no key]
 
 [No Objectives]

@@ -114,6 +114,8 @@ Tamanho da praia
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Felicidade
 
 [Harvest]
 Coletar
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ silêncio
 Novo
 [nick taken]
 Infelizmente o apelido que elegeu já está tomado em freenode. Só poderá falar através de YOG
+[No Hints]
+
 [no key]
 
 [No Objectives]

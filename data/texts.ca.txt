@@ -114,6 +114,8 @@ Tamany de la platja
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Felicitat
 
 [Harvest]
 Recolectar
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Silenci
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
+[No Hints]
+
 [no key]
 
 [No Objectives]
