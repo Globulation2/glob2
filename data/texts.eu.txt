@@ -114,6 +114,8 @@ hondar tamaina
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Poztasuna
 
 [Harvest]
 Uzta bildu
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Kanpaina berria
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
+[No Hints]
+
 [no key]
 
 [No Objectives]

@@ -45,51 +45,77 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 {
 	this->mapScript=mapScript;
 	this->game=game;
-	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
-	addWidget(scriptEditor);
 	
-	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_LEFT, "standard");
-	addWidget(compilationResult);
-	addWidget(new TextButton(10, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
-	addWidget(new TextButton(120, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
-	compileButton = new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE);
-	addWidget(compileButton);
-	loadButton = new TextButton(370, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD);
-	addWidget(loadButton);
-	saveButton = new TextButton(480, 370, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE);
-	addWidget(saveButton);
-	
-	addWidget(new TextButton(10, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map script]"), TAB_SCRIPT));
-	addWidget(new TextButton(130, 10, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[objectives]"), TAB_OBJECTIVES));
-
-	primary = new TextButton(30, 40, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Primary Objectives]"), TAB_PRIMARY);
-	secondary = new TextButton(150, 40, 120, 20, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Secondary Objectives]"), TAB_SECONDARY);
-	addWidget(primary);
-	addWidget(secondary);
-	secondary->visible=false;
-	primary->visible=false;
-	
+	addWidget(new TextButton(10, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
+	addWidget(new TextButton(120, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	addWidget(new TextButton(10, 10, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[map script]"), TAB_SCRIPT));
+	addWidget(new TextButton(130, 10, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[objectives]"), TAB_OBJECTIVES));
+	addWidget(new TextButton(250, 10, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[briefing]"), TAB_BRIEFING));
+	addWidget(new TextButton(370, 10, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hints]"), TAB_HINTS));
 	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[map script]"));
 	addWidget(mode);
+
+	//These are for the script tab
+	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, mapScript->sourceCode.c_str());
+	scriptWidgets.push_back(scriptEditor);
+	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
+	scriptWidgets.push_back(compilationResult);
+	scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
+	scriptWidgets.push_back(new TextButton(370, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
+	scriptWidgets.push_back(new TextButton(480, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE));
+
+	//These are for the objectives tab
+	objectivesWidgets.push_back(new TextButton(30, 40, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Primary Objectives]"), TAB_PRIMARY));
+	objectivesWidgets.push_back(new TextButton(150, 40, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Secondary Objectives]"), TAB_SECONDARY));
 	
 	for(int i=0; i<8; ++i)
 	{
-		primaryObjectives[i] = new TextInput(30, 68 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
-		primaryObjectives[i]->visible=false;
-		addWidget(primaryObjectives[i]);
+		primaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		objectivesWidgets.push_back(primaryObjectives[i]);
 		
 		primaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
-		primaryObjectiveLabels[i]->visible=false;
-		addWidget(primaryObjectiveLabels[i]);
+		objectivesWidgets.push_back(primaryObjectiveLabels[i]);
 		
-		
-		secondaryObjectives[i] = new TextInput(30, 68 + 35*i, 580, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
-		secondaryObjectives[i]->visible=false;
-		addWidget(secondaryObjectives[i]);
+		secondaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		objectivesWidgets.push_back(secondaryObjectives[i]);
 		
 		secondaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+9));
-		secondaryObjectiveLabels[i]->visible=false;
-		addWidget(secondaryObjectiveLabels[i]);
+		objectivesWidgets.push_back(secondaryObjectiveLabels[i]);
+	}
+	
+	//This is for the briefing tab
+	missionBriefing = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, game->missionBriefing.c_str());
+	briefingWidgets.push_back(missionBriefing);
+	
+	//This is for the hints tab
+	for(int i=0; i<8; ++i)
+	{
+		hints[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+		hintWidgets.push_back(hints[i]);
+		
+		hintLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
+		hintWidgets.push_back(hintLabels[i]);
+	}	
+	
+	//Add all the widgets
+	for(int i=0; i<scriptWidgets.size(); ++i)
+	{
+		addWidget(scriptWidgets[i]);
+	}
+	for(int i=0; i<objectivesWidgets.size(); ++i)
+	{
+		objectivesWidgets[i]->visible=false;
+		addWidget(objectivesWidgets[i]);
+	}
+	for(int i=0; i<briefingWidgets.size(); ++i)
+	{
+		briefingWidgets[i]->visible=false;
+		addWidget(briefingWidgets[i]);
+	}
+	for(int i=0; i<hintWidgets.size(); ++i)
+	{
+		hintWidgets[i]->visible=false;
+		addWidget(hintWidgets[i]);
 	}
 	
 	// important, widgets must be initialised by hand as we use custom event loop
@@ -105,6 +131,10 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 		{
 			secondaryObjectives[game->objectives.getScriptNumber(i)-9]->setText(game->objectives.getGameObjectiveText(i));
 		}
+	}
+	for(int i = 0; i<game->gameHints.getNumberOfHints(); ++i)
+	{
+		hints[game->gameHints.getScriptNumber(i)-1]->setText(game->gameHints.getGameHintText(i));
 	}
 }
 
@@ -134,12 +164,14 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		if (par1 == OK)
 		{
+			//Load the script
 			if (testCompile())
 			{
 				mapScript->sourceCode = scriptEditor->getText();
 				endValue=par1;
 			}
 			
+			//Load the objectives
 			int n=0;
 			for(int i=0; i<8; ++i)
 			{
@@ -179,6 +211,32 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			{
 				game->objectives.removeObjective(game->objectives.getNumberOfObjectives()-1);
 			}
+
+			//Load the briefing
+			game->missionBriefing = missionBriefing->getText();
+			
+			//Load the hints
+			n=0;
+			for(int i=0; i<8; ++i)
+			{
+				if(hints[i]->getText() != "")
+				{
+					if(n >= game->gameHints.getNumberOfHints())
+					{
+						game->gameHints.addNewHint(hints[i]->getText(), false, i+1);
+					}
+					else
+					{
+						game->gameHints.setGameHintText(n, hints[i]->getText());
+						game->gameHints.setScriptNumber(n, i+1);
+					}
+					n+=1;
+				}
+			}
+			while(game->gameHints.getNumberOfHints() > n)
+			{
+				game->gameHints.removeHint(game->gameHints.getNumberOfHints()-1);
+			}
 		}
 		else if (par1 == CANCEL)
 		{
@@ -198,41 +256,93 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == TAB_SCRIPT)
 		{
-			scriptEditor->visible = true;
-			compileButton->visible = true;
-			loadButton->visible = true;
-			saveButton->visible = true;
-
-			primary->visible = false;
-			secondary->visible = false;
-			for(int i=0; i<8; ++i)
+			for(int i=0; i<scriptWidgets.size(); ++i)
 			{
-				primaryObjectives[i]->visible = false;
-				secondaryObjectives[i]->visible = false;
-				primaryObjectiveLabels[i]->visible = false;
-				secondaryObjectiveLabels[i]->visible = false;
+				scriptWidgets[i]->visible=true;
+			}
+			for(int i=0; i<objectivesWidgets.size(); ++i)
+			{
+				objectivesWidgets[i]->visible=false;
+			}
+			for(int i=0; i<briefingWidgets.size(); ++i)
+			{
+				briefingWidgets[i]->visible=false;
+			}
+			for(int i=0; i<hintWidgets.size(); ++i)
+			{
+				hintWidgets[i]->visible=false;
 			}
 			
 			mode->setText(Toolkit::getStringTable()->getString("[map script]"));
 		}
 		else if (par1 == TAB_OBJECTIVES)
 		{
-			scriptEditor->visible = false;
-			compileButton->visible = false;
-			loadButton->visible = false;
-			saveButton->visible = false;
-
-			primary->visible = true;
-			secondary->visible = true;
+			for(int i=0; i<scriptWidgets.size(); ++i)
+			{
+				scriptWidgets[i]->visible=false;
+			}
+			for(int i=0; i<objectivesWidgets.size(); ++i)
+			{
+				objectivesWidgets[i]->visible=true;
+			}
+			for(int i=0; i<briefingWidgets.size(); ++i)
+			{
+				briefingWidgets[i]->visible=false;
+			}
+			for(int i=0; i<hintWidgets.size(); ++i)
+			{
+				hintWidgets[i]->visible=false;
+			}
+			
 			for(int i=0; i<8; ++i)
 			{
-				primaryObjectives[i]->visible = true;
 				secondaryObjectives[i]->visible = false;
-				primaryObjectiveLabels[i]->visible = true;
 				secondaryObjectiveLabels[i]->visible = false;
 			}
 			
 			mode->setText(Toolkit::getStringTable()->getString("[objectives]"));
+		}
+		else if (par1 == TAB_BRIEFING)
+		{
+			for(int i=0; i<scriptWidgets.size(); ++i)
+			{
+				scriptWidgets[i]->visible=false;
+			}
+			for(int i=0; i<objectivesWidgets.size(); ++i)
+			{
+				objectivesWidgets[i]->visible=false;
+			}
+			for(int i=0; i<briefingWidgets.size(); ++i)
+			{
+				briefingWidgets[i]->visible=true;
+			}
+			for(int i=0; i<hintWidgets.size(); ++i)
+			{
+				hintWidgets[i]->visible=false;
+			}
+			
+			mode->setText(Toolkit::getStringTable()->getString("[briefing]"));
+		}
+		else if (par1 == TAB_HINTS)
+		{
+			for(int i=0; i<scriptWidgets.size(); ++i)
+			{
+				scriptWidgets[i]->visible=false;
+			}
+			for(int i=0; i<objectivesWidgets.size(); ++i)
+			{
+				objectivesWidgets[i]->visible=false;
+			}
+			for(int i=0; i<briefingWidgets.size(); ++i)
+			{
+				briefingWidgets[i]->visible=false;
+			}
+			for(int i=0; i<hintWidgets.size(); ++i)
+			{
+				hintWidgets[i]->visible=true;
+			}
+			
+			mode->setText(Toolkit::getStringTable()->getString("[hints]"));
 		}
 		else if (par1 == TAB_PRIMARY)
 		{
@@ -260,7 +370,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		bool found = false;
 		for(int i=0; i<8; ++i)
 		{
-			if(source == primaryObjectives[i] || source == secondaryObjectives[i])
+			if(source == primaryObjectives[i] || source == secondaryObjectives[i] || hints[i])
 				found = true;
 		}
 		if(found)
@@ -274,6 +384,10 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 				if(source != secondaryObjectives[i])
 				{
 					secondaryObjectives[i]->deactivate();
+				}
+				if(source != hints[i])
+				{
+					hints[i]->deactivate();
 				}
 			}
 		}

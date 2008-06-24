@@ -114,6 +114,8 @@ Strandstørrelse
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Antal lykkelige
 
 [Harvest]
 Høst
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Ny Kampagne
 Ny
 [nick taken]
 Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
+[No Hints]
+
 [no key]
 
 [No Objectives]

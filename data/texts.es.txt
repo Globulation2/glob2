@@ -114,6 +114,8 @@ Tamaño de la Playa
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Felicidad
 
 [Harvest]
 Cosecha
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Mudo
 Nuevo
 [nick taken]
 Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en freenode, solamente  podrás hablar a través de YOG
+[No Hints]
+
 [no key]
 
 [No Objectives]

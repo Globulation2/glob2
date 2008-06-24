@@ -114,6 +114,8 @@ beach size
 Blocked Players
 [break]
 break
+[briefing]
+Briefing
 [build %0 level %1]
 Construct %0 Level %1
 [Build]
@@ -370,6 +372,8 @@ Happiness
 Hard Pause
 [Harvest]
 Harvest
+[hints]
+Hints
 [home]
 home
 [hospital explanation 2]
@@ -524,6 +528,8 @@ New Campaign
 New Map
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[No Hints]
+No Hints
 [no key]
 no key yet
 [No Objectives]

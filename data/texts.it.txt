@@ -114,6 +114,8 @@ Grandezza della spiaggia
 
 [break]
 pausa
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -422,6 +424,8 @@ Soddisfazione
 Pausa forte
 [Harvest]
 Raccogliere
+[hints]
+
 [home]
 home
 [hospital explanation 2]
@@ -586,6 +590,8 @@ nuova campagna
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
+[No Hints]
+
 [no key]
 nessun tasto
 [No Objectives]

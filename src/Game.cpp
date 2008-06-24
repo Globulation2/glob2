@@ -915,6 +915,12 @@ bool Game::load(GAGCore::InputStream *stream)
 		objectives.decodeData(stream, mapHeader.getVersionMinor());
 	}
 	
+	if(mapHeader.getVersionMinor() >= 76)
+	{
+		missionBriefing = stream->readText("briefing");
+		gameHints.decodeData(stream, mapHeader.getVersionMinor());
+	}
+	
 	stream->readLeaveSection();
 	
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
@@ -1040,6 +1046,8 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 
 	///Save game objectives
 	objectives.encodeData(stream);
+	stream->writeText(missionBriefing, "missionBriefing");
+	gameHints.encodeData(stream);
 
 	Uint8 sha1[20];
 	for(int i=0; i<20; ++i)

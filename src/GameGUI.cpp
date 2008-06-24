@@ -489,6 +489,21 @@ void GameGUI::step(void)
 		order = toolManager.getOrder();
 	}
 
+	///This shows the mission briefing at the begginning of the mission
+	if(game.stepCounter == 12)
+	{
+		if(game.missionBriefing != "")
+		{
+			if(gameMenuScreen)
+			{
+				delete gameMenuScreen;
+				gameMenuScreen=NULL;
+			}
+			inGameMenu=IGM_OBJECTIVES;
+			gameMenuScreen = new InGameObjectivesScreen(this, true);
+		}
+	}
+
 	if(game.stepCounter % 25 == 1)
 	{
 		if(showStarvingMap)
@@ -608,7 +623,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					gameMenuScreen=NULL;
 					inGameMenu=IGM_OBJECTIVES;
-					gameMenuScreen = new InGameObjectivesScreen(this);
+					gameMenuScreen = new InGameObjectivesScreen(this, false);
 					return true;
 				}
 				break;
