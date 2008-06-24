@@ -114,6 +114,8 @@ AIWarrush
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ AIWarrush
 
 [Harvest]
 Жањи
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ sr
 Нова
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[No Hints]
+
 [no key]
 
 [No Objectives]

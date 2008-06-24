@@ -114,6 +114,8 @@ veľkosť pláže
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -428,6 +430,8 @@ Ručná mapa
 
 [Harvest]
 Ťažba
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -592,6 +596,8 @@ Stlmiť
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+[No Hints]
+
 [no key]
 
 [No Objectives]

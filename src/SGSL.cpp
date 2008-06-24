@@ -303,6 +303,36 @@ void Story::objectiveComplete(GameGUI* gui)
 }
 
 
+
+void Story::hintHidden(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
+	{
+		if(gui->game.gameHints.getScriptNumber(i) == n)
+		{
+			gui->game.gameHints.setHintHidden(i);
+			break;
+		}
+	}
+}
+
+
+
+void Story::hintVisible(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
+	{
+		if(gui->game.gameHints.getScriptNumber(i) == n)
+		{
+			gui->game.gameHints.setHintVisible(i);
+			break;
+		}
+	}
+}
+
+
 static const FunctionArgumentDescription totoDescription[] = {
 	{ Token::S_WIN, Token::S_LOOSE },
 	{ Token::INT, Token::INT },
@@ -319,8 +349,17 @@ static const FunctionArgumentDescription objectiveHiddenDescription[] = {
 	{ -1, -1}
 };
 
-
 static const FunctionArgumentDescription objectiveVisibleDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hintHiddenDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hintVisibleDescription[] = {
 	{ Token::INT, Token::INT },
 	{ -1, -1}
 };
@@ -1099,6 +1138,8 @@ Mapscript::Mapscript()
 	functions["toto"] = std::make_pair(totoDescription, &Story::toto);
 	functions["objectiveHidden"] = std::make_pair(objectiveHiddenDescription, &Story::objectiveHidden);
 	functions["objectiveVisible"] = std::make_pair(objectiveVisibleDescription, &Story::objectiveVisible);
+	functions["hintHidden"] = std::make_pair(hintHiddenDescription, &Story::hintHidden);
+	functions["hintVisible"] = std::make_pair(hintVisibleDescription, &Story::hintVisible);
 	functions["objectiveComplete"] = std::make_pair(objectiveCompleteDescription, &Story::objectiveComplete);
 }
 

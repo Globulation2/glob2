@@ -29,6 +29,7 @@
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace GAGCore
 {
@@ -212,6 +213,8 @@ public:
 	Map map;
 	Mapscript script;
 	GameObjectives objectives;
+	GameHints gameHints;
+	std::string missionBriefing;
 	GameGUI *gui;
 	MapEdit *edit;
 	std::list<BuildProject> buildProjects;

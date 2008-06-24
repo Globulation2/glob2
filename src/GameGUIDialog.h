@@ -127,17 +127,31 @@ public:
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
 
+
+///This screen shows the current objectives of the mission, a mission briefing, and
+///hints as the mission goes along
 class InGameObjectivesScreen:public OverlayScreen
 {
 public:
 	enum
 	{
-		OK = 1,
+		OBJECTIVES = 1,
+		BRIEFING = 2,
+		HINTS = 3,
+		OK = 4,
 	};
 public:
-	InGameObjectivesScreen(GameGUI* gui);
+	//If show briefing is enabled, then the briefing tab will be shown rather than the objectives tab
+	InGameObjectivesScreen(GameGUI* gui, bool showBriefing);
 	virtual ~InGameObjectivesScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	
+	Text* objectives;
+	Text* briefing;
+	Text* hints;
+	std::vector<Widget*> objectivesWidgets;
+	std::vector<Widget*> briefingWidgets;
+	std::vector<Widget*> hintsWidgets;
 };
 
 

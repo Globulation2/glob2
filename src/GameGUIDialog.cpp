@@ -17,17 +17,19 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "boost/lexical_cast.hpp"
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
-#include <GUIAnimation.h>
-#include <GUIButton.h>
-#include <GUISelector.h>
-#include <GUIText.h>
+#include "GUIAnimation.h"
+#include "GUIButton.h"
+#include "GUISelector.h"
+#include "GUITextArea.h"
+#include "GUIText.h"
 #include "Player.h"
 #include "SoundMixer.h"
-#include <StringTable.h>
-#include <Toolkit.h>
+#include "StringTable.h"
+#include "Toolkit.h"
 
 
 //! Main menu screen
@@ -403,27 +405,55 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 
 
 
-InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui)
-:OverlayScreen(globalContainer->gfx, 320, 340)
+InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
+:OverlayScreen(globalContainer->gfx, 470, 390)
 {
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[objectives]")));
-	addWidget(new Text(10, 40, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Primary Objectives]")));
+	addWidget(new TextButton(10, 40, 143, 25, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[objectives]"), OBJECTIVES));
+
+	int hints_x = 317;
+	if(gui->game.missionBriefing.empty())
+	{
+		hints_x = 163;
+	}
+	else
+	{
+		addWidget(new TextButton(163, 40, 144, 25, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[briefing]"), BRIEFING));
+	}
+	addWidget(new TextButton(hints_x, 40, 143, 25, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[hints]"), HINTS));
 	
+	
+	
+	objectives = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[objectives]"));
+	briefing = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[briefing]"));
+	hints = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[hints]"));
+	
+	objectivesWidgets.push_back(objectives);
+	briefingWidgets.push_back(briefing);
+	hintsWidgets.push_back(hints);
+	
+	
+	std::string text;
+	
+	//This group of widgets is all for the objectives tab
+	objectivesWidgets.push_back(new Text(10, 70, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Primary Objectives]")));
 	int n=0;
 	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
 	{
 		if(gui->game.objectives.isObjectiveVisible(i) && gui->game.objectives.getObjectiveType(i) == GameObjectives::Primary)
 		{
-			addWidget(new Text(50, 70 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString(gui->game.objectives.getGameObjectiveText(i).c_str())));
-			OnOffButton* b = new OnOffButton(20, 70 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
+			text = gui->game.objectives.getGameObjectiveText(i);
+			if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
+				text = Toolkit::getStringTable()->getString(text.c_str());
+			objectivesWidgets.push_back(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
+			OnOffButton* b = new OnOffButton(20, 100 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
 			b->setClickable(false);
-			addWidget(b);
+			objectivesWidgets.push_back(b);
 			n+=1;
 		}
 	}
 	if(n == 0)
 	{
-		addWidget(new Text(50, 70 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Objectives]")));
+		objectivesWidgets.push_back(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Objectives]")));
 		n+=1;
 	}
 	
@@ -439,22 +469,69 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui)
 	
 	if(isSecondary)
 	{
-		addWidget(new Text(10, 70 + 30*n, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Secondary Objectives]")));
+		objectivesWidgets.push_back(new Text(10, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Secondary Objectives]")));
 		for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
 		{
 			if(gui->game.objectives.isObjectiveVisible(i) && gui->game.objectives.getObjectiveType(i) == GameObjectives::Secondary)
 			{
-				addWidget(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString(gui->game.objectives.getGameObjectiveText(i).c_str())));
-				OnOffButton* b = new OnOffButton(20, 100 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
+				text = gui->game.objectives.getGameObjectiveText(i);
+				if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
+					text = Toolkit::getStringTable()->getString(text.c_str());
+				objectivesWidgets.push_back(new Text(50, 130 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
+				OnOffButton* b = new OnOffButton(20, 130 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, gui->game.objectives.isObjectiveComplete(i), i);
 				b->setClickable(false);
-				addWidget(b);
+				objectivesWidgets.push_back(b);
 				n+=1;
 			}
 		}
 	}
 	
+	text = gui->game.missionBriefing;
+	if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
+		text = Toolkit::getStringTable()->getString(text.c_str());
+		
+	//This group of widgets is for the mission briefing tab
+	briefingWidgets.push_back(new TextArea(10, 70, 450, 260, ALIGN_LEFT, ALIGN_TOP, "standard", true, text.c_str()));
+	
+	//This group of widgets is for the hints tab
+	n=0;
+	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
+	{
+		if(gui->game.gameHints.isHintVisible(i))
+		{
+			text = gui->game.gameHints.getGameHintText(i);
+			if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
+				text = Toolkit::getStringTable()->getString(text.c_str());
+			text = boost::lexical_cast<std::string>(n+1) + ") " + text;
+			hintsWidgets.push_back(new Text(50, 70 + 25*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
+			n+=1;
+		}
+	}
+	if(n == 0)
+	{
+		hintsWidgets.push_back(new Text(50, 70 + 25*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Hints]")));
+		n+=1;
+	}
+	
+	//Add the widgets to the menu
+	for(int i=0; i<objectivesWidgets.size(); i++)
+	{
+		objectivesWidgets[i]->visible=!showBriefing;
+		addWidget(objectivesWidgets[i]);
+	}
+	for(int i=0; i<briefingWidgets.size(); i++)
+	{
+		briefingWidgets[i]->visible=showBriefing;
+		addWidget(briefingWidgets[i]);
+	}
+	for(int i=0; i<hintsWidgets.size(); i++)
+	{
+		hintsWidgets[i]->visible=false;
+		addWidget(hintsWidgets[i]);
+	}
+	
 	// add ok button
-	addWidget(new TextButton(0, 290, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	addWidget(new TextButton(0, 340, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();
 }
 
@@ -464,7 +541,55 @@ void InGameObjectivesScreen::onAction(Widget *source, Action action, int par1, i
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		endValue=par1;
+		if(par1 == OK)
+		{
+			endValue=par1;
+		}
+		else if(par1 == OBJECTIVES)
+		{
+			for(int i=0; i<objectivesWidgets.size(); i++)
+			{
+				objectivesWidgets[i]->visible=true;
+			}
+			for(int i=0; i<briefingWidgets.size(); i++)
+			{
+				briefingWidgets[i]->visible=false;
+			}
+			for(int i=0; i<hintsWidgets.size(); i++)
+			{
+				hintsWidgets[i]->visible=false;
+			}
+		}
+		else if(par1 == BRIEFING)
+		{
+			for(int i=0; i<objectivesWidgets.size(); i++)
+			{
+				objectivesWidgets[i]->visible=false;
+			}
+			for(int i=0; i<briefingWidgets.size(); i++)
+			{
+				briefingWidgets[i]->visible=true;
+			}
+			for(int i=0; i<hintsWidgets.size(); i++)
+			{
+				hintsWidgets[i]->visible=false;
+			}
+		}
+		else if(par1 == HINTS)
+		{
+			for(int i=0; i<objectivesWidgets.size(); i++)
+			{
+				objectivesWidgets[i]->visible=false;
+			}
+			for(int i=0; i<briefingWidgets.size(); i++)
+			{
+				briefingWidgets[i]->visible=false;
+			}
+			for(int i=0; i<hintsWidgets.size(); i++)
+			{
+				hintsWidgets[i]->visible=true;
+			}
+		}
 	}
 }
 

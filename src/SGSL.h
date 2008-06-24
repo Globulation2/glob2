@@ -279,6 +279,8 @@ private:
 	void objectiveHidden(GameGUI* gui);
 	void objectiveVisible(GameGUI* gui);
 	void objectiveComplete(GameGUI* gui);
+	void hintHidden(GameGUI* gui);
+	void hintVisible(GameGUI* gui);
 	
 	
 	bool testCondition(GameGUI *gui);

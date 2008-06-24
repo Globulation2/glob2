@@ -114,6 +114,8 @@ Strandbreite
 
 [break]
 
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -422,6 +424,8 @@ Zufriedenheit
 
 [Harvest]
 Ernten
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -586,6 +590,8 @@ mute
 
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
+[No Hints]
+
 [no key]
 
 [No Objectives]

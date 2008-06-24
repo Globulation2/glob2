@@ -44,8 +44,10 @@ public:
 		SAVE,
 		TAB_SCRIPT = 10,
 		TAB_OBJECTIVES = 11,
-		TAB_PRIMARY = 12,
-		TAB_SECONDARY = 13,
+		TAB_BRIEFING = 12,
+		TAB_HINTS = 13,
+		TAB_PRIMARY = 14,
+		TAB_SECONDARY = 15,
 	};
 	
 protected:
@@ -54,15 +56,18 @@ protected:
 	Mapscript *mapScript;
 	Game *game;
 	Text *mode;
-	TextButton *compileButton;
-	TextButton *loadButton;
-	TextButton *saveButton;
-	TextButton* primary;
-	TextButton* secondary;
 	TextInput *primaryObjectives[8];
 	TextInput *secondaryObjectives[8];
 	Text *primaryObjectiveLabels[8];
 	Text *secondaryObjectiveLabels[8];
+	TextArea* missionBriefing;
+	TextInput *hints[8];
+	Text *hintLabels[8];
+	
+	std::vector<Widget*> scriptWidgets;
+	std::vector<Widget*> objectivesWidgets;
+	std::vector<Widget*> briefingWidgets;
+	std::vector<Widget*> hintWidgets;
 	
 protected:
 	bool testCompile(void);

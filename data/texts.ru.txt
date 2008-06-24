@@ -114,6 +114,8 @@ backspace
 
 [break]
 break
+[briefing]
+
 [build %0 level %1]
 
 [build barracks level 0]
@@ -424,6 +426,8 @@ Ok
 "Полная" пауза
 [Harvest]
 Собирает
+[hints]
+
 [home]
 home
 [hospital explanation 2]
@@ -590,6 +594,8 @@ meta-%0
 Новая карта
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
+[No Hints]
+
 [no key]
 пока нет клавиши
 [No Objectives]
