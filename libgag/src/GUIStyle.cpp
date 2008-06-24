@@ -42,10 +42,29 @@ namespace GAGGUI
 		drawFrame(target, x, y, w, h, highlight);
 		if (state)
 		{
-			target->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
-			target->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
-			target->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
-			target->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
+			target->drawLine(x+(w/5)+1, y+(h/2),     x+(w/2),     y+4*(h/5)-1, 0, 255, 0);
+			target->drawLine(x+(w/5),   y+(h/2),     x+(w/2),     y+4*(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5)-1, x+4*(w/5),   y+(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5),   x+4*(w/5)-1, y+(h/5), 0, 255, 0);
+		}
+	}
+	
+	void Style::drawTriButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, Uint8 state)
+	{
+		drawFrame(target, x, y, w, h, highlight);
+		if (state==1)
+		{
+			target->drawLine(x+(w/5)+1, y+(h/2),     x+(w/2),     y+4*(h/5)-1, 0, 255, 0);
+			target->drawLine(x+(w/5),   y+(h/2),     x+(w/2),     y+4*(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5)-1, x+4*(w/5),   y+(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5),   x+4*(w/5)-1, y+(h/5), 0, 255, 0);
+		}
+		else if (state==2)
+		{
+			target->drawLine(x+(w/5),     y+(h/5), x+w-(w/5)-1, y+4*(h/5), 255, 64, 0);
+			target->drawLine(x+w-(w/5)-1, y+(h/5), x+(w/5),     y+4*(h/5), 255, 64, 0);
+			target->drawLine(x+(w/5)+1,   y+(h/5), x+w-(w/5)-2, y+4*(h/5), 255, 64, 0);
+			target->drawLine(x+w-(w/5)-2, y+(h/5), x+(w/5)+1,   y+4*(h/5), 255, 64, 0);
 		}
 	}
 	

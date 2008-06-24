@@ -46,7 +46,7 @@ public:
 	///This gets the number of objectives there are
 	int getNumberOfObjectives();
 	///This adds a new objective
-	void addNewObjective(const std::string& objective, bool hidden, bool complete, GameObjectiveType type, int scriptNumber);
+	void addNewObjective(const std::string& objective, bool hidden, bool complete, bool failed, GameObjectiveType type, int scriptNumber);
 	///This removes the given objective
 	void removeObjective(int n);
 
@@ -67,8 +67,12 @@ public:
 	void setObjectiveComplete(int n);
 	///This sets the given objective text as incomplete
 	void setObjectiveIncomplete(int n);
+	///This sets the given objective text as failed
+	void setObjectiveFailed(int n);
 	///This returns true if the given objective is complete
 	bool isObjectiveComplete(int n);
+	///This returns true if the given objective is failed
+	bool isObjectiveFailed(int n);
 	
 	///This sets the given objective type
 	void setObjectiveType(int n, GameObjectiveType type);
@@ -88,6 +92,7 @@ private:
 	std::vector<std::string> texts;
 	std::vector<bool> hidden;
 	std::vector<bool> completed;
+	std::vector<bool> failed;
 	std::vector<GameObjectiveType> types;
 	std::vector<int> scriptNumbers;
 };
