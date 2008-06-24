@@ -157,8 +157,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	//Put locks if needed
 	if(gameGUI->game.gameHeader.areAllyTeamsFixed())
 	{
-	
-		int np = gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo);
+		int np = std::max(2, gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo));
 		//Although this is the animation widget, we are just using it to display a still frame
 		addWidget(new Animation(172, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
 		addWidget(new Animation(196, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
