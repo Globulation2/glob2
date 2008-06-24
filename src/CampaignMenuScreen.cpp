@@ -34,11 +34,11 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 	addWidget(exit);
 	playerName = new TextInput(330, 225, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getPlayerName());
 	addWidget(playerName);
-	availableMissions = new List(10, 50, 300, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	availableMissions = new CheckList(10, 50, 300, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	for(unsigned i=0; i<campaign.getMapCount(); ++i)
 	{
 		if(campaign.getMap(i).isUnlocked())
-			availableMissions->addText(campaign.getMap(i).getMapName());
+			availableMissions->addItem(campaign.getMap(i).getMapName(), campaign.getMap(i).isCompleted());
 	}
 	addWidget(availableMissions);
 	
@@ -79,7 +79,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
 					if(campaign.getMap(i).isUnlocked())
-						availableMissions->addText(campaign.getMap(i).getMapName());
+						availableMissions->addItem(campaign.getMap(i).getMapName(), campaign.getMap(i).isCompleted());
 				}
 				campaign.save(true);
 			}

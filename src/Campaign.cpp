@@ -31,6 +31,7 @@ using namespace GAGCore;
 CampaignMapEntry::CampaignMapEntry()
 {
 	isLocked=false;
+	completed=false;
 }
 
 
@@ -92,6 +93,20 @@ bool CampaignMapEntry::isUnlocked()
 
 
 
+bool CampaignMapEntry::isCompleted()
+{
+	return completed;
+}
+
+
+
+void CampaignMapEntry::setCompleted(bool ncompleted)
+{
+	completed = ncompleted;
+}
+
+
+
 const std::string& CampaignMapEntry::getDescription() const
 {
 	return description;
@@ -133,6 +148,10 @@ bool CampaignMapEntry::load(InputStream* stream, Uint32 versionMinor)
 	{
 		description = stream->readText("description");
 	}
+	if(versionMinor>=76)
+	{
+		completed = stream->readUint8("completed");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -155,6 +174,7 @@ void CampaignMapEntry::save(OutputStream* stream)
 	}
 	stream->writeLeaveSection();
 	stream->writeText(description, "description");
+	stream->writeUint8(completed, "completed");
 	stream->writeLeaveSection();
 }
 
@@ -253,10 +273,12 @@ void Campaign::removeMap(unsigned n)
 
 
 
-void Campaign::unlockAllFrom(const std::string& map)
+void Campaign::setCompleted(const std::string& map)
 {
 	for(unsigned n=0; n<maps.size(); ++n)
 	{
+		if(maps[n].getMapName() == map)
+			maps[n].setCompleted(true);
 		for(unsigned i=0; i<maps[n].getUnlockedByMaps().size(); ++i)
 		{
 			if(maps[n].getUnlockedByMaps()[i] == map)
