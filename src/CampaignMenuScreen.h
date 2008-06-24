@@ -22,7 +22,7 @@
 #include "Campaign.h"
 #include "Glob2Screen.h"
 #include "GUIButton.h"
-#include "GUIList.h"
+#include "GUICheckList.h"
 #include "GUIText.h"
 #include "GUITextInput.h"
 #include "GUITextArea.h"
@@ -56,7 +56,7 @@ private:
 	TextInput* playerName;
 
 	/// The list of missions that are currently unlocked
-	List* availableMissions;
+	CheckList* availableMissions;
 	
 	/// Map description
 	TextArea* description;

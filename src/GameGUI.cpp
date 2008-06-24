@@ -635,6 +635,12 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					gameMenuScreen=NULL;
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					flushOutgoingAndExit=true;
+					
+			if(campaign!=NULL)
+			{
+				campaign->setCompleted(missionName);
+			}
+					
 					return true;
 				}
 				break;
@@ -3717,7 +3723,7 @@ void GameGUI::checkWonConditions(void)
 		{
 			if(campaign!=NULL)
 			{
-				campaign->unlockAllFrom(missionName);
+				campaign->setCompleted(missionName);
 			}
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have won]"), true);
