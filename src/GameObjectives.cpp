@@ -27,6 +27,7 @@ GameObjectives::GameObjectives()
 	texts.push_back("[Defeat Your Oppenents]");
 	hidden.push_back(false);
 	completed.push_back(false);
+	failed.push_back(false);
 	types.push_back(Primary);
 	scriptNumbers.push_back(1);
 }
@@ -40,11 +41,12 @@ int GameObjectives::getNumberOfObjectives()
 
 
 
-void GameObjectives::addNewObjective(const std::string& objective, bool ishidden, bool complete, GameObjectiveType type, int scriptNumber)
+void GameObjectives::addNewObjective(const std::string& objective, bool ishidden, bool complete, bool nfailed, GameObjectiveType type, int scriptNumber)
 {
 	texts.push_back(objective);
 	hidden.push_back(ishidden);
 	completed.push_back(complete);
+	failed.push_back(nfailed);
 	types.push_back(type);
 	scriptNumbers.push_back(scriptNumber);
 }
@@ -56,6 +58,7 @@ void GameObjectives::removeObjective(int n)
 	texts.erase(texts.begin() + n);
 	hidden.erase(hidden.begin() + n);
 	completed.erase(completed.begin() + n);
+	failed.erase(failed.begin() + n);
 	types.erase(types.begin() + n);
 	scriptNumbers.erase(scriptNumbers.begin() + n);
 }
@@ -101,6 +104,7 @@ bool GameObjectives::isObjectiveVisible(int n)
 void GameObjectives::setObjectiveComplete(int n)
 {
 	completed[n]=true;
+	failed[n]=false;
 }
 
 
@@ -108,6 +112,15 @@ void GameObjectives::setObjectiveComplete(int n)
 void GameObjectives::setObjectiveIncomplete(int n)
 {
 	completed[n]=false;
+	failed[n]=false;
+}
+
+
+
+void GameObjectives::setObjectiveFailed(int n)
+{
+	completed[n]=false;
+	failed[n]=true;
 }
 
 
@@ -115,6 +128,13 @@ void GameObjectives::setObjectiveIncomplete(int n)
 bool GameObjectives::isObjectiveComplete(int n)
 {
 	return completed[n];
+}
+
+
+
+bool GameObjectives::isObjectiveFailed(int n)
+{
+	return failed[n];
 }
 
 
@@ -157,6 +177,7 @@ void GameObjectives::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeText(texts[i], "text");
 		stream->writeUint8(hidden[i], "hidden");
 		stream->writeUint8(completed[i], "completed");
+		stream->writeUint8(failed[i], "failed");
 		stream->writeUint8(types[i], "type");
 		stream->writeUint8(scriptNumbers[i], "scriptNumber");
 		stream->writeLeaveSection();
@@ -171,6 +192,7 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 	texts.clear();
 	hidden.clear();
 	completed.clear();
+	failed.clear();
 	types.clear();
 	scriptNumbers.clear();
 	stream->readEnterSection("GameObjectives");
@@ -181,6 +203,10 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 		texts.push_back(stream->readText("text"));
 		hidden.push_back(stream->readUint8("hidden"));
 		completed.push_back(stream->readUint8("completed"));
+		if(versionMinor>=76)
+			failed.push_back(stream->readUint8("failed"));
+		else
+			failed.push_back(false);
 		types.push_back(static_cast<GameObjectiveType>(stream->readUint8("type")));
 		scriptNumbers.push_back(stream->readUint8("scriptNumber"));
 		stream->readLeaveSection();

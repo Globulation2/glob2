@@ -96,6 +96,30 @@ namespace GAGGUI
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
 	
+	///A button like OnOffButton except that it has 3 states, off (0), on (1) and alternate (2)
+	class TriButton:public HighlightableWidget
+	{
+	protected:
+		Uint8 state;
+		bool isClickable;
+	public:
+		TriButton() { state=false; returnCode=0; isClickable=true;}
+		TriButton(const std::string &tooltip, const std::string &tooltipFont) :HighlightableWidget(tooltip, tooltipFont) { state=0; returnCode=0; }
+		TriButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Uint8 startState, int returnCode);
+		TriButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Uint8 startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont);
+		virtual ~TriButton() { }
+	
+		virtual void paint(void);
+		virtual Uint8 getState(void) { return state; }
+		virtual void setState(Uint8 newState);
+	
+		//! Makes it so that nothing occurs on click
+		virtual void setClickable(bool enabled) { isClickable = enabled; }
+	protected:
+		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseButtonUp(SDL_Event *event);
+	};
+	
 	//! A button that can have multiple color
 	class ColorButton:public HighlightableWidget
 	{

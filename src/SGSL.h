@@ -279,6 +279,7 @@ private:
 	void objectiveHidden(GameGUI* gui);
 	void objectiveVisible(GameGUI* gui);
 	void objectiveComplete(GameGUI* gui);
+	void objectiveFailed(GameGUI* gui);
 	void hintHidden(GameGUI* gui);
 	void hintVisible(GameGUI* gui);
 	

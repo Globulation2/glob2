@@ -52,6 +52,7 @@ namespace GAGGUI
 		Style();
 		virtual ~Style() { }
 		virtual void drawOnOffButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, bool state);
+		virtual void drawTriButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, Uint8 state);
 		virtual void drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 		virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 		virtual void drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength);

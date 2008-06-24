@@ -90,7 +90,7 @@
 // version 73 moved the race variable from BaseTeam down to team to shrink the size of MapHeader
 // version 74 added unitsFailingRequirements to Building
 // version 75 added description to Campaign, GameObjectives to Game, and removed campaignText from Game
-// version 76 added mission complete/incomplete to Campaigns, added mission brieifing, added mission hints
+// version 76 added mission complete/incomplete to Campaigns, added mission brieifing, added mission hints, added ability to fail game objective
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above
