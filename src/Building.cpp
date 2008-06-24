@@ -302,6 +302,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	lastShootStep = 0xFFFFFFFF;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
+	unitsFailingRequirements=0;
 }
 
 void Building::save(GAGCore::OutputStream *stream)
