@@ -67,7 +67,16 @@ Engine::~Engine()
 int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName)
 {
 	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	GameHeader gameHeader = loadGameHeader(mapName);
+	if(gameHeader.getNumberOfPlayers() == 0)
+	{
+		gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	}
+	else
+	{
+		gui.localPlayer = 0;
+		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
+	}
 	int end=initGame(mapHeader, gameHeader);
 	gui.setCampaignGame(campaign, missionName);
 	return end;
@@ -78,7 +87,16 @@ int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const s
 int Engine::initCampaign(const std::string &mapName)
 {
 	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	GameHeader gameHeader = loadGameHeader(mapName);
+	if(gameHeader.getNumberOfPlayers() == 0)
+	{
+		gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	}
+	else
+	{
+		gui.localPlayer = 0;
+		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
+	}
 	int end=initGame(mapHeader, gameHeader);
 	return end;
 }

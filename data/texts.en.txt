@@ -10,6 +10,8 @@
 %0's team unit got converted to your team
 [abreaviation explanation A]
 A: Allies
+[teams editor]
+Teams Editor
 [abreaviation explanation C]
 C: Send chat messages to
 [abreaviation explanation fV]
@@ -20,6 +22,8 @@ mV: Show vision for Markets buildings (to exchange fruits)
 V: Show vision for all buildings
 [add map]
 Add map
+[open teams editor]
+Open Teams Editor
 [add shortcut]
 Add Shortcut
 [Add]
@@ -390,6 +394,8 @@ HP
 Hitpoint
 [human]
 human
+[Human]
+Human
 [hungry]
 hungry
 [hungryness]
