@@ -28,25 +28,12 @@
 #include "GUIBase.h"
 #include "KeyboardManager.h"
 #include <map>
+#include "MapEditDialog.h"
+#include "Minimap.h"
+#include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
 #include <string>
 #include <vector>
-#include "Minimap.h"
-#include "OverlayAreas.h"
-
-namespace GAGCore
-{
-	class Sprite;
-	class Font;
-}
-using namespace GAGCore;
-namespace GAGGUI
-{
-	class OverlayScreen;
-}
-using namespace GAGGUI;
-class Unit;
-
 
 ///A generic rectangle structure used for a variety of purposes, but mainly for the convience of the widget system
 struct widgetRectangle
@@ -60,50 +47,6 @@ struct widgetRectangle
 	int width;
 	int height;
 };
-
-
-///This is the map editor menu screen. It has 5 buttons. Its very similair to the in-game main menu
-class MapEditMenuScreen : public OverlayScreen
-{
-public:
-	MapEditMenuScreen();
-	virtual ~MapEditMenuScreen() { }
-	void onAction(Widget *source, Action action, int par1, int par2);
-
-	enum
-	{
-		LOAD_MAP,
-		SAVE_MAP,
-		OPEN_SCRIPT_EDITOR,
-		RETURN_EDITOR,
-		QUIT_EDITOR
-	};
-};
-
-
-///This is a text info box. It is used primarily for entering the names of the script areas,
-///however it is generic enough to be recycled for other purposes.
-class AskForTextInput : public OverlayScreen
-{
-public:
-	enum
-	{
-		OK,
-		CANCEL
-	};
-	AskForTextInput(const std::string& label, const std::string& current);
-	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getText();
-private:
-	TextInput* textEntry;
-	TextButton* ok;
-	TextButton* cancel;
-	Text* label;
-	std::string labelText;
-	std::string currentText;
-};
-
-
 
 class MapEdit;
 
@@ -480,6 +423,9 @@ public:
 	int run(void);
 	
 	void mapHasBeenModiffied(void) { hasMapBeenModified=true; }
+	
+	///This function regenerates a game header for use in campaigns
+	void regenerateGameHeader();
 
 	Game game;
 	friend class MapEditorWidget;
@@ -783,6 +729,10 @@ private:
 	///Tells whether the script editor is being drawn
 	bool showingScriptEditor;
 	ScriptEditorScreen* scriptEditor;
+	
+	///Tells whether the teams editor is being drawn
+	bool showingTeamsEditor;
+	TeamsEditor* teamsEditor;
 
 
 	///The various types of brushes for placing a zone

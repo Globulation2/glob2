@@ -1115,12 +1115,14 @@ MapEdit::MapEdit()
 	firstPlacementX=-1;
 	firstPlacementY=-1;
 
-	showingMenuScreen=false;
 	menuScreen = NULL;
+	scriptEditor=NULL;
+	teamsEditor=NULL;
+	showingMenuScreen=false;
 	showingLoad=false;
 	showingSave=false;
 	showingScriptEditor=false;
-	scriptEditor=false;
+	showingTeamsEditor=false;
 
 	terrainType=TerrainSelector::NoTerrain;
 
@@ -1263,6 +1265,10 @@ int MapEdit::run(void)
 	drawMenu();
 	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), true, true);
 	drawMiniMap();
+	
+	
+	if(game.gameHeader.getNumberOfPlayers() == 0)
+		regenerateGameHeader();
 
 	bool isRunning=true;
 	int returnCode=0;
@@ -1279,14 +1285,14 @@ int MapEdit::run(void)
  			processEvent(event);
 		}
 		
-		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor)
+		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
+		{
 			handleMapScroll();
-		// redraw on scroll
-// 		bool doRedraw=false;
-		viewportX+=xSpeed;
-		viewportY+=ySpeed;
-		viewportX&=game.map.getMaskW();
-		viewportY&=game.map.getMaskH();
+			viewportX+=xSpeed;
+			viewportY+=ySpeed;
+			viewportX&=game.map.getMaskW();
+			viewportY&=game.map.getMaskH();
+		}
 
 		//special overrides here to allow for scrolling and painting terrain at the same time
 		if(xSpeed!=0 || ySpeed!=0)
@@ -1325,6 +1331,12 @@ int MapEdit::run(void)
 			globalContainer->gfx->setClipRect();
 			scriptEditor->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
+		}
+		if(showingTeamsEditor)
+		{
+			globalContainer->gfx->setClipRect();
+			teamsEditor->dispatchPaint();
+			globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
 		}
 		if(isShowingAreaName)
 		{
@@ -1681,7 +1693,7 @@ void MapEdit::processEvent(SDL_Event& event)
 	}
 #	endif
 	
-	else if(showingMenuScreen || showingLoad || showingSave || showingScriptEditor || isShowingAreaName)
+	else if(showingMenuScreen || showingLoad || showingSave || showingScriptEditor || showingTeamsEditor || isShowingAreaName)
 	{
 		delegateMenu(event);
 		return;
@@ -2134,6 +2146,22 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		showingScriptEditor=false;
 		scriptEditor=NULL;
 	}
+	else if(action=="open teams editor")
+	{
+		performAction("unselect");
+		performAction("scroll horizontal stop");
+		performAction("scroll vertical stop");
+		
+		teamsEditor=new TeamsEditor(&game);
+		showingTeamsEditor=true;
+		hasMapBeenModified=true;
+	}
+	else if(action=="close teams editor")
+	{
+		delete teamsEditor;
+		showingTeamsEditor=false;
+		teamsEditor=NULL;
+	}
 	else if(action=="open area name")
 	{
 		performAction("unselect");
@@ -2421,7 +2449,10 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	else if(action=="add team")
 	{
 		if(game.mapHeader.getNumberOfTeams() < 12)
+		{
 			game.addTeam();
+			regenerateGameHeader();
+		}
 		hasMapBeenModified = true;
 	}
 	else if(action=="remove team")
@@ -2431,6 +2462,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			if(team==game.mapHeader.getNumberOfTeams()-1)
 				team-=1;
 			game.removeTeam();
+			regenerateGameHeader();
 		}
 		hasMapBeenModified = true;
 	}
@@ -3034,6 +3066,13 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close menu screen");
 				performAction("open script editor");
 			}
+			break;
+			case MapEditMenuScreen::OPEN_TEAMS_EDITOR:
+			{
+				performAction("close menu screen");
+				performAction("open teams editor");
+			}
+			break;
 			case MapEditMenuScreen::RETURN_EDITOR:
 			{
 				performAction("close menu screen");
@@ -3090,6 +3129,18 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case ScriptEditorScreen::CANCEL:
 			{
 				performAction("close script editor");
+			}
+		}
+	}
+	if(showingTeamsEditor)
+	{
+		teamsEditor->translateAndProcessEvent(&event);
+		switch(teamsEditor->endValue)
+		{
+			case ScriptEditorScreen::OK:
+			case ScriptEditorScreen::CANCEL:
+			{
+				performAction("close teams editor");
 			}
 		}
 	}
@@ -3638,63 +3689,28 @@ void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 }
 
 
-
-MapEditMenuScreen::MapEditMenuScreen() : OverlayScreen(globalContainer->gfx, 320, 260)
+void MapEdit::regenerateGameHeader()
 {
-	addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load map]"), LOAD_MAP));
-	addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save map]"), SAVE_MAP));
-	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[open script editor]"), OPEN_SCRIPT_EDITOR, 27));
-	addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the editor]"), QUIT_EDITOR));
-	addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to editor]"), RETURN_EDITOR, 27));
-	dispatchInit();
-}
-
-void MapEditMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-		endValue=par1;
-}
-
-
-
-
-AskForTextInput::AskForTextInput(const std::string& aLabel, const std::string& aCurrent) : OverlayScreen(globalContainer->gfx, 300, 120), labelText(aLabel), currentText(aCurrent)
-{
-	label = new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString(labelText.c_str()));
-	textEntry = new TextInput(10, 35, 280, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", currentText, true);
-	ok = new TextButton(10, 70, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK);
-	cancel =  new TextButton(155, 70, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
-	addWidget(label);
-	addWidget(textEntry);
-	addWidget(ok);
-	addWidget(cancel);
-	dispatchInit();
-}
-
-
-
-void AskForTextInput::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	GameHeader gameHeader;
+	MapHeader& mapHeader = game.mapHeader;
+	
+	int playerNumber=0;
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		if(par1==OK)
+		if (i==0)
 		{
-			currentText=textEntry->getText();
-			endValue=OK;
+			std::string name = FormatableString("Player %0").arg(playerNumber);
+			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
 		}
-		else if(par1==CANCEL)
+		else
 		{
-			endValue=CANCEL;
+			std::string name = FormatableString("AI Player %0").arg(playerNumber);
+			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
 		}
+		playerNumber+=1;
 	}
+	gameHeader.setNumberOfPlayers(playerNumber);
+	game.setGameHeader(gameHeader);
 }
-
-
-
-std::string AskForTextInput::getText()
-{
-	return currentText;
-}
-
 
 
