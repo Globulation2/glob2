@@ -7,6 +7,7 @@
 struct Thunk;
 struct Value;
 struct Heap;
+struct DebugInfo;
 
 struct Thread
 {
@@ -30,10 +31,12 @@ struct Thread
 	typedef std::vector<Frame> Frames;
 	
 	Heap* heap;
+	DebugInfo* debugInfo;
 	Frames frames;
 	
-	Thread(Heap* heap):
-		heap(heap)
+	Thread(Heap* heap, DebugInfo* debugInfo):
+		heap(heap),
+		debugInfo(debugInfo)
 	{}
 	
 	void markForGC();

@@ -12,6 +12,31 @@ const Position& ThunkDebugInfo::find(size_t address) const
 }
 
 
+static string getName(ThunkPrototype* thunk)
+{
+	NativeThunk* nativeThunk = dynamic_cast<NativeThunk*>(thunk);
+	if (nativeThunk != 0)
+		return nativeThunk->name;
+	
+	NativeMethod* nativeMethod = dynamic_cast<NativeMethod*>(thunk);
+	if (nativeMethod != 0)
+		return nativeMethod->name;
+
+	for (ThunkPrototype::Body::const_iterator it = thunk->body.begin(); it != thunk->body.end(); ++it)
+	{
+		CreateCode<Function>* createCode = dynamic_cast<CreateCode<Function>*>(*it);
+		if (createCode != 0)
+		{
+			nativeMethod = dynamic_cast<NativeMethod*>(createCode->prototype);
+			return nativeMethod->name + "::getter";
+		}
+	}
+	
+	assert(nativeMethod);
+	return "";
+}
+
+
 const Position& DebugInfo::find(ThunkPrototype* thunk, size_t address)
 {
 	Thunks::const_iterator it = thunks.find(thunk);
@@ -19,23 +44,8 @@ const Position& DebugInfo::find(ThunkPrototype* thunk, size_t address)
 		return it->second.find(address);
 	else
 	{
-		NativeMethod* native = dynamic_cast<NativeMethod*>(thunk);
-		if (native == 0)
-		{
-			for (ThunkPrototype::Body::const_iterator it = thunk->body.begin(); it != thunk->body.end(); ++it)
-			{
-				CreateCode<Function>* createCode = dynamic_cast<CreateCode<Function>*>(*it);
-				if (createCode != 0)
-				{
-					native = dynamic_cast<NativeMethod*>(createCode->prototype);
-					break;
-				}
-			}
-		}
-		assert(native);
-		
-		std::string name = "<";
-		name += native->name;
+		string name = "<";
+		name += getName(thunk);
 		name += ">";
 		Position nativePosition(name, 0, 0);
 		ThunkDebugInfo& debug = thunks[thunk];
