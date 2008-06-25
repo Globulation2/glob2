@@ -29,7 +29,7 @@ struct Value
 	
 	virtual ~Value() { }
 	
-	void dump(std::ostream &stream) const { stream << typeid(*this).name() << " "; dumpSpecific(stream); }
+	void dump(std::ostream &stream) const;
 	
 	virtual void dumpSpecific(std::ostream &stream) const { }
 	
@@ -48,10 +48,10 @@ struct Value
 };
 extern Value nil;
 
-struct ScopePrototype;
+struct ThunkPrototype;
 struct Prototype: Value
 {
-	typedef std::map<std::string, ScopePrototype*> Members;
+	typedef std::map<std::string, ThunkPrototype*> Members;
 	
 	Members members;
 	
@@ -75,7 +75,7 @@ struct Prototype: Value
 		for_each(members.begin(), members.end(), compose1(mem_fun(&Value::markForGC), select2nd<Members::value_type>()));
 	}
 	
-	virtual ScopePrototype* lookup(const std::string& name) const
+	virtual ThunkPrototype* lookup(const std::string& name) const
 	{
 		Members::const_iterator method = members.find(name);
 		if (method != members.end())
@@ -86,17 +86,14 @@ struct Prototype: Value
 };
 
 struct Code;
-struct ScopePrototype: Prototype
+struct ThunkPrototype: Prototype
 {
-	typedef std::vector<std::string> Locals;
 	typedef std::vector<Code*> Body;
-	
+
 	Prototype* outer;
-	Locals locals;
 	Body body;
-	
-	ScopePrototype(Heap* heap, Prototype* outer);
-	virtual ~ScopePrototype();
+
+	ThunkPrototype(Heap* heap, Prototype* outer);
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
@@ -111,17 +108,40 @@ struct ScopePrototype: Prototype
 	}
 };
 
-struct Scope: Value
+struct Thunk: Value
 {
-	typedef std::vector<Value*> Locals;
-	
+	typedef ThunkPrototype Prototype;
 	Value* outer;
-	Locals locals;
-	
-	Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
+
+	Thunk(Heap* heap, ThunkPrototype* prototype, Value* outer):
 		Value(heap, prototype),
 		outer(outer)
 	{}
+
+	ThunkPrototype* thunkPrototype()
+	{
+		return static_cast<ThunkPrototype*>(prototype);
+	}
+};
+
+struct ScopePrototype: ThunkPrototype
+{
+	typedef std::vector<std::string> Locals;
+	
+	Locals locals;
+	
+	ScopePrototype(Heap* heap, Prototype* outer);
+	virtual ~ScopePrototype();
+};
+
+struct Scope: Thunk
+{
+	typedef ScopePrototype Prototype;
+	typedef std::vector<Value*> Locals;
+	
+	Locals locals;
+	
+	Scope(Heap* heap, ScopePrototype* prototype, Value* outer);
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
@@ -139,18 +159,18 @@ struct Scope: Value
 		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
 	
-	ScopePrototype* def()
+	ScopePrototype* scopePrototype()
 	{
 		return static_cast<ScopePrototype*>(prototype);
 	}
 };
 
-struct PatternNode;
 struct Method: ScopePrototype
 {
 	Method(Heap* heap, Prototype* outer);
 };
 
+struct PatternNode;
 struct NativeMethod: Method
 {
 	std::string name;
@@ -158,38 +178,11 @@ struct NativeMethod: Method
 	virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
 };
 
-struct Thunk: Value
+struct Function: Scope
 {
-	Value* receiver;
-	ScopePrototype* method;
+	typedef Method Prototype;
 	
-	Thunk(Heap* heap, Value* receiver, ScopePrototype* method):
-		Value(heap, 0),
-		receiver(receiver),
-		method(method)
-	{}
-	
-protected:
-	Thunk(Heap* heap, Prototype* prototype, Value* receiver, ScopePrototype* method):
-		Value(heap, prototype),
-		receiver(receiver),
-		method(method)
-	{
-		assert(method->outer == receiver->prototype);
-	}
-};
-
-struct Function: Thunk
-{
-	struct FunctionPrototype: Prototype
-	{
-		FunctionPrototype();
-	};
-	static FunctionPrototype functionPrototype;
-	
-	Function(Heap* heap, Value* receiver, ScopePrototype* method):
-		Thunk(heap, &functionPrototype, receiver, method)
-	{}
+	Function(Heap* heap, Prototype* prototype, Value* outer);
 };
 
 struct Integer: Value

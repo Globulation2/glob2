@@ -49,7 +49,7 @@ Token Lexer::_next()
 void Lexer::fail(const string& expected) const
 {
 	ostringstream message;
-	message << "Syntax error @" << token.position.line << ":" << token.position.column << ":" << endl;
+	message << "Syntax error @" << token.position << ":" << endl;
 	message << "Found: " << token.type->desc << endl;
 	message << "Expected: " << expected << endl;
 	throw Exception(token.position, message.str());

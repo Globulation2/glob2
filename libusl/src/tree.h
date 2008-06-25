@@ -6,8 +6,9 @@
 #include <vector>
 
 struct ScopePrototype;
+struct ThunkPrototype;
 struct Method;
-struct FileDebugInfo;
+struct DebugInfo;
 struct Code;
 struct Value;
 struct Heap;
@@ -19,79 +20,68 @@ struct Node
 	Node(const Position& position):
 		position(position)
 	{}
-	
 	virtual ~Node() {}
-	void generate(ScopePrototype* scope, FileDebugInfo* debug, Code* code);
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap) = 0;
+	
+	void generate(ThunkPrototype* scope, DebugInfo* debug, Code* code);
+	virtual void generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap) = 0;
 	
 	void dump(std::ostream &stream, unsigned indent = 0) const;
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 };
 
-struct FunctionNode: Node
+struct ExpressionNode: Node
 {
-	FunctionNode(const Position& position):
+	ExpressionNode(const Position& position):
 		Node(position)
 	{}
+	
+	virtual void generate(ScopePrototype* thunk, DebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap) = 0;
 };
 
-struct ConstNode: Node
+struct ConstNode: ExpressionNode
 {
 	ConstNode(const Position& position, Value* value):
-		Node(position),
+		ExpressionNode(position),
 		value(value)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	Value* value;
 };
 
-struct EvalNode: Node
+struct SelectNode: ExpressionNode
 {
-	EvalNode(const Position& position, FunctionNode* thunk):
-		Node(position),
-		thunk(thunk)
-	{}
-	
-	virtual ~EvalNode();
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
-	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
-	
-	FunctionNode* thunk;
-};
-
-struct SelectNode: FunctionNode
-{
-	SelectNode(const Position& position, Node* receiver, const std::string& name):
-		FunctionNode(position),
+	SelectNode(const Position& position, ExpressionNode* receiver, const std::string& name):
+		ExpressionNode(position),
 		receiver(receiver),
 		name(name)
 	{}
 	
 	virtual ~SelectNode();
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
-	Node* receiver;
+	ExpressionNode* receiver;
 	const std::string name;
 };
 
-struct ApplyNode: Node
+struct ApplyNode: ExpressionNode
 {
-	ApplyNode(const Position& position, FunctionNode* function, Node* argument):
-		Node(position),
+	ApplyNode(const Position& position, ExpressionNode* function, ExpressionNode* argument):
+		ExpressionNode(position),
 		function(function),
 		argument(argument)
 	{}
 	
 	virtual ~ApplyNode();
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
-	FunctionNode* function;
-	Node* argument;
+	ExpressionNode* function;
+	ExpressionNode* argument;
 };
 
 struct DecNode: Node
@@ -103,7 +93,7 @@ struct DecNode: Node
 		VAR,
 	};
 	
-	DecNode(const Position& position, Type type, const std::string& name, Node* body):
+	DecNode(const Position& position, Type type, const std::string& name, ExpressionNode* body):
 		Node(position),
 		type(type),
 		name(name),
@@ -111,21 +101,22 @@ struct DecNode: Node
 	{}
 	
 	virtual ~DecNode();
-	void declare(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	void declare(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
+	virtual void generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	Type type;
 	std::string name;
-	Node* body;
+	ExpressionNode* body;
 };
 
-struct BlockNode: Node
+struct BlockNode: ExpressionNode
 {
 	typedef std::vector<Node*> Elements;
 	
 	BlockNode(const Position& position):
-		Node(position)
+		ExpressionNode(position)
 	{}
 	
 	virtual ~BlockNode();
@@ -140,7 +131,7 @@ struct ExecutionBlock: BlockNode
 		BlockNode(position)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
 };
 
 struct RecordBlock: BlockNode
@@ -149,17 +140,17 @@ struct RecordBlock: BlockNode
 		BlockNode(position)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
 };
 
-struct DefLookupNode: Node
+struct DefLookupNode: ExpressionNode
 {
 	DefLookupNode(const Position& position, const std::string& name):
-		Node(position),
+		ExpressionNode(position),
 		name(name)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	std::string name;
@@ -178,7 +169,7 @@ struct IgnorePatternNode: PatternNode
 		PatternNode(position)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 };
 
 struct NilPatternNode: PatternNode
@@ -187,7 +178,7 @@ struct NilPatternNode: PatternNode
 		PatternNode(position)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 };
 
 struct ValPatternNode: PatternNode
@@ -197,7 +188,7 @@ struct ValPatternNode: PatternNode
 		name(name)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	std::string name;
@@ -210,7 +201,7 @@ struct DefPatternNode: PatternNode
 		name(name)
 	{}
 	
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	std::string name;
@@ -225,26 +216,26 @@ struct TuplePatternNode: PatternNode
 	{}
 	
 	virtual ~TuplePatternNode();
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	Members members;
 };
 
-struct FunNode: Node
+struct FunNode: ExpressionNode
 {
-	FunNode(const Position& position, PatternNode* arg, Node* body):
-		Node(position),
+	FunNode(const Position& position, PatternNode* arg, ExpressionNode* body):
+		ExpressionNode(position),
 		arg(arg),
 		body(body)
 	{}
 	
 	virtual ~FunNode();
-	virtual void generate(ScopePrototype* scope, FileDebugInfo* debug, Heap* heap);
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
 	
 	PatternNode* arg;
-	Node* body;
+	ExpressionNode* body;
 };
 
 #endif // ndef TREE_H

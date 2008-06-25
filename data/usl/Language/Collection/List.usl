@@ -4,7 +4,7 @@
  Martin Voelkle <martin voelkle@gmail com> - 2008
 \*
 \# the interface
-List := interface (
+List := interface [
 	def isEmpty := abstract
 
 	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
@@ -12,25 +12,28 @@ List := interface (
 	
 	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := {
-		if (isEmpty)
+		if (isEmpty) {
 			Cons(x, Nil)
-		else
+		} else {
 			Cons(this.head, this.tail append x)
+		}
 	}
 	
 	\# Returns a list resulting from the concatenation of list x at the end of this list
 	def concat (x:List) := {
-		if (isEmpty)
+		if (isEmpty) {
 			x
-		else
+		} else {
 			Cons(this.head, this.tail concat x)
+		}
 	}
 
 	def map(function) := {
-		if (isEmpty)
+		if (isEmpty) {
 			Nil
-		else
+		} else {
 			Cons(function(this.head), this.tail map function)
+		}
 	}
 	
 	def foreach(function) := if (!isEmpty) {
@@ -39,46 +42,48 @@ List := interface (
 	}
 	
 	def contains(x) := {
-		if (isEmpty)
-			False
-		else
+		if (isEmpty) {
+			false
+		} else {
 			(this.head == x) || (this.tail contains x)
+		}
 	}
 
 	\# Returns a list containing the elements of this list in the reverse order
 	def reverse := {
 		def reverse(source, result) := {
-			if (source.isEmpty)
+			if (source.isEmpty) {
 				result
-			else
+			} else {
 				reverse(source.tail, List(source.head, result))
+			}
 		}
 		reverse(this, Nil)
 	}
 
 	def zip(that) := abstract
-)
+]
 
 \# the empty list
-Nil := List with (
-	def isEmpty := True
-)
+Nil := List with [
+	def isEmpty := true
+]
 
 \# a non-empty list
-Cons := List with fun (head, tail) => (
-	def isEmpty := False
-)
+Cons := List with fun (head, tail) => [
+	def isEmpty := false
+]
 
 def list(elements: Array) := {
 	def build(i, l) := {
-		if (i < 0)
+		if (i < 0) {
 			l
-		else
+		} else {
 			build(i - 1, Cons(elements at i, l))
+		}
 	}
 	build(elements.size - 1, Nil)
 }
 
 \# we should be able to write:
 val a := list [1, 2, 3, 4]
-
