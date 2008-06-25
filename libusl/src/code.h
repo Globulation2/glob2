@@ -60,7 +60,7 @@ struct SelectCode: Code
 	std::string name;
 };
 
-struct ApplyCode: EvalCode
+struct ApplyCode: Code
 {
 	virtual void execute(Thread* thread);
 };
@@ -100,9 +100,19 @@ struct ReturnCode: Code
 	virtual void execute(Thread* thread);
 };
 
-struct NativeCode: Code
+struct NativeThunkCode: Code
 {
-	NativeCode(NativeMethod* method);
+	NativeThunkCode(NativeThunk* thunk);
+	
+	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
+	
+	NativeThunk* thunk;
+};
+
+struct NativeMethodCode: Code
+{
+	NativeMethodCode(NativeMethod* method);
 	
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;

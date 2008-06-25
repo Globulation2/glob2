@@ -121,6 +121,8 @@ struct BlockNode: ExpressionNode
 	
 	virtual ~BlockNode();
 	virtual void dumpSpecific(std::ostream &stream, unsigned indent) const;
+	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
+	virtual void generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap* heap) = 0;
 	
 	Elements elements;
 };
@@ -131,7 +133,7 @@ struct ExecutionBlock: BlockNode
 		BlockNode(position)
 	{}
 	
-	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
+	virtual void generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 };
 
 struct RecordBlock: BlockNode
@@ -140,7 +142,7 @@ struct RecordBlock: BlockNode
 		BlockNode(position)
 	{}
 	
-	virtual void generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap);
+	virtual void generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap* heap);
 };
 
 struct DefLookupNode: ExpressionNode

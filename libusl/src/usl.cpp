@@ -90,7 +90,7 @@ int main(int argc, char** argv)
 		try
 		{
 			block.dump(cout);
-			block.generate(code, &debug, &heap);
+			block.generateMembers(code, &debug, &heap);
 		}
 		catch(Exception& e)
 		{
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 	cout << '\n';
 	dumpCode(&heap, &debug, cout);
 	
-	Thread thread(&heap);
+	Thread thread(&heap, &debug);
 	thread.frames.push_back(Thread::Frame(new Scope(&heap, code, 0)));
 	
 	int instCount = 0;

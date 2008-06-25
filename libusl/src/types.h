@@ -170,6 +170,13 @@ struct Method: ScopePrototype
 	Method(Heap* heap, Prototype* outer);
 };
 
+struct NativeThunk: ThunkPrototype
+{
+	std::string name;
+	NativeThunk(Prototype* outer, const std::string& name);
+	virtual Value* execute(Thread* thread, Value* receiver) = 0;
+};
+
 struct PatternNode;
 struct NativeMethod: Method
 {

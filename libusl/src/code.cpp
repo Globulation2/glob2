@@ -2,6 +2,11 @@
 #include "interpreter.h"
 #include "tree.h"
 #include "debug.h"
+#include "error.h"
+
+#include <sstream>
+
+using namespace std;
 
 ThunkPrototype* thisMember(Prototype* outer)
 {
@@ -100,15 +105,14 @@ void EvalCode::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
-	
 	assert(stack.size() >= 1);
 	
-	// get the function
+	// get the thunk
 	Thunk* thunk = dynamic_cast<Thunk*>(stack.back());
-	assert(thunk != 0);
 	stack.pop_back();
 	
 	// push a new frame
+	assert(thunk != 0); // TODO: This assert can be triggered by the user
 	frames.push_back(thunk);
 }
 
@@ -127,7 +131,14 @@ void SelectCode::execute(Thread* thread)
 	
 	// get definition
 	ThunkPrototype* def = receiver->prototype->lookup(name);
-	assert(def != 0);
+	if (def == 0)
+	{
+		const Thread::Frame& frame = thread->frames.back();
+		ostringstream message;
+		message << "member <" << name << "> not found in ";
+		receiver->dump(message); 
+		throw Exception(thread->debugInfo->find(frame.thunk->thunkPrototype(), frame.nextInstr), message.str());
+	}
 	
 	// create a thunk
 	Thunk* thunk = new Thunk(thread->heap, def, receiver);
@@ -146,15 +157,19 @@ void ApplyCode::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
+	assert(stack.size() >= 2);
 	
 	// get argument
 	Value* argument = stack.back();
 	stack.pop_back();
 	
-	// push a new frame
-	EvalCode::execute(thread);
+	// get the function
+	Function* function = dynamic_cast<Function*>(stack.back());
+	stack.pop_back();
 	
-	assert(dynamic_cast<Function*>(frames.back().thunk) != 0); // TODO: This assert can be triggered by the user
+	// push a new frame
+	assert(function != 0); // TODO: This assert can be triggered by the user
+	frames.push_back(function);
 	
 	// put the argument on the stack
 	frames.back().stack.push_back(argument);
@@ -229,11 +244,31 @@ void ReturnCode::execute(Thread* thread)
 }
 
 
-NativeCode::NativeCode(NativeMethod* method):
+NativeThunkCode::NativeThunkCode(NativeThunk* thunk):
+	thunk(thunk)
+{}
+
+void NativeThunkCode::execute(Thread* thread)
+{
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	
+	Value* receiver = stack.back();
+	stack.pop_back();
+	
+	stack.push_back(thunk->execute(thread, receiver));
+}
+
+void NativeThunkCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " " << thunk->name;
+}
+
+
+NativeMethodCode::NativeMethodCode(NativeMethod* method):
 	method(method)
 {}
 
-void NativeCode::execute(Thread* thread)
+void NativeMethodCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
@@ -245,10 +280,11 @@ void NativeCode::execute(Thread* thread)
 	stack.push_back(method->execute(thread, receiver, argument));
 }
 
-void NativeCode::dumpSpecific(std::ostream &stream) const
+void NativeMethodCode::dumpSpecific(std::ostream &stream) const
 {
 	stream << " " << method->name;
 }
+
 
 template <typename ThunkType>
 CreateCode<ThunkType>::CreateCode(typename ThunkType::Prototype* prototype):
@@ -264,7 +300,7 @@ void CreateCode<ThunkType>::execute(Thread* thread)
 	Value* receiver = stack.back();
 	stack.pop_back();
 	
-	assert(prototype->outer == receiver->prototype); // Should not fail if the parser is bug-free
+	assert(prototype->outer == 0 || prototype->outer == receiver->prototype); // Should not fail if the parser is bug-free
 	
 	// create a thunk
 	ThunkType* thunk = new ThunkType(thread->heap, prototype, receiver);

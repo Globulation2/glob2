@@ -25,13 +25,13 @@ ThunkPrototype::ThunkPrototype(Heap* heap, Prototype* outer):
 {}
 
 
-struct ScopeSize: NativeMethod
+struct ScopeSize: NativeThunk
 {
 	ScopeSize():
-		NativeMethod(0, "Scope::size", new NilPatternNode(Position()))
+		NativeThunk(0, "Scope::size")
 	{}
 	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	Value* execute(Thread* thread, Value* receiver)
 	{
 		Scope* scope = dynamic_cast<Scope*>(receiver);
 		assert(scope);
@@ -42,7 +42,7 @@ struct ScopeSize: NativeMethod
 ScopePrototype::ScopePrototype(Heap* heap, Prototype* outer):
 	ThunkPrototype(heap, outer)
 {
-	members["size"] = nativeMethodMember(&scopeSize);
+	members["size"] = &scopeSize;
 }
 
 ScopePrototype::~ScopePrototype()
@@ -63,6 +63,17 @@ ScopePrototype(heap, outer)
 {}
 
 
+NativeThunk::NativeThunk(Prototype* outer, const std::string& name):
+	ThunkPrototype(0, outer),
+	name(name)
+{
+	body.push_back(new ThunkCode());
+	body.push_back(new ParentCode());
+	body.push_back(new NativeThunkCode(this));
+	body.push_back(new ReturnCode());
+}
+
+
 NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument):
 	Method(0, outer),
 	name(name)
@@ -73,7 +84,7 @@ NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNod
 	body.push_back(new ParentCode());
 	body.push_back(new ThunkCode());
 	body.push_back(new ValRefCode(0));
-	body.push_back(new NativeCode(this));
+	body.push_back(new NativeMethodCode(this));
 	body.push_back(new ReturnCode());
 }
 
@@ -101,10 +112,29 @@ struct IntegerAdd: NativeMethod
 	}
 } integerAdd;
 
+struct IntegerSub: NativeMethod
+{
+	IntegerSub():
+		NativeMethod(&Integer::integerPrototype, "Integer::-", new ValPatternNode(Position(), "that"))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Integer* thisInt = dynamic_cast<Integer*>(receiver);
+		Integer* thatInt = dynamic_cast<Integer*>(argument);
+		
+		assert(thisInt);
+		assert(thatInt);
+		
+		return new Integer(thread->heap, thisInt->value - thatInt->value);
+	}
+} integerSub;
+
 Integer::IntegerPrototype::IntegerPrototype():
 	Prototype(0)
 {
 	members["+"] = nativeMethodMember(&integerAdd);
+	members["-"] = nativeMethodMember(&integerSub);
 }
 
 Integer::IntegerPrototype Integer::integerPrototype;
