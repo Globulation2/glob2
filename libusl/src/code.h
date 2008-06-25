@@ -12,9 +12,9 @@ class Prototype;
 class Operation;
 
 
-ScopePrototype* thisMember(Prototype* outer);
+ThunkPrototype* thisMember(Prototype* outer);
 ScopePrototype* getMember(Prototype* outer);
-ScopePrototype* nativeMethodMember(Method* method);
+ThunkPrototype* nativeMethodMember(Method* method);
 
 
 struct Code
@@ -90,7 +90,7 @@ struct DupCode: Code
 	virtual void execute(Thread* thread);
 };
 
-struct ScopeCode: Code
+struct ThunkCode: Code
 {
 	virtual void execute(Thread* thread);
 };
@@ -110,23 +110,15 @@ struct NativeCode: Code
 	NativeMethod* method;
 };
 
-struct DefRefCode: Code
+template<typename ThunkType>
+struct CreateCode: Code
 {
-	DefRefCode(ScopePrototype* def);
+	CreateCode(typename ThunkType::Prototype* prototype);
 	
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
-	ScopePrototype* def;
-};
-
-struct FunCode: Code
-{
-	FunCode(Method* method);
-	
-	virtual void execute(Thread* thread);
-	
-	Method* method;
+	typename ThunkType::Prototype* prototype;
 };
 
 #endif // ndef CODE_H

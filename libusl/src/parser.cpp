@@ -4,11 +4,9 @@
 
 using namespace std;
 
-BlockNode* Parser::parse()
+void Parser::parse(BlockNode* block)
 {
-	auto_ptr<ExecutionBlock> block(new ExecutionBlock(Position()));
-	statements(block.get());
-	return block.release();
+	statements(block);
 }
 
 void Parser::statements(BlockNode* block)
@@ -86,7 +84,7 @@ DecNode* Parser::declaration(const Position& position, DecNode::Type type, const
 		fail(getType(COLON)->desc);
 	}
 	newlines();
-	Node* expr = expression();
+	ExpressionNode* expr = expression();
 	if (arg.get())
 		expr = new FunNode(position, arg.release(), expr);
 	return new DecNode(position, type, name, expr);
@@ -146,52 +144,76 @@ PatternNode* Parser::pattern()
 	}
 }
 
-Node* Parser::expression()
+void Parser::expressions(BlockNode* block)
 {
-	return expression(simple());
-}
-
-Node* Parser::expression(const Position& position, const string& id)
-{
-	return expression(new DefLookupNode(position, id));
-}
-
-Node* Parser::expression(Node* first)
-{
-	auto_ptr<Node> node(first);
+	newlines();
 	while (true)
 	{
 		switch (tokenType())
 		{
+		case END:
+		case RPAR:
+		case RBRACE:
+		case RBRACK:
+			return;
+		case COMMA:
+			next();
+			break;
+		default:
+			block->elements.push_back(expression());
+			newlines();
+		}
+	}
+}
+
+ExpressionNode* Parser::expression()
+{
+	return expression(simple());
+}
+
+ExpressionNode* Parser::expression(const Position& position, const string& id)
+{
+	return expression(new DefLookupNode(position, id));
+}
+
+ExpressionNode* Parser::expression(ExpressionNode* first)
+{
+	auto_ptr<ExpressionNode> node(first);
+	while (true)
+	{
+		const Position& position = token.position;
+		switch (tokenType())
+		{
 		case ID:
 		case PREFIX:
-			node.reset(selectAndApply(token.position, node, identifier()));
+		{
+			string method = identifier();
+			ExpressionNode* argument = simple();
+			node.reset(new ApplyNode(position, new SelectNode(position, node.release(), method), argument));
 			break;
+		}
 		case DOT:
 		{
 			next();
 			const string& selected = identifier();
-			node.reset(new SelectNode(token.position, node.release(), selected));
+			node.reset(new SelectNode(position, node.release(), selected));
 			break;
 		}
 		case LPAR:
 		case LBRACE:
 		case LBRACK:
-			node.reset(selectAndApply(token.position, node, "apply"));
+		{
+			ExpressionNode* argument = simple();
+			node.reset(new ApplyNode(position, node.release(), argument));
 			break;
+		}
 		default:
 			return node.release();
 		}
 	}
 }
 
-ApplyNode* Parser::selectAndApply(const Position& position, auto_ptr<Node> receiver, const string& method)
-{
-	Node* argument = simple();
-	return new ApplyNode(position, new SelectNode(position, receiver.release(), method), argument);
-}
-
-Node* Parser::simple()
+ExpressionNode* Parser::simple()
 {
 	Position position = token.position;
 	switch (tokenType())
@@ -212,11 +234,16 @@ Node* Parser::simple()
 			int value = atoi(str.c_str());
 			return new ConstNode(position, new Integer(heap, value));
 		}
+	case STR:
+		{
+			// TODO: implements strings
+			assert(false);
+		}
 	case LPAR:
 		{
 			next();
 			auto_ptr<RecordBlock> block(new RecordBlock(position));
-			statements(block.get());
+			expressions(block.get());
 			accept(RPAR);
 			RecordBlock* record = block.get();
 			switch(record->elements.size()) {
@@ -224,12 +251,10 @@ Node* Parser::simple()
 				return new ConstNode(position, &nil);
 			case 1:
 				{
-					Node* element = dynamic_cast<Node*>(record->elements.front());
-					if (element != 0)
-					{
-						record->elements.clear();
-						return element;
-					}
+					ExpressionNode* element = dynamic_cast<ExpressionNode*>(record->elements.front());
+					assert(element);
+					record->elements.clear();
+					return element;
 				}
 			}
 			return block.release();
@@ -255,7 +280,7 @@ Node* Parser::simple()
 			next();
 			auto_ptr<PatternNode> arg(pattern());
 			accept(ARROW);
-			Node* body = expression();
+			ExpressionNode* body = expression();
 			return new FunNode(position, arg.release(), body);
 		}
 	default:

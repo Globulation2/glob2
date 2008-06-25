@@ -17,5 +17,5 @@ void Thread::Frame::markForGC()
 	
 	// mark all variables in frame
 	for_each(stack.begin(), stack.end(), mem_fun(&Value::markForGC));
-	scope->markForGC();
+	thunk->markForGC();
 }

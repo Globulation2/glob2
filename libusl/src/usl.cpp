@@ -9,98 +9,116 @@
 
 using namespace std;
 
-void dumpCode(ScopePrototype* scope, FileDebugInfo* debug, ostream& stream)
+void dumpCode(ThunkPrototype* thunk, ThunkDebugInfo* debug, ostream& stream)
 {
-	stream << scope << '\n';
-	for (size_t i = 0; i < scope->body.size(); ++i)
+	stream << thunk << " ";
+	thunk->dump(stream);
+	stream << '\n';
+	for (size_t i = 0; i < thunk->body.size(); ++i)
 	{
-		Position pos = debug->find(scope, i);
+		Position pos = debug->find(i);
 		stream << pos.line << ":" << pos.column << ": ";
-		scope->body[i]->dump(stream);
+		thunk->body[i]->dump(stream);
 		stream << '\n';
 	}
 	stream << '\n';
 }
 
-void dumpCode(Heap* heap, FileDebugInfo* debug, ostream& stream)
+void dumpCode(Heap* heap, DebugInfo* debug, ostream& stream)
 {
 	for (Heap::Values::iterator values = heap->values.begin(); values != heap->values.end(); ++values)
 	{
-		ScopePrototype* scope = dynamic_cast<ScopePrototype*>(*values);
-		if (scope != 0)
-			dumpCode(scope, debug, stream);
+		ThunkPrototype* thunk = dynamic_cast<ThunkPrototype*>(*values);
+		if (thunk != 0)
+		{
+			ThunkDebugInfo* thunkDebug = debug->get(thunk);
+			dumpCode(thunk, thunkDebug, stream);
+		}
 	}
 }
 
 int main(int argc, char** argv)
 {
-	if (argc != 2)
+	if (argc < 2)
 	{
 		cerr << "Wrong number of arguments" << endl;
 		return 1;
 	}
 	
-	string file = argv[1];
-	
-	ifstream ifs(file.c_str());
-	if (!ifs.good())
-	{
-		cerr << "Can't open file " << file << endl;
-		return 2;
-	}
-	
-	cout << "Testing " << argv[1] << "\n\n";
-	
-	string source;
-	while (true)
-	{
-		char c = ifs.get();
-		if (ifs.eof() || !ifs.good())
-			break;
-		source += c;
-	}
-	ifs.close();
-	
-	cout << "* source:\n" << source << "\n";
-
 	Heap heap;
-	ScopePrototype* root = new ScopePrototype(&heap, 0);
-	ProgramDebugInfo debug;
+	ScopePrototype* code = new ScopePrototype(&heap, 0);
+	DebugInfo debug;
 	
-	Parser parser(source.c_str(), &heap);
-	Node* node;
-	try
 	{
-		node = parser.parse();
-		node->dump(cout);
-		node->generate(root, debug.get(file), &heap);
+		ExecutionBlock block = ExecutionBlock(Position());
+	
+		for (int i = 1; i < argc; ++i)
+		{
+			string file = argv[i];
+	
+			ifstream ifs(file.c_str());
+			if (!ifs.good())
+			{
+				cerr << "Can't open file " << file << endl;
+				return 2;
+			}
+	
+			cout << "Parsing " << argv[i] << "\n\n";
+	
+			string source;
+			while (true)
+			{
+				char c = ifs.get();
+				if (ifs.eof() || !ifs.good())
+					break;
+				source += c;
+			}
+			ifs.close();
+
+			Parser parser(file, source.c_str(), &heap);
+			try
+			{
+				parser.parse(&block);
+			}
+			catch(Exception& e)
+			{
+				cout << e.position << ":" << e.what() << endl;
+				return -1;
+			}
+		}
+	
+		try
+		{
+			block.dump(cout);
+			block.generate(code, &debug, &heap);
+		}
+		catch(Exception& e)
+		{
+			cout << e.position << ":" << e.what() << endl;
+			return -1;
+		}
 	}
-	catch(Exception& e)
-	{
-		cout << e.what() << endl;
-		return -1;
-	}
-	delete node;
 	
 	cout << '\n';
-	dumpCode(&heap, debug.get(file), cout);
+	dumpCode(&heap, &debug, cout);
 	
 	Thread thread(&heap);
-	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
+	thread.frames.push_back(Thread::Frame(new Scope(&heap, code, 0)));
 	
 	int instCount = 0;
-	while (thread.frames.size() > 1 || thread.frames.front().nextInstr < root->body.size())
+	while (thread.frames.size() > 1 || thread.frames.front().nextInstr < code->body.size())
 	{
 		Thread::Frame& frame = thread.frames.back();
-		ScopePrototype* scope = frame.scope->def();
+		ThunkPrototype* thunk = frame.thunk->thunkPrototype();
+		cout << thunk;
 		
 		for (size_t i = 0; i < thread.frames.size(); ++i)
-			cout << "[" << thread.frames[i].scope->locals.size() << "," << thread.frames[i].stack.size() << "]";
+			cout << "[" << thread.frames[i].stack.size() << "]";
 		
-		FilePosition position = debug.find(scope, frame.nextInstr);
-		cout << " " << position.file << ":" << position.position.line << ":" << position.position.column << ": ";
+		Position position = debug.find(thunk, frame.nextInstr);
+		cout << " " << position.filename << ":" << position.line << ":" << position.column << ": ";
 		
-		Code* code = scope->body[frame.nextInstr++];
+		Code* code = thunk->body[frame.nextInstr++];
 		code->dump(cout);
 		cout << endl;
 		code->execute(&thread);

@@ -4,7 +4,7 @@
 #include <stack>
 #include <vector>
 
-struct Scope;
+struct Thunk;
 struct Value;
 struct Heap;
 
@@ -14,12 +14,12 @@ struct Thread
 	{
 		typedef std::vector<Value*> Stack;
 	
-		Scope* scope;
+		Thunk* thunk;
 		Stack stack;
 		size_t nextInstr;
 		
-		Frame(Scope* scope):
-			scope(scope)
+		Frame(Thunk* thunk):
+			thunk(thunk)
 		{
 			nextInstr = 0;
 		}

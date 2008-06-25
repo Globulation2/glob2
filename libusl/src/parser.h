@@ -8,12 +8,12 @@ struct Heap;
 
 struct Parser: Lexer
 {
-	Parser(const char* src, Heap* heap):
-		Lexer(src),
+	Parser(const std::string& filename, const char* src, Heap* heap):
+		Lexer(filename, src),
 		heap(heap)
 	{}
 	
-	BlockNode* parse();
+	void parse(BlockNode* block);
 
 private:
 	void statements(BlockNode* block);
@@ -21,11 +21,11 @@ private:
 	DecNode* declaration(DecNode::Type type);
 	DecNode* declaration(const Position& position, DecNode::Type type, const std::string& name);
 	PatternNode* pattern();
-	Node* expression();
-	Node* expression(const Position& position, const std::string& id);
-	Node* expression(Node* first);
-	ApplyNode* selectAndApply(const Position& position, std::auto_ptr<Node> receiver, const std::string& method);
-	Node* simple();
+	void expressions(BlockNode* block);
+	ExpressionNode* expression();
+	ExpressionNode* expression(const Position& position, const std::string& id);
+	ExpressionNode* expression(ExpressionNode* first);
+	ExpressionNode* simple();
 	void newlines();
 	std::string identifier();
 	void accept(TokenType type);

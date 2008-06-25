@@ -2,14 +2,16 @@
 #define POSITION_H
 
 #include <string>
+#include <ostream>
 
 struct Position
 {
+	std::string filename;
 	size_t line;
 	size_t column;
 	
-	Position(): line(0), column(0) {}
-	Position(size_t line, size_t column): line(line), column(column) {}
+	Position(): filename(), line(0), column(0) {}
+	Position(const std::string& filename, size_t line, size_t column): filename(filename), line(line), column(column) {}
 	
 	bool operator<(const Position& that) const;
 	
@@ -17,15 +19,9 @@ struct Position
 	void move(const char *text, size_t length);
 };
 
-struct FilePosition
+inline std::ostream& operator<<(std::ostream& stream, const Position& position)
 {
-	std::string file;
-	Position position;
-	
-	FilePosition(const std::string& file, const Position& position):
-		file(file),
-		position(position)
-	{}
-};
+	return stream << position.filename << ":" << position.line << ":" << position.column;
+}
 
 #endif // ndef POSITION_H

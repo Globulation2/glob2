@@ -47,8 +47,8 @@ public:
 		return 0;
 	}
 
-	Lexer(const char* text):
-		Tokenizer(tokenTypes, TOKENTYPES, text),
+	Lexer(const std::string& filename, const char* text):
+		Tokenizer(tokenTypes, TOKENTYPES, filename, text),
 		token(_next())
 	{ }
 	
