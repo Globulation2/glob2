@@ -226,12 +226,10 @@ void ExecutionBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, He
 
 void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
 {
-	//scope->members["get"] = getMember(block);
-
 	for (Elements::const_iterator it = elements.begin(); it != elements.end(); ++it)
 	{
 		DecNode* dec = dynamic_cast<DecNode*>(*it);
-		if (dec)
+		if (dec != 0)
 			dec->declare(scope, debug, heap);
 	}
 
@@ -247,6 +245,8 @@ void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap*
 		DecNode* dec = dynamic_cast<DecNode*>(element);
 		if (dec)
 		{
+			Node::generate(scope, debug, new PopCode());
+			
 			getter = scope->members[dec->name];
 		}
 		else

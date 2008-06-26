@@ -6,7 +6,9 @@
 #include "debug.h"
 
 #include <cassert>
+#include <algorithm>
 
+using namespace std;
 
 void Value::dump(std::ostream &stream) const
 {
@@ -39,10 +41,30 @@ struct ScopeSize: NativeThunk
 	}
 } scopeSize;
 
+struct ScopeAt: NativeMethod
+{
+	ScopeAt():
+		NativeMethod(0, "Scope::at", new ValPatternNode(Position(), "index"))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Scope* scope = dynamic_cast<Scope*>(receiver);
+		Integer* index = dynamic_cast<Integer*>(argument);
+		assert(scope);
+		assert(index);
+		size_t i = index->value;
+		assert(i >= 0);
+		assert(i < scope->locals.size());
+		return scope->locals[i];
+	}
+} scopeAt;
+
 ScopePrototype::ScopePrototype(Heap* heap, Prototype* outer):
 	ThunkPrototype(heap, outer)
 {
 	members["size"] = &scopeSize;
+	members["at"] = nativeMethodMember(&scopeAt);
 }
 
 ScopePrototype::~ScopePrototype()
@@ -128,11 +150,36 @@ struct IntegerSub: NativeMethod
 	}
 } integerSub;
 
+struct IntegerLessThan: NativeMethod
+{
+	IntegerLessThan():
+		NativeMethod(&Integer::integerPrototype, "Integer::<", new ValPatternNode(Position(), "that"))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Integer* thisInt = dynamic_cast<Integer*>(receiver);
+		Integer* thatInt = dynamic_cast<Integer*>(argument);
+		
+		assert(thisInt);
+		assert(thatInt);
+		
+		bool result = thisInt->value < thatInt->value;
+		string resultName(result ? "true" : "false");
+		Thread::Frame& rootFrame = thread->frames.front();
+		Scope* rootScope = dynamic_cast<Scope*>(rootFrame.thunk);
+		ScopePrototype* rootPrototype = rootScope->scopePrototype();
+		size_t index = find(rootPrototype->locals.begin(), rootPrototype->locals.end(), resultName) - rootPrototype->locals.begin();
+		return rootScope->locals[index];
+	}
+} integerLessThan;
+
 Integer::IntegerPrototype::IntegerPrototype():
 	Prototype(0)
 {
 	members["+"] = nativeMethodMember(&integerAdd);
 	members["-"] = nativeMethodMember(&integerSub);
+	members["<"] = nativeMethodMember(&integerLessThan);
 }
 
 Integer::IntegerPrototype Integer::integerPrototype;

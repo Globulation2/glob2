@@ -16,8 +16,7 @@ void dumpCode(ThunkPrototype* thunk, ThunkDebugInfo* debug, ostream& stream)
 	stream << '\n';
 	for (size_t i = 0; i < thunk->body.size(); ++i)
 	{
-		Position pos = debug->find(i);
-		stream << pos.line << ":" << pos.column << ": ";
+		stream << debug->find(i) << ": ";
 		thunk->body[i]->dump(stream);
 		stream << '\n';
 	}
@@ -37,7 +36,7 @@ void dumpCode(Heap* heap, DebugInfo* debug, ostream& stream)
 	}
 }
 
-Value* run(Thread& thread, DebugInfo& debug, int& instCount)
+Value* run(Thread& thread, int& instCount)
 {
 	while (true)
 	{
@@ -47,10 +46,10 @@ Value* run(Thread& thread, DebugInfo& debug, int& instCount)
 		Code* code = thunk->body[nextInstr];
 		frame.nextInstr++;
 		
-		cout << thunk << ":" << nextInstr << "/" << thunk->body.size();
+		cout << thunk;
 		for (size_t i = 0; i < thread.frames.size(); ++i)
 			cout << "[" << thread.frames[i].stack.size() << "]";
-		cout << " " << debug.find(thunk, nextInstr) << ": ";
+		cout << " " << thread.debugInfo->find(thunk, nextInstr) << ": ";
 		code->dump(cout);
 		cout << endl;
 		
@@ -145,7 +144,16 @@ int main(int argc, char** argv)
 	thread.frames.push_back(Thread::Frame(new Scope(&heap, code, 0)));
 	
 	int instCount = 0;
-	Value* result = run(thread, debug, instCount);
+	Value* result;
+	try
+	{
+		result = run(thread, instCount);
+	}
+	catch(Exception& e)
+	{
+		cout << e.position << ":" << e.what() << endl;
+		return -1;
+	}
 
 	cout << "\n\n* result:\n";
 	result->dump(cout);
