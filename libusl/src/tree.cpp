@@ -92,7 +92,6 @@ void ApplyNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
 {
 	ThunkPrototype* arg = new ThunkPrototype(heap, thunk);
 	argument->generate(arg, debug, heap);
-	Node::generate(arg, debug, new ReturnCode());
 	
 	function->generate(thunk, debug, heap);
 	Node::generate(thunk, debug, new ThunkCode());
@@ -138,7 +137,6 @@ void DecNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
 			ThunkPrototype* def = scope->members[name];
 			assert(def);
 			body->generate(def, debug, heap);
-			Node::generate(def, debug, new ReturnCode());
 
 			Node::generate(scope, debug, new ConstCode(&nil));
 		}
@@ -158,7 +156,6 @@ void DecNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
 			Node::generate(getter, debug, new ThunkCode());
 			Node::generate(getter, debug, new ParentCode());
 			Node::generate(getter, debug, new ValRefCode(index));
-			Node::generate(getter, debug, new ReturnCode());
 		}
 		break;
 	}
@@ -224,7 +221,6 @@ void ExecutionBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, He
 	{
 		Node::generate(scope, debug, new ConstCode(&nil));
 	}
-	Node::generate(scope, debug, new ReturnCode());
 }
 
 
@@ -262,7 +258,6 @@ void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap*
 			Node::generate(getter, debug, new ThunkCode());
 			Node::generate(getter, debug, new ParentCode());
 			Node::generate(getter, debug, new ValRefCode(index));
-			Node::generate(getter, debug, new ReturnCode());
 		}
 
 		stringstream str;
@@ -271,7 +266,6 @@ void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap*
 	}
 
 	Node::generate(scope, debug, new ThunkCode());
-	Node::generate(scope, debug, new ReturnCode());
 }
 
 
@@ -341,7 +335,6 @@ void ValPatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* hea
 	Node::generate(getter, debug, new ThunkCode());
 	Node::generate(getter, debug, new ParentCode());
 	Node::generate(getter, debug, new ValRefCode(index));
-	Node::generate(getter, debug, new ReturnCode());
 }
 
 void ValPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -365,7 +358,6 @@ void DefPatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* hea
 	Node::generate(getter, debug, new ParentCode());
 	Node::generate(getter, debug, new ValRefCode(index));
 	Node::generate(getter, debug, new EvalCode());
-	Node::generate(getter, debug, new ReturnCode());
 }
 
 void DefPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -421,7 +413,6 @@ void FunNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
 	Method* method = new Method(heap, thunk);
 	arg->generate(method, debug, heap);
 	body->generate(method, debug, heap);
-	Node::generate(method, debug, new ReturnCode());
 	
 	Node::generate(thunk, debug, new ThunkCode());
 	Node::generate(thunk, debug, new CreateCode<Function>(method));

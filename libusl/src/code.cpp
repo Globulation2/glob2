@@ -13,7 +13,6 @@ ThunkPrototype* thisMember(Prototype* outer)
 	ThunkPrototype* thunk = new ThunkPrototype(0, outer); // TODO: GC
 	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
-	thunk->body.push_back(new ReturnCode());
 	return thunk;
 }
 /*
@@ -50,7 +49,6 @@ ThunkPrototype* nativeMethodMember(Method* method)
 	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
 	thunk->body.push_back(new CreateCode<Function>(method));
-	thunk->body.push_back(new ReturnCode());
 	return thunk;
 }
 
@@ -233,14 +231,6 @@ void ThunkCode::execute(Thread* thread)
 {
 	Thread::Frame& frame = thread->frames.back();
 	frame.stack.push_back(frame.thunk);
-}
-
-
-void ReturnCode::execute(Thread* thread)
-{
-	Value* value = thread->frames.back().stack.back();
-	thread->frames.pop_back();
-	thread->frames.back().stack.push_back(value);
 }
 
 

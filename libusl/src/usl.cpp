@@ -37,6 +37,45 @@ void dumpCode(Heap* heap, DebugInfo* debug, ostream& stream)
 	}
 }
 
+Value* run(Thread& thread, DebugInfo& debug, int& instCount)
+{
+	while (true)
+	{
+		Thread::Frame& frame = thread.frames.back();
+		ThunkPrototype* thunk = frame.thunk->thunkPrototype();
+		size_t nextInstr = frame.nextInstr;
+		Code* code = thunk->body[nextInstr];
+		frame.nextInstr++;
+		
+		cout << thunk << ":" << nextInstr << "/" << thunk->body.size();
+		for (size_t i = 0; i < thread.frames.size(); ++i)
+			cout << "[" << thread.frames[i].stack.size() << "]";
+		cout << " " << debug.find(thunk, nextInstr) << ": ";
+		code->dump(cout);
+		cout << endl;
+		
+		code->execute(&thread);
+		instCount++;
+		
+		while (true)
+		{
+			Thread::Frame& frame = thread.frames.back();
+			if (frame.nextInstr < frame.thunk->thunkPrototype()->body.size())
+				break;
+			Value* retVal = frame.stack.back();
+			thread.frames.pop_back();
+			if (!thread.frames.empty())
+			{
+				thread.frames.back().stack.push_back(retVal);
+			}
+			else
+			{
+				return retVal;
+			}
+		}
+	}
+}
+
 int main(int argc, char** argv)
 {
 	if (argc < 2)
@@ -106,30 +145,11 @@ int main(int argc, char** argv)
 	thread.frames.push_back(Thread::Frame(new Scope(&heap, code, 0)));
 	
 	int instCount = 0;
-	while (thread.frames.size() > 1 || thread.frames.front().nextInstr < code->body.size())
-	{
-		Thread::Frame& frame = thread.frames.back();
-		ThunkPrototype* thunk = frame.thunk->thunkPrototype();
-		cout << thunk;
-		
-		for (size_t i = 0; i < thread.frames.size(); ++i)
-			cout << "[" << thread.frames[i].stack.size() << "]";
-		
-		Position position = debug.find(thunk, frame.nextInstr);
-		cout << " " << position.filename << ":" << position.line << ":" << position.column << ": ";
-		
-		Code* code = thunk->body[frame.nextInstr++];
-		code->dump(cout);
-		cout << endl;
-		code->execute(&thread);
-		
-		instCount++;
-	}
+	Value* result = run(thread, debug, instCount);
+
 	cout << "\n\n* result:\n";
-	thread.frames.back().stack.back()->dump(cout);
+	result->dump(cout);
 	cout << endl;
-	
-	thread.frames.pop_back();
 	
 	cout << "\n* stats:\n";
 	cout << "heap size: " << heap.values.size() << "\tinst count: " << instCount << "\n";

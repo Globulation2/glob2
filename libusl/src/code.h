@@ -95,11 +95,6 @@ struct ThunkCode: Code
 	virtual void execute(Thread* thread);
 };
 
-struct ReturnCode: Code
-{
-	virtual void execute(Thread* thread);
-};
-
 struct NativeThunkCode: Code
 {
 	NativeThunkCode(NativeThunk* thunk);
