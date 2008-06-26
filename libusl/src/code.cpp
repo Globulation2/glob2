@@ -134,7 +134,8 @@ void SelectCode::execute(Thread* thread)
 		const Thread::Frame& frame = thread->frames.back();
 		ostringstream message;
 		message << "member <" << name << "> not found in ";
-		receiver->dump(message); 
+		receiver->dump(message);
+		message << "(" << receiver->prototype << ")";
 		throw Exception(thread->debugInfo->find(frame.thunk->thunkPrototype(), frame.nextInstr), message.str());
 	}
 	

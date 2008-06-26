@@ -87,3 +87,5 @@ def list(elements: Array) := {
 
 \# we should be able to write:
 val a := list [1, 2, 3, 4]
+a.head
+
