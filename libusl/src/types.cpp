@@ -70,7 +70,6 @@ NativeThunk::NativeThunk(Prototype* outer, const std::string& name):
 	body.push_back(new ThunkCode());
 	body.push_back(new ParentCode());
 	body.push_back(new NativeThunkCode(this));
-	body.push_back(new ReturnCode());
 }
 
 
@@ -85,7 +84,6 @@ NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNod
 	body.push_back(new ThunkCode());
 	body.push_back(new ValRefCode(0));
 	body.push_back(new NativeMethodCode(this));
-	body.push_back(new ReturnCode());
 }
 
 
