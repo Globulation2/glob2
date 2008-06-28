@@ -219,6 +219,10 @@ void GameGUI::init()
 	missionName="";
 	
 	scrollWheelChanges=0;
+	
+	hilightObject1=HilightNone;
+	hilightObject2=HilightNone;
+	hilightObject3=HilightNone;
 }
 
 void GameGUI::adjustLocalTeam()
@@ -650,12 +654,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					gameMenuScreen=NULL;
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					flushOutgoingAndExit=true;
-					
-			if(campaign!=NULL)
-			{
-				campaign->setCompleted(missionName);
-			}
-					
 					return true;
 				}
 				break;
@@ -2366,6 +2364,10 @@ void GameGUI::drawPanelButtons(int pos)
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 4);
 	}
 
+	if(hilightObject1 == HilightUnderMinimapIcon || hilightObject2 == HilightUnderMinimapIcon || hilightObject3 == HilightUnderMinimapIcon)
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, pos, 38));
+	}
 	// draw decoration
 }
 
@@ -2411,6 +2413,12 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 
 			buildingSprite->setBaseColor(localTeam->color);
 			globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
+			
+			globalContainer->gfx->setClipRect();
+			if(hilightObject1 == HilightBuilding+IntBuildingType::shortNumberFromType(type) || hilightObject2 == HilightBuilding+IntBuildingType::shortNumberFromType(type) || hilightObject3 == HilightBuilding+IntBuildingType::shortNumberFromType(type))
+			{
+				arrowPositions.push_back(HilightArrowPosition(x+decX-36, y-6+decX, 38));
+			}
 		}
 	}
 	int count = i;
@@ -2848,6 +2856,10 @@ void GameGUI::drawBuildingInfos(void)
 				}
 			}
 		}
+		if(hilightObject1 == HilightUnitsWorkingBar || hilightObject2 == HilightUnitsWorkingBar || hilightObject3 == HilightUnitsWorkingBar)
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, ypos+6, 38));
+		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
 	
@@ -3044,6 +3056,7 @@ void GameGUI::drawBuildingInfos(void)
 
 	if ((selBuild->owner->allies) & (1<<localTeamNo))
 	{
+		//Unit production ratios
 		if (buildingType->unitProductionTime) // swarm
 		{
 			int left=(selBuild->productionTimeout*128)/buildingType->unitProductionTime;
@@ -3055,6 +3068,11 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, getUnitName(i));
+			}
+			
+			if(hilightObject1 == HilightRatioBar || hilightObject2 == HilightRatioBar || hilightObject3 == HilightRatioBar)
+			{
+				arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, 256+90+(1*20)+12-8, 38));
 			}
 		}
 		
@@ -3247,6 +3265,11 @@ void GameGUI::drawPanel(void)
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
+	if(hilightObject1 == HilightRightSideMenu || hilightObject2 == HilightRightSideMenu || hilightObject3 == HilightRightSideMenu)
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, globalContainer->gfx->getH()/2, 38));
+	}
+
 	// draw the buttons in the panel
 	drawPanelButtons(128);
 
@@ -3411,6 +3434,11 @@ void GameGUI::drawTopScreenBar(void)
 		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 7);
 	else
 		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
+	
+	if(hilightObject1 == HilightMainMenuIcon || hilightObject2 == HilightMainMenuIcon || hilightObject3 == HilightMainMenuIcon)
+	{
+		arrowPositions.push_back(HilightArrowPosition(pos-32, 32, 43));
+	}
 }
 
 void GameGUI::drawOverlayInfos(void)
@@ -3633,6 +3661,7 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -3644,6 +3673,8 @@ void GameGUI::drawAll(int team)
 								((showFertilityMap) ? Game::DRAW_OVERLAY : 0) |
 								Game::DRAW_AREA;
 	
+	updateHilightInGame();
+	arrowPositions.clear();
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16);
@@ -3705,6 +3736,13 @@ void GameGUI::drawAll(int team)
 	}
 	if (scrollableText)
 		drawInGameScrollableText();
+		
+	// draw the hilight arrows
+	for(int i=0; i<arrowPositions.size(); ++i)
+	{
+		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
+		
+	}
 }
 
 void GameGUI::checkWonConditions(void)
@@ -4344,6 +4382,39 @@ void GameGUI::setCampaignGame(Campaign& campaign, const std::string& missionName
 {
 	this->campaign=&campaign;
 	this->missionName=missionName;
+}
+
+
+
+void GameGUI::updateHilightInGame()
+{
+	game.hilightUnitType = 0;
+	if(hilightObject1 == HilightWorkers || hilightObject2 == HilightWorkers || hilightObject3 == HilightWorkers)
+	{
+		game.hilightUnitType |= 1<<WORKER;
+	}
+	if(hilightObject1 == HilightExplorers || hilightObject2 == HilightExplorers || hilightObject3 == HilightExplorers)
+	{
+		game.hilightUnitType |= 1<<EXPLORER;
+	}
+	if(hilightObject1 == HilightWarriors || hilightObject2 == HilightWarriors || hilightObject3 == HilightWarriors)
+	{
+		game.hilightUnitType |= 1<<WARRIOR;
+	}
+	
+	game.hilightBuildingType = 0;
+	if(hilightObject1 >= HilightBuildingOnMap)
+	{
+		game.hilightBuildingType |= 1<<(hilightObject1 - HilightBuildingOnMap);
+	}
+	if(hilightObject2 >= HilightBuildingOnMap)
+	{
+		game.hilightBuildingType |= 1<<(hilightObject2 - HilightBuildingOnMap);
+	}
+	if(hilightObject3 >= HilightBuildingOnMap)
+	{
+		game.hilightBuildingType |= 1<<(hilightObject3 - HilightBuildingOnMap);
+	}
 }
 
 

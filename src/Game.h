@@ -233,6 +233,12 @@ public:
 	int prestigeToReach;
 	bool totalPrestigeReached;
 	bool isGameEnded;
+	///This is the IntBuildingType of a building type to be hilighted. All buildings of this type will be drawn
+	///With an arrow pointed at them. This is primarily for tutorials and is linked through the script system
+	///This is a mask, where 1<<typenum is the buildings to be hilighted
+	Uint32 hilightBuildingType;
+	///Similar to above, but for units
+	Uint32 hilightUnitType;
 	
 	
 	Team *getTeamWithMostPrestige(void);

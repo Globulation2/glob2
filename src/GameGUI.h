@@ -126,6 +126,54 @@ public:
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
 	
+	///This is an enum for the current hilight object. The hilighted object is shown with a large arrow.
+	///This is primarily for tutorials
+	enum HilightObject
+	{
+		HilightNone=0,
+		///This causes the main menu icon to be hilighted
+		HilightMainMenuIcon=1,
+		///This causes all workers on the map to be hilighted
+		HilightWorkers=2,
+		///This causes all explorers on the map to be hilighted
+		HilightExplorers=3,
+		///This causes all warriors on the map to be hilighted
+		HilightWarriors=4,
+		///This causes the right-side menu to be hilighted
+		HilightRightSideMenu=5,
+		///This causes the minimap icons to be hilighted
+		HilightUnderMinimapIcon=6,
+		///This causes the units working bar to be hilighted
+		HilightUnitsWorkingBar=7,
+		///This causes the worker/explorer/warrior ratio bars on a swarm to be hilighted
+		HilightRatioBar=8,
+		
+		///Anything above this number causes a particular building on the right side menu to be hilighted,
+		///the value is HilightBuilding+IntBuildingType
+		HilightBuilding=50,
+		///Anything above this number causes the particular building on the actual map to be hilighted
+		///the value is HilightBuilding+IntBuildingType
+		HilightBuildingOnMap=100,
+	};
+	struct HilightArrowPosition
+	{
+		HilightArrowPosition(int x, int y, int sprite) : x(x), y(y), sprite(sprite) {}
+		int x;
+		int y;
+		int sprite;
+	};
+		
+	int hilightObject1;
+	int hilightObject2;
+	int hilightObject3;
+	///The arrows must be the last things to be drawn,
+	///So there positions are stored during the drawing
+	///proccess, and they are drawn last
+	std::vector<HilightArrowPosition> arrowPositions;
+	
+	///This sends the hilight values to the Game class, setting Game::hilightBuildingType and Game::hilightUnitType
+	void updateHilightInGame();
+	
 	KeyboardManager keyboardManager;
 public:
 	Game game;
