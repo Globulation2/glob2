@@ -5,6 +5,7 @@
 #include <vector>
 
 struct Thunk;
+struct Scope;
 struct Value;
 struct Heap;
 struct DebugInfo;
@@ -27,17 +28,29 @@ struct Thread
 		
 		void markForGC();
 	};
+	struct RuntimeValues
+	{
+		RuntimeValues();
+		Value* trueValue;
+		Value* falseValue;
+	};
 	
 	typedef std::vector<Frame> Frames;
 	
 	Heap* heap;
 	DebugInfo* debugInfo;
+	Scope* root;
+	RuntimeValues runtimeValues;
 	Frames frames;
 	
-	Thread(Heap* heap, DebugInfo* debugInfo):
+	Thread(Heap* heap, DebugInfo* debugInfo, Scope* root):
 		heap(heap),
-		debugInfo(debugInfo)
+		debugInfo(debugInfo),
+		root(root)
 	{}
+	
+	Value* getRuntimeValue(Value*& cachedValue, const std::string& name);
+	Value* getRootLocal(const std::string& name);
 	
 	void markForGC();
 };

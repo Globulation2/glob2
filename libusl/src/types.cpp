@@ -12,13 +12,65 @@ using namespace std;
 
 void Value::dump(std::ostream &stream) const
 {
-	stream << unmangle(typeid(*this).name()) << " ";
+	stream << unmangle(typeid(*this).name()) << "(" << prototype << ")" << " ";
 	dumpSpecific(stream);
 }
 
 
 Prototype Nil(0);
 Value nil(0, &Nil);
+
+
+#include <iostream>
+struct PrototypeWith: NativeMethod
+{
+	PrototypeWith():
+		NativeMethod(0, "Prototype::with", new ValPatternNode(Position(), "that"))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Prototype* thisProt = dynamic_cast<Prototype*>(receiver);
+		assert(thisProt);
+		argument->dump(cout); cout << endl;
+		Prototype* thatProt = dynamic_cast<Prototype*>(argument);
+		if (thatProt == 0)
+		{
+			thatProt = argument->prototype;
+		}
+		// TODO
+		return thatProt;
+	}
+} prototypeWith;
+
+
+struct MetaPrototype: Prototype
+{
+	MetaPrototype():
+		Prototype(0)
+	{
+		members["with"] = nativeMethodMember(&prototypeWith);
+	}
+} metaPrototype;
+
+
+struct ValuePrototype: NativeThunk
+{
+	ValuePrototype():
+		NativeThunk(0, "Value::prototype")
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver)
+	{
+		return receiver->prototype;
+	}
+} valuePrototype;
+
+Prototype::Prototype(Heap* heap):
+	Value(heap, &metaPrototype)
+{
+	members["prototype"] = &valuePrototype;	
+}
 
 
 ThunkPrototype::ThunkPrototype(Heap* heap, Prototype* outer):
@@ -50,12 +102,15 @@ struct ScopeAt: NativeMethod
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
 	{
 		Scope* scope = dynamic_cast<Scope*>(receiver);
-		Integer* index = dynamic_cast<Integer*>(argument);
 		assert(scope);
+		
+		Integer* index = dynamic_cast<Integer*>(argument);
 		assert(index);
+
 		size_t i = index->value;
 		assert(i >= 0);
 		assert(i < scope->locals.size());
+
 		return scope->locals[i];
 	}
 } scopeAt;
@@ -80,11 +135,6 @@ Scope::Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
 {}
 	
 
-Method::Method(Heap* heap, Prototype* outer):
-ScopePrototype(heap, outer)
-{}
-
-
 NativeThunk::NativeThunk(Prototype* outer, const std::string& name):
 	ThunkPrototype(0, outer),
 	name(name)
@@ -96,7 +146,7 @@ NativeThunk::NativeThunk(Prototype* outer, const std::string& name):
 
 
 NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument):
-	Method(0, outer),
+	ScopePrototype(0, outer),
 	name(name)
 {
 	argument->generate(this, 0, (Heap*) 0);
@@ -109,8 +159,19 @@ NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNod
 }
 
 
-Function::Function(Heap* heap, Method* prototype, Value* outer):
-	Scope(heap, prototype, outer)
+struct FunctionPrototype: Prototype
+{
+
+	FunctionPrototype():
+		Prototype(0)
+	{}
+	
+} functionPrototype;
+
+Function::Function(Heap* heap, Prototype* prototype, Value* outer):
+	Value(heap, &functionPrototype), 
+	prototype(prototype),
+	outer(outer)
 {}
 
 
@@ -166,11 +227,8 @@ struct IntegerLessThan: NativeMethod
 		
 		bool result = thisInt->value < thatInt->value;
 		string resultName(result ? "true" : "false");
-		Thread::Frame& rootFrame = thread->frames.front();
-		Scope* rootScope = dynamic_cast<Scope*>(rootFrame.thunk);
-		ScopePrototype* rootPrototype = rootScope->scopePrototype();
-		size_t index = find(rootPrototype->locals.begin(), rootPrototype->locals.end(), resultName) - rootPrototype->locals.begin();
-		return rootScope->locals[index];
+		Value*& resultValue(result ? thread->runtimeValues.trueValue : thread->runtimeValues.falseValue);
+		return thread->getRuntimeValue(resultValue, resultName);
 	}
 } integerLessThan;
 

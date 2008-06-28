@@ -140,8 +140,9 @@ int main(int argc, char** argv)
 	cout << '\n';
 	dumpCode(&heap, &debug, cout);
 	
-	Thread thread(&heap, &debug);
-	thread.frames.push_back(Thread::Frame(new Scope(&heap, code, 0)));
+	Scope* root = new Scope(&heap, code, 0);
+	Thread thread(&heap, &debug, root);
+	thread.frames.push_back(Thread::Frame(root));
 	
 	int instCount = 0;
 	Value* result;

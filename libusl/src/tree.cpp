@@ -410,12 +410,16 @@ FunNode::~FunNode()
 
 void FunNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
 {
-	Method* method = new Method(heap, thunk);
-	arg->generate(method, debug, heap);
-	body->generate(method, debug, heap);
+	ScopePrototype* scope = new ScopePrototype(heap, thunk);
+	arg->generate(scope, debug, heap);
+	BlockNode* block = dynamic_cast<BlockNode*>(body);
+	if (block == 0)
+		body->generate(scope, debug, heap);
+	else
+		block->generateMembers(scope, debug, heap);
 	
 	Node::generate(thunk, debug, new ThunkCode());
-	Node::generate(thunk, debug, new CreateCode<Function>(method));
+	Node::generate(thunk, debug, new CreateCode<Function>(scope));
 }
 
 void FunNode::dumpSpecific(std::ostream &stream, unsigned indent) const
