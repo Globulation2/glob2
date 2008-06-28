@@ -348,6 +348,39 @@ void Story::hintVisible(GameGUI* gui)
 }
 
 
+
+void Story::hilightItem(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	if(n>=0)
+	{
+		gui->hilightObject1 = static_cast<GameGUI::HilightObject>(n);
+	}
+}
+
+
+
+void Story::hilightSecondItem(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	if(n>=0)
+	{
+		gui->hilightObject2 = static_cast<GameGUI::HilightObject>(n);
+	}
+}
+
+
+
+void Story::hilightThirdItem(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	if(n>=0)
+	{
+		gui->hilightObject3 = static_cast<GameGUI::HilightObject>(n);
+	}
+}
+
+
 static const FunctionArgumentDescription totoDescription[] = {
 	{ Token::S_WIN, Token::S_LOOSE },
 	{ Token::INT, Token::INT },
@@ -380,6 +413,11 @@ static const FunctionArgumentDescription hintHiddenDescription[] = {
 };
 
 static const FunctionArgumentDescription hintVisibleDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightItemDescription[] = {
 	{ Token::INT, Token::INT },
 	{ -1, -1}
 };
@@ -1162,6 +1200,9 @@ Mapscript::Mapscript()
 	functions["objectiveFailed"] = std::make_pair(objectiveFailedDescription, &Story::objectiveFailed);
 	functions["hintHidden"] = std::make_pair(hintHiddenDescription, &Story::hintHidden);
 	functions["hintVisible"] = std::make_pair(hintVisibleDescription, &Story::hintVisible);
+	functions["hilightItem"] = std::make_pair(hilightItemDescription, &Story::hilightItem);
+	functions["hilightSecondItem"] = std::make_pair(hilightItemDescription, &Story::hilightSecondItem);
+	functions["hilightThirdItem"] = std::make_pair(hilightItemDescription, &Story::hilightThirdItem);
 }
 
 Mapscript::~Mapscript(void)
