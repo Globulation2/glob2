@@ -43,7 +43,7 @@ ScopePrototype* getMember(Prototype* outer)
 	return nativeMethodMember(new ScopeGet(outer));
 }
 */
-ThunkPrototype* nativeMethodMember(Method* method)
+ThunkPrototype* nativeMethodMember(NativeMethod* method)
 {
 	ThunkPrototype* thunk = new ThunkPrototype(0, method->outer); // TODO: GC
 	thunk->body.push_back(new ThunkCode());
@@ -109,6 +109,9 @@ void EvalCode::execute(Thread* thread)
 	Thunk* thunk = dynamic_cast<Thunk*>(stack.back());
 	stack.pop_back();
 	
+	if (frames.back().nextInstr == frames.back().thunk->thunkPrototype()->body.size())
+		frames.pop_back();
+	
 	// push a new frame
 	assert(thunk != 0); // TODO: This assert can be triggered by the user
 	frames.push_back(thunk);
@@ -164,11 +167,15 @@ void ApplyCode::execute(Thread* thread)
 	
 	// get the function
 	Function* function = dynamic_cast<Function*>(stack.back());
+	assert(function != 0); // TODO: This assert can be triggered by the user
 	stack.pop_back();
 	
+	if (frames.back().nextInstr == frames.back().thunk->thunkPrototype()->body.size())
+		frames.pop_back();
+
 	// push a new frame
-	assert(function != 0); // TODO: This assert can be triggered by the user
-	frames.push_back(function);
+	Scope* scope = new Scope(thread->heap, function->prototype, function->outer);
+	frames.push_back(scope);
 	
 	// put the argument on the stack
 	frames.back().stack.push_back(argument);

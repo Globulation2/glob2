@@ -23,9 +23,10 @@ private:
 	PatternNode* pattern();
 	void expressions(BlockNode* block);
 	ExpressionNode* expression();
-	ExpressionNode* expression(const Position& position, const std::string& id);
-	ExpressionNode* expression(ExpressionNode* first);
-	ExpressionNode* simple();
+	ExpressionNode* prefixedExpression();
+	ExpressionNode* methodCompositionExpression(ExpressionNode* first);
+	ExpressionNode* pathExpression(ExpressionNode* first);
+	ExpressionNode* simpleExpression();
 	void newlines();
 	std::string identifier();
 	void accept(TokenType type);

@@ -14,7 +14,7 @@ class Operation;
 
 ThunkPrototype* thisMember(Prototype* outer);
 ScopePrototype* getMember(Prototype* outer);
-ThunkPrototype* nativeMethodMember(Method* method);
+ThunkPrototype* nativeMethodMember(NativeMethod* method);
 
 
 struct Code

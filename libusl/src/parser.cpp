@@ -41,7 +41,9 @@ Node* Parser::statement()
 	case DEF:
 		return declaration(DecNode::DEF);
 	case ID:
+	case PREFIX:
 		{
+			bool isPrefix = tokenType() == PREFIX;
 			string name = identifier();
 			switch (tokenType())
 			{
@@ -49,7 +51,10 @@ Node* Parser::statement()
 			case COLONEQ:
 				return declaration(position, DecNode::AUTO, name);
 			default:
-				return expression(position, name);
+				if (!isPrefix)
+					return methodCompositionExpression(pathExpression(new DefLookupNode(position, name)));
+				else
+					return new SelectNode(position, expression(), name);
 			}
 		}
 	default:
@@ -168,15 +173,47 @@ void Parser::expressions(BlockNode* block)
 
 ExpressionNode* Parser::expression()
 {
-	return expression(simple());
+	return prefixedExpression();
 }
 
-ExpressionNode* Parser::expression(const Position& position, const string& id)
+ExpressionNode* Parser::prefixedExpression()
 {
-	return expression(new DefLookupNode(position, id));
+	const Position position(token.position);
+	switch(tokenType())
+	{
+	case PREFIX:
+	{
+		const string name(identifier());
+		return new SelectNode(position, expression(), name);
+	}
+	default:
+		return methodCompositionExpression(pathExpression(simpleExpression()));
+	}
 }
 
-ExpressionNode* Parser::expression(ExpressionNode* first)
+ExpressionNode* Parser::methodCompositionExpression(ExpressionNode* first)
+{
+	auto_ptr<ExpressionNode> node(pathExpression(first));
+	while (true)
+	{
+		const Position position(token.position);
+		switch (tokenType())
+		{
+		case ID:
+		case PREFIX:
+		{
+			string method = identifier();
+			ExpressionNode* argument = pathExpression(simpleExpression());
+			node.reset(new ApplyNode(position, new SelectNode(position, node.release(), method), argument));
+			break;
+		}
+		default:
+			return node.release();
+		}
+	}
+}
+
+ExpressionNode* Parser::pathExpression(ExpressionNode* first)
 {
 	auto_ptr<ExpressionNode> node(first);
 	while (true)
@@ -184,14 +221,6 @@ ExpressionNode* Parser::expression(ExpressionNode* first)
 		const Position& position = token.position;
 		switch (tokenType())
 		{
-		case ID:
-		case PREFIX:
-		{
-			string method = identifier();
-			ExpressionNode* argument = simple();
-			node.reset(new ApplyNode(position, new SelectNode(position, node.release(), method), argument));
-			break;
-		}
 		case DOT:
 		{
 			next();
@@ -203,7 +232,7 @@ ExpressionNode* Parser::expression(ExpressionNode* first)
 		case LBRACE:
 		case LBRACK:
 		{
-			ExpressionNode* argument = simple();
+			ExpressionNode* argument = simpleExpression();
 			node.reset(new ApplyNode(position, node.release(), argument));
 			break;
 		}
@@ -213,16 +242,12 @@ ExpressionNode* Parser::expression(ExpressionNode* first)
 	}
 }
 
-ExpressionNode* Parser::simple()
+ExpressionNode* Parser::simpleExpression()
 {
-	Position position = token.position;
+	const Position position(token.position);
 	switch (tokenType())
 	{
 	case PREFIX:
-		{
-			const string& op = identifier();
-			return new SelectNode(token.position, simple(), op);
-		}
 	case ID:
 		{
 			return new DefLookupNode(position, identifier());
