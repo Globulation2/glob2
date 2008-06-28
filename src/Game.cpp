@@ -152,6 +152,9 @@ void Game::clearGame()
 	mouseUnit = NULL;
 	selectedUnit = NULL;
 	selectedBuilding = NULL;
+	
+	hilightBuildingType=0;
+	hilightUnitType=0;
 }
 
 
@@ -1757,6 +1760,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 	}
+	if(hilightUnitType & (1<<unit->typeNum))
+	{
+		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36);
+	}
 }
 
 struct BuildingPosComp
@@ -2169,6 +2176,11 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 			globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, 127));
 			globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
 			globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
+		}
+		
+		if(hilightBuildingType & (1<<building->shortTypeNum))
+		{
+			globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
 		}
 	}
 }

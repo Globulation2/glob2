@@ -282,6 +282,9 @@ private:
 	void objectiveFailed(GameGUI* gui);
 	void hintHidden(GameGUI* gui);
 	void hintVisible(GameGUI* gui);
+	void hilightItem(GameGUI* gui);
+	void hilightSecondItem(GameGUI* gui);
+	void hilightThirdItem(GameGUI* gui);
 	
 	
 	bool testCondition(GameGUI *gui);
