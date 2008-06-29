@@ -283,8 +283,13 @@ private:
 	void hintHidden(GameGUI* gui);
 	void hintVisible(GameGUI* gui);
 	void hilightItem(GameGUI* gui);
-	void hilightSecondItem(GameGUI* gui);
-	void hilightThirdItem(GameGUI* gui);
+	void unhilightItem(GameGUI* gui);
+	void hilightUnits(GameGUI* gui);
+	void unhilightUnits(GameGUI* gui);
+	void hilightBuildings(GameGUI* gui);
+	void unhilightBuildings(GameGUI* gui);
+	void hilightBuildingOnPanel(GameGUI* gui);
+	void unhilightBuildingOnPanel(GameGUI* gui);
 	
 	
 	bool testCondition(GameGUI *gui);
