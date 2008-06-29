@@ -220,9 +220,7 @@ void GameGUI::init()
 	
 	scrollWheelChanges=0;
 	
-	hilightObject1=HilightNone;
-	hilightObject2=HilightNone;
-	hilightObject3=HilightNone;
+	hilights.clear();
 }
 
 void GameGUI::adjustLocalTeam()
@@ -2364,7 +2362,7 @@ void GameGUI::drawPanelButtons(int pos)
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 4);
 	}
 
-	if(hilightObject1 == HilightUnderMinimapIcon || hilightObject2 == HilightUnderMinimapIcon || hilightObject3 == HilightUnderMinimapIcon)
+	if(hilights.find(HilightUnderMinimapIcon) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, pos, 38));
 	}
@@ -2415,7 +2413,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
 			
 			globalContainer->gfx->setClipRect();
-			if(hilightObject1 == HilightBuilding+IntBuildingType::shortNumberFromType(type) || hilightObject2 == HilightBuilding+IntBuildingType::shortNumberFromType(type) || hilightObject3 == HilightBuilding+IntBuildingType::shortNumberFromType(type))
+			if(hilights.find(HilightBuildingOnPanel+IntBuildingType::shortNumberFromType(type)) != hilights.end())
 			{
 				arrowPositions.push_back(HilightArrowPosition(x+decX-36, y-6+decX, 38));
 			}
@@ -2856,7 +2854,7 @@ void GameGUI::drawBuildingInfos(void)
 				}
 			}
 		}
-		if(hilightObject1 == HilightUnitsWorkingBar || hilightObject2 == HilightUnitsWorkingBar || hilightObject3 == HilightUnitsWorkingBar)
+		if(hilights.find(HilightUnitsAssignedBar) != hilights.end())
 		{
 			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, ypos+6, 38));
 		}
@@ -3070,7 +3068,7 @@ void GameGUI::drawBuildingInfos(void)
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, getUnitName(i));
 			}
 			
-			if(hilightObject1 == HilightRatioBar || hilightObject2 == HilightRatioBar || hilightObject3 == HilightRatioBar)
+			if(hilights.find(HilightRatioBar) != hilights.end())
 			{
 				arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, 256+90+(1*20)+12-8, 38));
 			}
@@ -3265,7 +3263,7 @@ void GameGUI::drawPanel(void)
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
-	if(hilightObject1 == HilightRightSideMenu || hilightObject2 == HilightRightSideMenu || hilightObject3 == HilightRightSideMenu)
+	if(hilights.find(HilightRightSidePanel) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, globalContainer->gfx->getH()/2, 38));
 	}
@@ -3435,7 +3433,7 @@ void GameGUI::drawTopScreenBar(void)
 	else
 		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
 	
-	if(hilightObject1 == HilightMainMenuIcon || hilightObject2 == HilightMainMenuIcon || hilightObject3 == HilightMainMenuIcon)
+	if(hilights.find(HilightMainMenuIcon) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(pos-32, 32, 43));
 	}
@@ -4389,31 +4387,27 @@ void GameGUI::setCampaignGame(Campaign& campaign, const std::string& missionName
 void GameGUI::updateHilightInGame()
 {
 	game.hilightUnitType = 0;
-	if(hilightObject1 == HilightWorkers || hilightObject2 == HilightWorkers || hilightObject3 == HilightWorkers)
+	if(hilights.find(HilightWorkers) != hilights.end())
 	{
 		game.hilightUnitType |= 1<<WORKER;
 	}
-	if(hilightObject1 == HilightExplorers || hilightObject2 == HilightExplorers || hilightObject3 == HilightExplorers)
+	if(hilights.find(HilightExplorers) != hilights.end())
 	{
 		game.hilightUnitType |= 1<<EXPLORER;
 	}
-	if(hilightObject1 == HilightWarriors || hilightObject2 == HilightWarriors || hilightObject3 == HilightWarriors)
+	if(hilights.find(HilightWarriors) != hilights.end())
 	{
 		game.hilightUnitType |= 1<<WARRIOR;
 	}
 	
 	game.hilightBuildingType = 0;
-	if(hilightObject1 >= HilightBuildingOnMap)
+	
+	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
-		game.hilightBuildingType |= 1<<(hilightObject1 - HilightBuildingOnMap);
-	}
-	if(hilightObject2 >= HilightBuildingOnMap)
-	{
-		game.hilightBuildingType |= 1<<(hilightObject2 - HilightBuildingOnMap);
-	}
-	if(hilightObject3 >= HilightBuildingOnMap)
-	{
-		game.hilightBuildingType |= 1<<(hilightObject3 - HilightBuildingOnMap);
+		if(hilights.find(HilightBuildingOnMap + i) != hilights.end())
+		{
+			game.hilightBuildingType |= 1<<(i);
+		}
 	}
 }
 

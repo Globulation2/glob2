@@ -351,33 +351,114 @@ void Story::hintVisible(GameGUI* gui)
 
 void Story::hilightItem(GameGUI* gui)
 {
-	int n = line[++lineSelector].value;
-	if(n>=0)
+	std::string n = line[++lineSelector].msg;
+	int t=0;
+	if(n=="main menu icon")
 	{
-		gui->hilightObject1 = static_cast<GameGUI::HilightObject>(n);
+		t=GameGUI::HilightMainMenuIcon;
+	}
+	else if(n=="right side panel")
+	{
+		t=GameGUI::HilightRightSidePanel;
+	}
+	else if(n=="under minimap icons")
+	{
+		t=GameGUI::HilightUnderMinimapIcon;
+	}
+	else if(n=="units assigned bar")
+	{
+		t=GameGUI::HilightUnitsAssignedBar;
+	}
+	else if(n=="units ratio bar")
+	{
+		t=GameGUI::HilightRatioBar;
+	}
+	
+	if(t!=0)
+	{
+		gui->hilights.insert(t);
 	}
 }
 
 
 
-void Story::hilightSecondItem(GameGUI* gui)
+void Story::unhilightItem(GameGUI* gui)
 {
-	int n = line[++lineSelector].value;
-	if(n>=0)
+	std::string n = line[++lineSelector].msg;
+	int t=0;
+	if(n=="main menu icon")
 	{
-		gui->hilightObject2 = static_cast<GameGUI::HilightObject>(n);
+		t=GameGUI::HilightMainMenuIcon;
+	}
+	else if(n=="right side panel")
+	{
+		t=GameGUI::HilightRightSidePanel;
+	}
+	else if(n=="under minimap icons")
+	{
+		t=GameGUI::HilightUnderMinimapIcon;
+	}
+	else if(n=="units assigned bar")
+	{
+		t=GameGUI::HilightUnitsAssignedBar;
+	}
+	else if(n=="units ratio bar")
+	{
+		t=GameGUI::HilightRatioBar;
+	}
+	
+	if(t!=0)
+	{
+		gui->hilights.erase(t);
 	}
 }
 
 
 
-void Story::hilightThirdItem(GameGUI* gui)
+void Story::hilightUnits(GameGUI* gui)
 {
-	int n = line[++lineSelector].value;
-	if(n>=0)
-	{
-		gui->hilightObject3 = static_cast<GameGUI::HilightObject>(n);
-	}
+	int n = line[++lineSelector].type - Token::S_WORKER;
+	gui->hilights.insert(GameGUI::HilightWorkers+n);
+}
+
+
+
+void Story::unhilightUnits(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_WORKER;
+	gui->hilights.erase(GameGUI::HilightWorkers+n);
+}
+
+
+
+void Story::hilightBuildings(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.insert(GameGUI::HilightBuildingOnMap+n);
+}
+
+
+
+void Story::unhilightBuildings(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.erase(GameGUI::HilightBuildingOnMap+n);
+}
+
+
+
+void Story::hilightBuildingOnPanel(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.insert(GameGUI::HilightBuildingOnPanel+n);
+}
+
+
+
+void Story::unhilightBuildingOnPanel(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.erase(GameGUI::HilightBuildingOnPanel+n);
 }
 
 
@@ -418,7 +499,42 @@ static const FunctionArgumentDescription hintVisibleDescription[] = {
 };
 
 static const FunctionArgumentDescription hilightItemDescription[] = {
-	{ Token::INT, Token::INT },
+	{ Token::STRING, Token::STRING },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightItemDescription[] = {
+	{ Token::STRING, Token::STRING },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightUnitsDescription[] = {
+	{ Token::S_WORKER, Token::S_WARRIOR },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightUnitsDescription[] = {
+	{ Token::S_WORKER, Token::S_WARRIOR },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightBuildingsDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightBuildingsDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightBuildingOnPanelDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightBuildingOnPanelDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
 	{ -1, -1}
 };
 
@@ -1201,8 +1317,13 @@ Mapscript::Mapscript()
 	functions["hintHidden"] = std::make_pair(hintHiddenDescription, &Story::hintHidden);
 	functions["hintVisible"] = std::make_pair(hintVisibleDescription, &Story::hintVisible);
 	functions["hilightItem"] = std::make_pair(hilightItemDescription, &Story::hilightItem);
-	functions["hilightSecondItem"] = std::make_pair(hilightItemDescription, &Story::hilightSecondItem);
-	functions["hilightThirdItem"] = std::make_pair(hilightItemDescription, &Story::hilightThirdItem);
+	functions["unhilightItem"] = std::make_pair(unhilightItemDescription, &Story::unhilightItem);
+	functions["hilightUnits"] = std::make_pair(hilightUnitsDescription, &Story::hilightUnits);
+	functions["unhilightUnits"] = std::make_pair(unhilightUnitsDescription, &Story::unhilightUnits);
+	functions["hilightBuildings"] = std::make_pair(hilightBuildingsDescription, &Story::hilightBuildings);
+	functions["unhilightBuildings"] = std::make_pair(unhilightBuildingsDescription, &Story::unhilightBuildings);
+	functions["hilightBuildingOnPanel"] = std::make_pair(hilightBuildingOnPanelDescription, &Story::hilightBuildingOnPanel);
+	functions["unhilightBuildingOnPanel"] = std::make_pair(unhilightBuildingOnPanelDescription, &Story::unhilightBuildingOnPanel);
 }
 
 Mapscript::~Mapscript(void)
