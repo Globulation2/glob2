@@ -197,6 +197,8 @@ void Player::save(GAGCore::OutputStream  *stream)
 void Player::makeItAI(AI::ImplementitionID aiType)
 {
 	BasePlayer::makeItAI(aiType);
+	if(ai)
+		delete ai;
 	ai=new AI(aiType, this);
 }
 
