@@ -35,6 +35,7 @@
 #include <Stream.h>
 
 #include "GameGUI.h"
+#include "Player.h"
 #include "GlobalContainer.h"
 #include "SGSL.h"
 #include "Unit.h"
@@ -462,6 +463,18 @@ void Story::unhilightBuildingOnPanel(GameGUI* gui)
 }
 
 
+
+void Story::resetAI(GameGUI* gui)
+{
+	int player = line[++lineSelector].value;
+	int aitype = line[++lineSelector].value;
+	if(gui->game.players[player])
+	{
+		gui->game.players[player]->makeItAI(static_cast<AI::ImplementitionID>(aitype));
+	}
+}
+
+
 static const FunctionArgumentDescription totoDescription[] = {
 	{ Token::S_WIN, Token::S_LOOSE },
 	{ Token::INT, Token::INT },
@@ -535,6 +548,12 @@ static const FunctionArgumentDescription hilightBuildingOnPanelDescription[] = {
 
 static const FunctionArgumentDescription unhilightBuildingOnPanelDescription[] = {
 	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription resetAIDescription[] = {
+	{ Token::INT, Token::INT },
+	{ Token::INT, Token::INT },
 	{ -1, -1}
 };
 
@@ -1324,6 +1343,7 @@ Mapscript::Mapscript()
 	functions["unhilightBuildings"] = std::make_pair(unhilightBuildingsDescription, &Story::unhilightBuildings);
 	functions["hilightBuildingOnPanel"] = std::make_pair(hilightBuildingOnPanelDescription, &Story::hilightBuildingOnPanel);
 	functions["unhilightBuildingOnPanel"] = std::make_pair(unhilightBuildingOnPanelDescription, &Story::unhilightBuildingOnPanel);
+	functions["resetAI"] = std::make_pair(resetAIDescription, &Story::resetAI);
 }
 
 Mapscript::~Mapscript(void)
