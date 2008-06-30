@@ -290,6 +290,7 @@ private:
 	void unhilightBuildings(GameGUI* gui);
 	void hilightBuildingOnPanel(GameGUI* gui);
 	void unhilightBuildingOnPanel(GameGUI* gui);
+	void resetAI(GameGUI* gui);
 	
 	
 	bool testCondition(GameGUI *gui);
