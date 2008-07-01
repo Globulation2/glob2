@@ -297,6 +297,17 @@ void HeightMap::makeCraters(unsigned int craterCount, unsigned int craterRadius,
 	normalize();
 }
 
+
+
+void HeightMap::makePlain(float smoothingFactor)
+{
+	operator=(1.0);
+	addNoise(.99,smoothingFactor);
+	normalize();
+}
+
+
+
 void HeightMap::makeSwamp(float smoothingFactor)
 {
 	operator=(1.0);
