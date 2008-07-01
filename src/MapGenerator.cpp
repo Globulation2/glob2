@@ -22,13 +22,739 @@
 #include <time.h>
 #include <stdlib.h>
 
+#include "boost/integer_traits.hpp"
+#include "boost/math/common_factor.hpp"
+#include "boost/random.hpp"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "Map.h"
+#include "HeightMapGenerator.h"
 #include "MapGenerationDescriptor.h"
+#include "MapGenerator.h"
+#include "Map.h"
+#include <map>
+#include <queue>
+#include <set>
 #include "Unit.h"
 #include "Utilities.h"
-#include "HeightMapGenerator.h"
+
+bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
+{
+	if (verbose)
+		printf("Generating map, please wait ....\n");
+	game.map.setSize(descriptor.wDec, descriptor.hDec);
+	game.map.setGame(&game);
+	setRandomSyncRandSeed();
+	
+	switch (descriptor.methode)
+	{
+		case MapGenerationDescriptor::eUNIFORM:
+			game.map.makeHomogenMap(descriptor.terrainType);
+			game.addTeam();
+		break;
+		case MapGenerationDescriptor::eSWAMP:
+		case MapGenerationDescriptor::eISLANDS:
+		case MapGenerationDescriptor::eRIVER:
+		case MapGenerationDescriptor::eCRATERLAKES:
+			if (!game.map.makeRandomMap(descriptor))
+				return false;
+			if (!game.makeRandomMap(descriptor))
+				return false;
+			break;
+		case MapGenerationDescriptor::eCONCRETEISLANDS:
+			if (!computeConcreteIslands(game, descriptor))
+				return false;
+			break;
+		case MapGenerationDescriptor::eOLDRANDOM:
+			if (!game.map.oldMakeRandomMap(descriptor))
+				return false;
+			if (!game.makeRandomMap(descriptor))
+				return false;
+			break;
+		case MapGenerationDescriptor::eOLDISLANDS:
+			if (!game.map.oldMakeIslandsMap(descriptor))
+				return false;
+			if (!game.oldMakeIslandsMap(descriptor))
+				return false;
+			break;
+						
+		default:
+			assert(false);
+	}
+	
+	// compile script
+	game.script.compileScript(&game);
+	
+	if (verbose)
+		printf(".... map generated.\n");
+	return true;
+}
+
+
+bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor)
+{
+	game.map.makeHomogenMap(descriptor.terrainType);
+	for(int i=0; i<descriptor.nbTeams; ++i)
+		game.addTeam();
+	
+	std::vector<int> grid(game.map.getW() * game.map.getH(), 0);
+	std::vector<MapGeneratorPoint> teamPoints;
+	std::vector<int> weights1;
+	std::vector<int> weights2;
+	std::vector<int> areaNumbers;
+	//Add in team bases
+	for(int i=0; i<descriptor.nbTeams; ++i)
+	{
+		teamPoints.push_back(MapGeneratorPoint(0,0));
+		weights1.push_back(1);
+		weights2.push_back(10);
+		areaNumbers.push_back(i+1);
+	}
+	
+	int islandsCount = syncRand() % (descriptor.nbTeams*2);
+	
+	//Add in auxilary islands
+	for(int i=0; i<islandsCount; ++i)
+	{
+		teamPoints.push_back(MapGeneratorPoint(0,0));
+		weights1.push_back(1);
+		weights2.push_back(1+syncRand()%3);
+		areaNumbers.push_back(descriptor.nbTeams+i+1);
+	}
+	
+	// Initiallly devide up the land
+	splitUpPoints(game, grid, 0, teamPoints, weights1);
+	splitUpArea(game, grid, 0, teamPoints, weights2, areaNumbers);
+	
+	// Create a heightmap that will be used to give the map a rough edge
+	std::vector<int> heights(game.map.getW() * game.map.getH(), 75);
+	HeightMap heightMap(game.map.getW(), game.map.getH());
+	heightMap.makePlain(4);
+	
+	// Put water between the borders
+	std::vector<MapGeneratorPoint> border;
+	findBorderPoints(game, grid, border);
+	for(int i=0; i<border.size(); ++i)
+	{
+		for(int x=border[i].x-6; x<=border[i].x+6; ++x)
+		{
+			for(int y=border[i].y-6; y<=border[i].y+6; ++y)
+			{
+				int nx = game.map.normalizeX(x);
+				int ny = game.map.normalizeY(y);
+				int d = std::max(std::abs(x - border[i].x), std::abs(y - border[i].y));
+				heights[ny * game.map.getW() + nx] = std::min(heights[ny * game.map.getW() + nx], 15 + d*13);
+			}
+		}
+	}
+	// Use the heightmap to put in water, grass, and land
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			int total_height = heights[y * game.map.getW() + x] + heightMap.uiLevel(x, y, 30) - 15;
+			if(total_height<45)
+				game.map.setUMatPos(x, y, WATER, 1);
+			else if(total_height>=45 && total_height<=55)
+				game.map.setUMatPos(x, y, SAND, 1);
+			else
+				game.map.setUMatPos(x, y, GRASS, 1);
+		}
+	}
+	game.map.controlSand();
+
+	// Go through the map again and place alga
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			int total_height = heights[y * game.map.getW() + x] + heightMap.uiLevel(x, y, 30) - 15;
+			if(total_height<=15)
+			{
+				game.map.setRessource(x, y, ALGA, 1);
+			}
+		}
+	}
+	
+	
+	// Reset the grid, and recompute within the boundaries of the now-rough edged areas
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			grid[y * game.map.getW() + x] = 0;
+		}
+	}
+	splitUpArea(game, grid, 0, teamPoints, weights2, areaNumbers, true);
+	
+	
+	int areaNumber = descriptor.nbTeams + islandsCount + 2;
+	
+	// Fill in the auxilary islands
+	for(int i=0; i<islandsCount; ++i)
+	{
+		// Initialize
+		std::vector<MapGeneratorPoint> baseLocations;
+		std::vector<int> resourceWeights;
+		std::vector<int> areaNumbers;
+		for(int j=0; j<2; ++j)
+		{
+			baseLocations.push_back(MapGeneratorPoint(0,0));
+			resourceWeights.push_back(1);
+			areaNumbers.push_back(areaNumber);
+			areaNumber+=1;
+		}
+		
+		// Devide the area. Its possible the area will be so small it can't be used
+		if(splitUpPoints(game, grid, descriptor.nbTeams+i+1, baseLocations, resourceWeights))
+		{
+			splitUpArea(game, grid, descriptor.nbTeams+i+1, baseLocations, resourceWeights, areaNumbers);
+			
+			// Fill in wheat
+			std::vector<MapGeneratorPoint> fruitLocations;
+			for(int x=0; x<game.map.getW(); ++x)
+			{
+				for(int y=0; y<game.map.getH(); ++y)
+				{
+					int n = grid[y * game.map.getW() + x] - areaNumbers[0];
+					if(n==0)
+					{
+						game.map.setRessource(x, y, CORN, syncRand()%3);
+					}
+					else if(n==1)
+					{
+						fruitLocations.push_back(MapGeneratorPoint(x, y));
+					}
+				}
+			}
+			
+			// Place some fruit
+			int fruit_n = syncRand()%6;
+			for(int i=0; i<fruit_n; ++i)
+			{
+				int n = syncRand()%fruitLocations.size();
+				game.map.setRessource(fruitLocations[n].x, fruitLocations[n].y, CHERRY + syncRand()%3, 1);
+			}
+		}
+	}
+	
+	int typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
+	BuildingType *swarm = globalContainer->buildingsTypes.get(typeNum);
+	
+	heights.clear();
+	heights.resize(game.map.getW() * game.map.getH(), 0);
+	
+	// Devide up the player-lands
+	for(int i=0; i<descriptor.nbTeams; ++i)
+	{
+		// Initialize
+		std::vector<MapGeneratorPoint> baseLocations;
+		std::vector<int> resourceWeights;
+		std::vector<int> areaNumbers;
+		std::vector<int> halfAreaNumbers;
+		for(int j=0; j<12; ++j)
+		{
+			baseLocations.push_back(MapGeneratorPoint(0,0));
+			resourceWeights.push_back(1);
+			areaNumbers.push_back(areaNumber);
+			areaNumber+=1;
+		}
+		
+		// Devide the area
+		splitUpPoints(game, grid, i+1, baseLocations, resourceWeights);
+		splitUpArea(game, grid, i+1, baseLocations, resourceWeights, areaNumbers);
+
+		// Draw within the groups
+		std::vector<std::vector<MapGeneratorPoint> > stoneLocations(3);
+		for(int x=0; x<game.map.getW(); ++x)
+		{
+			for(int y=0; y<game.map.getH(); ++y)
+			{
+				int n = grid[y * game.map.getW() + x] - areaNumbers[0];
+				if(n==0)
+					game.map.setRessource(x, y, CORN, syncRand()%3);
+				if(n==1)
+					game.map.setRessource(x, y, WOOD, syncRand()%3);
+				if(n==2)
+					game.map.setRessource(x, y, CORN, syncRand()%3);
+				if(n==3)
+					game.map.setRessource(x, y, WOOD, syncRand()%3);
+				if(n==4)
+					stoneLocations[0].push_back(MapGeneratorPoint(x, y));
+				if(n==5)
+					stoneLocations[1].push_back(MapGeneratorPoint(x, y));
+				if(n==6)
+					stoneLocations[2].push_back(MapGeneratorPoint(x, y));
+			}
+		}
+		
+		for(int j=0; j<stoneLocations.size(); ++j)
+		{
+			int n = 0;
+			while(stoneLocations[j].size() && n<4)
+			{
+				int chosen = syncRand() % stoneLocations[j].size();
+				game.map.setRessource(stoneLocations[j][chosen].x, stoneLocations[j][chosen].y, STONE, 1);
+				stoneLocations[j].erase(stoneLocations[j].begin() + chosen);
+				n+=1;
+			}
+		}
+		
+		std::vector<MapGeneratorPoint> startingLocations;
+		for(int x=0; x<game.map.getW(); ++x)
+		{
+			for(int y=0; y<game.map.getH(); ++y)
+			{
+				int n = grid[y * game.map.getW() + x] - areaNumbers[0];
+				if(n>=6 && n<12 && game.checkRoomForBuilding(x, y, swarm, i, false))
+				{
+					startingLocations.push_back(MapGeneratorPoint(x, y));
+				}
+			}
+		}
+		
+		int chosen = syncRand()%startingLocations.size();
+		Building* b = addBuilding(game, startingLocations[chosen].x, startingLocations[chosen].y, i, IntBuildingType::SWARM_BUILDING, 1, false);
+		
+		std::vector<MapGeneratorPoint> unitLocations;
+		for(int x=0; x<game.map.getW(); ++x)
+		{
+			for(int y=0; y<game.map.getH(); ++y)
+			{
+				int n = grid[y * game.map.getW() + x] - areaNumbers[0];
+				if(n>=6 && n<12 && game.map.doesPosTouchBuilding(x, y, b->gid) && game.map.isFreeForGroundUnit(x, y, false, 1<<i))
+				{
+					unitLocations.push_back(MapGeneratorPoint(x, y));
+				}
+			}
+		}
+		
+		int count = std::min(unitLocations.size(), Uint32(descriptor.nbWorkers));
+		while(count)
+		{
+			int n = syncRand() % unitLocations.size();
+			game.addUnit(unitLocations[n].x, unitLocations[n].y, i, WORKER, 0, 0, 0, 0);
+			unitLocations.erase(unitLocations.begin() + n);
+			count-=1;
+		}
+	}
+	
+	return true;
+}
+
+
+
+bool MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights)
+{
+	std::vector<MapGeneratorPoint> startingPoints;
+	long center_x=0;
+	long center_y=0;
+	int total_squares=0;
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			if(grid[y * game.map.getW() + x]==areaN)
+			{
+				startingPoints.push_back(MapGeneratorPoint(x, y));
+			}
+		}
+	}
+	
+	if(startingPoints.empty())
+		return false;
+	
+	Uint32 n = syncRand() % startingPoints.size();
+
+	assert(points.size() == weights.size());
+	for(int i=0; i<points.size(); ++i)
+	{
+		points[i].x = startingPoints[n].x;
+		points[i].y = startingPoints[n].y;
+	}
+	
+	startingPoints.clear();
+	
+	bool cont=true;
+	while(cont)
+	{
+		bool changed=false;
+		for(int i=0; i<points.size(); ++i)
+		{
+			int best = boost::integer_traits<int>::const_max;
+			for(int j=0; j<points.size(); ++j)
+			{
+				if(i == j)
+					continue;
+				int dist=game.map.warpDistSquare(points[i].x, points[i].y, points[j].x, points[j].y) * weights[j];
+				best = std::min(dist, best);
+			}
+			int orig = best;
+			int best_x = -1;
+			int best_y = -1;
+			//std::cout<<"For point "<<i<<" cur="<<orig<<std::endl;
+			for(int dx=-1; dx<=1; ++dx)
+			{
+				for(int dy=-1; dy<=1; ++dy)
+				{
+					if(dx==0 && dy==0)
+						continue;
+					int nx = game.map.normalizeX(points[i].x + dx);
+					int ny = game.map.normalizeY(points[i].y + dy);
+					if(grid[ny * game.map.getW() + nx]  != areaN)
+						continue;
+					int score=boost::integer_traits<int>::const_max;
+					bool invalid=false;
+					for(int j=0; j<points.size(); ++j)
+					{
+						if(i == j)
+							continue;
+						if(nx == points[j].x && ny == points[j].y)
+						{
+							invalid=true;
+							break;
+						}
+						int dist=game.map.warpDistSquare(nx, ny, points[j].x, points[j].y) * weights[j];
+						score = std::min(dist, score);
+					}
+					if(invalid)
+						continue;
+					//std::cout<<"dx="<<dx<<", dy="<<dy<<": score="<<score<<std::endl;
+					
+					if(score>best)
+					{
+						best = score;
+						best_x = nx;
+						best_y = ny;
+					}
+				}
+			}
+			if(best_x != -1)
+			{
+				if(std::abs(long(best - orig)) >= 1)
+					changed=true;
+				points[i].x = best_x;
+				points[i].y = best_y;
+			}
+		}
+		if(!changed)
+		{
+			cont = false;
+		}
+	}
+	
+	for(int i=0; i<points.size(); ++i)
+	{
+		for(int j=0; j<points.size(); ++j)
+		{
+			if(i!=j && points[i].x == points[j].x && points[i].y == points[j].y)
+				return false;
+		}
+	}
+	boost::random_number_generator<boost::mt19937> adapter(randomGenerator);
+	std::random_shuffle(points.begin(), points.end(), adapter);
+	return true;
+}
+
+
+
+
+void MapGenerator::splitUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, std::vector<int>& areaNumbers, bool grassOnly)
+{
+	std::vector<int> gradient(game.map.getW() * game.map.getH(), 0);
+	
+	Uint32 wDec = game.map.wDec;
+	Uint32 hMask = game.map.hMask;
+	Uint32 wMask = game.map.wMask;
+
+	std::vector<std::list<int> > squares(points.size());
+	std::vector<int> expansion(points.size(), 0);
+	std::vector<int> current;
+	std::vector<int> count;
+	
+	for(int i=0; i<points.size(); ++i)
+	{
+		grid[points[i].y * game.map.getW() + points[i].x] = i;
+		gradient[points[i].y << wDec | points[i].x] = 1;
+		squares[i].push_back(points[i].y << wDec | points[i].x);
+		
+		current.push_back(1);
+		count.push_back(1);
+	}
+	
+	
+	bool cont=true;
+	while(cont)
+	{
+		bool found=false;
+		for(int p=0; p<points.size(); ++p)
+		{
+			expansion[p]+=weights[p];
+			if(!squares[p].empty())
+				found=true;
+			while(expansion[p] > 0 && !squares[p].empty())
+			{
+				Uint32 deltaAddrG = squares[p].back();
+				squares[p].erase(--squares[p].end());
+
+				size_t y = deltaAddrG >> wDec;      // Calculate the coordinates of
+				size_t x = deltaAddrG & wMask;      // the current field and of the
+				
+				size_t yu = ((y - 1) & hMask);      // fields next to it.
+				size_t yd = ((y + 1) & hMask);      // We live on a torus! If we are on
+				size_t xl = ((x - 1) & wMask);      // the "last line" of the map, the
+				size_t xr = ((x + 1) & wMask);      // next line is the line 0 again.
+				
+				
+				int t = grid[(y << wDec) | x];
+				assert(t < points.size());
+				int g = gradient[(y << wDec) | x] + 1;
+				grid[(y << wDec) | x] = areaNumbers[t];
+				
+				size_t deltaAddrC[8];
+				int *addr;
+				int side;
+				
+				deltaAddrC[0] = (yu << wDec) | xl;  // Calculate the positions of the
+				deltaAddrC[1] = (yu << wDec) | x ;  // 8 fields next to us from their
+				deltaAddrC[2] = (yu << wDec) | xr;  // coordinates.
+				deltaAddrC[3] = (y  << wDec) | xr;
+				deltaAddrC[4] = (yd << wDec) | xr;
+				deltaAddrC[5] = (yd << wDec) | x ;
+				deltaAddrC[6] = (yd << wDec) | xl;
+				deltaAddrC[7] = (y  << wDec) | xl;
+				
+				if(g != current[p])
+				{
+					current[p] = g;
+					count[p] = 0;
+				}
+				
+				for (int ci=0; ci<8; ci++)          // Check for each of this fields if we
+				{                                   // can improve its gradient value
+					addr = &gradient[deltaAddrC[ci]];
+					side = *addr;
+					if (side==0 && grid[deltaAddrC[ci]]==areaN)
+					{
+						if(grassOnly && !game.map.isGrass(deltaAddrC[ci]))
+							continue;
+						*addr = g;
+						grid[deltaAddrC[ci]] = t;
+						count[p]+=1;
+						expansion[p]-=1;
+						
+						Uint32 randLocation = syncRand() % count[p];
+						std::list<int>::iterator i = squares[p].begin();
+						std::advance(i, randLocation);
+						squares[p].insert(i, deltaAddrC[ci]);
+					}
+				}
+			}
+		}
+		if(!found)
+			cont = false;
+	}
+}
+
+
+
+void MapGenerator::findBorderPoints(Game& game, std::vector<int>& grid, std::vector<MapGeneratorPoint>& points)
+{
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			bool found=false;
+			for(int dx=-1; dx<=1 && !found; ++dx)
+			{
+				for(int dy=-1; dy<=1 && !found; ++dy)
+				{
+					if(grid[game.map.normalizeY(y + dy) * game.map.getW() + game.map.normalizeX(x + dx)] != grid[y * game.map.getW() + x])
+					{
+						found=true;
+					}
+				}
+			}
+			if(found)
+				points.push_back(MapGeneratorPoint(x, y));
+		}
+	}
+}
+
+
+
+void MapGenerator::computePercentageOfAreas(Game& game, std::vector<int>& grid)
+{
+	// Compute land sizes
+	std::map<int, int> amounts;
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			amounts[grid[y * game.map.getW() + x]] +=1;
+		}
+	}
+	for(std::map<int,int>::iterator i=amounts.begin(); i!=amounts.end(); ++i)
+	{
+		int percent = i->second * 10000 / (game.map.getW() * game.map.getH());
+		std::cout<<"Area "<<i->first<<" takes up "<<percent/100<<"."<<percent%100<<"%"<<std::endl;
+	}
+}
+
+
+
+void MapGenerator::joinAreas(Game& game, std::vector<int>& grid, std::vector<int> toBeJoined, std::vector<int> target)
+{
+	int numberOfJoins = toBeJoined.size() / target.size();
+	std::vector<std::vector<bool> > borders(toBeJoined.size(), std::vector<bool>(toBeJoined.size(), false));
+	
+	std::map<int, int> newJoined;
+	for(int i=0; i<toBeJoined.size(); ++i)
+	{
+		newJoined[toBeJoined[i]] = i;
+	}
+	
+	// Find out which areas border with which other areas
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			int g = grid[y * game.map.getW() + x];
+			if(newJoined.find(g) == newJoined.end())
+				continue;
+				
+			for(int dx=-1; dx<=1; ++dx)
+			{
+				for(int dy=-1; dy<=1; ++dy)
+				{
+					int nx = game.map.normalizeX(x + dx);
+					int ny = game.map.normalizeY(y + dy);
+					int g2 = grid[ny * game.map.getW() + nx];
+					if(newJoined.find(g2) == newJoined.end())
+						continue;
+					if(g != g2)
+					{
+						borders[newJoined[g]][newJoined[g2]] = true;
+						borders[newJoined[g2]][newJoined[g]] = true;
+					}
+				}
+			}
+		}
+	}
+	
+	// Attempt to merge the groups, when a successful full-merging is found, exit
+	std::vector<Node> nodes(toBeJoined.size());
+	for(int i=0; i<toBeJoined.size(); ++i)
+	{
+		nodes[i].original.push_back(i);
+		nodes[i].borders = borders[i];
+	}
+	
+	std::vector<int> targets(toBeJoined.size());
+	for(int i=0; i<nodes.size(); ++i)
+	{
+		for(int j=0; j<nodes[i].original.size(); ++j)
+		{
+			targets[nodes[i].original[j]] = i;
+		}
+	}
+	
+	for(int x=0; x<game.map.getW(); ++x)
+	{
+		for(int y=0; y<game.map.getH(); ++y)
+		{
+			int& g = grid[y * game.map.getW() + x];
+			if(newJoined.find(g) == newJoined.end())
+				continue;
+			g = target[targets[newJoined[g]]];
+		}
+	}
+}
+
+
+
+bool MapGenerator::joinLoop(Game& game, std::vector<Node> nodes, std::vector<Node>& result, int numberOfJoins)
+{
+	// Choose which one to work on
+	int whichOne=-1;
+	for(int i=0; i<nodes.size(); ++i)
+	{
+		if(nodes[i].original.size() < numberOfJoins)
+		{
+			whichOne = i;
+			break;
+		}
+	}
+	
+	// If there none that can be worked on, make this combination valid
+	if(whichOne==-1)
+	{
+		result = nodes;
+		return true;
+	}
+	
+	// Attempt all possible merge combinations and loop
+	Node old1 = nodes[whichOne];
+	std::vector<Node> newNodes = nodes;
+	newNodes.erase(newNodes.begin() + whichOne);
+	boost::random_number_generator<boost::mt19937> adapter(randomGenerator);
+	std::random_shuffle(newNodes.begin(), newNodes.end(), adapter);
+	
+	bool found=false;
+	for(int i=0; i<newNodes.size(); ++i)
+	{
+		if(newNodes[i].original.size()==1 && old1.borders[newNodes[i].original[0]])
+		{
+			found=true;
+		
+			Node old2 = newNodes[i];
+			
+			Node n;
+			n.original = old1.original;
+			n.original.insert(n.original.begin(), old2.original.begin(), old2.original.end());
+			n.borders = old1.borders;
+			for(int j=0; j<old1.borders.size(); ++j)
+			{
+				if(old1.borders[j] || old2.borders[j])
+				{
+					n.borders[j] = true;
+				}
+			}
+			
+			std::vector<Node> stillNewNodes(newNodes);
+			stillNewNodes.erase(stillNewNodes.begin() + i);
+			stillNewNodes.insert(stillNewNodes.begin(), n);
+			
+			if(joinLoop(game, stillNewNodes, result, numberOfJoins))
+				return true;
+		}
+	}
+	return false;
+}
+
+
+
+Building* MapGenerator::addBuilding(Game& game, int x, int y, int team, int type, int level, bool underConstruction)
+{
+	std::string name = IntBuildingType::typeFromShortNumber(type);
+	int typeNum=globalContainer->buildingsTypes.getTypeNum(name, level-1, underConstruction);
+	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+	if(bt == NULL)
+	{
+		return NULL;
+	}
+
+	int placeX = x;
+	int placeY = y;
+	if (game.checkRoomForBuilding(x, y, bt, team, false))
+	{
+		if(bt->maxUnitWorking)
+			return game.addBuilding(x, y, typeNum, team, 1, 0);
+		else
+			return game.addBuilding(x, y, typeNum, team, 0, 0);
+	}
+	return NULL;
+}
+
 
 
 ///generates a map that is of one terrain type only
@@ -1721,48 +2447,3 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 	return true;
 }
 
-bool Game::generateMap(MapGenerationDescriptor &descriptor)
-{
-	if (verbose)
-		printf("Generating map, please wait ....\n");
-	map.setSize(descriptor.wDec, descriptor.hDec);
-	map.setGame(this);
-	switch (descriptor.methode)
-	{
-		case MapGenerationDescriptor::eUNIFORM:
-			map.makeHomogenMap(descriptor.terrainType);
-			addTeam();
-		break;
-		case MapGenerationDescriptor::eSWAMP:
-		case MapGenerationDescriptor::eISLANDS:
-		case MapGenerationDescriptor::eRIVER:
-		case MapGenerationDescriptor::eCRATERLAKES:
-			if (!map.makeRandomMap(descriptor))
-				return false;
-			if (!makeRandomMap(descriptor))
-				return false;
-			break;
-		case MapGenerationDescriptor::eOLDRANDOM:
-			if (!map.oldMakeRandomMap(descriptor))
-				return false;
-			if (!makeRandomMap(descriptor))
-				return false;
-			break;
-		case MapGenerationDescriptor::eOLDISLANDS:
-			if (!map.oldMakeIslandsMap(descriptor))
-				return false;
-			if (!oldMakeIslandsMap(descriptor))
-				return false;
-			break;
-						
-		default:
-			assert(false);
-	}
-	
-	// compile script
-	script.compileScript(this);
-	
-	if (verbose)
-		printf(".... map generated.\n");
-	return true;
-}

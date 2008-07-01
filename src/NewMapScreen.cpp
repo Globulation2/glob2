@@ -66,6 +66,7 @@ NewMapScreen::NewMapScreen()
 	methodes->addText(Toolkit::getStringTable()->getString("[river terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[concrete islands]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
 	methodes->setSelectionIndex(0);
@@ -417,6 +418,8 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						fruitRatio->visible=fruitText->visible=
 						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
+						break;
+					case  MapGenerationDescriptor::eCONCRETEISLANDS:
 						break;
 					case  MapGenerationDescriptor::eOLDRANDOM:
 						ratioText->visible=

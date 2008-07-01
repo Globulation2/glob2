@@ -18,6 +18,8 @@ C: Send chat messages to
 fV: Show vision for Inn buildings (to steal units)
 [abreaviation explanation mV]
 mV: Show vision for Markets buildings (to exchange fruits)
+[concrete islands]
+Concrete Islands
 [abreaviation explanation V]
 V: Show vision for all buildings
 [add map]

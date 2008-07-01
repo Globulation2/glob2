@@ -2051,7 +2051,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 
 		if (game.checkRoomForBuilding(tempX, tempY, bt, &x, &y, team, false))
 		{
-			if(selectionName=="swarm" || selectionName=="inn" || selectionName=="defencetower" || selectionName=="market")
+			if(bt->maxUnitWorking)
 				game.addBuilding(x, y, typeNum, team, 1, 0);
 			else
 				game.addBuilding(x, y, typeNum, team, 0, 0);

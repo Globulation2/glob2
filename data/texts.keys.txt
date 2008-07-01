@@ -17,6 +17,7 @@
 [AICastor-Description]
 [AICastor]
 [AINicowar-Description]
+[concrete islands]
 [AINicowar]
 [AINone-Description]
 [teams editor]

@@ -5440,6 +5440,20 @@ Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
 		return dy;
 }
 
+Sint32 Map::warpDistSum(int px, int py, int qx, int qy)
+{
+	Sint32 dx=abs(px-qx);
+	Sint32 dy=abs(py-qy);
+	dx&=wMask;
+	dy&=hMask;
+	if (dx>(w>>1))
+		dx=abs(w-dx);
+	if (dy>(h>>1))
+		dy=abs(h-dy);
+	return dx + dy;
+}
+
+
 bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 {
 	Sint32 dx=abs(ux-bx);
