@@ -380,16 +380,6 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	{
 		game.teams[i]->createLists();
 	}
-	
-	
-	std::vector<MapGeneratorPoint> borders;
-	findBorderPoints(game, grid, borders);
-	
-	for(int i=0; i<borders.size(); ++i)
-	{
-		game.map.addForbidden(borders[i].x, borders[i].y, 0);
-	}
-	
 	return true;
 }
 
