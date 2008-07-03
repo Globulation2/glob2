@@ -236,6 +236,8 @@ Kompiluj skrypt
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Łączę
 [connecting to]
@@ -446,6 +448,8 @@ Host w grze
 Punkty życia
 [hp]
 Życie
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Na miejscu
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 Otwarty
@@ -941,6 +947,8 @@ Pływalnia
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

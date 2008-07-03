@@ -236,6 +236,8 @@ Kompilera skript
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Anslut
 [connecting to]
@@ -446,6 +448,8 @@ Var värd för ett spel
 HP
 [hp]
 Hälsopoäng
+[Human]
+
 [human]
 mänsklig
 [hungry]
@@ -644,6 +648,8 @@ Här
 Öppna Spara Meny
 [open script editor]
 Öppna Skript Editor
+[open teams editor]
+
 [open]
 öppna
 [Options]
@@ -941,6 +947,8 @@ Byt till Terrängvy
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

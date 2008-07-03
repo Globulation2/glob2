@@ -236,6 +236,8 @@ Compileer script
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Verbinden
 [connecting to]
@@ -446,6 +448,8 @@ Start een server
 Sterkte
 [hp]
 Sterkte
+[Human]
+
 [human]
 Mens
 [hungry]
@@ -644,6 +648,8 @@ Open menu laden
 Open menu opslaan
 [open script editor]
 Open scriptbewerker
+[open teams editor]
+
 [open]
 Open
 [Options]
@@ -941,6 +947,8 @@ Schakel naar terrein scherm
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

@@ -236,6 +236,8 @@ Sestavit skript
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Připojit
 [connecting to]
@@ -446,6 +448,8 @@ Hostuj hru
 Životy
 [hp]
 Životy
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Na místě
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 Otevřít
@@ -941,6 +947,8 @@ Koupaliště
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

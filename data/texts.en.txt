@@ -10,22 +10,16 @@
 %0's team unit got converted to your team
 [abreaviation explanation A]
 A: Allies
-[teams editor]
-Teams Editor
 [abreaviation explanation C]
 C: Send chat messages to
 [abreaviation explanation fV]
 fV: Show vision for Inn buildings (to steal units)
 [abreaviation explanation mV]
 mV: Show vision for Markets buildings (to exchange fruits)
-[concrete islands]
-Concrete Islands
 [abreaviation explanation V]
 V: Show vision for all buildings
 [add map]
 Add map
-[open teams editor]
-Open Teams Editor
 [add shortcut]
 Add Shortcut
 [Add]
@@ -188,6 +182,8 @@ Compile script
 compose
 [Computing Fertility]
 Computing Fertility
+[concrete islands]
+Concrete Islands
 [connect]
 Connect
 [connecting to]
@@ -394,10 +390,10 @@ Host a game
 HP
 [hp]
 Hitpoint
-[human]
-human
 [Human]
 Human
+[human]
+human
 [hungry]
 hungry
 [hungryness]
@@ -582,6 +578,8 @@ Open Load Menu
 Open Save Menu
 [open script editor]
 Open Script Editor
+[open teams editor]
+Open Teams Editor
 [open]
 open
 [Options]
@@ -878,6 +876,8 @@ Switch to Terrain view
 sys req
 [tab]
 tab
+[teams editor]
+Teams Editor
 [Teams Fixed]
 Teams Fixed
 [teams]

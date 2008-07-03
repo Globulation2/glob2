@@ -236,6 +236,8 @@ Script derle
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Baglan
 [connecting to]
@@ -446,6 +448,8 @@ Oyun Sunucusu ol
 CAN
 [hp]
 Can
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Burada
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 Ac
@@ -941,6 +947,8 @@ Yuzme havuzu
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 
