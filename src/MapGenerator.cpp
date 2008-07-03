@@ -663,7 +663,7 @@ void MapGenerator::chooseRandomPoints(Game& game, std::vector<MapGeneratorPoint>
 	n = std::min(int(points.size()), n);
 	for(int i=0; i<n; ++i)
 	{
-		int r = syncRand() % (points.size()-n);
+		int r = syncRand() % (points.size()-i);
 		std::iter_swap(points.begin() + i, points.begin() + i + r);
 	}
 	points.erase(points.begin() + n, points.end());
