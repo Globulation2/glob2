@@ -51,6 +51,9 @@ private:
 	
 	///This function fills the vector with all of the points in a specific area
 	void getAllPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
+	
+	///This function fills the vector with all of points except those in a specific area
+	void getAllOtherPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
 
 	///This function computes all of points that are borders
 	void findBorderPoints(Game& game, std::vector<int>& grid, std::vector<MapGeneratorPoint>& points);
