@@ -93,7 +93,7 @@ public:
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const char *name);

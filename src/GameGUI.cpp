@@ -3872,7 +3872,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 	}
 }
 
-bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {
 	init();
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
@@ -3897,7 +3897,7 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
     //may be an older file version.
 	//game.setMapHeader(mapHeader);
 	if(setGameHeader)
-		game.setGameHeader(gameHeader);
+		game.setGameHeader(gameHeader, saveAI);
 
 	return true;
 }

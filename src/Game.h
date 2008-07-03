@@ -87,7 +87,7 @@ public:
 	
 	/// This method will prepare the game with the provided gameHeader,
 	/// including initiating the Players
-	void setGameHeader(const GameHeader& gameHeader);
+	void setGameHeader(const GameHeader& gameHeader, bool saveAI=false);
 	
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	void executeOrder(boost::shared_ptr<Order> order, int localPlayer);
