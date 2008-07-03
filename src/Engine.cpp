@@ -145,7 +145,7 @@ int Engine::initCustom(const std::string &gameName)
 		}
 	}
 
-	int ret = initGame(mapHeader, gameHeader, true);
+	int ret = initGame(mapHeader, gameHeader, true, false, true);
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
 	else if(ret == -1)
@@ -573,9 +573,9 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 
 
 
-int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
+int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData))
+	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
 		return EE_CANT_LOAD_MAP;
 	
 	// We remove uncontrolled stuff from map

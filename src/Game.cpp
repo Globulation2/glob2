@@ -170,7 +170,7 @@ void Game::setMapHeader(const MapHeader& newMapHeader)
 
 
 
-void Game::setGameHeader(const GameHeader& newGameHeader)
+void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
@@ -181,7 +181,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader)
 	for (int i=0; i<newGameHeader.getNumberOfPlayers(); i++)
 	{
 		//Don't change AI's
-		if(gameHeader.getBasePlayer(i).type < BasePlayer::P_AI)
+		if(!saveAI || gameHeader.getBasePlayer(i).type < BasePlayer::P_AI)
 		{
 			delete players[i];
 			players[i]=new Player();
