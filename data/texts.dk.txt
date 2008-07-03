@@ -236,6 +236,8 @@ Kompilere skript
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Forbinder
 [connecting to]
@@ -446,6 +448,8 @@ Opret et spil
 HP
 [hp]
 Liv point
+[Human]
+
 [human]
 menneskelig
 [hungry]
@@ -644,6 +648,8 @@ Her
 Åben gem menu
 [open script editor]
 Åben Script Editor
+[open teams editor]
+
 [open]
 Åben
 [Options]
@@ -941,6 +947,8 @@ Skift til terring visning
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

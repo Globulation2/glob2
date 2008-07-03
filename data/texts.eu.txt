@@ -236,6 +236,8 @@ Konpilatu script-a
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Konektatu
 [connecting to]
@@ -446,6 +448,8 @@ Partida bat ostatatu
 Osotasuna
 [hp]
 Osotasuna
+[Human]
+
 [human]
 gizakia
 [hungry]
@@ -644,6 +648,8 @@ Ireki kargatzeko menua
 Ireki gordetzeko menua
 [open script editor]
 Ireki Script editorea
+[open teams editor]
+
 [open]
 ireki
 [Options]
@@ -941,6 +947,8 @@ Lurzoru ikuspegira aldatu
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

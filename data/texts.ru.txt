@@ -230,6 +230,8 @@ caps lock
 
 [Computing Fertility]
 Вычисление плодородия
+[concrete islands]
+
 [connect]
 Подключиться
 [connecting to]
@@ -442,6 +444,8 @@ home
 Зд.
 [hp]
 Здоровье
+[Human]
+
 [human]
 человек
 [hungry]
@@ -640,6 +644,8 @@ Ok
 Открыть меню сохранения
 [open script editor]
 Открыть редактор скриптов
+[open teams editor]
+
 [open]
 открыто
 [Options]
@@ -938,6 +944,8 @@ space
 sys req
 [tab]
 tab
+[teams editor]
+
 [Teams Fixed]
 
 [teams]

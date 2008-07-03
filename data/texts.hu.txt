@@ -236,6 +236,8 @@ Szkript fordítása
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Kapcsolódás
 [connecting to]
@@ -446,6 +448,8 @@ Játék hostolása
 Életpont
 [hp]
 Életpont
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Helyszínen van
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 nyitva
@@ -941,6 +947,8 @@ fejlesztése
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

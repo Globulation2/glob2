@@ -236,6 +236,8 @@ AIWarrush
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 連線
 [connecting to]
@@ -446,6 +448,8 @@ AIWarrush
 HP
 [hp]
 生命值
+[Human]
+
 [human]
 人類玩家
 [hungry]
@@ -644,6 +648,8 @@ Air dmg.
 開啟儲存選單
 [open script editor]
 開啟語法編輯器
+[open teams editor]
+
 [open]
 開啟
 [Options]
@@ -941,6 +947,8 @@ V: 持鍵以傳送訊息
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

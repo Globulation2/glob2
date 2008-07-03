@@ -236,6 +236,8 @@ Compilar script
 Compôr
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Conectar
 [connecting to]
@@ -448,6 +450,8 @@ Hospedar um jogo
 Vida
 [hp]
 Vida
+[Human]
+
 [human]
 humano
 [hungry]
@@ -646,6 +650,8 @@ Abrir Menu de carregamento
 Abrir Menu de Gravação
 [open script editor]
 Abrir editor de script
+[open teams editor]
+
 [open]
 Abrir
 [Options]
@@ -944,6 +950,8 @@ Mudar para visão de terrenos
 sys req
 [tab]
 tab
+[teams editor]
+
 [Teams Fixed]
 
 [teams]

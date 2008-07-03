@@ -236,6 +236,8 @@ Compiler le script
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Connecter
 [connecting to]
@@ -446,6 +448,8 @@ Héberger une partie
 Point de vie
 [hp]
 Pts vie
+[Human]
+
 [human]
 Humain
 [hungry]
@@ -644,6 +648,8 @@ Ouvrir menu de chargement
 Ouvrir menu de sauvegarde
 [open script editor]
 Ouvrir éditeur de script
+[open teams editor]
+
 [open]
 ouvert
 [Options]
@@ -942,6 +948,8 @@ Changer vers la vue du terrain
 Sys Req
 [tab]
 Tab
+[teams editor]
+
 [Teams Fixed]
 
 [teams]

@@ -236,6 +236,8 @@ AIWarrush
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Прикључи се
 [connecting to]
@@ -446,6 +448,8 @@ AIWarrush
 Живот
 [hp]
 Здравље
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 отвори
@@ -941,6 +947,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 
