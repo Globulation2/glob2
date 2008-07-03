@@ -230,6 +230,8 @@ Compila lo script
 componi
 [Computing Fertility]
 Calcolando la fertilità
+[concrete islands]
+
 [connect]
 Connesso
 [connecting to]
@@ -440,6 +442,8 @@ Ospita una partita
 PV
 [hp]
 Punti vita
+[Human]
+
 [human]
 umano
 [hungry]
@@ -636,6 +640,8 @@ Apri Carica Menù
 Apri Salva Menù
 [open script editor]
 Apri l'Editor di Script
+[open teams editor]
+
 [open]
 Apri
 [Options]
@@ -934,6 +940,8 @@ Passa alla Visualizzazione Terreno
 requisiti sistema
 [tab]
 TAB
+[teams editor]
+
 [Teams Fixed]
 
 [teams]

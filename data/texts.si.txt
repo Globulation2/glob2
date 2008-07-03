@@ -236,6 +236,8 @@ Zgradi skripto
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Vspostavi povezavo
 [connecting to]
@@ -446,6 +448,8 @@ Gostuj igro
 Zd
 [hp]
 Zdravje
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Tukaj
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 odpri
@@ -941,6 +947,8 @@ Bazen
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

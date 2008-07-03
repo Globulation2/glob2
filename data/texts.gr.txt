@@ -236,6 +236,8 @@ caps lock
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Σύνδεση
 [connecting to]
@@ -448,6 +450,8 @@ Ok
 HP
 [hp]
 Hitpoint
+[Human]
+
 [human]
 άνθρωπος
 [hungry]
@@ -646,6 +650,8 @@ Ok
 Άνοιγμα Μενού Αποθήκευσης
 [open script editor]
 Άνοιγμα Επεξεργαστή Script
+[open teams editor]
+
 [open]
 άνοιγμα
 [Options]
@@ -944,6 +950,8 @@ V: κρατήστε για να μιλίσετε
 sys req
 [tab]
 tab
+[teams editor]
+
 [Teams Fixed]
 
 [teams]

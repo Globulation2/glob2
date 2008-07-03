@@ -236,6 +236,8 @@ Clearing flag
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Connect
 [connecting to]
@@ -446,6 +448,8 @@ Host a game
 HP
 [hp]
 Hitpoint
+[Human]
+
 [human]
 الأنسان
 [hungry]
@@ -644,6 +648,8 @@ Open Load Menu
 Open Save Menu
 [open script editor]
 فتح محرر الكتابة
+[open teams editor]
+
 [open]
 افتح
 [Options]
@@ -941,6 +947,8 @@ Switch to Terrain view
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

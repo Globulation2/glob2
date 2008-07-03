@@ -236,6 +236,8 @@ Compilează scriptul
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Conectează
 [connecting to]
@@ -446,6 +448,8 @@ Găzduiţi un joc
 Punct de viaţă
 [hp]
 Viata
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Aici
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 deschis
@@ -941,6 +947,8 @@ Piscină
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

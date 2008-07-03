@@ -236,6 +236,8 @@ Compilar el script
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Conectat
 [connecting to]
@@ -446,6 +448,8 @@ Servir una partida
 Vida
 [hp]
 Vida
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Aqui
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 Obrir
@@ -941,6 +947,8 @@ Piscina
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

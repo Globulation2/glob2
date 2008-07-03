@@ -236,6 +236,8 @@ Compilar Script
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Connectar
 [connecting to]
@@ -446,6 +448,8 @@ Administra un Juego
 HP
 [hp]
 Puntuación
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Aquí
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 Abierto
@@ -941,6 +947,8 @@ Alberca de natación
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

@@ -236,6 +236,8 @@ Compilar script
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Conectar
 [connecting to]
@@ -446,6 +448,8 @@ Servir uma partida
 Danho
 [hp]
 Danho
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Aqui
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 aberto
@@ -941,6 +947,8 @@ Piscina
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 

@@ -236,6 +236,8 @@ Kopilovať skript
 
 [Computing Fertility]
 
+[concrete islands]
+
 [connect]
 Pripojiť
 [connecting to]
@@ -446,6 +448,8 @@ Vytvor hru
 HP
 [hp]
 Zdravie
+[Human]
+
 [human]
 
 [hungry]
@@ -643,6 +647,8 @@ Tu
 [open save menu]
 
 [open script editor]
+
+[open teams editor]
 
 [open]
 otvorené
@@ -941,6 +947,8 @@ Bazén
 [sys req]
 
 [tab]
+
+[teams editor]
 
 [Teams Fixed]
 
