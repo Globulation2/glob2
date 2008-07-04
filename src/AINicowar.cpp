@@ -2081,8 +2081,10 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		Building* building = echo.player->team->myBuildings[i];
 		if(building && building->underAttackTimer)
 		{
+			int nx = (building->posX - building->type->decLeft + w) %w;
+			int ny = (building->posY - building->type->decTop + h) %h;
 			buildingGID[building->posX * h + building->posY] = building->gid;
-			modify_points(counts, w, h, building->posX, building->posY, 4, 1, locations);
+			modify_points(counts, w, h, nx, ny, 4, 1, locations);
 		}
 	}
 	
@@ -2132,7 +2134,9 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 				if(buildingGID[nx * h + ny] != NOGBID)
 				{
 					Building* building = echo.player->team->myBuildings[Building::GIDtoID(buildingGID[nx * h + ny])];
-					modify_points(counts, w, h, building->posX, building->posY, 4, -1, locations);
+					int nx2 = (building->posX - building->type->decLeft + w) %w;
+					int ny2 = (building->posY - building->type->decTop + h) %h;
+					modify_points(counts, w, h, nx2, ny2, 4, -1, locations);
 					buildingGID[nx * h + ny] = NOGBID;
 				}
 				
@@ -2148,6 +2152,21 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 			}
 		}
 		enemyUnits.push_back(std::min(20, enemy_count));
+	}
+	
+	//Remove all flags with an enemy_count of 0
+	for(std::vector<int>::iterator i=flagLocations.begin(); i!=flagLocations.end();)
+	{
+		int n = i-flagLocations.begin();
+		if(enemyUnits[n] == 0)
+		{
+			i = flagLocations.erase(i);
+			enemyUnits.erase(enemyUnits.begin() + n);
+		}
+		else
+		{
+			++i;
+		}
 	}
 
 	//Take all existing defense flags, and move them to the nearest new flag position
@@ -2211,11 +2230,38 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	//on the map to go to, so delete them
 	for(std::vector<int>::iterator i = existing_defense_flags.begin(); i!=existing_defense_flags.end(); ++i)
 	{
-		if(echo.get_building_register().is_building_found(*i))
-		{
-			ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
-			echo.add_management_order(mo_destroyed);
-		}
+        Building* b = echo.get_building_register().get_building(*i);
+        int enemy_count = 0;
+        for(int px = -3; px <= 3; ++px)
+        {
+                int nx = (b->posX + px + w)%w;
+                for(int py = -3; py<=3; ++py)
+                {
+                        int ny = (b->posY + py + h)%h;
+                        Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
+                        if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & echo.player->team->enemies)
+                        {
+                                Unit* unit = echo.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
+                                if(unit->typeNum == WARRIOR)
+                                {
+                                        enemy_count += 1;
+                                }
+                        }
+                }
+        }
+        if(enemy_count == 0)
+        {
+                ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
+                echo.add_management_order(mo_destroyed);
+        }
+        else
+        {
+                if(enemy_count != echo.get_building_register().get_assigned(*i))
+                {
+                        ManagementOrder* mo_assign=new AssignWorkers(enemy_count, *i);
+                        echo.add_management_order(mo_assign);
+                }
+        }
 	}
 	
 	//If there are remaining positions on the map, it is because we didn't have enough existing

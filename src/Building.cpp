@@ -1309,7 +1309,7 @@ int Building::desiredNumberOfWorkers(void)
 void Building::step(void)
 {
 	updateCallLists();
-	if(underAttackTimer > 0)
+	if(underAttackTimer>0)
 		underAttackTimer-=1;
 
 	// NOTE : Unit needs to update itself when it is in a building

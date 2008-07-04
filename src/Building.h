@@ -274,7 +274,7 @@ public:
 	Sint32 posX, posY; // (Uint16)
 	Sint32 posXLocal, posYLocal;
 
-	// Timer counts down 5 frames after last attacked
+	// Counts down 240 frames from when a unit was attacked
 	Uint8 underAttackTimer;
 
 
