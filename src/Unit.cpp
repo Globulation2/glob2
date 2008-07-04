@@ -467,7 +467,7 @@ void Unit::syncStep(void)
 				degats=1;
 			enemy->hp-=degats;
 			
-			enemy->underAttackTimer = 256/speed + 1;
+			enemy->underAttackTimer = 240;
 
 			boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 			enemy->owner->pushGameEvent(event);
@@ -487,7 +487,7 @@ void Unit::syncStep(void)
 					degats=1;
 				enemy->hp-=degats;
 			
-				enemy->underAttackTimer = 256/speed + 1;
+				enemy->underAttackTimer = 240;
 
 				boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
 				enemy->owner->pushGameEvent(event);
