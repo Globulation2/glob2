@@ -2070,7 +2070,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	for(int i=0; i<1024; ++i)
 	{
 		Unit* unit = echo.player->team->myUnits[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER)
+		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[unit->posX * h + unit->posY] == NOGUID)
 		{
 			unitGID[unit->posX * h + unit->posY] = unit->gid;
 			modify_points(counts, w, h, unit->posX, unit->posY, 4, 1, locations);
@@ -2079,7 +2079,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	for(int i=0; i<1024; ++i)
 	{
 		Building* building = echo.player->team->myBuildings[i];
-		if(building && building->underAttackTimer)
+		if(building && building->underAttackTimer && buildingGID[building->posX * h + building->posY] == NOGBID)
 		{
 			int nx = (building->posX - building->type->decLeft + w) %w;
 			int ny = (building->posY - building->type->decTop + h) %h;
