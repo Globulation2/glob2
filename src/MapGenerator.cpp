@@ -356,12 +356,17 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			
 			//Place swarms
 			chooseFreeForBuildingSquares(game, startingLocations, swarm, i);
+			if(startingLocations.size() == 0)
+				return false;
 			int chosen = syncRand()%startingLocations.size();
 			Building* b = addBuilding(game, startingLocations[chosen].x, startingLocations[chosen].y, i, IntBuildingType::SWARM_BUILDING, 1, false);
+			if(b == NULL)
+				return false;
 			
 			//Set the initial viewport location
 			game.teams[i]->startPosX=b->posX;
 			game.teams[i]->startPosY=b->posY;
+			game.teams[i]->startPosSet=3;
 			
 			//Place units arround the swarm
 			std::vector<MapGeneratorPoint> unitLocations = baseLocations;
@@ -372,6 +377,10 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			{
 				game.addUnit(unitLocations[n].x, unitLocations[n].y, i, WORKER, 0, 0, 0, 0);
 			}
+		}
+		else
+		{
+			return false;
 		}
 	}
 	
