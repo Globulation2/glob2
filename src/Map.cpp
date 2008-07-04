@@ -3806,6 +3806,40 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		isWarFlag=true;
 
 	memset(gradient, 1, size);
+	
+	for (int y=0; y<h; y++)
+	{
+		int wy=w*y;
+		for (int x=0; x<w; x++)
+		{
+			int wyx=wy+x;
+			Case& c=cases[wyx];
+			if (c.building==NOGBID)
+			{
+				if (c.forbidden&teamMask)
+					gradient[wyx] = 0;
+				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
+					gradient[wyx] = 0;
+				else if(immobileUnits[wyx] != 255)
+					gradient[wyx] = 0;
+				else if (!canSwim && isWater(x, y))
+					gradient[wyx] = 0;
+			}
+			else
+			{
+				if (c.building==bgid)
+				{
+					gradient[wyx] = 255;
+					listedAddr[listCountWrite++] = wyx;
+				}
+				//Warflags don't consider enemy buildings an obstacle
+				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
+					gradient[wyx] = 0;
+				else if(gradient[wyx]!=255)
+					gradient[wyx] = 1;
+			}
+		}
+	}
 
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
@@ -3849,40 +3883,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 						}
 					}
 				}
-		}
-	}
-	
-	for (int y=0; y<h; y++)
-	{
-		int wy=w*y;
-		for (int x=0; x<w; x++)
-		{
-			int wyx=wy+x;
-			Case& c=cases[wyx];
-			if (c.building==NOGBID)
-			{
-				if (c.forbidden&teamMask)
-					gradient[wyx] = 0;
-				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
-					gradient[wyx] = 0;
-				else if(immobileUnits[wyx] != 255)
-					gradient[wyx] = 0;
-				else if (!canSwim && isWater(x, y))
-					gradient[wyx] = 0;
-			}
-			else
-			{
-				if (c.building==bgid)
-				{
-					gradient[wyx] = 255;
-					listedAddr[listCountWrite++] = wyx;
-				}
-				//Warflags don't consider enemy buildings an obstacle
-				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
-					gradient[wyx] = 0;
-				else if(gradient[wyx]!=255)
-					gradient[wyx] = 1;
-			}
 		}
 	}
 	
