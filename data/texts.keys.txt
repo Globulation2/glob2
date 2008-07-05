@@ -73,6 +73,7 @@
 [cancel destroy]
 [cancel repair]
 [cancel upgrade]
+[ctrl - line]
 [Cancel]
 [caps lock]
 [carry]

@@ -188,6 +188,8 @@ Concrete Islands
 Isles
 [connect]
 Connect
+[ctrl - line]
+Ctrl - Line
 [connecting to]
 Connecting to
 [Construction Site Defaults]
