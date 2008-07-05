@@ -224,7 +224,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			points.clear();
 			
 			// Place some fruit
-			int fruit_n = syncRand()%6;
+			int fruit_n = syncRand()%6+1;
 			getAllPoints(game, grid, areaNumbers[1], points);
 			chooseRandomPoints(game, points, fruit_n);
 			for(int j=0; j<points.size(); ++j)
@@ -404,6 +404,8 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	}
 	splitUpArea(game, grid, 0, teamPoints, teamWeights, teamAreaNumbers, true);
 	
+	std::vector<int> connectorDistances = distances;
+	
 	// For each team, find a point just off the coast and place algae there
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
@@ -416,8 +418,8 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 			for(int y=0; y<game.map.getH(); ++y)
 			{
 				int d = distances[y * game.map.getW() + x];
-				int g = grid[x * game.map.getW() + y];
-				if(d == 8 && g!=connectorArea)
+				int d2 = connectorDistances[y * game.map.getW() + x];
+				if(d == 8 && d2 > 4)
 				{
 					possible.push_back(MapGeneratorPoint(x, y));
 				}
