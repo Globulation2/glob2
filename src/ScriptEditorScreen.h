@@ -69,6 +69,8 @@ protected:
 	std::vector<Widget*> briefingWidgets;
 	std::vector<Widget*> hintWidgets;
 	
+	
+	bool changeTabAgain;
 protected:
 	bool testCompile(void);
 	
@@ -77,6 +79,7 @@ public:
 	virtual ~ScriptEditorScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
+	virtual void onTimer(Uint32 tick);
 
 private:
 	void loadSave(bool isLoad, const char *dir, const char *ext);

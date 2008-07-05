@@ -136,6 +136,8 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	{
 		hints[game->gameHints.getScriptNumber(i)-1]->setText(game->gameHints.getGameHintText(i));
 	}
+	
+	changeTabAgain=true;
 }
 
 bool ScriptEditorScreen::testCompile(void)
@@ -392,12 +394,60 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			}
 		}
 	}
+	else if(action == TEXT_TABBED)
+	{
+		TextInput* next=NULL;
+		for(int i=0; i<8; ++i)
+		{
+			if(source == primaryObjectives[i])
+			{
+				next=primaryObjectives[(i+1)%8];
+				break;
+			}
+			else if(source == secondaryObjectives[i])
+			{
+				next=secondaryObjectives[(i+1)%8];
+				break;
+			}
+			else if(source == hints[i])
+			{
+				next=hints[(i+1)%8];
+				break;
+			}
+		}
+		if(next && changeTabAgain)
+		{
+			next->activate();
+			for(int i=0; i<8; ++i)
+			{
+				if(next != primaryObjectives[i])
+				{
+					primaryObjectives[i]->deactivate();
+				}
+				if(next != secondaryObjectives[i])
+				{
+					secondaryObjectives[i]->deactivate();
+				}
+				if(next != hints[i])
+				{
+					hints[i]->deactivate();
+				}
+			}
+			changeTabAgain=false;
+		}
+	}
 }
 
 void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
 {
 
 }
+
+void ScriptEditorScreen::onTimer(Uint32 timer)
+{
+	changeTabAgain=true;
+}
+
 
 std::string filenameToName(const std::string& fullfilename)
 {

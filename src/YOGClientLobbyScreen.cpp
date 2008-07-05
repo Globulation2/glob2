@@ -173,6 +173,10 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 			autoCompleteNick();
 		}
 	}
+	else if (action==TEXT_TABBED)
+	{
+		autoCompleteNick();
+	}
 	else if (action==TEXT_VALIDATED)
 	{
 		if(textInput->getText() != "")

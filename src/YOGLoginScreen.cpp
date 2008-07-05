@@ -76,6 +76,7 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	wasConnecting = false;
 	
 	client->addEventListener(this);
+	changeTabAgain=true;
 }
 
 YOGLoginScreen::~YOGLoginScreen()
@@ -111,6 +112,21 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==password)
 			login->deactivate();
 	}
+	if (action==TEXT_TABBED)
+	{
+		if (login->isActivated() && changeTabAgain)
+		{
+			login->deactivate();
+			password->activate();
+			changeTabAgain=false;
+		}
+		else if (password->isActivated() && changeTabAgain)
+		{
+			password->deactivate();
+			login->activate();
+			changeTabAgain=false;
+		}
+	}
 }
 
 void YOGLoginScreen::onTimer(Uint32 tick)
@@ -126,6 +142,7 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 	}
 
 	client->update();
+	changeTabAgain=true;
 }
 
 
