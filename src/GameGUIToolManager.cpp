@@ -92,13 +92,18 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 		
-		if(building!="stonewall" || firstPlacementX==-1)
+		
+		SDLMod modState = SDL_GetModState();
+		if(!(modState & KMOD_CTRL) || firstPlacementX==-1)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
 		}
 		///This allows the drag-placing of walls
 		else
 		{
+			int bw = 0;
+			int bh = 0;
+		
 			int startx = firstPlacementX;
 			int endx = mapX;
 			int starty = firstPlacementY;
@@ -128,11 +133,23 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				for(int x=startx; x!=endx;)
 				{
 					px+=1;
-					drawBuildingAt(x, y, localteam, viewportX, viewportY);
+					if(bw == 0)
+					{
+						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+						bw = bt->width;
+						bh = bt->height;
+					}
+					bw-=1;
 					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 					{
 						y=game.map.normalizeY(y+diry);
-						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+						if(bh == 0)
+						{
+							drawBuildingAt(x, y, localteam, viewportX, viewportY);
+							bw = bt->width;
+							bh = bt->height;
+						}
+						bh-=1;
 						py+=1;
 					}
 					x=game.map.normalizeX(x+dirx);
@@ -146,17 +163,28 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				for(int y=starty; y!=endy;)
 				{
 					py+=1;
-					drawBuildingAt(x, y, localteam, viewportX, viewportY);
+					if(bh == 0)
+					{
+						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+						bw = bt->width;
+						bh = bt->height;
+					}
+					bh-=1;
 					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 					{
 						x=game.map.normalizeX(x+dirx);
-						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+						if(bw == 0)
+						{
+							drawBuildingAt(x, y, localteam, viewportX, viewportY);
+							bw = bt->width;
+							bh = bt->height;
+						}
+						bw-=1;
 						px+=1;
 					}
 					y=game.map.normalizeY(y+diry);
 				}
 			}
-			drawBuildingAt(endx, endy, localteam, viewportX, viewportY);
 		}
 	}
 	else if(mode == PlaceZone)
@@ -294,15 +322,18 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
-		placeBuildingAt(mapX, mapY, localteam);
 
-		if(building!="stonewall" || firstPlacementX==-1)
+		SDLMod modState = SDL_GetModState();
+		if(!(modState & KMOD_CTRL) || firstPlacementX==-1)
 		{
 			placeBuildingAt(mapX, mapY, localteam);
 		}
 		///This allows the drag-placing of walls
 		else
 		{
+			int bw=0;
+			int bh=0;
+			
 			int startx = firstPlacementX;
 			int endx = mapX;
 			int starty = firstPlacementY;
@@ -332,11 +363,23 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 				for(int x=startx; x!=endx;)
 				{
 					px+=1;
-					placeBuildingAt(x, y, localteam);
+					if(bw == 0)
+					{
+						placeBuildingAt(x, y, localteam);
+						bw = bt->width;
+						bh = bt->height;
+					}
+					bw-=1;
 					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 					{
 						y=game.map.normalizeY(y+diry);
-						placeBuildingAt(x, y, localteam);
+						if(bh == 0)
+						{
+							placeBuildingAt(x, y, localteam);
+							bw = bt->width;
+							bh = bt->height;
+						}
+						bh-=1;
 						py+=1;
 					}
 					x=game.map.normalizeY(x+dirx);
@@ -350,11 +393,23 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 				for(int y=starty; y!=endy;)
 				{
 					py+=1;
-					placeBuildingAt(x, y, localteam);
+					if(bw == 0)
+					{
+						placeBuildingAt(x, y, localteam);
+						bw = bt->width;
+						bh = bt->height;
+					}
+					bw-=1;
 					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 					{
 						x=game.map.normalizeY(x+dirx);
-						placeBuildingAt(x, y, localteam);
+						if(bh == 0)
+						{
+							placeBuildingAt(x, y, localteam);
+							bw = bt->width;
+							bh = bt->height;
+						}
+						bh-=1;
 						px+=1;
 					}
 					y=game.map.normalizeY(y+diry);
