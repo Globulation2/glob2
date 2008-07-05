@@ -54,8 +54,9 @@ public:
 		eISLANDS=3,
 		eCRATERLAKES=4,
 		eCONCRETEISLANDS=5,
-		eOLDRANDOM=6,
-		eOLDISLANDS=7
+		eISLES=6,
+		eOLDRANDOM=7,
+		eOLDISLANDS=8
 	};
 
 	Methode methode;
