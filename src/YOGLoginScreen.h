@@ -88,6 +88,7 @@ private:
 	bool wasConnecting;
 	
 	boost::shared_ptr<YOGClient> client;
+	bool changeTabAgain;
 };
 
 #endif

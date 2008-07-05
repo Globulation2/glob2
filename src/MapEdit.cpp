@@ -1317,30 +1317,35 @@ int MapEdit::run(void)
 		if(showingMenuScreen)
 		{
 			globalContainer->gfx->setClipRect();
+			menuScreen->dispatchTimer(startTick);
 			menuScreen->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
 		}
 		if(showingLoad || showingSave)
 		{
 			globalContainer->gfx->setClipRect();
+			loadSaveScreen->dispatchTimer(startTick);
 			loadSaveScreen->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
 		}
 		if(showingScriptEditor)
 		{
 			globalContainer->gfx->setClipRect();
+			scriptEditor->dispatchTimer(startTick);
 			scriptEditor->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
 		}
 		if(showingTeamsEditor)
 		{
 			globalContainer->gfx->setClipRect();
+			teamsEditor->dispatchTimer(startTick);
 			teamsEditor->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
 		}
 		if(isShowingAreaName)
 		{
 			globalContainer->gfx->setClipRect();
+			areaName->dispatchTimer(startTick);
 			areaName->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
 		}

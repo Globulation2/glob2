@@ -395,6 +395,12 @@ namespace GAGGUI
 			parent->onAction(this, TEXT_CANCELED, 0, 0);
 			break;
 			
+			case SDLK_TAB:
+			{
+				parent->onAction(this, TEXT_TABBED, 0, 0);
+			}
+			break;
+			
 			case SDLK_RETURN:
 			if (!readOnly)
 			{
