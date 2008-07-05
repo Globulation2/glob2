@@ -66,7 +66,8 @@ NewMapScreen::NewMapScreen()
 	methodes->addText(Toolkit::getStringTable()->getString("[river terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[concrete islands]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[concrete islands terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[isles terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
 	methodes->setSelectionIndex(0);
@@ -96,10 +97,12 @@ NewMapScreen::NewMapScreen()
 	nbTeams->add(10);
 	nbTeams->add(11);
 	nbTeams->add(12);
+	/*
 	nbTeams->add(13);
 	nbTeams->add(14);
 	nbTeams->add(15);
 	nbTeams->add(16);
+	*/
 	nbTeams->setNth(descriptor.nbTeams-1);
 	nbTeams->visible=false;
 	addWidget(nbTeams);
@@ -420,6 +423,8 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						true;
 						break;
 					case  MapGenerationDescriptor::eCONCRETEISLANDS:
+						break;
+					case  MapGenerationDescriptor::eISLES:
 						break;
 					case  MapGenerationDescriptor::eOLDRANDOM:
 						ratioText->visible=
