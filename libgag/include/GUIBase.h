@@ -71,6 +71,7 @@ namespace GAGGUI
 		TEXT_VALIDATED,
 		TEXT_CANCELED,
 		TEXT_SET,
+		TEXT_TABBED,
 	
 		LIST_ELEMENT_SELECTED,
 	
@@ -79,6 +80,7 @@ namespace GAGGUI
 		VALUE_CHANGED,
 		
 		KEY_CHANGED,
+		
 	};
 	
 	class Screen;
