@@ -3559,6 +3559,13 @@ void GameGUI::drawOverlayInfos(void)
 	globalContainer->gfx->setClipRect();
 	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-128+14, 14, 100, viewportX, viewportY, game);
 
+	// display text if placing a building 
+	/*
+	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255,0)));
+	globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[ctrl - line]"));
+	globalContainer->standardFont->popStyle();
+	*/
+
 	// Draw icon if trasmitting
 	if (globalContainer->voiceRecorder->recordingNow)
 		globalContainer->gfx->drawSprite(5, globalContainer->gfx->getH()-50, globalContainer->gamegui, 24);
