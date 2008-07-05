@@ -182,8 +182,10 @@ Compile script
 compose
 [Computing Fertility]
 Computing Fertility
-[concrete islands]
+[concrete islands terrain]
 Concrete Islands
+[isles terrain]
+Isles
 [connect]
 Connect
 [connecting to]

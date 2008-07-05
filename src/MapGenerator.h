@@ -37,14 +37,24 @@ public:
 	///This performs the concrete islands generator
 	bool computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor);
 
+	///This performs the isles generator
+	bool computeIsles(Game& game, MapGenerationDescriptor& descriptor);
+
+	///This function devides up the player lands using the standard method
+	bool devideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber);
+
 private:
 	///This is a function that takes an area and devides it up into several smaller areas using the
 	///given area numbers and weights. This is bassically a combination of splitUpPoints and splitUpArea
 	bool devideUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers);
 	
+	///This creates an area with the shape of an oval with the given width and height
+	void createOval(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height);
+	
 	///This function takes the grid, an area number, and places points in it such that the points are spaced
-	///as far from eachother as possible, bearing in mind weights
-	bool splitUpPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights);
+	///as far from eachother as possible, bearing in mind weights. Returns 0 if failure, otherwise returns 
+	///the minimum distance between points that was accomplished
+	int splitUpPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights);
 	
 	///This function takes a grid and an area number, and devides that area into more areas
 	void splitUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, std::vector<int>& areaNumbers, bool grassOnly=false);
@@ -54,6 +64,9 @@ private:
 	
 	///This function fills the vector with all of points except those in a specific area
 	void getAllOtherPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
+	
+	///This function gets all of the points in a straight line from x1,y1 to x2,y2
+	void getAllPointsLine(Game& game, int x1, int y1, int x2, int y2, std::vector<MapGeneratorPoint>& points);
 
 	///This function computes all of points that are borders
 	void findBorderPoints(Game& game, std::vector<int>& grid, std::vector<MapGeneratorPoint>& points);
