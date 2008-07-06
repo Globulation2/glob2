@@ -184,12 +184,8 @@ compose
 Computing Fertility
 [concrete islands terrain]
 Concrete Islands
-[isles terrain]
-Isles
 [connect]
 Connect
-[ctrl - line]
-Ctrl - Line
 [connecting to]
 Connecting to
 [Construction Site Defaults]
@@ -210,6 +206,8 @@ Create game
 Create map
 [credits]
 Credits
+[ctrl - line]
+Ctrl - Line
 [current speed]
 Current speed
 [custom game]
@@ -420,6 +418,8 @@ Inside
 island size
 [islands terrain]
 Islands
+[isles terrain]
+Isles
 [iterate selection]
 Iterate to Next Selection
 [jobs]
@@ -508,8 +508,6 @@ Map upload failed. Unknown reason.
 Author Name
 [Map Upload: Waiting for reply]
 Waiting for reply
-[maps available]
-Maps Available
 [mark map]
 Mark Map For Allies
 [market explanation 2]
@@ -998,6 +996,8 @@ Unit Settings
  units working
 [Units]
 Units
+[unlocked at start]
+Unlocked At Start
 [unlocked by]
 Unlocked By
 [Unnamed Area]

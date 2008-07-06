@@ -230,6 +230,8 @@ caps lock
 
 [Computing Fertility]
 Вычисление плодородия
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -254,6 +256,8 @@ control-%0
 Создать карту
 [credits]
 Благодарности
+[ctrl - line]
+
 [current speed]
 Текущая скорость
 [custom game]
@@ -476,6 +480,8 @@ insert
 размер острова
 [islands terrain]
 Острова
+[isles terrain]
+
 [iterate selection]
 Перейти к следующему
 [jobs]
@@ -1062,6 +1068,8 @@ tab
  юнитов работает
 [Units]
 Юниты
+[unlocked at start]
+
 [unlocked by]
 Открываетс после
 [Unnamed Area]
