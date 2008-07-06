@@ -230,6 +230,8 @@ Compila lo script
 componi
 [Computing Fertility]
 Calcolando la fertilità
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -254,6 +256,8 @@ Crea partita
 Crea una mappa
 [credits]
 Credits
+[ctrl - line]
+
 [current speed]
 Velocità attuale
 [custom game]
@@ -474,6 +478,8 @@ Dentro
 Grandezza delle isole
 [islands terrain]
 Terreno a isole
+[isles terrain]
+
 [iterate selection]
 Passa alla prossima selezione
 [jobs]
@@ -1056,6 +1062,8 @@ Impostazioni unità
 Unità al lavoro
 [Units]
 Unità
+[unlocked at start]
+
 [unlocked by]
 Sbloccato da
 [Unnamed Area]

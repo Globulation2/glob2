@@ -236,6 +236,8 @@ Kompilere skript
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Lav spil
 Lav et kort
 [credits]
 Credit
+[ctrl - line]
+
 [current speed]
 Nuværende hastighed
 [custom game]
@@ -480,6 +484,8 @@ Indenfor
 Ø størrelse
 [islands terrain]
 Øer
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1064,6 +1070,8 @@ Enheder
 Enheder der arbejder
 [Units]
 Enheder
+[unlocked at start]
+
 [unlocked by]
 Låst op af
 [Unnamed Area]

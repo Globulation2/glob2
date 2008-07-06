@@ -236,6 +236,8 @@ Konpilatu script-a
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Sortu partida
 Sortu mapa
 [credits]
 Kredituak
+[ctrl - line]
+
 [current speed]
 Oraingo abiadura
 [custom game]
@@ -480,6 +484,8 @@ Barruan
 irla tamaina
 [islands terrain]
 IrlakYOG 
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1064,6 +1070,8 @@ Unitate ezarpenak
  unitate lanean
 [Units]
 Unitateak
+[unlocked at start]
+
 [unlocked by]
 Desblokeatzailea:
 [Unnamed Area]

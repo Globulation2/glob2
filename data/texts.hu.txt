@@ -236,6 +236,8 @@ Szkript fordítása
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Búza
 Térkép készítése
 [credits]
 Szerzők
+[ctrl - line]
+
 [current speed]
 Aktuális sebesség
 [custom game]
@@ -480,6 +484,8 @@ Belül
 a szigetek mérete
 [islands terrain]
 Szigetek
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1064,6 +1070,8 @@ Egységes térkép
  az egységek dolgoznak
 [Units]
 Egységek
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
