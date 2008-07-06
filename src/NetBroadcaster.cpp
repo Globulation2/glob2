@@ -22,6 +22,8 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include <iostream>
+#include "boost/lexical_cast.hpp"
+
 using namespace GAGCore;
 
 
@@ -116,8 +118,9 @@ void NetBroadcaster::enableBroadcasting()
 		exit(2);
 	}
 	IPaddress address;
-	address.host = INADDR_BROADCAST;
 	address.port = LAN_BROADCAST_PORT;
+	//192.168.255.255
+	address.host = 0xFFFFA8C0;
 	SDLNet_UDP_Bind(socket, 0, &address);
 	
 	IPaddress localaddress;
