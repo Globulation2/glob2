@@ -360,7 +360,7 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	}
 	computeDistances(game, connectorPoints, obstacles, distances);
 	
-	computePercentageOfAreas(game, grid);
+	//computePercentageOfAreas(game, grid);
 	
 	// Stamp out the connectors
 	for(int x=0; x<game.map.getW(); ++x)
@@ -512,8 +512,10 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			}
 			areaNumbers = areaIndexes;
 			
-			//Place wood
+			// Place wood
 			std::vector<MapGeneratorPoint> wheatWoodPoints;
+			std::vector<MapGeneratorPoint> wheatPoints;
+			//std::vector<MapGeneratorPoint> woodPoints;
 			getAllPoints(game, grid, areaNumbers[3], wheatWoodPoints);
 			getAllPoints(game, grid, areaNumbers[4], wheatWoodPoints);
 			getAllPoints(game, grid, areaNumbers[5], wheatWoodPoints);
@@ -522,11 +524,14 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			{
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if(h > 50)
+				{
 					game.map.setRessource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
+					//woodPoints.push_back(wheatWoodPoints[j]);
+				}
 			}
 			wheatWoodPoints.clear();
 			
-			//Place wheat
+			// Place wheat
 			getAllPoints(game, grid, areaNumbers[0], wheatWoodPoints);
 			getAllPoints(game, grid, areaNumbers[1], wheatWoodPoints);
 			getAllPoints(game, grid, areaNumbers[2], wheatWoodPoints);
@@ -535,11 +540,14 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			{
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if(h > 50)
+				{
 					game.map.setRessource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, CORN, 1);
+					wheatPoints.push_back(wheatWoodPoints[j]);
+				}
 			}
 			
 			
-			///All remaining points are part of the main base
+			// These are all poinst in the base
 			std::vector<MapGeneratorPoint> baseLocations;
 			getAllPoints(game, grid, areaNumbers[6], baseLocations);
 			getAllPoints(game, grid, areaNumbers[7], baseLocations);
@@ -548,7 +556,7 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			getAllPoints(game, grid, areaNumbers[10], baseLocations);
 			getAllPoints(game, grid, areaNumbers[11], baseLocations);
 			
-			//Place stone
+			// Place stone
 			int numberOfStone = 6;
 			std::vector<MapGeneratorPoint> stoneLocations = baseLocations;
 			chooseRandomPoints(game, stoneLocations, numberOfStone);
@@ -557,11 +565,21 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				game.map.setRessource(stoneLocations[j].x, stoneLocations[j].y, STONE, 1);
 			}
 			
-			//Compute every points distance from the wheat
-			std::vector<int> wheatDistance;
-			computeDistances(game, wheatWoodPoints, obstacles, wheatDistance);
 			
-			//Only consider points between 1 and 4 squares from wheat
+			// Concerning starting locations, we also consider points inside the wheat and wood areas
+			getAllPoints(game, grid, areaNumbers[0], baseLocations);
+			getAllPoints(game, grid, areaNumbers[1], baseLocations);
+			getAllPoints(game, grid, areaNumbers[2], baseLocations);
+			getAllPoints(game, grid, areaNumbers[3], baseLocations);
+			getAllPoints(game, grid, areaNumbers[4], baseLocations);
+			getAllPoints(game, grid, areaNumbers[5], baseLocations);
+			
+			
+			// Compute every points distance from the wheat
+			std::vector<int> wheatDistance;
+			computeDistances(game, wheatPoints, obstacles, wheatDistance);
+			
+			// Only consider points between 1 and 4 squares from wheat
 			std::vector<MapGeneratorPoint> startingLocations;
 			for(int j=0; j<baseLocations.size(); ++j)
 			{
@@ -581,7 +599,7 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				}
 			}
 			
-			//Place swarms
+			// Place swarms
 			chooseFreeForBuildingSquares(game, startingLocations, swarm, i);
 			if(startingLocations.size() == 0)
 			{
@@ -594,12 +612,12 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				return false;
 			}
 			
-			//Set the initial viewport location
+			// Set the initial viewport location
 			game.teams[i]->startPosX=b->posX;
 			game.teams[i]->startPosY=b->posY;
 			game.teams[i]->startPosSet=3;
 			
-			//Place units arround the swarm
+			// Place units arround the swarm
 			std::vector<MapGeneratorPoint> unitLocations = baseLocations;
 			chooseFreeForGroundUnits(game, unitLocations, i);
 			chooseTouchingBuilding(game, unitLocations, b);
