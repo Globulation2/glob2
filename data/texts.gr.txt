@@ -236,6 +236,8 @@ caps lock
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Crater Lakes
 Δημιουργία χάρτη
 [credits]
 Εύσημα
+[ctrl - line]
+
 [current speed]
 Τωρινή ταχύτητα
 [custom game]
@@ -482,6 +486,8 @@ Hitpoint
 μέγεθος νησιού
 [islands terrain]
 Νησιά
+[isles terrain]
+
 [iterate selection]
 Προχώρησε στην Επόμενη Επιλογή
 [jobs]
@@ -1068,6 +1074,8 @@ Tutorial
  εργαζόμενες μονάδες
 [Units]
 Μονάδες
+[unlocked at start]
+
 [unlocked by]
 Ξεκλειδώθηκε από
 [Unnamed Area]

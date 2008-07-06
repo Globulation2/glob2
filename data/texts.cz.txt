@@ -236,6 +236,8 @@ Sestavit skript
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Vytvoř hru
 Vytvořit mapu
 [credits]
 Poděkování
+[ctrl - line]
+
 [current speed]
 Současná rychlost
 [custom game]
@@ -480,6 +484,8 @@ Uvnitř
 Velikost ostrovů
 [islands terrain]
 Ostrovy
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1064,6 +1070,8 @@ Jednotná krajina
  jednotek pracuje
 [Units]
 Jednotky
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]

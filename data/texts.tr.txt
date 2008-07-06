@@ -236,6 +236,8 @@ Script derle
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Yeni oyun
 Yeni harita
 [credits]
 Hakkinda
+[ctrl - line]
+
 [current speed]
 Mevcut hiz
 [custom game]
@@ -480,6 +484,8 @@ Icerde
 ada boyutu
 [islands terrain]
 Adalar
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1064,6 +1070,8 @@ Birim editoru
  calisan birimler
 [Units]
 Birimler
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]

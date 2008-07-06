@@ -119,6 +119,9 @@ namespace GAGGUI
 		virtual void onSDLMouseMotion(SDL_Event *event);
 		//! Draw an item of the list, called by paint
 		virtual void drawItem(int x, int y, size_t element);
+		//! Handles an item being clicked, with mx and my being relative to the corner of the item.
+		//! This is called whether or not the element was already selected
+		virtual void handleItemClick(size_t element, int mx, int my);
 	};
 }
 

@@ -230,6 +230,8 @@ Skript kompilieren
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -254,6 +256,8 @@ Spiel anlegen
 Karte erzeugen
 [credits]
 Mitwirkende
+[ctrl - line]
+
 [current speed]
 Aktuelle Geschwindigkeit
 [custom game]
@@ -474,6 +478,8 @@ Drinnen
 Inselgrösse
 [islands terrain]
 Inseln
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1056,6 +1062,8 @@ Einheiten
 Einheiten arbeiten
 [Units]
 Einheiten
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]

@@ -236,6 +236,8 @@ Compilar script
 Compôr
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Criar jogo
 Criar mapa
 [credits]
 Créditos
+[ctrl - line]
+
 [current speed]
 Velocidade corrente
 [custom game]
@@ -482,6 +486,8 @@ Dentro
 Tamanho da ilha
 [islands terrain]
 Ilhas
+[isles terrain]
+
 [iterate selection]
 Vai para a próxima unidade
 [jobs]
@@ -1066,6 +1072,8 @@ Ajustes de unidade
 unidades trabalhando
 [Units]
 Unidades
+[unlocked at start]
+
 [unlocked by]
 Destravado por
 [Unnamed Area]

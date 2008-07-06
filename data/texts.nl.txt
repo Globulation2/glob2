@@ -236,6 +236,8 @@ Compileer script
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ Start een spel
 Bewerk speelveld
 [credits]
 Met dank aan...
+[ctrl - line]
+
 [current speed]
 Huidige snelheid
 [custom game]
@@ -480,6 +484,8 @@ Binnen
 Eiland grootte
 [islands terrain]
 Eilanden
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1064,6 +1070,8 @@ Gebouwen
  werkende eenheden
 [Units]
 Eenheden
+[unlocked at start]
+
 [unlocked by]
 Beschikbaar door
 [Unnamed Area]

@@ -236,6 +236,8 @@ AIWarrush
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [concrete islands]
 
 [connect]
@@ -260,6 +262,8 @@ AIWarrush
 Направи мапу
 [credits]
 Заслуге
+[ctrl - line]
+
 [current speed]
 Тренутна брзина
 [custom game]
@@ -480,6 +484,8 @@ AIWarrush
 Величина острва
 [islands terrain]
 Острвско земљиште
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -1064,6 +1070,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
  јединица у послу
 [Units]
 Јединице
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
