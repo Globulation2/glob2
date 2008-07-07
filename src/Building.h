@@ -227,7 +227,6 @@ public:
 	std::list<Order *> orderQueue;
 	
 	static std::string getBuildingName(int type);
-	
 public:
 	// type
 	Sint32 typeNum; // number in BuildingTypes
@@ -254,7 +253,6 @@ public:
 	Sint32 subscriptionWorkingTimer;
 	Sint32 maxUnitInside;
 	///This counts the number of units that failed the requirements for the building, but where free
-	Uint32 unitsFailingRequirements;
 	std::list<Unit *> unitsInside;
 	
 	// optimisation and consistency
@@ -332,6 +330,22 @@ public:
 	Uint32 lastShootStep;
 	Sint32 lastShootSpeedX;
 	Sint32 lastShootSpeedY;
+	
+	
+	enum UnitCantWorkReason
+	{
+		UnitNotAvailable=0,
+		UnitTooLowLevel=1,
+		UnitCantAccessBuilding=2,
+		UnitTooFarFromBuilding=3,
+		UnitCantAccessResource=4,
+		UnitCantAccessFruit=5,
+		UnitTooFarFromResource=6,
+		UnitTooFarFromFruit=7,
+		UnitCantWorkReasonSize,
+	};
+	
+	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
 
 protected:
 	FILE *logFile;

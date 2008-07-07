@@ -2140,7 +2140,7 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 			if (building->maxUnitInside>0)
 				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
 			if (building->maxUnitWorking>0)
-				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), building->unitsFailingRequirements, 255, 255, 255, 255, 64, 0);
+				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
 
 			// food (for inns)
 			if ((type->canFeedUnit) || (type->unitProductionTime))
