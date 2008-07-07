@@ -2,6 +2,22 @@
 %0 已離開遊戲
 [%0 level %1]
 
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
 [%0% Uploaded]
 
 [%0's game]

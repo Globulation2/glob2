@@ -1086,7 +1086,6 @@ void Unit::handleDisplacement(void)
 						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedRessource]);
 					targetBuilding->addRessourceIntoBuilding(caryedRessource);
 					caryedRessource=-1;
-
 				}
 				
 				if (!loopMove && !exchangeReady)
