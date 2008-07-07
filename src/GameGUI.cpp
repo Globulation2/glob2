@@ -3084,14 +3084,53 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				if (buildingType->maxRessource[i])
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(getRessourceName(i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(getRessourceName(i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
 					j++;
+					ypos += 11;
 				}
 			}
 			if (buildingType->maxBullets)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[Bullets]")).arg(selBuild->bullets).arg(buildingType->maxBullets).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[Bullets]")).arg(selBuild->bullets).arg(buildingType->maxBullets).c_str());
 				j++;
+			}
+		}
+		
+		// data on whether or not the building is recieving units
+		bool otherFailure=true;
+		for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
+		{
+			int n = selBuild->unitsFailingRequirements[j];
+			if(j!=0 && n>0)
+				otherFailure=true;
+		}
+		if(otherFailure)
+		{
+			for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
+			{
+				int n = selBuild->unitsFailingRequirements[j];
+				if(n>0 && selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
+				{
+					std::string s;
+					if(j == Building::UnitNotAvailable)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units not available]")).arg(n);
+					if(j == Building::UnitTooLowLevel)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too low level]")).arg(n);
+					else if(j == Building::UnitCantAccessBuilding)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access building]")).arg(n);
+					else if(j == Building::UnitTooFarFromBuilding)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from building]")).arg(n);
+					else if(j == Building::UnitCantAccessResource)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access resource]")).arg(n);
+					else if(j == Building::UnitCantAccessFruit)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from resource]")).arg(n);
+					else if(j == Building::UnitTooFarFromResource)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access fruit]")).arg(n);
+					else if(j == Building::UnitTooFarFromFruit)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from fruit]")).arg(n);
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, s.c_str());
+					ypos+=11;
+				}
 			}
 		}
 
@@ -4194,6 +4233,7 @@ void GameGUI::checkSelection(void)
 	}
 }
 
+
 void GameGUI::iterateSelection(void)
 {
 	if (selectionMode==BUILDING_SELECTION)
@@ -4306,6 +4346,26 @@ void GameGUI::centerViewportOnSelection(void)
 		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 }
+
+
+void GameGUI::dumpUnitInformation(void)
+{
+	if(game.selectedUnit != NULL)
+	{
+		Unit* unit = game.selectedUnit;
+		std::cout<<"unit->posx = "<<unit->posX<<std::endl;
+		std::cout<<"unit->posy = "<<unit->posY<<std::endl;
+		std::cout<<"unit->gid = "<<unit->gid<<std::endl;
+		std::cout<<"unit->medical = "<<unit->medical<<std::endl;
+		std::cout<<"unit->activity = "<<unit->activity<<std::endl;
+		std::cout<<"unit->displacement = "<<unit->displacement<<std::endl;
+		std::cout<<"unit->movement = "<<unit->movement<<std::endl;
+		std::cout<<"unit->action = "<<unit->action<<std::endl;
+		if(unit->targetBuilding)
+			std::cout<<"unit->targetBuilding->gid = "<<unit->targetBuilding->gid<<std::endl;
+	}
+}
+
 
 void GameGUI::enableBuildingsChoice(const std::string &name)
 {

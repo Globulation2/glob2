@@ -298,6 +298,9 @@ private:
 	void clearSelection(void) { setSelection(NO_SELECTION); }
 	void checkSelection(void);
 	
+	/// This function causes all information about the selected unit to be dumped
+	void dumpUnitInformation(void);
+	
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;
