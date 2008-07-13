@@ -1006,6 +1006,8 @@ Uniform terrain
 Unit editor
 [unit settings explanation]
 The default number of units assigned
+[flag settings explanation]
+The default radius of the flag
 [unit settings]
 Unit Settings
 [units working]

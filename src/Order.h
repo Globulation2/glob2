@@ -48,13 +48,13 @@ public:
 	virtual Uint8 getOrderType(void)=0;
 
 	///Takes in an arbitrary amount of information and returns its assocciatted order
-	static boost::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength);
+	static boost::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor);
 
 	///Returns the encoded data buffer of data for the Order
 	virtual Uint8 *getData(void)=0;
 	
 	///Sets the Orders local data from a data buffer
-	virtual bool setData(const Uint8 *data, int dataLength)=0;
+	virtual bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor)=0;
 	
 	///Returns the length of the data
 	virtual int getDataLength(void)=0;
@@ -68,13 +68,13 @@ public:
 class OrderCreate:public Order
 {
 public:
-	OrderCreate(const Uint8 *data, int dataLength);
-	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture);
+	OrderCreate(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, Sint32 flagRadius=0);
 	virtual ~OrderCreate(void) {}
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 24; }
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	int getDataLength(void) { return 28; }
 
 	Sint32 teamNumber;
 	Sint32 posX;
@@ -82,9 +82,10 @@ public:
 	Sint32 typeNum;
 	Sint32 unitWorking;
 	Sint32 unitWorkingFuture;
+	Sint32 flagRadius;
 
  private:
-	Uint8 data[24];
+	Uint8 data[28];
 };
 
 
@@ -92,12 +93,12 @@ public:
 class OrderDelete:public Order
 {
 public:
-	OrderDelete(const Uint8 *data, int dataLength);
+	OrderDelete(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderDelete(Uint16 gid);
 	virtual ~OrderDelete(void) {}
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 2; }
 
 	Uint16 gid;
@@ -110,12 +111,12 @@ protected:
 class OrderCancelDelete:public Order
 {
 public:
-	OrderCancelDelete(const Uint8 *data, int dataLength);
+	OrderCancelDelete(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderCancelDelete(Uint16 gid);
 	virtual ~OrderCancelDelete(void) {}
 	Uint8 getOrderType(void) { return ORDER_CANCEL_DELETE; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 2; }
 
 	Uint16 gid;
@@ -128,12 +129,12 @@ protected:
 class OrderConstruction:public Order
 {
 public:
-	OrderConstruction(const Uint8 *data, int dataLength);
+	OrderConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderConstruction(Uint16 gid, Uint32 unitWorking, Uint32 unitWorkingFuture);
 	virtual ~OrderConstruction(void) {}
 	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 10; }
 
 	Uint16 gid;
@@ -148,12 +149,12 @@ protected:
 class OrderCancelConstruction:public Order
 {
 public:
-	OrderCancelConstruction(const Uint8 *data, int dataLength);
+	OrderCancelConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderCancelConstruction(Uint16 gid, Uint32 unitWorking);
 	virtual ~OrderCancelConstruction(void) {}
 	Uint8 getOrderType(void) { return ORDER_CANCEL_CONSTRUCTION; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 6; }
 
 	Uint16 gid;
@@ -176,12 +177,12 @@ public:
 class OrderModifyBuilding:public OrderModify
 {
 public:
-	OrderModifyBuilding(const Uint8 *data, int dataLength);
+	OrderModifyBuilding(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderModifyBuilding(Uint16 gid, Uint16 numberRequested);
 	virtual ~OrderModifyBuilding(void) {}
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 4; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_BUILDING; }
 
@@ -196,12 +197,12 @@ protected:
 class OrderModifyExchange:public OrderModify
 {
 public:
-	OrderModifyExchange(const Uint8 *data, int dataLength);
+	OrderModifyExchange(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask);
 	virtual ~OrderModifyExchange(void) {}
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 10; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_EXCHANGE; }
 
@@ -216,12 +217,12 @@ protected:
 class OrderModifySwarm:public OrderModify
 {
 public:
-	OrderModifySwarm(const Uint8 *data, int dataLength);
+	OrderModifySwarm(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderModifySwarm(Uint16 gid, Sint32 ratio[NB_UNIT_TYPE]);
 	virtual ~OrderModifySwarm(void) {}
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 2+4*NB_UNIT_TYPE; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_SWARM; }
 
@@ -235,12 +236,12 @@ protected:
 class OrderModifyFlag:public OrderModify
 {
 public:
-	OrderModifyFlag(const Uint8 *data, int dataLength);
+	OrderModifyFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderModifyFlag(Uint16 gid, Sint32 range);
 	virtual ~OrderModifyFlag(void) {}
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 6; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_FLAG; }
 
@@ -254,12 +255,12 @@ protected:
 class OrderModifyClearingFlag:public OrderModify
 {
 public:
-	OrderModifyClearingFlag(const Uint8 *data, int dataLength);
+	OrderModifyClearingFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT]);
 	virtual ~OrderModifyClearingFlag(void);
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 2+BASIC_COUNT; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_CLEARING_FLAG; }
 
@@ -273,12 +274,12 @@ protected:
 class OrderModifyMinLevelToFlag:public OrderModify
 {
 public:
-	OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength);
+	OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag);
 	virtual ~OrderModifyMinLevelToFlag(void);
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 4; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_MIN_LEVEL_TO_FLAG; }
 
@@ -292,12 +293,12 @@ protected:
 class OrderMoveFlag:public OrderModify
 {
 public:
-	OrderMoveFlag(const Uint8 *data, int dataLength);
+	OrderMoveFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderMoveFlag(Uint16 gid, Sint32 x, Sint32 y, bool drop);
 	virtual ~OrderMoveFlag(void) {}
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 11; }
 	Uint8 getOrderType(void) { return ORDER_MOVE_FLAG; }
 
@@ -315,14 +316,14 @@ class BrushAccumulator;
 class OrderAlterateArea:public OrderModify
 {
 public:
-	OrderAlterateArea(const Uint8 *data, int dataLength);
+	OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	#endif
 	virtual ~OrderAlterateArea(void);
 	
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void);
 	
 	Uint8 teamNumber;
@@ -342,7 +343,7 @@ protected:
 class OrderAlterateForbidden:public OrderAlterateArea
 {
 public:
-	OrderAlterateForbidden(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
+	OrderAlterateForbidden(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
@@ -353,7 +354,7 @@ public:
 class OrderAlterateGuardArea:public OrderAlterateArea
 {
 public:
-	OrderAlterateGuardArea(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
+	OrderAlterateGuardArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
@@ -364,7 +365,7 @@ public:
 class OrderAlterateClearArea:public OrderAlterateArea
 {
 public:
-	OrderAlterateClearArea(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
+	OrderAlterateClearArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
@@ -389,7 +390,7 @@ public:
 	virtual ~NullOrder(void) { }
 
 	Uint8 *getData(void) { return NULL; }
-	bool setData(const Uint8 *data, int dataLength) { return true; }
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor) { return true; }
 	int getDataLength(void) { return 0; }
 	Uint8 getOrderType(void) { return ORDER_NULL; }
 };
@@ -397,12 +398,12 @@ public:
 class MessageOrder:public MiscOrder
 {
 public:
-	MessageOrder(const Uint8 *data, int dataLength);
+	MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text);
 	virtual ~MessageOrder(void);
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return length; }
 	char *getText(void) { return (char *)(data+9); }
 	Uint8 getOrderType(void) { return ORDER_TEXT_MESSAGE; }
@@ -426,12 +427,12 @@ public:
 class OrderVoiceData:public MiscOrder
 {
 public:
-	OrderVoiceData(const Uint8 *data, int dataLength);
+	OrderVoiceData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas);
 	virtual ~OrderVoiceData(void);
 
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return framesDatasLength+5; }
 	int getStrippedDataLength(void) { return 5; }
 	Uint8 getOrderType(void) { return ORDER_VOICE_DATA; }
@@ -446,13 +447,13 @@ public:
 class SetAllianceOrder:public MiscOrder
 {
 public:
-	SetAllianceOrder(const Uint8 *data, int dataLength);
+	SetAllianceOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask);
 	virtual ~SetAllianceOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_SET_ALLIANCE; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 24; }
 
 	Uint32 teamNumber;
@@ -469,13 +470,13 @@ public:
 class MapMarkOrder:public MiscOrder
 {
 public:
-	MapMarkOrder(const Uint8 *data, int dataLength);
+	MapMarkOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y);
 	virtual ~MapMarkOrder(void) { }
 	
 	Uint8 getOrderType(void) { return ORDER_MAP_MARK; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 12; }
 
 	Uint32 teamNumber;
@@ -491,13 +492,13 @@ private:
 class PauseGameOrder:public MiscOrder
 {
 public:
-	PauseGameOrder(const Uint8 *data, int dataLength);
+	PauseGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	PauseGameOrder(bool startPause);
 	virtual ~PauseGameOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_PAUSE_GAME; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 1; }
 
 	bool pause;
@@ -509,13 +510,13 @@ private:
 class PlayerQuitsGameOrder:public MiscOrder
 {
 public:
-	PlayerQuitsGameOrder(const Uint8 *data, int dataLength);
+	PlayerQuitsGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	PlayerQuitsGameOrder(Sint32 player);
 	virtual ~PlayerQuitsGameOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_PLAYER_QUIT_GAME; }
 	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 4; }
 	
 	Sint32 player;
