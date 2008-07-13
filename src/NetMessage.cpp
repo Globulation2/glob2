@@ -288,7 +288,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	stream->read(buffer, size, "data");
 	stream->readLeaveSection();
 	
-	order = Order::getOrder(buffer, size);
+	order = Order::getOrder(buffer, size, VERSION_MINOR);
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
 	

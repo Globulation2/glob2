@@ -249,24 +249,6 @@ public:
 };
 
 
-///This is a single team info, that only draws itself and handles clicks when there is a team with its number in the game. It shows
-///the color of the team, and allows for selecting between various strings of options for the team (right now only one string is
-///present, "human", more may be added later)
-class TeamInfo : public MapEditorWidget
-{
-public:
-	TeamInfo(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int teamNum, std::vector<std::string>& options);
-	void draw();
-	void handleClick(int relMouseX, int relMouseY);
-	void setSelectionPos(int pos) { selectorPos=pos; }
-	int getSelectionPos() { return selectorPos; }
-private:
-	int teamNum;
-	int selectorPos;
-	std::vector<std::string>& options;
-};
-
-
 
 ///This is the title shown when you select a unit for editing. It is just text.
 class UnitInfoTitle : public MapEditorWidget
@@ -596,18 +578,7 @@ private:
 	///@{
 	PlusIcon* increaseTeams;
 	MinusIcon* decreaseTeams;
-	TeamInfo* teamInfo1;
-	TeamInfo* teamInfo2;
-	TeamInfo* teamInfo3;
-	TeamInfo* teamInfo4;
-	TeamInfo* teamInfo5;
-	TeamInfo* teamInfo6;
-	TeamInfo* teamInfo7;
-	TeamInfo* teamInfo8;
-	TeamInfo* teamInfo9;
-	TeamInfo* teamInfo10;
-	TeamInfo* teamInfo11;
-	TeamInfo* teamInfo12;
+	TeamColorSelector* team_view_tcs;
 	///@}
 
 	///Unit editor view

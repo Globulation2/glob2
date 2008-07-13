@@ -254,8 +254,6 @@ Kompilere skript
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Forbinder
 [connecting to]
@@ -404,6 +402,8 @@ Tom ø
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Mad
 [forbidden area]
@@ -452,6 +452,8 @@ Antal lykkelige
 
 [Harvest]
 Høst
+[high priority]
+
 [hints]
 
 [home]
@@ -556,6 +558,8 @@ Log ind
 Tabt : %0 har mere prestige end du har
 [Lost : your colony is dead]
 Tabt : Din koloni er død
+[low priority]
+
 [lowquality]
 Lav kvalitet
 [Magic At. Air]
@@ -567,8 +571,6 @@ Jord skade.
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Kort navn: %0.
@@ -600,10 +602,10 @@ Marker kort for allierede
 Frugt med andre
 [market explanation]
 Tillader at bytte frugt
-[market level 0]
-
 [market]
 Market
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +713,8 @@ Prestige
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Prune

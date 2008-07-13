@@ -134,54 +134,6 @@ velikost obal
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Zgradi
 [Building Defaults]
@@ -205,12 +157,6 @@ Kampanja
 [Can't join game, game has started]
 
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-
-[Can't join game, timeout]
-
-[Can't join game, wrong game version]
 
 [cancel destroy]
 Prekliči uničenje
@@ -254,8 +200,6 @@ Zgradi skripto
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Vspostavi povezavo
 [connecting to]
@@ -298,12 +242,6 @@ Naključni kazalec
 tako enote kot stavbe
 [defencetower explanation]
 Napada bližnje sovražnike
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Obrambni Stolp
 [Defense Map]
@@ -404,6 +342,8 @@ raziskovalci
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Hrana
 [forbidden area]
@@ -452,6 +392,8 @@ Zadovoljstvo
 
 [Harvest]
 Poberi
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +426,6 @@ Na poti
  
 [inn explanation]
 Nahranjuje tvoje enote
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Restavracija
 [insert]
@@ -556,6 +492,8 @@ Prijava
 Izgubil si : %0 ima več ugleda kot ti
 [Lost : your colony is dead]
 Poražen si : tvoja kolonija je premagana
+[low priority]
+
 [lowquality]
 Nizka kakovost
 [Magic At. Air]
@@ -567,8 +505,6 @@ Nizka kakovost
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Ime mape: %0.
@@ -592,18 +528,16 @@ Višina mape
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 
 [market explanation 2]
 
 [market explanation]
 Omogoča menjavo blaga
-[market level 0]
-
 [market]
 Tržnica
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +645,8 @@ Ugled
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Slive
@@ -926,8 +862,6 @@ Strežnikovo ime
  
 [swarm explanation]
 Ustvarja nove enote
-[swarm level 0]
-
 [swarm]
 Porodnišnica
 [Swim]
