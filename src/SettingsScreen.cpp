@@ -255,6 +255,21 @@ SettingsScreen::SettingsScreen()
 			group_widest_element = 0;
 		}
 	}
+	flagSettingsExplanation = new Text( 10, 100+40*3+10, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[flag settings explanation]"));
+	
+	for(int t=IntBuildingType::EXPLORATION_FLAG; t<=IntBuildingType::CLEARING_FLAG; ++t)
+	{
+		int size = addDefaultFlagRadiusWidget(t, group_current_column_x, 140 + 40*group_row, 4);
+		group_widest_element = std::max(group_widest_element, size);
+		
+		group_row += 1;
+		if(group_row == 8)
+		{
+			group_row = 0;
+			group_current_column_x += group_widest_element + 10;
+			group_widest_element = 0;
+		}
+	}
 	
 	buildings = new TextButton( 10, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Building Defaults]"), BUILDINGSETTINGS);
 	constructionsites = new TextButton( 140, 60, 220, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Construction Site Defaults]"), CONSTRUCTIONSITES);
@@ -268,6 +283,7 @@ SettingsScreen::SettingsScreen()
 	addWidgetToGroup(constructionsites, unitGroup);
 	addWidgetToGroup(upgrades, unitGroup);
 	addWidgetToGroup(flags, unitGroup);
+	addWidgetToGroup(flagSettingsExplanation, unitGroup);
 
 	//shortcuts part
 	game_shortcuts=new TextButton( 100, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
@@ -410,6 +426,13 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 						unitRatios[t][l]->setNth(1);
 					globalContainer->settings.defaultUnitsAssigned[t][l]=unitRatios[t][l]->getNth();
 				}
+			}
+		}
+		for(int t=0; t<3; ++t)
+		{
+			if(flagRadii[t])
+			{
+				globalContainer->settings.defaultFlagRadius[t] = flagRadii[t]->getNth()+1;
 			}
 		}
 	}
@@ -619,6 +642,27 @@ int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, i
 
 
 
+int SettingsScreen::addDefaultFlagRadiusWidget(int type, int x, int y, int group)
+{
+	int n = type - IntBuildingType::EXPLORATION_FLAG;
+	flagRadii[n] = new Number(x, y+20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	addNumbersFor(1, 20, flagRadii[n]);
+	flagRadii[n]->setNth(globalContainer->settings.defaultFlagRadius[n]-1);
+	flagRadii[n]->visible=false;
+	addWidgetToGroup(flagRadii[n], unitGroup);
+
+	std::string text=getDefaultUnitAssignmentText(type, 1, true);
+	flagRadiusTexts[n]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
+	
+	addWidgetToGroup(flagRadiusTexts[n], unitGroup);
+	flagRadiusTexts[n]->visible=false;
+	flagRadiusGroupNumbers[n] = group;
+
+	return std::max(flagRadiusTexts[n]->getWidth(), flagRadii[n]->getWidth());
+}
+
+
+
 std::string SettingsScreen::getDefaultUnitAssignmentText(int type, int level, bool flag)
 {
 	std::string name="[" + IntBuildingType::typeFromShortNumber(type) + "]";
@@ -661,6 +705,13 @@ void SettingsScreen::setLanguageTextsForDefaultAssignmentWidgets()
 			}
 		}
 	}
+	for(int t=0; t<3; ++t)
+	{
+		if(flagRadiusTexts[t])
+		{
+			flagRadiusTexts[t]->setText(getDefaultUnitAssignmentText(t+IntBuildingType::EXPLORATION_FLAG, 1, true));
+		}
+	}
 }
 
 
@@ -685,6 +736,24 @@ void SettingsScreen::activateDefaultAssignedGroupNumber(int group)
 				if(unitRatioTexts[i][j])
 					unitRatioTexts[i][j]->visible=false;
 			}
+		}
+	}
+	for(int i=0; i<3; ++i)
+	{
+
+		if(flagRadiusGroupNumbers[i] == group)
+		{
+			if(flagRadii[i])
+				flagRadii[i]->visible=true;
+			if(flagRadiusTexts[i])
+				flagRadiusTexts[i]->visible=true;
+		}
+		else
+		{
+			if(flagRadii[i])
+				flagRadii[i]->visible=false;
+			if(flagRadiusTexts[i])
+				flagRadiusTexts[i]->visible=false;
 		}
 	}
 }

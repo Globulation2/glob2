@@ -50,6 +50,8 @@ public:
 	///Levels are from 0 to 5, where even numbers are building
 	///under construction and odd ones are completed buildings.
 	int defaultUnitsAssigned[IntBuildingType::NB_BUILDING][6];
+	///Default radius of flags, 0 for exploration, 1 for war flag, 2 for clearing flag
+	int defaultFlagRadius[3];
 
 	int cloudPatchSize;//the bigger the faster the uglier
 	int cloudMaxAlpha;//the higher the nicer the clouds the harder the units are visible
@@ -63,6 +65,7 @@ public:
 	int tempUnitFuture;
 
 	void resetDefaultUnitsAssigned();
+	void resetDefaultFlagRadius();
 };
 
 //Version 1 - Resets default units assigned and keyboard shortcuts

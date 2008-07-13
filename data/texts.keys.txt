@@ -8,6 +8,7 @@
 [%0 units too far from fruit]
 [%0 units too far from resource]
 [%0 units too low level]
+[flag settings explanation]
 [%0% Uploaded]
 [%0's game]
 [%0's team unit got converted to your team]
