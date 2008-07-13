@@ -563,8 +563,11 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 		
 		if (isRoom)
 		{
+			int r = 0;
+			if(bt->isVirtual)
+				r = globalContainer->settings.defaultFlagRadius[bt->shortTypeNum - IntBuildingType::EXPLORATION_FLAG];
 			ghostManager.addBuilding(building, mapX, mapY);
-			orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture)));
+			orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
 		}
 	}
 }

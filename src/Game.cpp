@@ -235,6 +235,11 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber, oc->unitWorking, oc->unitWorkingFuture);
 				if (b)
 				{
+					if(isVirtual)
+					{
+						b->unitStayRange = oc->flagRadius;
+						b->unitStayRangeLocal = oc->flagRadius;
+					}
 					fprintf(logFile, "ORDER_CREATE (%d, %d, %d)", posX, posY, bt->shortTypeNum);
 					b->owner->addToStaticAbilitiesLists(b);
 					b->update();

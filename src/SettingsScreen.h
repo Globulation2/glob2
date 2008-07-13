@@ -85,6 +85,9 @@ private:
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
 	int unitRatioGroupNumbers[IntBuildingType::NB_BUILDING][6];
+	Number* flagRadii[3];
+	Text* flagRadiusTexts[3];
+	int flagRadiusGroupNumbers[3];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
@@ -107,6 +110,7 @@ private:
 	TextButton* remove_shortcut;
 	
 	Text* unitSettingsExplanation;
+	Text* flagSettingsExplanation;
 	
 	bool gfxAltered;
 	
@@ -132,6 +136,8 @@ public:
 	ShortcutMode currentMode;
 	///Quick code that adds in a default unit assignment widget pair at the specific position, and returns the width.
 	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag=false);
+	///Quick code that adds in a default flag radius widget pair at the specific position, and returns the width.
+	int addDefaultFlagRadiusWidget(int type, int x, int y, int group);
 	///Activates the given group number for default assignment widgets
 	void activateDefaultAssignedGroupNumber(int group);
 	///Returns the default unit assignment text
